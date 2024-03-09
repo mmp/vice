@@ -1,5 +1,5 @@
 {
-  "tracon": "A80 (Atlanta)",
+  "tracon": "A80",
   "airports": {
     "KATL": {
       "approaches": {
@@ -8,7 +8,7 @@
           "tower_controller": "ATL_1_TWR",
           "type": "ILS",
           "waypoints": [
-            "LARII/a5000 JAAJJ/a5000 BAZAR/a4000 SCHEL/a2900 _ATL_8L/a1015"
+            "LARII/a5000 JAAJJ/a5000 BAZAR/a4000 SCHEL/a2900"
           ]
         },
         "I8R": {
@@ -16,7 +16,7 @@
           "tower_controller": "ATL_2_TWR",
           "type": "ILS",
           "waypoints": [
-            "GPEAT/a5000 PEARI/a5000 NZBIT/a4000 HARSN/a2800 _ATL_8R/a1015"
+            "GPEAT/a5000 PEARI/a5000 NZBIT/a4000 HARSN/a2800"
           ]
         },
         "I9L": {
@@ -24,7 +24,7 @@
           "tower_controller": "ATL_3_TWR",
           "type": "ILS",
           "waypoints": [
-            "RYENN/a7000 AAKAY/a6000 ARRBE/a5000 HRDEY/a4000 VINII/a2700 _ATL_9L/a1019"
+            "RYENN/a7000 AAKAY/a6000 ARRBE/a5000 HRDEY/a4000 VINII/a2700"
           ]
         },
         "I9R": {
@@ -32,7 +32,7 @@
           "tower_controller": "ATL_4_TWR",
           "type": "ILS",
           "waypoints": [
-            "ANDIY/a7000 DFINS/a6000 GGUYY/a5000 EEASY/a4000 BURNY/a2700 _ATL_9R/a1026"
+            "ANDIY/a7000 DFINS/a6000 GGUYY/a5000 EEASY/a4000 BURNY/a2700"
           ]
         },
         "I10": {
@@ -40,7 +40,7 @@
           "tower_controller": "ATL_5_TWR",
           "type": "ILS",
           "waypoints": [
-            "DEWHY/a4000 CTEEE/a4000 ZMANN/a2700 _ATL_10/a1000"
+            "DEWHY/a4000 CTEEE/a4000 ZMANN/a2700"
           ]
         },
         "I6L": {
@@ -48,7 +48,7 @@
           "tower_controller": "ATL_2_TWR",
           "type": "ILS",
           "waypoints": [
-            "JIRRI/a5000 BOYKN/a5000 MARKD/a4000 DEJAA/a2600 _ATL_26L/a990"
+            "JIRRI/a5000 BOYKN/a5000 MARKD/a4000 DEJAA/a2600"
           ]
         },
         "I6R": {
@@ -56,7 +56,7 @@
           "tower_controller": "ATL_1_TWR",
           "type": "ILS",
           "waypoints": [
-            "ZELOW/a5000 HAINZ/a5000 BAMBU/a4000 AJAAY/a2700 _ATL_26R/a996"
+            "ZELOW/a5000 HAINZ/a5000 BAMBU/a4000 AJAAY/a2700"
           ]
         },
         "I7L": {
@@ -64,7 +64,7 @@
           "tower_controller": "ATL_4_TWR",
           "type": "ILS",
           "waypoints": [
-            "SLVAA/a7000 ROMMM/a6000 SEJAY/a5000 GRMPI/a4000 DEPOT/a2800 _ATL_27L/a985"
+            "SLVAA/a7000 ROMMM/a6000 SEJAY/a5000 GRMPI/a4000 DEPOT/a2800"
           ]
         },
         "I7R": {
@@ -72,7 +72,7 @@
           "tower_controller": "ATL_3_TWR",
           "type": "ILS",
           "waypoints": [
-            "YOUYU/a7000 MMCAP/a6000 MAASN/a5000 MRCER/a4000 OSTRR/a2700 _ATL_27R/a985"
+            "YOUYU/a7000 MMCAP/a6000 MAASN/a5000 MRCER/a4000 OSTRR/a2700"
           ]
         },
         "I28": {
@@ -80,7 +80,7 @@
           "tower_controller": "ATL_5_TWR",
           "type": "ILS",
           "waypoints": [
-            "N033.37.09.702,W083.54.02.559 PRMAN/a4000 WONZR/a4000 JUBBA/a2700 _ATL_28/a998"
+            "N033.37.09.702,W083.54.02.559 PRMAN/a4000 WONZR/a4000 JUBBA/a2700"
           ]
         }
       },
@@ -89,328 +89,328 @@
           "LUCKK": {
             "cleared_altitude": 10000,
             "sid": "BANNG3",
-            "waypoints": "_ATL_26L _ATL_8R SNUFY SLAWW RIGGZ RIVTT/s250 BANNG"
+            "waypoints": "SNUFY SLAWW RIGGZ RIVTT/s250 BANNG"
           },
           "HANKO": {
             "cleared_altitude": 10000,
             "sid": "CUTTN2",
-            "waypoints": "_ATL_26L _ATL_8R SNUFY BDODD CUTTN"
+            "waypoints": "SNUFY BDODD CUTTN"
           },
           "IRQ": {
             "cleared_altitude": 10000,
             "sid": "GAIRY2",
-            "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN SMOGG GAIRY"
+            "waypoints": "MPASS ZELAN SMOGG GAIRY"
           },
           "SARGE": {
             "cleared_altitude": 10000,
             "sid": "HAALO3",
-            "waypoints": "_ATL_26L _ATL_8R SNUFY SLAWW RIGGZ RIVTT HAALO"
+            "waypoints": "SNUFY SLAWW RIGGZ RIVTT HAALO"
           },
           "KELLN": {
             "cleared_altitude": 10000,
             "sid": "JACCC2",
-            "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN SMOGG JACCC SHUTT BFOUT"
+            "waypoints": "MPASS ZELAN SMOGG JACCC SHUTT BFOUT"
           },
           "STNGA": {
             "cleared_altitude": 10000,
             "sid": "KAJIN2",
-            "waypoints": "_ATL_26L _ATL_8R SNUFY BDODD KAJIN"
+            "waypoints": "SNUFY BDODD KAJIN"
           },
           "VUZ,YAALL,CHOOK": {
             "cleared_altitude": 10000,
             "sid": "NASSA2",
-            "waypoints": "_ATL_26L _ATL_8R SNUFY BDODD NASSA ENGNR"
+            "waypoints": "SNUFY BDODD NASSA ENGNR"
           },
           "RAFTN,SMTTH": {
             "cleared_altitude": 10000,
             "sid": "PADGT2",
-            "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN/s250 PADGT"
+            "waypoints": "MPASS ZELAN/s250 PADGT"
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
             "sid": "PENCL2",
-            "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN/s250 WURLD PENCL LEDRR"
+            "waypoints": "MPASS ZELAN/s250 WURLD PENCL LEDRR"
           },
           "HRTWL": {
             "cleared_altitude": 10000,
             "sid": "PHIIL3",
-            "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN/s250 SMOGG PHIIL LAGGR MULSN"
+            "waypoints": "MPASS ZELAN/s250 SMOGG PHIIL LAGGR MULSN"
           },
           "BURGG": {
             "cleared_altitude": 10000,
             "sid": "PLMMR3",
-            "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN/s250 SMOGG DLLNN PLMMR PLMMR TENSE NWANT"
+            "waypoints": "MPASS ZELAN/s250 SMOGG DLLNN PLMMR PLMMR TENSE NWANT"
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
             "sid": "POUNC2",
-            "waypoints": "_ATL_26L _ATL_8R SNUFY BDODD POUNC PNTHA GRGIA"
+            "waypoints": "SNUFY BDODD POUNC PNTHA GRGIA"
           },
           "BOBBD": {
             "cleared_altitude": 10000,
             "sid": "SMKEY2",
-            "waypoints":"_ATL_26L _ATL_8R MPASS ZELAN/s250 SMKEY HUCHH"
+            "waypoints": "MPASS ZELAN/s250 SMKEY HUCHH"
           },
           "WALET": {
             "cleared_altitude": 10000,
             "sid": "SMLTZ3",
-            "waypoints": "_ATL_26L _ATL_8R SNUFY SLAWW RIGGZ RIVTT SMLTZ WALET"
+            "waypoints": "SNUFY SLAWW RIGGZ RIVTT SMLTZ WALET"
           },
           "RESPE,GLAZR": {
             "cleared_altitude": 10000, 
             "sid": "VARNM2",
-            "waypoints": "_ATL_26L _ATL_8R MPASS ZELAN WURLD VARNM "
+            "waypoints": "MPASS ZELAN WURLD VARNM "
           },
           "NOKIE": {
             "cleared_altitude": 10000,
             "sid": "VRSTY3",
-            "waypoints": "_ATL_26L _ATL_8R SNUFY SLAWW RIGGZ RIVTT VRSTY"
+            "waypoints": "SNUFY SLAWW RIGGZ RIVTT VRSTY"
           }
         },
         "27R": {
           "LUCKK": {
             "cleared_altitude": 10000,
             "sid": "BANNG3",
-            "waypoints": "_ATL_27R _ATL_9L SLAWW RIGGZ RIVTT/s250 BANNG"
+            "waypoints": "SLAWW RIGGZ RIVTT/s250 BANNG"
           },
           "HANKO": {
             "cleared_altitude": 10000,
             "sid": "CUTTN2",
-            "waypoints": "_ATL_27R _ATL_9L SLAWW WESEK CUTTN"
+            "waypoints": "SLAWW WESEK CUTTN"
           },
           "IRQ": {
             "cleared_altitude": 10000,
             "sid": "GAIRY2",
-            "waypoints": "_ATL_27R _ATL_9L FUTBL ZALLE GGOLF GAIRY"
+            "waypoints": "FUTBL ZALLE GGOLF GAIRY"
           },
           "SARGE": {
             "cleared_altitude": 10000,
             "sid": "HAALO3",
-            "waypoints": "_ATL_27R _ATL_9L SLAWW RIGGZ RIVTT HAALO"
+            "waypoints": "SLAWW RIGGZ RIVTT HAALO"
           },
           "KELLN": {
             "cleared_altitude": 10000,
             "sid": "JACCC2",
-            "waypoints": "_ATL_27R _ATL_9L FUTBL ZALLE GGOLF DDUBB JACCC SHUTT BFOUT"
+            "waypoints": "FUTBL ZALLE GGOLF DDUBB JACCC SHUTT BFOUT"
           },
           "STNGA": {
             "cleared_altitude": 10000,
             "sid": "KAJIN2",
-            "waypoints": "_ATL_27R _ATL_9L SLAWW WESEK KAJIN"
+            "waypoints": "SLAWW WESEK KAJIN"
           },
           "VUZ,YAALL,CHOOK": {
             "cleared_altitude": 10000,
             "sid": "NASSA2",
-            "waypoints": "_ATL_27R _ATL_9L SLAWW WESEK NASSA ENGNR"
+            "waypoints": "SLAWW WESEK NASSA ENGNR"
           },
           "RAFTN,SMTTH": {
             "cleared_altitude": 10000,
             "sid": "PADGT2",
-            "waypoints": "_ATL_27R _ATL_9L CPARK MPASS ZELAN PADGT"
+            "waypoints": "CPARK MPASS ZELAN PADGT"
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
             "sid": "PENCL2",
-            "waypoints": "_ATL_27R _ATL_9L CPARK MPASS ZELAN/s250 WURLD PENCL LEDRR"
+            "waypoints": "CPARK MPASS ZELAN/s250 WURLD PENCL LEDRR"
           },
           "HRTWL": {
             "cleared_altitude": 10000,
             "sid": "PHIIL3",
-            "waypoints": "_ATL_27R _ATL_9L FUTBL ZALLE GGOLF PHIIL LAGGR MULSN"
+            "waypoints": "FUTBL ZALLE GGOLF PHIIL LAGGR MULSN"
           },
           "BURGG": {
             "cleared_altitude": 10000,
             "sid": "PLMMR3",
-            "waypoints": "_ATL_27R _ATL_9L FUTBL ZALLE GGOLF PLMMR PLMMR TENSE NWANT"
+            "waypoints": "FUTBL ZALLE GGOLF PLMMR PLMMR TENSE NWANT"
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
             "sid": "POUNC2",
-            "waypoints": "_ATL_27R _ATL_9L SLAWW WESEK POUNC PNTHA GRGIA"
+            "waypoints": "SLAWW WESEK POUNC PNTHA GRGIA"
           },
           "BOBBD": {
             "cleared_altitude": 10000,
             "sid": "SMKEY2",
-            "waypoints":"_ATL_27R _ATL_9L CPARK MPASS ZELAN/s250 SMKEY HUCHH"
+            "waypoints": "CPARK MPASS ZELAN/s250 SMKEY HUCHH"
           },
           "WALET": {
             "cleared_altitude": 10000,
             "sid": "SMLTZ3",
-            "waypoints": "_ATL_27R _ATL_9L SLAWW RIGGZ RIVTT SMLTZ WALET"
+            "waypoints": "SLAWW RIGGZ RIVTT SMLTZ WALET"
           },
           "RESPE,GLAZR": {
             "cleared_altitude": 10000, 
             "sid": "VARNM2",
-            "waypoints": "_ATL_27R _ATL_9L CPARK MPASS ZELAN WURLD VARNM "
+            "waypoints": "CPARK MPASS ZELAN WURLD VARNM "
           },
           "NOKIE": {
             "cleared_altitude": 10000,
             "sid": "VRSTY3",
-            "waypoints": "_ATL_27R _ATL_9L SLAWW RIGGZ RIVTT VRSTY"
+            "waypoints": "SLAWW RIGGZ RIVTT VRSTY"
           }
         },
         "8R": {
           "LUCKK": {
             "cleared_altitude": 10000,
             "sid": "BANNG3",
-            "waypoints": "_ATL_8R _ATL_26L SKNNR GRITZ HYZMN BANNG"
+            "waypoints": "SKNNR GRITZ HYZMN BANNG"
           },
           "HANKO": {
             "cleared_altitude": 10000,
             "sid": "CUTTN2",
-            "waypoints": "_ATL_8R _ATL_26L HRSHL KLEGG COBBB CUTTN"
+            "waypoints": "HRSHL KLEGG COBBB CUTTN"
           },
           "IRQ": {
             "cleared_altitude": 10000,
             "sid": "GAIRY2",
-            "waypoints": "_ATL_8R _ATL_26L RONII IGEBE GAIRY"
+            "waypoints": "RONII IGEBE GAIRY"
           },
           "SARGE": {
             "cleared_altitude": 10000,
             "sid": "HAALO3",
-            "waypoints": "_ATL_8R _ATL_26L SKNNR GRITZ HYZMN HAALO"
+            "waypoints": "SKNNR GRITZ HYZMN HAALO"
           },
           "KELLN": {
             "cleared_altitude": 10000,
             "sid": "JACCC2",
-            "waypoints": "_ATL_8R _ATL_26L RONII IGEBE JACCC SHUTT BFOUT"
+            "waypoints": "RONII IGEBE JACCC SHUTT BFOUT"
           },
           "STNGA": {
             "cleared_altitude": 10000,
             "sid": "KAJIN2",
-            "waypoints": "_ATL_8R _ATL_26L HRSHL KLEGG COBBB KAJIN"
+            "waypoints": "HRSHL KLEGG COBBB KAJIN"
           },
           "VUZ,YAALL,CHOOK": {
             "cleared_altitude": 10000,
             "sid": "NASSA2",
-            "waypoints": "_ATL_8R _ATL_26L HRSHL KLEGG COBBB NASSA ENGNR"
+            "waypoints": "HRSHL KLEGG COBBB NASSA ENGNR"
           },
           "RAFTN,SMTTH": {
             "cleared_altitude": 10000,
             "sid": "PADGT2",
-            "waypoints": "_ATL_8R _ATL_26L RONII HOYYT GRABA PADGT"
+            "waypoints": "RONII HOYYT GRABA PADGT"
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
             "sid": "PENCL2",
-            "waypoints": "_ATL_8R _ATL_26L RONII HOYYT PENCL LEDRR"
+            "waypoints": "RONII HOYYT PENCL LEDRR"
           },
           "HRTWL": {
             "cleared_altitude": 10000,
             "sid": "PHIIL3",
-            "waypoints": "_ATL_8R _ATL_26L RONII IGEBE PHIIL LAGGR MULSN"
+            "waypoints": "RONII IGEBE PHIIL LAGGR MULSN"
           },
           "BURGG": {
             "cleared_altitude": 10000,
             "sid": "PLMMR3",
-            "waypoints": "_ATL_8R _ATL_26L RONII IGEBE PLMMR PLMMR TENSE NWANT"
+            "waypoints": "RONII IGEBE PLMMR PLMMR TENSE NWANT"
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
             "sid": "POUNC2",
-            "waypoints": "_ATL_8R _ATL_26L HRSHL KLEGG COBBB POUNC PNTHA GRGIA"
+            "waypoints": "HRSHL KLEGG COBBB POUNC PNTHA GRGIA"
           },
           "BOBBD": {
             "cleared_altitude": 10000,
             "sid": "SMKEY2",
-            "waypoints":"_ATL_8R _ATL_26L RONII HOYYT CUMON SMKEY HUCHH"
+            "waypoints": "RONII HOYYT CUMON SMKEY HUCHH"
           },
           "WALET": {
             "cleared_altitude": 10000,
             "sid": "SMLTZ3",
-            "waypoints": "_ATL_8R _ATL_26L SKNNR GRITZ HYZMN TROFY SMLTZ WALET"
+            "waypoints": "SKNNR GRITZ HYZMN TROFY SMLTZ WALET"
           },
           "RESPE,GLAZR": {
             "cleared_altitude": 10000, 
             "sid": "VARNM2",
-            "waypoints": "_ATL_8R _ATL_26L RONII HOYYT VARNM "
+            "waypoints": "RONII HOYYT VARNM "
           },
           "NOKIE": {
             "cleared_altitude": 10000,
             "sid": "VRSTY3",
-            "waypoints": "_ATL_8R _ATL_26L SKNNR GRITZ HYZMN TROFY VRSTY"
+            "waypoints": "SKNNR GRITZ HYZMN TROFY VRSTY"
           }
         },
         "9L": {
           "LUCKK": {
             "cleared_altitude": 10000,
             "sid": "BANNG3",
-            "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN BANNG"
+            "waypoints": "GRITZ HYZMN BANNG"
           },
           "HANKO": {
             "cleared_altitude": 10000,
             "sid": "CUTTN2",
-            "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN TYRNN CUTTN"
+            "waypoints": "GRITZ HYZMN TYRNN CUTTN"
           },
           "IRQ": {
             "cleared_altitude": 10000,
             "sid": "GAIRY2",
-            "waypoints": "_ATL_9L _ATL_27R GRITZ DDUBB GAIRY"
+            "waypoints": "GRITZ DDUBB GAIRY"
           },
           "SARGE": {
             "cleared_altitude": 10000,
             "sid": "HAALO3",
-            "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN HAALO"
+            "waypoints": "GRITZ HYZMN HAALO"
           },
           "KELLN": {
             "cleared_altitude": 10000,
             "sid": "JACCC2",
-            "waypoints": "_ATL_9L _ATL_27R GRITZ DDUBB JACCC SHUTT BFOUT"
+            "waypoints": "GRITZ DDUBB JACCC SHUTT BFOUT"
           },
           "STNGA": {
             "cleared_altitude": 10000,
             "sid": "KAJIN2",
-            "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN TYRNN"
+            "waypoints": "GRITZ HYZMN TYRNN"
           },
           "VUZ,YAALL,CHOOK": {
             "cleared_altitude": 10000,
             "sid": "NASSA2",
-            "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN TYRNN NASSA ENGNR"
+            "waypoints": "GRITZ HYZMN TYRNN NASSA ENGNR"
           },
           "RAFTN,SMTTH": {
             "cleared_altitude": 10000,
             "sid": "PADGT2",
-            "waypoints": "_ATL_9L _ATL_27R PICKT RONII HOYYT GRABA PADGT"
+            "waypoints": "PICKT RONII HOYYT GRABA PADGT"
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
             "sid": "PENCL2",
-            "waypoints": "_ATL_9L _ATL_27R PICKT RONII HOYYT PENCL LEDRR"
+            "waypoints": "PICKT RONII HOYYT PENCL LEDRR"
           },
           "HRTWL": {
             "cleared_altitude": 10000,
             "sid": "PHIIL3",
-            "waypoints": "_ATL_9L _ATL_27R LIDAS ERWIN PHIIL LAGGR MULSN"
+            "waypoints": "LIDAS ERWIN PHIIL LAGGR MULSN"
           },
           "BURGG": {
             "cleared_altitude": 10000,
             "sid": "PLMMR3",
-            "waypoints": "_ATL_9L _ATL_27R LIDAS ERWIN PLMMR PLMMR TENSE NWANT"
+            "waypoints": "LIDAS ERWIN PLMMR PLMMR TENSE NWANT"
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
             "sid": "POUNC2",
-            "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN TYRNN POUNC PNTHA GRGIA"
+            "waypoints": "GRITZ HYZMN TYRNN POUNC PNTHA GRGIA"
           },
           "BOBBD": {
             "cleared_altitude": 10000,
             "sid": "SMKEY2",
-            "waypoints":"_ATL_9L _ATL_27R PICKT RONII HOYYT CUMON SMKEY HUCHH"
+            "waypoints": "PICKT RONII HOYYT CUMON SMKEY HUCHH"
           },
           "WALET": {
             "cleared_altitude": 10000,
             "sid": "SMLTZ3",
-            "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN TROFY SMLTZ WALET"
+            "waypoints": "GRITZ HYZMN TROFY SMLTZ WALET"
           },
           "RESPE,GLAZR": {
             "cleared_altitude": 10000, 
             "sid": "VARNM2",
-            "waypoints": "_ATL_9L _ATL_27R PICKT RONII HOYYT VARNM "
+            "waypoints": "PICKT RONII HOYYT VARNM "
           },
           "NOKIE": {
             "cleared_altitude": 10000,
             "sid": "VRSTY3",
-            "waypoints": "_ATL_9L _ATL_27R GRITZ HYZMN TROFY VRSTY"
+            "waypoints": "GRITZ HYZMN TROFY VRSTY"
           }
         }
       },
@@ -800,7 +800,6 @@
         "GLAZR": "North",
         "NOKIE": "East"
       },
-      "location": "N33.38.31.431,W84.25.47.527",
       "tower_list": 5
     }
   },
@@ -1133,17 +1132,19 @@
         "initial_controller" : "ATL_CTR",
         "initial_speed": 290,
         "star": "CHPPR1",
-        "runway_waypoints": {
-          "8L": "MRCHH JAGRR/a9000/h180",
-          "8R": "MRCHH JAGRR/a9000/h180",
-          "9L": "MRCHH BSHOP/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
-          "9R": "MRCHH BSHOP/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
-          "10": "MRCHH BSHOP/a9000 NAVVY/a8000 DROYD/a8000/h180",
-          "26R": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-          "26L": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-          "27L": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
-          "27R": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
-          "28": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095"
+          "runway_waypoints": {
+              "KATL": {
+                  "8L": "MRCHH JAGRR/a9000/h180",
+                  "8R": "MRCHH JAGRR/a9000/h180",
+                  "9L": "MRCHH BSHOP/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
+                  "9R": "MRCHH BSHOP/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
+                  "10": "MRCHH BSHOP/a9000 NAVVY/a8000 DROYD/a8000/h180",
+                  "26R": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                  "26L": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                  "27L": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
+                  "27R": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
+                  "28": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095"
+              }
         },
         "speed_restriction": 250,
         "waypoints": "OWNNS/ho CHPPR/a13000 MRCHH"
@@ -1220,17 +1221,19 @@
       "initial_controller" : "ATL_CTR",
       "initial_speed": 290,
       "star": "CHPPR1",
-      "runway_waypoints": {
-        "8L": "MRCHH JAGRR/a9000/h180",
-        "8R": "MRCHH JAGRR/a9000/h180",
-        "9L": "MRCHH BSHOP/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
-        "9R": "MRCHH BSHOP/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
-        "10": "MRCHH BSHOP/a9000 NAVVY/a8000 DROYD/a8000/h180",
-        "26R": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "26L": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "27L": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
-        "27R": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
-        "28": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095"
+        "runway_waypoints": {
+            "KATL": {
+                "8L": "MRCHH JAGRR/a9000/h180",
+                "8R": "MRCHH JAGRR/a9000/h180",
+                "9L": "MRCHH BSHOP/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
+                "9R": "MRCHH BSHOP/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
+                "10": "MRCHH BSHOP/a9000 NAVVY/a8000 DROYD/a8000/h180",
+                "26R": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "26L": "MRCHH HIDRO RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "27L": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
+                "27R": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095",
+                "28": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "OWNNS/ho CHPPR/a13000/s250 MRCHH"
@@ -1385,16 +1388,18 @@
       "initial_speed": 290,
       "star": "GLAVN1",
       "runway_waypoints": {
-        "8L": "STHRN YABBA/a9000 NAVVY/a8000 LARII/a6500 JAAJJ/a5000/h095",
-        "8R": "STHRN YABBA/a9000 NAVVY/a8000 GPEAT/a6500 PEARI/a5000/h095",
-        "9L": "STHRN YABBA/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
-        "9R": "STHRN YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
-        "10": "STHRN YABBA/a9000 NAVVY/a8000 DROYD/a8000/h180",
-        "26R": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "26L": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "27L": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
-        "27R": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
-        "28": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095"
+            "KATL": {
+                "8L": "STHRN YABBA/a9000 NAVVY/a8000 LARII/a6500 JAAJJ/a5000/h095",
+                "8R": "STHRN YABBA/a9000 NAVVY/a8000 GPEAT/a6500 PEARI/a5000/h095",
+                "9L": "STHRN YABBA/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
+                "9R": "STHRN YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
+                "10": "STHRN YABBA/a9000 NAVVY/a8000 DROYD/a8000/h180",
+                "26R": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "26L": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "27L": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
+                "27R": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
+                "28": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "MADDX/ho GLAVN/a14000 STHRN"
@@ -1471,16 +1476,18 @@
       "initial_speed": 290,
       "star": "GLAVN1",
       "runway_waypoints": {
-        "8L": "STHRN YABBA/a9000 NAVVY/a8000 LARII/a6500 JAAJJ/a5000/h095",
-        "8R": "STHRN YABBA/a9000 NAVVY/a8000 GPEAT/a6500 PEARI/a5000/h095",
-        "9L": "STHRN YABBA/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
-        "9R": "STHRN YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
-        "10": "STHRN YABBA/a9000 NAVVY/a8000 DROYD/a8000/h180",
-        "26R": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "26L": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "27L": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
-        "27R": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
-        "28": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095"
+            "KATL": {
+                "8L": "STHRN YABBA/a9000 NAVVY/a8000 LARII/a6500 JAAJJ/a5000/h095",
+                "8R": "STHRN YABBA/a9000 NAVVY/a8000 GPEAT/a6500 PEARI/a5000/h095",
+                "9L": "STHRN YABBA/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h095",
+                "9R": "STHRN YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h095",
+                "10": "STHRN YABBA/a9000 NAVVY/a8000 DROYD/a8000/h180",
+                "26R": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "26L": "STHRN HOGGG RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "27L": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
+                "27R": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095",
+                "28": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "MADDX/ho GLAVN/a12000/s250 STHRN"
@@ -1607,11 +1614,13 @@
       "initial_speed": 290,
       "star": "HOBTT2",
       "runway_waypoints": {
-        "26L": "ENSLL/a12000 RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
-        "26R": "ENSLL/a12000 RAIIN KLOWD SWEPT KYMMY KEAVY/h905",
-        "27L": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095",
-        "27R": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095",
-        "28": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095"
+            "KATL": {
+                "26L": "ENSLL/a12000 RAIIN KLOWD SWEPT KYMMY KEAVY/h095",
+                "26R": "ENSLL/a12000 RAIIN KLOWD SWEPT KYMMY KEAVY/h905",
+                "27L": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095",
+                "27R": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095",
+                "28": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "SMAWG/a17000/ho HOBTT/a14000 ENSLL/a12000"
@@ -2062,16 +2071,18 @@
       "initial_speed": 290,
       "star": "ONDRE1",
       "runway_waypoints": {
-        "8L": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "8R": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "9L": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "9R": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "10": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "26L": "SMELY VOLTS/a9000/h175",
-        "26R": "SMELY VOLTS/a9000/h175",
-        "27L": "SMELY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
-        "27R": "SMELY ANVAL/a9000 POSEY/a8000 SLVAA/a7000 MMCAP/a6000/h275",
-        "28": "SMELY ANVAL/a9000 POSEY/a8000/h180"
+            "KATL": {
+                "8L": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "8R": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "9L": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+                "9R": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+                "10": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+                "26L": "SMELY VOLTS/a9000/h175",
+                "26R": "SMELY VOLTS/a9000/h175",
+                "27L": "SMELY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
+                "27R": "SMELY ANVAL/a9000 POSEY/a8000 SLVAA/a7000 MMCAP/a6000/h275",
+                "28": "SMELY ANVAL/a9000 POSEY/a8000/h180"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "STRWY/ho ONDRE/a13000/s250 SMELY"
@@ -2137,16 +2148,18 @@
       "initial_speed": 290,
       "star": "ONDRE1",
       "runway_waypoints": {
-        "8L": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "8R": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "9L": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "9R": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "10": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
-        "26L": "SMELY VOLTS/a9000/h175",
-        "26R": "SMELY VOLTS/a9000/h175",
-        "27L": "SMELY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
-        "27R": "SMELY ANVAL/a9000 POSEY/a8000 SLVAA/a7000 MMCAP/a6000/h275",
-        "28": "SMELY ANVAL/a9000 POSEY/a8000/h180"
+            "KATL": {
+                "8L": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "8R": "SMELY GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "9L": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+                "9R": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+                "10": "SMELY FRYES SHURT REMAC DACTL STUMP/h275",
+                "26L": "SMELY VOLTS/a9000/h175",
+                "26R": "SMELY VOLTS/a9000/h175",
+                "27L": "SMELY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
+                "27R": "SMELY ANVAL/a9000 POSEY/a8000 SLVAA/a7000 MMCAP/a6000/h275",
+                "28": "SMELY ANVAL/a9000 POSEY/a8000/h180"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "STRWY/ho ONDRE/a13000 SMELY"
@@ -2269,16 +2282,18 @@
       "initial_speed": 290,
       "star": "OZZZI1",
       "runway_waypoints": {
-        "8L": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "8R": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "9L": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
-        "9R": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
-        "10": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
-        "26L": "HAARY CALLA/a9000 POSEY/a8000 JIRRI/a6500 BOYKN/a5000/h275",
-        "26R": "HAARY CALLA/a9000 POSEY/a8000 ZELOW/a6500 HAINZ/a5000/h275",
-        "27L": "HAARY CALLA/a9000 POSEY/a8000 SLVAA/a7000 ROMMM/a6000/h275",
-        "27R": "HAARY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
-        "28": "HAARY ANVAL/a9000 POSEY/a8000 BLUFF/a8000/h180"
+          "KATL": {
+              "8L": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+              "8R": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+              "9L": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
+              "9R": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
+              "10": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
+              "26L": "HAARY CALLA/a9000 POSEY/a8000 JIRRI/a6500 BOYKN/a5000/h275",
+              "26R": "HAARY CALLA/a9000 POSEY/a8000 ZELOW/a6500 HAINZ/a5000/h275",
+              "27L": "HAARY CALLA/a9000 POSEY/a8000 SLVAA/a7000 ROMMM/a6000/h275",
+              "27R": "HAARY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
+              "28": "HAARY ANVAL/a9000 POSEY/a8000 BLUFF/a8000/h180"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "WINNG/ho OZZZI/a12000/s250 HAARY"
@@ -2339,16 +2354,18 @@
       "initial_speed": 290,
       "star": "OZZZI1",
       "runway_waypoints": {
-        "8L": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "8R": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "9L": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
-        "9R": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
-        "10": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
-        "26L": "HAARY CALLA/a9000 POSEY/a8000 JIRRI/a6500 BOYKN/a5000/h275",
-        "26R": "HAARY CALLA/a9000 POSEY/a8000 ZELOW/a6500 HAINZ/a5000/h275",
-        "27L": "HAARY CALLA/a9000 POSEY/a8000 SLVAA/a7000 ROMMM/a6000/h275",
-        "27R": "HAARY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
-        "28": "HAARY ANVAL/a9000 POSEY/a8000 BLUFF/a8000/h180"
+            "KATL": {
+                "8L": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "8R": "HAARY KILRR GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "9L": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
+                "9R": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
+                "10": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275",
+                "26L": "HAARY CALLA/a9000 POSEY/a8000 JIRRI/a6500 BOYKN/a5000/h275",
+                "26R": "HAARY CALLA/a9000 POSEY/a8000 ZELOW/a6500 HAINZ/a5000/h275",
+                "27L": "HAARY CALLA/a9000 POSEY/a8000 SLVAA/a7000 ROMMM/a6000/h275",
+                "27R": "HAARY ANVAL/a9000 POSEY/a8000 YOUYU/a7000 ROMMM/a6000/h275",
+                "28": "HAARY ANVAL/a9000 POSEY/a8000 BLUFF/a8000/h180"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "WINNG/ho OZZZI/a14000 HAARY"
@@ -2495,11 +2512,13 @@
       "initial_speed": 290,
       "star": "SITTH2",
       "runway_waypoints": {
-        "8L": "TIZZY/a12000 GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "8R": "TIZZY/a12000 GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-        "9L": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275",
-        "9R": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275",
-        "10": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275"
+            "KATL": {
+                "8L": "TIZZY/a12000 GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "8R": "TIZZY/a12000 GAASS KLOWD KUNFU TRAPE SNEVE/h275",
+                "9L": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275",
+                "9R": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275",
+                "10": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275"
+            }
       },
       "speed_restriction": 250,
       "waypoints": "FORCC/ho SITTH/a14000 TIZZY/a12000"
@@ -2656,7 +2675,6 @@
     "_ATL_27R": "N33.38.04.838,W84.24.26.142",
     "_ATL_28": "N033.37.13.918,W084.25.07.434"
   },
-  "magnetic_variation": 5.2,
   "name": "KATL",
   "primary_airport": "KATL",
   "radar_sites": {
@@ -2813,10 +2831,10 @@
             "solo_controller": "ATL_APP",
             "multi_controllers": {
                 "default" : {
-                    "ATL_H_APP": {"primary": true, "arrivals": ["SITTH2"]},
-                    "ATL_D_APP": {"backup": "ATL_H_APP", "arrivals": ["GLAVN1 EAST", "CHPPR1 EAST"]},
-                    "ATL_L_APP": {"backup": "ATL_D_APP", "arrivals": ["ONDRE1 EAST", "OZZZI1 EAST"]},
-                    "ATL_Y_APP": {"backup": "ATL_L_APP", "arrivals": ["GNDLF2"]},
+                    "ATL_H_APP": {"primary": true, "arrivals": ["SITTH2"]}, 
+                    "ATL_D_APP": {"backup": "ATL_H_APP", "arrivals": ["GLAVN1 EAST", "CHPPR1 EAST"]}, 
+                    "ATL_L_APP": {"backup": "ATL_D_APP", "arrivals": ["ONDRE1 EAST", "OZZZI1 EAST"]}, 
+                    "ATL_Y_APP": {"backup": "ATL_H_APP", "arrivals": ["GNDLF2"]},
                     "ATL_O_APP": {"backup": "ATL_H_APP"},
                     "ATL_V_APP": {"backup": "ATL_D_APP"},
                     "ATL_A_APP": {"backup": "ATL_L_APP"},

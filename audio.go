@@ -10,7 +10,6 @@ import "C"
 
 import (
 	"C"
-	"reflect"
 	"sync"
 	"unsafe"
 
@@ -105,8 +104,7 @@ func (a *AudioEngine) StopPlayContinuous(e AudioType) {
 //export audioCallback
 func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	n := int(size)
-	hdr := reflect.SliceHeader{Data: uintptr(unsafe.Pointer(ptr)), Len: n, Cap: n}
-	out := *(*[]C.uint8)(unsafe.Pointer(&hdr))
+	out := unsafe.Slice(ptr, n)
 	a := &globalConfig.Audio
 
 	accum := make([]int, n/2)

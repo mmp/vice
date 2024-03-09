@@ -12,9 +12,11 @@ import (
 	"net/rpc"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
+	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
 	"golang.org/x/exp/slog"
 )
@@ -29,6 +31,7 @@ type SimScenarioConfiguration struct {
 	SelectedController  string
 	SelectedSplit       string
 	SplitConfigurations SplitConfigurationSet
+	PrimaryAirport      string
 
 	Wind         Wind
 	LaunchConfig LaunchConfig
@@ -211,8 +214,8 @@ func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 	if imgui.BeginTableV("arrivalgroups", 3, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
-		imgui.TableSetupColumn("Arrival")
 		imgui.TableSetupColumn("Airport")
+		imgui.TableSetupColumn("Arrival")
 		imgui.TableSetupColumn("AAR")
 		imgui.TableHeadersRow()
 
@@ -253,6 +256,7 @@ type NewSimConfiguration struct {
 	Password        string // for create remote only
 	NewSimType      int
 
+	LiveWeather               bool
 	SelectedRemoteSim         string
 	SelectedRemoteSimPosition string
 	RemoteSimPassword         string // for join remote only
@@ -496,17 +500,42 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				sort.Strings(a)
 				imgui.Text(strings.Join(a, ", "))
 			}
+			validAirport := c.Scenario.PrimaryAirport != "KAAC" && remoteServer != nil
 
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Wind:")
+			uiStartDisable(!validAirport)
+			imgui.Checkbox("Live Weather", &c.LiveWeather)
+			if !validAirport {
+				c.LiveWeather = false
+			}
+			uiEndDisable(!validAirport)
 			imgui.TableNextColumn()
 			wind := c.Scenario.Wind
-			if wind.Gust > wind.Speed {
-				imgui.Text(fmt.Sprintf("%03d at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
-			} else {
-				imgui.Text(fmt.Sprintf("%03d at %d", wind.Direction, wind.Speed))
+			if c.LiveWeather {
+				var ok bool
+				if wind, ok = airportWind[c.Scenario.PrimaryAirport]; !ok {
+					primary := c.Scenario.PrimaryAirport
+					wind, ok = getWind(primary)
+					if !ok {
+						wind = c.Scenario.Wind
+					}
+				}
 			}
+
+			if wind.Gust > wind.Speed {
+				imgui.Text(fmt.Sprintf("%v at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
+			} else {
+				imgui.Text(fmt.Sprintf("%v at %d", wind.Direction, wind.Speed))
+			}
+			uiStartDisable(!c.LiveWeather)
+			refresh := imgui.Button("Refresh Weather")
+			if refresh {
+				clear(airportWind)
+				clear(windRequest)
+			}
+			uiEndDisable(!c.LiveWeather)
 			imgui.EndTable()
 
 		}
@@ -611,6 +640,48 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	}
 
 	return false
+}
+
+func getWind(airport string) (Wind, bool) {
+	for airport, ch := range windRequest {
+		select {
+		case w := <-ch:
+			dirStr := fmt.Sprintf("%v", w[0].Wdir)
+			dir, err := strconv.Atoi(dirStr)
+			if err != nil {
+				lg.Errorf("Error converting %v to an int: %v", dirStr, err)
+			}
+			airportWind[airport] = Wind{
+				Direction: int32(dir),
+				Speed:     int32(w[0].Wspd),
+				Gust:      int32(w[0].Wgst),
+			}
+			delete(windRequest, airport)
+		default:
+			// no wind yet
+		}
+	}
+
+	if _, ok := airportWind[airport]; ok {
+		// The wind is in the map
+		return airportWind[airport], true
+	} else if _, ok := windRequest[airport]; ok {
+		// it's been requested but we don't have it yet
+		return Wind{}, false
+	} else {
+		// It hasn't been requested nor is in airportWind
+		c := make(chan []getweather.MetarData)
+		windRequest[airport] = c
+		go func() {
+			weather, err := getweather.GetWeather(airport)
+			if len(err) != 0 {
+				lg.Errorf("%v", err)
+			}
+			c <- weather
+		}()
+		return Wind{}, false
+	}
+
 }
 
 func (c *NewSimConfiguration) OkDisabled() bool {
@@ -841,6 +912,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimName = s.Name
 	w.SimDescription = s.Scenario
 	w.SimTime = s.SimTime
+	w.STARSFacilityAdaptation = sg.STARSFacilityAdaptation
 
 	for _, callsign := range sc.VirtualControllers {
 		// Skip controllers that are in MultiControllers
@@ -858,8 +930,10 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	}
 
 	// Make some fake METARs; slightly different for all airports.
-	alt := 2980 + rand.Intn(40)
+	var alt int
+
 	fakeMETAR := func(icao string) {
+		alt = 2980 + rand.Intn(40)
 		spd := w.Wind.Speed - 3 + rand.Int31n(6)
 		var wind string
 		if spd < 0 {
@@ -885,6 +959,46 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		}
 	}
 
+	realMETAR := func(icao string) {
+		weather, errors := getweather.GetWeather(icao)
+		if len(errors) != 0 {
+			s.lg.Errorf("Error getting weather for %v.", icao)
+		}
+		fullMETAR := weather[0].RawMETAR
+		altimiter := getAltimiter(fullMETAR)
+		var err error
+
+		if err != nil {
+			s.lg.Errorf("Error converting altimiter to an intiger: %v.", altimiter)
+		}
+		var wind string
+		spd := weather[0].Wspd
+		dir := weather[0].Wdir.(float64)
+
+		if err != nil {
+			lg.Errorf("Error converting %v into an int: %v.", dir, err)
+		}
+		if spd <= 0 {
+			wind = "00000KT"
+		} else if dir == -1 {
+			wind = fmt.Sprintf("VRB%vKT", spd)
+		} else {
+			wind = fmt.Sprintf("%03d%02d", int(dir), spd)
+			gst := weather[0].Wgst
+			if gst > 5 {
+				wind += fmt.Sprintf("G%02d", gst)
+			}
+			wind += "KT"
+		}
+
+		// Just provide the stuff that the STARS display shows
+		w.METAR[icao] = &METAR{
+			AirportICAO: icao,
+			Wind:        wind,
+			Altimeter:   "A" + altimiter,
+		}
+	}
+
 	w.DepartureAirports = make(map[string]*Airport)
 	for name := range s.LaunchConfig.DepartureRates {
 		w.DepartureAirports[name] = w.GetAirport(name)
@@ -895,15 +1009,33 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 			w.ArrivalAirports[name] = w.GetAirport(name)
 		}
 	}
-
-	for ap := range w.DepartureAirports {
-		fakeMETAR(ap)
-	}
-	for ap := range w.ArrivalAirports {
-		fakeMETAR(ap)
+	if ssc.LiveWeather {
+		for ap := range w.DepartureAirports {
+			realMETAR(ap)
+		}
+		for ap := range w.ArrivalAirports {
+			realMETAR(ap)
+		}
+	} else {
+		for ap := range w.DepartureAirports {
+			fakeMETAR(ap)
+		}
+		for ap := range w.ArrivalAirports {
+			fakeMETAR(ap)
+		}
 	}
 
 	return w
+}
+
+func getAltimiter(metar string) string {
+	for _, indexString := range []string{" A3", " A2"} {
+		index := strings.Index(metar, indexString)
+		if index != -1 && index+5 < len(metar) {
+			return metar[index+1 : index+5]
+		}
+	}
+	return ""
 }
 
 func (s *Sim) LogValue() slog.Value {
@@ -1922,7 +2054,8 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 
 			// Go ahead and climb departures the rest of the way and send
 			// them direct to their first fix (if they aren't already).
-			if ac.IsDeparture() {
+			octrl := s.World.GetController(ac.TrackingController)
+			if ac.IsDeparture() && !octrl.IsHuman {
 				s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 					slog.Int("final_altitude", ac.FlightPlan.Altitude))
 				ac.DepartOnCourse()
@@ -2003,6 +2136,32 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 		})
 }
 
+func (s *Sim) ForceQL(token, callsign, controller string) error {
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if s.World.GetController(controller) == nil {
+				return ErrNoController
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			octrl := s.World.GetController(controller)
+			ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
+			return nil
+		})
+}
+
+func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			ac.ForceQLControllers = FilterSlice(ac.ForceQLControllers, func(qlController string) bool { return qlController != controller })
+			return nil
+		})
+}
+
 func (s *Sim) PointOut(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
@@ -2056,6 +2215,12 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 				ToController:   s.PointOuts[callsign][ctrl.Callsign].FromController,
 				Callsign:       ac.Callsign,
 			})
+			if len(ac.PointOutHistory) < 20 {
+				ac.PointOutHistory = append([]string{ctrl.SectorId}, ac.PointOutHistory...)
+			} else {
+				ac.PointOutHistory = ac.PointOutHistory[:19]
+				ac.PointOutHistory = append([]string{ctrl.SectorId}, ac.PointOutHistory...)
+			}
 
 			delete(s.PointOuts[callsign], ctrl.Callsign)
 			return nil

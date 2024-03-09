@@ -19,7 +19,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode"
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/pkg/browser"
@@ -162,6 +161,13 @@ var (
 		"STARS: more accurate simulation of STARS weather radar display",
 		"Added new syntax for issuing left/right turn in degrees: T10L, T20R, etc.",
 		"STARS: allow middle-click highlight of aircraft regardless of having their track",
+		"STARS: fixed bug with airport weather list flickering",
+		"Added new scenarios: SCT LAX (Jud Lopez), IND (Samuel Valencia), MKE (Yahya Nazimuddin), MIA (Mike K)",
+		"Scenario updates/bugfixes: TPA (Connor Allen), SCT ONT/SNA (Eli Thompson), A80, L30 (Michael Trokel)",
+		"STARS: added automated terminal proximity alert (ATPA) support",
+		"STARS: consolidated wake turbulence (CWT) categories are now shown in datablocks and used for ATPA in-trail requirements",
+		"Live weather can now be used in sims",
+		"STARS: fixed various small bugs related to when the FDB should be displayed",
 	}
 )
 
@@ -434,26 +440,6 @@ func setCursorForRightButtons(text []string) {
 	}
 	offset := imgui.ContentRegionAvail().X - width
 	imgui.SetCursorPos(imgui.Vec2{offset, imgui.CursorPosY()})
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-func drawAirportSelector(airports map[string]interface{}, title string) (map[string]interface{}, bool) {
-	airportsString := strings.Join(SortedMapKeys(airports), ",")
-
-	if imgui.InputTextV(title, &airportsString, imgui.InputTextFlagsCharsUppercase, nil) {
-		ap := strings.FieldsFunc(airportsString, func(ch rune) bool {
-			return unicode.IsSpace(ch) || ch == ','
-		})
-
-		airports = make(map[string]interface{})
-		for _, a := range ap {
-			airports[a] = nil
-		}
-		return airports, true
-	}
-
-	return airports, false
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -983,19 +969,22 @@ func showAboutDialog() {
 	// vertically maximized. So we hand-wrap the lines for the
 	// font we're using...
 	credits :=
-		`Additional credits: Thanks to Dennis Graiani and
-Samuel Valencia for contributing features to vice
-and to Connor Allen, Adam Bolek, Aaron Flett, Mike K,
-Jud Lopez, Jace Martin, Justin Nguyen, Arya T,
-Eli Thompson, Michael Trokel, and Samuel Valencia
-for developing scenarios. Video maps are thanks
-to the ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA,
-ZNY, ZOB, ZSE, and ZTL VATSIM ARTCCs. Thanks
-also to OpenScope for the airline fleet and aircraft
-performance databases and to ourairports.com
-for the airport database. See the file CREDITS.txt
-in the vice source code distribution for third-party
-software, fonts, sounds, etc.`
+		`Additional credits: Thanks to Michael Trokel,
+Dennis Graiani and Samuel Valencia for
+contributing features to vice and to Connor
+Allen, Adam Bolek, Aaron Flett, Mike K, Jud
+Lopez, Jace Martin, Yahya Nazimuddin, Justin
+Nguyen, Arya T, Eli Thompson, Michael Trokel,
+and Samuel Valencia for developing scenarios.
+Video maps are thanks to the ZAU, ZBW, ZDC,
+ZDV, ZHU, ZID, ZJX, ZLA, ZNY, ZOB, ZSE, and
+ZTL VATSIM ARTCCs. Thanks also to
+OpenScope for the aircraft performance and
+airline databases and to ourairports.com
+for the airport database. See the file
+CREDITS.txt in the vice source code
+distribution for third-party software, fonts,
+sounds, etc.`
 
 	imgui.Text(credits)
 
@@ -1556,11 +1545,12 @@ func (lc *LaunchControlWindow) spawnArrival(group, airport string) *Aircraft {
 			return ac
 		}
 	}
-	panic("unable to spawn a departure")
+	panic("unable to spawn an arrival")
 }
 
 func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 	showLaunchControls := true
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(platform.WindowSize()[1]) * 19 / 20})
 	imgui.BeginV("Launch Control", &showLaunchControls, imgui.WindowFlagsAlwaysAutoResize)
 
 	imgui.Text("Mode:")
@@ -1577,7 +1567,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 	// Right-justify
 	imgui.SameLine()
 	//	imgui.SetCursorPos(imgui.Vec2{imgui.CursorPosX() + imgui.ContentRegionAvail().X - float32(3*width+10),
-	imgui.SetCursorPos(imgui.Vec2{imgui.WindowWidth() - float32(5*width), imgui.CursorPosY()})
+	imgui.SetCursorPos(imgui.Vec2{imgui.WindowWidth() - float32(7*width), imgui.CursorPosY()})
 	if lc.w != nil && lc.w.Connected() {
 		if lc.w.SimIsPaused {
 			if imgui.Button(FontAwesomeIconPlayCircle) {

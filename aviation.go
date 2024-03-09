@@ -5,25 +5,149 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/fs"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
 type FAAAirport struct {
+	Id         string
+	Name       string
+	Elevation  int
+	Location   Point2LL
+	Runways    []Runway
+	Approaches map[string][]WaypointArray
+	STARs      map[string]STAR
+}
+
+type TRACON struct {
+	Name  string
+	ARTCC string
+}
+
+type ARTCC struct {
+	Name string
+}
+
+type ReportingPoint struct {
+	Fix      string
+	Location Point2LL
+}
+
+type Arrival struct {
+	Waypoints       WaypointArray                       `json:"waypoints"`
+	RunwayWaypoints map[string]map[string]WaypointArray `json:"runway_waypoints"` // Airport -> runway -> waypoints
+	SpawnWaypoint   string                              `json:"spawn"`            // if "waypoints" aren't specified
+	CruiseAltitude  float32                             `json:"cruise_altitude"`
+	Route           string                              `json:"route"`
+	STAR            string                              `json:"star"`
+
+	InitialController   string  `json:"initial_controller"`
+	InitialAltitude     float32 `json:"initial_altitude"`
+	AssignedAltitude    float32 `json:"assigned_altitude"`
+	InitialSpeed        float32 `json:"initial_speed"`
+	SpeedRestriction    float32 `json:"speed_restriction"`
+	ExpectApproach      string  `json:"expect_approach"`
+	Scratchpad          string  `json:"scratchpad"`
+	SecondaryScratchpad string  `json:"secondary_scratchpad"`
+	Description         string  `json:"description"`
+
+	// Airport -> arrival airlines
+	Airlines map[string][]ArrivalAirline `json:"airlines"`
+}
+
+type ArrivalAirline struct {
+	ICAO    string `json:"icao"`
+	Airport string `json:"airport"`
+	Fleet   string `json:"fleet,omitempty"`
+}
+
+type STAR struct {
+	Transitions     map[string]WaypointArray
+	RunwayWaypoints map[string]WaypointArray
+}
+
+func (s STAR) Check(e *ErrorLogger) {
+	check := func(wps WaypointArray) {
+		for _, wp := range wps {
+			_, okn := database.Navaids[wp.Fix]
+			_, okf := database.Fixes[wp.Fix]
+			if !okn && !okf {
+				e.ErrorString("fix %s not found in navaid database", wp.Fix)
+			}
+		}
+	}
+	for _, wps := range s.Transitions {
+		check(wps)
+	}
+	for _, wps := range s.RunwayWaypoints {
+		check(wps)
+	}
+}
+
+func (s STAR) HasWaypoint(wp string) bool {
+	for _, wps := range s.Transitions {
+		if slices.ContainsFunc(wps, func(w Waypoint) bool { return w.Fix == wp }) {
+			return true
+		}
+	}
+	for _, wps := range s.RunwayWaypoints {
+		if slices.ContainsFunc(wps, func(w Waypoint) bool { return w.Fix == wp }) {
+			return true
+		}
+	}
+	return false
+}
+
+func (s STAR) GetWaypointsFrom(fix string) WaypointArray {
+	for _, tr := range SortedMapKeys(s.Transitions) {
+		wps := s.Transitions[tr]
+		if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == fix }); idx != -1 {
+			return wps[idx:]
+		}
+	}
+	for _, tr := range SortedMapKeys(s.RunwayWaypoints) {
+		wps := s.RunwayWaypoints[tr]
+		if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == fix }); idx != -1 {
+			return wps[idx:]
+		}
+	}
+	return nil
+}
+
+func MakeSTAR() *STAR {
+	return &STAR{
+		Transitions:     make(map[string]WaypointArray),
+		RunwayWaypoints: make(map[string]WaypointArray),
+	}
+}
+
+func (s STAR) Print(name string) {
+	for tr, wps := range s.Transitions {
+		fmt.Printf("%-12s: %s\n", name+"."+tr, wps.Encode())
+	}
+	for rwy, wps := range s.RunwayWaypoints {
+		fmt.Printf("%-12s: %s\n", name+".RWY"+rwy, wps.Encode())
+	}
+}
+
+type Runway struct {
 	Id        string
-	Name      string
+	Heading   float32
+	Threshold Point2LL
 	Elevation int
-	Location  Point2LL
 }
 
 type METAR struct {
@@ -116,12 +240,14 @@ func (f Frequency) String() string {
 }
 
 type Controller struct {
-	Callsign  string    // Not provided in scenario JSON
-	FullName  string    `json:"full_name"`
-	Frequency Frequency `json:"frequency"`
-	SectorId  string    `json:"sector_id"`  // e.g. N56, 2J, ...
-	Scope     string    `json:"scope_char"` // For tracked a/c on the scope--e.g., T
-	IsHuman   bool      // Not provided in scenario JSON
+	Callsign           string    // Not provided in scenario JSON
+	FullName           string    `json:"full_name"`
+	Frequency          Frequency `json:"frequency"`
+	SectorId           string    `json:"sector_id"`  // e.g. N56, 2J, ...
+	Scope              string    `json:"scope_char"` // For tracked a/c on the scope--e.g., T
+	IsHuman            bool      // Not provided in scenario JSON
+	FacilityIdentifier string    `json:"facility_id"`   // For example the "N" in "N4P" showing the N90 TRACON
+	ERAMFacility       bool      `json:"eram_facility"` // To weed out N56 and N4P being the same fac
 }
 
 type FlightRules int
@@ -212,12 +338,6 @@ const (
 
 func (t TransponderMode) String() string {
 	return [...]string{"Standby", "C"}[t]
-}
-
-type Runway struct {
-	Number         string
-	Heading        float32
-	Threshold, End Point2LL
 }
 
 type Navaid struct {
@@ -387,9 +507,9 @@ func (pt PTType) String() string {
 type ProcedureTurn struct {
 	Type         PTType
 	RightTurns   bool
-	ExitAltitude float32 `json:",omitempty"`
-	MinuteLimit  int     `json:",omitempty"`
-	NmLimit      int     `json:",omitempty"`
+	ExitAltitude int     `json:",omitempty"`
+	MinuteLimit  float32 `json:",omitempty"`
+	NmLimit      float32 `json:",omitempty"`
 	Entry180NoPT bool    `json:",omitempty"`
 }
 
@@ -713,15 +833,15 @@ func (wslice WaypointArray) Encode() string {
 				}
 			}
 			if pt.MinuteLimit != 0 {
-				s += fmt.Sprintf("%dmin", pt.MinuteLimit)
+				s += fmt.Sprintf("%.1fmin", pt.MinuteLimit)
 			} else {
-				s += fmt.Sprintf("%dnm", pt.NmLimit)
+				s += fmt.Sprintf("%.1fnm", pt.NmLimit)
 			}
 			if pt.Entry180NoPT {
 				s += "/nopt180"
 			}
 			if pt.ExitAltitude != 0 {
-				s += fmt.Sprintf("/pta%0f", pt.ExitAltitude)
+				s += fmt.Sprintf("/pta%d", pt.ExitAltitude)
 			}
 		}
 		if w.IAF {
@@ -750,9 +870,9 @@ func (wslice WaypointArray) Encode() string {
 		}
 		if w.Arc != nil {
 			if w.Arc.Fix != "" {
-				s += fmt.Sprintf("/arc%f%s", w.Arc.Radius, w.Arc.Fix)
+				s += fmt.Sprintf("/arc%.1f%s", w.Arc.Radius, w.Arc.Fix)
 			} else {
-				s += fmt.Sprintf("/arc%f", w.Arc.Length)
+				s += fmt.Sprintf("/arc%.1f", w.Arc.Length)
 			}
 		}
 
@@ -764,7 +884,7 @@ func (wslice WaypointArray) Encode() string {
 }
 
 func (w *WaypointArray) UnmarshalJSON(b []byte) error {
-	if len(b) > 2 && b[0] == '"' && b[len(b)-1] == '"' {
+	if len(b) >= 2 && b[0] == '"' && b[len(b)-1] == '"' {
 		// Handle the string encoding used in scenario JSON files
 		wp, err := parseWaypoints(string(b[1 : len(b)-1]))
 		if err == nil {
@@ -828,8 +948,8 @@ func (w WaypointArray) CheckApproach(e *ErrorLogger) {
 	w.checkBasics(e)
 	w.checkDescending(e)
 
-	if len(w) < 3 {
-		e.ErrorString("must have at least three waypoints in an approach")
+	if len(w) < 2 {
+		e.ErrorString("must have at least two waypoints in an approach")
 	}
 
 	/*
@@ -905,14 +1025,17 @@ func parsePTExtent(pt *ProcedureTurn, extent string) error {
 	}
 
 	var err error
+	var limit float64
 	if extent[len(extent)-2:] == "nm" {
-		if pt.NmLimit, err = strconv.Atoi(extent[:len(extent)-2]); err != nil {
+		if limit, err = strconv.ParseFloat(extent[:len(extent)-2], 32); err != nil {
 			return fmt.Errorf("%s: unable to parse length in nm for procedure turn: %v", extent, err)
 		}
+		pt.NmLimit = float32(limit)
 	} else if extent[len(extent)-3:] == "min" {
-		if pt.MinuteLimit, err = strconv.Atoi(extent[:len(extent)-3]); err != nil {
+		if limit, err = strconv.ParseFloat(extent[:len(extent)-3], 32); err != nil {
 			return fmt.Errorf("%s: unable to parse minutes procedure turn: %v", extent, err)
 		}
+		pt.MinuteLimit = float32(pt.MinuteLimit)
 	} else {
 		return fmt.Errorf("%s: invalid extent units for procedure turn", extent)
 	}
@@ -980,7 +1103,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 					}
 
 					if alt, err := strconv.Atoi(f[3:]); err == nil {
-						wp.ProcedureTurn.ExitAltitude = float32(alt)
+						wp.ProcedureTurn.ExitAltitude = alt
 					} else {
 						return nil, fmt.Errorf("%s: error parsing procedure turn exit altitude: %v", f[3:], err)
 					}
@@ -1156,7 +1279,7 @@ func (a *AirspaceVolume) Inside(p Point2LL, alt int) bool {
 
 	switch a.Type {
 	case AirspaceVolumePolygon:
-		return PointInPolygon(p, a.Vertices)
+		return PointInPolygon2LL(p, a.Vertices)
 	case AirspaceVolumeCircle:
 		return nmdistance2ll(p, a.Center) < a.Radius
 	default:
@@ -1198,6 +1321,19 @@ type StaticDatabase struct {
 	AircraftTypeAliases map[string]string
 	AircraftPerformance map[string]AircraftPerformance
 	Airlines            map[string]Airline
+	MagneticGrid        MagneticGrid
+	ARTCCs              map[string]ARTCC
+	TRACONs             map[string]TRACON
+}
+
+func (d StaticDatabase) LookupWaypoint(f string) (Point2LL, bool) {
+	if n, ok := d.Navaids[f]; ok {
+		return n.Location, true
+	} else if f, ok := d.Fixes[f]; ok {
+		return f.Location, true
+	} else {
+		return Point2LL{}, false
+	}
 }
 
 type AircraftPerformance struct {
@@ -1212,6 +1348,11 @@ type AircraftPerformance struct {
 		Accelerate float32 `json:"accelerate"` // kts / 2 seconds
 		Decelerate float32 `json:"decelerate"`
 	} `json:"rate"`
+	Category struct {
+		SRS   int    `json:"srs"`
+		LAHSO int    `json:"lahso"`
+		CWT   string `json:"cwt"`
+	}
 	Runway struct {
 		Takeoff float32 `json:"takeoff"` // nm
 		Landing float32 `json:"landing"` // nm
@@ -1247,24 +1388,32 @@ func InitializeStaticDatabase() *StaticDatabase {
 	db := &StaticDatabase{}
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go func() { db.Navaids = parseNavaids(); wg.Done() }()
-	wg.Add(1)
 	go func() { db.Airports = parseAirports(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.Fixes = parseFixes(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.AircraftPerformance = parseAircraftPerformance(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.Airlines, db.Callsigns = parseAirlines(); wg.Done() }()
+	var airports map[string]FAAAirport
+	wg.Add(1)
+	go func() { airports, db.Navaids, db.Fixes = parseCIFP(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.MagneticGrid = parseMagneticGrid(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs(); wg.Done() }()
 	wg.Wait()
 
+	for icao, ap := range airports {
+		db.Airports[icao] = ap
+	}
+
+	//fmt.Printf("Parsed built-in databases in %v\n", time.Since(start))
 	lg.Infof("Parsed built-in databases in %v", time.Since(start))
 
 	return db
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// FAA databases
+// FAA (and other) databases
 
 // Utility function for parsing CSV files as strings; it breaks each line
 // of the file into fields and calls the provided callback function for
@@ -1312,28 +1461,6 @@ func mungeCSV(filename string, raw string, fields []string, callback func([]stri
 	}
 }
 
-func parseNavaids() map[string]Navaid {
-	navaids := make(map[string]Navaid)
-
-	// https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription_2023-09-07/
-	navBaseRaw := LoadResource("NAV_BASE.csv.zst")
-	mungeCSV("navaids", string(navBaseRaw),
-		[]string{"NAV_ID", "NAV_TYPE", "NAME", "LONG_DECIMAL", "LAT_DECIMAL"},
-		func(s []string) {
-			n := Navaid{
-				Id:       s[0],
-				Type:     s[1],
-				Name:     s[2],
-				Location: Point2LL{float32(atof(s[3])), float32(atof(s[4]))},
-			}
-			if n.Id != "" {
-				navaids[n.Id] = n
-			}
-		})
-
-	return navaids
-}
-
 func parseAirports() map[string]FAAAirport {
 	airports := make(map[string]FAAAirport)
 
@@ -1354,11 +1481,21 @@ func parseAirports() map[string]FAAAirport {
 	airports["4Y3"] = FAAAirport{Id: "4Y3", Name: "", Elevation: 624,
 		Location: parse("N36.26.30.006,W95.36.21.936")}
 	airports["KAAC"] = FAAAirport{Id: "KAAC", Name: "", Elevation: 677,
-		Location: parse("N036.11.08.930,W095.45.53.942")}
+		Location: parse("N036.11.08.930,W095.45.53.942"),
+		Runways: []Runway{
+			Runway{Id: "28L", Heading: 280, Threshold: parse("N036.10.37.069,W095.44.51.979"), Elevation: 677},
+			Runway{Id: "28R", Heading: 280, Threshold: parse("N036.11.23.280,W095.44.35.912"), Elevation: 677},
+			Runway{Id: "10L", Heading: 280, Threshold: parse("N036.10.32.180,W095.44.24.843"), Elevation: 677},
+			Runway{Id: "10R", Heading: 280, Threshold: parse("N036.11.19.188,W095.44.10.863"), Elevation: 677},
+		}}
 	airports["KBRT"] = FAAAirport{Id: "KBRT", Name: "", Elevation: 689,
 		Location: parse("N36.30.26.585,W96.16.28.968")}
 	airports["KJKE"] = FAAAirport{Id: "KJKE", Name: "", Elevation: 608,
-		Location: parse("N035.56.19.765,W095.42.49.812")}
+		Location: parse("N035.56.19.765,W095.42.49.812"),
+		Runways: []Runway{
+			Runway{Id: "27", Heading: 270, Threshold: parse("N035.56.14.615,W095.42.05.152"), Elevation: 689},
+			Runway{Id: "9", Heading: 270, Threshold: parse("N035.56.20.355,W095.41.35.791"), Elevation: 689},
+		}}
 	airports["Z91"] = FAAAirport{Id: "Z91", Name: "", Elevation: 680,
 		Location: parse("N36.05.06.948,W96.26.57.501")}
 
@@ -1378,26 +1515,6 @@ func parseAirports() map[string]FAAAirport {
 		})
 
 	return airports
-}
-
-func parseFixes() map[string]Fix {
-	fixes := make(map[string]Fix)
-
-	fixesRaw := LoadResource("FIX_BASE.csv.zst")
-
-	mungeCSV("fixes", string(fixesRaw),
-		[]string{"FIX_ID", "LONG_DECIMAL", "LAT_DECIMAL"},
-		func(s []string) {
-			f := Fix{
-				Id:       s[0],
-				Location: Point2LL{float32(atof(s[1])), float32(atof(s[2]))},
-			}
-			if f.Id != "" {
-				fixes[f.Id] = f
-			}
-		})
-
-	return fixes
 }
 
 func parseAircraftPerformance() map[string]AircraftPerformance {
@@ -1455,6 +1572,107 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 	return airlines, callsigns
 }
 
+// FAA Coded Instrument Flight Procedures (CIFP)
+// https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/download/
+func parseCIFP() (map[string]FAAAirport, map[string]Navaid, map[string]Fix) {
+	cifp, err := fs.ReadFile(resourcesFS, "FAACIFP18.zst")
+	if err != nil {
+		panic(err)
+	}
+
+	return ParseARINC424(cifp)
+}
+
+type MagneticGrid struct {
+	MinLatitude, MaxLatitude   float32
+	MinLongitude, MaxLongitude float32
+	LatLongStep                float32
+	Samples                    []float32
+}
+
+func parseMagneticGrid() MagneticGrid {
+	/*
+		1. Download software and coefficients from https://www.ncei.noaa.gov/products/world-magnetic-model
+		2. Build wmm_grid, run with the parameters in the MagneticGrid initializer below, year 2024,
+		   altitude 0 -> 0, select "declination" for output.
+		3. awk '{print $5}' < GridResults.txt | zstd -19 -o magnetic_grid.txt.zst
+	*/
+	mg := MagneticGrid{
+		MinLatitude:  24,
+		MaxLatitude:  50,
+		MinLongitude: -125,
+		MaxLongitude: -66,
+		LatLongStep:  0.25,
+	}
+
+	samples := LoadResource("magnetic_grid.txt.zst")
+	r := bufio.NewReader(bytes.NewReader(samples))
+
+	for {
+		line, err := r.ReadString('\n')
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			panic(err)
+		}
+
+		if v, err := strconv.ParseFloat(strings.TrimSpace(line), 32); err != nil {
+			panic(line + ": parsing error: " + err.Error())
+		} else {
+			mg.Samples = append(mg.Samples, float32(v))
+		}
+	}
+
+	nlat := int(1 + (mg.MaxLatitude-mg.MinLatitude)/mg.LatLongStep)
+	nlong := int(1 + (mg.MaxLongitude-mg.MinLongitude)/mg.LatLongStep)
+	if len(mg.Samples) != nlat*nlong {
+		panic(fmt.Sprintf("found %d magnetic grid samples, expected %d x %d = %d",
+			len(mg.Samples), nlat, nlong, nlat*nlong))
+	}
+
+	return mg
+}
+
+func (mg *MagneticGrid) Lookup(p Point2LL) (float32, error) {
+	if p[0] < mg.MinLongitude || p[0] > mg.MaxLongitude ||
+		p[1] < mg.MinLatitude || p[1] > mg.MaxLatitude {
+		return 0, fmt.Errorf("lookup point outside sampled grid")
+	}
+
+	nlat := int(1 + (mg.MaxLatitude-mg.MinLatitude)/mg.LatLongStep)
+	nlong := int(1 + (mg.MaxLongitude-mg.MinLongitude)/mg.LatLongStep)
+
+	// Round to nearest
+	lat := min(int((p[1]-mg.MinLatitude)/mg.LatLongStep+0.5), nlat-1)
+	long := min(int((p[0]-mg.MinLongitude)/mg.LatLongStep+0.5), nlong-1)
+
+	// Note: we flip the sign
+	return -mg.Samples[long+nlong*lat], nil
+}
+
+func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
+	artccJSON := LoadResource("artccs.json")
+	var artccs map[string]ARTCC
+	if err := json.Unmarshal(artccJSON, &artccs); err != nil {
+		panic(fmt.Sprintf("error unmarshalling ARTCCs: %v", err))
+	}
+
+	traconJSON := LoadResource("tracons.json")
+	var tracons map[string]TRACON
+	if err := json.Unmarshal(traconJSON, &tracons); err != nil {
+		panic(fmt.Sprintf("error unmarshalling TRACONs: %v", err))
+	}
+
+	// Validate that all of the TRACON ARTCCs are known.
+	for name, tracon := range tracons {
+		if _, ok := artccs[tracon.ARTCC]; !ok {
+			panic(tracon.ARTCC + ": ARTCC unknown for TRACON " + name)
+		}
+	}
+
+	return artccs, tracons
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Utility methods
 
@@ -1501,5 +1719,301 @@ func FixReadback(fix string) string {
 		return stopShouting(aid.Name)
 	} else {
 		return fix
+	}
+}
+
+func cleanRunway(rwy string) string {
+	// The runway may have extra text to distinguish different
+	// configurations (e.g., "13.JFK-ILS-13"). Find the prefix that is
+	// an actual runway specifier to use in the search below.
+	for i, ch := range rwy {
+		if ch >= '0' && ch <= '9' {
+			continue
+		} else if ch == 'L' || ch == 'R' || ch == 'C' {
+			return rwy[:i+1]
+		} else {
+			return rwy[:i]
+		}
+	}
+	return rwy
+}
+
+func LookupRunway(icao, rwy string) (Runway, bool) {
+	if ap, ok := database.Airports[icao]; !ok {
+		return Runway{}, false
+	} else {
+		rwy = cleanRunway(rwy)
+		idx := slices.IndexFunc(ap.Runways, func(r Runway) bool { return r.Id == rwy })
+		if idx == -1 {
+			return Runway{}, false
+		}
+		return ap.Runways[idx], true
+	}
+}
+
+func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
+	if ap, ok := database.Airports[icao]; !ok {
+		return Runway{}, false
+	} else {
+		rwy = cleanRunway(rwy)
+
+		// Break runway into number and optional extension and swap
+		// left/right.
+		n := len(rwy)
+		num, ext := "", ""
+		switch rwy[n-1] {
+		case 'R':
+			ext = "L"
+			num = rwy[:n-1]
+		case 'L':
+			ext = "R"
+			num = rwy[:n-1]
+		case 'C':
+			ext = "C"
+			num = rwy[:n-1]
+		default:
+			num = rwy
+		}
+
+		// Extract the number so we can get the opposite heading
+		v, err := strconv.Atoi(num)
+		if err != nil {
+			return Runway{}, false
+		}
+
+		// The (v+18)%36 below would give us 0 for runway 36, so handle 18
+		// specially.
+		if v == 18 {
+			rwy = "36" + ext
+		} else {
+			rwy = fmt.Sprintf("%d", (v+18)%36) + ext
+		}
+
+		idx := slices.IndexFunc(ap.Runways, func(r Runway) bool { return r.Id == rwy })
+		if idx == -1 {
+			return Runway{}, false
+		}
+		return ap.Runways[idx], true
+	}
+}
+
+func (ap FAAAirport) ValidRunways() string {
+	return strings.Join(MapSlice(ap.Runways, func(r Runway) string { return r.Id }), ", ")
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Arrival
+
+func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
+	if ar.Route == "" && ar.STAR == "" {
+		e.ErrorString("neither \"route\" nor \"star\" specified")
+		return
+	}
+
+	if ar.Route != "" {
+		e.Push("Route " + ar.Route)
+	} else {
+		e.Push("Route " + ar.STAR)
+	}
+	defer e.Pop()
+
+	if len(ar.Waypoints) == 0 {
+		// STAR details are coming from the FAA CIFP; make sure
+		// everything is ok so we don't get into trouble when we
+		// spawn arrivals...
+		if ar.STAR == "" {
+			e.ErrorString("must provide \"star\" if \"waypoints\" aren't given")
+			return
+		}
+		if ar.SpawnWaypoint == "" {
+			e.ErrorString("must specify \"spawn\" if \"waypoints\" aren't given with arrival")
+			return
+		}
+
+		spawnPoint, spawnTString, ok := strings.Cut(ar.SpawnWaypoint, "@")
+		spawnT := float32(0)
+		if ok {
+			if st, err := strconv.ParseFloat(spawnTString, 32); err != nil {
+				e.ErrorString("error parsing spawn offset \"%s\": %s", spawnTString, err)
+			} else {
+				spawnT = float32(st)
+			}
+		}
+
+		for icao := range ar.Airlines {
+			airport, ok := database.Airports[icao]
+			if !ok {
+				e.ErrorString("airport \"%s\" not found in database", icao)
+				continue
+			}
+
+			star, ok := airport.STARs[ar.STAR]
+			if !ok {
+				e.ErrorString("STAR \"%s\" not available for %s. Options: %s",
+					ar.STAR, icao, strings.Join(SortedMapKeys(airport.STARs), ", "))
+				continue
+			}
+
+			star.Check(e)
+
+			if len(ar.Waypoints) == 0 {
+				for _, tr := range SortedMapKeys(star.Transitions) {
+					wps := star.Transitions[tr]
+					if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == spawnPoint }); idx != -1 {
+						ar.Waypoints = wps[idx:]
+						sg.InitializeWaypointLocations(ar.Waypoints, e)
+
+						if len(ar.Waypoints) >= 2 && spawnT != 0 {
+							ar.Waypoints[0].Location = lerp2f(spawnT, ar.Waypoints[0].Location, ar.Waypoints[1].Location)
+							ar.Waypoints[0].Fix = "_" + ar.Waypoints[0].Fix
+						}
+
+						break
+					}
+				}
+			}
+
+			if star.RunwayWaypoints != nil {
+				if ar.RunwayWaypoints == nil {
+					ar.RunwayWaypoints = make(map[string]map[string]WaypointArray)
+				}
+				if ar.RunwayWaypoints[icao] == nil {
+					ar.RunwayWaypoints[icao] = make(map[string]WaypointArray)
+				}
+
+				for _, rwy := range airport.Runways {
+					for starRwy, wp := range star.RunwayWaypoints {
+						// Trim leading 0, if any
+						if starRwy[0] == '0' {
+							starRwy = starRwy[1:]
+						}
+
+						n := len(starRwy)
+						if starRwy == rwy.Id ||
+							(n == len(rwy.Id) && starRwy[n-1] == 'B' /* both */ && starRwy[:n-1] == rwy.Id[:n-1]) {
+							ar.RunwayWaypoints[icao][rwy.Id] = DuplicateSlice(wp)
+							sg.InitializeWaypointLocations(ar.RunwayWaypoints[icao][rwy.Id], e)
+							break
+						}
+					}
+				}
+			}
+		}
+		switch len(ar.Waypoints) {
+		case 0:
+			e.ErrorString("Couldn't find waypoint %s in any of the STAR routes", spawnPoint)
+			return
+
+		case 1:
+			ar.Waypoints[0].Handoff = true
+
+		default:
+			// add a handoff point randomly halfway between the first two waypoints.
+			mid := Waypoint{
+				Fix: "_handoff",
+				// FIXME: it's a little sketchy to lerp Point2ll coordinates
+				// but probably ok over short distances here...
+				Location: lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
+				Handoff:  true,
+			}
+			ar.Waypoints = append([]Waypoint{ar.Waypoints[0], mid}, ar.Waypoints[1:]...)
+		}
+	} else {
+		if len(ar.Waypoints) < 2 {
+			e.ErrorString("must provide at least two \"waypoints\" for arrival " +
+				"(even if \"runway_waypoints\" are provided)")
+		}
+
+		sg.InitializeWaypointLocations(ar.Waypoints, e)
+
+		for ap, rwywp := range ar.RunwayWaypoints {
+			e.Push("Airport " + ap)
+
+			if _, ok := database.Airports[ap]; !ok {
+				e.ErrorString("airport is unknown")
+				continue
+			}
+
+			for rwy, wp := range rwywp {
+				e.Push("Runway " + rwy)
+
+				if _, ok := LookupRunway(ap, rwy); !ok {
+					e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[ap].ValidRunways())
+				}
+
+				sg.InitializeWaypointLocations(wp, e)
+
+				if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {
+					e.ErrorString("initial \"runway_waypoints\" fix must match " +
+						"last \"waypoints\" fix")
+				}
+
+				// For the check, splice together the last common
+				// waypoint and the runway waypoints.  This will give
+				// us a repeated first fix, but this way we can check
+				// compliance with restrictions at that fix...
+				ewp := append([]Waypoint{ar.Waypoints[len(ar.Waypoints)-1]}, wp...)
+				WaypointArray(ewp).CheckArrival(e)
+
+				e.Pop()
+			}
+			e.Pop()
+		}
+	}
+
+	ar.Waypoints.CheckArrival(e)
+
+	for arrivalAirport, airlines := range ar.Airlines {
+		e.Push("Arrival airport " + arrivalAirport)
+		if len(airlines) == 0 {
+			e.ErrorString("no \"airlines\" specified for arrivals to " + arrivalAirport)
+		}
+		for _, al := range airlines {
+			database.CheckAirline(al.ICAO, al.Fleet, e)
+			if _, ok := database.Airports[al.Airport]; !ok {
+				e.ErrorString("departure airport \"airport\" \"%s\" unknown", al.Airport)
+			}
+		}
+
+		ap, ok := sg.Airports[arrivalAirport]
+		if !ok {
+			e.ErrorString("arrival airport \"%s\" unknown", arrivalAirport)
+		} else if ar.ExpectApproach != "" {
+			if _, ok := ap.Approaches[ar.ExpectApproach]; !ok {
+				e.ErrorString("arrival airport \"%s\" doesn't have a \"%s\" approach",
+					arrivalAirport, ar.ExpectApproach)
+			}
+		}
+
+		e.Pop()
+	}
+
+	if ar.InitialAltitude == 0 {
+		e.ErrorString("must specify \"initial_altitude\"")
+	} else {
+		// Make sure the initial altitude isn't below any of
+		// altitude restrictions.
+		for _, wp := range ar.Waypoints {
+			if wp.AltitudeRestriction != nil &&
+				wp.AltitudeRestriction.TargetAltitude(ar.InitialAltitude) > ar.InitialAltitude {
+				e.ErrorString("\"initial_altitude\" is below altitude restriction at \"%s\"", wp.Fix)
+			}
+		}
+	}
+
+	if ar.InitialController == "" {
+		e.ErrorString("\"initial_controller\" missing")
+	} else if _, ok := sg.ControlPositions[ar.InitialController]; !ok {
+		e.ErrorString("controller \"%s\" not found for \"initial_controller\"", ar.InitialController)
+	}
+}
+
+func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
+	if ap, ok := a.RunwayWaypoints[airport]; !ok {
+		return nil
+	} else if wp, ok := ap[rwy]; !ok {
+		return nil
+	} else {
+		return wp
 	}
 }

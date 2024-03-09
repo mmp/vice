@@ -1,5 +1,5 @@
 {
-    "tracon": "D10 (Dallas-Ft. Worth)",
+    "tracon": "D10",
     "airports": {
         "KDFW": {
             "name": "Dallas Fort Worth International Airport",
@@ -10,7 +10,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
-                        "MORRY/a3000/if POPPA/a3000 HODAX/a2300/faf _DFW_13R/a591"
+                        "MORRY/a3000/if POPPA/a3000 HODAX/a2300/faf"
                     ]
                 },
                 "I7L": {
@@ -19,7 +19,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_E3_TWR",
                     "waypoints": [
-                        "RIVET/a5000/if DRAAK/a5000 INWOD/a3000 GBUSH/a2300/faf _DFW_17L/a545"
+                        "RIVET/a5000/if DRAAK/a5000 INWOD/a3000 GBUSH/a2300/faf"
                     ]
                 },
                 "I7C": {
@@ -28,7 +28,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_E1_TWR",
                     "waypoints": [
-                        "BOSSI/a6000/if PENNY/a5000 ZINGG/a3000 JIFFY/a2300/faf _DFW_17C/a562"
+                        "BOSSI/a6000/if PENNY/a5000 ZINGG/a3000 JIFFY/a2300/faf"
                     ]
                 },
                 "I7R": {
@@ -37,7 +37,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_E1_TWR",
                     "waypoints": [
-                        "NETTS/a6000/if GARZA/a5000 YALTA/a3000 BBAKR/a2200/faf _DFW_17R/a567"
+                        "NETTS/a6000/if GARZA/a5000 YALTA/a3000 BBAKR/a2200/faf"
                     ]
                 },
                 "I8L": {
@@ -46,7 +46,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
-                        "GRUCH/a4000/if ALIGN/a3000 UDALL/a3000 JAYCI/a2300/faf _DFW_18L/a602"
+                        "GRUCH/a4000/if ALIGN/a3000 UDALL/a3000 JAYCI/a2300/faf"
                     ]
                 },
                 "I8R": {
@@ -55,7 +55,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
-                        "ICKEL/a4000/if YOHAN/a3000 LEGRE/a3000 NETEE/a2400/faf _DFW_18R/a607"
+                        "ICKEL/a4000/if YOHAN/a3000 LEGRE/a3000 NETEE/a2400/faf"
                     ]
                 },
                 "I1R": {
@@ -64,7 +64,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
-                        "TULOY/a5000/iaf GACHO/a5000/if VANDE/a3000 FIVIS/a2400/faf GUKSE/a1060 _DFW_31R/a523"
+                        "TULOY/a5000/iaf GACHO/a5000/if VANDE/a3000 FIVIS/a2400/faf GUKSE/a1060"
                     ]
                 },
                 "R1L": {
@@ -73,7 +73,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_E3_TWR",
                     "waypoints": [
-                        "ZUREK/a5000/iaf WOLKA/a5000/if NKORT/a3000 TARRO/a2400/faf _DFW_31L/a581"
+                        "ZUREK/a5000/iaf WOLKA/a5000/if NKORT/a3000 TARRO/a2400/faf"
                     ]
                 },
                 "I5L": {
@@ -82,7 +82,7 @@
                     "type": "ILS",
                     "tower_controller":"DFW_E1_TWR",
                     "waypoints": [
-                        "TANDE/a6000/if CORMN/a5000 DALLN/a3000 BEGGO/a2500/faf _DFW_35L/a564"
+                        "TANDE/a6000/if CORMN/a5000 DALLN/a3000 BEGGO/a2500/faf"
                     ]
                 },
                 "I5C": {
@@ -91,7 +91,7 @@
                     "type": "ILS",
                     "tower_controller":"DFW_E1_TWR",
                     "waypoints": [
-                        "RAYMA/a6000/if TUFFO/a5000 DAYZZ/a3000 JOBBS/a2100/faf _DFW_35C/a563"
+                        "RAYMA/a6000/if TUFFO/a5000 DAYZZ/a3000 JOBBS/a2100/faf"
                     ]
                 },
                 "I5R": {
@@ -100,7 +100,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_E3_TWR",
                     "waypoints": [
-                        "GALOP/a5000/if FRIZZ/a5000 COROL/a3000 POLKE/a2200 _DFW_35R/a575"
+                        "GALOP/a5000/if FRIZZ/a5000 COROL/a3000 POLKE/a2200"
                     ]
                 },
                 "I6L": {
@@ -109,7 +109,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
-                        "ALLIN/a4000/if HUTEN/a3000 CHAAR/a3000 BOBIN/a2300 _DFW_36L/a588"
+                        "ALLIN/a4000/if HUTEN/a3000 CHAAR/a3000 BOBIN/a2300"
                     ]
                 },
                 "I6R": {
@@ -118,7 +118,7 @@
                     "type": "ILS",
                     "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
-                        "SLOCO/a4000/if KICKA/a3000 TUTOO/a3000 BASIN/a2300/faf _DFW_36R/a581"
+                        "SLOCO/a4000/if KICKA/a3000 TUTOO/a3000 BASIN/a2300/faf"
                     ]
                 }
             },
@@ -242,468 +242,468 @@
                     "MLC": {
                         "cleared_altitude": 10000,
                         "sid": "AKUNA9",
-                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL/a5000+/s240 CORTS BIGGD CMORE AKUNA TIKYS"
+                        "waypoints": "SPERA JGIRL/a5000+/s240 CORTS BIGGD CMORE AKUNA TIKYS"
                     },
                     "ALIAN": {
                         "cleared_altitude": 10000,
                         "sid": "ALIAN2",
-                        "waypoints": "_DFW_17R _DFW_35L LARRN/a5000+/s240 GIGEM RBBIT"
+                        "waypoints": "LARRN/a5000+/s240 GIGEM RBBIT"
                     },
                     "CLL": {
                         "cleared_altitude": 10000,
                         "sid": "ARDIA7",
-                        "waypoints": "_DFW_17R _DFW_35L TREXX/a5000+/s240 DALBY NEAPS/a10000+ ARDIA ELLVR"
+                        "waypoints": "TREXX/a5000+/s240 DALBY NEAPS/a10000+ ARDIA ELLVR"
                     },
                     "TUL,IRW": {
                         "cleared_altitude": 10000,
                         "sid": "BLECO8",
-                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL/a5000+/s240 CORTS BIGGD CMORE BLECO ZEMMA"
+                        "waypoints": "SPERA JGIRL/a5000+/s240 CORTS BIGGD CMORE BLECO ZEMMA"
                     },
                     "TORNN": {
                         "cleared_altitude": 10000,
                         "sid": "DARTZ9",
-                        "waypoints": "_DFW_17R _DFW_35L TREXX/a5000+/s240 DALBY OUTTR/a9000+ DARTZ BRDEN"
+                        "waypoints": "TREXX/a5000+/s240 DALBY OUTTR/a9000+ DARTZ BRDEN"
                     },
                     "TNV": {
                         "cleared_altitude": 10000,
                         "sid": "DARTZ9",
-                        "waypoints": "_DFW_17R _DFW_35L TREXX/a5000+/s240 DALBY OUTTR/a9000+ DARTZ BRDEN TORNN BILEE"
+                        "waypoints": "TREXX/a5000+/s240 DALBY OUTTR/a9000+ DARTZ BRDEN TORNN BILEE"
                     },
                     "FORCK": {
                         "cleared_altitude": 10000,
                         "sid": "FORCK3",
-                        "waypoints": "_DFW_17R _DFW_35L TREXX/a5000+ JOLEN PAXTN HANUH LYING"
+                        "waypoints": "TREXX/a5000+ JOLEN PAXTN HANUH LYING"
                     },
                     "EAKER": {
                         "cleared_altitude": 10000,
                         "sid": "GRABE8",
-                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL/a5000+/s240 CORTS BIGGD CMORE GRABE"
+                        "waypoints": "SPERA JGIRL/a5000+/s240 CORTS BIGGD CMORE GRABE"
                     },
                     "OKM": {
                         "cleared_altitude": 10000,
                         "sid": "GRABE8",
-                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL/a5000+/s240 CORTS BIGGD CMORE GRABE EAKER"
+                        "waypoints": "SPERA JGIRL/a5000+/s240 CORTS BIGGD CMORE GRABE EAKER"
                     },
                     "GRABE": {
                         "cleared_altitude": 10000,
                         "sid": "GRABE8",
-                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL/a5000+/s240 CORTS BIGGD CMORE"
+                        "waypoints": "SPERA JGIRL/a5000+/s240 CORTS BIGGD CMORE"
                     },
                     "HULZE": {
                         "cleared_altitude": 10000,
                         "sid": "HRPER3",
-                        "waypoints": "_DFW_17R _DFW_35L BPARK YAMEL/a5000+/s240 FIRMN TYGGR DBLSS HRPER"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN TYGGR DBLSS HRPER"
                     },
                     "HUDAD": {
                         "cleared_altitude": 10000,
                         "sid": "HUDAD2",
-                        "waypoints": "_DFW_17R _DFW_35L BPARK YAMEL/a5000+/s240 FIRMN PGLET MUTEE"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN PGLET MUTEE"
                     },
                     "WINDU": {
                         "cleared_altitude": 10000,
                         "sid": "JASPA7",
-                        "waypoints": "_DFW_17R _DFW_35L TREXX/a5000+/s240 DALBY ENIKE/a10000+ JASPA/a10000+"
+                        "waypoints": "TREXX/a5000+/s240 DALBY ENIKE/a10000+ JASPA/a10000+"
                     },
                     "BRHMA": {
                         "cleared_altitude": 10000,
                         "sid": "KATZZ2",
-                        "waypoints": "_DFW_17R _DFW_35L LARRN/a5000+/s240 GIGEM TANNO ROOOO RUFFS KATZZ"
+                        "waypoints": "LARRN/a5000+/s240 GIGEM TANNO ROOOO RUFFS KATZZ"
                     },
                     "ADM": {
                         "cleared_altitude": 10000,
                         "sid": "LOWGN8",
-                        "waypoints": "_DFW_17R _DFW_35L BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR LOWGN"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR LOWGN"
                     },
                     "ROLLS": {
                         "cleared_altitude": 10000,
                         "sid": "LOWGN8",
-                        "waypoints": "_DFW_17R _DFW_35L BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR LOWGN ADM MRMAC"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR LOWGN ADM MRMAC"
                     },
                     "ZALEA,BDDAY": {
                         "cleared_altitude": 10000,
                         "sid": "MRSSH3",
-                        "waypoints": "_DFW_17R _DFW_35L TREXX/a5000+ JOLEN THHOR MRSSH"
+                        "waypoints": "TREXX/a5000+ JOLEN THHOR MRSSH"
                     },
                     "ACT": {
                         "cleared_altitude": 10000,
                         "sid": "NELYN6",
-                        "waypoints": "_DFW_17R _DFW_35L TREXX/a5000+/s240 DALBY NELYN"
+                        "waypoints": "TREXX/a5000+/s240 DALBY NELYN"
                     },
                     "HOARY": {
                         "cleared_altitude": 10000,
                         "sid": "NELYN6",
-                        "waypoints": "_DFW_17R _DFW_35L TREXX/a5000+/s240 DALBY NELYN ACT PRIZE"
+                        "waypoints": "TREXX/a5000+/s240 DALBY NELYN ACT PRIZE"
                     },
                     "SAT": {
                         "cleared_altitude": 10000,
                         "sid": "NELYN6",
-                        "waypoints": "_DFW_17R _DFW_35L TREXX/a5000+/s240 DALBY NELYN ACT PRIZE HOARY"
+                        "waypoints": "TREXX/a5000+/s240 DALBY NELYN ACT PRIZE HOARY"
                     },
                     "LOOSE": {
                         "cleared_altitude": 10000,
                         "sid": "TRYTN4",
-                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL/a5000+ CORTS TRRCH JAYXX TRYTN"
+                        "waypoints": "SPERA JGIRL/a5000+ CORTS TRRCH JAYXX TRYTN"
                     },
                     "CIKAN,DOSXX": {
                         "cleared_altitude": 10000,
                         "sid": "WSTEX2",
-                        "waypoints": "_DFW_17R _DFW_35L LARRN/a5000+/s240 GIGEM RBBIT LYNDE WSTEX"
+                        "waypoints": "LARRN/a5000+/s240 GIGEM RBBIT LYNDE WSTEX"
                     },
                     "BSKAT": {
                         "cleared_altitude": 10000,
                         "sid": "ZACHH4",
-                        "waypoints": "_DFW_17R _DFW_35L SPERA JGIRL/a5000+ CORTS ZERLU SWDIA ZACHH"
+                        "waypoints": "SPERA JGIRL/a5000+ CORTS ZERLU SWDIA ZACHH"
                     }
                 },
                 "18L": {
                     "MLC": {
                         "cleared_altitude": 10000,
                         "sid": "AKUNA9",
-                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR AKUNA TIKYS"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR AKUNA TIKYS"
                     },
                     "ALIAN": {
                         "cleared_altitude": 10000,
                         "sid": "ALIAN2",
-                        "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 GIGEM RBBIT"
+                        "waypoints": "LARRN/a5000+/s240 GIGEM RBBIT"
                     },
                     "CLL": {
                         "cleared_altitude": 10000,
                         "sid": "ARDIA7",
-                        "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 LIZIE CUTSO/a10000+ ARDIA ELLVR"
+                        "waypoints": "LARRN/a5000+/s240 LIZIE CUTSO/a10000+ ARDIA ELLVR"
                     },
                     "TUL,IRW": {
                         "cleared_altitude": 10000,
                         "sid": "BLECO8",
-                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR BLECO ZEMMA"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR BLECO ZEMMA"
                     },
                     "TORNN": {
                         "cleared_altitude": 10000,
                         "sid": "DARTZ9",
-                        "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 LIZIE CALEK/a10000+ DARTZ BRDEN"
+                        "waypoints": "LARRN/a5000+/s240 LIZIE CALEK/a10000+ DARTZ BRDEN"
                     },
                     "TNV": {
                         "cleared_altitude": 10000,
                         "sid": "DARTZ9",
-                        "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 LIZIE CALEK/a10000+ DARTZ BRDEN TORNN BILEE"
+                        "waypoints": "LARRN/a5000+/s240 LIZIE CALEK/a10000+ DARTZ BRDEN TORNN BILEE"
                     },
                     "FORCK": {
                         "cleared_altitude": 10000,
                         "sid": "FORCK3",
-                        "waypoints": "_DFW_18L _DFW_36R TREXX/a5000+ JOLEN PAXTN HANUH LYING"
+                        "waypoints": "TREXX/a5000+ JOLEN PAXTN HANUH LYING"
                     },
                     "EAKER": {
                         "cleared_altitude": 10000,
                         "sid": "GRABE8",
-                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR GRABE"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR GRABE"
                     },
                     "OKM": {
                         "cleared_altitude": 10000,
                         "sid": "GRABE8",
-                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR GRABE EAKER"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR GRABE EAKER"
                     },
                     "GRABE": {
                         "cleared_altitude": 10000,
                         "sid": "GRABE8",
-                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR"
                     },
                     "HULZE": {
                         "cleared_altitude": 10000,
                         "sid": "HRPER3",
-                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/a5000+/s240 FIRMN TYGGR DBLSS HRPER"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN TYGGR DBLSS HRPER"
                     },
                     "HUDAD": {
                         "cleared_altitude": 10000,
                         "sid": "HUDAD2",
-                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/a5000+/s240 FIRMN PGLET MUTEE"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN PGLET MUTEE"
                     },
                     "WINDU": {
                         "cleared_altitude": 10000,
                         "sid": "JASPA7",
-                        "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 JUGEL/a10000+ JASPA/a10000+"
+                        "waypoints": "LARRN/a5000+/s240 JUGEL/a10000+ JASPA/a10000+"
                     },
                     "BRHMA": {
                         "cleared_altitude": 10000,
                         "sid": "KATZZ2",
-                        "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 GIGEM TANNO ROOOO RUFFS KATZZ"
+                        "waypoints": "LARRN/a5000+/s240 GIGEM TANNO ROOOO RUFFS KATZZ"
                     },
                     "ADM": {
                         "cleared_altitude": 10000,
                         "sid": "LOWGN8",
-                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR LOWGN"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR LOWGN"
                     },
                     "ROLLS": {
                         "cleared_altitude": 10000,
                         "sid": "LOWGN8",
-                        "waypoints": "_DFW_18L _DFW_36R BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR LOWGN ADM MRMAC"
+                        "waypoints": "BPARK YAMEL/a5000+/s240 FIRMN BINGM BEMMR LOWGN ADM MRMAC"
                     },
                     "ZALEA,BDDAY": {
                         "cleared_altitude": 10000,
                         "sid": "MRSSH3",
-                        "waypoints": "_DFW_18L _DFW_36R TREXX/a5000+ JOLEN THHOR MRSSH"
+                        "waypoints": "TREXX/a5000+ JOLEN THHOR MRSSH"
                     },
                     "ACT": {
                         "cleared_altitude": 10000,
                         "sid": "NELYN6",
-                        "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 WETUR/a10000+ NELYN"
+                        "waypoints": "LARRN/a5000+/s240 WETUR/a10000+ NELYN"
                     },
                     "HOARY": {
                         "cleared_altitude": 10000,
                         "sid": "NELYN6",
-                        "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 WETUR/a10000+ NELYN ACT PRIZE"
+                        "waypoints": "LARRN/a5000+/s240 WETUR/a10000+ NELYN ACT PRIZE"
                     },
                     "SAT": {
                         "cleared_altitude": 10000,
                         "sid": "NELYN6",
-                        "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 WETUR/a10000+ NELYN ACT PRIZE HOARY"
+                        "waypoints": "LARRN/a5000+/s240 WETUR/a10000+ NELYN ACT PRIZE HOARY"
                     },
                     "LOOSE": {
                         "cleared_altitude": 10000,
                         "sid": "TRYTN4",
-                        "waypoints": "_DFW_18L _DFW_36R SPERA JGIRL/a5000+ CORTS TRRCH JAYXX TRYTN"
+                        "waypoints": "SPERA JGIRL/a5000+ CORTS TRRCH JAYXX TRYTN"
                     },
                     "CIKAN,DOSXX": {
                         "cleared_altitude": 10000,
                         "sid": "WSTEX2",
-                        "waypoints": "_DFW_18L _DFW_36R LARRN/a5000+/s240 GIGEM RBBIT LYNDE WSTEX"
+                        "waypoints": "LARRN/a5000+/s240 GIGEM RBBIT LYNDE WSTEX"
                     },
                     "BSKAT": {
                         "cleared_altitude": 10000,
                         "sid": "ZACHH4",
-                        "waypoints": "_DFW_18L _DFW_36R SPERA JGIRL/a5000+ CORTS ZERLU SWDIA ZACHH"
+                        "waypoints": "SPERA JGIRL/a5000+ CORTS ZERLU SWDIA ZACHH"
                     }
                 },
                 "36R": {
                     "MLC": {
                         "cleared_altitude": 10000,
                         "sid": "AKUNA9",
-                        "waypoints": "_DFW_36R _DFW_18L HAZKL/a5000+/s240 RYNNE/a7000+ AKUNA TIKYS"
+                        "waypoints": "HAZKL/a5000+/s240 RYNNE/a7000+ AKUNA TIKYS"
                     },
                     "ALIAN": {
                         "cleared_altitude": 10000,
                         "sid": "ALIAN2",
-                        "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN RBBIT"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN RBBIT"
                     },
                     "CLL": {
                         "cleared_altitude": 10000,
                         "sid": "ARDIA7",
-                        "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL ARDIA ELLVR"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN KELLR MYGAL ARDIA ELLVR"
                     },
                     "TUL,IRW": {
                         "cleared_altitude": 10000,
                         "sid": "BLECO8",
-                        "waypoints": "_DFW_36R _DFW_18L HAZKL/a5000+/s240 RYNNE/a7000+ BLECO ZEMMA"
+                        "waypoints": "HAZKL/a5000+/s240 RYNNE/a7000+ BLECO ZEMMA"
                     },
                     "TORNN": {
                         "cleared_altitude": 10000,
                         "sid": "DARTZ9",
-                        "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL DARTZ BRDEN"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN KELLR MYGAL DARTZ BRDEN"
                     },
                     "TNV": {
                         "cleared_altitude": 10000,
                         "sid": "DARTZ9",
-                        "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL DARTZ BRDEN TORNN BILEE"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN KELLR MYGAL DARTZ BRDEN TORNN BILEE"
                     },
                     "FORCK": {
                         "cleared_altitude": 10000,
                         "sid": "FORCK3",
-                        "waypoints": "_DFW_36R _DFW_18L MECHL/a4000+ BORDD/a6000+ JYMME/a7000+ HANUH LYING"
+                        "waypoints": "MECHL/a4000+ BORDD/a6000+ JYMME/a7000+ HANUH LYING"
                     },
                     "EAKER": {
                         "cleared_altitude": 10000,
                         "sid": "GRABE8",
-                        "waypoints": "_DFW_36R _DFW_18L HAZKL/a5000+/s240 RYNNE/a7000+ GRABE"
+                        "waypoints": "HAZKL/a5000+/s240 RYNNE/a7000+ GRABE"
                     },
                     "OKM": {
                         "cleared_altitude": 10000,
                         "sid": "GRABE8",
-                        "waypoints": "_DFW_36R _DFW_18L HAZKL/a5000+/s240 RYNNE/a7000+ GRABE EAKER"
+                        "waypoints": "HAZKL/a5000+/s240 RYNNE/a7000+ GRABE EAKER"
                     },
                     "GRABE": {
                         "cleared_altitude": 10000,
                         "sid": "GRABE8",
-                        "waypoints": "_DFW_36R _DFW_18L HAZKL/a5000+/s240 RYNNE/a7000+"
+                        "waypoints": "HAZKL/a5000+/s240 RYNNE/a7000+"
                     },
                     "HULZE": {
                         "cleared_altitude": 10000,
                         "sid": "HRPER3",
-                        "waypoints": "_DFW_36R _DFW_18L HAZKL/a5000+/s240 TULUY HUNNT TYGGR DBLSS HRPER"
+                        "waypoints": "HAZKL/a5000+/s240 TULUY HUNNT TYGGR DBLSS HRPER"
                     },
                     "HUDAD": {
                         "cleared_altitude": 10000,
                         "sid": "HUDAD2",
-                        "waypoints": "_DFW_36R _DFW_18L HAZKL/a5000+/s240 TULUY PGLET MUTEE"
+                        "waypoints": "HAZKL/a5000+/s240 TULUY PGLET MUTEE"
                     },
                     "WINDU": {
                         "cleared_altitude": 10000,
                         "sid": "JASPA7",
-                        "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL JASPA/a10000+"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN KELLR MYGAL JASPA/a10000+"
                     },
                     "BRHMA": {
                         "cleared_altitude": 10000,
                         "sid": "KATZZ2",
-                        "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN ROOOO RUFFS KATZZ"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN ROOOO RUFFS KATZZ"
                     },
                     "ADM": {
                         "cleared_altitude": 10000,
                         "sid": "LOWGN8",
-                        "waypoints": "_DFW_36R _DFW_18L HAZKL/a5000+/s240 AZIDE/a9000+ LOWGN"
+                        "waypoints": "HAZKL/a5000+/s240 AZIDE/a9000+ LOWGN"
                     },
                     "ROLLS": {
                         "cleared_altitude": 10000,
                         "sid": "LOWGN8",
-                        "waypoints": "_DFW_36R _DFW_18L HAZKL/a5000+/s240 AZIDE/a9000+ LOWGN ADM MRMAC"
+                        "waypoints": "HAZKL/a5000+/s240 AZIDE/a9000+ LOWGN ADM MRMAC"
                     },
                     "ZALEA,BDDAY": {
                         "cleared_altitude": 10000,
                         "sid": "MRSSH3",
-                        "waypoints": "_DFW_36R _DFW_18L MECHL/a4000+ BORDD/a6000+ JYMME/a7000+ THHOR MRSSH"
+                        "waypoints": "MECHL/a4000+ BORDD/a6000+ JYMME/a7000+ THHOR MRSSH"
                     },
                     "ACT": {
                         "cleared_altitude": 10000,
                         "sid": "NELYN6",
-                        "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL NELYN"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN KELLR MYGAL NELYN"
                     },
                     "HOARY": {
                         "cleared_altitude": 10000,
                         "sid": "NELYN6",
-                        "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL NELYN ACT PRIZE"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN KELLR MYGAL NELYN ACT PRIZE"
                     },
                     "SAT": {
                         "cleared_altitude": 10000,
                         "sid": "NELYN6",
-                        "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL NELYN ACT PRIZE HOARY"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN KELLR MYGAL NELYN ACT PRIZE HOARY"
                     },
                     "LOOSE": {
                         "cleared_altitude": 10000,
                         "sid": "TRYTN4",
-                        "waypoints": "_DFW_36R _DFW_18L CUZEN/a5000+ FEZTR/a7000+ SWYFT TRRCH JAYXX TRYTN"
+                        "waypoints": "CUZEN/a5000+ FEZTR/a7000+ SWYFT TRRCH JAYXX TRYTN"
                     },
                     "CIKAN,DOSXX": {
                         "cleared_altitude": 10000,
                         "sid": "WSTEX2",
-                        "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN RBBIT LYNDE WSTEX"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN RBBIT LYNDE WSTEX"
                     },
                     "BSKAT": {
                         "cleared_altitude": 10000,
                         "sid": "ZACHH4",
-                        "waypoints": "_DFW_36R _DFW_18L CUZEN/a5000+ FEZTR/a7000+ ZERLU SWDIA ZACHH"
+                        "waypoints": "CUZEN/a5000+ FEZTR/a7000+ ZERLU SWDIA ZACHH"
                     }
                 },
                 "35L": {
                     "MLC": {
                         "cleared_altitude": 10000,
                         "sid": "AKUNA9",
-                        "waypoints": "_DFW_35L _DFW_17R CUZEN/a5000+/s240 ITTTT/a6000+ AKUNA TIKYS"
+                        "waypoints": "CUZEN/a5000+/s240 ITTTT/a6000+ AKUNA TIKYS"
                     },
                     "ALIAN": {
                         "cleared_altitude": 10000,
                         "sid": "ALIAN2",
-                        "waypoints": "_DFW_35L _DFW_17R GVINE KMART/a5500+/s240 MARSN RBBIT"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN RBBIT"
                     },
                     "CLL": {
                         "cleared_altitude": 10000,
                         "sid": "ARDIA7",
-                        "waypoints": "_DFW_35L _DFW_17R MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR ARDIA ELLVR"
+                        "waypoints": "MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR ARDIA ELLVR"
                     },
                     "TUL,IRW": {
                         "cleared_altitude": 10000,
                         "sid": "BLECO8",
-                        "waypoints": "_DFW_35L _DFW_17R CUZEN/a5000+/s240 YUNGG/a7000+ BLECO ZEMMA"
+                        "waypoints": "CUZEN/a5000+/s240 YUNGG/a7000+ BLECO ZEMMA"
                     },
                     "TORNN": {
                         "cleared_altitude": 10000,
                         "sid": "DARTZ9",
-                        "waypoints": "_DFW_36R _DFW_18L GVINE KMART/a5500+/s240 MARSN KELLR MYGAL DARTZ BRDEN"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN KELLR MYGAL DARTZ BRDEN"
                     },
                     "TNV": {
                         "cleared_altitude": 10000,
                         "sid": "DARTZ9",
-                        "waypoints": "_DFW_35L _DFW_17R MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR DARTZ BRDEN TORNN BILEE"
+                        "waypoints": "MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR DARTZ BRDEN TORNN BILEE"
                     },
                     "FORCK": {
                         "cleared_altitude": 10000,
                         "sid": "FORCK3",
-                        "waypoints": "_DFW_35L _DFW_17R MECHL/a4000+/s240 JYMME/a7000+ HANUH LYING"
+                        "waypoints": "MECHL/a4000+/s240 JYMME/a7000+ HANUH LYING"
                     },
                     "EAKER": {
                         "cleared_altitude": 10000,
                         "sid": "GRABE8",
-                        "waypoints": "_DFW_35L _DFW_17R CUZEN/a5000+/s240 YUNGG/a7000+ GRABE"
+                        "waypoints": "CUZEN/a5000+/s240 YUNGG/a7000+ GRABE"
                     },
                     "OKM": {
                         "cleared_altitude": 10000,
                         "sid": "GRABE8",
-                        "waypoints": "_DFW_35L _DFW_17R CUZEN/a5000+/s240 YUNGG/a7000+ GRABE EAKER"
+                        "waypoints": "CUZEN/a5000+/s240 YUNGG/a7000+ GRABE EAKER"
                     },
                     "GRABE": {
                         "cleared_altitude": 10000,
                         "sid": "GRABE8",
-                        "waypoints": "_DFW_35L _DFW_17R CUZEN/a5000+/s240 YUNGG/a7000+"
+                        "waypoints": "CUZEN/a5000+/s240 YUNGG/a7000+"
                     },
                     "HULZE": {
                         "cleared_altitude": 10000,
                         "sid": "HRPER3",
-                        "waypoints": "_DFW_35L _DFW_17R HAZKL/a5000+/s240 TULUY HUNNT TYGGR DBLSS HRPER"
+                        "waypoints": "HAZKL/a5000+/s240 TULUY HUNNT TYGGR DBLSS HRPER"
                     },
                     "HUDAD": {
                         "cleared_altitude": 10000,
                         "sid": "HUDAD2",
-                        "waypoints": "_DFW_35L _DFW_17R HAZKL/a5000+/s240 TULUY PGLET MUTEE"
+                        "waypoints": "HAZKL/a5000+/s240 TULUY PGLET MUTEE"
                     },
                     "WINDU": {
                         "cleared_altitude": 10000,
                         "sid": "JASPA7",
-                        "waypoints": "_DFW_35L _DFW_17R MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR JASPA/a10000+"
+                        "waypoints": "MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR JASPA/a10000+"
                     },
                     "BRHMA": {
                         "cleared_altitude": 10000,
                         "sid": "KATZZ2",
-                        "waypoints": "_DFW_35L _DFW_17R GVINE KMART/a5500+/s240 MARSN ROOOO RUFFS KATZZ"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN ROOOO RUFFS KATZZ"
                     },
                     "ADM": {
                         "cleared_altitude": 10000,
                         "sid": "LOWGN8",
-                        "waypoints": "_DFW_35L _DFW_17R CUZEN/a5000+/a240 YUNGG/a7000+ LOWGN"
+                        "waypoints": "CUZEN/a5000+/a240 YUNGG/a7000+ LOWGN"
                     },
                     "ROLLS": {
                         "cleared_altitude": 10000,
                         "sid": "LOWGN8",
-                        "waypoints": "_DFW_35L _DFW_17R CUZEN/a5000+/a240 YUNGG/a7000+ LOWGN ADM MRMAC"
+                        "waypoints": "CUZEN/a5000+/a240 YUNGG/a7000+ LOWGN ADM MRMAC"
                     },
                     "ZALEA,BDDAY": {
                         "cleared_altitude": 10000,
                         "sid": "MRSSH3",
-                        "waypoints": "_DFW_35L _DFW_17R MECHL/a4000+ BORDD/a6000+ JYMME/a7000+ THHOR MRSSH"
+                        "waypoints": "MECHL/a4000+ BORDD/a6000+ JYMME/a7000+ THHOR MRSSH"
                     },
                     "ACT": {
                         "cleared_altitude": 10000,
                         "sid": "NELYN6",
-                        "waypoints": "_DFW_35L _DFW_17R MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR NELYN"
+                        "waypoints": "MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR NELYN"
                     },
                     "HOARY": {
                         "cleared_altitude": 10000,
                         "sid": "NELYN6",
-                        "waypoints": "_DFW_35L _DFW_17R MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR NELYN ACT PRIZE"
+                        "waypoints": "MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR NELYN ACT PRIZE"
                     },
                     "SAT": {
                         "cleared_altitude": 10000,
                         "sid": "NELYN6",
-                        "waypoints": "_DFW_35L _DFW_17R MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR NELYN ACT PRIZE HOARY"
+                        "waypoints": "MECHL/a4000+/s240 JYMME/a7000+ OWLLS SKTRR NELYN ACT PRIZE HOARY"
                     },
                     "LOOSE": {
                         "cleared_altitude": 10000,
                         "sid": "TRYTN4",
-                        "waypoints": "_DFW_35L _DFW_17R CUZEN/a5000+ FEZTR/a7000+ SWYFT TRRCH JAYXX TRYTN"
+                        "waypoints": "CUZEN/a5000+ FEZTR/a7000+ SWYFT TRRCH JAYXX TRYTN"
                     },
                     "CIKAN,DOSXX": {
                         "cleared_altitude": 10000,
                         "sid": "WSTEX2",
-                        "waypoints": "_DFW_35L _DFW_17R GVINE KMART/a5500+/s240 MARSN RBBIT LYNDE WSTEX"
+                        "waypoints": "GVINE KMART/a5500+/s240 MARSN RBBIT LYNDE WSTEX"
                     },
                     "BSKAT": {
                         "cleared_altitude": 10000,
                         "sid": "ZACHH4",
-                        "waypoints": "_DFW_35L _DFW_17R CUZEN/a5000+ FEZTR/a7000+ ZERLU SWDIA ZACHH"
+                        "waypoints": "CUZEN/a5000+ FEZTR/a7000+ ZERLU SWDIA ZACHH"
                     }
                 }
             },
@@ -1209,7 +1209,6 @@
                 "DOSXX": "West",
                 "BSKAT": "East"
             },
-            "location": "N032.54.07.668,W097.01.25.089",
             "tower_list": 2
         },
         "KDAL": {
@@ -1220,7 +1219,7 @@
                     "runway": "13L",
                     "type": "ILS",
                     "waypoints": [
-                        "WADES/if/a2500 NNATE/a1900/faf TSKED/a920 _DAL_13L/a485"
+                        "WADES/if/a2500 NNATE/a1900/faf TSKED/a920"
                     ]
                 },
                 "Z3L": {
@@ -1228,7 +1227,7 @@
                     "runway": "13L",
                     "type": "RNAV",
                     "waypoints": [
-                        "WADES/if/a2500 NNATE/a1900/faf TSKED/a920 _DAL_13L/a485"
+                        "WADES/if/a2500 NNATE/a1900/faf TSKED/a920"
                     ]
                 },
                 "Y3L": {
@@ -1236,7 +1235,7 @@
                     "runway": "13L",
                     "type": "RNAV",
                     "waypoints": [
-                        "SLANT/a2600+ APAKE/a2600/iaf BINAY/if/a2300 CAMSO/faf/a2000 _DAL_13L/a485"
+                        "SLANT/a2600+ APAKE/a2600/iaf BINAY/if/a2300 CAMSO/faf/a2000"
                     ]
                 },
                 "W3L": {
@@ -1244,8 +1243,8 @@
                     "runway": "13L",
                     "type": "RNAV",
                     "waypoints": [
-                        "NOKME/a4000/iaf/s230 WUPAG/a3300/s210 EBARE/a3000 HEXOV/a2100/s200 KUMTE/a1600/faf CEGEP/a1212 _DAL_13L/a485",
-                        "WENOP/a3000/s210/if  HEXOV/a2100/s200 KUMTE/a1600/faf CEGEP/a1212 _DAL_13L/a485"
+                        "NOKME/a4000/iaf/s230 WUPAG/a3300/s210 EBARE/a3000 HEXOV/a2100/s200 KUMTE/a1600/faf CEGEP/a1212",
+                        "WENOP/a3000/s210/if  HEXOV/a2100/s200 KUMTE/a1600/faf CEGEP/a1212"
                     ]
                 },
                 "X3L": {
@@ -1253,8 +1252,8 @@
                     "runway": "13L",
                     "type": "RNAV",
                     "waypoints": [
-                        "TUNDE/a1600+/if ZUNAM/a1600/faf _DAL_13L/a485",
-                        "NETNE/a3000/s210/if VEALY/a2000/s200 ZUNAM/a1600/faf _DAL_13L/a485"
+                        "TUNDE/a1600+/if ZUNAM/a1600/faf",
+                        "NETNE/a3000/s210/if VEALY/a2000/s200 ZUNAM/a1600/faf"
                     ]
                 },
                 "I3R": {
@@ -1262,7 +1261,7 @@
                     "runway": "13R",
                     "type": "ILS",
                     "waypoints": [
-                        "LIPPI/a2500/if LAURA/a1900/faf _DAL_13R/a479"
+                        "LIPPI/a2500/if LAURA/a1900/faf"
                     ]
                 },
                 "Y3R": {
@@ -1270,7 +1269,7 @@
                     "runway": "13R",
                     "type": "ILS",
                     "waypoints": [
-                        "SLANT/a2600+ APAKE/a2600/iaf BINAY/a2300/if CAMSO/a2000/faf _DAL_13R/a479"
+                        "SLANT/a2600+ APAKE/a2600/iaf BINAY/a2300/if CAMSO/a2000/faf"
                     ]
                 },
                 "Z3R": {
@@ -1278,7 +1277,7 @@
                     "runway": "13R",
                     "type": "RNAV",
                     "waypoints": [
-                        "LIPPI/a2500/if LAURA/a1900/faf _DAL_13R/a479"
+                        "LIPPI/a2500/if LAURA/a1900/faf"
                     ]
                 },
                 "W3R": {
@@ -1286,8 +1285,8 @@
                     "runway": "13R",
                     "type": "RNAV",
                     "waypoints": [
-                        "NOKME/a4000/s230/if WUPAG/a3300/s210 EBARE/a3000 HEXOV/a2100 LAICH/a2000/s190 INAPT/faf/a1600 WUREM/a1250 _DAL_13R/a478",
-                        "WENOP/a3000/if/s210 HEXOV/a2100 LAICH/a2000 INAPT/a1600/faf WUREM/a1250 _DAL_13R/a478"
+                        "NOKME/a4000/s230/if WUPAG/a3300/s210 EBARE/a3000 HEXOV/a2100 LAICH/a2000/s190 INAPT/faf/a1600 WUREM/a1250",
+                        "WENOP/a3000/if/s210 HEXOV/a2100 LAICH/a2000 INAPT/a1600/faf WUREM/a1250"
                     ]
                 },
                 "X3R": {
@@ -1295,16 +1294,16 @@
                     "runway": "13R",
                     "type": "RNAV",
                     "waypoints": [
-                        "FRDDM/a1600+/if TOFLY/a1600/faf _DAL_13L/a485",
-                        "NETNE/a3000/s210/if VEALY/a2000/s200  TOFLY/a1600/faf _DAL_13L/a485"
+                        "FRDDM/a1600+/if TOFLY/a1600/faf",
+                        "NETNE/a3000/s210/if VEALY/a2000/s200  TOFLY/a1600/faf"
                     ]
                 },
                 "I1L": {
                     "full_name": "ILS Runway 31L",
-                    "runway": "13L",
+                    "runway": "31L",
                     "type": "ILS",
                     "waypoints": [
-                        "MYLES/a2500/if JAKID/a2200/faf ENTRA/a1520 _DAL_31L/a477"
+                        "MYLES/a2500/if JAKID/a2200/faf ENTRA/a1520"
                     ]
                 },
                 "Y1L": {
@@ -1312,7 +1311,7 @@
                     "runway": "31L",
                     "type": "RNAV",
                     "waypoints": [
-                        "ORVLL/a3000+ CEMPI/a3000/iaf MYLES/a2500/if JAKID/a2200/faf ENTRA/a1520 _DAL_31L/a477"
+                        "ORVLL/a3000+ CEMPI/a3000/iaf MYLES/a2500/if JAKID/a2200/faf ENTRA/a1520"
                     ]
                 },
                 "Z1L": {
@@ -1320,10 +1319,10 @@
                     "runway": "31R",
                     "type": "RNAV",
                     "waypoints": [
-                        "RYCKK/if/a2800+ SCATS/a2800 WAGBU/a1900/faf _DAL_31L/a476",
-                        "SUMLN/a4000/if NAKFA/s210 WAGBU/a1900/faf _DAL_31L/a476",
-                        "JALIM/a4000/if LAYER/s210 NAKFA/s210 WAGBU/a1900/faf _DAL_31L/a476",
-                        "DWNTN/if/a3000 OVELE/s210 WAGBU/a1900/faf _DAL_31L/a476"
+                        "RYCKK/if/a2800+ SCATS/a2800 WAGBU/a1900/faf",
+                        "SUMLN/a4000/if NAKFA/s210 WAGBU/a1900/faf",
+                        "JALIM/a4000/if LAYER/s210 NAKFA/s210 WAGBU/a1900/faf",
+                        "DWNTN/if/a3000 OVELE/s210 WAGBU/a1900/faf"
                     ]
                 },
                 "I1R": {
@@ -1331,7 +1330,7 @@
                     "runway": "31R",
                     "type": "ILS",
                     "waypoints": [
-                        "FACIA/a2500/if DATLE/a2200/faf BOKLE/a1360 _DAL_31R/a487"
+                        "FACIA/a2500/if DATLE/a2200/faf BOKLE/a1360"
                     ]
                 },
                 "Y1R": {
@@ -1339,8 +1338,8 @@
                     "runway": "31R",
                     "type": "RNAV",
                     "waypoints": [
-                        "YEAGR/a3000+ GEVME/a3000/iaf FACIA/a2500/if DATLE/a2200/faf BOKLE/a1360 _DAL_31R/a487",
-                        "ORVLL/a3000+ GEVME/a3000/iaf FACIA/a2500/if DATLE/a2200/faf BOKLE/a1360 _DAL_31R/a487"
+                        "YEAGR/a3000+ GEVME/a3000/iaf FACIA/a2500/if DATLE/a2200/faf BOKLE/a1360",
+                        "ORVLL/a3000+ GEVME/a3000/iaf FACIA/a2500/if DATLE/a2200/faf BOKLE/a1360"
                     ]
                 },
                 "Z1R": {
@@ -1348,10 +1347,10 @@
                     "runway": "31R",
                     "type": "RNAV",
                     "waypoints": [
-                        "KELHR/a2800+/if ZORNO/a2800 TIRKE/a1900/faf _DAL_31R/a487",
-                        "DWNTN/a3000/if USURY/s210 TIRKE/a1900/faf _DAL_31R/a487",
-                        "SUMLN/a4000/if QUARE/a3000/s210 TIRKE/a1900/faf _DAL_31R/a487",
-                        "JALIM/a4000/if WEANS/s210/a3300 QUARE/s210 TIRKE/a1900/faf _DAL_31R/a487"
+                        "KELHR/a2800+/if ZORNO/a2800 TIRKE/a1900/faf",
+                        "DWNTN/a3000/if USURY/s210 TIRKE/a1900/faf",
+                        "SUMLN/a4000/if QUARE/a3000/s210 TIRKE/a1900/faf",
+                        "JALIM/a4000/if WEANS/s210/a3300 QUARE/s210 TIRKE/a1900/faf"
                     ]
                 }
             },
@@ -1360,364 +1359,364 @@
                     "NELYN": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO"
                     },
                     "JASPA": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO"
                     },
                     "ARDIA": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L  DRSET/a6000- HAYZZ/a6000 CURLO"
+                        "waypoints": " DRSET/a6000- HAYZZ/a6000 CURLO"
                     },
                     "DARTZ": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO"
                     },
                     "ACT": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO NELYN"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO NELYN"
                     },
                     "HOARY": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO NELYN ACT PRIZE"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO NELYN ACT PRIZE"
                     },
                     "SAT": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO NELYN ACT PRIZE HOARY"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO NELYN ACT PRIZE HOARY"
                     },
                     "WINDU": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO JASPA"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO JASPA"
                     },
                     "ELLVR": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO ARDIA"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO ARDIA"
                     },
                     "CLL": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO ARDIA ELLVR"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO ARDIA ELLVR"
                     },
                     "BRDEN": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO DARTZ"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO DARTZ"
                     },
                     "TORNN": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO DARTZ BRDEN"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO DARTZ BRDEN"
                     },
                     "BILEE": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO DARTZ BRDEN TORNN"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO DARTZ BRDEN TORNN"
                     },
                     "TNV": {
                         "cleared_altitude": 6000,
                         "sid": "CURLO5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000 CURLO DARTZ BRDEN TORNN BILEE"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000 CURLO DARTZ BRDEN TORNN BILEE"
                     },
                     "BSKAT": {
                         "cleared_altitude": 6000,
                         "sid": "LNDRE5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE ZERLU SWDIA ZACHH"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE ZERLU SWDIA ZACHH"
                     },
                     "LOOSE": {
                         "cleared_altitude": 6000,
                         "sid": "LNDRE5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE TRRCH JAYXX TRYTN"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE TRRCH JAYXX TRYTN"
                     },
                     "FORCK": {
                         "cleared_altitude": 6000,
                         "sid": "LNDRE5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE HANUH LYING"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE HANUH LYING"
                     },
                     "MRRSH": {
                         "cleared_altitude": 6000,
                         "sid": "LNDRE5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE THHOR JJANE"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE THHOR JJANE"
                     },
                     "ZALEA,BDDAY": {
                         "cleared_altitude": 6000,
                         "sid": "LNDRE5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE THHOR JJANE MRSSH"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE THHOR JJANE MRSSH"
                     },
                     "ADM": {
                         "cleared_altitude": 6000,
                         "sid": "SWTSR6",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR LOWGN"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR LOWGN"
                     },
                     "ROLLS": {
                         "cleared_altitude": 6000,
                         "sid": "SWTSR6",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR LOWGN ADM MRMAC"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR LOWGN ADM MRMAC"
                     },
                     "BLECO": {
                         "cleared_altitude": 6000,
                         "sid": "SWTSR6",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR"
                     },
                     "ZEMMA": {
                         "cleared_altitude": 6000,
                         "sid": "SWTSR6",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR BLECO"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR BLECO"
                     },
                     "TUL,IRW": {
                         "cleared_altitude": 6000,
                         "sid": "SWTSR6",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR BLECO ZEMMA"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR BLECO ZEMMA"
                     },
                     "GRABE": {
                         "cleared_altitude": 6000,
                         "sid": "SWTSR6",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR"
                     },
                     "EAKER": {
                         "cleared_altitude": 6000,
                         "sid": "SWTSR6",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR GRABE"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR GRABE"
                     },
                     "OKM": {
                         "cleared_altitude": 6000,
                         "sid": "SWTSR6",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR GRABE EAKER"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR GRABE EAKER"
                     },
                     "AKUNA": {
                         "cleared_altitude": 6000,
                         "sid": "SWTSR6",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR"
                     },
                     "TIKYS": {
                         "cleared_altitude": 6000,
                         "sid": "SWTSR6",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR AKUNA"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR AKUNA"
                     },
                     "MLC": {
                         "cleared_altitude": 6000,
                         "sid": "SWTSR6",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR AKUNA TIKYS"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ SHRAM/a7000+ LNDRE SWTSR AKUNA TIKYS"
                     },
                     "WSTEX": {
                         "cleared_altitude": 6000,
                         "sid": "KKITY5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ CURLO KKITY RBBIT LYNDE"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ CURLO KKITY RBBIT LYNDE"
                     },
                     "DOSXX,CIKAN": {
                         "cleared_altitude": 6000,
                         "sid": "KKITY5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ CURLO KKITY RBBIT LYNDE WSTEX"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ CURLO KKITY RBBIT LYNDE WSTEX"
                     },
                     "ALIAN": {
                         "cleared_altitude": 6000,
                         "sid": "KKITY5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ CURLO KKITY RBBIT FUMED"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ CURLO KKITY RBBIT FUMED"
                     },
                     "BRHMA": {
                         "cleared_altitude": 6000,
                         "sid": "KKITY5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ CURLO KKITY ROOOO RUFFS KATZZ"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ CURLO KKITY ROOOO RUFFS KATZZ"
                     },
                     "HULZE": {
                         "cleared_altitude": 6000,
                         "sid": "KKITY5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ CURLO KKITY TYGGR DBLSS HRPER"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ CURLO KKITY TYGGR DBLSS HRPER"
                     },
                     "HUDAD": {
                         "cleared_altitude": 6000,
                         "sid": "KKITY5",
-                        "waypoints": "_DAL_13R _DAL_31L DRSET/a6000- HAYZZ/a6000+ CURLO KKITY PGLET MUTEE"
+                        "waypoints": "DRSET/a6000- HAYZZ/a6000+ CURLO KKITY PGLET MUTEE"
                     }
                 },
                 "31L": {
                     "NELYN": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+"
                     },
                     "JASPA": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+"
                     },
                     "ARDIA": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+"
                     },
                     "DARTZ": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+"
                     },
                     "ACT": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ NELYN"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ NELYN"
                     },
                     "HOARY": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ NELYN ACT PRIZE"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ NELYN ACT PRIZE"
                     },
                     "SAT": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ NELYN ACT PRIZE HOARY"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ NELYN ACT PRIZE HOARY"
                     },
                     "WINDU": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ JASPA"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ JASPA"
                     },
                     "ELLVR": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ ARDIA"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ ARDIA"
                     },
                     "CLL": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ ARDIA ELLVR"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ ARDIA ELLVR"
                     },
                     "BRDEN": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ DARTZ"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ DARTZ"
                     },
                     "TORNN": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ DARTZ BRDEN"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ DARTZ BRDEN"
                     },
                     "BILEE": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ DARTZ BRDEN TORNN"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ DARTZ BRDEN TORNN"
                     },
                     "TNV": {
                         "cleared_altitude": 5000,
                         "sid": "RAMBL6",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ DARTZ BRDEN TORNN BILEE"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ DARTZ BRDEN TORNN BILEE"
                     },
                     "BSKAT": {
                         "cleared_altitude": 5000,
                         "sid": "EMMTT4",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ ZERLU SWDIA ZACHH"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ ZERLU SWDIA ZACHH"
                     },
                     "LOOSE": {
                         "cleared_altitude": 5000,
                         "sid": "EMMTT4",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ TRRCH JAYXX TRYTN"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ TRRCH JAYXX TRYTN"
                     },
                     "FORCK": {
                         "cleared_altitude": 5000,
                         "sid": "EMMTT4",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ HANUH LYING"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ HANUH LYING"
                     },
                     "MRRSH": {
                         "cleared_altitude": 5000,
                         "sid": "EMMTT4",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ THHOR JJANE"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ THHOR JJANE"
                     },
                     "ZALEA,BDDAY": {
                         "cleared_altitude": 5000,
                         "sid": "EMMTT4",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ THHOR JJANE MRSSH"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ THHOR JJANE MRSSH"
                     },
                     "ADM": {
                         "cleared_altitude": 5000,
                         "sid": "ESNYE7",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE LOWGN"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE LOWGN"
                     },
                     "ROLLS": {
                         "cleared_altitude": 5000,
                         "sid": "ESNYE7",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE LOWGN ADM MRMAC"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE LOWGN ADM MRMAC"
                     },
                     "BLECO": {
                         "cleared_altitude": 5000,
                         "sid": "ESNYE7",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE"
                     },
                     "ZEMMA": {
                         "cleared_altitude": 5000,
                         "sid": "ESNYE7",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE BLECO"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE BLECO"
                     },
                     "TUL,IRW": {
                         "cleared_altitude": 5000,
                         "sid": "ESNYE7",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE BLECO ZEMMA"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE BLECO ZEMMA"
                     },
                     "GRABE": {
                         "cleared_altitude": 5000,
                         "sid": "ESNYE7",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE"
                     },
                     "EAKER": {
                         "cleared_altitude": 5000,
                         "sid": "ESNYE7",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE GRABE"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE GRABE"
                     },
                     "OKM": {
                         "cleared_altitude": 5000,
                         "sid": "ESNYE7",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE GRABE EAKER"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE GRABE EAKER"
                     },
                     "AKUNA": {
                         "cleared_altitude": 5000,
                         "sid": "ESNYE7",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE"
                     },
                     "TIKYS": {
                         "cleared_altitude": 5000,
                         "sid": "ESNYE7",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE AKUNA"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE AKUNA"
                     },
                     "MLC": {
                         "cleared_altitude": 5000,
                         "sid": "ESNYE7",
-                        "waypoints": "_DAL_31L _DAL_13R FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE AKUNA TIKYS"
+                        "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE AKUNA TIKYS"
                     },
                     "WSTEX": {
                         "cleared_altitude": 5000,
                         "sid": "SNSET4",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ SNSET RBBIT"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ SNSET RBBIT"
                     },
                     "DOSXX,CIKAN": {
                         "cleared_altitude": 5000,
                         "sid": "SNSET4",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ SNSET RBBIT LYNDE WSTEX"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ SNSET RBBIT LYNDE WSTEX"
                     },
                     "ALIAN": {
                         "cleared_altitude": 5000,
                         "sid": "SNSET4",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ SNSET RBBIT FUMED"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ SNSET RBBIT FUMED"
                     },
                     "BRHMA": {
                         "cleared_altitude": 5000,
                         "sid": "SNSET4",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ SNSET ROOOO RUFFS KATZZ"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ SNSET ROOOO RUFFS KATZZ"
                     },
                     "HULZE": {
                         "cleared_altitude": 5000,
                         "sid": "SNSET4",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ SNSET TYGGR DBLSS HRPER"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ SNSET TYGGR DBLSS HRPER"
                     },
                     "HUDAD": {
                         "cleared_altitude": 5000,
                         "sid": "SNSET4",
-                        "waypoints": "_DAL_31L _DAL_13R NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ SNSET PGLET MUTEE"
+                        "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ SNSET PGLET MUTEE"
                     }
                 }
             },
@@ -1922,7 +1921,6 @@
                 "HULZE": "ALL",
                 "HUDAD": "ALL"
             },
-            "location": "N032.50.53.375,W096.51.10.706",
             "tower_list": 1
         },
         "KAFW": {
@@ -1933,7 +1931,7 @@
                     "runway": "16L",
                     "type": "ILS",
                     "waypoints": [
-                        "ARGUE/if/a4000 WIGZU/a2400 _AFW_16L/a723"
+                        "ARGUE/if/a4000 WIGZU/a2400"
                     ]
                 },
                 "R6L": {
@@ -1941,8 +1939,8 @@
                     "runway": "16L",
                     "type": "ILS",
                     "waypoints": [
-                        "MQP/a4000+ RAVYA/a4000/iaf ARGUE/a3000/if WIGZU/a2400/faf _AFW_16L/a723",
-                        "UKW/a4000+ RAVYA/a4000/iaf ARGUE/a3000/if WIGZU/a2400/faf _AFW_16L/a723"
+                        "MQP/a4000+ RAVYA/a4000/iaf ARGUE/a3000/if WIGZU/a2400/faf",
+                        "UKW/a4000+ RAVYA/a4000/iaf ARGUE/a3000/if WIGZU/a2400/faf"
                     ]
                 },
                 "R6R": {
@@ -1950,8 +1948,8 @@
                     "runway": "16R",
                     "type": "RNAV",
                     "waypoints": [
-                        "UKW/a4000+ FUNGO/iaf/a4000 KEENE/a3000/if ROMPS/a2400 DHOBI/a1400 _AFW_16R/a721",
-                        "PULSE/a4000/iaf KEENE/a3000/if ROMPS/a2400 DHOBI/a1400 _AFW_16R/a721"
+                        "UKW/a4000+ FUNGO/iaf/a4000 KEENE/a3000/if ROMPS/a2400 DHOBI/a1400",
+                        "PULSE/a4000/iaf KEENE/a3000/if ROMPS/a2400 DHOBI/a1400"
                     ]
                 },
                 "I4R": {
@@ -1959,7 +1957,7 @@
                     "runway": "34R",
                     "type": "ILS",
                     "waypoints": [
-                        "UCCOL/a3000/if ERPIF/a2400/faf _AFW_34R/a681"
+                        "UCCOL/a3000/if ERPIF/a2400/faf"
                     ]
                 },
                 "R4R": {
@@ -1967,7 +1965,7 @@
                     "runway": "34R",
                     "type": "RNAV",
                     "waypoints": [
-                        "UCCOL/a3000/if ERPIF/a2400/faf _AFW_34R/a681"
+                        "UCCOL/a3000/if ERPIF/a2400/faf"
                     ]
                 }
             },
@@ -1976,84 +1974,84 @@
                     "BSKAT": {
                     "cleared_altitude": 3000,
                     "sid": "KUSSO1",
-                    "waypoints": "_AFW_16L _AFW_34R/h166/h166 SALVE KUSSO ZERLU SWDIA ZACHH"
+                    "waypoints": "_AFW_34R/h166 SALVE KUSSO ZERLU SWDIA ZACHH"
                     },
                     "LOOSE": {
                         "cleared_altitude": 3000,
                         "sid": "KUSSO1",
-                        "waypoints": "_AFW_16L _AFW_34R/h166/h166 SALVE TRRCH JAYXX TRYTN"
+                        "waypoints": "_AFW_34R/h166 SALVE TRRCH JAYXX TRYTN"
                         },
                     "FORCK": {
                         "cleared_altitude": 3000,
                         "sid": "KUSSO1",
-                        "waypoints": "_AFW_16L _AFW_34R/h166/h166 SALVE KUSSO HANUH LYING"
+                        "waypoints": "_AFW_34R/h166 SALVE KUSSO HANUH LYING"
                         },
                     "ZALEA": {
                             "cleared_altitude": 3000,
                             "sid": "KUSSO1",
-                            "waypoints": "_AFW_16L _AFW_34R/h166/h166 SALVE KUSSO THHOR JJANE MRSSH"
+                            "waypoints": "_AFW_34R/h166 SALVE KUSSO THHOR JJANE MRSSH"
                         },
                     "MLC": {
                         "cleared_altitude": 3000,
                         "sid": "NANDR2",
-                        "waypoints": "_AFW_16L _AFW_34R/h166/h166 CUZNO/a3000+ NANDR/a13000 AKUNA TIKYS"
+                        "waypoints": "_AFW_34R/h166 CUZNO/a3000+ NANDR/a13000 AKUNA TIKYS"
                     },
                     "TORNN": {
                         "cleared_altitude": 3000,
                         "sid": "JPOOL6",
-                        "waypoints": "_AFW_16L _AFW_34R/h166/h166 TTT DARTZ BRDEN"
+                        "waypoints": "_AFW_34R/h166 TTT DARTZ BRDEN"
                     },
                     "HUDAD": {
                         "cleared_altitude": 3000,
                         "sid": "SWABR1",
-                        "waypoints": "_AFW_16L _AFW_34R/h166/h166 BOTCH SWABR PGLET MUTEE"
+                        "waypoints": "_AFW_34R/h166 BOTCH SWABR PGLET MUTEE"
                     },
                     "HULZE": {
                         "cleared_altitude": 3000,
                         "sid": "SWABR1",
-                        "waypoints": "_AFW_16L _AFW_34R/h166/h166 BOTCH SWABR TYGGR DBLSS HRPER"
+                        "waypoints": "_AFW_34R/h166 BOTCH SWABR TYGGR DBLSS HRPER"
                     }
                 },
                 "34R": {
                     "BSKAT": {
                         "cleared_altitude": 3000,
                         "sid": "KUSSO1",
-                        "waypoints": "_AFW_34R _AFW_16L/h346 SALVE KUSSO ZERLU SWDIA ZACHH"
+                        "waypoints": "_AFW_16L/h346 SALVE KUSSO ZERLU SWDIA ZACHH"
                         },
                         "LOOSE": {
                             "cleared_altitude": 3000,
                             "sid": "KUSSO1",
-                            "waypoints": "_AFW_34R _AFW_16L/h346 SALVE TRRCH JAYXX TRYTN"
+                            "waypoints": "_AFW_16L/h346 SALVE TRRCH JAYXX TRYTN"
                             },
                         "FORCK": {
                             "cleared_altitude": 3000,
                             "sid": "KUSSO1",
-                            "waypoints": "_AFW_34R _AFW_16L/h346 SALVE KUSSO HANUH LYING"
+                            "waypoints": "_AFW_16L/h346 SALVE KUSSO HANUH LYING"
                             },
                         "ZALEA": {
                                 "cleared_altitude": 3000,
                                 "sid": "KUSSO1",
-                                "waypoints": "_AFW_34R _AFW_16L/h346 SALVE KUSSO THHOR JJANE MRSSH"
+                                "waypoints": "_AFW_16L/h346 SALVE KUSSO THHOR JJANE MRSSH"
                             },
                         "MLC": {
                             "cleared_altitude": 3000,
                             "sid": "NANDR2",
-                            "waypoints": "_AFW_34R _AFW_16L/h346 CUZNO/a3000+ NANDR/a13000 AKUNA TIKYS"
+                            "waypoints": "_AFW_16L/h346 CUZNO/a3000+ NANDR/a13000 AKUNA TIKYS"
                         },
                         "TORNN": {
                             "cleared_altitude": 3000,
                             "sid": "JPOOL6",
-                            "waypoints": "_AFW_34R _AFW_16L/h346 TTT DARTZ BRDEN"
+                            "waypoints": "_AFW_16L/h346 TTT DARTZ BRDEN"
                         },
                         "HUDAD": {
                             "cleared_altitude": 3000,
                             "sid": "SWABR1",
-                            "waypoints": "_AFW_34R _AFW_16L/h346 BOTCH SWABR PGLET MUTEE"
+                            "waypoints": "_AFW_16L/h346 BOTCH SWABR PGLET MUTEE"
                         },
                         "HULZE": {
                             "cleared_altitude": 3000,
                             "sid": "SWABR1",
-                            "waypoints": "_AFW_34R _AFW_16L/h346 BOTCH SWABR TYGGR DBLSS HRPER"
+                            "waypoints": "_AFW_16L/h346 BOTCH SWABR TYGGR DBLSS HRPER"
                         }
                 }
             },
@@ -2184,7 +2182,6 @@
                 "HUDAD": "ALL",
                 "HULZE": "ALL"
             },
-            "location": "N032.59.24.239,W097.19.11.037",
             "tower_list": 1
         }
     },
@@ -2592,12 +2589,14 @@
                     "star": "VKTRY2",
                     "waypoints": "COWNE/a17000-19000/s290/ho JEYAR/a13000-16000/s270 VKTRY/a10000-11000/s250",
                     "runway_waypoints": {
+                      "KDFW": {
                         "13R": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 THASA/a5000/s240 MORRY POPPA/h135",
                         "17L": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090",
                         "17C": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090",
                         "17R": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090",
                         "18R": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090",
                         "18L": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h090"
+                      }
                 }
             }
         ],
@@ -3406,7 +3405,7 @@
             ]
         }
     ],
-    "magnetic_variation": -3.2, 
+    "magnetic_adjustment": -0.75, 
     "name": "D10",
     "primary_airport": "KDFW",
     "radar_sites": {

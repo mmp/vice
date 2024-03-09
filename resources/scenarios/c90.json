@@ -1,5 +1,5 @@
 {
-  "tracon": "C90 (Chicago)",
+    "tracon": "C90",
     "airports": {
         "KORD": {
             "approaches": {
@@ -8,7 +8,7 @@
                     "tower_controller": "ORD_S_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "RAHNN/a11000 DEGAN/a8000 HARRL/a5000 NAPER/a4000 REKKS/a2200 _ORD_4R/a661"
+                        "RAHNN/a11000 DEGAN/a8000 HARRL/a5000 NAPER/a4000 REKKS/a2200"
                     ]
                 },
                 "I9L": {
@@ -16,7 +16,7 @@
                     "tower_controller": "ORD_N_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "JHONN/a9000 ESSSS/a8000 VNDER/a7000 ILIUM/a6000 TRYXI/a5000 DOOGY/a4000 ZENAH/a2300 OGSIE/a1760 _ORD_9L/a668"
+                        "JHONN/a9000 ESSSS/a8000 VNDER/a7000 ILIUM/a6000 TRYXI/a5000 DOOGY/a4000 ZENAH/a2300 OGSIE/a1760"
                     ]
                 },
                 "I9C": {
@@ -24,7 +24,7 @@
                     "tower_controller": "ORD_NN_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "NORDL/a9000 KOOSS/a8000 SIKLR/a7000 MUELL/a6000 FFRAN/a5000 MIETH/a4000 EZELL/a2300 RANDI/a1400 _ORD_9C/a673"
+                        "NORDL/a9000 KOOSS/a8000 SIKLR/a7000 MUELL/a6000 FFRAN/a5000 MIETH/a4000 EZELL/a2300 RANDI/a1400"
                     ]
                 },
                 "I9R": {
@@ -32,7 +32,7 @@
                     "tower_controller": "ORD_N_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "ADLMN/a9000 FOTTR/a8000 WASCO/a7000 GEMMS/a6000 CHILR/a5000 DEVON/a4000 MEOWW/a2300 YONUT/a1380 _ORD_9R/a668"
+                        "ADLMN/a9000 FOTTR/a8000 WASCO/a7000 GEMMS/a6000 CHILR/a5000 DEVON/a4000 MEOWW/a2300 YONUT/a1380"
                     ]
                 },
                 "I0L": {
@@ -40,7 +40,7 @@
                     "tower_controller": "ORD_C_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "ARIST/a9000 KALZO/a8000 BURKE/a7000 SYSCO/a6000 PRATT/a5000 CARLE/a4000 BUGSE/a2300 POPME/a1200 _ORD_10L/a672"
+                        "ARIST/a9000 KALZO/a8000 BURKE/a7000 SYSCO/a6000 PRATT/a5000 CARLE/a4000 BUGSE/a2300 POPME/a1200"
                     ]
                 },
                 "I0C": {
@@ -48,7 +48,7 @@
                     "tower_controller": "ORD_S_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "BAIRY/a9000 COUPR/a8000 KYLAA/a7000 PEPAW/a6000 SHARN/a5000 RRUDA/a4000 RAYYY/a2300 ZURSO/a1220 _ORD_10C/a669"
+                        "BAIRY/a9000 COUPR/a8000 KYLAA/a7000 PEPAW/a6000 SHARN/a5000 RRUDA/a4000 RAYYY/a2300 ZURSO/a1220"
                     ]
                 },
                 "I0R": {
@@ -56,7 +56,7 @@
                     "tower_controller": "ORD_SS_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "FERLL/a9000 MLSEN/a8000 OLLGA/a7000 LEATH/a6000 GOOZY/a5000 KVENN/a4000 FLLYN/a2300 TRUFL/a1220 _ORD_10R/a680"
+                        "FERLL/a9000 MLSEN/a8000 OLLGA/a7000 LEATH/a6000 GOOZY/a5000 KVENN/a4000 FLLYN/a2300 TRUFL/a1220"
                     ]
                 },
                 "I7L": {
@@ -64,7 +64,7 @@
                     "tower_controller": "ORD_N_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "NRMAH/a9000 JOEBO/a8000 GRABL/a7000 RIPPR/a6000 BASHH/a5000 EBENS/a4000 JLOWW/a2200 ZOSRO/a1160 _ORD_27L/a654"
+                        "NRMAH/a9000 JOEBO/a8000 GRABL/a7000 RIPPR/a6000 BASHH/a5000 EBENS/a4000 JLOWW/a2200 ZOSRO/a1160"
                     ]
                 },
                 "I7C": {
@@ -72,7 +72,7 @@
                     "tower_controller": "ORD_C_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "NCHLS/a9000 CRICO/a8000 CERMI/a7000 BOOWW/a6000 MRRFF/a5000 JMBBO/a4000 DRSCL/a2200 YVONE/a1160 _ORD_27C/a653"
+                        "NCHLS/a9000 CRICO/a8000 CERMI/a7000 BOOWW/a6000 MRRFF/a5000 JMBBO/a4000 DRSCL/a2200 YVONE/a1160"
                     ]
                 },
                 "I7R": {
@@ -80,7 +80,7 @@
                     "tower_controller": "ORD_NN_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "VOGLR/a10000 VINYY/a9000 JOKKR/a8000 IYLEK/a7000 WELEV/a6000 HAREE/a5000 BONZO/a4000 SIBLY/a2200 _ORD_27R/a664"
+                        "VOGLR/a10000 VINYY/a9000 JOKKR/a8000 IYLEK/a7000 WELEV/a6000 HAREE/a5000 BONZO/a4000 SIBLY/a2200"
                     ]
                 },
                 "I8L": {
@@ -88,7 +88,7 @@
                     "tower_controller": "ORD_SS_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "VOGLR/a10000 LYSIN/a9000 KEGNE/a8000 JAVON/a7000 HANSO/a6000 FITAR/a5000 CAKOS/a4000 PONCC/a2200 ALKYL/a1240 _ORD_28L/a667"
+                        "VOGLR/a10000 LYSIN/a9000 KEGNE/a8000 JAVON/a7000 HANSO/a6000 FITAR/a5000 CAKOS/a4000 PONCC/a2200 ALKYL/a1240"
                     ]
                 },
                 "I8C": {
@@ -96,7 +96,7 @@
                     "tower_controller": "ORD_S_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "VOGLR/a10000 LNDUH/a9000 SNTOE/a8000 KOENN/a7000 MEMAW/a6000 RZUKO/a5000 HAZIL/a4000 SEIKA/a2300 _ORD_28C/a651"
+                        "VOGLR/a10000 LNDUH/a9000 SNTOE/a8000 KOENN/a7000 MEMAW/a6000 RZUKO/a5000 HAZIL/a4000 SEIKA/a2300"
                     ]
                 },
                 "I8R": {
@@ -104,7 +104,7 @@
                     "tower_controller": "ORD_C_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "VOGLR/a10000 MOTTT/a9000 RICKV/a8000 BLUTO/a7000 ROCSE/a6000 WAVIE/a5000 ADAME/a4000 WILLT/a2200 _ORD_28R/a651"
+                        "VOGLR/a10000 MOTTT/a9000 RICKV/a8000 BLUTO/a7000 ROCSE/a6000 WAVIE/a5000 ADAME/a4000 WILLT/a2200"
                     ]
                 }
                 },
@@ -113,35 +113,35 @@
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_10L _ORD_28R/h250"
+                            "waypoints": "_ORD_28R/h250"
                         }
                     },
                     "9R": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_9R _ORD_27L/h320"
+                            "waypoints": "_ORD_27L/h320"
                         }
                     },
                     "22L": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_22L _ORD_4R/h180"
+                            "waypoints": "_ORD_4R/h180"
                         }
                     },
                     "28R": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_28R _ORD_10L/h250"
+                            "waypoints": "_ORD_10L/h250"
                         }
                     },
                     "27L": {
                         "EARND,DENNT,CMSKY,BACEN,ACITO,MYKIE,NOONY,SIMMN,OLINN,PEKUE,MOBLE,DUFEE,EBAKE,RAYNR,PMPKN": {
                             "cleared_altitude": 5000,
                             "sid": "ORD7",
-                            "waypoints": "_ORD_27L _ORD_9R/h010"
+                            "waypoints": "_ORD_9R/h010"
                         }
                     }
                 },
@@ -510,7 +510,6 @@
                     "OLINN": "West",
                     "PEKUE": "West"
                 },
-                "location": "KORD",
                 "tower_list": 4
                 },
                 "KMDW": {
@@ -519,29 +518,29 @@
                             "runway": "4R",
                             "type": "ILS",
                             "waypoints": [
-                                "ALQUE/a6000 BANER/a5000 CADON/a4000 CITGO/a2400 OLOXE/a1460 _MDW_4R/a619"
+                                "ALQUE/a6000 BANER/a5000 CADON/a4000 CITGO/a2400 OLOXE/a1460"
                             ]
                         },
                         "I3C": {
                             "runway": "13C",
                             "type": "ILS",
                             "waypoints": [
-                                "DPA/a2600 HEBKU/a2600 HITOB/a2000 HISKO/a1440 _MDW_13C/a611",
-                                "HEBKU/a2600 HITOB/a2000 HISKO/a1440 _MDW_13C/a611"
+                                "DPA/a2600 HEBKU/a2600 HITOB/a2000 HISKO/a1440",
+                                "HEBKU/a2600 HITOB/a2000 HISKO/a1440"
                             ]
                         },
                         "R2L": {
                             "runway": "22L",
                             "type": "RNAV",
                             "waypoints": [
-                                "STERE/a3000 TACTT/a3000 SAILZ/a3000 DXXON/a3000 MNDOE/a2400 JIBBB/a1900 YACHT/a1500 _MDW_22L/a611"
+                                "STERE/a3000 TACTT/a3000 SAILZ/a3000 DXXON/a3000 MNDOE/a2400 JIBBB/a1900 YACHT/a1500"
                             ]
                         },
                         "I1C": {
                             "runway": "31C",
                             "type": "ILS",
                             "waypoints": [
-                                "HILLS/a5000 GLEAM/a4000 RUNTS/a2500 HOBEL/a1700 _MDW_31C/a613"
+                                "HILLS/a5000 GLEAM/a4000 RUNTS/a2500 HOBEL/a1700"
                             ]
                         }
                     },
@@ -550,68 +549,68 @@
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h100"
+                                "waypoints": "_MDW_22L/h100"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h130"
+                                "waypoints": "_MDW_22L/h130"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h250"
+                                "waypoints": "_MDW_22L/h250"
                             }
                         },
                         "13C": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_13C _MDW_31C/h090"
+                                "waypoints": "_MDW_31C/h090"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_13C _MDW_31C/h170"
+                                "waypoints": "_MDW_31C/h170"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_13C _MDW_31C/h200"
+                                "waypoints": "_MDW_31C/h200"
                             }
                         },
                         "22L": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h140"
+                                "waypoints": "_MDW_4R/h140"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_4R _MDW_22L/h180"
+                                "waypoints": "_MDW_4R/h180"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_22L _MDW_4R/h250"
+                                "waypoints": "_MDW_4R/h250"
                             }
                         },
                         "31C": {
                             "PETTY,LEWKE": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_31C _MDW_13C/h100"
+                                "waypoints": "_MDW_13C/h100"
                             },
                             "ACITO,BACEN,CMSKY,DENNT,EARND": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_31C _MDW_13C/h220"
+                                "waypoints": "_MDW_13C/h220"
                             },
                             "PMPKN,RAYNR,PEKUE,SIMMN": {
                                 "cleared_altitude": 3000,
                                 "sid": "MIDWA6",
-                                "waypoints": "_MDW_31C _MDW_13C/h250"
+                                "waypoints": "_MDW_13C/h250"
                             }
                         }
                     },
@@ -974,7 +973,6 @@
                         "EARND": "South",
                         "DENNT": "South"
                     },
-                    "location": "N41.47.08.974,W87.45.10.284",
                     "tower_list": 1
                 }
             },
@@ -2139,18 +2137,20 @@
                         "initial_speed" : 280,
                         "star": "BENKY6",
                         "runway_waypoints": {
-                            "9L": "AHSTN/h350",
-                            "10L": "AHSTN/h350",
-                            "9C": "AHSTN/h350",
-                            "10C": "AHSTN/h350",
-                            "10R": "AHSTN/h350",
-                            "9R": "AHSTN/h350",
-                            "27L": "AHSTN PETAH JORJO MONKZ TONIE/h093",
-                            "27C": "AHSTN PETAH JORJO MONKZ TONIE/h093",
-                            "27R": "AHSTN PETAH KURKK VULCN HIMGO/h093",
-                            "28L": "AHSTN PETAH JORJO MONKZ RREGY/h095",
-                            "28C": "AHSTN PETAH JORJO MONKZ TONIE/h093",
-                            "28R": "AHSTN PETAH JORJO MONKZ TONIE/h093"
+                            "KORD": {
+                                "9L": "AHSTN/h350",
+                                "10L": "AHSTN/h350",
+                                "9C": "AHSTN/h350",
+                                "10C": "AHSTN/h350",
+                                "10R": "AHSTN/h350",
+                                "9R": "AHSTN/h350",
+                                "27L": "AHSTN PETAH JORJO MONKZ TONIE/h093",
+                                "27C": "AHSTN PETAH JORJO MONKZ TONIE/h093",
+                                "27R": "AHSTN PETAH KURKK VULCN HIMGO/h093",
+                                "28L": "AHSTN PETAH JORJO MONKZ RREGY/h095",
+                                "28C": "AHSTN PETAH JORJO MONKZ TONIE/h093",
+                                "28R": "AHSTN PETAH JORJO MONKZ TONIE/h093"
+                            }
                         },
                         "speed_restriction": 250,
                         "waypoints": "BYLAW/a20000/ho BENKY/a12000 NEWRK AHSTN"
@@ -2271,10 +2271,12 @@
                         "initial_speed" : 250,
                         "star": "ENDEE6",
                         "runway_waypoints": {
-                            "4R": "STKNY/a6000 ALQUE/a6000/h047",
-                            "13C": "STKNY/a6000 GORLC/h043",
-                            "22L": "STKNY/a6000 PKACH/a6000 TUURN WADLL",
-                            "31C": "STKNY/a6000 WNNRS GAGGA/h091"
+                            "KMDW": {
+                                "4R": "STKNY/a6000 ALQUE/a6000/h047",
+                                "13C": "STKNY/a6000 GORLC/h043",
+                                "22L": "STKNY/a6000 PKACH/a6000 TUURN WADLL",
+                                "31C": "STKNY/a6000 WNNRS GAGGA/h091"
+                            }
                         },
                         "speed_restriction": 250,
                         "waypoints": "ENDEE/a7000/s250/ho STKNY/a6000"
@@ -2304,18 +2306,20 @@
                         "initial_speed": 280,
                         "star": "ERNNY8",
                         "runway_waypoints": {
-                            "9L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
-                            "9C": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
-                            "9R": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
-                            "10L": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
-                            "10C": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
-                            "10R": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
-                            "27L": "ERNNY/h150",
-                            "27C": "ERNNY/h150",
-                            "27R": "ERNNY/h150",
-                            "28L": "ERNNY/h150",
-                            "28C": "ERNNY/h150",
-                            "28R": "ERNNY/h150"
+                            "KORD": {
+                                "9L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                                "9C": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                                "9R": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                                "10L": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
+                                "10C": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
+                                "10R": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
+                                "27L": "ERNNY/h150",
+                                "27C": "ERNNY/h150",
+                                "27R": "ERNNY/h150",
+                                "28L": "ERNNY/h150",
+                                "28C": "ERNNY/h150",
+                                "28R": "ERNNY/h150"
+                            }
                         },
                         "speed_restriction": 250,
                         "waypoints": "SWIIS/ho ERNNY"
@@ -2517,10 +2521,12 @@
                         "initial_speed": 250,
                         "star": "FISSK5",
                         "runway_waypoints": {
-                            "4R": "HALIE/a6000 OLCYK/a4000/h278",
-                            "13C": "HALIE/a6000 OLCYK/a4000 TINLY/h279",
-                            "22L": "HALIE/a6000 GERMN/a4000 LNANE BOCAH TACTT/a3000/h274",
-                            "31C": "HALIE/a6000 HAADN/a6000 HILLS/a5000/s240/h295"
+                            "KMDW": {
+                                "4R": "HALIE/a6000 OLCYK/a4000/h278",
+                                "13C": "HALIE/a6000 OLCYK/a4000 TINLY/h279",
+                                "22L": "HALIE/a6000 GERMN/a4000 LNANE BOCAH TACTT/a3000/h274",
+                                "31C": "HALIE/a6000 HAADN/a6000 HILLS/a5000/s240/h295"
+                            }
                         },
                         "speed_restriction": 250,
                         "waypoints": "AZUMO/ho HALIE/a6000"
@@ -2587,18 +2593,20 @@
                         "initial_speed": 280,
                         "star": "FYTTE7",
                         "runway_waypoints": {
-                            "9L": "MADII/h200",
-                            "9C": "MADII/h200",
-                            "9R": "MADII/h200",
-                            "10L": "MADII/h200",
-                            "10C": "MADII/h200",
-                            "10R": "MADII/h200",
-                            "27L": "MADII SOOLU KURKK VULCN HIMGO/h093",
-                            "27C": "MADII SOOLU KURKK VULCN HIMGO/h093",
-                            "27R": "MADII SOOLU KURKK VULCN HIMGO/h093",
-                            "28L": "MADII SOOLU JORJO MONKZ TONIE/h093",
-                            "28C": "MADII SOOLU JORJO MONKZ TONIE/h093",
-                            "28R": "MADII SOOLU JORJO MONKZ TONIE/h093"
+                            "KORD": {
+                                "9L": "MADII/h200",
+                                "9C": "MADII/h200",
+                                "9R": "MADII/h200",
+                                "10L": "MADII/h200",
+                                "10C": "MADII/h200",
+                                "10R": "MADII/h200",
+                                "27L": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                                "27C": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                                "27R": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                                "28L": "MADII SOOLU JORJO MONKZ TONIE/h093",
+                                "28C": "MADII SOOLU JORJO MONKZ TONIE/h093",
+                                "28R": "MADII SOOLU JORJO MONKZ TONIE/h093"
+                            }
                         },
                         "speed_restriction": 250,
                         "waypoints": "CUUPP/ho CHMPN CLSBY/a13000/s270 FYTTE/a11000/s250 MOTRR COGSS MADII"
@@ -2783,10 +2791,12 @@
                         "initial_speed": 250,
                         "star": "PANGG4",
                         "runway_waypoints": {
-                            "4R": "HALIE/a6000 OLCYK/a4000/h278",
-                            "13C": "HALIE/a6000 OLCYK/a4000 TINLY/a4000/h279",
-                            "22L": "HALIE/a6000 GERMN/a4000 LNANE BOCAH TACTT/a3000/h274",
-                            "31C": "HALIE/a6000 HAADN/a6000 HILLS/a5000/s240/h295"
+                            "KMDW": {
+                                "4R": "HALIE/a6000 OLCYK/a4000/h278",
+                                "13C": "HALIE/a6000 OLCYK/a4000 TINLY/a4000/h279",
+                                "22L": "HALIE/a6000 GERMN/a4000 LNANE BOCAH TACTT/a3000/h274",
+                                "31C": "HALIE/a6000 HAADN/a6000 HILLS/a5000/s240/h295"
+                            }
                         },
                         "speed_restriction": 250,
                         "waypoints": "IROCK/ho HALIE/a6000"
@@ -2907,18 +2917,20 @@
                         "initial_speed": 280,
                         "star": "VEECK5",
                         "runway_waypoints": {
-                            "9L": "CLUSO KAYTO PINKK VULCN KURKK BAMBB/h270",
-                            "9C": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
-                            "9R": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
-                            "10L": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
-                            "10C": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
-                            "10R": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
-                            "27L": "CLUSO/h030",
-                            "27C": "CLUSO/h030",
-                            "27R": "CLUSO/h030",
-                            "28L": "CLUSO/h030",
-                            "28C": "CLUSO/h030",
-                            "28R": "CLUSO/h030"
+                            "KORD": {
+                                "9L": "CLUSO KAYTO PINKK VULCN KURKK BAMBB/h270",
+                                "9C": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
+                                "9R": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
+                                "10L": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
+                                "10C": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
+                                "10R": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
+                                "27L": "CLUSO/h030",
+                                "27C": "CLUSO/h030",
+                                "27R": "CLUSO/h030",
+                                "28L": "CLUSO/h030",
+                                "28C": "CLUSO/h030",
+                                "28R": "CLUSO/h030"
+                            }
                         },
                         "speed_restriction": 250,
                         "waypoints": "BOONE/a11000/ho HANNI CLUSO"
@@ -3190,18 +3202,20 @@
                         "initial_speed": 280,
                         "star": "WYNDE2",
                         "runway_waypoints": {
-                            "9L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
-                            "9C": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
-                            "9R": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
-                            "10L": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
-                            "10C": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
-                            "10R": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
-                            "27L": "ERNNY/h150",
-                            "27C": "ERNNY/h150",
-                            "27R": "ERNNY/h150",
-                            "28L": "ERNNY/h150",
-                            "28C": "ERNNY/h150",
-                            "28R": "ERNNY/h150"
+                            "KORD": {
+                                "9L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                                "9C": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                                "9R": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                                "10L": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
+                                "10C": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
+                                "10R": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
+                                "27L": "ERNNY/h150",
+                                "27C": "ERNNY/h150",
+                                "27R": "ERNNY/h150",
+                                "28L": "ERNNY/h150",
+                                "28C": "ERNNY/h150",
+                                "28R": "ERNNY/h150"
+                            }
                         },
                         "speed_restriction": 250,
                         "waypoints": "WYNDE/ho FIYER/a11000 ERNNY"
@@ -3402,7 +3416,7 @@
                     ]
                 }
             ],
-            "magnetic_variation": -2.0,
+            "magnetic_adjustment": -0.75,
             "name": "KORD",
             "primary_airport": "KORD",
             "radar_sites": {

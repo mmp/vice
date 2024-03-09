@@ -1,5 +1,5 @@
 {
-    "tracon": "P50 (Phoenix)",
+    "tracon": "P50",
     "airports": {
         "KPHX": {
             "name": "Phoenix",
@@ -9,7 +9,7 @@
                     "tower_controller": "PHX_T_TWR",
                     "type": "ILS",
                      "waypoints": [
-                      "AVONA/a4000+/iaf QAQCE FOWLE/a4000/if ZINGA/faf/a2600 PURCH/a1620 _PHX_7L/a1116"
+                      "AVONA/a4000+/iaf QAQCE FOWLE/a4000/if ZINGA/faf/a2600 PURCH/a1620"
                     ]
                 },
                 "I7R": {
@@ -17,7 +17,7 @@
                     "tower_controller": "PHX_T_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "ALLIS/iaf/a7000 FFIXA/a7000 TESLE/if/a7000 FALGO/a6000 CAGOR/a5000 BALTE/a4000 TOTIE/a3000/faf ALOGE/a1840 _PHX_7R/a1116"
+                        "ALLIS/iaf/a7000 FFIXA/a7000 TESLE/if/a7000 FALGO/a6000 CAGOR/a5000 BALTE/a4000 TOTIE/a3000/faf ALOGE/a1840"
                     ]
                 },
                 "I8": {
@@ -25,7 +25,7 @@
                     "tower_controller": "PHX_E_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "ALLIS/iaf/a6000 SARTE/a6000 HIKID/a6000 ILIKE/a5000/if JAMIL/a4000 WAZUP/a3000 _PHX_8/a1118"
+                        "ALLIS/iaf/a6000 SARTE/a6000 HIKID/a6000 ILIKE/a5000/if JAMIL/a4000 WAZUP/a3000"
                     ]
                 },
                 "I5L": {
@@ -33,7 +33,7 @@
                     "tower_controller": "PHX_T_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "ZERLO/a5000 FIXAR/a5000/iaf BUDME/a5000 HAMEK/a4000/if GIPSE/a4000 SCADE/a3000 KONTE/a2040 _PHX_25L/a1126"
+                        "ZERLO/a5000 FIXAR/a5000/iaf BUDME/a5000 HAMEK/a4000/if GIPSE/a4000 SCADE/a3000 KONTE/a2040"
                     ]
                 },
                 "R5R": {
@@ -41,7 +41,7 @@
                     "tower_controller": "PHX_T_TWR",
                     "type": "RNAV",
                     "waypoints": [
-                        "ZERLO/a7000 UVIYO/a7000/iaf TEYYI/a5000/if ZAMEX/a4000 UXCUN/a3000/faf YASCU/a1860 _PHX_25R/a1134"
+                        "ZERLO/a7000 UVIYO/a7000/iaf TEYYI/a5000/if ZAMEX/a4000 UXCUN/a3000/faf YASCU/a1860"
                     ]
                 },
                 "I26": {
@@ -49,7 +49,7 @@
                     "tower_controller": "PHX_E_TWR",
                     "type": "ILS",
                     "waypoints": [
-                        "ZERLO/a7000 CERUN/iaf/a7000 ZEMOS/a6000 TODRE/if/a5000 JAGAL/a4000 PRUNN/a3000/faf DELSE/a1740 _PHX_26/a1135"
+                        "ZERLO/a7000 CERUN/iaf/a7000 ZEMOS/a6000 TODRE/if/a5000 JAGAL/a4000 PRUNN/a3000/faf DELSE/a1740"
                     ]
                 }
             },
@@ -58,228 +58,228 @@
                     "JNIPR": {
                         "cleared_altitude": 8000,
                         "sid": "BROAK1",
-                        "waypoints": "_PHX_7L _PHX_25R SPRKY BROAK FTHLS"
+                        "waypoints": "SPRKY BROAK FTHLS"
                     },
                     "ABQ,MAXXO": {
                         "cleared_altitude": 8000,
                         "sid": "BROAK1",
-                        "waypoints": "_PHX_7L _PHX_25R SPRKY BROAK FTHLS JNIPR JSSUA"
+                        "waypoints": "SPRKY BROAK FTHLS JNIPR JSSUA"
                     },
                     "PHASE": {
                         "cleared_altitude": 4000,
                         "sid": "ECLPS1",
-                        "waypoints": "_PHX_7L _PHX_25R SPRKY ECLPS KATMN BOXXR"
+                        "waypoints": "SPRKY ECLPS KATMN BOXXR"
                     },
                     "MOHAK": {
                         "cleared_altitude": 8000,
                         "sid": "FYRBD1",
-                        "waypoints": "_PHX_7L _PHX_25R FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI FYRBD JUDTH"
+                        "waypoints": "FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI FYRBD JUDTH"
                     },
                     "MESSI": {
                         "cleared_altitude": 8000,
                         "sid": "KEENS2",
-                        "waypoints": "_PHX_7L _PHX_25R FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO"
+                        "waypoints": "FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO"
                     },
                     "HRRBR": {
                         "cleared_altitude": 8000,
                         "sid": "KEENS2",
-                        "waypoints": "_PHX_7L _PHX_25R FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO CULTS"
+                        "waypoints": "FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO CULTS"
                     },
                     "BLH": {
                         "cleared_altitude": 8000,
                         "sid": "KEENS2",
-                        "waypoints": "_PHX_7L _PHX_25R FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO SALOM"
+                        "waypoints": "FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO SALOM"
                     },
                     "GCN,YOOPR,JARPA": {
                         "cleared_altitude": 8000,
                         "sid": "MRBIL1",
-                        "waypoints": "_PHX_7L _PHX_25R SPRKY GOALY/a9000- POCCK MRBIL YOTES"
+                        "waypoints": "SPRKY GOALY/a9000- POCCK MRBIL YOTES"
                     },
                     "RIMMM": {
                         "cleared_altitude": 8000,
                         "sid": "QUAKY1",
-                        "waypoints": "_PHX_7L _PHX_25R SPRKY GOALY/a9000- QUAKY SNOBL CARTL LOFTS"
+                        "waypoints": "SPRKY GOALY/a9000- QUAKY SNOBL CARTL LOFTS"
                     },
                     "TUS": {
                         "cleared_altitude": 8000,
                         "sid": "STRRM1",
-                        "waypoints": "_PHX_7L _PHX_25R SPRKY/a2600+/s220 ANZEL DDUKE BNYRD STRRM"
+                        "waypoints": "SPRKY/a2600+/s220 ANZEL DDUKE BNYRD STRRM"
                     },
                     "RRSTA": {
                         "cleared_altitude": 8000,
                         "sid": "ZEPER2",
-                        "waypoints": "_PHX_7L _PHX_25R SPRKY GOALY/a9000- JOLAR ZEPER MAYSA"
+                        "waypoints": "SPRKY GOALY/a9000- JOLAR ZEPER MAYSA"
                     }
                 },
                 "8": {
                     "JNIPR": {
                         "cleared_altitude": 8000,
                         "sid": "BROAK1",
-                        "waypoints": "_PHX_8 _PHX_26 SPRKY BROAK FTHLS"
+                        "waypoints": "SPRKY BROAK FTHLS"
                     },
                     "ABQ,MAXXO": {
                         "cleared_altitude": 8000,
                         "sid": "BROAK1",
-                        "waypoints": "_PHX_8 _PHX_26 SPRKY BROAK FTHLS JNIPR JSSUA"
+                        "waypoints": "SPRKY BROAK FTHLS JNIPR JSSUA"
                     },
                     "PHASE": {
                         "cleared_altitude": 4000,
                         "sid": "ECLPS1",
-                        "waypoints": "_PHX_8 _PHX_26 SPRKY ECLPS KATMN BOXXR"
+                        "waypoints": "SPRKY ECLPS KATMN BOXXR"
                     },
                     "MOHAK": {
                         "cleared_altitude": 8000,
                         "sid": "FYRBD1",
-                        "waypoints": "_PHX_8 _PHX_26 FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI FYRBD JUDTH"
+                        "waypoints": "FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI FYRBD JUDTH"
                     },
                     "MESSI": {
                         "cleared_altitude": 8000,
                         "sid": "KEENS2",
-                        "waypoints": "_PHX_8 _PHX_26 FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO"
+                        "waypoints": "FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO"
                     },
                     "HRRBR": {
                         "cleared_altitude": 8000,
                         "sid": "KEENS2",
-                        "waypoints": "_PHX_8 _PHX_26 FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO CULTS"
+                        "waypoints": "FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO CULTS"
                     },
                     "BLH": {
                         "cleared_altitude": 8000,
                         "sid": "KEENS2",
-                        "waypoints": "_PHX_8 _PHX_26 FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO SALOM"
+                        "waypoints": "FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI WULKO KEENS IZZZO SALOM"
                     },
                     "GCN,YOOPR,JARPA": {
                         "cleared_altitude": 8000,
                         "sid": "MRBIL1",
-                        "waypoints": "_PHX_8 _PHX_26 SPRKY GOALY/a9000- POCCK MRBIL YOTES"
+                        "waypoints": "SPRKY GOALY/a9000- POCCK MRBIL YOTES"
                     },
                     "RIMMM": {
                         "cleared_altitude": 8000,
                         "sid": "QUAKY1",
-                        "waypoints": "_PHX_8 _PHX_26 SPRKY GOALY/a9000- QUAKY SNOBL CARTL LOFTS"
+                        "waypoints": "SPRKY GOALY/a9000- QUAKY SNOBL CARTL LOFTS"
                     },
                     "TUS": {
                         "cleared_altitude": 8000,
                         "sid": "STRRM1",
-                        "waypoints": "_PHX_8 _PHX_26 SPRKY/a2600+/s220 ANZEL DDUKE BNYRD STRRM"
+                        "waypoints": "SPRKY/a2600+/s220 ANZEL DDUKE BNYRD STRRM"
                     },
                     "RRSTA": {
                         "cleared_altitude": 8000,
                         "sid": "ZEPER2",
-                        "waypoints": "_PHX_8 _PHX_26 SPRKY GOALY/a9000- JOLAR ZEPER MAYSA"
+                        "waypoints": "SPRKY GOALY/a9000- JOLAR ZEPER MAYSA"
                     }
                 },
                 "25R": {
                     "JNIPR": {
                         "cleared_altitude": 8000,
                         "sid": "BROAK1",
-                        "waypoints": "_PHX_25R _PHX_7L JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS"
+                        "waypoints": "JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS"
                     },
                     "ABQ,MAXXO": {
                         "cleared_altitude": 8000,
                         "sid": "BROAK1",
-                        "waypoints": "_PHX_25R _PHX_7L JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS JNIPR JSSUA"
+                        "waypoints": "JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS JNIPR JSSUA"
                     },
                     "PHASE": {
                         "cleared_altitude": 4000,
                         "sid": "ECLPS1",
-                        "waypoints": "_PHX_25R _PHX_7L JUTAK WETAL RIICH ECLPS KATMN BOXXR"
+                        "waypoints": "JUTAK WETAL RIICH ECLPS KATMN BOXXR"
                     },
                     "MOHAK": {
                         "cleared_altitude": 8000,
                         "sid": "FYRBD1",
-                        "waypoints": "_PHX_25R _PHX_7L JUTAK WETAL FYRBD JUDTH"
+                        "waypoints": "JUTAK WETAL FYRBD JUDTH"
                     },
                     "MESSI": {
                         "cleared_altitude": 8000,
                         "sid": "KEENS2",
-                        "waypoints": "_PHX_25R _PHX_7L WULKO KEENS IZZZO"
+                        "waypoints": "WULKO KEENS IZZZO"
                     },
                     "HRRBR": {
                         "cleared_altitude": 8000,
                         "sid": "KEENS2",
-                        "waypoints": "_PHX_25R _PHX_7L WULKO KEENS IZZZO CULTS"
+                        "waypoints": "WULKO KEENS IZZZO CULTS"
                     },
                     "BLH": {
                         "cleared_altitude": 8000,
                         "sid": "KEENS2",
-                        "waypoints": "_PHX_25R _PHX_7L WULKO KEENS IZZZO SALOM"
+                        "waypoints": "WULKO KEENS IZZZO SALOM"
                     },
                     "GCN,YOOPR,JARPA": {
                         "cleared_altitude": 8000,
                         "sid": "MRBIL1",
-                        "waypoints": "_PHX_25R _PHX_7L JINOL OSGUE ZIDOG/a5000+/s230 OXYGN ZILUB MRBIL YOTES"
+                        "waypoints": "JINOL OSGUE ZIDOG/a5000+/s230 OXYGN ZILUB MRBIL YOTES"
                     },
                     "RIMMM": {
                         "cleared_altitude": 8000,
                         "sid": "QUAKY1",
-                        "waypoints": "_PHX_25R _PHX_7L JINOL OSGUE ZIDOG/a5000+/s230 OXYGN ZILUB QUAKY SNOBL CARTL LOFTS"
+                        "waypoints": "JINOL OSGUE ZIDOG/a5000+/s230 OXYGN ZILUB QUAKY SNOBL CARTL LOFTS"
                     },
                     "TUS": {
                         "cleared_altitude": 8000,
                         "sid": "STRRM1",
-                        "waypoints": "_PHX_25R _PHX_7L JUTAK WETAL BNYRD STRRM"
+                        "waypoints": "JUTAK WETAL BNYRD STRRM"
                     },
                     "RRSTA": {
                         "cleared_altitude": 8000,
                         "sid": "ZEPER2",
-                        "waypoints": "_PHX_25R _PHX_7L JINOL OSGUE ZIDOG/a5000+/s230 FANON ZEPER MAYSA"
+                        "waypoints": "JINOL OSGUE ZIDOG/a5000+/s230 FANON ZEPER MAYSA"
                     }
                 },
                 "26": {
                     "JNIPR": {
                         "cleared_altitude": 8000,
                         "sid": "BROAK1",
-                        "waypoints": "_PHX_26 _PHX_8 JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS"
+                        "waypoints": "JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS"
                     },
                     "ABQ,MAXXO": {
                         "cleared_altitude": 8000,
                         "sid": "BROAK1",
-                        "waypoints": "_PHX_26 _PHX_8 JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS JNIPR JSSUA"
+                        "waypoints": "JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS JNIPR JSSUA"
                     },
                     "PHASE": {
                         "cleared_altitude": 4000,
                         "sid": "ECLPS1",
-                        "waypoints": "_PHX_26 _PHX_8 JUTAK WETAL RIICH ECLPS KATMN BOXXR"
+                        "waypoints": "JUTAK WETAL RIICH ECLPS KATMN BOXXR"
                     },
                     "MOHAK": {
                         "cleared_altitude": 8000,
                         "sid": "FYRBD1",
-                        "waypoints": "_PHX_26 _PHX_8 JUTAK WETAL FYRBD JUDTH"
+                        "waypoints": "JUTAK WETAL FYRBD JUDTH"
                     },
                     "MESSI": {
                         "cleared_altitude": 8000,
                         "sid": "KEENS2",
-                        "waypoints": "_PHX_26 _PHX_8 WULKO KEENS IZZZO"
+                        "waypoints": "WULKO KEENS IZZZO"
                     },
                     "HRRBR": {
                         "cleared_altitude": 8000,
                         "sid": "KEENS2",
-                        "waypoints": "_PHX_26 _PHX_8 WULKO KEENS IZZZO CULTS"
+                        "waypoints": "WULKO KEENS IZZZO CULTS"
                     },
                     "BLH": {
                         "cleared_altitude": 8000,
                         "sid": "KEENS2",
-                        "waypoints": "_PHX_26 _PHX_8 WULKO KEENS IZZZO SALOM"
+                        "waypoints": "WULKO KEENS IZZZO SALOM"
                     },
                     "GCN,YOOPR,JARPA": {
                         "cleared_altitude": 8000,
                         "sid": "MRBIL1",
-                        "waypoints": "_PHX_26 _PHX_8 WIVLA HIRVU ZIDOG/a5000+/s230 OXYGN ZILUB MRBIL YOTES"
+                        "waypoints": "WIVLA HIRVU ZIDOG/a5000+/s230 OXYGN ZILUB MRBIL YOTES"
                     },
                     "RIMMM": {
                         "cleared_altitude": 8000,
                         "sid": "QUAKY1",
-                        "waypoints": "_PHX_26 _PHX_8 WIVLA HIRVU ZIDOG/a5000+/s230 OXYGN ZILUB QUAKY SNOBL CARTL LOFTS"
+                        "waypoints": "WIVLA HIRVU ZIDOG/a5000+/s230 OXYGN ZILUB QUAKY SNOBL CARTL LOFTS"
                     },
                     "TUS": {
                         "cleared_altitude": 8000,
                         "sid": "STRRM1",
-                        "waypoints": "_PHX_26 _PHX_8 JUTAK WETAL BNYRD STRRM"
+                        "waypoints": "JUTAK WETAL BNYRD STRRM"
                     },
                     "RRSTA": {
                         "cleared_altitude": 8000,
                         "sid": "ZEPER2",
-                        "waypoints": "_PHX_26 _PHX_8 WIVLA HIRVU ZIDOG/a5000+/s230 FANON ZEPER MAYSA"
+                        "waypoints": "WIVLA HIRVU ZIDOG/a5000+/s230 FANON ZEPER MAYSA"
                     }
                 }
             },
@@ -676,7 +676,6 @@
                 "TUS": "South",
                 "RRSTA": "North"
             },
-            "location": "N33.26.03.418,W112.00.41.451",
             "tower_list": 2
         }
     },
@@ -736,12 +735,14 @@
                 "initial_speed": 270,
                 "star": "BRUSR1",
                 "runway_waypoints": {
-                    "7L": "BRUSR/a13000-17000/s250 BDWIL/a9000-12000/s250 ENSEA/a8000-10000/s230 FBALL/a7000-10000/s210 PGSKN/a6000/s210 TLMAN FOWLE/a4000+/h115",
-                    "7R": "BRUSR/a13000-17000/s250 BDWIL/a9000-12000/s250 ENSEA/a8000-10000/s230 FBALL/a7000-10000/s210 PGSKN/a6000/s210 TLMAN BALTE/a4000+/h119",
-                    "8":  "BRUSR/a13000-17000/s250 BDWIL/a9000-12000/s250 ENSEA/a8000-10000/s230 FBALL/a7000-10000/s210 PGSKN/a6000/s210 TLMAN JAMIL/a4000+/h108",
-                    "25L": "BRUSR/a13000-17000/s250 ANNTI/a11000-12000 ZILUB/a9000/s250 BRIEZ/a8000-9000/s250 KUCOO/a7000/s210 JURAZ/h079",
-                    "25R": "BRUSR/a13000-17000/s250 ANNTI/a11000-12000 ZILUB/a9000/s250 BRIEZ/a8000-9000/s250 KUCOO/a7000/s210 JURAZ/h079",
-                    "26":  "BRUSR/a13000-17000/s250 ANNTI/a11000-12000 ZILUB/a9000/s250 BRIEZ/a8000-9000/s250 KUCOO/a7000/s210 JURAZ/h079"
+                    "KPHX": {
+                        "7L": "BRUSR/a13000-17000/s250 BDWIL/a9000-12000/s250 ENSEA/a8000-10000/s230 FBALL/a7000-10000/s210 PGSKN/a6000/s210 TLMAN FOWLE/a4000+/h115",
+                        "7R": "BRUSR/a13000-17000/s250 BDWIL/a9000-12000/s250 ENSEA/a8000-10000/s230 FBALL/a7000-10000/s210 PGSKN/a6000/s210 TLMAN BALTE/a4000+/h119",
+                        "8":  "BRUSR/a13000-17000/s250 BDWIL/a9000-12000/s250 ENSEA/a8000-10000/s230 FBALL/a7000-10000/s210 PGSKN/a6000/s210 TLMAN JAMIL/a4000+/h108",
+                        "25L": "BRUSR/a13000-17000/s250 ANNTI/a11000-12000 ZILUB/a9000/s250 BRIEZ/a8000-9000/s250 KUCOO/a7000/s210 JURAZ/h079",
+                        "25R": "BRUSR/a13000-17000/s250 ANNTI/a11000-12000 ZILUB/a9000/s250 BRIEZ/a8000-9000/s250 KUCOO/a7000/s210 JURAZ/h079",
+                        "26":  "BRUSR/a13000-17000/s250 ANNTI/a11000-12000 ZILUB/a9000/s250 BRIEZ/a8000-9000/s250 KUCOO/a7000/s210 JURAZ/h079"
+                    }
                 },
                 "waypoints": "MAIER/a19000-25000/s270 N34.14.44.991,W112.10.40.982/ho BRUSR/a13000-17000/s250"
             }
@@ -877,12 +878,14 @@
                 "initial_speed": 260,
                 "star": "EAGUL6",
                 "runway_waypoints": {
-                    "7L": "HOMRR/a17000-/s250 BOHTX/a13000-14000 GEENO/a11000-12000/s230 QUENY/a10000/s210 HINEY/a7000/s210 OBASE/a7000/s210/h258",
-                    "7R": "HOMRR/a17000-/s250 BOHTX/a13000-14000 GEENO/a11000-12000/s230 QUENY/a10000/s210 HINEY/a7000/s210 OBASE/a7000/s210/h258",
-                    "8":  "HOMRR/a17000-/s250 BOHTX/a13000-14000 GEENO/a11000-12000/s230 QUENY/a10000/s210 HINEY/a7000/s210 OBASE/a7000/s210/h258",
-                    "25L": "HOMRR/a17000-/s250 VNNOM/a9400+ ESDEE/a8100-10000/s210 BASSL/a6000 DERVL/a4500-5500/s210 GIPSE/a4000+/h219",
-                    "25R": "HOMRR/a17000-/s250 VNNOM/a9400+ ESDEE/a8100-10000/s210 BASSL/a6000 DERVL/a4500-5500/s210 ZAMEX/a4000+/h220",
-                    "26":  "HOMRR/a17000-/s250 VNNOM/a9400+ ESDEE/a8100-10000/s210 BASSL/a6000 DERVL/a4500-5500/s210 JAGAL/a4000+/h228"
+                    "KPHX": {
+                        "7L": "HOMRR/a17000-/s250 BOHTX/a13000-14000 GEENO/a11000-12000/s230 QUENY/a10000/s210 HINEY/a7000/s210 OBASE/a7000/s210/h258",
+                        "7R": "HOMRR/a17000-/s250 BOHTX/a13000-14000 GEENO/a11000-12000/s230 QUENY/a10000/s210 HINEY/a7000/s210 OBASE/a7000/s210/h258",
+                        "8":  "HOMRR/a17000-/s250 BOHTX/a13000-14000 GEENO/a11000-12000/s230 QUENY/a10000/s210 HINEY/a7000/s210 OBASE/a7000/s210/h258",
+                        "25L": "HOMRR/a17000-/s250 VNNOM/a9400+ ESDEE/a8100-10000/s210 BASSL/a6000 DERVL/a4500-5500/s210 GIPSE/a4000+/h219",
+                        "25R": "HOMRR/a17000-/s250 VNNOM/a9400+ ESDEE/a8100-10000/s210 BASSL/a6000 DERVL/a4500-5500/s210 ZAMEX/a4000+/h220",
+                        "26":  "HOMRR/a17000-/s250 VNNOM/a9400+ ESDEE/a8100-10000/s210 BASSL/a6000 DERVL/a4500-5500/s210 JAGAL/a4000+/h228"
+                    }
                 },
                 "waypoints": "EAGUL/a17000/s260 N34.01.57.242,W111.12.33.095/ho HOMRR/a17000-/s250"
             }
@@ -1028,12 +1031,14 @@
                 "initial_speed": 265,
                 "star": "HYDRR1",
                 "runway_waypoints": {
-                    "7L": "GEELA/a11000-17000/s250 PUNNT/a10000-12000/s230 TEICH/a8000-9000/s210 TESLE/a7000 FALGO/a6000/s210 CAGOR/a5000+ JAMIL/a4000+/h066",
-                    "7R": "GEELA/a11000-17000/s250 PUNNT/a10000-12000/s230 TEICH/a8000-9000/s210 TESLE/a7000 FALGO/a6000/s210 CAGOR/a5000+ FOWLE/a4000+/h076",
-                    "8":  "GEELA/a11000-17000/s250 PUNNT/a10000-12000/s230 TEICH/a8000-9000/s210 TESLE/a7000 FALGO/a6000/s210 CAGOR/a5000+ BALTE/a4000+/h078",
-                    "25L": "GEELA/a11000-17000/s250 AGGLA/a11000-14000/s250 CHAVO/a9000/s210 LEMOE/a7000/s210/h079",
-                    "25R": "GEELA/a11000-17000/s250 AGGLA/a11000-14000/s250 CHAVO/a9000/s210 LEMOE/a7000/s210/h079",
-                    "26":  "GEELA/a11000-17000/s250 AGGLA/a11000-14000/s250 CHAVO/a9000/s210 LEMOE/a7000/s210/h079"
+                    "KPHX": {
+                        "7L": "GEELA/a11000-17000/s250 PUNNT/a10000-12000/s230 TEICH/a8000-9000/s210 TESLE/a7000 FALGO/a6000/s210 CAGOR/a5000+ JAMIL/a4000+/h066",
+                        "7R": "GEELA/a11000-17000/s250 PUNNT/a10000-12000/s230 TEICH/a8000-9000/s210 TESLE/a7000 FALGO/a6000/s210 CAGOR/a5000+ FOWLE/a4000+/h076",
+                        "8":  "GEELA/a11000-17000/s250 PUNNT/a10000-12000/s230 TEICH/a8000-9000/s210 TESLE/a7000 FALGO/a6000/s210 CAGOR/a5000+ BALTE/a4000+/h078",
+                        "25L": "GEELA/a11000-17000/s250 AGGLA/a11000-14000/s250 CHAVO/a9000/s210 LEMOE/a7000/s210/h079",
+                        "25R": "GEELA/a11000-17000/s250 AGGLA/a11000-14000/s250 CHAVO/a9000/s210 LEMOE/a7000/s210/h079",
+                        "26":  "GEELA/a11000-17000/s250 AGGLA/a11000-14000/s250 CHAVO/a9000/s210 LEMOE/a7000/s210/h079"
+                    }
                 },
                 "waypoints": "HYDRR/a15000-19000/s265 N33.16.38.018,W112.55.55.135/ho GEELA/a11000-17000/s250"
             }
@@ -1177,12 +1182,14 @@
                 "initial_speed": 270,
                 "star": "PINNG1",
                 "runway_waypoints": {
-                    "7L": "BRDEY/a13000+/s250 WIGWM/a12000-14000/s250 DDUKE/a10000-12000 RVANN/a8000-9000/s230 LGACY/a7000/s210 VISTL NEELE/a7000/s210/h258",
-                    "7R": "BRDEY/a13000+/s250 WIGWM/a12000-14000/s250 DDUKE/a10000-12000 RVANN/a8000-9000/s230 LGACY/a7000/s210 VISTL NEELE/a7000/s210/h258",
-                    "8":  "BRDEY/a13000+/s250 WIGWM/a12000-14000/s250 DDUKE/a10000-12000 RVANN/a8000-9000/s230 LGACY/a7000/s210 VISTL NEELE/a7000/s210/h258",
-                    "25L": "BRDEY/a13000+/s250 PAAAR/a10000-12000/s230 PUKRE/a8000-9000/s210 FINAP/a5000-6000 GIPSE/a4000+/h282",
-                    "25R": "BRDEY/a13000+/s250 PAAAR/a10000-12000/s230 PUKRE/a8000-9000/s210 FINAP/a5000-6000 ZAMEX/a4000+/h284",
-                    "26":  "BRDEY/a13000+/s250 PAAAR/a10000-12000/s230 PUKRE/a8000-9000/s210 FINAP/a5000-6000 JAGAL/a4000+/h292"
+                    "KPHX": {
+                        "7L": "BRDEY/a13000+/s250 WIGWM/a12000-14000/s250 DDUKE/a10000-12000 RVANN/a8000-9000/s230 LGACY/a7000/s210 VISTL NEELE/a7000/s210/h258",
+                        "7R": "BRDEY/a13000+/s250 WIGWM/a12000-14000/s250 DDUKE/a10000-12000 RVANN/a8000-9000/s230 LGACY/a7000/s210 VISTL NEELE/a7000/s210/h258",
+                        "8":  "BRDEY/a13000+/s250 WIGWM/a12000-14000/s250 DDUKE/a10000-12000 RVANN/a8000-9000/s230 LGACY/a7000/s210 VISTL NEELE/a7000/s210/h258",
+                        "25L": "BRDEY/a13000+/s250 PAAAR/a10000-12000/s230 PUKRE/a8000-9000/s210 FINAP/a5000-6000 GIPSE/a4000+/h282",
+                        "25R": "BRDEY/a13000+/s250 PAAAR/a10000-12000/s230 PUKRE/a8000-9000/s210 FINAP/a5000-6000 ZAMEX/a4000+/h284",
+                        "26":  "BRDEY/a13000+/s250 PAAAR/a10000-12000/s230 PUKRE/a8000-9000/s210 FINAP/a5000-6000 JAGAL/a4000+/h292"
+                    }
                 },
                 "waypoints": "HYBRD/a22000-25000 PINNG/a17000+/s270/ho BRDEY/a13000+/s250"
             }
@@ -1247,6 +1254,7 @@
     },
     "default_scenario": "KPHX West",
     "fixes": {
+        "MESSI": "33.79982777,-113.80315833",
         "_PHX_8":   "N33.26.27.009,W112.01.36.552",
         "_PHX_7L":  "N33.25.51.639,W112.01.37.522",
         "_PHX_7R":  "N33.25.43.689,W112.01.37.543",
@@ -1269,7 +1277,7 @@
             ]
         }
     ],
-    "magnetic_variation": -10.1,
+    "magnetic_adjustment": -2,
     "name": "KPHX",
     "primary_airport": "KPHX",
     "radar_sites": {

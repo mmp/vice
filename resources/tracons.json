@@ -1,0 +1,642 @@
+{
+    "A11": {
+        "Name": "Anchorage TRACON",
+        "ARTCC": "ZAN"
+    },
+    "A80": {
+        "Name": "Atlanta TRACON",
+        "ARTCC": "ZTL"
+    },
+    "A90": {
+        "Name": "Boston TRACON",
+        "ARTCC": "ZBW"
+    },
+    "AAC": {
+        "Name": "Academy Tower",
+        "ARTCC": "ZFW"
+    },
+    "ABE": {
+        "Name": "Allentown Tower",
+        "ARTCC": "ZNY"
+    },
+    "ABI": {
+        "Name": "Abilene Tower",
+        "ARTCC": "ZFW"
+    },
+    "ABQ": {
+        "Name": "Albuquerque Tower",
+        "ARTCC": "ZAB"
+    },
+    "ACT": {
+        "Name": "Waco Tower",
+        "ARTCC": "ZFW"
+    },
+    "ACY": {
+        "Name": "Atlantic City Tower",
+        "ARTCC": "ZDC"
+    },
+    "AGS": {
+        "Name": "Augusta Tower",
+        "ARTCC": "ZTL"
+    },
+    "ALB": {
+        "Name": "Albany Tower",
+        "ARTCC": "ZBW"
+    },
+    "ALO": {
+        "Name": "Waterloo Tower",
+        "ARTCC": "ZAU"
+    },
+    "AMA": {
+        "Name": "Amarillo Tower",
+        "ARTCC": "ZAB"
+    },
+    "ASE": {
+        "Name": "Aspen Tower",
+        "ARTCC": "ZDV"
+    },
+    "AUS": {
+        "Name": "Austin Tower",
+        "ARTCC": "ZHU"
+    },
+    "AVL": {
+        "Name": "Asheville Tower",
+        "ARTCC": "ZTL"
+    },
+    "AVP": {
+        "Name": "Wilkes-Barre Tower",
+        "ARTCC": "ZNY"
+    },
+    "AZO": {
+        "Name": "Kalamazoo Tower",
+        "ARTCC": "ZAU"
+    },
+    "BFL": {
+        "Name": "Bakersfield Tower",
+        "ARTCC": "ZLA"
+    },
+    "BGM": {
+        "Name": "Binghamton Tower",
+        "ARTCC": "ZNY"
+    },
+    "BGR": {
+        "Name": "Bangor Tower",
+        "ARTCC": "ZBW"
+    },
+    "BHM": {
+        "Name": "Birmingham Tower",
+        "ARTCC": "ZTL"
+    },
+    "BIL": {
+        "Name": "Billings Tower",
+        "ARTCC": "ZLC"
+    },
+    "BIS": {
+        "Name": "Bismarck Tower",
+        "ARTCC": "ZMP"
+    },
+    "BNA": {
+        "Name": "Nashville Tower",
+        "ARTCC": "ZME"
+    },
+    "BOI": {
+        "Name": "Boise Tower",
+        "ARTCC": "ZLC"
+    },
+    "BTR": {
+        "Name": "Baton Rouge Tower",
+        "ARTCC": "ZHU"
+    },
+    "BTV": {
+        "Name": "Burlington Tower",
+        "ARTCC": "ZBW"
+    },
+    "BUF": {
+        "Name": "Buffalo Tower",
+        "ARTCC": "ZOB"
+    },
+    "C90": {
+        "Name": "Chicago TRACON",
+        "ARTCC": "ZAU"
+    },
+    "CAE": {
+        "Name": "Columbia Tower",
+        "ARTCC": "ZJX"
+    },
+    "CAK": {
+        "Name": "Akron-Canton Tower",
+        "ARTCC": "ZOB"
+    },
+    "CHA": {
+        "Name": "Chatanooga Tower",
+        "ARTCC": "ZTL"
+    },
+    "CHS": {
+        "Name": "Charleston Tower",
+        "ARTCC": "ZJX"
+    },
+    "CID": {
+        "Name": "Cedar Rapids Tower",
+        "ARTCC": "ZAU"
+    },
+    "CKB": {
+        "Name": "Clarksburg Tower",
+        "ARTCC": "ZOB"
+    },
+    "CLE": {
+        "Name": "Cleveland Tower",
+        "ARTCC": "ZOB"
+    },
+    "CLT": {
+        "Name": "Charlotte Tower",
+        "ARTCC": "ZTL"
+    },
+    "CMH": {
+        "Name": "Columbus Tower",
+        "ARTCC": "ZID"
+    },
+    "CMI": {
+        "Name": "Champaign Tower",
+        "ARTCC": "ZAU"
+    },
+    "COS": {
+        "Name": "Colorado Springs Tower",
+        "ARTCC": "ZDV"
+    },
+    "CPR": {
+        "Name": "Casper Tower",
+        "ARTCC": "ZDV"
+    },
+    "CRP": {
+        "Name": "Corpus Christi Tower",
+        "ARTCC": "ZHU"
+    },
+    "CRW": {
+        "Name": "Charleston Tower",
+        "ARTCC": "ZID"
+    },
+    "CVG": {
+        "Name": "Cincinnati Tower",
+        "ARTCC": "ZID"
+    },
+    "D01": {
+        "Name": "Denver TRACON",
+        "ARTCC": "ZDV"
+    },
+    "D10": {
+        "Name": "Dallas/Ft Worth TRACON",
+        "ARTCC": "ZFW"
+    },
+    "D21": {
+        "Name": "Detroit TRACON",
+        "ARTCC": "ZOB"
+    },
+    "DAB": {
+        "Name": "Daytona Beach Tower",
+        "ARTCC": "ZJX"
+    },
+    "DAY": {
+        "Name": "Dayton Tower",
+        "ARTCC": "ZID"
+    },
+    "DLH": {
+        "Name": "Duluth Tower",
+        "ARTCC": "ZMP"
+    },
+    "DSM": {
+        "Name": "Des Moines Tower",
+        "ARTCC": "ZMP"
+    },
+    "ELM": {
+        "Name": "Elmira Tower",
+        "ARTCC": "ZNY"
+    },
+    "ELP": {
+        "Name": "El Paso Tower",
+        "ARTCC": "ZAB"
+    },
+    "ERI": {
+        "Name": "Erie Tower",
+        "ARTCC": "ZOB"
+    },
+    "EUG": {
+        "Name": "Eugene Tower",
+        "ARTCC": "ZSE"
+    },
+    "EVV": {
+        "Name": "Evansville Tower",
+        "ARTCC": "ZID"
+    },
+    "F11": {
+        "Name": "Central Florida TRACON",
+        "ARTCC": "ZJX"
+    },
+    "FAI": {
+        "Name": "Fairbanks Tower",
+        "ARTCC": "ZAN"
+    },
+    "FAR": {
+        "Name": "Fargo Tower",
+        "ARTCC": "ZMP"
+    },
+    "FAT": {
+        "Name": "Fresno Tower",
+        "ARTCC": "ZOA"
+    },
+    "FAY": {
+        "Name": "Fayetteville Tower",
+        "ARTCC": "ZDC"
+    },
+    "FLO": {
+        "Name": "Florence Tower",
+        "ARTCC": "ZJX"
+    },
+    "FNT": {
+        "Name": "Flint Tower",
+        "ARTCC": "ZOB"
+    },
+    "FSD": {
+        "Name": "Sioux Falls Tower",
+        "ARTCC": "ZMP"
+    },
+    "FSM": {
+        "Name": "Fort Smith Tower",
+        "ARTCC": "ZME"
+    },
+    "FWA": {
+        "Name": "Fort Wayne Tower",
+        "ARTCC": "ZAU"
+    },
+    "GEG": {
+        "Name": "Spokane Tower",
+        "ARTCC": "ZSE"
+    },
+    "GGG": {
+        "Name": "Longview Tower",
+        "ARTCC": "ZFW"
+    },
+    "GPT": {
+        "Name": "Gulfport Tower",
+        "ARTCC": "ZHU"
+    },
+    "GRB": {
+        "Name": "Green Bay Tower",
+        "ARTCC": "ZMP"
+    },
+    "GRR": {
+        "Name": "Grand Rapids Tower",
+        "ARTCC": "ZAU"
+    },
+    "GSO": {
+        "Name": "Greensboro Tower",
+        "ARTCC": "ZTL"
+    },
+    "GSP": {
+        "Name": "Greer Tower",
+        "ARTCC": "ZTL"
+    },
+    "GTF": {
+        "Name": "Great Falls Tower",
+        "ARTCC": "ZLC"
+    },
+    "HLN": {
+        "Name": "Helena Tower",
+        "ARTCC": "ZLC"
+    },
+    "HSV": {
+        "Name": "Huntsville Tower",
+        "ARTCC": "ZME"
+    },
+    "HTS": {
+        "Name": "Huntington Tower",
+        "ARTCC": "ZID"
+    },
+    "HUF": {
+        "Name": "Terre Haute/Hulman ATCT/TRACON",
+        "ARTCC": "ZID"
+    },
+    "I90": {
+        "Name": "Houston TRACON",
+        "ARTCC": "ZFW"
+    },
+    "ICT": {
+        "Name": "Wichita Tower",
+        "ARTCC": "ZKC"
+    },
+    "ILM": {
+        "Name": "Wilmington Tower",
+        "ARTCC": "ZDC"
+    },
+    "IND": {
+        "Name": "Indianapolis Tower",
+        "ARTCC": "ZID"
+    },
+    "ITO": {
+        "Name": "Hilo Tower",
+        "ARTCC": "ZHN"
+    },
+    "JAN": {
+        "Name": "Jackson Tower",
+        "ARTCC": "ZME"
+    },
+    "JAX": {
+        "Name": "Jacksonville Tower",
+        "ARTCC": "ZJX"
+    },
+    "L30": {
+        "Name": "Las Vegas TRACON",
+        "ARTCC": "ZLA"
+    },
+    "LAN": {
+        "Name": "Lansing Tower",
+        "ARTCC": "ZOB"
+    },
+    "LBB": {
+        "Name": "Lubbock Tower",
+        "ARTCC": "ZFW"
+    },
+    "LCH": {
+        "Name": "Lake Charles Tower",
+        "ARTCC": "ZHU"
+    },
+    "LEX": {
+        "Name": "Lexington Tower",
+        "ARTCC": "ZID"
+    },
+    "LFT": {
+        "Name": "Lafayette Tower",
+        "ARTCC": "ZHU"
+    },
+    "LIT": {
+        "Name": "Little Rock Tower",
+        "ARTCC": "ZME"
+    },
+    "M03": {
+        "Name": "Memphis TRACON",
+        "ARTCC": "ZME"
+    },
+    "M98": {
+        "Name": "Minneapolis TRACON",
+        "ARTCC": "ZMP"
+    },
+    "MAF": {
+        "Name": "Midland Tower",
+        "ARTCC": "ZFW"
+    },
+    "MBS": {
+        "Name": "Saginaw Tower",
+        "ARTCC": "ZOB"
+    },
+    "MCI": {
+        "Name": "Kansas City Tower",
+        "ARTCC": "ZKC"
+    },
+    "MDT": {
+        "Name": "Harrisburg Intl Tower",
+        "ARTCC": "ZNY"
+    },
+    "MFD": {
+        "Name": "Mansfield Tower",
+        "ARTCC": "ZOB"
+    },
+    "MGM": {
+        "Name": "Montgomery Tower",
+        "ARTCC": "ZTL"
+    },
+    "MIA": {
+        "Name": "Miami Tower",
+        "ARTCC": "ZMA"
+    },
+    "MKE": {
+        "Name": "Milwaukee Tower",
+        "ARTCC": "ZAU"
+    },
+    "MKG": {
+        "Name": "Muskegon Tower",
+        "ARTCC": "ZAU"
+    },
+    "MLI": {
+        "Name": "Quad City Tower",
+        "ARTCC": "ZAU"
+    },
+    "MLU": {
+        "Name": "Monroe Tower",
+        "ARTCC": "ZFW"
+    },
+    "MOB": {
+        "Name": "Mobile Tower",
+        "ARTCC": "ZHU"
+    },
+    "MSN": {
+        "Name": "Madison Tower",
+        "ARTCC": "ZAU"
+    },
+    "MSY": {
+        "Name": "New Orleans Tower",
+        "ARTCC": "ZHU"
+    },
+    "MWH": {
+        "Name": "Grant County Tower",
+        "ARTCC": "ZSE"
+    },
+    "MYR": {
+        "Name": "Myrtle Beach Tower",
+        "ARTCC": "ZJX"
+    },
+    "N90": {
+        "Name": "New York TRACON",
+        "ARTCC": "ZNY"
+    },
+    "NCT": {
+        "Name": "NorCal TRACON",
+        "ARTCC": "ZOA"
+    },
+    "NMM": {
+        "Name": "Meridian TRACON",
+        "ARTCC": "ZME"
+    },
+    "OKC": {
+        "Name": "Oklahoma City Tower",
+        "ARTCC": "ZFW"
+    },
+    "ORF": {
+        "Name": "Norfolk Tower",
+        "ARTCC": "ZDC"
+    },
+    "P31": {
+        "Name": "Pensacola TRACON",
+        "ARTCC": "ZJX"
+    },
+    "P50": {
+        "Name": "Phoenix TRACON",
+        "ARTCC": "ZAB"
+    },
+    "P80": {
+        "Name": "Portland TRACON",
+        "ARTCC": "ZSE"
+    },
+    "PBI": {
+        "Name": "Palm Beach Tower",
+        "ARTCC": "ZMA"
+    },
+    "PCT": {
+        "Name": "Potomac TRACON",
+        "ARTCC": "ZDC"
+    },
+    "PHL": {
+        "Name": "Philadelphia Tower",
+        "ARTCC": "ZNY"
+    },
+    "PIA": {
+        "Name": "Peoria Tower",
+        "ARTCC": "ZKC"
+    },
+    "PIT": {
+        "Name": "Pittsburgh Tower",
+        "ARTCC": "ZOB"
+    },
+    "PSC": {
+        "Name": "Pasco Tower",
+        "ARTCC": "ZSE"
+    },
+    "PVD": {
+        "Name": "Providence Tower",
+        "ARTCC": "ZBW"
+    },
+    "PWM": {
+        "Name": "Portland Tower",
+        "ARTCC": "ZBW"
+    },
+    "R90": {
+        "Name": "Omaha TRACON",
+        "ARTCC": "ZMP"
+    },
+    "RDG": {
+        "Name": "Reading Tower",
+        "ARTCC": "ZNY"
+    },
+    "RDU": {
+        "Name": "Raleigh-Durham Tower",
+        "ARTCC": "ZDC"
+    },
+    "RFD": {
+        "Name": "Rockford Tower",
+        "ARTCC": "ZAU"
+    },
+    "ROA": {
+        "Name": "Roanoke Tower",
+        "ARTCC": "ZDC"
+    },
+    "ROC": {
+        "Name": "Rochester Tower",
+        "ARTCC": "ZOB"
+    },
+    "ROW": {
+        "Name": "Roswell Tower",
+        "ARTCC": "ZAB"
+    },
+    "RST": {
+        "Name": "Rochester Tower",
+        "ARTCC": "ZMP"
+    },
+    "RSW": {
+        "Name": "Fort Myers Tower",
+        "ARTCC": "ZMA"
+    },
+    "S46": {
+        "Name": "Seattle TRACON",
+        "ARTCC": "ZSE"
+    },
+    "S56": {
+        "Name": "Salt Lake City TRACON",
+        "ARTCC": "ZLC"
+    },
+    "SAT": {
+        "Name": "San Antonio Tower",
+        "ARTCC": "ZHU"
+    },
+    "SAV": {
+        "Name": "Savannah Tower",
+        "ARTCC": "ZJX"
+    },
+    "SBA": {
+        "Name": "Santa Barbara Tower",
+        "ARTCC": "ZLA"
+    },
+    "SBN": {
+        "Name": "South Bend Tower",
+        "ARTCC": "ZAU"
+    },
+    "SCT": {
+        "Name": "SoCal TRACON",
+        "ARTCC": "ZLA"
+    },
+    "SDF": {
+        "Name": "Standiford Tower",
+        "ARTCC": "ZID"
+    },
+    "SGF": {
+        "Name": "Springfield Tower",
+        "ARTCC": "ZKC"
+    },
+    "SHV": {
+        "Name": "Shreveport Tower",
+        "ARTCC": "ZFW"
+    },
+    "SPI": {
+        "Name": "Springfield Tower",
+        "ARTCC": "ZKC"
+    },
+    "SUX": {
+        "Name": "Sioux Gateway Tower",
+        "ARTCC": "ZMP"
+    },
+    "SYR": {
+        "Name": "Syracuse Tower",
+        "ARTCC": "ZBW"
+    },
+    "T75": {
+        "Name": "St Louis TRACON",
+        "ARTCC": "ZKC"
+    },
+    "TLH": {
+        "Name": "Tallahassee Tower",
+        "ARTCC": "ZJX"
+    },
+    "TOL": {
+        "Name": "Toledo Tower",
+        "ARTCC": "ZOB"
+    },
+    "TPA": {
+        "Name": "Tampa Tower",
+        "ARTCC": "ZMA"
+    },
+    "TRI": {
+        "Name": "Tri-Cities Tower",
+        "ARTCC": "ZTL"
+    },
+    "TUL": {
+        "Name": "Tulsa Tower",
+        "ARTCC": "ZKC"
+    },
+    "TWF": {
+        "Name": "Twin Falls Tower",
+        "ARTCC": "ZLC"
+    },
+    "TYS": {
+        "Name": "Knoxville Tower",
+        "ARTCC": "ZTL"
+    },
+    "U90": {
+        "Name": "Tucson TRACON",
+        "ARTCC": "ZAB"
+    },
+    "Y90": {
+        "Name": "Yankee TRACON",
+        "ARTCC": "ZBW"
+    },
+    "YNG": {
+        "Name": "Youngstown Tower",
+        "ARTCC": "ZOB"
+    }
+}

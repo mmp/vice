@@ -27,9 +27,22 @@ import (
 // 15: audio engine rewrite
 // 16: cleared/assigned alt for departures, minor nav changes
 // 17: weather intensity default bool
-const CurrentConfigVersion = 17
+// 18: STARS ATPA
+// 19: runway waypoints now per-airport
+const CurrentConfigVersion = 19
 
+// Slightly convoluted, but the full GlobalConfig definition is split into
+// the part with the Sim and the rest of it.  In this way, we can first
+// deserialize the non-Sim part and then only try to deserialize the Sim if
+// its version matches CurrentConfigVersion.  This saves us from displaying
+// errors about corrupt JSON in cases where fields in the Sim have changed
+// (and we're going to throw it away anyway...)
 type GlobalConfig struct {
+	GlobalConfigNoSim
+	GlobalConfigSim
+}
+
+type GlobalConfigNoSim struct {
 	Version               int
 	InitialWindowSize     [2]int
 	InitialWindowPosition [2]int
@@ -46,12 +59,14 @@ type GlobalConfig struct {
 	AskedDiscordOptIn      bool
 	InhibitDiscordActivity AtomicBool
 
-	// This is only for serialize / deserialize
-	Sim      *Sim
 	Callsign string
 
 	highlightedLocation        Point2LL
 	highlightedLocationEndTime time.Time
+}
+
+type GlobalConfigSim struct {
+	Sim *Sim
 }
 
 func configFilePath() string {
@@ -145,7 +160,8 @@ func LoadOrMakeDefaultConfig() {
 		r := bytes.NewReader(config)
 		d := json.NewDecoder(r)
 
-		if err := d.Decode(globalConfig); err != nil {
+		globalConfig = &GlobalConfig{}
+		if err := d.Decode(&globalConfig.GlobalConfigNoSim); err != nil {
 			SetDefaultConfig()
 			ShowErrorDialog("Configuration file is corrupt: %v", err)
 		}
@@ -155,7 +171,6 @@ func LoadOrMakeDefaultConfig() {
 			globalConfig.DisplayRoot = nil
 		}
 		if globalConfig.Version < 5 {
-			globalConfig.Sim = nil
 			globalConfig.Callsign = ""
 		}
 		if globalConfig.Version < 15 && globalConfig.Audio.AudioEnabled {
@@ -163,15 +178,22 @@ func LoadOrMakeDefaultConfig() {
 				globalConfig.Audio.EffectEnabled[i] = true
 			}
 		}
-		if globalConfig.Version < CurrentConfigVersion {
-			globalConfig.Sim = nil
 
+		if globalConfig.Version < CurrentConfigVersion {
 			if globalConfig.DisplayRoot != nil {
 				globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
 					if up, ok := p.(PaneUpgrader); ok {
 						up.Upgrade(globalConfig.Version, CurrentConfigVersion)
 					}
 				})
+			}
+		}
+
+		if globalConfig.Version == CurrentConfigVersion {
+			// Go ahead and deserialize the Sim
+			r.Seek(0, io.SeekStart)
+			if err := d.Decode(&globalConfig.GlobalConfigSim); err != nil {
+				ShowErrorDialog("Configuration file is corrupt: %v", err)
 			}
 		}
 	}

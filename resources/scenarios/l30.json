@@ -1,5 +1,5 @@
 {
-  "tracon": "L30 (Las Vegas)",
+    "tracon": "L30",
     "airports": {
         "KLAS": {
             "approaches": {
@@ -8,7 +8,7 @@
                     "runway": "26L",
                     "type": "ILS",
                     "waypoints": [
-                        "BERBN/if/a8000/s210 BISHP/a7000 KODSE/a5800 HUXAR/a5000 RELIN/faf/a2200 _LAS_26L/a2200"
+                        "BERBN/if/a8000/s210 BISHP/a7000 KODSE/a5800 HUXAR/a5000 RELIN/faf/a2200"
                     ]
                 },
                 "IZ6": {
@@ -16,8 +16,8 @@
                     "runway": "26L",
                     "type": "ILS",
                     "waypoints": [
-                        "BLD/iaf/a8000 LARRE/if/a6500 SHAND/a4800 RELIN/faf/a3800 _LAS_26L/a2200",
-                        "PRINO/iaf/a8000/s210 LARRE/if/a6500 SHAND/a4800 RELIN/faf/a3800 _LAS_26L/a2200"   
+                        "BLD/iaf/a8000 LARRE/if/a6500 SHAND/a4800 RELIN/faf/a3800",
+                        "PRINO/iaf/a8000/s210 LARRE/if/a6500 SHAND/a4800 RELIN/faf/a3800"   
                     ]
                 },
                 "RY9R": {
@@ -25,24 +25,24 @@
                     "runway": "19R",
                     "type": "RNAV",
                     "waypoints": [
-                        "SUVIE/iaf/nopt/a6000+ STORA/if/a6000/lhilpt5nm MOZOS/a5300 WAKSI/faf/a4300 _LAS_19R/a2200",
-                        "STORA/if/iaf/lhilpt5nm/a6000 MOZOS/a5300 WAKSI/faf/a4300 _LAS_19R/a2200"
+                        "SUVIE/iaf/nopt/a6000+ STORA/if/a6000/lhilpt5nm MOZOS/a5300 WAKSI/faf/a4300",
+                        "STORA/if/iaf/lhilpt5nm/a6000 MOZOS/a5300 WAKSI/faf/a4300"
                     ]
                 },
                 "I1L": {
                     "runway": "1L",
                     "type": "ILS",
                     "waypoints": [
-                        "KRUDY/iaf/a8000 TRREY/a7000/if CODNO/a6300 NODIY/a5300/faf _LAS_1L/a2200",
-                        "ROAMN/iaf/a8000 TRREY/a7000/if CODNO/a6300 NODIY/a5300/faf _LAS_1L/a2200"
+                        "KRUDY/iaf/a8000 TRREY/a7000/if CODNO/a6300 NODIY/a5300/faf",
+                        "ROAMN/iaf/a8000 TRREY/a7000/if CODNO/a6300 NODIY/a5300/faf"
                     ] 
                 },
                 "R1R": {
                     "runway": "1R",
                     "type": "RNAV",
                     "waypoints": [
-                        "CAKNU/iaf/a6000+ FEBET/if/a6000 KIBSE/faf/a5100 _LAS_1R/a2200",
-                        "BUHLL/iaf/a7000/s210 FEBET/if/a6000 KIBSE/faf/a5100 _LAS_1R/a2200"
+                        "CAKNU/iaf/a6000+ FEBET/if/a6000 KIBSE/faf/a5100",
+                        "BUHLL/iaf/a7000/s210 FEBET/if/a6000 KIBSE/faf/a5100"
                     ]
                 },
                 "RY9L": {
@@ -50,8 +50,8 @@
                     "runway": "19L",
                     "type": "RNAV",
                     "waypoints": [
-                        "SUVIE/iaf/nopt/a6000+ STORA/if/a6000/lhilpt5nm MOZOS/a5300 DIRDE/faf/a4300 _LAS_19L/a2200",
-                        "STORA/if/iaf/lhilpt5nm/a6000 MOZOS/a5300 DIRDE/faf/a4300 _LAS_19L/a2200"
+                        "SUVIE/iaf/nopt/a6000+ STORA/if/a6000/lhilpt5nm MOZOS/a5300 DIRDE/faf/a4300",
+                        "STORA/if/iaf/lhilpt5nm/a6000 MOZOS/a5300 DIRDE/faf/a4300"
                     ]
                 },
                 "IZ2": {
@@ -59,8 +59,8 @@
                     "runway": "26R",
                     "type": "ILS",
                     "waypoints": [
-                        "FLYES/iaf/a8000/s210 FLICR/a6500 BJORG/a4800 CONDY/a3800/faf _LAS_26R/a2200",
-                        "BLD/a6500+/iaf FLICR/a6500 BJORG/a4800 CONDY/a3800/faf _LAS_26R/a2200"
+                        "FLYES/iaf/a8000/s210 FLICR/a6500 BJORG/a4800 CONDY/a3800/faf",
+                        "BLD/a6500+/iaf FLICR/a6500 BJORG/a4800 CONDY/a3800/faf"
                     ]
                 },
                 "IY2": {
@@ -68,7 +68,7 @@
                     "runway": "26R",
                     "type": "ILS",
                     "waypoints": [
-                        "BERBN/if/a8000/s210 LUISA/a7000 SETKE/a6600/s210 ZEPAM/a5800 HAWKO/a5100 CONDY/a3800 _LAS_26R/a2200"
+                        "BERBN/if/a8000/s210 LUISA/a7000 SETKE/a6600/s210 ZEPAM/a5800 HAWKO/a5100 CONDY/a3800"
                     ]
                 }
             },
@@ -77,496 +77,496 @@
                     "VERKN": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_26R _LAS_8L LEELN/a8000- GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
+                        "waypoints": "LEELN/a8000- GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
                     },
                     "TUKRR": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_26R _LAS_8L LEELN/a8000- GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+                        "waypoints": "LEELN/a8000- GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
                     },
                     "KENNO": {
                         "cleared_altitude": 19000,
                         "sid": "JOHKR3",
-                        "waypoints": "_LAS_26R _LAS_8L RUDYY/a4000+/s230 SELLZ/a8000- KRUGR/a11000- JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+                        "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- KRUGR/a11000- JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
                     },
                     "JAYSN": {
                         "cleared_altitude": 14000,
                         "sid": "LOHLA3",
-                        "waypoints": "_LAS_26R _LAS_8L LEELN/a800- PENSK LOHLA/a13400+ JAYSN"
+                        "waypoints": "LEELN/a800- PENSK LOHLA/a13400+ JAYSN"
                     },
                     "HOCEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_26R _LAS_8L RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ"
+                        "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ"
                     },
                     "SSKEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_26R _LAS_8L RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ IWANS"
+                        "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ IWANS"
                     },
                     "HEC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_26R _LAS_8L RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ SLVRR TOPAC"
+                        "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ SLVRR TOPAC"
                     },
                     "LVELL": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_26R _LAS_8L RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ DOYYL ZELMA JOTNU"
+                        "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ DOYYL ZELMA JOTNU"
                     },
                     "BLH": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_26R _LAS_8L RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ DOYYL ZELMA"
+                        "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ DOYYL ZELMA"
                     },
                     "BOJAC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_26R _LAS_8L RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ DOYYL"
+                        "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ DOYYL"
                     },
                     "ZAYNE": {
                         "cleared_altitude": 19000,
                         "sid": "RASLR3",
-                        "waypoints": "_LAS_26R _LAS_8L RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK"
+                        "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK"
                     }, 
                     "FRNCK": {
                         "cleared_altitude": 19000,
                         "sid": "RATPK3",
-                        "waypoints": "_LAS_26R _LAS_8L LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN"
+                        "waypoints": "LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN"
                     }
                 },
                 "26L": {
                     "VERKN": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_26R _LAS_8L LEELN/a8000- GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
+                        "waypoints": "LEELN/a8000- GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
                     },
                     "TUKRR": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_26L _LAS_8L LEELN/a8000- GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+                        "waypoints": "LEELN/a8000- GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
                     },
                     "KENNO": {
                         "cleared_altitude": 19000,
                         "sid": "JOHKR3",
-                        "waypoints": "_LAS_26L _LAS_8L SILTT RUDYY/a4000+/s230 SELLZ/a8000- KRUGR/a11000- JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+                        "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- KRUGR/a11000- JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
                     },
                     "JAYSN": {
                         "cleared_altitude": 14000,
                         "sid": "LOHLA3",
-                        "waypoints": "_LAS_26L _LAS_8L LEELN/a800- PENSK LOHLA/a13400+ JAYSN"
+                        "waypoints": "LEELN/a800- PENSK LOHLA/a13400+ JAYSN"
                     },
                     "HOCEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_26L _LAS_8L SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ"
+                        "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ"
                     },
                     "SSKEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_26L _LAS_8L SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ IWANS"
+                        "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ IWANS"
                     },
                     "HEC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_26L _LAS_8L SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ SLVRR TOPAC"
+                        "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ SLVRR TOPAC"
                     },
                     "LVELL": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_26L _LAS_8L SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ DOYYL ZELMA JOTNU"
+                        "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ DOYYL ZELMA JOTNU"
                     },
                     "BLH": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_26L _LAS_8L SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ DOYYL ZELMA"
+                        "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ DOYYL ZELMA"
                     },
                     "BOJAC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_26L _LAS_8L SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ DOYYL"
+                        "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ DOYYL"
                     },
                     "ZAYNE": {
                         "cleared_altitude": 19000,
                         "sid": "RASLR3",
-                        "waypoints": "_LAS_26L _LAS_8L SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK"
+                        "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK"
                     }, 
                     "FRNCK": {
                         "cleared_altitude": 19000,
                         "sid": "RATPK3",
-                        "waypoints": "_LAS_26R _LAS_8L LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN"
+                        "waypoints": "LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN"
                     }
                 },
                 "8R": {
                     "VERKN": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_8R _LAS_26L N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000+ GIDGT GEEOO BETHL VERKN"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000+ GIDGT GEEOO BETHL VERKN"
                     },
                     "TUKRR": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_8R _LAS_26L N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
                     },
                     "KENNO": {
                         "cleared_altitude": 19000,
                         "sid": "JOHKR3",
-                        "waypoints": "_LAS_8R _LAS_26L N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000 HNIBL/a8000/s230 VMPRE JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000 HNIBL/a8000/s230 VMPRE JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
                     },
                     "JAYSN": {
                         "cleared_altitude": 14000,
                         "sid": "LOHLA3",
-                        "waypoints": "_LAS_8R _LAS_26L N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 KNGPN LOHLA/a13400+ JAYSN"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 KNGPN LOHLA/a13400+ JAYSN"
                     },
                     "HOCEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_8R _LAS_26L N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ"
                     },
                     "SSKEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_8R _LAS_26L N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ IWANS"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ IWANS"
                     },
                     "HEC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_8R _LAS_26L N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC"
                     },
                     "LVELL": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_8R _LAS_26L N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL ZELMA JOTNU"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL ZELMA JOTNU"
                     },
                     "BLH": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_8R _LAS_26L N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL ZELMA"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL ZELMA"
                     },
                     "BOJAC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_8R _LAS_26L N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL"
                     },
                     "ZAYNE": {
                         "cleared_altitude": 19000,
                         "sid": "RASLR3",
-                        "waypoints": "_LAS_8R _LAS_26L  N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 ROODE/a8000+ RASLR/a13000+ ROHCK"
+                        "waypoints": " N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 ROODE/a8000+ RASLR/a13000+ ROHCK"
                     }, 
                     "FRNCK": {
                         "cleared_altitude": 19000,
                         "sid": "RATPK3",
-                        "waypoints": "_LAS_8R _LAS_26L N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN JENFR RATPK DARDN"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN JENFR RATPK DARDN"
                     }
                 },
                 "8L": {
                     "VERKN": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_8L _LAS_26R N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000+ GIDGT GEEOO BETHL VERKN"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000+ GIDGT GEEOO BETHL VERKN"
                     },
                     "TUKRR": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_8L _LAS_26R N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
                     },
                     "KENNO": {
                         "cleared_altitude": 19000,
                         "sid": "JOHKR3",
-                        "waypoints": "_LAS_8L _LAS_26R N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000 HNIBL/a8000/s230 VMPRE JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000 HNIBL/a8000/s230 VMPRE JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
                     },
                     "JAYSN": {
                         "cleared_altitude": 14000,
                         "sid": "LOHLA3",
-                        "waypoints": "_LAS_8L _LAS_26R N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 KNGPN LOHLA/a13400+ JAYSN"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 KNGPN LOHLA/a13400+ JAYSN"
                     },
                     "HOCEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_8L _LAS_26R N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ"
                     },
                     "SSKEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_8L _LAS_26R N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ IWANS"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ IWANS"
                     },
                     "HEC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_8L _LAS_26R N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC"
                     },
                     "LVELL": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_8L _LAS_26R N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL ZELMA JOTNU"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL ZELMA JOTNU"
                     },
                     "BLH": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_8L _LAS_26R N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL ZELMA"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL ZELMA"
                     },
                     "BOJAC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_8L _LAS_26R N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL"
                     },
                     "ZAYNE": {
                         "cleared_altitude": 19000,
                         "sid": "RASLR3",
-                        "waypoints": "_LAS_8L _LAS_26R  N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 ROODE/a8000+ RASLR/a13000+ ROHCK"
+                        "waypoints": " N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 ROODE/a8000+ RASLR/a13000+ ROHCK"
                     }, 
                     "FRNCK": {
                         "cleared_altitude": 19000,
                         "sid": "RATPK3",
-                        "waypoints": "_LAS_8L _LAS_26R N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN JENFR RATPK DARDN"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN JENFR RATPK DARDN"
                     }
                 },
                 "1R": {
                     "VERKN": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN AIRRO/a11500+/s250 GIDGT GEEOO BETHL VERKN"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN AIRRO/a11500+/s250 GIDGT GEEOO BETHL VERKN"
                     },
                     "TUKRR": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN AIRRO/a11500+/s250 GIDGT NICLE 36.582613,-112.440224 TUKRR"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN AIRRO/a11500+/s250 GIDGT NICLE 36.582613,-112.440224 TUKRR"
                     },
                     "KENNO": {
                         "cleared_altitude": 19000,
                         "sid": "JOHKR3",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000 HRRLY KWYYN RAWKK/a13000+ JOHKR JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000 HRRLY KWYYN RAWKK/a13000+ JOHKR JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
                     },
                     "JAYSN": {
                         "cleared_altitude": 14000,
                         "sid": "LOHLA3",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ PENSK LOHLA/a13400+ JAYSN"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ PENSK LOHLA/a13400+ JAYSN"
                     },
                     "HOCEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 NIITZ"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 NIITZ"
                     },
                     "SSKEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 NIITZ IWANS SSKEE"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 NIITZ IWANS SSKEE"
                     },
                     "HEC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR TOPAC HEC"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR TOPAC HEC"
                     },
                     "LVELL": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ doyyl ZELMA JOTNU LVELL"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ doyyl ZELMA JOTNU LVELL"
                     },
                     "BLH": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ DOYYL ZELMA 34.1896975,-115.0455705 BLH"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ DOYYL ZELMA 34.1896975,-115.0455705 BLH"
                     },
                     "BOJAC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ DOYYL BOJAC"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ DOYYL BOJAC"
                     },
                     "ZAYNE": {
                         "cleared_altitude": 19000,
                         "sid": "RASLR3",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 RASLR/a13000+ ROHCK ZAYNE"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 RASLR/a13000+ ROHCK ZAYNE"
                     },
                     "FRNCK": {
                         "cleared_altitude": 19000,
                         "sid": "RATPK3",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ KYBAD/a6000+ JENFR RATPK DARDN"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD/a6000+ JENFR RATPK DARDN"
                     }                  
                 },
                 "1L": {
                     "VERKN": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN AIRRO/a11500+/s250 GIDGT GEEOO BETHL VERKN"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN AIRRO/a11500+/s250 GIDGT GEEOO BETHL VERKN"
                     },
                     "TUKRR": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN AIRRO/a11500+/s250 GIDGT NICLE 36.582613,-112.440224 TUKRR"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN AIRRO/a11500+/s250 GIDGT NICLE 36.582613,-112.440224 TUKRR"
                     },
                     "KENNO": {
                         "cleared_altitude": 19000,
                         "sid": "JOHKR3",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000 HRRLY KWYYN RAWKK/a13000+ JOHKR JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000 HRRLY KWYYN RAWKK/a13000+ JOHKR JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
                     },
                     "JAYSN": {
                         "cleared_altitude": 14000,
                         "sid": "LOHLA3",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ PENSK LOHLA/a13400+ JAYSN"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ PENSK LOHLA/a13400+ JAYSN"
                     },
                     "HOCEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 NIITZ"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 NIITZ"
                     },
                     "SSKEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 NIITZ IWANS SSKEE"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 NIITZ IWANS SSKEE"
                     },
                     "HEC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR TOPAC HEC"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR TOPAC HEC"
                     },
                     "LVELL": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ doyyl ZELMA JOTNU LVELL"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ doyyl ZELMA JOTNU LVELL"
                     },
                     "BLH": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ DOYYL ZELMA 34.1896975,-115.0455705 BLH"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ DOYYL ZELMA 34.1896975,-115.0455705 BLH"
                     },
                     "BOJAC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ DOYYL BOJAC"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ DOYYL BOJAC"
                     },
                     "ZAYNE": {
                         "cleared_altitude": 19000,
                         "sid": "RASLR3",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 RASLR/a13000+ ROHCK ZAYNE"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 RASLR/a13000+ ROHCK ZAYNE"
                     },
                     "FRNCK": {
                         "cleared_altitude": 19000,
                         "sid": "RATPK3",
-                        "waypoints": "_LAS_1R _LAS_19L N036.07.49.830,W115.07.49.006/a2700+ KYBAD/a6000+ JENFR RATPK DARDN"
+                        "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD/a6000+ JENFR RATPK DARDN"
                     }                  
                 },
                 "19R": {
                     "VERKN": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_19R _LAS_1L N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
+                        "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
                     },
                     "TUKRR": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_19R _LAS_1L N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+                        "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
                     },
                     "KENNO": {
                         "cleared_altitude": 19000,
                         "sid": "JOHKR3",
-                        "waypoints": "_LAS_19R _LAS_1L N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG COMIC MGNTO KRUGR/a11000- BESSY/a5000 HRRLY KWYYN RAWKK/a13000+ JOHKR JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+                        "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG COMIC MGNTO KRUGR/a11000- BESSY/a5000 HRRLY KWYYN RAWKK/a13000+ JOHKR JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
                     },
                     "JAYSN": {
                         "cleared_altitude": 14000,
                         "sid": "LOHLA3",
-                        "waypoints": "_LAS_19R _LAS_1L N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- PENSK LOHLA/a13400+ JAYSN"
+                        "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- PENSK LOHLA/a13400+ JAYSN"
                     },
                     "HOCEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_19R _LAS_1L N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000+ NIITZ"
+                        "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000+ NIITZ"
                     },
                     "SSKEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_19R _LAS_1L N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000 NIITZ IWANS SSKEE"
+                        "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000 NIITZ IWANS SSKEE"
                     },
                     "HEC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_19R _LAS_1L N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC HEC"
+                        "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC HEC"
                     },
                     "LVELL": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_19R _LAS_1L N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ doyyl ZELMA JOTNU LVELL"
+                        "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ doyyl ZELMA JOTNU LVELL"
                     },
                     "BLH": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_19R _LAS_1L N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL ZELMA 34.1896975,-115.0455705 BLH"
+                        "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL ZELMA 34.1896975,-115.0455705 BLH"
                     },
                     "BOJAC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_19R _LAS_1L N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL BOJAC"
+                        "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL BOJAC"
                     },
                     "ZAYNE": {
                         "cleared_altitude": 19000,
                         "sid": "RASLR3",
-                        "waypoints": "_LAS_19R _LAS_1L N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK ZAYNE"
+                        "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK ZAYNE"
                     },
                     "FRNCK": {
                         "cleared_altitude": 19000,
                         "sid": "RATPK3",
-                        "waypoints": "_LAS_19R _LAS_1L N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN"
+                        "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN"
                     }                  
                 }, 
                 "19L": {
                     "VERKN": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_19L _LAS_1R N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
+                        "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
                     },
                     "TUKRR": {
                         "cleared_altitude": 19000,
                         "sid": "GIDGT2",
-                        "waypoints": "_LAS_19L _LAS_1R N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+                        "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
                     },
                     "KENNO": {
                         "cleared_altitude": 19000,
                         "sid": "JOHKR3",
-                        "waypoints": "_LAS_19L _LAS_1R N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG COMIC MGNTO KRUGR/a11000- BESSY/a5000 HRRLY KWYYN RAWKK/a13000+ JOHKR JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+                        "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG COMIC MGNTO KRUGR/a11000- BESSY/a5000 HRRLY KWYYN RAWKK/a13000+ JOHKR JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
                     },
                     "JAYSN": {
                         "cleared_altitude": 14000,
                         "sid": "LOHLA3",
-                        "waypoints": "_LAS_19L _LAS_1R N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- PENSK LOHLA/a13400+ JAYSN"
+                        "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- PENSK LOHLA/a13400+ JAYSN"
                     },
                     "HOCEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_19L _LAS_1R N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000+ NIITZ"
+                        "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000+ NIITZ"
                     },
                     "SSKEE": {
                         "cleared_altitude": 19000,
                         "sid": "NIITZ3",
-                        "waypoints": "_LAS_19L _LAS_1R N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000 NIITZ IWANS SSKEE"
+                        "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000 NIITZ IWANS SSKEE"
                     },
                     "HEC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_19L _LAS_1R N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC HEC"
+                        "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC HEC"
                     },
                     "LVELL": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_19L _LAS_1R N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ doyyl ZELMA JOTNU LVELL"
+                        "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ doyyl ZELMA JOTNU LVELL"
                     },
                     "BLH": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_19L _LAS_1R N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL ZELMA 34.1896975,-115.0455705 BLH"
+                        "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL ZELMA 34.1896975,-115.0455705 BLH"
                     },
                     "BOJAC": {
                         "cleared_altitude": 19000,
                         "sid": "RADYR2",
-                        "waypoints": "_LAS_19L _LAS_1R N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL BOJAC"
+                        "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ DOYYL BOJAC"
                     },
                     "ZAYNE": {
                         "cleared_altitude": 19000,
                         "sid": "RASLR3",
-                        "waypoints": "_LAS_19L _LAS_1R N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK ZAYNE"
+                        "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK ZAYNE"
                     },
                     "FRNCK": {
                         "cleared_altitude": 19000,
                         "sid": "RATPK3",
-                        "waypoints": "_LAS_19L _LAS_1R N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN"
+                        "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN"
                     }                  
                 }
                 
@@ -760,7 +760,6 @@
                 "RATPK": "RATPK3",
                 "FRNCK": "RATPK3"
             },
-            "location": "N36.4.59.17,W115.8.53.52",
             "tower_list": 1
 
 
@@ -849,12 +848,14 @@
                     "initial_speed": 250,
                     "star": "CHOWW2",
                     "runway_waypoints": {
-                        "26R": "WOLPH TATUU/a9500/a10500- KRLOZ/a9000- FLYES/a8000/s210/h221",
-                        "26L": "WOLPH TATUU/a9500/a10500- KRLOZ/a9000- PRINO/a8000/s210/h221",
-                        "19L": "WOLPH SACHL/a10000+/a13000- FELAA/a8500+/a10000- FOOOF/a7000+/a8000/s220 NNEON PPENN/a6000/s210/h263",
-                        "19R": "WOLPH SACHL/a10000+/a13000- FELAA/a8500+/a10000- FOOOF/a7000+/a8000/s220 NNEON PPENN/a6000/s210/h263",
-                        "1L": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 TRREY/a7000+/s210",
-                        "1R": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 BUHLL/a7000/s210"
+                        "KLAS": {
+                            "26R": "WOLPH TATUU/a9500/a10500- KRLOZ/a9000- FLYES/a8000/s210/h221",
+                            "26L": "WOLPH TATUU/a9500/a10500- KRLOZ/a9000- PRINO/a8000/s210/h221",
+                            "19L": "WOLPH SACHL/a10000+/a13000- FELAA/a8500+/a10000- FOOOF/a7000+/a8000/s220 NNEON PPENN/a6000/s210/h263",
+                            "19R": "WOLPH SACHL/a10000+/a13000- FELAA/a8500+/a10000- FOOOF/a7000+/a8000/s220 NNEON PPENN/a6000/s210/h263",
+                            "1L": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 TRREY/a7000+/s210",
+                            "1R": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 BUHLL/a7000/s210"
+                        }
                     },
                     "waypoints": "AALAN/a17000+/a23000- N036.26.03.917,W114.09.59.551/ho CHOWW/s250/a19000- WOLPH"
     
@@ -901,14 +902,16 @@
                 "initial_speed": 280,
                 "star": "COKTL3",
                 "runway_waypoints": {
-                    "8L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210",
-                    "8R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210",
-                    "1R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210",
-                    "1L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210",
-                    "19R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
-                    "19L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
-                    "26L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
-                    "26R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079"
+                    "KLAS": {
+                        "8L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210",
+                        "8R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210",
+                        "1R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210",
+                        "1L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210",
+                        "19R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
+                        "19L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
+                        "26L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
+                        "26R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079"
+                    }
                 },
                 "waypoints": " ARYEL/a21000+/ho COKTL/a16000+/a19000-/s250 ZLLDA/a14000+ "
             }
@@ -1081,14 +1084,16 @@
                 "initial_speed": 280,
                 "star": "JAYSN2",
                 "runway_waypoints": {
-                   "19R": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
-                   "19L": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
-                   "26R": "WAPID PESHY/s250/a15000+ NEEMA/a14200+ ENNVY/a11000+ REDQN/s210/a9000+ TWAFL BERBN/a8000/s210/h079",
-                   "26L": "WAPID PESHY/s250/a15000+ NEEMA/a14200+ ENNVY/a11000+ REDQN/s210/a9000+ TWAFL BERBN/a8000/s210/h079",
-                   "1L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
-                   "1R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
-                   "8L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005",
-                   "8R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005"
+                   "KLAS": {
+                       "19R": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
+                       "19L": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
+                       "26R": "WAPID PESHY/s250/a15000+ NEEMA/a14200+ ENNVY/a11000+ REDQN/s210/a9000+ TWAFL BERBN/a8000/s210/h079",
+                       "26L": "WAPID PESHY/s250/a15000+ NEEMA/a14200+ ENNVY/a11000+ REDQN/s210/a9000+ TWAFL BERBN/a8000/s210/h079",
+                       "1L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
+                       "1R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
+                       "8L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005",
+                       "8R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005"
+                   }
                 },
                 "waypoints": "JAYSN/a19000+/ho WAPID"
             }
@@ -1219,16 +1224,16 @@
                 "initial_speed": 280,
                 "star": "RKSTR3",
                 "runway_waypoints": {
-                    "1L": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 TRREY/a7000+/s210",
-                    "1R": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 BUHLL/a7000/s210",
-                    "8R": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 YAGGR/a8000/s210/h005",
-                    "8L": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 YAGGR/a8000/s210/h005",
-                    "26R": "RKSTR HUXLY/a10000+/a13000-/s250 HAYLN/a9000- FLYES/a8000/s210/h292",
-                    "19L": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a8500+/a10000- FOOOF/a7000+/a8000-/s220 NNEON PPENN/a6000/s210/h263",
-                    "19R": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a8500+/a10000- FOOOF/a7000+/a8000-/s220 NNEON PPENN/a6000/s210/h263",
-                    "26L": "RKSTR HUXLY/a10000+/a13000-/s250 HAYLN/a9000- PRINO/a8000/s210/h290"
-
-
+                    "KLAS": {
+                        "1L": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 TRREY/a7000+/s210",
+                        "1R": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 BUHLL/a7000/s210",
+                        "8R": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 YAGGR/a8000/s210/h005",
+                        "8L": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 YAGGR/a8000/s210/h005",
+                        "26R": "RKSTR HUXLY/a10000+/a13000-/s250 HAYLN/a9000- FLYES/a8000/s210/h292",
+                        "19L": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a8500+/a10000- FOOOF/a7000+/a8000-/s220 NNEON PPENN/a6000/s210/h263",
+                        "19R": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a8500+/a10000- FOOOF/a7000+/a8000-/s220 NNEON PPENN/a6000/s210/h263",
+                        "26L": "RKSTR HUXLY/a10000+/a13000-/s250 HAYLN/a9000- PRINO/a8000/s210/h290"
+                    }
                 },
                 "waypoints": "KWEAN STYYX/a22000+/a26000-/ho PEHTY/a14000+/a19000-/s250 RKSTR"
             }
@@ -1274,13 +1279,15 @@
                 "initial_speed": 280,
                 "star": "RNDRZ2",
                 "runway_waypoints" : {
-                    "19R": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
-                    "19L": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
-                    "26R": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
-                    "26L": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
-                    "1L": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
-                    "1R": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
-                    "8L": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005"
+                    "KLAS": {
+                        "19R": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
+                        "19L": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
+                        "26R": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
+                        "26L": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
+                        "1L": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
+                        "1R": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
+                        "8L": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005"
+                    }
                 },
                 "waypoints": " WATEV/a19000+/ho TOETS RNDRZ/a13000+/a19000-/s250 "
             }
@@ -1366,7 +1373,6 @@
         "_LAS_19L": "N036.05.48.980,W115.09.29.091",
         "_LAS_19R": "N036.05.50.697,W115.09.15.633"
     },
-    "magnetic_variation": -11,
     "name": "KLAS",
     "primary_airport": "KLAS",
     "radar_sites": {

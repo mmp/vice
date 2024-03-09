@@ -1,5 +1,5 @@
 {
-  "tracon": "NCT (NorCal)",
+  "tracon": "NCT",
   "airports": {
     "KSJC": {
       "approaches": {
@@ -7,46 +7,46 @@
           "runway": "12R",
           "type": "ILS",
           "waypoints": [
-            "ARTAQ/if/a1800 SUNNE/a1800 JUJGE/a520 _SJC12R/a58"
+            "ARTAQ/if/a1800 SUNNE/a1800 JUJGE/a520"
           ]
         },
         "R2R": {
           "runway": "12R",
           "type": "RNAV",
           "waypoints": [
-            "ARTAQ/iaf/a1800 SUNNE/if/a1100 FOXAG/a1100 _SJC12R/a58",
-            "HITIR/if/a4000 ZORSA/s210 PUAKO/s210 FOXAG/a1100 _SJC12R/a58",
-            "WADVA/iaf/a4500 RERAE/if/a1800 PUAKO/s210 FOXAG/a1100 _SJC12R/a58"
+            "ARTAQ/iaf/a1800 SUNNE/if/a1100 FOXAG/a1100",
+            "HITIR/if/a4000 ZORSA/s210 PUAKO/s210 FOXAG/a1100",
+            "WADVA/iaf/a4500 RERAE/if/a1800 PUAKO/s210 FOXAG/a1100"
           ]
         },
         "R2L": {
           "runway": "12L",
           "type": "RNAV",
           "waypoints": [
-            "ARTAQ/iaf/a1800 OMSEE/if/a1100 HINIR/a1100 _SJC12L/a58",
-            "HITIR/if/a4000 ZORSA/s210 NIBUY/s210 HINIR/a1100 _SJC12L/a58",
-            "WADVA/iaf/a4500 RERAE/if/a1800 NIBUY/s210 HINIR/a1100 _SJC12L/a58"
+            "ARTAQ/iaf/a1800 OMSEE/if/a1100 HINIR/a1100",
+            "HITIR/if/a4000 ZORSA/s210 NIBUY/s210 HINIR/a1100",
+            "WADVA/iaf/a4500 RERAE/if/a1800 NIBUY/s210 HINIR/a1100"
           ]
         },
         "I3L": {
           "runway": "30L",
           "type": "ILS",
           "waypoints": [
-            "BORED/iaf/a5200 SWIGS/a4000 KLIDE/iaf/a4000 ZULUP/if/a3600 JENES/a3200 HIVAK/a2700 FORUL/a1000 _SJC30L/a58"
+            "BORED/iaf/a5200 SWIGS/a4000 KLIDE/iaf/a4000 ZULUP/if/a3600 JENES/a3200 HIVAK/a2700 FORUL/a1000"
           ]
         },
         "R3L": {
           "runway": "30L",
           "type": "RNAV",
           "waypoints": [
-            "JILNA/iaf/a5300 YADUT HEPAP/a4700 FODPA JEGSA WOXAR WOXAR/faf/a1600 _SJC30L/a58"
+            "JILNA/iaf/a5300 YADUT HEPAP/a4700 FODPA JEGSA WOXAR WOXAR/faf/a1600"
           ]
         },
         "R3R": {
           "runway": "30R",
           "type": "RNAV",
           "waypoints": [
-            "BORED/iaf SWIGS KLIDE/iaf/a4000/s230 ZULUP/a3600 KIRVE/a2600 COKOR/a2000 HILUD/a960 _SJC30R/a58"
+            "BORED/iaf SWIGS KLIDE/iaf/a4000/s230 ZULUP/a3600 KIRVE/a2600 COKOR/a2000 HILUD/a960"
           ]
         }
       },
@@ -55,88 +55,88 @@
           "GRTFL,DEDHD,HRNER,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 12000,
             "sid":"LOUPE5",
-            "waypoints": "_SJC30R _SJC12L BMRNG"
+            "waypoints": "BMRNG"
           },
           "AVE,PXN": {
             "cleared_altitude": 12000,
             "sid":"SJC3",
-            "waypoints": "_SJC30R _SJC12L/h300 MOONY"
+            "waypoints": "KSJC-12L/h300 MOONY"
           },
           "VLREE,JFREE,NTELL,LOSHN,EBAYE": {
             "cleared_altitude": 12000,
             "sid":"SPTNS1",
-            "waypoints": "_SJC30R _SJC12L STCLR/a900/s230 SPTNS/a5000 TECKY/a13000"
+            "waypoints": "STCLR/a900/s230 SPTNS/a5000 TECKY/a13000"
           },
           "SAC,LIN": {
             "cleared_altitude": 12000,
             "sid":"SUNOL1",
-            "waypoints": "_SJC30R _SJC12L/h043 SUNOL"
+            "waypoints": "KSJC-12L/h043 SUNOL"
           }
         },
         "30L": {
           "GRTFL,DEDHD,HRNER,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 12000,
             "sid":"LOUPE5",
-            "waypoints": "_SJC30L _SJC12R BMRNG"
+            "waypoints": "BMRNG"
           },
           "AVE,PXN": {
             "cleared_altitude": 12000,
             "sid":"SJC3",
-            "waypoints": "_SJC30L _SJC12R/h300 MOONY"
+            "waypoints": "KSJC-12R/h300 MOONY"
           },
           "VLREE,JFREE,NTELL,LOSHN,EBAYE": {
             "cleared_altitude": 12000,
             "sid":"SPTNS1",
-            "waypoints": "_SJC30L _SJC12R STCLR/a900/s230 SPTNS/a5000 TECKY/a13000"
+            "waypoints": "STCLR/a900/s230 SPTNS/a5000 TECKY/a13000"
           },
           "SAC,LIN": {
             "cleared_altitude": 12000,
             "sid":"SUNOL1",
-            "waypoints": "_SJC30L _SJC12R/h043 SUNOL"
+            "waypoints": "KSJC-12R/h043 SUNOL"
           }
         },
         "12R": {
           "GRTFL,DEDHD,HRNER,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 12000,
             "sid":"LOUPE5",
-            "waypoints": "_SJC12R _SJC30L/h150 BMRNG"
+            "waypoints": "KSJC-30L/h150 BMRNG"
           },
           "AVE,PXN": {
             "cleared_altitude": 12000,
             "sid":"SJC3",
-            "waypoints": "_SJC12R _SJC30L/h150 MOONY"
+            "waypoints": "KSJC-30L/h150 MOONY"
           },
           "VLREE,JFREE,NTELL,LOSHN,EBAYE": {
             "cleared_altitude": 12000,
             "sid":"TECKY4",
-            "waypoints": "_SJC12R _SJC30L NEVSE TECKY/a13000"
+            "waypoints": "NEVSE TECKY/a13000"
           },
           "SAC,LIN": {
             "cleared_altitude": 12000,
             "sid":"SUNOL1",
-            "waypoints": "_SJC12R _SJC30L/h150 SUNOL"
+            "waypoints": "KSJC-30L/h150 SUNOL"
           }
         },
         "12L": {
           "GRTFL,DEDHD,HRNER,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 12000,
             "sid":"LOUPE5",
-            "waypoints": "_SJC12L _SJC30R/h150 BMRNG"
+            "waypoints": "KSJC-30R/h150 BMRNG"
           },
           "AVE,PXN": {
             "cleared_altitude": 12000,
             "sid":"SJC3",
-            "waypoints": "_SJC12L _SJC30R/h150 MOONY"
+            "waypoints": "KSJC-30R/h150 MOONY"
           },
           "VLREE,JFREE,NTELL,LOSHN,EBAYE": {
             "cleared_altitude": 12000,
             "sid":"TECKY4",
-            "waypoints": "_SJC12L _SJC30R NEVSE TECKY/a13000"
+            "waypoints": "NEVSE TECKY/a13000"
           },
           "SAC,LIN": {
             "cleared_altitude": 12000,
             "sid":"SUNOL1",
-            "waypoints": "_SJC12L _SJC30R/h150 SUNOL"
+            "waypoints": "KSJC-30R/h150 SUNOL"
           }
         }
       },
@@ -506,7 +506,6 @@
         "LIN": "East",
         "TECKY": "Southeast"
       },
-      "location": "KSJC",
       "tower_list": 1
     },
     "KOAK": {
@@ -515,21 +514,21 @@
           "runway": "10L",
           "type": "RNAV",
           "waypoints": [
-            "MICRA/iaf COMMO DATTS/if/a3000 ENCOL/a1800 AKEVE/a1000 JEPAG _OAK10L/a49"
+            "MICRA/iaf COMMO DATTS/if/a3000 ENCOL/a1800 AKEVE/a1000 JEPAG"
           ]
         },
         "R0R": {
           "runway": "10R",
           "type": "RNAV",
           "waypoints": [
-            "MICRA/iaf COMMO DATTS/if/a3000 ENCOL/a1800 ALOIN/a1000 CAXIN _OAK10L/a49"
+            "MICRA/iaf COMMO DATTS/if/a3000 ENCOL/a1800 ALOIN/a1000 CAXIN"
           ]
         },
         "I12": {
           "runway": "12",
           "type": "ILS",
           "waypoints": [
-            "RAIDR/iaf/a2900 ALCAT/if/a2900 PLAZA/a1800 _OAK12/a49"
+            "RAIDR/iaf/a2900 ALCAT/if/a2900 PLAZA/a1800"
           ]
         },
         "RY12": {
@@ -537,7 +536,7 @@
           "full_name": "RNAV Y Runway 12",
           "type": "RNAV",
           "waypoints": [
-            "RAIDR/iaf/a2900 ALCAT/if/a2900 PLAZA/a1800 ILATE _OAK12/a49"
+            "RAIDR/iaf/a2900 ALCAT/if/a2900 PLAZA/a1800 ILATE"
           ]
         },
         "RZ12": {
@@ -545,15 +544,15 @@
           "full_name": "RNAV Y Runway 12",
           "type": "RNAV",
           "waypoints": [
-            "NRTHM/iaf/a3600 ALCAT/if/a2900 SHNGL/if PLAZA/a1800 _OAK12/a49",
-            "HIRMO/iaf/a4000 FREEM/arc3OAK/a3700 JENAY BEEEJ/if/a3200 MNNTY/a1800 PLAZA/a1800 _OAK12/a49"
+            "NRTHM/iaf/a3600 ALCAT/if/a2900 SHNGL/if PLAZA/a1800",
+            "HIRMO/iaf/a4000 FREEM/arc3OAK/a3700 JENAY BEEEJ/if/a3200 MNNTY/a1800 PLAZA/a1800"
           ]
         },
         "I8R": {
           "runway": "28R",
           "type": "ILS",
           "waypoints": [
-            "BBUBB/iaf/a5000 NAGVY/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500 _OAK28R/a49"
+            "BBUBB/iaf/a5000 NAGVY/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500"
           ]
         },
         "RY8R": {
@@ -561,8 +560,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 28R",
           "waypoints": [
-            "BBUBB/iaf/a5000 NAGVY/if/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500 JAPSO/a980 _OAK28R/a49",
-            "CYMBL/iaf/a5300 NAGVY/if/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500 JAPSO/a980 _OAK28R/a49"
+            "BBUBB/iaf/a5000 NAGVY/if/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500 JAPSO/a980",
+            "CYMBL/iaf/a5300 NAGVY/if/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500 JAPSO/a980"
           ]
         },
         "RZ8R": {
@@ -570,8 +569,8 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 28R",
           "waypoints": [
-            "BBUBB/iaf/a5000 NAGVY/if/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500 _OAK28R/a49",
-            "CYMBL/iaf/a5300 NAGVY/if/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500 _OAK28R/a49"
+            "BBUBB/iaf/a5000 NAGVY/if/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500",
+            "CYMBL/iaf/a5300 NAGVY/if/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500"
           ]
         },
         "RY8L": {
@@ -579,8 +578,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 28L",
           "waypoints": [
-            "BBUBB/iaf/a5000 JUPAP/if/a3700 HEDER/a2800 VODSY/a1900 TENIE/a1080 _OAK28L/a49",
-            "CYMBL/iaf/a5300 JUPAP/if/a3700 HEDER/a2800 VODSY/a1900 TENIE/a1080 _OAK28L/a49"
+            "BBUBB/iaf/a5000 JUPAP/if/a3700 HEDER/a2800 VODSY/a1900 TENIE/a1080",
+            "CYMBL/iaf/a5300 JUPAP/if/a3700 HEDER/a2800 VODSY/a1900 TENIE/a1080"
           ]
         },
         "RZ8L": {
@@ -588,16 +587,16 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 28L",
           "waypoints": [
-            "BBUBB/iaf/a5000 JUPAP/if/a3700 HEDER/a2800 VODSY/a1900 _OAK28L/a49",
-            "CYMBL/iaf/a5300 JUPAP/if/a3700 HEDER/a2800 VODSY/a1900  _OAK28L/a49"
+            "BBUBB/iaf/a5000 JUPAP/if/a3700 HEDER/a2800 VODSY/a1900",
+            "CYMBL/iaf/a5300 JUPAP/if/a3700 HEDER/a2800 VODSY/a1900 "
           ]
         },
         "I30": {
           "runway": "30",
           "type": "ILS",
           "waypoints": [
-            "PARBB/iaf/a4500 ZOLUM WUVON/if/a2700 MITOE/a2000 _OAK30/a49",
-            "FRNNY/iaf/a4100 WUVON/if/a2700 MITOE/a2000 _OAK30/a49"
+            "PARBB/iaf/a4500 ZOLUM WUVON/if/a2700 MITOE/a2000",
+            "FRNNY/iaf/a4100 WUVON/if/a2700 MITOE/a2000"
           ]
         },
         "RY30": {
@@ -605,8 +604,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 30",
           "waypoints": [
-            "PARBB/iaf/a4500 MITOE/a2000 _OAK30/a49",
-            "FRNNY/iaf/a4100 MITOE/a2000 _OAK30/a49"
+            "PARBB/iaf/a4500 MITOE/a2000",
+            "FRNNY/iaf/a4100 MITOE/a2000"
           ]
         },
         "RZ30": {
@@ -614,9 +613,9 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 30",
           "waypoints": [
-            "PARBB/iaf/a4500 HEPMO MITOE/a2000 _OAK30/a49",
-            "FRNNY/iaf/a4100 WUVON/if MITOE/a2000 _OAK30/a49",
-            "ALLXX/if/a5000/s210 CRSEN HEPMO MITOE/a2000 _OAK30/a49"
+            "PARBB/iaf/a4500 HEPMO MITOE/a2000",
+            "FRNNY/iaf/a4100 WUVON/if MITOE/a2000",
+            "ALLXX/if/a5000/s210 CRSEN HEPMO MITOE/a2000"
           ]
         }
       },
@@ -625,118 +624,118 @@
           "NTELL,KAYEX,SUSEY,KTINA,YYUNG": {
             "cleared_altitude": 12000,
             "sid":"CNDEL5",
-            "waypoints": "_OAK28R _OAK10L LEJAY/a2000 CNDEL PORTE/a10000"
+            "waypoints": "LEJAY/a2000 CNDEL PORTE/a10000"
           },
           "RZS,FLW,SXC,GVO": {
             "cleared_altitude": 12000,
             "sid":"COAST9",
-            "waypoints": "_OAK28R _OAK10L/h278 SEGUL CYPRS MCKEY"
+            "waypoints": "KOAK-10L/h278 SEGUL CYPRS MCKEY"
           },
           "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 12000,
             "sid":"HUSSH2",
-            "waypoints": "_OAK28R _OAK10L/h296 HUSSH NIITE REBAS/a8000"
+            "waypoints": "KOAK-10L/h296 HUSSH NIITE REBAS/a8000"
           },
           "PYE,SGD,CCR,SAC": {
             "cleared_altitude": 12000,
             "sid":"OAK5",
-            "waypoints": "_OAK28R _OAK10L/h280"
+            "waypoints": "KOAK-10L/h280"
           },
           "SNS,SHOEY": {
             "cleared_altitude": 12000,
             "sid":"NUEVO8",
-            "waypoints": "_OAK28R _OAK10L/h278"
+            "waypoints": "KOAK-10L/h278"
           },
           "ENI,RBL,LIN": {
             "cleared_altitude": 12000,
             "sid":"SILENT3",
-            "waypoints": "_OAK28R _OAK10L/h278 REBAS"
+            "waypoints": "KOAK-10L/h278 REBAS"
           },
           "SUNNE": {
             "cleared_altitude": 12000,
             "sid":"SUNNE1",
-            "waypoints": "_OAK28R _OAK10L/h120 SUNNE"
+            "waypoints": "KOAK-10L/h120 SUNNE"
           }
         },
         "30": {
           "NTELL,KAYEX,SUSEY,KTINA,YYUNG": {
             "cleared_altitude": 12000,
             "sid":"CNDEL5",
-            "waypoints": "_OAK30 _OAK12 LEJAY/a2000 CNDEL PORTE/a10000"
+            "waypoints": "LEJAY/a2000 CNDEL PORTE/a10000"
           },
           "RZS,FLW,SXC,GVO": {
             "cleared_altitude": 12000,
             "sid":"COAST9",
-            "waypoints": "_OAK30 _OAK12/h296 SEGUL CYPRS MCKEY"
+            "waypoints": "KOAK-12/h296 SEGUL CYPRS MCKEY"
           },
           "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 12000,
             "sid":"HUSSH2",
-            "waypoints": "_OAK30 _OAK12/h296 HUSSH NIITE REBAS/a8000"
+            "waypoints": "KOAK-12/h296 HUSSH NIITE REBAS/a8000"
           },
           "PYE,SGD,CCR,SAC": {
             "cleared_altitude": 12000,
             "sid":"OAK5",
-            "waypoints": "_OAK30 _OAK12/h315"
+            "waypoints": "KOAK-12/h315"
           },
           "SNS,SHOEY": {
             "cleared_altitude": 12000,
             "sid":"NUEVO8",
-            "waypoints": "_OAK30 _OAK12/h296"
+            "waypoints": "KOAK-12/h296"
           },
           "ENI,RBL,LIN": {
             "cleared_altitude": 12000,
             "sid":"SILENT3",
-            "waypoints": "_OAK30 _OAK12/h278 REBAS"
+            "waypoints": "KOAK-12/h278 REBAS"
           },
           "SUNNE": {
             "cleared_altitude": 12000,
             "sid":"SUNNE1",
-            "waypoints": "_OAK30 _OAK12/h120 SUNNE"
+            "waypoints": "KOAK-12/h120 SUNNE"
           }
         },
         "10L": {
           "NTELL,KAYEX,SUSEY,KTINA,YYUNG": {
             "cleared_altitude": 6000,
             "sid":"KATFH3",
-            "waypoints": "_OAK10L _OAK28R ROWLY/a3000 VYYDA/a4000 KATFH/a6000 MCOVY"
+            "waypoints": "ROWLY/a3000 VYYDA/a4000 KATFH/a6000 MCOVY"
           },
           "ALANN,CINNY,BEBOP,ALCOA SUSEY,LIBBO": {
             "cleared_altitude": 6000,
             "sid":"QUAKE2",
-            "waypoints": "_OAK10L _OAK28R/h270"
+            "waypoints": "KOAK-28R/h270"
           },
           "RZS": {
             "cleared_altitude": 6000,
             "sid":"COAST9",
-            "waypoints": "_OAK10L _OAK28R/h270"
+            "waypoints": "KOAK-28R/h270"
           },
           "PYE,SGD,CCR,SAC": {
             "cleared_altitude": 12000,
             "sid":"OAK5",
-            "waypoints": "_OAK10L _OAK28R/h280"
+            "waypoints": "KOAK-28R/h280"
           }
         },
           "12": {
             "NTELL,KAYEX,SUSEY,KTINA,YYUNG": {
               "cleared_altitude": 6000,
               "sid":"KATFH3",
-              "waypoints": "_OAK12 _OAK30 ROWLY/a3000 VYYDA/a4000 KATFH/a6000 MCOVY"
+              "waypoints": "ROWLY/a3000 VYYDA/a4000 KATFH/a6000 MCOVY"
             },
             "ALANN,CINNY,BEBOP,ALCOA SUSEY,LIBBO": {
               "cleared_altitude": 6000,
               "sid":"QUAKE2",
-              "waypoints": "_OAK12 _OAK30/h120"
+              "waypoints": "KOAK-30/h120"
             },
             "PXN,AVE,FLW": {
               "cleared_altitude": 6000,
               "sid":"SKYL1",
-              "waypoints": "_OAK12 _OAK30 SIXDY/a3000 SIWBI/a5000 SIZXO/a9000 WAGES/a20000"
+              "waypoints": "SIXDY/a3000 SIWBI/a5000 SIZXO/a9000 WAGES/a20000"
             },
             "PYE,SGD,CCR,SAC": {
               "cleared_altitude": 12000,
               "sid":"OAK5",
-              "waypoints": "_OAK12 _OAK30/h120"
+              "waypoints": "KOAK-30/h120"
             }
           }
         },
@@ -907,7 +906,6 @@
         "LIN": "East",
         "SUNNE": "East"
       },
-      "location": "KOAK",
       "tower_list": 2
     },
     "KSFO": {
@@ -916,7 +914,7 @@
           "runway": "10L",
           "type": "ILS",
           "waypoints": [
-            "STINS/iaf/a3500 NORMM/if/a3500 XATTU/a1800 _SFO10L/a55"
+            "STINS/iaf/a3500 NORMM/if/a3500 XATTU/a1800"
           ]
         },
         "G0R": {
@@ -924,28 +922,28 @@
           "type": "RNAV",
           "full_name": "GLS Runway 10R",
           "waypoints": [
-            "STINS/iaf/a3500 DOTNE/if/a3500 JULOS/a1900 _SFO10R/a55"
+            "STINS/iaf/a3500 DOTNE/if/a3500 JULOS/a1900"
           ]
         },
         "R0R": {
           "runway": "10R",
           "type": "RNAV",
           "waypoints": [
-            "STINS/iaf/a3500 DOTNE/if/a3500 JULOS/a1900 _SFO10R/a55"
+            "STINS/iaf/a3500 DOTNE/if/a3500 JULOS/a1900"
           ]
         },
         "I9L": {
           "runway": "19L",
           "type": "ILS",
           "waypoints": [
-            "CCR UPEND/iaf/a5000 BERKS/if/a5000 SHAKE/a2800 ROGGE/a1800 _SFO19L/a55"
+            "CCR UPEND/iaf/a5000 BERKS/if/a5000 SHAKE/a2800 ROGGE/a1800"
           ]
         },
         "R9L": {
           "runway": "19L",
           "type": "RNAV",
           "waypoints": [
-            "UPEND/iaf/a5000 BERKS/if/a5000 SHAKE/a2800 ROGGE/a1800 _SFO19L/a55"
+            "UPEND/iaf/a5000 BERKS/if/a5000 SHAKE/a2800 ROGGE/a1800"
           ]
         },
         "G9L": {
@@ -953,14 +951,14 @@
           "type": "RNAV",
           "full_name": "GLS Runway 19L",
           "waypoints": [
-            "UPEND/iaf/a5000 BERKS/if/a5000 SHAKE/a2800 _SFO19L/a55"
+            "UPEND/iaf/a5000 BERKS/if/a5000 SHAKE/a2800"
           ]
         },
         "R9R": {
           "runway": "19R",
           "type": "RNAV",
           "waypoints": [
-            "UPEND/iaf/a5000 HITOD/a4000 ESUME/a2800 _SFO19R/a55"
+            "UPEND/iaf/a5000 HITOD/a4000 ESUME/a2800"
           ]
         },
         "G9R": {
@@ -968,24 +966,24 @@
           "type": "RNAV",
           "full_name": "GLS Runway 19R",
           "waypoints": [
-            "UPEND/iaf/a5000 HITOD/a4000 ESUME/a2800 _SFO19R/a55"
+            "UPEND/iaf/a5000 HITOD/a4000 ESUME/a2800"
           ]
         },
         "I8L": {
           "runway": "28L",
           "type": "ILS",
           "waypoints": [
-            "ARCHI/iaf/a7000 PONKE/a5000 WETOR/a4000 ROKME/a3100 HEMAN/a3100 DUYET/a1800 NEPIC/a860 _SFO28L/a55",
-            "FAITH/iaf/a7000 PONKE/a5000 WETOR/a4000 ROKME/a3100 HEMAN/a3100 DUYET/a1800 NEPIC/a860 _SFO28L/a55"
+            "ARCHI/iaf/a7000 PONKE/a5000 WETOR/a4000 ROKME/a3100 HEMAN/a3100 DUYET/a1800 NEPIC/a860",
+            "FAITH/iaf/a7000 PONKE/a5000 WETOR/a4000 ROKME/a3100 HEMAN/a3100 DUYET/a1800 NEPIC/a860"
           ]
         },
         "R8L": {
           "runway": "28L",
           "type": "RNAV",
           "waypoints": [
-            "ARCHI/iaf/a7000 PONKE/a5000 WETOR/a4000 ROKME/a3100 HEMAN/a3100 DUYET/a1800 NEPIC/a860 _SFO28L/a55",
-            "DIVEC/iaf/a7000 PONKE/a5000 WETOR/a4000 ROKME/a3100 HEMAN/a3100 DUYET/a1800 NEPIC/a860 _SFO28L/a55",
-            "EDDYY/iaf/a6000 SIDBY/iaf/a4000 HEMAN/if/a3100 DUYET/a1800 NEPIC/a860 _SFO28L/a55"
+            "ARCHI/iaf/a7000 PONKE/a5000 WETOR/a4000 ROKME/a3100 HEMAN/a3100 DUYET/a1800 NEPIC/a860",
+            "DIVEC/iaf/a7000 PONKE/a5000 WETOR/a4000 ROKME/a3100 HEMAN/a3100 DUYET/a1800 NEPIC/a860",
+            "EDDYY/iaf/a6000 SIDBY/iaf/a4000 HEMAN/if/a3100 DUYET/a1800 NEPIC/a860"
           ]
         },
         "GLL": {
@@ -993,17 +991,17 @@
           "type": "RNAV",
           "full_name": "GLS Runway 28L",
           "waypoints": [
-            "ARCHI/iaf/a7000 PONKE/a5000 WETOR/a4000 ROKME/a3100 HEMAN/a3100 DUYET/a1800 NEPIC/a860 _SFO28L/a55",
-            "DIVEC/iaf/a7000 PONKE/a5000 WETOR/a4000 ROKME/a3100 HEMAN/a3100 DUYET/a1800 NEPIC/a860 _SFO28L/a55",
-            "EDDYY/iaf/a6000 SIDBY/iaf/a4000 HEMAN/if/a3100 DUYET/a1800 NEPIC/a860 _SFO28L/a55"
+            "ARCHI/iaf/a7000 PONKE/a5000 WETOR/a4000 ROKME/a3100 HEMAN/a3100 DUYET/a1800 NEPIC/a860",
+            "DIVEC/iaf/a7000 PONKE/a5000 WETOR/a4000 ROKME/a3100 HEMAN/a3100 DUYET/a1800 NEPIC/a860",
+            "EDDYY/iaf/a6000 SIDBY/iaf/a4000 HEMAN/if/a3100 DUYET/a1800 NEPIC/a860"
           ]
         },
         "I8R": {
           "runway": "28R",
           "type": "ILS",
           "waypoints": [
-            "ARCHI/iaf/a7000 ZILED/a5000 GIRRR/a4000 DUMBA/iaf/a3000 CEPIN/if/a3000 AXMUL/a1800 _SFO28R/a55",
-            "EDDYY/iaf/a6000 SIDBY/iaf/a4000 CEPIN/a3000 AXMUL/a1800 _SFO28R/a55"
+            "ARCHI/iaf/a7000 ZILED/a5000 GIRRR/a4000 DUMBA/iaf/a3000 CEPIN/if/a3000 AXMUL/a1800",
+            "EDDYY/iaf/a6000 SIDBY/iaf/a4000 CEPIN/a3000 AXMUL/a1800"
           ]
         },
         "Z8R": {
@@ -1011,8 +1009,8 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 28R",
           "waypoints": [
-            "ARCHI/iaf/a7000 ZILED/a5000 GIRRR/a4000 DUMBA/iaf/a3000 CEPIN/if/a3000 AXMUL/a1800 _SFO28R/a55",
-            "EDDYY/iaf/a6000 SIDBY/iaf/a4000 CEPIN/a3000 AXMUL/a1800 _SFO28R/a55"
+            "ARCHI/iaf/a7000 ZILED/a5000 GIRRR/a4000 DUMBA/iaf/a3000 CEPIN/if/a3000 AXMUL/a1800",
+            "EDDYY/iaf/a6000 SIDBY/iaf/a4000 CEPIN/a3000 AXMUL/a1800"
           ]
         },
         "X8R": {
@@ -1020,7 +1018,7 @@
           "type": "RNAV",
           "full_name": "RNAV X Runway 28R",
           "waypoints": [
-            "ANETE/iaf/a7000 FATUS/a6000 HEGOT/if/a5000 WASOP/a4000 MIUKE/a3000 GOBEC/a1800 DARNE/a1140 _SFO28R/a55"
+            "ANETE/iaf/a7000 FATUS/a6000 HEGOT/if/a5000 WASOP/a4000 MIUKE/a3000 GOBEC/a1800 DARNE/a1140"
           ]
         },
         "Y8R": {
@@ -1028,8 +1026,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 28R",
           "waypoints": [
-            "ARCHI/iaf/a7000 WIBNI GUTTS/if/a3400 DONNG/faf/a1800 JOSUF/a1264 FABLA/a743 _SFO28R/a55",
-            "EDDYY/iaf/a6000 SIDBY/iaf GUTTS/if/a3400 DONNG/faf/a1800 JOSUF/a1264 FABLA/a743 _SFO28R/a55"
+            "ARCHI/iaf/a7000 WIBNI GUTTS/if/a3400 DONNG/faf/a1800 JOSUF/a1264 FABLA/a743",
+            "EDDYY/iaf/a6000 SIDBY/iaf GUTTS/if/a3400 DONNG/faf/a1800 JOSUF/a1264 FABLA/a743"
           ]
         },
         "GLR": {
@@ -1037,8 +1035,8 @@
           "type": "ILS",
           "full_name": "GLS Runway 28R",
           "waypoints": [
-            "ARCHI/iaf/a7000 ZILED/a5000 GIRRR/a4000 DUMBA/iaf/a3000 CEPIN/if/a3000 AXMUL/a1800 _SFO28R/a55",
-            "EDDYY/iaf/a6000 SIDBY/iaf/a4000 CEPIN/a3000 AXMUL/a1800 _SFO28R/a55"
+            "ARCHI/iaf/a7000 ZILED/a5000 GIRRR/a4000 DUMBA/iaf/a3000 CEPIN/if/a3000 AXMUL/a1800",
+            "EDDYY/iaf/a6000 SIDBY/iaf/a4000 CEPIN/a3000 AXMUL/a1800"
           ]
         },
         "TTR": {
@@ -1046,7 +1044,7 @@
           "type": "Visual",
           "full_name": "Tiptoe Visual Runway 28R",
           "waypoints": [
-            "EDDYY/a6000 SIDBY/a5000 CHERA MIUKE _SFO28R/a55"
+            "EDDYY/a6000 SIDBY/a5000 CHERA MIUKE"
           ]
         },
         "TTL": {
@@ -1054,7 +1052,7 @@
           "type": "Visual",
           "full_name": "Tiptoe Visual Runway 28L",
           "waypoints": [
-            "EDDYY/a6000 SIDBY/a5000 CHERA HEMAN _SFO28L/a55"
+            "EDDYY/a6000 SIDBY/a5000 CHERA HEMAN"
           ]
         }
       },
@@ -1063,416 +1061,416 @@
           "CINNY,BEBOP,ALCOA,AMAKR": {
             "cleared_altitude": 2500,
             "sid":"GNNRR3",
-            "waypoints": "_SFO28R _SFO10L GNNRR/a2500"
+            "waypoints": "GNNRR/a2500"
           },
           "ENI": {
             "cleared_altitude": 1800,
             "sid":"MOLEN9",
-            "waypoints": "_SFO28R _SFO10L WESLA/a1800 STINS MOLEN"
+            "waypoints": "WESLA/a1800 STINS MOLEN"
           },
           "GRTFL,DEDHD,ORRCA,MOGEE": {
             "cleared_altitude": 8000,
             "sid":"NIITE3",
-            "waypoints": "_SFO28R _SFO10L GALOO HUSSH NIITE REBAS/a8000 "
+            "waypoints": "GALOO HUSSH NIITE REBAS/a8000 "
           },
           "TIPRE,SYRAH": {
             "cleared_altitude": 8000,
             "sid":"NIITE3",
-            "waypoints": "_SFO28R _SFO10L MDBAY HUSSH NIITE REBAS/a8000 TAMMM"
+            "waypoints": "MDBAY HUSSH NIITE REBAS/a8000 TAMMM"
           },
           "MQO,FLW": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO28R _SFO10L SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY"
+            "waypoints": "SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY"
           },
           "RZS,GVO": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO28R _SFO10L SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY MQO"
+            "waypoints": "SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY MQO"
           },
           "SXC": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO28R _SFO10L SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY DAISY BENET"
+            "waypoints": "SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY DAISY BENET"
           },
           "NTELL": {
             "cleared_altitude": 13000,
             "sid":"SAHEY4",
-            "waypoints": "_SFO28R _SFO10L/h280 SAHEY CIITY/a5000 HOPII/a13000"
+            "waypoints": "SAHEY CIITY/a5000 HOPII/a13000"
           },
           "KAYEX,SUSEY,KTINA": {
             "cleared_altitude": 9000,
             "sid":"SAHEY4",
-            "waypoints": "_SFO28R _SFO10L/h280 SAHEY CIITY/a5000 MAAYS/a6000 MCOVY/a9000"
+            "waypoints": "KSFO-10L/h280 SAHEY CIITY/a5000 MAAYS/a6000 MCOVY/a9000"
           },
           "LIN,SAC,CCR,RBL": {
             "cleared_altitude": 3000,
             "sid":"SFO4",
-            "waypoints": "_SFO28R _SFO10L/h280"
+            "waypoints": "KSFO-10L/h280"
           }
         },
         "28L": {
           "CINNY,BEBOP,ALCOA,AMAKR": {
             "cleared_altitude": 2500,
             "sid":"GNNRR3",
-            "waypoints": "_SFO28L _SFO10R GNNRR/a2500"
+            "waypoints": "GNNRR/a2500"
           },
           "ENI": {
             "cleared_altitude": 1800,
             "sid":"MOLEN9",
-            "waypoints": "_SFO28L _SFO10R WESLA/a1800 STINS MOLEN"
+            "waypoints": "WESLA/a1800 STINS MOLEN"
           },
           "GRTFL,DEDHD,ORRCA,MOGEE": {
             "cleared_altitude": 8000,
             "sid":"NIITE3",
-            "waypoints": "_SFO28L _SFO10R GALOO HUSSH NIITE REBAS/a8000 "
+            "waypoints": "GALOO HUSSH NIITE REBAS/a8000 "
           },
           "TIPRE,SYRAH": {
             "cleared_altitude": 8000,
             "sid":"NIITE3",
-            "waypoints": "_SFO28L _SFO10R MDBAY HUSSH NIITE REBAS/a8000 TAMMM"
+            "waypoints": "MDBAY HUSSH NIITE REBAS/a8000 TAMMM"
           },
           "MQO,FLW": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO28L _SFO10R SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY"
+            "waypoints": "SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY"
           },
           "RZS,GVO": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO28L _SFO10R SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY MQO"
+            "waypoints": "SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY MQO"
           },
           "SXC": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO28L _SFO10R SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY DAISY BENET"
+            "waypoints": "SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY DAISY BENET"
           },
           "NTELL": {
             "cleared_altitude": 13000,
             "sid":"SAHEY4",
-            "waypoints": "_SFO28L _SFO10R/h280 SAHEY CIITY/a5000 HOPII/a13000"
+            "waypoints": "KSFO-10R/h280 SAHEY CIITY/a5000 HOPII/a13000"
           },
           "KAYEX,SUSEY,KTINA": {
             "cleared_altitude": 9000,
             "sid":"SAHEY4",
-            "waypoints": "_SFO28L _SFO10R/h280 SAHEY CIITY/a5000 MAAYS/a6000 MCOVY/a9000"
+            "waypoints": "KSFO-10R/h280 SAHEY CIITY/a5000 MAAYS/a6000 MCOVY/a9000"
           },
           "LIN,SAC,CCR,RBL": {
             "cleared_altitude": 3000,
             "sid":"SFO4",
-            "waypoints": "_SFO28L _SFO10R/h280"
+            "waypoints": "KSFO-10R/h280"
           }
         },
         "10R": {
           "CINNY,BEBOP,ALCOA,AMAKR": {
             "cleared_altitude": 2500,
             "sid":"GNNRR3",
-            "waypoints": "_SFO10R _SFO28L/h100"
+            "waypoints": "KSFO-28L/h100"
           },
           "ENI": {
             "cleared_altitude": 1800,
             "sid":"MOLEN9",
-            "waypoints": "_SFO10R _SFO28L SIPLY/a2000 STINS MOLEN"
+            "waypoints": "SIPLY/a2000 STINS MOLEN"
           },
           "GRTFL,DEDHD,ORRCA,MOGEE": {
             "cleared_altitude": 8000,
             "sid":"NIITE3",
-            "waypoints": "_SFO10R _SFO28L/h100"
+            "waypoints": "KSFO-28L/h100"
           },
           "TIPRE,SYRAH": {
             "cleared_altitude": 8000,
             "sid":"NIITE3",
-            "waypoints": "_SFO10R _SFO28L/h100"
+            "waypoints": "KSFO-28L/h100"
           },
           "MQO,FLW": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO10R _SFO28L/h100"
+            "waypoints": "KSFO-28L/h100"
           },
           "RZS,GVO": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO10R _SFO28L/h100"
+            "waypoints": "KSFO-28L/h100"
           },
           "SXC": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO10R _SFO28L/h100"
+            "waypoints": "KSFO-28L/h100"
           },
           "NTELL": {
             "cleared_altitude": 13000,
             "sid":"SAHEY4",
-            "waypoints": "_SFO10R _SFO28L URRSA SAHEY CIITY/a5000 HOPII"
+            "waypoints": "URRSA SAHEY CIITY/a5000 HOPII"
           },
           "KAYEX,SUSEY,KTINA": {
             "cleared_altitude": 9000,
             "sid":"SAHEY4",
-            "waypoints": "_SFO10R _SFO28L URRSA SAHEY MAAYS/a6000 MCOVY/a9000"
+            "waypoints": "URRSA SAHEY MAAYS/a6000 MCOVY/a9000"
           },
           "LIN,SAC,CCR,RBL": {
             "cleared_altitude": 3000,
             "sid":"SFO4",
-            "waypoints": "_SFO10R _SFO28L/h100"
+            "waypoints": "KSFO-28L/h100"
           }
         },
         "10L": {
           "CINNY,BEBOP,ALCOA,AMAKR": {
             "cleared_altitude": 2500,
             "sid":"GNNRR3",
-            "waypoints": "_SFO10L _SFO28R/h100"
+            "waypoints": "KSFO-28R/h100"
           },
           "ENI": {
             "cleared_altitude": 1800,
             "sid":"MOLEN9",
-            "waypoints": "_SFO10L _SFO28R SIPLY/a2000 STINS MOLEN"
+            "waypoints": "SIPLY/a2000 STINS MOLEN"
           },
           "GRTFL,DEDHD,ORRCA,MOGEE": {
             "cleared_altitude": 8000,
             "sid":"NIITE3",
-            "waypoints": "_SFO10L _SFO28R/h100"
+            "waypoints": "KSFO-28R/h100"
           },
           "TIPRE,SYRAH": {
             "cleared_altitude": 8000,
             "sid":"NIITE3",
-            "waypoints": "_SFO10L _SFO28R/h100"
+            "waypoints": "KSFO-28R/h100"
           },
           "MQO,FLW": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO10L _SFO28R/h100"
+            "waypoints": "KSFO-28R/h100"
           },
           "RZS,GVO": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO10L _SFO28R/h100"
+            "waypoints": "KSFO-28R/h100"
           },
           "SXC": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO10L _SFO28R/h100"
+            "waypoints": "KSFO-28R/h100"
           },
           "NTELL": {
             "cleared_altitude": 13000,
             "sid":"SAHEY4",
-            "waypoints": "_SFO10L _SFO28R ORYAN SAHEY CIITY/a5000 HOPII"
+            "waypoints": "ORYAN SAHEY CIITY/a5000 HOPII"
           },
           "KAYEX,SUSEY,KTINA": {
             "cleared_altitude": 9000,
             "sid":"SAHEY4",
-            "waypoints": "_SFO10L _SFO28R ORYAN SAHEY MAAYS/a6000 MCOVY/a9000"
+            "waypoints": "ORYAN SAHEY MAAYS/a6000 MCOVY/a9000"
           },
           "LIN,SAC,CCR,RBL": {
             "cleared_altitude": 3000,
             "sid":"SFO4",
-            "waypoints": "_SFO10L _SFO28R/h100"
+            "waypoints": "KSFO-28R/h100"
           }
         },
-        "01L": {
+        "1L": {
           "CINNY,BEBOP,ALCOA,AMAKR": {
             "cleared_altitude": 2500,
             "sid":"GNNRR3",
-            "waypoints": "_SFO1L _SFO19R/h014"
+            "waypoints": "KSFO-19R/h014"
           },
           "ENI": {
             "cleared_altitude": 1800,
             "sid":"MOLEN9",
-            "waypoints": "_SFO1L _SFO19R/h014"
+            "waypoints": "KSFO-19R/h014"
           },
           "GRTFL,DEDHD,ORRCA,MOGEE": {
             "cleared_altitude": 8000,
             "sid":"NIITE3",
-            "waypoints": "_SFO1L _SFO19R MDBAY/a520 HUSSH NIITE REBAS/a8000"
+            "waypoints": "MDBAY/a520 HUSSH NIITE REBAS/a8000"
           },
           "TIPRE,SYRAH": {
             "cleared_altitude": 8000,
             "sid":"NIITE3",
-            "waypoints": "_SFO1L _SFO19R MDBAY/a520 HUSSH NIITE REBAS/a8000"
+            "waypoints": "MDBAY/a520 HUSSH NIITE REBAS/a8000"
           },
           "MQO,FLW": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO1L _SFO19R N037.41.01.129,W122.24.39.913 SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY"
+            "waypoints": "N037.41.01.129,W122.24.39.913 SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY"
           },
           "RZS,GVO": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO1L _SFO19R N037.41.01.129,W122.24.39.913 SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY MQO"
+            "waypoints": "N037.41.01.129,W122.24.39.913 SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY MQO"
           },
           "SXC": {
             "cleared_altitude": 22000,
             "sid":"OFFSH2",
-            "waypoints": "_SFO1L _SFO19R N037.41.01.129,W122.24.39.913 SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY DAISY BENET"
+            "waypoints": "N037.41.01.129,W122.24.39.913 SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY DAISY BENET"
           },
           "NTELL": {
             "cleared_altitude": 13000,
             "sid":"SAHEY4",
-            "waypoints": "_SFO1L _SFO19R/h014"
+            "waypoints": "KSFO-19R/h014"
           },
           "KAYEX,SUSEY,KTINA": {
             "cleared_altitude": 9000,
             "sid":"SAHEY4",
-            "waypoints": "_SFO1L _SFO19R/h014"
+            "waypoints": "KSFO-19R/h014"
           },
           "LIN,SAC,CCR,RBL": {
             "cleared_altitude": 3000,
             "sid":"SFO4",
-            "waypoints": "_SFO1L _SFO19R/h033"
+            "waypoints": "KSFO-19R/h033"
           }
         },
-      "01R": {
+      "1R": {
         "CINNY,BEBOP,ALCOA,AMAKR": {
           "cleared_altitude": 2500,
           "sid":"GNNRR3",
-          "waypoints": "_SFO1R _SFO19L/h014"
+          "waypoints": "KSFO-19L/h014"
         },
         "ENI": {
           "cleared_altitude": 1800,
           "sid":"MOLEN9",
-          "waypoints": "_SFO1R _SFO19L/h014"
+          "waypoints": "KSFO-19L/h014"
         },
         "GRTFL,DEDHD,ORRCA,MOGEE": {
           "cleared_altitude": 8000,
           "sid":"NIITE3",
-          "waypoints": "_SFO1R _SFO19L MDBAY/a520 HUSSH NIITE REBAS/a8000"
+          "waypoints": "MDBAY/a520 HUSSH NIITE REBAS/a8000"
         },
         "TIPRE,SYRAH": {
           "cleared_altitude": 8000,
           "sid":"NIITE3",
-          "waypoints": "_SFO1R _SFO19L MDBAY/a520 HUSSH NIITE REBAS/a8000"
+          "waypoints": "MDBAY/a520 HUSSH NIITE REBAS/a8000"
         },
         "MQO,FLW": {
           "cleared_altitude": 22000,
           "sid":"OFFSH2",
-          "waypoints": "_SFO1R _SFO19L N037.40.29.420,W122.23.27.678 SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY"
+          "waypoints": "N037.40.29.420,W122.23.27.678 SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY"
         },
         "RZS,GVO": {
           "cleared_altitude": 22000,
           "sid":"OFFSH2",
-          "waypoints": "_SFO1R _SFO19L N037.40.29.420,W122.23.27.678 SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY MQO"
+          "waypoints": "N037.40.29.420,W122.23.27.678 SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY MQO"
         },
         "SXC": {
           "cleared_altitude": 22000,
           "sid":"OFFSH2",
-          "waypoints": "_SFO1R _SFO19L N037.40.29.420,W122.23.27.678 SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY DAISY BENET"
+          "waypoints": "N037.40.29.420,W122.23.27.678 SENZY/a2500 WAMMY SEGUL/a16000 CYPRS/a22000 MCKEY DAISY BENET"
         },
         "NTELL": {
           "cleared_altitude": 13000,
           "sid":"SAHEY4",
-          "waypoints": "_SFO1R _SFO19L/h014"
+          "waypoints": "KSFO-19L/h014"
         },
         "KAYEX,SUSEY,KTINA": {
           "cleared_altitude": 9000,
           "sid":"SAHEY4",
-          "waypoints": "_SFO1R _SFO19L/h014"
+          "waypoints": "KSFO-19L/h014"
         },
         "LIN,SAC,CCR,RBL": {
           "cleared_altitude": 3000,
           "sid":"SFO4",
-          "waypoints": "_SFO1R _SFO19L/h033"
+          "waypoints": "KSFO-19L/h033"
         }
       },
       "19R": {
         "CINNY,BEBOP,ALCOA,AMAKR": {
           "cleared_altitude": 2500,
           "sid":"GNNRR3",
-          "waypoints": "_SFO19R _SFO1L/h190"
+          "waypoints": "KSFO-1L/h190"
         },
         "ENI": {
           "cleared_altitude": 1800,
           "sid":"MOLEN9",
-          "waypoints": "_SFO19R _SFO1L N037.34.00.902,W122.19.49.105 N037.33.14.773,W122.14.06.029 N037.34.05.558,W122.12.34.046 SIPLY/a2500 STINS MOLEN"
+          "waypoints": "N037.34.00.902,W122.19.49.105 N037.33.14.773,W122.14.06.029 N037.34.05.558,W122.12.34.046 SIPLY/a2500 STINS MOLEN"
         },
         "GRTFL,DEDHD,ORRCA,MOGEE": {
           "cleared_altitude": 8000,
           "sid":"NIITE3",
-          "waypoints": "_SFO19R _SFO1L/h190"
+          "waypoints": "KSFO-1L/h190"
         },
         "TIPRE,SYRAH": {
           "cleared_altitude": 8000,
           "sid":"NIITE3",
-          "waypoints": "_SFO19R _SFO1L/h190"
+          "waypoints": "KSFO-1L/h190"
         },
         "MQO,FLW": {
           "cleared_altitude": 22000,
           "sid":"OFFSH2",
-          "waypoints": "_SFO19R _SFO1L/h190"
+          "waypoints": "KSFO-1L/h190"
         },
         "RZS,GVO": {
           "cleared_altitude": 22000,
           "sid":"OFFSH2",
-          "waypoints": "_SFO19R _SFO1L/h190"
+          "waypoints": "KSFO-1L/h190"
         },
         "SXC": {
           "cleared_altitude": 22000,
           "sid":"OFFSH2",
-          "waypoints": "_SFO19R _SFO1L/h190"
+          "waypoints": "KSFO-1L/h190"
         },
         "NTELL": {
           "cleared_altitude": 13000,
           "sid":"SAHEY4",
-          "waypoints": "_SFO19R _SFO1L/h190"
+          "waypoints": "KSFO-1L/h190"
         },
         "KAYEX,SUSEY,KTINA": {
           "cleared_altitude": 9000,
           "sid":"SAHEY4",
-          "waypoints": "_SFO19R _SFO1L/h190"
+          "waypoints": "KSFO-1L/h190"
         },
         "LIN,SAC,CCR,RBL": {
           "cleared_altitude": 3000,
           "sid":"SFO4",
-          "waypoints": "_SFO19R _SFO1L/h190"
+          "waypoints": "KSFO-1L/h190"
         }
       },
       "19L": {
         "CINNY,BEBOP,ALCOA,AMAKR": {
           "cleared_altitude": 2500,
           "sid":"GNNRR3",
-          "waypoints": "_SFO19L _SFO1R/h190"
+          "waypoints": "KSFO-1R/h190"
         },
         "ENI": {
           "cleared_altitude": 1800,
           "sid":"MOLEN9",
-          "waypoints": "_SFO19L _SFO1R N037.34.00.902,W122.19.49.105 N037.33.14.773,W122.14.06.029 N037.34.05.558,W122.12.34.046 SIPLY/a2500 STINS MOLEN"
+          "waypoints": "N037.34.00.902,W122.19.49.105 N037.33.14.773,W122.14.06.029 N037.34.05.558,W122.12.34.046 SIPLY/a2500 STINS MOLEN"
         },
         "GRTFL,DEDHD,ORRCA,MOGEE": {
           "cleared_altitude": 8000,
           "sid":"NIITE3",
-          "waypoints": "_SFO19L _SFO1R/h190"
+          "waypoints": "KSFO-1R/h190"
         },
         "TIPRE,SYRAH": {
           "cleared_altitude": 8000,
           "sid":"NIITE3",
-          "waypoints": "_SFO19L _SFO1R/h190"
+          "waypoints": "KSFO-1R/h190"
         },
         "MQO,FLW": {
           "cleared_altitude": 22000,
           "sid":"OFFSH2",
-          "waypoints": "_SFO19L _SFO1R/h190"
+          "waypoints": "KSFO-1R/h190"
         },
         "RZS,GVO": {
           "cleared_altitude": 22000,
           "sid":"OFFSH2",
-          "waypoints": "_SFO19L _SFO1R/h190"
+          "waypoints": "KSFO-1R/h190"
         },
         "SXC": {
           "cleared_altitude": 22000,
           "sid":"OFFSH2",
-          "waypoints": "_SFO19L _SFO1R/h190"
+          "waypoints": "KSFO-1R/h190"
         },
         "NTELL": {
           "cleared_altitude": 13000,
           "sid":"SAHEY4",
-          "waypoints": "_SFO19L _SFO1R/h190"
+          "waypoints": "KSFO-1R/h190"
         },
         "KAYEX,SUSEY,KTINA": {
           "cleared_altitude": 9000,
           "sid":"SAHEY4",
-          "waypoints": "_SFO19L _SFO1R/h190"
+          "waypoints": "KSFO-1R/h190"
         },
         "LIN,SAC,CCR,RBL": {
           "cleared_altitude": 3000,
           "sid":"SFO4",
-          "waypoints": "_SFO19L _SFO1R/h190"
+          "waypoints": "KSFO-1R/h190"
             }
           }
         },
@@ -2019,7 +2017,6 @@
         "CCR": "Southeast",
         "RBL": "Southeast"
       },
-      "location": "KSFO",
       "tower_list": 3
     },
     "KRNO": {
@@ -2029,49 +2026,48 @@
           "type": "ILS",
           "full_name": "ILS Y Runway 17R",
           "waypoints": [
-            "LIBGE/a12000/iaf ROARS WALAR/if/a8000 ZOMPO/a7500 DISCS/a7400 HONEL/a6540 WUMKA _RNO17R/a4415"
+            "LIBGE/a12000/iaf ROARS WALAR/if/a8000 ZOMPO/a7500 DISCS/a7400 HONEL/a6540 WUMKA"
           ]
         },
         "R7R": {
           "runway": "17R",
           "type": "RNAV",
           "waypoints": [
-            "LIBGE/a12000/iaf CEROX ECOLO/if/a8600 ETARE/a7200 UDADY/a6000 _RNO17R/a4415",
-            "HALLE/iaf ECOLO/if/a8600 ETARE/a7200 UDADY/a6000 _RNO17R/a4415",
-            "FMG NUKOE/a10000 ROXJO/iaf ECOLO/if/a8600 ETARE/a7200 UDADY/a6000 _RNO17R/a4415",
-            "CAXIL/a10000 NUKOE/a10000 ROXJO/iaf ECOLO/if/a8600 ETARE/a7200 UDADY/a6000 _RNO17R/a4415"
+            "LIBGE/a12000/iaf CEROX ECOLO/if/a8600 ETARE/a7200 UDADY/a6000",
+            "HALLE/iaf ECOLO/if/a8600 ETARE/a7200 UDADY/a6000",
+            "FMG NUKOE/a10000 ROXJO/iaf ECOLO/if/a8600 ETARE/a7200 UDADY/a6000",
+            "CAXIL/a10000 NUKOE/a10000 ROXJO/iaf ECOLO/if/a8600 ETARE/a7200 UDADY/a6000"
           ]
         },
         "R7L": {
           "runway": "17L",
           "type": "RNAV",
           "waypoints": [
-            "LIBGE/a12000/iaf TEBOY/if/a8600 SEKAW/a7800 BADPE/a6900 WARAX _RNO17L/a4415",
-            "HALLE/iaf TEBOY/if/a8600 SEKAW/a7800 BADPE/a6900 WARAX _RNO17L/a4415",
-            "FMG NUKOE/a10000 ROXJO/iaf TEBOY/if/a8600 SEKAW/a7800 BADPE/a6900 WARAX _RNO17L/a4415",
-            "CAXIL/a10000 NUKOE/a10000 ROXJO/iaf TEBOY/if/a8600 SEKAW/a7800 BADPE/a6900 WARAX _RNO17L/a4415"
+            "LIBGE/a12000/iaf TEBOY/if/a8600 SEKAW/a7800 BADPE/a6900 WARAX",
+            "HALLE/iaf TEBOY/if/a8600 SEKAW/a7800 BADPE/a6900 WARAX",
+            "FMG NUKOE/a10000 ROXJO/iaf TEBOY/if/a8600 SEKAW/a7800 BADPE/a6900 WARAX",
+            "CAXIL/a10000 NUKOE/a10000 ROXJO/iaf TEBOY/if/a8600 SEKAW/a7800 BADPE/a6900 WARAX"
           ]
         },
         "I5L": {
           "runway": "35L",
           "type": "ILS",
           "waypoints": [
-            "SPOON/iaf APIME/iaf/if/a10800 WAGGE/a9400 ZONVI/a8700 EPOSE/a8200 CALEG/a6860 DUYEP/a5800 _RNO35L/a4415",
-            "SPOON/iaf WAGGE/a9400 ZONVI/a8700 EPOSE/a8200 CALEG/a6860 DUYEP/a5800 _RNO35L/a4415"
+            "SPOON/iaf/nopt APIME/iaf/if/hilpt/a10800 WAGGE/a9400 ZONVI/a8700 EPOSE/a8200 CALEG/a6860 DUYEP/a5800"
           ]
         },
         "R5L": {
           "runway": "35L",
           "type": "RNAV",
           "waypoints": [
-            "TARVR/a14000 SPOON/iaf MASUE/if LANBE/a7000 GUKCE/faf/a6900 _RNO35L/a4415"
+            "TARVR/a14000 SPOON/iaf MASUE/if LANBE/a7000 GUKCE/faf/a6900"
           ]
         },
         "R5R": {
           "runway": "35R",
           "type": "RNAV",
           "waypoints": [
-            "TARVR/a14000 SPOON/iaf MASUE/if LANBE/a7000 TULVE/faf/a6900 _RNO35R/a4415"
+            "TARVR/a14000 SPOON/iaf MASUE/if LANBE/a7000 TULVE/faf/a6900"
           ]
         }
       },
@@ -2080,128 +2076,128 @@
           "YERIN": {
             "cleared_altitude": 19000,
             "sid":"ALPYN1",
-            "waypoints": "_RNO35R _RNO17L NSTAR ALPYN/a9000/s230 RYANN/a15000"
+            "waypoints": "NSTAR ALPYN/a9000/s230 RYANN/a15000"
           },
           "CRDDZ,HALLE,PYGOW": {
             "cleared_altitude": 19000,
             "sid":"ALPYN1",
-            "waypoints": "_RNO35R _RNO17L PVINE/a8500"
+            "waypoints": "PVINE/a8500"
           },
           "SWR": {
             "cleared_altitude": 19000,
             "sid":"RENO1",
-            "waypoints": "_RNO35R _RNO17L/h003"
+            "waypoints": "KRNO-17L/h003"
           },
           "FMG": {
             "cleared_altitude": 19000,
             "sid":"SPRKS1",
-            "waypoints": "_RNO35R _RNO17L N039.36.19.962,W119.45.47.872/a6800/h100 N039.38.59.854,W119.41.59.219/h140"
+            "waypoints": "N039.36.19.962,W119.45.47.872/a6800/h100 N039.38.59.854,W119.41.59.219/h140"
           },
           "LLC": {
             "cleared_altitude": 19000,
             "sid":"WAGGE7",
-            "waypoints": "_RNO35R _RNO17L/h350"
+            "waypoints": "KRNO-17L/h350"
           },
           "PESKE,DARBI,BLKJK,MRLET": {
             "cleared_altitude": 19000,
             "sid":"ZEFFR8",
-            "waypoints": "_RNO35R _RNO17L/h350"
+            "waypoints": "KRNO-17L/h350"
           }
         },
         "35L": {
           "YERIN": {
             "cleared_altitude": 19000,
             "sid":"ALPYN1",
-            "waypoints": "_RNO35L _RNO17R NSTAR ALPYN/a9000/s230 RYANN/a15000"
+            "waypoints": "NSTAR ALPYN/a9000/s230 RYANN/a15000"
           },
           "CRDDZ,HALLE,PYGOW": {
             "cleared_altitude": 19000,
             "sid":"ALPYN1",
-            "waypoints": "_RNO35L _RNO17R PVINE/a8500"
+            "waypoints": "PVINE/a8500"
           },
           "SWR": {
             "cleared_altitude": 19000,
             "sid":"RENO1",
-            "waypoints": "_RNO35L _RNO17R/h333 "
+            "waypoints": "KRNO-17R/h333 "
           },
           "FMG": {
             "cleared_altitude": 19000,
             "sid":"SPRKS1",
-            "waypoints": "_RNO35L _RNO17R N039.36.19.962,W119.45.47.872/a6800/h100 N039.38.59.854,W119.41.59.219/h140"
+            "waypoints": "N039.36.19.962,W119.45.47.872/a6800/h100 N039.38.59.854,W119.41.59.219/h140"
           },
           "LLC": {
             "cleared_altitude": 19000,
             "sid":"WAGGE7",
-            "waypoints": "_RNO35L _RNO17R/h350"
+            "waypoints": "KRNO-17R/h350"
           },
           "PESKE,DARBI,BLKJK,MRLET": {
             "cleared_altitude": 19000,
             "sid":"ZEFFR8",
-            "waypoints": "_RNO35L _RNO17R/h350"
+            "waypoints": "KRNO-17R/h350"
           }
         },
         "17R": {
           "YERIN": {
             "cleared_altitude": 19000,
             "sid":"ALPYN1",
-            "waypoints": "_RNO17R _RNO35L/h167"
+            "waypoints": "KRNO-35L/h167"
           },
           "CRDDZ,HALLE,PYGOW": {
             "cleared_altitude": 19000,
             "sid":"ALPYN1",
-            "waypoints": "_RNO17R _RNO35L/h167 PVINE/a8500"
+            "waypoints": "KRNO-35L/h167 PVINE/a8500"
           },
           "SWR": {
             "cleared_altitude": 19000,
             "sid":"RENO1",
-            "waypoints": "_RNO17R _RNO35L/h167"
+            "waypoints": "KRNO-35L/h167"
           },
           "FMG": {
             "cleared_altitude": 19000,
             "sid":"SPRKS1",
-            "waypoints": "_RNO17R _RNO35L N039.25.07.035,W119.46.17.453/h045 FMG"
+            "waypoints": "N039.25.07.035,W119.46.17.453/h045 FMG"
           },
           "LLC": {
             "cleared_altitude": 19000,
             "sid":"WAGGE7",
-            "waypoints": "_RNO17R _RNO35L WAGGE JERGA"
+            "waypoints": "WAGGE JERGA"
           },
           "PESKE,DARBI,BLKJK,MRLET": {
             "cleared_altitude": 19000,
             "sid":"ZEFFR8",
-            "waypoints": "_RNO17R _RNO35L ZEFFR EPOSE/a9200"
+            "waypoints": "ZEFFR EPOSE/a9200"
           }
         },
           "17L": {
             "YERIN": {
               "cleared_altitude": 19000,
               "sid":"ALPYN1",
-              "waypoints": "_RNO17L _RNO35R NSTAR ALPYN/a9000/s230 RYANN/a15000"
+              "waypoints": "NSTAR ALPYN/a9000/s230 RYANN/a15000"
             },
             "CRDDZ,HALLE,PYGOW": {
               "cleared_altitude": 19000,
               "sid":"ALPYN1",
-              "waypoints": "_RNO17L _RNO35R/h167 PVINE/a8500"
+              "waypoints": "KRNO-35R/h167 PVINE/a8500"
             },
             "SWR": {
               "cleared_altitude": 19000,
               "sid":"RENO1",
-              "waypoints": "_RNO17L _RNO35R/h167 "
+              "waypoints": "KRNO-35R/h167 "
             },
             "FMG": {
               "cleared_altitude": 19000,
               "sid":"SPRKS1",
-              "waypoints": "_RNO17L _RNO35R N039.25.07.035,W119.46.17.453/h045 FMG"
+              "waypoints": "N039.25.07.035,W119.46.17.453/h045 FMG"
             },
             "LLC": {
               "cleared_altitude": 19000,
               "sid":"WAGGE7",
-              "waypoints": "_RNO17L _RNO35R WAGGE JERGA"
+              "waypoints": "WAGGE JERGA"
             },
             "PESKE,DARBI,BLKJK,MRLET": {
               "cleared_altitude": 19000,
               "sid":"ZEFFR8",
-              "waypoints": "_RNO17L _RNO35R ZEFFR EPOSE/a9200"
+              "waypoints": "ZEFFR EPOSE/a9200"
             }
         }
       },
@@ -2484,7 +2480,6 @@
         "MRLET": "West",
         "BLKJK": "East"
       },
-      "location": "KRNO",
       "tower_list": 4
     },
     "KSMF": {
@@ -2493,8 +2488,8 @@
           "runway": "17R",
           "type": "ILS",
           "waypoints": [
-            "TUDOR/iaf/a1800 FAPIN/if/a1800 JARNU KAYEG _SMF17R/a25",
-            "TENCO/iaf/a4000 FAPIN/if/a1800 JARNU KAYEG _SMF17R/a25"
+            "TUDOR/iaf/a1800 FAPIN/if/a1800 JARNU KAYEG",
+            "TENCO/iaf/a4000 FAPIN/if/a1800 JARNU KAYEG"
           ]
         },
         "RY7R": {
@@ -2502,8 +2497,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 17R",
           "waypoints": [
-            "TUDOR/iaf/a1800 FAPIN/if/a1800 JARNU AMUNE _SMF17R/a25",
-            "TENCO/iaf/a4000 FAPIN/if/a1800 JARNU AMUNE _SMF17R/a25"
+            "TUDOR/iaf/a1800 FAPIN/if/a1800 JARNU AMUNE",
+            "TENCO/iaf/a4000 FAPIN/if/a1800 JARNU AMUNE"
           ]
         },
         "RZ7R": {
@@ -2511,17 +2506,17 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 17R",
           "waypoints": [
-            "TUDOR/a5000/iaf WAXIX/if/a1800 WIPEB ZOLOV/a1100 _SMF17R/a25",
-            "TENCO/iaf/a4000 ZIMAM/if JOKUV ZOLOV/a1100 _SMF17R/a25",
-            "OVOME/if/a4000 FIKAN ZOLOV/a1100 _SMF17R/a25"
+            "TUDOR/a5000/iaf WAXIX/if/a1800 WIPEB ZOLOV/a1100",
+            "TENCO/iaf/a4000 ZIMAM/if JOKUV ZOLOV/a1100",
+            "OVOME/if/a4000 FIKAN ZOLOV/a1100"
           ]
         },
         "I7L": {
           "runway": "17L",
           "type": "ILS",
           "waypoints": [
-            "VRONA/iaf/a1900 DIRBE/if/a1900 LEVEY/a1900 JOBUD/a500 _SMF17L/a25",
-            "TENCO/iaf/a4000 DIRBE/if/a1900 LEVEY/a1900 JOBUD/a500 _SMF17L/a25"
+            "VRONA/iaf/a1900 DIRBE/if/a1900 LEVEY/a1900 JOBUD/a500",
+            "TENCO/iaf/a4000 DIRBE/if/a1900 LEVEY/a1900 JOBUD/a500"
           ]
         },
         "RY7L": {
@@ -2529,8 +2524,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 17L",
           "waypoints": [
-            "VRONA/iaf/a1900 DIRBE/if/a1900 LEVEY/a1900 JAMIM/a1080 _SMF17L/a25",
-            "TENCO/iaf/a4000 DIRBE/if/a1900 LEVEY/a1900 JAMIM/a1080 _SMF17L/a25"
+            "VRONA/iaf/a1900 DIRBE/if/a1900 LEVEY/a1900 JAMIM/a1080",
+            "TENCO/iaf/a4000 DIRBE/if/a1900 LEVEY/a1900 JAMIM/a1080"
           ]
         },
         "RZ7L": {
@@ -2538,16 +2533,16 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 17L",
           "waypoints": [
-            "TUDOR/a5000/iaf WENUD/if MUKVY UWFUR/a1100 _SMF17L/a25",
-            "TENCO/a4000/iaf ZIMAM/if/a1600 WOSKI/a1100 UWFUR/a1100 _SMF17L/a25",
-            "OVOME/a4000/if FIKAN JULUK UZIZY/a1100 UWFUR/a1100 _SMF17L/a25"
+            "TUDOR/a5000/iaf WENUD/if MUKVY UWFUR/a1100",
+            "TENCO/a4000/iaf ZIMAM/if/a1600 WOSKI/a1100 UWFUR/a1100",
+            "OVOME/a4000/if FIKAN JULUK UZIZY/a1100 UWFUR/a1100"
           ]
         },
         "I5L": {
           "runway": "35L",
           "type": "ILS",
           "waypoints": [
-            "SAC/iaf/a3000 ELMAC/if/a3000 HADSU/a1400 CANLO _SMF35L/a25"
+            "SAC/iaf/a3000 ELMAC/if/a3000 HADSU/a1400 CANLO"
           ]
         },
         "RY5L": {
@@ -2555,8 +2550,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 35L",
           "waypoints": [
-            "MYNRR/iaf/a3000 ELMAC/if/a3000 HADSU/a1400 CANLO _SMF35L/a25",
-            "ISYOH/iaf/a3000 ELMAC/if/a3000 HADSU/a1400 CANLO _SMF35L/a25"
+            "MYNRR/iaf/a3000 ELMAC/if/a3000 HADSU/a1400 CANLO",
+            "ISYOH/iaf/a3000 ELMAC/if/a3000 HADSU/a1400 CANLO"
           ]
         },
         "RZ5L": {
@@ -2564,9 +2559,9 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 35L",
           "waypoints": [
-            "MYNRR/iaf/a9000 ELMAC/if/a3000 WOMAV/a1100 _SMF35L/a25",
-            "ISYOH/iaf/a6000 ELMAC/if/a3000 WOMAV/a1100 _SMF35L/a25",
-            "PIECH/iaf/a4000 BANZA/iaf/a4000 ZITUL/a3200 WOMAV/a1100 _SMF35L/a25"
+            "MYNRR/iaf/a9000 ELMAC/if/a3000 WOMAV/a1100",
+            "ISYOH/iaf/a6000 ELMAC/if/a3000 WOMAV/a1100",
+            "PIECH/iaf/a4000 BANZA/iaf/a4000 ZITUL/a3200 WOMAV/a1100"
           ]
         },
         "RY5R": {
@@ -2574,8 +2569,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 35R",
           "waypoints": [
-            "MYNRR/iaf/a3000 FIPIN/if/a3000 CEDRA AMNIC/a780 _SMF35R/a25",
-            "ISYOH/iaf/a3000 FIPIN/if/a3000 CEDRA AMNIC/a780 _SMF35R/a25"
+            "MYNRR/iaf/a3000 FIPIN/if/a3000 CEDRA AMNIC/a780",
+            "ISYOH/iaf/a3000 FIPIN/if/a3000 CEDRA AMNIC/a780"
           ]
         },
         "RZ5R": {
@@ -2583,9 +2578,9 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 35R",
           "waypoints": [
-            "MYNRR/iaf/a9000 FIPIN/if/a3000 JUNBO/a1100 _SMF35L/a25",
-            "ISYOH/iaf/a6000 ELMAC/if/a3000 JUNBO/a1100 _SMF35L/a25",
-            "PIECH/iaf/a4000 BANZA/iaf/a4000 ZITUL/a2200 PUGYI/a2000 LERIY/a1100 JUNBO/a1100 _SMF35R/a25"
+            "MYNRR/iaf/a9000 FIPIN/if/a3000 JUNBO/a1100",
+            "ISYOH/iaf/a6000 ELMAC/if/a3000 JUNBO/a1100",
+            "PIECH/iaf/a4000 BANZA/iaf/a4000 ZITUL/a2200 PUGYI/a2000 LERIY/a1100 JUNBO/a1100"
           ]
         }
       },
@@ -2594,68 +2589,68 @@
           "HNW,SWR,MVA,OAL,NTELL,LIN,FROGO,DUDES,FMG": {
             "cleared_altitude": 19000,
             "sid":"FROGO1",
-            "waypoints": "_SMF35R _SMF17L N038.44.59.285,W121.34.36.855/h090"
+            "waypoints": "N038.44.59.285,W121.34.36.855/h090"
           },
           "FRA": {
             "cleared_altitude": 19000,
             "sid":"FTHIL3",
-            "waypoints": "_SMF35R _SMF17L  N038.44.59.285,W121.34.36.855 FTHIL GRDOE"
+            "waypoints": "N038.44.59.285,W121.34.36.855 FTHIL GRDOE"
           },
           "MACUS,RALEY,SHUFL": {
             "cleared_altitude": 19000,
             "sid":"RVRCT4",
-            "waypoints": "_SMF35R _SMF17L N038.44.59.285,W121.34.36.855 RVRCT"
+            "waypoints": "N038.44.59.285,W121.34.36.855 RVRCT"
           }
         },
         "35L": {
           "HNW,SWR,MVA,OAL,NTELL,LIN,FROGO,DUDES,FMG": {
             "cleared_altitude": 19000,
             "sid":"FROGO1",
-            "waypoints": "_SMF35L _SMF17R N038.45.03.900,W121.36.03.290/h090"
+            "waypoints": "N038.45.03.900,W121.36.03.290/h090"
           },
           "FRA": {
             "cleared_altitude": 19000,
             "sid":"FTHIL3",
-            "waypoints": "_SMF35L _SMF17R N038.45.03.900,W121.36.03.290 FTHIL GRDOE"
+            "waypoints": "N038.45.03.900,W121.36.03.290 FTHIL GRDOE"
           },
           "MACUS,RALEY,SHUFL": {
             "cleared_altitude": 19000,
             "sid":"RVRCT4",
-            "waypoints": "_SMF35L _SMF17R N038.45.03.900,W121.36.03.290 RVRCT"
+            "waypoints": "N038.45.03.900,W121.36.03.290 RVRCT"
           }
         },
         "17R": {
           "HNW,SWR,MVA,OAL,NTELL,LIN,FROGO,DUDES,FMG": {
             "cleared_altitude": 19000,
             "sid":"FROGO1",
-            "waypoints": "_SMF17R _SMF35L/h120"
+            "waypoints": "KSMF-35L/h120"
           },
           "FRA": {
             "cleared_altitude": 19000,
             "sid":"FTHIL3",
-            "waypoints": "_SMF17R _SMF35L FTHIL GRDOE"
+            "waypoints": "FTHIL GRDOE"
           },
           "MACUS,RALEY,SHUFL": {
             "cleared_altitude": 19000,
             "sid":"SCTWN4",
-            "waypoints": "_SMF17R _SMF35L SCTWN/a2300"
+            "waypoints": "SCTWN/a2300"
           }
         },
         "17L": {
           "HNW,SWR,MVA,OAL,NTELL,LIN,FROGO,DUDES,FMG": {
             "cleared_altitude": 19000,
             "sid":"FROGO1",
-            "waypoints": "_SMF17L _SMF35R/h120"
+            "waypoints": "KSMF-35R/h120"
           },
           "FRA": {
             "cleared_altitude": 19000,
             "sid":"FTHIL3",
-            "waypoints": "_SMF17L _SMF35R FTHIL GRDOE"
+            "waypoints": "FTHIL GRDOE"
           },
           "MACUS,RALEY,SHUFL": {
             "cleared_altitude": 19000,
             "sid":"SCTWN4",
-            "waypoints": "_SMF17L _SMF35R SCTWN/a2300"
+            "waypoints": "SCTWN/a2300"
           }
         }
       },
@@ -2892,7 +2887,6 @@
         "FROGO": "North",
         "NTELL": "South"
       },
-      "location": "KSMF",
       "tower_list": 5
     },
     "KMRY": {
@@ -2902,8 +2896,8 @@
           "type": "ILS",
           "full_name": "Localizer Runway 28L",
           "waypoints": [
-            "WIGGL/iaf/nopt CHRLE/hilpt/nopt180/if/iaf/a6100 YITUD/a5400 RODNE/a4600 WUXUN/a4060 ZILKU/a3020 _MRY28L/a47",
-            "SNS/nopt CHRLE/hilpt/nopt180/if/iaf/a6100 YITUD/a5400 RODNE/a4600 WUXUN/a4060 ZILKU/a3020 _MRY28L/a47"
+            "WIGGL/iaf/nopt CHRLE/hilpt/nopt180/if/iaf/a6100 YITUD/a5400 RODNE/a4600 WUXUN/a4060 ZILKU/a3020",
+            "SNS/nopt CHRLE/hilpt/nopt180/if/iaf/a6100 YITUD/a5400 RODNE/a4600 WUXUN/a4060 ZILKU/a3020"
           ]
         },
         "RY8L": {
@@ -2911,8 +2905,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 28L",
           "waypoints": [
-            "SNS/nopt/a5100 HIXAR/a5100/nopt180/hilpt IGEYO/a4100 HUGON/a3200 INICU/a1740 _MRY28L/a47",
-            "WIGGL/iaf/a5100/nopt HIXAR/a5100/nopt180/hilpt IGEYO/a4100 HUGON/a3200 INICU/a1740 _MRY28L/a47"
+            "SNS/nopt/a5100 HIXAR/a5100/nopt180/hilpt IGEYO/a4100 HUGON/a3200 INICU/a1740",
+            "WIGGL/iaf/a5100/nopt HIXAR/a5100/nopt180/hilpt IGEYO/a4100 HUGON/a3200 INICU/a1740"
           ]
         },
         "RZ8L": {
@@ -2920,8 +2914,8 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 28L",
           "waypoints": [
-            "JEJMA/nopt SNS/if/iaf/nopt180/hilpt CONIV OKUPE HUTAD _MRY28L/a47",
-            "BASEC/iaf/nopt/a4900 SNS/if/iaf/nopt180/hilpt CONIV OKUPE HUTAD _MRY28L/a47"
+            "JEJMA/nopt SNS/if/iaf/nopt180/hilpt CONIV OKUPE HUTAD",
+            "BASEC/iaf/nopt/a4900 SNS/if/iaf/nopt180/hilpt CONIV OKUPE HUTAD"
           ]
         },
         "RV8L": {
@@ -2929,22 +2923,22 @@
           "type": "ILS",
           "full_name": "Raceway Visual Runway 28L",
           "waypoints": [
-            "CHRLE/a6100 HUTAD/a1500 _MRY28L/a47",
-            "SNS/a4500 OKUPE HUTAD/a1500 _MRY28L/a47"
+            "CHRLE/a6100 HUTAD/a1500",
+            "SNS/a4500 OKUPE HUTAD/a1500"
           ]
         },
         "I0R": {
           "runway": "10R",
           "type": "ILS",
           "waypoints": [
-            "ZEBED/if/iaf/nopt180/hilpt/a2600 MINCK/a1700 _MRY10R/a47"
+            "ZEBED/if/iaf/nopt180/hilpt/a2600 MINCK/a1700"
           ]
         },
         "R0R": {
           "runway": "10R",
           "type": "RNAV",
           "waypoints": [
-            "ZEBED/if/iaf/nopt180/hilpt MINCK _MRY10R/a47"
+            "ZEBED/if/iaf/nopt180/hilpt MINCK"
           ]
         }
       },
@@ -2953,28 +2947,28 @@
           "SNS,PXN,AVE,PRB,SHOEY,OSI,SJC": {
             "cleared_altitude": 19000,
             "sid":"MRY5",
-            "waypoints": "_MRY28R _MRY10L N036.36.00.365,W121.53.02.217/h329"
+            "waypoints": "N036.36.00.365,W121.53.02.217/h329"
           }
         },
         "28L": {
           "SNS,PXN,AVE,PRB,SHOEY,OSI,SJC": {
             "cleared_altitude": 19000,
             "sid":"MRY5",
-            "waypoints": "_MRY28L _MRY10R N036.36.00.365,W121.53.02.217/h329"
+            "waypoints": "N036.36.00.365,W121.53.02.217/h329"
           }
         },
         "10R": {
           "SNS,OSI,SJC,PXN,BSR,PRB,AVE": {
             "cleared_altitude": 19000,
             "sid":"TORO7",
-            "waypoints": "_MRY10R _MRY28L N036.34.37.610,W121.48.56.810/h060"
+            "waypoints": "N036.34.37.610,W121.48.56.810/h060"
           }
         },
         "10L": {
           "SNS,OSI,SJC,PXN,BSR,PRB,AVE": {
             "cleared_altitude": 19000,
             "sid":"TORO7",
-            "waypoints": "_MRY10L _MRY28R N036.34.37.610,W121.48.56.810/h060"
+            "waypoints": "N036.34.37.610,W121.48.56.810/h060"
           }
         }
       },
@@ -3109,7 +3103,6 @@
         "SNS": "North",
         "SHOEY": "North"
       },
-      "location": "KMRY",
       "tower_list": 6
     },
     "KMER": {
@@ -3118,16 +3111,16 @@
           "runway": "13",
           "type": "RNAV",
           "waypoints": [
-            "VOLTA/a2000 DIGQY/iaf/a2000 GANQA/if/a2000 RILRE/a1700 _MER13/a55",
-            "PATYY/a2000 DIGQY/iaf/a2000 GANQA/if/a2000 RILRE/a1700 _MER13/a55",
-            "AWALI/iaf/a2000 GANQA/if/a2000 RILRE/a1700 _MER13/a55"
+            "VOLTA/a2000 DIGQY/iaf/a2000 GANQA/if/a2000 RILRE/a1700",
+            "PATYY/a2000 DIGQY/iaf/a2000 GANQA/if/a2000 RILRE/a1700",
+            "AWALI/iaf/a2000 GANQA/if/a2000 RILRE/a1700"
           ]
         },
         "I31": {
           "runway": "31",
           "type": "ILS",
           "waypoints": [
-            "FEXUM/iaf/nopt/a3000 HYP/nopt180/hilpt/a3000 SARNE/a1800 _MER31/a55"
+            "FEXUM/iaf/nopt/a3000 HYP/nopt180/hilpt/a3000 SARNE/a1800"
           ]
         },
         "R31": {
@@ -3135,8 +3128,8 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 28L",
           "waypoints": [
-             "UNIGE/a2000 NUPUZ/iaf/a2000 CUMLO/if/a2000 SARNE/a1800 _MER31/a55",
-            "EBTUW/iaf/a2000 CUMLO/if/a2000 SARNE/a1800 _MER13/a55"
+            "UNIGE/a2000 NUPUZ/iaf/a2000 CUMLO/if/a2000 SARNE/a1800",
+            "EBTUW/iaf/a2000 CUMLO/if/a2000 SARNE/a1800"
           ]
         }
       },
@@ -3144,53 +3137,53 @@
         "13": {
           "HAGRD": {
             "cleared_altitude": 5000,
-            "waypoints": "_MER13 _MER31/h130"
+            "waypoints": "KMER-31/h130"
           },
           "SNS": {
             "cleared_altitude": 5000,
-            "waypoints": "_MER13 _MER31/h130"
+            "waypoints": "KMER-31/h130"
           },
           "SHOEY": {
             "cleared_altitude": 5000,
-            "waypoints": "_MER13 _MER31/h130"
+            "waypoints": "KMER-31/h130"
           },
           "FUULL": {
             "cleared_altitude": 5000,
-            "waypoints": "_MER13 _MER31/h130"
+            "waypoints": "KMER-31/h130"
           },
           "JAGWA": {
             "cleared_altitude": 5000,
-            "waypoints": "_MER13 _MER31/h130"
+            "waypoints": "KMER-31/h130"
           },
           "MOD": {
             "cleared_altitude": 5000,
-            "waypoints": "_MER13 _MER31/h130"
+            "waypoints": "KMER-31/h130"
           }
         },
         "31": {
           "HAGRD": {
             "cleared_altitude": 5000,
-            "waypoints": "_MER31 _MER13/h130"
+            "waypoints": "KMER-13/h130"
           },
           "SNS": {
             "cleared_altitude": 5000,
-            "waypoints": "_MER31 _MER13/h130"
+            "waypoints": "KMER-13/h130"
           },
           "SHOEY": {
             "cleared_altitude": 5000,
-            "waypoints": "_MER31 _MER13/h130"
+            "waypoints": "KMER-13/h130"
           },
           "FUULL": {
             "cleared_altitude": 5000,
-            "waypoints": "_MER31 _MER13/h130"
+            "waypoints": "KMER-13/h130"
           },
           "JAGWA": {
             "cleared_altitude": 5000,
-            "waypoints": "_MER31 _MER13/h130"
+            "waypoints": "KMER-13/h130"
           },
           "MOD": {
             "cleared_altitude": 5000,
-            "waypoints": "_MER31 _MER13/h130"
+            "waypoints": "KMER-13/h130"
           }
         }
       },
@@ -3235,7 +3228,6 @@
         "SHOEY": "East",
         "FUULL": "East"
       },
-      "location": "KMER",
       "tower_list": 7
     },
     "KMOD": {
@@ -3244,17 +3236,17 @@
           "runway": "28R",
           "type": "ILS",
           "waypoints": [
-            "PXN/a7500 KALEI/iaf/a3500/nopt DLRAY/if/a1800 ZELAT/iaf/a1800/nopt180/hilpt _MOD28R/a53",
-            "FRA/a7500 KALEI/iaf/a3500/nopt DLRAY/if/a1800 ZELAT/iaf/a1800/nopt180/hilpt _MOD28R/a53"
+            "PXN/a7500 KALEI/iaf/a3500/nopt DLRAY/if/a1800 ZELAT/iaf/a1800/nopt180/hilpt",
+            "FRA/a7500 KALEI/iaf/a3500/nopt DLRAY/if/a1800 ZELAT/iaf/a1800/nopt180/hilpt"
           ]
         },
         "R8R": {
           "runway": "28R",
           "type": "RNAV",
           "waypoints": [
-            "PXN KALEI/iaf/a3500 DLRAY/if/a3500 ZELAT/a1800 _MOD28R/a53",
-            "FRA KALEI/iaf/a3500 DLRAY/if/a3500 ZELAT/a1800 _MOD28R/a53",
-            "VOLTA/a3500 FABNA/iaf/a3500 DLRAY/if/a3500 ZELAT/a1800 _MOD28R/a53"
+            "PXN KALEI/iaf/a3500 DLRAY/if/a3500 ZELAT/a1800",
+            "FRA KALEI/iaf/a3500 DLRAY/if/a3500 ZELAT/a1800",
+            "VOLTA/a3500 FABNA/iaf/a3500 DLRAY/if/a3500 ZELAT/a1800"
           ]
         }
       },
@@ -3262,7 +3254,7 @@
         "28R": {
           "NTELL,SYRAH": {
             "cleared_altitude": 5000,
-            "waypoints": "_MOD28R _MOD10L/h280"
+            "waypoints": "KMOD-10L/h280"
           }
         }
       },
@@ -3324,7 +3316,6 @@
         "NTELL": "East",
         "SYRAH": "East"
       },
-      "location": "KMOD",
       "tower_list": 8
     },
     "KSCK": {
@@ -3333,27 +3324,27 @@
           "runway": "11L",
           "type": "RNAV",
           "waypoints": [
-            "VISTO/a2700/nopt HAXEK/if/iaf/a2700/nopt180/hilpt GIKTE/a1800 _SCK11L/a55",
-            "ALTAM/iaf/a2700 LITPE/nopt HAXEK/if/iaf/a2700/nopt180/hilpt GIKTE/a1800 _SCK11L/a55",
-            "OAKEY/iaf/a2700 HAXEK/if/iaf/a2700/nopt180/hilpt GIKTE/a1800 _SCK11L/a55",
-            "LIN/iaf/a2700 HAXEK/if/iaf/a2700/nopt180/hilpt GIKTE/a1800 _SCK11L/a55"
+            "VISTO/a2700/nopt HAXEK/if/iaf/a2700/nopt180/hilpt GIKTE/a1800",
+            "ALTAM/iaf/a2700 LITPE/nopt HAXEK/if/iaf/a2700/nopt180/hilpt GIKTE/a1800",
+            "OAKEY/iaf/a2700 HAXEK/if/iaf/a2700/nopt180/hilpt GIKTE/a1800",
+            "LIN/iaf/a2700 HAXEK/if/iaf/a2700/nopt180/hilpt GIKTE/a1800"
           ]
         },
         "I9R": {
           "runway": "29R",
           "type": "ILS",
           "waypoints": [
-            "MOD/iaf/a2900/nopt SIMMS/if/a1800 IPDEW/iaf/nopt180/hilpt WIGBI _SCK29R/a55",
-            "DIJER/iaf/a2900 SIMMS/if/a1800 IPDEW/iaf/nopt180/hilpt WIGBI _SCK29R/a55",
-            "HONEZ/iaf/a2900 SIMMS/if/a1800 IPDEW/iaf/nopt180/hilpt WIGBI _SCK29R/a55"
+            "MOD/iaf/a2900/nopt SIMMS/if/a1800 IPDEW/iaf/nopt180/hilpt WIGBI",
+            "DIJER/iaf/a2900 SIMMS/if/a1800 IPDEW/iaf/nopt180/hilpt WIGBI",
+            "HONEZ/iaf/a2900 SIMMS/if/a1800 IPDEW/iaf/nopt180/hilpt WIGBI"
           ]
         },
         "R9R": {
           "runway": "29R",
           "type": "ILS",
           "waypoints": [
-            "FASIT/iaf/a2000/nopt OXJEF/if/iaf/a2000/nopt180/hilpt IPDEW/a1800 WIGBI _SCK29R/a55",
-            "AXING/iaf/a2000/nopt OXJEF/if/iaf/a2000/nopt180/hilpt IPDEW/a1800 WIGBI _SCK29R/a55"
+            "FASIT/iaf/a2000/nopt OXJEF/if/iaf/a2000/nopt180/hilpt IPDEW/a1800 WIGBI",
+            "AXING/iaf/a2000/nopt OXJEF/if/iaf/a2000/nopt180/hilpt IPDEW/a1800 WIGBI"
           ]
         }
       },
@@ -3361,13 +3352,13 @@
         "11L": {
           "MOD,AVE": {
             "cleared_altitude": 19000,
-            "waypoints": "_SCK11L _SCK29R/h110"
+            "waypoints": "KSCK-29R/h110"
           }
         },
         "29R": {
           "MOD,AVE": {
             "cleared_altitude": 19000,
-            "waypoints": "_SCK29R _SCK11L/h290"
+            "waypoints": "KSCK-11L/h290"
           }
         }
       },
@@ -3429,7 +3420,6 @@
         "AVE": "East",
         "MOD": "East"
       },
-      "location": "KSCK",
       "tower_list": 9
     },
     "KSAC": {
@@ -3438,16 +3428,16 @@
           "runway": "2",
           "type": "ILS",
           "waypoints": [
-            "UBIYI/a2000 TERUY/a1500/nopt SAC/iaf/nopt180/hilpt/a1500 _SAC2/a55"
+            "UBIYI/a2000 TERUY/a1500/nopt SAC/iaf/nopt180/hilpt/a1500"
           ]
         },
         "R2": {
           "runway": "2",
           "type": "RNAV",
           "waypoints": [
-            "COUPS/iaf/a2000 JIRAG/if/a2000 SEBAE/a1500 WUDRO _SAC2/a55",
-            "VISTO/iaf/a2000 JIRAG/if/a2000 SEBAE/a1500 WUDRO _SAC2/a55",
-            "EMBER/iaf/a2000 JIRAG/if/a2000 SEBAE/a1500 WUDRO _SAC2/a55"
+            "COUPS/iaf/a2000 JIRAG/if/a2000 SEBAE/a1500 WUDRO",
+            "VISTO/iaf/a2000 JIRAG/if/a2000 SEBAE/a1500 WUDRO",
+            "EMBER/iaf/a2000 JIRAG/if/a2000 SEBAE/a1500 WUDRO"
           ]
         },
         "V2": {
@@ -3455,7 +3445,7 @@
           "type": "ILS",
           "full_name": "VOR Runway 2",
           "waypoints": [
-            "COUPS/if/iaf/a1500/nopt SAC/iaf/a1500/nopt180/hilpt _SAC2/a55"
+            "COUPS/if/iaf/a1500/nopt SAC/iaf/a1500/nopt180/hilpt"
           ]
         }
       },
@@ -3463,13 +3453,13 @@
         "2": {
           "SAC,FROGO": {
             "cleared_altitude": 19000,
-            "waypoints": "_SAC2 _SAC20/h110"
+            "waypoints": "KSAC-20/h110"
           }
         },
         "20": {
           "SAC,FROGO": {
             "cleared_altitude": 19000,
-            "waypoints": "_SAC20 _SAC2/h200"
+            "waypoints": "KSAC-2/h200"
           }
         }
       },
@@ -3531,7 +3521,6 @@
         "SAC": "East",
         "FROGO": "East"
       },
-      "location": "KSAC",
       "tower_list": 10
     },
     "KLVK": {
@@ -3540,8 +3529,8 @@
           "runway": "25R",
           "type": "ILS",
           "waypoints": [
-            "LIN/iaf/a3100 UHHUT/if/a3100 JUSOM/a3100 _LVK25R/a55",
-            "MOD/iaf/a3100 UHHUT/if/a3100 JUSOM/a3100 _LVK25R/a55"
+            "LIN/iaf/a3100 UHHUT/if/a3100 JUSOM/a3100",
+            "MOD/iaf/a3100 UHHUT/if/a3100 JUSOM/a3100"
           ]
         },
         "L5R": {
@@ -3549,8 +3538,8 @@
           "type": "ILS",
           "full_name": "Localizer Runway 25R",
           "waypoints": [
-            "LIN/iaf/a3100 UHHUT/if/a3100 JUSOM/a3100 HINIX/a2520 ZABGO/a2000 _LVK25R/a55",
-            "MOD/iaf/a3100 UHHUT/if/a3100 JUSOM/a3100 HINIX/a2520 ZABGO/a2000 _LVK25R/a55"
+            "LIN/iaf/a3100 UHHUT/if/a3100 JUSOM/a3100 HINIX/a2520 ZABGO/a2000",
+            "MOD/iaf/a3100 UHHUT/if/a3100 JUSOM/a3100 HINIX/a2520 ZABGO/a2000"
           ]
         }
       },
@@ -3558,13 +3547,13 @@
         "25R": {
           "ALTAM,OAK,SAC": {
             "cleared_altitude": 3100,
-            "waypoints": "_LVK25R _LVK7L/h250"
+            "waypoints": "KLVK-7L/h250"
           }
         },
         "7L": {
           "ALTAM,OAK,SAC": {
             "cleared_altitude": 3100,
-            "waypoints": "_LVK7L _LVK25R/h070"
+            "waypoints": "KLVK-25R/h070"
           }
         }
       },
@@ -3627,7 +3616,6 @@
         "SAC": "East",
         "OAK": "East"
       },
-      "location": "KLVK",
       "tower_list": 11
     },
     "KSNS": {
@@ -3636,7 +3624,7 @@
           "runway": "31",
           "type": "ILS",
           "waypoints": [
-            "ARTYY/iaf/a5900/nopt/arc22SNS AANNE/if/iaf/a5900/nopt180/hilpt FREZZ/a5400 DEBBS/a5000 _SNS31/a55"
+            "ARTYY/iaf/a5900/nopt/arc22SNS AANNE/if/iaf/a5900/nopt180/hilpt FREZZ/a5400 DEBBS/a5000"
           ]
         },
         "L31": {
@@ -3644,7 +3632,7 @@
           "type": "ILS",
           "full_name": "Localizer Runway 31",
           "waypoints": [
-            "ARTYY/iaf/a5900/arc22SNS AANNE/if/a5900 FREZZ/a5400 MRCDZ/a5300 CASTS/a4900 TATUM/a3800 KNOLS/a1220 _SNS31/a55"
+            "ARTYY/iaf/a5900/arc22SNS AANNE/if/a5900 FREZZ/a5400 MRCDZ/a5300 CASTS/a4900 TATUM/a3800 KNOLS/a1220"
           ]
         },
         "RZ31": {
@@ -3652,8 +3640,8 @@
           "type": "RNAV",
           "full_name": "RNAV Z Runway 31",
           "waypoints": [
-            "RANCK/a6000 EFGON/iaf/a6000 WABUB/if/a6000 ACIYO/a3600 GIPVY/a3300 _SNS31/a55",
-            "SISGY/iaf/a6000 WABUB/if/a6000 ACIYO/a3600 GIPVY/a3300 _SNS31/a55"
+            "RANCK/a6000 EFGON/iaf/a6000 WABUB/if/a6000 ACIYO/a3600 GIPVY/a3300",
+            "SISGY/iaf/a6000 WABUB/if/a6000 ACIYO/a3600 GIPVY/a3300"
           ]
         },
         "RY31": {
@@ -3661,8 +3649,8 @@
           "type": "RNAV",
           "full_name": "RNAV Y Runway 31",
           "waypoints": [
-            "RANCK/a6000 EFGON/iaf/a6000 WABUB/if/a6000 ACIYO/a3600 GIPVY/a3300 HEPIK _SNS31/a55",
-            "SISGY/iaf/a6000 WABUB/if/a6000 ACIYO/a3600 GIPVY/a3300 HEPIK _SNS31/a55"
+            "RANCK/a6000 EFGON/iaf/a6000 WABUB/if/a6000 ACIYO/a3600 GIPVY/a3300 HEPIK",
+            "SISGY/iaf/a6000 WABUB/if/a6000 ACIYO/a3600 GIPVY/a3300 HEPIK"
           ]
         }
       },
@@ -3670,13 +3658,13 @@
         "31": {
           "SNS,BSR,SUSEY": {
             "cleared_altitude": 5000,
-            "waypoints": "_SNS31 _SNS13/h310"
+            "waypoints": "KSNS-13/h310"
           }
         },
         "13": {
           "SNS,BSR,SUSEY": {
             "cleared_altitude": 5000,
-            "waypoints": "_SNS13 _SNS31/h130"
+            "waypoints": "KSNS-31/h130"
           }
         }
       },
@@ -3739,7 +3727,6 @@
         "SUSEY": "East",
         "SNS": "East"
       },
-      "location": "KSNS",
       "tower_list": 12
     }
   },
@@ -4505,10 +4492,12 @@
         "route": "STUBL/a24000/s280/ho RAZRR/a20000 OUCHH/a16000 NIKKT/a10000",
         "waypoints": "STUBL/a24000/s280/ho RAZRR/a20000 OUCHH/a16000 NIKKT/a10000",
         "runway_waypoints": {
-          "30L": "NIKKT/a10000 SEKKO/a8000/s230 SCOPR/a7000 KLIDE/a4000/s230",
-          "30R": "NIKKT/a10000 SEKKO/a8000/s230 SCOPR/a7000 KLIDE/a4000/s230",
-          "12R": "NIKKT/a10000 GOTEE/a10000/s280 SHIKK TRCOT/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600 JESEN/a4100 HITIR/a4000",
-          "12L": "NIKKT/a10000 GOTEE/a10000/s280 SHIKK TRCOT/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600 JESEN/a4100 HITIR/a4000"
+            "KSJC": {
+                "30L": "NIKKT/a10000 SEKKO/a8000/s230 SCOPR/a7000 KLIDE/a4000/s230",
+                "30R": "NIKKT/a10000 SEKKO/a8000/s230 SCOPR/a7000 KLIDE/a4000/s230",
+                "12R": "NIKKT/a10000 GOTEE/a10000/s280 SHIKK TRCOT/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600 JESEN/a4100 HITIR/a4000",
+                "12L": "NIKKT/a10000 GOTEE/a10000/s280 SHIKK TRCOT/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600 JESEN/a4100 HITIR/a4000"
+            }
         }
       }
     ],
@@ -4727,10 +4716,12 @@
         "route": "ROBIE N036.12.54.041,W121.12.43.000/ho GOALI SNS",
         "waypoints": "ROBIE N036.12.54.041,W121.12.43.000/ho GOALI SNS",
         "runway_waypoints": {
-          "30L": "SNS GILRO",
-          "30R": "SNS GILRO",
-          "12R": "SNS SJC",
-          "12L": "SNS SJC"
+            "KSJC": {
+                "30L": "SNS GILRO",
+                "30R": "SNS GILRO",
+                "12R": "SNS SJC",
+                "12L": "SNS SJC"
+            }
         }
       }
     ],
@@ -4777,10 +4768,12 @@
         "route": "TROXX/a26000 N036.15.02.375,W121.11.30.463/ho SILCN/a20000/s280 VLLEY/a15000/s250",
         "waypoints": "TROXX/a26000 N036.15.02.375,W121.11.30.463/ho SILCN/a20000/s280 VLLEY/a15000/s250",
         "runway_waypoints": {
-          "30L": "VLLEY/a15000/s250 GUUYY/a11000 WLSSN/a8000/s250 GSTEE/a4200 KLIDE/a4000/s230",
-          "30R": "VLLEY/a15000/s250 GUUYY/a11000 WLSSN/a8000/s250 GSTEE/a4200 KLIDE/a4000/s23",
-          "12R": "VLLEY/a15000/s250 BAXBE/a12000 APLLE/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600",
-          "12L": "VLLEY/a15000/s250 BAXBE/a12000 APLLE/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600"
+            "KSJC": {
+                "30L": "VLLEY/a15000/s250 GUUYY/a11000 WLSSN/a8000/s250 GSTEE/a4200 KLIDE/a4000/s230",
+                "30R": "VLLEY/a15000/s250 GUUYY/a11000 WLSSN/a8000/s250 GSTEE/a4200 KLIDE/a4000/s23",
+                "12R": "VLLEY/a15000/s250 BAXBE/a12000 APLLE/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600",
+                "12L": "VLLEY/a15000/s250 BAXBE/a12000 APLLE/a9000/s240 GGUGL/a7000 GAARY/a5800 EDMND/a5600"
+            }
         }
       }
     ],
@@ -6057,10 +6050,12 @@
         "route": "SLMMR/a13000/ho POZUR/a8000",
         "waypoints": "SLMMR/a13000/ho POZUR/a8000",
         "runway_waypoints": {
-          "17R": "POZUR/a8000 TENCO/a4000/h255",
-          "17L": "POZUR/a8000 TENCO/a4000/h255",
-          "35R": "POZUR/a8000 RICEE PKAAY/a6000/s210 THANN BANZA/a4000/s210",
-          "35L": "POZUR/a8000 RICEE PKAAY/a6000/s210 THANN BANZA/a4000/s210"
+            "KSMF": {
+                "17R": "POZUR/a8000 TENCO/a4000/h255",
+                "17L": "POZUR/a8000 TENCO/a4000/h255",
+                "35R": "POZUR/a8000 RICEE PKAAY/a6000/s210 THANN BANZA/a4000/s210",
+                "35L": "POZUR/a8000 RICEE PKAAY/a6000/s210 THANN BANZA/a4000/s210"
+            }
         }
       }
     ],
@@ -6151,10 +6146,12 @@
         "route": "SUUTR/a24000/s250 FOOLZ/a21000 GLDDD/a19000 WRAPS/a17000 N037.54.29.105,W120.50.04.568/ho PNNEN/a12000 SLUIC",
         "waypoints": "SUUTR/a24000/s250 FOOLZ/a21000 GLDDD/a19000 WRAPS/a17000 N037.54.29.105,W120.50.04.568 PNNEN/a12000 SLUIC",
         "runway_waypoints": {
-          "17R": "SLUIC AMADR/a9000 NGGET/a7000 CHNEL/a5000 OVOME/a4000/s210",
-          "17L": "SLUIC AMADR/a9000 NGGET/a7000 CHNEL/a5000 OVOME/a4000/s210",
-          "35R": "SLUIC AMADR/a9000 MYNRR/a9000/h299",
-          "35L": "SLUIC AMADR/a9000 MYNRR/a9000/h299"
+            "KSMF": {
+                "17R": "SLUIC AMADR/a9000 NGGET/a7000 CHNEL/a5000 OVOME/a4000/s210",
+                "17L": "SLUIC AMADR/a9000 NGGET/a7000 CHNEL/a5000 OVOME/a4000/s210",
+                "35R": "SLUIC AMADR/a9000 MYNRR/a9000/h299",
+                "35L": "SLUIC AMADR/a9000 MYNRR/a9000/h299"
+            }
         }
       }
     ],
@@ -7269,7 +7266,6 @@
     "_SNS13": "N036.40.03.657,W121.36.33.969",
     "SNSD": "N036.40.11.759,W121.34.06.670"
   },
-  "magnetic_variation": -13.3,
   "name": "KSFO",
   "primary_airport": "KSFO",
   "radar_sites": {
@@ -7945,12 +7941,12 @@
         {
           "airport": "KSFO",
           "rate": 5,
-          "runway": "01L"
+          "runway": "1L"
         },
         {
           "airport": "KSFO",
           "rate": 5,
-          "runway": "01R"
+          "runway": "1R"
         }
       ],
       "wind": {
@@ -8540,12 +8536,12 @@
         {
           "airport": "KSFO",
           "rate": 5,
-          "runway": "01L"
+          "runway": "1L"
         },
         {
           "airport": "KSFO",
           "rate": 5,
-          "runway": "01R"
+          "runway": "1R"
         },
         {
           "airport": "KOAK",
@@ -9281,12 +9277,12 @@
         {
           "airport": "KSFO",
           "rate": 0,
-          "runway": "01L"
+          "runway": "1L"
         },
         {
           "airport": "KSFO",
           "rate": 0,
-          "runway": "01R"
+          "runway": "1R"
         },
         {
           "airport": "KSFO",

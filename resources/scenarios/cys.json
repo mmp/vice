@@ -1,5 +1,5 @@
 {
-  "tracon": "CYS (Cheyenne Regional)",
+  "tracon": "D01",
   "airports": {
     "KCYS": {
       "approaches": {
@@ -7,38 +7,38 @@
           "runway": "9",
           "type": "RNAV",
           "waypoints": [
-            "TODVE/iaf/a10600 SIGSE/if/a9600 HAXUG/faf/a7800 WIKAR/a7060 _CYS9/a6155"
+            "TODVE/iaf/a10600 SIGSE/if/a9600 HAXUG/faf/a7800 WIKAR/a7060"
           ]
         },
         "R13": {
           "runway": "13",
           "type": "RNAV",
           "waypoints": [
-            "MILKY/iaf EMOTY/if/iaf/a9000 EXUMY/faf/a7900 JIMIG/a7180 _CYS13/a6155"
+            "MILKY/iaf EMOTY/if/iaf/a9000 EXUMY/faf/a7900 JIMIG/a7180"
           ]
         },
         "I27": {
           "runway": "27",
           "type": "ILS",
           "waypoints": [
-            "HAMER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800 _CYS27/a6155"
+            "HAMER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800"
           ]
         },
         "R27": {
           "runway": "27",
           "type": "RNAV",
           "waypoints": [
-            "CRIMS/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800 _CYS27/a6155",
-            "EGBER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800 _CYS27/a6155",
-            "POGTE/a8200 VIDEE/a8100 FERBU/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800 _CYS27/a6155"
+            "CRIMS/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800",
+            "EGBER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800",
+            "POGTE/a8200 VIDEE/a8100 FERBU/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800"
           ]
         },
         "R31": {
           "runway": "31",
           "type": "RNAV",
           "waypoints": [
-            "CIKNU/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800 _CYS31/a6147",
-            "HAMER/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800 _CYS31/a6147"
+            "CIKNU/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800",
+            "HAMER/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800"
           ]
         }
       },
@@ -46,105 +46,105 @@
         "9": {
           "DEN": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS9 _CYS27/h090"
+            "waypoints": "KCYS-27/h090"
           },
           "BENNE": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS9 _CYS27/h090"
+            "waypoints": "KCYS-27/h090"
           },
           "POGTE": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS9 _CYS27/h090"
+            "waypoints": "KCYS-27/h090"
           },
           "MILKY": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS9 _CYS27/h090"
+            "waypoints": "KCYS-27/h090"
           },
           "EGBER": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS9 _CYS27/h090"
+            "waypoints": "KCYS-27/h090"
           },
           "SNY": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS9 _CYS27/h090"
+            "waypoints": "KCYS-27/h090"
           }
         },
         "27": {
           "DEN": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS27 _CYS9/h270"
+            "waypoints": "KCYS-9/h270"
           },
           "BENNE": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS27 _CYS9/h270"
+            "waypoints": "KCYS-9/h270"
           },
           "POGTE": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS27 _CYS9/h270"
+            "waypoints": "KCYS-9/h270"
           },
           "MILKY": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS27 _CYS9/h270"
+            "waypoints": "KCYS-9/h270"
           },
           "EGBER": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS27 _CYS9/h270"
+            "waypoints": "KCYS-9/h270"
           },
           "SNY": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS27 _CYS9/h270"
+            "waypoints": "KCYS-9/h270"
           }
         },
         "31": {
           "DEN": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS31 _CYS13/h310"
+            "waypoints": "KCYS-13/h310"
           },
           "BENNE": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS31 _CYS13/h310"
+            "waypoints": "KCYS-13/h310"
           },
           "POGTE": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS31 _CYS13/h310"
+            "waypoints": "KCYS-13/h310"
           },
           "MILKY": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS31 _CYS13/h310"
+            "waypoints": "KCYS-13/h310"
           },
           "EGBER": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS31 _CYS13/h310"
+            "waypoints": "KCYS-13/h310"
           },
           "SNY": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS31 _CYS13/h310"
+            "waypoints": "KCYS-13/h310"
           }
         },
         "13": {
           "DEN": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS13 _CYS31/h130"
+            "waypoints": "KCYS-31/h130"
           },
           "BENNE": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS13 _CYS31/h130"
+            "waypoints": "KCYS-31/h130"
           },
           "POGTE": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS13 _CYS31/h130"
+            "waypoints": "KCYS-31/h130"
           },
           "MILKY": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS13 _CYS31/h130"
+            "waypoints": "KCYS-31/h130"
           },
           "EGBER": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS13 _CYS31/h130"
+            "waypoints": "KCYS-31/h130"
           },
           "SNY": {
             "cleared_altitude": 8000,
-            "waypoints": "_CYS13 _CYS31/h130"
+            "waypoints": "KCYS-31/h130"
           }
         }
       },
@@ -241,7 +241,6 @@
         "EGBER": "East",
         "SNY": "East"
       },
-      "location": "KCYS",
       "tower_list": 1
     }
   },
@@ -409,14 +408,7 @@
     }
   },
   "default_scenario": "KCYS Landing East",
-  "fixes": {
-    "_CYS": "41.155701,-104.811997",
-    "_CYS13": "N041.09.47.178,W104.49.35.207",
-    "_CYS31": "N041.09.15.825,W104.47.13.071",
-    "_CYS9": "N041.09.24.353,W104.49.19.771",
-    "_CYS27": "N041.09.15.715,W104.47.14.197"
-  },
-  "magnetic_variation": 7.7,
+  "magnetic_adjustment": -2,
   "name": "KCYS",
   "primary_airport": "KCYS",
   "radar_sites": {

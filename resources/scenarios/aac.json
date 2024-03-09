@@ -1,5 +1,5 @@
 {
-  "tracon": "AAC (Academy)",
+  "tracon": "AAC",
   "airports": {
     "KAAC": {
       "name": "Academy",
@@ -8,21 +8,21 @@
           "runway": "28R",
           "type": "ILS",
           "waypoints": [
-            "GRAYY/iaf/if/a4000+ ADCOK/a4000- RUSTY/a3000+ WOODY/faf/a2100+ _KAAC_28Rb/a690"
+            "GRAYY/iaf/if/a4000+ ADCOK/a4000- RUSTY/a3000+ WOODY/faf/a2100+"
           ]
         },
         "R8L": {
           "runway": "28L",
           "type": "RNAV",
           "waypoints": [
-            "CHAPP/iaf/if/a5000+ LITTL/a4000+ RICKY/a3000+ ONETA/faf/a2100+ _KAAC_28Lb/a690"
+            "CHAPP/iaf/if/a5000+ LITTL/a4000+ RICKY/a3000+ ONETA/faf/a2100+"
           ]
         },
         "R8R": {
           "runway": "28R",
           "type": "RNAV",
           "waypoints": [
-            "GRAYY/iaf/if/a4000 ADCOK/a3000+ RUSTY/a3000+ WOODY/faf/a2100+ _KAAC_28Rb/a690"
+            "GRAYY/iaf/if/a4000 ADCOK/a3000+ RUSTY/a3000+ WOODY/faf/a2100+"
           ]
         }
       },
@@ -31,44 +31,44 @@
           "COLIN.P,MAYES.P": {
             "cleared_altitude": 5000,
             "description": "props",
-            "waypoints": "_KAAC_28Lb _KAAC_28Le/h010"
+            "waypoints": "KAAC-10R/h010"
           },
           "COLIN.JT,MAYES.JT": {
             "cleared_altitude": 9000,
             "description": "jets/turboprops",
-            "waypoints": "_KAAC_28Lb _KAAC_28Le/h310"
+            "waypoints": "KAAC-10R/h310"
           },
           "NOBLE.P,SHAWN.P": {
             "cleared_altitude": 5000,
             "description": "props",
-            "waypoints": "_KAAC_28Lb _KAAC_28Le/h190"
+            "waypoints": "KAAC-10R/h190"
           },
           "NOBLE.JT,SHAWN.JT": {
             "cleared_altitude": 9000,
             "description": "jets/turboprops",
-            "waypoints": "_KAAC_28Lb _KAAC_28Le/h260"
+            "waypoints": "KAAC-10R/h260"
           }
         },
         "28R": {
           "COLIN.P,MAYES.P": {
             "cleared_altitude": 5000,
             "description": "props",
-            "waypoints": "_KAAC_28Rb _KAAC_28Re/h010"
+            "waypoints": "KAAC-10L/h010"
           },
           "COLIN.JT,MAYES.JT": {
             "cleared_altitude": 9000,
             "description": "jets/turboprops",
-            "waypoints": "_KAAC_28Rb _KAAC_28Re/h310"
+            "waypoints": "KAAC-10L/h310"
           },
           "NOBLE.P,SHAWN.P": {
             "cleared_altitude": 5000,
             "description": "props",
-            "waypoints": "_KAAC_28Rb _KAAC_28Re/h190"
+            "waypoints": "KAAC-10L/h190"
           },
           "NOBLE.JT,SHAWN.JT": {
             "cleared_altitude": 9000,
             "description": "jets/turboprops",
-            "waypoints": "_KAAC_28Rb _KAAC_28Re/h260"
+            "waypoints": "KAAC-10L/h260"
           }
         }
       },
@@ -482,7 +482,6 @@
         "SHAWN.P": "SHAWN",
         "SHAWN.JT": "SHAWN"
       },
-      "location": "KAAC",
       "tower_list": 1
     },
     "KJKE": {
@@ -492,7 +491,7 @@
           "runway": "27",
           "type": "ILS",
           "waypoints": [
-            "BEJEO/iaf/a4000+ ARREL/if/a3000+ CHAPL/faf/a2400+ _KJKE_27b/a620"
+            "BEJEO/iaf/a4000+ ARREL/if/a3000+ CHAPL/faf/a2400+"
           ]
         }
       },
@@ -500,7 +499,7 @@
         "27": {
           "COLIN,MAYES,NOBLE,SHAWN": {
             "cleared_altitude": 4000,
-            "waypoints": "_KJKE_27b _KJKE_27e/h270"
+            "waypoints": "KJKE-9/h270"
           }
         }
       },
@@ -677,7 +676,6 @@
         "NOBLE": "NOBLE",
         "SHAWN": "SHAWN"
       },
-      "location": "KJKE",
       "tower_list": 2
     }
   },
@@ -850,8 +848,10 @@
         "initial_speed": 300,
         "star": "KILLR4",
         "runway_waypoints": {
-          "28L": "SHREM ZEEKK/a9000-/s210 CHIEF/a6000 RUBIN/a6000 CHAPP/a5000",
-          "28R": "SHREM COLEY/a6000+/s210 HULET/a4000-5000 HOWRD/a4000 GRAYY/a4000"
+          "KAAC": {
+              "28L": "SHREM ZEEKK/a9000-/s210 CHIEF/a6000 RUBIN/a6000 CHAPP/a5000",
+              "28R": "SHREM COLEY/a6000+/s210 HULET/a4000-5000 HOWRD/a4000 GRAYY/a4000"
+          }
         },
         "waypoints": "N035.27.48.630,W095.13.43.123 N035.32.19.389,W095.17.22.053/ho KILLR/a10000/s210 SHREM"
       }
@@ -920,8 +920,10 @@
         "initial_speed": 300,
         "star": "REELI1",
         "runway_waypoints": {
-          "28R": "GERAT DMANN/a6000+/s210 OSCAR/a5000- HOWRD/a4000 GRAYY/a4000",
-          "28L": "GERAT TRISH RUBIN/a6000/s210 CHAPP/a5000"
+          "KAAC": {
+              "28R": "GERAT DMANN/a6000+/s210 OSCAR/a5000- HOWRD/a4000 GRAYY/a4000",
+              "28L": "GERAT TRISH RUBIN/a6000/s210 CHAPP/a5000"
+          }
         },
         "waypoints": "N036.44.24.994,W094.59.19.899 N036.41.31.822,W095.03.53.404/ho REELI/a11000/s250 SHELP GERAT"
       }
@@ -1617,23 +1619,17 @@
     "SHAWN": "TUL@267/29",
     "AVANT": "TUL@300/20",
     "BARTS": "TUL@327/27",
-    "_KJKE_27b": "N035.56.14.615,W095.42.05.152",
-    "_KJKE_27e": "N035.56.21.440,W095.44.35.967",
-    "CHAPL": "_KJKE_27b@090/5.4",
-    "ARREL": "_KJKE_27b@090/7.9",
-    "BEJEO": "_KJKE_27b@090/10.9",
-    "_KAAC_28Rb": "N036.11.23.280,W095.44.35.912",
-    "_KAAC_28Re": "_KAAC_28Rb@280/1.8",
-    "WOODY": "_KAAC_28Rb@100/4.3",
-    "RUSTY": "_KAAC_28Rb@100/7.3",
-    "ADCOK": "_KAAC_28Rb@100/10.9",
-    "GRAYY": "_KAAC_28Rb@100/15",
-    "_KAAC_28Lb": "N036.10.37.069,W095.44.51.979",
-    "_KAAC_28Le": "_KAAC_28Lb@280/1.8",
-    "ONETA": "_KAAC_28Lb@100/4.3",
-    "RICKY": "_KAAC_28Lb@100/7.3",
-    "LITTL": "_KAAC_28Lb@100/10.6",
-    "CHAPP": "_KAAC_28Lb@100/13.8",
+    "CHAPL": "KJKE-27@090/5.4",
+    "ARREL": "KJKE-27@090/7.9",
+    "BEJEO": "KJKE-27@090/10.9",
+    "WOODY": "KAAC-28R@100/4.3",
+    "RUSTY": "KAAC-28R@100/7.3",
+    "ADCOK": "KAAC-28R@100/10.9",
+    "GRAYY": "KAAC-28R@100/15",
+    "ONETA": "KAAC-28L@100/4.3",
+    "RICKY": "KAAC-28L@100/7.3",
+    "LITTL": "KAAC-28L@100/10.6",
+    "CHAPP": "KAAC-28L@100/13.8",
     "ALETH": "COLIN@180/16",
     "STONE": "ALETH@180/8",
     "KURDZ": "STONE@190/3",
@@ -1691,7 +1687,7 @@
       ]
     }
   ],
-  "magnetic_variation": 2.2,
+  "magnetic_adjustment": 2,
   "name": "KAAC",
   "primary_airport": "KAAC",
   "radar_sites": {

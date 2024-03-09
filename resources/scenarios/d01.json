@@ -1,5 +1,5 @@
 {
-  "tracon": "D01 (Denver)",
+  "tracon": "D01",
   "airports": {
     "KDEN": {
       "approaches": {
@@ -8,7 +8,7 @@
           "tower_controller": "DEN_W_TWR",
           "type": "ILS",
           "waypoints": [
-            "SARAH/a9000 ASURE/a8000 TAILR/a7000 SUNKE/a5740 _DEN_7/a5352"
+            "SARAH/a9000 ASURE/a8000 TAILR/a7000 SUNKE/a5740"
           ]
         },
         "I8": {
@@ -16,7 +16,7 @@
           "tower_controller": "DEN_E_TWR",
           "type": "ILS",
           "waypoints": [
-            "LIPPS/a10000 OWNER/a7000 _DEN_8/a5354"
+            "LIPPS/a10000 OWNER/a7000"
           ]
         },
         "I6L": {
@@ -24,10 +24,10 @@
           "tower_controller": "DEN_N_TWR",
           "type": "ILS",
           "waypoints": [
-            "JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820 _DEN_16L/a5357",
-            "KIPPR/a12000/s210 HAYLY JAPEE JDIZL JEEPR JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820 _DEN_16L/a5357",
-            "TSHNR/a13000/s210 JAPEE JDIZL JEEPR JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820 _DEN_16L/a5357",
-            "KAILE/a11000/s210 BJETN BJETN/a10000/s210 JEEPR JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820 _DEN_16L/a5357"
+            "JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820",
+            "KIPPR/a12000/s210 HAYLY JAPEE JDIZL JEEPR JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820",
+            "TSHNR/a13000/s210 JAPEE JDIZL JEEPR JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820",
+            "KAILE/a11000/s210 BJETN BJETN/a10000/s210 JEEPR JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820"
           ]
         },
         "I6R": {
@@ -35,10 +35,10 @@
           "tower_controller": "DEN_N_TWR",
           "type": "ILS",
           "waypoints": [
-            "SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000 _DEN_16R/a5326",
-            "KIPPR/a12000/s210 HAYLY SKIMJ SEEYU SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000 _DEN_16R/a5326",
-            "TSHNR/a13000/s210 SKIMJ SEEYU SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000 _DEN_16R/a5326",
-            "KAILE/a11000/s210 SHROM SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000 _DEN_16R/a5326"
+            "SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000",
+            "KIPPR/a12000/s210 HAYLY SKIMJ SEEYU SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000",
+            "TSHNR/a13000/s210 SKIMJ SEEYU SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000",
+            "KAILE/a11000/s210 SHROM SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000"
           ]
         },
         "I7L": {
@@ -46,11 +46,11 @@
           "tower_controller": "DEN_E_TWR",
           "type": "ILS",
           "waypoints": [
-            "GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000 _DEN_17L/a5539",
-            "TSHNR/a13000/s210 KLING GAPPY GIRTH GOLFN GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000 _DEN_17L/a5539",
-            "KIPPR/a12000/s210 GAPPY GIRTH GOLFN GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000 _DEN_17L/a5539",
-            "WAHUU/a9000/s210 GOLFN GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000 _DEN_17L/a5539",
-            "KAILE/a11000/s210 OVVAL GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000 _DEN_17L/a5539"
+            "GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000",
+            "TSHNR/a13000/s210 KLING GAPPY GIRTH GOLFN GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000",
+            "KIPPR/a12000/s210 GAPPY GIRTH GOLFN GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000",
+            "WAHUU/a9000/s210 GOLFN GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000",
+            "KAILE/a11000/s210 OVVAL GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000"
           ]
         },
         "I7R": {
@@ -58,10 +58,10 @@
           "tower_controller": "DEN_C_TWR",
           "type": "ILS",
           "waypoints": [
-            "HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000 _DEN_17R/a5392",
-            "KIPPR/a12000/s210 TARIE HALDO HEETT HISSY/a12000 HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000 _DEN_17R/a5392",
-            "TSHNR/a13000/s210 KLING HALDO HEETT HISSY/a12000 HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000 _DEN_17R/a5392",
-            "KAILE/a11000/s210 OVVAL HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000 _DEN_17R/a5392"
+            "HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000",
+            "KIPPR/a12000/s210 TARIE HALDO HEETT HISSY/a12000 HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000",
+            "TSHNR/a13000/s210 KLING HALDO HEETT HISSY/a12000 HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000",
+            "KAILE/a11000/s210 OVVAL HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000"
           ]
         },
         "I25": {
@@ -69,7 +69,7 @@
           "tower_controller": "DEN_W_TWR",
           "type": "ILS",
           "waypoints": [
-            "ETHAL/a10000 GASTI/a7000 _DEN_25/a5355"
+            "ETHAL/a10000 GASTI/a7000"
           ]
         },
         "I26": {
@@ -77,7 +77,7 @@
           "tower_controller": "DEN_E_TWR",
           "type": "ILS",
           "waypoints": [
-            "FUZZZ/a9000 GRASP/a7000 FEETS/a5820 _DEN_26/a5309"
+            "FUZZZ/a9000 GRASP/a7000 FEETS/a5820"
           ]
         },
         "I4L": {
@@ -85,10 +85,10 @@
           "tower_controller": "DEN_N_TWR",
           "type": "ILS",
           "waypoints": [
-            "KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040 _DEN_34L/a5327",
-            "BOSSS/a12000/s210 PAAAS AJAKS COGGG/a10000 KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040 _DEN_34L/a5327",
-            "LDORA/a13000/s210 FLUFF AJAKS COGGG/a10000 KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040 _DEN_34L/a5327",
-            "TELLR/a11000/s210 ALPNE COGGG/a10000 KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040 _DEN_34L/a5327"
+            "KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040",
+            "BOSSS/a12000/s210 PAAAS AJAKS COGGG/a10000 KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040",
+            "LDORA/a13000/s210 FLUFF AJAKS COGGG/a10000 KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040",
+            "TELLR/a11000/s210 ALPNE COGGG/a10000 KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040"
           ]
         },
         "I4R": {
@@ -96,10 +96,10 @@
           "tower_controller": "DEN_N_TWR",
           "type": "ILS",
           "waypoints": [
-            "BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000 _DEN_34R/a5354",
-            "BOSSS/a12000/s210 PAAAS BREKK BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000 _DEN_34R/a5354",
-            "LDORA/a13000/s210 FLUFF BREKK BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000 _DEN_34R/a5354",
-            "TELLR/a11000/s210 BHAPY BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000 _DEN_34R/a5354"
+            "BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000",
+            "BOSSS/a12000/s210 PAAAS BREKK BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000",
+            "LDORA/a13000/s210 FLUFF BREKK BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000",
+            "TELLR/a11000/s210 BHAPY BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000"
           ]
         },
         "I5L": {
@@ -107,10 +107,10 @@
           "tower_controller": "DEN_C_TWR",
           "type": "ILS",
           "waypoints": [
-            "CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120 _DEN_35L/a5434",
-            "BOSSS/a12000/s210 EPICC CPPER CHAPP/a12000 CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120 _DEN_35L/a5434",
-            "LDORA/a13000/s210 KARVE CPPER CHAPP/a12000 CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120 _DEN_35L/a5434",
-            "TELLR/a11000/s210 VAIIL CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120 _DEN_35L/a5434"
+            "CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120",
+            "BOSSS/a12000/s210 EPICC CPPER CHAPP/a12000 CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120",
+            "LDORA/a13000/s210 KARVE CPPER CHAPP/a12000 CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120",
+            "TELLR/a11000/s210 VAIIL CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120"
           ]
         },
         "I5R": {
@@ -118,11 +118,11 @@
           "tower_controller": "DEN_E_TWR",
           "type": "ILS",
           "waypoints": [
-            "DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120 _DEN_35R/a5370",
-            "LDORA/a13000/s210 DASHY DRATS DITSE DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120 _DEN_35R/a5370",
-            "BOSSS/a12000/s210 DRATS DITSE DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120 _DEN_35R/a5370",
-            "TELLR/a11000/s210 VAIIL DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120 _DEN_35R/a5370",
-            "PURRL/a9000/s210 DOVVE DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120 _DEN_35R/a5370"
+            "DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120",
+            "LDORA/a13000/s210 DASHY DRATS DITSE DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120",
+            "BOSSS/a12000/s210 DRATS DITSE DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120",
+            "TELLR/a11000/s210 VAIIL DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120",
+            "PURRL/a9000/s210 DOVVE DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120"
           ]
         }
       },
@@ -131,492 +131,492 @@
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
             "sid": "BAYLR6",
-            "waypoints": "_DEN_8 _DEN_26/h083"
+            "waypoints": "_DEN_26/h083"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
             "sid": "CHUWY1",
-            "waypoints": "_DEN_8 _DEN_26 ROYYL/a10000- TURBN CHICN/a14000+ VELAA/a16000+ YOKES/a17000+ LNGWD"
+            "waypoints": "ROYYL/a10000- TURBN CHICN/a14000+ VELAA/a16000+ YOKES/a17000+ LNGWD"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
             "sid": "CONNR7",
-            "waypoints": "_DEN_8 _DEN_26/h083"
+            "waypoints": "_DEN_26/h083"
           },
           "VOAXA": {
             "cleared_altitude": 23000,
             "sid": "COORZ6",
-            "waypoints": "_DEN_8 _DEN_26/h083"
+            "waypoints": "_DEN_26/h083"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
             "sid": "DDRTH1",
-            "waypoints": "_DEN_8 _DEN_26 ROYYL/a10000- TURBN CHICN/a14000+ FAARM/a16000+ YAMMI/a17000+"
+            "waypoints": "ROYYL/a10000- TURBN CHICN/a14000+ FAARM/a16000+ YAMMI/a17000+"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "_DEN_8 _DEN_26 ROYYL/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE"
+            "waypoints": "ROYYL/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "_DEN_8 _DEN_26 TIGHT/a10000- HAAHN/a12000- GASSS/a14000+ SNIPR"
+            "waypoints": "TIGHT/a10000- HAAHN/a12000- GASSS/a14000+ SNIPR"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
             "sid": "EPKEE7",
-            "waypoints": "_DEN_8 _DEN_26 KIDNG/a10000- PIDLE APUUU/a14000+ EPKEE/a15000+ POIZN"
+            "waypoints": "KIDNG/a10000- PIDLE APUUU/a14000+ EPKEE/a15000+ POIZN"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "_DEN_8 _DEN_26 KIDNG/a10000- KMBEL BHIGH MMESA/a14000+"
+            "waypoints": "KIDNG/a10000- KMBEL BHIGH MMESA/a14000+"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
             "sid": "HHOTH2",
-            "waypoints": "_DEN_8 _DEN_26 ROYYL/a10000- TURBN CHICN/a14000+ KKIMM/a16000+ BRYCC/a17000+ HHOTH"
+            "waypoints": "ROYYL/a10000- TURBN CHICN/a14000+ KKIMM/a16000+ BRYCC/a17000+ HHOTH"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
             "sid": "SABTH2",
-            "waypoints": "_DEN_8 _DEN_26 KIDNG/a10000- TWWIN FIGTR/a14000+ PACMN/a16000+ SHOJO/a18000+ SABTH"
+            "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+ PACMN/a16000+ SHOJO/a18000+ SABTH"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
             "sid": "SLEEK2",
-            "waypoints": "_DEN_8 _DEN_26 KIDNG/a10000- TWWIN FIGTR/a14000+ SEGAH/a16000+ BCORP/a17000+ STAKR/a18000+ AZARO"
+            "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+ SEGAH/a16000+ BCORP/a17000+ STAKR/a18000+ AZARO"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
             "sid": "SMMUR2",
-            "waypoints": "_DEN_8 _DEN_26 KIDNG/a10000- TWWIN FIGTR/a14000+ WEPON/a16000+ SOLAR/a17000+ SMMUR"
+            "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+ WEPON/a16000+ SOLAR/a17000+ SMMUR"
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
             "sid": "SUDDZ1",
-            "waypoints": "_DEN_8 _DEN_26 KIDNG/a10000- TWWIN FIGTR/a14000+ HANGR/a16000+ SCAGS/a18000+ FRNKE/a23000+"
+            "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+ HANGR/a16000+ SCAGS/a18000+ FRNKE/a23000+"
           },
           "XXWNG1": {
             "cleared_altitude": 23000,
             "sid": "XXWNG1",
-            "waypoints": "_DEN_8 _DEN_26 ROYYL/a10000- TURBN CHICN/a14000+ FAARM/a16000+ RIKKK/a17000+"
+            "waypoints": "ROYYL/a10000- TURBN CHICN/a14000+ FAARM/a16000+ RIKKK/a17000+"
           },
           "CHNGY": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR3",
-            "waypoints": "_DEN_8 _DEN_26/h83"  
+            "waypoints": "_DEN_26/h83"  
           }
         },
         "17L": {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
             "sid": "BAYLR6",
-            "waypoints": "_DEN_17L _DEN_35R GOROC BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
+            "waypoints": "GOROC BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
             "sid": "CHUWY1",
-            "waypoints": "_DEN_17L _DEN_35R/h173"
+            "waypoints": "_DEN_35R/h173"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
             "sid": "CONNR7",
-            "waypoints": "_DEN_17L _DEN_35R FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
+            "waypoints": "FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
           },
           "VOAXA": {
             "cleared_altitude": 23000,
             "sid": "COORZ6",
-            "waypoints": "_DEN_17L _DEN_35R FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
+            "waypoints": "FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
             "sid": "DDRTH1",
-            "waypoints": "_DEN_17L _DEN_35R/h173"
+            "waypoints": "_DEN_35R/h173"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "_DEN_17L _DEN_35R GISTT/a7000+ KIDNG/a10000- KAYGG LUPTN/a14000+"
+            "waypoints": "GISTT/a7000+ KIDNG/a10000- KAYGG LUPTN/a14000+"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "_DEN_17L _DEN_35R GISTT/a7000+ KIDNG/a10000- TWEDT GASSS/a14000+ SNIPR"
+            "waypoints": "GISTT/a7000+ KIDNG/a10000- TWEDT GASSS/a14000+ SNIPR"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
             "sid": "EPKEE7",
-            "waypoints": "_DEN_17L _DEN_35R GISTT/a7000+ MLHOS/a10000- SMTHR/a11000 SMPSN APUUU/a14000+ EPKEE/a15000+ POIZN"
+            "waypoints": "GISTT/a7000+ MLHOS/a10000- SMTHR/a11000 SMPSN APUUU/a14000+ EPKEE/a15000+ POIZN"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "_DEN_17L _DEN_35R GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ"
+            "waypoints": "GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
             "sid": "HHOTH2",
-            "waypoints": "_DEN_17L _DEN_35R/h173"
+            "waypoints": "_DEN_35R/h173"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
             "sid": "SABTH2",
-            "waypoints": "_DEN_17L _DEN_35R RAYDR/a10000- JSMNN/a17000+ SHOJO/a18000+ SABTH"
+            "waypoints": "RAYDR/a10000- JSMNN/a17000+ SHOJO/a18000+ SABTH"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
             "sid": "SLEEK2",
-            "waypoints": "_DEN_17L _DEN_35R RAYDR/a10000- BCORP/a17000+ STAKR/a18000+ AZARO"
+            "waypoints": "RAYDR/a10000- BCORP/a17000+ STAKR/a18000+ AZARO"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
             "sid": "SMMUR2",
-            "waypoints": "_DEN_17L _DEN_35R RAYDR/a10000- SIGHT/a10000+ SOLAR/a17000+ SMMUR"
+            "waypoints": "RAYDR/a10000- SIGHT/a10000+ SOLAR/a17000+ SMMUR"
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
             "sid": "SUDDZ1",
-            "waypoints": "_DEN_17L _DEN_35R RAYDR/a10000- CHOZN/a12000 FLYYR/a16000 SCAGS/a18000+ FRNKE/a23000+"
+            "waypoints": "RAYDR/a10000- CHOZN/a12000 FLYYR/a16000 SCAGS/a18000+ FRNKE/a23000+"
           },
           "XXWNG1": {
             "cleared_altitude": 23000,
             "sid": "XXWNG1",
-            "waypoints": "_DEN_17L _DEN_35R/h173"
+            "waypoints": "_DEN_35R/h173"
           },
           "CHNGY": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR3",
-            "waypoints": "_DEN_17L _DEN_35R MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"
+            "waypoints": "MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"
           }
         },
         "25": {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
             "sid": "BAYLR6",
-            "waypoints": "_DEN_25 _DEN_7 BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
+            "waypoints": "BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
             "sid": "CHUWY1",
-            "waypoints": "_DEN_25 _DEN_7 MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ ELCEE/a16000+ YOKES/a17000+ LNGWD"
+            "waypoints": "MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ ELCEE/a16000+ YOKES/a17000+ LNGWD"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
             "sid": "CONNR7",
-            "waypoints": "_DEN_25 _DEN_7 FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
+            "waypoints": "FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
           },
           "VOAXA": {
             "cleared_altitude": 23000,
             "sid": "COORZ6",
-            "waypoints": "_DEN_25 _DEN_7 FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
+            "waypoints": "FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
             "sid": "DDRTH1",
-            "waypoints": "_DEN_25 _DEN_7 MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ HERDR/a16000+ TROTO YAMMI/a17000+"
+            "waypoints": "MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ HERDR/a16000+ TROTO YAMMI/a17000+"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "_DEN_25 _DEN_7/h263"
+            "waypoints": "_DEN_7/h263"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "_DEN_25 _DEN_7/h263"
+            "waypoints": "_DEN_7/h263"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
             "sid": "EPKEE7",
-            "waypoints": "_DEN_25 _DEN_7/h263"
+            "waypoints": "_DEN_7/h263"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "_DEN_25 _DEN_7/h263"
+            "waypoints": "_DEN_7/h263"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
             "sid": "HHOTH2",
-            "waypoints": "_DEN_25 _DEN_7 MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ TAGKO/a16000+ BRYCC/a17000+ HHOTH"
+            "waypoints": "MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ TAGKO/a16000+ BRYCC/a17000+ HHOTH"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
             "sid": "SABTH2",
-            "waypoints": "_DEN_25 _DEN_7 BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ ICECI/a16000+ SHOJO/a18000+ SABTH"
+            "waypoints": "BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ ICECI/a16000+ SHOJO/a18000+ SABTH"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
             "sid": "SLEEK2",
-            "waypoints": "_DEN_25 _DEN_7 BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ WEPON/a16000 STAKR/a18000+ AZARO"
+            "waypoints": "BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ WEPON/a16000 STAKR/a18000+ AZARO"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
             "sid": "SMMUR2",
-            "waypoints": "_DEN_25 _DEN_7 BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ RKYMT/a16000+ SOLAR/a17000+ SMMUR "
+            "waypoints": "BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ RKYMT/a16000+ SOLAR/a17000+ SMMUR "
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
             "sid": "SUDDZ1",
-            "waypoints": "_DEN_25 _DEN_7 BRKEM/a10000- LENNN/a11000 TIKLR CIROS/a16000 RKYMT/a18000 SCAGS/a21000 FRNKE"
+            "waypoints": "BRKEM/a10000- LENNN/a11000 TIKLR CIROS/a16000 RKYMT/a18000 SCAGS/a21000 FRNKE"
           },
           "XXWNG1": {
             "cleared_altitude": 23000,
             "sid": "XXWNG1",
-            "waypoints": "_DEN_25 _DEN_7 MUGBE/a10000- WAZEE LODOE/a13000 RINKR/a15000 HERDR/a17000 RIKKK/a17000+"
+            "waypoints": "MUGBE/a10000- WAZEE LODOE/a13000 RINKR/a15000 HERDR/a17000 RIKKK/a17000+"
           },
           "CHNGY": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR3",
-            "waypoints": "_DEN_25 _DEN_7 MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"  
+            "waypoints": "MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"  
           }
         },
         "34L": {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
             "sid": "BAYLR6",
-            "waypoints": "_DEN_34L _DEN_16R BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
+            "waypoints": "BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
             "sid": "CHUWY1",
-            "waypoints": "_DEN_34L _DEN_16R NKATA/a10000- YOKES/a17000+ LNGWD"
+            "waypoints": "NKATA/a10000- YOKES/a17000+ LNGWD"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
             "sid": "CONNR7",
-            "waypoints": "_DEN_34L _DEN_16R FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
+            "waypoints": "FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
           },
           "VOAXA": {
             "cleared_altitude": 23000,
             "sid": "COORZ6",
-            "waypoints": "_DEN_34L _DEN_16R FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
+            "waypoints": "FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
             "sid": "DDRTH1",
-            "waypoints": "_DEN_34L _DEN_16R NKATA/a10000- KAYOO/a11000- YAMMI/a17000+"
+            "waypoints": "NKATA/a10000- KAYOO/a11000- YAMMI/a17000+"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "_DEN_34L _DEN_16R NUGGS HIDEF/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE"
+            "waypoints": "NUGGS HIDEF/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "_DEN_34L _DEN_16R NUGGS HIDEF/a10000- BRSTO/a12000- GASSS/a14000+ SNIPR"
+            "waypoints": "NUGGS HIDEF/a10000- BRSTO/a12000- GASSS/a14000+ SNIPR"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
             "sid": "EPKEE7",
-            "waypoints": "_DEN_34L _DEN_16R KIDNG/a10000- PIDLE APUUU/a14000+ EPKEE/a15000+ POIZN"
+            "waypoints": "KIDNG/a10000- PIDLE APUUU/a14000+ EPKEE/a15000+ POIZN"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "_DEN_34L _DEN_16R KIDNG/a10000- KMBEL BHIGH MMESA/a14000+"
+            "waypoints": "KIDNG/a10000- KMBEL BHIGH MMESA/a14000+"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
             "sid": "HHOTH2",
-            "waypoints": "_DEN_34L _DEN_16R NKATA/a10000- HAWKR CCLYD/a13000+ BRYCC/a17000+ HHOTH"
+            "waypoints": "NKATA/a10000- HAWKR CCLYD/a13000+ BRYCC/a17000+ HHOTH"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
             "sid": "SABTH2",
-            "waypoints": "_DEN_34L _DEN_16R/h353"
+            "waypoints": "_DEN_16R/h353"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
             "sid": "SLEEK2",
-            "waypoints": "_DEN_34L _DEN_16R/h353"
+            "waypoints": "_DEN_16R/h353"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
             "sid": "SMMUR2",
-            "waypoints": "_DEN_34L _DEN_16R/h353"
+            "waypoints": "_DEN_16R/h353"
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
             "sid": "SUDDZ1",
-            "waypoints": "_DEN_34L _DEN_16R/h353"
+            "waypoints": "_DEN_16R/h353"
           },
           "XXWNG1": {
             "cleared_altitude": 23000,
             "sid": "XXWNG1",
-            "waypoints": "_DEN_34L _DEN_16R NKATA/a10000- HAWKR BNITA/a13000+ RIKKK/a17000+"
+            "waypoints": "NKATA/a10000- HAWKR BNITA/a13000+ RIKKK/a17000+"
           },
           "CHNGY": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR3",
-            "waypoints": "_DEN_34L _DEN_16R MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"
+            "waypoints": "MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"
           }
         },
         "34R": {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
             "sid": "BAYLR6",
-            "waypoints": "_DEN_34R _DEN_16L BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
+            "waypoints": "BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
             "sid": "CHUWY1",
-            "waypoints": "_DEN_34R _DEN_16L NKATA/a10000- YOKES/a17000+ LNGWD"
+            "waypoints": "NKATA/a10000- YOKES/a17000+ LNGWD"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
             "sid": "CONNR7",
-            "waypoints": "_DEN_34R _DEN_16L FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
+            "waypoints": "FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
           },
           "VOAXA": {
             "cleared_altitude": 23000,
             "sid": "COORZ6",
-            "waypoints": "_DEN_34R _DEN_16L FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
+            "waypoints": "FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
             "sid": "DDRTH1",
-            "waypoints": "_DEN_34R _DEN_16L NKATA/a10000- KAYOO/a11000- YAMMI/a17000+"
+            "waypoints": "NKATA/a10000- KAYOO/a11000- YAMMI/a17000+"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "_DEN_34R _DEN_16L NUGGS HIDEF/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE"
+            "waypoints": "NUGGS HIDEF/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "_DEN_34R _DEN_16L NUGGS HIDEF/a10000- BRSTO/a12000- GASSS/a14000+ SNIPR"
+            "waypoints": "NUGGS HIDEF/a10000- BRSTO/a12000- GASSS/a14000+ SNIPR"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
             "sid": "EPKEE7",
-            "waypoints": "_DEN_34R _DEN_16L KIDNG/a10000- PIDLE APUUU/a14000+ EPKEE/a15000+ POIZN"
+            "waypoints": "KIDNG/a10000- PIDLE APUUU/a14000+ EPKEE/a15000+ POIZN"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "_DEN_34R _DEN_16L KIDNG/a10000- KMBEL BHIGH MMESA/a14000+"
+            "waypoints": "KIDNG/a10000- KMBEL BHIGH MMESA/a14000+"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
             "sid": "HHOTH2",
-            "waypoints": "_DEN_34R _DEN_16L NKATA/a10000- HAWKR CCLYD/a13000+ BRYCC/a17000+ HHOTH"
+            "waypoints": "NKATA/a10000- HAWKR CCLYD/a13000+ BRYCC/a17000+ HHOTH"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
             "sid": "SABTH2",
-            "waypoints": "_DEN_34R _DEN_16L/h353"
+            "waypoints": "_DEN_16L/h353"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
             "sid": "SLEEK2",
-            "waypoints": "_DEN_34R _DEN_16L/h353"
+            "waypoints": "_DEN_16L/h353"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
             "sid": "SMMUR2",
-            "waypoints": "_DEN_34R _DEN_16L/h353"
+            "waypoints": "_DEN_16L/h353"
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
             "sid": "SUDDZ1",
-            "waypoints": "_DEN_34R _DEN_16L/h353"
+            "waypoints": "_DEN_16L/h353"
           },
           "XXWNG1": {
             "cleared_altitude": 23000,
             "sid": "XXWNG1",
-            "waypoints": "_DEN_34R _DEN_16L NKATA/a10000- HAWKR BNITA/a13000+ RIKKK/a17000+"
+            "waypoints": "NKATA/a10000- HAWKR BNITA/a13000+ RIKKK/a17000+"
           },
           "CHNGY": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR3",
-            "waypoints": "_DEN_34R _DEN_16L MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"
+            "waypoints": "MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"
           }
         },
         "16L" : {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
             "sid": "BAYLR6",
-            "waypoints": "_DEN_16L _DEN_34R GOROC BRKEM/a10000- WAKIR/a11000+ TUULO/a16000 HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
+            "waypoints": "GOROC BRKEM/a10000- WAKIR/a11000+ TUULO/a16000 HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
             "sid": "CHUWY1",
-            "waypoints": "_DEN_16L _DEN_34R/h173"
+            "waypoints": "_DEN_34R/h173"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
             "sid": "CONNR7",
-            "waypoints": "_DEN_16L _DEN_34R FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
+            "waypoints": "FOAMS/a10000- TAVRN/a12000+ VONNN/a14000+ TEEBO/a16000+ CONNR/a17000+ WERNR"
           },
           "VOAXA": {
             "cleared_altitude": 23000,
             "sid": "COORZ6",
-            "waypoints": "_DEN_16L _DEN_34R FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
+            "waypoints": "FOAMS/a10000- IPALE/a12000+ MOLSN/a14000+ BULLT/a16000+ COORZ/a17000+"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
             "sid": "DDRTH1",
-            "waypoints": "_DEN_16L _DEN_34R/h173"
+            "waypoints": "_DEN_34R/h173"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "_DEN_16L _DEN_34R GISTT/a7000+ KIDNG/a10000- KAYGG LUPTN/a14000+ MRENE"
+            "waypoints": "GISTT/a7000+ KIDNG/a10000- KAYGG LUPTN/a14000+ MRENE"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "_DEN_16L _DEN_34R GISTT/a7000+ KIDNG/a10000- TWEDT GASSS/a14000+ SNIPR"
+            "waypoints": "GISTT/a7000+ KIDNG/a10000- TWEDT GASSS/a14000+ SNIPR"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
             "sid": "EPKEE7",
-            "waypoints": "_DEN_16L _DEN_34R GISTT/a7000+ MLHOS/a10000- SMTHR/a12000- SMPSN APUUU/a14000+ EPKEE/a15000+ POIZN"
+            "waypoints": "GISTT/a7000+ MLHOS/a10000- SMTHR/a12000- SMPSN APUUU/a14000+ EPKEE/a15000+ POIZN"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "_DEN_16L _DEN_34R GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ"
+            "waypoints": "GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
             "sid": "HHOTH2",
-            "waypoints": "_DEN_16L _DEN_34R/h173"
+            "waypoints": "_DEN_34R/h173"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
             "sid": "SABTH2",
-            "waypoints": "_DEN_16L _DEN_34R BOGEI/a10000- SHOJO/a18000+ SABTH"
+            "waypoints": "BOGEI/a10000- SHOJO/a18000+ SABTH"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
             "sid": "SLEEK2",
-            "waypoints": "_DEN_16L _DEN_34R BOGEI/a10000- BCORP/a17000+ STAKR/a18000+ AZARO"
+            "waypoints": "BOGEI/a10000- BCORP/a17000+ STAKR/a18000+ AZARO"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
             "sid": "SMMUR2",
-            "waypoints": "_DEN_16L _DEN_34R BOGEI/a10000- SIGHT/a10000+ SOLAR/a17000+ SMMUR"
+            "waypoints": "BOGEI/a10000- SIGHT/a10000+ SOLAR/a17000+ SMMUR"
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
             "sid": "SUDDZ1",
-            "waypoints": "_DEN_16L _DEN_34R BOGEI/a10000- CHOZN/a12000 FLYYR/a14000 CONRD/a19000 SCAGS/a21000 FRNKE/a23000"
+            "waypoints": "BOGEI/a10000- CHOZN/a12000 FLYYR/a14000 CONRD/a19000 SCAGS/a21000 FRNKE/a23000"
           },
           "XXWNG": {
             "cleared_altitude": 23000,
             "sid": "XXWNG1",
-            "waypoints": "_DEN_16L _DEN_34R/h173"
+            "waypoints": "_DEN_34R/h173"
           },
           "CHNGY": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR3",
-            "waypoints": "_DEN_16L _DEN_34R MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"
+            "waypoints": "MUGBE/a10000- RALFI/a12000+ RAPDS/a14000+ PCKNS/a16000+ ZIMMR/a17000+"
           }
         }
         },
@@ -937,7 +937,6 @@
           "XXWNG": "NORTH",
           "CHNGY": "WEST"
         },
-        "location": "KDEN",
         "tower_list": 4
       }
     },
@@ -1003,17 +1002,19 @@
           "initial_speed": 290,
           "star": "AALLE3",
           "runway_waypoints": {
-            "7": "HEDDD/a18000 DEELO/a16000 JEPHF/a14000/s250 HAZLT HAITR/a11000/s210/h263",
-            "8": "HEDDD/a18000 DEELO/a16000 JEPHF/a14000/s250 HAZLT HAITR/a11000/s210/h263",
-            "16L": "HEDDD/a18000 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
-            "16R": "HEDDD/a18000 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
-            "17L": "HEDDD/a18000 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
-            "17R": "HEDDD/a18000 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
-            "25": "HEDDD/a18000 CRUNK/a14000/h222",
-            "26": "HEDDD/a18000 CRUNK/a14000/h222",
-            "34L": "HEDDD/a18000 DEELO/a16000 JEPHF/a14000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
-            "34R": "HEDDD/a18000 DEELO/a16000 JEPHF/a14000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
-            "35L": "HEDDD/a18000 DEELO/a16000 FULLA/a14000/s250 FFFAT DOGGG/a11000/s210/h173"
+            "KDEN": {
+                "7": "HEDDD/a18000 DEELO/a16000 JEPHF/a14000/s250 HAZLT HAITR/a11000/s210/h263",
+                "8": "HEDDD/a18000 DEELO/a16000 JEPHF/a14000/s250 HAZLT HAITR/a11000/s210/h263",
+                "16L": "HEDDD/a18000 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
+                "16R": "HEDDD/a18000 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
+                "17L": "HEDDD/a18000 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
+                "17R": "HEDDD/a18000 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
+                "25": "HEDDD/a18000 CRUNK/a14000/h222",
+                "26": "HEDDD/a18000 CRUNK/a14000/h222",
+                "34L": "HEDDD/a18000 DEELO/a16000 JEPHF/a14000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
+                "34R": "HEDDD/a18000 DEELO/a16000 JEPHF/a14000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
+                "35L": "HEDDD/a18000 DEELO/a16000 FULLA/a14000/s250 FFFAT DOGGG/a11000/s210/h173"
+            }
           },
           "speed_restriction": 250,
           "waypoints": "AALLE/a19000/ho HEDDD/a18000"
@@ -1110,18 +1111,20 @@
           "initial_speed": 290,
           "star": "CLASH4",
           "runway_waypoints": {
-            "7": "EVRLY/a18000/s250 JURKY/a16000 ROOTZ/a14000/s250 RPIDS BBOOK/a11000/s210/h263",
-            "8": "EVRLY/a18000/s250 JURKY/a16000 ROOTZ/a14000/s250 RPIDS BBOOK/a11000/s210/h263",
-            "16R": "EVRLY/a18000/s250 JURKY/a16000 ROOTZ/a14000/s250 RPIDS RDDVL CLFFF/a11000/s210/h353",
-            "16L" :"EVRLY/a18000/s250 JURKY/a16000 JAAAM/a14000/s250 HUDPI QWIKE/a11000/s210/h353",
-            "17L" :"EVRLY/a18000/s250 JURKY/a16000 JAAAM/a14000/s250 HUDPI QWIKE/a11000/s210/h353",
-            "17R" :"EVRLY/a18000/s250 JURKY/a16000 JAAAM/a14000/s250 HUDPI QWIKE/a11000/s210/h353",
-            "25": "EVRLY/a18000/s250 ERVNN/a14000 FIDLS/a13000/s210/h351",
-            "26": "EVRLY/a18000/s250 ERVNN/a14000 FIDLS/a13000/s210/h351",
-            "34L": "EVRLY/a18000/s250 RECRD/a15000 TWNSN/a13000/s210 PNBAL/a11000 ROCCS/a10000 EBBLR/a9000/s210/h260",
-            "34R": "EVRLY/a18000/s250 RECRD/a15000 TWNSN/a13000/s210 PNBAL/a11000 ROCCS/a10000 EBBLR/a9000/s210/h260",
-            "35L": "EVRLY/a18000/s250 RECRD/a15000 TWNSN/a13000/s210 PNBAL/a11000 ROCCS/a10000 PURRL/a9000/s210/h298",
-            "35R": "EVRLY/a18000/s250 RECRD/a15000 TWNSN/a13000/s210 PNBAL/a11000 ROCCS/a10000 PURRL/a9000/s210/h298"
+            "KDEN": {
+                "7": "EVRLY/a18000/s250 JURKY/a16000 ROOTZ/a14000/s250 RPIDS BBOOK/a11000/s210/h263",
+                "8": "EVRLY/a18000/s250 JURKY/a16000 ROOTZ/a14000/s250 RPIDS BBOOK/a11000/s210/h263",
+                "16R": "EVRLY/a18000/s250 JURKY/a16000 ROOTZ/a14000/s250 RPIDS RDDVL CLFFF/a11000/s210/h353",
+                "16L" :"EVRLY/a18000/s250 JURKY/a16000 JAAAM/a14000/s250 HUDPI QWIKE/a11000/s210/h353",
+                "17L" :"EVRLY/a18000/s250 JURKY/a16000 JAAAM/a14000/s250 HUDPI QWIKE/a11000/s210/h353",
+                "17R" :"EVRLY/a18000/s250 JURKY/a16000 JAAAM/a14000/s250 HUDPI QWIKE/a11000/s210/h353",
+                "25": "EVRLY/a18000/s250 ERVNN/a14000 FIDLS/a13000/s210/h351",
+                "26": "EVRLY/a18000/s250 ERVNN/a14000 FIDLS/a13000/s210/h351",
+                "34L": "EVRLY/a18000/s250 RECRD/a15000 TWNSN/a13000/s210 PNBAL/a11000 ROCCS/a10000 EBBLR/a9000/s210/h260",
+                "34R": "EVRLY/a18000/s250 RECRD/a15000 TWNSN/a13000/s210 PNBAL/a11000 ROCCS/a10000 EBBLR/a9000/s210/h260",
+                "35L": "EVRLY/a18000/s250 RECRD/a15000 TWNSN/a13000/s210 PNBAL/a11000 ROCCS/a10000 PURRL/a9000/s210/h298",
+                "35R": "EVRLY/a18000/s250 RECRD/a15000 TWNSN/a13000/s210 PNBAL/a11000 ROCCS/a10000 PURRL/a9000/s210/h298"
+            }
           },
           "speed_restriction": 250,
           "waypoints": "CLASH/a19000/ho EVRLY/a18000"
@@ -1196,18 +1199,20 @@
           "initial_speed": 290,
           "star": "FLATI3",
           "runway_waypoints": {
-            "7": "ELLDO/a18000/s250 MLVVA/a14000/h132",
-            "8": "ELLDO/a18000/s250 MLVVA/a14000/h132",
-            "16L": "ELLDO/a18000/s250 BSAFE/a15000 BDUNN/a14000/s210 TSHNR/a13000/s210/h099",
-            "16R": "ELLDO/a18000/s250 BSAFE/a15000 BDUNN/a14000/s210 TSHNR/a13000/s210/h099",
-            "17L": "ELLDO/a18000/s250 BSAFE/a15000 BDUNN/a14000/s210 TSHNR/a13000/s210/h099",
-            "17R": "ELLDO/a18000/s250 BSAFE/a15000 BDUNN/a14000/s210 TSHNR/a13000/s210/h099",
-            "25": "ELLDO/a18000/s250 TOTTT/a16000 YESSS SKEWD/a14000/s250 LEKEE/a12000 XCUTV CAPTJ/a11000/s210/h083",
-            "26": "ELLDO/a18000/s250 TOTTT/a16000 YESSS SKEWD/a14000/s250 LEKEE/a12000 XCUTV CAPTJ/a11000/s210/h083",
-            "34L": "ELLDO/a18000/s250 TOTTT/a16000 BAACK/a15000 BABAA/a13000/s250 HIMOM/a11000/s210/h173",
-            "34R": "ELLDO/a18000/s250 TOTTT/a16000 BAACK/a15000 BABAA/a13000/s250 HIMOM/a11000/s210/h173",
-            "35L": "ELLDO/a18000/s250 TOTTT/a16000 BAACK/a15000 BABAA/a13000/s250 HIMOM/a11000/s210/h173",
-            "35R": "ELLDO/a18000/s250 TOTTT/a16000 YESSS SKEWD/a14000/s250 LEKEE/a13000 XCUTV FFFAT DOGGG/a11000/s210/h173"
+            "KDEN": {
+                "7": "ELLDO/a18000/s250 MLVVA/a14000/h132",
+                "8": "ELLDO/a18000/s250 MLVVA/a14000/h132",
+                "16L": "ELLDO/a18000/s250 BSAFE/a15000 BDUNN/a14000/s210 TSHNR/a13000/s210/h099",
+                "16R": "ELLDO/a18000/s250 BSAFE/a15000 BDUNN/a14000/s210 TSHNR/a13000/s210/h099",
+                "17L": "ELLDO/a18000/s250 BSAFE/a15000 BDUNN/a14000/s210 TSHNR/a13000/s210/h099",
+                "17R": "ELLDO/a18000/s250 BSAFE/a15000 BDUNN/a14000/s210 TSHNR/a13000/s210/h099",
+                "25": "ELLDO/a18000/s250 TOTTT/a16000 YESSS SKEWD/a14000/s250 LEKEE/a12000 XCUTV CAPTJ/a11000/s210/h083",
+                "26": "ELLDO/a18000/s250 TOTTT/a16000 YESSS SKEWD/a14000/s250 LEKEE/a12000 XCUTV CAPTJ/a11000/s210/h083",
+                "34L": "ELLDO/a18000/s250 TOTTT/a16000 BAACK/a15000 BABAA/a13000/s250 HIMOM/a11000/s210/h173",
+                "34R": "ELLDO/a18000/s250 TOTTT/a16000 BAACK/a15000 BABAA/a13000/s250 HIMOM/a11000/s210/h173",
+                "35L": "ELLDO/a18000/s250 TOTTT/a16000 BAACK/a15000 BABAA/a13000/s250 HIMOM/a11000/s210/h173",
+                "35R": "ELLDO/a18000/s250 TOTTT/a16000 YESSS SKEWD/a14000/s250 LEKEE/a13000 XCUTV FFFAT DOGGG/a11000/s210/h173"
+            }
           },
           "speed_restriction": 250,
           "waypoints": "FLATI/a21000/ho ELLDO/a18000/s250"
@@ -1312,18 +1317,20 @@
           "initial_speed": 290,
           "star": "LAWGR3",
           "runway_waypoints": {
-            "7": "PPINT/a18000/s250 BURRP/a16000 JEPHF/a14000/s250 HAZLT HAITR/a11000/s210/h263",
-            "8": "PPINT/a18000/s250 BURRP/a16000 JEPHF/a14000/s250 HAZLT HAITR/a11000/s210/h263",
-            "16L": "PPINT/a18000/s250 TAPME/a13000/s230 GRRUB/a11000/s210/h265",
-            "16R": "PPINT/a18000/s250 TAPME/a13000/s230 GRRUB/a11000/s210/h265",
-            "17L": "PPINT/a18000/s250 TAPME/a13000/s230 GRRUB/a11000/s210/h265",
-            "17R": "PPINT/a18000/s250 TAPME/a13000/s230 GRRUB/a11000/s210/h265",
-            "25": "PPINT/a18000/s250 JIBBA/a13000 RODEY/a13000/s210/h172",
-            "26": "PPINT/a18000/s250 JIBBA/a13000 RODEY/a13000/s210/h172",
-            "34L": "PPINT/a18000/s250 BURRP/a16000 JEPHF/a14000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
-            "34R": "PPINT/a18000/s250 BURRP/a16000 JEPHF/a14000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
-            "35L": "PPINT/a18000/s250 BURRP/a16000 YUPEE/a14000/s250 FFFAT DOGGG/a11000/s210/h173",
-            "35R": "PPINT/a18000/s250 BURRP/a16000 YUPEE/a14000/s250 FFFAT DOGGG/a11000/s210/h173"
+            "KDEN": {
+                "7": "PPINT/a18000/s250 BURRP/a16000 JEPHF/a14000/s250 HAZLT HAITR/a11000/s210/h263",
+                "8": "PPINT/a18000/s250 BURRP/a16000 JEPHF/a14000/s250 HAZLT HAITR/a11000/s210/h263",
+                "16L": "PPINT/a18000/s250 TAPME/a13000/s230 GRRUB/a11000/s210/h265",
+                "16R": "PPINT/a18000/s250 TAPME/a13000/s230 GRRUB/a11000/s210/h265",
+                "17L": "PPINT/a18000/s250 TAPME/a13000/s230 GRRUB/a11000/s210/h265",
+                "17R": "PPINT/a18000/s250 TAPME/a13000/s230 GRRUB/a11000/s210/h265",
+                "25": "PPINT/a18000/s250 JIBBA/a13000 RODEY/a13000/s210/h172",
+                "26": "PPINT/a18000/s250 JIBBA/a13000 RODEY/a13000/s210/h172",
+                "34L": "PPINT/a18000/s250 BURRP/a16000 JEPHF/a14000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
+                "34R": "PPINT/a18000/s250 BURRP/a16000 JEPHF/a14000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
+                "35L": "PPINT/a18000/s250 BURRP/a16000 YUPEE/a14000/s250 FFFAT DOGGG/a11000/s210/h173",
+                "35R": "PPINT/a18000/s250 BURRP/a16000 YUPEE/a14000/s250 FFFAT DOGGG/a11000/s210/h173"
+            }
           },
           "speed_restriction": 250,
           "waypoints": "LAWGR/a21000/ho PPINT/a18000/s250"
@@ -1380,18 +1387,20 @@
           "initial_speed": 290,
           "star": "LONGZ2",
           "runway_waypoints": {
-            "7": "FLNEL/a18000/s250 DORKE/a16000 BASHE/a13000/s210/h170",
-            "8": "FLNEL/a18000/s250 DORKE/a16000 BASHE/a13000/s210/h170",
-            "16L": "FLNEL/a18000/s250 BEOND/a13000/s210 SWAYN/a12000 KAILE/a11000/s210/h092",
-            "16R": "FLNEL/a18000/s250 BEOND/a13000/s210 SWAYN/a12000 KAILE/a11000/s210/h092", 
-            "17L": "FLNEL/a18000/s250 BEOND/a13000/s210 SWAYN/a12000 KAILE/a11000/s210/h092",
-            "17R": "FLNEL/a18000/s250 BEOND/a13000/s210 SWAYN/a12000 KAILE/a11000/s210/h092",
-            "25": "FLNEL/a18000/s250 HLMUT SKEWD/a14000/s250 LEKEE/a12000 XCUTV CAPTJ/a11000/s210/h083",
-            "26": "FLNEL/a18000/s250 HLMUT SKEWD/a14000/s250 LEKEE/a12000 XCUTV CAPTJ/a11000/s210/h083",
-            "34L": "FLNEL/a18000/s250 HLMUT ARCHY/a14000 BABAA/a12000/s250 HIMOM/a11000/s210/h173",
-            "34R": "FLNEL/a18000/s250 HLMUT ARCHY/a14000 BABAA/a12000/s250 HIMOM/a11000/s210/h173",
-            "35L": "FLNEL/a18000/s250 HLMUT ARCHY/a14000 BABAA/a12000/s250 HIMOM/a11000/s210/h173",
-            "35R": "FLNEL/a18000/s250 HLMUT SKEWD/a14000 LEKEE/a12000 XCUTV FFFAT DOGGG/a11000/s210/h173"
+            "KDEN": {
+                "7": "FLNEL/a18000/s250 DORKE/a16000 BASHE/a13000/s210/h170",
+                "8": "FLNEL/a18000/s250 DORKE/a16000 BASHE/a13000/s210/h170",
+                "16L": "FLNEL/a18000/s250 BEOND/a13000/s210 SWAYN/a12000 KAILE/a11000/s210/h092",
+                "16R": "FLNEL/a18000/s250 BEOND/a13000/s210 SWAYN/a12000 KAILE/a11000/s210/h092", 
+                "17L": "FLNEL/a18000/s250 BEOND/a13000/s210 SWAYN/a12000 KAILE/a11000/s210/h092",
+                "17R": "FLNEL/a18000/s250 BEOND/a13000/s210 SWAYN/a12000 KAILE/a11000/s210/h092",
+                "25": "FLNEL/a18000/s250 HLMUT SKEWD/a14000/s250 LEKEE/a12000 XCUTV CAPTJ/a11000/s210/h083",
+                "26": "FLNEL/a18000/s250 HLMUT SKEWD/a14000/s250 LEKEE/a12000 XCUTV CAPTJ/a11000/s210/h083",
+                "34L": "FLNEL/a18000/s250 HLMUT ARCHY/a14000 BABAA/a12000/s250 HIMOM/a11000/s210/h173",
+                "34R": "FLNEL/a18000/s250 HLMUT ARCHY/a14000 BABAA/a12000/s250 HIMOM/a11000/s210/h173",
+                "35L": "FLNEL/a18000/s250 HLMUT ARCHY/a14000 BABAA/a12000/s250 HIMOM/a11000/s210/h173",
+                "35R": "FLNEL/a18000/s250 HLMUT SKEWD/a14000 LEKEE/a12000 XCUTV FFFAT DOGGG/a11000/s210/h173"
+            }
           },
           "speed_restriction": 250,
           "waypoints": "LONGZ/a21000/ho FLNEL/a18000/s250"
@@ -1462,18 +1471,20 @@
           "initial_speed": 290,
           "star": "NIIXX3",
           "runway_waypoints": {
-            "7": "HAGGR/a18000 JPAGE/a16000 ROOTZ/a14000/s250 RPIDS BBOOK/a11000/s210/h263",
-            "8": "HAGGR/a18000 JPAGE/a16000 ROOTZ/a14000/s250 RPIDS BBOOK/a11000/s210/h263",
-            "16L": "HAGGR/a18000 JPAGE/a16000 JAAAM/a14000/s250 HUDPI QWIKE/a11000/s210/h353",
-            "16R": "HAGGR/a18000 JPAGE/a16000 ROOTZ/a14000/s250 RPIDS RDDVL CLFFF/a11000/s210/h353",
-            "17L": "HAGGR/a18000 JPAGE/a16000 JAAAM/a14000/s250 HUDPI QWIKE/a11000/s210/h353",
-            "17R": "HAGGR/a18000 JPAGE/a16000 JAAAM/a14000/s250 HUDPI QWIKE/a11000/s210/h353",
-            "25": "HAGGR/a18000 GEILS/a14000/h317",
-            "26": "HAGGR/a18000 GEILS/a14000/h317",
-            "34L": "HAGGR/a18000 BSTON/a14000/s230 BOSSS/a12000/s210/h273",
-            "34R": "HAGGR/a18000 BSTON/a14000/s230 BOSSS/a12000/s210/h273",
-            "35L": "HAGGR/a18000 BSTON/a14000/s230 BOSSS/a12000/s210/h273",
-            "35R": "HAGGR/a18000 BSTON/a14000/s230 BOSSS/a12000/s210/h273"
+            "KDEN": {
+                "7": "HAGGR/a18000 JPAGE/a16000 ROOTZ/a14000/s250 RPIDS BBOOK/a11000/s210/h263",
+                "8": "HAGGR/a18000 JPAGE/a16000 ROOTZ/a14000/s250 RPIDS BBOOK/a11000/s210/h263",
+                "16L": "HAGGR/a18000 JPAGE/a16000 JAAAM/a14000/s250 HUDPI QWIKE/a11000/s210/h353",
+                "16R": "HAGGR/a18000 JPAGE/a16000 ROOTZ/a14000/s250 RPIDS RDDVL CLFFF/a11000/s210/h353",
+                "17L": "HAGGR/a18000 JPAGE/a16000 JAAAM/a14000/s250 HUDPI QWIKE/a11000/s210/h353",
+                "17R": "HAGGR/a18000 JPAGE/a16000 JAAAM/a14000/s250 HUDPI QWIKE/a11000/s210/h353",
+                "25": "HAGGR/a18000 GEILS/a14000/h317",
+                "26": "HAGGR/a18000 GEILS/a14000/h317",
+                "34L": "HAGGR/a18000 BSTON/a14000/s230 BOSSS/a12000/s210/h273",
+                "34R": "HAGGR/a18000 BSTON/a14000/s230 BOSSS/a12000/s210/h273",
+                "35L": "HAGGR/a18000 BSTON/a14000/s230 BOSSS/a12000/s210/h273",
+                "35R": "HAGGR/a18000 BSTON/a14000/s230 BOSSS/a12000/s210/h273"
+            }
           },
           "speed_restriction": 250,
           "waypoints": "NIIXX/a21000/ho HAGGR/a18000/s250"
@@ -1550,18 +1561,20 @@
           "initial_speed": 290,
           "star": "SSKII3",
           "runway_waypoints": {
-            "7": "BGDEE/a19000/s250 POWPW/a14000 BRNNO/a13000/s210/h352",
-            "8": "BGDEE/a19000/s250 POWPW/a14000 BRNNO/a13000/s210/h352",
-            "16L": "BGDEE/a19000/s250 TLRID/a16000 EPPIC/a14000/s240 RDDVL CLFFF/a11000/s210/h353",
-            "16R": "BGDEE/a19000/s250 TLRID/a16000 EPPIC/a14000/s240 RDDVL CLFFF/a11000/s210/h353",
-            "17L": "BGDEE/a19000/s250 TLRID/a16000 ZATUT/a14000/s240 LOOOP HUDPI QWIKE/a11000/s210/h353",
-            "17R": "BGDEE/a19000/s250 TLRID/a16000 ZATUT/a14000/s240 LOOOP HUDPI QWIKE/a11000/s210/h353",
-            "25": "BGDEE/a19000/s250 TLRID/a16000 ZATUT/a14000/s240 LOOOP JIBAT/a11000/s210/h082",
-            "26": "BGDEE/a19000/s250 TLRID/a16000 ZATUT/a14000/s240 LOOOP JIBAT/a11000/s210/h082",
-            "34L": "BGDEE/a19000/s250 CRAGG/a13000/s210 NARLE/a12000 TELLR/a11000/s210/h075",
-            "34R": "BGDEE/a19000/s250 CRAGG/a13000/s210 NARLE/a12000 TELLR/a11000/s210/h075",
-            "35L": "BGDEE/a19000/s250 CRAGG/a13000/s210 NARLE/a12000 TELLR/a11000/s210/h075",
-            "35R": "BGDEE/a19000/s250 CRAGG/a13000/s210 NARLE/a12000 TELLR/a11000/s210/h075"
+            "KDEN": {
+                "7": "BGDEE/a19000/s250 POWPW/a14000 BRNNO/a13000/s210/h352",
+                "8": "BGDEE/a19000/s250 POWPW/a14000 BRNNO/a13000/s210/h352",
+                "16L": "BGDEE/a19000/s250 TLRID/a16000 EPPIC/a14000/s240 RDDVL CLFFF/a11000/s210/h353",
+                "16R": "BGDEE/a19000/s250 TLRID/a16000 EPPIC/a14000/s240 RDDVL CLFFF/a11000/s210/h353",
+                "17L": "BGDEE/a19000/s250 TLRID/a16000 ZATUT/a14000/s240 LOOOP HUDPI QWIKE/a11000/s210/h353",
+                "17R": "BGDEE/a19000/s250 TLRID/a16000 ZATUT/a14000/s240 LOOOP HUDPI QWIKE/a11000/s210/h353",
+                "25": "BGDEE/a19000/s250 TLRID/a16000 ZATUT/a14000/s240 LOOOP JIBAT/a11000/s210/h082",
+                "26": "BGDEE/a19000/s250 TLRID/a16000 ZATUT/a14000/s240 LOOOP JIBAT/a11000/s210/h082",
+                "34L": "BGDEE/a19000/s250 CRAGG/a13000/s210 NARLE/a12000 TELLR/a11000/s210/h075",
+                "34R": "BGDEE/a19000/s250 CRAGG/a13000/s210 NARLE/a12000 TELLR/a11000/s210/h075",
+                "35L": "BGDEE/a19000/s250 CRAGG/a13000/s210 NARLE/a12000 TELLR/a11000/s210/h075",
+                "35R": "BGDEE/a19000/s250 CRAGG/a13000/s210 NARLE/a12000 TELLR/a11000/s210/h075"
+            }
           },
           "speed_restriction": 250,
           "waypoints": "SSKII/a21000/ho BGDEE/a19000/s250"
@@ -1638,6 +1651,7 @@
           "initial_speed": 290,
           "star": "FLATI3",
           "runway_waypoints": {
+            "KDEN": {
               "7": "MNARK/a19000/s250 SUMTT/a14000/h033",
               "8": "MNARK/a19000/s250 SUMTT/a14000/h033",
               "16L": "MNARK/a19000/s250 EOLUS/a16000 EPPIC/a14000/s240 RDDVL CLFFF/a11000/s210/h353",
@@ -1650,6 +1664,7 @@
               "34R": "MNARK/a19000/s250 BDIVN/a15000 KUSHH/a14000/s210 LDORA/a13000/s210/h064",
               "35L": "MNARK/a19000/s250 BDIVN/a15000 KUSHH/a14000/s210 LDORA/a13000/s210/h064",
               "35R": "MNARK/a19000/s250 BDIVN/a15000 KUSHH/a14000/s210 LDORA/a13000/s210/h064"
+            }
           },
           "speed_restriction": 250,
           "waypoints": "TBARR/a21000/ho MNARK/a19000/s250"
@@ -1798,7 +1813,6 @@
         ]
       }
     ],
-    "magnetic_variation": 7.9,
     "name": "KDEN",
    "primary_airport": "KDEN",
     "radar_sites": {

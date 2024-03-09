@@ -135,6 +135,21 @@ func lerp(x, a, b float32) float32 {
 	return (1-x)*a + x*b
 }
 
+// greatest common divisor
+func gcd(a, b int) int {
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}
+
+// least common multiple
+func lcm(a, b int) int {
+	return a / gcd(a, b) * b
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Extent2D
 
@@ -347,7 +362,21 @@ func EquilateralTriangleVertices(height float32) [3][2]float32 {
 // PointInPolygon checks whether the given point is inside the given polygon;
 // it assumes that the last vertex does not repeat the first one, and so includes
 // the edge from pts[len(pts)-1] to pts[0] in its test.
-func PointInPolygon(p Point2LL, pts []Point2LL) bool {
+func PointInPolygon(p [2]float32, pts [][2]float32) bool {
+	inside := false
+	for i := 0; i < len(pts); i++ {
+		p0, p1 := pts[i], pts[(i+1)%len(pts)]
+		if (p0[1] <= p[1] && p[1] < p1[1]) || (p1[1] <= p[1] && p[1] < p0[1]) {
+			x := p0[0] + (p[1]-p0[1])*(p1[0]-p0[0])/(p1[1]-p0[1])
+			if x > p[0] {
+				inside = !inside
+			}
+		}
+	}
+	return inside
+}
+
+func PointInPolygon2LL(p Point2LL, pts []Point2LL) bool {
 	inside := false
 	for i := 0; i < len(pts); i++ {
 		p0, p1 := pts[i], pts[(i+1)%len(pts)]

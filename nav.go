@@ -116,6 +116,7 @@ type NavHeading struct {
 type NavApproach struct {
 	Assigned          *Approach
 	AssignedId        string
+	ATPAVolume        *ATPAVolume
 	Cleared           bool
 	InterceptState    InterceptLocalizerState
 	NoPT              bool
@@ -426,7 +427,7 @@ func (nav *Nav) Summary(fp FlightPlan) string {
 				fmt.Sprintf("Fly the %s procedure turn at %s, %s entry", pt.ProcedureTurn.Type,
 					pt.Fix, pt.Entry.String()))
 			if pt.ProcedureTurn.ExitAltitude != 0 &&
-				nav.FlightState.Altitude > pt.ProcedureTurn.ExitAltitude {
+				nav.FlightState.Altitude > float32(pt.ProcedureTurn.ExitAltitude) {
 				lines = append(lines, fmt.Sprintf("Descend to %d in the procedure turn",
 					int(pt.ProcedureTurn.ExitAltitude)))
 			}
@@ -1806,14 +1807,25 @@ func (nav *Nav) directFix(fix string) bool {
 	}
 
 	if ap := nav.Approach.Assigned; ap != nil {
+		// This is a little hacky, but... Because of the way we currently
+		// interpret ARINC424 files, fixes with procedure turns have no
+		// procedure turn for routes with /nopt from the previous fix.
+		// Therefore, if we are going direct to a fix that has a procedure
+		// turn, we can't take the first matching route but have to keep
+		// looking for it in case another route has it with a PT...
+		found := false
 		for _, route := range ap.Waypoints {
 			for i, wp := range route {
 				if wp.Fix == fix {
 					nav.Waypoints = route[i:]
-					return true
+					found = true
+					if wp.ProcedureTurn != nil {
+						break
+					}
 				}
 			}
 		}
+		return found
 	}
 	return false
 }
@@ -1920,8 +1932,12 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World
 
 	nav.Approach.Assigned = ap
 	nav.Approach.AssignedId = id
+	nav.Approach.ATPAVolume = nil
+	if airp := w.GetAirport(airport); airp != nil {
+		nav.Approach.ATPAVolume = airp.ATPAVolumes[ap.Runway]
+	}
 
-	if waypoints := arr.RunwayWaypoints[ap.Runway]; len(waypoints) > 0 {
+	if waypoints := arr.GetRunwayWaypoints(airport, ap.Runway); len(waypoints) > 0 {
 		if len(nav.Waypoints) == 0 {
 			// Nothing left on our route; assume that it has (hopefully
 			// recently) passed the last fix and that patching in the rest
@@ -2522,9 +2538,9 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind WindModel, lg *Logger) (floa
 
 func (fp *FlyRacetrackPT) GetAltitude(nav *Nav) (float32, bool) {
 	descend := fp.ProcedureTurn.ExitAltitude != 0 &&
-		nav.FlightState.Altitude > fp.ProcedureTurn.ExitAltitude &&
+		nav.FlightState.Altitude > float32(fp.ProcedureTurn.ExitAltitude) &&
 		fp.State != PTStateApproaching
-	return fp.ProcedureTurn.ExitAltitude, descend
+	return float32(fp.ProcedureTurn.ExitAltitude), descend
 }
 
 func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel, lg *Logger) (float32, TurnMethod, float32) {
