@@ -416,6 +416,7 @@ type STARSAircraftState struct {
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
 	LeaderLineDirection *CardinalOrdinalDirection
+	ChosenLeaderLine *CardinalOrdinalDirection 
 
 	Ghost struct {
 		PartialDatablock bool
@@ -2978,6 +2979,13 @@ func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt
 		})
 }
 
+func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir *CardinalOrdinalDirection) {
+	ctx.world.SetGlobalLeaderLine(callsign, dir, nil, 
+	func(err error) {
+		sp.previewAreaOutput = GetSTARSError(err).Error()
+	})
+}
+
 func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
 	ctx.world.InitiateTrack(callsign,
 		func(any) {
@@ -3357,10 +3365,28 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				}
 				return
-			} else if dir, ok := numpadToDirection(cmd[0]); ok && len(cmd) == 1 {
-				state.LeaderLineDirection = dir
-				status.clear = true
-				return
+			} else if dir, ok := numpadToDirection(cmd[0]); ok && (len(cmd) == 1 || len(cmd) == 2){
+				if len(cmd) == 1 {
+						state.LeaderLineDirection = dir
+						state.ChosenLeaderLine = dir
+						status.clear = true
+						return
+				} else if len(cmd) == 2 { // Global leader lines
+					if cmd[0] != cmd[1] || strings.Contains(cmd, "0") {
+						status.err = GetSTARSError(ErrSTARSCommandFormat)
+						return
+					}
+					if ac.TrackingController != ctx.world.Callsign {
+						status.err = GetSTARSError(ErrSTARSIllegalPosition)
+						return
+					}
+					if dir, ok := numpadToDirection(cmd[0]); ok {
+						sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
+						status.clear = true 
+					} 
+					return
+
+				}
 			} else if cmd == "?" {
 				ctx.world.PrintInfo(ac)
 				status.clear = true
@@ -3713,9 +3739,25 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				if len(cmd) == 1 {
 					if dir, ok := numpadToDirection(cmd[0]); ok {
 						state.LeaderLineDirection = dir
+						state.ChosenLeaderLine = dir
 						status.clear = true
 						return
 					}
+				} else if len(cmd) == 2 { // Global leader lines
+					if cmd[0] != cmd[1] || strings.Contains(cmd, "0") {
+						status.err = GetSTARSError(ErrSTARSCommandFormat)
+						return
+					}
+					if ac.TrackingController != ctx.world.Callsign {
+						status.err = GetSTARSError(ErrSTARSIllegalPosition)
+						return
+					}
+					if dir, ok := numpadToDirection(cmd[0]); ok {
+						sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
+						status.clear = true 
+					} 
+					return
+
 				}
 				status.err = ErrSTARSCommandFormat
 				return
@@ -5807,6 +5849,11 @@ func (sp *STARSPane) diverging(a, b *Aircraft) bool {
 func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
 	state := sp.Aircraft[ac.Callsign]
 
+	if state.ChosenLeaderLine == nil {
+		state.LeaderLineDirection = ac.GlobalLinePosition
+	} else {
+		state.LeaderLineDirection = state.ChosenLeaderLine
+	}
 	var errs []string
 	if ac.Squawk == Squawk(0o7500) || state.SPCOverride == "HJ" {
 		errs = append(errs, "HJ")

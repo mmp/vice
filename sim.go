@@ -1927,6 +1927,31 @@ func (s *Sim) Ident(token, callsign string) error {
 		})
 }
 
+func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *CardinalOrdinalDirection) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchCommand(token, callsign,
+		func(c *Controller, ac *Aircraft) error {
+			// Make sure no one has the track already
+			if ac.TrackingController != c.Callsign {
+				return ErrOtherControllerHasTrack
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			ac.GlobalLinePosition = dir 
+			fmt.Println(ac.GlobalLinePosition)
+			s.eventStream.Post(Event{
+				Type:         InitiatedTrackEvent,
+				Callsign:     ac.Callsign,
+				ToController: ctrl.Callsign,
+			})
+
+			return nil
+		})
+}
+
 func (s *Sim) InitiateTrack(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

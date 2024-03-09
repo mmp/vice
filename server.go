@@ -98,6 +98,14 @@ func (s *SimProxy) TakeOrReturnLaunchControl() *rpc.Call {
 	return s.Client.Go("Sim.TakeOrReturnLaunchControl", s.ControllerToken, nil, nil)
 }
 
+func (s *SimProxy) SetGlobalLeaderLine(callsign string, direction *CardinalOrdinalDirection) *rpc.Call {
+	return s.Client.Go("Sim.SetGlobalLeaderLine", &SetGlobalLeaderLineArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Direction:      direction,
+	}, nil, nil)
+}
+
 func (s *SimProxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
 	return s.Client.Go("Sim.SetScratchpad", &SetScratchpadArgs{
 		ControllerToken: s.ControllerToken,
@@ -685,6 +693,20 @@ func (sd *SimDispatcher) SetSecondaryScratchpad(a *SetScratchpadArgs, _ *struct{
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetSecondaryScratchpad(a.ControllerToken, a.Callsign, a.Scratchpad)
+	}
+}
+
+type SetGlobalLeaderLineArgs struct {
+	ControllerToken string 
+	Callsign string
+	Direction *CardinalOrdinalDirection
+}
+
+func (sd *SimDispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.SetGlobalLeaderLine(a.ControllerToken, a.Callsign, a.Direction)
 	}
 }
 

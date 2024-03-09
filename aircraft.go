@@ -42,7 +42,7 @@ type Aircraft struct {
 		RedirectedTo   string
 		RDIndicator    bool
 	}
-
+	GlobalLinePosition *CardinalOrdinalDirection
 	// The controller who gave approach clearance
 	ApproachController string
 
