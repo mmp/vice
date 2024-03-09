@@ -22,7 +22,7 @@ jobs:
     steps:
     - name: Debug wix paths
       run: |
-	Get-ChildItem -Path C:\ -Recurse -ErrorAction SilentlyContinue -Filter candle.exe
+        Get-ChildItem -Path C:\ -Recurse -ErrorAction SilentlyContinue -Filter candle.exe
 
     - name: Checkout source
       uses: actions/checkout@v3
