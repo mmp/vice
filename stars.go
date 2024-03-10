@@ -2035,6 +2035,29 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		}
 
 	case CommandModeHandOff:
+		if string(cmd[0]) == "C" { // Enabling/ disabling automatic handoff processing
+			// Manual 4-30
+			if string(cmd[1]) == "X" {
+				if string(cmd[2]) == "E" {
+					sp.AirspaceAwareness.Interfacility = true
+				} else if string(cmd[2]) == "I" {
+					sp.AirspaceAwareness.Interfacility = false
+				}
+			} else if string(cmd[1]) == "T" {
+				if string(cmd[2]) == "E" {
+					sp.AirspaceAwareness.Intrafacility = true
+				} else if string(cmd[2]) == "I" {
+					sp.AirspaceAwareness.Intrafacility = false
+				}
+			}
+			if string(cmd[1]) == "E" {
+				sp.AirspaceAwareness.Intrafacility = true
+				sp.AirspaceAwareness.Interfacility = true
+			} else if string(cmd[1]) == "I" {
+				sp.AirspaceAwareness.Intrafacility = false
+				sp.AirspaceAwareness.Interfacility = false
+			}
+		}
 		f := strings.Fields(cmd)
 		switch len(f) {
 		case 0:
