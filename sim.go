@@ -1079,8 +1079,8 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 func getAltimiter(metar string) string {
 	for _, indexString := range []string{" A3", " A2"} {
 		index := strings.Index(metar, indexString)
-		if index != -1 && index+5 < len(metar) {
-			return metar[index+1 : index+5]
+		if index != -1 && index+6 < len(metar) {
+			return metar[index+2 : index+6]
 		}
 	}
 	return ""
