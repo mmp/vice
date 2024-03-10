@@ -12,14 +12,14 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"log/slog"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"golang.org/x/exp/slices"
-	"golang.org/x/exp/slog"
 )
 
 type FAAAirport struct {

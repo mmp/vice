@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"log/slog"
 	"math"
 	"net"
 	"net/http"
@@ -22,7 +23,6 @@ import (
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
-	"golang.org/x/exp/slog"
 )
 
 const ViceRPCVersion = 11

@@ -6,11 +6,10 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"runtime"
 	"sync"
 	"time"
-
-	"golang.org/x/exp/slog"
 )
 
 type EventSubscriberId int

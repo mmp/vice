@@ -6,10 +6,9 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"strings"
 	"time"
-
-	"golang.org/x/exp/slog"
 )
 
 type Aircraft struct {
@@ -36,13 +35,9 @@ type Aircraft struct {
 	// Handoff offered but not yet accepted
 	HandoffTrackController string
 
-	RedirectedHandoff struct {
-		OrigionalOwner string
-		Redirector     []string
-		RedirectedTo   string
-		RDIndicator    bool
-	}
 	GlobalLinePosition *CardinalOrdinalDirection
+	RedirectedHandoff RedirectedHandoff
+
 	// The controller who gave approach clearance
 	ApproachController string
 
@@ -66,6 +61,13 @@ type Aircraft struct {
 
 	// Who to try to hand off to at a waypoint with /ho
 	WaypointHandoffController string
+}
+
+type RedirectedHandoff struct {
+	OrigionalOwner string   // Controller callsign
+	Redirector     []string // Sector id
+	RedirectedTo   string   // Sector id
+	RDIndicator    bool
 }
 
 type PilotResponse struct {

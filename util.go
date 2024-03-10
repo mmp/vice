@@ -17,6 +17,7 @@ import (
 	"image/draw"
 	"io"
 	"io/fs"
+	"log/slog"
 	"net"
 	"net/http"
 	"net/rpc"
@@ -37,7 +38,6 @@ import (
 	"github.com/iancoleman/orderedmap"
 	"github.com/klauspost/compress/zstd"
 	"golang.org/x/exp/constraints"
-	"golang.org/x/exp/slog"
 )
 
 ///////////////////////////////////////////////////////////////////////////
