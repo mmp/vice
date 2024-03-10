@@ -4949,13 +4949,15 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		// it's under our control
 		dt = FullDatablock
 	}
+	me := w.GetController(w.Callsign)
+	if slices.Contains(ac.ForceQLControllers, me.Callsign) {
+		dt = FullDatablock
+	}
 
 	if ac.HandoffTrackController == w.Callsign {
 		// it's being handed off to us
 		dt = FullDatablock
 	}
-
-	me := w.GetController(w.Callsign)
 
 	// Point outs are FDB until acked.
 	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
