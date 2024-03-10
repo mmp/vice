@@ -3562,10 +3562,32 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.err = ErrSTARSIllegalParam
 				}
 				return
-			} else if lc := len(cmd); lc > 2 && cmd[lc-1] == '*' && isControllerId(cmd[:lc-1]) {
-				status.clear = true
-				sp.pointOut(ctx, ac.Callsign, cmd[:lc-1])
-				return
+			} else if lc := len(cmd); lc >= 2 && cmd[lc-1] == '*' { // Some sort of pointout
+				// First check for errors. (Manual 6-73)
+
+				// Check if arrival
+				for _, airport := range ctx.world.ArrivalAirports {
+					if airport.Name == ac.FlightPlan.ArrivalAirport {
+						status.err = GetSTARSError(ErrSTARSIllegalTrack)
+						return
+					}
+				}
+				// Check if being handed off, pointed out or suspended (TODO suspended)
+				if sp.OutboundPointOuts[ac.Callsign] != "" || sp.InboundPointOuts[ac.Callsign] != "" ||
+					(ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.world.Callsign) {
+					status.err = GetSTARSError(ErrSTARSIllegalTrack)
+					return
+				}
+
+				ok, control := sameFacility(ctx, cmd, ac.Callsign)
+				if !ok {
+					sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalPosition).Error()
+				} else {
+					status.clear = true
+					sp.pointOut(ctx, ac.Callsign, control)
+					return
+				}
+
 			} else if len(cmd) > 0 {
 				// See if cmd works as a sector id; if so, make it a handoff.
 				user := ctx.world.GetController(ctx.world.Callsign)
