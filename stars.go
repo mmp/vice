@@ -1764,7 +1764,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	}
 
 	ps := &sp.CurrentPreferenceSet
-
 	switch sp.commandMode {
 	case CommandModeNone:
 		switch cmd {
@@ -1891,7 +1890,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					} else {
 						ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
 						if !ok {
-							status.err = GetSTARSError(ErrSTARSCommandFormat)
+							status.err = GetSTARSError(ErrSTARSIllegalPosition) // assume it's this
 							return
 						}
 						sp.forceQL(ctx, aircraft.Callsign, control)
@@ -1974,7 +1973,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		if len(cmd) > 0 {
 			ok, control := sameFacility(ctx, cmd, "")
 			if !ok {
-				status.err = GetSTARSError(ErrSTARSCommandFormat)
+				status.err = GetSTARSError(ErrSTARSIllegalPosition)
 				return
 			}
 			for _, controler := range ctx.world.Controllers {
