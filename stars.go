@@ -3368,8 +3368,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					// Try running it as a command
 					ctx.world.RunAircraftCommands(ac, cmd,
 						func(err error) {
-							globalConfig.Audio.PlayOnce(AudioCommandError)
-							sp.previewAreaOutput = GetSTARSError(err).Error()
+							// If it's not a command, set the scratchpad if it fits.
+							if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
+								sp.setScratchpad(ctx, ac.Callsign, cmd, false)
+							} else {
+								globalConfig.Audio.PlayOnce(AudioCommandError)
+								sp.previewAreaOutput = GetSTARSError(err).Error()
+							}
 						})
 				}
 				status.clear = true
@@ -3587,8 +3592,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				// If it didn't match a controller, try to run it as a command
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
-						globalConfig.Audio.PlayOnce(AudioCommandError)
-						sp.previewAreaOutput = GetSTARSError(err).Error()
+						// If it's not a valid command and fits the requirements for a scratchpad, set the scratchpad.
+						if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
+							sp.setScratchpad(ctx, ac.Callsign, cmd, false)
+						} else {
+							globalConfig.Audio.PlayOnce(AudioCommandError)
+							sp.previewAreaOutput = GetSTARSError(err).Error()
+						}
 					})
 
 				status.clear = true
