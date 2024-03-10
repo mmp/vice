@@ -6,15 +6,15 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"math"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
-	"golang.org/x/exp/slices"
-	"golang.org/x/exp/slog"
 )
 
 const initialSimSeconds = 45

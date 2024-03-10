@@ -8,11 +8,10 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
-
-	"golang.org/x/exp/slices"
 )
 
 const ARINC424LineLength = 134 // 132 chars + \r + \n

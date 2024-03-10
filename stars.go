@@ -10,6 +10,7 @@ package main
 import (
 	"fmt"
 	"runtime"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -18,7 +19,6 @@ import (
 	"unsafe"
 
 	"github.com/mmp/imgui-go/v4"
-	"golang.org/x/exp/slices"
 )
 
 // IFR TRACON separation requirements

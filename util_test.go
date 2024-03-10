@@ -5,10 +5,9 @@
 package main
 
 import (
+	"slices"
 	"testing"
 	"time"
-
-	"golang.org/x/exp/slices"
 )
 
 func TestWrapText(t *testing.T) {

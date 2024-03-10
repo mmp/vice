@@ -6,9 +6,9 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"strings"
-
-	"golang.org/x/exp/slog"
+	"time"
 )
 
 type Aircraft struct {

@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"image/png"
+	"log/slog"
 	"net/http"
 	"os"
 	"path"
@@ -22,7 +23,6 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/pkg/browser"
-	"golang.org/x/exp/slog"
 )
 
 var (

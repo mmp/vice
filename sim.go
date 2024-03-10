@@ -9,8 +9,10 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/rpc"
 	"runtime"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -18,8 +20,6 @@ import (
 
 	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
-	"golang.org/x/exp/slices"
-	"golang.org/x/exp/slog"
 )
 
 type SimConfiguration struct {
