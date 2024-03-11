@@ -3092,7 +3092,7 @@ func (sp *STARSPane) recallRedirectedHandoff(ctx *PaneContext, callsign string) 
 // returns the controller responsible for the aircraft given its altitude
 // and route.
 func calculateAirspace(ctx *PaneContext, callsign string) string {
-	ac := ctx.world.Aircraft[callsign]
+	ac := ctx.world.GetAircraft(callsign)
 	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
 		for _, fix := range rules.Fix {
 			if strings.Contains(ac.FlightPlan.Route, fix) {
@@ -3121,11 +3121,12 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 	userController := *ctx.world.GetController(ctx.world.Callsign)
 	controller = strings.TrimSuffix(controller, "*")
 	lc := len(controller)
-	
+	fmt.Println(controller)
 	// ARTCC airspaceawareness
 	haveTrianglePrefix := strings.HasPrefix(controller, STARSTriangleCharacter)
 	if controller == "C" || (haveTrianglePrefix && lc == 3) {
 		control := calculateAirspace(ctx, callsign)
+		fmt.Println(control)
 		if control != "" {
 			return true, control
 		}
