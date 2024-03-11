@@ -3651,6 +3651,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						}
 					})
 				status.clear = true
+				return
 			}
 
 		case CommandModeInitiateControl:
