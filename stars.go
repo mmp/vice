@@ -5100,9 +5100,12 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 	if state.ForceQL {
 		dt = FullDatablock
 	}
-	if ac.RedirectedHandoff.RedirectedTo == me.SectorId {
-		dt = FullDatablock
+	if len(ac.RedirectedHandoff.Redirector) > 0 {
+		if ac.RedirectedHandoff.RedirectedTo == me.SectorId {
+			dt = FullDatablock
+		}
 	}
+	
 	if ac.RedirectedHandoff.RDIndicator {
 		dt = FullDatablock
 	}
