@@ -3156,7 +3156,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 				return true, controller
 			}
 
-		} else if control := ctx.world.GetController(controller); control.ERAMFacility {
+		} else if control := ctx.world.GetController(controller); control != nil && control.ERAMFacility {
 			return true, control.SectorId
 		}
 
