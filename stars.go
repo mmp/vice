@@ -3315,6 +3315,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.clear = true
 					state.OutboundHandoffAccepted = false
 					state.OutboundHandoffFlashEnd = time.Now()
+					sp.handoffControl(ctx, ac.Callsign)
 					return
 				} else if ctx.keyboard != nil {
 					_, ctrl := ctx.keyboard.Pressed[KeyControl]
@@ -3652,7 +3653,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					})
 				status.clear = true
 				return
-			}
+			} 
 
 		case CommandModeInitiateControl:
 			// TODO: error if cmd != ""?
