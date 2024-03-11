@@ -3255,22 +3255,27 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			if cmd == "" {
 				user := ctx.world.GetController(ctx.world.Callsign)
 				if ac.RedirectedHandoff.RedirectedTo == user.SectorId {
+					fmt.Println(0)
 					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
 					status.clear = true
 					return
 				} else if slices.Contains(ac.RedirectedHandoff.Redirector, user.SectorId) {
+					fmt.Println(1)
 					sp.recallRedirectedHandoff(ctx, ac.Callsign)
 					status.clear = true
 					return
 				} else if ac.RedirectedHandoff.RDIndicator && ac.RedirectedHandoff.RedirectedTo == "" {
+					fmt.Println(2)
 					sp.slewRedirect(ctx, ac.Callsign)
 					status.clear = true
 					return
 				} else if ac.HandoffTrackController == ctx.world.Callsign {
+					fmt.Println(3)
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
 					return
 				} else if slices.Contains(ac.ForceQLControllers, ctx.world.Callsign) {
+					fmt.Println(4)
 					sp.RemoveForceQL(ctx, ac.Callsign, ctx.world.Callsign)
 					status.clear = true
 					return
@@ -3288,28 +3293,34 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 				} else if ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.world.Callsign &&
 					ac.TrackingController == ctx.world.Callsign {
+						fmt.Println(5)
 					// cancel offered handoff offered
 					status.clear = true
 					sp.cancelHandoff(ctx, ac.Callsign)
 					return
 				} else if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
+					fmt.Println(6)
 					// ack point out
 					sp.acknowledgePointOut(ctx, ac.Callsign)
 					status.clear = true
 					return
 				} else if state.PointedOut {
+					fmt.Println(7)
 					state.PointedOut = false
 					status.clear = true
 					return
 				} else if state.ForceQL {
+					fmt.Println(8)
 					state.ForceQL = false
 					status.clear = true
 				} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+					fmt.Println(9)
 					// ack rejected point out
 					delete(sp.RejectedPointOuts, ac.Callsign)
 					status.clear = true
 					return
 				} else if state.OutboundHandoffAccepted {
+					fmt.Println(10)
 					// ack an accepted handoff, which we will treat as also
 					// handing off control.
 					status.clear = true
@@ -3318,6 +3329,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					sp.handoffControl(ctx, ac.Callsign)
 					return
 				} else if ctx.keyboard != nil {
+					fmt.Println(11)
 					_, ctrl := ctx.keyboard.Pressed[KeyControl]
 					_, shift := ctx.keyboard.Pressed[KeyShift]
 					if ctrl && shift {
@@ -3329,12 +3341,15 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				}
 
 				if state.DatablockType != FullDatablock {
+					fmt.Println(12)
 					state.DatablockType = FullDatablock
 					// do not collapse datablock if user is tracking the aircraft
 				} else if ac.TrackingController != ctx.world.Callsign {
+					fmt.Println(13)
 					state.DatablockType = PartialDatablock
 				}
 			} else if cmd == "." {
+				fmt.Println(14)
 				if err := sp.setScratchpad(ctx, ac.Callsign, "", false); err != nil {
 					status.err = err
 				} else {
@@ -3342,6 +3357,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				}
 				return
 			} else if cmd == "+" {
+				fmt.Println(15)
 				if err := sp.setScratchpad(ctx, ac.Callsign, "", true); err != nil {
 					status.err = err
 				} else {
@@ -3349,6 +3365,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				}
 				return
 			} else if cmd == "*" {
+				fmt.Println(16)
 				from := sp.Aircraft[ac.Callsign].TrackPosition()
 				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 					p := transforms.LatLongFromWindowP(pw)
@@ -3360,7 +3377,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				}
 				return
-			} else if dir, ok := numpadToDirection(cmd[0]); ok && (len(cmd) == 1 || len(cmd) == 2){
+			} else if dir, ok := numpadToDirection(cmd[0]); ok && (len(cmd) == 1 || (len(cmd) == 2 && unicode.IsDigit(rune(cmd[1])))){
+				fmt.Println(17)
 				if len(cmd) == 1 {
 						state.LeaderLineDirection = dir
 						state.ChosenLeaderLine = dir
@@ -3383,16 +3401,19 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 				}
 			} else if cmd == "?" {
+				fmt.Println(18)
 				ctx.world.PrintInfo(ac)
 				status.clear = true
 				return
 			} else if cmd == "X" {
+				fmt.Println(18)
 				ctx.world.DeleteAircraft(ac, func(e error) {
 					status.err = ErrSTARSIllegalTrack
 				})
 				status.clear = true
 				return
 			} else if isControllerId(cmd) || cmd == "C" { // For ARTCC handoffs
+				fmt.Println(19)
 				if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err != nil {
 					// Try running it as a command
 					ctx.world.RunAircraftCommands(ac, cmd,
