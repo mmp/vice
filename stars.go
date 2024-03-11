@@ -3125,7 +3125,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 
 	// ARTCC airspaceawareness
 	haveTrianglePrefix := strings.HasPrefix(controller, STARSTriangleCharacter)
-	if controller == "C" || haveTrianglePrefix {
+	if controller == "C" || (haveTrianglePrefix && lc == 3) {
 		control := calculateAirspace(ctx, callsign)
 		if control != "" {
 			return true, control
