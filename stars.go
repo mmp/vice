@@ -1883,11 +1883,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 						var fac string
 						for _, control := range ctx.world.Controllers {
 							if control.Callsign == ctx.world.Callsign {
-								fac = control.FacilityIdentifier
+								fac = string(control.SectorId[0])
 							}
 						}
 						for _, control := range ctx.world.Controllers {
-							if !control.ERAMFacility && control.FacilityIdentifier == fac {
+							if !control.ERAMFacility && string(control.SectorId[0]) == fac {
 								sp.forceQL(ctx, aircraft.Callsign, control.SectorId)
 							}
 						}
@@ -3119,10 +3119,9 @@ func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
 // Also decode the controller into its regular sector (N4P -> 4P)
 func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) {
 	userController := *ctx.world.GetController(ctx.world.Callsign)
-
 	controller = strings.TrimSuffix(controller, "*")
 	lc := len(controller)
-
+	
 	// ARTCC airspaceawareness
 	haveTrianglePrefix := strings.HasPrefix(controller, STARSTriangleCharacter)
 	if controller == "C" || (haveTrianglePrefix && lc == 3) {
@@ -3133,10 +3132,10 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 	} else {
 		// Non ARTCC airspaceawareness handoffs
 		if lc == 1 && !haveTrianglePrefix { // Must be a same sector.
-			for _, control := range ctx.world.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
-				if control.FacilityIdentifier == userController.FacilityIdentifier && // Same facility?
-					string(control.SectorId[0]) == string(userController.SectorId[0]) && // Same Sector?
-					string(control.SectorId[1]) == controller { // The actual controller
+			for _, control := range ctx.world.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good
+				if control.SectorId[0] == userController.SectorId[0] && // Same facility?
+					string(control.SectorId[1]) == string(userController.SectorId[1]) && // Same Sector?
+					string(control.SectorId[2]) == controller { // The actual controller
 					return true, control.SectorId
 				}
 			}
@@ -3144,21 +3143,20 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 			controllers := ctx.world.GetAllControllers()
 			// Find the controller fac
 			for _, control := range controllers {
-				if control.SectorId == controller && control.FacilityIdentifier == userController.FacilityIdentifier { // Found the facility
+				fmt.Println(control.SectorId[1:], controller)
+				if control.SectorId[0] == userController.SectorId[0] && control.SectorId[1:] == controller { // Found the facility, the facility is now included in the sector ID. TODO
 					return true, control.SectorId
 				}
 			}
 
 		} else if lc == 5 && haveTrianglePrefix { // ∆N4P for example. Must be different fac
 			controller = controller[2:] // Remove the ∆
-			receivingController := Controller{
-				SectorId:           controller[1:],
-				FacilityIdentifier: string(controller[0]),
-			}
-			if userController.FacilityIdentifier != receivingController.FacilityIdentifier {
-				return true, receivingController.SectorId
+			if userController.SectorId[0] != controller[0] {
+				return true, controller
 			}
 
+		} else if control := ctx.world.GetController(controller); control.ERAMFacility {
+			return true, control.SectorId
 		}
 
 	}
@@ -3205,18 +3203,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 	// See if an aircraft was clicked
 	ac, acDistance := sp.tryGetClosestAircraft(ctx.world, mousePosition, transforms)
 	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
-
-	isControllerId := func(id string) bool {
-		// FIXME: check--this is likely to be pretty slow, relatively
-		// speaking...
-		for _, ctrl := range ctx.world.GetAllControllers() {
-			if ctrl.SectorId == id {
-				return true
-			}
-		}
-		return false
-	}
-
 	ps := &sp.CurrentPreferenceSet
 
 	// The only thing that can happen with a ghost is to switch between a full/partial
@@ -3390,22 +3376,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				ctx.world.DeleteAircraft(ac, func(e error) {
 					status.err = ErrSTARSIllegalTrack
 				})
-				status.clear = true
-				return
-			} else if isControllerId(cmd) || cmd == "C" { // For ARTCC handoffs
-				if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err != nil {
-					// Try running it as a command
-					ctx.world.RunAircraftCommands(ac, cmd,
-						func(err error) {
-							// If it's not a command, set the scratchpad if it fits.
-							if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
-								sp.setScratchpad(ctx, ac.Callsign, cmd, false)
-							} else {
-								globalConfig.Audio.PlayOnce(AudioCommandError)
-								sp.previewAreaOutput = GetSTARSError(err).Error()
-							}
-						})
-				}
 				status.clear = true
 				return
 			} else if cmd == "*J" {
@@ -4950,25 +4920,10 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 	}
 
 	if ps.SignOnList.Visible {
-		format := func(ctrl *Controller) string {
-			return fmt.Sprintf("%3s", ctrl.SectorId) + " " + ctrl.Frequency.String() + " " +
-				ctrl.Callsign + Select(ctrl.IsHuman, "*", "") + "\n"
-		}
-
-		// User first
-		text := ""
-		userCtrl := ctx.world.GetController(ctx.world.Callsign)
-		if userCtrl != nil {
-			text += format(userCtrl)
-		}
-
-		for _, callsign := range SortedMapKeys(ctx.world.GetAllControllers()) {
-			ctrl := ctx.world.GetController(callsign)
-			if ctrl != userCtrl {
-				text += format(ctrl)
-			}
-		}
-
+		// User first 
+		user := ctx.world.GetController(ctx.world.Callsign)
+		text := user.SectorId[1:] + ""
+		
 		drawList(text, ps.SignOnList.Position)
 	}
 
@@ -5048,7 +5003,7 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = FullDatablock
 	}
 	me := w.GetController(w.Callsign)
-	if slices.Contains(ac.ForceQLControllers, me.Callsign) {
+	if len(ac.ForceQLControllers) > 0 && slices.Contains(ac.ForceQLControllers, me.Callsign) {
 		dt = FullDatablock
 	}
 
