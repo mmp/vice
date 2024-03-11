@@ -10,9 +10,11 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -20,8 +22,6 @@ import (
 
 	"github.com/iancoleman/orderedmap"
 	"github.com/klauspost/compress/zstd"
-	"golang.org/x/exp/slices"
-	"golang.org/x/exp/slog"
 )
 
 type ScenarioGroup struct {

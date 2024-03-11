@@ -7,12 +7,12 @@ package main
 import (
 	"fmt"
 	"image"
+	"log/slog"
 	"math"
 	"sync"
 	"unsafe"
 
 	"github.com/mmp/imgui-go/v4"
-	"golang.org/x/exp/slog"
 )
 
 // Renderer defines an interface for all of the various drawing that happens in vice.

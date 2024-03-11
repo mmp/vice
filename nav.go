@@ -6,11 +6,10 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
+	"slices"
 	"strings"
 	"time"
-
-	"golang.org/x/exp/slices"
-	"golang.org/x/exp/slog"
 )
 
 // State related to navigation. Pointers are used for optional values; nil

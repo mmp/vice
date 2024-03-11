@@ -6,10 +6,9 @@ package main
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"unicode"
-
-	"golang.org/x/exp/slices"
 )
 
 type Airport struct {
