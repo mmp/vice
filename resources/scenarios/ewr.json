@@ -212,14 +212,14 @@
       ],
       "departure_routes": {
         "22R": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ V30,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
             "cleared_altitude": 2500,
             "sid": "EWR5",
             "waypoints": "_EWR4_22Ra/h220"
           }
         },
         "4L": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ V30,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
             "cleared_altitude": 3000,
             "sid": "EWR5",
             "waypoints": "_EWR4_4La/h290"
@@ -611,7 +611,7 @@
           "altitude": 8000,
           "destination": "KPHL",
           "exit": "SBJ",
-          "route": "SBJ V30 ETX V162 PTW"
+          "route": "SBJ ETX V162 PTW"
         },
         {
           "airlines": [
@@ -1234,14 +1234,14 @@
       },
       "departure_routes": {
         "1": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ V30,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
             "cleared_altitude": 2000,
             "sid": "TEB4",
             "waypoints": "_TEB4_1a/h280"
           }
         },
         "24": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ V30,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
             "cleared_altitude": 2000,
             "sid": "RUUDY6",
             "waypoints": "DAVIM WENTZ/a1500 RUUDY/h280"
@@ -1282,8 +1282,8 @@
           ],
           "altitude": 8000,
           "destination": "KILG",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX PTW"
+          "exit": "SBJ",
+          "route": "SBJ ETX PTW"
         },
         {
           "airlines": [
@@ -1293,8 +1293,8 @@
           ],
           "altitude": 4000,
           "destination": "KILG",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX PTW"
+          "exit": "SBJ",
+          "route": "SBJ ETX PTW"
         },
         {
           "airlines": [
@@ -1340,8 +1340,8 @@
           ],
           "altitude": 8000,
           "destination": "KABE",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX"
+          "exit": "SBJ",
+          "route": "SBJ ETX"
         },
         {
           "airlines": [
@@ -1351,8 +1351,8 @@
           ],
           "altitude": 6000,
           "destination": "KABE",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX"
+          "exit": "SBJ",
+          "route": "SBJ ETX"
         },
         {
           "airlines": [
@@ -1363,7 +1363,7 @@
           "altitude": 6000,
           "destination": "KRDG",
           "exit": "SBJ",
-          "route": "SBJ V30 ETX"
+          "route": "SBJ ETX"
         },
         {
           "airlines": [
@@ -1373,8 +1373,8 @@
           ],
           "altitude": 8000,
           "destination": "KMDT",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX V162 HAR"
+          "exit": "SBJ",
+          "route": "SBJ ETX V162 HAR"
         },
         {
           "airlines": [
@@ -1508,8 +1508,8 @@
           ],
           "altitude": 9000,
           "destination": "KSRB",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 LANNA ETX V39 MRB V166 ESL V4 HVQ XXX V115 AZQ V140 LVT V321 GRILL HEM"
+          "exit": "SBJ",
+          "route": "SBJ LANNA ETX V39 MRB V166 ESL V4 HVQ XXX V115 AZQ V140 LVT V321 GRILL HEM"
         },
         {
           "airlines": [
@@ -1864,8 +1864,7 @@
         "SHIPP": "South",
         "WAVEY": "South",
         "WHITE": "South",
-        "ZIMMZ": "West",
-        "SBJ V30": "West"
+        "ZIMMZ": "West"
       },     
       "tower_list": 1,
       "atpa_volumes": {
@@ -1933,14 +1932,14 @@
       },
       "departure_routes": {
         "5": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ V30,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 2000,
             "sid": "MMU7",
             "waypoints": "_MMU5_049/a1700+/h160"
           }
         },
         "23": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ V30,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 2000,
             "sid": "MMU7",
             "waypoints": "_MMU23_229/a600 _MMU23_210/a2000+/h160"
@@ -1981,8 +1980,8 @@
           ],
           "altitude": 8000,
           "destination": "KILG",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX PTW"
+          "exit": "SBJ",
+          "route": "SBJ ETX PTW"
         },
         {
           "airlines": [
@@ -1992,8 +1991,8 @@
           ],
           "altitude": 4000,
           "destination": "KILG",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX PTW"
+          "exit": "SBJ",
+          "route": "SBJ ETX PTW"
         },
         {
           "airlines": [
@@ -2039,8 +2038,8 @@
           ],
           "altitude": 8000,
           "destination": "KABE",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX"
+          "exit": "SBJ",
+          "route": "SBJ ETX"
         },
         {
           "airlines": [
@@ -2050,8 +2049,8 @@
           ],
           "altitude": 6000,
           "destination": "KABE",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX"
+          "exit": "SBJ",
+          "route": "SBJ ETX"
         },
         {
           "airlines": [
@@ -2061,8 +2060,8 @@
           ],
           "altitude": 6000,
           "destination": "KRDG",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX"
+          "exit": "SBJ",
+          "route": "SBJ ETX"
         },
         {
           "airlines": [
@@ -2072,8 +2071,8 @@
           ],
           "altitude": 8000,
           "destination": "KMDT",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX V162 HAR"
+          "exit": "SBJ",
+          "route": "SBJ ETX V162 HAR"
         },
         {
           "airlines": [
@@ -2207,8 +2206,8 @@
           ],
           "altitude": 9000,
           "destination": "KSRB",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 LANNA ETX V39 MRB V166 ESL V4 HVQ XXX V115 AZQ V140 LVT V321 GRILL HEM"
+          "exit": "SBJ",
+          "route": "SBJ LANNA ETX V39 MRB V166 ESL V4 HVQ XXX V115 AZQ V140 LVT V321 GRILL HEM"
         },
         {
           "airlines": [
@@ -4124,11 +4123,11 @@
       ],
       "arrivals": {
         "COATE": {
-          "KTEB": 2,
-          "KMMU": 5
+          "KTEB": 5,
+          "KMMU": 2
         },
         "FLOSI4": {
-          "KEWR": 5
+          "KEWR": 8
         },
         "FQM3": {
           "KEWR": 10
@@ -4369,13 +4368,13 @@
           "KEWR": 15
         },
         "PHL": {
-          "KEWR": 3
+          "KEWR": 2
         },
         "PHLBO4": {
           "KEWR": 15
         },
         "WRI": {
-          "KEWR": 3
+          "KEWR": 1
         }
       },
       "solo_controller": "EWR_P_APP",
@@ -4410,10 +4409,10 @@
       ],
       "arrivals": {
         "FLOSI4": {
-          "KEWR": 20
+          "KEWR": 14
         },
         "South": {
-          "KEWR": 35
+          "KEWR": 28
         }
       },
       "solo_controller": "EWR_A_APP",
@@ -4448,10 +4447,10 @@
       ],
       "arrivals": {
         "FLOSI4": {
-          "KEWR": 20
+          "KEWR": 13
         },
         "South29": {
-          "KEWR": 35
+          "KEWR": 23
         }
       },
       "solo_controller": "EWR_A_APP",
@@ -4489,7 +4488,7 @@
           "KEWR": 25
         },
         "PHLBO4": {
-          "KEWR": 40
+          "KEWR": 13
         }
       },
       "solo_controller": "EWR_P_APP",
@@ -4573,7 +4572,6 @@
     "PARKE": "PAR",
     "SAX": "SAX",
     "SBJ": "SBJ",
-    "SBJ V30": "V30",
     "SHIPP": "SHI",
     "WAVEY": "WAV",
     "WHITE": "WHI",
