@@ -1536,9 +1536,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 		if distance2f(ac.Position(), w.Center) > 1.66 && ac.IsDeparture(){
 			lg.Infof("%v being deleted due to being greater than 100nm from the center", ac.Callsign)
 			w.DeleteAircraft(ac, nil)
-		} else {
-			fmt.Println(distance2f(ac.Position(), w.Center))
-		}
+		} 
 		if !ok {
 			lg.Errorf("%s: not found in World Aircraft?", callsign)
 			continue
@@ -1898,7 +1896,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 							}
 						}
 					} else {
-						ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
+						ok, control := calculateController(ctx, tcp, aircraft.Callsign)
 						if !ok {
 							status.err = GetSTARSError(ErrSTARSIllegalPosition) // assume it's this
 							return
@@ -1981,7 +1979,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			}
 		}
 		if len(cmd) > 0 {
-			ok, control := sameFacility(ctx, cmd, "")
+			ok, control := calculateController(ctx, cmd, "")
 			if !ok {
 				status.err = GetSTARSError(ErrSTARSIllegalPosition)
 				return
@@ -3029,7 +3027,7 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 
 func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) error {
 	// Change the "C" to "N56" for example
-	ok, control := sameFacility(ctx, controller, callsign)
+	ok, control := calculateController(ctx, controller, callsign)
 	if !ok {
 		return ErrSTARSIllegalPosition
 	}
@@ -3043,7 +3041,7 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 }
 
 func (sp *STARSPane) redirectHandoff(ctx *PaneContext, callsign, controller string) error {
-	ok, control := sameFacility(ctx, controller, callsign)
+	ok, control := calculateController(ctx, controller, callsign)
 	if !ok {
 		return ErrSTARSIllegalPosition
 	}
@@ -3123,7 +3121,7 @@ func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
 
 // Give a bool if the handoff is good and the correct syntax.
 // Also decode the controller into its regular sector (N4P -> 4P)
-func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) {
+func calculateController(ctx *PaneContext, controller, callsign string) (bool, string) {
 	userController := *ctx.world.GetController(ctx.world.Callsign)
 
 	controller = strings.TrimSuffix(controller, "*")
@@ -3466,7 +3464,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						}
 					}
 					for _, tcp := range tcps {
-						ok, control := sameFacility(ctx, tcp, ac.Callsign)
+						ok, control := calculateController(ctx, tcp, ac.Callsign)
 						if !ok {
 							status.err = GetSTARSError(ErrSTARSIllegalPosition)
 							return
@@ -3614,7 +3612,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				}
 
-				ok, control := sameFacility(ctx, cmd, ac.Callsign)
+				ok, control := calculateController(ctx, cmd, ac.Callsign)
 				if !ok {
 					sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalPosition).Error()
 				} else {
@@ -3628,7 +3626,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				user := ctx.world.GetController(ctx.world.Callsign)
 				if ac.HandoffTrackController == user.Callsign || ac.RedirectedHandoff.RedirectedTo == user.SectorId { // Redirect
 					cmd = strings.TrimPrefix(cmd, STARSTriangleCharacter)
-					ok, control := sameFacility(ctx, cmd, ac.Callsign)
+					ok, control := calculateController(ctx, cmd, ac.Callsign)
 					if !ok {
 						status.err = GetSTARSError(ErrSTARSIllegalPosition)
 						return
@@ -5973,9 +5971,18 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		if ac.HandoffTrackController != "" {
 			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
 				if ac.RedirectedHandoff.RedirectedTo != "" {
-					field4 = ac.RedirectedHandoff.RedirectedTo[len(ac.RedirectedHandoff.RedirectedTo)-1:]
+					if sameFacility(ctx, ac.RedirectedHandoff.RedirectedTo) {
+						field4 = ac.RedirectedHandoff.RedirectedTo[len(ac.RedirectedHandoff.RedirectedTo)-1:]
+					} else {
+						field4 = ctx.world.GetController(ac.RedirectedHandoff.RedirectedTo).FacilityIdentifier
+					}
 				} else {
-					field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+					if sameFacility(ctx, ac.HandoffTrackController) {
+						field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+					} else {
+						field4 = ctrl.FacilityIdentifier
+					}
+					
 				}
 			}
 		}
@@ -6064,6 +6071,10 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	}
 
 	return nil
+}
+
+func sameFacility(ctx *PaneContext, receiving string) bool {
+	return ctx.world.GetController(ctx.world.Callsign).FacilityIdentifier == ctx.world.GetController(receiving).FacilityIdentifier
 }
 
 func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightness STARSBrightness) {
