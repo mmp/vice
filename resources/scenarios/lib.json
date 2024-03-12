@@ -2392,12 +2392,131 @@
   "arrival_groups": {},
   "center": "N040.45.26.477,W074.24.28.789",
   "range": 60,
+  "stars_adaptation": {
+		"scratchpad_rules": [false, false],
+		"force_ql_self": true,
+    "airspace_awareness": [
+      {
+        "fix": ["MERIT", "BAYYS", "GREKI"],
+        "altitude_range": [13000, 999000],
+        "to_center": true,
+        "receiving_controller": "B19"
+      },
+      {
+        "fix": ["DIXIE"],
+        "altitude_range": [0, 8000],
+        "to_center": false,
+        "aircraft_type": ["J"],
+        "receiving_controller": "MY"
+      },
+      {
+        "fix": ["DIXIE"],
+        "altitude_range": [0, 6000],
+        "to_center": false,
+        "aircraft_type": ["P", "T"],
+        "receiving_controller": "MY"
+      },
+      {
+        "fix": ["DIXIE"],
+        "altitude_range": [11000, 999999],
+        "to_center": true,
+        "receiving_controller": "C68"
+      },
+      {
+        "fix": ["WHITE"],
+        "altitude_range": [9000, 999999],
+        "to_center": true,
+        "receiving_controller": "C68"
+      },
+      {
+        "fix": ["RBV"],
+        "altitude_range": [14000, 999999],
+        "to_center": true,
+        "aircraft_type": ["J"],
+        "receiving_controller": "C55"
+      },
+      {
+        "fix": ["ARD"],
+        "altitude_range": [14000, 999999],
+        "to_center": true,
+        "aircraft_type": ["P", "T"],
+        "receiving_controller": "C55"
+      },
+      {
+        "fix": ["COATE", "GAYEL", "NEION"],
+        "altitude_range": [16000, 999999],
+        "to_center": true,
+        "aircraft_type": ["J"],
+        "receiving_controller": "C35"
+      },
+      {
+        "fix": ["COATE"],
+        "altitude_range": [11000, 14000],
+        "to_center": true,
+        "receiving_controller": "C51"
+      },
+      {
+        "fix": ["GAYEL"],
+        "altitude_range": [14000, 14000],
+        "to_center": true,
+        "aircraft_type": ["P", "T"],
+        "receiving_controller": "C51"
+      },
+      {
+        "fix": ["HAAYS"],
+        "altitude_range": [12000, 12000],
+        "to_center": true,
+        "receiving_controller": "C51"
+      },
+      {
+        "fix": ["COATE"],
+        "altitude_range": [8000, 10000],
+        "receiving_controller": "AVP TODO"
+      },
+      {
+        "fix": ["SAX V118 LVZ"],
+        "altitude_range": [8000, 8000],
+        "receiving_controller": "AVP TODO"
+      },
+      {
+        "fix": ["HAAYS"],
+        "altitude_range": [9000, 10000],
+        "receiving_controller": "AVP TODO"
+      },
+      {
+        "fix": ["PARKE", "ELIOT"],
+        "altitude_range": [14000, 99999],
+        "to_center": true,
+        "receiving_controller": "C39"
+      },
+      {
+        "fix": ["NEWEL", "ZIMMZ"],
+        "altitude_range": [17000, 99999],
+        "to_center": true,
+        "receiving_controller": "C39"
+      },
+      {
+        "fix": ["BIGGY"],
+        "altitude_range": [14000, 99999],
+        "to_center": true,
+        "receiving_controller": "C55"
+      },
+      {
+        "fix": ["BIGGY"],
+        "altitude_range": [17000, 99999],
+        "to_center": true,
+        "receiving_controller": "C55"
+      }
+    ]
+	},
   "control_positions": {
     "BOS_SW_CTR": {
       "frequency": 134000,
       "full_name": "Boston center",
       "scope_char": "C",
-      "sector_id": "B19"
+      "sector_id": "B19",
+      "facility_id": "B",
+      "eram_facility": true
     },
     "EWR_DEP": {
       "frequency": 119200,
@@ -2417,17 +2536,53 @@
       "scope_char": "L",
       "sector_id": "1L"
     },
-    "NY_B_CTR": {
+    "NY_56_CTR": {
       "frequency": 125325,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N56"
+      "sector_id": "C56",
+      "facility_id": "C",
+      "eram_facility": true
     },
-    "NY_C_CTR": {
+    "NY_68_CTR": {
+      "frequency": 118975,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C68",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "NY_55_CTR": {
       "frequency": 132175,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N34"
+      "sector_id": "C55",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "NY_35_CTR": {
+      "frequency": 132600,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C35",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "NY_51_CTR": {
+      "frequency": 134450,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C51",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "NY_39_CTR": {
+      "frequency": 132100,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C39",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "NY_LE_DEP": {
       "frequency": 126800,
@@ -2458,6 +2613,20 @@
       "full_name": "New York departure",
       "scope_char": "E",
       "sector_id": "5E"
+    },
+    "WRI_APP": {
+      "frequency": 126470,
+      "full_name": "McGuire approach",
+      "scope_char": "5",
+      "sector_id": "MY",
+      "facility_id": "5"
+    },
+    "AVP_S_APP": {
+      "frequency": 126470,
+      "full_name": "Wilkes Barre Approach",
+      "scope_char": "7",
+      "sector_id": "WE",
+      "facility_id": "7"
     }
   },
   "default_scenario": "Liberty Combined - JFK Owns Coney",
@@ -2566,8 +2735,12 @@
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
-        "NY_B_CTR",
-        "NY_C_CTR",
+        "NY_56_CTR",
+        "NY_68_CTR",
+        "NY_55_CTR",
+        "NY_35_CTR",
+        "NY_51_CTR",
+        "NY_39_CTR",
         "BOS_SW_CTR"
       ],
       "default_maps": [ "LIB Departure" ],
@@ -2631,8 +2804,13 @@
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
-        "NY_B_CTR",
-        "NY_C_CTR",
+        "NY_56_CTR",
+        "NY_68_CTR",
+        "NY_55_CTR",
+        "NY_35_CTR",
+        "NY_51_CTR",
+        "NY_39_CTR",
+        "BOS_SW_CTR",
         "BOS_SW_CTR"
       ],
       "default_maps": [ "LIB Departure" ],
@@ -2694,8 +2872,13 @@
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
-        "NY_B_CTR",
-        "NY_C_CTR",
+        "NY_56_CTR",
+        "NY_68_CTR",
+        "NY_55_CTR",
+        "NY_35_CTR",
+        "NY_51_CTR",
+        "NY_39_CTR",
+        "BOS_SW_CTR",
         "BOS_SW_CTR"
       ],
       "default_maps": [ "LIB Departure" ],
@@ -2784,8 +2967,13 @@
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
-        "NY_B_CTR",
-        "NY_C_CTR",
+        "NY_56_CTR",
+        "NY_68_CTR",
+        "NY_55_CTR",
+        "NY_35_CTR",
+        "NY_51_CTR",
+        "NY_39_CTR",
+        "BOS_SW_CTR",
         "BOS_SW_CTR"
       ],
       "default_maps": [ "LIB Departure" ],
@@ -2838,8 +3026,13 @@
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
-        "NY_B_CTR",
-        "NY_C_CTR",
+        "NY_56_CTR",
+        "NY_68_CTR",
+        "NY_55_CTR",
+        "NY_35_CTR",
+        "NY_51_CTR",
+        "NY_39_CTR",
+        "BOS_SW_CTR",
         "BOS_SW_CTR"
       ],
       "default_maps": [ "LIB Departure" ],
@@ -2916,8 +3109,13 @@
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
-        "NY_B_CTR",
-        "NY_C_CTR",
+        "NY_56_CTR",
+        "NY_68_CTR",
+        "NY_55_CTR",
+        "NY_35_CTR",
+        "NY_51_CTR",
+        "NY_39_CTR",
+        "BOS_SW_CTR",
         "BOS_SW_CTR"
       ],
       "default_maps": [ "LIB Departure" ],
@@ -2988,8 +3186,13 @@
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
-        "NY_B_CTR",
-        "NY_C_CTR",
+        "NY_56_CTR",
+        "NY_68_CTR",
+        "NY_55_CTR",
+        "NY_35_CTR",
+        "NY_51_CTR",
+        "NY_39_CTR",
+        "BOS_SW_CTR",
         "BOS_SW_CTR"
       ],
       "default_maps": [ "LIB Departure" ],

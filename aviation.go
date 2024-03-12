@@ -1342,6 +1342,9 @@ type AircraftPerformance struct {
 	// engines, weight class, category
 	WeightClass string  `json:"weightClass"`
 	Ceiling     float32 `json:"ceiling"`
+	Engine struct {
+		AircraftType string `json:"type"`
+	} `json:"engines"`
 	Rate        struct {
 		Climb      float32 `json:"climb"` // ft / minute; reduce by 500 after alt 5000 if this is >=2500
 		Descent    float32 `json:"descent"`
