@@ -266,7 +266,7 @@ func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (w *World) SetGlobalLeaderLine(callsign string, dir *CardinalOrdinalDirection,success func(any), err func(error)) {
+func (w *World) SetGlobalLeaderLine(callsign string, dir *CardinalOrdinalDirection, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.SetGlobalLeaderLine(callsign, dir),
@@ -482,8 +482,7 @@ func (w *World) GetAircraft(callsign string) *Aircraft {
 	return aircraft
 }
 
-
-func findAircraft(sample string, aircraft []*Aircraft) (*Aircraft){
+func findAircraft(sample string, aircraft []*Aircraft) *Aircraft {
 
 	var final []*Aircraft
 	for _, icao := range aircraft {
@@ -496,7 +495,7 @@ func findAircraft(sample string, aircraft []*Aircraft) (*Aircraft){
 	} else {
 		return final[0]
 	}
-	}
+}
 
 func (w *World) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
 	var filtered []*Aircraft
