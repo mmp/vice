@@ -412,11 +412,11 @@ type STARSAircraftState struct {
 	ATPAStatus               ATPAStatus
 	MinimumMIT               float32
 	ATPALeadAircraftCallsign string
-	LastKnowScopeChar 		 string
+	LastKnowScopeChar        string
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
 	LeaderLineDirection *CardinalOrdinalDirection
-	ChosenLeaderLine *CardinalOrdinalDirection 
+	ChosenLeaderLine    *CardinalOrdinalDirection
 
 	Ghost struct {
 		PartialDatablock bool
@@ -1534,10 +1534,10 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 
 	for callsign, state := range sp.Aircraft {
 		ac, ok := w.Aircraft[callsign]
-		if distance2f(ac.Position(), w.Center) > 1.66 && ac.IsDeparture(){
+		if distance2f(ac.Position(), w.Center) > 1.66 && ac.IsDeparture() {
 			lg.Infof("%v being deleted due to being greater than 100nm from the center", ac.Callsign)
 			w.DeleteAircraft(ac, nil)
-		} 
+		}
 		if !ok {
 			lg.Errorf("%s: not found in World Aircraft?", callsign)
 			continue
@@ -2983,10 +2983,10 @@ func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt
 }
 
 func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir *CardinalOrdinalDirection) {
-	ctx.world.SetGlobalLeaderLine(callsign, dir, nil, 
-	func(err error) {
-		sp.previewAreaOutput = GetSTARSError(err).Error()
-	})
+	ctx.world.SetGlobalLeaderLine(callsign, dir, nil,
+		func(err error) {
+			sp.previewAreaOutput = GetSTARSError(err).Error()
+		})
 }
 
 func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
@@ -3165,8 +3165,8 @@ func calculateController(ctx *PaneContext, controller, callsign string) (bool, s
 
 		} else {
 			for _, control := range ctx.world.Controllers {
-				if control.ERAMFacility && control.SectorId == controller{
-					return true, control.SectorId 
+				if control.ERAMFacility && control.SectorId == controller {
+					return true, control.SectorId
 				}
 			}
 		}
@@ -3268,15 +3268,15 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
 					status.clear = true
 					return
-				} else if slices.Contains(ac.RedirectedHandoff.Redirector, user.SectorId) {					
+				} else if slices.Contains(ac.RedirectedHandoff.Redirector, user.SectorId) {
 					sp.recallRedirectedHandoff(ctx, ac.Callsign)
 					status.clear = true
 					return
-				} else if ac.RedirectedHandoff.RDIndicator && ac.RedirectedHandoff.RedirectedTo == "" {					
+				} else if ac.RedirectedHandoff.RDIndicator && ac.RedirectedHandoff.RedirectedTo == "" {
 					sp.slewRedirect(ctx, ac.Callsign)
 					status.clear = true
 					return
-				} else if ac.HandoffTrackController == ctx.world.Callsign {					
+				} else if ac.HandoffTrackController == ctx.world.Callsign {
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
 					return
@@ -3297,7 +3297,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						}
 					}
 				} else if ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.world.Callsign &&
-					ac.TrackingController == ctx.world.Callsign {					
+					ac.TrackingController == ctx.world.Callsign {
 					// cancel offered handoff offered
 					status.clear = true
 					sp.cancelHandoff(ctx, ac.Callsign)
@@ -3307,19 +3307,19 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					sp.acknowledgePointOut(ctx, ac.Callsign)
 					status.clear = true
 					return
-				} else if state.PointedOut {					
+				} else if state.PointedOut {
 					state.PointedOut = false
 					status.clear = true
 					return
-				} else if state.ForceQL {					
+				} else if state.ForceQL {
 					state.ForceQL = false
 					status.clear = true
-				} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {					
+				} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
 					// ack rejected point out
 					delete(sp.RejectedPointOuts, ac.Callsign)
 					status.clear = true
 					return
-				} else if state.OutboundHandoffAccepted {					
+				} else if state.OutboundHandoffAccepted {
 					// ack an accepted handoff, which we will treat as also
 					// handing off control.
 					status.clear = true
@@ -3327,7 +3327,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					state.OutboundHandoffFlashEnd = time.Now()
 					sp.handoffControl(ctx, ac.Callsign)
 					return
-				} else if ctx.keyboard != nil {					
+				} else if ctx.keyboard != nil {
 					_, ctrl := ctx.keyboard.Pressed[KeyControl]
 					_, shift := ctx.keyboard.Pressed[KeyShift]
 					if ctrl && shift {
@@ -3338,20 +3338,20 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 				}
 
-				if state.DatablockType != FullDatablock {				
+				if state.DatablockType != FullDatablock {
 					state.DatablockType = FullDatablock
 					// do not collapse datablock if user is tracking the aircraft
-				} else if ac.TrackingController != ctx.world.Callsign {					
+				} else if ac.TrackingController != ctx.world.Callsign {
 					state.DatablockType = PartialDatablock
 				}
-			} else if cmd == "." {	
+			} else if cmd == "." {
 				if err := sp.setScratchpad(ctx, ac.Callsign, "", false); err != nil {
 					status.err = err
 				} else {
 					status.clear = true
 				}
 				return
-			} else if cmd == "+" {				
+			} else if cmd == "+" {
 				if err := sp.setScratchpad(ctx, ac.Callsign, "", true); err != nil {
 					status.err = err
 				} else {
@@ -3370,12 +3370,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				}
 				return
-			} else if dir, ok := numpadToDirection(cmd[0]); ok && (len(cmd) == 1 || (len(cmd) == 2 && unicode.IsDigit(rune(cmd[1])))){
+			} else if dir, ok := numpadToDirection(cmd[0]); ok && (len(cmd) == 1 || (len(cmd) == 2 && unicode.IsDigit(rune(cmd[1])))) {
 				if len(cmd) == 1 {
-						state.LeaderLineDirection = dir
-						state.ChosenLeaderLine = dir
-						status.clear = true
-						return
+					state.LeaderLineDirection = dir
+					state.ChosenLeaderLine = dir
+					status.clear = true
+					return
 				} else if len(cmd) == 2 { // Global leader lines
 					if cmd[0] != cmd[1] || strings.Contains(cmd, "0") {
 						status.err = GetSTARSError(ErrSTARSCommandFormat)
@@ -3387,8 +3387,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 					if dir, ok := numpadToDirection(cmd[0]); ok {
 						sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
-						status.clear = true 
-					} 
+						status.clear = true
+					}
 					return
 
 				}
@@ -3663,7 +3663,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					})
 				status.clear = true
 				return
-			} 
+			}
 
 		case CommandModeInitiateControl:
 			// TODO: error if cmd != ""?
@@ -3733,8 +3733,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 					if dir, ok := numpadToDirection(cmd[0]); ok {
 						sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
-						status.clear = true 
-					} 
+						status.clear = true
+					}
 					return
 
 				}
@@ -5082,7 +5082,7 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 			dt = FullDatablock
 		}
 	}
-	
+
 	if ac.RedirectedHandoff.RDIndicator {
 		dt = FullDatablock
 	}
@@ -5122,11 +5122,11 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			continue
 		}
 
-		trackId := "*"
+		trackId := ""
 		if ac.TrackingController != "" {
 			trackId = "?"
 			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil &&
-			ctx.world.GetController(ac.TrackingController).FacilityIdentifier == ctx.world.GetController(ctx.world.Callsign).FacilityIdentifier {
+				ctx.world.GetController(ac.TrackingController).FacilityIdentifier == ctx.world.GetController(ctx.world.Callsign).FacilityIdentifier {
 				trackId = ctrl.Scope
 				state.LastKnowScopeChar = ctrl.Scope
 			} else {
@@ -5992,7 +5992,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 					} else {
 						field4 = ctrl.FacilityIdentifier
 					}
-					
+
 				}
 			}
 		}
