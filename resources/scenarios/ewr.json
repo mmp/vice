@@ -3890,26 +3890,26 @@
       ],
       "arrivals": {
         "COATE": {
-          "KTEB": 2,
-          "KMMU": 5
+          "KTEB": 5,
+          "KMMU": 2
         },
         "FLOSI4": {
-          "KEWR": 5
-        },
-        "FQM3": {
           "KEWR": 10
         },
+        "FQM3": {
+          "KEWR": 8
+        },
         "LVZ4": {
-          "KTEB": 2,
-          "KMMU": 5
+          "KTEB": 5,
+          "KMMU": 2
         },
         "JAIKE4": {
           "KTEB": 2,
           "KMMU":5
         },
         "MAZIE": {
-          "KTEB": 2,
-          "KMMU":5
+          "KTEB": 5,
+          "KMMU":2
         },
         "PHL": {
           "KEWR": 2
@@ -3918,7 +3918,7 @@
           "KEWR": 10
         },
         "WRI": {
-          "KEWR": 2
+          "KEWR": 0
         }
       },
       "solo_controller": "EWR_APP",
@@ -3993,17 +3993,17 @@
       "departure_runways": [
         {
           "airport": "KEWR",
-          "rate": 20,
+          "rate": 25,
           "runway": "22R"
         },
         {
           "airport": "KTEB",
-          "rate": 5,
+          "rate": 8,
           "runway": "24"
         },
         {
           "airport": "KMMU",
-          "rate": 7,
+          "rate": 3,
           "runway": "23"
         }
       ],
@@ -4092,12 +4092,12 @@
         },
         {
           "airport": "KTEB",
-          "rate": 45,
+          "rate": 10,
           "runway": "1"
         },
         {
           "airport": "KMMU",
-          "rate": 10,
+          "rate": 5,
           "runway": "5"
         }
       ],
@@ -4134,16 +4134,16 @@
           "KEWR": 10
         },
         "LVZ4": {
-          "KTEB": 2,
-          "KMMU": 5
+          "KTEB": 5,
+          "KMMU": 2
         },
         "JAIKE4": {
-          "KTEB": 2,
-          "KMMU": 5
+          "KTEB": 5,
+          "KMMU": 2
         },
         "MAZIE": {
-          "KTEB": 2,
-          "KMMU":5
+          "KTEB": 5,
+          "KMMU":2
         },
         "PHL": {
           "KEWR": 2
@@ -4152,7 +4152,7 @@
           "KEWR": 10
         },
         "WRI": {
-          "KEWR": 2
+          "KEWR": 0
         }
       },
       "solo_controller": "EWR_APP",
