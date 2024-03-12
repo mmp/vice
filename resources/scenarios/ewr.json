@@ -3610,7 +3610,7 @@
       "frequency": 119650,
       "full_name": "Allentown approach",
       "scope_char": "4",
-      "sector_id": "AF",
+      "sector_id": "1A",
       "facility_id": "4"
     },
     "BOS_CTR": {
@@ -3762,7 +3762,7 @@
       "frequency": 126470,
       "full_name": "McGuire approach",
       "scope_char": "5",
-      "sector_id": "MY",
+      "sector_id": "1Y",
       "facility_id": "5"
     }
   },

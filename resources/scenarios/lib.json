@@ -2618,15 +2618,22 @@
       "frequency": 126470,
       "full_name": "McGuire approach",
       "scope_char": "5",
-      "sector_id": "MY",
+      "sector_id": "1Y",
       "facility_id": "5"
     },
     "AVP_S_APP": {
       "frequency": 126470,
       "full_name": "Wilkes Barre Approach",
       "scope_char": "7",
-      "sector_id": "WE",
+      "sector_id": "1E",
       "facility_id": "7"
+    },
+    "ABE_APP": {
+      "frequency": 119650,
+      "full_name": "Allentown approach",
+      "scope_char": "F",
+      "sector_id": "1F",
+      "facility_id": "4"
     }
   },
   "default_scenario": "Liberty Combined - JFK Owns Coney",

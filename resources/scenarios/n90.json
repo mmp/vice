@@ -3731,8 +3731,15 @@
       "frequency": 119650,
       "full_name": "Allentown approach",
       "scope_char": "F",
-      "sector_id": "AF",
+      "sector_id": "1F",
       "facility_id": "4"
+    },
+    "AVP_S_APP": {
+      "frequency": 126470,
+      "full_name": "Wilkes Barre Approach",
+      "scope_char": "7",
+      "sector_id": "1E",
+      "facility_id": "7"
     },
     "BOS_CTR": {
       "frequency": 134700,
