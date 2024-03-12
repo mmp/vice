@@ -3134,7 +3134,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 		// Non ARTCC airspaceawareness handoffs
 		if lc == 1 && !haveTrianglePrefix { // Must be a same sector.
 			for _, control := range ctx.world.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
-				if control.FacilityIdentifier == userController.FacilityIdentifier && // Same facility?
+				if control.FacilityIdentifier == "" && // Same facility? (Facility ID will be "" if they are the same fac)
 					string(control.SectorId[0]) == string(userController.SectorId[0]) && // Same Sector?
 					string(control.SectorId[1]) == controller { // The actual controller
 					return true, control.SectorId
@@ -3144,7 +3144,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 			controllers := ctx.world.GetAllControllers()
 			// Find the controller fac
 			for _, control := range controllers {
-				if control.SectorId == controller && control.FacilityIdentifier == userController.FacilityIdentifier { // Found the facility
+				if control.SectorId == controller && control.FacilityIdentifier == "" { // Found the facility
 					return true, control.SectorId
 				}
 			}
@@ -3155,7 +3155,7 @@ func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) 
 				SectorId:           controller[1:],
 				FacilityIdentifier: string(controller[0]),
 			}
-			if userController.FacilityIdentifier != receivingController.FacilityIdentifier {
+			if receivingController.FacilityIdentifier != "" {
 				return true, receivingController.SectorId
 			}
 
