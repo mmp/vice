@@ -1408,12 +1408,18 @@
   },
   "center": "KLGA",
   "range": 60,
+  "stars_adaptation": {
+		"scratchpad_rules": [false, false],
+		"force_ql_self": true
+	},
   "control_positions": {
     "BOS_E_CTR": {
       "frequency": 133450,
       "full_name": "Boston center",
       "scope_char": "C",
-      "sector_id": "B17"
+      "sector_id": "B17",
+      "facility_id": "B",
+      "eram_facility": true
     },
     "EWR_APP": {
       "frequency": 128550,
@@ -1509,25 +1515,33 @@
       "frequency": 125325,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N56"
+      "sector_id": "C56",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "NY_CTR": {
       "frequency": 125325,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N56"
+      "sector_id": "C56",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "NY_C_CTR": {
       "frequency": 132175,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N34"
+      "sector_id": "C34",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "NY_F_CTR": {
       "frequency": 128300,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N66"
+      "sector_id": "C66",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "NY_LE_DEP": {
       "frequency": 126800,
