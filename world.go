@@ -477,8 +477,26 @@ func (w *World) GetAircraft(callsign string) *Aircraft {
 	if ac, ok := w.Aircraft[callsign]; ok {
 		return ac
 	}
-	return nil
+	ac := w.GetAllAircraft()
+	aircraft := findAircraft(callsign, ac)
+	return aircraft
 }
+
+
+func findAircraft(sample string, aircraft []*Aircraft) (*Aircraft){
+
+	var final []*Aircraft
+	for _, icao := range aircraft {
+		if strings.Contains(icao.Callsign, sample) {
+			final = append(final, icao)
+		}
+	}
+	if len(final) > 1 || len(final) == 0 {
+		return nil
+	} else {
+		return final[0]
+	}
+	}
 
 func (w *World) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
 	var filtered []*Aircraft
