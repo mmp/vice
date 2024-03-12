@@ -2044,7 +2044,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		}
 
 	case CommandModeHandOff:
-		if string(cmd[0]) == "C" { // Enabling/ disabling automatic handoff processing
+		if cmd != "" && string(cmd[0]) == "C" { // Enabling/ disabling automatic handoff processing
 			// Manual 4-30
 			if string(cmd[1]) == "X" {
 				if string(cmd[2]) == "E" {
