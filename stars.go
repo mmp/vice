@@ -3127,7 +3127,6 @@ func calculateController(ctx *PaneContext, controller, callsign string) (bool, s
 
 	controller = strings.TrimSuffix(controller, "*")
 	lc := len(controller)
-
 	// ARTCC airspaceawareness
 	haveTrianglePrefix := strings.HasPrefix(controller, STARSTriangleCharacter)
 	if controller == "C" || (haveTrianglePrefix && lc == 3) {
@@ -3164,6 +3163,12 @@ func calculateController(ctx *PaneContext, controller, callsign string) (bool, s
 				return true, receivingController.SectorId
 			}
 
+		} else {
+			for _, control := range ctx.world.Controllers {
+				if control.ERAMFacility && control.SectorId == controller{
+					return true, control.SectorId 
+				}
+			}
 		}
 
 	}
