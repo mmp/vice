@@ -412,6 +412,7 @@ type STARSAircraftState struct {
 	ATPAStatus               ATPAStatus
 	MinimumMIT               float32
 	ATPALeadAircraftCallsign string
+	LastKnowScopeChar 		 string
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
 	LeaderLineDirection *CardinalOrdinalDirection
@@ -5116,11 +5117,15 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			continue
 		}
 
-		trackId := ""
+		trackId := "*"
 		if ac.TrackingController != "" {
 			trackId = "?"
-			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil {
+			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil &&
+			ctx.world.GetController(ac.TrackingController).FacilityIdentifier == ctx.world.GetController(ctx.world.Callsign).FacilityIdentifier {
 				trackId = ctrl.Scope
+				state.LastKnowScopeChar = ctrl.Scope
+			} else {
+				trackId = state.LastKnowScopeChar
 			}
 		}
 
