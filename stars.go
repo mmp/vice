@@ -1533,6 +1533,12 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 
 	for callsign, state := range sp.Aircraft {
 		ac, ok := w.Aircraft[callsign]
+		if distance2f(ac.Position(), w.Center) > 1.66 && ac.IsDeparture(){
+			lg.Infof("%v being deleted due to being greater than 100nm from the center", ac.Callsign)
+			w.DeleteAircraft(ac, nil)
+		} else {
+			fmt.Println(distance2f(ac.Position(), w.Center))
+		}
 		if !ok {
 			lg.Errorf("%s: not found in World Aircraft?", callsign)
 			continue
