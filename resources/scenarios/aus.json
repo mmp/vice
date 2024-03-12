@@ -1356,7 +1356,7 @@
                                 ],
                                 "altitude_range": [
                                     9000,
-                                    0
+                                    99000
                                 ],
                                 "receiving_controller": "C80",
                                 "to_center": true
