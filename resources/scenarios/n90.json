@@ -3764,11 +3764,51 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_C_CTR": {
+    "NY_56_CTR": {
+      "frequency": 125325,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C56",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "NY_68_CTR": {
+      "frequency": 118975,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C68",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "NY_55_CTR": {
       "frequency": 132175,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "C34",
+      "sector_id": "C55",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "NY_35_CTR": {
+      "frequency": 132600,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C35",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "NY_51_CTR": {
+      "frequency": 134450,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C51",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "NY_39_CTR": {
+      "frequency": 132100,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C39",
       "facility_id": "C",
       "eram_facility": true
     },
