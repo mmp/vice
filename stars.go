@@ -3116,11 +3116,27 @@ func calculateAirspace(ctx *PaneContext, callsign string) (string, bool) {
 	return "", false
 }
 
+
 func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
 	ctx.world.HandoffControl(callsign, nil,
 		func(err error) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
+}
+
+func singleScope(ctx *PaneContext,facilityIdentifier string) *Controller {
+	controllers := ctx.world.GetAllControllers()
+	var controllersInFacility []*Controller
+	for _, controller := range controllers {
+		if controller.FacilityIdentifier == facilityIdentifier {
+			controllersInFacility = append(controllersInFacility, controller)
+		}
+	}
+	if len(controllersInFacility) == 1 {
+		return controllersInFacility[0]
+	} else {
+		return nil
+	}
 }
 
 // Give a bool if the handoff is good and the correct syntax.
@@ -3134,10 +3150,13 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 	haveTrianglePrefix := strings.HasPrefix(controller, STARSTriangleCharacter)
 	if controller == "C" || (haveTrianglePrefix && lc == 3) {
 		control, toCenter := calculateAirspace(ctx, callsign)
-		if control != "" && ((controller == "C" && toCenter) || (controller == ctx.world.GetController(control).FacilityIdentifier && !toCenter)){
+		if control != "" && ((controller == "C" && toCenter) || (controller == ctx.world.GetController(control).FacilityIdentifier && !toCenter) ||
+		(controller == ctx.world.GetController(control).FacilityIdentifier && !toCenter) ){
 			state := sp.Aircraft[callsign]
 			state.LastKnownHandoff = ctx.world.GetController(control).Scope
 			return true, control
+		} else if controller := singleScope(ctx, string(controller[2])); controller != nil {
+			return true, controller.SectorId
 		}
 	} else {
 		// Non ARTCC airspaceawareness handoffs
