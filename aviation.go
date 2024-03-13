@@ -5,10 +5,12 @@
 package main
 
 import (
+	"archive/zip"
 	"bufio"
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"io"
 	"io/fs"
@@ -1324,6 +1326,7 @@ type StaticDatabase struct {
 	MagneticGrid        MagneticGrid
 	ARTCCs              map[string]ARTCC
 	TRACONs             map[string]TRACON
+	MVAs                map[string][]MVA // TRACON -> MVAs
 }
 
 func (d StaticDatabase) LookupWaypoint(f string) (Point2LL, bool) {
@@ -1403,6 +1406,8 @@ func InitializeStaticDatabase() *StaticDatabase {
 	go func() { db.MagneticGrid = parseMagneticGrid(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.MVAs = parseMVAs(); wg.Done() }()
 	wg.Wait()
 
 	for icao, ap := range airports {
@@ -1651,6 +1656,189 @@ func (mg *MagneticGrid) Lookup(p Point2LL) (float32, error) {
 
 	// Note: we flip the sign
 	return -mg.Samples[long+nlong*lat], nil
+}
+
+type MVA struct {
+	MinimumLimit          int                      `xml:"minimumLimit"`
+	MinimumLimitReference string                   `xml:"minimumLimitReference"`
+	Proj                  *MVAHorizontalProjection `xml:"horizontalProjection"`
+	ExteriorRing          [][2]float32
+	InteriorRings         [][][2]float32
+}
+
+func (m *MVA) Inside(p [2]float32) bool {
+	if !PointInPolygon(p, m.ExteriorRing) {
+		return false
+	}
+	for _, in := range m.InteriorRings {
+		if PointInPolygon(p, in) {
+			return false
+		}
+	}
+	return true
+}
+
+type MVALinearRing struct {
+	PosList string `xml:"posList"`
+}
+
+func (r MVALinearRing) Vertices() [][2]float32 {
+	var v [][2]float32
+	f := strings.Fields(r.PosList)
+	if len(f)%2 != 0 {
+		panic("odd number of floats?")
+	}
+
+	for i := 0; i < len(f); i += 2 {
+		v0, err := strconv.ParseFloat(f[i], 32)
+		if err != nil {
+			panic(err)
+		}
+		v1, err := strconv.ParseFloat(f[i+1], 32)
+		if err != nil {
+			panic(err)
+		}
+		v = append(v, [2]float32{float32(v0), float32(v1)})
+	}
+
+	return v
+}
+
+type MVAExterior struct {
+	LinearRing MVALinearRing `xml:"LinearRing"`
+}
+
+type MVAInterior struct {
+	LinearRing MVALinearRing `xml:"LinearRing"`
+}
+
+type MVAPolygonPatch struct {
+	Exterior  MVAExterior   `xml:"exterior"`
+	Interiors []MVAInterior `xml:"interior"`
+}
+
+type MVAPatches struct {
+	PolygonPatch MVAPolygonPatch `xml:"PolygonPatch"`
+}
+
+type MVASurface struct {
+	Patches MVAPatches `xml:"patches"`
+}
+
+type MVAHorizontalProjection struct {
+	Surface MVASurface `xml:"Surface"`
+}
+
+// To update the MVA data:
+// % go run util/scrapemva.go # download the XML files
+// % parallel zstd -19 {} ::: *xml
+// % zip mva-fus3.zip *FUS3_*zst
+// % mv mva*zip ~/vice/resources/
+// % /bin/rm MVA_*zst MVA_*xml
+
+func parseMVAs() map[string][]MVA {
+	// The MVA files are stored in a zip file to avoid the overhead of
+	// opening lots of files to read them in.
+	z := LoadResource("mva-fus3.zip")
+	zr, err := zip.NewReader(bytes.NewReader(z), int64(len(z)))
+	if err != nil {
+		panic(err)
+	}
+
+	type mvaTracon struct {
+		TRACON string
+		MVAs   []MVA
+	}
+	mvaChan := make(chan mvaTracon, len(zr.File))
+
+	for _, f := range zr.File {
+		// Launch a goroutine for each one so that we load them in
+		// parallel.
+		go func(f *zip.File) {
+			r, err := f.Open()
+			if err != nil {
+				// Errors are panics since this all happens at startup time
+				// with data that's fixed at release time.
+				panic(err)
+			}
+
+			b, err := io.ReadAll(r)
+			if err != nil {
+				panic(err)
+			}
+
+			contents := []byte(decompressZstd(string(b)))
+			decoder := xml.NewDecoder(bytes.NewReader(contents))
+
+			var mvas []MVA
+			tracon := ""
+			for {
+				// The full XML schema is fairly complex so rather than
+				// declaring a ton of helper types to represent the full
+				// nested complexity, we'll instead walk through until we
+				// find the sections where the MVA altitudes and polygons
+				// are defined.
+				token, _ := decoder.Token()
+				if token == nil {
+					break
+				}
+
+				if se, ok := token.(xml.StartElement); ok {
+					switch se.Name.Local {
+					case "description":
+						// The first <ns1:description> in the file will be
+						// of the form ABE_MVA_FUS3_2022, which gives us
+						// the name of the TRACON we've got (ABE, in that
+						// case). Subsequent descriptions should all be
+						// "MINIMUM VECTORING ALTITUDE (MVA)"
+						var desc string
+						if err := decoder.DecodeElement(&desc, &se); err != nil {
+							panic(fmt.Sprintf("Error decoding element: %v", err))
+						}
+
+						if tracon == "" {
+							var ok bool
+							tracon, _, ok = strings.Cut(desc, "_")
+							if !ok {
+								panic(desc + ": unexpected description string")
+							}
+						} else if desc != "MINIMUM VECTORING ALTITUDE (MVA)" {
+							panic(desc)
+						}
+
+					case "AirspaceVolume":
+						var m MVA
+						if err := decoder.DecodeElement(&m, &se); err != nil {
+							panic(fmt.Sprintf("Error decoding element: %v", err))
+						}
+
+						// Parse the floats and initialize the rings
+						patch := m.Proj.Surface.Patches.PolygonPatch
+						m.ExteriorRing = patch.Exterior.LinearRing.Vertices()
+						for _, in := range patch.Interiors {
+							m.InteriorRings = append(m.InteriorRings, in.LinearRing.Vertices())
+						}
+
+						m.Proj = nil // Don't hold on to the strings
+
+						mvas = append(mvas, m)
+					}
+				}
+			}
+
+			r.Close()
+
+			mvaChan <- mvaTracon{TRACON: tracon, MVAs: mvas}
+		}(f)
+	}
+
+	mvas := make(map[string][]MVA)
+	for range zr.File {
+		m := <-mvaChan
+		mvas[m.TRACON] = m.MVAs
+	}
+
+	return mvas
 }
 
 func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
