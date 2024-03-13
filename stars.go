@@ -1497,8 +1497,13 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
 	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
 
-	// Play the CA sound if any CAs are unacknowledged
-	if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool { return !ca.Acknowledged }) {
+	// Play the CA sound if any CAs or MSAWs are unacknowledged
+	playAlertSound := !ps.DisableCAWarnings && slices.ContainsFunc(sp.CAAircraft,
+		func(ca CAAircraft) bool {
+			return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
+				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings
+		})
+	if playAlertSound {
 		globalConfig.Audio.StartPlayContinuous(AudioConflictAlert)
 	} else {
 		globalConfig.Audio.StopPlayContinuous(AudioConflictAlert)
@@ -5768,6 +5773,7 @@ func (sp *STARSPane) diverging(a, b *Aircraft) bool {
 }
 
 func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
+	ps := sp.CurrentPreferenceSet
 	state := sp.Aircraft[ac.Callsign]
 
 	var errs []string
@@ -5780,8 +5786,12 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
 		errs = append(errs, "MI")
 	}
-	if slices.ContainsFunc(sp.CAAircraft,
-		func(ca CAAircraft) bool { return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign }) {
+	if !ps.DisableCAWarnings &&
+		slices.ContainsFunc(sp.CAAircraft,
+			func(ca CAAircraft) bool {
+				return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
+					!state.DisableCAWarnings
+			}) {
 		errs = append(errs, "CA")
 		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 	}
@@ -5876,6 +5886,10 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		// Line 1: fields 1, 2, and 8 (surprisingly). Always the same content; nothing multiplexed
 		field1 := ac.Callsign
 		field2 := "" // TODO: * for MSAW inhibited, etc.
+		if state.DisableCAWarnings {
+			field2 = STARSTriangleCharacter
+		}
+
 		field8 := []string{""}
 		rd := ac.RedirectedHandoff.RDIndicator
 		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
