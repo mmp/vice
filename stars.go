@@ -6041,9 +6041,18 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		if ac.HandoffTrackController != "" {
 			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
 				if ac.RedirectedHandoff.RedirectedTo != "" {
-					field4 = ac.RedirectedHandoff.RedirectedTo[len(ac.RedirectedHandoff.RedirectedTo)-1:]
+					if sameFacility(ctx, ac.RedirectedHandoff.RedirectedTo) {
+						field4 = ac.RedirectedHandoff.RedirectedTo[len(ac.RedirectedHandoff.RedirectedTo)-1:]
+					} else {
+						field4 = ctx.world.GetController(ac.RedirectedHandoff.RedirectedTo).FacilityIdentifier
+					}
 				} else {
-					field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+					if sameFacility(ctx, ac.HandoffTrackController) {
+						field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+					} else {
+						field4 = ctrl.FacilityIdentifier
+					}
+
 				}
 			}
 		}
@@ -6132,6 +6141,10 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	}
 
 	return nil
+}
+
+func sameFacility(ctx *PaneContext, receiving string) bool {
+	return ctx.world.GetController(ctx.world.Callsign).FacilityIdentifier == ctx.world.GetController(receiving).FacilityIdentifier
 }
 
 func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightness STARSBrightness) {
