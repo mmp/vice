@@ -1944,7 +1944,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 							}
 						}
 					} else {
-						ok, control := sameFacility(ctx, tcp, aircraft.Callsign)
+						ok, control := sp.calculateController(ctx, tcp, aircraft.Callsign)
 						if !ok {
 							status.err = GetSTARSError(ErrSTARSIllegalPosition) // assume it's this
 							return
@@ -2027,7 +2027,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			}
 		}
 		if len(cmd) > 0 {
-			ok, control := sameFacility(ctx, cmd, "")
+			ok, control := sp.calculateController(ctx, cmd, "")
 			if !ok {
 				status.err = GetSTARSError(ErrSTARSIllegalPosition)
 				return
@@ -3068,7 +3068,7 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 
 func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) error {
 	// Change the "C" to "N56" for example
-	ok, control := sameFacility(ctx, controller, callsign)
+	ok, control := sp.calculateController(ctx, controller, callsign)
 	if !ok {
 		return ErrSTARSIllegalPosition
 	}
@@ -3082,7 +3082,7 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 }
 
 func (sp *STARSPane) redirectHandoff(ctx *PaneContext, callsign, controller string) error {
-	ok, control := sameFacility(ctx, controller, callsign)
+	ok, control := sp.calculateController(ctx, controller, callsign)
 	if !ok {
 		return ErrSTARSIllegalPosition
 	}
@@ -3162,7 +3162,7 @@ func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
 
 // Give a bool if the handoff is good and the correct syntax.
 // Also decode the controller into its regular sector (N4P -> 4P)
-func sameFacility(ctx *PaneContext, controller, callsign string) (bool, string) {
+func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign string) (bool, string) {
 	userController := *ctx.world.GetController(ctx.world.Callsign)
 
 	controller = strings.TrimSuffix(controller, "*")
@@ -3490,7 +3490,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						}
 					}
 					for _, tcp := range tcps {
-						ok, control := sameFacility(ctx, tcp, ac.Callsign)
+						ok, control := sp.calculateController(ctx, tcp, ac.Callsign)
 						if !ok {
 							status.err = GetSTARSError(ErrSTARSIllegalPosition)
 							return
@@ -3638,7 +3638,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				}
 
-				ok, control := sameFacility(ctx, cmd, ac.Callsign)
+				ok, control := sp.calculateController(ctx, cmd, ac.Callsign)
 				if !ok {
 					sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalPosition).Error()
 				} else {
@@ -3652,7 +3652,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				user := ctx.world.GetController(ctx.world.Callsign)
 				if ac.HandoffTrackController == user.Callsign || ac.RedirectedHandoff.RedirectedTo == user.SectorId { // Redirect
 					cmd = strings.TrimPrefix(cmd, STARSTriangleCharacter)
-					ok, control := sameFacility(ctx, cmd, ac.Callsign)
+					ok, control := sp.calculateController(ctx, cmd, ac.Callsign)
 					if !ok {
 						status.err = GetSTARSError(ErrSTARSIllegalPosition)
 						return
