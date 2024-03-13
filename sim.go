@@ -2333,7 +2333,7 @@ func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
 func (s *Sim) PointOut(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
-			if ac.ControllingController != ctrl.Callsign {
+			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
 			if s.World.GetController(controller) == nil {
