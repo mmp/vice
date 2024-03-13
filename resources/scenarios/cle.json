@@ -2950,6 +2950,38 @@
                                                     ]
                         },
                         "center": "N41.24.31.437,W81.51.17.377",
+                        "stars_adaptation": {
+                            "scratchpad_rules": [false, false],
+                            "force_ql_self": true,
+                            "airspace_awareness": [
+                                {
+                                    "fix": [
+                                        "APE",
+                                        "ALPHE",
+                                        "DAIFE",
+                                        "BAGEL",
+                                        "YABRO",
+                                        "EWC",
+                                        "NUSMM",
+                                        "PATRC",
+                                        "JASEE",
+                                        "MAAJR",
+                                        "DORET",
+                                        "DUUKR",
+                                        "PUUDL",
+                                        "SNNOH",
+                                        "SINKR",
+                                        "MYCAR" 
+                                    ],
+                                    "altitude_range": [
+                                        0,
+                                        0
+                                    ],
+                                    "receiving_controller": "C66",
+                                    "to_center": true
+                                }
+                            ]
+                        },
                         "control_positions": {
                             "CLE_A_APP": {
                                 "frequency": 124000,
@@ -2985,7 +3017,9 @@
                                 "frequency": 125425,
                                 "full_name": "Cleveland Center",
                                 "scope_char": "C",
-                                "sector_id": "66"
+                                "sector_id": "C66",
+                                "facility_id": "C",
+                                "eram_facility": true
                             },
                             "CLE_TWR": {
                                 "frequency": 124500,

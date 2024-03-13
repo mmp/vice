@@ -3223,6 +3223,39 @@
                 ]
             },
             "center": "N41.58.34.897,W87.54.27.062",
+            "stars_adaptation": {
+                "scratchpad_rules": [false, false],
+                "force_ql_self": true,
+                "airspace_awareness": [
+                    {
+                        "fix": [
+                            "EARND",
+                            "DENNT",
+                            "CMSKY",
+                            "BACEN",
+                            "ACITO",
+                            "MYKIE",
+                            "NOONY",
+                            "SIMMN",
+                            "OLINN",
+                            "PEKUE",
+                            "MOBLE",
+                            "DUFEE",
+                            "EBAKE",
+                            "RAYNR",
+                            "PMPKN",
+                            "PETTY",
+                            "LEWKE"
+                        ],
+                        "altitude_range": [
+                            0,
+                            0
+                        ],
+                        "receiving_controller": "C81",
+                        "to_center": true
+                    }
+                ]
+            },
             "control_positions": {
                 "CHI_Z_APP": {
                     "frequency": 119000,
@@ -3330,7 +3363,9 @@
                     "frequency": 120350,
                     "full_name": "Chicago Center",
                     "scope_char": "C",
-                    "sector_id": "81"
+                    "sector_id": "C81",
+                    "facility_id": "C",
+                    "eram_facility": true
                 },
                 "ORD_S_TWR": {
                     "frequency": 120750,

@@ -212,14 +212,14 @@
       ],
       "departure_routes": {
         "22R": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ V30,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
             "cleared_altitude": 2500,
             "sid": "EWR5",
             "waypoints": "_EWR4_22Ra/h220"
           }
         },
         "4L": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ V30,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
             "cleared_altitude": 3000,
             "sid": "EWR5",
             "waypoints": "_EWR4_4La/h290"
@@ -611,7 +611,7 @@
           "altitude": 8000,
           "destination": "KPHL",
           "exit": "SBJ",
-          "route": "SBJ V30 ETX V162 PTW"
+          "route": "SBJ ETX V162 PTW"
         },
         {
           "airlines": [
@@ -1234,14 +1234,14 @@
       },
       "departure_routes": {
         "1": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ V30,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
             "cleared_altitude": 2000,
             "sid": "TEB4",
             "waypoints": "_TEB4_1a/h280"
           }
         },
         "24": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ V30,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
             "cleared_altitude": 2000,
             "sid": "RUUDY6",
             "waypoints": "DAVIM WENTZ/a1500 RUUDY/h280"
@@ -1282,8 +1282,8 @@
           ],
           "altitude": 8000,
           "destination": "KILG",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX PTW"
+          "exit": "SBJ",
+          "route": "SBJ ETX PTW"
         },
         {
           "airlines": [
@@ -1293,8 +1293,8 @@
           ],
           "altitude": 4000,
           "destination": "KILG",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX PTW"
+          "exit": "SBJ",
+          "route": "SBJ ETX PTW"
         },
         {
           "airlines": [
@@ -1340,8 +1340,8 @@
           ],
           "altitude": 8000,
           "destination": "KABE",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX"
+          "exit": "SBJ",
+          "route": "SBJ ETX"
         },
         {
           "airlines": [
@@ -1351,8 +1351,8 @@
           ],
           "altitude": 6000,
           "destination": "KABE",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX"
+          "exit": "SBJ",
+          "route": "SBJ ETX"
         },
         {
           "airlines": [
@@ -1363,7 +1363,7 @@
           "altitude": 6000,
           "destination": "KRDG",
           "exit": "SBJ",
-          "route": "SBJ V30 ETX"
+          "route": "SBJ ETX"
         },
         {
           "airlines": [
@@ -1373,8 +1373,8 @@
           ],
           "altitude": 8000,
           "destination": "KMDT",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX V162 HAR"
+          "exit": "SBJ",
+          "route": "SBJ ETX V162 HAR"
         },
         {
           "airlines": [
@@ -1508,8 +1508,8 @@
           ],
           "altitude": 9000,
           "destination": "KSRB",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 LANNA ETX V39 MRB V166 ESL V4 HVQ XXX V115 AZQ V140 LVT V321 GRILL HEM"
+          "exit": "SBJ",
+          "route": "SBJ LANNA ETX V39 MRB V166 ESL V4 HVQ XXX V115 AZQ V140 LVT V321 GRILL HEM"
         },
         {
           "airlines": [
@@ -1864,8 +1864,7 @@
         "SHIPP": "South",
         "WAVEY": "South",
         "WHITE": "South",
-        "ZIMMZ": "West",
-        "SBJ V30": "West"
+        "ZIMMZ": "West"
       },     
       "tower_list": 1,
       "atpa_volumes": {
@@ -1933,14 +1932,14 @@
       },
       "departure_routes": {
         "5": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ V30,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 2000,
             "sid": "MMU7",
             "waypoints": "_MMU5_049/a1700+/h160"
           }
         },
         "23": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ V30,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 2000,
             "sid": "MMU7",
             "waypoints": "_MMU23_229/a600 _MMU23_210/a2000+/h160"
@@ -1981,8 +1980,8 @@
           ],
           "altitude": 8000,
           "destination": "KILG",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX PTW"
+          "exit": "SBJ",
+          "route": "SBJ ETX PTW"
         },
         {
           "airlines": [
@@ -1992,8 +1991,8 @@
           ],
           "altitude": 4000,
           "destination": "KILG",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX PTW"
+          "exit": "SBJ",
+          "route": "SBJ ETX PTW"
         },
         {
           "airlines": [
@@ -2039,8 +2038,8 @@
           ],
           "altitude": 8000,
           "destination": "KABE",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX"
+          "exit": "SBJ",
+          "route": "SBJ ETX"
         },
         {
           "airlines": [
@@ -2050,8 +2049,8 @@
           ],
           "altitude": 6000,
           "destination": "KABE",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX"
+          "exit": "SBJ",
+          "route": "SBJ ETX"
         },
         {
           "airlines": [
@@ -2061,8 +2060,8 @@
           ],
           "altitude": 6000,
           "destination": "KRDG",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX"
+          "exit": "SBJ",
+          "route": "SBJ ETX"
         },
         {
           "airlines": [
@@ -2072,8 +2071,8 @@
           ],
           "altitude": 8000,
           "destination": "KMDT",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 ETX V162 HAR"
+          "exit": "SBJ",
+          "route": "SBJ ETX V162 HAR"
         },
         {
           "airlines": [
@@ -2207,8 +2206,8 @@
           ],
           "altitude": 9000,
           "destination": "KSRB",
-          "exit": "SBJ V30",
-          "route": "SBJ V30 LANNA ETX V39 MRB V166 ESL V4 HVQ XXX V115 AZQ V140 LVT V321 GRILL HEM"
+          "exit": "SBJ",
+          "route": "SBJ LANNA ETX V39 MRB V166 ESL V4 HVQ XXX V115 AZQ V140 LVT V321 GRILL HEM"
         },
         {
           "airlines": [
@@ -3574,7 +3573,6 @@
         "speed_restriction": null,
         "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025",
         "expect_approach": "RY9"
-        
       }
     ],
     "WRI": [
@@ -3599,183 +3597,173 @@
     ]
   },
   "center": "N040.43.34.389,W074.28.54.713",
+  "stars_adaptation": {
+    "scratchpad_rules": [
+      false,
+      false
+    ],
+    "force_ql_self": true
+  },
   "range": 60,
   "control_positions": {
     "ABE_APP": {
       "frequency": 119650,
       "full_name": "Allentown approach",
-      "scope_char": "F",
-      "sector_id": "AF",
-      "facility_id": "A"
+      "scope_char": "4",
+      "sector_id": "1A",
+      "facility_id": "4"
     },
     "BOS_CTR": {
       "frequency": 134700,
       "full_name": "Boston center",
       "scope_char": "C",
       "sector_id": "B37",
-      "facility_id": "B"
+      "facility_id": "B",
+      "eram_facility": true
     },
     "CDW_TWR": {
       "frequency": 119800,
       "full_name": "Caldwell tower",
       "scope_char": "T",
-      "sector_id": "4T",
-      "facility_id": "N"
+      "sector_id": "4T"
     },
     "DC_CTR": {
       "frequency": 133725,
       "full_name": "Washington center",
       "scope_char": "C",
       "sector_id": "W32",
-      "facility_id": "W"
+      "facility_id": "W",
+      "eram_facility": true
     },
     "EWR_APP": {
       "frequency": 128550,
       "full_name": "New York approach",
       "scope_char": "P",
-      "sector_id": "4P",
-      "facility_id": "N"
+      "sector_id": "4P"
     },
     "EWR_A_APP": {
       "frequency": 120150,
       "full_name": "New York approach",
       "scope_char": "A",
-      "sector_id": "4A",
-      "facility_id": "N"
+      "sector_id": "4A"
     },
     "EWR_DEP": {
       "frequency": 119200,
       "full_name": "New York departure",
       "scope_char": "N",
-      "sector_id": "4N",
-      "facility_id": "N"
+      "sector_id": "4N"
     },
     "EWR_H_APP": {
       "frequency": 132800,
       "full_name": "New York approach",
       "scope_char": "H",
-      "sector_id": "4H",
-      "facility_id": "N"
+      "sector_id": "4H"
     },
     "EWR_P_APP": {
       "frequency": 128550,
       "full_name": "New York approach",
       "scope_char": "P",
-      "sector_id": "4P",
-      "facility_id": "N"
+      "sector_id": "4P"
     },
     "EWR_M_APP": {
       "frequency": 125550,
       "full_name": "New York approach",
       "scope_char": "M",
-      "sector_id": "4M",
-      "facility_id": "N"
+      "sector_id": "4M"
     },
     "EWR_Q_APP": {
       "frequency": 125500,
       "full_name": "New York approach",
       "scope_char": "Q",
-      "sector_id": "4Q",
-      "facility_id": "N"
+      "sector_id": "4Q"
     },
     "EWR_S_APP": {
       "frequency": 123770,
       "full_name": "New York approach",
       "scope_char": "S",
-      "sector_id": "4S",
-      "facility_id": "N"
+      "sector_id": "4S"
     },
     "EWR_TWR": {
       "frequency": 118300,
       "full_name": "Newark tower",
       "scope_char": "T",
-      "sector_id": "4Z",
-      "facility_id": "N"
+      "sector_id": "4Z"
     },
     "EWR_U_APP": {
       "frequency": 127600,
       "full_name": "New York approach",
       "scope_char": "U",
-      "sector_id": "4U",
-      "facility_id": "N"
+      "sector_id": "4U"
     },
     "LGA_APP": {
       "frequency": 120800,
       "full_name": "New York approach",
       "scope_char": "V",
-      "sector_id": "1V",
-      "facility_id": "N"
+      "sector_id": "1V"
     },
     "LGA_DEP": {
       "frequency": 120400,
       "full_name": "New York approach",
       "scope_char": "L",
-      "sector_id": "1L",
-      "facility_id": "N"
+      "sector_id": "1L"
     },
     "MMU_TWR": {
       "frequency": 118100,
       "full_name": "Morristown tower",
       "scope_char": "T",
-      "sector_id": "4K",
-      "facility_id": "N"
+      "sector_id": "4K"
     },
     "NY_CTR": {
       "frequency": 125325,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N56",
-      "facility_id": "N",
+      "sector_id": "C56",
+      "facility_id": "C",
       "eram_facility": true
     },
     "NY_LE_DEP": {
       "frequency": 126800,
       "full_name": "New York departure",
       "scope_char": "E",
-      "sector_id": "5E",
-      "facility_id": "N"
+      "sector_id": "5E"
     },
     "NY_LN_DEP": {
       "frequency": 118170,
       "full_name": "New York departure",
       "scope_char": "T",
-      "sector_id": "5T",
-      "facility_id": "N"
+      "sector_id": "5T"
     },
     "NY_LS_DEP": {
       "frequency": 124750,
       "full_name": "New York departure",
       "scope_char": "S",
-      "sector_id": "5S",
-      "facility_id": "N"
+      "sector_id": "5S"
     },
     "NY_LW_DEP": {
       "frequency": 120850,
       "full_name": "New York departure",
       "scope_char": "W",
-      "sector_id": "5W",
-      "facility_id": "N"
+      "sector_id": "5W"
     },
     "PHL_E_APP": {
-      "frequency": 124350,
+      "frequency": 128400,
       "full_name": "Philly approach",
-      "scope_char": "E",
-      "sector_id": "6E",
-      "facility_id": "P"
+      "scope_char": "2",
+      "sector_id": "1N",
+      "facility_id": "2"
     },
     "TEB_TWR": {
       "frequency": 119500,
       "full_name": "Teterboro tower",
       "scope_char": "T",
-      "sector_id": "4J",
-      "facility_id": "N"
+      "sector_id": "4J"
     },
     "WRI_APP": {
       "frequency": 126470,
       "full_name": "McGuire approach",
-      "scope_char": "Y",
-      "sector_id": "MY",
-      "facility_id": "M"
+      "scope_char": "5",
+      "sector_id": "1Y",
+      "facility_id": "5"
     }
   },
   "default_scenario": "KEWR Depart 22R Land 22L",
@@ -3901,26 +3889,26 @@
       ],
       "arrivals": {
         "COATE": {
-          "KTEB": 2,
-          "KMMU": 5
+          "KTEB": 5,
+          "KMMU": 2
         },
         "FLOSI4": {
-          "KEWR": 5
-        },
-        "FQM3": {
           "KEWR": 10
         },
+        "FQM3": {
+          "KEWR": 8
+        },
         "LVZ4": {
-          "KTEB": 2,
-          "KMMU": 5
+          "KTEB": 5,
+          "KMMU": 2
         },
         "JAIKE4": {
           "KTEB": 2,
           "KMMU":5
         },
         "MAZIE": {
-          "KTEB": 2,
-          "KMMU":5
+          "KTEB": 5,
+          "KMMU":2
         },
         "PHL": {
           "KEWR": 2
@@ -3929,7 +3917,7 @@
           "KEWR": 10
         },
         "WRI": {
-          "KEWR": 2
+          "KEWR": 0
         }
       },
       "solo_controller": "EWR_APP",
@@ -4004,17 +3992,17 @@
       "departure_runways": [
         {
           "airport": "KEWR",
-          "rate": 20,
+          "rate": 25,
           "runway": "22R"
         },
         {
           "airport": "KTEB",
-          "rate": 5,
+          "rate": 8,
           "runway": "24"
         },
         {
           "airport": "KMMU",
-          "rate": 7,
+          "rate": 3,
           "runway": "23"
         }
       ],
@@ -4103,12 +4091,12 @@
         },
         {
           "airport": "KTEB",
-          "rate": 45,
+          "rate": 10,
           "runway": "1"
         },
         {
           "airport": "KMMU",
-          "rate": 10,
+          "rate": 5,
           "runway": "5"
         }
       ],
@@ -4135,26 +4123,26 @@
       ],
       "arrivals": {
         "COATE": {
-          "KTEB": 2,
-          "KMMU": 5
+          "KTEB": 5,
+          "KMMU": 2
         },
         "FLOSI4": {
-          "KEWR": 5
+          "KEWR": 8
         },
         "FQM3": {
           "KEWR": 10
         },
         "LVZ4": {
-          "KTEB": 2,
-          "KMMU": 5
+          "KTEB": 5,
+          "KMMU": 2
         },
         "JAIKE4": {
-          "KTEB": 2,
-          "KMMU": 5
+          "KTEB": 5,
+          "KMMU": 2
         },
         "MAZIE": {
-          "KTEB": 2,
-          "KMMU":5
+          "KTEB": 5,
+          "KMMU":2
         },
         "PHL": {
           "KEWR": 2
@@ -4163,7 +4151,7 @@
           "KEWR": 10
         },
         "WRI": {
-          "KEWR": 2
+          "KEWR": 0
         }
       },
       "solo_controller": "EWR_APP",
@@ -4380,13 +4368,13 @@
           "KEWR": 15
         },
         "PHL": {
-          "KEWR": 3
+          "KEWR": 2
         },
         "PHLBO4": {
           "KEWR": 15
         },
         "WRI": {
-          "KEWR": 3
+          "KEWR": 1
         }
       },
       "solo_controller": "EWR_P_APP",
@@ -4421,10 +4409,10 @@
       ],
       "arrivals": {
         "FLOSI4": {
-          "KEWR": 20
+          "KEWR": 14
         },
         "South": {
-          "KEWR": 35
+          "KEWR": 28
         }
       },
       "solo_controller": "EWR_A_APP",
@@ -4459,10 +4447,10 @@
       ],
       "arrivals": {
         "FLOSI4": {
-          "KEWR": 20
+          "KEWR": 13
         },
         "South29": {
-          "KEWR": 35
+          "KEWR": 23
         }
       },
       "solo_controller": "EWR_A_APP",
@@ -4479,7 +4467,9 @@
         "MMU_TWR",
         "CDW_TWR"
       ],
-      "default_maps": [ "EWR" ],
+      "default_maps": [
+        "EWR"
+      ],
       "wind": {
         "direction": 300,
         "gust": 33,
@@ -4498,7 +4488,7 @@
           "KEWR": 25
         },
         "PHLBO4": {
-          "KEWR": 40
+          "KEWR": 13
         }
       },
       "solo_controller": "EWR_P_APP",
@@ -4582,7 +4572,6 @@
     "PARKE": "PAR",
     "SAX": "SAX",
     "SBJ": "SBJ",
-    "SBJ V30": "V30",
     "SHIPP": "SHI",
     "WAVEY": "WAV",
     "WHITE": "WHI",

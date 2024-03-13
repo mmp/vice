@@ -3108,54 +3108,185 @@
         ]
     },
     "center": "KDFW",
+    "stars_adaptation": {
+        "scratchpad_rules": [false, false],
+        "force_ql_self": true,
+        "airspace_awareness": [
+            {
+                "fix": [
+                    "HUDAD",
+                    "HRPER",
+                    "HULZE",
+                    "KATZZ",
+                    "BRHMA",
+                    "WSTEX",
+                    "CIKAN",
+                    "DOSXX",
+                    "ALIAN"
+                ],
+                "altitude_range": [
+                    0,
+                    0
+                ],
+                "receiving_controller": "C32",
+                "to_center": true
+            },
+            {
+                "fix": [
+                    "NELYN",
+                    "ACT",
+                    "HOARY",
+                    "SAT",
+                    "JASPA",
+                    "WINDU",
+                    "ARDIA",
+                    "ELLVR",
+                    "CLL",
+                    "TORNN",
+                    "TNV"
+                ],
+                "altitude_range":[
+                    0,
+                    12000
+                ],
+                "receiving_controller": "1H",
+                "to_center": false
+            },
+            {
+                "fix": [
+                    "NELYN",
+                    "ACT",
+                    "HOARY",
+                    "SAT",
+                    "JASPA",
+                    "WINDU",
+                    "ARDIA",
+                    "ELLVR",
+                    "CLL",
+                    "TORNN",
+                    "TNV"
+                ],
+                "altitude_range":[
+                    12001,
+                    99000
+                ],
+                "receiving_controller": "C96",
+                "to_center": true
+            },
+            {
+                "fix": [
+                    "MRSSH",
+                    "BDDAY",
+                    "ZALEA",
+                    "FORCK",
+                    "TRYTN",
+                    "LOOSE",
+                    "ZACHH",
+                    "BSKAT"
+                ],
+                "altitude_range": [
+                    0,
+                    0
+                ],
+                "receiving_controller": "C83",
+                "to_center": true
+            },
+            {
+                "fix":[
+                    "AKUNA",
+                    "MLC",
+                    "GRABE",
+                    "EAKER",
+                    "OKM",
+                    "BLECO",
+                    "ZEMMA",
+                    "TUL",
+                    "IRW",
+                    "LOWGN",
+                    "ADM",
+                    "MRMAC",
+                    "ROLLS"
+                ],
+                "altitude_range":[
+                    0,
+                    0
+                ],
+                "receiving_controller": "C53",
+                "to_center": true
+            }
+        ]
+    },
     "control_positions": {
         "FTW_29_CTR": {
             "frequency": 135250, 
             "full_name": "Forth Worth Center",
             "scope_char": "C",
-            "sector_id": "C29"
+            "sector_id": "C29",
+            "facility_id": "C",
+            "eram_facility": true
+        },
+        "ACT_H_APP": {
+            "frequency": 127650,
+            "full_name": "Waco Approach",
+            "scope_char": "H",
+            "sector_id": "1H",
+            "facility_id": "W"
         },
         "FTW_32_CTR": {
             "frequency": 127000,
             "full_name": "Forth Worth Center",
             "scope_char": "C",
-            "sector_id": "C32"
+            "sector_id": "C32",
+            "facility_id": "C",
+            "eram_facility": true
         },
         "FTW_37_CTR": {
             "frequency": 124875,
             "full_name": "Forth Worth Center",
             "scope_char": "C",
-            "sector_id": "C37"
+            "sector_id": "C37",
+            "facility_id": "C",
+            "eram_facility": true
         },
         "FTW_53_CTR": {
             "frequency": 124750,
             "full_name": "Forth Worth Center",
             "scope_char": "C",
-            "sector_id": "C53"
+            "sector_id": "C53",
+            "facility_id": "C",
+            "eram_facility": true
         },
         "FTW_62_CTR": {
             "frequency": 127150, 
             "full_name": "Forth Worth Center",
             "scope_char": "C",
-            "sector_id": "C62"
+            "sector_id": "C62",
+            "facility_id": "C",
+            "eram_facility": true
         },
         "FTW_75_CTR": {
             "frequency": 127950,
             "full_name": "Forth Worth Center",
             "scope_char": "C",
-            "sector_id": "C75"
+            "sector_id": "C75",
+            "facility_id": "C",
+            "eram_facility": true
         },
         "FTW_83_CTR": {
             "frequency": 132025,
             "full_name": "Forth Worth Center",
             "scope_char": "C",
-            "sector_id": "C83"
+            "sector_id": "C83",
+            "facility_id": "C",
+            "eram_facility": true
         },
         "FTW_96_CTR": {
             "frequency": 133300, 
             "full_name": "Forth Worth Center",
             "scope_char": "C",
-            "sector_id": "C96"
+            "sector_id": "C96",
+            "facility_id": "C",
+            "eram_facility": true
         },
         "REG_L_DEP": {
             "frequency": 118550,
@@ -3591,7 +3722,7 @@
                 "DFW_W1_TWR",
                 "DFW_E3_TWR"
             ],
-            "default_maps": ["MIDSOUTH RVMD10139 "],
+            "default_maps": ["RVMD10139S"],
             "departure_runways": [
                 {
                     "airport": "KDFW",
@@ -3728,13 +3859,14 @@
                 "FTW_75_CTR",
                 "FTW_83_CTR",
                 "FTW_96_CTR",
+                "ACT_H_APP",
                 "AFW_TWR",
                 "DAL_TWR",
                 "DFW_E1_TWR",
                 "DFW_W1_TWR",
                 "DFW_E3_TWR"
             ],
-            "default_maps": ["MIDSOUTH RVMD10139 "],
+            "default_maps": ["RVMD10140S"],
             "departure_runways": [
                 {
                     "airport": "KDFW",
@@ -3806,209 +3938,209 @@
     },
     "stars_maps": [
         {
+            "group": 1,
+            "label": "EMERGCY",
+            "name": "RVMD10024S"
+        },
+        {
             "group": 0,
-            "label": "EMERG",
-            "name": "EMERGENCY RVMD10024 "
+            "label": "MVA_3NM",
+            "name": "RVMD10027S"
         },
         {
-            "group": 1,
-            "label": "MVA",
-            "name": "MVA 3NM RVMD10027 "
+            "group": 0,
+            "label": "CLASS_B",
+            "name": "RVMD10026S"
         },
         {
-            "group": 1,
-            "label": "BRAVO",
-            "name": "CLASS B RVMD10026 "
-        },
-        {
-            "group": 1,
+            "group": 0,
             "label": "FIXES",
-            "name": "FIX NAMES RVMD10104 "
+            "name": "RVMD10104S"
         },
         {
             "group": 0,
-            "label": "AIRPT",
-            "name": "AIRPORTS RVMD10043"
+            "label": "AIRPRTS",
+            "name": "RVMD10043S"
         },
         {
             "group": 0,
-            "label": "RNAVGTE",
-            "name": "DFIX RVMD10050 "
+            "label": "DR_RNAV",
+            "name": "RVMD10050S"
         },
         {
             "group": 0,
-            "label": "MIDSTH",
-            "name": "MIDSOUTH RVMD10139 "
+            "label": "MID_S",
+            "name": "RVMD10139S"
         },
         {
             "group": 0,
-            "label": "MIDNTH",
-            "name": "MIDNORTH RVMD10140 "
+            "label": "MID_N",
+            "name": "RVMD10140S"
         },
         {
             "group": 0,
-            "label": "AR-S",
-            "name": "ARRIVAL SOUTH RVMD10103 "
+            "label": "AR_S",
+            "name": "RVMD10103S"
         },
         {
             "group": 0,
-            "label": "AR-N",
-            "name": "ARRIVAL NORTH RVMD10102 "
+            "label": "AR_N",
+            "name": "RVMD10102S"
         },
         {
             "group": 0,
-            "label": "FD-S",
-            "name": "FEEDER SOUTH RVMD10121 "
+            "label": "FEEDR_S",
+            "name": "RVMD10121S"
         },
         {
             "group": 0,
-            "label": "FD-N",
-            "name": "FEEDER NORTH RVMD10120 "
+            "label": "FEEDR_N",
+            "name": "RVMD10120S"
         },
         {
             "group": 0,
-            "label": "DR-S",
-            "name": "DEPARTURE SOUTH RVMD10119 "
+            "label": "DR_S",
+            "name": "RVMD10119S"
         },
         {
             "group": 0,
-            "label": "DR-N",
-            "name": "DEPARTURE NORTH RVMD10118 "
+            "label": "DR_N",
+            "name": "RVMD10118S"
         },
         {
             "group": 0,
-            "label": "SAT-S",
-            "name": "SATELLITE SOUTH RVMD10123 "
+            "label": "SAT_S",
+            "name": "RVMD10123S"
         },
         {
             "group": 0,
-            "label": "SAT-N",
-            "name": "SATELLITE NORTH RVMD10122 "
-        },
-        {
-            "group": 1,
-            "label": "DFWDPS",
-            "name": "DFW RNAV SOUTH RVMD10125"
-        },
-        {
-            "group": 1,
-            "label": "DFWDPN",
-            "name": "DFW RNAV NORTH RVMD10124 "
-        },
-        {
-            "group": 1,
-            "label": "DALDPS",
-            "name": "DAL DEPARTURES SOUTH RVMD10133 "
-        },
-        {
-            "group": 1,
-            "label": "DALDPN",
-            "name": "DAL DEPARTURES NORTH RVMD10132 "
+            "label": "SAT_N",
+            "name": "RVMD10122S"
         },
         {
             "group": 0,
-            "label": "CLASD S",
-            "name": "CLASS D SOUTH RVMD10032 "
+            "label": "RNAV_S",
+            "name": "RVMD10125S"
         },
         {
             "group": 0,
-            "label": "CLASD N",
-            "name": "CLASS D NORTH RVMD10029 "
+            "label": "RNAV_N",
+            "name": "RVMD10124S"
         },
         {
             "group": 0,
-            "label": "DU-W",
-            "name": "DUALS WEST RVMD10035"
+            "label": "DALRNVS",
+            "name": "RVMD10133S"
         },
         {
             "group": 0,
-            "label": "DU-E",
-            "name": "DUALS EAST RVMD10034 "
+            "label": "DALRNVN",
+            "name": "RVMD10132S"
         },
         {
             "group": 0,
-            "label": "TRIPS",
-            "name": "TRIPS RVMD10036 "
+            "label": "TWR_SOU",
+            "name": "RVMD10032S"
         },
         {
             "group": 0,
-            "label": "NTZ",
-            "name": "FINAL MONITOR RVMD10025 "
+            "label": "TWR_NOR",
+            "name": "RVMD10029S"
         },
         {
             "group": 0,
-            "label": "SATFNL",
-            "name": "SAT FINALS RVMD10028 "
+            "label": "CAPBOXW",
+            "name": "RVMD10035S"
         },
         {
             "group": 0,
-            "label": "CONVGTE",
-            "name": "CONVFIX RVMD10106 "
+            "label": "CAPBOXE",
+            "name": "RVMD10034S"
         },
         {
-            "group": 1,
-            "label": "FIXSTH",
-            "name": "RNAV FIX SOUTH RVMD10107 "
+            "group": 0,
+            "label": "CAPBOXA",
+            "name": "RVMD10036S"
         },
         {
-            "group": 1,
-            "label": "FIXNTH",
-            "name": "RNAV FIX NORTH RVMD10108 "
+            "group": 0,
+            "label": "FIN_MON",
+            "name": "RVMD10025S"
+        },
+        {
+            "group": 0,
+            "label": "SAT_FNL",
+            "name": "RVMD10028S"
+        },
+        {
+            "group": 0,
+            "label": "DR_CONV",
+            "name": "RVMD10106S"
+        },
+        {
+            "group": 0,
+            "label": "DFWRNVS",
+            "name": "RVMD10107S"
+        },
+        {
+            "group": 0,
+            "label": "DFWRNVN",
+            "name": "RVMD10108S"
         },
         {
             "group": 0,
             "label": "RIVAS",
-            "name": "AR3 PRE-A RVMD10013 "
+            "name": "RVMD10013S"
         },
         {
             "group": 0,
-            "label": "AR-SHLF",
-            "name": "AR-SHELF RVMD10101 "
+            "label": "ARSHELF",
+            "name": "RVMD10101S"
         },
         {
             "group": 0,
-            "label": "HELO",
-            "name": "HELO ROUTES RVMD10017 "
+            "label": "HELO_RT",
+            "name": "RVMD10017S"
         },
         {
             "group": 0,
-            "label": "CFLITE",
-            "name": "CAREFLIGHT RVMD10033"
+            "label": "CAREFLT",
+            "name": "RVMD10033S"
         },
         {
             "group": 0,
-            "label": "31L",
-            "name": "RWY 31L FINAL RVMD10011 "
+            "label": "RWY_31L",
+            "name": "RVMD10011S"
         },
         {
             "group": 0,
             "label": "31LDEP",
-            "name": "31L DEPARTURES RVMD10040 "
+            "name": "31L DEPARTURE MAP"
         },
         {
-            "group": 0,
-            "label": "DALRW13",
-            "name": "DAL SOUTH FLOW RVMD10053 "
+            "group": 1,
+            "label": "DALRNPS",
+            "name": "RVMD10053S"
         },
         {
-            "group": 0,
-            "label": "DALRZ31",
-            "name": "DAL NORTH FLOW RVMD10054 "
+            "group": 1,
+            "label": "DALRNPN",
+            "name": "RVMD10054S"
         },
         {
             "group": 0,
             "label": "SATSONO",
-            "name": "SATSONO RVMD10058S "
+            "name": "RVMD10058S "
         },
         {
             "group": 0,
             "label": "DRNOSO",
-            "name": "DRNOSO RVMD10057 "
+            "name": "RVMD10057S"
         },
         {
-            "group": 0,
-            "label": "DRSONO",
-            "name": "DRSONO RVMD10056 "
+        "group": 0,
+        "label": "DRSONO",
+        "name": "RVMD10056S"
         }
     ],
     "video_map_file": "videomaps/ZFW-videomaps.json.zst"

@@ -1318,24 +1318,97 @@
                         }]
                     },
                     "center": "KAUS",
+                    "stars_adaptation": {
+                        "scratchpad_rules": [false, false],
+                        "force_ql_self": true,
+                        "airspace_awareness": [
+                            {
+                                "fix": [
+                                    "ABI",
+                                    "BNDIA",
+                                    "MUCKY",
+                                    "SJT",
+                                    "AMUSE"
+                                ],
+                                "altitude_range": [
+                                    0,
+                                    0
+                                ],
+                                "receiving_controller": "C50",
+                                "to_center": true
+                            },
+                            {
+                                "fix": [
+                                    "ZENZI",
+                                    "CLL"
+                                ],
+                                "altitude_range": [
+                                    0,
+                                    8999
+                                ],
+                                "receiving_controller": "1U",
+                                "to_center": false
+                            },
+                            {
+                                "fix": [
+                                    "ZENZI",
+                                    "CLL"
+                                ],
+                                "altitude_range": [
+                                    9000,
+                                    99000
+                                ],
+                                "receiving_controller": "C80",
+                                "to_center": true
+                            },
+                            {
+                                "fix": [
+                                    "SAYBR"
+                                ],
+                                "altitude_range": [
+                                    0,
+                                    0
+                                ],
+                                "receiving_controller": "C96",
+                                "to_center": true
+                            },
+                            {
+                                "fix": [
+                                    "KSAT"
+                                ],
+                                "altitude_range": [
+                                    0,
+                                    13000
+                                ],
+                                "receiving_controller": "1N",
+                                "to_center": false
+                            }
+                        ]
+                    },
                     "control_positions": {
                         "HOU_50_CTR": {
                             "frequency": 134200,
                             "full_name": "Houston Center",
                             "scope_char": "C",
-                            "sector_id": "50"
+                            "sector_id": "C50",
+                            "facility_id": "C",
+                            "eram_facility": true
                         },
                         "HOU_80_CTR": {
                             "frequency": 132150,
                             "full_name": "Houston Center",
                             "scope_char": "C",
-                            "sector_id": "80"
+                            "sector_id": "C80",
+                            "facility_id": "C",
+                            "eram_facility": true
                         },
                         "HOU_96_CTR": {
                             "frequency": 125650,
                             "full_name": "Houston Center",
                             "scope_char": "C",
-                            "sector_id": "96"
+                            "sector_id": "C96",
+                            "facility_id": "C",
+                            "eram_facility": true
                         },
                         "AUS_W_APP": {
                             "frequency": 119000,
@@ -1359,19 +1432,22 @@
                             "frequency": 127100,
                             "full_name": "San Antonio Approach",
                             "scope_char": "S",
-                            "sector_id": "1SN"
+                            "sector_id": "1N",
+                            "facility_id": "S"
                         },
                         "I90_U_APP": {
                             "frequency": 126150,
                             "full_name": "Houston Approach",
                             "scope_char": "U",
-                            "sector_id": "1HU"
+                            "sector_id": "1U",
+                            "facility_id": "H"
                         },
                         "I90_Z_APP": {
                             "frequency": 124225,
                             "full_name": "Houston Approach",
                             "scope_char": "Z",
-                            "sector_id": "1HZ"
+                            "sector_id": "1Z",
+                            "facility_id": "H"
                         },
                         "AUS_E_TWR": {
                             "frequency": 121000,
