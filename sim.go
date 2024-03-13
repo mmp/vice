@@ -574,7 +574,6 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				dir = "Variable"
 			} else {
 				dir = fmt.Sprintf("%v", wind.Direction)
-				fmt.Println(wind.Direction, dir)
 			}
 			if wind.Gust > wind.Speed {
 				imgui.Text(fmt.Sprintf("%v at %d gust %d", dir, wind.Speed, wind.Gust))
