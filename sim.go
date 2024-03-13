@@ -569,11 +569,17 @@ func (c *NewSimConfiguration) DrawUI() bool {
 					}
 				}
 			}
-
-			if wind.Gust > wind.Speed {
-				imgui.Text(fmt.Sprintf("%v at %d gust %d", wind.Direction, wind.Speed, wind.Gust))
+			var dir string
+			if wind.Direction == -1 {
+				dir = "VRB"
 			} else {
-				imgui.Text(fmt.Sprintf("%v at %d", wind.Direction, wind.Speed))
+				dir = fmt.Sprintf("%v", wind.Direction)
+				fmt.Println(wind.Direction, dir)
+			}
+			if wind.Gust > wind.Speed {
+				imgui.Text(fmt.Sprintf("%v at %d gust %d", dir, wind.Speed, wind.Gust))
+			} else {
+				imgui.Text(fmt.Sprintf("%v at %d", dir, wind.Speed))
 			}
 			uiStartDisable(!c.LiveWeather)
 			refresh := imgui.Button("Refresh Weather")
@@ -1022,7 +1028,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		}
 		var wind string
 		spd := weather[0].Wspd
-		dir := weather[0].Wdir.(float64)
+		dir := weather[0].Wdir.(int)
 
 		if err != nil {
 			lg.Errorf("Error converting %v into an int: %v.", dir, err)
