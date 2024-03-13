@@ -5960,14 +5960,16 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
 			field8 = []string{" PO" + id}
 		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
-			field8 = append(field8, " UN")
+			field8 = []string{"", " UN"}
+		} else if time.Until(ac.POFlashingEndTime) > 0 * time.Second{
+			field8 = []string{"", " PO"}
 		} else if redirect := ac.RedirectedHandoff; (rd && len(redirect.Redirector) > 0 && ac.RedirectedHandoff.RedirectedTo != "") ||
 			((redirect.RedirectedTo == user.SectorId) ||
 				(ac.TrackingController == user.Callsign && redirect.OrigionalOwner != "")) {
 			field8 = []string{" RD"}
 		} else if slices.Contains(ac.RedirectedHandoff.Redirector, user.SectorId) {
 			field8 = []string{" RD"}
-		}
+		} 
 
 		// Line 2: fields 3, 4, 5
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
