@@ -571,7 +571,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			}
 			var dir string
 			if wind.Direction == -1 {
-				dir = "VRB"
+				dir = "Variable"
 			} else {
 				dir = fmt.Sprintf("%v", wind.Direction)
 				fmt.Println(wind.Direction, dir)
@@ -1028,7 +1028,12 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		}
 		var wind string
 		spd := weather[0].Wspd
-		dir := weather[0].Wdir.(int)
+		var dir float64
+		if weather[0].Wdir == -1 {
+			dirInt := weather[0].Wdir.(int)
+			dir = float64(dirInt)
+		}
+		dir = weather[0].Wdir.(float64)
 
 		if err != nil {
 			lg.Errorf("Error converting %v into an int: %v.", dir, err)
@@ -1994,7 +1999,6 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *CardinalOrdinalDi
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			ac.GlobalLinePosition = dir 
-			fmt.Println(ac.GlobalLinePosition)
 			s.eventStream.Post(Event{
 				Type:         InitiatedTrackEvent,
 				Callsign:     ac.Callsign,
