@@ -939,6 +939,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	} else {
 		w.PrimaryController = sc.SoloController
 	}
+	w.TRACON = sg.TRACON
 	w.MagneticVariation = sg.MagneticVariation
 	w.NmPerLongitude = sg.NmPerLongitude
 	w.Wind = sc.Wind

@@ -572,3 +572,14 @@ func (ac *Aircraft) ArrivalAirportElevation() float32 {
 func (ac *Aircraft) ATPAVolume() *ATPAVolume {
 	return ac.Nav.Approach.ATPAVolume
 }
+
+func (ac *Aircraft) MVAsApply() bool {
+	if ac.IsDeparture() {
+		// Start issuing MVAs 5 miles from the field
+		// TODO: are there better criteria?
+		return nmdistance2ll(ac.Position(), ac.Nav.FlightState.DepartureAirportLocation) > 5
+	} else {
+		// If they're established on the approach, they're good.
+		return !ac.OnApproach()
+	}
+}

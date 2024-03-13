@@ -54,6 +54,7 @@ type World struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
+	TRACON                  string
 	LaunchConfig            LaunchConfig
 	PrimaryController       string
 	MultiControllers        SplitConfiguration
@@ -104,6 +105,7 @@ func (w *World) Assign(other *World) {
 	w.DepartureAirports = other.DepartureAirports
 	w.ArrivalAirports = other.ArrivalAirports
 
+	w.TRACON = other.TRACON
 	w.LaunchConfig = other.LaunchConfig
 	w.PrimaryController = other.PrimaryController
 	w.MultiControllers = DuplicateMap(other.MultiControllers)

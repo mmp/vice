@@ -428,8 +428,11 @@ type STARSAircraftState struct {
 	DisplayReportedBeacon bool // note: only for unassociated
 	DisplayPTL            bool
 	DisableCAWarnings     bool
-	DisableMSAW           bool
-	InhibitMSAWAlert      bool // only applies if in an alert. clear when alert is over?
+
+	MSAW             bool // minimum safe altitude warning
+	DisableMSAW      bool
+	InhibitMSAW      bool // only applies if in an alert. clear when alert is over?
+	MSAWAcknowledged bool
 
 	SPCOverride string
 
@@ -1108,7 +1111,7 @@ func (sp *STARSPane) ResetWorld(w *World) {
 	}
 	ps.SystemMapVisible = make(map[int]interface{})
 
-	sp.SystemMaps = makeSystemMaps(w)
+	sp.SystemMaps = sp.makeSystemMaps(w)
 
 	ps.CurrentATIS = ""
 	for i := range ps.GIText {
@@ -1138,7 +1141,7 @@ func (sp *STARSPane) ResetWorld(w *World) {
 	sp.lastTrackUpdate = time.Time{} // force update
 }
 
-func makeSystemMaps(w *World) map[int]*STARSMap {
+func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 	maps := make(map[int]*STARSMap)
 
 	// CA suppression filters
@@ -1150,6 +1153,21 @@ func makeSystemMaps(w *World) map[int]*STARSMap {
 		vol.GenerateDrawCommands(&csf.CommandBuffer, w.NmPerLongitude)
 	}
 	maps[400] = csf
+
+	// MVAs
+	mvas := &STARSMap{
+		Label: w.TRACON + " MVA",
+		Name:  "ALL MINIMUM VECTORING ALTITUDES",
+	}
+	ld := GetLinesDrawBuilder()
+	for _, mva := range database.MVAs[w.TRACON] {
+		ld.AddClosedPolyline(mva.ExteriorRing)
+		p := Extent2DFromPoints(mva.ExteriorRing).Center()
+		ld.AddNumber(p, 0.005, fmt.Sprintf("%d", mva.MinimumLimit/100))
+	}
+	ld.GenerateCommands(&mvas.CommandBuffer)
+	ReturnLinesDrawBuilder(ld)
+	maps[401] = mvas
 
 	// Radar maps
 	radarIndex := 701
@@ -1232,6 +1250,30 @@ func (sp *STARSPane) processEvents(w *World) {
 		if _, ok := w.Aircraft[callsign]; !ok {
 			delete(sp.Aircraft, callsign)
 		}
+	}
+
+	// See if there are any MVA issues
+	mvas := database.MVAs[w.TRACON]
+	for callsign, ac := range w.Aircraft {
+		state := sp.Aircraft[callsign]
+		if !ac.MVAsApply() {
+			state.MSAW = false
+			continue
+		}
+
+		warn := slices.ContainsFunc(mvas, func(mva MVA) bool {
+			return mva.Inside(ac.Position()) && ac.Altitude() < float32(mva.MinimumLimit)
+		})
+
+		if !warn && state.InhibitMSAW {
+			// The warning has cleared, so the inhibit is disabled (p.7-25)
+			state.InhibitMSAW = false
+		}
+		if warn && !state.MSAW {
+			// It's a new alert
+			state.MSAWAcknowledged = false
+		}
+		state.MSAW = warn
 	}
 
 	// Filter out any removed aircraft from the CA list
@@ -1503,6 +1545,15 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
 				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings
 		})
+	if !ps.DisableMSAW {
+		for _, ac := range aircraft {
+			state := sp.Aircraft[ac.Callsign]
+			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW && !state.DisableMSAW {
+				playAlertSound = true
+				break
+			}
+		}
+	}
 	if playAlertSound {
 		globalConfig.Audio.StartPlayContinuous(AudioConflictAlert)
 	} else {
@@ -3280,6 +3331,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 							return
 						}
 					}
+				} else if state.MSAW && !state.MSAWAcknowledged {
+					// Acknowledged a MSAW
+					state.MSAWAcknowledged = true
 				} else if ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.world.Callsign &&
 					ac.TrackingController == ctx.world.Callsign {
 					// cancel offered handoff offered
@@ -3717,8 +3771,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			case "Q":
 				if cmd == "" {
-					status.clear = true
-					state.InhibitMSAWAlert = true
+					if ac.TrackingController != ctx.world.Callsign && ac.ControllingController != ctx.world.Callsign {
+						status.err = ErrSTARSIllegalTrack
+					} else {
+						status.clear = true
+						state.InhibitMSAW = true
+					}
 				} else {
 					status.err = ErrSTARSCommandFormat
 				}
@@ -3735,8 +3793,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			case "V":
 				if cmd == "" {
-					state.DisableMSAW = !state.DisableMSAW
-					status.clear = true
+					if ac.TrackingController != ctx.world.Callsign && ac.ControllingController != ctx.world.Callsign {
+						status.err = ErrSTARSIllegalTrack
+					} else {
+						state.DisableMSAW = !state.DisableMSAW
+						status.clear = true
+					}
 				} else {
 					status.err = ErrSTARSCommandFormat
 				}
@@ -4768,18 +4830,54 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 	}
 
 	if ps.AlertList.Visible {
-		text := "LA/CA/MCI\n"
-		if len(sp.CAAircraft) > ps.AlertList.Lines {
-			text += fmt.Sprintf("MORE: %d/%d\n", ps.AlertList.Lines, len(sp.CAAircraft))
-		}
-		for i, pair := range sp.CAAircraft {
-			text += pair.Callsigns[0] + "*" + pair.Callsigns[1] + " CA\n"
-			if i+1 == ps.AlertList.Lines {
-				// No need to add more...
-				break
+		var lists []string
+		n := 0 // total number of aircraft in the mix
+		if !ps.DisableMSAW {
+			lists = append(lists, "LA")
+			for _, ac := range aircraft {
+				if sp.Aircraft[ac.Callsign].MSAW {
+					n++
+				}
 			}
 		}
-		drawList(text, ps.AlertList.Position)
+		if !ps.DisableCAWarnings {
+			lists = append(lists, "CA")
+			n += len(sp.CAAircraft)
+		}
+
+		if len(lists) > 0 {
+			text := strings.Join(lists, "/") + "\n"
+			if n > ps.AlertList.Lines {
+				text += fmt.Sprintf("MORE: %d/%d\n", ps.AlertList.Lines, n)
+			}
+
+			// LA
+			if !ps.DisableMSAW {
+				for _, ac := range aircraft {
+					if n == 0 {
+						break
+					}
+					if sp.Aircraft[ac.Callsign].MSAW {
+						text += fmt.Sprintf("%-14s%03d LA\n", ac.Callsign, int((ac.Altitude()+50)/100))
+						n--
+					}
+				}
+			}
+
+			// CA
+			if !ps.DisableCAWarnings {
+				for _, pair := range sp.CAAircraft {
+					if n == 0 {
+						break
+					}
+
+					text += fmt.Sprintf("%-17s CA\n", pair.Callsigns[0]+"*"+pair.Callsigns[1])
+					n--
+				}
+			}
+
+			drawList(text, ps.AlertList.Position)
+		}
 	}
 
 	if ps.CoastList.Visible {
@@ -5777,7 +5875,9 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	state := sp.Aircraft[ac.Callsign]
 
 	var errs []string
-	if ac.Squawk == Squawk(0o7500) || state.SPCOverride == "HJ" {
+	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
+		errs = append(errs, "LA")
+	} else if ac.Squawk == Squawk(0o7500) || state.SPCOverride == "HJ" {
 		errs = append(errs, "HJ")
 	} else if ac.Squawk == Squawk(0o7600) || state.SPCOverride == "RF" {
 		errs = append(errs, "RF")
@@ -5883,10 +5983,17 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 
 	case FullDatablock:
 		user := ctx.world.GetController(ctx.world.Callsign)
-		// Line 1: fields 1, 2, and 8 (surprisingly). Always the same content; nothing multiplexed
+		// Line 1: fields 1, 2, and 8 (surprisingly). Field 8 may be multiplexed.
 		field1 := ac.Callsign
-		field2 := "" // TODO: * for MSAW inhibited, etc.
-		if state.DisableCAWarnings {
+
+		field2 := ""
+		if state.InhibitMSAW || state.DisableMSAW {
+			if state.DisableCAWarnings {
+				field2 = "+"
+			} else {
+				field2 = "*"
+			}
+		} else if state.DisableCAWarnings {
 			field2 = STARSTriangleCharacter
 		}
 
