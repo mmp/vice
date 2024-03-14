@@ -1799,8 +1799,8 @@ func (sp *STARSPane) getAircraftIndex(ac *Aircraft) int {
 }
 
 func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status STARSCommandStatus) {
-	lookupAircraft := func(callsign string) *Aircraft {
-		if ac := ctx.world.GetAircraft(callsign); ac != nil {
+	lookupAircraft := func(callsign string, abbreviated bool) *Aircraft {
+		if ac := ctx.world.GetAircraft(callsign, abbreviated); ac != nil {
 			return ac
 		}
 
@@ -1819,8 +1819,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		return nil
 	}
-	lookupCallsign := func(callsign string) string {
-		ac := lookupAircraft(callsign)
+	lookupCallsign := func(callsign string, abbreivated bool) string {
+		ac := lookupAircraft(callsign, abbreivated)
 		if ac != nil {
 			return ac.Callsign
 		}
@@ -1934,7 +1934,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			cmd = cmd[2:]
 
 			callsign, tcps, _ := strings.Cut(cmd, " ")
-			aircraft := lookupAircraft(callsign)
+			aircraft := lookupAircraft(callsign, false)
 			if aircraft == nil {
 				status.err = ErrSTARSNoFlight
 			} else {
@@ -2022,7 +2022,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					status.err = ErrSTARSIllegalFix
 					return
 				}
-			} else if ac := lookupAircraft(f[0]); ac != nil && len(f) > 1 {
+			} else if ac := lookupAircraft(f[0], true); ac != nil && len(f) > 1 {
 				acCmds := strings.Join(f[1:], " ")
 				ctx.world.RunAircraftCommands(ac, acCmds,
 					func(err error) {
@@ -2076,7 +2076,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		}
 
 	case CommandModeInitiateControl:
-		if ac := lookupAircraft(cmd); ac == nil {
+		if ac := lookupAircraft(cmd, false); ac == nil {
 			status.err = ErrSTARSNoFlight
 		} else {
 			sp.initiateTrack(ctx, ac.Callsign)
@@ -2094,7 +2094,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			status.clear = true
 			return
 		} else {
-			sp.dropTrack(ctx, lookupCallsign(cmd))
+			sp.dropTrack(ctx, lookupCallsign(cmd, false))
 			return
 		}
 
@@ -2147,11 +2147,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			status.clear = true
 			return
 		case 1:
-			sp.cancelHandoff(ctx, lookupCallsign(f[0]))
+			sp.cancelHandoff(ctx, lookupCallsign(f[0], false))
 			status.clear = true
 			return
 		case 2:
-			sp.handoffTrack(ctx, lookupCallsign(f[1]), f[0])
+			sp.handoffTrack(ctx, lookupCallsign(f[1], false), f[0])
 			status.clear = true
 			return
 		}
@@ -2224,7 +2224,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			} else if len(cmd) == 1 {
 				// illegal value for dwell
 				status.err = ErrSTARSIllegalValue
-			} else if ac := lookupAircraft(cmd); ac != nil {
+			} else if ac := lookupAircraft(cmd, false); ac != nil {
 				// D(callsign)
 				// Display flight plan
 				status.output, status.err = sp.flightPlanSTARS(ctx.world, ac)
@@ -2326,18 +2326,20 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					// Tracked by other controllers
 					ps.OtherControllerLeaderLineDirection = dir
 					status.clear = true
-				} else {
-					status.err = ErrSTARSIllegalParam
-				}
+				} 
 				return
 			} else if f := strings.Fields(cmd); len(f) == 2 {
 				// either L(id)(space)(dir) or L(dir)(space)(callsign)
-				if len(f[0]) == 1 {
+				if len(f[0]) == 1 || len(f[0]) == 2{
 					// L(dir)(space)(callsign)
-					if dir, ok := numpadToDirection(f[0][0]); ok {
-						if ac := lookupAircraft(f[1]); ac != nil {
-							sp.Aircraft[ac.Callsign].LeaderLineDirection = dir
-							status.clear = true
+					if _, ok := numpadToDirection(f[0][0]); ok {
+						if ac := lookupAircraft(f[1], false); ac != nil {
+							err := sp.setLeaderLine(ctx, ac, f[0])
+							if err != nil {
+								status.err = err
+								return
+							}
+							status.clear = true 
 						} else {
 							status.err = ErrSTARSNoFlight
 						}
@@ -2537,7 +2539,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		case "O":
 			if len(cmd) > 2 {
-				aircraft := lookupAircraft(cmd)
+				aircraft := lookupAircraft(cmd, false)
 				if aircraft == nil {
 					status.err = GetSTARSError(ErrSTARSCommandFormat)
 					return
@@ -2783,7 +2785,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			if len(f) == 1 {
 				// Y callsign -> clear scratchpad and reported altitude
 				// Y+ callsign -> secondary scratchpad..
-				callsign := lookupCallsign(f[0])
+				callsign := lookupCallsign(f[0], false)
 				if state, ok := sp.Aircraft[callsign]; ok {
 					state.pilotAltitude = 0
 					if err := sp.setScratchpad(ctx, callsign, "", isSecondary); err != nil {
@@ -2799,7 +2801,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				// as above, Y+ -> secondary scratchpad
 
 				// Either pilot alt or scratchpad entry
-				if ac := lookupAircraft(f[0]); ac == nil {
+				if ac := lookupAircraft(f[0], false); ac == nil {
 					status.err = ErrSTARSNoFlight
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
 					sp.Aircraft[ac.Callsign].pilotAltitude = alt * 100
@@ -2834,11 +2836,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	case CommandModeFlightData:
 		f := strings.Fields(cmd)
 		if len(f) == 1 {
-			callsign := lookupCallsign(f[0])
+			callsign := lookupCallsign(f[0], false)
 			status.err = ctx.world.SetSquawkAutomatic(callsign)
 		} else if len(f) == 2 {
 			if squawk, err := ParseSquawk(f[1]); err == nil {
-				callsign := lookupCallsign(f[0])
+				callsign := lookupCallsign(f[0], false)
 				status.err = ctx.world.SetSquawk(callsign, squawk)
 			} else {
 				status.err = ErrSTARSIllegalCode
@@ -2851,7 +2853,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 	case CommandModeCollisionAlert:
 		if len(cmd) > 3 && cmd[:2] == "K " {
-			if ac := lookupAircraft(cmd[2:]); ac != nil {
+			if ac := lookupAircraft(cmd[2:], false); ac != nil {
 				state := sp.Aircraft[ac.Callsign]
 				state.DisableCAWarnings = !state.DisableCAWarnings
 			} else {
@@ -3206,37 +3208,31 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 	return false, ""
 }
 
-func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) (status STARSCommandStatus) {
+func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) error  {
 	state := sp.Aircraft[ac.Callsign]
 	if len(cmd) == 1 {
 		if dir, ok := numpadToDirection(cmd[0]); ok {
-			fmt.Println("leader")
 			state.LeaderLineDirection = dir
 			state.ChosenLeaderLine = dir
 			state.GlobalLeaderLine = false
-			status.clear = true
-			return status
+			return nil 
 		}
 	} else if len(cmd) == 2 { // Global leader lines
-		fmt.Println("leader2")
 		if cmd[0] != cmd[1] || strings.Contains(cmd, "0") {
-			status.err = GetSTARSError(ErrSTARSCommandFormat)
-			return status
+			 return GetSTARSError(ErrSTARSCommandFormat)
+			
 		}
 		if ac.TrackingController != ctx.world.Callsign {
-			status.err = GetSTARSError(ErrSTARSIllegalPosition)
-			return status
+			return GetSTARSError(ErrSTARSIllegalTrack)
 		}
 		if dir, ok := numpadToDirection(cmd[0]); ok {
 			sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
 			state.GlobalLeaderLine = true
-			status.clear = true
-			return
+			return nil 
 		}
-		return status
 
 	}
-	return status
+	return GetSTARSError(ErrSTARSCommandFormat)
 }
 
 func (sp *STARSPane) forceQL(ctx *PaneContext, callsign, controller string) {
@@ -3441,7 +3437,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if (unicode.IsDigit(rune(cmd[0])) && len(cmd) == 1) ||
 				(len(cmd) == 2 && unicode.IsDigit(rune(cmd[1]))) {
-				status = sp.setLeaderLine(ctx, ac, cmd)
+				err := sp.setLeaderLine(ctx, ac, cmd)
+				if err != nil {
+					status.err = err
+					return
+				}
+				status.clear = true 
 				return
 			} else if cmd == "?" {
 				ctx.world.PrintInfo(ac)
@@ -3766,7 +3767,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			case "L": // Leader line
 
-				status = sp.setLeaderLine(ctx, ac, cmd)
+				err := sp.setLeaderLine(ctx, ac, cmd)
+				if err != nil {
+					status.err = err
+					return
+				}
+				status.clear = true 
 				return
 
 			case "M":
@@ -7181,7 +7187,7 @@ func STARSDisabledButton(text string, flags int, buttonScale float32) {
 // the flightplan; the provided callback function should make the update
 // and the rest of the details are handled here.
 func amendFlightPlan(w *World, callsign string, amend func(fp *FlightPlan)) error {
-	if ac := w.GetAircraft(callsign); ac == nil {
+	if ac := w.GetAircraft(callsign, false); ac == nil {
 		return ErrNoAircraftForCallsign
 	} else {
 		fp := Select(ac.FlightPlan != nil, ac.FlightPlan, &FlightPlan{})
