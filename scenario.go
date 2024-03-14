@@ -49,9 +49,9 @@ type ScenarioGroup struct {
 	ReportingPointStrings []string         `json:"reporting_points"`
 	ReportingPoints       []ReportingPoint // not in JSON
 
-	NmPerLatitude           float32                 // Always 60
-	NmPerLongitude          float32                 // Derived from Center
-	MagneticVariation       float32                 `json:"magnetic_variation"`
+	NmPerLatitude           float32 // Always 60
+	NmPerLongitude          float32 // Derived from Center
+	MagneticVariation       float32
 	MagneticAdjustment      float32                 `json:"magnetic_adjustment"`
 	STARSFacilityAdaptation STARSFacilityAdaptation `json:"stars_adaptation"`
 }

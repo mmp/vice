@@ -853,7 +853,6 @@
             ]
           }
         ],
-        "magnetic_variation": 0,
         "name": "M98",
         "primary_airport": "KMSP",
         "radar_sites": {
