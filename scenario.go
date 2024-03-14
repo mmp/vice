@@ -626,6 +626,39 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		e.ErrorString("default scenario \"%s\" not found in \"scenarios\"", sg.DefaultScenario)
 	}
 
+	for _, aa := range sg.STARSFacilityAdaptation.AirspaceAwareness {
+		e.Push("stars_adaptation")
+
+		// FIXME: disabled for now due to some errors in lib.json
+		/*
+			for _, fix := range aa.Fix {
+				if _, ok := sg.locate(fix); !ok {
+					e.ErrorString(fix + ": fix unknown")
+				}
+			}
+		*/
+
+		if aa.AltitudeRange[0] > aa.AltitudeRange[1] {
+			e.ErrorString("lower end of \"altitude_range\" %d above upper end %d",
+				aa.AltitudeRange[0], aa.AltitudeRange[1])
+		}
+
+		// FIXME: disabled pending resolving sector id vs controller callsign
+		/*
+			if _, ok := sg.ControlPositions[aa.ReceivingController]; !ok {
+				e.ErrorString(aa.ReceivingController + ": controller unknown")
+			}
+		*/
+
+		for _, t := range aa.AircraftType {
+			if t != "J" && t != "T" && t != "P" {
+				e.ErrorString("\"%s\": invalid \"aircraft_type\". Expected \"J\", \"T\", or \"P\".", t)
+			}
+		}
+
+		e.Pop()
+	}
+
 	for callsign, ctrl := range sg.ControlPositions {
 		e.Push("Controller " + callsign)
 
