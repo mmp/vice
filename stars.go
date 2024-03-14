@@ -399,6 +399,7 @@ type STARSAircraftState struct {
 	tracksIndex int
 
 	DatablockType DatablockType
+	FullLDB time.Time // If the LDB displays the groundspeed. When to stop 
 
 	IsSelected bool // middle click
 	Warnings []string
@@ -3402,13 +3403,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 				}
-
-				if state.DatablockType != FullDatablock {
-					state.DatablockType = FullDatablock
+				db := sp.datablockType(ctx.world, ac)
+				if db == LimitedDatablock && time.Until(state.FullLDB) <= 0{
+						state.FullLDB = time.Now().Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
-				} else if ac.TrackingController != ctx.world.Callsign {
+				} else if db == FullDatablock{
 					state.DatablockType = PartialDatablock
+				} else {
+					state.DatablockType = FullDatablock
 				}
+			
 			} else if cmd == "." {
 				if err := sp.setScratchpad(ctx, ac.Callsign, "", false); err != nil {
 					status.err = err
@@ -5131,6 +5135,12 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = PartialDatablock
 	}
 
+	if ac.TrackingController == "" {
+		dt = LimitedDatablock
+	} else {
+		fmt.Println(ac.TrackingController)
+	}
+
 	if ac.TrackingController == w.Callsign || (ac.ControllingController == w.Callsign) {
 		// it's under our control
 		dt = FullDatablock
@@ -5179,6 +5189,7 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 
 	return dt
 }
+
 
 func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations,
 	cb *CommandBuffer) {
@@ -5922,7 +5933,8 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	index := slices.Index(state.Warnings, state.SPCOverride)
 	if index != -1 {
 		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
-	} else if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
+	} else if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW && !slices.Contains(state.Warnings, "LA"){
+		fmt.Println(state.Warnings)
 		state.Warnings = append(state.Warnings, "LA")
 	} else if ac.Squawk == Squawk(0o7500) || state.SPCOverride == "HJ" {
 		state.Warnings = append(state.Warnings, "HJ")
@@ -5974,7 +5986,11 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	switch ty {
 	case LimitedDatablock:
 		db := baseDB.Duplicate()
-		db.Lines[1].Text = "TODO LIMITED DATABLOCK"
+		db.Lines[1].Text = fmt.Sprintf("%v", ac.Squawk)
+		db.Lines[2].Text = fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
+		if time.Until(state.FullLDB) > 0 {
+			db.Lines[2].Text += fmt.Sprintf(" %02d", (state.TrackGroundspeed()+5)/10)
+		}
 		return []STARSDatablock{db}
 
 	case PartialDatablock:
