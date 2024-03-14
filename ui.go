@@ -673,12 +673,14 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	}
 
 	next := ModalDialogButton{
-		text:     "Next",
+		text:     c.config.UIButtonText(),
 		disabled: c.config.OkDisabled(),
 		action: func() bool {
-			uiShowModalDialog(NewModalDialogBox(&RatesModalClient{
-				config:      c.config,
-				allowCancel: c.allowCancel}), false)
+			if c.config.ShowRatesWindow() {
+				uiShowModalDialog(NewModalDialogBox(&RatesModalClient{
+					config:      c.config,
+					allowCancel: c.allowCancel}), false)
+			}
 			return true
 		},
 	}
