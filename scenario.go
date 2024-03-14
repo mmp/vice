@@ -53,11 +53,11 @@ type ScenarioGroup struct {
 	NmPerLongitude          float32                 // Derived from Center
 	MagneticVariation       float32                 `json:"magnetic_variation"`
 	MagneticAdjustment      float32                 `json:"magnetic_adjustment"`
-	STARSFacilityAdaptation STARSFacilityAdaptation `json:"stars_adaptation"`
+	STARSFacilityAdaptation STARSFacilityAdaptation `json:"stars_config"`
 }
 
 type AirspaceAwareness struct {
-	Fix                 []string `json:"fix"`
+	Fix                 []string `json:"fixes"`
 	AltitudeRange       [2]int   `json:"altitude_range"`
 	ReceivingController string   `json:"receiving_controller"`
 	ToCenter            bool     `json:"to_center"`
@@ -67,7 +67,7 @@ type AirspaceAwareness struct {
 type STARSFacilityAdaptation struct {
 	AirspaceAwareness []AirspaceAwareness `json:"airspace_awareness"`
 	ForceQLToSelf     bool                `json:"force_ql_self"`
-	ScratchpadRules   [2]bool             `json:"scratchpad_rules"`
+	ScratchpadRules   [2]bool             `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
 }
 
 type Airspace struct {

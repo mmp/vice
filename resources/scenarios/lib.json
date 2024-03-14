@@ -2459,117 +2459,117 @@
   "arrival_groups": {},
   "center": "N040.45.26.477,W074.24.28.789",
   "range": 60,
-  "stars_adaptation": {
-		"scratchpad_rules": [false, false],
+  "stars_config": {
+		"allow_long_scratchpad": [false, false],
 		"force_ql_self": true,
     "airspace_awareness": [
       {
-        "fix": ["MERIT", "BAYYS", "GREKI"],
+        "fixes": ["MERIT", "BAYYS", "GREKI"],
         "altitude_range": [13000, 999000],
         "to_center": true,
         "receiving_controller": "B19"
       },
       {
-        "fix": ["DIXIE"],
+        "fixes": ["DIXIE"],
         "altitude_range": [0, 8000],
         "to_center": false,
         "aircraft_type": ["J"],
         "receiving_controller": "MY"
       },
       {
-        "fix": ["DIXIE"],
+        "fixes": ["DIXIE"],
         "altitude_range": [0, 6000],
         "to_center": false,
         "aircraft_type": ["P", "T"],
         "receiving_controller": "MY"
       },
       {
-        "fix": ["DIXIE"],
+        "fixes": ["DIXIE"],
         "altitude_range": [11000, 999999],
         "to_center": true,
         "receiving_controller": "C68"
       },
       {
-        "fix": ["WHITE"],
+        "fixes": ["WHITE"],
         "altitude_range": [9000, 999999],
         "to_center": true,
         "receiving_controller": "C68"
       },
       {
-        "fix": ["RBV"],
+        "fixes": ["RBV"],
         "altitude_range": [14000, 999999],
         "to_center": true,
         "aircraft_type": ["J"],
         "receiving_controller": "C55"
       },
       {
-        "fix": ["ARD"],
+        "fixes": ["ARD"],
         "altitude_range": [14000, 999999],
         "to_center": true,
         "aircraft_type": ["P", "T"],
         "receiving_controller": "C55"
       },
       {
-        "fix": ["COATE", "GAYEL", "NEION"],
+        "fixes": ["COATE", "GAYEL", "NEION"],
         "altitude_range": [16000, 999999],
         "to_center": true,
         "aircraft_type": ["J"],
         "receiving_controller": "C35"
       },
       {
-        "fix": ["COATE"],
+        "fixes": ["COATE"],
         "altitude_range": [11000, 14000],
         "to_center": true,
         "receiving_controller": "C51"
       },
       {
-        "fix": ["GAYEL"],
+        "fixes": ["GAYEL"],
         "altitude_range": [14000, 14000],
         "to_center": true,
         "aircraft_type": ["P", "T"],
         "receiving_controller": "C51"
       },
       {
-        "fix": ["HAAYS"],
+        "fixes": ["HAAYS"],
         "altitude_range": [12000, 12000],
         "to_center": true,
         "receiving_controller": "C51"
       },
       {
-        "fix": ["COATE"],
+        "fixes": ["COATE"],
         "altitude_range": [8000, 10000],
         "receiving_controller": "AVP TODO"
       },
       {
-        "fix": ["SAX V118 LVZ"],
+        "fixes": ["SAX V118 LVZ"],
         "altitude_range": [8000, 8000],
         "receiving_controller": "AVP TODO"
       },
       {
-        "fix": ["HAAYS"],
+        "fixes": ["HAAYS"],
         "altitude_range": [9000, 10000],
         "receiving_controller": "AVP TODO"
       },
       {
-        "fix": ["PARKE", "ELIOT"],
+        "fixes": ["PARKE", "ELIOT"],
         "altitude_range": [14000, 99999],
         "to_center": true,
         "receiving_controller": "C39"
       },
       {
-        "fix": ["NEWEL", "ZIMMZ"],
+        "fixes": ["NEWEL", "ZIMMZ"],
         "altitude_range": [17000, 99999],
         "to_center": true,
         "receiving_controller": "C39"
       },
       {
-        "fix": ["BIGGY"],
+        "fixes": ["BIGGY"],
         "altitude_range": [14000, 99999],
         "to_center": true,
         "receiving_controller": "C55"
       },
       {
-        "fix": ["LANNA"],
+        "fixes": ["LANNA"],
         "altitude_range": [17000, 99999],
         "to_center": true,
         "receiving_controller": "C55"

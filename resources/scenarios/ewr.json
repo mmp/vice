@@ -3597,8 +3597,8 @@
     ]
   },
   "center": "N040.43.34.389,W074.28.54.713",
-  "stars_adaptation": {
-    "scratchpad_rules": [
+  "stars_config": {
+    "allow_long_scratchpad": [
       false,
       false
     ],
