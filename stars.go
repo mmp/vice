@@ -401,7 +401,7 @@ type STARSAircraftState struct {
 	DatablockType DatablockType
 
 	IsSelected bool // middle click
-
+	Warnings []string
 	// Only drawn if non-zero
 	JRingRadius              float32
 	ConeLength               float32
@@ -5910,25 +5910,29 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	} else {
 		state.LeaderLineDirection = state.ChosenLeaderLine
 	}
-	var errs []string
-	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
-		errs = append(errs, "LA")
+	index := slices.Index(state.Warnings, state.SPCOverride)
+	if index != -1 {
+		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
+	} else if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
+		state.Warnings = append(state.Warnings, "LA")
 	} else if ac.Squawk == Squawk(0o7500) || state.SPCOverride == "HJ" {
-		errs = append(errs, "HJ")
+		state.Warnings = append(state.Warnings, "HJ")
 	} else if ac.Squawk == Squawk(0o7600) || state.SPCOverride == "RF" {
-		errs = append(errs, "RF")
+		state.Warnings = append(state.Warnings, "RF")
 	} else if ac.Squawk == Squawk(0o7700) || state.SPCOverride == "EM" {
-		errs = append(errs, "EM")
+		state.Warnings = append(state.Warnings, "EM")
 	} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
-		errs = append(errs, "MI")
+		state.Warnings = append(state.Warnings, "MI")
 	}
+	
+	state.SPCOverride = ""
 	if !ps.DisableCAWarnings &&
 		slices.ContainsFunc(sp.CAAircraft,
 			func(ca CAAircraft) bool {
 				return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
 					!state.DisableCAWarnings
 			}) {
-		errs = append(errs, "CA")
+		state.Warnings = append(state.Warnings, "CA")
 		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 	}
 	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
@@ -5936,13 +5940,14 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
 		}
-		errs = append(errs, "AS"+altStrs)
+		state.Warnings = append(state.Warnings, "AS"+altStrs)
 	}
 
 	// baseDB is what stays the same for all datablock variants
+	
 	baseDB := STARSDatablock{}
-	baseDB.Lines[0].Text = strings.Join(errs, "/") // want e.g., EM/LA if multiple things going on
-	if len(errs) > 0 {
+	baseDB.Lines[0].Text = strings.Join(state.Warnings, "/") // want e.g., EM/LA if multiple things going on
+	if len(state.Warnings) > 0 {
 		baseDB.Lines[0].Colors = append(baseDB.Lines[0].Colors,
 			STARSDatablockFieldColors{
 				Start: 0,
