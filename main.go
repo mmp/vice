@@ -13,6 +13,7 @@ import (
 	"flag"
 	"fmt"
 	"io/fs"
+	"log/slog"
 	"os"
 	"os/signal"
 	"runtime"
@@ -23,7 +24,6 @@ import (
 	"github.com/apenwarr/fixconsole"
 	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
-	"golang.org/x/exp/slog"
 )
 
 const ViceServerAddress = "vice.pharr.org"

@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"image/png"
+	"log/slog"
 	"net/http"
 	"os"
 	"path"
@@ -22,7 +23,6 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/pkg/browser"
-	"golang.org/x/exp/slog"
 )
 
 var (
@@ -672,8 +672,59 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 		b = append(b, ModalDialogButton{text: "Cancel"})
 	}
 
+	next := ModalDialogButton{
+		text:     c.config.UIButtonText(),
+		disabled: c.config.OkDisabled(),
+		action: func() bool {
+			if c.config.ShowRatesWindow() {
+				uiShowModalDialog(NewModalDialogBox(&RatesModalClient{
+					config:      c.config,
+					allowCancel: c.allowCancel}), false)
+			}
+			return true
+		},
+	}
+
+	return append(b, next)
+}
+
+func (c *ConnectModalClient) Draw() int {
+	if enter := c.config.DrawUI(); enter {
+		return 1
+	} else {
+		return -1
+	}
+}
+
+type RatesModalClient struct {
+	config      NewSimConfiguration
+	allowCancel bool
+}
+
+func (c *RatesModalClient) Title() string { return "Arrival / Departure Rates" }
+
+func (c *RatesModalClient) Opening() {}
+
+func (c *RatesModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+
+	prev := ModalDialogButton{
+		text: "Previous",
+		action: func() bool {
+			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{
+				config:      c.config,
+				allowCancel: c.allowCancel}), false)
+			return true
+		},
+	}
+	b = append(b, prev)
+
+	if c.allowCancel {
+		b = append(b, ModalDialogButton{text: "Cancel"})
+	}
+
 	ok := ModalDialogButton{
-		text:     "Ok",
+		text:     "Create",
 		disabled: c.config.OkDisabled(),
 		action: func() bool {
 			c.config.displayError = c.config.Start()
@@ -684,8 +735,8 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	return append(b, ok)
 }
 
-func (c *ConnectModalClient) Draw() int {
-	if enter := c.config.DrawUI(); enter {
+func (c *RatesModalClient) Draw() int {
+	if enter := c.config.DrawRatesUI(); enter {
 		return 1
 	} else {
 		return -1
@@ -973,18 +1024,19 @@ func showAboutDialog() {
 Dennis Graiani and Samuel Valencia for
 contributing features to vice and to Connor
 Allen, Adam Bolek, Aaron Flett, Mike K, Jud
-Lopez, Jace Martin, Yahya Nazimuddin, Justin
-Nguyen, Arya T, Eli Thompson, Michael Trokel,
-and Samuel Valencia for developing scenarios.
-Video maps are thanks to the ZAU, ZBW, ZDC,
-ZDV, ZHU, ZID, ZJX, ZLA, ZNY, ZOB, ZSE, and
-ZTL VATSIM ARTCCs. Thanks also to
-OpenScope for the aircraft performance and
-airline databases and to ourairports.com
+Lopez, Jace Martin, Merry, Yahya Nazimuddin,
+Justin Nguyen, Arya T, Nelson T, Eli
+Thompson, Michael Trokel, and Samuel
+Valencia for developing scenarios. Video
+maps are thanks to the ZAU, ZBW, ZDC,
+ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
+ZSE, and ZTL VATSIM ARTCCs. Thanks also
+to OpenScope for the aircraft performance
+and airline databases and to ourairports.com
 for the airport database. See the file
 CREDITS.txt in the vice source code
-distribution for third-party software, fonts,
-sounds, etc.`
+distribution for third-party software,
+fonts, sounds, etc.`
 
 	imgui.Text(credits)
 

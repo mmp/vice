@@ -8,11 +8,10 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
-
-	"golang.org/x/exp/slices"
 )
 
 const ARINC424LineLength = 134 // 132 chars + \r + \n
@@ -383,7 +382,7 @@ func parseSSA(line []byte) ssaRecord {
 	}
 }
 
-func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc) {
+func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	switch string(r.pathAndTermination) {
 	case "FM", "VM":
 		// these are headings off of the previous waypoint
@@ -404,6 +403,10 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc) {
 	case "DF": // direct to fix from unspecified point
 		break
 
+	case "VI": // heading to intercept or next leg. ignore for now?
+		ok = false
+		return
+
 	default:
 		/*
 			r.Print()
@@ -422,6 +425,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc) {
 		speed = parseInt(r.speed)
 	}
 
+	ok = true
 	wp = Waypoint{
 		Fix:     r.fix,
 		Speed:   speed,
@@ -515,7 +519,7 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 				transitions[rec.transition][n-1].Heading = (hdg + 5) / 10
 			}
 		} else {
-			wp, arc := rec.GetWaypoint()
+			wp, arc, ok := rec.GetWaypoint()
 			if arc != nil {
 				// it goes on the previous one...
 				if n := len(transitions[rec.transition]); n == 0 {
@@ -524,12 +528,13 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 					transitions[rec.transition][n-1].Arc = arc
 				}
 			}
-
-			if n := len(transitions[rec.transition]); n > 0 && wp.Fix == transitions[rec.transition][n-1].Fix &&
-				wp.ProcedureTurn != nil {
-				transitions[rec.transition][n-1] = wp
-			} else {
-				transitions[rec.transition] = append(transitions[rec.transition], wp)
+			if ok {
+				if n := len(transitions[rec.transition]); n > 0 && wp.Fix == transitions[rec.transition][n-1].Fix &&
+					wp.ProcedureTurn != nil {
+					transitions[rec.transition][n-1] = wp
+				} else {
+					transitions[rec.transition] = append(transitions[rec.transition], wp)
+				}
 			}
 		}
 	}

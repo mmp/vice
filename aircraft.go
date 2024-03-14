@@ -6,9 +6,8 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"strings"
-
-	"golang.org/x/exp/slog"
 )
 
 type Aircraft struct {
@@ -34,6 +33,7 @@ type Aircraft struct {
 	// Handoff offered but not yet accepted
 	HandoffTrackController string
 
+	RedirectedHandoff RedirectedHandoff
 	// The controller who gave approach clearance
 	ApproachController string
 
@@ -57,6 +57,13 @@ type Aircraft struct {
 
 	// Who to try to hand off to at a waypoint with /ho
 	WaypointHandoffController string
+}
+
+type RedirectedHandoff struct {
+	OrigionalOwner string   // Controller callsign
+	Redirector     []string // Sector id
+	RedirectedTo   string   // Sector id
+	RDIndicator    bool
 }
 
 type PilotResponse struct {
@@ -564,4 +571,15 @@ func (ac *Aircraft) ArrivalAirportElevation() float32 {
 
 func (ac *Aircraft) ATPAVolume() *ATPAVolume {
 	return ac.Nav.Approach.ATPAVolume
+}
+
+func (ac *Aircraft) MVAsApply() bool {
+	if ac.IsDeparture() {
+		// Start issuing MVAs 5 miles from the field
+		// TODO: are there better criteria?
+		return nmdistance2ll(ac.Position(), ac.Nav.FlightState.DepartureAirportLocation) > 5
+	} else {
+		// If they're established on the approach, they're good.
+		return !ac.OnApproach()
+	}
 }

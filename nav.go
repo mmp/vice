@@ -6,11 +6,10 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
+	"slices"
 	"strings"
 	"time"
-
-	"golang.org/x/exp/slices"
-	"golang.org/x/exp/slog"
 )
 
 // State related to navigation. Pointers are used for optional values; nil
@@ -119,6 +118,7 @@ type NavApproach struct {
 	ATPAVolume        *ATPAVolume
 	Cleared           bool
 	InterceptState    InterceptLocalizerState
+	PassedApproachFix bool // have we passed a fix on the approach yet?
 	NoPT              bool
 	AtFixClearedRoute []Waypoint
 }
@@ -284,8 +284,23 @@ func (nav *Nav) OnApproach() bool {
 		return false
 	}
 
-	_, assigned := nav.AssignedHeading()
-	return !assigned // no heading -> on the localizer or flying approach route
+	if _, assigned := nav.AssignedHeading(); assigned {
+		return false
+	}
+
+	// The aircraft either must have passed a fix on the approach or be on
+	// the localizer and also be above any upcoming altitude restrictions.
+	if !nav.Approach.PassedApproachFix && nav.Approach.InterceptState != HoldingLocalizer {
+		return false
+	}
+
+	for _, wp := range nav.Waypoints {
+		// Ignore controller-assigned "cross FIX at ALT" for this
+		if r := wp.AltitudeRestriction; r != nil {
+			return nav.FlightState.Altitude >= r.TargetAltitude(nav.FlightState.Altitude)
+		}
+	}
+	return false
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1430,6 +1445,7 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 			// The aircraft has made it to the approach fix they
 			// were cleared to, so they can start to descend.
 			nav.Altitude = NavAltitude{}
+			nav.Approach.PassedApproachFix = true
 		}
 
 		if wp.AltitudeRestriction != nil &&
@@ -1716,6 +1732,9 @@ func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
 		// Only cancel approach clearance if the aircraft wasn't on a
 		// heading and now we're giving them one.
 		nav.Approach.Cleared = false
+
+		// MVAs are back in the mix
+		nav.Approach.PassedApproachFix = false
 
 		// If an arrival is given a heading off of a route with altitude
 		// constraints, set its cleared altitude to its current altitude

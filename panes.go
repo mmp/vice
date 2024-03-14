@@ -6,12 +6,12 @@ package main
 
 import (
 	"encoding/json"
+	"log/slog"
+	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/mmp/imgui-go/v4"
-	"golang.org/x/exp/slices"
-	"golang.org/x/exp/slog"
 )
 
 // Panes (should) mostly operate in window coordinates: (0,0) is lower

@@ -6,15 +6,15 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"math"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
-	"golang.org/x/exp/slices"
-	"golang.org/x/exp/slog"
 )
 
 const initialSimSeconds = 45
@@ -54,6 +54,7 @@ type World struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
+	TRACON                  string
 	LaunchConfig            LaunchConfig
 	PrimaryController       string
 	MultiControllers        SplitConfiguration
@@ -104,6 +105,7 @@ func (w *World) Assign(other *World) {
 	w.DepartureAirports = other.DepartureAirports
 	w.ArrivalAirports = other.ArrivalAirports
 
+	w.TRACON = other.TRACON
 	w.LaunchConfig = other.LaunchConfig
 	w.PrimaryController = other.PrimaryController
 	w.MultiControllers = DuplicateMap(other.MultiControllers)
@@ -295,6 +297,46 @@ func (w *World) DropTrack(callsign string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.DropTrack(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) RedirectHandoff(callsign, controller string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.RedirectedHandoff(callsign, controller),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) AcceptRedirectedHandoff(callsign string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.AcceptRedirectedHandoff(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) RecallRedirectedHandoff(callsign string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.RecallRedirectedHandoff(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) SlewRedirectedHandoff(callsign string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.SlewRedirectedHandoff(callsign),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,

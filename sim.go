@@ -9,8 +9,10 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/rpc"
 	"runtime"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -18,7 +20,6 @@ import (
 
 	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
-	"golang.org/x/exp/slog"
 )
 
 type SimConfiguration struct {
@@ -353,6 +354,14 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	c.ScenarioName = scenarioName
 }
 
+func (c *NewSimConfiguration) UIButtonText() string {
+	return Select(c.NewSimType == NewSimJoinRemote, "Join", "Next")
+}
+
+func (c *NewSimConfiguration) ShowRatesWindow() bool {
+	return c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote
+}
+
 func (c *NewSimConfiguration) DrawUI() bool {
 	if c.updateRemoteSimsCall != nil && c.updateRemoteSimsCall.CheckFinished(nil) {
 		c.updateRemoteSimsCall = nil
@@ -422,25 +431,73 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	imgui.Separator()
 
 	if c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote {
-		if imgui.BeginComboV("TRACON/ATCT", c.TRACONName, imgui.ComboFlagsHeightLarge) {
-			for _, name := range SortedMapKeys(c.selectedServer.configs) {
-				if imgui.SelectableV(name, name == c.TRACONName, 0, imgui.Vec2{}) {
-					c.SetTRACON(name)
-				}
-			}
-			imgui.EndCombo()
-		}
+		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg |
+			imgui.TableFlagsSizingStretchProp
+		tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+		if imgui.BeginTableV("SelectScenario", 3, flags, imgui.Vec2{tableScale * 600, tableScale * 300}, 0.) {
+			imgui.TableSetupColumn("ARTCC")
+			imgui.TableSetupColumn("ATCT/TRACON")
+			imgui.TableSetupColumn("Scenario")
+			imgui.TableHeadersRow()
+			imgui.TableNextRow()
 
-		if imgui.BeginComboV("Config", c.ScenarioName, imgui.ComboFlagsHeightLarge) {
-			for _, groupName := range SortedMapKeys(c.TRACON) {
-				group := c.TRACON[groupName]
-				for _, name := range SortedMapKeys(group.ScenarioConfigs) {
-					if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
-						c.SetScenario(groupName, name)
+			// ARTCCs
+			artccs := make(map[string]interface{})
+			allTRACONs := SortedMapKeys(c.selectedServer.configs)
+			for _, tracon := range allTRACONs {
+				artccs[database.TRACONs[tracon].ARTCC] = nil
+			}
+			imgui.TableNextColumn()
+			if imgui.BeginChildV("artccs", imgui.Vec2{tableScale * 150, tableScale * 350}, false, /* border */
+				imgui.WindowFlagsNoResize) {
+				for _, artcc := range SortedMapKeys(artccs) {
+					label := fmt.Sprintf("%s (%s)", artcc, strings.ReplaceAll(database.ARTCCs[artcc].Name, " Center", ""))
+					if imgui.SelectableV(label, artcc == database.TRACONs[c.TRACONName].ARTCC, 0, imgui.Vec2{}) &&
+						artcc != database.TRACONs[c.TRACONName].ARTCC {
+						// a new ARTCC was chosen; reset the TRACON to the first one with that ARTCC
+						idx := slices.IndexFunc(allTRACONs, func(tracon string) bool { return artcc == database.TRACONs[tracon].ARTCC })
+						c.SetTRACON(allTRACONs[idx])
 					}
 				}
 			}
-			imgui.EndCombo()
+			imgui.EndChild()
+
+			// TRACONs for selected ARTCC
+			imgui.TableNextColumn()
+			if imgui.BeginChildV("tracons", imgui.Vec2{tableScale * 150, tableScale * 350}, false, /* border */
+				imgui.WindowFlagsNoResize) {
+				for _, tracon := range allTRACONs {
+					if database.TRACONs[tracon].ARTCC != database.TRACONs[c.TRACONName].ARTCC {
+						continue
+					}
+					name := strings.TrimSuffix(database.TRACONs[tracon].Name, " TRACON")
+					name = strings.TrimSuffix(name, " ATCT/TRACON")
+					name = strings.TrimSuffix(name, " Tower")
+					label := fmt.Sprintf("%s (%s)", tracon, name)
+					if imgui.SelectableV(label, tracon == c.TRACONName, 0, imgui.Vec2{}) && tracon != c.TRACONName {
+						// TRACON selected
+						c.SetTRACON(tracon)
+					}
+				}
+			}
+			imgui.EndChild()
+
+			// Scenarios for the tracon
+			imgui.TableNextColumn()
+			if imgui.BeginChildV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, false, /* border */
+				imgui.WindowFlagsNoResize) {
+				for _, groupName := range SortedMapKeys(c.TRACON) {
+					group := c.TRACON[groupName]
+					for _, name := range SortedMapKeys(group.ScenarioConfigs) {
+						if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
+							c.SetScenario(groupName, name)
+						}
+					}
+				}
+			}
+			imgui.EndChild()
+
+			imgui.EndTable()
 		}
 
 		if sc := c.Scenario.SplitConfigurations; sc.Len() > 1 {
@@ -539,10 +596,6 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.EndTable()
 
 		}
-		imgui.Separator()
-
-		c.Scenario.LaunchConfig.DrawDepartureUI()
-		c.Scenario.LaunchConfig.DrawArrivalUI()
 	} else {
 		// Join remote
 		runningSims := remoteServer.runningSims
@@ -639,6 +692,12 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		}
 	}
 
+	return false
+}
+
+func (c *NewSimConfiguration) DrawRatesUI() bool {
+	c.Scenario.LaunchConfig.DrawDepartureUI()
+	c.Scenario.LaunchConfig.DrawArrivalUI()
 	return false
 }
 
@@ -888,6 +947,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	} else {
 		w.PrimaryController = sc.SoloController
 	}
+	w.TRACON = sg.TRACON
 	w.MagneticVariation = sg.MagneticVariation
 	w.NmPerLongitude = sg.NmPerLongitude
 	w.Wind = sc.Wind
@@ -1031,8 +1091,8 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 func getAltimiter(metar string) string {
 	for _, indexString := range []string{" A3", " A2"} {
 		index := strings.Index(metar, indexString)
-		if index != -1 && index+5 < len(metar) {
-			return metar[index+1 : index+5]
+		if index != -1 && index+6 < len(metar) {
+			return metar[index+2 : index+6]
 		}
 	}
 	return ""
@@ -1972,6 +2032,79 @@ func (s *Sim) DropTrack(token, callsign string) error {
 		})
 }
 
+func (s *Sim) RedirectedHandoff(token, callsign, controller string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if ac.RedirectedHandoff.RedirectedTo != ctrl.SectorId &&
+				ac.HandoffTrackController != ctrl.Callsign {
+				return ErrOtherControllerHasTrack
+			}
+			if s.World.GetController(controller) == nil {
+				return ErrNoController
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			octrl := s.World.GetController(controller)
+
+			s.eventStream.Post(Event{
+				Type:           OfferedHandoffEvent,
+				FromController: ctrl.Callsign,
+				ToController:   octrl.Callsign,
+				Callsign:       ac.Callsign,
+			})
+			ac.RedirectedHandoff.OrigionalOwner = ac.TrackingController
+			ac.RedirectedHandoff.Redirector = append(ac.RedirectedHandoff.Redirector, ctrl.SectorId)
+			ac.RedirectedHandoff.RedirectedTo = octrl.SectorId
+			ac.RedirectedHandoff.RDIndicator = true
+
+			// Add them to the auto-accept map even if the target is
+			// covered; this way, if they sign off in the interim, we still
+			// end up accepting it automatically.
+
+			return nil
+		})
+}
+
+func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if ac.HandoffTrackController != ctrl.Callsign && ac.RedirectedHandoff.RedirectedTo != ctrl.SectorId {
+				return ErrNotBeingHandedOffToMe
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			s.eventStream.Post(Event{
+				Type:           AcceptedHandoffEvent,
+				FromController: ac.ControllingController,
+				ToController:   ctrl.Callsign,
+				Callsign:       ac.Callsign,
+			})
+
+			ac.HandoffTrackController = ""
+			ac.RedirectedHandoff = RedirectedHandoff{RDIndicator: true}
+			ac.TrackingController = ctrl.Callsign
+
+			if !s.controllerIsSignedIn(ac.ControllingController) {
+				// Take immediate control on handoffs from virtual
+				ac.ControllingController = ctrl.Callsign
+				return []RadioTransmission{RadioTransmission{
+					Controller: ctrl.Callsign,
+					Message:    ac.ContactMessage(s.ReportingPoints),
+					Type:       RadioTransmissionContact,
+				}}
+			} else {
+				return nil
+			}
+		})
+}
+
 func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -2136,6 +2269,49 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 		})
 }
 
+func (s *Sim) SlewRedirectedHandoff(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			ac.RedirectedHandoff = RedirectedHandoff{}
+			return nil
+		})
+}
+
+func (s *Sim) RecallRedirectedHandoff(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) error {
+			if !slices.Contains(ac.RedirectedHandoff.Redirector, ctrl.SectorId) || ctrl.SectorId == ac.RedirectedHandoff.RedirectedTo {
+				return ErrSTARSIllegalTrack
+			}
+			return nil
+		},
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			if ctrl.Callsign != ac.TrackingController {
+				for index, redirect := range ac.RedirectedHandoff.Redirector {
+					if ctrl.SectorId == redirect {
+						if index == 0 {
+							ac.HandoffTrackController = ctrl.Callsign
+							ac.RedirectedHandoff = RedirectedHandoff{RDIndicator: true}
+						} else {
+							ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[index]
+							ac.RedirectedHandoff.Redirector = ac.RedirectedHandoff.Redirector[:index]
+						}
+					}
+				}
+			}
+			return nil
+		})
+}
+
 func (s *Sim) ForceQL(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
@@ -2165,7 +2341,7 @@ func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
 func (s *Sim) PointOut(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
-			if ac.ControllingController != ctrl.Callsign {
+			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
 			if s.World.GetController(controller) == nil {

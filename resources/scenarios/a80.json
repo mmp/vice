@@ -2526,12 +2526,54 @@
    ]
   },
   "center": "N33.38.24.846,W84.25.42.088",
+  "stars_adaptation": {
+		"scratchpad_rules": [false, false],
+		"force_ql_self": true,
+    "airspace_awareness": [
+      {
+        "fix": [
+          "BNA",
+          "CEASE",
+          "EMAHH",
+          "JAACE",
+          "BOBBD",
+          "BURGG",
+          "CHOOK",
+          "VUZ",
+          "YAALL",
+          "GLAZR",
+          "RESPE",
+          "GRGIA",
+          "STEIT",
+          "HANKO",
+          "HRTWL",
+          "IRQ",
+          "KELLN",
+          "LUCKK",
+          "NOKIE",
+          "RAFTN",
+          "SMTTH",
+          "SARGE",
+          "STNGA",
+          "WALET"
+        ],
+        "altitude_range": [
+          0,
+          0
+        ],
+        "receiving_controller": "C43",
+        "to_center": true
+      }
+    ]
+	},
   "control_positions": {
     "ATL_CTR": {
         "frequency": 132975,
         "full_name": "Atlanta Center",
         "scope_char": "C",
-        "sector_id": "43"
+        "sector_id": "C43",
+        "facility_id": "C",
+        "eram_facility": true
     },
     "ATL_APP" : {
       "frequency": 127900,

@@ -11,13 +11,12 @@ import (
 	"image/color"
 	"image/draw"
 	"image/png"
+	"log/slog"
 	"math"
 	"net/http"
 	"net/url"
 	"sort"
 	"time"
-
-	"golang.org/x/exp/slog"
 )
 
 ///////////////////////////////////////////////////////////////////////////
