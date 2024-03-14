@@ -1531,8 +1531,8 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	DrawHighlighted(ctx, transforms, cb)
 
-	sp.drawTracks(aircraft, ctx, transforms, cb)
 	sp.drawDatablocks(aircraft, ctx, transforms, cb)
+	sp.drawTracks(aircraft, ctx, transforms, cb)
 
 	ghosts := sp.getGhostAircraft(aircraft, ctx)
 	sp.drawGhosts(ghosts, ctx, transforms, cb)
