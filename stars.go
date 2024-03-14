@@ -5204,6 +5204,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		if state.LastKnownHandoff == "" {
 			state.LastKnownHandoff = "*"
 		}
+		
 		if ac.TrackingController != "" {
 			trackId = "?"
 			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil &&
@@ -5212,6 +5213,8 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			} else {
 				trackId = state.LastKnownHandoff
 			}
+		} else {
+			trackId = "*"
 		}
 
 		// "cheat" by using ac.Heading() if we don't yet have two radar tracks to compute the
