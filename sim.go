@@ -354,6 +354,14 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	c.ScenarioName = scenarioName
 }
 
+func (c *NewSimConfiguration) UIButtonText() string {
+	return Select(c.NewSimType == NewSimJoinRemote, "Join", "Next")
+}
+
+func (c *NewSimConfiguration) ShowRatesWindow() bool {
+	return c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote
+}
+
 func (c *NewSimConfiguration) DrawUI() bool {
 	if c.updateRemoteSimsCall != nil && c.updateRemoteSimsCall.CheckFinished(nil) {
 		c.updateRemoteSimsCall = nil
@@ -426,7 +434,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingStretchProp
 		tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
-		if imgui.BeginTableV("SelectScenario", 3, flags, imgui.Vec2{tableScale * 650, tableScale * 300}, 0.) {
+		if imgui.BeginTableV("SelectScenario", 3, flags, imgui.Vec2{tableScale * 600, tableScale * 300}, 0.) {
 			imgui.TableSetupColumn("ARTCC")
 			imgui.TableSetupColumn("ATCT/TRACON")
 			imgui.TableSetupColumn("Scenario")
@@ -456,13 +464,16 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 			// TRACONs for selected ARTCC
 			imgui.TableNextColumn()
-			if imgui.BeginChildV("tracons", imgui.Vec2{tableScale * 200, tableScale * 350}, false, /* border */
+			if imgui.BeginChildV("tracons", imgui.Vec2{tableScale * 150, tableScale * 350}, false, /* border */
 				imgui.WindowFlagsNoResize) {
 				for _, tracon := range allTRACONs {
 					if database.TRACONs[tracon].ARTCC != database.TRACONs[c.TRACONName].ARTCC {
 						continue
 					}
-					label := fmt.Sprintf("%s (%s)", tracon, database.TRACONs[tracon].Name)
+					name := strings.TrimSuffix(database.TRACONs[tracon].Name, " TRACON")
+					name = strings.TrimSuffix(name, " ATCT/TRACON")
+					name = strings.TrimSuffix(name, " Tower")
+					label := fmt.Sprintf("%s (%s)", tracon, name)
 					if imgui.SelectableV(label, tracon == c.TRACONName, 0, imgui.Vec2{}) && tracon != c.TRACONName {
 						// TRACON selected
 						c.SetTRACON(tracon)
@@ -942,6 +953,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	} else {
 		w.PrimaryController = sc.SoloController
 	}
+	w.TRACON = sg.TRACON
 	w.MagneticVariation = sg.MagneticVariation
 	w.NmPerLongitude = sg.NmPerLongitude
 	w.Wind = sc.Wind

@@ -1,41 +1,41 @@
-{
+    {
     "tracon": "Y90",
     "airports": {
         "KBDL": {
             "approaches": {
-                "I6": { "cifp_id": "I6" },
-                "I24": { "cifp_id": "I24" }
-            },
+                "I6": {
+                    "cifp_id": "I6" 
+                 },
+                 "I33": {
+                    "cifp_id": "I33"
+                 }
+         },
         "departure_routes":{
-            "24":{
-                "PVD": {
-                    "cleared_altitude": 6000,
+            "33":{
+                "VEERS": {
+                    "cleared_altitude": 4000,
                     "sid": "BDL6",
-                    "waypoints": "PVD/a4000/h064"
+                    "waypoints": "VEERS/a4000/h330"
+                },
+                "MAD": {
+                    "cleared_altitude": 4000,
+                    "sid": "BDL6",
+                    "waypoints": "MAD/a4000/h330"
                 }
             },
             "6":{
                 "PVD": {
-                    "cleared_altitude": 6000,
+                    "cleared_altitude": 4000,
                     "sid": "BDL6",
                     "waypoints": "PVD/a4000/h064"
                 },
-
-                "VEERS": {
-                    "cleared_altitude": 6000,
-                    "sid": "BDL6",
-                    "waypoints": "VEERS/a4000/h064"
-                },
                 "CTR": {
-                    "cleared_altitude": 6000,
+                    "cleared_altitude": 4000,
                     "sid": "BDL6",
                     "waypoints": "CTR/a4000/h064"
-                },"MAD": {
-                    "cleared_altitude": 6000,
-                    "sid": "BDL6",
-                    "waypoints": "MAD/a4000/h064"
                 }
             }
+
          },
         "departures": [
             {
@@ -182,7 +182,7 @@
             "GON": "Southeast",
             "MAD": "South",
             "VEERS": "West"
-          },
+        },
         "tower_list": 1
 
 
@@ -190,6 +190,44 @@
         }
     },
     "arrival_groups": {
+        "DPK3": [
+            {
+                "airlines": {
+                    "KBDL": [
+                        {
+                            "airport": "KORD",
+                            "icao": "AAL"                         
+                        },
+                        {
+                            "airport": "KDEN",
+                            "icao": "DAL"                         
+                        },
+                        {
+                            "airport": "KCOS",
+                            "icao": "SWA"                         
+                        },
+                        {
+                            "airport": "KBOS",
+                            "icao": "JBU"                         
+                        },
+                        {
+                            "airport": "KDEN",
+                            "icao": "SWA"                         
+                        },
+                        {
+                            "airport": "KMSP",
+                            "icao": "UAL"                         
+                        }
+                    ]
+                },
+                "cruise_altitude": 36000,
+                "initial_altitude": 24000,
+                "initial_controller": "BOS_37_CTR",
+                "initial_speed": 250,
+                "star": "DPK3",
+                "waypoints": "DPK/a19000 BELTT/ho MAD/a11000 BRISS"
+            }
+        ],
         "STELA1": [
             {
                 "airlines": {
@@ -225,8 +263,7 @@
                 "initial_controller": "BOS_37_CTR",
                 "initial_speed": 250,
                 "star": "STELA1",
-                "waypoints": "SWEDE/a23000 STELA/a11000 TOMES/a9000/ho"
-                
+                "waypoints": "SYR WILET RKA SWEDE/a23000 CANAN STELA/a11000/ho MOLDS TOMES"
             }
         ]
     },
@@ -236,19 +273,25 @@
             "frequency": 134700,
             "full_name": "Boston Center",
             "scope_char": "C",
-            "sector_id": "37"
+            "sector_id": "B37"
         },
         "BDL_APP": {
             "frequency": 123950,
             "full_name": "Bradley Approach",
-            "scope_char": "Y",
-            "sector_id": "90"
+            "scope_char": "B",
+            "sector_id": "1B"
+        },
+        "BDL_DEP": {
+            "frequency": 125350,
+            "full_name": "Bradley Departure",
+            "scope_char": "N",
+            "sector_id": "1N"
         },
         "BDL_TWR": {
             "frequency": 120300,
             "full_name": "Bradley Tower",
-            "scope_char": "Y",
-            "sector_id": "T"
+            "scope_char": "T",
+            "sector_id": "1T"
         }
     },
     "default_scenario": "Y90 RWY 6/33",
@@ -275,21 +318,33 @@
             "arrival_runways": [
                 {
                     "airport": "KBDL",
-                    "runway": "6"
+                    "runway": "6"    
+                },
+                {    
+                    "airport":"KBDL",
+                    "runway": "33"
                 }
-            ],
+            ],  
             "arrivals": {
                 "STELA1": {
                     "KBDL": 15
+                },
+                "DPK3": {
+                    "KBDL": 18
                 }
             },
             "solo_controller": "BDL_APP",
             "multi_controllers":{
                 "default": {
-                    "BDL_APP":{"departures": ["KBDL"],
+                    "BDL_DEP":{
                         "primary": true,
-                        "arrivals": ["STELA1"]
+                        "departures": ["KBDL"]
+                    }, 
+                    "BDL_ARR": {
+                        "backup": "BDL_DEP",
+                        "arrivals": ["STELA1", "DPK3"]
                     }
+                    
                 }
             },
             "controllers": [
@@ -303,6 +358,11 @@
                     "airport":"KBDL",
                     "rate": 20,
                     "runway": "6"
+                },
+                {
+                    "airport":"KBDL",
+                    "rate": 20,
+                    "runway": "33"
                 }
             ],
             "wind": {
@@ -325,7 +385,7 @@
     "stars_maps": [
         {
             "group": 0,
-            "label": "Y90 RWY 6/33",
+            "label": "RWY 6/33",
             "name": "Y90 RWY 6/33"
         }
     ],

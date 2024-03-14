@@ -673,12 +673,14 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	}
 
 	next := ModalDialogButton{
-		text:     "Next",
+		text:     c.config.UIButtonText(),
 		disabled: c.config.OkDisabled(),
 		action: func() bool {
-			uiShowModalDialog(NewModalDialogBox(&RatesModalClient{
-				config:      c.config,
-				allowCancel: c.allowCancel}), false)
+			if c.config.ShowRatesWindow() {
+				uiShowModalDialog(NewModalDialogBox(&RatesModalClient{
+					config:      c.config,
+					allowCancel: c.allowCancel}), false)
+			}
 			return true
 		},
 	}
@@ -1022,18 +1024,19 @@ func showAboutDialog() {
 Dennis Graiani and Samuel Valencia for
 contributing features to vice and to Connor
 Allen, Adam Bolek, Aaron Flett, Mike K, Jud
-Lopez, Jace Martin, Yahya Nazimuddin, Justin
-Nguyen, Arya T, Eli Thompson, Michael Trokel,
-and Samuel Valencia for developing scenarios.
-Video maps are thanks to the ZAU, ZBW, ZDC,
-ZDV, ZHU, ZID, ZJX, ZLA, ZNY, ZOB, ZSE, and
-ZTL VATSIM ARTCCs. Thanks also to
-OpenScope for the aircraft performance and
-airline databases and to ourairports.com
+Lopez, Jace Martin, Merry, Yahya Nazimuddin,
+Justin Nguyen, Arya T, Nelson T, Eli
+Thompson, Michael Trokel, and Samuel
+Valencia for developing scenarios. Video
+maps are thanks to the ZAU, ZBW, ZDC,
+ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
+ZSE, and ZTL VATSIM ARTCCs. Thanks also
+to OpenScope for the aircraft performance
+and airline databases and to ourairports.com
 for the airport database. See the file
 CREDITS.txt in the vice source code
-distribution for third-party software, fonts,
-sounds, etc.`
+distribution for third-party software,
+fonts, sounds, etc.`
 
 	imgui.Text(credits)
 
