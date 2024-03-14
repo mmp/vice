@@ -7,47 +7,56 @@
           "BIGGY,PARKE": {
             "cleared_altitude": 11000,
             "sid": "EWR5",
+            "handoff_controller": "NY_LW_APP",
             "waypoints": "KEWR-4L/ho _EWR4_22Ra _EWR4_22Rb/h280"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 10000,
             "sid": "EWR5",
+            "handoff_controller": "NY_LN_APP",
             "waypoints": "KEWR-4L/ho _EWR4_22Ra/h350"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "sid": "EWR5",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KEWR-4L/ho _EWR4_22Ra ELVAE"
           },
           "ELIOT,NEWEL,ZIMMZ": {
             "cleared_altitude": 10000,
             "sid": "EWR5",
+            "handoff_controller": "NY_LW_APP",
             "waypoints": "KEWR-4L/ho _EWR4_22Ra/h300"
           },
           "LANNA": {
             "cleared_altitude": 11000,
             "sid": "EWR5",
+            "handoff_controller": "NY_LW_APP",
             "waypoints": "KEWR-4L/ho _EWR4_22Ra _EWR4_22Rb/h280"
           }
         },
         "4L": {
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
+            "handoff_controller": "NY_LW_APP",
             "cleared_altitude": 10000,
             "sid": "EWR5",
             "waypoints": "KEWR-22R/ho _EWR4_4La _EWR4_4Lb/h270"
           },
           "COATE,GAYEL,HAAYS,NEION": {
+            "handoff_controller": "NY_LN_APP",
             "cleared_altitude": 10000,
             "sid": "EWR5",
             "waypoints": "KEWR-22R/ho _EWR4_4La _EWR4_4Lb/h350"
           },
           "DIXIE,WHITE": {
+            "handoff_controller": "NY_LS_APP",
             "cleared_altitude": 6000,
             "sid": "EWR5",
             "waypoints": "KEWR-22R/ho _EWR4_4La _EWR4_4Lc ELVAE"
           }
         }
       },
+      "departure_controller": "EWR_DEP",
       "departures": [
         {
           "airlines": [
@@ -830,31 +839,37 @@
           "ARD": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KJFK-31L/ho _JFK5_13Rc/h250"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KJFK-31L/ho _JFK5_13Ra/h050"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KJFK-31L/ho _JFK5_13Ra _JFK5_13Rb/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KJFK-31L/ho _JFK5_13Ra _JFK5_13Rb/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KJFK-31L/ho _JFK5_13Rc _JFK5_13Rd/h222"
           },
           "RBV": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KJFK-31L/ho _JFK5_13Rc RBV"
           }
         },
@@ -862,21 +877,25 @@
           "ARD,DIXIE,RBV,WHITE": {
             "cleared_altitude": 7000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "_JFK_4L/ho/h222"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "_JFK_4L/ho _JFK5_22Ra _JFK5_22Rb/h050"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "_JFK_4L/ho _JFK5_22Ra _JFK5_22Rb _JFK5_22Rc/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "_JFK_4L/ho _JFK5_22Ra _JFK5_22Rb _JFK5_22Rc/h010"
           }
         },
@@ -884,26 +903,31 @@
           "ARD,RBV": {
             "cleared_altitude": 11000,
             "sid": "SKORR5.RNGRR",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "_JFK_13R/ho SKORR METSS/a2500+ RNGRR/h223"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "SKORR5.YNKEE",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "_JFK_13R/ho SKORR CESID/a2500+/h060"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "SKORR5.YNKEE",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "_JFK_13R/ho SKORR CESID/a2500+ _JFK_31La/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "_JFK_13R/ho SKORR CESID/a2500+ _JFK_31La/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
             "sid": "SKORR5.RNGRR",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "_JFK_13R/ho SKORR METSS/a2500+ RNGRR/h223"
           }
         },
@@ -911,31 +935,37 @@
           "ARD": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KJFK-22R/ho _JFK5_4La/h250"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KJFK-22R/ho _JFK5_4La/h050"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
+            "handoff_controller": "NY_LE_APP", 
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lc/h222"
           },
           "RBV": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KJFK-22R/ho _JFK5_4La RBV"
           }
         },
@@ -943,35 +973,42 @@
           "ARD": {
             "cleared_altitude": 9000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KJFK-22R/ho _JFK5_4La/h250"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KJFK-22R/ho _JFK5_4La/h050"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lc/h222"
           },
           "RBV": {
             "cleared_altitude": 9000,
             "sid": "JFK5",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KJFK-22R/ho _JFK5_4La RBV"
           }
         }
       },
+      "departure_controller": "JFK_DEP",
       "departures": [
         {
           "airlines": [
@@ -1403,26 +1440,31 @@
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LW_APP",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LN_APP",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h320"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LN_APP", 
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h320"
           },
           "WHITE": {
             "cleared_altitude": 10000,
             "sid": "NTHNS5",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KLGA-31/ho KIWIE NTHNS CNRSE ASALT/h224"
           }
         },
@@ -1430,26 +1472,31 @@
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LW_APP",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LN_APP",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h320"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LN_APP",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h320"
           },
           "WHITE": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h220"
           }
         },
@@ -1457,21 +1504,25 @@
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "JUTES3",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES TNNIS/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "JUTES3",
+            "handoff_controller": "NY_LW_APP",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c/h270"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 15000,
             "sid": "JUTES3",
+            "handoff_controller": "NY_LN_APP",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/h310"
           },
           "WHITE": {
             "cleared_altitude": 10000,
             "sid": "HOPEA3",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KLGA-4/ho _LGA_22a HOPEA CRI ASALT/h224"
           }
         },
@@ -1479,26 +1530,31 @@
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "JUTES3",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES TNNIS/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "JUTES3",
+            "handoff_controller": "NY_LW_APP",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "JUTES3",
+            "handoff_controller": "NY_LN_APP",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/h310"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "JUTES3",
+            "handoff_controller": "NY_LN_APP",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/h310"
           },
           "WHITE": {
             "cleared_altitude": 12000,
             "sid": "JUTES3",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c _LGA7_22d/h220"
           }
         },
@@ -1506,26 +1562,31 @@
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KLGA-13/ho _LGA7_31c/h070"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LW_APP",
             "waypoints": "KLGA-13/ho _LGA7_31a/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KLGA-13/ho _LGA7_31b/h320"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LN_APP",
             "waypoints": "KLGA-13/ho _LGA7_31b/h320"
           },
           "WHITE": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KLGA-13/ho _LGA7_31a/h210"
           }
         },
@@ -1533,30 +1594,36 @@
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LE_APP",
             "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/h070"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LW_APP",
             "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_BRXa _LGA7_BRXb/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LN_APP",
             "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/h320"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LN_APP",
             "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/h320"
           },
           "WHITE": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
+            "handoff_controller": "NY_LS_APP",
             "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_BRXa _LGA7_BRXb/h210"
           }
         }
       },
+      "departure_controller": "LGA_DEP",
       "departures": [
         {
           "airlines": [
@@ -2502,7 +2569,7 @@
         "receiving_controller": "C55"
       },
       {
-        "fix": ["BIGGY"],
+        "fix": ["LANNA"],
         "altitude_range": [17000, 99999],
         "to_center": true,
         "receiving_controller": "C55"
@@ -2584,31 +2651,31 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_LE_DEP": {
+    "NY_LE_APP": {
       "frequency": 126800,
       "full_name": "New York departure",
       "scope_char": "E",
       "sector_id": "5E"
     },
-    "NY_LN_DEP": {
+    "NY_LN_APP": {
       "frequency": 118170,
       "full_name": "New York departure",
       "scope_char": "T",
       "sector_id": "5T"
     },
-    "NY_LS_DEP": {
+    "NY_LS_APP": {
       "frequency": 124750,
       "full_name": "New York departure",
       "scope_char": "S",
       "sector_id": "5S"
     },
-    "NY_LW_DEP": {
+    "NY_LW_APP": {
       "frequency": 120850,
       "full_name": "New York departure",
       "scope_char": "W",
       "sector_id": "5W"
     },
-    "NY_L_DEP": {
+    "NY_L_APP": {
       "frequency": 126800,
       "full_name": "New York departure",
       "scope_char": "E",
@@ -2736,9 +2803,25 @@
   },
   "scenarios": {
     "Liberty Combined - JFK Owns Coney": {
-      "solo_controller": "NY_L_DEP",
+      "solo_controller": "NY_L_APP",
+      "multi_controllers": {
+        "default": {
+          "NY_LE_APP": {
+            "primary": true 
+          },
+          "NY_LW_APP": {
+            "backup": "NY_LE_APP"
+          },
+          "NY_LS_APP": {
+            "backup": "NY_LW_APP"
+          },
+          "NY_LN_APP": {
+            "backup": "NY_LE_APP"
+          }
+        }
+      },
       "controllers": [
-        "NY_L_DEP",
+        "NY_L_APP",
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
@@ -2805,9 +2888,25 @@
       ]
     },
     "Liberty Combined - LGA Owns Coney": {
-      "solo_controller": "NY_L_DEP",
+      "solo_controller": "NY_L_APP",
+      "multi_controllers": {
+        "default": {
+          "NY_LE_APP": {
+            "primary": true 
+          },
+          "NY_LW_APP": {
+            "backup": "NY_LE_APP"
+          },
+          "NY_LS_APP": {
+            "backup": "NY_LW_APP"
+          },
+          "NY_LN_APP": {
+            "backup": "NY_LE_APP"
+          }
+        }
+      },
       "controllers": [
-        "NY_L_DEP",
+        "NY_L_APP",
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
@@ -2870,12 +2969,12 @@
       ]
     },
     "Liberty East": {
-      "solo_controller": "NY_LE_DEP",
+      "solo_controller": "NY_LE_APP",
       "controllers": [
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LS_DEP",
-        "NY_LN_DEP",
+        "NY_LE_APP",
+        "NY_LW_APP",
+        "NY_LS_APP",
+        "NY_LN_APP",
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
@@ -2965,12 +3064,12 @@
       ]
     },
     "Liberty North": {
-      "solo_controller": "NY_LN_DEP",
+      "solo_controller": "NY_LN_APP",
       "controllers": [
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LS_DEP",
-        "NY_LN_DEP",
+        "NY_LE_APP",
+        "NY_LW_APP",
+        "NY_LS_APP",
+        "NY_LN_APP",
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
@@ -3024,12 +3123,12 @@
       ]
     },
     "Liberty South JFK Owns Coney": {
-      "solo_controller": "NY_LS_DEP",
+      "solo_controller": "NY_LS_APP",
       "controllers": [
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LS_DEP",
-        "NY_LN_DEP",
+        "NY_LE_APP",
+        "NY_LW_APP",
+        "NY_LS_APP",
+        "NY_LN_APP",
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
@@ -3107,12 +3206,12 @@
       ]
     },
     "Liberty South LGA Owns Coney": {
-      "solo_controller": "NY_LS_DEP",
+      "solo_controller": "NY_LS_APP",
       "controllers": [
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LS_DEP",
-        "NY_LN_DEP",
+        "NY_LE_APP",
+        "NY_LW_APP",
+        "NY_LS_APP",
+        "NY_LN_APP",
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
@@ -3184,12 +3283,12 @@
       ]
     },
     "Liberty West": {
-      "solo_controller": "NY_LW_DEP",
+      "solo_controller": "NY_LW_APP",
       "controllers": [
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LS_DEP",
-        "NY_LN_DEP",
+        "NY_LE_APP",
+        "NY_LW_APP",
+        "NY_LS_APP",
+        "NY_LN_APP",
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
