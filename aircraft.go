@@ -36,7 +36,7 @@ type Aircraft struct {
 	HandoffTrackController string
 
 	GlobalLinePosition *CardinalOrdinalDirection
-	RedirectedHandoff RedirectedHandoff
+	RedirectedHandoff  RedirectedHandoff
 
 	// The controller who gave approach clearance
 	ApproachController string
