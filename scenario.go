@@ -622,13 +622,6 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		sg.MagneticVariation = mvar + sg.MagneticAdjustment
 	}
 
-	if sg.NmPerLatitude == 0 {
-		e.ErrorString("\"nm_per_latitude\" not specified")
-	}
-	if sg.NmPerLongitude == 0 {
-		e.ErrorString("\"nm_per_latitude\" not specified")
-	}
-
 	if _, ok := sg.Scenarios[sg.DefaultScenario]; !ok {
 		e.ErrorString("default scenario \"%s\" not found in \"scenarios\"", sg.DefaultScenario)
 	}
