@@ -354,6 +354,14 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	c.ScenarioName = scenarioName
 }
 
+func (c *NewSimConfiguration) UIButtonText() string {
+	return Select(c.NewSimType == NewSimJoinRemote, "Join", "Next")
+}
+
+func (c *NewSimConfiguration) ShowRatesWindow() bool {
+	return c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote
+}
+
 func (c *NewSimConfiguration) DrawUI() bool {
 	if c.updateRemoteSimsCall != nil && c.updateRemoteSimsCall.CheckFinished(nil) {
 		c.updateRemoteSimsCall = nil
