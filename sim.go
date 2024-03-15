@@ -978,6 +978,19 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimName = s.Name
 	w.SimDescription = s.Scenario
 	w.SimTime = s.SimTime
+	for _, airport := range sg.Airports {
+		for _, runway := range airport.DepartureRoutes {
+			for exit := range runway {
+				fixes := strings.Split(exit, ",")
+				for _, fix := range fixes {
+					if !slices.Contains(w.DepartureGates, fix) {
+						w.DepartureGates = append(w.DepartureGates, fix)
+					}
+				}
+			}
+
+		}
+	}
 	w.STARSFacilityAdaptation = sg.STARSFacilityAdaptation
 
 	for _, callsign := range sc.VirtualControllers {
@@ -1569,7 +1582,13 @@ func (s *Sim) updateState() {
 	}
 
 	// Don't spawn automatically if someone is spawning manually.
-	if s.LaunchConfig.Mode == LaunchAutomatic {
+	var length int
+	for _, gates := range stoppedGates {
+		if gates {
+			length += 1
+		}
+	}
+	if s.LaunchConfig.Mode == LaunchAutomatic && length != len(s.World.DepartureGates) { // If all gates are stopped, dont even bother spawning
 		s.spawnAircraft()
 	}
 }
@@ -1760,18 +1779,22 @@ func (s *Sim) spawnAircraft() {
 			s.lg.Errorf("%s: couldn't find an active runway for spawning departure?", airport)
 			continue
 		}
-
-		prevDep := s.lastDeparture[airport][runway][category]
-		s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
-		ac, dep, err := s.World.CreateDeparture(airport, runway, category,
-			s.LaunchConfig.DepartureChallenge, prevDep)
-		if err != nil {
-			s.lg.Errorf("CreateDeparture error: %v", err)
-		} else {
-			s.lastDeparture[airport][runway][category] = dep
-			s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
-			s.launchAircraftNoLock(*ac)
-			s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum, false))
+		for {
+			prevDep := s.lastDeparture[airport][runway][category]
+			s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
+			ac, dep, err := s.World.CreateDeparture(airport, runway, category,
+				s.LaunchConfig.DepartureChallenge, prevDep)
+			if err != nil {
+				s.lg.Errorf("CreateDeparture error: %v", err)
+			} else { // Found an exit that is not stopped
+				if !stoppedGates[ac.Exit] {
+					s.lastDeparture[airport][runway][category] = dep
+					s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
+					s.launchAircraftNoLock(*ac)
+					s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum, false))
+					break
+				}
+			}
 		}
 	}
 }
