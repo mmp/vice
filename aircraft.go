@@ -198,7 +198,6 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 
 func (ac *Aircraft) GoAround() []RadioTransmission {
 	resp := ac.Nav.GoAround()
-
 	return []RadioTransmission{RadioTransmission{
 		Controller: ac.ControllingController,
 		Message:    resp.Message,
@@ -304,6 +303,7 @@ func (ac *Aircraft) AtFixCleared(fix, approach string) []RadioTransmission {
 }
 
 func (ac *Aircraft) ClearedApproach(id string, w *World) []RadioTransmission {
+	ac.ControllingController = w.DepartureController(ac)
 	if ac.IsDeparture() {
 		return ac.readbackUnexpected("unable. This aircraft is a departure.")
 	}
