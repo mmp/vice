@@ -8,6 +8,7 @@
 package main
 
 import (
+	"cmp"
 	"fmt"
 	"runtime"
 	"slices"
@@ -910,6 +911,33 @@ func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 }
 
 func (ps *STARSPreferenceSet) Activate(w *World) {
+	// It should only take integer values but it's a float32 and we
+	// previously didn't enforce this...
+	ps.Range = float32(int(ps.Range))
+
+	// Brightness goes in steps of 5 (similarly not enforced previously...)
+	remapBrightness := func(b *STARSBrightness) {
+		*b = (*b + 2) / 5 * 5
+		*b = clamp(*b, 0, 100)
+	}
+	remapBrightness(&ps.Brightness.DCB)
+	remapBrightness(&ps.Brightness.BackgroundContrast)
+	remapBrightness(&ps.Brightness.VideoGroupA)
+	remapBrightness(&ps.Brightness.VideoGroupB)
+	remapBrightness(&ps.Brightness.FullDatablocks)
+	remapBrightness(&ps.Brightness.Lists)
+	remapBrightness(&ps.Brightness.Positions)
+	remapBrightness(&ps.Brightness.LimitedDatablocks)
+	remapBrightness(&ps.Brightness.OtherTracks)
+	remapBrightness(&ps.Brightness.Lines)
+	remapBrightness(&ps.Brightness.RangeRings)
+	remapBrightness(&ps.Brightness.Compass)
+	remapBrightness(&ps.Brightness.BeaconSymbols)
+	remapBrightness(&ps.Brightness.PrimarySymbols)
+	remapBrightness(&ps.Brightness.History)
+	remapBrightness(&ps.Brightness.Weather)
+	remapBrightness(&ps.Brightness.WxContrast)
+
 	if ps.VideoMapVisible == nil {
 		ps.VideoMapVisible = make(map[string]interface{})
 		if w != nil && len(w.STARSMaps) > 0 {
@@ -1777,6 +1805,7 @@ func (sp *STARSPane) disableMenuSpinner(ctx *PaneContext) {
 
 func (sp *STARSPane) activateMenuSpinner(ptr unsafe.Pointer) {
 	activeSpinner = ptr
+	activeSpinnerMouseDelta = 0
 }
 
 func (sp *STARSPane) getAircraftIndex(ac *Aircraft) int {
@@ -4046,16 +4075,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 
 	switch sp.activeDCBMenu {
 	case DCBMenuMain:
-		STARSCallbackSpinner(ctx, "RANGE\n", &ps.Range,
-			func(v float32) string { return strconv.Itoa(int(v)) },
-			func(v, delta float32) float32 {
-				if delta > 0 {
-					v++
-				} else if delta < 0 {
-					v--
-				}
-				return clamp(v, 6, 256)
-			}, STARSButtonFull, buttonScale)
+		STARSItemsSpinner(ctx, "RANGE\n", &ps.Range, GenRange[float32](6, 257, 1), STARSButtonFull, buttonScale)
 		sp.STARSPlaceButton("PLACE\nCNTR", STARSButtonHalfVertical, buttonScale,
 			func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 				ps.Center = transforms.LatLongFromWindowP(pw)
@@ -4068,26 +4088,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if STARSToggleButton("OFF\nCNTR", &ps.OffCenter, STARSButtonHalfVertical, buttonScale) {
 			ps.CurrentCenter = ps.Center
 		}
-		STARSCallbackSpinner(ctx, "RR\n", &ps.RangeRingRadius,
-			func(v int) string { return strconv.Itoa(v) },
-			func(v int, delta float32) int {
-				di := 0
-				if delta > 0 {
-					di = 1
-				} else if delta < 0 {
-					di = -1
-				}
-
-				valid := []int{2, 5, 10, 20}
-				for i := range valid {
-					if v == valid[i] {
-						i = clamp(i+di, 0, len(valid)-1)
-						return valid[i]
-					}
-				}
-				lg.Errorf("%d: invalid value for RR spinner", v)
-				return valid[0]
-			}, STARSButtonFull, buttonScale)
+		STARSItemsSpinner(ctx, "RR\n", &ps.RangeRingRadius, []int{2, 5, 10, 20}, STARSButtonFull, buttonScale)
 		sp.STARSPlaceButton("PLACE\nRR", STARSButtonHalfVertical, buttonScale,
 			func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 				ps.RangeRingsCenter = transforms.LatLongFromWindowP(pw)
@@ -4125,7 +4126,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 		STARSCallbackSpinner(ctx, "LDR DIR\n   ", &ps.LeaderLineDirection,
 			func(d CardinalOrdinalDirection) string { return d.ShortString() },
-			func(d CardinalOrdinalDirection, delta float32) CardinalOrdinalDirection {
+			func(d CardinalOrdinalDirection, delta int) CardinalOrdinalDirection {
 				if delta == 0 {
 					return d
 				} else if delta < 0 {
@@ -4134,17 +4135,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 					return CardinalOrdinalDirection((d + 1) % 8)
 				}
 			}, STARSButtonHalfVertical, buttonScale)
-		STARSCallbackSpinner(ctx, "LDR\n ", &ps.LeaderLineLength,
-			func(v int) string { return strconv.Itoa(v) },
-			func(v int, delta float32) int {
-				if delta == 0 {
-					return v
-				} else if delta < 0 {
-					return max(0, v-1)
-				} else {
-					return min(7, v+1)
-				}
-			}, STARSButtonHalfVertical, buttonScale)
+		STARSIntSpinner(ctx, "LDR\n ", &ps.LeaderLineLength, 0, 7, STARSButtonHalfVertical, buttonScale)
 
 		if STARSSelectButton("CHAR\nSIZE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuCharSize
@@ -4198,12 +4189,12 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if STARSToggleButton("DCB\nBOTTOM", &bottom, STARSButtonHalfVertical, buttonScale) {
 			ps.DCBPosition = DCBPositionBottom
 		}
-		STARSFloatSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, 0.1, 20, STARSButtonFull, buttonScale)
+		STARSItemsSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, []float32{0.5, 1, 1.5, 2, 2.5, 3}, STARSButtonFull, buttonScale)
 		STARSToggleButton("PTL OWN", &ps.PTLOwn, STARSButtonHalfVertical, buttonScale)
 		STARSToggleButton("PTL ALL", &ps.PTLAll, STARSButtonHalfVertical, buttonScale)
 		STARSCallbackSpinner(ctx, "DWELL\n", &ps.DwellMode,
 			func(mode DwellMode) string { return mode.String() },
-			func(mode DwellMode, delta float32) DwellMode {
+			func(mode DwellMode, delta int) DwellMode {
 				if delta > 0 {
 					return [3]DwellMode{DwellModeLock, DwellModeLock, DwellModeOn}[mode]
 				} else if delta < 0 {
@@ -7029,24 +7020,19 @@ var (
 	// though we also need to think about focus capture; probably should
 	// force take it when a spinner is active..
 	activeSpinner unsafe.Pointer
+	// Accumulated but not yet reported mouse movement
+	activeSpinnerMouseDelta float32
 )
 
 func STARSIntSpinner(ctx *PaneContext, text string, value *int, min int, max int, flags int, buttonScale float32) {
 	STARSCallbackSpinner[int](ctx, text, value,
 		func(v int) string { return strconv.Itoa(v) },
-		func(v int, delta float32) int {
-			di := 0
-			if delta > 0 {
-				di = 1
-			} else if delta < 0 {
-				di = -1
-			}
-			return clamp(v+di, min, max)
-		}, flags, buttonScale)
+		func(v int, delta int) int { return clamp(v+delta, min, max) },
+		flags, buttonScale)
 }
 
 func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print func(v V) string,
-	callback func(v V, delta float32) V, flags int, buttonScale float32) {
+	callback func(v V, delta int) V, flags int, buttonScale float32) {
 	text += print(*value)
 
 	if activeSpinner == unsafe.Pointer(value) {
@@ -7067,7 +7053,17 @@ func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print 
 		}
 
 		if ctx.mouse != nil {
-			*value = callback(*value, -ctx.mouse.Wheel[1])
+			activeSpinnerMouseDelta += -ctx.mouse.Wheel[1]
+
+			// Require two ticks for a delta of one; make the spinners a
+			// little less jumpy.
+			const movementScale = 2
+			// Only report a change when there's enough movement to matter.
+			if abs(activeSpinnerMouseDelta) > movementScale {
+				delta := int(activeSpinnerMouseDelta / movementScale)
+				activeSpinnerMouseDelta -= float32(delta * movementScale)
+				*value = callback(*value, delta)
+			}
 		}
 	} else {
 		_, clicked := drawDCBButton(text, flags, buttonScale, false, false)
@@ -7077,10 +7073,13 @@ func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print 
 	}
 }
 
-func STARSFloatSpinner(ctx *PaneContext, text string, value *float32, min float32, max float32, flags int, buttonScale float32) {
-	STARSCallbackSpinner(ctx, text, value, func(f float32) string { return fmt.Sprintf("%.1f", *value) },
-		func(v float32, delta float32) float32 {
-			return clamp(v+delta/10, min, max)
+func STARSItemsSpinner[T cmp.Ordered](ctx *PaneContext, text string, value *T, options []T, flags int, buttonScale float32) {
+	STARSCallbackSpinner(ctx, text, value,
+		func(v T) string { return fmt.Sprintf("%v", v) },
+		func(v T, delta int) T {
+			idx, _ := slices.BinarySearch(options, *value)
+			idx = clamp(idx+delta, 0, len(options)-1)
+			return options[idx]
 		}, flags, buttonScale)
 }
 
@@ -7094,24 +7093,12 @@ func STARSBrightnessSpinner(ctx *PaneContext, text string, b *STARSBrightness, m
 				return fmt.Sprintf("%2d", int(b))
 			}
 		},
-		func(b STARSBrightness, delta float32) STARSBrightness {
-			if delta > 0 {
-				if b == 0 && allowOff {
-					return STARSBrightness(min)
-				} else {
-					b++
-					return STARSBrightness(clamp(b, min, 100))
-				}
-			} else if delta < 0 {
-				if b == min && allowOff {
-					return STARSBrightness(0)
-				} else {
-					b--
-					return STARSBrightness(clamp(b, min, 100))
-				}
-			} else {
-				return b
+		func(b STARSBrightness, delta int) STARSBrightness {
+			b += STARSBrightness(5 * delta)
+			if b < min && allowOff {
+				return STARSBrightness(0)
 			}
+			return STARSBrightness(clamp(b, min, 100))
 		}, flags, buttonScale)
 }
 
