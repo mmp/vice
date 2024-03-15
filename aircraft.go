@@ -21,6 +21,7 @@ type Aircraft struct {
 	FlightPlan          *FlightPlan
 	ForceQLControllers  []string
 	PointOutHistory     []string
+	HeldForRelease 		bool 
 
 	// Who has the radar track
 	TrackingController string
@@ -176,6 +177,7 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 			lg.Info("randomly going around")
 			ac.GoAroundDistance = nil // only go around once
 			rt := ac.GoAround()
+			ac.ControllingController = w.DepartureController(ac)
 			PostRadioEvents(ac.Callsign, rt, ep)
 
 			// If it was handed off to tower, hand it back to us
@@ -301,7 +303,6 @@ func (ac *Aircraft) AtFixCleared(fix, approach string) []RadioTransmission {
 }
 
 func (ac *Aircraft) ClearedApproach(id string, w *World) []RadioTransmission {
-	ac.ControllingController = w.DepartureController(ac)
 	if ac.IsDeparture() {
 		return ac.readbackUnexpected("unable. This aircraft is a departure.")
 	}
