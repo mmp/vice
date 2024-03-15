@@ -1436,13 +1436,83 @@ how it simulates aircraft or the STARS interface.
             
           </section>
 
+	  <section class="docs-section" id="stars-control">
+            <h2 class="section-heading">Other Controllers</h2>
+            <h3>Specifying Controller ID</h3> <p><i>vice</i> emulates correct sector IDs for controllers.</p><br><br>
+            <h4>Sector ID Breakdown</h4> 
+            <p>A full controller has three elements. The facility, the area and the sector. Taking a look at an example sector ID <code>N4P</code>. The <code>N</code> stands for the 
+            N90 (New York) TRACON. The <code>4</code> stands for the fourth area/ the Newark area of the N90 TRACON. Finally, the <code>P</code> is the Yardley
+            sector of the Newark area.</p>
+
+            <h4>Intra-facility specification</h4>
+            <p>Intra-facility TCPs are specified with the area of the TRACON, and the sector. So a handoff from <code>4P</code> to
+            <code>1V</code> would be <code>1V</code>. If the TCP is in the same area as the initiator, the area can be ommited.</p>
+
+            <h4>Inter-facility specification</h4>
+            <p>Specifying inter-facility positions must be specified first with the delta (∆) symbol, which is mapped to the backtick
+              key. They also must be specified with the receiver TCP's facilty. For example, a handoff from an N90 position to a position in the 
+              ABE TRACON, it would need the facility identifier for ABE. It must also contain the area and sector ID of the receiving TCP. The area and 
+              sector ID can be ommited if there is only one TCP in that facility, or there is an airspace awareness rule (specified in the facility
+              configuration file). Then, only the delta symbol and facility need to be specified
+            </p>
+
+            <h4>Enroute specification</h4>
+            <p>Enroute sectors can be specified with their facility identifier and the sector. For the home ARTCC, the facility identifier is 
+            specified with a <code>C</code>. There is an exeption, if a neigboring ARTCCs facility identifier is a C, then the facility identifier 
+            for the home ARTCC would change from a C to the regular facility identifier. So for ZNY, it would turn from a C to N. The sector ID can be ommited
+            if there is only one ERAM controller signed on, or there is an airspace awareness rule defined in the configuration file.</p>
+            <!-- <p>quickref</p> -->
+          </section>
+
 	  <section class="docs-section" id="stars-track-ownership">
             <h2 class="section-heading">Track Ownership</h2>
-
           </section>
 
 	  <section class="docs-section" id="tracks-datablocks">
             <h2 class="section-heading">Tracks and Datablocks</h2>
+
+            <h3>Datablock Types</h3>
+            <h4>Partial Datablock</h4>
+            <p>Partial Datablocks are associated datablocks that are owned by another TCP. They display line 2 of a full datablock. With the exception
+              of the groundspeed
+            </p>
+            <h3>Leader Lines</h3>
+            <p>Leader line direction can be changed with <code>leader direction (1/2/3/4/5/6/7/8/9), SLEW</code> or <code>MULTI FUNC, L, 
+              leader direction (1/2/3/4/5/6/7/8/9), SPACE, acid or bcn code, | ENTER</code>for the local user. 
+            Leader lines can also be changed globally with <code>MULTI FUNC, L, leader direction (11/22/33/44/55/66/77/88/99), SLEW</code> or 
+          <code>MULTI FUNC, L, leader dir (11/22/33/44/55/66/77/88/99), SPACE, acid or bcn code, ENTER</code></p>
+          <h3>PTL Lines</h3>
+          <p>PTL Lines (Predicted Track Lines) show the aircrafts predicted track over the course of 0.5 to 3 minutes. These lines can be adjusted in the <code>SHIFT</code> 
+          menu. <code>PTL OWN</code> will turn on PTLs for tracks that are owned by the TCP, and <code>PTL ALL</code> will display PTLs for all associated tracks in range of altitude
+        filters.</p>
+        <h3>Scratchpads</h3>
+        <p>In STARS, scratchpads are used to display information to the controllers. For example, the departure exit gate, or the assigned approach. 
+          Scratchpads are three characters, but can be four if specified in the facility configuration file. Scratchpads can consist of alphanumeric characters, plus 
+          signs, delta symbols, forward slash, and an asterisk. The primary scratchpad can be set with <code>scratchpad #1, SLEW</code> (Implied command), or 
+          <code>MULTI FUNC, Y, scratchpad #1, SLEW</code>. The secondary scratchpad also consists of three alphanumeric characters (can be four if specified in the facility
+          configuration file). The secondary scratchpad can also consist of plus signs, delta symbols, forward slash, and an asterisk. Secondary scratchpads can be entered with
+          <code>MULTI FUNC, Y, +, scratchpad #2, SLEW</code> or <code>scratchpad #2, SLEW</code>
+        </p>
+        <h3>Quicklook</h3>
+        <p>When quicklooking a TCP, all tracks that are tracked by the TCP will show as an FDB. <code>MULTI FUNC, Q, [SECTOR ID] ENTER</code> will 
+        quicklook the specified TCP. Or using the implied command: <code>[SECTOR ID] ENTER</code> will also quicklook the TCP.</p>
+        <h3>Force Quicklook</h3>
+        <p>Force Quicklook will turn a datablock yellow, for the receiving TCP. A track can be force quicklooked with <code>*,*,[ID], SLEW</code>.
+          If specified in the facility configuration file, if owned by the TCP, the controller can force quicklook to self with <code>*, *, SLEW</code>.
+          The TCP can clear a force quicklook with <code>SLEW</code>.
+        </p>
+        <h3>Handoffs</h3>
+        <p>Handoffs in <i>vice</i> emulates STARS functionality.<br><br> <code>[SECTOR ID], SLEW</code> can ne used to initiate a handoff of a track to the 
+        specified TCP. </p>
+        <h3>Pointouts</h3>
+        <p>A pointout can be initiated with <code>[SECTOR ID], *, SLEW</code> and will flash the target as yellow to the specified TCP. If the TCP
+        accepts the pointout, <code>PO</code> will flash in the tracks datablock for five seconds. If the TCP rejects the pointout, then <code>UN</code> 
+      will flash in the tracks datablock for five seconds.<br><br><code>SLEW</code> will accept the pointout and <code>UN, SLEW</code> will reject it</p>
+
+      <h3>Redirecting Handoffs</h3>
+      <p>An incoming handoff can be redirected to another TCP with <code>[SECTOR ID] SLEW</code>. Doing this will add <code>RD</code> to the handoff initiators datablock, 
+      to the redirectors datablock, and to the TCP to where the track was redirected to. It will also turn the datablock green for the redirector.</p>
+            <!-- <p>dwell mode here, quicklook, leader lines, FUSED/radar mode, DCB HISTORY, PTLs, DWELL, </p> -->
 
             <h3>Full and Partial Datablocks</h3>
             
@@ -1551,6 +1621,7 @@ how it simulates aircraft or the STARS interface.
             <br>
             <p>A map showing the minimum vectoring altitudes used for MSAWs is included in the "SYS PROC" maps available from the "MAPS" menu in the DCB.</p>
  
+>>>>>>> master
           </section>
 
 
