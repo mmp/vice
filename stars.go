@@ -6702,7 +6702,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			ctx.platform.GetClipboard().SetText(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 		}
 
-		if ctx.keyboard.IsPressed(KeyControl) {
+		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyControl) {
 			if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
 				if state := sp.Aircraft[ac.Callsign]; state != nil {
 					state.IsSelected = !state.IsSelected
