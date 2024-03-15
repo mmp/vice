@@ -1608,7 +1608,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 	})
 
 	sp.updateCAAircraft(w, aircraft)
-	sp.updateIntrailDistance(aircraft, w)
+	sp.updateInTrailDistance(aircraft, w)
 }
 
 func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
@@ -5286,8 +5286,8 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 			// Partial datablock is just airspeed and then aircraft type if it's ~heavy.
 			datablockText = fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
 			ac := ctx.world.Aircraft[ghost.Callsign]
-			recat := getRecatCategory(ac)
-			datablockText += recat
+			cwtCategory := getCwtCategory(ac)
+			datablockText += cwtCategory
 		} else {
 			// The full datablock ain't much more...
 			datablockText = ghost.Callsign + "\n" + fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
@@ -5580,7 +5580,7 @@ func (sp *STARSPane) updateCAAircraft(w *World, aircraft []*Aircraft) {
 	}
 }
 
-func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft, w *World) {
+func (sp *STARSPane) updateInTrailDistance(aircraft []*Aircraft, w *World) {
 	// Zero out the previous distance
 	for _, ac := range aircraft {
 		sp.Aircraft[ac.Callsign].IntrailDistance = 0
@@ -5648,7 +5648,7 @@ func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft, w *World) {
 			leadingState, trailingState := sp.Aircraft[leading.Callsign], sp.Aircraft[trailing.Callsign]
 			trailingState.IntrailDistance =
 				nmdistance2ll(leadingState.TrackPosition(), trailingState.TrackPosition())
-			sp.checkInTrailRecatSeparation(trailing, leading)
+			sp.checkInTrailCwtSeparation(trailing, leading)
 		}
 		handledVolumes[vol.Id] = nil
 	}
@@ -5707,7 +5707,7 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	return add2f(p, scale2f(ma.v, gs))
 }
 
-func getRecatCategory(ac *Aircraft) string {
+func getCwtCategory(ac *Aircraft) string {
 	perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
@@ -5715,7 +5715,7 @@ func getRecatCategory(ac *Aircraft) string {
 	}
 	wc := perf.Category.CWT
 	if len(wc) == 0 {
-		lg.Errorf("%s: no recat category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
+		lg.Errorf("%s: no CWT category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
 		return "NOWGT"
 	}
 
@@ -5747,7 +5747,7 @@ func getRecatCategory(ac *Aircraft) string {
 
 }
 
-func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
+func (sp *STARSPane) checkInTrailCwtSeparation(back, front *Aircraft) {
 	actype := func(ac *Aircraft) int {
 		perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 		if !ok {
@@ -5756,7 +5756,7 @@ func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
 		}
 		wc := perf.Category.CWT
 		if len(wc) == 0 {
-			lg.Errorf("%s: no recat category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
+			lg.Errorf("%s: no CWT category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
 			return 1
 		}
 		switch wc[0] {
@@ -5784,7 +5784,7 @@ func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
 		}
 	}
 	mitRequirements := [10][10]float32{ // [front][back]
-		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behing I
+		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind I
 		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind H
 		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind G
 		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind F
@@ -5794,7 +5794,6 @@ func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
 		[10]float32{5, 5, 5, 5, 5, 4, 4, 3, 3, 10},          // Behind B
 		[10]float32{8, 7, 7, 7, 7, 6, 6, 4.5, 3, 10},        // Behind A
 		[10]float32{10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, // Behind NOWGT (No weight: 7110.762)
-
 	}
 	fclass, bclass := actype(front), actype(back)
 	mit := mitRequirements[fclass][bclass]
@@ -5966,7 +5965,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else if sp.isOverflight(ctx, ac) {
 			field3 += "E"
 		}
-		cat := getRecatCategory(ac)
+		cat := getCwtCategory(ac)
 		field3 += cat
 
 		// Field 1: alternate between altitude and either primary
@@ -6071,7 +6070,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else {
 			modifier = " "
 		}
-		cat := getRecatCategory(ac)
+		cat := getCwtCategory(ac)
 		acCategory = modifier + cat
 
 		field5 := []string{} // alternate speed and aircraft type
