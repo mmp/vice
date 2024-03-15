@@ -5137,16 +5137,14 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 
 	if ac.TrackingController == "" {
 		dt = LimitedDatablock
-	} else {
-		fmt.Println(ac.TrackingController)
-	}
+	} 
 
 	if ac.TrackingController == w.Callsign || (ac.ControllingController == w.Callsign) {
 		// it's under our control
 		dt = FullDatablock
 	}
 	me := w.GetController(w.Callsign)
-	if slices.Contains(ac.ForceQLControllers, me.Callsign) {
+	if ac.ForceQLControllers != nil && slices.Contains(ac.ForceQLControllers, me.Callsign) {
 		dt = FullDatablock
 	}
 
@@ -5218,8 +5216,9 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		
 		if ac.TrackingController != "" {
 			trackId = "?"
-			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil &&
-				ctx.world.GetController(ac.TrackingController).FacilityIdentifier == ctx.world.GetController(ctx.world.Callsign).FacilityIdentifier {
+			octrl := ctx.world.GetController(ctx.world.Callsign)
+			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil && octrl != nil&&
+				ctx.world.GetController(ac.TrackingController).FacilityIdentifier == octrl.FacilityIdentifier {
 				trackId = ctrl.Scope
 			} else {
 				trackId = state.LastKnownHandoff
@@ -7340,6 +7339,9 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 	af := sp.CurrentPreferenceSet.AltitudeFilters
 	alt := sp.Aircraft[ac.Callsign].TrackAltitude()
 	user := ctx.world.GetController(ctx.world.Callsign)
+	if user == nil {
+		return false
+	}
 	if ac.TrackingController == ctx.world.Callsign {
 		// For owned datablocks
 		return true
