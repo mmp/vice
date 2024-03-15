@@ -516,10 +516,18 @@
       "departure_routes": {
         "22R": {
           "SHIPP,WAVEY,MERIT,BAYYS,GREKI,BDR": {
+            "cleared_altitude": 6000,
+            "handoff_controller": "LGA_DEP",
+            "sid": "EWR5",
+            "waypoints": "N040.37.34.200,W074.10.48.000 N040.39.29.400,W074.15.37.800/ho N040.50.39.600,W074.08.24.000/h040"
+          }
+        },
+        "4L": {
+          "SHIPP,WAVEY,MERIT,BAYYS,GREKI,BDR": {
             "cleared_altitude": 5000,
             "handoff_controller": "LGA_DEP",
             "sid": "EWR5",
-            "waypoints": "N040.37.34.200,W074.10.48.000 N040.39.29.400,W074.15.37.800/ho N040.50.39.600,W074.08.24.000/h130"
+            "waypoints": "N040.44.02.400,W074.06.25.800/ho N040.49.00.600,W074.03.19.200/h130"
           }
         }
       },
@@ -2219,7 +2227,7 @@
           "airport": "KEWR",
           "category": "East",
           "rate": 6,
-          "runway": "22R"
+          "runway": "4L"
         },
         {
           "airport": "KHPN",
