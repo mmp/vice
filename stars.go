@@ -399,10 +399,10 @@ type STARSAircraftState struct {
 	tracksIndex int
 
 	DatablockType DatablockType
-	FullLDB time.Time // If the LDB displays the groundspeed. When to stop 
+	FullLDB       time.Time // If the LDB displays the groundspeed. When to stop
 
 	IsSelected bool // middle click
-	Warnings []string
+	Warnings   []string
 	// Only drawn if non-zero
 	JRingRadius              float32
 	ConeLength               float32
@@ -2327,11 +2327,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					// Tracked by other controllers
 					ps.OtherControllerLeaderLineDirection = dir
 					status.clear = true
-				} 
+				}
 				return
 			} else if f := strings.Fields(cmd); len(f) == 2 {
 				// either L(id)(space)(dir) or L(dir)(space)(callsign)
-				if len(f[0]) == 1 || len(f[0]) == 2{
+				if len(f[0]) == 1 || len(f[0]) == 2 {
 					// L(dir)(space)(callsign)
 					if _, ok := numpadToDirection(f[0][0]); ok {
 						if ac := lookupAircraft(f[1], false); ac != nil {
@@ -2340,7 +2340,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 								status.err = err
 								return
 							}
-							status.clear = true 
+							status.clear = true
 						} else {
 							status.err = ErrSTARSNoFlight
 						}
@@ -3159,8 +3159,11 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 			state := sp.Aircraft[callsign]
 			state.LastKnownHandoff = ctx.world.GetController(control).Scope
 			return true, control
-		} else if controller := singleScope(ctx, string(controller[2])); controller != nil {
-			return true, controller.Callsign
+		} else if len(controller) > 2 {
+			controller := singleScope(ctx, string(controller[2]))
+			if controller != nil {
+				return true, controller.Callsign
+			}
 		}
 	} else {
 		// Non ARTCC airspaceawareness handoffs
@@ -3209,19 +3212,19 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 	return false, ""
 }
 
-func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) error  {
+func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) error {
 	state := sp.Aircraft[ac.Callsign]
 	if len(cmd) == 1 {
 		if dir, ok := numpadToDirection(cmd[0]); ok {
 			state.LeaderLineDirection = dir
 			state.ChosenLeaderLine = dir
 			state.GlobalLeaderLine = false
-			return nil 
+			return nil
 		}
 	} else if len(cmd) == 2 { // Global leader lines
 		if cmd[0] != cmd[1] || strings.Contains(cmd, "0") {
-			 return GetSTARSError(ErrSTARSCommandFormat)
-			
+			return GetSTARSError(ErrSTARSCommandFormat)
+
 		}
 		if ac.TrackingController != ctx.world.Callsign {
 			return GetSTARSError(ErrSTARSIllegalTrack)
@@ -3229,7 +3232,7 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) e
 		if dir, ok := numpadToDirection(cmd[0]); ok {
 			sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
 			state.GlobalLeaderLine = true
-			return nil 
+			return nil
 		}
 
 	}
@@ -3404,15 +3407,15 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 				}
 				db := sp.datablockType(ctx.world, ac)
-				if db == LimitedDatablock && time.Until(state.FullLDB) <= 0{
-						state.FullLDB = time.Now().Add(5 * time.Second)
+				if db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
+					state.FullLDB = time.Now().Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
-				} else if db == FullDatablock{
+				} else if db == FullDatablock {
 					state.DatablockType = PartialDatablock
 				} else {
 					state.DatablockType = FullDatablock
 				}
-			
+
 			} else if cmd == "." {
 				if err := sp.setScratchpad(ctx, ac.Callsign, "", false); err != nil {
 					status.err = err
@@ -3446,7 +3449,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.err = err
 					return
 				}
-				status.clear = true 
+				status.clear = true
 				return
 			} else if cmd == "?" {
 				ctx.world.PrintInfo(ac)
@@ -3776,7 +3779,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.err = err
 					return
 				}
-				status.clear = true 
+				status.clear = true
 				return
 
 			case "M":
@@ -5137,7 +5140,7 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 
 	if ac.TrackingController == "" {
 		dt = LimitedDatablock
-	} 
+	}
 
 	if ac.TrackingController == w.Callsign || (ac.ControllingController == w.Callsign) {
 		// it's under our control
@@ -5188,7 +5191,6 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 	return dt
 }
 
-
 func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations,
 	cb *CommandBuffer) {
 	td := GetTextDrawBuilder()
@@ -5213,11 +5215,11 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		if state.LastKnownHandoff == "" {
 			state.LastKnownHandoff = "*"
 		}
-		
+
 		if ac.TrackingController != "" {
 			trackId = "?"
 			octrl := ctx.world.GetController(ctx.world.Callsign)
-			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil && octrl != nil&&
+			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil && octrl != nil &&
 				ctx.world.GetController(ac.TrackingController).FacilityIdentifier == octrl.FacilityIdentifier {
 				trackId = ctrl.Scope
 			} else {
@@ -5932,8 +5934,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	index := slices.Index(state.Warnings, state.SPCOverride)
 	if index != -1 {
 		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
-	} else if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW && !slices.Contains(state.Warnings, "LA"){
-		fmt.Println(state.Warnings)
+	} else if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW && !slices.Contains(state.Warnings, "LA") {
 		state.Warnings = append(state.Warnings, "LA")
 	} else if ac.Squawk == Squawk(0o7500) || state.SPCOverride == "HJ" {
 		state.Warnings = append(state.Warnings, "HJ")
@@ -5944,7 +5945,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
 		state.Warnings = append(state.Warnings, "MI")
 	}
-	
+
 	state.SPCOverride = ""
 	if !ps.DisableCAWarnings &&
 		slices.ContainsFunc(sp.CAAircraft,
@@ -5952,7 +5953,9 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 				return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
 					!state.DisableCAWarnings
 			}) {
-		state.Warnings = append(state.Warnings, "CA")
+		if !slices.Contains(state.Warnings, "CA") {
+			state.Warnings = append(state.Warnings, "CA")
+		}	
 		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 	}
 	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
@@ -5964,7 +5967,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	}
 
 	// baseDB is what stays the same for all datablock variants
-	
+
 	baseDB := STARSDatablock{}
 	baseDB.Lines[0].Text = strings.Join(state.Warnings, "/") // want e.g., EM/LA if multiple things going on
 	if len(state.Warnings) > 0 {

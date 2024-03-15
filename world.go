@@ -38,6 +38,7 @@ type World struct {
 	updateCall        *PendingCall
 	showSettings      bool
 	showScenarioInfo  bool
+	showCoordination  bool
 
 	launchControlWindow *LaunchControlWindow
 
@@ -84,6 +85,7 @@ type World struct {
 	ArrivalGroups           map[string][]Arrival
 	TotalDepartures         int
 	TotalArrivals           int
+	DepartureGates          []string
 	STARSFacilityAdaptation STARSFacilityAdaptation
 
 	STARSInputOverride string
@@ -135,6 +137,7 @@ func (w *World) Assign(other *World) {
 	w.ArrivalGroups = other.ArrivalGroups
 	w.TotalDepartures = other.TotalDepartures
 	w.TotalArrivals = other.TotalArrivals
+	w.DepartureGates = other.DepartureGates
 	w.STARSFacilityAdaptation = other.STARSFacilityAdaptation
 }
 
@@ -463,11 +466,11 @@ func (w *World) GetAircraft(callsign string, abbreviated bool) *Aircraft { // If
 		ac := w.GetAllAircraft()
 		aircraft := findAircraft(callsign, ac)
 		return aircraft
-	} 
+	}
 	if ac, ok := w.Aircraft[callsign]; ok {
 		return ac
 	}
-	return nil 
+	return nil
 }
 
 func findAircraft(sample string, aircraft []*Aircraft) *Aircraft {
@@ -949,6 +952,10 @@ func (w *World) ToggleShowScenarioInfoWindow() {
 	w.showScenarioInfo = !w.showScenarioInfo
 }
 
+func (w *World) ToggleShowCoordinationWindow() {
+	w.showCoordination = !w.showCoordination
+}
+
 type MissingPrimaryModalClient struct {
 	world *World
 }
@@ -990,6 +997,49 @@ func (w *World) DrawMissingPrimaryDialog() {
 			uiShowModalDialog(w.missingPrimaryDialog, true)
 		}
 	}
+}
+
+func (w *World) DrawCoordinationWindow() {
+	if !w.showCoordination {
+		return
+	}
+	if stoppedGates == nil { // This shouldn't happen.
+		stoppedGates = make(map[string]bool)
+	}
+	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
+		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+
+	// Ensure that the window is wide enough to show the description
+	sz := imgui.CalcTextSize(w.SimDescription, false, 0)
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
+	imgui.BeginV("Coordination List", &w.showCoordination, imgui.WindowFlagsAlwaysAutoResize)
+	if imgui.BeginTabBar("Controllers") {
+		if imgui.BeginTabItem("Tower") {
+
+			if imgui.BeginTabBar("Bar") {
+
+				if imgui.BeginTableV("Tower", 2, tableFlags, imgui.Vec2{}, 0) {
+					imgui.TableSetupColumn("Fix")
+					imgui.TableSetupColumn("Stop Departures")
+					imgui.TableHeadersRow()
+					for _, fix := range w.DepartureGates {
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+						imgui.Text(fix)
+						imgui.TableNextColumn()
+						enabled := stoppedGates[fix]
+						imgui.Checkbox("##"+fix, &enabled)
+						stoppedGates[fix] = enabled
+					}
+					imgui.EndTable()
+				}
+				imgui.EndTabBar()
+			}
+			imgui.EndTabItem()
+		}
+		imgui.EndTabBar()
+	}
+	imgui.End()
 }
 
 func (w *World) DrawScenarioInfoWindow() {
