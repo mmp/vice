@@ -701,7 +701,9 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string) {
 	if _, ok := nav.AssignedHeading(); !ok {
 		// Don't do anything if they are not on a heading; let them fly the
 		// regular route and don't (potentially) skip waypoints and go
-		// straight to the exit.
+		// straight to the exit; however, the altitude should be changed
+		nav.Altitude = NavAltitude{Assigned: &alt}
+		nav.Speed = NavSpeed{}
 		return
 	}
 
