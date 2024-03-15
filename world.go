@@ -465,11 +465,30 @@ func (w *World) Disconnect() {
 	w.Controllers = nil
 }
 
-func (w *World) GetAircraft(callsign string) *Aircraft {
+func (w *World) GetAircraft(callsign string, abbreviated bool) *Aircraft { // If the callsign can be abbreivated (for radio commands, not STARS commands)
+	if abbreviated {
+		ac := w.GetAllAircraft()
+		aircraft := findAircraft(callsign, ac)
+		return aircraft
+	} 
 	if ac, ok := w.Aircraft[callsign]; ok {
 		return ac
 	}
-	return nil
+	return nil 
+}
+
+func findAircraft(sample string, aircraft []*Aircraft) *Aircraft {
+	var final []*Aircraft
+	for _, icao := range aircraft {
+		if strings.Contains(icao.Callsign, sample) {
+			final = append(final, icao)
+		}
+	}
+	if len(final) == 1 {
+		return final[0]
+	} else {
+		return nil
+	}
 }
 
 func (w *World) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {

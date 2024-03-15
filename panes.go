@@ -423,13 +423,13 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 
 	// TODO: is this needed? Shouldn't there be a RemovedAircraftEvent?
 	fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool {
-		ac := w.GetAircraft(callsign)
+		ac := w.GetAircraft(callsign, false)
 		return ac != nil
 	})
 
 	if fsp.CollectDeparturesArrivals {
 		isDeparture := func(callsign string) bool {
-			ac := w.GetAircraft(callsign)
+			ac := w.GetAircraft(callsign, false)
 			return ac != nil && ac.IsDeparture()
 		}
 		dep := FilterSlice(fsp.strips, isDeparture)
@@ -529,7 +529,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	for i := scrollOffset; i < min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
 		callsign := fsp.strips[i]
 		strip := ctx.world.GetFlightStrip(callsign)
-		ac := ctx.world.GetAircraft(callsign)
+		ac := ctx.world.GetAircraft(callsign, false)
 		if ac == nil {
 			lg.Errorf("%s: no aircraft for callsign?!", strip.Callsign)
 			continue
@@ -885,7 +885,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 			icao, flight := callsign[:idx], callsign[idx:]
 			if telephony, ok := database.Callsigns[icao]; ok {
 				radioCallsign = telephony + " " + flight
-				if ac := w.GetAircraft(callsign); ac != nil {
+				if ac := w.GetAircraft(callsign, false); ac != nil {
 					if fp := ac.FlightPlan; fp != nil {
 						if strings.HasPrefix(fp.AircraftType, "H/") {
 							radioCallsign += " heavy"
