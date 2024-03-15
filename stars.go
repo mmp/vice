@@ -3250,7 +3250,6 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) e
 	} else if len(cmd) == 2 { // Global leader lines
 		if cmd[0] != cmd[1] || strings.Contains(cmd, "0") {
 			return GetSTARSError(ErrSTARSCommandFormat)
-
 		}
 		if ac.TrackingController != ctx.world.Callsign {
 			return GetSTARSError(ErrSTARSIllegalTrack)
@@ -3260,7 +3259,6 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) e
 			state.GlobalLeaderLine = true
 			return nil
 		}
-
 	}
 	return GetSTARSError(ErrSTARSCommandFormat)
 }
@@ -3799,7 +3797,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 
 			case "L": // Leader line
-
 				err := sp.setLeaderLine(ctx, ac, cmd)
 				if err != nil {
 					status.err = err
@@ -5919,6 +5916,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	} else {
 		state.LeaderLineDirection = state.ChosenLeaderLine
 	}
+
 	index := slices.Index(state.Warnings, state.SPCOverride)
 	if index != -1 {
 		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
