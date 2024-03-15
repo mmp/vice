@@ -2526,12 +2526,12 @@
    ]
   },
   "center": "N33.38.24.846,W84.25.42.088",
-  "stars_adaptation": {
-		"scratchpad_rules": [false, false],
+  "stars_config": {
+		"allow_long_scratchpad": [false, false],
 		"force_ql_self": true,
     "airspace_awareness": [
       {
-        "fix": [
+        "fixes": [
           "BNA",
           "CEASE",
           "EMAHH",

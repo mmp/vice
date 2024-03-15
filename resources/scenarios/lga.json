@@ -1408,8 +1408,8 @@
   },
   "center": "KLGA",
   "range": 60,
-  "stars_adaptation": {
-		"scratchpad_rules": [false, false],
+  "stars_config": {
+		"allow_long_scratchpad": [false, false],
 		"force_ql_self": true
 	},
   "control_positions": {

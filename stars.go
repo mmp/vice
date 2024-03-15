@@ -8,6 +8,7 @@
 package main
 
 import (
+	"cmp"
 	"fmt"
 	"runtime"
 	"slices"
@@ -416,8 +417,9 @@ type STARSAircraftState struct {
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
 	LeaderLineDirection *CardinalOrdinalDirection
-
-	Ghost struct {
+	ChosenLeaderLine    *CardinalOrdinalDirection
+	GlobalLeaderLine    bool // If the aircraft is a global line or set by the TCP
+	Ghost               struct {
 		PartialDatablock bool
 		State            GhostState
 	}
@@ -910,6 +912,33 @@ func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 }
 
 func (ps *STARSPreferenceSet) Activate(w *World) {
+	// It should only take integer values but it's a float32 and we
+	// previously didn't enforce this...
+	ps.Range = float32(int(ps.Range))
+
+	// Brightness goes in steps of 5 (similarly not enforced previously...)
+	remapBrightness := func(b *STARSBrightness) {
+		*b = (*b + 2) / 5 * 5
+		*b = clamp(*b, 0, 100)
+	}
+	remapBrightness(&ps.Brightness.DCB)
+	remapBrightness(&ps.Brightness.BackgroundContrast)
+	remapBrightness(&ps.Brightness.VideoGroupA)
+	remapBrightness(&ps.Brightness.VideoGroupB)
+	remapBrightness(&ps.Brightness.FullDatablocks)
+	remapBrightness(&ps.Brightness.Lists)
+	remapBrightness(&ps.Brightness.Positions)
+	remapBrightness(&ps.Brightness.LimitedDatablocks)
+	remapBrightness(&ps.Brightness.OtherTracks)
+	remapBrightness(&ps.Brightness.Lines)
+	remapBrightness(&ps.Brightness.RangeRings)
+	remapBrightness(&ps.Brightness.Compass)
+	remapBrightness(&ps.Brightness.BeaconSymbols)
+	remapBrightness(&ps.Brightness.PrimarySymbols)
+	remapBrightness(&ps.Brightness.History)
+	remapBrightness(&ps.Brightness.Weather)
+	remapBrightness(&ps.Brightness.WxContrast)
+
 	if ps.VideoMapVisible == nil {
 		ps.VideoMapVisible = make(map[string]interface{})
 		if w != nil && len(w.STARSMaps) > 0 {
@@ -1531,8 +1560,8 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	DrawHighlighted(ctx, transforms, cb)
 
-	sp.drawTracks(aircraft, ctx, transforms, cb)
 	sp.drawDatablocks(aircraft, ctx, transforms, cb)
+	sp.drawTracks(aircraft, ctx, transforms, cb)
 
 	ghosts := sp.getGhostAircraft(aircraft, ctx)
 	sp.drawGhosts(ghosts, ctx, transforms, cb)
@@ -1777,6 +1806,7 @@ func (sp *STARSPane) disableMenuSpinner(ctx *PaneContext) {
 
 func (sp *STARSPane) activateMenuSpinner(ptr unsafe.Pointer) {
 	activeSpinner = ptr
+	activeSpinnerMouseDelta = 0
 }
 
 func (sp *STARSPane) getAircraftIndex(ac *Aircraft) int {
@@ -1791,8 +1821,8 @@ func (sp *STARSPane) getAircraftIndex(ac *Aircraft) int {
 }
 
 func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status STARSCommandStatus) {
-	lookupAircraft := func(callsign string) *Aircraft {
-		if ac := ctx.world.GetAircraft(callsign); ac != nil {
+	lookupAircraft := func(callsign string, abbreviated bool) *Aircraft {
+		if ac := ctx.world.GetAircraft(callsign, abbreviated); ac != nil {
 			return ac
 		}
 
@@ -1811,8 +1841,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		return nil
 	}
-	lookupCallsign := func(callsign string) string {
-		ac := lookupAircraft(callsign)
+	lookupCallsign := func(callsign string, abbreivated bool) string {
+		ac := lookupAircraft(callsign, abbreivated)
 		if ac != nil {
 			return ac.Callsign
 		}
@@ -1926,7 +1956,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			cmd = cmd[2:]
 
 			callsign, tcps, _ := strings.Cut(cmd, " ")
-			aircraft := lookupAircraft(callsign)
+			aircraft := lookupAircraft(callsign, false)
 			if aircraft == nil {
 				status.err = ErrSTARSNoFlight
 			} else {
@@ -2014,7 +2044,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					status.err = ErrSTARSIllegalFix
 					return
 				}
-			} else if ac := lookupAircraft(f[0]); ac != nil && len(f) > 1 {
+			} else if ac := lookupAircraft(f[0], true); ac != nil && len(f) > 1 {
 				acCmds := strings.Join(f[1:], " ")
 				ctx.world.RunAircraftCommands(ac, acCmds,
 					func(err error) {
@@ -2068,7 +2098,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		}
 
 	case CommandModeInitiateControl:
-		if ac := lookupAircraft(cmd); ac == nil {
+		if ac := lookupAircraft(cmd, false); ac == nil {
 			status.err = ErrSTARSNoFlight
 		} else {
 			sp.initiateTrack(ctx, ac.Callsign)
@@ -2086,7 +2116,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			status.clear = true
 			return
 		} else {
-			sp.dropTrack(ctx, lookupCallsign(cmd))
+			sp.dropTrack(ctx, lookupCallsign(cmd, false))
 			return
 		}
 
@@ -2139,11 +2169,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			status.clear = true
 			return
 		case 1:
-			sp.cancelHandoff(ctx, lookupCallsign(f[0]))
+			sp.cancelHandoff(ctx, lookupCallsign(f[0], false))
 			status.clear = true
 			return
 		case 2:
-			sp.handoffTrack(ctx, lookupCallsign(f[1]), f[0])
+			sp.handoffTrack(ctx, lookupCallsign(f[1], false), f[0])
 			status.clear = true
 			return
 		}
@@ -2216,7 +2246,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			} else if len(cmd) == 1 {
 				// illegal value for dwell
 				status.err = ErrSTARSIllegalValue
-			} else if ac := lookupAircraft(cmd); ac != nil {
+			} else if ac := lookupAircraft(cmd, false); ac != nil {
 				// D(callsign)
 				// Display flight plan
 				status.output, status.err = sp.flightPlanSTARS(ctx.world, ac)
@@ -2324,11 +2354,15 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				return
 			} else if f := strings.Fields(cmd); len(f) == 2 {
 				// either L(id)(space)(dir) or L(dir)(space)(callsign)
-				if len(f[0]) == 1 {
+				if len(f[0]) == 1 || len(f[0]) == 2 {
 					// L(dir)(space)(callsign)
-					if dir, ok := numpadToDirection(f[0][0]); ok {
-						if ac := lookupAircraft(f[1]); ac != nil {
-							sp.Aircraft[ac.Callsign].LeaderLineDirection = dir
+					if _, ok := numpadToDirection(f[0][0]); ok {
+						if ac := lookupAircraft(f[1], false); ac != nil {
+							err := sp.setLeaderLine(ctx, ac, f[0])
+							if err != nil {
+								status.err = err
+								return
+							}
 							status.clear = true
 						} else {
 							status.err = ErrSTARSNoFlight
@@ -2529,7 +2563,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		case "O":
 			if len(cmd) > 2 {
-				aircraft := lookupAircraft(cmd)
+				aircraft := lookupAircraft(cmd, false)
 				if aircraft == nil {
 					status.err = GetSTARSError(ErrSTARSCommandFormat)
 					return
@@ -2775,7 +2809,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			if len(f) == 1 {
 				// Y callsign -> clear scratchpad and reported altitude
 				// Y+ callsign -> secondary scratchpad..
-				callsign := lookupCallsign(f[0])
+				callsign := lookupCallsign(f[0], false)
 				if state, ok := sp.Aircraft[callsign]; ok {
 					state.pilotAltitude = 0
 					if err := sp.setScratchpad(ctx, callsign, "", isSecondary); err != nil {
@@ -2791,7 +2825,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				// as above, Y+ -> secondary scratchpad
 
 				// Either pilot alt or scratchpad entry
-				if ac := lookupAircraft(f[0]); ac == nil {
+				if ac := lookupAircraft(f[0], false); ac == nil {
 					status.err = ErrSTARSNoFlight
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
 					sp.Aircraft[ac.Callsign].pilotAltitude = alt * 100
@@ -2826,11 +2860,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	case CommandModeFlightData:
 		f := strings.Fields(cmd)
 		if len(f) == 1 {
-			callsign := lookupCallsign(f[0])
+			callsign := lookupCallsign(f[0], false)
 			status.err = ctx.world.SetSquawkAutomatic(callsign)
 		} else if len(f) == 2 {
 			if squawk, err := ParseSquawk(f[1]); err == nil {
-				callsign := lookupCallsign(f[0])
+				callsign := lookupCallsign(f[0], false)
 				status.err = ctx.world.SetSquawk(callsign, squawk)
 			} else {
 				status.err = ErrSTARSIllegalCode
@@ -2843,7 +2877,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 	case CommandModeCollisionAlert:
 		if len(cmd) > 3 && cmd[:2] == "K " {
-			if ac := lookupAircraft(cmd[2:]); ac != nil {
+			if ac := lookupAircraft(cmd[2:], false); ac != nil {
 				state := sp.Aircraft[ac.Callsign]
 				state.DisableCAWarnings = !state.DisableCAWarnings
 			} else {
@@ -3024,6 +3058,13 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 
 func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt int) {
 	ctx.world.SetTemporaryAltitude(callsign, alt, nil,
+		func(err error) {
+			sp.previewAreaOutput = GetSTARSError(err).Error()
+		})
+}
+
+func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir *CardinalOrdinalDirection) {
+	ctx.world.SetGlobalLeaderLine(callsign, dir, nil,
 		func(err error) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
@@ -3211,6 +3252,31 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 		return false, "sp one" // Should to to scratchpad one
 	}
 	return false, ""
+}
+
+func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) error {
+	state := sp.Aircraft[ac.Callsign]
+	if len(cmd) == 1 {
+		if dir, ok := numpadToDirection(cmd[0]); ok {
+			state.LeaderLineDirection = dir
+			state.ChosenLeaderLine = dir
+			state.GlobalLeaderLine = false
+			return nil
+		}
+	} else if len(cmd) == 2 { // Global leader lines
+		if cmd[0] != cmd[1] || strings.Contains(cmd, "0") {
+			return GetSTARSError(ErrSTARSCommandFormat)
+		}
+		if ac.TrackingController != ctx.world.Callsign {
+			return GetSTARSError(ErrSTARSIllegalTrack)
+		}
+		if dir, ok := numpadToDirection(cmd[0]); ok {
+			sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
+			state.GlobalLeaderLine = true
+			return nil
+		}
+	}
+	return GetSTARSError(ErrSTARSCommandFormat)
 }
 
 func (sp *STARSPane) forceQL(ctx *PaneContext, callsign, controller string) {
@@ -3408,8 +3474,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				}
 				return
-			} else if dir, ok := numpadToDirection(cmd[0]); ok && len(cmd) == 1 {
-				state.LeaderLineDirection = dir
+			} else if (unicode.IsDigit(rune(cmd[0])) && len(cmd) == 1) ||
+				(len(cmd) == 2 && unicode.IsDigit(rune(cmd[1]))) {
+				err := sp.setLeaderLine(ctx, ac, cmd)
+				if err != nil {
+					status.err = err
+					return
+				}
 				status.clear = true
 				return
 			} else if cmd == "?" {
@@ -3735,15 +3806,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				}
 				return
 
-			case "L":
-				if len(cmd) == 1 {
-					if dir, ok := numpadToDirection(cmd[0]); ok {
-						state.LeaderLineDirection = dir
-						status.clear = true
-						return
-					}
+			case "L": // Leader line
+				err := sp.setLeaderLine(ctx, ac, cmd)
+				if err != nil {
+					status.err = err
+					return
 				}
-				status.err = ErrSTARSCommandFormat
+				status.clear = true
 				return
 
 			case "M":
@@ -4046,16 +4115,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 
 	switch sp.activeDCBMenu {
 	case DCBMenuMain:
-		STARSCallbackSpinner(ctx, "RANGE\n", &ps.Range,
-			func(v float32) string { return strconv.Itoa(int(v)) },
-			func(v, delta float32) float32 {
-				if delta > 0 {
-					v++
-				} else if delta < 0 {
-					v--
-				}
-				return clamp(v, 6, 256)
-			}, STARSButtonFull, buttonScale)
+		STARSItemsSpinner(ctx, "RANGE\n", &ps.Range, GenRange[float32](6, 257, 1), STARSButtonFull, buttonScale)
 		sp.STARSPlaceButton("PLACE\nCNTR", STARSButtonHalfVertical, buttonScale,
 			func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 				ps.Center = transforms.LatLongFromWindowP(pw)
@@ -4068,26 +4128,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if STARSToggleButton("OFF\nCNTR", &ps.OffCenter, STARSButtonHalfVertical, buttonScale) {
 			ps.CurrentCenter = ps.Center
 		}
-		STARSCallbackSpinner(ctx, "RR\n", &ps.RangeRingRadius,
-			func(v int) string { return strconv.Itoa(v) },
-			func(v int, delta float32) int {
-				di := 0
-				if delta > 0 {
-					di = 1
-				} else if delta < 0 {
-					di = -1
-				}
-
-				valid := []int{2, 5, 10, 20}
-				for i := range valid {
-					if v == valid[i] {
-						i = clamp(i+di, 0, len(valid)-1)
-						return valid[i]
-					}
-				}
-				lg.Errorf("%d: invalid value for RR spinner", v)
-				return valid[0]
-			}, STARSButtonFull, buttonScale)
+		STARSItemsSpinner(ctx, "RR\n", &ps.RangeRingRadius, []int{2, 5, 10, 20}, STARSButtonFull, buttonScale)
 		sp.STARSPlaceButton("PLACE\nRR", STARSButtonHalfVertical, buttonScale,
 			func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 				ps.RangeRingsCenter = transforms.LatLongFromWindowP(pw)
@@ -4125,7 +4166,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 		STARSCallbackSpinner(ctx, "LDR DIR\n   ", &ps.LeaderLineDirection,
 			func(d CardinalOrdinalDirection) string { return d.ShortString() },
-			func(d CardinalOrdinalDirection, delta float32) CardinalOrdinalDirection {
+			func(d CardinalOrdinalDirection, delta int) CardinalOrdinalDirection {
 				if delta == 0 {
 					return d
 				} else if delta < 0 {
@@ -4134,17 +4175,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 					return CardinalOrdinalDirection((d + 1) % 8)
 				}
 			}, STARSButtonHalfVertical, buttonScale)
-		STARSCallbackSpinner(ctx, "LDR\n ", &ps.LeaderLineLength,
-			func(v int) string { return strconv.Itoa(v) },
-			func(v int, delta float32) int {
-				if delta == 0 {
-					return v
-				} else if delta < 0 {
-					return max(0, v-1)
-				} else {
-					return min(7, v+1)
-				}
-			}, STARSButtonHalfVertical, buttonScale)
+		STARSIntSpinner(ctx, "LDR\n ", &ps.LeaderLineLength, 0, 7, STARSButtonHalfVertical, buttonScale)
 
 		if STARSSelectButton("CHAR\nSIZE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuCharSize
@@ -4198,12 +4229,12 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if STARSToggleButton("DCB\nBOTTOM", &bottom, STARSButtonHalfVertical, buttonScale) {
 			ps.DCBPosition = DCBPositionBottom
 		}
-		STARSFloatSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, 0.1, 20, STARSButtonFull, buttonScale)
+		STARSItemsSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, []float32{0.5, 1, 1.5, 2, 2.5, 3}, STARSButtonFull, buttonScale)
 		STARSToggleButton("PTL OWN", &ps.PTLOwn, STARSButtonHalfVertical, buttonScale)
 		STARSToggleButton("PTL ALL", &ps.PTLAll, STARSButtonHalfVertical, buttonScale)
 		STARSCallbackSpinner(ctx, "DWELL\n", &ps.DwellMode,
 			func(mode DwellMode) string { return mode.String() },
-			func(mode DwellMode, delta float32) DwellMode {
+			func(mode DwellMode, delta int) DwellMode {
 				if delta > 0 {
 					return [3]DwellMode{DwellModeLock, DwellModeLock, DwellModeOn}[mode]
 				} else if delta < 0 {
@@ -5885,6 +5916,12 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	ps := sp.CurrentPreferenceSet
 	state := sp.Aircraft[ac.Callsign]
 
+	if state.ChosenLeaderLine == nil {
+		state.LeaderLineDirection = ac.GlobalLinePosition
+	} else {
+		state.LeaderLineDirection = state.ChosenLeaderLine
+	}
+
 	var errs []string
 	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
 		errs = append(errs, "LA")
@@ -7036,24 +7073,19 @@ var (
 	// though we also need to think about focus capture; probably should
 	// force take it when a spinner is active..
 	activeSpinner unsafe.Pointer
+	// Accumulated but not yet reported mouse movement
+	activeSpinnerMouseDelta float32
 )
 
 func STARSIntSpinner(ctx *PaneContext, text string, value *int, min int, max int, flags int, buttonScale float32) {
 	STARSCallbackSpinner[int](ctx, text, value,
 		func(v int) string { return strconv.Itoa(v) },
-		func(v int, delta float32) int {
-			di := 0
-			if delta > 0 {
-				di = 1
-			} else if delta < 0 {
-				di = -1
-			}
-			return clamp(v+di, min, max)
-		}, flags, buttonScale)
+		func(v int, delta int) int { return clamp(v+delta, min, max) },
+		flags, buttonScale)
 }
 
 func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print func(v V) string,
-	callback func(v V, delta float32) V, flags int, buttonScale float32) {
+	callback func(v V, delta int) V, flags int, buttonScale float32) {
 	text += print(*value)
 
 	if activeSpinner == unsafe.Pointer(value) {
@@ -7074,7 +7106,17 @@ func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print 
 		}
 
 		if ctx.mouse != nil {
-			*value = callback(*value, -ctx.mouse.Wheel[1])
+			activeSpinnerMouseDelta += -ctx.mouse.Wheel[1]
+
+			// Require two ticks for a delta of one; make the spinners a
+			// little less jumpy.
+			const movementScale = 2
+			// Only report a change when there's enough movement to matter.
+			if abs(activeSpinnerMouseDelta) > movementScale {
+				delta := int(activeSpinnerMouseDelta / movementScale)
+				activeSpinnerMouseDelta -= float32(delta * movementScale)
+				*value = callback(*value, delta)
+			}
 		}
 	} else {
 		_, clicked := drawDCBButton(text, flags, buttonScale, false, false)
@@ -7084,10 +7126,13 @@ func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print 
 	}
 }
 
-func STARSFloatSpinner(ctx *PaneContext, text string, value *float32, min float32, max float32, flags int, buttonScale float32) {
-	STARSCallbackSpinner(ctx, text, value, func(f float32) string { return fmt.Sprintf("%.1f", *value) },
-		func(v float32, delta float32) float32 {
-			return clamp(v+delta/10, min, max)
+func STARSItemsSpinner[T cmp.Ordered](ctx *PaneContext, text string, value *T, options []T, flags int, buttonScale float32) {
+	STARSCallbackSpinner(ctx, text, value,
+		func(v T) string { return fmt.Sprintf("%v", v) },
+		func(v T, delta int) T {
+			idx, _ := slices.BinarySearch(options, *value)
+			idx = clamp(idx+delta, 0, len(options)-1)
+			return options[idx]
 		}, flags, buttonScale)
 }
 
@@ -7101,24 +7146,12 @@ func STARSBrightnessSpinner(ctx *PaneContext, text string, b *STARSBrightness, m
 				return fmt.Sprintf("%2d", int(b))
 			}
 		},
-		func(b STARSBrightness, delta float32) STARSBrightness {
-			if delta > 0 {
-				if b == 0 && allowOff {
-					return STARSBrightness(min)
-				} else {
-					b++
-					return STARSBrightness(clamp(b, min, 100))
-				}
-			} else if delta < 0 {
-				if b == min && allowOff {
-					return STARSBrightness(0)
-				} else {
-					b--
-					return STARSBrightness(clamp(b, min, 100))
-				}
-			} else {
-				return b
+		func(b STARSBrightness, delta int) STARSBrightness {
+			b += STARSBrightness(5 * delta)
+			if b < min && allowOff {
+				return STARSBrightness(0)
 			}
+			return STARSBrightness(clamp(b, min, 100))
 		}, flags, buttonScale)
 }
 
@@ -7150,7 +7183,7 @@ func STARSDisabledButton(text string, flags int, buttonScale float32) {
 // the flightplan; the provided callback function should make the update
 // and the rest of the details are handled here.
 func amendFlightPlan(w *World, callsign string, amend func(fp *FlightPlan)) error {
-	if ac := w.GetAircraft(callsign); ac == nil {
+	if ac := w.GetAircraft(callsign, false); ac == nil {
 		return ErrNoAircraftForCallsign
 	} else {
 		fp := Select(ac.FlightPlan != nil, ac.FlightPlan, &FlightPlan{})
@@ -7335,6 +7368,9 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft, w *World) CardinalOrdinalDirection {
 	ps := sp.CurrentPreferenceSet
 
+	if sp.Aircraft[ac.Callsign].GlobalLeaderLine && ac.GlobalLinePosition != nil {
+		return *ac.GlobalLinePosition
+	}
 	if lld := sp.Aircraft[ac.Callsign].LeaderLineDirection; lld != nil {
 		// The direction was specified for the aircraft specifically
 		return *lld

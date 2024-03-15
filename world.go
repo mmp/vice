@@ -268,6 +268,20 @@ func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	return nil // UNIMPLEMENTED
 }
 
+func (w *World) SetGlobalLeaderLine(callsign string, dir *CardinalOrdinalDirection, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
+		ac.GlobalLinePosition = dir
+	}
+
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.SetGlobalLeaderLine(callsign, dir),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (w *World) InitiateTrack(callsign string, success func(any), err func(error)) {
 	// Modifying locally is not canonical but improves perceived latency in
 	// the common case; the RPC may fail, though that's fine; the next
@@ -465,11 +479,30 @@ func (w *World) Disconnect() {
 	w.Controllers = nil
 }
 
-func (w *World) GetAircraft(callsign string) *Aircraft {
+func (w *World) GetAircraft(callsign string, abbreviated bool) *Aircraft { // If the callsign can be abbreivated (for radio commands, not STARS commands)
+	if abbreviated {
+		ac := w.GetAllAircraft()
+		aircraft := findAircraft(callsign, ac)
+		return aircraft
+	} 
 	if ac, ok := w.Aircraft[callsign]; ok {
 		return ac
 	}
-	return nil
+	return nil 
+}
+
+func findAircraft(sample string, aircraft []*Aircraft) *Aircraft {
+	var final []*Aircraft
+	for _, icao := range aircraft {
+		if strings.Contains(icao.Callsign, sample) {
+			final = append(final, icao)
+		}
+	}
+	if len(final) == 1 {
+		return final[0]
+	} else {
+		return nil
+	}
 }
 
 func (w *World) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
