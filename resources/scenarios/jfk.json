@@ -2742,6 +2742,55 @@
     ]
   },
   "center": "KJFK",
+  "stars_config": {
+    "allow_long_scratchpad": [false, false],
+    "force_ql_self": true,
+    "airspace_awareness": [
+      {
+         "fixes": [
+          "SHIPP",
+          "WAVEY"
+        ],
+        "aircraft_type": [
+          "J"
+        ],
+        "altitude_range": [
+          12000,
+          99999
+        ],
+        "to_center": true,
+        "receiving_controller": "C66"
+      },
+      {
+        "fixes": [
+          "SHIPP",
+          "WAVEY"
+        ],
+        "aircraft_type": [
+          "P",
+          "T"
+        ],
+        "altitude_range": [
+          10000,
+          99999
+        ],
+        "to_center": true,
+        "receiving_controller": "C66"
+      },
+      {
+        "fixes": [
+          "BETTE",
+          "HAPIE"
+        ],
+        "altitude_range": [
+          11000,
+          99999
+        ],
+        "to_center": true,
+        "receiving_controller": "B17"
+      }
+  ]
+  },
   "control_positions": {
     "BOS_E_CTR": {
       "frequency": 133450,

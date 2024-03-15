@@ -2950,12 +2950,12 @@
                                                     ]
                         },
                         "center": "N41.24.31.437,W81.51.17.377",
-                        "stars_adaptation": {
-                            "scratchpad_rules": [false, false],
+                        "stars_config": {
+                            "allow_long_scratchpad": [false, false],
                             "force_ql_self": true,
                             "airspace_awareness": [
                                 {
-                                    "fix": [
+                                    "fixes": [
                                         "APE",
                                         "ALPHE",
                                         "DAIFE",

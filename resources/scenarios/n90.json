@@ -3398,15 +3398,15 @@
   },
   "center": "KLGA",
   "range": 80,
-  "stars_adaptation": {
-    "scratchpad_rules": [
+  "stars_config": {
+    "allow_long_scratchpad": [
       false,
       false
     ],
     "force_ql_self": true,
     "airspace_awareness": [
       {
-        "fix": [
+        "fixes": [
           "MERIT",
           "BAYYS",
           "GREKI"
@@ -3419,7 +3419,7 @@
         "receiving_controller": "B19"
       },
       {
-        "fix": [
+        "fixes": [
           "DIXIE"
         ],
         "altitude_range": [
@@ -3433,7 +3433,7 @@
         "receiving_controller": "MY"
       },
       {
-        "fix": [
+        "fixes": [
           "DIXIE"
         ],
         "altitude_range": [
@@ -3448,7 +3448,7 @@
         "receiving_controller": "MY"
       },
       {
-        "fix": [
+        "fixes": [
           "DIXIE"
         ],
         "altitude_range": [
@@ -3459,7 +3459,7 @@
         "receiving_controller": "C68"
       },
       {
-        "fix": [
+        "fixes": [
           "WHITE"
         ],
         "altitude_range": [
@@ -3470,7 +3470,7 @@
         "receiving_controller": "C68"
       },
       {
-        "fix": [
+        "fixes": [
           "RBV"
         ],
         "altitude_range": [
@@ -3484,7 +3484,7 @@
         "receiving_controller": "C55"
       },
       {
-        "fix": [
+        "fixes": [
           "ARD"
         ],
         "altitude_range": [
@@ -3499,7 +3499,7 @@
         "receiving_controller": "C55"
       },
       {
-        "fix": [
+        "fixes": [
           "COATE",
           "GAYEL",
           "NEION"
@@ -3515,7 +3515,7 @@
         "receiving_controller": "C35"
       },
       {
-        "fix": [
+        "fixes": [
           "COATE"
         ],
         "altitude_range": [
@@ -3526,7 +3526,7 @@
         "receiving_controller": "C51"
       },
       {
-        "fix": [
+        "fixes": [
           "GAYEL"
         ],
         "altitude_range": [
@@ -3541,7 +3541,7 @@
         "receiving_controller": "C51"
       },
       {
-        "fix": [
+        "fixes": [
           "HAAYS"
         ],
         "altitude_range": [
@@ -3552,7 +3552,7 @@
         "receiving_controller": "C51"
       },
       {
-        "fix": [
+        "fixes": [
           "COATE"
         ],
         "altitude_range": [
@@ -3562,7 +3562,7 @@
         "receiving_controller": "AVP TODO"
       },
       {
-        "fix": [
+        "fixes": [
           "SAX V118 LVZ"
         ],
         "altitude_range": [
@@ -3572,7 +3572,7 @@
         "receiving_controller": "AVP TODO"
       },
       {
-        "fix": [
+        "fixes": [
           "HAAYS"
         ],
         "altitude_range": [
@@ -3582,7 +3582,7 @@
         "receiving_controller": "AVP TODO"
       },
       {
-        "fix": [
+        "fixes": [
           "PARKE",
           "ELIOT"
         ],
@@ -3594,7 +3594,7 @@
         "receiving_controller": "C39"
       },
       {
-        "fix": [
+        "fixes": [
           "NEWEL",
           "ZIMMZ"
         ],
@@ -3606,7 +3606,7 @@
         "receiving_controller": "C39"
       },
       {
-        "fix": [
+        "fixes": [
           "BIGGY"
         ],
         "altitude_range": [
@@ -3617,7 +3617,7 @@
         "receiving_controller": "C55"
       },
       {
-        "fix": [
+        "fixes": [
           "BIGGY"
         ],
         "altitude_range": [
@@ -3628,7 +3628,7 @@
         "receiving_controller": "C55"
       },
       {
-        "fix": [
+        "fixes": [
           "SHIPP",
           "WAVEY"
         ],
@@ -3643,7 +3643,7 @@
         "receiving_controller": "C66"
       },
       {
-        "fix": [
+        "fixes": [
           "SHIPP",
           "WAVEY"
         ],
@@ -3659,7 +3659,7 @@
         "receiving_controller": "C66"
       },
       {
-        "fix": [
+        "fixes": [
           "BETTE",
           "HAPIE"
         ],

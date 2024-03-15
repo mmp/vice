@@ -1318,12 +1318,12 @@
                         }]
                     },
                     "center": "KAUS",
-                    "stars_adaptation": {
-                        "scratchpad_rules": [false, false],
+                    "stars_config": {
+                        "allow_long_scratchpad": [false, false],
                         "force_ql_self": true,
                         "airspace_awareness": [
                             {
-                                "fix": [
+                                "fixes": [
                                     "ABI",
                                     "BNDIA",
                                     "MUCKY",
@@ -1338,7 +1338,7 @@
                                 "to_center": true
                             },
                             {
-                                "fix": [
+                                "fixes": [
                                     "ZENZI",
                                     "CLL"
                                 ],
@@ -1350,7 +1350,7 @@
                                 "to_center": false
                             },
                             {
-                                "fix": [
+                                "fixes": [
                                     "ZENZI",
                                     "CLL"
                                 ],
@@ -1362,7 +1362,7 @@
                                 "to_center": true
                             },
                             {
-                                "fix": [
+                                "fixes": [
                                     "SAYBR"
                                 ],
                                 "altitude_range": [
@@ -1373,7 +1373,7 @@
                                 "to_center": true
                             },
                             {
-                                "fix": [
+                                "fixes": [
                                     "KSAT"
                                 ],
                                 "altitude_range": [
