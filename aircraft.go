@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log/slog"
 	"strings"
-	"time"
 )
 
 type Aircraft struct {
@@ -22,7 +21,6 @@ type Aircraft struct {
 	FlightPlan          *FlightPlan
 	ForceQLControllers  []string
 	PointOutHistory     []string
-	POFlashingEndTime   time.Time
 
 	// Who has the radar track
 	TrackingController string
