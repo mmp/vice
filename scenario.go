@@ -49,9 +49,9 @@ type ScenarioGroup struct {
 	ReportingPointStrings []string         `json:"reporting_points"`
 	ReportingPoints       []ReportingPoint // not in JSON
 
-	NmPerLatitude           float32                 // Always 60
-	NmPerLongitude          float32                 // Derived from Center
-	MagneticVariation       float32                 `json:"magnetic_variation"`
+	NmPerLatitude           float32 // Always 60
+	NmPerLongitude          float32 // Derived from Center
+	MagneticVariation       float32
 	MagneticAdjustment      float32                 `json:"magnetic_adjustment"`
 	STARSFacilityAdaptation STARSFacilityAdaptation `json:"stars_config"`
 }
@@ -622,15 +622,41 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		sg.MagneticVariation = mvar + sg.MagneticAdjustment
 	}
 
-	if sg.NmPerLatitude == 0 {
-		e.ErrorString("\"nm_per_latitude\" not specified")
-	}
-	if sg.NmPerLongitude == 0 {
-		e.ErrorString("\"nm_per_latitude\" not specified")
-	}
-
 	if _, ok := sg.Scenarios[sg.DefaultScenario]; !ok {
 		e.ErrorString("default scenario \"%s\" not found in \"scenarios\"", sg.DefaultScenario)
+	}
+
+	for _, aa := range sg.STARSFacilityAdaptation.AirspaceAwareness {
+		e.Push("stars_adaptation")
+
+		// FIXME: disabled for now due to some errors in lib.json
+		/*
+			for _, fix := range aa.Fix {
+				if _, ok := sg.locate(fix); !ok {
+					e.ErrorString(fix + ": fix unknown")
+				}
+			}
+		*/
+
+		if aa.AltitudeRange[0] > aa.AltitudeRange[1] {
+			e.ErrorString("lower end of \"altitude_range\" %d above upper end %d",
+				aa.AltitudeRange[0], aa.AltitudeRange[1])
+		}
+
+		// FIXME: disabled pending resolving sector id vs controller callsign
+		/*
+			if _, ok := sg.ControlPositions[aa.ReceivingController]; !ok {
+				e.ErrorString(aa.ReceivingController + ": controller unknown")
+			}
+		*/
+
+		for _, t := range aa.AircraftType {
+			if t != "J" && t != "T" && t != "P" {
+				e.ErrorString("\"%s\": invalid \"aircraft_type\". Expected \"J\", \"T\", or \"P\".", t)
+			}
+		}
+
+		e.Pop()
 	}
 
 	for callsign, ctrl := range sg.ControlPositions {
