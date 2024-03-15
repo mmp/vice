@@ -33,7 +33,9 @@ type Aircraft struct {
 	// Handoff offered but not yet accepted
 	HandoffTrackController string
 
-	RedirectedHandoff RedirectedHandoff
+	GlobalLinePosition *CardinalOrdinalDirection
+	RedirectedHandoff  RedirectedHandoff
+
 	// The controller who gave approach clearance
 	ApproachController string
 

@@ -268,6 +268,20 @@ func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	return nil // UNIMPLEMENTED
 }
 
+func (w *World) SetGlobalLeaderLine(callsign string, dir *CardinalOrdinalDirection, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
+		ac.GlobalLinePosition = dir
+	}
+
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.SetGlobalLeaderLine(callsign, dir),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (w *World) InitiateTrack(callsign string, success func(any), err func(error)) {
 	// Modifying locally is not canonical but improves perceived latency in
 	// the common case; the RPC may fail, though that's fine; the next
