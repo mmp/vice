@@ -3978,7 +3978,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				v = math.Float32frombits(math.Float32bits(v) &^ (1 << 31))
 				d := int(v)
 				v = 60 * (v - float32(d))
-				return fmt.Sprintf("%3d %.2f", d, v)
+				return fmt.Sprintf("%d %.2f", d, v)
 			}
 			status.output = fmt.Sprintf("%s / %s", format(pll.Latitude()), format(pll.Longitude()))
 			status.clear = true
