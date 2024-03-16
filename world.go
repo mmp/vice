@@ -1040,10 +1040,13 @@ func (w *World) DrawCoordinationWindow() {
 			imgui.EndTabItem()
 		}
 		if imgui.BeginTabItem("Releases"){
-			if imgui.BeginTableV("Releases", 3, tableFlags, imgui.Vec2{}, 0) {
+			if imgui.BeginTableV("Releases", 6, tableFlags, imgui.Vec2{}, 0) {
 				imgui.TableSetupColumn("Callsign")
 				imgui.TableSetupColumn("Airport")
+				imgui.TableSetupColumn("Exit Gate")
+				imgui.TableSetupColumn("Aircraft")
 				imgui.TableSetupColumn("Release")
+				imgui.TableSetupColumn("FP Info")
 				imgui.TableHeadersRow()
 				
 					for _, ac := range heldAircraft {
@@ -1054,12 +1057,56 @@ func (w *World) DrawCoordinationWindow() {
 							imgui.TableNextColumn()
 							imgui.Text(ac.FlightPlan.DepartureAirport)
 							imgui.TableNextColumn()
+							imgui.Text(ac.Exit)
+							imgui.TableNextColumn()
+							imgui.Text(ac.FlightPlan.AircraftType)
+							imgui.TableNextColumn()
 							release := imgui.Button("Release##"+ac.Callsign)
+							imgui.TableNextColumn()
+							info := imgui.Button("Display##"+ac.Callsign)
 							if release {
 								i := slices.Index(heldAircraft, ac)
 								heldAircraft = append(heldAircraft[:i], heldAircraft[i+1:]...)
 								w.LaunchAircraft(*ac)
 							}	
+							if info {
+								ac.ToggleDisplayFP()
+							}
+							if ac.DisplayFPInfo {
+								imgui.BeginV(fmt.Sprintf("Flight Plan for %v", ac.Callsign), &ac.DisplayFPInfo, imgui.WindowFlagsAlwaysAutoResize)
+								if imgui.BeginTableV("Info", 2, tableFlags, imgui.Vec2{}, 0) {
+									imgui.TableSetupColumn("Field")
+									imgui.TableSetupColumn("Value")
+									imgui.TableHeadersRow()
+									imgui.TableNextRow()
+									imgui.TableNextColumn()
+									imgui.Text("Callsign")
+									imgui.TableNextColumn()
+									imgui.Text(ac.Callsign)
+									imgui.TableNextRow()
+									imgui.TableNextColumn()
+									imgui.Text("Departure Airport")
+									imgui.TableNextColumn()
+									imgui.Text(ac.FlightPlan.DepartureAirport)
+									imgui.TableNextRow()
+									imgui.TableNextColumn()
+									imgui.Text("Arrival Airport")
+									imgui.TableNextColumn()
+									imgui.Text(ac.FlightPlan.ArrivalAirport)
+									imgui.TableNextRow()
+									imgui.TableNextColumn()
+									imgui.Text("Aircraft Type")
+									imgui.TableNextColumn()
+									imgui.Text(ac.FlightPlan.AircraftType)
+									imgui.TableNextRow()
+									imgui.TableNextColumn()
+									imgui.Text("Route")
+									imgui.TableNextColumn()
+									imgui.Text(ac.FlightPlan.Route)
+									imgui.EndTable()
+								}
+								imgui.End()
+							}
 						}
 								
 					}
@@ -1070,6 +1117,10 @@ func (w *World) DrawCoordinationWindow() {
 		imgui.EndTabBar()
 	}
 	imgui.End()
+}
+
+func (ac *Aircraft) ToggleDisplayFP() {
+	ac.DisplayFPInfo = !ac.DisplayFPInfo
 }
 
 func (w *World) DrawScenarioInfoWindow() {

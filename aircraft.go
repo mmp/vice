@@ -21,6 +21,7 @@ type Aircraft struct {
 	FlightPlan          *FlightPlan
 	ForceQLControllers  []string
 	PointOutHistory     []string
+	DisplayFPInfo       bool
 
 	// Who has the radar track
 	TrackingController string

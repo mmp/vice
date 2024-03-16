@@ -1796,9 +1796,15 @@ func (s *Sim) spawnAircraft() {
 					s.launchAircraftNoLock(*ac)
 					s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum, false))
 					break
-				} else if s.World.Airports[ac.FlightPlan.DepartureAirport].Uncontrolled {
-					if !slices.Contains(heldAircraft, ac) && len(heldAircraft) <= len(s.World.Airports) * 2{ // Make sure they're arent to many of them
-						heldAircraft = append(heldAircraft, ac)	
+				} else if !stoppedGates[ac.Exit] && s.World.Airports[ac.FlightPlan.DepartureAirport].Uncontrolled {
+					if !slices.Contains(heldAircraft, ac) { // Make sure they're arent to many of them
+						per := make(map[string][]*Aircraft) // To limit each airport to 2 releases.
+						for _, held := range heldAircraft {
+							per[held.FlightPlan.DepartureAirport] = append(per[held.FlightPlan.DepartureAirport], held)
+						}
+						if len(per[ac.FlightPlan.DepartureAirport]) < 2 {
+							heldAircraft = append(heldAircraft, ac)	
+						}	
 					}
 					break
 				}
