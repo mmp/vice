@@ -6661,7 +6661,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			} else {
 				ps.Range += mouse.Wheel[1]
 			}
-			ps.Range = clamp(ps.Range, 6, 512) // 4-33
+			ps.Range = float32(int(clamp(ps.Range, 6, 256) + 0.5)) // 4-33
 
 			// We want to zoom in centered at the mouse position; this affects
 			// the scope center after the zoom, so we'll find the
