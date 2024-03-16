@@ -2065,17 +2065,42 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			}
 		}
 		if len(cmd) > 0 {
+			if cmd == "ALL" {
+				if ps.QuickLookAll && ps.QuickLookAllIsPlus {
+					ps.QuickLookAllIsPlus = false
+				} else {
+					ps.QuickLookAll = !ps.QuickLookAll
+					ps.QuickLookAllIsPlus = false
+					ps.QuickLookPositions = nil
+				}
+				status.clear = true
+				return
+			} else if cmd == "ALL+" {
+				if ps.QuickLookAll && !ps.QuickLookAllIsPlus {
+					ps.QuickLookAllIsPlus = true
+				} else {
+					ps.QuickLookAll = !ps.QuickLookAll
+					ps.QuickLookAllIsPlus = false
+					ps.QuickLookPositions = nil
+				}
+				status.clear = true
+				return
+			} 
 			ok, control := sp.calculateController(ctx, cmd, "")
 			if !ok {
 				status.err = GetSTARSError(ErrSTARSIllegalPosition)
 				return
 			}
 			for _, controler := range ctx.world.Controllers {
-				if controler.SectorId == control {
-					positions, input, err := parseQuickLookPositions(ctx.world, cmd)
+				if controler.Callsign == control {
+					c := ctx.world.GetController(control)
+					if c == nil {
+						status.err = GetSTARSError(ErrSTARSIllegalPosition)
+						return
+					}
+					positions, input, err := parseQuickLookPositions(ctx.world, c.SectorId)
 					if len(positions) > 0 {
 						ps.QuickLookAll = false
-
 						for _, pos := range positions {
 							// Toggle
 							match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
@@ -2655,35 +2680,48 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				status.clear = true
 				return
 			} else {
-				positions, input, err := parseQuickLookPositions(ctx.world, cmd)
-				if len(positions) > 0 {
-					ps.QuickLookAll = false
-
-					for _, pos := range positions {
-						// Toggle
-						match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
-						matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
-						if slices.ContainsFunc(ps.QuickLookPositions, match) {
-							nomatch := func(q QuickLookPosition) bool { return !match(q) }
-							ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
-						} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
-							// Toggle plus
-							ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
-						} else {
-							ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
-						}
-					}
-					sort.Slice(ps.QuickLookPositions,
-						func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
-				}
-
-				if err == nil {
-					status.clear = true
-				} else {
-					status.err = err
-					sp.previewAreaInput = input
-				}
+				ok, control := sp.calculateController(ctx, cmd, "")
+			if !ok {
+				status.err = GetSTARSError(ErrSTARSIllegalPosition)
 				return
+			}
+			for _, controler := range ctx.world.Controllers {
+				if controler.Callsign == control {
+					c := ctx.world.GetController(control)
+					if c == nil {
+						status.err = GetSTARSError(ErrSTARSIllegalPosition)
+						return
+					}
+					positions, input, err := parseQuickLookPositions(ctx.world, c.SectorId)
+					if len(positions) > 0 {
+						ps.QuickLookAll = false
+						for _, pos := range positions {
+							// Toggle
+							match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
+							matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
+							if slices.ContainsFunc(ps.QuickLookPositions, match) {
+								nomatch := func(q QuickLookPosition) bool { return !match(q) }
+								ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
+							} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
+								// Toggle plus
+								ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
+							} else {
+								ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
+							}
+						}
+						sort.Slice(ps.QuickLookPositions,
+							func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
+					}
+
+					if err == nil {
+						status.clear = true
+					} else {
+						status.err = err
+						sp.previewAreaInput = input
+					}
+					return
+				}
+			}
 			}
 
 		case "S":
@@ -3183,7 +3221,11 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 	haveTrianglePrefix := strings.HasPrefix(controller, STARSTriangleCharacter)
 	if controller == "C" || (haveTrianglePrefix && lc == 3) {
 		control, toCenter := calculateAirspace(ctx, callsign)
-		if control != "" && ((controller == "C" && toCenter) || (controller == ctx.world.GetController(control).FacilityIdentifier && !toCenter) ||
+		c := ctx.world.GetController(control)
+		if c == nil {
+			return false, ""
+		}
+		if control != "" && ((controller == "C" && toCenter) || (controller == c.FacilityIdentifier && !toCenter) ||
 			(controller == ctx.world.GetController(control).FacilityIdentifier && !toCenter)) {
 			state := sp.Aircraft[callsign]
 			state.LastKnownHandoff = ctx.world.GetController(control).Scope
