@@ -2288,6 +2288,7 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			if ac.RedirectedHandoff.RDIndicator && ac.RedirectedHandoff.RedirectedTo == ctrl.Callsign { // Accept
+				ac.ControllingController = ctrl.Callsign
 				ac.HandoffTrackController = ""
 				ac.TrackingController = ac.RedirectedHandoff.RedirectedTo
 				ac.RedirectedHandoff = RedirectedHandoff{
