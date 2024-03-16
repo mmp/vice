@@ -1804,6 +1804,7 @@ func (s *Sim) spawnAircraft() {
 						}
 						if len(per[ac.FlightPlan.DepartureAirport]) < 2 {
 							heldAircraft = append(heldAircraft, ac)	
+							s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum, false))
 						}	
 					}
 					break
