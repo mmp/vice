@@ -10,7 +10,6 @@ package main
 import (
 	"cmp"
 	"fmt"
-	"math"
 	"runtime"
 	"slices"
 	"sort"
@@ -3974,8 +3973,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 		if cmd == "D*" {
 			pll := transforms.LatLongFromWindowP(mousePosition)
 			format := func(v float32) string {
-				// abs but for float32
-				v = math.Float32frombits(math.Float32bits(v) &^ (1 << 31))
+				v = abs(v)
 				d := int(v)
 				v = 60 * (v - float32(d))
 				return fmt.Sprintf("%d %.2f", d, v)
