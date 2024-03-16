@@ -393,16 +393,6 @@ func (w *World) AcceptHandoff(callsign string, success func(any), err func(error
 		})
 }
 
-func (w *World) RejectHandoff(callsign string, success func(any), err func(error)) {
-	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
-			Call:      w.simProxy.RejectHandoff(callsign),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
 func (w *World) CancelHandoff(callsign string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
@@ -484,11 +474,11 @@ func (w *World) GetAircraft(callsign string, abbreviated bool) *Aircraft { // If
 		ac := w.GetAllAircraft()
 		aircraft := findAircraft(callsign, ac)
 		return aircraft
-	} 
+	}
 	if ac, ok := w.Aircraft[callsign]; ok {
 		return ac
 	}
-	return nil 
+	return nil
 }
 
 func findAircraft(sample string, aircraft []*Aircraft) *Aircraft {

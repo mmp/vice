@@ -2261,30 +2261,6 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 		})
 }
 
-func (s *Sim) RejectHandoff(token, callsign string) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	return s.dispatchCommand(token, callsign,
-		func(ctrl *Controller, ac *Aircraft) error {
-			if ac.HandoffTrackController != ctrl.Callsign {
-				return ErrNotBeingHandedOffToMe
-			}
-			return nil
-		},
-		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			s.eventStream.Post(Event{
-				Type:           RejectedHandoffEvent,
-				FromController: ac.ControllingController,
-				ToController:   ctrl.Callsign,
-				Callsign:       ac.Callsign,
-			})
-
-			ac.HandoffTrackController = ""
-			return nil
-		})
-}
-
 func (s *Sim) CancelHandoff(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
