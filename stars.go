@@ -400,6 +400,7 @@ type STARSAircraftState struct {
 	tracksIndex int
 
 	DatablockType DatablockType
+	FullLDB       time.Time // If the LDB displays the groundspeed. When to stop
 
 	IsSelected bool // middle click
 
@@ -3443,9 +3444,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 				}
-
-				if state.DatablockType != FullDatablock {
-					state.DatablockType = FullDatablock
+				db := sp.datablockType(ctx.world, ac)
+				if db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
+					state.FullLDB = time.Now().Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
 				} else if ac.TrackingController != ctx.world.Callsign {
 					state.DatablockType = PartialDatablock
@@ -5136,6 +5137,10 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = PartialDatablock
 	}
 
+	if ac.TrackingController == "" {
+		dt = LimitedDatablock
+	}
+
 	if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 		// it's under our control
 		dt = FullDatablock
@@ -5968,6 +5973,11 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	case LimitedDatablock:
 		db := baseDB.Duplicate()
 		db.Lines[1].Text = "TODO LIMITED DATABLOCK"
+		db.Lines[1].Text = fmt.Sprintf("%v", ac.Squawk)
+		db.Lines[2].Text = fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
+		if time.Until(state.FullLDB) > 0 {
+			db.Lines[2].Text += fmt.Sprintf(" %02d", (state.TrackGroundspeed()+5)/10)
+		}
 		return []STARSDatablock{db}
 
 	case PartialDatablock:
