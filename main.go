@@ -17,6 +17,7 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"os/signal"
+	"path"
 	"runtime"
 	"runtime/debug"
 	"runtime/pprof"
@@ -92,6 +93,21 @@ func main() {
 
 	// Initialize the logging system first and foremost.
 	lg = NewLogger(*server, *logLevel)
+
+	// If the path is non-absolute, convert it to an absolute path
+	// w.r.t. the current directory.  (This is to work around that vice
+	// changes the working directory to above where the resources are,
+	// which in turn was causing profiling data to be written in an
+	// unexpected place...)
+	absPath := func(p *string) {
+		if p != nil && !path.IsAbs(*p) {
+			if cwd, err := os.Getwd(); err == nil {
+				*p = path.Join(cwd, *p)
+			}
+		}
+	}
+	absPath(memprofile)
+	absPath(cpuprofile)
 
 	writeMemProfile := func() {
 		f, err := os.Create(*memprofile)
