@@ -44,6 +44,16 @@
                           "GEEQU/a7000/s210/iaf SAMMZ/a4000 JACKO/a3000 CIJOT/a1520",
                           "TRTEL/a7000/s210/iaf SOGGY SAMMZ/a4000 JACKO/a3000 CIJOT/a1520"
                       ]
+                    },
+                    "I35": {
+                      "full_name": "ILS Runway 35",
+                      "runway": "35",
+                      "type": "ILS",
+                      "tower_controller": "MSP_S_TWR",
+                      "waypoints": [
+                          "JAMEZ/a7000/iaf OBERR/a6000 SSTAR/a5000 ROZEE/a4000 LORAH/a3000 HUCUM/a1600",
+                          "NNEWW/a7000/iaf ROZEE/a4000 LORAH/a3000 HUCUM/a1600"
+                      ]
                     }
                 },
                 "departure_routes": {
@@ -51,208 +61,208 @@
                     "DLL": {
                       "cleared_altitude": 7000,
                       "sid": "COULT7",
-                      "waypoints": "_MSP_30L/h121 TAXEE COULT LMFRY"
+                      "waypoints": "_MSP_30L/h105 TAXEE COULT LMFRY"
                     },
                     "ABR": {
-                      "cleared_altitude": 7000,
+                      "cleared_altitude": 7000, 
                       "sid": "DWN8",
-                      "waypoints": "_MSP_30L/h121 INUNE DWN"
+                      "waypoints": "_MSP_30L/h090 INUNE DWN"
                     },
                     "FAR": {
                       "cleared_altitude": 7000,
                       "sid": "KBREW1",
-                      "waypoints": "_MSP_30L/h121 GEP HRBEK HOMUR KBREW/a14000"
+                      "waypoints": "_MSP_30L/h090 GEP HRBEK HOMUR KBREW/a14000"
                     },
                     "LEINY": {
                       "cleared_altitude": 7000,
                       "sid": "LEINY6",
-                      "waypoints": "_MSP_30L/h080 TONCA BOTNE KUUGL/a6000"
+                      "waypoints": "_MSP_30L/h090 TONCA BOTNE KUUGL/a6000"
                     },
                     "ONTIJ": {
                       "cleared_altitude": 7000,
                       "sid": "ORSKY3",
-                      "waypoints": "_MSP_30L/h121 JURNY RUMLE PEDLN/a9000 ORSKY/a11000"
+                      "waypoints": "_MSP_30L/h120 JURNY RUMLE PEDLN/a9000 ORSKY/a11000"
                     },
                     "ALO": {
                       "cleared_altitude": 7000,
                       "sid": "RST1",
-                      "waypoints": "_MSP_30L/h121 FGT FOBUG/a4000 DOKTR CORDY RST"
+                      "waypoints": "_MSP_30L/h120 FGT FOBUG/a4000 DOKTR CORDY RST"
                     },
                     "RXANN": {
                       "cleared_altitude": 7000,
                       "sid": "SCHEP1",
-                      "waypoints": "_MSP_30L/h121 HUGIR MCONL ARREX SCHEP"
+                      "waypoints": "_MSP_30L/h120 HUGIR MCONL ARREX SCHEP"
                     },
                     "SMERF": {
                       "cleared_altitude": 7000,
                       "sid": "SMERF7",
-                      "waypoints": "_MSP_30L/h121 ZOGAP/a5000 PAGOZ"
+                      "waypoints": "_MSP_30L/h090 ZOGAP/a5000 PAGOZ"
                     },
                     "GRB": {
                       "cleared_altitude": 7000,
                       "sid": "WLSTN7",
-                      "waypoints": "_MSP_30L/h121 SNINE DWIYT WLSTN"
+                      "waypoints": "_MSP_30L/h105 SNINE DWIYT WLSTN"
                     },
                     "ODI": {
                       "cleared_altitude": 7000,
                       "sid": "ZMBRO7",
-                      "waypoints": "_MSP_30L/h121 JEDET/a4000 ZMBRO"
+                      "waypoints": "_MSP_30L/h120 JEDET/a4000 ZMBRO"
                     }
                   },
                   "12L": {
                     "DLL": {
                       "cleared_altitude": 7000,
                       "sid": "COULT7",
-                      "waypoints": "_MSP_30R/h121 TAXEE COULT LMFRY"
+                      "waypoints": "_MSP_30L/h105 TAXEE COULT LMFRY"
                     },
                     "ABR": {
-                      "cleared_altitude": 7000,
+                      "cleared_altitude": 7000, 
                       "sid": "DWN8",
-                      "waypoints": "_MSP_30R/h121 INUNE DWN"
+                      "waypoints": "_MSP_30L/h090 INUNE DWN"
                     },
                     "FAR": {
                       "cleared_altitude": 7000,
                       "sid": "KBREW1",
-                      "waypoints": "_MSP_30R/h121 GEP HRBEK HOMUR KBREW/a14000"
+                      "waypoints": "_MSP_30L/h090 GEP HRBEK HOMUR KBREW/a14000"
                     },
                     "LEINY": {
                       "cleared_altitude": 7000,
                       "sid": "LEINY6",
-                      "waypoints": "_MSP_30R/h080 TONCA BOTNE KUUGL/a6000"
+                      "waypoints": "_MSP_30L/h090 TONCA BOTNE KUUGL/a6000"
                     },
                     "ONTIJ": {
                       "cleared_altitude": 7000,
                       "sid": "ORSKY3",
-                      "waypoints": "_MSP_30R/h121 JURNY RUMLE PEDLN/a9000 ORSKY/a11000"
+                      "waypoints": "_MSP_30L/h120 JURNY RUMLE PEDLN/a9000 ORSKY/a11000"
                     },
                     "ALO": {
                       "cleared_altitude": 7000,
                       "sid": "RST1",
-                      "waypoints": "_MSP_30R/h121 FGT FOBUG/a4000 DOKTR CORDY RST"
+                      "waypoints": "_MSP_30L/h120 FGT FOBUG/a4000 DOKTR CORDY RST"
                     },
                     "RXANN": {
                       "cleared_altitude": 7000,
                       "sid": "SCHEP1",
-                      "waypoints": "_MSP_30R/h121 HUGIR MCONL ARREX SCHEP"
+                      "waypoints": "_MSP_30L/h120 HUGIR MCONL ARREX SCHEP"
                     },
                     "SMERF": {
                       "cleared_altitude": 7000,
                       "sid": "SMERF7",
-                      "waypoints": "_MSP_30R/h121 ZOGAP/a5000 PAGOZ"
+                      "waypoints": "_MSP_30L/h090 ZOGAP/a5000 PAGOZ"
                     },
                     "GRB": {
                       "cleared_altitude": 7000,
                       "sid": "WLSTN7",
-                      "waypoints": "_MSP_30R/h121 SNINE DWIYT WLSTN"
+                      "waypoints": "_MSP_30L/h105 SNINE DWIYT WLSTN"
                     },
                     "ODI": {
                       "cleared_altitude": 7000,
                       "sid": "ZMBRO7",
-                      "waypoints": "_MSP_30R/h121 JEDET/a4000 ZMBRO"
+                      "waypoints": "_MSP_30L/h120 JEDET/a4000 ZMBRO"
                     }
                   },
                   "30L": {
                     "DLL": {
                       "cleared_altitude": 7000,
                       "sid": "COULT7",
-                      "waypoints": "_MSP_12R/h301 TAXEE COULT LMFRY"
+                      "waypoints": "_MSP_12R/h360 TAXEE COULT LMFRY"
                     },
                     "ABR": {
                       "cleared_altitude": 7000,
                       "sid": "DWN8",
-                      "waypoints": "_MSP_12R/h301 INUNE DWN"
+                      "waypoints": "_MSP_12R/h300 INUNE DWN"
                     },
                     "FAR": {
                       "cleared_altitude": 7000,
                       "sid": "KBREW1",
-                      "waypoints": "_MSP_12R/h301 GEP HRBEK HOMUR KBREW/a14000"
+                      "waypoints": "_MSP_12R/h320 GEP HRBEK HOMUR KBREW/a14000"
                     },
                     "LEINY": {
                       "cleared_altitude": 7000,
                       "sid": "LEINY6",
-                      "waypoints": "_MSP_12R/h301 TONCA BOTNE KUUGL/a6000"
+                      "waypoints": "_MSP_12R/h300 TONCA BOTNE KUUGL/a6000"
                     },
                     "ONTIJ": {
                       "cleared_altitude": 7000,
                       "sid": "ORSKY3",
-                      "waypoints": "_MSP_12R/h301 JURNY RUMLE PEDLN/a9000 ORSKY/a11000"
+                      "waypoints": "_MSP_12R/h280 JURNY RUMLE PEDLN/a9000 ORSKY/a11000"
                     },
                     "ALO": {
                       "cleared_altitude": 7000,
                       "sid": "RST1",
-                      "waypoints": "_MSP_12R/h301 FGT FOBUG/a4000 DOKTR CORDY RST"
+                      "waypoints": "_MSP_12R/h260 FGT FOBUG/a4000 DOKTR CORDY RST"
                     },
                     "RXANN": {
                       "cleared_altitude": 7000,
                       "sid": "SCHEP1",
-                      "waypoints": "_MSP_12R/h301 HUGIR MCONL ARREX SCHEP"
+                      "waypoints": "_MSP_12R/h280 HUGIR MCONL ARREX SCHEP"
                     },
                     "SMERF": {
                       "cleared_altitude": 7000,
                       "sid": "SMERF7",
-                      "waypoints": "_MSP_12R/h301 ZOGAP/a5000 PAGOZ"
+                      "waypoints": "_MSP_12R/h300 ZOGAP/a5000 PAGOZ"
                     },
                     "GRB": {
                       "cleared_altitude": 7000,
                       "sid": "WLSTN7",
-                      "waypoints": "_MSP_12R/h301 SNINE DWIYT WLSTN"
+                      "waypoints": "_MSP_12R/h340 SNINE DWIYT WLSTN"
                     },
                     "ODI": {
                       "cleared_altitude": 7000,
                       "sid": "ZMBRO7",
-                      "waypoints": "_MSP_12R/h301 JEDET/a4000 ZMBRO"
+                      "waypoints": "_MSP_12R/h260 JEDET/a4000 ZMBRO"
                     }
                   },
                   "30R": {
                     "DLL": {
                       "cleared_altitude": 7000,
                       "sid": "COULT7",
-                      "waypoints": "_MSP_12L/h301 TAXEE COULT LMFRY"
+                      "waypoints": "_MSP_12R/h360 TAXEE COULT LMFRY"
                     },
                     "ABR": {
                       "cleared_altitude": 7000,
                       "sid": "DWN8",
-                      "waypoints": "_MSP_12L/h301 INUNE DWN"
+                      "waypoints": "_MSP_12R/h300 INUNE DWN"
                     },
                     "FAR": {
                       "cleared_altitude": 7000,
                       "sid": "KBREW1",
-                      "waypoints": "_MSP_12L/h301 GEP HRBEK HOMUR KBREW/a14000"
+                      "waypoints": "_MSP_12R/h320 GEP HRBEK HOMUR KBREW/a14000"
                     },
                     "LEINY": {
                       "cleared_altitude": 7000,
                       "sid": "LEINY6",
-                      "waypoints": "_MSP_12L/h301 TONCA BOTNE KUUGL/a6000"
+                      "waypoints": "_MSP_12R/h300 TONCA BOTNE KUUGL/a6000"
                     },
                     "ONTIJ": {
                       "cleared_altitude": 7000,
                       "sid": "ORSKY3",
-                      "waypoints": "_MSP_12L/h301 JURNY RUMLE PEDLN/a9000 ORSKY/a11000"
+                      "waypoints": "_MSP_12R/h280 JURNY RUMLE PEDLN/a9000 ORSKY/a11000"
                     },
                     "ALO": {
                       "cleared_altitude": 7000,
                       "sid": "RST1",
-                      "waypoints": "_MSP_12L/h301 FGT FOBUG/a4000 DOKTR CORDY RST"
+                      "waypoints": "_MSP_12R/h260 FGT FOBUG/a4000 DOKTR CORDY RST"
                     },
                     "RXANN": {
                       "cleared_altitude": 7000,
                       "sid": "SCHEP1",
-                      "waypoints": "_MSP_12L/h301 HUGIR MCONL ARREX SCHEP"
+                      "waypoints": "_MSP_12R/h280 HUGIR MCONL ARREX SCHEP"
                     },
                     "SMERF": {
                       "cleared_altitude": 7000,
                       "sid": "SMERF7",
-                      "waypoints": "_MSP_12L/h301 ZOGAP/a5000 PAGOZ"
+                      "waypoints": "_MSP_12R/h300 ZOGAP/a5000 PAGOZ"
                     },
                     "GRB": {
                       "cleared_altitude": 7000,
                       "sid": "WLSTN7",
-                      "waypoints": "_MSP_12L/h301 SNINE DWIYT WLSTN"
+                      "waypoints": "_MSP_12R/h340 SNINE DWIYT WLSTN"
                     },
                     "ODI": {
                       "cleared_altitude": 7000,
                       "sid": "ZMBRO7",
-                      "waypoints": "_MSP_12L/h301 JEDET/a4000 ZMBRO"
+                      "waypoints": "_MSP_12R/h260 JEDET/a4000 ZMBRO"
                     }
                   }
                 },
@@ -377,22 +387,22 @@
                   }
                 ],
                 "exit_categories": {
-                  "DLL": "East",
-                  "ABR": "West",
-                  "FAR": "West",
-                  "LEINY": "West",
-                  "ONTIJ": "West",
-                  "ALO": "East",
-                  "RXANN": "West",
-                  "SMERF": "West",
-                  "GRB": "East",
-                  "ODI": "East"
+                  "DLL": "SouthEast",
+                  "ABR": "NorthWest",
+                  "FAR": "NorthWest",
+                  "LEINY": "NorthWest",
+                  "ONTIJ": "SouthWest",
+                  "ALO": "SouthEast",
+                  "RXANN": "SouthWest",
+                  "SMERF": "NorthWest",
+                  "GRB": "NorthEast",
+                  "ODI": "SouthEast"
                 },
                 "tower_list": 2
             }
         },
         "arrival_groups": {
-          "BAINY3_12": [
+          "BAINY3": [
             {
               "airlines": {
                 "KMSP": [
@@ -419,40 +429,19 @@
                 "initial_controller": "MSP_05_CTR",
                 "initial_speed": 280,
                 "star": "BAINY3",
-                "waypoints": "BAINY/a16000/s280 LUCCY/a11000/s280/ho SAUGR OGLVE/a8000 KAYQU/a7000/s210/h181"
-            }
-          ],
-          "BAINY3_30": [
-            {
-              "airlines": {
-                "KMSP": [
-                  {
-                    "airport": "KSEA",
-                    "icao": "DAL"
-                  },
-                  {
-                    "airport": "KPDX",
-                    "icao": "DAL"
-                  },
-                  {
-                    "airport": "EHAM",
-                    "fleet": "long",
-                    "icao": "DAL"
-                  },
-                  {
-                    "airport": "CYEG",
-                    "icao": "WJA"
+                "runway_waypoints": {
+                  "KMSP": {
+                    "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210",
+                    "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210",
+                    "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 JJENI/h121",
+                    "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210 IRRRV/h122",
+                    "35": "SAUGR GEP/a10000/s250 PRRPL/a9000 BRNVL/a8000/s210 GWAIT/h176"
                   }
-                ]
-              },
-              "initial_altitude": 17000,
-                "initial_controller": "MSP_05_CTR",
-                "initial_speed": 280,
-                "star": "BAINY3",
-                "waypoints": "BAINY/a17000/s280 LUCCY/a14000/s280/ho SAUGR GEP/a10000/s250 PRRPL/a9000 OSMOH/a8000/s210 IRRRV/h122"
+                },
+                "waypoints": "GGULL/a24000+ SHULZ/a20000+ BAINY/a15000-19000/s280/ho LUCCY/a11000+/s280 SAUGR"
             }
           ],
-          "BLUEM4_12": [
+          "BLUEM4": [
             {
               "airlines": {
                 "KMSP": [
@@ -476,43 +465,22 @@
                 ]
               },
               "initial_altitude": 16000,
-                "initial_controller": "MSP_05_CTR",
-                "initial_speed": 280,
-                "star": "BLUEM4",
-                "waypoints": "LAZYY/a16000/s280 BLUEM/a14000/s280/ho HHAMR/a12000 FARBO ELLKO/a10000/s250 SAVVG/a9000 GREAK/a8000/s230 DOLEE/h301"
-            }
-          ],
-          "BLUEM4_30": [
-            {
-              "airlines": {
-                "KMSP": [
-                  {
-                    "airport": "KSTL",
-                    "icao": "DAL"
-                  },
-                  {
-                    "airport": "KDFW",
-                    "icao": "AAL"
-                  },
-                  {
-                    "airport": "MMUN",
-                    "fleet": "long",
-                    "icao": "DAL"
-                  },
-                  {
-                    "airport": "KDAL",
-                    "icao": "SWA"
-                  }
-                ]
+              "initial_controller": "MSP_05_CTR",
+              "initial_speed": 280,
+              "star": "BLUEM4",
+              "runway_waypoints": {
+                "KMSP": {
+                  "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 DOLEE/h301",
+                  "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 COZZZ/h301",
+                  "30L": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
+                  "30R": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
+                  "35": "FARBO JAMEZ/a7000+"
+                }
               },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_05_CTR",
-                "initial_speed": 280,
-                "star": "BLUEM4",
-                "waypoints": "LAZYY/a16000/s280 BLUEM/a14000/s280/ho HHAMR/a12000 FARBO NOFLD/a10000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036"
+              "waypoints": "LAZYY/a16000+/s280 BLUEM/a11000+/s280/ho HHAMR/a10000+ FARBO"
             }
           ],
-          "KKILR3_12": [
+          "KKILR3": [
             {
               "airlines": {
                 "KMSP": [
@@ -538,39 +506,19 @@
                 "initial_controller": "MSP_05_CTR",
                 "initial_speed": 280,
                 "star": "KKILR3",
-                "waypoints": "CMAAC/a15000/s280 KKILR/a14000/s280/ho HUGGI/a13000 KRISP AFTYN/a10000/s250 CMMOE/a8000/s230 COZZZ/h301"
-            }
-          ],
-          "KKILR3_30": [
-            {
-              "airlines": {
-                "KMSP": [
-                  {
-                    "airport": "KMDW",
-                    "icao": "DAL"
-                  },
-                  {
-                    "airport": "KORD",
-                    "icao": "UAL"
-                  },
-                  {
-                    "airport": "KCLE",
-                    "icao": "DAL"
-                  },
-                  {
-                    "airport": "KEWR",
-                    "icao": "AAL"
+                "runway_waypoints": {
+                  "KMSP": {
+                    "12R": "KRISP AFTYN/a10000+/s250 CMMOE/a8000/s210 COZZZ/h301",
+                    "12L": "KRISP AFTYN/a10000+/s250 GREAK/a8000/s230 DOLEE/h301",
+                    "30L": "KRISP GEEQU/a210",
+                    "30R": "KRISP GEEQU/a210",
+                    "35": "KRISP AFTYN/a10000+/s230 CMMOE/a8000/s210"
                   }
-                ]
-              },
-              "initial_altitude": 15000,
-                "initial_controller": "MSP_05_CTR",
-                "initial_speed": 280,
-                "star": "KKILR3",
-                "waypoints": "CMAAC/a15000/s280 KKILR/a14000/s280/ho HUGGI/a13000 KRISP STUWE/a7000 GEEQU/a210/h243"
+                },
+                "waypoints": "CMAAC/a14000+/s280 KKILR/a12000+/s280/ho HUGGI/a10000+ KRISP"
             }
           ],
-          "MUSCL3_12": [
+          "MUSCL3": [
             {
               "airlines": {
                 "KMSP": [
@@ -596,36 +544,16 @@
                 "initial_controller": "MSP_05_CTR",
                 "initial_speed": 280,
                 "star": "MUSCL3",
-                "waypoints": "MUSCL/a17000/s280 BAYKS/a15000/s280/ho WOLVS LOOON/a12000 WDBRY/a10000/s250 ZASKY/a9000 CMMOE/a8000/s230 COZZZ/h301"
-            }
-          ],
-          "MUSCL3_30": [
-            {
-              "airlines": {
-                "KMSP": [
-                  {
-                    "airport": "KBOS",
-                    "icao": "DAL"
-                  },
-                  {
-                    "airport": "KBUF",
-                    "icao": "SWA"
-                  },
-                  {
-                    "airport": "KLGA",
-                    "icao": "DAL"
-                  },
-                  {
-                    "airport": "KJFK",
-                    "icao": "AAL"
+                "runway_waypoints": {
+                  "KMSP": {
+                    "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 COZZZ/h301",
+                    "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
+                    "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210",
+                    "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210",
+                    "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 COZZZ/h301"
                   }
-                ]
-              },
-              "initial_altitude": 17000,
-                "initial_controller": "MSP_05_CTR",
-                "initial_speed": 280,
-                "star": "MUSCL3",
-                "waypoints": "MUSCL/a17000/s280 BAYKS/a15000/s280/ho WOLVS LKLND/a9000 KROIX/a7000/s230 TRTEL/a7000/s210/h224"
+                },
+                "waypoints": "MUSCL/a17000/s280 BAYKS/a15000/s280/ho WOLVS"
             }
           ],
           "NITZR3_12": [
@@ -684,6 +612,35 @@
                 "initial_speed": 280,
                 "star": "NITZR3",
                 "waypoints": "DEMLL/a16000/s280 NITZR/a14000/s280/ho WRSAW/a12000 DAHRL AANAH/a10000/s250 WBSTR/a9000 CANDD/a7000/s230 HAPTN/a7000/s210/h036"
+            }
+          ],
+          "NITZR3_35": [
+            {
+              "airlines": {
+                "KMSP": [
+                  {
+                    "airport": "KIAH",
+                    "icao": "DAL"
+                  },
+                  {
+                    "airport": "KAUS",
+                    "icao": "SWA"
+                  },
+                  {
+                    "airport": "KOKC",
+                    "icao": "DAL"
+                  },
+                  {
+                    "airport": "KDFW",
+                    "icao": "AAL"
+                  }
+                ]
+              },
+              "initial_altitude": 16000,
+                "initial_controller": "MSP_05_CTR",
+                "initial_speed": 280,
+                "star": "NITZR3",
+                "waypoints": "DEMLL/a16000/s280 NITZR/a14000/s280/ho WRSAW/a12000 DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000"
             }
           ],
           "TORGY3_12": [
@@ -750,6 +707,39 @@
                 "initial_speed": 280,
                 "star": "TORGY3",
                 "waypoints": "TORGY/a13000/s280 OFSON/a12000/ho HMBRG CONIA JAEDN/a10000/s250 HDEEE/a9000 MAUER/a8000/s210 JJENI/h121"
+            }
+          ],
+          "TORGY3_35": [
+            {
+              "airlines": {
+                "KMSP": [
+                  {
+                    "airport": "KLAX",
+                    "icao": "DAL"
+                  },
+                  {
+                    "airport": "KBUR",
+                    "icao": "SWA"
+                  },
+                  {
+                    "airport": "KSJC",
+                    "icao": "DAL"
+                  },
+                  {
+                    "airport": "KSFO",
+                    "icao": "UAL"
+                  },
+                  {
+                    "airport": "KDEN",
+                    "icao": "UAL"
+                  }
+                ]
+              },
+              "initial_altitude": 13000,
+                "initial_controller": "MSP_05_CTR",
+                "initial_speed": 280,
+                "star": "TORGY3",
+                "waypoints": "TORGY/a13000/s280 OFSON/a12000/ho HMBRG CONIA JAEDN/a10000/s250 HDEEE/a9000 BRNVL/a8000/s210 GWAIT/h176"
             }
           ]
         },
