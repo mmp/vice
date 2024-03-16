@@ -69,7 +69,7 @@
           "type": "ILS",
           "tower_controller": "MIA_S_TWR",
           "waypoints": [
-            "SHANN/a3000+/if OLDDE/a3000 BIRDD/a1600/faf"
+            "SHANN/a5000/if OLDDE/a3000 BIRDD/a1600/faf"
           ]
         }
       },
@@ -168,27 +168,27 @@
           "ALTNN,DUCEN": {
             "cleared_altitude": 5000,
             "sid": "ALTNN1",
-            "waypoints": "CSALT DEALZ LIIVV FARRY AGERS/a5000 PERTS ALTNN"
+            "waypoints": "CSALT DEALZ LIIVV FARRY AGERS PERTS ALTNN"
           },
           "BNGOS,COREA,DOLIE,MERKS": {
             "cleared_altitude": 5000,
             "sid": "BNGOS3",
-            "waypoints": "CSALT DEALZ LIIVV NIBLT MRENO/a5000 BNGOS"
+            "waypoints": "CSALT DEALZ LIIVV NIBLT MRENO BNGOS"
           },
           "FLMGO,WAPOM,STYMY": {
             "cleared_altitude": 5000,
             "sid": "FLMGO1",
-            "waypoints": "CSALT DEALZ LIIVV GEITH ALNZO/a5000 FLMGO"
+            "waypoints": "CSALT DEALZ LIIVV GEITH ALNZO FLMGO"
           },
           "FOLZZ,PADUS,ZFP,SNAGY,SUMRS,ALYRA,GOZZR": {
             "cleared_altitude": 5000,
             "sid": "FOLZZ2",
-            "waypoints": "N025.48.10.207,W080.15.21.890 JAMBA KBOLA MARCK/a5000 FOLZZ"
+            "waypoints": "N025.48.10.207,W080.15.21.890 JAMBA KBOLA MARCK FOLZZ"
           },
           "GLADZ,BAGGS,LULLS,SHAQQ": {
             "cleared_altitude": 5000,
             "sid": "GLADZ2",
-            "waypoints": "CSALT DEALZ LIIVV BLART SELFI GAYTR/a5000 RUTLG GLADZ"
+            "waypoints": "CSALT DEALZ LIIVV BLART SELFI GAYTR RUTLG GLADZ"
           },
           "GWAVA,URSUS": {
             "cleared_altitude": 5000,
@@ -198,7 +198,7 @@
           "HURCN,KPASA,SMELZ": {
             "cleared_altitude": 5000,
             "sid": "HURCN3",
-            "waypoints": "CSALT DEALZ LIIVV NIBLT JOENZ/a5000 HURCN"
+            "waypoints": "CSALT DEALZ LIIVV NIBLT JOENZ HURCN"
           },
           "KLADA,BITAC,JAGOR,RAJAY": {
             "cleared_altitude": 5000, 
@@ -208,34 +208,34 @@
           "MAYNR,CANOA,FUNDI,MAXIM": {
             "cleared_altitude": 5000,
             "sid": "MAYNR1",
-            "waypoints": "N025.48.10.640,W080.15.10.711 BALLR MYNNT RUUMM AUSTI/a5000 MAYNR"
+            "waypoints": "N025.48.10.640,W080.15.10.711 BALLR MYNNT RUUMM AUSTI MAYNR"
           }
         },
         "12": {
           "ALTNN,DUCEN": {
             "cleared_altitude": 5000,
             "sid": "ALTNN1",
-            "waypoints": "N025.46.39.247,W080.15.39.385 CSALT DEALZ LIIVV FARRY AGERS/a5000 PERTS ALTNN"
+            "waypoints": "N025.46.39.247,W080.15.39.385 CSALT DEALZ LIIVV FARRY AGERS PERTS ALTNN"
           },
           "BNGOS,COREA,DOLIE,MERKS": {
             "cleared_altitude": 5000,
             "sid": "BNGOS3",
-            "waypoints": "N025.46.39.247,W080.15.39.385 CSALT DEALZ LIIVV NIBLT MRENO/a5000 BNGOS"
+            "waypoints": "N025.46.39.247,W080.15.39.385 CSALT DEALZ LIIVV NIBLT MRENO BNGOS"
           },
           "FLMGO,STYMY,WAPOM": {
             "cleared_altitude": 5000,
             "sid": "FLMGO1",
-            "waypoints": "N025.46.39.247,W080.15.39.385 CSALT DEALZ LIIVV GEITH ALNZO/a5000 FLMGO"
+            "waypoints": "N025.46.39.247,W080.15.39.385 CSALT DEALZ LIIVV GEITH ALNZO FLMGO"
           },
           "FOLZZ,PADUS,ZFP,SNAGY,SUMRS,ALYRA,GOZZR": {
             "cleared_altitude": 5000,
             "sid": "FOLZZ2",
-            "waypoints": "N025.46.39.247,W080.15.39.385 JAMBA KBOLA MARCK/a5000 FOLZZ"
+            "waypoints": "N025.46.39.247,W080.15.39.385 JAMBA KBOLA MARCK FOLZZ"
           },
           "GLADZ,BAGGS,LULLS,SHAQQ": {
             "cleared_altitude": 5000,
             "sid": "GLADZ2",
-            "waypoints": "N025.46.39.247,W080.15.39.385 CSALT DEALZ LIIVV BLART SELFI GAYTR/a5000 RUTLG GLADZ"
+            "waypoints": "N025.46.39.247,W080.15.39.385 CSALT DEALZ LIIVV BLART SELFI GAYTR RUTLG GLADZ"
           },
           "GWAVA,URSUS": {
             "cleared_altitude": 5000,
@@ -245,7 +245,7 @@
           "HURCN,KPASA,SMELZ": {
             "cleared_altitude": 5000,
             "sid": "HURCN3",
-            "waypoints": "N025.46.39.247,W080.15.39.385 CSALT DEALZ LIIVV NIBLT JOENZ/a5000 HURCN"
+            "waypoints": "N025.46.39.247,W080.15.39.385 CSALT DEALZ LIIVV NIBLT JOENZ HURCN"
           },
           "KLADA,BITAC,JAGOR,RAJAY": {
             "cleared_altitude": 5000, 
@@ -255,34 +255,34 @@
           "MAYNR,CANOA,FUNDI,MAXIM": {
             "cleared_altitude": 5000,
             "sid": "MAYNR1",
-            "waypoints": "N025.46.39.247,W080.15.39.385 BALLR MYNNT RUUMM AUSTI/a5000 MAYNR"
+            "waypoints": "N025.46.39.247,W080.15.39.385 BALLR MYNNT RUUMM AUSTI MAYNR"
           }
         },
         "26L": {
           "ALTNN,DUCEN": {
             "cleared_altitude": 5000,
             "sid": "ALTNN1",
-            "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS RMIRO FARRY AGERS/a5000 PERTS ALTNN"
+            "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS RMIRO FARRY AGERS PERTS ALTNN"
           },
           "BNGOS,COREA,DOLIE,MERKS": {
             "cleared_altitude": 5000,
             "sid": "BNGOS3",
-            "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS MRENO/a5000 BNGOS"
+            "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS MRENO BNGOS"
           },
           "FLMGO,STYMY,WAPOM": {
             "cleared_altitude": 5000,
             "sid": "FLMGO1",
-            "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS RMIRO ALNZO/a5000 FLMGO"
+            "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS RMIRO ALNZO FLMGO"
           },
           "FOLZZ,PADUS,ZFP,SNAGY,SUMRS,ALYRA,GOZZR": {
             "cleared_altitude": 5000,
             "sid": "FOLZZ2",
-            "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS RMIRO KELEY SHQIL MARCK/a5000 FOLZZ"
+            "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS RMIRO KELEY SHQIL MARCK FOLZZ"
           },
           "GLADZ,BAGGS,LULLS,SHAQQ": {
             "cleared_altitude": 5000,
             "sid": "GLADZ2",
-            "waypoints": "N025.47.58.054,W080.19.47.567 KSENO GAYTR/a5000 RUTLG GLADZ"
+            "waypoints": "N025.47.58.054,W080.19.47.567 KSENO GAYTR RUTLG GLADZ"
           },
           "GWAVA,URSUS": {
             "cleared_altitude": 5000,
@@ -292,7 +292,7 @@
           "HURCN,KPASA,SMELZ": {
             "cleared_altitude": 5000,
             "sid": "HURCN3",
-            "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS NIBLT JOENZ/a5000 HURCN"
+            "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS NIBLT JOENZ HURCN"
           },
           "KLADA,BITAC,JAGOR,RAJAY": {
             "cleared_altitude": 5000, 
@@ -302,34 +302,34 @@
           "MAYNR,CANOA,FUNDI,MAXIM": {
             "cleared_altitude": 5000,
             "sid": "MAYNR1",
-            "waypoints": "N025.47.58.054,W080.19.47.567 KSENO COOZY HAMAK LONZO AUSTI/a5000 MAYNR"
+            "waypoints": "N025.47.58.054,W080.19.47.567 KSENO COOZY HAMAK LONZO AUSTI MAYNR"
           }
         },
         "27": {
           "ALTNN,DUCEN": {
             "cleared_altitude": 5000,
             "sid": "ALTNN1",
-            "waypoints": "N025.47.07.606,W080.20.03.881 KROCS RUSSS RMIRO FARRY AGERS/a5000 PERTS ALTNN"
+            "waypoints": "N025.47.07.606,W080.20.03.881 KROCS RUSSS RMIRO FARRY AGERS PERTS ALTNN"
           },
           "BNGOS,COREA,DOLIE,MERKS": {
             "cleared_altitude": 5000,
             "sid": "BNGOS3",
-            "waypoints": "N025.47.07.606,W080.20.03.881 KROCS RUSSS MRENO/a5000 BNGOS"
+            "waypoints": "N025.47.07.606,W080.20.03.881 KROCS RUSSS MRENO BNGOS"
           },
           "FLMGO,STYMY,WAPOM": {
             "cleared_altitude": 5000,
             "sid": "FLMGO1",
-            "waypoints": "N025.47.07.606,W080.20.03.881 KROCS RUSSS RMIRO ALNZO/a5000 FLMGO"
+            "waypoints": "N025.47.07.606,W080.20.03.881 KROCS RUSSS RMIRO ALNZO FLMGO"
           },
           "FOLZZ,PADUS,ZFP,SNAGY,SUMRS,ALYRA,GOZZR": {
             "cleared_altitude": 5000,
             "sid": "FOLZZ2",
-            "waypoints": "N025.47.07.606,W080.20.03.881 KROCS RUSSS RMIRO KELEY SHQIL MARCK/a5000 FOLZZ"
+            "waypoints": "N025.47.07.606,W080.20.03.881 KROCS RUSSS RMIRO KELEY SHQIL MARCK FOLZZ"
           },
           "GLADZ,BAGGS,LULLS,SHAQQ": {
             "cleared_altitude": 5000,
             "sid": "GLADZ2",
-            "waypoints": "KSENO GAYTR/a5000 RUTLG GLADZ"
+            "waypoints": "KSENO GAYTR RUTLG GLADZ"
           },
           "GWAVA,URSUS": {
             "cleared_altitude": 5000,
@@ -339,7 +339,7 @@
           "HURCN,KPASA,SMELZ": {
             "cleared_altitude": 5000,
             "sid": "HURCN3",
-            "waypoints": "N025.47.07.606,W080.20.03.881 KROCS RUSSS NIBLT JOENZ/a5000 HURCN"
+            "waypoints": "N025.47.07.606,W080.20.03.881 KROCS RUSSS NIBLT JOENZ HURCN"
           },
           "KLADA,BITAC,JAGOR,RAJAY": {
             "cleared_altitude": 5000, 
@@ -349,7 +349,7 @@
           "MAYNR,CANOA,FUNDI,MAXIM": {
             "cleared_altitude": 5000,
             "sid": "MAYNR1",
-            "waypoints": "KSENO COOZY HAMAK LONZO AUSTI/a5000 MAYNR"
+            "waypoints": "KSENO COOZY HAMAK LONZO AUSTI MAYNR"
           }
         }
       },
@@ -963,32 +963,32 @@
             "AGERS,DUCEN,HURGI": {
               "cleared_altitude": 4000,
               "sid": "AGERS1",
-              "waypoints": "N026.04.35.228,W080.06.17.380 LLBOW ROOOM/a4000+ YOLOO LRICK AGERS"
+              "waypoints": "N026.04.35.228,W080.06.17.380 LLBOW ROOOM YOLOO LRICK AGERS"
             },
             "BNICE,COREA,DOLIE,MERKS": {
               "cleared_altitude": 4000,
               "sid": "BNICE1",
-              "waypoints": "N026.04.35.228,W080.06.17.380 LLBOW ROOOM/a4000+ YOLOO LRICK MRENO/a4000 BNICE"
+              "waypoints": "N026.04.35.228,W080.06.17.380 LLBOW ROOOM YOLOO LRICK MRENO/a4000 BNICE"
             },
             "FRSBE,STYMY,WAPOM": {
               "cleared_altitude": 4000,
               "sid": "FRSBE2",
-              "waypoints": "N026.04.35.228,W080.06.17.380 LLBOW ROOOM/a4000+ YOLOO LRICK ALNZO FRSBE"
+              "waypoints": "N026.04.35.228,W080.06.17.380 LLBOW ROOOM YOLOO LRICK ALNZO FRSBE"
             },
             "GLADZ,BAGGS,LULLS,SHAQQ": {
               "cleared_altitude": 4000,
               "sid": "GLADZ2",
-              "waypoints": "N026.04.35.228,W080.06.17.380 LLBOW ROOOM/a4000+ YOLOO LRICK/h276 GAYTR/a5000 RUTLG GLADZ"
+              "waypoints": "N026.04.35.228,W080.06.17.380 LLBOW ROOOM YOLOO LRICK/h276 GAYTR/a5000 RUTLG GLADZ"
             },
             "HROCK,KPASA,SMELZ": {
               "cleared_altitude": 4000,
               "sid": "HROCK2",
-              "waypoints": "N026.04.35.228,W080.06.17.380 LLBOW ROOOM/a4000+ YOLOO LRICK JOENZ HROCK"
+              "waypoints": "N026.04.35.228,W080.06.17.380 LLBOW ROOOM YOLOO LRICK JOENZ HROCK"
             },
             "LIFRR,BAIRN,WIXED": {
               "cleared_altitude": 4000,
               "sid": "LIFRR1",
-              "waypoints": "N026.04.35.228,W080.06.17.380 LLBOW ROOOM/a4000+ YOLOO LRICK LIFRR/a4000"
+              "waypoints": "N026.04.35.228,W080.06.17.380 LLBOW ROOOM YOLOO LRICK LIFRR"
             },
             "DORRL,MATLK,ONEWY": {
               "cleared_altitude": 2000,
@@ -1000,7 +1000,7 @@
             "FEALX,PADUS,ZFP,SNAGY,SUMRS,ETECK,WOLFO": {
               "cleared_altitude": 4000,
               "sid": "FEALX2",
-              "waypoints": "CLPSO MIMSE FEALX/a4000+"
+              "waypoints": "CLPSO MIMSE FEALX"
             },
             "REGAE,URSUS": {
               "cleared_altitude": 4000,
@@ -1027,7 +1027,7 @@
             "FEALX,PADUS,ZFP,SNAGY,SUMRS,ETECK,WOLFO": {
               "cleared_altitude": 4000,
               "sid": "FEALX2",
-              "waypoints": "N026.04.37.294,W080.11.44.141 DREDS SHELZ JMACA BEEDZ LNKIN FEALX/a4000+"
+              "waypoints": "N026.04.37.294,W080.11.44.141 DREDS SHELZ JMACA BEEDZ LNKIN FEALX"
             },
             "FRSBE,STYMY,WAPOM": {
               "cleared_altitude": 4000,
@@ -1047,7 +1047,7 @@
             "LIFRR,BAIRN,WIXED": {
               "cleared_altitude": 4000,
               "sid": "LIFRR1",
-              "waypoints": "N026.04.37.294,W080.11.44.141 DREDS SHELZ LIFRR/a4000"
+              "waypoints": "N026.04.37.294,W080.11.44.141 DREDS SHELZ LIFRR"
             },
             "DORRL,MATLK,ONEWY": {
               "cleared_altitude": 4000,
@@ -1059,7 +1059,7 @@
             "BNICE,COREA,DOLIE,MERKS": {
               "cleared_altitude": 4000,
               "sid": "BNICE1",
-              "waypoints": "TIDEZ DUSKE KBUNK MRENO/a4000 BNICE"
+              "waypoints": "TIDEZ DUSKE KBUNK MRENO BNICE"
             },
             "GLADZ,BAGGS,LULLS,SHAQQ": {
               "cleared_altitude": 4000,
@@ -2413,7 +2413,7 @@
           "STYMY": {
             "cleared_altitude": 2000,
             "sid": "FRSBE2",
-            "waypoints": "KFXE-27/h09 ALNZO FLMGO WAPOM"
+            "waypoints": "KFXE-27/h091 ALNZO FLMGO WAPOM"
           },
           "WAPOM": {
             "cleared_altitude": 2000,
@@ -3275,10 +3275,10 @@
                   "8R":  "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h092",
                   "9":   "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h092",
                   "12":  "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h092",
-                  "26L": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000+ REELN WNNER/a5000/h124",
-                  "26R": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000+ REELN WNNER/a5000/h124",
-                  "27":  "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000+ REELN WNNER/a5000/h124",
-                  "30":  "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000+ REELN WNNER/a5000/h124"
+                  "26L": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
+                  "26R": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
+                  "27":  "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
+                  "30":  "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124"
               },
               "KTMB": {
                   "9L":  "FROGZ HATUG/a9000/h140",
@@ -3369,22 +3369,22 @@
         "initial_speed": 280,
         "star": "SNDBR3",
         "runway_waypoints": {
-              "KTMB": {
-                  "9L":  "SNDBR CJAAY/h025/a6000",
-                  "9R":  "SNDBR CJAAY/h025/a6000",
-                  "27R": "SNDBR CJAAY/h025/a6000",
-                  "27L": "SNDBR CJAAY/h025/a6000"
-              },
-              "KMIA": {
-                  "8L":  "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h058",
-                  "8R":  "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h058",
-                  "9":   "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h058",
-                  "12":  "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h058",
-                  "26L": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000+ REELN WNNER/a5000/h124",
-                  "26R": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000+ REELN WNNER/a5000/h124",
-                  "27":  "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000+ REELN WNNER/a5000/h124",
-                  "30":  "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000+ REELN WNNER/a5000/h124"
-              }
+          "KTMB": {
+            "9L":  "SNDBR CJAAY/h025/a6000",
+            "9R":  "SNDBR CJAAY/h025/a6000",
+            "27R": "SNDBR CJAAY/h025/a6000",
+            "27L": "SNDBR CJAAY/h025/a6000"
+          },
+          "KMIA": {
+            "8L":  "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h058",
+            "8R":  "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h058",
+            "9":   "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h058",
+            "12":  "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h058",
+            "26L": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
+            "26R": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
+            "27":  "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
+            "30":  "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124"
+          }
         },
         "waypoints": "PAMPR/s280 N25.09.22.045,W80.58.21.664/ho SNDBR"
       }
@@ -3466,16 +3466,16 @@
         "initial_speed": 280,
         "star": "VIICE2",
           "runway_waypoints": {
-              "KMIA": {
-                  "8L":  "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                  "8R":  "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                  "9":   "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                  "12":  "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                  "26L": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000+ SHANN/a3000+/h305",
-                  "26R": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000+ SHANN/a3000+/h305",
-                  "27":  "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000+ SHANN/a3000+/h305",
-                  "30":  "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000+ SHANN/a3000+/h305"
-              }
+            "KMIA": {
+              "8L":  "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
+              "8R":  "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
+              "9":   "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
+              "12":  "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
+              "26L": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
+              "26R": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
+              "27":  "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
+              "30":  "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305"
+            }
         },
         "waypoints": "CLYER/a21000+ JJETS/a15000+/s280/ho VIICE/a16000-"
       }
