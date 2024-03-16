@@ -176,11 +176,15 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 			lg.Info("randomly going around")
 			ac.GoAroundDistance = nil // only go around once
 			rt := ac.GoAround()
+			ac.ControllingController = w.DepartureController(ac)
 			PostRadioEvents(ac.Callsign, rt, ep)
 
 			// If it was handed off to tower, hand it back to us
 			if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
-				ac.HandoffTrackController = ac.ApproachController
+				ac.HandoffTrackController = w.DepartureController(ac)
+				if ac.HandoffTrackController == "" {
+					ac.HandoffTrackController = ac.ApproachController
+				}
 				ep.PostEvent(Event{
 					Type:           OfferedHandoffEvent,
 					Callsign:       ac.Callsign,
@@ -196,7 +200,6 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 
 func (ac *Aircraft) GoAround() []RadioTransmission {
 	resp := ac.Nav.GoAround()
-
 	return []RadioTransmission{RadioTransmission{
 		Controller: ac.ControllingController,
 		Message:    resp.Message,
