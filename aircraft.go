@@ -182,7 +182,10 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 
 			// If it was handed off to tower, hand it back to us
 			if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
-				ac.HandoffTrackController = ac.ApproachController
+				ac.HandoffTrackController = w.DepartureController(ac)
+				if ac.HandoffTrackController == "" {
+					ac.HandoffTrackController = ac.ApproachController
+				}
 				ep.PostEvent(Event{
 					Type:           OfferedHandoffEvent,
 					Callsign:       ac.Callsign,
