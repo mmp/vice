@@ -680,8 +680,11 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 				uiShowModalDialog(NewModalDialogBox(&RatesModalClient{
 					config:      c.config,
 					allowCancel: c.allowCancel}), false)
+				return true
+			} else {
+				c.config.displayError = c.config.Start()
+				return c.config.displayError == nil
 			}
-			return true
 		},
 	}
 
