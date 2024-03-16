@@ -39,6 +39,10 @@ type SimServerConnection struct {
 	err    error
 }
 
+func (s *SimServer) Close() error {
+	return s.RPCClient.Close()
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 type SimProxy struct {
@@ -56,7 +60,12 @@ func (s *SimProxy) TogglePause() *rpc.Call {
 }
 
 func (s *SimProxy) SignOff(_, _ *struct{}) error {
-	return s.Client.CallWithTimeout("Sim.SignOff", s.ControllerToken, nil)
+	if err := s.Client.CallWithTimeout("Sim.SignOff", s.ControllerToken, nil); err != nil {
+		return err
+	}
+	// FIXME: this is handing in zstd code. Why?
+	// return s.Client.Close()
+	return nil
 }
 
 func (s *SimProxy) ChangeControlPosition(callsign string, keepTracks bool) error {

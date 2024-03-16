@@ -57,7 +57,7 @@ func decompressZstd(s string) string {
 	return string(b)
 }
 
-func zstdReader(b []byte) io.Reader {
+func zstdReader(b []byte) *zstd.Decoder {
 	br := bytes.NewReader(b)
 	r, err := zstd.NewReader(br)
 	if err != nil {
@@ -998,6 +998,12 @@ func (c *CompressedConn) Write(b []byte) (n int, err error) {
 	n, err = c.w.Write(b)
 	c.w.Flush()
 	return
+}
+
+func (c *CompressedConn) Close() error {
+	c.r.Close()
+	c.w.Close()
+	return c.Conn.Close()
 }
 
 var RXTotal, TXTotal int64

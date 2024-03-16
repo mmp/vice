@@ -1017,7 +1017,9 @@ func loadVideoMaps(filesystem fs.FS, path string, referencedVideoMaps map[string
 	var r io.Reader
 	r = fr
 	if strings.HasSuffix(strings.ToLower(path), ".zst") {
-		r, _ = zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
+		zr, _ := zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
+		defer zr.Close()
+		r = zr
 	}
 
 	if referenced, ok := referencedVideoMaps[path]; ok {
