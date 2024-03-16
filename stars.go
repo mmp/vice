@@ -5174,7 +5174,7 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = LimitedDatablock
 	}
 
-	if ac.TrackingController == w.Callsign || (ac.ControllingController == w.Callsign) {
+	if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 		// it's under our control
 		dt = FullDatablock
 	}
