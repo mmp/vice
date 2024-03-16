@@ -87,7 +87,7 @@ type World struct {
 	TotalArrivals           int
 	DepartureGates          []string
 	STARSFacilityAdaptation STARSFacilityAdaptation
-
+	StoppedGates map[string]bool
 	STARSInputOverride string
 }
 
@@ -389,6 +389,16 @@ func (w *World) RedirectHandoff(callsign, controller string, success func(any), 
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.RedirectHandoff(callsign, controller),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) UpdateStoppedGates(stopped map[string]bool, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.UpdateStoppedGates(stopped),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
@@ -1004,8 +1014,8 @@ func (w *World) DrawCoordinationWindow() {
 	if !w.showCoordination {
 		return
 	}
-	if stoppedGates == nil { // This shouldn't happen.
-		stoppedGates = make(map[string]bool)
+	if w.StoppedGates == nil { 
+		w.StoppedGates = make(map[string]bool)
 	}
 	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
@@ -1027,9 +1037,13 @@ func (w *World) DrawCoordinationWindow() {
 						imgui.TableNextColumn()
 						imgui.Text(fix)
 						imgui.TableNextColumn()
-						enabled := stoppedGates[fix]
+						if w.StoppedGates[fix] {
+							fmt.Println(fix, true )
+						}
+						enabled := w.StoppedGates[fix] 
 						imgui.Checkbox("##"+fix, &enabled)
-						stoppedGates[fix] = enabled
+						w.StoppedGates[fix] = enabled
+						w.UpdateStoppedGates(w.StoppedGates, nil, nil)
 					}
 					imgui.EndTable()
 				}

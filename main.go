@@ -51,9 +51,7 @@ var (
 	remoteServer *SimServer
 	airportWind  map[string]Wind
 	windRequest  map[string]chan []getweather.MetarData
-	stoppedGates map[string]bool
 	heldAircraft []*Aircraft
-	releasedAircraft string
 	//go:embed resources/version.txt
 	buildVersion string
 
@@ -289,7 +287,6 @@ func main() {
 		// Init the maps
 		airportWind = make(map[string]Wind)
 		windRequest = make(map[string]chan []getweather.MetarData)
-		stoppedGates = make(map[string]bool)
 
 		stopConnectingRemoteServer := false
 		frameIndex := 0

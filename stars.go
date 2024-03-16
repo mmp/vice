@@ -7163,7 +7163,7 @@ func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print 
 
 			// Require two ticks for a delta of one; make the spinners a
 			// little less jumpy.
-			const movementScale = 2
+			const movementScale = 1
 			// Only report a change when there's enough movement to matter.
 			if abs(activeSpinnerMouseDelta) > movementScale {
 				delta := int(activeSpinnerMouseDelta / movementScale)
