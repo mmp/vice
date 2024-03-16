@@ -1016,9 +1016,7 @@ func (w *World) DrawCoordinationWindow() {
 	imgui.BeginV("Coordination List", &w.showCoordination, imgui.WindowFlagsAlwaysAutoResize)
 	if imgui.BeginTabBar("Controllers") {
 		if imgui.BeginTabItem("Tower") {
-
 			if imgui.BeginTabBar("Bar") {
-
 				if imgui.BeginTableV("Tower", 2, tableFlags, imgui.Vec2{}, 0) {
 					imgui.TableSetupColumn("Fix")
 					imgui.TableSetupColumn("Stop Departures")
