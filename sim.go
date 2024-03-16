@@ -1588,10 +1588,13 @@ func (s *Sim) updateState() {
 			length += 1
 		}
 	}
+
 	if s.LaunchConfig.Mode == LaunchAutomatic && length != len(s.World.DepartureGates) { // If all gates are stopped, dont even bother spawning
 		s.spawnAircraft()
 	}
 }
+
+
 
 func (s *Sim) ResolveController(callsign string) string {
 	if s.World.MultiControllers == nil {
@@ -1779,7 +1782,7 @@ func (s *Sim) spawnAircraft() {
 			s.lg.Errorf("%s: couldn't find an active runway for spawning departure?", airport)
 			continue
 		}
-		for {
+		for { // There will always be a gate, because is all gates are checked this func wont get called
 			prevDep := s.lastDeparture[airport][runway][category]
 			s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
 			ac, dep, err := s.World.CreateDeparture(airport, runway, category,
@@ -1787,11 +1790,16 @@ func (s *Sim) spawnAircraft() {
 			if err != nil {
 				s.lg.Errorf("CreateDeparture error: %v", err)
 			} else { // Found an exit that is not stopped
-				if !stoppedGates[ac.Exit] {
+				if !stoppedGates[ac.Exit] && !s.World.Airports[ac.FlightPlan.DepartureAirport].Uncontrolled {
 					s.lastDeparture[airport][runway][category] = dep
 					s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
 					s.launchAircraftNoLock(*ac)
 					s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum, false))
+					break
+				} else if s.World.Airports[ac.FlightPlan.DepartureAirport].Uncontrolled {
+					if !slices.Contains(heldAircraft, ac) && len(heldAircraft) <= len(s.World.Airports) * 2{ // Make sure they're arent to many of them
+						heldAircraft = append(heldAircraft, ac)	
+					}
 					break
 				}
 			}

@@ -21,7 +21,6 @@ type Aircraft struct {
 	FlightPlan          *FlightPlan
 	ForceQLControllers  []string
 	PointOutHistory     []string
-	HeldForRelease 		bool 
 
 	// Who has the radar track
 	TrackingController string

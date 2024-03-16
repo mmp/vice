@@ -50,7 +50,8 @@ var (
 	airportWind  map[string]Wind
 	windRequest  map[string]chan []getweather.MetarData
 	stoppedGates map[string]bool
-
+	heldAircraft []*Aircraft
+	releasedAircraft string
 	//go:embed resources/version.txt
 	buildVersion string
 
@@ -268,7 +269,7 @@ func main() {
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
 		lg.Info("Starting main loop")
-		// Init the wind maps
+		// Init the maps
 		airportWind = make(map[string]Wind)
 		windRequest = make(map[string]chan []getweather.MetarData)
 		stoppedGates = make(map[string]bool)

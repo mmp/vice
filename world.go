@@ -461,6 +461,7 @@ func (w *World) Disconnect() {
 	w.Controllers = nil
 }
 
+// Bool is if the callsign can be abbreviated
 func (w *World) GetAircraft(callsign string, abbreviated bool) *Aircraft { // If the callsign can be abbreivated (for radio commands, not STARS commands)
 	if abbreviated {
 		ac := w.GetAllAircraft()
@@ -1022,6 +1023,7 @@ func (w *World) DrawCoordinationWindow() {
 					imgui.TableSetupColumn("Fix")
 					imgui.TableSetupColumn("Stop Departures")
 					imgui.TableHeadersRow()
+					// TODO: Stop all departures with one checkbox. Use UIDisable() to disabled the other checkboxes
 					for _, fix := range w.DepartureGates {
 						imgui.TableNextRow()
 						imgui.TableNextColumn()
@@ -1034,6 +1036,34 @@ func (w *World) DrawCoordinationWindow() {
 					imgui.EndTable()
 				}
 				imgui.EndTabBar()
+			}
+			imgui.EndTabItem()
+		}
+		if imgui.BeginTabItem("Releases"){
+			if imgui.BeginTableV("Releases", 3, tableFlags, imgui.Vec2{}, 0) {
+				imgui.TableSetupColumn("Callsign")
+				imgui.TableSetupColumn("Airport")
+				imgui.TableSetupColumn("Release")
+				imgui.TableHeadersRow()
+				
+					for _, ac := range heldAircraft {
+						if ac != nil {
+							imgui.TableNextRow()
+							imgui.TableNextColumn()
+							imgui.Text(ac.Callsign)
+							imgui.TableNextColumn()
+							imgui.Text(ac.FlightPlan.DepartureAirport)
+							imgui.TableNextColumn()
+							release := imgui.Button("Release##"+ac.Callsign)
+							if release {
+								i := slices.Index(heldAircraft, ac)
+								heldAircraft = append(heldAircraft[:i], heldAircraft[i+1:]...)
+								w.LaunchAircraft(*ac)
+							}	
+						}
+								
+					}
+				imgui.EndTable()
 			}
 			imgui.EndTabItem()
 		}

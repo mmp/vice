@@ -33,6 +33,8 @@ type Airport struct {
 	ConvergingRunways []ConvergingRunways        `json:"converging_runways"`
 
 	ATPAVolumes map[string]*ATPAVolume `json:"atpa_volumes"`
+
+	Uncontrolled bool `json:"uncontrolled_field"`
 }
 
 type ConvergingRunways struct {
