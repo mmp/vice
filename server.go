@@ -262,12 +262,6 @@ func (s *SimProxy) DeleteAircraft(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
-type AircraftCommandsArgs struct {
-	ControllerToken string
-	Callsign        string
-	Commands        string
-}
-
 func (s *SimProxy) RunAircraftCommands(callsign string, cmds string) *rpc.Call {
 	return s.Client.Go("Sim.RunAircraftCommands", &AircraftCommandsArgs{
 		ControllerToken: s.ControllerToken,
@@ -895,6 +889,12 @@ func (sd *SimDispatcher) DeleteAircraft(da *DeleteAircraftArgs, _ *struct{}) err
 	} else {
 		return sim.DeleteAircraft(da.ControllerToken, da.Callsign)
 	}
+}
+
+type AircraftCommandsArgs struct {
+	ControllerToken string
+	Callsign        string
+	Commands        string
 }
 
 func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *struct{}) error {
