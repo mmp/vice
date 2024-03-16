@@ -2949,8 +2949,142 @@
                                                         }
                                                     ]
                         },
-                        "center": "N41.24.31.437,W81.51.17.377",
                         "stars_config": {
+                            "center": "N41.24.31.437,W81.51.17.377",
+                            "inhibit_ca_volumes": [
+                                {
+                                    "name": "CLE FINAL NO CA",
+                                    "type": "polygon",
+                                    "floor": 0,
+                                    "ceiling": 3000,
+                                    "vertices": [
+                                        "N041.40.41.065,W081.32.08.759",
+                                        "N041.36.33.461,W081.24.26.152",
+                                        "N041.08.01.132,W082.07.52.769",
+                                        "N041.13.37.657,W082.15.06.289"
+                                    ]
+                                }
+                            ],
+                            "radar_sites": {
+                                "KCLE": {
+                                    "char": "L",
+                                    "position": "KCLE",
+                                    "elevation": 900,
+                                    "primary_range": 60,
+                                    "secondary_range": 120,
+                                    "slope_angle": 0.175
+                                }
+                            },
+                            "scratchpads": {
+                                "APE": "CAV",
+                                "ALPHE": "GTL",
+                                "DAIFE": "GTL",
+                                "BAGEL": "GTL",
+                                "YABRO": "GTL",
+                                "EWC": "KKI",
+                                "NUSMM": "KKI",
+                                "PATRC": "PFL",
+                                "JASEE": "PFL",
+                                "DORET": "PFL",
+                                "MAAJR": "PFL",
+                                "DUUKR": "PFL",
+                                "PUUDL": "ZAA",
+                                "SNNOH": "ZAA",
+                                "SINKR": "ZAA",
+                                "MYCAR": "MYC"
+                            },
+                            "stars_maps": [
+                                {
+                                    "group": 0,
+                                    "label": "RY24",
+                                    "name": "CLE-001 (RY24)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "S_STAR",
+                                    "name": "CLE-059 (SOUTH FLOW STARS)"
+                                },
+                                {
+                                    "group": 0,
+                                    "label": "RY6",
+                                    "name": "CLE-003 (RY6)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "N_STAR",
+                                    "name": "CLE-062 (NORTH FLOW STARS)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "CLASS-B",
+                                    "name": "CLE-014 (CLASS-B)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "MVAFUS3",
+                                    "name": "CLE-006 (MVAFUS3)"
+                                },
+                                {
+                                    "group": 0,
+                                    "label": "RY28",
+                                    "name": "CLE-004 (RY28)"
+                                },
+                                {
+                                    "group": 0,
+                                    "label": "BASIC",
+                                    "name": "CLE-007 (BASIC)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "SATAPCH",
+                                    "name": "CLE-013 (SATELLITE APCHS)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "ZOB",
+                                    "name": "CLE-011 (ZOB SECTORS)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "ADJ BDY",
+                                    "name": "CLE-015 (ADJ BNDY)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "SHORE",
+                                    "name": "CLE-016 (SKY SHORE)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "HWY",
+                                    "name": "CLE-019 (INTERSTATES)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "C/D",
+                                    "name": "CLE-028 (CLASS C D)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "INTLBDR",
+                                    "name": "CLE-045 (INTL BRDR)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "S_SID",
+                                    "name": "CLE-053 (SOUTH FLOW SIDS)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "N_SID",
+                                    "name": "CLE-055 (NORTH FLOW SIDS)"
+                                },
+                                {
+                                    "group": 1,
+                                    "label": "SAT_SID",
+                                    "name": "CLE-058 (SATELLITE SIDS)"
+                                }
+                            ],
                             "allow_long_scratchpad": [false, false],
                             "force_ql_self": true,
                             "airspace_awareness": [
@@ -3053,32 +3187,8 @@
                             "_BRWNZ4_24R_FINAL": "N41.39.58.387,W81.32.07.173",
                            "_ROLLN2_24R_FINAL": "N41.34.00.993,W81.28.26.780"
                         },
-                        "inhibit_ca_volumes": [
-                            {
-                                "name": "CLE FINAL NO CA",
-                                "type": "polygon",
-                                "floor": 0,
-                                "ceiling": 3000,
-                                "vertices": [
-                                    "N041.40.41.065,W081.32.08.759",
-                                    "N041.36.33.461,W081.24.26.152",
-                                    "N041.08.01.132,W082.07.52.769",
-                                    "N041.13.37.657,W082.15.06.289"
-                                ]
-                            }
-                        ],
                         "name": "KCLE",
                         "primary_airport": "KCLE",
-                        "radar_sites": {
-                          "KCLE": {
-                            "char": "L",
-                            "position": "KCLE",
-                            "elevation": 900,
-                            "primary_range": 60,
-                            "secondary_range": 120,
-                            "slope_angle": 0.175
-                        }
-                    },
                     "scenarios": {
                         "KCLE North": {
                             "approach_airspace": [
@@ -3354,115 +3464,5 @@
                             }
                         }
                     },
-                    "scratchpads": {
-                        "APE": "CAV",
-                        "ALPHE": "GTL",
-                        "DAIFE": "GTL",
-                        "BAGEL": "GTL",
-                        "YABRO": "GTL",
-                        "EWC": "KKI",
-                        "NUSMM": "KKI",
-                        "PATRC": "PFL",
-                        "JASEE": "PFL",
-                        "DORET": "PFL",
-                        "MAAJR": "PFL",
-                        "DUUKR": "PFL",
-                        "PUUDL": "ZAA",
-                        "SNNOH": "ZAA",
-                        "SINKR": "ZAA",
-                        "MYCAR": "MYC"
-                    },
-                    "stars_maps": [
-                        {
-                            "group": 0,
-                            "label": "RY24",
-                            "name": "CLE-001 (RY24)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "S_STAR",
-                            "name": "CLE-059 (SOUTH FLOW STARS)"
-                        },
-                        {
-                            "group": 0,
-                            "label": "RY6",
-                            "name": "CLE-003 (RY6)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "N_STAR",
-                            "name": "CLE-062 (NORTH FLOW STARS)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "CLASS-B",
-                            "name": "CLE-014 (CLASS-B)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "MVAFUS3",
-                            "name": "CLE-006 (MVAFUS3)"
-                        },
-                        {
-                            "group": 0,
-                            "label": "RY28",
-                            "name": "CLE-004 (RY28)"
-                        },
-                        {
-                            "group": 0,
-                            "label": "BASIC",
-                            "name": "CLE-007 (BASIC)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "SATAPCH",
-                            "name": "CLE-013 (SATELLITE APCHS)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "ZOB",
-                            "name": "CLE-011 (ZOB SECTORS)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "ADJ BDY",
-                            "name": "CLE-015 (ADJ BNDY)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "SHORE",
-                            "name": "CLE-016 (SKY SHORE)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "HWY",
-                            "name": "CLE-019 (INTERSTATES)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "C/D",
-                            "name": "CLE-028 (CLASS C D)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "INTLBDR",
-                            "name": "CLE-045 (INTL BRDR)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "S_SID",
-                            "name": "CLE-053 (SOUTH FLOW SIDS)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "N_SID",
-                            "name": "CLE-055 (NORTH FLOW SIDS)"
-                        },
-                        {
-                            "group": 1,
-                            "label": "SAT_SID",
-                            "name": "CLE-058 (SATELLITE SIDS)"
-                        }
-                    ],
                     "video_map_file": "videomaps/ZOB-videomaps.json.zst"
                 }

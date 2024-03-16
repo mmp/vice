@@ -3107,7 +3107,6 @@
             }
         ]
     },
-    "center": "KDFW",
     "stars_config": {
         "allow_long_scratchpad": [false, false],
         "force_ql_self": true,
@@ -3482,101 +3481,9 @@
         "_AFW_34L": "N032.58.35.858,W097.18.54.695",
         "_AFW_34R": "N032.58.34.855,W097.19.00.737"
     },
-    "inhibit_ca_volumes": [
-        {
-            "name": "DFW SOUTH",
-            "type": "polygon",
-            "floor": 0,
-            "ceiling": 6000,
-            "vertices": [
-                "32.92026,-97.05916",
-                "33.24728,-97.05714",
-                "33.24694,-97.00072",
-                "32.90578,-97.0042 ",
-                "32.92026,-97.05916"
-            ]
-        },
-        {
-            "name": "DFW NORTH",
-            "type": "polygon",
-            "floor": 0,
-            "ceiling": 6000,
-            "vertices": [
-                "32.87252,-97.06059",
-                "32.55641,-97.08109",
-                "32.55720,-96.97406",
-                "32.87140,-96.9893",
-                "32.87252,-97.06059"
-            ]
-        },
-        {
-            "name": "DAL SOUTH",
-            "type": "polygon",
-            "floor": 0,
-            "ceiling": 3000,
-            "vertices": [
-                "32.82645,-96.84307",
-                "32.64717,-96.64349",
-                "32.67312,-96.61273",
-                "32.83947,-96.82698",
-                "32.82645,-96.84307"
-            ]
-        },
-        {
-            "name": "DAL SOUTH",
-            "type": "polygon",
-            "floor": 0,
-            "ceiling": 1169,
-            "vertices": [
-                "32.85097,-96.87249",
-                "32.92873,-96.96787",
-                "32.97203,-96.96755",
-                "32.87531,-96.84222",
-                "32.85097,-96.87249"
-            ]
-        }
-    ],
     "magnetic_adjustment": -0.75, 
     "name": "D10",
     "primary_airport": "KDFW",
-    "radar_sites": {
-        "EAST": {
-            "char": "A",
-            "position": "32.876904, -97.01486",
-            "elevation": 660,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "silence_angle": 50.4,
-            "slope_angle": 0.3
-          },
-          "AZLE": {
-            "char": "D",
-            "position": "32.8771333,-97.60949",
-            "elevation": 1150,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "silence_angle": 50.4,
-            "slope_angle": 0.3
-          },
-          "SACH": {
-            "char": "C",
-            "position": "32.989903,-96.578041",
-            "elevation": 650,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "silence_angle": 50.4,
-            "slope_angle": 0.3
-          },
-          "WEST": {
-            "char": "B",
-            "position": "32.9251,-97.043844",
-            "elevation": 710,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "silence_angle": 50.4,
-            "slope_angle": 0.3
-          }
-    }, 
     "reporting_points": [
         "BEREE",
         "BOOVE",
@@ -3898,6 +3805,100 @@
             }
         }
     },
+    "stars_config": {
+    "center": "KDFW",
+    "inhibit_ca_volumes": [
+        {
+            "name": "DFW SOUTH",
+            "type": "polygon",
+            "floor": 0,
+            "ceiling": 6000,
+            "vertices": [
+                "32.92026,-97.05916",
+                "33.24728,-97.05714",
+                "33.24694,-97.00072",
+                "32.90578,-97.0042 ",
+                "32.92026,-97.05916"
+            ]
+        },
+        {
+            "name": "DFW NORTH",
+            "type": "polygon",
+            "floor": 0,
+            "ceiling": 6000,
+            "vertices": [
+                "32.87252,-97.06059",
+                "32.55641,-97.08109",
+                "32.55720,-96.97406",
+                "32.87140,-96.9893",
+                "32.87252,-97.06059"
+            ]
+        },
+        {
+            "name": "DAL SOUTH",
+            "type": "polygon",
+            "floor": 0,
+            "ceiling": 3000,
+            "vertices": [
+                "32.82645,-96.84307",
+                "32.64717,-96.64349",
+                "32.67312,-96.61273",
+                "32.83947,-96.82698",
+                "32.82645,-96.84307"
+            ]
+        },
+        {
+            "name": "DAL SOUTH",
+            "type": "polygon",
+            "floor": 0,
+            "ceiling": 1169,
+            "vertices": [
+                "32.85097,-96.87249",
+                "32.92873,-96.96787",
+                "32.97203,-96.96755",
+                "32.87531,-96.84222",
+                "32.85097,-96.87249"
+            ]
+        }
+    ],
+    "radar_sites": {
+        "EAST": {
+            "char": "A",
+            "position": "32.876904, -97.01486",
+            "elevation": 660,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 50.4,
+            "slope_angle": 0.3
+          },
+          "AZLE": {
+            "char": "D",
+            "position": "32.8771333,-97.60949",
+            "elevation": 1150,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 50.4,
+            "slope_angle": 0.3
+          },
+          "SACH": {
+            "char": "C",
+            "position": "32.989903,-96.578041",
+            "elevation": 650,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 50.4,
+            "slope_angle": 0.3
+          },
+          "WEST": {
+            "char": "B",
+            "position": "32.9251,-97.043844",
+            "elevation": 710,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 50.4,
+            "slope_angle": 0.3
+          }
+    }, 
     "scratchpads": {
         "MLC": "AKU",
         "ALIAN": "RBT",
@@ -4142,6 +4143,7 @@
         "label": "DRSONO",
         "name": "RVMD10056S"
         }
-    ],
+    ]
+    },
     "video_map_file": "videomaps/ZFW-videomaps.json.zst"
 }

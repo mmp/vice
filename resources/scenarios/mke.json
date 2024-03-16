@@ -467,7 +467,6 @@
       }
     ]
   },
-  "center": "KMKE",
   "control_positions": {
     "MKE_E_APP": {
       "frequency": 118000,
@@ -512,37 +511,12 @@
       "sector_id": "2E"
     }
   },
-  "inhibit_ca_volumes": [
-    {
-        "name": "MKE 19R NO CA",
-        "type": "polygon",
-        "floor": 0,
-        "ceiling": 7000,
-        "vertices": [
-            "N043.16.33.164,W088.05.53.375",
-            "N043.15.16.520,W087.38.30.671",
-            "N042.57.14.449,W088.01.27.149",
-            "N042.56.48.686,W087.42.51.5697"
-        ]
-    }
-],
   "default_scenario": "KMKE RWY 1L",
   "fixes": {
     "_MKE": "42.947200775146484,-87.89659882"
   },
   "name": "KMKE",
   "primary_airport": "KMKE",
-  "radar_sites": {
-    "MKE": {
-      "char": "A",
-      "position": "KMKE",
-      "elevation": 728,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    }
-  },
   "reporting_points": [
     "SUDDS",
     "ZOWRO",
@@ -808,6 +782,33 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KMKE",
+  "inhibit_ca_volumes": [
+    {
+        "name": "MKE 19R NO CA",
+        "type": "polygon",
+        "floor": 0,
+        "ceiling": 7000,
+        "vertices": [
+            "N043.16.33.164,W088.05.53.375",
+            "N043.15.16.520,W087.38.30.671",
+            "N042.57.14.449,W088.01.27.149",
+            "N042.56.48.686,W087.42.51.5697"
+        ]
+    }
+],
+  "radar_sites": {
+    "MKE": {
+      "char": "A",
+      "position": "KMKE",
+      "elevation": 728,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    }
+  },
   "scratchpads": {
     "ACCRA": "ACR",
     "DELHI": "UEC",
@@ -838,6 +839,7 @@
       "label": "MKE 7R",
       "name": "MKE RWY 7R"
     }
-  ],
+  ]
+  },
   "video_map_file": "videomaps/ZAU-videomaps.json.zst"
   }

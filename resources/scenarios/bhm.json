@@ -743,7 +743,6 @@
       }
     ]
   },
-  "center": "KBHM",
   "control_positions": {
     "ATL_CTR": {
       "frequency": 132975,
@@ -802,46 +801,9 @@
     "_BHM_24": "N33.34.24.480,W86.44.20.840",
     "KBHM": "N33.33.49.992,W86.45.08.294"
   },
-  "inhibit_ca_volumes": [
-    {
-      "name": "BHM NO CA",
-      "type": "polygon",
-      "floor": 0,
-      "ceiling": 3500,
-      "vertices": [
-          "-86.897208,33.532504",
-          "-86.641151,33.677967",
-          "-86.584176,33.611529",
-          "-86.839472,33.462847"
-      ]
-  },
-  {
-    "name": "BHM NO CA",
-    "type": "polygon",
-    "floor": 0,
-    "ceiling": 3500,
-    "vertices": [
-        "-86.695616,33.672883",
-        "-86.695274,33.453065",
-        "-86.79461,33.453311",
-        "-86.794879,33.672271"
-    ]
-}
-  ],
   "magnetic_adjustment": -1,
   "name": "KBHM",
   "primary_airport": "KBHM",
-  "radar_sites": {
-    "BHM": {
-      "char": "B",
-      "position": "33.573611,-86.75611",
-      "elevation": 705,
-      "primary_range": 100,
-      "secondary_range": 150,
-      "silence_angle": 50.4,
-      "slope_angle": 0.3
-    }
-  },
   "reporting_points": [
     "KIOSK",
     "DIODE",
@@ -982,6 +944,45 @@
       }
     }
   },
+    "stars_config": {
+  "center": "KBHM",
+  "inhibit_ca_volumes": [
+    {
+      "name": "BHM NO CA",
+      "type": "polygon",
+      "floor": 0,
+      "ceiling": 3500,
+      "vertices": [
+          "-86.897208,33.532504",
+          "-86.641151,33.677967",
+          "-86.584176,33.611529",
+          "-86.839472,33.462847"
+      ]
+  },
+  {
+    "name": "BHM NO CA",
+    "type": "polygon",
+    "floor": 0,
+    "ceiling": 3500,
+    "vertices": [
+        "-86.695616,33.672883",
+        "-86.695274,33.453065",
+        "-86.79461,33.453311",
+        "-86.794879,33.672271"
+    ]
+}
+  ],
+  "radar_sites": {
+    "BHM": {
+      "char": "B",
+      "position": "33.573611,-86.75611",
+      "elevation": 705,
+      "primary_range": 100,
+      "secondary_range": 150,
+      "silence_angle": 50.4,
+      "slope_angle": 0.3
+    }
+  },
     "scratchpads": {
       "RHETT": "RHETT",
       "MRICA": "MRICA",
@@ -1108,6 +1109,7 @@
       "label": "SAT BDY",
       "name": "BHM SAT BOUNDARY"
     }
-  ],
+  ]
+    },
 "video_map_file": "videomaps/ZTL-videomaps.json.zst"
 }

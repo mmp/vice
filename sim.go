@@ -959,13 +959,14 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.Airports = sg.Airports
 	w.Fixes = sg.Fixes
 	w.PrimaryAirport = sg.PrimaryAirport
-	w.RadarSites = sg.RadarSites
-	w.Center = Select(sc.Center.IsZero(), sg.Center, sc.Center)
-	w.Range = Select(sc.Range == 0, sg.Range, sc.Range)
+	stars := sg.STARSFacilityAdaptation
+	w.RadarSites = stars.RadarSites
+	w.Center = Select(stars.Center.IsZero(), stars.Center, stars.Center)
+	w.Range = Select(sc.Range == 0, stars.Range, sc.Range)
 	w.DefaultMaps = sc.DefaultMaps
-	w.STARSMaps = sg.STARSMaps
-	w.InhibitCAVolumes = sg.InhibitCAVolumes
-	w.Scratchpads = sg.Scratchpads
+	w.STARSMaps = stars.Maps
+	w.InhibitCAVolumes = stars.InhibitCAVolumes
+	w.Scratchpads = stars.Scratchpads
 	w.ArrivalGroups = sg.ArrivalGroups
 	w.ApproachAirspace = sc.ApproachAirspace
 	w.DepartureAirspace = sc.DepartureAirspace

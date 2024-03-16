@@ -605,7 +605,6 @@
             }
         ]
     },
-    "center": "N032.73.00.036,W117.17.57.109",
     "control_positions":{
         "LAX_55_CTR": {
             "frequency": 135550,
@@ -665,18 +664,6 @@
     },
     "name": "KSAN",
     "primary_airport": "KSAN",
-    "radar_sites": {
-        "KSAN": {
-            "char": "S",
-            "position": "KSAN",
-            "elevation": 17,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "slope_angle": 0.175
-        }
-
-
-    },
     "scenarios": {
         "KSAN West": {
             "arrival_runways": [
@@ -794,6 +781,18 @@
             }
         }
     },
+    "stars_config": {
+    "center": "N032.73.00.036,W117.17.57.109",
+    "radar_sites": {
+        "KSAN": {
+            "char": "S",
+            "position": "KSAN",
+            "elevation": 17,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "slope_angle": 0.175
+        }
+    },
     "scratchpads": {
         "SLI": "SLI",
         "CHKNN": "CHK",
@@ -863,6 +862,7 @@
             "label": "SAN 9-27 SCT",
             "name": "542S SAN 9-27 SCT"
         }
-    ],
+    ]
+    },
     "video_map_file": "videomaps/ZLA-videomaps.json.zst"
 }

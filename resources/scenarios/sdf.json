@@ -703,7 +703,6 @@
     }
   ]
 },
-"center": "KSDF",
 "control_positions": {
   "IND_CTR": {
     "frequency": 119550,
@@ -777,60 +776,8 @@
   "_SDF_35L": "N38.09.29.311,W85.44.21.201",
   "_SDF_35R": "N38.09.56.531,W85.43.26.158"
 },
-"inhibit_ca_volumes": [
-  {
-    "name": "SDF NO CA",
-    "type": "polygon",
-    "floor": 0,
-    "ceiling": 4000,
-    "vertices": [
-      "N038.37.17.709,W085.56.13.818",
-      "N038.39.24.518,W085.49.26.143",
-      "N037.43.21.933,W085.31.09.131",
-      "N037.43.08.282,W085.36.38.226"
-    ]
-  }
-],
 "name": "KSDF",
 "primary_airport": "KSDF",
-"radar_sites": {
-  "SDF": {
-    "char": "A",
-    "position": "38.18611,-85.72694",
-    "elevation": 564,
-    "primary_range": 60,
-    "secondary_range": 120,
-    "silence_angle": 50.4,
-    "slope_angle": 0.3
-  },
-  "CVG": {
-    "char": "B",
-    "position": "39.04121,-84.65238",
-    "elevation": 961,
-    "primary_range": 60,
-    "secondary_range": 120,
-    "silence_angle": 50.4,
-    "slope_angle": 0.3
-  },
-  "LEX": {
-    "char": "D",
-    "position": "38.03675,-84.60864",
-    "elevation": 1040,
-    "primary_range": 60,
-    "secondary_range": 120,
-    "silence_angle": 50.4,
-    "slope_angle": 0.3
-  },
-  "HNB": {
-    "char": "E",
-    "position": "38.31398,-87.070681",
-    "elevation": 667,
-    "primary_range": 60,
-    "secondary_range": 120,
-    "silence_angle": 50.4,
-    "slope_angle": 0.3
-  }
-},
 "reporting_points": [
   "CHERI",
   "NERVE",
@@ -968,6 +915,60 @@
           "gust": 19,
           "speed": 13
       }
+  }
+},
+"stars_config": {
+"center": "KSDF",
+"inhibit_ca_volumes": [
+  {
+    "name": "SDF NO CA",
+    "type": "polygon",
+    "floor": 0,
+    "ceiling": 4000,
+    "vertices": [
+      "N038.37.17.709,W085.56.13.818",
+      "N038.39.24.518,W085.49.26.143",
+      "N037.43.21.933,W085.31.09.131",
+      "N037.43.08.282,W085.36.38.226"
+    ]
+  }
+],
+"radar_sites": {
+  "SDF": {
+    "char": "A",
+    "position": "38.18611,-85.72694",
+    "elevation": 564,
+    "primary_range": 60,
+    "secondary_range": 120,
+    "silence_angle": 50.4,
+    "slope_angle": 0.3
+  },
+  "CVG": {
+    "char": "B",
+    "position": "39.04121,-84.65238",
+    "elevation": 961,
+    "primary_range": 60,
+    "secondary_range": 120,
+    "silence_angle": 50.4,
+    "slope_angle": 0.3
+  },
+  "LEX": {
+    "char": "D",
+    "position": "38.03675,-84.60864",
+    "elevation": 1040,
+    "primary_range": 60,
+    "secondary_range": 120,
+    "silence_angle": 50.4,
+    "slope_angle": 0.3
+  },
+  "HNB": {
+    "char": "E",
+    "position": "38.31398,-87.070681",
+    "elevation": 667,
+    "primary_range": 60,
+    "secondary_range": 120,
+    "silence_angle": 50.4,
+    "slope_angle": 0.3
   }
 },
 "scratchpads": {
@@ -1128,6 +1129,7 @@
     "label": "STADIUM",
     "name": "Stadiums"
   }
-],
+]
+},
 "video_map_file": "videomaps/ZID-videomaps.json.zst"
 }

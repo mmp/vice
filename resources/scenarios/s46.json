@@ -2322,7 +2322,6 @@
       }
     ]
   },
-  "center": "KSEA",
   "control_positions": {
     "SEA_CTR": {
       "frequency": 135450,
@@ -2395,35 +2394,6 @@
   },
   "name": "KSEA",
   "primary_airport": "KSEA",
-  "radar_sites": {
-    "SEA": {
-      "char": "R",
-      "position": "47.45133,-122.32273",
-      "elevation": 654,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 15,
-      "slope_angle": 0.3
-    },
-    "SEA2": {
-      "char": "S",
-      "position": "47.65766,-122.41305",
-      "elevation": 577,
-      "primary_range": 230,
-      "secondary_range": 230,
-      "silence_angle": 15,
-      "slope_angle": 0.3
-    },
-    "NUW": {
-      "char": "N",
-      "position": "48.32244,-122.66503",
-      "elevation": 491,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 15,
-      "slope_angle": 0.3
-    }
-  },
   "reporting_points": [
     "GLASR",
     "RADDY",
@@ -2575,6 +2545,37 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KSEA",
+  "radar_sites": {
+    "SEA": {
+      "char": "R",
+      "position": "47.45133,-122.32273",
+      "elevation": 654,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 15,
+      "slope_angle": 0.3
+    },
+    "SEA2": {
+      "char": "S",
+      "position": "47.65766,-122.41305",
+      "elevation": 577,
+      "primary_range": 230,
+      "secondary_range": 230,
+      "silence_angle": 15,
+      "slope_angle": 0.3
+    },
+    "NUW": {
+      "char": "N",
+      "position": "48.32244,-122.66503",
+      "elevation": 491,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 15,
+      "slope_angle": 0.3
+    }
+  },
   "scratchpads": {
     "HQM": "HQM",
     "YYJ": "YYJ",
@@ -2710,6 +2711,7 @@
       "label": "SOUTH",
       "name": "S46__SOUTH"
   }
-  ],
+  ]
+  },
 "video_map_file": "videomaps/ZSE-videomaps.json.zst"
 }

@@ -543,7 +543,6 @@
       }
     ]
   },
-  "center": "KABE",
   "control_positions": {
     "ABE_APP": {
       "frequency": 119650,
@@ -589,38 +588,8 @@
     }
   },
   "default_scenario": "KABE Depart 6 Land 6",
-  "inhibit_ca_volumes": [
-      {
-          "name": "ABE NO CA",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 7,
-          "center": "40.65236,-75.4404"
-      }
-  ],
   "name": "KABE",
   "primary_airport": "KABE",
-  "radar_sites": {
-    "ABE": {
-      "char": "A",
-      "position": "40.673611,-75.453333",
-      "elevation": 413,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "NXX": {
-      "char": "N",
-      "position": "40.19980, -75.14820",
-      "elevation": 408,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 50.4,
-      "slope_angle": 0.175
-    }
-  },
   "reporting_points": [
       "BWZ",
       "DUMMR",
@@ -729,6 +698,38 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KABE",
+  "inhibit_ca_volumes": [
+      {
+          "name": "ABE NO CA",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 7,
+          "center": "40.65236,-75.4404"
+      }
+  ],
+  "radar_sites": {
+    "ABE": {
+      "char": "A",
+      "position": "40.673611,-75.453333",
+      "elevation": 413,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "NXX": {
+      "char": "N",
+      "position": "40.19980, -75.14820",
+      "elevation": 408,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 50.4,
+      "slope_angle": 0.175
+    }
+  },
   "scratchpads": {
     "ARD": "ARD",
     "ETX": "ETX",
@@ -748,6 +749,7 @@
       "label": "ABE MVA",
       "name": "ABE MVA"
     }
-  ],
+  ]
+  },
   "video_map_file": "videomaps/abe-maps.json.zst"
 }

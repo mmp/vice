@@ -413,16 +413,6 @@
         ]
         }
     },
-  "inhibit_ca_volumes": [
-    {
-        "name": "COS NO CA",
-        "type": "circle",
-        "floor": 0,
-        "ceiling": 9500,
-        "radius": 10,
-        "center": "N038.47.52.142,W104.42.03.065"
-    }
-],
   "arrival_groups": {
     "OZZZY5": [
       {
@@ -555,7 +545,6 @@
       }
     ]
   },
-  "center": "N038.47.36.733,W104.35.10.501",
   "control_positions": {
     "COS_APP": {
       "frequency": 124000,
@@ -610,18 +599,6 @@
   },
   "name": "KCOS",
   "primary_airport": "KCOS",
-  "radar_sites": {
-    "COS": {
-      "char": "A",
-      "position": "N038.47.36.733,W104.35.10.501",
-      "elevation": 6075,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    }
-  },
-  "range": 30,
   "scenarios": {
     "North VMC": {
       "approach_airspace": [
@@ -748,6 +725,30 @@
       }
     }
   },
+  "stars_config": {
+  "center": "N038.47.36.733,W104.35.10.501",
+  "inhibit_ca_volumes": [
+    {
+        "name": "COS NO CA",
+        "type": "circle",
+        "floor": 0,
+        "ceiling": 9500,
+        "radius": 10,
+        "center": "N038.47.52.142,W104.42.03.065"
+    }
+  ],
+  "radar_sites": {
+    "COS": {
+      "char": "A",
+      "position": "N038.47.36.733,W104.35.10.501",
+      "elevation": 6075,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    }
+  },
+  "range": 30,
   "scratchpads": {
     "LUFSE": "LUF",
     "PUB": "PUB",
@@ -870,6 +871,7 @@
       "label": "Z 35L",
       "name": "COS Z 35R"
     }
-  ],
+  ]
+  },
   "video_map_file": "videomaps/ZDV-videomaps.json.zst"
 }

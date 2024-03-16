@@ -2457,11 +2457,58 @@
     }
   },
   "arrival_groups": {},
+  "stars_config": {
   "center": "N040.45.26.477,W074.24.28.789",
   "range": 60,
-  "stars_config": {
-		"allow_long_scratchpad": [false, false],
-		"force_ql_self": true,
+  "radar_sites": {
+    "EWR": {
+      "char": "E",
+      "position": "KEWR",
+      "elevation": 136,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "HPN": {
+      "char": "H",
+      "position": "KHPN",
+      "elevation": 708,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "ISP": {
+      "char": "I",
+      "position": "KISP",
+      "elevation": 185,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "JFK": {
+      "char": "J",
+      "position": "KJFK",
+      "elevation": 143,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "SWF": {
+      "char": "S",
+      "position": "KSWF",
+      "elevation": 972,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    }
+  },
+      "allow_long_scratchpad": [false, false],
+      "force_ql_self": true,
     "airspace_awareness": [
       {
         "fixes": ["MERIT", "BAYYS", "GREKI"],
@@ -2574,8 +2621,101 @@
         "to_center": true,
         "receiving_controller": "C55"
       }
-    ]
-	},
+    ],
+  "scratchpads": {
+    "BAYYS": "BAY",
+    "BIGGY": "BIG",
+    "BREZY": "BRE",
+    "COATE": "COA",
+    "DEEZZ": "DEZ",
+    "DEEZZ5": "DEZ",
+    "DIXIE": "DIX",
+    "ELIOT": "ELI",
+    "GAYEL": "GAY",
+    "GREKI": "GRE",
+    "HAAYS": "HAY",
+    "LANNA": "LAN",
+    "MERIT": "MER",
+    "NEION": "NEI",
+    "NEWEL": "NWL",
+    "PARKE": "PAR",
+    "RBV": "RBV",
+    "WHITE": "WHI",
+    "ZIMMZ": "ZIM"
+  },
+  "stars_maps": [
+    {
+      "group": 0,
+      "label": "LIB D",
+      "name": "LIB Departure"
+    },
+    {
+      "group": 0,
+      "label": "LIB C",
+      "name": "LIB Catskill"
+    },
+    {
+      "group": 1,
+      "label": "MVA",
+      "name": "N90 MVA"
+    },
+    {
+      "group": 0,
+      "label": "EWR",
+      "name": "EWR"
+    },
+    {
+      "group": 0,
+      "label": "EWR SAT",
+      "name": "EWR Satellites"
+    },
+    {
+      "group": 0,
+      "label": "EWR CRDA",
+      "name": "EWR CRDA"
+    },
+    {
+      "group": 1,
+      "label": "NY B",
+      "name": "N90 CLASS B"
+    },
+    {
+      "group": 0,
+      "label": "JFK4",
+      "name": "JFK 4s"
+    },
+    {
+      "group": 0,
+      "label": "JFK13",
+      "name": "JFK 13s"
+    },
+    {
+      "group": 0,
+      "label": "JFK22",
+      "name": "JFK 22s"
+    },
+    {
+      "group": 0,
+      "label": "JFK31",
+      "name": "JFK 31s"
+    },
+    {
+      "group": 0,
+      "label": "JFK22 ILS",
+      "name": "JFK ILS 22s"
+    },
+    {
+      "group": 0,
+      "label": "JFK31 NTZ",
+      "name": "JFK 31s NTZ"
+    },
+    {
+      "group": 0,
+      "label": "LGA",
+      "name": "LGA"
+    }
+  ]
+  },
   "control_positions": {
     "BOS_SW_CTR": {
       "frequency": 134000,
@@ -2754,53 +2894,6 @@
   },
   "name": "LIB",
   "primary_airport": "KEWR",
-  "radar_sites": {
-    "EWR": {
-      "char": "E",
-      "position": "KEWR",
-      "elevation": 136,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "HPN": {
-      "char": "H",
-      "position": "KHPN",
-      "elevation": 708,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "ISP": {
-      "char": "I",
-      "position": "KISP",
-      "elevation": 185,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "JFK": {
-      "char": "J",
-      "position": "KJFK",
-      "elevation": 143,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "SWF": {
-      "char": "S",
-      "position": "KSWF",
-      "elevation": 972,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    }
-  },
   "scenarios": {
     "Liberty Combined - JFK Owns Coney": {
       "solo_controller": "NY_L_APP",
@@ -3342,98 +3435,5 @@
       ]
     }
   },
-  "scratchpads": {
-    "BAYYS": "BAY",
-    "BIGGY": "BIG",
-    "BREZY": "BRE",
-    "COATE": "COA",
-    "DEEZZ": "DEZ",
-    "DEEZZ5": "DEZ",
-    "DIXIE": "DIX",
-    "ELIOT": "ELI",
-    "GAYEL": "GAY",
-    "GREKI": "GRE",
-    "HAAYS": "HAY",
-    "LANNA": "LAN",
-    "MERIT": "MER",
-    "NEION": "NEI",
-    "NEWEL": "NWL",
-    "PARKE": "PAR",
-    "RBV": "RBV",
-    "WHITE": "WHI",
-    "ZIMMZ": "ZIM"
-  },
-  "stars_maps": [
-    {
-      "group": 0,
-      "label": "LIB D",
-      "name": "LIB Departure"
-    },
-    {
-      "group": 0,
-      "label": "LIB C",
-      "name": "LIB Catskill"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "N90 MVA"
-    },
-    {
-      "group": 0,
-      "label": "EWR",
-      "name": "EWR"
-    },
-    {
-      "group": 0,
-      "label": "EWR SAT",
-      "name": "EWR Satellites"
-    },
-    {
-      "group": 0,
-      "label": "EWR CRDA",
-      "name": "EWR CRDA"
-    },
-    {
-      "group": 1,
-      "label": "NY B",
-      "name": "N90 CLASS B"
-    },
-    {
-      "group": 0,
-      "label": "JFK4",
-      "name": "JFK 4s"
-    },
-    {
-      "group": 0,
-      "label": "JFK13",
-      "name": "JFK 13s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22",
-      "name": "JFK 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31",
-      "name": "JFK 31s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22 ILS",
-      "name": "JFK ILS 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31 NTZ",
-      "name": "JFK 31s NTZ"
-    },
-    {
-      "group": 0,
-      "label": "LGA",
-      "name": "LGA"
-    }
-  ],
   "video_map_file": "videomaps/n90-maps.json.zst"
 }

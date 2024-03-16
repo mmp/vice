@@ -979,7 +979,6 @@
             }
         ]
     },
-    "center": "N034.12.14.800,W118.21.44.000",
     "control_positions": {
         "LAX_55_CTR": {
             "frequency": 135550,
@@ -1075,32 +1074,6 @@
     },
     "name": "KBUR",
     "primary_airport": "KBUR",
-    "radar_sites": {
-        "KBUR": {
-            "char": "S",
-            "position": "KBUR",
-            "elevation": 778,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "slope_angle": 0.175
-        },
-        "KVNY": {
-            "char": "S",
-            "position": "KWHP",
-            "elevation": 802,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "slope_angle": 0.175
-        },
-        "KWHP": {
-            "char": "S",
-            "position": "KWHP",
-            "elevation": 1003,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "slope_angle": 0.175
-        }
-    },
     "scenarios": {
         "KBUR 8/15": {
             "arrival_runways": [
@@ -1417,7 +1390,34 @@
             }
         }
     },
-
+    "stars_config": {
+    "center": "N034.12.14.800,W118.21.44.000",
+    "radar_sites": {
+        "KBUR": {
+            "char": "S",
+            "position": "KBUR",
+            "elevation": 778,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "slope_angle": 0.175
+        },
+        "KVNY": {
+            "char": "S",
+            "position": "KWHP",
+            "elevation": 802,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "slope_angle": 0.175
+        },
+        "KWHP": {
+            "char": "S",
+            "position": "KWHP",
+            "elevation": 1003,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "slope_angle": 0.175
+        }
+    },
     "scratchpads": {
         "COREZ": "COR",
         "CSTRO": "CST",
@@ -1487,7 +1487,7 @@
             "label": "EOVM",
             "name": "711S EOVM SCT"
         }
-
-    ],
+    ]
+    },
     "video_map_file": "videomaps/ZLA-videomaps.json.zst"
 }

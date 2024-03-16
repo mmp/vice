@@ -2741,56 +2741,6 @@
       }
     ]
   },
-  "center": "KJFK",
-  "stars_config": {
-    "allow_long_scratchpad": [false, false],
-    "force_ql_self": true,
-    "airspace_awareness": [
-      {
-         "fixes": [
-          "SHIPP",
-          "WAVEY"
-        ],
-        "aircraft_type": [
-          "J"
-        ],
-        "altitude_range": [
-          12000,
-          99999
-        ],
-        "to_center": true,
-        "receiving_controller": "C66"
-      },
-      {
-        "fixes": [
-          "SHIPP",
-          "WAVEY"
-        ],
-        "aircraft_type": [
-          "P",
-          "T"
-        ],
-        "altitude_range": [
-          10000,
-          99999
-        ],
-        "to_center": true,
-        "receiving_controller": "C66"
-      },
-      {
-        "fixes": [
-          "BETTE",
-          "HAPIE"
-        ],
-        "altitude_range": [
-          11000,
-          99999
-        ],
-        "to_center": true,
-        "receiving_controller": "B17"
-      }
-  ]
-  },
   "control_positions": {
     "BOS_E_CTR": {
       "frequency": 133450,
@@ -2960,89 +2910,8 @@
     "_LGA_4a": "N040.44.56.662,W073.51.53.497",
     "_LGA_4b": "N040.47.59.557,W073.47.11.533"
   },
-  "inhibit_ca_volumes": [
-      {
-          "name": "JFK NO CA",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1500,
-          "radius": 3,
-          "center": "KJFK"
-      },
-      {
-          "name": "FRG NO CA",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KFRG"
-      },
-      {
-          "name": "ISP NO CA",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KISP"
-      },
-      {
-          "name": "HVN NO CA",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KHVN"
-      }
-  ],
   "name": "KJFK",
   "primary_airport": "KJFK",
-  "radar_sites": {
-    "EWR": {
-      "char": "E",
-      "position": "KEWR",
-      "elevation": 136,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "HPN": {
-      "char": "H",
-      "position": "KHPN",
-      "elevation": 708,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "ISP": {
-      "char": "I",
-      "position": "KISP",
-      "elevation": 185,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "JFK": {
-      "char": "J",
-      "position": "KJFK",
-      "elevation": 143,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "SWF": {
-      "char": "S",
-      "position": "KSWF",
-      "elevation": 972,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    }
-  },
   "reporting_points": [
       "BDR",
       "BEADS",
@@ -3776,6 +3645,136 @@
       }
     }
   },
+  "stars_config": {
+    "center": "KJFK",
+  "radar_sites": {
+    "EWR": {
+      "char": "E",
+      "position": "KEWR",
+      "elevation": 136,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "HPN": {
+      "char": "H",
+      "position": "KHPN",
+      "elevation": 708,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "ISP": {
+      "char": "I",
+      "position": "KISP",
+      "elevation": 185,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "JFK": {
+      "char": "J",
+      "position": "KJFK",
+      "elevation": 143,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "SWF": {
+      "char": "S",
+      "position": "KSWF",
+      "elevation": 972,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    }
+  },
+  "inhibit_ca_volumes": [
+      {
+          "name": "JFK NO CA",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1500,
+          "radius": 3,
+          "center": "KJFK"
+      },
+      {
+          "name": "FRG NO CA",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KFRG"
+      },
+      {
+          "name": "ISP NO CA",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KISP"
+      },
+      {
+          "name": "HVN NO CA",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KHVN"
+      }
+  ],
+    "allow_long_scratchpad": [false, false],
+    "force_ql_self": true,
+    "airspace_awareness": [
+      {
+         "fixes": [
+          "SHIPP",
+          "WAVEY"
+        ],
+        "aircraft_type": [
+          "J"
+        ],
+        "altitude_range": [
+          12000,
+          99999
+        ],
+        "to_center": true,
+        "receiving_controller": "C66"
+      },
+      {
+        "fixes": [
+          "SHIPP",
+          "WAVEY"
+        ],
+        "aircraft_type": [
+          "P",
+          "T"
+        ],
+        "altitude_range": [
+          10000,
+          99999
+        ],
+        "to_center": true,
+        "receiving_controller": "C66"
+      },
+      {
+        "fixes": [
+          "BETTE",
+          "HAPIE"
+        ],
+        "altitude_range": [
+          11000,
+          99999
+        ],
+        "to_center": true,
+        "receiving_controller": "B17"
+      }
+  ],
   "scratchpads": {
     "ARD": "ARD",
     "BAYYS": "BAY",
@@ -3869,6 +3868,7 @@
       "label": "Airports",
       "name": "Airport Diagrams"
     }
-  ],
+  ]
+  },
   "video_map_file": "videomaps/n90-maps.json.zst"
 }

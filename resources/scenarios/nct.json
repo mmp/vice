@@ -4100,50 +4100,6 @@
 ]
       }
     },
-  "inhibit_ca_volumes": [
-    {
-        "name": "SFO NO CA",
-        "type": "polygon",
-        "floor": 0,
-        "ceiling": 9500,
-        "vertices": ["N037.37.08.892,W122.33.08.745", "N037.22.39.887,W122.09.39.473", "N037.35.58.882,W122.02.09.364", "N037.46.00.246,W122.25.24.023"]
-    },
-    {
-      "name": "OAK NO CA",
-      "type": "polygon",
-      "floor": 0,
-      "ceiling": 9500,
-      "vertices":  ["N037.52.49.775,W122.17.57.264","N037.40.51.887,W122.21.36.276","N037.32.51.112,W122.02.56.907","N037.42.43.769,W121.48.34.590","N037.53.55.281,W122.20.16.955"]
-  },
-  {
-    "name": "SJC NO CA",
-    "type": "polygon",
-    "floor": 0,
-    "ceiling": 9500,
-    "vertices": ["N037.23.02.519,W122.01.52.362","N037.11.55.003,W121.46.33.273","N037.14.26.313,W121.43.03.242","N037.26.32.028,W121.52.57.493"]
-},
-{
-  "name": "SMF NO CA",
-  "type": "polygon",
-  "floor": 0,
-  "ceiling": 9500,
-  "vertices": ["N038.48.53.569,W121.39.29.531","N038.38.04.043,W121.38.43.965","N038.37.10.375,W121.32.06.095","N038.47.13.071,W121.31.19.486"]
-},
-{
-  "name": "RNO NO CA",
-  "type": "polygon",
-  "floor": 0,
-  "ceiling": 9500,
-  "vertices": ["N039.32.56.316,W119.49.19.716","N039.27.04.534,W119.51.36.551","N039.27.06.512,W119.41.00.031","N039.33.44.780,W119.41.42.575"]
-},
-{
-  "name": "MRY NO CA",
-  "type": "polygon",
-  "floor": 0,
-  "ceiling": 9500,
-  "vertices": ["N036.38.52.122,W121.54.18.929","N036.32.57.456,W121.58.21.425","N036.30.18.827,W121.44.01.442","N036.37.44.213,W121.43.51.170"]
-}
-],
   "arrival_groups": {
     "BRINY2": [
       {
@@ -6977,7 +6933,6 @@
       }
     ]
   },
-  "center": "KSJC",
   "control_positions": {
     "NCT_APP": {
       "frequency": 133950,
@@ -7268,252 +7223,6 @@
   },
   "name": "KSFO",
   "primary_airport": "KSFO",
-  "radar_sites": {
-    "NUQ": {
-      "char": "N",
-      "position": "37.424528,122.01511",
-      "elevation": 112,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "OAK": {
-      "char": "O",
-      "position": "37.706125,-122.22532",
-      "elevation": 50,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "BAB": {
-      "char": "B",
-      "position": "39.129919,-121.46101",
-      "elevation": 167,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "FLX": {
-      "char": "L",
-      "position": "37.424528,122.01511",
-      "elevation": 5436,
-      "primary_range": 225,
-      "secondary_range": 225,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "MCC": {
-      "char": "M",
-      "position": "38.674069,-121.3655",
-      "elevation": 255,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "MCE": {
-      "char": "E",
-      "position": "37.287139,-120.50908",
-      "elevation": 320,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "MRY": {
-      "char": "Y",
-      "position": "36.69462,-121.76025",
-      "elevation": 449,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "QMV": {
-      "char": "Q",
-      "position": "37.923889,-122.59778",
-      "elevation": 3522,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "PRB": {
-      "char": "P",
-      "position": "35.394722,-120.35444",
-      "elevation": 4920,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "RNO": {
-      "char": "R",
-      "position": "36.69462,-121.76025",
-      "elevation": 4519,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "SAC": {
-      "char": "S",
-      "position": "38.553806,-121.269",
-      "elevation": 258,
-      "primary_range": 5,
-      "secondary_range": 250,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "SCK": {
-      "char": "A",
-      "position": "37.887714,-121.24351",
-      "elevation": 121,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "SUU": {
-      "char": "T",
-      "position": "38.250619,-121.92464",
-      "elevation": 186,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "RBL": {
-      "char": "F",
-      "position": "40.146167,-122.30453",
-      "elevation": 711,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "silence_angle": 30,
-      "slope_angle": 1.3
-    },
-    "WLWA": {
-      "char": "0",
-      "position": "39.5234,-122.17",
-      "elevation": 275,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0
-    },
-    "SPZA": {
-      "char": "1",
-      "position": "39.48469,-118.857",
-      "elevation": 4150,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 1.5
-    },
-    "RNOA": {
-      "char": "2",
-      "position": "39.5837,-119.799",
-      "elevation": 5450,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0
-    },
-    "JAQA": {
-      "char": "3",
-      "position": "38.34001,-120.721",
-      "elevation": 2275,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "SMFA": {
-      "char": "4",
-      "position": "38.7824,-121.694",
-      "elevation": 200,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0
-    },
-    "SQLA": {
-      "char": "5",
-      "position": "37.41051,-122.307",
-      "elevation": 2300,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0
-    },
-    "RHVA": {
-      "char": "6",
-      "position": "37.3227,-121.755",
-      "elevation": 1000,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0
-    },
-    "O27A": {
-      "char": "7",
-      "position": "37.6415,-120.628",
-      "elevation": 300,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "SNSA": {
-      "char": "8",
-      "position": "36.5348,-121.62",
-      "elevation": 3475,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0
-    },
-    "MAEA": {
-      "char": "9",
-      "position": "37.02199,-120.135",
-      "elevation": 375,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "D86A": {
-      "char": "10",
-      "position": "36.5178,-119.414",
-      "elevation": 425,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "TRKA": {
-      "char": "11",
-      "position": "39.31711,-120.14",
-      "elevation": 5974,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "TVLA": {
-      "char": "11",
-      "position": "38.8892,-119.998",
-      "elevation": 6338,
-      "primary_range": 1,
-      "secondary_range": 60,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    }
-  },
-  "range": 45,
   "scenarios": {
     "Area A Combined - SJCW": {
       "approach_airspace": ["SJC_W_FLOW"],
@@ -9342,6 +9051,298 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KSJC",
+  "inhibit_ca_volumes": [
+    {
+        "name": "SFO NO CA",
+        "type": "polygon",
+        "floor": 0,
+        "ceiling": 9500,
+        "vertices": ["N037.37.08.892,W122.33.08.745", "N037.22.39.887,W122.09.39.473", "N037.35.58.882,W122.02.09.364", "N037.46.00.246,W122.25.24.023"]
+    },
+    {
+      "name": "OAK NO CA",
+      "type": "polygon",
+      "floor": 0,
+      "ceiling": 9500,
+      "vertices":  ["N037.52.49.775,W122.17.57.264","N037.40.51.887,W122.21.36.276","N037.32.51.112,W122.02.56.907","N037.42.43.769,W121.48.34.590","N037.53.55.281,W122.20.16.955"]
+  },
+  {
+    "name": "SJC NO CA",
+    "type": "polygon",
+    "floor": 0,
+    "ceiling": 9500,
+    "vertices": ["N037.23.02.519,W122.01.52.362","N037.11.55.003,W121.46.33.273","N037.14.26.313,W121.43.03.242","N037.26.32.028,W121.52.57.493"]
+},
+{
+  "name": "SMF NO CA",
+  "type": "polygon",
+  "floor": 0,
+  "ceiling": 9500,
+  "vertices": ["N038.48.53.569,W121.39.29.531","N038.38.04.043,W121.38.43.965","N038.37.10.375,W121.32.06.095","N038.47.13.071,W121.31.19.486"]
+},
+{
+  "name": "RNO NO CA",
+  "type": "polygon",
+  "floor": 0,
+  "ceiling": 9500,
+  "vertices": ["N039.32.56.316,W119.49.19.716","N039.27.04.534,W119.51.36.551","N039.27.06.512,W119.41.00.031","N039.33.44.780,W119.41.42.575"]
+},
+{
+  "name": "MRY NO CA",
+  "type": "polygon",
+  "floor": 0,
+  "ceiling": 9500,
+  "vertices": ["N036.38.52.122,W121.54.18.929","N036.32.57.456,W121.58.21.425","N036.30.18.827,W121.44.01.442","N036.37.44.213,W121.43.51.170"]
+}
+],
+  "radar_sites": {
+    "NUQ": {
+      "char": "N",
+      "position": "37.424528,122.01511",
+      "elevation": 112,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "OAK": {
+      "char": "O",
+      "position": "37.706125,-122.22532",
+      "elevation": 50,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "BAB": {
+      "char": "B",
+      "position": "39.129919,-121.46101",
+      "elevation": 167,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "FLX": {
+      "char": "L",
+      "position": "37.424528,122.01511",
+      "elevation": 5436,
+      "primary_range": 225,
+      "secondary_range": 225,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "MCC": {
+      "char": "M",
+      "position": "38.674069,-121.3655",
+      "elevation": 255,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "MCE": {
+      "char": "E",
+      "position": "37.287139,-120.50908",
+      "elevation": 320,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "MRY": {
+      "char": "Y",
+      "position": "36.69462,-121.76025",
+      "elevation": 449,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "QMV": {
+      "char": "Q",
+      "position": "37.923889,-122.59778",
+      "elevation": 3522,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "PRB": {
+      "char": "P",
+      "position": "35.394722,-120.35444",
+      "elevation": 4920,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "RNO": {
+      "char": "R",
+      "position": "36.69462,-121.76025",
+      "elevation": 4519,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "SAC": {
+      "char": "S",
+      "position": "38.553806,-121.269",
+      "elevation": 258,
+      "primary_range": 5,
+      "secondary_range": 250,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "SCK": {
+      "char": "A",
+      "position": "37.887714,-121.24351",
+      "elevation": 121,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "SUU": {
+      "char": "T",
+      "position": "38.250619,-121.92464",
+      "elevation": 186,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "RBL": {
+      "char": "F",
+      "position": "40.146167,-122.30453",
+      "elevation": 711,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 30,
+      "slope_angle": 1.3
+    },
+    "WLWA": {
+      "char": "0",
+      "position": "39.5234,-122.17",
+      "elevation": 275,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0
+    },
+    "SPZA": {
+      "char": "1",
+      "position": "39.48469,-118.857",
+      "elevation": 4150,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 1.5
+    },
+    "RNOA": {
+      "char": "2",
+      "position": "39.5837,-119.799",
+      "elevation": 5450,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0
+    },
+    "JAQA": {
+      "char": "3",
+      "position": "38.34001,-120.721",
+      "elevation": 2275,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "SMFA": {
+      "char": "4",
+      "position": "38.7824,-121.694",
+      "elevation": 200,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0
+    },
+    "SQLA": {
+      "char": "5",
+      "position": "37.41051,-122.307",
+      "elevation": 2300,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0
+    },
+    "RHVA": {
+      "char": "6",
+      "position": "37.3227,-121.755",
+      "elevation": 1000,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0
+    },
+    "O27A": {
+      "char": "7",
+      "position": "37.6415,-120.628",
+      "elevation": 300,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "SNSA": {
+      "char": "8",
+      "position": "36.5348,-121.62",
+      "elevation": 3475,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0
+    },
+    "MAEA": {
+      "char": "9",
+      "position": "37.02199,-120.135",
+      "elevation": 375,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "D86A": {
+      "char": "10",
+      "position": "36.5178,-119.414",
+      "elevation": 425,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "TRKA": {
+      "char": "11",
+      "position": "39.31711,-120.14",
+      "elevation": 5974,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "TVLA": {
+      "char": "11",
+      "position": "38.8892,-119.998",
+      "elevation": 6338,
+      "primary_range": 1,
+      "secondary_range": 60,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    }
+  },
+  "range": 45,
   "scratchpads": {
     "BENNE": "BEN",
     "BARGR": "BRG",
@@ -9569,6 +9570,7 @@
       "label": "R_STARS",
       "name": "RVMNCT946S"
     }
-  ],
+  ]
+  },
   "video_map_file": "videomaps/ZOA-videomaps.json.zst"
 }

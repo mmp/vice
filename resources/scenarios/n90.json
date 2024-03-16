@@ -3396,9 +3396,82 @@
       }
     ]
   },
+  "stars_config": {
   "center": "KLGA",
   "range": 80,
-  "stars_config": {
+  "inhibit_ca_volumes": [
+    {
+      "name": "EWR NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 2,
+      "center": "KEWR"
+    },
+    {
+      "name": "LGA NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 2,
+      "center": "KLGA"
+    },
+    {
+      "name": "JFK NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1500,
+      "radius": 3,
+      "center": "KJFK"
+    }
+  ],
+  "radar_sites": {
+    "EWR": {
+      "char": "E",
+      "position": "KEWR",
+      "elevation": 136,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "HPN": {
+      "char": "H",
+      "position": "KHPN",
+      "elevation": 708,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "ISP": {
+      "char": "I",
+      "position": "KISP",
+      "elevation": 185,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "JFK": {
+      "char": "J",
+      "position": "KJFK",
+      "elevation": 143,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "SWF": {
+      "char": "S",
+      "position": "KSWF",
+      "elevation": 972,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    }
+  },
     "allow_long_scratchpad": [
       false,
       false
@@ -3670,7 +3743,137 @@
         "to_center": true,
         "receiving_controller": "B17"
       }
-    ]
+    ],
+  "scratchpads": {
+    "BAYYS": "BAY",
+    "BETTE": "BET",
+    "BDR": "BDR",
+    "BIGGY": "BIG",
+    "BREZY": "BRE",
+    "COATE": "COA",
+    "DEEZZ": "DEZ",
+    "DIXIE": "DIX",
+    "ELIOT": "ELI",
+    "GAYEL": "GAY",
+    "GREKI": "GRE",
+    "HAAYS": "HAY",
+    "HAPIE": "HAP",
+    "LANNA": "LAN",
+    "MERIT": "MER",
+    "NEION": "NEI",
+    "NEWEL": "NWL",
+    "None": null,
+    "PARKE": "PAR",
+    "RBV": "RBV",
+    "SAX": "SAX",
+    "SBJ": "SBJ",
+    "SHIPP": "SHI",
+    "WAVEY": "WAV",
+    "WHITE": "WHI",
+    "ZIMMZ": "ZIM"
+  },
+  "stars_maps": [
+    {
+      "group": 0,
+      "label": "EWR",
+      "name": "EWR"
+    },
+    {
+      "group": 0,
+      "label": "EWR SAT",
+      "name": "EWR Satellites"
+    },
+    {
+      "group": 0,
+      "label": "EWR CRDA",
+      "name": "EWR CRDA"
+    },
+    {
+      "group": 1,
+      "label": "NY B",
+      "name": "N90 CLASS B"
+    },
+    {
+      "group": 1,
+      "label": "MVA",
+      "name": "N90 MVA"
+    },
+    {
+      "group": 0,
+      "label": "JFK4",
+      "name": "JFK 4s"
+    },
+    {
+      "group": 0,
+      "label": "JFK13",
+      "name": "JFK 13s"
+    },
+    {
+      "group": 0,
+      "label": "JFK22",
+      "name": "JFK 22s"
+    },
+    {
+      "group": 0,
+      "label": "JFK31",
+      "name": "JFK 31s"
+    },
+    {
+      "group": 0,
+      "label": "JFK22 ILS",
+      "name": "JFK ILS 22s"
+    },
+    {
+      "group": 0,
+      "label": "JFK31 NTZ",
+      "name": "JFK 31s NTZ"
+    },
+    {
+      "group": 0,
+      "label": "LGA",
+      "name": "LGA"
+    },
+    {
+      "group": 0,
+      "label": "LIB D",
+      "name": "LIB Departure"
+    },
+    {
+      "group": 0,
+      "label": "LIB C",
+      "name": "LIB Catskill"
+    },
+    {
+      "group": 0,
+      "label": "LGA",
+      "name": "LGA"
+    },
+    {
+      "group": 0,
+      "label": "LGA RTL",
+      "name": "LGA Right Turn Line"
+    },
+    {
+      "group": 0,
+      "label": "LOC 31",
+      "name": "LGA LOC 31"
+    },
+    {
+      "group": 1,
+      "label": "NY B",
+      "name": "N90 CLASS B"
+    },
+    {
+      "group": 1,
+      "label": "LGA GEO",
+      "name": "LGA GEO"
+    },
+    {
+      "group": 1,
+      "label": "MVA",
+      "name": "N90 MVA"
+    }
+  ]
   },
   "control_positions": {
     "EWR_A_APP": {
@@ -3931,81 +4134,8 @@
     "_LGA_WHITESTONE2": "N040.43.18.046,W073.50.29.864",
     "_EWR4_DEVIL": "N040.45.39.688,W074.07.31.043"
   },
-  "inhibit_ca_volumes": [
-    {
-      "name": "EWR NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 2,
-      "center": "KEWR"
-    },
-    {
-      "name": "LGA NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 2,
-      "center": "KLGA"
-    },
-    {
-      "name": "JFK NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1500,
-      "radius": 3,
-      "center": "KJFK"
-    }
-  ],
   "name": "N90 Combined",
   "primary_airport": "KEWR",
-  "radar_sites": {
-    "EWR": {
-      "char": "E",
-      "position": "KEWR",
-      "elevation": 136,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "HPN": {
-      "char": "H",
-      "position": "KHPN",
-      "elevation": 708,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "ISP": {
-      "char": "I",
-      "position": "KISP",
-      "elevation": 185,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "JFK": {
-      "char": "J",
-      "position": "KJFK",
-      "elevation": 143,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "SWF": {
-      "char": "S",
-      "position": "KSWF",
-      "elevation": 972,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    }
-  },
   "reporting_points": [
     "CAMMO",
     "CYN",
@@ -5288,135 +5418,5 @@
       }
     }
   },
-  "scratchpads": {
-    "BAYYS": "BAY",
-    "BETTE": "BET",
-    "BDR": "BDR",
-    "BIGGY": "BIG",
-    "BREZY": "BRE",
-    "COATE": "COA",
-    "DEEZZ": "DEZ",
-    "DIXIE": "DIX",
-    "ELIOT": "ELI",
-    "GAYEL": "GAY",
-    "GREKI": "GRE",
-    "HAAYS": "HAY",
-    "HAPIE": "HAP",
-    "LANNA": "LAN",
-    "MERIT": "MER",
-    "NEION": "NEI",
-    "NEWEL": "NWL",
-    "None": null,
-    "PARKE": "PAR",
-    "RBV": "RBV",
-    "SAX": "SAX",
-    "SBJ": "SBJ",
-    "SHIPP": "SHI",
-    "WAVEY": "WAV",
-    "WHITE": "WHI",
-    "ZIMMZ": "ZIM"
-  },
-  "stars_maps": [
-    {
-      "group": 0,
-      "label": "EWR",
-      "name": "EWR"
-    },
-    {
-      "group": 0,
-      "label": "EWR SAT",
-      "name": "EWR Satellites"
-    },
-    {
-      "group": 0,
-      "label": "EWR CRDA",
-      "name": "EWR CRDA"
-    },
-    {
-      "group": 1,
-      "label": "NY B",
-      "name": "N90 CLASS B"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "N90 MVA"
-    },
-    {
-      "group": 0,
-      "label": "JFK4",
-      "name": "JFK 4s"
-    },
-    {
-      "group": 0,
-      "label": "JFK13",
-      "name": "JFK 13s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22",
-      "name": "JFK 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31",
-      "name": "JFK 31s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22 ILS",
-      "name": "JFK ILS 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31 NTZ",
-      "name": "JFK 31s NTZ"
-    },
-    {
-      "group": 0,
-      "label": "LGA",
-      "name": "LGA"
-    },
-    {
-      "group": 0,
-      "label": "LIB D",
-      "name": "LIB Departure"
-    },
-    {
-      "group": 0,
-      "label": "LIB C",
-      "name": "LIB Catskill"
-    },
-    {
-      "group": 0,
-      "label": "LGA",
-      "name": "LGA"
-    },
-    {
-      "group": 0,
-      "label": "LGA RTL",
-      "name": "LGA Right Turn Line"
-    },
-    {
-      "group": 0,
-      "label": "LOC 31",
-      "name": "LGA LOC 31"
-    },
-    {
-      "group": 1,
-      "label": "NY B",
-      "name": "N90 CLASS B"
-    },
-    {
-      "group": 1,
-      "label": "LGA GEO",
-      "name": "LGA GEO"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "N90 MVA"
-    }
-  ],
   "video_map_file": "videomaps/n90-maps.json.zst"
 }

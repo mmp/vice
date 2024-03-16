@@ -759,7 +759,6 @@
       }
     ]
   },
-  "center": "KSAV",
   "control_positions": {
     "JAX_30_CTR": {
       "frequency": 135925,
@@ -800,30 +799,9 @@
     "SAV":     "N32.08.46.464,W81.11.56.648",
     "KSAV":    "N32.07.39.009,W81.12.07.892"
   },
-  "inhibit_ca_volumes": [
-    {
-      "name": "SAV NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 2000,
-      "radius": 7,
-      "center": "N32.07.39.009,W81.12.07.892"
-    }
-  ],
-    "magnetic_adjustment": -0.5,
+  "magnetic_adjustment": -0.5,
   "name": "KSAV",
   "primary_airport": "KSAV",
-  "radar_sites": {
-    "SAV": {
-      "char": "S",
-      "position": "32.13347,-81.21328",
-      "elevation": 35,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 15,
-      "slope_angle": 0.175
-    }
-  },
   "reporting_points": [
     "LOTTS",
     "PLZZZ",
@@ -946,6 +924,29 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KSAV",
+  "radar_sites": {
+    "SAV": {
+      "char": "S",
+      "position": "32.13347,-81.21328",
+      "elevation": 35,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    }
+  },
+  "inhibit_ca_volumes": [
+    {
+      "name": "SAV NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 2000,
+      "radius": 7,
+      "center": "N32.07.39.009,W81.12.07.892"
+    }
+  ],
   "scratchpads": {
     "GIPPL": "GIP",
     "JROSS": "JRO",
@@ -997,6 +998,7 @@
         "label": "RNAV 01",
         "name": "RNAV - 01"
     }
-  ],
+  ]
+  },
   "video_map_file": "videomaps/ZJX-videomaps.json.zst"
 }
