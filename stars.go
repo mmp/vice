@@ -3480,7 +3480,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				if db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
 					state.FullLDB = time.Now().Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
-				} else if db == FullDatablock {
+				} else if db == FullDatablock && ac.TrackingController != ctx.world.Callsign{
 					state.DatablockType = PartialDatablock
 				} else {
 					state.DatablockType = FullDatablock
