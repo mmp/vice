@@ -84,7 +84,8 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 		return p
 	}
 
-	br := bufio.NewReader(zstdReader(file))
+	contents := decompressZstd(string(file))
+	br := bufio.NewReader(strings.NewReader(contents))
 	var lines [][]byte
 
 	getline := func() []byte {

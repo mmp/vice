@@ -39,6 +39,10 @@ type SimServerConnection struct {
 	err    error
 }
 
+func (s *SimServer) Close() error {
+	return s.RPCClient.Close()
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 type SimProxy struct {
@@ -56,7 +60,12 @@ func (s *SimProxy) TogglePause() *rpc.Call {
 }
 
 func (s *SimProxy) SignOff(_, _ *struct{}) error {
-	return s.Client.CallWithTimeout("Sim.SignOff", s.ControllerToken, nil)
+	if err := s.Client.CallWithTimeout("Sim.SignOff", s.ControllerToken, nil); err != nil {
+		return err
+	}
+	// FIXME: this is handing in zstd code. Why?
+	// return s.Client.Close()
+	return nil
 }
 
 func (s *SimProxy) ChangeControlPosition(callsign string, keepTracks bool) error {
@@ -238,12 +247,6 @@ func (s *SimProxy) DeleteAircraft(callsign string) *rpc.Call {
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
-}
-
-type AircraftCommandsArgs struct {
-	ControllerToken string
-	Callsign        string
-	Commands        string
 }
 
 func (s *SimProxy) RunAircraftCommands(callsign string, cmds string) *rpc.Call {
@@ -858,6 +861,12 @@ func (sd *SimDispatcher) DeleteAircraft(da *DeleteAircraftArgs, _ *struct{}) err
 	} else {
 		return sim.DeleteAircraft(da.ControllerToken, da.Callsign)
 	}
+}
+
+type AircraftCommandsArgs struct {
+	ControllerToken string
+	Callsign        string
+	Commands        string
 }
 
 func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *struct{}) error {

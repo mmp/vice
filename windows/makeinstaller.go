@@ -79,7 +79,7 @@ func main() {
 		return files
 	}
 
-	r.ResourceFiles = initFiles("resources/*.zst", "resources/*json")
+	r.ResourceFiles = initFiles("resources/*.zst", "resources/*json", "resources/mva-fus3.zip")
 	r.AudioFiles = initFiles("resources/audio/*.mp3")
 	r.FontFiles = initFiles("resources/fonts/*.zst")
 	r.VideoMapFiles = initFiles("resources/videomaps/*.zst")
