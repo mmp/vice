@@ -317,46 +317,6 @@ func (w *World) DropTrack(callsign string, success func(any), err func(error)) {
 		})
 }
 
-func (w *World) RedirectHandoff(callsign, controller string, success func(any), err func(error)) {
-	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
-			Call:      w.simProxy.RedirectedHandoff(callsign, controller),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
-func (w *World) AcceptRedirectedHandoff(callsign string, success func(any), err func(error)) {
-	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
-			Call:      w.simProxy.AcceptRedirectedHandoff(callsign),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
-func (w *World) RecallRedirectedHandoff(callsign string, success func(any), err func(error)) {
-	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
-			Call:      w.simProxy.RecallRedirectedHandoff(callsign),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
-func (w *World) SlewRedirectedHandoff(callsign string, success func(any), err func(error)) {
-	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
-			Call:      w.simProxy.SlewRedirectedHandoff(callsign),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
 func (w *World) HandoffTrack(callsign string, controller string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
@@ -387,6 +347,26 @@ func (w *World) AcceptHandoff(callsign string, success func(any), err func(error
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.AcceptHandoff(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) RedirectHandoff(callsign, controller string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.RedirectHandoff(callsign, controller),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) AcceptRedirectedHandoff(callsign string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.AcceptRedirectedHandoff(callsign),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
@@ -479,16 +459,17 @@ func (w *World) Disconnect() {
 	w.Controllers = nil
 }
 
+// Bool is if the callsign can be abbreviated
 func (w *World) GetAircraft(callsign string, abbreviated bool) *Aircraft { // If the callsign can be abbreivated (for radio commands, not STARS commands)
 	if abbreviated {
 		ac := w.GetAllAircraft()
 		aircraft := findAircraft(callsign, ac)
 		return aircraft
-	} 
+	}
 	if ac, ok := w.Aircraft[callsign]; ok {
 		return ac
 	}
-	return nil 
+	return nil
 }
 
 func findAircraft(sample string, aircraft []*Aircraft) *Aircraft {
