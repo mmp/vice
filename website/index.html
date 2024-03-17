@@ -24,7 +24,7 @@
   
   <!-- FontAwesome JS-->
   <script defer src="assets/fontawesome/js/all.min.js"></script>
-  
+
   <!-- Plugins CSS -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.2/styles/atom-one-dark.min.css">
   <link rel="stylesheet" href="assets/plugins/simplelightbox/simple-lightbox.min.css">
@@ -762,6 +762,11 @@ how it simulates aircraft or the STARS interface.
               </li>
             </ul>
 
+            <div class="container">
+              <button id="toggleButton">🔍 Show Earlier Releases</button>
+              <br>
+            <div id="hiddenText" style="display:none;">
+              <br>
             <h3>0.10.16 (22 December 2023)</h3>
             <ul>
 	      <li>Added multiple new scenarios: S46, BHM, GSP (Aaron Flett), AUS (Jace Martin), P50 (Mike K)</li>
@@ -1172,6 +1177,8 @@ how it simulates aircraft or the STARS interface.
               <li>0.3.1: Added JFK approach scenarios, improved aircraft flight model, routes, and airlines.</li>
               <li>0.2.1: Initial release</li>
             </ul>
+            </div> <!-- initially hidden -->
+            </div> <!-- container -->
 
           </section><!--//section-->
 
@@ -3508,6 +3515,19 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
   <script src="assets/plugins/simplelightbox/simple-lightbox.min.js"></script>      
   <script src="assets/plugins/gumshoe/gumshoe.polyfills.min.js"></script> 
   <script src="assets/js/docs.js"></script> 
+
+  <script>
+document.getElementById('toggleButton').addEventListener('click', function() {
+  var text = document.getElementById('hiddenText');
+  if (text.style.display === "none") {
+    text.style.display = "block";
+    this.textContent = "🔍 Hide Earlier Releases";
+  } else {
+    text.style.display = "none";
+    this.textContent = "🔍 Show Earlier Releases";
+  }
+});
+</script>
 
 </body>
 </html> 
