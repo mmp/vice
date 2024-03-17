@@ -635,7 +635,7 @@
               "icao": "UAL"
             }
           ],
-          "altitude": 340,
+          "altitude": 34000,
           "destination": "MROC",
           "exit": "WHITE",
           "route": "ELVAE COL WHITE J209 VILLS J209 SBY J79 KATZN CVI WEAVR J121 CHS CAKET Q97 DEBRL Q97 MALET Q93 EBAYY Q93 FOBIN Q93 MCLAW Y442 FUNDI UM335 ALVEK UM328 SELEK UZ403 PIRAS"
@@ -646,7 +646,7 @@
               "icao": "JBU"
             }
           ],
-          "altitude": 360,
+          "altitude": 36000,
           "destination": "KPBI",
           "exit": "WHITE",
           "route": "ELVAE COL WHITE J209 VILLS J209 SBY J79 KATZN ISO J121 CHS CAKET Q97 DEBRL Q97 MALET DDANY STOOP"
@@ -2313,7 +2313,7 @@
               "icao": "UAL"
             }
           ],
-          "altitude": 340,
+          "altitude": 34000,
           "destination": "MROC",
           "exit": "WHITE",
           "route": "ELVAE COL WHITE J209 VILLS J209 SBY J79 KATZN CVI WEAVR J121 CHS CAKET Q97 DEBRL Q97 MALET Q93 EBAYY Q93 FOBIN Q93 MCLAW Y442 FUNDI UM335 ALVEK UM328 SELEK UZ403 PIRAS"
@@ -2324,7 +2324,7 @@
               "icao": "JBU"
             }
           ],
-          "altitude": 360,
+          "altitude": 36000,
           "destination": "KPBI",
           "exit": "WHITE",
           "route": "ELVAE COL WHITE J209 VILLS J209 SBY J79 KATZN ISO J121 CHS CAKET Q97 DEBRL Q97 MALET DDANY STOOP"
