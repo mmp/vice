@@ -4107,7 +4107,7 @@
             ]
           },
           "EWR_DEP": {
-            "backup": "EWR_P_APP",
+            "backup": "EWR_A_APP",
             "departures": [
               "KEWR",
               "KTEB",
@@ -4115,7 +4115,7 @@
             ]
           },
           "EWR_U_APP": {
-            "backup": "EWR_P_APP"
+            "backup": "EWR_A_APP"
           },
           "EWR_H_APP": {
             "backup": "EWR_U_APP",

@@ -3078,6 +3078,16 @@ Given the id, the approach can be specified with:</p>
                 the route is used for.</td>
               </tr>
               <tr>
+                <td>"expect_approach"</td>
+                <td>String</td>
+                <td>(<i>Optional</i>) If provided, the aircraft has been
+                told to expect the given approach by a previous controller
+                and so it is not necessary to issue an "expect approach"
+                  command before clearing an aircraft for an approach.
+                  (This setting is especially useful in "finals" scenarios.) 
+                 </td>
+              </tr>
+              <tr>
                 <td>"initial_altitude"</td>
                 <td>Number</td>
                 <td>The aircraft's altitude when first spawned.</td>
@@ -3091,6 +3101,22 @@ Given the id, the approach can be specified with:</p>
                 <td>"initial_speed"</td>
                 <td>Number</td>
                 <td>The aircraft's initial speed when first spawned.</td>
+              </tr>
+              <tr>
+                <td>"route"</td>
+                <td>String</td>
+                <td>(<i>Optional</i>) The aircraft's remaining route. (This is only used for displaying the
+                  aircraft's flight plan, e.g. in flight strips.)</td>
+              </tr>
+              <tr>
+                <td>"scratchpad"</td>
+                <td>String</td>
+                <td>(<i>Optional</i>) If provided, the aircraft's scratchpad is set to this value.</td>
+              </tr>
+              <tr>
+                <td>"secondary_scratchpad"</td>
+                <td>String</td>
+                <td>(<i>Optional</i>) If provided, the aircraft's secondary scratchpad is set to this value.</td>
               </tr>
               <tr>
                 <td>"speed_restriction"</td>

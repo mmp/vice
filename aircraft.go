@@ -176,11 +176,15 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 			lg.Info("randomly going around")
 			ac.GoAroundDistance = nil // only go around once
 			rt := ac.GoAround()
+			ac.ControllingController = w.DepartureController(ac)
 			PostRadioEvents(ac.Callsign, rt, ep)
 
 			// If it was handed off to tower, hand it back to us
 			if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
-				ac.HandoffTrackController = ac.ApproachController
+				ac.HandoffTrackController = w.DepartureController(ac)
+				if ac.HandoffTrackController == "" {
+					ac.HandoffTrackController = ac.ApproachController
+				}
 				ep.PostEvent(Event{
 					Type:           OfferedHandoffEvent,
 					Callsign:       ac.Callsign,
@@ -196,7 +200,6 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 
 func (ac *Aircraft) GoAround() []RadioTransmission {
 	resp := ac.Nav.GoAround()
-
 	return []RadioTransmission{RadioTransmission{
 		Controller: ac.ControllingController,
 		Message:    resp.Message,
@@ -559,8 +562,8 @@ func (ac *Aircraft) GS() float32 {
 	return ac.Nav.FlightState.GS
 }
 
-func (ac *Aircraft) OnApproach() bool {
-	return ac.Nav.OnApproach()
+func (ac *Aircraft) OnApproach(checkAltitude bool) bool {
+	return ac.Nav.OnApproach(checkAltitude)
 }
 
 func (ac *Aircraft) DepartureAirportElevation() float32 {
@@ -582,6 +585,6 @@ func (ac *Aircraft) MVAsApply() bool {
 		return nmdistance2ll(ac.Position(), ac.Nav.FlightState.DepartureAirportLocation) > 5
 	} else {
 		// If they're established on the approach, they're good.
-		return !ac.OnApproach()
+		return !ac.OnApproach(true)
 	}
 }

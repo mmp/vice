@@ -279,7 +279,7 @@ func (nav *Nav) EnqueueHeading(h NavHeading) {
 	}
 }
 
-func (nav *Nav) OnApproach() bool {
+func (nav *Nav) OnApproach(checkAltitude bool) bool {
 	if !nav.Approach.Cleared {
 		return false
 	}
@@ -292,6 +292,10 @@ func (nav *Nav) OnApproach() bool {
 	// the localizer and also be above any upcoming altitude restrictions.
 	if !nav.Approach.PassedApproachFix && nav.Approach.InterceptState != HoldingLocalizer {
 		return false
+	}
+
+	if !checkAltitude {
+		return true
 	}
 
 	for _, wp := range nav.Waypoints {

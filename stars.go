@@ -400,6 +400,7 @@ type STARSAircraftState struct {
 	tracksIndex int
 
 	DatablockType DatablockType
+	FullLDB       time.Time // If the LDB displays the groundspeed. When to stop
 
 	IsSelected bool // middle click
 
@@ -414,6 +415,7 @@ type STARSAircraftState struct {
 	MinimumMIT               float32
 	ATPALeadAircraftCallsign string
 
+	POFlashingEndTime        time.Time
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
 	LeaderLineDirection *CardinalOrdinalDirection
@@ -1340,6 +1342,7 @@ func (sp *STARSPane) processEvents(w *World) {
 				if ctrl := w.GetController(event.ToController); ctrl != nil && ctrl.SectorId == id {
 					delete(sp.InboundPointOuts, event.Callsign)
 					sp.Aircraft[event.Callsign].PointedOut = true
+					sp.Aircraft[event.Callsign].POFlashingEndTime = time.Now().Add(5 * time.Second)
 				}
 			}
 
@@ -1637,7 +1640,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 	})
 
 	sp.updateCAAircraft(w, aircraft)
-	sp.updateIntrailDistance(aircraft, w)
+	sp.updateInTrailDistance(aircraft, w)
 }
 
 func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
@@ -3441,9 +3444,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 				}
-
-				if state.DatablockType != FullDatablock {
-					state.DatablockType = FullDatablock
+				db := sp.datablockType(ctx.world, ac)
+				if db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
+					state.FullLDB = time.Now().Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
 				} else if ac.TrackingController != ctx.world.Callsign {
 					state.DatablockType = PartialDatablock
@@ -3973,14 +3976,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 		if cmd == "D*" {
 			pll := transforms.LatLongFromWindowP(mousePosition)
 			format := func(v float32) string {
+				v = abs(v)
 				d := int(v)
 				v = 60 * (v - float32(d))
-				m := int(v)
-				v = 60 * (v - float32(d))
-				s := int(v)
-				return fmt.Sprintf("%3d %02d.%02d", d, m, s)
+				return fmt.Sprintf("%d %.2f", d, v)
 			}
-			status.output = fmt.Sprintf("%s %s", format(pll.Longitude()), format(pll.Latitude()))
+			status.output = fmt.Sprintf("%s / %s", format(pll.Latitude()), format(pll.Longitude()))
 			status.clear = true
 			return
 		} else if cmd == "P" {
@@ -5134,6 +5135,10 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = PartialDatablock
 	}
 
+	if ac.TrackingController == "" {
+		dt = LimitedDatablock
+	}
+
 	if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 		// it's under our control
 		dt = FullDatablock
@@ -5317,8 +5322,8 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 			// Partial datablock is just airspeed and then aircraft type if it's ~heavy.
 			datablockText = fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
 			ac := ctx.world.Aircraft[ghost.Callsign]
-			recat := getRecatCategory(ac)
-			datablockText += recat
+			cwtCategory := getCwtCategory(ac)
+			datablockText += cwtCategory
 		} else {
 			// The full datablock ain't much more...
 			datablockText = ghost.Callsign + "\n" + fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
@@ -5528,7 +5533,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [
 		return
 	}
 
-	if ac.OnApproach() {
+	if ac.OnApproach(false) {
 		// No warnings once they're flying the approach
 		return
 	}
@@ -5611,7 +5616,7 @@ func (sp *STARSPane) updateCAAircraft(w *World, aircraft []*Aircraft) {
 	}
 }
 
-func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft, w *World) {
+func (sp *STARSPane) updateInTrailDistance(aircraft []*Aircraft, w *World) {
 	// Zero out the previous distance
 	for _, ac := range aircraft {
 		sp.Aircraft[ac.Callsign].IntrailDistance = 0
@@ -5679,7 +5684,7 @@ func (sp *STARSPane) updateIntrailDistance(aircraft []*Aircraft, w *World) {
 			leadingState, trailingState := sp.Aircraft[leading.Callsign], sp.Aircraft[trailing.Callsign]
 			trailingState.IntrailDistance =
 				nmdistance2ll(leadingState.TrackPosition(), trailingState.TrackPosition())
-			sp.checkInTrailRecatSeparation(trailing, leading)
+			sp.checkInTrailCwtSeparation(trailing, leading)
 		}
 		handledVolumes[vol.Id] = nil
 	}
@@ -5738,7 +5743,7 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	return add2f(p, scale2f(ma.v, gs))
 }
 
-func getRecatCategory(ac *Aircraft) string {
+func getCwtCategory(ac *Aircraft) string {
 	perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
@@ -5746,7 +5751,7 @@ func getRecatCategory(ac *Aircraft) string {
 	}
 	wc := perf.Category.CWT
 	if len(wc) == 0 {
-		lg.Errorf("%s: no recat category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
+		lg.Errorf("%s: no CWT category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
 		return "NOWGT"
 	}
 
@@ -5778,17 +5783,17 @@ func getRecatCategory(ac *Aircraft) string {
 
 }
 
-func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
-	actype := func(ac *Aircraft) int {
+func (sp *STARSPane) checkInTrailCwtSeparation(back, front *Aircraft) {
+	cwtClass := func(ac *Aircraft) int {
 		perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
 		if !ok {
 			lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
-			return 1
+			return 9
 		}
 		wc := perf.Category.CWT
 		if len(wc) == 0 {
-			lg.Errorf("%s: no recat category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
-			return 1
+			lg.Errorf("%s: no CWT category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
+			return 9
 		}
 		switch wc[0] {
 		case 'I':
@@ -5814,36 +5819,41 @@ func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
 			return 9
 		}
 	}
-	mitRequirements := [10][10]float32{ // [front][back]
-		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behing I
-		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind H
-		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind G
-		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind F
-		[10]float32{4, 3, 3, 3, 3, 3, 3, 3, 3, 10},          // Behind E
-		[10]float32{5, 5, 5, 5, 5, 4, 4, 3, 3, 10},          // Behind D
-		[10]float32{5, 5, 3.5, 3.5, 3.5, 3, 3, 3, 3, 10},    // Behind C
-		[10]float32{5, 5, 5, 5, 5, 4, 4, 3, 3, 10},          // Behind B
-		[10]float32{8, 7, 7, 7, 7, 6, 6, 4.5, 3, 10},        // Behind A
-		[10]float32{10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, // Behind NOWGT (No weight: 7110.762)
-
+	// 7110.126B TBL 5-5-2
+	// 0 value means minimum radar separation
+	cwtOnApproachLookUp := [10][10]float32{ // [front][back]
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 10},          // Behind I
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 10},          // Behind H
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 10},          // Behind G
+		{4, 0, 0, 0, 0, 0, 0, 0, 0, 10},          // Behind F
+		{4, 0, 0, 0, 0, 0, 0, 0, 0, 10},          // Behind E
+		{6, 6, 5, 5, 5, 4, 4, 3, 0, 10},          // Behind D
+		{6, 5, 3.5, 3.5, 3.5, 0, 0, 0, 0, 10},    // Behind C
+		{6, 5, 5, 5, 5, 4, 4, 3, 0, 10},          // Behind B
+		{8, 8, 7, 7, 7, 6, 6, 5, 0, 10},          // Behind A
+		{10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, // Behind NOWGT (No weight: 7110.762)
 	}
-	fclass, bclass := actype(front), actype(back)
-	mit := mitRequirements[fclass][bclass]
+	cwtSeparation := cwtOnApproachLookUp[cwtClass(front)][cwtClass(back)]
 
 	state := sp.Aircraft[back.Callsign]
 	vol := back.ATPAVolume()
-	if vol.Enable25nmApproach &&
-		nmdistance2ll(vol.Threshold, state.TrackPosition()) < vol.Dist25nmApproach {
-		// Reduced separation allowed starting 10nm out, if, as per 5-5-4(i):
-		// 1. leading weight class <= trailing weight class
-		// 2. super/heavy can't be leading
+	if cwtSeparation == 0 {
+		cwtSeparation = float32(LateralMinimum)
 
-		if fclass <= bclass && fclass <= 6 {
-			mit = 2.5
+		// 7110.126B replaces 7110.65Z 5-5-4(j), which is now 7110.65AA 5-5-4(i)
+		// Reduced separation allowed 10 NM out (also enabled for the ATPA volume)
+		if vol.Enable25nmApproach &&
+			nmdistance2ll(vol.Threshold, state.TrackPosition()) < vol.Dist25nmApproach {
+
+			// between aircraft established on the final approach course
+			if back.OnApproach(false) && front.OnApproach(false) {
+				// TODO: Required separation must exist prior to applying 2.5 NM separation (TBL 5-5-2)
+				cwtSeparation = 2.5
+			}
 		}
 	}
 
-	state.MinimumMIT = mit
+	state.MinimumMIT = cwtSeparation
 	state.ATPALeadAircraftCallsign = front.Callsign
 	state.ATPAStatus = ATPAStatusMonitor // baseline
 
@@ -5863,7 +5873,7 @@ func (sp *STARSPane) checkInTrailRecatSeparation(back, front *Aircraft) {
 	fp, bp := fac.p, bac.p
 	for s := float32(0); s < 45; s++ {
 		fp, bp := fac.NextPosition(fp), bac.NextPosition(bp)
-		if distance2f(fp, bp) < float32(mit) { // no bueno
+		if distance2f(fp, bp) < cwtSeparation { // no bueno
 			if s <= 24 {
 				// Error if conflict expected within 24 seconds (6-159).
 				state.ATPAStatus = ATPAStatusAlert
@@ -5936,7 +5946,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		errs = append(errs, "CA")
 		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 	}
-	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
+	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside && !slices.Contains(errs, "AS"){
 		altStrs := ""
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
@@ -5966,6 +5976,11 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	case LimitedDatablock:
 		db := baseDB.Duplicate()
 		db.Lines[1].Text = "TODO LIMITED DATABLOCK"
+		db.Lines[1].Text = fmt.Sprintf("%v", ac.Squawk)
+		db.Lines[2].Text = fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
+		if time.Until(state.FullLDB) > 0 {
+			db.Lines[2].Text += fmt.Sprintf(" %02d", (state.TrackGroundspeed()+5)/10)
+		}
 		return []STARSDatablock{db}
 
 	case PartialDatablock:
@@ -6003,7 +6018,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else if sp.isOverflight(ctx, ac) {
 			field3 += "E"
 		}
-		cat := getRecatCategory(ac)
+		cat := getCwtCategory(ac)
 		field3 += cat
 
 		// Field 1: alternate between altitude and either primary
@@ -6046,6 +6061,8 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = []string{" PO" + id}
 		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
 			field8 = []string{"", " UN"}
+		} else if time.Until(state.POFlashingEndTime) > 0*time.Second {
+			field8 = []string{"", " PO"}
 		} else if redirect := ac.RedirectedHandoff; (rd && len(redirect.Redirector) > 0 && ac.RedirectedHandoff.RedirectedTo != "") ||
 			((redirect.RedirectedTo == user.SectorId) ||
 				(ac.TrackingController == user.Callsign && redirect.OrigionalOwner != "")) {
@@ -6108,7 +6125,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else {
 			modifier = " "
 		}
-		cat := getRecatCategory(ac)
+		cat := getCwtCategory(ac)
 		acCategory = modifier + cat
 
 		field5 := []string{} // alternate speed and aircraft type
