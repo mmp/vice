@@ -5957,8 +5957,8 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		state.LeaderLineDirection = state.ChosenLeaderLine
 	}
 
-	index := slices.Index(state.Warnings, state.SPCOverride)
-	if index != -1 {
+	
+	if index := slices.Index(state.Warnings, state.SPCOverride); index != -1 {
 		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
 	} else if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW && !slices.Contains(state.Warnings, "LA") {
 		state.Warnings = append(state.Warnings, "LA")
@@ -5970,6 +5970,9 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		state.Warnings = append(state.Warnings, "EM")
 	} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
 		state.Warnings = append(state.Warnings, "MI")
+	}
+	if index := slices.Index(state.Warnings, "LA"); index != -1 && !state.MSAW {
+		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
 	}
 
 	state.SPCOverride = ""
