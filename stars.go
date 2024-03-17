@@ -2092,14 +2092,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				status.err = GetSTARSError(ErrSTARSIllegalPosition)
 				return
 			}
-			for _, controler := range ctx.world.Controllers {
-				if controler.Callsign == control {
-					c := ctx.world.GetController(control)
-					if c == nil {
-						status.err = GetSTARSError(ErrSTARSIllegalPosition)
-						return
-					}
-					positions, input, err := parseQuickLookPositions(ctx.world, c.SectorId)
+			for _, controller := range ctx.world.Controllers {
+				if controller.Callsign == control {
+					positions, input, err := parseQuickLookPositions(ctx.world, controller.SectorId)
 					if len(positions) > 0 {
 						ps.QuickLookAll = false
 						for _, pos := range positions {
@@ -2382,6 +2377,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					// Tracked by other controllers
 					ps.OtherControllerLeaderLineDirection = dir
 					status.clear = true
+				} else {
+					status.err = GetSTARSError(ErrSTARSCommandFormat)
 				}
 				return
 			} else if f := strings.Fields(cmd); len(f) == 2 {
@@ -5991,7 +5988,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		}
 		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 	}
-	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
+	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside && !slices.Contains(state.Warnings, "AS"){
 		altStrs := ""
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
