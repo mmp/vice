@@ -1037,7 +1037,6 @@
       }
     ]
   },
-  "center": "KJAX",
   "control_positions": {
     "JAX_30_CTR": {
       "frequency": 135925,
@@ -1129,53 +1128,6 @@
   },
   "name": "KJAX",
   "primary_airport": "KJAX",
-  "radar_sites": {
-    "JAX": {
-      "char": "J",
-      "position": "30.49333,-81.69267",
-      "elevation": 140,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "slope_angle": 0.175,
-      "silence_angle": 15
-    },
-    "GNV": {
-      "char": "G",
-      "position": "29.41514,-82.23247",
-      "elevation": 155,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "slope_angle": 0.175,
-      "silence_angle": 15
-    },
-    "ZNEN": {
-      "char": "N",
-      "position": "30.34600,-81.87397",
-      "elevation": 125,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "slope_angle": 0.175,
-      "silence_angle": 15
-    },
-    "ZCTY": {
-      "char": "C",
-      "position": "29.74403,-83.00106",
-      "elevation": 150,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "slope_angle": 0.175,
-      "silence_angle": 15
-    },
-    "DAB": {
-      "char": "D",
-      "position": "29.17267,-81.19224",
-      "elevation": 150,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "slope_angle": 0.175,
-      "silence_angle": 15
-    }
-  },
   "scenarios": {
     "KJAX East": {
       "approach_airspace": [
@@ -1521,6 +1473,55 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KJAX",
+  "radar_sites": {
+    "JAX": {
+      "char": "J",
+      "position": "30.49333,-81.69267",
+      "elevation": 140,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "slope_angle": 0.175,
+      "silence_angle": 15
+    },
+    "GNV": {
+      "char": "G",
+      "position": "29.41514,-82.23247",
+      "elevation": 155,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "slope_angle": 0.175,
+      "silence_angle": 15
+    },
+    "ZNEN": {
+      "char": "N",
+      "position": "30.34600,-81.87397",
+      "elevation": 125,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "slope_angle": 0.175,
+      "silence_angle": 15
+    },
+    "ZCTY": {
+      "char": "C",
+      "position": "29.74403,-83.00106",
+      "elevation": 150,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "slope_angle": 0.175,
+      "silence_angle": 15
+    },
+    "DAB": {
+      "char": "D",
+      "position": "29.17267,-81.19224",
+      "elevation": 150,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "slope_angle": 0.175,
+      "silence_angle": 15
+    }
+  },
   "scratchpads": {
     "ALLMA": "BRS",
     "BAXLY": "BRS",
@@ -1615,4 +1616,5 @@
    }
   ],
   "video_map_file": "videomaps/ZJX-videomaps.json.zst"
+  }
 }

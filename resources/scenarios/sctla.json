@@ -696,29 +696,6 @@
     "tower_list": 2
  }
   },
-  "inhibit_ca_volumes": [
-    {
-        "name": "LAX NO CA",
-        "type": "circle",
-        "floor": 0,
-        "ceiling": 9500,
-        "radius": 10,
-        "center": "N033.56.33.635,W118.24.39.226"
-    },
-    {
-        "name": "LAX FINAL NO CA",
-        "type": "polygon",
-        "floor": 0,
-        "ceiling": 7000,
-        "vertices": [
-            "N033.57.51.665,W118.27.37.122",
-            "N033.54.05.553,W118.26.40.296",
-            "N033.59.40.773,W117.30.46.636",
-            "N034.03.49.229,W117.32.59.159",
-            "N033.57.51.665,W118.27.37.122"
-        ]
-    }
-],
   "arrival_groups": {
     "BIGBR3": [
       {
@@ -1490,7 +1467,6 @@
       }
     ]
   },
-  "center": "KLAX",
   "control_positions": {
     "LAX_D_APP": {
       "frequency": 124900,
@@ -1955,6 +1931,31 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KLAX",
+  "inhibit_ca_volumes": [
+    {
+        "name": "LAX NO CA",
+        "type": "circle",
+        "floor": 0,
+        "ceiling": 9500,
+        "radius": 10,
+        "center": "N033.56.33.635,W118.24.39.226"
+    },
+    {
+        "name": "LAX FINAL NO CA",
+        "type": "polygon",
+        "floor": 0,
+        "ceiling": 7000,
+        "vertices": [
+            "N033.57.51.665,W118.27.37.122",
+            "N033.54.05.553,W118.26.40.296",
+            "N033.59.40.773,W117.30.46.636",
+            "N034.03.49.229,W117.32.59.159",
+            "N033.57.51.665,W118.27.37.122"
+        ]
+    }
+],
   "scratchpads": {
     "LAS": "LAS",
     "HAILO": "HAL",
@@ -2110,4 +2111,5 @@
 }
   ],
   "video_map_file": "videomaps/ZLA-videomaps.json.zst"
+  }
   }

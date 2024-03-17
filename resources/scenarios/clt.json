@@ -2152,7 +2152,6 @@
                         }
                     ]
                 },
-                "center": "KCLT",
                 "control_positions": {
                     "ATL_CTR": {
                         "frequency": 132975,
@@ -2271,34 +2270,9 @@
                         "KCLT": "N35.12.48.150,W80.56.56.487",
                         "CLT": "N35.12.48.150,W80.56.56.487"
                     },
-                    "inhibit_ca_volumes": [
-                        {
-                            "name": "CLT NO CA",
-                            "type": "polygon",
-                            "floor": 0,
-                            "ceiling": 7000,
-                            "vertices": [
-                                "N035.40.57.861,W080.55.23.748",
-                                "N035.40.57.861,W081.02.11.671",
-                                "N034.42.27.537,W080.59.16.933",
-                                "N034.42.46.598,W080.47.34.467"
-                            ]
-                        }
-                    ],
                     "magnetic_adjustment": -0.5,
                     "name": "KCLT",
                     "primary_airport": "KCLT",
-                    "radar_sites": {
-                        "CLT": {
-                            "char": "C",
-                            "position": "KCLT",
-                            "elevation": 850,
-                            "primary_range": 60,
-                            "secondary_range": 120,
-                            "silence_angle": 10,
-                            "slope_angle": 0.5
-                        }
-                    },
                     "scenarios": {
                         "KCLT Land 18L/C/R Depart 18C/L": {
                             "approach_airspace": [
@@ -2565,6 +2539,33 @@
                             }
                         }
                     },
+                    "stars_config": {
+                    "center": "KCLT",
+                    "inhibit_ca_volumes": [
+                        {
+                            "name": "CLT NO CA",
+                            "type": "polygon",
+                            "floor": 0,
+                            "ceiling": 7000,
+                            "vertices": [
+                                "N035.40.57.861,W080.55.23.748",
+                                "N035.40.57.861,W081.02.11.671",
+                                "N034.42.27.537,W080.59.16.933",
+                                "N034.42.46.598,W080.47.34.467"
+                            ]
+                        }
+                    ],
+                    "radar_sites": {
+                        "CLT": {
+                            "char": "C",
+                            "position": "KCLT",
+                            "elevation": 850,
+                            "primary_range": 60,
+                            "secondary_range": 120,
+                            "silence_angle": 10,
+                            "slope_angle": 0.5
+                        }
+                    },
                     "scratchpads": {
                         "RDU": "BAR",
                         "TYI": "BAR",
@@ -2688,4 +2689,5 @@
                         }
                     ],
                     "video_map_file": "videomaps/ZTL-videomaps.json.zst"
+                    }
                }

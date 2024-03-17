@@ -1299,7 +1299,6 @@
             }
         ]
     },
-    "center": "33.67291176086692,-117.87014751983102",
     "control_positions": {
         "LAX_30_CTR": {
             "frequency": 119950,
@@ -1385,16 +1384,6 @@
     },
     "name": "KSNA",
     "primary_airport": "KSNA",
-    "radar_sites": {
-        "KSNA": {
-            "char": "S",
-            "position": "KSNA",
-            "elevation": 17,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "slope_angle": 0.175
-        }
-    },
     "scenarios": {
         "Coast": {
             "arrival_runways": [
@@ -1585,6 +1574,36 @@
             }
         }
     },
+    "stars_config": {
+    "center": "33.67291176086692,-117.87014751983102",
+    "radar_sites": {
+        "KSNA": {
+            "char": "S",
+            "position": "KSNA",
+            "elevation": 17,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "slope_angle": 0.175
+        }
+    },
+    "inhibit_ca_volumes": [
+        {
+            "name": "SNA CONFLICT COMPRESS",
+            "type": "circle",
+            "floor": 0,
+            "ceiling": 3000,
+            "radius": 12.4,
+            "center": "KSNA"
+        },
+        {
+            "name": "LGB CONFLICT COMPRESS",
+            "type": "circle",
+            "floor": 0,
+            "ceiling": 3000,
+            "radius": 11,
+            "center": "KLGB"
+        }
+    ],
     "scratchpads": {
        "BEALE": "FIN",
        "MISEN": "FIN",
@@ -1609,24 +1628,6 @@
        "YELAH": "ZMM",
        "WYZEE": "ZMM"
     },
-    "inhibit_ca_volumes": [
-        {
-            "name": "SNA CONFLICT COMPRESS",
-            "type": "circle",
-            "floor": 0,
-            "ceiling": 3000,
-            "radius": 12.4,
-            "center": "KSNA"
-        },
-        {
-            "name": "LGB CONFLICT COMPRESS",
-            "type": "circle",
-            "floor": 0,
-            "ceiling": 3000,
-            "radius": 11,
-            "center": "KLGB"
-        }
-    ],
     "stars_maps": [
         {
             "group": 0,
@@ -1670,4 +1671,5 @@
           }
     ],
     "video_map_file": "videomaps/ZLA-videomaps.json.zst"
+    }
 }

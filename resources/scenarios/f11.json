@@ -8502,7 +8502,6 @@
       }
     ]
   },
-  "center": "N028.25.45.781,W081.18.32.260",
   "control_positions": {
     "MIA_46_CTR": {
       "frequency": 135175,
@@ -8709,105 +8708,8 @@
     "_MCO_17L_BITHO": "N28.40.01.555,W81.11.30.377",
     "KTPA": "N27.58.29.470,W82.32.00.334"
   },
-  "inhibit_ca_volumes": [
-    {
-      "name": "MCON FINAL 1",
-      "type": "polygon",
-      "floor": 0,
-      "ceiling": 3500,
-      "vertices": [
-        "28.41091, -81.36375", 
-        "28.42071, -81.24334",
-        "28.27062, -81.24346",
-        "28.26492, -81.36209"
-      ]
-    }, 
-    {
-      "name": "MCON FINAL 2",
-      "type": "polygon",
-      "floor": 1500,
-      "ceiling": 5500,
-      "vertices": [
-        "28.26492, -81.36209",
-        "28.270617, -81.243458",
-        "28.174966, -81.243933",
-        "28.162737, -81.363028"
-      ]
-    },
-    {
-      "name": "MCOS FINAL 1",
-      "type": "polygon",
-      "floor": 0,
-      "ceiling": 3500,
-      "vertices": [
-        "28.440698, -81.366071",
-        "28.597189, -81.369039",
-        "28.595685, -81.245422",
-        "28.441817, -81.244156"
-      ]
-    },
-    {
-      "name": "MCOS FINAL 2",
-      "type": "polygon",
-      "floor": 1500,
-      "ceiling": 6000,
-      "vertices": [
-        "28.597189, -81.369039",
-        "28.741967, -81.374263",
-        "28.744883, -81.245658",
-        "28.59685, -81.245422"
-      ]
-    }
-  ],
   "name": "KMCO",
   "primary_airport": "KMCO",
-  "radar_sites": {
-    "MCO": {
-      "char": "M",
-      "position": "28.394833, -81.304639",
-      "elevation": 100,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 50.4,
-      "slope_angle": 0.175
-    },
-    "DAB": {
-      "char": "D",
-      "position": "29.172639, -81.192194",
-      "elevation": 38,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 49.7,
-      "slope_angle": 0.175
-    },
-    "MLB": {
-      "char": "B",
-      "position": "28.111714, -80.668556",
-      "elevation": 30,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 49.7,
-      "slope_angle": 0.175
-    },
-    "GNV": {
-      "char": "G",
-      "position": "29.41538, -82.23232",
-      "elevation": 155,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 15,
-      "slope_angle": 0.175
-    },
-    "ZMLB": {
-      "char": "Z",
-      "position": "28.08427, -80.79808",
-      "elevation": 22,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "silence_angle": 15,
-      "slope_angle": 0.175
-    }
-  },
   "scenarios": {
     "KMCO South": {
       "approach_airspace": [
@@ -9691,6 +9593,105 @@
       }
     }
   },
+  "stars_config": {
+  "center": "N028.25.45.781,W081.18.32.260",
+  "inhibit_ca_volumes": [
+    {
+      "name": "MCON FINAL 1",
+      "type": "polygon",
+      "floor": 0,
+      "ceiling": 3500,
+      "vertices": [
+        "28.41091, -81.36375", 
+        "28.42071, -81.24334",
+        "28.27062, -81.24346",
+        "28.26492, -81.36209"
+      ]
+    }, 
+    {
+      "name": "MCON FINAL 2",
+      "type": "polygon",
+      "floor": 1500,
+      "ceiling": 5500,
+      "vertices": [
+        "28.26492, -81.36209",
+        "28.270617, -81.243458",
+        "28.174966, -81.243933",
+        "28.162737, -81.363028"
+      ]
+    },
+    {
+      "name": "MCOS FINAL 1",
+      "type": "polygon",
+      "floor": 0,
+      "ceiling": 3500,
+      "vertices": [
+        "28.440698, -81.366071",
+        "28.597189, -81.369039",
+        "28.595685, -81.245422",
+        "28.441817, -81.244156"
+      ]
+    },
+    {
+      "name": "MCOS FINAL 2",
+      "type": "polygon",
+      "floor": 1500,
+      "ceiling": 6000,
+      "vertices": [
+        "28.597189, -81.369039",
+        "28.741967, -81.374263",
+        "28.744883, -81.245658",
+        "28.59685, -81.245422"
+      ]
+    }
+  ],
+  "radar_sites": {
+    "MCO": {
+      "char": "M",
+      "position": "28.394833, -81.304639",
+      "elevation": 100,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 50.4,
+      "slope_angle": 0.175
+    },
+    "DAB": {
+      "char": "D",
+      "position": "29.172639, -81.192194",
+      "elevation": 38,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 49.7,
+      "slope_angle": 0.175
+    },
+    "MLB": {
+      "char": "B",
+      "position": "28.111714, -80.668556",
+      "elevation": 30,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 49.7,
+      "slope_angle": 0.175
+    },
+    "GNV": {
+      "char": "G",
+      "position": "29.41538, -82.23232",
+      "elevation": 155,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "ZMLB": {
+      "char": "Z",
+      "position": "28.08427, -80.79808",
+      "elevation": 22,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    }
+  },
   "scratchpads": {
     "DDANY": "DDA",
     "BORRD": "DDA",
@@ -9857,4 +9858,5 @@
     }
   ],
   "video_map_file": "videomaps/ZJX-videomaps.json.zst"
+  }
 }

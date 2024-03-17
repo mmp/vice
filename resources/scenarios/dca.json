@@ -1406,7 +1406,6 @@
     }
   ]
 },
-"center": "KDCA",
 "control_positions": {
   "DC_CTR": {
   "frequency": 133725,
@@ -1530,146 +1529,8 @@
     "BWI": "BAL",
     "ALWYZ":   "N38.59.00.660,W77.39.16.540"
   },
-  "inhibit_ca_volumes": [
-    {
-      "name": "DCA NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1500,
-      "radius": 5,
-      "center": "N38.51.34.118,W77.02.10.979"
-    }
-  ],
   "name": "KDCA",
   "primary_airport": "KDCA",
-  "radar_sites": {
-    "DCA": {
-      "char": "D",
-      "position": "38.8451920,-77.0331090",
-      "elevation": 88,
-      "primary_range":60,
-      "secondary_range":120,
-      "silence_angle": 54.7 , 
-      "slope_angle": 0.3
-    },
-    "ADW": {
-      "char": "A",
-      "position": "38.8122660,-76.8670090",
-      "elevation": 338,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 54.7, 
-      "slope_angle": 0.3
-    },
-    "BAL": {
-      "char": "B",
-      "position": "39.1794850,-76.6838430",
-      "elevation": 325,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 54.7, 
-      "slope_angle": 0.3 
-    },
-    "CHO": {
-      "char": "C",
-      "position": "38.1800000,-78.4193610",
-      "elevation": 1599,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 54.7, 
-      "slope_angle": 0.3
-    },
-    "IAD": {
-      "char": "I",
-      "position": "38.9565300,-77.4633900",
-      "elevation": 425,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 54.7, 
-      "slope_angle": 0.3
-    },
-    "MDT": {
-      "char": "T",
-      "position": "40.1857740,-76.7950640",
-      "elevation": 1007,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 54.7, 
-      "slope_angle": 0.3
-    },
-    "MRB": {
-      "char": "M",
-      "position": "39.3952650,-77.9946880",
-      "elevation": 883,
-      "primary_range": 70,
-      "secondary_range": 120,
-      "silence_angle": 49.7,
-      "slope_angle": 0.3
-    },
-    "NHK": {
-      "char": "N",
-      "position": "38.2987080,-76.4120690",
-      "elevation": 88,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 59.7, 
-      "slope_angle": 0.3
-    },
-    "PHL": {
-      "char": "P",
-      "position": "39.8591750,-75.2667470",
-      "elevation": 123,
-      "primary_range": 70,
-      "secondary_range": 120,
-      "silence_angle": 49.7,
-      "slope_angle": 0.3
-    },
-    "RIC": {
-      "char": "R",
-      "position": "37.5053410,-77.3242350",
-      "elevation": 259,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 54.7,
-      "slope_angle": 0.3
-    },
-    "QBE": {
-      "char": "E",
-      "position": "37.5173130,-79.5101010",
-      "elevation": 4353,
-      "primary_range": 200,
-      "secondary_range": 250,
-      "silence_angle": 59.7, 
-      "slope_angle": 0.3
-    },
-    "QBN": {
-      "char": "Q",
-      "position": "37.3828590,-76.9987510",
-      "elevation": 303,
-      "primary_range": 200,
-      "secondary_range": 250,
-      "silence_angle": 59.7, 
-      "slope_angle": 0.3
-    },
-    "QIE": {
-      "char": "Z",
-      "position": "39.8247290,-74.9541500",
-      "elevation": 371,
-      "primary_range": 200,
-      "secondary_range": 250,
-      "silence_angle": 59.7, 
-      "slope_angle": 0.3
-    },
-    "QPL": {
-      "char": "L",
-      "position": "38.8823130,-77.7030850",
-      "elevation": 1943,
-      "primary_range": 200,
-      "secondary_range": 250,
-      "silence_angle": 59.7, 
-      "slope_angle": 0.3
-    }
-  },
   "reporting_points": [
     "CAPSS",
     "HOYAS",
@@ -1896,6 +1757,146 @@
   } 
 }
 },
+"stars_config": {
+"center": "KDCA",
+  "inhibit_ca_volumes": [
+    {
+      "name": "DCA NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1500,
+      "radius": 5,
+      "center": "N38.51.34.118,W77.02.10.979"
+    }
+  ],
+  "radar_sites": {
+    "DCA": {
+      "char": "D",
+      "position": "38.8451920,-77.0331090",
+      "elevation": 88,
+      "primary_range":60,
+      "secondary_range":120,
+      "silence_angle": 54.7 , 
+      "slope_angle": 0.3
+    },
+    "ADW": {
+      "char": "A",
+      "position": "38.8122660,-76.8670090",
+      "elevation": 338,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 54.7, 
+      "slope_angle": 0.3
+    },
+    "BAL": {
+      "char": "B",
+      "position": "39.1794850,-76.6838430",
+      "elevation": 325,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 54.7, 
+      "slope_angle": 0.3 
+    },
+    "CHO": {
+      "char": "C",
+      "position": "38.1800000,-78.4193610",
+      "elevation": 1599,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 54.7, 
+      "slope_angle": 0.3
+    },
+    "IAD": {
+      "char": "I",
+      "position": "38.9565300,-77.4633900",
+      "elevation": 425,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 54.7, 
+      "slope_angle": 0.3
+    },
+    "MDT": {
+      "char": "T",
+      "position": "40.1857740,-76.7950640",
+      "elevation": 1007,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 54.7, 
+      "slope_angle": 0.3
+    },
+    "MRB": {
+      "char": "M",
+      "position": "39.3952650,-77.9946880",
+      "elevation": 883,
+      "primary_range": 70,
+      "secondary_range": 120,
+      "silence_angle": 49.7,
+      "slope_angle": 0.3
+    },
+    "NHK": {
+      "char": "N",
+      "position": "38.2987080,-76.4120690",
+      "elevation": 88,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 59.7, 
+      "slope_angle": 0.3
+    },
+    "PHL": {
+      "char": "P",
+      "position": "39.8591750,-75.2667470",
+      "elevation": 123,
+      "primary_range": 70,
+      "secondary_range": 120,
+      "silence_angle": 49.7,
+      "slope_angle": 0.3
+    },
+    "RIC": {
+      "char": "R",
+      "position": "37.5053410,-77.3242350",
+      "elevation": 259,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 54.7,
+      "slope_angle": 0.3
+    },
+    "QBE": {
+      "char": "E",
+      "position": "37.5173130,-79.5101010",
+      "elevation": 4353,
+      "primary_range": 200,
+      "secondary_range": 250,
+      "silence_angle": 59.7, 
+      "slope_angle": 0.3
+    },
+    "QBN": {
+      "char": "Q",
+      "position": "37.3828590,-76.9987510",
+      "elevation": 303,
+      "primary_range": 200,
+      "secondary_range": 250,
+      "silence_angle": 59.7, 
+      "slope_angle": 0.3
+    },
+    "QIE": {
+      "char": "Z",
+      "position": "39.8247290,-74.9541500",
+      "elevation": 371,
+      "primary_range": 200,
+      "secondary_range": 250,
+      "silence_angle": 59.7, 
+      "slope_angle": 0.3
+    },
+    "QPL": {
+      "char": "L",
+      "position": "38.8823130,-77.7030850",
+      "elevation": 1943,
+      "primary_range": 200,
+      "secondary_range": 250,
+      "silence_angle": 59.7, 
+      "slope_angle": 0.3
+    }
+  },
   "scratchpads": {
     "SCOOB": "AME",
     "MAULS": "CLH",
@@ -2029,4 +2030,5 @@
     }
   ],
   "video_map_file": "videomaps/ZDC-videomaps.json.zst"
+}
 }
