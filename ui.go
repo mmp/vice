@@ -1029,23 +1029,28 @@ func showAboutDialog() {
 	// vertically maximized. So we hand-wrap the lines for the
 	// font we're using...
 	credits :=
-		`Additional credits: Thanks to Michael Trokel,
-Dennis Graiani and Samuel Valencia for
-contributing features to vice and to Connor
-Allen, Adam Bolek, Aaron Flett, Mike K, Jud
-Lopez, Jace Martin, Merry, Yahya Nazimuddin,
-Justin Nguyen, Arya T, Nelson T, Eli
-Thompson, Michael Trokel, and Samuel
-Valencia for developing scenarios. Video
-maps are thanks to the ZAU, ZBW, ZDC,
-ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
-ZSE, and ZTL VATSIM ARTCCs. Thanks also
-to OpenScope for the aircraft performance
-and airline databases and to ourairports.com
-for the airport database. See the file
-CREDITS.txt in the vice source code
-distribution for third-party software,
-fonts, sounds, etc.`
+		`Additional credits:
+- Software Development: Dennis Graiani,
+  Michael Trokel, Samuel Valencia, and
+  Yi Zhang.
+- Facility engineering: Connor Allen, Adam
+  Bolek, Aaron Flett, Mike K, Jud Lopez,
+  Jace Martin, Merry, Yahya Nazimuddin,
+  Justin Nguyen, Arya T, Nelson T, Eli
+  Thompson, Michael Trokel, and Samuel
+  Valencia.
+- Video maps: thanks to the ZAU, ZBW, ZDC,
+  ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
+  ZSE, and ZTL VATSIM ARTCCs.
+- Additionally: OpenScope for the aircraft
+  performance and airline databases,
+  ourairports.com for the airport database,
+  and for the FAA for being awesome about
+  providing the CIFP, MVA specifications,
+  and other useful aviation data digitally.
+- One more thing: see the file CREDITS.txt
+  in the vice source code distribution for
+  third-party software, fonts, sounds, etc.`
 
 	imgui.Text(credits)
 
