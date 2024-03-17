@@ -134,14 +134,14 @@ func (s *SimProxy) SetSecondaryScratchpad(callsign string, scratchpad string) *r
 func (s *SimProxy) UpdateStoppedGates(stopped map[string]bool) *rpc.Call {
 	return s.Client.Go("Sim.UpdateStoppedGates", &StoppedGateArgs{
 		ControllerToken: s.ControllerToken,
-		StoppedGates: stopped,
+		StoppedGates:    stopped,
 	}, nil, nil)
 }
 
 func (s *SimProxy) UpdateStoppedAirports(stopped map[string]bool) *rpc.Call {
 	return s.Client.Go("Sim.UpdateStoppedAirports", &StoppedGateArgs{
 		ControllerToken: s.ControllerToken,
-		StoppedGates: stopped,
+		StoppedGates:    stopped,
 	}, nil, nil)
 }
 
@@ -204,7 +204,7 @@ func (s *SimProxy) ForceQL(callsign, controller string) *rpc.Call {
 }
 
 func (s *SimProxy) RedirectHandoff(callsign, controller string) *rpc.Call {
-	return s.Client.Go("Sim.RedirectHandoff", &ForceQLArgs{
+	return s.Client.Go("Sim.RedirectHandoff", &HandoffArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Controller:      controller,
@@ -716,7 +716,6 @@ func (sd *SimDispatcher) UpdateStoppedAirports(a *StoppedGateArgs, _ *struct{}) 
 	}
 }
 
-
 type SetGlobalLeaderLineArgs struct {
 	ControllerToken string
 	Callsign        string
@@ -735,7 +734,7 @@ type InitiateTrackArgs AircraftSpecifier
 
 type StoppedGateArgs struct {
 	ControllerToken string
-	StoppedGates map[string]bool
+	StoppedGates    map[string]bool
 }
 
 func (sd *SimDispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error {
@@ -770,11 +769,11 @@ func (sd *SimDispatcher) HandoffTrack(h *HandoffArgs, _ *struct{}) error {
 	}
 }
 
-func (sd *SimDispatcher) RedirectHandoff(po *ForceQLArgs, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
+func (sd *SimDispatcher) RedirectHandoff(h *HandoffArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.RedirectHandoff(po.ControllerToken, po.Callsign, po.Controller)
+		return sim.RedirectHandoff(h.ControllerToken, h.Callsign, h.Controller)
 	}
 }
 

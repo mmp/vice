@@ -2091,9 +2091,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				status.err = GetSTARSError(ErrSTARSIllegalPosition)
 				return
 			}
-			for _, controller := range ctx.world.Controllers {
-				if controller.Callsign == control {
-					positions, input, err := parseQuickLookPositions(ctx.world, controller.SectorId)
+			for _, c := range ctx.world.Controllers {
+				if c.Callsign == control {
+					positions, input, err := parseQuickLookPositions(ctx.world, c.SectorId)
 					if len(positions) > 0 {
 						ps.QuickLookAll = false
 						for _, pos := range positions {
@@ -2682,13 +2682,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					status.err = GetSTARSError(ErrSTARSIllegalPosition)
 					return
 				}
-				for _, controler := range ctx.world.Controllers {
-					if controler.Callsign == control {
-						c := ctx.world.GetController(control)
-						if c == nil {
-							status.err = GetSTARSError(ErrSTARSIllegalPosition)
-							return
-						}
+				for _, c := range ctx.world.Controllers {
+					if c.Callsign == control {
 						positions, input, err := parseQuickLookPositions(ctx.world, c.SectorId)
 						if len(positions) > 0 {
 							ps.QuickLookAll = false
@@ -3253,7 +3248,7 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 			}
 
 		} else if lc == 5 && haveTrianglePrefix { // ∆N4P for example. Must be different fac
-			controller = controller[2:] // Remove the ∆
+			controller = strings.TrimPrefix(controller, STARSTriangleCharacter) // Remove the ∆
 			receivingController := ctx.world.GetController(controller[1:])
 			if receivingController == nil {
 				return false, ""
@@ -5172,8 +5167,7 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		// it's under our control
 		dt = FullDatablock
 	}
-	me := w.GetController(w.Callsign)
-	if ac.ForceQLControllers != nil && slices.Contains(ac.ForceQLControllers, me.Callsign) {
+	if ac.ForceQLControllers != nil && slices.Contains(ac.ForceQLControllers, w.Callsign) {
 		dt = FullDatablock
 	}
 
@@ -7369,10 +7363,6 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 	af := sp.CurrentPreferenceSet.AltitudeFilters
 	alt := sp.Aircraft[ac.Callsign].TrackAltitude()
-	user := ctx.world.GetController(ctx.world.Callsign)
-	if user == nil {
-		return false
-	}
 	if ac.TrackingController == ctx.world.Callsign {
 		// For owned datablocks
 		return true
@@ -7399,10 +7389,10 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 	} else if sp.CurrentPreferenceSet.QuickLookAll {
 		// Quick look all
 		return true
-	} else if ac.RedirectedHandoff.RedirectedTo == user.Callsign {
+	} else if ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign {
 		// Redirected to
 		return true
-	} else if slices.Contains(ac.RedirectedHandoff.Redirector, user.Callsign) {
+	} else if slices.Contains(ac.RedirectedHandoff.Redirector, ctx.world.Callsign) {
 		// Had it but redirected it
 		return true
 	}
