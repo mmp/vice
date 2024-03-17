@@ -1286,6 +1286,7 @@ type SimWorldUpdate struct {
 	Controllers  map[string]*Controller
 	Time         time.Time
 	StoppedGates map[string]bool
+	CFRAirports  map[string]bool
 
 	LaunchConfig LaunchConfig
 
@@ -1312,6 +1313,7 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	w.TotalDepartures = wu.TotalDepartures
 	w.TotalArrivals = wu.TotalArrivals
 	w.StoppedGates = wu.StoppedGates
+	w.CFRAirports = wu.CFRAirports
 
 	// Important: do this after updating aircraft, controllers, etc.,
 	// so that they reflect any changes the events are flagging.
@@ -1348,6 +1350,7 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 			TotalDepartures: s.TotalDepartures,
 			TotalArrivals:   s.TotalArrivals,
 			StoppedGates:    s.World.StoppedGates,
+			CFRAirports:     s.World.CFRAirports,
 		}
 
 		return nil
@@ -1790,8 +1793,8 @@ func (s *Sim) spawnAircraft() {
 				s.LaunchConfig.DepartureChallenge, prevDep)
 			if err != nil {
 				s.lg.Errorf("CreateDeparture error: %v", err)
-			} else { 
-				if !s.World.StoppedGates[ac.Exit] && !s.World.Airports[ac.FlightPlan.DepartureAirport].Uncontrolled && !s.World.CFRAirports[ac.FlightPlan.DepartureAirport]{ // Found an exit that is not stopped
+			} else {
+				if !s.World.StoppedGates[ac.Exit] && !s.World.Airports[ac.FlightPlan.DepartureAirport].Uncontrolled && !s.World.CFRAirports[ac.FlightPlan.DepartureAirport] { // Found an exit that is not stopped
 					s.lastDeparture[airport][runway][category] = dep
 					s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
 					s.launchAircraftNoLock(*ac)
@@ -1799,11 +1802,11 @@ func (s *Sim) spawnAircraft() {
 					break
 				} else if s.World.Airports[ac.FlightPlan.DepartureAirport].Uncontrolled || s.World.CFRAirports[ac.FlightPlan.DepartureAirport] { // If its uncontrolled, they can still call up
 					if !slices.Contains(heldAircraft, ac) { // Make sure they're arent to many of them
-						per := make(map[string][]*Aircraft) // To limit each airport to 2 releases.
+						per := make(map[string][]*Aircraft) // To limit each airport to 1 release at a time
 						for _, held := range heldAircraft {
 							per[held.FlightPlan.DepartureAirport] = append(per[held.FlightPlan.DepartureAirport], held)
 						}
-						if len(per[ac.FlightPlan.DepartureAirport]) < 2 {
+						if len(per[ac.FlightPlan.DepartureAirport]) == 0 {
 							heldAircraft = append(heldAircraft, ac)
 							s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum, false))
 						}
@@ -2009,20 +2012,19 @@ func (s *Sim) SetSecondaryScratchpad(token, callsign, scratchpad string) error {
 		})
 }
 
-func (s *Sim) UpdateStoppedGates(token string, stopped map[string]bool) error  {
+func (s *Sim) UpdateStoppedGates(token string, stopped map[string]bool) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 	s.World.StoppedGates = stopped
-	return nil 
+	return nil
 }
 
-func (s *Sim) UpdateStoppedAirports(token string, stopped map[string]bool) error  {
+func (s *Sim) UpdateStoppedAirports(token string, stopped map[string]bool) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 	s.World.CFRAirports = stopped
-	return nil 
+	return nil
 }
-
 
 func (s *Sim) Ident(token, callsign string) error {
 	s.mu.Lock(s.lg)
