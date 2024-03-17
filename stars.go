@@ -176,13 +176,8 @@ type QuickLookPosition struct {
 	Plus     bool
 }
 
-func parseQuickLookPositions(w *World, s string) ([]QuickLookPosition, string, error) {
+func (sp *STARSPane) parseQuickLookPositions(ctx *PaneContext, s string) ([]QuickLookPosition, string, error) {
 	var positions []QuickLookPosition
-
-	subset := ""
-	if ctrl, ok := w.Controllers[w.Callsign]; ok { // this will fail if we're an observer
-		subset = string(ctrl.SectorId[0])
-	}
 
 	// per 6-94, this is "fun"
 	// - in general the string is a list of TCPs / sector ids.
@@ -195,16 +190,12 @@ func parseQuickLookPositions(w *World, s string) ([]QuickLookPosition, string, e
 		plus := len(id) > 1 && id[len(id)-1] == '+'
 		id = strings.TrimRight(id, "+")
 
-		ctrl := w.GetController(id)
-		if ctrl == nil && len(id) == 1 && subset != "" {
-			id = subset + id
-			ctrl = w.GetController(id)
-		}
-		if ctrl == nil {
+		ok, callsign := sp.calculateController(ctx, id, "")
+		if !ok {
 			return positions, strings.Join(ids[i:], " "), ErrSTARSIllegalPosition
 		} else {
 			positions = append(positions, QuickLookPosition{
-				Callsign: ctrl.Callsign,
+				Callsign: callsign,
 				Id:       id,
 				Plus:     plus,
 			})
@@ -2084,44 +2075,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				}
 				status.clear = true
 				return
-			}
-			ok, control := sp.calculateController(ctx, cmd, "")
-			if !ok {
-				status.err = GetSTARSError(ErrSTARSIllegalPosition)
+			} else {
+				status.clear, sp.previewAreaInput, status.err = sp.updateQL(ctx, cmd)
 				return
-			}
-			for _, c := range ctx.world.Controllers {
-				if c.Callsign == control {
-					positions, input, err := parseQuickLookPositions(ctx.world, c.SectorId)
-					if len(positions) > 0 {
-						ps.QuickLookAll = false
-
-						for _, pos := range positions {
-							// Toggle
-							match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
-							matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
-							if slices.ContainsFunc(ps.QuickLookPositions, match) {
-								nomatch := func(q QuickLookPosition) bool { return !match(q) }
-								ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
-							} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
-								// Toggle plus
-								ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
-							} else {
-								ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
-							}
-						}
-						sort.Slice(ps.QuickLookPositions,
-							func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
-					}
-
-					if err == nil {
-						status.clear = true
-					} else {
-						status.err = err
-						sp.previewAreaInput = input
-					}
-					return
-				}
 			}
 		}
 
@@ -2677,43 +2633,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				status.clear = true
 				return
 			} else {
-				ok, control := sp.calculateController(ctx, cmd, "")
-				if !ok {
-					status.err = GetSTARSError(ErrSTARSIllegalPosition)
-					return
-				}
-				for _, c := range ctx.world.Controllers {
-					if c.Callsign == control {
-						positions, input, err := parseQuickLookPositions(ctx.world, c.SectorId)
-						if len(positions) > 0 {
-							ps.QuickLookAll = false
-							for _, pos := range positions {
-								// Toggle
-								match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
-								matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
-								if slices.ContainsFunc(ps.QuickLookPositions, match) {
-									nomatch := func(q QuickLookPosition) bool { return !match(q) }
-									ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
-								} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
-									// Toggle plus
-									ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
-								} else {
-									ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
-								}
-							}
-							sort.Slice(ps.QuickLookPositions,
-								func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
-						}
-
-						if err == nil {
-							status.clear = true
-						} else {
-							status.err = err
-							sp.previewAreaInput = input
-						}
-						return
-					}
-				}
+				status.clear, sp.previewAreaInput, status.err = sp.updateQL(ctx, cmd)
+				return
 			}
 
 		case "S":
@@ -3070,6 +2991,45 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	}
 
 	status.err = ErrSTARSCommandFormat
+	return
+}
+
+func (sp *STARSPane) updateQL(ctx *PaneContext, input string) (ok bool, previewInput string, err error) {
+	positions, input, err := sp.parseQuickLookPositions(ctx, input)
+	if err != nil {
+		err = GetSTARSError(err)
+		ok = false
+		previewInput = input
+		return
+	}
+
+	if len(positions) > 0 {
+		ps := &sp.CurrentPreferenceSet
+		ps.QuickLookAll = false
+
+		for _, pos := range positions {
+			// Toggle
+			match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
+			matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
+			if slices.ContainsFunc(ps.QuickLookPositions, match) {
+				nomatch := func(q QuickLookPosition) bool { return !match(q) }
+				ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
+			} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
+				// Toggle plus
+				ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
+			} else {
+				ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
+			}
+		}
+		sort.Slice(ps.QuickLookPositions,
+			func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
+	}
+
+	if err == nil {
+		ok = true
+	} else {
+		previewInput = input
+	}
 	return
 }
 
@@ -5980,7 +5940,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		errs = append(errs, "CA")
 		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 	}
-	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside && !slices.Contains(errs, "AS"){
+	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside && !slices.Contains(errs, "AS") {
 		altStrs := ""
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
