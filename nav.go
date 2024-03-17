@@ -30,6 +30,10 @@ type Nav struct {
 	// followed, it's fine for the second to override it.
 	DeferredHeading *DeferredHeading
 
+	// Deferred Altitude does the same as DeferredHeading, but for altitude
+	// assignements
+	DeferredAltitude *DeferredAltitude
+
 	FinalAltitude float32
 	Waypoints     []Waypoint
 }
@@ -47,6 +51,12 @@ type DeferredHeading struct {
 	// intended.
 	Time    time.Time
 	Heading NavHeading
+}
+
+type DeferredAltitude struct {
+	// Same as DeferredHeading, but for altitude assignments
+	Time     time.Time
+	Altitude NavAltitude
 }
 
 type FlightState struct {
@@ -276,6 +286,15 @@ func (nav *Nav) EnqueueHeading(h NavHeading) {
 	nav.DeferredHeading = &DeferredHeading{
 		Time:    now.Add(time.Duration(delay * float32(time.Second))),
 		Heading: h,
+	}
+}
+
+func (nav *Nav) EnqueueAltitude(a NavAltitude) {
+	delay := 3 + 3*rand.Float32()
+	now := time.Now()
+	nav.DeferredAltitude = &DeferredAltitude{
+		Time: 		now.Add(time.Duration(delay * float32(time.Second))),
+		Altitude: a,
 	}
 }
 
@@ -956,6 +975,13 @@ const MaximumRate = 100000
 const initialClimbAltitude = 1500
 
 func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
+	//	is it time to start following an altitude given by the controller
+	if da := nav.DeferredAltitude; da != nil && time.Now().After(da.Time) {
+		lg.Debug("initiating deferred altitude assignment", slog.Any("altitude", da.Altitude))
+		nav.Altitude = da.Altitude
+		nav.DeferredAltitude = nil
+	}
+	
 	// Baseline...
 	alt, rate = nav.FlightState.Altitude, MaximumRate // FIXME: not maximum rate
 
@@ -1625,7 +1651,7 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) PilotResponse {
 
 		response = fmt.Sprintf("at %.0f knots, ", *nav.Speed.Assigned) + response
 	} else {
-		nav.Altitude = NavAltitude{Assigned: &alt}
+		nav.EnqueueAltitude(NavAltitude{Assigned: &alt})
 	}
 	return PilotResponse{Message: response}
 }
