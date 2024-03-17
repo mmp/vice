@@ -1057,10 +1057,10 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 			dirInt := weather[0].Wdir.(int)
 			dir = float64(dirInt)
 		}
-		dir = weather[0].Wdir.(float64)
-
-		if err != nil {
-			lg.Errorf("Error converting %v into an int: %v.", dir, err)
+		var ok bool
+		dir, ok = weather[0].Wdir.(float64)
+		if !ok {
+			lg.Errorf("Error converting %v into a float64: actual type %T", dir, dir)
 		}
 		if spd <= 0 {
 			wind = "00000KT"

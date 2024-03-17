@@ -563,8 +563,8 @@ func (ac *Aircraft) GS() float32 {
 	return ac.Nav.FlightState.GS
 }
 
-func (ac *Aircraft) OnApproach() bool {
-	return ac.Nav.OnApproach()
+func (ac *Aircraft) OnApproach(checkAltitude bool) bool {
+	return ac.Nav.OnApproach(checkAltitude)
 }
 
 func (ac *Aircraft) DepartureAirportElevation() float32 {
@@ -586,6 +586,6 @@ func (ac *Aircraft) MVAsApply() bool {
 		return nmdistance2ll(ac.Position(), ac.Nav.FlightState.DepartureAirportLocation) > 5
 	} else {
 		// If they're established on the approach, they're good.
-		return !ac.OnApproach()
+		return !ac.OnApproach(true)
 	}
 }
