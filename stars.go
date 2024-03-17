@@ -415,7 +415,8 @@ type STARSAircraftState struct {
 	MinimumMIT               float32
 	ATPALeadAircraftCallsign string
 	LastKnownHandoff         string
-	POFlashingEndTime        time.Time
+
+	POFlashingEndTime time.Time
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
 	LeaderLineDirection *CardinalOrdinalDirection
@@ -2085,7 +2086,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				}
 				status.clear = true
 				return
-			} 
+			}
 			ok, control := sp.calculateController(ctx, cmd, "")
 			if !ok {
 				status.err = GetSTARSError(ErrSTARSIllegalPosition)
@@ -2681,47 +2682,47 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				return
 			} else {
 				ok, control := sp.calculateController(ctx, cmd, "")
-			if !ok {
-				status.err = GetSTARSError(ErrSTARSIllegalPosition)
-				return
-			}
-			for _, controler := range ctx.world.Controllers {
-				if controler.Callsign == control {
-					c := ctx.world.GetController(control)
-					if c == nil {
-						status.err = GetSTARSError(ErrSTARSIllegalPosition)
-						return
-					}
-					positions, input, err := parseQuickLookPositions(ctx.world, c.SectorId)
-					if len(positions) > 0 {
-						ps.QuickLookAll = false
-						for _, pos := range positions {
-							// Toggle
-							match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
-							matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
-							if slices.ContainsFunc(ps.QuickLookPositions, match) {
-								nomatch := func(q QuickLookPosition) bool { return !match(q) }
-								ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
-							} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
-								// Toggle plus
-								ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
-							} else {
-								ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
-							}
-						}
-						sort.Slice(ps.QuickLookPositions,
-							func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
-					}
-
-					if err == nil {
-						status.clear = true
-					} else {
-						status.err = err
-						sp.previewAreaInput = input
-					}
+				if !ok {
+					status.err = GetSTARSError(ErrSTARSIllegalPosition)
 					return
 				}
-			}
+				for _, controler := range ctx.world.Controllers {
+					if controler.Callsign == control {
+						c := ctx.world.GetController(control)
+						if c == nil {
+							status.err = GetSTARSError(ErrSTARSIllegalPosition)
+							return
+						}
+						positions, input, err := parseQuickLookPositions(ctx.world, c.SectorId)
+						if len(positions) > 0 {
+							ps.QuickLookAll = false
+							for _, pos := range positions {
+								// Toggle
+								match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
+								matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
+								if slices.ContainsFunc(ps.QuickLookPositions, match) {
+									nomatch := func(q QuickLookPosition) bool { return !match(q) }
+									ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
+								} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
+									// Toggle plus
+									ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
+								} else {
+									ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
+								}
+							}
+							sort.Slice(ps.QuickLookPositions,
+								func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
+						}
+
+						if err == nil {
+							status.clear = true
+						} else {
+							status.err = err
+							sp.previewAreaInput = input
+						}
+						return
+					}
+				}
 			}
 
 		case "S":
@@ -3480,7 +3481,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				if db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
 					state.FullLDB = time.Now().Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
-				} else if db == FullDatablock && ac.TrackingController != ctx.world.Callsign{
+				} else if db == FullDatablock && ac.TrackingController != ctx.world.Callsign {
 					state.DatablockType = PartialDatablock
 				} else {
 					state.DatablockType = FullDatablock
@@ -5173,7 +5174,7 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = LimitedDatablock
 	}
 
-	if ac.TrackingController == w.Callsign || (ac.ControllingController == w.Callsign) {
+	if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 		// it's under our control
 		dt = FullDatablock
 	}
@@ -5987,7 +5988,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			}) {
 		if !slices.Contains(state.Warnings, "CA") {
 			state.Warnings = append(state.Warnings, "CA")
-		}	
+		}
 		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 	}
 	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
