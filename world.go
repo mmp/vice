@@ -373,16 +373,6 @@ func (w *World) AcceptRedirectedHandoff(callsign string, success func(any), err 
 		})
 }
 
-func (w *World) RejectHandoff(callsign string, success func(any), err func(error)) {
-	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
-			Call:      w.simProxy.RejectHandoff(callsign),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
 func (w *World) CancelHandoff(callsign string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
