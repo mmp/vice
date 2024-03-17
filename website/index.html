@@ -107,7 +107,6 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-locations">Specifying Locations</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-routes">Aircraft Routes</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airlines-aircraft">Airlines and Aircraft</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-videomaps">Video Maps</a></li>
           <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenario-groups">Scenario Groups</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airports">Airports</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-approaches">Approaches</a></li>
@@ -115,6 +114,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-arrivals">Arrivals</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airspace">Airspace</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenarios">Scenarios</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-stars-videomaps">STARS and Video Maps</a></li>
 	</ul>
       </nav><!--//docs-nav-->
     </div><!--//docs-sidebar-->
@@ -1621,7 +1621,6 @@ how it simulates aircraft or the STARS interface.
             <br>
             <p>A map showing the minimum vectoring altitudes used for MSAWs is included in the "SYS PROC" maps available from the "MAPS" menu in the DCB.</p>
  
->>>>>>> master
           </section>
 
 
@@ -2381,51 +2380,6 @@ above</a> for information about the CRDA system list.</p>
             </p>
           </section><!--//section-->
 
-          <section class="docs-section" id="fe-videomaps">
-            <h2 class="section-heading">Video Maps</h2>
-
-            <p>Video maps are specified separately from the rest of the configuration since they require fairly large files and are not normally edited by hand.
-              Video map files are simply JSON files with a series of members, each one of which stores an array of strings giving latitude-longitude positions.
-              Each successive pair of positions specifies a line to be draw when rendering the video map.
-              The following shows an excerpt from the ZNY video maps file that gives a sense of the format.
-            </p>
-            <pre>
-{
-  "ABE": [
-    "N041.00.05.616,W075.32.00.217",
-    "N041.00.01.277,W075.32.29.551",
-    ...
-  ],
-  "ABE - MVA": [
-    "N040.31.00.726,W076.31.35.993",
-    "N040.30.09.063,W076.31.21.985",
-    ...
-  ],
-  ...
-}
-            </pre>
-            <p>
-              There are utility programs available for extracting video maps from
-              both vSTARS configuration files and from installed CRC
-              ARTCCs.
-            </p>
-            <ul>
-              <li> <i>vstars2vice</i> is available from the
-              <a href="https://github.com/mmp/vstars2vice/releases">vstars2vice
-              releases</a> page.
-              It is a command-line program: the first argument should be
-              the path to a VSTARS configuration file and the second a path
-              to an output file.
-              </li>
-              <li> <i>crc2vice</i> is available from the
-                <a href="https://github.com/mmp/crc2vice/releases">crc2vice
-                releases</a> page.  See
-                its <a href="https://github.com/mmp/crc2vice/blob/master/README.md">README</a>
-                file for information about how to use it.
-              </li>
-            </ul>
-        </section><!--//section-->
-
           <section class="docs-section" id="fe-scenario-groups">
             <h2 class="section-heading">Scenario Groups</h2>
 
@@ -2437,7 +2391,7 @@ above</a> for information about the CRDA system list.</p>
               <i>vice</i> source code distribution for examples.
             </p>
             <p>These are the elements of a scenario group:</p>
-              <table class="table">
+            <table class="table">
             <thead>
               <tr>
                 <th>Element</th>
@@ -2460,11 +2414,6 @@ above</a> for information about the CRDA system list.</p>
                 <td>"arrival_groups"</td>
                 <td>Object</td>
                 <td>Defines the possible arrival routes; see <a href="#fe-arrivals">arrivals</a>.</td>
-              </tr>
-              <tr>
-                <td>"center"</td>
-                <td>String</td>
-                <td>Default radar scope center (as a <a href="#fe-locations">latitude-longitude position</a>.)</td>
               </tr>
               <tr>
                 <td>"control_positions"</td>
@@ -2505,35 +2454,6 @@ above</a> for information about the CRDA system list.</p>
                 </td>
               </tr>
               <tr>
-                <td>"inhibit_ca_volumes"</td>
-                <td>Array of objects</td>
-                <td>Each entry specifies a volume of space where collision
-                  alerts are inhibited. It can be useful to specify these
-                  around airports so that alerts aren't issued for aircraft
-                  arriving/departing on parallel runways. Each object has
-                  the following members:
-                  <ul>
-                    <li>"name": a string used to identify the volume in
-                      system lists.</li>
-                    <li>"type": either "circle" or "polygon"</li>
-                    <li>"floor": number giving the minimum altitude of the volume.</li>
-                    <li>"ceiling": number giving the maximum altitude of
-                      the volume.</li>
-                  </ul>
-                  For "circle" volumes, there are two additional members:
-                  <ul>
-                    <li>"center": the location of the center of the volume.</li>
-                    <li>"radius": the radius of the volume, in nautical miles.</li>
-                  </ul>
-                  For "polygon" volumes, an additional parameter specifies
-                  its extent:
-                  <ul>
-                    <li>"vertices": an array of locations specifying the
-                    outline of the volume.</li>
-                  </ul>
-                </td>
-              </tr>
-              <tr>
                 <td>"magnetic_variation"</td>
                 <td>Number</td>
                 <td>Number of degrees difference between true North and magnetic North.
@@ -2551,31 +2471,6 @@ above</a> for information about the CRDA system list.</p>
                   This is used to determine which airport's altimeter and winds to include at the top of the SSA list in the STARS radar scope.</td>
               </tr>
               <tr>
-                <td>"radar_sites"</td>
-                <td>Object (<i>Optional</i>)</td>
-                <td>Specification of all of the radar sites.
-                  (If not specified, then STARS Fused mode is the only radar mode available.)
-                  Each object member describes a radar site; the member's name gives the site's identifier.
-                  Each radar site has the following configuration values:
-                  <ul>
-                    <li>"char": a single character string identifier for the radar</li>
-                    <li>"elevation": an integer giving the radar site's
-                    elevation in feet. (Not required if the position is
-                    specified using an airport ICAO code.)</li>
-                    <li>"position": the radar's lateral position</li>
-                    <li>"primary_range": an integer giving the range in nautical miles at which the radar can pick up a primary track (typically, 60)</li>
-                    <li>"secondary_range": an integer giving the range in nautical miles at which the radar can pick up a secondary track (typically, 120)</li>
-                    <li>"silence_angle": the spread angle in degrees of the radar's "cone of silence"&mdash;the volume above it where aircraft cannot be tracked (typically, 30)</li>
-                    <li>"slope_angle": the angle in degrees with respect to the ground that the base of radar coverage increases as a function of distance from the radar site (typically, 0.175)</li>
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <td>"range"</td>
-                <td>Number</td>
-                <td>Default radar scope center range in nautical miles. If unspecified, a 50 mile range is the default.</td>
-              </tr>
-              <tr>
                 <td>"reporting_points"</td>
                 <td>Array of strings</td>
                 <td>Each entry specifies a fix that aircraft may use at
@@ -2588,31 +2483,14 @@ above</a> for information about the CRDA system list.</p>
                 <td>This defines all of the ATC scenarios that are available in the scenario group. See the <a href="#fe-scenarios">scenarios section</a> for details.</td>
               </tr>
               <tr>
-                <td>"scratchpads"</td>
+                <td>"stars_config"</td>
                 <td>Object</td>
-                <td>Each member specifies a scratchpad entry that is assigned when a departing aircraft has a given exit fix.  Example: <code>"MERIT": "MER"</code></td>
-              </tr>
-              <tr>
-                <td>"stars_maps"</td>
-                <td>Array of objects</td>
-                <td>These objects specify the available video maps in the STARS scope; the first 6 are shown in the main DCB and all are available under the "MAPS" sub-menu.
-                  Each one has three member values:
-                  <ul>
-                    <li>"group": either 0 or 1, to denote map group "A" or "B".  (STARS allows setting the brightness of these separately.)</li>
-                    <li>"label": a short string giving the map's label to show in the STARS DCB (e.g., "JFK4")</li>
-                    <li>"name": a string giving the name of the map in the video map file (e.g., "N90 JFK - 4s")</li>
-                    </ul>
-                </td>
+                <td>Defines settings and configurations related to the STARS radar scope. See <a href="#fe-stars-videomaps">STARS and Video Maps</a> for documentation about the items stored in this object.</td>
               </tr>
               <tr>
                 <td>"tracon"</td>
                 <td>String</td>
                 <td>Name of the ATCT/TRACON that the scenario group is associated with. This is used to show all scenarios for a given ATCT/TRACON together in the UI.</td>
-              </tr>
-              <tr>
-                <td>"video_map_file"</td>
-                <td>String</td>
-                <td>Filename of the video map file from which the maps specified in "stars_maps" are found (e.g., "videomaps/zny-maps.json.zst")</td>
               </tr>
             </tbody>
               </table>
@@ -3458,6 +3336,151 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             </table>
           </section><!--//section-->
           
+          <section class="docs-section" id="fe-stars-videomaps">
+            <h2 class="section-heading">STARS and Video Maps</h2>
+
+            <p>A number of settings related to the STARS radar scope are set using the "stars_config" object
+              in the scenario group. It stores the following values:
+              </p>
+
+            <table class="table">
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"center"</td>
+                <td>String</td>
+                <td>Default radar scope center (as a <a href="#fe-locations">latitude-longitude position</a>.)</td>
+              </tr>
+              <tr>
+                <td>"inhibit_ca_volumes"</td>
+                <td>Array of objects</td>
+                <td>Each entry specifies a volume of space where collision
+                  alerts are inhibited. It can be useful to specify these
+                  around airports so that alerts aren't issued for aircraft
+                  arriving/departing on parallel runways. Each object has
+                  the following members:
+                  <ul>
+                    <li>"name": a string used to identify the volume in
+                      system lists.</li>
+                    <li>"type": either "circle" or "polygon"</li>
+                    <li>"floor": number giving the minimum altitude of the volume.</li>
+                    <li>"ceiling": number giving the maximum altitude of
+                      the volume.</li>
+                  </ul>
+                  For "circle" volumes, there are two additional members:
+                  <ul>
+                    <li>"center": the location of the center of the volume.</li>
+                    <li>"radius": the radius of the volume, in nautical miles.</li>
+                  </ul>
+                  For "polygon" volumes, an additional parameter specifies
+                  its extent:
+                  <ul>
+                    <li>"vertices": an array of locations specifying the
+                    outline of the volume.</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"radar_sites"</td>
+                <td>Array of objects (<i>Optional</i>)</td>
+                <td>Specification of all of the radar sites.
+                  (If not specified, then STARS Fused mode is the only radar mode available.)
+                  Each object member describes a radar site; the member's name gives the site's identifier.
+                  Each radar site has the following configuration values:
+                  <ul>
+                    <li>"char": a single character string identifier for the radar</li>
+                    <li>"elevation": an integer giving the radar site's
+                    elevation in feet. (Not required if the position is
+                    specified using an airport ICAO code.)</li>
+                    <li>"position": the radar's lateral position</li>
+                    <li>"primary_range": an integer giving the range in nautical miles at which the radar can pick up a primary track (typically, 60)</li>
+                    <li>"secondary_range": an integer giving the range in nautical miles at which the radar can pick up a secondary track (typically, 120)</li>
+                    <li>"silence_angle": the spread angle in degrees of the radar's "cone of silence"&mdash;the volume above it where aircraft cannot be tracked (typically, 30)</li>
+                    <li>"slope_angle": the angle in degrees with respect to the ground that the base of radar coverage increases as a function of distance from the radar site (typically, 0.175)</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"range"</td>
+                <td>Number</td>
+                <td>Default radar scope center range in nautical miles. If unspecified, a 50 mile range is the default.</td>
+              </tr>
+              <tr>
+                <td>"scratchpads"</td>
+                <td>Object</td>
+                <td>Each member specifies a scratchpad entry that is assigned when a departing aircraft has a given exit fix.  Example: <code>"MERIT": "MER"</code></td>
+              </tr>
+              <tr>
+                <td>"stars_maps"</td>
+                <td>Array of objects</td>
+                <td>These objects specify the available video maps in the STARS scope; the first 6 are shown in the main DCB and all are available under the "MAPS" sub-menu.
+                  Each one has three member values:
+                  <ul>
+                    <li>"group": either 0 or 1, to denote map group "A" or "B".  (STARS allows setting the brightness of these separately.)</li>
+                    <li>"label": a short string giving the map's label to show in the STARS DCB (e.g., "JFK4")</li>
+                    <li>"name": a string giving the name of the map in the video map file (e.g., "N90 JFK - 4s")</li>
+                    </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"video_map_file"</td>
+                <td>String</td>
+                <td>Filename of the video map file from which the maps specified in "stars_maps" are found (e.g., "videomaps/zny-maps.json.zst")</td>
+              </tr>
+            </tbody>
+            </table>
+
+            <h3>Video Maps</h3>
+            <p>Video maps are specified separately from the rest of the configuration since they require fairly large files and are not normally edited by hand.
+              Video map files are simply JSON files with a series of members, each one of which stores an array of strings giving latitude-longitude positions.
+              Each successive pair of positions specifies a line to be draw when rendering the video map.
+              The following shows an excerpt from the ZNY video maps file that gives a sense of the format.
+            </p>
+            <pre>
+{
+  "ABE": [
+    "N041.00.05.616,W075.32.00.217",
+    "N041.00.01.277,W075.32.29.551",
+    ...
+  ],
+  "ABE - MVA": [
+    "N040.31.00.726,W076.31.35.993",
+    "N040.30.09.063,W076.31.21.985",
+    ...
+  ],
+  ...
+}
+            </pre>
+            <p>
+              There are utility programs available for extracting video maps from
+              both vSTARS configuration files and from installed CRC
+              ARTCCs.
+            </p>
+            <ul>
+              <li> <i>vstars2vice</i> is available from the
+              <a href="https://github.com/mmp/vstars2vice/releases">vstars2vice
+              releases</a> page.
+              It is a command-line program: the first argument should be
+              the path to a VSTARS configuration file and the second a path
+              to an output file.
+              </li>
+              <li> <i>crc2vice</i> is available from the
+                <a href="https://github.com/mmp/crc2vice/releases">crc2vice
+                releases</a> page.  See
+                its <a href="https://github.com/mmp/crc2vice/blob/master/README.md">README</a>
+                file for information about how to use it.
+              </li>
+            </ul>
+        </section><!--//section-->
+
+
+
         </article>
 
         <footer class="footer">
