@@ -1324,6 +1324,7 @@ func (sp *STARSPane) processEvents(w *World) {
 				} else {
 					sp.InboundPointOuts[event.Callsign] = ""
 				}
+				sp.Aircraft[event.Callsign].DatablockType = FullDatablock
 			}
 			if event.FromController == w.Callsign {
 				if ctrl := w.GetController(event.ToController); ctrl != nil {
@@ -1331,6 +1332,7 @@ func (sp *STARSPane) processEvents(w *World) {
 				} else {
 					sp.OutboundPointOuts[event.Callsign] = ""
 				}
+				sp.Aircraft[event.Callsign].DatablockType = FullDatablock
 			}
 
 		case AcknowledgedPointOutEvent:
