@@ -1743,6 +1743,9 @@ func (s *Sim) spawnAircraft() {
 			if ac, err := s.World.CreateArrival(group, arrivalAirport, goAround); err != nil {
 				s.lg.Error("CreateArrival error: %v", err)
 			} else if ac != nil {
+				if ac.FlightPlan.Altitude < 500 { // Just so altitudes of 500 can be filled. (For VFR?)
+					ac.FlightPlan.Altitude *= 100
+				}
 				s.launchAircraftNoLock(*ac)
 				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum, pushActive))
 			}
