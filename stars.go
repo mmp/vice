@@ -5941,7 +5941,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		errs = append(errs, "CA")
 		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 	}
-	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
+	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside && !slices.Contains(errs, "AS"){
 		altStrs := ""
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
