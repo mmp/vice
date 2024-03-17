@@ -1566,8 +1566,9 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	DrawHighlighted(ctx, transforms, cb)
 
-	sp.drawDatablocks(aircraft, ctx, transforms, cb)
 	sp.drawTracks(aircraft, ctx, transforms, cb)
+	sp.drawLeaderLines(aircraft, ctx, transforms, cb)
+	sp.drawDatablocks(aircraft, ctx, transforms, cb)
 
 	ghosts := sp.getGhostAircraft(aircraft, ctx)
 	sp.drawGhosts(ghosts, ctx, transforms, cb)
@@ -6310,12 +6311,38 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 	return
 }
 
+func (sp *STARSPane) drawLeaderLines(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations,
+	cb *CommandBuffer) {
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+	now := ctx.world.CurrentTime()
+
+	for _, ac := range aircraft {
+		state := sp.Aircraft[ac.Callsign]
+		if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
+			continue
+		}
+
+		dbs := sp.getDatablocks(ctx, ac)
+		if len(dbs) == 0 {
+			continue
+		}
+
+		baseColor, brightness := sp.datablockColor(ctx.world, ac)
+		pac := transforms.WindowFromLatLongP(state.TrackPosition())
+		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac, ctx.world))
+		ld.AddLine(pac, add2f(pac, v), brightness.ScaleRGB(baseColor))
+	}
+
+	transforms.LoadWindowViewingMatrices(cb)
+	cb.LineWidth(1)
+	ld.GenerateCommands(cb)
+}
+
 func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 	transforms ScopeTransformations, cb *CommandBuffer) {
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
 
 	now := ctx.world.CurrentTime()
 	realNow := time.Now() // for flashing rate...
@@ -6347,16 +6374,10 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		pt := add2f(datablockOffset, pac)
 		idx := (realNow.Second() / 2) % len(dbs) // 2 second cycle
 		dbs[idx].DrawText(td, pt, font, baseColor, brightness)
-
-		// Leader line
-		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac, ctx.world))
-		ld.AddLine(pac, add2f(pac, v), brightness.ScaleRGB(baseColor))
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
-	cb.LineWidth(1)
-	ld.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
