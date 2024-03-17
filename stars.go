@@ -5533,7 +5533,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [
 		return
 	}
 
-	if ac.OnApproach() {
+	if ac.OnApproach(false) {
 		// No warnings once they're flying the approach
 		return
 	}
@@ -5846,9 +5846,7 @@ func (sp *STARSPane) checkInTrailCwtSeparation(back, front *Aircraft) {
 			nmdistance2ll(vol.Threshold, state.TrackPosition()) < vol.Dist25nmApproach {
 
 			// between aircraft established on the final approach course
-			if back.Nav.Approach.InterceptState == HoldingLocalizer &&
-				front.Nav.Approach.InterceptState == HoldingLocalizer {
-
+			if back.OnApproach(false) && front.OnApproach(false) {
 				// TODO: Required separation must exist prior to applying 2.5 NM separation (TBL 5-5-2)
 				cwtSeparation = 2.5
 			}
