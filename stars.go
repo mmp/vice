@@ -414,8 +414,9 @@ type STARSAircraftState struct {
 	ATPAStatus               ATPAStatus
 	MinimumMIT               float32
 	ATPALeadAircraftCallsign string
-
+	LastKnownHandoff         string
 	POFlashingEndTime        time.Time
+
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
 	LeaderLineDirection *CardinalOrdinalDirection
@@ -5230,11 +5231,21 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		}
 
 		trackId := ""
+		if state.LastKnownHandoff == "" {
+			state.LastKnownHandoff = "*"
+		}
+
 		if ac.TrackingController != "" {
 			trackId = "?"
-			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil {
+			octrl := ctx.world.GetController(ctx.world.Callsign)
+			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil && octrl != nil &&
+				ctx.world.GetController(ac.TrackingController).FacilityIdentifier == octrl.FacilityIdentifier {
 				trackId = ctrl.Scope
+			} else {
+				trackId = state.LastKnownHandoff
 			}
+		} else {
+			trackId = "*"
 		}
 
 		// "cheat" by using ac.Heading() if we don't yet have two radar tracks to compute the
