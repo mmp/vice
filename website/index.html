@@ -159,16 +159,18 @@
                 D10 (DFW),
                 F11 (JAX, MCO, SFB, ISM, ORL),
                 L30 (LAS),
+                M98 (MSP),
                 N90 (EWR, JFK, LGA, FRG, ISP, HVN),
                 NCT (SJC, SFO, OAK, RNO, SMF, MRY, MER, MOD, SCK, SAC, LVK, SNS),
                 P50 (PHX),
                 S46 (SEA),
-                SCT (BUR, LAX, LGB, ONT, PSP, SAN, SNA, VNY, WHP)
+                SCT (BUR, LAX, LGB, ONT, PSP, SAN, SNA, VNY, WHP),
+                Y90 (BDL),
                 as well as the
                 AAC, ABE, ASE, AUS, BHM, CLE, CLT, COS, CYS, DAB, DCA, GSP, IND, JAX, MIA, MKE, PHL, SAV, SDF, and TPA
                 ATCT/TRACONs.
                 New scenarios are regularly added.
-                Adding scenarios at more airports is a matter of writing JSON configuration files that describe them;
+                Adding scenarios at additional airports is a matter of writing JSON configuration files that describe them;
                 see <a href="#section-facility-engineering">below</a> for documentation about how scenarios are
                 described
                 and please join the <a href="https://discord.gg/y993vgQxhY"><i>vice</i> discord</a> if you'd like to
@@ -176,15 +178,22 @@
               </p>
               <p>
                 There is a short <a href="https://youtu.be/MNFpFaT1k7s">video overview</a> that gives a tour of
+               
                 <i>vice</i>. (Note: this video was recorded with an older version of <i>vice</i>, so some details are
+               
                 different in the latest version.)
               </p>
             </section><!--//docs-intro-->
           </header>
+            </section><!--//docs-intro-->
+          </header>
 
+          <section class="docs-section" id="started">
           <section class="docs-section" id="started">
             <h2 class="section-heading">Getting Started</h2>
             <p>The radar client interface that <i>vice</i> provides is based on STARS.
+              For familiarity to VATSIM controllers, <i>vice</i> generally follows the keyboard command scheme
+              implemented
               For familiarity to VATSIM controllers, <i>vice</i> generally follows the keyboard command scheme
               implemented
               in <a href="https://crc.virtualnas.net/docs/#/">CRC's STARS implementation</a>; see
@@ -195,18 +204,26 @@
               The first time you launch <i>vice</i>, a window is shown for configuring the simulation.
               (After the first time, the window can be brought up by clicking the "replay" button in the menubar: <i
                 class="fas fa-redo"></i>.)
+              (After the first time, the window can be brought up by clicking the "replay" button in the menubar: <i
+                class="fas fa-redo"></i>.)
               A number of scenarios are available, some departure-only and
               some including both departures and arrivals.
-              Here is the configuration window for LGA:
+              Here is an example:
             </p>
             <div class="text-center">
               <img src="config.jpg" srcset="config-2x.jpg 2x" width="520" height="692" class="img-fluid"
                 alt="configuration dialog box">
             </div>
             <br>
-            <p>
-              (Each scenario usually offers multiple runway configurations.)
+            <p>After selecting an ARTCC, the available TRACONs and ATCT/TRACONs in that ARTCC are shown.
+              Selecting one of those gives a number of scenarios to choose from. Here the ZNY ARTCC has
+              been selected and then the PHL ATCT/TRACON. After choosing a scenario and clicking the "Next"
+              button, a window with further settings is shown:
             </p>
+            <div class="text-center">
+              <img src="config-rates.png" srcset="config-rates-2x.png 2x" width="518" height="485" class="img-fluid" alt="configuration rates dialog box">
+            </div>
+            <br>
             <p>
               In the configuration window, you can set the average departure rate (ADR)
               for all of the airports that may have departures in the scenario as well as the average arrival rate (AAR)
@@ -222,11 +239,17 @@
             <p>
               The "Sequencing challenge" slider controls how challenging the departure sequence is&mdash;the higher it
               is, the more likely it is
+              The "Sequencing challenge" slider controls how challenging the departure sequence is&mdash;the higher it
+              is, the more likely it is
               that successive departures will be to the same gate or to the same fix.
               For arrivals, the "Go around probability" slider allows setting the probability that each arrival goes
               around.
             </p>
             <p>
+              After you have configured the simulation, click "Ok" and you will have a STARS scope and flight strip
+              window to work with.
+              Use the usual STARS commands as appropriate (to initiate track, accept handoffs, handoff to other
+              controllers, etc.),
               After you have configured the simulation, click "Ok" and you will have a STARS scope and flight strip
               window to work with.
               Use the usual STARS commands as appropriate (to initiate track, accept handoffs, handoff to other
@@ -256,7 +279,10 @@
             </p>
             <p>To adjust the amount of space used for flight strips, right click the line separating the flight strips
               from the
+            <p>To adjust the amount of space used for flight strips, right click the line separating the flight strips
+              from the
               radar window and drag left or right with your mouse.
+              You can also remove flight strips entirely by opening the settings window, <i class="fas fa-cog"></i> in the menubar, and disabling "Show flight strips" under the "Flight strips" header.
             </p>
             <p>
               A number of buttons are available in the menu bar at the top of the window:
@@ -372,7 +398,7 @@
 
             <p>With <i>vice</i> you can also have multiple controllers working aircraft together.
               Select "Create multi-controller" in the "New Simulation" window and
-              you can select a scenario and set its parameters in more or less the same way
+              you can select an ARTCC, ATCT/TRACON, and scenario in the same way
               that you do with a single controller.
               Here is the top part of the multi-controller configuration window;
               all of the settings that are the same as for single-controller aren't shown.
@@ -384,10 +410,12 @@
             <br>
             <p>
               Each multi-controller simulation has a name associated with it;
-              <i>vice</i> chooses a random one by default (above, it's "following-nature").
+              <i>vice</i> chooses a random one by default (above, it's "choice-length").
               You're welcome to choose a different name if you prefer.
               These names can be used so that you can tell other people which
               simulation to choose in order to join you.
+              You may also enable "Require password" and enter a password for the
+              simulation so that only people you allow can join it.
             </p>
             <p>
               Selecting "Join multi-controller" shows a list of the simulations
@@ -748,6 +776,41 @@
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
+            <h3>0.10.21 (TODO March 2024)</h3>
+            <ul>
+              <li>New scenarios: BDL (MerryArbitrary), M98 (Jace Martin).</li>
+              <li>Scenario updates: EWR (aq86_), LGA (Yi Zheng), MIA (Connor Allen), Y90 (MerryArbitrary, Nelson T).</li>
+              <li>STARS simulation has been improved in numerous ways:
+                <ul>
+                  <li>Significantly improved how handoffs are handled: multiple redirected handoffs are now supported, inter- and intra-facility handoffs are now handled more accurately.</li>
+                  <li>Added support for "force quicklook" to push a quicklook to another controller.</li>
+                  <li>Added support for minimum safe altitude warnings (MSAW) for aircraft that are below the MVA.</li>
+                  <li>CWT category updates and bugfixes.</li>
+                  <li>Added support for global leader lines.</li>
+                  <li>Limited datablocks are now supported (and used when appropriate).</li>
+                  <li>Added point out history command.</li>
+                  <li>Fixed various bugs in DCB spinners (brightness now goes in steps of 5, etc.)</li>
+                  <li>Fixed a bug where leader lines would be drawn over track symbols.</li>
+                  <li>Handle various cases where the FDB should be displayed by default.</li>
+                  <li>The scratchpad can now be set by entering text and slewing an aircraft.</li>
+                </ul>
+              </li>
+              <li>A number of other bug fixes, including:
+                <ul>
+                  <li>Fixed a bug where go-arounds would sometimes not contact departure.</li>
+                  <li>Fixed bugs in the winds display in the "new sim" user interface.</li>
+                  <li>Fixed a bug where departures handed off to virtual controllers wouldn't climb to their final altitude.</li>
+                  </ul>
+              </li>
+              <li>Facility engineering changes/improvements:
+                <ul>
+                  <li>In scenario groups, "tracon" must be a valid 3-letter id from the <a href="https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon">FAA list of TRACONs</a>. (This allows <i>vice</i> to present scenarios grouped by ARTCC and then TRACON.)</li>
+                  <li><i>vice</i> now has a built-in model of magnetic declination. Therefore, the "magnetic_variation" setting is no longer used. If small adjustments are needed (e.g. due to video maps assuming a different magnetic adjustment, "magnetic_correction" can be used to add a small offset to the automatically-determined value.</li>
+                  <li>There is a new "stars_config" field in scenario definitions with a number of new fields to define per-facility STARS behavior. (See the <a href="#fe-stars-videomaps">STARS and Video Maps</a> section for details.)</li>
+                </ul>
+              </li>
+            </ul>
+
             <h3>0.10.20 (28 February 2024)</h3>
             <ul>
               <li>Added new scenarios: SCT LAX (Jud Lopez), IND (Samuel Valencia), MKE (Yahya Nazimuddin), MIA (Mike K).
@@ -846,6 +909,11 @@
               </li>
             </ul>
 
+            <div class="container">
+              <button id="toggleButton">🔍 Show Earlier Releases</button>
+              <br>
+            <div id="hiddenText" style="display:none;">
+              <br>
             <h3>0.10.16 (22 December 2023)</h3>
             <ul>
               <li>Added multiple new scenarios: S46, BHM, GSP (Aaron Flett), AUS (Jace Martin), P50 (Mike K)</li>
@@ -1266,6 +1334,8 @@
               <li>0.3.1: Added JFK approach scenarios, improved aircraft flight model, routes, and airlines.</li>
               <li>0.2.1: Initial release</li>
             </ul>
+            </div> <!-- initially hidden -->
+            </div> <!-- container -->
 
           </section><!--//section-->
 
@@ -4047,6 +4117,19 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
   <script src="assets/plugins/simplelightbox/simple-lightbox.min.js"></script>
   <script src="assets/plugins/gumshoe/gumshoe.polyfills.min.js"></script>
   <script src="assets/js/docs.js"></script>
+
+  <script>
+document.getElementById('toggleButton').addEventListener('click', function() {
+  var text = document.getElementById('hiddenText');
+  if (text.style.display === "none") {
+    text.style.display = "block";
+    this.textContent = "🔍 Hide Earlier Releases";
+  } else {
+    text.style.display = "none";
+    this.textContent = "🔍 Show Earlier Releases";
+  }
+});
+</script>
 
 </body>
 
