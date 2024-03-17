@@ -1669,7 +1669,7 @@
             "label": "ZLA_W",
             "name": "450S ZLA ASW SCT"
           }
-    ]
-    },
+    ],
     "video_map_file": "videomaps/ZLA-videomaps.json.zst"
+    }
 }

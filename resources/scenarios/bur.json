@@ -1487,7 +1487,7 @@
             "label": "EOVM",
             "name": "711S EOVM SCT"
         }
-    ]
-    },
+    ],
     "video_map_file": "videomaps/ZLA-videomaps.json.zst"
+    }
 }

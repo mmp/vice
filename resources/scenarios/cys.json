@@ -615,7 +615,7 @@
       "label": "RNAV 09",
       "name": "RNAV9__CYS RNAV RWY 09"
     }
-  ]
-  },
+  ],
   "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+  }
 }

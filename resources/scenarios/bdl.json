@@ -389,7 +389,7 @@
             "label": "RWY 6/33",
             "name": "Y90 RWY 6/33"
         }
-    ]
-    },
+    ],
     "video_map_file": "videomaps/ZBW-videomaps.json.zst"
+    }
 }

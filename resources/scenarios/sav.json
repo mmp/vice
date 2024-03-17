@@ -998,7 +998,7 @@
         "label": "RNAV 01",
         "name": "RNAV - 01"
     }
-  ]
-  },
+  ],
   "video_map_file": "videomaps/ZJX-videomaps.json.zst"
+  }
 }

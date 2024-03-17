@@ -871,7 +871,7 @@
       "label": "Z 35L",
       "name": "COS Z 35R"
     }
-  ]
-  },
+  ],
   "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+  }
 }

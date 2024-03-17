@@ -680,7 +680,7 @@
       "label": "RNAV28",
       "name": "GMU RNAV 28"
   }
-  ]
-  },
+  ],
 "video_map_file": "videomaps/ZTL-videomaps.json.zst"
+  }
 }

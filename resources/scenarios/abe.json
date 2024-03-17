@@ -749,7 +749,7 @@
       "label": "ABE MVA",
       "name": "ABE MVA"
     }
-  ]
-  },
+  ],
   "video_map_file": "videomaps/abe-maps.json.zst"
+  }
 }

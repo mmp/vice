@@ -3409,6 +3409,7 @@
                     "name": "ZAU C90 Arrival Fixes"
                 }
             ],
+                "video_map_file": "videomaps/ZAU-videomaps.json.zst",
                 "airspace_awareness": [
                     {
                         "fixes": [
@@ -4692,6 +4693,5 @@
                     "speed": 2
                 }
             }
-            },
-            "video_map_file": "videomaps/ZAU-videomaps.json.zst"
+            }
         }

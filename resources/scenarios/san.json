@@ -862,7 +862,7 @@
             "label": "SAN 9-27 SCT",
             "name": "542S SAN 9-27 SCT"
         }
-    ]
-    },
+    ],
     "video_map_file": "videomaps/ZLA-videomaps.json.zst"
+    }
 }

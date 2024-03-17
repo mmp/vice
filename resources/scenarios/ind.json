@@ -1649,7 +1649,7 @@
       "label": "RNP 32",
       "name": "RNP FIXES RWY 32"
     }
-  ]
-  },
+  ],
   "video_map_file": "videomaps/ZID-videomaps.json.zst"
+  }
 }

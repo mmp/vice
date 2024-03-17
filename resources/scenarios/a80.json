@@ -2616,6 +2616,7 @@
           "name": "ARRIVAL RADAR EAST DUALS"
         }
       ],
+    "video_map_file": "videomaps/atl-maps.json.zst",
     "airspace_awareness": [
       {
         "fixes": [
@@ -3119,6 +3120,5 @@
                 "speed": 5
               }
             }
-      },
-    "video_map_file": "videomaps/atl-maps.json.zst"
+      }
     }

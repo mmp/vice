@@ -3873,7 +3873,8 @@
       "label": "MVA",
       "name": "N90 MVA"
     }
-  ]
+  ],
+  "video_map_file": "videomaps/n90-maps.json.zst"
   },
   "control_positions": {
     "EWR_A_APP": {
@@ -5417,6 +5418,5 @@
         "speed": 5
       }
     }
-  },
-  "video_map_file": "videomaps/n90-maps.json.zst"
+  }
 }

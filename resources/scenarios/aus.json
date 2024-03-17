@@ -1865,7 +1865,7 @@
                             "label": "GTU FAC",
                             "name": "GTU FINALS"
                         }
-                    ]
-                    },
-    "video_map_file": "videomaps/ZHU-videomaps.json.zst"
+                    ],
+                    "video_map_file": "videomaps/ZHU-videomaps.json.zst"
+                    }
     }

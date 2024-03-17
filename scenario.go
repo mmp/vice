@@ -28,7 +28,6 @@ type ScenarioGroup struct {
 	TRACON           string                 `json:"tracon"`
 	Name             string                 `json:"name"`
 	Airports         map[string]*Airport    `json:"airports"`
-	VideoMapFile     string                 `json:"video_map_file"`
 	Fixes            map[string]Point2LL    `json:"-"`
 	FixesStrings     orderedmap.OrderedMap  `json:"fixes"`
 	Scenarios        map[string]*Scenario   `json:"scenarios"`
@@ -68,6 +67,7 @@ type STARSFacilityAdaptation struct {
 	CenterString      string                `json:"center"`
 	Range             float32               `json:"range"`
 	Scratchpads       map[string]string     `json:"scratchpads"`
+	VideoMapFile      string                `json:"video_map_file"`
 }
 
 type Airspace struct {
@@ -1339,11 +1339,11 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 				scenarioGroups[s.TRACON][s.Name] = s
 			}
 
-			if referencedVideoMaps[s.VideoMapFile] == nil {
-				referencedVideoMaps[s.VideoMapFile] = make(map[string]interface{})
+			if referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile] == nil {
+				referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile] = make(map[string]interface{})
 			}
 			for _, m := range s.STARSFacilityAdaptation.Maps {
-				referencedVideoMaps[s.VideoMapFile][m.Name] = nil
+				referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile][m.Name] = nil
 			}
 		}
 		return nil
@@ -1375,20 +1375,20 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 
 			// These may have an empty "video_map_file" member, which
 			// is automatically patched up here...
-			if s.VideoMapFile == "" {
+			if s.STARSFacilityAdaptation.VideoMapFile == "" {
 				if *videoMapFilename != "" {
-					s.VideoMapFile = *videoMapFilename
+					s.STARSFacilityAdaptation.VideoMapFile = *videoMapFilename
 				} else {
 					e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
 						*scenarioFilename)
 				}
 			}
 
-			if referencedVideoMaps[s.VideoMapFile] == nil {
-				referencedVideoMaps[s.VideoMapFile] = make(map[string]interface{})
+			if referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile] == nil {
+				referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile] = make(map[string]interface{})
 			}
 			for _, m := range s.STARSFacilityAdaptation.Maps {
-				referencedVideoMaps[s.VideoMapFile][m.Name] = nil
+				referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile][m.Name] = nil
 			}
 		}
 	}
@@ -1472,11 +1472,11 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 			}
 
 			// Initialize the CommandBuffers in the scenario's maps.
-			if sgroup.VideoMapFile == "" {
+			if vf := sgroup.STARSFacilityAdaptation.VideoMapFile; vf == "" {
 				e.ErrorString("no \"video_map_file\" specified")
 			} else {
-				if bufferMap, ok := videoMapCommandBuffers[sgroup.VideoMapFile]; !ok {
-					e.ErrorString("video map file \"%s\" unknown", sgroup.VideoMapFile)
+				if bufferMap, ok := videoMapCommandBuffers[vf]; !ok {
+					e.ErrorString("video map file \"%s\" unknown", vf)
 				} else {
 					for i, sm := range sgroup.STARSFacilityAdaptation.Maps {
 						if cb, ok := bufferMap[sm.Name]; !ok {

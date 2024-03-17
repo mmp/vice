@@ -5431,7 +5431,7 @@
       "label": "COAST",
       "name": "Coastline"
     }
-  ]
-  },
+  ],
   "video_map_file": "videomaps/phl-maps.json.zst"
+  }
 }

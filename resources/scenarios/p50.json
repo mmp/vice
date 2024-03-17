@@ -1557,7 +1557,7 @@
             "label": "LUFOPEN",
             "name": "PHX366 LUFOPEN"
         }
-    ]
-    },
+    ],
     "video_map_file": "videomaps/ZAB-videomaps.json.zst"
+    }
 }

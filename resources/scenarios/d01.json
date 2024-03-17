@@ -3473,7 +3473,7 @@
           "label": "ZDV",
           "name": "D01 ZDV"
       }
-    ]
-    },
+    ],
     "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+    }
   }

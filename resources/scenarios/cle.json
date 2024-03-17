@@ -3085,6 +3085,7 @@
                                     "name": "CLE-058 (SATELLITE SIDS)"
                                 }
                             ],
+                            "video_map_file": "videomaps/ZOB-videomaps.json.zst",
                             "allow_long_scratchpad": [false, false],
                             "force_ql_self": true,
                             "airspace_awareness": [
@@ -3463,6 +3464,5 @@
                                 "speed": 10
                             }
                         }
-                    },
-                    "video_map_file": "videomaps/ZOB-videomaps.json.zst"
+                    }
                 }

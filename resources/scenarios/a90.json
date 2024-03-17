@@ -2820,8 +2820,8 @@
       "label": "33L SID",
       "name": "BOS RWY 33L RNAV SID"
     }
-   ]
-  },
+   ],
    "video_map_file": "videomaps/ZBW-videomaps.json.zst"
+  }
 }
 

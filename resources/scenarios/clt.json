@@ -2687,7 +2687,7 @@
                             "label": "NOISE S",
                             "name": "NOISE 2NM/4NM LINES (SOUTH)"
                         }
-                    ]
-                    },
+                    ],
                     "video_map_file": "videomaps/ZTL-videomaps.json.zst"
+                    }
                }

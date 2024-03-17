@@ -1614,7 +1614,7 @@
       "label": "RNAVS32",
       "name": "RNAV STARS RWY 32"
    }
-  ]
-  },
+  ],
   "video_map_file": "videomaps/ZJX-videomaps.json.zst"
+  }
 }

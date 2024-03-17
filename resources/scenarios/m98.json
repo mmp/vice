@@ -1053,7 +1053,7 @@
             "label": "AIRSPAC",
             "name": "M98 106 AIRSPAC"
           }
-        ]
-        },
-    "video_map_file": "videomaps/ZMP-videomaps.json.zst"
+        ],
+        "video_map_file": "videomaps/ZMP-videomaps.json.zst"
+        }
 }

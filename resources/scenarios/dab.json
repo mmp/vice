@@ -816,7 +816,7 @@
       "label": "SEC_BDY",
       "name": "SECTOR BOUNDARY"
     }
-  ]
-  },
+  ],
   "video_map_file": "videomaps/ZJX-videomaps.json.zst"
+  }
 }

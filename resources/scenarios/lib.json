@@ -2714,7 +2714,8 @@
       "label": "LGA",
       "name": "LGA"
     }
-  ]
+  ],
+  "video_map_file": "videomaps/n90-maps.json.zst"
   },
   "control_positions": {
     "BOS_SW_CTR": {
@@ -3434,6 +3435,5 @@
         }
       ]
     }
-  },
-  "video_map_file": "videomaps/n90-maps.json.zst"
+  }
 }

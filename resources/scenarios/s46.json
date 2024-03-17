@@ -2711,7 +2711,7 @@
       "label": "SOUTH",
       "name": "S46__SOUTH"
   }
-  ]
-  },
-"video_map_file": "videomaps/ZSE-videomaps.json.zst"
+  ],
+  "video_map_file": "videomaps/ZSE-videomaps.json.zst"
+  }
 }

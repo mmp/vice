@@ -3868,7 +3868,7 @@
       "label": "Airports",
       "name": "Airport Diagrams"
     }
-  ]
-  },
+  ],
   "video_map_file": "videomaps/n90-maps.json.zst"
+  }
 }
