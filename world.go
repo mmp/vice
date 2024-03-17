@@ -88,6 +88,7 @@ type World struct {
 	DepartureGates          []string
 	STARSFacilityAdaptation STARSFacilityAdaptation
 	StoppedGates map[string]bool
+	CFRAirports map[string]bool
 	STARSInputOverride string
 }
 
@@ -399,6 +400,16 @@ func (w *World) UpdateStoppedGates(stopped map[string]bool, success func(any), e
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.UpdateStoppedGates(stopped),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) UpdateStoppedAirports(stopped map[string]bool, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.UpdateStoppedAirports(stopped),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
@@ -1017,6 +1028,9 @@ func (w *World) DrawCoordinationWindow() {
 	if w.StoppedGates == nil { 
 		w.StoppedGates = make(map[string]bool)
 	}
+	if w.CFRAirports == nil {
+		w.CFRAirports = make(map[string]bool)
+	}
 	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
@@ -1027,6 +1041,25 @@ func (w *World) DrawCoordinationWindow() {
 	if imgui.BeginTabBar("Controllers") {
 		if imgui.BeginTabItem("Tower") {
 			if imgui.BeginTabBar("Bar") {
+				if imgui.BeginTabItem("Gates") {
+					stopAll := true
+					for _, value := range w.StoppedGates {
+						if !value {
+							stopAll = false
+						}
+					}
+					changed := imgui.Checkbox("Stop all departures", &stopAll)
+					if changed && !stopAll {
+						for gate := range w.StoppedGates {
+							w.StoppedGates[gate] = false
+						}
+					}
+					if stopAll {
+						for gate := range w.StoppedGates {
+							w.StoppedGates[gate] = true 
+						}
+					}
+					uiStartDisable(stopAll)
 				if imgui.BeginTableV("Tower", 2, tableFlags, imgui.Vec2{}, 0) {
 					imgui.TableSetupColumn("Fix")
 					imgui.TableSetupColumn("Stop Departures")
@@ -1037,9 +1070,6 @@ func (w *World) DrawCoordinationWindow() {
 						imgui.TableNextColumn()
 						imgui.Text(fix)
 						imgui.TableNextColumn()
-						if w.StoppedGates[fix] {
-							fmt.Println(fix, true )
-						}
 						enabled := w.StoppedGates[fix] 
 						imgui.Checkbox("##"+fix, &enabled)
 						w.StoppedGates[fix] = enabled
@@ -1047,6 +1077,28 @@ func (w *World) DrawCoordinationWindow() {
 					}
 					imgui.EndTable()
 				}
+				uiEndDisable(stopAll)
+				imgui.EndTabItem()
+			}
+			if imgui.BeginTabItem("CFR") {
+				if imgui.BeginTableV("CFR", 2, tableFlags, imgui.Vec2{}, 0) {
+					imgui.TableSetupColumn("Airport")
+					imgui.TableSetupColumn("CFR?")
+					imgui.TableHeadersRow()
+					for _, name := range SortedMapKeys(w.Airports) {
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+						imgui.Text(name)
+						imgui.TableNextColumn()
+						enabled := w.CFRAirports[name]
+						imgui.Checkbox("CFR##"+name, &enabled)
+						w.CFRAirports[name] = enabled
+						w.UpdateStoppedAirports(w.CFRAirports, nil, nil)
+					}
+					imgui.EndTable()
+				}
+				imgui.EndTabItem()
+			}
 				imgui.EndTabBar()
 			}
 			imgui.EndTabItem()

@@ -138,6 +138,13 @@ func (s *SimProxy) UpdateStoppedGates(stopped map[string]bool) *rpc.Call {
 	}, nil, nil)
 }
 
+func (s *SimProxy) UpdateStoppedAirports(stopped map[string]bool) *rpc.Call {
+	return s.Client.Go("Sim.UpdateStoppedAirports", &StoppedGateArgs{
+		ControllerToken: s.ControllerToken,
+		StoppedGates: stopped,
+	}, nil, nil)
+}
+
 func (s *SimProxy) InitiateTrack(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.InitiateTrack", &InitiateTrackArgs{
 		ControllerToken: s.ControllerToken,
@@ -698,6 +705,14 @@ func (sd *SimDispatcher) UpdateStoppedGates(a *StoppedGateArgs, _ *struct{}) err
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.UpdateStoppedGates(a.ControllerToken, a.StoppedGates)
+	}
+}
+
+func (sd *SimDispatcher) UpdateStoppedAirports(a *StoppedGateArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.UpdateStoppedAirports(a.ControllerToken, a.StoppedGates)
 	}
 }
 
