@@ -25,7 +25,7 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
-const ViceRPCVersion = 11
+const ViceRPCVersion = 12
 
 type SimServer struct {
 	*RPCClient
@@ -176,13 +176,6 @@ func (s *SimProxy) HandoffControl(callsign string) *rpc.Call {
 
 func (s *SimProxy) AcceptHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.AcceptHandoff", &AcceptHandoffArgs{
-		ControllerToken: s.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
-}
-
-func (s *SimProxy) RejectHandoff(callsign string) *rpc.Call {
-	return s.Client.Go("Sim.RejectHandoff", &RejectHandoffArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
@@ -800,16 +793,6 @@ func (sd *SimDispatcher) AcceptHandoff(ah *AcceptHandoffArgs, _ *struct{}) error
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.AcceptHandoff(ah.ControllerToken, ah.Callsign)
-	}
-}
-
-type RejectHandoffArgs AircraftSpecifier
-
-func (sd *SimDispatcher) RejectHandoff(rh *RejectHandoffArgs, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[rh.ControllerToken]; !ok {
-		return ErrNoSimForControllerToken
-	} else {
-		return sim.RejectHandoff(rh.ControllerToken, rh.Callsign)
 	}
 }
 

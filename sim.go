@@ -960,13 +960,14 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.Airports = sg.Airports
 	w.Fixes = sg.Fixes
 	w.PrimaryAirport = sg.PrimaryAirport
-	w.RadarSites = sg.RadarSites
-	w.Center = Select(sc.Center.IsZero(), sg.Center, sc.Center)
-	w.Range = Select(sc.Range == 0, sg.Range, sc.Range)
+	stars := sg.STARSFacilityAdaptation
+	w.RadarSites = stars.RadarSites
+	w.Center = Select(stars.Center.IsZero(), stars.Center, stars.Center)
+	w.Range = Select(sc.Range == 0, stars.Range, sc.Range)
 	w.DefaultMaps = sc.DefaultMaps
-	w.STARSMaps = sg.STARSMaps
-	w.InhibitCAVolumes = sg.InhibitCAVolumes
-	w.Scratchpads = sg.Scratchpads
+	w.STARSMaps = stars.Maps
+	w.InhibitCAVolumes = stars.InhibitCAVolumes
+	w.Scratchpads = stars.Scratchpads
 	w.ArrivalGroups = sg.ArrivalGroups
 	w.ApproachAirspace = sc.ApproachAirspace
 	w.DepartureAirspace = sc.DepartureAirspace
@@ -2242,30 +2243,6 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 			} else {
 				return nil
 			}
-		})
-}
-
-func (s *Sim) RejectHandoff(token, callsign string) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	return s.dispatchCommand(token, callsign,
-		func(ctrl *Controller, ac *Aircraft) error {
-			if ac.HandoffTrackController != ctrl.Callsign {
-				return ErrNotBeingHandedOffToMe
-			}
-			return nil
-		},
-		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			s.eventStream.Post(Event{
-				Type:           RejectedHandoffEvent,
-				FromController: ac.ControllingController,
-				ToController:   ctrl.Callsign,
-				Callsign:       ac.Callsign,
-			})
-
-			ac.HandoffTrackController = ""
-			return nil
 		})
 }
 

@@ -3596,15 +3596,6 @@
       }
     ]
   },
-  "center": "N040.43.34.389,W074.28.54.713",
-  "stars_config": {
-    "allow_long_scratchpad": [
-      false,
-      false
-    ],
-    "force_ql_self": true
-  },
-  "range": 60,
   "control_positions": {
     "ABE_APP": {
       "frequency": 119650,
@@ -3793,65 +3784,8 @@
     "_TEB_24": "N040.51.27.762,W074.03.14.842",
     "_TEB_6": "N040.50.48.376,W074.04.13.509"
   },
-  "inhibit_ca_volumes": [
-    {
-      "name": "EWR NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 7,
-      "center": "KEWR"
-    }
-  ],
   "name": "KEWR",
   "primary_airport": "KEWR",
-  "radar_sites": {
-    "EWR": {
-      "char": "E",
-      "position": "KEWR",
-      "elevation": 136,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "HPN": {
-      "char": "H",
-      "position": "KHPN",
-      "elevation": 708,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "ISP": {
-      "char": "I",
-      "position": "KISP",
-      "elevation": 185,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "JFK": {
-      "char": "J",
-      "position": "KJFK",
-      "elevation": 143,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "SWF": {
-      "char": "S",
-      "position": "KSWF",
-      "elevation": 972,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    }
-  },
   "reporting_points": [
     "CAMMO",
     "CYN",
@@ -4553,6 +4487,71 @@
       }
     }
   },
+  "stars_config": {
+  "center": "N040.43.34.389,W074.28.54.713",
+  "range": 60,
+  "inhibit_ca_volumes": [
+    {
+      "name": "EWR NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 7,
+      "center": "KEWR"
+    }
+  ],
+  "radar_sites": {
+    "EWR": {
+      "char": "E",
+      "position": "KEWR",
+      "elevation": 136,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "HPN": {
+      "char": "H",
+      "position": "KHPN",
+      "elevation": 708,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "ISP": {
+      "char": "I",
+      "position": "KISP",
+      "elevation": 185,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "JFK": {
+      "char": "J",
+      "position": "KJFK",
+      "elevation": 143,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "SWF": {
+      "char": "S",
+      "position": "KSWF",
+      "elevation": 972,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    }
+  },
+    "allow_long_scratchpad": [
+      false,
+      false
+    ],
+    "force_ql_self": true,
   "scratchpads": {
     "BAYYS": "BAY",
     "BDR": "BDR",
@@ -4651,4 +4650,5 @@
     }
   ],
   "video_map_file": "videomaps/n90-maps.json.zst"
+  }
 }

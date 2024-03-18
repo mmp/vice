@@ -1317,7 +1317,6 @@
                             "waypoints": "CLL TOAMY/a4000/h265/ho" 
                         }]
                     },
-                    "center": "KAUS",
                     "stars_config": {
                         "allow_long_scratchpad": [false, false],
                         "force_ql_self": true,
@@ -1483,34 +1482,8 @@
                             "KAUS": "N30.11.39.753,W97.40.11.133",
                             "AUS": "N30.11.39.753,W97.40.11.133"
                         },
-                        "inhibit_ca_volumes": [
-                            {
-                                "name": "AUS NO CA",
-                                "type": "polygon",
-                                "floor": 0,
-                                "ceiling": 7000,
-                                "vertices": [
-                                    "N30.32.34.436,W97.48.10.531",
-                                    "N29.50.29.042,W97.46.59.802",
-                                    "N29.50.48.312,W97.31.59.718",
-                                    "N30.32.53.861,W97.33.04.560",
-                                    "N30.32.34.436,W97.48.10.531"
-                                ]
-                            }
-                        ],
                         "name": "KAUS",
                         "primary_airport": "KAUS",
-                        "radar_sites": {
-                            "AUS": {
-                                "char": "A",
-                                "position": "KAUS",
-                                "elevation": 542,
-                                "primary_range": 60,
-                                "secondary_range": 120,
-                                "silence_angle": 10,
-                                "slope_angle": 0.5
-                            }
-                    },
                     "scenarios": {
                         "AUS TRACON South": {
                             "approach_airspace": [
@@ -1751,6 +1724,34 @@
                             }
                         }
                     },
+                    "stars_config": {
+                        "center": "KAUS",
+                        "inhibit_ca_volumes": [
+                            {
+                                "name": "AUS NO CA",
+                                "type": "polygon",
+                                "floor": 0,
+                                "ceiling": 7000,
+                                "vertices": [
+                                    "N30.32.34.436,W97.48.10.531",
+                                    "N29.50.29.042,W97.46.59.802",
+                                    "N29.50.48.312,W97.31.59.718",
+                                    "N30.32.53.861,W97.33.04.560",
+                                    "N30.32.34.436,W97.48.10.531"
+                                ]
+                            }
+                        ],
+                        "radar_sites": {
+                            "AUS": {
+                                "char": "A",
+                                "position": "KAUS",
+                                "elevation": 542,
+                                "primary_range": 60,
+                                "secondary_range": 120,
+                                "silence_angle": 10,
+                                "slope_angle": 0.5
+                            }
+                        },
                     "scratchpads": {
                         "ZENZI": "HOO",
                         "SAYBR": "MUN",
@@ -1865,5 +1866,6 @@
                             "name": "GTU FINALS"
                         }
                     ],
-    "video_map_file": "videomaps/ZHU-videomaps.json.zst"
+                    "video_map_file": "videomaps/ZHU-videomaps.json.zst"
+                    }
     }

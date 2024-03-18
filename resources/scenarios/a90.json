@@ -2276,31 +2276,6 @@
       }
     ]
   },
-  "center": "KBOS",
-  "stars_config": {
-    "allow_long_scratchpad": [false, false],
-    "force_ql_self": true,
-    "airspace_awareness": [
-      {
-        "fixes": [
-          "BLZZR",
-          "BRUWN",
-          "CELTK",
-          "HYLND",
-          "LBSTA",
-          "PATSS",
-          "REVSS",
-          "SSOXS"
-        ],
-        "altitude_range": [
-          0,
-          0
-        ],
-        "receiving_controller": "C37",
-        "to_center": true
-      }
-    ]
-  },
   "control_positions": {
     "BOS_E_TWR": {
       "frequency": 132225,
@@ -2392,28 +2367,8 @@
     "KBOS": "N42.21.52.065,W71.00.58.712",
     "BOS": "N42.21.52.065,W71.00.58.712"
    },
-   "inhibit_ca_volumes": [
-    {
-      "name": "BOS NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 2000,
-      "radius": 7,
-      "center": "N042.23.05.581,W071.00.43.615"
-    }
-   ],
    "name": "KBOS",
    "primary_airport": "KBOS",
-   "radar_sites": {
-     "KMLB": {
-       "char": "B",
-       "position": "KBOS",
-       "elevation": 150,
-       "primary_range": 60,
-       "secondary_range": 120,
-       "slope_angle": 0.175
-     }
-   },
    "scenarios": {
     "KBOS Land 4R/L Depart 9": {
       "approach_airspace": [
@@ -2685,6 +2640,50 @@
       }
     }
    },
+  "stars_config": {
+    "center": "KBOS",
+   "inhibit_ca_volumes": [
+    {
+      "name": "BOS NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 2000,
+      "radius": 7,
+      "center": "N042.23.05.581,W071.00.43.615"
+    }
+   ],
+   "radar_sites": {
+     "KMLB": {
+       "char": "B",
+       "position": "KBOS",
+       "elevation": 150,
+       "primary_range": 60,
+       "secondary_range": 120,
+       "slope_angle": 0.175
+     }
+   },
+    "allow_long_scratchpad": [false, false],
+    "force_ql_self": true,
+    "airspace_awareness": [
+      {
+        "fixes": [
+          "BLZZR",
+          "BRUWN",
+          "CELTK",
+          "HYLND",
+          "LBSTA",
+          "PATSS",
+          "REVSS",
+          "SSOXS"
+        ],
+        "altitude_range": [
+          0,
+          0
+        ],
+        "receiving_controller": "C37",
+        "to_center": true
+      }
+    ],
    "scratchpads": {
     "BLZZR": "BLZ",
     "BRUWN": "BRU",
@@ -2823,5 +2822,6 @@
     }
    ],
    "video_map_file": "videomaps/ZBW-videomaps.json.zst"
+  }
 }
 

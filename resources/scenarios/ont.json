@@ -1080,25 +1080,6 @@
     },
     "name": "KONT",
     "primary_airport": "KONT",
-    "radar_sites": {
-        "KONT": {
-            "char": "S",
-            "position": "KONT",
-            "elevation": 778,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "slope_angle": 0.175
-        },
-        "KPSP": {
-            "char": "S",
-            "position": "KPSP",
-            "elevation": 802,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "slope_angle": 0.175
-        }
-    },
-    "center": "KONT",
     "scenarios": {
         "Empire West": {
             "arrival_runways": [
@@ -1362,6 +1343,26 @@
             }
         } 
     },
+    "stars_config": {
+    "center": "KONT",
+    "radar_sites": {
+        "KONT": {
+            "char": "S",
+            "position": "KONT",
+            "elevation": 778,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "slope_angle": 0.175
+        },
+        "KPSP": {
+            "char": "S",
+            "position": "KPSP",
+            "elevation": 802,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "slope_angle": 0.175
+        }
+    },
     "scratchpads": {
         "AVRRY": "MTB",
         "DINTY": "SHL",
@@ -1436,4 +1437,5 @@
           }
     ],
     "video_map_file": "videomaps/ZLA-videomaps.json.zst"
+    }
 }

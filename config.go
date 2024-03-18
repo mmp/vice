@@ -29,7 +29,8 @@ import (
 // 17: weather intensity default bool
 // 18: STARS ATPA
 // 19: runway waypoints now per-airport
-const CurrentConfigVersion = 19
+// 20: "stars_config" and various scenario fields moved there, plus STARSFacilityAdaptation
+const CurrentConfigVersion = 20
 
 // Slightly convoluted, but the full GlobalConfig definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first

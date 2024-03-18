@@ -436,7 +436,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		e.Push("Departure exit " + dep.Exit)
 		e.Push("Destination " + dep.Destination)
 
-		if _, ok := sg.Scratchpads[dep.Exit]; dep.Scratchpad == "" && !ok {
+		if _, ok := sg.STARSFacilityAdaptation.Scratchpads[dep.Exit]; dep.Scratchpad == "" && !ok {
 			e.ErrorString("exit not in scenario group \"scratchpads\"")
 		}
 

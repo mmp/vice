@@ -270,16 +270,6 @@
         ]
         }
     },
-  "inhibit_ca_volumes": [
-    {
-        "name": "CYS NO CA",
-        "type": "circle",
-        "floor": 0,
-        "ceiling": 9500,
-        "radius": 10,
-        "center": "N041.09.19.519,W104.48.39.012"
-    }
-],
   "arrival_groups": {
     "DEN": [
       {
@@ -380,7 +370,6 @@
       }
     ]
   },
-  "center": "KCYS",
   "control_positions": {
     "CYS_APP": {
       "frequency": 124550,
@@ -411,18 +400,6 @@
   "magnetic_adjustment": -2,
   "name": "KCYS",
   "primary_airport": "KCYS",
-  "radar_sites": {
-    "CYS": {
-      "char": "A",
-      "position": "KCYS",
-      "elevation": 6155,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    }
-  },
-  "range": 30,
   "scenarios": {
     "KCYS Landing East": {
       "approach_airspace": [
@@ -545,6 +522,30 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KCYS",
+  "inhibit_ca_volumes": [
+    {
+        "name": "CYS NO CA",
+        "type": "circle",
+        "floor": 0,
+        "ceiling": 9500,
+        "radius": 10,
+        "center": "N041.09.19.519,W104.48.39.012"
+    }
+  ],
+  "radar_sites": {
+    "CYS": {
+      "char": "A",
+      "position": "KCYS",
+      "elevation": 6155,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    }
+  },
+  "range": 30,
   "scratchpads": {
     "DEN": "DEN",
     "CYS": "DEN",
@@ -616,4 +617,5 @@
     }
   ],
   "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+  }
 }

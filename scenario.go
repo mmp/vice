@@ -28,23 +28,15 @@ type ScenarioGroup struct {
 	TRACON           string                 `json:"tracon"`
 	Name             string                 `json:"name"`
 	Airports         map[string]*Airport    `json:"airports"`
-	VideoMapFile     string                 `json:"video_map_file"`
 	Fixes            map[string]Point2LL    `json:"-"`
 	FixesStrings     orderedmap.OrderedMap  `json:"fixes"`
 	Scenarios        map[string]*Scenario   `json:"scenarios"`
 	DefaultScenario  string                 `json:"default_scenario"`
 	ControlPositions map[string]*Controller `json:"control_positions"`
-	Scratchpads      map[string]string      `json:"scratchpads"`
 	Airspace         Airspace               `json:"airspace"`
 	ArrivalGroups    map[string][]Arrival   `json:"arrival_groups"`
 
-	Center           Point2LL              `json:"-"`
-	CenterString     string                `json:"center"`
-	Range            float32               `json:"range"`
-	PrimaryAirport   string                `json:"primary_airport"`
-	RadarSites       map[string]*RadarSite `json:"radar_sites"`
-	STARSMaps        []STARSMap            `json:"stars_maps"`
-	InhibitCAVolumes []AirspaceVolume      `json:"inhibit_ca_volumes"`
+	PrimaryAirport string `json:"primary_airport"`
 
 	ReportingPointStrings []string         `json:"reporting_points"`
 	ReportingPoints       []ReportingPoint // not in JSON
@@ -65,9 +57,17 @@ type AirspaceAwareness struct {
 }
 
 type STARSFacilityAdaptation struct {
-	AirspaceAwareness []AirspaceAwareness `json:"airspace_awareness"`
-	ForceQLToSelf     bool                `json:"force_ql_self"`
-	ScratchpadRules   [2]bool             `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
+	AirspaceAwareness []AirspaceAwareness   `json:"airspace_awareness"`
+	ForceQLToSelf     bool                  `json:"force_ql_self"`
+	ScratchpadRules   [2]bool               `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
+	Maps              []STARSMap            `json:"stars_maps"`
+	InhibitCAVolumes  []AirspaceVolume      `json:"inhibit_ca_volumes"`
+	RadarSites        map[string]*RadarSite `json:"radar_sites"`
+	Center            Point2LL              `json:"-"`
+	CenterString      string                `json:"center"`
+	Range             float32               `json:"range"`
+	Scratchpads       map[string]string     `json:"scratchpads"`
+	VideoMapFile      string                `json:"video_map_file"`
 }
 
 type Airspace struct {
@@ -486,7 +486,8 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.ErrorString("must specify at least one default video map using \"default_maps\"")
 	} else {
 		for _, dm := range s.DefaultMaps {
-			if !slices.ContainsFunc(sg.STARSMaps, func(m STARSMap) bool { return m.Name == dm }) {
+			if !slices.ContainsFunc(sg.STARSFacilityAdaptation.Maps,
+				func(m STARSMap) bool { return m.Name == dm }) {
 				e.ErrorString("video map \"%s\" not found in \"stars_maps\"", dm)
 			}
 		}
@@ -524,17 +525,12 @@ var (
 )
 
 func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[string]map[string]*SimConfiguration) {
-	// Do these first!
-	if sg.CenterString == "" {
-		e.ErrorString("No \"center\" specified")
-	} else if pos, ok := sg.locate(sg.CenterString); !ok {
-		e.ErrorString("unknown location \"%s\" specified for \"center\"", sg.CenterString)
-	} else {
-		sg.Center = pos
-	}
+	// stars_config items. This goes first because we need to initialize
+	// Center (and thence NmPerLongitude) ASAP.
+	sg.STARSFacilityAdaptation.PostDeserialize(e, sg)
 
 	sg.NmPerLatitude = 60
-	sg.NmPerLongitude = 60 * cos(radians(sg.Center[1]))
+	sg.NmPerLongitude = 60 * cos(radians(sg.STARSFacilityAdaptation.Center[1]))
 
 	if sg.TRACON == "" {
 		e.ErrorString("\"tracon\" must be specified")
@@ -679,26 +675,6 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		e.Pop()
 	}
 
-	if sg.Range == 0 {
-		sg.Range = 50
-	}
-
-	for name, rs := range sg.RadarSites {
-		e.Push("Radar site " + name)
-		if p, ok := sg.locate(rs.PositionString); rs.PositionString == "" || !ok {
-			e.ErrorString("radar site position \"%s\" not found", rs.PositionString)
-		} else {
-			rs.Position = p
-		}
-		if rs.Char == "" {
-			e.ErrorString("radar site is missing \"char\"")
-		}
-		if rs.Elevation == 0 {
-			e.ErrorString("radar site is missing \"elevation\"")
-		}
-		e.Pop()
-	}
-
 	for name, arrivals := range sg.ArrivalGroups {
 		e.Push("Arrival group " + name)
 		if len(arrivals) == 0 {
@@ -729,11 +705,45 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		e.Pop()
 	}
 
-	if len(sg.STARSMaps) == 0 {
+	initializeSimConfigurations(sg, simConfigurations, *server)
+}
+
+func (s *STARSFacilityAdaptation) PostDeserialize(e *ErrorLogger, sg *ScenarioGroup) {
+	e.Push("stars_config")
+
+	if len(s.Maps) == 0 {
 		e.ErrorString("No \"stars_maps\" specified")
 	}
 
-	initializeSimConfigurations(sg, simConfigurations, *server)
+	if s.CenterString == "" {
+		e.ErrorString("No \"center\" specified")
+	} else if pos, ok := sg.locate(s.CenterString); !ok {
+		e.ErrorString("unknown location \"%s\" specified for \"center\"", s.CenterString)
+	} else {
+		s.Center = pos
+	}
+
+	if s.Range == 0 {
+		s.Range = 50
+	}
+
+	for name, rs := range s.RadarSites {
+		e.Push("Radar site " + name)
+		if p, ok := sg.locate(rs.PositionString); rs.PositionString == "" || !ok {
+			e.ErrorString("radar site position \"%s\" not found", rs.PositionString)
+		} else {
+			rs.Position = p
+		}
+		if rs.Char == "" {
+			e.ErrorString("radar site is missing \"char\"")
+		}
+		if rs.Elevation == 0 {
+			e.ErrorString("radar site is missing \"elevation\"")
+		}
+		e.Pop()
+	}
+
+	e.Pop() // stars_config
 }
 
 func initializeSimConfigurations(sg *ScenarioGroup,
@@ -1329,11 +1339,11 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 				scenarioGroups[s.TRACON][s.Name] = s
 			}
 
-			if referencedVideoMaps[s.VideoMapFile] == nil {
-				referencedVideoMaps[s.VideoMapFile] = make(map[string]interface{})
+			if referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile] == nil {
+				referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile] = make(map[string]interface{})
 			}
-			for _, m := range s.STARSMaps {
-				referencedVideoMaps[s.VideoMapFile][m.Name] = nil
+			for _, m := range s.STARSFacilityAdaptation.Maps {
+				referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile][m.Name] = nil
 			}
 		}
 		return nil
@@ -1365,20 +1375,20 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 
 			// These may have an empty "video_map_file" member, which
 			// is automatically patched up here...
-			if s.VideoMapFile == "" {
+			if s.STARSFacilityAdaptation.VideoMapFile == "" {
 				if *videoMapFilename != "" {
-					s.VideoMapFile = *videoMapFilename
+					s.STARSFacilityAdaptation.VideoMapFile = *videoMapFilename
 				} else {
 					e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
 						*scenarioFilename)
 				}
 			}
 
-			if referencedVideoMaps[s.VideoMapFile] == nil {
-				referencedVideoMaps[s.VideoMapFile] = make(map[string]interface{})
+			if referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile] == nil {
+				referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile] = make(map[string]interface{})
 			}
-			for _, m := range s.STARSMaps {
-				referencedVideoMaps[s.VideoMapFile][m.Name] = nil
+			for _, m := range s.STARSFacilityAdaptation.Maps {
+				referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile][m.Name] = nil
 			}
 		}
 	}
@@ -1461,18 +1471,18 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 				scenarioNames[scenarioName] = groupName
 			}
 
-			// Initialize the CommandBuffers in the scenario's STARSMaps.
-			if sgroup.VideoMapFile == "" {
+			// Initialize the CommandBuffers in the scenario's maps.
+			if vf := sgroup.STARSFacilityAdaptation.VideoMapFile; vf == "" {
 				e.ErrorString("no \"video_map_file\" specified")
 			} else {
-				if bufferMap, ok := videoMapCommandBuffers[sgroup.VideoMapFile]; !ok {
-					e.ErrorString("video map file \"%s\" unknown", sgroup.VideoMapFile)
+				if bufferMap, ok := videoMapCommandBuffers[vf]; !ok {
+					e.ErrorString("video map file \"%s\" unknown", vf)
 				} else {
-					for i, sm := range sgroup.STARSMaps {
+					for i, sm := range sgroup.STARSFacilityAdaptation.Maps {
 						if cb, ok := bufferMap[sm.Name]; !ok {
 							e.ErrorString("video map \"%s\" not found", sm.Name)
 						} else {
-							sgroup.STARSMaps[i].CommandBuffer = cb
+							sgroup.STARSFacilityAdaptation.Maps[i].CommandBuffer = cb
 						}
 					}
 				}

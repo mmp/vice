@@ -176,13 +176,8 @@ type QuickLookPosition struct {
 	Plus     bool
 }
 
-func parseQuickLookPositions(w *World, s string) ([]QuickLookPosition, string, error) {
+func (sp *STARSPane) parseQuickLookPositions(ctx *PaneContext, s string) ([]QuickLookPosition, string, error) {
 	var positions []QuickLookPosition
-
-	subset := ""
-	if ctrl, ok := w.Controllers[w.Callsign]; ok { // this will fail if we're an observer
-		subset = string(ctrl.SectorId[0])
-	}
 
 	// per 6-94, this is "fun"
 	// - in general the string is a list of TCPs / sector ids.
@@ -195,16 +190,12 @@ func parseQuickLookPositions(w *World, s string) ([]QuickLookPosition, string, e
 		plus := len(id) > 1 && id[len(id)-1] == '+'
 		id = strings.TrimRight(id, "+")
 
-		ctrl := w.GetController(id)
-		if ctrl == nil && len(id) == 1 && subset != "" {
-			id = subset + id
-			ctrl = w.GetController(id)
-		}
-		if ctrl == nil {
+		ok, callsign := sp.calculateController(ctx, id, "")
+		if !ok {
 			return positions, strings.Join(ids[i:], " "), ErrSTARSIllegalPosition
 		} else {
 			positions = append(positions, QuickLookPosition{
-				Callsign: ctrl.Callsign,
+				Callsign: callsign,
 				Id:       id,
 				Plus:     plus,
 			})
@@ -1566,8 +1557,9 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	DrawHighlighted(ctx, transforms, cb)
 
-	sp.drawDatablocks(aircraft, ctx, transforms, cb)
 	sp.drawTracks(aircraft, ctx, transforms, cb)
+	sp.drawLeaderLines(aircraft, ctx, transforms, cb)
+	sp.drawDatablocks(aircraft, ctx, transforms, cb)
 
 	ghosts := sp.getGhostAircraft(aircraft, ctx)
 	sp.drawGhosts(ghosts, ctx, transforms, cb)
@@ -2085,43 +2077,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				}
 				status.clear = true
 				return
-			}
-			ok, control := sp.calculateController(ctx, cmd, "")
-			if !ok {
-				status.err = GetSTARSError(ErrSTARSIllegalPosition)
+			} else {
+				status.clear, sp.previewAreaInput, status.err = sp.updateQL(ctx, cmd)
 				return
-			}
-			for _, c := range ctx.world.Controllers {
-				if c.Callsign == control {
-					positions, input, err := parseQuickLookPositions(ctx.world, c.SectorId)
-					if len(positions) > 0 {
-						ps.QuickLookAll = false
-						for _, pos := range positions {
-							// Toggle
-							match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
-							matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
-							if slices.ContainsFunc(ps.QuickLookPositions, match) {
-								nomatch := func(q QuickLookPosition) bool { return !match(q) }
-								ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
-							} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
-								// Toggle plus
-								ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
-							} else {
-								ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
-							}
-						}
-						sort.Slice(ps.QuickLookPositions,
-							func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
-					}
-
-					if err == nil {
-						status.clear = true
-					} else {
-						status.err = err
-						sp.previewAreaInput = input
-					}
-					return
-				}
 			}
 		}
 
@@ -2677,43 +2635,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				status.clear = true
 				return
 			} else {
-				ok, control := sp.calculateController(ctx, cmd, "")
-				if !ok {
-					status.err = GetSTARSError(ErrSTARSIllegalPosition)
-					return
-				}
-				for _, c := range ctx.world.Controllers {
-					if c.Callsign == control {
-						positions, input, err := parseQuickLookPositions(ctx.world, c.SectorId)
-						if len(positions) > 0 {
-							ps.QuickLookAll = false
-							for _, pos := range positions {
-								// Toggle
-								match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
-								matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
-								if slices.ContainsFunc(ps.QuickLookPositions, match) {
-									nomatch := func(q QuickLookPosition) bool { return !match(q) }
-									ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
-								} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
-									// Toggle plus
-									ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
-								} else {
-									ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
-								}
-							}
-							sort.Slice(ps.QuickLookPositions,
-								func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
-						}
-
-						if err == nil {
-							status.clear = true
-						} else {
-							status.err = err
-							sp.previewAreaInput = input
-						}
-						return
-					}
-				}
+				status.clear, sp.previewAreaInput, status.err = sp.updateQL(ctx, cmd)
+				return
 			}
 
 		case "S":
@@ -3070,6 +2993,45 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	}
 
 	status.err = ErrSTARSCommandFormat
+	return
+}
+
+func (sp *STARSPane) updateQL(ctx *PaneContext, input string) (ok bool, previewInput string, err error) {
+	positions, input, err := sp.parseQuickLookPositions(ctx, input)
+	if err != nil {
+		err = GetSTARSError(err)
+		ok = false
+		previewInput = input
+		return
+	}
+
+	if len(positions) > 0 {
+		ps := &sp.CurrentPreferenceSet
+		ps.QuickLookAll = false
+
+		for _, pos := range positions {
+			// Toggle
+			match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
+			matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
+			if slices.ContainsFunc(ps.QuickLookPositions, match) {
+				nomatch := func(q QuickLookPosition) bool { return !match(q) }
+				ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
+			} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
+				// Toggle plus
+				ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
+			} else {
+				ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
+			}
+		}
+		sort.Slice(ps.QuickLookPositions,
+			func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
+	}
+
+	if err == nil {
+		ok = true
+	} else {
+		previewInput = input
+	}
 	return
 }
 
@@ -6318,12 +6280,38 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 	return
 }
 
+func (sp *STARSPane) drawLeaderLines(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations,
+	cb *CommandBuffer) {
+	ld := GetColoredLinesDrawBuilder()
+	defer ReturnColoredLinesDrawBuilder(ld)
+	now := ctx.world.CurrentTime()
+
+	for _, ac := range aircraft {
+		state := sp.Aircraft[ac.Callsign]
+		if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
+			continue
+		}
+
+		dbs := sp.getDatablocks(ctx, ac)
+		if len(dbs) == 0 {
+			continue
+		}
+
+		baseColor, brightness := sp.datablockColor(ctx.world, ac)
+		pac := transforms.WindowFromLatLongP(state.TrackPosition())
+		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac, ctx.world))
+		ld.AddLine(pac, add2f(pac, v), brightness.ScaleRGB(baseColor))
+	}
+
+	transforms.LoadWindowViewingMatrices(cb)
+	cb.LineWidth(1)
+	ld.GenerateCommands(cb)
+}
+
 func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 	transforms ScopeTransformations, cb *CommandBuffer) {
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
 
 	now := ctx.world.CurrentTime()
 	realNow := time.Now() // for flashing rate...
@@ -6355,16 +6343,10 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		pt := add2f(datablockOffset, pac)
 		idx := (realNow.Second() / 2) % len(dbs) // 2 second cycle
 		dbs[idx].DrawText(td, pt, font, baseColor, brightness)
-
-		// Leader line
-		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac, ctx.world))
-		ld.AddLine(pac, add2f(pac, v), brightness.ScaleRGB(baseColor))
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
-	cb.LineWidth(1)
-	ld.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
