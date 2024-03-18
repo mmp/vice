@@ -5138,6 +5138,10 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = FullDatablock
 	}
 
+	if len(state.Warnings) > 0 {
+		dt = FullDatablock
+	}
+
 	// Point outs are FDB until acked.
 	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
 		dt = FullDatablock
