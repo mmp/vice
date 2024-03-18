@@ -307,6 +307,10 @@ func (nav *Nav) OnApproach(checkAltitude bool) bool {
 	return false
 }
 
+func (nav *Nav) OnFinalApproach() bool {
+	return false
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Communication
 

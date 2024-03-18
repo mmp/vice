@@ -5841,7 +5841,7 @@ func (sp *STARSPane) checkInTrailCwtSeparation(back, front *Aircraft) {
 			nmdistance2ll(vol.Threshold, state.TrackPosition()) < vol.Dist25nmApproach {
 
 			// between aircraft established on the final approach course
-			if back.OnApproach(false) && front.OnApproach(false) {
+			if back.OnFinalApproach() && front.OnFinalApproach() {
 				// TODO: Required separation must exist prior to applying 2.5 NM separation (TBL 5-5-2)
 				cwtSeparation = 2.5
 			}

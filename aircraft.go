@@ -80,8 +80,8 @@ func (ac *Aircraft) TAS() float32 {
 	return ac.Nav.TAS()
 }
 
-func (a *Aircraft) IsAssociated() bool {
-	return a.FlightPlan != nil && a.Squawk == a.AssignedSquawk && a.Mode == Charlie
+func (ac *Aircraft) IsAssociated() bool {
+	return ac.FlightPlan != nil && ac.Squawk == ac.AssignedSquawk && ac.Mode == Charlie
 }
 
 func (ac *Aircraft) HandleControllerDisconnect(callsign string, w *World) {
@@ -564,6 +564,10 @@ func (ac *Aircraft) GS() float32 {
 
 func (ac *Aircraft) OnApproach(checkAltitude bool) bool {
 	return ac.Nav.OnApproach(checkAltitude)
+}
+
+func (ac *Aircraft) OnFinalApproach() bool {
+	return ac.Nav.OnFinalApproach()
 }
 
 func (ac *Aircraft) DepartureAirportElevation() float32 {
