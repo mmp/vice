@@ -3492,7 +3492,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						func(err error) {
 							// If it's not a command, set the scratchpad if it fits.
 							if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
-								sp.setScratchpad(ctx, ac.Callsign, cmd, false)
+								err := sp.setScratchpad(ctx, ac.Callsign, cmd, false)
+								if err != nil {
+									status.err = GetSTARSError(err)
+									return
+								}
 							} else {
 								globalConfig.Audio.PlayOnce(AudioCommandError)
 								sp.previewAreaOutput = GetSTARSError(err).Error()
