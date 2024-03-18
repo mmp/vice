@@ -3127,7 +3127,7 @@ func calculateAirspace(ctx *PaneContext, callsign string) (string, bool) {
 	aircraftType := database.AircraftPerformance[ac.FlightPlan.BaseType()].Engine.AircraftType
 	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
 		for _, fix := range rules.Fix {
-			if strings.Contains(ac.FlightPlan.Route, fix) {
+			if strings.Contains(ac.FlightPlan.Route, fix) || fix == "ALL" {
 				alt := rules.AltitudeRange
 				if (alt[0] == 0 && alt[1] == 0) /* none specified */ ||
 					(ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1]) {
@@ -6019,7 +6019,14 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		field2 := " "
 		if ac.HandoffTrackController != "" {
 			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
-				field2 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+				if ctrl.FacilityIdentifier == "" { // Same facility
+					field2 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+				} else if ctrl.ERAMFacility { // Enroute handoff
+					field2 = "C"
+				} else { // Different facility
+					field2 = ctrl.FacilityIdentifier
+				}
+				
 			}
 		}
 
@@ -6112,9 +6119,11 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 						field4 = ctx.world.GetController(ac.RedirectedHandoff.RedirectedTo).FacilityIdentifier
 					}
 				} else {
-					if sameFacility(ctx, ac.HandoffTrackController) {
+					if ctrl.FacilityIdentifier == "" { // Same facility
 						field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
-					} else {
+					} else if ctrl.ERAMFacility { // Enroute handoff
+						field4 = "C"
+					} else { // Different facility
 						field4 = ctrl.FacilityIdentifier
 					}
 
