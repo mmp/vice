@@ -3124,20 +3124,25 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 // and route.
 func calculateAirspace(ctx *PaneContext, callsign string) (string, bool) {
 	ac := ctx.world.Aircraft[callsign]
+	if ac == nil {
+		return "no target", false 
+	}
 	aircraftType := database.AircraftPerformance[ac.FlightPlan.BaseType()].Engine.AircraftType
-	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
-		for _, fix := range rules.Fix {
-			if strings.Contains(ac.FlightPlan.Route, fix) || fix == "ALL" {
-				alt := rules.AltitudeRange
-				if (alt[0] == 0 && alt[1] == 0) /* none specified */ ||
-					(ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1]) {
-					if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, aircraftType) {
-						return rules.ReceivingController, rules.ToCenter
+		for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
+			for _, fix := range rules.Fix {
+				if strings.Contains(ac.FlightPlan.Route, fix) || fix == "ALL" {
+					alt := rules.AltitudeRange
+					if (alt[0] == 0 && alt[1] == 0) /* none specified */ ||
+						(ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1]) {
+						if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, aircraftType) {
+							return rules.ReceivingController, rules.ToCenter
+						}
 					}
 				}
 			}
 		}
-	}
+	
+	
 
 	return "", false
 }
@@ -3175,6 +3180,9 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 	haveTrianglePrefix := strings.HasPrefix(controller, STARSTriangleCharacter)
 	if controller == "C" || (haveTrianglePrefix && lc == 3) {
 		control, toCenter := calculateAirspace(ctx, callsign)
+		if control == "no target" {
+			return false, control
+		}
 		c := ctx.world.GetController(control)
 		if c == nil {
 			return false, ""
