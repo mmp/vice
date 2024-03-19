@@ -613,7 +613,7 @@ type STARSPreferenceSet struct {
 	AutomaticFDBOffset       bool
 
 	DisplayTPASize               bool
-	DisplayATPAIntrailDist       bool
+	DisplayATPAInTrailDist       bool
 	DisplayATPAWarningAlertCones bool
 	DisplayATPAMonitorCones      bool
 
@@ -1432,10 +1432,10 @@ func (sp *STARSPane) Upgrade(from, to int) {
 	}
 	if from < 18 {
 		// ATPA; set defaults
-		sp.CurrentPreferenceSet.DisplayATPAIntrailDist = true
+		sp.CurrentPreferenceSet.DisplayATPAInTrailDist = true
 		sp.CurrentPreferenceSet.DisplayATPAWarningAlertCones = true
 		for i := range sp.PreferenceSets {
-			sp.PreferenceSets[i].DisplayATPAIntrailDist = true
+			sp.PreferenceSets[i].DisplayATPAInTrailDist = true
 			sp.PreferenceSets[i].DisplayATPAWarningAlertCones = true
 		}
 	}
@@ -1878,13 +1878,13 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		case "*DE":
 			// Enable ATPA in-trail distances
-			ps.DisplayATPAIntrailDist = true
+			ps.DisplayATPAInTrailDist = true
 			status.clear = true
 			return
 
 		case "*DI":
 			// Inhibit ATPA in-trail distances
-			ps.DisplayATPAIntrailDist = false
+			ps.DisplayATPAInTrailDist = false
 			status.clear = true
 			return
 
@@ -4450,8 +4450,8 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if STARSSelectButton("A/TPA\nMILEAGE\n"+onoff(ps.DisplayTPASize), STARSButtonFull, buttonScale) {
 			ps.DisplayTPASize = !ps.DisplayTPASize
 		}
-		if STARSSelectButton("INTRAIL\nDIST\n"+onoff(ps.DisplayATPAIntrailDist), STARSButtonFull, buttonScale) {
-			ps.DisplayATPAIntrailDist = !ps.DisplayATPAIntrailDist
+		if STARSSelectButton("INTRAIL\nDIST\n"+onoff(ps.DisplayATPAInTrailDist), STARSButtonFull, buttonScale) {
+			ps.DisplayATPAInTrailDist = !ps.DisplayATPAInTrailDist
 		}
 		if STARSSelectButton("ALERT\nCONES\n"+onoff(ps.DisplayATPAWarningAlertCones), STARSButtonFull, buttonScale) {
 			ps.DisplayATPAWarningAlertCones = !ps.DisplayATPAWarningAlertCones
@@ -6140,7 +6140,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		var line3FieldColors *STARSDatablockFieldColors
 		if state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert {
 			field6 = "*TPA"
-		} else if state.IntrailDistance != 0 && sp.CurrentPreferenceSet.DisplayATPAIntrailDist {
+		} else if state.IntrailDistance != 0 && sp.CurrentPreferenceSet.DisplayATPAInTrailDist {
 			field6 = fmt.Sprintf("%.2f", state.IntrailDistance)
 
 			if state.ATPAStatus == ATPAStatusWarning {
