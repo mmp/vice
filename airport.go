@@ -440,6 +440,10 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			e.ErrorString("exit not in scenario group \"scratchpads\"")
 		}
 
+		if dep.Altitude < 500 && dep.Altitude != 0{
+			e.ErrorString("altitude of %v is too low to be used. Is it supposed to be %v?",dep.Altitude, dep.Altitude*100)
+		}
+
 		if _, ok := database.Airports[dep.Destination]; !ok {
 			e.ErrorString("destination airport \"%s\" unknown", dep.Destination)
 		}
