@@ -5842,7 +5842,7 @@ func (sp *STARSPane) checkInTrailCwtSeparation(back, front *Aircraft) {
 
 			// between aircraft established on the final approach course
 			if back.OnFinalApproach() && front.OnFinalApproach() {
-				// TODO: Required separation must exist prior to applying 2.5 NM separation (TBL 5-5-2)
+				// Not-implemented: Required separation must exist prior to applying 2.5 NM separation (TBL 5-5-2)
 				cwtSeparation = 2.5
 			}
 		}
