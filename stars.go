@@ -613,7 +613,7 @@ type STARSPreferenceSet struct {
 	AutomaticFDBOffset       bool
 
 	DisplayTPASize               bool
-	DisplayATPAInTrailDist       bool
+	DisplayATPAInTrailDist       bool `json:"DisplayATPAIntrailDist"`
 	DisplayATPAWarningAlertCones bool
 	DisplayATPAMonitorCones      bool
 
