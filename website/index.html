@@ -104,6 +104,7 @@
 	  href="#crc-stars-differences">Differences from CRC STARS</a></li>
 
 	  <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-facility-engineering"><span class="theme-icon-holder me-2"><i class="fas fa-wrench"></i></span>Facility Engineering</a></li>
+    <li class="nav-item"><a class="nav-link scrollto" href="#fe-faq">FAQ</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-locations">Specifying Locations</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-routes">Aircraft Routes</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airlines-aircraft">Airlines and Aircraft</a></li>
@@ -2289,6 +2290,60 @@ above</a> for information about the CRDA system list.</p>
 
             </section><!--//docs-intro-->
           </header>
+          <section class="docs-section" id="fe-faq">
+          <h2 class="section-heading">Facility Enginerring FAQ</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="width: 20%;">Question</th>
+                <th>Answer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>How do I get started?</td>
+                <td>To get started creating a facility configuration file for <i>vice</i>, read through the
+                  documentation provided below. It will contain all
+                  of the information that will need to be specified in the facility configuration file. You can also
+                  refer to the
+                  <a href="https://github.com/mmp/vice/tree/master/resources/scenarios"><i>vice</i> GitHub page</a> for
+                  pre-exisiting scenarios
+                </td>
+              </tr>
+              <tr>
+                <td>How do I test my edits?</td>
+                <td>In <i>vice</i>, you can test your edits with the command line. On Windows, open up a command prompt
+                  and set the directory to the folder
+                  with the <i>vice</i> executable. Then, run
+                  <code>vice.exe -scenario path_to_scenario_file -videomap path_to_videomap_file</code>. On MacOs,
+                  it's a very simillar command. Chnage the directory of the terminal to where Vice.app is located. Then,
+                  run <code>./Vice.app/Contents/MacOs/vice 
+                -scenario path_to_scenario_file -videomap path_to_videomap_file
+              </code></td>
+              </tr>
+              <tr>
+                <td>How can I submit one of my scenarios?</td>
+                <td>To submit one of your files, you can: <br>
+                  <ol>
+                    <li>Make a pull request or file an issue in the <a href="https://github.com/mmp/vice"><i>vice</i>
+                        GitHub Page</a></li>
+                    <li>Join the <a href="https://discord.gg/y993vgQxhY"><i>vice</i> Discord</a> and send the file to
+                      one of the <i>vice</i> developers or facility engineers</li>
+                  </ol>
+                </td>
+              </tr>
+              <tr>
+                <td>It says "center" is unknown even though it's in the documentation</td>
+                <td>Make sure that "center" is in <code>"stars_config"</code> or inside of a scenario.</td>
+              </tr>
+              <tr>
+                <td>How can I get the lat/long coordinates of a point on a map</td>
+                <td>Using <code>ctrl + shift + click</code> will copy the coordinates of where you clicked into your
+                  clipboard!</td>
+              </tr>
+            </tbody>
+          </table>
+          </section>
 
           <section class="docs-section" id="fe-locations">
             <h2 class="section-heading">Specifying Locations</h2>
@@ -3409,6 +3464,39 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <td>"force_ql_self"</td>
+                <td>Boolean</td>
+                <td>If the TCP can use <code>*, *, SLEW</code> to make the track appear yellow on their scope</td>
+              </tr>
+              <tr>
+                <td>"allow_long_scrachpad"</td>
+                <td>Array of booleans</td>
+                <td>The first boolean will allow the primary scratchpad to be four letters instead of three. The
+                  second boolean will allow the
+                  secondary scratchpad to be four letters instead of three
+                </td>
+              </tr>
+              <tr>
+                <td>"airspace_awareness"</td>
+                <td>Array of objects</td>
+                <td>Each of these objects specify an airspace awareness rule for a TRACON. Each object has the
+                  following memebers. <br>
+                  <ul>
+                    <li>"fixes": an array of strings that represent that different fixes an aircraft could be filled
+                      on to apply for this rule.</li>
+                    <li>"altitude_range": an array of two numbers that represent the different cruising altitude that
+                      an airplane has to have to
+                      apply for this rule.
+                    </li>
+                    <li>"receiving_controller": the sector ID of the controller that will be receiving this rule.</li>
+                    <li>"to_center": a boolean that represents if the receiving controller for this rule is an ERAM
+                      facility.</li>
+                    <li>"aircraft_type": an array of strings. "P" for props, "T" for turboprop/ turboshafts, and "J"
+                      for jets.</li>
+                  </ul>
+                </td>
+              </tr>
               <tr>
                 <td>"center"</td>
                 <td>String</td>
