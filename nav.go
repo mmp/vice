@@ -307,6 +307,15 @@ func (nav *Nav) OnApproach(checkAltitude bool) bool {
 	return false
 }
 
+func (nav *Nav) OnFinalApproach() bool {
+	if !nav.OnApproach(false) {
+		return false
+	}
+
+	_, hasPassedFaf, err := nav.distanceToEndOfApproach()
+	return err == nil && hasPassedFaf
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Communication
 
@@ -1220,7 +1229,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 	maxAccel := nav.Perf.Rate.Accelerate * 30 // per minute
 
-	fd, err := nav.finalApproachDistance()
+	fd, _, err := nav.distanceToEndOfApproach()
 	if err == nil && fd < 5 {
 		// Cancel speed restrictions inside 5 mile final
 		lg.Debug("speed: cancel speed restrictions at 5 mile final")
@@ -1357,33 +1366,43 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (*Waypoint, float32, float
 	return nil, 0, 0
 }
 
-// finalApproachDistance returns the total remaining flying distance
-// for an aircraft that has been given an approach.
-func (nav *Nav) finalApproachDistance() (float32, error) {
+// distanceToEndOfApproach returns the remaining distance to the last
+// waypoint, and a flag indicating if the FAF has passed for an
+// aircraft that has been given an approach.
+func (nav *Nav) distanceToEndOfApproach() (float32, bool, error) {
 	if nav.Approach.Assigned == nil || !nav.Approach.Cleared {
-		return 0, ErrNotClearedForApproach
+		return 0, false, ErrNotClearedForApproach
 	}
 
 	if nav.Heading.Assigned != nil {
 		// We're not currently on the route, so it's a little unclear. Rather than
 		// guessing, we'll just error out and let callers decide how to handle this.
-		return 0, ErrNotFlyingRoute
+		return 0, false, ErrNotFlyingRoute
 	}
 
 	// Calculate flying distance to the airport
 	if wp := nav.Waypoints; len(wp) == 0 {
 		// This shouldn't happen since the aircraft should be deleted when
 		// it reaches the final waypoint.  Nevertheless...
-		d := nmdistance2ll(nav.FlightState.Position, nav.FlightState.ArrivalAirportLocation)
-		return d, nil
+		remainingDistance := nmdistance2ll(nav.FlightState.Position, nav.FlightState.ArrivalAirportLocation)
+		// If the plane still exists then it should not
+		return remainingDistance, false, nil
 	} else {
 		// Distance to the next fix plus sum of the distances between
 		// remaining fixes.
-		d := nmdistance2ll(nav.FlightState.Position, wp[0].Location)
+		remainingDistance := nmdistance2ll(nav.FlightState.Position, wp[0].Location)
 		for i := 0; i < len(wp)-1; i++ {
-			d += nmdistance2ll(wp[i].Location, wp[i+1].Location)
+			remainingDistance += nmdistance2ll(wp[i].Location, wp[i+1].Location)
 		}
-		return d, nil
+		// Check if any remaining waypoint is the FAF, in reverse direction.
+		isPastFaf := true
+		for i := len(wp) - 1; i > -1; i-- {
+			if wp[i].FAF {
+				isPastFaf = false
+				break
+			}
+		}
+		return remainingDistance, isPastFaf, nil
 	}
 }
 
