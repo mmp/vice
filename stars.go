@@ -5859,16 +5859,17 @@ func (sp *STARSPane) checkInTrailCwtSeparation(back, front *Aircraft) {
 	}
 
 	// front, back aircraft
-	fac := MakeModeledAircraft(front, sp.Aircraft[front.Callsign], vol.Threshold)
-	bac := MakeModeledAircraft(back, state, vol.Threshold)
+	frontModel := MakeModeledAircraft(front, sp.Aircraft[front.Callsign], vol.Threshold)
+	backModel := MakeModeledAircraft(back, state, vol.Threshold)
 
 	// Will there be a MIT violation s seconds in the future?  (Note that
 	// we don't include altitude separation here since what we need is
 	// distance separation by the threshold...)
-	fp, bp := fac.p, bac.p
-	for s := float32(0); s < 45; s++ {
-		fp, bp := fac.NextPosition(fp), bac.NextPosition(bp)
-		if distance2f(fp, bp) < cwtSeparation { // no bueno
+	frontPosition, backPosition := frontModel.p, backModel.p
+	for s := 0; s < 45; s++ {
+		frontPosition, backPosition = frontModel.NextPosition(frontPosition), backModel.NextPosition(backPosition)
+		distance := distance2f(frontPosition, backPosition)
+		if distance < cwtSeparation { // no bueno
 			if s <= 24 {
 				// Error if conflict expected within 24 seconds (6-159).
 				state.ATPAStatus = ATPAStatusAlert
