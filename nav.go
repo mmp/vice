@@ -307,13 +307,17 @@ func (nav *Nav) OnApproach(checkAltitude bool) bool {
 	return false
 }
 
-func (nav *Nav) OnFinalApproach() bool {
-	if !nav.OnApproach(false) {
-		return false
-	}
+// OnExtendedCenterline checks if the flight position is less than maxNmDeviation
+// from the infinite line defined by the assigned approach localizer
+func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
+	approach := nav.Approach.Assigned
+	localizer := approach.Line()
+	distance := PointLineDistance(
+		ll2nm(nav.FlightState.Position, nav.FlightState.NmPerLongitude),
+		ll2nm(localizer[0], nav.FlightState.NmPerLongitude),
+		ll2nm(localizer[1], nav.FlightState.NmPerLongitude))
 
-	_, hasPassedFaf, err := nav.distanceToEndOfApproach()
-	return err == nil && hasPassedFaf
+	return distance < maxNmDeviation
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -905,10 +909,7 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *Logger) (heading float32, t
 
 	case TurningToJoin:
 		// we've turned to intercept. have we intercepted?
-		loc := ap.Line()
-		dist := PointLineDistance(ll2nm(nav.FlightState.Position, nav.FlightState.NmPerLongitude),
-			ll2nm(loc[0], nav.FlightState.NmPerLongitude), ll2nm(loc[1], nav.FlightState.NmPerLongitude))
-		if dist > .2 {
+		if !nav.OnExtendedCenterline(.2) {
 			return
 		}
 		lg.Debug("heading: localizer intercepted")
@@ -1229,7 +1230,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 	maxAccel := nav.Perf.Rate.Accelerate * 30 // per minute
 
-	fd, _, err := nav.distanceToEndOfApproach()
+	fd, err := nav.distanceToEndOfApproach()
 	if err == nil && fd < 5 {
 		// Cancel speed restrictions inside 5 mile final
 		lg.Debug("speed: cancel speed restrictions at 5 mile final")
@@ -1367,17 +1368,16 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (*Waypoint, float32, float
 }
 
 // distanceToEndOfApproach returns the remaining distance to the last
-// waypoint, and a flag indicating if the FAF has passed for an
-// aircraft that has been given an approach.
-func (nav *Nav) distanceToEndOfApproach() (float32, bool, error) {
+// waypoint (usually runway threshold) of the currently assigned approach.
+func (nav *Nav) distanceToEndOfApproach() (float32, error) {
 	if nav.Approach.Assigned == nil || !nav.Approach.Cleared {
-		return 0, false, ErrNotClearedForApproach
+		return 0, ErrNotClearedForApproach
 	}
 
 	if nav.Heading.Assigned != nil {
 		// We're not currently on the route, so it's a little unclear. Rather than
 		// guessing, we'll just error out and let callers decide how to handle this.
-		return 0, false, ErrNotFlyingRoute
+		return 0, ErrNotFlyingRoute
 	}
 
 	// Calculate flying distance to the airport
@@ -1385,8 +1385,7 @@ func (nav *Nav) distanceToEndOfApproach() (float32, bool, error) {
 		// This shouldn't happen since the aircraft should be deleted when
 		// it reaches the final waypoint.  Nevertheless...
 		remainingDistance := nmdistance2ll(nav.FlightState.Position, nav.FlightState.ArrivalAirportLocation)
-		// If the plane still exists then it should not
-		return remainingDistance, false, nil
+		return remainingDistance, nil
 	} else {
 		// Distance to the next fix plus sum of the distances between
 		// remaining fixes.
@@ -1394,15 +1393,8 @@ func (nav *Nav) distanceToEndOfApproach() (float32, bool, error) {
 		for i := 0; i < len(wp)-1; i++ {
 			remainingDistance += nmdistance2ll(wp[i].Location, wp[i+1].Location)
 		}
-		// Check if any remaining waypoint is the FAF, in reverse direction.
-		isPastFaf := true
-		for i := len(wp) - 1; i > -1; i-- {
-			if wp[i].FAF {
-				isPastFaf = false
-				break
-			}
-		}
-		return remainingDistance, isPastFaf, nil
+
+		return remainingDistance, nil
 	}
 }
 
