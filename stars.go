@@ -4102,7 +4102,12 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 
 	switch sp.activeDCBMenu {
 	case DCBMenuMain:
-		STARSItemsSpinner(ctx, "RANGE\n", &ps.Range, GenRange[float32](6, 257, 1), STARSButtonFull, buttonScale)
+		STARSCallbackSpinner(ctx, "RANGE\n", &ps.Range,
+			func(v float32) string { return fmt.Sprintf("%d", int(v+0.5)) }, // print it as an int
+			func(v float32, delta int) float32 {
+				v += float32(delta)
+				return clamp(v, 6, 256)
+			}, STARSButtonFull, buttonScale)
 		sp.STARSPlaceButton("PLACE\nCNTR", STARSButtonHalfVertical, buttonScale,
 			func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 				ps.Center = transforms.LatLongFromWindowP(pw)
@@ -6695,7 +6700,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			} else {
 				ps.Range += mouse.Wheel[1]
 			}
-			ps.Range = float32(int(clamp(ps.Range, 6, 256) + 0.5)) // 4-33
+			ps.Range = clamp(ps.Range, 6, 256) // 4-33
 
 			// We want to zoom in centered at the mouse position; this affects
 			// the scope center after the zoom, so we'll find the
