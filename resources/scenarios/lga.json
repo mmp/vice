@@ -462,13 +462,13 @@
             "cleared_altitude": 8000,
             "handoff_controller": "LGA_DEP",
             "sid": "JFK5",
-            "waypoints": "N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h240"
+            "waypoints": "N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h320"
           },
           "HAAYS,NEION,COATE": {
             "cleared_altitude": 9000,
             "handoff_controller": "LGA_DEP",
             "sid": "JFK5",
-            "waypoints": "N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h240"
+            "waypoints": "N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h320"
           }
         }
       },
@@ -1547,23 +1547,29 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_LE_DEP": {
+    "NY_LE_APP": {
       "frequency": 126800,
       "full_name": "New York departure",
       "scope_char": "E",
       "sector_id": "5E"
     },
-    "NY_LS_DEP": {
+    "NY_LS_APP": {
       "frequency": 124750,
       "full_name": "New York departure",
       "scope_char": "S",
       "sector_id": "5S"
     },
-    "NY_L_DEP": {
-      "frequency": 126800,
+    "NY_LN_APP": {
+      "frequency": 118170,
       "full_name": "New York departure",
-      "scope_char": "E",
-      "sector_id": "5E"
+      "scope_char": "T",
+      "sector_id": "5T"
+    },
+    "NY_LW_APP": {
+      "frequency": 120850,
+      "full_name": "New York departure",
+      "scope_char": "W",
+      "sector_id": "5W"
     }
   },
   "default_scenario": "KLGA Depart 13 Land 22",
@@ -1681,7 +1687,10 @@
         "LGA_Y_DEP",
         "LGA_TWR",
         "NY_CTR",
-        "NY_L_DEP"
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -1792,7 +1801,10 @@
         "LGA_Y_DEP",
         "LGA_TWR",
         "NY_CTR",
-        "NY_L_DEP"
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -1903,7 +1915,10 @@
         "LGA_Y_DEP",
         "LGA_TWR",
         "NY_CTR",
-        "NY_L_DEP"
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2014,7 +2029,10 @@
         "LGA_Y_DEP",
         "LGA_TWR",
         "NY_CTR",
-        "NY_L_DEP"
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2126,7 +2144,10 @@
         "LGA_Y_DEP",
         "LGA_TWR",
         "NY_CTR",
-        "NY_L_DEP"
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2207,7 +2228,10 @@
         "LGA_DEP",
         "LGA_TWR",
         "NY_CTR",
-        "NY_L_DEP"
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2245,7 +2269,10 @@
         "LGA_DEP",
         "LGA_TWR",
         "NY_CTR",
-        "NY_L_DEP"
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2282,7 +2309,10 @@
         "LGA_DEP",
         "LGA_TWR",
         "NY_CTR",
-        "NY_L_DEP"
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2319,7 +2349,10 @@
         "LGA_DEP",
         "LGA_TWR",
         "NY_CTR",
-        "NY_L_DEP"
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2356,7 +2389,10 @@
         "LGA_DEP",
         "LGA_TWR",
         "NY_CTR",
-        "NY_L_DEP"
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2393,7 +2429,10 @@
         "LGA_DEP",
         "LGA_TWR",
         "NY_CTR",
-        "NY_L_DEP"
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2430,7 +2469,10 @@
         "LGA_DEP",
         "LGA_TWR",
         "NY_CTR",
-        "NY_L_DEP"
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
