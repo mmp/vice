@@ -6017,7 +6017,14 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		field2 := " "
 		if ac.HandoffTrackController != "" {
 			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
-				field2 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+				if ctrl.FacilityIdentifier == "" { // Same facility
+					field2 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+				} else if ctrl.ERAMFacility { // Enroute handoff
+					field2 = "C"
+				} else { // Different facility
+					field2 = ctrl.FacilityIdentifier
+				}
+
 			}
 		}
 
@@ -6110,9 +6117,11 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 						field4 = ctx.world.GetController(ac.RedirectedHandoff.RedirectedTo).FacilityIdentifier
 					}
 				} else {
-					if sameFacility(ctx, ac.HandoffTrackController) {
+					if ctrl.FacilityIdentifier == "" { // Same facility
 						field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
-					} else {
+					} else if ctrl.ERAMFacility { // Enroute handoff
+						field4 = "C"
+					} else { // Different facility
 						field4 = ctrl.FacilityIdentifier
 					}
 
