@@ -2337,7 +2337,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					ps.OtherControllerLeaderLineDirection = dir
 					status.clear = true
 				} else {
-					status.err = ErrSTARSIllegalParam
+					status.err = GetSTARSError(ErrSTARSCommandFormat)
 				}
 				return
 			} else if f := strings.Fields(cmd); len(f) == 2 {
