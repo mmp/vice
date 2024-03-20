@@ -1,4 +1,4 @@
-name: build-linux
+name: check-gofmt
 
 on:
   push:
@@ -31,9 +31,8 @@ jobs:
 
     - name: Check gofmt
       run: |
-         files=$(gofmt -l .)
-         if [ "$(files | wc -l)" -gt 0 ]; then
+         if [ "$(gofmt -l . | wc -l)" -gt 0 ]; then
              echo The following files require reformatting with gofmt:
-             echo $files
+             gofmt -l .
              exit 1
          fi
