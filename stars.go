@@ -394,7 +394,7 @@ type STARSAircraftState struct {
 	FullLDB       time.Time // If the LDB displays the groundspeed. When to stop
 
 	IsSelected bool // middle click
-
+	Warnings   []string
 	// Only drawn if non-zero
 	JRingRadius              float32
 	ConeLength               float32
@@ -5149,6 +5149,10 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = FullDatablock
 	}
 
+	if len(state.Warnings) > 0 {
+		dt = FullDatablock
+	}
+
 	// Point outs are FDB until acked.
 	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
 		dt = FullDatablock
@@ -5935,39 +5939,47 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		state.LeaderLineDirection = state.ChosenLeaderLine
 	}
 
-	var errs []string
-	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
-		errs = append(errs, "LA")
+	if index := slices.Index(state.Warnings, state.SPCOverride); index != -1 {
+		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
+	} else if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW && !slices.Contains(state.Warnings, "LA") {
+		state.Warnings = append(state.Warnings, "LA")
 	} else if ac.Squawk == Squawk(0o7500) || state.SPCOverride == "HJ" {
-		errs = append(errs, "HJ")
+		state.Warnings = append(state.Warnings, "HJ")
 	} else if ac.Squawk == Squawk(0o7600) || state.SPCOverride == "RF" {
-		errs = append(errs, "RF")
+		state.Warnings = append(state.Warnings, "RF")
 	} else if ac.Squawk == Squawk(0o7700) || state.SPCOverride == "EM" {
-		errs = append(errs, "EM")
+		state.Warnings = append(state.Warnings, "EM")
 	} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
-		errs = append(errs, "MI")
+		state.Warnings = append(state.Warnings, "MI")
 	}
+	if index := slices.Index(state.Warnings, "LA"); index != -1 && !state.MSAW {
+		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
+	}
+
+	state.SPCOverride = ""
 	if !ps.DisableCAWarnings &&
 		slices.ContainsFunc(sp.CAAircraft,
 			func(ca CAAircraft) bool {
 				return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
 					!state.DisableCAWarnings
 			}) {
-		errs = append(errs, "CA")
+		if !slices.Contains(state.Warnings, "CA") {
+			state.Warnings = append(state.Warnings, "CA")
+		}
 		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 	}
-	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside && !slices.Contains(errs, "AS") {
+	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside && !slices.Contains(state.Warnings, "AS") {
 		altStrs := ""
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
 		}
-		errs = append(errs, "AS"+altStrs)
+		state.Warnings = append(state.Warnings, "AS"+altStrs)
 	}
 
 	// baseDB is what stays the same for all datablock variants
 	baseDB := STARSDatablock{}
-	baseDB.Lines[0].Text = strings.Join(errs, "/") // want e.g., EM/LA if multiple things going on
-	if len(errs) > 0 {
+	baseDB.Lines[0].Text = strings.Join(state.Warnings, "/") // want e.g., EM/LA if multiple things going on
+	if len(state.Warnings) > 0 {
 		baseDB.Lines[0].Colors = append(baseDB.Lines[0].Colors,
 			STARSDatablockFieldColors{
 				Start: 0,
