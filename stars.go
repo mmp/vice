@@ -3129,7 +3129,7 @@ func calculateAirspace(ctx *PaneContext, callsign string) (string, bool) {
 	aircraftType := database.AircraftPerformance[ac.FlightPlan.BaseType()].Engine.AircraftType
 	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
 		for _, fix := range rules.Fix {
-			if strings.Contains(ac.FlightPlan.Route, fix) {
+			if strings.Contains(ac.FlightPlan.Route, fix) || fix == "ALL" {
 				alt := rules.AltitudeRange
 				if (alt[0] == 0 && alt[1] == 0) /* none specified */ ||
 					(ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1]) {
