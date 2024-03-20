@@ -2158,8 +2158,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			status.clear = true
 			return
 		case 2:
-			sp.handoffTrack(ctx, lookupCallsign(f[1], false), f[0])
-			status.clear = true
+			if err := sp.handoffTrack(ctx, lookupCallsign(f[1], false), f[0]); err != nil {
+				status.err = GetSTARSError(err)
+			} else {
+				status.clear = true
+			}
 			return
 		}
 
@@ -3488,10 +3491,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						func(err error) {
 							// If it's not a command, set the scratchpad if it fits.
 							if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
-								sp.setScratchpad(ctx, ac.Callsign, cmd, false)
+								if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
+									status.err = err
+								}
 							} else {
-								globalConfig.Audio.PlayOnce(AudioCommandError)
-								sp.previewAreaOutput = GetSTARSError(err).Error()
+								status.err = err
 							}
 						})
 				}
@@ -3699,12 +3703,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 				ok, control := sp.calculateController(ctx, cmd, ac.Callsign)
 				if !ok {
-					sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalPosition).Error()
+					status.err = ErrSTARSIllegalPosition
 				} else {
 					status.clear = true
 					sp.pointOut(ctx, ac.Callsign, control)
-					return
 				}
+				return
 
 			} else if len(cmd) > 0 {
 				// See if cmd works as a sector id; if so, make it a handoff.
@@ -3721,11 +3725,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 				} else {
-					err := sp.handoffTrack(ctx, ac.Callsign, cmd)
-					if err == nil {
+					if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
 						status.clear = true
 						return
 					}
+					// Otherwise fall through to try running it as a command
 				}
 
 				// If it didn't match a controller, try to run it as a command
@@ -3733,10 +3737,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					func(err error) {
 						// If it's not a valid command and fits the requirements for a scratchpad, set the scratchpad.
 						if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
-							sp.setScratchpad(ctx, ac.Callsign, cmd, false)
+							if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
+								status.err = err
+							}
 						} else {
-							globalConfig.Audio.PlayOnce(AudioCommandError)
-							sp.previewAreaOutput = GetSTARSError(err).Error()
+							status.err = err
 						}
 					})
 
@@ -3761,8 +3766,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				status.clear = true
 				sp.cancelHandoff(ctx, ac.Callsign)
 			} else {
-				status.clear = true
-				sp.handoffTrack(ctx, ac.Callsign, cmd)
+				if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err != nil {
+					status.err = GetSTARSError(err)
+				} else {
+					status.clear = true
+				}
 			}
 			return
 
