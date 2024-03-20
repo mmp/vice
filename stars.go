@@ -604,7 +604,7 @@ type STARSPreferenceSet struct {
 
 	// TODO: review--should some of the below not be in prefs but be in STARSPane?
 
-	DisplayUncorrelatedTargets bool
+	// DisplayUncorrelatedTargets bool // NOT USED
 
 	DisableCAWarnings bool
 	DisableMSAW       bool
@@ -816,7 +816,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.AltitudeFilters.Unassociated = [2]int{100, 60000}
 	ps.AltitudeFilters.Associated = [2]int{100, 60000}
 
-	ps.DisplayUncorrelatedTargets = true
+	//ps.DisplayUncorrelatedTargets = true
 
 	ps.DisplayTPASize = true
 	ps.DisplayATPAWarningAlertCones = true
@@ -4201,7 +4201,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		STARSDisabledButton("CURSOR\nHOME", STARSButtonFull, buttonScale)
 		STARSDisabledButton("CSR SPD\n4", STARSButtonFull, buttonScale)
 		STARSDisabledButton("MAP\nUNCOR", STARSButtonFull, buttonScale)
-		STARSToggleButton("UNCOR", &ps.DisplayUncorrelatedTargets, STARSButtonFull, buttonScale)
+		STARSDisabledButton("UNCOR", STARSButtonFull, buttonScale)
 		STARSDisabledButton("BEACON\nMODE-2", STARSButtonFull, buttonScale)
 		STARSDisabledButton("RTQC", STARSButtonFull, buttonScale)
 		STARSDisabledButton("MCP", STARSButtonFull, buttonScale)
