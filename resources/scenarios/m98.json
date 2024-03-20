@@ -758,7 +758,9 @@
             "frequency": 125300, 
             "full_name": "Minnieapolis Center",
             "scope_char": "C",
-            "sector_id": "C05"
+            "sector_id": "C05",
+            "facility_id": "C",
+            "eram_facility": true
           },
           "MSP_R_DEP": {
             "frequency": 124700, 
@@ -965,6 +967,14 @@
           }
         },
         "stars_config": {
+        "force_ql_self": true,
+        "airspace_awareness": [
+          {
+            "fixes": ["ALO"],
+            "receiving_controller": "C05",
+            "to_center": true
+          }
+        ],
         "center": "KMSP",
         "inhibit_ca_volumes": [
           {
