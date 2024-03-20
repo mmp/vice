@@ -30,4 +30,10 @@ jobs:
         cache-dependency-path: go.sum
 
     - name: Check gofmt
-      run: if [ "$(gofmt -l . | wc -l)" -gt 0 ]; then exit 1; fi
+      run: |
+         files=$(gofmt -l .)
+         if [ "$(files | wc -l)" -gt 0 ]; then
+             echo The following files require reformatting with gofmt:
+             echo $files
+             exit 1
+         fi
