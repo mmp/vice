@@ -76,7 +76,7 @@
 	<ul class="section-items list-unstyled nav flex-column pb-3">
 	  <li class="nav-item section-title"><a class="nav-link scrollto" href="#section-using"><span class="theme-icon-holder me-2"><i class="fas fa-plane"></i></span>About Vice</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#started">Getting Started</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#commands">ATC Commands</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands">ATC Commands</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#draw-routes">Drawing Routes</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#launches">Launching Aircraft</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#multi-controller">Multiple Controllers</a></li>
@@ -92,8 +92,8 @@
 	  <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-stars"><span class="theme-icon-holder me-2"><svg><use xlink:href="#radar"></use></svg></span>STARS</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-key-concepts">Key Concepts</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-command-entry">Entering Commands</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-dcb">The DCB</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-quickref">Quick Reference</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-dcb">The DCB</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto"
 	  href="#stars-track-ownership">Track Ownership</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto"
@@ -215,7 +215,7 @@
             <p>
               After you have configured the simulation, click "Ok" and you will have a STARS scope and flight strip window to work with.
               Use the usual STARS commands as appropriate (to initiate track, accept handoffs, handoff to other controllers, etc.),
-              and the additional <a href="#commands">ATC commands below</a> to issue control commands to aircraft.
+              and the additional <a href="#atc-commands">ATC commands below</a> to issue control commands to aircraft.
             </p>
             <p>
               When the simulation starts, <i>vice</i> also displays a small
@@ -252,7 +252,7 @@
                   arrivals, and approaches.</li>
                 <li> <i class="fas fa-keyboard"></i>: opens a window that
                 shows a summary
-                of <i>vice</i>'s <a href="#commands">ATC commands</a>
+                of <i>vice</i>'s <a href="#atc-commands">ATC commands</a>
                 and frequently-used STARS commands.</li>
                 <li> <i class="fas fa-plane-departure"></i>: open a window with controls for launching aircraft, either automatically or manually.</li>
                 <li> <i class="fas fa-book"></i>: open this webpage to review <i>vice</i>'s documentation.</li>
@@ -371,7 +371,7 @@
 
           </section>
 
-	  <section class="docs-section" id="commands">
+	  <section class="docs-section" id="atc-commands">
             <h2 class="section-heading">ATC Commands</h2>
             <p>The commands below issue control commands to aircraft. To
               indicate which aircraft should be given a command, you
@@ -1001,7 +1001,7 @@ how it simulates aircraft or the STARS interface.
                 there is now a <code>TS</code> command for "then speed",
                 and <code>TA</code> for "then altitude", or <code>TC</code>
                 for "then climb", or <code>TD</code> for "then descend".
-                (See the <a href="#commands">ATC command reference</a> for
+                (See the <a href="#atc-commands">ATC command reference</a> for
                 details.)
               </li>
               <li>Updates to the JAX, C90, and F11 scenarios and a new
@@ -1036,7 +1036,7 @@ how it simulates aircraft or the STARS interface.
               round markers for radar tracks; choose "FUSED" in the "SITE menu.)
               <li>It is no longer allowed to issue control commands to
               departing aircraft before they have checked in.</li>
-              <li>Added multiple new <a href="#commands">ATC commands</a>:
+              <li>Added multiple new <a href="#atc-commands">ATC commands</a>:
               <ul>
                 <li><code>EC</code>/<code>ED</code>: expedite
                   climb/descent.</li>
@@ -1185,7 +1185,7 @@ how it simulates aircraft or the STARS interface.
 		  <li>All new flight modeling engine supports procedure turns (both racetrack and standard 45/180)
                     and more accurate turns to intercept localizers, etc.  The approaches in the existing scenarios
                     have been updated to include their procedure turns, where appropriate.</li>
-                  <li>A number of new <a href="#commands">aircraft control
+                  <li>A number of new <a href="#atc-commands">aircraft control
                       commands</a> have been added:
                     <ul>
                       <li>Cancel speed restrictions</li>
@@ -1353,7 +1353,7 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td><code>[TRIANGLE]</code></td><td>~</td></tr>
+                  <tr><td><code>[TRIANGLE] / ∆</code></td><td>`</td></tr>
                   <tr><td><code>[MIN]</code></td><td>[End]</td></tr>
                   <tr><td><code>[INIT CNTL]</code></td><td>[F3] or [CTRL][SHIFT]</td></tr>
                   <tr><td><code>[TERM CNTL]</code></td><td>[F4]</td></tr>
@@ -1467,6 +1467,47 @@ how it simulates aircraft or the STARS interface.
                 </table>
           </section>            
 
+	  <section class="docs-section" id="stars-quickref">
+            <h2 class="section-heading">Quick Reference</h2>
+            <p>For basic controlling, a small number of STARS commands are used frequently.
+              The following table lists them and gives a short description of their operation.
+            </p>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Command</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><code>[SLEW]</code></td><td><p>Whichever of the
+                  following first applies:</p>
+                      <ul>
+                        <li>Accepts the <a href="#stars-track-ownership">handoff of an aircraft's track</a> from another controller.</li>
+                        <li>Acknowledge an alert for an aircraft such as a <a href="#stars-collision-alerts">collision alert (CA)</a> or
+                          <a href="#stars-msaw">minimum safe altitude warning (MSAW)</a>.</li>
+                        <li>Acknowledges a <a href="#stars-pointouts">point-out</a> from another controller.</li>
+                        <li>Cancels an outbound <a href="#stars-track-ownership">handoff</a> to another controller.</li>
+                        <li>Clears a forced <a href="#stars-quicklook">quicklook</a> from another controller.</li>
+                        <li>Hands off control after track ownership is accepted by another controller after a <a href="#stars-track-ownership">handoff</a>.</li>
+                        <li>Temporarily displays the aircraft's current groundspeed in the <a href="#stars-datablock-types">limited datablock</a>.</li>
+                        <li>Toggles between the <a href="#stars-datablock-types">full and limited datablock</a> for an unowned track.</li>
+                      </ul>
+                  </td></tr>
+                  <tr><td><code>[INIT CNTL][SLEW]</code></td><td>Initiate control of an aircraft that isn't being tracked by any controller.</td></tr>
+                  <tr><td><code>(id)[SLEW]</code></td><td>Offers to handoff the
+                      track of the aircraft to the controller identified by (id).</td></tr>
+                  <tr><td><code>(scratchpad)[SLEW]</code></td><td>Sets
+                  the scratchpad of the aircraft to <code>(scratchpad)</code>.</td></tr>
+                  <tr><td><code>.[SLEW]</code></td><td>Clears the
+                  aircraft's scratchpad.</td></tr>
+                  <tr><td><code>+(###)[SLEW]</code></td><td>Sets the
+                      aircraft's assigned temporary altitude (which is shown in its datablock).</td></tr>
+                </tbody>
+              </table>
+            
+          </section>
+
 	  <section class="docs-section" id="stars-dcb">
             <h2 class="section-heading">The DCB</h2>
 
@@ -1525,51 +1566,115 @@ how it simulates aircraft or the STARS interface.
 
           </section>
           
-	  <section class="docs-section" id="stars-quickref">
-            <h2 class="section-heading">Quick Reference</h2>
-            <p>For basic controlling, a small number of STARS commands are used frequently.
-              The following table lists them and gives a short description of their operation.
-            </p>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width:20%">Command</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td><code>[SLEW]</code></td><td><p>Whichever of the
-                  following first applies:</p>
-                      <ul>
-                        <li>Accepts the <a href="#stars-track-ownership">handoff of an aircraft's track</a> from another controller.</li>
-                        <li>Acknowledge an alert for an aircraft such as a conflict alert (CA) or
-                          minimum safe altitude warning (MSAW).</li>
-                        <li>Acknowledges a point-out from another controller.</li>
-                        <li>Cancels an outbound <a href="#stars-track-ownership">handoff</a> to another controller.</li>
-                        <li>Clears a forced <a href="#stars-quicklook">quicklook</a> from another controller.</li>
-                        <li>Hands off control after track ownership is accepted by another controller after a <a href="#stars-track-ownership">handoff</a>.</li>
-                        <li>Temporarily displays the aircraft's current groundspeed in the <a href="#stars-datablock-types">limited datablock</a>.</li>
-                        <li>Toggles between the <a href="#stars-datablock-types">full and limited datablock</a> for an unowned track.</li>
-                      </ul>
-                  </td></tr>
-                  <tr><td><code>[INIT CNTL][SLEW]</code></td><td>Initiate control of an aircraft that isn't being tracked by another controller.</td></tr>
-                  <tr><td><code>(id)[SLEW]</code></td><td>Offers to handoff the
-                      track of the aircraft to the controller identified by (id).</td></tr>
-                  <tr><td><code>(scratchpad)[SLEW]</code></td><td>Sets
-                  the scratchpad of the aircraft to <code>(scratchpad)</code>.</td></tr>
-                  <tr><td><code>.[SLEW]</code></td><td>Clears the
-                  aircraft's scratchpad.</td></tr>
-                  <tr><td><code>+(###)[SLEW]</code></td><td>Sets the
-                      aircraft's assigned temporary altitude (which is shown in its datablock).</td></tr>
-                </tbody>
-              </table>
-            
-          </section>
 
-	  <section class="docs-section" id="stars-control">
-            <h2 class="section-heading">Other Controllers</h2>
-            <h3>Specifying Controller ID</h3> <p><i>vice</i> emulates correct sector IDs for controllers.</p><br><br>
-            <h4>Sector ID Breakdown</h4> 
+	  <section class="docs-section" id="stars-track-ownership">
+            <h2 class="section-heading">Track Ownership</h2>
+
+            <p>Controllers must both own an aircraft's track and have control of the aircraft in order to issue
+              <a href="#atc-commands">instructions to the aircraft's pilot</a>. Managing ownership of tracks
+              and control of an aircraft is at the core of how multiple controllers work together to
+              control an aircraft; it is crucial that controllers hand off both the track and control of an
+              aircraft before it enters another controller's airspace.
+              We will start by summarizing the flow of how departures' and arrivals' tracks and control are managed.
+            </p>
+
+            <h3>Departures</h3>
+            <p>When an aircraft departs an airport, it's track and control are initially not owned by any controller.
+              Its datablock is drawn in green (indicating that the current controller does not own it) and an
+              asterisk shown in the center of its track (here, a blue dot), also indicates that its track is
+              unowned.
+            </p>
+            <div class="text-center">
+              <img src="uncontrolled-departure.gif" srcset="uncontrolled-departure-2x.gif 2x" width="216" height="139" class="img-fluid">
+            </div>
+            <br>
+            <p>Any controller may initiate track of an uncontrolled aircraft track by holding <code>[CTRL][SHIFT]</code>
+              and slewing the aircraft's track. You should do so if you are responsible for an airport's departures,
+              but should not if you are not! Alternatively, you may enable the "Auto track departures" checkbox
+              in the "Settings" window to automatically initiate track on the departing aircraft that you are
+              responsible for in the current scenario.
+              </p>
+            <div class="text-center">
+              <img src="autotrack-departures.png" srcset="autotrack-departures-2x.png 2x" width="389" height="255">
+            </div>
+            <br>
+            <p>After you own an aircraft's track, the datablock will become white and a letter corresponding
+              to your position's TCP will appear at the center of the radar track.</p>
+            <div class="text-center">
+              <img src="departure-initiated-track.gif" srcset="departure-initiated-track-2x.gif 2x" width="216" height="139" class="img-fluid">
+            </div>
+            <br>
+            <p>However, you do not immediately have control of the aircraft after initiating tracking it;
+              for a departure, the aircraft is still under the tower's control and tuned to the tower's
+              radio frequency.  Once the (virtual) tower controller tells the aircraft to "contact
+              departure", they will check in with a message on your radio frequency. It is at this point
+              that you also have control of the aircraft and can start
+              issuing control commands to it.
+              </p>
+
+            <h3>Arrivals</h3>
+
+            <p>Arriving aircraft will always be owned by another controller (human or virtual) before they
+              are handed off to you. Initially, they are displayed with a
+              green datablock and the owning controller's id shown in the middle of their radar track.
+              Generally it is a center controller who owns the aircraft and a "C" will be displayed.
+              </p>
+            <div class="text-center">
+              <img src="center-owned-arrival.gif" srcset="center-owned-arrival-2x.gif 2x" width="170" height="145" class="img-fluid">
+            </div>
+            <br>
+            <p>The controller who owns the aircraft's track will eventually hand it off to you;
+              at this point, the datablock will turn white and will start flashing, as shown here:
+              </p>
+            <div class="text-center">
+              <img src="inbound-handoff-arrival.gif" srcset="inbound-handoff-arrival-2x.gif 2x" width="170" height="145" class="img-fluid">
+            </div>
+            <br>
+            <p>The datablock will continue flashing until you accept the handoff by slewing the aircraft's
+              radar track. At that point it will stop flashing and remain white.
+              However, as with departures, you do not have control of the aircraft until the other
+              instructs the aircraft to contact you, transferring control as well.
+              The aircraft will then contact you on the radio
+              and you may start issuing <a href="#atc-commands">control instructions</a> to it.
+            </p>
+
+            <h3>Handing off Aircraft</h3>
+
+            <p>When you are ready to hand off an aircraft's track to
+            another controller, enter the controller's ID and slew
+              the aircraft. Doing so will initiate a handoff request.
+              (Determining the correct controller ID to enter has a few
+              subtleties and is discussed further below.) Outbound handoffs
+              have an identifier for the controller stuffed into
+              the second line of the datablock (here, it is the "L" between
+              altitude/airspeed or airport/aircraft type.)
+            <p>
+              <div class="text-center">
+                <img src="outbound-handoff.gif" srcset="outbound-handoff-2x.gif 2x" width="133" height="79" class="img-fluid">
+              </div>
+              <br>
+            <p>Once the other controller accepts the handoff, control of the aircraft's track is
+              transferred to that controller. The aircraft's datablock will start
+              flashing to notify you of this and the letter on the track will switch to be the
+              other controller's. After a few seconds the datablock will stop flashing.
+              Note that at this point you still retain control
+              of the aircraft and can issue control instructions to it since you haven't yet transferred control to
+              the other controller.</p>
+            <div class="text-center">
+              <img src="outbound-handoff-accepted.gif" srcset="outbound-handoff-accepted-2x.gif 2x" width="133" height="79" class="img-fluid">
+            </div>
+              <br>
+            <p>When you are ready to transfer control of the aircraft to the controller who has
+              accepted the track, slew the aircraft's radar track. The datablock will turn green,
+              the aircraft will contact the other controller, and you will no longer be able to
+              issue instructions to the aircraft.</p>
+<div class="text-center">
+<img src="outbound-handoff-comms.gif" srcset="outbound-handoff-comms-2x.gif 2x" width="133" height="79" class="img-fluid">
+</div>
+<br>
+
+
+            <h3>Sector IDs For Handoffs</h4> 
             <p>A full controller has three elements. The facility, the area and the sector. Taking a look at an example sector ID <code>N4P</code>. The <code>N</code> stands for the 
             N90 (New York) TRACON. The <code>4</code> stands for the fourth area/ the Newark area of the N90 TRACON. Finally, the <code>P</code> is the Yardley
             sector of the Newark area.</p>
@@ -1591,11 +1696,7 @@ how it simulates aircraft or the STARS interface.
             specified with a <code>C</code>. There is an exeption, if a neigboring ARTCCs facility identifier is a C, then the facility identifier 
             for the home ARTCC would change from a C to the regular facility identifier. So for ZNY, it would turn from a C to N. The sector ID can be ommited
             if there is only one ERAM controller signed on, or there is an airspace awareness rule defined in the configuration file.</p>
-            <!-- <p>quickref</p> -->
-          </section>
 
-	  <section class="docs-section" id="stars-track-ownership">
-            <h2 class="section-heading">Track Ownership</h2>
           </section>
 
 	  <section class="docs-section" id="tracks-datablocks">
@@ -1634,16 +1735,16 @@ how it simulates aircraft or the STARS interface.
         <h3>Handoffs</h3>
         <p>Handoffs in <i>vice</i> emulates STARS functionality.<br><br> <code>[SECTOR ID], SLEW</code> can ne used to initiate a handoff of a track to the 
         specified TCP. </p>
-        <h3>Pointouts</h3>
+        <h3 id="stars-pointouts">Point-outs</h3>
         <p>A pointout can be initiated with <code>[SECTOR ID], *, SLEW</code> and will flash the target as yellow to the specified TCP. If the TCP
         accepts the pointout, <code>PO</code> will flash in the tracks datablock for five seconds. If the TCP rejects the pointout, then <code>UN</code> 
       will flash in the tracks datablock for five seconds.<br><br><code>SLEW</code> will accept the pointout and <code>UN, SLEW</code> will reject it</p>
 
-      <h3>Redirecting Handoffs</h3>
-      <p>An incoming handoff can be redirected to another TCP with <code>[SECTOR ID] SLEW</code>. Doing this will add <code>RD</code> to the handoff initiators datablock, 
-        to the redirectors datablock, and to the TCP to where the track was redirected to. It will also turn the datablock green for the redirector.</p>
+        <h3>Redirecting Handoffs</h3>
+            <p>An incoming handoff can be redirected to another TCP with <code>[SECTOR ID] SLEW</code>. Doing this will add <code>RD</code> to the handoff initiators datablock, 
+              to the redirectors datablock, and to the TCP to where the track was redirected to. It will also turn the datablock green for the redirector.</p>
 
-      <h3 id="stars-dwell-mode">Dwell Mode</h3>
+            <h3 id="stars-dwell-mode">Dwell Mode</h3>
       
             <!-- <p>dwell mode here, quicklook, leader lines, FUSED/radar mode, DCB HISTORY, PTLs, DWELL, </p> -->
 
@@ -1676,7 +1777,7 @@ how it simulates aircraft or the STARS interface.
 
             <!-- id, all, force ql -->
 
-            <h3>Collision Alerts</h3>
+            <h3 id="stars-collision-alerts">Collision Alerts</h3>
             <p>If there is a loss of separation between aircraft or if STARS predicts an imminent loss of separation, a collision alert will be issued where red text "CA" is shown in the aircraft datablocks and an alert sound will be played. The alert sound continues until one of the aircraft is slewed.  Here is an example of a pair of aircraft with CA alerts:</p>
             <div class="text-center">
               <img src="ca-datablocks.png" srcset="ca-datablocks-2x.png 2x" width="231" height="124" class="img-fluid" alt="tpa ring">
@@ -1715,7 +1816,7 @@ how it simulates aircraft or the STARS interface.
             </div>
             <br>
               
-            <h3 id="msaw">Minimum Safe Altitude Warnings</h3>
+            <h3 id="stars-msaw">Minimum Safe Altitude Warnings</h3>
             
             <p>If aircraft are beneath the minimum vectoring altitude at their location, a minimum safe altitude warning (MSAW) may be issued. Aircraft with MSAWs have "LA" (for "low altitude") displayed in red at the top of their datablocks. An alert sound is played when an MSAW is issued; it can be silenced by slewing the corresponding aircraft. Here is an example of such an aircraft:</p>
             <div class="text-center">
@@ -2193,7 +2294,7 @@ above</a> for information about the CRDA system list.</p>
             </div>
             <br>
             <p>The red triangle indicates that STARS is functioning correctly; in <i>vice</i> it will always be there. The first line of text shows the current zulu time 06:12:27 and the altimeter and winds at the primary airport, JFK. The following line shows the network status (always "OK/OK/NA" in <i>vice</i>) as well as the current radar mode, which may be "FUSED", "MULTI", or "SINGLE". Next is the current range shown from the scope's center, 41nm, and the length of predicted track lines (PTLs). Next are the altitude filters, first for unassociated tracks and then for associated tracks (both in hundreds of feet.) The next few lines show the altimeter and winds at nearby airports.</p>
-            <p>A few lines are only shown when corresponding features are enabled. Here, "QL: 4P" indicates that sector id 4P has been <a href="#quicklook">quicklooked</a> and "TW OFF: MSAW" indicates that <a href="#msaw">MSAW</a> has been disabled system-wide.  When <a href="#crda">CRDA</a> is enabled for a runway pair, an indication is shown here as well.</p>
+            <p>A few lines are only shown when corresponding features are enabled. Here, "QL: 4P" indicates that sector id 4P has been <a href="#quicklook">quicklooked</a> and "TW OFF: MSAW" indicates that <a href="#stars-msaw">MSAW</a> has been disabled system-wide.  When <a href="#crda">CRDA</a> is enabled for a runway pair, an indication is shown here as well.</p>
             <p>Only one keyboard command is available to control the SSA list.</p>
               <table class="table table-bordered">
                 <thead>
@@ -2832,7 +2933,7 @@ above</a> for information about the CRDA system list.</p>
             <h2 class="section-heading">Approaches</h2>
 
             <p>The member names in the airport "approaches" object give the abbreviated name of each approach,
-            as used in <i>vice</i>'s <a href="#commands">ATC commands</a>.</p>
+            as used in <i>vice</i>'s <a href="#atc-commands">ATC commands</a>.</p>
 
             <p>Approaches may be specified using data automatically loaded from the
               <a href="https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/">FAA CIFP</a> or manually.
