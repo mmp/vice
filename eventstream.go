@@ -191,6 +191,7 @@ const (
 	RejectedPointOutEvent
 	IdentEvent
 	HandoffControllEvent
+	SetGlobalLeaderLineEvent
 	NumEventTypes
 )
 
@@ -198,7 +199,8 @@ func (t EventType) String() string {
 	return []string{"InitiatedTrack", "DroppedTrack", "PushedFlightStrip", "PointOut",
 		"OfferedHandoff", "AcceptedHandoff", "CanceledHandoff", "RejectedHandoff",
 		"RadioTransmission", "StatusMessage", "ServerBroadcastMessage",
-		"AcknowledgedPointOut", "RejectedPointOut", "Ident", "HandoffControll"}[t]
+		"AcknowledgedPointOut", "RejectedPointOut", "Ident", "HandoffControll",
+		"SetGlobalLeaderLine"}[t]
 }
 
 type Event struct {
@@ -207,7 +209,8 @@ type Event struct {
 	FromController        string
 	ToController          string // For radio transmissions, the controlling controller.
 	Message               string
-	RadioTransmissionType RadioTransmissionType // For radio transmissions only
+	RadioTransmissionType RadioTransmissionType     // For radio transmissions only
+	LeaderLineDirection   *CardinalOrdinalDirection // SetGlobalLeaderLineEvent
 }
 
 func (e *Event) String() string {
