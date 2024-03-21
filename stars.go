@@ -910,6 +910,10 @@ func (ps *STARSPreferenceSet) Activate(w *World) {
 	// previously didn't enforce this...
 	ps.Range = float32(int(ps.Range))
 
+	if ps.PTLAll { // both can't be set; we didn't enforce this previously...
+		ps.PTLOwn = false
+	}
+
 	// Brightness goes in steps of 5 (similarly not enforced previously...)
 	remapBrightness := func(b *STARSBrightness) {
 		*b = (*b + 2) / 5 * 5
@@ -3848,8 +3852,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			case "R":
 				if cmd == "" {
-					state.DisplayPTL = !state.DisplayPTL
-					status.clear = true
+					if ps.PTLAll || (ps.PTLOwn && ac.TrackingController == ctx.world.Callsign) {
+						status.err = ErrSTARSIllegalTrack // 6-13
+					} else {
+						state.DisplayPTL = !state.DisplayPTL
+						status.clear = true
+					}
 				} else {
 					status.err = ErrSTARSCommandFormat
 				}
@@ -4227,9 +4235,18 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if STARSToggleButton("DCB\nBOTTOM", &bottom, STARSButtonHalfVertical, buttonScale) {
 			ps.DCBPosition = DCBPositionBottom
 		}
-		STARSItemsSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, []float32{0.5, 1, 1.5, 2, 2.5, 3}, STARSButtonFull, buttonScale)
-		STARSToggleButton("PTL OWN", &ps.PTLOwn, STARSButtonHalfVertical, buttonScale)
-		STARSToggleButton("PTL ALL", &ps.PTLAll, STARSButtonHalfVertical, buttonScale)
+		STARSItemsSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, []float32{0, 0.5, 1, 1.5, 2, 2.5, 3}, STARSButtonFull, buttonScale)
+		if ps.PTLLength > 0 {
+			if STARSToggleButton("PTL OWN", &ps.PTLOwn, STARSButtonHalfVertical, buttonScale) && ps.PTLOwn {
+				ps.PTLAll = false
+			}
+			if STARSToggleButton("PTL ALL", &ps.PTLAll, STARSButtonHalfVertical, buttonScale) && ps.PTLAll {
+				ps.PTLOwn = false
+			}
+		} else {
+			STARSDisabledButton("PTL OWN", STARSButtonHalfVertical, buttonScale)
+			STARSDisabledButton("PTL ALL", STARSButtonHalfVertical, buttonScale)
+		}
 		STARSCallbackSpinner(ctx, "DWELL\n", &ps.DwellMode,
 			func(mode DwellMode) string { return mode.String() },
 			func(mode DwellMode, delta int) DwellMode {
@@ -4703,7 +4720,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			if filter.All || filter.Range {
 				text += fmt.Sprintf("%dNM ", int(ps.Range))
 			}
-			if filter.All || filter.PredictedTrackLines {
+			if (filter.All || filter.PredictedTrackLines) && ps.PTLLength > 0 {
 				text += fmt.Sprintf("PTL: %.1f", ps.PTLLength)
 			}
 			pw = td.AddText(text, pw, style)
@@ -6391,6 +6408,9 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 			continue
 		}
 		if !(state.DisplayPTL || ps.PTLAll || (ps.PTLOwn && ac.TrackingController == ctx.world.Callsign)) {
+			continue
+		}
+		if ps.PTLLength == 0 {
 			continue
 		}
 
