@@ -411,7 +411,6 @@ type STARSAircraftState struct {
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
 	LeaderLineDirection *CardinalOrdinalDirection
-	ChosenLeaderLine    *CardinalOrdinalDirection
 	GlobalLeaderLine    bool // If the aircraft is a global line or set by the TCP
 	Ghost               struct {
 		PartialDatablock bool
@@ -2328,7 +2327,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					ps.LeaderLineDirection = *dir
 					status.clear = true
 				} else {
-					status.err = ErrSTARSIllegalParam
+					status.err = ErrSTARSCommandFormat
 				}
 				return
 			} else if l == 2 {
@@ -2339,9 +2338,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				} else if ok && cmd[1] == '*' {
 					// Tracked by other controllers
 					ps.OtherControllerLeaderLineDirection = dir
+					// This also clears out any controller-specific assignments (4-98)
+					clear(ps.ControllerLeaderLineDirections)
 					status.clear = true
 				} else {
-					status.err = GetSTARSError(ErrSTARSCommandFormat)
+					status.err = ErrSTARSCommandFormat
 				}
 				return
 			} else if f := strings.Fields(cmd); len(f) == 2 {
@@ -2457,6 +2458,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 							status.clear = true
 							return
 						}
+					} else {
+						status.err = ErrSTARSCommandFormat
 					}
 				} else if ap := cmd[:3]; validAirport(ap) {
 					if cmd[n-1] == 'S' || cmd[n-1] == 'T' || cmd[n-1] == 'D' {
@@ -3249,24 +3252,19 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) e
 	if len(cmd) == 1 {
 		if dir, ok := numpadToDirection(cmd[0]); ok {
 			state.LeaderLineDirection = dir
-			state.ChosenLeaderLine = dir
 			state.GlobalLeaderLine = false
 			return nil
 		}
-	} else if len(cmd) == 2 { // Global leader lines
-		if cmd[0] != cmd[1] || strings.Contains(cmd, "0") {
-			return GetSTARSError(ErrSTARSCommandFormat)
-		}
+	} else if len(cmd) == 2 && cmd[0] == cmd[1] { // Global leader lines
 		if ac.TrackingController != ctx.world.Callsign {
-			return GetSTARSError(ErrSTARSIllegalTrack)
-		}
-		if dir, ok := numpadToDirection(cmd[0]); ok {
+			return ErrSTARSIllegalTrack
+		} else if dir, ok := numpadToDirection(cmd[0]); ok {
 			sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
 			state.GlobalLeaderLine = true
 			return nil
 		}
 	}
-	return GetSTARSError(ErrSTARSCommandFormat)
+	return ErrSTARSCommandFormat
 }
 
 func (sp *STARSPane) forceQL(ctx *PaneContext, callsign, controller string) {
@@ -3471,12 +3469,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if (unicode.IsDigit(rune(cmd[0])) && len(cmd) == 1) ||
 				(len(cmd) == 2 && unicode.IsDigit(rune(cmd[1]))) {
-				err := sp.setLeaderLine(ctx, ac, cmd)
-				if err != nil {
+				if err := sp.setLeaderLine(ctx, ac, cmd); err != nil {
 					status.err = err
-					return
+				} else {
+					status.clear = true
 				}
-				status.clear = true
 				return
 			} else if cmd == "?" {
 				ctx.world.PrintInfo(ac)
@@ -3806,12 +3803,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 
 			case "L": // Leader line
-				err := sp.setLeaderLine(ctx, ac, cmd)
-				if err != nil {
+				if err := sp.setLeaderLine(ctx, ac, cmd); err != nil {
 					status.err = err
-					return
+				} else {
+					status.clear = true
 				}
-				status.clear = true
 				return
 
 			case "M":
@@ -4044,6 +4040,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 	return
 }
 
+// Returns the cardinal-ordinal direction associated with the numbpad keys,
+// interpreting 5 as the center; (nil, true) is returned for '5' and
+// (nil, false) is returned for an invalid key.
 func numpadToDirection(key byte) (*CardinalOrdinalDirection, bool) {
 	var dir CardinalOrdinalDirection
 	switch key {
@@ -5950,12 +5949,6 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	ps := sp.CurrentPreferenceSet
 	state := sp.Aircraft[ac.Callsign]
 
-	if state.ChosenLeaderLine == nil {
-		state.LeaderLineDirection = ac.GlobalLinePosition
-	} else {
-		state.LeaderLineDirection = state.ChosenLeaderLine
-	}
-
 	if index := slices.Index(state.Warnings, state.SPCOverride); index != -1 {
 		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
 	} else if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW && !slices.Contains(state.Warnings, "LA") {
@@ -7445,13 +7438,13 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 
 func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft, w *World) CardinalOrdinalDirection {
 	ps := sp.CurrentPreferenceSet
+	state := sp.Aircraft[ac.Callsign]
 
-	if sp.Aircraft[ac.Callsign].GlobalLeaderLine && ac.GlobalLinePosition != nil {
-		return *ac.GlobalLinePosition
-	}
-	if lld := sp.Aircraft[ac.Callsign].LeaderLineDirection; lld != nil {
+	if state.GlobalLeaderLine && ac.GlobalLeaderLineDirection != nil {
+		return *ac.GlobalLeaderLineDirection
+	} else if state.LeaderLineDirection != nil {
 		// The direction was specified for the aircraft specifically
-		return *lld
+		return *state.LeaderLineDirection
 	} else if ac.TrackingController == w.Callsign {
 		// Tracked by us
 		return ps.LeaderLineDirection
