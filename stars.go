@@ -957,6 +957,11 @@ const (
 	FullDatablock
 )
 
+// In CRC, whenever a tracked aircraft is slewed, it displays the callsign, squawk, and assigned squawk
+func slewAircaft(w *World, ac *Aircraft) string{ 
+	return fmt.Sprintf("%v %v %v", ac.Callsign, ac.Squawk, ac.AssignedSquawk)
+}
+
 // See STARS Operators Manual 5-184...
 func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 	fp := ac.FlightPlan
@@ -3041,12 +3046,20 @@ func (sp *STARSPane) updateQL(ctx *PaneContext, input string) (ok bool, previewI
 }
 
 func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) error {
-	if len(contents) > 4 {
-		return ErrSTARSIllegalScratchpad
+	hasDelta := strings.Contains(contents, STARSTriangleCharacter)
+	lc := len(contents)
+	if hasDelta {
+		lc -= 1
+	}
+	if lc > 4 || (lc == 4 && !ctx.world.STARSFacilityAdaptation.ScratchpadRules[0] && !isSecondary) || 
+	(lc == 4 && !ctx.world.STARSFacilityAdaptation.ScratchpadRules[1] && isSecondary) {
+		sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalScratchpad).Error()
+		return nil
 	}
 	illegalScratchpads := []string{"RDR", "XXX", "CST", "AMB", "NAT", "ADB"}
 	if slices.Contains(illegalScratchpads, contents) {
 		sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalScratchpad).Error()
+		return nil
 	}
 
 	if isSecondary {
@@ -3060,7 +3073,7 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 				sp.previewAreaOutput = GetSTARSError(err).Error()
 			})
 	}
-	return nil
+	return nil 
 }
 
 func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt int) {
@@ -3330,17 +3343,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 	ac, acDistance := sp.tryGetClosestAircraft(ctx.world, mousePosition, transforms)
 	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
 
-	// isControllerId := func(id string) bool {
-	// 	// FIXME: check--this is likely to be pretty slow, relatively
-	// 	// speaking...
-	// 	for _, ctrl := range ctx.world.GetAllControllers() {
-	// 		if ctrl.SectorId == id {
-	// 			return true
-	// 		}
-	// 	}
-	// 	return false
-	// }
-
 	ps := &sp.CurrentPreferenceSet
 
 	// The only thing that can happen with a ghost is to switch between a full/partial
@@ -3451,6 +3453,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					state.DatablockType = PartialDatablock
 				} else {
 					state.DatablockType = FullDatablock
+				}
+
+				if ac.TrackingController == ctx.world.Callsign {
+					status.output = slewAircaft(ctx.world, ac)
 				}
 
 			} else if cmd == "." {
@@ -3736,13 +3742,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
 						// If it's not a valid command and fits the requirements for a scratchpad, set the scratchpad.
-						if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
 							if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
 								status.err = err
 							}
-						} else {
-							status.err = err
-						}
 					})
 				status.clear = true
 				return
