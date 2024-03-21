@@ -109,7 +109,7 @@ var (
 	ErrSTARSIllegalCode       = NewSTARSError("ILL CODE")
 	ErrSTARSIllegalFix        = NewSTARSError("ILL FIX")
 	ErrSTARSIllegalFlight     = NewSTARSError("ILL FLIGHT")
-	ErrSTARSIllegalFunc		  = NewSTARSError("ILL FUNC")
+	ErrSTARSIllegalFunc       = NewSTARSError("ILL FUNC")
 	ErrSTARSIllegalLine       = NewSTARSError("ILL LINE")
 	ErrSTARSIllegalMap        = NewSTARSError("ILL MAP")
 	ErrSTARSIllegalParam      = NewSTARSError("ILL PARAM")

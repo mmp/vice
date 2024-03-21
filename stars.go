@@ -958,7 +958,7 @@ const (
 )
 
 // In CRC, whenever a tracked aircraft is slewed, it displays the callsign, squawk, and assigned squawk
-func slewAircaft(w *World, ac *Aircraft) string{ 
+func slewAircaft(w *World, ac *Aircraft) string {
 	return fmt.Sprintf("%v %v %v", ac.Callsign, ac.Squawk, ac.AssignedSquawk)
 }
 
@@ -3051,8 +3051,8 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 	if hasDelta {
 		lc -= 1
 	}
-	if lc > 4 || (lc == 4 && !ctx.world.STARSFacilityAdaptation.ScratchpadRules[0] && !isSecondary) || 
-	(lc == 4 && !ctx.world.STARSFacilityAdaptation.ScratchpadRules[1] && isSecondary) {
+	if lc > 4 || (lc == 4 && !ctx.world.STARSFacilityAdaptation.ScratchpadRules[0] && !isSecondary) ||
+		(lc == 4 && !ctx.world.STARSFacilityAdaptation.ScratchpadRules[1] && isSecondary) {
 		sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalScratchpad).Error()
 		return nil
 	}
@@ -3073,7 +3073,7 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 				sp.previewAreaOutput = GetSTARSError(err).Error()
 			})
 	}
-	return nil 
+	return nil
 }
 
 func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt int) {
@@ -3742,9 +3742,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
 						// If it's not a valid command and fits the requirements for a scratchpad, set the scratchpad.
-							if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
-								status.err = err
-							}
+						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
+							status.err = err
+						}
 					})
 				status.clear = true
 				return
