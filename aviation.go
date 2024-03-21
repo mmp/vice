@@ -2200,7 +2200,7 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 
 	for _, controller :=  range sg.ControlPositions {
 		if controller.ERAMFacility && controller.FacilityIdentifier == "" {
-			e.ErrorString(controller.Callsign, "is an ERAM facility, but has no facility id specified")
+			e.ErrorString(fmt.Sprintf("%v is an ERAM facility, but has no facility id specified", controller.Callsign))
 		}
 	}
 }
