@@ -6160,12 +6160,13 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 						field4 = ac.RedirectedHandoff.RedirectedTo[len(ac.RedirectedHandoff.RedirectedTo)-1:]
 					} else {
 						field4 = ctx.world.GetController(ac.RedirectedHandoff.RedirectedTo).FacilityIdentifier
+						
 					}
 				} else {
-					if ctrl.FacilityIdentifier == "" { // Same facility
-						field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
-					} else if ctrl.ERAMFacility { // Enroute handoff
+					if ctrl.ERAMFacility { // Same facility
 						field4 = "C"
+					} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
+						field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
 					} else { // Different facility
 						field4 = ctrl.FacilityIdentifier
 					}
