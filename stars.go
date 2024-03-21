@@ -193,7 +193,7 @@ func (sp *STARSPane) parseQuickLookPositions(ctx *PaneContext, s string) ([]Quic
 
 		callsign, err := sp.calculateController(ctx, id, "")
 		control := ctx.world.GetController(callsign)
-		if err != nil || control.FacilityIdentifier != "" || control.Callsign == ctx.world.Callsign{
+		if err != nil || control.FacilityIdentifier != "" || control.Callsign == ctx.world.Callsign {
 			return positions, strings.Join(ids[i:], " "), ErrSTARSCommandFormat
 		} else {
 			positions = append(positions, QuickLookPosition{
@@ -1977,7 +1977,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 						}
 					} else {
 						control, err := sp.calculateController(ctx, tcp, aircraft.Callsign)
-						if err != nil  {
+						if err != nil {
 							status.err = GetSTARSError(ErrSTARSIllegalPosition) // assume it's this
 							return
 						}
@@ -3044,6 +3044,10 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 	if len(contents) > 4 {
 		return ErrSTARSIllegalScratchpad
 	}
+	illegalScratchpads := []string{"RDR", "XXX", "CST", "AMB", "NAT", "ADB"}
+	if slices.Contains(illegalScratchpads, contents) {
+		sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalScratchpad).Error()
+	}
 
 	if isSecondary {
 		ctx.world.SetSecondaryScratchpad(callsign, contents, nil,
@@ -3183,10 +3187,10 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 	haveTrianglePrefix := strings.HasPrefix(controller, STARSTriangleCharacter)
 	if controller == "C" || (haveTrianglePrefix && lc == 3) {
 		if lc == 3 {
-		if control := singleScope(ctx, string(controller[2])); control != nil {
-			return control.Callsign, nil
+			if control := singleScope(ctx, string(controller[2])); control != nil {
+				return control.Callsign, nil
+			}
 		}
-	}
 		if callsign == "" {
 			return "", errors.New("Cannot calculate airspace")
 		}
@@ -3196,14 +3200,14 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 		}
 		c := ctx.world.GetController(control)
 		if c == nil {
-			return "", errors.New("Error finding "+control)
+			return "", errors.New("Error finding " + control)
 		}
 		if control != "" && ((controller == "C" && toCenter) || (controller == c.FacilityIdentifier && !toCenter) ||
 			(controller == ctx.world.GetController(control).FacilityIdentifier && !toCenter)) {
 			state := sp.Aircraft[callsign]
 			state.LastKnownHandoff = ctx.world.GetController(control).Scope
 			return control, nil
-		} 
+		}
 	} else {
 		// Non ARTCC airspaceawareness handoffs
 		if lc == 1 && !haveTrianglePrefix { // Must be a same sector.
@@ -3326,16 +3330,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 	ac, acDistance := sp.tryGetClosestAircraft(ctx.world, mousePosition, transforms)
 	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
 
-	isControllerId := func(id string) bool {
-		// FIXME: check--this is likely to be pretty slow, relatively
-		// speaking...
-		for _, ctrl := range ctx.world.GetAllControllers() {
-			if ctrl.SectorId == id {
-				return true
-			}
-		}
-		return false
-	}
+	// isControllerId := func(id string) bool {
+	// 	// FIXME: check--this is likely to be pretty slow, relatively
+	// 	// speaking...
+	// 	for _, ctrl := range ctx.world.GetAllControllers() {
+	// 		if ctrl.SectorId == id {
+	// 			return true
+	// 		}
+	// 	}
+	// 	return false
+	// }
 
 	ps := &sp.CurrentPreferenceSet
 
@@ -3476,7 +3480,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				}
 				return
 			} else if (unicode.IsDigit(rune(cmd[0])) && len(cmd) == 1) ||
-				(len(cmd) == 2 && unicode.IsDigit(rune(cmd[1]))) {
+				(len(cmd) == 2 && unicode.IsDigit(rune(cmd[1])) && cmd[0] == cmd[1]) {
 				err := sp.setLeaderLine(ctx, ac, cmd)
 				if err != nil {
 					status.err = err
@@ -3492,25 +3496,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				ctx.world.DeleteAircraft(ac, func(e error) {
 					status.err = ErrSTARSIllegalTrack
 				})
-				status.clear = true
-				return
-			} else if isControllerId(cmd) || cmd == "C" { // For ARTCC handoffs
-				if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err != nil {
-					// Try running it as a command
-					ctx.world.RunAircraftCommands(ac, cmd,
-						func(err error) {
-							// If it's not a command, set the scratchpad if it fits.
-							if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
-								if err != nil {
-									status.err = GetSTARSError(err)
-									return
-								}
-							} else {
-								status.err = err
-								return
-							}
-						})
-				}
 				status.clear = true
 				return
 			} else if cmd == "*J" {
@@ -3542,8 +3527,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
 				// STARS Manual 6-70 (On slew). Cannot go interfacility
-				// TODO: Or can be used to accept a pointout as a handoff.
-
+				// TODO: Or can be used to accept a pointout as a handoff
 				if cmd == "**" { // Non specified TCP
 					if ctx.world.STARSFacilityAdaptation.ForceQLToSelf && ac.TrackingController == ctx.world.Callsign {
 						state.ForceQL = true
@@ -3629,7 +3613,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				status.clear = true
 				return
 			} else if alt, err := strconv.Atoi(cmd); err == nil && len(cmd) == 3 {
-				state.pilotAltitude = alt * 100
+				status.err = GetSTARSError(ErrSTARSIllegalFunc) /* Pilot reported altitude can only be entered if there is no mode C, so until
+				that is simulated, we're just goint to automatically return an error
+				*/
+				return
+				state.pilotAltitude = alt
 				status.clear = true
 				return
 			} else if len(cmd) == 5 && cmd[:2] == "++" {
@@ -3698,7 +3686,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[lc-1] == '*' { // Some sort of pointout
 				// First check for errors. (Manual 6-73)
-
 				// Check if arrival
 				for _, airport := range ctx.world.ArrivalAirports {
 					if airport.Name == ac.FlightPlan.ArrivalAirport {
@@ -3737,13 +3724,14 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 				} else {
-					if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
-						status.clear = true
-						return
+					if control, err := sp.calculateController(ctx, cmd, ac.Callsign); err == nil {
+						if err := sp.handoffTrack(ctx, ac.Callsign, control); err == nil {
+							status.clear = true
+							return
+						}
 					}
 					// Otherwise fall through to try running it as a command
 				}
-
 				// If it didn't match a controller, try to run it as a command
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
@@ -3898,7 +3886,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				} else {
 					// Is it an altitude or a scratchpad update?
 					if alt, err := strconv.Atoi(cmd); err == nil && len(cmd) == 3 {
-						state.pilotAltitude = alt * 100
+						status.err = GetSTARSError(ErrSTARSIllegalFunc) /* Pilot reported altitude can only be entered if there is no mode C, so until
+						that is simulated, we're just goint to automatically return an error
+						*/
+						return
+						state.pilotAltitude = alt
 						status.clear = true
 					} else {
 						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary); err != nil {
@@ -6120,6 +6112,9 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		}
 		if ac.SecondaryScratchpad != "" {
 			field3 = append(field3, ac.SecondaryScratchpad)
+		}
+		if state.pilotAltitude != 0 {
+			field3 = append(field3, fmt.Sprintf("%v*", state.pilotAltitude))
 		}
 		if len(field3) == 1 {
 			ap := ac.FlightPlan.ArrivalAirport
