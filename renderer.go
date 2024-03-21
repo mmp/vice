@@ -257,6 +257,7 @@ func (cb *CommandBuffer) SetDrawBounds(b Extent2D) {
 	scale := platform.FramebufferSize()[1] / platform.DisplaySize()[1]
 	x0, y0 := int(scale*b.p0[0]), int(scale*b.p0[1])
 	w, h := int(scale*b.Width()), int(scale*b.Height())
+	w, h = max(w, 0), max(h, 0)
 	cb.Scissor(x0, y0, w, h)
 	cb.Viewport(x0, y0, w, h)
 }
