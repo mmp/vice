@@ -5232,22 +5232,37 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			continue
 		}
 
-		trackId := ""
-		if state.LastKnownHandoff == "" {
-			state.LastKnownHandoff = "*"
-		}
+		/* TODO: Having the scope char reflect who STARS thinks is tracking the target. This will probably take something like a map[string]struct{}
+		in the World struct, which will contain all of the facility specific information. This is where local flight plans will be stored, and any other
+		local information that a STARS facility may contain
+		*/
 
+		// trackId := ""
+		// if state.LastKnownHandoff == "" {
+		// 	state.LastKnownHandoff = "*"
+		// }
+
+		// if ac.TrackingController != "" {
+		// 	trackId = "?"
+		// 	octrl := ctx.world.GetController(ctx.world.Callsign)
+		// 	if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil && octrl != nil &&
+		// 		ctx.world.GetController(ac.TrackingController).FacilityIdentifier == octrl.FacilityIdentifier {
+		// 		trackId = ctrl.Scope
+		// 	} else {
+		// 		trackId = "*"
+		// 	}
+		// } else {
+		// 	trackId = "*"
+		// }
+
+
+		trackId := ""
 		if ac.TrackingController != "" {
 			trackId = "?"
-			octrl := ctx.world.GetController(ctx.world.Callsign)
-			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil && octrl != nil &&
-				ctx.world.GetController(ac.TrackingController).FacilityIdentifier == octrl.FacilityIdentifier {
+			octrl := ctx.world.GetController(ctx.world.Callsign) 
+			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil && octrl != nil {
 				trackId = ctrl.Scope
-			} else {
-				trackId = state.LastKnownHandoff
 			}
-		} else {
-			trackId = "*"
 		}
 
 		// "cheat" by using ac.Heading() if we don't yet have two radar tracks to compute the
