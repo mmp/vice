@@ -3217,26 +3217,26 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 			return "", errors.New("Cannot calculate airspace")
 		}
 		if controller == "C" {
-		control, toCenter := calculateAirspace(ctx, callsign)
-		if control == "no target" {
-			return "", errors.New("Error calculate controller")
+			control, toCenter := calculateAirspace(ctx, callsign)
+			if control == "no target" {
+				return "", errors.New("Error calculate controller")
+			}
+			c := ctx.world.GetController(control)
+			if c == nil {
+				return "", errors.New("Error finding " + control)
+			}
+			if control != "" && ((controller == "C" && toCenter) || (controller == c.FacilityIdentifier && !toCenter) ||
+				(controller == ctx.world.GetController(control).FacilityIdentifier && !toCenter)) {
+				state := sp.Aircraft[callsign]
+				state.LastKnownHandoff = ctx.world.GetController(control).Scope
+				return control, nil
+			}
+		} else {
+			control := ctx.world.GetController(controller)
+			if control != nil {
+				return control.Callsign, nil
+			}
 		}
-		c := ctx.world.GetController(control)
-		if c == nil {
-			return "", errors.New("Error finding " + control)
-		}
-		if control != "" && ((controller == "C" && toCenter) || (controller == c.FacilityIdentifier && !toCenter) ||
-			(controller == ctx.world.GetController(control).FacilityIdentifier && !toCenter)) {
-			state := sp.Aircraft[callsign]
-			state.LastKnownHandoff = ctx.world.GetController(control).Scope
-			return control, nil
-		}
-	} else {
-		control := ctx.world.GetController(controller)
-		if control != nil {
-			return control.Callsign, nil
-		}
-	}
 
 	} else {
 		// Non ARTCC airspaceawareness handoffs
@@ -3748,11 +3748,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 				} else {
-						if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
-							status.clear = true
-							return
-						}
+					if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
+						status.clear = true
+						return
 					}
+				}
 				// If it didn't match a controller, try to run it as a command
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
@@ -6160,7 +6160,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 						field4 = ac.RedirectedHandoff.RedirectedTo[len(ac.RedirectedHandoff.RedirectedTo)-1:]
 					} else {
 						field4 = ctx.world.GetController(ac.RedirectedHandoff.RedirectedTo).FacilityIdentifier
-						
+
 					}
 				} else {
 					if ctrl.ERAMFacility { // Same facility

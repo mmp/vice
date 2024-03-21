@@ -2198,7 +2198,7 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.ErrorString("controller \"%s\" not found for \"initial_controller\"", ar.InitialController)
 	}
 
-	for _, controller :=  range sg.ControlPositions {
+	for _, controller := range sg.ControlPositions {
 		if controller.ERAMFacility && controller.FacilityIdentifier == "" {
 			e.ErrorString(fmt.Sprintf("%v is an ERAM facility, but has no facility id specified", controller.Callsign))
 		}
