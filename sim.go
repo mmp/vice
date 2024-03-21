@@ -2456,7 +2456,9 @@ type HeadingArgs struct {
 func (s *Sim) AssignHeading(hdg *HeadingArgs) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-
+	if hdg.Heading%5 != 0 { // Just so that scratchpads like R11 can go in
+		return errors.New("Heading too specific")
+	}
 	return s.dispatchControllingCommand(hdg.ControllerToken, hdg.Callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			if hdg.Present {
