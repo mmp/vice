@@ -11,6 +11,7 @@ import (
 	"cmp"
 	"errors"
 	"fmt"
+	"reflect"
 	"runtime"
 	"slices"
 	"sort"
@@ -3045,6 +3046,14 @@ func (sp *STARSPane) updateQL(ctx *PaneContext, input string) (ok bool, previewI
 	return
 }
 
+func (sp *STARSPane) updateWarnings(ctx *PaneContext, callsign string, warnings []string) error {
+	ctx.world.UpdateWarnings(callsign, warnings, nil,
+		func(err error) {
+			sp.previewAreaOutput = GetSTARSError(err).Error()
+		})
+		return nil
+}
+
 func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) error {
 	hasDelta := strings.Contains(contents, STARSTriangleCharacter)
 	lc := len(contents)
@@ -3446,7 +3455,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						sp.initiateTrack(ctx, ac.Callsign)
 						return
 					}
-				} else if db := sp.datablockType(ctx.world, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
+				} 
+				 if db := sp.datablockType(ctx.world, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
 					state.FullLDB = time.Now().Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
 				} else if db == FullDatablock && ac.TrackingController != ctx.world.Callsign {
@@ -3521,7 +3531,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
 				// Do not clear the input area to allow entering a fix for the second location
 				return
-			} else if cmd == "HJ" || cmd == "RF" || cmd == "EM" || cmd == "MI" || cmd == "SI" {
+			} else if cmd == "HJ" || cmd == "RF" || cmd == "EM" || cmd == "MI" || cmd == "SI" || cmd == "LL" {
 				state.SPCOverride = cmd
 				status.clear = true
 				return
@@ -4670,7 +4680,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		if filter.All || filter.SpecialPurposeCodes {
 			// Special purpose codes listed in red, if anyone is squawking
 			// those.
-			var hj, rf, em, mi bool
+			var hj, rf, em, mi, ll bool
 			for _, ac := range aircraft {
 				state := sp.Aircraft[ac.Callsign]
 				if ac.Squawk == Squawk(0o7500) || state.SPCOverride == "HJ" {
@@ -4681,6 +4691,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 					em = true
 				} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
 					mi = true
+				} else if state.SPCOverride == "LL" {
+					ll = true
 				}
 			}
 
@@ -4696,6 +4708,9 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			}
 			if mi {
 				codes = append(codes, "MI")
+			} 
+			if ll {
+				codes = append(codes, "LL")
 			}
 			if len(codes) > 0 {
 				td.AddText(strings.Join(codes, " "), pw, alertStyle)
@@ -5954,10 +5969,17 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		state.Warnings = append(state.Warnings, "EM")
 	} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
 		state.Warnings = append(state.Warnings, "MI")
+	} else if state.SPCOverride == "LL" {
+		state.Warnings = append(state.Warnings, "LL")
 	}
 	if index := slices.Index(state.Warnings, "LA"); index != -1 && !state.MSAW {
 		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
 	}
+
+	if !reflect.DeepEqual(state.Warnings, ac.Warnings) && ac.TrackingController == ctx.world.Callsign{
+		sp.updateWarnings(ctx, ac.Callsign, state.Warnings)
+	}
+	state.Warnings = ac.Warnings
 
 	state.SPCOverride = ""
 	if !ps.DisableCAWarnings &&
@@ -6070,7 +6092,6 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		return dbs
 
 	case FullDatablock:
-		user := ctx.world.GetController(ctx.world.Callsign)
 		// Line 1: fields 1, 2, and 8 (surprisingly). Field 8 may be multiplexed.
 		field1 := ac.Callsign
 
@@ -6097,7 +6118,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = []string{"", " PO"}
 		} else if redirect := ac.RedirectedHandoff; (rd && len(redirect.Redirector) > 0 && ac.RedirectedHandoff.RedirectedTo != "") ||
 			((redirect.RedirectedTo == ctx.world.Callsign) ||
-				(ac.TrackingController == user.Callsign && redirect.OrigionalOwner != "")) {
+				(ac.TrackingController == ctx.world.Callsign && redirect.OrigionalOwner != "")) {
 			field8 = []string{" RD"}
 		} else if slices.Contains(ac.RedirectedHandoff.Redirector, ctx.world.Callsign) || ac.RedirectedHandoff.RDIndicator {
 			field8 = []string{" RD"}

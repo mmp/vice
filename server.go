@@ -115,6 +115,20 @@ func (s *SimProxy) SetGlobalLeaderLine(callsign string, direction *CardinalOrdin
 	}, nil, nil)
 }
 
+type UpdateWarningsArgs struct {
+	ControllerToken string 
+	Callsign string 
+	Warnings []string
+}
+
+func (s *SimProxy) UpdateWarnings(callsign string, warnings []string) *rpc.Call {
+	return s.Client.Go("Sim.UpdateWarnings", &UpdateWarningsArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Warnings: warnings,
+	}, nil, nil)
+}
+
 func (s *SimProxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
 	return s.Client.Go("Sim.SetScratchpad", &SetScratchpadArgs{
 		ControllerToken: s.ControllerToken,
@@ -675,6 +689,14 @@ type SetScratchpadArgs struct {
 	ControllerToken string
 	Callsign        string
 	Scratchpad      string
+}
+
+func (sd *SimDispatcher) UpdateWarnings(a *UpdateWarningsArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.UpdateWarnings(a.ControllerToken, a.Callsign, a.Warnings)
+	}
 }
 
 func (sd *SimDispatcher) SetScratchpad(a *SetScratchpadArgs, _ *struct{}) error {
