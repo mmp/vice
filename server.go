@@ -116,16 +116,16 @@ func (s *SimProxy) SetGlobalLeaderLine(callsign string, direction *CardinalOrdin
 }
 
 type UpdateWarningsArgs struct {
-	ControllerToken string 
-	Callsign string 
-	Warnings []string
+	ControllerToken string
+	Callsign        string
+	Warnings        []string
 }
 
 func (s *SimProxy) UpdateWarnings(callsign string, warnings []string) *rpc.Call {
 	return s.Client.Go("Sim.UpdateWarnings", &UpdateWarningsArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
-		Warnings: warnings,
+		Warnings:        warnings,
 	}, nil, nil)
 }
 

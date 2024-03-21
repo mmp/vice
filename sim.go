@@ -1996,10 +1996,10 @@ func (s *Sim) UpdateWarnings(token, callsign string, warnings []string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackingCommand(token, callsign,
-	func(c *Controller, a *Aircraft) []RadioTransmission {
-		a.Warnings = warnings
-		return nil
-	})
+		func(c *Controller, a *Aircraft) []RadioTransmission {
+			a.Warnings = warnings
+			return nil
+		})
 }
 
 func (s *Sim) SetScratchpad(token, callsign, scratchpad string) error {

@@ -3051,7 +3051,7 @@ func (sp *STARSPane) updateWarnings(ctx *PaneContext, callsign string, warnings 
 		func(err error) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
 		})
-		return nil
+	return nil
 }
 
 func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) error {
@@ -3455,8 +3455,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						sp.initiateTrack(ctx, ac.Callsign)
 						return
 					}
-				} 
-				 if db := sp.datablockType(ctx.world, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
+				}
+				if db := sp.datablockType(ctx.world, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
 					state.FullLDB = time.Now().Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
 				} else if db == FullDatablock && ac.TrackingController != ctx.world.Callsign {
@@ -4708,7 +4708,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			}
 			if mi {
 				codes = append(codes, "MI")
-			} 
+			}
 			if ll {
 				codes = append(codes, "LL")
 			}
@@ -5976,7 +5976,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
 	}
 
-	if !reflect.DeepEqual(state.Warnings, ac.Warnings) && ac.TrackingController == ctx.world.Callsign{
+	if !reflect.DeepEqual(state.Warnings, ac.Warnings) && ac.TrackingController == ctx.world.Callsign {
 		sp.updateWarnings(ctx, ac.Callsign, state.Warnings)
 	}
 	state.Warnings = ac.Warnings
