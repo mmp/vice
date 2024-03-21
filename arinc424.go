@@ -568,7 +568,7 @@ func parseSTAR(recs []ssaRecord) *STAR {
 			if !ok {
 				base, ok = transitions["ALL"]
 			}
-			if base == nil {
+			if !ok {
 				// There's no common segment, which is fine
 				star.Transitions[t] = wps
 			} else {

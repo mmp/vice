@@ -606,7 +606,7 @@ type STARSPreferenceSet struct {
 
 	// TODO: review--should some of the below not be in prefs but be in STARSPane?
 
-	DisplayUncorrelatedTargets bool
+	// DisplayUncorrelatedTargets bool // NOT USED
 
 	DisableCAWarnings bool
 	DisableMSAW       bool
@@ -615,7 +615,7 @@ type STARSPreferenceSet struct {
 	AutomaticFDBOffset       bool
 
 	DisplayTPASize               bool
-	DisplayATPAIntrailDist       bool
+	DisplayATPAInTrailDist       bool `json:"DisplayATPAIntrailDist"`
 	DisplayATPAWarningAlertCones bool
 	DisplayATPAMonitorCones      bool
 
@@ -818,7 +818,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.AltitudeFilters.Unassociated = [2]int{100, 60000}
 	ps.AltitudeFilters.Associated = [2]int{100, 60000}
 
-	ps.DisplayUncorrelatedTargets = true
+	//ps.DisplayUncorrelatedTargets = true
 
 	ps.DisplayTPASize = true
 	ps.DisplayATPAWarningAlertCones = true
@@ -1434,10 +1434,10 @@ func (sp *STARSPane) Upgrade(from, to int) {
 	}
 	if from < 18 {
 		// ATPA; set defaults
-		sp.CurrentPreferenceSet.DisplayATPAIntrailDist = true
+		sp.CurrentPreferenceSet.DisplayATPAInTrailDist = true
 		sp.CurrentPreferenceSet.DisplayATPAWarningAlertCones = true
 		for i := range sp.PreferenceSets {
-			sp.PreferenceSets[i].DisplayATPAIntrailDist = true
+			sp.PreferenceSets[i].DisplayATPAInTrailDist = true
 			sp.PreferenceSets[i].DisplayATPAWarningAlertCones = true
 		}
 	}
@@ -1881,13 +1881,13 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		case "*DE":
 			// Enable ATPA in-trail distances
-			ps.DisplayATPAIntrailDist = true
+			ps.DisplayATPAInTrailDist = true
 			status.clear = true
 			return
 
 		case "*DI":
 			// Inhibit ATPA in-trail distances
-			ps.DisplayATPAIntrailDist = false
+			ps.DisplayATPAInTrailDist = false
 			status.clear = true
 			return
 
@@ -2161,8 +2161,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			status.clear = true
 			return
 		case 2:
-			sp.handoffTrack(ctx, lookupCallsign(f[1], false), f[0])
-			status.clear = true
+			if err := sp.handoffTrack(ctx, lookupCallsign(f[1], false), f[0]); err != nil {
+				status.err = GetSTARSError(err)
+			} else {
+				status.clear = true
+			}
 			return
 		}
 
@@ -3127,24 +3130,22 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 func calculateAirspace(ctx *PaneContext, callsign string) (string, bool) {
 	ac := ctx.world.Aircraft[callsign]
 	if ac == nil {
-		return "no target", false 
+		return "no target", false
 	}
 	aircraftType := database.AircraftPerformance[ac.FlightPlan.BaseType()].Engine.AircraftType
-		for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
-			for _, fix := range rules.Fix {
-				if strings.Contains(ac.FlightPlan.Route, fix) || fix == "ALL" {
-					alt := rules.AltitudeRange
-					if (alt[0] == 0 && alt[1] == 0) /* none specified */ ||
-						(ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1]) {
-						if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, aircraftType) {
-							return rules.ReceivingController, rules.ToCenter
-						}
+	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
+		for _, fix := range rules.Fix {
+			if strings.Contains(ac.FlightPlan.Route, fix) || fix == "ALL" {
+				alt := rules.AltitudeRange
+				if (alt[0] == 0 && alt[1] == 0) /* none specified */ ||
+					(ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1]) {
+					if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, aircraftType) {
+						return rules.ReceivingController, rules.ToCenter
 					}
 				}
 			}
 		}
-	
-	
+	}
 
 	return "", false
 }
@@ -3439,9 +3440,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						sp.initiateTrack(ctx, ac.Callsign)
 						return
 					}
-				}
-				db := sp.datablockType(ctx.world, ac)
-				if db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
+				} else if db := sp.datablockType(ctx.world, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
 					state.FullLDB = time.Now().Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
 				} else if db == FullDatablock && ac.TrackingController != ctx.world.Callsign {
@@ -3502,14 +3501,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						func(err error) {
 							// If it's not a command, set the scratchpad if it fits.
 							if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
-								err := sp.setScratchpad(ctx, ac.Callsign, cmd, false)
 								if err != nil {
 									status.err = GetSTARSError(err)
 									return
 								}
 							} else {
-								globalConfig.Audio.PlayOnce(AudioCommandError)
-								sp.previewAreaOutput = GetSTARSError(err).Error()
+								status.err = err
+								return
 							}
 						})
 				}
@@ -3721,8 +3719,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				} else {
 					status.clear = true
 					sp.pointOut(ctx, ac.Callsign, control)
-					return
 				}
+				return
 
 			} else if len(cmd) > 0 {
 				// See if cmd works as a sector id; if so, make it a handoff.
@@ -3739,11 +3737,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 				} else {
-					err := sp.handoffTrack(ctx, ac.Callsign, cmd)
-					if err == nil {
+					if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
 						status.clear = true
 						return
 					}
+					// Otherwise fall through to try running it as a command
 				}
 
 				// If it didn't match a controller, try to run it as a command
@@ -3751,10 +3749,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					func(err error) {
 						// If it's not a valid command and fits the requirements for a scratchpad, set the scratchpad.
 						if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
-							sp.setScratchpad(ctx, ac.Callsign, cmd, false)
+							if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
+								status.err = err
+							}
 						} else {
-							globalConfig.Audio.PlayOnce(AudioCommandError)
-							sp.previewAreaOutput = GetSTARSError(err).Error()
+							status.err = err
 						}
 					})
 				status.clear = true
@@ -3778,8 +3777,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				status.clear = true
 				sp.cancelHandoff(ctx, ac.Callsign)
 			} else {
-				status.clear = true
-				sp.handoffTrack(ctx, ac.Callsign, cmd)
+				if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err != nil {
+					status.err = GetSTARSError(err)
+				} else {
+					status.clear = true
+				}
 			}
 			return
 
@@ -4216,7 +4218,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		STARSDisabledButton("CURSOR\nHOME", STARSButtonFull, buttonScale)
 		STARSDisabledButton("CSR SPD\n4", STARSButtonFull, buttonScale)
 		STARSDisabledButton("MAP\nUNCOR", STARSButtonFull, buttonScale)
-		STARSToggleButton("UNCOR", &ps.DisplayUncorrelatedTargets, STARSButtonFull, buttonScale)
+		STARSDisabledButton("UNCOR", STARSButtonFull, buttonScale)
 		STARSDisabledButton("BEACON\nMODE-2", STARSButtonFull, buttonScale)
 		STARSDisabledButton("RTQC", STARSButtonFull, buttonScale)
 		STARSDisabledButton("MCP", STARSButtonFull, buttonScale)
@@ -4470,8 +4472,8 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if STARSSelectButton("A/TPA\nMILEAGE\n"+onoff(ps.DisplayTPASize), STARSButtonFull, buttonScale) {
 			ps.DisplayTPASize = !ps.DisplayTPASize
 		}
-		if STARSSelectButton("INTRAIL\nDIST\n"+onoff(ps.DisplayATPAIntrailDist), STARSButtonFull, buttonScale) {
-			ps.DisplayATPAIntrailDist = !ps.DisplayATPAIntrailDist
+		if STARSSelectButton("INTRAIL\nDIST\n"+onoff(ps.DisplayATPAInTrailDist), STARSButtonFull, buttonScale) {
+			ps.DisplayATPAInTrailDist = !ps.DisplayATPAInTrailDist
 		}
 		if STARSSelectButton("ALERT\nCONES\n"+onoff(ps.DisplayATPAWarningAlertCones), STARSButtonFull, buttonScale) {
 			ps.DisplayATPAWarningAlertCones = !ps.DisplayATPAWarningAlertCones
@@ -5863,8 +5865,11 @@ func (sp *STARSPane) checkInTrailCwtSeparation(back, front *Aircraft) {
 			nmdistance2ll(vol.Threshold, state.TrackPosition()) < vol.Dist25nmApproach {
 
 			// between aircraft established on the final approach course
-			if back.OnApproach(false) && front.OnApproach(false) {
-				// TODO: Required separation must exist prior to applying 2.5 NM separation (TBL 5-5-2)
+			// Note 1: checked with OnExtendedCenterline since reduced separation probably
+			// doesn't apply to approaches with curved final approach segment
+			// Note 2: 0.2 NM is slightly less than full-scale deflection at 5 NM out
+			if back.OnExtendedCenterline(.2) && front.OnExtendedCenterline(.2) {
+				// Not-implemented: Required separation must exist prior to applying 2.5 NM separation (TBL 5-5-2)
 				cwtSeparation = 2.5
 			}
 		}
@@ -5881,16 +5886,17 @@ func (sp *STARSPane) checkInTrailCwtSeparation(back, front *Aircraft) {
 	}
 
 	// front, back aircraft
-	fac := MakeModeledAircraft(front, sp.Aircraft[front.Callsign], vol.Threshold)
-	bac := MakeModeledAircraft(back, state, vol.Threshold)
+	frontModel := MakeModeledAircraft(front, sp.Aircraft[front.Callsign], vol.Threshold)
+	backModel := MakeModeledAircraft(back, state, vol.Threshold)
 
 	// Will there be a MIT violation s seconds in the future?  (Note that
 	// we don't include altitude separation here since what we need is
 	// distance separation by the threshold...)
-	fp, bp := fac.p, bac.p
-	for s := float32(0); s < 45; s++ {
-		fp, bp := fac.NextPosition(fp), bac.NextPosition(bp)
-		if distance2f(fp, bp) < cwtSeparation { // no bueno
+	frontPosition, backPosition := frontModel.p, backModel.p
+	for s := 0; s < 45; s++ {
+		frontPosition, backPosition = frontModel.NextPosition(frontPosition), backModel.NextPosition(backPosition)
+		distance := distance2f(frontPosition, backPosition)
+		if distance < cwtSeparation { // no bueno
 			if s <= 24 {
 				// Error if conflict expected within 24 seconds (6-159).
 				state.ATPAStatus = ATPAStatusAlert
@@ -5942,7 +5948,6 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		state.LeaderLineDirection = state.ChosenLeaderLine
 	}
 
-	
 	if index := slices.Index(state.Warnings, state.SPCOverride); index != -1 {
 		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
 	} else if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW && !slices.Contains(state.Warnings, "LA") {
@@ -6041,7 +6046,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 				} else { // Different facility
 					field2 = ctrl.FacilityIdentifier
 				}
-				
+
 			}
 		}
 
@@ -6181,7 +6186,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		var line3FieldColors *STARSDatablockFieldColors
 		if state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert {
 			field6 = "*TPA"
-		} else if state.IntrailDistance != 0 && sp.CurrentPreferenceSet.DisplayATPAIntrailDist {
+		} else if state.IntrailDistance != 0 && sp.CurrentPreferenceSet.DisplayATPAInTrailDist {
 			field6 = fmt.Sprintf("%.2f", state.IntrailDistance)
 
 			if state.ATPAStatus == ATPAStatusWarning {

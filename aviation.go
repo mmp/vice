@@ -1035,9 +1035,9 @@ func parsePTExtent(pt *ProcedureTurn, extent string) error {
 		pt.NmLimit = float32(limit)
 	} else if extent[len(extent)-3:] == "min" {
 		if limit, err = strconv.ParseFloat(extent[:len(extent)-3], 32); err != nil {
-			return fmt.Errorf("%s: unable to parse minutes procedure turn: %v", extent, err)
+			return fmt.Errorf("%s: unable to parse minutes in procedure turn: %v", extent, err)
 		}
-		pt.MinuteLimit = float32(pt.MinuteLimit)
+		pt.MinuteLimit = float32(limit)
 	} else {
 		return fmt.Errorf("%s: invalid extent units for procedure turn", extent)
 	}
