@@ -3049,7 +3049,7 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 	if strings.Contains(contents, STARSTriangleCharacter) {
 		lc -= 1
 	}
-	var index int 
+	var index int
 	if isSecondary {
 		index = 1
 	}
@@ -3326,7 +3326,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 	// See if an aircraft was clicked
 	ac, acDistance := sp.tryGetClosestAircraft(ctx.world, mousePosition, transforms)
 	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
-
 
 	ps := &sp.CurrentPreferenceSet
 
@@ -3717,9 +3716,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
 						// If it's not a valid command and fits the requirements for a scratchpad, set the scratchpad.
-							if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
-								status.err = err
-							}
+						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
+							status.err = err
+						}
 					})
 
 				status.clear = true
