@@ -297,6 +297,10 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				}
 			}
 
+			if _, ok := sg.ControlPositions[callsign]; !ok {
+				e.ErrorString("controller \"%s\" not defined in the scenario group's \"control_positions\"", callsign)
+			}
+
 			// Make sure any airports claimed for departures are valid
 			for _, airportSID := range ctrl.Departures {
 				ap, sidRunway, haveSIDRunway := strings.Cut(airportSID, "/")

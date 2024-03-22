@@ -8563,6 +8563,12 @@
       "scope_char": "W",
       "sector_id": "4W"
     },
+    "MCO_A_APP": {
+      "frequency": 132650,
+      "full_name": "Orlando Approach",
+      "scope_char": "A",
+      "sector_id": "4A"
+    },
     "MCO_M_APP": {
       "frequency": 123850,
       "full_name": "Orlando Approach",

@@ -1137,7 +1137,7 @@
                         "primary": true,
                         "arrivals": ["SIZLR3", "ZIGGY7", "SCBBY2/THRNE3", "SCBBY2", "SETER5", "JCKIE2/DSNEE5", "DSNEE5 North"]
                     },
-                    "ONT_S_APP": {
+                    "ONT_P_APP": {
                         "backup": "ONT_N_APP",
                         "departures": ["KONT"]
                     },
@@ -1302,7 +1302,7 @@
                         "primary": true,
                         "arrivals": ["SIZLR3", "JCKIE2 East", "ROOBY3", "ROOBY3 East", "SCBBY2 East"]
                     },
-                    "ONT_S_APP": {
+                    "ONT_P_APP": {
                         "backup": "ONT_N_APP",
                         "departures": ["KONT"]
                     },

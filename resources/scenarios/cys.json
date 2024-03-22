@@ -490,12 +490,6 @@
         }
       },
       "solo_controller": "CYS_APP",
-      "multi_controllers": {
-        "default" : {
-              "CYS_APP": {"primary": true, "arrivals": ["DEN", "BZN", "OMA", "SEA"]},
-              "CYS_DEP": {"backup": "CYS_APP", "departures": ["KCYS"]}
-            }
-          },
       "controllers": [
         "CYS_TWR",
         "CYS_APP",

@@ -329,7 +329,7 @@
                         "primary": true,
                         "departures": ["KBDL"]
                     }, 
-                    "BDL_ARR": {
+                    "BDL_APP": {
                         "backup": "BDL_DEP",
                         "arrivals": ["STELA1", "DPK3"]
                     }
