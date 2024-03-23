@@ -3050,7 +3050,7 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 		lc -= 1
 	}
 	if ac := ctx.world.GetAircraft(callsign, false); ac != nil && ac.TrackingController == "" {
-		return ErrSTARSIllegalTrack /* This is because /OK can be used for associated tracks that are not owned by this TCP. But /OK cannot be used 
+		return ErrSTARSIllegalTrack /* This is because /OK can be used for associated tracks that are not owned by this TCP. But /OK cannot be used
 		for unassociated tracks. So might as well weed them out now. */
 	}
 	var index int
@@ -3070,10 +3070,10 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 	}
 
 	for _, letter := range contents {
-		var found bool 
+		var found bool
 		for _, allowed := range allowedCharacters {
 			if strings.Contains(allowed, string(letter)) {
-				found = true 
+				found = true
 				break
 			}
 		}
