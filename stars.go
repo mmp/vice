@@ -2395,6 +2395,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		case "N":
 			// CRDA...
+			if len(sp.ConvergingRunways) == 0 {
+				// These are all illegal if there are no CRDA runway pairs
+				status.err = ErrSTARSIllegalFunction
+				return
+			}
 			if cmd == "" {
 				// Toggle CRDA processing (on by default). Note that when
 				// it is disabled we still hold on to CRDARunwayPairState array so
@@ -2406,17 +2411,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				ps.CRDA.ForceAllGhosts = !ps.CRDA.ForceAllGhosts
 				status.clear = true
 				return
-			} else if n := len(cmd); n >= 5 {
-				// All commands are at least 5 characters, so check that up front
-				validAirport := func(ap string) bool {
-					for _, pair := range sp.ConvergingRunways {
-						if pair.Airport == ap {
-							return true
-						}
-					}
-					return false
-				}
-
+			} else {
+				// Given a string that starts with a runway identifier and then possibly has some extra text,
+				// return the runway and the text as separate strings.
 				getRunway := func(s string) (string, string) {
 					i := 0
 					for i < len(s) {
@@ -2433,133 +2430,210 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					return s[:i], s[i:]
 				}
 
-				getState := func(ap, rwy string) (*CRDARunwayPairState, *CRDARunwayState) {
-					for i, pair := range sp.ConvergingRunways {
-						if pair.Airport != ap {
-							continue
-						}
+				// This function takes a string of the form "JFK 22LMORE"
+				// or "22LMORE" and looks for the associated
+				// CRDARunwayPairState and CRDARunwayState for an enabled
+				// CRDA runway.  "MORE" represents arbitrary text *that may
+				// contain spaces*.  If the airport is not specified, then
+				// it must be possible to unambiguously determine the
+				// airport given the runway. It returns:
+				//
+				// airport: the name of the associated airport
+				// runway: the runway identifier
+				// ps: CRDARunwayPairState for the runway
+				// rs: CRDARunwayState for the runway
+				// extra: any excess text after the runway identifier
+				// err: ErrSTARSIllegalParam if there is no such enabled
+				//   runway pair or if more than one matches when only a
+				//   runway is specified.
+				getRunwayState := func(s string) (airport string, runway string, ps *CRDARunwayPairState,
+					rs *CRDARunwayState, extra string, err error) {
+					if s[0] >= '0' && s[0] <= '9' {
+						// It starts with a runway identifier. (We'll
+						// assume CRDA isn't happening for airports
+						// with names like '87N'..)
+						runway, extra = getRunway(s)
 
-						pairState := &ps.CRDA.RunwayPairState[i]
-						if !pairState.Enabled {
-							continue
-						}
+						for i, pair := range sp.ConvergingRunways {
+							pairState := &sp.CurrentPreferenceSet.CRDA.RunwayPairState[i]
+							if !pairState.Enabled {
+								continue
+							}
+							for j, pairRunway := range pair.Runways {
+								if runway != pairRunway {
+									continue
+								}
 
-						for j, pairRunway := range pair.Runways {
-							if rwy == pairRunway {
-								return pairState, &pairState.RunwayState[j]
+								if ps != nil {
+									// We found more than one match...
+									err = ErrSTARSIllegalParam
+									return
+								}
+								airport = pair.Airport
+								ps, rs = pairState, &pairState.RunwayState[j]
 							}
 						}
-					}
-					return nil, nil
-				}
-
-				if cmd[0] == 'L' && validAirport(cmd[1:4]) {
-					// Set leader line direction: NL<airport><runway><1-9>
-					rwy, num := getRunway(cmd[4:])
-					_, runwayState := getState(cmd[1:4], rwy)
-					if len(num) == 1 {
-						if dir, ok := numpadToDirection(num[0]); ok {
-							runwayState.LeaderLineDirection = dir
-							status.clear = true
-							return
+						if ps == nil {
+							err = ErrSTARSIllegalParam
 						}
 					} else {
-						status.err = ErrSTARSCommandFormat
-					}
-				} else if ap := cmd[:3]; validAirport(ap) {
-					if cmd[n-1] == 'S' || cmd[n-1] == 'T' || cmd[n-1] == 'D' {
-						// enable/disable a runway pair
-						if index, err := strconv.Atoi(cmd[3 : n-1]); err == nil {
-							for i, pair := range sp.ConvergingRunways {
-								if pair.Airport == ap && pair.Index == index {
-									if cmd[n-1] == 'D' {
-										ps.CRDA.RunwayPairState[i].Enabled = false
-										status.clear = true
-										status.output = ap + " " + pair.getRunwaysString() + " INHIBITED"
-										return
-									} else {
-										// Make sure neither of the runways involved is already enabled with
-										// another pair.
-										for j, pairState := range ps.CRDA.RunwayPairState {
-											if !pairState.Enabled {
-												continue
-											}
-											if sp.ConvergingRunways[j].Runways[0] == pair.Runways[0] ||
-												sp.ConvergingRunways[j].Runways[0] == pair.Runways[1] ||
-												sp.ConvergingRunways[j].Runways[1] == pair.Runways[0] ||
-												sp.ConvergingRunways[j].Runways[1] == pair.Runways[1] {
-												status.err = ErrSTARSIllegalParam
-												return
-											}
-										}
+						// Expect airport and then a space.
+						var ok bool
+						airport, extra, ok = strings.Cut(s, " ")
+						if !ok {
+							err = ErrSTARSIllegalParam
+							return
+						}
 
-										if cmd[n-1] == 'S' {
-											ps.CRDA.RunwayPairState[i].Mode = CRDAModeStagger
-										} else {
-											ps.CRDA.RunwayPairState[i].Mode = CRDAModeTie
-										}
-										ps.CRDA.RunwayPairState[i].Enabled = true
-										status.output = ap + " " + pair.getRunwaysString() + " ENABLED"
-										status.clear = true
+						runway, extra = getRunway(extra)
+						for i, pair := range sp.ConvergingRunways {
+							if pair.Airport != airport {
+								continue
+							}
+
+							pairState := &sp.CurrentPreferenceSet.CRDA.RunwayPairState[i]
+							if !pairState.Enabled {
+								continue
+							}
+
+							for j, pairRunway := range pair.Runways {
+								if runway == pairRunway {
+									ps, rs = pairState, &pairState.RunwayState[j]
+									return
+								}
+							}
+						}
+						err = ErrSTARSIllegalParam
+					}
+					return
+				}
+
+				// Check these commands first; if we key off cmd[0]=='L' for example we end up issuing
+				// an error if the user actually specified an airport starting with "L"...
+				if ap, rwy, _, runwayState, extra, err := getRunwayState(cmd); err == nil {
+					if extra == "E" || (extra == "" && !runwayState.Enabled) {
+						// 6-23: enable ghosts for runway
+						runwayState.Enabled = true
+						status.output = ap + " " + rwy + " GHOSTING ENABLED"
+						status.clear = true
+						return
+					} else if extra == "I" || (extra == "" && runwayState.Enabled) {
+						// 6-23: disable ghosts for runway
+						runwayState.Enabled = false
+						status.output = ap + " " + rwy + " GHOSTING INHIBITED"
+						// this also disables the runway's visualizations
+						runwayState.DrawQualificationRegion = false
+						runwayState.DrawCourseLines = false
+						status.clear = true
+						return
+					} else if extra == " B" { // 6-31
+						runwayState.DrawQualificationRegion = !runwayState.DrawQualificationRegion
+						status.clear = true
+						return
+					} else if extra == " L" { // 6-32
+						runwayState.DrawCourseLines = !runwayState.DrawCourseLines
+						status.clear = true
+						return
+					}
+				}
+				if cmd[0] == 'L' {
+					// 6-26: Set leader line direction: NL(airport) (runway)(1-9)
+					// or: NL(runway)(1-9); runway must unambiguously define airport
+					if _, _, _, runwayState, num, err := getRunwayState(cmd[1:]); err == nil {
+						if len(num) == 1 {
+							if dir, ok := numpadToDirection(num[0]); ok {
+								runwayState.LeaderLineDirection = dir
+								status.clear = true
+								return
+							}
+						}
+						status.err = ErrSTARSCommandFormat
+						return
+					}
+				} else if cmd[0] == 'P' {
+					// These commands either start with an airport and a
+					// space or use the controller's default airport if
+					// none is specified. None of the commands otherwise
+					// allow spaces, so we can use the presence of a space
+					// to determine if an airport was specified.
+					airport, extra, ok := strings.Cut(cmd[1:], " ")
+					if !ok {
+						ctrl := ctx.world.GetController(ctx.world.Callsign)
+						airport = ctrl.DefaultAirport[1:] // drop leading "K"
+						extra = cmd[1:]
+					}
+
+					if index, err := strconv.Atoi(extra); err == nil {
+						// 6-22: toggle ghosts for a runway pair
+						// NP(airport )(idx) / NP(idx)
+						for i, pair := range sp.ConvergingRunways {
+							if pair.Airport == airport && pair.Index == index {
+								// TODO: we toggle each independently; is that correct?
+								rps := &ps.CRDA.RunwayPairState[i]
+								rps.RunwayState[0].Enabled = !rps.RunwayState[0].Enabled
+								rps.RunwayState[1].Enabled = !rps.RunwayState[1].Enabled
+								status.clear = true
+								return
+							}
+						}
+						status.err = ErrSTARSCommandFormat
+						return
+					} else {
+						// 8-11: disable/set stagger or tie mode for a runway pair
+						// NP(airport )(idx)(cmd) / NP(idx)(cmd)
+						n := len(extra)
+						if n < 2 || (extra[n-1] != 'S' && extra[n-1] != 'T' && extra[n-1] != 'D') {
+							status.err = ErrSTARSCommandFormat
+							return
+						}
+						index, err := strconv.Atoi(extra[:n-1])
+						if err != nil {
+							status.err = ErrSTARSIllegalRPC
+							return
+						}
+						for i, pair := range sp.ConvergingRunways {
+							if pair.Airport != airport || pair.Index != index {
+								continue
+							}
+
+							if extra[n-1] == 'D' {
+								ps.CRDA.RunwayPairState[i].Enabled = false
+								status.clear = true
+								status.output = airport + " " + pair.getRunwaysString() + " INHIBITED"
+								return
+							} else {
+								// Make sure neither of the runways involved is already enabled in
+								// another pair.
+								for j, pairState := range ps.CRDA.RunwayPairState {
+									if !pairState.Enabled {
+										continue
+									}
+									if sp.ConvergingRunways[j].Runways[0] == pair.Runways[0] ||
+										sp.ConvergingRunways[j].Runways[0] == pair.Runways[1] ||
+										sp.ConvergingRunways[j].Runways[1] == pair.Runways[0] ||
+										sp.ConvergingRunways[j].Runways[1] == pair.Runways[1] {
+										status.err = ErrSTARSIllegalRunway
 										return
 									}
 								}
-							}
-						}
-					} else {
-						// there should be a valid runway following the
-						// airport
-						rwy, extra := getRunway(cmd[3:])
 
-						pairState, runwayState := getState(ap, rwy)
-						if pairState != nil && runwayState != nil {
-							switch extra {
-							case "":
-								// toggle ghosts for runway
-								runwayState.Enabled = !runwayState.Enabled
-								status.output = ap + " " + rwy + " GHOSTING " +
-									Select(runwayState.Enabled, "ENABLED", "INHIBITED")
-								if !runwayState.Enabled {
-									runwayState.DrawQualificationRegion = false
-									runwayState.DrawCourseLines = false
+								if extra[n-1] == 'S' {
+									ps.CRDA.RunwayPairState[i].Mode = CRDAModeStagger
+								} else {
+									ps.CRDA.RunwayPairState[i].Mode = CRDAModeTie
 								}
-								status.clear = true
-								return
-
-							case "E":
-								// enable ghosts for runway
-								runwayState.Enabled = true
-								status.output = ap + " " + rwy + " GHOSTING ENABLED"
-								status.clear = true
-								return
-
-							case "I":
-								// disable ghosts for runway
-								runwayState.Enabled = false
-								status.output = ap + " " + rwy + " GHOSTING INHIBITED"
-								// this also disables the runway's visualizations
-								runwayState.DrawQualificationRegion = false
-								runwayState.DrawCourseLines = false
-								status.clear = true
-								return
-
-							case " B":
-								runwayState.DrawQualificationRegion = !runwayState.DrawQualificationRegion
-								status.clear = true
-								return
-
-							case " L":
-								runwayState.DrawCourseLines = !runwayState.DrawCourseLines
+								ps.CRDA.RunwayPairState[i].Enabled = true
+								ps.CRDAStatusList.Visible = true
+								status.output = airport + " " + pair.getRunwaysString() + " ENABLED"
 								status.clear = true
 								return
 							}
 						}
 					}
 				}
-
-				status.err = ErrSTARSIllegalParam
-				return
 			}
+			status.err = ErrSTARSIllegalParam
+			return
 
 		case "O":
 			if len(cmd) > 2 {
@@ -3832,13 +3906,56 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			case "N":
 				// CRDA
-				if cmd == "" || cmd == "*" { // TODO: it's not clear what the difference should be
-					if state.Ghost.State == GhostStateForced {
+				if cmd == "" {
+					clickedGhost := ghost != nil && ghostDistance < acDistance
+					if clickedGhost {
+						state.Ghost.State = GhostStateSuppressed
+					} else if slices.ContainsFunc(ghosts, func(g *GhostAircraft) bool { return g.Callsign == ac.Callsign }) {
 						state.Ghost.State = GhostStateRegular
 					} else {
-						state.Ghost.State = GhostStateForced
+						status.err = ErrSTARSIllegalTrack
 					}
-					status.clear = true
+				} else if cmd == "*" {
+					clickedGhost := ghost != nil && ghostDistance < acDistance
+					if clickedGhost {
+						// 6-27: display track information in preview area (as an arrival)
+						if fp, err := sp.flightPlanSTARS(ctx.world, ac); err != nil {
+							status.err = err
+						} else {
+							status.output = fp
+							status.clear = true
+						}
+					} else {
+						// 6-29: force/unforce ghost qualification
+						if !slices.ContainsFunc(ghosts, func(g *GhostAircraft) bool { return g.Callsign == ac.Callsign }) {
+							status.err = ErrSTARSIllegalTrack
+						} else {
+							// Is it inside an enabled approach region?
+							for i, pairState := range ps.CRDA.RunwayPairState {
+								if !pairState.Enabled {
+									continue
+								}
+								for j, rwyState := range pairState.RunwayState {
+									if !rwyState.Enabled {
+										continue
+									}
+									region := sp.ConvergingRunways[i].ApproachRegions[j]
+									if lat, _ := region.Inside(state.TrackPosition(), float32(state.TrackAltitude()),
+										ctx.world.NmPerLongitude, ctx.world.MagneticVariation); lat {
+										// All good. Whew
+										if state.Ghost.State == GhostStateForced {
+											state.Ghost.State = GhostStateRegular
+										} else {
+											state.Ghost.State = GhostStateForced
+										}
+										status.clear = true
+										return
+									}
+								}
+							}
+							status.err = ErrSTARSIllegalTrack
+						}
+					}
 				} else {
 					status.err = ErrSTARSCommandFormat
 				}
