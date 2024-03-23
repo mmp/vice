@@ -15,6 +15,6 @@ h=`file ${fn}.png | awk '{print $7}' | sed s/,//`
 
 echo '<div class="text-center">'
 echo "<img src=\"${fn}.png\" srcset=\"${fn}-2x.png 2x\" width=\"$w\" height=\"$h\">"
-echo '</div>'
+echo '</div><br>'
 
 

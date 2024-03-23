@@ -425,20 +425,20 @@
       "scope_char": "T",
       "sector_id": "1T"
     },
-    "GSP_N_APP": {
-      "frequency": 127670,
+    "GSP_W_APP": {
+      "frequency": 118800,
       "full_name": "Radar West",
       "scope_char": "W",
       "sector_id": "1W"
     },
-    "GSP_S_APP": {
-      "frequency": 123800,
+    "GSP_E_APP": {
+      "frequency": 119400,
       "full_name": "Radar East",
       "scope_char": "E",
       "sector_id": "1E"
     },
-    "GSP_W_APP": {
-      "frequency": 120150,
+    "GSP_S_APP": {
+      "frequency": 120600,
       "full_name": "Radar South",
       "scope_char": "S",
       "sector_id": "1S"

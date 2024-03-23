@@ -1286,10 +1286,10 @@ how it simulates aircraft or the STARS interface.
             <p>Two <i>scratchpad entries</i> may be associated with an aircraft&mdash;the primary and secondary scratchpads. The scratchpad is usually used to record information about how to route the aircraft&mdash;the approach it has been cleared for or its exit fix, for example.
               Here is the datablock for an aircraft where the second line is alternating between showing altitude, speed, and CWT category (here, "G"), and the scratchpad ("27L") and aircraft type ("E145").
               </p>
-<div class="text-center">
-<img src="scratchpad.gif" srcset="scratchpad-2x.gif 2x" width="202" height="70" class="img-fluid">
-</div>
-<br>
+            <div class="text-center">
+              <img src="scratchpad.gif" srcset="scratchpad-2x.gif 2x" width="202" height="70" class="img-fluid">
+            </div>
+            <br>
             <p>A single controller may own an aircraft's track and a single controller may own control of an aircraft.  The same controller may be responsible for both or different controllers may own and control a track.  A controller must have control of an aircraft in order to issue instructions to the pilot.  See the discussion of <a href="#stars-track-ownership">Track Ownership</a> below for more information about how control and track ownership are transferred between controllers.
             </p>
 
@@ -1338,8 +1338,12 @@ how it simulates aircraft or the STARS interface.
               indicates that a single digit should be entered, without any parenthesis.
               Similarly, <code>(ABC)</code> indicates that three letters are expected.
             </p>
-            <p>Many keyboard commands take an aircraft identifier, which will be denoted <code>(ACID)</code> in the following. The aircraft identifier may be given as either the aircraft's complete callsign, e.g., "UAL650", or as just part of the aircraft's callsign, if that is sufficient to unambiguously identify the aircraft, e.g., "L65".
+            <p>Many keyboard commands take an aircraft identifier, which will be denoted <code>(ACID)</code> in the following. The aircraft identifier may be given as either the aircraft's complete callsign, e.g., "UAL650", or as the aircraft's beacon code.
             </p>
+            <p>It is also common for commands to take a controller's id in the form of a TCP;
+              in the following documentation, <code>(TCP)</code> indicates such a TCP.
+              There are a number of rules that define how such TCPs are specified; they are
+              <a href="#stars-specifying-tcps">discussed in more detail below</a>.</p>
             <p>The STARS keyboard has a number of custom keys that are not present on standard keyboards.
               <i>vice</i> uses the same mappings to regular keys as <a href="https://crc.virtualnas.net/docs/#/stars">CRC STARS</a> does.
               In the following documentation, when one of the STARS keys in square brackets below is shown, the corresponding
@@ -1365,7 +1369,7 @@ how it simulates aircraft or the STARS interface.
                   <tr><td><code>[CNTR]</code></td><td>[Ctrl-F1]</td></tr>
                   <tr><td><code>[MAPS]</code></td><td>[Ctrl-F2]</td></tr>
                   <tr><td><code>[BRITE]</code></td><td>[Ctrl-F4]</td></tr>
-                  <tr><td><code>[LDR]</code></td><td>[Ctrl-F5]L</td></tr>
+                  <tr><td><code>[LDR]</code></td><td>[Ctrl-F5]</td></tr>
                   <tr><td><code>[CHARSIZE]</code></td><td>[Ctrl-F6]</td></tr>
                   <tr><td><code>[DCB-SHIFT]</code></td><td>[Ctrl-F7]</td></tr>
                   <tr><td><code>[DCB]</code></td><td>[Ctrl-F8]</td></tr>
@@ -1465,6 +1469,37 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                 </tbody>
                 </table>
+
+            <h3 id="stars-specifying-tcps">Specifying TCPs</h3>
+
+            <p>There are three elements in a full sector ID for a controller: the facility, the area and the sector.
+              Consider for example the <code>N4P</code> sector ID: the <code>N</code> stands for the 
+              N90 (New York) TRACON;  the <code>4</code> stands for the fourth area (which is the Newark area)
+              of the N90 TRACON; finally, the <code>P</code> is the Yardley sector of the Newark area.</p>
+            <p>There are four cases for how these handoffs are specified:
+              <ul>
+                <li>When handing off an aircraft between controllers in the same TRACON facility, only the area
+                  and sector need to be specified. Thus, for a handoff from Yardley (<code>N4P</code>) to
+                  LaGuardia departure (<code>N1L</code>), the Yardley controller could specify <code>1L</code>
+                  for LaGaurdia departure.</li>
+                <li>For handoffs within the same area, the area can be omitted: LaGuardia departure <code>N1L</code>
+                  can handoff to LaGuardia approach <code>N1V</code> by specifying just <code>V</code> for the
+                  controller's sector ID.</li>
+                <li>To hand off to a different facility, the facility must be specified first with the delta (∆) symbol, which is mapped to the backtick
+                  key. They also must be specified with the receiver TCP's facilty. For example, for a handoff from an N90 position to a position in the 
+                  ABE TRACON, the facility identifier for ABE must be specified. It must also contain the area and sector ID of the receiving TCP. The area and 
+                  sector ID can be ommited if there is only one TCP in that facility, or there is an airspace awareness rule (specified in the facility
+                  configuration file). Then, only the delta symbol and facility need to be specified.</li>
+                <li>To handoff to an enroute controller, the facility identifier and sector must be provided.
+                  For the home ARTCC, the facility identifier is specified with a <code>C</code>.
+                  There is an exception that if a neighboring ARTCC's facility identifier is "C",
+                  then the facility identifier for the home ARTCC changes from a C to the regular facility identifier.
+                  Thus, for ZNY, it turns from "C" to "N". The sector ID may be omitted
+                  if there is only one ERAM controller signed on or there is an airspace awareness rule defined
+                  in the configuration file for which aircraft go to which enroute controllers.</li>
+              </ul>
+              </p>
+
           </section>            
 
 	  <section class="docs-section" id="stars-quickref">
@@ -1641,18 +1676,18 @@ how it simulates aircraft or the STARS interface.
             <h3>Handing off Aircraft</h3>
 
             <p>When you are ready to hand off an aircraft's track to
-            another controller, enter the controller's ID and slew
+              another controller, enter the controller's sector ID and slew
               the aircraft. Doing so will initiate a handoff request.
               (Determining the correct controller ID to enter has a few
               subtleties and is discussed further below.) Outbound handoffs
               have an identifier for the controller stuffed into
               the second line of the datablock (here, it is the "L" between
               altitude/airspeed or airport/aircraft type.)
-            <p>
-              <div class="text-center">
-                <img src="outbound-handoff.gif" srcset="outbound-handoff-2x.gif 2x" width="133" height="79" class="img-fluid">
-              </div>
-              <br>
+              </p>
+            <div class="text-center">
+              <img src="outbound-handoff.gif" srcset="outbound-handoff-2x.gif 2x" width="133" height="79" class="img-fluid">
+            </div>
+            <br>
             <p>Once the other controller accepts the handoff, control of the aircraft's track is
               transferred to that controller. The aircraft's datablock will start
               flashing to notify you of this and the letter on the track will switch to be the
@@ -1663,59 +1698,188 @@ how it simulates aircraft or the STARS interface.
             <div class="text-center">
               <img src="outbound-handoff-accepted.gif" srcset="outbound-handoff-accepted-2x.gif 2x" width="133" height="79" class="img-fluid">
             </div>
-              <br>
+            <br>
             <p>When you are ready to transfer control of the aircraft to the controller who has
               accepted the track, slew the aircraft's radar track. The datablock will turn green,
               the aircraft will contact the other controller, and you will no longer be able to
               issue instructions to the aircraft.</p>
-<div class="text-center">
-<img src="outbound-handoff-comms.gif" srcset="outbound-handoff-comms-2x.gif 2x" width="133" height="79" class="img-fluid">
-</div>
-<br>
-
-
-            <h3>Sector IDs For Handoffs</h4> 
-            <p>A full controller has three elements. The facility, the area and the sector. Taking a look at an example sector ID <code>N4P</code>. The <code>N</code> stands for the 
-            N90 (New York) TRACON. The <code>4</code> stands for the fourth area/ the Newark area of the N90 TRACON. Finally, the <code>P</code> is the Yardley
-            sector of the Newark area.</p>
-
-            <h4>Intra-facility specification</h4>
-            <p>Intra-facility TCPs are specified with the area of the TRACON, and the sector. So a handoff from <code>4P</code> to
-            <code>1V</code> would be <code>1V</code>. If the TCP is in the same area as the initiator, the area can be ommited.</p>
-
-            <h4>Inter-facility specification</h4>
-            <p>Specifying inter-facility positions must be specified first with the delta (∆) symbol, which is mapped to the backtick
-              key. They also must be specified with the receiver TCP's facilty. For example, a handoff from an N90 position to a position in the 
-              ABE TRACON, it would need the facility identifier for ABE. It must also contain the area and sector ID of the receiving TCP. The area and 
-              sector ID can be ommited if there is only one TCP in that facility, or there is an airspace awareness rule (specified in the facility
-              configuration file). Then, only the delta symbol and facility need to be specified
-            </p>
-
-            <h4>Enroute specification</h4>
-            <p>Enroute sectors can be specified with their facility identifier and the sector. For the home ARTCC, the facility identifier is 
-            specified with a <code>C</code>. There is an exeption, if a neigboring ARTCCs facility identifier is a C, then the facility identifier 
-            for the home ARTCC would change from a C to the regular facility identifier. So for ZNY, it would turn from a C to N. The sector ID can be ommited
-            if there is only one ERAM controller signed on, or there is an airspace awareness rule defined in the configuration file.</p>
+            <div class="text-center">
+              <img src="outbound-handoff-comms.gif" srcset="outbound-handoff-comms-2x.gif 2x" width="133" height="79" class="img-fluid">
+            </div>
+            <br>
 
           </section>
 
 	  <section class="docs-section" id="tracks-datablocks">
             <h2 class="section-heading">Tracks and Datablocks</h2>
 
+            <p>Much information is encoded in the radar track symbol of an aircraft and the
+              datablock displayed next to it. STARS provides many different ways to configure
+              how this information is presented in an effort to balance providing the necessary
+              information about aircraft that are important to a controller while minimizing the
+              visual clutter from aircraft that are less relevant.</p>
+
             <h3 id="stars-datablock-types">Datablock Types</h3>
-            <h4>Partial Datablock</h4>
+
+            <p>There are three datablock formats that may be used: limited datablocks (LDBs),
+              partial datablocks (PDBs), and full datablocks (FDBs)s.
+              </p>
+
+            <h4>Limited Datablocks (LDBs)</h4>
+
+            <h4>Partial Datablock (PDBs)</h4>
             <p>Partial Datablocks are associated datablocks that are owned by another TCP. They display line 2 of a full datablock. With the exception
               of the groundspeed
             </p>
-            <h3 id="stars-leader-lines">Leader Lines</h3>
-            <p>Leader line direction can be changed with <code>leader direction (1/2/3/4/5/6/7/8/9), SLEW</code> or <code>MULTI FUNC, L, 
-              leader direction (1/2/3/4/5/6/7/8/9), SPACE, acid or bcn code, | ENTER</code>for the local user. 
-            Leader lines can also be changed globally with <code>MULTI FUNC, L, leader direction (11/22/33/44/55/66/77/88/99), SLEW</code> or 
-          <code>MULTI FUNC, L, leader dir (11/22/33/44/55/66/77/88/99), SPACE, acid or bcn code, ENTER</code></p>
-          <h3 id="stars-ptl-lines">PTL Lines</h3>
-          <p>PTL Lines (Predicted Track Lines) show the aircrafts predicted track over the course of 0.5 to 3 minutes. These lines can be adjusted in the <code>SHIFT</code> 
-          menu. <code>PTL OWN</code> will turn on PTLs for tracks that are owned by the TCP, and <code>PTL ALL</code> will display PTLs for all associated tracks in range of altitude
-        filters.</p>
+
+            <h4>Full Datablock (FDBs)</h4>
+
+
+            Consolidated Wake Turbulence (CWT) category
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Letter</th>
+                    <th>Category</th>
+                    <th>Examples</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>A</td>
+                    <td>Super</td>
+                    <td>A380</td>
+                  </tr>
+                  <tr>
+                    <td>B</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>C</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>D</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>E</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>F</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>G</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>H</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>I</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+                </table>
+
+            <h4>Datablock Display Rules</h4>
+            
+            <p>The FDB is displayed for a track if:
+            <ul>
+              <li>The track is owned by the current controller.</li>
+              <li>The track is being handed off from another controller to the current controller.</li>
+              <li>The track is a redirected handoff where the current controller has either redirected it or had it redirected to them.</li>
+              <li>Another controller has pointed out the track to the current controller and the point out hasn't been cleared.</li>
+              <li>The user has clicked on a track owned by another controller.</li>
+              <li>The track is owned by a controller whose sector id the user has quicklooked.</li>
+              <li>The track has been force quicklooked to the current controller by another controller.</li>
+              <li>"Quick look all" has been enabled by the controller.</li>
+            </ul>
+            </p>
+
+            <h3>Positioning Datablocks</h3>
+
+            <h3 id="stars-leader-lines">Leader Lines and Positioning Datablocks</h3>
+
+            <p>Leader lines connect radar tracks to the datablocks of the associated aircraft.
+              They may have eight orientations, corresponding to the eight cardinal and ordinal directions.
+              Here is an example of a radar track with a leader line East of the aircraft (left) and
+              Northwest of it (right):</p>
+            <div class="text-center">
+              <img src="leader-line-6.png" srcset="leader-line-6-2x.png 2x" width="183" height="78">
+              <img src="leader-line-7.png" srcset="leader-line-7-2x.png 2x" width="194" height="78">
+            </div><br>
+            <p>The DCB offers two buttons for configuring leader lines:</p>
+            <div class="text-center">
+              <img src="dcb-ldr.png" srcset="dcb-ldr-2x.png 2x" width="71" height="69">
+            </div><br>
+            <p>The top button, LDR DIR, is a spinner that controls the default direction of leader lines for
+              aircraft whose tracks that are owned by the current controller.
+              The bottom button, LDR, controls the length of all leader lines.</p>
+            <p>A number of keyboard commands are available to specify leader lines, including ways to specify
+              them for subsets of the aircraft. These all use the numbers 1-9 to specify a
+              leader line direction; depending on the command, 5 may be used to clear a previously-set direction or
+              it may be invalid.</p>
+            <p>If you have a numeric keypad on your keyboard, you have an easy reference to
+              the association between numbers and directions; consider the aircraft to be at the position of
+              the "5" key and then the other numbers specify the direction of the leader line relative to the
+              aircraft. If you don't have a numeric keypad, visualize one, or refer to this figure:</p>
+              <table style="table table-centered; width: auto;">
+                <tbody>
+                  <tr><td>7</td><td>8</td><td>9</td></tr>
+                  <tr><td>4</td><td><i class="fas fa-plane fa-rotate-270"></i></td><td>6</td></tr>
+                  <tr><td>1</td><td>2</td><td>3</td></tr>
+                </tbody>
+              </table>
+            <p>A number of commands are available to configure leader lines, where all uses of <code>(#)</code>
+              below correspond to a number following the above convention for specifying directions:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:30%">Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>(#)[SLEW]</code> / <code>[MULTIFUNC]L(#)[SLEW]</code> / <code>[MULTIFUNC]L(#) (ACID)</code></td>
+                    <td>Sets the leader line direction for the aircraft, where <code>(#)</code> is a valid leader line direction specifier. 5 may be given to clear a previously-assigned direction.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]L(#)U</code></td>
+                    <td>Sets the default leader line direction for aircraft with unassociated tracks.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]L(#)*</code></td>
+                    <td>Sets the default leader line direction for aircraft tracked by other controllers. 5 may be given to clear a previously-assigned direction.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]L(TCP)(#)</td>
+                    <td>Sets the leader line for aircraft controlled by the specified TCP. If a one-letter TCP is entered, a space should be entered after it. 5 may be entered to clear a previously-assigned direction</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]L(##)[SLEW]</code> / <code>[MULTIFUNC]L(##) (ACID)</code></td>
+                    <td>Sets the default leader line for a single track system-wide, across all controllers' displays. 55 may be entered to clear a previously-specified direction.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[LDR]</code></td>
+                    <td>Activates the LDR spinner in the DCB.</td>
+                  </tr>
+                </tbody>
+              </table>
+
+
         <h3>Scratchpads</h3>
         <p>In STARS, scratchpads are used to display information to the controllers. For example, the departure exit gate, or the assigned approach. 
           Scratchpads are three characters, but can be four if specified in the facility configuration file. Scratchpads can consist of alphanumeric characters, plus 
@@ -1748,19 +1912,7 @@ how it simulates aircraft or the STARS interface.
       
             <!-- <p>dwell mode here, quicklook, leader lines, FUSED/radar mode, DCB HISTORY, PTLs, DWELL, </p> -->
 
-            <h3>Full and Partial Datablocks</h3>
-            
-            <p>The FDB is displayed for a track if:</p>
-            <ul>
-              <li>The track is owned by the current controller.</li>
-              <li>The track is being handed off from another controller to the current controller.</li>
-              <li>The track is a redirected handoff where the current controller has either redirected it or had it redirected to them.</li>
-              <li>Another controller has pointed out the track to the current controller and the point out hasn't been cleared.</li>
-              <li>The user has clicked on a track owned by another controller.</li>
-              <li>The track is owned by a controller whose sector id the user has quicklooked.</li>
-              <li>The track has been force quicklooked to the current controller by another controller.</li>
-              <li>"Quick look all" has been enabled by the controller.</li>
-            </ul>
+            <h3 id="stars-altitude-range">Altitude Ranges</h3>
 
             <!-- brightness and font controls, dwell mode -->
 
@@ -1769,11 +1921,7 @@ how it simulates aircraft or the STARS interface.
             <!-- history incl DCB setting -->
             <!-- fused / radar mode, sector id... -->
 
-            <h3 id="stars-radar-site">RADAR Sites"</h3>
-
-            <h3>Leader Lines</h3>
-
-            <h3 id="quicklook">Quicklook</h3>
+            <h3 id="stars-radar-site">RADAR Sites</h3>
 
             <!-- id, all, force ql -->
 
@@ -1859,13 +2007,44 @@ how it simulates aircraft or the STARS interface.
  
           </section>
 
-
-          <!-- TODO: maps -->
-          
 	  <section class="docs-section" id="stars-tools">
             <h2 class="section-heading">Tools</h2>
 
-            <h3>Predicted Track Lines</h3>
+            <p>STARS offers a variety of tools to help with vectoring aircraft and ensuring they
+            remain separated.</p>
+
+            <h3 id="stars-ptl-lines">Predicted Track Lines</h3>
+            <p>PTLs (Predicted Track Lines) show the aircraft's predicted course over the course of 0.5 to 3 minutes
+              into the future. Here is an example of a track with a PTL:</p>
+            <div class="text-center">
+              <img src="ptl.png" srcset="ptl-2x.png 2x" width="165" height="103">
+            </div>
+            <br>
+            <p>PTLs can be controlled using these buttons in the auxiliary DCB menu, which is shown by
+              selecting SHIFT from the main DCB.</p>
+            <div class="text-center">
+              <img src="ptl-dcb.png" srcset="ptl-dcb-2x.png 2x" width="146" height="69">
+            </div>
+            <br>
+            <p>PTL OWN sets whether PTLs are shown for tracks that are owned by the TCP,
+              and PTL ALL sets whether PTLs are shown all associated tracks in the current
+              <a href="#stars-altitude-range">altitude ranges</a>.  It is also possible to
+              display or hide the PTL of a single aircraft using a keyboard command:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]R[SLEW]</code></td>
+                    <td>Enable/disable the PTL for a radar track. An error is issued if the aircraft
+                    is already displaying a PTL due to PTL OWN or PTL ALL being enabled.</td>
+                  </tr>
+                </tbody>
+              </table>
             
             <h3>Range Bearing Lines</h3>
             <p>Range bearing lines (RBLs) track the distance and heading between aircraft and/or fixes.
@@ -2106,14 +2285,21 @@ how it simulates aircraft or the STARS interface.
 
               <h3>Compass</h3>
 
+            <p>To help with determining headings when vectoring aircraft, a compass rose may be displayed
+              around the edges of the STARS radar scope:</p>
+            <div class="text-center">
+              <img src="compass.png" srcset="compass-2x.png 2x" width="455" height="32">
+            </div><br>
+            <p>The brightness of the compass rose is controlled by CMP in the BRITE DCB menu and
+              the size of the font used is set based on TOOLS in the CHAR SIZE DCB menu.</p> 
+
               <h3 id="stars-range-rings">Range Rings</h3>
 
             <p>Range rings are concentric circles drawn around a selected point with successive steps between
               their radii that are 2, 5, 10, or 20nm. With 5nm steps, the default, here are the 5 and 10nm range rings drawn around KEWR:</p>
             <div class="text-center">
-              <img src="rr-example.png" srcset="rr-example-2x.png 2x" width="248" height="245" class="img-fluid" alt="Range rings on radar scope">
-            </div>
-            <br>
+              <img src="rr-example.png" srcset="rr-example-2x.png 2x" width="259" height="255">
+            </div><br>
             <p>The brightness of range rings can be controlled with the "RR" spinner in the "BRITE" menu of the main DCB.
               If the brightness is set to 0, range rings are not drawn. A few buttons on the main DCB make it possible to
               configure range rings.  Clicking on "RR" activates a spinner that allows selecting the step between radii.
@@ -2127,25 +2313,6 @@ how it simulates aircraft or the STARS interface.
             <p>The radius of the range rings can also be set by entering <code>[RANGE]</code> and then 2, 5, 10, or 20, and then pressing enter.
             </p>
             
-              <h3 id="stars-weather">Weather</h3>
-
-            <p>The current weather radar can be displayed on the STARS scope. Here is an example South of KSEA.
-              The blue-green areas indicate light precipitation, while the mustard-colored area is moderate to heavy precipitation.
-              Stippling in the radar also indicates the strength, where a denser stipple is heavier precipitation.</p>
-            <div class="text-center">
-              <img src="wx-radar.png" srcset="wx-radar-2x.png 2x" width="449" height="294" class="img-fluid" alt="Weather radar on radar scope">
-            </div>
-            <br>
-            <p>The brightness of the radar on the STARS scope can be controlled using the "WX" spinner in the "BRITE" menu of the DCB.
-              It is also possible to control which levels of precipitation are shown using the "WX*" buttons in the main DCB:
-              </p>
-            <div class="text-center">
-              <img src="wx-buttons.png" srcset="wx-buttons-2x.png 2x" width="211" height="71" class="img-fluid" alt="WX buttons on DCB">
-            </div>
-            <br>
-            <p>With the selection above, the two lowest levels, WX0 and WX1, are not shown, while all of the higher levels
-              of precipitation are.</p>
-
               <h3 id="crda">CRDA</h3>
 
             <p>The Converging Runways Display Aid (CRDA) helps ensure separation between aircraft approaching
@@ -2255,6 +2422,25 @@ how it simulates aircraft or the STARS interface.
             <h3 id="stars-brightness">Brightness</h3>
             
             <h3 id="stars-video-maps">Video Maps</h3>
+
+            <h3 id="stars-weather">Weather</h3>
+
+            <p>The current weather radar can be displayed on the STARS scope. Here is an example South of KSEA.
+              The blue-green areas indicate light precipitation, while the mustard-colored area is moderate to heavy precipitation.
+              Stippling in the radar also indicates the strength, where a denser stipple is heavier precipitation.</p>
+            <div class="text-center">
+              <img src="wx-radar.png" srcset="wx-radar-2x.png 2x" width="449" height="294" class="img-fluid" alt="Weather radar on radar scope">
+            </div>
+            <br>
+            <p>The brightness of the radar on the STARS scope can be controlled using the "WX" spinner in the "BRITE" menu of the DCB.
+              It is also possible to control which levels of precipitation are shown using the "WX*" buttons in the main DCB:
+            </p>
+            <div class="text-center">
+              <img src="wx-buttons.png" srcset="wx-buttons-2x.png 2x" width="211" height="71" class="img-fluid" alt="WX buttons on DCB">
+            </div>
+            <br>
+            <p>With the selection above, the two lowest levels, WX0 and WX1, are not shown, while all of the higher levels
+              of precipitation are.</p>
 
             <h3 id="stars-preferences">Preferences</h3>
 
@@ -2694,17 +2880,26 @@ above</a> for information about the CRDA system list.</p>
               <tr>
                 <td>"control_positions"</td>
                 <td>Object</td>
-                <td>Information about all of the controllers that are used
+                <td><p>Information about all of the controllers that are used
                 in the scenarios in the group.  Each member specifies a
                 controller with the corresponding callsign.  For each
-                controller, the following members should be specified:
+                controller, the following members should be specified:</p>
                   <ul>
                     <li>"full_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
                     <li>"frequency": the controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325)</li>
                     <li>"scope_char": a string giving a single character to use on radar scopes for tracks owned by this position (e.g., "C")</li>
                     <li>"sector_id": the controller's sector id, as used for handoffs, etc. (e.g., "N56")</li>
-                    </ul>
-                  </td>
+                  </ul>
+                  <p>One additional member may be required.</p>
+                  <ul>
+                    <li>"default_airport": when CRDA is used, each
+                    controller must have a default airport for CRDA
+                      commands. <i>vice</i> tries to use the controller's
+                      callsign to determine this airport (e.g., LGA_V_APP has LGA as a default).
+                      If the start of the callsign does not identify a valid airport
+                      then the default must be specified explicitly.</li>
+                  </ul>
+                </td>
               </tr>
               <tr>
                 <td>"default_scenario"</td>

@@ -4074,6 +4074,7 @@
       "sector_id": "2G"
     },
     "NY_APP": {
+      "default_airport": "KJFK",
       "frequency": 128125,
       "full_name": "New York approach",
       "scope_char": "G",

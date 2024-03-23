@@ -414,7 +414,6 @@ type STARSAircraftState struct {
 	// This is only set if a leader line direction was specified for this
 	// aircraft individually
 	LeaderLineDirection *CardinalOrdinalDirection
-	ChosenLeaderLine    *CardinalOrdinalDirection
 	GlobalLeaderLine    bool // If the aircraft is a global line or set by the TCP
 	Ghost               struct {
 		PartialDatablock bool
@@ -912,6 +911,10 @@ func (ps *STARSPreferenceSet) Activate(w *World) {
 	// It should only take integer values but it's a float32 and we
 	// previously didn't enforce this...
 	ps.Range = float32(int(ps.Range))
+
+	if ps.PTLAll { // both can't be set; we didn't enforce this previously...
+		ps.PTLOwn = false
+	}
 
 	// Brightness goes in steps of 5 (similarly not enforced previously...)
 	remapBrightness := func(b *STARSBrightness) {
@@ -2333,7 +2336,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					ps.LeaderLineDirection = *dir
 					status.clear = true
 				} else {
-					status.err = ErrSTARSIllegalParam
+					status.err = ErrSTARSCommandFormat
 				}
 				return
 			} else if l == 2 {
@@ -2344,9 +2347,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				} else if ok && cmd[1] == '*' {
 					// Tracked by other controllers
 					ps.OtherControllerLeaderLineDirection = dir
+					// This also clears out any controller-specific assignments (4-98)
+					clear(ps.ControllerLeaderLineDirections)
 					status.clear = true
 				} else {
-					status.err = GetSTARSError(ErrSTARSCommandFormat)
+					status.err = ErrSTARSCommandFormat
 				}
 				return
 			} else if f := strings.Fields(cmd); len(f) == 2 {
@@ -2462,6 +2467,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 							status.clear = true
 							return
 						}
+					} else {
+						status.err = ErrSTARSCommandFormat
 					}
 				} else if ap := cmd[:3]; validAirport(ap) {
 					if cmd[n-1] == 'S' || cmd[n-1] == 'T' || cmd[n-1] == 'D' {
@@ -3287,7 +3294,6 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) e
 	if len(cmd) == 1 {
 		if dir, ok := numpadToDirection(cmd[0]); ok {
 			state.LeaderLineDirection = dir
-			state.ChosenLeaderLine = dir
 			state.GlobalLeaderLine = false
 			return nil
 		}
@@ -3297,15 +3303,14 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) e
 
 		}
 		if ac.TrackingController != ctx.world.Callsign {
-			return GetSTARSError(ErrSTARSIllegalTrack)
-		}
-		if dir, ok := numpadToDirection(cmd[0]); ok {
+			return ErrSTARSIllegalTrack
+		} else if dir, ok := numpadToDirection(cmd[0]); ok {
 			sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
 			state.GlobalLeaderLine = true
 			return nil
 		}
 	}
-	return GetSTARSError(ErrSTARSCommandFormat)
+	return ErrSTARSCommandFormat
 }
 
 func (sp *STARSPane) forceQL(ctx *PaneContext, callsign, controller string) {
@@ -3508,9 +3513,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				err := sp.setLeaderLine(ctx, ac, cmd)
 				if err != nil {
 					status.err = err
-					return
+				} else {
+					status.clear = true
 				}
-				status.clear = true
 				return
 			} else if cmd == "?" {
 				ctx.world.PrintInfo(ac)
@@ -3818,12 +3823,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 
 			case "L": // Leader line
-				err := sp.setLeaderLine(ctx, ac, cmd)
-				if err != nil {
+				if err := sp.setLeaderLine(ctx, ac, cmd); err != nil {
 					status.err = err
-					return
+				} else {
+					status.clear = true
 				}
-				status.clear = true
 				return
 
 			case "M":
@@ -3864,8 +3868,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			case "R":
 				if cmd == "" {
-					state.DisplayPTL = !state.DisplayPTL
-					status.clear = true
+					if ps.PTLAll || (ps.PTLOwn && ac.TrackingController == ctx.world.Callsign) {
+						status.err = ErrSTARSIllegalTrack // 6-13
+					} else {
+						state.DisplayPTL = !state.DisplayPTL
+						status.clear = true
+					}
 				} else {
 					status.err = ErrSTARSCommandFormat
 				}
@@ -4056,6 +4064,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 	return
 }
 
+// Returns the cardinal-ordinal direction associated with the numbpad keys,
+// interpreting 5 as the center; (nil, true) is returned for '5' and
+// (nil, false) is returned for an invalid key.
 func numpadToDirection(key byte) (*CardinalOrdinalDirection, bool) {
 	var dir CardinalOrdinalDirection
 	switch key {
@@ -4247,9 +4258,18 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if STARSToggleButton("DCB\nBOTTOM", &bottom, STARSButtonHalfVertical, buttonScale) {
 			ps.DCBPosition = DCBPositionBottom
 		}
-		STARSItemsSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, []float32{0.5, 1, 1.5, 2, 2.5, 3}, STARSButtonFull, buttonScale)
-		STARSToggleButton("PTL OWN", &ps.PTLOwn, STARSButtonHalfVertical, buttonScale)
-		STARSToggleButton("PTL ALL", &ps.PTLAll, STARSButtonHalfVertical, buttonScale)
+		STARSItemsSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, []float32{0, 0.5, 1, 1.5, 2, 2.5, 3}, STARSButtonFull, buttonScale)
+		if ps.PTLLength > 0 {
+			if STARSToggleButton("PTL OWN", &ps.PTLOwn, STARSButtonHalfVertical, buttonScale) && ps.PTLOwn {
+				ps.PTLAll = false
+			}
+			if STARSToggleButton("PTL ALL", &ps.PTLAll, STARSButtonHalfVertical, buttonScale) && ps.PTLAll {
+				ps.PTLOwn = false
+			}
+		} else {
+			STARSDisabledButton("PTL OWN", STARSButtonHalfVertical, buttonScale)
+			STARSDisabledButton("PTL ALL", STARSButtonHalfVertical, buttonScale)
+		}
 		STARSCallbackSpinner(ctx, "DWELL\n", &ps.DwellMode,
 			func(mode DwellMode) string { return mode.String() },
 			func(mode DwellMode, delta int) DwellMode {
@@ -4728,7 +4748,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			if filter.All || filter.Range {
 				text += fmt.Sprintf("%dNM ", int(ps.Range))
 			}
-			if filter.All || filter.PredictedTrackLines {
+			if (filter.All || filter.PredictedTrackLines) && ps.PTLLength > 0 {
 				text += fmt.Sprintf("PTL: %.1f", ps.PTLLength)
 			}
 			pw = td.AddText(text, pw, style)
@@ -5970,12 +5990,6 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	ps := sp.CurrentPreferenceSet
 	state := sp.Aircraft[ac.Callsign]
 
-	if state.ChosenLeaderLine == nil {
-		state.LeaderLineDirection = ac.GlobalLinePosition
-	} else {
-		state.LeaderLineDirection = state.ChosenLeaderLine
-	}
-
 	if index := slices.Index(state.Warnings, state.SPCOverride); index != -1 {
 		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
 	} else if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW && !slices.Contains(state.Warnings, "LA") {
@@ -6439,6 +6453,9 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 			continue
 		}
 		if !(state.DisplayPTL || ps.PTLAll || (ps.PTLOwn && ac.TrackingController == ctx.world.Callsign)) {
+			continue
+		}
+		if ps.PTLLength == 0 {
 			continue
 		}
 
@@ -7473,13 +7490,13 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 
 func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft, w *World) CardinalOrdinalDirection {
 	ps := sp.CurrentPreferenceSet
+	state := sp.Aircraft[ac.Callsign]
 
-	if sp.Aircraft[ac.Callsign].GlobalLeaderLine && ac.GlobalLinePosition != nil {
-		return *ac.GlobalLinePosition
-	}
-	if lld := sp.Aircraft[ac.Callsign].LeaderLineDirection; lld != nil {
+	if state.GlobalLeaderLine && ac.GlobalLeaderLineDirection != nil {
+		return *ac.GlobalLeaderLineDirection
+	} else if state.LeaderLineDirection != nil {
 		// The direction was specified for the aircraft specifically
-		return *lld
+		return *state.LeaderLineDirection
 	} else if ac.TrackingController == w.Callsign {
 		// Tracked by us
 		return ps.LeaderLineDirection

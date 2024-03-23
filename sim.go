@@ -2077,7 +2077,7 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *CardinalOrdinalDi
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			ac.GlobalLinePosition = dir
+			ac.GlobalLeaderLineDirection = dir
 			return nil
 		})
 }
