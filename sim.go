@@ -2365,6 +2365,17 @@ func (s *Sim) RejectPointOut(token, callsign string) error {
 		})
 }
 
+func (s *Sim) ToggleSPCOverride(token, callsign, spc string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchTrackingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			ac.ToggleSPCOverride(spc)
+			return nil
+		})
+}
+
 func (s *Sim) AssignAltitude(token, callsign string, altitude int, afterSpeed bool) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

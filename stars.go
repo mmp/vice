@@ -429,8 +429,6 @@ type STARSAircraftState struct {
 	InhibitMSAW      bool // only applies if in an alert. clear when alert is over?
 	MSAWAcknowledged bool
 
-	SPCOverrides map[string]interface{}
-
 	FirstSeen           time.Time
 	FirstRadarTrack     time.Time
 	HaveEnteredAirspace bool
@@ -3541,15 +3539,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				// Do not clear the input area to allow entering a fix for the second location
 				return
 			} else if isSPC(cmd) {
-				if state.SPCOverrides == nil {
-					state.SPCOverrides = make(map[string]interface{})
-				}
-				// Toggle the SPC override
-				if _, ok := state.SPCOverrides[cmd]; ok {
-					delete(state.SPCOverrides, cmd)
-				} else {
-					state.SPCOverrides[cmd] = nil
-				}
+				ctx.world.ToggleSPCOverride(ac.Callsign, cmd, nil, func(err error) {
+					sp.previewAreaOutput = GetSTARSError(err).Error()
+				})
 				status.clear = true
 				return
 			} else if cmd == "UN" {
@@ -4712,8 +4704,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			// those.
 			codes := make(map[string]interface{})
 			for _, ac := range aircraft {
-				state := sp.Aircraft[ac.Callsign]
-				for code := range state.SPCOverrides {
+				for code := range ac.SPCOverrides {
 					codes[code] = nil
 				}
 				if ok, code := squawkingSPC(ac.Squawk); ok {
@@ -5970,7 +5961,7 @@ func (sp *STARSPane) getWarnings(ctx *PaneContext, ac *Aircraft) []string {
 	if ok, code := squawkingSPC(ac.Squawk); ok {
 		warnings[code] = nil
 	}
-	for code := range state.SPCOverrides {
+	for code := range ac.SPCOverrides {
 		warnings[code] = nil
 	}
 	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
