@@ -3717,7 +3717,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					func(err error) {
 						// If it's not a valid command and fits the requirements for a scratchpad, set the scratchpad.
 						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
-							status.err = err
+							sp.previewAreaOutput = GetSTARSError(err).Error()
+							return
 						}
 					})
 
