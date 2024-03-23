@@ -2880,17 +2880,26 @@ above</a> for information about the CRDA system list.</p>
               <tr>
                 <td>"control_positions"</td>
                 <td>Object</td>
-                <td>Information about all of the controllers that are used
+                <td><p>Information about all of the controllers that are used
                 in the scenarios in the group.  Each member specifies a
                 controller with the corresponding callsign.  For each
-                controller, the following members should be specified:
+                controller, the following members should be specified:</p>
                   <ul>
                     <li>"full_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
                     <li>"frequency": the controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325)</li>
                     <li>"scope_char": a string giving a single character to use on radar scopes for tracks owned by this position (e.g., "C")</li>
                     <li>"sector_id": the controller's sector id, as used for handoffs, etc. (e.g., "N56")</li>
-                    </ul>
-                  </td>
+                  </ul>
+                  <p>One additional member may be required.</p>
+                  <ul>
+                    <li>"default_airport": when CRDA is used, each
+                    controller must have a default airport for CRDA
+                      commands. <i>vice</i> tries to use the controller's
+                      callsign to determine this airport (e.g., LGA_V_APP has LGA as a default).
+                      If the start of the callsign does not identify a valid airport
+                      then the default must be specified explicitly.</li>
+                  </ul>
+                </td>
               </tr>
               <tr>
                 <td>"default_scenario"</td>
