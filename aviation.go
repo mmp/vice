@@ -2198,6 +2198,12 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 	} else if _, ok := sg.ControlPositions[ar.InitialController]; !ok {
 		e.ErrorString("controller \"%s\" not found for \"initial_controller\"", ar.InitialController)
 	}
+
+	for _, controller := range sg.ControlPositions {
+		if controller.ERAMFacility && controller.FacilityIdentifier == "" {
+			e.ErrorString(fmt.Sprintf("%v is an ERAM facility, but has no facility id specified", controller.Callsign))
+		}
+	}
 }
 
 func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {

@@ -38,6 +38,7 @@ type World struct {
 	updateCall        *PendingCall
 	showSettings      bool
 	showScenarioInfo  bool
+	showCoordination  bool
 
 	launchControlWindow *LaunchControlWindow
 
@@ -84,9 +85,11 @@ type World struct {
 	ArrivalGroups           map[string][]Arrival
 	TotalDepartures         int
 	TotalArrivals           int
+	DepartureGates          []string
 	STARSFacilityAdaptation STARSFacilityAdaptation
-
-	STARSInputOverride string
+	StoppedGates            map[string]bool
+	CFRAirports             map[string]bool
+	STARSInputOverride      string
 }
 
 func NewWorld() *World {
@@ -135,6 +138,7 @@ func (w *World) Assign(other *World) {
 	w.ArrivalGroups = other.ArrivalGroups
 	w.TotalDepartures = other.TotalDepartures
 	w.TotalArrivals = other.TotalArrivals
+	w.DepartureGates = other.DepartureGates
 	w.STARSFacilityAdaptation = other.STARSFacilityAdaptation
 }
 
@@ -219,6 +223,20 @@ func (w *World) LaunchAircraft(ac Aircraft) {
 		&PendingCall{
 			Call:      w.simProxy.LaunchAircraft(ac),
 			IssueTime: time.Now(),
+		})
+}
+
+func (w *World) UpdateWarnings(callsign string, warnings []string, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
+		ac.Warnings = warnings
+	}
+
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.UpdateWarnings(callsign, warnings),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
 		})
 }
 
@@ -387,6 +405,25 @@ func (w *World) ForceQL(callsign, controller string, success func(any), err func
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.ForceQL(callsign, controller),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+func (w *World) UpdateStoppedGates(stopped map[string]bool, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.UpdateStoppedGates(stopped),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) UpdateStoppedAirports(stopped map[string]bool, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.UpdateStoppedAirports(stopped),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
@@ -941,6 +978,10 @@ func (w *World) ToggleShowScenarioInfoWindow() {
 	w.showScenarioInfo = !w.showScenarioInfo
 }
 
+func (w *World) ToggleShowCoordinationWindow() {
+	w.showCoordination = !w.showCoordination
+}
+
 type MissingPrimaryModalClient struct {
 	world *World
 }
@@ -982,6 +1023,172 @@ func (w *World) DrawMissingPrimaryDialog() {
 			uiShowModalDialog(w.missingPrimaryDialog, true)
 		}
 	}
+}
+
+func (w *World) DrawCoordinationWindow() {
+	if !w.showCoordination {
+		return
+	}
+	if w.StoppedGates == nil {
+		w.StoppedGates = make(map[string]bool)
+	}
+	if w.CFRAirports == nil {
+		w.CFRAirports = make(map[string]bool)
+	}
+	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
+		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+
+	// Ensure that the window is wide enough to show the description
+	sz := imgui.CalcTextSize(w.SimDescription, false, 0)
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
+	imgui.BeginV("Coordination List", &w.showCoordination, imgui.WindowFlagsAlwaysAutoResize)
+	if imgui.BeginTabBar("Controllers") {
+		if imgui.BeginTabItem("Tower") {
+			if imgui.BeginTabBar("Bar") {
+				if imgui.BeginTabItem("Gates") {
+					stopAll := true
+					for _, value := range w.StoppedGates {
+						if !value {
+							stopAll = false
+						}
+					}
+					changed := imgui.Checkbox("Stop all departures", &stopAll)
+					if changed && !stopAll {
+						for gate := range w.StoppedGates {
+							w.StoppedGates[gate] = false
+						}
+					}
+					if stopAll {
+						for gate := range w.StoppedGates {
+							w.StoppedGates[gate] = true
+						}
+					}
+					uiStartDisable(stopAll)
+					if imgui.BeginTableV("Tower", 2, tableFlags, imgui.Vec2{}, 0) {
+						imgui.TableSetupColumn("Fix")
+						imgui.TableSetupColumn("Stop Departures")
+						imgui.TableHeadersRow()
+						// TODO: Stop all departures with one checkbox. Use UIDisable() to disabled the other checkboxes
+						for _, fix := range w.DepartureGates {
+							imgui.TableNextRow()
+							imgui.TableNextColumn()
+							imgui.Text(fix)
+							imgui.TableNextColumn()
+							enabled := w.StoppedGates[fix]
+							imgui.Checkbox("##"+fix, &enabled)
+							w.StoppedGates[fix] = enabled
+							w.UpdateStoppedGates(w.StoppedGates, nil, nil)
+						}
+						imgui.EndTable()
+					}
+					uiEndDisable(stopAll)
+					imgui.EndTabItem()
+				}
+				if imgui.BeginTabItem("CFR") {
+					if imgui.BeginTableV("CFR", 2, tableFlags, imgui.Vec2{}, 0) {
+						imgui.TableSetupColumn("Airport")
+						imgui.TableSetupColumn("CFR?")
+						imgui.TableHeadersRow()
+						for _, name := range SortedMapKeys(w.Airports) {
+							imgui.TableNextRow()
+							imgui.TableNextColumn()
+							imgui.Text(name)
+							imgui.TableNextColumn()
+							enabled := w.CFRAirports[name]
+							imgui.Checkbox("CFR##"+name, &enabled)
+							w.CFRAirports[name] = enabled
+							w.UpdateStoppedAirports(w.CFRAirports, nil, nil)
+						}
+						imgui.EndTable()
+					}
+					imgui.EndTabItem()
+				}
+				imgui.EndTabBar()
+			}
+			imgui.EndTabItem()
+		}
+		if imgui.BeginTabItem("Releases") {
+			if imgui.BeginTableV("Releases", 6, tableFlags, imgui.Vec2{}, 0) {
+				imgui.TableSetupColumn("Callsign")
+				imgui.TableSetupColumn("Airport")
+				imgui.TableSetupColumn("Exit Gate")
+				imgui.TableSetupColumn("Aircraft")
+				imgui.TableSetupColumn("Release")
+				imgui.TableSetupColumn("FP Info")
+				imgui.TableHeadersRow()
+
+				for _, ac := range heldAircraft {
+					if ac != nil {
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+						imgui.Text(ac.Callsign)
+						imgui.TableNextColumn()
+						imgui.Text(ac.FlightPlan.DepartureAirport)
+						imgui.TableNextColumn()
+						imgui.Text(ac.Exit)
+						imgui.TableNextColumn()
+						imgui.Text(ac.FlightPlan.AircraftType)
+						imgui.TableNextColumn()
+						release := imgui.Button("Release##" + ac.Callsign)
+						imgui.TableNextColumn()
+						info := imgui.Button("Display##" + ac.Callsign)
+						if release {
+							i := slices.Index(heldAircraft, ac)
+							heldAircraft = append(heldAircraft[:i], heldAircraft[i+1:]...)
+							w.LaunchAircraft(*ac)
+						}
+						if info {
+							ac.ToggleDisplayFP()
+						}
+						if ac.DisplayFPInfo {
+							imgui.BeginV(fmt.Sprintf("Flight Plan for %v", ac.Callsign), &ac.DisplayFPInfo, imgui.WindowFlagsAlwaysAutoResize)
+							if imgui.BeginTableV("Info", 2, tableFlags, imgui.Vec2{}, 0) {
+								imgui.TableSetupColumn("Field")
+								imgui.TableSetupColumn("Value")
+								imgui.TableHeadersRow()
+								imgui.TableNextRow()
+								imgui.TableNextColumn()
+								imgui.Text("Callsign")
+								imgui.TableNextColumn()
+								imgui.Text(ac.Callsign)
+								imgui.TableNextRow()
+								imgui.TableNextColumn()
+								imgui.Text("Departure Airport")
+								imgui.TableNextColumn()
+								imgui.Text(ac.FlightPlan.DepartureAirport)
+								imgui.TableNextRow()
+								imgui.TableNextColumn()
+								imgui.Text("Arrival Airport")
+								imgui.TableNextColumn()
+								imgui.Text(ac.FlightPlan.ArrivalAirport)
+								imgui.TableNextRow()
+								imgui.TableNextColumn()
+								imgui.Text("Aircraft Type")
+								imgui.TableNextColumn()
+								imgui.Text(ac.FlightPlan.AircraftType)
+								imgui.TableNextRow()
+								imgui.TableNextColumn()
+								imgui.Text("Route")
+								imgui.TableNextColumn()
+								imgui.Text(ac.FlightPlan.Route)
+								imgui.EndTable()
+							}
+							imgui.End()
+						}
+					}
+
+				}
+				imgui.EndTable()
+			}
+			imgui.EndTabItem()
+		}
+		imgui.EndTabBar()
+	}
+	imgui.End()
+}
+
+func (ac *Aircraft) ToggleDisplayFP() {
+	ac.DisplayFPInfo = !ac.DisplayFPInfo
 }
 
 func (w *World) DrawScenarioInfoWindow() {

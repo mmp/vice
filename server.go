@@ -115,6 +115,20 @@ func (s *SimProxy) SetGlobalLeaderLine(callsign string, direction *CardinalOrdin
 	}, nil, nil)
 }
 
+type UpdateWarningsArgs struct {
+	ControllerToken string
+	Callsign        string
+	Warnings        []string
+}
+
+func (s *SimProxy) UpdateWarnings(callsign string, warnings []string) *rpc.Call {
+	return s.Client.Go("Sim.UpdateWarnings", &UpdateWarningsArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Warnings:        warnings,
+	}, nil, nil)
+}
+
 func (s *SimProxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
 	return s.Client.Go("Sim.SetScratchpad", &SetScratchpadArgs{
 		ControllerToken: s.ControllerToken,
@@ -128,6 +142,20 @@ func (s *SimProxy) SetSecondaryScratchpad(callsign string, scratchpad string) *r
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Scratchpad:      scratchpad,
+	}, nil, nil)
+}
+
+func (s *SimProxy) UpdateStoppedGates(stopped map[string]bool) *rpc.Call {
+	return s.Client.Go("Sim.UpdateStoppedGates", &StoppedGateArgs{
+		ControllerToken: s.ControllerToken,
+		StoppedGates:    stopped,
+	}, nil, nil)
+}
+
+func (s *SimProxy) UpdateStoppedAirports(stopped map[string]bool) *rpc.Call {
+	return s.Client.Go("Sim.UpdateStoppedAirports", &StoppedGateArgs{
+		ControllerToken: s.ControllerToken,
+		StoppedGates:    stopped,
 	}, nil, nil)
 }
 
@@ -663,6 +691,14 @@ type SetScratchpadArgs struct {
 	Scratchpad      string
 }
 
+func (sd *SimDispatcher) UpdateWarnings(a *UpdateWarningsArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.UpdateWarnings(a.ControllerToken, a.Callsign, a.Warnings)
+	}
+}
+
 func (sd *SimDispatcher) SetScratchpad(a *SetScratchpadArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
@@ -676,6 +712,22 @@ func (sd *SimDispatcher) SetSecondaryScratchpad(a *SetScratchpadArgs, _ *struct{
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetSecondaryScratchpad(a.ControllerToken, a.Callsign, a.Scratchpad)
+	}
+}
+
+func (sd *SimDispatcher) UpdateStoppedGates(a *StoppedGateArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.UpdateStoppedGates(a.ControllerToken, a.StoppedGates)
+	}
+}
+
+func (sd *SimDispatcher) UpdateStoppedAirports(a *StoppedGateArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.UpdateStoppedAirports(a.ControllerToken, a.StoppedGates)
 	}
 }
 
@@ -694,6 +746,11 @@ func (sd *SimDispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *stru
 }
 
 type InitiateTrackArgs AircraftSpecifier
+
+type StoppedGateArgs struct {
+	ControllerToken string
+	StoppedGates    map[string]bool
+}
 
 func (sd *SimDispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
