@@ -269,10 +269,6 @@ func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
 }
 
 func (w *World) SetGlobalLeaderLine(callsign string, dir *CardinalOrdinalDirection, success func(any), err func(error)) {
-	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
-		ac.GlobalLeaderLineDirection = dir
-	}
-
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.SetGlobalLeaderLine(callsign, dir),

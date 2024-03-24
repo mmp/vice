@@ -2010,6 +2010,12 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *CardinalOrdinalDi
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			ac.GlobalLeaderLineDirection = dir
+			s.eventStream.Post(Event{
+				Type:                SetGlobalLeaderLineEvent,
+				Callsign:            ac.Callsign,
+				FromController:      callsign,
+				LeaderLineDirection: dir,
+			})
 			return nil
 		})
 }
