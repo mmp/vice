@@ -2680,7 +2680,7 @@
           0,
           0
         ],
-        "receiving_controller": "C37",
+        "receiving_controller": "BOS_CTR",
         "to_center": true
       }
     ],

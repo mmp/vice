@@ -1333,7 +1333,7 @@
                                     0,
                                     0
                                 ],
-                                "receiving_controller": "C50",
+                                "receiving_controller": "HOU_50_CTR",
                                 "to_center": true
                             },
                             {
@@ -1345,7 +1345,7 @@
                                     0,
                                     8999
                                 ],
-                                "receiving_controller": "1U",
+                                "receiving_controller": "I90_U_APP",
                                 "to_center": false
                             },
                             {
@@ -1357,7 +1357,7 @@
                                     9000,
                                     99000
                                 ],
-                                "receiving_controller": "C80",
+                                "receiving_controller": "HOU_80_CTR",
                                 "to_center": true
                             },
                             {
@@ -1368,7 +1368,7 @@
                                     0,
                                     0
                                 ],
-                                "receiving_controller": "C96",
+                                "receiving_controller": "HOU_96_CTR",
                                 "to_center": true
                             },
                             {
@@ -1379,7 +1379,7 @@
                                     0,
                                     13000
                                 ],
-                                "receiving_controller": "1N",
+                                "receiving_controller": "SAT_N_APP",
                                 "to_center": false
                             }
                         ]
