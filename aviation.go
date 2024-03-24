@@ -305,6 +305,36 @@ func ParseSquawk(s string) (Squawk, error) {
 	return Squawk(sq), nil
 }
 
+// Special purpose code: beacon codes are squawked in various unusual situations.
+type SPC struct {
+	Squawk Squawk
+	Code   string
+}
+
+var spcs = []SPC{
+	{Squawk: Squawk(0o7400), Code: "LL"}, // lost link
+	{Squawk: Squawk(0o7500), Code: "HJ"}, // hijack
+	{Squawk: Squawk(0o7600), Code: "RF"}, // radio failure
+	{Squawk: Squawk(0o7700), Code: "EM"}, // emergency condigion
+	{Squawk: Squawk(0o7777), Code: "MI"}, // military intercept
+}
+
+// SquawkIsSPC returns true if the given beacon code is a SPC.  The second
+// return value is a string giving the two-letter abbreviated SPC it
+// corresponds to.
+func SquawkIsSPC(squawk Squawk) (bool, string) {
+	for _, spc := range spcs {
+		if spc.Squawk == squawk {
+			return true, spc.Code
+		}
+	}
+	return false, ""
+}
+
+func StringIsSPC(code string) bool {
+	return slices.ContainsFunc(spcs, func(spc SPC) bool { return spc.Code == code })
+}
+
 type RadarTrack struct {
 	Position    Point2LL
 	Altitude    int

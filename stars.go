@@ -1029,32 +1029,6 @@ func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 	return result, nil
 }
 
-type SPC struct {
-	Squawk Squawk
-	Code   string
-}
-
-var starsSPCs = []SPC{
-	{Squawk: Squawk(0o7400), Code: "LL"}, // lost link
-	{Squawk: Squawk(0o7500), Code: "HJ"}, // hijack
-	{Squawk: Squawk(0o7600), Code: "RF"}, // radio failure
-	{Squawk: Squawk(0o7700), Code: "EM"}, // emergency condigion
-	{Squawk: Squawk(0o7777), Code: "MI"}, // military intercept
-}
-
-func squawkingSPC(squawk Squawk) (bool, string) {
-	for _, spc := range starsSPCs {
-		if spc.Squawk == squawk {
-			return true, spc.Code
-		}
-	}
-	return false, ""
-}
-
-func isSPC(code string) bool {
-	return slices.ContainsFunc(starsSPCs, func(spc SPC) bool { return spc.Code == code })
-}
-
 type STARSCommandStatus struct {
 	clear  bool
 	output string
@@ -1282,7 +1256,7 @@ func (sp *STARSPane) processEvents(w *World) {
 			sa.FirstSeen = w.CurrentTime()
 		}
 
-		if ok, _ := squawkingSPC(ac.Squawk); ok {
+		if ok, _ := SquawkIsSPC(ac.Squawk); ok {
 			if _, ok := sp.HavePlayedSPCAlertSound[ac.Callsign]; !ok {
 				sp.HavePlayedSPCAlertSound[ac.Callsign] = nil
 				//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
@@ -3538,7 +3512,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
 				// Do not clear the input area to allow entering a fix for the second location
 				return
-			} else if isSPC(cmd) {
+			} else if StringIsSPC(cmd) {
 				ctx.world.ToggleSPCOverride(ac.Callsign, cmd, nil, func(err error) {
 					sp.previewAreaOutput = GetSTARSError(err).Error()
 				})
@@ -4707,7 +4681,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 				for code := range ac.SPCOverrides {
 					codes[code] = nil
 				}
-				if ok, code := squawkingSPC(ac.Squawk); ok {
+				if ok, code := SquawkIsSPC(ac.Squawk); ok {
 					codes[code] = nil
 				}
 			}
@@ -5958,7 +5932,7 @@ func (sp *STARSPane) getWarnings(ctx *PaneContext, ac *Aircraft) []string {
 	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
 		warnings["LA"] = nil
 	}
-	if ok, code := squawkingSPC(ac.Squawk); ok {
+	if ok, code := SquawkIsSPC(ac.Squawk); ok {
 		warnings[code] = nil
 	}
 	for code := range ac.SPCOverrides {
@@ -7403,7 +7377,7 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 		// Pointouts: This is if its been accepted,
 		// for an incoming pointout, it falls to the FDB check
 		return true
-	} else if ok, _ := squawkingSPC(ac.Squawk); ok {
+	} else if ok, _ := SquawkIsSPC(ac.Squawk); ok {
 		// Special purpose codes
 		return true
 	} else if sp.Aircraft[ac.Callsign].DatablockType == FullDatablock {
