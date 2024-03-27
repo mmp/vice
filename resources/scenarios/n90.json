@@ -3489,7 +3489,7 @@
           999000
         ],
         "to_center": true,
-        "receiving_controller": "B19"
+        "receiving_controller": "BOS_SW_CTR"
       },
       {
         "fixes": [
@@ -3503,7 +3503,7 @@
         "aircraft_type": [
           "J"
         ],
-        "receiving_controller": "MY"
+        "receiving_controller": "WRI_APP"
       },
       {
         "fixes": [
@@ -3518,7 +3518,7 @@
           "P",
           "T"
         ],
-        "receiving_controller": "MY"
+        "receiving_controller": "WRI_APP"
       },
       {
         "fixes": [
@@ -3529,7 +3529,7 @@
           999999
         ],
         "to_center": true,
-        "receiving_controller": "C68"
+        "receiving_controller": "NY_68_CTR"
       },
       {
         "fixes": [
@@ -3540,7 +3540,7 @@
           999999
         ],
         "to_center": true,
-        "receiving_controller": "C68"
+        "receiving_controller": "NY_68_CTR"
       },
       {
         "fixes": [
@@ -3554,7 +3554,7 @@
         "aircraft_type": [
           "J"
         ],
-        "receiving_controller": "C55"
+        "receiving_controller": "NY_55_CTR"
       },
       {
         "fixes": [
@@ -3569,7 +3569,7 @@
           "P",
           "T"
         ],
-        "receiving_controller": "C55"
+        "receiving_controller": "NY_55_CTR"
       },
       {
         "fixes": [
@@ -3585,7 +3585,7 @@
         "aircraft_type": [
           "J"
         ],
-        "receiving_controller": "C35"
+        "receiving_controller": "NY_35_CTR"
       },
       {
         "fixes": [
@@ -3596,7 +3596,7 @@
           14000
         ],
         "to_center": true,
-        "receiving_controller": "C51"
+        "receiving_controller": "NY_51_CTR"
       },
       {
         "fixes": [
@@ -3611,7 +3611,7 @@
           "P",
           "T"
         ],
-        "receiving_controller": "C51"
+        "receiving_controller": "NY_51_CTR"
       },
       {
         "fixes": [
@@ -3622,7 +3622,7 @@
           12000
         ],
         "to_center": true,
-        "receiving_controller": "C51"
+        "receiving_controller": "NY_51_CTR"
       },
       {
         "fixes": [
@@ -3632,17 +3632,17 @@
           8000,
           10000
         ],
-        "receiving_controller": "AVP TODO"
+        "receiving_controller": "AVP_N_APP"
       },
       {
         "fixes": [
-          "SAX V118 LVZ"
+          "SAX"
         ],
         "altitude_range": [
           8000,
           8000
         ],
-        "receiving_controller": "AVP TODO"
+        "receiving_controller": "AVP_N_APP"
       },
       {
         "fixes": [
@@ -3652,7 +3652,7 @@
           9000,
           10000
         ],
-        "receiving_controller": "AVP TODO"
+        "receiving_controller": "AVP_N_APP"
       },
       {
         "fixes": [
@@ -3664,7 +3664,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C39"
+        "receiving_controller": "NY_39_CTR"
       },
       {
         "fixes": [
@@ -3676,7 +3676,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C39"
+        "receiving_controller": "NY_39_CTR"
       },
       {
         "fixes": [
@@ -3687,7 +3687,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C55"
+        "receiving_controller": "NY_55_CTR"
       },
       {
         "fixes": [
@@ -3698,7 +3698,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C55"
+        "receiving_controller": "NY_55_CTR"
       },
       {
         "fixes": [
@@ -3713,7 +3713,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C66"
+        "receiving_controller": "NY_66_CTR"
       },
       {
         "fixes": [
@@ -3729,7 +3729,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C66"
+        "receiving_controller": "NY_66_CTR"
       },
       {
         "fixes": [
@@ -3741,7 +3741,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "B17"
+        "receiving_controller": "BOS_17_CTR"
       }
     ],
   "scratchpads": {
@@ -3945,6 +3945,22 @@
       "sector_id": "1E",
       "facility_id": "7"
     },
+    "BOS_SW_CTR": {
+      "frequency": 134000,
+      "full_name": "Boston center",
+      "scope_char": "C",
+      "sector_id": "B19",
+      "facility_id": "B",
+      "eram_facility": true
+    },
+    "BOS_17_CTR": {
+      "frequency": 133450,
+      "full_name": "Boston center",
+      "scope_char": "C",
+      "sector_id": "B17",
+      "facility_id": "B",
+      "eram_facility": true
+    },
     "BOS_CTR": {
       "frequency": 134700,
       "full_name": "Boston center",
@@ -4103,6 +4119,20 @@
       "full_name": "Kennedy tower",
       "scope_char": "T",
       "sector_id": "2W"
+    },
+    "WRI_APP": {
+      "frequency": 126470,
+      "full_name": "McGuire approach",
+      "scope_char": "5",
+      "sector_id": "1Y",
+      "facility_id": "5"
+    },
+    "AVP_N_APP": {
+      "frequency": 120950,
+      "full_name": "Wilkes Barre Approach",
+      "scope_char": "7",
+      "sector_id": "1B",
+      "facility_id": "7"
     }
   },
   "default_scenario": "N90 Combined. Coney: JFK Belmont: LGA",

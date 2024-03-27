@@ -3127,7 +3127,7 @@
                     0,
                     0
                 ],
-                "receiving_controller": "C32",
+                "receiving_controller": "FTW_32_CTR",
                 "to_center": true
             },
             {
@@ -3148,7 +3148,7 @@
                     0,
                     12000
                 ],
-                "receiving_controller": "1H",
+                "receiving_controller": "ACT_H_APP",
                 "to_center": false
             },
             {
@@ -3169,7 +3169,7 @@
                     12001,
                     99000
                 ],
-                "receiving_controller": "C96",
+                "receiving_controller": "FTW_96_CTR",
                 "to_center": true
             },
             {
@@ -3187,7 +3187,7 @@
                     0,
                     0
                 ],
-                "receiving_controller": "C83",
+                "receiving_controller": "FTW_83_CTR",
                 "to_center": true
             },
             {
@@ -3210,7 +3210,7 @@
                     0,
                     0
                 ],
-                "receiving_controller": "C53",
+                "receiving_controller": "FTW_53_CTR",
                 "to_center": true
             }
         ]

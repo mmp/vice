@@ -2848,13 +2848,13 @@
       "frequency": 132175,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N34"
+      "sector_id": "C34"
     },
     "NY_F_CTR": {
       "frequency": 128300,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N66"
+      "sector_id": "C66"
     },
     "NY_LE_DEP": {
       "frequency": 126800,
@@ -3744,7 +3744,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C66"
+        "receiving_controller": "NY_F_CTR"
       },
       {
         "fixes": [
@@ -3760,7 +3760,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C66"
+        "receiving_controller": "NY_F_CTR"
       },
       {
         "fixes": [
@@ -3772,7 +3772,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "B17"
+        "receiving_controller": "BOS_E_CTR"
       }
   ],
   "scratchpads": {

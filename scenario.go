@@ -207,6 +207,13 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		}
 	}
 
+	// Make sure all of the controllers used in airspace awareness will be there.
+	for _, aa := range sg.STARSFacilityAdaptation.AirspaceAwareness {
+		if !slices.Contains(s.VirtualControllers, aa.ReceivingController) {
+			s.VirtualControllers = append(s.VirtualControllers, aa.ReceivingController)
+		}
+	}
+
 	sort.Slice(s.ArrivalRunways, func(i, j int) bool {
 		if s.ArrivalRunways[i].Airport == s.ArrivalRunways[j].Airport {
 			return s.ArrivalRunways[i].Runway < s.ArrivalRunways[j].Runway
@@ -677,26 +684,20 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 	for _, aa := range sg.STARSFacilityAdaptation.AirspaceAwareness {
 		e.Push("stars_adaptation")
 
-		// FIXME: disabled for now due to some errors in lib.json
-		/*
-			for _, fix := range aa.Fix {
-				if _, ok := sg.locate(fix); !ok {
-					e.ErrorString(fix + ": fix unknown")
-				}
+		for _, fix := range aa.Fix {
+			if _, ok := sg.locate(fix); !ok {
+				e.ErrorString(fix + ": fix unknown")
 			}
-		*/
+		}
 
 		if aa.AltitudeRange[0] > aa.AltitudeRange[1] {
 			e.ErrorString("lower end of \"altitude_range\" %d above upper end %d",
 				aa.AltitudeRange[0], aa.AltitudeRange[1])
 		}
 
-		// FIXME: disabled pending resolving sector id vs controller callsign
-		/*
-			if _, ok := sg.ControlPositions[aa.ReceivingController]; !ok {
-				e.ErrorString(aa.ReceivingController + ": controller unknown")
-			}
-		*/
+		if _, ok := sg.ControlPositions[aa.ReceivingController]; !ok {
+			e.ErrorString(aa.ReceivingController + ": controller unknown")
+		}
 
 		for _, t := range aa.AircraftType {
 			if t != "J" && t != "T" && t != "P" {
