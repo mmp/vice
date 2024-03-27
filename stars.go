@@ -3043,7 +3043,45 @@ func (sp *STARSPane) updateQL(ctx *PaneContext, input string) (ok bool, previewI
 }
 
 func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) error {
-	if len(contents) > 4 {
+	lc := len(contents)
+	if strings.Contains(contents, STARSTriangleCharacter) {
+		lc -= 1
+	}
+	if ac := ctx.world.GetAircraft(callsign, false); ac != nil && ac.TrackingController == "" {
+		return ErrSTARSIllegalTrack /* This is because /OK can be used for associated tracks that are not owned by this TCP. But /OK cannot be used
+		for unassociated tracks. So might as well weed them out now. */
+	}
+	var index int
+	if isSecondary {
+		index = 1
+	}
+
+	if lc > 4 || (lc > 3 && !ctx.world.STARSFacilityAdaptation.ScratchpadRules[index]) {
+		return ErrSTARSCommandFormat
+	}
+
+	allowedCharacters := []string{
+		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+		"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+		"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", STARSTriangleCharacter,
+		".", "/", "*",
+	}
+
+	for _, letter := range contents {
+		var found bool
+		for _, allowed := range allowedCharacters {
+			if strings.Contains(allowed, string(letter)) {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return ErrSTARSCommandFormat
+		}
+	}
+
+	illegalScratchpads := []string{"NAT", "CST", "AMB", "RDR", "ADB", "XXX"}
+	if slices.Contains(illegalScratchpads, contents) {
 		return ErrSTARSIllegalScratchpad
 	}
 
@@ -3322,17 +3360,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 	ac, acDistance := sp.tryGetClosestAircraft(ctx.world, mousePosition, transforms)
 	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
 
-	isControllerId := func(id string) bool {
-		// FIXME: check--this is likely to be pretty slow, relatively
-		// speaking...
-		for _, ctrl := range ctx.world.GetAllControllers() {
-			if ctrl.SectorId == id {
-				return true
-			}
-		}
-		return false
-	}
-
 	ps := &sp.CurrentPreferenceSet
 
 	// The only thing that can happen with a ghost is to switch between a full/partial
@@ -3487,23 +3514,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				ctx.world.DeleteAircraft(ac, func(e error) {
 					status.err = ErrSTARSIllegalTrack
 				})
-				status.clear = true
-				return
-			} else if isControllerId(cmd) || cmd == "C" { // For ARTCC handoffs
-				if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err != nil {
-					// Try running it as a command
-					ctx.world.RunAircraftCommands(ac, cmd,
-						func(err error) {
-							// If it's not a command, set the scratchpad if it fits.
-							if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
-								if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
-									status.err = err
-								}
-							} else {
-								status.err = err
-							}
-						})
-				}
 				status.clear = true
 				return
 			} else if cmd == "*J" {
@@ -3738,17 +3748,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 					// Otherwise fall through to try running it as a command
 				}
-
 				// If it didn't match a controller, try to run it as a command
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
 						// If it's not a valid command and fits the requirements for a scratchpad, set the scratchpad.
-						if len(cmd) <= 3 || (len(cmd) >= 4 && ctx.world.STARSFacilityAdaptation.ScratchpadRules[0]) {
-							if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
-								status.err = err
-							}
-						} else {
-							status.err = err
+						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
+							sp.previewAreaOutput = GetSTARSError(err).Error()
+							return
 						}
 					})
 
