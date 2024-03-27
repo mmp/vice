@@ -394,7 +394,7 @@ type STARSAircraftState struct {
 	FullLDB       time.Time // If the LDB displays the groundspeed. When to stop
 
 	IsSelected bool // middle click
-	Warnings   []string
+
 	// Only drawn if non-zero
 	JRingRadius              float32
 	ConeLength               float32
@@ -430,8 +430,6 @@ type STARSAircraftState struct {
 	DisableMSAW      bool
 	InhibitMSAW      bool // only applies if in an alert. clear when alert is over?
 	MSAWAcknowledged bool
-
-	SPCOverride string
 
 	FirstSeen           time.Time
 	FirstRadarTrack     time.Time
@@ -1033,11 +1031,6 @@ func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 	return result, nil
 }
 
-func squawkingSPC(squawk Squawk) bool {
-	return squawk == Squawk(0o7500) || squawk == Squawk(0o7600) ||
-		squawk == Squawk(0o7700) || squawk == Squawk(0o7777)
-}
-
 type STARSCommandStatus struct {
 	clear  bool
 	output string
@@ -1267,7 +1260,7 @@ func (sp *STARSPane) processEvents(w *World) {
 			sp.Aircraft[callsign] = sa
 		}
 
-		if squawkingSPC(ac.Squawk) {
+		if ok, _ := SquawkIsSPC(ac.Squawk); ok {
 			if _, ok := sp.HavePlayedSPCAlertSound[ac.Callsign]; !ok {
 				sp.HavePlayedSPCAlertSound[ac.Callsign] = nil
 				//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
@@ -3443,7 +3436,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						sp.initiateTrack(ctx, ac.Callsign)
 						return
 					}
-				} else if db := sp.datablockType(ctx.world, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
+				} else if db := sp.datablockType(ctx, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
 					state.FullLDB = time.Now().Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
 				} else if db == FullDatablock && ac.TrackingController != ctx.world.Callsign {
@@ -3530,8 +3523,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
 				// Do not clear the input area to allow entering a fix for the second location
 				return
-			} else if cmd == "HJ" || cmd == "RF" || cmd == "EM" || cmd == "MI" || cmd == "SI" {
-				state.SPCOverride = cmd
+			} else if StringIsSPC(cmd) {
+				ctx.world.ToggleSPCOverride(ac.Callsign, cmd, nil, func(err error) {
+					sp.previewAreaOutput = GetSTARSError(err).Error()
+				})
 				status.clear = true
 				return
 			} else if cmd == "UN" {
@@ -4693,35 +4688,18 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		if filter.All || filter.SpecialPurposeCodes {
 			// Special purpose codes listed in red, if anyone is squawking
 			// those.
-			var hj, rf, em, mi bool
+			codes := make(map[string]interface{})
 			for _, ac := range aircraft {
-				state := sp.Aircraft[ac.Callsign]
-				if ac.Squawk == Squawk(0o7500) || state.SPCOverride == "HJ" {
-					hj = true
-				} else if ac.Squawk == Squawk(0o7600) || state.SPCOverride == "RF" {
-					rf = true
-				} else if ac.Squawk == Squawk(0o7700) || state.SPCOverride == "EM" {
-					em = true
-				} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
-					mi = true
+				for code := range ac.SPCOverrides {
+					codes[code] = nil
+				}
+				if ok, code := SquawkIsSPC(ac.Squawk); ok {
+					codes[code] = nil
 				}
 			}
 
-			var codes []string
-			if hj {
-				codes = append(codes, "HJ")
-			}
-			if rf {
-				codes = append(codes, "RF")
-			}
-			if em {
-				codes = append(codes, "EM")
-			}
-			if mi {
-				codes = append(codes, "MI")
-			}
 			if len(codes) > 0 {
-				td.AddText(strings.Join(codes, " "), pw, alertStyle)
+				td.AddText(strings.Join(SortedMapKeys(codes), " "), pw, alertStyle)
 				newline()
 			}
 		}
@@ -5151,7 +5129,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
+func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType {
 	state := sp.Aircraft[ac.Callsign]
 	dt := state.DatablockType
 
@@ -5164,6 +5142,7 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = LimitedDatablock
 	}
 
+	w := ctx.world
 	if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 		// it's under our control
 		dt = FullDatablock
@@ -5177,7 +5156,7 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = FullDatablock
 	}
 
-	if len(state.Warnings) > 0 {
+	if len(sp.getWarnings(ctx, ac)) > 0 {
 		dt = FullDatablock
 	}
 
@@ -5467,8 +5446,8 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 
 	// Draw main track symbol letter
 	trackIdBrightness := ps.Brightness.Positions
-	dt := sp.datablockType(ctx.world, ac)
-	color, _ := sp.datablockColor(ctx.world, ac)
+	dt := sp.datablockType(ctx, ac)
+	color, _ := sp.datablockColor(ctx, ac)
 	if dt == PartialDatablock || dt == LimitedDatablock {
 		trackIdBrightness = ps.Brightness.LimitedDatablocks
 	}
@@ -5957,51 +5936,51 @@ func (sp *STARSPane) diverging(a, b *Aircraft) bool {
 	return true
 }
 
-func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
+func (sp *STARSPane) getWarnings(ctx *PaneContext, ac *Aircraft) []string {
+	warnings := make(map[string]interface{})
 	ps := sp.CurrentPreferenceSet
 	state := sp.Aircraft[ac.Callsign]
 
-	if index := slices.Index(state.Warnings, state.SPCOverride); index != -1 {
-		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
-	} else if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW && !slices.Contains(state.Warnings, "LA") {
-		state.Warnings = append(state.Warnings, "LA")
-	} else if ac.Squawk == Squawk(0o7500) || state.SPCOverride == "HJ" {
-		state.Warnings = append(state.Warnings, "HJ")
-	} else if ac.Squawk == Squawk(0o7600) || state.SPCOverride == "RF" {
-		state.Warnings = append(state.Warnings, "RF")
-	} else if ac.Squawk == Squawk(0o7700) || state.SPCOverride == "EM" {
-		state.Warnings = append(state.Warnings, "EM")
-	} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
-		state.Warnings = append(state.Warnings, "MI")
+	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
+		warnings["LA"] = nil
 	}
-	if index := slices.Index(state.Warnings, "LA"); index != -1 && !state.MSAW {
-		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
+	if ok, code := SquawkIsSPC(ac.Squawk); ok {
+		warnings[code] = nil
 	}
-
-	state.SPCOverride = ""
-	if !ps.DisableCAWarnings &&
+	for code := range ac.SPCOverrides {
+		warnings[code] = nil
+	}
+	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
 		slices.ContainsFunc(sp.CAAircraft,
 			func(ca CAAircraft) bool {
-				return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
-					!state.DisableCAWarnings
+				return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
 			}) {
-		if !slices.Contains(state.Warnings, "CA") {
-			state.Warnings = append(state.Warnings, "CA")
-		}
-		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
+		warnings["CA"] = nil
 	}
-	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside && !slices.Contains(state.Warnings, "AS") {
+	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
 		altStrs := ""
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
 		}
-		state.Warnings = append(state.Warnings, "AS"+altStrs)
+		warnings["AS"+altStrs] = nil
 	}
+
+	return SortedMapKeys(warnings)
+}
+
+func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
+	if ac.Mode == Standby {
+		return nil
+	}
+
+	state := sp.Aircraft[ac.Callsign]
+
+	warnings := sp.getWarnings(ctx, ac)
 
 	// baseDB is what stays the same for all datablock variants
 	baseDB := STARSDatablock{}
-	baseDB.Lines[0].Text = strings.Join(state.Warnings, "/") // want e.g., EM/LA if multiple things going on
-	if len(state.Warnings) > 0 {
+	baseDB.Lines[0].Text = strings.Join(warnings, "/") // want e.g., EM/LA if multiple things going on
+	if len(warnings) > 0 {
 		baseDB.Lines[0].Colors = append(baseDB.Lines[0].Colors,
 			STARSDatablockFieldColors{
 				Start: 0,
@@ -6010,11 +5989,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			})
 	}
 
-	if ac.Mode == Standby {
-		return nil
-	}
-
-	ty := sp.datablockType(ctx.world, ac)
+	ty := sp.datablockType(ctx, ac)
 
 	switch ty {
 	case LimitedDatablock:
@@ -6253,9 +6228,9 @@ func sameFacility(ctx *PaneContext, receiving string) bool {
 	return ctx.world.GetController(ctx.world.Callsign).FacilityIdentifier == ctx.world.GetController(receiving).FacilityIdentifier
 }
 
-func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightness STARSBrightness) {
+func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, brightness STARSBrightness) {
 	ps := sp.CurrentPreferenceSet
-	dt := sp.datablockType(w, ac)
+	dt := sp.datablockType(ctx, ac)
 	state := sp.Aircraft[ac.Callsign]
 	brightness = Select(dt == PartialDatablock || dt == LimitedDatablock,
 		ps.Brightness.LimitedDatablocks, ps.Brightness.FullDatablocks)
@@ -6264,6 +6239,7 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 		brightness = STARSBrightness(100)
 	}
 
+	w := ctx.world
 	for _, controller := range ac.RedirectedHandoff.Redirector {
 		if controller == w.Callsign && ac.RedirectedHandoff.RedirectedTo != w.Callsign {
 			color = STARSUntrackedAircraftColor
@@ -6346,7 +6322,7 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*Aircraft, ctx *PaneContext, tra
 			continue
 		}
 
-		baseColor, brightness := sp.datablockColor(ctx.world, ac)
+		baseColor, brightness := sp.datablockColor(ctx, ac)
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
 		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac, ctx.world))
 		ld.AddLine(pac, add2f(pac, v), brightness.ScaleRGB(baseColor))
@@ -6378,7 +6354,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 			continue
 		}
 
-		baseColor, brightness := sp.datablockColor(ctx.world, ac)
+		baseColor, brightness := sp.datablockColor(ctx, ac)
 
 		// Compute the bounds of the datablock; always use the first one so
 		// things don't jump around when it switches between multiple of
@@ -7413,7 +7389,7 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 		// Pointouts: This is if its been accepted,
 		// for an incoming pointout, it falls to the FDB check
 		return true
-	} else if ac.Squawk == 7500 || ac.Squawk == 7600 || ac.Squawk == 7700 || ac.Squawk == 7777 || ac.Squawk == 7400 {
+	} else if ok, _ := SquawkIsSPC(ac.Squawk); ok {
 		// Special purpose codes
 		return true
 	} else if sp.Aircraft[ac.Callsign].DatablockType == FullDatablock {

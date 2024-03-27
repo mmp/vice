@@ -429,6 +429,20 @@ func (w *World) RejectPointOut(callsign string, success func(any), err func(erro
 		})
 }
 
+func (w *World) ToggleSPCOverride(callsign string, spc string, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
+		ac.ToggleSPCOverride(spc)
+	}
+
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.ToggleSPCOverride(callsign, spc),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (w *World) ChangeControlPosition(callsign string, keepTracks bool) error {
 	err := w.simProxy.ChangeControlPosition(callsign, keepTracks)
 	if err == nil {
