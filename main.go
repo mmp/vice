@@ -100,7 +100,7 @@ func main() {
 	// which in turn was causing profiling data to be written in an
 	// unexpected place...)
 	absPath := func(p *string) {
-		if p != nil && !path.IsAbs(*p) {
+		if p != nil && *p != "" && !path.IsAbs(*p) {
 			if cwd, err := os.Getwd(); err == nil {
 				*p = path.Join(cwd, *p)
 			}
