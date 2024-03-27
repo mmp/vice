@@ -1338,10 +1338,16 @@ how it simulates aircraft or the STARS interface.
               indicates that a single digit should be entered, without any parenthesis.
               Similarly, <code>(ABC)</code> indicates that three letters are expected.
             </p>
+            <p>For commands that take runways, <code>(RWY)</code> will be used.
+              Runways are specified with their number and then, if required, "L", "C", or "R"
+              to distinguish between parallel runways. Runways numbered 9 or less should not have a leading zero.
+              <code>(AIRPORT)</code> denotes an airport given to a command; airports should be specified using
+              three letters, dropping the leading "K".
+            </p>
             <p>Many keyboard commands take an aircraft identifier, which will be denoted <code>(ACID)</code> in the following. The aircraft identifier may be given as either the aircraft's complete callsign, e.g., "UAL650", or as the aircraft's beacon code.
             </p>
-            <p>It is also common for commands to take a controller's id in the form of a TCP;
-              in the following documentation, <code>(TCP)</code> indicates such a TCP.
+            <p>It is also common for commands to take identify a controller using the controller TCP ID;
+              in the following documentation, <code>(TCP)</code> indicates that case.
               There are a number of rules that define how such TCPs are specified; they are
               <a href="#stars-specifying-tcps">discussed in more detail below</a>.</p>
             <p>The STARS keyboard has a number of custom keys that are not present on standard keyboards.
@@ -2359,54 +2365,83 @@ how it simulates aircraft or the STARS interface.
                     <td>Toggles whether CRDA is enabled.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(ABC)S(#)</code></td>
-                    <td>Toggles stagger mode for the given CRDA runway pair at the airport ABC.</td>
+                    <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)</code> / <code>[MULTIFUNC]NP(#)</code></td>
+                    <td>Toggles whether ghost tracks are enabled for the CRDA runway pair at the specified airport.
+                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(ABC)T(#)</code></td>
-                    <td>Toggles tie mode for the given CRDA runway pair at the airport ABC.</td>
+                    <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)S</code> / <code>[MULTIFUNC]NP(#)S</code></td>
+                    <td>Toggles stagger mode for the CRDA runway pair at the specified airport.
+                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(ABC)D(#)</code></td>
-                    <td>Disables CRDA for the given runway pair at the airport ABC.</td>
+                    <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)T</code> / <code>[MULTIFUNC]NP(#)T</code></td>
+                    <td>Toggles tie mode for the given CRDA runway pair at the specified airport.
+                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]NL(ABC)(#)</code></td>
-                    <td>Set the leader line direction for ghost aircraft according to the given number,
-                      which is interpreted with reference to the number pad on a keyboard (e.g., "2"
-                      signifies that the leader line should be directly below the radar track, if the radar track
-                      is considered to be at "5".)
+                    <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)D</code> / <code>[MULTIFUNC]NP(#)D</code></td>
+                    <td>Disables CRDA for the given runway pair at the specified airport.
+                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      If no airport is specified, the controller's default airport is used.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]NL(AIRPORT)&nbsp;(RWY)(#)</code> / <code>[MULTIFUNC]NL(RWY)(#)</code></td>
+                    <td>Set the leader line direction for ghost aircraft at the specified airport and given runway
+                      according to the given number. Clears the assigned leader line direction if '5' is given.
+                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N*ALL</code></td>
-                    <td>Force ghost tracks for all aircraft</td>
+                    <td>Force ghost tracks for all aircraft. (Aircraft still must be within the lateral boundary of
+                    their runway's approach region for a ghost to be displayed, however.)</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N[SLEW]</code></td>
-                    <td>Toggle whether ghosts are forced for the slewed aircraft.</td>
+                    <td>If a ghost track was slewed, suppress display of that ghost.
+                      If a primary track was slewed, enable regular display of its ghost.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(ABC)(RWY)</code></td>
-                    <td>Toggle whether ghosts are generated for the specified runway.</td>
+                    <td><code>[MULTIFUNC]N*[SLEW]</code></td>
+                    <td>If a ghost track as slewed, display the aircraft's flight plan in the preview area.
+                      If a primary track was slewed, toggle whether display of its ghost is forced (i.e., always
+                      displayed regardless of heading, altitude, etc., so long as it is within the lateral
+                      boundary of its runway's approach region.)</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(ABC)(RWY)E</code></td>
-                    <td>Enable ghosts for the specified runway.</td>
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)</code> / <code>[MULTIFUNC]N(RWY)</code></td>
+                    <td>Toggles whether ghosts are generated for the specified runway.
+                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(ABC)(RWY)I</code></td>
-                    <td>Inhibit ghosts for the specified runway</td>
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)E</code> / <code>[MULTIFUNC]N(RWY)E</code></td>
+                    <td>Enable ghosts for the specified runway.
+                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(ABC)(RWY)&nbsp;B</code></td>
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)I</code> / <code>[MULTIFUNC]N(RWY)I</code></td>
+                    <td>Inhibit ghosts for the specified runway.
+                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)&nbsp;B</code> / <code>[MULTIFUNC]N(RWY)&nbsp;B</code></td>
                     <td>Toggle whether the <i>qualification region</i> for the runway is drawn;
-                      this is the lateral region of space aircraft must be inside for a ghost to be generated.</td>
+                      this is the lateral region of space aircraft must be inside for a ghost to be generated.
+                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(ABC)(RWY)&nbsp;L</code></td>
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)&nbsp;L</code> / <code>[MULTIFUNC]N(RWY)&nbsp;L</code></td>
                     <td>Toggle whether the <i>course lines</i> for the runway are drawn;
                       these show the final approach course that CRDA is defined with respect to.
+                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                 </tbody>
