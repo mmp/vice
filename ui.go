@@ -361,11 +361,13 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Display information about vice")
 		}
-		if imgui.Button(FontAwesomeIconDiscord) {
-			browser.OpenURL("https://discord.gg/y993vgQxhY")
-		}
-		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Join the vice discord")
+		if imgui.BeginMenu(FontAwesomeIconDiscord) {
+			if imgui.MenuItem("Vice Discord") {
+				browser.OpenURL("https://discord.gg/y993vgQxhY")
+			} else if imgui.MenuItem("Vice ATC Hub") {
+				browser.OpenURL("https://discord.gg/MRDfS3yyhA")
+			}
+			imgui.EndMenu()
 		}
 
 		imgui.PopStyleColor()
