@@ -519,6 +519,7 @@
       },
       "cruise_altitude": 37000,
       "initial_altitude": 11000,
+      "initial_speed": 250,
       "initial_controller": "IND_CTR",
       "star": "DAMEN5",
       "runway_waypoints": {

@@ -2223,6 +2223,10 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		}
 	}
 
+	if ar.InitialSpeed == 0 {
+		e.ErrorString("must specify \"initial_speed\"")
+	}
+
 	if ar.InitialController == "" {
 		e.ErrorString("\"initial_controller\" missing")
 	} else if _, ok := sg.ControlPositions[ar.InitialController]; !ok {
