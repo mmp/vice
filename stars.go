@@ -3045,10 +3045,8 @@ func (sp *STARSPane) updateQL(ctx *PaneContext, input string) (ok bool, previewI
 }
 
 func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) error {
-	lc := len(contents)
-	if strings.Contains(contents, STARSTriangleCharacter) {
-		lc -= 1
-	}
+	lc := len([]rune(contents))
+
 	if ac := ctx.world.GetAircraft(callsign, false); ac != nil && ac.TrackingController == "" {
 		return ErrSTARSIllegalTrack /* This is because /OK can be used for associated tracks that are not owned by this TCP. But /OK cannot be used
 		for unassociated tracks. So might as well weed them out now. */
@@ -3062,22 +3060,9 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 		return ErrSTARSCommandFormat
 	}
 
-	allowedCharacters := []string{
-		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-		"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-		"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", STARSTriangleCharacter,
-		".", "/", "*",
-	}
-
+	allowedCharacters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./*" + STARSTriangleCharacter
 	for _, letter := range contents {
-		var found bool
-		for _, allowed := range allowedCharacters {
-			if strings.Contains(allowed, string(letter)) {
-				found = true
-				break
-			}
-		}
-		if !found {
+		if !strings.ContainsRune(allowedCharacters, letter) {
 			return ErrSTARSCommandFormat
 		}
 	}
