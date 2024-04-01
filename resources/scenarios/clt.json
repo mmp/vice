@@ -2157,7 +2157,9 @@
                         "frequency": 132975,
                         "full_name": "Atlanta Center",
                         "scope_char": "C",
-                        "sector_id": "43"
+                        "sector_id": "43",
+                        "facility_id": "C",
+                        "eram_facility": true
                     },
                     "CLT_APP": {
                         "frequency": 119500,
@@ -2235,19 +2237,24 @@
                         "frequency": 135925,
                         "full_name": "Jacksonville Center",
                         "scope_char": "C",
-                        "sector_id": "J30"
+                        "sector_id": "J30",
+                        "facility_id": "J",
+                        "eram_facility": true
                     },
                     "DC_CTR": {
                         "frequency": 133725,
                         "full_name": "Washington Center",
                         "scope_char": "C",
-                        "sector_id": "W32"
+                        "sector_id": "W32",
+                        "facility_id": "W",
+                        "eram_facility": true
                       },
                       "GSO_APP": {
                         "frequency": 124350,
                         "full_name": "Greensboro Approach",
                         "scope_char": "W",
-                        "sector_id": "4W"
+                        "sector_id": "4W",
+                        "facility_id": "4"
                       },
                       "CLT_TWR": {
                         "frequency": 118100,

@@ -749,12 +749,16 @@
       "full_name": "Atlanta Center",
       "scope_char": "C",
       "sector_id": "C43"
+      "facility_id": "C",
+      "eram_facility": true
     },
     "MEM_CTR": {
       "frequency": 132550,
       "full_name": "Memphis Center",
       "scope_char": "C",
       "sector_id": "M22"
+      "facility_id": "M",
+      "eram_facility": true
     },
     "BHM_TWR": {
       "frequency": 119900,

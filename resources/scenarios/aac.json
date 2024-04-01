@@ -1586,12 +1586,16 @@
     "ZAE_OKC_LOW": {
       "frequency": 135000,
       "full_name": "Oklahoma Center",
+      "facility_id": "O",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "O01"
     },
     "ZAE_TUL_LOW": {
       "frequency": 136000,
       "full_name": "Tulsa Center",
+      "facility_id": "T",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "T01"
     }
@@ -1867,6 +1871,24 @@
       ]
     }
   ],
+    "airspace_awareness": [
+      {
+         "fixes": [
+          "COLIN",
+          "MAYES"
+        ],
+        "to_center": true,
+        "receiving_controller": "ZAE_TUL_LOW"
+      },
+      {
+         "fixes": [
+          "SHAWN",
+          "NOBLE"
+        ],
+        "to_center": true,
+        "receiving_controller": "ZAE_OKC_LOW"
+      }
+    ],
   "radar_sites": {
     "AAC": {
       "char": "A",
