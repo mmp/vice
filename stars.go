@@ -3510,14 +3510,15 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						sp.initiateTrack(ctx, ac.Callsign)
 						return
 					}
-				} else if db := sp.datablockType(ctx, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
-					state.FullLDB = time.Now().Add(5 * time.Second)
-					// do not collapse datablock if user is tracking the aircraft
-				} else if db == FullDatablock && ac.TrackingController != ctx.world.Callsign {
-					state.DatablockType = PartialDatablock
-				} else {
-					state.DatablockType = FullDatablock
-				}
+					if db := sp.datablockType(ctx, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
+						state.FullLDB = time.Now().Add(5 * time.Second)
+						// do not collapse datablock if user is tracking the aircraft
+					} else if db == FullDatablock && ac.TrackingController != ctx.world.Callsign {
+						state.DatablockType = PartialDatablock
+					} else {
+						state.DatablockType = FullDatablock
+					}
+				} 
 			} else if cmd == "." {
 				if err := sp.setScratchpad(ctx, ac.Callsign, "", false); err != nil {
 					status.err = err
