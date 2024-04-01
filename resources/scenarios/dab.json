@@ -535,8 +535,8 @@
       "frequency": 128375,
       "full_name": "Orlando approach",
       "scope_char": "B",
-      "sector_id": "4B"
-      "facility_id": "4",
+      "sector_id": "4B",
+      "facility_id": "4"
     },
     "JAX_N_APP": {
       "frequency": 127000,

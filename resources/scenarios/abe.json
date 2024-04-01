@@ -589,7 +589,7 @@
       "full_name": "Philly approach",
       "scope_char": "N",
       "sector_id": "6N",
-      "facility_id": "6",
+      "facility_id": "6"
     }
   },
   "default_scenario": "KABE Depart 6 Land 6",
