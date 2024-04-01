@@ -50,7 +50,7 @@ var (
 	localServer  *SimServer
 	remoteServer *SimServer
 	airportWind  map[string]Wind
-	windRequest  map[string]chan []getweather.MetarData
+	windRequest  map[string]chan getweather.MetarData
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -286,7 +286,7 @@ func main() {
 		lg.Info("Starting main loop")
 		// Init the wind maps
 		airportWind = make(map[string]Wind)
-		windRequest = make(map[string]chan []getweather.MetarData)
+		windRequest = make(map[string]chan getweather.MetarData)
 
 		stopConnectingRemoteServer := false
 		frameIndex := 0

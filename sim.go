@@ -710,15 +710,15 @@ func getWind(airport string) (Wind, bool) {
 	for airport, ch := range windRequest {
 		select {
 		case w := <-ch:
-			dirStr := fmt.Sprintf("%v", w[0].Wdir)
+			dirStr := fmt.Sprintf("%v", w.Wdir)
 			dir, err := strconv.Atoi(dirStr)
 			if err != nil {
 				lg.Errorf("Error converting %v to an int: %v", dirStr, err)
 			}
 			airportWind[airport] = Wind{
 				Direction: int32(dir),
-				Speed:     int32(w[0].Wspd),
-				Gust:      int32(w[0].Wgst),
+				Speed:     int32(w.Wspd),
+				Gust:      int32(w.Wgst),
 			}
 			delete(windRequest, airport)
 		default:
@@ -734,7 +734,7 @@ func getWind(airport string) (Wind, bool) {
 		return Wind{}, false
 	} else {
 		// It hasn't been requested nor is in airportWind
-		c := make(chan []getweather.MetarData)
+		c := make(chan getweather.MetarData)
 		windRequest[airport] = c
 		go func() {
 			weather, err := getweather.GetWeather(airport)
@@ -1030,7 +1030,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		if len(errors) != 0 {
 			s.lg.Errorf("Error getting weather for %v.", icao)
 		}
-		fullMETAR := weather[0].RawMETAR
+		fullMETAR := weather.RawMETAR
 		altimiter := getAltimiter(fullMETAR)
 		var err error
 
@@ -1038,14 +1038,14 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 			s.lg.Errorf("Error converting altimiter to an intiger: %v.", altimiter)
 		}
 		var wind string
-		spd := weather[0].Wspd
+		spd := weather.Wspd
 		var dir float64
-		if weather[0].Wdir == -1 {
-			dirInt := weather[0].Wdir.(int)
+		if weather.Wdir == -1 {
+			dirInt := weather.Wdir.(int)
 			dir = float64(dirInt)
 		}
 		var ok bool
-		dir, ok = weather[0].Wdir.(float64)
+		dir, ok = weather.Wdir.(float64)
 		if !ok {
 			lg.Errorf("Error converting %v into a float64: actual type %T", dir, dir)
 		}
@@ -1055,7 +1055,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 			wind = fmt.Sprintf("VRB%vKT", spd)
 		} else {
 			wind = fmt.Sprintf("%03d%02d", int(dir), spd)
-			gst := weather[0].Wgst
+			gst := weather.Wgst
 			if gst > 5 {
 				wind += fmt.Sprintf("G%02d", gst)
 			}
