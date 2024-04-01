@@ -1738,7 +1738,7 @@
           ]
         },
         "initial_altitude": 17000,
-        "initial_controller": "BOS_CTR",
+        "initial_controller": "BOS_37_CTR",
         "initial_speed": 290,
         "star": "JFUND2",
         "runway_waypoints": {
@@ -2059,7 +2059,7 @@
           ]
         },
         "initial_altitude": 17000,
-        "initial_controller": "BOS_CTR",
+        "initial_controller": "BOS_37_CTR",
         "initial_speed": 290,
         "star": "OOSHN5",
         "runway_waypoints": {
@@ -2162,7 +2162,7 @@
           ]
         },
         "initial_altitude": 17000,
-        "initial_controller": "BOS_CTR",
+        "initial_controller": "BOS_37_CTR",
         "initial_speed": 290,
         "star": "ROBUC3",
         "runway_waypoints": {
@@ -2343,7 +2343,7 @@
       "scope_char": "L",
       "sector_id": "1L"
     },
-    "BOS_CTR": {
+    "BOS_37_CTR": {
       "frequency": 134700,
       "full_name": "Boston Center",
       "scope_char": "C",
@@ -2411,7 +2411,7 @@
       "controllers": [
         "BOS_E_TWR",
         "BOS_W_TWR",
-        "BOS_CTR"
+        "BOS_37_CTR"
       ],
       "default_maps": [ "BOS A90 MAIN" ],
       "departure_airspace": [
@@ -2471,7 +2471,7 @@
       "controllers": [
         "BOS_E_TWR",
         "BOS_W_TWR",
-        "BOS_CTR"
+        "BOS_37_CTR"
       ],
       "default_maps": [ "BOS A90 MAIN" ],
       "departure_airspace": [
@@ -2527,7 +2527,7 @@
       "controllers": [
         "BOS_E_TWR",
         "BOS_W_TWR",
-        "BOS_CTR"
+        "BOS_37_CTR"
       ],
       "default_maps": [ "BOS A90 MAIN" ],
       "departure_airspace": [
@@ -2583,7 +2583,7 @@
       "controllers": [
         "BOS_E_TWR",
         "BOS_W_TWR",
-        "BOS_CTR"
+        "BOS_37_CTR"
       ],
       "default_maps": [ "BOS A90 MAIN" ],
       "departure_airspace": [
@@ -2629,7 +2629,7 @@
       "controllers": [
         "BOS_E_TWR",
         "BOS_W_TWR",
-        "BOS_CTR",
+        "BOS_37_CTR",
         "BOS_N_APP",
         "BOS_S_APP"
       ],
@@ -2680,7 +2680,7 @@
           0,
           0
         ],
-        "receiving_controller": "BOS_CTR",
+        "receiving_controller": "BOS_37_CTR",
         "to_center": true
       }
     ],

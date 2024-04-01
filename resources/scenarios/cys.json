@@ -375,7 +375,8 @@
       "frequency": 124550,
       "full_name": "Cheyenne approach",
       "scope_char": "A",
-      "sector_id": "1A"
+      "sector_id": "6A"
+      "facility_id": "6",
     },
     "CYS_TWR": {
       "frequency": 118700,
@@ -386,14 +387,17 @@
     "DEN_D_APP": {
       "frequency": 134850,
       "full_name": "Denver approach",
+      "facility_id": "1",
       "scope_char": "D",
       "sector_id": "1D"
     },
     "DEN_21_CTR": {
       "frequency": 125900,
       "full_name": "Denver center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "21"
+      "sector_id": "D21"
     }
   },
   "default_scenario": "KCYS Landing East",
