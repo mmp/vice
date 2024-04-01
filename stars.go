@@ -6869,7 +6869,8 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			ctx.platform.GetClipboard().SetText(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 		}
 
-		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyControl) {
+		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyControl) && !ctx.keyboard.IsPressed(KeyShift) { // There is a conflict between this and initating a track CRC-style, 
+			// so making sure that shift isn't being pressed would be a good idea.
 			if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
 				if state := sp.Aircraft[ac.Callsign]; state != nil {
 					state.IsSelected = !state.IsSelected
