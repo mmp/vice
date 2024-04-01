@@ -2,6 +2,7 @@
   "tracon": "N90",
   "airports": {
     "KEWR": {
+      "omit_arrival_scratchpad": true,
       "name": "Newark",
       "approaches": {
         "I11": {

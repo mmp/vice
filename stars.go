@@ -6172,8 +6172,15 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
 		sp := fmt.Sprintf("%3s", ac.Scratchpad)
 
-		field1 := [2]string{alt, Select(ac.Scratchpad != "", sp, ap)}
-
+		field1 := [2]string{}
+		field1[0] = alt
+		if ac.Scratchpad != "" {
+			field1[1] = sp
+		} else if airport := ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport); airport != nil && !airport.OmitArrivalScratchpad {
+			field1[1] = ap
+		} else {
+			field1[1] = alt
+		}
 		dbs[0].Lines[1].Text = field1[0] + field2 + field3 + field4
 		dbs[1].Lines[1].Text = field1[1] + field2 + field3 + field4
 
@@ -6226,11 +6233,13 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field3 = append(field3, ac.SecondaryScratchpad)
 		}
 		if len(field3) == 1 {
-			ap := ac.FlightPlan.ArrivalAirport
-			if len(ap) == 4 {
-				ap = ap[1:] // drop the leading K
+			if ap := ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil && !ap.OmitArrivalScratchpad {
+				ap := ac.FlightPlan.ArrivalAirport
+				if len(ap) == 4 {
+					ap = ap[1:] // drop the leading K
+				}
+				field3 = append(field3, ap)
 			}
-			field3 = append(field3, ap)
 		}
 
 		field4 := "  "
