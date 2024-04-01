@@ -1031,10 +1031,10 @@ func showAboutDialog() {
   Yi Zhang.
 - Facility engineering: Connor Allen, Adam
   Bolek, Aaron Flett, Mike K, Jud Lopez,
-  Jace Martin, Merry, Yahya Nazimuddin,
-  Justin Nguyen, Arya T, Nelson T, Eli
-  Thompson, Michael Trokel, and Samuel
-  Valencia.
+  Ethan Malimon, Jace Martin, Merry,
+  Yahya Nazimuddin, Justin Nguyen, Arya T,
+  Nelson T, Eli Thompson, Michael Trokel,
+  and Samuel Valencia.
 - Video maps: thanks to the ZAU, ZBW, ZDC,
   ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
   ZSE, and ZTL VATSIM ARTCCs.
