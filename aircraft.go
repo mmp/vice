@@ -483,11 +483,11 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, departureAirport 
 	} else {
 		// human controller will be first
 		ctrl := w.PrimaryController
-		if w.MultiControllers != nil {
+		if len(w.MultiControllers) > 0 {
 			ctrl = w.MultiControllers.GetDepartureController(departureAirport, runway, exitRoute.SID)
-			if ctrl == "" {
-				ctrl = w.PrimaryController
-			}
+		}
+		if ctrl == "" {
+			ctrl = w.PrimaryController
 		}
 
 		ac.DepartureContactAltitude =
