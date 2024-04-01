@@ -120,6 +120,10 @@ func pow(a, b float32) float32 {
 	return float32(math.Pow(float64(a), float64(b)))
 }
 
+func exp(x float32) float32 {
+	return float32(math.Exp(float64(x)))
+}
+
 func sqr[V constraints.Integer | constraints.Float](v V) V { return v * v }
 
 func clamp[T constraints.Ordered](x T, low T, high T) T {

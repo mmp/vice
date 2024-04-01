@@ -1395,11 +1395,13 @@ type AircraftPerformance struct {
 		Landing float32 `json:"landing"` // nm
 	} `json:"runway"`
 	Speed struct {
-		Min     float32 `json:"min"`
-		V2      float32 `json:"v2"`
-		Landing float32 `json:"landing"`
-		Cruise  float32 `json:"cruise"`
-		Max     float32 `json:"max"`
+		Min        float32 `json:"min"`
+		V2         float32 `json:"v2"`
+		Landing    float32 `json:"landing"`
+		CruiseTAS  float32 `json:"cruise"`
+		CruiseMach float32 `json:"cruiseM"`
+		MaxTAS     float32 `json:"max"`
+		MaxMach    float32 `json:"maxM"`
 	} `json:"speed"`
 }
 
@@ -1568,6 +1570,15 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 
 	ap := make(map[string]AircraftPerformance)
 	for _, ac := range acStruct.Aircraft {
+		// If we have mach but not TAS, do the conversion; the nav code
+		// works with TAS..
+		if ac.Speed.CruiseMach != 0 && ac.Speed.CruiseTAS == 0 {
+			ac.Speed.CruiseTAS = 666.739 * ac.Speed.CruiseMach
+		}
+		if ac.Speed.MaxMach != 0 && ac.Speed.MaxTAS == 0 {
+			ac.Speed.MaxTAS = 666.739 * ac.Speed.MaxMach
+		}
+
 		ap[ac.ICAO] = ac
 
 		if ac.Speed.V2 != 0 && ac.Speed.V2 > 1.5*ac.Speed.Min {
@@ -1923,8 +1934,8 @@ func (db *StaticDatabase) CheckAirline(icao, fleet string, e *ErrorLogger) {
 		if perf, ok := database.AircraftPerformance[aircraft.ICAO]; !ok {
 			e.ErrorString("aircraft not present in performance database")
 		} else {
-			if perf.Speed.Min < 35 || perf.Speed.Landing < 35 || perf.Speed.Cruise < 35 ||
-				perf.Speed.Max < 35 || perf.Speed.Min > perf.Speed.Max {
+			if perf.Speed.Min < 35 || perf.Speed.Landing < 35 || perf.Speed.CruiseTAS < 35 ||
+				perf.Speed.MaxTAS < 35 || perf.Speed.Min > perf.Speed.MaxTAS {
 				e.ErrorString("aircraft's speed specification is questionable: %s", spew.Sdump(perf.Speed))
 			}
 			if perf.Rate.Climb == 0 || perf.Rate.Descent == 0 || perf.Rate.Accelerate == 0 ||
@@ -2021,6 +2032,28 @@ func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
 
 func (ap FAAAirport) ValidRunways() string {
 	return strings.Join(MapSlice(ap.Runways, func(r Runway) string { return r.Id }), ", ")
+}
+
+// returns the ratio of air density at the given altitude (in feet) to the
+// air density at sea level, subject to assuming the standard atmosphere.
+func DensityRatioAtAltitude(alt float32) float32 {
+	altm := alt * 0.3048 // altitude in meters
+
+	// https://en.wikipedia.org/wiki/Barometric_formula#Density_equations
+	const g0 = 9.80665    // gravitational constant, m/s^2
+	const M_air = 0.02897 // molar mass of earth's air, kg/mol
+	const R = 8.314463    // universal gas constant J/(mol K)
+	const T_b = 288.15    // reference temperature at sea level, degrees K
+
+	return exp(-g0 * M_air * altm / (R * T_b))
+}
+
+func IASToTAS(ias, altitude float32) float32 {
+	return ias / sqrt(DensityRatioAtAltitude(altitude))
+}
+
+func TASToIAS(tas, altitude float32) float32 {
+	return tas * sqrt(DensityRatioAtAltitude(altitude))
 }
 
 ///////////////////////////////////////////////////////////////////////////
