@@ -513,7 +513,15 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		}
 
 		if c.NewSimType == NewSimCreateRemote {
-			if imgui.InputTextV("Name", &c.NewSimName, 0, nil) {
+			if imgui.InputTextV("Name", &c.NewSimName, imgui.InputTextFlagsCallbackAlways,
+				func(cb imgui.InputTextCallbackData) int32 {
+					// Prevent excessively-long names...
+					const MaxLength = 32
+					if l := len(cb.Buffer()); l > MaxLength {
+						cb.DeleteBytes(MaxLength-1, l-MaxLength)
+					}
+					return 0
+				}) {
 				c.displayError = nil
 			}
 			if c.NewSimName == "" {
