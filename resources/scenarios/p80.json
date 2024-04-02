@@ -1859,6 +1859,8 @@
     "SEA_CTR": {
       "frequency": 135450,
       "full_name": "Seattle Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "S16"
     },

@@ -2600,7 +2600,7 @@
         },
         "cruise_altitude": 35000,
         "initial_altitude": 17000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_74_CTR",
         "initial_speed": 300,
         "star": "KORRY4",
         "speed_restriction": 250,
@@ -2692,7 +2692,7 @@
         "assigned_altitude": 10000,
         "cruise_altitude": 35000,
         "initial_altitude": 13000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "DC_32_CTR",
         "initial_speed": 300,
         "star": "MIP4",
         "speed_restriction": 250,
@@ -2792,7 +2792,7 @@
         "assigned_altitude": 11000,
         "cruise_altitude": 39000,
         "initial_altitude": 12000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_66_CTR",
         "initial_speed": 300,
         "star": "CAMRN4",
         "speed_restriction": 250,
@@ -2886,7 +2886,7 @@
         "cruise_altitude": 37000,
         "initial_altitude": 20000,
         "description": "LENDY8",
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_36_CTR",
         "initial_speed": 300,
         "star": "LENDY8",
         "speed_restriction": 250,
@@ -2950,7 +2950,7 @@
         "cruise_altitude": 39000,
         "description": "IGN1",
         "initial_altitude": 19000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_36_CTR",
         "initial_speed": 300,
         "star": "IGN1",
         "speed_restriction": 250,
@@ -2996,7 +2996,7 @@
         "assigned_altitude": 9000,
         "cruise_altitude": 41000,
         "initial_altitude": 11000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_66_CTR",
         "initial_speed": 300,
         "route": "/. OWENZ CAMRN",
         "speed_restriction": 250,
@@ -3154,7 +3154,7 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_74_CTR",
         "initial_speed": 300,
         "star": "FQM3",
         "speed_restriction": null,
@@ -3388,7 +3388,7 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 20000,
-        "initial_controller": "DC_CTR",
+        "initial_controller": "DC_32_CTR",
         "initial_speed": 300,
         "star": "PHLBO4",
         "speed_restriction": null,
@@ -3975,7 +3975,7 @@
       "scope_char": "T",
       "sector_id": "4T"
     },
-    "DC_CTR": {
+    "DC_32_CTR": {
       "frequency": 133725,
       "full_name": "Washington center",
       "scope_char": "C",
@@ -3983,7 +3983,7 @@
       "facility_id": "W",
       "eram_facility": true
     },
-    "NY_CTR": {
+    "NY_56_CTR": {
       "frequency": 125325,
       "full_name": "New York center",
       "scope_char": "C",
@@ -3991,11 +3991,19 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_56_CTR": {
-      "frequency": 125325,
+    "NY_36_CTR": {
+      "frequency": 133150,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "C56",
+      "sector_id": "C36",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "NY_74_CTR": {
+      "frequency": 132150,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C74",
       "facility_id": "C",
       "eram_facility": true
     },
@@ -4395,7 +4403,6 @@
         "JFK_TWR",
         "EWR_TWR",
         "LGA_TWR",
-        "NY_CTR",
         "NY_66_CTR",
         "NY_56_CTR",
         "NY_68_CTR",
@@ -4403,7 +4410,7 @@
         "NY_35_CTR",
         "NY_51_CTR",
         "NY_39_CTR",
-        "DC_CTR"
+        "DC_32_CTR"
       ],
       "default_maps": [
         "EWR",
@@ -4644,7 +4651,6 @@
         "JFK_TWR",
         "EWR_TWR",
         "LGA_TWR",
-        "NY_CTR",
         "NY_66_CTR",
         "NY_56_CTR",
         "NY_68_CTR",
@@ -4652,7 +4658,7 @@
         "NY_35_CTR",
         "NY_51_CTR",
         "NY_39_CTR",
-        "DC_CTR"
+        "DC_32_CTR"
       ],
       "default_maps": [
         "EWR",
@@ -4883,7 +4889,6 @@
         "JFK_TWR",
         "EWR_TWR",
         "LGA_TWR",
-        "NY_CTR",
         "NY_66_CTR",
         "NY_56_CTR",
         "NY_68_CTR",
@@ -4891,7 +4896,7 @@
         "NY_35_CTR",
         "NY_51_CTR",
         "NY_39_CTR",
-        "DC_CTR"
+        "DC_32_CTR"
       ],
       "default_maps": [
         "EWR",
@@ -5132,7 +5137,6 @@
         "JFK_TWR",
         "EWR_TWR",
         "LGA_TWR",
-        "NY_CTR",
         "NY_66_CTR",
         "NY_56_CTR",
         "NY_68_CTR",
@@ -5140,7 +5144,7 @@
         "NY_35_CTR",
         "NY_51_CTR",
         "NY_39_CTR",
-        "DC_CTR"
+        "DC_32_CTR"
       ],
       "default_maps": [
         "EWR",
@@ -5381,7 +5385,6 @@
         "JFK_TWR",
         "EWR_TWR",
         "LGA_TWR",
-        "NY_CTR",
         "NY_66_CTR",
         "NY_56_CTR",
         "NY_68_CTR",
@@ -5389,7 +5392,7 @@
         "NY_35_CTR",
         "NY_51_CTR",
         "NY_39_CTR",
-        "DC_CTR"
+        "DC_32_CTR"
       ],
       "default_maps": [
         "EWR",

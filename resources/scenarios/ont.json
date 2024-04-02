@@ -978,24 +978,32 @@
         "LAX_39_CTR": {
             "frequency": 133200,
             "full_name": "Los Angeles Center",
+            "facility_id": "C",
+            "eram_facility": true,
             "scope_char": "C",
             "sector_id": "C55"
         },
         "LAX_30_CTR": {
             "frequency": 119950,
             "full_name": "Los Angeles Center",
+            "facility_id": "C",
+            "eram_facility": true,
             "scope_char": "C",
             "sector_id": "C30"
         },
         "LAX_37_CTR": {
             "frequency": 133550,
             "full_name": "Los Angeles Center",
+            "facility_id": "C",
+            "eram_facility": true,
             "scope_char": "C",
             "sector_id": "C37"
         },
         "LAX_04_CTR": {
             "frequency": 125800,
             "full_name": "Los Angeles Center",
+            "facility_id": "C",
+            "eram_facility": true,
             "scope_char": "C",
             "sector_id": "C04"
         },

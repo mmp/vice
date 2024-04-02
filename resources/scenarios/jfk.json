@@ -2750,6 +2750,14 @@
       "scope_char": "C",
       "sector_id": "B17"
     },
+    "DC_32_CTR": {
+      "frequency": 133725,
+      "full_name": "Washington center",
+      "scope_char": "C",
+      "sector_id": "W32",
+      "facility_id": "W",
+      "eram_facility": true
+    },
     "EWR_APP": {
       "frequency": 128550,
       "full_name": "New York approach",

@@ -1303,6 +1303,8 @@
         "LAX_30_CTR": {
             "frequency": 119950,
             "full_name": "Los Angeles Center",
+            "facility_id": "C",
+            "eram_facility": true,
             "scope_char": "C",
             "sector_id": "C30"
         },

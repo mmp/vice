@@ -983,6 +983,8 @@
         "LAX_55_CTR": {
             "frequency": 135550,
             "full_name": "Los Angeles Center",
+            "facility_id": "C",
+            "eram_facility": true,
             "scope_char": "C",
             "sector_id": "C55"
         },
@@ -1046,11 +1048,11 @@
             "scope_char": "T",
             "sector_id": "2T"
         },
-         "WHP_TWR": {
-        "frequency": 135000,
-        "full_name": "Whiteman Tower",
-        "scope_char": "T",
-        "sector_id": "3T"
+        "WHP_TWR": {
+            "frequency": 135000,
+            "full_name": "Whiteman Tower",
+            "scope_char": "T",
+            "sector_id": "3T"
         }
     },
     "default_scenario": "KBUR 8/15",

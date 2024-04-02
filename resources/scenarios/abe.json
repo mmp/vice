@@ -321,7 +321,7 @@
         "cruise_altitude": 9000,
         "initial_altitude": 7000,
         "description": "MDT departures",
-        "initial_controller": "MDT_APP",
+        "initial_controller": "MDT_SE_APP",
         "initial_speed": 250,
         "route": "/. KRAZE FJC",
         "runway_waypoints": {
@@ -346,7 +346,7 @@
         "cruise_altitude": 4000,
         "initial_altitude": 300,
         "description": "RDG departures",
-        "initial_controller": "MDT_APP",
+        "initial_controller": "MDT_SE_APP",
         "initial_speed": 250,
         "route": "/. ETX",
         "waypoints": "KRDG N040.23.52.301,W075.55.26.797/ho ETX"
@@ -561,20 +561,21 @@
       "full_name": "Wilkes Barre Approach",
       "scope_char": "7",
       "sector_id": "1E",
-      "facility_id": "7"
+      "facility_id": "1"
     },
     "EWR_APP": {
       "frequency": 128550,
       "full_name": "New York approach",
       "scope_char": "P",
       "sector_id": "4P",
-      "facility_id": "4"
+      "facility_id": "2"
     },
-    "MDT_APP": {
+    "MDT_SE_APP": {
       "frequency": 126450,
       "full_name": "Harrisburg approach",
       "scope_char": "S",
-      "sector_id": "HS"
+      "sector_id": "HS",
+      "facility_id": "5"
     },
     "NY_D_CTR": {
       "frequency": 127725,
@@ -589,7 +590,7 @@
       "full_name": "Philly approach",
       "scope_char": "N",
       "sector_id": "6N",
-      "facility_id": "6"
+      "facility_id": "3"
     }
   },
   "default_scenario": "KABE Depart 6 Land 6",
@@ -638,7 +639,7 @@
         "PHL_NA_APP",
         "EWR_APP",
         "AVP_S_APP",
-        "MDT_APP",
+        "MDT_SE_APP",
         "NY_D_CTR"
       ],
       "default_maps": [ "Allentown TRACON Video Map" ],
@@ -686,7 +687,7 @@
         "PHL_NA_APP",
         "EWR_APP",
         "AVP_S_APP",
-        "MDT_APP",
+        "MDT_SE_APP",
         "NY_D_CTR"
       ],
       "default_maps": [ "Allentown TRACON Video Map" ],

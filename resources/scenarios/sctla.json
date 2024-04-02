@@ -1507,6 +1507,8 @@
     "LAX_CTR": {
       "frequency": 135550,
       "full_name": "LA Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "55"
     },

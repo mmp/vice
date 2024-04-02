@@ -1199,6 +1199,8 @@
         "ABQ_CTR": {
             "frequency": 132800,
             "full_name": "Albuquerque Center",
+            "facility_id": "C",
+            "eram_facility": true,
             "scope_char": "C",
             "sector_id": "C16"
         },

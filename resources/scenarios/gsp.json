@@ -416,6 +416,8 @@
     "ATL_CTR": {
       "frequency": 132975,
       "full_name": "Atlanta Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "43"
     },

@@ -2326,6 +2326,8 @@
     "SEA_CTR": {
       "frequency": 135450,
       "full_name": "Seattle Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "S",
       "sector_id": "S16"
     },
@@ -2349,13 +2351,13 @@
     },
     "SEA_W_APP": {
       "frequency": 125600,
-      "full_name": "Seattle West Approach",
+      "full_name": "Seattle Approach",
       "scope_char": "W",
       "sector_id": "1W"
     },
     "SEA_E_APP": {
       "frequency": 123900,
-      "full_name": "Seattle East Approach",
+      "full_name": "Seattle Approach",
       "scope_char": "E",
       "sector_id": "1E"
     },
