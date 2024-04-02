@@ -1373,6 +1373,7 @@
   },
   "stars_config": {
   "center": "KIND",
+  "allow_long_scratchpad": [true, true],
   "inhibit_ca_volumes": [
     {
       "name": "IND CA SUPPRESSION",

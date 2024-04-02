@@ -582,6 +582,16 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			}
 		}
 	}
+	for _, scratchpad := range sg.STARSFacilityAdaptation.Scratchpads {
+		if ls := len(scratchpad); ls > 4 || (ls > 3 && !sg.STARSFacilityAdaptation.ScratchpadRules[0]) {
+			max := 3
+			if sg.STARSFacilityAdaptation.ScratchpadRules[0] {
+				max = 4
+			}
+			e.ErrorString("%v exceeds the maximum scratchpad length of %v", scratchpad, max)
+
+		}
+	}
 
 	for rwy, vol := range ap.ATPAVolumes {
 		e.Push("ATPA " + rwy)

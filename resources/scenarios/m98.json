@@ -1016,16 +1016,16 @@
           }
         },
         "scratchpads": {
-          "DLL": "TAXEE",
-          "ABR": "INUNE",
-          "FAR": "GEP",
-          "LEINY": "TONCA",
-          "ONTIJ": "JURNY",
-          "ALO": "FGT",
-          "RXANN": "HUGIR",
-          "SMERF": "ZOGAP",
-          "GRB": "SNINE",
-          "ODI": "JEDET"
+          "DLL": "DLL",
+          "ABR": "ABR",
+          "FAR": "FAR",
+          "LEINY": "LEI",
+          "ONTIJ": "FOD",
+          "ALO": "RST",
+          "RXANN": "ONL",
+          "SMERF": "SME",
+          "GRB": "GRB",
+          "ODI": "ODI"
         },
         "stars_maps": [
           {
