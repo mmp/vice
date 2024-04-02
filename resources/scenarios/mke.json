@@ -489,6 +489,8 @@
     "CHI_81_CTR": {
       "frequency": 120350,
       "full_name": "Chicago Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "C81"
     },

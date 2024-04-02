@@ -1676,7 +1676,9 @@
         "frequency": 127650,
         "full_name": "Denver Center",
         "scope_char": "C",
-        "sector_id": "17"
+        "sector_id": "D17",
+        "facility_id": "C",
+        "eram_facility": true
       },
       "DEN_I_APP": {
         "frequency": 120350,

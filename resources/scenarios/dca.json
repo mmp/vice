@@ -1411,13 +1411,17 @@
   "frequency": 133725,
   "full_name": "Washington Center",
   "scope_char": "C",
-  "sector_id": "32"
+  "sector_id": "32",
+  "facility_id": "C",
+  "eram_facility": true
   },
   "NY_CTR": {
   "frequency": 125325,
   "full_name": "New York Center",
   "scope_char": "C",
-  "sector_id": "N56"
+  "sector_id": "N56",
+  "facility_id": "N",
+  "eram_facility": true
   },
   "BWI_S_APP": {
     "frequency": 119700,

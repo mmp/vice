@@ -1864,7 +1864,7 @@
         "assigned_altitude": 11000,
         "cruise_altitude": 39000,
         "initial_altitude": 12000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_F_CTR",
         "initial_speed": 300,
         "star": "CAMRN4",
         "speed_restriction": 250,
@@ -1996,7 +1996,7 @@
         "cruise_altitude": 5000,
         "description": "via JFK",
         "initial_altitude": 5000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_B_CTR",
         "initial_speed": 250,
         "route": "/. JFK CCC ISP",
         "waypoints": "N039.58.50.484,W074.03.34.151 ZIGGI/ho JFK CCC KISP"
@@ -2014,7 +2014,7 @@
         "cruise_altitude": 27000,
         "initial_altitude": 7000,
         "description": "via SARDI",
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_B_CTR",
         "initial_speed": 250,
         "route": "/. SARDI V139 RICED KEYED HVN",
         "waypoints": "N040.11.27.469,W073.12.53.712 N040.15.12.483,W073.08.39.131/ho SARDI RICED KEYED HVN"
@@ -2135,7 +2135,7 @@
         "cruise_altitude": 5000,
         "initial_altitude": 5000,
         "description": "via ZIGGI",
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_B_CTR",
         "initial_speed": 250,
         "route": "/. ZIGGI",
         "speed_restriction": 250,
@@ -2292,7 +2292,7 @@
         "cruise_altitude": 37000,
         "initial_altitude": 20000,
         "description": "LENDY8",
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_C_CTR",
         "initial_speed": 300,
         "star": "LENDY8",
         "speed_restriction": 250,
@@ -2390,7 +2390,7 @@
         "cruise_altitude": 39000,
         "description": "IGN1",
         "initial_altitude": 19000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_C_CTR",
         "initial_speed": 300,
         "star": "IGN1",
         "speed_restriction": 250,
@@ -2429,7 +2429,7 @@
         "cruise_altitude": 15000,
         "description": "DENNA3",
         "initial_altitude": 8000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_B_CTR",
         "initial_speed": 250,
         "star": "DENNA3",
         "speed_restriction": 250,
@@ -2456,7 +2456,7 @@
         "cruise_altitude": 29000,
         "description": "LOVES2",
         "initial_altitude": 8000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_B_CTR",
         "initial_speed": 250,
         "star": "LOVES2",
         "speed_restriction": 250,
@@ -2534,7 +2534,7 @@
         "assigned_altitude": 9000,
         "cruise_altitude": 41000,
         "initial_altitude": 11000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_F_CTR",
         "initial_speed": 300,
         "route": "/. OWENZ CAMRN",
         "speed_restriction": 250,
@@ -2745,6 +2745,8 @@
     "BOS_E_CTR": {
       "frequency": 133450,
       "full_name": "Boston center",
+      "facility_id": "B",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "B17"
     },
@@ -2836,25 +2838,25 @@
       "frequency": 125325,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N56"
-    },
-    "NY_CTR": {
-      "frequency": 125325,
-      "full_name": "New York center",
-      "scope_char": "C",
+      "facility_id": "C",
+      "eram_facility": true,
       "sector_id": "N56"
     },
     "NY_C_CTR": {
       "frequency": 132175,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "C34"
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "N34"
     },
     "NY_F_CTR": {
-      "frequency": 128300,
+      "frequency": 133500,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "C66"
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "N86"
     },
     "NY_LE_DEP": {
       "frequency": 126800,
@@ -3029,7 +3031,7 @@
         "JFK_TWR",
         "LGA_APP",
         "LGA_DEP",
-        "NY_CTR",
+        "NY_B_CTR",
         "NY_L_DEP"
       ],
       "default_maps": [ "JFK 13s" ],
@@ -3176,7 +3178,7 @@
         "JFK_TWR",
         "LGA_APP",
         "LGA_DEP",
-        "NY_CTR",
+        "NY_B_CTR",
         "NY_L_DEP"
       ],
       "default_maps": [ "JFK 22s" ],
@@ -3318,7 +3320,7 @@
         "JFK_TWR",
         "LGA_APP",
         "LGA_DEP",
-        "NY_CTR",
+        "NY_B_CTR",
         "NY_L_DEP"
       ],
       "default_maps": [ "JFK 22s" ],
@@ -3459,7 +3461,7 @@
         "JFK_TWR",
         "LGA_APP",
         "LGA_DEP",
-        "NY_CTR",
+        "NY_B_CTR",
         "NY_L_DEP"
       ],
       "default_maps": [ "JFK 31s" ],
@@ -3600,7 +3602,7 @@
         "JFK_TWR",
         "LGA_APP",
         "LGA_DEP",
-        "NY_CTR",
+        "NY_B_CTR",
         "NY_L_DEP"
       ],
       "default_maps": [ "JFK 4s" ],

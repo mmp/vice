@@ -579,12 +579,15 @@
     "DEN_29_CTR": {
       "frequency": 132225,
       "full_name": "Denver center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "29"
     },
     "PUB_APP": {
       "frequency": 120100,
       "full_name": "Pueblo Approach",
+      "facility_id": "1",
       "scope_char": "P",
       "sector_id": "1P"
     }

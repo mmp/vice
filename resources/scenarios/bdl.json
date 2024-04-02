@@ -272,7 +272,9 @@
             "frequency": 134700,
             "full_name": "Boston Center",
             "scope_char": "C",
-            "sector_id": "B37"
+            "sector_id": "B37",
+            "facility_id": "C",
+            "eram_facility": true
         },
         "BDL_APP": {
             "frequency": 123950,
