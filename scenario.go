@@ -685,7 +685,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		e.Push("stars_adaptation")
 
 		for _, fix := range aa.Fix {
-			if _, ok := sg.locate(fix); !ok {
+			if _, ok := sg.locate(fix); !ok && fix != "ALL" {
 				e.ErrorString(fix + ": fix unknown")
 			}
 		}
