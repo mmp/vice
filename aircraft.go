@@ -22,7 +22,6 @@ type Aircraft struct {
 	ForceQLControllers  []string
 	PointOutHistory     []string
 	DisplayFPInfo       bool
-	Warnings            []string
 
 	// STARS-related state that is globally visible
 	TrackingController        string // Who has the radar track

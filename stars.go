@@ -3124,14 +3124,6 @@ func (sp *STARSPane) updateQL(ctx *PaneContext, input string) (ok bool, previewI
 	return
 }
 
-func (sp *STARSPane) updateWarnings(ctx *PaneContext, callsign string, warnings []string) error {
-	ctx.world.UpdateWarnings(callsign, warnings, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
-	return nil
-}
-
 func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) error {
 	lc := len([]rune(contents))
 

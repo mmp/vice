@@ -226,20 +226,6 @@ func (w *World) LaunchAircraft(ac Aircraft) {
 		})
 }
 
-func (w *World) UpdateWarnings(callsign string, warnings []string, success func(any), err func(error)) {
-	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
-		ac.Warnings = warnings
-	}
-
-	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
-			Call:      w.simProxy.UpdateWarnings(callsign, warnings),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
 func (w *World) SetScratchpad(callsign string, scratchpad string, success func(any), err func(error)) {
 	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
 		ac.Scratchpad = scratchpad
