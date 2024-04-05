@@ -407,7 +407,6 @@ type STARSAircraftState struct {
 	ATPAStatus               ATPAStatus
 	MinimumMIT               float32
 	ATPALeadAircraftCallsign string
-	LastKnownHandoff         string
 	POFlashingEndTime        time.Time
 
 	// These are only set if a leader line direction was specified for this
@@ -3312,8 +3311,6 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 			}
 			if control != "" && ((controller == "C" && toCenter) || (controller == c.FacilityIdentifier && !toCenter) ||
 				(controller == ctx.world.GetController(control).FacilityIdentifier && !toCenter)) {
-				state := sp.Aircraft[callsign]
-				state.LastKnownHandoff = ctx.world.GetController(control).Scope
 				return control, nil
 			}
 		} else {
@@ -3348,16 +3345,12 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 				return "", errors.New("Error fidning interfacility position")
 			}
 			if receivingController.FacilityIdentifier != "" && string(controller[0]) == receivingController.FacilityIdentifier {
-				state := sp.Aircraft[callsign]
-				state.LastKnownHandoff = receivingController.Scope
 				return receivingController.Callsign, nil
 			}
 
 		}
 		for _, control := range ctx.world.Controllers {
 			if control.ERAMFacility && control.SectorId == controller {
-				state := sp.Aircraft[callsign]
-				state.LastKnownHandoff = control.Scope
 				return control.Callsign, nil
 			}
 		}
