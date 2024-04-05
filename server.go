@@ -255,6 +255,14 @@ func (s *SimProxy) RejectPointOut(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
+func (s *SimProxy) ToggleSPCOverride(callsign string, spc string) *rpc.Call {
+	return s.Client.Go("Sim.ToggleSPCOverride", &ToggleSPCArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		SPC:             spc,
+	}, nil, nil)
+}
+
 func (s *SimProxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
 	return s.Client.Go("Sim.SetTemporaryAltitude", &AssignAltitudeArgs{
 		ControllerToken: s.ControllerToken,
@@ -876,6 +884,20 @@ func (sd *SimDispatcher) RejectPointOut(po *PointOutArgs, _ *struct{}) error {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.RejectPointOut(po.ControllerToken, po.Callsign)
+	}
+}
+
+type ToggleSPCArgs struct {
+	ControllerToken string
+	Callsign        string
+	SPC             string
+}
+
+func (sd *SimDispatcher) ToggleSPCOverride(ts *ToggleSPCArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[ts.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.ToggleSPCOverride(ts.ControllerToken, ts.Callsign, ts.SPC)
 	}
 }
 

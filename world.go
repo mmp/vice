@@ -287,10 +287,6 @@ func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
 }
 
 func (w *World) SetGlobalLeaderLine(callsign string, dir *CardinalOrdinalDirection, success func(any), err func(error)) {
-	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
-		ac.GlobalLeaderLineDirection = dir
-	}
-
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.SetGlobalLeaderLine(callsign, dir),
@@ -470,6 +466,20 @@ func (w *World) RejectPointOut(callsign string, success func(any), err func(erro
 		})
 }
 
+func (w *World) ToggleSPCOverride(callsign string, spc string, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
+		ac.ToggleSPCOverride(spc)
+	}
+
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.ToggleSPCOverride(callsign, spc),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (w *World) ChangeControlPosition(callsign string, keepTracks bool) error {
 	err := w.simProxy.ChangeControlPosition(callsign, keepTracks)
 	if err == nil {
@@ -567,12 +577,16 @@ func (w *World) GetAllControllers() map[string]*Controller {
 }
 
 func (w *World) DepartureController(ac *Aircraft) string {
-	callsign := w.MultiControllers.ResolveController(ac.DepartureContactController,
-		func(callsign string) bool {
-			ctrl, ok := w.Controllers[callsign]
-			return ok && ctrl.IsHuman
-		})
-	return Select(callsign != "", callsign, w.PrimaryController)
+	if len(w.MultiControllers) > 0 {
+		callsign := w.MultiControllers.ResolveController(ac.DepartureContactController,
+			func(callsign string) bool {
+				ctrl, ok := w.Controllers[callsign]
+				return ok && ctrl.IsHuman
+			})
+		return Select(callsign != "", callsign, w.PrimaryController)
+	} else {
+		return w.PrimaryController
+	}
 }
 
 func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
@@ -888,7 +902,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	// handoff happens, so that it can reflect which controllers are
 	// actually signed in at that point.
 	arrivalController := w.PrimaryController
-	if w.MultiControllers != nil {
+	if len(w.MultiControllers) > 0 {
 		arrivalController = w.MultiControllers.GetArrivalController(arrivalGroup)
 		if arrivalController == "" {
 			arrivalController = w.PrimaryController

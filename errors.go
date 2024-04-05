@@ -110,10 +110,13 @@ var (
 	ErrSTARSIllegalFix        = NewSTARSError("ILL FIX")
 	ErrSTARSIllegalFlight     = NewSTARSError("ILL FLIGHT")
 	ErrSTARSIllegalFunc       = NewSTARSError("ILL FUNC")
+	ErrSTARSIllegalFunction   = NewSTARSError("ILL FNCT")
 	ErrSTARSIllegalLine       = NewSTARSError("ILL LINE")
 	ErrSTARSIllegalMap        = NewSTARSError("ILL MAP")
 	ErrSTARSIllegalParam      = NewSTARSError("ILL PARAM")
 	ErrSTARSIllegalPosition   = NewSTARSError("ILL POS")
+	ErrSTARSIllegalRPC        = NewSTARSError("ILL RPC") // CRDA runway pair config
+	ErrSTARSIllegalRunway     = NewSTARSError("ILL RWY")
 	ErrSTARSIllegalScratchpad = NewSTARSError("ILL SCR")
 	ErrSTARSIllegalSector     = NewSTARSError("ILL SECTOR")
 	ErrSTARSIllegalText       = NewSTARSError("ILL TEXT")

@@ -1362,7 +1362,7 @@ func updateDiscordStatus() {
 	// Sign in to the Vice app on Discord
 	discord_err := discord_client.Login("1158289394717970473")
 	if discord_err != nil {
-		lg.Error("Discord RPC Error", slog.String("error", discord_err.Error()))
+		lg.Warn("Discord RPC Error", slog.String("error", discord_err.Error()))
 		return
 	}
 	lg.Info("Successfully logged into Discord")

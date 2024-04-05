@@ -4774,7 +4774,7 @@
         "assigned_altitude": 8000,
         "cruise_altitude": 39000,
         "initial_altitude": 9000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_A_CTR",
         "initial_speed": 250,
         "spawn": "LRP",
         "star": "BOJID4"
@@ -5014,7 +5014,7 @@
         },
         "assigned_altitude": 10000,
         "initial_altitude": 10000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_A_CTR",
         "initial_speed": 250,
         "star": "SPUDS7",
         "spawn": "ETX"
@@ -5026,43 +5026,55 @@
       "frequency": 133725,
       "full_name": "Washington center",
       "scope_char": "C",
-      "sector_id": "W32"
+      "sector_id": "W32",
+      "facility_id": "W",
+      "eram_facility": true
     },
     "EWR_APP": {
       "frequency": 128550,
       "full_name": "New York approach",
       "scope_char": "P",
-      "sector_id": "4P"
+      "sector_id": "4P",
+      "facility_id": "1"
     },
     "LGA_DEP": {
       "frequency": 120400,
       "full_name": "New York departure",
       "scope_char": "L",
-      "sector_id": "1L"
+      "sector_id": "1L",
+      "facility_id": "1"
+    },
+    "NY_A_CTR": {
+      "frequency": 120025,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "N26",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "NY_B_CTR": {
       "frequency": 125325,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N56"
-    },
-    "NY_CTR": {
-      "frequency": 125325,
-      "full_name": "New York center",
-      "scope_char": "C",
-      "sector_id": "N56"
+      "sector_id": "N56",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "NY_C_CTR": {
       "frequency": 132175,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N34"
+      "sector_id": "N34",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "NY_F_CTR": {
-      "frequency": 128300,
+      "frequency": 133500,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N66"
+      "sector_id": "N66",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "PHL_F1_APP": {
       "frequency": 124500,
@@ -5143,7 +5155,7 @@
         "PHL_NA_APP",
         "PHL_SA_APP",
         "DC_CTR",
-        "NY_CTR"
+        "NY_A_CTR"
       ],
       "default_maps": [ "Philadelphia Map West" ],
       "wind": {
@@ -5198,7 +5210,7 @@
       "controllers": [
         "PHL_TWR",
         "DC_CTR",
-        "NY_CTR"
+        "NY_A_CTR"
       ],
       "default_maps": [ "Philadelphia Map West" ],
       "departure_airspace": [
@@ -5267,7 +5279,7 @@
       "controllers": [
         "PHL_TWR",
         "DC_CTR",
-        "NY_CTR"
+        "NY_A_CTR"
       ],
       "default_maps": [ "Philadelphia Map East" ],
       "departure_airspace": [

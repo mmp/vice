@@ -153,17 +153,15 @@ func (l *Logger) Warnf(msg string, args ...any) {
 
 func (l *Logger) Error(msg string, args ...any) {
 	args = append([]any{slog.Any("callstack", Callstack())}, args...)
-	if l == nil {
-		slog.Error(msg, args...)
-	} else {
+	slog.Error(msg, args...)
+	if l != nil {
 		l.Logger.Error(msg, args...)
 	}
 }
 
 func (l *Logger) Errorf(msg string, args ...any) {
-	if l == nil {
-		slog.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
-	} else {
+	slog.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
+	if l != nil {
 		l.Logger.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
 	}
 }

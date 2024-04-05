@@ -810,30 +810,40 @@
     "IND_33_CTR": {
       "frequency": 124525,
       "full_name": "Indianapolis Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "C33"
     },
     "IND_34_CTR": {
       "frequency": 119550,
       "full_name": "Indianapolis Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "C34"
     },
     "IND_35_CTR": {
       "frequency": 132200,
       "full_name": "Indianapolis Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "C35"
     },
     "CHI_35_CTR": {
       "frequency": 134875,
       "full_name": "Chicago Center",
+      "facility_id": "Z",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "Z35"
     },
     "CHI_51_CTR": {
       "frequency": 133150,
       "full_name": "Chicago Center",
+      "facility_id": "Z",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "Z51"
     },
@@ -900,42 +910,49 @@
     "CMH_U_APP": {
       "frequency": 118420,
       "full_name": "Columbus Approach",
+      "facility_id": "1",
       "scope_char": "U",
       "sector_id": "11U"
     },
     "CVG_N_APP": {
       "frequency": 123875,
       "full_name": "Cincinnati Approach",
+      "facility_id": "2",
       "scope_char": "N",
       "sector_id": "21N"
     },
     "HUF_H_APP": {
       "frequency": 125450,
       "full_name": "Hulman Approach",
+      "facility_id": "3",
       "scope_char": "H",
       "sector_id": "31H"
     },
     "HUF_Q_APP": {
       "frequency": 119800,
       "full_name": "Hulman Approach",
+      "facility_id": "3",
       "scope_char": "Q",
       "sector_id": "31Q"
     },
     "HUF_G_APP": {
       "frequency": 128025,
       "full_name": "Hulman Approach",
+      "facility_id": "3",
       "scope_char": "G",
       "sector_id": "31G"
     },
     "GUS_E_APP": {
       "frequency": 121050,
       "full_name": "Grissom Approach",
+      "facility_id": "4",
       "scope_char": "E",
       "sector_id": "41E"
     },
     "FWA_W_APP": {
       "frequency": 127200,
       "full_name": "Fort Wayne Approach",
+      "facility_id": "5",
       "scope_char": "W",
       "sector_id": "51W"
     }

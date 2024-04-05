@@ -970,8 +970,8 @@
         "force_ql_self": true,
         "airspace_awareness": [
           {
-            "fixes": ["ALO"],
-            "receiving_controller": "C05",
+            "fixes": ["ALL"],
+            "receiving_controller": "MSP_05_CTR",
             "to_center": true
           }
         ],
@@ -1016,17 +1016,17 @@
           }
         },
         "scratchpads": {
-          "DLL": "TAXEE",
-          "ABR": "INUNE",
-          "FAR": "GEP",
-          "LEINY": "TONCA",
-          "ONTIJ": "JURNY",
-          "ALO": "FGT",
-          "RXANN": "HUGIR",
-          "SMERF": "ZOGAP",
-          "GRB": "SNINE",
-          "ODI": "JEDET"
-        },
+            "DLL": "DLL",
+            "ABR": "ABR",
+            "FAR": "FAR",
+            "LEINY": "LEI",
+            "ONTIJ": "FOD",
+            "ALO": "RST",
+            "RXANN": "ONL",
+            "SMERF": "SME",
+            "GRB": "GRB",
+            "ODI": "ODI"
+          },
         "stars_maps": [
           {
             "group": 1,

@@ -519,6 +519,7 @@
       },
       "cruise_altitude": 37000,
       "initial_altitude": 11000,
+      "initial_speed": 250,
       "initial_controller": "IND_CTR",
       "star": "DAMEN5",
       "runway_waypoints": {
@@ -707,12 +708,15 @@
   "IND_CTR": {
     "frequency": 119550,
     "full_name": "Indianapolis Center",
+      "facility_id": "C",
+      "eram_facility": true,
     "scope_char": "C",
     "sector_id": "34"
   },
   "CVG_APP": {
     "frequency": 123875,
     "full_name": "Cincinnati Approach",
+    "facility_id": "1",
     "scope_char": "N",
     "sector_id": "1N"
   },

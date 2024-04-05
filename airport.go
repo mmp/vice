@@ -32,9 +32,9 @@ type Airport struct {
 	ApproachRegions   map[string]*ApproachRegion `json:"approach_regions"`
 	ConvergingRunways []ConvergingRunways        `json:"converging_runways"`
 
-	ATPAVolumes map[string]*ATPAVolume `json:"atpa_volumes"`
-
-	Uncontrolled bool `json:"uncontrolled_field"`
+	Uncontrolled          bool                   `json:"uncontrolled_field"`
+	ATPAVolumes           map[string]*ATPAVolume `json:"atpa_volumes"`
+	OmitArrivalScratchpad bool                   `json:"omit_arrival_scratchpad"`
 }
 
 type ConvergingRunways struct {

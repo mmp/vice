@@ -50,8 +50,9 @@ var (
 	localServer  *SimServer
 	remoteServer *SimServer
 	airportWind  map[string]Wind
-	windRequest  map[string]chan []getweather.MetarData
+	windRequest  map[string]chan getweather.MetarData
 	heldAircraft []*Aircraft
+
 	//go:embed resources/version.txt
 	buildVersion string
 
@@ -100,7 +101,7 @@ func main() {
 	// which in turn was causing profiling data to be written in an
 	// unexpected place...)
 	absPath := func(p *string) {
-		if p != nil && !path.IsAbs(*p) {
+		if p != nil && *p != "" && !path.IsAbs(*p) {
 			if cwd, err := os.Getwd(); err == nil {
 				*p = path.Join(cwd, *p)
 			}
@@ -286,7 +287,7 @@ func main() {
 		lg.Info("Starting main loop")
 		// Init the maps
 		airportWind = make(map[string]Wind)
-		windRequest = make(map[string]chan []getweather.MetarData)
+		windRequest = make(map[string]chan getweather.MetarData)
 
 		stopConnectingRemoteServer := false
 		frameIndex := 0

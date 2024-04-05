@@ -24,20 +24,13 @@ type Aircraft struct {
 	DisplayFPInfo       bool
 	Warnings            []string
 
-	// Who has the radar track
-	TrackingController string
-	// Who has control of the aircraft; may not be the same as
-	// TrackingController, e.g. after an aircraft has been flashed but
-	// before they have been instructed to contact the new tracking
-	// controller.
-	ControllingController string
-
-	// Handoff offered but not yet accepted
-	HandoffTrackController string
-
+	// STARS-related state that is globally visible
+	TrackingController        string // Who has the radar track
+	ControllingController     string // Who has control; not necessarily the same as TrackingController
+	HandoffTrackController    string // Handoff offered but not yet accepted
 	GlobalLeaderLineDirection *CardinalOrdinalDirection
-
-	RedirectedHandoff RedirectedHandoff
+	RedirectedHandoff         RedirectedHandoff
+	SPCOverrides              map[string]interface{}
 
 	// The controller who gave approach clearance
 	ApproachController string
@@ -492,11 +485,11 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, departureAirport 
 	} else {
 		// human controller will be first
 		ctrl := w.PrimaryController
-		if w.MultiControllers != nil {
+		if len(w.MultiControllers) > 0 {
 			ctrl = w.MultiControllers.GetDepartureController(departureAirport, runway, exitRoute.SID)
-			if ctrl == "" {
-				ctrl = w.PrimaryController
-			}
+		}
+		if ctrl == "" {
+			ctrl = w.PrimaryController
 		}
 
 		ac.DepartureContactAltitude =
@@ -593,5 +586,16 @@ func (ac *Aircraft) MVAsApply() bool {
 	} else {
 		// If they're established on the approach, they're good.
 		return !ac.OnApproach(true)
+	}
+}
+
+func (ac *Aircraft) ToggleSPCOverride(spc string) {
+	if ac.SPCOverrides == nil {
+		ac.SPCOverrides = make(map[string]interface{})
+	}
+	if _, ok := ac.SPCOverrides[spc]; ok {
+		delete(ac.SPCOverrides, spc)
+	} else {
+		ac.SPCOverrides[spc] = nil
 	}
 }

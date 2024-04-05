@@ -11,7 +11,6 @@ import (
 	"cmp"
 	"errors"
 	"fmt"
-	"reflect"
 	"runtime"
 	"slices"
 	"sort"
@@ -397,7 +396,7 @@ type STARSAircraftState struct {
 	FullLDB       time.Time // If the LDB displays the groundspeed. When to stop
 
 	IsSelected bool // middle click
-	Warnings   []string
+
 	// Only drawn if non-zero
 	JRingRadius              float32
 	ConeLength               float32
@@ -411,11 +410,13 @@ type STARSAircraftState struct {
 	LastKnownHandoff         string
 	POFlashingEndTime        time.Time
 
-	// This is only set if a leader line direction was specified for this
-	// aircraft individually
-	LeaderLineDirection *CardinalOrdinalDirection
-	GlobalLeaderLine    bool // If the aircraft is a global line or set by the TCP
-	Ghost               struct {
+	// These are only set if a leader line direction was specified for this
+	// aircraft individually:
+	LeaderLineDirection       *CardinalOrdinalDirection
+	GlobalLeaderLineDirection *CardinalOrdinalDirection
+	UseGlobalLeaderLine       bool
+
+	Ghost struct {
 		PartialDatablock bool
 		State            GhostState
 	}
@@ -431,8 +432,6 @@ type STARSAircraftState struct {
 	DisableMSAW      bool
 	InhibitMSAW      bool // only applies if in an alert. clear when alert is over?
 	MSAWAcknowledged bool
-
-	SPCOverride string
 
 	FirstSeen           time.Time
 	FirstRadarTrack     time.Time
@@ -1039,11 +1038,6 @@ func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 	return result, nil
 }
 
-func squawkingSPC(squawk Squawk) bool {
-	return squawk == Squawk(0o7500) || squawk == Squawk(0o7600) ||
-		squawk == Squawk(0o7700) || squawk == Squawk(0o7777)
-}
-
 type STARSCommandStatus struct {
 	clear  bool
 	output string
@@ -1266,12 +1260,14 @@ func (sp *STARSPane) processEvents(w *World) {
 			if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 				sa.DatablockType = FullDatablock
 			}
-			sp.Aircraft[callsign] = sa
-
+			sa.GlobalLeaderLineDirection = ac.GlobalLeaderLineDirection
+			sa.UseGlobalLeaderLine = sa.GlobalLeaderLineDirection != nil
 			sa.FirstSeen = w.CurrentTime()
+
+			sp.Aircraft[callsign] = sa
 		}
 
-		if squawkingSPC(ac.Squawk) {
+		if ok, _ := SquawkIsSPC(ac.Squawk); ok {
 			if _, ok := sp.HavePlayedSPCAlertSound[ac.Callsign]; !ok {
 				sp.HavePlayedSPCAlertSound[ac.Callsign] = nil
 				//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
@@ -1391,6 +1387,14 @@ func (sp *STARSPane) processEvents(w *World) {
 				lg.Errorf("%s: have IdentEvent but missing STARS state?", event.Callsign)
 			} else {
 				state.IdentEnd = time.Now().Add(10 * time.Second)
+			}
+
+		case SetGlobalLeaderLineEvent:
+			if state, ok := sp.Aircraft[event.Callsign]; !ok {
+				lg.Errorf("%s: have SetGlobalLeaderLineEvent but missing STARS state?", event.Callsign)
+			} else {
+				state.GlobalLeaderLineDirection = event.LeaderLineDirection
+				state.UseGlobalLeaderLine = state.GlobalLeaderLineDirection != nil
 			}
 		}
 	}
@@ -2327,78 +2331,76 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 		case "L":
 			// leader lines
-			if l := len(cmd); l == 0 {
-				status.err = ErrSTARSCommandFormat
-				return
-			} else if l == 1 {
+			if l := len(cmd); l == 1 {
 				if dir, ok := numpadToDirection(cmd[0]); ok && dir != nil {
-					// Tracked by me
+					// 4-97: tracked by me, '5' not allowed
 					ps.LeaderLineDirection = *dir
 					status.clear = true
 				} else {
 					status.err = ErrSTARSCommandFormat
 				}
-				return
 			} else if l == 2 {
-				if dir, ok := numpadToDirection(cmd[0]); ok && cmd[1] == 'U' {
-					// Unassociated tracks
+				if dir, ok := numpadToDirection(cmd[0]); ok && dir != nil && cmd[1] == 'U' {
+					// 4-101: unassociated tracks; '5' is not allowed here.
 					ps.UnassociatedLeaderLineDirection = dir
 					status.clear = true
 				} else if ok && cmd[1] == '*' {
-					// Tracked by other controllers
+					// 4-98: tracked by other controllers
 					ps.OtherControllerLeaderLineDirection = dir
 					// This also clears out any controller-specific assignments (4-98)
 					clear(ps.ControllerLeaderLineDirections)
 					status.clear = true
+				} else if cmd == "5*" {
+					// Remove setting for other controllers
+					ps.OtherControllerLeaderLineDirection = nil
+					status.clear = true
 				} else {
 					status.err = ErrSTARSCommandFormat
 				}
-				return
-			} else if f := strings.Fields(cmd); len(f) == 2 {
-				// either L(id)(space)(dir) or L(dir)(space)(callsign)
-				if len(f[0]) == 1 || len(f[0]) == 2 {
-					// L(dir)(space)(callsign)
-					if _, ok := numpadToDirection(f[0][0]); ok {
-						if ac := lookupAircraft(f[1], false); ac != nil {
-							err := sp.setLeaderLine(ctx, ac, f[0])
-							if err != nil {
-								status.err = err
-								return
-							}
-							status.clear = true
+			} else if len(cmd) >= 3 {
+				// 4-99: track owned by a specific TCP: L(tcp)(dir),(where
+				// tcp has a space if it's given as a single character).
+				tcp := strings.TrimSuffix(cmd[:2], " ")
+				if controller, err := sp.calculateController(ctx, tcp, ""); err == nil {
+					if dir, ok := numpadToDirection(cmd[2]); ok {
+						// Per-controller leaderline
+						if ps.ControllerLeaderLineDirections == nil {
+							ps.ControllerLeaderLineDirections = make(map[string]CardinalOrdinalDirection)
+						}
+						if dir != nil {
+							ps.ControllerLeaderLineDirections[controller] = *dir
 						} else {
-							status.err = ErrSTARSNoFlight
+							delete(ps.ControllerLeaderLineDirections, controller)
+						}
+						status.clear = true
+						return
+					}
+				} else if num, acid, ok := strings.Cut(cmd, " "); ok {
+					// L(#) (ACID) or L(##) (ACID)
+					if ac := lookupAircraft(acid, false); ac != nil {
+						if err := sp.setLeaderLine(ctx, ac, num); err != nil {
+							status.err = err
+						} else {
+							status.clear = true
 						}
 					} else {
-						status.err = ErrSTARSCommandFormat
+						status.err = ErrSTARSNoFlight
 					}
-					return
 				} else {
-					// L(id)(space)(dir)
-					if ctrl := ctx.world.GetController(f[0]); ctrl != nil {
-						if dir, ok := numpadToDirection(f[1][0]); ok && len(f[1]) == 1 {
-							// Per-controller leaderline
-							if ps.ControllerLeaderLineDirections == nil {
-								ps.ControllerLeaderLineDirections = make(map[string]CardinalOrdinalDirection)
-							}
-							if dir != nil {
-								ps.ControllerLeaderLineDirections[ctrl.Callsign] = *dir
-							} else {
-								delete(ps.ControllerLeaderLineDirections, ctrl.Callsign)
-							}
-							status.clear = true
-						} else {
-							status.err = ErrSTARSCommandFormat
-						}
-					} else {
-						status.err = ErrSTARSIllegalPosition
-					}
-					return
+					status.err = ErrSTARSIllegalPosition
 				}
+			} else {
+				status.err = ErrSTARSCommandFormat
 			}
+			return
 
 		case "N":
 			// CRDA...
+			if len(sp.ConvergingRunways) == 0 {
+				// These are all illegal if there are no CRDA runway pairs
+				status.err = ErrSTARSIllegalFunction
+				return
+			}
 			if cmd == "" {
 				// Toggle CRDA processing (on by default). Note that when
 				// it is disabled we still hold on to CRDARunwayPairState array so
@@ -2410,17 +2412,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				ps.CRDA.ForceAllGhosts = !ps.CRDA.ForceAllGhosts
 				status.clear = true
 				return
-			} else if n := len(cmd); n >= 5 {
-				// All commands are at least 5 characters, so check that up front
-				validAirport := func(ap string) bool {
-					for _, pair := range sp.ConvergingRunways {
-						if pair.Airport == ap {
-							return true
-						}
-					}
-					return false
-				}
-
+			} else {
+				// Given a string that starts with a runway identifier and then possibly has some extra text,
+				// return the runway and the text as separate strings.
 				getRunway := func(s string) (string, string) {
 					i := 0
 					for i < len(s) {
@@ -2437,133 +2431,210 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					return s[:i], s[i:]
 				}
 
-				getState := func(ap, rwy string) (*CRDARunwayPairState, *CRDARunwayState) {
-					for i, pair := range sp.ConvergingRunways {
-						if pair.Airport != ap {
-							continue
-						}
+				// This function takes a string of the form "JFK 22LMORE"
+				// or "22LMORE" and looks for the associated
+				// CRDARunwayPairState and CRDARunwayState for an enabled
+				// CRDA runway.  "MORE" represents arbitrary text *that may
+				// contain spaces*.  If the airport is not specified, then
+				// it must be possible to unambiguously determine the
+				// airport given the runway. It returns:
+				//
+				// airport: the name of the associated airport
+				// runway: the runway identifier
+				// ps: CRDARunwayPairState for the runway
+				// rs: CRDARunwayState for the runway
+				// extra: any excess text after the runway identifier
+				// err: ErrSTARSIllegalParam if there is no such enabled
+				//   runway pair or if more than one matches when only a
+				//   runway is specified.
+				getRunwayState := func(s string) (airport string, runway string, ps *CRDARunwayPairState,
+					rs *CRDARunwayState, extra string, err error) {
+					if s[0] >= '0' && s[0] <= '9' {
+						// It starts with a runway identifier. (We'll
+						// assume CRDA isn't happening for airports
+						// with names like '87N'..)
+						runway, extra = getRunway(s)
 
-						pairState := &ps.CRDA.RunwayPairState[i]
-						if !pairState.Enabled {
-							continue
-						}
+						for i, pair := range sp.ConvergingRunways {
+							pairState := &sp.CurrentPreferenceSet.CRDA.RunwayPairState[i]
+							if !pairState.Enabled {
+								continue
+							}
+							for j, pairRunway := range pair.Runways {
+								if runway != pairRunway {
+									continue
+								}
 
-						for j, pairRunway := range pair.Runways {
-							if rwy == pairRunway {
-								return pairState, &pairState.RunwayState[j]
+								if ps != nil {
+									// We found more than one match...
+									err = ErrSTARSIllegalParam
+									return
+								}
+								airport = pair.Airport
+								ps, rs = pairState, &pairState.RunwayState[j]
 							}
 						}
-					}
-					return nil, nil
-				}
-
-				if cmd[0] == 'L' && validAirport(cmd[1:4]) {
-					// Set leader line direction: NL<airport><runway><1-9>
-					rwy, num := getRunway(cmd[4:])
-					_, runwayState := getState(cmd[1:4], rwy)
-					if len(num) == 1 {
-						if dir, ok := numpadToDirection(num[0]); ok {
-							runwayState.LeaderLineDirection = dir
-							status.clear = true
-							return
+						if ps == nil {
+							err = ErrSTARSIllegalParam
 						}
 					} else {
-						status.err = ErrSTARSCommandFormat
-					}
-				} else if ap := cmd[:3]; validAirport(ap) {
-					if cmd[n-1] == 'S' || cmd[n-1] == 'T' || cmd[n-1] == 'D' {
-						// enable/disable a runway pair
-						if index, err := strconv.Atoi(cmd[3 : n-1]); err == nil {
-							for i, pair := range sp.ConvergingRunways {
-								if pair.Airport == ap && pair.Index == index {
-									if cmd[n-1] == 'D' {
-										ps.CRDA.RunwayPairState[i].Enabled = false
-										status.clear = true
-										status.output = ap + " " + pair.getRunwaysString() + " INHIBITED"
-										return
-									} else {
-										// Make sure neither of the runways involved is already enabled with
-										// another pair.
-										for j, pairState := range ps.CRDA.RunwayPairState {
-											if !pairState.Enabled {
-												continue
-											}
-											if sp.ConvergingRunways[j].Runways[0] == pair.Runways[0] ||
-												sp.ConvergingRunways[j].Runways[0] == pair.Runways[1] ||
-												sp.ConvergingRunways[j].Runways[1] == pair.Runways[0] ||
-												sp.ConvergingRunways[j].Runways[1] == pair.Runways[1] {
-												status.err = ErrSTARSIllegalParam
-												return
-											}
-										}
+						// Expect airport and then a space.
+						var ok bool
+						airport, extra, ok = strings.Cut(s, " ")
+						if !ok {
+							err = ErrSTARSIllegalParam
+							return
+						}
 
-										if cmd[n-1] == 'S' {
-											ps.CRDA.RunwayPairState[i].Mode = CRDAModeStagger
-										} else {
-											ps.CRDA.RunwayPairState[i].Mode = CRDAModeTie
-										}
-										ps.CRDA.RunwayPairState[i].Enabled = true
-										status.output = ap + " " + pair.getRunwaysString() + " ENABLED"
-										status.clear = true
+						runway, extra = getRunway(extra)
+						for i, pair := range sp.ConvergingRunways {
+							if pair.Airport != airport {
+								continue
+							}
+
+							pairState := &sp.CurrentPreferenceSet.CRDA.RunwayPairState[i]
+							if !pairState.Enabled {
+								continue
+							}
+
+							for j, pairRunway := range pair.Runways {
+								if runway == pairRunway {
+									ps, rs = pairState, &pairState.RunwayState[j]
+									return
+								}
+							}
+						}
+						err = ErrSTARSIllegalParam
+					}
+					return
+				}
+
+				// Check these commands first; if we key off cmd[0]=='L' for example we end up issuing
+				// an error if the user actually specified an airport starting with "L"...
+				if ap, rwy, _, runwayState, extra, err := getRunwayState(cmd); err == nil {
+					if extra == "E" || (extra == "" && !runwayState.Enabled) {
+						// 6-23: enable ghosts for runway
+						runwayState.Enabled = true
+						status.output = ap + " " + rwy + " GHOSTING ENABLED"
+						status.clear = true
+						return
+					} else if extra == "I" || (extra == "" && runwayState.Enabled) {
+						// 6-23: disable ghosts for runway
+						runwayState.Enabled = false
+						status.output = ap + " " + rwy + " GHOSTING INHIBITED"
+						// this also disables the runway's visualizations
+						runwayState.DrawQualificationRegion = false
+						runwayState.DrawCourseLines = false
+						status.clear = true
+						return
+					} else if extra == " B" { // 6-31
+						runwayState.DrawQualificationRegion = !runwayState.DrawQualificationRegion
+						status.clear = true
+						return
+					} else if extra == " L" { // 6-32
+						runwayState.DrawCourseLines = !runwayState.DrawCourseLines
+						status.clear = true
+						return
+					}
+				}
+				if cmd[0] == 'L' {
+					// 6-26: Set leader line direction: NL(airport) (runway)(1-9)
+					// or: NL(runway)(1-9); runway must unambiguously define airport
+					if _, _, _, runwayState, num, err := getRunwayState(cmd[1:]); err == nil {
+						if len(num) == 1 {
+							if dir, ok := numpadToDirection(num[0]); ok {
+								runwayState.LeaderLineDirection = dir
+								status.clear = true
+								return
+							}
+						}
+						status.err = ErrSTARSCommandFormat
+						return
+					}
+				} else if cmd[0] == 'P' {
+					// These commands either start with an airport and a
+					// space or use the controller's default airport if
+					// none is specified. None of the commands otherwise
+					// allow spaces, so we can use the presence of a space
+					// to determine if an airport was specified.
+					airport, extra, ok := strings.Cut(cmd[1:], " ")
+					if !ok {
+						ctrl := ctx.world.GetController(ctx.world.Callsign)
+						airport = ctrl.DefaultAirport[1:] // drop leading "K"
+						extra = cmd[1:]
+					}
+
+					if index, err := strconv.Atoi(extra); err == nil {
+						// 6-22: toggle ghosts for a runway pair
+						// NP(airport )(idx) / NP(idx)
+						for i, pair := range sp.ConvergingRunways {
+							if pair.Airport == airport && pair.Index == index {
+								// TODO: we toggle each independently; is that correct?
+								rps := &ps.CRDA.RunwayPairState[i]
+								rps.RunwayState[0].Enabled = !rps.RunwayState[0].Enabled
+								rps.RunwayState[1].Enabled = !rps.RunwayState[1].Enabled
+								status.clear = true
+								return
+							}
+						}
+						status.err = ErrSTARSCommandFormat
+						return
+					} else {
+						// 8-11: disable/set stagger or tie mode for a runway pair
+						// NP(airport )(idx)(cmd) / NP(idx)(cmd)
+						n := len(extra)
+						if n < 2 || (extra[n-1] != 'S' && extra[n-1] != 'T' && extra[n-1] != 'D') {
+							status.err = ErrSTARSCommandFormat
+							return
+						}
+						index, err := strconv.Atoi(extra[:n-1])
+						if err != nil {
+							status.err = ErrSTARSIllegalRPC
+							return
+						}
+						for i, pair := range sp.ConvergingRunways {
+							if pair.Airport != airport || pair.Index != index {
+								continue
+							}
+
+							if extra[n-1] == 'D' {
+								ps.CRDA.RunwayPairState[i].Enabled = false
+								status.clear = true
+								status.output = airport + " " + pair.getRunwaysString() + " INHIBITED"
+								return
+							} else {
+								// Make sure neither of the runways involved is already enabled in
+								// another pair.
+								for j, pairState := range ps.CRDA.RunwayPairState {
+									if !pairState.Enabled {
+										continue
+									}
+									if sp.ConvergingRunways[j].Runways[0] == pair.Runways[0] ||
+										sp.ConvergingRunways[j].Runways[0] == pair.Runways[1] ||
+										sp.ConvergingRunways[j].Runways[1] == pair.Runways[0] ||
+										sp.ConvergingRunways[j].Runways[1] == pair.Runways[1] {
+										status.err = ErrSTARSIllegalRunway
 										return
 									}
 								}
-							}
-						}
-					} else {
-						// there should be a valid runway following the
-						// airport
-						rwy, extra := getRunway(cmd[3:])
 
-						pairState, runwayState := getState(ap, rwy)
-						if pairState != nil && runwayState != nil {
-							switch extra {
-							case "":
-								// toggle ghosts for runway
-								runwayState.Enabled = !runwayState.Enabled
-								status.output = ap + " " + rwy + " GHOSTING " +
-									Select(runwayState.Enabled, "ENABLED", "INHIBITED")
-								if !runwayState.Enabled {
-									runwayState.DrawQualificationRegion = false
-									runwayState.DrawCourseLines = false
+								if extra[n-1] == 'S' {
+									ps.CRDA.RunwayPairState[i].Mode = CRDAModeStagger
+								} else {
+									ps.CRDA.RunwayPairState[i].Mode = CRDAModeTie
 								}
-								status.clear = true
-								return
-
-							case "E":
-								// enable ghosts for runway
-								runwayState.Enabled = true
-								status.output = ap + " " + rwy + " GHOSTING ENABLED"
-								status.clear = true
-								return
-
-							case "I":
-								// disable ghosts for runway
-								runwayState.Enabled = false
-								status.output = ap + " " + rwy + " GHOSTING INHIBITED"
-								// this also disables the runway's visualizations
-								runwayState.DrawQualificationRegion = false
-								runwayState.DrawCourseLines = false
-								status.clear = true
-								return
-
-							case " B":
-								runwayState.DrawQualificationRegion = !runwayState.DrawQualificationRegion
-								status.clear = true
-								return
-
-							case " L":
-								runwayState.DrawCourseLines = !runwayState.DrawCourseLines
+								ps.CRDA.RunwayPairState[i].Enabled = true
+								ps.CRDAStatusList.Visible = true
+								status.output = airport + " " + pair.getRunwaysString() + " ENABLED"
 								status.clear = true
 								return
 							}
 						}
 					}
 				}
-
-				status.err = ErrSTARSIllegalParam
-				return
 			}
+			status.err = ErrSTARSIllegalParam
+			return
 
 		case "O":
 			if len(cmd) > 2 {
@@ -3062,20 +3133,31 @@ func (sp *STARSPane) updateWarnings(ctx *PaneContext, callsign string, warnings 
 }
 
 func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) error {
-	hasDelta := strings.Contains(contents, STARSTriangleCharacter)
-	lc := len(contents)
-	if hasDelta {
-		lc -= 1
+	lc := len([]rune(contents))
+
+	if ac := ctx.world.GetAircraft(callsign, false); ac != nil && ac.TrackingController == "" {
+		return ErrSTARSIllegalTrack /* This is because /OK can be used for associated tracks that are not owned by this TCP. But /OK cannot be used
+		for unassociated tracks. So might as well weed them out now. */
 	}
-	if lc > 4 || (lc == 4 && !ctx.world.STARSFacilityAdaptation.ScratchpadRules[0] && !isSecondary) ||
-		(lc == 4 && !ctx.world.STARSFacilityAdaptation.ScratchpadRules[1] && isSecondary) {
-		sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalScratchpad).Error()
-		return nil
+	var index int
+	if isSecondary {
+		index = 1
 	}
-	illegalScratchpads := []string{"RDR", "XXX", "CST", "AMB", "NAT", "ADB"}
+
+	if lc > 4 || (lc > 3 && !ctx.world.STARSFacilityAdaptation.ScratchpadRules[index]) {
+		return ErrSTARSCommandFormat
+	}
+
+	allowedCharacters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./*" + STARSTriangleCharacter
+	for _, letter := range contents {
+		if !strings.ContainsRune(allowedCharacters, letter) {
+			return ErrSTARSCommandFormat
+		}
+	}
+
+	illegalScratchpads := []string{"NAT", "CST", "AMB", "RDR", "ADB", "XXX"}
 	if slices.Contains(illegalScratchpads, contents) {
-		sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalScratchpad).Error()
-		return nil
+		return ErrSTARSIllegalScratchpad
 	}
 
 	if isSecondary {
@@ -3100,6 +3182,10 @@ func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt
 }
 
 func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir *CardinalOrdinalDirection) {
+	state := sp.Aircraft[callsign]
+	state.GlobalLeaderLineDirection = dir // hack for instant update
+	state.UseGlobalLeaderLine = dir != nil
+
 	ctx.world.SetGlobalLeaderLine(callsign, dir, nil,
 		func(err error) {
 			sp.previewAreaOutput = GetSTARSError(err).Error()
@@ -3294,7 +3380,9 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) e
 	if len(cmd) == 1 {
 		if dir, ok := numpadToDirection(cmd[0]); ok {
 			state.LeaderLineDirection = dir
-			state.GlobalLeaderLine = false
+			if dir != nil {
+				state.UseGlobalLeaderLine = false
+			}
 			return nil
 		}
 	} else if len(cmd) == 2 { // Global leader lines
@@ -3306,7 +3394,6 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) e
 			return ErrSTARSIllegalTrack
 		} else if dir, ok := numpadToDirection(cmd[0]); ok {
 			sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
-			state.GlobalLeaderLine = true
 			return nil
 		}
 	}
@@ -3469,7 +3556,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 				}
-				if db := sp.datablockType(ctx.world, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
+				if db := sp.datablockType(ctx, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
 					state.FullLDB = time.Now().Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
 				} else if db == FullDatablock && ac.TrackingController != ctx.world.Callsign {
@@ -3509,9 +3596,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				}
 				return
 			} else if (unicode.IsDigit(rune(cmd[0])) && len(cmd) == 1) ||
-				(len(cmd) == 2 && unicode.IsDigit(rune(cmd[1])) && cmd[0] == cmd[1]) {
-				err := sp.setLeaderLine(ctx, ac, cmd)
-				if err != nil {
+				(len(cmd) == 2 && unicode.IsDigit(rune(cmd[1]))) {
+				// 6-81: set locally, 6-101: set system wide
+				if err := sp.setLeaderLine(ctx, ac, cmd); err != nil {
 					status.err = err
 				} else {
 					status.clear = true
@@ -3544,8 +3631,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
 				// Do not clear the input area to allow entering a fix for the second location
 				return
-			} else if cmd == "HJ" || cmd == "RF" || cmd == "EM" || cmd == "MI" || cmd == "SI" || cmd == "LL" {
-				state.SPCOverride = cmd
+			} else if StringIsSPC(cmd) {
+				ctx.world.ToggleSPCOverride(ac.Callsign, cmd, nil, func(err error) {
+					sp.previewAreaOutput = GetSTARSError(err).Error()
+				})
 				status.clear = true
 				return
 			} else if cmd == "UN" {
@@ -3763,7 +3852,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					func(err error) {
 						// If it's not a valid command and fits the requirements for a scratchpad, set the scratchpad.
 						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
-							status.err = err
+							sp.previewAreaOutput = GetSTARSError(err).Error()
+							return
 						}
 					})
 				status.clear = true
@@ -3841,13 +3931,56 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			case "N":
 				// CRDA
-				if cmd == "" || cmd == "*" { // TODO: it's not clear what the difference should be
-					if state.Ghost.State == GhostStateForced {
+				if cmd == "" {
+					clickedGhost := ghost != nil && ghostDistance < acDistance
+					if clickedGhost {
+						state.Ghost.State = GhostStateSuppressed
+					} else if slices.ContainsFunc(ghosts, func(g *GhostAircraft) bool { return g.Callsign == ac.Callsign }) {
 						state.Ghost.State = GhostStateRegular
 					} else {
-						state.Ghost.State = GhostStateForced
+						status.err = ErrSTARSIllegalTrack
 					}
-					status.clear = true
+				} else if cmd == "*" {
+					clickedGhost := ghost != nil && ghostDistance < acDistance
+					if clickedGhost {
+						// 6-27: display track information in preview area (as an arrival)
+						if fp, err := sp.flightPlanSTARS(ctx.world, ac); err != nil {
+							status.err = err
+						} else {
+							status.output = fp
+							status.clear = true
+						}
+					} else {
+						// 6-29: force/unforce ghost qualification
+						if !slices.ContainsFunc(ghosts, func(g *GhostAircraft) bool { return g.Callsign == ac.Callsign }) {
+							status.err = ErrSTARSIllegalTrack
+						} else {
+							// Is it inside an enabled approach region?
+							for i, pairState := range ps.CRDA.RunwayPairState {
+								if !pairState.Enabled {
+									continue
+								}
+								for j, rwyState := range pairState.RunwayState {
+									if !rwyState.Enabled {
+										continue
+									}
+									region := sp.ConvergingRunways[i].ApproachRegions[j]
+									if lat, _ := region.Inside(state.TrackPosition(), float32(state.TrackAltitude()),
+										ctx.world.NmPerLongitude, ctx.world.MagneticVariation); lat {
+										// All good. Whew
+										if state.Ghost.State == GhostStateForced {
+											state.Ghost.State = GhostStateRegular
+										} else {
+											state.Ghost.State = GhostStateForced
+										}
+										status.clear = true
+										return
+									}
+								}
+							}
+							status.err = ErrSTARSIllegalTrack
+						}
+					}
 				} else {
 					status.err = ErrSTARSCommandFormat
 				}
@@ -4097,6 +4230,7 @@ func numpadToDirection(key byte) (*CardinalOrdinalDirection, bool) {
 		dir = CardinalOrdinalDirection(NorthEast)
 		return &dir, true
 	}
+
 	return nil, false
 }
 
@@ -4705,40 +4839,18 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		if filter.All || filter.SpecialPurposeCodes {
 			// Special purpose codes listed in red, if anyone is squawking
 			// those.
-			var hj, rf, em, mi, ll bool
+			codes := make(map[string]interface{})
 			for _, ac := range aircraft {
-				state := sp.Aircraft[ac.Callsign]
-				if ac.Squawk == Squawk(0o7500) || state.SPCOverride == "HJ" {
-					hj = true
-				} else if ac.Squawk == Squawk(0o7600) || state.SPCOverride == "RF" {
-					rf = true
-				} else if ac.Squawk == Squawk(0o7700) || state.SPCOverride == "EM" {
-					em = true
-				} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
-					mi = true
-				} else if state.SPCOverride == "LL" {
-					ll = true
+				for code := range ac.SPCOverrides {
+					codes[code] = nil
+				}
+				if ok, code := SquawkIsSPC(ac.Squawk); ok {
+					codes[code] = nil
 				}
 			}
 
-			var codes []string
-			if hj {
-				codes = append(codes, "HJ")
-			}
-			if rf {
-				codes = append(codes, "RF")
-			}
-			if em {
-				codes = append(codes, "EM")
-			}
-			if mi {
-				codes = append(codes, "MI")
-			}
-			if ll {
-				codes = append(codes, "LL")
-			}
 			if len(codes) > 0 {
-				td.AddText(strings.Join(codes, " "), pw, alertStyle)
+				td.AddText(strings.Join(SortedMapKeys(codes), " "), pw, alertStyle)
 				newline()
 			}
 		}
@@ -5167,7 +5279,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
+func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType {
 	state := sp.Aircraft[ac.Callsign]
 	dt := state.DatablockType
 
@@ -5180,6 +5292,7 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = LimitedDatablock
 	}
 
+	w := ctx.world
 	if ac.TrackingController == w.Callsign || ac.ControllingController == w.Callsign {
 		// it's under our control
 		dt = FullDatablock
@@ -5193,7 +5306,7 @@ func (sp *STARSPane) datablockType(w *World, ac *Aircraft) DatablockType {
 		dt = FullDatablock
 	}
 
-	if len(state.Warnings) > 0 {
+	if len(sp.getWarnings(ctx, ac)) > 0 {
 		dt = FullDatablock
 	}
 
@@ -5497,8 +5610,8 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 
 	// Draw main track symbol letter
 	trackIdBrightness := ps.Brightness.Positions
-	dt := sp.datablockType(ctx.world, ac)
-	color, _ := sp.datablockColor(ctx.world, ac)
+	dt := sp.datablockType(ctx, ac)
+	color, _ := sp.datablockColor(ctx, ac)
 	if dt == PartialDatablock || dt == LimitedDatablock {
 		trackIdBrightness = ps.Brightness.LimitedDatablocks
 	}
@@ -5986,59 +6099,52 @@ func (sp *STARSPane) diverging(a, b *Aircraft) bool {
 	return true
 }
 
-func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
+func (sp *STARSPane) getWarnings(ctx *PaneContext, ac *Aircraft) []string {
+	warnings := make(map[string]interface{})
 	ps := sp.CurrentPreferenceSet
 	state := sp.Aircraft[ac.Callsign]
 
-	if index := slices.Index(state.Warnings, state.SPCOverride); index != -1 {
-		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
-	} else if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW && !slices.Contains(state.Warnings, "LA") {
-		state.Warnings = append(state.Warnings, "LA")
-	} else if ac.Squawk == Squawk(0o7500) || state.SPCOverride == "HJ" {
-		state.Warnings = append(state.Warnings, "HJ")
-	} else if ac.Squawk == Squawk(0o7600) || state.SPCOverride == "RF" {
-		state.Warnings = append(state.Warnings, "RF")
-	} else if ac.Squawk == Squawk(0o7700) || state.SPCOverride == "EM" {
-		state.Warnings = append(state.Warnings, "EM")
-	} else if ac.Squawk == Squawk(0o7777) || state.SPCOverride == "MI" {
-		state.Warnings = append(state.Warnings, "MI")
-	} else if state.SPCOverride == "LL" {
-		state.Warnings = append(state.Warnings, "LL")
+	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
+		warnings["LA"] = nil
 	}
-	if index := slices.Index(state.Warnings, "LA"); index != -1 && !state.MSAW {
-		state.Warnings = append(state.Warnings[:index], state.Warnings[index+1:]...)
+	if ok, code := SquawkIsSPC(ac.Squawk); ok {
+		warnings[code] = nil
 	}
-
-	if !reflect.DeepEqual(state.Warnings, ac.Warnings) && ac.TrackingController == ctx.world.Callsign {
-		sp.updateWarnings(ctx, ac.Callsign, state.Warnings)
+	for code := range ac.SPCOverrides {
+		warnings[code] = nil
 	}
-	state.Warnings = ac.Warnings
-
-	state.SPCOverride = ""
-	if !ps.DisableCAWarnings &&
+	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
 		slices.ContainsFunc(sp.CAAircraft,
 			func(ca CAAircraft) bool {
-				return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
-					!state.DisableCAWarnings
+				return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
 			}) {
-		if !slices.Contains(state.Warnings, "CA") {
-			state.Warnings = append(state.Warnings, "CA")
-		}
-		sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
+		warnings["CA"] = nil
 	}
-	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside && !slices.Contains(state.Warnings, "AS") {
+	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
 		altStrs := ""
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
 		}
-		state.Warnings = append(state.Warnings, "AS"+altStrs)
+		warnings["AS"+altStrs] = nil
 	}
+
+	return SortedMapKeys(warnings)
+}
+
+func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
+	if ac.Mode == Standby {
+		return nil
+	}
+
+	state := sp.Aircraft[ac.Callsign]
+
+	warnings := sp.getWarnings(ctx, ac)
 
 	// baseDB is what stays the same for all datablock variants
 
 	baseDB := STARSDatablock{}
-	baseDB.Lines[0].Text = strings.Join(state.Warnings, "/") // want e.g., EM/LA if multiple things going on
-	if len(state.Warnings) > 0 {
+	baseDB.Lines[0].Text = strings.Join(warnings, "/") // want e.g., EM/LA if multiple things going on
+	if len(warnings) > 0 {
 		baseDB.Lines[0].Colors = append(baseDB.Lines[0].Colors,
 			STARSDatablockFieldColors{
 				Start: 0,
@@ -6047,11 +6153,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			})
 	}
 
-	if ac.Mode == Standby {
-		return nil
-	}
-
-	ty := sp.datablockType(ctx.world, ac)
+	ty := sp.datablockType(ctx, ac)
 
 	switch ty {
 	case LimitedDatablock:
@@ -6117,8 +6219,15 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
 		sp := fmt.Sprintf("%3s", ac.Scratchpad)
 
-		field1 := [2]string{alt, Select(ac.Scratchpad != "", sp, ap)}
-
+		field1 := [2]string{}
+		field1[0] = alt
+		if ac.Scratchpad != "" {
+			field1[1] = sp
+		} else if airport := ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport); airport != nil && !airport.OmitArrivalScratchpad {
+			field1[1] = ap
+		} else {
+			field1[1] = alt
+		}
 		dbs[0].Lines[1].Text = field1[0] + field2 + field3 + field4
 		dbs[1].Lines[1].Text = field1[1] + field2 + field3 + field4
 
@@ -6173,11 +6282,13 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field3 = append(field3, fmt.Sprintf("%v*", state.pilotAltitude))
 		}
 		if len(field3) == 1 {
-			ap := ac.FlightPlan.ArrivalAirport
-			if len(ap) == 4 {
-				ap = ap[1:] // drop the leading K
+			if ap := ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil && !ap.OmitArrivalScratchpad {
+				ap := ac.FlightPlan.ArrivalAirport
+				if len(ap) == 4 {
+					ap = ap[1:] // drop the leading K
+				}
+				field3 = append(field3, ap)
 			}
-			field3 = append(field3, ap)
 		}
 
 		field4 := "  "
@@ -6293,9 +6404,9 @@ func sameFacility(ctx *PaneContext, receiving string) bool {
 	return ctx.world.GetController(ctx.world.Callsign).FacilityIdentifier == ctx.world.GetController(receiving).FacilityIdentifier
 }
 
-func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightness STARSBrightness) {
+func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, brightness STARSBrightness) {
 	ps := sp.CurrentPreferenceSet
-	dt := sp.datablockType(w, ac)
+	dt := sp.datablockType(ctx, ac)
 	state := sp.Aircraft[ac.Callsign]
 	brightness = Select(dt == PartialDatablock || dt == LimitedDatablock,
 		ps.Brightness.LimitedDatablocks, ps.Brightness.FullDatablocks)
@@ -6304,6 +6415,7 @@ func (sp *STARSPane) datablockColor(w *World, ac *Aircraft) (color RGB, brightne
 		brightness = STARSBrightness(100)
 	}
 
+	w := ctx.world
 	for _, controller := range ac.RedirectedHandoff.Redirector {
 		if controller == w.Callsign && ac.RedirectedHandoff.RedirectedTo != w.Callsign {
 			color = STARSUntrackedAircraftColor
@@ -6386,7 +6498,7 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*Aircraft, ctx *PaneContext, tra
 			continue
 		}
 
-		baseColor, brightness := sp.datablockColor(ctx.world, ac)
+		baseColor, brightness := sp.datablockColor(ctx, ac)
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
 		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac, ctx.world))
 		ld.AddLine(pac, add2f(pac, v), brightness.ScaleRGB(baseColor))
@@ -6418,7 +6530,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 			continue
 		}
 
-		baseColor, brightness := sp.datablockColor(ctx.world, ac)
+		baseColor, brightness := sp.datablockColor(ctx, ac)
 
 		// Compute the bounds of the datablock; always use the first one so
 		// things don't jump around when it switches between multiple of
@@ -6815,7 +6927,8 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			ctx.platform.GetClipboard().SetText(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 		}
 
-		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyControl) {
+		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyControl) && !ctx.keyboard.IsPressed(KeyShift) { // There is a conflict between this and initating a track CRC-style,
+			// so making sure that shift isn't being pressed would be a good idea.
 			if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
 				if state := sp.Aircraft[ac.Callsign]; state != nil {
 					state.IsSelected = !state.IsSelected
@@ -7453,7 +7566,7 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 		// Pointouts: This is if its been accepted,
 		// for an incoming pointout, it falls to the FDB check
 		return true
-	} else if ac.Squawk == 7500 || ac.Squawk == 7600 || ac.Squawk == 7700 || ac.Squawk == 7777 || ac.Squawk == 7400 {
+	} else if ok, _ := SquawkIsSPC(ac.Squawk); ok {
 		// Special purpose codes
 		return true
 	} else if sp.Aircraft[ac.Callsign].DatablockType == FullDatablock {
@@ -7492,8 +7605,8 @@ func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft, w *World) CardinalOrdi
 	ps := sp.CurrentPreferenceSet
 	state := sp.Aircraft[ac.Callsign]
 
-	if state.GlobalLeaderLine && ac.GlobalLeaderLineDirection != nil {
-		return *ac.GlobalLeaderLineDirection
+	if state.UseGlobalLeaderLine {
+		return *state.GlobalLeaderLineDirection
 	} else if state.LeaderLineDirection != nil {
 		// The direction was specified for the aircraft specifically
 		return *state.LeaderLineDirection
