@@ -8506,24 +8506,30 @@
     "MIA_46_CTR": {
       "frequency": 135175,
       "full_name": "Miami center",
+      "facility_id": "M",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "R46"
     },
     "JAX_30_CTR": {
       "frequency": 135925,
       "full_name": "Jacksonville center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "30"
     },
     "JAX_N_APP": {
       "frequency": 127000,
       "full_name": "Jacksonville approach",
+      "facility_id": "3",
       "scope_char": "N",
       "sector_id": "3N"
     },
     "DAB_H_APP": {
       "frequency": 125725,
       "full_name": "Daytona Beach approach",
+      "facility_id": "5",
       "scope_char": "H",
       "sector_id": "5H"
     },
@@ -8531,6 +8537,7 @@
       "frequency": 118150,
       "full_name": "Tampa approach",
       "scope_char": "A",
+      "facility_id": "T",
       "sector_id": "TE"
     },
     "MCO_E_APP": {

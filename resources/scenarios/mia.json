@@ -3617,6 +3617,8 @@
     "MIA_46_CTR": {
       "frequency": 135175, 
       "full_name": "Miami Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "C46"
     },
