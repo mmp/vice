@@ -4655,10 +4655,6 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 
 func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, paneExtent Extent2D,
 	transforms ScopeTransformations, cb *CommandBuffer) {
-	for name := range ctx.world.AllAirports() {
-		ctx.world.AddAirportForWeather(name)
-	}
-
 	ps := sp.CurrentPreferenceSet
 
 	transforms.LoadWindowViewingMatrices(cb)
