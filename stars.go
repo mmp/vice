@@ -1991,7 +1991,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					} else {
 						control, err := sp.calculateController(ctx, tcp, aircraft.Callsign)
 						if err != nil {
-							status.err = GetSTARSError(ErrSTARSIllegalPosition) // assume it's this
+							status.err = ErrSTARSIllegalPosition // assume it's this
 							return
 						}
 						sp.forceQL(ctx, aircraft.Callsign, control)
@@ -3237,11 +3237,12 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 }
 
 // returns the controller responsible for the aircraft given its altitude
-// and route.
-func calculateAirspace(ctx *PaneContext, callsign string) (string, bool) {
+// and route and a Boolean value indicating whether the controller is a
+// center controller.
+func calculateAirspace(ctx *PaneContext, callsign string) (string, bool, error) {
 	ac := ctx.world.Aircraft[callsign]
 	if ac == nil {
-		return "no target", false
+		return "", false, ErrSTARSIllegalFlight
 	}
 	aircraftType := database.AircraftPerformance[ac.FlightPlan.BaseType()].Engine.AircraftType
 	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
@@ -3251,14 +3252,14 @@ func calculateAirspace(ctx *PaneContext, callsign string) (string, bool) {
 				if (alt[0] == 0 && alt[1] == 0) /* none specified */ ||
 					(ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1]) {
 					if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, aircraftType) {
-						return rules.ReceivingController, rules.ToCenter
+						return rules.ReceivingController, rules.ToCenter, nil
 					}
 				}
 			}
 		}
 	}
 
-	return "", false
+	return "", false, ErrSTARSIllegalPosition
 }
 
 func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
@@ -3302,13 +3303,13 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 			return "", errors.New("Cannot calculate airspace")
 		}
 		if controller == "C" {
-			control, toCenter := calculateAirspace(ctx, callsign)
-			if control == "no target" {
-				return "", errors.New("Error calculate controller")
+			control, toCenter, err := calculateAirspace(ctx, callsign)
+			if err != nil {
+				return "", err
 			}
 			c := ctx.world.GetController(control)
 			if c == nil {
-				return "", errors.New("Error finding " + control)
+				return "", ErrSTARSIllegalPosition
 			}
 			if control != "" && ((controller == "C" && toCenter) || (controller == c.FacilityIdentifier && !toCenter) ||
 				(controller == ctx.world.GetController(control).FacilityIdentifier && !toCenter)) {
@@ -3322,7 +3323,6 @@ func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign 
 				return control.Callsign, nil
 			}
 		}
-
 	} else {
 		// Non ARTCC airspaceawareness handoffs
 		if lc == 1 && !haveTrianglePrefix { // Must be a same sector.
