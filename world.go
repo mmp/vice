@@ -507,17 +507,8 @@ func (w *World) GetFlightStrip(callsign string) *FlightStrip {
 	return nil
 }
 
-func (w *World) AddAirportForWeather(airport string) {
-	// UNIMPLEMENTED
-}
-
 func (w *World) GetMETAR(location string) *METAR {
 	return w.METAR[location]
-}
-
-func (w *World) GetAirportATIS(airport string) []ATIS {
-	// UNIMPLEMENTED
-	return nil
 }
 
 func (w *World) GetController(callsign string) *Controller {
