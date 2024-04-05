@@ -2858,7 +2858,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				callsign := lookupCallsign(f[0], false)
 				if state, ok := sp.Aircraft[callsign]; ok {
 					state.pilotAltitude = 0
-					if err := sp.setScratchpad(ctx, callsign, "", isSecondary); err != nil {
+					if err := sp.setScratchpad(ctx, callsign, "", isSecondary, false); err != nil {
 						status.err = err
 					} else {
 						status.clear = true
@@ -2876,7 +2876,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
 					sp.Aircraft[ac.Callsign].pilotAltitude = alt * 100
 				} else {
-					if err := sp.setScratchpad(ctx, ac.Callsign, f[1], isSecondary); err != nil {
+					if err := sp.setScratchpad(ctx, ac.Callsign, f[1], isSecondary, false); err != nil {
 						status.err = err
 					}
 				}
@@ -3122,22 +3122,28 @@ func (sp *STARSPane) updateQL(ctx *PaneContext, input string) (ok bool, previewI
 	return
 }
 
-func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) error {
+func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool, isImplied bool) error {
 	lc := len([]rune(contents))
 
 	if ac := ctx.world.GetAircraft(callsign, false); ac != nil && ac.TrackingController == "" {
 		return ErrSTARSIllegalTrack /* This is because /OK can be used for associated tracks that are not owned by this TCP. But /OK cannot be used
 		for unassociated tracks. So might as well weed them out now. */
 	}
-	var index int
+
+	fac := ctx.world.STARSFacilityAdaptation
 	if isSecondary {
-		index = 1
+		// 5-148: secondary is 1 to 3-maybe-4 characters
+		if lc < 1 || (fac.AllowLongScratchpad[1] && lc > 4) || (!fac.AllowLongScratchpad[1] && lc > 3) {
+			return ErrSTARSCommandFormat
+		}
+	} else {
+		// 5-148: primary is 2 to 3-maybe-4 characters
+		if lc < 2 || (fac.AllowLongScratchpad[0] && lc > 4) || (!fac.AllowLongScratchpad[0] && lc > 3) {
+			return ErrSTARSCommandFormat
+		}
 	}
 
-	if lc > 4 || (lc > 3 && !ctx.world.STARSFacilityAdaptation.ScratchpadRules[index]) {
-		return ErrSTARSCommandFormat
-	}
-
+	// Make sure it's only allowed characters
 	allowedCharacters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./*" + STARSTriangleCharacter
 	for _, letter := range contents {
 		if !strings.ContainsRune(allowedCharacters, letter) {
@@ -3145,8 +3151,28 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 		}
 	}
 
+	// It can't be three numerals
+	if lc == 3 && contents[0] >= '0' && contents[0] <= '9' &&
+		contents[1] >= '0' && contents[1] <= '9' &&
+		contents[2] >= '0' && contents[2] <= '9' {
+		return ErrSTARSCommandFormat
+	}
+
+	if !isSecondary && isImplied {
+		// For the implied version (i.e., not [multifunc]Y), it also can't
+		// match one of the TCPs
+		if lc == 2 {
+			for _, ctrl := range ctx.world.GetAllControllers() {
+				if ctrl.SectorId == contents {
+					return ErrSTARSCommandFormat
+				}
+			}
+		}
+	}
+
+	// Certain specific strings aren't allowed in the first 3 characters
 	illegalScratchpads := []string{"NAT", "CST", "AMB", "RDR", "ADB", "XXX"}
-	if slices.Contains(illegalScratchpads, contents) {
+	if lc >= 3 && slices.Contains(illegalScratchpads, contents[:3]) {
 		return ErrSTARSIllegalScratchpad
 	}
 
@@ -3550,14 +3576,14 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				}
 
 			} else if cmd == "." {
-				if err := sp.setScratchpad(ctx, ac.Callsign, "", false); err != nil {
+				if err := sp.setScratchpad(ctx, ac.Callsign, "", false, true); err != nil {
 					status.err = err
 				} else {
 					status.clear = true
 				}
 				return
 			} else if cmd == "+" {
-				if err := sp.setScratchpad(ctx, ac.Callsign, "", true); err != nil {
+				if err := sp.setScratchpad(ctx, ac.Callsign, "", true, true); err != nil {
 					status.err = err
 				} else {
 					status.clear = true
@@ -3730,7 +3756,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					sp.setTemporaryAltitude(ctx, ac.Callsign, alt*100)
 					status.clear = true
 				} else {
-					if err := sp.setScratchpad(ctx, ac.Callsign, cmd[1:], true); err != nil {
+					if err := sp.setScratchpad(ctx, ac.Callsign, cmd[1:], true, true); err != nil {
 						status.err = err
 					} else {
 						status.clear = true
@@ -3830,7 +3856,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				ctx.world.RunAircraftCommands(ac, cmd,
 					func(err error) {
 						// If it's not a valid command and fits the requirements for a scratchpad, set the scratchpad.
-						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
+						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false, true); err != nil {
 							sp.previewAreaOutput = GetSTARSError(err).Error()
 							return
 						}
@@ -4015,7 +4041,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				if cmd == "" {
 					// Clear pilot reported altitude and scratchpad
 					state.pilotAltitude = 0
-					if err := sp.setScratchpad(ctx, ac.Callsign, "", isSecondary); err != nil {
+					if err := sp.setScratchpad(ctx, ac.Callsign, "", isSecondary, false); err != nil {
 						status.err = err
 					} else {
 						status.clear = true
@@ -4027,7 +4053,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						state.pilotAltitude = alt * 100
 						status.clear = true
 					} else {
-						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary); err != nil {
+						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary, false); err != nil {
 							status.err = err
 						} else {
 							status.clear = true
