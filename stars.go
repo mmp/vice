@@ -3268,17 +3268,26 @@ func calculateAirspace(ctx *PaneContext, callsign string) (string, bool, error) 
 	if ac == nil {
 		return "", false, ErrSTARSIllegalFlight
 	}
-	aircraftType := database.AircraftPerformance[ac.FlightPlan.BaseType()].Engine.AircraftType
+
 	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
 		for _, fix := range rules.Fix {
-			if strings.Contains(ac.FlightPlan.Route, fix) || fix == "ALL" {
-				alt := rules.AltitudeRange
-				if (alt[0] == 0 && alt[1] == 0) /* none specified */ ||
-					(ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1]) {
-					if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, aircraftType) {
-						return rules.ReceivingController, rules.ToCenter, nil
-					}
-				}
+			// Does the fix in the rules match the route?
+			if fix != "ALL" && !ac.RouteIncludesFix(fix) {
+				continue
+			}
+
+			// Does the final altitude satisfy the altitude range, if specified?
+			alt := rules.AltitudeRange
+			if !(alt[0] == 0 && alt[1] == 0) /* none specified */ &&
+				(ac.FlightPlan.Altitude < alt[0] || ac.FlightPlan.Altitude > alt[1]) {
+				continue
+			}
+
+			// Finally make sure any aircraft type specified in the rules
+			// in the matches.
+			aircraftType := ac.AircraftPerformance().Engine.AircraftType
+			if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, aircraftType) {
+				return rules.ReceivingController, rules.ToCenter, nil
 			}
 		}
 	}
