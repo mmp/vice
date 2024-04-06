@@ -1675,6 +1675,7 @@
             "full_name": "Cleveland Center",
             "scope_char": "C",
             "sector_id": "C48",
+            "facility_id": "C",
             "eram_facility": true
         },
         "DTW_SW_TWR": {
