@@ -1546,7 +1546,6 @@
       }
     ]
   },
-  "center": "KAAC",
   "control_positions": {
     "AAC_NR_APP": {
       "frequency": 120200,
@@ -1587,12 +1586,16 @@
     "ZAE_OKC_LOW": {
       "frequency": 135000,
       "full_name": "Oklahoma Center",
+      "facility_id": "O",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "O01"
     },
     "ZAE_TUL_LOW": {
       "frequency": 136000,
       "full_name": "Tulsa Center",
+      "facility_id": "T",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "T01"
     }
@@ -1665,51 +1668,9 @@
     "HOWRD": "OSCAR@248/4",
     "TRISH": "GERAT@187/10"
   },
-  "inhibit_ca_volumes": [
-    {
-      "name": "KAAC NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 4,
-      "center": "KAAC"
-    },
-    {
-      "name": "KAAC APPR NO CA",
-      "type": "polygon",
-      "floor": 0,
-      "ceiling": 2000,
-      "vertices": [
-        "N036.13.41.447,W095.57.41.462",
-        "N036.11.51.886,W095.58.16.096",
-        "N036.08.18.188,W095.33.24.647",
-        "N036.10.22.608,W095.32.50.755"
-      ]
-    }
-  ],
   "magnetic_adjustment": 2,
   "name": "KAAC",
   "primary_airport": "KAAC",
-  "radar_sites": {
-    "AAC": {
-      "char": "A",
-      "position": "KAAC",
-      "elevation": 820,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "JKE": {
-      "char": "J",
-      "position": "KJKE",
-      "elevation": 658,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    }
-  },
   "reporting_points": [
     "ATOKA",
     "AVANT",
@@ -1886,6 +1847,68 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KAAC",
+  "inhibit_ca_volumes": [
+    {
+      "name": "KAAC NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 4,
+      "center": "KAAC"
+    },
+    {
+      "name": "KAAC APPR NO CA",
+      "type": "polygon",
+      "floor": 0,
+      "ceiling": 2000,
+      "vertices": [
+        "N036.13.41.447,W095.57.41.462",
+        "N036.11.51.886,W095.58.16.096",
+        "N036.08.18.188,W095.33.24.647",
+        "N036.10.22.608,W095.32.50.755"
+      ]
+    }
+  ],
+    "airspace_awareness": [
+      {
+         "fixes": [
+          "COLIN",
+          "MAYES"
+        ],
+        "to_center": true,
+        "receiving_controller": "ZAE_TUL_LOW"
+      },
+      {
+         "fixes": [
+          "SHAWN",
+          "NOBLE"
+        ],
+        "to_center": true,
+        "receiving_controller": "ZAE_OKC_LOW"
+      }
+    ],
+  "radar_sites": {
+    "AAC": {
+      "char": "A",
+      "position": "KAAC",
+      "elevation": 820,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "JKE": {
+      "char": "J",
+      "position": "KJKE",
+      "elevation": 658,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    }
+  },
   "scratchpads": {
     "COLIN": "RCO",
     "MAYES": "RMA",
@@ -1900,4 +1923,5 @@
     }
   ],
   "video_map_file": "videomaps/aac-maps.json.zst"
+  }
 }

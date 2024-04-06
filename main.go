@@ -14,8 +14,10 @@ import (
 	"fmt"
 	"io/fs"
 	"log/slog"
+	_ "net/http/pprof"
 	"os"
 	"os/signal"
+	"path"
 	"runtime"
 	"runtime/debug"
 	"runtime/pprof"
@@ -48,7 +50,7 @@ var (
 	localServer  *SimServer
 	remoteServer *SimServer
 	airportWind  map[string]Wind
-	windRequest  map[string]chan []getweather.MetarData
+	windRequest  map[string]chan getweather.MetarData
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -91,6 +93,21 @@ func main() {
 
 	// Initialize the logging system first and foremost.
 	lg = NewLogger(*server, *logLevel)
+
+	// If the path is non-absolute, convert it to an absolute path
+	// w.r.t. the current directory.  (This is to work around that vice
+	// changes the working directory to above where the resources are,
+	// which in turn was causing profiling data to be written in an
+	// unexpected place...)
+	absPath := func(p *string) {
+		if p != nil && *p != "" && !path.IsAbs(*p) {
+			if cwd, err := os.Getwd(); err == nil {
+				*p = path.Join(cwd, *p)
+			}
+		}
+	}
+	absPath(memprofile)
+	absPath(cpuprofile)
 
 	writeMemProfile := func() {
 		f, err := os.Create(*memprofile)
@@ -269,7 +286,7 @@ func main() {
 		lg.Info("Starting main loop")
 		// Init the wind maps
 		airportWind = make(map[string]Wind)
-		windRequest = make(map[string]chan []getweather.MetarData)
+		windRequest = make(map[string]chan getweather.MetarData)
 
 		stopConnectingRemoteServer := false
 		frameIndex := 0

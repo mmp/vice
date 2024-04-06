@@ -32,7 +32,8 @@ type Airport struct {
 	ApproachRegions   map[string]*ApproachRegion `json:"approach_regions"`
 	ConvergingRunways []ConvergingRunways        `json:"converging_runways"`
 
-	ATPAVolumes map[string]*ATPAVolume `json:"atpa_volumes"`
+	ATPAVolumes           map[string]*ATPAVolume `json:"atpa_volumes"`
+	OmitArrivalScratchpad bool                   `json:"omit_arrival_scratchpad"`
 }
 
 type ConvergingRunways struct {
@@ -133,12 +134,32 @@ type GhostAircraft struct {
 	TrackId             string
 }
 
+func (ar *ApproachRegion) Inside(p Point2LL, alt float32, nmPerLongitude, magneticVariation float32) (lateral, vertical bool) {
+	line, quad := ar.GetLateralGeometry(nmPerLongitude, magneticVariation)
+	lateral = PointInPolygon2LL(p, quad[:])
+
+	// Work in nm here...
+	l := [2][2]float32{ll2nm(line[0], nmPerLongitude), ll2nm(line[1], nmPerLongitude)}
+	pc := ClosestPointOnLine(l, ll2nm(p, nmPerLongitude))
+	d := distance2f(pc, l[0])
+	if d > ar.DescentPointDistance {
+		vertical = alt <= ar.DescentPointAltitude+ar.AboveAltitudeTolerance &&
+			alt >= ar.DescentPointAltitude-ar.BelowAltitudeTolerance
+	} else {
+		t := (d - ar.NearDistance) / (ar.DescentPointDistance - ar.NearDistance)
+		approachAlt := lerp(t, ar.ReferencePointAltitude, ar.DescentPointAltitude)
+		vertical = alt <= approachAlt+ar.AboveAltitudeTolerance &&
+			alt >= alt-ar.BelowAltitudeTolerance
+	}
+	return
+}
+
 func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, heading float32, scratchpad string,
 	forceGhost bool, offset float32, leaderDirection CardinalOrdinalDirection, runwayIntersection [2]float32,
 	nmPerLongitude float32, magneticVariation float32, other *ApproachRegion) *GhostAircraft {
 	// Start with lateral extent since even if it's forced, the aircraft still must be inside it.
-	line, quad := ar.GetLateralGeometry(nmPerLongitude, magneticVariation)
-	if !PointInPolygon2LL(track.Position, quad[:]) {
+	lat, vert := ar.Inside(track.Position, float32(track.Altitude), nmPerLongitude, magneticVariation)
+	if !lat {
 		return nil
 	}
 
@@ -149,22 +170,8 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 		}
 
 		// Check vertical extent
-		// Work in nm here...
-		l := [2][2]float32{ll2nm(line[0], nmPerLongitude), ll2nm(line[1], nmPerLongitude)}
-		pc := ClosestPointOnLine(l, ll2nm(track.Position, nmPerLongitude))
-		d := distance2f(pc, l[0])
-		if d > ar.DescentPointDistance {
-			if float32(track.Altitude) > ar.DescentPointAltitude+ar.AboveAltitudeTolerance ||
-				float32(track.Altitude) < ar.DescentPointAltitude-ar.BelowAltitudeTolerance {
-				return nil
-			}
-		} else {
-			t := (d - ar.NearDistance) / (ar.DescentPointDistance - ar.NearDistance)
-			alt := lerp(t, ar.ReferencePointAltitude, ar.DescentPointAltitude)
-			if float32(track.Altitude) > alt+ar.AboveAltitudeTolerance ||
-				float32(track.Altitude) < alt-ar.BelowAltitudeTolerance {
-				return nil
-			}
+		if !vert {
+			return nil
 		}
 
 		if len(ar.ScratchpadPatterns) > 0 {
@@ -434,8 +441,12 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 		e.Push("Departure exit " + dep.Exit)
 		e.Push("Destination " + dep.Destination)
 
-		if _, ok := sg.Scratchpads[dep.Exit]; dep.Scratchpad == "" && !ok {
+		if _, ok := sg.STARSFacilityAdaptation.Scratchpads[dep.Exit]; dep.Scratchpad == "" && !ok {
 			e.ErrorString("exit not in scenario group \"scratchpads\"")
+		}
+
+		if dep.Altitude < 500 && dep.Altitude != 0 {
+			e.ErrorString("altitude of %v is too low to be used. Is it supposed to be %v?", dep.Altitude, dep.Altitude*100)
 		}
 
 		if _, ok := database.Airports[dep.Destination]; !ok {

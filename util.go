@@ -6,7 +6,6 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	_ "embed"
 	"encoding/gob"
 	"encoding/json"
@@ -55,15 +54,6 @@ func decompressZstd(s string) string {
 		lg.Errorf("Error decompressing buffer")
 	}
 	return string(b)
-}
-
-func zstdReader(b []byte) io.Reader {
-	br := bytes.NewReader(b)
-	r, err := zstd.NewReader(br)
-	if err != nil {
-		panic(err)
-	}
-	return r
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1000,6 +990,12 @@ func (c *CompressedConn) Write(b []byte) (n int, err error) {
 	return
 }
 
+func (c *CompressedConn) Close() error {
+	c.r.Close()
+	c.w.Close()
+	return c.Conn.Close()
+}
+
 var RXTotal, TXTotal int64
 
 type LoggingConn struct {
@@ -1366,7 +1362,7 @@ func updateDiscordStatus() {
 	// Sign in to the Vice app on Discord
 	discord_err := discord_client.Login("1158289394717970473")
 	if discord_err != nil {
-		lg.Error("Discord RPC Error", slog.String("error", discord_err.Error()))
+		lg.Warn("Discord RPC Error", slog.String("error", discord_err.Error()))
 		return
 	}
 	lg.Info("Successfully logged into Discord")

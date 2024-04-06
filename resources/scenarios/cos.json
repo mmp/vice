@@ -413,16 +413,6 @@
         ]
         }
     },
-  "inhibit_ca_volumes": [
-    {
-        "name": "COS NO CA",
-        "type": "circle",
-        "floor": 0,
-        "ceiling": 9500,
-        "radius": 10,
-        "center": "N038.47.52.142,W104.42.03.065"
-    }
-],
   "arrival_groups": {
     "OZZZY5": [
       {
@@ -555,7 +545,6 @@
       }
     ]
   },
-  "center": "N038.47.36.733,W104.35.10.501",
   "control_positions": {
     "COS_APP": {
       "frequency": 124000,
@@ -590,12 +579,15 @@
     "DEN_29_CTR": {
       "frequency": 132225,
       "full_name": "Denver center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "29"
     },
     "PUB_APP": {
       "frequency": 120100,
       "full_name": "Pueblo Approach",
+      "facility_id": "1",
       "scope_char": "P",
       "sector_id": "1P"
     }
@@ -610,18 +602,6 @@
   },
   "name": "KCOS",
   "primary_airport": "KCOS",
-  "radar_sites": {
-    "COS": {
-      "char": "A",
-      "position": "N038.47.36.733,W104.35.10.501",
-      "elevation": 6075,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    }
-  },
-  "range": 30,
   "scenarios": {
     "North VMC": {
       "approach_airspace": [
@@ -748,6 +728,30 @@
       }
     }
   },
+  "stars_config": {
+  "center": "N038.47.36.733,W104.35.10.501",
+  "inhibit_ca_volumes": [
+    {
+        "name": "COS NO CA",
+        "type": "circle",
+        "floor": 0,
+        "ceiling": 9500,
+        "radius": 10,
+        "center": "N038.47.52.142,W104.42.03.065"
+    }
+  ],
+  "radar_sites": {
+    "COS": {
+      "char": "A",
+      "position": "N038.47.36.733,W104.35.10.501",
+      "elevation": 6075,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    }
+  },
+  "range": 30,
   "scratchpads": {
     "LUFSE": "LUF",
     "PUB": "PUB",
@@ -872,4 +876,5 @@
     }
   ],
   "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+  }
 }

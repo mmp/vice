@@ -480,13 +480,14 @@
       }
     ]
   },
-  "center": "KDAB",
   "control_positions": {
     "JAX_30_CTR": {
       "frequency": 135925,
       "full_name": "Jacksonville center",
       "scope_char": "C",
-      "sector_id": "30"
+      "sector_id": "J30",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "DAB_H_APP": {
       "frequency": 125725,
@@ -534,13 +535,15 @@
       "frequency": 128375,
       "full_name": "Orlando approach",
       "scope_char": "B",
-      "sector_id": "4B"
+      "sector_id": "4B",
+      "facility_id": "4"
     },
     "JAX_N_APP": {
       "frequency": 127000,
       "full_name": "Jacksonville approach",
       "scope_char": "N",
-      "sector_id": "3N"
+      "sector_id": "3N",
+      "facility_id": "3"
     },
     "DAB_N_TWR": {
       "frequency": 120700,
@@ -572,62 +575,6 @@
   "magnetic_adjustment": -2,
   "name": "KDAB",
   "primary_airport": "KDAB",
-  "radar_sites": {
-    "DAB": {
-      "char": "D",
-      "position": "29.17264, -81.19219",
-      "elevation": 38,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 15,
-      "slope_angle": 0.175
-    },
-    "JAX": {
-      "char": "J",
-      "position": "30.49333, -81.69267",
-      "elevation": 40,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 15,
-      "slope_angle": 0.175
-    },
-    "MCO": {
-      "char": "O",
-      "position": "28.37483, -81.30463",
-      "elevation": 100,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 15,
-      "slope_angle": 0.175
-    },
-    "GNV": {
-      "char": "G",
-      "position": "29.41538, -82.23232",
-      "elevation": 155,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "silence_angle": 15,
-      "slope_angle": 0.175
-    },
-    "NEN": {
-      "char": "W",
-      "position": "30.34593, -81.87403",
-      "elevation": 95,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "silence_angle": 15,
-      "slope_angle": 0.175
-    },
-    "MLB": {
-      "char": "M",
-      "position": "28.08427, -80.79808",
-      "elevation": 22,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "silence_angle": 15,
-      "slope_angle": 0.175
-    }
-  },
   "scenarios": {
     "KDAB Depart 7L/R Land 7L/R": {
       "approach_airspace": [
@@ -764,6 +711,64 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KDAB",
+  "radar_sites": {
+    "DAB": {
+      "char": "D",
+      "position": "29.17264, -81.19219",
+      "elevation": 38,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "JAX": {
+      "char": "J",
+      "position": "30.49333, -81.69267",
+      "elevation": 40,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "MCO": {
+      "char": "O",
+      "position": "28.37483, -81.30463",
+      "elevation": 100,
+      "primary_range": 60,
+      "secondary_range": 60,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "GNV": {
+      "char": "G",
+      "position": "29.41538, -82.23232",
+      "elevation": 155,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "NEN": {
+      "char": "W",
+      "position": "30.34593, -81.87403",
+      "elevation": 95,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    },
+    "MLB": {
+      "char": "M",
+      "position": "28.08427, -80.79808",
+      "elevation": 22,
+      "primary_range": 250,
+      "secondary_range": 250,
+      "silence_angle": 15,
+      "slope_angle": 0.175
+    }
+  },
   "scratchpads": {
     "CRG": "ROY",
     "MALET": "MAL",
@@ -817,4 +822,5 @@
     }
   ],
   "video_map_file": "videomaps/ZJX-videomaps.json.zst"
+  }
 }

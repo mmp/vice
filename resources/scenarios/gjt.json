@@ -542,7 +542,6 @@
       }
     ]
   },
-  "center": "KGJT",
   "control_positions": {
     "GJT_APP": {
       "frequency": 119700,
@@ -553,12 +552,16 @@
     "DEN_11_CTR": {
       "frequency": 120470,
       "full_name": "Denver Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "11"
     },
     "DEN_12_CTR": {
       "frequency": 125350,
       "full_name": "Denver Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "11"
     },
@@ -577,17 +580,6 @@
   },
   "name": "KGJT",
   "primary_airport": "KGJT",
-  "radar_sites": {
-    "GJT": {
-      "char": "A",
-      "position": "KGJT",
-      "elevation": 4900,
-      "primary_range": 120,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    }
-  },
   "reporting_points": [
     "KGJT"
   ],
@@ -689,6 +681,19 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KGJT",
+  "radar_sites": {
+    "GJT": {
+      "char": "A",
+      "position": "KGJT",
+      "elevation": 4900,
+      "primary_range": 120,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    }
+  },
   "scratchpads": {
     "SQUAT": "SQT",
     "PACES": "PCS",
@@ -771,4 +776,5 @@
 }
   ],
   "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+  }
   }

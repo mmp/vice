@@ -382,8 +382,6 @@
       }
     ]
   },
-  "center": "N039.19.41.442,W106.53.21.361",
-  "range": 25,
   "control_positions": {
     "ASE_APP": {
       "frequency": 123800,
@@ -400,8 +398,10 @@
     "DEN_11_CTR": {
       "frequency": 120475,
       "full_name": "Denver center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "11"
+      "sector_id": "D11"
     }
   },
   "default_scenario": "VMC 15",
@@ -410,33 +410,8 @@
     "BASLT": "N039.28.21.466,W107.03.18.550",
     "GLDEN": "N039.23.22.761,W107.04.05.516"
   },
-  "inhibit_ca_volumes": [
-    {
-      "name": "ASE FNL CA",
-      "type": "polygon",
-      "floor": 6155,
-      "ceiling": 10000,
-      "vertices": [
-        "N039.10.33.155,W106.55.16.442",
-        "N039.17.10.915,W106.56.44.278",
-        "N039.17.52.732,W106.48.56.947",
-        "N039.11.23.500,W106.46.07.620"
-      ]
-    }
-  ],
   "name": "KASE",
   "primary_airport": "KASE",
-  "radar_sites": {
-    "KASE": {
-      "char": "A",
-      "position": "39.223202,-106.869003",
-      "elevation": 7820,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    }
-  },
   "scenarios": {
     "VMC 15": {
       "approach_airspace": ["ASE_APP"],
@@ -477,6 +452,34 @@
         "gust": 5,
         "speed": 10
       }
+    }
+  },
+  "stars_config": {
+  "center": "N039.19.41.442,W106.53.21.361",
+  "range": 25,
+  "inhibit_ca_volumes": [
+    {
+      "name": "ASE FNL CA",
+      "type": "polygon",
+      "floor": 6155,
+      "ceiling": 10000,
+      "vertices": [
+        "N039.10.33.155,W106.55.16.442",
+        "N039.17.10.915,W106.56.44.278",
+        "N039.17.52.732,W106.48.56.947",
+        "N039.11.23.500,W106.46.07.620"
+      ]
+    }
+  ],
+  "radar_sites": {
+    "KASE": {
+      "char": "A",
+      "position": "39.223202,-106.869003",
+      "elevation": 7820,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.3
     }
   },
   "scratchpads": {
@@ -555,4 +558,5 @@
     }
   ],
   "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+  }
 }

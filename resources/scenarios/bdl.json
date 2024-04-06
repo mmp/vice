@@ -267,13 +267,14 @@
             }
         ]
     },
-    "center": "41.935711707565986, -72.6940381965002",
     "control_positions":{
         "BOS_37_CTR": {
             "frequency": 134700,
             "full_name": "Boston Center",
             "scope_char": "C",
-            "sector_id": "B37"
+            "sector_id": "B37",
+            "facility_id": "C",
+            "eram_facility": true
         },
         "BDL_APP": {
             "frequency": 123950,
@@ -303,16 +304,6 @@
     },
     "name": "KBDL",
     "primary_airport": "KBDL",
-    "radar_sites": {
-        "KBDL": {
-            "char": "Y",
-            "position": "KBDL",
-            "elevation": 173,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "slope_angle": 0.175
-        }
-    },
     "scenarios": {
         "Y90 RWY 6/33": {
             "arrival_runways": [
@@ -340,7 +331,7 @@
                         "primary": true,
                         "departures": ["KBDL"]
                     }, 
-                    "BDL_ARR": {
+                    "BDL_APP": {
                         "backup": "BDL_DEP",
                         "arrivals": ["STELA1", "DPK3"]
                     }
@@ -372,6 +363,18 @@
             }
         }
     },
+    "stars_config": {
+    "center": "41.935711707565986, -72.6940381965002",
+    "radar_sites": {
+        "KBDL": {
+            "char": "Y",
+            "position": "KBDL",
+            "elevation": 173,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "slope_angle": 0.175
+        }
+    },
     "scratchpads": {
         "HFD": "HFD",
         "CTR": "CTR",
@@ -390,4 +393,5 @@
         }
     ],
     "video_map_file": "videomaps/ZBW-videomaps.json.zst"
+    }
 }

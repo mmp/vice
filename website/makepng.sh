@@ -1,14 +1,20 @@
 #!/bin/zsh
 
-x2=${2%%.png}-2x.png
-convert "$1" $x2
-convert "$1" -scale 50% $2
+if [[ $# -ne 1 ]]; then
+    echo makevideo: expected one arg for output filename
+fi
 
-w=`file $2 | awk '{print $5}'`
-h=`file $2 | awk '{print $7}' | sed s/,//`
+fn=$1
+ss=`ls -t ~/Desktop/Screenshot* | head -1`
+
+mv ${ss} ${fn}-2x.png
+convert -scale 50% ${fn}-2x.png ${fn}.png
+
+w=`file ${fn}.png | awk '{print $5}'`
+h=`file ${fn}.png | awk '{print $7}' | sed s/,//`
 
 echo '<div class="text-center">'
-echo "<img src=\"$2\" srcset=\"$x2 2x\" width=\"$w\" height=\"$h\">"
-echo '</div>'
+echo "<img src=\"${fn}.png\" srcset=\"${fn}-2x.png 2x\" width=\"$w\" height=\"$h\">"
+echo '</div><br>'
 
 

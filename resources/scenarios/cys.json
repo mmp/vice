@@ -270,16 +270,6 @@
         ]
         }
     },
-  "inhibit_ca_volumes": [
-    {
-        "name": "CYS NO CA",
-        "type": "circle",
-        "floor": 0,
-        "ceiling": 9500,
-        "radius": 10,
-        "center": "N041.09.19.519,W104.48.39.012"
-    }
-],
   "arrival_groups": {
     "DEN": [
       {
@@ -380,13 +370,13 @@
       }
     ]
   },
-  "center": "KCYS",
   "control_positions": {
     "CYS_APP": {
       "frequency": 124550,
       "full_name": "Cheyenne approach",
       "scope_char": "A",
-      "sector_id": "1A"
+      "sector_id": "6A",
+      "facility_id": "6"
     },
     "CYS_TWR": {
       "frequency": 118700,
@@ -397,32 +387,23 @@
     "DEN_D_APP": {
       "frequency": 134850,
       "full_name": "Denver approach",
+      "facility_id": "1",
       "scope_char": "D",
       "sector_id": "1D"
     },
     "DEN_21_CTR": {
       "frequency": 125900,
       "full_name": "Denver center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "21"
+      "sector_id": "D21"
     }
   },
   "default_scenario": "KCYS Landing East",
   "magnetic_adjustment": -2,
   "name": "KCYS",
   "primary_airport": "KCYS",
-  "radar_sites": {
-    "CYS": {
-      "char": "A",
-      "position": "KCYS",
-      "elevation": 6155,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    }
-  },
-  "range": 30,
   "scenarios": {
     "KCYS Landing East": {
       "approach_airspace": [
@@ -513,12 +494,6 @@
         }
       },
       "solo_controller": "CYS_APP",
-      "multi_controllers": {
-        "default" : {
-              "CYS_APP": {"primary": true, "arrivals": ["DEN", "BZN", "OMA", "SEA"]},
-              "CYS_DEP": {"backup": "CYS_APP", "departures": ["KCYS"]}
-            }
-          },
       "controllers": [
         "CYS_TWR",
         "CYS_APP",
@@ -545,6 +520,30 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KCYS",
+  "inhibit_ca_volumes": [
+    {
+        "name": "CYS NO CA",
+        "type": "circle",
+        "floor": 0,
+        "ceiling": 9500,
+        "radius": 10,
+        "center": "N041.09.19.519,W104.48.39.012"
+    }
+  ],
+  "radar_sites": {
+    "CYS": {
+      "char": "A",
+      "position": "KCYS",
+      "elevation": 6155,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    }
+  },
+  "range": 30,
   "scratchpads": {
     "DEN": "DEN",
     "CYS": "DEN",
@@ -616,4 +615,5 @@
     }
   ],
   "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+  }
 }

@@ -84,7 +84,8 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 		return p
 	}
 
-	br := bufio.NewReader(zstdReader(file))
+	contents := decompressZstd(string(file))
+	br := bufio.NewReader(strings.NewReader(contents))
 	var lines [][]byte
 
 	getline := func() []byte {
@@ -567,7 +568,7 @@ func parseSTAR(recs []ssaRecord) *STAR {
 			if !ok {
 				base, ok = transitions["ALL"]
 			}
-			if base == nil {
+			if !ok {
 				// There's no common segment, which is fine
 				star.Transitions[t] = wps
 			} else {

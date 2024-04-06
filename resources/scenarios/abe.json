@@ -321,7 +321,7 @@
         "cruise_altitude": 9000,
         "initial_altitude": 7000,
         "description": "MDT departures",
-        "initial_controller": "MDT_APP",
+        "initial_controller": "MDT_SE_APP",
         "initial_speed": 250,
         "route": "/. KRAZE FJC",
         "runway_waypoints": {
@@ -346,7 +346,7 @@
         "cruise_altitude": 4000,
         "initial_altitude": 300,
         "description": "RDG departures",
-        "initial_controller": "MDT_APP",
+        "initial_controller": "MDT_SE_APP",
         "initial_speed": 250,
         "route": "/. ETX",
         "waypoints": "KRDG N040.23.52.301,W075.55.26.797/ho ETX"
@@ -402,7 +402,7 @@
         "cruise_altitude": 27000,
         "description": "via KRAZE",
         "initial_altitude": 10000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_D_CTR",
         "initial_speed": 250,
         "route": "/. KRAZE",
         "runway_waypoints": {
@@ -434,7 +434,7 @@
         "cruise_altitude": 33000,
         "initial_altitude": 10000,
         "description": "via SNOWY",
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_D_CTR",
         "initial_speed": 250,
         "route": "/. SLATT",
         "runway_waypoints": {
@@ -467,7 +467,7 @@
         "cruise_altitude": 22000,
         "initial_altitude": 10000,
         "description": "via SLATT",
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_D_CTR",
         "initial_speed": 250,
         "route": "/. SLATT",
         "runway_waypoints": {
@@ -497,7 +497,7 @@
         "cruise_altitude": 35000,
         "initial_altitude": 10000,
         "description": "via V162 DUMMR",
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_D_CTR",
         "initial_speed": 250,
         "route": "/. DUMMR",
         "runway_waypoints": {
@@ -530,7 +530,7 @@
         "cruise_altitude": 12000,
         "initial_altitude": 10000,
         "description": "via V93 DUMMR",
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_D_CTR",
         "initial_speed": 250,
         "route": "/. DUMMR",
         "runway_waypoints": {
@@ -543,7 +543,6 @@
       }
     ]
   },
-  "center": "KABE",
   "control_positions": {
     "ABE_APP": {
       "frequency": 119650,
@@ -557,70 +556,46 @@
       "scope_char": "T",
       "sector_id": "AL"
     },
-    "AVP_APP": {
+    "AVP_S_APP": {
       "frequency": 126300,
-      "full_name": "Wilkes Barre approach",
-      "scope_char": "B",
-      "sector_id": "WB"
+      "full_name": "Wilkes Barre Approach",
+      "scope_char": "7",
+      "sector_id": "1E",
+      "facility_id": "1"
     },
     "EWR_APP": {
       "frequency": 128550,
       "full_name": "New York approach",
       "scope_char": "P",
-      "sector_id": "4P"
+      "sector_id": "4P",
+      "facility_id": "2"
     },
-    "MDT_APP": {
+    "MDT_SE_APP": {
       "frequency": 126450,
       "full_name": "Harrisburg approach",
       "scope_char": "S",
-      "sector_id": "HS"
+      "sector_id": "HS",
+      "facility_id": "5"
     },
-    "NY_CTR": {
-      "frequency": 125325,
+    "NY_D_CTR": {
+      "frequency": 127725,
       "full_name": "New York center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "N56"
+      "sector_id": "N72"
     },
     "PHL_NA_APP": {
       "frequency": 128400,
       "full_name": "Philly approach",
       "scope_char": "N",
-      "sector_id": "6N"
+      "sector_id": "6N",
+      "facility_id": "3"
     }
   },
   "default_scenario": "KABE Depart 6 Land 6",
-  "inhibit_ca_volumes": [
-      {
-          "name": "ABE NO CA",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 7,
-          "center": "40.65236,-75.4404"
-      }
-  ],
   "name": "KABE",
   "primary_airport": "KABE",
-  "radar_sites": {
-    "ABE": {
-      "char": "A",
-      "position": "40.673611,-75.453333",
-      "elevation": 413,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    },
-    "NXX": {
-      "char": "N",
-      "position": "40.19980, -75.14820",
-      "elevation": 408,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 50.4,
-      "slope_angle": 0.175
-    }
-  },
   "reporting_points": [
       "BWZ",
       "DUMMR",
@@ -663,9 +638,9 @@
         "ABE_APP",
         "PHL_NA_APP",
         "EWR_APP",
-        "AVP_APP",
-        "MDT_APP",
-        "NY_CTR"
+        "AVP_S_APP",
+        "MDT_SE_APP",
+        "NY_D_CTR"
       ],
       "default_maps": [ "Allentown TRACON Video Map" ],
       "departure_runways": [
@@ -711,9 +686,9 @@
         "ABE_APP",
         "PHL_NA_APP",
         "EWR_APP",
-        "AVP_APP",
-        "MDT_APP",
-        "NY_CTR"
+        "AVP_S_APP",
+        "MDT_SE_APP",
+        "NY_D_CTR"
       ],
       "default_maps": [ "Allentown TRACON Video Map" ],
       "departure_runways": [
@@ -727,6 +702,38 @@
         "direction": 80,
         "speed": 14
       }
+    }
+  },
+  "stars_config": {
+  "center": "KABE",
+  "inhibit_ca_volumes": [
+      {
+          "name": "ABE NO CA",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 7,
+          "center": "40.65236,-75.4404"
+      }
+  ],
+  "radar_sites": {
+    "ABE": {
+      "char": "A",
+      "position": "40.673611,-75.453333",
+      "elevation": 413,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.3
+    },
+    "NXX": {
+      "char": "N",
+      "position": "40.19980, -75.14820",
+      "elevation": 408,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 50.4,
+      "slope_angle": 0.175
     }
   },
   "scratchpads": {
@@ -750,4 +757,5 @@
     }
   ],
   "video_map_file": "videomaps/abe-maps.json.zst"
+  }
 }

@@ -103,6 +103,8 @@ type NavSpeed struct {
 	Restriction *float32
 }
 
+const MaxIAS = 290
+
 type NavHeading struct {
 	Assigned     *float32
 	Turn         *TurnMethod
@@ -155,7 +157,7 @@ func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerforma
 		}
 
 		nav.FlightState.Altitude = arr.InitialAltitude
-		nav.FlightState.IAS = min(arr.InitialSpeed, nav.Perf.Speed.Cruise)
+		nav.FlightState.IAS = arr.InitialSpeed
 		// This won't be quite right but it's better than leaving GS to be
 		// 0 for the first nav update tick which leads to various Inf and
 		// NaN cases...
@@ -232,9 +234,9 @@ func makeNav(w *World, fp FlightPlan, perf AircraftPerformance, wp []Waypoint) *
 }
 
 func (nav *Nav) TAS() float32 {
-	// Simple model for the increase in TAS as a function of altitude: 2%
-	// additional TAS on top of IAS for each 1000 feet.
-	return nav.FlightState.IAS * (1 + .02*nav.FlightState.Altitude/1000)
+	tas := IASToTAS(nav.FlightState.IAS, nav.FlightState.Altitude)
+	tas = min(tas, nav.Perf.Speed.CruiseTAS)
+	return tas
 }
 
 func (nav *Nav) v2() float32 {
@@ -279,7 +281,7 @@ func (nav *Nav) EnqueueHeading(h NavHeading) {
 	}
 }
 
-func (nav *Nav) OnApproach() bool {
+func (nav *Nav) OnApproach(checkAltitude bool) bool {
 	if !nav.Approach.Cleared {
 		return false
 	}
@@ -294,6 +296,10 @@ func (nav *Nav) OnApproach() bool {
 		return false
 	}
 
+	if !checkAltitude {
+		return true
+	}
+
 	for _, wp := range nav.Waypoints {
 		// Ignore controller-assigned "cross FIX at ALT" for this
 		if r := wp.AltitudeRestriction; r != nil {
@@ -301,6 +307,19 @@ func (nav *Nav) OnApproach() bool {
 		}
 	}
 	return false
+}
+
+// OnExtendedCenterline checks if the flight position is less than maxNmDeviation
+// from the infinite line defined by the assigned approach localizer
+func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
+	approach := nav.Approach.Assigned
+	localizer := approach.Line()
+	distance := PointLineDistance(
+		ll2nm(nav.FlightState.Position, nav.FlightState.NmPerLongitude),
+		ll2nm(localizer[0], nav.FlightState.NmPerLongitude),
+		ll2nm(localizer[1], nav.FlightState.NmPerLongitude))
+
+	return distance < maxNmDeviation
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -531,7 +550,7 @@ func (nav *Nav) updateAirspeed(lg *Logger) {
 	targetSpeed, targetRate := nav.TargetSpeed(lg)
 
 	// Stay within the aircraft's capabilities
-	targetSpeed = clamp(targetSpeed, nav.Perf.Speed.Min, nav.Perf.Speed.Max)
+	targetSpeed = clamp(targetSpeed, nav.Perf.Speed.Min, MaxIAS)
 
 	setSpeed := func(next float32) {
 		if nav.Altitude.AfterSpeed != nil &&
@@ -892,10 +911,7 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *Logger) (heading float32, t
 
 	case TurningToJoin:
 		// we've turned to intercept. have we intercepted?
-		loc := ap.Line()
-		dist := PointLineDistance(ll2nm(nav.FlightState.Position, nav.FlightState.NmPerLongitude),
-			ll2nm(loc[0], nav.FlightState.NmPerLongitude), ll2nm(loc[1], nav.FlightState.NmPerLongitude))
-		if dist > .2 {
+		if !nav.OnExtendedCenterline(.2) {
 			return
 		}
 		lg.Debug("heading: localizer intercepted")
@@ -998,7 +1014,7 @@ func (nav *Nav) TargetAltitude(lg *Logger) (alt, rate float32) {
 	getAssignedRate := func() float32 {
 		if nav.FlightState.IsDeparture {
 			if nav.FlightState.Altitude < 10000 {
-				targetSpeed := min(250, nav.Perf.Speed.Cruise)
+				targetSpeed := min(250, TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude))
 				if nav.FlightState.IAS < 0.8*targetSpeed {
 					// Prioritize accelerate over climb starting at 1500 AGL
 					return 0.8 * nav.Perf.Rate.Climb
@@ -1216,7 +1232,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 	maxAccel := nav.Perf.Rate.Accelerate * 30 // per minute
 
-	fd, err := nav.finalApproachDistance()
+	fd, err := nav.distanceToEndOfApproach()
 	if err == nil && fd < 5 {
 		// Cancel speed restrictions inside 5 mile final
 		lg.Debug("speed: cancel speed restrictions at 5 mile final")
@@ -1233,13 +1249,15 @@ func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 			// (We expect this to usually be the case.) Ad-hoc speed based
 			// on V2, also assuming some flaps are out, so we don't just
 			// want to return 250 knots here...
-			return min(nav.v2()*1.6, min(250, nav.Perf.Speed.Cruise)), MaximumRate
+			cruiseIAS := TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
+			return min(nav.v2()*1.6, min(250, cruiseIAS)), MaximumRate
 		}
 		return nav.targetAltitudeIAS()
 	}
 
 	if nav.FlightState.IsDeparture {
-		targetSpeed := min(250, nav.Perf.Speed.Cruise)
+		cruiseIAS := TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
+		targetSpeed := min(250, cruiseIAS)
 
 		if !nav.IsAirborne() {
 			return targetSpeed, 0.8 * maxAccel
@@ -1317,17 +1335,18 @@ func (nav *Nav) TargetSpeed(lg *Logger) (float32, float32) {
 // to cruise speed based on altitude.
 func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 	maxAccel := nav.Perf.Rate.Accelerate * 30 // per minute
+	cruiseIAS := TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
 
 	if nav.FlightState.Altitude < 10000 {
 		// 250kts under 10k.  We can assume a high acceleration rate for
 		// departures when this kicks in at 1500' AGL given that VNav will
 		// slow the rate of climb at that point until we reach the target
 		// speed.
-		return min(nav.Perf.Speed.Cruise, 250), 0.9 * maxAccel
+		return min(cruiseIAS, 250), 0.9 * maxAccel
 	}
 
 	x := clamp((nav.FlightState.Altitude-10000)/(nav.Perf.Ceiling-10000), 0, 1)
-	return lerp(x, min(nav.Perf.Speed.Cruise, 250), nav.Perf.Speed.Cruise), 0.8 * maxAccel
+	return lerp(x, min(cruiseIAS, 250), cruiseIAS), 0.8 * maxAccel
 }
 
 func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (*Waypoint, float32, float32) {
@@ -1353,9 +1372,9 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (*Waypoint, float32, float
 	return nil, 0, 0
 }
 
-// finalApproachDistance returns the total remaining flying distance
-// for an aircraft that has been given an approach.
-func (nav *Nav) finalApproachDistance() (float32, error) {
+// distanceToEndOfApproach returns the remaining distance to the last
+// waypoint (usually runway threshold) of the currently assigned approach.
+func (nav *Nav) distanceToEndOfApproach() (float32, error) {
 	if nav.Approach.Assigned == nil || !nav.Approach.Cleared {
 		return 0, ErrNotClearedForApproach
 	}
@@ -1370,16 +1389,17 @@ func (nav *Nav) finalApproachDistance() (float32, error) {
 	if wp := nav.Waypoints; len(wp) == 0 {
 		// This shouldn't happen since the aircraft should be deleted when
 		// it reaches the final waypoint.  Nevertheless...
-		d := nmdistance2ll(nav.FlightState.Position, nav.FlightState.ArrivalAirportLocation)
-		return d, nil
+		remainingDistance := nmdistance2ll(nav.FlightState.Position, nav.FlightState.ArrivalAirportLocation)
+		return remainingDistance, nil
 	} else {
 		// Distance to the next fix plus sum of the distances between
 		// remaining fixes.
-		d := nmdistance2ll(nav.FlightState.Position, wp[0].Location)
+		remainingDistance := nmdistance2ll(nav.FlightState.Position, wp[0].Location)
 		for i := 0; i < len(wp)-1; i++ {
-			d += nmdistance2ll(wp[i].Location, wp[i+1].Location)
+			remainingDistance += nmdistance2ll(wp[i].Location, wp[i+1].Location)
 		}
-		return d, nil
+
+		return remainingDistance, nil
 	}
 }
 
@@ -1631,14 +1651,17 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) PilotResponse {
 }
 
 func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) PilotResponse {
+	maxIAS := TASToIAS(nav.Perf.Speed.MaxTAS, nav.FlightState.Altitude)
+	maxIAS = 10 * float32(int((maxIAS+5)/10)) // round to 10s
+
 	var response string
 	if speed == 0 {
 		nav.Speed = NavSpeed{}
 		response = "cancel speed restrictions"
 	} else if float32(speed) < nav.Perf.Speed.Landing {
 		response = fmt.Sprintf("unable. Our minimum speed is %.0f knots", nav.Perf.Speed.Landing)
-	} else if float32(speed) > nav.Perf.Speed.Max {
-		response = fmt.Sprintf("unable. Our maximum speed is %.0f knots", nav.Perf.Speed.Max)
+	} else if float32(speed) > maxIAS {
+		response = fmt.Sprintf("unable. Our maximum speed is %.0f knots", maxIAS)
 	} else if nav.Approach.Cleared {
 		// TODO: make sure we're not within 5 miles...
 		nav.Speed = NavSpeed{Assigned: &speed}

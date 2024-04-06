@@ -2525,10 +2525,98 @@
     }
    ]
   },
-  "center": "N33.38.24.846,W84.25.42.088",
   "stars_config": {
-		"allow_long_scratchpad": [false, false],
-		"force_ql_self": true,
+      "center": "N33.38.24.846,W84.25.42.088",
+      "allow_long_scratchpad": [false, false],
+      "force_ql_self": true,
+      "radar_sites": {
+          "KATL": {
+              "char": "A",
+              "position": "KATL",
+              "elevation": 1150,
+              "primary_range": 60,
+              "secondary_range": 120,
+              "slope_angle": 0.175
+          }
+      },
+      "scratchpads": {
+        "LUCKK": "BAN",
+        "HANKO": "CUT",
+        "IRQ": "GAI",
+        "SARGE": "HAA",
+        "KELLN": "JAC",
+        "STNGA": "KAJ",
+        "CHOOK": "NAS",
+        "YAALL": "NAS",
+        "VUZ": "NAS",
+        "RAFTN": "PAD",
+        "SMTTH": "PAD",
+        "BNA": "PEN",
+        "EMAHH": "PEN",
+        "JAACE": "PEN",
+        "HRTWL": "PHI",
+        "BURGG": "PLM",
+        "STEIT": "POU",
+        "GRGIA": "POU",
+        "BOBBD": "SMK",
+        "WALET": "SML",
+        "GLAZR": "VAR",
+        "RESPE": "VAR",
+        "NOKIE": "VRS"
+      },
+      "stars_maps": [
+        {
+          "group": 0,
+          "label": "CLASS B",
+          "name": "CLASS BRAVO"
+        },
+        {
+          "group": 0,
+          "label": "TAR WEST",
+          "name": "TERMINAL ARRIVAL RADAR WEST"
+        },
+        {
+          "group": 0,
+          "label": "AR WEST TRIPS",
+          "name": "ARRIVAL RADAR WEST TRIPLES"
+        },
+        {
+          "group": 0,
+          "label": "TAR EAST",
+          "name": "TERMINAL ARRIVAL RADAR EAST"
+        },
+        {
+          "group": 0,
+          "label": "AR EAST TRIPS",
+          "name": "ARRIVAL RADAR EAST TRIPLES"
+        },
+        {
+          "group": 0,
+          "label": "MVA",
+          "name": "FUSION MINIMUM VECTORING ALTITUDE"
+        },
+        {
+          "group": 0,
+          "label": "DR EAST",
+          "name": "DEPARTURE RADAR EAST"
+        },
+        {
+          "group": 0,
+          "label": "DR WEST",
+          "name": "DEPARTURE RADAR WEST"
+        },
+        {
+          "group": 0,
+          "label": "AR WEST DUALS",
+          "name": "ARRIVAL RADAR WEST DUALS"
+        },
+        {
+          "group": 0,
+          "label": "AR EAST DUALS",
+          "name": "ARRIVAL RADAR EAST DUALS"
+        }
+      ],
+    "video_map_file": "videomaps/atl-maps.json.zst",
     "airspace_awareness": [
       {
         "fixes": [
@@ -2561,7 +2649,7 @@
           0,
           0
         ],
-        "receiving_controller": "C43",
+        "receiving_controller": "ATL_CTR",
         "to_center": true
       }
     ]
@@ -2719,16 +2807,6 @@
   },
   "name": "KATL",
   "primary_airport": "KATL",
-  "radar_sites": {
-    "KATL": {
-      "char": "A",
-      "position": "ATL",
-      "elevation": 1150,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "slope_angle": 0.175
-    }
-  },
   "scenarios": {
     "KATL West": {
       "approach_airspace": [
@@ -3042,83 +3120,5 @@
                 "speed": 5
               }
             }
-      },
-      "scratchpads": {
-        "LUCKK": "BAN",
-        "HANKO": "CUT",
-        "IRQ": "GAI",
-        "SARGE": "HAA",
-        "KELLN": "JAC",
-        "STNGA": "KAJ",
-        "CHOOK": "NAS",
-        "YAALL": "NAS",
-        "VUZ": "NAS",
-        "RAFTN": "PAD",
-        "SMTTH": "PAD",
-        "BNA": "PEN",
-        "EMAHH": "PEN",
-        "JAACE": "PEN",
-        "HRTWL": "PHI",
-        "BURGG": "PLM",
-        "STEIT": "POU",
-        "GRGIA": "POU",
-        "BOBBD": "SMK",
-        "WALET": "SML",
-        "GLAZR": "VAR",
-        "RESPE": "VAR",
-        "NOKIE": "VRS"
-      },
-      "stars_maps": [
-        {
-          "group": 0,
-          "label": "CLASS B",
-          "name": "CLASS BRAVO"
-        },
-        {
-          "group": 0,
-          "label": "TAR WEST",
-          "name": "TERMINAL ARRIVAL RADAR WEST"
-        },
-        {
-          "group": 0,
-          "label": "AR WEST TRIPS",
-          "name": "ARRIVAL RADAR WEST TRIPLES"
-        },
-        {
-          "group": 0,
-          "label": "TAR EAST",
-          "name": "TERMINAL ARRIVAL RADAR EAST"
-        },
-        {
-          "group": 0,
-          "label": "AR EAST TRIPS",
-          "name": "ARRIVAL RADAR EAST TRIPLES"
-        },
-        {
-          "group": 0,
-          "label": "MVA",
-          "name": "FUSION MINIMUM VECTORING ALTITUDE"
-        },
-        {
-          "group": 0,
-          "label": "DR EAST",
-          "name": "DEPARTURE RADAR EAST"
-        },
-        {
-          "group": 0,
-          "label": "DR WEST",
-          "name": "DEPARTURE RADAR WEST"
-        },
-        {
-          "group": 0,
-          "label": "AR WEST DUALS",
-          "name": "ARRIVAL RADAR WEST DUALS"
-        },
-        {
-          "group": 0,
-          "label": "AR EAST DUALS",
-          "name": "ARRIVAL RADAR EAST DUALS"
-        }
-      ],
-    "video_map_file": "videomaps/atl-maps.json.zst"
+      }
     }

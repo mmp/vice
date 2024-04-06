@@ -3613,11 +3613,12 @@
       }
     ]
   },
-  "center": "KMIA",
   "control_positions": {
     "MIA_46_CTR": {
       "frequency": 135175, 
       "full_name": "Miami Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "C46"
     },
@@ -3743,106 +3744,9 @@
     "_FLL_28R": "N26.04.36.554,W80.08.28.029",
     "_FLL_28L": "N26.03.56.575,W80.08.03.192"
   },
-  "inhibit_ca_volumes": [
-    {
-      "name": "MIA NO CA",
-      "type": "polygon",
-      "floor": 0,
-      "ceiling": 3000,
-      "vertices": [
-          "N25.48.37.085,W80.35.06.374",
-          "N25.44.07.170,W80.35.01.151",
-          "N25.45.22.666,W79.57.13.907",
-          "N25.51.23.540,W79.56.40.533"
-      ]
-    },
-    {
-      "name": "FLL NO CA",
-      "type": "polygon",
-      "floor": 0,
-      "ceiling": 3000,
-      "vertices": [
-        "N26.05.42.838,W80.20.03.890",
-        "N26.06.05.183,W79.55.58.486",
-        "N26.02.45.551,W79.58.18.903",
-        "N26.03.17.401,W80.24.50.474"
-      ]
-    },
-    {
-      "name": "FXE NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 5,
-      "center": "N26.11.49.540,W80.10.13.363"
-    },
-    {
-      "name": "OPF NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 7,
-      "center": "N25.54.25.166,W80.16.29.327"
-    },
-    {
-      "name": "TMV NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 7,
-      "center": "N25.38.53.381,W80.25.49.415"
-    }
-  ],
   "magnetic_adjustment": -2,
   "name": "KMIA",
   "primary_airport": "KMIA",
-  "radar_sites": {
-    "MIA": {
-      "char": "M",
-      "position": "25.79772, -80.29338",
-      "elevation": 112,
-      "primary_range": 64,
-      "secondary_range": 90,
-      "silence_angle": 49.59,
-      "slope_angle": 0.3
-    },
-    "FLL": {
-      "char": "F",
-      "position": "26.06761, -80.15268",
-      "elevation": 77,
-      "primary_range": 64,
-      "secondary_range": 90,
-      "silence_angle": 49.59,
-      "slope_angle": 0.3
-    },
-    "QMA": {
-      "char": "T",
-      "position": "25.38503, -80.30199",
-      "elevation": 109, 
-      "primary_range": 60,
-      "secondary_range": 255,
-      "silence_angle": 29.7,
-      "slope_angle": 0.3
-    },
-    "QML": {
-      "char": "L",
-      "position": "28.05032, -81.47532",
-      "elevation": 118,
-      "primary_range": 60,
-      "secondary_range": 255,
-      "silence_angle": 29.7,
-      "slope_angle": 0.3
-    },
-    "QMQ": {
-      "char": "N",
-      "position": "24.35056, -81.41202",
-      "elevation": 103,
-      "primary_range": 60,
-      "secondary_range": 255,
-      "silence_angle": 29.7,
-      "slope_angle": 0.3
-    }
-  },
   "reporting_points": [
     "BHHIA",
     "CUUDA",
@@ -4389,6 +4293,105 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KMIA",
+  "radar_sites": {
+    "MIA": {
+      "char": "M",
+      "position": "25.79772, -80.29338",
+      "elevation": 112,
+      "primary_range": 64,
+      "secondary_range": 90,
+      "silence_angle": 49.59,
+      "slope_angle": 0.3
+    },
+    "FLL": {
+      "char": "F",
+      "position": "26.06761, -80.15268",
+      "elevation": 77,
+      "primary_range": 64,
+      "secondary_range": 90,
+      "silence_angle": 49.59,
+      "slope_angle": 0.3
+    },
+    "QMA": {
+      "char": "T",
+      "position": "25.38503, -80.30199",
+      "elevation": 109, 
+      "primary_range": 60,
+      "secondary_range": 255,
+      "silence_angle": 29.7,
+      "slope_angle": 0.3
+    },
+    "QML": {
+      "char": "L",
+      "position": "28.05032, -81.47532",
+      "elevation": 118,
+      "primary_range": 60,
+      "secondary_range": 255,
+      "silence_angle": 29.7,
+      "slope_angle": 0.3
+    },
+    "QMQ": {
+      "char": "N",
+      "position": "24.35056, -81.41202",
+      "elevation": 103,
+      "primary_range": 60,
+      "secondary_range": 255,
+      "silence_angle": 29.7,
+      "slope_angle": 0.3
+    }
+  },
+  "inhibit_ca_volumes": [
+    {
+      "name": "MIA NO CA",
+      "type": "polygon",
+      "floor": 0,
+      "ceiling": 3000,
+      "vertices": [
+          "N25.48.37.085,W80.35.06.374",
+          "N25.44.07.170,W80.35.01.151",
+          "N25.45.22.666,W79.57.13.907",
+          "N25.51.23.540,W79.56.40.533"
+      ]
+    },
+    {
+      "name": "FLL NO CA",
+      "type": "polygon",
+      "floor": 0,
+      "ceiling": 3000,
+      "vertices": [
+        "N26.05.42.838,W80.20.03.890",
+        "N26.06.05.183,W79.55.58.486",
+        "N26.02.45.551,W79.58.18.903",
+        "N26.03.17.401,W80.24.50.474"
+      ]
+    },
+    {
+      "name": "FXE NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 5,
+      "center": "N26.11.49.540,W80.10.13.363"
+    },
+    {
+      "name": "OPF NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 7,
+      "center": "N25.54.25.166,W80.16.29.327"
+    },
+    {
+      "name": "TMV NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 7,
+      "center": "N25.38.53.381,W80.25.49.415"
+    }
+  ],
   "scratchpads": {
     "DUCEN": "ALT",
     "ALTNN": "ALT",
@@ -4816,4 +4819,5 @@
     }
   ],
   "video_map_file": "videomaps/ZMA-videomaps.json.zst"
+  }
 }

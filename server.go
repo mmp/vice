@@ -25,7 +25,7 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
-const ViceRPCVersion = 11
+const ViceRPCVersion = 12
 
 type SimServer struct {
 	*RPCClient
@@ -37,6 +37,10 @@ type SimServer struct {
 type SimServerConnection struct {
 	server *SimServer
 	err    error
+}
+
+func (s *SimServer) Close() error {
+	return s.RPCClient.Close()
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -56,7 +60,12 @@ func (s *SimProxy) TogglePause() *rpc.Call {
 }
 
 func (s *SimProxy) SignOff(_, _ *struct{}) error {
-	return s.Client.CallWithTimeout("Sim.SignOff", s.ControllerToken, nil)
+	if err := s.Client.CallWithTimeout("Sim.SignOff", s.ControllerToken, nil); err != nil {
+		return err
+	}
+	// FIXME: this is handing in zstd code. Why?
+	// return s.Client.Close()
+	return nil
 }
 
 func (s *SimProxy) ChangeControlPosition(callsign string, keepTracks bool) error {
@@ -136,14 +145,6 @@ func (s *SimProxy) DropTrack(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) RedirectedHandoff(callsign, controller string) *rpc.Call {
-	return s.Client.Go("Sim.RedirectedHandoff", &HandoffArgs{
-		ControllerToken: s.ControllerToken,
-		Callsign:        callsign,
-		Controller:      controller,
-	}, nil, nil)
-}
-
 func (s *SimProxy) HandoffTrack(callsign string, controller string) *rpc.Call {
 	return s.Client.Go("Sim.HandoffTrack", &HandoffArgs{
 		ControllerToken: s.ControllerToken,
@@ -166,33 +167,6 @@ func (s *SimProxy) AcceptHandoff(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) AcceptRedirectedHandoff(callsign string) *rpc.Call {
-	return s.Client.Go("Sim.AcceptRedirectedHandoff", &AcceptHandoffArgs{
-		ControllerToken: s.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
-}
-func (s *SimProxy) RecallRedirectedHandoff(callsign string) *rpc.Call {
-	return s.Client.Go("Sim.RecallRedirectedHandoff", &AcceptHandoffArgs{
-		ControllerToken: s.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
-}
-
-func (s *SimProxy) SlewRedirectedHandoff(callsign string) *rpc.Call {
-	return s.Client.Go("Sim.SlewRedirectedHandoff", &AcceptHandoffArgs{
-		ControllerToken: s.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
-}
-
-func (s *SimProxy) RejectHandoff(callsign string) *rpc.Call {
-	return s.Client.Go("Sim.RejectHandoff", &RejectHandoffArgs{
-		ControllerToken: s.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
-}
-
 func (s *SimProxy) CancelHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.CancelHandoff", &CancelHandoffArgs{
 		ControllerToken: s.ControllerToken,
@@ -205,6 +179,21 @@ func (s *SimProxy) ForceQL(callsign, controller string) *rpc.Call {
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Controller:      controller,
+	}, nil, nil)
+}
+
+func (s *SimProxy) RedirectHandoff(callsign, controller string) *rpc.Call {
+	return s.Client.Go("Sim.RedirectHandoff", &HandoffArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Controller:      controller,
+	}, nil, nil)
+}
+
+func (s *SimProxy) AcceptRedirectedHandoff(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.AcceptRedirectedHandoff", &AcceptHandoffArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
 	}, nil, nil)
 }
 
@@ -238,6 +227,14 @@ func (s *SimProxy) RejectPointOut(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
+func (s *SimProxy) ToggleSPCOverride(callsign string, spc string) *rpc.Call {
+	return s.Client.Go("Sim.ToggleSPCOverride", &ToggleSPCArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		SPC:             spc,
+	}, nil, nil)
+}
+
 func (s *SimProxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
 	return s.Client.Go("Sim.SetTemporaryAltitude", &AssignAltitudeArgs{
 		ControllerToken: s.ControllerToken,
@@ -251,12 +248,6 @@ func (s *SimProxy) DeleteAircraft(callsign string) *rpc.Call {
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
-}
-
-type AircraftCommandsArgs struct {
-	ControllerToken string
-	Callsign        string
-	Commands        string
 }
 
 func (s *SimProxy) RunAircraftCommands(callsign string, cmds string) *rpc.Call {
@@ -743,35 +734,20 @@ func (sd *SimDispatcher) HandoffTrack(h *HandoffArgs, _ *struct{}) error {
 		return sim.HandoffTrack(h.ControllerToken, h.Callsign, h.Controller)
 	}
 }
-func (sd *SimDispatcher) RedirectedHandoff(h *HandoffArgs, _ *struct{}) error {
+
+func (sd *SimDispatcher) RedirectHandoff(h *HandoffArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.RedirectedHandoff(h.ControllerToken, h.Callsign, h.Controller)
+		return sim.RedirectHandoff(h.ControllerToken, h.Callsign, h.Controller)
 	}
 }
 
-func (sd *SimDispatcher) AcceptRedirectedHandoff(h *AcceptHandoffArgs, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
+func (sd *SimDispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.AcceptRedirectedHandoff(h.ControllerToken, h.Callsign)
-	}
-}
-
-func (sd *SimDispatcher) RecallRedirectedHandoff(h *AcceptHandoffArgs, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
-		return ErrNoSimForControllerToken
-	} else {
-		return sim.RecallRedirectedHandoff(h.ControllerToken, h.Callsign)
-	}
-}
-
-func (sd *SimDispatcher) SlewRedirectedHandoff(h *AcceptHandoffArgs, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
-		return ErrNoSimForControllerToken
-	} else {
-		return sim.SlewRedirectedHandoff(h.ControllerToken, h.Callsign)
+		return sim.AcceptRedirectedHandoff(po.ControllerToken, po.Callsign)
 	}
 }
 
@@ -790,16 +766,6 @@ func (sd *SimDispatcher) AcceptHandoff(ah *AcceptHandoffArgs, _ *struct{}) error
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.AcceptHandoff(ah.ControllerToken, ah.Callsign)
-	}
-}
-
-type RejectHandoffArgs AircraftSpecifier
-
-func (sd *SimDispatcher) RejectHandoff(rh *RejectHandoffArgs, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[rh.ControllerToken]; !ok {
-		return ErrNoSimForControllerToken
-	} else {
-		return sim.RejectHandoff(rh.ControllerToken, rh.Callsign)
 	}
 }
 
@@ -864,6 +830,20 @@ func (sd *SimDispatcher) RejectPointOut(po *PointOutArgs, _ *struct{}) error {
 	}
 }
 
+type ToggleSPCArgs struct {
+	ControllerToken string
+	Callsign        string
+	SPC             string
+}
+
+func (sd *SimDispatcher) ToggleSPCOverride(ts *ToggleSPCArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[ts.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.ToggleSPCOverride(ts.ControllerToken, ts.Callsign, ts.SPC)
+	}
+}
+
 type AssignAltitudeArgs struct {
 	ControllerToken string
 	Callsign        string
@@ -886,6 +866,12 @@ func (sd *SimDispatcher) DeleteAircraft(da *DeleteAircraftArgs, _ *struct{}) err
 	} else {
 		return sim.DeleteAircraft(da.ControllerToken, da.Callsign)
 	}
+}
+
+type AircraftCommandsArgs struct {
+	ControllerToken string
+	Callsign        string
+	Commands        string
 }
 
 func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, _ *struct{}) error {

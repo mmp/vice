@@ -462,13 +462,13 @@
             "cleared_altitude": 8000,
             "handoff_controller": "LGA_DEP",
             "sid": "JFK5",
-            "waypoints": "N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h240"
+            "waypoints": "N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h320"
           },
           "HAAYS,NEION,COATE": {
             "cleared_altitude": 9000,
             "handoff_controller": "LGA_DEP",
             "sid": "JFK5",
-            "waypoints": "N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h240"
+            "waypoints": "N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h320"
           }
         }
       },
@@ -573,7 +573,9 @@
         "HAAYS": "East",
         "NEION": "East",
         "SHIPP": "East",
-        "WAVEY": "East"
+        "WAVEY": "East",
+        "MERIT": "East",
+        "GREKI": "East"
       }
     },
     "KHPN": {
@@ -779,7 +781,7 @@
         },
         "cruise_altitude": 35000,
         "initial_altitude": 17000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_B_CTR",
         "initial_speed": 300,
         "star": "KORRY4",
         "speed_restriction": 250,
@@ -871,7 +873,7 @@
         "assigned_altitude": 10000,
         "cruise_altitude": 35000,
         "initial_altitude": 13000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "DC_32_CTR",
         "initial_speed": 300,
         "route": "/. MIP4",
         "speed_restriction": 250,
@@ -1414,12 +1416,6 @@
       }
     ]
   },
-  "center": "KLGA",
-  "range": 60,
-  "stars_config": {
-		"allow_long_scratchpad": [false, false],
-		"force_ql_self": true
-	},
   "control_positions": {
     "BOS_E_CTR": {
       "frequency": 133450,
@@ -1427,6 +1423,14 @@
       "scope_char": "C",
       "sector_id": "B17",
       "facility_id": "B",
+      "eram_facility": true
+    },
+    "DC_32_CTR": {
+      "frequency": 133725,
+      "full_name": "Washington center",
+      "scope_char": "C",
+      "sector_id": "W32",
+      "facility_id": "W",
       "eram_facility": true
     },
     "EWR_APP": {
@@ -1527,14 +1531,6 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_CTR": {
-      "frequency": 125325,
-      "full_name": "New York center",
-      "scope_char": "C",
-      "sector_id": "C56",
-      "facility_id": "C",
-      "eram_facility": true
-    },
     "NY_C_CTR": {
       "frequency": 132175,
       "full_name": "New York center",
@@ -1551,23 +1547,29 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_LE_DEP": {
+    "NY_LE_APP": {
       "frequency": 126800,
       "full_name": "New York departure",
       "scope_char": "E",
       "sector_id": "5E"
     },
-    "NY_LS_DEP": {
+    "NY_LS_APP": {
       "frequency": 124750,
       "full_name": "New York departure",
       "scope_char": "S",
       "sector_id": "5S"
     },
-    "NY_L_DEP": {
-      "frequency": 126800,
+    "NY_LN_APP": {
+      "frequency": 118170,
       "full_name": "New York departure",
-      "scope_char": "E",
-      "sector_id": "5E"
+      "scope_char": "T",
+      "sector_id": "5T"
+    },
+    "NY_LW_APP": {
+      "frequency": 120850,
+      "full_name": "New York departure",
+      "scope_char": "W",
+      "sector_id": "5W"
     }
   },
   "default_scenario": "KLGA Depart 13 Land 22",
@@ -1618,65 +1620,8 @@
     "_LGA_4a": "N040.44.56.662,W073.51.53.497",
     "_LGA_4b": "N040.47.59.557,W073.47.11.533"
   },
-  "inhibit_ca_volumes": [
-    {
-      "name": "LGA NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 2,
-      "center": "KLGA"
-    }
-  ],
   "name": "KLGA",
   "primary_airport": "KLGA",
-  "radar_sites": {
-    "EWR": {
-      "char": "E",
-      "position": "KEWR",
-      "elevation": 136,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "HPN": {
-      "char": "H",
-      "position": "KHPN",
-      "elevation": 708,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "ISP": {
-      "char": "I",
-      "position": "KISP",
-      "elevation": 185,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "JFK": {
-      "char": "J",
-      "position": "KJFK",
-      "elevation": 143,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "SWF": {
-      "char": "S",
-      "position": "KSWF",
-      "elevation": 972,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    }
-  },
   "reporting_points": [
     "BEUTY",
     "DAVYS",
@@ -1741,8 +1686,11 @@
         "LGA_DEP",
         "LGA_Y_DEP",
         "LGA_TWR",
-        "NY_CTR",
-        "NY_L_DEP"
+        "NY_B_CTR",
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -1852,8 +1800,11 @@
         "LGA_DEP",
         "LGA_Y_DEP",
         "LGA_TWR",
-        "NY_CTR",
-        "NY_L_DEP"
+        "NY_B_CTR",
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -1963,8 +1914,11 @@
         "LGA_DEP",
         "LGA_Y_DEP",
         "LGA_TWR",
-        "NY_CTR",
-        "NY_L_DEP"
+        "NY_B_CTR",
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2074,8 +2028,11 @@
         "LGA_DEP",
         "LGA_Y_DEP",
         "LGA_TWR",
-        "NY_CTR",
-        "NY_L_DEP"
+        "NY_B_CTR",
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2186,8 +2143,11 @@
         "LGA_DEP",
         "LGA_Y_DEP",
         "LGA_TWR",
-        "NY_CTR",
-        "NY_L_DEP"
+        "NY_B_CTR",
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2267,8 +2227,11 @@
         "LGA_V_APP",
         "LGA_DEP",
         "LGA_TWR",
-        "NY_CTR",
-        "NY_L_DEP"
+        "NY_B_CTR",
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2305,8 +2268,11 @@
         "LGA_V_APP",
         "LGA_DEP",
         "LGA_TWR",
-        "NY_CTR",
-        "NY_L_DEP"
+        "NY_B_CTR",
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2342,8 +2308,11 @@
         "LGA_V_APP",
         "LGA_DEP",
         "LGA_TWR",
-        "NY_CTR",
-        "NY_L_DEP"
+        "NY_B_CTR",
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2379,8 +2348,11 @@
         "LGA_V_APP",
         "LGA_DEP",
         "LGA_TWR",
-        "NY_CTR",
-        "NY_L_DEP"
+        "NY_B_CTR",
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2416,8 +2388,11 @@
         "LGA_V_APP",
         "LGA_DEP",
         "LGA_TWR",
-        "NY_CTR",
-        "NY_L_DEP"
+        "NY_B_CTR",
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2453,8 +2428,11 @@
         "LGA_V_APP",
         "LGA_DEP",
         "LGA_TWR",
-        "NY_CTR",
-        "NY_L_DEP"
+        "NY_B_CTR",
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2490,8 +2468,11 @@
         "LGA_V_APP",
         "LGA_DEP",
         "LGA_TWR",
-        "NY_CTR",
-        "NY_L_DEP"
+        "NY_B_CTR",
+        "NY_LE_APP",
+        "NY_LN_APP",
+        "NY_LW_APP",
+        "NY_LS_APP"
       ],
       "default_maps": [
         "LGA"
@@ -2501,6 +2482,68 @@
         "direction": 320,
         "speed": 12
       }
+    }
+  },
+  "stars_config": {
+  "center": "KLGA",
+  "range": 60,
+      "allow_long_scratchpad": [false, false],
+      "force_ql_self": true,
+  "inhibit_ca_volumes": [
+    {
+      "name": "LGA NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 2,
+      "center": "KLGA"
+    }
+  ],
+  "radar_sites": {
+    "EWR": {
+      "char": "E",
+      "position": "KEWR",
+      "elevation": 136,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "HPN": {
+      "char": "H",
+      "position": "KHPN",
+      "elevation": 708,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "ISP": {
+      "char": "I",
+      "position": "KISP",
+      "elevation": 185,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "JFK": {
+      "char": "J",
+      "position": "KJFK",
+      "elevation": 143,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "SWF": {
+      "char": "S",
+      "position": "KSWF",
+      "elevation": 972,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
     }
   },
   "scratchpads": {
@@ -2559,4 +2602,5 @@
     }
   ],
   "video_map_file": "videomaps/n90-maps.json.zst"
+  }
 }

@@ -1293,7 +1293,6 @@
             }
         ]
     },
-    "center": "N36.4.59.17,W115.8.53.52",
     "control_positions": {
         "LAS_APP": {
             "frequency": 135000,
@@ -1304,6 +1303,8 @@
         "LAX_55_CTR": {
             "frequency": 135550,
             "full_name": "Los Angeles Center",
+            "facility_id": "C",
+            "eram_facility": true,
             "scope_char": "C",
             "sector_id": "C55"
         },
@@ -1375,18 +1376,6 @@
     },
     "name": "KLAS",
     "primary_airport": "KLAS",
-    "radar_sites": {
-        "KLAS": {
-            "char": "A",
-            "position": "KLAS",
-            "elevation": 2200,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "slope_angle": 0.175
-        }
-
-
-    },
     "scenarios": {
         "KLAS Depart 19L/26R Land 19L/26L/26R": {
             "arrival_runways": [
@@ -1487,7 +1476,7 @@
                 }
                 
             ],
-            
+
             "wind": {
                 "direction": 230,
                 "gust": 10,
@@ -1796,7 +1785,18 @@
         }
        
     },
-    
+    "stars_config": {
+    "center": "N36.4.59.17,W115.8.53.52",
+    "radar_sites": {
+        "KLAS": {
+            "char": "A",
+            "position": "KLAS",
+            "elevation": 2200,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "slope_angle": 0.175
+        }
+    },
     "scratchpads": {
         "GIDGIT": "GID",
         "VERKN": "GID",
@@ -1854,10 +1854,7 @@
             "label": "LAS_1",
             "name": "283 BM3M L30"
         }
-        
-    
-
-
     ],
     "video_map_file": "videomaps/ZLA-videomaps.json.zst"
+    }
 }

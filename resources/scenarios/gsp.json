@@ -412,11 +412,12 @@
       }
     ]
   },
-  "center": "KGSP",
   "control_positions": {
     "ATL_CTR": {
       "frequency": 132975,
       "full_name": "Atlanta Center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "43"
     },
@@ -426,20 +427,20 @@
       "scope_char": "T",
       "sector_id": "1T"
     },
-    "GSP_N_APP": {
-      "frequency": 127670,
+    "GSP_W_APP": {
+      "frequency": 118800,
       "full_name": "Radar West",
       "scope_char": "W",
       "sector_id": "1W"
     },
-    "GSP_S_APP": {
-      "frequency": 123800,
+    "GSP_E_APP": {
+      "frequency": 119400,
       "full_name": "Radar East",
       "scope_char": "E",
       "sector_id": "1E"
     },
-    "GSP_W_APP": {
-      "frequency": 120150,
+    "GSP_S_APP": {
+      "frequency": 120600,
       "full_name": "Radar South",
       "scope_char": "S",
       "sector_id": "1S"
@@ -453,35 +454,6 @@
   },
   "name": "KGSP",
   "primary_airport": "KGSP",
-  "radar_sites": {
-      "GSP": {
-        "char": "G",
-        "position": "34.88823,-82.20683",
-        "elevation": 1010,
-        "primary_range": 100,
-        "secondary_range": 150,
-        "silence_angle": 30.0,
-        "slope_angle": 0.3
-      },
-      "QRM": {
-        "char": "Q",
-        "position": "35.61081,-81.23825",
-        "elevation": 1324,
-        "primary_range": 200,
-        "secondary_range": 200,
-        "silence_angle": 29.7,
-        "slope_angle": 0.3
-      },
-      "QNK": {
-        "char": "K",
-        "position": "33.75978,-82.467",
-        "elevation": 808,
-        "primary_range": 200,
-        "secondary_range": 200,
-        "silence_angle": 29.7,
-        "slope_angle": 0.3
-      }
-  },
   "reporting_points": [
     "TDAAY",
     "TYRES",
@@ -593,6 +565,37 @@
       }
     }
   },
+  "stars_config": {
+  "center": "KGSP",
+  "radar_sites": {
+      "GSP": {
+        "char": "G",
+        "position": "34.88823,-82.20683",
+        "elevation": 1010,
+        "primary_range": 100,
+        "secondary_range": 150,
+        "silence_angle": 30.0,
+        "slope_angle": 0.3
+      },
+      "QRM": {
+        "char": "Q",
+        "position": "35.61081,-81.23825",
+        "elevation": 1324,
+        "primary_range": 200,
+        "secondary_range": 200,
+        "silence_angle": 29.7,
+        "slope_angle": 0.3
+      },
+      "QNK": {
+        "char": "K",
+        "position": "33.75978,-82.467",
+        "elevation": 808,
+        "primary_range": 200,
+        "secondary_range": 200,
+        "silence_angle": 29.7,
+        "slope_angle": 0.3
+      }
+  },
     "scratchpads": {
         "DRIVN": "DRIVN",
         "ACERB": "ACERB",
@@ -681,4 +684,5 @@
   }
   ],
 "video_map_file": "videomaps/ZTL-videomaps.json.zst"
+  }
 }

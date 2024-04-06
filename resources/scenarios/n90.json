@@ -2600,7 +2600,7 @@
         },
         "cruise_altitude": 35000,
         "initial_altitude": 17000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_74_CTR",
         "initial_speed": 300,
         "star": "KORRY4",
         "speed_restriction": 250,
@@ -2692,7 +2692,7 @@
         "assigned_altitude": 10000,
         "cruise_altitude": 35000,
         "initial_altitude": 13000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "DC_32_CTR",
         "initial_speed": 300,
         "star": "MIP4",
         "speed_restriction": 250,
@@ -2792,7 +2792,7 @@
         "assigned_altitude": 11000,
         "cruise_altitude": 39000,
         "initial_altitude": 12000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_66_CTR",
         "initial_speed": 300,
         "star": "CAMRN4",
         "speed_restriction": 250,
@@ -2886,7 +2886,7 @@
         "cruise_altitude": 37000,
         "initial_altitude": 20000,
         "description": "LENDY8",
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_36_CTR",
         "initial_speed": 300,
         "star": "LENDY8",
         "speed_restriction": 250,
@@ -2950,7 +2950,7 @@
         "cruise_altitude": 39000,
         "description": "IGN1",
         "initial_altitude": 19000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_36_CTR",
         "initial_speed": 300,
         "star": "IGN1",
         "speed_restriction": 250,
@@ -2996,7 +2996,7 @@
         "assigned_altitude": 9000,
         "cruise_altitude": 41000,
         "initial_altitude": 11000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_66_CTR",
         "initial_speed": 300,
         "route": "/. OWENZ CAMRN",
         "speed_restriction": 250,
@@ -3154,7 +3154,7 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 18000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_74_CTR",
         "initial_speed": 300,
         "star": "FQM3",
         "speed_restriction": null,
@@ -3388,7 +3388,7 @@
         },
         "cruise_altitude": 39000,
         "initial_altitude": 20000,
-        "initial_controller": "DC_CTR",
+        "initial_controller": "DC_32_CTR",
         "initial_speed": 300,
         "star": "PHLBO4",
         "speed_restriction": null,
@@ -3396,9 +3396,82 @@
       }
     ]
   },
+  "stars_config": {
   "center": "KLGA",
   "range": 80,
-  "stars_config": {
+  "inhibit_ca_volumes": [
+    {
+      "name": "EWR NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 2,
+      "center": "KEWR"
+    },
+    {
+      "name": "LGA NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 2,
+      "center": "KLGA"
+    },
+    {
+      "name": "JFK NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1500,
+      "radius": 3,
+      "center": "KJFK"
+    }
+  ],
+  "radar_sites": {
+    "EWR": {
+      "char": "E",
+      "position": "KEWR",
+      "elevation": 136,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "HPN": {
+      "char": "H",
+      "position": "KHPN",
+      "elevation": 708,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "ISP": {
+      "char": "I",
+      "position": "KISP",
+      "elevation": 185,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "JFK": {
+      "char": "J",
+      "position": "KJFK",
+      "elevation": 143,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "SWF": {
+      "char": "S",
+      "position": "KSWF",
+      "elevation": 972,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    }
+  },
     "allow_long_scratchpad": [
       false,
       false
@@ -3416,7 +3489,7 @@
           999000
         ],
         "to_center": true,
-        "receiving_controller": "B19"
+        "receiving_controller": "BOS_SW_CTR"
       },
       {
         "fixes": [
@@ -3430,7 +3503,7 @@
         "aircraft_type": [
           "J"
         ],
-        "receiving_controller": "MY"
+        "receiving_controller": "WRI_APP"
       },
       {
         "fixes": [
@@ -3445,7 +3518,7 @@
           "P",
           "T"
         ],
-        "receiving_controller": "MY"
+        "receiving_controller": "WRI_APP"
       },
       {
         "fixes": [
@@ -3456,7 +3529,7 @@
           999999
         ],
         "to_center": true,
-        "receiving_controller": "C68"
+        "receiving_controller": "NY_68_CTR"
       },
       {
         "fixes": [
@@ -3467,7 +3540,7 @@
           999999
         ],
         "to_center": true,
-        "receiving_controller": "C68"
+        "receiving_controller": "NY_68_CTR"
       },
       {
         "fixes": [
@@ -3481,7 +3554,7 @@
         "aircraft_type": [
           "J"
         ],
-        "receiving_controller": "C55"
+        "receiving_controller": "NY_55_CTR"
       },
       {
         "fixes": [
@@ -3496,7 +3569,7 @@
           "P",
           "T"
         ],
-        "receiving_controller": "C55"
+        "receiving_controller": "NY_55_CTR"
       },
       {
         "fixes": [
@@ -3512,7 +3585,7 @@
         "aircraft_type": [
           "J"
         ],
-        "receiving_controller": "C35"
+        "receiving_controller": "NY_35_CTR"
       },
       {
         "fixes": [
@@ -3523,7 +3596,7 @@
           14000
         ],
         "to_center": true,
-        "receiving_controller": "C51"
+        "receiving_controller": "NY_51_CTR"
       },
       {
         "fixes": [
@@ -3538,7 +3611,7 @@
           "P",
           "T"
         ],
-        "receiving_controller": "C51"
+        "receiving_controller": "NY_51_CTR"
       },
       {
         "fixes": [
@@ -3549,7 +3622,7 @@
           12000
         ],
         "to_center": true,
-        "receiving_controller": "C51"
+        "receiving_controller": "NY_51_CTR"
       },
       {
         "fixes": [
@@ -3559,17 +3632,17 @@
           8000,
           10000
         ],
-        "receiving_controller": "AVP TODO"
+        "receiving_controller": "AVP_N_APP"
       },
       {
         "fixes": [
-          "SAX V118 LVZ"
+          "SAX"
         ],
         "altitude_range": [
           8000,
           8000
         ],
-        "receiving_controller": "AVP TODO"
+        "receiving_controller": "AVP_N_APP"
       },
       {
         "fixes": [
@@ -3579,7 +3652,7 @@
           9000,
           10000
         ],
-        "receiving_controller": "AVP TODO"
+        "receiving_controller": "AVP_N_APP"
       },
       {
         "fixes": [
@@ -3591,7 +3664,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C39"
+        "receiving_controller": "NY_39_CTR"
       },
       {
         "fixes": [
@@ -3603,7 +3676,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C39"
+        "receiving_controller": "NY_39_CTR"
       },
       {
         "fixes": [
@@ -3614,7 +3687,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C55"
+        "receiving_controller": "NY_55_CTR"
       },
       {
         "fixes": [
@@ -3625,7 +3698,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C55"
+        "receiving_controller": "NY_55_CTR"
       },
       {
         "fixes": [
@@ -3640,7 +3713,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C66"
+        "receiving_controller": "NY_66_CTR"
       },
       {
         "fixes": [
@@ -3656,7 +3729,7 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "C66"
+        "receiving_controller": "NY_66_CTR"
       },
       {
         "fixes": [
@@ -3668,9 +3741,140 @@
           99999
         ],
         "to_center": true,
-        "receiving_controller": "B17"
+        "receiving_controller": "BOS_17_CTR"
       }
-    ]
+    ],
+  "scratchpads": {
+    "BAYYS": "BAY",
+    "BETTE": "BET",
+    "BDR": "BDR",
+    "BIGGY": "BIG",
+    "BREZY": "BRE",
+    "COATE": "COA",
+    "DEEZZ": "DEZ",
+    "DIXIE": "DIX",
+    "ELIOT": "ELI",
+    "GAYEL": "GAY",
+    "GREKI": "GRE",
+    "HAAYS": "HAY",
+    "HAPIE": "HAP",
+    "LANNA": "LAN",
+    "MERIT": "MER",
+    "NEION": "NEI",
+    "NEWEL": "NWL",
+    "None": null,
+    "PARKE": "PAR",
+    "RBV": "RBV",
+    "SAX": "SAX",
+    "SBJ": "SBJ",
+    "SHIPP": "SHI",
+    "WAVEY": "WAV",
+    "WHITE": "WHI",
+    "ZIMMZ": "ZIM"
+  },
+  "stars_maps": [
+    {
+      "group": 0,
+      "label": "EWR",
+      "name": "EWR"
+    },
+    {
+      "group": 0,
+      "label": "EWR SAT",
+      "name": "EWR Satellites"
+    },
+    {
+      "group": 0,
+      "label": "EWR CRDA",
+      "name": "EWR CRDA"
+    },
+    {
+      "group": 1,
+      "label": "NY B",
+      "name": "N90 CLASS B"
+    },
+    {
+      "group": 1,
+      "label": "MVA",
+      "name": "N90 MVA"
+    },
+    {
+      "group": 0,
+      "label": "JFK4",
+      "name": "JFK 4s"
+    },
+    {
+      "group": 0,
+      "label": "JFK13",
+      "name": "JFK 13s"
+    },
+    {
+      "group": 0,
+      "label": "JFK22",
+      "name": "JFK 22s"
+    },
+    {
+      "group": 0,
+      "label": "JFK31",
+      "name": "JFK 31s"
+    },
+    {
+      "group": 0,
+      "label": "JFK22 ILS",
+      "name": "JFK ILS 22s"
+    },
+    {
+      "group": 0,
+      "label": "JFK31 NTZ",
+      "name": "JFK 31s NTZ"
+    },
+    {
+      "group": 0,
+      "label": "LGA",
+      "name": "LGA"
+    },
+    {
+      "group": 0,
+      "label": "LIB D",
+      "name": "LIB Departure"
+    },
+    {
+      "group": 0,
+      "label": "LIB C",
+      "name": "LIB Catskill"
+    },
+    {
+      "group": 0,
+      "label": "LGA",
+      "name": "LGA"
+    },
+    {
+      "group": 0,
+      "label": "LGA RTL",
+      "name": "LGA Right Turn Line"
+    },
+    {
+      "group": 0,
+      "label": "LOC 31",
+      "name": "LGA LOC 31"
+    },
+    {
+      "group": 1,
+      "label": "NY B",
+      "name": "N90 CLASS B"
+    },
+    {
+      "group": 1,
+      "label": "LGA GEO",
+      "name": "LGA GEO"
+    },
+    {
+      "group": 1,
+      "label": "MVA",
+      "name": "N90 MVA"
+    }
+  ],
+  "video_map_file": "videomaps/n90-maps.json.zst"
   },
   "control_positions": {
     "EWR_A_APP": {
@@ -3741,6 +3945,22 @@
       "sector_id": "1E",
       "facility_id": "7"
     },
+    "BOS_SW_CTR": {
+      "frequency": 134000,
+      "full_name": "Boston center",
+      "scope_char": "C",
+      "sector_id": "B19",
+      "facility_id": "B",
+      "eram_facility": true
+    },
+    "BOS_17_CTR": {
+      "frequency": 133450,
+      "full_name": "Boston center",
+      "scope_char": "C",
+      "sector_id": "B17",
+      "facility_id": "B",
+      "eram_facility": true
+    },
     "BOS_CTR": {
       "frequency": 134700,
       "full_name": "Boston center",
@@ -3755,7 +3975,7 @@
       "scope_char": "T",
       "sector_id": "4T"
     },
-    "DC_CTR": {
+    "DC_32_CTR": {
       "frequency": 133725,
       "full_name": "Washington center",
       "scope_char": "C",
@@ -3763,7 +3983,7 @@
       "facility_id": "W",
       "eram_facility": true
     },
-    "NY_CTR": {
+    "NY_56_CTR": {
       "frequency": 125325,
       "full_name": "New York center",
       "scope_char": "C",
@@ -3771,11 +3991,19 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_56_CTR": {
-      "frequency": 125325,
+    "NY_36_CTR": {
+      "frequency": 133150,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "C56",
+      "sector_id": "C36",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "NY_74_CTR": {
+      "frequency": 132150,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C74",
       "facility_id": "C",
       "eram_facility": true
     },
@@ -3870,6 +4098,7 @@
       "sector_id": "2G"
     },
     "NY_APP": {
+      "default_airport": "KJFK",
       "frequency": 128125,
       "full_name": "New York approach",
       "scope_char": "G",
@@ -3898,6 +4127,20 @@
       "full_name": "Kennedy tower",
       "scope_char": "T",
       "sector_id": "2W"
+    },
+    "WRI_APP": {
+      "frequency": 126470,
+      "full_name": "McGuire approach",
+      "scope_char": "5",
+      "sector_id": "1Y",
+      "facility_id": "5"
+    },
+    "AVP_N_APP": {
+      "frequency": 120950,
+      "full_name": "Wilkes Barre Approach",
+      "scope_char": "7",
+      "sector_id": "1B",
+      "facility_id": "7"
     }
   },
   "default_scenario": "N90 Combined. Coney: JFK Belmont: LGA",
@@ -3931,81 +4174,8 @@
     "_LGA_WHITESTONE2": "N040.43.18.046,W073.50.29.864",
     "_EWR4_DEVIL": "N040.45.39.688,W074.07.31.043"
   },
-  "inhibit_ca_volumes": [
-    {
-      "name": "EWR NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 2,
-      "center": "KEWR"
-    },
-    {
-      "name": "LGA NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 2,
-      "center": "KLGA"
-    },
-    {
-      "name": "JFK NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1500,
-      "radius": 3,
-      "center": "KJFK"
-    }
-  ],
   "name": "N90 Combined",
   "primary_airport": "KEWR",
-  "radar_sites": {
-    "EWR": {
-      "char": "E",
-      "position": "KEWR",
-      "elevation": 136,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "HPN": {
-      "char": "H",
-      "position": "KHPN",
-      "elevation": 708,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "ISP": {
-      "char": "I",
-      "position": "KISP",
-      "elevation": 185,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "JFK": {
-      "char": "J",
-      "position": "KJFK",
-      "elevation": 143,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "SWF": {
-      "char": "S",
-      "position": "KSWF",
-      "elevation": 972,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    }
-  },
   "reporting_points": [
     "CAMMO",
     "CYN",
@@ -4233,7 +4403,6 @@
         "JFK_TWR",
         "EWR_TWR",
         "LGA_TWR",
-        "NY_CTR",
         "NY_66_CTR",
         "NY_56_CTR",
         "NY_68_CTR",
@@ -4241,7 +4410,7 @@
         "NY_35_CTR",
         "NY_51_CTR",
         "NY_39_CTR",
-        "DC_CTR"
+        "DC_32_CTR"
       ],
       "default_maps": [
         "EWR",
@@ -4482,7 +4651,6 @@
         "JFK_TWR",
         "EWR_TWR",
         "LGA_TWR",
-        "NY_CTR",
         "NY_66_CTR",
         "NY_56_CTR",
         "NY_68_CTR",
@@ -4490,7 +4658,7 @@
         "NY_35_CTR",
         "NY_51_CTR",
         "NY_39_CTR",
-        "DC_CTR"
+        "DC_32_CTR"
       ],
       "default_maps": [
         "EWR",
@@ -4721,7 +4889,6 @@
         "JFK_TWR",
         "EWR_TWR",
         "LGA_TWR",
-        "NY_CTR",
         "NY_66_CTR",
         "NY_56_CTR",
         "NY_68_CTR",
@@ -4729,7 +4896,7 @@
         "NY_35_CTR",
         "NY_51_CTR",
         "NY_39_CTR",
-        "DC_CTR"
+        "DC_32_CTR"
       ],
       "default_maps": [
         "EWR",
@@ -4970,7 +5137,6 @@
         "JFK_TWR",
         "EWR_TWR",
         "LGA_TWR",
-        "NY_CTR",
         "NY_66_CTR",
         "NY_56_CTR",
         "NY_68_CTR",
@@ -4978,7 +5144,7 @@
         "NY_35_CTR",
         "NY_51_CTR",
         "NY_39_CTR",
-        "DC_CTR"
+        "DC_32_CTR"
       ],
       "default_maps": [
         "EWR",
@@ -5219,7 +5385,6 @@
         "JFK_TWR",
         "EWR_TWR",
         "LGA_TWR",
-        "NY_CTR",
         "NY_66_CTR",
         "NY_56_CTR",
         "NY_68_CTR",
@@ -5227,7 +5392,7 @@
         "NY_35_CTR",
         "NY_51_CTR",
         "NY_39_CTR",
-        "DC_CTR"
+        "DC_32_CTR"
       ],
       "default_maps": [
         "EWR",
@@ -5287,136 +5452,5 @@
         "speed": 5
       }
     }
-  },
-  "scratchpads": {
-    "BAYYS": "BAY",
-    "BETTE": "BET",
-    "BDR": "BDR",
-    "BIGGY": "BIG",
-    "BREZY": "BRE",
-    "COATE": "COA",
-    "DEEZZ": "DEZ",
-    "DIXIE": "DIX",
-    "ELIOT": "ELI",
-    "GAYEL": "GAY",
-    "GREKI": "GRE",
-    "HAAYS": "HAY",
-    "HAPIE": "HAP",
-    "LANNA": "LAN",
-    "MERIT": "MER",
-    "NEION": "NEI",
-    "NEWEL": "NWL",
-    "None": null,
-    "PARKE": "PAR",
-    "RBV": "RBV",
-    "SAX": "SAX",
-    "SBJ": "SBJ",
-    "SHIPP": "SHI",
-    "WAVEY": "WAV",
-    "WHITE": "WHI",
-    "ZIMMZ": "ZIM"
-  },
-  "stars_maps": [
-    {
-      "group": 0,
-      "label": "EWR",
-      "name": "EWR"
-    },
-    {
-      "group": 0,
-      "label": "EWR SAT",
-      "name": "EWR Satellites"
-    },
-    {
-      "group": 0,
-      "label": "EWR CRDA",
-      "name": "EWR CRDA"
-    },
-    {
-      "group": 1,
-      "label": "NY B",
-      "name": "N90 CLASS B"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "N90 MVA"
-    },
-    {
-      "group": 0,
-      "label": "JFK4",
-      "name": "JFK 4s"
-    },
-    {
-      "group": 0,
-      "label": "JFK13",
-      "name": "JFK 13s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22",
-      "name": "JFK 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31",
-      "name": "JFK 31s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22 ILS",
-      "name": "JFK ILS 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31 NTZ",
-      "name": "JFK 31s NTZ"
-    },
-    {
-      "group": 0,
-      "label": "LGA",
-      "name": "LGA"
-    },
-    {
-      "group": 0,
-      "label": "LIB D",
-      "name": "LIB Departure"
-    },
-    {
-      "group": 0,
-      "label": "LIB C",
-      "name": "LIB Catskill"
-    },
-    {
-      "group": 0,
-      "label": "LGA",
-      "name": "LGA"
-    },
-    {
-      "group": 0,
-      "label": "LGA RTL",
-      "name": "LGA Right Turn Line"
-    },
-    {
-      "group": 0,
-      "label": "LOC 31",
-      "name": "LGA LOC 31"
-    },
-    {
-      "group": 1,
-      "label": "NY B",
-      "name": "N90 CLASS B"
-    },
-    {
-      "group": 1,
-      "label": "LGA GEO",
-      "name": "LGA GEO"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "N90 MVA"
-    }
-  ],
-  "video_map_file": "videomaps/n90-maps.json.zst"
+  }
 }

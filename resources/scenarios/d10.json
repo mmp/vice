@@ -3107,7 +3107,6 @@
             }
         ]
     },
-    "center": "KDFW",
     "stars_config": {
         "allow_long_scratchpad": [false, false],
         "force_ql_self": true,
@@ -3128,7 +3127,7 @@
                     0,
                     0
                 ],
-                "receiving_controller": "C32",
+                "receiving_controller": "FTW_32_CTR",
                 "to_center": true
             },
             {
@@ -3149,7 +3148,7 @@
                     0,
                     12000
                 ],
-                "receiving_controller": "1H",
+                "receiving_controller": "ACT_H_APP",
                 "to_center": false
             },
             {
@@ -3170,7 +3169,7 @@
                     12001,
                     99000
                 ],
-                "receiving_controller": "C96",
+                "receiving_controller": "FTW_96_CTR",
                 "to_center": true
             },
             {
@@ -3188,7 +3187,7 @@
                     0,
                     0
                 ],
-                "receiving_controller": "C83",
+                "receiving_controller": "FTW_83_CTR",
                 "to_center": true
             },
             {
@@ -3211,7 +3210,7 @@
                     0,
                     0
                 ],
-                "receiving_controller": "C53",
+                "receiving_controller": "FTW_53_CTR",
                 "to_center": true
             }
         ]
@@ -3307,120 +3306,140 @@
             "sector_id": "1Z"
           },
           "REG_E_APP": {
+            "default_airport": "KDFW",
             "frequency": 125020,
             "full_name": "Regional Approach",
             "scope_char": "E",
             "sector_id": "1E"
           },
           "REG_A_APP": {
+            "default_airport": "KDFW",
             "frequency": 133525,
             "full_name": "Regional Approach",
             "scope_char": "A",
             "sector_id": "1A"
           },
           "REG_W_APP": {
+            "default_airport": "KDFW",
             "frequency": 119870,
             "full_name": "Regional Approach",
             "scope_char": "W",
             "sector_id": "1W"
           },
           "REG_Y_APP": {
+            "default_airport": "KDFW",
             "frequency": 133625,
             "full_name": "Regional Approach",
             "scope_char": "Y",
             "sector_id": "1Y"
           },
           "REG_G_APP": {
+            "default_airport": "KDFW",
             "frequency": 119400,
             "full_name": "Regional Approach",
             "scope_char": "G",
             "sector_id": "1G"
           },
           "REG_J_APP": {
+            "default_airport": "KDFW",
             "frequency": 127070,
             "full_name": "Regional Approach",
             "scope_char": "J",
             "sector_id": "1J"
           },
           "REG_H_APP": {
+            "default_airport": "KDFW",
             "frequency": 118425,
             "full_name": "Regional Approach",
             "scope_char": "H",
             "sector_id": "1H"
           },
           "REG_N_APP": {
+            "default_airport": "KDFW",
             "frequency": 124300,
             "full_name": "Regional Approach",
             "scope_char": "N",
             "sector_id": "1N"
           },
           "REG_U_APP": {
+            "default_airport": "KDFW",
             "frequency": 125275,
             "full_name": "Regional Approach",
             "scope_char": "U",
             "sector_id": "1U"
           },
           "REG_S_APP": {
+            "default_airport": "KDFW",
             "frequency": 125200,
             "full_name": "Regional Approach",
             "scope_char": "S",
             "sector_id": "1S"
           },
           "REG_V_APP": {
+            "default_airport": "KDFW",
             "frequency": 135500,
             "full_name": "Regional Approach",
             "scope_char": "V",
             "sector_id": "1V"
           },
           "REG_K_APP": {
+            "default_airport": "KDFW",
             "frequency": 123900,
             "full_name": "Regional Approach",
             "scope_char": "K",
             "sector_id": "1K"
           },
           "REG_F_APP": {
+            "default_airport": "KDFW",
             "frequency": 124250,
             "full_name": "Regional Approach",
             "scope_char": "F",
             "sector_id": "1F"
           },
           "REG_M_APP": {
+            "default_airport": "KDFW",
             "frequency": 118100,
             "full_name": "Regional Approach",
             "scope_char": "M",
             "sector_id": "1M"
           },
           "REG_B_APP": {
+            "default_airport": "KDFW",
             "frequency": 119050,
             "full_name": "Regional Approach",
             "scope_char": "B",
             "sector_id": "1B"
           },
           "REG_P_APP": {
+            "default_airport": "KDFW",
             "frequency": 125800,
             "full_name": "Regional Approach",
             "scope_char": "P",
             "sector_id": "1P"
           },
           "REG_D_APP": {
+            "default_airport": "KDFW",
             "frequency": 135975,
             "full_name": "Regional Approach",
             "scope_char": "D",
             "sector_id": "1D"
           },
           "REG_R_APP": {
+            "default_airport": "KDFW",
             "frequency": 133150,
             "full_name": "Regional Approach",
             "scope_char": "R",
             "sector_id": "1R"
           },
           "REG_T_APP": {
+            "default_airport": "KDFW",
             "frequency": 124825,
             "full_name": "Regional Approach",
             "scope_char": "T",
             "sector_id": "1T"
           },
           "REG_X_APP": {
+            "default_airport": "KDFW",
             "frequency": 124075,
             "full_name": "Regional Approach",
             "scope_char": "X",
@@ -3482,101 +3501,9 @@
         "_AFW_34L": "N032.58.35.858,W097.18.54.695",
         "_AFW_34R": "N032.58.34.855,W097.19.00.737"
     },
-    "inhibit_ca_volumes": [
-        {
-            "name": "DFW SOUTH",
-            "type": "polygon",
-            "floor": 0,
-            "ceiling": 6000,
-            "vertices": [
-                "32.92026,-97.05916",
-                "33.24728,-97.05714",
-                "33.24694,-97.00072",
-                "32.90578,-97.0042 ",
-                "32.92026,-97.05916"
-            ]
-        },
-        {
-            "name": "DFW NORTH",
-            "type": "polygon",
-            "floor": 0,
-            "ceiling": 6000,
-            "vertices": [
-                "32.87252,-97.06059",
-                "32.55641,-97.08109",
-                "32.55720,-96.97406",
-                "32.87140,-96.9893",
-                "32.87252,-97.06059"
-            ]
-        },
-        {
-            "name": "DAL SOUTH",
-            "type": "polygon",
-            "floor": 0,
-            "ceiling": 3000,
-            "vertices": [
-                "32.82645,-96.84307",
-                "32.64717,-96.64349",
-                "32.67312,-96.61273",
-                "32.83947,-96.82698",
-                "32.82645,-96.84307"
-            ]
-        },
-        {
-            "name": "DAL SOUTH",
-            "type": "polygon",
-            "floor": 0,
-            "ceiling": 1169,
-            "vertices": [
-                "32.85097,-96.87249",
-                "32.92873,-96.96787",
-                "32.97203,-96.96755",
-                "32.87531,-96.84222",
-                "32.85097,-96.87249"
-            ]
-        }
-    ],
     "magnetic_adjustment": -0.75, 
     "name": "D10",
     "primary_airport": "KDFW",
-    "radar_sites": {
-        "EAST": {
-            "char": "A",
-            "position": "32.876904, -97.01486",
-            "elevation": 660,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "silence_angle": 50.4,
-            "slope_angle": 0.3
-          },
-          "AZLE": {
-            "char": "D",
-            "position": "32.8771333,-97.60949",
-            "elevation": 1150,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "silence_angle": 50.4,
-            "slope_angle": 0.3
-          },
-          "SACH": {
-            "char": "C",
-            "position": "32.989903,-96.578041",
-            "elevation": 650,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "silence_angle": 50.4,
-            "slope_angle": 0.3
-          },
-          "WEST": {
-            "char": "B",
-            "position": "32.9251,-97.043844",
-            "elevation": 710,
-            "primary_range": 60,
-            "secondary_range": 120,
-            "silence_angle": 50.4,
-            "slope_angle": 0.3
-          }
-    }, 
     "reporting_points": [
         "BEREE",
         "BOOVE",
@@ -3898,6 +3825,100 @@
             }
         }
     },
+    "stars_config": {
+    "center": "KDFW",
+    "inhibit_ca_volumes": [
+        {
+            "name": "DFW SOUTH",
+            "type": "polygon",
+            "floor": 0,
+            "ceiling": 6000,
+            "vertices": [
+                "32.92026,-97.05916",
+                "33.24728,-97.05714",
+                "33.24694,-97.00072",
+                "32.90578,-97.0042 ",
+                "32.92026,-97.05916"
+            ]
+        },
+        {
+            "name": "DFW NORTH",
+            "type": "polygon",
+            "floor": 0,
+            "ceiling": 6000,
+            "vertices": [
+                "32.87252,-97.06059",
+                "32.55641,-97.08109",
+                "32.55720,-96.97406",
+                "32.87140,-96.9893",
+                "32.87252,-97.06059"
+            ]
+        },
+        {
+            "name": "DAL SOUTH",
+            "type": "polygon",
+            "floor": 0,
+            "ceiling": 3000,
+            "vertices": [
+                "32.82645,-96.84307",
+                "32.64717,-96.64349",
+                "32.67312,-96.61273",
+                "32.83947,-96.82698",
+                "32.82645,-96.84307"
+            ]
+        },
+        {
+            "name": "DAL SOUTH",
+            "type": "polygon",
+            "floor": 0,
+            "ceiling": 1169,
+            "vertices": [
+                "32.85097,-96.87249",
+                "32.92873,-96.96787",
+                "32.97203,-96.96755",
+                "32.87531,-96.84222",
+                "32.85097,-96.87249"
+            ]
+        }
+    ],
+    "radar_sites": {
+        "EAST": {
+            "char": "A",
+            "position": "32.876904, -97.01486",
+            "elevation": 660,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 50.4,
+            "slope_angle": 0.3
+          },
+          "AZLE": {
+            "char": "D",
+            "position": "32.8771333,-97.60949",
+            "elevation": 1150,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 50.4,
+            "slope_angle": 0.3
+          },
+          "SACH": {
+            "char": "C",
+            "position": "32.989903,-96.578041",
+            "elevation": 650,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 50.4,
+            "slope_angle": 0.3
+          },
+          "WEST": {
+            "char": "B",
+            "position": "32.9251,-97.043844",
+            "elevation": 710,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 50.4,
+            "slope_angle": 0.3
+          }
+    }, 
     "scratchpads": {
         "MLC": "AKU",
         "ALIAN": "RBT",
@@ -4144,4 +4165,5 @@
         }
     ],
     "video_map_file": "videomaps/ZFW-videomaps.json.zst"
+    }
 }

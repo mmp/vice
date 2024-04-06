@@ -1195,11 +1195,12 @@
             }
         ]
     },
-    "center": "KPHX",
     "control_positions": {
         "ABQ_CTR": {
             "frequency": 132800,
             "full_name": "Albuquerque Center",
+            "facility_id": "C",
+            "eram_facility": true,
             "scope_char": "C",
             "sector_id": "C16"
         },
@@ -1262,53 +1263,9 @@
         "_PHX_25L": "N33.25.43.768,W112.00.05.488",
         "_PHX_25R": "N33.25.51.642,W111.59.36.050"
     },
-    "inhibit_ca_volumes": [
-        {
-            "name": "PHX NO CA",
-            "type": "polygon",
-            "floor": 0,
-            "ceiling": 3000,
-            "vertices": [
-                "33.4653575,-112.2070783",
-                "33.4044933,-112.2078636",
-                "33.4087472,-111.8081231",
-                "33.4679753,-111.8195106",
-                "33.4653575,-112.2070783"
-            ]
-        }
-    ],
     "magnetic_adjustment": -2,
     "name": "KPHX",
     "primary_airport": "KPHX",
-    "radar_sites": {
-        "PHX": {
-          "char": "P",
-          "position": "33.42699, -112.00649",
-          "elevation": 1312,
-          "primary_range": 50,
-          "secondary_range": 70,
-          "silence_angle": 15,
-          "slope_angle": 0.3
-        },
-        "QXP": {
-            "char": "N",
-            "position": "35.3527778, -112.94972",
-            "elevation": 46491,
-            "primary_range": 60,
-            "secondary_range": 100,
-            "silence_angle": 15,
-            "slope_angle": 0.3
-          },
-          "PHA": {
-            "char": "A",
-            "position": "33.98139,-111.79806",
-            "elevation": 5423,
-            "primary_range": 200,
-            "secondary_range": 200,
-            "silence_angle": 15,
-            "slope_angle": 0.3
-          }
-    },
     "reporting_points": [
         "BRDEY",
         "GEELA",
@@ -1439,6 +1396,52 @@
             }
         }
     },
+    "stars_config": {
+    "center": "KPHX",
+    "radar_sites": {
+        "PHX": {
+          "char": "P",
+          "position": "33.42699, -112.00649",
+          "elevation": 1312,
+          "primary_range": 50,
+          "secondary_range": 70,
+          "silence_angle": 15,
+          "slope_angle": 0.3
+        },
+        "QXP": {
+            "char": "N",
+            "position": "35.3527778, -112.94972",
+            "elevation": 46491,
+            "primary_range": 60,
+            "secondary_range": 100,
+            "silence_angle": 15,
+            "slope_angle": 0.3
+          },
+          "PHA": {
+            "char": "A",
+            "position": "33.98139,-111.79806",
+            "elevation": 5423,
+            "primary_range": 200,
+            "secondary_range": 200,
+            "silence_angle": 15,
+            "slope_angle": 0.3
+          }
+    },
+    "inhibit_ca_volumes": [
+        {
+            "name": "PHX NO CA",
+            "type": "polygon",
+            "floor": 0,
+            "ceiling": 3000,
+            "vertices": [
+                "33.4653575,-112.2070783",
+                "33.4044933,-112.2078636",
+                "33.4087472,-111.8081231",
+                "33.4679753,-111.8195106",
+                "33.4653575,-112.2070783"
+            ]
+        }
+    ],
     "scratchpads": {
         "JNIPR": "BRO",
         "ABQ":   "BRO",
@@ -1558,4 +1561,5 @@
         }
     ],
     "video_map_file": "videomaps/ZAB-videomaps.json.zst"
+    }
 }

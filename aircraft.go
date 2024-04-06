@@ -22,19 +22,13 @@ type Aircraft struct {
 	ForceQLControllers  []string
 	PointOutHistory     []string
 
-	// Who has the radar track
-	TrackingController string
-	// Who has control of the aircraft; may not be the same as
-	// TrackingController, e.g. after an aircraft has been flashed but
-	// before they have been instructed to contact the new tracking
-	// controller.
-	ControllingController string
-
-	// Handoff offered but not yet accepted
-	HandoffTrackController string
-
-	GlobalLinePosition *CardinalOrdinalDirection
-	RedirectedHandoff  RedirectedHandoff
+	// STARS-related state that is globally visible
+	TrackingController        string // Who has the radar track
+	ControllingController     string // Who has control; not necessarily the same as TrackingController
+	HandoffTrackController    string // Handoff offered but not yet accepted
+	GlobalLeaderLineDirection *CardinalOrdinalDirection
+	RedirectedHandoff         RedirectedHandoff
+	SPCOverrides              map[string]interface{}
 
 	// The controller who gave approach clearance
 	ApproachController string
@@ -80,8 +74,8 @@ func (ac *Aircraft) TAS() float32 {
 	return ac.Nav.TAS()
 }
 
-func (a *Aircraft) IsAssociated() bool {
-	return a.FlightPlan != nil && a.Squawk == a.AssignedSquawk && a.Mode == Charlie
+func (ac *Aircraft) IsAssociated() bool {
+	return ac.FlightPlan != nil && ac.Squawk == ac.AssignedSquawk && ac.Mode == Charlie
 }
 
 func (ac *Aircraft) HandleControllerDisconnect(callsign string, w *World) {
@@ -172,15 +166,19 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 	}
 
 	if ac.GoAroundDistance != nil {
-		if d, err := ac.Nav.finalApproachDistance(); err == nil && d < *ac.GoAroundDistance {
+		if d, err := ac.Nav.distanceToEndOfApproach(); err == nil && d < *ac.GoAroundDistance {
 			lg.Info("randomly going around")
 			ac.GoAroundDistance = nil // only go around once
 			rt := ac.GoAround()
+			ac.ControllingController = w.DepartureController(ac)
 			PostRadioEvents(ac.Callsign, rt, ep)
 
 			// If it was handed off to tower, hand it back to us
 			if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
-				ac.HandoffTrackController = ac.ApproachController
+				ac.HandoffTrackController = w.DepartureController(ac)
+				if ac.HandoffTrackController == "" {
+					ac.HandoffTrackController = ac.ApproachController
+				}
 				ep.PostEvent(Event{
 					Type:           OfferedHandoffEvent,
 					Callsign:       ac.Callsign,
@@ -196,7 +194,6 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 
 func (ac *Aircraft) GoAround() []RadioTransmission {
 	resp := ac.Nav.GoAround()
-
 	return []RadioTransmission{RadioTransmission{
 		Controller: ac.ControllingController,
 		Message:    resp.Message,
@@ -486,11 +483,11 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, departureAirport 
 	} else {
 		// human controller will be first
 		ctrl := w.PrimaryController
-		if w.MultiControllers != nil {
+		if len(w.MultiControllers) > 0 {
 			ctrl = w.MultiControllers.GetDepartureController(departureAirport, runway, exitRoute.SID)
-			if ctrl == "" {
-				ctrl = w.PrimaryController
-			}
+		}
+		if ctrl == "" {
+			ctrl = w.PrimaryController
 		}
 
 		ac.DepartureContactAltitude =
@@ -559,8 +556,12 @@ func (ac *Aircraft) GS() float32 {
 	return ac.Nav.FlightState.GS
 }
 
-func (ac *Aircraft) OnApproach() bool {
-	return ac.Nav.OnApproach()
+func (ac *Aircraft) OnApproach(checkAltitude bool) bool {
+	return ac.Nav.OnApproach(checkAltitude)
+}
+
+func (ac *Aircraft) OnExtendedCenterline(maxNmDeviation float32) bool {
+	return ac.Nav.OnExtendedCenterline(maxNmDeviation)
 }
 
 func (ac *Aircraft) DepartureAirportElevation() float32 {
@@ -582,6 +583,17 @@ func (ac *Aircraft) MVAsApply() bool {
 		return nmdistance2ll(ac.Position(), ac.Nav.FlightState.DepartureAirportLocation) > 5
 	} else {
 		// If they're established on the approach, they're good.
-		return !ac.OnApproach()
+		return !ac.OnApproach(true)
+	}
+}
+
+func (ac *Aircraft) ToggleSPCOverride(spc string) {
+	if ac.SPCOverrides == nil {
+		ac.SPCOverrides = make(map[string]interface{})
+	}
+	if _, ok := ac.SPCOverrides[spc]; ok {
+		delete(ac.SPCOverrides, spc)
+	} else {
+		ac.SPCOverrides[spc] = nil
 	}
 }

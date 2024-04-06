@@ -4774,7 +4774,7 @@
         "assigned_altitude": 8000,
         "cruise_altitude": 39000,
         "initial_altitude": 9000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_A_CTR",
         "initial_speed": 250,
         "spawn": "LRP",
         "star": "BOJID4"
@@ -5014,56 +5014,67 @@
         },
         "assigned_altitude": 10000,
         "initial_altitude": 10000,
-        "initial_controller": "NY_CTR",
+        "initial_controller": "NY_A_CTR",
         "initial_speed": 250,
         "star": "SPUDS7",
         "spawn": "ETX"
       }
     ]
   },
-  "center": "KPHL",
   "control_positions": {
     "DC_CTR": {
       "frequency": 133725,
       "full_name": "Washington center",
       "scope_char": "C",
-      "sector_id": "W32"
+      "sector_id": "W32",
+      "facility_id": "W",
+      "eram_facility": true
     },
     "EWR_APP": {
       "frequency": 128550,
       "full_name": "New York approach",
       "scope_char": "P",
-      "sector_id": "4P"
+      "sector_id": "4P",
+      "facility_id": "1"
     },
     "LGA_DEP": {
       "frequency": 120400,
       "full_name": "New York departure",
       "scope_char": "L",
-      "sector_id": "1L"
+      "sector_id": "1L",
+      "facility_id": "1"
+    },
+    "NY_A_CTR": {
+      "frequency": 120025,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "N26",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "NY_B_CTR": {
       "frequency": 125325,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N56"
-    },
-    "NY_CTR": {
-      "frequency": 125325,
-      "full_name": "New York center",
-      "scope_char": "C",
-      "sector_id": "N56"
+      "sector_id": "N56",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "NY_C_CTR": {
       "frequency": 132175,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N34"
+      "sector_id": "N34",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "NY_F_CTR": {
-      "frequency": 128300,
+      "frequency": 133500,
       "full_name": "New York center",
       "scope_char": "C",
-      "sector_id": "N66"
+      "sector_id": "N66",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "PHL_F1_APP": {
       "frequency": 124500,
@@ -5101,6 +5112,217 @@
       "_rvrd5": "DQO@061/5",
       "_rvrd9": "N039.46.14.391,W075.28.05.879",
       "_rvrd14": "N039.49.23.699,W075.22.51.176"
+  },
+  "name": "KPHL",
+  "primary_airport": "KPHL",
+  "reporting_points": [
+      "BOJID",
+      "HIFAL",
+      "JIIMS",
+      "PAATS",
+      "PSOUT",
+      "SPUDS",
+      "TRAGG"
+  ],
+  "scenarios": {
+    "KPHL 27R Final": {
+      "approach_airspace": [
+        "PHL_F1_APP27",
+        "PHL_F2_APP27"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KPHL",
+          "runway": "27R"
+        }
+      ],
+      "arrivals": {
+        "FINAL27_NORTH": {
+          "KPHL": 20
+        },
+        "FINAL27_SOUTH": {
+          "KPHL": 20
+        },
+        "FINAL17_NORTH": {
+          "KPHL": 20
+        }
+      },
+      "solo_controller": "PHL_F1_APP",
+      "center": "N039.55.00.306,W074.59.15.972",
+      "range": 30,
+      "controllers": [
+        "PHL_TWR",
+        "PHL_NA_APP",
+        "PHL_SA_APP",
+        "DC_CTR",
+        "NY_A_CTR"
+      ],
+      "default_maps": [ "Philadelphia Map West" ],
+      "wind": {
+        "direction": 290,
+        "speed": 8
+      }
+    },
+    "KPHL Depart 27L Land 27R/35": {
+      "approach_airspace": [
+        "PHL_DU_APP27",
+        "PHL_F1_APP27",
+        "PHL_F2_APP27",
+        "PHL_PT_APP27",
+        "PHL_N_APP27",
+        "PHL_S_APP27",
+        "PHL_WD_APP27",
+        "PHL_YD_APP27"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KPHL",
+          "runway": "27R"
+        },
+        {
+          "airport": "KPHL",
+          "runway": "35"
+        }
+      ],
+      "arrivals": {
+        "BOJID4": {
+          "KPHL": 12
+        },
+        "JIIMS4": {
+          "KPHL": 12
+        },
+        "PAATS4": {
+          "KPHL": 12
+        },
+        "SPUDS7": {
+          "KPHL": 10
+        }
+      },
+      "solo_controller": "PHL_NA_APP",
+      "multi_controllers": {
+          "default" : {
+              "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID4", "SPUDS7" ] },
+              "PHL_SA_APP": { "backup": "PHL_NA_APP", "arrivals": [ "JIIMS4", "PAATS4" ] },
+              "PHL_F1_APP": { "backup": "PHL_NA_APP" },
+              "PHL_ND_DEP": { "backup": "PHL_NA_APP", "departures": ["KPHL"] }
+          }
+      },
+      "controllers": [
+        "PHL_TWR",
+        "DC_CTR",
+        "NY_A_CTR"
+      ],
+      "default_maps": [ "Philadelphia Map West" ],
+      "departure_airspace": [
+        "PHL_N_DEP27",
+        "PHL_S_DEP27",
+        "PHL_N_HIGH27",
+        "PHL_S_HIGH27"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KPHL",
+          "rate": 45,
+          "runway": "27L"
+        }
+      ],
+      "wind": {
+        "direction": 290,
+        "gust": 17,
+        "speed": 12
+      }
+    },
+    "KPHL Depart 9L Land 9R/17": {
+      "approach_airspace": [
+        "PHL_DU_APP9",
+        "PHL_F1_APP9",
+        "PHL_F2_APP9",
+        "PHL_N_APP9",
+        "PHL_PT_APP9",
+        "PHL_S_APP9",
+        "PHL_WD_APP9",
+        "PHL_YD_APP9"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KPHL",
+          "runway": "9R"
+        },
+        {
+          "airport": "KPHL",
+          "runway": "17"
+        }
+      ],
+      "arrivals": {
+        "BOJID4": {
+          "KPHL": 12
+        },
+        "JIIMS4": {
+          "KPHL": 12
+        },
+        "PAATS4": {
+          "KPHL": 12
+        },
+        "SPUDS7": {
+          "KPHL": 10
+        }
+      },
+      "solo_controller": "PHL_NA_APP",
+      "multi_controllers": {
+          "default" : {
+              "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID4", "SPUDS7" ] },
+              "PHL_SA_APP": { "backup": "PHL_NA_APP", "arrivals": [ "JIIMS4", "PAATS4" ] },
+              "PHL_F1_APP": { "backup": "PHL_NA_APP" },
+              "PHL_ND_DEP": { "backup": "PHL_NA_APP", "departures": ["KPHL"] }
+          }
+      },
+      "controllers": [
+        "PHL_TWR",
+        "DC_CTR",
+        "NY_A_CTR"
+      ],
+      "default_maps": [ "Philadelphia Map East" ],
+      "departure_airspace": [
+        "PHL_N_DEP9",
+        "PHL_N_HIGH9",
+        "PHL_S_DEP9",
+        "PHL_S_HIGH9"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KPHL",
+          "rate": 45,
+          "runway": "9L"
+        }
+      ],
+      "wind": {
+        "direction": 70,
+        "gust": 24,
+        "speed": 17
+      }
+    }
+  },
+  "stars_config": {
+  "center": "KPHL",
+  "radar_sites": {
+    "NXX": {
+      "char": "N",
+      "position": "40.19980, -75.14820",
+      "elevation": 408,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 50.4,
+      "slope_angle": 0.175
+    },
+    "PHL": {
+      "char": "P",
+      "position": "KPHL",
+      "elevation": 150,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 50.4,
+      "slope_angle": 0.175
+    }
   },
   "inhibit_ca_volumes": [
       {
@@ -5172,215 +5394,6 @@
           ]
       }
   ],
-  "name": "KPHL",
-  "primary_airport": "KPHL",
-  "radar_sites": {
-    "NXX": {
-      "char": "N",
-      "position": "40.19980, -75.14820",
-      "elevation": 408,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 50.4,
-      "slope_angle": 0.175
-    },
-    "PHL": {
-      "char": "P",
-      "position": "KPHL",
-      "elevation": 150,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 50.4,
-      "slope_angle": 0.175
-    }
-  },
-  "reporting_points": [
-      "BOJID",
-      "HIFAL",
-      "JIIMS",
-      "PAATS",
-      "PSOUT",
-      "SPUDS",
-      "TRAGG"
-  ],
-  "scenarios": {
-    "KPHL 27R Final": {
-      "approach_airspace": [
-        "PHL_F1_APP27",
-        "PHL_F2_APP27"
-      ],
-      "arrival_runways": [
-        {
-          "airport": "KPHL",
-          "runway": "27R"
-        }
-      ],
-      "arrivals": {
-        "FINAL27_NORTH": {
-          "KPHL": 20
-        },
-        "FINAL27_SOUTH": {
-          "KPHL": 20
-        },
-        "FINAL17_NORTH": {
-          "KPHL": 20
-        }
-      },
-      "solo_controller": "PHL_F1_APP",
-      "center": "N039.55.00.306,W074.59.15.972",
-      "range": 30,
-      "controllers": [
-        "PHL_TWR",
-        "PHL_NA_APP",
-        "PHL_SA_APP",
-        "DC_CTR",
-        "NY_CTR"
-      ],
-      "default_maps": [ "Philadelphia Map West" ],
-      "wind": {
-        "direction": 290,
-        "speed": 8
-      }
-    },
-    "KPHL Depart 27L Land 27R/35": {
-      "approach_airspace": [
-        "PHL_DU_APP27",
-        "PHL_F1_APP27",
-        "PHL_F2_APP27",
-        "PHL_PT_APP27",
-        "PHL_N_APP27",
-        "PHL_S_APP27",
-        "PHL_WD_APP27",
-        "PHL_YD_APP27"
-      ],
-      "arrival_runways": [
-        {
-          "airport": "KPHL",
-          "runway": "27R"
-        },
-        {
-          "airport": "KPHL",
-          "runway": "35"
-        }
-      ],
-      "arrivals": {
-        "BOJID4": {
-          "KPHL": 12
-        },
-        "JIIMS4": {
-          "KPHL": 12
-        },
-        "PAATS4": {
-          "KPHL": 12
-        },
-        "SPUDS7": {
-          "KPHL": 10
-        }
-      },
-      "solo_controller": "PHL_NA_APP",
-      "multi_controllers": {
-          "default" : {
-              "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID4", "SPUDS7" ] },
-              "PHL_SA_APP": { "backup": "PHL_NA_APP", "arrivals": [ "JIIMS4", "PAATS4" ] },
-              "PHL_F1_APP": { "backup": "PHL_NA_APP" },
-              "PHL_ND_DEP": { "backup": "PHL_NA_APP", "departures": ["KPHL"] }
-          }
-      },
-      "controllers": [
-        "PHL_TWR",
-        "DC_CTR",
-        "NY_CTR"
-      ],
-      "default_maps": [ "Philadelphia Map West" ],
-      "departure_airspace": [
-        "PHL_N_DEP27",
-        "PHL_S_DEP27",
-        "PHL_N_HIGH27",
-        "PHL_S_HIGH27"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KPHL",
-          "rate": 45,
-          "runway": "27L"
-        }
-      ],
-      "wind": {
-        "direction": 290,
-        "gust": 17,
-        "speed": 12
-      }
-    },
-    "KPHL Depart 9L Land 9R/17": {
-      "approach_airspace": [
-        "PHL_DU_APP9",
-        "PHL_F1_APP9",
-        "PHL_F2_APP9",
-        "PHL_N_APP9",
-        "PHL_PT_APP9",
-        "PHL_S_APP9",
-        "PHL_WD_APP9",
-        "PHL_YD_APP9"
-      ],
-      "arrival_runways": [
-        {
-          "airport": "KPHL",
-          "runway": "9R"
-        },
-        {
-          "airport": "KPHL",
-          "runway": "17"
-        }
-      ],
-      "arrivals": {
-        "BOJID4": {
-          "KPHL": 12
-        },
-        "JIIMS4": {
-          "KPHL": 12
-        },
-        "PAATS4": {
-          "KPHL": 12
-        },
-        "SPUDS7": {
-          "KPHL": 10
-        }
-      },
-      "solo_controller": "PHL_NA_APP",
-      "multi_controllers": {
-          "default" : {
-              "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID4", "SPUDS7" ] },
-              "PHL_SA_APP": { "backup": "PHL_NA_APP", "arrivals": [ "JIIMS4", "PAATS4" ] },
-              "PHL_F1_APP": { "backup": "PHL_NA_APP" },
-              "PHL_ND_DEP": { "backup": "PHL_NA_APP", "departures": ["KPHL"] }
-          }
-      },
-      "controllers": [
-        "PHL_TWR",
-        "DC_CTR",
-        "NY_CTR"
-      ],
-      "default_maps": [ "Philadelphia Map East" ],
-      "departure_airspace": [
-        "PHL_N_DEP9",
-        "PHL_N_HIGH9",
-        "PHL_S_DEP9",
-        "PHL_S_HIGH9"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KPHL",
-          "rate": 45,
-          "runway": "9L"
-        }
-      ],
-      "wind": {
-        "direction": 70,
-        "gust": 24,
-        "speed": 17
-      }
-    }
-  },
   "scratchpads": {
     "ARD": "ARD",
     "BAYYS": "BAY",
@@ -5432,4 +5445,5 @@
     }
   ],
   "video_map_file": "videomaps/phl-maps.json.zst"
+  }
 }

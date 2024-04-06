@@ -1671,13 +1671,14 @@
         }
       ]
     },
-    "center": "KDEN",
     "control_positions": {
       "DEN_17_CTR": {
         "frequency": 127650,
         "full_name": "Denver Center",
         "scope_char": "C",
-        "sector_id": "17"
+        "sector_id": "D17",
+        "facility_id": "C",
+        "eram_facility": true
       },
       "DEN_I_APP": {
         "frequency": 120350,
@@ -1799,33 +1800,8 @@
       "KDEN": "N39.51.41.421,W104.40.23.005",
       "DEN": "N39.51.41.421,W104.40.23.005"
     },
-    "inhibit_ca_volumes": [
-      {
-        "name": "D01 NO CA",
-        "type": "polygon",
-        "floor": 5000,
-        "ceiling": 13000,
-        "vertices": [
-          "N039.18.01.727,W104.33.48.707",
-          "N039.18.14.375,W104.45.11.370",
-          "N040.24.47.562,W104.45.01.098",
-          "N040.24.22.019,W104.31.03.253"
-        ]
-      }
-    ],
     "name": "KDEN",
    "primary_airport": "KDEN",
-    "radar_sites": {
-      "DEN": {
-        "char": "D",
-        "elevation": 136,
-        "position": "KDEN",
-        "primary_range": 60,
-        "secondary_range": 120,
-        "silence_angle": 30,
-        "slope_angle": 0.175
-      }
-    },
     "scenarios": {
       "South Calm": {
         "arrival_runways": [
@@ -3084,6 +3060,33 @@
         }
       }
     },
+    "stars_config": {
+    "center": "KDEN",
+    "inhibit_ca_volumes": [
+      {
+        "name": "D01 NO CA",
+        "type": "polygon",
+        "floor": 5000,
+        "ceiling": 13000,
+        "vertices": [
+          "N039.18.01.727,W104.33.48.707",
+          "N039.18.14.375,W104.45.11.370",
+          "N040.24.47.562,W104.45.01.098",
+          "N040.24.22.019,W104.31.03.253"
+        ]
+      }
+    ],
+    "radar_sites": {
+      "DEN": {
+        "char": "D",
+        "elevation": 136,
+        "position": "KDEN",
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      }
+    },
     "scratchpads": {
       "HBU": "BAY",
       "TEHRU": "BAY",
@@ -3474,4 +3477,5 @@
       }
     ],
     "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+    }
   }

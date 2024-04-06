@@ -269,10 +269,6 @@ func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
 }
 
 func (w *World) SetGlobalLeaderLine(callsign string, dir *CardinalOrdinalDirection, success func(any), err func(error)) {
-	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
-		ac.GlobalLinePosition = dir
-	}
-
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.SetGlobalLeaderLine(callsign, dir),
@@ -317,46 +313,6 @@ func (w *World) DropTrack(callsign string, success func(any), err func(error)) {
 		})
 }
 
-func (w *World) RedirectHandoff(callsign, controller string, success func(any), err func(error)) {
-	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
-			Call:      w.simProxy.RedirectedHandoff(callsign, controller),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
-func (w *World) AcceptRedirectedHandoff(callsign string, success func(any), err func(error)) {
-	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
-			Call:      w.simProxy.AcceptRedirectedHandoff(callsign),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
-func (w *World) RecallRedirectedHandoff(callsign string, success func(any), err func(error)) {
-	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
-			Call:      w.simProxy.RecallRedirectedHandoff(callsign),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
-func (w *World) SlewRedirectedHandoff(callsign string, success func(any), err func(error)) {
-	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
-			Call:      w.simProxy.SlewRedirectedHandoff(callsign),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
 func (w *World) HandoffTrack(callsign string, controller string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
@@ -393,10 +349,20 @@ func (w *World) AcceptHandoff(callsign string, success func(any), err func(error
 		})
 }
 
-func (w *World) RejectHandoff(callsign string, success func(any), err func(error)) {
+func (w *World) RedirectHandoff(callsign, controller string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
-			Call:      w.simProxy.RejectHandoff(callsign),
+			Call:      w.simProxy.RedirectHandoff(callsign, controller),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) AcceptRedirectedHandoff(callsign string, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.AcceptRedirectedHandoff(callsign),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
@@ -463,6 +429,20 @@ func (w *World) RejectPointOut(callsign string, success func(any), err func(erro
 		})
 }
 
+func (w *World) ToggleSPCOverride(callsign string, spc string, success func(any), err func(error)) {
+	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
+		ac.ToggleSPCOverride(spc)
+	}
+
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.ToggleSPCOverride(callsign, spc),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (w *World) ChangeControlPosition(callsign string, keepTracks bool) error {
 	err := w.simProxy.ChangeControlPosition(callsign, keepTracks)
 	if err == nil {
@@ -479,16 +459,17 @@ func (w *World) Disconnect() {
 	w.Controllers = nil
 }
 
+// Bool is if the callsign can be abbreviated
 func (w *World) GetAircraft(callsign string, abbreviated bool) *Aircraft { // If the callsign can be abbreivated (for radio commands, not STARS commands)
 	if abbreviated {
 		ac := w.GetAllAircraft()
 		aircraft := findAircraft(callsign, ac)
 		return aircraft
-	} 
+	}
 	if ac, ok := w.Aircraft[callsign]; ok {
 		return ac
 	}
-	return nil 
+	return nil
 }
 
 func findAircraft(sample string, aircraft []*Aircraft) *Aircraft {
@@ -559,12 +540,16 @@ func (w *World) GetAllControllers() map[string]*Controller {
 }
 
 func (w *World) DepartureController(ac *Aircraft) string {
-	callsign := w.MultiControllers.ResolveController(ac.DepartureContactController,
-		func(callsign string) bool {
-			ctrl, ok := w.Controllers[callsign]
-			return ok && ctrl.IsHuman
-		})
-	return Select(callsign != "", callsign, w.PrimaryController)
+	if len(w.MultiControllers) > 0 {
+		callsign := w.MultiControllers.ResolveController(ac.DepartureContactController,
+			func(callsign string) bool {
+				ctrl, ok := w.Controllers[callsign]
+				return ok && ctrl.IsHuman
+			})
+		return Select(callsign != "", callsign, w.PrimaryController)
+	} else {
+		return w.PrimaryController
+	}
 }
 
 func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
@@ -880,7 +865,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	// handoff happens, so that it can reflect which controllers are
 	// actually signed in at that point.
 	arrivalController := w.PrimaryController
-	if w.MultiControllers != nil {
+	if len(w.MultiControllers) > 0 {
 		arrivalController = w.MultiControllers.GetArrivalController(arrivalGroup)
 		if arrivalController == "" {
 			arrivalController = w.PrimaryController
