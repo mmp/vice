@@ -3845,7 +3845,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			} else if len(cmd) > 0 {
 				// See if cmd works as a sector id; if so, make it a handoff.
 				if ac.HandoffTrackController == ctx.world.Callsign || ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign { // Redirect
-					cmd = strings.TrimPrefix(cmd, STARSTriangleCharacter)
 					control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
 					if control == nil {
 						status.err = ErrSTARSIllegalPosition
