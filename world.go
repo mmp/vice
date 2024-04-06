@@ -511,18 +511,10 @@ func (w *World) GetMETAR(location string) *METAR {
 	return w.METAR[location]
 }
 
-func (w *World) GetController(callsign string) *Controller {
+func (w *World) GetControllerByCallsign(callsign string) *Controller {
 	if ctrl := w.Controllers[callsign]; ctrl != nil {
 		return ctrl
 	}
-
-	// Look up by id
-	for _, ctrl := range w.Controllers {
-		if ctrl.SectorId == callsign {
-			return ctrl
-		}
-	}
-
 	return nil
 }
 
