@@ -576,6 +576,7 @@
           "full_name": "Minnieapolis Center",
           "scope_char": "C",
           "sector_id": "C05",
+          "facility_id": "C",
           "eram_facility": true
         },
         "MSP_08_CTR": {
@@ -583,6 +584,7 @@
           "full_name": "Minnieapolis Center",
           "scope_char": "C",
           "sector_id": "C08",
+          "facility_id": "C",
           "eram_facility": true
         },
         "MSP_R_DEP": {
