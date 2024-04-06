@@ -278,6 +278,9 @@ func main() {
 		if !globalConfig.AskedDiscordOptIn {
 			uiShowDiscordOptInDialog()
 		}
+		if !globalConfig.NotifiedNewCommandSyntax {
+			uiShowNewCommandSyntaxDialog()
+		}
 
 		simStartTime := time.Now()
 

@@ -245,6 +245,10 @@ func uiShowDiscordOptInDialog() {
 	uiShowModalDialog(NewModalDialogBox(&DiscordOptInModalClient{}), true)
 }
 
+func uiShowNewCommandSyntaxDialog() {
+	uiShowModalDialog(NewModalDialogBox(&NewCommandSyntaxModalClient{}), true)
+}
+
 // If |b| is true, all following imgui elements will be disabled (and drawn
 // accordingly).
 func uiStartDisable(b bool) {
@@ -982,6 +986,43 @@ func (d *DiscordOptInModalClient) Draw() int {
 	update := !globalConfig.InhibitDiscordActivity.Load()
 	imgui.Checkbox("Update Discord activity status", &update)
 	globalConfig.InhibitDiscordActivity.Store(!update)
+
+	return -1
+}
+
+type NewCommandSyntaxModalClient struct{}
+
+func (d *NewCommandSyntaxModalClient) Title() string {
+	return "Aircraft Control Command Syntax Has Changed"
+}
+
+func (d *NewCommandSyntaxModalClient) Opening() {}
+
+func (d *NewCommandSyntaxModalClient) Buttons() []ModalDialogButton {
+	return []ModalDialogButton{
+		ModalDialogButton{
+			text: "Ok",
+			action: func() bool {
+				globalConfig.NotifiedNewCommandSyntax = true
+				return true
+			},
+		},
+	}
+}
+
+func (d *NewCommandSyntaxModalClient) Draw() int {
+	style := imgui.CurrentStyle()
+	spc := style.ItemSpacing()
+	spc.Y -= 4
+	imgui.PushStyleVarVec2(imgui.StyleVarItemSpacing, spc)
+
+	imgui.Text(`Aircraft control commands (e.g., "C30" for "climb and maintain`)
+	imgui.Text(`3000") now must begin with a comma: ,`)
+	imgui.Text(``)
+	imgui.Text(`This is necessary to distinguish between control commands, handoffs`)
+	imgui.Text(`to other controllers, and setting a track's scratchpad.`)
+
+	imgui.PopStyleVar()
 
 	return -1
 }
