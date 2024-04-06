@@ -638,12 +638,6 @@
           "full_name": "Minnieapolis Tower",
           "scope_char": "T",
           "sector_id": "03"
-        },
-        "FCM_TWR": {
-          "frequency": 119150,
-          "full_name": "Flying Cloud Tower",
-          "scope_char": "T",
-          "sector_id": "04"
         }
       },
       "default_scenario": "MSP 12R/L/17",
