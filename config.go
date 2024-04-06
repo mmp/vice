@@ -57,8 +57,9 @@ type GlobalConfigNoSim struct {
 
 	DisplayRoot *DisplayNode
 
-	AskedDiscordOptIn      bool
-	InhibitDiscordActivity AtomicBool
+	AskedDiscordOptIn        bool
+	InhibitDiscordActivity   AtomicBool
+	NotifiedNewCommandSyntax bool
 
 	Callsign string
 
@@ -150,6 +151,7 @@ func SetDefaultConfig() {
 	globalConfig.Version = CurrentConfigVersion
 	globalConfig.WhatsNewIndex = len(whatsNew)
 	globalConfig.InitialWindowPosition = [2]int{100, 100}
+	globalConfig.NotifiedNewCommandSyntax = true // don't warn for new installs
 }
 
 func LoadOrMakeDefaultConfig() {

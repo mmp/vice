@@ -27,6 +27,9 @@ import (
 const LateralMinimum = 3
 const VerticalMinimum = 1000
 
+// Character that prefixes aircraft control commands ("climb and maintain", etc.)
+const STARSAircraftCommandChar = ','
+
 // STARS ∆ is U+008A in the FixedDemiBold font we use...
 const STARSTriangleCharacter = "\u008A"
 
@@ -2056,16 +2059,19 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					status.err = ErrSTARSIllegalFix
 					return
 				}
-			} else if ac := lookupAircraft(f[0], true); ac != nil && len(f) > 1 {
-				acCmds := strings.Join(f[1:], " ")
-				ctx.world.RunAircraftCommands(ac, acCmds,
-					func(err error) {
-						globalConfig.Audio.PlayOnce(AudioCommandError)
-						sp.previewAreaOutput = GetSTARSError(err).Error()
-					})
+			} else if f[0][0] == STARSAircraftCommandChar {
+				if ac := lookupAircraft(f[0][1:], true); ac != nil && len(f) > 1 {
+					acCmds := strings.Join(f[1:], " ")
 
-				status.clear = true
-				return
+					ctx.world.RunAircraftCommands(ac, acCmds,
+						func(err error) {
+							globalConfig.Audio.PlayOnce(AudioCommandError)
+							sp.previewAreaOutput = GetSTARSError(err).Error()
+						})
+
+					status.clear = true
+					return
+				}
 			}
 		}
 		if len(cmd) > 0 {
@@ -3245,7 +3251,6 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 }
 
 func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) error {
-	// Change the "C" to "N56" for example
 	control := sp.lookupControllerForId(ctx, controller, callsign)
 	if control == nil {
 		return ErrSTARSIllegalPosition
@@ -3574,6 +3579,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.output = slewAircaft(ctx.world, ac)
 				}
 
+			} else if cmd[0] == STARSAircraftCommandChar {
+				ctx.world.RunAircraftCommands(ac, cmd[1:],
+					func(err error) {
+						sp.previewAreaOutput = GetSTARSError(err).Error()
+					})
+				status.clear = true
+				return
 			} else if cmd == "." {
 				if err := sp.setScratchpad(ctx, ac.Callsign, "", false, true); err != nil {
 					status.err = err
@@ -3840,28 +3852,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 					sp.redirectHandoff(ctx, ac.Callsign, control.Callsign)
-					if err == nil {
-						status.clear = true
-						return
-					}
+					status.clear = true
+				} else if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
+					status.clear = true
 				} else {
-					if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
-						status.clear = true
-						return
-					}
-					// Otherwise fall through to try running it as a command
+					status.err = err
 				}
-				// If it didn't match a controller, try to run it as a command
-				ctx.world.RunAircraftCommands(ac, cmd,
-					func(err error) {
-						// If it's not a valid command and fits the requirements for a scratchpad, set the scratchpad.
-						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false, true); err != nil {
-							sp.previewAreaOutput = GetSTARSError(err).Error()
-							return
-						}
-					})
-
-				status.clear = true
 				return
 			}
 
