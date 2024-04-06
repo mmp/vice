@@ -711,7 +711,9 @@ how it simulates aircraft or the STARS interface.
               <li>Scenario updates: EWR (aq86_), LGA (Yi Zheng), MIA (Connor Allen), Y90 (MerryArbitrary, Nelson T).</li>
               <li>STARS simulation has been improved in numerous ways:
                 <ul>
-                  <li>Significantly improved how handoffs are handled: multiple redirected handoffs are now supported, inter- and intra-facility handoffs are now handled more accurately.</li>
+                  <li><b>Aircraft control commands (like "C80" for "climb
+                  and maintain 8,000") must now start with a comma: ,.</b></li>
+                  <li>Significantly improved handoffs: multiple redirected handoffs are now supported, inter- and intra-facility handoffs are now handled more accurately.</li>
                   <li>Added support for "force quicklook" to push a quicklook to another controller.</li>
                   <li>Added support for minimum safe altitude warnings (MSAW) for aircraft that are below the MVA.</li>
                   <li>CWT category updates and bugfixes.</li>
@@ -728,14 +730,20 @@ how it simulates aircraft or the STARS interface.
                 <ul>
                   <li>Fixed a bug where go-arounds would sometimes not contact departure.</li>
                   <li>Fixed bugs in the winds display in the "new sim" user interface.</li>
-                  <li>Fixed a bug where departures handed off to virtual controllers wouldn't climb to their final altitude.</li>
+                  <li>Fixed a bug where departures handed off to virtual
+                    controllers wouldn't climb to their final altitude.</li>
+                  <li>Fixed a bug where live weather would occasionally
+                    cause vice to crash.</li>
+                  <li>Fixed a bug where aircraft TAS would be too high at high altitudes.</li>
                   </ul>
               </li>
               <li>Facility engineering changes/improvements:
                 <ul>
                   <li>In scenario groups, "tracon" must be a valid 3-letter id from the <a href="https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon">FAA list of TRACONs</a>. (This allows <i>vice</i> to present scenarios grouped by ARTCC and then TRACON.)</li>
+                  <li>In the <a href="#fe-scenario-groups">specification of controllers in "control_positions"</a>, "eram_facility" and "facility_id" may now be specified.</li>
                   <li><i>vice</i> now has a built-in model of magnetic declination. Therefore, the "magnetic_variation" setting is no longer used. If small adjustments are needed (e.g. due to video maps assuming a different magnetic adjustment, "magnetic_correction" can be used to add a small offset to the automatically-determined value.</li>
-                  <li>There is a new "stars_config" field in scenario definitions with a number of new fields to define per-facility STARS behavior. (See the <a href="#fe-stars-videomaps">STARS and Video Maps</a> section for details.)</li>
+                  <li>There is a new "stars_config" field in scenario definitions with a number of new fields to define per-facility STARS behavior. (See the <a href="#fe-stars-videomaps">STARS and Video Maps</a> section for details.) The entries "center", "inhibit_ca_volumes", "radar_sites", "range", "scratchpads", "stars_maps", and "video_map_file" have moved from the scenario to be inside "stars_config".</li>
+                  <li>In <a href="#fe-airports">airport specifications</a>, the Boolean value "omit_arrival_scratchpad" may be set to indicate that the arrival airport should not be shown in place of an empty scratchpad in datablocks.</li>
                 </ul>
               </li>
             </ul>
@@ -1752,7 +1760,7 @@ how it simulates aircraft or the STARS interface.
             <h4>Full Datablock (FDBs)</h4>
 
 
-            Consolidated Wake Turbulence (CWT) category
+            <a href="https://www.faa.gov/documentLibrary/media/Order/JO_7110.126A.pdf">Consolidated Wake Turbulence (CWT)</a> category
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -1769,43 +1777,43 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                   <tr>
                     <td>B</td>
-                    <td></td>
-                    <td></td>
+                    <td>Upper Heavy</td>
+                    <td>A33*, A34*, A35*, B744, B77*, B788, B789</td>
                   </tr>
                   <tr>
                     <td>C</td>
-                    <td></td>
-                    <td></td>
+                    <td>Lower Heavy</td>
+                    <td>A30*, A310, B76*, DC10, MD11</td>
                   </tr>
                   <tr>
                     <td>D</td>
-                    <td></td>
-                    <td></td>
+                    <td>Non-Pairwise Heavy</td>
+                    <td>B74[1,3,D,R,S], B78X</td>
                   </tr>
                   <tr>
                     <td>E</td>
-                    <td></td>
-                    <td></td>
+                    <td>B757</td>
+                    <td>B752, B753</td>
                   </tr>
                   <tr>
                     <td>F</td>
-                    <td></td>
-                    <td></td>
+                    <td>Upper Large</td>
+                    <td>A31*, A32*, B73*, DH8D, E190</td>
                   </tr>
                   <tr>
                     <td>G</td>
-                    <td></td>
-                    <td></td>
+                    <td>Lower Large</td>
+                    <td>CRJ*, GLF[2,3,4]</td>
                   </tr>
                   <tr>
                     <td>H</td>
-                    <td></td>
-                    <td></td>
+                    <td>Upper Small</td>
+                    <td>BE40, B350, C560, LJ*</td>
                   </tr>
                   <tr>
                     <td>I</td>
-                    <td></td>
-                    <td></td>
+                    <td>Lower Small</td>
+                    <td>BE20, C25[A, B], PA31, SR22</td>
                   </tr>
                 </tbody>
                 </table>
@@ -2931,6 +2939,8 @@ above</a> for information about the CRDA system list.</p>
                 controller with the corresponding callsign.  For each
                 controller, the following members should be specified:</p>
                   <ul>
+                    <li>"eram_facility": (<i>Optional</i>) indicates whether the controller is using an ERAM scope (i.e., is a center controller).</li>
+                    <li>"facility_id": (<i>Optional</i>) a single character giving the controller's facility. This should only be specified for controllers outside of the TRACON.</li>
                     <li>"full_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
                     <li>"frequency": the controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325)</li>
                     <li>"scope_char": a string giving a single character to use on radar scopes for tracks owned by this position (e.g., "C")</li>
@@ -3155,6 +3165,11 @@ above</a> for information about the CRDA system list.</p>
                 <td>"name"</td>
                 <td>String</td>
                 <td>(<i>Optional</i>) The name of the airport.</td>
+              </tr>
+              <tr>
+                <td>"omit_arrival_scratchpad"</td>
+                <td>Boolean</td>
+                <td>(<i>Optional</i>) If true, the arrival airport is not shown alternating with the altitude in full datablocks when the scratchpad is unset.</td>
               </tr>
               <tr>
                 <td>"tower_list"</td>
@@ -3872,14 +3887,15 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"force_ql_self"</td>
                 <td>Boolean</td>
-                <td>If the TCP can use <code>*, *, SLEW</code> to make the track appear yellow on their scope</td>
+                <td>Indicates whether controllers may
+                enter <code>**[SLEW]</code> to make a track appear yellow
+                on their own scope.</td>
               </tr>
               <tr>
                 <td>"allow_long_scrachpad"</td>
-                <td>Array of booleans</td>
-                <td>The first boolean will allow the primary scratchpad to be four letters instead of three. The
-                  second boolean will allow the
-                  secondary scratchpad to be four letters instead of three
+                <td>Array of two Booleans</td>
+                <td>These indicate whether the primary and secondary scratchpad (respectively)
+                  may be four characters long (rather than the default of three).
                 </td>
               </tr>
               <tr>
@@ -3889,15 +3905,15 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   following memebers. <br>
                   <ul>
                     <li>"fixes": an array of strings that represent that different fixes an aircraft could be filled
-                      on to apply for this rule.</li>
-                    <li>"altitude_range": an array of two numbers that represent the different cruising altitude that
+                      on to apply for this rule. If "ALL" is given, </li>
+                    <li>"altitude_range": (<i>Optional</i>) an array of two numbers that represent the different cruising altitude that
                       an airplane has to have to
                       apply for this rule.
                     </li>
                     <li>"receiving_controller": the sector ID of the controller that will be receiving this rule.</li>
-                    <li>"to_center": a boolean that represents if the receiving controller for this rule is an ERAM
+                    <li>"to_center": a Boolean that represents if the receiving controller for this rule is an ERAM
                       facility.</li>
-                    <li>"aircraft_type": an array of strings. "P" for props, "T" for turboprop/ turboshafts, and "J"
+                    <li>"aircraft_type": (<i>Optional</i>) an array of strings giving allowed aircraft types for the rule: "P" for props, "T" for turboprop/ turboshafts, and "J"
                       for jets.</li>
                   </ul>
                 </td>
