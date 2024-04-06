@@ -1514,16 +1514,16 @@
             ],
             "arrivals": {
                 "GRAYT2": {
-                    "KDTW": 3
+                    "KDTW": 4
                 },
                 "HANBL3": {
-                    "KDTW": 4
+                    "KDTW": 6
                 },
                 "KKISS2": {
-                    "KDTW": 3
+                    "KDTW": 5
                 },
                 "VCTRZ2": {
-                    "KDTW": 4
+                    "KDTW": 7
                 }
             },
             "solo_controller": "DTW_F_APP",
@@ -1558,13 +1558,13 @@
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 4,
+                    "rate": 3,
                     "runway": "27R",
                     "category": "HHOWE"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 2,
                     "runway": "27L",
                     "category": "LIDDS"
                 },
@@ -1582,13 +1582,13 @@
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 2,
                     "runway": "27R",
                     "category": "KAYLN"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 4,
+                    "rate": 3,
                     "runway": "27R",
                     "category": "MIGGY"
                 },
@@ -1675,6 +1675,7 @@
             "full_name": "Cleveland Center",
             "scope_char": "C",
             "sector_id": "C48",
+            "facility_id": "C",
             "eram_facility": true
         },
         "DTW_SW_TWR": {
