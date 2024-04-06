@@ -1293,6 +1293,10 @@ func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[stri
 
 			m[name] = cb
 			ReturnLinesDrawBuilder(ld)
+		} else {
+			// Include it with an empty command buffer anyway just so we
+			// know which maps were in the file.
+			m[name] = CommandBuffer{}
 		}
 
 		// Is there another video map in the object?
@@ -1533,7 +1537,8 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 				} else {
 					for i, sm := range sgroup.STARSFacilityAdaptation.Maps {
 						if cb, ok := bufferMap[sm.Name]; !ok {
-							e.ErrorString("video map \"%s\" not found", sm.Name)
+							e.ErrorString("video map \"%s\" not found. Available maps: %s",
+								sm.Name, `"`+strings.Join(SortedMapKeys(bufferMap), `", "`)+`"`)
 						} else {
 							sgroup.STARSFacilityAdaptation.Maps[i].CommandBuffer = cb
 						}
