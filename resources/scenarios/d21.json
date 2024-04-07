@@ -1256,28 +1256,28 @@
             ],
             "arrivals": {
                 "CRAKN2": {
-                    "KDTW": 3
-                },
-                "CUUGR2": {
-                    "KDTW": 2
-                },
-                "KKISS2": {
-                    "KDTW": 3
-                },
-                "HAYLL3": {
-                    "KDTW": 2
-                },
-                "KLYNK3": {
                     "KDTW": 4
                 },
+                "CUUGR2": {
+                    "KDTW": 3
+                },
+                "KKISS2": {
+                    "KDTW": 4
+                },
+                "HAYLL3": {
+                    "KDTW": 3
+                },
+                "KLYNK3": {
+                    "KDTW": 3
+                },
                 "LECTR3": {
-                    "KDTW": 2
+                    "KDTW": 4
                 },
                 "WNGNT2": {
-                    "KDTW": 2
+                    "KDTW": 3
                 },
                 "GRAYT2": {
-                    "KDTW": 2
+                    "KDTW": 3
                 }
             },
             "solo_controller": "DTW_F_APP",
@@ -1302,19 +1302,19 @@
             "departure_runways": [
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "3L",
                     "category": "BARII"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "3L",
                     "category": "CLVIN"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "3L",
                     "category": "HHOWE"
                 },
@@ -1326,43 +1326,43 @@
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "3L",
                     "category": "PAVYL"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "4R",
                     "category": "CCOBB"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "4R",
                     "category": "KAYLN"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "4R",
                     "category": "MIGGY"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "4R",
                     "category": "SNDRS"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "4R",
                     "category": "TRMML"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "4R",
                     "category": "ZETTR"
                 }
@@ -1385,28 +1385,28 @@
             ],
             "arrivals": {
                 "FERRL2": {
-                    "KDTW": 3
+                    "KDTW": 4
                 },
                 "TPGUN2": {
-                    "KDTW": 2
+                    "KDTW": 3
                 },
                 "RKCTY2": {
-                    "KDTW": 2
+                    "KDTW": 3
                 },
                 "LAYKS2": {
-                    "KDTW": 2
+                    "KDTW": 3
                 },
                 "HTROD2": {
                     "KDTW": 4
                 },
                 "BONZZ2": {
-                    "KDTW": 2
-                },
-                "HANBL3": {
                     "KDTW": 3
                 },
+                "HANBL3": {
+                    "KDTW": 4
+                },
                 "VCTRZ2": {
-                    "KDTW": 2
+                    "KDTW": 3
                 }
             },
             "solo_controller": "DTW_F_APP",
@@ -1431,67 +1431,67 @@
             "departure_runways": [
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "21R",
                     "category": "BARII"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "21R",
                     "category": "CLVIN"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "21R",
                     "category": "HHOWE"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "21R",
                     "category": "LIDDS"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "21R",
                     "category": "PAVYL"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "22L",
                     "category": "CCOBB"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "22L",
                     "category": "KAYLN"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "22L",
                     "category": "MIGGY"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "22L",
                     "category": "SNDRS"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "22L",
                     "category": "TRMML"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "22L",
                     "category": "ZETTR"
                 }
@@ -1514,16 +1514,16 @@
             ],
             "arrivals": {
                 "GRAYT2": {
-                    "KDTW": 3
+                    "KDTW": 4
                 },
                 "HANBL3": {
-                    "KDTW": 5
+                    "KDTW": 6
                 },
                 "KKISS2": {
-                    "KDTW": 5
+                    "KDTW": 6
                 },
                 "VCTRZ2": {
-                    "KDTW": 4
+                    "KDTW": 5
                 }
             },
             "solo_controller": "DTW_F_APP",
@@ -1546,74 +1546,74 @@
             "departure_runways": [
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "27L",
                     "category": "BARII"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "27L",
                     "category": "CLVIN"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "27R",
                     "category": "HHOWE"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "27L",
                     "category": "LIDDS"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "27L",
                     "category": "PAVYL"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "27R",
                     "category": "CCOBB"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "27R",
                     "category": "KAYLN"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "27R",
                     "category": "MIGGY"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "27L",
                     "category": "SNDRS"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 2,
+                    "rate": 3,
                     "runway": "27R",
                     "category": "TRMML"
                 },
                 {
                     "airport": "KDTW",
-                    "rate": 3,
+                    "rate": 4,
                     "runway": "27R",
                     "category": "ZETTR"
                 }
             ],
             "wind": {
                 "direction": 270,
-                "speed": 8
+                "speed": 21
             }
         }
     },
