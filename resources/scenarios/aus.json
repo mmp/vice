@@ -1333,8 +1333,7 @@
                                     0,
                                     0
                                 ],
-                                "receiving_controller": "HOU_50_CTR",
-                                "to_center": true
+                                "receiving_controller": "HOU_50_CTR"
                             },
                             {
                                 "fixes": [
@@ -1345,8 +1344,7 @@
                                     0,
                                     8999
                                 ],
-                                "receiving_controller": "I90_U_APP",
-                                "to_center": false
+                                "receiving_controller": "I90_U_APP"
                             },
                             {
                                 "fixes": [
@@ -1357,8 +1355,7 @@
                                     9000,
                                     99000
                                 ],
-                                "receiving_controller": "HOU_80_CTR",
-                                "to_center": true
+                                "receiving_controller": "HOU_80_CTR"
                             },
                             {
                                 "fixes": [
@@ -1368,8 +1365,7 @@
                                     0,
                                     0
                                 ],
-                                "receiving_controller": "HOU_96_CTR",
-                                "to_center": true
+                                "receiving_controller": "HOU_96_CTR"
                             },
                             {
                                 "fixes": [
@@ -1379,8 +1375,7 @@
                                     0,
                                     13000
                                 ],
-                                "receiving_controller": "SAT_N_APP",
-                                "to_center": false
+                                "receiving_controller": "SAT_N_APP"
                             }
                         ]
                     },

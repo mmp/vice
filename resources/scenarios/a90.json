@@ -2680,8 +2680,7 @@
           0,
           0
         ],
-        "receiving_controller": "BOS_37_CTR",
-        "to_center": true
+        "receiving_controller": "BOS_37_CTR"
       }
     ],
    "scratchpads": {

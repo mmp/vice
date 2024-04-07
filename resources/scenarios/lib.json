@@ -2513,73 +2513,62 @@
       {
         "fixes": ["MERIT", "BAYYS", "GREKI"],
         "altitude_range": [13000, 999000],
-        "to_center": true,
         "receiving_controller": "BOS_SW_CTR"
       },
       {
         "fixes": ["DIXIE"],
         "altitude_range": [0, 8000],
-        "to_center": false,
         "aircraft_type": ["J"],
         "receiving_controller": "WRI_APP"
       },
       {
         "fixes": ["DIXIE"],
         "altitude_range": [0, 6000],
-        "to_center": false,
         "aircraft_type": ["P", "T"],
         "receiving_controller": "WRI_APP"
       },
       {
         "fixes": ["DIXIE"],
         "altitude_range": [11000, 999999],
-        "to_center": true,
         "receiving_controller": "NY_68_CTR"
       },
       {
         "fixes": ["WHITE"],
         "altitude_range": [9000, 999999],
-        "to_center": true,
         "receiving_controller": "NY_68_CTR"
       },
       {
         "fixes": ["RBV"],
         "altitude_range": [14000, 999999],
-        "to_center": true,
         "aircraft_type": ["J"],
         "receiving_controller": "NY_55_CTR"
       },
       {
         "fixes": ["ARD"],
         "altitude_range": [14000, 999999],
-        "to_center": true,
         "aircraft_type": ["P", "T"],
         "receiving_controller": "NY_55_CTR"
       },
       {
         "fixes": ["COATE", "GAYEL", "NEION"],
         "altitude_range": [16000, 999999],
-        "to_center": true,
         "aircraft_type": ["J"],
         "receiving_controller": "NY_35_CTR"
       },
       {
         "fixes": ["COATE"],
         "altitude_range": [11000, 14000],
-        "to_center": true,
         "receiving_controller": "NY_51_CTR"
       },
       {
         "fixes": ["GAYEL"],
         "altitude_range": [14000, 14000],
-        "to_center": true,
         "aircraft_type": ["P", "T"],
         "receiving_controller": "NY_51_CTR"
       },
       {
         "fixes": ["HAAYS"],
         "altitude_range": [12000, 12000],
-        "to_center": true,
         "receiving_controller": "NY_51_CTR"
       },
       {
@@ -2600,25 +2589,21 @@
       {
         "fixes": ["PARKE", "ELIOT"],
         "altitude_range": [14000, 99999],
-        "to_center": true,
         "receiving_controller": "NY_39_CTR"
       },
       {
         "fixes": ["NEWEL", "ZIMMZ"],
         "altitude_range": [17000, 99999],
-        "to_center": true,
         "receiving_controller": "NY_39_CTR"
       },
       {
         "fixes": ["BIGGY"],
         "altitude_range": [14000, 99999],
-        "to_center": true,
         "receiving_controller": "NY_55_CTR"
       },
       {
         "fixes": ["LANNA"],
         "altitude_range": [17000, 99999],
-        "to_center": true,
         "receiving_controller": "NY_55_CTR"
       }
     ],

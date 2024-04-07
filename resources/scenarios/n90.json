@@ -3488,7 +3488,6 @@
           13000,
           999000
         ],
-        "to_center": true,
         "receiving_controller": "BOS_SW_CTR"
       },
       {
@@ -3499,7 +3498,6 @@
           0,
           8000
         ],
-        "to_center": false,
         "aircraft_type": [
           "J"
         ],
@@ -3513,7 +3511,6 @@
           0,
           6000
         ],
-        "to_center": false,
         "aircraft_type": [
           "P",
           "T"
@@ -3528,7 +3525,6 @@
           11000,
           999999
         ],
-        "to_center": true,
         "receiving_controller": "NY_68_CTR"
       },
       {
@@ -3539,7 +3535,6 @@
           9000,
           999999
         ],
-        "to_center": true,
         "receiving_controller": "NY_68_CTR"
       },
       {
@@ -3550,7 +3545,6 @@
           14000,
           999999
         ],
-        "to_center": true,
         "aircraft_type": [
           "J"
         ],
@@ -3564,7 +3558,6 @@
           14000,
           999999
         ],
-        "to_center": true,
         "aircraft_type": [
           "P",
           "T"
@@ -3581,7 +3574,6 @@
           16000,
           999999
         ],
-        "to_center": true,
         "aircraft_type": [
           "J"
         ],
@@ -3595,7 +3587,6 @@
           11000,
           14000
         ],
-        "to_center": true,
         "receiving_controller": "NY_51_CTR"
       },
       {
@@ -3606,7 +3597,6 @@
           14000,
           14000
         ],
-        "to_center": true,
         "aircraft_type": [
           "P",
           "T"
@@ -3621,7 +3611,6 @@
           12000,
           12000
         ],
-        "to_center": true,
         "receiving_controller": "NY_51_CTR"
       },
       {
@@ -3663,7 +3652,6 @@
           14000,
           99999
         ],
-        "to_center": true,
         "receiving_controller": "NY_39_CTR"
       },
       {
@@ -3675,7 +3663,6 @@
           17000,
           99999
         ],
-        "to_center": true,
         "receiving_controller": "NY_39_CTR"
       },
       {
@@ -3686,7 +3673,6 @@
           14000,
           99999
         ],
-        "to_center": true,
         "receiving_controller": "NY_55_CTR"
       },
       {
@@ -3697,7 +3683,6 @@
           17000,
           99999
         ],
-        "to_center": true,
         "receiving_controller": "NY_55_CTR"
       },
       {
@@ -3712,7 +3697,6 @@
           12000,
           99999
         ],
-        "to_center": true,
         "receiving_controller": "NY_66_CTR"
       },
       {
@@ -3728,7 +3712,6 @@
           10000,
           99999
         ],
-        "to_center": true,
         "receiving_controller": "NY_66_CTR"
       },
       {
@@ -3740,7 +3723,6 @@
           11000,
           99999
         ],
-        "to_center": true,
         "receiving_controller": "BOS_17_CTR"
       }
     ],
