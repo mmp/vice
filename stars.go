@@ -5147,7 +5147,11 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 
 	if ps.SignOnList.Visible {
 		format := func(ctrl *Controller) string {
-			return fmt.Sprintf("%3s", ctrl.SectorId) + " " + ctrl.Frequency.String() + " " +
+			id := ctrl.SectorId
+			if ctrl.FacilityIdentifier != "" && !ctrl.ERAMFacility {
+				id = STARSTriangleCharacter + ctrl.FacilityIdentifier + id
+			}
+			return fmt.Sprintf("%4s", id) + " " + ctrl.Frequency.String() + " " +
 				ctrl.Callsign + Select(ctrl.IsHuman, "*", "") + "\n"
 		}
 
