@@ -52,7 +52,6 @@ type AirspaceAwareness struct {
 	Fix                 []string `json:"fixes"`
 	AltitudeRange       [2]int   `json:"altitude_range"`
 	ReceivingController string   `json:"receiving_controller"`
-	ToCenter            bool     `json:"to_center"`
 	AircraftType        []string `json:"aircraft_type"`
 }
 

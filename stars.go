@@ -3246,12 +3246,11 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 }
 
 // returns the controller responsible for the aircraft given its altitude
-// and route and a Boolean value indicating whether the controller is a
-// center controller.
-func calculateAirspace(ctx *PaneContext, callsign string) (string, bool, error) {
+// and route.
+func calculateAirspace(ctx *PaneContext, callsign string) (string, error) {
 	ac := ctx.world.Aircraft[callsign]
 	if ac == nil {
-		return "", false, ErrSTARSIllegalFlight
+		return "", ErrSTARSIllegalFlight
 	}
 
 	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
@@ -3272,12 +3271,12 @@ func calculateAirspace(ctx *PaneContext, callsign string) (string, bool, error) 
 			// in the matches.
 			aircraftType := ac.AircraftPerformance().Engine.AircraftType
 			if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, aircraftType) {
-				return rules.ReceivingController, rules.ToCenter, nil
+				return rules.ReceivingController, nil
 			}
 		}
 	}
 
-	return "", false, ErrSTARSIllegalPosition
+	return "", ErrSTARSIllegalPosition
 }
 
 func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
@@ -3329,12 +3328,13 @@ func (sp *STARSPane) lookupControllerForId(ctx *PaneContext, id, callsign string
 			return nil
 		}
 
-		controlCallsign, toCenter, err := calculateAirspace(ctx, callsign)
+		controlCallsign, err := calculateAirspace(ctx, callsign)
 		if err != nil {
 			return nil
 		}
 		control := ctx.world.GetControllerByCallsign(controlCallsign)
 
+		toCenter := control.ERAMFacility
 		if control != nil && (toCenter || (id == control.FacilityIdentifier && !toCenter)) {
 			return control
 		}

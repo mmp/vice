@@ -1138,6 +1138,12 @@
       },
       "stars_config": {
         "center": "KMSP",
+          "airspace_awareness": [
+              {
+                  "fixes": ["ALL"],
+                  "receiving_controller": "MSP_05_CTR"
+              }
+          ],
         "inhibit_ca_volumes": [
           {
             "name": "MSP 12",

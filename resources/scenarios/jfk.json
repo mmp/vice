@@ -3753,7 +3753,6 @@
           12000,
           99999
         ],
-        "to_center": true,
         "receiving_controller": "NY_F_CTR"
       },
       {
@@ -3769,7 +3768,6 @@
           10000,
           99999
         ],
-        "to_center": true,
         "receiving_controller": "NY_F_CTR"
       },
       {
@@ -3781,7 +3779,6 @@
           11000,
           99999
         ],
-        "to_center": true,
         "receiving_controller": "BOS_E_CTR"
       }
   ],
