@@ -29,7 +29,7 @@ import (
 )
 
 const ViceServerAddress = "vice.pharr.org"
-const ViceServerPort = 8001
+const ViceServerPort = 8000
 
 var (
 	// There are a handful of widely-used global variables in vice, all
