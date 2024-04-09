@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"log/slog"
+	"slices"
 	"strings"
 )
 
@@ -159,7 +160,7 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 	if passedWaypoint != nil {
 		lg.Info("passed", slog.Any("waypoint", passedWaypoint))
 
-		if passedWaypoint.Delete && ac.Nav.Approach.Cleared {
+		if passedWaypoint.Delete {
 			lg.Info("deleting aircraft after landing")
 			w.DeleteAircraft(ac, nil)
 		}
@@ -596,4 +597,12 @@ func (ac *Aircraft) ToggleSPCOverride(spc string) {
 	} else {
 		ac.SPCOverrides[spc] = nil
 	}
+}
+
+func (ac *Aircraft) AircraftPerformance() AircraftPerformance {
+	return ac.Nav.Perf
+}
+
+func (ac *Aircraft) RouteIncludesFix(fix string) bool {
+	return slices.ContainsFunc(ac.Nav.Waypoints, func(w Waypoint) bool { return w.Fix == fix })
 }

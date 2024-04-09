@@ -1877,7 +1877,6 @@
           "COLIN",
           "MAYES"
         ],
-        "to_center": true,
         "receiving_controller": "ZAE_TUL_LOW"
       },
       {
@@ -1885,7 +1884,6 @@
           "SHAWN",
           "NOBLE"
         ],
-        "to_center": true,
         "receiving_controller": "ZAE_OKC_LOW"
       }
     ],

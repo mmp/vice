@@ -9,7 +9,7 @@ package main
 
 import (
 	"cmp"
-	"errors"
+
 	"fmt"
 	"runtime"
 	"slices"
@@ -26,6 +26,9 @@ import (
 // IFR TRACON separation requirements
 const LateralMinimum = 3
 const VerticalMinimum = 1000
+
+// Character that prefixes aircraft control commands ("climb and maintain", etc.)
+const STARSAircraftCommandChar = ','
 
 // STARS ∆ is U+008A in the FixedDemiBold font we use...
 const STARSTriangleCharacter = "\u008A"
@@ -191,13 +194,12 @@ func (sp *STARSPane) parseQuickLookPositions(ctx *PaneContext, s string) ([]Quic
 		plus := len(id) > 1 && id[len(id)-1] == '+'
 		id = strings.TrimRight(id, "+")
 
-		callsign, err := sp.calculateController(ctx, id, "")
-		control := ctx.world.GetController(callsign)
-		if err != nil || control.FacilityIdentifier != "" || control.Callsign == ctx.world.Callsign {
+		control := sp.lookupControllerForId(ctx, id, "")
+		if control == nil || control.FacilityIdentifier != "" || control.Callsign == ctx.world.Callsign {
 			return positions, strings.Join(ids[i:], " "), ErrSTARSCommandFormat
 		} else {
 			positions = append(positions, QuickLookPosition{
-				Callsign: callsign,
+				Callsign: control.Callsign,
 				Id:       control.SectorId,
 				Plus:     plus,
 			})
@@ -407,7 +409,6 @@ type STARSAircraftState struct {
 	ATPAStatus               ATPAStatus
 	MinimumMIT               float32
 	ATPALeadAircraftCallsign string
-	LastKnownHandoff         string
 	POFlashingEndTime        time.Time
 
 	// These are only set if a leader line direction was specified for this
@@ -978,7 +979,7 @@ func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 
 	// Common stuff
 	owner := ""
-	if ctrl := w.GetController(ac.TrackingController); ctrl != nil {
+	if ctrl := w.GetControllerByCallsign(ac.TrackingController); ctrl != nil {
 		owner = ctrl.SectorId
 	}
 
@@ -1317,7 +1318,7 @@ func (sp *STARSPane) processEvents(w *World) {
 		switch event.Type {
 		case PointOutEvent:
 			if event.ToController == w.Callsign {
-				if ctrl := w.GetController(event.FromController); ctrl != nil {
+				if ctrl := w.GetControllerByCallsign(event.FromController); ctrl != nil {
 					sp.InboundPointOuts[event.Callsign] = ctrl.SectorId
 				} else {
 					sp.InboundPointOuts[event.Callsign] = ""
@@ -1325,7 +1326,7 @@ func (sp *STARSPane) processEvents(w *World) {
 				sp.Aircraft[event.Callsign].DatablockType = FullDatablock
 			}
 			if event.FromController == w.Callsign {
-				if ctrl := w.GetController(event.ToController); ctrl != nil {
+				if ctrl := w.GetControllerByCallsign(event.ToController); ctrl != nil {
 					sp.OutboundPointOuts[event.Callsign] = ctrl.SectorId
 				} else {
 					sp.OutboundPointOuts[event.Callsign] = ""
@@ -1335,12 +1336,12 @@ func (sp *STARSPane) processEvents(w *World) {
 
 		case AcknowledgedPointOutEvent:
 			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
-				if ctrl := w.GetController(event.FromController); ctrl != nil && ctrl.SectorId == id {
+				if ctrl := w.GetControllerByCallsign(event.FromController); ctrl != nil && ctrl.SectorId == id {
 					delete(sp.OutboundPointOuts, event.Callsign)
 				}
 			}
 			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
-				if ctrl := w.GetController(event.ToController); ctrl != nil && ctrl.SectorId == id {
+				if ctrl := w.GetControllerByCallsign(event.ToController); ctrl != nil && ctrl.SectorId == id {
 					delete(sp.InboundPointOuts, event.Callsign)
 					sp.Aircraft[event.Callsign].PointedOut = true
 					sp.Aircraft[event.Callsign].POFlashingEndTime = time.Now().Add(5 * time.Second)
@@ -1349,13 +1350,13 @@ func (sp *STARSPane) processEvents(w *World) {
 
 		case RejectedPointOutEvent:
 			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
-				if ctrl := w.GetController(event.FromController); ctrl != nil && ctrl.SectorId == id {
+				if ctrl := w.GetControllerByCallsign(event.FromController); ctrl != nil && ctrl.SectorId == id {
 					delete(sp.OutboundPointOuts, event.Callsign)
 					sp.RejectedPointOuts[event.Callsign] = nil
 				}
 			}
 			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
-				if ctrl := w.GetController(event.ToController); ctrl != nil && ctrl.SectorId == id {
+				if ctrl := w.GetControllerByCallsign(event.ToController); ctrl != nil && ctrl.SectorId == id {
 					delete(sp.InboundPointOuts, event.Callsign)
 				}
 			}
@@ -1703,7 +1704,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 		case KeyEnter:
 			if status := sp.executeSTARSCommand(sp.previewAreaInput, ctx); status.err != nil {
-				sp.previewAreaOutput = GetSTARSError(status.err).Error()
+				sp.displayError(status.err)
 			} else {
 				if status.clear {
 					sp.resetInputState()
@@ -1988,12 +1989,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 							}
 						}
 					} else {
-						control, err := sp.calculateController(ctx, tcp, aircraft.Callsign)
-						if err != nil {
-							status.err = ErrSTARSIllegalPosition // assume it's this
+						control := sp.lookupControllerForId(ctx, tcp, aircraft.Callsign)
+						if control == nil {
+							status.err = ErrSTARSIllegalPosition
 							return
 						}
-						sp.forceQL(ctx, aircraft.Callsign, control)
+						sp.forceQL(ctx, aircraft.Callsign, control.Callsign)
 					}
 				}
 				status.clear = true
@@ -2058,16 +2059,18 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					status.err = ErrSTARSIllegalFix
 					return
 				}
-			} else if ac := lookupAircraft(f[0], true); ac != nil && len(f) > 1 {
-				acCmds := strings.Join(f[1:], " ")
-				ctx.world.RunAircraftCommands(ac, acCmds,
-					func(err error) {
-						globalConfig.Audio.PlayOnce(AudioCommandError)
-						sp.previewAreaOutput = GetSTARSError(err).Error()
-					})
+			} else if f[0][0] == STARSAircraftCommandChar {
+				if ac := lookupAircraft(f[0][1:], true); ac != nil && len(f) > 1 {
+					acCmds := strings.Join(f[1:], " ")
 
-				status.clear = true
-				return
+					ctx.world.RunAircraftCommands(ac, acCmds,
+						func(err error) {
+							sp.displayError(err)
+						})
+
+					status.clear = true
+					return
+				}
 			}
 		}
 		if len(cmd) > 0 {
@@ -2174,7 +2177,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			return
 		case 2:
 			if err := sp.handoffTrack(ctx, lookupCallsign(f[1], false), f[0]); err != nil {
-				status.err = GetSTARSError(err)
+				status.err = err
 			} else {
 				status.clear = true
 			}
@@ -2360,16 +2363,16 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				// 4-99: track owned by a specific TCP: L(tcp)(dir),(where
 				// tcp has a space if it's given as a single character).
 				tcp := strings.TrimSuffix(cmd[:2], " ")
-				if controller, err := sp.calculateController(ctx, tcp, ""); err == nil {
+				if controller := sp.lookupControllerForId(ctx, tcp, ""); controller != nil {
 					if dir, ok := numpadToDirection(cmd[2]); ok {
 						// Per-controller leaderline
 						if ps.ControllerLeaderLineDirections == nil {
 							ps.ControllerLeaderLineDirections = make(map[string]CardinalOrdinalDirection)
 						}
 						if dir != nil {
-							ps.ControllerLeaderLineDirections[controller] = *dir
+							ps.ControllerLeaderLineDirections[controller.Callsign] = *dir
 						} else {
-							delete(ps.ControllerLeaderLineDirections, controller)
+							delete(ps.ControllerLeaderLineDirections, controller.Callsign)
 						}
 						status.clear = true
 						return
@@ -2558,7 +2561,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					// to determine if an airport was specified.
 					airport, extra, ok := strings.Cut(cmd[1:], " ")
 					if !ok {
-						ctrl := ctx.world.GetController(ctx.world.Callsign)
+						ctrl := ctx.world.GetControllerByCallsign(ctx.world.Callsign)
 						airport = ctrl.DefaultAirport[1:] // drop leading "K"
 						extra = cmd[1:]
 					}
@@ -2639,10 +2642,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			if len(cmd) > 2 {
 				aircraft := lookupAircraft(cmd, false)
 				if aircraft == nil {
-					status.err = GetSTARSError(ErrSTARSCommandFormat)
+					status.err = ErrSTARSCommandFormat
 					return
 				} else if aircraft.TrackingController == "" {
-					status.err = GetSTARSError(ErrSTARSIllegalTrack)
+					status.err = ErrSTARSIllegalTrack
 					return
 				} else {
 					status.output = strings.Join(aircraft.PointOutHistory, " ")
@@ -2859,7 +2862,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				callsign := lookupCallsign(f[0], false)
 				if state, ok := sp.Aircraft[callsign]; ok {
 					state.pilotAltitude = 0
-					if err := sp.setScratchpad(ctx, callsign, "", isSecondary); err != nil {
+					if err := sp.setScratchpad(ctx, callsign, "", isSecondary, false); err != nil {
 						status.err = err
 					} else {
 						status.clear = true
@@ -2877,7 +2880,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
 					sp.Aircraft[ac.Callsign].pilotAltitude = alt * 100
 				} else {
-					if err := sp.setScratchpad(ctx, ac.Callsign, f[1], isSecondary); err != nil {
+					if err := sp.setScratchpad(ctx, ac.Callsign, f[1], isSecondary, false); err != nil {
 						status.err = err
 					}
 				}
@@ -3087,7 +3090,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 func (sp *STARSPane) updateQL(ctx *PaneContext, input string) (ok bool, previewInput string, err error) {
 	positions, input, err := sp.parseQuickLookPositions(ctx, input)
 	if err != nil {
-		err = GetSTARSError(err)
 		ok = false
 		previewInput = input
 		return
@@ -3123,22 +3125,28 @@ func (sp *STARSPane) updateQL(ctx *PaneContext, input string) (ok bool, previewI
 	return
 }
 
-func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool) error {
+func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents string, isSecondary bool, isImplied bool) error {
 	lc := len([]rune(contents))
 
 	if ac := ctx.world.GetAircraft(callsign, false); ac != nil && ac.TrackingController == "" {
 		return ErrSTARSIllegalTrack /* This is because /OK can be used for associated tracks that are not owned by this TCP. But /OK cannot be used
 		for unassociated tracks. So might as well weed them out now. */
 	}
-	var index int
+
+	fac := ctx.world.STARSFacilityAdaptation
 	if isSecondary {
-		index = 1
+		// 5-148: secondary is 1 to 3-maybe-4 characters
+		if lc < 1 || (fac.AllowLongScratchpad[1] && lc > 4) || (!fac.AllowLongScratchpad[1] && lc > 3) {
+			return ErrSTARSCommandFormat
+		}
+	} else {
+		// 5-148: primary is 2 to 3-maybe-4 characters
+		if lc < 2 || (fac.AllowLongScratchpad[0] && lc > 4) || (!fac.AllowLongScratchpad[0] && lc > 3) {
+			return ErrSTARSCommandFormat
+		}
 	}
 
-	if lc > 4 || (lc > 3 && !ctx.world.STARSFacilityAdaptation.ScratchpadRules[index]) {
-		return ErrSTARSCommandFormat
-	}
-
+	// Make sure it's only allowed characters
 	allowedCharacters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./*" + STARSTriangleCharacter
 	for _, letter := range contents {
 		if !strings.ContainsRune(allowedCharacters, letter) {
@@ -3146,30 +3154,44 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 		}
 	}
 
+	// It can't be three numerals
+	if lc == 3 && contents[0] >= '0' && contents[0] <= '9' &&
+		contents[1] >= '0' && contents[1] <= '9' &&
+		contents[2] >= '0' && contents[2] <= '9' {
+		return ErrSTARSCommandFormat
+	}
+
+	if !isSecondary && isImplied {
+		// For the implied version (i.e., not [multifunc]Y), it also can't
+		// match one of the TCPs
+		if lc == 2 {
+			for _, ctrl := range ctx.world.GetAllControllers() {
+				if ctrl.SectorId == contents {
+					return ErrSTARSCommandFormat
+				}
+			}
+		}
+	}
+
+	// Certain specific strings aren't allowed in the first 3 characters
 	illegalScratchpads := []string{"NAT", "CST", "AMB", "RDR", "ADB", "XXX"}
-	if slices.Contains(illegalScratchpads, contents) {
+	if lc >= 3 && slices.Contains(illegalScratchpads, contents[:3]) {
 		return ErrSTARSIllegalScratchpad
 	}
 
 	if isSecondary {
 		ctx.world.SetSecondaryScratchpad(callsign, contents, nil,
-			func(err error) {
-				sp.previewAreaOutput = GetSTARSError(err).Error()
-			})
+			func(err error) { sp.displayError(err) })
 	} else {
 		ctx.world.SetScratchpad(callsign, contents, nil,
-			func(err error) {
-				sp.previewAreaOutput = GetSTARSError(err).Error()
-			})
+			func(err error) { sp.displayError(err) })
 	}
 	return nil
 }
 
 func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt int) {
 	ctx.world.SetTemporaryAltitude(callsign, alt, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+		func(err error) { sp.displayError(err) })
 }
 
 func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir *CardinalOrdinalDirection) {
@@ -3178,9 +3200,7 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir 
 	state.UseGlobalLeaderLine = dir != nil
 
 	ctx.world.SetGlobalLeaderLine(callsign, dir, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+		func(err error) { sp.displayError(err) })
 }
 
 func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
@@ -3193,16 +3213,11 @@ func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
 				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.world, ac)
 			}
 		},
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+		func(err error) { sp.displayError(err) })
 }
 
 func (sp *STARSPane) dropTrack(ctx *PaneContext, callsign string) {
-	ctx.world.DropTrack(callsign, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+	ctx.world.DropTrack(callsign, nil, func(err error) { sp.displayError(err) })
 }
 
 func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
@@ -3215,57 +3230,58 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.world, ac)
 			}
 		},
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+		func(err error) { sp.displayError(err) })
 }
 
 func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) error {
-	// Change the "C" to "N56" for example
-	control, err := sp.calculateController(ctx, controller, callsign)
-	if err != nil {
+	control := sp.lookupControllerForId(ctx, controller, callsign)
+	if control == nil {
 		return ErrSTARSIllegalPosition
 	}
 
-	ctx.world.HandoffTrack(callsign, control, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+	ctx.world.HandoffTrack(callsign, control.Callsign, nil,
+		func(err error) { sp.displayError(err) })
 
 	return nil
 }
 
 // returns the controller responsible for the aircraft given its altitude
-// and route and a Boolean value indicating whether the controller is a
-// center controller.
-func calculateAirspace(ctx *PaneContext, callsign string) (string, bool, error) {
+// and route.
+func calculateAirspace(ctx *PaneContext, callsign string) (string, error) {
 	ac := ctx.world.Aircraft[callsign]
 	if ac == nil {
-		return "", false, ErrSTARSIllegalFlight
+		return "", ErrSTARSIllegalFlight
 	}
-	aircraftType := database.AircraftPerformance[ac.FlightPlan.BaseType()].Engine.AircraftType
+
 	for _, rules := range ctx.world.STARSFacilityAdaptation.AirspaceAwareness {
 		for _, fix := range rules.Fix {
-			if strings.Contains(ac.FlightPlan.Route, fix) || fix == "ALL" {
-				alt := rules.AltitudeRange
-				if (alt[0] == 0 && alt[1] == 0) /* none specified */ ||
-					(ac.FlightPlan.Altitude >= alt[0] && ac.FlightPlan.Altitude <= alt[1]) {
-					if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, aircraftType) {
-						return rules.ReceivingController, rules.ToCenter, nil
-					}
-				}
+			// Does the fix in the rules match the route?
+			if fix != "ALL" && !ac.RouteIncludesFix(fix) {
+				continue
+			}
+
+			// Does the final altitude satisfy the altitude range, if specified?
+			alt := rules.AltitudeRange
+			if !(alt[0] == 0 && alt[1] == 0) /* none specified */ &&
+				(ac.FlightPlan.Altitude < alt[0] || ac.FlightPlan.Altitude > alt[1]) {
+				continue
+			}
+
+			// Finally make sure any aircraft type specified in the rules
+			// in the matches.
+			aircraftType := ac.AircraftPerformance().Engine.AircraftType
+			if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, aircraftType) {
+				return rules.ReceivingController, nil
 			}
 		}
 	}
 
-	return "", false, ErrSTARSIllegalPosition
+	return "", ErrSTARSIllegalPosition
 }
 
 func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
 	ctx.world.HandoffControl(callsign, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+		func(err error) { sp.displayError(err) })
 }
 
 func singleScope(ctx *PaneContext, facilityIdentifier string) *Controller {
@@ -3283,87 +3299,73 @@ func singleScope(ctx *PaneContext, facilityIdentifier string) *Controller {
 	}
 }
 
-// Give a bool if the handoff is good and the correct syntax.
-// Also decode the controller into its regular sector (N4P -> 4P)
-func (sp *STARSPane) calculateController(ctx *PaneContext, controller, callsign string) (string, error) {
-	userController := *ctx.world.GetController(ctx.world.Callsign)
+// Given a controller TCP id and optionally an aircraft callsign, returns
+// the associated Controller.
+func (sp *STARSPane) lookupControllerForId(ctx *PaneContext, id, callsign string) *Controller {
+	haveTrianglePrefix := strings.HasPrefix(id, STARSTriangleCharacter)
+	id = strings.TrimPrefix(id, STARSTriangleCharacter)
 
-	controller = strings.TrimSuffix(controller, "*")
-	lc := len(controller)
-	// ARTCC airspaceawareness
-	haveTrianglePrefix := strings.HasPrefix(controller, STARSTriangleCharacter)
-	if controller[0] == 'C' || (haveTrianglePrefix && lc == 3) {
-		if lc == 3 {
-			if control := singleScope(ctx, string(controller[2])); control != nil {
-				return control.Callsign, nil
+	lc := len(id)
+	if lc == 0 {
+		return nil
+	}
+
+	if haveTrianglePrefix {
+		if lc == 1 {
+			// Facility id where there's only one controller at that facility.
+			return singleScope(ctx, id)
+		} else if lc == 3 {
+			// ∆N4P for example. Must be a different facility.
+			for _, control := range ctx.world.GetAllControllers() {
+				if control.SectorId == id[1:] && control.FacilityIdentifier == string(id[0]) {
+					return control
+				}
 			}
 		}
+	} else if id == "C" {
+		// ARTCC airspace-awareness; must have an aircraft callsign
 		if callsign == "" {
-			return "", errors.New("Cannot calculate airspace")
+			return nil
 		}
-		if controller == "C" {
-			control, toCenter, err := calculateAirspace(ctx, callsign)
-			if err != nil {
-				return "", err
-			}
-			c := ctx.world.GetController(control)
-			if c == nil {
-				return "", ErrSTARSIllegalPosition
-			}
-			if control != "" && ((controller == "C" && toCenter) || (controller == c.FacilityIdentifier && !toCenter) ||
-				(controller == ctx.world.GetController(control).FacilityIdentifier && !toCenter)) {
-				state := sp.Aircraft[callsign]
-				state.LastKnownHandoff = ctx.world.GetController(control).Scope
-				return control, nil
-			}
-		} else {
-			control := ctx.world.GetController(controller)
-			if control != nil {
-				return control.Callsign, nil
-			}
+
+		controlCallsign, err := calculateAirspace(ctx, callsign)
+		if err != nil {
+			return nil
+		}
+		control := ctx.world.GetControllerByCallsign(controlCallsign)
+
+		toCenter := control.ERAMFacility
+		if control != nil && (toCenter || (id == control.FacilityIdentifier && !toCenter)) {
+			return control
 		}
 	} else {
-		// Non ARTCC airspaceawareness handoffs
-		if lc == 1 && !haveTrianglePrefix { // Must be a same sector.
-			for _, control := range ctx.world.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
+		// Non ARTCC airspace-awareness handoffs
+		if lc == 1 { // Must be a same sector.
+			userController := *ctx.world.GetControllerByCallsign(ctx.world.Callsign)
+
+			for _, control := range ctx.world.GetAllControllers() { // If the controller fac/ sector == userControllers fac/ sector its all good!
 				if control.FacilityIdentifier == "" && // Same facility? (Facility ID will be "" if they are the same fac)
-					string(control.SectorId[0]) == string(userController.SectorId[0]) && // Same Sector?
-					string(control.SectorId[1]) == controller { // The actual controller
-					return control.Callsign, nil
+					control.SectorId[0] == userController.SectorId[0] && // Same Sector?
+					string(control.SectorId[1]) == id { // The actual controller
+					return control
 				}
 			}
-		} else if lc == 2 && !haveTrianglePrefix { // Must be a same sector || same fac.
-			controllers := ctx.world.GetAllControllers()
-			// Find the controller fac
-			for _, control := range controllers {
-				if control.SectorId == controller && control.FacilityIdentifier == "" { // Found the facility
-					return control.Callsign, nil
+		} else if lc == 2 {
+			// Must be a same sector || same facility.
+			for _, control := range ctx.world.GetAllControllers() {
+				if control.SectorId == id && control.FacilityIdentifier == "" {
+					return control
 				}
 			}
-
-		} else if lc == 5 && haveTrianglePrefix { // ∆N4P for example. Must be different fac
-			controller = strings.TrimPrefix(controller, STARSTriangleCharacter) // Remove the ∆
-			receivingController := ctx.world.GetController(controller[1:])
-			if receivingController == nil {
-				return "", errors.New("Error fidning interfacility position")
-			}
-			if receivingController.FacilityIdentifier != "" && string(controller[0]) == receivingController.FacilityIdentifier {
-				state := sp.Aircraft[callsign]
-				state.LastKnownHandoff = receivingController.Scope
-				return receivingController.Callsign, nil
-			}
-
 		}
+
 		for _, control := range ctx.world.Controllers {
-			if control.ERAMFacility && control.SectorId == controller {
-				state := sp.Aircraft[callsign]
-				state.LastKnownHandoff = control.Scope
-				return control.Callsign, nil
+			if control.ERAMFacility && control.SectorId == id {
+				return control
 			}
 		}
-
 	}
-	return "", errors.New("Error finding any controller")
+	return nil
 }
 
 func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) error {
@@ -3388,24 +3390,17 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) e
 }
 
 func (sp *STARSPane) forceQL(ctx *PaneContext, callsign, controller string) {
-	ctx.world.ForceQL(callsign, controller, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+	ctx.world.ForceQL(callsign, controller, nil, func(err error) { sp.displayError(err) })
 }
 
 func (sp *STARSPane) redirectHandoff(ctx *PaneContext, callsign, controller string) {
 	ctx.world.RedirectHandoff(callsign, controller, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+		func(err error) { sp.displayError(err) })
 }
 
 func (sp *STARSPane) acceptRedirectedHandoff(ctx *PaneContext, callsign string) {
 	ctx.world.AcceptRedirectedHandoff(callsign, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+		func(err error) { sp.displayError(err) })
 }
 
 func (sp *STARSPane) RemoveForceQL(ctx *PaneContext, callsign, controller string) {
@@ -3413,24 +3408,15 @@ func (sp *STARSPane) RemoveForceQL(ctx *PaneContext, callsign, controller string
 }
 
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
-	ctx.world.PointOut(callsign, controller, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+	ctx.world.PointOut(callsign, controller, nil, func(err error) { sp.displayError(err) })
 }
 
 func (sp *STARSPane) acknowledgePointOut(ctx *PaneContext, callsign string) {
-	ctx.world.AcknowledgePointOut(callsign, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+	ctx.world.AcknowledgePointOut(callsign, nil, func(err error) { sp.displayError(err) })
 }
 
 func (sp *STARSPane) cancelHandoff(ctx *PaneContext, callsign string) {
-	ctx.world.CancelHandoff(callsign, nil,
-		func(err error) {
-			sp.previewAreaOutput = GetSTARSError(err).Error()
-		})
+	ctx.world.CancelHandoff(callsign, nil, func(err error) { sp.displayError(err) })
 }
 
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mousePosition [2]float32,
@@ -3556,15 +3542,19 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.output = slewAircaft(ctx.world, ac)
 				}
 
+			} else if cmd[0] == STARSAircraftCommandChar {
+				ctx.world.RunAircraftCommands(ac, cmd[1:], func(err error) { sp.displayError(err) })
+				status.clear = true
+				return
 			} else if cmd == "." {
-				if err := sp.setScratchpad(ctx, ac.Callsign, "", false); err != nil {
+				if err := sp.setScratchpad(ctx, ac.Callsign, "", false, true); err != nil {
 					status.err = err
 				} else {
 					status.clear = true
 				}
 				return
 			} else if cmd == "+" {
-				if err := sp.setScratchpad(ctx, ac.Callsign, "", true); err != nil {
+				if err := sp.setScratchpad(ctx, ac.Callsign, "", true, true); err != nil {
 					status.err = err
 				} else {
 					status.clear = true
@@ -3619,15 +3609,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				// Do not clear the input area to allow entering a fix for the second location
 				return
 			} else if StringIsSPC(cmd) {
-				ctx.world.ToggleSPCOverride(ac.Callsign, cmd, nil, func(err error) {
-					sp.previewAreaOutput = GetSTARSError(err).Error()
-				})
+				ctx.world.ToggleSPCOverride(ac.Callsign, cmd, nil,
+					func(err error) { sp.displayError(err) })
 				status.clear = true
 				return
 			} else if cmd == "UN" {
-				ctx.world.RejectPointOut(ac.Callsign, nil, func(err error) {
-					sp.previewAreaOutput = GetSTARSError(err).Error()
-				})
+				ctx.world.RejectPointOut(ac.Callsign, nil,
+					func(err error) { sp.displayError(err) })
 				status.clear = true
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
@@ -3640,7 +3628,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						status.clear = true
 						return
 					} else {
-						status.err = GetSTARSError(ErrSTARSIllegalPosition)
+						status.err = ErrSTARSIllegalPosition
 						return
 					}
 				} else {
@@ -3655,12 +3643,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						}
 					}
 					for _, tcp := range tcps {
-						control, err := sp.calculateController(ctx, tcp, ac.Callsign)
-						if err != nil {
-							status.err = GetSTARSError(ErrSTARSIllegalPosition)
+						control := sp.lookupControllerForId(ctx, tcp, ac.Callsign)
+						if control == nil {
+							status.err = ErrSTARSIllegalPosition
 							return
 						}
-						sp.forceQL(ctx, ac.Callsign, control)
+						sp.forceQL(ctx, ac.Callsign, control.Callsign)
 					}
 					status.clear = true
 					return
@@ -3737,7 +3725,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					sp.setTemporaryAltitude(ctx, ac.Callsign, alt*100)
 					status.clear = true
 				} else {
-					if err := sp.setScratchpad(ctx, ac.Callsign, cmd[1:], true); err != nil {
+					if err := sp.setScratchpad(ctx, ac.Callsign, cmd[1:], true, true); err != nil {
 						status.err = err
 					} else {
 						status.clear = true
@@ -3792,58 +3780,41 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				// Check if arrival
 				for _, airport := range ctx.world.ArrivalAirports {
 					if airport.Name == ac.FlightPlan.ArrivalAirport {
-						status.err = GetSTARSError(ErrSTARSIllegalTrack)
+						status.err = ErrSTARSIllegalTrack
 						return
 					}
 				}
 				// Check if being handed off, pointed out or suspended (TODO suspended)
 				if sp.OutboundPointOuts[ac.Callsign] != "" || sp.InboundPointOuts[ac.Callsign] != "" ||
 					(ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.world.Callsign) {
-					status.err = GetSTARSError(ErrSTARSIllegalTrack)
+					status.err = ErrSTARSIllegalTrack
 					return
 				}
 
-				control, err := sp.calculateController(ctx, cmd, ac.Callsign)
-				if err != nil {
-					sp.previewAreaOutput = GetSTARSError(ErrSTARSIllegalPosition).Error()
+				control := sp.lookupControllerForId(ctx, strings.TrimSuffix(cmd, "*"), ac.Callsign)
+				if control == nil {
+					status.err = ErrSTARSIllegalPosition
 				} else {
 					status.clear = true
-					sp.pointOut(ctx, ac.Callsign, control)
+					sp.pointOut(ctx, ac.Callsign, control.Callsign)
 				}
 				return
 
 			} else if len(cmd) > 0 {
 				// See if cmd works as a sector id; if so, make it a handoff.
 				if ac.HandoffTrackController == ctx.world.Callsign || ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign { // Redirect
-					cmd = strings.TrimPrefix(cmd, STARSTriangleCharacter)
-					control, err := sp.calculateController(ctx, cmd, ac.Callsign)
-					if err != nil {
-						status.err = GetSTARSError(ErrSTARSIllegalPosition)
+					control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
+					if control == nil {
+						status.err = ErrSTARSIllegalPosition
 						return
 					}
-					sp.redirectHandoff(ctx, ac.Callsign, control)
-					if err == nil {
-						status.clear = true
-						return
-					}
+					sp.redirectHandoff(ctx, ac.Callsign, control.Callsign)
+					status.clear = true
+				} else if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
+					status.clear = true
 				} else {
-					if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
-						status.clear = true
-						return
-					}
-					// Otherwise fall through to try running it as a command
+					status.err = err
 				}
-				// If it didn't match a controller, try to run it as a command
-				ctx.world.RunAircraftCommands(ac, cmd,
-					func(err error) {
-						// If it's not a valid command and fits the requirements for a scratchpad, set the scratchpad.
-						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false); err != nil {
-							sp.previewAreaOutput = GetSTARSError(err).Error()
-							return
-						}
-					})
-
-				status.clear = true
 				return
 			}
 
@@ -3865,7 +3836,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				sp.cancelHandoff(ctx, ac.Callsign)
 			} else {
 				if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err != nil {
-					status.err = GetSTARSError(err)
+					status.err = err
 				} else {
 					status.clear = true
 				}
@@ -4022,7 +3993,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				if cmd == "" {
 					// Clear pilot reported altitude and scratchpad
 					state.pilotAltitude = 0
-					if err := sp.setScratchpad(ctx, ac.Callsign, "", isSecondary); err != nil {
+					if err := sp.setScratchpad(ctx, ac.Callsign, "", isSecondary, false); err != nil {
 						status.err = err
 					} else {
 						status.clear = true
@@ -4034,7 +4005,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						state.pilotAltitude = alt * 100
 						status.clear = true
 					} else {
-						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary); err != nil {
+						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary, false); err != nil {
 							status.err = err
 						} else {
 							status.clear = true
@@ -4044,7 +4015,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				}
 			case "O": //Pointout history
 				if ac.TrackingController != ctx.world.Callsign {
-					status.err = GetSTARSError(ErrSTARSIllegalTrack)
+					status.err = ErrSTARSIllegalTrack
 					return
 				}
 
@@ -4655,10 +4626,6 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 
 func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, paneExtent Extent2D,
 	transforms ScopeTransformations, cb *CommandBuffer) {
-	for name := range ctx.world.AllAirports() {
-		ctx.world.AddAirportForWeather(name)
-	}
-
 	ps := sp.CurrentPreferenceSet
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -5180,19 +5147,23 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 
 	if ps.SignOnList.Visible {
 		format := func(ctrl *Controller) string {
-			return fmt.Sprintf("%3s", ctrl.SectorId) + " " + ctrl.Frequency.String() + " " +
+			id := ctrl.SectorId
+			if ctrl.FacilityIdentifier != "" && !ctrl.ERAMFacility {
+				id = STARSTriangleCharacter + ctrl.FacilityIdentifier + id
+			}
+			return fmt.Sprintf("%4s", id) + " " + ctrl.Frequency.String() + " " +
 				ctrl.Callsign + Select(ctrl.IsHuman, "*", "") + "\n"
 		}
 
 		// User first
 		text := ""
-		userCtrl := ctx.world.GetController(ctx.world.Callsign)
+		userCtrl := ctx.world.GetControllerByCallsign(ctx.world.Callsign)
 		if userCtrl != nil {
 			text += format(userCtrl)
 		}
 
 		for _, callsign := range SortedMapKeys(ctx.world.GetAllControllers()) {
-			ctrl := ctx.world.GetController(callsign)
+			ctrl := ctx.world.GetControllerByCallsign(callsign)
 			if ctrl != userCtrl {
 				text += format(ctrl)
 			}
@@ -5357,8 +5328,8 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		trackId := "*"
 		if ac.TrackingController != "" {
 			trackId = "?"
-			octrl := ctx.world.GetController(ctx.world.Callsign)
-			if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil && octrl != nil {
+			octrl := ctx.world.GetControllerByCallsign(ctx.world.Callsign)
+			if ctrl := ctx.world.GetControllerByCallsign(ac.TrackingController); ctrl != nil && octrl != nil {
 				trackId = ctrl.Scope
 			}
 		}
@@ -6155,7 +6126,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 
 		field2 := " "
 		if ac.HandoffTrackController != "" {
-			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
+			if ctrl := ctx.world.GetControllerByCallsign(ac.HandoffTrackController); ctrl != nil {
 				if ctrl.FacilityIdentifier == "" { // Same facility
 					field2 = ctrl.SectorId[len(ctrl.SectorId)-1:]
 				} else if ctrl.ERAMFacility { // Enroute handoff
@@ -6256,12 +6227,12 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 
 		field4 := "  "
 		if ac.HandoffTrackController != "" {
-			if ctrl := ctx.world.GetController(ac.HandoffTrackController); ctrl != nil {
+			if ctrl := ctx.world.GetControllerByCallsign(ac.HandoffTrackController); ctrl != nil {
 				if ac.RedirectedHandoff.RedirectedTo != "" {
 					if sameFacility(ctx, ac.RedirectedHandoff.RedirectedTo) {
 						field4 = ac.RedirectedHandoff.RedirectedTo[len(ac.RedirectedHandoff.RedirectedTo)-1:]
 					} else {
-						field4 = ctx.world.GetController(ac.RedirectedHandoff.RedirectedTo).FacilityIdentifier
+						field4 = ctx.world.GetControllerByCallsign(ac.RedirectedHandoff.RedirectedTo).FacilityIdentifier
 					}
 				} else {
 					if ctrl.ERAMFacility { // Same facility
@@ -6363,7 +6334,8 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 }
 
 func sameFacility(ctx *PaneContext, receiving string) bool {
-	return ctx.world.GetController(ctx.world.Callsign).FacilityIdentifier == ctx.world.GetController(receiving).FacilityIdentifier
+	return ctx.world.GetControllerByCallsign(ctx.world.Callsign).FacilityIdentifier ==
+		ctx.world.GetControllerByCallsign(receiving).FacilityIdentifier
 }
 
 func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, brightness STARSBrightness) {
@@ -6909,8 +6881,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 		}
 
 		if status.err != nil {
-			// TODO: as above, rewrite server errors to be cryptic STARS errors...
-			sp.previewAreaOutput = status.err.Error()
+			sp.displayError(status.err)
 		} else {
 			if status.clear {
 				sp.resetInputState()
@@ -7415,6 +7386,13 @@ func (sp *STARSPane) resetInputState() {
 
 	sp.scopeClickHandler = nil
 	sp.selectedPlaceButton = ""
+}
+
+func (sp *STARSPane) displayError(err error) {
+	if err != nil { // it should be, but...
+		globalConfig.Audio.PlayOnce(AudioCommandError)
+		sp.previewAreaOutput = GetSTARSError(err).Error()
+	}
 }
 
 const (

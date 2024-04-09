@@ -507,31 +507,14 @@ func (w *World) GetFlightStrip(callsign string) *FlightStrip {
 	return nil
 }
 
-func (w *World) AddAirportForWeather(airport string) {
-	// UNIMPLEMENTED
-}
-
 func (w *World) GetMETAR(location string) *METAR {
 	return w.METAR[location]
 }
 
-func (w *World) GetAirportATIS(airport string) []ATIS {
-	// UNIMPLEMENTED
-	return nil
-}
-
-func (w *World) GetController(callsign string) *Controller {
+func (w *World) GetControllerByCallsign(callsign string) *Controller {
 	if ctrl := w.Controllers[callsign]; ctrl != nil {
 		return ctrl
 	}
-
-	// Look up by id
-	for _, ctrl := range w.Controllers {
-		if ctrl.SectorId == callsign {
-			return ctrl
-		}
-	}
-
 	return nil
 }
 
