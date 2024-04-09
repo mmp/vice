@@ -168,7 +168,7 @@ var (
 		"STARS: consolidated wake turbulence (CWT) categories are now shown in datablocks and used for ATPA in-trail requirements",
 		"Live weather can now be used in sims",
 		"STARS: fixed various small bugs related to when the FDB should be displayed",
-		"New scenarios: BDL (MerryArbitrary), M98 (Jace Martin), P80 (Ethan Malimon)",
+		"New scenarios: BDL (MerryArbitrary), D21 (Jackson Verdoorn), M98 (Jace Martin), P80 (Ethan Malimon)",
 		"Scenario updates: EWR (aq86_), LGA (Yi Zheng), MIA (Connor Allen), Y90 (MerryArbitrary, Nelson T)",
 		`Aircraft control commands (like "C80" for "climb and maintain 8,000") must now start with a comma`,
 		`Related: the scratchpad can now be set by entering text and slewing an aircraft`,
@@ -1089,7 +1089,7 @@ func showAboutDialog() {
   Ethan Malimon, Jace Martin, Merry,
   Yahya Nazimuddin, Justin Nguyen, Arya T,
   Nelson T, Eli Thompson, Michael Trokel,
-  and Samuel Valencia.
+  Samuel Valencia, and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC,
   ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
   ZSE, and ZTL VATSIM ARTCCs.
