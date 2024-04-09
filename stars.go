@@ -3136,12 +3136,12 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 	fac := ctx.world.STARSFacilityAdaptation
 	if isSecondary {
 		// 5-148: secondary is 1 to 3-maybe-4 characters
-		if lc < 1 || (fac.AllowLongScratchpad[1] && lc > 4) || (!fac.AllowLongScratchpad[1] && lc > 3) {
+		if (fac.AllowLongScratchpad[1] && lc > 4) || (!fac.AllowLongScratchpad[1] && lc > 3) {
 			return ErrSTARSCommandFormat
 		}
 	} else {
 		// 5-148: primary is 2 to 3-maybe-4 characters
-		if lc < 2 || (fac.AllowLongScratchpad[0] && lc > 4) || (!fac.AllowLongScratchpad[0] && lc > 3) {
+		if lc == 1 || (fac.AllowLongScratchpad[0] && lc > 4) || (!fac.AllowLongScratchpad[0] && lc > 3) {
 			return ErrSTARSCommandFormat
 		}
 	}
