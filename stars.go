@@ -3802,18 +3802,23 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 			} else if len(cmd) > 0 {
 				// See if cmd works as a sector id; if so, make it a handoff.
-				if ac.HandoffTrackController == ctx.world.Callsign || ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign { // Redirect
-					control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
-					if control == nil {
-						status.err = ErrSTARSIllegalPosition
-						return
+				control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
+				if control != nil {
+					if ac.HandoffTrackController == ctx.world.Callsign || ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign { // Redirect
+						sp.redirectHandoff(ctx, ac.Callsign, control.Callsign)
+						status.clear = true
+					} else if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
+						status.clear = true
+					} else {
+						status.err = err
 					}
-					sp.redirectHandoff(ctx, ac.Callsign, control.Callsign)
-					status.clear = true
-				} else if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
-					status.clear = true
 				} else {
-					status.err = err
+					// Try setting the scratchpad
+					if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false, true); err != nil {
+						status.err = err
+					} else {
+						status.clear = true
+					}
 				}
 				return
 			}
