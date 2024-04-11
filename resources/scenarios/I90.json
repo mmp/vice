@@ -1,0 +1,112 @@
+{
+    "tracon": "I90",
+    "name": "I90",
+    "primary_airport": "KIAH",
+    "airports": {
+        "KIAH": {
+            "name": "Houston Intercontinental",
+            "approaches": {
+                "I8L": {
+                    "full_name": "ILS 8L",
+                    "runway": "8L",
+                    "tower_controller": "IAH_N_TWR",
+                    "type": "ILS",
+                    "waypoints": [
+                        "GUSHR/a6000/s210/iaf BEPEA LIMEE/a3000 KABBY/a3000 KICKM/a3000/if FLIBZ/a3000 JACEN/a2000",
+                        "MAAKO/iaf KABBY/a3000 KICKM/a3000/if FLIBZ/a3000 JACEN/a2000"
+                    ]
+                },
+                "I8R": {
+                    "full_name": "ILS 8R",
+                    "runway": "8R",
+                    "tower_controller": "IAH_C_TWR",
+                    "type": "ILS",
+                    "waypoints": [
+                        "TTORO/a8000/s210/iaf BGBUK/a7000 LASSY/a7000 DPLOY/a7000 JELLI/a5000/if REIGN/a4000 EELPO/a3000 MATON/a2000",
+                        "LASSY/a7000/s210/iaf DPLOY/a7000 JELLI/a5000/if REIGN/a4000 EELPO/a3000 MATON/a2000",
+                        "WDLNS/a7000/s210/iaf POLLN DPLOY/a7000 JELLI/a5000/if REIGN/a4000 EELPO/a3000 MATON/a2000"
+                    ]
+                },
+                "IL9": {
+                    "full_name": "ILS 9",
+                    "runway": "9",
+                    "tower_controller": "IAH_S_TWR",
+                    "type": "ILS",
+                    "waypoints": [
+                        "URANG/a5000/iaf CHILT/a5000 MEDIC/a4000/if DOHNN/a4000 SAYNO/a3000 HYWAY/a2000"
+                    ]
+                },
+                "I6R": {
+                    "full_name": "ILS 6R",
+                    "runway": "6R",
+                    "tower_controller": "IAH_N_TWR",
+                    "type": "ILS",
+                    "waypoints" : [
+                        "HOOTI/a6000/s210/iaf GRIZL/a6000 ZAPPO/a5000 NEWLY/a5000 RAIDS/a4000/if CHUBS/a3000 OWELL/a2000",
+                        "ZAPPO/a5000/s210/iaf NEWLY/a5000 RAIDS/a4000/if CHUBS/a3000 OWELL/a2000"
+                    ]
+                },
+                "I6L": {
+                    "full_name": "ILS 6L",
+                    "runway": "6L",
+                    "tower_controller": "IAH_C_TWR",
+                    "type": "ILS",
+                    "waypoints": [
+                        "BOZZ/a8000/s210/iaf VANNN/a7000 MKAYE/a7000 GRIEG/a5000/if KERNS/a3000 JEPNI/a2000",
+                        "GARRR/a7000/iaf VANNN/a7000 MKAYE/a7000 GRIEG/a5000/if KERNS/a3000 JEPNI/a2000",
+                        "VANNN/a7000/s210/iaf MKAYE/a7000 GRIEG/a5000/if KERNS/a3000 JEPNI/a2000"
+                    ]
+                },
+                "I27": {
+                    "full_name": "ILS 27",
+                    "runway": "27",
+                    "tower_controller": "IAH_S_TWR",
+                    "type": "ILS",
+                    "waypoints": [
+                        "CLSIK/a4000/s210/iaf GRUNG/a4000 SILLS/a4000 TRANN/a3000 DENTO/a2000/if REDOC/a1500",
+                        "SILLS/a4000/s210/iaf TRANN/a3000 DENTO/a2000/if REDOC/a1500",
+                        "RDFSH/a4000/s210/iaf GEYGR/a4000 SYYKO/a3000 TRANN/a3000 DENTO/a2000/if REDOC/a1500"
+                    ]
+                }
+            }
+        }
+    },
+    "arrival_groups": {
+    },
+    "default_scenario": "",
+    "scenarios": {
+
+    },
+    "fixes": {
+        
+    },
+    "control_positions": {
+        "IAH_C_TWR": {
+            "frequency": "125350",
+            "full_name": "Houston Tower",
+            "scope_char": "Z",
+            "sector_id": "4Z"
+        },
+        "IAH_N_TWR": {
+            "frequency": "120725",
+            "full_name": "Houston Tower",
+            "scope_char": "Y",
+            "sector_id": "4Y"
+        },
+        "IAH_S_TWR" : {
+            "frequency": "135150",
+            "full_name": "Houston Tower",
+            "scope_char": "J",
+            "sector_id": "4J"
+        },
+        "IAH_W_TWR": {
+            "frequency": "127300",
+            "full_name": "Houston Tower",
+            "scope_char": "T",
+            "sector_id": "4T"
+        }
+    },
+    "stars_config": {
+
+    }
+}

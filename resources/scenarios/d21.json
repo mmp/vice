@@ -1808,6 +1808,51 @@
                 "group": 0,
                 "label": "W_DEP",
                 "name": "DTW-012 (WF-DEP SAT)"
+            },
+            {
+                "group": 1,
+                "label": "NF_SID",
+                "name": "DTW-133 (NORTH FLOW INITIAL SIDS)"
+            },
+            {
+                "group": 1,
+                "label": "SF_SID",
+                "name": "DTW-134 (SOUTH FLOW INITIAL SIDS)"
+            },
+            {
+                "group": 1,
+                "label": "MVA",
+                "name": "DTW-001 (MVA)"
+            },
+            {
+                "group": 1,
+                "label": "SA-DEL",
+                "name": "DTW-606 (SF ARR FEEDER DELEGATIONS)"
+            },
+            {
+                "group": 1,
+                "label": "SD-DEL",
+                "name": "DTW-604 (SF DEP DELEGATIONS)"
+            },
+            {
+                "group": 1,
+                "label": "NA-DEL",
+                "name": "DTW-602 (NF ARR FEEDER DELEGATIONS)"
+            },
+            {
+                "group": 1,
+                "label": "ND-DEL",
+                "name": "DTW-600 (NF DEP DELEGATIONS)"
+            },
+            {
+                "group": 1,
+                "label": "WA-DEL",
+                "name": "DTW-610 (WF ARR FEEDER DELEGATIONS)"
+            },
+            {
+                "group": 1,
+                "label": "WD-DEL",
+                "name": "DTW-608 (WF DEP DELEGATIONS)"
             }
         ],
         "video_map_file": "videomaps/ZOB-videomaps.json.zst"
