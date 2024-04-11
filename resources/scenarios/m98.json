@@ -576,12 +576,14 @@
           "full_name": "Minnieapolis Center",
           "scope_char": "C",
           "sector_id": "C05",
+          "facility_id": "C",
           "eram_facility": true
         },
         "MSP_08_CTR": {
           "frequency": 135000,
           "full_name": "Minnieapolis Center",
           "scope_char": "C",
+          "facility_id": "C",
           "sector_id": "C08",
           "eram_facility": true
         },
@@ -1136,6 +1138,12 @@
       },
       "stars_config": {
         "center": "KMSP",
+        "airspace_awareness": [
+          {
+              "fixes": ["ALL"],
+              "receiving_controller": "MSP_05_CTR"
+          }
+      ],
         "inhibit_ca_volumes": [
           {
             "name": "MSP 12",
