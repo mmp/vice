@@ -2,7 +2,7 @@
   "tracon": "P80",
   "airports": {
     "KPDX": {
-      "name": "Portland",
+      "name": "Portland Intl Airport",
       "approaches": {
         "I0L": {
           "full_name": "ILS Runway 10L",
@@ -55,9 +55,9 @@
           "waypoints": [
             "BLAZR/faf/a2000",
             "BUXOM/if/a3000 TRAYL/if/a2300 TTIDE/a2300 BLAZR/faf/a2000",
-            "CIZZL/iaf/s210/a5000 DAYSS/if/a4500 RIPPP/if/a3500 TTIDE/a2300 BLAZR/faf/a2000",
-            "MYCRO/iaf/s210/a5000 GAMBE/if/a4000 TTIDE/a2300 BLAZR/faf/a2000",
-            "VOODO/iaf/s210/a5000 RIPPP/if/a3500 TTIDE/a2300 BLAZR/faf/a2000"
+            "CIZZL/iaf/s210/a5000 DAYSS/arc3.5/if/a4500 RIPPP/arc4.5/if/a3500 TTIDE/a2300 BLAZR/faf/a2000",
+            "MYCRO/iaf/s210/a5000 GAMBE/arc5.9/if/a4000 TTIDE/a2300 BLAZR/faf/a2000",
+            "VOODU/iaf/s210/a5000 RIPPP/arc4.5/if/a3500 TTIDE/a2300 BLAZR/faf/a2000"
           ]
         },
         "Z0R": {
@@ -67,10 +67,10 @@
           "tower_controller": "PDX_S_TWR",
           "waypoints": [
             "POWLZ/faf/a2000",
-            "CIZZL/iaf/s210/a5000 DAYSS/if/a4500 CATUL/if/a3500 POWLZ/faf/a2000",
-            "MYCRO/iaf/s210/a5000 TOWWN/if/a3800 MIVUE/a2800 POWLZ/faf/a2000",
+            "CIZZL/iaf/s210/a5000 DAYSS/arc3.7/if/a4500 CATUL/arc5.0/if/a3500 POWLZ/faf/a2000",
+            "MYCRO/iaf/s210/a5000 TOWWN/arc3.5/if/a3800 MIVUE/arc2.6/a2800 POWLZ/faf/a2000",
             "SCAPO/if/a4000 WETTR/a4000 SAUVI/a2900 POWLZ/faf/a2000",
-            "VOODU/iaf/s210/a5000 CATUL/if/a3500 POWLZ/faf/a2000"
+            "VOODU/iaf/s210/a5000 CATUL/arc5.0/if/a3500 POWLZ/faf/a2000"
           ]
         },
         "Z8L": {
@@ -81,7 +81,7 @@
           "waypoints": [
             "ADDUM/faf/a2000",
             "HPSTR/if/a2900 HANAH/a2900 ADDUM/faf/a2000",
-            "WIDMR/if/s210/a5000 DSHUT/a3200 NOLGE/a2500 ADDUM/faf/a2000"
+            "WIDMR/if/s210/a5000 DSHUT/arc2.2/a3200 NOLGE/arc1.6/a2500 ADDUM/faf/a2000"
           ]
         },
         "Z8R": {
@@ -92,7 +92,7 @@
           "waypoints": [
             "TOLOC/faf/a2000",
             "NACIY/if/a2900 OMMSI/a2900 TOLOC/faf/a2000",
-            "WIDMR/if/s210/a5000 BYKES/a3200 TOLOC/faf/a2000"
+            "WIDMR/if/s210/a5000 BYKES/arc4.0/a3200 TOLOC/faf/a2000"
           ]
         }
       },
@@ -212,7 +212,7 @@
           "TOU,OLM,SEA,BTG,AST,LTJ,EUG,ONP,UBG,OTH,OED,LMT,LKV,WHAMY,CHISM,MINNE,ARRIE,COUGA": {
             "cleared_altitude": 6000,
             "sid": "PTLD2",
-            "waypoints": "KPDX/h283"
+            "waypoints": "KPDX-10R/h283"
           },
           "IMB,KOATA,RIELY": {
             "cleared_altitude": 7000,
@@ -484,7 +484,7 @@
         "initial_controller": "SEA_16_CTR",
         "initial_speed": 300,
         "route": "/. HHOOD",
-        "waypoints": "SODDA/ho/a17000+ DUFUR RABBI/s270/a13000+ HHOOD/s250/a9000-15000 SHAFR/s210/a6700/h259"
+        "waypoints": "SODDA/a17000+ DUFUR RABBI/s270/a13000+ HHOOD/ho/s250/a9000-15000 SHAFR/s210/a6700/h259"
       }
     ],
     "HHOOD4East": [
@@ -2259,7 +2259,7 @@
         "cruise_altitude": 34000,
         "expect_approach": "I8R",
         "initial_altitude": 9000,
-        "initial_controller": "PDX_N_APP",
+        "initial_controller": "PDX_APP",
         "initial_speed": 250,
         "speed_restriction": 210,
         "star": "HHOOD4",
@@ -2557,7 +2557,7 @@
         "cruise_altitude": 34000,
         "expect_approach": "I0L",
         "initial_altitude": 5000,
-        "initial_controller": "PDX_N_APP",
+        "initial_controller": "PDX_APP",
         "initial_speed": 250,
         "speed_restriction": 210,
         "star": "HHOOD4",
@@ -2645,7 +2645,7 @@
         "cruise_altitude": 34000,
         "expect_approach": "I0L",
         "initial_altitude": 5000,
-        "initial_controller": "PDX_N_APP",
+        "initial_controller": "PDX_APP",
         "initial_speed": 250,
         "speed_restriction": 210,
         "star": "KRATR2",
@@ -2733,7 +2733,7 @@
         "cruise_altitude": 34000,
         "expect_approach": "I8L",
         "initial_altitude": 6000,
-        "initial_controller": "PDX_N_APP",
+        "initial_controller": "PDX_APP",
         "initial_speed": 250,
         "speed_restriction": 210,
         "star": "KRATR2",
@@ -3031,7 +3031,7 @@
         "cruise_altitude": 34000,
         "expect_approach": "I8L",
         "initial_altitude": 9000,
-        "initial_controller": "PDX_N_APP",
+        "initial_controller": "PDX_APP",
         "initial_speed": 250,
         "speed_restriction": 210,
         "star": "TMBERS2",
@@ -3329,7 +3329,7 @@
         "cruise_altitude": 34000,
         "expect_approach": "I0R",
         "initial_altitude": 6000,
-        "initial_controller": "PDX_N_APP",
+        "initial_controller": "PDX_APP",
         "initial_speed": 250,
         "speed_restriction": 210,
         "star": "TMBERS2",
@@ -3337,47 +3337,47 @@
         "waypoints": "SSAIL/a6000-8000 N045.28.18.266,W122.45.55.178/ho MYCRO/s210/a5000 BBREW PUBBB/h305"
       }
     ]
-  },
+ },
   "control_positions": {
     "SEA_16_CTR": {
       "frequency": 135450,
       "full_name": "Seattle Center",
-      "facility_id": "C",
-      "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "S16"
+      "sector_id": "S16",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "SEA_32_CTR": {
       "frequency": 126600,
       "full_name": "Seattle Center",
-      "facility_id": "C",
-      "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "S32"
+      "sector_id": "S32",
+      "facility_id": "C",
+      "eram_facility": true
     },
       "SEA_02_CTR": {
       "frequency": 120300,
       "full_name": "Seattle Center",
-      "facility_id": "C",
-      "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "S02"
+      "sector_id": "S02",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "SEA_42_CTR": {
       "frequency": 132070,
       "full_name": "Seattle Center",
-      "facility_id": "C",
-      "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "S42"
+      "sector_id": "S42",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "SEA_46_CTR": {
       "frequency": 124350,
       "full_name": "Seattle Center",
-      "facility_id": "C",
-      "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "S46"
+      "sector_id": "S46",
+      "facility_id": "C",
+      "eram_facility": true
     },
     "PDX_N_TWR": {
       "frequency": 118700,
@@ -3397,7 +3397,7 @@
       "scope_char": "B",
       "sector_id": "2B"
     },
-    "PDX_N_APP": {
+    "PDX_APP": {
       "frequency": 124350,
       "full_name": "Portland Approach",
       "scope_char": "W",
@@ -3414,6 +3414,12 @@
         "full_name": "Portland Approach",
         "scope_char": "F",
         "sector_id": "1F"
+    },
+    "PDX_DEP":{
+      "frequency": 124350,
+      "full_name": "Portland Departure",
+      "scope_char": "D",
+      "sector_id": "1D"
     }
   },
   "default_scenario": "KPDX_West Flow",
@@ -3426,14 +3432,14 @@
     "_PDX_21": "N45.35.38.6,W122.36.01.0",
     "KPDX": "N45.35.17.7,W122.35.39.8"
   },
-  "name": "KPDX",
-  "primary_airport": "KPDX",
   "reporting_points": [
     "HHOOD",
     "KRATR",
     "TMBRS",
     "BTG"
   ],
+  "name": "P80",
+  "primary_airport": "KPDX",
   "scenarios": {
     "KPDX_West Flow": {
       "approach_airspace": [
@@ -3463,17 +3469,17 @@
           "KPDX": 4
         }
       },
-      "solo_controller": "PDX_N_APP",
+      "solo_controller": "PDX_APP",
       "multi_controllers": {
         "default" : {
-            "PDX_N_APP": {"primary": true, "arrivals": ["HHOOD4West","OCITY3West"], "departures": ["KPDX"]},
-            "PDX_S_APP": {"backup": "PDX_N_APP", "arrivals": ["KRATR2West","TMBERS2West"]}
+            "PDX_APP": {"primary": true, "arrivals": ["HHOOD4West","OCITY3West"], "departures": ["KPDX"]},
+            "PDX_S_APP": {"backup": "PDX_APP", "arrivals": ["KRATR2West","TMBERS2West"]}
         }
     },
       "controllers": [
         "PDX_S_TWR",
         "PDX_N_TWR",
-        "PDX_N_APP",
+        "PDX_APP",
         "SEA_16_CTR",
         "SEA_32_CTR",
         "SEA_02_CTR",
@@ -3529,17 +3535,17 @@
           "KPDX": 4
         }
       },
-      "solo_controller": "PDX_N_APP",
+      "solo_controller": "PDX_APP",
       "multi_controllers": {
         "default" : {
-            "PDX_N_APP": {"primary": true, "arrivals": ["HHOOD4East","KRATR2East"], "departures": ["KPDX"]},
-            "PDX_S_APP": {"backup": "PDX_N_APP", "arrivals": ["OCITY3East","TMBERS2East"]}
+            "PDX_APP": {"primary": true, "arrivals": ["HHOOD4East","KRATR2East"], "departures": ["KPDX"]},
+            "PDX_S_APP": {"backup": "PDX_APP", "arrivals": ["OCITY3East","TMBERS2East"]}
         }
     },
       "controllers": [
         "PDX_S_TWR",
         "PDX_N_TWR",
-        "PDX_N_APP",
+        "PDX_APP",
         "SEA_16_CTR",
         "SEA_32_CTR",
         "SEA_02_CTR",
@@ -3596,7 +3602,7 @@
       "controllers": [
         "PDX_S_TWR",
         "PDX_N_TWR",
-        "PDX_N_APP",
+        "PDX_APP",
         "SEA_16_CTR",
         "SEA_32_CTR",
         "SEA_02_CTR",
@@ -3638,7 +3644,7 @@
       "controllers": [
         "PDX_S_TWR",
         "PDX_N_TWR",
-        "PDX_N_APP",
+        "PDX_APP",
         "SEA_16_CTR",
         "SEA_32_CTR",
         "SEA_02_CTR",
@@ -3651,29 +3657,42 @@
       },
       "default_maps": ["P80__10 MAP" ]
     }
+
   },
-    "stars_config": {
-  "center": "KPDX",
-  "radar_sites": {
-    "PDX": {
-      "char": "R",
-      "position": "45.5887089,-122.5968694",
-      "elevation": 30,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 15,
-      "slope_angle": 0.3
+  "stars_config": {
+    "center": "KPDX",
+      "airspace_awareness": [
+          {
+              "fixes": ["ALL"],
+              "receiving_controller": "SEA_16_CTR"
+          }
+      ],
+    "inhibit_ca_volumes": [
+      {
+        "name": "P80",
+        "type": "polygon",
+        "floor": 0,
+        "ceiling": 6000,
+        "vertices": [
+            "N045.38.23.132,W122.51.08.289",
+            "N045.42.19.736,W122.44.24.761",
+            "N045.29.11.632,W122.13.18.788",
+            "N045.25.43.331,W122.16.25.693",
+            "N045.38.23.132,W122.51.08.289"
+        ]
+      }
+    ],
+    "radar_sites": {
+      "PDX": {
+        "char": "W",
+        "position": "KPDX",
+        "elevation": 161,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 50.4,
+        "slope_angle": 0.3
+      }
     },
-    "PDX2": {
-      "char": "S",
-      "position": "45.5887089,-122.5968694",
-      "elevation": 30,
-      "primary_range": 230,
-      "secondary_range": 230,
-      "silence_angle": 15,
-      "slope_angle": 0.3
-    }
-  },
   "scratchpads": {
     "TOU": "TOU",
     "SEA": "SEA",
@@ -3791,5 +3810,5 @@
   }
   ],
 "video_map_file": "videomaps/ZSE-videomaps.json.zst"
-    }
+  }
 }
