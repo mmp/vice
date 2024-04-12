@@ -168,6 +168,20 @@ var (
 		"STARS: consolidated wake turbulence (CWT) categories are now shown in datablocks and used for ATPA in-trail requirements",
 		"Live weather can now be used in sims",
 		"STARS: fixed various small bugs related to when the FDB should be displayed",
+		"New scenarios: BDL (MerryArbitrary), D21 (Jackson Verdoorn), M98 (Jace Martin), P80 (Ethan Malimon)",
+		"Scenario updates: EWR (aq86_), LGA (Yi Zheng), MIA (Connor Allen), Y90 (MerryArbitrary, Nelson T)",
+		`Aircraft control commands (like "C80" for "climb and maintain 8,000") must now start with a comma`,
+		`Related: the scratchpad can now be set by entering text and slewing an aircraft`,
+		"Redirected handoffs are now supported and inter- and intra-facility handoffs are now handled more accurately",
+		`Added support for "force quicklook" to push a quicklook to another controller`,
+		`Added support for minimum safe altitude warnings (MSAW) for aircraft that are below the MVA`,
+		`CWT category updates and bugfixes`,
+		`Added support for global leader lines`,
+		`Limited datablocks are now supported (and used when appropriate)`,
+		`Handle various cases where the FDB should be displayed by default`,
+		`Fixed a bug where go-arounds would sometimes not contact departure`,
+		`Fixed a bug where live weather would occasionally cause vice to crash`,
+		`Fixed a bug where aircraft TAS would be too high at high altitudes`,
 	}
 )
 
@@ -243,6 +257,10 @@ func uiShowConnectDialog(allowCancel bool) {
 
 func uiShowDiscordOptInDialog() {
 	uiShowModalDialog(NewModalDialogBox(&DiscordOptInModalClient{}), true)
+}
+
+func uiShowNewCommandSyntaxDialog() {
+	uiShowModalDialog(NewModalDialogBox(&NewCommandSyntaxModalClient{}), true)
 }
 
 // If |b| is true, all following imgui elements will be disabled (and drawn
@@ -992,6 +1010,43 @@ func (d *DiscordOptInModalClient) Draw() int {
 	return -1
 }
 
+type NewCommandSyntaxModalClient struct{}
+
+func (d *NewCommandSyntaxModalClient) Title() string {
+	return "Aircraft Control Command Syntax Has Changed"
+}
+
+func (d *NewCommandSyntaxModalClient) Opening() {}
+
+func (d *NewCommandSyntaxModalClient) Buttons() []ModalDialogButton {
+	return []ModalDialogButton{
+		ModalDialogButton{
+			text: "Ok",
+			action: func() bool {
+				globalConfig.NotifiedNewCommandSyntax = true
+				return true
+			},
+		},
+	}
+}
+
+func (d *NewCommandSyntaxModalClient) Draw() int {
+	style := imgui.CurrentStyle()
+	spc := style.ItemSpacing()
+	spc.Y -= 4
+	imgui.PushStyleVarVec2(imgui.StyleVarItemSpacing, spc)
+
+	imgui.Text(`Aircraft control commands (e.g., "C30" for "climb and maintain`)
+	imgui.Text(`3000") now must begin with a comma: ,`)
+	imgui.Text(``)
+	imgui.Text(`This is necessary to distinguish between control commands, handoffs`)
+	imgui.Text(`to other controllers, and setting a track's scratchpad.`)
+
+	imgui.PopStyleVar()
+
+	return -1
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // "about" dialog box
 
@@ -1040,7 +1095,7 @@ func showAboutDialog() {
   Ethan Malimon, Jace Martin, Merry,
   Yahya Nazimuddin, Justin Nguyen, Arya T,
   Nelson T, Eli Thompson, Michael Trokel,
-  and Samuel Valencia.
+  Samuel Valencia, and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC,
   ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
   ZSE, and ZTL VATSIM ARTCCs.

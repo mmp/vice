@@ -1951,7 +1951,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 			return ErrOtherControllerHasTrack
 		}
 
-		ctrl := s.World.GetController(sc.Callsign)
+		ctrl := s.World.GetControllerByCallsign(sc.Callsign)
 		if ctrl == nil {
 			s.lg.Error("controller unknown", slog.String("controller", sc.Callsign),
 				slog.Any("world_controllers", s.World.Controllers))
@@ -2141,13 +2141,13 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
-			if s.World.GetController(controller) == nil {
+			if s.World.GetControllerByCallsign(controller) == nil {
 				return ErrNoController
 			}
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			octrl := s.World.GetController(controller)
+			octrl := s.World.GetControllerByCallsign(controller)
 
 			s.eventStream.Post(Event{
 				Type:           OfferedHandoffEvent,
@@ -2180,7 +2180,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			var radioTransmissions []RadioTransmission
-			if octrl := s.World.GetController(ac.TrackingController); octrl != nil {
+			if octrl := s.World.GetControllerByCallsign(ac.TrackingController); octrl != nil {
 				name := Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
 				bye := Sample("good day", "seeya")
 				contact := Sample("contact ", "over to ", "")
@@ -2214,7 +2214,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 
 			// Go ahead and climb departures the rest of the way and send
 			// them direct to their first fix (if they aren't already).
-			octrl := s.World.GetController(ac.TrackingController)
+			octrl := s.World.GetControllerByCallsign(ac.TrackingController)
 			if ac.IsDeparture() && !octrl.IsHuman {
 				s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 					slog.Int("final_altitude", ac.FlightPlan.Altitude))
@@ -2275,13 +2275,13 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
-			if s.World.GetController(controller) == nil {
+			if s.World.GetControllerByCallsign(controller) == nil {
 				return ErrNoController
 			}
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			octrl := s.World.GetController(controller)
+			octrl := s.World.GetControllerByCallsign(controller)
 			ac.RedirectedHandoff.OrigionalOwner = ac.TrackingController
 			ac.RedirectedHandoff.Redirector = append(ac.ForceQLControllers, ctrl.Callsign)
 			ac.RedirectedHandoff.RedirectedTo = octrl.Callsign
@@ -2323,13 +2323,13 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 func (s *Sim) ForceQL(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
-			if s.World.GetController(controller) == nil {
+			if s.World.GetControllerByCallsign(controller) == nil {
 				return ErrNoController
 			}
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			octrl := s.World.GetController(controller)
+			octrl := s.World.GetControllerByCallsign(controller)
 			ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
 			return nil
 		})
@@ -2352,13 +2352,13 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
-			if s.World.GetController(controller) == nil {
+			if s.World.GetControllerByCallsign(controller) == nil {
 				return ErrNoController
 			}
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			octrl := s.World.GetController(controller)
+			octrl := s.World.GetControllerByCallsign(controller)
 			s.eventStream.Post(Event{
 				Type:           PointOutEvent,
 				FromController: ctrl.Callsign,

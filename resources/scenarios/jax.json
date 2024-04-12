@@ -1041,18 +1041,22 @@
     "JAX_30_CTR": {
       "frequency": 135925,
       "full_name": "Jacksonville center",
+      "facility_id": "C",
+      "eram_facility": true,
       "scope_char": "C",
       "sector_id": "30"
     },
     "MCO_E_APP": {
       "frequency": 124800,
       "full_name": "Orlando approach",
+      "facility_id": "4",
       "scope_char": "E",
       "sector_id": "4E"
     },
     "DAB_H_APP": {
       "frequency": 125725,
       "full_name": "Daytona Beach approach",
+      "facility_id": "5",
       "scope_char": "H",
       "sector_id": "5H"
     },

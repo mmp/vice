@@ -3127,8 +3127,7 @@
                     0,
                     0
                 ],
-                "receiving_controller": "FTW_32_CTR",
-                "to_center": true
+                "receiving_controller": "FTW_32_CTR"
             },
             {
                 "fixes": [
@@ -3148,8 +3147,7 @@
                     0,
                     12000
                 ],
-                "receiving_controller": "ACT_H_APP",
-                "to_center": false
+                "receiving_controller": "ACT_H_APP"
             },
             {
                 "fixes": [
@@ -3169,8 +3167,7 @@
                     12001,
                     99000
                 ],
-                "receiving_controller": "FTW_96_CTR",
-                "to_center": true
+                "receiving_controller": "FTW_96_CTR"
             },
             {
                 "fixes": [
@@ -3187,8 +3184,7 @@
                     0,
                     0
                 ],
-                "receiving_controller": "FTW_83_CTR",
-                "to_center": true
+                "receiving_controller": "FTW_83_CTR"
             },
             {
                 "fixes":[
@@ -3210,8 +3206,7 @@
                     0,
                     0
                 ],
-                "receiving_controller": "FTW_53_CTR",
-                "to_center": true
+                "receiving_controller": "FTW_53_CTR"
             }
         ]
     },

@@ -2668,18 +2668,23 @@
     "MIA_46_CTR": {
         "frequency": 135175,
         "full_name": "Miami Center",
+        "facility_id": "C",
+        "eram_facility": true,
         "scope_char": "C",
         "sector_id": "C46"
     },
     "JAX_30_CTR": {
       "frequency": 135925,
       "full_name": "Jacksonville Center",
+      "facility_id": "J",
+      "eram_facility": true,
       "scope_char": "J",
       "sector_id": "J30"
     },
     "MCO_E_APP": {
       "frequency": 124800,
       "full_name": "Orlando approach",
+      "facility_id": "4",
       "scope_char": "E",
       "sector_id": "4E"
     },
@@ -2687,9 +2692,9 @@
       "frequency": 127000,
       "full_name": "Jacksonville approach",
       "scope_char": "N",
+      "facility_id": "3",
       "sector_id": "3N"
     },
-
     "TPA_E_APP": {
       "frequency": 118150,
       "full_name": "Tampa Approach",
@@ -2732,7 +2737,6 @@
       "scope_char": "F",
       "sector_id": "1F"
     },
-
     "TPA_W_TWR": {
       "frequency": 119500,
       "full_name": "Tampa West Tower",

@@ -52,22 +52,21 @@ type AirspaceAwareness struct {
 	Fix                 []string `json:"fixes"`
 	AltitudeRange       [2]int   `json:"altitude_range"`
 	ReceivingController string   `json:"receiving_controller"`
-	ToCenter            bool     `json:"to_center"`
 	AircraftType        []string `json:"aircraft_type"`
 }
 
 type STARSFacilityAdaptation struct {
-	AirspaceAwareness []AirspaceAwareness   `json:"airspace_awareness"`
-	ForceQLToSelf     bool                  `json:"force_ql_self"`
-	ScratchpadRules   [2]bool               `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
-	Maps              []STARSMap            `json:"stars_maps"`
-	InhibitCAVolumes  []AirspaceVolume      `json:"inhibit_ca_volumes"`
-	RadarSites        map[string]*RadarSite `json:"radar_sites"`
-	Center            Point2LL              `json:"-"`
-	CenterString      string                `json:"center"`
-	Range             float32               `json:"range"`
-	Scratchpads       map[string]string     `json:"scratchpads"`
-	VideoMapFile      string                `json:"video_map_file"`
+	AirspaceAwareness   []AirspaceAwareness   `json:"airspace_awareness"`
+	ForceQLToSelf       bool                  `json:"force_ql_self"`
+	AllowLongScratchpad [2]bool               `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
+	Maps                []STARSMap            `json:"stars_maps"`
+	InhibitCAVolumes    []AirspaceVolume      `json:"inhibit_ca_volumes"`
+	RadarSites          map[string]*RadarSite `json:"radar_sites"`
+	Center              Point2LL              `json:"-"`
+	CenterString        string                `json:"center"`
+	Range               float32               `json:"range"`
+	Scratchpads         map[string]string     `json:"scratchpads"`
+	VideoMapFile        string                `json:"video_map_file"`
 }
 
 type Airspace struct {
@@ -1293,6 +1292,10 @@ func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[stri
 
 			m[name] = cb
 			ReturnLinesDrawBuilder(ld)
+		} else {
+			// Include it with an empty command buffer anyway just so we
+			// know which maps were in the file.
+			m[name] = CommandBuffer{}
 		}
 
 		// Is there another video map in the object?
@@ -1533,7 +1536,8 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 				} else {
 					for i, sm := range sgroup.STARSFacilityAdaptation.Maps {
 						if cb, ok := bufferMap[sm.Name]; !ok {
-							e.ErrorString("video map \"%s\" not found", sm.Name)
+							e.ErrorString("video map \"%s\" not found. Available maps: %s",
+								sm.Name, `"`+strings.Join(SortedMapKeys(bufferMap), `", "`)+`"`)
 						} else {
 							sgroup.STARSFacilityAdaptation.Maps[i].CommandBuffer = cb
 						}
