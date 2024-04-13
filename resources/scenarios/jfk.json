@@ -3853,8 +3853,7 @@
       "solo_controller": "JFK_APP",
       "controllers": [
         "BOS_E_CTR",
-        "JFK_TWR",
-        "NY_CTR"
+        "JFK_TWR"
       ],
       "default_maps": [ "JFK 22s" ],
       "wind": {
