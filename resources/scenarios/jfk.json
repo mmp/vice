@@ -2739,7 +2739,184 @@
         "speed_restriction": 250,
         "spawn": "PARCH"
       }
-    ]
+    ],
+    "PARCH3/ROBER2.Finals22": [
+      {
+        "airlines": {
+          "KJFK": [
+            {
+              "airport": "CYYZ",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "LFPG",
+              "fleet": "long",
+              "icao": "AFR"
+            },
+            {
+              "airport": "EGLL",
+              "fleet": "long",
+              "icao": "BAW"
+            },
+            {
+              "airport": "EGCC",
+              "icao": "CLX"
+            },
+            {
+              "airport": "KBOS",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "EDDF",
+              "fleet": "long",
+              "icao": "DLH"
+            },
+            {
+              "airport": "EDDF",
+              "icao": "GEC"
+            },
+            {
+              "airport": "EDDM",
+              "fleet": "long",
+              "icao": "DLH"
+            },
+            {
+              "airport": "EDDM",
+              "icao": "GEC"
+            },
+            {
+              "airport": "EIDW",
+              "fleet": "long",
+              "icao": "EIN"
+            },
+            {
+              "airport": "LLBG",
+              "fleet": "jfk",
+              "icao": "ELY"
+            },
+            {
+              "airport": "EFHK",
+              "fleet": "long",
+              "icao": "FIN"
+            },
+            {
+              "airport": "EDDF",
+              "icao": "GEC"
+            },
+            {
+              "airport": "LEBL",
+              "fleet": "long",
+              "icao": "IBE"
+            },
+            {
+              "airport": "LEMD",
+              "fleet": "long",
+              "icao": "IBE"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "JBU"
+            },
+            {
+              "airport": "EHAM",
+              "fleet": "long",
+              "icao": "KLM"
+            },
+            {
+              "airport": "OMDB",
+              "fleet": "loww",
+              "icao": "UAE"
+            },
+            {
+              "airport": "CYYZ",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KBOS",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KBOS",
+              "icao": "UPS"
+            },
+            {
+              "airport": "EGCC",
+              "fleet": "long",
+              "icao": "VIR"
+            }
+          ]
+        },
+        "assigned_altitude": 5000,
+        "cruise_altitude": 36000,
+        "description": "PARCH3",
+        "initial_altitude": 12000,
+        "initial_controller": "JFK_K_APP",
+        "initial_speed": 250,
+        "star": "ROBER2",
+        "waypoints": "CCC ROBER/h270/ho"
+      }
+    ],
+      "CAMRN/LENDY8.Finals22": [
+      {
+        "airlines": {
+          "KJFK": [
+            {
+              "airport": "KDCA",
+              "fleet": "jfk",
+              "icao": "WJA"
+            },
+            {
+              "airport": "KORF",
+              "fleet": "jfk",
+              "icao": "WJA"
+            },
+            {
+              "airport": "KJAX",
+              "fleet": "jfk",
+              "icao": "WJA"
+            },
+            {
+              "airport": "KMCO",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KCLT",
+              "icao": "JBU"
+            },
+            {
+              "airport": "MKJP",
+              "icao": "BWA"
+            },
+            {
+              "airport": "KAUS",
+              "icao": "AAL"
+            },
+            {
+              "airport": "MMMY",
+              "fleet": "long",
+              "icao": "AMX"
+            },
+            {
+              "airport": "MMMX",
+              "fleet": "long",
+              "icao": "AMX"
+            }
+          ]
+        },
+        "assigned_altitude": 4000,
+        "cruise_altitude": 39000,
+        "initial_altitude": 8000,
+        "initial_controller": "JFK_G_APP",
+        "initial_speed": 250,
+        "speed_restriction": 250,
+        "star": "CAMRN4",
+        "waypoints": "N040.12.34.307,W073.43.07.417 N040.16.13.896,W073.40.17.843/ho/h040"
+      }
+      ]
   },
   "control_positions": {
     "BOS_E_CTR": {
@@ -3652,6 +3829,37 @@
         "direction": 30,
         "gust": 25,
         "speed": 19
+      }
+    },
+    "KJFK Finals 22": {
+      "arrival_runways": [
+        {
+          "airport": "KJFK",
+          "runway": "22L"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "22R"
+        }
+      ],
+      "arrivals": {
+        "PARCH3/ROBER2.Finals22": {
+          "KJFK": 24
+        },
+        "CAMRN/LENDY8.Finals22": {
+          "KJFK": 24
+        }
+      },
+      "solo_controller": "JFK_APP",
+      "controllers": [
+        "BOS_E_CTR",
+        "JFK_TWR",
+        "NY_CTR"
+      ],
+      "default_maps": [ "JFK 22s" ],
+      "wind": {
+        "direction": 260,
+        "speed": 9
       }
     }
   },
