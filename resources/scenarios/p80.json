@@ -70,7 +70,7 @@
             "CIZZL/iaf/s210/a5000 DAYSS/arc3.7/if/a4500 CATUL/arc5.0/if/a3500 POWLZ/faf/a2000",
             "MYCRO/iaf/s210/a5000 TOWWN/arc3.5/if/a3800 MIVUE/arc2.6/a2800 POWLZ/faf/a2000",
             "SCAPO/if/a4000 WETTR/a4000 SAUVI/a2900 POWLZ/faf/a2000",
-            "VOODU/iaf/s210/a5000 CATUL/arc5.0/if/a3500 POWLZ/faf/a2000"
+            "VOODU/iaf/s210/a5000 CATUL/arc5/if/a3500 POWLZ/faf/a2000"
           ]
         },
         "Z8L": {
@@ -92,7 +92,7 @@
           "waypoints": [
             "TOLOC/faf/a2000",
             "NACIY/if/a2900 OMMSI/a2900 TOLOC/faf/a2000",
-            "WIDMR/if/s210/a5000 BYKES/arc4.0/a3200 TOLOC/faf/a2000"
+            "WIDMR/if/s210/a5000 BYKES/a3200/arc4 TOLOC/faf/a2000"
           ]
         }
       },
@@ -3472,14 +3472,19 @@
       "solo_controller": "PDX_APP",
       "multi_controllers": {
         "default" : {
-            "PDX_APP": {"primary": true, "arrivals": ["HHOOD4West","OCITY3West"], "departures": ["KPDX"]},
-            "PDX_S_APP": {"backup": "PDX_APP", "arrivals": ["KRATR2West","TMBERS2West"]}
+          "PDX_APP": {"primary": true, "arrivals": ["HHOOD4West","KRATR2West"], "departures": ["KPDX"]},
+          "PDX_S_APP": {"backup": "PDX_APP", "arrivals": ["OCITY3West","TMBERS2West"]},
+          "PDX_DEP": {"backup": "PDX_APP", "departures": ["KPDX"]},
+          "PDX_F_APP": {"backup": "PDX_APP"}
         }
     },
       "controllers": [
         "PDX_S_TWR",
         "PDX_N_TWR",
+        "PDX_S_APP",
+        "PDX_F_APP",
         "PDX_APP",
+        "PDX_DEP",
         "SEA_16_CTR",
         "SEA_32_CTR",
         "SEA_02_CTR",
@@ -3538,14 +3543,19 @@
       "solo_controller": "PDX_APP",
       "multi_controllers": {
         "default" : {
-            "PDX_APP": {"primary": true, "arrivals": ["HHOOD4East","KRATR2East"], "departures": ["KPDX"]},
-            "PDX_S_APP": {"backup": "PDX_APP", "arrivals": ["OCITY3East","TMBERS2East"]}
+          "PDX_APP": {"primary": true, "arrivals": ["HHOOD4East","KRATR2East"], "departures": ["KPDX"]},
+          "PDX_S_APP": {"backup": "PDX_APP", "arrivals": ["OCITY3East","TMBERS2East"]},
+          "PDX_DEP": {"backup": "PDX_APP", "departures": ["KPDX"]},
+          "PDX_F_APP": {"backup": "PDX_APP"}
         }
     },
       "controllers": [
         "PDX_S_TWR",
         "PDX_N_TWR",
+        "PDX_S_APP",
+        "PDX_F_APP",
         "PDX_APP",
+        "PDX_DEP",
         "SEA_16_CTR",
         "SEA_32_CTR",
         "SEA_02_CTR",
