@@ -469,7 +469,7 @@ func (w *World) GetAircraft(callsign string, abbreviated bool) *Aircraft { // If
 		aircraft := w.findAircraft(callsign, ac)
 		return aircraft
 	}
-	
+
 	return nil
 }
 
