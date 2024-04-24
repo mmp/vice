@@ -936,7 +936,7 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 	}
 
 	// Grab keyboard input
-	mp.input.InsertAtCursor(ctx.keyboard.Input)
+	mp.input.InsertAtCursor(strings.ToUpper(ctx.keyboard.Input))
 
 	if ctx.keyboard.IsPressed(KeyUpArrow) {
 		if mp.historyOffset < len(mp.history) {
@@ -989,32 +989,35 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 		}
 	}
 
-	if ctx.keyboard.IsPressed(KeyEnter) {
-		cmd := string(mp.input.cmd)
-
-		if callsign, cmds, ok := strings.Cut(cmd, " "); ok {
-			if ac := ctx.world.GetAircraft(strings.ToUpper(callsign), true /*abbreviated*/); ac != nil {
-				mp.runCommands(ctx.world, ac.Callsign, cmds)
-				mp.history = append(mp.history, mp.input)
-				mp.messages = append(mp.messages, Message{contents: "> " + cmd})
-			} else {
-				mp.messages = append(mp.messages, Message{contents: callsign + ": no such aircraft", error: true})
-			}
-		}
-		mp.input = CLIInput{}
+	if ctx.keyboard.IsPressed(KeyEnter) && mp.input.cmd != "" {
+		mp.runCommands(ctx.world)
 	}
 }
 
-func (mp *MessagesPane) runCommands(w *World, callsign, cmd string) {
-	w.RunAircraftCommands(callsign, cmd, func(errorString string, remainingCommands string) {
-		if errorString != "" {
-			mp.messages = append(mp.messages, Message{contents: errorString, error: true})
+func (mp *MessagesPane) runCommands(w *World) {
+	callsign, cmd, ok := strings.Cut(mp.input.cmd, " ")
+
+	mp.messages = append(mp.messages, Message{contents: "> " + mp.input.cmd})
+	mp.history = append(mp.history, mp.input)
+	mp.input = CLIInput{}
+
+	if ok {
+		if ac := w.GetAircraft(callsign, true /*abbreviated*/); ac != nil {
+			w.RunAircraftCommands(ac.Callsign, cmd, func(errorString string, remainingCommands string) {
+				if errorString != "" {
+					mp.messages = append(mp.messages, Message{contents: errorString, error: true})
+				}
+				if remainingCommands != "" && mp.input.cmd == "" {
+					mp.input.cmd = callsign + " " + remainingCommands
+					mp.input.cursor = len(mp.input.cmd)
+				}
+			})
+		} else {
+			mp.messages = append(mp.messages, Message{contents: callsign + ": no such aircraft", error: true})
 		}
-		if remainingCommands != "" && mp.input.cmd == "" {
-			mp.input.cmd = remainingCommands
-			mp.input.cursor = len(mp.input.cmd)
-		}
-	})
+	} else if cmd != "" {
+		mp.messages = append(mp.messages, Message{contents: "invalid command: " + mp.input.cmd, error: true})
+	}
 }
 
 func (ci *CLIInput) InsertAtCursor(s string) {
@@ -1122,11 +1125,8 @@ func (mp *MessagesPane) processEvents(w *World) {
 
 		case TrackClickedEvent:
 			if mp.input.cmd != "" {
-				mp.runCommands(w, event.Callsign, mp.input.cmd)
-				mp.history = append(mp.history, mp.input)
-				mp.messages = append(mp.messages, Message{contents: "> " + mp.input.cmd})
-				mp.input = CLIInput{}
-
+				mp.input.cmd = event.Callsign + " " + mp.input.cmd
+				mp.runCommands(w)
 				// Take the focus back
 				wmTakeKeyboardFocus(mp, false)
 			}
