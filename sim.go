@@ -1373,10 +1373,6 @@ func (s *Sim) Activate(lg *Logger) {
 	}
 }
 
-func (s *Sim) SetSTARSInput(input string) {
-	s.STARSInputOverride = input
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // Simulation
 

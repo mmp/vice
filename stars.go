@@ -27,9 +27,6 @@ import (
 const LateralMinimum = 3
 const VerticalMinimum = 1000
 
-// Character that prefixes aircraft control commands ("climb and maintain", etc.)
-const STARSAircraftCommandChar = ','
-
 // STARS ∆ is U+008A in the FixedDemiBold font we use...
 const STARSTriangleCharacter = "\u008A"
 
@@ -1461,19 +1458,11 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.processEvents(ctx.world)
 	sp.updateRadarTracks(ctx.world)
 
-	if ctx.world.STARSInputOverride != "" {
-		sp.previewAreaInput = ctx.world.STARSInputOverride
-		ctx.world.STARSInputOverride = ""
-	}
-
 	ps := sp.CurrentPreferenceSet
 
 	// Clear to background color
 	cb.ClearRGB(ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor))
 
-	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
-		wmTakeKeyboardFocus(sp, false)
-	}
 	sp.processKeyboardInput(ctx)
 
 	transforms := GetScopeTransformations(ctx.paneExtent, ctx.world.MagneticVariation, ctx.world.NmPerLongitude,
@@ -1657,6 +1646,16 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 	if !ctx.haveFocus || ctx.keyboard == nil {
 		return
+	}
+
+	if ctx.keyboard.IsPressed(KeyTab) {
+		// focus back to the MessagesPane
+		globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
+			if mp, ok := pane.(*MessagesPane); ok {
+				wmTakeKeyboardFocus(mp, false)
+				delete(ctx.keyboard.Pressed, KeyTab) // prevent cycling back and forth
+			}
+		})
 	}
 
 	input := strings.ToUpper(ctx.keyboard.Input)
@@ -2057,18 +2056,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					return
 				} else {
 					status.err = ErrSTARSIllegalFix
-					return
-				}
-			} else if f[0][0] == STARSAircraftCommandChar {
-				if ac := lookupAircraft(f[0][1:], true); ac != nil && len(f) > 1 {
-					acCmds := strings.Join(f[1:], " ")
-
-					ctx.world.RunAircraftCommands(ac, acCmds,
-						func(err error) {
-							sp.displayError(err)
-						})
-
-					status.clear = true
 					return
 				}
 			}
@@ -3542,10 +3529,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.output = slewAircaft(ctx.world, ac)
 				}
 
-			} else if cmd[0] == STARSAircraftCommandChar {
-				ctx.world.RunAircraftCommands(ac, cmd[1:], func(err error) { sp.displayError(err) })
-				status.clear = true
-				return
 			} else if cmd == "." {
 				if err := sp.setScratchpad(ctx, ac.Callsign, "", false, true); err != nil {
 					status.err = err
@@ -6825,6 +6808,15 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 
 	mouse := ctx.mouse
 	ps := &sp.CurrentPreferenceSet
+
+	if ctx.mouse.Clicked[MouseButtonPrimary] && !ctx.haveFocus {
+		if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
+			sp.events.PostEvent(Event{Type: TrackClickedEvent, Callsign: ac.Callsign})
+		}
+		wmTakeKeyboardFocus(sp, false)
+		return
+	}
+
 	if activeSpinner == nil && !sp.LockDisplay {
 		// Handle dragging the scope center
 		if mouse.Dragging[MouseButtonSecondary] {

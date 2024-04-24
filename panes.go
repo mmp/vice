@@ -789,12 +789,23 @@ type Message struct {
 	error    bool
 }
 
+type CLIInput struct {
+	cmd    string
+	cursor int
+}
+
 type MessagesPane struct {
 	FontIdentifier FontIdentifier
 	font           *Font
 	scrollbar      *ScrollBar
 	events         *EventsSubscription
 	messages       []Message
+
+	// Command-input-related
+	input         CLIInput
+	history       []CLIInput
+	historyOffset int // for up arrow / downarrow. Note: counts from the end! 0 when not in history
+	savedInput    CLIInput
 }
 
 func NewMessagesPane() *MessagesPane {
@@ -825,7 +836,7 @@ func (mp *MessagesPane) ResetWorld(w *World) {
 	mp.messages = nil
 }
 
-func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return false }
+func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return true }
 
 func (mp *MessagesPane) DrawUI() {
 	if newFont, changed := DrawFontPicker(&mp.FontIdentifier, "Font"); changed {
@@ -836,9 +847,15 @@ func (mp *MessagesPane) DrawUI() {
 func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	mp.processEvents(ctx.world)
 
+	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
+		wmTakeKeyboardFocus(mp, false)
+	}
+	mp.processKeyboard(ctx)
+
+	nLines := len(mp.messages) + 1 /* prompt */
 	lineHeight := float32(mp.font.size + 1)
 	visibleLines := int(ctx.paneExtent.Height() / lineHeight)
-	mp.scrollbar.Update(len(mp.messages), visibleLines, ctx)
+	mp.scrollbar.Update(nLines, visibleLines, ctx)
 
 	drawWidth := ctx.paneExtent.Width()
 	if mp.scrollbar.Visible() {
@@ -855,6 +872,31 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	scrollOffset := mp.scrollbar.Offset()
 	y := lineHeight
+
+	// Draw the prompt and any input text
+	cliStyle := TextStyle{Font: mp.font, Color: RGB{1, 1, .2}}
+	cursorStyle := TextStyle{Font: mp.font, LineSpacing: 0,
+		Color: RGB{1, 1, .2}, DrawBackground: true, BackgroundColor: RGB{1, 1, 1}}
+	ci := mp.input
+
+	prompt := "> "
+	if !ctx.haveFocus {
+		// Don't draw the cursor if we don't have keyboard focus
+		td.AddText(prompt+ci.cmd, [2]float32{indent, y}, cliStyle)
+	} else if ci.cursor == len(ci.cmd) {
+		// cursor at the end
+		td.AddTextMulti([]string{prompt + string(ci.cmd), " "}, [2]float32{indent, y},
+			[]TextStyle{cliStyle, cursorStyle})
+	} else {
+		// cursor in the middle
+		sb := prompt + ci.cmd[:ci.cursor]
+		sc := ci.cmd[ci.cursor : ci.cursor+1]
+		se := ci.cmd[ci.cursor+1:]
+		styles := []TextStyle{cliStyle, cursorStyle, cliStyle}
+		td.AddTextMulti([]string{sb, sc, se}, [2]float32{indent, y}, styles)
+	}
+	y += lineHeight
+
 	for i := scrollOffset; i < min(len(mp.messages), visibleLines+scrollOffset+1); i++ {
 		// TODO? wrap text
 		msg := mp.messages[len(mp.messages)-1-i]
@@ -864,8 +906,139 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 
 	ctx.SetWindowCoordinateMatrices(cb)
+	if ctx.haveFocus {
+		// Yellow border around the edges
+		ld := GetLinesDrawBuilder()
+		defer ReturnLinesDrawBuilder(ld)
+
+		w, h := ctx.paneExtent.Width(), ctx.paneExtent.Height()
+		ld.AddClosedPolyline([][2]float32{{0, 0}, {w, 0}, {w, h}, {0, h}})
+		cb.SetRGB(RGB{1, 1, 0}) // yellow
+		ld.GenerateCommands(cb)
+	}
 	mp.scrollbar.Draw(ctx, cb)
 	td.GenerateCommands(cb)
+}
+
+func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
+	if ctx.keyboard == nil || !ctx.haveFocus {
+		return
+	}
+
+	if ctx.keyboard.IsPressed(KeyTab) {
+		// focus back to the STARS Pane (assume just one...)
+		globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
+			if sp, ok := pane.(*STARSPane); ok {
+				wmTakeKeyboardFocus(sp, false)
+				delete(ctx.keyboard.Pressed, KeyTab) // prevent cycling back and forth
+			}
+		})
+	}
+
+	// Grab keyboard input
+	mp.input.InsertAtCursor(ctx.keyboard.Input)
+
+	if ctx.keyboard.IsPressed(KeyUpArrow) {
+		if mp.historyOffset < len(mp.history) {
+			if mp.historyOffset == 0 {
+				mp.savedInput = mp.input // save current input in case we return
+			}
+			mp.historyOffset++
+			mp.input = mp.history[len(mp.history)-mp.historyOffset]
+			mp.input.cursor = len(mp.input.cmd)
+		}
+	}
+	if ctx.keyboard.IsPressed(KeyDownArrow) {
+		if mp.historyOffset > 0 {
+			mp.historyOffset--
+			if mp.historyOffset == 0 {
+				mp.input = mp.savedInput
+				mp.savedInput = CLIInput{}
+			} else {
+				mp.input = mp.history[len(mp.history)-mp.historyOffset]
+			}
+			mp.input.cursor = len(mp.input.cmd)
+		}
+	}
+
+	if ctx.keyboard.IsPressed(KeyLeftArrow) {
+		if mp.input.cursor > 0 {
+			mp.input.cursor--
+		}
+	}
+	if ctx.keyboard.IsPressed(KeyRightArrow) {
+		if mp.input.cursor < len(mp.input.cmd) {
+			mp.input.cursor++
+		}
+	}
+	if ctx.keyboard.IsPressed(KeyHome) {
+		mp.input.cursor = 0
+	}
+	if ctx.keyboard.IsPressed(KeyEnd) {
+		mp.input.cursor = len(mp.input.cmd)
+	}
+	if ctx.keyboard.IsPressed(KeyBackspace) {
+		mp.input.DeleteBeforeCursor()
+	}
+	if ctx.keyboard.IsPressed(KeyDelete) {
+		mp.input.DeleteAfterCursor()
+	}
+	if ctx.keyboard.IsPressed(KeyEscape) {
+		if mp.input.cursor > 0 {
+			mp.input = CLIInput{}
+		}
+	}
+
+	if ctx.keyboard.IsPressed(KeyEnter) {
+		cmd := string(mp.input.cmd)
+
+		if callsign, cmds, ok := strings.Cut(cmd, " "); ok {
+			if ac := ctx.world.GetAircraft(strings.ToUpper(callsign), true /*abbreviated*/); ac != nil {
+				mp.runCommands(ctx.world, ac.Callsign, cmds)
+				mp.history = append(mp.history, mp.input)
+				mp.messages = append(mp.messages, Message{contents: "> " + cmd})
+			} else {
+				mp.messages = append(mp.messages, Message{contents: callsign + ": no such aircraft", error: true})
+			}
+		}
+		mp.input = CLIInput{}
+	}
+}
+
+func (mp *MessagesPane) runCommands(w *World, callsign, cmd string) {
+	w.RunAircraftCommands(callsign, cmd, func(errorString string, remainingCommands string) {
+		if errorString != "" {
+			mp.messages = append(mp.messages, Message{contents: errorString, error: true})
+		}
+		if remainingCommands != "" && mp.input.cmd == "" {
+			mp.input.cmd = remainingCommands
+			mp.input.cursor = len(mp.input.cmd)
+		}
+	})
+}
+
+func (ci *CLIInput) InsertAtCursor(s string) {
+	if len(s) == 0 {
+		return
+	}
+
+	ci.cmd = ci.cmd[:ci.cursor] + s + ci.cmd[ci.cursor:]
+
+	// place cursor after the inserted text
+	ci.cursor += len(s)
+}
+
+func (ci *CLIInput) DeleteBeforeCursor() {
+	if ci.cursor > 0 {
+		ci.cmd = ci.cmd[:ci.cursor-1] + ci.cmd[ci.cursor:]
+		ci.cursor--
+	}
+}
+
+func (ci *CLIInput) DeleteAfterCursor() {
+	if ci.cursor < len(ci.cmd) {
+		ci.cmd = ci.cmd[:ci.cursor] + ci.cmd[ci.cursor+1:]
+	}
 }
 
 func (mp *MessagesPane) processEvents(w *World) {
@@ -945,6 +1118,17 @@ func (mp *MessagesPane) processEvents(w *World) {
 						contents: event.Message,
 						system:   true,
 					})
+			}
+
+		case TrackClickedEvent:
+			if mp.input.cmd != "" {
+				mp.runCommands(w, event.Callsign, mp.input.cmd)
+				mp.history = append(mp.history, mp.input)
+				mp.messages = append(mp.messages, Message{contents: "> " + mp.input.cmd})
+				mp.input = CLIInput{}
+
+				// Take the focus back
+				wmTakeKeyboardFocus(mp, false)
 			}
 		}
 	}

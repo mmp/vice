@@ -687,12 +687,18 @@ func (w *World) DeleteAircraft(ac *Aircraft, onErr func(err error)) {
 	}
 }
 
-func (w *World) RunAircraftCommands(ac *Aircraft, cmds string, onErr func(err error)) {
+func (w *World) RunAircraftCommands(callsign string, cmds string, handleResult func(message string, remainingInput string)) {
+	var result AircraftCommandsResult
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
-			Call:      w.simProxy.RunAircraftCommands(ac.Callsign, cmds),
+			Call:      w.simProxy.RunAircraftCommands(callsign, cmds, &result),
 			IssueTime: time.Now(),
-			OnErr:     onErr,
+			OnSuccess: func(any) {
+				handleResult(result.ErrorMessage, result.RemainingInput)
+			},
+			OnErr: func(err error) {
+				lg.Errorf("%s: %v", callsign, err)
+			},
 		})
 }
 

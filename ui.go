@@ -1030,11 +1030,10 @@ func (d *NewCommandSyntaxModalClient) Draw() int {
 	spc.Y -= 4
 	imgui.PushStyleVarVec2(imgui.StyleVarItemSpacing, spc)
 
-	imgui.Text(`Aircraft control commands (e.g., "C30" for "climb and maintain`)
-	imgui.Text(`3000") now must begin with a comma: ,`)
-	imgui.Text(``)
-	imgui.Text(`This is necessary to distinguish between control commands, handoffs`)
-	imgui.Text(`to other controllers, and setting a track's scratchpad.`)
+	imgui.Text(`Aircraft control commands are now entered in the messages window`)
+	imgui.Text(`at the bottom of the screen. You can either click on that window`)
+	imgui.Text(`and the STARS window to set where keyboard input should go, or`)
+	imgui.Text(`pressing the TAB key switches between them.`)
 
 	imgui.PopStyleVar()
 
