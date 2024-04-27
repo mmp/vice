@@ -76,10 +76,10 @@
 	<ul class="section-items list-unstyled nav flex-column pb-3">
 	  <li class="nav-item section-title"><a class="nav-link scrollto" href="#section-using"><span class="theme-icon-holder me-2"><i class="fas fa-plane"></i></span>About Vice</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#started">Getting Started</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands">ATC Commands</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#draw-routes">Drawing Routes</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#launches">Launching Aircraft</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#multi-controller">Multiple Controllers</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands">ATC Commands</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#airspace">Airspace</a></li>
 
 	  <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-installation"><span class="theme-icon-holder me-2"><i class="fas fa-arrow-down"></i></span>Installation</a></li>
@@ -384,12 +384,22 @@
 
 	  <section class="docs-section" id="atc-commands">
             <h2 class="section-heading">ATC Commands</h2>
-            <p>The commands below issue control commands to aircraft. To
+            <p>A command prompt is available at the bottom of <i>vice</i>'s window.
+              When <i>vice</i> starts up, keyboard input initially goes to the STARS radar scope.
+              To switch to the command window, either click on the command window or press TAB.
+              Pressing TAB again or clicking on the STARS scope will return keyboard focus to STARS.
+              When the command window has keyboard focus, it is highlighted in yellow, as shown below:
+              </p>
+<div class="text-center">
+<img src="cli-window.png" srcset="cli-window-2x.png 2x" width="913" height="91">
+</div><br>
+            <p>The commands below can be entered to issue control commands to aircraft. To
               indicate which aircraft should be given a command, you
               can either enter a command and click on an aircraft's radar
-              track or you can enter the aircraft's callsign, a space, 
-              the command, and then press the "enter" key.
-              After you issue a command, the virtual pilot's readback is shown at the bottom of the window.
+              track in the STARS window or you can enter the aircraft's callsign, a space, 
+              the command, and then press the "enter" key. The aircraft's callsign may
+              be abbreviated if unambiguously identifies a single aircraft.
+              After you issue a command, the virtual pilot's readback is shown.
               The aircraft will then start following that instruction, to the best of its abilities.
               Unlike VATSIM, the pilots will always do exactly what you tell them to.
             </p>
@@ -669,7 +679,7 @@
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.10.20/Vice-v0.10.20-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.10.20 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.10.21/Vice-v0.10.21-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.10.21 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -678,7 +688,7 @@
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Big Sur or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.10.20/Vice-v0.10.20-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.10.20 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.10.21/Vice-v0.10.21-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.10.21 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -705,15 +715,15 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
-            <h3>0.10.21 (TODO April 2024)</h3>
+            <h3>0.10.21 (26 April 2024)</h3>
             <ul>
               <li>New scenarios: BDL (MerryArbitrary), D21 (Jackson Verdoorn), M98 (Jace Martin), P80 (Ethan Malimon).</li>
               <li>Scenario updates: EWR (aq86_), LGA (Yi Zheng), MIA
-              (Connor Allen), M98 (Y90 (MerryArbitrary, Nelson T).</li>
+              (Connor Allen), Y90 (MerryArbitrary, Nelson T).</li>
               <li>STARS simulation has been improved in numerous ways:
                 <ul>
                   <li><b>Aircraft control commands (like "C80" for "climb
-                  and maintain 8,000") must now start with a comma: ,.</b></li>
+                  and maintain 8,000") are now entered in the radio comms window at the bottom.</b></li>
                   <li>Significantly improved handoffs: multiple redirected handoffs are now supported, inter- and intra-facility handoffs are now handled more accurately.</li>
                   <li>Added support for "force quicklook" to push a quicklook to another controller.</li>
                   <li>Added support for minimum safe altitude warnings (MSAW) for aircraft that are below the MVA.</li>
@@ -779,6 +789,11 @@ how it simulates aircraft or the STARS interface.
 	      <li>STARS: fixed bug with flickering airport weather list.</li>
             </ul>
 
+            <div class="container">
+              <button id="toggleButton">🔍 Show Earlier Releases</button>
+              <br>
+            <div id="hiddenText" style="display:none;">
+              <br>
             <h3>0.10.18 (12 February 2024)</h3>
             <ul>
 	      <li>Added new scenarios: SCT (Justin Nguyen and Eli Thompson), NCT and D01/GJT (Jud Lopez), and TPA (Connor Allen).</li>
@@ -832,11 +847,6 @@ how it simulates aircraft or the STARS interface.
               </li>
             </ul>
 
-            <div class="container">
-              <button id="toggleButton">🔍 Show Earlier Releases</button>
-              <br>
-            <div id="hiddenText" style="display:none;">
-              <br>
             <h3>0.10.16 (22 December 2023)</h3>
             <ul>
 	      <li>Added multiple new scenarios: S46, BHM, GSP (Aaron Flett), AUS (Jace Martin), P50 (Mike K)</li>

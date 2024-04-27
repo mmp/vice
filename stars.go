@@ -5460,110 +5460,114 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
 
-	primaryTargetBrightness := ps.Brightness.PrimarySymbols
-
 	pos := state.TrackPosition()
 	pw := transforms.WindowFromLatLongP(pos)
-
 	// On high DPI windows displays we need to scale up the tracks
 	scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 
-	switch mode := sp.radarMode(ctx.world); mode {
-	case RadarModeSingle:
-		site := ctx.world.RadarSites[ps.RadarSiteSelected]
-		primary, secondary, dist := site.CheckVisibility(ctx.world, pos, state.TrackAltitude())
+	primaryTargetBrightness := ps.Brightness.PrimarySymbols
+	if primaryTargetBrightness > 0 {
+		switch mode := sp.radarMode(ctx.world); mode {
+		case RadarModeSingle:
+			site := ctx.world.RadarSites[ps.RadarSiteSelected]
+			primary, secondary, dist := site.CheckVisibility(ctx.world, pos, state.TrackAltitude())
 
-		// Orient the box toward the radar
-		h := headingp2ll(site.Position, pos, ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
-		rot := rotator2f(h)
+			// Orient the box toward the radar
+			h := headingp2ll(site.Position, pos, ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
+			rot := rotator2f(h)
 
-		// blue box: x +/-9 pixels, y +/-3 pixels
-		box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
+			// blue box: x +/-9 pixels, y +/-3 pixels
+			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
 
-		// Scale box based on distance from the radar; TODO: what exactly should this be?
-		scale *= float32(clamp(dist/40, .5, 1.5))
-		for i := range box {
-			box[i] = scale2f(box[i], scale)
-			box[i] = add2f(rot(box[i]), pw)
-			box[i] = transforms.LatLongFromWindowP(box[i])
+			// Scale box based on distance from the radar; TODO: what exactly should this be?
+			scale *= float32(clamp(dist/40, .5, 1.5))
+			for i := range box {
+				box[i] = scale2f(box[i], scale)
+				box[i] = add2f(rot(box[i]), pw)
+				box[i] = transforms.LatLongFromWindowP(box[i])
+			}
+
+			color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
+			if primary {
+				// Draw a filled box
+				trid.AddQuad(box[0], box[1], box[2], box[3], color)
+			} else if secondary {
+				// If it's just a secondary return, only draw the box outline.
+				// TODO: is this 40nm, or secondary?
+				ld.AddPolyline([2]float32{}, color, box[:])
+			}
+
+			// green line
+			line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
+			for i := range line {
+				line[i] = add2f(rot(scale2f(line[i], scale)), pw)
+				line[i] = transforms.LatLongFromWindowP(line[i])
+			}
+			ld.AddLine(line[0], line[1], primaryTargetBrightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
+
+		case RadarModeMulti:
+			primary, secondary, _ := sp.radarVisibility(ctx.world, pos, state.TrackAltitude())
+			rot := rotator2f(heading)
+
+			// blue box: x +/-9 pixels, y +/-3 pixels
+			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
+			for i := range box {
+				box[i] = scale2f(box[i], scale)
+				box[i] = add2f(rot(box[i]), pw)
+				box[i] = transforms.LatLongFromWindowP(box[i])
+			}
+
+			color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
+			if primary {
+				// Draw a filled box
+				trid.AddQuad(box[0], box[1], box[2], box[3], color)
+			} else if secondary {
+				// If it's just a secondary return, only draw the box outline.
+				// TODO: is this 40nm, or secondary?
+				ld.AddPolyline([2]float32{}, color, box[:])
+			}
+
+		case RadarModeFused:
+			if ps.Brightness.PrimarySymbols > 0 {
+				color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
+				pd2.AddPoint(pos, color)
+			}
 		}
-
-		color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
-		if primary {
-			// Draw a filled box
-			trid.AddQuad(box[0], box[1], box[2], box[3], color)
-		} else if secondary {
-			// If it's just a secondary return, only draw the box outline.
-			// TODO: is this 40nm, or secondary?
-			ld.AddPolyline([2]float32{}, color, box[:])
-		}
-
-		// green line
-		line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
-		for i := range line {
-			line[i] = add2f(rot(scale2f(line[i], scale)), pw)
-			line[i] = transforms.LatLongFromWindowP(line[i])
-		}
-		ld.AddLine(line[0], line[1], primaryTargetBrightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
-
-	case RadarModeMulti:
-		primary, secondary, _ := sp.radarVisibility(ctx.world, pos, state.TrackAltitude())
-		rot := rotator2f(heading)
-
-		// blue box: x +/-9 pixels, y +/-3 pixels
-		box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
-		for i := range box {
-			box[i] = scale2f(box[i], scale)
-			box[i] = add2f(rot(box[i]), pw)
-			box[i] = transforms.LatLongFromWindowP(box[i])
-		}
-
-		color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
-		if primary {
-			// Draw a filled box
-			trid.AddQuad(box[0], box[1], box[2], box[3], color)
-		} else if secondary {
-			// If it's just a secondary return, only draw the box outline.
-			// TODO: is this 40nm, or secondary?
-			ld.AddPolyline([2]float32{}, color, box[:])
-		}
-
-	case RadarModeFused:
-		color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
-		pd2.AddPoint(pos, color)
 	}
 
 	// Draw main track symbol letter
 	trackIdBrightness := ps.Brightness.Positions
-	dt := sp.datablockType(ctx, ac)
-	color, _ := sp.datablockColor(ctx, ac)
-	if dt == PartialDatablock || dt == LimitedDatablock {
-		trackIdBrightness = ps.Brightness.LimitedDatablocks
-	}
-	if trackId != "" {
-		font := sp.systemFont[ps.CharSize.PositionSymbols]
-		td.AddTextCentered(trackId, pw, TextStyle{Font: font, Color: trackIdBrightness.ScaleRGB(color), DropShadow: true})
-	} else {
-		// TODO: draw box if in range of squawks we have selected
-
-		// diagonals
-		dx := transforms.LatLongFromWindowV([2]float32{1, 0})
-		dy := transforms.LatLongFromWindowV([2]float32{0, 1})
-		// Returns lat-long point w.r.t. p with a window coordinates vector (x,y) added.
-		delta := func(p Point2LL, x, y float32) Point2LL {
-			return add2ll(p, add2ll(scale2f(dx, x), scale2f(dy, y)))
+	if trackIdBrightness > 0 {
+		dt := sp.datablockType(ctx, ac)
+		color, _ := sp.datablockColor(ctx, ac)
+		if dt == PartialDatablock || dt == LimitedDatablock {
+			trackIdBrightness = ps.Brightness.LimitedDatablocks
 		}
+		if trackId != "" {
+			font := sp.systemFont[ps.CharSize.PositionSymbols]
+			td.AddTextCentered(trackId, pw, TextStyle{Font: font, Color: trackIdBrightness.ScaleRGB(color), DropShadow: true})
+		} else {
+			// TODO: draw box if in range of squawks we have selected
 
-		px := float32(3) * scale
-		// diagonals
-		diagPx := px * 0.707107                                            /* 1/sqrt(2) */
-		trackColor := trackIdBrightness.ScaleRGB(RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
-		ld.AddLine(delta(pos, -diagPx, -diagPx), delta(pos, diagPx, diagPx), trackColor)
-		ld.AddLine(delta(pos, diagPx, -diagPx), delta(pos, -diagPx, diagPx), trackColor)
-		// horizontal line
-		ld.AddLine(delta(pos, -px, 0), delta(pos, px, 0), trackColor)
-		// vertical line
-		ld.AddLine(delta(pos, 0, -px), delta(pos, 0, px), trackColor)
+			// diagonals
+			dx := transforms.LatLongFromWindowV([2]float32{1, 0})
+			dy := transforms.LatLongFromWindowV([2]float32{0, 1})
+			// Returns lat-long point w.r.t. p with a window coordinates vector (x,y) added.
+			delta := func(p Point2LL, x, y float32) Point2LL {
+				return add2ll(p, add2ll(scale2f(dx, x), scale2f(dy, y)))
+			}
+
+			px := float32(3) * scale
+			// diagonals
+			diagPx := px * 0.707107                                            /* 1/sqrt(2) */
+			trackColor := trackIdBrightness.ScaleRGB(RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
+			ld.AddLine(delta(pos, -diagPx, -diagPx), delta(pos, diagPx, diagPx), trackColor)
+			ld.AddLine(delta(pos, diagPx, -diagPx), delta(pos, -diagPx, diagPx), trackColor)
+			// horizontal line
+			ld.AddLine(delta(pos, -px, 0), delta(pos, px, 0), trackColor)
+			// vertical line
+			ld.AddLine(delta(pos, 0, -px), delta(pos, 0, px), trackColor)
+		}
 	}
 
 	// Draw history in reverse order so that if it's not moving, more

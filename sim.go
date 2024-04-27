@@ -2080,8 +2080,11 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
-			if s.World.GetControllerByCallsign(controller) == nil {
+			if octrl := s.World.GetControllerByCallsign(controller); octrl == nil {
 				return ErrNoController
+			} else if octrl.Callsign == ctrl.Callsign {
+				// Can't handoff to ourself
+				return ErrInvalidController
 			}
 			return nil
 		},
@@ -2214,8 +2217,11 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
-			if s.World.GetControllerByCallsign(controller) == nil {
+			if octrl := s.World.GetControllerByCallsign(controller); octrl == nil {
 				return ErrNoController
+			} else if octrl.Callsign == ctrl.Callsign {
+				// Can't redirect to ourself
+				return ErrInvalidController
 			}
 			return nil
 		},
@@ -2290,9 +2296,11 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 		func(ctrl *Controller, ac *Aircraft) error {
 			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
-			}
-			if s.World.GetControllerByCallsign(controller) == nil {
+			} else if octrl := s.World.GetControllerByCallsign(controller); octrl == nil {
 				return ErrNoController
+			} else if octrl.Callsign == ctrl.Callsign {
+				// Can't point out to ourself
+				return ErrInvalidController
 			}
 			return nil
 		},
