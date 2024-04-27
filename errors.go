@@ -19,6 +19,7 @@ var (
 	ErrInvalidAltitude              = errors.New("Altitude above aircraft's ceiling")
 	ErrInvalidApproach              = errors.New("Invalid approach")
 	ErrInvalidCommandSyntax         = errors.New("Invalid command syntax")
+	ErrInvalidController            = errors.New("Invalid controller")
 	ErrInvalidHeading               = errors.New("Invalid heading")
 	ErrNoAircraftForCallsign        = errors.New("No aircraft exists with specified callsign")
 	ErrNoController                 = errors.New("No controller with that callsign")
@@ -57,6 +58,7 @@ var errorStringToError = map[string]error{
 	ErrInvalidAltitude.Error():              ErrInvalidAltitude,
 	ErrInvalidApproach.Error():              ErrInvalidApproach,
 	ErrInvalidCommandSyntax.Error():         ErrInvalidCommandSyntax,
+	ErrInvalidController.Error():            ErrInvalidController,
 	ErrInvalidHeading.Error():               ErrInvalidHeading,
 	ErrNoAircraftForCallsign.Error():        ErrNoAircraftForCallsign,
 	ErrNoController.Error():                 ErrNoController,
@@ -131,6 +133,7 @@ var starsErrorRemap = map[error]*STARSError{
 	ErrInvalidAltitude:              ErrSTARSIllegalValue,
 	ErrInvalidApproach:              ErrSTARSIllegalValue,
 	ErrInvalidCommandSyntax:         ErrSTARSCommandFormat,
+	ErrInvalidController:            ErrSTARSIllegalPosition,
 	ErrInvalidHeading:               ErrSTARSIllegalValue,
 	ErrNoAircraftForCallsign:        ErrSTARSNoFlight,
 	ErrNoController:                 ErrSTARSIllegalSector,
