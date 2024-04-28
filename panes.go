@@ -1000,7 +1000,7 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 func (msg *Message) Color() RGB {
 	switch {
 	case msg.error:
-		return RGB{.9,.1,.1}
+		return RGB{.9, .1, .1}
 	case msg.global:
 		return RGB{0.012, 0.78, 0.016}
 	default:

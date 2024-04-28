@@ -1282,9 +1282,9 @@ type GlobalMessage struct {
 }
 
 type SimWorldUpdate struct {
-	Aircraft      map[string]*Aircraft
-	Controllers   map[string]*Controller
-	Time          time.Time
+	Aircraft    map[string]*Aircraft
+	Controllers map[string]*Controller
+	Time        time.Time
 
 	LaunchConfig LaunchConfig
 
