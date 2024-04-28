@@ -787,7 +787,7 @@ type Message struct {
 	contents string
 	system   bool
 	error    bool
-	global 	 bool
+	global   bool
 }
 
 type CLIInput struct {
@@ -945,7 +945,6 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 	} else {
 		mp.input.InsertAtCursor(strings.ToUpper(ctx.keyboard.Input))
 	}
-	
 
 	if ctx.keyboard.IsPressed(KeyUpArrow) {
 		if mp.historyOffset < len(mp.history) {
@@ -1009,9 +1008,9 @@ func (mp *MessagesPane) runCommands(w *World) {
 	if mp.input.cmd[0] == '/' {
 		w.SendGlobalMessage(GlobalMessage{
 			FromController: w.Callsign,
-			Message: w.Callsign + ": " + mp.input.cmd[1:],
+			Message:        w.Callsign + ": " + mp.input.cmd[1:],
 		})
-		mp.messages = append(mp.messages, Message{contents: w.Callsign + ": " + mp.input.cmd[1:], global: true,})
+		mp.messages = append(mp.messages, Message{contents: w.Callsign + ": " + mp.input.cmd[1:], global: true})
 		mp.history = append(mp.history, mp.input)
 		mp.input = CLIInput{}
 		return
@@ -1132,7 +1131,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 		case GlobalMessageEvent:
 			if event.FromController != w.Callsign {
 				mp.messages = append(mp.messages, Message{contents: event.Message, global: true})
-			}	
+			}
 		case StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.
 			n := len(mp.messages)

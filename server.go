@@ -177,8 +177,8 @@ func (s *SimProxy) CancelHandoff(callsign string) *rpc.Call {
 func (s *SimProxy) GlobalMessage(global GlobalMessage) *rpc.Call {
 	return s.Client.Go("Sim.GlobalMessage", &GlobalMessageArgs{
 		ControllerToken: s.ControllerToken,
-		Message: global.Message,
-		FromController: global.FromController,
+		Message:         global.Message,
+		FromController:  global.FromController,
 	}, nil, nil)
 }
 
@@ -799,8 +799,8 @@ type ForceQLArgs struct {
 }
 type GlobalMessageArgs struct {
 	ControllerToken string
-	FromController string 
-	Message string 
+	FromController  string
+	Message         string
 }
 
 func (sd *SimDispatcher) GlobalMessage(po *GlobalMessageArgs, _ *struct{}) error {

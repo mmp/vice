@@ -1277,14 +1277,14 @@ func (s *Sim) PostEvent(e Event) {
 }
 
 type GlobalMessage struct {
-	Message string 
+	Message        string
 	FromController string
 }
 
 type SimWorldUpdate struct {
-	Aircraft    map[string]*Aircraft
-	Controllers map[string]*Controller
-	Time        time.Time
+	Aircraft      map[string]*Aircraft
+	Controllers   map[string]*Controller
+	Time          time.Time
 	GlobalMessage GlobalMessage
 
 	LaunchConfig LaunchConfig
@@ -1347,7 +1347,7 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 			Events:          ctrl.events.Get(),
 			TotalDepartures: s.TotalDepartures,
 			TotalArrivals:   s.TotalArrivals,
-			GlobalMessage: s.World.GlobalMessage,
+			GlobalMessage:   s.World.GlobalMessage,
 		}
 
 		return nil
@@ -1965,8 +1965,8 @@ func (s *Sim) GlobalMessage(global GlobalMessageArgs) error {
 	defer s.mu.Unlock(s.lg)
 
 	s.eventStream.Post(Event{
-		Type: GlobalMessageEvent,
-		Message: global.Message,
+		Type:           GlobalMessageEvent,
+		Message:        global.Message,
 		FromController: global.FromController,
 	})
 

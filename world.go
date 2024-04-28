@@ -94,7 +94,7 @@ type World struct {
 }
 
 type ERAMFacilityData struct {
-	FlightPlans map[string]FlightPlan
+	FlightPlans    map[string]FlightPlan
 	STARSFacilites map[string]STARSFacilityData
 }
 
@@ -242,8 +242,6 @@ func (w *World) SendGlobalMessage(global GlobalMessage) {
 			IssueTime: time.Now(),
 		})
 }
-
-
 
 func (w *World) SetScratchpad(callsign string, scratchpad string, success func(any), err func(error)) {
 	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
