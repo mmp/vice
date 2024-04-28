@@ -444,7 +444,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 		case '-':
 			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{0, float32(alt0)}}
 		case 'B':
-			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt1)}}
+			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(min(alt0, alt1)), float32(max(alt0, alt1))}}
 		case 'G', 'I':
 			// glideslope alt in second, 'at' in first
 			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt0)}}
