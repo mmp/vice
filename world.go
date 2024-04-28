@@ -235,10 +235,10 @@ func (w *World) LaunchAircraft(ac Aircraft) {
 		})
 }
 
-func (w *World) SendGlobalMessage(msg string) {
+func (w *World) SendGlobalMessage(global GlobalMessage) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
-			Call:      w.simProxy.GlobalMessage(msg),
+			Call:      w.simProxy.GlobalMessage(global),
 			IssueTime: time.Now(),
 		})
 }

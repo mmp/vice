@@ -1278,7 +1278,7 @@ func (s *Sim) PostEvent(e Event) {
 
 type GlobalMessage struct {
 	Message string 
-	Sent bool
+	FromController string
 }
 
 type SimWorldUpdate struct {
@@ -1960,14 +1960,16 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 		cmd)
 }
 
-func (s *Sim) GlobalMessage(token, message string) error {
+func (s *Sim) GlobalMessage(global GlobalMessageArgs) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	s.World.GlobalMessage = GlobalMessage{
-		Message: message,
-		Sent: false,
-	}
+	s.eventStream.Post(Event{
+		Type: GlobalMessageEvent,
+		Message: global.Message,
+		FromController: global.FromController,
+	})
+
 	return nil
 }
 

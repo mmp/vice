@@ -899,11 +899,6 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 	y += lineHeight
 
-	if gmsg := ctx.world.GlobalMessage; !gmsg.Sent {
-		td.AddText(gmsg.Message, [2]float32{indent, y}, globalStyle)
-		gmsg.Sent = true
-	}
-
 	for i := scrollOffset; i < min(len(mp.messages), visibleLines+scrollOffset+1); i++ {
 		// TODO? wrap text
 		msg := mp.messages[len(mp.messages)-1-i]
@@ -1007,7 +1002,10 @@ func (mp *MessagesPane) runCommands(w *World) {
 	callsign, cmd, ok := strings.Cut(mp.input.cmd, " ")
 
 	if mp.input.cmd[0] == '/' {
-		w.SendGlobalMessage(w.Callsign + ": " + mp.input.cmd[1:])
+		w.SendGlobalMessage(GlobalMessage{
+			FromController: w.Callsign,
+			Message: w.Callsign + ": " + mp.input.cmd[1:],
+		})
 		mp.messages = append(mp.messages, Message{contents: w.Callsign + ": " + mp.input.cmd[1:], global: true,})
 		mp.history = append(mp.history, mp.input)
 		mp.input = CLIInput{}
@@ -1126,7 +1124,10 @@ func (mp *MessagesPane) processEvents(w *World) {
 				transmissions = append(transmissions, event.Message)
 				unexpectedTransmission = unexpectedTransmission || (event.RadioTransmissionType == RadioTransmissionUnexpected)
 			}
-
+		case GlobalMessageEvent:
+			if event.FromController != w.Callsign {
+				mp.messages = append(mp.messages, Message{contents: event.Message, global: true})
+			}	
 		case StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.
 			n := len(mp.messages)

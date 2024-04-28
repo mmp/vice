@@ -191,6 +191,7 @@ const (
 	RadioTransmissionEvent
 	StatusMessageEvent
 	ServerBroadcastMessageEvent
+	GlobalMessageEvent
 	AcknowledgedPointOutEvent
 	RejectedPointOutEvent
 	IdentEvent
