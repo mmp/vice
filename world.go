@@ -323,16 +323,6 @@ func (w *World) HandoffTrack(callsign string, controller string, success func(an
 		})
 }
 
-func (w *World) HandoffControl(callsign string, success func(any), err func(error)) {
-	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
-			Call:      w.simProxy.HandoffControl(callsign),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
 func (w *World) AcceptHandoff(callsign string, success func(any), err func(error)) {
 	if ac := w.Aircraft[callsign]; ac != nil && ac.HandoffTrackController == w.Callsign {
 		ac.HandoffTrackController = ""

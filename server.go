@@ -153,13 +153,6 @@ func (s *SimProxy) HandoffTrack(callsign string, controller string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) HandoffControl(callsign string) *rpc.Call {
-	return s.Client.Go("Sim.HandoffControl", &HandoffArgs{
-		ControllerToken: s.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
-}
-
 func (s *SimProxy) AcceptHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.AcceptHandoff", &AcceptHandoffArgs{
 		ControllerToken: s.ControllerToken,
@@ -751,14 +744,6 @@ func (sd *SimDispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, _ *struc
 	}
 }
 
-func (sd *SimDispatcher) HandoffControl(h *HandoffArgs, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
-		return ErrNoSimForControllerToken
-	} else {
-		return sim.HandoffControl(h.ControllerToken, h.Callsign)
-	}
-}
-
 type AcceptHandoffArgs AircraftSpecifier
 
 func (sd *SimDispatcher) AcceptHandoff(ah *AcceptHandoffArgs, _ *struct{}) error {
@@ -1062,7 +1047,13 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 				rewriteError(ErrInvalidCommandSyntax)
 				return nil
 			}
-
+		case 'F':
+			if command == "FC" {
+				if err := sim.HandoffControl(token, callsign); err != nil {
+					rewriteError(err)
+					return nil
+				}
+			}
 		case 'H':
 			if len(command) == 1 {
 				if err := sim.AssignHeading(&HeadingArgs{
