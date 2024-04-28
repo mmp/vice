@@ -940,7 +940,12 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 	}
 
 	// Grab keyboard input
-	mp.input.InsertAtCursor(strings.ToUpper(ctx.keyboard.Input))
+	if len(mp.input.cmd) > 0 && mp.input.cmd[0] == '/' {
+		mp.input.InsertAtCursor(ctx.keyboard.Input)
+	} else {
+		mp.input.InsertAtCursor(strings.ToUpper(ctx.keyboard.Input))
+	}
+	
 
 	if ctx.keyboard.IsPressed(KeyUpArrow) {
 		if mp.historyOffset < len(mp.history) {
