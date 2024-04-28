@@ -127,8 +127,9 @@ type STARSPane struct {
 
 	HavePlayedSPCAlertSound map[string]interface{}
 
-	lastTrackUpdate time.Time
-	discardTracks   bool
+	lastTrackUpdate        time.Time
+	lastHistoryTrackUpdate time.Time
+	discardTracks          bool
 
 	drawApproachAirspace  bool
 	drawDepartureAirspace bool
@@ -382,14 +383,14 @@ const (
 )
 
 type STARSAircraftState struct {
-	// Radar tracks are maintained as a ring buffer where tracksIndex is
-	// the index of the next track to be written.  (Thus, tracksIndex==0
-	// implies that there are no tracks.)  In FUSED mode, radar tracks are
-	// updated once per second; otherwise they are updated once every 5
-	// seconds. Changing to/from FUSED mode causes tracksIndex to be reset,
-	// thus discarding previous tracks.
-	tracks      [50]RadarTrack
-	tracksIndex int
+	// Radar track history is maintained with a ring buffer where
+	// historyTracksIndex is the index of the next track to be written.
+	// (Thus, historyTracksIndex==0 implies that there are no tracks.)
+	// Changing to/from FUSED mode causes tracksIndex to be reset, thus
+	// discarding previous tracks.
+	track              RadarTrack // last one from the radar sensor
+	historyTracks      [10]RadarTrack
+	historyTracksIndex int
 
 	DatablockType DatablockType
 	FullLDB       time.Time // If the LDB displays the groundspeed. When to stop
@@ -466,30 +467,27 @@ const (
 )
 
 func (s *STARSAircraftState) TrackAltitude() int {
-	idx := (s.tracksIndex - 1) % len(s.tracks)
-	return s.tracks[idx].Altitude
+	return s.track.Altitude
 }
 
 func (s *STARSAircraftState) TrackDeltaAltitude() int {
-	if s.tracksIndex < 2 {
+	if s.historyTracksIndex < 2 {
 		return 0
 	}
-	prev := (s.tracksIndex - 2) % len(s.tracks)
-	return s.TrackAltitude() - s.tracks[prev].Altitude
+	prev := (s.historyTracksIndex - 2) % len(s.historyTracks)
+	return s.TrackAltitude() - s.historyTracks[prev].Altitude
 }
 
 func (s *STARSAircraftState) TrackPosition() Point2LL {
-	idx := (s.tracksIndex - 1) % len(s.tracks)
-	return s.tracks[idx].Position
+	return s.track.Position
 }
 
 func (s *STARSAircraftState) TrackGroundspeed() int {
-	idx := (s.tracksIndex - 1) % len(s.tracks)
-	return s.tracks[idx].Groundspeed
+	return s.track.Groundspeed
 }
 
 func (s *STARSAircraftState) HaveHeading() bool {
-	return s.tracksIndex > 1
+	return s.historyTracksIndex > 1
 }
 
 // Note that the vector returned by HeadingVector() is along the aircraft's
@@ -501,10 +499,10 @@ func (s *STARSAircraftState) HeadingVector(nmPerLongitude, magneticVariation flo
 		return Point2LL{}
 	}
 
-	idx0, idx1 := (s.tracksIndex-1)%len(s.tracks), (s.tracksIndex-2)%len(s.tracks)
+	idx0, idx1 := (s.historyTracksIndex-1)%len(s.historyTracks), (s.historyTracksIndex-2)%len(s.historyTracks)
 
-	p0 := ll2nm(s.tracks[idx0].Position, nmPerLongitude)
-	p1 := ll2nm(s.tracks[idx1].Position, nmPerLongitude)
+	p0 := ll2nm(s.historyTracks[idx0].Position, nmPerLongitude)
+	p1 := ll2nm(s.historyTracks[idx1].Position, nmPerLongitude)
 	v := sub2ll(p0, p1)
 	v = normalize2f(v)
 	// v's length should be groundspeed / 60 nm.
@@ -516,15 +514,15 @@ func (s *STARSAircraftState) TrackHeading(nmPerLongitude float32) float32 {
 	if !s.HaveHeading() {
 		return 0
 	}
-	idx0, idx1 := (s.tracksIndex-1)%len(s.tracks), (s.tracksIndex-2)%len(s.tracks)
-	return headingp2ll(s.tracks[idx1].Position, s.tracks[idx0].Position, nmPerLongitude, 0)
+	idx0, idx1 := (s.historyTracksIndex-1)%len(s.historyTracks), (s.historyTracksIndex-2)%len(s.historyTracks)
+	return headingp2ll(s.historyTracks[idx1].Position, s.historyTracks[idx0].Position, nmPerLongitude, 0)
 }
 
 func (s *STARSAircraftState) LostTrack(now time.Time) bool {
 	// Only return true if we have at least one valid track from the past
 	// but haven't heard from the aircraft recently.
-	idx := (s.tracksIndex - 1) % len(s.tracks)
-	return s.tracksIndex == 0 || now.Sub(s.tracks[idx].Time) > 30*time.Second
+	idx := (s.historyTracksIndex - 1) % len(s.historyTracks)
+	return s.historyTracksIndex == 0 || now.Sub(s.historyTracks[idx].Time) > 30*time.Second
 }
 
 func (s *STARSAircraftState) Ident() bool {
@@ -562,6 +560,9 @@ type STARSPreferenceSet struct {
 	GIText      [9]string
 
 	RadarTrackHistory int
+	// 4-94: 0.5s increments via trackball but 0.1s increments allowed if
+	// keyboard input.
+	RadarTrackHistoryRate float32
 
 	DisplayWeatherLevel [6]bool
 
@@ -800,6 +801,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.RangeRingRadius = 5
 
 	ps.RadarTrackHistory = 5
+	ps.RadarTrackHistoryRate = 4.5
 
 	ps.VideoMapVisible = make(map[string]interface{})
 	if w != nil && len(w.STARSMaps) > 0 {
@@ -911,6 +913,10 @@ func (ps *STARSPreferenceSet) Activate(w *World) {
 
 	if ps.PTLAll { // both can't be set; we didn't enforce this previously...
 		ps.PTLOwn = false
+	}
+
+	if ps.RadarTrackHistoryRate == 0 {
+		ps.RadarTrackHistoryRate = 4.5 // upgrade from old
 	}
 
 	// Brightness goes in steps of 5 (similarly not enforced previously...)
@@ -1596,7 +1602,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// have for rendering the current frame.
 	if sp.discardTracks {
 		for _, state := range sp.Aircraft {
-			state.tracksIndex = 0
+			state.historyTracksIndex = 0
 		}
 		sp.lastTrackUpdate = time.Time{} // force update
 		sp.discardTracks = false
@@ -1624,14 +1630,24 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 			continue
 		}
 
-		idx := state.tracksIndex % len(state.tracks)
-		state.tracks[idx] = RadarTrack{
+		state.track = RadarTrack{
 			Position:    ac.Position(),
 			Altitude:    int(ac.Altitude()),
 			Groundspeed: int(ac.Nav.FlightState.GS),
 			Time:        now,
 		}
-		state.tracksIndex++
+	}
+
+	// History tracks are updated after a radar track update, only if
+	// H_RATE seconds have elapsed (4-94).
+	ps := &sp.CurrentPreferenceSet
+	if now.Sub(sp.lastHistoryTrackUpdate).Seconds() >= float64(ps.RadarTrackHistoryRate) {
+		sp.lastHistoryTrackUpdate = now
+		for _, state := range sp.Aircraft {
+			idx := state.historyTracksIndex % len(state.historyTracks)
+			state.historyTracks[idx] = state.track
+			state.historyTracksIndex++
+		}
 	}
 
 	aircraft := sp.visibleAircraft(w)
@@ -3153,7 +3169,7 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 		// match one of the TCPs
 		if lc == 2 {
 			for _, ctrl := range ctx.world.GetAllControllers() {
-				if ctrl.SectorId == contents {
+				if ctrl.FacilityIdentifier == "" && ctrl.SectorId == contents {
 					return ErrSTARSCommandFormat
 				}
 			}
@@ -4310,7 +4326,17 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 
 	case DCBMenuAux:
 		STARSDisabledButton("VOL\n10", STARSButtonFull, buttonScale)
-		STARSIntSpinner(ctx, "HISTORY\n", &ps.RadarTrackHistory, 0, 10, STARSButtonFull, buttonScale)
+		STARSIntSpinner(ctx, "HISTORY\n", &ps.RadarTrackHistory, 0, 10, STARSButtonHalfVertical, buttonScale)
+		STARSCallbackSpinner(ctx, "H_RATE\n", &ps.RadarTrackHistoryRate,
+			func(v float32) string { return fmt.Sprintf("%.1f", v) },
+			func(v float32, delta int) float32 {
+				if delta > 0 {
+					v += 0.5
+				} else if delta < 0 {
+					v -= 0.5
+				}
+				return clamp(v, 0, 4.5)
+			}, STARSButtonHalfVertical, buttonScale)
 		STARSDisabledButton("CURSOR\nHOME", STARSButtonFull, buttonScale)
 		STARSDisabledButton("CSR SPD\n4", STARSButtonFull, buttonScale)
 		STARSDisabledButton("MAP\nUNCOR", STARSButtonFull, buttonScale)
@@ -5383,8 +5409,7 @@ func (sp *STARSPane) getGhostAircraft(aircraft []*Aircraft, ctx *PaneContext) []
 				force := state.Ghost.State == GhostStateForced || ps.CRDA.ForceAllGhosts
 				heading := Select(state.HaveHeading(), state.TrackHeading(ac.NmPerLongitude()),
 					ac.Heading())
-				idx := (state.tracksIndex - 1) % len(state.tracks)
-				ghost := region.TryMakeGhost(ac.Callsign, state.tracks[idx], heading, ac.Scratchpad, force,
+				ghost := region.TryMakeGhost(ac.Callsign, state.track, heading, ac.Scratchpad, force,
 					offset, leaderDirection, runwayIntersection, ac.NmPerLongitude(), ac.MagneticVariation(),
 					otherRegion)
 				if ghost != nil {
@@ -5573,20 +5598,17 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 	// Draw history in reverse order so that if it's not moving, more
 	// recent tracks (which will have more contrast with the background),
 	// will be the ones that are visible.
-	n := ps.RadarTrackHistory
-	for i := n; i >= 1; i-- {
-		trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
-		trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
+	if ps.Brightness.History > 0 { // Don't draw if brightness == 0.
+		n := ps.RadarTrackHistory
+		for i := n - 1; i >= 0; i-- {
+			trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
+			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
 
-		idx := (state.tracksIndex - 1 -
-			Select(sp.radarMode(ctx.world) == RadarModeFused, 5, 1)*i) % len(state.tracks)
-		if idx < 0 {
-			continue
-		}
-
-		p := state.tracks[idx].Position
-		if !p.IsZero() {
-			pd.AddPoint(p, trackColor)
+			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
+				if p := state.historyTracks[idx].Position; !p.IsZero() {
+					pd.AddPoint(p, trackColor)
+				}
+			}
 		}
 	}
 }
