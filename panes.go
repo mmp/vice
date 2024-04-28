@@ -867,10 +867,6 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	defer ReturnTextDrawBuilder(td)
 
 	indent := float32(2)
-	style := TextStyle{Font: mp.font, Color: RGB{1, 1, 1}}
-	systemStyle := TextStyle{Font: mp.font, Color: RGB{.1, .9, .1}}
-	errorStyle := TextStyle{Font: mp.font, Color: RGB{.9, .1, .1}}
-	globalStyle := TextStyle{Font: mp.font, Color: RGB{0.012, 0.78, 0.016}}
 
 	scrollOffset := mp.scrollbar.Offset()
 	y := lineHeight
@@ -902,10 +898,9 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	for i := scrollOffset; i < min(len(mp.messages), visibleLines+scrollOffset+1); i++ {
 		// TODO? wrap text
 		msg := mp.messages[len(mp.messages)-1-i]
-		s := Select(msg.error, errorStyle, Select(msg.system, systemStyle, style))
+
+		s := TextStyle{Font: mp.font, Color: msg.Color()}
 		td.AddText(msg.contents, [2]float32{indent, y}, s)
-		g := Select(msg.global, globalStyle, Select(msg.system, systemStyle, style))
-		td.AddText(msg.contents, [2]float32{indent, y}, g)
 		y += lineHeight
 	}
 
@@ -1002,9 +997,18 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 	}
 }
 
-func (mp *MessagesPane) runCommands(w *World) {
-	callsign, cmd, ok := strings.Cut(mp.input.cmd, " ")
+func (msg *Message) Color() RGB {
+	switch {
+	case msg.error:
+		return RGB{.9,.1,.1}
+	case msg.global:
+		return RGB{0.012, 0.78, 0.016}
+	default:
+		return RGB{1, 1, 1}
+	}
+}
 
+func (mp *MessagesPane) runCommands(w *World) {
 	if mp.input.cmd[0] == '/' {
 		w.SendGlobalMessage(GlobalMessage{
 			FromController: w.Callsign,
@@ -1015,7 +1019,7 @@ func (mp *MessagesPane) runCommands(w *World) {
 		mp.input = CLIInput{}
 		return
 	}
-
+	callsign, cmd, ok := strings.Cut(mp.input.cmd, " ")
 	mp.messages = append(mp.messages, Message{contents: "> " + mp.input.cmd})
 	mp.history = append(mp.history, mp.input)
 	mp.input = CLIInput{}

@@ -1285,7 +1285,6 @@ type SimWorldUpdate struct {
 	Aircraft      map[string]*Aircraft
 	Controllers   map[string]*Controller
 	Time          time.Time
-	GlobalMessage GlobalMessage
 
 	LaunchConfig LaunchConfig
 
@@ -1311,7 +1310,6 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	w.STARSInputOverride = wu.STARSInput
 	w.TotalDepartures = wu.TotalDepartures
 	w.TotalArrivals = wu.TotalArrivals
-	w.GlobalMessage = wu.GlobalMessage
 
 	// Important: do this after updating aircraft, controllers, etc.,
 	// so that they reflect any changes the events are flagging.
@@ -1347,7 +1345,6 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 			Events:          ctrl.events.Get(),
 			TotalDepartures: s.TotalDepartures,
 			TotalArrivals:   s.TotalArrivals,
-			GlobalMessage:   s.World.GlobalMessage,
 		}
 
 		return nil

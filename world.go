@@ -30,12 +30,8 @@ type World struct {
 	METAR       map[string]*METAR
 	Controllers map[string]*Controller
 
-	GlobalMessage GlobalMessage
-
 	DepartureAirports map[string]*Airport
 	ArrivalAirports   map[string]*Airport
-
-	ERAMComputers map[string]ERAMFacilityData
 
 	lastUpdateRequest time.Time
 	lastReturnedTime  time.Time
@@ -91,15 +87,6 @@ type World struct {
 	STARSFacilityAdaptation STARSFacilityAdaptation
 
 	STARSInputOverride string
-}
-
-type ERAMFacilityData struct {
-	FlightPlans    map[string]FlightPlan
-	STARSFacilites map[string]STARSFacilityData
-}
-
-type STARSFacilityData struct {
-	StoredFlightPlans map[string]FlightPlan
 }
 
 func NewWorld() *World {
