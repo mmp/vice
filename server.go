@@ -973,6 +973,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 							}
 						} else {
 							rewriteError(ErrInvalidCommandSyntax)
+							return nil
 						}
 					}
 
@@ -989,6 +990,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					components := strings.Split(command, "/")
 					if len(components) != 2 || len(components[1]) == 0 || components[1][0] != 'C' {
 						rewriteError(ErrInvalidCommandSyntax)
+						return nil
 					}
 
 					fix := strings.ToUpper(components[0][1:])
