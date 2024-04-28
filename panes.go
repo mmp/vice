@@ -1009,6 +1009,7 @@ func (mp *MessagesPane) runCommands(w *World) {
 	if mp.input.cmd[0] == '/' {
 		w.SendGlobalMessage(w.Callsign + ": " + mp.input.cmd[1:])
 		mp.messages = append(mp.messages, Message{contents: w.Callsign + ": " + mp.input.cmd[1:], global: true,})
+		mp.history = append(mp.history, mp.input)
 		mp.input = CLIInput{}
 		return
 	}
