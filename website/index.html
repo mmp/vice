@@ -401,7 +401,8 @@
               be abbreviated if unambiguously identifies a single aircraft.
               After you issue a command, the virtual pilot's readback is shown.
               The aircraft will then start following that instruction, to the best of its abilities.
-              Unlike VATSIM, the pilots will always do exactly what you tell them to.
+              Unlike VATSIM, the pilots will always do exactly what you tell them to. Starting
+              a message with a slash to send a message in ATC chat and will be seen by all other users.
             </p>
             <p>If you'd like to issue multiple commands to an aircraft,
               enter the commands one after another with a space between them and
@@ -1736,9 +1737,13 @@ how it simulates aircraft or the STARS interface.
             </div>
             <br>
             <p>When you are ready to transfer control of the aircraft to the controller who has
-              accepted the track, use the command <code>FC</code> to instruct the aircraft to contact the next controller.
-              aircraft will contact the controller that you handed off the track too. If you wish to handoff control to a seperate controller, the 
-              frequency of the next controller should also be entered. For example, <code>FC125.32</code> to handoff the aircraft to 125.325</p>
+              accepted the track, slew the aircraft's radar track. The datablock will turn green,
+              the aircraft will contact the other controller, and you will no longer be able to
+              issue instructions to the aircraft.</p>
+            <div class="text-center">
+              <img src="outbound-handoff-comms.gif" srcset="outbound-handoff-comms-2x.gif 2x" width="133" height="79" class="img-fluid">
+            </div>
+            <br>
 
           </section>
 
