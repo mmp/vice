@@ -30,8 +30,12 @@ type World struct {
 	METAR       map[string]*METAR
 	Controllers map[string]*Controller
 
+	GlobalMessage GlobalMessage
+
 	DepartureAirports map[string]*Airport
 	ArrivalAirports   map[string]*Airport
+
+	ERAMComputers map[string]ERAMFacilityData
 
 	lastUpdateRequest time.Time
 	lastReturnedTime  time.Time
@@ -87,6 +91,15 @@ type World struct {
 	STARSFacilityAdaptation STARSFacilityAdaptation
 
 	STARSInputOverride string
+}
+
+type ERAMFacilityData struct {
+	FlightPlans map[string]FlightPlan
+	STARSFacilites map[string]STARSFacilityData
+}
+
+type STARSFacilityData struct {
+	StoredFlightPlans map[string]FlightPlan
 }
 
 func NewWorld() *World {
@@ -221,6 +234,16 @@ func (w *World) LaunchAircraft(ac Aircraft) {
 			IssueTime: time.Now(),
 		})
 }
+
+func (w *World) SendGlobalMessage(msg string) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.GlobalMessage(msg),
+			IssueTime: time.Now(),
+		})
+}
+
+
 
 func (w *World) SetScratchpad(callsign string, scratchpad string, success func(any), err func(error)) {
 	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
