@@ -1746,13 +1746,8 @@ how it simulates aircraft or the STARS interface.
             </div>
             <br>
             <p>When you are ready to transfer control of the aircraft to the controller who has
-              accepted the track, slew the aircraft's radar track. The datablock will turn green,
-              the aircraft will contact the other controller, and you will no longer be able to
-              issue instructions to the aircraft.</p>
-            <div class="text-center">
-              <img src="outbound-handoff-comms.gif" srcset="outbound-handoff-comms-2x.gif 2x" width="133" height="79" class="img-fluid">
-            </div>
-            <br>
+              accepted the track, use the <code>FC</code> command. This will tell the aircraft to switch frequencies to the next
+            controller.</p>
 
           </section>
 
@@ -1772,7 +1767,9 @@ how it simulates aircraft or the STARS interface.
               </p>
 
             <h4>Limited Datablocks (LDBs)</h4>
-
+              <p>Limited datablocks are shown when a target is not tracked by a TCP. This will contain the code the aircraft is squawking, the aircrafts
+                altitude, and when slewed, it will display the aircraft's groundspeed for a short period of time.
+              </p>
             <h4>Partial Datablock (PDBs)</h4>
             <p>Partial Datablocks are associated datablocks that are owned by another TCP. They display line 2 of a full datablock. With the exception
               of the groundspeed

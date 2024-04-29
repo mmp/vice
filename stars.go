@@ -3282,11 +3282,6 @@ func calculateAirspace(ctx *PaneContext, callsign string) (string, error) {
 	return "", ErrSTARSIllegalPosition
 }
 
-func (sp *STARSPane) handoffControl(ctx *PaneContext, callsign string) {
-	ctx.world.HandoffControl(callsign, nil,
-		func(err error) { sp.displayError(err) })
-}
-
 func singleScope(ctx *PaneContext, facilityIdentifier string) *Controller {
 	controllers := ctx.world.GetAllControllers()
 	var controllersInFacility []*Controller
@@ -3515,12 +3510,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.clear = true
 					return
 				} else if state.OutboundHandoffAccepted {
-					// ack an accepted handoff, which we will treat as also
-					// handing off control.
+					// ack an accepted handoff
 					status.clear = true
 					state.OutboundHandoffAccepted = false
 					state.OutboundHandoffFlashEnd = time.Now()
-					sp.handoffControl(ctx, ac.Callsign)
+
 					return
 				} else if ctx.keyboard != nil {
 					_, ctrl := ctx.keyboard.Pressed[KeyControl]
