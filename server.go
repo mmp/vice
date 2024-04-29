@@ -25,7 +25,7 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
-const ViceRPCVersion = 12
+const ViceRPCVersion = 13
 
 type SimServer struct {
 	*RPCClient
@@ -171,6 +171,14 @@ func (s *SimProxy) CancelHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.CancelHandoff", &CancelHandoffArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
+	}, nil, nil)
+}
+
+func (s *SimProxy) GlobalMessage(global GlobalMessage) *rpc.Call {
+	return s.Client.Go("Sim.GlobalMessage", &GlobalMessageArgs{
+		ControllerToken: s.ControllerToken,
+		Message:         global.Message,
+		FromController:  global.FromController,
 	}, nil, nil)
 }
 
@@ -789,6 +797,19 @@ type ForceQLArgs struct {
 	Callsign        string
 	Controller      string
 }
+type GlobalMessageArgs struct {
+	ControllerToken string
+	FromController  string
+	Message         string
+}
+
+func (sd *SimDispatcher) GlobalMessage(po *GlobalMessageArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.GlobalMessage(*po)
+	}
+}
 
 func (sd *SimDispatcher) ForceQL(po *ForceQLArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
@@ -898,7 +919,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 			case nil:
 				//
 			case ErrOtherControllerHasTrack:
-				result.ErrorMessage = "Another controller owns the aircraft's track"
+				result.ErrorMessage = "Another controller is controlling this aircraft's"
 			default:
 				result.ErrorMessage = "Invalid or unknown command"
 			}

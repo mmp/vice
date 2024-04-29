@@ -222,6 +222,14 @@ func (w *World) LaunchAircraft(ac Aircraft) {
 		})
 }
 
+func (w *World) SendGlobalMessage(global GlobalMessage) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.GlobalMessage(global),
+			IssueTime: time.Now(),
+		})
+}
+
 func (w *World) SetScratchpad(callsign string, scratchpad string, success func(any), err func(error)) {
 	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == w.Callsign {
 		ac.Scratchpad = scratchpad

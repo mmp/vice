@@ -787,6 +787,7 @@ type Message struct {
 	contents string
 	system   bool
 	error    bool
+	global   bool
 }
 
 type CLIInput struct {
@@ -866,9 +867,6 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	defer ReturnTextDrawBuilder(td)
 
 	indent := float32(2)
-	style := TextStyle{Font: mp.font, Color: RGB{1, 1, 1}}
-	systemStyle := TextStyle{Font: mp.font, Color: RGB{.1, .9, .1}}
-	errorStyle := TextStyle{Font: mp.font, Color: RGB{.9, .1, .1}}
 
 	scrollOffset := mp.scrollbar.Offset()
 	y := lineHeight
@@ -900,7 +898,8 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	for i := scrollOffset; i < min(len(mp.messages), visibleLines+scrollOffset+1); i++ {
 		// TODO? wrap text
 		msg := mp.messages[len(mp.messages)-1-i]
-		s := Select(msg.error, errorStyle, Select(msg.system, systemStyle, style))
+
+		s := TextStyle{Font: mp.font, Color: msg.Color()}
 		td.AddText(msg.contents, [2]float32{indent, y}, s)
 		y += lineHeight
 	}
@@ -936,7 +935,11 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 	}
 
 	// Grab keyboard input
-	mp.input.InsertAtCursor(strings.ToUpper(ctx.keyboard.Input))
+	if len(mp.input.cmd) > 0 && mp.input.cmd[0] == '/' {
+		mp.input.InsertAtCursor(ctx.keyboard.Input)
+	} else {
+		mp.input.InsertAtCursor(strings.ToUpper(ctx.keyboard.Input))
+	}
 
 	if ctx.keyboard.IsPressed(KeyUpArrow) {
 		if mp.historyOffset < len(mp.history) {
@@ -994,9 +997,29 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 	}
 }
 
-func (mp *MessagesPane) runCommands(w *World) {
-	callsign, cmd, ok := strings.Cut(mp.input.cmd, " ")
+func (msg *Message) Color() RGB {
+	switch {
+	case msg.error:
+		return RGB{.9, .1, .1}
+	case msg.global:
+		return RGB{0.012, 0.78, 0.016}
+	default:
+		return RGB{1, 1, 1}
+	}
+}
 
+func (mp *MessagesPane) runCommands(w *World) {
+	if mp.input.cmd[0] == '/' {
+		w.SendGlobalMessage(GlobalMessage{
+			FromController: w.Callsign,
+			Message:        w.Callsign + ": " + mp.input.cmd[1:],
+		})
+		mp.messages = append(mp.messages, Message{contents: w.Callsign + ": " + mp.input.cmd[1:], global: true})
+		mp.history = append(mp.history, mp.input)
+		mp.input = CLIInput{}
+		return
+	}
+	callsign, cmd, ok := strings.Cut(mp.input.cmd, " ")
 	mp.messages = append(mp.messages, Message{contents: "> " + mp.input.cmd})
 	mp.history = append(mp.history, mp.input)
 	mp.input = CLIInput{}
@@ -1109,7 +1132,10 @@ func (mp *MessagesPane) processEvents(w *World) {
 				transmissions = append(transmissions, event.Message)
 				unexpectedTransmission = unexpectedTransmission || (event.RadioTransmissionType == RadioTransmissionUnexpected)
 			}
-
+		case GlobalMessageEvent:
+			if event.FromController != w.Callsign {
+				mp.messages = append(mp.messages, Message{contents: event.Message, global: true})
+			}
 		case StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.
 			n := len(mp.messages)

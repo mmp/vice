@@ -1276,6 +1276,11 @@ func (s *Sim) PostEvent(e Event) {
 	s.eventStream.Post(e)
 }
 
+type GlobalMessage struct {
+	Message        string
+	FromController string
+}
+
 type SimWorldUpdate struct {
 	Aircraft    map[string]*Aircraft
 	Controllers map[string]*Controller
@@ -1950,6 +1955,19 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 			return nil
 		},
 		cmd)
+}
+
+func (s *Sim) GlobalMessage(global GlobalMessageArgs) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	s.eventStream.Post(Event{
+		Type:           GlobalMessageEvent,
+		Message:        global.Message,
+		FromController: global.FromController,
+	})
+
+	return nil
 }
 
 func (s *Sim) SetScratchpad(token, callsign, scratchpad string) error {
