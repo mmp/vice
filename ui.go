@@ -1915,7 +1915,7 @@ altitude. (*TS* = 'then speed')`, "*TS210*"},
 	[3]string{"*E_appr", `"Expect the _appr_ approach."`, "*EI2L*"},
 	[3]string{"*C_appr", `"Cleared _appr_ approach."`, "*CI2L*"},
 	[3]string{"*TO*", `"Contact tower"`, "*TO*"},
-	[3]string{"*FC*", `"Contact _ctrl_ on _freq_."`, "*FC*"},
+	[3]string{"*FC*", `"Contact _ctrl_ on _freq_, where _ctrl_ is the controller who has the track and _freq_ is their frequency."`, "*FC*"},
 	[3]string{"*X*", "(Deletes the aircraft.)", "*X*"},
 }
 
