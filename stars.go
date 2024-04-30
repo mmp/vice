@@ -383,12 +383,18 @@ const (
 )
 
 type STARSAircraftState struct {
+	// Independently of the track history, we store the most recent track
+	// from the sensor as well as the previous one. This gives us the
+	// freshest possible information for things like calculating headings,
+	// rates of altitude change, etc.
+	track         RadarTrack
+	previousTrack RadarTrack
+
 	// Radar track history is maintained with a ring buffer where
 	// historyTracksIndex is the index of the next track to be written.
 	// (Thus, historyTracksIndex==0 implies that there are no tracks.)
 	// Changing to/from FUSED mode causes tracksIndex to be reset, thus
 	// discarding previous tracks.
-	track              RadarTrack // last one from the radar sensor
 	historyTracks      [10]RadarTrack
 	historyTracksIndex int
 
@@ -471,11 +477,11 @@ func (s *STARSAircraftState) TrackAltitude() int {
 }
 
 func (s *STARSAircraftState) TrackDeltaAltitude() int {
-	if s.historyTracksIndex < 2 {
+	if s.previousTrack.Position.IsZero() {
+		// No previous track
 		return 0
 	}
-	prev := (s.historyTracksIndex - 2) % len(s.historyTracks)
-	return s.TrackAltitude() - s.historyTracks[prev].Altitude
+	return s.track.Altitude - s.previousTrack.Altitude
 }
 
 func (s *STARSAircraftState) TrackPosition() Point2LL {
@@ -487,7 +493,7 @@ func (s *STARSAircraftState) TrackGroundspeed() int {
 }
 
 func (s *STARSAircraftState) HaveHeading() bool {
-	return s.historyTracksIndex > 1
+	return !s.previousTrack.Position.IsZero()
 }
 
 // Note that the vector returned by HeadingVector() is along the aircraft's
@@ -499,10 +505,8 @@ func (s *STARSAircraftState) HeadingVector(nmPerLongitude, magneticVariation flo
 		return Point2LL{}
 	}
 
-	idx0, idx1 := (s.historyTracksIndex-1)%len(s.historyTracks), (s.historyTracksIndex-2)%len(s.historyTracks)
-
-	p0 := ll2nm(s.historyTracks[idx0].Position, nmPerLongitude)
-	p1 := ll2nm(s.historyTracks[idx1].Position, nmPerLongitude)
+	p0 := ll2nm(s.track.Position, nmPerLongitude)
+	p1 := ll2nm(s.previousTrack.Position, nmPerLongitude)
 	v := sub2ll(p0, p1)
 	v = normalize2f(v)
 	// v's length should be groundspeed / 60 nm.
@@ -514,15 +518,13 @@ func (s *STARSAircraftState) TrackHeading(nmPerLongitude float32) float32 {
 	if !s.HaveHeading() {
 		return 0
 	}
-	idx0, idx1 := (s.historyTracksIndex-1)%len(s.historyTracks), (s.historyTracksIndex-2)%len(s.historyTracks)
-	return headingp2ll(s.historyTracks[idx1].Position, s.historyTracks[idx0].Position, nmPerLongitude, 0)
+	return headingp2ll(s.previousTrack.Position, s.track.Position, nmPerLongitude, 0)
 }
 
 func (s *STARSAircraftState) LostTrack(now time.Time) bool {
 	// Only return true if we have at least one valid track from the past
 	// but haven't heard from the aircraft recently.
-	idx := (s.historyTracksIndex - 1) % len(s.historyTracks)
-	return s.historyTracksIndex == 0 || now.Sub(s.historyTracks[idx].Time) > 30*time.Second
+	return !s.track.Position.IsZero() && now.Sub(s.track.Time) > 30*time.Second
 }
 
 func (s *STARSAircraftState) Ident() bool {
@@ -1630,6 +1632,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 			continue
 		}
 
+		state.previousTrack = state.track
 		state.track = RadarTrack{
 			Position:    ac.Position(),
 			Altitude:    int(ac.Altitude()),
