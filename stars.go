@@ -3985,22 +3985,34 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 					return
 				case "A": // toggle requested altitude: 6-108
-					if state.DisplayRequestedAltitude == nil {
-						b := ps.DisplayRequestedAltitude // inherit from system-wide
-						state.DisplayRequestedAltitude = &b
+					if sp.datablockType(ctx, ac) != FullDatablock {
+						status.err = ErrSTARSIllegalFunction
+					} else {
+						if state.DisplayRequestedAltitude == nil {
+							b := ps.DisplayRequestedAltitude // inherit from system-wide
+							state.DisplayRequestedAltitude = &b
+						}
+						*state.DisplayRequestedAltitude = !*state.DisplayRequestedAltitude
+						status.clear = true
 					}
-					*state.DisplayRequestedAltitude = !*state.DisplayRequestedAltitude
-					status.clear = true
 					return
 				case "AE": // enable requested altitude: 6-108
-					b := true
-					state.DisplayRequestedAltitude = &b
-					status.clear = true
+					if sp.datablockType(ctx, ac) != FullDatablock {
+						status.err = ErrSTARSIllegalFunction
+					} else {
+						b := true
+						state.DisplayRequestedAltitude = &b
+						status.clear = true
+					}
 					return
 				case "AI": // inhibit requested altitude: 6-108
-					b := false
-					state.DisplayRequestedAltitude = &b
-					status.clear = true
+					if sp.datablockType(ctx, ac) != FullDatablock {
+						status.err = ErrSTARSIllegalFunction
+					} else {
+						b := false
+						state.DisplayRequestedAltitude = &b
+						status.clear = true
+					}
 					return
 				}
 
