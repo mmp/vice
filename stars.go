@@ -8,8 +8,6 @@
 package main
 
 import (
-	"cmp"
-
 	"fmt"
 	"runtime"
 	"slices"
@@ -18,7 +16,6 @@ import (
 	"strings"
 	"time"
 	"unicode"
-	"unsafe"
 
 	"github.com/mmp/imgui-go/v4"
 )
@@ -356,7 +353,7 @@ const (
 	CommandModeInitiateControl
 	CommandModeTerminateControl
 	CommandModeHandOff
-	CommandModeVP
+	CommandModeVFRPlan
 	CommandModeMultiFunc
 	CommandModeFlightData
 	CommandModeCollisionAlert
@@ -381,6 +378,27 @@ const (
 	DCBMenuGITextFilter
 	DCBMenuTPA
 )
+
+// DCBSpinner is an interface used to manage the various spinner types in
+// the DCB menu. Since the various spinners generally have unique
+// requirements and expectations about keyboard input, having this
+// interface allows collecting all of that in the various implementations
+// of the interface.
+type DCBSpinner interface {
+	// Label returns the text that should be shown in the DCB button.
+	Label() string
+	// Equal returns true if the provided spinner controls the same value
+	// as this spinner.
+	Equals(other DCBSpinner) bool
+	// MouseWheel is called when the spinner is active and there is mouse
+	// wheel input; implementations should update the underlying value
+	// accordingly.
+	MouseWheel(delta int)
+	// KeyboardInput is called if the spinner is active and the user enters
+	// text and presses enter; implementations should update the underlying
+	// value accordingly.
+	KeyboardInput(text string) error
+}
 
 type STARSAircraftState struct {
 	// Radar track history is maintained with a ring buffer where
@@ -1743,23 +1761,28 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			}
 
 		case KeyF2:
-			if ctx.keyboard.IsPressed(KeyControl) {
-				if ps.DisplayDCB {
-					sp.disableMenuSpinner(ctx)
-					sp.activeDCBMenu = DCBMenuMaps
-				}
+			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
+				sp.disableMenuSpinner(ctx)
+				sp.activeDCBMenu = DCBMenuMaps
 				sp.resetInputState()
 				sp.commandMode = CommandModeMaps
 			}
 
 		case KeyF3:
-			sp.resetInputState()
-			sp.commandMode = CommandModeInitiateControl
-
-		case KeyF4:
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuBrite
+			} else {
+				sp.resetInputState()
+				sp.commandMode = CommandModeInitiateControl
+			}
+
+		case KeyF4:
+			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
+				sp.activeDCBMenu = DCBMenuMain
+				sp.activateMenuSpinner(MakeLeaderLineLengthSpinner(&ps.LeaderLineLength))
+				sp.resetInputState()
+				sp.commandMode = CommandModeLDR
 			} else {
 				sp.resetInputState()
 				sp.commandMode = CommandModeTerminateControl
@@ -1767,21 +1790,16 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 		case KeyF5:
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
-				sp.activeDCBMenu = DCBMenuMain
-				sp.activateMenuSpinner(unsafe.Pointer(&ps.LeaderLineLength))
+				sp.disableMenuSpinner(ctx)
+				sp.activeDCBMenu = DCBMenuCharSize
 			} else {
 				sp.resetInputState()
 				sp.commandMode = CommandModeHandOff
 			}
 
 		case KeyF6:
-			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner(ctx)
-				sp.activeDCBMenu = DCBMenuCharSize
-			} else {
-				sp.resetInputState()
-				sp.commandMode = CommandModeVP
-			}
+			sp.resetInputState()
+			sp.commandMode = CommandModeFlightData
 
 		case KeyF7:
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
@@ -1805,16 +1823,20 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		case KeyF9:
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
-				sp.activateMenuSpinner(unsafe.Pointer(&ps.RangeRingRadius))
+				sp.activateMenuSpinner(MakeRangeRingRadiusSpinner(&ps.RangeRingRadius))
+				sp.resetInputState()
+				sp.commandMode = CommandModeRangeRings
 			} else {
 				sp.resetInputState()
-				sp.commandMode = CommandModeFlightData
+				sp.commandMode = CommandModeVFRPlan
 			}
 
 		case KeyF10:
 			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
-				sp.activateMenuSpinner(unsafe.Pointer(&ps.Range))
+				sp.activateMenuSpinner(MakeRadarRangeSpinner(&ps.Range))
+				sp.resetInputState()
+				sp.commandMode = CommandModeRange
 			}
 
 		case KeyF11:
@@ -1834,8 +1856,8 @@ func (sp *STARSPane) disableMenuSpinner(ctx *PaneContext) {
 	ctx.platform.EndCaptureMouse()
 }
 
-func (sp *STARSPane) activateMenuSpinner(ptr unsafe.Pointer) {
-	activeSpinner = ptr
+func (sp *STARSPane) activateMenuSpinner(spinner DCBSpinner) {
+	activeSpinner = spinner
 	activeSpinnerMouseDelta = 0
 }
 
@@ -1851,6 +1873,19 @@ func (sp *STARSPane) getAircraftIndex(ac *Aircraft) int {
 }
 
 func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status STARSCommandStatus) {
+	// If there's an active spinner, it gets keyboard input.
+	if activeSpinner != nil {
+		if err := activeSpinner.KeyboardInput(cmd); err != nil {
+			status.err = err
+		} else {
+			// Clear the input area and disable the spinner's mouse capture
+			// on success.
+			status.clear = true
+			sp.disableMenuSpinner(ctx)
+		}
+		return
+	}
+
 	lookupAircraft := func(callsign string, abbreviated bool) *Aircraft {
 		if ac := ctx.world.GetAircraft(callsign, abbreviated); ac != nil {
 			return ac
@@ -2187,7 +2222,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			return
 		}
 
-	case CommandModeVP:
+	case CommandModeVFRPlan:
 		// TODO
 		status.err = ErrSTARSCommandFormat
 		return
@@ -3014,48 +3049,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			return
 		}
 
-	case CommandModeLDR:
-		if len(cmd) > 0 {
-			if r, err := strconv.Atoi(cmd); err != nil {
-				status.err = ErrSTARSCommandFormat
-			} else if r < 0 || r > 7 {
-				status.err = ErrSTARSIllegalValue
-			} else {
-				ps.Range = float32(r)
-			}
-			status.clear = true
-			return
-		}
-
-	case CommandModeRangeRings:
-		// TODO: what if user presses enter?
-		switch cmd {
-		case "2":
-			ps.RangeRingRadius = 2
-		case "5":
-			ps.RangeRingRadius = 5
-		case "10":
-			ps.RangeRingRadius = 10
-		case "20":
-			ps.RangeRingRadius = 20
-		default:
-			status.err = ErrSTARSIllegalValue
-		}
-		status.clear = true
-		return
-
-	case CommandModeRange:
-		if len(cmd) > 0 {
-			if r, err := strconv.Atoi(cmd); err != nil {
-				status.err = ErrSTARSCommandFormat
-			} else if r < 6 || r > 256 {
-				status.err = ErrSTARSIllegalValue
-			} else {
-				ps.Range = float32(r)
-			}
-			status.clear = true
-			return
-		}
+	case CommandModeLDR, CommandModeRangeRings, CommandModeRange:
+		// There should always be an active spinner in these modes, which
+		// is handled at the start of the method...
 
 	case CommandModeSiteMenu:
 		if cmd == "~" {
@@ -3841,7 +3837,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			}
 			return
 
-		case CommandModeVP:
+		case CommandModeVFRPlan:
 			// TODO: implement
 			status.err = ErrSTARSCommandFormat
 			return
@@ -4225,12 +4221,8 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 
 	switch sp.activeDCBMenu {
 	case DCBMenuMain:
-		STARSCallbackSpinner(ctx, "RANGE\n", &ps.Range,
-			func(v float32) string { return fmt.Sprintf("%d", int(v+0.5)) }, // print it as an int
-			func(v float32, delta int) float32 {
-				v += float32(delta)
-				return clamp(v, 6, 256)
-			}, STARSButtonFull, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeRadarRangeSpinner(&ps.Range), CommandModeRange,
+			STARSButtonFull, buttonScale)
 		sp.STARSPlaceButton("PLACE\nCNTR", STARSButtonHalfVertical, buttonScale,
 			func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 				ps.Center = transforms.LatLongFromWindowP(pw)
@@ -4243,7 +4235,8 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if STARSToggleButton("OFF\nCNTR", &ps.OffCenter, STARSButtonHalfVertical, buttonScale) {
 			ps.CurrentCenter = ps.Center
 		}
-		STARSItemsSpinner(ctx, "RR\n", &ps.RangeRingRadius, []int{2, 5, 10, 20}, STARSButtonFull, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeRangeRingRadiusSpinner(&ps.RangeRingRadius), CommandModeRangeRings,
+			STARSButtonFull, buttonScale)
 		sp.STARSPlaceButton("PLACE\nRR", STARSButtonHalfVertical, buttonScale,
 			func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 				ps.RangeRingsCenter = transforms.LatLongFromWindowP(pw)
@@ -4279,18 +4272,10 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if STARSSelectButton("BRITE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuBrite
 		}
-		STARSCallbackSpinner(ctx, "LDR DIR\n   ", &ps.LeaderLineDirection,
-			func(d CardinalOrdinalDirection) string { return d.ShortString() },
-			func(d CardinalOrdinalDirection, delta int) CardinalOrdinalDirection {
-				if delta == 0 {
-					return d
-				} else if delta < 0 {
-					return CardinalOrdinalDirection((d + 7) % 8)
-				} else {
-					return CardinalOrdinalDirection((d + 1) % 8)
-				}
-			}, STARSButtonHalfVertical, buttonScale)
-		STARSIntSpinner(ctx, "LDR\n ", &ps.LeaderLineLength, 0, 7, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeLeaderLineDirectionSpinner(&ps.LeaderLineDirection), CommandModeNone,
+			STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeLeaderLineLengthSpinner(&ps.LeaderLineLength), CommandModeLDR,
+			STARSButtonHalfVertical, buttonScale)
 
 		if STARSSelectButton("CHAR\nSIZE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuCharSize
@@ -4320,17 +4305,10 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 
 	case DCBMenuAux:
 		STARSDisabledButton("VOL\n10", STARSButtonFull, buttonScale)
-		STARSIntSpinner(ctx, "HISTORY\n", &ps.RadarTrackHistory, 0, 10, STARSButtonHalfVertical, buttonScale)
-		STARSCallbackSpinner(ctx, "H_RATE\n", &ps.RadarTrackHistoryRate,
-			func(v float32) string { return fmt.Sprintf("%.1f", v) },
-			func(v float32, delta int) float32 {
-				if delta > 0 {
-					v += 0.5
-				} else if delta < 0 {
-					v -= 0.5
-				}
-				return clamp(v, 0, 4.5)
-			}, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("HISTORY\n", &ps.RadarTrackHistory, 0, 10),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeHistoryRateSpinner(&ps.RadarTrackHistoryRate),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
 		STARSDisabledButton("CURSOR\nHOME", STARSButtonFull, buttonScale)
 		STARSDisabledButton("CSR SPD\n4", STARSButtonFull, buttonScale)
 		STARSDisabledButton("MAP\nUNCOR", STARSButtonFull, buttonScale)
@@ -4354,7 +4332,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if STARSToggleButton("DCB\nBOTTOM", &bottom, STARSButtonHalfVertical, buttonScale) {
 			ps.DCBPosition = DCBPositionBottom
 		}
-		STARSItemsSpinner(ctx, "PTL\nLNTH\n", &ps.PTLLength, []float32{0, 0.5, 1, 1.5, 2, 2.5, 3}, STARSButtonFull, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakePTLLengthSpinner(&ps.PTLLength), CommandModeNone, STARSButtonFull, buttonScale)
 		if ps.PTLLength > 0 {
 			if STARSToggleButton("PTL OWN", &ps.PTLOwn, STARSButtonHalfVertical, buttonScale) && ps.PTLOwn {
 				ps.PTLAll = false
@@ -4365,18 +4343,9 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		} else {
 			STARSDisabledButton("PTL OWN", STARSButtonHalfVertical, buttonScale)
 			STARSDisabledButton("PTL ALL", STARSButtonHalfVertical, buttonScale)
+
 		}
-		STARSCallbackSpinner(ctx, "DWELL\n", &ps.DwellMode,
-			func(mode DwellMode) string { return mode.String() },
-			func(mode DwellMode, delta int) DwellMode {
-				if delta > 0 {
-					return [3]DwellMode{DwellModeLock, DwellModeLock, DwellModeOn}[mode]
-				} else if delta < 0 {
-					return [3]DwellMode{DwellModeOff, DwellModeOn, DwellModeOff}[mode]
-				}
-				return mode
-			},
-			STARSButtonFull, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeDwellModeSpinner(&ps.DwellMode), CommandModeNone, STARSButtonFull, buttonScale)
 		if STARSSelectButton("TPA/\nATPA", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuTPA
 		}
@@ -4427,24 +4396,41 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 
 	case DCBMenuBrite:
-		STARSBrightnessSpinner(ctx, "DCB ", &ps.Brightness.DCB, 25, false, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "BKC ", &ps.Brightness.BackgroundContrast, 0, false, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "MPA ", &ps.Brightness.VideoGroupA, 5, false, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "MPB ", &ps.Brightness.VideoGroupB, 5, false, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "FDB ", &ps.Brightness.FullDatablocks, 5, true, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "LST ", &ps.Brightness.Lists, 25, false, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "POS ", &ps.Brightness.Positions, 5, true, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "LDB ", &ps.Brightness.LimitedDatablocks, 5, true, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "OTH ", &ps.Brightness.OtherTracks, 5, true, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "TLS ", &ps.Brightness.Lines, 5, true, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "RR ", &ps.Brightness.RangeRings, 5, true, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "CMP ", &ps.Brightness.Compass, 5, true, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "BCN ", &ps.Brightness.BeaconSymbols, 5, true, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "PRI ", &ps.Brightness.PrimarySymbols, 5, true, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "HST ", &ps.Brightness.History, 5, true, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("DCB", &ps.Brightness.DCB, 25, false),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("BKC", &ps.Brightness.BackgroundContrast, 0, false),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("MPA", &ps.Brightness.VideoGroupA, 5, false),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("MPB", &ps.Brightness.VideoGroupB, 5, false),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("FDB", &ps.Brightness.FullDatablocks, 5, true),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("LST", &ps.Brightness.Lists, 25, false),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("POS", &ps.Brightness.Positions, 5, true),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("LDB", &ps.Brightness.LimitedDatablocks, 5, true),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("OTH", &ps.Brightness.OtherTracks, 5, true),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("TLS", &ps.Brightness.Lines, 5, true),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("RR", &ps.Brightness.RangeRings, 5, true),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("CMP", &ps.Brightness.Compass, 5, true),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("BCN", &ps.Brightness.BeaconSymbols, 5, true),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("PRI", &ps.Brightness.PrimarySymbols, 5, true),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("HST", &ps.Brightness.History, 5, true),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
 		// The STARS manual, p.4-74 actually says that weather can't go to OFF... FIXME?
-		STARSBrightnessSpinner(ctx, "WX ", &ps.Brightness.Weather, 5, true, STARSButtonHalfVertical, buttonScale)
-		STARSBrightnessSpinner(ctx, "WXC ", &ps.Brightness.WxContrast, 5, false, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("WX", &ps.Brightness.Weather, 5, true),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("WXC", &ps.Brightness.WxContrast, 5, false),
+			CommandModeNone, STARSButtonHalfVertical, buttonScale)
 		if ps.Brightness.Weather != 0 {
 			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.renderer)
 		} else {
@@ -4456,11 +4442,16 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 
 	case DCBMenuCharSize:
-		STARSIntSpinner(ctx, "DATA\nBLOCKS\n", &ps.CharSize.Datablocks, 0, 5, STARSButtonFull, buttonScale)
-		STARSIntSpinner(ctx, "LISTS\n", &ps.CharSize.Lists, 0, 5, STARSButtonFull, buttonScale)
-		STARSIntSpinner(ctx, "DCB\n", &ps.CharSize.DCB, 0, 2, STARSButtonFull, buttonScale)
-		STARSIntSpinner(ctx, "TOOLS\n", &ps.CharSize.Tools, 0, 5, STARSButtonFull, buttonScale)
-		STARSIntSpinner(ctx, "POS\n", &ps.CharSize.PositionSymbols, 0, 5, STARSButtonFull, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("DATA\nBLOCKS\n", &ps.CharSize.Datablocks, 0, 5),
+			CommandModeNone, STARSButtonFull, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("LISTS\n", &ps.CharSize.Lists, 0, 5),
+			CommandModeNone, STARSButtonFull, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("DCB\n", &ps.CharSize.DCB, 0, 2),
+			CommandModeNone, STARSButtonFull, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("TOOLS\n", &ps.CharSize.Tools, 0, 5),
+			CommandModeNone, STARSButtonFull, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("POS\n", &ps.CharSize.PositionSymbols, 0, 5),
+			CommandModeNone, STARSButtonFull, buttonScale)
 		if STARSSelectButton("DONE", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMain
 		}
@@ -4672,7 +4663,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		pt += "TC\n"
 	case CommandModeHandOff:
 		pt += "HD\n"
-	case CommandModeVP:
+	case CommandModeVFRPlan:
 		pt += "VP\n"
 	case CommandModeMultiFunc:
 		pt += "F" + sp.multiFuncPrefix + "\n"
@@ -7254,29 +7245,20 @@ func STARSToggleButton(text string, state *bool, flags int, buttonScale float32)
 	return clicked
 }
 
-var (
-	// TODO: think about implications of multiple STARSPanes being active
-	// at once w.r.t. this.  This probably should be a member variable,
-	// though we also need to think about focus capture; probably should
-	// force take it when a spinner is active..
-	activeSpinner unsafe.Pointer
-	// Accumulated but not yet reported mouse movement
-	activeSpinnerMouseDelta float32
-)
+// TODO: think about implications of multiple STARSPanes being active
+// at once w.r.t. this.  This probably should be a member variable,
+// though we also need to think about focus capture; probably should
+// force take it when a spinner is active..
+var activeSpinner DCBSpinner
+var activeSpinnerMouseDelta float32
 
-func STARSIntSpinner(ctx *PaneContext, text string, value *int, min int, max int, flags int, buttonScale float32) {
-	STARSCallbackSpinner[int](ctx, text, value,
-		func(v int) string { return strconv.Itoa(v) },
-		func(v int, delta int) int { return clamp(v+delta, min, max) },
-		flags, buttonScale)
-}
-
-func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print func(v V) string,
-	callback func(v V, delta int) V, flags int, buttonScale float32) {
-	text += print(*value)
-
-	if activeSpinner == unsafe.Pointer(value) {
-		buttonBounds, clicked := drawDCBButton(text, flags, buttonScale, true, false)
+// DrawDCBSpinner draws the provided spinner at the current location in the
+// DCB. It handles mouse capture (and release) and passing mouse wheel
+// events to the spinner.
+func (sp *STARSPane) DrawDCBSpinner(ctx *PaneContext, spinner DCBSpinner, commandMode CommandMode, flags int, buttonScale float32) {
+	if activeSpinner != nil && spinner.Equals(activeSpinner) {
+		// This spinner is active.
+		buttonBounds, clicked := drawDCBButton(spinner.Label(), flags, buttonScale, true, false)
 		// This is horrific and one of many ugly things about capturing the
 		// mouse, but most of Panes' work is in the simplified space of a
 		// pane coordinate system; here we need something in terms of
@@ -7302,44 +7284,372 @@ func STARSCallbackSpinner[V any](ctx *PaneContext, text string, value *V, print 
 			if abs(activeSpinnerMouseDelta) > movementScale {
 				delta := int(activeSpinnerMouseDelta / movementScale)
 				activeSpinnerMouseDelta -= float32(delta * movementScale)
-				*value = callback(*value, delta)
+				spinner.MouseWheel(delta)
 			}
 		}
 	} else {
-		_, clicked := drawDCBButton(text, flags, buttonScale, false, false)
+		// The spinner is not active; draw it (and check if it was clicked...)
+		_, clicked := drawDCBButton(spinner.Label(), flags, buttonScale, false, false)
 		if clicked {
-			activeSpinner = unsafe.Pointer(value)
+			activeSpinner = spinner
+			sp.resetInputState()
+			sp.commandMode = commandMode
 		}
 	}
 }
 
-func STARSItemsSpinner[T cmp.Ordered](ctx *PaneContext, text string, value *T, options []T, flags int, buttonScale float32) {
-	STARSCallbackSpinner(ctx, text, value,
-		func(v T) string { return fmt.Sprintf("%v", v) },
-		func(v T, delta int) T {
-			idx, _ := slices.BinarySearch(options, *value)
-			idx = clamp(idx+delta, 0, len(options)-1)
-			return options[idx]
-		}, flags, buttonScale)
+type DCBRadarRangeSpinner struct {
+	r *float32
 }
 
-func STARSBrightnessSpinner(ctx *PaneContext, text string, b *STARSBrightness, min STARSBrightness, allowOff bool,
-	flags int, buttonScale float32) {
-	STARSCallbackSpinner(ctx, text, b,
-		func(b STARSBrightness) string {
-			if b == 0 {
-				return "OFF"
-			} else {
-				return fmt.Sprintf("%2d", int(b))
-			}
-		},
-		func(b STARSBrightness, delta int) STARSBrightness {
-			b += STARSBrightness(5 * delta)
-			if b < min && allowOff {
-				return STARSBrightness(0)
-			}
-			return STARSBrightness(clamp(b, min, 100))
-		}, flags, buttonScale)
+func MakeRadarRangeSpinner(r *float32) DCBSpinner {
+	return &DCBRadarRangeSpinner{r}
+}
+
+func (s DCBRadarRangeSpinner) Label() string {
+	return "RANGE\n" + strconv.Itoa(int(*s.r+0.5)) // print it as an int
+}
+
+func (s DCBRadarRangeSpinner) Equals(other DCBSpinner) bool {
+	r, ok := other.(*DCBRadarRangeSpinner)
+	return ok && r.r == s.r
+}
+
+func (s *DCBRadarRangeSpinner) MouseWheel(delta int) {
+	*s.r = clamp(*s.r+float32(delta), 6, 256)
+}
+
+func (s *DCBRadarRangeSpinner) KeyboardInput(text string) error {
+	// 4-33
+	if r, err := strconv.Atoi(text); err != nil {
+		return ErrSTARSCommandFormat
+	} else if r < 6 || r > 256 {
+		return ErrSTARSRangeLimit
+	} else {
+		// Input numbers are ints but we store a float (for smoother
+		// stepping when the mouse wheel is used to zoom the scope).
+		*s.r = float32(r)
+		return nil
+	}
+}
+
+// DCBIntegerRangeSpinner is a generic implementation of DCBSpinner for
+// managing integers in steps of 1 within a given range.
+type DCBIntegerRangeSpinner struct {
+	text     string
+	value    *int
+	min, max int
+}
+
+func MakeIntegerRangeSpinner(t string, v *int, min, max int) DCBSpinner {
+	return &DCBIntegerRangeSpinner{text: t, value: v, min: min, max: max}
+}
+
+func (s *DCBIntegerRangeSpinner) Label() string {
+	return s.text + strconv.Itoa(*s.value)
+}
+
+func (s *DCBIntegerRangeSpinner) Equals(other DCBSpinner) bool {
+	ir, ok := other.(*DCBIntegerRangeSpinner)
+	return ok && ir.value == s.value
+}
+
+func (s *DCBIntegerRangeSpinner) MouseWheel(delta int) {
+	*s.value = clamp(*s.value+delta, s.min, s.max)
+}
+
+func (s *DCBIntegerRangeSpinner) KeyboardInput(text string) error {
+	if v, err := strconv.Atoi(text); err != nil {
+		return ErrSTARSCommandFormat
+	} else if v < s.min || v > s.max {
+		return ErrSTARSRangeLimit
+	} else {
+		*s.value = v
+		return nil
+	}
+}
+
+// Leader lines are integers between 0 and 7 so the IntegerRangeSpinner
+// fits.
+func MakeLeaderLineLengthSpinner(l *int) DCBSpinner {
+	return MakeIntegerRangeSpinner("LDR\n", l, 0, 7)
+}
+
+type DCBLeaderLineDirectionSpinner struct {
+	d *CardinalOrdinalDirection
+}
+
+func MakeLeaderLineDirectionSpinner(dir *CardinalOrdinalDirection) DCBSpinner {
+	return &DCBLeaderLineDirectionSpinner{dir}
+}
+
+func (s *DCBLeaderLineDirectionSpinner) Label() string {
+	return "LDR DIR\n" + s.d.ShortString()
+}
+
+func (s *DCBLeaderLineDirectionSpinner) Equals(other DCBSpinner) bool {
+	l, ok := other.(*DCBLeaderLineDirectionSpinner)
+	return ok && l.d == s.d
+}
+
+func (s *DCBLeaderLineDirectionSpinner) MouseWheel(delta int) {
+	// The CardinalOrdinalDirection enum goes clockwise, so adding one (mod
+	// 8) goes forward, and subtracting 1 (mod 8) goes backwards.
+	if delta < 0 {
+		*s.d = CardinalOrdinalDirection((*s.d + 7) % 8)
+	} else {
+		*s.d = CardinalOrdinalDirection((*s.d + 1) % 8)
+	}
+}
+
+func (s *DCBLeaderLineDirectionSpinner) KeyboardInput(text string) error {
+	if len(text) > 1 {
+		return ErrSTARSCommandFormat
+	} else if dir, ok := numpadToDirection(text[0]); !ok || dir == nil /* entered 5 */ {
+		return ErrSTARSCommandFormat
+	} else {
+		*s.d = *dir
+		return nil
+	}
+}
+
+type DCBHistoryRateSpinner struct {
+	r *float32
+}
+
+func MakeHistoryRateSpinner(r *float32) DCBSpinner {
+	return &DCBHistoryRateSpinner{r}
+}
+
+func (s *DCBHistoryRateSpinner) Label() string {
+	return "H_RATE\n" + fmt.Sprintf("%.1f", *s.r)
+}
+
+func (s *DCBHistoryRateSpinner) Equals(other DCBSpinner) bool {
+	r, ok := other.(*DCBHistoryRateSpinner)
+	return ok && r.r == s.r
+}
+
+func (s *DCBHistoryRateSpinner) MouseWheel(delta int) {
+	// 4-94 the spinner goes in steps of 0.5.
+	if delta > 0 {
+		*s.r = clamp(*s.r+0.5, 0, 4.5)
+	} else if delta < 0 {
+		*s.r = clamp(*s.r-0.5, 0, 4.5)
+	}
+}
+
+func (s *DCBHistoryRateSpinner) KeyboardInput(text string) error {
+	// 4-94: however, for keyboard input, values in the range 0-4.5 in
+	// increments of 0.1 are allowed.
+
+	// Simple specialized parser to make it easier to validate (versus
+	// using strconv.ParseFloat and then having to verify it's a valid
+	// value.)
+	whole, frac, ok := strings.Cut(text, ".")
+	if !ok {
+		frac = "0"
+	}
+
+	// Make sure we have a single digit for the whole part and the
+	// fractional part.
+	if len(whole) != 1 || whole[0] < '0' || whole[0] > '9' {
+		return ErrSTARSIllegalValue
+	}
+	if len(frac) != 1 || frac[0] < '0' || frac[0] > '9' {
+		return ErrSTARSIllegalValue
+	}
+
+	// Convert it to a float
+	if value := float32(whole[0]-'0') + float32(frac[0]-'0')/10; value > 4.5 {
+		return ErrSTARSIllegalValue
+	} else {
+		*s.r = value
+		return nil
+	}
+}
+
+type DCBPTLLengthSpinner struct {
+	l *float32
+}
+
+func MakePTLLengthSpinner(l *float32) DCBSpinner {
+	return &DCBPTLLengthSpinner{l}
+}
+
+func (s *DCBPTLLengthSpinner) Label() string {
+	return "PTL\nLNTH\n" + fmt.Sprintf("%.1f", *s.l)
+}
+
+func (s *DCBPTLLengthSpinner) Equals(other DCBSpinner) bool {
+	p, ok := other.(*DCBPTLLengthSpinner)
+	return ok && p.l == s.l
+}
+
+func (s *DCBPTLLengthSpinner) MouseWheel(delta int) {
+	// 6-16: PTLs are between 0 and 5 minutes, specified in 0.5 minute
+	// increments.
+	if delta > 0 {
+		*s.l = min(*s.l+0.5, 5)
+	} else if delta < 0 {
+		*s.l = max(*s.l-0.5, 0)
+	}
+}
+
+func (s *DCBPTLLengthSpinner) KeyboardInput(text string) error {
+	// Here we'll just parse it as a float and then validate it.
+	if v, err := strconv.ParseFloat(text, 32); err != nil {
+		return ErrSTARSCommandFormat
+	} else if v < 0 || v > 5 {
+		// out of range
+		return ErrSTARSCommandFormat
+	} else if float64(int(v)) != v && float64(int(v))+0.5 != v {
+		// Not a whole number or a decimal x.5
+		return ErrSTARSCommandFormat
+	} else {
+		*s.l = float32(v)
+		return nil
+	}
+}
+
+type DCBDwellModeSpinner struct {
+	m *DwellMode
+}
+
+func MakeDwellModeSpinner(m *DwellMode) DCBSpinner {
+	return &DCBDwellModeSpinner{m}
+}
+
+func (s *DCBDwellModeSpinner) Label() string {
+	return "DWELL\n" + s.m.String()
+}
+
+func (s *DCBDwellModeSpinner) Equals(other DCBSpinner) bool {
+	d, ok := other.(*DCBDwellModeSpinner)
+	return ok && s.m == d.m
+}
+
+func (s *DCBDwellModeSpinner) MouseWheel(delta int) {
+	if delta > 0 {
+		// Cycle through the modes Off -> On -> Lock
+		*s.m = [3]DwellMode{DwellModeOff: DwellModeOn,
+			DwellModeOn:   DwellModeLock,
+			DwellModeLock: DwellModeLock}[*s.m]
+	} else if delta < 0 {
+		// Cycle: Lock-> On -> Off
+		*s.m = [3]DwellMode{DwellModeOff: DwellModeOff,
+			DwellModeOn:   DwellModeOff,
+			DwellModeLock: DwellModeOn}[*s.m]
+	}
+}
+
+func (s *DCBDwellModeSpinner) KeyboardInput(text string) error {
+	// 4-109
+	switch text {
+	case "0":
+		*s.m = DwellModeOff
+		return nil
+	case "1":
+		*s.m = DwellModeOn
+		return nil
+	case "2":
+		*s.m = DwellModeLock
+		return nil
+	default:
+		return ErrSTARSIllegalValue
+	}
+}
+
+type DCBRangeRingRadiusSpinner struct {
+	r *int
+}
+
+func MakeRangeRingRadiusSpinner(radius *int) DCBSpinner {
+	return &DCBRangeRingRadiusSpinner{radius}
+}
+
+func (s *DCBRangeRingRadiusSpinner) Label() string {
+	return "RR\n" + strconv.Itoa(*s.r)
+}
+
+func (s *DCBRangeRingRadiusSpinner) Equals(other DCBSpinner) bool {
+	r, ok := other.(*DCBRangeRingRadiusSpinner)
+	return ok && r.r == s.r
+}
+
+func (s *DCBRangeRingRadiusSpinner) MouseWheel(delta int) {
+	// Range rings have 2, 5, 10, or 20 miles radii..
+	if delta > 0 {
+		switch *s.r {
+		case 2:
+			*s.r = 5
+		case 5:
+			*s.r = 10
+		case 10:
+			*s.r = 20
+		}
+	} else {
+		switch *s.r {
+		case 5:
+			*s.r = 2
+		case 10:
+			*s.r = 5
+		case 20:
+			*s.r = 10
+		}
+	}
+}
+
+func (s *DCBRangeRingRadiusSpinner) KeyboardInput(text string) error {
+	if v, err := strconv.Atoi(text); err != nil {
+		return ErrSTARSCommandFormat
+	} else if v != 2 && v != 5 && v != 10 && v != 20 {
+		return ErrSTARSIllegalValue
+	} else {
+		*s.r = v
+		return nil
+	}
+}
+
+// DCBBrightnessSpinner handles spinners in the BRITE menu
+type DCBBrightnessSpinner struct {
+	text     string
+	b        *STARSBrightness
+	min      STARSBrightness
+	allowOff bool
+}
+
+func MakeBrightnessSpinner(t string, b *STARSBrightness, min STARSBrightness, allowOff bool) DCBSpinner {
+	return &DCBBrightnessSpinner{text: t, b: b, min: min, allowOff: allowOff}
+}
+
+func (s *DCBBrightnessSpinner) Label() string {
+	return s.text + " " + Select(*s.b == 0, "OFF", fmt.Sprintf("%2d", int(*s.b)))
+}
+
+func (s *DCBBrightnessSpinner) Equals(other DCBSpinner) bool {
+	b, ok := other.(*DCBBrightnessSpinner)
+	return ok && b.b == s.b
+}
+
+func (s *DCBBrightnessSpinner) MouseWheel(delta int) {
+	*s.b += STARSBrightness(5 * delta)
+	if *s.b < s.min && s.allowOff {
+		*s.b = STARSBrightness(0)
+	} else {
+		*s.b = STARSBrightness(clamp(*s.b, s.min, 100))
+	}
+}
+
+func (s *DCBBrightnessSpinner) KeyboardInput(text string) error {
+	if v, err := strconv.Atoi(text); err != nil {
+		return ErrSTARSCommandFormat
+	} else if v < int(s.min) || v > 100 || (v == 0 && !s.allowOff) {
+		return ErrSTARSIllegalValue
+	} else {
+		*s.b = STARSBrightness(v)
+		return nil
+	}
 }
 
 func STARSSelectButton(text string, flags int, buttonScale float32) bool {

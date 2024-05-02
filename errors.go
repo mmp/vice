@@ -125,6 +125,7 @@ var (
 	ErrSTARSIllegalTrack      = NewSTARSError("ILL TRK")
 	ErrSTARSIllegalValue      = NewSTARSError("ILL VALUE")
 	ErrSTARSNoFlight          = NewSTARSError("NO FLIGHT")
+	ErrSTARSRangeLimit        = NewSTARSError("RANGE LIMIT")
 )
 
 var starsErrorRemap = map[error]*STARSError{
