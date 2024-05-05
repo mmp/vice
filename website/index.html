@@ -716,6 +716,12 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
+            <h3>0.10.23 (TODO)</h3>
+            <ul>
+              <li>Added ATC chat functionality.</li>
+              <li>Improved handling of keyboard input when spinners in the STARS DCB are active.</li>
+            </ul>
+
             <h3>0.10.22 (28 April 2024)</h3>
             <ul>
               <li>Fixed bug where <i>vice</i> would sometimes crash when
@@ -1408,15 +1414,15 @@ how it simulates aircraft or the STARS interface.
                   <tr><td><code>[INIT CNTL]</code></td><td>[F3] or [CTRL][SHIFT]</td></tr>
                   <tr><td><code>[TERM CNTL]</code></td><td>[F4]</td></tr>
                   <tr><td><code>[HND OFF]</code></td><td>[F5]</td></tr>
-                  <tr><td><code>[VP]</code></td><td>[F6]</td></tr>
+                  <tr><td><code>[FLT DATA]</code></td><td>[F6]</td></tr>
                   <tr><td><code>[MULTIFUNC]</code></td><td>[F7]</td></tr>
-                  <tr><td><code>[FLT DATA]</code></td><td>[F9]</td></tr>
+                  <tr><td><code>[VP]</code></td><td>[F9]</td></tr>
                   <tr><td><code>[CA]</code></td><td>[F11]</td></tr>
                   <tr><td><code>[CNTR]</code></td><td>[Ctrl-F1]</td></tr>
                   <tr><td><code>[MAPS]</code></td><td>[Ctrl-F2]</td></tr>
-                  <tr><td><code>[BRITE]</code></td><td>[Ctrl-F4]</td></tr>
-                  <tr><td><code>[LDR]</code></td><td>[Ctrl-F5]</td></tr>
-                  <tr><td><code>[CHARSIZE]</code></td><td>[Ctrl-F6]</td></tr>
+                  <tr><td><code>[BRITE]</code></td><td>[Ctrl-F3]</td></tr>
+                  <tr><td><code>[LDR]</code></td><td>[Ctrl-F4]</td></tr>
+                  <tr><td><code>[CHARSIZE]</code></td><td>[Ctrl-F5]</td></tr>
                   <tr><td><code>[DCB-SHIFT]</code></td><td>[Ctrl-F7]</td></tr>
                   <tr><td><code>[DCB]</code></td><td>[Ctrl-F8]</td></tr>
                   <tr><td><code>[RNGRING]</code></td><td>[Ctrl-F9]</td></tr>
@@ -1835,6 +1841,45 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                 </tbody>
                 </table>
+
+            <p>The requested final cruising altitudes of aircraft can
+              optionally be displayed in full datablocks as well, multiplexed with the airspeed and aircraft type.
+              The following commands are available to control this:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:30%">Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]RA</code></td>
+                    <td>Toggles display of requested altitude for all aircraft that have not had requested altitude display specifically enabled or inhibited.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]RAE</code></td>
+                    <td>Enables the display of requested altitude for all aircraft that have not had requested altitude display inhibited.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]RAI</code></td>
+                    <td>Disables the display of requested altitude for all aircraft that have not had requested altitude display enabled.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]RA[SLEW]</code></td>
+                    <td>Toggles display of requested altitude for the slewed aircraft.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]RAE[SLEW]</code></td>
+                    <td>Enables the display of requested altitude for the slewed aircraft.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]RAI[SLEW]</code></td>
+                    <td>Disables the display of requested altitude for the slewed aircraft.</td>
+                  </tr>
+                </tbody>
+              </table>
+
 
             <h4>Datablock Display Rules</h4>
             

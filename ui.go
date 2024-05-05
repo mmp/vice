@@ -182,6 +182,8 @@ var (
 		`Fixed a bug where go-arounds would sometimes not contact departure`,
 		`Fixed a bug where live weather would occasionally cause vice to crash`,
 		`Fixed a bug where aircraft TAS would be too high at high altitudes`,
+		`Added support for ATC chat`,
+		`Improved handling of keyboard input when spinners in the STARS DCB are active`,
 	}
 )
 
