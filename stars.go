@@ -410,8 +410,9 @@ type STARSAircraftState struct {
 	historyTracks      [10]RadarTrack
 	historyTracksIndex int
 
-	DatablockType DatablockType
-	FullLDB       time.Time // If the LDB displays the groundspeed. When to stop
+	DatablockType            DatablockType
+	FullLDB                  time.Time // If the LDB displays the groundspeed. When to stop
+	DisplayRequestedAltitude *bool     // nil if unspecified
 
 	IsSelected bool // middle click
 
@@ -640,6 +641,8 @@ type STARSPreferenceSet struct {
 
 	PTLLength      float32
 	PTLOwn, PTLAll bool
+
+	DisplayRequestedAltitude bool
 
 	DwellMode DwellMode
 
@@ -2768,6 +2771,22 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				return
 			}
 
+		case "R": // requested altitude: 6-107
+			switch cmd {
+			case "A": // toggle
+				ps.DisplayRequestedAltitude = !ps.DisplayRequestedAltitude
+				status.clear = true
+				return
+			case "AE": // enable
+				ps.DisplayRequestedAltitude = true
+				status.clear = true
+				return
+			case "AI": // inhibit
+				ps.DisplayRequestedAltitude = false
+				status.clear = true
+				return
+			}
+
 		case "S":
 			switch len(cmd) {
 			case 0:
@@ -3952,17 +3971,46 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 
 			case "R":
-				if cmd == "" {
+				switch cmd {
+				case "":
 					if ps.PTLAll || (ps.PTLOwn && ac.TrackingController == ctx.world.Callsign) {
 						status.err = ErrSTARSIllegalTrack // 6-13
 					} else {
 						state.DisplayPTL = !state.DisplayPTL
 						status.clear = true
 					}
-				} else {
-					status.err = ErrSTARSCommandFormat
+					return
+				case "A": // toggle requested altitude: 6-108
+					if sp.datablockType(ctx, ac) != FullDatablock {
+						status.err = ErrSTARSIllegalFunction
+					} else {
+						if state.DisplayRequestedAltitude == nil {
+							b := ps.DisplayRequestedAltitude // inherit from system-wide
+							state.DisplayRequestedAltitude = &b
+						}
+						*state.DisplayRequestedAltitude = !*state.DisplayRequestedAltitude
+						status.clear = true
+					}
+					return
+				case "AE": // enable requested altitude: 6-108
+					if sp.datablockType(ctx, ac) != FullDatablock {
+						status.err = ErrSTARSIllegalFunction
+					} else {
+						b := true
+						state.DisplayRequestedAltitude = &b
+						status.clear = true
+					}
+					return
+				case "AI": // inhibit requested altitude: 6-108
+					if sp.datablockType(ctx, ac) != FullDatablock {
+						status.err = ErrSTARSIllegalFunction
+					} else {
+						b := false
+						state.DisplayRequestedAltitude = &b
+						status.clear = true
+					}
+					return
 				}
-				return
 
 			case "V":
 				if cmd == "" {
@@ -6271,6 +6319,10 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field5 = append(field5, speed+acCategory)
 		}
 		field5 = append(field5, actype)
+		if (state.DisplayRequestedAltitude != nil && *state.DisplayRequestedAltitude) ||
+			(state.DisplayRequestedAltitude == nil && sp.CurrentPreferenceSet.DisplayRequestedAltitude) {
+			field5 = append(field5, fmt.Sprintf("R%03d", ac.FlightPlan.Altitude/100))
+		}
 		for i := range field5 {
 			if len(field5[i]) < 5 {
 				field5[i] = fmt.Sprintf("%-5s", field5[i])
