@@ -343,6 +343,13 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 			}
 		}
 
+		if imgui.Button(FontAwesomeIconHeadset) {
+			w.ToggleShowCoordinationWindow()
+		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Coordinate")
+		}
+
 		if imgui.Button(FontAwesomeIconKeyboard) {
 			uiToggleShowKeyboardWindow()
 		}
@@ -400,7 +407,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 		w.DrawSettingsWindow()
 
 		w.DrawScenarioInfoWindow()
-
+		w.DrawCoordinationWindow()
 		w.DrawMissingPrimaryDialog()
 
 		if w.LaunchConfig.Controller == w.Callsign {
@@ -657,7 +664,6 @@ func (m *ModalDialogBox) Draw() {
 			allButtonText = append(allButtonText, b.text)
 		}
 		setCursorForRightButtons(allButtonText)
-
 		for i, b := range buttons {
 			uiStartDisable(b.disabled)
 			if i > 0 {
@@ -695,7 +701,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	}
 
 	next := ModalDialogButton{
-		text:     c.config.UIButtonText(),
+		text:     "Next", //c.config.UIButtonText(),
 		disabled: c.config.OkDisabled(),
 		action: func() bool {
 			if c.config.ShowRatesWindow() {

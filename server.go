@@ -131,6 +131,20 @@ func (s *SimProxy) SetSecondaryScratchpad(callsign string, scratchpad string) *r
 	}, nil, nil)
 }
 
+func (s *SimProxy) UpdateStoppedGates(stopped map[string]bool) *rpc.Call {
+	return s.Client.Go("Sim.UpdateStoppedGates", &StoppedGateArgs{
+		ControllerToken: s.ControllerToken,
+		StoppedGates:    stopped,
+	}, nil, nil)
+}
+
+func (s *SimProxy) UpdateStoppedAirports(stopped map[string]bool) *rpc.Call {
+	return s.Client.Go("Sim.UpdateStoppedAirports", &StoppedGateArgs{
+		ControllerToken: s.ControllerToken,
+		StoppedGates:    stopped,
+	}, nil, nil)
+}
+
 func (s *SimProxy) InitiateTrack(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.InitiateTrack", &InitiateTrackArgs{
 		ControllerToken: s.ControllerToken,
@@ -688,6 +702,22 @@ func (sd *SimDispatcher) SetSecondaryScratchpad(a *SetScratchpadArgs, _ *struct{
 	}
 }
 
+func (sd *SimDispatcher) UpdateStoppedGates(a *StoppedGateArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.UpdateStoppedGates(a.ControllerToken, a.StoppedGates)
+	}
+}
+
+func (sd *SimDispatcher) UpdateStoppedAirports(a *StoppedGateArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.UpdateStoppedAirports(a.ControllerToken, a.StoppedGates)
+	}
+}
+
 type SetGlobalLeaderLineArgs struct {
 	ControllerToken string
 	Callsign        string
@@ -703,6 +733,11 @@ func (sd *SimDispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *stru
 }
 
 type InitiateTrackArgs AircraftSpecifier
+
+type StoppedGateArgs struct {
+	ControllerToken string
+	StoppedGates    map[string]bool
+}
 
 func (sd *SimDispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {

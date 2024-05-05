@@ -1646,6 +1646,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 
 	for callsign, state := range sp.Aircraft {
 		ac, ok := w.Aircraft[callsign]
+
 		if !ok {
 			lg.Errorf("%s: not found in World Aircraft?", callsign)
 			continue
@@ -3391,7 +3392,11 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) e
 			}
 			return nil
 		}
-	} else if len(cmd) == 2 && cmd[0] == cmd[1] { // Global leader lines
+	} else if len(cmd) == 2 { // Global leader lines
+		if cmd[0] != cmd[1] || strings.Contains(cmd, "0") {
+			return GetSTARSError(ErrSTARSCommandFormat)
+
+		}
 		if ac.TrackingController != ctx.world.Callsign {
 			return ErrSTARSIllegalTrack
 		} else if dir, ok := numpadToDirection(cmd[0]); ok {
@@ -3628,8 +3633,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
 				// STARS Manual 6-70 (On slew). Cannot go interfacility
-				// TODO: Or can be used to accept a pointout as a handoff.
-
+				// TODO: Or can be used to accept a pointout as a handoff
 				if cmd == "**" { // Non specified TCP
 					if ctx.world.STARSFacilityAdaptation.ForceQLToSelf && ac.TrackingController == ctx.world.Callsign {
 						state.ForceQL = true
@@ -3715,7 +3719,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				status.clear = true
 				return
 			} else if alt, err := strconv.Atoi(cmd); err == nil && len(cmd) == 3 {
-				state.pilotAltitude = alt * 100
+				status.err = GetSTARSError(ErrSTARSIllegalFunc) /* Pilot reported altitude can only be entered if there is no mode C, so until
+				that is simulated, we're just goint to automatically return an error
+				*/
+				return
+				state.pilotAltitude = alt
 				status.clear = true
 				return
 			} else if len(cmd) == 5 && cmd[:2] == "++" {
@@ -3784,7 +3792,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[lc-1] == '*' { // Some sort of pointout
 				// First check for errors. (Manual 6-73)
-
 				// Check if arrival
 				for _, airport := range ctx.world.ArrivalAirports {
 					if airport.Name == ac.FlightPlan.ArrivalAirport {
@@ -4044,7 +4051,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				} else {
 					// Is it an altitude or a scratchpad update?
 					if alt, err := strconv.Atoi(cmd); err == nil && len(cmd) == 3 {
-						state.pilotAltitude = alt * 100
+						status.err = GetSTARSError(ErrSTARSIllegalFunc) /* Pilot reported altitude can only be entered if there is no mode C, so until
+						that is simulated, we're just goint to automatically return an error
+						*/
+						return
+						state.pilotAltitude = alt
 						status.clear = true
 					} else {
 						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary, false); err != nil {
@@ -5002,7 +5013,6 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		for i, acIdx := range SortedMapKeys(dep) {
 			ac := dep[acIdx]
 			text += fmt.Sprintf("%2d %-7s %s\n", acIdx, ac.Callsign, ac.Squawk.String())
-
 			// Limit to the user limit
 			if i == ps.TABList.Lines {
 				break
@@ -5372,6 +5382,24 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		local information that a STARS facility may contain
 		*/
 
+		// trackId := ""
+		// if state.LastKnownHandoff == "" {
+		// 	state.LastKnownHandoff = "*"
+		// }
+
+		// if ac.TrackingController != "" {
+		// 	trackId = "?"
+		// 	octrl := ctx.world.GetController(ctx.world.Callsign)
+		// 	if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil && octrl != nil &&
+		// 		ctx.world.GetController(ac.TrackingController).FacilityIdentifier == octrl.FacilityIdentifier {
+		// 		trackId = ctrl.Scope
+		// 	} else {
+		// 		trackId = "*"
+		// 	}
+		// } else {
+		// 	trackId = "*"
+		// }
+
 		trackId := "*"
 		if ac.TrackingController != "" {
 			trackId = "?"
@@ -5654,7 +5682,6 @@ func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatabl
 	}
 
 	dbs := sp.formatDatablocks(ctx, ac)
-
 	// For Southern or Westerly directions the datablock text should be
 	// right justified, since the leader line will be connecting on that
 	// side.
@@ -6126,6 +6153,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	warnings := sp.getWarnings(ctx, ac)
 
 	// baseDB is what stays the same for all datablock variants
+
 	baseDB := STARSDatablock{}
 	baseDB.Lines[0].Text = strings.Join(warnings, "/") // want e.g., EM/LA if multiple things going on
 	if len(warnings) > 0 {
@@ -6261,6 +6289,9 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		}
 		if ac.SecondaryScratchpad != "" {
 			field3 = append(field3, ac.SecondaryScratchpad)
+		}
+		if state.pilotAltitude != 0 {
+			field3 = append(field3, fmt.Sprintf("%v*", state.pilotAltitude))
 		}
 		if len(field3) == 1 {
 			if ap := ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil && !ap.OmitArrivalScratchpad {
@@ -7331,7 +7362,7 @@ func (sp *STARSPane) DrawDCBSpinner(ctx *PaneContext, spinner DCBSpinner, comman
 
 			// Require two ticks for a delta of one; make the spinners a
 			// little less jumpy.
-			const movementScale = 2
+			const movementScale = 1
 			// Only report a change when there's enough movement to matter.
 			if abs(activeSpinnerMouseDelta) > movementScale {
 				delta := int(activeSpinnerMouseDelta / movementScale)

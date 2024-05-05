@@ -821,6 +821,7 @@ type Sim struct {
 	Handoffs map[string]time.Time
 	// callsign -> "to" controller
 	PointOuts map[string]map[string]PointOut
+	// ForceQL map[string]
 
 	TotalDepartures int
 	TotalArrivals   int
@@ -986,6 +987,19 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimName = s.Name
 	w.SimDescription = s.Scenario
 	w.SimTime = s.SimTime
+	for _, airport := range sg.Airports {
+		for _, runway := range airport.DepartureRoutes {
+			for exit := range runway {
+				fixes := strings.Split(exit, ",")
+				for _, fix := range fixes {
+					if !slices.Contains(w.DepartureGates, fix) {
+						w.DepartureGates = append(w.DepartureGates, fix)
+					}
+				}
+			}
+
+		}
+	}
 	w.STARSFacilityAdaptation = sg.STARSFacilityAdaptation
 
 	for _, callsign := range sc.VirtualControllers {
@@ -1282,9 +1296,11 @@ type GlobalMessage struct {
 }
 
 type SimWorldUpdate struct {
-	Aircraft    map[string]*Aircraft
-	Controllers map[string]*Controller
-	Time        time.Time
+	Aircraft     map[string]*Aircraft
+	Controllers  map[string]*Controller
+	Time         time.Time
+	StoppedGates map[string]bool
+	CFRAirports  map[string]bool
 
 	LaunchConfig LaunchConfig
 
@@ -1310,6 +1326,8 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	w.STARSInputOverride = wu.STARSInput
 	w.TotalDepartures = wu.TotalDepartures
 	w.TotalArrivals = wu.TotalArrivals
+	w.StoppedGates = wu.StoppedGates
+	w.CFRAirports = wu.CFRAirports
 
 	// Important: do this after updating aircraft, controllers, etc.,
 	// so that they reflect any changes the events are flagging.
@@ -1345,6 +1363,8 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 			Events:          ctrl.events.Get(),
 			TotalDepartures: s.TotalDepartures,
 			TotalArrivals:   s.TotalArrivals,
+			StoppedGates:    s.World.StoppedGates,
+			CFRAirports:     s.World.CFRAirports,
 		}
 
 		return nil
@@ -1578,7 +1598,14 @@ func (s *Sim) updateState() {
 	}
 
 	// Don't spawn automatically if someone is spawning manually.
-	if s.LaunchConfig.Mode == LaunchAutomatic {
+	var length int
+	for _, gates := range s.World.StoppedGates {
+		if gates {
+			length += 1
+		}
+	}
+
+	if s.LaunchConfig.Mode == LaunchAutomatic && length != len(s.World.DepartureGates) { // If all gates are stopped, dont even bother spawning
 		s.spawnAircraft()
 	}
 }
@@ -1769,18 +1796,34 @@ func (s *Sim) spawnAircraft() {
 			s.lg.Errorf("%s: couldn't find an active runway for spawning departure?", airport)
 			continue
 		}
-
-		prevDep := s.lastDeparture[airport][runway][category]
-		s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
-		ac, dep, err := s.World.CreateDeparture(airport, runway, category,
-			s.LaunchConfig.DepartureChallenge, prevDep)
-		if err != nil {
-			s.lg.Errorf("CreateDeparture error: %v", err)
-		} else {
-			s.lastDeparture[airport][runway][category] = dep
-			s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
-			s.launchAircraftNoLock(*ac)
-			s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum, false))
+		for { // There will always be a gate, because is all gates are checked this func wont get called
+			prevDep := s.lastDeparture[airport][runway][category]
+			s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
+			ac, dep, err := s.World.CreateDeparture(airport, runway, category,
+				s.LaunchConfig.DepartureChallenge, prevDep)
+			if err != nil {
+				s.lg.Errorf("CreateDeparture error: %v", err)
+			} else {
+				if !s.World.StoppedGates[ac.Exit] && !s.World.Airports[ac.FlightPlan.DepartureAirport].Uncontrolled && !s.World.CFRAirports[ac.FlightPlan.DepartureAirport] { // Found an exit that is not stopped
+					s.lastDeparture[airport][runway][category] = dep
+					s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
+					s.launchAircraftNoLock(*ac)
+					s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum, false))
+					break
+				} else if s.World.Airports[ac.FlightPlan.DepartureAirport].Uncontrolled || s.World.CFRAirports[ac.FlightPlan.DepartureAirport] { // If its uncontrolled, they can still call up
+					if !slices.Contains(heldAircraft, ac) { // Make sure they're arent to many of them
+						per := make(map[string][]*Aircraft) // To limit each airport to 1 release at a time
+						for _, held := range heldAircraft {
+							per[held.FlightPlan.DepartureAirport] = append(per[held.FlightPlan.DepartureAirport], held)
+						}
+						if len(per[ac.FlightPlan.DepartureAirport]) == 0 {
+							heldAircraft = append(heldAircraft, ac)
+							s.NextDepartureSpawn[airport] = now.Add(randomWait(rateSum, false))
+						}
+					}
+					break
+				}
+			}
 		}
 	}
 }
@@ -1990,6 +2033,20 @@ func (s *Sim) SetSecondaryScratchpad(token, callsign, scratchpad string) error {
 			ac.SecondaryScratchpad = scratchpad
 			return nil
 		})
+}
+
+func (s *Sim) UpdateStoppedGates(token string, stopped map[string]bool) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	s.World.StoppedGates = stopped
+	return nil
+}
+
+func (s *Sim) UpdateStoppedAirports(token string, stopped map[string]bool) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	s.World.CFRAirports = stopped
+	return nil
 }
 
 func (s *Sim) Ident(token, callsign string) error {
@@ -2446,7 +2503,9 @@ type HeadingArgs struct {
 func (s *Sim) AssignHeading(hdg *HeadingArgs) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-
+	if hdg.Heading%5 != 0 { // Just so that scratchpads like R11 can go in
+		return errors.New("Heading too specific")
+	}
 	return s.dispatchControllingCommand(hdg.ControllerToken, hdg.Callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			if hdg.Present {
