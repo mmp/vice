@@ -1861,7 +1861,6 @@ func (sp *STARSPane) disableMenuSpinner(ctx *PaneContext) {
 
 func (sp *STARSPane) activateMenuSpinner(spinner DCBSpinner) {
 	activeSpinner = spinner
-	activeSpinnerMouseDelta = 0
 }
 
 func (sp *STARSPane) getAircraftIndex(ac *Aircraft) int {
@@ -7302,7 +7301,6 @@ func STARSToggleButton(text string, state *bool, flags int, buttonScale float32)
 // though we also need to think about focus capture; probably should
 // force take it when a spinner is active..
 var activeSpinner DCBSpinner
-var activeSpinnerMouseDelta float32
 
 // DrawDCBSpinner draws the provided spinner at the current location in the
 // DCB. It handles mouse capture (and release) and passing mouse wheel
@@ -7326,18 +7324,9 @@ func (sp *STARSPane) DrawDCBSpinner(ctx *PaneContext, spinner DCBSpinner, comman
 			ctx.platform.EndCaptureMouse()
 		}
 
-		if ctx.mouse != nil {
-			activeSpinnerMouseDelta += -ctx.mouse.Wheel[1]
-
-			// Require two ticks for a delta of one; make the spinners a
-			// little less jumpy.
-			const movementScale = 2
-			// Only report a change when there's enough movement to matter.
-			if abs(activeSpinnerMouseDelta) > movementScale {
-				delta := int(activeSpinnerMouseDelta / movementScale)
-				activeSpinnerMouseDelta -= float32(delta * movementScale)
-				spinner.MouseWheel(delta)
-			}
+		if ctx.mouse != nil && ctx.mouse.Wheel[1] != 0 {
+			delta := Select(ctx.mouse.Wheel[1] > 0, -1, 1)
+			spinner.MouseWheel(delta)
 		}
 	} else {
 		// The spinner is not active; draw it (and check if it was clicked...)
