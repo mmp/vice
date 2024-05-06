@@ -1019,6 +1019,7 @@ func (mp *MessagesPane) runCommands(w *World) {
 		mp.input = CLIInput{}
 		return
 	}
+
 	callsign, cmd, ok := strings.Cut(mp.input.cmd, " ")
 	mp.messages = append(mp.messages, Message{contents: "> " + mp.input.cmd})
 	mp.history = append(mp.history, mp.input)
@@ -1038,8 +1039,8 @@ func (mp *MessagesPane) runCommands(w *World) {
 		} else {
 			mp.messages = append(mp.messages, Message{contents: callsign + ": no such aircraft", error: true})
 		}
-	} else if cmd != "" {
-		mp.messages = append(mp.messages, Message{contents: "invalid command: " + mp.input.cmd, error: true})
+	} else {
+		mp.messages = append(mp.messages, Message{contents: "invalid command: " + callsign, error: true})
 	}
 }
 
