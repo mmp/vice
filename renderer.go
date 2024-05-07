@@ -995,9 +995,9 @@ func ReturnTexturedTrianglesDrawBuilder(td *TexturedTrianglesDrawBuilder) {
 // draw command.
 type TextDrawBuilder struct {
 	// Vertex/index buffers for regular text and drop shadows, if enabled.
-	regular, shadow TextBuffers
+	regular, shadow map[uint32]*TextBuffers // Map from texid to buffers
 
-	// Buffers for background quads, if specified
+	// Buffers for background quads, if specified (shared for all tex ids)
 	background struct {
 		p       [][2]float32
 		rgb     []RGB
@@ -1160,10 +1160,22 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 			// beyond the small perf. cost, we'll end up getting "?" and
 			// the like if we do this anyway.
 			if glyph.Visible {
-				td.regular.Add([2]float32{px, py}, glyph, style.Color)
+				if td.regular == nil {
+					td.regular = make(map[uint32]*TextBuffers)
+				}
+				if _, ok := td.regular[style.Font.texId]; !ok {
+					td.regular[style.Font.texId] = &TextBuffers{}
+				}
+				td.regular[style.Font.texId].Add([2]float32{px, py}, glyph, style.Color)
 
 				if style.DropShadow {
-					td.shadow.Add([2]float32{px + 1, py - 1}, glyph, style.DropShadowColor)
+					if td.shadow == nil {
+						td.shadow = make(map[uint32]*TextBuffers)
+					}
+					if _, ok := td.shadow[style.Font.texId]; !ok {
+						td.shadow[style.Font.texId] = &TextBuffers{}
+					}
+					td.shadow[style.Font.texId].Add([2]float32{px + 1, py - 1}, glyph, style.DropShadowColor)
 				}
 			}
 
@@ -1181,8 +1193,12 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 }
 
 func (td *TextDrawBuilder) Reset() {
-	td.regular.Reset()
-	td.shadow.Reset()
+	for _, regular := range td.regular {
+		regular.Reset()
+	}
+	for _, shadow := range td.shadow {
+		shadow.Reset()
+	}
 
 	td.background.p = td.background.p[:0]
 	td.background.rgb = td.background.rgb[:0]
@@ -1190,10 +1206,6 @@ func (td *TextDrawBuilder) Reset() {
 }
 
 func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
-	if len(td.regular.indices) == 0 {
-		return
-	}
-
 	// Issue the commands to draw the background first, if any background
 	// quads have been specified.
 	if len(td.background.indices) > 0 {
@@ -1207,19 +1219,30 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 		cb.DrawQuads(ind, len(td.background.indices))
 	}
 
-	// Issue the drawing commands for the text itself.
-
 	// Enable blending so that we get antialiasing at character edges
 	// (which have fractional alpha in the atlas texture.)
 	cb.Blend()
 
-	// Enable the texture with the font atlas
-	texid := uint32(imgui.CurrentIO().Fonts().GetTextureID())
-	cb.EnableTexture(texid)
+	// Draw them in order of texture id (arbitrary, but consistent across
+	// frames.)  Note that this doesn't necessarily precisely follow the
+	// draw order from the user, so drawing from two atlases where
+	// characters from different atlases overlap may not turn out as
+	// expected. We'll assume that's not worth worrying about...
+	for _, id := range SortedMapKeys(td.regular) {
+		regular := td.regular[id]
+		if len(regular.indices) == 0 {
+			continue
+		}
 
-	// Draw the drop shadows before the main text
-	td.shadow.GenerateCommands(cb)
-	td.regular.GenerateCommands(cb)
+		// Enable the texture with the font atlas
+		cb.EnableTexture(id)
+
+		// Draw any drop shadows before the main text
+		if shadow, ok := td.shadow[id]; ok {
+			shadow.GenerateCommands(cb)
+		}
+		regular.GenerateCommands(cb)
+	}
 
 	// Clean up after ourselves.
 	cb.DisableVertexArray()

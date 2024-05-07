@@ -24,8 +24,8 @@ import (
 const LateralMinimum = 3
 const VerticalMinimum = 1000
 
-// STARS ∆ is U+008A in the FixedDemiBold font we use...
-const STARSTriangleCharacter = "\u008A"
+// STARS ∆ is character 0x80 in the font
+const STARSTriangleCharacter = string(rune(0x80))
 
 var (
 	STARSBackgroundColor    = RGB{.2, .2, .2} // at 100 contrast
@@ -7731,19 +7731,15 @@ func amendFlightPlan(w *World, callsign string, amend func(fp *FlightPlan)) erro
 }
 
 func (sp *STARSPane) initializeFonts() {
-	init := func(fonts []*Font, name string, sizes []int) {
-		for i, sz := range sizes {
-			id := FontIdentifier{Name: name, Size: sz}
-			fonts[i] = GetFont(id)
-			if fonts[i] == nil {
-				lg.Errorf("Font not found for %+v", id)
-				fonts[i] = GetDefaultFont()
-			}
-		}
-	}
-
-	init(sp.systemFont[:], "Fixed Demi Bold", []int{9, 11, 12, 13, 14, 16})
-	init(sp.dcbFont[:], "Inconsolata SemiBold", []int{10, 12, 14})
+	sp.systemFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 9})
+	sp.systemFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
+	sp.systemFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
+	sp.systemFont[3] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
+	sp.systemFont[4] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize3", Size: 16})
+	sp.systemFont[5] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize4", Size: 18})
+	sp.dcbFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 9})
+	sp.dcbFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
+	sp.dcbFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
 }
 
 func (sp *STARSPane) resetInputState() {
