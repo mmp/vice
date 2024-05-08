@@ -648,12 +648,6 @@
           "full_name": "Minnieapolis Tower",
           "scope_char": "T",
           "sector_id": "03"
-        },
-        "FCM_TWR": {
-          "frequency": 119150,
-          "full_name": "Flying Cloud Tower",
-          "scope_char": "T",
-          "sector_id": "04"
         }
       },
       "default_scenario": "MSP 12R/L",
@@ -716,8 +710,7 @@
             "MSP_09_CTR",
 			"MSP_10_CTR",
             "MSP_N_TWR",
-            "MSP_S_TWR",
-            "FCM_TWR"
+            "MSP_S_TWR"
           ],
           "default_maps": ["M98 204 12 B"],
           "departure_runways": [
@@ -835,8 +828,7 @@
 			"MSP_10_CTR",
             "MSP_N_TWR",
             "MSP_S_TWR",
-            "MSP_W_TWR",
-            "FCM_TWR"
+            "MSP_W_TWR"
           ],
           "default_maps": ["M98 227 12-17 B"],
           "departure_runways": [
@@ -953,8 +945,7 @@
             "MSP_09_CTR",
 			"MSP_10_CTR",
             "MSP_N_TWR",
-            "MSP_S_TWR",
-            "FCM_TWR"
+            "MSP_S_TWR"
           ],
           "default_maps": ["M98 203 30 B"],
           "departure_runways": [
@@ -1076,8 +1067,7 @@
 			"MSP_10_CTR",
             "MSP_N_TWR",
             "MSP_S_TWR",
-            "MSP_W_TWR",
-            "FCM_TWR"
+            "MSP_W_TWR"
           ],
           "default_maps": ["M98 231 30-35 B"],
           "departure_runways": [
@@ -1152,8 +1142,16 @@
         "center": "44.890395, -93.230667",
         "airspace_awareness": [
           {
-              "fixes": ["ALL"],
+              "fixes": ["GRB", "DLL", "ODI"],
               "receiving_controller": "MSP_05_CTR"
+          },
+          {
+            "fixes": ["ALO", "ONTIJ", "RXANN"],
+            "receiving_controller": "MSP_09_CTR"
+          },
+          {
+            "fixes": ["LEINY", "ABR", "SMERF", "FAR"],
+            "receiving_controller": "MSP_10_CTR"
           }
       ],
         "inhibit_ca_volumes": [
