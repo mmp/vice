@@ -1,4 +1,4 @@
-    {
+{
     "tracon": "Y90",
     "airports": {
         "KBDL": {
@@ -183,11 +183,39 @@
             "MAD": "South",
             "VEERS": "West"
         },
-        "tower_list": 1
+        "tower_list": 2
 
 
 
-        }
+        },
+        "KHFD": {
+            "approaches": {
+                "R2": {
+                    "cifp_id": "R2" 
+                 }
+         },
+         "departure_routes":{
+            "2":{
+                "CCC": {
+                    "cleared_altitude": 4000,
+                    "sid": "CSTL9",
+                    "waypoints": "CCC/a6000"
+                }
+            }
+        },
+        "departures": [
+            {
+                "airlines": [
+                    {
+                        "icao": "N"
+                    }
+                ],
+                "destination": "KJFK",
+                "exit": "CCC",
+                "route": "CCC ROBER2"
+            }
+        ]    
+    }
     },
     "arrival_groups": {
         "DPK3": [
@@ -256,14 +284,22 @@
                             "airport": "KMSP",
                             "icao": "UAL"                         
                         }
-                    ]
+                    ],
+                    "KHFD": [
+                        {
+                        "airport": "KALB",
+                        "icao": "N"  
+                        }
+                    ]   
+                    
+        
                 },
                 "cruise_altitude": 36000,
                 "initial_altitude": 24000,
                 "initial_controller": "BOS_37_CTR",
                 "initial_speed": 250,
                 "star": "STELA1",
-                "waypoints": "SYR WILET RKA SWEDE/a23000 CANAN STELA/a11000/ho MOLDS TOMES"
+                "waypoints": "SYR WILET RKA SWEDE/a23000 CANAN/ho STELA/a11000 MOLDS TOMES"
             }
         ]
     },
@@ -272,7 +308,7 @@
             "frequency": 134700,
             "full_name": "Boston Center",
             "scope_char": "C",
-            "sector_id": "B37",
+            "sector_id": "C37",
             "facility_id": "C",
             "eram_facility": true
         },
@@ -293,6 +329,30 @@
             "full_name": "Bradley Tower",
             "scope_char": "T",
             "sector_id": "1T"
+        },
+        "HFD_TWR": {
+            "frequency": 119600,
+            "full_name": "Brainard Tower",
+            "scope_char": "H",
+            "sector_id": "2T"
+        },
+        "PVD_APP": {
+            "frequency": 123675,
+            "full_name": "Providence Approach",
+            "scope_char": "P",
+            "sector_id": "2P"
+        },
+        "BOS_APP": {
+            "frequency": 133000,
+            "full_name": "Boston Approach",
+            "scope_char": "A",
+            "sector_id": "1A"
+        },
+        "ISP_APP": {
+            "frequency": 120050,
+            "full_name": "New York Approach",
+            "scope_char": "N",  
+            "sector_id": "1N"
         }
     },
     "default_scenario": "Y90 RWY 6/33",
@@ -314,11 +374,16 @@
                 {    
                     "airport":"KBDL",
                     "runway": "33"
+                },
+                {    
+                    "airport":"KHFD",
+                    "runway": "2"
                 }
             ],  
             "arrivals": {
                 "STELA1": {
-                    "KBDL": 15
+                    "KBDL": 15,
+                    "KHFD": 3
                 },
                 "DPK3": {
                     "KBDL": 18
@@ -341,9 +406,13 @@
             "controllers": [
                 "BDL_TWR",
                 "BDL_APP",
-                "BOS_37_CTR"
+                "BOS_37_CTR",
+                "HFD_TWR",
+                "PVD_APP",
+                "BOS_APP",
+                "ISP_APP"
             ],
-            "default_maps": ["Y90 RWY 6/33"],
+            "default_maps": ["Y90 RWY 6/33","BDL_TWR 6/33","Y90 COASTLINE"],
             "departure_runways": [
                 {
                     "airport":"KBDL",
@@ -383,13 +452,29 @@
         "PVD": "PVD",
         "GON": "GON",
         "MAD": "MAD",
-        "VEERS": "VEERS"
+        "VEERS": "VEERS",
+        "CCC": "CCC"    
     },
     "stars_maps": [
         {
             "group": 0,
-            "label": "RWY 6/33",
+            "label": "BDL 6/33",
             "name": "Y90 RWY 6/33"
+        },
+        {
+            "group": 0,
+            "label": "SATS",
+            "name": "Y90 SATS FAC"
+        },
+        {
+            "group": 0,
+            "label": "COAST",
+            "name": "Y90 COASTLINE"
+        },
+        {
+            "group": 0,
+            "label": "TWR",
+            "name": "BDL_TWR 6/33"
         }
     ],
     "video_map_file": "videomaps/ZBW-videomaps.json.zst"
