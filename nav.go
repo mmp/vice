@@ -1703,13 +1703,13 @@ func (nav *Nav) MaintainMaximumForward() PilotResponse {
 
 func (nav *Nav) SaySpeed() PilotResponse {
 	currentSpeed := nav.FlightState.IAS
-	var output string 
+	var output string
 
 	if nav.Speed.Assigned != nil {
 		assignedSpeed := *nav.Speed.Assigned
 		if assignedSpeed < currentSpeed {
 			output = Sample(fmt.Sprintf("at %.0f slowing to %.0f", currentSpeed, assignedSpeed),
-			fmt.Sprintf("at %.0f and slowing", currentSpeed))
+				fmt.Sprintf("at %.0f and slowing", currentSpeed))
 		} else if assignedSpeed > currentSpeed {
 			output = fmt.Sprintf("at %0.f speeding up to %.0f", currentSpeed, assignedSpeed)
 		} else {
