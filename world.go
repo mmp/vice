@@ -948,7 +948,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		}
 	}
 
-	if w.sameGateDepartures == w.sameDepartureCap + 4 || (lastDeparture != nil && dep.Exit != lastDeparture.Exit) { // reset back to zero if its at 7 or if there is a new gate
+	if w.sameGateDepartures == w.sameDepartureCap+4 || (lastDeparture != nil && dep.Exit != lastDeparture.Exit) { // reset back to zero if its at 7 or if there is a new gate
 		w.sameDepartureCap = rand.Intn(3) + 1
 		w.sameGateDepartures = 0
 	}
