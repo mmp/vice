@@ -220,6 +220,10 @@ func (ac *Aircraft) MaintainMaximumForward() []RadioTransmission {
 	return ac.transmitResponse(ac.Nav.MaintainMaximumForward())
 }
 
+func (ac *Aircraft) SaySpeed() []RadioTransmission {
+	return ac.transmitResponse(ac.Nav.SaySpeed())
+}
+
 func (ac *Aircraft) ExpediteDescent() []RadioTransmission {
 	return ac.transmitResponse(ac.Nav.ExpediteDescent())
 }
