@@ -45,6 +45,9 @@ type World struct {
 
 	missingPrimaryDialog *ModalDialogBox
 
+	sameGateDepartures int
+	sameDepartureCap   int
+
 	// Scenario routes to draw on the scope
 	scopeDraw struct {
 		arrivals   map[string]map[int]bool               // group->index
@@ -884,7 +887,11 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	rwy := &w.DepartureRunways[idx]
 
 	var dep *Departure
-	if rand.Float32() < challenge && lastDeparture != nil {
+	if w.sameDepartureCap == 0 {
+		w.sameDepartureCap = 3
+	}
+	if rand.Float32() < challenge && lastDeparture != nil && w.sameGateDepartures < w.sameDepartureCap {
+		w.sameGateDepartures += 1
 		// 50/50 split between the exact same departure and a departure to
 		// the same gate as the last departure.
 		pred := Select(rand.Float32() < .5,
@@ -900,6 +907,23 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		} else {
 			dep = &ap.Departures[idx]
 		}
+	} else if w.sameGateDepartures >= w.sameDepartureCap { // Keep adding this number until 7 so that no more same-gate departures are launched, then reset it to zero
+		w.sameGateDepartures += 1
+	}
+
+	getExit := func() (*Aircraft, *Departure, error) {
+		idx := SampleFiltered(ap.Departures,
+			func(d Departure) bool {
+				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
+				return ok && (rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
+			})
+		if idx == -1 {
+			// This shouldn't ever happen...
+			return nil, nil, fmt.Errorf("%s/%s: unable to find a valid departure",
+				departureAirport, rwy.Runway)
+		}
+		dep = &ap.Departures[idx]
+		return nil, dep, nil
 	}
 
 	if dep == nil {
@@ -916,6 +940,20 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		}
 		dep = &ap.Departures[idx]
 	}
+	for {
+		if lastDeparture != nil && dep.Exit == lastDeparture.Exit && w.sameGateDepartures >= w.sameDepartureCap {
+			_, dep, _ = getExit()
+		} else {
+			break
+		}
+	}
+
+	if w.sameGateDepartures == w.sameDepartureCap + 4 || (lastDeparture != nil && dep.Exit != lastDeparture.Exit) { // reset back to zero if its at 7 or if there is a new gate
+		w.sameDepartureCap = rand.Intn(3) + 1
+		w.sameGateDepartures = 0
+	}
+
+	fmt.Println(dep.Exit, w.sameGateDepartures)
 
 	airline := SampleSlice(dep.Airlines)
 	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
