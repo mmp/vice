@@ -821,7 +821,6 @@ type Sim struct {
 	Handoffs map[string]time.Time
 	// callsign -> "to" controller
 	PointOuts map[string]map[string]PointOut
-	// ForceQL map[string]
 
 	TotalDepartures int
 	TotalArrivals   int
