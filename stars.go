@@ -5400,14 +5400,13 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	ld.GenerateCommands(cb)
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
-	
 }
 
 func (sp *STARSPane) getTrackSize(ctx *PaneContext, transforms ScopeTransformations) float32 {
 	var output float32 = 13 // base track size
 	e := transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
 	var distance float32 = 0.3623 // Around 2200 feet in nm
-	if distance / e > 13 {
+	if distance/e > 13 {
 		output = distance / e
 	}
 	return output
