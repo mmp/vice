@@ -46,6 +46,8 @@ type World struct {
 
 	missingPrimaryDialog *ModalDialogBox
 
+	DisplayFPInfo map[string]*bool
+
 	// Scenario routes to draw on the scope
 	scopeDraw struct {
 		arrivals   map[string]map[int]bool               // group->index
@@ -1121,10 +1123,14 @@ func (w *World) DrawCoordinationWindow() {
 							w.LaunchAircraft(*ac)
 						}
 						if info {
-							ac.ToggleDisplayFP()
+							ac.ToggleDisplayFP(w)
 						}
-						if ac.DisplayFPInfo {
-							imgui.BeginV(fmt.Sprintf("Flight Plan for %v", ac.Callsign), &ac.DisplayFPInfo, imgui.WindowFlagsAlwaysAutoResize)
+						if w.DisplayFPInfo == nil {
+							w.DisplayFPInfo = make(map[string]*bool)
+						}
+						
+						if w.DisplayFPInfo[ac.Callsign] != nil && *w.DisplayFPInfo[ac.Callsign] {
+							imgui.BeginV(fmt.Sprintf("Flight Plan for %v", ac.Callsign), w.DisplayFPInfo[ac.Callsign], imgui.WindowFlagsAlwaysAutoResize)
 							if imgui.BeginTableV("Info", 2, tableFlags, imgui.Vec2{}, 0) {
 								imgui.TableSetupColumn("Field")
 								imgui.TableSetupColumn("Value")
@@ -1170,8 +1176,17 @@ func (w *World) DrawCoordinationWindow() {
 	imgui.End()
 }
 
-func (ac *Aircraft) ToggleDisplayFP() {
-	ac.DisplayFPInfo = !ac.DisplayFPInfo
+func (ac *Aircraft) ToggleDisplayFP(w *World) {
+	if w.DisplayFPInfo == nil {
+        w.DisplayFPInfo = make(map[string]*bool)
+    }
+    
+    if _, ok := w.DisplayFPInfo[ac.Callsign]; !ok {
+        initialValue := false
+        w.DisplayFPInfo[ac.Callsign] = &initialValue
+    }
+
+    *w.DisplayFPInfo[ac.Callsign] = !*w.DisplayFPInfo[ac.Callsign]
 }
 
 func (w *World) DrawScenarioInfoWindow() {

@@ -3380,13 +3380,10 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) e
 			return nil
 		}
 	} else if len(cmd) == 2 { // Global leader lines
-		if cmd[0] != cmd[1] || strings.Contains(cmd, "0") {
-			return GetSTARSError(ErrSTARSCommandFormat)
 
-		}
 		if ac.TrackingController != ctx.world.Callsign {
 			return ErrSTARSIllegalTrack
-		} else if dir, ok := numpadToDirection(cmd[0]); ok {
+		} else if dir, ok := numpadToDirection(cmd[0]); ok && cmd[0] == cmd[1] {
 			sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
 			return nil
 		}
@@ -5334,29 +5331,6 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		if state.LostTrack(now) {
 			continue
 		}
-
-		/* TODO: Having the scope char reflect who STARS thinks is tracking the target. This will probably take something like a map[string]struct{}
-		in the World struct, which will contain all of the facility specific information. This is where local flight plans will be stored, and any other
-		local information that a STARS facility may contain
-		*/
-
-		// trackId := ""
-		// if state.LastKnownHandoff == "" {
-		// 	state.LastKnownHandoff = "*"
-		// }
-
-		// if ac.TrackingController != "" {
-		// 	trackId = "?"
-		// 	octrl := ctx.world.GetController(ctx.world.Callsign)
-		// 	if ctrl := ctx.world.GetController(ac.TrackingController); ctrl != nil && octrl != nil &&
-		// 		ctx.world.GetController(ac.TrackingController).FacilityIdentifier == octrl.FacilityIdentifier {
-		// 		trackId = ctrl.Scope
-		// 	} else {
-		// 		trackId = "*"
-		// 	}
-		// } else {
-		// 	trackId = "*"
-		// }
 
 		trackId := "*"
 		if ac.TrackingController != "" {
