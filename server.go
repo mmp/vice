@@ -1191,6 +1191,11 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					rewriteError(err)
 					return nil
 				}
+			} else if command == "SS" {
+				if err := sim.SaySpeed(token, callsign); err != nil {
+					rewriteError(err)
+					return nil
+				}
 			} else {
 				if kts, err := strconv.Atoi(command[1:]); err != nil {
 					rewriteError(err)

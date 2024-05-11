@@ -1676,13 +1676,14 @@ func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) PilotResponse {
 	} else {
 		nav.Speed = NavSpeed{Assigned: &speed}
 		if speed < nav.FlightState.IAS {
-			msg := Sample("reduce speed to %.0f knots", "down to %.0f")
+			msg := Sample("reduce speed to %.0f knots", "speed %.0f", "pulling it back to %.0f", "%.0f for the speed", "slow to %.0f")
 			response = fmt.Sprintf(msg, speed)
 		} else if speed > nav.FlightState.IAS {
-			msg := Sample("increase speed to %.0f knots", "up to %.0f")
+			msg := Sample("increase speed to %.0f knots", "speed %.0f", "%.0f for the speed", "maintain %.0f knots")
 			response = fmt.Sprintf(msg, speed)
 		} else {
-			response = fmt.Sprintf("maintain %.0f knots", speed)
+			msg := Sample("maintain %.0f knots", "keep it at %.0f", "well stay at %.0f")
+			response = fmt.Sprintf(msg, speed)
 		}
 	}
 	return PilotResponse{Message: response}
@@ -1698,6 +1699,26 @@ func (nav *Nav) MaintainMaximumForward() PilotResponse {
 	nav.Speed = NavSpeed{MaintainMaximumForward: true}
 	r := Sample("we'll keep it at maximum forward speed", "maintaining maximum forward speed")
 	return PilotResponse{Message: r}
+}
+
+func (nav *Nav) SaySpeed() PilotResponse {
+	currentSpeed := nav.FlightState.IAS
+	var output string
+
+	if nav.Speed.Assigned != nil {
+		assignedSpeed := *nav.Speed.Assigned
+		if assignedSpeed < currentSpeed {
+			output = Sample(fmt.Sprintf("at %.0f slowing to %.0f", currentSpeed, assignedSpeed),
+				fmt.Sprintf("at %.0f and slowing", currentSpeed))
+		} else if assignedSpeed > currentSpeed {
+			output = fmt.Sprintf("at %0.f speeding up to %.0f", currentSpeed, assignedSpeed)
+		} else {
+			output = Sample(fmt.Sprintf("maintaining %.0f knots", currentSpeed), fmt.Sprintf("at %.0f knots", currentSpeed))
+		}
+	} else {
+		output = Sample(fmt.Sprintf("maintaining %.0f knots", currentSpeed), fmt.Sprintf("at %.0f knots", currentSpeed))
+	}
+	return PilotResponse{Message: output}
 }
 
 func (nav *Nav) ExpediteDescent() PilotResponse {
