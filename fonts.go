@@ -410,7 +410,7 @@ func initializeSTARSFonts(r Renderer) {
 	// Iterate over the fonts, create Font/Glyph objects for them, and copy
 	// their bitmaps into the atlas image.
 	x, y := 0, 0
-	for fi, fontName := range SortedMapKeys(starsFonts) { // consistent order
+	for _, fontName := range SortedMapKeys(starsFonts) { // consistent order
 		sf := starsFonts[fontName]
 		f := &Font{
 			glyphs: make(map[rune]*Glyph),
@@ -441,13 +441,13 @@ func initializeSTARSFonts(r Renderer) {
 		x = 0
 		y += sf.Height + 1
 
-		if fi == 0 {
+		if fontName == "sddCharFontSetBSize0" || fontName == "sddCharOutlineFontSetBSize0" {
 			// Make a downscaled version of the smallest one for font size
 			// 0 (which we don't seem to have a bitmap for...) Note that we
 			// arguably should do this once in a preprocess and then encode
-			// the result in starsFonts, but this doesn't take too long and
-			// for now at least makes it easier to tweak some of the
-			// details.
+			// the result in starsFonts/starsOutlineFonts, but this doesn't
+			// take too long and for now at least makes it easier to tweak
+			// some of the details.
 			sf.PointSize = 7
 			const delta = 2
 			sf.Width -= delta

@@ -72,8 +72,9 @@ type STARSPane struct {
 
 	weatherRadar WeatherRadar
 
-	systemFont [6]*Font
-	dcbFont    [3]*Font // 0, 1, 2 only
+	systemFont        [6]*Font
+	systemOutlineFont [6]*Font
+	dcbFont           [3]*Font // 0, 1, 2 only
 
 	events *EventsSubscription
 
@@ -5602,7 +5603,9 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 		}
 		if trackId != "" {
 			font := sp.systemFont[ps.CharSize.PositionSymbols]
-			td.AddTextCentered(trackId, pw, TextStyle{Font: font, Color: trackIdBrightness.ScaleRGB(color), DropShadow: true})
+			outlineFont := sp.systemOutlineFont[ps.CharSize.PositionSymbols]
+			td.AddTextCentered(trackId, pw, TextStyle{Font: outlineFont, Color: RGB{}})
+			td.AddTextCentered(trackId, pw, TextStyle{Font: font, Color: trackIdBrightness.ScaleRGB(color)})
 		} else {
 			// TODO: draw box if in range of squawks we have selected
 
@@ -7737,6 +7740,12 @@ func (sp *STARSPane) initializeFonts() {
 	sp.systemFont[3] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
 	sp.systemFont[4] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize3", Size: 16})
 	sp.systemFont[5] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize4", Size: 18})
+	sp.systemOutlineFont[0] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 9})
+	sp.systemOutlineFont[1] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 11})
+	sp.systemOutlineFont[2] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize1", Size: 12})
+	sp.systemOutlineFont[3] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize2", Size: 15})
+	sp.systemOutlineFont[4] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize3", Size: 16})
+	sp.systemOutlineFont[5] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize4", Size: 18})
 	sp.dcbFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 9})
 	sp.dcbFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
 	sp.dcbFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
