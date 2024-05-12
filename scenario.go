@@ -1161,13 +1161,49 @@ func loadZIPVideoMapFile(r io.Reader, referenced map[string]interface{}) (map[st
 			return nil, err
 		}
 
-		var prev Point2LL
+		var prev, center Point2LL
+		var radius float32
 		var lines [][2]Point2LL
 		scanner := bufio.NewScanner(bytes.NewBuffer(dat))
 		for scanner.Scan() {
-			line := scanner.Text()
+			line := []byte(scanner.Text())
 
-			if bang := strings.IndexByte(line, '!'); bang == -1 {
+			parseInt := func(b []byte) float32 {
+				v := 0
+				for i, ch := range b {
+					v *= 10
+					if ch < '0' || ch > '9' {
+						err = fmt.Errorf("Non-numeric value found at column %d: \"%s\"", i, string(b))
+					}
+					v += int(ch - '0')
+				}
+				return float32(v)
+			}
+			parseLatLong := func(line []byte) Point2LL {
+				lat, latmin, latsec, latsecdec := parseInt(line[:2]), parseInt(line[3:5]), parseInt(line[6:8]), parseInt(line[9:13])
+				lon, lonmin, lonsec, lonsecdec := parseInt(line[15:18]), parseInt(line[19:21]), parseInt(line[22:24]), parseInt(line[25:29])
+				return Point2LL{
+					// Assume West, so negate longitude...
+					-(lon + lonmin/60 + lonsec/3600 + lonsecdec/(3600*10000)),
+					lat + latmin/60 + latsec/3600 + latsecdec/(3600*10000),
+				}
+			}
+
+			if len(line) > 8 && line[0] == '!' {
+				// Extract center or radius
+				switch string(line[4:8]) {
+				case "9900":
+					center = parseLatLong(line[12:])
+				case "9909":
+					radius = float32(parseInt(line[12:]) * FeetToNauticalMiles)
+				}
+				if err != nil {
+					return nil, err
+				}
+				continue
+			}
+
+			if bang := bytes.IndexByte(line, '!'); bang == -1 {
 				return nil, fmt.Errorf("Unexpected line in DAT file: \"%s\"", line)
 			} else {
 				line = line[:bang]
@@ -1175,32 +1211,17 @@ func loadZIPVideoMapFile(r io.Reader, referenced map[string]interface{}) (map[st
 
 			if len(line) == 0 {
 				continue
-			} else if line == "LINE " {
+			} else if string(line) == "LINE " {
 				// start a new line
 				prev = Point2LL{}
-			} else if len(line) == 34 && line[:3] == "GP " {
+			} else if len(line) == 34 && string(line[:3]) == "GP " {
 				// Assume this format is 100% column based for efficiency...
-
-				parseInt := func(start, end int) float32 {
-					v := 0
-					for i := start; i < end; i++ {
-						v *= 10
-						if line[i] < '0' || line[i] > '9' {
-							err = fmt.Errorf("Non-numeric value found at column %d", i)
-						}
-						v += int(line[i] - '0')
-					}
-					return float32(v)
-				}
 
 				// Lines are of the following form. Pull out the values from the columns...
 				// GP 42 20 55.0000  071 00 22.0000  !
-				lat, latmin, latsec, latsecdec := parseInt(3, 5), parseInt(6, 8), parseInt(9, 11), parseInt(12, 16)
-				lon, lonmin, lonsec, lonsecdec := parseInt(18, 21), parseInt(22, 24), parseInt(25, 27), parseInt(28, 32)
-				pt := Point2LL{
-					// Assume West, so negate longitude...
-					-(lon + lonmin/60 + lonsec/3600 + lonsecdec/(3600*10000)),
-					lat + latmin/60 + latsec/3600 + latsecdec/(3600*10000),
+				pt := parseLatLong(line[3:])
+				if err != nil {
+					return nil, err
 				}
 				if !prev.IsZero() {
 					lines = append(lines, [2]Point2LL{prev, pt})
@@ -1211,15 +1232,8 @@ func loadZIPVideoMapFile(r io.Reader, referenced map[string]interface{}) (map[st
 			}
 		}
 
-		e := EmptyExtent2D()
-		for _, line := range lines {
-			e = Union(e, line[0])
-			e = Union(e, line[1])
-		}
-
-		center := e.Center()
 		lines = FilterSlice(lines, func(l [2]Point2LL) bool {
-			return nmdistance2ll(l[0], center) < 80 && nmdistance2ll(l[1], center) < 80
+			return nmdistance2ll(l[0], center) < radius
 		})
 
 		ld := GetLinesDrawBuilder()
