@@ -1860,6 +1860,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 func (sp *STARSPane) disableMenuSpinner(ctx *PaneContext) {
 	activeSpinner = nil
 	ctx.platform.EndCaptureMouse()
+	sp.commandMode = CommandModeNone
 }
 
 func (sp *STARSPane) activateMenuSpinner(spinner DCBSpinner) {
@@ -7325,6 +7326,7 @@ func (sp *STARSPane) DrawDCBSpinner(ctx *PaneContext, spinner DCBSpinner, comman
 		if clicked {
 			activeSpinner = nil
 			ctx.platform.EndCaptureMouse()
+			sp.commandMode = CommandModeNone
 		}
 
 		if ctx.mouse != nil && ctx.mouse.Wheel[1] != 0 {
