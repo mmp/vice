@@ -2413,7 +2413,7 @@
         "BOS_W_TWR",
         "BOS_37_CTR"
       ],
-      "default_maps": [ "BOS A90 MAIN" ],
+      "default_maps": [ "BOS 4" ],
       "departure_airspace": [
         "BOS_APP4R"
       ],
@@ -2473,7 +2473,7 @@
         "BOS_W_TWR",
         "BOS_37_CTR"
       ],
-      "default_maps": [ "BOS A90 MAIN" ],
+      "default_maps": [ "BOS 4" ],
       "departure_airspace": [
         "BOS_APP"
       ],
@@ -2529,7 +2529,7 @@
         "BOS_W_TWR",
         "BOS_37_CTR"
       ],
-      "default_maps": [ "BOS A90 MAIN" ],
+      "default_maps": [ "BOS 4" ],
       "departure_airspace": [
         "BOS_APP"
       ],
@@ -2585,7 +2585,7 @@
         "BOS_W_TWR",
         "BOS_37_CTR"
       ],
-      "default_maps": [ "BOS A90 MAIN" ],
+      "default_maps": [ "BOS 4" ],
       "departure_airspace": [
         "BOS_APP"
       ],
@@ -2633,7 +2633,7 @@
         "BOS_N_APP",
         "BOS_S_APP"
       ],
-      "default_maps": [ "BOS 4R/L" ],
+      "default_maps": [ "BOS 4" ],
       "wind": {
         "direction": 70,
         "speed": 10
@@ -2696,131 +2696,11 @@
    "stars_maps": [
     {
       "group": 0,
-      "label": "MAIN",
-      "name": "BOS A90 MAIN"
-    },
-    {
-      "group": 0,
       "label": "4R/L",
-      "name": "BOS 4R/L"
-    },
-    {
-      "group": 0,
-      "label": "4R/15R",
-      "name": "BOS 4R/15R"
-    },
-    {
-      "group": 0,
-      "label": "15R",
-      "name": "BOS 15R"
-    },
-    {
-      "group": 0,
-      "label": "15R/9",
-      "name": "BOS 15R/9"
-    },
-    {
-      "group": 0,
-      "label": "22L",
-      "name": "BOS 22L"
-    },
-    {
-      "group": 0,
-      "label": "27",
-      "name": "BOS 27"
-    },
-    {
-      "group": 0,
-      "label": "27/22",
-      "name": "BOS 27/22"
-    },
-    {
-      "group": 0,
-      "label": "27/32",
-      "name": "BOS 27/32"
-    },
-    {
-      "group": 0,
-      "label": "33L/32",
-      "name": "BOS 33L/32"
-    },
-    {
-      "group": 0,
-      "label": "33L",
-      "name": "BOS 33L"
-    },
-    {
-      "group": 1,
-      "label": "ASPC",
-      "name": "B, C, D, AIRSPACE"
-   },
-    {
-      "group": 0,
-      "label": "A90 BASE",
-      "name": "A90 BASE"
-    },
-    {
-      "group": 0,
-      "label": "MVA",
-      "name": "A90 MVA"
-    },
-    {
-      "group": 0,
-      "label": "COAST",
-      "name": "A90 COASTLINE"
-    },
-    {
-      "group": 0,
-      "label": "STAR 4L",
-      "name": "BOS RWY 4R/L RNAV STAR"
-    },
-    {
-      "group": 0,
-      "label": "STAR 15R",
-      "name": "BOS RWY 15R RNAV STAR"
-    },
-    {
-      "group": 0,
-      "label": "STAR 22L",
-      "name": "BOS RWY 22L RNAV STAR"
-    },
-    {
-      "group": 0,
-      "label": "STAR 27",
-      "name": "BOS RWY 27 RNAV STAR"
-    },
-    {
-      "group": 0,
-      "label": "STAR 33L",
-      "name": "BOS RWY 33L RNAV STAR"
-    },
-    {
-      "group": 0,
-      "label": "9 SID",
-      "name": "BOS RWY 9 RNAV SID"
-    },
-    {
-      "group": 0,
-      "label": "15R SID",
-      "name": "BOS RWY 15R RNAV SID"
-    },
-    {
-      "group": 0,
-      "label": "22L SID",
-      "name": "BOS RWY 22L RNAV SID"
-    },
-    {
-      "group": 0,
-      "label": "27 SID",
-      "name": "BOS RWY 27 RNAV SID"
-    },
-    {
-      "group": 0,
-      "label": "33L SID",
-      "name": "BOS RWY 33L RNAV SID"
+      "name": "BOS 4"
     }
    ],
-   "video_map_file": "videomaps/ZBW-videomaps.json.zst"
+   "video_map_file": "videomaps/a90.zip"
   }
 }
 

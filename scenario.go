@@ -5,8 +5,10 @@
 package main
 
 import (
+	"archive/zip"
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/fs"
@@ -1085,7 +1087,11 @@ func loadVideoMaps(filesystem fs.FS, path string, referencedVideoMaps map[string
 	}
 
 	if referenced, ok := referencedVideoMaps[path]; ok {
-		lvm.commandBufs, err = loadVideoMapFile(r, referenced)
+		if strings.HasSuffix(strings.ToLower(path), ".zip") {
+			lvm.commandBufs, err = loadZIPVideoMapFile(r, referenced)
+		} else {
+			lvm.commandBufs, err = loadJSONVideoMapFile(r, referenced)
+		}
 		if err != nil {
 			lvm.err = err
 			result <- lvm
@@ -1097,7 +1103,140 @@ func loadVideoMaps(filesystem fs.FS, path string, referencedVideoMaps map[string
 	result <- lvm
 }
 
-func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[string]CommandBuffer, error) {
+func loadZIPVideoMapFile(r io.Reader, referenced map[string]interface{}) (map[string]CommandBuffer, error) {
+	contents, err := io.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+
+	zr, err := zip.NewReader(bytes.NewReader(contents), int64(len(contents)))
+	if err != nil {
+		return nil, err
+	}
+
+	idx := slices.IndexFunc(zr.File, func(f *zip.File) bool { return f.Name == "maps.json" })
+	if idx == -1 {
+		return nil, fmt.Errorf("No \"maps.json\" file found in ZIP file")
+	}
+
+	readFileContents := func(f *zip.File) ([]byte, error) {
+		r, err := f.Open()
+		if err != nil {
+			return nil, err
+		}
+		defer r.Close()
+		return io.ReadAll(r)
+	}
+
+	mapsSpec, err := readFileContents(zr.File[idx])
+	if err != nil {
+		return nil, err
+	}
+
+	type ZIPMapSpecifier struct {
+		Filename string `json:"filename"`
+		Number   int    `json:"number"`
+		Name     string `json:"name"`
+	}
+	var specs []ZIPMapSpecifier
+	if err := json.Unmarshal(mapsSpec, &specs); err != nil {
+		return nil, err
+	}
+
+	m := make(map[string]CommandBuffer)
+	for _, spec := range specs {
+		idx := slices.IndexFunc(zr.File, func(f *zip.File) bool { return f.Name == spec.Filename })
+		if idx == -1 {
+			return nil, fmt.Errorf("%s: file not found in ZIP", spec.Filename)
+		}
+
+		if _, ok := referenced[spec.Name]; !ok {
+			// It's not used, don't bother but leave an empty command buffer
+			m[spec.Name] = CommandBuffer{}
+			continue
+		}
+
+		dat, err := readFileContents(zr.File[idx])
+		if err != nil {
+			return nil, err
+		}
+
+		var prev Point2LL
+		var lines [][2]Point2LL
+		scanner := bufio.NewScanner(bytes.NewBuffer(dat))
+		for scanner.Scan() {
+			line := scanner.Text()
+
+			if bang := strings.IndexByte(line, '!'); bang == -1 {
+				return nil, fmt.Errorf("Unexpected line in DAT file: \"%s\"", line)
+			} else {
+				line = line[:bang]
+			}
+
+			if len(line) == 0 {
+				continue
+			} else if line == "LINE " {
+				// start a new line
+				prev = Point2LL{}
+			} else if len(line) == 34 && line[:3] == "GP " {
+				// Assume this format is 100% column based for efficiency...
+
+				parseInt := func(start, end int) float32 {
+					v := 0
+					for i := start; i < end; i++ {
+						v *= 10
+						if line[i] < '0' || line[i] > '9' {
+							err = fmt.Errorf("Non-numeric value found at column %d", i)
+						}
+						v += int(line[i] - '0')
+					}
+					return float32(v)
+				}
+
+				// Lines are of the following form. Pull out the values from the columns...
+				// GP 42 20 55.0000  071 00 22.0000  !
+				lat, latmin, latsec, latsecdec := parseInt(3, 5), parseInt(6, 8), parseInt(9, 11), parseInt(12, 16)
+				lon, lonmin, lonsec, lonsecdec := parseInt(18, 21), parseInt(22, 24), parseInt(25, 27), parseInt(28, 32)
+				pt := Point2LL{
+					// Assume West, so negate longitude...
+					-(lon + lonmin/60 + lonsec/3600 + lonsecdec/(3600*10000)),
+					lat + latmin/60 + latsec/3600 + latsecdec/(3600*10000),
+				}
+				if !prev.IsZero() {
+					lines = append(lines, [2]Point2LL{prev, pt})
+				}
+				prev = pt
+			} else {
+				return nil, fmt.Errorf("Unexpected line in DAT file: \"%s\"", line)
+			}
+		}
+
+		e := EmptyExtent2D()
+		for _, line := range lines {
+			e = Union(e, line[0])
+			e = Union(e, line[1])
+		}
+
+		center := e.Center()
+		lines = FilterSlice(lines, func(l [2]Point2LL) bool {
+			return nmdistance2ll(l[0], center) < 80 && nmdistance2ll(l[1], center) < 80
+		})
+
+		ld := GetLinesDrawBuilder()
+		for _, line := range lines {
+			ld.AddLine(line[0], line[1])
+		}
+
+		var cb CommandBuffer
+		ld.GenerateCommands(&cb)
+		m[spec.Name] = cb
+		ReturnLinesDrawBuilder(ld)
+	}
+
+	return m, nil
+}
+
+func loadJSONVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[string]CommandBuffer, error) {
 	r := bufio.NewReader(ir)
 
 	// For debugging, enable check here; the file will also be parsed using
@@ -1463,12 +1602,10 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 			return nil
 		}
 
-		if filepath.Ext(path) != ".json" && filepath.Ext(path) != ".zst" {
-			return nil
+		if ext := filepath.Ext(path); ext == ".json" || ext == ".zst" || ext == ".zip" {
+			launches++
+			go loadVideoMaps(resourcesFS, path, referencedVideoMaps, vmChan)
 		}
-
-		launches++
-		go loadVideoMaps(resourcesFS, path, referencedVideoMaps, vmChan)
 		return nil
 	})
 	if err != nil {
