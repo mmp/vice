@@ -5378,8 +5378,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		trackId := "*"
 		if ac.TrackingController != "" {
 			trackId = "?"
-			octrl := ctx.world.GetControllerByCallsign(ctx.world.Callsign)
-			if ctrl := ctx.world.GetControllerByCallsign(ac.TrackingController); ctrl != nil && octrl != nil {
+			if ctrl := ctx.world.GetControllerByCallsign(ac.TrackingController); ctrl != nil {
 				trackId = ctrl.Scope
 			}
 		}
