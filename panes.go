@@ -565,7 +565,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 		// Second column; 3 entries
 		x += width0
-		td.AddText(ac.AssignedSquawk.String(), [2]float32{x, y}, style)
+		td.AddText(ac.FlightPlan.AssignedSquawk.String(), [2]float32{x, y}, style)
 		td.AddText(strconv.Itoa(ac.TempAltitude), [2]float32{x, y - fh*3/2}, style)
 		if fp != nil {
 			td.AddText(strconv.Itoa(fp.Altitude), [2]float32{x, y - fh*3}, style)

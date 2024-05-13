@@ -15,7 +15,6 @@ type Aircraft struct {
 	Callsign            string
 	Scratchpad          string
 	SecondaryScratchpad string
-	AssignedSquawk      Squawk // from ATC
 	Squawk              Squawk // actually squawking
 	Mode                TransponderMode
 	TempAltitude        int
@@ -76,7 +75,7 @@ func (ac *Aircraft) TAS() float32 {
 }
 
 func (ac *Aircraft) IsAssociated() bool {
-	return ac.FlightPlan != nil && ac.Squawk == ac.AssignedSquawk && ac.Mode == Charlie
+	return ac.FlightPlan != nil && ac.Squawk == ac.FlightPlan.AssignedSquawk && ac.Mode == Charlie
 }
 
 func (ac *Aircraft) HandleControllerDisconnect(callsign string, w *World) {

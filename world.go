@@ -52,6 +52,8 @@ type World struct {
 		departures map[string]map[string]map[string]bool // airport->runway->exit
 	}
 
+	ERAMComputers map[string]ERAMComputer
+
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
 	TRACON                  string
@@ -87,6 +89,55 @@ type World struct {
 	STARSFacilityAdaptation STARSFacilityAdaptation
 
 	STARSInputOverride string
+}
+
+type ERAMComputer struct {
+	STARSComputers map[string]STARSComputer
+	FlightPlans []FlightPlan
+}
+
+type STARSComputer struct {
+	RecievedPlans []SentFlightPlan
+	ContainedPlans []FlightPlan
+}
+
+const (
+	RemoteEnroute = iota // Flight plan received from a NAS ARTCC
+	/* This is essentially a flight plan that has been sent over by an overlying ERAM facility. */
+	RemoteNonEnroute // Flight plan received from an adjacent terminal facility
+	/* This is a flight plan that has been sent over by another STARS facility. */
+
+	// TODO: Find out what these two flight plan types mean:
+	LocalEnroute // VFR interfacility flight plan entered locally for which the NAS ARTCC has not returned a flight plan
+	LocalNonEnroute // Flight plan entered by TCW or flight plan from an adjacent terminal that has been handed off to this STARS facility
+
+)
+
+type STARSFlightPlan struct {
+	FlightPlan
+	FlightplanType int
+}
+
+const (
+	IFRFlightPlan = iota
+	VFRFlightPlan
+	Amendment
+	Cancellation
+	RequestFlightPlan
+	DepartureType 
+	BeaconTerminate
+)
+
+type SentFlightPlan struct {
+	SourceID time.Time
+	MessageType int
+	FlightID int
+	AircraftData int
+	BCN Squawk
+	CoordinationFix string 
+	CoordinationTime time.Time
+	Altitude int // Requested/ assigned
+	Route string 
 }
 
 func NewWorld() *World {
@@ -819,7 +870,6 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 
 	return &Aircraft{
 		Callsign:       callsign,
-		AssignedSquawk: squawk,
 		Squawk:         squawk,
 		Mode:           Charlie,
 	}, acType
@@ -844,7 +894,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.FlightPlan = NewFlightPlan(IFR, acType, airline.Airport, arrivalAirport)
+	ac.FlightPlan = ac.NewFlightPlan(IFR, acType, airline.Airport, arrivalAirport)
 
 	// Figure out which controller will (for starters) get the arrival
 	// handoff. For single-user, it's easy.  Otherwise, figure out which
@@ -923,7 +973,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.FlightPlan = NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
+	ac.FlightPlan = ac.NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
 		return nil, nil, err

@@ -271,6 +271,7 @@ type FlightPlan struct {
 	Rules                  FlightRules
 	AircraftType           string
 	CruiseSpeed            int
+	AssignedSquawk         Squawk // from ATC
 	DepartureAirport       string
 	DepartTimeEst          int
 	DepartTimeActual       int
@@ -385,12 +386,13 @@ type Fix struct {
 	Location Point2LL
 }
 
-func NewFlightPlan(r FlightRules, ac, dep, arr string) *FlightPlan {
+func (aircraft *Aircraft) NewFlightPlan(r FlightRules, ac, dep, arr string) *FlightPlan {
 	return &FlightPlan{
 		Rules:            r,
 		AircraftType:     ac,
 		DepartureAirport: dep,
 		ArrivalAirport:   arr,
+		AssignedSquawk: aircraft.Squawk,
 	}
 }
 

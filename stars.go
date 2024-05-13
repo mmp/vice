@@ -989,7 +989,7 @@ const (
 
 // In CRC, whenever a tracked aircraft is slewed, it displays the callsign, squawk, and assigned squawk
 func slewAircaft(w *World, ac *Aircraft) string {
-	return fmt.Sprintf("%v %v %v", ac.Callsign, ac.Squawk, ac.AssignedSquawk)
+	return fmt.Sprintf("%v %v %v", ac.Callsign, ac.Squawk, ac.FlightPlan.AssignedSquawk)
 }
 
 // See STARS Operators Manual 5-184...
@@ -1022,7 +1022,7 @@ func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 		if state.FirstRadarTrack.IsZero() {
 			// Proposed departure
 			result += numType + " "
-			result += ac.AssignedSquawk.String() + " " + owner + "\n"
+			result += ac.FlightPlan.AssignedSquawk.String() + " " + owner + "\n"
 
 			if len(fp.DepartureAirport) > 0 {
 				result += fp.DepartureAirport[1:] + " "
@@ -1032,7 +1032,7 @@ func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 			result += "R" + fmt.Sprintf("%03d", fp.Altitude/100)
 		} else {
 			// Active departure
-			result += ac.AssignedSquawk.String() + " "
+			result += ac.FlightPlan.AssignedSquawk.String() + " "
 			if len(fp.DepartureAirport) > 0 {
 				result += fp.DepartureAirport[1:] + " "
 			}
@@ -1047,7 +1047,7 @@ func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 	} else {
 		// Format it as an arrival (we don't do overflights...)
 		result += numType + " "
-		result += ac.AssignedSquawk.String() + " "
+		result += ac.FlightPlan.AssignedSquawk.String() + " "
 		result += owner + " "
 		result += fmt.Sprintf("%03d", int(ac.Altitude())/100) + "\n"
 
@@ -5289,7 +5289,7 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 	dt := state.DatablockType
 
 	// TODO: when do we do a partial vs limited datablock?
-	if ac.Squawk != ac.AssignedSquawk {
+	if ac.Squawk != ac.FlightPlan.AssignedSquawk {
 		dt = PartialDatablock
 	}
 
@@ -6155,7 +6155,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	case PartialDatablock:
 		dbs := []STARSDatablock{baseDB.Duplicate(), baseDB.Duplicate()}
 
-		if ac.Squawk != ac.AssignedSquawk {
+		if ac.Squawk != ac.FlightPlan.AssignedSquawk {
 			sq := ac.Squawk.String()
 			if len(baseDB.Lines[0].Text) > 0 {
 				dbs[0].Lines[0].Text += " "
