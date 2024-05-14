@@ -6586,7 +6586,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 	ps := sp.CurrentPreferenceSet
 	font := sp.systemFont[ps.CharSize.Datablocks]
 	color := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
-	textStyle := TextStyle{Font: font, DrawBackground: true, Color: color}
+	textStyle := TextStyle{Font: font, Color: color}
 
 	for _, ac := range aircraft {
 		state := sp.Aircraft[ac.Callsign]
@@ -6711,9 +6711,8 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 	ps := sp.CurrentPreferenceSet
 	color := ps.Brightness.Lines.RGB() // check
 	style := TextStyle{
-		Font:           sp.systemFont[ps.CharSize.Tools],
-		Color:          color,
-		DrawBackground: true, // default BackgroundColor is fine
+		Font:  sp.systemFont[ps.CharSize.Tools],
+		Color: color,
 	}
 
 	drawRBL := func(p0 Point2LL, p1 Point2LL, idx int, gs float32) {
