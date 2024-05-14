@@ -1330,7 +1330,7 @@ func (a *AirspaceVolume) GenerateDrawCommands(cb *CommandBuffer, nmPerLongitude 
 		for _, vtx := range a.Vertices {
 			v = append(v, [2]float32(vtx))
 		}
-		ld.AddPolyline([2]float32{}, v)
+		ld.AddLineLoop(v)
 	case AirspaceVolumeCircle:
 		ld.AddLatLongCircle(a.Center, nmPerLongitude, a.Radius, 360)
 	default:

@@ -1216,7 +1216,7 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 	}
 	ld := GetLinesDrawBuilder()
 	for _, mva := range database.MVAs[w.TRACON] {
-		ld.AddClosedPolyline(mva.ExteriorRing)
+		ld.AddLineLoop(mva.ExteriorRing)
 		p := Extent2DFromPoints(mva.ExteriorRing).Center()
 		ld.AddNumber(p, 0.005, fmt.Sprintf("%d", mva.MinimumLimit/100))
 	}
@@ -4779,8 +4779,9 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		trid.AddTriangle(tv[0], tv[1], tv[2], ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor))
 		trid.GenerateCommands(cb)
 
-		square := [4][2]float32{[2]float32{-5, -5}, [2]float32{5, -5}, [2]float32{5, 5}, [2]float32{-5, 5}}
-		ld.AddPolyline(pIndicator, ps.Brightness.Lists.ScaleRGB(STARSListColor), square[:])
+		square := [][2]float32{[2]float32{-5, -5}, [2]float32{5, -5}, [2]float32{5, 5}, [2]float32{-5, 5}}
+		square = MapSlice(square, func(p [2]float32) [2]float32 { return add2f(p, pIndicator) })
+		ld.AddLineLoop(ps.Brightness.Lists.ScaleRGB(STARSListColor), square)
 		ld.GenerateCommands(cb)
 
 		pw[1] -= 10
@@ -5249,7 +5250,7 @@ func (sp *STARSPane) drawCRDARegions(ctx *PaneContext, transforms ScopeTransform
 
 				ld := GetLinesDrawBuilder()
 				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
-				ld.AddPolyline([2]float32{0, 0}, [][2]float32{quad[0], quad[1], quad[2], quad[3]})
+				ld.AddLineLoop([][2]float32{quad[0], quad[1], quad[2], quad[3]})
 
 				ld.GenerateCommands(cb)
 				ReturnLinesDrawBuilder(ld)
@@ -5555,7 +5556,7 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 			} else if secondary {
 				// If it's just a secondary return, only draw the box outline.
 				// TODO: is this 40nm, or secondary?
-				ld.AddPolyline([2]float32{}, color, box[:])
+				ld.AddLineLoop(color, box[:])
 			}
 
 			// green line
@@ -5585,7 +5586,7 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 			} else if secondary {
 				// If it's just a secondary return, only draw the box outline.
 				// TODO: is this 40nm, or secondary?
-				ld.AddPolyline([2]float32{}, color, box[:])
+				ld.AddLineLoop(color, box[:])
 			}
 
 		case RadarModeFused:
@@ -6586,7 +6587,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 	ps := sp.CurrentPreferenceSet
 	font := sp.systemFont[ps.CharSize.Datablocks]
 	color := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
-	textStyle := TextStyle{Font: font, DrawBackground: true, Color: color}
+	textStyle := TextStyle{Font: font, Color: color}
 
 	for _, ac := range aircraft {
 		state := sp.Aircraft[ac.Callsign]
@@ -6644,7 +6645,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			// coordinates of the vertices of the cone triangle. We'll
 			// start with a canonical triangle in nm coordinates, going one
 			// unit up the +y axis with a small spread in x.
-			v := [4][2]float32{[2]float32{0, 0}, [2]float32{-.04, 1}, [2]float32{.04, 1}}
+			v := [][2]float32{[2]float32{0, 0}, [2]float32{-.04, 1}, [2]float32{.04, 1}}
 
 			// Now we want to get that triangle in window coordinates...
 
@@ -6687,7 +6688,8 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			// We've got what we need to draw a polyline with the
 			// aircraft's position as an anchor.
 			pw := transforms.WindowFromLatLongP(state.TrackPosition())
-			ld.AddPolyline(pw, coneColor, v[:])
+			v = MapSlice(v, func(p [2]float32) [2]float32 { return add2f(p, pw) })
+			ld.AddLineLoop(coneColor, v)
 
 			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
 				ptext := add2f(pw, rot(scale2f([2]float32{0, 0.5}, length)))
@@ -6711,9 +6713,8 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 	ps := sp.CurrentPreferenceSet
 	color := ps.Brightness.Lines.RGB() // check
 	style := TextStyle{
-		Font:           sp.systemFont[ps.CharSize.Tools],
-		Color:          color,
-		DrawBackground: true, // default BackgroundColor is fine
+		Font:  sp.systemFont[ps.CharSize.Tools],
+		Color: color,
 	}
 
 	drawRBL := func(p0 Point2LL, p1 Point2LL, idx int, gs float32) {
