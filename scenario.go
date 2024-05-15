@@ -8,7 +8,6 @@ import (
 	"archive/zip"
 	"bufio"
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/fs"
@@ -1138,8 +1137,14 @@ func loadZIPVideoMapFile(r io.Reader, referenced map[string]interface{}) (map[st
 		Number   int    `json:"number"`
 		Name     string `json:"name"`
 	}
+	var e ErrorLogger
+	CheckJSONVsSchema[[]ZIPMapSpecifier](mapsSpec, &e)
+	if e.HaveErrors() {
+		e.PrintErrors(lg)
+		return nil, fmt.Errorf("JSON errors")
+	}
 	var specs []ZIPMapSpecifier
-	if err := json.Unmarshal(mapsSpec, &specs); err != nil {
+	if err := UnmarshalJSON(mapsSpec, &specs); err != nil {
 		return nil, err
 	}
 
@@ -1161,9 +1166,9 @@ func loadZIPVideoMapFile(r io.Reader, referenced map[string]interface{}) (map[st
 			return nil, err
 		}
 
-		var prev, center Point2LL
-		var radius float32
-		var lines [][2]Point2LL
+		var center Point2LL
+		var lineStrips [][][2]float32
+		var currentLineStrip [][2]float32
 		scanner := bufio.NewScanner(bytes.NewBuffer(dat))
 		for scanner.Scan() {
 			line := []byte(scanner.Text())
@@ -1191,11 +1196,8 @@ func loadZIPVideoMapFile(r io.Reader, referenced map[string]interface{}) (map[st
 
 			if len(line) > 8 && line[0] == '!' {
 				// Extract center or radius
-				switch string(line[4:8]) {
-				case "9900":
+				if string(line[4:8]) == "9900" {
 					center = parseLatLong(line[12:])
-				case "9909":
-					radius = float32(parseInt(line[12:]) * FeetToNauticalMiles)
 				}
 				if err != nil {
 					return nil, err
@@ -1213,7 +1215,8 @@ func loadZIPVideoMapFile(r io.Reader, referenced map[string]interface{}) (map[st
 				continue
 			} else if string(line) == "LINE " {
 				// start a new line
-				prev = Point2LL{}
+				lineStrips = append(lineStrips, currentLineStrip)
+				currentLineStrip = nil
 			} else if len(line) == 34 && string(line[:3]) == "GP " {
 				// Assume this format is 100% column based for efficiency...
 
@@ -1223,22 +1226,31 @@ func loadZIPVideoMapFile(r io.Reader, referenced map[string]interface{}) (map[st
 				if err != nil {
 					return nil, err
 				}
-				if !prev.IsZero() {
-					lines = append(lines, [2]Point2LL{prev, pt})
-				}
-				prev = pt
+				currentLineStrip = append(currentLineStrip, pt)
 			} else {
 				return nil, fmt.Errorf("Unexpected line in DAT file: \"%s\"", line)
 			}
 		}
+		if currentLineStrip != nil {
+			lineStrips = append(lineStrips, currentLineStrip)
+		}
 
-		lines = FilterSlice(lines, func(l [2]Point2LL) bool {
-			return nmdistance2ll(l[0], center) < radius
-		})
+		if center.IsZero() {
+			return nil, fmt.Errorf("Center not found in DAT file")
+		}
 
 		ld := GetLinesDrawBuilder()
-		for _, line := range lines {
-			ld.AddLine(line[0], line[1])
+		const maxDist = 98
+		lineStrips = FilterSlice(lineStrips, func(strip [][2]float32) bool {
+			for _, p := range strip {
+				if nmdistance2ll(p, center) > maxDist {
+					return false
+				}
+			}
+			return true
+		})
+		for _, strip := range lineStrips {
+			ld.AddLineStrip(strip)
 		}
 
 		var cb CommandBuffer
