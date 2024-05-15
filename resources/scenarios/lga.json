@@ -1693,7 +1693,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "MAP0"
+        "0204s"
       ],
       "departure_runways": [
         {
@@ -1807,7 +1807,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "MAP0"
+        "0204s"
       ],
       "departure_runways": [
         {
@@ -1921,7 +1921,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "MAP0"
+        "0204s"
       ],
       "departure_runways": [
         {
@@ -2035,7 +2035,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "MAP0"
+        "0204s"
       ],
       "departure_runways": [
         {
@@ -2150,7 +2150,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "MAP0"
+        "0204s"
       ],
       "departure_runways": [
         {
@@ -2234,7 +2234,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "MAP0"
+        "0204s"
       ],
       "range": 23,
       "wind": {
@@ -2275,7 +2275,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "MAP0"
+        "0204s"
       ],
       "range": 23,
       "wind": {
@@ -2315,7 +2315,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "MAP0"
+        "0204s"
       ],
       "range": 23,
       "wind": {
@@ -2355,7 +2355,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "MAP0"
+        "0204s"
       ],
       "range": 23,
       "wind": {
@@ -2395,7 +2395,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "MAP0"
+        "0204s"
       ],
       "range": 23,
       "wind": {
@@ -2435,7 +2435,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "MAP0"
+        "0204s"
       ],
       "range": 23,
       "wind": {
@@ -2475,7 +2475,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "MAP0"
+        "0204s"
       ],
       "range": 23,
       "wind": {
@@ -2570,31 +2570,38 @@
     "ZIMMZ": "ZIM"
   },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "M0",
-      "name": "MAP0"
-    },
-    {
-      "group": 0,
-      "label": "M1",
-      "name": "MAP1"
-    },
-    {
-      "group": 0,
-      "label": "M2",
-      "name": "MAP2"
-    },
-    {
-      "group": 0,
-      "label": "M3",
-      "name": "MAP3"
-    },
-    {
-      "group": 0,
-      "label": "MVA",
-      "name": "MVA"
-    }
+      { "name": "0204s", "label": "0204s", "group": 0 },
+      { "name": "0401s", "label": "0401s", "group": 0 },
+      { "name": "0841s", "label": "0841s", "group": 0 },
+      { "name": "0202s", "label": "0202s", "group": 0 },
+      { "name": "0720s", "label": "0720s", "group": 0 },
+      { "name": "0301s", "label": "0301s", "group": 0 },
+      { "name": "0100s", "label": "0100s", "group": 0 },
+      { "name": "0323s", "label": "0323s", "group": 0 },
+      { "name": "0305s", "label": "0305s", "group": 0 },
+      { "name": "0302s", "label": "0302s", "group": 0 },
+      { "name": "0304s", "label": "0304s", "group": 0 },
+      { "name": "0203s", "label": "0203s", "group": 0 },
+      { "name": "0303s", "label": "0303s", "group": 0 },
+      { "name": "0150s", "label": "0150s", "group": 0 },
+      { "name": "0709s", "label": "0709s", "group": 0 },
+      { "name": "0300s", "label": "0300s", "group": 0 },
+      { "name": "0420s", "label": "0420s", "group": 0 },
+      { "name": "0840s", "label": "0840s", "group": 0 },
+      { "name": "0730s", "label": "0730s", "group": 0 },
+      { "name": "0890s", "label": "0890s", "group": 0 },
+      { "name": "0851s", "label": "0851s", "group": 0 },
+      { "name": "0860s", "label": "0860s", "group": 0 },
+      { "name": "0850s", "label": "0850s", "group": 0 },
+      { "name": "0905s", "label": "0905s", "group": 0 },
+      { "name": "0852s", "label": "0852s", "group": 0 },
+      { "name": "0811s", "label": "0811s", "group": 0 },
+      { "name": "0813s", "label": "0813s", "group": 0 },
+      { "name": "0812s", "label": "0812s", "group": 0 },
+      { "name": "0889s", "label": "0889s", "group": 0 },
+      { "name": "0810s", "label": "0810s", "group": 0 },
+      { "name": "0888s", "label": "0888s", "group": 0 },
+      { "name": "0870seovm", "label": "0870seovm", "group": 0 }
   ],
   "video_map_file": "videomaps/n90.zip"
   }
