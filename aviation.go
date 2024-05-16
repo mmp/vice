@@ -433,8 +433,14 @@ func PlausibleFinalAltitude(w *World, fp *FlightPlan, perf AircraftPerformance) 
 	pDep, pArr := dep.Location, arr.Location
 	if nmdistance2ll(pDep, pArr) < 100 {
 		altitude = 7000
+		if dep.Elevation > 3000 || arr.Elevation > 3000 {
+			altitude += 1000
+		}
 	} else if nmdistance2ll(pDep, pArr) < 200 {
 		altitude = 11000
+		if dep.Elevation > 3000 || arr.Elevation > 3000 {
+			altitude += 1000
+		}
 	} else if nmdistance2ll(pDep, pArr) < 300 {
 		altitude = 21000
 	} else {
