@@ -911,7 +911,7 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		defer ReturnLinesDrawBuilder(ld)
 
 		w, h := ctx.paneExtent.Width(), ctx.paneExtent.Height()
-		ld.AddClosedPolyline([][2]float32{{0, 0}, {w, 0}, {w, h}, {0, h}})
+		ld.AddLineLoop([][2]float32{{0, 0}, {w, 0}, {w, h}, {0, h}})
 		cb.SetRGB(RGB{1, 1, 0}) // yellow
 		ld.GenerateCommands(cb)
 	}

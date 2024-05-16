@@ -11,6 +11,16 @@
             "SARAH/a9000 ASURE/a8000 TAILR/a7000 SUNKE/a5740"
           ]
         },
+	"R7": {
+          "runway": "7",
+          "tower_controller": "DEN_W_TWR",
+          "type": "RNAV",
+          "waypoints": [
+            "HAITR/a11000/s210 DWLLT/arc8.5 MNCHH TAILR/faf",
+	    "BBOOK/a11000/s210 BEEKY/arc9.1 TAILR/faf",
+	    "SARAH/a9000 TAILR/faf"
+          ]
+        },
         "I8": {
           "runway": "8",
           "tower_controller": "DEN_E_TWR",
@@ -41,6 +51,17 @@
             "KAILE/a11000/s210 SHROM SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000"
           ]
         },
+	"R6R": {
+          "runway": "16R",
+          "tower_controller": "DEN_N_TWR",
+          "type": "RNAV",
+          "waypoints": [
+            "CLFFF/a11000 HELBY/arc9.8 APASE",
+            "KIPPR/a12000/s210 HAYLY PECIY BUDUJ ZOREG HAROS/s210 APASE",
+            "TSHNR/a13000/s210 PECIY BUDUJ ZOREG HAROS/s210 APASE",
+            "KAILE/a11000/s210 OGINE ZOREG HAROS/s210 APASE"
+          ]
+        },
         "I7L": {
           "runway": "17L",
           "tower_controller": "DEN_E_TWR",
@@ -64,6 +85,15 @@
             "KAILE/a11000/s210 OVVAL HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000"
           ]
         },
+	"R7R": {
+          "runway": "17R",
+          "tower_controller": "DEN_C_TWR",
+          "type": "RNAV",
+          "waypoints": [
+            "HOOPE JNKBX JOULE",
+            "QWIKE/a11000/s210 STAAM/arc4.3 DAVTE PAYOG/arc4.3 JNKBX JOULE"
+          ]
+        },
         "I25": {
           "runway": "25",
           "tower_controller": "DEN_W_TWR",
@@ -78,6 +108,16 @@
           "type": "ILS",
           "waypoints": [
             "FUZZZ/a9000 GRASP/a7000 FEETS/a5820"
+          ]
+        },
+	"R26": {
+          "runway": "26",
+          "tower_controller": "DEN_E_TWR",
+          "type": "RNAV",
+          "waypoints": [
+            "FUZZZ JPBAG GRASP",
+	    "JIBAT/a11000/s210 HOTDG/arc8.8 JPBAG GRASP",
+	    "CAPTJ/a11000/s210 BCALN/arc8.7 JPBAG GRASP"
           ]
         },
         "I4L": {
@@ -102,6 +142,15 @@
             "TELLR/a11000/s210 BHAPY BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000"
           ]
         },
+	"R4R": {
+          "runway": "34R",
+          "tower_controller": "DEN_N_TWR",
+          "type": "RNAV",
+          "waypoints": [
+            "HIMOM/a11000/s210 MCMUL/arc4.3 KUGLN/arc4.6 BSAYN CORDE",
+            "BOOBU BENGL BOENG BSAYN CORDE"
+          ]
+        },
         "I5L": {
           "runway": "35L",
           "tower_controller": "DEN_C_TWR",
@@ -123,6 +172,15 @@
             "BOSSS/a12000/s210 DRATS DITSE DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120",
             "TELLR/a11000/s210 VAIIL DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120",
             "PURRL/a9000/s210 DOVVE DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120"
+          ]
+        },
+	"R5R": {
+          "runway": "35R",
+          "tower_controller": "DEN_E_TWR",
+          "type": "RNAV",
+          "waypoints": [
+            "DORRY DEANE DRUMM FRONZ",
+	    "DOGGG/a11000/s210 MSIMS/arc10.2 FRONZ"
           ]
         }
       },
@@ -156,12 +214,12 @@
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "ROYYL/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE"
+            "waypoints": "ROYYL/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE EEONS"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "TIGHT/a10000- HAAHN/a12000- GASSS/a14000+ SNIPR"
+            "waypoints": "TIGHT/a10000- HAAHN/a12000- GASSS/a14000+ SNIPR EMMYS"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
@@ -171,7 +229,7 @@
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "KIDNG/a10000- KMBEL BHIGH MMESA/a14000+"
+            "waypoints": "KIDNG/a10000- KMBEL BHIGH MMESA/a14000+ FALUJ EXTAN"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
@@ -238,12 +296,12 @@
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "GISTT/a7000+ KIDNG/a10000- KAYGG LUPTN/a14000+"
+            "waypoints": "GISTT/a7000+ KIDNG/a10000- KAYGG LUPTN/a14000+ MRENE EEONS"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "GISTT/a7000+ KIDNG/a10000- TWEDT GASSS/a14000+ SNIPR"
+            "waypoints": "GISTT/a7000+ KIDNG/a10000- TWEDT GASSS/a14000+ SNIPR EMMYS"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
@@ -253,7 +311,7 @@
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ"
+            "waypoints": "GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ EXTAN"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
@@ -402,12 +460,12 @@
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "NUGGS HIDEF/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE"
+            "waypoints": "NUGGS HIDEF/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE EEONS"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "NUGGS HIDEF/a10000- BRSTO/a12000- GASSS/a14000+ SNIPR"
+            "waypoints": "NUGGS HIDEF/a10000- BRSTO/a12000- GASSS/a14000+ SNIPR EMMYS"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
@@ -417,7 +475,7 @@
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "KIDNG/a10000- KMBEL BHIGH MMESA/a14000+"
+            "waypoints": "KIDNG/a10000- KMBEL BHIGH MMESA/a14000+ FALUJ EXTAN"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
@@ -484,12 +542,12 @@
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "NUGGS HIDEF/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE"
+            "waypoints": "NUGGS HIDEF/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE EEONS"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "NUGGS HIDEF/a10000- BRSTO/a12000- GASSS/a14000+ SNIPR"
+            "waypoints": "NUGGS HIDEF/a10000- BRSTO/a12000- GASSS/a14000+ SNIPR EMMYS"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
@@ -499,7 +557,7 @@
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "KIDNG/a10000- KMBEL BHIGH MMESA/a14000+"
+            "waypoints": "KIDNG/a10000- KMBEL BHIGH MMESA/a14000+ FALUJ EXTAN"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
@@ -566,12 +624,12 @@
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
             "sid": "EEONS8",
-            "waypoints": "GISTT/a7000+ KIDNG/a10000- KAYGG LUPTN/a14000+ MRENE"
+            "waypoints": "GISTT/a7000+ KIDNG/a10000- KAYGG LUPTN/a14000+ MRENE EEONS"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
             "sid": "EMMYS8",
-            "waypoints": "GISTT/a7000+ KIDNG/a10000- TWEDT GASSS/a14000+ SNIPR"
+            "waypoints": "GISTT/a7000+ KIDNG/a10000- TWEDT GASSS/a14000+ SNIPR EMMYS"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
@@ -581,7 +639,7 @@
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
             "sid": "EXTAN7",
-            "waypoints": "GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ"
+            "waypoints": "GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ EXTAN"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
@@ -1013,7 +1071,8 @@
                 "26": "HEDDD/a18000 CRUNK/a14000/h222",
                 "34L": "HEDDD/a18000 DEELO/a16000 JEPHF/a14000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
                 "34R": "HEDDD/a18000 DEELO/a16000 JEPHF/a14000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
-                "35L": "HEDDD/a18000 DEELO/a16000 FULLA/a14000/s250 FFFAT DOGGG/a11000/s210/h173"
+                "35L": "HEDDD/a18000 DEELO/a16000 FULLA/a14000/s250 FFFAT DOGGG/a11000/s210/h173",
+		"35R": "HEDDD/a18000 DEELO/a16000 FULLA/a14000/s250 FFFAT DOGGG/a11000/s210/h173"
             }
           },
           "speed_restriction": 250,
@@ -3090,29 +3149,29 @@
     "scratchpads": {
       "HBU": "BAY",
       "TEHRU": "BAY",
-      "CHUWY": "CHU",
+      "CHUWY": "YOK",
       "WERNR": "CON",
       "CONNR": "CON",
       "VOAXA": "COO",
-      "DDRTH": "DDR",
+      "DDRTH": "YAM",
       "EEONS": "EEO",
       "WYNDM": "EEO",
-      "EMMYSS": "EMM",
+      "EMMYS": "EMM",
       "ZIRKL": "EMM",
       "GAETR": "EPK",
       "DUUZE": "EPK",
       "EXTAN": "EXT",
       "SHAYK": "EXT",
-      "JOBBA": "HHO",
-      "SAABR": "HHO",
-      "JOPLN": "SAB",
-      "VRONI": "SAB",
-      "SLEEK": "SLE",
-      "DAAYE": "SMM",
-      "RAITT": "SMM",
-      "SUDDZ": "SUD",
-      "XXWNG": "XXW",
-      "CHNGY": "CHN"
+      "JOBBA": "BRY",
+      "SAABR": "BRY",
+      "JOPLN": "SHO",
+      "VRONI": "SHO",
+      "SLEEK": "STA",
+      "DAAYE": "SOL",
+      "RAITT": "SOL",
+      "SUDDZ": "SCA",
+      "XXWNG": "RIK",
+      "CHNGY": "ZIM"
     },
     "stars_maps": [
       {

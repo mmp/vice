@@ -578,22 +578,19 @@ func (l *LinesDrawBuilder) AddLine(p0, p1 [2]float32) {
 	l.indices = append(l.indices, idx, idx+1)
 }
 
-// AddPolyline adds multiple lines to the lines draw builder where the
-// vertex positions of the lines are found by adding each vertex of the
-// provided shape array to the center point p.
-func (l *LinesDrawBuilder) AddPolyline(p [2]float32, shape [][2]float32) {
+// AddLineStrip adds multiple lines to the lines draw builder where each
+// line is given by a successive pair of points, a la GL_LINE_STRIP.
+func (l *LinesDrawBuilder) AddLineStrip(p [][2]float32) {
 	idx := int32(len(l.p))
-	for _, delta := range shape {
-		pp := add2f(p, delta)
-		l.p = append(l.p, pp)
-	}
-	for i := 0; i < len(shape); i++ {
-		l.indices = append(l.indices, idx+int32(i), idx+int32((i+1)%len(shape)))
+	l.p = append(l.p, p...)
+	for i := 0; i < len(p)-1; i++ {
+		l.indices = append(l.indices, idx+int32(i), idx+int32((i+1)%len(p)))
 	}
 }
 
-// Adds a closed poly line
-func (l *LinesDrawBuilder) AddClosedPolyline(p [][2]float32) {
+// Adds a line loop, like a line strip but where the last vertex connects
+// to the first, a la GL_LINE_LOOP.
+func (l *LinesDrawBuilder) AddLineLoop(p [][2]float32) {
 	idx := int32(len(l.p))
 	l.p = append(l.p, p...)
 	for i := range p {
@@ -755,9 +752,9 @@ func (l *ColoredLinesDrawBuilder) AddLine(p0, p1 [2]float32, color RGB) {
 	l.color = append(l.color, color, color)
 }
 
-func (l *ColoredLinesDrawBuilder) AddPolyline(p [2]float32, color RGB, shape [][2]float32) {
-	l.LinesDrawBuilder.AddPolyline(p, shape)
-	for range shape {
+func (l *ColoredLinesDrawBuilder) AddLineLoop(color RGB, p [][2]float32) {
+	l.LinesDrawBuilder.AddLineLoop(p)
+	for range p {
 		l.color = append(l.color, color)
 	}
 }

@@ -2,6 +2,7 @@
     "tracon": "C90",
       "airports": {
           "KORD": {
+            "omit_arrival_scratchpad": true,
               "approaches": {
                   "I9L": {
                       "runway": "9L",
@@ -4277,7 +4278,7 @@
                         ]
                     },
                         "initial_altitude": 13000,
-                        "initial_controller": "CHI_81_CTR",
+                        "initial_controller": "SBN_N_APP",
                         "initial_speed": 280,
                         "star": "WATSN4",
                         "speed_restriction": 250,
@@ -4755,6 +4756,27 @@
             ]
         },
         "control_positions": {
+            "SBN_N_APP": {
+                "frequency": 118550,
+                "full_name": "South Bend Approach",
+                "scope_char": "2",
+                "sector_id": "2N",
+                "facility_id": "2"
+            },
+            "MKE_E_APP": {
+                "frequency": 118000,
+                "full_name": "Milwaukee Approach",
+                "scope_char": "1",
+                "sector_id": "1E",
+                "facility_id": "1"
+            },
+            "RFD_E_APP": {
+                "frequency": 121000,
+                "full_name": "Rockford Approach",
+                "scope_char": "3",
+                "sector_id": "3E",
+                "facility_id": "3"
+            },
             "CHI_Z_APP": {
                 "frequency": 119000,
                 "full_name": "Chicago Approach",
@@ -4863,7 +4885,41 @@
                 "frequency": 120350,
                 "full_name": "Chicago Center",
                 "scope_char": "C",
-                "sector_id": "81"
+                "sector_id": "C81",
+                "facility_id": "C",
+                "eram_facility": true
+            },
+            "CHI_51_CTR": {
+                "frequency": 135150,
+                "full_name": "Chicago Center",
+                "scope_char": "C",
+                "sector_id": "C51",
+                "facility_id": "C",
+                "eram_facility": true
+            },
+            "CHI_77_CTR": {
+                "frequency": 134825,
+                "full_name": "Chicago Center",
+                "scope_char": "C",
+                "sector_id": "C77",
+                "facility_id": "C",
+                "eram_facility": true
+            },
+            "CHI_74_CTR": {
+                "frequency": 133350,
+                "full_name": "Chicago Center",
+                "scope_char": "C",
+                "sector_id": "C74",
+                "facility_id": "C",
+                "eram_facility": true
+            },
+            "CHI_62_CTR": {
+                "frequency": 123825,
+                "full_name": "Chicago Center",
+                "scope_char": "C",
+                "sector_id": "C62",
+                "facility_id": "C",
+                "eram_facility": true
             },
             "ORD_S_TWR": {
                 "frequency": 120750,
@@ -5022,6 +5078,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
@@ -5145,6 +5208,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
@@ -5286,6 +5356,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR",
                     "PWK_TWR"
@@ -5469,6 +5546,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR",
                     "PWK_TWR",
@@ -5691,6 +5775,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR",
                     "PWK_TWR",
@@ -5883,6 +5974,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR",
                     "PWK_TWR"
@@ -6031,6 +6129,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
@@ -6146,6 +6251,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
@@ -6268,6 +6380,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
@@ -6395,6 +6514,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR"
                 ],
@@ -6552,6 +6678,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR",
                     "PWK_TWR",
@@ -6774,6 +6907,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR",
                     "PWK_TWR",
@@ -6966,6 +7106,13 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "ORD_S_TWR",
                     "MDW_TWR",
                     "PWK_TWR"
@@ -7074,6 +7221,12 @@
                     },
                     "controllers": [
                         "CHI_81_CTR",
+                        "CHI_77_CTR",
+                        "CHI_51_CTR",
+                        "CHI_74_CTR",
+                        "CHI_62_CTR",
+                        "RFD_E_APP",
+                        "SBN_N_APP",
                         "CHI_Z_APP",
                         "ORD_S_TWR",
                         "MDW_TWR"
@@ -7126,6 +7279,12 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "CHI_Z_APP",
                     "ORD_S_TWR",
                     "MDW_TWR"
@@ -7178,6 +7337,12 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "CHI_Z_APP",
                     "ORD_S_TWR",
                     "MDW_TWR"
@@ -7230,6 +7395,12 @@
                 },
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "CHI_Z_APP",
                     "ORD_S_TWR",
                     "MDW_TWR"
@@ -7295,6 +7466,7 @@
                 "solo_controller": "CHI_F_APP",
                 "controllers": [
                     "CHI_81_CTR",
+                    "RFD_E_APP",
                     "CHI_Y_APP",
                     "ORD_S_TWR"
                 ],
@@ -7324,7 +7496,7 @@
                 },
                 "solo_controller": "CHI_Z_APP",
                 "controllers": [
-                    "CHI_81_CTR",
+                    "SBN_N_APP",
                     "CHI_J_APP",
                     "ORD_S_TWR"
                 ],
@@ -7373,7 +7545,7 @@
                 },
                 "solo_controller": "CHI_Z_APP",
                 "controllers": [
-                    "CHI_81_CTR",
+                    "SBN_N_APP",
                     "CHI_J_APP",
                     "ORD_S_TWR",
                     "CHI_E_APP",
@@ -7407,6 +7579,13 @@
                 "solo_controller": "CHI_W_APP",
                 "controllers": [
                     "CHI_81_CTR",
+                    "CHI_77_CTR",
+                    "CHI_51_CTR",
+                    "CHI_74_CTR",
+                    "CHI_62_CTR",
+                    "MKE_E_APP",
+                    "RFD_E_APP",
+                    "SBN_N_APP",
                     "CHI_X_APP",
                     "ORD_S_TWR",
                     "CHI_E_APP"
@@ -7755,6 +7934,44 @@
                     "name": "ZAU C90 NSAT RNAV"
                 }
             ],
+            "airspace_awareness": [
+                {
+                    "fixes": [
+                      "ACITO",
+                      "BACEN",
+                      "CMSKY",
+                      "DENNT",
+                      "EARND"
+                    ],
+                    "receiving_controller": "CHI_51_CTR"
+                  },
+                  {
+                    "fixes": [
+                      "EBAKE",
+                      "DUFEE",
+                      "MOBLE",
+                      "LEWKE"
+                    ],
+                    "receiving_controller": "CHI_81_CTR"
+                  },
+                  {
+                    "fixes": [
+                      "PMPKN",
+                      "RAYNR"
+                    ],
+                    "receiving_controller": "CHI_62_CTR"
+                  },
+                  {
+                    "fixes": [
+                      "MYKIE",
+                      "NOONY",
+                      "SIMMN",
+                      "OLINN",
+                      "PEKUE"
+                    ],
+                    "receiving_controller": "CHI_77_CTR"
+                  }
+                ],
             "video_map_file": "videomaps/ZAU-videomaps.json.zst"
         }
 }

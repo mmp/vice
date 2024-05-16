@@ -2491,6 +2491,16 @@ func (s *Sim) MaintainMaximumForward(token, callsign string) error {
 		})
 }
 
+func (s *Sim) SaySpeed(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			return ac.SaySpeed()
+		})
+}
+
 func (s *Sim) ExpediteDescent(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
