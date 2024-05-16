@@ -156,6 +156,7 @@ func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerforma
 			nav.Altitude.Assigned = &alt
 		}
 
+		nav.FinalAltitude = max(nav.FinalAltitude, arr.InitialAltitude)
 		nav.FlightState.Altitude = arr.InitialAltitude
 		nav.FlightState.IAS = arr.InitialSpeed
 		// This won't be quite right but it's better than leaving GS to be
