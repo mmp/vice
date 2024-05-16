@@ -6883,6 +6883,9 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 		wmTakeKeyboardFocus(sp, false)
 		return
 	}
+	if (ctx.mouse.Clicked[MouseButtonSecondary] || ctx.mouse.Clicked[MouseButtonTertiary]) && !ctx.haveFocus {
+		wmTakeKeyboardFocus(sp, false)
+	}
 
 	if activeSpinner == nil && !sp.LockDisplay {
 		// Handle dragging the scope center
