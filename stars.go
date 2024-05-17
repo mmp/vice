@@ -5376,8 +5376,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		trackId := "*"
 		if ac.TrackingController != "" {
 			trackId = "?"
-			octrl := ctx.world.GetControllerByCallsign(ctx.world.Callsign)
-			if ctrl := ctx.world.GetControllerByCallsign(ac.TrackingController); ctrl != nil && octrl != nil {
+			if ctrl := ctx.world.GetControllerByCallsign(ac.TrackingController); ctrl != nil {
 				trackId = ctrl.Scope
 			}
 		}
@@ -5394,13 +5393,24 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.PointSize(5)
 	pd.GenerateCommands(cb)
-	cb.PointSize(12) // bigger points for fused mode primary tracks
+	cb.PointSize(sp.getTrackSize(ctx, transforms)) // bigger points for fused mode primary tracks
+
 	pd2.GenerateCommands(cb)
 	trid.GenerateCommands(cb)
 	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
+}
+
+func (sp *STARSPane) getTrackSize(ctx *PaneContext, transforms ScopeTransformations) float32 {
+	var size float32 = 13 // base track size
+	e := transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
+	var distance float32 = 0.3623 // Around 2200 feet in nm
+	if distance/e > 13 {
+		size = distance / e
+	}
+	return size
 }
 
 func (sp *STARSPane) getGhostAircraft(aircraft []*Aircraft, ctx *PaneContext) []*GhostAircraft {
@@ -6620,7 +6630,6 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 				td.AddText(format(state.JRingRadius), pt, textStyle)
 			}
 		}
-
 		atpaStatus := state.ATPAStatus // this may change
 
 		// If warning/alert cones are inhibited but monitor cones are not,
