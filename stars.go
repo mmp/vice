@@ -277,7 +277,6 @@ func (s *STARSDatablock) DrawText(td *TextDrawBuilder, pt [2]float32, font *Font
 	style := TextStyle{
 		Font:        font,
 		Color:       brightness.ScaleRGB(baseColor),
-		DropShadow:  true,
 		LineSpacing: 0}
 
 	for _, line := range s.Lines {
@@ -294,7 +293,6 @@ func (s *STARSDatablock) DrawText(td *TextDrawBuilder, pt [2]float32, font *Font
 					style := TextStyle{
 						Font:        font,
 						Color:       brightness.ScaleRGB(spanColor),
-						DropShadow:  true,
 						LineSpacing: 0}
 					pt = td.AddText(line.Text[start:end], pt, style)
 					start = end
@@ -4683,14 +4681,12 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 
 	font := sp.systemFont[ps.CharSize.Lists]
 	style := TextStyle{
-		Font:       font,
-		Color:      ps.Brightness.Lists.ScaleRGB(STARSListColor),
-		DropShadow: true,
+		Font:  font,
+		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
 	}
 	alertStyle := TextStyle{
-		Font:       font,
-		Color:      ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor),
-		DropShadow: true,
+		Font:  font,
+		Color: ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor),
 	}
 
 	td := GetTextDrawBuilder()
@@ -5471,9 +5467,9 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 	ps := sp.CurrentPreferenceSet
 	color := ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor)
 	trackFont := sp.systemFont[ps.CharSize.PositionSymbols]
-	trackStyle := TextStyle{Font: trackFont, Color: color, DropShadow: true, LineSpacing: 0}
+	trackStyle := TextStyle{Font: trackFont, Color: color, LineSpacing: 0}
 	datablockFont := sp.systemFont[ps.CharSize.Datablocks]
-	datablockStyle := TextStyle{Font: datablockFont, Color: color, DropShadow: true, LineSpacing: 0}
+	datablockStyle := TextStyle{Font: datablockFont, Color: color, LineSpacing: 0}
 
 	for _, ghost := range ghosts {
 		state := sp.Aircraft[ghost.Callsign]
@@ -7118,8 +7114,6 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, buttonScale float32, transfo
 		Font:        sp.dcbFont[ps.CharSize.DCB],
 		Color:       RGB{1, 1, 1},
 		LineSpacing: 0,
-		// DropShadow: true, // ????
-		// DropShadowColor: RGB{0,0,0}, // ????
 	}
 	if dcbDrawState.style.Font == nil {
 		lg.Errorf("nil buttonFont??")

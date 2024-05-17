@@ -1212,7 +1212,6 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 	style := TextStyle{
 		Font:           font,
 		Color:          color,
-		DropShadow:     true,
 		DrawBackground: true}
 
 	// STARS

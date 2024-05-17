@@ -992,7 +992,7 @@ func ReturnTexturedTrianglesDrawBuilder(td *TexturedTrianglesDrawBuilder) {
 // draw command.
 type TextDrawBuilder struct {
 	// Vertex/index buffers for regular text and drop shadows, if enabled.
-	regular, shadow map[uint32]*TextBuffers // Map from texid to buffers
+	regular map[uint32]*TextBuffers // Map from texid to buffers
 
 	// Buffers for background quads, if specified (shared for all tex ids)
 	background struct {
@@ -1069,11 +1069,6 @@ type TextStyle struct {
 	// BackgroundColor specifies the color of the background; it is only used if
 	// DrawBackground is grue.
 	BackgroundColor RGB
-	// DropShadow controls whether a drop shadow of the text is drawn,
-	// offset one pixel to the right and one pixel down from the main text.
-	DropShadow bool
-	// DropShadowColor specifies the color to use for drop shadow text.
-	DropShadowColor RGB
 }
 
 // AddTextCentered draws the specified text centered at the specified
@@ -1164,16 +1159,6 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 					td.regular[style.Font.texId] = &TextBuffers{}
 				}
 				td.regular[style.Font.texId].Add([2]float32{px, py}, glyph, style.Color)
-
-				if style.DropShadow {
-					if td.shadow == nil {
-						td.shadow = make(map[uint32]*TextBuffers)
-					}
-					if _, ok := td.shadow[style.Font.texId]; !ok {
-						td.shadow[style.Font.texId] = &TextBuffers{}
-					}
-					td.shadow[style.Font.texId].Add([2]float32{px + 1, py - 1}, glyph, style.DropShadowColor)
-				}
 			}
 
 			// Visible or not, advance the x cursor position to move to the next character.
@@ -1192,9 +1177,6 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 func (td *TextDrawBuilder) Reset() {
 	for _, regular := range td.regular {
 		regular.Reset()
-	}
-	for _, shadow := range td.shadow {
-		shadow.Reset()
 	}
 
 	td.background.p = td.background.p[:0]
@@ -1234,10 +1216,6 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 		// Enable the texture with the font atlas
 		cb.EnableTexture(id)
 
-		// Draw any drop shadows before the main text
-		if shadow, ok := td.shadow[id]; ok {
-			shadow.GenerateCommands(cb)
-		}
 		regular.GenerateCommands(cb)
 	}
 
