@@ -992,7 +992,7 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 		}
 	}
 
-	if ctx.keyboard.IsPressed(KeyEnter) && mp.input.cmd != "" {
+	if ctx.keyboard.IsPressed(KeyEnter) && strings.TrimSpace(mp.input.cmd) != "" {
 		mp.runCommands(ctx.world)
 	}
 }
@@ -1009,6 +1009,8 @@ func (msg *Message) Color() RGB {
 }
 
 func (mp *MessagesPane) runCommands(w *World) {
+	mp.input.cmd = strings.TrimSpace(mp.input.cmd)
+
 	if mp.input.cmd[0] == '/' {
 		w.SendGlobalMessage(GlobalMessage{
 			FromController: w.Callsign,
@@ -1151,8 +1153,8 @@ func (mp *MessagesPane) processEvents(w *World) {
 			}
 
 		case TrackClickedEvent:
-			if mp.input.cmd != "" {
-				mp.input.cmd = event.Callsign + " " + mp.input.cmd
+			if cmd := strings.TrimSpace(mp.input.cmd); cmd != "" {
+				mp.input.cmd = event.Callsign + " " + cmd
 				mp.runCommands(w)
 				// Take the focus back
 				wmTakeKeyboardFocus(mp, false)
