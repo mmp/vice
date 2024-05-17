@@ -787,17 +787,20 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 		}
 
 		id := ""
-		for _, ch := range format {
+		for i, ch := range format {
 			switch ch {
 			case '#':
-				id += strconv.Itoa(rand.Intn(10))
+				if i == 0 {
+					// Don't start with a 0.
+					id += strconv.Itoa(1 + rand.Intn(9))
+				} else {
+					id += strconv.Itoa(rand.Intn(10))
+				}
 			case '@':
 				id += string(rune('A' + rand.Intn(26)))
 			}
 		}
-		if id == "0" || id == "00" || id == "000" || id == "0000" {
-			continue // bleh, try again
-		} else if _, ok := w.Aircraft[callsign+id]; ok {
+		if _, ok := w.Aircraft[callsign+id]; ok {
 			continue // it already exits
 		} else if _, ok := badCallsigns[callsign+id]; ok {
 			continue // nope
