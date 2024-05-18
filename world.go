@@ -1677,6 +1677,23 @@ func (w *World) DrawSettingsWindow() {
 	if imgui.CollapsingHeader("Audio") {
 		globalConfig.Audio.DrawUI()
 	}
+	if imgui.CollapsingHeader("Display") {
+		imgui.Checkbox("Start in full-screen", &globalConfig.StartInFullScreen)
+		monitorNames := platform.GetAllMonitorNames()
+		if imgui.BeginComboV("Monitor", monitorNames[globalConfig.FullScreenMonitor], imgui.ComboFlagsHeightLarge) {
+			for index, monitor := range monitorNames {
+				if imgui.SelectableV(monitor, monitor == monitorNames[globalConfig.FullScreenMonitor], 0, imgui.Vec2{}) {
+					globalConfig.FullScreenMonitor = index
+
+					if platform.IsFullScreen() {
+						platform.RefreshFullScreen()
+					}
+				}
+			}
+
+			imgui.EndCombo()
+		}
+	}
 	if fsp != nil && imgui.CollapsingHeader("Flight Strips") {
 		fsp.DrawUI()
 	}

@@ -40,6 +40,7 @@ var (
 	FontAwesomeIconCopyright           = faUsedIcons["Copyright"]
 	FontAwesomeIconDiscord             = faBrandsUsedIcons["Discord"]
 	FontAwesomeIconExclamationTriangle = faUsedIcons["ExclamationTriangle"]
+	FontAwesomeIconExpandAlt           = faUsedIcons["ExpandAlt"]
 	FontAwesomeIconFile                = faUsedIcons["File"]
 	FontAwesomeIconFolder              = faUsedIcons["Folder"]
 	FontAwesomeIconGithub              = faBrandsUsedIcons["Github"]
@@ -79,6 +80,7 @@ var (
 		"Cog":                 FontAwesomeString("Cog"),
 		"Copyright":           FontAwesomeString("Copyright"),
 		"ExclamationTriangle": FontAwesomeString("ExclamationTriangle"),
+		"ExpandAlt":           FontAwesomeString("ExpandAlt"),
 		"File":                FontAwesomeString("File"),
 		"Folder":              FontAwesomeString("Folder"),
 		"HandPointLeft":       FontAwesomeString("HandPointLeft"),

@@ -374,7 +374,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 		}
 
 		width, _ := ui.font.BoundText(FontAwesomeIconInfoCircle, 0)
-		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(4*width+10), 0})
+		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(6*width+15), 0})
 		if imgui.Button(FontAwesomeIconInfoCircle) {
 			ui.showAboutDialog = !ui.showAboutDialog
 		}
@@ -388,6 +388,13 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 				browser.OpenURL("https://discord.gg/MRDfS3yyhA")
 			}
 			imgui.EndMenu()
+		}
+
+		if imgui.Button(FontAwesomeIconExpandAlt) {
+			platform.ToggleFullScreen()
+		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip(Select(platform.IsFullScreen(), "Exit", "Enter") + " full-screen mode")
 		}
 
 		imgui.PopStyleColor()

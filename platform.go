@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"math"
 	"runtime"
+	"strconv"
 
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -42,6 +43,15 @@ type Platform interface {
 	// EnableVSync specifies whether v-sync should be used when rendering;
 	// v-sync is on by default and should only be disabled for benchmarking.
 	EnableVSync(sync bool)
+	// IsFullScreen() returns true if the application is in full-screen mode.
+	IsFullScreen() bool
+	// RefreshFullScreen() refreshes the windowed/fullscreen state of the application,
+	// used to handle monitor changes while in full-screen.
+	RefreshFullScreen()
+	// ToggleFullScreen() switches between the application running in windowed and fullscreen mode.
+	ToggleFullScreen()
+	// GetAllMonitorNames() returns an array of all available monitors' names. 
+	GetAllMonitorNames() []string
 	// DisplaySize returns the dimension of the display.
 	DisplaySize() [2]float32
 	// WindowSize returns the size of the window.
@@ -80,6 +90,8 @@ type GLFWPlatform struct {
 	multisample            bool
 	windowTitle            string
 	mouseCapture           Extent2D
+	monitors               []*glfw.Monitor
+	isFullScreen           bool
 }
 
 // NewGLFWPlatform returns a new instance of a GLFWPlatform with a window
@@ -114,7 +126,13 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 	if multisample {
 		glfw.WindowHint(glfw.Samples, 4)
 	}
-	window, err := glfw.CreateWindow(windowSize[0], windowSize[1], "vice", nil, nil)
+	monitors := glfw.GetMonitors()
+	if globalConfig.FullScreenMonitor > len(monitors)-1 {
+		// Monitor saved in globalConfig doesn't exist, fallback to default
+		globalConfig.FullScreenMonitor = 0
+		globalConfig.StartInFullScreen = false
+	}
+	window, err := glfw.CreateWindow(windowSize[0], windowSize[1], "vice", monitors[globalConfig.FullScreenMonitor], nil)
 	if err != nil {
 		glfw.Terminate()
 		return nil, fmt.Errorf("failed to create window: %w", err)
@@ -127,11 +145,20 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 		imguiIO:     io,
 		window:      window,
 		multisample: multisample,
+		monitors:    monitors,
 	}
 	platform.setKeyMapping()
 	platform.installCallbacks()
 	platform.createMouseCursors()
 	platform.EnableVSync(true)
+	
+	if globalConfig.StartInFullScreen {
+		platform.isFullScreen = true;
+	} else {
+		platform.RefreshFullScreen()
+	}
+
+	glfw.SetMonitorCallback(platform.MonitorCallback)
 
 	lg.Info("Finished GLFW initialization")
 	return platform, nil
@@ -151,6 +178,65 @@ func (g *GLFWPlatform) EnableVSync(sync bool) {
 		glfw.SwapInterval(1)
 	} else {
 		glfw.SwapInterval(0)
+	}
+}
+
+func (g *GLFWPlatform) IsFullScreen() bool {
+	return g.isFullScreen
+}
+
+func (g *GLFWPlatform) RefreshFullScreen() {
+	monitor := g.monitors[globalConfig.FullScreenMonitor]
+	vm := monitor.GetVideoMode()
+	if g.isFullScreen {
+		g.window.SetMonitor(monitor, 0, 0, vm.Width, vm.Height, vm.RefreshRate)
+	} else {
+		windowSize := [2]int{globalConfig.InitialWindowSize[0], globalConfig.InitialWindowSize[1]}
+	
+		if windowSize[0] == 0 || windowSize[1] == 0 {
+			if runtime.GOOS == "windows" {
+				windowSize[0] = vm.Width - 200
+				windowSize[1] = vm.Height - 300
+			} else {
+				windowSize[0] = vm.Width - 150
+				windowSize[1] = vm.Height - 150
+			}
+		}
+
+		g.window.SetMonitor(nil,globalConfig.InitialWindowPosition[0],globalConfig.InitialWindowPosition[1],windowSize[0],windowSize[1],-1)
+	}
+}
+
+func (g *GLFWPlatform) ToggleFullScreen() {
+	g.isFullScreen = !g.isFullScreen
+	g.RefreshFullScreen()
+}
+
+func (g *GLFWPlatform) GetAllMonitorNames() []string {
+	var monitorNames []string
+	for index, monitor := range g.monitors {
+		monitorNames = append(monitorNames, "(" + strconv.Itoa(index) + ") " + monitor.GetName())
+	}
+	return monitorNames
+}
+
+func (g *GLFWPlatform) MonitorCallback(monitor *glfw.Monitor, event glfw.PeripheralEvent) {
+	const GLFW_CONNECTED = 0x00040001
+	const GLFW_DISCONNECTED = 0x00040002
+	
+	if event == GLFW_CONNECTED {
+		g.monitors = append(g.monitors, monitor)
+	} else if event == GLFW_DISCONNECTED {
+		for index, savedMonitor := range g.monitors {
+			if monitor.GetName() == savedMonitor.GetName() {
+				g.monitors = append(g.monitors[:index], g.monitors[index+1:]...)
+
+				globalConfig.FullScreenMonitor = 0
+				globalConfig.StartInFullScreen = false
+				g.isFullScreen = false
+				g.RefreshFullScreen()
+			}
+		}
 	}
 }
 
