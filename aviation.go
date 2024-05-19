@@ -2121,6 +2121,11 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				for _, tr := range SortedMapKeys(star.Transitions) {
 					wps := star.Transitions[tr]
 					if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == spawnPoint }); idx != -1 {
+						if idx == len(wps)-1 {
+							e.ErrorString("Only have one waypoint on STAR: \"%s\". 2 or more are necessary for navigation",
+								wps[idx].Fix)
+						}
+
 						ar.Waypoints = wps[idx:]
 						sg.InitializeWaypointLocations(ar.Waypoints, e)
 
