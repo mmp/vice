@@ -401,8 +401,56 @@ func initializeSTARSFonts(r Renderer) {
 	// definition of starsFonts, which stores the bitmaps and additional
 	// information about the glyphs in the STARS fonts.
 
-	// We'll extract the font bitmaps into an atlas image.
-	const res = 1024
+	// We'll extract the font bitmaps into an atlas image; assume 1k x 1k for starters.
+	res := 1024
+
+	// Windows high DPI displays are different than Macs in that they
+	// expose the actual pixel count.  So we need to scale the font atlas
+	// accordingly. Here we just double up pixels since we want to maintain
+	// the realistic chunkiness of the original fonts.
+	doublePixels := runtime.GOOS == "windows" && platform.DPIScale() > 1.5
+
+	if doublePixels {
+		res *= 2
+		for name, sf := range starsFonts {
+			sf.Width *= 2
+			sf.Height *= 2
+
+			for i := range sf.Glyphs {
+				g := &sf.Glyphs[i]
+				g.StepX *= 2
+				g.Bounds[0] *= 2
+				g.Bounds[1] *= 2
+
+				// Generate a new bitmap with 2x as many
+				// pixels. Fortunately the original bitmaps are all under
+				// 16 pixels wide, so they will still fit in an uint32.
+				var bitmap []uint32
+				for _, line := range g.Bitmap {
+					if line&0xffff != 0 {
+						panic("not enough room in 32 bits")
+					}
+
+					// Horizontal doubling: double all of the set bits in
+					// the line.
+					var newLine uint32
+					for b := 0; b < 32; b++ {
+						// 0b_abcdefghijklmnop0000000000000000 ->
+						// 0b_aabbccddeeffgghhiijjkkllmmnnoopp
+						if line&(1<<(b/2+16)) != 0 {
+							newLine |= 1 << b
+						}
+					}
+
+					// Vertical doubling: add the line twice to the bitmap.
+					bitmap = append(bitmap, newLine, newLine)
+				}
+				g.Bitmap = bitmap
+			}
+			starsFonts[name] = sf
+		}
+	}
+
 	atlas := image.NewRGBA(image.Rectangle{Max: image.Point{X: res, Y: res}})
 
 	var newFonts []*Font
@@ -416,7 +464,7 @@ func initializeSTARSFonts(r Renderer) {
 			glyphs: make(map[rune]*Glyph),
 			size:   sf.Height,
 			mono:   true,
-			id:     FontIdentifier{Name: fontName, Size: sf.Height},
+			id:     FontIdentifier{Name: fontName, Size: Select(doublePixels, sf.Height/2, sf.Height)},
 		}
 		newFonts = append(newFonts, f)
 
@@ -457,7 +505,9 @@ func initializeSTARSFonts(r Renderer) {
 				glyphs: make(map[rune]*Glyph),
 				size:   sf.Height,
 				mono:   true,
-				id:     FontIdentifier{Name: fontName, Size: sf.Height},
+				// The FontIdentifier is still w.r.t. the original font
+				// size, not the possibly-doubled size.
+				id: FontIdentifier{Name: fontName, Size: Select(doublePixels, sf.Height/2, sf.Height)},
 			}
 			newFonts = append(newFonts, f)
 
