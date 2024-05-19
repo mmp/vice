@@ -188,6 +188,7 @@ var (
 		`Added "FC" command to tell aircraft to change to the next controller's frequency`,
 		`STARS: Add support for displaying requested altitude in FDB`,
 		`Fixed a bug where aircraft callsign numbers could start with 0`,
+		`STARS: use realistic fonts for the STARS display`,
 	}
 )
 
