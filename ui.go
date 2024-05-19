@@ -182,8 +182,12 @@ var (
 		`Fixed a bug where go-arounds would sometimes not contact departure`,
 		`Fixed a bug where live weather would occasionally cause vice to crash`,
 		`Fixed a bug where aircraft TAS would be too high at high altitudes`,
-		`Added support for ATC chat`,
-		`Improved handling of keyboard input when spinners in the STARS DCB are active`,
+		`Added support for ATC chat (prefix chat messages a '/' in the command prompt)`,
+		`Allow entering values for STARS DCB spinner using the keyboard`,
+		`Scenario Updates: D01 and COS (Andrew S), Y90 (Merry Arbitrary), C90 (Jud Lopez)`,
+		`Added "FC" command to tell aircraft to change to the next controller's frequency`,
+		`STARS: Add support for displaying requested altitude in FDB`,
+		`Fixed a bug where aircraft callsign numbers could start with 0`,
 	}
 )
 
