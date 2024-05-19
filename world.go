@@ -1686,7 +1686,7 @@ func (w *World) DrawSettingsWindow() {
 					globalConfig.FullScreenMonitor = index
 
 					if platform.IsFullScreen() {
-						platform.RefreshFullScreen()
+						platform.EnableFullScreen(!platform.IsFullScreen())
 					}
 				}
 			}

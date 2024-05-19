@@ -391,7 +391,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 		}
 
 		if imgui.Button(FontAwesomeIconExpandAlt) {
-			platform.ToggleFullScreen()
+			platform.EnableFullScreen(!platform.IsFullScreen())
 		}
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip(Select(platform.IsFullScreen(), "Exit", "Enter") + " full-screen mode")
