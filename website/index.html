@@ -721,10 +721,21 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
-            <h3>0.10.23 (TODO)</h3>
+            <h3>0.10.23 (TODO May 2024)</h3>
             <ul>
               <li>Added ATC chat functionality.</li>
-              <li>Improved handling of keyboard input when spinners in the STARS DCB are active.</li>
+              <li>Scenario Updates: D01 and COS (Andrew S), Y90 (Merry Arbitrary), C90 (Jud Lopez).</li>
+              <li>Added <code>FC</code> command to tell aircraft to change to the next controller's frequency.</li>
+              <li>STARS improvements:
+                <ul>
+                  <li>Updated the fonts to the real-world STARS display fonts.</li>
+                  <li>Allow entering values for DCB spinners using the keyboard.</li>
+                  <li>Add support for displaying requested altitude in FDB.</li>
+                  <li>Fixed bug where controller ids would be drawn as question marks in tracks in observer mode.</li>
+                </ul>
+              </li>
+              <li>Fixed various minor bugs with aircraft command input.</li>
+              <li>Fixed bug where aircraft callsign numbers could start with 0.</li>
             </ul>
 
             <h3>0.10.22 (28 April 2024)</h3>
