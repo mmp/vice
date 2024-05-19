@@ -140,8 +140,8 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 	platform.createMouseCursors()
 	platform.EnableVSync(true)
 
-	if !globalConfig.StartInFullScreen {
-		platform.EnableFullScreen(false)
+	if globalConfig.StartInFullScreen {
+		platform.EnableFullScreen(true)
 	}
 
 	glfw.SetMonitorCallback(platform.MonitorCallback)
@@ -171,6 +171,7 @@ func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
 	if g.IsMacOSNativeFullScreen() {
 		return
 	}
+	g.window.Hide()
 
 	monitors := glfw.GetMonitors()
 	monitor := monitors[globalConfig.FullScreenMonitor]
@@ -179,7 +180,7 @@ func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
 		g.window.SetMonitor(monitor, 0, 0, vm.Width, vm.Height, vm.RefreshRate)
 	} else {
 		windowSize := [2]int{globalConfig.InitialWindowSize[0], globalConfig.InitialWindowSize[1]}
-	
+
 		if windowSize[0] == 0 || windowSize[1] == 0 || runtime.GOOS == "darwin" {
 			if runtime.GOOS == "windows" {
 				windowSize[0] = vm.Width - 200
@@ -192,6 +193,8 @@ func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
 
 		g.window.SetMonitor(nil,globalConfig.InitialWindowPosition[0],globalConfig.InitialWindowPosition[1],windowSize[0],windowSize[1],glfw.DontCare)
 	}
+
+	g.window.Show()
 }
 
 // Detecting whether the window is already in native (MacOS) fullscreen is a bit tricky, since GLFW doesn't have

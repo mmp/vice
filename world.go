@@ -1685,9 +1685,7 @@ func (w *World) DrawSettingsWindow() {
 				if imgui.SelectableV(monitor, monitor == monitorNames[globalConfig.FullScreenMonitor], 0, imgui.Vec2{}) {
 					globalConfig.FullScreenMonitor = index
 
-					if platform.IsFullScreen() {
-						platform.EnableFullScreen(!platform.IsFullScreen())
-					}
+					platform.EnableFullScreen(platform.IsFullScreen())
 				}
 			}
 
