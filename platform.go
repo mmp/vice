@@ -121,7 +121,18 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 	if multisample {
 		glfw.WindowHint(glfw.Samples, 4)
 	}
-	window, err := glfw.CreateWindow(windowSize[0], windowSize[1], "vice", nil, nil)
+	var window *glfw.Window
+	if globalConfig.StartInFullScreen {
+		monitors := glfw.GetMonitors()
+		if globalConfig.FullScreenMonitor < len(monitors)-1 {
+			// Monitor saved in config not found, fallback to default
+			globalConfig.FullScreenMonitor = 0
+		}
+		vm := monitors[globalConfig.FullScreenMonitor].GetVideoMode()
+		window, err = glfw.CreateWindow(vm.Width, vm.Height, "vice", monitors[globalConfig.FullScreenMonitor], nil)
+	} else {
+		window, err = glfw.CreateWindow(windowSize[0], windowSize[1], "vice", nil, nil)
+	}
 	if err != nil {
 		glfw.Terminate()
 		return nil, fmt.Errorf("failed to create window: %w", err)
@@ -139,10 +150,6 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 	platform.installCallbacks()
 	platform.createMouseCursors()
 	platform.EnableVSync(true)
-
-	if globalConfig.StartInFullScreen {
-		platform.EnableFullScreen(true)
-	}
 
 	glfw.SetMonitorCallback(platform.MonitorCallback)
 
@@ -171,7 +178,6 @@ func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
 	if g.IsMacOSNativeFullScreen() {
 		return
 	}
-	g.window.Hide()
 
 	monitors := glfw.GetMonitors()
 	monitor := monitors[globalConfig.FullScreenMonitor]
@@ -193,8 +199,6 @@ func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
 
 		g.window.SetMonitor(nil,globalConfig.InitialWindowPosition[0],globalConfig.InitialWindowPosition[1],windowSize[0],windowSize[1],glfw.DontCare)
 	}
-
-	g.window.Show()
 }
 
 // Detecting whether the window is already in native (MacOS) fullscreen is a bit tricky, since GLFW doesn't have
