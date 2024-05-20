@@ -1480,6 +1480,32 @@ func (sp *STARSPane) Upgrade(from, to int) {
 			sp.PreferenceSets[i].DisplayATPAWarningAlertCones = true
 		}
 	}
+	if from < 21 {
+		// System list offsets changed from updated handling of
+		// transformation matrices with and without the DCB visible.
+		update := func(ps *STARSPreferenceSet) {
+			if ps.DisplayDCB && ps.DCBPosition == DCBPositionTop {
+				shift := func(y *float32) {
+					*y = max(0, *y-.05)
+				}
+				shift(&ps.SSAList.Position[1])
+				shift(&ps.VFRList.Position[1])
+				shift(&ps.TABList.Position[1])
+				shift(&ps.AlertList.Position[1])
+				shift(&ps.CoastList.Position[1])
+				shift(&ps.SignOnList.Position[1])
+				shift(&ps.VideoMapsList.Position[1])
+				shift(&ps.CRDAStatusList.Position[1])
+				for i := range ps.TowerLists {
+					shift(&ps.TowerLists[i].Position[1])
+				}
+			}
+		}
+		update(&sp.CurrentPreferenceSet)
+		for i := range sp.PreferenceSets {
+			update(&sp.PreferenceSets[i])
+		}
+	}
 }
 
 func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
@@ -1500,12 +1526,11 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	if ps.DisplayDCB {
 		paneExtent = sp.DrawDCB(ctx, transforms, cb)
 
-		// Update scissor and viewport for what's left and to protect the DCB.
-		cb.SetDrawBounds(paneExtent)
+		// Update scissor for what's left and to protect the DCB (even
+		// though this is apparently unrealistic, at least as far as radar
+		// tracks go...)
+		cb.SetScissorBounds(paneExtent)
 
-		// Clean up for the updated paneExtent that accounts for the space the DCB took.
-		transforms = GetScopeTransformations(paneExtent, ctx.world.MagneticVariation, ctx.world.NmPerLongitude,
-			sp.CurrentPreferenceSet.CurrentCenter, float32(ps.Range), 0)
 		if ctx.mouse != nil {
 			// The mouse position is provided in Pane coordinates, so that needs to be updated unless
 			// the DCB is at the top, in which case it's unchanged.
@@ -1579,7 +1604,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		return aircraft[i].Callsign < aircraft[j].Callsign
 	})
 
-	sp.drawSystemLists(aircraft, ctx, paneExtent, transforms, cb)
+	sp.drawSystemLists(aircraft, ctx, ctx.paneExtent, transforms, cb)
 
 	// Tools before datablocks
 	sp.drawPTLs(aircraft, ctx, transforms, cb)

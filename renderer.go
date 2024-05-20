@@ -262,6 +262,20 @@ func (cb *CommandBuffer) SetDrawBounds(b Extent2D) {
 	cb.Viewport(x0, y0, w, h)
 }
 
+// SetScissorBounds sets the scissor rectangle according to the
+// specified bounds so that subsequent code can assume window (or Pane)
+// coordinates from (0,0)-(width,height) when drawing things.
+func (cb *CommandBuffer) SetScissorBounds(b Extent2D) {
+	// One messy detail here is that these windows are specified in
+	// framebuffer coordinates, not display coordinates, so they must be
+	// scaled for e.g., retina displays.
+	scale := platform.FramebufferSize()[1] / platform.DisplaySize()[1]
+	x0, y0 := int(scale*b.p0[0]), int(scale*b.p0[1])
+	w, h := int(scale*b.Width()), int(scale*b.Height())
+	w, h = max(w, 0), max(h, 0)
+	cb.Scissor(x0, y0, w, h)
+}
+
 // SetRGBA adds a command to the command buffer to set the current RGBA
 // color. Subsequent draw commands will inherit this color unless they
 // specify e.g., per-vertex colors themselves.

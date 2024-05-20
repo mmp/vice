@@ -30,7 +30,8 @@ import (
 // 18: STARS ATPA
 // 19: runway waypoints now per-airport
 // 20: "stars_config" and various scenario fields moved there, plus STARSFacilityAdaptation
-const CurrentConfigVersion = 20
+// 21: STARS DCB drawing changes, so system list positions changed
+const CurrentConfigVersion = 21
 
 // Slightly convoluted, but the full GlobalConfig definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first
