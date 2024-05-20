@@ -46,6 +46,7 @@ type GlobalConfig struct {
 
 type GlobalConfigNoSim struct {
 	Version               int
+	FullScreenMonitor     int
 	InitialWindowSize     [2]int
 	InitialWindowPosition [2]int
 	ImGuiSettings         string
@@ -61,6 +62,7 @@ type GlobalConfigNoSim struct {
 	AskedDiscordOptIn        bool
 	InhibitDiscordActivity   AtomicBool
 	NotifiedNewCommandSyntax bool
+	StartInFullScreen        bool
 
 	Callsign string
 
