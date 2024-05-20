@@ -47,7 +47,7 @@ type Platform interface {
 	EnableFullScreen(fullscreen bool)
 	// IsFullScreen() returns true if the application is in full-screen mode.
 	IsFullScreen() bool
-	// GetAllMonitorNames() returns an array of all available monitors' names. 
+	// GetAllMonitorNames() returns an array of all available monitors' names.
 	GetAllMonitorNames() []string
 	// DisplaySize returns the dimension of the display.
 	DisplaySize() [2]float32
@@ -122,12 +122,12 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 		glfw.WindowHint(glfw.Samples, 4)
 	}
 	var window *glfw.Window
+	monitors := glfw.GetMonitors()
+	if globalConfig.FullScreenMonitor >= len(monitors) {
+		// Monitor saved in config not found, fallback to default
+		globalConfig.FullScreenMonitor = 0
+	}
 	if globalConfig.StartInFullScreen {
-		monitors := glfw.GetMonitors()
-		if globalConfig.FullScreenMonitor < len(monitors)-1 {
-			// Monitor saved in config not found, fallback to default
-			globalConfig.FullScreenMonitor = 0
-		}
 		vm := monitors[globalConfig.FullScreenMonitor].GetVideoMode()
 		window, err = glfw.CreateWindow(vm.Width, vm.Height, "vice", monitors[globalConfig.FullScreenMonitor], nil)
 	} else {
@@ -180,6 +180,11 @@ func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
 	}
 
 	monitors := glfw.GetMonitors()
+	if globalConfig.FullScreenMonitor >= len(monitors) {
+		// Shouldn't happen, but just to be sure
+		globalConfig.FullScreenMonitor = 0
+	}
+
 	monitor := monitors[globalConfig.FullScreenMonitor]
 	vm := monitor.GetVideoMode()
 	if fullscreen {
@@ -197,7 +202,7 @@ func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
 			}
 		}
 
-		g.window.SetMonitor(nil,globalConfig.InitialWindowPosition[0],globalConfig.InitialWindowPosition[1],windowSize[0],windowSize[1],glfw.DontCare)
+		g.window.SetMonitor(nil, globalConfig.InitialWindowPosition[0], globalConfig.InitialWindowPosition[1], windowSize[0], windowSize[1], glfw.DontCare)
 	}
 }
 
@@ -227,7 +232,7 @@ func (g *GLFWPlatform) GetAllMonitorNames() []string {
 	var monitorNames []string
 	monitors := glfw.GetMonitors()
 	for index, monitor := range monitors {
-		monitorNames = append(monitorNames, "(" + strconv.Itoa(index) + ") " + monitor.GetName())
+		monitorNames = append(monitorNames, "("+strconv.Itoa(index)+") "+monitor.GetName())
 	}
 	return monitorNames
 }
