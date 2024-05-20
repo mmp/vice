@@ -6185,7 +6185,21 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		if time.Until(state.FullLDB) > 0 {
 			db.Lines[2].Text += fmt.Sprintf(" %02d", (state.TrackGroundspeed()+5)/10)
 		}
-		return []STARSDatablock{db}
+
+		if state.Ident() {
+			// flash ID after squawk code
+			start := len(db.Lines[1].Text)
+			db.Lines[1].Text += "ID"
+
+			// The text is the same but the "ID" is much dimmer for the flash.
+			db2 := db.Duplicate()
+			color, _ := sp.datablockColor(ctx, ac)
+			db2.Lines[1].Colors = append(db2.Lines[1].Colors,
+				STARSDatablockFieldColors{Start: start, End: start + 2, Color: color.Scale(0.3)})
+			return []STARSDatablock{db, db2}
+		} else {
+			return []STARSDatablock{db}
+		}
 
 	case PartialDatablock:
 		dbs := []STARSDatablock{baseDB.Duplicate(), baseDB.Duplicate()}
@@ -6200,12 +6214,22 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			dbs[1].Lines[0].Text += sq + "WHO"
 		}
 
-		field4 := Select(state.Ident(), "ID", "")
+		if state.Ident() {
+			alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
+			dbs[0].Lines[1].Text = alt + " ID"
+			dbs[1].Lines[1].Text = alt + " ID"
+
+			color, _ := sp.datablockColor(ctx, ac)
+			dbs[1].Lines[1].Colors = append(dbs[1].Lines[1].Colors,
+				STARSDatablockFieldColors{Start: 4, End: 6, Color: color.Scale(0.3)})
+
+			return dbs
+		}
 
 		if fp := ac.FlightPlan; fp != nil && fp.Rules == VFR {
 			as := fmt.Sprintf("%03d  %02d", (state.TrackAltitude()+50)/100, (state.TrackGroundspeed()+5)/10)
-			dbs[0].Lines[1].Text = as + field4
-			dbs[1].Lines[1].Text = as + field4
+			dbs[0].Lines[1].Text = as
+			dbs[1].Lines[1].Text = as
 			return dbs
 		}
 
@@ -6250,8 +6274,9 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else {
 			field1[1] = alt
 		}
-		dbs[0].Lines[1].Text = field1[0] + field2 + field3 + field4
-		dbs[1].Lines[1].Text = field1[1] + field2 + field3 + field4
+
+		dbs[0].Lines[1].Text = field1[0] + field2 + field3
+		dbs[1].Lines[1].Text = field1[1] + field2 + field3
 
 		return dbs
 
@@ -6294,19 +6319,22 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			alt = "CST"
 		}
 		field3 := []string{alt}
-		if ac.Scratchpad != "" {
-			field3 = append(field3, ac.Scratchpad)
-		}
-		if ac.SecondaryScratchpad != "" {
-			field3 = append(field3, ac.SecondaryScratchpad)
-		}
-		if len(field3) == 1 {
-			if ap := ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil && !ap.OmitArrivalScratchpad {
-				ap := ac.FlightPlan.ArrivalAirport
-				if len(ap) == 4 {
-					ap = ap[1:] // drop the leading K
+		if !state.Ident() {
+			// Don't display these if they're identing: then it's just altitude and speed + "ID"
+			if ac.Scratchpad != "" {
+				field3 = append(field3, ac.Scratchpad)
+			}
+			if ac.SecondaryScratchpad != "" {
+				field3 = append(field3, ac.SecondaryScratchpad)
+			}
+			if len(field3) == 1 {
+				if ap := ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil && !ap.OmitArrivalScratchpad {
+					ap := ac.FlightPlan.ArrivalAirport
+					if len(ap) == 4 {
+						ap = ap[1:] // drop the leading K
+					}
+					field3 = append(field3, ap)
 				}
-				field3 = append(field3, ap)
 			}
 		}
 
@@ -6333,33 +6361,44 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		}
 
 		speed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
-		acCategory := ""
-		actype := ac.FlightPlan.TypeWithoutSuffix()
-		if strings.Index(actype, "/") == 1 {
-			actype = actype[2:]
-		}
-		modifier := ""
-		if ac.FlightPlan.Rules == VFR {
-			modifier += "V"
-		} else if sp.isOverflight(ctx, ac) {
-			modifier += "E"
-		} else {
-			modifier = " "
-		}
-		cat := getCwtCategory(ac)
-		acCategory = modifier + cat
 
 		field5 := []string{} // alternate speed and aircraft type
+		var line5FieldColors *STARSDatablockFieldColors
 		if state.Ident() {
 			// Speed is followed by ID when identing (2-67, field 5)
 			field5 = append(field5, speed+"ID")
+			field5 = append(field5, speed+"ID")
+			color, _ := sp.datablockColor(ctx, ac)
+
+			line5FieldColors = &STARSDatablockFieldColors{
+				Start: len(speed),
+				End:   len(speed) + 2,
+				Color: color.Scale(0.3),
+			}
 		} else {
+			acCategory := ""
+			actype := ac.FlightPlan.TypeWithoutSuffix()
+			if strings.Index(actype, "/") == 1 {
+				actype = actype[2:]
+			}
+			modifier := ""
+			if ac.FlightPlan.Rules == VFR {
+				modifier += "V"
+			} else if sp.isOverflight(ctx, ac) {
+				modifier += "E"
+			} else {
+				modifier = " "
+			}
+			cat := getCwtCategory(ac)
+			acCategory = modifier + cat
+
 			field5 = append(field5, speed+acCategory)
-		}
-		field5 = append(field5, actype)
-		if (state.DisplayRequestedAltitude != nil && *state.DisplayRequestedAltitude) ||
-			(state.DisplayRequestedAltitude == nil && sp.CurrentPreferenceSet.DisplayRequestedAltitude) {
-			field5 = append(field5, fmt.Sprintf("R%03d", ac.FlightPlan.Altitude/100))
+
+			field5 = append(field5, actype)
+			if (state.DisplayRequestedAltitude != nil && *state.DisplayRequestedAltitude) ||
+				(state.DisplayRequestedAltitude == nil && sp.CurrentPreferenceSet.DisplayRequestedAltitude) {
+				field5 = append(field5, fmt.Sprintf("R%03d", ac.FlightPlan.Altitude/100))
+			}
 		}
 		for i := range field5 {
 			if len(field5[i]) < 5 {
@@ -6399,10 +6438,9 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		}
 		line3 := field6 + "  " + field7
 
-		// Now make some datablocks. For our purposes, only field3 and
-		// field5 (and thus line 2) may be time multiplexed, which
-		// simplifies db creation here.  Note that line 1 has already been
-		// set in baseDB above.)
+		// Now make some datablocks. For our purposes, only fields 3, 5,
+		// and 8 may be time multiplexed, which simplifies db creation
+		// here.  Note that line 1 has already been set in baseDB above.
 		dbs := []STARSDatablock{}
 		n := lcm(len(field3), len(field5)) // cycle through all variations
 		n = lcm(n, len(field8))
@@ -6413,6 +6451,13 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			db.Lines[3].Text = line3
 			if line3FieldColors != nil {
 				db.Lines[3].Colors = append(db.Lines[3].Colors, *line3FieldColors)
+			}
+			if line5FieldColors != nil && i&1 == 1 {
+				// Flash "ID" for identing
+				fc := *line5FieldColors
+				fc.Start += len(field3[i%len(field3)]) + len(field4)
+				fc.End += len(field3[i%len(field3)]) + len(field4)
+				db.Lines[2].Colors = append(db.Lines[2].Colors, fc)
 			}
 			dbs = append(dbs, db)
 		}
@@ -6450,9 +6495,6 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 	if now.Second()&1 == 0 { // one second cycle
 		if _, pointOut := sp.InboundPointOuts[ac.Callsign]; pointOut {
 			// point out
-			brightness /= 3
-		} else if state.Ident() {
-			// ident
 			brightness /= 3
 		} else if state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd) {
 			// we handed it off, it was accepted, but we haven't yet acknowledged
@@ -6553,7 +6595,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 			continue
 		}
 
-		baseColor, brightness := sp.datablockColor(ctx, ac)
+		color, brightness := sp.datablockColor(ctx, ac)
 
 		// Compute the bounds of the datablock; always use the first one so
 		// things don't jump around when it switches between multiple of
@@ -6566,7 +6608,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
 		pt := add2f(datablockOffset, pac)
 		idx := (realNow.Second() / 2) % len(dbs) // 2 second cycle
-		dbs[idx].DrawText(td, pt, font, baseColor, brightness)
+		dbs[idx].DrawText(td, pt, font, color, brightness)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
