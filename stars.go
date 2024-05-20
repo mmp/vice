@@ -7167,7 +7167,7 @@ func drawDCBText(text string, td *TextDrawBuilder, buttonSize [2]float32, color 
 	_, h := style.Font.BoundText(strings.Join(lines, "\n"), dcbDrawState.style.LineSpacing)
 
 	slop := buttonSize[1] - float32(h) // todo: what if negative...
-	y0 := dcbDrawState.cursor[1] - slop/2
+	y0 := dcbDrawState.cursor[1] - 1 - slop/2
 	for _, line := range lines {
 		lw, lh := style.Font.BoundText(line, style.LineSpacing)
 		x0 := dcbDrawState.cursor[0] + (buttonSize[0]-float32(lw))/2
