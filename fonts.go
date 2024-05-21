@@ -39,7 +39,7 @@ var (
 	FontAwesomeIconCaretRight          = faUsedIcons["CaretRight"]
 	FontAwesomeIconCheckSquare         = faUsedIcons["CheckSquare"]
 	FontAwesomeIconCog                 = faUsedIcons["Cog"]
-	FontAwesomeIconCompressAlt		   = faUsedIcons["CompressAlt"]
+	FontAwesomeIconCompressAlt         = faUsedIcons["CompressAlt"]
 	FontAwesomeIconCopyright           = faUsedIcons["Copyright"]
 	FontAwesomeIconDiscord             = faBrandsUsedIcons["Discord"]
 	FontAwesomeIconExclamationTriangle = faUsedIcons["ExclamationTriangle"]
@@ -80,7 +80,7 @@ var (
 		"CaretDown":           FontAwesomeString("CaretDown"),
 		"CaretRight":          FontAwesomeString("CaretRight"),
 		"CheckSquare":         FontAwesomeString("CheckSquare"),
-		"CompressAlt":		   FontAwesomeString("CompressAlt"),
+		"CompressAlt":         FontAwesomeString("CompressAlt"),
 		"Cog":                 FontAwesomeString("Cog"),
 		"Copyright":           FontAwesomeString("Copyright"),
 		"ExclamationTriangle": FontAwesomeString("ExclamationTriangle"),

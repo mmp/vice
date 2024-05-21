@@ -247,19 +247,19 @@ func (g *GLFWPlatform) IsMacOSNativeFullScreen() bool {
 }
 
 func (g *GLFWPlatform) IsFullScreen() bool {
-	x := g.window.GetMonitor() != nil 
+	x := g.window.GetMonitor() != nil
 	if runtime.GOOS == "darwin" {
-		f := C.isNativeFullscreen(g.window.GetCocoaWindow()) 
+		f := C.isNativeFullscreen(g.window.GetCocoaWindow())
 		var y bool
 		if f {
-			y = true 
+			y = true
 		} else {
-			y = false 
+			y = false
 		}
 		return x || y
 	}
 	return x
-	
+
 }
 
 func (g *GLFWPlatform) GetAllMonitorNames() []string {
