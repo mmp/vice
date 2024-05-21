@@ -7,6 +7,21 @@
 
 package main
 
+/*
+#cgo darwin CFLAGS: -x objective-c
+#cgo darwin LDFLAGS: -framework Cocoa
+
+#import <Cocoa/Cocoa.h>
+#import <GLFW/glfw3.h>
+
+// Function to set macOS specific properties
+void makeFullscreenNative(void *window) {
+    NSWindow *nswindow = ((NSWindow*)window);
+    [nswindow setCollectionBehavior: NSWindowCollectionBehaviorFullScreenPrimary];
+    [nswindow toggleFullScreen:nil];
+}
+*/
+import "C"
 import (
 	"fmt"
 	"math"
@@ -175,7 +190,9 @@ func (g *GLFWPlatform) EnableVSync(sync bool) {
 }
 
 func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
-	if g.IsMacOSNativeFullScreen() {
+	if runtime.GOOS == "darwin" {
+		window := g.window.GetCocoaWindow()
+		C.makeFullscreenNative(window)
 		return
 	}
 
