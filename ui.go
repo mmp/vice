@@ -1094,9 +1094,9 @@ func showAboutDialog() {
 	// font we're using...
 	credits :=
 		`Additional credits:
-- Software Development: Dennis Graiani,
-  Michael Trokel, Samuel Valencia, and
-  Yi Zhang.
+- Software Development: Artem Dorofeev,
+  Dennis Graiani, Michael Trokel, Samuel
+  Valencia, and Yi Zhang.
 - Facility engineering: Connor Allen, Adam
   Bolek, Lucas Chan, Aaron Flett, Mike K,
   Jud Lopez, Ethan Malimon, Jace Martin,
