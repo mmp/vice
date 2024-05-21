@@ -395,7 +395,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 			imgui.EndMenu()
 		}
 
-		if imgui.Button(FontAwesomeIconExpandAlt) {
+		if imgui.Button(Select(platform.IsFullScreen(), FontAwesomeIconCompressAlt, FontAwesomeIconExpandAlt)) {
 			platform.EnableFullScreen(!platform.IsFullScreen())
 		}
 		if imgui.IsItemHovered() {
