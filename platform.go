@@ -20,6 +20,11 @@ void makeFullscreenNative(void *window) {
     [nswindow setCollectionBehavior: NSWindowCollectionBehaviorFullScreenPrimary];
     [nswindow toggleFullScreen:nil];
 }
+
+bool isNativeFullscreen(void *window) {
+    NSWindow *nswindow = ((NSWindow*)window);
+    return (nswindow.styleMask & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen;
+}
 */
 import "C"
 import (
@@ -242,7 +247,19 @@ func (g *GLFWPlatform) IsMacOSNativeFullScreen() bool {
 }
 
 func (g *GLFWPlatform) IsFullScreen() bool {
-	return g.window.GetMonitor() != nil || g.IsMacOSNativeFullScreen()
+	x := g.window.GetMonitor() != nil 
+	if runtime.GOOS == "darwin" {
+		f := C.isNativeFullscreen(g.window.GetCocoaWindow()) 
+		var y bool
+		if f {
+			y = true 
+		} else {
+			y = false 
+		}
+		return x || y
+	}
+	return x
+	
 }
 
 func (g *GLFWPlatform) GetAllMonitorNames() []string {
