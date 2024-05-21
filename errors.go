@@ -20,6 +20,7 @@ var (
 	ErrInvalidApproach              = errors.New("Invalid approach")
 	ErrInvalidCommandSyntax         = errors.New("Invalid command syntax")
 	ErrInvalidController            = errors.New("Invalid controller")
+	ErrInvalidFacility				= errors.New("Invalid facility")
 	ErrInvalidHeading               = errors.New("Invalid heading")
 	ErrNoAircraftForCallsign        = errors.New("No aircraft exists with specified callsign")
 	ErrNoController                 = errors.New("No controller with that callsign")
@@ -59,6 +60,7 @@ var errorStringToError = map[string]error{
 	ErrInvalidApproach.Error():              ErrInvalidApproach,
 	ErrInvalidCommandSyntax.Error():         ErrInvalidCommandSyntax,
 	ErrInvalidController.Error():            ErrInvalidController,
+	ErrInvalidFacility.Error():				 ErrInvalidFacility,
 	ErrInvalidHeading.Error():               ErrInvalidHeading,
 	ErrNoAircraftForCallsign.Error():        ErrNoAircraftForCallsign,
 	ErrNoController.Error():                 ErrNoController,
@@ -135,6 +137,7 @@ var starsErrorRemap = map[error]*STARSError{
 	ErrInvalidApproach:              ErrSTARSIllegalValue,
 	ErrInvalidCommandSyntax:         ErrSTARSCommandFormat,
 	ErrInvalidController:            ErrSTARSIllegalPosition,
+	ErrInvalidFacility:				 ErrSTARSIllegalTrack,
 	ErrInvalidHeading:               ErrSTARSIllegalValue,
 	ErrNoAircraftForCallsign:        ErrSTARSNoFlight,
 	ErrNoController:                 ErrSTARSIllegalSector,

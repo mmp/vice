@@ -6309,7 +6309,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			((redirect.RedirectedTo == ctx.world.Callsign) ||
 				(ac.TrackingController == ctx.world.Callsign && redirect.OrigionalOwner != "")) {
 			field8 = []string{" RD"}
-		} else if slices.Contains(ac.RedirectedHandoff.Redirector, ctx.world.Callsign) || ac.RedirectedHandoff.RDIndicator {
+		} else if ac.RedirectedHandoff.OrigionalOwner == ctx.world.Callsign {
 			field8 = []string{" RD"}
 		}
 

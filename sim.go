@@ -2237,9 +2237,12 @@ func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 		func(ctrl *Controller, ac *Aircraft) error {
 			if octrl := s.World.GetControllerByCallsign(controller); octrl == nil {
 				return ErrNoController
-			} else if octrl.Callsign == ctrl.Callsign {
-				// Can't redirect to ourself
+			} else if octrl.Callsign == ctrl.Callsign || octrl.Callsign == ac.TrackingController {
+				// Can't redirect to ourself and the controller who initiated the handoff
 				return ErrInvalidController
+			} else if octrl.FacilityIdentifier != ctrl.FacilityIdentifier {
+				// Can't redirect to an interfacility position
+				return ErrInvalidFacility
 			}
 			return nil
 		},
