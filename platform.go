@@ -8,6 +8,7 @@
 package main
 
 /*
+#if defined(__APPLE__)
 #cgo darwin CFLAGS: -x objective-c
 #cgo darwin LDFLAGS: -framework Cocoa
 
@@ -25,6 +26,17 @@ bool isNativeFullscreen(void *window) {
     NSWindow *nswindow = ((NSWindow*)window);
     return (nswindow.styleMask & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen;
 }
+#else
+// No-op functions for non-macOS platforms
+void makeFullscreenNative(void *window) {
+    // Nothing to do for non-MacOs platforms
+}
+
+bool isNativeFullscreen(void *window) {
+    // Always return false for non-MacOs
+    return false;
+}
+#endif
 */
 import "C"
 import (
@@ -247,19 +259,13 @@ func (g *GLFWPlatform) IsMacOSNativeFullScreen() bool {
 }
 
 func (g *GLFWPlatform) IsFullScreen() bool {
-	x := g.window.GetMonitor() != nil
-	if runtime.GOOS == "darwin" {
-		f := C.isNativeFullscreen(g.window.GetCocoaWindow())
-		var y bool
-		if f {
-			y = true
-		} else {
-			y = false
-		}
-		return x || y
+	if g.window.GetMonitor() != nil {
+		return true
+	} else if runtime.GOOS == "darwin" && C.isNativeFullscreen(g.window.GetCocoaWindow()) {
+		return true
+	} else {
+		return false
 	}
-	return x
-
 }
 
 func (g *GLFWPlatform) GetAllMonitorNames() []string {
