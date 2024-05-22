@@ -1484,6 +1484,12 @@ func (sp *STARSPane) Upgrade(from, to int) {
 		// System list offsets changed from updated handling of
 		// transformation matrices with and without the DCB visible.
 		update := func(ps *STARSPreferenceSet) {
+			ps.CharSize.DCB = max(0, ps.CharSize.DCB-1)
+			ps.CharSize.Datablocks = max(0, ps.CharSize.Datablocks-1)
+			ps.CharSize.Lists = max(0, ps.CharSize.Lists-1)
+			ps.CharSize.Tools = max(0, ps.CharSize.Tools-1)
+			ps.CharSize.PositionSymbols = max(0, ps.CharSize.PositionSymbols-1)
+
 			if ps.DisplayDCB && ps.DCBPosition == DCBPositionTop {
 				shift := func(y *float32) {
 					*y = max(0, *y-.05)
@@ -7128,7 +7134,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent Extent2D, tran
 ///////////////////////////////////////////////////////////////////////////
 // DCB menu on top
 
-const STARSButtonSize = 70
+const STARSButtonSize = 75
 
 const (
 	STARSButtonFull = 1 << iota
@@ -7813,21 +7819,21 @@ func amendFlightPlan(w *World, callsign string, amend func(fp *FlightPlan)) erro
 }
 
 func (sp *STARSPane) initializeFonts() {
-	sp.systemFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 9})
-	sp.systemFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
-	sp.systemFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
-	sp.systemFont[3] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
-	sp.systemFont[4] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize3", Size: 16})
-	sp.systemFont[5] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize4", Size: 18})
-	sp.systemOutlineFont[0] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 9})
-	sp.systemOutlineFont[1] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 11})
-	sp.systemOutlineFont[2] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize1", Size: 12})
-	sp.systemOutlineFont[3] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize2", Size: 15})
-	sp.systemOutlineFont[4] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize3", Size: 16})
-	sp.systemOutlineFont[5] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize4", Size: 18})
-	sp.dcbFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 9})
-	sp.dcbFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
-	sp.dcbFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
+	sp.systemFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
+	sp.systemFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
+	sp.systemFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
+	sp.systemFont[3] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize3", Size: 16})
+	sp.systemFont[4] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize4", Size: 18})
+	sp.systemFont[5] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize5", Size: 19})
+	sp.systemOutlineFont[0] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 11})
+	sp.systemOutlineFont[1] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize1", Size: 12})
+	sp.systemOutlineFont[2] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize2", Size: 15})
+	sp.systemOutlineFont[3] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize3", Size: 16})
+	sp.systemOutlineFont[4] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize4", Size: 18})
+	sp.systemOutlineFont[5] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize5", Size: 19})
+	sp.dcbFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
+	sp.dcbFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
+	sp.dcbFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
 }
 
 func (sp *STARSPane) resetInputState() {
