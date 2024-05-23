@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"slices"
 	"strings"
+	"time"
 )
 
 type Aircraft struct {
@@ -57,10 +58,11 @@ type Aircraft struct {
 }
 
 type RedirectedHandoff struct {
-	OrigionalOwner string   // Controller callsign
-	Redirector     []string // Sector id
-	RedirectedTo   string   // Sector id
-	RDIndicator    bool
+	OriginalOwner string   // Controller callsign
+	Redirector    []string // Controller callsign
+	RedirectedTo  string   // Controller callsign
+	RDIndicator   bool
+	Accepted      time.Time
 }
 
 type PilotResponse struct {
