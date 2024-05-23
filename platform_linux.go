@@ -1,3 +1,5 @@
+// +build linux
+
 // platform.go
 //
 // This a slightly modified version of the GLFW/SDL2 infrastructure from
@@ -7,42 +9,6 @@
 
 package main
 
-/*
-#ifdef __APPLE__
-#cgo darwin CFLAGS: -x objective-c
-#cgo darwin LDFLAGS: -framework Cocoa
-
-#include <Cocoa/Cocoa.h>
-#include <GLFW/glfw3.h>
-
-// Function to set macOS specific properties
-void makeFullscreenNative(void *window) {
-    NSWindow *nswindow = ((NSWindow*)window);
-    [nswindow setCollectionBehavior: NSWindowCollectionBehaviorFullScreenPrimary];
-    [nswindow toggleFullScreen:nil];
-}
-
-// Function to check if the window is in native fullscreen mode
-int isNativeFullscreen(void *window) {
-    NSWindow *nswindow = ((NSWindow*)window);
-    return (nswindow.styleMask & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen ? 1 : 0;
-}
-#else
-
-#include <GLFW/glfw3.h>
-
-// No-op functions for non-macOS platforms
-void makeFullscreenNative(void *window) {
-    // No operation on non-macOS platforms
-}
-
-int isNativeFullscreen(void *window) {
-    // Always return 0 on non-macOS platforms
-    return 0;
-}
-#endif
-*/
-import "C"
 import (
 	"fmt"
 	"math"
@@ -211,9 +177,7 @@ func (g *GLFWPlatform) EnableVSync(sync bool) {
 }
 
 func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
-	if runtime.GOOS == "darwin" {
-		window := g.window.GetCocoaWindow()
-		C.makeFullscreenNative(window)
+	if g.IsMacOSNativeFullScreen() {
 		return
 	}
 
@@ -263,13 +227,7 @@ func (g *GLFWPlatform) IsMacOSNativeFullScreen() bool {
 }
 
 func (g *GLFWPlatform) IsFullScreen() bool {
-	if g.window.GetMonitor() != nil {
-		return true
-	} else if runtime.GOOS == "darwin" && C.isNativeFullscreen(g.window.GetCocoaWindow()) == 1{
-		return true
-	} else {
-		return false
-	}
+	return g.window.GetMonitor() != nil || g.IsMacOSNativeFullScreen()
 }
 
 func (g *GLFWPlatform) GetAllMonitorNames() []string {
