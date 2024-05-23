@@ -1794,7 +1794,6 @@ func (s *Sim) spawnAircraft() {
 			s.lg.Errorf("%s: couldn't find an active runway for spawning departure?", airport)
 			continue
 		}
-		for { // There will always be a gate, because is all gates are checked this func wont get called
 			prevDep := s.lastDeparture[airport][runway][category]
 			s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
 			ac, dep, err := s.World.CreateDeparture(airport, runway, category,
@@ -1822,7 +1821,6 @@ func (s *Sim) spawnAircraft() {
 					break
 				}
 			}
-		}
 	}
 }
 
