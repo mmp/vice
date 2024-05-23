@@ -8,7 +8,7 @@
 package main
 
 /*
-#if defined(__APPLE__)
+#ifdef (__APPLE__)
 #cgo darwin CFLAGS: -x objective-c
 #cgo darwin LDFLAGS: -framework Cocoa
 
@@ -28,13 +28,16 @@ int isNativeFullscreen(void *window) {
     return (nswindow.styleMask & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen ? 1 : 0;
 }
 #else
+
+#import <GLFW/glfw3.h>
+
 // No-op functions for non-macOS platforms
 void makeFullscreenNative(void *window) {
     // No operation on non-macOS platforms
 }
 
 int isNativeFullscreen(void *window) {
-    // Always return 0 (false) on non-macOS platforms
+    // Always return 0 on non-macOS platforms
     return 0;
 }
 #endif
