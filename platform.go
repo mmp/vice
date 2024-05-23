@@ -8,7 +8,7 @@
 package main
 
 /*
-#ifdef (__APPLE__)
+#ifdef __APPLE__
 #cgo darwin CFLAGS: -x objective-c
 #cgo darwin LDFLAGS: -framework Cocoa
 
