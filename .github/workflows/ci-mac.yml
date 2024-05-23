@@ -33,8 +33,8 @@ jobs:
       run: go version
 
     - name: Install Mac dependencies
-      run: brew install sdl2 pkg-config
-    
+      run: brew install sdl2 pkg-config glfw
+
     - name: Build universal binary
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
@@ -43,28 +43,26 @@ jobs:
         lipo -create -output vice vice_amd64 vice_arm64
 
     - name: Run tests
-      run:
-        go test -v
+      run: go test -v
 
     - name: Check scenarios
-      run:
-        ./vice -lint
+      run: ./vice -lint
 
     - name: Create icons
       run: |
         mkdir -p icon.iconset
         cp icons/tower-rounded-inset-16x16.png icon.iconset/icon_16x16.png
-        cp icons/tower-rounded-inset-32x32.png icon.iconset/icon_16x16@2.png
+        cp icons/tower-rounded-inset-32x32.png icon.iconset/icon_16x16@2x.png
         cp icons/tower-rounded-inset-32x32.png icon.iconset/icon_32x32.png
-        cp icons/tower-rounded-inset-64x64.png icon.iconset/icon_32x32@2.png
+        cp icons/tower-rounded-inset-64x64.png icon.iconset/icon_32x32@2x.png
         cp icons/tower-rounded-inset-64x64.png icon.iconset/icon_64x64.png
-        cp icons/tower-rounded-inset-128x128.png icon.iconset/icon_64x64@2.png
+        cp icons/tower-rounded-inset-128x128.png icon.iconset/icon_64x64@2x.png
         cp icons/tower-rounded-inset-128x128.png icon.iconset/icon_128x128.png
-        cp icons/tower-rounded-inset-256x256.png icon.iconset/icon_128x128@2.png
+        cp icons/tower-rounded-inset-256x256.png icon.iconset/icon_128x128@2x.png
         cp icons/tower-rounded-inset-256x256.png icon.iconset/icon_256x256.png
-        cp icons/tower-rounded-inset-512x512.png icon.iconset/icon_256x256@2.png
+        cp icons/tower-rounded-inset-512x512.png icon.iconset/icon_256x256@2x.png
         cp icons/tower-rounded-inset-512x512.png icon.iconset/icon_512x512.png
-        cp icons/tower-rounded-inset-1024x1024.png icon.iconset/icon_512x512@2.png
+        cp icons/tower-rounded-inset-1024x1024.png icon.iconset/icon_512x512@2x.png
         iconutil -c icns icon.iconset
 
     - name: Create Vice.app
@@ -83,7 +81,6 @@ jobs:
         cp resources/mva-fus3.zip Vice.app/Contents/Resources/
 
     - name: Check Secrets
-      # The secrets aren't available for PRs but we don't want the build to fail just because of that...
       run: |
          if [ -z "${{ secrets.APPLE_DEVELOPER_ID_CERT_PASSWORD }}" ]; then
              echo "SECRETS_AVAILABLE=false" >> $GITHUB_ENV
@@ -96,7 +93,6 @@ jobs:
       env:
         APPLE_DEVELOPER_ID_CERT_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_CERT_PASSWORD }}
         APPLE_DEVELOPER_ID_CERT_FILE: ${{ secrets.APPLE_DEVELOPER_ID_CERT_FILE }}
-      # https://medium.com/anchore-engineering/developers-need-to-handle-macos-binary-signing-how-we-automated-the-solution-part-2-ad1e08caff0f
       run: |
         EPHEMERAL_KEYCHAIN="ci-ephemeral-keychain"
         EPHEMERAL_KEYCHAIN_PASSWORD="$(openssl rand -base64 100)"
@@ -121,9 +117,7 @@ jobs:
         APPLE_CODESIGN_ID: ${{ secrets.APPLE_CODESIGN_ID2 }}
         APPLE_TEAMID: ${{ secrets.APPLE_TEAMID }}
       run: |
-        # make a zip for notarization.
         zip -rv vice.zip Vice.app
-        # get the zip file notarized
         xcrun notarytool submit \
             --wait \
             --apple-id ${APPLE_CODESIGN_ID} \
@@ -131,12 +125,10 @@ jobs:
             --team-id ${APPLE_TEAMID} \
             --timeout 30m \
             vice.zip
-        # notarized! staple the notarization
         xcrun stapler staple Vice.app
 
     - name: Create zip file for app
-      run:
-        zip -rv Vice-osx.zip Vice.app
+      run: zip -rv Vice-osx.zip Vice.app
 
     - name: Save zip file as build artifact
       uses: actions/upload-artifact@v3
@@ -146,8 +138,7 @@ jobs:
 
     - name: Rename zip for release (maybe)
       if: startsWith(github.ref, 'refs/tags/')
-      run:
-        mv Vice-osx.zip 'Vice-${{ github.ref_name }}-osx.zip'
+      run: mv Vice-osx.zip 'Vice-${{ github.ref_name }}-osx.zip'
 
     - name: Upload release (maybe)
       if: startsWith(github.ref, 'refs/tags/')

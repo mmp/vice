@@ -12,8 +12,8 @@ package main
 #cgo darwin CFLAGS: -x objective-c
 #cgo darwin LDFLAGS: -framework Cocoa
 
-#import <Cocoa/Cocoa.h>
-#import <GLFW/glfw3.h>
+#include <Cocoa/Cocoa.h>
+#include <GLFW/glfw3.h>
 
 // Function to set macOS specific properties
 void makeFullscreenNative(void *window) {
@@ -29,7 +29,7 @@ int isNativeFullscreen(void *window) {
 }
 #else
 
-#import <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>
 
 // No-op functions for non-macOS platforms
 void makeFullscreenNative(void *window) {
