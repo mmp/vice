@@ -2271,17 +2271,8 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 					OriginalOwner: ac.RedirectedHandoff.OriginalOwner,
 					Accepted:      time.Now(),
 				}
-			} else if len(ac.RedirectedHandoff.Redirector) > 1 && slices.Contains(ac.RedirectedHandoff.Redirector, ctrl.Callsign) { // Recall
-
-				for index := range ac.RedirectedHandoff.Redirector {
-					if ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-index-1] == ctrl.Callsign {
-						ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-index-1]
-						ac.RedirectedHandoff.Redirector = ac.RedirectedHandoff.Redirector[:len(ac.RedirectedHandoff.Redirector)-index-1]
-						break
-					}
-				}
 			} else {
-				if ac.RedirectedHandoff.OriginalOwner == ctrl.Callsign {
+				if ac.RedirectedHandoff.OriginalOwner == ctrl.Callsign || slices.Contains(ac.RedirectedHandoff.Redirector, ctrl.Callsign) {
 					ac.RedirectedHandoff = RedirectedHandoff{} // Clear RD
 				}
 			}
