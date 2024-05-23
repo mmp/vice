@@ -1,3 +1,4 @@
+//go:build darwin
 // +build darwin
 
 // platform.go
@@ -267,7 +268,7 @@ func (g *GLFWPlatform) IsMacOSNativeFullScreen() bool {
 func (g *GLFWPlatform) IsFullScreen() bool {
 	if g.window.GetMonitor() != nil {
 		return true
-	} else if runtime.GOOS == "darwin" && C.isNativeFullscreen(g.window.GetCocoaWindow()) == 1{
+	} else if runtime.GOOS == "darwin" && C.isNativeFullscreen(g.window.GetCocoaWindow()) == 1 {
 		return true
 	} else {
 		return false
