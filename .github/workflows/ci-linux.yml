@@ -35,7 +35,7 @@ jobs:
     - name: Install Linux dependencies
       run: |
         sudo apt update
-        sudo apt install xorg-dev libsdl2-dev libsystemd-dev
+        sudo apt install -y xorg-dev libsdl2-dev libsystemd-dev libglfw3 libglfw3-dev
 
     - name: Build
       run: |
@@ -44,9 +44,7 @@ jobs:
         ls
 
     - name: Run tests
-      run:
-        go test -v
+      run: go test -v
 
     - name: Check scenarios
-      run:
-        ./vice -lint
+      run: ./vice -lint
