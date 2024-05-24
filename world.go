@@ -909,7 +909,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		
 	} 
 
-	getExit := func() (*Aircraft, *Departure, error) {
+	getExit := func() (*Departure, error) {
 		idx := SampleFiltered(ap.Departures,
 			func(d Departure) bool {
 				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
@@ -917,11 +917,11 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 			})
 		if idx == -1 {
 			// This shouldn't ever happen...
-			return nil, nil, fmt.Errorf("%s/%s: unable to find a valid departure",
+			return nil, fmt.Errorf("%s/%s: unable to find a valid departure",
 				departureAirport, rwy.Runway)
 		}
 		dep = &ap.Departures[idx]
-		return nil, dep, nil
+		return dep, nil
 	}
 
 	if dep == nil {
@@ -940,7 +940,11 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	}
 	for {
 		if lastDeparture != nil && dep.Exit == lastDeparture.Exit && w.sameGateDepartures >= w.sameDepartureCap {
-			_, dep, _ = getExit()
+			var err error
+			dep, err = getExit()
+			if err != nil { // If it doesn't find a valid departure it shouldn't be too much of an issue. Probably best to log it.
+				slog.Error(err.Error())
+			}
 		} else {
 			break
 		}
