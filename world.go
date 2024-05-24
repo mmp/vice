@@ -909,21 +909,6 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		
 	} 
 
-	getExit := func() (*Departure, error) {
-		idx := SampleFiltered(ap.Departures,
-			func(d Departure) bool {
-				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
-				return ok && (rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
-			})
-		if idx == -1 {
-			// This shouldn't ever happen...
-			return nil, fmt.Errorf("%s/%s: unable to find a valid departure",
-				departureAirport, rwy.Runway)
-		}
-		dep = &ap.Departures[idx]
-		return dep, nil
-	}
-
 	if dep == nil {
 		// Sample uniformly, minding the category, if specified
 		idx := SampleFiltered(ap.Departures,
@@ -938,17 +923,11 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		}
 		dep = &ap.Departures[idx]
 	}
-	for {
-		if lastDeparture != nil && dep.Exit == lastDeparture.Exit && w.sameGateDepartures >= w.sameDepartureCap {
-			var err error
-			dep, err = getExit()
-			if err != nil { // If it doesn't find a valid departure it shouldn't be too much of an issue. Probably best to log it.
-				slog.Error(err.Error())
-			}
-		} else {
-			break
-		}
-	}
+
+		if lastDeparture == nil || (dep.Exit == lastDeparture.Exit && w.sameGateDepartures >= w.sameDepartureCap) {
+			return nil, nil, fmt.Errorf("couldn't make a departure")
+		} 
+	
 
 	// Same gate buffer is a random int between 3-4 that gives a period after a few same gate departures.
 	// For example, WHITE, WHITE, WHITE, DIXIE, NEWEL, GAYEL, MERIT, DIXIE, DIXIE
