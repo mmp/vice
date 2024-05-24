@@ -91,42 +91,9 @@ type World struct {
 	STARSInputOverride string
 }
 
-type ERAMComputer struct {
-	STARSComputers map[string]STARSComputer
-	FlightPlans []FlightPlan
-}
 
-type STARSComputer struct {
-	RecievedPlans []SentFlightPlan
-	ContainedPlans []FlightPlan
-}
 
-const (
-	RemoteEnroute = iota // Flight plan received from a NAS ARTCC
-	/* This is essentially a flight plan that has been sent over by an overlying ERAM facility. */
-	RemoteNonEnroute // Flight plan received from an adjacent terminal facility
-	/* This is a flight plan that has been sent over by another STARS facility. */
 
-	// TODO: Find out what these two flight plan types mean:
-	LocalEnroute // VFR interfacility flight plan entered locally for which the NAS ARTCC has not returned a flight plan
-	LocalNonEnroute // Flight plan entered by TCW or flight plan from an adjacent terminal that has been handed off to this STARS facility
-
-)
-
-type STARSFlightPlan struct {
-	FlightPlan
-	FlightplanType int
-}
-
-const (
-	IFRFlightPlan = iota
-	VFRFlightPlan
-	Amendment
-	Cancellation
-	RequestFlightPlan
-	DepartureType 
-	BeaconTerminate
-)
 
 type SentFlightPlan struct {
 	SourceID time.Time

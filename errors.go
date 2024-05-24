@@ -52,6 +52,11 @@ var (
 	ErrInvalidPassword           = errors.New("Invalid password")
 )
 
+// flight plan processing related
+var (
+	ErrNoSTARSFacility = errors.New("No STARS Facility in ERAM computer")
+)
+
 var errorStringToError = map[string]error{
 	ErrClearedForUnexpectedApproach.Error(): ErrClearedForUnexpectedApproach,
 	ErrFixNotInRoute.Error():                ErrFixNotInRoute,
@@ -83,6 +88,7 @@ var errorStringToError = map[string]error{
 	ErrRPCVersionMismatch.Error():           ErrRPCVersionMismatch,
 	ErrRestoringSavedState.Error():          ErrRestoringSavedState,
 	ErrInvalidPassword.Error():              ErrInvalidPassword,
+	ErrNoSTARSFacility.Error():              ErrNoSTARSFacility,
 }
 
 func TryDecodeError(e error) error {
