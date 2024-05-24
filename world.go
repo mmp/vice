@@ -888,7 +888,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 
 	var dep *Departure
 	if w.sameDepartureCap == 0 {
-		w.sameDepartureCap = 3
+		w.sameDepartureCap = rand.Intn(3) + 1 // Set the initial max same departure cap (1-3)
 	}
 	if rand.Float32() < challenge && lastDeparture != nil && w.sameGateDepartures < w.sameDepartureCap {
 		w.sameGateDepartures += 1
@@ -907,7 +907,9 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		} else {
 			dep = &ap.Departures[idx]
 		}
-	} else if w.sameGateDepartures >= w.sameDepartureCap { // Keep adding this number until 7 so that no more same-gate departures are launched, then reset it to zero
+	} else if w.sameGateDepartures >= w.sameDepartureCap {
+		/* Keep adding to World sameGateDepartures number until 7 so that no more
+		same-gate departures are launched, then reset it to zero. Adding it to this */
 		w.sameGateDepartures += 1
 	}
 
@@ -948,7 +950,12 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		}
 	}
 
-	if w.sameGateDepartures == w.sameDepartureCap+4 || (lastDeparture != nil && dep.Exit != lastDeparture.Exit) { // reset back to zero if its at 7 or if there is a new gate
+	// Same gate buffer is a random int between 3-4 that gives a period after a few same gate departures.
+	// For example, WHITE, WHITE, WHITE, DIXIE, NEWEL, GAYEL, MERIT, DIXIE, DIXIE
+	// Another same-gate departure will not be happen untill after MERIT (in this example) because of the buffer.
+	sameGateBuffer := rand.Intn(2) + 3
+
+	if w.sameGateDepartures >= w.sameDepartureCap+sameGateBuffer || (lastDeparture != nil && dep.Exit != lastDeparture.Exit) { // reset back to zero if its at 7 or if there is a new gate
 		w.sameDepartureCap = rand.Intn(3) + 1
 		w.sameGateDepartures = 0
 	}
