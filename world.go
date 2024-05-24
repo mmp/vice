@@ -906,8 +906,8 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		} else {
 			dep = &ap.Departures[idx]
 		}
-		
-	} 
+
+	}
 
 	if dep == nil {
 		// Sample uniformly, minding the category, if specified
@@ -924,10 +924,9 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		dep = &ap.Departures[idx]
 	}
 
-		if lastDeparture == nil || (dep.Exit == lastDeparture.Exit && w.sameGateDepartures >= w.sameDepartureCap) {
-			return nil, nil, fmt.Errorf("couldn't make a departure")
-		} 
-	
+	if lastDeparture == nil || (dep.Exit == lastDeparture.Exit && w.sameGateDepartures >= w.sameDepartureCap) {
+		return nil, nil, fmt.Errorf("couldn't make a departure")
+	}
 
 	// Same gate buffer is a random int between 3-4 that gives a period after a few same gate departures.
 	// For example, WHITE, WHITE, WHITE, DIXIE, NEWEL, GAYEL, MERIT, DIXIE, DIXIE
