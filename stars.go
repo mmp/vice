@@ -3503,6 +3503,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			if cmd == "" {
 				if ac.RedirectedHandoff.RDIndicator {
 					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
+					if state.OutboundHandoffAccepted {
+						state.OutboundHandoffAccepted = false
+						state.OutboundHandoffFlashEnd = time.Now()
+					}
 					status.clear = true
 					return
 				} else if ac.HandoffTrackController == ctx.world.Callsign {
@@ -6235,14 +6239,18 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		field2 := " "
 		if ac.HandoffTrackController != "" {
 			if ctrl := ctx.world.GetControllerByCallsign(ac.HandoffTrackController); ctrl != nil {
-				if ctrl.FacilityIdentifier == "" { // Same facility
-					field2 = ctrl.SectorId[len(ctrl.SectorId)-1:]
-				} else if ctrl.ERAMFacility { // Enroute handoff
-					field2 = "C"
-				} else { // Different facility
-					field2 = ctrl.FacilityIdentifier
-				}
+				if ac.RedirectedHandoff.RedirectedTo != "" {
+					field2 = ctx.world.GetControllerByCallsign(ac.RedirectedHandoff.RedirectedTo).SectorId[len(ctrl.SectorId)-1:]
+				} else {
+					if ctrl.ERAMFacility { // Same facility
+						field2 = "C"
+					} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
+						field2 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+					} else { // Different facility
+						field2 = ctrl.FacilityIdentifier
+					}
 
+				}
 			}
 		}
 
@@ -6305,7 +6313,8 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else if time.Until(state.POFlashingEndTime) > 0*time.Second {
 			field8 = []string{"", " PO"}
 		} else if redirect := ac.RedirectedHandoff; rd && (redirect.RedirectedTo == ctx.world.Callsign ||
-			slices.Contains(redirect.Redirector, ctx.world.Callsign) || redirect.OriginalOwner == ctx.world.Callsign) {
+			(len(redirect.Redirector) > 0 && (redirect.Redirector[len(redirect.Redirector)-1] == ctx.world.Callsign)) ||
+			redirect.OriginalOwner == ctx.world.Callsign) {
 			if redirect.RedirectedTo == "" && time.Since(redirect.Accepted) > 30*time.Second {
 				// Clear the RD 30 seconds after the acceptance for the original owner
 				ac.RedirectedHandoff = RedirectedHandoff{}
