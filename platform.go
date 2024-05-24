@@ -174,8 +174,6 @@ func (g *GLFWPlatform) EnableVSync(sync bool) {
 	}
 }
 
-
-
 // Detecting whether the window is already in native (MacOS) fullscreen is a bit tricky, since GLFW doesn't have
 // a function for this. To prevent unexpected behavior, it needs to only allow to either fullscreen natively or through SetWindowMonitor.
 // The function assumes the window is in native fullscreen if it's maximized and the window size matches one of the monitor's size.

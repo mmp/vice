@@ -2,7 +2,6 @@
 
 package main
 
-
 /*
 #ifdef __APPLE__
 #cgo darwin CFLAGS: -x objective-c
