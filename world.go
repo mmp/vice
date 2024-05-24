@@ -960,8 +960,6 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		w.sameGateDepartures = 0
 	}
 
-	fmt.Println(dep.Exit, w.sameGateDepartures)
-
 	airline := SampleSlice(dep.Airlines)
 	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
