@@ -891,7 +891,6 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		w.sameDepartureCap = rand.Intn(3) + 1 // Set the initial max same departure cap (1-3)
 	}
 	if rand.Float32() < challenge && lastDeparture != nil && w.sameGateDepartures < w.sameDepartureCap {
-		w.sameGateDepartures += 1
 		// 50/50 split between the exact same departure and a departure to
 		// the same gate as the last departure.
 		pred := Select(rand.Float32() < .5,
@@ -907,11 +906,8 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		} else {
 			dep = &ap.Departures[idx]
 		}
-	} else if w.sameGateDepartures >= w.sameDepartureCap {
-		/* Keep adding to World sameGateDepartures number until 7 so that no more
-		same-gate departures are launched, then reset it to zero. Adding it to this */
-		w.sameGateDepartures += 1
-	}
+		
+	} 
 
 	getExit := func() (*Aircraft, *Departure, error) {
 		idx := SampleFiltered(ap.Departures,
@@ -971,6 +967,10 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
 		return nil, nil, err
 	}
+
+	/* Keep adding to World sameGateDepartures number until the departure cap + the buffer so that no more
+	same-gate departures are launched, then reset it to zero. Once the buffer is reached, it will reset World sameGateDepartures to zero*/
+	w.sameGateDepartures += 1
 
 	return ac, dep, nil
 }
