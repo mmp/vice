@@ -598,7 +598,7 @@ func (l *LinesDrawBuilder) AddLineStrip(p [][2]float32) {
 	idx := int32(len(l.p))
 	l.p = append(l.p, p...)
 	for i := 0; i < len(p)-1; i++ {
-		l.indices = append(l.indices, idx+int32(i), idx+int32((i+1)%len(p)))
+		l.indices = append(l.indices, idx+int32(i), idx+int32((i+1)))
 	}
 }
 
