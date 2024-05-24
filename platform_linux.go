@@ -1,7 +1,4 @@
-//go:build linux
-// +build linux
-
-// platform.go
+// platform_linux.go
 //
 // This a slightly modified version of the GLFW/SDL2 infrastructure from
 // imgui-go-examples, where the main addition is cursor handling
