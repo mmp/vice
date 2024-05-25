@@ -9,13 +9,10 @@ import (
 )
 
 func (g *GLFWPlatform) IsFullScreen() bool {
-	return g.window.GetMonitor() != nil || g.IsMacOSNativeFullScreen()
+	return g.window.GetMonitor() != nil
 }
 
 func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
-	if g.IsMacOSNativeFullScreen() {
-		return
-	}
 
 	monitors := glfw.GetMonitors()
 	if globalConfig.FullScreenMonitor >= len(monitors) {
