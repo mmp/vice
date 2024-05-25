@@ -924,7 +924,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		dep = &ap.Departures[idx]
 	}
 
-	if lastDeparture == nil || (dep.Exit == lastDeparture.Exit && w.sameGateDepartures >= w.sameDepartureCap) {
+	if lastDeparture != nil || (dep.Exit == lastDeparture.Exit && w.sameGateDepartures >= w.sameDepartureCap) {
 		return nil, nil, fmt.Errorf("couldn't make a departure")
 	}
 
