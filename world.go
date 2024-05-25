@@ -91,22 +91,6 @@ type World struct {
 	STARSInputOverride string
 }
 
-
-
-
-
-type SentFlightPlan struct {
-	SourceID time.Time
-	MessageType int
-	FlightID int
-	AircraftData int
-	BCN Squawk
-	CoordinationFix string 
-	CoordinationTime time.Time
-	Altitude int // Requested/ assigned
-	Route string 
-}
-
 func NewWorld() *World {
 	return &World{
 		Aircraft:    make(map[string]*Aircraft),
