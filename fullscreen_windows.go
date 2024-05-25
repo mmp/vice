@@ -26,8 +26,8 @@ func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
 		windowSize := [2]int{globalConfig.InitialWindowSize[0], globalConfig.InitialWindowSize[1]}
 
 		if windowSize[0] == 0 || windowSize[1] == 0 {
-				windowSize[0] = vm.Width - 200
-				windowSize[1] = vm.Height - 300
+			windowSize[0] = vm.Width - 200
+			windowSize[1] = vm.Height - 300
 		}
 
 		g.window.SetMonitor(nil, globalConfig.InitialWindowPosition[0], globalConfig.InitialWindowPosition[1], windowSize[0], windowSize[1], glfw.DontCare)
