@@ -174,38 +174,6 @@ func (g *GLFWPlatform) EnableVSync(sync bool) {
 	}
 }
 
-func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
-	if g.IsMacOSNativeFullScreen() {
-		return
-	}
-
-	monitors := glfw.GetMonitors()
-	if globalConfig.FullScreenMonitor >= len(monitors) {
-		// Shouldn't happen, but just to be sure
-		globalConfig.FullScreenMonitor = 0
-	}
-
-	monitor := monitors[globalConfig.FullScreenMonitor]
-	vm := monitor.GetVideoMode()
-	if fullscreen {
-		g.window.SetMonitor(monitor, 0, 0, vm.Width, vm.Height, vm.RefreshRate)
-	} else {
-		windowSize := [2]int{globalConfig.InitialWindowSize[0], globalConfig.InitialWindowSize[1]}
-
-		if windowSize[0] == 0 || windowSize[1] == 0 || runtime.GOOS == "darwin" {
-			if runtime.GOOS == "windows" {
-				windowSize[0] = vm.Width - 200
-				windowSize[1] = vm.Height - 300
-			} else {
-				windowSize[0] = vm.Width - 150
-				windowSize[1] = vm.Height - 150
-			}
-		}
-
-		g.window.SetMonitor(nil, globalConfig.InitialWindowPosition[0], globalConfig.InitialWindowPosition[1], windowSize[0], windowSize[1], glfw.DontCare)
-	}
-}
-
 // Detecting whether the window is already in native (MacOS) fullscreen is a bit tricky, since GLFW doesn't have
 // a function for this. To prevent unexpected behavior, it needs to only allow to either fullscreen natively or through SetWindowMonitor.
 // The function assumes the window is in native fullscreen if it's maximized and the window size matches one of the monitor's size.
@@ -222,10 +190,6 @@ func (g *GLFWPlatform) IsMacOSNativeFullScreen() bool {
 		}
 	}
 	return false
-}
-
-func (g *GLFWPlatform) IsFullScreen() bool {
-	return g.window.GetMonitor() != nil || g.IsMacOSNativeFullScreen()
 }
 
 func (g *GLFWPlatform) GetAllMonitorNames() []string {
