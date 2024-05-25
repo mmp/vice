@@ -405,7 +405,7 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 				remove(event.Callsign)
 			}
 
-		case AcceptedHandoffEvent:
+		case AcceptedHandoffEvent, AcceptedRedirectedHandoffEvent:
 			if ac, ok := w.Aircraft[event.Callsign]; ok {
 				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == w.Callsign {
 					possiblyAdd(ac)

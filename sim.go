@@ -2248,10 +2248,12 @@ func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			octrl := s.World.GetControllerByCallsign(controller)
+			if ac.RedirectedHandoff.RedirectedTo == "" {
+				ac.RedirectedHandoff.Redirector = nil
+			}
 			ac.RedirectedHandoff.OriginalOwner = ac.TrackingController
 			ac.RedirectedHandoff.Redirector = append(ac.RedirectedHandoff.Redirector, ctrl.Callsign)
 			ac.RedirectedHandoff.RedirectedTo = octrl.Callsign
-			ac.RedirectedHandoff.RDIndicator = true
 			return nil
 		})
 }
@@ -2262,9 +2264,9 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			if ac.RedirectedHandoff.RDIndicator && ac.RedirectedHandoff.RedirectedTo == ctrl.Callsign { // Accept
+			if ac.RedirectedHandoff.RedirectedTo == ctrl.Callsign { // Accept
 				s.eventStream.Post(Event{
-					Type:           AcceptedHandoffEvent,
+					Type:           AcceptedRedirectedHandoffEvent,
 					FromController: ac.RedirectedHandoff.OriginalOwner,
 					ToController:   ctrl.Callsign,
 					Callsign:       ac.Callsign,
@@ -2272,11 +2274,7 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 				ac.ControllingController = ctrl.Callsign
 				ac.HandoffTrackController = ""
 				ac.TrackingController = ac.RedirectedHandoff.RedirectedTo
-				ac.RedirectedHandoff = RedirectedHandoff{
-					RDIndicator:   true,
-					OriginalOwner: ac.RedirectedHandoff.OriginalOwner,
-					Accepted:      time.Now(),
-				}
+				ac.RedirectedHandoff = RedirectedHandoff{}
 			} else if len(ac.RedirectedHandoff.Redirector) > 0 && slices.Contains(ac.RedirectedHandoff.Redirector, ctrl.Callsign) { // Recall
 
 				for index := range ac.RedirectedHandoff.Redirector {
@@ -2285,10 +2283,6 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 						ac.RedirectedHandoff.Redirector = ac.RedirectedHandoff.Redirector[:len(ac.RedirectedHandoff.Redirector)-index-1]
 						break
 					}
-				}
-			} else {
-				if ac.RedirectedHandoff.OriginalOwner == ctrl.Callsign {
-					ac.RedirectedHandoff = RedirectedHandoff{} // Clear RD
 				}
 			}
 			return nil

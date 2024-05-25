@@ -186,6 +186,7 @@ const (
 	PointOutEvent
 	OfferedHandoffEvent
 	AcceptedHandoffEvent
+	AcceptedRedirectedHandoffEvent
 	CanceledHandoffEvent
 	RejectedHandoffEvent
 	RadioTransmissionEvent
