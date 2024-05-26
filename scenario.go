@@ -5,6 +5,7 @@
 package main
 
 import (
+	"archive/zip"
 	"bufio"
 	"bytes"
 	"fmt"
@@ -1085,7 +1086,11 @@ func loadVideoMaps(filesystem fs.FS, path string, referencedVideoMaps map[string
 	}
 
 	if referenced, ok := referencedVideoMaps[path]; ok {
-		lvm.commandBufs, err = loadVideoMapFile(r, referenced)
+		if strings.HasSuffix(strings.ToLower(path), ".zip") {
+			lvm.commandBufs, err = loadZIPVideoMapFile(r, referenced)
+		} else {
+			lvm.commandBufs, err = loadJSONVideoMapFile(r, referenced)
+		}
 		if err != nil {
 			lvm.err = err
 			result <- lvm
@@ -1097,7 +1102,167 @@ func loadVideoMaps(filesystem fs.FS, path string, referencedVideoMaps map[string
 	result <- lvm
 }
 
-func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[string]CommandBuffer, error) {
+func loadZIPVideoMapFile(r io.Reader, referenced map[string]interface{}) (map[string]CommandBuffer, error) {
+	contents, err := io.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+
+	zr, err := zip.NewReader(bytes.NewReader(contents), int64(len(contents)))
+	if err != nil {
+		return nil, err
+	}
+
+	idx := slices.IndexFunc(zr.File, func(f *zip.File) bool { return f.Name == "maps.json" })
+	if idx == -1 {
+		return nil, fmt.Errorf("No \"maps.json\" file found in ZIP file")
+	}
+
+	readFileContents := func(f *zip.File) ([]byte, error) {
+		r, err := f.Open()
+		if err != nil {
+			return nil, err
+		}
+		defer r.Close()
+		return io.ReadAll(r)
+	}
+
+	mapsSpec, err := readFileContents(zr.File[idx])
+	if err != nil {
+		return nil, err
+	}
+
+	type ZIPMapSpecifier struct {
+		Filename string `json:"filename"`
+		Number   int    `json:"number"`
+		Name     string `json:"name"`
+	}
+	var e ErrorLogger
+	CheckJSONVsSchema[[]ZIPMapSpecifier](mapsSpec, &e)
+	if e.HaveErrors() {
+		e.PrintErrors(lg)
+		return nil, fmt.Errorf("JSON errors")
+	}
+	var specs []ZIPMapSpecifier
+	if err := UnmarshalJSON(mapsSpec, &specs); err != nil {
+		return nil, err
+	}
+
+	m := make(map[string]CommandBuffer)
+	for _, spec := range specs {
+		idx := slices.IndexFunc(zr.File, func(f *zip.File) bool { return f.Name == spec.Filename })
+		if idx == -1 {
+			return nil, fmt.Errorf("%s: file not found in ZIP", spec.Filename)
+		}
+
+		if _, ok := referenced[spec.Name]; !ok {
+			// It's not used, don't bother but leave an empty command buffer
+			m[spec.Name] = CommandBuffer{}
+			continue
+		}
+
+		dat, err := readFileContents(zr.File[idx])
+		if err != nil {
+			return nil, err
+		}
+
+		var center Point2LL
+		var lineStrips [][][2]float32
+		var currentLineStrip [][2]float32
+		scanner := bufio.NewScanner(bytes.NewBuffer(dat))
+		for scanner.Scan() {
+			line := []byte(scanner.Text())
+
+			parseInt := func(b []byte) float32 {
+				v := 0
+				for i, ch := range b {
+					v *= 10
+					if ch < '0' || ch > '9' {
+						err = fmt.Errorf("Non-numeric value found at column %d: \"%s\"", i, string(b))
+					}
+					v += int(ch - '0')
+				}
+				return float32(v)
+			}
+			parseLatLong := func(line []byte) Point2LL {
+				lat, latmin, latsec, latsecdec := parseInt(line[:2]), parseInt(line[3:5]), parseInt(line[6:8]), parseInt(line[9:13])
+				lon, lonmin, lonsec, lonsecdec := parseInt(line[15:18]), parseInt(line[19:21]), parseInt(line[22:24]), parseInt(line[25:29])
+				return Point2LL{
+					// Assume West, so negate longitude...
+					-(lon + lonmin/60 + lonsec/3600 + lonsecdec/(3600*10000)),
+					lat + latmin/60 + latsec/3600 + latsecdec/(3600*10000),
+				}
+			}
+
+			if len(line) > 8 && line[0] == '!' {
+				// Extract center or radius
+				if string(line[4:8]) == "9900" {
+					center = parseLatLong(line[12:])
+				}
+				if err != nil {
+					return nil, err
+				}
+				continue
+			}
+
+			if bang := bytes.IndexByte(line, '!'); bang == -1 {
+				return nil, fmt.Errorf("Unexpected line in DAT file: \"%s\"", line)
+			} else {
+				line = line[:bang]
+			}
+
+			if len(line) == 0 {
+				continue
+			} else if string(line) == "LINE " {
+				// start a new line
+				lineStrips = append(lineStrips, currentLineStrip)
+				currentLineStrip = nil
+			} else if len(line) == 34 && string(line[:3]) == "GP " {
+				// Assume this format is 100% column based for efficiency...
+
+				// Lines are of the following form. Pull out the values from the columns...
+				// GP 42 20 55.0000  071 00 22.0000  !
+				pt := parseLatLong(line[3:])
+				if err != nil {
+					return nil, err
+				}
+				currentLineStrip = append(currentLineStrip, pt)
+			} else {
+				return nil, fmt.Errorf("Unexpected line in DAT file: \"%s\"", line)
+			}
+		}
+		if currentLineStrip != nil {
+			lineStrips = append(lineStrips, currentLineStrip)
+		}
+
+		if center.IsZero() {
+			return nil, fmt.Errorf("Center not found in DAT file")
+		}
+
+		ld := GetLinesDrawBuilder()
+		const maxDist = 98
+		lineStrips = FilterSlice(lineStrips, func(strip [][2]float32) bool {
+			for _, p := range strip {
+				if nmdistance2ll(p, center) > maxDist {
+					return false
+				}
+			}
+			return true
+		})
+		for _, strip := range lineStrips {
+			ld.AddLineStrip(strip)
+		}
+
+		var cb CommandBuffer
+		ld.GenerateCommands(&cb)
+		m[spec.Name] = cb
+		ReturnLinesDrawBuilder(ld)
+	}
+
+	return m, nil
+}
+
+func loadJSONVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[string]CommandBuffer, error) {
 	r := bufio.NewReader(ir)
 
 	// For debugging, enable check here; the file will also be parsed using
@@ -1472,12 +1637,10 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 			return nil
 		}
 
-		if filepath.Ext(path) != ".json" && filepath.Ext(path) != ".zst" {
-			return nil
+		if ext := filepath.Ext(path); ext == ".json" || ext == ".zst" || ext == ".zip" {
+			launches++
+			go loadVideoMaps(resourcesFS, path, referencedVideoMaps, vmChan)
 		}
-
-		launches++
-		go loadVideoMaps(resourcesFS, path, referencedVideoMaps, vmChan)
 		return nil
 	})
 	if err != nil {
