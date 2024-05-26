@@ -3524,11 +3524,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					state.RDIndicatorEnd = time.Time{}
 					status.clear = true
 					return
-				} else if ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign || slices.Contains(ac.RedirectedHandoff.Redirector, ctx.world.Callsign) {
+				} else if ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign || (len(ac.RedirectedHandoff.Redirector) > 0 && ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1] == ctx.world.Callsign) {
 					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
 					status.clear = true
 					return
-				} else if ac.HandoffTrackController == ctx.world.Callsign {
+				} else if ac.HandoffTrackController == ctx.world.Callsign && ac.RedirectedHandoff.RedirectedTo == "" {
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
 					return
@@ -5353,7 +5353,7 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		dt = FullDatablock
 	}
 
-	if ac.HandoffTrackController == w.Callsign {
+	if ac.HandoffTrackController == w.Callsign && ac.RedirectedHandoff.RedirectedTo == "" {
 		// it's being handed off to us
 		dt = FullDatablock
 	}
@@ -5378,7 +5378,7 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		}
 	}
 
-	if slices.Contains(ac.RedirectedHandoff.Redirector, w.Callsign) || ac.RedirectedHandoff.OriginalOwner == w.Callsign {
+	if ac.RedirectedHandoff.OriginalOwner == w.Callsign {
 		dt = FullDatablock
 	}
 
