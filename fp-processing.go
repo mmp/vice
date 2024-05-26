@@ -73,7 +73,7 @@ func (fp FlightPlan) DepartureMessage(sendingFacility string, simTime time.Time)
 	}
 	message.BCN = fp.AssignedSquawk
 	message.CoordinationFix = fp.Exit
-	message.Altitude = fmt.Sprint("%v%v", Select(fp.Rules == VFR, "VFR/", ""), fp.Altitude)
+	message.Altitude = fmt.Sprintf("%v%v", Select(fp.Rules == VFR, "VFR/", ""), fp.Altitude)
 	message.Route = fp.Route
 
 	return message
