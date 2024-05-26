@@ -2228,6 +2228,7 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			delete(s.Handoffs, ac.Callsign)
 			ac.HandoffTrackController = ""
+			ac.RedirectedHandoff = RedirectedHandoff{}
 			return nil
 		})
 }
