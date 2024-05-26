@@ -1581,6 +1581,7 @@ func (s *Sim) updateState() {
 	if s.LaunchConfig.Mode == LaunchAutomatic {
 		s.spawnAircraft()
 	}
+	s.World.UpdateComputers(now)
 }
 
 func (s *Sim) ResolveController(callsign string) string {

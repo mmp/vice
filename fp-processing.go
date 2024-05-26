@@ -1,15 +1,28 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 	"time"
 )
 
+// Give the computers a chance to sort through their received messages. Messages will send when the time is appropriate (eg. handoff).
+// Some messages will be sent from recieved messages (for example a FP message from a RF message).
+func (w *World) UpdateComputers(simTime time.Time) {
+	// Sort through messages made
+	for _, comp := range w.ERAMComputers {
+		comp.SortMessages(simTime)
+		for _, stars := range comp.STARSComputers {
+			stars.SortReceivedMessages()
+		}
+	}
+}
+
 // Message types sent from either ERAM or STARS
 const (
-	Plan              = iota // Both STARS & ERAM send this. ERAM only receives VFR plans/
-	Amendment                // ERAM
-	Cancellation             // ERAM
+	Plan              = iota // Both STARS & ERAM send this.
+	Amendment                // ERAM (STARS?)
+	Cancellation             // ERAM (STARS?)
 	RequestFlightPlan        // STARS
 	DepartureDM              // STARS
 	BeaconTerminate          // STARS
@@ -22,8 +35,48 @@ const (
 )
 
 type ERAMComputer struct {
-	STARSComputers map[string]*STARSComputer
-	FlightPlans    map[Squawk]*FlightPlan
+	STARSComputers   map[string]*STARSComputer
+	ReceivedMessages []FlightPlanMessage
+	FlightPlans      map[Squawk]*FlightPlan
+	Identifier       string
+}
+
+func (comp *ERAMComputer) SortMessages(simTime time.Time) {
+	for _, msg := range comp.ReceivedMessages {
+		switch msg.MessageType {
+		case RequestFlightPlan:
+			facility := msg.SourceID[:3] // Facility asking for FP
+
+			// Find the flight plan
+			plan, ok := comp.FlightPlans[msg.BCN]
+			if ok {
+				comp.ToSTARSFacility(facility, plan.DepartureMessage(comp.Identifier, simTime))
+			}
+		case DepartureDM: // TODO: Find out what this does
+		case BeaconTerminate: // TODO: Find out what this does
+		}
+	}
+}
+
+func (fp FlightPlan) DepartureMessage(sendingFacility string, simTime time.Time) FlightPlanMessage {
+	message := FlightPlanMessage{}
+
+	message.SourceID = fmt.Sprintf(sendingFacility, simTime)
+	message.MessageType = Plan
+	message.FlightID = fp.ECID + fp.Callsign
+	message.AircraftData = AircraftDataMessage{
+		DepartureLocation: fp.DepartureAirport,
+		NumberOfAircraft:  1, // One for now.
+		AircraftType:      fp.TypeWithoutSuffix(),
+		AircraftCategory:  fp.AircraftType, // TODO: Use a method to turn this into an aircraft category
+		Equipment:         strings.TrimPrefix(fp.AircraftType, fp.TypeWithoutSuffix()),
+	}
+	message.BCN = fp.AssignedSquawk
+	message.CoordinationFix = fp.Exit
+	message.Altitude = fmt.Sprint("%v%v", Select(fp.Rules == VFR, "VFR/", ""), fp.Altitude)
+	message.Route = fp.Route
+
+	return message
 }
 
 // Sends a message, whether that be a flight plan or any other message type to a STARS computer.
@@ -45,7 +98,7 @@ type STARSComputer struct {
 type STARSFlightPlan struct {
 	FlightPlan
 	FlightPlanType   int
-	CoordinationTime time.Time
+	CoordinationTime CoordinationTime
 	CoordinationFix  string
 }
 
@@ -71,7 +124,7 @@ type FlightPlanMessage struct {
 	AircraftData     AircraftDataMessage
 	BCN              Squawk
 	CoordinationFix  string
-	CoordinationTime time.Time
+	CoordinationTime CoordinationTime
 
 	// Altitude will either be requested (cruise altitude) for departures, or the assigned altitude for arrivals.
 	// ERAM has the ability to assign interm alts (and is used much more than STARS interm alts) with `QQ`.
@@ -80,6 +133,17 @@ type FlightPlanMessage struct {
 	// Examples of altitudes could be 310, VFR/170, VFR, 170B210 (block altitude), etc.
 	Altitude string
 	Route    string
+}
+
+const (
+	DepartureTime  = "P"
+	ArrivalTime    = "A"
+	OverflightTime = "E"
+)
+
+type CoordinationTime struct {
+	Time time.Time
+	Type string // A for arrivals, P for Departures, E for overflights
 }
 
 type AircraftDataMessage struct {
@@ -120,8 +184,7 @@ func (s FlightPlanMessage) FlightPlan() STARSFlightPlan {
 // Sorting the STARS messages. This will store flight plans with FP messages, change flight plans with AM messages,
 // cancel flight plans with CX messages, etc.
 func (comp *STARSComputer) SortReceivedMessages() {
-	for len(comp.RecievedMessages) != 0 {
-		msg := comp.RecievedMessages[0]
+	for _, msg := range comp.RecievedMessages {
 		switch msg.MessageType {
 		case Plan:
 			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()

@@ -40,7 +40,6 @@ type Aircraft struct {
 	Nav Nav
 
 	// Departure related state
-	Exit                       string
 	DepartureContactAltitude   float32
 	DepartureContactController string
 
@@ -464,7 +463,7 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, departureAirport 
 		ac.Scratchpad = w.Scratchpads[dep.Exit]
 	}
 	ac.SecondaryScratchpad = dep.SecondaryScratchpad
-	ac.Exit = dep.Exit
+	ac.FlightPlan.Exit = dep.Exit
 
 	if dep.Altitude == 0 {
 		ac.FlightPlan.Altitude = PlausibleFinalAltitude(w, ac.FlightPlan, perf)
@@ -514,10 +513,10 @@ func (ac *Aircraft) ContactMessage(reportingPoints []ReportingPoint) string {
 }
 
 func (ac *Aircraft) DepartOnCourse() {
-	if ac.Exit == "" {
+	if ac.FlightPlan.Exit == "" {
 		lg.Warn("unset \"exit\" for departure", slog.String("callsign", ac.Callsign))
 	}
-	ac.Nav.DepartOnCourse(float32(ac.FlightPlan.Altitude), ac.Exit)
+	ac.Nav.DepartOnCourse(float32(ac.FlightPlan.Altitude), ac.FlightPlan.Exit)
 }
 
 func (ac *Aircraft) IsDeparture() bool {

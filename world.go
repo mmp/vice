@@ -820,9 +820,9 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 	}
 
 	return &Aircraft{
-		Callsign:       callsign,
-		Squawk:         squawk,
-		Mode:           Charlie,
+		Callsign: callsign,
+		Squawk:   squawk,
+		Mode:     Charlie,
 	}, acType
 }
 

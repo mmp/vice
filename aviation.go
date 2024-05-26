@@ -268,12 +268,12 @@ func (f FlightRules) String() string {
 }
 
 type FlightPlan struct {
-	Callsign 			   string 
+	Callsign               string
 	Rules                  FlightRules
 	AircraftType           string
 	CruiseSpeed            int
 	AssignedSquawk         Squawk // from ATC
-	ECID 				   string // Mainly for ERAM
+	ECID                   string // Mainly for ERAM
 	DepartureAirport       string
 	DepartTimeEst          int
 	DepartTimeActual       int
@@ -282,6 +282,7 @@ type FlightPlan struct {
 	Hours, Minutes         int
 	FuelHours, FuelMinutes int
 	AlternateAirport       string
+	Exit                   string
 	Route                  string
 	Remarks                string
 }
@@ -394,7 +395,7 @@ func (aircraft *Aircraft) NewFlightPlan(r FlightRules, ac, dep, arr string) *Fli
 		AircraftType:     ac,
 		DepartureAirport: dep,
 		ArrivalAirport:   arr,
-		AssignedSquawk: aircraft.Squawk,
+		AssignedSquawk:   aircraft.Squawk,
 	}
 }
 
