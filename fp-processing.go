@@ -22,8 +22,8 @@ const (
 )
 
 type ERAMComputer struct {
-	STARSComputers map[string]STARSComputer
-	FlightPlans    map[string]FlightPlan
+	STARSComputers map[string]*STARSComputer
+	FlightPlans    map[Squawk]*FlightPlan
 }
 
 // Sends a message, whether that be a flight plan or any other message type to a STARS computer.
@@ -39,7 +39,7 @@ func (comp *ERAMComputer) ToSTARSFacility(facility string, msg FlightPlanMessage
 
 type STARSComputer struct {
 	RecievedMessages []FlightPlanMessage
-	ContainedPlans   map[string]STARSFlightPlan
+	ContainedPlans   map[Squawk]STARSFlightPlan
 }
 
 type STARSFlightPlan struct {
@@ -124,16 +124,13 @@ func (comp *STARSComputer) SortReceivedMessages() {
 		msg := comp.RecievedMessages[0]
 		switch msg.MessageType {
 		case Plan:
-			callsign := msg.FlightID[3:]
-			comp.ContainedPlans[callsign] = msg.FlightPlan()
+			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
 			comp.RecievedMessages = comp.RecievedMessages[1:]
 		case Amendment:
-			callsign := msg.FlightID[3:]
-			comp.ContainedPlans[callsign] = msg.FlightPlan()
+			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
 			comp.RecievedMessages = comp.RecievedMessages[1:]
 		case Cancellation: // Deletes the flight plan from the computer
-			callsign := msg.FlightID[3:]
-			delete(comp.ContainedPlans, callsign)
+			delete(comp.ContainedPlans, msg.BCN)
 		}
 	}
 }

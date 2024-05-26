@@ -924,11 +924,13 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.FlightPlan = ac.NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
+	flightPlan := ac.NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
 		return nil, nil, err
 	}
+	// Add the flight plan to the ERAM computer
+	w.ERAMComputers[database.TRACONs[w.TRACON].ARTCC].FlightPlans[flightPlan.AssignedSquawk] = flightPlan
 
 	return ac, dep, nil
 }

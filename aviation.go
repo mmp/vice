@@ -268,10 +268,12 @@ func (f FlightRules) String() string {
 }
 
 type FlightPlan struct {
+	Callsign 			   string 
 	Rules                  FlightRules
 	AircraftType           string
 	CruiseSpeed            int
 	AssignedSquawk         Squawk // from ATC
+	ECID 				   string // Mainly for ERAM
 	DepartureAirport       string
 	DepartTimeEst          int
 	DepartTimeActual       int
