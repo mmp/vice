@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/checkandmate1/AirportWeatherData"
+	getweather "github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -988,6 +988,8 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.SimTime = s.SimTime
 	w.STARSFacilityAdaptation = sg.STARSFacilityAdaptation
 
+	w.initComputers()
+
 	for _, callsign := range sc.VirtualControllers {
 		// Skip controllers that are in MultiControllers
 		if w.MultiControllers != nil {
@@ -1774,7 +1776,7 @@ func (s *Sim) spawnAircraft() {
 		prevDep := s.lastDeparture[airport][runway][category]
 		s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
 		ac, dep, err := s.World.CreateDeparture(airport, runway, category,
-			s.LaunchConfig.DepartureChallenge, prevDep)
+			s.LaunchConfig.DepartureChallenge, prevDep, now)
 		if err != nil {
 			s.lg.Errorf("CreateDeparture error: %v", err)
 		} else {

@@ -67,6 +67,7 @@ type STARSFacilityAdaptation struct {
 	Range               float32               `json:"range"`
 	Scratchpads         map[string]string     `json:"scratchpads"`
 	VideoMapFile        string                `json:"video_map_file"`
+	STARSFacilities 	[]string			  `json:"stars_facilities"`
 }
 
 type Airspace struct {
