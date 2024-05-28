@@ -184,11 +184,15 @@ var (
 		`Fixed a bug where aircraft TAS would be too high at high altitudes`,
 		`Added support for ATC chat (prefix chat messages a '/' in the command prompt)`,
 		`Allow entering values for STARS DCB spinner using the keyboard`,
-		`Scenario Updates: D01 and COS (Andrew S), Y90 (Merry Arbitrary), C90 (Jud Lopez)`,
+		`Scenario Updates: D01 and COS (Andrew S), Y90 (Merry Arbitrary), C90 (Jud Lopez, Yahya Nazimuddin)`,
 		`Added "FC" command to tell aircraft to change to the next controller's frequency`,
 		`STARS: Add support for displaying requested altitude in FDB`,
 		`Fixed a bug where aircraft callsign numbers could start with 0`,
 		`STARS: use realistic fonts for the STARS display`,
+		`Improved sequencing of departures`,
+		`Added I90 scenario (Jace Martin)`,
+		`Added full-screen mode`,
+		`Updated command entry so keyboard focus returns to STARS after issuing a control command`,
 	}
 )
 
