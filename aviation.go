@@ -32,6 +32,7 @@ type FAAAirport struct {
 	Runways    []Runway
 	Approaches map[string][]WaypointArray
 	STARs      map[string]STAR
+	ARTCC      string
 }
 
 type TRACON struct {
@@ -248,8 +249,9 @@ type Controller struct {
 	SectorId           string    `json:"sector_id"`  // e.g. N56, 2J, ...
 	Scope              string    `json:"scope_char"` // For tracked a/c on the scope--e.g., T
 	IsHuman            bool      // Not provided in scenario JSON
-	FacilityIdentifier string    `json:"facility_id"`     // For example the "N" in "N4P" showing the N90 TRACON
-	ERAMFacility       bool      `json:"eram_facility"`   // To weed out N56 and N4P being the same fac
+	FacilityIdentifier string    `json:"facility_id"`   // For example the "N" in "N4P" showing the N90 TRACON
+	ERAMFacility       bool      `json:"eram_facility"` // To weed out N56 and N4P being the same fac
+	Facility           string    `json:"facility"` // So we can get the STARS facility from a controller
 	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
 	Facility           string    `json:"facility"`
 }
@@ -398,7 +400,7 @@ func (aircraft *Aircraft) NewFlightPlan(r FlightRules, ac, dep, arr string) *Fli
 		DepartureAirport: dep,
 		ArrivalAirport:   arr,
 		AssignedSquawk:   aircraft.Squawk,
-		ECID: "XXX",
+		ECID:             "XXX", // TODO. (Mainly for FDIO and ERAM so not super high priority. )
 	}
 }
 
@@ -1562,6 +1564,17 @@ func parseAirports() map[string]FAAAirport {
 				airports[ap.Id] = ap
 			}
 		})
+
+	artccsRaw := LoadResource("airport_artccs.json")
+	data := make(map[string]string) // Airport -> ARTCC
+	json.Unmarshal(artccsRaw, &data)
+
+	for name, artcc := range data {
+		if entry, ok := airports[name]; ok {
+			entry.ARTCC = artcc
+			airports[name] = entry
+		}
+	}
 
 	return airports
 }

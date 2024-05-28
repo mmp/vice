@@ -756,7 +756,6 @@ func (c *RatesModalClient) Buttons() []ModalDialogButton {
 			return c.config.displayError == nil
 		},
 	}
-
 	return append(b, ok)
 }
 
@@ -1649,7 +1648,7 @@ func MakeLaunchControlWindow(w *World) *LaunchControlWindow {
 
 func (lc *LaunchControlWindow) spawnDeparture(airport, rwy, category string) *Aircraft {
 	for i := 0; i < 100; i++ {
-		if ac, _, err := lc.w.CreateDeparture(airport, rwy, category, 0, nil); err == nil {
+		if ac, _, err := lc.w.CreateDeparture(airport, rwy, category, 0, nil, lc.w.SimTime); err == nil {
 			return ac
 		}
 	}

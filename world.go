@@ -53,6 +53,7 @@ type World struct {
 	}
 
 	ERAMComputers map[string]*ERAMComputer
+	NonSortedPlans []*FlightPlan
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
@@ -138,6 +139,7 @@ func (w *World) Assign(other *World) {
 	w.TotalDepartures = other.TotalDepartures
 	w.TotalArrivals = other.TotalArrivals
 	w.STARSFacilityAdaptation = other.STARSFacilityAdaptation
+	// w.ERAMComputers = other.ERAMComputers
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
@@ -869,7 +871,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 }
 
 func (w *World) CreateDeparture(departureAirport, runway, category string, challenge float32,
-	lastDeparture *Departure) (*Aircraft, *Departure, error) {
+	lastDeparture *Departure, simTime time.Time) (*Aircraft, *Departure, error) {
 	ap := w.Airports[departureAirport]
 	if ap == nil {
 		return nil, nil, ErrUnknownAirport
@@ -930,6 +932,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
 		return nil, nil, err
 	}
+	// Add the flight plan to the ERAM computer
 	artcc, stars := w.SafeFacility("")
 	if artcc.FlightPlans == nil {
 		artcc.FlightPlans = map[Squawk]*FlightPlan{}
@@ -937,7 +940,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	artcc.FlightPlans[flightPlan.AssignedSquawk] = flightPlan
 
 	// STARS RF Message
-	stars.RequestFlightPlan(ac.FlightPlan.AssignedSquawk, w.SimTime)
+	stars.RequestFlightPlan(ac.FlightPlan.AssignedSquawk, simTime)
 
 	return ac, dep, nil
 }
