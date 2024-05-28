@@ -1575,7 +1575,7 @@ func (s *Sim) updateState() {
 						lg.Errorf("Contained plan for %v is nil: %v", bcn, stars.ContainedPlans)
 					}
 				} else {
-					lg.Errorf("controller %v is nil")
+					lg.Errorf("controller %v is nil", ctrl)
 				}
 			}
 
