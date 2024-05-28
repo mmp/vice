@@ -135,7 +135,7 @@ func (s *SimProxy) InitiateTrack(callsign string, fp *STARSFlightPlan) *rpc.Call
 	return s.Client.Go("Sim.InitiateTrack", InitiateTrackArgs{
 		AircraftSpecifier: AircraftSpecifier{
 			ControllerToken: s.ControllerToken,
-			Callsign: callsign,
+			Callsign:        callsign,
 		},
 		Plan: fp,
 	}, nil, nil)

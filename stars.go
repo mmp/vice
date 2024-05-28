@@ -3272,7 +3272,7 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 			if ac, ok := ctx.world.Aircraft[callsign]; ok {
 				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.world, ac)
 			}
-			
+
 			// stars.TrackInformation[w.GetAircraft(callsign, false).Squawk].TrackOwner for recall. whoops
 		},
 		func(err error) { sp.displayError(err) })
@@ -3291,18 +3291,18 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 			bcn := w.GetAircraft(callsign, false).Squawk
 			msg := stars.ContainedPlans[bcn].Message()
 			info := TrackInformation{
-				TrackOwner: w.Callsign,
+				TrackOwner:        w.Callsign,
 				HandoffController: controller,
 			}
 			msg.TrackInformation = info
 			stars.SendTrackInfo(w.FacilityFromController(controller), msg, w.SimTime, InitateTransfer)
 		} else {
-			if entry, ok :=stars.TrackInformation[w.GetAircraft(callsign, false).Squawk]; ok {
+			if entry, ok := stars.TrackInformation[w.GetAircraft(callsign, false).Squawk]; ok {
 				entry.HandoffController = controller
 				stars.TrackInformation[w.GetAircraft(callsign, false).Squawk] = entry
 			}
 		}
-		
+
 	},
 		func(err error) { sp.displayError(err) })
 
@@ -3885,7 +3885,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			} else {
 				status.err = ErrSTARSCommandFormat
 			}
-			
+
 			return
 
 		case CommandModeTerminateControl:
@@ -5436,7 +5436,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			trackId = "?"
 			if ctrl := ctx.world.GetControllerByCallsign(stars.TrackInformation[ac.Squawk].TrackOwner); ctrl != nil {
 				trackId = ctrl.Scope
-			} 
+			}
 		}
 		fmt.Println(ac.Callsign, stars.TrackInformation[ac.Squawk])
 
@@ -6492,7 +6492,7 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 			return
 		}
 	}
-	
+
 	_, stars := w.SafeFacility("")
 
 	if info := stars.TrackInformation[ac.Squawk]; info.TrackOwner == "" {
@@ -6504,12 +6504,12 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 		} else if state.IsSelected {
 			// middle button selected
 			color = STARSSelectedAircraftColor
-		} else if info.TrackOwner == w.Callsign { //change 
+		} else if info.TrackOwner == w.Callsign { //change
 			// we own the track track
 			color = STARSTrackedAircraftColor
 		} else if ac.RedirectedHandoff.OrigionalOwner == w.Callsign || ac.RedirectedHandoff.RedirectedTo == w.Callsign {
 			color = STARSTrackedAircraftColor
-		} else if /**/info.HandoffController == w.Callsign &&
+		} else if /**/ info.HandoffController == w.Callsign &&
 			!slices.Contains(ac.RedirectedHandoff.Redirector, w.Callsign) {
 			// flashing white if it's being handed off to us.
 			color = STARSTrackedAircraftColor

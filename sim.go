@@ -847,7 +847,7 @@ type Sim struct {
 }
 
 type Handoff struct {
-	Time time.Time
+	Time              time.Time
 	ReceivingFacility string // only for auto accept
 }
 
@@ -1564,16 +1564,16 @@ func (s *Sim) updateState() {
 					bcn := w.GetAircraft(callsign, false).Squawk
 					plan := stars.ContainedPlans[bcn]
 					if plan != nil {
-					msg := plan.Message()
-					info := TrackInformation{
-						TrackOwner:        ac.TrackingController,
-						HandoffController: ctrl,
+						msg := plan.Message()
+						info := TrackInformation{
+							TrackOwner:        ac.TrackingController,
+							HandoffController: ctrl,
+						}
+						msg.TrackInformation = info
+						stars.SendTrackInfo(w.FacilityFromController(ctrl), msg, now, InitateTransfer)
+					} else {
+						lg.Errorf("Contained plan for %v is nil: %v", bcn, stars.ContainedPlans)
 					}
-					msg.TrackInformation = info
-					stars.SendTrackInfo(w.FacilityFromController(ctrl), msg, now, InitateTransfer)
-				} else {
-					lg.Errorf("Contained plan for %v is nil: %v", bcn, stars.ContainedPlans)
-				}
 				} else {
 					lg.Errorf("controller %v is nil")
 				}
@@ -2191,7 +2191,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			if octrl.Facility != ctrl.Facility { // inter-facility
 				msg := stars.TrackInformation[ac.Squawk].FlightPlan.Message()
 				msg.TrackInformation = TrackInformation{
-					TrackOwner: ctrl.Callsign,
+					TrackOwner:        ctrl.Callsign,
 					HandoffController: octrl.Callsign,
 				}
 				stars.SendTrackInfo(octrl.Facility, msg, s.SimTime, InitateTransfer)
@@ -2200,7 +2200,6 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 				entry.HandoffController = octrl.Callsign
 				stars.TrackInformation[ac.Squawk] = entry
 			}
-			
 
 			// Add them to the auto-accept map even if the target is
 			// covered; this way, if they sign off in the interim, we still
@@ -2209,7 +2208,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			entry := s.Handoffs[ac.Callsign]
 			entry.Time = s.SimTime.Add(time.Duration(acceptDelay) * time.Second)
 			s.Handoffs[ac.Callsign] = entry
-			
+
 			return nil
 		})
 }

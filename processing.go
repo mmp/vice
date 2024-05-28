@@ -251,7 +251,7 @@ type TrackInformation struct {
 	TrackLocation     Point2LL // TODO
 	TrackOwner        string
 	HandoffController string
-	FlightPlan *STARSFlightPlan
+	FlightPlan        *STARSFlightPlan
 }
 
 func (comp *STARSComputer) SendTrackInfo(receivingFacility string, msg FlightPlanMessage, simTime time.Time, Type int) {
@@ -332,6 +332,7 @@ func (comp *STARSComputer) RequestFlightPlan(BCN Squawk, simTime time.Time) {
 	}
 	comp.ToOverlyingERAMFacility(message)
 }
+
 // identifier can be bcn or callsign
 func (w *World) getSTARSFlightPlan(identifier string) *STARSFlightPlan {
 	_, stars := w.SafeFacility("")
@@ -344,7 +345,7 @@ func (w *World) getSTARSFlightPlan(identifier string) *STARSFlightPlan {
 			fp := STARSFlightPlan{
 				FlightPlan: FlightPlan{
 					AssignedSquawk: squawk,
-					ECID: "XXX",
+					ECID:           "XXX",
 				},
 			}
 			return &fp
@@ -357,16 +358,14 @@ func (w *World) getSTARSFlightPlan(identifier string) *STARSFlightPlan {
 		}
 		return &STARSFlightPlan{
 			FlightPlan: FlightPlan{
-				Callsign: identifier,
+				Callsign:       identifier,
 				AssignedSquawk: Squawk(rand.Intn(0o7000)),
-				ECID: "XXX",
+				ECID:           "XXX",
 			},
 		}
 	}
-	
+
 }
-
-
 
 // Sorting the STARS messages. This will store flight plans with FP messages, change flight plans with AM messages,
 // cancel flight plans with CX messages, etc.
