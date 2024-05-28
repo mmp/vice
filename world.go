@@ -45,6 +45,9 @@ type World struct {
 
 	missingPrimaryDialog *ModalDialogBox
 
+	sameGateDepartures int
+	sameDepartureCap   int
+
 	// Scenario routes to draw on the scope
 	scopeDraw struct {
 		arrivals   map[string]map[int]bool               // group->index
@@ -887,7 +890,10 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	rwy := &w.DepartureRunways[idx]
 
 	var dep *Departure
-	if rand.Float32() < challenge && lastDeparture != nil {
+	if w.sameDepartureCap == 0 {
+		w.sameDepartureCap = rand.Intn(3) + 1 // Set the initial max same departure cap (1-3)
+	}
+	if rand.Float32() < challenge && lastDeparture != nil && w.sameGateDepartures < w.sameDepartureCap {
 		// 50/50 split between the exact same departure and a departure to
 		// the same gate as the last departure.
 		pred := Select(rand.Float32() < .5,
@@ -903,6 +909,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		} else {
 			dep = &ap.Departures[idx]
 		}
+
 	}
 
 	if dep == nil {
@@ -920,6 +927,20 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		dep = &ap.Departures[idx]
 	}
 
+	if lastDeparture != nil && (dep.Exit == lastDeparture.Exit && w.sameGateDepartures >= w.sameDepartureCap) {
+		return nil, nil, fmt.Errorf("couldn't make a departure")
+	}
+
+	// Same gate buffer is a random int between 3-4 that gives a period after a few same gate departures.
+	// For example, WHITE, WHITE, WHITE, DIXIE, NEWEL, GAYEL, MERIT, DIXIE, DIXIE
+	// Another same-gate departure will not be happen untill after MERIT (in this example) because of the buffer.
+	sameGateBuffer := rand.Intn(2) + 3
+
+	if w.sameGateDepartures >= w.sameDepartureCap+sameGateBuffer || (lastDeparture != nil && dep.Exit != lastDeparture.Exit) { // reset back to zero if its at 7 or if there is a new gate
+		w.sameDepartureCap = rand.Intn(3) + 1
+		w.sameGateDepartures = 0
+	}
+
 	airline := SampleSlice(dep.Airlines)
 	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
@@ -931,6 +952,10 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
 		return nil, nil, err
 	}
+
+	/* Keep adding to World sameGateDepartures number until the departure cap + the buffer so that no more
+	same-gate departures are launched, then reset it to zero. Once the buffer is reached, it will reset World sameGateDepartures to zero*/
+	w.sameGateDepartures += 1
 
 	return ac, dep, nil
 }
