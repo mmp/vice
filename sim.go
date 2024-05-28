@@ -302,7 +302,9 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 			Call:      remoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
 			IssueTime: time.Now(),
 			OnSuccess: func(result any) {
-				remoteServer.runningSims = rs
+				if remoteServer != nil {
+					remoteServer.runningSims = rs
+				}
 			},
 			OnErr: func(e error) {
 				lg.Errorf("GetRunningSims error: %v", e)
