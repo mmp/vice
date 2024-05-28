@@ -131,10 +131,13 @@ func (s *SimProxy) SetSecondaryScratchpad(callsign string, scratchpad string) *r
 	}, nil, nil)
 }
 
-func (s *SimProxy) InitiateTrack(callsign string) *rpc.Call {
-	return s.Client.Go("Sim.InitiateTrack", &InitiateTrackArgs{
-		ControllerToken: s.ControllerToken,
-		Callsign:        callsign,
+func (s *SimProxy) InitiateTrack(callsign string, fp *STARSFlightPlan) *rpc.Call {
+	return s.Client.Go("Sim.InitiateTrack", InitiateTrackArgs{
+		AircraftSpecifier: AircraftSpecifier{
+			ControllerToken: s.ControllerToken,
+			Callsign: callsign,
+		},
+		Plan: fp,
 	}, nil, nil)
 }
 
@@ -702,13 +705,16 @@ func (sd *SimDispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *stru
 	}
 }
 
-type InitiateTrackArgs AircraftSpecifier
+type InitiateTrackArgs struct {
+	AircraftSpecifier
+	Plan *STARSFlightPlan
+}
 
 func (sd *SimDispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.InitiateTrack(it.ControllerToken, it.Callsign)
+		return sim.InitiateTrack(it.ControllerToken, it.Callsign, it.Plan)
 	}
 }
 

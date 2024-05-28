@@ -818,7 +818,7 @@ type Sim struct {
 	NextArrivalSpawn map[string]time.Time
 
 	// callsign -> auto accept time
-	Handoffs map[string]time.Time
+	Handoffs map[string]Handoff
 	// callsign -> "to" controller
 	PointOuts map[string]map[string]PointOut
 
@@ -844,6 +844,11 @@ type Sim struct {
 	PushEnd       time.Time
 
 	STARSInputOverride string
+}
+
+type Handoff struct {
+	Time time.Time
+	ReceivingFacility string // only for auto accept
 }
 
 type PointOut struct {
@@ -905,7 +910,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		lastUpdateTime: time.Now(),
 
 		SimRate:   1,
-		Handoffs:  make(map[string]time.Time),
+		Handoffs:  make(map[string]Handoff),
 		PointOuts: make(map[string]map[string]PointOut),
 	}
 
@@ -1284,9 +1289,11 @@ type GlobalMessage struct {
 }
 
 type SimWorldUpdate struct {
-	Aircraft    map[string]*Aircraft
-	Controllers map[string]*Controller
-	Time        time.Time
+	Aircraft      map[string]*Aircraft
+	Controllers   map[string]*Controller
+	ERAMComputers map[string]*ERAMComputer
+
+	Time time.Time
 
 	LaunchConfig LaunchConfig
 
@@ -1303,6 +1310,8 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	if wu.Controllers != nil {
 		w.Controllers = wu.Controllers
 	}
+
+	w.ERAMComputers = wu.ERAMComputers
 
 	w.LaunchConfig = wu.LaunchConfig
 
@@ -1340,6 +1349,7 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 		*update = SimWorldUpdate{
 			Aircraft:        s.World.Aircraft,
 			Controllers:     s.World.Controllers,
+			ERAMComputers:   s.World.ERAMComputers,
 			Time:            s.SimTime,
 			LaunchConfig:    s.LaunchConfig,
 			SimIsPaused:     s.Paused,
@@ -1467,7 +1477,7 @@ func (s *Sim) updateState() {
 	now := s.SimTime
 
 	for callsign, t := range s.Handoffs {
-		if !now.After(t) {
+		if !now.After(t.Time) {
 			continue
 		}
 
@@ -1485,6 +1495,25 @@ func (s *Sim) updateState() {
 
 			ac.TrackingController = ac.HandoffTrackController
 			ac.HandoffTrackController = ""
+			w := s.World
+			_, stars := w.SafeFacility(t.ReceivingFacility)
+			bcn := w.GetAircraft(callsign, false).Squawk
+			currentlyTracking := stars.TrackInformation[bcn].TrackOwner
+			if w.GetControllerByCallsign(currentlyTracking).FacilityIdentifier != "" { // inter-facility
+				msg := stars.ContainedPlans[bcn].Message()
+				info := TrackInformation{
+					TrackOwner:        stars.TrackInformation[bcn].HandoffController,
+					HandoffController: "",
+				}
+				msg.TrackInformation = info
+				stars.SendTrackInfo(w.FacilityFromController(currentlyTracking), msg, w.SimTime, AcceptRecallTransfer)
+			} else {
+				if entry, ok := stars.TrackInformation[w.GetAircraft(callsign, false).Squawk]; ok {
+					entry.TrackOwner = stars.TrackInformation[bcn].HandoffController
+					entry.HandoffController = ""
+					stars.TrackInformation[bcn] = entry
+				}
+			}
 		}
 		delete(s.Handoffs, callsign)
 	}
@@ -1525,11 +1554,29 @@ func (s *Sim) updateState() {
 				s.eventStream.Post(Event{
 					Type:           OfferedHandoffEvent,
 					Callsign:       ac.Callsign,
-					FromController: ac.TrackingController,
+					FromController: ac.WaypointHandoffController,
 					ToController:   ctrl,
 				})
-
-				ac.HandoffTrackController = ctrl
+				w := s.World
+				controller := w.GetControllerByCallsign(ctrl)
+				if controller != nil {
+					_, stars := w.SafeFacility(controller.Facility)
+					bcn := w.GetAircraft(callsign, false).Squawk
+					plan := stars.ContainedPlans[bcn]
+					if plan != nil {
+					msg := plan.Message()
+					info := TrackInformation{
+						TrackOwner:        ac.TrackingController,
+						HandoffController: ctrl,
+					}
+					msg.TrackInformation = info
+					stars.SendTrackInfo(w.FacilityFromController(ctrl), msg, now, InitateTransfer)
+				} else {
+					lg.Errorf("Contained plan for %v is nil: %v", bcn, stars.ContainedPlans)
+				}
+				} else {
+					lg.Errorf("controller %v is nil")
+				}
 			}
 
 			// Contact the departure controller
@@ -1952,7 +1999,8 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 	cmd func(*Controller, *Aircraft) []RadioTransmission) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
-			if ac.TrackingController != ctrl.Callsign {
+			_, stars := s.World.SafeFacility("")
+			if entry, ok := stars.TrackInformation[ac.Squawk]; !ok || entry.TrackOwner == "" {
 				return ErrOtherControllerHasTrack
 			}
 			return nil
@@ -2045,14 +2093,15 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *CardinalOrdinalDi
 		})
 }
 
-func (s *Sim) InitiateTrack(token, callsign string) error {
+func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
 		func(c *Controller, ac *Aircraft) error {
 			// Make sure no one has the track already
-			if ac.TrackingController != "" {
+			_, stars := s.World.SafeFacility("")
+			if entry, ok := stars.TrackInformation[ac.Squawk]; ok || entry.TrackOwner != "" {
 				return ErrOtherControllerHasTrack
 			}
 			return nil
@@ -2071,6 +2120,18 @@ func (s *Sim) InitiateTrack(token, callsign string) error {
 				ToController: ctrl.Callsign,
 			})
 
+			w := s.World
+
+			_, stars := w.SafeFacility("")
+
+			if stars.TrackInformation == nil {
+				stars.TrackInformation = make(map[Squawk]TrackInformation)
+			}
+			entry := stars.TrackInformation[w.Aircraft[callsign].Squawk]
+			entry.FlightPlan = fp
+			entry.TrackOwner = ctrl.Callsign
+
+			stars.TrackInformation[w.Aircraft[callsign].Squawk] = entry
 			return nil
 		})
 }
@@ -2081,13 +2142,17 @@ func (s *Sim) DropTrack(token, callsign string) error {
 
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			ac.TrackingController = ""
+			w := s.World
+			_, stars := w.SafeFacility("")
+			delete(stars.ContainedPlans, stars.TrackInformation[ac.Squawk].FlightPlan.AssignedSquawk)
+			delete(stars.TrackInformation, ac.Squawk)
 			ac.ControllingController = ""
 			s.eventStream.Post(Event{
 				Type:           DroppedTrackEvent,
 				Callsign:       ac.Callsign,
 				FromController: ctrl.Callsign,
 			})
+
 			return nil
 		})
 }
@@ -2121,11 +2186,30 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 
 			ac.HandoffTrackController = octrl.Callsign
 
+			_, stars := s.World.SafeFacility("")
+
+			if octrl.Facility != ctrl.Facility { // inter-facility
+				msg := stars.TrackInformation[ac.Squawk].FlightPlan.Message()
+				msg.TrackInformation = TrackInformation{
+					TrackOwner: ctrl.Callsign,
+					HandoffController: octrl.Callsign,
+				}
+				stars.SendTrackInfo(octrl.Facility, msg, s.SimTime, InitateTransfer)
+			} else {
+				entry := stars.TrackInformation[ac.Squawk]
+				entry.HandoffController = octrl.Callsign
+				stars.TrackInformation[ac.Squawk] = entry
+			}
+			
+
 			// Add them to the auto-accept map even if the target is
 			// covered; this way, if they sign off in the interim, we still
 			// end up accepting it automatically.
 			acceptDelay := 4 + rand.Intn(10)
-			s.Handoffs[ac.Callsign] = s.SimTime.Add(time.Duration(acceptDelay) * time.Second)
+			entry := s.Handoffs[ac.Callsign]
+			entry.Time = s.SimTime.Add(time.Duration(acceptDelay) * time.Second)
+			s.Handoffs[ac.Callsign] = entry
+			
 			return nil
 		})
 }
@@ -2209,6 +2293,25 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 
 			ac.HandoffTrackController = ""
 			ac.TrackingController = ctrl.Callsign
+			w := s.World
+			_, stars := w.SafeFacility("")
+			bcn := w.GetAircraft(callsign, false).Squawk
+			currentlyTracking := stars.TrackInformation[bcn].TrackOwner
+			if w.GetControllerByCallsign(currentlyTracking).FacilityIdentifier != "" { // inter-facility
+				msg := stars.ContainedPlans[bcn].Message()
+				info := TrackInformation{
+					TrackOwner:        ctrl.Callsign,
+					HandoffController: "",
+				}
+				msg.TrackInformation = info
+				stars.SendTrackInfo(w.FacilityFromController(currentlyTracking), msg, w.SimTime, AcceptRecallTransfer)
+			} else {
+				if entry, ok := stars.TrackInformation[w.GetAircraft(callsign, false).Squawk]; ok {
+					entry.HandoffController = ""
+					entry.TrackOwner = ctrl.Callsign
+					stars.TrackInformation[w.GetAircraft(callsign, false).Squawk] = entry
+				}
+			}
 			if !s.controllerIsSignedIn(ac.ControllingController) {
 				// Take immediate control on handoffs from virtual
 				ac.ControllingController = ctrl.Callsign

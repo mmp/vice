@@ -290,7 +290,7 @@ func (w *World) SetGlobalLeaderLine(callsign string, dir *CardinalOrdinalDirecti
 		})
 }
 
-func (w *World) InitiateTrack(callsign string, success func(any), err func(error)) {
+func (w *World) InitiateTrack(callsign string, fp *STARSFlightPlan, success func(any), err func(error)) {
 	// Modifying locally is not canonical but improves perceived latency in
 	// the common case; the RPC may fail, though that's fine; the next
 	// world update will roll back these changes anyway.
@@ -303,7 +303,7 @@ func (w *World) InitiateTrack(callsign string, success func(any), err func(error
 
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
-			Call:      w.simProxy.InitiateTrack(callsign),
+			Call:      w.simProxy.InitiateTrack(callsign, fp),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,

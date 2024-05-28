@@ -3612,7 +3612,8 @@
       "scope_char": "C",
       "sector_id": "B37",
       "facility_id": "B",
-      "eram_facility": true
+      "eram_facility": true,
+      "facility": "ZBW"
     },
     "CDW_TWR": {
       "frequency": 119800,
@@ -3627,7 +3628,8 @@
       "scope_char": "C",
       "sector_id": "W32",
       "facility_id": "W",
-      "eram_facility": true
+      "eram_facility": true,
+      "facility": "ZDC"
     },
     "EWR_APP": {
       "frequency": 128550,
@@ -3726,7 +3728,8 @@
       "scope_char": "C",
       "sector_id": "C56",
       "facility_id": "C",
-      "eram_facility": true
+      "eram_facility": true,
+      "facility": "ZNY"
     },
     "NY_LE_DEP": {
       "frequency": 126800,

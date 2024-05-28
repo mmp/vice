@@ -33,7 +33,7 @@ func (w *World) initComputers() {
 
 		stars.STARSInbox[outerStars.Identifier] = &outerStars.RecievedMessages
 	}
-	fmt.Println("inboxes", stars.STARSInbox)
+
 }
 
 // Access their ERAM and STARS computers. Leave blank for own TRACON
@@ -44,42 +44,41 @@ func (w *World) SafeFacility(inputTracon string) (*ERAMComputer, *STARSComputer)
 	}
 	tracon, ok := database.TRACONs[inputTracon]
 	if !ok {
-		lg.Infof("TRACON %s not found, initializing computers", w.TRACON)
-		w.initComputers()
-		tracon, ok = database.TRACONs[inputTracon]
-		if !ok {
-			lg.Errorf("TRACON %s still not found after initialization", w.TRACON)
-		}
+		lg.Errorf("TRACON %s not found: %v", inputTracon, database.TRACONs)
 	}
 
 	artcc, ok := w.ERAMComputers[tracon.ARTCC]
 	if !ok {
-		fmt.Printf("ARTCC %s not found in ERAMComputers, initializing computers", tracon.ARTCC)
 		w.initComputers()
 		artcc, ok = w.ERAMComputers[tracon.ARTCC]
 		if !ok {
-			lg.Errorf("ARTCC %s still not found after initialization", tracon.ARTCC)
+			lg.Errorf("ARTCC %s still not found after initialization. TRACON: %v", tracon.ARTCC, tracon)
 		}
 	}
 	fac, ok := artcc.STARSComputers[inputTracon]
 	if !ok {
-		lg.Infof("STARSComputer for TRACON %s not found, initializing computers", w.TRACON)
 		w.initComputers()
 		fac, ok = artcc.STARSComputers[inputTracon]
 		if !ok {
-			lg.Errorf("STARSComputer for TRACON %s still not found after initialization", w.TRACON)
+			lg.Errorf("STARSComputer for TRACON %s still not found after initialization\n", w.TRACON)
 		}
 	}
 	return artcc, fac
 }
 
 func (w *World) FacilityFromController(callsign string) string {
-	return w.Controllers[callsign].Facility
+	controller, ok := w.Controllers[callsign]
+	if ok {
+		return controller.Facility
+	}
+	lg.Errorf("Couldn't find facility for %v.\n", callsign)
+	return ""
 }
 
 // Give the computers a chance to sort through their received messages. Messages will send when the time is appropriate (eg. handoff).
 // Some messages will be sent from recieved messages (for example a FP message from a RF message).
 func (w *World) UpdateComputers(simTime time.Time) {
+	// _, fac := w.SafeFacility("")
 	// Sort through messages made
 	for _, comp := range w.ERAMComputers {
 		comp.SortMessages(simTime)
@@ -135,15 +134,13 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time) {
 	for _, msg := range *comp.ReceivedMessages {
 		switch msg.MessageType {
 		case RequestFlightPlan:
-			fmt.Println("ERAM: Received RF request from a STARS facility.")
 			facility := msg.SourceID[:3] // Facility asking for FP
-			fmt.Println("ERAM: FACILITY: ", facility)
 			// Find the flight plan
 			plan, ok := comp.FlightPlans[msg.BCN]
 			if ok {
 				comp.ToSTARSFacility(facility, plan.DepartureMessage(comp.Identifier, simTime))
 			}
-			fmt.Println("ERAM: Send a message to STARS facility", plan.DepartureMessage(comp.Identifier, simTime))
+			*comp.ReceivedMessages = (*comp.ReceivedMessages)[1:]
 		case DepartureDM: // TODO: Find out what this does
 		case BeaconTerminate: // TODO: Find out what this does
 		}
@@ -180,13 +177,12 @@ func (comp *ERAMComputer) ToSTARSFacility(facility string, msg FlightPlanMessage
 		return ErrNoSTARSFacility
 	}
 	STARSFacility.RecievedMessages = append(STARSFacility.RecievedMessages, msg)
-	fmt.Println("ERAM: Sent a message to a STARS facility: ", msg)
 	return nil
 }
 
 type STARSComputer struct {
 	RecievedMessages []FlightPlanMessage
-	ContainedPlans   map[Squawk]STARSFlightPlan
+	ContainedPlans   map[Squawk]*STARSFlightPlan
 	TrackInformation map[Squawk]TrackInformation
 	ERAMInbox        *[]FlightPlanMessage // The address of the overlying ERAM's message inbox.
 	Identifier       string
@@ -235,7 +231,7 @@ type FlightPlanMessage struct {
 	TrackInformation // For track messages
 }
 
-func (fp FlightPlan) Message() FlightPlanMessage {
+func (fp STARSFlightPlan) Message() FlightPlanMessage {
 	return FlightPlanMessage{
 		BCN:      fp.AssignedSquawk,
 		Altitude: fmt.Sprint(fp.Altitude), // Eventually we'll change this to a string
@@ -252,24 +248,22 @@ func (fp FlightPlan) Message() FlightPlanMessage {
 }
 
 type TrackInformation struct {
-	TrackLocation     Point2LL
+	TrackLocation     Point2LL // TODO
 	TrackOwner        string
 	HandoffController string
+	FlightPlan *STARSFlightPlan
 }
 
-// func (comp *STARSComputer) SendTrackInfo(receivingFacility string, info TrackInformation, simTime time.Time, ) {
-// 	msg := FlightPlanMessage{
-// 		MessageType:      InitateTransfer,
-// 		TrackInformation: info,
-// 		SourceID:         fmt.Sprintf("%v%v", comp.Identifier, simTime.Format("1504Z")),
-// 	}
-// 	inbox := comp.STARSInbox[receivingFacility]
-// 	if inbox == nil {
-// 		fmt.Println(comp.ERAMInbox)
-// 	} else {
-// 		*inbox = append(*inbox, msg)
-// 	}
-// }
+func (comp *STARSComputer) SendTrackInfo(receivingFacility string, msg FlightPlanMessage, simTime time.Time, Type int) {
+
+	msg.MessageType = Type
+	msg.SourceID = fmt.Sprintf("%v%v", comp.Identifier, simTime.Format("1504Z"))
+	inbox := comp.STARSInbox[receivingFacility]
+	if inbox == nil {
+	} else {
+		*inbox = append(*inbox, msg)
+	}
+}
 
 const (
 	DepartureTime  = "P"
@@ -298,15 +292,13 @@ type AircraftDataMessage struct {
 // Sends a message to the overlying ERAM facility.
 func (comp *STARSComputer) ToOverlyingERAMFacility(msg FlightPlanMessage) {
 	if *comp.ERAMInbox == nil {
-		fmt.Println(comp.ERAMInbox)
 	} else {
 		*comp.ERAMInbox = append(*comp.ERAMInbox, msg)
-		fmt.Println("STARS: Sent a message to ERAM: ", msg)
 	}
 }
 
 // Converts the message to a STARS flight plan.
-func (s FlightPlanMessage) FlightPlan() STARSFlightPlan {
+func (s FlightPlanMessage) FlightPlan() *STARSFlightPlan {
 	flightPlan := STARSFlightPlan{}
 	if !strings.Contains(s.Altitude, "VFR") {
 		flightPlan.Rules = IFR
@@ -328,7 +320,7 @@ func (s FlightPlanMessage) FlightPlan() STARSFlightPlan {
 	- Arrival Airport
 	*/
 
-	return flightPlan
+	return &flightPlan
 }
 
 func (comp *STARSComputer) RequestFlightPlan(BCN Squawk, simTime time.Time) {
@@ -338,22 +330,55 @@ func (comp *STARSComputer) RequestFlightPlan(BCN Squawk, simTime time.Time) {
 		BCN:         BCN,
 		SourceID:    fmt.Sprintf("%v%v", comp.Identifier, zulu),
 	}
-	fmt.Println("STARS: requesting FP for ", BCN)
 	comp.ToOverlyingERAMFacility(message)
 }
+// identifier can be bcn or callsign
+func (w *World) getSTARSFlightPlan(identifier string) *STARSFlightPlan {
+	_, stars := w.SafeFacility("")
+	squawk, err := ParseSquawk(identifier)
+	if err == nil { // Squawk code was entered
+		fp, ok := stars.ContainedPlans[squawk]
+		if ok { // The flight plan is stored in the system
+			return fp
+		} else { // Create a flight plan
+			fp := STARSFlightPlan{
+				FlightPlan: FlightPlan{
+					AssignedSquawk: squawk,
+					ECID: "XXX",
+				},
+			}
+			return &fp
+		}
+	} else { // Callsign was entered
+		for _, plan := range stars.ContainedPlans {
+			if plan.Callsign == identifier { // We have this plan in our system
+				return plan
+			}
+		}
+		return &STARSFlightPlan{
+			FlightPlan: FlightPlan{
+				Callsign: identifier,
+				AssignedSquawk: Squawk(rand.Intn(0o7000)),
+				ECID: "XXX",
+			},
+		}
+	}
+	
+}
+
+
 
 // Sorting the STARS messages. This will store flight plans with FP messages, change flight plans with AM messages,
 // cancel flight plans with CX messages, etc.
 func (comp *STARSComputer) SortReceivedMessages() {
 	if comp.ContainedPlans == nil {
-		comp.ContainedPlans = make(map[Squawk]STARSFlightPlan)
+		comp.ContainedPlans = make(map[Squawk]*STARSFlightPlan)
 	}
 	for _, msg := range comp.RecievedMessages {
 		switch msg.MessageType {
 		case Plan:
 			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
 			comp.RecievedMessages = comp.RecievedMessages[1:]
-			fmt.Println("STARS: Sorted an FP message from ERAM: ", comp.ContainedPlans[msg.BCN])
 		case Amendment:
 			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
 			comp.RecievedMessages = comp.RecievedMessages[1:]
@@ -362,14 +387,14 @@ func (comp *STARSComputer) SortReceivedMessages() {
 		case InitateTransfer:
 			// 1. Store the data comp.trackinfo. we now know whos tracking the plane, and its flightplan
 			comp.TrackInformation[msg.BCN] = TrackInformation{
-				TrackOwner: msg.TrackOwner,
+				TrackOwner:        msg.TrackOwner,
 				HandoffController: msg.HandoffController,
 			}
 			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
 		case AcceptRecallTransfer:
 			// When we send an accept message, we set the track ownership to us.
 			// when we receive an accept message, we change the track ownership to the receiving controller.
-			// When we send a recall message, we tell our system to stop the flashing. 
+			// When we send a recall message, we tell our system to stop the flashing.
 			// When we receive a recall message, we keep the plan and if we click the track, it is no longer able to be accepted
 			// We can infer whether its a recall/ accept by the track ownership that gets sent back.
 
@@ -386,7 +411,7 @@ func (comp *STARSComputer) SortReceivedMessages() {
 				}
 			}
 
-			
 		}
 	}
+	clear(comp.RecievedMessages)
 }
