@@ -251,6 +251,7 @@ type Controller struct {
 	FacilityIdentifier string    `json:"facility_id"`     // For example the "N" in "N4P" showing the N90 TRACON
 	ERAMFacility       bool      `json:"eram_facility"`   // To weed out N56 and N4P being the same fac
 	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
+	Facility           string    `json:"facility"`
 }
 
 type FlightRules int
@@ -391,11 +392,13 @@ type Fix struct {
 
 func (aircraft *Aircraft) NewFlightPlan(r FlightRules, ac, dep, arr string) *FlightPlan {
 	return &FlightPlan{
+		Callsign:         aircraft.Callsign,
 		Rules:            r,
 		AircraftType:     ac,
 		DepartureAirport: dep,
 		ArrivalAirport:   arr,
 		AssignedSquawk:   aircraft.Squawk,
+		ECID: "XXX",
 	}
 }
 

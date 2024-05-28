@@ -250,11 +250,12 @@ func main() {
 		var world *World
 
 		localServer = <-localSimServerChan
-
+		globalConfig.Sim = nil
 		if globalConfig.Sim != nil && !*resetSim {
 			var result NewSimResult
 			if err := localServer.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
 				lg.Errorf("error restoring saved Sim: %v", err)
+				
 			} else {
 				world = result.World
 				world.simProxy = &SimProxy{

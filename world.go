@@ -52,7 +52,7 @@ type World struct {
 		departures map[string]map[string]map[string]bool // airport->runway->exit
 	}
 
-	ERAMComputers map[string]ERAMComputer
+	ERAMComputers map[string]*ERAMComputer
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
@@ -925,12 +925,19 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	}
 
 	flightPlan := ac.NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
+	ac.FlightPlan = flightPlan
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
 		return nil, nil, err
 	}
-	// Add the flight plan to the ERAM computer
-	w.ERAMComputers[database.TRACONs[w.TRACON].ARTCC].FlightPlans[flightPlan.AssignedSquawk] = flightPlan
+	artcc, stars := w.SafeFacility("")
+	if artcc.FlightPlans == nil {
+		artcc.FlightPlans = map[Squawk]*FlightPlan{}
+	}
+	artcc.FlightPlans[flightPlan.AssignedSquawk] = flightPlan
+
+	// STARS RF Message
+	stars.RequestFlightPlan(ac.FlightPlan.AssignedSquawk, w.SimTime)
 
 	return ac, dep, nil
 }
