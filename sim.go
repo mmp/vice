@@ -2250,7 +2250,13 @@ func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			octrl := s.World.GetControllerByCallsign(controller)
 			ac.RedirectedHandoff.OriginalOwner = ac.TrackingController
-			if len(ac.RedirectedHandoff.Redirector) == 0 || ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1] != ctrl.Callsign {
+			if (len(ac.RedirectedHandoff.Redirector) == 1 || (len(ac.RedirectedHandoff.Redirector) > 1) && ac.RedirectedHandoff.Redirector[1] == ctrl.Callsign) && octrl.Callsign == ac.RedirectedHandoff.Redirector[0] {
+				// If you're the 2nd redirector (which is true if 1 redirect happened so far, or in case of multiple redirected handoffs, check against the 2nd redirector's callsign)
+				// redirecting back to the 1st redirector, clear the RD and show it as a normal handoff
+				ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[0]
+				ac.RedirectedHandoff = RedirectedHandoff{}
+				return nil
+			} else if len(ac.RedirectedHandoff.Redirector) == 0 || ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1] != ctrl.Callsign {
 				// Don't append the same controller multiple times
 				// (the case in which the last redirector recalls and then redirects again)
 				ac.RedirectedHandoff.Redirector = append(ac.RedirectedHandoff.Redirector, ctrl.Callsign)

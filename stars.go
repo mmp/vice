@@ -3863,7 +3863,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
 				if control != nil {
 					if ac.HandoffTrackController == ctx.world.Callsign || ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign { // Redirect
-						sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
+						if (len(ac.RedirectedHandoff.Redirector) == 1 || (len(ac.RedirectedHandoff.Redirector) > 1) && ac.RedirectedHandoff.Redirector[1] == ctx.world.Callsign) && ac.RedirectedHandoff.Redirector[0] == control.Callsign {
+							// If you're the 2nd redirector (which is true if 1 redirect happened so far, or in case of multiple redirected handoffs, check against the 2nd redirector's callsign)
+							// redirecting back to the 1st redirector, show a PDB instead of a normal FDB
+							sp.Aircraft[ac.Callsign].DatablockType = PartialDatablock
+						} else {
+							sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
+						}
 						sp.redirectHandoff(ctx, ac.Callsign, control.Callsign)
 						status.clear = true
 					} else if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
@@ -6329,9 +6335,10 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = []string{"", " UN"}
 		} else if time.Until(state.POFlashingEndTime) > 0*time.Second {
 			field8 = []string{"", " PO"}
-		} else if redirect := ac.RedirectedHandoff; redirect.RedirectedTo == ctx.world.Callsign ||
+		} else if redirect := ac.RedirectedHandoff; (redirect.RedirectedTo == ctx.world.Callsign ||
 			(len(redirect.Redirector) > 0 && (redirect.Redirector[len(redirect.Redirector)-1] == ctx.world.Callsign)) ||
-			redirect.OriginalOwner == ctx.world.Callsign || time.Until(state.RDIndicatorEnd) > 0 {
+			redirect.OriginalOwner == ctx.world.Callsign || time.Until(state.RDIndicatorEnd) > 0) &&
+			!(len(redirect.Redirector) > 1 && redirect.RedirectedTo == redirect.Redirector[0] && redirect.Redirector[len(redirect.Redirector)-1] == redirect.Redirector[1]) { // Don't show "RD" if the second redirector redirects back to the first redirector
 			field8 = []string{" RD"}
 		}
 
