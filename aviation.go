@@ -253,7 +253,6 @@ type Controller struct {
 	ERAMFacility       bool      `json:"eram_facility"` // To weed out N56 and N4P being the same fac
 	Facility           string    `json:"facility"` // So we can get the STARS facility from a controller
 	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
-	Facility           string    `json:"facility"`
 }
 
 type FlightRules int
