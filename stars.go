@@ -876,11 +876,11 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 
 	ps.PreviewAreaPosition = [2]float32{.05, .8}
 
-	ps.SSAList.Position = [2]float32{.05, .95}
+	ps.SSAList.Position = [2]float32{.05, .9}
 	ps.SSAList.Visible = true
 	ps.SSAList.Filter.All = true
 
-	ps.TABList.Position = [2]float32{.05, .7}
+	ps.TABList.Position = [2]float32{.05, .65}
 	ps.TABList.Lines = 5
 	ps.TABList.Visible = true
 
@@ -896,7 +896,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.CoastList.Lines = 5
 	ps.CoastList.Visible = false
 
-	ps.SignOnList.Position = [2]float32{.8, .95}
+	ps.SignOnList.Position = [2]float32{.8, .9}
 	ps.SignOnList.Visible = true
 
 	ps.VideoMapsList.Position = [2]float32{.85, .5}
