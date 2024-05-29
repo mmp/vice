@@ -460,7 +460,7 @@ type STARSAircraftState struct {
 	FirstRadarTrack     time.Time
 	HaveEnteredAirspace bool
 
-	IdentEnd                time.Time
+	IdentStart, IdentEnd    time.Time
 	OutboundHandoffAccepted bool
 	OutboundHandoffFlashEnd time.Time
 
@@ -546,7 +546,8 @@ func (s *STARSAircraftState) LostTrack(now time.Time) bool {
 }
 
 func (s *STARSAircraftState) Ident() bool {
-	return !s.IdentEnd.IsZero() && s.IdentEnd.After(time.Now())
+	now := time.Now()
+	return !s.IdentStart.IsZero() && s.IdentStart.Before(now) && s.IdentEnd.After(now)
 }
 
 type STARSMap struct {
@@ -1412,7 +1413,8 @@ func (sp *STARSPane) processEvents(w *World) {
 			if state, ok := sp.Aircraft[event.Callsign]; !ok {
 				lg.Errorf("%s: have IdentEvent but missing STARS state?", event.Callsign)
 			} else {
-				state.IdentEnd = time.Now().Add(10 * time.Second)
+				state.IdentStart = time.Now().Add(time.Duration(2+rand.Intn(3)) * time.Second)
+				state.IdentEnd = state.IdentStart.Add(10 * time.Second)
 			}
 
 		case SetGlobalLeaderLineEvent:
