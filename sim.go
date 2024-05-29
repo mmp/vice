@@ -1566,11 +1566,12 @@ func (s *Sim) updateState() {
 					if plan != nil {
 						msg := plan.Message()
 						info := TrackInformation{
-							TrackOwner:        ac.TrackingController,
+							TrackOwner:        ac.WaypointHandoffController,
 							HandoffController: ctrl,
 						}
 						msg.TrackInformation = info
 						stars.SendTrackInfo(w.FacilityFromController(ctrl), msg, now, InitateTransfer)
+						fmt.Printf("Sent %v t information to %v: %v.\n", bcn, w.FacilityFromController(ctrl), msg)
 					} else {
 						lg.Errorf("Contained plan for %v is nil: %v", bcn, stars.ContainedPlans)
 					}
@@ -2096,12 +2097,12 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *CardinalOrdinalDi
 func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-
+	fmt.Println("initiate sim")
 	return s.dispatchCommand(token, callsign,
 		func(c *Controller, ac *Aircraft) error {
 			// Make sure no one has the track already
 			_, stars := s.World.SafeFacility("")
-			if entry, ok := stars.TrackInformation[ac.Squawk]; ok || entry.TrackOwner != "" {
+			if entry, ok := stars.TrackInformation[ac.Squawk]; ok || entry != nil && entry.TrackOwner != "" {
 				return ErrOtherControllerHasTrack
 			}
 			return nil
@@ -2123,15 +2124,16 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 			w := s.World
 
 			_, stars := w.SafeFacility("")
+			fmt.Println(stars.Identifier)
 
 			if stars.TrackInformation == nil {
-				stars.TrackInformation = make(map[Squawk]TrackInformation)
+				stars.TrackInformation = make(map[Squawk]*TrackInformation)
 			}
-			entry := stars.TrackInformation[w.Aircraft[callsign].Squawk]
-			entry.FlightPlan = fp
-			entry.TrackOwner = ctrl.Callsign
-
-			stars.TrackInformation[w.Aircraft[callsign].Squawk] = entry
+			stars.TrackInformation[ac.Squawk] = &TrackInformation{
+				TrackOwner: ctrl.Callsign,
+				FlightPlan: fp,
+			}
+			
 			return nil
 		})
 }
@@ -2144,7 +2146,7 @@ func (s *Sim) DropTrack(token, callsign string) error {
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			w := s.World
 			_, stars := w.SafeFacility("")
-			delete(stars.ContainedPlans, stars.TrackInformation[ac.Squawk].FlightPlan.AssignedSquawk)
+			stars.ContainedPlans[ac.Squawk] = stars.TrackInformation[ac.Squawk].FlightPlan
 			delete(stars.TrackInformation, ac.Squawk)
 			ac.ControllingController = ""
 			s.eventStream.Post(Event{

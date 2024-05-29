@@ -300,7 +300,7 @@ func (w *World) InitiateTrack(callsign string, fp *STARSFlightPlan, success func
 	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == "" {
 		ac.TrackingController = w.Callsign
 	}
-
+	fmt.Println("world initiate")
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.InitiateTrack(callsign, fp),
@@ -847,8 +847,8 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.FlightPlan = ac.NewFlightPlan(IFR, acType, airline.Airport, arrivalAirport)
-
+	flightPlan := ac.NewFlightPlan(IFR, acType, airline.Airport, arrivalAirport)
+	ac.FlightPlan = flightPlan
 	// Figure out which controller will (for starters) get the arrival
 	// handoff. For single-user, it's easy.  Otherwise, figure out which
 	// control position is initially responsible for the arrival. Note that
@@ -866,6 +866,16 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	if err := ac.InitializeArrival(w, arrivalGroup, idx, arrivalController, goAround); err != nil {
 		return nil, err
 	}
+
+	artcc, stars := w.SafeFacility("")
+	if artcc.FlightPlans == nil {
+		artcc.FlightPlans = map[Squawk]*FlightPlan{}
+	}
+	artcc.FlightPlans[flightPlan.AssignedSquawk] = flightPlan
+
+	// STARS RF Message
+	stars.RequestFlightPlan(ac.FlightPlan.AssignedSquawk, w.SimTime)
+
 
 	return ac, nil
 }

@@ -183,7 +183,7 @@ func (comp *ERAMComputer) ToSTARSFacility(facility string, msg FlightPlanMessage
 type STARSComputer struct {
 	RecievedMessages []FlightPlanMessage
 	ContainedPlans   map[Squawk]*STARSFlightPlan
-	TrackInformation map[Squawk]TrackInformation
+	TrackInformation map[Squawk]*TrackInformation
 	ERAMInbox        *[]FlightPlanMessage // The address of the overlying ERAM's message inbox.
 	Identifier       string
 	STARSInbox       map[string]*[]FlightPlanMessage // Other STARS Facilities inbox.
@@ -334,37 +334,22 @@ func (comp *STARSComputer) RequestFlightPlan(BCN Squawk, simTime time.Time) {
 }
 
 // identifier can be bcn or callsign
-func (w *World) getSTARSFlightPlan(identifier string) *STARSFlightPlan {
+func (w *World) getSTARSFlightPlan(identifier string) (*STARSFlightPlan, error ){
 	_, stars := w.SafeFacility("")
 	squawk, err := ParseSquawk(identifier)
 	if err == nil { // Squawk code was entered
 		fp, ok := stars.ContainedPlans[squawk]
 		if ok { // The flight plan is stored in the system
-			return fp
-		} else { // Create a flight plan
-			fp := STARSFlightPlan{
-				FlightPlan: FlightPlan{
-					AssignedSquawk: squawk,
-					ECID:           "XXX",
-				},
-			}
-			return &fp
-		}
+			return fp, nil
+		} 	
 	} else { // Callsign was entered
 		for _, plan := range stars.ContainedPlans {
 			if plan.Callsign == identifier { // We have this plan in our system
-				return plan
+				return plan, nil
 			}
 		}
-		return &STARSFlightPlan{
-			FlightPlan: FlightPlan{
-				Callsign:       identifier,
-				AssignedSquawk: Squawk(rand.Intn(0o7000)),
-				ECID:           "XXX",
-			},
-		}
 	}
-
+	return nil, ErrSTARSNoFlight
 }
 
 // Sorting the STARS messages. This will store flight plans with FP messages, change flight plans with AM messages,
@@ -385,11 +370,12 @@ func (comp *STARSComputer) SortReceivedMessages() {
 			delete(comp.ContainedPlans, msg.BCN)
 		case InitateTransfer:
 			// 1. Store the data comp.trackinfo. we now know whos tracking the plane, and its flightplan
-			comp.TrackInformation[msg.BCN] = TrackInformation{
+			comp.TrackInformation[msg.BCN] = &TrackInformation{
 				TrackOwner:        msg.TrackOwner,
 				HandoffController: msg.HandoffController,
 			}
 			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
+			fmt.Printf("Message for %v has been received and sorted: %v.\n", msg.BCN, comp.ContainedPlans[msg.BCN])
 		case AcceptRecallTransfer:
 			// When we send an accept message, we set the track ownership to us.
 			// when we receive an accept message, we change the track ownership to the receiving controller.

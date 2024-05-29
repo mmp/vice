@@ -714,6 +714,7 @@ func (sd *SimDispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error
 	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
+		fmt.Println("dispatcher")
 		return sim.InitiateTrack(it.ControllerToken, it.Callsign, it.Plan)
 	}
 }

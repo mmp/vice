@@ -1661,24 +1661,19 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 			Time:        now,
 		}
 		// Associate the flight plans.
-		// flightPlans := &w.ERAMComputers[database.TRACONs[w.TRACON].ARTCC].FlightPlans
-		// if *flightPlans == nil {
-		// 	*flightPlans = make(map[Squawk]*FlightPlan)
-		// }
-		// plan, ok := (*flightPlans)[ac.Squawk]
-		// if ok {
-		// 	ac.FlightPlan = plan
-		// }
-
-		artcc, ok := w.ERAMComputers[database.TRACONs[w.TRACON].ARTCC]
-		if ok {
-			flightPlans := &artcc.FlightPlans
-			if *flightPlans == nil {
-				*flightPlans = make(map[Squawk]*FlightPlan)
-			}
-			plan, ok := (*flightPlans)[ac.Squawk]
-			if ok {
-				ac.FlightPlan = plan
+		_, stars := w.SafeFacility("")
+		if _, ok := stars.TrackInformation[ac.Squawk]; ok { // Someone is tracking this
+			continue
+		}
+		ap := w.GetAirport(ac.FlightPlan.DepartureAirport)
+		if ap != nil {
+			
+		}
+		for sq, info := range stars.ContainedPlans { // auto associate
+			if sq == ac.Squawk {
+				fmt.Println("auto associate")
+				w.InitiateTrack(ac.Callsign, info, nil, nil)
+				fmt.Println(ac.Callsign, 1)
 			}
 		}
 	}
@@ -2169,8 +2164,14 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		if ac := lookupAircraft(cmd, false); ac == nil {
 			status.err = ErrSTARSNoFlight
 		} else {
-			sp.initiateTrack(ctx, ac, ac.Callsign)
-			status.clear = true
+			err := sp.initiateTrack(ctx, ac, ac.Callsign)
+			if err != nil {
+				status.err = err
+			} else {
+				status.clear = true
+			}
+			fmt.Println(ac.Callsign, 2)
+
 		}
 		return
 
@@ -3245,8 +3246,12 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir 
 		func(err error) { sp.displayError(err) })
 }
 
-func (sp *STARSPane) initiateTrack(ctx *PaneContext, ac *Aircraft, identifier string) { // identifier can be squawk or callsign
-	fp := ctx.world.getSTARSFlightPlan(identifier)
+func (sp *STARSPane) initiateTrack(ctx *PaneContext, ac *Aircraft, identifier string) error { // identifier can be squawk or callsign
+	fmt.Println("stars initiate")
+	fp, err := ctx.world.getSTARSFlightPlan(identifier)
+	if err != nil {
+		return err
+	}
 	ctx.world.InitiateTrack(ac.Callsign, fp,
 		func(any) {
 			if state, ok := sp.Aircraft[ac.Callsign]; ok {
@@ -3257,6 +3262,7 @@ func (sp *STARSPane) initiateTrack(ctx *PaneContext, ac *Aircraft, identifier st
 			}
 		},
 		func(err error) { sp.displayError(err) })
+	return nil
 }
 
 func (sp *STARSPane) dropTrack(ctx *PaneContext, callsign string) {
@@ -3583,7 +3589,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					if ctrl && shift {
 						// initiate track, CRC style
 						status.clear = true
-						sp.initiateTrack(ctx, ac, ac.Callsign)
+						err := sp.initiateTrack(ctx, ac, ac.Callsign)
+						if err != nil {
+							status.err = err
+						} else {
+							status.clear = true
+						}
+						fmt.Println(ac.Callsign, 3)
 						return
 					}
 				}
@@ -3881,11 +3893,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 		case CommandModeInitiateControl:
 			status.clear = true
 			if cmd != "" {
-				sp.initiateTrack(ctx, ac, cmd)
+				err := sp.initiateTrack(ctx, ac, cmd)
+			if err != nil {
+				status.err = err
+			} else {
+				status.clear = true
+			}
 			} else {
 				status.err = ErrSTARSCommandFormat
 			}
-
+			fmt.Println(ac.Callsign, 4)
 			return
 
 		case CommandModeTerminateControl:
@@ -5344,11 +5361,13 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 	}
 
 	trackInfo, ok := fac.TrackInformation[ac.Squawk]
-	// fmt.Println(ac.Callsign, fac.Identifier, trackInfo)
 
 	if ok { // The track owner is known, so it will be a P/FDB
-		if trackInfo.TrackOwner == w.Callsign || (ac.ControllingController == w.Callsign && ac.TrackingController != "") {
+		if trackInfo.TrackOwner == w.Callsign {
 			// it's under our control
+			dt = FullDatablock
+		}
+		if state.OutboundHandoffAccepted {
 			dt = FullDatablock
 		}
 		if ac.ForceQLControllers != nil && slices.Contains(ac.ForceQLControllers, w.Callsign) {
@@ -5432,13 +5451,12 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 
 		_, stars := w.SafeFacility("")
 
-		if stars.TrackInformation[ac.Squawk].TrackOwner != "" { // If it's being tracked by a same-facility or a position we handed off to
+		if info := stars.TrackInformation[ac.Squawk]; info != nil && info.TrackOwner != "" { // If it's being tracked by a same-facility or a position we handed off to
 			trackId = "?"
 			if ctrl := ctx.world.GetControllerByCallsign(stars.TrackInformation[ac.Squawk].TrackOwner); ctrl != nil {
 				trackId = ctrl.Scope
 			}
 		}
-		fmt.Println(ac.Callsign, stars.TrackInformation[ac.Squawk])
 
 		// "cheat" by using ac.Heading() if we don't yet have two radar tracks to compute the
 		// heading with; this makes things look better when we first see a track or when
@@ -6279,7 +6297,16 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	case FullDatablock:
 		// Line 1: fields 1, 2, and 8 (surprisingly). Field 8 may be multiplexed.
 		_, stars := ctx.world.SafeFacility("")
-		field1 := stars.TrackInformation[ac.Squawk].FlightPlan.Callsign
+		info := stars.TrackInformation[ac.Squawk]
+		var field1 string
+		if info == nil {
+			fmt.Printf("info for %v is nil: %v", ac.Squawk, stars.TrackInformation)
+		} else if info.FlightPlan == nil {
+			fmt.Printf("fp info for %v is nil: %v", ac.Squawk, stars.TrackInformation[ac.Squawk])
+		} else {
+			field1 = info.FlightPlan.Callsign
+		}
+		
 
 		field2 := ""
 		if state.InhibitMSAW || state.DisableMSAW {
@@ -6495,7 +6522,7 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 
 	_, stars := w.SafeFacility("")
 
-	if info := stars.TrackInformation[ac.Squawk]; info.TrackOwner == "" {
+	if info := stars.TrackInformation[ac.Squawk]; info == nil || info.TrackOwner == "" {
 		color = STARSUntrackedAircraftColor
 	} else {
 		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut || state.ForceQL {
@@ -7915,9 +7942,11 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 
 				if sp.AutoTrackDepartures && ac.TrackingController == "" &&
 					w.DepartureController(ac) == w.Callsign {
-					fp := w.getSTARSFlightPlan(callsign)
-					fmt.Println(ac.Callsign, fp)
-					w.InitiateTrack(callsign, fp, nil, nil) // ignore error...
+					fp, err := w.getSTARSFlightPlan(callsign)
+					if err != nil {
+						w.InitiateTrack(callsign, fp, nil, nil) // ignore error...
+						fmt.Println(ac.Callsign, 0)
+					}
 				}
 			}
 		}
