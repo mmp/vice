@@ -6600,6 +6600,9 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		}
 
 		color, brightness := sp.datablockColor(ctx, ac)
+		if brightness == 0 {
+			continue
+		}
 
 		// Compute the bounds of the datablock; always use the first one so
 		// things don't jump around when it switches between multiple of
