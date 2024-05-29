@@ -5672,12 +5672,9 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 		}
 	}
 
-	// Draw history in reverse order so that if it's not moving, more
-	// recent tracks (which will have more contrast with the background),
-	// will be the ones that are visible.
 	if ps.Brightness.History > 0 { // Don't draw if brightness == 0.
-		n := ps.RadarTrackHistory
-		for i := n - 1; i >= 0; i-- {
+		// Draw history from new to old
+		for i := range ps.RadarTrackHistory {
 			trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
 			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
 
