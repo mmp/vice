@@ -5382,8 +5382,10 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	cb *CommandBuffer) {
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
-	pd := PointsDrawBuilder{}
-	pd2 := PointsDrawBuilder{}
+	trackBuilder := GetColoredTrianglesDrawBuilder()
+	defer ReturnColoredTrianglesDrawBuilder(trackBuilder)
+	historyBuilder := GetColoredTrianglesDrawBuilder()
+	defer ReturnColoredTrianglesDrawBuilder(historyBuilder)
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)
 	trid := GetColoredTrianglesDrawBuilder()
@@ -5417,12 +5419,13 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		heading := Select(state.HaveHeading(),
 			state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(), ac.Heading())
 
-		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, &pd, &pd2, ld, trid, td)
+		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, trackBuilder, historyBuilder,
+			ld, trid, td)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	pd.GenerateCommands(cb)
-	pd2.GenerateCommands(cb)
+	historyBuilder.GenerateCommands(cb)
+	trackBuilder.GenerateCommands(cb)
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	trid.GenerateCommands(cb)
@@ -5553,8 +5556,8 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 }
 
 func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, heading float32, ctx *PaneContext,
-	transforms ScopeTransformations, trackId string,
-	pd *PointsDrawBuilder, pd2 *PointsDrawBuilder, ld *ColoredLinesDrawBuilder,
+	transforms ScopeTransformations, trackId string, trackBuilder *ColoredTrianglesDrawBuilder,
+	historyBuilder *ColoredTrianglesDrawBuilder, ld *ColoredLinesDrawBuilder,
 	trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
@@ -5629,8 +5632,8 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 		case RadarModeFused:
 			if ps.Brightness.PrimarySymbols > 0 {
 				color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
-				trackSize := sp.getTrackSize(ctx, transforms) * scale // bigger points for fused mode primary tracks
-				pd2.AddPoint(transforms.WindowFromLatLongP(pos), trackSize, color)
+				trackSize := sp.getTrackSize(ctx, transforms) // bigger points for fused mode primary tracks
+				drawTrack(ctx, trackBuilder, pw, trackSize, color)
 			}
 		}
 	}
@@ -5680,11 +5683,41 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 
 			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
 				if p := state.historyTracks[idx].Position; !p.IsZero() {
-					historyTrackSize := 5 * scale
-					pd.AddPoint(transforms.WindowFromLatLongP(p), historyTrackSize, trackColor)
+					const historyTrackDiameter = 8
+					drawTrack(ctx, historyBuilder, transforms.WindowFromLatLongP(p), historyTrackDiameter,
+						trackColor)
 				}
 			}
 		}
+	}
+}
+
+func drawTrack(ctx *PaneContext, ctd *ColoredTrianglesDrawBuilder, p [2]float32, diameter float32, color RGB) {
+	// Figure out how many points to use to approximate the circle; use
+	// more the bigger it is on the screen, but, sadly, not enough to get a
+	// nice clean circle (matching real-world..)
+	np := 8
+	if diameter > 20 {
+		np = Select(diameter <= 40, 16, 32)
+	}
+
+	// Prepare the points around the unit circle; rotate them by 1/2 their
+	// angular spacing so that we have vertical and horizontal edges at the
+	// sides (e.g., a octagon like a stop-sign with 8 points, rather than
+	// having a vertex at the top of the circle.)
+	rot := rotator2f(360 / (2 * float32(np)))
+	pts := MapSlice(GetCirclePoints(np), func(p [2]float32) [2]float32 { return rot(p) })
+
+	// Scale the points based on the circle radius (and deal with the usual
+	// Windows high-DPI borkage...)
+	scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+	radius := scale * float32(int(diameter/2+0.5)) // round to integer
+	pts = MapSlice(pts, func(p [2]float32) [2]float32 { return scale2f(p, radius) })
+
+	// And finally draw the thing...
+	for i := range pts {
+		p0, p1 := pts[i], pts[(i+1)%len(pts)]
+		ctd.AddTriangle(p, add2f(p, p0), add2f(p, p1), color)
 	}
 }
 
