@@ -1227,7 +1227,8 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 	defer ReturnTextDrawBuilder(td)
 	ld := GetLinesDrawBuilder()
 	defer ReturnLinesDrawBuilder(ld)
-	pd := &PointsDrawBuilder{}
+	pd := GetTrianglesDrawBuilder() // for circles
+	defer ReturnTrianglesDrawBuilder(pd)
 	ldr := GetLinesDrawBuilder() // for restrictions--in window coords...
 	defer ReturnLinesDrawBuilder(ldr)
 
@@ -1254,13 +1255,13 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 				continue
 			}
 
-			w.drawWaypoints(arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+			w.drawWaypoints(arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr)
 
 			// Draw runway-specific waypoints
 			for _, ap := range SortedMapKeys(arr.RunwayWaypoints) {
 				for _, rwy := range SortedMapKeys(arr.RunwayWaypoints[ap]) {
 					wp := arr.RunwayWaypoints[ap][rwy]
-					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
 
 					if len(wp) > 1 {
 						// Draw the runway number in the middle of the line
@@ -1292,7 +1293,7 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 			appr := ap.Approaches[name]
 			if appr.Runway == rwy.Runway && w.scopeDraw.approaches[rwy.Airport][name] {
 				for _, wp := range appr.Waypoints {
-					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
 				}
 			}
 		}
@@ -1314,7 +1315,7 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 			for _, exit := range SortedMapKeys(exitRoutes) {
 				if w.scopeDraw.departures[name][rwy][exit] {
 					w.drawWaypoints(exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
-						td, style, ld, pd, ldr, color)
+						td, style, ld, pd, ldr)
 				}
 			}
 		}
@@ -1379,7 +1380,7 @@ func calculateOffset(font *Font, pt func(int) ([2]float32, bool)) [2]float32 {
 
 func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]interface{},
 	transforms ScopeTransformations, td *TextDrawBuilder, style TextStyle,
-	ld *LinesDrawBuilder, pd *PointsDrawBuilder, ldr *LinesDrawBuilder, color RGB) {
+	ld *LinesDrawBuilder, pd *TrianglesDrawBuilder, ldr *LinesDrawBuilder) {
 
 	// Draw an arrow at the point p (in nm coordinates) pointing in the
 	// direction given by the angle a.
@@ -1560,8 +1561,9 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 		drawnWaypoints[wp.Fix] = nil
 
 		// Draw a circle at the waypoint's location
-		const pointSize = 5
-		pd.AddPoint(transforms.WindowFromLatLongP(wp.Location), pointSize, color)
+		const pointRadius = 2.5
+		const nSegments = 8
+		pd.AddCircle(transforms.WindowFromLatLongP(wp.Location), pointRadius, nSegments)
 
 		offset := calculateOffset(style.Font, func(j int) ([2]float32, bool) {
 			idx := i + j

@@ -494,40 +494,6 @@ func (cb *CommandBuffer) ResetState() {
 // CommandBuffer. This allows batching up many things to be drawn all in a
 // single draw command, with corresponding GPU performance benefits.
 
-// PointsDrawBuilder accumulates colored points to be drawn.
-type PointsDrawBuilder struct {
-	td ColoredTrianglesDrawBuilder
-}
-
-// Reset resets all of the internal storage in the PointsDrawBuilder so that
-// new points can be specified. It maintains the memory allocations so that
-// once the system reaches steady state, there will generally not be dynamic
-// memory allocations when it is used.
-func (p *PointsDrawBuilder) Reset() {
-	p.td.Reset()
-}
-
-// AddPoint adds the specified point to the draw list in the
-// PointsDrawBuilder.
-func (p *PointsDrawBuilder) AddPoint(pt [2]float32, diameter float32, color RGB) {
-	// Draw points as a fan of triangles around the center point. Choose
-	// the number of points based on its diameter, which we assume is in
-	// window coordinates.
-	np := max(5, int(diameter))
-	pts := GetCirclePoints(np)
-	radius := diameter / 2
-	for i := range pts {
-		p0, p1 := scale2f(pts[i], radius), scale2f(pts[(i+1)%np], radius)
-		p.td.AddTriangle(pt, add2f(pt, p0), add2f(pt, p1), color)
-	}
-}
-
-// GenerateCommands adds a draw command for all of the points in the
-// PointsDrawBuilder to the provided command buffer.
-func (p *PointsDrawBuilder) GenerateCommands(cb *CommandBuffer) {
-	p.td.GenerateCommands(cb)
-}
-
 // LinesDrawBuilder accumulates lines to be drawn together. Note that it does
 // not allow specifying the colors of the lines; instead, whatever the current
 // color is (as set via the CommandBuffer SetRGB method) is used when drawing
