@@ -290,7 +290,7 @@ func fontsInit(r Renderer, platform Platform) {
 		Pix:    unsafe.Slice((*uint8)(img.Pixels), 4*img.Width*img.Height),
 		Stride: 4 * img.Width,
 		Rect:   image.Rectangle{Max: image.Point{X: img.Width, Y: img.Height}}}
-	atlasId := r.CreateTextureFromImage(rgb8Image, false)
+	atlasId := r.CreateTextureFromImage(rgb8Image, true /* nearest */)
 	io.Fonts().SetTextureID(imgui.TextureID(atlasId))
 
 	// Patch up the texture id after the atlas was created with the

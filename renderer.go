@@ -1001,10 +1001,8 @@ func (td *TextDrawBuilder) AddText(s string, p [2]float32, style TextStyle) [2]f
 // the first block of text starting at the specified point p.  Subsequent
 // blocks begin immediately after the end of the previous block.
 func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []TextStyle) [2]float32 {
-	// Initial state; start out pixel-perfect, at least.
-	x0, y0 := float32(int(p[0]+0.5)), float32(int(p[1]+0.5))
 	// Current cursor position
-	px, py := x0, y0
+	px, py := p[0], p[1]
 
 	for i := range text {
 		style := styles[i]
@@ -1048,7 +1046,7 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 				}
 
 				// Update the cursor to go to the next line.
-				px = x0
+				px = p[0]
 				py -= dy
 
 				// Reset the upper line box corner for the start of the
