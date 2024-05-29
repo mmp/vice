@@ -514,7 +514,7 @@ func (p *PointsDrawBuilder) AddPoint(pt [2]float32, diameter float32, color RGB)
 	// the number of points based on its diameter, which we assume is in
 	// window coordinates.
 	np := max(5, int(diameter))
-	pts := getCirclePoints(np)
+	pts := GetCirclePoints(np)
 	radius := diameter / 2
 	for i := range pts {
 		p0, p1 := scale2f(pts[i], radius), scale2f(pts[(i+1)%np], radius)
@@ -573,41 +573,11 @@ func (l *LinesDrawBuilder) AddLineLoop(p [][2]float32) {
 	}
 }
 
-var (
-	// So that we can efficiently draw circles with various tessellations,
-	// circlePoints caches vertex positions of a unit circle at the origin
-	// for specified tessellation rates.
-	circlePoints map[int][][2]float32
-)
-
-// getCirclePoints returns the vertices for a unit circle at the origin
-// with the given number of segments; it creates the vertex slice if this
-// tessellation rate hasn't been seen before and otherwise returns a
-// preexisting one.
-func getCirclePoints(nsegs int) [][2]float32 {
-	if circlePoints == nil {
-		circlePoints = make(map[int][][2]float32)
-	}
-	if _, ok := circlePoints[nsegs]; !ok {
-		// Evaluate the vertices of the circle to initialize a new slice.
-		var pts [][2]float32
-		for d := 0; d < nsegs; d++ {
-			angle := radians(float32(d) / float32(nsegs) * 360)
-			pt := [2]float32{sin(angle), cos(angle)}
-			pts = append(pts, pt)
-		}
-		circlePoints[nsegs] = pts
-	}
-
-	// One way or another, it's now available in the map.
-	return circlePoints[nsegs]
-}
-
 // AddCircle adds lines that draw the outline of a circle with specified
 // and color centered at the specified point p. The nsegs parameter
 // specifies the tessellation rate for the circle.
 func (l *LinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int) {
-	circle := getCirclePoints(nsegs)
+	circle := GetCirclePoints(nsegs)
 
 	idx := int32(len(l.p))
 	for i := 0; i < nsegs; i++ {
@@ -805,7 +775,7 @@ func (t *TrianglesDrawBuilder) AddQuad(p0, p1, p2, p3 [2]float32) {
 // specified position to be drawn using triangles. The specified number of
 // segments, nsegs, sets the tessellation rate for the circle.
 func (t *TrianglesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int) {
-	circle := getCirclePoints(nsegs)
+	circle := GetCirclePoints(nsegs)
 
 	idx := int32(len(t.p))
 	t.p = append(t.p, p) // center point
