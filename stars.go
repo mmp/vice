@@ -1561,7 +1561,6 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	transforms.LoadWindowViewingMatrices(cb)
 
 	// Maps
-	cb.PointSize(5)
 	cb.LineWidth(1)
 	for _, vmap := range ctx.world.STARSMaps {
 		if _, ok := ps.VideoMapVisible[vmap.Name]; !ok {
@@ -5421,15 +5420,15 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, &pd, &pd2, ld, trid, td)
 	}
 
-	transforms.LoadLatLongViewingMatrices(cb)
-	cb.PointSize(5)
+	transforms.LoadWindowViewingMatrices(cb)
 	pd.GenerateCommands(cb)
-	cb.PointSize(sp.getTrackSize(ctx, transforms)) // bigger points for fused mode primary tracks
-
 	pd2.GenerateCommands(cb)
+
+	transforms.LoadLatLongViewingMatrices(cb)
 	trid.GenerateCommands(cb)
 	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
+
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
 }
@@ -5630,7 +5629,8 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 		case RadarModeFused:
 			if ps.Brightness.PrimarySymbols > 0 {
 				color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
-				pd2.AddPoint(pos, color)
+				trackSize := sp.getTrackSize(ctx, transforms) * scale // bigger points for fused mode primary tracks
+				pd2.AddPoint(transforms.WindowFromLatLongP(pos), trackSize, color)
 			}
 		}
 	}
@@ -5680,7 +5680,8 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 
 			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
 				if p := state.historyTracks[idx].Position; !p.IsZero() {
-					pd.AddPoint(p, trackColor)
+					historyTrackSize := 5 * scale
+					pd.AddPoint(transforms.WindowFromLatLongP(p), historyTrackSize, trackColor)
 				}
 			}
 		}

@@ -121,8 +121,6 @@ const (
 	RendererDisableColorArray           // no args
 	RendererTexCoordArray               // byte offset to array values, n components, stride (bytes)
 	RendererDisableTexCoordArray        // no args
-	RendererPointSize                   // float32
-	RendererDrawPoints                  // 2 int32: offset to the index buffer, count
 	RendererLineWidth                   // float32
 	RendererDrawLines                   // 2 int32: offset to the index buffer, count
 	RendererDrawTriangles               // 2 int32: offset to the index buffer, count
@@ -432,22 +430,6 @@ func (cb *CommandBuffer) DisableTexCoordArray() {
 	cb.appendInts(RendererDisableTexCoordArray)
 }
 
-// PointSize adds a command to the command buffer that specifies the size
-// of subsequent points that are drawn in pixels.
-func (cb *CommandBuffer) PointSize(w float32) {
-	cb.appendInts(RendererPointSize)
-	// Scale as needed so that points are the same size on retina-style displays.
-	cb.appendFloats(w * platform.DPIScale())
-}
-
-// DrawPoints adds a command to the command buffer to draw a number of points.
-// offset gives the offset in the command buffer where the vertex indices for
-// the points begin (as returned by e.g., the IntBuffer method) and count is
-// the number of points to draw.
-func (cb *CommandBuffer) DrawPoints(offset, count int) {
-	cb.appendInts(RendererDrawPoints, offset, count)
-}
-
 // LineWidth adds a command to the command buffer that sets the width in
 // pixels of subsequent lines that are drawn.
 func (cb *CommandBuffer) LineWidth(w float32) {
@@ -514,9 +496,7 @@ func (cb *CommandBuffer) ResetState() {
 
 // PointsDrawBuilder accumulates colored points to be drawn.
 type PointsDrawBuilder struct {
-	p       [][2]float32
-	color   []RGB
-	indices []int32
+	td ColoredTrianglesDrawBuilder
 }
 
 // Reset resets all of the internal storage in the PointsDrawBuilder so that
@@ -524,47 +504,28 @@ type PointsDrawBuilder struct {
 // once the system reaches steady state, there will generally not be dynamic
 // memory allocations when it is used.
 func (p *PointsDrawBuilder) Reset() {
-	p.p = p.p[:0]
-	p.color = p.color[:0]
-	p.indices = p.indices[:0]
+	p.td.Reset()
 }
 
 // AddPoint adds the specified point to the draw list in the
 // PointsDrawBuilder.
-func (p *PointsDrawBuilder) AddPoint(pt [2]float32, color RGB) {
-	p.p = append(p.p, pt)
-	p.color = append(p.color, color)
-	p.indices = append(p.indices, int32(len(p.p)-1))
-}
-
-// Bounds returns the 2D bounding box of all of the points provided to the
-// PointsDrawBuilder.
-func (p *PointsDrawBuilder) Bounds() Extent2D {
-	return Extent2DFromPoints(p.p)
+func (p *PointsDrawBuilder) AddPoint(pt [2]float32, diameter float32, color RGB) {
+	// Draw points as a fan of triangles around the center point. Choose
+	// the number of points based on its diameter, which we assume is in
+	// window coordinates.
+	np := max(5, int(diameter))
+	pts := getCirclePoints(np)
+	radius := diameter / 2
+	for i := range pts {
+		p0, p1 := scale2f(pts[i], radius), scale2f(pts[(i+1)%np], radius)
+		p.td.AddTriangle(pt, add2f(pt, p0), add2f(pt, p1), color)
+	}
 }
 
 // GenerateCommands adds a draw command for all of the points in the
 // PointsDrawBuilder to the provided command buffer.
 func (p *PointsDrawBuilder) GenerateCommands(cb *CommandBuffer) {
-	if len(p.indices) == 0 {
-		return
-	}
-
-	// Create arrays for the vertex positions and colors.
-	pi := cb.Float2Buffer(p.p)
-	cb.VertexArray(pi, 2, 2*4)
-	rgb := cb.RGBBuffer(p.color)
-	cb.RGB32Array(rgb, 3, 3*4)
-
-	// Create an index buffer from the indices.
-	ind := cb.IntBuffer(p.indices)
-
-	// Add the draw command to the command buffer.
-	cb.DrawPoints(ind, len(p.indices))
-
-	// Clean up
-	cb.DisableVertexArray()
-	cb.DisableColorArray()
+	p.td.GenerateCommands(cb)
 }
 
 // LinesDrawBuilder accumulates lines to be drawn together. Note that it does
