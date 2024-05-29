@@ -1411,16 +1411,16 @@ func (sp *STARSPane) processEvents(w *World) {
 			}
 
 		case AcceptedRedirectedHandoffEvent:
-			state, ok := sp.Aircraft[event.Callsign]
-			if !ok {
-				lg.Errorf("%s: have AcceptedRedirectedHandoffEvent but missing STARS state?", event.Callsign)
-			}
 			if event.FromController == w.Callsign && event.ToController != w.Callsign {
-				globalConfig.Audio.PlayOnce(AudioHandoffAccepted)
-				state.OutboundHandoffAccepted = true
-				state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
-				state.RDIndicatorEnd = time.Now().Add(30 * time.Second)
-				state.DatablockType = FullDatablock
+				if state, ok := sp.Aircraft[event.Callsign]; !ok {
+					lg.Errorf("%s: have AcceptedRedirectedHandoffEvent but missing STARS state?", event.Callsign)
+				} else {
+					globalConfig.Audio.PlayOnce(AudioHandoffAccepted)
+					state.OutboundHandoffAccepted = true
+					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
+					state.RDIndicatorEnd = time.Now().Add(30 * time.Second)
+					state.DatablockType = FullDatablock
+				}
 			}
 
 		case IdentEvent:
@@ -3524,7 +3524,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					state.RDIndicatorEnd = time.Time{}
 					status.clear = true
 					return
-				} else if ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign || (len(ac.RedirectedHandoff.Redirector) > 0 && ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1] == ctx.world.Callsign) {
+				} else if ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign || ac.RedirectedHandoff.GetLastRedirector() == ctx.world.Callsign {
 					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
 					status.clear = true
 					return
@@ -3863,9 +3863,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
 				if control != nil {
 					if ac.HandoffTrackController == ctx.world.Callsign || ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign { // Redirect
-						if (len(ac.RedirectedHandoff.Redirector) == 1 || (len(ac.RedirectedHandoff.Redirector) > 1) && ac.RedirectedHandoff.Redirector[1] == ctx.world.Callsign) && ac.RedirectedHandoff.Redirector[0] == control.Callsign {
-							// If you're the 2nd redirector (which is true if 1 redirect happened so far, or in case of multiple redirected handoffs, check against the 2nd redirector's callsign)
-							// redirecting back to the 1st redirector, show a PDB instead of a normal FDB
+						if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctx.world.Callsign, control.Callsign) {
 							sp.Aircraft[ac.Callsign].DatablockType = PartialDatablock
 						} else {
 							sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
@@ -6335,10 +6333,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = []string{"", " UN"}
 		} else if time.Until(state.POFlashingEndTime) > 0*time.Second {
 			field8 = []string{"", " PO"}
-		} else if redirect := ac.RedirectedHandoff; (redirect.RedirectedTo == ctx.world.Callsign ||
-			(len(redirect.Redirector) > 0 && (redirect.Redirector[len(redirect.Redirector)-1] == ctx.world.Callsign)) ||
-			redirect.OriginalOwner == ctx.world.Callsign || time.Until(state.RDIndicatorEnd) > 0) &&
-			!(len(redirect.Redirector) > 1 && redirect.RedirectedTo == redirect.Redirector[0] && redirect.Redirector[len(redirect.Redirector)-1] == redirect.Redirector[1]) { // Don't show "RD" if the second redirector redirects back to the first redirector
+		} else if ac.RedirectedHandoff.ShowRDIndicator(ctx.world.Callsign, state.RDIndicatorEnd) {
 			field8 = []string{" RD"}
 		}
 

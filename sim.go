@@ -2250,17 +2250,12 @@ func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			octrl := s.World.GetControllerByCallsign(controller)
 			ac.RedirectedHandoff.OriginalOwner = ac.TrackingController
-			if (len(ac.RedirectedHandoff.Redirector) == 1 || (len(ac.RedirectedHandoff.Redirector) > 1) && ac.RedirectedHandoff.Redirector[1] == ctrl.Callsign) && octrl.Callsign == ac.RedirectedHandoff.Redirector[0] {
-				// If you're the 2nd redirector (which is true if 1 redirect happened so far, or in case of multiple redirected handoffs, check against the 2nd redirector's callsign)
-				// redirecting back to the 1st redirector, clear the RD and show it as a normal handoff
+			if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Callsign, octrl.Callsign) {
 				ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[0]
 				ac.RedirectedHandoff = RedirectedHandoff{}
 				return nil
-			} else if len(ac.RedirectedHandoff.Redirector) == 0 || ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1] != ctrl.Callsign {
-				// Don't append the same controller multiple times
-				// (the case in which the last redirector recalls and then redirects again)
-				ac.RedirectedHandoff.Redirector = append(ac.RedirectedHandoff.Redirector, ctrl.Callsign)
 			}
+			ac.RedirectedHandoff.AddRedirector(ctrl)
 			ac.RedirectedHandoff.RedirectedTo = octrl.Callsign
 			return nil
 		})
@@ -2283,7 +2278,7 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 				ac.HandoffTrackController = ""
 				ac.TrackingController = ac.RedirectedHandoff.RedirectedTo
 				ac.RedirectedHandoff = RedirectedHandoff{}
-			} else if len(ac.RedirectedHandoff.Redirector) > 0 && ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1] == ctrl.Callsign { // Recall (only the last redirector is able to recall)
+			} else if ac.RedirectedHandoff.GetLastRedirector() == ctrl.Callsign { // Recall (only the last redirector is able to recall)
 				if len(ac.RedirectedHandoff.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"
 					ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1]
 				} else { // One redirect took place, clear the RD and show it as a normal handoff
