@@ -7176,7 +7176,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent Extent2D, tran
 ///////////////////////////////////////////////////////////////////////////
 // DCB menu on top
 
-const STARSButtonSize = 75
+const STARSButtonSize = 76
 
 const (
 	STARSButtonFull = 1 << iota
