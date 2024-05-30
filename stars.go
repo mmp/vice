@@ -168,6 +168,7 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *PaneContext, aircraft []*Aircraf
 type CAAircraft struct {
 	Callsigns    [2]string // sorted alphabetically
 	Acknowledged bool
+	SoundEnd     time.Time
 }
 
 type QuickLookPosition struct {
@@ -455,6 +456,7 @@ type STARSAircraftState struct {
 	DisableMSAW      bool
 	InhibitMSAW      bool // only applies if in an alert. clear when alert is over?
 	MSAWAcknowledged bool
+	MSAWSoundEnd     time.Time
 
 	FirstSeen           time.Time
 	FirstRadarTrack     time.Time
@@ -1329,6 +1331,7 @@ func (sp *STARSPane) processEvents(w *World) {
 		if warn && !state.MSAW {
 			// It's a new alert
 			state.MSAWAcknowledged = false
+			state.MSAWSoundEnd = time.Now().Add(5 * time.Second)
 		}
 		state.MSAW = warn
 	}
@@ -1632,15 +1635,17 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
 
 	// Play the CA sound if any CAs or MSAWs are unacknowledged
+	now := time.Now()
 	playAlertSound := !ps.DisableCAWarnings && slices.ContainsFunc(sp.CAAircraft,
 		func(ca CAAircraft) bool {
 			return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
-				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings
+				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings && now.Before(ca.SoundEnd)
 		})
 	if !ps.DisableMSAW {
 		for _, ac := range aircraft {
 			state := sp.Aircraft[ac.Callsign]
-			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW && !state.DisableMSAW {
+			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW && !state.DisableMSAW &&
+				now.Before(state.MSAWSoundEnd) {
 				playAlertSound = true
 				break
 			}
@@ -5851,6 +5856,7 @@ func (sp *STARSPane) updateCAAircraft(w *World, aircraft []*Aircraft) {
 				}) {
 					sp.CAAircraft = append(sp.CAAircraft, CAAircraft{
 						Callsigns: [2]string{callsign, ocs},
+						SoundEnd:  time.Now().Add(5 * time.Second),
 					})
 				}
 			}
