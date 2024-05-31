@@ -6363,14 +6363,20 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		if state.LostTrack(ctx.world.CurrentTime()) {
 			alt = "CST"
 		}
+		// Build up field3 and field4 in tandem because 4 gets a "+" if 3
+		// is displaying the secondary scratchpad.  Leave the empty string
+		// as a placeholder in field 4 otherwise.
 		field3 := []string{alt}
+		field4 := []string{""}
 		if !state.Ident() {
 			// Don't display these if they're identing: then it's just altitude and speed + "ID"
 			if ac.Scratchpad != "" {
 				field3 = append(field3, ac.Scratchpad)
+				field4 = append(field4, "")
 			}
 			if ac.SecondaryScratchpad != "" {
 				field3 = append(field3, ac.SecondaryScratchpad)
+				field4 = append(field4, "+") // 2-67, "Field 4 Contents"
 			}
 			if len(field3) == 1 {
 				if ap := ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil && !ap.OmitArrivalScratchpad {
@@ -6379,29 +6385,34 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 						ap = ap[1:] // drop the leading K
 					}
 					field3 = append(field3, ap)
+					field4 = append(field4, "")
 				}
 			}
 		}
 
-		field4 := "  "
-		if ac.HandoffTrackController != "" {
-			if ctrl := ctx.world.GetControllerByCallsign(ac.HandoffTrackController); ctrl != nil {
-				if ac.RedirectedHandoff.RedirectedTo != "" {
-					if sameFacility(ctx, ac.RedirectedHandoff.RedirectedTo) {
-						field4 = ac.RedirectedHandoff.RedirectedTo[len(ac.RedirectedHandoff.RedirectedTo)-1:]
+		// Fill in empty field4 entries.
+		for i := range field4 {
+			if field4[i] == "" && ac.HandoffTrackController != "" {
+				if ctrl := ctx.world.GetControllerByCallsign(ac.HandoffTrackController); ctrl != nil {
+					if ac.RedirectedHandoff.RedirectedTo != "" {
+						if sameFacility(ctx, ac.RedirectedHandoff.RedirectedTo) {
+							field4[i] = ac.RedirectedHandoff.RedirectedTo[len(ac.RedirectedHandoff.RedirectedTo)-1:]
+						} else {
+							field4[i] = ctx.world.GetControllerByCallsign(ac.RedirectedHandoff.RedirectedTo).FacilityIdentifier
+						}
 					} else {
-						field4 = ctx.world.GetControllerByCallsign(ac.RedirectedHandoff.RedirectedTo).FacilityIdentifier
+						if ctrl.ERAMFacility { // Same facility
+							field4[i] = "C"
+						} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
+							field4[i] = ctrl.SectorId[len(ctrl.SectorId)-1:]
+						} else { // Different facility
+							field4[i] = ctrl.FacilityIdentifier
+						}
 					}
-				} else {
-					if ctrl.ERAMFacility { // Same facility
-						field4 = "C"
-					} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
-						field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
-					} else { // Different facility
-						field4 = ctrl.FacilityIdentifier
-					}
-
 				}
+			}
+			for len(field4[i]) < 2 {
+				field4[i] += " "
 			}
 		}
 
@@ -6483,16 +6494,19 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		}
 		line3 := field6 + "  " + field7
 
-		// Now make some datablocks. For our purposes, only fields 3, 5,
-		// and 8 may be time multiplexed, which simplifies db creation
-		// here.  Note that line 1 has already been set in baseDB above.
+		// Now make some datablocks. Note that line 1 has already been set
+		// in baseDB above.
+		//
+		// A number of the fields may be multiplexed; the total number of
+		// unique datablock variations is the least common multiple of all
+		// of their lengths.  and 8 may be time multiplexed, which
+		// simplifies db creation here.
 		dbs := []STARSDatablock{}
-		n := lcm(len(field3), len(field5)) // cycle through all variations
-		n = lcm(n, len(field8))
+		n := lcm(lcm(len(field3), len(field4)), lcm(len(field5), len(field8)))
 		for i := 0; i < n; i++ {
 			db := baseDB.Duplicate()
 			db.Lines[1].Text = field1 + field2 + field8[i%len(field8)]
-			db.Lines[2].Text = field3[i%len(field3)] + field4 + field5[i%len(field5)]
+			db.Lines[2].Text = field3[i%len(field3)] + field4[i%len(field4)] + field5[i%len(field5)]
 			db.Lines[3].Text = line3
 			if line3FieldColors != nil {
 				db.Lines[3].Colors = append(db.Lines[3].Colors, *line3FieldColors)
