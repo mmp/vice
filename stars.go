@@ -6417,17 +6417,17 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		// Fill in empty field4 entries.
 		for i := range field4 {
 			if field4[i] == "" && ac.HandoffTrackController != "" {
-  			if ctrl := ctx.world.GetControllerByCallsign(ac.HandoffTrackController); ctrl != nil {
-	  			if ac.RedirectedHandoff.RedirectedTo != "" {
-		  			field4 = ctx.world.GetControllerByCallsign(ac.RedirectedHandoff.RedirectedTo).SectorId[len(ctrl.SectorId)-1:]
-  				} else {
-	  				if ctrl.ERAMFacility { // Same facility
-		  				field4 = "C"
-			  		} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
-				  		field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
-					  } else { // Different facility
-  						field4 = ctrl.FacilityIdentifier
-            }
+				if ctrl := ctx.world.GetControllerByCallsign(ac.HandoffTrackController); ctrl != nil {
+					if ac.RedirectedHandoff.RedirectedTo != "" {
+						field4 = append(field4, ctx.world.GetControllerByCallsign(ac.RedirectedHandoff.RedirectedTo).SectorId[len(ctrl.SectorId)-1:])
+					} else {
+						if ctrl.ERAMFacility { // Same facility
+							field4 = append(field4, "C")
+						} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
+							field4 = append(field4, ctrl.SectorId[len(ctrl.SectorId)-1:])
+						} else { // Different facility
+							field4 = append(field4, ctrl.FacilityIdentifier)
+						}
 					}
 				}
 			}
