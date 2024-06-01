@@ -1,0 +1,831 @@
+{
+  "tracon": "S56",
+  "airports": {
+    "KSLC": {
+      "approaches": {
+        "I6L": {
+          "tower_controller": "SLC_C_TWR",
+          "cifp_id": "I16L"
+        },
+        "I6R": {
+          "tower_controller": "SLC_C_TWR",
+          "cifp_id": "I16R"
+        },
+        "I7": {
+          "tower_controller": "SLC_C_TWR",
+          "cifp_id": "I17"
+        },
+        "I4L": {
+          "tower_controller": "SLC_C_TWR",
+          "cifp_id": "I34L"
+        },
+        "I4R": {
+          "tower_controller": "SLC_C_TWR",
+          "cifp_id": "I34R"
+        },
+        "L5": {
+          "full_name": "LDA Runway 35",
+          "tower_controller": "SLC_C_TWR",
+          "cifp_id": "X35"
+        }
+      },
+      "departure_routes": {
+        "34L": {
+          "TWF": {
+            "assigned_altitude": 9000,
+            "sid": "CGULL1",
+            "waypoints": "KSLC-16R/h280 CORVR/a13000+ CGULL/a15000+ MOFER SCOVL DRYAD",
+            "description": "CGULL1"
+          },
+          "TRILA": {
+            "assigned_altitude": 9000,
+            "sid": "ARCHZ1",
+            "waypoints": "KSLC-16R/h280 SCANT/a10000+ ARCHZ/a13000+ TRILA/a19000+",
+            "description": "ARCHZ1"
+          },
+          "DEZRT": {
+            "assigned_altitude": 9000,
+            "sid": "DEZRT2",
+            "waypoints": "KSLC-16R/h280 DURCH/a12000+ BONNE/a14000+ DEZRT/a15000+",
+            "description": "DEZRT2"
+          },
+          "STEWW": {
+            "assigned_altitude": 9000,
+            "sid": "ARCHZ1",
+            "waypoints": "KSLC-16L/h280 SCANT/a10000+ ARCHZ/a13000+ TRILA/a19000+ EDETH SEVYR MLF",
+            "description": "ARCHZ1"
+          }
+        },
+        "34R": {
+          "HOLTR": {
+            "assigned_altitude": 9000,
+            "sid": "RUGGD3",
+            "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ KLOUD SAWGI",
+            "description": "RUGGD3"
+          },
+          "OCS": {
+            "assigned_altitude": 9000,
+            "sid": "RUGGD3",
+            "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ SPINE SKIII POPLE",
+            "description": "RUGGD3"
+          },
+          "PERTY": {
+            "assigned_altitude": 9000,
+            "sid": "RUGGD3",
+            "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ HERTS PERTY",
+            "description": "RUGGD3"
+          },
+          "EKR": {
+            "assigned_altitude": 9000,
+            "sid": "RUGGD3",
+            "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ UPJAR BORZI",
+            "description": "RUGGD3"
+          },
+          "KIERA": {
+            "assigned_altitude": 9000,
+            "sid": "RUGGD3",
+            "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ LOFOG LEGBE",
+            "description": "RUGGD3"
+          }
+        },
+        "16L": {
+          "KIMMR, EYELO": {
+            "assigned_altitude": 9000,
+            "sid": "ZIONZ1",
+            "waypoints": "KSLC-34R/h160 HOPTO/a9000+ ZIONZ KOOGR/a13000+ ROMMN/a19000-",
+            "description": "ZIONZ1"
+          },
+          "LOUDY": {
+            "assigned_altitude": 9000,
+            "sid": "ZIONZ1",
+            "waypoints": "KSLC-34R/h160 HOPTO/a9000+ ZIONZ GITLN LODUY/a14000+ URNUW",
+            "description": "ZIONZ1"
+          },
+          "STEWW": {
+            "assigned_altitude": 9000,
+            "sid": "ZIONZ1",
+            "waypoints": "KSLC-34R/h160 HOPTO/a9000+ ZIONZ GITLN LODUY/a14000+ URNUW EHK"
+          }
+        },
+        "16R": {
+          "TWF": {
+            "assigned_altitude": 9000,
+            "sid": "CGULL1",
+            "waypoints": "KSLC-34L/h280 CORVR/a13000+ CGULL/a15000+ MOFER SCOVL DRYAD",
+            "description": "CGULL1"
+          },
+          "HOLTR": {
+            "assigned_altitude": 9000,
+            "sid": "RUGGD3",
+            "waypoints": "KSLC-34L/h340 BUBBY/a11000+ RUGGD/a12000+ KLOUD SAWGI",
+            "description": "RUGGD3"
+          },
+          "OCS": {
+            "assigned_altitude": 9000,
+            "sid": "RUGGD3",
+            "waypoints": "KSLC-34L/h340 BUBBY/a11000+ RUGGD/a12000+ SPINE SKIII POPLE",
+            "description": "RUGGD3"
+          },
+          "PERTY": {
+            "assigned_altitude": 9000,
+            "sid": "RUGGD3",
+            "waypoints": "KSLC-34L/h340 BUBBY/a11000+ RUGGD/a12000+ HERTS PERTY",
+            "description": "RUGGD3"
+          },
+          "EKR": {
+            "assigned_altitude": 9000,
+            "sid": "RUGGD3",
+            "waypoints": "KSLC-34L/h340 BUBBY/a11000+ RUGGD/a12000+ UPJAR BORZI",
+            "description": "RUGGD3"
+          },
+          "KIERA": {
+            "assigned_altitude": 9000,
+            "sid": "RUGGD3",
+            "waypoints": "KSLC-34L/h340 BUBBY/a11000+ RUGGD/a12000+ LOFOG LEGBE",
+            "description": "RUGGD3"
+          },
+          "DEZRT": {
+            "assigned_altitude": 9000,
+            "sid": "DEZRT2",
+            "waypoints": "KSLC-34L/h280 DURCH/a12000+ BONNE/a14000+ DEZRT/a15000+",
+            "description": "DEZRT2"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "fleet": "short"
+            }
+          ],
+          "destination": "KDEN",
+          "exit": "PERTY",
+          "route": "PERTY KAMPR LONGZ2",
+          "scratchpad": "RHE"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "SKW"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "default"
+            }
+          ],
+          "destination": "KORD",
+          "exit": "OCS",
+          "route": "OCS KURSE Q122 VIGGR MYRRS FYTTE7",
+          "scratchpad": "RSP"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "short"
+            }
+          ],
+          "destination": "KATL",
+          "exit": "OCS",
+          "route": "OCS KURSE Q122 VIGGR JACCC JACCC1",
+          "scratchpad": "RSP"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "short"
+            }
+          ],
+          "destination": "KLAS",
+          "exit": "STEWW",
+          "route": "STEWW CHOWW2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KPSC",
+          "exit": "TWF",
+          "route": "TWF J15 BOI",
+          "scratchpad": "COR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KSEA",
+          "exit": "TWF",
+          "route": "TWF PDT CHINS5",
+          "scratchpad": "COR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "short"
+            }
+          ],
+          "destination": "KGEG",
+          "exit": "TWF",
+          "route": "TWF J12 DNJ GEG",
+          "scratchpad": "COR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "short"
+            }
+          ],
+          "destination": "KBOI",
+          "exit": "TWF",
+          "route": "TWF BROPH SPUUD4",
+          "scratchpad": "COR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "long"
+            }
+          ],
+          "destination": "PHNL",
+          "exit": "DEZRT",
+          "route": "DEZRT BAM FMG PYE BEBOP R464 BITTA MAGGI3",
+          "scratchpad": "DUR"
+        }
+      ],
+      "tower_list": 1
+    }
+  },
+  "arrival_groups": {
+    "North - N Flow": [
+      {
+        "airlines": {
+          "KSLC": [
+            {
+              "airport": "KSEA",
+              "icao": "DAL"
+            },
+            {
+              "airport": "CYVR",
+              "icao": "SKW"
+            },
+            {
+              "airport": "KBOI",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "initial_altitude": 19000,
+        "initial_controller": "SLC_33_CTR",
+        "initial_speed": 300,
+        "star": "NORDK6",
+        "spawn": "LHO",
+        "waypoints": "LHO/a19000+/ho CARTR/a19000 NORDK SETTT/a15000 DYANN/a11000+ ANNTY/a11000 CEEDR/h164",
+        "description": "NORDK6"
+      },
+      {
+        "airlines": {
+          "KSLC": [
+            {
+              "airport": "KMSP",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KDEN",
+              "icao": "SKW"
+            },
+            {
+              "airport": "KDEN",
+              "icao": "FFT"
+            }
+          ]
+        },
+        "initial_altitude": 20000,
+        "initial_controller": "SLC_33_CTR",
+        "initial_speed": 280,
+        "star": "SKEES5",
+        "spawn": "BEARR",
+        "description": "SKEES5"
+      }
+    ],
+    "North - S Flow": [
+      {
+        "airlines": {
+          "KSLC": [
+            {
+              "airport": "KSEA",
+              "icao": "DAL"
+            },
+            {
+              "airport": "CYVR",
+              "icao": "SKW"
+            },
+            {
+              "airport": "KBOI",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "initial_altitude": 19000,
+        "initial_controller": "SLC_33_CTR",
+        "initial_speed": 300,
+        "star": "NORDK6",
+        "spawn": "LHO@0.2",
+        "description": "NORDK6"
+      },
+      {
+        "airlines": {
+          "KSLC": [
+            {
+              "airport": "KMSP",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KDEN",
+              "icao": "SKW"
+            },
+            {
+              "airport": "KDEN",
+              "icao": "FFT"
+            }
+          ]
+        },
+        "initial_altitude": 17000,
+        "initial_controller": "SLC_33_CTR",
+        "initial_speed": 280,
+        "star": "SKEES5",
+        "spawn": "SLOAP@0.7",
+        "description": "SKEES5"
+      }
+    ],
+    "S/E - N Flow": [
+      {
+        "airlines": {
+          "KSLC": [
+            {
+              "airport": "KAUS",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KDFW",
+              "icao": "SKW"
+            },
+            {
+              "airport": "KDEN",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMSP",
+              "icao": "FDX"
+            },
+            {
+              "airport": "KIAH",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KASE",
+              "icao": "DPJ"
+            }
+          ]
+        },
+        "initial_altitude": 23000,
+        "initial_controller": "SLC_33_CTR",
+        "initial_speed": 310,
+        "star": "LEEHY5",
+        "spawn": "GOSHU",
+        "description": "LEEHY5"
+      },
+      {
+        "airlines": {
+          "KSLC": [
+            {
+              "airport": "KATL",
+              "icao": "DAL"
+            }
+          ]
+        },
+        "initial_altitude": 17000,
+        "initial_controller": "SLC_33_CTR",
+        "initial_speed": 280,
+        "star": "QWENN5",
+        "spawn": "UINTA@0.2",
+        "description": "QWENN5"
+      }
+    ],
+    "S/E - S Flow": [
+      {
+        "airlines": {
+          "KSLC": [
+            {
+              "airport": "KAUS",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KDFW",
+              "icao": "SKW"
+            },
+            {
+              "airport": "KDEN",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KMSP",
+              "icao": "FDX"
+            },
+            {
+              "airport": "KIAH",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "initial_altitude": 23000,
+        "initial_controller": "SLC_33_CTR",
+        "initial_speed": 310,
+        "star": "LEEHY5",
+        "spawn": "GOSHU",
+        "description": "LEEHY5"
+      }
+    ],
+    "WAATS5-N": [
+      {
+        "airlines": {
+          "KSLC": [
+            {
+              "airport": "KLAX",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KSMF",
+              "icao": "SKW"
+            },
+            {
+              "airport": "KSFO",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "initial_altitude": 19000,
+        "initial_controller": "SLC_33_CTR",
+        "initial_speed": 300,
+        "star": "WAATS5",
+        "spawn": "WAATS",
+        "route": "/. WAATS",
+        "waypoints": "KNOLE/a17000+/ho WAATS/a14000+ RAACE/a12000 CRKIT OQUIR PITTT CEEDR/h164",
+        "description": "WAATS5"
+      }
+    ],
+    "WAATS5-S": [
+      {
+        "airlines": {
+          "KSLC": [
+            {
+              "airport": "KLAX",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KSMF",
+              "icao": "SKW"
+            },
+            {
+              "airport": "KSFO",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "initial_altitude": 19000,
+        "initial_controller": "SLC_33_CTR",
+        "initial_speed": 300,
+        "star": "WAATS5",
+        "spawn": "WAATS",
+        "route": "/. WAATS",
+        "waypoints": "KNOLE/a17000+/ho WAATS/a14000 DUGGY/a12000 SLAGG QUIPA LOAPP RROYY/h344",
+        "description": "WAATS5"
+      }
+    ]
+  },
+  "control_positions": {
+    "SLC_W_TWR": {
+      "frequency": 132650,
+      "full_name": "Salt Lake City Tower",
+      "scope_char": "W",
+      "sector_id": "1W"
+    },
+    "SLC_C_TWR": {
+      "frequency": 119050,
+      "full_name": "Salt Lake City Tower",
+      "scope_char": "L",
+      "sector_id": "1L"
+    },
+    "SLC_E_TWR": {
+      "frequency": 118300,
+      "full_name": "Salt Lake City Tower",
+      "scope_char": "E",
+      "sector_id": "1E"
+    },
+    "SLC_A_APP": {
+      "frequency": 118850,
+      "full_name": "Salt Lake City Approach",
+      "scope_char": "A",
+      "sector_id": "1A"
+    },
+    "SLC_B_APP": {
+      "frequency": 124900,
+      "full_name": "Salt Lake City Approach",
+      "scope_char": "B",
+      "sector_id": "1B"
+    },
+    "SLC_F_APP": {
+      "frequency": 125700,
+      "full_name": "Salt Lake City Approach",
+      "scope_char": "F",
+      "sector_id": "1F"
+    },
+    "SLC_G_APP": {
+      "frequency": 126250,
+      "full_name": "Salt Lake City Approach",
+      "scope_char": "G",
+      "sector_id": "1G"
+    },
+    "SLC_H_APP": {
+      "frequency": 121100,
+      "full_name": "Salt Lake City Approach",
+      "scope_char": "H",
+      "sector_id": "1H"
+    },
+    "SLC_J_APP": {
+      "frequency": 128600,
+      "full_name": "Salt Lake City Approach",
+      "scope_char": "J",
+      "sector_id": "1J"
+    },
+    "SLC_K_APP": {
+      "frequency": 135500,
+      "full_name": "Salt Lake City Approach",
+      "scope_char": "K",
+      "sector_id": "1K"
+    },
+    "SLC_S_APP": {
+      "frequency": 128100,
+      "full_name": "Salt Lake City Approach",
+      "scope_char": "S",
+      "sector_id": "1S"
+    },
+    "SLC_V_APP": {
+      "frequency": 127400,
+      "full_name": "Salt Lake City Approach",
+      "scope_char": "V",
+      "sector_id": "1V"
+    },
+    "SLC_33_CTR": {
+      "frequency": 120275,
+      "full_name": "Salt Lake City Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "scope_char": "C",
+      "sector_id": "C33"
+    }
+  },
+  "default_scenario": "Land North SIMULs",
+  "name": "S56",
+  "primary_airport": "KSLC",
+  "scenarios": {
+    "Land North SIMULs": {
+      "arrival_runways": [
+        {
+          "airport": "KSLC",
+          "runway": "34L"
+        },
+        {
+          "airport": "KSLC",
+          "runway": "35"
+        }
+      ],
+      "arrivals": {
+        "North - N Flow": {
+          "KSLC": 15
+        },
+        "S/E - N Flow": {
+          "KSLC": 15
+        },
+        "WAATS5-N": {
+          "KSLC": 15
+        }
+      },
+      "solo_controller": "SLC_K_APP",
+      "controllers": [
+        "SLC_C_TWR",
+        "SLC_E_TWR",
+        "SLC_33_CTR"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KSLC",
+          "rate": 15,
+          "runway": "34L"
+        },
+        {
+          "airport": "KSLC",
+          "rate": 15,
+          "runway": "34R"
+        }
+      ],
+      "wind": {
+        "direction": 340,
+        "speed": 10
+      },
+      "default_maps": [
+        "S56 107 N Flow Base Map",
+        "S56 203 3NM Separation MVA",
+        "S56 141 North Final Lines"
+      ]
+    },
+    "Land South SIMULs": {
+      "arrival_runways": [
+        {
+          "airport": "KSLC",
+          "runway": "16R"
+        },
+        {
+          "airport": "KSLC",
+          "runway": "17"
+        }
+      ],
+      "arrivals": {
+        "North - S Flow": {
+          "KSLC": 15
+        },
+        "S/E - S Flow": {
+          "KSLC": 15
+        },
+        "WAATS5-S": {
+          "KSLC": 15
+        }
+      },
+      "solo_controller": "SLC_K_APP",
+      "controllers": [
+        "SLC_C_TWR",
+        "SLC_E_TWR",
+        "SLC_33_CTR"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KSLC",
+          "rate": 15,
+          "runway": "16R"
+        },
+        {
+          "airport": "KSLC",
+          "rate": 15,
+          "runway": "16L"
+        }
+      ],
+      "wind": {
+        "direction": 340,
+        "speed": 10
+      },
+      "default_maps": [
+        "S56 109 South Flow Base Map",
+        "S56 203 3NM Separation MVA",
+        "S56 142 South Final Lines",
+        "S56 167 Widely Spaced Simuls Map"
+      ]
+    }
+  },
+  "stars_config": {
+    "center": "KSLC",
+    "scratchpads": {
+      "STEWW": "SCA"
+    },
+    "stars_maps": [
+      {
+        "group": 0,
+        "label": "N-FLOW",
+        "name": "S56 107 N Flow Base Map"
+      },
+      {
+        "group": 0,
+        "label": "S-FLOW",
+        "name": "S56 109 South Flow Base Map"
+      },
+      {
+        "group": 0,
+        "label": "N-FINAL",
+        "name": "S56 141 North Final Lines"
+      },
+      {
+        "group": 0,
+        "label": "S-FINAL",
+        "name": "S56 142 South Final Lines"
+      },
+      {
+        "group": 1,
+        "label": "MVA",
+        "name": "S56 203 3NM Separation MVA"
+      },
+      {
+        "group": 0,
+        "label": "EOVM",
+        "name": "S56 119 Emergency Obstacle Map"
+      },
+      {
+        "group": 0,
+        "label": "N-FNL-E",
+        "name": "S56 147 North Finals Extended"
+      },
+      {
+        "group": 0,
+        "label": "S-FNL-E",
+        "name": "S56 146 South Finals Extended"
+      },
+      {
+        "group": 0,
+        "label": "N-SIDL",
+        "name": "S56 162 North Flow SID Lines"
+      },
+      {
+        "group": 0,
+        "label": "S-SIDL",
+        "name": "S56 159 South Flow SID Lines"
+      },
+      {
+        "group": 0,
+        "label": "N-SIDW",
+        "name": "S56 160 North Flow SID Waypoint Symbols"
+      },
+      {
+        "group": 0,
+        "label": "S-SIDW",
+        "name": "S56 157 South Flow SID Waypoints Symbols"
+      },
+      {
+        "group": 0,
+        "label": "N-SIDN",
+        "name": "S56 161 North Flow SID Names"
+      },
+      {
+        "group": 0,
+        "label": "S-SIDN",
+        "name": "S56 158 South Flow SID Waypoint Names"
+      },
+      {
+        "group": 0,
+        "label": "T SPACE",
+        "name": "S56 137 Tower Airspace"
+      },
+      {
+        "group": 0,
+        "label": "ROADS",
+        "name": "S56 176 Roads"
+      },
+      {
+        "group": 0,
+        "label": "SAT",
+        "name": "S56 102 Satellite Approaches"
+      },
+      {
+        "group": 0,
+        "label": "WIDESIM",
+        "name": "S56 167 Widely Spaced Simuls Map"
+      },
+      {
+        "group": 0,
+        "label": "GPS",
+        "name": "S56 120 GPS Approach Centerlines"
+      },
+      {
+        "group": 0,
+        "label": "GPSTXT",
+        "name": "S56 150 GPS Approaches Text"
+      },
+      {
+        "group": 0,
+        "label": "OGD-VOR",
+        "name": "S56 190 OGD VOR-A Approach"
+      },
+      {
+        "group": 0,
+        "label": "PVU-VOR",
+        "name": "S56 169 PVU VOR Approach"
+      },
+      {
+        "group": 0,
+        "label": "ZLC",
+        "name": "S56 104 ZLC Split Map"
+      }
+    ],
+    "video_map_file": "videomaps/ZLC-videomaps.json.zst"
+  }
+}
