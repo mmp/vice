@@ -466,6 +466,8 @@ type STARSAircraftState struct {
 	OutboundHandoffAccepted bool
 	OutboundHandoffFlashEnd time.Time
 
+	RDIndicatorEnd time.Time
+
 	// This is a little messy: we maintain maps from callsign->sector id
 	// for pointouts that track the global state of them. Here we track
 	// just inbound pointouts to the current controller so that the first
@@ -1409,6 +1411,19 @@ func (sp *STARSPane) processEvents(w *World) {
 					globalConfig.Audio.PlayOnce(AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
+				}
+			}
+
+		case AcceptedRedirectedHandoffEvent:
+			if event.FromController == w.Callsign && event.ToController != w.Callsign {
+				if state, ok := sp.Aircraft[event.Callsign]; !ok {
+					lg.Errorf("%s: have AcceptedRedirectedHandoffEvent but missing STARS state?", event.Callsign)
+				} else {
+					globalConfig.Audio.PlayOnce(AudioHandoffAccepted)
+					state.OutboundHandoffAccepted = true
+					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
+					state.RDIndicatorEnd = time.Now().Add(30 * time.Second)
+					state.DatablockType = FullDatablock
 				}
 			}
 
@@ -3513,11 +3528,19 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 		switch sp.commandMode {
 		case CommandModeNone:
 			if cmd == "" {
-				if ac.RedirectedHandoff.RDIndicator {
+				if time.Until(state.RDIndicatorEnd) > 0 {
+					if state.OutboundHandoffAccepted {
+						state.OutboundHandoffAccepted = false
+						state.OutboundHandoffFlashEnd = time.Now()
+					}
+					state.RDIndicatorEnd = time.Time{}
+					status.clear = true
+					return
+				} else if ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign || ac.RedirectedHandoff.GetLastRedirector() == ctx.world.Callsign {
 					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
 					status.clear = true
 					return
-				} else if ac.HandoffTrackController == ctx.world.Callsign {
+				} else if ac.HandoffTrackController == ctx.world.Callsign && ac.RedirectedHandoff.RedirectedTo == "" {
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
 					return
@@ -3852,6 +3875,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
 				if control != nil {
 					if ac.HandoffTrackController == ctx.world.Callsign || ac.RedirectedHandoff.RedirectedTo == ctx.world.Callsign { // Redirect
+						if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctx.world.Callsign, control.Callsign) {
+							sp.Aircraft[ac.Callsign].DatablockType = PartialDatablock
+						} else {
+							sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
+						}
 						sp.redirectHandoff(ctx, ac.Callsign, control.Callsign)
 						status.clear = true
 					} else if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
@@ -5341,7 +5369,7 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		dt = FullDatablock
 	}
 
-	if ac.HandoffTrackController == w.Callsign {
+	if ac.HandoffTrackController == w.Callsign && ac.RedirectedHandoff.RedirectedTo == "" {
 		// it's being handed off to us
 		dt = FullDatablock
 	}
@@ -5366,10 +5394,7 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		}
 	}
 
-	if ac.RedirectedHandoff.RDIndicator {
-		dt = FullDatablock
-	}
-	if slices.Contains(ac.RedirectedHandoff.Redirector, w.Callsign) {
+	if ac.RedirectedHandoff.OriginalOwner == w.Callsign {
 		dt = FullDatablock
 	}
 
@@ -6281,14 +6306,18 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		field2 := " "
 		if ac.HandoffTrackController != "" {
 			if ctrl := ctx.world.GetControllerByCallsign(ac.HandoffTrackController); ctrl != nil {
-				if ctrl.FacilityIdentifier == "" { // Same facility
-					field2 = ctrl.SectorId[len(ctrl.SectorId)-1:]
-				} else if ctrl.ERAMFacility { // Enroute handoff
-					field2 = "C"
-				} else { // Different facility
-					field2 = ctrl.FacilityIdentifier
-				}
+				if ac.RedirectedHandoff.RedirectedTo != "" {
+					field2 = ctx.world.GetControllerByCallsign(ac.RedirectedHandoff.RedirectedTo).SectorId[len(ctrl.SectorId)-1:]
+				} else {
+					if ctrl.ERAMFacility { // Same facility
+						field2 = "C"
+					} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
+						field2 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+					} else { // Different facility
+						field2 = ctrl.FacilityIdentifier
+					}
 
+				}
 			}
 		}
 
@@ -6341,7 +6370,6 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		}
 
 		field8 := []string{""}
-		rd := ac.RedirectedHandoff.RDIndicator
 		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
 			field8 = []string{" PO"}
 		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
@@ -6350,11 +6378,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = []string{"", " UN"}
 		} else if time.Until(state.POFlashingEndTime) > 0*time.Second {
 			field8 = []string{"", " PO"}
-		} else if redirect := ac.RedirectedHandoff; (rd && len(redirect.Redirector) > 0 && ac.RedirectedHandoff.RedirectedTo != "") ||
-			((redirect.RedirectedTo == ctx.world.Callsign) ||
-				(ac.TrackingController == ctx.world.Callsign && redirect.OrigionalOwner != "")) {
-			field8 = []string{" RD"}
-		} else if slices.Contains(ac.RedirectedHandoff.Redirector, ctx.world.Callsign) || ac.RedirectedHandoff.RDIndicator {
+		} else if ac.RedirectedHandoff.ShowRDIndicator(ctx.world.Callsign, state.RDIndicatorEnd) {
 			field8 = []string{" RD"}
 		}
 
@@ -6395,18 +6419,14 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			if field4[i] == "" && ac.HandoffTrackController != "" {
 				if ctrl := ctx.world.GetControllerByCallsign(ac.HandoffTrackController); ctrl != nil {
 					if ac.RedirectedHandoff.RedirectedTo != "" {
-						if sameFacility(ctx, ac.RedirectedHandoff.RedirectedTo) {
-							field4[i] = ac.RedirectedHandoff.RedirectedTo[len(ac.RedirectedHandoff.RedirectedTo)-1:]
-						} else {
-							field4[i] = ctx.world.GetControllerByCallsign(ac.RedirectedHandoff.RedirectedTo).FacilityIdentifier
-						}
+						field4 = append(field4, ctx.world.GetControllerByCallsign(ac.RedirectedHandoff.RedirectedTo).SectorId[len(ctrl.SectorId)-1:])
 					} else {
 						if ctrl.ERAMFacility { // Same facility
-							field4[i] = "C"
+							field4 = append(field4, "C")
 						} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
-							field4[i] = ctrl.SectorId[len(ctrl.SectorId)-1:]
+							field4 = append(field4, ctrl.SectorId[len(ctrl.SectorId)-1:])
 						} else { // Different facility
-							field4[i] = ctrl.FacilityIdentifier
+							field4 = append(field4, ctrl.FacilityIdentifier)
 						}
 					}
 				}
@@ -6581,7 +6601,7 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 	} else if ac.TrackingController == w.Callsign {
 		// we own the track track
 		color = STARSTrackedAircraftColor
-	} else if ac.RedirectedHandoff.OrigionalOwner == w.Callsign || ac.RedirectedHandoff.RedirectedTo == w.Callsign {
+	} else if ac.RedirectedHandoff.OriginalOwner == w.Callsign || ac.RedirectedHandoff.RedirectedTo == w.Callsign {
 		color = STARSTrackedAircraftColor
 	} else if ac.HandoffTrackController == w.Callsign &&
 		!slices.Contains(ac.RedirectedHandoff.Redirector, w.Callsign) {
