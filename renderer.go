@@ -121,8 +121,6 @@ const (
 	RendererDisableColorArray           // no args
 	RendererTexCoordArray               // byte offset to array values, n components, stride (bytes)
 	RendererDisableTexCoordArray        // no args
-	RendererPointSize                   // float32
-	RendererDrawPoints                  // 2 int32: offset to the index buffer, count
 	RendererLineWidth                   // float32
 	RendererDrawLines                   // 2 int32: offset to the index buffer, count
 	RendererDrawTriangles               // 2 int32: offset to the index buffer, count
@@ -432,22 +430,6 @@ func (cb *CommandBuffer) DisableTexCoordArray() {
 	cb.appendInts(RendererDisableTexCoordArray)
 }
 
-// PointSize adds a command to the command buffer that specifies the size
-// of subsequent points that are drawn in pixels.
-func (cb *CommandBuffer) PointSize(w float32) {
-	cb.appendInts(RendererPointSize)
-	// Scale as needed so that points are the same size on retina-style displays.
-	cb.appendFloats(w * platform.DPIScale())
-}
-
-// DrawPoints adds a command to the command buffer to draw a number of points.
-// offset gives the offset in the command buffer where the vertex indices for
-// the points begin (as returned by e.g., the IntBuffer method) and count is
-// the number of points to draw.
-func (cb *CommandBuffer) DrawPoints(offset, count int) {
-	cb.appendInts(RendererDrawPoints, offset, count)
-}
-
 // LineWidth adds a command to the command buffer that sets the width in
 // pixels of subsequent lines that are drawn.
 func (cb *CommandBuffer) LineWidth(w float32) {
@@ -512,61 +494,6 @@ func (cb *CommandBuffer) ResetState() {
 // CommandBuffer. This allows batching up many things to be drawn all in a
 // single draw command, with corresponding GPU performance benefits.
 
-// PointsDrawBuilder accumulates colored points to be drawn.
-type PointsDrawBuilder struct {
-	p       [][2]float32
-	color   []RGB
-	indices []int32
-}
-
-// Reset resets all of the internal storage in the PointsDrawBuilder so that
-// new points can be specified. It maintains the memory allocations so that
-// once the system reaches steady state, there will generally not be dynamic
-// memory allocations when it is used.
-func (p *PointsDrawBuilder) Reset() {
-	p.p = p.p[:0]
-	p.color = p.color[:0]
-	p.indices = p.indices[:0]
-}
-
-// AddPoint adds the specified point to the draw list in the
-// PointsDrawBuilder.
-func (p *PointsDrawBuilder) AddPoint(pt [2]float32, color RGB) {
-	p.p = append(p.p, pt)
-	p.color = append(p.color, color)
-	p.indices = append(p.indices, int32(len(p.p)-1))
-}
-
-// Bounds returns the 2D bounding box of all of the points provided to the
-// PointsDrawBuilder.
-func (p *PointsDrawBuilder) Bounds() Extent2D {
-	return Extent2DFromPoints(p.p)
-}
-
-// GenerateCommands adds a draw command for all of the points in the
-// PointsDrawBuilder to the provided command buffer.
-func (p *PointsDrawBuilder) GenerateCommands(cb *CommandBuffer) {
-	if len(p.indices) == 0 {
-		return
-	}
-
-	// Create arrays for the vertex positions and colors.
-	pi := cb.Float2Buffer(p.p)
-	cb.VertexArray(pi, 2, 2*4)
-	rgb := cb.RGBBuffer(p.color)
-	cb.RGB32Array(rgb, 3, 3*4)
-
-	// Create an index buffer from the indices.
-	ind := cb.IntBuffer(p.indices)
-
-	// Add the draw command to the command buffer.
-	cb.DrawPoints(ind, len(p.indices))
-
-	// Clean up
-	cb.DisableVertexArray()
-	cb.DisableColorArray()
-}
-
 // LinesDrawBuilder accumulates lines to be drawn together. Note that it does
 // not allow specifying the colors of the lines; instead, whatever the current
 // color is (as set via the CommandBuffer SetRGB method) is used when drawing
@@ -598,7 +525,7 @@ func (l *LinesDrawBuilder) AddLineStrip(p [][2]float32) {
 	idx := int32(len(l.p))
 	l.p = append(l.p, p...)
 	for i := 0; i < len(p)-1; i++ {
-		l.indices = append(l.indices, idx+int32(i), idx+int32((i+1)%len(p)))
+		l.indices = append(l.indices, idx+int32(i), idx+int32((i+1)))
 	}
 }
 
@@ -612,41 +539,11 @@ func (l *LinesDrawBuilder) AddLineLoop(p [][2]float32) {
 	}
 }
 
-var (
-	// So that we can efficiently draw circles with various tessellations,
-	// circlePoints caches vertex positions of a unit circle at the origin
-	// for specified tessellation rates.
-	circlePoints map[int][][2]float32
-)
-
-// getCirclePoints returns the vertices for a unit circle at the origin
-// with the given number of segments; it creates the vertex slice if this
-// tessellation rate hasn't been seen before and otherwise returns a
-// preexisting one.
-func getCirclePoints(nsegs int) [][2]float32 {
-	if circlePoints == nil {
-		circlePoints = make(map[int][][2]float32)
-	}
-	if _, ok := circlePoints[nsegs]; !ok {
-		// Evaluate the vertices of the circle to initialize a new slice.
-		var pts [][2]float32
-		for d := 0; d < nsegs; d++ {
-			angle := radians(float32(d) / float32(nsegs) * 360)
-			pt := [2]float32{sin(angle), cos(angle)}
-			pts = append(pts, pt)
-		}
-		circlePoints[nsegs] = pts
-	}
-
-	// One way or another, it's now available in the map.
-	return circlePoints[nsegs]
-}
-
 // AddCircle adds lines that draw the outline of a circle with specified
 // and color centered at the specified point p. The nsegs parameter
 // specifies the tessellation rate for the circle.
 func (l *LinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int) {
-	circle := getCirclePoints(nsegs)
+	circle := GetCirclePoints(nsegs)
 
 	idx := int32(len(l.p))
 	for i := 0; i < nsegs; i++ {
@@ -844,7 +741,7 @@ func (t *TrianglesDrawBuilder) AddQuad(p0, p1, p2, p3 [2]float32) {
 // specified position to be drawn using triangles. The specified number of
 // segments, nsegs, sets the tessellation rate for the circle.
 func (t *TrianglesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int) {
-	circle := getCirclePoints(nsegs)
+	circle := GetCirclePoints(nsegs)
 
 	idx := int32(len(t.p))
 	t.p = append(t.p, p) // center point
@@ -1104,10 +1001,8 @@ func (td *TextDrawBuilder) AddText(s string, p [2]float32, style TextStyle) [2]f
 // the first block of text starting at the specified point p.  Subsequent
 // blocks begin immediately after the end of the previous block.
 func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []TextStyle) [2]float32 {
-	// Initial state; start out pixel-perfect, at least.
-	x0, y0 := float32(int(p[0]+0.5)), float32(int(p[1]+0.5))
 	// Current cursor position
-	px, py := x0, y0
+	px, py := p[0], p[1]
 
 	for i := range text {
 		style := styles[i]
@@ -1151,7 +1046,7 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 				}
 
 				// Update the cursor to go to the next line.
-				px = x0
+				px = p[0]
 				py -= dy
 
 				// Reset the upper line box corner for the start of the

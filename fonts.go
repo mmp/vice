@@ -39,6 +39,7 @@ var (
 	FontAwesomeIconCaretRight          = faUsedIcons["CaretRight"]
 	FontAwesomeIconCheckSquare         = faUsedIcons["CheckSquare"]
 	FontAwesomeIconCog                 = faUsedIcons["Cog"]
+	FontAwesomeIconCompressAlt         = faUsedIcons["CompressAlt"]
 	FontAwesomeIconCopyright           = faUsedIcons["Copyright"]
 	FontAwesomeIconDiscord             = faBrandsUsedIcons["Discord"]
 	FontAwesomeIconExclamationTriangle = faUsedIcons["ExclamationTriangle"]
@@ -79,6 +80,7 @@ var (
 		"CaretDown":           FontAwesomeString("CaretDown"),
 		"CaretRight":          FontAwesomeString("CaretRight"),
 		"CheckSquare":         FontAwesomeString("CheckSquare"),
+		"CompressAlt":         FontAwesomeString("CompressAlt"),
 		"Cog":                 FontAwesomeString("Cog"),
 		"Copyright":           FontAwesomeString("Copyright"),
 		"ExclamationTriangle": FontAwesomeString("ExclamationTriangle"),
@@ -288,7 +290,7 @@ func fontsInit(r Renderer, platform Platform) {
 		Pix:    unsafe.Slice((*uint8)(img.Pixels), 4*img.Width*img.Height),
 		Stride: 4 * img.Width,
 		Rect:   image.Rectangle{Max: image.Point{X: img.Width, Y: img.Height}}}
-	atlasId := r.CreateTextureFromImage(rgb8Image, false)
+	atlasId := r.CreateTextureFromImage(rgb8Image, true /* nearest */)
 	io.Fonts().SetTextureID(imgui.TextureID(atlasId))
 
 	// Patch up the texture id after the atlas was created with the

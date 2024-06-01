@@ -1156,8 +1156,6 @@ func (mp *MessagesPane) processEvents(w *World) {
 			if cmd := strings.TrimSpace(mp.input.cmd); cmd != "" {
 				mp.input.cmd = event.Callsign + " " + cmd
 				mp.runCommands(w)
-				// Take the focus back
-				wmTakeKeyboardFocus(mp, false)
 			}
 		}
 	}

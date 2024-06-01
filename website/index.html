@@ -269,6 +269,7 @@
                 <li> <i class="fas fa-book"></i>: open this webpage to review <i>vice</i>'s documentation.</li>
                 <li> <i class="fas fa-info-circle"></i>: display information about the version of <i>vice</i> you have installed.</li>
                 <li> <i class="fab fa-discord"></i>: join the <i>vice</i> Discord.</li>
+                <li> <i class="fas fa-expand-alt"></i>: Toggle full-screen mode.</li>
               </ul>
             <p>
               When you exit <i>vice</i>, it remembers everything going on&mdash;all of the aircraft in flight, the instructions they have been given, etc.
@@ -399,10 +400,16 @@
               track in the STARS window or you can enter the aircraft's callsign, a space, 
               the command, and then press the "enter" key. The aircraft's callsign may
               be abbreviated if unambiguously identifies a single aircraft.
-              After you issue a command, the virtual pilot's readback is shown.
-              The aircraft will then start following that instruction, to the best of its abilities.
-              Unlike VATSIM, the pilots will always do exactly what you tell them to. Starting
-              a message with a slash to send a message in ATC chat and will be seen by all other users.
+              After you issue a command, the virtual pilot's readback is
+              shown and keyboard focus returns to the STARS window.
+            </p>
+            <p>
+              After receiving an instruction, the aircraft will start
+              following that instruction, to the best of its abilities.
+              Unlike VATSIM, the pilots will always do exactly what you
+              tell them to.
+            </p>
+            <p>Start a message with a slash to send a message in ATC chat that will be seen by all other users.
             </p>
             <p>If you'd like to issue multiple commands to an aircraft,
               enter the commands one after another with a space between them and
@@ -685,7 +692,7 @@
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.10.22/Vice-v0.10.22-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.10.22 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.10.23/Vice-v0.10.23-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.10.23 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -694,7 +701,7 @@
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Big Sur or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.10.22/Vice-v0.10.22-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.10.22 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.10.23/Vice-v0.10.23-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.10.23 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -721,11 +728,16 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
-            <h3>0.10.23 (TODO May 2024)</h3>
+            <h3>0.10.23 (28 May 2024)</h3>
             <ul>
               <li>Added ATC chat functionality.</li>
-              <li>Scenario Updates: D01 and COS (Andrew S), Y90 (Merry Arbitrary), C90 (Jud Lopez).</li>
-              <li>Added <code>FC</code> command to tell aircraft to change to the next controller's frequency.</li>
+              <li>New scenario: I90, including IAH, HOU, GLS, SGR (Jace Martin).</li>
+              <li>Scenario Updates: D01 and COS (Andrew S), Y90 (Merry Arbitrary), C90 (Jud Lopez, Yahya Nazimuddin).</li>
+              <li>Added <code>FC</code> command to tell aircraft to change
+                to the next controller's frequency.</li>
+              <li>Full-screen mode is now available.</li>
+	      <li>Improved sequencing of departures.</li>
+	      <li>Updated command entry so keyboard focus returns to STARS after issuing a control command.</li>
               <li>STARS improvements:
                 <ul>
                   <li>Updated the fonts to the real-world STARS display fonts.</li>

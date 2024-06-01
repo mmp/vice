@@ -234,29 +234,6 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 		case RendererDisableTexCoordArray:
 			gl.DisableClientState(gl.TEXTURE_COORD_ARRAY)
 
-		case RendererPointSize:
-			gl.PointSize(float())
-
-		case RendererDrawPoints:
-			offset := ui32()
-			ptr := uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(offset)
-			count := i32()
-
-			gl.Enable(gl.ALPHA_TEST)
-			gl.AlphaFunc(gl.NOTEQUAL, 0)
-			gl.Enable(gl.BLEND)
-			gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-			gl.Enable(gl.POINT_SMOOTH)
-			gl.Hint(gl.POINT_SMOOTH_HINT, gl.NICEST)
-
-			gl.DrawElements(gl.POINTS, count, gl.UNSIGNED_INT, unsafe.Pointer(ptr))
-			stats.nDrawCalls++
-			stats.nPoints += int(count)
-
-			gl.Disable(gl.POINT_SMOOTH)
-			gl.BlendFunc(gl.NONE, gl.NONE)
-			gl.Disable(gl.BLEND)
-
 		case RendererLineWidth:
 			gl.LineWidth(float())
 

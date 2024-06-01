@@ -168,6 +168,7 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *PaneContext, aircraft []*Aircraf
 type CAAircraft struct {
 	Callsigns    [2]string // sorted alphabetically
 	Acknowledged bool
+	SoundEnd     time.Time
 }
 
 type QuickLookPosition struct {
@@ -455,12 +456,13 @@ type STARSAircraftState struct {
 	DisableMSAW      bool
 	InhibitMSAW      bool // only applies if in an alert. clear when alert is over?
 	MSAWAcknowledged bool
+	MSAWSoundEnd     time.Time
 
 	FirstSeen           time.Time
 	FirstRadarTrack     time.Time
 	HaveEnteredAirspace bool
 
-	IdentEnd                time.Time
+	IdentStart, IdentEnd    time.Time
 	OutboundHandoffAccepted bool
 	OutboundHandoffFlashEnd time.Time
 
@@ -548,7 +550,8 @@ func (s *STARSAircraftState) LostTrack(now time.Time) bool {
 }
 
 func (s *STARSAircraftState) Ident() bool {
-	return !s.IdentEnd.IsZero() && s.IdentEnd.After(time.Now())
+	now := time.Now()
+	return !s.IdentStart.IsZero() && s.IdentStart.Before(now) && s.IdentEnd.After(now)
 }
 
 type STARSMap struct {
@@ -878,11 +881,11 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 
 	ps.PreviewAreaPosition = [2]float32{.05, .8}
 
-	ps.SSAList.Position = [2]float32{.05, .95}
+	ps.SSAList.Position = [2]float32{.05, .9}
 	ps.SSAList.Visible = true
 	ps.SSAList.Filter.All = true
 
-	ps.TABList.Position = [2]float32{.05, .7}
+	ps.TABList.Position = [2]float32{.05, .65}
 	ps.TABList.Lines = 5
 	ps.TABList.Visible = true
 
@@ -898,7 +901,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.CoastList.Lines = 5
 	ps.CoastList.Visible = false
 
-	ps.SignOnList.Position = [2]float32{.8, .95}
+	ps.SignOnList.Position = [2]float32{.8, .9}
 	ps.SignOnList.Visible = true
 
 	ps.VideoMapsList.Position = [2]float32{.85, .5}
@@ -1330,6 +1333,7 @@ func (sp *STARSPane) processEvents(w *World) {
 		if warn && !state.MSAW {
 			// It's a new alert
 			state.MSAWAcknowledged = false
+			state.MSAWSoundEnd = time.Now().Add(5 * time.Second)
 		}
 		state.MSAW = warn
 	}
@@ -1427,7 +1431,8 @@ func (sp *STARSPane) processEvents(w *World) {
 			if state, ok := sp.Aircraft[event.Callsign]; !ok {
 				lg.Errorf("%s: have IdentEvent but missing STARS state?", event.Callsign)
 			} else {
-				state.IdentEnd = time.Now().Add(10 * time.Second)
+				state.IdentStart = time.Now().Add(time.Duration(2+rand.Intn(3)) * time.Second)
+				state.IdentEnd = state.IdentStart.Add(10 * time.Second)
 			}
 
 		case SetGlobalLeaderLineEvent:
@@ -1499,6 +1504,12 @@ func (sp *STARSPane) Upgrade(from, to int) {
 		// System list offsets changed from updated handling of
 		// transformation matrices with and without the DCB visible.
 		update := func(ps *STARSPreferenceSet) {
+			ps.CharSize.DCB = max(0, ps.CharSize.DCB-1)
+			ps.CharSize.Datablocks = max(0, ps.CharSize.Datablocks-1)
+			ps.CharSize.Lists = max(0, ps.CharSize.Lists-1)
+			ps.CharSize.Tools = max(0, ps.CharSize.Tools-1)
+			ps.CharSize.PositionSymbols = max(0, ps.CharSize.PositionSymbols-1)
+
 			if ps.DisplayDCB && ps.DCBPosition == DCBPositionTop {
 				shift := func(y *float32) {
 					*y = max(0, *y-.05)
@@ -1570,7 +1581,6 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	transforms.LoadWindowViewingMatrices(cb)
 
 	// Maps
-	cb.PointSize(5)
 	cb.LineWidth(1)
 	for _, vmap := range ctx.world.STARSMaps {
 		if _, ok := ps.VideoMapVisible[vmap.Name]; !ok {
@@ -1640,15 +1650,17 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
 
 	// Play the CA sound if any CAs or MSAWs are unacknowledged
+	now := time.Now()
 	playAlertSound := !ps.DisableCAWarnings && slices.ContainsFunc(sp.CAAircraft,
 		func(ca CAAircraft) bool {
 			return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
-				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings
+				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings && now.Before(ca.SoundEnd)
 		})
 	if !ps.DisableMSAW {
 		for _, ac := range aircraft {
 			state := sp.Aircraft[ac.Callsign]
-			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW && !state.DisableMSAW {
+			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW && !state.DisableMSAW &&
+				now.Before(state.MSAWSoundEnd) {
 				playAlertSound = true
 				break
 			}
@@ -5402,8 +5414,10 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	cb *CommandBuffer) {
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
-	pd := PointsDrawBuilder{}
-	pd2 := PointsDrawBuilder{}
+	trackBuilder := GetColoredTrianglesDrawBuilder()
+	defer ReturnColoredTrianglesDrawBuilder(trackBuilder)
+	historyBuilder := GetColoredTrianglesDrawBuilder()
+	defer ReturnColoredTrianglesDrawBuilder(historyBuilder)
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)
 	trid := GetColoredTrianglesDrawBuilder()
@@ -5437,18 +5451,19 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		heading := Select(state.HaveHeading(),
 			state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(), ac.Heading())
 
-		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, &pd, &pd2, ld, trid, td)
+		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, trackBuilder, historyBuilder,
+			ld, trid, td)
 	}
 
-	transforms.LoadLatLongViewingMatrices(cb)
-	cb.PointSize(5)
-	pd.GenerateCommands(cb)
-	cb.PointSize(sp.getTrackSize(ctx, transforms)) // bigger points for fused mode primary tracks
+	transforms.LoadWindowViewingMatrices(cb)
+	historyBuilder.GenerateCommands(cb)
+	trackBuilder.GenerateCommands(cb)
 
-	pd2.GenerateCommands(cb)
+	transforms.LoadLatLongViewingMatrices(cb)
 	trid.GenerateCommands(cb)
 	cb.LineWidth(1)
 	ld.GenerateCommands(cb)
+
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
 }
@@ -5573,8 +5588,8 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 }
 
 func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, heading float32, ctx *PaneContext,
-	transforms ScopeTransformations, trackId string,
-	pd *PointsDrawBuilder, pd2 *PointsDrawBuilder, ld *ColoredLinesDrawBuilder,
+	transforms ScopeTransformations, trackId string, trackBuilder *ColoredTrianglesDrawBuilder,
+	historyBuilder *ColoredTrianglesDrawBuilder, ld *ColoredLinesDrawBuilder,
 	trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
@@ -5649,7 +5664,8 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 		case RadarModeFused:
 			if ps.Brightness.PrimarySymbols > 0 {
 				color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
-				pd2.AddPoint(pos, color)
+				trackSize := sp.getTrackSize(ctx, transforms) // bigger points for fused mode primary tracks
+				drawTrack(ctx, trackBuilder, pw, trackSize, color)
 			}
 		}
 	}
@@ -5691,21 +5707,49 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 		}
 	}
 
-	// Draw history in reverse order so that if it's not moving, more
-	// recent tracks (which will have more contrast with the background),
-	// will be the ones that are visible.
 	if ps.Brightness.History > 0 { // Don't draw if brightness == 0.
-		n := ps.RadarTrackHistory
-		for i := n - 1; i >= 0; i-- {
+		// Draw history from new to old
+		for i := range ps.RadarTrackHistory {
 			trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
 			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
 
 			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
 				if p := state.historyTracks[idx].Position; !p.IsZero() {
-					pd.AddPoint(p, trackColor)
+					const historyTrackDiameter = 8
+					drawTrack(ctx, historyBuilder, transforms.WindowFromLatLongP(p), historyTrackDiameter,
+						trackColor)
 				}
 			}
 		}
+	}
+}
+
+func drawTrack(ctx *PaneContext, ctd *ColoredTrianglesDrawBuilder, p [2]float32, diameter float32, color RGB) {
+	// Figure out how many points to use to approximate the circle; use
+	// more the bigger it is on the screen, but, sadly, not enough to get a
+	// nice clean circle (matching real-world..)
+	np := 8
+	if diameter > 20 {
+		np = Select(diameter <= 40, 16, 32)
+	}
+
+	// Prepare the points around the unit circle; rotate them by 1/2 their
+	// angular spacing so that we have vertical and horizontal edges at the
+	// sides (e.g., a octagon like a stop-sign with 8 points, rather than
+	// having a vertex at the top of the circle.)
+	rot := rotator2f(360 / (2 * float32(np)))
+	pts := MapSlice(GetCirclePoints(np), func(p [2]float32) [2]float32 { return rot(p) })
+
+	// Scale the points based on the circle radius (and deal with the usual
+	// Windows high-DPI borkage...)
+	scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+	radius := scale * float32(int(diameter/2+0.5)) // round to integer
+	pts = MapSlice(pts, func(p [2]float32) [2]float32 { return scale2f(p, radius) })
+
+	// And finally draw the thing...
+	for i := range pts {
+		p0, p1 := pts[i], pts[(i+1)%len(pts)]
+		ctd.AddTriangle(p, add2f(p, p0), add2f(p, p1), color)
 	}
 }
 
@@ -5837,6 +5881,7 @@ func (sp *STARSPane) updateCAAircraft(w *World, aircraft []*Aircraft) {
 				}) {
 					sp.CAAircraft = append(sp.CAAircraft, CAAircraft{
 						Callsigns: [2]string{callsign, ocs},
+						SoundEnd:  time.Now().Add(5 * time.Second),
 					})
 				}
 			}
@@ -6342,14 +6387,20 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		if state.LostTrack(ctx.world.CurrentTime()) {
 			alt = "CST"
 		}
+		// Build up field3 and field4 in tandem because 4 gets a "+" if 3
+		// is displaying the secondary scratchpad.  Leave the empty string
+		// as a placeholder in field 4 otherwise.
 		field3 := []string{alt}
+		field4 := []string{""}
 		if !state.Ident() {
 			// Don't display these if they're identing: then it's just altitude and speed + "ID"
 			if ac.Scratchpad != "" {
 				field3 = append(field3, ac.Scratchpad)
+				field4 = append(field4, "")
 			}
 			if ac.SecondaryScratchpad != "" {
 				field3 = append(field3, ac.SecondaryScratchpad)
+				field4 = append(field4, "+") // 2-67, "Field 4 Contents"
 			}
 			if len(field3) == 1 {
 				if ap := ctx.world.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil && !ap.OmitArrivalScratchpad {
@@ -6358,25 +6409,30 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 						ap = ap[1:] // drop the leading K
 					}
 					field3 = append(field3, ap)
+					field4 = append(field4, "")
 				}
 			}
 		}
 
-		field4 := "  "
-		if ac.HandoffTrackController != "" {
-			if ctrl := ctx.world.GetControllerByCallsign(ac.HandoffTrackController); ctrl != nil {
-				if ac.RedirectedHandoff.RedirectedTo != "" {
-					field4 = ctx.world.GetControllerByCallsign(ac.RedirectedHandoff.RedirectedTo).SectorId[len(ctrl.SectorId)-1:]
-				} else {
-					if ctrl.ERAMFacility { // Same facility
-						field4 = "C"
-					} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
-						field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
-					} else { // Different facility
-						field4 = ctrl.FacilityIdentifier
+		// Fill in empty field4 entries.
+		for i := range field4 {
+			if field4[i] == "" && ac.HandoffTrackController != "" {
+  			if ctrl := ctx.world.GetControllerByCallsign(ac.HandoffTrackController); ctrl != nil {
+	  			if ac.RedirectedHandoff.RedirectedTo != "" {
+		  			field4 = ctx.world.GetControllerByCallsign(ac.RedirectedHandoff.RedirectedTo).SectorId[len(ctrl.SectorId)-1:]
+  				} else {
+	  				if ctrl.ERAMFacility { // Same facility
+		  				field4 = "C"
+			  		} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
+				  		field4 = ctrl.SectorId[len(ctrl.SectorId)-1:]
+					  } else { // Different facility
+  						field4 = ctrl.FacilityIdentifier
+            }
 					}
-
 				}
+			}
+			for len(field4[i]) < 2 {
+				field4[i] += " "
 			}
 		}
 
@@ -6458,16 +6514,19 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		}
 		line3 := field6 + "  " + field7
 
-		// Now make some datablocks. For our purposes, only fields 3, 5,
-		// and 8 may be time multiplexed, which simplifies db creation
-		// here.  Note that line 1 has already been set in baseDB above.
+		// Now make some datablocks. Note that line 1 has already been set
+		// in baseDB above.
+		//
+		// A number of the fields may be multiplexed; the total number of
+		// unique datablock variations is the least common multiple of all
+		// of their lengths.  and 8 may be time multiplexed, which
+		// simplifies db creation here.
 		dbs := []STARSDatablock{}
-		n := lcm(len(field3), len(field5)) // cycle through all variations
-		n = lcm(n, len(field8))
+		n := lcm(lcm(len(field3), len(field4)), lcm(len(field5), len(field8)))
 		for i := 0; i < n; i++ {
 			db := baseDB.Duplicate()
 			db.Lines[1].Text = field1 + field2 + field8[i%len(field8)]
-			db.Lines[2].Text = field3[i%len(field3)] + field4 + field5[i%len(field5)]
+			db.Lines[2].Text = field3[i%len(field3)] + field4[i%len(field4)] + field5[i%len(field5)]
 			db.Lines[3].Text = line3
 			if line3FieldColors != nil {
 				db.Lines[3].Colors = append(db.Lines[3].Colors, *line3FieldColors)
@@ -6616,6 +6675,9 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 		}
 
 		color, brightness := sp.datablockColor(ctx, ac)
+		if brightness == 0 {
+			continue
+		}
 
 		// Compute the bounds of the datablock; always use the first one so
 		// things don't jump around when it switches between multiple of
@@ -7148,7 +7210,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent Extent2D, tran
 ///////////////////////////////////////////////////////////////////////////
 // DCB menu on top
 
-const STARSButtonSize = 70
+const STARSButtonSize = 76
 
 const (
 	STARSButtonFull = 1 << iota
@@ -7833,21 +7895,21 @@ func amendFlightPlan(w *World, callsign string, amend func(fp *FlightPlan)) erro
 }
 
 func (sp *STARSPane) initializeFonts() {
-	sp.systemFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 9})
-	sp.systemFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
-	sp.systemFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
-	sp.systemFont[3] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
-	sp.systemFont[4] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize3", Size: 16})
-	sp.systemFont[5] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize4", Size: 18})
-	sp.systemOutlineFont[0] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 9})
-	sp.systemOutlineFont[1] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 11})
-	sp.systemOutlineFont[2] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize1", Size: 12})
-	sp.systemOutlineFont[3] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize2", Size: 15})
-	sp.systemOutlineFont[4] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize3", Size: 16})
-	sp.systemOutlineFont[5] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize4", Size: 18})
-	sp.dcbFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 9})
-	sp.dcbFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
-	sp.dcbFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
+	sp.systemFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
+	sp.systemFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
+	sp.systemFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
+	sp.systemFont[3] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize3", Size: 16})
+	sp.systemFont[4] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize4", Size: 18})
+	sp.systemFont[5] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize5", Size: 19})
+	sp.systemOutlineFont[0] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 11})
+	sp.systemOutlineFont[1] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize1", Size: 12})
+	sp.systemOutlineFont[2] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize2", Size: 15})
+	sp.systemOutlineFont[3] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize3", Size: 16})
+	sp.systemOutlineFont[4] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize4", Size: 18})
+	sp.systemOutlineFont[5] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize5", Size: 19})
+	sp.dcbFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
+	sp.dcbFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
+	sp.dcbFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
 }
 
 func (sp *STARSPane) resetInputState() {
