@@ -332,6 +332,11 @@ func DrawFontPicker(id *FontIdentifier, label string) (newFont *Font, changed bo
 		// Take advantage of the sort order returned by GetAllFonts()--that
 		// all fonts of the same name come consecutively.
 		for _, font := range f {
+			if _, ok := starsFonts[font.Name]; ok {
+				// Don't offer up the STARS fonts.
+				continue
+			}
+
 			if font.Name != lastFontName {
 				lastFontName = font.Name
 				// Use the 14pt version of the font in the combo box.
