@@ -104,8 +104,8 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 	glfw.WindowHint(glfw.ContextVersionMajor, 2)
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 
+	vm := glfw.GetPrimaryMonitor().GetVideoMode()
 	if windowSize[0] == 0 || windowSize[1] == 0 {
-		vm := glfw.GetPrimaryMonitor().GetVideoMode()
 		if runtime.GOOS == "windows" {
 			windowSize[0] = vm.Width - 200
 			windowSize[1] = vm.Height - 300
@@ -115,6 +115,11 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 		}
 	}
 
+	// If window position is out of bounds, create the window at (100, 100)
+	if windowPosition[0] < 0 || windowPosition[1] < 0 || windowPosition[0] > vm.Width || windowPosition[1] > vm.Height {
+		globalConfig.InitialWindowPosition = [2]int{100, 100}
+		windowPosition = [2]int{100, 100}
+	}
 	// Start with an invisible window so that we can position it first
 	glfw.WindowHint(glfw.Visible, 0)
 	// Disable GLFW_AUTO_ICONIFY to stop the window from automatically minimizing in fullscreen
