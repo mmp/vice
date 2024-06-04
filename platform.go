@@ -117,6 +117,8 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 
 	// Start with an invisible window so that we can position it first
 	glfw.WindowHint(glfw.Visible, 0)
+	// Disable GLFW_AUTO_ICONIFY to stop the window from automatically minimizing in fullscreen
+	glfw.WindowHint(glfw.AutoIconify, 0)
 	// Maybe enable multisampling
 	if multisample {
 		glfw.WindowHint(glfw.Samples, 4)
