@@ -139,7 +139,7 @@ func (w *World) Assign(other *World) {
 	w.TotalDepartures = other.TotalDepartures
 	w.TotalArrivals = other.TotalArrivals
 	w.STARSFacilityAdaptation = other.STARSFacilityAdaptation
-	// w.ERAMComputers = other.ERAMComputers
+	w.ERAMComputers = other.ERAMComputers
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
@@ -300,7 +300,6 @@ func (w *World) InitiateTrack(callsign string, fp *STARSFlightPlan, success func
 	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == "" {
 		ac.TrackingController = w.Callsign
 	}
-	fmt.Println("world initiate")
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.InitiateTrack(callsign, fp),
@@ -336,12 +335,14 @@ func (w *World) HandoffTrack(callsign string, controller string, success func(an
 }
 
 func (w *World) AcceptHandoff(callsign string, success func(any), err func(error)) {
-	if ac := w.Aircraft[callsign]; ac != nil && ac.HandoffTrackController == w.Callsign {
-		ac.HandoffTrackController = ""
-		ac.TrackingController = w.Callsign
-		ac.ControllingController = w.Callsign
+	_, stars := w.SafeFacility("")
+	ac := w.GetAircraft(callsign, false)
+	if ac != nil {
+		if info := stars.TrackInformation[ac.Squawk]; info != nil && info.HandoffController == w.Callsign {
+			ac.ControllingController = w.Callsign
+		}
 	}
-
+	
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.AcceptHandoff(callsign),
@@ -867,16 +868,45 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		return nil, err
 	}
 
-	artcc, stars := w.SafeFacility("")
+	artcc, stars := w.SafeFacility(w.FacilityFromController(ac.TrackingController))
+
 	if artcc.FlightPlans == nil {
-		artcc.FlightPlans = map[Squawk]*FlightPlan{}
+		artcc.FlightPlans = map[Squawk]*STARSFlightPlan{}
 	}
-	artcc.FlightPlans[flightPlan.AssignedSquawk] = flightPlan
+	starsFP := &STARSFlightPlan{
+		FlightPlan: *flightPlan,
+	}
+	if artcc.TrackInformation == nil {
+		artcc.TrackInformation = make(map[Squawk]*TrackInformation)
+	}
+	artcc.TrackInformation[starsFP.AssignedSquawk] = &TrackInformation{
+		TrackOwner: ac.TrackingController,
+	}
+	starsFP.CoordinationFix = starsFP.CordinationFix(w, ac)
+	dist, err := ac.Nav.distanceAlongRoute(starsFP.CoordinationFix)
+	time2 := dist / float32(starsFP.CruiseSpeed) * 60
+	if err == nil {
+		starsFP.CoordinationTime = CoordinationTime{
+			Time: w.SimTime.Add(time.Duration(time2 *  float32(time.Minute))),
+		}
 
-	// STARS RF Message
-	stars.RequestFlightPlan(ac.FlightPlan.AssignedSquawk, w.SimTime)
-
-
+	}
+	
+	artcc.FlightPlans[flightPlan.AssignedSquawk] = starsFP
+	if stars == nil { // coming from an ERAM place
+		artcc.TrackInformation[flightPlan.AssignedSquawk] = &TrackInformation{
+			TrackOwner: ac.TrackingController,
+		}
+	} else {
+		if stars.TrackInformation == nil {
+			stars.TrackInformation = make(map[Squawk]*TrackInformation)
+		}
+		stars.TrackInformation[flightPlan.AssignedSquawk] = &TrackInformation{
+			TrackOwner: ac.TrackingController,
+		}
+		fmt.Printf("Created an arrival %v. Under %v facility. Initial controller: %v.", ac.Callsign, stars.Identifier, arrivalController)
+	}
+	
 	return ac, nil
 }
 
@@ -943,14 +973,13 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		return nil, nil, err
 	}
 	// Add the flight plan to the ERAM computer
-	artcc, stars := w.SafeFacility("")
+	artcc, _ := w.SafeFacility("")
 	if artcc.FlightPlans == nil {
-		artcc.FlightPlans = map[Squawk]*FlightPlan{}
+		artcc.FlightPlans = map[Squawk]*STARSFlightPlan{}
 	}
-	artcc.FlightPlans[flightPlan.AssignedSquawk] = flightPlan
+	artcc.FlightPlans[flightPlan.AssignedSquawk] = flightPlan.STARS()
 
-	// STARS RF Message
-	stars.RequestFlightPlan(ac.FlightPlan.AssignedSquawk, simTime)
+	artcc.ToSTARSFacility(w.TRACON, flightPlan.DepartureMessage(artcc.Identifier, w.SimTime))
 
 	return ac, dep, nil
 }

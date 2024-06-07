@@ -1403,6 +1403,31 @@ func (nav *Nav) distanceToEndOfApproach() (float32, error) {
 	}
 }
 
+func (nav *Nav) distanceAlongRoute(fix string) (float32, error) {
+	if nav.Heading.Assigned != nil {
+		return 0, ErrNotFlyingRoute
+	}
+	if wp := nav.Waypoints; len(wp) == 0 {
+		return 0, nil
+	} else {
+		index := -1
+		for num, waypoint := range nav.Waypoints {
+			if waypoint.Fix == fix {
+				index = num
+			}
+		}
+		if index == -1 {
+			return 0, ErrFixNotInRoute
+		}
+		wp = wp[:index+1]
+		distance := nmdistance2ll(nav.FlightState.Position, wp[0].Location)
+		for i := 0; i < len(wp)-1; i++ {
+			distance += nmdistance2ll(wp[i].Location, wp[i+1].Location)
+		}
+		return distance, nil
+	}
+}
+
 func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 	if len(nav.Waypoints) == 0 {
 		return nil

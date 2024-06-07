@@ -68,7 +68,18 @@ type STARSFacilityAdaptation struct {
 	Scratchpads         map[string]string     `json:"scratchpads"`
 	VideoMapFile        string                `json:"video_map_file"`
 	ExternalFacilities  []string              `json:"stars_facilities"`
+	CoordinationFixes	map[string]string	  `json:"coordination_fixes"`
 }
+
+type CoordinationFix struct {
+	Fix string 
+	Type string 
+}
+
+const (
+	ZoneBasedFix = "zone"
+	RouteBasedFix = "route"
+)
 
 type Airspace struct {
 	Boundaries map[string][]Point2LL                 `json:"boundaries"`

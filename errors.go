@@ -55,6 +55,7 @@ var (
 // flight plan processing related
 var (
 	ErrNoSTARSFacility = errors.New("No STARS Facility in ERAM computer")
+	ErrNoERAMFacility  = errors.New("No ERAM facility exists")
 )
 
 var errorStringToError = map[string]error{
@@ -89,6 +90,7 @@ var errorStringToError = map[string]error{
 	ErrRestoringSavedState.Error():          ErrRestoringSavedState,
 	ErrInvalidPassword.Error():              ErrInvalidPassword,
 	ErrNoSTARSFacility.Error():              ErrNoSTARSFacility,
+	ErrNoERAMFacility.Error():               ErrNoERAMFacility,
 }
 
 func TryDecodeError(e error) error {

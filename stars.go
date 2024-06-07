@@ -1665,12 +1665,9 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 		if _, ok := stars.TrackInformation[ac.Squawk]; ok { // Someone is tracking this
 			continue
 		}
-		ap := w.GetAirport(ac.FlightPlan.DepartureAirport)
-		if ap != nil {
-			
-		}
+
 		for sq, info := range stars.ContainedPlans { // auto associate
-			if sq == ac.Squawk {
+			if sq == ac.Squawk && ac.inAcquisitionArea(w) {
 				fmt.Println("auto associate")
 				w.InitiateTrack(ac.Callsign, info, nil, nil)
 				fmt.Println(ac.Callsign, 1)
@@ -1995,7 +1992,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			status.clear = true
 			status.output = "TPA SIZE ON"
 			return
-
+		case "?":
+			printERAMComputerMap(ctx.world.ERAMComputers)
+			status.clear = true
 		case "*D+I":
 			// Inhibit
 			ps.DisplayTPASize = false
@@ -2179,13 +2178,19 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		if cmd == "ALL" {
 			for callsign, ac := range ctx.world.Aircraft {
 				if ac.TrackingController == ctx.world.Callsign {
-					sp.dropTrack(ctx, callsign)
+					err := sp.dropTrack(ctx, callsign)
+					if err != nil {
+						status.err = err
+					}
 				}
 			}
 			status.clear = true
 			return
 		} else {
-			sp.dropTrack(ctx, lookupCallsign(cmd, false))
+			err := sp.dropTrack(ctx, lookupCallsign(cmd, false))
+			if err != nil {
+				status.err = err
+			}
 			return
 		}
 
@@ -3265,8 +3270,14 @@ func (sp *STARSPane) initiateTrack(ctx *PaneContext, ac *Aircraft, identifier st
 	return nil
 }
 
-func (sp *STARSPane) dropTrack(ctx *PaneContext, callsign string) {
-	ctx.world.DropTrack(callsign, nil, func(err error) { sp.displayError(err) })
+func (sp *STARSPane) dropTrack(ctx *PaneContext, callsign string) error {
+	_, stars := ctx.world.SafeFacility("")
+	if info := stars.TrackInformation[ctx.world.GetAircraft(callsign, false).Squawk]; info.TrackOwner == ctx.world.Callsign {
+		ctx.world.DropTrack(callsign, nil, func(err error) { sp.displayError(err) })
+		return nil
+	} else {
+		return ErrSTARSIllegalTrack
+	}
 }
 
 func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
@@ -3278,10 +3289,12 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 			if ac, ok := ctx.world.Aircraft[callsign]; ok {
 				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.world, ac)
 			}
-
 			// stars.TrackInformation[w.GetAircraft(callsign, false).Squawk].TrackOwner for recall. whoops
 		},
-		func(err error) { sp.displayError(err) })
+		func(err error) { 
+			sp.displayError(err) 
+			lg.Errorf("Error accepting track")
+		})
 }
 
 func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) error {
@@ -3301,7 +3314,7 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 				HandoffController: controller,
 			}
 			msg.TrackInformation = info
-			stars.SendTrackInfo(w.FacilityFromController(controller), msg, w.SimTime, InitateTransfer)
+			stars.SendTrackInfo(w.FacilityFromController(control.Callsign), msg, w.SimTime, InitateTransfer)
 		} else {
 			if entry, ok := stars.TrackInformation[w.GetAircraft(callsign, false).Squawk]; ok {
 				entry.HandoffController = controller
@@ -3525,14 +3538,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 		switch sp.commandMode {
 		case CommandModeNone:
+			_, stars := ctx.world.SafeFacility("")
 			if cmd == "" {
 				if ac.RedirectedHandoff.RDIndicator {
 					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
 					status.clear = true
 					return
-				} else if ac.HandoffTrackController == ctx.world.Callsign {
+				} else if info := stars.TrackInformation[ac.Squawk]; info != nil && info.HandoffController == ctx.world.Callsign {
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
+					fmt.Println("Accept handoff init")
 					return
 				} else if slices.Contains(ac.ForceQLControllers, ctx.world.Callsign) {
 					sp.RemoveForceQL(ctx, ac.Callsign, ctx.world.Callsign)
@@ -3648,8 +3663,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.clear = true
 				}
 				return
-			} else if cmd == "?" {
-				ctx.world.PrintInfo(ac)
+			} else if cmd[0] == '?' {
+				// ctx.world.PrintInfo(ac)
+				_, stars := ctx.world.SafeFacility("")
+				// fmt.Println(stars.TrackInformation)
+				// fmt.Println(ac.Nav.distanceAlongRoute(cmd[1:]))
+
+				fmt.Println(stars.TrackInformation)
 				status.clear = true
 				return
 			} else if cmd == "X" {
@@ -3894,11 +3914,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			status.clear = true
 			if cmd != "" {
 				err := sp.initiateTrack(ctx, ac, cmd)
-			if err != nil {
-				status.err = err
-			} else {
-				status.clear = true
-			}
+				if err != nil {
+					status.err = err
+				} else {
+					status.clear = true
+				}
 			} else {
 				status.err = ErrSTARSCommandFormat
 			}
@@ -3906,9 +3926,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			return
 
 		case CommandModeTerminateControl:
-			// TODO: error if cmd != ""?
 			status.clear = true
-			sp.dropTrack(ctx, ac.Callsign)
+			err := sp.dropTrack(ctx, ac.Callsign)
+			if err != nil {
+				status.err = err
+			}
 			return
 
 		case CommandModeHandOff:
@@ -5377,6 +5399,11 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		if trackInfo.HandoffController == w.Callsign {
 			// it's being handed off to us
 			dt = FullDatablock
+			_, stars := w.SafeFacility("")
+			if _, ok := stars.ContainedPlans[ac.Squawk]; !ok {
+				dt = LimitedDatablock
+				fmt.Printf("Plan for %v/%v is nil. Plans: %v.\n", ac.Callsign, ac.Squawk, stars.ContainedPlans)
+			}
 		}
 
 		if len(sp.getWarnings(ctx, ac)) > 0 {
@@ -6300,13 +6327,13 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		info := stars.TrackInformation[ac.Squawk]
 		var field1 string
 		if info == nil {
-			fmt.Printf("info for %v is nil: %v", ac.Squawk, stars.TrackInformation)
+			fmt.Printf("info for %v is nil: %v.\n", ac.Squawk, stars.TrackInformation)
 		} else if info.FlightPlan == nil {
-			fmt.Printf("fp info for %v is nil: %v", ac.Squawk, stars.TrackInformation[ac.Squawk])
+			// fmt.Printf("fp info for %v is nil: %v.\n", ac.Squawk, stars.TrackInformation[ac.Squawk])
+			sp.Aircraft[ac.Callsign].DatablockType = LimitedDatablock
 		} else {
 			field1 = info.FlightPlan.Callsign
 		}
-		
 
 		field2 := ""
 		if state.InhibitMSAW || state.DisableMSAW {
@@ -6495,6 +6522,7 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 	}
 
 	// Handle cases where it should flash
+	_, stars := w.SafeFacility("")
 	now := time.Now()
 	if now.Second()&1 == 0 { // one second cycle
 		if _, pointOut := sp.InboundPointOuts[ac.Callsign]; pointOut {
@@ -6506,8 +6534,9 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 		} else if state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd) {
 			// we handed it off, it was accepted, but we haven't yet acknowledged
 			brightness /= 3
-		} else if (ac.HandoffTrackController == w.Callsign && !slices.Contains(ac.RedirectedHandoff.Redirector, w.Callsign)) || // handing off to us
-			ac.RedirectedHandoff.RedirectedTo == w.Callsign {
+		} else if info := stars.TrackInformation[ac.Squawk]; (info != nil && info.HandoffController == ctx.world.Callsign &&  // handing off to us
+			!slices.Contains(ac.RedirectedHandoff.Redirector, w.Callsign)) || // not a redirector
+			ac.RedirectedHandoff.RedirectedTo == w.Callsign { // redirected to
 			brightness /= 3
 		}
 	}
@@ -6520,7 +6549,7 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 		}
 	}
 
-	_, stars := w.SafeFacility("")
+	
 
 	if info := stars.TrackInformation[ac.Squawk]; info == nil || info.TrackOwner == "" {
 		color = STARSUntrackedAircraftColor
@@ -6536,7 +6565,7 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 			color = STARSTrackedAircraftColor
 		} else if ac.RedirectedHandoff.OrigionalOwner == w.Callsign || ac.RedirectedHandoff.RedirectedTo == w.Callsign {
 			color = STARSTrackedAircraftColor
-		} else if /**/ info.HandoffController == w.Callsign &&
+		} else if info.HandoffController == w.Callsign &&
 			!slices.Contains(ac.RedirectedHandoff.Redirector, w.Callsign) {
 			// flashing white if it's being handed off to us.
 			color = STARSTrackedAircraftColor
