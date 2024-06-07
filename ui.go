@@ -1105,10 +1105,10 @@ func showAboutDialog() {
   Bolek, Lucas Chan, Aaron Flett, Mike K,
   Jonah Lefkoff, Jud Lopez, Ethan Malimon,
   Jace Martin, Merry, Yahya Nazimuddin,
-  Justin Nguyen, Andrew S, Arya T, Nelson T,
-  Eli Thompson, Michael Trokel, Samuel
-  Valencia, Gavin Velicevic, and Jackson
-  Verdoorn.
+  Justin Nguyen, Giovanni Rivera, Andrew S,
+  Arya T, Nelson T, Eli Thompson, Michael
+  Trokel, Samuel Valencia, Gavin Velicevic,
+  and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC,
   ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
   ZSE, and ZTL VATSIM ARTCCs.
