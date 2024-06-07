@@ -2,6 +2,48 @@
   "tracon": "JAX",
   "airports": {
     "KJAX": {
+      "atpa_volumes": {
+        "8":{
+          "runway_threshold": "KJAX-8",
+          "heading": 77,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 15000,
+          "length": 40,
+          "left_width": 3000,
+          "right_width": 2500
+      },
+      "14":{
+          "runway_threshold": "KJAX-14",
+          "heading": 137,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 15000,
+          "length": 40,
+          "left_width": 3000,
+          "right_width": 2500
+      },
+      "26":{
+          "runway_threshold": "KJAX-26",
+          "heading": 257,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 15000,
+          "length": 40,
+          "left_width": 3000,
+          "right_width": 2500
+      },
+      "32":{
+          "runway_threshold": "KJAX-32",
+          "heading": 317,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 15000,
+          "length": 40,
+          "left_width": 3000,
+          "right_width": 2500
+      }
+      },
       "approaches": {
         "I8": {
           "runway": "8",
@@ -589,7 +631,7 @@
           ]
         },
         "initial_altitude": 15000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_54_CTR",
         "initial_speed": 250,
         "star": "LUNNI1",
         "runway_waypoints": {
@@ -696,7 +738,7 @@
           ]
         },
         "initial_altitude": 12000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_77_CTR",
         "initial_speed": 250,
         "star": "MARQO2",
         "runway_waypoints": {
@@ -786,7 +828,7 @@
         },
           "assigned_altitude": 8000,
           "initial_altitude": 10000,
-          "initial_controller": "JAX_30_CTR",
+          "initial_controller": "JAX_77_CTR",
           "initial_speed": 250,
           "route": "/. MONIA",
           "waypoints": "CAMJO MARQO/ho MONIA"
@@ -839,7 +881,7 @@
           ]
         },
         "initial_altitude": 12000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_79_CTR",
         "initial_speed": 250,
         "star": "OHDEA1",
         "runway_waypoints": {
@@ -927,7 +969,7 @@
           ]
         },
         "initial_altitude": 16000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_57_CTR",
         "initial_speed": 250,
         "star": "QUBEN1",
         "runway_waypoints": {
@@ -991,7 +1033,7 @@
           ]
         },
         "initial_altitude": 17000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_15_CTR",
         "initial_speed": 250,
         "star": "TEBOW1",
         "runway_waypoints": {
@@ -1038,81 +1080,113 @@
     ]
   },
   "control_positions": {
-    "JAX_30_CTR": {
-      "frequency": 135925,
+    "JAX_54_CTR": {
+      "frequency": 124675,
       "full_name": "Jacksonville center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "30"
+      "sector_id": "C54"
+    },
+    "JAX_57_CTR": {
+      "frequency": 134005,
+      "full_name": "Jacksonville Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "scope_char": "C",
+      "sector_id": "C57"
+    },
+    "JAX_15_CTR": {
+      "frequency": 133325,
+      "full_name": "Jacksonville Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "scope_char": "C",
+      "sector_id": "C57"
+    },
+    "JAX_77_CTR": {
+      "frequency": 125375,
+      "full_name": "Jacksonville Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "scope_char": "C",
+      "sector_id": "C77"
+    },
+    "JAX_79_CTR": {
+      "frequency": 133700,
+      "full_name": "Jacksonville Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "scope_char": "C",
+      "sector_id": "C79"
     },
     "MCO_E_APP": {
       "frequency": 124800,
       "full_name": "Orlando approach",
       "facility_id": "4",
       "scope_char": "E",
-      "sector_id": "4E"
+      "sector_id": "1E"
     },
-    "DAB_H_APP": {
-      "frequency": 125725,
+    "DAB_N_APP": {
+      "frequency": 125800,
       "full_name": "Daytona Beach approach",
       "facility_id": "5",
-      "scope_char": "H",
-      "sector_id": "5H"
+      "scope_char": "1",
+      "sector_id": "1N"
     },
     "JAX_N_APP": {
       "frequency": 127000,
       "full_name": "Jacksonville approach",
       "scope_char": "N",
-      "sector_id": "3N"
+      "sector_id": "1N"
     },
     "JAX_W_APP": {
       "frequency": 127775,
       "full_name": "Jacksonville approach",
       "scope_char": "W",
-      "sector_id": "3W"
+      "sector_id": "1W"
     },
     "JAX_E_APP": {
-      "frequency": 132775,
+      "frequency": 127750,
       "full_name": "Jacksonville approach",
       "scope_char": "E",
-      "sector_id": "3E"
+      "sector_id": "1E"
     },
     "JAX_R_APP": {
       "frequency": 119000,
       "full_name": "Jacksonville approach",
       "scope_char": "R",
-      "sector_id": "3R"
+      "sector_id": "1R"
     },
     "JAX_J_APP": {
       "frequency": 119850,
       "full_name": "Jacksonville approach",
       "scope_char": "J",
-      "sector_id": "3J"
+      "sector_id": "1J"
     },
     "JAX_S_APP": {
       "frequency": 120750,
       "full_name": "Jacksonville approach",
       "scope_char": "S",
-      "sector_id": "3S"
+      "sector_id": "1S"
     },
     "JAX_V_APP": {
       "frequency": 118600,
       "full_name": "Jacksonville approach",
       "scope_char": "V",
-      "sector_id": "3V"
+      "sector_id": "1V"
     },
     "JAX_TWR": {
-      "frequency": 118300,
-      "full_name": "Jacksonville tower",
+      "frequency": 118100,
+      "full_name": "Fernandia Tower",
       "scope_char": "T",
-      "sector_id": "3JT"
+      "sector_id": "1F"
     },
     "FHB_TWR": {
       "frequency": 118300,
       "full_name": "Jacksonville tower",
       "scope_char": "T",
-      "sector_id": "3JT"
+      "sector_id": "1T"
     }
   },
   "default_scenario": "KJAX East",
@@ -1205,8 +1279,12 @@
           }
       },
       "controllers": [
-        "JAX_30_CTR",
-        "DAB_H_APP",
+        "JAX_57_CTR",
+        "JAX_54_CTR",
+        "JAX_15_CTR",
+        "JAX_77_CTR",
+        "JAX_79_CTR",
+        "DAB_N_APP",
         "MCO_E_APP",
         "JAX_TWR"
       ],
@@ -1307,8 +1385,12 @@
           }
       },
       "controllers": [
-        "JAX_30_CTR",
-        "DAB_H_APP",
+        "JAX_57_CTR",
+        "JAX_54_CTR",
+        "JAX_15_CTR",
+        "JAX_77_CTR",
+        "JAX_79_CTR",
+        "DAB_N_APP",
         "MCO_E_APP",
         "JAX_TWR"
       ],
@@ -1408,8 +1490,12 @@
           }
       },
       "controllers": [
-        "JAX_30_CTR",
-        "DAB_H_APP",
+        "JAX_57_CTR",
+        "JAX_54_CTR",
+        "JAX_15_CTR",
+        "JAX_77_CTR",
+        "JAX_79_CTR",
+        "DAB_N_APP",
         "MCO_E_APP",
         "JAX_TWR"
       ],
@@ -1466,7 +1552,12 @@
         "JAX_S_APP",
         "JAX_E_APP",
         "JAX_V_APP",
-        "JAX_30_CTR",
+        "JAX_57_CTR",
+        "JAX_54_CTR",
+        "JAX_15_CTR",
+        "JAX_77_CTR",
+        "JAX_79_CTR",
+        "DAB_N_APP",
         "JAX_TWR"
       ],
       "default_maps": [ "EAST FLOW" ],
@@ -1479,6 +1570,52 @@
   },
   "stars_config": {
   "center": "KJAX",
+  "airspace_awareness": [
+    {
+      "fixes": [
+        "ALLMA",
+        "BAXLY"
+      ],
+      "altitude_range": [
+        0,
+        999000
+      ],
+      "receiving_controller": "JAX_79_CTR"
+    },
+    {
+      "fixes": [
+        "WISPR"
+      ],
+      "altitude_range": [
+        0,
+        999000
+      ],
+      "receiving_controller": "JAX_54_CTR"
+    },
+    {
+      "fixes": [
+        "EXBOX",
+        "OMN",
+        "SAWGY"
+      ],
+      "altitude_range": [
+        0,
+        999000
+      ],
+      "receiving_controller": "JAX_57_CTR"
+    },
+    {
+      "fixes": [
+        "CAPPS",
+        "JAYJA"
+      ]
+      ,"altitude_range": [
+        0,
+        999000
+      ],
+      "receiving_controller": "JAX_77_CTR"
+    }
+  ],
   "radar_sites": {
     "JAX": {
       "char": "J",
