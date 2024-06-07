@@ -1105,7 +1105,7 @@ func showAboutDialog() {
   Bolek, Lucas Chan, Aaron Flett, Mike K,
   Jonah Lefkoff, Jud Lopez, Ethan Malimon,
   Jace Martin, Merry, Yahya Nazimuddin,
-  Justin Nguyen, Giovanni Rivera, Andrew S,
+  Justin Nguyen, Giovanni, Andrew S,
   Arya T, Nelson T, Eli Thompson, Michael
   Trokel, Samuel Valencia, Gavin Velicevic,
   and Jackson Verdoorn.
