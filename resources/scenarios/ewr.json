@@ -4521,6 +4521,11 @@
     "PVD",
     "ABE"
   ],
+  "coordination_fixes": {
+    "DYLIN": "route",
+    "SWEET": "route",
+    "FLOSI": "route"
+  },
   "inhibit_ca_volumes": [
     {
       "name": "EWR NO CA",
