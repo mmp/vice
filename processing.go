@@ -233,7 +233,17 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time) {
 	for _, msg := range *comp.ReceivedMessages {
 		switch msg.MessageType {
 		case Plan:
-			*comp.FlightPlans[msg.BCN] = *msg.FlightPlan()
+			if comp == nil {
+				lg.Errorf("comp = nil")
+			} else if msg.FlightPlan() == nil {
+				lg.Errorf("msg.plan = nil")
+			} else {
+				if comp.FlightPlans == nil {
+					comp.FlightPlans = make(map[Squawk]*STARSFlightPlan) // Use appropriate types here
+				}
+				// Ensure comp.FlightPlans[msg.BCN] is initialized
+				comp.FlightPlans[msg.BCN] = msg.FlightPlan()
+			}
 		case RequestFlightPlan:
 			facility := msg.SourceID[:3] // Facility asking for FP
 			// Find the flight plan
@@ -309,7 +319,11 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, w *World) { // For
 	fmt.Printf("Sent %v plan to %v\n", fp.AssignedSquawk, w.TRACON)
 	fp.Sent = true
 	if err != nil {
-		lg.Error(err.Error())
+		artcc := database.TRACONs[w.TRACON].ARTCC
+		err = comp.SendMessageToERAM(artcc, fp.Message())
+		if err != nil {
+			lg.Error(err.Error())
+		}
 	}
 }
 
