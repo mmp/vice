@@ -302,7 +302,9 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 			Call:      remoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
 			IssueTime: time.Now(),
 			OnSuccess: func(result any) {
-				remoteServer.runningSims = rs
+				if remoteServer != nil {
+					remoteServer.runningSims = rs
+				}
 			},
 			OnErr: func(e error) {
 				lg.Errorf("GetRunningSims error: %v", e)
@@ -2356,6 +2358,7 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			delete(s.Handoffs, ac.Callsign)
 			ac.HandoffTrackController = ""
+			ac.RedirectedHandoff = RedirectedHandoff{}
 			return nil
 		})
 }
@@ -2365,18 +2368,25 @@ func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 		func(ctrl *Controller, ac *Aircraft) error {
 			if octrl := s.World.GetControllerByCallsign(controller); octrl == nil {
 				return ErrNoController
-			} else if octrl.Callsign == ctrl.Callsign {
-				// Can't redirect to ourself
+			} else if octrl.Callsign == ctrl.Callsign || octrl.Callsign == ac.TrackingController {
+				// Can't redirect to ourself and the controller who initiated the handoff
 				return ErrInvalidController
+			} else if octrl.FacilityIdentifier != ctrl.FacilityIdentifier {
+				// Can't redirect to an interfacility position
+				return ErrInvalidFacility
 			}
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			octrl := s.World.GetControllerByCallsign(controller)
-			ac.RedirectedHandoff.OrigionalOwner = ac.TrackingController
-			ac.RedirectedHandoff.Redirector = append(ac.ForceQLControllers, ctrl.Callsign)
+			ac.RedirectedHandoff.OriginalOwner = ac.TrackingController
+			if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Callsign, octrl.Callsign) {
+				ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[0]
+				ac.RedirectedHandoff = RedirectedHandoff{}
+				return nil
+			}
+			ac.RedirectedHandoff.AddRedirector(ctrl)
 			ac.RedirectedHandoff.RedirectedTo = octrl.Callsign
-			ac.RedirectedHandoff.RDIndicator = true
 			return nil
 		})
 }
@@ -2387,26 +2397,25 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			if ac.RedirectedHandoff.RDIndicator && ac.RedirectedHandoff.RedirectedTo == ctrl.Callsign { // Accept
+			if ac.RedirectedHandoff.RedirectedTo == ctrl.Callsign { // Accept
+				s.eventStream.Post(Event{
+					Type:           AcceptedRedirectedHandoffEvent,
+					FromController: ac.RedirectedHandoff.OriginalOwner,
+					ToController:   ctrl.Callsign,
+					Callsign:       ac.Callsign,
+				})
 				ac.ControllingController = ctrl.Callsign
 				ac.HandoffTrackController = ""
 				ac.TrackingController = ac.RedirectedHandoff.RedirectedTo
-				ac.RedirectedHandoff = RedirectedHandoff{
-					RDIndicator: true,
+				ac.RedirectedHandoff = RedirectedHandoff{}
+			} else if ac.RedirectedHandoff.GetLastRedirector() == ctrl.Callsign { // Recall (only the last redirector is able to recall)
+				if len(ac.RedirectedHandoff.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"
+					ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1]
+				} else { // One redirect took place, clear the RD and show it as a normal handoff
+					ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1]
+					ac.RedirectedHandoff = RedirectedHandoff{}
 				}
-			} else if len(ac.RedirectedHandoff.Redirector) > 1 && slices.Contains(ac.RedirectedHandoff.Redirector, ctrl.Callsign) { // Recall
-
-				for index := range ac.RedirectedHandoff.Redirector {
-					if ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-index-1] == ctrl.Callsign {
-						ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-index-1]
-						ac.RedirectedHandoff.Redirector = ac.RedirectedHandoff.Redirector[:len(ac.RedirectedHandoff.Redirector)-index-1]
-						break
-					}
-				}
-			} else {
-				ac.RedirectedHandoff = RedirectedHandoff{} // Clear RD
 			}
-
 			return nil
 		})
 }

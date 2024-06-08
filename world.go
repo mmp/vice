@@ -45,6 +45,9 @@ type World struct {
 
 	missingPrimaryDialog *ModalDialogBox
 
+	sameGateDepartures int
+	sameDepartureCap   int
+
 	// Scenario routes to draw on the scope
 	scopeDraw struct {
 		arrivals   map[string]map[int]bool               // group->index
@@ -792,17 +795,20 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 		}
 
 		id := ""
-		for _, ch := range format {
+		for i, ch := range format {
 			switch ch {
 			case '#':
-				id += strconv.Itoa(rand.Intn(10))
+				if i == 0 {
+					// Don't start with a 0.
+					id += strconv.Itoa(1 + rand.Intn(9))
+				} else {
+					id += strconv.Itoa(rand.Intn(10))
+				}
 			case '@':
 				id += string(rune('A' + rand.Intn(26)))
 			}
 		}
-		if id == "0" || id == "00" || id == "000" || id == "0000" {
-			continue // bleh, try again
-		} else if _, ok := w.Aircraft[callsign+id]; ok {
+		if _, ok := w.Aircraft[callsign+id]; ok {
 			continue // it already exits
 		} else if _, ok := badCallsigns[callsign+id]; ok {
 			continue // nope
@@ -927,7 +933,10 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	rwy := &w.DepartureRunways[idx]
 
 	var dep *Departure
-	if rand.Float32() < challenge && lastDeparture != nil {
+	if w.sameDepartureCap == 0 {
+		w.sameDepartureCap = rand.Intn(3) + 1 // Set the initial max same departure cap (1-3)
+	}
+	if rand.Float32() < challenge && lastDeparture != nil && w.sameGateDepartures < w.sameDepartureCap {
 		// 50/50 split between the exact same departure and a departure to
 		// the same gate as the last departure.
 		pred := Select(rand.Float32() < .5,
@@ -943,6 +952,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		} else {
 			dep = &ap.Departures[idx]
 		}
+
 	}
 
 	if dep == nil {
@@ -958,6 +968,20 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 				departureAirport, rwy.Runway)
 		}
 		dep = &ap.Departures[idx]
+	}
+
+	if lastDeparture != nil && (dep.Exit == lastDeparture.Exit && w.sameGateDepartures >= w.sameDepartureCap) {
+		return nil, nil, fmt.Errorf("couldn't make a departure")
+	}
+
+	// Same gate buffer is a random int between 3-4 that gives a period after a few same gate departures.
+	// For example, WHITE, WHITE, WHITE, DIXIE, NEWEL, GAYEL, MERIT, DIXIE, DIXIE
+	// Another same-gate departure will not be happen untill after MERIT (in this example) because of the buffer.
+	sameGateBuffer := rand.Intn(2) + 3
+
+	if w.sameGateDepartures >= w.sameDepartureCap+sameGateBuffer || (lastDeparture != nil && dep.Exit != lastDeparture.Exit) { // reset back to zero if its at 7 or if there is a new gate
+		w.sameDepartureCap = rand.Intn(3) + 1
+		w.sameGateDepartures = 0
 	}
 
 	airline := SampleSlice(dep.Airlines)
@@ -980,6 +1004,10 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	artcc.FlightPlans[flightPlan.AssignedSquawk] = flightPlan.STARS()
 
 	artcc.ToSTARSFacility(w.TRACON, flightPlan.DepartureMessage(artcc.Identifier, w.SimTime))
+
+	/* Keep adding to World sameGateDepartures number until the departure cap + the buffer so that no more
+	same-gate departures are launched, then reset it to zero. Once the buffer is reached, it will reset World sameGateDepartures to zero*/
+	w.sameGateDepartures += 1
 
 	return ac, dep, nil
 }
@@ -1251,7 +1279,8 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 	defer ReturnTextDrawBuilder(td)
 	ld := GetLinesDrawBuilder()
 	defer ReturnLinesDrawBuilder(ld)
-	pd := &PointsDrawBuilder{}
+	pd := GetTrianglesDrawBuilder() // for circles
+	defer ReturnTrianglesDrawBuilder(pd)
 	ldr := GetLinesDrawBuilder() // for restrictions--in window coords...
 	defer ReturnLinesDrawBuilder(ldr)
 
@@ -1264,7 +1293,6 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 	style := TextStyle{
 		Font:           font,
 		Color:          color,
-		DropShadow:     true,
 		DrawBackground: true}
 
 	// STARS
@@ -1279,13 +1307,13 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 				continue
 			}
 
-			w.drawWaypoints(arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+			w.drawWaypoints(arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr)
 
 			// Draw runway-specific waypoints
 			for _, ap := range SortedMapKeys(arr.RunwayWaypoints) {
 				for _, rwy := range SortedMapKeys(arr.RunwayWaypoints[ap]) {
 					wp := arr.RunwayWaypoints[ap][rwy]
-					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
 
 					if len(wp) > 1 {
 						// Draw the runway number in the middle of the line
@@ -1317,7 +1345,7 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 			appr := ap.Approaches[name]
 			if appr.Runway == rwy.Runway && w.scopeDraw.approaches[rwy.Airport][name] {
 				for _, wp := range appr.Waypoints {
-					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
 				}
 			}
 		}
@@ -1339,7 +1367,7 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 			for _, exit := range SortedMapKeys(exitRoutes) {
 				if w.scopeDraw.departures[name][rwy][exit] {
 					w.drawWaypoints(exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
-						td, style, ld, pd, ldr, color)
+						td, style, ld, pd, ldr)
 				}
 			}
 		}
@@ -1351,10 +1379,9 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(2)
 	ld.GenerateCommands(cb)
-	cb.PointSize(5)
-	pd.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
+	pd.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 	cb.LineWidth(1)
 	ldr.GenerateCommands(cb)
@@ -1405,7 +1432,7 @@ func calculateOffset(font *Font, pt func(int) ([2]float32, bool)) [2]float32 {
 
 func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]interface{},
 	transforms ScopeTransformations, td *TextDrawBuilder, style TextStyle,
-	ld *LinesDrawBuilder, pd *PointsDrawBuilder, ldr *LinesDrawBuilder, color RGB) {
+	ld *LinesDrawBuilder, pd *TrianglesDrawBuilder, ldr *LinesDrawBuilder) {
 
 	// Draw an arrow at the point p (in nm coordinates) pointing in the
 	// direction given by the angle a.
@@ -1586,7 +1613,9 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 		drawnWaypoints[wp.Fix] = nil
 
 		// Draw a circle at the waypoint's location
-		pd.AddPoint([2]float32(wp.Location), color)
+		const pointRadius = 2.5
+		const nSegments = 8
+		pd.AddCircle(transforms.WindowFromLatLongP(wp.Location), pointRadius, nSegments)
 
 		offset := calculateOffset(style.Font, func(j int) ([2]float32, bool) {
 			idx := i + j
@@ -1725,6 +1754,21 @@ func (w *World) DrawSettingsWindow() {
 
 	if imgui.CollapsingHeader("Audio") {
 		globalConfig.Audio.DrawUI()
+	}
+	if imgui.CollapsingHeader("Display") {
+		imgui.Checkbox("Start in full-screen", &globalConfig.StartInFullScreen)
+		monitorNames := platform.GetAllMonitorNames()
+		if imgui.BeginComboV("Monitor", monitorNames[globalConfig.FullScreenMonitor], imgui.ComboFlagsHeightLarge) {
+			for index, monitor := range monitorNames {
+				if imgui.SelectableV(monitor, monitor == monitorNames[globalConfig.FullScreenMonitor], 0, imgui.Vec2{}) {
+					globalConfig.FullScreenMonitor = index
+
+					platform.EnableFullScreen(platform.IsFullScreen())
+				}
+			}
+
+			imgui.EndCombo()
+		}
 	}
 	if fsp != nil && imgui.CollapsingHeader("Flight Strips") {
 		fsp.DrawUI()

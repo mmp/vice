@@ -53,6 +53,7 @@ type FlightState struct {
 	IsDeparture               bool
 	DepartureAirportLocation  Point2LL
 	DepartureAirportElevation float32
+	ArrivalAirport            Waypoint
 	ArrivalAirportLocation    Point2LL
 	ArrivalAirportElevation   float32
 
@@ -156,6 +157,7 @@ func MakeArrivalNav(w *World, arr *Arrival, fp FlightPlan, perf AircraftPerforma
 			nav.Altitude.Assigned = &alt
 		}
 
+		nav.FinalAltitude = max(nav.FinalAltitude, arr.InitialAltitude)
 		nav.FlightState.Altitude = arr.InitialAltitude
 		nav.FlightState.IAS = arr.InitialSpeed
 		// This won't be quite right but it's better than leaving GS to be
@@ -228,6 +230,14 @@ func makeNav(w *World, fp FlightPlan, perf AircraftPerformance, wp []Waypoint) *
 	} else {
 		nav.FlightState.ArrivalAirportLocation = ap.Location
 		nav.FlightState.ArrivalAirportElevation = float32(ap.Elevation)
+
+		// Squirrel away the arrival airport as a fix and add it to the end
+		// of the waypoints.
+		nav.FlightState.ArrivalAirport = Waypoint{
+			Fix:      fp.ArrivalAirport,
+			Location: ap.Location,
+		}
+		nav.Waypoints = append(nav.Waypoints, nav.FlightState.ArrivalAirport)
 	}
 
 	return nav
@@ -905,7 +915,7 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *Logger) (heading float32, t
 			nav.Heading = NavHeading{Assigned: &hdg}
 			// Just in case.. Thus we will be ready to pick up the
 			// approach waypoints once we capture.
-			nav.Waypoints = nil
+			nav.Waypoints = []Waypoint{nav.FlightState.ArrivalAirport}
 		}
 		return
 
@@ -924,7 +934,6 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *Logger) (heading float32, t
 		thresholdDistance := nmdistance2ll(nav.FlightState.Position, threshold)
 		lg.Debugf("heading: intercepted the localizer @ %.2fnm!", thresholdDistance)
 
-		nav.Waypoints = nil
 		for i, wp := range ap.Waypoints[0] {
 			// Find the first waypoint that is:
 			// 1. In front of the aircraft.
@@ -947,7 +956,7 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *Logger) (heading float32, t
 			lg.Debugf("heading: fix %s ac heading %f wp heading %f in front %v threshold distance %f",
 				wp.Fix, nav.FlightState.Heading, acToWpHeading, inFront, thresholdDistance)
 			if inFront && nmdistance2ll(wp.Location, threshold) < thresholdDistance {
-				nav.Waypoints = DuplicateSlice(ap.Waypoints[0][i:])
+				nav.Waypoints = append(DuplicateSlice(ap.Waypoints[0][i:]), nav.FlightState.ArrivalAirport)
 				lg.Debug("heading: fix added future waypoints", slog.Any("waypoints", nav.Waypoints))
 				break
 			}
@@ -1387,15 +1396,17 @@ func (nav *Nav) distanceToEndOfApproach() (float32, error) {
 
 	// Calculate flying distance to the airport
 	if wp := nav.Waypoints; len(wp) == 0 {
-		// This shouldn't happen since the aircraft should be deleted when
-		// it reaches the final waypoint.  Nevertheless...
+		// This shouldn't ever happen; we should always have the
+		// destination airport, but just in case...
 		remainingDistance := nmdistance2ll(nav.FlightState.Position, nav.FlightState.ArrivalAirportLocation)
 		return remainingDistance, nil
 	} else {
 		// Distance to the next fix plus sum of the distances between
 		// remaining fixes.
 		remainingDistance := nmdistance2ll(nav.FlightState.Position, wp[0].Location)
-		for i := 0; i < len(wp)-1; i++ {
+		// Don't include the final waypoint, which should be the
+		// destination airport.
+		for i := 0; i < len(wp)-2; i++ {
 			remainingDistance += nmdistance2ll(wp[i].Location, wp[i+1].Location)
 		}
 
@@ -1482,7 +1493,7 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 		if clearedAtFix {
 			nav.Approach.Cleared = true
 			nav.Speed = NavSpeed{}
-			nav.Waypoints = nav.Approach.AtFixClearedRoute
+			nav.Waypoints = append(nav.Approach.AtFixClearedRoute, nav.FlightState.ArrivalAirport)
 		}
 		if nav.Heading.Arc != nil {
 			nav.Heading = NavHeading{}
@@ -1533,7 +1544,17 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *Logger) *Waypoint {
 			nav.Approach.NoPT = true
 		}
 
-		nav.Waypoints = nav.Waypoints[1:]
+		// Remove the waypoint from the route unless it's the destination
+		// airport, which we leave in any case.
+		if len(nav.Waypoints) == 1 {
+			// Passing the airport; leave it in the route but make sure
+			// we're on a heading.
+			hdg := nav.FlightState.Heading
+			nav.Heading = NavHeading{Assigned: &hdg}
+		} else {
+			nav.Waypoints = nav.Waypoints[1:]
+		}
+
 		if nav.Heading.Assigned == nil {
 			nav.flyProcedureTurnIfNecessary()
 		}
@@ -1642,8 +1663,8 @@ func (nav *Nav) GoAround() PilotResponse {
 	nav.Altitude = NavAltitude{Assigned: &alt}
 
 	nav.Approach = NavApproach{}
-
-	nav.Waypoints = nil
+	// Keep the destination airport at the end of the route.
+	nav.Waypoints = []Waypoint{nav.FlightState.ArrivalAirport}
 
 	s := Sample("going around", "on the go")
 	return PilotResponse{Message: s}
@@ -1907,7 +1928,7 @@ func (nav *Nav) directFix(fix string) bool {
 		for _, route := range ap.Waypoints {
 			for i, wp := range route {
 				if wp.Fix == fix {
-					nav.Waypoints = route[i:]
+					nav.Waypoints = append(route[i:], nav.FlightState.ArrivalAirport)
 					found = true
 					if wp.ProcedureTurn != nil {
 						break
@@ -2029,18 +2050,22 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World
 
 	if waypoints := arr.GetRunwayWaypoints(airport, ap.Runway); len(waypoints) > 0 {
 		if len(nav.Waypoints) == 0 {
-			// Nothing left on our route; assume that it has (hopefully
-			// recently) passed the last fix and that patching in the rest
-			// will work out.
-			nav.Waypoints = DuplicateSlice(waypoints[1:])
+			// Nothing left on our route; this shouldn't ever happen but
+			// just in case patch the runway waypoints in there and hope it
+			// works out.
+			nav.Waypoints = append(DuplicateSlice(waypoints[1:]), nav.FlightState.ArrivalAirport)
 		} else {
 			// Try to splice the runway-specific waypoints in with the
 			// aircraft's current waypoints...
 			found := false
 			for i, wp := range waypoints {
 				if idx := slices.IndexFunc(nav.Waypoints, func(w Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
-					nav.Waypoints = nav.Waypoints[:idx]
+					// Keep the waypoints up to the match but not the destination airport.
+					nav.Waypoints = nav.Waypoints[idx : len(nav.Waypoints)-1]
+					// Add the approach waypoints
 					nav.Waypoints = append(nav.Waypoints, waypoints[i:]...)
+					// And add the destination airport again at the end.
+					nav.Waypoints = append(nav.Waypoints, nav.FlightState.ArrivalAirport)
 					found = true
 					break
 				}
@@ -2056,7 +2081,8 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World
 				lg.Warn("aircraft waypoints don't match up with arrival runway waypoints. splicing...",
 					slog.Any("aircraft", nav.Waypoints),
 					slog.Any("runway", waypoints))
-				nav.Waypoints = DuplicateSlice(waypoints)
+				nav.Waypoints = append(DuplicateSlice(waypoints), nav.FlightState.ArrivalAirport)
+
 				hdg := nav.FlightState.Heading
 				nav.Heading = NavHeading{Assigned: &hdg}
 				nav.DeferredHeading = nil
@@ -2141,7 +2167,7 @@ func (nav *Nav) prepareForApproach(straightIn bool) (PilotResponse, error) {
 				if wp.Fix == nav.Waypoints[0].Fix {
 					directApproachFix = true
 					// Add the rest of the approach waypoints to our route
-					nav.Waypoints = DuplicateSlice(approach[i:])
+					nav.Waypoints = append(DuplicateSlice(approach[i:]), nav.FlightState.ArrivalAirport)
 					break
 				}
 			}
@@ -2248,7 +2274,7 @@ func (nav *Nav) prepareForChartedVisual() (PilotResponse, error) {
 
 	if wi != nil {
 		// Update the route and go direct to the intercept point.
-		nav.Waypoints = wi
+		nav.Waypoints = append(wi, nav.FlightState.ArrivalAirport)
 		nav.Heading = NavHeading{}
 		nav.DeferredHeading = nil
 		return PilotResponse{}, nil

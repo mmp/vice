@@ -858,8 +858,9 @@
       "solo_controller": "BHM_S_APP",
       "multi_controllers": {
         "default" : {
-            "BHM_S_APP": {"primary": true, "arrivals": ["KIOSK24", "WANDS", "HERKO24"], "departures": ["KBHM"]},
-            "BHM_N_APP": {"backup": "BHM_S_APP", "arrivals": ["NULLS24", "SHIMS", "NESTS24", "DIODE24", "LYMPH24"]}
+          "BHM_S_APP": {"primary": true, "arrivals": ["KIOSK24", "WANDS", "HERKO24"], "departures": ["KBHM"]},
+          "BHM_N_APP": {"backup": "BHM_S_APP", "arrivals": ["NULLS24", "SHIMS", "NESTS24", "DIODE24","LYMPH24"]},
+          "BHM_F_APP": {"backup": "BHM_S_APP"}
         }
     },
       "controllers": [
@@ -922,8 +923,9 @@
       "solo_controller": "BHM_S_APP",
       "multi_controllers": {
         "default" : {
-            "BHM_S_APP": {"primary": true, "arrivals": ["KIOSK6", "WANDS", "HERKO6"], "departures": ["KBHM"]},
-            "BHM_N_APP": {"backup": "BHM_S_APP", "arrivals": ["NULLS6", "SHIMS", "NESTS6", "DIODE6", "LYMPH6"]}
+          "BHM_S_APP": {"primary": true, "arrivals": ["KIOSK6", "WANDS", "HERKO6"], "departures": ["KBHM"]},
+          "BHM_N_APP": {"backup": "BHM_S_APP", "arrivals": ["NULLS6", "SHIMS", "NESTS6", "DIODE6","LYMPH6"]},
+          "BHM_F_APP": {"backup": "BHM_S_APP"}
         }
     },
       "controllers": [

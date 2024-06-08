@@ -442,8 +442,14 @@ func PlausibleFinalAltitude(w *World, fp *FlightPlan, perf AircraftPerformance) 
 	pDep, pArr := dep.Location, arr.Location
 	if nmdistance2ll(pDep, pArr) < 100 {
 		altitude = 7000
+		if dep.Elevation > 3000 || arr.Elevation > 3000 {
+			altitude += 1000
+		}
 	} else if nmdistance2ll(pDep, pArr) < 200 {
 		altitude = 11000
+		if dep.Elevation > 3000 || arr.Elevation > 3000 {
+			altitude += 1000
+		}
 	} else if nmdistance2ll(pDep, pArr) < 300 {
 		altitude = 21000
 	} else {
@@ -1339,7 +1345,7 @@ func (a *AirspaceVolume) GenerateDrawCommands(cb *CommandBuffer, nmPerLongitude 
 		for _, vtx := range a.Vertices {
 			v = append(v, [2]float32(vtx))
 		}
-		ld.AddPolyline([2]float32{}, v)
+		ld.AddLineLoop(v)
 	case AirspaceVolumeCircle:
 		ld.AddLatLongCircle(a.Center, nmPerLongitude, a.Radius, 360)
 	default:
@@ -2135,6 +2141,11 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				for _, tr := range SortedMapKeys(star.Transitions) {
 					wps := star.Transitions[tr]
 					if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == spawnPoint }); idx != -1 {
+						if idx == len(wps)-1 {
+							e.ErrorString("Only have one waypoint on STAR: \"%s\". 2 or more are necessary for navigation",
+								wps[idx].Fix)
+						}
+
 						ar.Waypoints = wps[idx:]
 						sg.InitializeWaypointLocations(ar.Waypoints, e)
 

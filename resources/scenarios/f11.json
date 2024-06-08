@@ -2,6 +2,48 @@
   "tracon": "F11",
   "airports": {
     "KMCO": {
+        "atpa_volumes": {
+            "17L": {
+                "runway_threshold": "KMCO-17L",
+                "heading": 185,
+                "max_heading_deviation": 185,
+                "floor": 100,
+                "ceiling": 8000,
+                "length": 40,
+                "left_width": 2000,
+                "right_width": 1500
+            },
+            "17R": {
+                "runway_threshold": "KMCO-17R",
+                "heading": 185,
+                "max_heading_deviation": 185,
+                "floor": 100,
+                "ceiling": 8000,
+                "length": 40,
+                "left_width": 2000,
+                "right_width": 1500
+            },
+            "18L": {
+                "runway_threshold": "KMCO-18L",
+                "heading": 185,
+                "max_heading_deviation": 185,
+                "floor": 100,
+                "ceiling": 8000,
+                "length": 40,
+                "left_width": 2000,
+                "right_width": 1500
+            },
+            "18R": {
+                "runway_threshold": "KMCO-18R",
+                "heading": 185,
+                "max_heading_deviation": 185,
+                "floor": 100,
+                "ceiling": 8000,
+                "length": 40,
+                "left_width": 2000,
+                "right_width": 1500
+            }
+        },
       "approaches": {
         "I7L": {
           "runway": "17L",
@@ -2367,7 +2409,7 @@
         },
         "assigned_altitude": 14000,
         "initial_altitude": 18000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "MIA_23_CTR",
         "initial_speed": 300,
         "star": "ALYNA3",
         "runway_waypoints": {
@@ -2646,7 +2688,7 @@
           ]
         },
         "initial_altitude": 19000,
-        "initial_controller": "MIA_46_CTR",
+        "initial_controller": "MIA_23_CTR",
         "initial_speed": 290,
         "star": "DADES1",
         "speed_restriction": 290,
@@ -2707,7 +2749,7 @@
         },
         "assigned_altitude": 8000,
         "initial_altitude": 8000,
-        "initial_controller": "MIA_46_CTR",
+        "initial_controller": "MIA_22_CTR",
         "initial_speed": 250,
         "star": "GOOFY7",
         "speed_restriction": 250,
@@ -3721,7 +3763,7 @@
           ]
         },
         "initial_altitude": 17000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_15_CTR",
         "initial_speed": 290,
         "star": "GRNCH5",
         "runway_waypoints": {
@@ -4069,7 +4111,7 @@
           ]
         },
         "initial_altitude": 17000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_15_CTR",
         "initial_speed": 290,
         "star": "GRNCH5",
         "speed_restriction": 290,
@@ -4405,7 +4447,7 @@
           ]
         },
         "initial_altitude": 17000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_15_CTR",
         "initial_speed": 290,
         "star": "GRNCH5",
         "speed_restriction": 290,
@@ -4834,7 +4876,7 @@
           ]
         },
         "initial_altitude": 13000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_58_CTR",
         "initial_speed": 280,
         "star": "GTOUT1",
         "speed_restriction": 250,
@@ -5263,7 +5305,7 @@
           ]
         },
         "initial_altitude": 13000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_58_CTR",
         "initial_speed": 280,
         "star": "GTOUT1",
         "speed_restriction": 250,
@@ -5721,7 +5763,7 @@
           ]
         },
         "initial_altitude": 14000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_15_CTR",
         "initial_speed": 280,
         "star": "JAFAR3",
         "runway_waypoints": {
@@ -5814,7 +5856,7 @@
         },
         "assigned_altitude": 8000,
         "initial_altitude": 8000,
-        "initial_controller": "MIA_46_CTR",
+        "initial_controller": "MIA_67_CTR",
         "initial_speed": 250,
         "star": "JOKRS3",
         "speed_restriction": 250,
@@ -6009,7 +6051,7 @@
           ]
         },
         "initial_altitude": 19000,
-        "initial_controller": "MIA_46_CTR",
+        "initial_controller": "MIA_67_CTR",
         "initial_speed": 280,
         "star": "PRICY3",
         "runway_waypoints": {
@@ -6216,7 +6258,7 @@
           ]
         },
         "initial_altitude": 19000,
-        "initial_controller": "MIA_46_CTR",
+        "initial_controller": "MIA_67_CTR",
         "initial_speed": 280,
         "star": "PRICY3",
         "speed_restriction": 250,
@@ -6411,7 +6453,7 @@
           ]
         },
         "initial_altitude": 19000,
-        "initial_controller": "MIA_46_CTR",
+        "initial_controller": "MIA_67_CTR",
         "initial_speed": 280,
         "star": "PRICY3",
         "speed_restriction": 250,
@@ -6882,7 +6924,7 @@
           ]
         },
         "initial_altitude": 15000,
-        "initial_controller": "MIA_46_CTR",
+        "initial_controller": "MIA_22_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
         "speed_restriction": 250,
@@ -6958,7 +7000,7 @@
           ]
         },
         "initial_altitude": 15000,
-        "initial_controller": "MIA_46_CTR",
+        "initial_controller": "MIA_22_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
         "speed_restriction": 250,
@@ -7034,7 +7076,7 @@
           ]
         },
         "initial_altitude": 15000,
-        "initial_controller": "MIA_46_CTR",
+        "initial_controller": "MIA_22_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
         "runway_waypoints": {
@@ -8065,7 +8107,7 @@
           ]
         },
         "initial_altitude": 12000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_58_CTR",
         "initial_speed": 280,
         "star": "SNFLD3",
         "speed_restriction": 250,
@@ -8494,7 +8536,7 @@
           ]
         },
         "initial_altitude": 12000,
-        "initial_controller": "JAX_30_CTR",
+        "initial_controller": "JAX_58_CTR",
         "initial_speed": 280,
         "star": "SNFLD3",
         "speed_restriction": 250,
@@ -8503,186 +8545,231 @@
     ]
   },
   "control_positions": {
-    "MIA_46_CTR": {
-      "frequency": 135175,
-      "full_name": "Miami center",
-      "facility_id": "M",
-      "eram_facility": true,
-      "scope_char": "C",
-      "sector_id": "R46"
+    "MIA_23_CTR": {
+        "frequency": 126950, 
+        "full_name": "Miami Center",
+        "facility_id": "R",
+        "eram_facility": true, 
+        "scope_char": "C",
+        "sector_id": "R23"
     },
-    "JAX_30_CTR": {
-      "frequency": 135925,
+    "MIA_22_CTR": {
+        "frequency": 133475,
+        "full_name": "Miami Center",
+        "facility_id": "R",
+        "eram_facility": true,
+        "scope_char": "C",
+        "sector_id": "R22"
+    },
+    "MIA_67_CTR": { 
+        "frequency": 127200,
+        "full_name": "Miami Center",
+        "facility_id": "R",
+        "eram_facility": true,
+        "scope_char": "C",
+        "sector_id": "R67"
+    },
+    "JAX_14_CTR": {
+      "frequency": 135750,
       "full_name": "Jacksonville center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "30"
+      "sector_id": "C14"
+    },
+    "JAX_15_CTR": {
+        "frequency": 133325,
+        "full_name": "Jacksonville center",
+        "facility_id": "C",
+        "eram_facility": true,
+        "scope_char": "C",
+        "sector_id": "C15"
+      },
+      "JAX_58_CTR": {
+        "frequency": 126350,
+        "full_name": "Jacksonville center",
+        "facility_id": "C",
+        "eram_facility": true,
+        "scope_char": "C",
+        "sector_id": "C58"
+      },
+    "JAX_57_CTR": {
+        "frequency": 134005,
+        "full_name": "Jacksonville Center",
+        "facility_id": "C",
+        "eram_facility": true,
+        "scope_char": "C",
+        "sector_id": "C57"
     },
     "JAX_N_APP": {
       "frequency": 127000,
       "full_name": "Jacksonville approach",
       "facility_id": "3",
       "scope_char": "N",
-      "sector_id": "3N"
+      "sector_id": "1N"
     },
-    "DAB_H_APP": {
-      "frequency": 125725,
+    "DAB_N_APP": {
+      "frequency": 125800,
       "full_name": "Daytona Beach approach",
       "facility_id": "5",
-      "scope_char": "H",
-      "sector_id": "5H"
+      "scope_char": "N",
+      "sector_id": "1N"
     },
     "TPA_E_APP": {
       "frequency": 118150,
       "full_name": "Tampa approach",
-      "scope_char": "A",
-      "facility_id": "T",
-      "sector_id": "TE"
+      "scope_char": "E",
+      "facility_id": "2",
+      "sector_id": "1E"
     },
     "MCO_E_APP": {
       "frequency": 124800,
       "full_name": "Orlando approach",
       "scope_char": "E",
-      "sector_id": "4E"
+      "sector_id": "1E",
+      "default_airport": "KMCO"
     },
     "MCO_E_DEP": {
       "frequency": 124800,
       "full_name": "Orlando approach",
       "scope_char": "E",
-      "sector_id": "4E"
+      "sector_id": "1E"
     },
     "MCO_B_APP": {
       "frequency": 128375,
       "full_name": "Orlando approach",
       "scope_char": "B",
-      "sector_id": "4B"
+      "sector_id": "1B"
     },
     "MCO_W_DEP": {
       "frequency": 120150,
       "full_name": "Orlando departure",
       "scope_char": "W",
-      "sector_id": "4W"
+      "sector_id": "1W"
     },
     "MCO_W_APP": {
       "frequency": 120150,
       "full_name": "Orlando Approach",
       "scope_char": "W",
-      "sector_id": "4W"
+      "sector_id": "1J"
     },
     "MCO_A_APP": {
       "frequency": 132650,
       "full_name": "Orlando Approach",
       "scope_char": "A",
-      "sector_id": "4A"
+      "sector_id": "1A"
     },
     "MCO_M_APP": {
       "frequency": 123850,
       "full_name": "Orlando Approach",
       "scope_char": "M",
-      "sector_id": "4M"
+      "sector_id": "1M"
     },
     "MCO_K_APP": {
       "frequency": 134950,
       "full_name": "Orlando Approach",
       "scope_char": "K",
-      "sector_id": "4K"
+      "sector_id": "1K"
     },
     "MCO_N_APP": {
       "frequency": 121100,
       "full_name": "Orlando Approach",
       "scope_char": "N",
-      "sector_id": "4N"
+      "sector_id": "1N"
     },
     "MCO_S_APP": {
       "frequency": 132650,
       "full_name": "Orlando Approach",
       "scope_char": "S",
-      "sector_id": "4S"
+      "sector_id": "1S"
     },
     "MCO_V_APP": {
       "frequency": 119775,
       "full_name": "Orlando Approach",
       "scope_char" :"V",
-      "sector_id": "4V"
+      "sector_id": "1V",
+      "default_airport": "KSFB"
     },
     "MCO_P_APP" : {
       "frequency": 135300,
       "full_name": "Orlando Approach",
       "scope_char": "P",
-      "sector_id": "4P"
+      "sector_id": "1P",
+      "default_airport": "KMLB"
     },
     "MCO_E_TWR": {
       "frequency": 118450,
       "full_name": "Orlando tower",
       "scope_char": "T",
-      "sector_id": "4ET"
+      "sector_id": "1T"
     },
     "MCO_D_APP": {
       "frequency": 119400,
       "full_name": "Orlando approach",
       "scope_char": "D",
-      "sector_id": "4D"
+      "sector_id": "1D",
+      "default_airport": "KISM"
     },
     "MCO_W_TWR": {
       "frequency": 126400,
       "full_name": "Orlando tower",
       "scope_char": "T",
-      "sector_id": "4WT"
+      "sector_id": "1Z"
     },
     "SFB_N_TWR": {
       "frequency": 120300,
       "full_name": "Sanford tower",
       "scope_char": "T",
-      "sector_id": "4NT"
+      "sector_id": "1Y"
     },
     "SFB_S_TWR": {
       "frequency": 135250,
       "full_name": "Sanford tower",
       "scope_char": "T",
-      "sector_id": "4ST"
+      "sector_id": "1F"
     },
     "MLB_TWR": {
       "frequency": 118200,
       "full_name": "Melbourne Orlando tower",
       "scope_char": "T",
-      "sector_id": "4MT"
+      "sector_id": "1O"
     },
     "ISM_TWR": {
       "frequency": 124450,
       "full_name": "Kissimee Gateway tower",
       "scope_char": "T",
-      "sector_id": "4IT"
+      "sector_id": "1I"
     },
     "ORL_TWR": {
       "frequency": 118700,
       "full_name": "Orlando Executive tower",
       "scope_char": "T",
-      "sector_id": "4OT"
+      "sector_id": "1X"
     },
     "SFB_TWR": {
       "frequency": 120300,
       "full_name": "Sanford tower",
       "scope_char": "T",
-      "sector_id": "4ST"
+      "sector_id": "1U"
     },
     "TPA_TWR": {
       "frequency": 119500,
       "full_name": "Tampa tower",
       "scope_char": "T",
-      "sector_id": "4TT"
+      "facility_id": "2",
+      "sector_id": "1W"
     },
     "MCO_G_APP": {
       "frequency": 127750,
       "full_name": "Orlando approach",
       "scope_char": "G",
-      "sector_id": "4G"
+      "sector_id": "1G"
     },
     "MCO_L_APP": {
       "frequency": 134050,
       "full_name": "Orlando approach",
       "scope_char": "L",
-      "sector_id": "4L"
+      "sector_id": "1L"
     }
   },
   "default_scenario": "KMCO South",
@@ -8795,7 +8882,7 @@
           "MCO_M_APP": {"backup": "MCO_W_APP"},
           "MCO_G_APP": {"backup": "MCO_M_APP"},
           "MCO_B_APP": {"backup": "MCO_E_APP","arrivals": ["GOOFY7", "GTOUT1", "RIDES2"]},
-          "MCO_L_APP": {"backup": "MCO_W_APP", "arrivals": ["PRICY3", "GRNCH5", "JOKRS3"]},
+          "MCO_L_APP": {"backup": "MCO_B_APP", "arrivals": ["PRICY3", "GRNCH5", "JOKRS3"]},
           "MCO_A_APP": {"backup": "MCO_D_APP"},
           "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KORL", "KSFB"]},
           "MCO_N_APP": {"backup": "MCO_D_APP"},
@@ -8804,10 +8891,15 @@
       },
       "controllers": [
         "TPA_E_APP",
-        "JAX_30_CTR",
-        "MIA_46_CTR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
         "JAX_N_APP",
-        "DAB_H_APP",
+        "DAB_N_APP",
         "MCO_E_TWR",
         "ISM_TWR",
         "ORL_TWR",
@@ -8961,10 +9053,15 @@
       },
       "controllers": [
         "TPA_E_APP",
-        "JAX_30_CTR",
-        "MIA_46_CTR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
         "JAX_N_APP",
-        "DAB_H_APP",
+        "DAB_N_APP",
         "MCO_E_TWR",
         "ISM_TWR",
         "ORL_TWR",
@@ -9052,10 +9149,15 @@
       "solo_controller": "MCO_W_DEP",
       "controllers": [
         "TPA_E_APP",
-        "JAX_30_CTR",
-        "MIA_46_CTR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
         "JAX_N_APP",
-        "DAB_H_APP",
+        "DAB_N_APP",
         "MCO_E_TWR",
         "ISM_TWR",
         "ORL_TWR",
@@ -9168,10 +9270,15 @@
       "solo_controller":"MCO_M_APP",
       "controllers": [
         "TPA_E_APP",
-        "JAX_30_CTR",
-        "MIA_46_CTR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
         "JAX_N_APP",
-        "DAB_H_APP",
+        "DAB_N_APP",
         "MCO_E_TWR",
         "ISM_TWR",
         "ORL_TWR",
@@ -9209,10 +9316,15 @@
       "solo_controller":"MCO_L_APP",
       "controllers": [
         "TPA_E_APP",
-        "JAX_30_CTR",
-        "MIA_46_CTR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
         "JAX_N_APP",
-        "DAB_H_APP",
+        "DAB_N_APP",
         "MCO_E_TWR",
         "ISM_TWR",
         "ORL_TWR",
@@ -9264,10 +9376,15 @@
       "solo_controller":"MCO_B_APP",
       "controllers": [
         "TPA_E_APP",
-        "JAX_30_CTR",
-        "MIA_46_CTR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
         "JAX_N_APP",
-        "DAB_H_APP",
+        "DAB_N_APP",
         "MCO_E_TWR",
         "ISM_TWR",
         "ORL_TWR",
@@ -9308,10 +9425,15 @@
       "solo_controller":"MCO_B_APP",
       "controllers": [
         "TPA_E_APP",
-        "JAX_30_CTR",
-        "MIA_46_CTR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
         "JAX_N_APP",
-        "DAB_H_APP",
+        "DAB_N_APP",
         "MCO_E_TWR",
         "ISM_TWR",
         "ORL_TWR",
@@ -9349,10 +9471,15 @@
       "solo_controller":"MCO_L_APP",
       "controllers": [
         "TPA_E_APP",
-        "JAX_30_CTR",
-        "MIA_46_CTR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
         "JAX_N_APP",
-        "DAB_H_APP",
+        "DAB_N_APP",
         "MCO_E_TWR",
         "ISM_TWR",
         "ORL_TWR",
@@ -9404,10 +9531,15 @@
       "solo_controller":"MCO_L_APP",
       "controllers": [
         "TPA_E_APP",
-        "JAX_30_CTR",
-        "MIA_46_CTR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
         "JAX_N_APP",
-        "DAB_H_APP",
+        "DAB_N_APP",
         "MCO_E_TWR",
         "ISM_TWR",
         "ORL_TWR",
@@ -9448,10 +9580,15 @@
       "solo_controller":"MCO_B_APP",
       "controllers": [
         "TPA_E_APP",
-        "JAX_30_CTR",
-        "MIA_46_CTR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
         "JAX_N_APP",
-        "DAB_H_APP",
+        "DAB_N_APP",
         "MCO_E_TWR",
         "ISM_TWR",
         "ORL_TWR",
@@ -9499,10 +9636,15 @@
       "solo_controller":"MCO_M_APP",
       "controllers": [
         "TPA_E_APP",
-        "JAX_30_CTR",
-        "MIA_46_CTR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
         "JAX_N_APP",
-        "DAB_H_APP",
+        "DAB_N_APP",
         "MCO_E_TWR",
         "ISM_TWR",
         "ORL_TWR",
@@ -9528,10 +9670,15 @@
       "solo_controller": "MCO_W_DEP",
       "controllers": [
         "TPA_E_APP",
-        "JAX_30_CTR",
-        "MIA_46_CTR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
         "JAX_N_APP",
-        "DAB_H_APP",
+        "DAB_N_APP",
         "MCO_E_TWR",
         "ISM_TWR",
         "ORL_TWR",
@@ -9608,6 +9755,72 @@
   },
   "stars_config": {
   "center": "N028.25.45.781,W081.18.32.260",
+  "airspace_awareness": [
+    {
+        "fixes": [
+            "BORRD",
+            "VALKA",
+            "JIPOD",
+            "ZALEN",
+            "ETECK",
+            "FAROV",
+            "LENDS",
+            "MLB",
+            "DDANY"
+        ],
+        "altitude_range": [
+            0,
+            999000
+        ],
+        "receiving_controller": "MIA_23_CTR"
+    },
+    {
+        "fixes": [
+            "VIYAP",
+            "PAINN",
+            "WORMS"
+        ],
+        "altitude_range": [
+            12000, 
+            999000
+        ],
+        "receiving_controller": "JAX_58_CTR"
+    },
+    {
+        "fixes": [
+            "VIYAP",
+            "PAINN",
+            "WORMS"
+        ],
+        "altitude_range": [
+            0,
+            11000
+        ],
+        "receiving_controller": "DAB_N_APP"
+    },
+    {
+        "fixes": [
+            "PLUMR"
+        ],
+        "altitude_range": [
+            0,
+            999000
+        ],
+        "receiving_controller": "MIA_67_CTR"
+    },
+    {
+        "fixes": [
+            "JFRYS",
+            "REMIS",
+            "CIGAR"
+        ],
+        "altitude_range": [
+            0,
+            999000
+        ],
+        "receiving_controller": "JAX_14_CTR"
+    }
+  ],
   "inhibit_ca_volumes": [
     {
       "name": "MCON FINAL 1",

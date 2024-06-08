@@ -1,0 +1,868 @@
+{
+  "tracon": "AVL",
+  "airports": {
+    "KAVL": {
+      "approaches": {
+        "I17": {
+          "runway": "17",
+          "type": "ILS",
+          "waypoints": [
+            "SOT/iaf/a6600 JUNOE/if/a5000 WUGAG/a5000 KEANS/faf/a4100",
+            "JUNOE/if/a5000 WUGAG/a5000 KEANS/faf/a4100",
+            "KEANS/iaf/pt45/a5600 WUGAG/a5000 KEANS/faf/a4100"
+          ]
+        },
+        "I35": {
+          "runway": "35",
+          "type": "ILS",
+            "waypoints": [
+                "TUXDO/iaf/nopt/a5100 NURUE/if/hilpt UMUXE/faf/a4000",
+                "NURUE/iaf/hilpt UMUXE/faf/a4000"
+            ]
+        },
+        "R17": {
+          "full_name":"RNAV GPS Runway 17",
+          "runway": "17",
+          "type" : "RNAV",
+          "waypoints": [
+            "OPIME/iaf/nopt/a6400 ONZIQ/if/hilpt7nm/nopt180/a6400 LUYGI/a4500 STOSS/faf/a4000 JIRDU/a2920",
+            "ONZIQ/iaf/hilpt7nm/nopt180/a6400 LUYGI/a4500 STOSS/faf/a4000 JIRDU/a2920"
+          ]
+        },
+        "R35": {
+            "full_name": "RNAV GPS Runway 35",
+            "runway": "35",
+            "type": "RNAV",
+            "waypoints": [
+                "ZIKOL/iaf/nopt/a6200 AVEBE/if/hilpt7nm/nopt180/a6200 ZICZU/a4200 UMUXE/faf/a4000 OBOVE/a3140",
+                "FIMOV/iaf/nopt/a6200 AVEBE/if/hilpt7nm/nopt180/a6200 ZICZU/a4200 UMUXE/faf/a4000 OBOVE/a3140",
+                "AVEBE/iaf/hilpt7nm/nopt180/a6200 ZICZU/a4200 UMUXE/faf/a4000 OBOVE/a3140"
+            ]
+        }
+      },
+      "departure_routes": {
+        "35": {
+            "SOT": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_17/h346"
+          },
+            "BZM": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_17/h346"
+          },
+          "SPA": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_17/h346"
+          },
+          "IRQ": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_17/h346"
+          },
+          "VXV": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_17/h346"
+          },
+          "MHONY": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_17/h346"
+          },
+          "JJENY": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_17/h346"
+          }
+        },
+        "17": {
+            "SOT": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_35/h166"
+          },
+            "BZM": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_35/h166"
+          },
+          "SPA": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_35/h166"
+          },
+          "IRQ": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_35/h166"
+          },
+          "VXV": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_35/h166"
+          },
+          "MHONY": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_35/h166"
+          },
+          "JJENY": {
+            "cleared_altitude": 8000,
+            "sid":"AVL7",
+            "waypoints": "_AVL_35/h166"
+          }
+        }
+      },
+      "departures": [
+        {
+            "exit": "SOT",
+            "destination": "KDFW",
+            "altitude": 36000,
+            "route": "SOT REWET LORNN MGRIF MEM J66 LIT FEWWW SEEVR4",
+            "airlines": [
+                {
+                    "icao": "AAL",
+                    "fleet": "short"
+                }
+            ]
+        },
+        {
+            "exit": "IRQ",
+            "destination": "KMIA",
+            "altitude": 32000,
+            "route": "IRQ FISHO TEEEM BULZI Q81 ENDEW BROMO FROGZ4",
+            "airlines": [
+                {
+                    "icao": "ENY",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "MHONY",
+            "destination": "KATL",
+            "altitude": 22000,
+            "route": "MHONY WINNG OZZZI1",
+            "airlines": [
+                {
+                    "icao": "DAL",
+                    "fleet": "short"
+                }
+            ]
+        },
+        {
+            "exit": "SPA",
+            "destination": "KFLL",
+            "altitude": 35000,
+            "route": "SPA QUIWE Q93 WOPNR Q93 PRMUS CUUDA3",
+            "airlines": [
+                {
+                    "icao": "AAY",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "JJENY",
+            "destination": "KCLT",
+            "altitude": 11000,
+            "route": "JJENY FILPZ4",
+            "airlines": [
+                {
+                    "icao": "JIA",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "BZM",
+            "destination": "KLGA",
+            "altitude": 31000,
+            "route": "BZM Q60 JAXSN HURTS PROUD2",
+            "airlines": [
+                {
+                    "icao": "EDV",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "SOT",
+            "destination": "KORD",
+            "altitude": 35000,
+            "route": "SOT CEMEX HEVAN Q118 BONNT VEECK5",
+            "airlines": [
+                {
+                    "icao": "ENY",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "MHONY",
+            "destination": "KATL",
+            "altitude": 22000,
+            "route": "MHONY WINNG OZZZI1",
+            "airlines": [
+                {
+                    "icao": "DAL",
+                    "fleet": "short"
+                }
+            ]
+        },
+        {
+            "exit": "BZM",
+            "destination": "KDCA",
+            "altitude": 33000,
+            "route": "BZM JOOLI Q56 KIWII WAVES CAPSS3",
+            "airlines": [
+                {
+                    "icao": "JIA",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "SOT",
+            "destination": "KORD",
+            "altitude": 38000,
+            "route": "SOT Q93 HEVAN BONNT VEECK5",
+            "airlines": [
+                {
+                    "icao": "GJS",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "SPA",
+            "destination": "KSFB",
+            "altitude": 37000,
+            "route": "SPA QUIWE Q93 GIPPL Q85 BEEGE Q85 LPERD TTHOR3",
+            "airlines": [
+                {
+                    "icao": "AAY",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "JJENY",
+            "destination": "KCLT",
+            "altitude": 11000,
+            "route": "JJENY FILPZ4",
+            "airlines": [
+                {
+                    "icao": "PDT",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "SPA",
+            "destination": "KFLL",
+            "altitude": 35000,
+            "route": "SPA SPA QUIWE Q93 FISHO Q93 WOPNR Q93 PRMUS CUUDA3",
+            "airlines": [
+                {
+                    "icao": "AAY",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "BZM",
+            "destination": "KEWR",
+            "altitude": 35000,
+            "route": "BZM KIDDO Q22 OMENS Q22 UMBRE QUART PHLBO4",
+            "airlines": [
+                {
+                    "icao": "AAY",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "VXV",
+            "destination": "KDFW",
+            "altitude": 36000,
+            "route": "VXV YUYUN BEREE2",
+            "airlines": [
+                {
+                    "icao": "ENY",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "MHONY",
+            "destination": "KATL",
+            "altitude": 22000,
+            "route": "MHONY WINNG OZZZI1",
+            "airlines": [
+                {
+                    "icao": "DAL",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "MHONY",
+            "destination": "KATL",
+            "altitude": 22000,
+            "route": "MHONY WINNG OZZZI1",
+            "airlines": [
+                {
+                    "icao": "DAL",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "SOT",
+            "destination": "KORD",
+            "altitude": 34000,
+            "route": "SOT IBATE HEVAN Q118 BONNT VEECK5",
+            "airlines": [
+                {
+                    "icao": "ENY",
+                    "fleet": "default"
+                }
+            ]
+        },
+        {
+            "exit": "MHONY",
+            "destination": "KATL",
+            "altitude": 22000,
+            "route": "MHONY WINNG OZZZI1",
+            "airlines": [
+                {
+                    "icao": "DAL",
+                    "fleet": "default"
+                }
+            ]
+        }
+    ],
+      "exit_categories": {
+        "VXV": "ALL",
+        "SOT": "ALL",
+        "BZM": "ALL",
+        "SPA": "ALL",
+        "IRQ": "ALL",
+        "MHONY": "ALL",
+        "JJENY": "ALL"
+      },
+      "tower_list": 1
+    }
+  },
+  "airspace": {
+    "boundaries": {
+      "AVLAPP1": [
+        "N35.58.59.180,W83.07.57.503",
+        "N35.58.59.906,W82.16.39.887",
+        "N35.48.11.066,W82.21.52.732",
+        "N35.47.33.545,W82.22.05.748",
+        "N35.42.29.448,W82.23.28.381",
+        "N35.39.57.431,W82.05.17.123",
+        "N35.21.46.738,W82.02.22.515",
+        "N35.21.39.502,W82.05.57.085",
+        "N35.17.30.481,W82.05.59.634",
+        "N35.04.51.879,W82.18.54.048",
+        "N35.03.44.730,W82.58.43.450",
+        "N35.15.42.203,W83.01.37.906",
+        "N35.32.14.720,W82.57.07.165",
+        "N35.36.43.524,W82.56.16.373",
+        "N35.37.48.050,W83.00.27.119",
+        "N35.50.12.455,W83.02.26.031",
+        "N35.58.59.300,W83.07.59.050"
+      ],
+      "AVLAPP06100":[
+        "N35.32.59.861,W82.05.59.850",
+        "N35.32.59.995,W82.03.59.996",
+        "N35.21.49.129,W82.02.23.306",
+        "N35.21.41.068,W82.05.59.998",
+        "N35.32.59.861,W82.05.59.850"
+      ],
+      "AVLAPP0610":[
+        "N35.13.31.960,W82.10.03.869",
+        "N35.08.53.665,W82.10.00.592",
+        "N35.05.00.159,W82.14.01.209",
+        "N35.04.51.977,W82.18.53.882",
+        "N35.13.31.960,W82.10.03.869"
+      ]
+    },
+    "volumes": {
+      "AVLAPP": [
+        {
+          "boundaries": [
+            "AVLAPP1"
+          ],
+          "lower": 0,
+          "upper": 10000
+        },
+        {
+          "boundaries": [
+            "AVLAPP06100"
+          ],
+          "lower": 6000,
+          "upper": 10000
+        },
+        {
+          "boundaries": [
+            "AVLAPP0610"
+          ],
+          "lower": 6000,
+          "upper": 10000
+        }
+      ]
+    }
+  },
+  "arrival_groups": {
+    "LEAVI": [
+      {
+        "airlines": {
+          "KAVL": [
+            {
+              "airport": "KORL",
+              "icao": "N"
+          },
+          {
+              "airport": "KDEN",
+              "icao": "UAL"
+          },
+          {
+              "airport": "KJZP",
+              "icao": "N"
+          }
+          ]
+        },
+        "cruise_altitude": 35000,
+        "initial_altitude": 15000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. LEAVI",
+        "waypoints": "KOKRE LEAVI/a11000/h343/ho"
+      }
+    ],
+    "JONEB": [
+      {
+        "airlines": {
+          "KAVL": [
+            {
+              "airport": "8NC9",
+              "icao": "N"
+          },
+          {
+              "airport": "K1A5",
+              "icao": "N"
+          },
+          {
+              "airport": "KCLT",
+              "icao": "JIA"
+          }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. JONEB",
+        "waypoints": "PITTY JAKIB/ho JONEB/a11000/h296"
+      }
+    ],
+  "TUSRE": [
+      {
+        "airlines": {
+          "KAVL": [
+            {
+              "airport": "KMCO",
+              "icao": "EJA"
+          },
+          {
+              "airport": "SC42",
+              "icao": "EJA"
+          },
+          {
+              "airport": "KBWI",
+              "icao": "N"
+          }
+          ]
+        },
+        "initial_altitude": 18000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "route": "/. TUSRE",
+        "waypoints": "BZM WOGAG/ho TUSRE/a11000/s250/h243"
+      }
+    ],
+      "OBURY": [
+      {
+        "airlines": {
+          "KAVL": [
+            {
+              "airport": "KPHF",
+              "icao": "N"
+          },
+          {
+              "airport": "KPIE",
+              "icao": "AAY"
+          },
+          {
+              "airport": "KLGA",
+              "icao": "RPA"
+          },
+          {
+              "airport": "KTPA",
+              "icao": "N"
+          },
+          {
+              "airport": "KMLB",
+              "icao": "N"
+          },
+          {
+              "airport": "KATL",
+              "icao": "DAL"
+          },
+          {
+              "airport": "KHST",
+              "icao": "EDV"
+          }
+          ]
+        },
+        "initial_altitude": 16000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 290,
+        "route": "/. OBURY",
+        "waypoints": "SPA CARTT OBURY/a11000/s250/h308/ho",
+        "speed_restriction": 250
+      }
+    ],
+      "PUPDG": [
+        {
+          "airlines": {
+            "KAVL": [
+              {
+                "airport": "KTYS",
+                "icao": "N"
+            },
+            {
+                "airport": "KSCH",
+                "icao": "EJA"
+            }
+            ]
+          },
+          "initial_altitude": 11000,
+          "initial_controller": "TYS_APP",
+          "initial_speed": 290,
+          "route": "/. PUPDG",
+          "waypoints": "BLAYQ/ho PUPDG/a11000/s250/h135",
+          "speed_restriction": 250
+        }
+    ],
+    "BARRD": [
+      {
+        "airlines": {
+          "KAVL": [
+            {
+              "airport": "NC72",
+              "icao": "N"
+          },
+          {
+              "airport": "2OH9",
+              "icao": "N"
+          }
+          ]
+        },
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 290,
+        "route": "/. BARRD",
+        "waypoints": "AFTEN BARRD/s250/h173/ho"
+      }
+    ]
+  },
+  "control_positions": {
+    "ATL_CTR": {
+      "frequency": 132975,
+      "full_name": "Atlanta Center",
+      "scope_char": "C",
+      "sector_id": "C43",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "AVL_W_APP": {
+      "frequency": 124650,
+      "full_name": "Asheville Approach",
+      "scope_char": "W",
+      "sector_id": "1W"
+    },
+    "AVL_E_APP": {
+      "frequency": 125800,
+      "full_name": "Asheville Approach",
+      "scope_char": "E",
+      "sector_id": "1E"
+    },
+    "GSP_APP": {
+      "frequency": 118800,
+      "full_name": "Greer Approach",
+      "scope_char": "G",
+      "sector_id": "1W",
+      "facility_id": "2"
+    },
+    "TRI_APP": {
+      "frequency": 125500,
+      "full_name": "Tri-Cities Approach",
+      "scope_char": "T",
+      "sector_id": "1W",
+      "facility_id": "3"
+    },
+    "AVL_TWR": {
+      "frequency": 121100,
+      "full_name": "Asheville Tower",
+      "scope_char": "T",
+      "sector_id": "1T"
+    },
+    "TYS_APP": {
+      "frequency": 123900,
+      "full_name": "Knoxville Approach",
+      "scope_char": "K",
+      "sector_id": "1W",
+      "facility_id": "1"
+    }
+  },
+  "default_scenario": "KAVL Land and Depart Runway 17",
+  "fixes": {
+    "_AVL_17": "N35.26.47.434,W82.32.47.094",
+    "_AVL_35": "N35.25.33.129,W82.32.13.731",
+    "KAVL": "N35.26.09.742,W82.32.31.296"
+  },
+  "magnetic_adjustment": -1,
+  "name": "KAVL",
+  "primary_airport": "KAVL",
+  "scenarios": {
+    "KAVL Land and Depart Runway 17": {
+      "approach_airspace": [
+        "AVLAPP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KAVL",
+          "runway": "17"
+        }
+      ],
+      "arrivals": {
+        "OBURY": {
+          "KAVL": 5
+        },
+        "PUPDG": {
+          "KAVL": 3
+        },
+        "BARRD": {
+          "KAVL": 7
+        },
+        "TUSRE": {
+          "KAVL": 4
+        },
+        "JONEB": {
+          "KAVL": 8
+        },
+        "LEAVI": {
+          "KAVL": 3
+        }
+      },
+      "solo_controller": "AVL_W_APP",
+      "multi_controllers": {
+        "default" : {
+            "AVL_W_APP": {"primary": true, "arrivals": ["PUPDG", "BARRD"], "departures": ["KAVL"]},
+            "AVL_E_APP": {"backup": "AVL_W_APP", "arrivals": ["LEAVI", "JONEB","TUSRE","OBURY"]}
+        }
+    },
+      "controllers": [
+        "AVL_TWR",
+        "ATL_CTR",
+        "TYS_APP",
+        "GSP_APP",
+        "TRI_APP"
+      ],
+      "default_maps": [ "AVL AIRSPACE", "RUNWAY 17" ],
+      "departure_airspace": [
+        "AVLAPP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KAVL",
+          "rate" : 15,
+          "runway": "17"
+        }
+      ],
+      "wind": {
+        "direction": 170,
+        "speed": 5
+      }
+    },
+    "KAVL Land and Depart Runway 35": {
+      "approach_airspace": [
+        "AVLAPP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KAVL",
+          "runway": "35"
+        }
+      ],
+      "arrivals": {
+        "OBURY": {
+          "KAVL": 5
+        },
+        "PUPDG": {
+          "KAVL": 3
+        },
+        "BARRD": {
+          "KAVL": 7
+        },
+        "TUSRE": {
+          "KAVL": 4
+        },
+        "JONEB": {
+          "KAVL": 8
+        },
+        "LEAVI": {
+          "KAVL": 3
+        }
+      },
+      "solo_controller": "AVL_W_APP",
+      "multi_controllers": {
+        "default" : {
+            "AVL_W_APP": {"primary": true, "arrivals": ["PUPDG", "BARRD"], "departures": ["KAVL"]},
+            "AVL_E_APP": {"backup": "AVL_W_APP", "arrivals": ["LEAVI", "JONEB","TUSRE","OBURY"]}
+        }
+    },
+      "controllers": [
+        "AVL_TWR",
+        "ATL_CTR",
+        "TYS_APP",
+        "GSP_APP",
+        "TRI_APP"
+      ],
+      "default_maps": [ "AVL AIRSPACE", "RUNWAY 35" ],
+      "departure_airspace": [
+        "AVLAPP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KAVL",
+          "rate" : 15,
+          "runway": "35"
+        }
+      ],
+      "wind": {
+        "direction": 350,
+        "speed": 5
+      }
+    }
+      },
+      "stars_config": {
+        "center": "KAVL",
+        "inhibit_ca_volumes": [
+          {
+            "name": "BHM NO CA",
+            "type": "polygon",
+            "floor": 0,
+            "ceiling": 3500,
+            "vertices": [
+                "-86.897208,33.532504",
+                "-86.641151,33.677967",
+                "-86.584176,33.611529",
+                "-86.839472,33.462847"
+            ]
+        },
+        {
+          "name": "BHM NO CA",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 3500,
+          "vertices": [
+              "-86.695616,33.672883",
+              "-86.695274,33.453065",
+              "-86.79461,33.453311",
+              "-86.794879,33.672271"
+          ]
+        }
+      ],
+      "radar_sites": {
+        "BHM": {
+          "char": "B",
+          "position": "33.573611,-86.75611",
+          "elevation": 705,
+          "primary_range": 100,
+          "secondary_range": 150,
+          "silence_angle": 50.4,
+          "slope_angle": 0.3
+        }
+    },
+    "scratchpads": {
+      "VXV": "VXV",
+      "SOT": "SOT",
+      "BZM": "BZM",
+      "SPA": "SPA",
+      "IRQ": "IRQ",
+      "MHONY": "MHONY",
+      "JJENY": "JJENY"
+  },
+  "stars_maps": [
+    {
+      "group": 1,
+      "label": "CLASS C",
+      "name": "AVL CLASS C / SECTORS"
+  },
+  {
+      "group": 1,
+      "label": "SECTORS",
+      "name": "AVL SECTORS"
+  },
+  {
+      "group": 0,
+      "label": "AIRSPAC",
+      "name": "AVL AIRSPACE"
+  },
+  {
+      "group": 1,
+      "label": "AVLRNAV",
+      "name": "AVL RNAV (GPS) RWY 17/35 APPROACHES"
+  },
+  {
+      "group": 0,
+      "label": "TOWER",
+      "name": "AVL TOWER"
+  },
+  {
+      "group": 0,
+      "label": "RWY 17",
+      "name": "RUNWAY 17"
+  },
+  {
+      "group": 0,
+      "label": "RWY 35",
+      "name": "RUNWAY 35"
+  },
+  {
+      "group": 1,
+      "label": "MVA",
+      "name": "AVL MINIMUM VECTORING ALTITUDES"
+  },
+  {
+      "group": 1,
+      "label": "EOVM",
+      "name": "AVL EMERGENCY OBSTRUCTION VIDEO MAP"
+  },
+  {
+    "group": 0,
+    "label": "CAB",
+    "name": "AVL Cab"
+}
+  ],
+"video_map_file": "videomaps/ZTL-videomaps.json.zst"
+      }
+    } 

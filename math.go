@@ -402,6 +402,36 @@ func PointInPolygon2LL(p Point2LL, pts []Point2LL) bool {
 	return inside
 }
 
+var (
+	// So that we can efficiently draw circles with various tessellations,
+	// circlePoints caches vertex positions of a unit circle at the origin
+	// for specified tessellation rates.
+	circlePoints map[int][][2]float32
+)
+
+// GetCirclePoints returns the vertices for a unit circle at the origin
+// with the given number of segments; it creates the vertex slice if this
+// tessellation rate hasn't been seen before and otherwise returns a
+// preexisting one.
+func GetCirclePoints(nsegs int) [][2]float32 {
+	if circlePoints == nil {
+		circlePoints = make(map[int][][2]float32)
+	}
+	if _, ok := circlePoints[nsegs]; !ok {
+		// Evaluate the vertices of the circle to initialize a new slice.
+		var pts [][2]float32
+		for d := 0; d < nsegs; d++ {
+			angle := radians(float32(d) / float32(nsegs) * 360)
+			pt := [2]float32{sin(angle), cos(angle)}
+			pts = append(pts, pt)
+		}
+		circlePoints[nsegs] = pts
+	}
+
+	// One way or another, it's now available in the map.
+	return circlePoints[nsegs]
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Point2LL
 

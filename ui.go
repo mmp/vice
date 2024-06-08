@@ -182,8 +182,17 @@ var (
 		`Fixed a bug where go-arounds would sometimes not contact departure`,
 		`Fixed a bug where live weather would occasionally cause vice to crash`,
 		`Fixed a bug where aircraft TAS would be too high at high altitudes`,
-		`Added support for ATC chat`,
-		`Improved handling of keyboard input when spinners in the STARS DCB are active`,
+		`Added support for ATC chat (prefix chat messages a '/' in the command prompt)`,
+		`Allow entering values for STARS DCB spinner using the keyboard`,
+		`Scenario Updates: D01 and COS (Andrew S), Y90 (Merry Arbitrary), C90 (Jud Lopez, Yahya Nazimuddin)`,
+		`Added "FC" command to tell aircraft to change to the next controller's frequency`,
+		`STARS: Add support for displaying requested altitude in FDB`,
+		`Fixed a bug where aircraft callsign numbers could start with 0`,
+		`STARS: use realistic fonts for the STARS display`,
+		`Improved sequencing of departures`,
+		`Added I90 scenario (Jace Martin)`,
+		`Added full-screen mode`,
+		`Updated command entry so keyboard focus returns to STARS after issuing a control command`,
 	}
 )
 
@@ -374,7 +383,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 		}
 
 		width, _ := ui.font.BoundText(FontAwesomeIconInfoCircle, 0)
-		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(4*width+10), 0})
+		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(6*width+15), 0})
 		if imgui.Button(FontAwesomeIconInfoCircle) {
 			ui.showAboutDialog = !ui.showAboutDialog
 		}
@@ -384,10 +393,17 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 		if imgui.BeginMenu(FontAwesomeIconDiscord) {
 			if imgui.MenuItem("Vice Discord") {
 				browser.OpenURL("https://discord.gg/y993vgQxhY")
-			} else if imgui.MenuItem("Vice ATC Hub") {
-				browser.OpenURL("https://discord.gg/MRDfS3yyhA")
+			} else if imgui.MenuItem("Vice ATC Hub (v2.0)") {
+				browser.OpenURL("https://discord.gg/4gSYDCBk8x")
 			}
 			imgui.EndMenu()
+		}
+
+		if imgui.Button(Select(platform.IsFullScreen(), FontAwesomeIconCompressAlt, FontAwesomeIconExpandAlt)) {
+			platform.EnableFullScreen(!platform.IsFullScreen())
+		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip(Select(platform.IsFullScreen(), "Exit", "Enter") + " full-screen mode")
 		}
 
 		imgui.PopStyleColor()
@@ -1081,13 +1097,14 @@ func showAboutDialog() {
 	// font we're using...
 	credits :=
 		`Additional credits:
-- Software Development: Dennis Graiani,
-  Michael Trokel, Samuel Valencia, and
-  Yi Zhang.
+- Software Development: Artem Dorofeev,
+  Dennis Graiani, Michael Trokel, Samuel
+  Valencia, and Yi Zhang.
 - Facility engineering: Connor Allen, Adam
   Bolek, Lucas Chan, Aaron Flett, Mike K,
-  Jud Lopez,   Ethan Malimon, Jace Martin,
-  Merry, Yahya Nazimuddin, Justin Nguyen,
+  Jonah Lefkoff, Jud Lopez, Ethan Malimon,
+  Jace Martin, Merry, Yahya Nazimuddin,
+  Justin Nguyen, Giovanni, Andrew S,
   Arya T, Nelson T, Eli Thompson, Michael
   Trokel, Samuel Valencia, Gavin Velicevic,
   and Jackson Verdoorn.

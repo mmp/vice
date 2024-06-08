@@ -30,7 +30,9 @@ import (
 // 18: STARS ATPA
 // 19: runway waypoints now per-airport
 // 20: "stars_config" and various scenario fields moved there, plus STARSFacilityAdaptation
-const CurrentConfigVersion = 20
+// 21: STARS DCB drawing changes, so system list positions changed
+// 22: draw points using triangles, remove some CommandBuffer commands
+const CurrentConfigVersion = 22
 
 // Slightly convoluted, but the full GlobalConfig definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first
@@ -45,6 +47,7 @@ type GlobalConfig struct {
 
 type GlobalConfigNoSim struct {
 	Version               int
+	FullScreenMonitor     int
 	InitialWindowSize     [2]int
 	InitialWindowPosition [2]int
 	ImGuiSettings         string
@@ -60,6 +63,7 @@ type GlobalConfigNoSim struct {
 	AskedDiscordOptIn        bool
 	InhibitDiscordActivity   AtomicBool
 	NotifiedNewCommandSyntax bool
+	StartInFullScreen        bool
 
 	Callsign string
 

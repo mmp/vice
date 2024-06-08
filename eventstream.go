@@ -186,6 +186,7 @@ const (
 	PointOutEvent
 	OfferedHandoffEvent
 	AcceptedHandoffEvent
+	AcceptedRedirectedHandoffEvent
 	CanceledHandoffEvent
 	RejectedHandoffEvent
 	RadioTransmissionEvent
@@ -203,7 +204,7 @@ const (
 
 func (t EventType) String() string {
 	return []string{"InitiatedTrack", "DroppedTrack", "PushedFlightStrip", "PointOut",
-		"OfferedHandoff", "AcceptedHandoff", "CanceledHandoff", "RejectedHandoff",
+		"OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent", "CanceledHandoff", "RejectedHandoff",
 		"RadioTransmission", "StatusMessage", "ServerBroadcastMessage", "GlobalMessage",
 		"AcknowledgedPointOut", "RejectedPointOut", "Ident", "HandoffControll",
 		"SetGlobalLeaderLine", "TrackClicked"}[t]

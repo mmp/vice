@@ -405,7 +405,7 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 				remove(event.Callsign)
 			}
 
-		case AcceptedHandoffEvent:
+		case AcceptedHandoffEvent, AcceptedRedirectedHandoffEvent:
 			if ac, ok := w.Aircraft[event.Callsign]; ok {
 				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == w.Callsign {
 					possiblyAdd(ac)
@@ -911,7 +911,7 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		defer ReturnLinesDrawBuilder(ld)
 
 		w, h := ctx.paneExtent.Width(), ctx.paneExtent.Height()
-		ld.AddClosedPolyline([][2]float32{{0, 0}, {w, 0}, {w, h}, {0, h}})
+		ld.AddLineLoop([][2]float32{{0, 0}, {w, 0}, {w, h}, {0, h}})
 		cb.SetRGB(RGB{1, 1, 0}) // yellow
 		ld.GenerateCommands(cb)
 	}
@@ -992,7 +992,7 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 		}
 	}
 
-	if ctx.keyboard.IsPressed(KeyEnter) && mp.input.cmd != "" {
+	if ctx.keyboard.IsPressed(KeyEnter) && strings.TrimSpace(mp.input.cmd) != "" {
 		mp.runCommands(ctx.world)
 	}
 }
@@ -1009,6 +1009,8 @@ func (msg *Message) Color() RGB {
 }
 
 func (mp *MessagesPane) runCommands(w *World) {
+	mp.input.cmd = strings.TrimSpace(mp.input.cmd)
+
 	if mp.input.cmd[0] == '/' {
 		w.SendGlobalMessage(GlobalMessage{
 			FromController: w.Callsign,
@@ -1151,11 +1153,9 @@ func (mp *MessagesPane) processEvents(w *World) {
 			}
 
 		case TrackClickedEvent:
-			if mp.input.cmd != "" {
-				mp.input.cmd = event.Callsign + " " + mp.input.cmd
+			if cmd := strings.TrimSpace(mp.input.cmd); cmd != "" {
+				mp.input.cmd = event.Callsign + " " + cmd
 				mp.runCommands(w)
-				// Take the focus back
-				wmTakeKeyboardFocus(mp, false)
 			}
 		}
 	}
