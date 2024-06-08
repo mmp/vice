@@ -5489,7 +5489,7 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 			}
 		}
 
-		if ac.RedirectedHandoff.RDIndicator {
+		if ac.RedirectedHandoff.OriginalOwner == w.Callsign {
 			dt = FullDatablock
 		}
 		if slices.Contains(ac.RedirectedHandoff.Redirector, w.Callsign) {
@@ -6723,7 +6723,7 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 		} else if info.TrackOwner == w.Callsign { //change
 			// we own the track track
 			color = STARSTrackedAircraftColor
-		} else if ac.RedirectedHandoff.OrigionalOwner == w.Callsign || ac.RedirectedHandoff.RedirectedTo == w.Callsign {
+		} else if ac.RedirectedHandoff.OriginalOwner == w.Callsign || ac.RedirectedHandoff.RedirectedTo == w.Callsign {
 			color = STARSTrackedAircraftColor
 		} else if info.HandoffController == w.Callsign &&
 			!slices.Contains(ac.RedirectedHandoff.Redirector, w.Callsign) {
