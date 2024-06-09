@@ -544,7 +544,7 @@
             }
           ]
         },
-        "initial_altitude": 12000,
+        "initial_altitude": 10000,
         "initial_controller": "DC_CTR",
         "initial_speed": 250,
         "star":"HENBY3",
@@ -591,7 +591,7 @@
             }
           ]
         },
-        "initial_altitude": 11000,
+        "initial_altitude": 9000,
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "star":"BROOK4",
@@ -644,7 +644,7 @@
             }
           ]
         },
-        "initial_altitude": 11000,
+        "initial_altitude": 9000,
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "star":"TRAKS3",
@@ -697,7 +697,7 @@
               }
             ]
           },
-          "initial_altitude": 11000,
+          "initial_altitude": 9000,
           "initial_controller": "ATL_CTR",
           "initial_speed": 250,
           "star":"TRAKS3",
@@ -742,11 +742,11 @@
             }
           ]
         },
-        "initial_altitude": 11000,
+        "initial_altitude": 9000,
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "star":"BLOCC2",
-        "waypoints": "MMJAY/ho VACUM BLOCC/s250/a11000/h332"
+        "waypoints": "MMJAY/ho VACUM BLOCC/s250/a9000/h332"
       }
     ]
   },
