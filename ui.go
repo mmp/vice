@@ -391,11 +391,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 			imgui.SetTooltip("Display information about vice")
 		}
 		if imgui.BeginMenu(FontAwesomeIconDiscord) {
-			if imgui.MenuItem("Vice Discord") {
-				browser.OpenURL("https://discord.gg/y993vgQxhY")
-			} else if imgui.MenuItem("Vice ATC Hub (v2.0)") {
-				browser.OpenURL("https://discord.gg/4gSYDCBk8x")
-			}
+			browser.OpenURL("https://discord.gg/y993vgQxhY")
 			imgui.EndMenu()
 		}
 
