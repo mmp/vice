@@ -6,162 +6,164 @@
             "17L": {
                 "runway_threshold": "KMCO-17L",
                 "heading": 185,
-                "max_heading_deviation": 185,
+                "max_heading_deviation": 90,
                 "floor": 100,
                 "ceiling": 8000,
                 "length": 40,
-                "left_width": 2000,
-                "right_width": 1500
+                "left_width": 20000,
+                "right_width": 150000,
+                "filtered_scratchpads": ["I7R", "I8R","R8L"],
+                "enable_2.5nm": true,
+                "2.5nm_distance": 10
             },
             "17R": {
                 "runway_threshold": "KMCO-17R",
                 "heading": 185,
-                "max_heading_deviation": 185,
+                "max_heading_deviation": 90,
                 "floor": 100,
                 "ceiling": 8000,
                 "length": 40,
-                "left_width": 2000,
-                "right_width": 1500
+                "left_width": 20000,
+                "right_width": 150000,
+                "filtered_scratchpads": ["I7L", "I8R","R8L"],
+                "enable_2.5nm": true,
+                "2.5nm_distance": 10
             },
             "18L": {
                 "runway_threshold": "KMCO-18L",
                 "heading": 185,
-                "max_heading_deviation": 185,
+                "max_heading_deviation": 90,
                 "floor": 100,
                 "ceiling": 8000,
                 "length": 40,
-                "left_width": 2000,
-                "right_width": 1500
+                "left_width": 20000,
+                "right_width": 150000,
+                "filtered_scratchpads": ["I7L", "I8R","I7R"],
+                "enable_2.5nm": true,
+                "2.5nm_distance": 10
             },
             "18R": {
                 "runway_threshold": "KMCO-18R",
                 "heading": 185,
-                "max_heading_deviation": 185,
+                "max_heading_deviation": 90,
                 "floor": 100,
                 "ceiling": 8000,
                 "length": 40,
-                "left_width": 2000,
-                "right_width": 1500
-            }
+                "left_width": 20000,
+                "right_width": 150000,
+                "filtered_scratchpads": ["I7L", "R8L","I7R"],
+                "enable_2.5nm": true,
+                "2.5nm_distance": 10
+            },
+            "36L": {
+              "runway_threshold": "KMCO-36L",
+              "heading": 5,
+              "max_heading_deviation": 90,
+              "floor": 100,
+              "ceiling": 8000,
+              "length": 40,
+              "left_width": 20000,
+              "right_width": 150000,
+              "filtered_scratchpads": ["I6R", "I5L", "I5R"],
+              "enable_2.5nm": true,
+              "2.5nm_distance": 10
+          },
+             "36R": {
+               "runway_threshold": "KMCO-36R",
+               "heading": 5,
+               "max_heading_deviation": 90,
+               "floor": 100,
+               "ceiling": 8000,
+               "length": 40,
+               "left_width": 20000,
+               "right_width": 150000,
+               "filtered_scratchpads": ["R6L", "I5L", "I5R"],
+               "enable_2.5nm": true,
+               "2.5nm_distance": 10
+           },
+           "35L": {
+             "runway_threshold": "KMCO-35L",
+             "heading": 5,
+             "max_heading_deviation": 90,
+             "floor": 100,
+             "ceiling": 8000,
+             "length": 40,
+             "left_width": 20000,
+             "right_width": 150000,
+             "filtered_scratchpads": ["I6R", "R6L", "I5R"],
+             "enable_2.5nm": true,
+             "2.5nm_distance": 10
+         },
+          "35R": {
+            "runway_threshold": "KMCO-35R",
+            "heading": 5,
+            "max_heading_deviation": 90,
+            "floor": 100,
+            "ceiling": 8000,
+            "length": 40,
+            "left_width": 20000,
+            "right_width": 150000,
+            "filtered_scratchpads": ["I6R", "I5L", "R6L"],
+            "enable_2.5nm": true,
+            "2.5nm_distance": 10
+         }
         },
       "approaches": {
         "I7L": {
-          "runway": "17L",
-          "tower_controller": "MCO_E_TWR",
-          "type": "ILS",
-          "waypoints": [
-            "BOSCH/a6000 KAKEY/a5000 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540",
-            "BANYA/a7000 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540"
-          ]
-        },
-        "R7L": {
-          "runway": "17L",
-          "tower_controller": "MCO_E_TWR",
-          "type": "RNAV",
-          "waypoints": [
-            "BOSCH/a6000 KAKEY/a5000 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540",
-            "BANYA/a7000 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540"
-          ]
+          "cifp_id": "I17L",
+          "tower_controller": "MCO_E_TWR"
         },
         "I7R": {
-          "runway": "17R",
-          "tower_controller": "MCO_E_TWR",
-          "type": "ILS",
-          "waypoints": [
-            "RATOY/a6000 SACRO/a6000 TACOT/a5000 DALTY/a4000 ELLAN/a3000 GLOSI/a2500 MINCO/a1600"
-          ]
-        },
-        "R7R": {
-          "runway": "17R",
-          "tower_controller": "MCO_E_TWR",
-          "type": "RNAV",
-          "waypoints": [
-            "RATOY/a6000 SACRO/a6000 TACOT/a5000 DALTY/a4000 ELLAN/a3000 GLOSI/a2500 MINCO/a1600"
-          ]
-        },
-        "R8L": {
-          "runway": "18L",
-          "tower_controller": "MCO_W_TWR",
-          "type": "RNAV",
-          "waypoints": [
-            "ZANTI/a4000 HABRA/a4000 GIPNE/a3000 COBOP/a2200 NAPPA/a560"
-          ]
+          "cifp_id": "I17R",
+          "tower_controller": "MCO_E_TWR"
         },
         "I8R": {
-          "runway": "18R",
-          "tower_controller": "MCO_W_TWR",
-          "type": "ILS",
-          "waypoints": [
-            "HOLOP/a5000 NAVAL/a4000 ONNER/a3000 HAMMY/a3000 TUFFE/a2200",
-            "YAGGO/a6000 NAVAL/a4000 ONNER/a3000 HAMMY/a3000 TUFFE/a2200"
-          ]
-        },
-        "R8R": {
-          "runway": "18R",
-          "tower_controller": "MCO_W_TWR",
-          "type": "RNAV",
-          "waypoints": [
-            "HOLOP/a5000 NAVAL/a4000 ONNER/a3000 HAMMY/a3000 TUFFE/a2200",
-            "YAGGO/a6000 NAVAL/a4000 ONNER/a3000 HAMMY/a3000 TUFFE/a2200"
-          ]
+          "cifp_id": "I18R",
+          "tower_controller": "MCO_W_TWR"
         },
         "I5L": {
-          "runway": "35L",
-          "tower_controller": "MCO_E_TWR",
-          "type": "ILS",
-          "waypoints": [
-            "NOGGI/a5000 FOBUK/a4000 FITEM/a3000 SPURR/a1600"
-          ]
-        },
-        "R5L": {
-          "runway": "35L",
-          "tower_controller": "MCO_E_TWR",
-          "type": "RNAV",
-          "waypoints": [
-            "ODDEL/a4000/nopt FOBUK/a4000/hilpt FITEM/a3000 SPURR/a1600"
-          ]
+          "cifp_id": "I35L",
+          "tower_controller": "MCO_E_TWR"
         },
         "I5R": {
-          "runway": "35R",
-          "tower_controller": "MCO_E_TWR",
-          "type": "ILS",
-          "waypoints": [
-            "CRUSE/a5000 SERAY/a4000 FESHA/a3000 HEWES/a1600 WOLDI/a540",
-            "HAHNA/a6000 SERAY/a4000 FESHA/a3000 HEWES/a1600 WOLDI/a540"
-          ]
-        },
-        "R5R": {
-          "runway": "35R",
-          "tower_controller": "MCO_E_TWR",
-          "type": "ILS",
-          "waypoints": [
-            "CRUSE/a5000 SERAY/a4000 FESHA/a3000 HEWES/a1600 WOLDI/a540",
-            "HAHNA/a6000 SERAY/a4000 FESHA/a3000 HEWES/a1600 WOLDI/a540"
-          ]
+          "cifp_id": "I35R",
+          "tower_controller": "MCO_W_TWR"
         },
         "I6R": {
-          "runway": "36R",
-          "tower_controller": "MCO_W_TWR",
-          "type": "ILS",
-          "waypoints": [
-            "TRAMP/a5000 FLOZY/a4000 SILKY/a3000 JAKOR/a1600 UVEKE/a540"
-          ]
+          "cifp_id": "I36R",
+          "tower_controller": "MCO_W_TWR"
         },
-        "R6R": {
-          "runway": "36R",
-          "tower_controller": "MCO_W_TWR",
-          "type": "RNAV",
-          "waypoints": [
-            "MINEE/a4000 BOYAB/a4000/nopt FLOZY/a4000/hilpt SILKY/a3000 JAKOR/a1600 UVEKE/a540"
-          ]
+        "R7L": {
+          "cifp_id": "R17L",
+          "tower_controller": "MCO_E_TWR"
+        },
+        "R7R": {
+          "cifp_id": "R17R",
+          "tower_controller": "MCO_E_TWR"
+        },
+        "R8L": {
+          "cifp_id": "R18L",
+          "tower_controller": "MCO_W_TWR"
+        },
+        "R8R": {
+          "cifp_id": "R18R",
+          "tower_controller": "MCO_W_TWR"
         },
         "R6L": {
-          "runway": "36L",
-          "tower_controller": "MCO_W_TWR",
-          "type": "RNAV",
-          "waypoints": [
-            "LORRA/a7000 EXBAN/a4000 AMEBE/a3000 BERDY/a1600 RUTNE/a780"
-          ]
+          "cifp_id": "R36L",
+          "tower_controller": "MCO_W_TWR"
+        },
+        "R6R": {
+          "cifp_id": "R36R",
+          "tower_controller": "MCO_W_TWR"
+        },
+        "R5R": {
+          "cifp_id": "R35R",
+          "tower_controller": "MCO_E_TWR"
+        },
+        "R5L": {
+          "cifp_id": "R35L",
+          "tower_controller": "MCO_E_TWR"
         }
       },
       "departure_routes": {
@@ -869,14 +871,14 @@
         "WORMS": "WORMS",
         "JFRYS": "RDSOX",
         "JIPOD": "DDANY",
-        "LAL": "KLMAN",
+        "LAL": "FSHUN",
         "OCF": "WORMS",
         "OMN": "WORMS",
         "PAINN": "JEEMY",
         "PIE": "CAMAN",
         "PLUMR": "FSHUN",
         "REMIS": "OSPRY",
-        "RSW": "KLMAN",
+        "RSW": "FSHUN",
         "SZW": "CAMAN",
         "VALKA": "DDANY",
         "VIYAP": "FATHE",
@@ -1029,14 +1031,14 @@
       },
       "departure_routes": {
         "9L": {
-          "WORMS,KLMAN,OSPRY,GDUNN": {
+          "WORMS,FSHUN,OSPRY,GDUNN": {
             "cleared_altitude": 3000,
             "sid": "SFB1",
             "waypoints": "_SFB_27R/h095"
           }
         },
         "27R": {
-          "WORMS,KLMAN,OSPRY,GDUNN": {
+          "WORMS,FSHUN,OSPRY,GDUNN": {
             "cleared_altitude": 3000,
             "sid": "SFB1",
             "waypoints": "_SFB_9L/h275"
@@ -1123,13 +1125,13 @@
             }
           ],
           "destination": "KEYW",
-          "exit": "KLMAN",
-          "route": "KLMAN FSHUN ROGAN RSW KARTR GIGIH"
+          "exit": "FSHUN",
+          "route": "FSHUN FSHUN ROGAN RSW KARTR GIGIH"
         }
       ],
       "exit_categories": {
         "WORMS": "North",
-        "KLMAN": "South",
+        "FSHUN": "South",
         "GDUNN": "West",
         "OSPRY": "West"
       },
@@ -1215,14 +1217,14 @@
     "KMLB": {
       "departure_routes": {
         "9R": {
-          "MLB,KLMAN,WORMS": {
+          "MLB,FSHUN,WORMS": {
             "cleared_altitude": 3000,
             "sid": "MLB7",
             "waypoints": "CAPEN"
           }
         },
         "27L": {
-          "MLB,KLMAN,WORMS": {
+          "MLB,FSHUN,WORMS": {
             "cleared_altitude": 3000,
             "sid": "MLB7",
             "waypoints": "_MLB_9R/h275"
@@ -1257,7 +1259,7 @@
       "exit_categories": {
         "MLB": "South",
         "WORMS": "North",
-        "KLMAN": "West"
+        "FSHUN": "West"
       },
       "tower_list": 1
     },
@@ -9928,9 +9930,9 @@
     "VIYAP": "FAT",
     "ETECK": "MZU",
     "FAROV": "MZU",
-    "LAL": "KLM",
-    "KLMAN": "KLM",
-    "RSW": "KLM",
+    "LAL": "FSH",
+    "FSHUN": "FSH",
+    "RSW": "FSH",
     "PLUMR": "FSH",
     "PAINN": "JEE",
     "REMIS": "OSP",
