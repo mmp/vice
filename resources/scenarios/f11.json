@@ -3003,10 +3003,6 @@
             },
             {
               "airport": "KPNS",
-              "icao": "SIL"
-            },
-            {
-              "airport": "KPNS",
               "icao": "NKS"
             },
             {
@@ -3342,10 +3338,6 @@
             },
             {
               "airport": "KPNS",
-              "icao": "SIL"
-            },
-            {
-              "airport": "KPNS",
               "icao": "NKS"
             },
             {
@@ -3678,10 +3670,6 @@
             {
               "airport": "KOMA",
               "icao": "SWA"
-            },
-            {
-              "airport": "KPNS",
-              "icao": "SIL"
             },
             {
               "airport": "KPNS",
@@ -4029,10 +4017,6 @@
             },
             {
               "airport": "KPNS",
-              "icao": "SIL"
-            },
-            {
-              "airport": "KPNS",
               "icao": "NKS"
             },
             {
@@ -4365,10 +4349,6 @@
             },
             {
               "airport": "KPNS",
-              "icao": "SIL"
-            },
-            {
-              "airport": "KPNS",
               "icao": "NKS"
             },
             {
@@ -4610,10 +4590,6 @@
               "icao": "FFT"
             },
             {
-              "airport": "KCHS",
-              "icao": "SIL"
-            },
-            {
               "airport": "KCLT",
               "icao": "NKS"
             },
@@ -4658,10 +4634,6 @@
             {
               "airport": "KDAY",
               "icao": "FFT"
-            },
-            {
-              "airport": "KGSP",
-              "icao": "SIL"
             },
             {
               "airport": "KMDT",
@@ -5039,10 +5011,6 @@
               "icao": "FFT"
             },
             {
-              "airport": "KCHS",
-              "icao": "SIL"
-            },
-            {
               "airport": "KCLT",
               "icao": "NKS"
             },
@@ -5087,10 +5055,6 @@
             {
               "airport": "KDAY",
               "icao": "FFT"
-            },
-            {
-              "airport": "KGSP",
-              "icao": "SIL"
             },
             {
               "airport": "KMDT",
@@ -5468,10 +5432,6 @@
               "icao": "FFT"
             },
             {
-              "airport": "KCHS",
-              "icao": "SIL"
-            },
-            {
               "airport": "KCLT",
               "icao": "NKS"
             },
@@ -5516,10 +5476,6 @@
             {
               "airport": "KDAY",
               "icao": "FFT"
-            },
-            {
-              "airport": "KGSP",
-              "icao": "SIL"
             },
             {
               "airport": "KMDT",
@@ -6881,10 +6837,6 @@
             },
             {
               "airport": "KFLL",
-              "icao": "SIL"
-            },
-            {
-              "airport": "KFLL",
               "icao": "SWA"
             },
             {
@@ -6957,10 +6909,6 @@
             },
             {
               "airport": "KFLL",
-              "icao": "SIL"
-            },
-            {
-              "airport": "KFLL",
               "icao": "SWA"
             },
             {
@@ -7030,10 +6978,6 @@
             {
               "airport": "KFLL",
               "icao": "NKS"
-            },
-            {
-              "airport": "KFLL",
-              "icao": "SIL"
             },
             {
               "airport": "KFLL",
@@ -7121,10 +7065,6 @@
             },
             {
               "airport": "KFLL",
-              "icao": "SIL"
-            },
-            {
-              "airport": "KFLL",
               "icao": "SWA"
             },
             {
@@ -7197,10 +7137,6 @@
             {
               "airport": "KFLL",
               "icao": "NKS"
-            },
-            {
-              "airport": "KFLL",
-              "icao": "SIL"
             },
             {
               "airport": "KFLL",
@@ -7409,10 +7345,6 @@
               "icao": "FFT"
             },
             {
-              "airport": "KCHS",
-              "icao": "SIL"
-            },
-            {
               "airport": "KCLT",
               "icao": "NKS"
             },
@@ -7457,10 +7389,6 @@
             {
               "airport": "KDAY",
               "icao": "FFT"
-            },
-            {
-              "airport": "KGSP",
-              "icao": "SIL"
             },
             {
               "airport": "KMDT",
@@ -7841,10 +7769,6 @@
               "icao": "FFT"
             },
             {
-              "airport": "KCHS",
-              "icao": "SIL"
-            },
-            {
               "airport": "KCLT",
               "icao": "NKS"
             },
@@ -7889,10 +7813,6 @@
             {
               "airport": "KDAY",
               "icao": "FFT"
-            },
-            {
-              "airport": "KGSP",
-              "icao": "SIL"
             },
             {
               "airport": "KMDT",
@@ -8270,10 +8190,6 @@
               "icao": "FFT"
             },
             {
-              "airport": "KCHS",
-              "icao": "SIL"
-            },
-            {
               "airport": "KCLT",
               "icao": "NKS"
             },
@@ -8318,10 +8234,6 @@
             {
               "airport": "KDAY",
               "icao": "FFT"
-            },
-            {
-              "airport": "KGSP",
-              "icao": "SIL"
             },
             {
               "airport": "KMDT",
