@@ -2126,7 +2126,7 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 								wps[idx].Fix)
 						}
 
-						ar.Waypoints = wps[idx:]
+						ar.Waypoints = DuplicateSlice(wps[idx:])
 						sg.InitializeWaypointLocations(ar.Waypoints, e)
 
 						if len(ar.Waypoints) >= 2 && spawnT != 0 {
