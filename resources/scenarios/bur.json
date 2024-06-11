@@ -716,19 +716,56 @@
             },
             "departure_routes":{
                 "12":{
-                    "VNY": {
+                    "MISEN,GMN,CSTRO": {
                         "cleared_altitude": 12000,
                         "sid": "WHP1",
                         "waypoints": "N034.15.18.060,W118.24.32.150 VNY/h325"
                     }
                 },
                 "30":{
-                    "VNY": {
+                    "MISEN,GMN,CSTRO": {
                         "cleared_altitude": 12000,
                         "sid": "WHP1",
                         "waypoints": "KWHP-12 TRAFF VNY UMBER/a4600 "
                     }
                 }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KLAS",
+                    "exit": "MISEN",
+                    "route": "VNY MISEN RNDRZ2"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KPRB",
+                    "exit": "GMN",
+                    "route": "VNY GMN CHVAL"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KRDD",
+                    "exit": "CSTRO",
+                    "route": "VNY CSTRO"
+                }
+            ],
+            "exit_categories": {
+                "CSTRO": "Northwest",
+                "MISEN": "Northeast",
+                "GMN": "Northwest"
             },
             "tower_list": 1
 

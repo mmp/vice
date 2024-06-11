@@ -179,6 +179,10 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				}
 			}
 
+			if len(ap.Departures) == 0 {
+				e.ErrorString("no \"departures\" specified for airport")
+			}
+
 			if rwy.Category != "" {
 				found := false
 				for _, dep := range ap.Departures {
