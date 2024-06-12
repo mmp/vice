@@ -1711,9 +1711,12 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 			Groundspeed: int(ac.Nav.FlightState.GS),
 			Time:        now,
 		}
-		// Associate the flight plans.
+		// `Associate `the flight plans.
 		_, stars := w.SafeFacility("")
-		if _, ok := stars.TrackInformation[ac.Squawk]; ok { // Someone is tracking this
+		if trackInfo, ok := stars.TrackInformation[ac.Squawk]; ok { // Someone is tracking this
+			if trackInfo.FlightPlan.AssignedSquawk == ac.Squawk && ac.inDropArea(w) {
+				w.DropTrack(trackInfo.FlightPlan.Callsign, nil, nil)
+			}
 			continue
 		}
 
@@ -1722,7 +1725,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 				fmt.Println("auto associate")
 				w.InitiateTrack(ac.Callsign, info, nil, nil)
 				fmt.Println(ac.Callsign, 1)
-			}
+			} 
 		}
 	}
 
@@ -1931,13 +1934,13 @@ func (sp *STARSPane) activateMenuSpinner(spinner DCBSpinner) {
 	activeSpinner = spinner
 }
 
-func (sp *STARSPane) getAircraftIndex(ac *Aircraft) int {
-	if idx, ok := sp.AircraftToIndex[ac.Callsign]; ok {
+func (sp *STARSPane) getAircraftIndex(plan *STARSFlightPlan) int {
+	if idx, ok := sp.AircraftToIndex[plan.Callsign]; ok {
 		return idx
 	} else {
 		idx := len(sp.AircraftToIndex) + 1
-		sp.AircraftToIndex[ac.Callsign] = idx
-		sp.IndexToAircraft[idx] = ac.Callsign
+		sp.AircraftToIndex[plan.Callsign] = idx
+		sp.IndexToAircraft[idx] = plan.Callsign
 		return idx
 	}
 }
@@ -3342,8 +3345,8 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 			}
 			// stars.TrackInformation[w.GetAircraft(callsign, false).Squawk].TrackOwner for recall. whoops
 		},
-		func(err error) { 
-			sp.displayError(err) 
+		func(err error) {
+			sp.displayError(err)
 			lg.Errorf("Error accepting track")
 		})
 }
@@ -5110,51 +5113,52 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		}
 	}
 
-	if ps.VFRList.Visible {
-		vfr := make(map[int]*Aircraft)
-		// Find all untracked VFR aircraft
-		for _, ac := range aircraft {
-			if ac.Squawk == Squawk(0o1200) && ac.TrackingController == "" {
-				vfr[sp.getAircraftIndex(ac)] = ac
-			}
-		}
+	if ps.VFRList.Visible { // TODO
+
+		// vfr := make(map[int]*Aircraft)
+		// // Find all untracked VFR aircraft
+		// for _, ac := range aircraft {
+		// 	if ac.Squawk == Squawk(0o1200) && ac.TrackingController == "" {
+		// 		vfr[sp.getAircraftIndex(ac)] = ac
+		// 	}
+		// }
 
 		text := "VFR LIST\n"
-		if len(vfr) > ps.VFRList.Lines {
-			text += fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr))
-		}
-		for i, acIdx := range SortedMapKeys(vfr) {
-			ac := vfr[acIdx]
-			text += fmt.Sprintf("%2d %-7s VFR\n", acIdx, ac.Callsign)
+		// if len(vfr) > ps.VFRList.Lines {
+		// 	text += fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr))
+		// }
+		// for i, acIdx := range SortedMapKeys(vfr) {
+		// 	ac := vfr[acIdx]
+		// 	text += fmt.Sprintf("%2d %-7s VFR\n", acIdx, ac.Callsign)
 
-			// Limit to the user limit
-			if i == ps.VFRList.Lines {
-				break
-			}
-		}
+		// 	// Limit to the user limit
+		// 	if i == ps.VFRList.Lines {
+		// 		break
+		// 	}
+		// }
 
 		drawList(text, ps.VFRList.Position)
 	}
 
 	if ps.TABList.Visible {
-		dep := make(map[int]*Aircraft)
-		// Untracked departures departing from one of our airports
-		for _, ac := range aircraft {
-			if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" {
-				if ap := ctx.world.DepartureAirports[fp.DepartureAirport]; ap != nil {
-					dep[sp.getAircraftIndex(ac)] = ac
-					break
-				}
+		plans := make(map[int]*STARSFlightPlan)
+		// Plans that are stored, but aren't associated to a track
+		_, stars := ctx.world.SafeFacility("")
+
+		for _, plan := range stars.ContainedPlans {
+			if stars.ContainedPlans != nil {
+				plans[sp.getAircraftIndex(plan)] = plan
 			}
+
 		}
 
 		text := "FLIGHT PLAN\n"
-		if len(dep) > ps.TABList.Lines {
-			text += fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(dep))
+		if len(plans) > ps.TABList.Lines {
+			text += fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(plans))
 		}
-		for i, acIdx := range SortedMapKeys(dep) {
-			ac := dep[acIdx]
-			text += fmt.Sprintf("%2d %-7s %s\n", acIdx, ac.Callsign, ac.Squawk.String())
+		for i, acIdx := range SortedMapKeys(plans) {
+			plan := plans[acIdx]
+			text += fmt.Sprintf("%2d %-7s %s\n", acIdx, plan.Callsign, plan.AssignedSquawk.String())
 
 			// Limit to the user limit
 			if i == ps.TABList.Lines {
@@ -5462,11 +5466,6 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		if trackInfo.HandoffController == w.Callsign {
 			// it's being handed off to us
 			dt = FullDatablock
-			_, stars := w.SafeFacility("")
-			if _, ok := stars.ContainedPlans[ac.Squawk]; !ok {
-				dt = LimitedDatablock
-				fmt.Printf("Plan for %v/%v is nil. Plans: %v.\n", ac.Callsign, ac.Squawk, stars.ContainedPlans)
-			}
 		}
 
 		if len(sp.getWarnings(ctx, ac)) > 0 {
@@ -6694,7 +6693,7 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 		} else if state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd) {
 			// we handed it off, it was accepted, but we haven't yet acknowledged
 			brightness /= 3
-		} else if info := stars.TrackInformation[ac.Squawk]; (info != nil && info.HandoffController == ctx.world.Callsign &&  // handing off to us
+		} else if info := stars.TrackInformation[ac.Squawk]; (info != nil && info.HandoffController == ctx.world.Callsign && // handing off to us
 			!slices.Contains(ac.RedirectedHandoff.Redirector, w.Callsign)) || // not a redirector
 			ac.RedirectedHandoff.RedirectedTo == w.Callsign { // redirected to
 			brightness /= 3
@@ -6708,8 +6707,6 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 			return
 		}
 	}
-
-	
 
 	if info := stars.TrackInformation[ac.Squawk]; info == nil || info.TrackOwner == "" {
 		color = STARSUntrackedAircraftColor

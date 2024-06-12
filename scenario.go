@@ -68,16 +68,16 @@ type STARSFacilityAdaptation struct {
 	Scratchpads         map[string]string     `json:"scratchpads"`
 	VideoMapFile        string                `json:"video_map_file"`
 	ExternalFacilities  []string              `json:"stars_facilities"`
-	CoordinationFixes	map[string]string	  `json:"coordination_fixes"`
+	CoordinationFixes   map[string]string     `json:"coordination_fixes"`
 }
 
 type CoordinationFix struct {
-	Fix string 
-	Type string 
+	Fix  string
+	Type string
 }
 
 const (
-	ZoneBasedFix = "zone"
+	ZoneBasedFix  = "zone"
 	RouteBasedFix = "route"
 )
 

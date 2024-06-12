@@ -345,7 +345,7 @@ func (w *World) AcceptHandoff(callsign string, success func(any), err func(error
 			ac.ControllingController = w.Callsign
 		}
 	}
-	
+
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
 			Call:      w.simProxy.AcceptHandoff(callsign),
@@ -889,15 +889,16 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		TrackOwner: ac.TrackingController,
 	}
 	starsFP.CoordinationFix = starsFP.CordinationFix(w, ac)
+	fmt.Printf("Coordination fix for %v is %v.", starsFP.Callsign, starsFP.CoordinationFix)
 	dist, err := ac.Nav.distanceAlongRoute(starsFP.CoordinationFix)
 	time2 := dist / float32(starsFP.CruiseSpeed) * 60
 	if err == nil {
 		starsFP.CoordinationTime = CoordinationTime{
-			Time: w.SimTime.Add(time.Duration(time2 *  float32(time.Minute))),
+			Time: w.SimTime.Add(time.Duration(time2 * float32(time.Minute))),
 		}
 
 	}
-	
+
 	artcc.FlightPlans[flightPlan.AssignedSquawk] = starsFP
 	if stars == nil { // coming from an ERAM place
 		artcc.TrackInformation[flightPlan.AssignedSquawk] = &TrackInformation{
@@ -912,7 +913,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		}
 		fmt.Printf("Created an arrival %v. Under %v facility. Initial controller: %v.", ac.Callsign, stars.Identifier, arrivalController)
 	}
-	
+
 	return ac, nil
 }
 

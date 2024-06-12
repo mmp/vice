@@ -27,7 +27,7 @@ func (w *World) initComputers() {
 	}
 
 	for fac, comp := range w.ERAMComputers {
-		for fac2, comp2 :=  range w.ERAMComputers {
+		for fac2, comp2 := range w.ERAMComputers {
 			if fac == fac2 {
 				continue // dont add our own ERAM to the inbox
 			}
@@ -62,8 +62,6 @@ func (w *World) initComputers() {
 			}
 		}
 	}
-	
-
 
 }
 
@@ -107,9 +105,9 @@ func (w *World) FacilityFromController(callsign string) string {
 	controller := w.GetControllerByCallsign(callsign)
 	if controller != nil {
 		return controller.Facility
-	}
+	} 
 	lg.Errorf("Couldn't find facility for %v: %v. \n", callsign, w.GetAllControllers())
-	return ""
+	return w.TRACON // figure out why sometimes EWR_APP is nil
 }
 
 // Give the computers a chance to sort through their received messages. Messages will send when the time is appropriate (eg. handoff).
@@ -138,7 +136,7 @@ func (fp *STARSFlightPlan) CordinationFix(w *World, ac *Aircraft) string { // TO
 	}
 	distanceMap := make(map[string]float32) //  -->
 	for fix, typ := range fixes {
-		if typ  == RouteBasedFix {
+		if typ == RouteBasedFix {
 			distanceMap[fix] = nmdistance2ll(ac.Position(), database.Fixes[fix].Location)
 		}
 	}
@@ -210,8 +208,8 @@ func (comp *ERAMComputer) UpdateTrackInfo(w *World) {
 func (comp *ERAMComputer) SendMessageToERAM(facility string, msg FlightPlanMessage) error {
 	if _, ok := comp.ERAMInboxes[facility]; ok {
 		*comp.ERAMInboxes[facility] = append(*comp.ERAMInboxes[facility], msg)
-		fmt.Println("Sent msg for %v to %v.", msg.BCN, facility)
-		return nil 
+		fmt.Printf("Sent msg for %v to %v.\n", msg.BCN, facility)
+		return nil
 	} else {
 		fmt.Printf("Eram facility %v could not be found in %v inbox: %v\n", facility, comp.Identifier, comp.ERAMInboxes)
 		return ErrNoERAMFacility
@@ -300,10 +298,10 @@ func (comp *ERAMComputer) SendFlightPlans(w *World) {
 	for sq := range comp.TrackInformation {
 		if comp.FlightPlans != nil {
 			if fp := comp.FlightPlans[sq]; fp != nil {
-				if !w.SimTime.Add(30 * time.Minute).Before(fp.CoordinationTime.Time) && !fp.Sent {
+				if !w.SimTime.Add(30*time.Minute).Before(fp.CoordinationTime.Time) && !fp.Sent {
 					comp.SendFlightPlan(fp, w)
 				} else if !fp.Sent {
-					fmt.Printf("%v is more than 30 minutes away from his coordination fix %v. Coordination Time: %v, Time Added: %v.\n\n", fp.Callsign, fp.CoordinationFix, fp.CoordinationTime, w.SimTime.Add(30 * time.Minute))
+					fmt.Printf("%v is more than 30 minutes away from his coordination fix %v. Coordination Time: %v, Time Added: %v.\n\n", fp.Callsign, fp.CoordinationFix, fp.CoordinationTime, w.SimTime.Add(30*time.Minute))
 				}
 			} else {
 				lg.Errorf("%v: Plan for %v is nil: %v.", comp.Identifier, sq, comp.FlightPlans)
@@ -341,7 +339,7 @@ type STARSFlightPlan struct {
 	FlightPlanType   int
 	CoordinationTime CoordinationTime
 	CoordinationFix  string
-	Sent bool 
+	Sent             bool
 }
 
 // Different flight plans (STARS)
@@ -392,6 +390,8 @@ func (fp STARSFlightPlan) Message() FlightPlanMessage {
 			Equipment:         strings.TrimPrefix(fp.AircraftType, fp.TypeWithoutSuffix()),
 		},
 		FlightID: fmt.Sprintf("%v%v", fp.ECID, fp.Callsign),
+		CoordinationFix: fp.CoordinationFix,
+		CoordinationTime: fp.CoordinationTime,
 	}
 }
 
@@ -507,12 +507,23 @@ func (ac *Aircraft) inAcquisitionArea(w *World) bool {
 	ap := w.GetAirport(ac.FlightPlan.DepartureAirport)
 	ap2 := w.GetAirport(ac.FlightPlan.ArrivalAirport)
 	if ap != nil {
-		if nmdistance2ll(ap.Location, ac.Position()) <= 30 || nmdistance2ll(ap2.Location, ac.Position()) <= 30 &&
-			(ac.IsDeparture() && ac.Altitude() >= float32(database.Airports[ac.FlightPlan.DepartureAirport].Elevation)+400) ||
-			(!ac.IsDeparture() && ac.Altitude() >= float32(database.Airports[ac.FlightPlan.ArrivalAirport].Elevation)+400) {
+		if (nmdistance2ll(ap.Location, ac.Position()) <= 2 || nmdistance2ll(ap2.Location, ac.Position()) <= 2) && !ac.inDropArea(w){
 			return true
 		}
 	}
+	return false
+}
+
+func (ac *Aircraft) inDropArea(w *World) bool {
+	ap := w.GetAirport(ac.FlightPlan.DepartureAirport)
+	ap2 := w.GetAirport(ac.FlightPlan.ArrivalAirport)
+		if (ap != nil && nmdistance2ll(ap.Location, ac.Position()) <= 1) || (ap2 != nil && nmdistance2ll(ap2.Location, ac.Position()) <= 1) {
+			if (ap != nil && ac.Altitude() <= float32(database.Airports[ac.FlightPlan.DepartureAirport].Elevation + 200)) || 
+			ac.Altitude() <= float32(database.Airports[ac.FlightPlan.ArrivalAirport].Elevation + 200){
+				return true
+			}
+		}
+	
 	return false
 }
 
@@ -522,11 +533,17 @@ func (comp *STARSComputer) SortReceivedMessages() {
 	if comp.ContainedPlans == nil {
 		comp.ContainedPlans = make(map[Squawk]*STARSFlightPlan)
 	}
+	if comp.TrackInformation == nil {
+		comp.TrackInformation = make(map[Squawk]*TrackInformation)
+	}
 	for _, msg := range comp.RecievedMessages {
 		switch msg.MessageType {
 		case Plan:
-			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
-			comp.RecievedMessages = comp.RecievedMessages[1:]
+			sq, _ := ParseSquawk("0000")
+			if msg.BCN != sq {
+				comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
+				comp.RecievedMessages = comp.RecievedMessages[1:]
+			}
 		case Amendment:
 			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
 			comp.RecievedMessages = comp.RecievedMessages[1:]
@@ -534,19 +551,19 @@ func (comp *STARSComputer) SortReceivedMessages() {
 			delete(comp.ContainedPlans, msg.BCN)
 		case InitateTransfer:
 			// 1. Store the data comp.trackinfo. we now know whos tracking the plane. Use the squawk to get the plan
-
 			if fp := comp.ContainedPlans[msg.BCN]; fp != nil { // We have the plan
 				comp.TrackInformation[msg.BCN] = &TrackInformation{
 					TrackOwner:        msg.TrackOwner,
 					HandoffController: msg.HandoffController,
-					FlightPlan: fp,
+					FlightPlan:        fp,
 				}
+				delete(comp.ContainedPlans, msg.BCN)
 				fmt.Printf("Message for %v has been received and sorted: %v.\n", msg.BCN, comp.ContainedPlans[msg.BCN])
 			} else {
 				lg.Errorf("No flight plan for %v.\n", msg.BCN)
 				// reject the thing
 			}
-			
+
 		case AcceptRecallTransfer:
 			// When we send an accept message, we set the track ownership to us.
 			// when we receive an accept message, we change the track ownership to the receiving controller.
@@ -567,10 +584,7 @@ func (comp *STARSComputer) SortReceivedMessages() {
 					comp.TrackInformation[msg.BCN] = entry
 				}
 			} else { // has to be a recall message. (we received the handoff)
-				if entry, ok := comp.TrackInformation[msg.BCN]; ok {
-					entry.HandoffController = ""
-					comp.TrackInformation[msg.BCN] = entry
-				}
+				delete(comp.TrackInformation, msg.BCN)
 			}
 
 		}
