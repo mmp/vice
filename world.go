@@ -88,8 +88,6 @@ type World struct {
 	TotalDepartures         int
 	TotalArrivals           int
 	STARSFacilityAdaptation STARSFacilityAdaptation
-
-	STARSInputOverride string
 }
 
 func NewWorld() *World {

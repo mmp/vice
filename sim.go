@@ -844,8 +844,6 @@ type Sim struct {
 
 	NextPushStart time.Time // both w.r.t. sim time
 	PushEnd       time.Time
-
-	STARSInputOverride string
 }
 
 type PointOut struct {
@@ -1292,7 +1290,6 @@ type SimWorldUpdate struct {
 
 	SimIsPaused     bool
 	SimRate         float32
-	STARSInput      string
 	Events          []Event
 	TotalDepartures int
 	TotalArrivals   int
@@ -1309,7 +1306,6 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	w.SimTime = wu.Time
 	w.SimIsPaused = wu.SimIsPaused
 	w.SimRate = wu.SimRate
-	w.STARSInputOverride = wu.STARSInput
 	w.TotalDepartures = wu.TotalDepartures
 	w.TotalArrivals = wu.TotalArrivals
 
