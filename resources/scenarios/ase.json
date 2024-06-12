@@ -491,72 +491,9 @@
     "DBL": "DBL"
   },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "BASE",
-      "name": "ASE BASE"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "ASE MVA"
-    },
-    {
-      "group": 0,
-      "label": "LOCDME",
-      "name": "ASE LOC-DME"
-    },
-    {
-      "group": 0,
-      "label": "LOC-E",
-      "name": "ASE LOC-E"
-    },
-    {
-      "group": 0,
-      "label": "AIRWY",
-      "name": "ASE Airwy"
-    },
-    {
-      "group": 1,
-      "label": "ODO",
-      "name": "ASE ODO"
-    },
-    {
-      "group": 0,
-      "label": "EOVM",
-      "name": "ASE EOVM"
-    },
-    {
-      "group": 0,
-      "label": "RIL ILS",
-      "name": "ASE RIL ILS"
-    },
-    {
-      "group": 0,
-      "label": "RNAVF",
-      "name": "ASE RNAV-F"
-    },
-    {
-      "group": 0,
-      "label": "RNVY15",
-      "name": "ASE RNVY-15"
-    },
-    {
-      "group": 0,
-      "label": "RNVZ15",
-      "name": "ASE RNVZ 15"
-    },
-    {
-      "group": 1,
-      "label": "VFR",
-      "name": "ASE VFR"
-    },
-    {
-      "group": 1,
-      "label": "WRAP-D",
-      "name": "ASE WRAP-D"
-    }
+      "ASE BASE", "ASE MVA", "ASE LOC-DME", "ASE LOC-E", "ASE Airwy", "ASE ODO", "ASE EOVM", "ASE RIL ILS", "ASE RNAV-F", "ASE RNVY-15",
+      "ASE RNVZ 15", "ASE VFR", "ASE WRAP-D"
   ],
-  "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+  "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
   }
 }

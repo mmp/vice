@@ -1408,42 +1408,9 @@
         }
     ],
     "stars_maps": [
-        {
-            "group": 0,
-            "label": "EMPB LE",
-            "name": "301S EMPB LE SCT"
-        },
-        {
-            "group": 0,
-            "label": "EMPB LW",
-            "name": "300S EMPB LW SCT"
-        },
-        {
-            "group": 2,
-            "label": "EMP FIX",
-            "name": "320S EMP FIX SCT"
-        },
-        {
-            "group": 1,
-            "label": "MVA",
-            "name": "701S FUS 3NM MVA SCT"
-        },
-        {
-            "group": 2,
-            "label": "SCB_THR",
-            "name": "362S SCBBY AND THRNE STAR SCT"
-        },
-        {
-            "group": 2,
-            "label": "DSN_SIZ",
-            "name": "365S DSNEE AND SIZZLR STAR SCT"
-        },
-        {
-            "group": 0,
-            "label": "ZLA_W",
-            "name": "450S ZLA ASW SCT"
-          }
+        "301S EMPB LE SCT", "300S EMPB LW SCT", "320S EMP FIX SCT", "701S FUS 3NM MVA SCT", "362S SCBBY AND THRNE STAR SCT", "365S DSNEE AND SIZZLR STAR SCT",
+        "450S ZLA ASW SCT"
     ],
-    "video_map_file": "videomaps/ZLA-videomaps.json.zst"
+    "video_map_file": "videomaps/ZLA-videomaps.gob.zst"
     }
 }

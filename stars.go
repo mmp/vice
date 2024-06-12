@@ -61,14 +61,14 @@ var (
 )
 
 const NumSTARSPreferenceSets = 32
-const NumSTARSMaps = 28
+const NumSTARSMaps = 38
 
 type STARSPane struct {
 	CurrentPreferenceSet  STARSPreferenceSet
 	SelectedPreferenceSet int
 	PreferenceSets        []STARSPreferenceSet
 
-	SystemMaps map[int]*STARSMap
+	systemMaps map[int]*STARSMap
 
 	weatherRadar WeatherRadar
 
@@ -554,11 +554,14 @@ func (s *STARSAircraftState) Ident() bool {
 	return !s.IdentStart.IsZero() && s.IdentStart.Before(now) && s.IdentEnd.After(now)
 }
 
+// Note: this should match ViceMapSpec in crc2vice (except for the command buffer)
 type STARSMap struct {
-	Label         string        `json:"label"`
-	Group         int           `json:"group"` // 0 -> A, 1 -> B
-	Name          string        `json:"name"`
-	CommandBuffer CommandBuffer `json:"command_buffer"`
+	Label         string
+	Group         int // 0 -> A, 1 -> B
+	Name          string
+	Id            int
+	Lines         [][]Point2LL
+	CommandBuffer CommandBuffer
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -642,7 +645,7 @@ type STARSPreferenceSet struct {
 	DisplayATPAWarningAlertCones bool
 	DisplayATPAMonitorCones      bool
 
-	VideoMapVisible  map[string]interface{}
+	DisplayVideoMap  [NumSTARSMaps]bool
 	SystemMapVisible map[int]interface{}
 
 	PTLLength      float32
@@ -815,8 +818,8 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.DCBPosition = DCBPositionTop
 
 	if w != nil {
-		ps.Center = w.Center
-		ps.Range = w.Range
+		ps.Center = w.GetInitialCenter()
+		ps.Range = w.GetInitialRange()
 	} else {
 		ps.Center = Point2LL{73.475, 40.395} // JFK-ish
 		ps.Range = 50
@@ -830,10 +833,6 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.RadarTrackHistory = 5
 	ps.RadarTrackHistoryRate = 4.5
 
-	ps.VideoMapVisible = make(map[string]interface{})
-	if w != nil && len(w.STARSMaps) > 0 {
-		ps.VideoMapVisible[w.STARSMaps[0].Name] = nil
-	}
 	ps.SystemMapVisible = make(map[int]interface{})
 
 	ps.FusedRadarMode = true
@@ -928,12 +927,11 @@ func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 	dupe := *ps
 	dupe.SelectedBeaconCodes = DuplicateSlice(ps.SelectedBeaconCodes)
 	dupe.CRDA.RunwayPairState = DuplicateSlice(ps.CRDA.RunwayPairState)
-	dupe.VideoMapVisible = DuplicateMap(ps.VideoMapVisible)
 	dupe.SystemMapVisible = DuplicateMap(ps.SystemMapVisible)
 	return dupe
 }
 
-func (ps *STARSPreferenceSet) Activate(w *World) {
+func (ps *STARSPreferenceSet) Activate(w *World, sp *STARSPane) {
 	// It should only take integer values but it's a float32 and we
 	// previously didn't enforce this...
 	ps.Range = float32(int(ps.Range))
@@ -969,12 +967,6 @@ func (ps *STARSPreferenceSet) Activate(w *World) {
 	remapBrightness(&ps.Brightness.Weather)
 	remapBrightness(&ps.Brightness.WxContrast)
 
-	if ps.VideoMapVisible == nil {
-		ps.VideoMapVisible = make(map[string]interface{})
-		if w != nil && len(w.STARSMaps) > 0 {
-			ps.VideoMapVisible[w.STARSMaps[0].Name] = nil
-		}
-	}
 	if ps.SystemMapVisible == nil {
 		ps.SystemMapVisible = make(map[int]interface{})
 	}
@@ -1104,7 +1096,7 @@ func (sp *STARSPane) Activate(w *World, r Renderer, eventStream *EventStream) {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
 		sp.CurrentPreferenceSet = sp.MakePreferenceSet("", w)
 	}
-	sp.CurrentPreferenceSet.Activate(w)
+	sp.CurrentPreferenceSet.Activate(w, sp)
 
 	if sp.HavePlayedSPCAlertSound == nil {
 		sp.HavePlayedSPCAlertSound = make(map[string]interface{})
@@ -1123,6 +1115,8 @@ func (sp *STARSPane) Activate(w *World, r Renderer, eventStream *EventStream) {
 	}
 
 	sp.initializeFonts()
+
+	sp.systemMaps = sp.makeSystemMaps(w)
 
 	if sp.Aircraft == nil {
 		sp.Aircraft = make(map[string]*STARSAircraftState)
@@ -1158,19 +1152,24 @@ func (sp *STARSPane) Deactivate() {
 func (sp *STARSPane) ResetWorld(w *World) {
 	ps := &sp.CurrentPreferenceSet
 
-	ps.Center = w.Center
-	ps.Range = w.Range
+	ps.Center = w.GetInitialCenter()
+	ps.Range = w.GetInitialRange()
 	ps.CurrentCenter = ps.Center
 	ps.RangeRingsCenter = ps.Center
 
-	ps.VideoMapVisible = make(map[string]interface{})
-	// Make the scenario's default video maps be visible
-	for _, dm := range w.DefaultMaps {
-		ps.VideoMapVisible[dm] = nil
+	videoMaps, defaultVideoMaps := w.GetVideoMaps()
+	clear(ps.DisplayVideoMap[:])
+	// Make the scenario's default video maps visible
+	for _, dm := range defaultVideoMaps {
+		if idx := slices.IndexFunc(videoMaps, func(m STARSMap) bool { return m.Name == dm }); idx != -1 {
+			ps.DisplayVideoMap[idx] = true
+		} else {
+			lg.Errorf("%s: \"default_map\" not found in \"stars_maps\"", dm)
+		}
 	}
 	ps.SystemMapVisible = make(map[int]interface{})
 
-	sp.SystemMaps = sp.makeSystemMaps(w)
+	sp.systemMaps = sp.makeSystemMaps(w)
 
 	ps.CurrentATIS = ""
 	for i := range ps.GIText {
@@ -1208,10 +1207,10 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 		Label: "ALLCASU",
 		Name:  "ALL CA SUPPRESSION FILTERS",
 	}
-	for _, vol := range w.InhibitCAVolumes {
+	for _, vol := range w.InhibitCAVolumes() {
 		vol.GenerateDrawCommands(&csf.CommandBuffer, w.NmPerLongitude)
 	}
-	maps[400] = csf
+	maps[700] = csf
 
 	// MVAs
 	mvas := &STARSMap{
@@ -1226,10 +1225,10 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 	}
 	ld.GenerateCommands(&mvas.CommandBuffer)
 	ReturnLinesDrawBuilder(ld)
-	maps[401] = mvas
+	maps[701] = mvas
 
 	// Radar maps
-	radarIndex := 701
+	radarIndex := 801
 	for _, name := range SortedMapKeys(w.RadarSites) {
 		sm := &STARSMap{
 			Label: name + "RCM",
@@ -1248,7 +1247,7 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 	}
 
 	// ATPA approach volumes
-	atpaIndex := 801
+	atpaIndex := 901
 	for _, name := range SortedMapKeys(w.ArrivalAirports) {
 		ap := w.ArrivalAirports[name]
 		for _, rwy := range SortedMapKeys(ap.ATPAVolumes) {
@@ -1582,11 +1581,13 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	// Maps
 	cb.LineWidth(1)
-	for _, vmap := range ctx.world.STARSMaps {
-		if _, ok := ps.VideoMapVisible[vmap.Name]; !ok {
+	videoMaps, _ := ctx.world.GetVideoMaps()
+	for i, disp := range ps.DisplayVideoMap {
+		if !disp {
 			continue
 		}
 
+		vmap := videoMaps[i]
 		color := ps.Brightness.VideoGroupA.ScaleRGB(STARSMapColor)
 		if vmap.Group == 1 {
 			color = ps.Brightness.VideoGroupB.ScaleRGB(STARSMapColor)
@@ -1600,7 +1601,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		color := ps.Brightness.VideoGroupA.ScaleRGB(STARSMapColor)
 		cb.SetRGB(color)
 		transforms.LoadLatLongViewingMatrices(cb)
-		cb.Call(sp.SystemMaps[idx].CommandBuffer)
+		cb.Call(sp.systemMaps[idx].CommandBuffer)
 	}
 
 	ctx.world.DrawScenarioRoutes(transforms, sp.systemFont[ps.CharSize.Tools],
@@ -1813,14 +1814,16 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		case KeyF1:
 			if ctx.keyboard.IsPressed(KeyControl) {
 				// Recenter
-				ps.Center = ctx.world.Center
+				ps.Center = ctx.world.GetInitialCenter()
 				ps.CurrentCenter = ps.Center
 			}
 
 		case KeyF2:
-			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner(ctx)
-				sp.activeDCBMenu = DCBMenuMaps
+			if ctx.keyboard.IsPressed(KeyControl) {
+				if ps.DisplayDCB {
+					sp.disableMenuSpinner(ctx)
+					sp.activeDCBMenu = DCBMenuMaps
+				}
 				sp.resetInputState()
 				sp.commandMode = CommandModeMaps
 			}
@@ -3079,11 +3082,14 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	case CommandModeMaps:
 		if cmd == "A" {
 			// remove all maps
-			ps.VideoMapVisible = make(map[string]interface{})
+			for i := range ps.DisplayVideoMap {
+				ps.DisplayVideoMap[i] = false
+			}
 			ps.SystemMapVisible = make(map[int]interface{})
+			sp.activeDCBMenu = DCBMenuMain
 			status.clear = true
 			return
-		} else if n := len(cmd); n >= 2 {
+		} else if n := len(cmd); n > 0 {
 			op := "T"            // toggle by default
 			if cmd[n-1] == 'E' { // enable
 				op = "E"
@@ -3093,30 +3099,30 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				cmd = cmd[:n-1]
 			}
 
+			videoMaps, _ := ctx.world.GetVideoMaps()
+
 			if idx, err := strconv.Atoi(cmd); err != nil {
 				status.err = ErrSTARSCommandFormat
 			} else if idx <= 0 {
 				status.err = ErrSTARSIllegalMap
-			} else if idx > len(ctx.world.STARSMaps) {
-				// is it a system map?
-				if _, ok := sp.SystemMaps[idx]; ok {
-					if _, ok := ps.SystemMapVisible[idx]; (ok && op == "T") || op == "I" {
-						delete(ps.SystemMapVisible, idx)
-					} else if (!ok && op == "T") || op == "E" {
-						ps.SystemMapVisible[idx] = nil
-					}
-					status.clear = true
-					return
+			} else if mi := slices.IndexFunc(videoMaps, func(m STARSMap) bool { return m.Id == idx }); mi != -1 {
+				if (ps.DisplayVideoMap[mi] && op == "T") || op == "I" {
+					ps.DisplayVideoMap[mi] = false
+				} else if (!ps.DisplayVideoMap[mi] && op == "T") || op == "E" {
+					ps.DisplayVideoMap[mi] = true
 				}
-				status.err = ErrSTARSIllegalMap
-			} else {
-				idx--
-				name := ctx.world.STARSMaps[idx].Name
-				if _, ok := ps.VideoMapVisible[name]; (ok && op == "T") || op == "I" {
-					delete(ps.VideoMapVisible, name)
+				sp.activeDCBMenu = DCBMenuMain
+				status.clear = true
+			} else if _, ok := sp.systemMaps[idx]; ok {
+				if _, ok := ps.SystemMapVisible[idx]; (ok && op == "T") || op == "I" {
+					delete(ps.SystemMapVisible, idx)
 				} else if (!ok && op == "T") || op == "E" {
-					ps.VideoMapVisible[name] = nil
+					ps.SystemMapVisible[idx] = nil
 				}
+				sp.activeDCBMenu = DCBMenuMain
+				status.clear = true
+			} else {
+				status.err = ErrSTARSIllegalMap
 			}
 			status.clear = true
 			return
@@ -4365,21 +4371,15 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if STARSSelectButton(ctx, "MAPS", STARSButtonFull, buttonScale) {
 			sp.activeDCBMenu = DCBMenuMaps
 		}
+		videoMaps, _ := ctx.world.GetVideoMaps()
 		for i := 0; i < 6; i++ {
-			if i >= len(ctx.world.STARSMaps) {
-				STARSDisabledButton(ctx, fmt.Sprintf(" %d\n", i+1), STARSButtonHalfVertical, buttonScale)
-			} else {
-				text := fmt.Sprintf(" %d\n%s", i+1, ctx.world.STARSMaps[i].Label)
-				name := ctx.world.STARSMaps[i].Name
-				_, visible := ps.VideoMapVisible[name]
-				if STARSToggleButton(ctx, text, &visible, STARSButtonHalfVertical, buttonScale) {
-					if visible {
-						ps.VideoMapVisible[name] = nil
-					} else {
-						delete(ps.VideoMapVisible, name)
-					}
-				}
-			}
+			// Maps are given left->right, top->down, but we draw the
+			// buttons top->down, left->right, so the indexing is a little
+			// funny.
+			idx := Select(i&1 == 0, i/2, 3+i/2)
+			m := videoMaps[idx]
+			text := Select(m.Id == 0, "", fmt.Sprintf("%d\n%s", m.Id, m.Label))
+			STARSToggleButton(ctx, text, &ps.DisplayVideoMap[idx], STARSButtonHalfVertical, buttonScale)
 		}
 		for i := range ps.DisplayWeatherLevel {
 			STARSToggleButton(ctx, "WX"+strconv.Itoa(i), &ps.DisplayWeatherLevel[i], STARSButtonHalfHorizontal, buttonScale)
@@ -4473,23 +4473,21 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 			sp.activeDCBMenu = DCBMenuMain
 		}
 		if STARSSelectButton(ctx, "CLR ALL", STARSButtonHalfVertical, buttonScale) {
-			ps.VideoMapVisible = make(map[string]interface{})
+			for i := range ps.DisplayVideoMap {
+				ps.DisplayVideoMap[i] = false
+			}
 			ps.SystemMapVisible = make(map[int]interface{})
 		}
-		for i := 0; i < NumSTARSMaps; i++ {
-			if i >= len(ctx.world.STARSMaps) {
-				STARSDisabledButton(ctx, fmt.Sprintf(" %d", i+1), STARSButtonHalfVertical, buttonScale)
-			} else {
-				name := ctx.world.STARSMaps[i].Name
-				_, visible := ps.VideoMapVisible[name]
-				if STARSToggleButton(ctx, ctx.world.STARSMaps[i].Label, &visible, STARSButtonHalfVertical, buttonScale) {
-					if visible {
-						ps.VideoMapVisible[name] = nil
-					} else {
-						delete(ps.VideoMapVisible, name)
-					}
-				}
-			}
+		videoMaps, _ := ctx.world.GetVideoMaps()
+		for i := 0; i < NumSTARSMaps-6; i++ {
+			// Indexing is tricky both because we are skipping the first 6
+			// maps, which are shown in the main DCB, but also because we
+			// draw top->down, left->right while the maps are specified
+			// left->right, top->down...
+			idx := Select(i&1 == 0, 6+i/2, 22+i/2)
+			m := videoMaps[idx]
+			text := Select(m.Id == 0, "", fmt.Sprintf("%d\n%s", m.Id, m.Label))
+			STARSToggleButton(ctx, text, &ps.DisplayVideoMap[idx], STARSButtonHalfVertical, buttonScale)
 		}
 
 		geoMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupGeo && ps.VideoMapsList.Visible
@@ -5145,22 +5143,22 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		}
 		if ps.VideoMapsList.Selection == VideoMapsGroupGeo {
 			text += "GEOGRAPHIC MAPS\n"
-			for i, m := range ctx.world.STARSMaps {
-				_, vis := ps.VideoMapVisible[m.Name]
-				text += format(m, i+1, vis) // 1-based indexing
+			videoMaps, _ := ctx.world.GetVideoMaps()
+			for i, m := range videoMaps {
+				text += format(m, m.Id, ps.DisplayVideoMap[i])
 			}
 		} else if ps.VideoMapsList.Selection == VideoMapsGroupSysProc {
 			text += "PROCESSING AREAS\n"
-			for _, index := range SortedMapKeys(sp.SystemMaps) {
+			for _, index := range SortedMapKeys(sp.systemMaps) {
 				_, vis := ps.SystemMapVisible[index]
-				text += format(*sp.SystemMaps[index], index, vis)
+				text += format(*sp.systemMaps[index], index, vis)
 			}
 		} else if ps.VideoMapsList.Selection == VideoMapsGroupCurrent {
 			text += "MAPS\n"
-			for i, m := range ctx.world.STARSMaps {
-				_, vis := ps.VideoMapVisible[m.Name]
+			videoMaps, _ := ctx.world.GetVideoMaps()
+			for i, vis := range ps.DisplayVideoMap {
 				if vis {
-					text += format(m, i+1, vis) // 1-based indexing
+					text += format(videoMaps[i], videoMaps[i].Id, vis)
 				}
 			}
 		} else {
@@ -5836,7 +5834,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [
 
 func (sp *STARSPane) updateCAAircraft(w *World, aircraft []*Aircraft) {
 	inCAVolumes := func(state *STARSAircraftState) bool {
-		for _, vol := range w.InhibitCAVolumes {
+		for _, vol := range w.InhibitCAVolumes() {
 			if vol.Inside(state.TrackPosition(), state.TrackAltitude()) {
 				return true
 			}

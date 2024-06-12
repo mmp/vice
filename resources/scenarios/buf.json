@@ -1134,107 +1134,11 @@
       "DAVVK": "DAVK"
     },
     "stars_maps": [
-      {
-        "group": 1,
-        "label": "23_GPS",
-        "name": "BUF-019 (23 GPS)"
-      },
-      {
-        "group": 1,
-        "label": "32_GPS",
-        "name": "BUF-020 (32 GPS)"
-      },
-      {
-        "group": 1,
-        "label": "14_GPS",
-        "name": "BUF-018 (14 GPS)"
-      },
-      {
-        "group": 1,
-        "label": "5_GPS",
-        "name": "BUF-017 (5 GPS)"
-      },
-      {
-        "group": 1,
-        "label": "SUA",
-        "name": "BUF-016 (SUA)"
-      },
-      {
-        "group": 1,
-        "label": "TACAN",
-        "name": "BUF-015 (IAG TACAN 28R)"
-      },
-      {
-        "group": 1,
-        "label": "IAGRNAV",
-        "name": "BUF-014 (IAG RNAV 28)"
-      },
-      {
-        "group": 0,
-        "label": "FAC",
-        "name": "BUF-013 (BUF FAC)"
-      },
-      {
-        "group": 1,
-        "label": "ERI_MVA",
-        "name": "BUF-012 (ERIE MVA)"
-      },
-      {
-        "group": 1,
-        "label": "TRSA",
-        "name": "BUF-011 (ERIE TRSA)"
-      },
-      {
-        "group": 1,
-        "label": "CLASS_D",
-        "name": "BUF-010 (CLASS D)"
-      },
-      {
-        "group": 1,
-        "label": "CLASS_C",
-        "name": "BUF-009 (CLASS C)"
-      },
-      {
-        "group": 1,
-        "label": "ZOB",
-        "name": "BUF-008 (ZOB)"
-      },
-      {
-        "group": 1,
-        "label": "VFR",
-        "name": "BUF-007 (VFR)"
-      },
-      {
-        "group": 1,
-        "label": "MVA",
-        "name": "BUF-006 (MVA)"
-      },
-      {
-        "group": 0,
-        "label": "ERIE",
-        "name": "BUF-005 (ERIE RVM)"
-      },
-      {
-        "group": 0,
-        "label": "32_FLOW",
-        "name": "BUF-004 (32 FLOW)"
-      },
-      {
-        "group": 0,
-        "label": "23_FLOW",
-        "name": "BUF-003 (23 FLOW)"
-      },
-      {
-        "group": 0,
-        "label": "14_FLOW",
-        "name": "BUF-002 (14 FLOW)"
-      },
-      {
-        "group": 0,
-        "label": "5_FLOW",
-        "name": "BUF-001 (5 FLOW)"
-      }
+        "BUF-019 (23 GPS)", "BUF-020 (32 GPS)", "BUF-018 (14 GPS)", "BUF-017 (5 GPS)", "BUF-016 (SUA)", "BUF-015 (IAG TACAN 28R)",
+        "BUF-014 (IAG RNAV 28)", "BUF-013 (BUF FAC)", "BUF-012 (ERIE MVA)", "BUF-011 (ERIE TRSA)", "BUF-010 (CLASS D)",
+        "BUF-009 (CLASS C)", "BUF-008 (ZOB)", "BUF-007 (VFR)", "BUF-006 (MVA)", "BUF-005 (ERIE RVM)", "BUF-004 (32 FLOW)",
+        "BUF-003 (23 FLOW)", "BUF-002 (14 FLOW)", "BUF-001 (5 FLOW)"
     ],
-    "video_map_file": "videomaps/ZOB-videomaps.json.zst"
+    "video_map_file": "videomaps/ZOB-videomaps.gob.zst"
   }
 }

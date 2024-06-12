@@ -1176,32 +1176,8 @@
     "SQUIB": "SQU"
   },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "MKE 1L",
-      "name": "MKE RWY 1L"
-    },
-    {
-      "group":1,
-      "label":"MVA",
-      "name": "MKE MVA"
-    },
-    {
-      "group": 0,
-      "label": "MKE 19R",
-      "name": "MKE RWY 19R"
-    },
-    {
-      "group": 0,
-      "label": "MKE 7R",
-      "name": "MKE RWY 7R"
-    },
-    {
-      "group": 0,
-      "label": "MKE 25L",
-      "name": "MKE RWY 25L"
-    }
+      "MKE RWY 1L", "MKE MVA", "MKE RWY 19R", "MKE RWY 7R", "MKE RWY 25L"
   ],
-  "video_map_file": "videomaps/ZAU-videomaps.json.zst"
+  "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
   }
 }

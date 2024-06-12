@@ -2812,92 +2812,10 @@
             "JCT": "PRA"
           },
           "stars_maps": [
-            {
-                "group": 0,
-                "label": "BASE",
-                "name": "I90 BASE MAP"
-            },
-            {
-                "group": 0,
-                "label": "3NM MVA",
-                "name": "I90 MVA FUS 3"
-            },
-            {
-                "group": 0,
-                "label": "BRAVO",
-                "name": "I90 CLASS B"
-            },
-            {
-                "group": 0,
-                "label": "3NM MVA",
-                "name": "I90 MVA FUS 3"
-            },
-            {
-                "group": 1,
-                "label": "IAH EAS",
-                "name": "IAH FINAL EAST FLOW"
-            },
-            {
-                "group": 1,
-                "label": "IAH E A",
-                "name": "IAH FINAL EAST FLOW ALT"
-            },
-            {
-                "group": 1,
-                "label": "IAH WES",
-                "name": "IAH FINAL WEST FLOW"
-            },
-            {
-                "group": 1,
-                "label": "IAH W A",
-                "name": "IAH FINAL WEST FLOW ALT"
-            },
-            {
-                "group": 1,
-                "label": "HOU_4",
-                "name": "HOU FINAL 4"
-            },
-            {
-                "group": 1,
-                "label": "HOU 13E",
-                "name": "HOU FINAL EAST HOU 13 ALT"
-            },
-            {
-                "group": 1,
-                "label": "HOU 13W",
-                "name": "HOU FINAL WEST-15-33 HOU 13 ALT"
-            },
-            {
-                "group": 1,
-                "label": "CLASS D",
-                "name": "CLASS D AIRPORTS"
-            },
-            {
-                "group": 1,
-                "label": "BPT E",
-                "name": "BPT EAST 15-33 HOU ALL"
-            },
-            {
-                "group": 1,
-                "label": "BPT W",
-                "name": "BPT WEST-15 HOU ALL"
-            },
-            {
-                "group": 1,
-                "label": "CLL E",
-                "name": "CLL-IDU EAST HOU ALL"
-            },
-            {
-                "group": 1,
-                "label": "CLL W",
-                "name": "CLL-IDU WEST-15-33 HOU ALL"
-            },
-            {
-                "group": 1,
-                "label": "DWH F",
-                "name": "DWH FINAL"
-            }
+              "I90 BASE MAP", "I90 MVA FUS 3", "I90 CLASS B", "I90 MVA FUS 3", "IAH FINAL EAST FLOW", "IAH FINAL EAST FLOW ALT",
+              "IAH FINAL WEST FLOW", "IAH FINAL WEST FLOW ALT", "HOU FINAL 4", "HOU FINAL EAST HOU 13 ALT", "HOU FINAL WEST-15-33 HOU 13 ALT",
+              "CLASS D AIRPORTS", "BPT EAST 15-33 HOU ALL", "BPT WEST-15 HOU ALL", "CLL-IDU EAST HOU ALL", "CLL-IDU WEST-15-33 HOU ALL", "DWH FINAL"
           ],
-          "video_map_file": "videomaps/ZHU-videomaps.json.zst"
+          "video_map_file": "videomaps/ZHU-videomaps.gob.zst"
     }
 }

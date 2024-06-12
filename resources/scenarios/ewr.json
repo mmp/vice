@@ -3922,9 +3922,9 @@
         "WRI_APP"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
-      "departure_runways": [
+      "departure_runways": [ 
         {
           "airport": "KEWR",
           "rate": 25,
@@ -3970,7 +3970,7 @@
         "PHL_E_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR" ],
+      "default_maps": [ "EWR ARR/DEP" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -4017,7 +4017,7 @@
         "PHL_E_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR" ],
+      "default_maps": [ "EWR ARR/DEP" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -4156,7 +4156,7 @@
         "WRI_APP"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "departure_runways": [
         {
@@ -4229,7 +4229,7 @@
         "PHL_E_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR" ],      
+      "default_maps": [ "EWR ARR/DEP" ],      
       "wind": {
         "direction": 60,
         "gust": 13,
@@ -4284,7 +4284,7 @@
         "PHL_E_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR" ],      
+      "default_maps": [ "EWR ARR/DEP" ],      
       "wind": {
         "direction": 240,
         "gust": 18,
@@ -4327,7 +4327,7 @@
         "CDW_TWR"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "wind": {
         "direction": 220,
@@ -4365,7 +4365,7 @@
         "CDW_TWR"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "wind": {
         "direction": 230,
@@ -4403,7 +4403,7 @@
         "CDW_TWR"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "wind": {
         "direction": 300,
@@ -4441,7 +4441,7 @@
         "CDW_TWR"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "wind": {
         "direction": 60,
@@ -4479,7 +4479,7 @@
         "CDW_TWR"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "wind": {
         "direction": 30,
@@ -4578,78 +4578,14 @@
     "ARD": "ARD",
     "ZIMMZ": "ZIM"
   },
-  "stars_maps": [
-    {
-      "group": 0,
-      "label": "EWR",
-      "name": "EWR"
-    },
-    {
-      "group": 0,
-      "label": "EWR SAT",
-      "name": "EWR Satellites"
-    },
-    {
-      "group": 0,
-      "label": "EWR CRDA",
-      "name": "EWR CRDA"
-    },
-    {
-      "group": 1,
-      "label": "NY B",
-      "name": "N90 CLASS B"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "N90 MVA"
-    },
-    {
-      "group": 0,
-      "label": "JFK4",
-      "name": "JFK 4s"
-    },
-    {
-      "group": 0,
-      "label": "JFK13",
-      "name": "JFK 13s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22",
-      "name": "JFK 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31",
-      "name": "JFK 31s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22 ILS",
-      "name": "JFK ILS 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31 NTZ",
-      "name": "JFK 31s NTZ"
-    },
-    {
-      "group": 0,
-      "label": "LGA",
-      "name": "LGA"
-    },
-    {
-      "group": 0,
-      "label": "LIB D",
-      "name": "LIB Departure"
-    },
-    {
-      "group": 0,
-      "label": "LIB C",
-      "name": "LIB Catskill"
-    }
-  ],
-  "video_map_file": "videomaps/n90-maps.json.zst"
+      "stars_maps": [ "EWR ARR/DEP", "MVA", "NY Class B",
+                      "EOVM", "MMU ILS 23", "CDW RNAV",
+                      "EWR CRDA", "EWR GLS", "TEB RNAV (GPS) RWY 6", "RNAVX 29", "TEB RNAV", "LGA & VAP", "EWR RNAV",
+                      "STW/SAX RNAV", "N07 RNAV", "DEPARTURE RNAV", "SMQ/N51", "39N/47N", "JFK ARR/DEP RWY 4L/R",
+                      "JFK ARR/DEP RWY 13L/R", "JFK ARR/DEP",
+                      "N90 TFR", "Coast", "EOVM", "", "EWR GPS", "", "",
+                      "NE HELI RNAV ROUTES", "CATSKILL AREA", "LIBERTY DEP", "ISP ARR/DEP", "LGA-HPN ARR/DEP",
+                      "JFK ARR/DEP RWY 22L/R", "JFK ARR/DEP RWY 31L/R" ],
+  "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
   }
 }

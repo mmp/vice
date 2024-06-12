@@ -25,7 +25,7 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
-const ViceRPCVersion = 14
+const ViceRPCVersion = 15
 
 type SimServer struct {
 	*RPCClient
@@ -275,22 +275,23 @@ type SimManager struct {
 	activeSims           map[string]*Sim
 	controllerTokenToSim map[string]*Sim
 	mu                   LoggingMutex
+	mapLibrary           *VideoMapLibrary
 	startTime            time.Time
 	lg                   *Logger
 }
 
 func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
-	simConfigurations map[string]map[string]*SimConfiguration, lg *Logger) *SimManager {
-	sm := &SimManager{
+	simConfigurations map[string]map[string]*SimConfiguration, mapLib *VideoMapLibrary,
+	lg *Logger) *SimManager {
+	return &SimManager{
 		scenarioGroups:       scenarioGroups,
 		configs:              simConfigurations,
 		activeSims:           make(map[string]*Sim),
 		controllerTokenToSim: make(map[string]*Sim),
+		mapLibrary:           mapLib,
 		startTime:            time.Now(),
 		lg:                   lg,
 	}
-
-	return sm
 }
 
 type NewSimResult struct {
@@ -300,7 +301,7 @@ type NewSimResult struct {
 
 func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
 	if config.NewSimType == NewSimCreateLocal || config.NewSimType == NewSimCreateRemote {
-		sim := NewSim(*config, sm.scenarioGroups, config.NewSimType == NewSimCreateLocal, sm.lg)
+		sim := NewSim(*config, sm.scenarioGroups, config.NewSimType == NewSimCreateLocal, sm.mapLibrary, sm.lg)
 		sim.prespawn()
 		return sm.Add(sim, result)
 	} else {
@@ -1345,15 +1346,15 @@ func TryConnectRemoteServer(hostname string) chan *SimServerConnection {
 	return ch
 }
 
-func LaunchLocalSimServer() (chan *SimServer, error) {
+func LaunchLocalSimServer() (chan *SimServer, *VideoMapLibrary, error) {
 	l, err := net.Listen("tcp", ":0")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	port := l.Addr().(*net.TCPAddr).Port
 
-	configsChan := runServer(l, true)
+	configsChan, mapLibrary := runServer(l, true)
 
 	ch := make(chan *SimServer, 1)
 	go func() {
@@ -1372,23 +1373,23 @@ func LaunchLocalSimServer() (chan *SimServer, error) {
 		}
 	}()
 
-	return ch, nil
+	return ch, mapLibrary, nil
 }
 
-func runServer(l net.Listener, isLocal bool) chan map[string]map[string]*SimConfiguration {
+func runServer(l net.Listener, isLocal bool) (chan map[string]map[string]*SimConfiguration, *VideoMapLibrary) {
 	ch := make(chan map[string]map[string]*SimConfiguration, 1)
 
-	server := func() {
-		var e ErrorLogger
-		scenarioGroups, simConfigurations := LoadScenarioGroups(&e)
-		if e.HaveErrors() {
-			e.PrintErrors(lg)
-			os.Exit(1)
-		}
+	var e ErrorLogger
+	scenarioGroups, simConfigurations, mapLib := LoadScenarioGroups(&e)
+	if e.HaveErrors() {
+		e.PrintErrors(lg)
+		os.Exit(1)
+	}
 
+	server := func() {
 		server := rpc.NewServer()
 
-		sm := NewSimManager(scenarioGroups, simConfigurations, lg)
+		sm := NewSimManager(scenarioGroups, simConfigurations, mapLib, lg)
 		if err := server.Register(sm); err != nil {
 			lg.Errorf("unable to register SimManager: %v", err)
 			os.Exit(1)
@@ -1424,7 +1425,7 @@ func runServer(l net.Listener, isLocal bool) chan map[string]map[string]*SimConf
 	} else {
 		server()
 	}
-	return ch
+	return ch, mapLib
 }
 
 ///////////////////////////////////////////////////////////////////////////

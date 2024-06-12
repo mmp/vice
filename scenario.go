@@ -5,10 +5,7 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
 	"fmt"
-	"io"
 	"io/fs"
 	"log/slog"
 	"os"
@@ -21,7 +18,6 @@ import (
 	"time"
 
 	"github.com/iancoleman/orderedmap"
-	"github.com/klauspost/compress/zstd"
 )
 
 type ScenarioGroup struct {
@@ -56,17 +52,28 @@ type AirspaceAwareness struct {
 }
 
 type STARSFacilityAdaptation struct {
-	AirspaceAwareness   []AirspaceAwareness   `json:"airspace_awareness"`
-	ForceQLToSelf       bool                  `json:"force_ql_self"`
-	AllowLongScratchpad [2]bool               `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
-	Maps                []STARSMap            `json:"stars_maps"`
-	InhibitCAVolumes    []AirspaceVolume      `json:"inhibit_ca_volumes"`
-	RadarSites          map[string]*RadarSite `json:"radar_sites"`
-	Center              Point2LL              `json:"-"`
-	CenterString        string                `json:"center"`
-	Range               float32               `json:"range"`
-	Scratchpads         map[string]string     `json:"scratchpads"`
-	VideoMapFile        string                `json:"video_map_file"`
+	AirspaceAwareness   []AirspaceAwareness `json:"airspace_awareness"`
+	ForceQLToSelf       bool                `json:"force_ql_self"`
+	AllowLongScratchpad [2]bool             `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
+	VideoMapNames       []string            `json:"stars_maps"`
+	VideoMaps           []STARSMap
+	ControllerConfigs   map[string]STARSControllerConfig `json:"controller_configs"`
+	InhibitCAVolumes    []AirspaceVolume                 `json:"inhibit_ca_volumes"`
+	RadarSites          map[string]*RadarSite            `json:"radar_sites"`
+	Center              Point2LL                         `json:"-"`
+	CenterString        string                           `json:"center"`
+	Range               float32                          `json:"range"`
+	Scratchpads         map[string]string                `json:"scratchpads"`
+	VideoMapFile        string                           `json:"video_map_file"`
+}
+
+type STARSControllerConfig struct {
+	VideoMapNames []string `json:"video_maps"`
+	VideoMaps     []STARSMap
+	DefaultMaps   []string `json:"default_maps"`
+	Center        Point2LL `json:"-"`
+	CenterString  string   `json:"center"`
+	Range         float32  `json:"range"`
 }
 
 type Airspace struct {
@@ -544,13 +551,30 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		}
 	}
 
-	if len(s.DefaultMaps) == 0 {
-		e.ErrorString("must specify at least one default video map using \"default_maps\"")
-	} else {
+	fa := sg.STARSFacilityAdaptation
+	if len(s.DefaultMaps) > 0 {
+		if len(fa.ControllerConfigs) > 0 {
+			e.ErrorString("\"default_maps\" is not allowed when \"controller_configs\" is set in \"stars_config\"")
+		}
+
 		for _, dm := range s.DefaultMaps {
-			if !slices.ContainsFunc(sg.STARSFacilityAdaptation.Maps,
-				func(m STARSMap) bool { return m.Name == dm }) {
+			if !slices.ContainsFunc(fa.VideoMapNames,
+				func(m string) bool { return m == dm }) {
 				e.ErrorString("video map \"%s\" not found in \"stars_maps\"", dm)
+			}
+		}
+	} else if len(fa.ControllerConfigs) > 0 {
+		// Make sure that each controller in the scenario is represented in
+		// "controller_configs".
+		if _, ok := fa.ControllerConfigs[s.SoloController]; !ok {
+			e.ErrorString("control position \"%s\" is not included in \"controller_configs\"",
+				s.SoloController)
+		}
+		for _, conf := range s.SplitConfigurations {
+			for pos := range conf {
+				if _, ok := fa.ControllerConfigs[pos]; !ok {
+					e.ErrorString("control position \"%s\" is not included in \"controller_configs\"", pos)
+				}
 			}
 		}
 	}
@@ -680,6 +704,16 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 		sg.MagneticVariation = mvar + sg.MagneticAdjustment
 	}
 
+	fa := sg.STARSFacilityAdaptation
+	if len(fa.VideoMapNames) == 0 {
+		if len(fa.ControllerConfigs) == 0 {
+			e.ErrorString("must provide one of \"stars_maps\" or \"controller_configs\" in \"stars_config\"")
+			fa.ControllerConfigs = CommaKeyExpand(fa.ControllerConfigs)
+		}
+	} else if len(fa.ControllerConfigs) > 0 {
+		e.ErrorString("cannot provide both \"stars_maps\" and \"controller_configs\" in \"stars_config\"")
+	}
+
 	if _, ok := sg.Scenarios[sg.DefaultScenario]; !ok {
 		e.ErrorString("default scenario \"%s\" not found in \"scenarios\"", sg.DefaultScenario)
 	}
@@ -767,8 +801,58 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 func (s *STARSFacilityAdaptation) PostDeserialize(e *ErrorLogger, sg *ScenarioGroup) {
 	e.Push("stars_config")
 
-	if len(s.Maps) == 0 {
-		e.ErrorString("No \"stars_maps\" specified")
+	// Video maps
+	if len(s.VideoMapNames) > 0 {
+		// Don't try to validate the map names here since we haven't loaded
+		// the video maps yet. (Chicken and egg: we use the map names when
+		// loading maps to figure out which ones we need rendering command
+		// buffers for, so hence we haven't loaded them at this point.)
+	} else if len(s.ControllerConfigs) > 0 {
+		s.ControllerConfigs = CommaKeyExpand(s.ControllerConfigs)
+
+		for ctrl, config := range s.ControllerConfigs {
+			if pos, ok := sg.locate(config.CenterString); !ok {
+				e.ErrorString("unknown location \"%s\" specified for \"center\"", s.CenterString)
+			} else {
+				config.Center = pos
+				s.ControllerConfigs[ctrl] = config
+			}
+		}
+
+		for ctrl, config := range s.ControllerConfigs {
+			if len(config.VideoMapNames) == 0 {
+				e.ErrorString("must provide \"video_maps\" for controller \"%s\"", ctrl)
+			}
+
+			for _, name := range config.DefaultMaps {
+				if !slices.Contains(config.VideoMapNames, name) {
+					e.ErrorString("default map \"%s\" for \"%s\" is not included in the controller's "+
+						"\"controller_maps\"", name, ctrl)
+				}
+			}
+			// Make sure all of the control positions are included in at least
+			// one of the scenarios.  As with VideoMapNames, don't try to
+			// validate the map names yet.
+			if !func() bool {
+				for _, sc := range sg.Scenarios {
+					if ctrl == sc.SoloController {
+						return true
+					}
+					for _, config := range sc.SplitConfigurations {
+						for pos := range config {
+							if ctrl == pos {
+								return true
+							}
+						}
+					}
+				}
+				return false
+			}() {
+				e.ErrorString("Control position \"%s\" in \"controller_configs\" not found in any of the scenarios", ctrl)
+			}
+		}
+	} else {
+		e.ErrorString("Must specify either \"controller_configs\" or \"stars_maps\"")
 	}
 
 	if s.CenterString == "" {
@@ -800,6 +884,47 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *ErrorLogger, sg *ScenarioGr
 	}
 
 	e.Pop() // stars_config
+}
+
+func (s *STARSFacilityAdaptation) PreSave() {
+	// Slim down STARSFacilityAdaptation before it is saved by discarding
+	// the video maps, which we can restore at load time through the
+	// VideoMapLibrary.
+	s.VideoMaps = nil
+	for ctrl, config := range s.ControllerConfigs {
+		config.VideoMaps = nil
+		s.ControllerConfigs[ctrl] = config
+	}
+}
+
+func (s *STARSFacilityAdaptation) PostLoad(ml *VideoMapLibrary) error {
+	// And conversely, PostLoad patches things up by restoring the
+	// STARSMaps for the video maps in the STARSFacilityAdaptation.
+	initMaps := func(names []string) ([]STARSMap, error) {
+		var maps []STARSMap
+		for _, name := range names {
+			if name == "" {
+				maps = append(maps, STARSMap{})
+			} else if m := ml.GetMap(s.VideoMapFile, name); m != nil {
+				maps = append(maps, *m)
+			} else {
+				return nil, fmt.Errorf("%s: map \"%s\" not found", s.VideoMapFile, name)
+			}
+		}
+		return maps, nil
+	}
+
+	var err error
+	if s.VideoMaps, err = initMaps(s.VideoMapNames); err != nil {
+		return err
+	}
+	for ctrl, config := range s.ControllerConfigs {
+		if config.VideoMaps, err = initMaps(config.VideoMapNames); err != nil {
+			return err
+		}
+		s.ControllerConfigs[ctrl] = config
+	}
+	return nil
 }
 
 func initializeSimConfigurations(sg *ScenarioGroup,
@@ -1062,266 +1187,6 @@ func InAirspace(p Point2LL, alt float32, volumes []ControllerAirspaceVolume) (bo
 ///////////////////////////////////////////////////////////////////////////
 // LoadScenarioGroups
 
-type LoadedVideoMap struct {
-	path        string
-	commandBufs map[string]CommandBuffer
-	err         error
-}
-
-func loadVideoMaps(filesystem fs.FS, path string, referencedVideoMaps map[string]map[string]interface{}, result chan LoadedVideoMap) {
-	start := time.Now()
-	lvm := LoadedVideoMap{path: path}
-
-	fr, err := filesystem.Open(path)
-	if err != nil {
-		lvm.err = err
-		result <- lvm
-		return
-	}
-	defer fr.Close()
-
-	var r io.Reader
-	r = fr
-	if strings.HasSuffix(strings.ToLower(path), ".zst") {
-		zr, _ := zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
-		defer zr.Close()
-		r = zr
-	}
-
-	if referenced, ok := referencedVideoMaps[path]; ok {
-		lvm.commandBufs, err = loadVideoMapFile(r, referenced)
-		if err != nil {
-			lvm.err = err
-			result <- lvm
-			return
-		}
-	}
-	lg.Infof("%s: video map loaded in %s\n", path, time.Since(start))
-
-	result <- lvm
-}
-
-func loadVideoMapFile(ir io.Reader, referenced map[string]interface{}) (map[string]CommandBuffer, error) {
-	r := bufio.NewReader(ir)
-
-	// For debugging, enable check here; the file will also be parsed using
-	// encoding/json and the result will be compared to what we get out of
-	// our parser.
-	check := false
-	var checkJSONMaps map[string][]Point2LL
-	if check {
-		buf, err := io.ReadAll(ir)
-		if err != nil {
-			panic(err)
-		}
-		if err := UnmarshalJSON(buf, &checkJSONMaps); err != nil {
-			return nil, err
-		}
-		r = bufio.NewReader(bytes.NewReader(buf))
-	}
-
-	cur, err := r.ReadByte()
-	if err != nil {
-		return nil, err
-	}
-
-	eof := false
-	advance := func() bool {
-		var err error
-		cur, err = r.ReadByte()
-		eof = err == io.EOF
-		return err == nil
-	}
-
-	// Custom "just enough" JSON parser below. This expects only vice JSON
-	// video map files but is ~2x faster than using encoding/json.
-	line := 1
-	skipWhitespace := func() {
-		for !eof {
-			if cur == '\n' {
-				line++
-			}
-			if cur != ' ' && cur != '\n' && cur != '\t' && cur != '\f' && cur != '\r' && cur != '\v' {
-				break
-			}
-			advance()
-		}
-	}
-	// Called when we expect the given character as the next token.
-	expect := func(ch byte) error {
-		skipWhitespace()
-		if !eof && cur == ch {
-			advance()
-			return nil
-		}
-		return fmt.Errorf("expected '%s' at line %d, found '%s'", string(ch), line, string(cur))
-	}
-	// tryQuoted tries to return a quoted string; nil is returned if the
-	// first non-whitespace character found is not a quotation mark.
-	tryQuoted := func(buf []byte) []byte {
-		buf = buf[:0]
-		skipWhitespace()
-		if !eof && cur != '"' {
-			return buf
-		}
-		advance()
-
-		// Scan ahead to the closing quote
-		for !eof && cur != '"' {
-			if cur == '\n' {
-				panic(fmt.Sprintf("unterminated string at line %d", line))
-			}
-			buf = append(buf, cur)
-			advance()
-		}
-		if eof {
-			panic("unterminated string")
-		}
-		advance()
-		return buf
-	}
-	// tryChar returns true and advances pos if the next non-whitespace
-	// character matches the one given.
-	tryChar := func(ch byte) bool {
-		skipWhitespace()
-		ok := !eof && cur == ch
-		if ok {
-			advance()
-		}
-		return ok
-	}
-
-	tryNull := func() bool {
-		if !tryChar('n') {
-			return false
-		}
-		for _, ch := range []byte{'u', 'l', 'l'} {
-			if eof || cur != ch {
-				return false
-			}
-			advance()
-		}
-		return true
-	}
-
-	m := make(map[string]CommandBuffer)
-
-	// Video map JSON files encode a JSON object where members are arrays
-	// of strings, where each string encodes a lat-long position.
-	if err := expect('{'); err != nil {
-		return nil, err
-	}
-	var nameBuf, ll []byte
-	for {
-		// Is there another member in the object?
-		nameBuf = tryQuoted(nameBuf)
-		if len(nameBuf) == 0 {
-			break
-		}
-		// Handle escaped unicode characters \uXXXX
-		name, _ := strconv.Unquote(`"` + string(nameBuf) + `"`)
-
-		if err := expect(':'); err != nil {
-			return nil, err
-		}
-
-		_, doparse := referenced[name]
-		doparse = doparse || check
-
-		// Expect an array for its value.
-		var segs []Point2LL
-		// Allow "null" for an empty array but ignore it
-		if tryNull() {
-			// don't try to parse the array...
-		} else {
-			if err := expect('['); err != nil {
-				return nil, err
-			}
-
-			for {
-				// Parse an element of the array, which should be a string
-				// representing a position.
-				ll = tryQuoted(ll)
-				if len(ll) == 0 {
-					break
-				}
-
-				if doparse {
-					// Skip this work if this video map isn't used
-					p, err := ParseLatLong(ll)
-					if err != nil {
-						return nil, err
-					}
-					segs = append(segs, p)
-				}
-
-				// Is there another entry after this one?
-				if !tryChar(',') {
-					break
-				}
-			}
-			// Array close.
-			if err := expect(']'); err != nil {
-				return nil, err
-			}
-		}
-
-		if check {
-			// Make sure we have the same number of points and that they
-			// are equal to the reference deserialized by encoding/json.
-			jsegs, ok := checkJSONMaps[name]
-			if !ok {
-				return nil, fmt.Errorf("%s: not found in encoding/json deserialized maps", name)
-			}
-			if len(jsegs) != len(segs) {
-				return nil, fmt.Errorf("%s: encoding/json returned %d segments, we found %d", name, len(jsegs), len(segs))
-			}
-			for i := range jsegs {
-				if jsegs[i][0] != segs[i][0] || jsegs[i][1] != segs[i][1] {
-					return nil, fmt.Errorf("%s: %d'th point mismatch: encoding/json %v ours %v", name, i, jsegs[i], segs[i])
-				}
-			}
-			delete(checkJSONMaps, name)
-		}
-
-		// Generate the command buffer to draw this video map.
-		if doparse {
-			ld := GetLinesDrawBuilder()
-
-			for i := 0; i < len(segs)/2; i++ {
-				ld.AddLine(segs[2*i], segs[2*i+1])
-			}
-			var cb CommandBuffer
-			ld.GenerateCommands(&cb)
-
-			m[name] = cb
-			ReturnLinesDrawBuilder(ld)
-		} else {
-			// Include it with an empty command buffer anyway just so we
-			// know which maps were in the file.
-			m[name] = CommandBuffer{}
-		}
-
-		// Is there another video map in the object?
-		if !tryChar(',') {
-			break
-		}
-	}
-	if err := expect('}'); err != nil {
-		return nil, err
-	}
-
-	if check && len(checkJSONMaps) > 0 {
-		var s []string
-		for k := range checkJSONMaps {
-			s = append(s, k)
-		}
-		return nil, fmt.Errorf("encoding/json found maps that we did not: %s", strings.Join(s, ", "))
-	}
-
-	return m, nil
-}
-
 func loadScenarioGroup(filesystem fs.FS, path string, e *ErrorLogger) *ScenarioGroup {
 	e.Push("File " + path)
 	defer e.Pop()
@@ -1366,13 +1231,27 @@ func (r RootFS) Open(filename string) (fs.File, error) {
 // continue on in the presence of errors; all errors will be printed and
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
-func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration) {
+func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration, *VideoMapLibrary) {
 	start := time.Now()
 
 	// First load the scenarios.
 	scenarioGroups := make(map[string]map[string]*ScenarioGroup)
 	simConfigurations := make(map[string]map[string]*SimConfiguration)
 	referencedVideoMaps := make(map[string]map[string]interface{}) // filename -> map name -> used
+	updateReferencedMaps := func(fa STARSFacilityAdaptation) {
+		if referencedVideoMaps[fa.VideoMapFile] == nil {
+			referencedVideoMaps[fa.VideoMapFile] = make(map[string]interface{})
+		}
+		for _, m := range fa.VideoMapNames {
+			referencedVideoMaps[fa.VideoMapFile][m] = nil
+		}
+		for _, config := range fa.ControllerConfigs {
+			for _, m := range config.VideoMapNames {
+				referencedVideoMaps[fa.VideoMapFile][m] = nil
+			}
+		}
+	}
+
 	err := fs.WalkDir(resourcesFS, "scenarios", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			lg.Errorf("error walking scenarios/: %v", err)
@@ -1407,13 +1286,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 				}
 				scenarioGroups[s.TRACON][s.Name] = s
 			}
-
-			if referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile] == nil {
-				referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile] = make(map[string]interface{})
-			}
-			for _, m := range s.STARSFacilityAdaptation.Maps {
-				referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile][m.Name] = nil
-			}
+			updateReferencedMaps(s.STARSFacilityAdaptation)
 		}
 		return nil
 	})
@@ -1422,7 +1295,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 	}
 	if e.HaveErrors() {
 		// Don't keep going since we'll likely crash in the following
-		return nil, nil
+		return nil, nil, nil
 	}
 
 	// Load the scenario specified on command line, if any.
@@ -1452,20 +1325,12 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 						*scenarioFilename)
 				}
 			}
-
-			if referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile] == nil {
-				referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile] = make(map[string]interface{})
-			}
-			for _, m := range s.STARSFacilityAdaptation.Maps {
-				referencedVideoMaps[s.STARSFacilityAdaptation.VideoMapFile][m.Name] = nil
-			}
+			updateReferencedMaps(s.STARSFacilityAdaptation)
 		}
 	}
 
-	// Next load the video maps.
-	videoMapCommandBuffers := make(map[string]map[string]CommandBuffer)
-	vmChan := make(chan LoadedVideoMap, 16)
-	launches := 0
+	// Next load the video maps; we will kick off work to load
+	maplib := MakeVideoMapLibrary()
 	err = fs.WalkDir(resourcesFS, "videomaps", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			lg.Errorf("error walking videomaps: %v", err)
@@ -1476,12 +1341,10 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 			return nil
 		}
 
-		if filepath.Ext(path) != ".json" && filepath.Ext(path) != ".zst" {
-			return nil
+		if strings.HasSuffix(path, "-videomaps.gob") || strings.HasSuffix(path, "-videomaps.gob.zst") {
+			maplib.AddFile(resourcesFS, path, referencedVideoMaps[path], e)
 		}
 
-		launches++
-		go loadVideoMaps(resourcesFS, path, referencedVideoMaps, vmChan)
 		return nil
 	})
 	if err != nil {
@@ -1489,24 +1352,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 		os.Exit(1)
 	}
 
-	receiveLoadedVideoMap := func() {
-		lvm := <-vmChan
-		if lvm.err != nil {
-			e.Push("File " + lvm.path)
-			e.Error(lvm.err)
-			e.Pop()
-		} else {
-			videoMapCommandBuffers[lvm.path] = lvm.commandBufs
-		}
-	}
-
-	// Get all of the loaded video map command buffers
-	for launches > 0 {
-		receiveLoadedVideoMap()
-		launches--
-	}
-
-	lg.Infof("video map load time: %s\n", time.Since(start))
+	lg.Infof("scenario/video map manifest load time: %s\n", time.Since(start))
 
 	// Load the video map specified on the command line, if any.
 	if *videoMapFilename != "" {
@@ -1517,8 +1363,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 				return os.DirFS(".")
 			}
 		}()
-		loadVideoMaps(fs, *videoMapFilename, referencedVideoMaps, vmChan)
-		receiveLoadedVideoMap()
+		maplib.AddFile(fs, *videoMapFilename, referencedVideoMaps[*videoMapFilename], e)
 	}
 
 	// Final tidying before we return the loaded scenarios.
@@ -1540,20 +1385,23 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 				scenarioNames[scenarioName] = groupName
 			}
 
-			// Initialize the CommandBuffers in the scenario's maps.
-			if vf := sgroup.STARSFacilityAdaptation.VideoMapFile; vf == "" {
+			// Make sure we have what we need in terms of video maps
+			fa := &sgroup.STARSFacilityAdaptation
+			if vf := fa.VideoMapFile; vf == "" {
 				e.ErrorString("no \"video_map_file\" specified")
+			} else if !maplib.HaveFile(vf) {
+				e.ErrorString("no manifest for video map \"%s\" found. Options: %s", vf,
+					strings.Join(maplib.AvailableFiles(), ", "))
 			} else {
-				if bufferMap, ok := videoMapCommandBuffers[vf]; !ok {
-					e.ErrorString("video map file \"%s\" unknown", vf)
-				} else {
-					for i, sm := range sgroup.STARSFacilityAdaptation.Maps {
-						if cb, ok := bufferMap[sm.Name]; !ok {
-							e.ErrorString("video map \"%s\" not found. Available maps: %s",
-								sm.Name, `"`+strings.Join(SortedMapKeys(bufferMap), `", "`)+`"`)
-						} else {
-							sgroup.STARSFacilityAdaptation.Maps[i].CommandBuffer = cb
-						}
+				if len(fa.VideoMapNames) > NumSTARSMaps {
+					e.ErrorString("too many \"stars_maps\": %d provided but only %d are allowed",
+						len(fa.VideoMapNames), NumSTARSMaps)
+				}
+
+				for _, name := range fa.VideoMapNames {
+					if name != "" && !maplib.HaveMap(vf, name) {
+						e.ErrorString("video map \"%s\" not found. Use -listmaps <ARTCC> to show available video maps.",
+							name)
 					}
 				}
 			}
@@ -1591,7 +1439,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 	}
 	lg.Warnf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
-	return scenarioGroups, simConfigurations
+	return scenarioGroups, simConfigurations, maplib
 }
 
 ///////////////////////////////////////////////////////////////////////////

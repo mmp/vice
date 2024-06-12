@@ -811,58 +811,9 @@
       "MHONY": "MHONY",
       "JJENY": "JJENY"
   },
-  "stars_maps": [
-    {
-      "group": 1,
-      "label": "CLASS C",
-      "name": "AVL CLASS C / SECTORS"
-  },
-  {
-      "group": 1,
-      "label": "SECTORS",
-      "name": "AVL SECTORS"
-  },
-  {
-      "group": 0,
-      "label": "AIRSPAC",
-      "name": "AVL AIRSPACE"
-  },
-  {
-      "group": 1,
-      "label": "AVLRNAV",
-      "name": "AVL RNAV (GPS) RWY 17/35 APPROACHES"
-  },
-  {
-      "group": 0,
-      "label": "TOWER",
-      "name": "AVL TOWER"
-  },
-  {
-      "group": 0,
-      "label": "RWY 17",
-      "name": "RUNWAY 17"
-  },
-  {
-      "group": 0,
-      "label": "RWY 35",
-      "name": "RUNWAY 35"
-  },
-  {
-      "group": 1,
-      "label": "MVA",
-      "name": "AVL MINIMUM VECTORING ALTITUDES"
-  },
-  {
-      "group": 1,
-      "label": "EOVM",
-      "name": "AVL EMERGENCY OBSTRUCTION VIDEO MAP"
-  },
-  {
-    "group": 0,
-    "label": "CAB",
-    "name": "AVL Cab"
-}
-  ],
-"video_map_file": "videomaps/ZTL-videomaps.json.zst"
+  "stars_maps": ["AVL CLASS C / SECTORS", "AVL SECTORS", "AVL AIRSPACE", "AVL RNAV (GPS) RWY 17/35 APPROACHES", "AVL TOWER",
+                 "RUNWAY 17", "RUNWAY 35", "AVL MINIMUM VECTORING ALTITUDES", "AVL EMERGENCY OBSTRUCTION VIDEO MAP", "AVL Cab" 
+                ],
+  "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
       }
     } 

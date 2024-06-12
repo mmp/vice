@@ -57,37 +57,35 @@ type World struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
-	TRACON                  string
-	LaunchConfig            LaunchConfig
-	PrimaryController       string
-	MultiControllers        SplitConfiguration
-	SimIsPaused             bool
-	SimRate                 float32
-	SimName                 string
-	SimDescription          string
-	SimTime                 time.Time
-	MagneticVariation       float32
-	NmPerLongitude          float32
-	Airports                map[string]*Airport
-	Fixes                   map[string]Point2LL
-	PrimaryAirport          string
-	RadarSites              map[string]*RadarSite
-	Center                  Point2LL
-	Range                   float32
-	DefaultMaps             []string
-	STARSMaps               []STARSMap
-	InhibitCAVolumes        []AirspaceVolume
-	Wind                    Wind
-	Callsign                string
-	ApproachAirspace        []ControllerAirspaceVolume
-	DepartureAirspace       []ControllerAirspaceVolume
-	DepartureRunways        []ScenarioGroupDepartureRunway
-	ArrivalRunways          []ScenarioGroupArrivalRunway
-	Scratchpads             map[string]string
-	ArrivalGroups           map[string][]Arrival
-	TotalDepartures         int
-	TotalArrivals           int
-	STARSFacilityAdaptation STARSFacilityAdaptation
+	TRACON                   string
+	LaunchConfig             LaunchConfig
+	PrimaryController        string
+	MultiControllers         SplitConfiguration
+	SimIsPaused              bool
+	SimRate                  float32
+	SimName                  string
+	SimDescription           string
+	SimTime                  time.Time
+	MagneticVariation        float32
+	NmPerLongitude           float32
+	Airports                 map[string]*Airport
+	Fixes                    map[string]Point2LL
+	PrimaryAirport           string
+	RadarSites               map[string]*RadarSite
+	Center                   Point2LL
+	Range                    float32
+	Wind                     Wind
+	Callsign                 string
+	ScenarioDefaultVideoMaps []string
+	ApproachAirspace         []ControllerAirspaceVolume
+	DepartureAirspace        []ControllerAirspaceVolume
+	DepartureRunways         []ScenarioGroupDepartureRunway
+	ArrivalRunways           []ScenarioGroupArrivalRunway
+	Scratchpads              map[string]string
+	ArrivalGroups            map[string][]Arrival
+	TotalDepartures          int
+	TotalArrivals            int
+	STARSFacilityAdaptation  STARSFacilityAdaptation
 }
 
 func NewWorld() *World {
@@ -554,6 +552,14 @@ func (w *World) GetSerializeSim() (*Sim, error) {
 	return w.simProxy.GetSerializeSim()
 }
 
+func (w *World) PreSave() {
+	w.STARSFacilityAdaptation.PreSave()
+}
+
+func (w *World) PostLoad(ml *VideoMapLibrary) error {
+	return w.STARSFacilityAdaptation.PostLoad(ml)
+}
+
 func (w *World) ToggleSimPause() {
 	w.pendingCalls = append(w.pendingCalls, &PendingCall{
 		Call:      w.simProxy.TogglePause(),
@@ -629,6 +635,31 @@ func (w *World) GetWindowTitle() string {
 			return w.Callsign + "@" + w.SimName + ": " + w.SimDescription + deparr
 		}
 	}
+}
+
+func (w *World) GetVideoMaps() ([]STARSMap, []string) {
+	if config, ok := w.STARSFacilityAdaptation.ControllerConfigs[w.Callsign]; ok {
+		return config.VideoMaps, config.DefaultMaps
+	}
+	return w.STARSFacilityAdaptation.VideoMaps, w.ScenarioDefaultVideoMaps
+}
+
+func (w *World) GetInitialRange() float32 {
+	if config, ok := w.STARSFacilityAdaptation.ControllerConfigs[w.Callsign]; ok && config.Range != 0 {
+		return config.Range
+	}
+	return w.Range
+}
+
+func (w *World) GetInitialCenter() Point2LL {
+	if config, ok := w.STARSFacilityAdaptation.ControllerConfigs[w.Callsign]; ok && !config.Center.IsZero() {
+		return config.Center
+	}
+	return w.Center
+}
+
+func (w *World) InhibitCAVolumes() []AirspaceVolume {
+	return w.STARSFacilityAdaptation.InhibitCAVolumes
 }
 
 func (w *World) PrintInfo(ac *Aircraft) {

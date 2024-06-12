@@ -3389,96 +3389,10 @@
             }
         },
         "stars_maps": [
-            {
-                "group": 0,
-                "label": "RY24",
-                "name": "CLE-001 (RY24)"
-            },
-            {
-                "group": 1,
-                "label": "S_STAR",
-                "name": "CLE-059 (SOUTH FLOW STARS)"
-            },
-            {
-                "group": 0,
-                "label": "RY6",
-                "name": "CLE-003 (RY6)"
-            },
-            {
-                "group": 1,
-                "label": "N_STAR",
-                "name": "CLE-062 (NORTH FLOW STARS)"
-            },
-            {
-                "group": 1,
-                "label": "CLASS-B",
-                "name": "CLE-014 (CLASS-B)"
-            },
-            {
-                "group": 1,
-                "label": "MVAFUS3",
-                "name": "CLE-006 (MVAFUS3)"
-            },
-            {
-                "group": 0,
-                "label": "RY28",
-                "name": "CLE-004 (RY28)"
-            },
-            {
-                "group": 0,
-                "label": "BASIC",
-                "name": "CLE-007 (BASIC)"
-            },
-            {
-                "group": 1,
-                "label": "SATAPCH",
-                "name": "CLE-013 (SATELLITE APCHS)"
-            },
-            {
-                "group": 1,
-                "label": "ZOB",
-                "name": "CLE-011 (ZOB SECTORS)"
-            },
-            {
-                "group": 1,
-                "label": "ADJ BDY",
-                "name": "CLE-015 (ADJ BNDY)"
-            },
-            {
-                "group": 1,
-                "label": "SHORE",
-                "name": "CLE-016 (SKY SHORE)"
-            },
-            {
-                "group": 1,
-                "label": "HWY",
-                "name": "CLE-019 (INTERSTATES)"
-            },
-            {
-                "group": 1,
-                "label": "C/D",
-                "name": "CLE-028 (CLASS C D)"
-            },
-            {
-                "group": 1,
-                "label": "INTLBDR",
-                "name": "CLE-045 (INTL BRDR)"
-            },
-            {
-                "group": 1,
-                "label": "S_SID",
-                "name": "CLE-053 (SOUTH FLOW SIDS)"
-            },
-            {
-                "group": 1,
-                "label": "N_SID",
-                "name": "CLE-055 (NORTH FLOW SIDS)"
-            },
-            {
-                "group": 1,
-                "label": "SAT_SID",
-                "name": "CLE-058 (SATELLITE SIDS)"
-            }
+            "CLE-001 (RY24)", "CLE-059 (SOUTH FLOW STARS)", "CLE-003 (RY6)", "CLE-062 (NORTH FLOW STARS)", "CLE-014 (CLASS-B)",
+            "CLE-006 (MVAFUS3)", "CLE-004 (RY28)", "CLE-007 (BASIC)", "CLE-013 (SATELLITE APCHS)", "CLE-011 (ZOB SECTORS)",
+            "CLE-015 (ADJ BNDY)", "CLE-016 (SKY SHORE)", "CLE-019 (INTERSTATES)", "CLE-028 (CLASS C D)", "CLE-045 (INTL BRDR)",
+            "CLE-053 (SOUTH FLOW SIDS)", "CLE-055 (NORTH FLOW SIDS)", "CLE-058 (SATELLITE SIDS)" 
         ],
         "range": 60,
         "scratchpads": {
@@ -3499,6 +3413,6 @@
             "SINKR": "ZAA",
             "MYCAR": "MYC"
         },
-        "video_map_file": "videomaps/ZOB-videomaps.json.zst"
+        "video_map_file": "videomaps/ZOB-videomaps.gob.zst"
     }
 }

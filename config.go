@@ -32,7 +32,8 @@ import (
 // 20: "stars_config" and various scenario fields moved there, plus STARSFacilityAdaptation
 // 21: STARS DCB drawing changes, so system list positions changed
 // 22: draw points using triangles, remove some CommandBuffer commands
-const CurrentConfigVersion = 22
+// 23: video map format update
+const CurrentConfigVersion = 23
 
 // Slightly convoluted, but the full GlobalConfig definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first
@@ -115,6 +116,7 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *W
 		if sim, err := w.GetSerializeSim(); err != nil {
 			lg.Errorf("%v", err)
 		} else {
+			sim.PreSave()
 			gc.Sim = sim
 			gc.Callsign = w.Callsign
 		}

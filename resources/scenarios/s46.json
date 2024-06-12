@@ -2460,7 +2460,7 @@
         "BFI_TWR",
         "SEA_CTR"
       ],
-      "default_maps": ["S46__SOUTH" ],
+      "default_maps": ["ZSE__S46N" ],
       "departure_airspace": [
         "SEAAPP"
       ],
@@ -2530,7 +2530,7 @@
         "BFI_TWR",
         "SEA_CTR"
       ],
-      "default_maps": ["S46__NORTH" ],
+      "default_maps": ["ZSE__S46S" ],
       "departure_airspace": [
         "SEAAPP"
       ],
@@ -2613,107 +2613,9 @@
     "ARRIE": "ARE"
 },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "BFI14R",
-      "name": "S46__BFI14R"
-  },
-  {
-      "group": 0,
-      "label": "BFI32L",
-      "name": "S46__BFI32L"
-  },
-  {
-      "group": 1,
-      "label": "CLASSB",
-      "name": "S46__BRAVO"
-  },
-  {
-      "group": 0,
-      "label": "EOVM",
-      "name": "S46__EOVM"
-  },
-  {
-      "group": 0,
-      "label": "BASE",
-      "name": "S46__FIXES"
-  },
-  {
-      "group": 0,
-      "label": "HAWKZ",
-      "name": "S46__HAWKZ"
-  },
-  {
-      "group": 0,
-      "label": "MARNR",
-      "name": "S46__MARNR"
-  },
-  {
-      "group": 1,
-      "label": "MVA",
-      "name": "S46__MOSAIC"
-  },
-  {
-      "group": 0,
-      "label": "NOISE",
-      "name": "S46__NOISE"
-  },
-  {
-      "group": 0,
-      "label": "NORTH",
-      "name": "S46__NORTH"
-  },
-  {
-      "group": 0,
-      "label": "16C",
-      "name": "S46__Runway 16C Final"
-  },
-  {
-      "group": 0,
-      "label": "16L",
-      "name": "S46__Runway 16L Final"
-  },
-  {
-      "group": 0,
-      "label": "16R",
-      "name": "S46__Runway 16R Final"
-  },
-  {
-      "group": 0,
-      "label": "34C",
-      "name": "S46__Runway 34C Final"
-  },
-  {
-      "group": 0,
-      "label": "34L",
-      "name": "S46__Runway 34L Final"
-  },
-  {
-      "group": 0,
-      "label": "34R",
-      "name": "S46__Runway 34R Final"
-  },
-  {
-      "group": 0,
-      "label": "SAT",
-      "name": "S46__SAT APCHS"
-  },
-  {
-      "group": 0,
-      "label": "ZSE HO",
-      "name": "S46__ZSE HANDOFF MAP"
-  },
-  {
-      "group": 1,
-      "label": "SHORE",
-      "name": "S46__SHORELINE"
-  },
-  {
-      "group": 0,
-      "label": "SOUTH",
-      "name": "S46__SOUTH"
-  }
+      "ZSE__S46S", "BFI 14R FINAL", "BFI 32L FINAL", "CLASS B", "S46 EOVM", "G_FIXES", "HAWKZ N", "HAWKZ S", "MARNR N", "MARNR S", "LMT 3NM MOSIAC",
+      "ZSE__S46N", "16C", "16L", "16R", "34C", "34L", "34R", "ZSE HANDOFF", "NORTH SHORELINE", "SOUTH SHORELINE"
   ],
-  "video_map_file": "videomaps/ZSE-videomaps.json.zst"
+  "video_map_file": "videomaps/ZSE-videomaps.gob.zst"
   }
 }

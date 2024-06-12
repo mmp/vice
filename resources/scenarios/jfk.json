@@ -3219,7 +3219,7 @@
         "NY_B_CTR",
         "NY_L_DEP"
       ],
-      "default_maps": [ "JFK 13s" ],
+      "default_maps": [ "JFK ARR/DEP RWY 13L/R" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3366,7 +3366,7 @@
         "NY_B_CTR",
         "NY_L_DEP"
       ],
-      "default_maps": [ "JFK 22s" ],
+      "default_maps": [ "JFK ARR/DEP RWY 22L/R" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3508,7 +3508,7 @@
         "NY_B_CTR",
         "NY_L_DEP"
       ],
-      "default_maps": [ "JFK 22s" ],
+      "default_maps": [ "JFK ARR/DEP RWY 22L/R" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3649,7 +3649,7 @@
         "NY_B_CTR",
         "NY_L_DEP"
       ],
-      "default_maps": [ "JFK 31s" ],
+      "default_maps": [ "JFK ARR/DEP RWY 31L/R" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3790,7 +3790,7 @@
         "NY_B_CTR",
         "NY_L_DEP"
       ],
-      "default_maps": [ "JFK 4s" ],
+      "default_maps": [ "JFK ARR/DEP RWY 4L/R" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3855,7 +3855,7 @@
         "BOS_E_CTR",
         "JFK_TWR"
       ],
-      "default_maps": [ "JFK 22s" ],
+      "default_maps": [ "JFK ARR/DEP RWY 22L/R" ],
       "wind": {
         "direction": 260,
         "speed": 9
@@ -4031,58 +4031,14 @@
     "WHITE": "WHI",
     "ZIMMZ": "ZIM"
   },
-  "stars_maps": [
-    {
-      "group": 0,
-      "label": "JFK4",
-      "name": "JFK 4s"
-    },
-    {
-      "group": 0,
-      "label": "JFK13",
-      "name": "JFK 13s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22",
-      "name": "JFK 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31",
-      "name": "JFK 31s"
-    },
-    {
-      "group": 0,
-      "label": "ISP",
-      "name": "ISP"
-    },
-    {
-      "group": 1,
-      "label": "NY B",
-      "name": "N90 CLASS B"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "N90 MVA"
-    },
-    {
-      "group": 0,
-      "label": "JFK22 ILS",
-      "name": "JFK ILS 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31 NTZ",
-      "name": "JFK 31s NTZ"
-    },
-    {
-      "group": 0,
-      "label": "Airports",
-      "name": "Airport Diagrams"
-    }
-  ],
-  "video_map_file": "videomaps/n90-maps.json.zst"
+      "stars_maps": [
+          "JFK RNAV", "Coast", "NY Class B",
+          "JFK GPS", "", "MVA",
+          "JFK ARR/DEP", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 22L/R", "JFK RNAV/RNP 22L", "JFK RNAV", "LGA LOC 31", "NE HELI RNAV ROUTES", "HELI GPS",
+          "NY Class B", "EOVM", "", "", "ISP ARR/DEP", "EWR ARR/DEP", "", "",
+          "JFK ARR/DEP RWY 31L/R", "JFK ARR/DEP RWY 13L/R", "JFK RWY22L/R ILS FINAL", "JFK RWY 31R/L NTZ BDRYS", "JFK GPS", "", "N90 TFR", "JFK PINS APPROACHES",
+          "Coast", "MVA", "", "CATSKILL AREA", "R5001/HELI GPS", "LIBERTY DEP", "", "LGA-HPN ARR/DEP"
+      ],
+  "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
   }
 }

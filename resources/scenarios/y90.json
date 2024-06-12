@@ -560,37 +560,8 @@
 			"CCC": "CCC"
 		},
 		"stars_maps": [
-			{
-				"group": 0,
-				"label": "BDL 6/33",
-				"name": "Y90 RWY 6/33"
-			},
-			{
-				"group": 0,
-				"label": "SATS",
-				"name": "Y90 SATS FAC"
-			},
-			{
-				"group": 0,
-				"label": "COAST",
-				"name": "Y90 COASTLINE"
-			},
-			{
-				"group": 0,
-				"label": "NTWR",
-				"name": "BDL_TWR 6/33"
-			},
-			{
-				"group": 0,
-				"label": "STWR",
-				"name": "BDL_TWR 24/33"
-			},
-			{
-				"group": 0,
-				"label": "BDL 24/33",
-				"name": "Y90 RWY 24/33"
-			}
+                    "Y90 RWY 6/33", "Y90 SATS FAC", "Y90 COASTLINE", "BDL_TWR 6/33", "BDL_TWR 24/33", "Y90 RWY 24/33"
 		],
-		"video_map_file": "videomaps/ZBW-videomaps.json.zst"
+		"video_map_file": "videomaps/ZBW-videomaps.gob.zst"
 	}
 }

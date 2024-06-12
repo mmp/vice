@@ -607,82 +607,11 @@
         "GQO": "GQO"
   },
   "stars_maps": [
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "GSP MINIMUM VECTORING ALTITUDE"
-  },
-  {
-      "group": 1,
-      "label": "COUNTY",
-      "name": "COUNTY JURISDICTIONS"
-  },
-  {
-      "group": 1,
-      "label": "RNAVOTH",
-      "name": "RNAV APPROACHES (AND17, 18A26, EOE04, EOE22, EHO05, AVL35)"
-  },
-  {
-      "group": 0,
-      "label": "MISC",
-      "name": "SIDS/STARS/EXTENDED FINAL APPROACH COURSES"
-  },
-  {
-      "group": 1,
-      "label": "RNAVNOR",
-      "name": "RNAV APPROACHES (FQD01, SPA05, 35A05, LUX08, GRD09, GMU01, GMU10, GYH05, LQK05, AND05, CEU07)"
-  },
-  {
-      "group": 0,
-      "label": "NORTH",
-      "name": "NORTH FLOW"
-  },
-  {
-      "group": 0,
-      "label": "VPLOW",
-      "name": "VPLOW WAYPOINT"
-  },
-  {
-      "group": 1,
-      "label": "RNAVSOT",
-      "name": "RNAV APPROACHES (FQD19, SPA23, 35A23, LUX26, GRD27, GMU19, GMU28, GYH23, LQK23, AND23, AND35, CEU25)"
-  },
-  {
-      "group": 0,
-      "label": "SOUTH",
-      "name": "SOUTH FLOW"
-  },
-  {
-      "group": 1,
-      "label": "EOVM",
-      "name": "GSP EMERGENCY OBSTRUCTION VIDEO MAP"
-  },
-  {
-      "group": 1,
-      "label": "EMRGCY",
-      "name": "EMERGENCY LOCATIONS"
-  },
-  {
-      "group": 0,
-      "label": "RNAV23",
-      "name": "GYH RNAV 23"
-  },
-  {
-      "group": 0,
-      "label": "RNAV19",
-      "name": "GMU RNAV 19"
-  },
-  {
-      "group": 0,
-      "label": "RNAV10",
-      "name": "GMU RNAV 10"
-  },
-  {
-      "group": 0,
-      "label": "RNAV28",
-      "name": "GMU RNAV 28"
-  }
+      "GSP MINIMUM VECTORING ALTITUDE", "COUNTY JURISDICTIONS", "RNAV APPROACHES (AND17, 18A26, EOE04, EOE22, EHO05, AVL35)",
+      "SIDS/STARS/EXTENDED FINAL APPROACH COURSES", "RNAV APPROACHES (FQD01, SPA05, 35A05, LUX08, GRD09, GMU01, GMU10, GYH05, LQK05, AND05, CEU07)",
+      "NORTH FLOW", "VPLOW WAYPOINT", "RNAV APPROACHES (FQD19, SPA23, 35A23, LUX26, GRD27, GMU19, GMU28, GYH23, LQK23, AND23, AND35, CEU25)", "SOUTH FLOW",
+      "GSP EMERGENCY OBSTRUCTION VIDEO MAP", "EMERGENCY LOCATIONS", "GYH RNAV 23", "GMU RNAV 19", "GMU RNAV 10", "GMU RNAV 28"
   ],
-"video_map_file": "videomaps/ZTL-videomaps.json.zst"
+"video_map_file": "videomaps/ZTL-videomaps.gob.zst"
   }
 }

@@ -21,6 +21,7 @@ import (
 	"runtime"
 	"runtime/debug"
 	"runtime/pprof"
+	"sort"
 	"time"
 
 	"github.com/apenwarr/fixconsole"
@@ -69,6 +70,7 @@ var (
 	broadcastPassword = flag.String("password", "", "password to authenticate with server for broadcast message")
 	resetSim          = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
 	showRoutes        = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given airport")
+	listMaps          = flag.String("listmaps", "", "path to a video map file to list maps of (e.g., resources/videomaps/ZNY-videomaps.gob.zst)")
 )
 
 func init() {
@@ -161,7 +163,7 @@ func main() {
 
 	if *lintScenarios {
 		var e ErrorLogger
-		_, _ = LoadScenarioGroups(&e)
+		_, _, _ = LoadScenarioGroups(&e)
 		if e.HaveErrors() {
 			e.PrintErrors(nil)
 			os.Exit(1)
@@ -190,8 +192,36 @@ func main() {
 				fmt.Println(wp.Encode())
 			}
 		}
+	} else if *listMaps != "" {
+		var e ErrorLogger
+		lib := MakeVideoMapLibrary()
+		path := *listMaps
+		lib.AddFile(os.DirFS("."), path, make(map[string]interface{}), &e)
+
+		if e.HaveErrors() {
+			e.PrintErrors(lg)
+			os.Exit(1)
+		}
+
+		var videoMaps []STARSMap
+		for _, name := range lib.AvailableMaps(path) {
+			videoMaps = append(videoMaps, *lib.GetMap(path, name))
+		}
+
+		sort.Slice(videoMaps, func(i, j int) bool {
+			vi, vj := videoMaps[i], videoMaps[j]
+			if vi.Id != vj.Id {
+				return vi.Id < vj.Id
+			}
+			return vi.Name < vj.Name
+		})
+
+		fmt.Printf("%5s\t%20s\t%s\n", "Id", "Label", "Name")
+		for _, m := range videoMaps {
+			fmt.Printf("%5d\t%20s\t%s\n", m.Id, m.Label, m.Name)
+		}
 	} else {
-		localSimServerChan, err := LaunchLocalSimServer()
+		localSimServerChan, mapLibrary, err := LaunchLocalSimServer()
 		if err != nil {
 			lg.Errorf("error launching local SimServer: %v", err)
 			os.Exit(1)
@@ -252,16 +282,20 @@ func main() {
 		localServer = <-localSimServerChan
 
 		if globalConfig.Sim != nil && !*resetSim {
-			var result NewSimResult
-			if err := localServer.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
-				lg.Errorf("error restoring saved Sim: %v", err)
+			if err := globalConfig.Sim.PostLoad(mapLibrary); err != nil {
+				lg.Errorf("Error in Sim PostLoad: %v", err)
 			} else {
-				world = result.World
-				world.simProxy = &SimProxy{
-					ControllerToken: result.ControllerToken,
-					Client:          localServer.RPCClient,
+				var result NewSimResult
+				if err := localServer.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
+					lg.Errorf("error restoring saved Sim: %v", err)
+				} else {
+					world = result.World
+					world.simProxy = &SimProxy{
+						ControllerToken: result.ControllerToken,
+						Client:          localServer.RPCClient,
+					}
+					world.ToggleShowScenarioInfoWindow()
 				}
-				world.ToggleShowScenarioInfoWindow()
 			}
 		}
 
