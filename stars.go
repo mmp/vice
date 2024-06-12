@@ -1725,7 +1725,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 				fmt.Println("auto associate")
 				w.InitiateTrack(ac.Callsign, info, nil, nil)
 				fmt.Println(ac.Callsign, 1)
-			} 
+			}
 		}
 	}
 

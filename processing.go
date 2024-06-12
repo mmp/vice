@@ -105,7 +105,7 @@ func (w *World) FacilityFromController(callsign string) string {
 	controller := w.GetControllerByCallsign(callsign)
 	if controller != nil {
 		return controller.Facility
-	} 
+	}
 	lg.Errorf("Couldn't find facility for %v: %v. \n", callsign, w.GetAllControllers())
 	return w.TRACON // figure out why sometimes EWR_APP is nil
 }
@@ -389,8 +389,8 @@ func (fp STARSFlightPlan) Message() FlightPlanMessage {
 			AircraftCategory:  fp.AircraftType, // TODO: Use a method to turn this into an aircraft category
 			Equipment:         strings.TrimPrefix(fp.AircraftType, fp.TypeWithoutSuffix()),
 		},
-		FlightID: fmt.Sprintf("%v%v", fp.ECID, fp.Callsign),
-		CoordinationFix: fp.CoordinationFix,
+		FlightID:         fmt.Sprintf("%v%v", fp.ECID, fp.Callsign),
+		CoordinationFix:  fp.CoordinationFix,
 		CoordinationTime: fp.CoordinationTime,
 	}
 }
@@ -507,7 +507,7 @@ func (ac *Aircraft) inAcquisitionArea(w *World) bool {
 	ap := w.GetAirport(ac.FlightPlan.DepartureAirport)
 	ap2 := w.GetAirport(ac.FlightPlan.ArrivalAirport)
 	if ap != nil {
-		if (nmdistance2ll(ap.Location, ac.Position()) <= 2 || nmdistance2ll(ap2.Location, ac.Position()) <= 2) && !ac.inDropArea(w){
+		if (nmdistance2ll(ap.Location, ac.Position()) <= 2 || nmdistance2ll(ap2.Location, ac.Position()) <= 2) && !ac.inDropArea(w) {
 			return true
 		}
 	}
@@ -517,13 +517,13 @@ func (ac *Aircraft) inAcquisitionArea(w *World) bool {
 func (ac *Aircraft) inDropArea(w *World) bool {
 	ap := w.GetAirport(ac.FlightPlan.DepartureAirport)
 	ap2 := w.GetAirport(ac.FlightPlan.ArrivalAirport)
-		if (ap != nil && nmdistance2ll(ap.Location, ac.Position()) <= 1) || (ap2 != nil && nmdistance2ll(ap2.Location, ac.Position()) <= 1) {
-			if (ap != nil && ac.Altitude() <= float32(database.Airports[ac.FlightPlan.DepartureAirport].Elevation + 200)) || 
-			ac.Altitude() <= float32(database.Airports[ac.FlightPlan.ArrivalAirport].Elevation + 200){
-				return true
-			}
+	if (ap != nil && nmdistance2ll(ap.Location, ac.Position()) <= 1) || (ap2 != nil && nmdistance2ll(ap2.Location, ac.Position()) <= 1) {
+		if (ap != nil && ac.Altitude() <= float32(database.Airports[ac.FlightPlan.DepartureAirport].Elevation+200)) ||
+			ac.Altitude() <= float32(database.Airports[ac.FlightPlan.ArrivalAirport].Elevation+200) {
+			return true
 		}
-	
+	}
+
 	return false
 }
 
