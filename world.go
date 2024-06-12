@@ -99,44 +99,11 @@ func NewWorld() *World {
 }
 
 func (w *World) Assign(other *World) {
+	*w = *other
 	w.Aircraft = DuplicateMap(other.Aircraft)
 	w.METAR = DuplicateMap(other.METAR)
 	w.Controllers = DuplicateMap(other.Controllers)
-
-	w.DepartureAirports = other.DepartureAirports
-	w.ArrivalAirports = other.ArrivalAirports
-
-	w.TRACON = other.TRACON
-	w.LaunchConfig = other.LaunchConfig
-	w.PrimaryController = other.PrimaryController
 	w.MultiControllers = DuplicateMap(other.MultiControllers)
-	w.SimIsPaused = other.SimIsPaused
-	w.SimRate = other.SimRate
-	w.SimName = other.SimName
-	w.SimDescription = other.SimDescription
-	w.SimTime = other.SimTime
-	w.MagneticVariation = other.MagneticVariation
-	w.NmPerLongitude = other.NmPerLongitude
-	w.Airports = other.Airports
-	w.Fixes = other.Fixes
-	w.PrimaryAirport = other.PrimaryAirport
-	w.RadarSites = other.RadarSites
-	w.Center = other.Center
-	w.Range = other.Range
-	w.DefaultMaps = other.DefaultMaps
-	w.STARSMaps = other.STARSMaps
-	w.InhibitCAVolumes = other.InhibitCAVolumes
-	w.Wind = other.Wind
-	w.Callsign = other.Callsign
-	w.ApproachAirspace = other.ApproachAirspace
-	w.DepartureAirspace = other.DepartureAirspace
-	w.DepartureRunways = other.DepartureRunways
-	w.ArrivalRunways = other.ArrivalRunways
-	w.Scratchpads = other.Scratchpads
-	w.ArrivalGroups = other.ArrivalGroups
-	w.TotalDepartures = other.TotalDepartures
-	w.TotalArrivals = other.TotalArrivals
-	w.STARSFacilityAdaptation = other.STARSFacilityAdaptation
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
