@@ -1116,7 +1116,9 @@ func (sp *STARSPane) Activate(w *World, r Renderer, eventStream *EventStream) {
 
 	sp.initializeFonts()
 
-	sp.systemMaps = sp.makeSystemMaps(w)
+	if w != nil {
+		sp.systemMaps = sp.makeSystemMaps(w)
+	}
 
 	if sp.Aircraft == nil {
 		sp.Aircraft = make(map[string]*STARSAircraftState)
