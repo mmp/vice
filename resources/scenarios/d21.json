@@ -770,42 +770,42 @@
                     "GRIVY": {
                         "cleared_altitude": 3000,
                         "sid": "LIDDS3",
-                        "waypoints": "KYIP-23/h300 KZLOV LIDDS NOONR ZEYOU GRIVY"
+                        "waypoints": "KYIP-23/h300 KZLOV LIDDS NOONR ZEYOU"
                     },
                     "MONEE": {
                         "cleared_altitude": 3000,
                         "sid": "MIGGY3",
-                        "waypoints": "KYIP-23/h300 MIGGY MONEE"
+                        "waypoints": "KYIP-23/h300 JAXII MIGGY"
                     },
                     "SLLAP": {
                         "cleared_altitude": 3000,
                         "sid": "MIGGY3",
-                        "waypoints": "KYIP-23/h300 JAXII"
+                        "waypoints": "KYIP-23/h300 JAXII MIGGY MONEE"
                     },
                     "MRDOC,ESSBE": {
                         "cleared_altitude": 3000,
                         "sid": "PAVYL3",
-                        "waypoints": "KYIP-23/h300 SLVVA PAVYL MRDOC"
+                        "waypoints": "KYIP-23/h300 SLVVA PAVYL"
                     },
                     "TORRR": {
                         "cleared_altitude": 3000,
                         "sid": "SNDRS3",
-                        "waypoints": "KYIP-23/h300 SNDRS TORRR"
+                        "waypoints": "KYIP-23/h300 JWELS SNDRS TORRR"
                     },
                     "BGHRT": {
                         "cleared_altitude": 3000,
                         "sid": "SNDRS3",
-                        "waypoints": "KYIP-23/h300 SNDRS REEDA SEABS KNRKO BGHRT"
+                        "waypoints": "KYIP-23/h300 JWELS SNDRS REEDA SEABS KNRKO BGHRT"
                     },
                     "GNZOE": {
                         "cleared_altitude": 3000,
                         "sid": "TRMML4",
-                        "waypoints": "KYIP-23/h300 TRMML DDEEZ GNZOE"
+                        "waypoints": "KYIP-23/h300 LOALA TRMML DDEEZ GNZOE"
                     },
                     "ZETTR": {
                         "cleared_altitude": 3000,
                         "sid": "ZETTR4",
-                        "waypoints": "KYIP-23/h300 ZETTR"
+                        "waypoints": "KYIP-23/h300 FLOKA"
                     },
                     "DUNKS": {
                         "cleared_altitude": 3000,
@@ -823,11 +823,6 @@
                         "cleared_altitude": 3000,
                         "sid": "BARII3",
                         "waypoints": "KYIP-5/h233 HUUTZ BARII"
-                    },
-                    "KAYLN": {
-                        "cleared_altitude": 3000,
-                        "sid": "KAYLN3",
-                        "waypoints": "KYIP-5/h233 MTRCT"
                     },
                     "ZEGBI": {
                         "cleared_altitude": 3000,
@@ -849,10 +844,10 @@
                         "sid": "KAYLN3",
                         "waypoints": "KYIP-5/h233 MTRCT KAYLN IIICE"
                     },
-                    "SLLAP": {
+                    "KAYLN": {
                         "cleared_altitude": 3000,
-                        "sid": "MIGGY3",
-                        "waypoints": "KYIP-5/h233 JAXII"
+                        "sid": "KAYLN3",
+                        "waypoints": "KYIP-5/h233 MTRCT"
                     },
                     "WINNZ": {
                         "cleared_altitude": 3000,
@@ -862,47 +857,52 @@
                     "GRIVY": {
                         "cleared_altitude": 3000,
                         "sid": "LIDDS3",
-                        "waypoints": "KYIP-5/h233 KZLOV LIDDS NOONR ZEYOU GRIVY"
+                        "waypoints": "KYIP-5/h233 KZLOV LIDDS NOONR ZEYOU"
                     },
                     "MONEE": {
                         "cleared_altitude": 3000,
                         "sid": "MIGGY3",
-                        "waypoints": "KYIP-5/h233 MIGGY MONEE"
+                        "waypoints": "KYIP-5/h233 JAXII MIGGY"
+                    },
+                    "SLLAP": {
+                        "cleared_altitude": 3000,
+                        "sid": "MIGGY3",
+                        "waypoints": "KYIP-5/h233 JAXII MIGGY MONEE"
                     },
                     "MRDOC,ESSBE": {
                         "cleared_altitude": 3000,
                         "sid": "PAVYL3",
-                        "waypoints": "KYIP-5/h233 SLVVA PAVYL MRDOC"
+                        "waypoints": "KYIP-5/h233 SLVVA PAVYL"
                     },
                     "TORRR": {
                         "cleared_altitude": 3000,
                         "sid": "SNDRS3",
-                        "waypoints": "KYIP-5/h233 SNDRS TORRR"
-                    },
-                    "SNDRS": {
-                        "cleared_altitude": 3000,
-                        "sid": "SNDRS3",
-                        "waypoints": "KYIP-5/h233 JWELS"
+                        "waypoints": "KYIP-5/h233 JWELS SNDRS TORRR"
                     },
                     "BGHRT": {
                         "cleared_altitude": 3000,
                         "sid": "SNDRS3",
-                        "waypoints": "KYIP-5/h233 SNDRS REEDA SEABS KNRKO BGHRT"
+                        "waypoints": "KYIP-5/h233 JWELS SNDRS REEDA SEABS KNRKO BGHRT"
                     },
                     "GNZOE": {
                         "cleared_altitude": 3000,
                         "sid": "TRMML4",
-                        "waypoints": "KYIP-5/h233 TRMML DDEEZ GNZOE"
+                        "waypoints": "KYIP-5/h233 LOALA TRMML DDEEZ GNZOE"
                     },
                     "ZETTR": {
                         "cleared_altitude": 3000,
                         "sid": "ZETTR4",
-                        "waypoints": "KYIP-5/h233 ZETTR"
+                        "waypoints": "KYIP-5/h233 FLOKA"
                     },
                     "DUNKS": {
                         "cleared_altitude": 3000,
                         "sid": "METRO3",
                         "waypoints": "KYIP-5/h233"
+                    },
+                    "SNDRS": {
+                        "cleared_altitude": 3000,
+                        "sid": "SNDRS3",
+                        "waypoints": "KYIP-5/h233 JWELS"
                     }
                 }
             },
@@ -1037,7 +1037,7 @@
                     "MONEE": {
                         "cleared_altitude": 3000,
                         "sid": "MIGGY3",
-                        "waypoints": "KDET-33/h148 MIGGY MONEE"
+                        "waypoints": "KDET-33/h148 JAXII MIGGY MONEE"
                     },
                     "MRDOC,ESSBE": {
                         "cleared_altitude": 3000,
@@ -1057,7 +1057,7 @@
                     "GNZOE": {
                         "cleared_altitude": 3000,
                         "sid": "TRMML4",
-                        "waypoints": "KDET-33/h148 TRMML DDEEZ GNZOE"
+                        "waypoints": "KDET-33/h148 LOALA TRMML DDEEZ GNZOE"
                     },
                     "ZETTR": {
                         "cleared_altitude": 3000,
@@ -1109,7 +1109,7 @@
                     "MONEE": {
                         "cleared_altitude": 3000,
                         "sid": "MIGGY3",
-                        "waypoints": "KDET-15/h328 MIGGY MONEE"
+                        "waypoints": "KDET-15/h328 JAXII MIGGY MONEE"
                     },
                     "MRDOC,ESSBE": {
                         "cleared_altitude": 3000,
@@ -1134,7 +1134,7 @@
                     "GNZOE": {
                         "cleared_altitude": 3000,
                         "sid": "TRMML4",
-                        "waypoints": "KDET-15/h328 TRMML DDEEZ GNZOE"
+                        "waypoints": "KDET-15/h328 LOALA TRMML DDEEZ GNZOE"
                     },
                     "ZETTR": {
                         "cleared_altitude": 3000,
@@ -1267,7 +1267,7 @@
                     "MONEE": {
                         "cleared_altitude": 3000,
                         "sid": "MIGGY3",
-                        "waypoints": "KPTK-27L/h095 MIGGY MONEE"
+                        "waypoints": "KPTK-27L/h095 JAXII MIGGY MONEE"
                     },
                     "MRDOC,ESSBE": {
                         "cleared_altitude": 3000,
@@ -1292,7 +1292,7 @@
                     "GNZOE": {
                         "cleared_altitude": 3000,
                         "sid": "TRMML4",
-                        "waypoints": "KPTK-27L/h095 TRMML DDEEZ GNZOE"
+                        "waypoints": "KPTK-27L/h095 LOALA TRMML DDEEZ GNZOE"
                     },
                     "ZETTR": {
                         "cleared_altitude": 3000,
@@ -1354,7 +1354,7 @@
                     "MONEE": {
                         "cleared_altitude": 3000,
                         "sid": "MIGGY3",
-                        "waypoints": "KPTK-9R/h275 MIGGY MONEE"
+                        "waypoints": "KPTK-9R/h275 JAXII MIGGY MONEE"
                     },
                     "MRDOC,ESSBE": {
                         "cleared_altitude": 3000,
@@ -1374,7 +1374,7 @@
                     "GNZOE": {
                         "cleared_altitude": 3000,
                         "sid": "TRMML4",
-                        "waypoints": "KPTK-9R/h275 TRMML DDEEZ GNZOE"
+                        "waypoints": "KPTK-9R/h275 LOALA TRMML DDEEZ GNZOE"
                     },
                     "ZETTR": {
                         "cleared_altitude": 3000,
@@ -2259,21 +2259,12 @@
                 }
             },
             "controllers": [
-                "DTW_F_APP",
-                "DTW_R_APP",
-                "DTW_A_APP",
-                "DTW_H_APP",
-                "DTW_V_APP",
-                "DTW_B_APP",
-                "DTW_E_DEP",
-                "DTW_Y_APP",
-                "DTW_D_APP",
-                "DTW_P_APP",
                 "DTW_SW_TWR",
                 "DTW_NE_TWR",
                 "YIP_TWR",
                 "DET_TWR",
                 "PTK_TWR",
+                "CLE_A_APP",
                 "CLE_48_CTR"
             ],
             "default_maps": ["DTW-009 (NF-ARR FEEDER)", "DTW-014 (4L Z)", "DTW-018 (3R)"],
@@ -2396,21 +2387,12 @@
                 }
             },
             "controllers": [
-                "DTW_F_APP",
-                "DTW_R_APP",
-                "DTW_A_APP",
-                "DTW_H_APP",
-                "DTW_V_APP",
-                "DTW_B_APP",
-                "DTW_E_DEP",
-                "DTW_Y_APP",
-                "DTW_D_APP",
-                "DTW_P_APP",
                 "DTW_SW_TWR",
                 "DTW_NE_TWR",
                 "YIP_TWR",
                 "DET_TWR",
                 "PTK_TWR",
+                "CLE_A_APP",
                 "CLE_48_CTR"
             ],
             "default_maps": ["DTW-007 (SF-ARR FEEDER)", "DTW-013 (22R Z)", "DTW-017 (21L)"],
@@ -2533,21 +2515,12 @@
                 }
             },
             "controllers": [
-                "DTW_F_APP",
-                "DTW_R_APP",
-                "DTW_A_APP",
-                "DTW_H_APP",
-                "DTW_V_APP",
-                "DTW_B_APP",
-                "DTW_E_DEP",
-                "DTW_Y_APP",
-                "DTW_D_APP",
-                "DTW_P_APP",
                 "DTW_SW_TWR",
                 "DTW_NE_TWR",
                 "YIP_TWR",
                 "DET_TWR",
                 "PTK_TWR",
+                "CLE_A_APP",
                 "CLE_48_CTR"
             ],
             "default_maps": ["DTW-011 (WF-ARR FEEDER)", "DTW-019 (27R)", "DTW-020 (27L)"],
@@ -2664,6 +2637,12 @@
             "facility_id": "C",
             "eram_facility": true
         },
+        "CLE_A_APP": {
+            "frequency": 124000,
+            "full_name": "Cleveland Approach",
+            "scope_char": "2",
+            "sector_id": "2A"
+        },
         "DTW_SW_TWR": {
             "frequency": 135000,
             "full_name": "Detroit Tower",
@@ -2767,4 +2746,3 @@
         "video_map_file": "videomaps/ZOB-videomaps.gob.zst"
     }
 }
-
