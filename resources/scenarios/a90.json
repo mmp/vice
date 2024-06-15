@@ -2601,43 +2601,6 @@
         "direction": 130,
         "speed": 10
       }
-    },
-    "KBOS 4R/L Final": {
-      "approach_airspace": [
-        "BOS_F_APP4R"
-      ],
-      "arrival_runways": [
-        {
-          "airport": "KBOS",
-          "runway": "4R"
-        },
-        {
-          "airport": "KBOS",
-          "runway": "4L"
-        }
-      ],
-      "arrivals": {
-        "NORTH_4FINAL": {
-          "KBOS": 30
-        },
-        "ROBUC3_4FINAL": {
-          "KBOS": 30
-        }
-      },
-      "solo_controller": "BOS_F_APP",
-      "range": 36,
-      "controllers": [
-        "BOS_E_TWR",
-        "BOS_W_TWR",
-        "BOS_37_CTR",
-        "BOS_N_APP",
-        "BOS_S_APP"
-      ],
-      "default_maps": [ "BOS 4R/L" ],
-      "wind": {
-        "direction": 70,
-        "speed": 10
-      }
     }
    },
   "stars_config": {
