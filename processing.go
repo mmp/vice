@@ -187,7 +187,7 @@ const (
 
 	// Track Data
 
-	InitiateTransfer      // When handoff gets sent. Sends the flightplan, contains track location
+	InitiateTransfer     // When handoff gets sent. Sends the flightplan, contains track location
 	AcceptRecallTransfer // Accept/ recall handoff
 	TrackUpdate
 	// updated track coordinates. If off by some amount that is unaccepable, you'd see "AMB" in STARS datatag.
@@ -305,8 +305,8 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, tracon string) {
 			if fixInfo.FromController != comp.Identifier { // Comes from a different ERAM facility
 				comp.SendMessageToERAM(fixInfo.FromController, msg)
 				if len(msg.SourceID) > 3 {
-				fmt.Printf("Forwarded an accept message from %v to %v.\n", msg.SourceID[:3], fixInfo.FromController)
-				} else { 
+					fmt.Printf("Forwarded an accept message from %v to %v.\n", msg.SourceID[:3], fixInfo.FromController)
+				} else {
 					fmt.Printf("%v: Accept message nil? %v.\n", comp.Identifier, msg)
 				}
 			} else { // Handoff was initiated by this ERAM facility. Nothing needs to be done atm besides change track info
@@ -694,7 +694,7 @@ func printERAMComputerMap(computers map[string]*ERAMComputer) {
 				fmt.Printf("\t\tOwner: %s\n", trackInfo.TrackOwner)
 				fmt.Printf("\t\tHandoffController: %s\n", trackInfo.HandoffController)
 				if trackInfo.FlightPlan != nil {
-				fmt.Printf("\t\tFlightPlan: %+v\n", *trackInfo.FlightPlan)
+					fmt.Printf("\t\tFlightPlan: %+v\n", *trackInfo.FlightPlan)
 				} else {
 					fmt.Printf("\t\tFlightPlan: nil\n")
 				}
@@ -729,9 +729,9 @@ func printERAMComputerMap(computers map[string]*ERAMComputer) {
 			fmt.Printf("\t\tHandoffController: %s\n", trackInfo.HandoffController)
 			if trackInfo.FlightPlan != nil {
 				fmt.Printf("\t\tFlightPlan: %+v\n", *trackInfo.FlightPlan)
-				} else {
-					fmt.Printf("\t\tFlightPlan: nil\n")
-				}
+			} else {
+				fmt.Printf("\t\tFlightPlan: nil\n")
+			}
 
 		}
 	}

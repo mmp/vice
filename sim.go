@@ -2403,9 +2403,9 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 					}
 				} else {
 					fmt.Printf("No fix found: Fac: %v, Fix: %v\n", stars.Identifier, fp.CoordinationFix)
-					
+
 				}
-				
+
 			}
 			if entry, ok := stars.TrackInformation[w.GetAircraft(callsign, false).Squawk]; ok {
 				entry.HandoffController = ""

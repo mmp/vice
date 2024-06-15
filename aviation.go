@@ -26,7 +26,7 @@ import (
 	"github.com/klauspost/compress/zstd"
 )
 
-type ERAMAdaptation struct {// add more later
+type ERAMAdaptation struct { // add more later
 	CoordinationFixes map[string]AdaptationFix `json:"coordination_fixes"`
 }
 
@@ -36,8 +36,8 @@ const (
 )
 
 type AdaptationFix struct {
-	Type string `json:"type"`
-	ToController string `json:"to"` // controller to handoff to 
+	Type           string `json:"type"`
+	ToController   string `json:"to"`   // controller to handoff to
 	FromController string `json:"from"` // controller to handoff from
 }
 
@@ -1450,7 +1450,7 @@ type Airline struct {
 }
 
 type FleetAircraft struct {
-	ICAO  string 
+	ICAO  string
 	Count int
 }
 
@@ -1475,7 +1475,7 @@ func InitializeStaticDatabase() *StaticDatabase {
 	wg.Add(1)
 	go func() { db.MVAs = parseMVAs(); wg.Done() }()
 	wg.Add(1)
-	go func() {db.ERAMAdaptations = parseAdaptations(); wg.Done()}()
+	go func() { db.ERAMAdaptations = parseAdaptations(); wg.Done() }()
 	wg.Wait()
 
 	for icao, ap := range airports {
@@ -1993,7 +1993,7 @@ func (db *StaticDatabase) CheckAirline(icao, fleet string, e *ErrorLogger) {
 	}
 }
 
-func parseAdaptations() map[string]ERAMAdaptation { 
+func parseAdaptations() map[string]ERAMAdaptation {
 	adaptations := make(map[string]ERAMAdaptation)
 
 	adaptationsRaw := LoadResource("adaptations.json")
@@ -2003,7 +2003,6 @@ func parseAdaptations() map[string]ERAMAdaptation {
 
 	return adaptations
 }
-
 
 func FixReadback(fix string) string {
 	if aid, ok := database.Navaids[fix]; ok {
