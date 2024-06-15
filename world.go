@@ -889,14 +889,13 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		TrackOwner: ac.TrackingController,
 	}
 	starsFP.CoordinationFix = starsFP.CordinationFix(w, ac)
-	fmt.Printf("Coordination fix for %v is %v.", starsFP.Callsign, starsFP.CoordinationFix)
+	fmt.Printf("Coordination fix for %v is %v.\n", starsFP.Callsign, starsFP.CoordinationFix)
 	dist, err := ac.Nav.distanceAlongRoute(starsFP.CoordinationFix)
 	time2 := dist / float32(starsFP.CruiseSpeed) * 60
 	if err == nil {
 		starsFP.CoordinationTime = CoordinationTime{
 			Time: w.SimTime.Add(time.Duration(time2 * float32(time.Minute))),
 		}
-
 	}
 
 	artcc.FlightPlans[flightPlan.AssignedSquawk] = starsFP
@@ -911,7 +910,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		stars.TrackInformation[flightPlan.AssignedSquawk] = &TrackInformation{
 			TrackOwner: ac.TrackingController,
 		}
-		fmt.Printf("Created an arrival %v. Under %v facility. Initial controller: %v.", ac.Callsign, stars.Identifier, arrivalController)
+		fmt.Printf("Created an arrival %v. Under %v facility. Initial controller: %v.\n", ac.Callsign, stars.Identifier, arrivalController)
 	}
 
 	return ac, nil

@@ -15,7 +15,6 @@ func (w *World) initComputers() {
 			ReceivedMessages: &[]FlightPlanMessage{},
 		}
 		w.ERAMComputers[fac].STARSComputers = make(map[string]*STARSComputer)
-
 		for name, stars := range database.TRACONs {
 			if stars.ARTCC == fac { // if the artcc of the tracon is the same
 				w.ERAMComputers[fac].STARSComputers[name] = &STARSComputer{ // make a news stars comp for this new fac (with var name)
@@ -44,8 +43,14 @@ func (w *World) initComputers() {
 	inboxes := make(map[string]*[]FlightPlanMessage)
 
 	for _, eram := range w.ERAMComputers {
+		if eram.PendingMessages == nil {
+			eram.PendingMessages = make(map[*FlightPlanMessage]string)
+		}
 		for _, stars := range eram.STARSComputers {
 			inboxes[stars.Identifier] = &stars.RecievedMessages
+			if stars.MessageMap == nil {
+				stars.MessageMap = make(map[FlightPlanMessage]string)
+			}
 		}
 	}
 
@@ -107,7 +112,10 @@ func (w *World) FacilityFromController(callsign string) string {
 		return controller.Facility
 	}
 	lg.Errorf("Couldn't find facility for %v: %v. \n", callsign, w.GetAllControllers())
-	return w.TRACON // figure out why sometimes EWR_APP is nil
+	if len(callsign) == 7 && (callsign[3:] =="_APP" || callsign[3:] == "_DEP") {
+		return w.TRACON // figure out why sometimes EWR_APP (primary controller) doesn't show up
+	}
+	return ""
 }
 
 // Give the computers a chance to sort through their received messages. Messages will send when the time is appropriate (eg. handoff).
@@ -116,7 +124,7 @@ func (w *World) UpdateComputers(simTime time.Time) {
 	// _, fac := w.SafeFacility("")
 	// Sort through messages made
 	for _, comp := range w.ERAMComputers {
-		comp.SortMessages(simTime)
+		comp.SortMessages(simTime, w.TRACON)
 		comp.SendFlightPlans(w)
 		for _, stars := range comp.STARSComputers {
 			stars.SortReceivedMessages()
@@ -190,6 +198,8 @@ type ERAMComputer struct {
 	ReceivedMessages *[]FlightPlanMessage
 	FlightPlans      map[Squawk]*STARSFlightPlan
 	TrackInformation map[Squawk]*TrackInformation
+	PendingMessages  map[*FlightPlanMessage]string // if a ZBW to N90 handoff goes through ZNY, ZNY needs to keep track of who sent that handoff initially, so that
+	// when N90 sends the accept handoff message, it can go back to ZBW.
 	Identifier       string
 }
 
@@ -224,7 +234,7 @@ func (comp *ERAMComputer) SendMessageToERAM(facility string, msg FlightPlanMessa
 // 	}
 // }
 
-func (comp *ERAMComputer) SortMessages(simTime time.Time) {
+func (comp *ERAMComputer) SortMessages(simTime time.Time, tracon string) {
 	if comp.ReceivedMessages == nil {
 		comp.ReceivedMessages = &[]FlightPlanMessage{}
 	}
@@ -252,6 +262,10 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time) {
 			*comp.ReceivedMessages = (*comp.ReceivedMessages)[1:]
 		case DepartureDM: // Stars ERAM coordination time tracking
 		case BeaconTerminate: // TODO: Find out what this does
+		case InitateTransfer:
+			// Forward these to w.TRACON for now. ERAM adaptations will have to fix this eventually...
+			msg.SourceID = comp.Identifier + msg.SourceID[3:]
+			comp.ToSTARSFacility(tracon, msg)
 		}
 	}
 }
@@ -332,6 +346,7 @@ type STARSComputer struct {
 	ERAMInbox        *[]FlightPlanMessage // The address of the overlying ERAM's message inbox.
 	Identifier       string
 	STARSInbox       map[string]*[]FlightPlanMessage // Other STARS Facilities inbox.
+	MessageMap map[FlightPlanMessage]string
 }
 
 type STARSFlightPlan struct {
@@ -544,6 +559,8 @@ func (comp *STARSComputer) SortReceivedMessages() {
 				comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
 				comp.RecievedMessages = comp.RecievedMessages[1:]
 			}
+			// todo: change with adaptations
+			
 		case Amendment:
 			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
 			comp.RecievedMessages = comp.RecievedMessages[1:]
@@ -558,9 +575,10 @@ func (comp *STARSComputer) SortReceivedMessages() {
 					FlightPlan:        fp,
 				}
 				delete(comp.ContainedPlans, msg.BCN)
+				comp.MessageMap[msg] = msg.SourceID[:3]
 				fmt.Printf("Message for %v has been received and sorted: %v.\n", msg.BCN, comp.ContainedPlans[msg.BCN])
 			} else {
-				lg.Errorf("No flight plan for %v.\n", msg.BCN)
+				// lg.Errorf("No flight plan for %v.\n", msg.BCN)
 				// reject the thing
 			}
 
