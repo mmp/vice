@@ -4516,11 +4516,6 @@
   "stars_config": {
   "center": "N040.43.34.389,W074.28.54.713",
   "range": 60,
-  "stars_facilities": [
-    "PHL",
-    "PVD",
-    "ABE"
-  ],
   "coordination_fixes": {
     "FLOSI": {
       "type": "route",

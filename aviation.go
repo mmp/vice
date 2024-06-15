@@ -30,6 +30,11 @@ type ERAMAdaptation struct {// add more later
 	CoordinationFixes map[string]AdaptationFix `json:"coordination_fixes"`
 }
 
+const (
+	RouteBasedFix = "route"
+	ZoneBasedFix  = "zone"
+)
+
 type AdaptationFix struct {
 	Type string `json:"type"`
 	ToController string `json:"to"` // controller to handoff to 
