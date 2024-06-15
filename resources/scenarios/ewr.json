@@ -4522,9 +4522,22 @@
     "ABE"
   ],
   "coordination_fixes": {
-    "DYLIN": "route",
-    "SWEET": "route",
-    "FLOSI": "route"
+    "FLOSI": {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  },
+  "DYLIN": {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  },
+  "SWEET": {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+
   },
   "inhibit_ca_volumes": [
     {

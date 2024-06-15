@@ -24,6 +24,16 @@ import (
 	"github.com/davecgh/go-spew/spew"
 )
 
+type ERAMAdaptation struct {// add more later
+	CoordinationFixes map[string]AdaptationFix `json:"coordination_fixes"`
+}
+
+type AdaptationFix struct {
+	Type string `json:"type"`
+	ToController string `json:"to"` // controller to handoff to 
+	FromController string `json:"from"` // controller to handoff from
+}
+
 type FAAAirport struct {
 	Id         string
 	Name       string
@@ -1371,6 +1381,7 @@ type StaticDatabase struct {
 	Airlines            map[string]Airline
 	MagneticGrid        MagneticGrid
 	ARTCCs              map[string]ARTCC
+	ERAMAdaptations     map[string]ERAMAdaptation
 	TRACONs             map[string]TRACON
 	MVAs                map[string][]MVA // TRACON -> MVAs
 }
@@ -1432,7 +1443,7 @@ type Airline struct {
 }
 
 type FleetAircraft struct {
-	ICAO  string
+	ICAO  string 
 	Count int
 }
 
@@ -1456,6 +1467,8 @@ func InitializeStaticDatabase() *StaticDatabase {
 	go func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.MVAs = parseMVAs(); wg.Done() }()
+	wg.Add(1)
+	go func() {db.ERAMAdaptations = parseAdaptations(); wg.Done()}()
 	wg.Wait()
 
 	for icao, ap := range airports {
@@ -1972,6 +1985,18 @@ func (db *StaticDatabase) CheckAirline(icao, fleet string, e *ErrorLogger) {
 		e.Pop()
 	}
 }
+
+func parseAdaptations() map[string]ERAMAdaptation { 
+	adaptations := make(map[string]ERAMAdaptation)
+
+	adaptationsRaw := LoadResource("adaptations.json")
+	if err := json.Unmarshal(adaptationsRaw, &adaptations); err != nil {
+		panic(err)
+	}
+
+	return adaptations
+}
+
 
 func FixReadback(fix string) string {
 	if aid, ok := database.Navaids[fix]; ok {

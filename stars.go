@@ -3362,13 +3362,14 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 		_, stars := w.SafeFacility("")
 		if control.Facility != "" { // inter-facility
 			bcn := w.GetAircraft(callsign, false).Squawk
-			msg := stars.ContainedPlans[bcn].Message()
+			msg := stars.TrackInformation[bcn].FlightPlan.Message()
+			msg.SourceID = w.FacilityFromController(w.Callsign) + w.SimTime.Format("1504Z")
 			info := TrackInformation{
 				TrackOwner:        w.Callsign,
 				HandoffController: controller,
 			}
 			msg.TrackInformation = info
-			stars.SendTrackInfo(w.FacilityFromController(control.Callsign), msg, w.SimTime, InitateTransfer)
+			stars.SendTrackInfo(w.FacilityFromController(control.Callsign), msg, w.SimTime, InitiateTransfer)
 		} else {
 			if entry, ok := stars.TrackInformation[w.GetAircraft(callsign, false).Squawk]; ok {
 				entry.HandoffController = controller

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"slices"
 	"strings"
 	"time"
 )
@@ -14,6 +15,7 @@ func (w *World) initComputers() {
 			Identifier:       fac,
 			ReceivedMessages: &[]FlightPlanMessage{},
 		}
+		w.ERAMComputers[fac].Adaptation = database.ERAMAdaptations[fac]
 		w.ERAMComputers[fac].STARSComputers = make(map[string]*STARSComputer)
 		for name, stars := range database.TRACONs {
 			if stars.ARTCC == fac { // if the artcc of the tracon is the same
@@ -112,7 +114,7 @@ func (w *World) FacilityFromController(callsign string) string {
 		return controller.Facility
 	}
 	lg.Errorf("Couldn't find facility for %v: %v. \n", callsign, w.GetAllControllers())
-	if len(callsign) == 7 && (callsign[3:] =="_APP" || callsign[3:] == "_DEP") {
+	if len(callsign) == 7 && (callsign[3:] == "_APP" || callsign[3:] == "_DEP") {
 		return w.TRACON // figure out why sometimes EWR_APP (primary controller) doesn't show up
 	}
 	return ""
@@ -134,20 +136,26 @@ func (w *World) UpdateComputers(simTime time.Time) {
 
 func (fp *STARSFlightPlan) CordinationFix(w *World, ac *Aircraft) string { // TODO: Replace AC with track info
 	fixes := w.STARSFacilityAdaptation.CoordinationFixes
-	for fix, typ := range fixes {
-		if typ == ZoneBasedFix { // Exclude zone based fixes for now. They come in after the route-based fixes.
+	for fix, info := range fixes {
+		if info.Type == ZoneBasedFix { // Exclude zone based fixes for now. They come in after the route-based fixes.
 			continue
 		}
 		if strings.Contains(fp.Route, fix) {
 			return fix
 		}
+		for _, waypoint := range ac.Nav.Waypoints {
+			if waypoint.Fix == fix {
+				return fix
+			}
+		}
 	}
 	distanceMap := make(map[string]float32) //  -->
-	for fix, typ := range fixes {
-		if typ == RouteBasedFix {
+	for fix, info := range fixes {
+		if info.Type == ZoneBasedFix {
 			distanceMap[fix] = nmdistance2ll(ac.Position(), database.Fixes[fix].Location)
 		}
 	}
+
 	var closestFix string
 	smallestValue := float32(math.MaxFloat32)
 	for key, value := range distanceMap {
@@ -157,7 +165,7 @@ func (fp *STARSFlightPlan) CordinationFix(w *World, ac *Aircraft) string { // TO
 		}
 	}
 	if closestFix == "" {
-		lg.Errorf("No fix for %v/%v. Route: %v.", ac.Callsign, ac.Squawk, ac.FlightPlan.Route)
+		lg.Errorf("No fix for %v/%v. Route: %v.", ac.Callsign, ac.Squawk, ac.Nav.Waypoints)
 	}
 	return closestFix
 }
@@ -179,7 +187,7 @@ const (
 
 	// Track Data
 
-	InitateTransfer      // When handoff gets sent. Sends the flightplan, contains track location
+	InitiateTransfer      // When handoff gets sent. Sends the flightplan, contains track location
 	AcceptRecallTransfer // Accept/ recall handoff
 	TrackUpdate
 	// updated track coordinates. If off by some amount that is unaccepable, you'd see "AMB" in STARS datatag.
@@ -200,7 +208,8 @@ type ERAMComputer struct {
 	TrackInformation map[Squawk]*TrackInformation
 	PendingMessages  map[*FlightPlanMessage]string // if a ZBW to N90 handoff goes through ZNY, ZNY needs to keep track of who sent that handoff initially, so that
 	// when N90 sends the accept handoff message, it can go back to ZBW.
-	Identifier       string
+	Identifier string
+	Adaptation ERAMAdaptation
 }
 
 type ERAMTrackInfo struct {
@@ -241,16 +250,40 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, tracon string) {
 	for _, msg := range *comp.ReceivedMessages {
 		switch msg.MessageType {
 		case Plan:
+			blank, _ := ParseSquawk("0000")
 			if comp == nil {
 				lg.Errorf("comp = nil")
 			} else if msg.FlightPlan() == nil {
 				lg.Errorf("msg.plan = nil")
-			} else {
+			} else if msg.FlightPlan().AssignedSquawk != blank { // TODO: Figure out why it's sending a blank fp
 				if comp.FlightPlans == nil {
 					comp.FlightPlans = make(map[Squawk]*STARSFlightPlan) // Use appropriate types here
 				}
 				// Ensure comp.FlightPlans[msg.BCN] is initialized
 				comp.FlightPlans[msg.BCN] = msg.FlightPlan()
+				fp := comp.FlightPlans[msg.BCN]
+				if fp.CoordinationFix == "" {
+					for fix, properties := range comp.Adaptation.CoordinationFixes {
+						if properties.Type == ZoneBasedFix {
+							continue
+						}
+						if strings.Contains(fp.Route, fix) {
+							fp.CoordinationFix = fix
+							break
+						}
+					}
+					if fp.CoordinationFix == "" {
+						fmt.Printf("No route-based fix for %v/%v. Route: %v.\n", fp.Callsign, fp.AssignedSquawk, fp.Route)
+					}
+				}
+				fmt.Printf("Added %v plan to %v computer: %v\n", msg.BCN, comp.Identifier, comp.FlightPlans[msg.BCN])
+				// check if another facility needs this plan.
+				if fix := msg.CoordinationFix; fix != "" {
+					// Send the plan to the STARS facility that needs it.
+					to := comp.Adaptation.CoordinationFixes[fix].ToController
+					comp.ToSTARSFacility(to, msg)
+					fmt.Printf("Forwarded %v plan to %v from %v.\n", msg.BCN, to, comp.Identifier)
+				}
 			}
 		case RequestFlightPlan:
 			facility := msg.SourceID[:3] // Facility asking for FP
@@ -262,12 +295,28 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, tracon string) {
 			*comp.ReceivedMessages = (*comp.ReceivedMessages)[1:]
 		case DepartureDM: // Stars ERAM coordination time tracking
 		case BeaconTerminate: // TODO: Find out what this does
-		case InitateTransfer:
+		case InitiateTransfer:
 			// Forward these to w.TRACON for now. ERAM adaptations will have to fix this eventually...
-			msg.SourceID = comp.Identifier + msg.SourceID[3:]
+			msg.SourceID = comp.Identifier + simTime.Format("1504Z")
 			comp.ToSTARSFacility(tracon, msg)
+			fmt.Printf("Forwarded handoff %v to %v: %v.\n", msg.SourceID, tracon, msg)
+		case AcceptRecallTransfer:
+			fixInfo := database.ERAMAdaptations[comp.Identifier].CoordinationFixes[msg.CoordinationFix]
+			if fixInfo.FromController != comp.Identifier { // Comes from a different ERAM facility
+				comp.SendMessageToERAM(fixInfo.FromController, msg)
+				if len(msg.SourceID) > 3 {
+				fmt.Printf("Forwarded an accept message from %v to %v.\n", msg.SourceID[:3], fixInfo.FromController)
+				} else { 
+					fmt.Printf("%v: Accept message nil? %v.\n", comp.Identifier, msg)
+				}
+			} else { // Handoff was initiated by this ERAM facility. Nothing needs to be done atm besides change track info
+				fmt.Printf("%v: %v.\n", fixInfo, msg.BCN)
+				comp.TrackInformation[msg.BCN].TrackOwner = msg.TrackOwner
+			}
+
 		}
 	}
+	clear(*comp.ReceivedMessages)
 }
 
 // Prepare the message to sent to a STARS facility after a RF message
@@ -297,10 +346,11 @@ func (fp FlightPlan) DepartureMessage(sendingFacility string, simTime time.Time)
 func (comp *ERAMComputer) ToSTARSFacility(facility string, msg FlightPlanMessage) error {
 	STARSFacility, ok := comp.STARSComputers[facility]
 	if !ok {
+		fmt.Printf("No STARS facility %v found in %v: %v\n", facility, comp.Identifier, comp.STARSComputers)
 		return ErrNoSTARSFacility
 	}
 	STARSFacility.RecievedMessages = append(STARSFacility.RecievedMessages, msg)
-	fmt.Printf("Identifier %v. Messages: %v.\n", facility, STARSFacility.RecievedMessages)
+	fmt.Printf("Sent %v to %v.\n", msg.BCN, facility)
 	return nil
 }
 
@@ -312,9 +362,10 @@ func (comp *ERAMComputer) SendFlightPlans(w *World) {
 	for sq := range comp.TrackInformation {
 		if comp.FlightPlans != nil {
 			if fp := comp.FlightPlans[sq]; fp != nil {
-				if !w.SimTime.Add(30*time.Minute).Before(fp.CoordinationTime.Time) && !fp.Sent {
+				to := comp.Adaptation.CoordinationFixes[fp.CoordinationFix].ToController
+				if !w.SimTime.Add(30*time.Minute).Before(fp.CoordinationTime.Time) && !slices.Contains(fp.ContainedFacilities, to) {
 					comp.SendFlightPlan(fp, w)
-				} else if !fp.Sent {
+				} else if !slices.Contains(fp.ContainedFacilities, to) {
 					fmt.Printf("%v is more than 30 minutes away from his coordination fix %v. Coordination Time: %v, Time Added: %v.\n\n", fp.Callsign, fp.CoordinationFix, fp.CoordinationTime, w.SimTime.Add(30*time.Minute))
 				}
 			} else {
@@ -327,16 +378,18 @@ func (comp *ERAMComputer) SendFlightPlans(w *World) {
 }
 
 func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, w *World) { // For individual plans being sent.
-	err := comp.ToSTARSFacility(w.TRACON, fp.Message())
-	fmt.Printf("Sent %v plan to %v\n", fp.AssignedSquawk, w.TRACON)
-	fp.Sent = true
-	if err != nil {
-		artcc := database.TRACONs[w.TRACON].ARTCC
-		err = comp.SendMessageToERAM(artcc, fp.Message())
-		if err != nil {
-			lg.Error(err.Error())
-		}
+	msg := fp.Message()
+	msg.MessageType = Plan
+	msg.SourceID = comp.Identifier + w.SimTime.Format("1504Z")
+	to := comp.Adaptation.CoordinationFixes[fp.CoordinationFix].ToController
+	err := comp.ToSTARSFacility(w.TRACON, msg) // change w.TRACON to the fix pair assignment (this will be in the adaptation)
+	if err != nil {                            // must go to another ERAM facility
+		comp.SendMessageToERAM(database.TRACONs[w.TRACON].ARTCC, msg)
+		fmt.Printf("Sent %v plan to %v\n", fp.AssignedSquawk, database.TRACONs[w.TRACON].ARTCC)
+	} else {
+		fmt.Printf("Sent %v plan to %v\n", fp.AssignedSquawk, w.TRACON)
 	}
+	fp.ContainedFacilities = append(fp.ContainedFacilities, to)
 }
 
 type STARSComputer struct {
@@ -346,15 +399,15 @@ type STARSComputer struct {
 	ERAMInbox        *[]FlightPlanMessage // The address of the overlying ERAM's message inbox.
 	Identifier       string
 	STARSInbox       map[string]*[]FlightPlanMessage // Other STARS Facilities inbox.
-	MessageMap map[FlightPlanMessage]string
+	MessageMap       map[FlightPlanMessage]string
 }
 
 type STARSFlightPlan struct {
 	FlightPlan
-	FlightPlanType   int
-	CoordinationTime CoordinationTime
-	CoordinationFix  string
-	Sent             bool
+	FlightPlanType      int
+	CoordinationTime    CoordinationTime
+	CoordinationFix     string
+	ContainedFacilities []string
 }
 
 // Different flight plans (STARS)
@@ -426,7 +479,7 @@ func (comp *STARSComputer) SendTrackInfo(receivingFacility string, msg FlightPla
 		*inbox = append(*inbox, msg)
 		fmt.Printf("%v: Appended for %v. Msg: %v.\n", receivingFacility, msg.SourceID, msg)
 	} else {
-		lg.Errorf("%v: inbox is nil: %v.\n", receivingFacility, comp.STARSInbox) // TODO: give to overlying ERAM
+		comp.ToOverlyingERAMFacility(msg)
 	}
 }
 
@@ -457,6 +510,7 @@ type AircraftDataMessage struct {
 // Sends a message to the overlying ERAM facility.
 func (comp *STARSComputer) ToOverlyingERAMFacility(msg FlightPlanMessage) {
 	if *comp.ERAMInbox == nil {
+		fmt.Printf("ERAM inbox is nil for %v.\n", comp.Identifier)
 	} else {
 		*comp.ERAMInbox = append(*comp.ERAMInbox, msg)
 	}
@@ -555,18 +609,20 @@ func (comp *STARSComputer) SortReceivedMessages() {
 		switch msg.MessageType {
 		case Plan:
 			sq, _ := ParseSquawk("0000")
-			if msg.BCN != sq {
-				comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
-				comp.RecievedMessages = comp.RecievedMessages[1:]
+			if msg.BCN == sq {
+				break
 			}
+			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
+			comp.RecievedMessages = comp.RecievedMessages[1:]
 			// todo: change with adaptations
-			
+			fmt.Printf("%v plan just recived by %v. Fix: %v. Time: %v.\n", msg.BCN, comp.Identifier, msg.CoordinationFix, msg.CoordinationTime)
+
 		case Amendment:
 			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
 			comp.RecievedMessages = comp.RecievedMessages[1:]
 		case Cancellation: // Deletes the flight plan from the computer
 			delete(comp.ContainedPlans, msg.BCN)
-		case InitateTransfer:
+		case InitiateTransfer:
 			// 1. Store the data comp.trackinfo. we now know whos tracking the plane. Use the squawk to get the plan
 			if fp := comp.ContainedPlans[msg.BCN]; fp != nil { // We have the plan
 				comp.TrackInformation[msg.BCN] = &TrackInformation{
@@ -575,11 +631,14 @@ func (comp *STARSComputer) SortReceivedMessages() {
 					FlightPlan:        fp,
 				}
 				delete(comp.ContainedPlans, msg.BCN)
-				comp.MessageMap[msg] = msg.SourceID[:3]
-				fmt.Printf("Message for %v has been received and sorted: %v.\n", msg.BCN, comp.ContainedPlans[msg.BCN])
+				if len(msg.SourceID) > 3 {
+					comp.MessageMap[msg] = msg.SourceID[:3]
+				} else {
+					fmt.Printf("init transfer msg nil? %v\n", msg)
+				}
+				fmt.Printf("Message for %v has been received and sorted: %v.\n", msg.BCN, comp.TrackInformation[msg.BCN].FlightPlan)
 			} else {
-				// lg.Errorf("No flight plan for %v.\n", msg.BCN)
-				// reject the thing
+				fmt.Printf("No plan for %v.\n", msg.BCN)
 			}
 
 		case AcceptRecallTransfer:
@@ -629,8 +688,17 @@ func printERAMComputerMap(computers map[string]*ERAMComputer) {
 			}
 
 			fmt.Println("\tTrackInformation:")
-			for sq, trackInfo := range starsComputer.TrackInformation {
-				fmt.Printf("\t\tSquawk: %s, TrackInfo: %+v\n", sq, *trackInfo)
+			for sq, trackInfo := range eramComputer.TrackInformation {
+				fmt.Printf("\tSquawk: %s, TrackInfo:\n", sq)
+				fmt.Printf("\t\tTrackLocation: %+v\n", trackInfo.TrackLocation)
+				fmt.Printf("\t\tOwner: %s\n", trackInfo.TrackOwner)
+				fmt.Printf("\t\tHandoffController: %s\n", trackInfo.HandoffController)
+				if trackInfo.FlightPlan != nil {
+				fmt.Printf("\t\tFlightPlan: %+v\n", *trackInfo.FlightPlan)
+				} else {
+					fmt.Printf("\t\tFlightPlan: nil\n")
+				}
+
 			}
 
 			if starsComputer.ERAMInbox != nil {
@@ -655,7 +723,16 @@ func printERAMComputerMap(computers map[string]*ERAMComputer) {
 
 		fmt.Println("TrackInformation:")
 		for sq, trackInfo := range eramComputer.TrackInformation {
-			fmt.Printf("\tSquawk: %s, TrackInfo: %+v\n", sq, *trackInfo)
+			fmt.Printf("\tSquawk: %s, TrackInfo:\n", sq)
+			fmt.Printf("\t\tTrackLocation: %+v\n", trackInfo.TrackLocation)
+			fmt.Printf("\t\tOwner: %s\n", trackInfo.TrackOwner)
+			fmt.Printf("\t\tHandoffController: %s\n", trackInfo.HandoffController)
+			if trackInfo.FlightPlan != nil {
+				fmt.Printf("\t\tFlightPlan: %+v\n", *trackInfo.FlightPlan)
+				} else {
+					fmt.Printf("\t\tFlightPlan: nil\n")
+				}
+
 		}
 	}
 }

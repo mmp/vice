@@ -56,19 +56,19 @@ type AirspaceAwareness struct {
 }
 
 type STARSFacilityAdaptation struct {
-	AirspaceAwareness   []AirspaceAwareness   `json:"airspace_awareness"`
-	ForceQLToSelf       bool                  `json:"force_ql_self"`
-	AllowLongScratchpad [2]bool               `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
-	Maps                []STARSMap            `json:"stars_maps"`
-	InhibitCAVolumes    []AirspaceVolume      `json:"inhibit_ca_volumes"`
-	RadarSites          map[string]*RadarSite `json:"radar_sites"`
-	Center              Point2LL              `json:"-"`
-	CenterString        string                `json:"center"`
-	Range               float32               `json:"range"`
-	Scratchpads         map[string]string     `json:"scratchpads"`
-	VideoMapFile        string                `json:"video_map_file"`
-	ExternalFacilities  []string              `json:"stars_facilities"`
-	CoordinationFixes   map[string]string     `json:"coordination_fixes"`
+	AirspaceAwareness   []AirspaceAwareness      `json:"airspace_awareness"`
+	ForceQLToSelf       bool                     `json:"force_ql_self"`
+	AllowLongScratchpad [2]bool                  `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
+	Maps                []STARSMap               `json:"stars_maps"`
+	InhibitCAVolumes    []AirspaceVolume         `json:"inhibit_ca_volumes"`
+	RadarSites          map[string]*RadarSite    `json:"radar_sites"`
+	Center              Point2LL                 `json:"-"`
+	CenterString        string                   `json:"center"`
+	Range               float32                  `json:"range"`
+	Scratchpads         map[string]string        `json:"scratchpads"`
+	VideoMapFile        string                   `json:"video_map_file"`
+	ExternalFacilities  []string                 `json:"stars_facilities"`
+	CoordinationFixes   map[string]AdaptationFix `json:"coordination_fixes"`
 }
 
 type CoordinationFix struct {

@@ -1503,6 +1503,7 @@ func (s *Sim) updateState() {
 			currentlyTracking := stars.TrackInformation[bcn].TrackOwner
 			if w.GetControllerByCallsign(currentlyTracking).FacilityIdentifier != "" { // inter-facility
 				msg := stars.ContainedPlans[bcn].Message()
+				msg.SourceID = w.FacilityFromController(currentlyTracking) + s.SimTime.Format("1504Z")
 				info := TrackInformation{
 					TrackOwner:        stars.TrackInformation[bcn].HandoffController,
 					HandoffController: "",
@@ -1571,10 +1572,10 @@ func (s *Sim) updateState() {
 							TrackOwner:        ac.TrackingController,
 							HandoffController: ctrl,
 						}
-						msg.MessageType = InitateTransfer
+						msg.MessageType = InitiateTransfer
 						fmt.Printf("WaypointHndOff: %v. Tracking: %v. Ctrl: %v.\n", ac.WaypointHandoffController, ac.TrackingController, ctrl)
 						msg.TrackInformation = info
-						stars.SendTrackInfo(w.FacilityFromController(ctrl), msg, now, InitateTransfer)
+						stars.SendTrackInfo(w.FacilityFromController(ctrl), msg, now, InitiateTransfer)
 						fmt.Printf("Sent %v fp (auto handoff) information to %v: %v.\n", bcn, w.FacilityFromController(ctrl), msg)
 
 					} else {
@@ -1582,12 +1583,13 @@ func (s *Sim) updateState() {
 						plan := eram.FlightPlans[bcn]
 						if plan != nil {
 							msg := plan.Message()
+							msg.SourceID = w.FacilityFromController(ctrl) + s.SimTime.Format("1504Z")
 							info := TrackInformation{
 								TrackOwner:        ac.TrackingController,
 								HandoffController: ctrl,
 							}
 							msg.TrackInformation = info
-							msg.MessageType = InitateTransfer
+							msg.MessageType = InitiateTransfer
 							if stars, ok := eram.STARSComputers[w.FacilityFromController(ctrl)]; ok { // in host ERAM
 								eram.ToSTARSFacility(stars.Identifier, msg)
 								fmt.Println("host ERAM", bcn)
@@ -2216,11 +2218,16 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 
 			if octrl.Facility != ctrl.Facility { // inter-facility
 				msg := stars.TrackInformation[ac.Squawk].FlightPlan.Message()
+				msg.SourceID = s.World.FacilityFromController(ctrl.Callsign) + s.SimTime.Format("1504Z")
 				msg.TrackInformation = TrackInformation{
 					TrackOwner:        ctrl.Callsign,
 					HandoffController: octrl.Callsign,
 				}
-				stars.SendTrackInfo(octrl.Facility, msg, s.SimTime, InitateTransfer)
+				stars.TrackInformation[ac.Squawk] = &TrackInformation{
+					TrackOwner:        ctrl.Callsign,
+					HandoffController: octrl.Callsign,
+				}
+				stars.SendTrackInfo(octrl.Facility, msg, s.SimTime, InitiateTransfer)
 			} else {
 				entry := stars.TrackInformation[ac.Squawk]
 				entry.HandoffController = octrl.Callsign
@@ -2325,6 +2332,12 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 			currentlyTracking := stars.TrackInformation[bcn].TrackOwner
 			if w.GetControllerByCallsign(currentlyTracking).FacilityIdentifier != "" { // inter-facility
 				fp := stars.ContainedPlans[bcn]
+				if fp == nil {
+					fp = stars.TrackInformation[bcn].FlightPlan
+					if fp == nil {
+						lg.Errorf("fp is still nil after reassignment for %v.\n", bcn)
+					}
+				}
 				msg := FlightPlanMessage{}
 				if fp != nil {
 					msg = fp.Message()
@@ -2333,12 +2346,27 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				} else {
 					lg.Errorf("both track & flightplan are nil for %v.\n", bcn)
 				}
+				msg.SourceID = w.FacilityFromController(ctrl.Callsign) + s.SimTime.Format("1504Z")
 				info := TrackInformation{
 					TrackOwner:        ctrl.Callsign,
 					HandoffController: "",
 				}
 				msg.TrackInformation = info
-				stars.SendTrackInfo(w.FacilityFromController(currentlyTracking), msg, w.SimTime, AcceptRecallTransfer)
+				msg.MessageType = AcceptRecallTransfer
+				if coordFix, ok := w.STARSFacilityAdaptation.CoordinationFixes[fp.CoordinationFix]; ok {
+					if from := coordFix.FromController; from[0] == 'Z' {
+						msg.MessageType = AcceptRecallTransfer
+						stars.ToOverlyingERAMFacility(msg)
+						fmt.Printf("accept msg to overlying ERAM %v\n", bcn)
+					} else {
+						to := coordFix.ToController
+						fmt.Printf("Not to a center? Fac: %v, Fix: %v, From: %v, To: %v.\n", stars.Identifier, fp.CoordinationFix, from, to)
+					}
+				} else {
+					fmt.Printf("No fix found: Fac: %v, Fix: %v\n", stars.Identifier, fp.CoordinationFix)
+					
+				}
+				
 			}
 			if entry, ok := stars.TrackInformation[w.GetAircraft(callsign, false).Squawk]; ok {
 				entry.HandoffController = ""

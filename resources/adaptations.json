@@ -1,0 +1,39 @@
+{
+    "ZNY": {
+        "coordination_fixes": {
+            "FLOSI": {
+                "type": "route",
+                "to": "N90",
+                "from": "ZBW"
+            },
+            "DYLIN": {
+                "type": "route",
+                "to": "N90",
+                "from": "ZDC"
+            },
+            "SWEET": {
+                "type": "route",
+                "to": "N90",
+                "from": "ZNY"
+            }
+        }
+    },
+    "ZBW": {
+        "coordination_fixes": {
+            "FLOSI": {
+                "type": "route",
+                "to": "ZNY",
+                "from": "ZBW"
+            }
+        }
+    },
+    "ZDC": {
+        "coordination_fixes": {
+            "DYLIN": {
+                "type": "route",
+                "to": "ZNY",
+                "from": "ZDC"
+            }
+        }
+    }
+}
