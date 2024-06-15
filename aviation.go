@@ -9,6 +9,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/csv"
+	"encoding/gob"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -22,6 +23,7 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/klauspost/compress/zstd"
 )
 
 type ERAMAdaptation struct {// add more later
@@ -2171,7 +2173,7 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 								wps[idx].Fix)
 						}
 
-						ar.Waypoints = wps[idx:]
+						ar.Waypoints = DuplicateSlice(wps[idx:])
 						sg.InitializeWaypointLocations(ar.Waypoints, e)
 
 						if len(ar.Waypoints) >= 2 && spawnT != 0 {
@@ -2337,4 +2339,197 @@ func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
 	} else {
 		return wp
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// VideoMapLibrary maintains a collection of video maps loaded from multiple
+// files.  Video maps are loaded asynchronously.
+type VideoMapLibrary struct {
+	manifests map[string]map[string]interface{} // filename -> map name
+	maps      map[string]map[string]*STARSMap
+	ch        chan LoadedVideoMap
+	loading   map[string]interface{}
+}
+
+type LoadedVideoMap struct {
+	path string
+	maps map[string]*STARSMap
+}
+
+func MakeVideoMapLibrary() *VideoMapLibrary {
+	return &VideoMapLibrary{
+		manifests: make(map[string]map[string]interface{}),
+		maps:      make(map[string]map[string]*STARSMap),
+		ch:        make(chan LoadedVideoMap, 64),
+		loading:   make(map[string]interface{}),
+	}
+}
+
+// AddFile adds a video map to the library. referenced encodes which maps
+// in the file are actually used; the loading code uses this information to
+// skip the work of generating CommandBuffers for unused video maps.
+func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, referenced map[string]interface{}, e *ErrorLogger) {
+	// Load the manifest and do initial error checking
+	mf, _ := strings.CutSuffix(filename, ".zst")
+	mf, _ = strings.CutSuffix(mf, "-videomaps.gob")
+	mf += "-manifest.gob"
+
+	fm, err := filesystem.Open(mf)
+	if err != nil {
+		e.Error(err)
+		return
+	}
+	defer fm.Close()
+
+	var manifest map[string]interface{} // the manifest file doesn't include the lines so is fast to parse...
+	dec := gob.NewDecoder(fm)
+	if err := dec.Decode(&manifest); err != nil {
+		e.Error(err)
+		return
+	}
+	ml.manifests[filename] = manifest
+
+	for name := range referenced {
+		if name != "" {
+			if _, ok := manifest[name]; !ok {
+				e.Error(fmt.Errorf("%s: video map \"%s\" in \"stars_maps\" not found", filename, name))
+			}
+		}
+	}
+
+	// Kick off the work to load the actual video map.
+	f, err := filesystem.Open(filename)
+	if err != nil {
+		e.Error(err)
+	} else {
+		ml.loading[filename] = nil
+		go ml.loadVideoMap(f, filename, referenced, manifest)
+	}
+}
+
+// loadVideoMap handles loading the given map; it runs asynchronously and
+// returns the result via the ml.ch chan.
+func (ml *VideoMapLibrary) loadVideoMap(f io.ReadCloser, filename string, referenced map[string]interface{},
+	manifest map[string]interface{}) {
+	defer f.Close()
+
+	r := io.Reader(f)
+	if strings.HasSuffix(strings.ToLower(filename), ".zst") {
+		zr, _ := zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
+		defer zr.Close()
+		r = zr
+	}
+
+	// Initial decoding of the gob file.
+	var maps []STARSMap
+	dec := gob.NewDecoder(r)
+	if err := dec.Decode(&maps); err != nil {
+		panic(fmt.Sprintf("%s: %v", filename, err))
+	}
+
+	// We'll return the maps via a map from the map name to the associated
+	// *STARSMap.
+	starsMaps := make(map[string]*STARSMap)
+	for _, sm := range maps {
+		if sm.Name == "" {
+			continue
+		}
+
+		if _, ok := referenced[sm.Name]; ok {
+			if _, ok := manifest[sm.Name]; !ok {
+				panic(fmt.Sprintf("%s: map \"%s\" not found in manifest file", filename, sm.Name))
+			}
+
+			ld := GetLinesDrawBuilder()
+			for _, lines := range sm.Lines {
+				// Slightly annoying: the line vertices are stored with
+				// Point2LLs but AddLineStrip() expects [2]float32s.
+				fl := MapSlice(lines, func(p Point2LL) [2]float32 { return p })
+				ld.AddLineStrip(fl)
+			}
+			ld.GenerateCommands(&sm.CommandBuffer)
+		}
+
+		// Clear out Lines so that the memory can be reclaimed since they
+		// aren't needed any more.
+		sm.Lines = nil
+		starsMaps[sm.Name] = &sm
+	}
+
+	ml.ch <- LoadedVideoMap{path: filename, maps: starsMaps}
+}
+
+func (ml *VideoMapLibrary) GetMap(filename, mapname string) *STARSMap {
+	// First harvest any video map files that have been loaded. Keep going
+	// as long as there are more waiting, but don't stall if there aren't
+	// any.
+	stop := false
+	for !stop {
+		select {
+		case m := <-ml.ch:
+			delete(ml.loading, m.path)
+			ml.maps[m.path] = m.maps
+
+		default:
+			stop = true
+		}
+	}
+
+	if fmaps, ok := ml.maps[filename]; ok {
+		return fmaps[mapname]
+	} else {
+		// The map file hasn't been loaded, so we'll need to stall and wait
+		// for it.
+		if _, ok := ml.loading[filename]; !ok {
+			lg.Errorf("%s: video map \"%s\" requested from file that isn't being loaded",
+				filename, mapname)
+			return nil
+		}
+
+		lg.Infof("%s/%s: blocking waiting for video map", filename, mapname)
+		for {
+			// Blocking channel receive here
+			m := <-ml.ch
+			delete(ml.loading, m.path)
+			ml.maps[m.path] = m.maps
+
+			if m.path == filename {
+				lg.Infof("%s: finished loading video map file", filename)
+				return m.maps[mapname]
+			}
+		}
+	}
+}
+
+func (ml VideoMapLibrary) HaveFile(filename string) bool {
+	// This can be determined strictly from the manifests and so there's no
+	// need to block.
+	_, ok := ml.manifests[filename]
+	return ok
+}
+
+func (ml VideoMapLibrary) AvailableFiles() []string {
+	return MapSlice(SortedMapKeys(ml.manifests),
+		func(s string) string {
+			s = strings.TrimPrefix(s, "videomaps/")
+			s, _, _ = strings.Cut(s, "-")
+			return s
+		})
+}
+
+func (ml VideoMapLibrary) AvailableMaps(filename string) []string {
+	if mf, ok := ml.manifests[filename]; !ok {
+		return nil
+	} else {
+		return SortedMapKeys(mf)
+	}
+}
+
+func (ml VideoMapLibrary) HaveMap(filename, mapname string) bool {
+	mf, ok := ml.manifests[filename]
+	if ok {
+		_, ok = mf[mapname]
+	}
+	return ok
 }

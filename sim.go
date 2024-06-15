@@ -844,8 +844,6 @@ type Sim struct {
 
 	NextPushStart time.Time // both w.r.t. sim time
 	PushEnd       time.Time
-
-	STARSInputOverride string
 }
 
 type Handoff struct {
@@ -872,7 +870,8 @@ func (sc *ServerController) LogValue() slog.Value {
 		slog.Bool("warned_no_update", sc.warnedNoUpdateCalls))
 }
 
-func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*ScenarioGroup, isLocal bool, lg *Logger) *Sim {
+func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*ScenarioGroup, isLocal bool,
+	mapLib *VideoMapLibrary, lg *Logger) *Sim {
 	lg = lg.With(slog.String("sim_name", ssc.NewSimName))
 
 	tracon, ok := scenarioGroups[ssc.TRACONName]
@@ -889,6 +888,42 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 	if !ok {
 		lg.Errorf("%s: unknown scenario", ssc.ScenarioName)
 		return nil
+	}
+
+	// We will finally go ahead and initialize the STARSMaps needed for the
+	// scenario (under the hope that the async load of the one we need has
+	// finished by now so that the first GetMap() call doesn't stall.
+	fa := &sg.STARSFacilityAdaptation
+	initializeMaps := func(maps []string) []STARSMap {
+		var sm []STARSMap
+		for _, name := range maps {
+			if name == "" {
+				sm = append(sm, STARSMap{})
+			} else {
+				m := mapLib.GetMap(fa.VideoMapFile, name)
+				if m == nil {
+					// This should be caught earlier, during scenario
+					// validation with the video map manifests...
+					panic(fmt.Sprintf("%s not found in %s", name, fa.VideoMapFile))
+				} else {
+					sm = append(sm, *m)
+				}
+			}
+		}
+
+		// Pad out with empty maps if not enough were specified.
+		for len(sm) < NumSTARSMaps {
+			sm = append(sm, STARSMap{})
+		}
+		return sm
+	}
+
+	if len(fa.VideoMapNames) > 0 && len(fa.VideoMaps) == 0 {
+		fa.VideoMaps = initializeMaps(fa.VideoMapNames)
+	}
+	for ctrl, config := range fa.ControllerConfigs {
+		config.VideoMaps = initializeMaps(config.VideoMapNames)
+		fa.ControllerConfigs[ctrl] = config
 	}
 
 	s := &Sim{
@@ -974,14 +1009,12 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.Airports = sg.Airports
 	w.Fixes = sg.Fixes
 	w.PrimaryAirport = sg.PrimaryAirport
-	stars := sg.STARSFacilityAdaptation
-	w.RadarSites = stars.RadarSites
-	w.Center = Select(stars.Center.IsZero(), stars.Center, stars.Center)
-	w.Range = Select(sc.Range == 0, stars.Range, sc.Range)
-	w.DefaultMaps = sc.DefaultMaps
-	w.STARSMaps = stars.Maps
-	w.InhibitCAVolumes = stars.InhibitCAVolumes
-	w.Scratchpads = stars.Scratchpads
+	fa := sg.STARSFacilityAdaptation
+	w.RadarSites = fa.RadarSites
+	w.Center = Select(fa.Center.IsZero(), fa.Center, fa.Center)
+	w.Range = Select(sc.Range == 0, fa.Range, sc.Range)
+	w.ScenarioDefaultVideoMaps = sc.DefaultMaps
+	w.Scratchpads = fa.Scratchpads
 	w.ArrivalGroups = sg.ArrivalGroups
 	w.ApproachAirspace = sc.ApproachAirspace
 	w.DepartureAirspace = sc.DepartureAirspace
@@ -1301,7 +1334,6 @@ type SimWorldUpdate struct {
 
 	SimIsPaused     bool
 	SimRate         float32
-	STARSInput      string
 	Events          []Event
 	TotalDepartures int
 	TotalArrivals   int
@@ -1320,7 +1352,6 @@ func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
 	w.SimTime = wu.Time
 	w.SimIsPaused = wu.SimIsPaused
 	w.SimRate = wu.SimRate
-	w.STARSInputOverride = wu.STARSInput
 	w.TotalDepartures = wu.TotalDepartures
 	w.TotalArrivals = wu.TotalArrivals
 
@@ -1390,6 +1421,14 @@ func (s *Sim) Activate(lg *Logger) {
 			s.lastDeparture[ap][rwy] = make(map[string]*Departure)
 		}
 	}
+}
+
+func (s *Sim) PreSave() {
+	s.World.PreSave()
+}
+
+func (s *Sim) PostLoad(ml *VideoMapLibrary) error {
+	return s.World.PostLoad(ml)
 }
 
 ///////////////////////////////////////////////////////////////////////////

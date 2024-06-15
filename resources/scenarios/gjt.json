@@ -719,62 +719,9 @@
     "CKW": "CKW"
   },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "ARWAYS",
-      "name": "GJT AIRWAYS"
-    },
-    {
-      "group": 0,
-      "label": "GJTBASE",
-      "name": "GJT BASE"
-    },
-    {
-    "group": 0,
-    "label": "GPS 29",
-    "name": "GJT GPS 29"
-    },
-    {
-      "group": 0,
-      "label": "GPSY 11",
-      "name": "GJT GPS Y 11"
-    },
-    {
-      "group": 0,
-      "label": "ILS 11",
-      "name": "GJT ILS 11"
-    },
-    {
-      "group": 1,
-      "label": "GJT MVA",
-      "name": "GJT MVA"
-    },
-    {
-      "group": 0,
-      "label": "NOKXI1",
-      "name": "GJT NOKXI1"
-  },
-  {
-    "group": 0,
-    "label": "RHONE2",
-    "name": "GJT RHONE2"
-  },
-  {
-    "group": 0,
-    "label": "RNP Z",
-    "name": "GJT RNP Z"
-},
-{
-  "group": 0,
-  "label": "GJT SAT",
-  "name": "GJT SATS"
-},
-{
-  "group": 1,
-  "label": "GJT VFR",
-  "name": "GJT VFR"
-}
+      "GJT AIRWAYS", "GJT BASE", "GJT GPS 29", "GJT GPS Y 11", "GJT ILS 11", "GJT MVA", "GJT NOKXI1",
+      "GJT RHONE2", "GJT RNP Z", "GJT SATS", "GJT VFR"
   ],
-  "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+  "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
   }
   }

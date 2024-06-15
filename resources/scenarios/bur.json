@@ -716,19 +716,56 @@
             },
             "departure_routes":{
                 "12":{
-                    "VNY": {
+                    "MISEN,GMN,CSTRO": {
                         "cleared_altitude": 12000,
                         "sid": "WHP1",
                         "waypoints": "N034.15.18.060,W118.24.32.150 VNY/h325"
                     }
                 },
                 "30":{
-                    "VNY": {
+                    "MISEN,GMN,CSTRO": {
                         "cleared_altitude": 12000,
                         "sid": "WHP1",
                         "waypoints": "KWHP-12 TRAFF VNY UMBER/a4600 "
                     }
                 }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KLAS",
+                    "exit": "MISEN",
+                    "route": "VNY MISEN RNDRZ2"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KPRB",
+                    "exit": "GMN",
+                    "route": "VNY GMN CHVAL"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KRDD",
+                    "exit": "CSTRO",
+                    "route": "VNY CSTRO"
+                }
+            ],
+            "exit_categories": {
+                "CSTRO": "Northwest",
+                "MISEN": "Northeast",
+                "GMN": "Northwest"
             },
             "tower_list": 1
 
@@ -1434,62 +1471,9 @@
         "GMN": "GMN"
     },
     "stars_maps": [
-        {
-            "group": 0,
-            "label": "BUR LW",
-            "name": "100S BURB LW SCT"
-        },
-        {
-            "group": 0,
-            "label": "BUR LE",
-            "name": "101S BURB LE SCT"
-        },
-        {
-            "group": 0,
-            "label": "BUR 26/33",
-            "name": "101S BURB LE SCT"
-        },
-        {
-            "group": 0,
-            "label": "BUR 8/15",
-            "name": "005 FUS_MVA L30"
-        },
-        {
-            "group": 0,
-            "label": "Class B",
-            "name": "023S T B A-S SCT"
-        },
-        {
-            "group": 0,
-            "label": "Class C",
-            "name": "022S T C A-S SCT"
-        },
-        {
-            "group": 0,
-            "label": "Class D",
-            "name": "027S T D A-S SCT"
-        },
-        {
-            "group": 1,
-            "label": "MVA",
-            "name": "701S FUS 3NM MVA SCT"
-        },
-        {
-            "group": 1,
-            "label": "GPS",
-            "name": "121S BUR GPS SCT"
-        },
-        {
-            "group": 1,
-            "label": "RWYS",
-            "name": "024S RWY NW SCT"
-        },
-        {
-            "group": 1,
-            "label": "EOVM",
-            "name": "711S EOVM SCT"
-        }
+        "100S BURB LW SCT", "101S BURB LE SCT", "101S BURB LE SCT", "005 FUS_MVA L30", "023S T B A-S SCT", "022S T C A-S SCT", "027S T D A-S SCT",
+        "701S FUS 3NM MVA SCT", "121S BUR GPS SCT", "024S RWY NW SCT", "711S EOVM SCT"
     ],
-    "video_map_file": "videomaps/ZLA-videomaps.json.zst"
+    "video_map_file": "videomaps/ZLA-videomaps.gob.zst"
     }
 }

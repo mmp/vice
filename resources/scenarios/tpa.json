@@ -3194,82 +3194,10 @@
     }
   },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "NORTH",
-      "name": "TPA-101S NORTH HI"
-    },
-    {
-      "group": 0,
-      "label": "SOUTH",
-      "name": "TPA-102S SOUTH HI"
-    },
-    {
-      "group": 0,
-      "label": "SAT",
-      "name": "TPA-103S SAT"
-    },
-    {
-      "group": 0,
-      "label": "FINAL 1",
-      "name": "TPA-104S FINAL 1"
-    },
-    {
-      "group": 1,
-      "label": "CLASBC1",
-      "name": "TPA-106S CLASSBC1"
-    },
-    {
-      "group": 1,
-      "label": "N BNDRY",
-      "name": "TPA-108S N BDRY"
-    },
-    {
-      "group": 1,
-      "label": "S BNDRY",
-      "name": "TPA-109S S BDRY"
-    },
-    {
-      "group": 1,
-      "label": "SAT BND",
-      "name": "TPA-110S SAT BDRY"
-    },
-    {
-      "group": 0,
-      "label": "FINAL 2",
-      "name": "TPA-111S FINAL 2"
-    },
-    {
-      "group": 1,
-      "label": "ILS",
-      "name": "TPA-113S ILS/NDB"
-    },
-    {
-      "group": 1,
-      "label": "TPA MVA",
-      "name": "TPA-122S MVA"
-    },
-    {
-      "group": 1,
-      "label": "EM HOSP",
-      "name": "TPA-123S EM HOSP"
-    },
-    {
-      "group": 1,
-      "label": "MID MAP",
-      "name": "TPA-127S MID MAP"
-    },
-    {
-      "group": 1,
-      "label": "SHELF N",
-      "name": "TPA-168S FINAL SHELF A-36"
-    },
-    {
-    "group": 1,
-    "label": "E SHELF",
-    "name": "TPA-268S EAST SHELF"
-    }
+      "TPA-101S NORTH HI", "TPA-102S SOUTH HI", "TPA-103S SAT", "TPA-104S FINAL 1", "TPA-106S CLASSBC1", "TPA-108S N BDRY", "TPA-109S S BDRY",
+      "TPA-110S SAT BDRY", "TPA-111S FINAL 2", "TPA-113S ILS/NDB", "TPA-122S MVA", "TPA-123S EM HOSP", "TPA-127S MID MAP",
+      "TPA-168S FINAL SHELF A-36", "TPA-268S EAST SHELF"
   ],
-  "video_map_file": "videomaps/ZMA-videomaps.json.zst"
+  "video_map_file": "videomaps/ZMA-videomaps.gob.zst"
   }
 }

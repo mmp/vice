@@ -3491,7 +3491,7 @@
         "SEA_42_CTR",
         "SEA_46_CTR"
       ],
-      "default_maps": ["P80__28 MAP"],
+      "default_maps": ["RWY 28"],
       "departure_airspace": [
         "PDXAPP"
       ],
@@ -3562,7 +3562,7 @@
         "SEA_42_CTR",
         "SEA_46_CTR"
       ],
-      "default_maps": ["P80__10 MAP" ],
+      "default_maps": ["RWY 10" ],
       "departure_airspace": [
         "PDXAPP"
       ],
@@ -3623,7 +3623,7 @@
         "direction": 250,
         "speed": 5
       },
-      "default_maps": ["P80__28 MAP" ]
+      "default_maps": ["RWY 28" ]
     },
     "KPDX_Eastflow Final": {
       "approach_airspace": [
@@ -3665,7 +3665,7 @@
         "direction": 250,
         "speed": 5
       },
-      "default_maps": ["P80__10 MAP" ]
+      "default_maps": ["RWY 10" ]
     }
 
   },
@@ -3728,97 +3728,11 @@
     "MINNE": "MNE"
 },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "10L/R",
-      "name": "P80__10 MAP"
-  },
-  {
-      "group": 0,
-      "label": "28R/L",
-      "name": "P80__28 MAP"
-  },
-  {
-      "group": 1,
-      "label": "CLASS C",
-      "name": "P80__PDX CLASS C AIRSPACE"
-  },
-  {
-      "group": 0,
-      "label": "28APCH",
-      "name": "P80__RWY 28 APCH FIXES"
-  },
-  {
-      "group": 0,
-      "label": "10APCH",
-      "name": "P80__RWY 10 APCH FIXES"
-  },
-  {
-      "group": 0,
-      "label": "VFR",
-      "name": "P80__VFR LABELS"
-  },
-  {
-      "group": 0,
-      "label": "TWR_CAB",
-      "name": "PDX__Tower Cab Map"
-  },
-  {
-      "group": 1,
-      "label": "MVA",
-      "name": "P80__MOSAIC"
-  },
-  {
-      "group": 0,
-      "label": "CASCD2",
-      "name": "P80__CASCADE DP"
-  },
-  {
-      "group": 0,
-      "label": "WHAMY4",
-      "name": "P80__WHAMY DP"
-  },
-  {
-      "group": 0,
-      "label": "RNAV 10R",
-      "name": "P80__RNP RWY 10R"
-  },
-  {
-      "group": 0,
-      "label": "RNAV 28L",
-      "name": "P80__RNP RWY 28L"
-  },
-  {
-      "group": 0,
-      "label": "RNAV 28R",
-      "name": "P80__RNP RWY 28R"
-  },
-  {
-      "group": 0,
-      "label": "P80",
-      "name": "ZSE__Tracon Boundary"
-  },
-  {
-      "group": 0,
-      "label": "EMER",
-      "name": "P80__EMERGENCY OBSTRUCTION VIDEO MAP"
-  },
-  {
-    "group": 0,
-    "label": "HNDOFF",
-    "name": "P80__ZSE HANDOFF MAP"
-  },
-  {
-    "group": 0,
-    "label": "CLASS D",
-    "name": "P80__CLASS D AIRSPACE"
-  },
-  {
-    "group": 0,
-    "label": "SATS",
-    "name": "ZSE__SAT F"
-  }
+      "RWY 10", "RWY 28", "PDX Class-C", "RWY 28 FIXES", "RWY 10 FIXES",
+      "VFRLABL", "PDX__Tower Cab Map", "CASCADE RNAV SID", "WHAMY RNAV SID", "RNP RWY 10R",
+      "RNP RWY 28L", "RNP RWY 28R", "ZSE__Tracon Boundary", "ZSE__HANDOFF",
+      "DELTA AIRSPACES", "ZSE__SAT F"
   ],
-"video_map_file": "videomaps/ZSE-videomaps.json.zst"
+"video_map_file": "videomaps/ZSE-videomaps.gob.zst"
   }
 }

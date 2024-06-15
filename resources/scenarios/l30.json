@@ -1819,42 +1819,8 @@
         "FRNCK": "RAT"
     },
     "stars_maps": [
-        {
-            "group": 0,
-            "label": "LAS_26",
-            "name": "283 BM3M L30"
-        },
-        {
-            "group": 0,
-            "label": "MVA",
-            "name": "005 FUS_MVA L30"
-        },
-        {
-            "group": 0,
-            "label": "Class_B",
-            "name": "004 CLASSB L30"
-        },
-        {
-            "group": 0,
-            "label": "LAS_2",
-            "name": "282 BM2M L30"
-        },
-        {
-            "group": 0,
-            "label": "LAS_3",
-            "name": "281 BM1M L30"
-        },
-        {
-            "group": 0,
-            "label": "LAS_4",
-            "name": "284 BM4M L30"
-        },
-        {
-            "group": 0,
-            "label": "LAS_1",
-            "name": "283 BM3M L30"
-        }
+        "283 BM3M L30", "005 FUS_MVA L30", "004 CLASSB L30", "282 BM2M L30", "281 BM1M L30", "284 BM4M L30", "283 BM3M L30"
     ],
-    "video_map_file": "videomaps/ZLA-videomaps.json.zst"
+    "video_map_file": "videomaps/ZLA-videomaps.gob.zst"
     }
 }

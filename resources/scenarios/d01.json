@@ -3837,7 +3837,7 @@
           "GXY_TWR",
           "FNL_TWR"
         ],
-         "default_maps": [ "ARRIVAL BASE","DR BASE","LN DUMP"],
+         "default_maps": [ "D01 AR BASE", "D01 DR BASE","LN DUMP"],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -4085,7 +4085,7 @@
           "GXY_TWR",
           "FNL_TWR"
         ],
-         "default_maps": [ "ARRIVAL BASE","DR BASE","LS DUMP" ],
+         "default_maps": [ "D01 AR BASE","D01 DR BASE","LS DUMP" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -4333,7 +4333,7 @@
           "GXY_TWR",
           "FNL_TWR"
         ],
-         "default_maps": [ "ARRIVAL BASE","DR BASE","LN DUMP"],
+         "default_maps": [ "D01 AR BASE","D01 DR BASE","LN DUMP"],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -4581,7 +4581,7 @@
           "GXY_TWR",
           "FNL_TWR"
         ],
-         "default_maps": [ "ARRIVAL BASE","DR BASE","LS DUMP" ],
+         "default_maps": [ "D01 AR BASE","D01 DR BASE","LS DUMP" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -4821,7 +4821,7 @@
           "GXY_TWR",
           "FNL_TWR"
         ],
-         "default_maps": [ "ARRIVAL BASE","DR BASE","WEST ALL DUMP" ],
+         "default_maps": [ "D01 AR BASE","D01 DR BASE","D01 West Dump" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -5061,7 +5061,7 @@
           "GXY_TWR",
           "FNL_TWR"
         ],
-         "default_maps": [ "ARRIVAL BASE","DR BASE","EAST ALL DUMP" ],
+         "default_maps": [ "D01 AR BASE","D01 DR BASE","D01 East Dump" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -5317,7 +5317,7 @@
           "GXY_TWR",
           "FNL_TWR"
         ],
-         "default_maps": [ "ARRIVAL BASE","DR BASE","LN DUMP", "EAST ALL DUMP"],
+         "default_maps": [ "D01 AR BASE","D01 DR BASE","LN DUMP", "D01 East Dump"],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -5573,7 +5573,7 @@
           "GXY_TWR",
           "FNL_TWR"
         ],
-         "default_maps": [ "ARRIVAL BASE","DR BASE","LN DUMP", "WEST ALL DUMP"],
+         "default_maps": [ "D01 AR BASE","D01 DR BASE","LN DUMP", "D01 West Dump"],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -5829,7 +5829,7 @@
           "GXY_TWR",
           "FNL_TWR"
         ],
-         "default_maps": [ "ARRIVAL BASE","DR BASE","LS DUMP","EAST ALL DUMP" ],
+         "default_maps": [ "D01 AR BASE","D01 DR BASE","LS DUMP","D01 East Dump" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -6085,7 +6085,7 @@
           "GXY_TWR",
           "FNL_TWR"
         ],
-         "default_maps": [ "ARRIVAL BASE","DR BASE","LS DUMP","WEST ALL DUMP" ],
+         "default_maps": [ "D01 AR BASE","D01 DR BASE","D01 West Dump" ],
         "departure_runways": [
           {
             "airport": "KDEN",
@@ -6139,6 +6139,17 @@
       }
     },
     "stars_config": {
+    "stars_maps": [
+        "D01 AR BASE", "D01 DR BASE", "D01 MVA",
+        "D01 EOVM", "D01 AIRWAYS", "D01 VFR",
+        "D01 North Dump", "D01 South Dump", "D01 East Dump", "D01 West Dump", "D01 AR LE", "D01 AR LEW",
+        "D01 AR LN", "D01 AR LNE", "D01 AR LNS", "D01 AR LNW", "D01 AR LS", "D01 AR LSE",
+        "D01 AR LSW", "D01 AR LW", "D01 BRAVO", "",
+        "D01 DR LE", "D01 DR LEW", "D01 DR LN", "D01 DR LNE", "D01 DR LNS", "D01 DR LNW", "D01 DR LS",
+        "D01 DR LSE", "D01 DR LSW", "D01 DR LW", "D01 ESID LE", "D01 ESID LN", "D01 ESID LS", "D01 Fixes",
+        "LN DUMP", "LS DUMP"
+    ],
+      "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
       "center": "KDEN",
       "inhibit_ca_volumes": [
         {
@@ -6192,189 +6203,6 @@
         "XXWNG": "RIK",
         "CHNGY": "ZIM"
       },
-      "stars_maps": [
-        {
-          "group": 0,
-          "label": "ARR BAS",
-          "name": "ARRIVAL BASE"
-      },
-      {
-        "group": 0,
-        "label": "DR BASE",
-        "name": "DR BASE"
-    },
-    {
-      "group": 1,
-      "label": "D01 MVA",
-      "name": "D01 MVA"
-  },
-  {
-    "group": 0,
-    "label": "EOVM",
-    "name": "D01 EOVM"
-  },
-  {
-    "group": 0,
-    "label": "AIRWAYS",
-    "name": "D01 AIRWAYS"
-  },
-  {
-    "group": 0,
-    "label": "VFRLMRK",
-    "name": "D01 LANDMARK VFR"
-  },
-  {
-    "group": 0,
-    "label": "LN DUMP",
-    "name": "LN DUMP"
-  },
-  {
-    "group": 0,
-    "label": "LS DUMP",
-    "name": "LS DUMP"
-  },
-  {
-    "group": 0,
-    "label": "E DUMP",
-    "name": "EAST ALL DUMP"
-  },
-  {
-    "group": 0,
-    "label": "W DUMP",
-    "name": "WEST ALL DUMP"
-  },
-  {
-    "group": 0,
-    "label": "AR LE",
-    "name": "D01 AR LE"
-  },
-  {
-    "group": 0,
-    "label": "AR LEW",
-    "name": "D01 AR LEW"
-  },
-  {
-    "group": 0,
-    "label": "AR LN",
-    "name": "D01 AR LN"
-  },
-  {
-    "group": 0,
-    "label": "AR LNE",
-    "name": "D01 AR LNE"
-  },
-  {
-    "group": 0,
-    "label": "AR LNS",
-    "name": "D01 AR LNS"
-  },
-  {
-    "group": 0,
-    "label": "AR LNW",
-    "name": "D01 AR LNW"
-  },
-  {
-    "group": 0,
-    "label": "AR LSE",
-    "name": "D01 AR LSE"
-  },
-  {
-    "group": 0,
-    "label": "AR LSW",
-    "name": "D01 AR LSW"
-  },
-  {
-    "group": 0,
-    "label": "AR LW",
-    "name": "D01 AR LW"
-  },
-  {
-    "group": 0,
-    "label": "DR LE",
-    "name": "D01 DR LE"
-  },
-  {
-    "group": 0,
-    "label": "CLASS B",
-    "name": "D01 CLASS B/E Airspace"
-  },
-  {
-    "group": 0,
-    "label": "N STAR",
-    "name": "N STARS"
-  },
-  {
-    "group": 0,
-    "label": "S STAR",
-    "name": "S STARS"
-  },
-  {
-    "group": 0,
-    "label": "ALLDSID",
-    "name": "D01 ALLDSID"
-  },
-  {
-    "group": 0,
-    "label": "ALLASID",
-    "name": "D01 ALLASID"
-  },
-  {
-    "group": 0,
-    "label": "SAT SID",
-    "name": "D01 SAT SID"
-  },
-  {
-    "group": 0,
-    "label": "DR LN",
-    "name": "D01 DR LN"
-  },
-  {
-    "group": 0,
-    "label": "DR LE",
-    "name": "D01 DR LE"
-  },
-  {
-    "group": 0,
-    "label": "DR LS",
-    "name": "D01 DR LS"
-  },
-  {
-    "group": 0,
-    "label": "DR LW",
-    "name": "D01 DR LW"
-  },
-  {
-    "group": 0,
-    "label": "DR LNE",
-    "name": "D01 DR LNE"
-  },
-  {
-    "group": 0,
-    "label": "DR LSE",
-    "name": "D01 DR LSE"
-  },
-  {
-    "group": 0,
-    "label": "DR LSW",
-    "name": "D01 DR LSW"
-  },
-  {
-    "group": 0,
-    "label": "DR LNW",
-    "name": "D01 DR LNW"
-  },
-  {
-    "group": 0,
-    "label": "DR LNS",
-    "name": "D01 DR LNS"
-  },
-  {
-    "group": 0,
-    "label": "DR LEW",
-    "name": "D01 DR LEW"
-  }
-      ],
-      "video_map_file": "videomaps/ZDV-videomaps.json.zst",
       "force_ql_self": true,
       "airspace_awareness": [
         {

@@ -709,123 +709,14 @@
     "scratchpads": {
       "STEWW": "SCA"
     },
-    "stars_maps": [
-      {
-        "group": 0,
-        "label": "N-FLOW",
-        "name": "S56 107 N Flow Base Map"
-      },
-      {
-        "group": 0,
-        "label": "S-FLOW",
-        "name": "S56 109 South Flow Base Map"
-      },
-      {
-        "group": 0,
-        "label": "N-FINAL",
-        "name": "S56 141 North Final Lines"
-      },
-      {
-        "group": 0,
-        "label": "S-FINAL",
-        "name": "S56 142 South Final Lines"
-      },
-      {
-        "group": 1,
-        "label": "MVA",
-        "name": "S56 203 3NM Separation MVA"
-      },
-      {
-        "group": 0,
-        "label": "EOVM",
-        "name": "S56 119 Emergency Obstacle Map"
-      },
-      {
-        "group": 0,
-        "label": "N-FNL-E",
-        "name": "S56 147 North Finals Extended"
-      },
-      {
-        "group": 0,
-        "label": "S-FNL-E",
-        "name": "S56 146 South Finals Extended"
-      },
-      {
-        "group": 0,
-        "label": "N-SIDL",
-        "name": "S56 162 North Flow SID Lines"
-      },
-      {
-        "group": 0,
-        "label": "S-SIDL",
-        "name": "S56 159 South Flow SID Lines"
-      },
-      {
-        "group": 0,
-        "label": "N-SIDW",
-        "name": "S56 160 North Flow SID Waypoint Symbols"
-      },
-      {
-        "group": 0,
-        "label": "S-SIDW",
-        "name": "S56 157 South Flow SID Waypoints Symbols"
-      },
-      {
-        "group": 0,
-        "label": "N-SIDN",
-        "name": "S56 161 North Flow SID Names"
-      },
-      {
-        "group": 0,
-        "label": "S-SIDN",
-        "name": "S56 158 South Flow SID Waypoint Names"
-      },
-      {
-        "group": 0,
-        "label": "T SPACE",
-        "name": "S56 137 Tower Airspace"
-      },
-      {
-        "group": 0,
-        "label": "ROADS",
-        "name": "S56 176 Roads"
-      },
-      {
-        "group": 0,
-        "label": "SAT",
-        "name": "S56 102 Satellite Approaches"
-      },
-      {
-        "group": 0,
-        "label": "WIDESIM",
-        "name": "S56 167 Widely Spaced Simuls Map"
-      },
-      {
-        "group": 0,
-        "label": "GPS",
-        "name": "S56 120 GPS Approach Centerlines"
-      },
-      {
-        "group": 0,
-        "label": "GPSTXT",
-        "name": "S56 150 GPS Approaches Text"
-      },
-      {
-        "group": 0,
-        "label": "OGD-VOR",
-        "name": "S56 190 OGD VOR-A Approach"
-      },
-      {
-        "group": 0,
-        "label": "PVU-VOR",
-        "name": "S56 169 PVU VOR Approach"
-      },
-      {
-        "group": 0,
-        "label": "ZLC",
-        "name": "S56 104 ZLC Split Map"
-      }
+      "stars_maps": ["S56 107 N Flow Base Map", "S56 109 South Flow Base Map", "S56 141 North Final Lines", "S56 142 South Final Lines",
+                     "S56 203 3NM Separation MVA", "S56 119 Emergency Obstacle Map", "S56 147 North Finals Extended", "S56 146 South Finals Extended",
+                     "S56 162 North Flow SID Lines", "S56 159 South Flow SID Lines", "S56 160 North Flow SID Waypoint Symbols",
+                     "S56 157 South Flow SID Waypoints Symbols", "S56 161 North Flow SID Names", "S56 158 South Flow SID Waypoint Names",
+                     "S56 137 Tower Airspace", "S56 176 Roads", "S56 102 Satellite Approaches", "S56 167 Widely Spaced Simuls Map",
+                     "S56 120 GPS Approach Centerlines", "S56 150 GPS Approaches Text", "S56 190 OGD VOR-A Approach",
+                     "S56 169 PVU VOR Approach", "S56 104 ZLC Split Map"
     ],
-    "video_map_file": "videomaps/ZLC-videomaps.json.zst"
+    "video_map_file": "videomaps/ZLC-videomaps.gob.zst"
   }
 }

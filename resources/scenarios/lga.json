@@ -1693,7 +1693,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "LGA"
+        "LGA-HPN ARR/DEP"
       ],
       "departure_runways": [
         {
@@ -1807,7 +1807,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "LGA"
+        "LGA-HPN ARR/DEP"
       ],
       "departure_runways": [
         {
@@ -1921,7 +1921,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "LGA"
+        "LGA-HPN ARR/DEP"
       ],
       "departure_runways": [
         {
@@ -2035,7 +2035,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "LGA"
+        "LGA-HPN ARR/DEP"
       ],
       "departure_runways": [
         {
@@ -2150,7 +2150,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "LGA"
+        "LGA-HPN ARR/DEP"
       ],
       "departure_runways": [
         {
@@ -2234,7 +2234,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "LGA"
+        "LGA-HPN ARR/DEP"
       ],
       "range": 23,
       "wind": {
@@ -2275,7 +2275,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "LGA"
+        "LGA-HPN ARR/DEP"
       ],
       "range": 23,
       "wind": {
@@ -2315,7 +2315,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "LGA"
+        "LGA-HPN ARR/DEP"
       ],
       "range": 23,
       "wind": {
@@ -2355,7 +2355,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "LGA"
+        "LGA-HPN ARR/DEP"
       ],
       "range": 23,
       "wind": {
@@ -2395,7 +2395,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "LGA"
+        "LGA-HPN ARR/DEP"
       ],
       "range": 23,
       "wind": {
@@ -2435,7 +2435,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "LGA"
+        "LGA-HPN ARR/DEP"
       ],
       "range": 23,
       "wind": {
@@ -2475,7 +2475,7 @@
         "NY_LS_APP"
       ],
       "default_maps": [
-        "LGA"
+        "LGA-HPN ARR/DEP"
       ],
       "range": 23,
       "wind": {
@@ -2569,38 +2569,10 @@
     "NEWEL": "NWL",
     "ZIMMZ": "ZIM"
   },
-  "stars_maps": [
-    {
-      "group": 0,
-      "label": "LGA",
-      "name": "LGA"
-    },
-    {
-      "group": 0,
-      "label": "LGA RTL",
-      "name": "LGA Right Turn Line"
-    },
-    {
-      "group": 0,
-      "label": "LOC 31",
-      "name": "LGA LOC 31"
-    },
-    {
-      "group": 1,
-      "label": "NY B",
-      "name": "N90 CLASS B"
-    },
-    {
-      "group": 1,
-      "label": "LGA GEO",
-      "name": "LGA GEO"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "N90 MVA"
-    }
-  ],
-  "video_map_file": "videomaps/n90-maps.json.zst"
+      "stars_maps": [ "LGA-HPN ARR/DEP", "NY Class B", "",
+                      "MVA", "Coast", "LGA LOC 31",
+                      "LGA-HPN ARR/DEP", "LGA RNAV", "BGM-101", "", "NY Class B", "", "NE HELI RNAV ROUTES",
+                      "HPN 16/34 GPS FIXES", "NK78 GPS", "ISP ARR/DEP", "EWR ARR/DEP", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 13L/R", "", "" ],
+  "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
   }
 }

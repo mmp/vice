@@ -78,6 +78,7 @@ jobs:
         cp resources/fonts/*zst Vice.app/Contents/Resources/fonts/
         cp resources/scenarios/*json Vice.app/Contents/Resources/scenarios/
         cp resources/videomaps/*zst Vice.app/Contents/Resources/videomaps/
+        cp resources/videomaps/*gob Vice.app/Contents/Resources/videomaps/
         cp resources/mva-fus3.zip Vice.app/Contents/Resources/
 
     - name: Check Secrets

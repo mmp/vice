@@ -1675,87 +1675,10 @@
     "SSI": "SSI"
   },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "EAST",
-      "name": "EAST FLOW"
-    },
-    {
-      "group": 0,
-      "label": "WEST",
-      "name": "WEST FLOW"
-    },
-    {
-    "group": 1,
-    "label": "CLASS C",
-    "name": "CLASS C AIRSPACE"
-    },
-    {
-      "group": 1,
-      "label": "CLASS D",
-      "name": "CLASS D AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "GPS",
-      "name": "GPS APPROACHES"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "MULTI MVA"
-    },
-    {
-      "group": 1,
-      "label": "SIDWAY",
-      "name": "SID WAYPOINTS (JAX)"
-    },
-    {
-      "group": 1,
-      "label": "LUNNI",
-      "name": "LUNNI STAR"
-    },
-    {
-      "group": 1,
-      "label": "MARQO",
-      "name": "MARQO STAR"
-    },
-    {
-      "group": 1,
-      "label": "OHDEA",
-      "name": "OHDEA STAR"
-    },
-    {
-      "group": 1,
-      "label": "QUBEN",
-      "name": "QUBEN STAR"
-   },
-   {
-       "group": 1,
-       "label": "TEBOW",
-       "name": "TEBOW STAR"
-   },
-   {
-    "group": 1,
-    "label": "RNAVS14",
-    "name": "RNAV STARS RWY 14"
-    },
-    {
-        "group": 1,
-        "label": "RNAVS26",
-        "name": "RNAV STARS RWY 26"
-    },
-    {
-        "group": 1,
-        "label": "RNAVS08",
-        "name": "RNAV STARS RWY 08"
-    },
-    {
-      "group": 1,
-      "label": "RNAVS32",
-      "name": "RNAV STARS RWY 32"
-   }
+      "EAST FLOW", "WEST FLOW", "CLASS C AIRSPACE", "CLASS D AIRSPACE", "GPS APPROACHES", "MULTI MVA", "SID WAYPOINTS (JAX)", "LUNNI STAR",
+      "MARQO STAR", "OHDEA STAR", "QUBEN STAR", "TEBOW STAR", "RNAV STARS RWY 14", "RNAV STARS RWY 26", "RNAV STARS RWY 08",
+      "RNAV STARS RWY 32"
   ],
-  "video_map_file": "videomaps/ZJX-videomaps.json.zst"
+  "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
   }
 }

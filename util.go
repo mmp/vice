@@ -533,6 +533,24 @@ func SampleWeighted[T any](slice []T, weight func(T) int) int {
 	return idx
 }
 
+// Given a map from strings to some type T where the keys are assumed to be
+// of the form "foo,bar,bat", return a new map where each comma-delineated
+// string in the keys has its own entry in the returned map.  Panics if a
+// key is repeated.
+func CommaKeyExpand[T any](in map[string]T) map[string]T {
+	m := make(map[string]T)
+	for k, v := range in {
+		for _, s := range strings.Split(k, ",") {
+			s = strings.TrimSpace(s)
+			if _, ok := m[s]; ok {
+				panic("key repeated in map given to CommaKeyExpand")
+			}
+			m[s] = v
+		}
+	}
+	return m
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // TransientMap
 

@@ -1196,57 +1196,9 @@
           "ODI": "ODI"
         },
         "stars_maps": [
-          {
-            "group": 1,
-            "label": "12 A",
-            "name": "M98 219 12 A"
-          },
-          {
-            "group": 0,
-            "label": "12 D",
-            "name": "M98 220 12 D"
-          },
-          {
-            "group": 1,
-            "label": "30 A",
-            "name": "M98 216 30 A"
-          },
-          {
-            "group": 0,
-            "label": "30 D",
-            "name": "M98 217 30 D"
-          },
-          {
-            "group": 0,
-            "label": "12-17 A",
-            "name": "M98 224 12-17 A"
-          },
-          {
-            "group": 0,
-            "label": "12-17 D",
-            "name": "M98 226 12-17 D"
-          },
-          {
-            "group": 0,
-            "label": "30-35 B",
-            "name": "M98 231 30-35 B"
-          },
-          {
-            "group": 1,
-            "label": "FIXES",
-            "name": "M98 110 FIXES"
-          },
-          {
-            "group": 1,
-            "label": "MVA",
-            "name": "M98 153 MVA"
-          },
-          {
-            "group": 0,
-            "label": "AIRSPAC",
-            "name": "M98 106 AIRSPAC"
-          }
+            "M98 219 12 A", "M98 220 12 D", "M98 216 30 A", "M98 217 30 D", "M98 224 12-17 A", "M98 226 12-17 D", "M98 231 30-35 B", 
+            "M98 110 FIXES", "M98 153 MVA", "M98 106 AIRSPAC"
         ],
-        "video_map_file": "videomaps/ZMP-videomaps.json.zst"
+        "video_map_file": "videomaps/ZMP-videomaps.gob.zst"
         }
 }
