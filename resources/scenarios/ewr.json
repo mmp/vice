@@ -1119,36 +1119,44 @@
         "WAVEY": "South",
         "WHITE": "South",
         "ZIMMZ": "West"
-      },      
+      },
       "tower_list": 1,
       "atpa_volumes": {
         "4R": {
-            "runway_threshold": "KEWR-4R",
-            "heading": 39,
-            "max_heading_deviation": 90,
-            "floor": 100,
-            "ceiling": 5000,
-            "length": 50,
-            "left_width": 20000,
-            "right_width": 20000,
-            "filtered_scratchpads": [ "VAP" ],
-            "excluded_scratchpads": [ "I4L" ],
-            "enable_2.5nm": true,
-            "2.5nm_distance": 10
-          },
-          "22L": {
-              "runway_threshold": "KEWR-22L",
-              "heading": 219,
-              "max_heading_deviation": 90,
-              "floor": 100,
-              "ceiling": 5000,
-              "length": 50,
-              "left_width": 20000,
-              "right_width": 20000,
-              "filtered_scratchpads": [ "VAP" ],
-              "excluded_scratchpads": [ "I2R" ],
-              "enable_2.5nm": true,
-              "2.5nm_distance": 10
+          "runway_threshold": "KEWR-4R",
+          "heading": 39,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 5000,
+          "length": 50,
+          "left_width": 20000,
+          "right_width": 20000,
+          "filtered_scratchpads": [
+            "VAP"
+          ],
+          "excluded_scratchpads": [
+            "I4L"
+          ],
+          "enable_2.5nm": true,
+          "2.5nm_distance": 10
+        },
+        "22L": {
+          "runway_threshold": "KEWR-22L",
+          "heading": 219,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 5000,
+          "length": 50,
+          "left_width": 20000,
+          "right_width": 20000,
+          "filtered_scratchpads": [
+            "VAP"
+          ],
+          "excluded_scratchpads": [
+            "I2R"
+          ],
+          "enable_2.5nm": true,
+          "2.5nm_distance": 10
         }
       }
     },
@@ -1866,32 +1874,32 @@
         "WAVEY": "South",
         "WHITE": "South",
         "ZIMMZ": "West"
-      },     
+      },
       "tower_list": 1,
       "atpa_volumes": {
         "6": {
-            "runway_threshold": "KTEB-6",
-            "heading": 60,
-            "max_heading_deviation": 90,
-            "floor": 100,
-            "ceiling": 5000,
-            "length": 50,
-            "left_width": 20000,
-            "right_width": 20000,
-            "enable_2.5nm": false,
-            "2.5nm_distance": 10
-          },
-          "19": {
-              "runway_threshold": "KTEB-19",
-              "heading": 195,
-              "max_heading_deviation": 90,
-              "floor": 100,
-              "ceiling": 5000,
-              "length": 50,
-              "left_width": 20000,
-              "right_width": 20000,
-              "enable_2.5nm": false,
-              "2.5nm_distance": 10
+          "runway_threshold": "KTEB-6",
+          "heading": 60,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 5000,
+          "length": 50,
+          "left_width": 20000,
+          "right_width": 20000,
+          "enable_2.5nm": false,
+          "2.5nm_distance": 10
+        },
+        "19": {
+          "runway_threshold": "KTEB-19",
+          "heading": 195,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 5000,
+          "length": 50,
+          "left_width": 20000,
+          "right_width": 20000,
+          "enable_2.5nm": false,
+          "2.5nm_distance": 10
         }
       }
     },
@@ -2564,7 +2572,7 @@
         "WAVEY": "South",
         "WHITE": "South",
         "ZIMMZ": "West"
-      }      
+      }
     }
   },
   "arrival_groups": {
@@ -3864,11 +3872,11 @@
         },
         "JAIKE4": {
           "KTEB": 2,
-          "KMMU":5
+          "KMMU": 5
         },
         "MAZIE": {
           "KTEB": 5,
-          "KMMU":2
+          "KMMU": 2
         },
         "PHL": {
           "KEWR": 2
@@ -3949,7 +3957,7 @@
       "default_maps": [
         "EWR ARR/DEP"
       ],
-      "departure_runways": [ 
+      "departure_runways": [
         {
           "airport": "KEWR",
           "rate": 25,
@@ -3995,7 +4003,9 @@
         "PHL_E_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR ARR/DEP" ],
+      "default_maps": [
+        "EWR ARR/DEP"
+      ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -4042,7 +4052,9 @@
         "PHL_E_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR ARR/DEP" ],
+      "default_maps": [
+        "EWR ARR/DEP"
+      ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -4102,7 +4114,7 @@
         },
         "MAZIE": {
           "KTEB": 5,
-          "KMMU":2
+          "KMMU": 2
         },
         "PHL": {
           "KEWR": 2
@@ -4221,7 +4233,7 @@
         "COATE": {
           "KTEB": 7,
           "KMMU": 2
-        },        
+        },
         "LVZ4": {
           "KTEB": 7,
           "KMMU": 2
@@ -4235,7 +4247,7 @@
           "KMMU": 1
         }
       },
-      "solo_controller": "EWR_U_APP",    
+      "solo_controller": "EWR_U_APP",
       "controllers": [
         "LGA_DEP",
         "LGA_APP",
@@ -4254,7 +4266,9 @@
         "PHL_E_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR ARR/DEP" ],      
+      "default_maps": [
+        "EWR ARR/DEP"
+      ],
       "wind": {
         "direction": 60,
         "gust": 13,
@@ -4276,7 +4290,7 @@
         "COATE": {
           "KTEB": 7,
           "KMMU": 2
-        },        
+        },
         "LVZ4": {
           "KTEB": 7,
           "KMMU": 2
@@ -4290,7 +4304,7 @@
           "KMMU": 1
         }
       },
-      "solo_controller": "EWR_U_APP",    
+      "solo_controller": "EWR_U_APP",
       "controllers": [
         "LGA_DEP",
         "LGA_APP",
@@ -4309,7 +4323,9 @@
         "PHL_E_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR ARR/DEP" ],      
+      "default_maps": [
+        "EWR ARR/DEP"
+      ],
       "wind": {
         "direction": 240,
         "gust": 18,
@@ -4514,121 +4530,154 @@
     }
   },
   "stars_config": {
-  "center": "N040.43.34.389,W074.28.54.713",
-  "range": 60,
-  "coordination_fixes": {
-    "FLOSI": {
-      "type": "route",
-      "to": "N90",
-      "from": "ZNY"
-  },
-  "DYLIN": {
-      "type": "route",
-      "to": "N90",
-      "from": "ZNY"
-  },
-  "SWEET": {
-      "type": "route",
-      "to": "N90",
-      "from": "ZNY"
-  }
-
-  },
-  "inhibit_ca_volumes": [
-    {
-      "name": "EWR NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 7,
-      "center": "KEWR"
-    }
-  ],
-  "radar_sites": {
-    "EWR": {
-      "char": "E",
-      "position": "KEWR",
-      "elevation": 136,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
+    "center": "N040.43.34.389,W074.28.54.713",
+    "range": 60,
+    "coordination_fixes": {
+      "FLOSI": {
+        "type": "route",
+        "to": "N90",
+        "from": "ZNY"
+      },
+      "DYLIN": {
+        "type": "route",
+        "to": "N90",
+        "from": "ZNY"
+      },
+      "SWEET": {
+        "type": "route",
+        "to": "N90",
+        "from": "ZNY"
+      },
+      "RBV": {
+        "type": "zone",
+        "to": "N90",
+        "from": "PHL"
+      }
     },
-    "HPN": {
-      "char": "H",
-      "position": "KHPN",
-      "elevation": 708,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
+    "inhibit_ca_volumes": [
+      {
+        "name": "EWR NO CA",
+        "type": "circle",
+        "floor": 0,
+        "ceiling": 1200,
+        "radius": 7,
+        "center": "KEWR"
+      }
+    ],
+    "radar_sites": {
+      "EWR": {
+        "char": "E",
+        "position": "KEWR",
+        "elevation": 136,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "HPN": {
+        "char": "H",
+        "position": "KHPN",
+        "elevation": 708,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "ISP": {
+        "char": "I",
+        "position": "KISP",
+        "elevation": 185,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "JFK": {
+        "char": "J",
+        "position": "KJFK",
+        "elevation": 143,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "SWF": {
+        "char": "S",
+        "position": "KSWF",
+        "elevation": 972,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      }
     },
-    "ISP": {
-      "char": "I",
-      "position": "KISP",
-      "elevation": 185,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "JFK": {
-      "char": "J",
-      "position": "KJFK",
-      "elevation": 143,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "SWF": {
-      "char": "S",
-      "position": "KSWF",
-      "elevation": 972,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    }
-  },
     "allow_long_scratchpad": [
       false,
       false
     ],
     "force_ql_self": true,
-  "scratchpads": {
-    "BAYYS": "BAY",
-    "BDR": "BDR",
-    "BIGGY": "BIG",
-    "BREZY": "BRE",
-    "COATE": "COA",
-    "DIXIE": "DIX",
-    "ELIOT": "ELI",
-    "GAYEL": "GAY",
-    "GREKI": "GRE",
-    "HAAYS": "HAY",
-    "LANNA": "LAN",
-    "MERIT": "MER",
-    "NEION": "NEI",
-    "NEWEL": "NWL",
-    "None": null,
-    "PARKE": "PAR",
-    "SAX": "SAX",
-    "SBJ": "SBJ",
-    "SHIPP": "SHI",
-    "WAVEY": "WAV",
-    "WHITE": "WHI",
-    "ARD": "ARD",
-    "ZIMMZ": "ZIM"
-  },
-      "stars_maps": [ "EWR ARR/DEP", "MVA", "NY Class B",
-                      "EOVM", "MMU ILS 23", "CDW RNAV",
-                      "EWR CRDA", "EWR GLS", "TEB RNAV (GPS) RWY 6", "RNAVX 29", "TEB RNAV", "LGA & VAP", "EWR RNAV",
-                      "STW/SAX RNAV", "N07 RNAV", "DEPARTURE RNAV", "SMQ/N51", "39N/47N", "JFK ARR/DEP RWY 4L/R",
-                      "JFK ARR/DEP RWY 13L/R", "JFK ARR/DEP",
-                      "N90 TFR", "Coast", "EOVM", "", "EWR GPS", "", "",
-                      "NE HELI RNAV ROUTES", "CATSKILL AREA", "LIBERTY DEP", "ISP ARR/DEP", "LGA-HPN ARR/DEP",
-                      "JFK ARR/DEP RWY 22L/R", "JFK ARR/DEP RWY 31L/R" ],
-  "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
+    "scratchpads": {
+      "BAYYS": "BAY",
+      "BDR": "BDR",
+      "BIGGY": "BIG",
+      "BREZY": "BRE",
+      "COATE": "COA",
+      "DIXIE": "DIX",
+      "ELIOT": "ELI",
+      "GAYEL": "GAY",
+      "GREKI": "GRE",
+      "HAAYS": "HAY",
+      "LANNA": "LAN",
+      "MERIT": "MER",
+      "NEION": "NEI",
+      "NEWEL": "NWL",
+      "None": null,
+      "PARKE": "PAR",
+      "SAX": "SAX",
+      "SBJ": "SBJ",
+      "SHIPP": "SHI",
+      "WAVEY": "WAV",
+      "WHITE": "WHI",
+      "ARD": "ARD",
+      "ZIMMZ": "ZIM"
+    },
+    "stars_maps": [
+      "EWR ARR/DEP",
+      "MVA",
+      "NY Class B",
+      "EOVM",
+      "MMU ILS 23",
+      "CDW RNAV",
+      "EWR CRDA",
+      "EWR GLS",
+      "TEB RNAV (GPS) RWY 6",
+      "RNAVX 29",
+      "TEB RNAV",
+      "LGA & VAP",
+      "EWR RNAV",
+      "STW/SAX RNAV",
+      "N07 RNAV",
+      "DEPARTURE RNAV",
+      "SMQ/N51",
+      "39N/47N",
+      "JFK ARR/DEP RWY 4L/R",
+      "JFK ARR/DEP RWY 13L/R",
+      "JFK ARR/DEP",
+      "N90 TFR",
+      "Coast",
+      "EOVM",
+      "",
+      "EWR GPS",
+      "",
+      "",
+      "NE HELI RNAV ROUTES",
+      "CATSKILL AREA",
+      "LIBERTY DEP",
+      "ISP ARR/DEP",
+      "LGA-HPN ARR/DEP",
+      "JFK ARR/DEP RWY 22L/R",
+      "JFK ARR/DEP RWY 31L/R"
+    ],
+    "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
   }
 }

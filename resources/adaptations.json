@@ -15,6 +15,11 @@
                 "type": "route",
                 "to": "N90",
                 "from": "ZNY"
+            },
+            "RBV": {
+                "type": "zone",
+                "to": "N90",
+                "from": "PHL"
             }
         }
     },

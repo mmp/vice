@@ -366,7 +366,7 @@ func (comp *ERAMComputer) SendFlightPlans(w *World) {
 				if !w.SimTime.Add(30*time.Minute).Before(fp.CoordinationTime.Time) && !slices.Contains(fp.ContainedFacilities, to) {
 					comp.SendFlightPlan(fp, w)
 				} else if !slices.Contains(fp.ContainedFacilities, to) {
-					fmt.Printf("%v is more than 30 minutes away from his coordination fix %v. Coordination Time: %v, Time Added: %v.\n\n", fp.Callsign, fp.CoordinationFix, fp.CoordinationTime, w.SimTime.Add(30*time.Minute))
+					fmt.Printf("%v/%v is more than 30 minutes away from his coordination fix %v. Coordination Time: %v, Time Added: %v.\n", fp.Callsign, fp.AssignedSquawk, fp.CoordinationFix, fp.CoordinationTime.Time.Format("15:04"), w.SimTime.Add(30*time.Minute).Format("15:04"))
 				}
 			} else {
 				lg.Errorf("%v: Plan for %v is nil: %v.", comp.Identifier, sq, comp.FlightPlans)

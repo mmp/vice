@@ -893,9 +893,19 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		starsFP.CoordinationTime = CoordinationTime{
 			Time: w.SimTime.Add(time.Duration(time2 * float32(time.Minute))),
 		}
-
+	} else { // zone based fixes.
+		loc := database.Fixes[starsFP.CoordinationFix].Location
+		if loc == (Point2LL{}) {
+			loc = database.Navaids[starsFP.CoordinationFix].Location
+		}
+		dist = nmdistance2ll(ac.Position(), loc)
+		fmt.Printf("Distance between %v and %v is %v.\n", ac.Position(), loc, dist)
+		time2 = dist / float32(starsFP.CruiseSpeed) * 60
+		starsFP.CoordinationTime = CoordinationTime{
+			Time: w.SimTime.Add(time.Duration(time2 * float32(time.Minute))),
+		}
 	}
-
+	fmt.Printf("Coordination time for %v/%v is %v. Sim time: %v. Added time: %v.\n", starsFP.Callsign, starsFP.AssignedSquawk, starsFP.CoordinationTime.Time.Format("15:04:05"), w.SimTime.Format("15:04:05"), time.Duration(time2*float32(time.Minute)).String())
 	artcc.FlightPlans[flightPlan.AssignedSquawk] = starsFP
 	if stars == nil { // coming from an ERAM place
 		artcc.TrackInformation[flightPlan.AssignedSquawk] = &TrackInformation{
