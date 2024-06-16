@@ -974,7 +974,7 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 		cmd = true
 	}
 
-	if (ctx.keyboard.IsPressed(KeyControl) || cmd)&& ctx.keyboard.IsPressed(KeyV) {
+	if (ctx.keyboard.IsPressed(KeyControl) || cmd) && ctx.keyboard.IsPressed(KeyV) {
 		c, err := ctx.platform.GetClipboard().Text()
 		if err == nil {
 			mp.input.InsertAtCursor(c)
@@ -985,7 +985,7 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 			mp.input.cursor--
 		}
 	}
-	
+
 	if ctx.keyboard.IsPressed(KeyRightArrow) {
 		if mp.input.cursor < len(mp.input.cmd) {
 			mp.input.cursor++
