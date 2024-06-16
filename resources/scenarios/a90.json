@@ -580,19 +580,6 @@
                   ]
               },
               {
-                  "exit": "PVC",
-                  "destination": "KPVC",
-                  "altitude": 3000,
-                  "route": "LOGAN4 PVC",
-                  "scratchpad": "P030",
-                  "airlines": [
-                      {
-                          "icao": "KAP",
-                          "fleet": "default"
-                      }
-                  ]
-              },
-              {
                   "exit": "HYLND",
                   "destination": "KDTW",
                   "scratchpad": "M280",
@@ -919,21 +906,6 @@
               },
               {
                 "exit": "PEASE",
-                "destination": "KPSM",
-                "altitude": 4000,
-                "scratchpad": "PSM",
-                "route": "LOGAN4 PEASE",
-                "airlines": [
-                  {
-                    "icao": "KAP"
-                  },
-                  {
-                    "icao": "CNS"
-                  }
-                ]
-              },
-              {
-                "exit": "PEASE",
                 "destination": "KDAW",
                 "altitude": 4000,
                 "scratchpad": "DAW",
@@ -1206,45 +1178,6 @@
                   ]
               },
               {
-                  "exit": "LFV",
-                  "destination": "KACK",
-                  "altitude": 5000,
-                  "scratchpad": "ACK",
-                  "route": "LOGAN4 LFV",
-                  "airlines": [
-                      {
-                          "icao": "KAP",
-                          "fleet": "usa"
-                      }
-                  ]
-              },
-              {
-                "exit": "LFV",
-                "destination": "KACK",
-                "altitude": 7000,
-                "scratchpad": "ACK",
-                "route": "LOGAN4 LFV",
-                "airlines": [
-                    {
-                        "icao": "KAP",
-                        "fleet": "usa"
-                    }
-                ]
-            },
-            {
-              "exit": "LFV",
-              "destination": "KACK",
-              "altitude": 9000,
-              "scratchpad": "ACK",
-              "route": "LOGAN4 LFV",
-              "airlines": [
-                  {
-                      "icao": "KAP",
-                      "fleet": "usa"
-                  }
-              ]
-          },
-              {
                   "exit": "ENE",
                   "destination": "KAUG",
                   "altitude": 6000,
@@ -1270,45 +1203,6 @@
                       }
                   ]
               },
-                {
-                    "exit": "DUNKK",
-                    "destination": "KMVY",
-                    "scratchpad": "MVY",
-                    "altitude": 3000,
-                    "route": "LOGAN4 DUNKK",
-                    "airlines": [
-                        {
-                            "icao": "KAP",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                  "exit": "DUNKK",
-                  "destination": "KMVY",
-                  "scratchpad": "MVY",
-                  "altitude": 5000,
-                  "route": "LOGAN4 DUNKK",
-                  "airlines": [
-                      {
-                          "icao": "KAP",
-                          "fleet": "default"
-                      }
-                  ]
-              },
-              {
-                "exit": "DUNKK",
-                "destination": "KMVY",
-                "scratchpad": "MVY",
-                "altitude": 7000,
-                "route": "LOGAN4 DUNKK",
-                "airlines": [
-                    {
-                        "icao": "KAP",
-                        "fleet": "default"
-                    }
-                ]
-            },
                 {
                     "exit": "BLZZR",
                     "destination": "KATL",
@@ -1947,58 +1841,6 @@
                     ]
                 },
                 {
-                    "exit": "MANCH",
-                    "destination": "KLEB",
-                    "altitude": 6000,
-                    "scratchpad": "M060",
-                    "route": "LOGAN4 MANCH",
-                    "airlines": [
-                        {
-                            "icao": "KAP",
-                            "fleet": "usa"
-                        }
-                    ]
-                },
-                {
-                  "exit": "MHT",
-                  "destination": "KCON",
-                  "altitude": 4000,
-                  "scratchpad": "CON",
-                  "route": "LOGAN4 MHT",
-                  "airlines": [
-                    {
-                      "icao": "CNS"
-                    }
-                  ]
-                },
-                {
-                  "exit": "MHT",
-                  "destination": "KLCI",
-                  "altitude": 6000,
-                  "scratchpad": "LCI",
-                  "route": "LOGAN4 MHT",
-                  "airlines": [
-                    {
-                      "icao": "CNS"
-                    }
-                  ]
-                },
-                {
-                  "exit": "MHT",
-                  "destination": "KMHT",
-                  "altitude": 3000,
-                  "scratchpad": "MHT",
-                  "route": "LOGAN4 MHT",
-                  "airlines": [
-                    {
-                      "icao": "CNS"
-                    },
-                    {
-                      "icao": "KAP"
-                    }
-                  ]
-                },
-                {
                     "exit": "PEASE",
                     "destination": "KRKD",
                     "altitude": 5000,
@@ -2124,19 +1966,6 @@
                     "airlines": [
                         {
                             "icao": "UAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "LFV",
-                    "destination": "KACK",
-                    "altitude": 5000,
-                    "scratchpad": "L050",
-                    "route": "LOGAN4 LFV",
-                    "airlines": [
-                        {
-                            "icao": "KAP",
                             "fleet": "default"
                         }
                     ]
@@ -2961,45 +2790,6 @@
                     ]
                 },
                 {
-                    "exit": "DUNKK",
-                    "destination": "KHYA",
-                    "altitude": 5000,
-                    "scratchpad": "HYA",
-                    "route": "LOGAN4 DUNKK V141 GAILS",
-                    "airlines": [
-                        {
-                            "icao": "KAP",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                  "exit": "DUNKK",
-                  "destination": "KHYA",
-                  "altitude": 3000,
-                  "scratchpad": "HYA",
-                  "route": "LOGAN4 DUNKK V141 GAILS",
-                  "airlines": [
-                      {
-                          "icao": "KAP",
-                          "fleet": "default"
-                      }
-                  ]
-              },
-              {
-                "exit": "DUNKK",
-                "destination": "KHYA",
-                "altitude": 7000,
-                "scratchpad": "HYA",
-                "route": "LOGAN4 DUNKK V141 GAILS",
-                "airlines": [
-                    {
-                        "icao": "KAP",
-                        "fleet": "default"
-                    }
-                ]
-            },
-                {
                     "exit": "SSOXS",
                     "destination": "KMCO",
                     "altitude": 36000,
@@ -3143,32 +2933,6 @@
                     ]
                 },
                 {
-                    "exit": "LFV",
-                    "destination": "KACK",
-                    "altitude": 5000,
-                    "scratchpad": "L050",
-                    "route": "LOGAN4 LFV",
-                    "airlines": [
-                        {
-                            "icao": "KAP",
-                            "fleet": "usa"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DUNKK",
-                    "destination": "KHYA",
-                    "altitude": 3000,
-                    "scratchpad": "L030",
-                    "route": "LOGAN4 DUNKK V141 GAILS",
-                    "airlines": [
-                        {
-                            "icao": "KAP",
-                            "fleet": "usa"
-                        }
-                    ]
-                },
-                {
                     "exit": "PATSS",
                     "destination": "KCLT",
                     "altitude": 36000,
@@ -3191,19 +2955,6 @@
                         {
                             "icao": "JBU",
                             "fleet": "long"
-                        }
-                    ]
-                },
-                {
-                    "exit": "PVC",
-                    "destination": "KPVC",
-                    "altitude": 3000,
-                    "scratchpad": "PVC",
-                    "route": "LOGAN4 PVC",
-                    "airlines": [
-                        {
-                            "icao": "KAP",
-                            "fleet": "default"
                         }
                     ]
                 },
@@ -3232,42 +2983,6 @@
                             "fleet": "default"
                         }
                     ]
-                },
-                {
-                  "exit": "DUNKK",
-                  "destination": "KCQX",
-                  "altitude": 3000,
-                  "scratchpad": "CQX",
-                  "route": "LOGAN4 DUNKK V141 GAILS",
-                  "airlines": [
-                    {
-                      "icao": "KAP"
-                    }
-                  ]
-                },
-                {
-                  "exit": "DUNKK",
-                  "destination": "KCQX",
-                  "altitude": 5000,
-                  "scratchpad": "CQX",
-                  "route": "LOGAN4 DUNKK V141 GAILS",
-                  "airlines": [
-                    {
-                      "icao": "KAP"
-                    }
-                  ]
-                },
-                {
-                  "exit": "DUNKK",
-                  "destination": "KCQX",
-                  "altitude": 7000,
-                  "scratchpad": "CQX",
-                  "route": "LOGAN4 DUNKK V141 GAILS",
-                  "airlines": [
-                    {
-                      "icao": "KAP"
-                    }
-                  ]
                 },
                 {
                     "exit": "SSOXS",
@@ -4073,17 +3788,6 @@
                             "icao": "AMF"
                         }
                     ],
-                    "destination": "KHYA",
-                    "exit": "MANCH",
-                    "altitude": 7000,
-                    "route": "MANCH BOS V141 DUNKK"
-                },
-                {
-                    "airlines" : [
-                        {
-                            "icao": "AMF"
-                        }
-                    ],
                     "destination": "KPQI",
                     "exit": "ENE",
                     "route": "ENE MLT"
@@ -4233,21 +3937,6 @@
         {
           "airlines": [
             {
-              "icao": "CNS"
-            },
-            {
-              "icao": "N"
-            }
-          ],
-          "destination": "KCQX",
-          "exit": "DUNKK",
-          "altitude": 5000,
-          "scratchpad": "CQX",
-          "route": "DUNKK V141 GAILS"
-        },
-        {
-          "airlines": [
-            {
               "icao": "EJA"
             },
             {
@@ -4284,21 +3973,6 @@
           "altitude": 35000,
           "scratchpad": "P350",
           "route": "LBSTA SCOGS VIGMA"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "N"
-            },
-            {
-              "icao": "CNS"
-            }
-          ],
-          "destination": "KPSM",
-          "exit": "PEASE",
-          "altitude": 5000,
-          "scratchpad": "PSM",
-          "route": "PEASE"
         }
       ],
       "exit_categories": {
@@ -4488,42 +4162,6 @@
           "altitude": 28000,
           "scratchpad": "B280",
           "route": "BOSOX Q167 RIFLE HEADI Q97 SAWED GUILD Q409 SESUE SOOOP"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "CNS"
-            },
-            {
-              "icao": "N"
-            }
-          ],
-          "destination": "KHYA",
-          "exit": "DUNKK",
-          "altitude": 5000,
-          "scratchpad": "HYA",
-          "route": "DUNKK V141 GAILS"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "CNS"
-            },
-            {
-              "icao": "N"
-            },
-            {
-              "icao": "GPD"
-            },
-            {
-              "icao": "LAK"
-            }
-          ],
-          "destination": "KACK",
-          "exit": "LFV",
-          "altitude": 7000,
-          "scratchpad": "ACK",
-          "route": "LFV"
         },
         {
           "airlines": [
@@ -4742,21 +4380,6 @@
               "icao": "N"
             }
           ],
-          "destination": "KPVC",
-          "altitude": 5000,
-          "exit": "PVC",
-          "scratchpad": "PVC",
-          "route": "PVC"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "CNS"
-            },
-            {
-              "icao": "N"
-            }
-          ],
           "destination": "KPWM",
           "altitude": 5000,
           "exit": "PEASE",
@@ -4912,16 +4535,6 @@
                     "destination": "KAEX",
                     "exit": "CON",
                     "route": "CON ALB DBABE Q448 PTW J48 CSN FANPO Q40 AEX"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "CNS"
-                        }
-                    ],
-                    "destination": "KBOS",
-                    "exit": "STEVO",
-                    "route": "STEVO LWRNC"
                 },
                 {
                     "airlines": [
@@ -5102,30 +4715,6 @@
                         ]
                     },
                     {
-                        "exit": "LFV",
-                        "destination": "KBOS",
-                        "altitude": 5000,
-                        "route": "LOGAN4 LFV",
-                        "airlines": [
-                            {
-                                "icao": "KAP",
-                                "fleet": "c402"
-                            }
-                        ]
-                    },
-                    {
-                        "exit": "FREDO",
-                        "destination": "KBOS",
-                        "altitude": 4000,
-                        "route": "FREDO",
-                        "airlines": [
-                            {
-                                "icao": "KAP",
-                                "fleet": "usa"
-                            }
-                        ]
-                    },
-                    {
                         "exit": "MVY",
                         "destination": "KDCA",
                         "altitude": 22000,
@@ -5146,18 +4735,6 @@
                             {
                                 "icao": "JBU",
                                 "fleet": "default"
-                            }
-                        ]
-                    },
-                    {
-                        "exit": "LFV",
-                        "destination": "KBOS",
-                        "altitude": 5000,
-                        "route": "LOGAN4 LFV",
-                        "airlines": [
-                            {
-                                "icao": "KAP",
-                                "fleet": "usa"
                             }
                         ]
                     },
@@ -5222,42 +4799,6 @@
                         ]
                     },
                     {
-                        "exit": "ACK",
-                        "destination": "KBOS",
-                        "altitude": 4000,
-                        "route": "ACK ACK341 FREDO",
-                        "airlines": [
-                            {
-                                "icao": "KAP",
-                                "fleet": "usa"
-                            }
-                        ]
-                    },
-                    {
-                        "exit": "SWANN",
-                        "destination": "KBOS",
-                        "altitude": 31000,
-                        "route": "SWANN3 SWANN BROSS Q419 JFK ROBUC3",
-                        "airlines": [
-                            {
-                                "icao": "RPA",
-                                "fleet": "default"
-                            }
-                        ]
-                    },
-                    {
-                        "exit": "MVY",
-                        "destination": "KBOS",
-                        "altitude": 6000,
-                        "route": "MVY MVY017 FREDO",
-                        "airlines": [
-                            {
-                                "icao": "KAP",
-                                "fleet": "default"
-                            }
-                        ]
-                    },
-                    {
                         "exit": "KEWB",
                         "destination": "KEWB",
                         "altitude": 4000,
@@ -5269,79 +4810,6 @@
                             }
                         ]
                     },
-                    {
-                        "exit": "MVY",
-                        "destination": "KBOS",
-                        "altitude": 3000,
-                        "route": "MVY MVY017 FREDO",
-                        "airlines": [
-                            {
-                                "icao": "KAP",
-                                "fleet": "default"
-                            }
-                        ]
-                    },
-                    {
-                        "exit": "MVY",
-                        "destination": "KBOS",
-                        "altitude": 3000,
-                        "route": "MVY MVY017 FREDO",
-                        "airlines": [
-                            {
-                                "icao": "KAP",
-                                "fleet": "usa"
-                            }
-                        ]
-                    },
-                    {
-                        "exit": "MVY",
-                        "destination": "KBOS",
-                        "altitude": 3000,
-                        "route": "MVY MVY017 FREDO",
-                        "airlines": [
-                            {
-                                "icao": "KAP",
-                                "fleet": "usa"
-                            }
-                        ]
-                    },
-                    {
-                        "exit": "DUNKK",
-                        "destination": "KBOS",
-                        "altitude": 5000,
-                        "route": "LOGAN4 DUNKK",
-                        "airlines": [
-                            {
-                                "icao": "KAP",
-                                "fleet": "default"
-                            }
-                        ]
-                    },
-                    {
-                        "exit": "DUNKK",
-                        "destination": "KBOS",
-                        "altitude": 5000,
-                        "route": "LOGAN4 DUNKK",
-                        "airlines": [
-                            {
-                                "icao": "KAP",
-                                "fleet": "usa"
-                            }
-                        ]
-                    },
-                    {
-                        "exit": "SWANN",
-                        "destination": "KBOS",
-                        "altitude": 31000,
-                        "route": "SWANN3 SWANN BROSS Q419 JFK ROBUC3",
-                        "airlines": [
-                            {
-                                "icao": "RPA",
-                                "fleet": "default"
-                            }
-                        ]
-                    },
-
                     {
                         "exit": "DOLIE",
                         "destination": "KAUS",
@@ -7287,16 +6755,16 @@
               "star": "ROBUC3",
               "runway_waypoints": {
                 "KBOS": {
-                    "4R": "ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY SOFEE/a9000-10000/s220 ERNEI/a7000-8000 GOSHI/a6000/s210/h035",
-                    "4L": "ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY SOFEE/a9000-10000/s220 ERNEI/a7000-8000 GOSHI/a6000/s210/h035",
-                    "27": "ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY KRANN/a11000-12000/s250 CRADL/a8000-10000 KLEBB HOKDU/a5000/s210/h024",
-                    "22L": "ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY KRANN/a11000-12000/s250 CRADL/a8000-10000 KLEBB/a8000/s250 ETHYN/a5000/s250 PTRIK/a5000/s220 TAALE/a5000/s210/h035",
-                    "15R": "ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY JAYNA/a11000/s250 BOXRS/a8000/s250 CHERS/a6000/s220 RDHOK/a6000/s210 TKMAN/a6000/s210/h329",
-                    "33L": "ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY JAYNA/a11000/s250 ANSLY/a8000/s240 BEREI/a6000-7000/s220 BBOGG/a6000/s210/h060"
+                    "4R": "JOODY SOFEE/a9000-10000/s220 ERNEI/a7000-8000 GOSHI/a6000/s210/h035",
+                    "4L": "JOODY SOFEE/a9000-10000/s220 ERNEI/a7000-8000 GOSHI/a6000/s210/h035",
+                    "27": "JOODY KRANN/a11000-12000/s250 CRADL/a8000-10000 KLEBB HOKDU/a5000/s210/h024",
+                    "22L": "JOODY KRANN/a11000-12000/s250 CRADL/a8000-10000 KLEBB/a8000/s250 ETHYN/a5000/s250 PTRIK/a5000/s220 TAALE/a5000/s210/h035",
+                    "15R": "JOODY JAYNA/a11000/s250 BOXRS/a8000/s250 CHERS/a6000/s220 RDHOK/a6000/s210 TKMAN/a6000/s210/h329",
+                    "33L": "JOODY JAYNA/a11000/s250 ANSLY/a8000/s240 BEREI/a6000-7000/s220 BBOGG/a6000/s210/h060"
                 }
               },
               "speed_restriction": 260,
-              "waypoints": "BANKI/a16000+/ho ROBUC/a12000-19000/s260"
+              "waypoints": "BANKI/a16000+/ho ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY"
             }
           ],
           "ROBUC3_4FINAL": [
@@ -7417,11 +6885,11 @@
         "facility_id": "1"
       },
       "BDL_APP": {
-        "frequency": 123950,
+        "frequency": 119000,
         "full_name": "Yankee Approach",
-        "scope_char": "B",
-        "sector_id": "1B",
-        "facility_id": "1"
+        "scope_char": "2",
+        "sector_id": "1W",
+        "facility_id": "2"
       },
       "BVY_TWR": {
         "frequency": 125200,
@@ -9085,13 +8553,12 @@
             "POMPY": "PMP",
             "PVD": "PVD",
             "ACK": "ACK",
-            "SWANN": "SWANN",
             "HYA": "HYA",
             "KEWB": "KEW",
             "DOLIE": "DOL"
         },
         "stars_maps": [
-            "A90 BASE", "MHT MAIN", "CAPE NE FLOW", "CAPE SW FLOW", "A90 MVA", "B, C, D, AIRSPACE",
+            "A90 BASE", "MHT MAIN", "A90 SAT FINALS", "CAPE NE FLOW", "CAPE SW FLOW", "A90 MVA", "B, C, D, AIRSPACE",
             "A90 SAT FINALS", "A90 COASTLINE", "A90 EOVM", "BOS A90 MAIN", "BOS 4R/15R", "BOS 4R/L",
             "BOS 15R", "BOS 15R/9", "BOS 27", "BOS 27/22", "BOS 27/32", "BOS 33L/32", "BOS 33L", 
             "BOS RNAV RWY 32 APP", "BOS RNAV RNP X 33L", "BOS RNAV RWY 4L APP", "BOS RWY 4 RNAV SID",
