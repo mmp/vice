@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -133,6 +134,7 @@ const (
 	KeyF10
 	KeyF11
 	KeyF12
+	KeyV
 )
 
 type KeyboardState struct {
@@ -183,6 +185,9 @@ func NewKeyboardState(p Platform) *KeyboardState {
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageDown)) {
 		keyboard.Pressed[KeyPageDown] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyV)) {
+		keyboard.Pressed[KeyV] = nil
 	}
 	const ImguiF1 = 290
 	for i := 0; i < 12; i++ {
@@ -963,12 +968,24 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 			mp.input.cursor = len(mp.input.cmd)
 		}
 	}
+	cmd := false
+	window := glfw.GetCurrentContext()
+	if window.GetKey(glfw.KeyLeftSuper) == glfw.Press || window.GetKey(glfw.KeyRightSuper) == glfw.Press {
+		cmd = true
+	}
 
+	if (ctx.keyboard.IsPressed(KeyControl) || cmd)&& ctx.keyboard.IsPressed(KeyV) {
+		c, err := ctx.platform.GetClipboard().Text()
+		if err == nil {
+			mp.input.InsertAtCursor(c)
+		}
+	}
 	if ctx.keyboard.IsPressed(KeyLeftArrow) {
 		if mp.input.cursor > 0 {
 			mp.input.cursor--
 		}
 	}
+	
 	if ctx.keyboard.IsPressed(KeyRightArrow) {
 		if mp.input.cursor < len(mp.input.cmd) {
 			mp.input.cursor++
