@@ -2216,7 +2216,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 			// Go ahead and climb departures the rest of the way and send
 			// them direct to their first fix (if they aren't already).
 			octrl := s.World.GetControllerByCallsign(ac.TrackingController)
-			if ac.IsDeparture() && !octrl.IsHuman {
+			if ac.IsDeparture() && octrl != nil && !octrl.IsHuman {
 				s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 					slog.Int("final_altitude", ac.FlightPlan.Altitude))
 				ac.DepartOnCourse()
