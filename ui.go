@@ -201,6 +201,10 @@ var (
 		`STARS: multiple improvements to drawing aircraft tracks`,
 		`Added a short pause before aircraft ident`,
 		`Aircraft can now be sent 'direct' to their destination airport`,
+		`Fixed a bug where vice would sometimes crash at startup or when MAPS was clicked`,
+		`New scenario: SCT (Jud Lopez)`,
+		`Scenario updates: AVL (Giovanni), A90 and BOS (Michael K)`,
+		`Fixed "ID" flashing when aircraft ident`,
 	}
 )
 
