@@ -2359,7 +2359,15 @@ func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, referenced
 		e.Error(err)
 	} else {
 		ml.loading[filename] = nil
-		go ml.loadVideoMap(f, filename, referenced, manifest)
+		if *server {
+			// Load single-threaded to avoid memory spike at launch.
+			ml.loadVideoMap(f, filename, referenced, manifest)
+			m := <-ml.ch
+			delete(ml.loading, m.path)
+			ml.maps[m.path] = m.maps
+		} else {
+			go ml.loadVideoMap(f, filename, referenced, manifest)
+		}
 	}
 }
 
