@@ -126,7 +126,7 @@ func (w *World) UpdateComputers(simTime time.Time) {
 	// _, fac := w.SafeFacility("")
 	// Sort through messages made
 	for _, comp := range w.ERAMComputers {
-		comp.SortMessages(simTime, w.TRACON)
+		comp.SortMessages(simTime, w)
 		comp.SendFlightPlans(w)
 		for _, stars := range comp.STARSComputers {
 			stars.SortReceivedMessages()
@@ -243,7 +243,7 @@ func (comp *ERAMComputer) SendMessageToERAM(facility string, msg FlightPlanMessa
 // 	}
 // }
 
-func (comp *ERAMComputer) SortMessages(simTime time.Time, tracon string) {
+func (comp *ERAMComputer) SortMessages(simTime time.Time, w *World) {
 	if comp.ReceivedMessages == nil {
 		comp.ReceivedMessages = &[]FlightPlanMessage{}
 	}
@@ -297,9 +297,31 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, tracon string) {
 		case BeaconTerminate: // TODO: Find out what this does
 		case InitiateTransfer:
 			// Forward these to w.TRACON for now. ERAM adaptations will have to fix this eventually...
-			msg.SourceID = comp.Identifier + simTime.Format("1504Z")
-			comp.ToSTARSFacility(tracon, msg)
-			fmt.Printf("Forwarded handoff %v to %v: %v.\n", msg.SourceID, tracon, msg)
+			if w.FacilityFromController(msg.HandoffController) == comp.Identifier { // keep it here
+				if comp.TrackInformation[msg.BCN] == nil {
+					comp.TrackInformation[msg.BCN] = &TrackInformation{
+						FlightPlan:        comp.FlightPlans[msg.BCN],
+					}
+				}
+				comp.TrackInformation[msg.BCN].TrackOwner = msg.TrackOwner
+				comp.TrackInformation[msg.BCN].HandoffController = msg.HandoffController
+				fmt.Printf("%v: handoff came to ZNY: %v.\n", comp.Identifier, msg.BCN)
+				break
+			}
+			for name, fix := range comp.Adaptation.CoordinationFixes {
+				if name == msg.CoordinationFix && fix.ToController != comp.Identifier { // Forward
+					msg.SourceID = comp.Identifier + simTime.Format("1504Z")
+					comp.ToSTARSFacility(w.TRACON, msg)
+					fmt.Printf("Forwarded handoff %v to %v: %v.\n", msg.SourceID, w.TRACON, msg)
+				} else if name == msg.CoordinationFix && fix.ToController == comp.Identifier { // Stay ehre
+					comp.TrackInformation[msg.BCN] = &TrackInformation{
+						TrackOwner:        msg.TrackOwner,
+						HandoffController: msg.HandoffController,
+						FlightPlan:        comp.FlightPlans[msg.BCN],
+					}
+				}
+			}
+
 		case AcceptRecallTransfer:
 			fixInfo := database.ERAMAdaptations[comp.Identifier].CoordinationFixes[msg.CoordinationFix]
 			if fixInfo.FromController != comp.Identifier { // Comes from a different ERAM facility
@@ -479,6 +501,7 @@ func (comp *STARSComputer) SendTrackInfo(receivingFacility string, msg FlightPla
 		*inbox = append(*inbox, msg)
 		fmt.Printf("%v: Appended for %v. Msg: %v.\n", receivingFacility, msg.SourceID, msg)
 	} else {
+		fmt.Printf("%v: Sending %v to overlying ERAM facility %v.\n", comp.Identifier, msg.BCN, receivingFacility)
 		comp.ToOverlyingERAMFacility(msg)
 	}
 }
@@ -509,6 +532,10 @@ type AircraftDataMessage struct {
 
 // Sends a message to the overlying ERAM facility.
 func (comp *STARSComputer) ToOverlyingERAMFacility(msg FlightPlanMessage) {
+	if comp == nil {
+		fmt.Printf("STARS computer is nil.\n")
+		return
+	}
 	if *comp.ERAMInbox == nil {
 		fmt.Printf("ERAM inbox is nil for %v.\n", comp.Identifier)
 	} else {
@@ -638,7 +665,7 @@ func (comp *STARSComputer) SortReceivedMessages() {
 				}
 				fmt.Printf("Message for %v has been received and sorted: %v.\n", msg.BCN, comp.TrackInformation[msg.BCN].FlightPlan)
 			} else {
-				fmt.Printf("No plan for %v.\n", msg.BCN)
+				fmt.Printf("%v: No plan for %v.\n", comp.Identifier, msg.BCN)
 			}
 
 		case AcceptRecallTransfer:

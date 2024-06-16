@@ -1272,7 +1272,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					return nil
 				}
 			}
-
+			
 		default:
 			rewriteError(ErrInvalidCommandSyntax)
 			return nil

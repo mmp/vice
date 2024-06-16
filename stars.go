@@ -6530,8 +6530,8 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 
 		// Fill in empty field4 entries.
 		for i := range field4 {
-			if field4[i] == "" && ac.HandoffTrackController != "" {
-				if ctrl := ctx.world.GetControllerByCallsign(ac.HandoffTrackController); ctrl != nil {
+			if field4[i] == "" && stars.TrackInformation[ac.Squawk].HandoffController != "" {
+				if ctrl := ctx.world.GetControllerByCallsign(stars.TrackInformation[ac.Squawk].HandoffController); ctrl != nil {
 					if ac.RedirectedHandoff.RedirectedTo != "" {
 						field4 = append(field4, ctx.world.GetControllerByCallsign(ac.RedirectedHandoff.RedirectedTo).SectorId[len(ctrl.SectorId)-1:])
 					} else {
