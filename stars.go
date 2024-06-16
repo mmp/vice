@@ -6458,8 +6458,8 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			color, _ := sp.datablockColor(ctx, ac)
 
 			line5FieldColors = &STARSDatablockFieldColors{
-				Start: len(speed),
-				End:   len(speed) + 2,
+				Start: len(speed) + 1,
+				End:   len(speed) + 3,
 				Color: color.Scale(0.3),
 			}
 		} else {
