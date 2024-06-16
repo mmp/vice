@@ -755,7 +755,7 @@ func DrawMinimumSeparationLine(p0ll, d0ll, p1ll, d1ll Point2LL, nmPerLongitude f
 		DrawBackground:  true,
 		BackgroundColor: backgroundColor,
 	}
-	text := fmt.Sprintf("%.2f nm", nmdistance2ll(p0tmin, p1tmin))
+	text := fmt.Sprintf("%.2fNM", nmdistance2ll(p0tmin, p1tmin))
 	if tmin < 0 {
 		text = "NO XING\n" + text
 	}
