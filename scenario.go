@@ -1439,6 +1439,26 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 	}
 	lg.Warnf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
+	if *listScenarios {
+		scenarioAirports := make(map[string]map[string]interface{})
+		for tracon, scenarios := range scenarioGroups {
+			if scenarioAirports[tracon] == nil {
+				scenarioAirports[tracon] = make(map[string]interface{})
+			}
+			for _, sg := range scenarios {
+				for name := range sg.Airports {
+					scenarioAirports[tracon][name] = nil
+				}
+			}
+		}
+
+		for _, tracon := range SortedMapKeys(scenarioAirports) {
+			airports := SortedMapKeys(scenarioAirports[tracon])
+			fmt.Printf("%s (%s),\n", tracon, strings.Join(airports, ", "))
+		}
+		os.Exit(0)
+	}
+
 	return scenarioGroups, simConfigurations, maplib
 }
 
