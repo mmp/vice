@@ -911,6 +911,10 @@ func (s *STARSFacilityAdaptation) PostLoad(ml *VideoMapLibrary) error {
 				return nil, fmt.Errorf("%s: map \"%s\" not found", s.VideoMapFile, name)
 			}
 		}
+		for len(maps) < NumSTARSMaps {
+			maps = append(maps, STARSMap{})
+		}
+
 		return maps, nil
 	}
 
