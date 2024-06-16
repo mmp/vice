@@ -1266,6 +1266,8 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					return nil
 				}
 			}
+		case 'X':
+			sim.DeleteAircraft(token, callsign)
 
 		default:
 			rewriteError(ErrInvalidCommandSyntax)
