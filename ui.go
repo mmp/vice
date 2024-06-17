@@ -193,6 +193,18 @@ var (
 		`Added I90 scenario (Jace Martin)`,
 		`Added full-screen mode`,
 		`Updated command entry so keyboard focus returns to STARS after issuing a control command`,
+		`New scenarios: PIT (Gavin V), AVL, AGS, and GSO (Giovanni), ACK, BNA, BOS, CHS, MHT, OKC, RDU (Michael K)`,
+		`Updates to BUF, CLE, D21 (Gavin), BHM (Giovanni), JAX and F11 (Michael K), D01 (Jud Lopez, Andrew S)`,
+		`Even more scenario updates: C90 (Jud Lopez, Yahya Nazimuddin), A90 (Michael K)`,
+		`STARS: more realistic video map handling (per controller maps, map id #s)`,
+		`Fixed a bug where vice would crash on launch if it was exited while minimized`,
+		`STARS: multiple improvements to drawing aircraft tracks`,
+		`Added a short pause before aircraft ident`,
+		`Aircraft can now be sent 'direct' to their destination airport`,
+		`Fixed a bug where vice would sometimes crash at startup or when MAPS was clicked`,
+		`New scenario: SCT (Jud Lopez)`,
+		`Scenario updates: AVL (Giovanni), A90 and BOS (Michael K)`,
+		`Fixed "ID" flashing when aircraft ident`,
 	}
 )
 

@@ -1,0 +1,1013 @@
+{
+    "tracon": "A90",
+    "airports": {
+        "KMHT": {
+            "approaches": {
+                "I6": {
+					"cifp_id": "I6"
+				},
+                "I17": {
+                    "cifp_id": "I17"
+                },
+                "I35": {
+                    "cifp_id": "I35"
+                },
+                "R6": {
+                    "cifp_id": "R6"
+                },
+                "R24": {
+                    "cifp_id": "R24"
+                },
+                "Y17": {
+                    "cifp_id": "RY17"
+                },
+                "Z17": {
+                    "cifp_id": "RZ17"
+                },
+                "Y35": {
+                    "cifp_id": "RY35"
+                },
+                "Z35": {
+                    "cifp_id": "RZ35"
+                }
+            },
+            "departure_routes": {
+                "17": {
+                    "CCC": {
+                        "cleared_altitude": 3000,
+                        "sid": "PPORT4",
+                        "waypoints": "KMHT-35/h219 TYLIR/a3000+ PPORT SHOEL RBELA JJIMY YANTC"
+                    },
+                    "NELIE": {
+                        "cleared_altitude": 3000,
+                        "sid": "PPORT4",
+                        "waypoints": "KMHT-35/h219 TYLIR/a3000+ PPORT SHOEL RBELA JJIMY"
+                    },
+                    "BAF": {
+                        "cleared_altitude": 3000,
+                        "sid": "PPORT4",
+                        "waypoints": "KMHT-35/h219 TYLIR/a3000+ PPORT SHOEL RBELA COTEE"
+                    },
+                    "HANNA,ENE,MANCH,PEASE,CLOWW,CAM,CON": {
+                        "cleared_altitude": 3000,
+                        "sid": "MHT1",
+                        "waypoints": "KMHT-35/h219"
+                    }
+                },
+                "35": {
+                    "CCC": {
+                        "cleared_altitude": 3000,
+                        "sid": "PPORT4",
+                        "waypoints": "KMHT-17/h352 TYLIR/a3000+ PPORT SHOEL RBELA JJIMY YANTC"
+                    },
+                    "NELIE": {
+                        "cleared_altitude": 3000,
+                        "sid": "PPORT4",
+                        "waypoints": "KMHT-17/h352 TYLIR/a3000+ PPORT SHOEL RBELA JJIMY"
+                    },
+                    "BAF": {
+                        "cleared_altitude": 3000,
+                        "sid": "PPORT4",
+                        "waypoints": "KMHT-17/h352 TYLIR/a3000+ PPORT SHOEL RBELA COTEE"
+                    },
+                    "HANNA,ENE,MANCH,PEASE,CLOWW,CAM,CON": {
+                        "cleared_altitude": 3000,
+                        "sid": "MHT1",
+                        "waypoints": "KMHT-17/h352"
+                    }
+                }
+            },
+            "departures": [
+                {
+					"airlines": [
+						{
+							"icao": "SWA"
+						}
+					],
+					"destination": "KBWI",
+                    "exit": "NELIE",
+					"route": "NELIE Q75 MXE V378 NUGGY TRISH3"
+				},
+                {
+                    "airlines": [
+                        {
+                            "icao": "JIA"
+                        }
+                    ],
+                    "destination": "KDCA",
+                    "exit": "NELIE",
+                    "route": "NELIE Q75 MXE CLIPR3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "JIA"
+                        },
+                        {
+                            "fleet": "short",
+                            "icao": "AAL"
+                        }
+                    ],
+                    "destination": "KCLT",
+                    "exit": "NELIE",
+                    "route": "NELIE Q75 GVE AIROW CHSLY6"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "UPS"
+                        },
+                        {
+                            "icao": "PDT"
+                        }
+                    ],
+                    "destination": "KPHL",
+                    "exit": "CCC",
+                    "route": "CCC MANTA Q439 BRIGS JIIMS4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "FDX"
+                        }
+                    ],
+                    "destination": "KMEM",
+                    "exit": "BAF",
+                    "route": "BAF Q406 BWZ J6 HVQ Q68 RAMRD BLUZZ4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "UPS"
+                        }
+                    ],
+                    "destination": "KSDF",
+                    "exit": "CAM",
+                    "route": "CAM Q822 GONZZ Q29 JHW UKATS DLAMP7"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KMCO",
+                    "exit": "CCC",
+                    "route": "CCC Q97 SAWED MOXXY Q85 LPERD GTOUT1"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "GJS"
+                        }
+                    ],
+                    "destination": "KEWR",
+                    "exit": "HANNA",
+                    "route": "HANNA FLOSI4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KMDW",
+                    "exit": "CAM",
+                    "route": "CAM Q822 GONZZ Q29 JHW DJB J60 ASHEN BAGEL PANGG5"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "VXP"
+                        }
+                    ],
+                    "destination": "KRDU",
+                    "exit": "CCC",
+                    "route": "CCC Q97 ZJAAY TAQLE2"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "ENY"
+                        }
+                    ],
+                    "destination": "KORD",
+                    "exit": "CAM",
+                    "route": "CAM Q822 GONZZ DTW"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KORH",
+                    "exit": "CLOWW",
+                    "route": "CLOWW SPENO"
+                },
+                {
+                    "airlines" : [
+                        {
+                            "icao": "AMF"
+                        }
+                    ],
+                    "destination": "KLEW",
+                    "exit": "PEASE",
+                    "route": "PEASE ENE"
+                },
+                {
+                    "airlines" : [
+                        {
+                            "icao": "AMF"
+                        }
+                    ],
+                    "destination": "KPWM",
+                    "exit": "PEASE",
+                    "route": "PEASE ENE"
+                },
+                {
+                    "airlines" : [
+                        {
+                            "icao": "AMF"
+                        }
+                    ],
+                    "destination": "KWVL",
+                    "exit": "PEASE",
+                    "route": "PEASE ENE"
+                },
+                {
+                    "airlines" : [
+                        {
+                            "icao": "AMF"
+                        }
+                    ],
+                    "destination": "KRKD",
+                    "exit": "PEASE",
+                    "route": "PEASE ENE"
+                },
+                {
+                    "airlines" : [
+                        {
+                            "icao": "AMF"
+                        }
+                    ],
+                    "destination": "KHYA",
+                    "exit": "MANCH",
+                    "altitude": 7000,
+                    "route": "MANCH BOS V141 DUNKK"
+                },
+                {
+                    "airlines" : [
+                        {
+                            "icao": "AMF"
+                        }
+                    ],
+                    "destination": "KPQI",
+                    "exit": "ENE",
+                    "route": "ENE MLT"
+                },
+                {
+                    "airlines" : [
+                        {
+                            "icao": "AMF"
+                        }
+                    ],
+                    "destination": "KBTV",
+                    "exit": "CAM",
+                    "route": "CAM"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "UPS"
+                        }
+                    ],
+                    "destination": "KBGR",
+                    "exit": "ENE",
+                    "route": "ENE T295 BGR"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "FTH"
+                        }
+                    ],
+                    "destination": "KIAD",
+                    "exit": "BAF",
+                    "route": "BAF HYPER9"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "EJA"
+                        }
+                    ],
+                    "destination": "KHPN",
+                    "exit": "CAM",
+                    "route": "CAM ALB VALRE5"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KHIE",
+                    "exit": "CON",
+                    "route": "CON ZAMIM"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "GTI"
+                        }
+                    ],
+                    "destination": "KAFW",
+                    "exit": "CAM",
+                    "route": "CAM ALB J190 CFB EWC ROD VHP FAM FSM RRNET TRUUK2"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "GTI"
+                        }
+                    ],
+                    "destination": "KCVG",
+                    "exit": "CAM",
+                    "route": "CAM GONZZ JOSSY MAULL KODIE SAVVI TIGRR4"
+                }
+            ],
+            "exit_categories": {
+                "CCC": "Southeast",
+                "NELIE": "South",
+                "BAF": "Southwest",
+                "HANNA": "South",
+                "ENE": "Northeast",
+                "MANCH": "Northeast",
+                "PEASE": "Northeast",
+                "CLOWW": "Northwest",
+                "CAM": "West"
+            },
+            "tower_list": 1
+        },
+        "KPSM": {
+            "approaches": {
+                "I16": {
+                    "cifp_id": "I16"
+                },
+                "I34": {
+                    "cifp_id": "I34"
+                },
+                "R16": {
+                    "cifp_id": "R16"
+                },
+                "R34": {
+                    "cifp_id": "R34"
+                }
+            },
+            "departure_routes": {
+                "16": {
+                    "CON,WEEZE,STEVO,PEASE": {
+                        "cleared_altitude": 3000,
+                        "sid": "PSM4",
+                        "waypoints": "KPSM-34/h220"
+                    }
+                },
+                "34": {
+                    "CON,WEEZE,STEVO,PEASE": {
+                        "cleared_altitude": 3000,
+                        "sid": "PSM4",
+                        "waypoints": "KPSM-16/h345"
+                    }
+                }
+            },  
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "GTI"
+                        }
+                    ],
+                    "destination": "KAEX",
+                    "exit": "CON",
+                    "route": "CON ALB DBABE Q448 PTW J48 CSN FANPO Q40 AEX"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "CNS"
+                        }
+                    ],
+                    "destination": "KBOS",
+                    "exit": "STEVO",
+                    "route": "STEVO LWRNC"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "AAY"
+                        }
+                    ],
+                    "destination": "KPIE",
+                    "exit": "CON",
+                    "route": "CON CAM ALB BIZEX Q75 TEUFL BAAMF DADES1"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        },
+                        {
+                            "icao": "CNS"
+                        }
+                    ],
+                    "destination": "KHEF",
+                    "exit": "CON",
+                    "route": "CON EEN DNY LAAYK V93 LRP V39 MRB"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "AAY"
+                        }
+                    ],
+                    "destination": "KSFB",
+                    "exit": "WEEZE",
+                    "route": "WEEZE SCUPP FOXBO RIFLE HEADI Q97 KALDA MOXXY Q85 LPERD TTHOR3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "N",
+                            "fleet": "fastGA"
+                        }
+                    ],
+                    "destination": "KHOU",
+                    "exit": "CON",
+                    "route": "CON BAF Q448 PTW J48 CSN FANPO Q40 AEX"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        },
+                        {
+                            "icao": "CNS"
+                        }
+                    ],
+                    "destination": "KIWI",
+                    "exit": "PEASE",
+                    "route": "PEASE ENE"
+                }
+            ],
+            "exit_categories": {
+                "CON": "ALL",
+                "WEEZE": "ALL",
+                "STEVO":"ALL",
+                "PEASE": "ALL"
+            },
+            "tower_list": 2
+        }
+    },
+    "arrival_groups": {
+        "ROZZE2": [
+            {
+                "airlines": {
+                    "KMHT": [
+                        {
+                            "airport": "KHYA",
+                            "icao": "AMF"
+                        },
+                        {
+                            "airport": "KBWI",
+                            "icao": "SWA"
+                        },
+                        {
+                            "airport": "KDCA",
+                            "icao": "JIA"
+                        },
+                        {
+                            "airport": "KCLT",
+                            "icao": "JIA"
+                        },
+                        {
+                            "airport": "KMDW",
+                            "icao": "SWA"
+                        },
+                        {
+                            "airport": "KEWR",
+                            "icao": "GJS"
+                        },
+                        {
+                            "airport": "KPHL",
+                            "icao": "PDT"
+                        },
+                        {
+                            "airport": "KDCA",
+                            "icao": "JIA"
+                        },
+                        {
+                            "airport": "KBWI",
+                            "icao": "SWA"
+                        },
+                        {
+                            "airport": "KCLT",
+                            "icao": "AAL"
+                        },
+                        {
+                            "airport": "KMCO",
+                            "icao": "SWA"
+                        },
+                        {
+                            "airport": "KDCA",
+                            "icao": "JIA"
+                        },
+                        {
+                            "airport": "KEWR",
+                            "icao": "GJS"
+                        },
+                        {
+                            "airport": "KBWI",
+                            "icao": "SWA"
+                        },
+                        {
+                            "airport": "KSDF",
+                            "icao": "UPS"
+                        },
+                        {
+                            "airport": "KMMU",
+                            "icao": "AMF"
+                        },
+                        {
+                            "airport": "KPHL",
+                            "icao": "UPS"
+                        }
+                    ]
+                },
+                "initial_altitude": 15000,
+                "initial_controller": "BOS_37_CTR",
+                "initial_speed": 280,
+                "star": "ROZZE2",
+                "runway_waypoints": {
+                    "KMHT": {
+                        "6": "ROZZE PNARD/a7000-9000 TEETO/a5000/s210/flyover",
+                        "17": "ROZZE NUUKM/a7000-9000 PURBL/a5000/s210/flyover",
+                        "24": "ROZZE NUUKM/a7000-9000 JSTNN/a5000/s210/h057",
+                        "35": "ROZZE NUUKM/a7000-9000 SHOWZ/a5000/s210/flyover"
+                    }
+                },
+                "waypoints": "FLYZZ/a13000+/ho FYSHR/a9000+ ROZZE"
+            }
+        ],
+        "ENE": [
+            {
+                "airlines": {
+                    "KMHT": [
+                        {
+                            "airport": "KBGR",
+                            "icao": "AMF"
+                        },
+                        {
+                            "airport":  "KBGR",
+                            "icao": "N"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "LXJ"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "EJA"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "CNS"
+                        }
+                    ],
+                    "KPSM": [
+                        {
+                            "airport": "KBGR",
+                            "icao": "AMF"
+                        },
+                        {
+                            "airport":  "KBGR",
+                            "icao": "N"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "LXJ"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "EJA"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "CNS"
+                        }
+                    ]
+                },
+                "initial_altitude": 7000,
+                "initial_controller": "BOS_37_CTR",
+                "initial_speed": 250,
+                "route": "BTSEE SCARB ENE",
+                "waypoints": "BTSEE SCARB/ho",
+                "runway_waypoints": {
+                    "KMHT": {
+                        "6": "SCARB/ho ENE/h243",
+                        "17": "SCARB/ho ENE/h243",
+                        "24": "SCARB/ho ENE/h243",
+                        "35": "SCARB/ho ENE/h243"
+                    },
+                    "KPSM": {
+                        "16": "SCARB/ho ENE/h212",
+                        "34": "SCARB/ho ENE/h212"
+                    }
+                }
+            }
+        ],
+        "CON": [
+            {
+                "airlines": {
+                    "KMHT": [
+                        {
+                            "airport": "KBGR",
+                            "icao": "AMF"
+                        },
+                        {
+                            "airport":  "KBGR",
+                            "icao": "N"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "LXJ"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "EJA"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "CNS"
+                        }
+                    ],
+                    "KPSM": [
+                        {
+                            "airport": "KBGR",
+                            "icao": "AMF"
+                        },
+                        {
+                            "airport":  "KBGR",
+                            "icao": "N"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "LXJ"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "EJA"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "CNS"
+                        }
+                    ]
+                },
+                "initial_altitude": 11000,
+                "initial_controller": "BOS_37_CTR",
+                "initial_speed": 280,
+                "route": "KJOHN CAMTN CON",
+                "waypoints": "KJOHN/ho CAMTN",
+                "runway_waypoints": {
+                    "KMHT": {
+                        "6": "CAMTN CON/h170",
+                        "17": "CAMTN CON/h170",
+                        "24": "CAMTN CON/h170",
+                        "35": "CAMTN CON/h170"
+                    },
+                    "KPSM": {
+                        "16": "CAMTN CON/h123",
+                        "34": "CAMTN CON/h123"
+                    }
+                }
+            }
+        ],
+        "GDM": [
+            {
+                "airlines": {
+                    "KMHT": [
+                        {
+                            "airport": "KBGR",
+                            "icao": "AMF"
+                        },
+                        {
+                            "airport":  "KBGR",
+                            "icao": "N"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "LXJ"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "EJA"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "CNS"
+                        }
+                    ],
+                    "KPSM": [
+                        {
+                            "airport": "KBGR",
+                            "icao": "LXJ"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "EJA"
+                        },
+                        {
+                            "airport": "KBGR",
+                            "icao": "CNS"
+                        },
+                        {
+                            "airport": "KPIE",
+                            "icao": "AAY"
+                        },
+                        {
+                            "airport": "KSFB",
+                            "icao": "AAY"
+                        }
+                    ]
+                },
+                "initial_altitude": 9000,
+                "initial_controller": "BOS_37_CTR",
+                "initial_speed": 250,
+                "route": "BAF PUDGY GDM",
+                "waypoints": "BAF PUDGY/ho",
+                "runway_waypoints": {
+                    "KMHT": {
+                        "6": "PUDGY/ho GDM/h066",
+                        "17": "PUDGY/ho GDM/h066",
+                        "24": "PUDGY/ho GDM/h066",
+                        "35": "PUDGY/ho GDM/h066"
+                    },
+                    "KPSM": {
+                        "16": "PUDGY/ho GDM/h074",
+                        "34": "PUDGY/ho GDM/h074"
+                    }
+                }
+            }
+        ]
+    },
+    "control_positions": {
+        "BOS_37_CTR": {
+            "frequency": 134700,
+            "full_name": "Boston Center",
+            "scope_char": "C",
+            "eram_facility": true,
+            "facility_id": "C",
+            "sector_id": "C37"
+        },
+        "PSM_TWR": {
+            "frequency": 128400,
+            "full_name": "Portsmouth Tower",
+            "scope_char": "T",
+            "sector_id": "1R"
+        },
+        "MHT_TWR": {
+            "frequency": 121300,
+            "full_name": "Manchester Tower",
+            "scope_char": "T",
+            "sector_id": "1M"
+        },
+        "MHT_Z_APP": {
+            "default_airport" :"KMHT",
+            "frequency": 124900,
+            "full_name": "Boston Approach",
+            "scope_char": "Z",
+            "sector_id": "1Z"
+        },
+        "MHT_E_APP": {
+            "default_airport": "KPSM",
+            "frequency": 125050,
+            "full_name": "Boston Approach",
+            "scope_char": "E",
+            "sector_id": "1E"
+        },
+        "MHT_W_APP": {
+            "frequency": 134750,
+            "full_name": "Boston Approach",
+            "scope_char": "W",
+            "sector_id": "1W"
+        },
+        "MHT_P_APP": {
+            "frequency": 125825,
+            "full_name": "Boston Approach",
+            "scope_char": "P",
+            "sector_id": "1P"
+        },
+        "MHT_J_APP": {
+            "frequency": 127350,
+            "full_name": "Boston Approach",
+            "scope_char": "J",
+            "sector_id": "1J"
+        },
+        "BOS_DEP": {
+            "frequency": 130000,
+            "full_name": "Boston Departure",
+            "scope_char": "D",
+            "facility_id": "1",
+            "sector_id": "1D"
+        }
+    },
+    "default_scenario": "KMHT South",
+    "name": "KMHT",
+    "primary_airport": "KMHT",
+    "scenarios": {
+        "KMHT South": {
+            "arrival_runways": [
+                {
+                    "airport": "KMHT",
+                    "runway": "17"
+                },
+                {
+                    "airport": "KMHT",
+                    "runway": "24"
+                },
+                {
+                    "airport": "KPSM",
+                    "runway": "16"
+                }
+            ],
+            "arrivals": {
+                "ROZZE2": {
+                    "KMHT": 10
+                },
+                "ENE": {
+                    "KMHT": 5,
+                    "KPSM": 5
+                },
+                "CON": {
+                    "KMHT": 5,
+                    "KPSM": 5
+                },
+                "GDM": {
+                    "KMHT": 2,
+                    "KPSM": 10
+                }
+            },
+            "solo_controller": "MHT_Z_APP",
+            "multi_controllers": {
+                "default": {
+                    "MHT_J_APP": {"primary": true, "departures": ["KMHT"]},
+                    "MHT_Z_APP": {"backup": "MHT_J_APP"},
+                    "MHT_E_APP": {"backup": "MHT_Z_APP", "arrivals":["ENE"]},
+                    "MHT_P_APP": {"backup": "MHT_E_APP", "departures":["KPSM"]},
+                    "MHT_W_APP": {"backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"]}
+                }
+            },
+            "controllers": [
+                "BOS_DEP",
+                "MHT_TWR",
+                "PSM_TWR",
+                "BOS_37_CTR"
+            ],
+            "default_maps": ["MHT MAIN"],
+            "departure_runways": [
+                {
+                    "airport": "KMHT",
+                    "rate": 30,
+                    "runway": "17"
+                },
+                {
+                    "airport": "KPSM",
+                    "rate": 15,
+                    "runway": "16"
+                }
+            ],
+            "wind": {
+                "direction": 210,
+                "gust": 15,
+                "speed": 7
+            }
+        },
+        "KMHT North": {
+            "arrival_runways": [
+                {
+                    "airport": "KMHT",
+                    "runway": "35"
+                },
+                {
+                    "airport": "KMHT",
+                    "runway": "6"
+                },
+                {
+                    "airport": "KPSM",
+                    "runway": "34"
+                }
+            ],
+            "arrivals": {
+                "ROZZE2": {
+                    "KMHT": 10
+                },
+                "ENE": {
+                    "KMHT": 5,
+                    "KPSM": 5
+                },
+                "CON": {
+                    "KMHT": 5,
+                    "KPSM": 5
+                },
+                "GDM": {
+                    "KMHT": 2,
+                    "KPSM": 10
+                }
+            },
+            "solo_controller": "MHT_Z_APP",
+            "multi_controllers": {
+                "default": {
+                    "MHT_Z_APP": {"primary": true, "departures": ["KMHT"]},
+                    "MHT_J_APP": {"backup": "MHT_Z_APP"},
+                    "MHT_E_APP": {"backup": "MHT_Z_APP", "arrivals":["ENE"]},
+                    "MHT_P_APP": {"backup": "MHT_E_APP", "departures":["KPSM"]},
+                    "MHT_W_APP": {"backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"]}
+                }
+            },
+            "controllers": [
+                "BOS_DEP",
+                "MHT_TWR",
+                "PSM_TWR",
+                "BOS_37_CTR"
+            ],
+            "default_maps": ["MHT MAIN"],
+            "departure_runways": [
+                {
+                    "airport": "KMHT",
+                    "rate": 30,
+                    "runway": "35"
+                },
+                {
+                    "airport": "KPSM",
+                    "rate": 15,
+                    "runway": "34"
+                }
+            ],
+            "wind": {
+                "direction": 10,
+                "gust": 15,
+                "speed": 7
+            }
+        }
+    },
+    "stars_config": {
+        "center": "KMHT",
+        "airspace_awareness": [
+            {
+                "fixes": ["ALL"],
+                "receiving_controller": "BOS_37_CTR"
+            }
+        ],
+        "inhibit_ca_volumes": [
+            {
+                "name": "MHT NO CA",
+                "type": "circle",
+                "floor": 0,
+                "ceiling": 2000,
+                "radius": 5,
+                "center": "KMHT"
+            },
+            {
+                "name": "PSM NO CA",
+                "type": "circle",
+                "floor": 0,
+                "ceiling": 2000,
+                "radius": 5,
+                "center": "KPSM"
+            }
+        ],
+        "scratchpads": {
+            "CCC": "PRT",
+            "NELIE": "PRT",
+            "BAF": "PRT",
+            "HANNA": "HAN",
+            "ENE": "ENE",
+            "MANCH": "MAN",
+            "CLOWW": "CLO",
+            "CAM": "CAM",
+            "CON": "PSM",
+            "WEEZE": "PSM",
+            "STEVO": "PSM",
+            "PEASE": "PSM"
+        },
+        "stars_maps": [
+           "A90 MVA", "B, C, D, AIRSPACE", "A90 SAT FINALS", "A90 COASTLINE",
+           "A90 EOVM", "MHT MAIN", "MHT RWY 6 ROZZE STAR", "MHT RWY 17 ROZZE STAR",
+           "MHT RWY 24 ROZZE STAR", "MHT RWY 35 ROZZE STAR", "A90 SAT GPS 2",
+           "A90 SAT GPS 3", "A90 SAT GPS 4", "A90 SAT GPS 5", "ZBW SPLIT 1",
+           "ZBW SPLIT 2", "ZBW SPLIT 3"
+        ],
+          "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
+    }
+}

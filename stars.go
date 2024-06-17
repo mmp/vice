@@ -878,7 +878,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.CharSize.Tools = 1
 	ps.CharSize.PositionSymbols = 0
 
-	ps.PreviewAreaPosition = [2]float32{.05, .8}
+	ps.PreviewAreaPosition = [2]float32{.05, .75}
 
 	ps.SSAList.Position = [2]float32{.05, .9}
 	ps.SSAList.Visible = true
@@ -1526,6 +1526,18 @@ func (sp *STARSPane) Upgrade(from, to int) {
 				for i := range ps.TowerLists {
 					shift(&ps.TowerLists[i].Position[1])
 				}
+			}
+		}
+		update(&sp.CurrentPreferenceSet)
+		for i := range sp.PreferenceSets {
+			update(&sp.PreferenceSets[i])
+		}
+	}
+	if from < 23 {
+		// This should have been in the from < 21 case...
+		update := func(ps *STARSPreferenceSet) {
+			if ps.PreviewAreaPosition[0] == .05 && ps.PreviewAreaPosition[1] == .8 {
+				ps.PreviewAreaPosition = [2]float32{.05, .75}
 			}
 		}
 		update(&sp.CurrentPreferenceSet)
@@ -6572,8 +6584,8 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			color, _ := sp.datablockColor(ctx, ac)
 
 			line5FieldColors = &STARSDatablockFieldColors{
-				Start: len(speed),
-				End:   len(speed) + 2,
+				Start: len(speed) + 1,
+				End:   len(speed) + 3,
 				Color: color.Scale(0.3),
 			}
 		} else {

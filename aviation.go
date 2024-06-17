@@ -2409,7 +2409,15 @@ func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, referenced
 		e.Error(err)
 	} else {
 		ml.loading[filename] = nil
-		go ml.loadVideoMap(f, filename, referenced, manifest)
+		if *server {
+			// Load single-threaded to avoid memory spike at launch.
+			ml.loadVideoMap(f, filename, referenced, manifest)
+			m := <-ml.ch
+			delete(ml.loading, m.path)
+			ml.maps[m.path] = m.maps
+		} else {
+			go ml.loadVideoMap(f, filename, referenced, manifest)
+		}
 	}
 }
 
@@ -2436,8 +2444,9 @@ func (ml *VideoMapLibrary) loadVideoMap(f io.ReadCloser, filename string, refere
 	// We'll return the maps via a map from the map name to the associated
 	// *STARSMap.
 	starsMaps := make(map[string]*STARSMap)
-	for _, sm := range maps {
+	for i, sm := range maps {
 		if sm.Name == "" {
+			maps[i].Lines = nil
 			continue
 		}
 

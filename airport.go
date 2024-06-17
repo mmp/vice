@@ -279,7 +279,13 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 					e.ErrorString("unable to convert approach id \"%s\" to runway", appr.Id)
 				}
 
-				appr.Waypoints = wps
+				// This is a little hacky, but we'll duplicate the waypoint
+				// arrays since later we e.g., append a waypoint for the
+				// runway threshold.  This leads to errors if a CIFP
+				// approach is referenced in two scenario files.
+				for _, w := range wps {
+					appr.Waypoints = append(appr.Waypoints, DuplicateSlice(w))
+				}
 			}
 		}
 
@@ -297,7 +303,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 
 			// Add the final fix at the runway threshold.
 			appr.Waypoints[i] = append(appr.Waypoints[i], Waypoint{
-				Fix:      appr.Runway,
+				Fix:      "_" + appr.Runway + "_THRESHOLD",
 				Location: rwy.Threshold,
 				AltitudeRestriction: &AltitudeRestriction{
 					Range: [2]float32{float32(rwy.Elevation), float32(rwy.Elevation)},
