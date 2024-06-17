@@ -131,6 +131,20 @@ func (s *SimProxy) SetSecondaryScratchpad(callsign string, scratchpad string) *r
 	}, nil, nil)
 }
 
+type CreateUnsupportedTrackArgs struct {
+	ControllerToken  string
+	Callsign         string
+	UnsupportedTrack *UnsupportedTrack
+}
+
+func (s *SimProxy) CreateUnsupportedTrack(callsign string, ut *UnsupportedTrack) *rpc.Call {
+	return s.Client.Go("Sim.CreateUnsupportedTrack", &CreateUnsupportedTrackArgs{
+		ControllerToken:  s.ControllerToken,
+		Callsign:         callsign,
+		UnsupportedTrack: ut,
+	}, nil, nil)
+}
+
 func (s *SimProxy) InitiateTrack(callsign string, fp *STARSFlightPlan) *rpc.Call {
 	return s.Client.Go("Sim.InitiateTrack", InitiateTrackArgs{
 		AircraftSpecifier: AircraftSpecifier{
@@ -716,6 +730,14 @@ func (sd *SimDispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.InitiateTrack(it.ControllerToken, it.Callsign, it.Plan)
+	}
+}
+
+func (sd *SimDispatcher) CreateUnsupportedTrack(it *CreateUnsupportedTrackArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.CreateUnsupportedTrack(it.ControllerToken, it.Callsign, it.UnsupportedTrack)
 	}
 }
 

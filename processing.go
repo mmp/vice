@@ -53,6 +53,9 @@ func (w *World) initComputers() {
 			if stars.MessageMap == nil {
 				stars.MessageMap = make(map[FlightPlanMessage]string)
 			}
+			if stars.UnsupportedTracks == nil {
+				stars.UnsupportedTracks = make(map[int]*UnsupportedTrack)
+			}
 		}
 	}
 
@@ -134,6 +137,13 @@ func (w *World) UpdateComputers(simTime time.Time) {
 			stars.SortReceivedMessages()
 		}
 	}
+}
+
+type UnsupportedTrack struct {
+	TrackLocation     Point2LL
+	Owner             string
+	HandoffController string
+	FlightPlan        *STARSFlightPlan
 }
 
 func (fp *STARSFlightPlan) CordinationFix(w *World, ac *Aircraft) string { // TODO: Replace AC with track info
@@ -417,13 +427,14 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, w *World) { // For
 }
 
 type STARSComputer struct {
-	RecievedMessages []FlightPlanMessage
-	ContainedPlans   map[Squawk]*STARSFlightPlan
-	TrackInformation map[Squawk]*TrackInformation
-	ERAMInbox        *[]FlightPlanMessage // The address of the overlying ERAM's message inbox.
-	Identifier       string
-	STARSInbox       map[string]*[]FlightPlanMessage // Other STARS Facilities inbox.
-	MessageMap       map[FlightPlanMessage]string
+	RecievedMessages  []FlightPlanMessage
+	ContainedPlans    map[Squawk]*STARSFlightPlan
+	TrackInformation  map[Squawk]*TrackInformation
+	ERAMInbox         *[]FlightPlanMessage // The address of the overlying ERAM's message inbox.
+	Identifier        string
+	STARSInbox        map[string]*[]FlightPlanMessage // Other STARS Facilities inbox.
+	MessageMap        map[FlightPlanMessage]string
+	UnsupportedTracks map[int]*UnsupportedTrack
 }
 
 type STARSFlightPlan struct {
@@ -696,6 +707,80 @@ func (comp *STARSComputer) SortReceivedMessages() {
 		}
 	}
 	clear(comp.RecievedMessages)
+}
+
+// For NAS codes
+func (comp *ERAMComputer) CreateSquawk() Squawk {
+	for {
+		// Generate a squawk between 1001 and 7777.
+		squawk := Squawk(0o1001 + rand.Intn(0o6776))
+		badCodes := []Squawk{0o1200, 0o7500, 0o7600, 0o7700, 0o7777}
+		if slices.Contains(badCodes, squawk) {
+			continue
+		}
+		// Check if the squawk ends in 00 or is 0000.
+		if squawk%100 != 0 && squawk != 0 {
+			// Check if any digit is greater than 7.
+			valid := true
+			for _, digit := range fmt.Sprintf("%04d", squawk) {
+				if digit > '7' {
+					valid = false
+					break
+				}
+			}
+
+			for _, plan := range comp.FlightPlans {
+				if plan == nil || plan.AssignedSquawk == squawk {
+					continue
+				}
+			}
+			for sq := range comp.TrackInformation {
+				if sq == squawk {
+					continue
+				}
+			}
+
+			if valid {
+				fmt.Printf("Created squawk %s\n", squawk.String())
+				return squawk
+			}
+		}
+	}
+}
+
+// For local codes
+func (comp *STARSComputer) CreateSquawk(x int) Squawk {
+	for {
+		// Generate a squawk between 0X01 and 0X77.
+		squawk := Squawk(x*100 + 1 + rand.Intn(76))
+
+		// Check if the squawk ends in 00 or is 0000.
+		if squawk%100 != 0 && squawk != 0 {
+			// Check if any digit is greater than 7.
+			valid := true
+			for _, digit := range fmt.Sprintf("%04d", squawk) {
+				if digit > '7' {
+					valid = false
+					break
+				}
+			}
+			
+			for _, plan := range comp.ContainedPlans {
+				if plan == nil || plan.AssignedSquawk == squawk {
+					continue
+				}
+			}
+			for sq := range comp.TrackInformation {
+				if  sq == squawk {
+					continue
+				}
+			}
+
+			if valid {
+				return squawk
+			}
+		}
+	}
 }
 
 func printERAMComputerMap(computers map[string]*ERAMComputer) {
