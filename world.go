@@ -256,6 +256,16 @@ func (w *World) SetGlobalLeaderLine(callsign string, dir *CardinalOrdinalDirecti
 		})
 }
 
+func (w *World) CreateUnsupportedTrack(callsign string, ut *UnsupportedTrack, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.CreateUnsupportedTrack(callsign, ut),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (w *World) InitiateTrack(callsign string, fp *STARSFlightPlan, success func(any), err func(error)) {
 	// Modifying locally is not canonical but improves perceived latency in
 	// the common case; the RPC may fail, though that's fine; the next
