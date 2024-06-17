@@ -85,6 +85,7 @@ type STARSPane struct {
 
 	AircraftToIndex map[string]int // for use in lists
 	IndexToAircraft map[int]string // map is sort of wasteful since it's dense, but...
+	UnsupportedTracks map[Squawk]bool // visible or not
 
 	// explicit JSON name to avoid errors during config deserialization for
 	// backwards compatibility, since this used to be a
@@ -1130,6 +1131,9 @@ func (sp *STARSPane) Activate(w *World, r Renderer, eventStream *EventStream) {
 	}
 	if sp.IndexToAircraft == nil {
 		sp.IndexToAircraft = make(map[int]string)
+	}
+	if sp.UnsupportedTracks == nil {
+		sp.UnsupportedTracks = make(map[Squawk]bool)
 	}
 
 	sp.events = eventStream.Subscribe()

@@ -53,6 +53,9 @@ func (w *World) initComputers() {
 			if stars.MessageMap == nil {
 				stars.MessageMap = make(map[FlightPlanMessage]string)
 			}
+			if stars.UnsupportedTracks == nil {
+				stars.UnsupportedTracks = make(map[int]*UnsupportedTrack)
+			}
 		}
 	}
 
@@ -134,6 +137,13 @@ func (w *World) UpdateComputers(simTime time.Time) {
 			stars.SortReceivedMessages()
 		}
 	}
+}
+
+type UnsupportedTrack struct {
+	TrackLocation Point2LL
+	Owner         string
+	HandoffController string
+	FlightPlan	*STARSFlightPlan
 }
 
 func (fp *STARSFlightPlan) CordinationFix(w *World, ac *Aircraft) string { // TODO: Replace AC with track info
@@ -424,6 +434,7 @@ type STARSComputer struct {
 	Identifier       string
 	STARSInbox       map[string]*[]FlightPlanMessage // Other STARS Facilities inbox.
 	MessageMap       map[FlightPlanMessage]string
+	UnsupportedTracks map[int]*UnsupportedTrack
 }
 
 type STARSFlightPlan struct {
