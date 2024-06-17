@@ -14,6 +14,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 	"unicode"
 
@@ -1954,6 +1955,9 @@ func (sp *STARSPane) activateMenuSpinner(spinner DCBSpinner) {
 }
 
 func (sp *STARSPane) getAircraftIndex(plan *STARSFlightPlan) int {
+	if plan.Callsign == "" {
+		return -1
+	}
 	if idx, ok := sp.AircraftToIndex[plan.Callsign]; ok {
 		return idx
 	} else {
@@ -2066,7 +2070,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			status.output = "TPA SIZE ON"
 			return
 		case "?":
-			printERAMComputerMap(ctx.world.ERAMComputers)
+			fmt.Println(SortedMapKeys(sp.AircraftToIndex))
+			// printERAMComputerMap(ctx.world.ERAMComputers)
 			status.clear = true
 		case "*D+I":
 			// Inhibit
@@ -5163,25 +5168,26 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		drawList(text, ps.VFRList.Position)
 	}
 
+	mutex := &sync.RWMutex{}
+
 	if ps.TABList.Visible {
-		plans := make(map[int]*STARSFlightPlan)
+		plans := []*STARSFlightPlan{}
 		// Plans that are stored, but aren't associated to a track
 		_, stars := ctx.world.SafeFacility("")
-
-		for _, plan := range stars.ContainedPlans {
-			if stars.ContainedPlans != nil {
-				plans[sp.getAircraftIndex(plan)] = plan
+		mutex.RLock()
+		for _, sq := range SortedMapKeys(stars.ContainedPlans) {
+			if contained := stars.ContainedPlans; contained != nil && contained[sq].Callsign != "" {
+				plans = append(plans, contained[sq])
 			}
-
 		}
+		mutex.RUnlock()
 
 		text := "FLIGHT PLAN\n"
 		if len(plans) > ps.TABList.Lines {
 			text += fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(plans))
 		}
-		for i, acIdx := range SortedMapKeys(plans) {
-			plan := plans[acIdx]
-			text += fmt.Sprintf("%2d %-7s %s\n", acIdx, plan.Callsign, plan.AssignedSquawk.String())
+		for i, plan := range plans {
+			text += fmt.Sprintf("%2d %-7s %s\n", i, plan.Callsign, plan.AssignedSquawk.String())
 
 			// Limit to the user limit
 			if i == ps.TABList.Lines {
