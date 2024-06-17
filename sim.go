@@ -2159,18 +2159,19 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *CardinalOrdinalDi
 		})
 }
 
-func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrack,) error {
+func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrack) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 	callsign = SortedMapKeys(s.World.Aircraft)[0]
 	return s.dispatchCommand(token, callsign,
-		func(c *Controller, ac *Aircraft) error {return nil},
+		func(c *Controller, ac *Aircraft) error { return nil },
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			_, stars := s.World.SafeFacility("")
 			i := 0
-		for ; stars.UnsupportedTracks[i] != nil; i++ {}
-		stars.UnsupportedTracks[i] = ut
-		fmt.Printf("Created unsupported track: %v.\n", ut)
+			for ; stars.UnsupportedTracks[i] != nil; i++ {
+			}
+			stars.UnsupportedTracks[i] = ut
+			fmt.Printf("Created unsupported track: %v.\n", ut)
 			return nil
 		})
 }

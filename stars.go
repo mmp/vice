@@ -83,8 +83,8 @@ type STARSPane struct {
 	// carried along in an STARSAircraftState.
 	Aircraft map[string]*STARSAircraftState
 
-	AircraftToIndex map[string]int // for use in lists
-	IndexToAircraft map[int]string // map is sort of wasteful since it's dense, but...
+	AircraftToIndex   map[string]int  // for use in lists
+	IndexToAircraft   map[int]string  // map is sort of wasteful since it's dense, but...
 	UnsupportedTracks map[Squawk]bool // visible or not
 
 	// explicit JSON name to avoid errors during config deserialization for

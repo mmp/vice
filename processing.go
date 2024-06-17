@@ -140,10 +140,10 @@ func (w *World) UpdateComputers(simTime time.Time) {
 }
 
 type UnsupportedTrack struct {
-	TrackLocation Point2LL
-	Owner         string
+	TrackLocation     Point2LL
+	Owner             string
 	HandoffController string
-	FlightPlan	*STARSFlightPlan
+	FlightPlan        *STARSFlightPlan
 }
 
 func (fp *STARSFlightPlan) CordinationFix(w *World, ac *Aircraft) string { // TODO: Replace AC with track info
@@ -427,13 +427,13 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, w *World) { // For
 }
 
 type STARSComputer struct {
-	RecievedMessages []FlightPlanMessage
-	ContainedPlans   map[Squawk]*STARSFlightPlan
-	TrackInformation map[Squawk]*TrackInformation
-	ERAMInbox        *[]FlightPlanMessage // The address of the overlying ERAM's message inbox.
-	Identifier       string
-	STARSInbox       map[string]*[]FlightPlanMessage // Other STARS Facilities inbox.
-	MessageMap       map[FlightPlanMessage]string
+	RecievedMessages  []FlightPlanMessage
+	ContainedPlans    map[Squawk]*STARSFlightPlan
+	TrackInformation  map[Squawk]*TrackInformation
+	ERAMInbox         *[]FlightPlanMessage // The address of the overlying ERAM's message inbox.
+	Identifier        string
+	STARSInbox        map[string]*[]FlightPlanMessage // Other STARS Facilities inbox.
+	MessageMap        map[FlightPlanMessage]string
 	UnsupportedTracks map[int]*UnsupportedTrack
 }
 
@@ -764,14 +764,14 @@ func (comp *STARSComputer) CreateSquawk(x int) Squawk {
 					break
 				}
 			}
-			
+
 			for _, plan := range comp.ContainedPlans {
 				if plan == nil || plan.AssignedSquawk == squawk {
 					continue
 				}
 			}
 			for sq := range comp.TrackInformation {
-				if  sq == squawk {
+				if sq == squawk {
 					continue
 				}
 			}
