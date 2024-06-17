@@ -83,6 +83,7 @@ type Arrival struct {
 	Scratchpad          string  `json:"scratchpad"`
 	SecondaryScratchpad string  `json:"secondary_scratchpad"`
 	Description         string  `json:"description"`
+	CoordinationFix     string  `json:"coordination_fix"`
 
 	// Airport -> arrival airlines
 	Airlines map[string][]ArrivalAirline `json:"airlines"`

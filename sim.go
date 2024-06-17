@@ -2192,6 +2192,10 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 			if stars.TrackInformation == nil {
 				stars.TrackInformation = make(map[Squawk]*TrackInformation)
 			}
+			if fp == nil {
+				lg.Errorf("nil flight plan for %v/%v", ac.Callsign, ac.Squawk)
+				return nil
+			}
 			stars.TrackInformation[fp.AssignedSquawk] = &TrackInformation{
 				TrackOwner: ctrl.Callsign,
 				FlightPlan: fp,
@@ -2266,7 +2270,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 				stars.TrackInformation[ac.Squawk] = &TrackInformation{
 					TrackOwner:        ctrl.Callsign,
 					HandoffController: octrl.Callsign,
-					FlightPlan: 	  stars.TrackInformation[ac.Squawk].FlightPlan,
+					FlightPlan:        stars.TrackInformation[ac.Squawk].FlightPlan,
 				}
 				stars.SendTrackInfo(s.World.FacilityFromController(octrl.Callsign), msg, s.SimTime, InitiateTransfer)
 			} else {
@@ -2443,12 +2447,12 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 				msg := stars.TrackInformation[ac.Squawk].FlightPlan.Message()
 				msg.SourceID = s.World.FacilityFromController(ctrl.Callsign) + s.SimTime.Format("1504Z")
 				msg.TrackInformation = TrackInformation{
-					TrackOwner:        ctrl.Callsign,
+					TrackOwner: ctrl.Callsign,
 				}
 
 				stars.TrackInformation[ac.Squawk] = &TrackInformation{
-					TrackOwner:        ctrl.Callsign,
-					FlightPlan: 	  stars.TrackInformation[ac.Squawk].FlightPlan,
+					TrackOwner: ctrl.Callsign,
+					FlightPlan: stars.TrackInformation[ac.Squawk].FlightPlan,
 				}
 				stars.SendTrackInfo(s.World.FacilityFromController(octrl.Callsign), msg, s.SimTime, InitiateTransfer)
 			} else {
@@ -2916,6 +2920,22 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 			s.lg.Info("deleted aircraft", slog.String("callsign", ac.Callsign),
 				slog.String("controller", ctrl.Callsign))
 			delete(s.World.Aircraft, ac.Callsign)
+			for _, eram := range s.World.ERAMComputers {
+				for sq, info := range eram.TrackInformation {
+					fp := info.FlightPlan
+					if fp != nil && fp.Callsign == ac.Callsign {
+						delete(eram.TrackInformation, sq)
+					}
+				}
+				for _, stars := range eram.STARSComputers {
+					for sq, info := range stars.TrackInformation {
+						fp := info.FlightPlan
+						if fp != nil && fp.Callsign == ac.Callsign {
+							delete(stars.TrackInformation, sq)
+						}
+					}
+				}
+			}
 			return nil
 		})
 }

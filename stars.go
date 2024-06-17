@@ -1714,20 +1714,22 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 			Groundspeed: int(ac.Nav.FlightState.GS),
 			Time:        now,
 		}
-		// `Associate `the flight plans.
+		// Associate the flight plans.
 		_, stars := w.SafeFacility("")
 		if trackInfo, ok := stars.TrackInformation[ac.Squawk]; ok { // Someone is tracking this
-			if trackInfo.FlightPlan.AssignedSquawk == ac.Squawk && ac.inDropArea(w) {
-				w.DropTrack(trackInfo.FlightPlan.Callsign, nil, nil)
+			if trackInfo.FlightPlan != nil {
+				if trackInfo.FlightPlan.AssignedSquawk == ac.Squawk && ac.inDropArea(w) {
+					w.DropTrack(trackInfo.FlightPlan.Callsign, nil, nil)
+				}
+			} else {
+				lg.Errorf("%s: no flight plan for squawk %d\n", ac.Callsign, ac.Squawk)
 			}
-			continue
+
 		}
 
 		for sq, info := range stars.ContainedPlans { // auto associate
-			if sq == ac.Squawk && ac.inAcquisitionArea(w) {
-				fmt.Println("auto associate")
+			if sp.AutoTrackDepartures && sq == ac.Squawk && ac.inAcquisitionArea(w) && w.DepartureController(ac) == w.Callsign {
 				w.InitiateTrack(ac.Callsign, info, nil, nil)
-				fmt.Println(ac.Callsign, 1)
 			}
 		}
 	}
@@ -3364,6 +3366,7 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 	if control == nil {
 		return ErrSTARSIllegalPosition
 	}
+	fmt.Printf("Handing off %s to %s\n", callsign, control.Callsign)
 
 	ctx.world.HandoffTrack(callsign, control.Callsign, func(a any) {
 		w := ctx.world
@@ -3377,6 +3380,7 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 				HandoffController: controller,
 			}
 			msg.TrackInformation = info
+
 			stars.SendTrackInfo(w.FacilityFromController(control.Callsign), msg, w.SimTime, InitiateTransfer)
 		} else {
 			if entry, ok := stars.TrackInformation[w.GetAircraft(callsign, false).Squawk]; ok {
@@ -3387,6 +3391,13 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 
 	},
 		func(err error) { sp.displayError(err) })
+	w := ctx.world
+	_, stars := ctx.world.SafeFacility("")
+
+	if entry, ok := stars.TrackInformation[w.GetAircraft(callsign, false).Squawk]; ok {
+		entry.HandoffController = controller
+		stars.TrackInformation[w.GetAircraft(callsign, false).Squawk] = entry
+	}
 
 	return nil
 }

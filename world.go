@@ -1002,13 +1002,25 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
 		return nil, nil, err
 	}
+
 	// Add the flight plan to the ERAM computer
 	artcc, _ := w.SafeFacility("")
 	if artcc.FlightPlans == nil {
 		artcc.FlightPlans = map[Squawk]*STARSFlightPlan{}
 	}
-	artcc.FlightPlans[flightPlan.AssignedSquawk] = flightPlan.STARS()
 
+	starsFP := flightPlan.STARS()
+	for fix, info := range artcc.Adaptation.CoordinationFixes {
+		if strings.Contains(flightPlan.Route, fix) {
+			msg := starsFP.Message()
+			msg.SourceID = artcc.Identifier + simTime.Format("1504Z")
+			artcc.SendMessageToERAM(info.ToController, msg)
+			starsFP.CoordinationFix = fix
+			starsFP.ContainedFacilities = append(starsFP.ContainedFacilities, info.ToController)
+			break
+		}
+	}
+	artcc.FlightPlans[flightPlan.AssignedSquawk] = starsFP
 	artcc.ToSTARSFacility(w.TRACON, flightPlan.DepartureMessage(artcc.Identifier, w.SimTime))
 
 	/* Keep adding to World sameGateDepartures number until the departure cap + the buffer so that no more

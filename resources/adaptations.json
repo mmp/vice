@@ -20,6 +20,21 @@
                 "type": "zone",
                 "to": "N90",
                 "from": "PHL"
+            },
+            "MERIT": {
+                "type": "route",
+                "to": "ZBW",
+                "from": "ZNY"
+            },
+            "GREKI": {
+                "type": "route",
+                "to": "ZBW",
+                "from": "ZNY"
+            },
+            "BAYYS": {
+                "type": "route",
+                "to": "ZBW",
+                "from": "ZNY"
             }
         }
     },

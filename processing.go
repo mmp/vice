@@ -110,8 +110,10 @@ func (w *World) SafeFacility(inputTracon string) (*ERAMComputer, *STARSComputer)
 
 func (w *World) FacilityFromController(callsign string) string {
 	controller := w.GetControllerByCallsign(callsign)
-	if controller != nil {
+	if controller != nil && controller.Facility != "" {
 		return controller.Facility
+	} else if controller != nil {
+		return w.TRACON
 	}
 	lg.Errorf("Couldn't find facility for %v: %v. \n", callsign, w.GetAllControllers())
 	if len(callsign) == 7 && (callsign[3:] == "_APP" || callsign[3:] == "_DEP") {
@@ -300,7 +302,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, w *World) {
 			if w.FacilityFromController(msg.HandoffController) == comp.Identifier { // keep it here
 				if comp.TrackInformation[msg.BCN] == nil {
 					comp.TrackInformation[msg.BCN] = &TrackInformation{
-						FlightPlan:        comp.FlightPlans[msg.BCN],
+						FlightPlan: comp.FlightPlans[msg.BCN],
 					}
 				}
 				comp.TrackInformation[msg.BCN].TrackOwner = msg.TrackOwner
@@ -614,8 +616,8 @@ func (ac *Aircraft) inDropArea(w *World) bool {
 	ap := w.GetAirport(ac.FlightPlan.DepartureAirport)
 	ap2 := w.GetAirport(ac.FlightPlan.ArrivalAirport)
 	if (ap != nil && nmdistance2ll(ap.Location, ac.Position()) <= 1) || (ap2 != nil && nmdistance2ll(ap2.Location, ac.Position()) <= 1) {
-		if (ap != nil && ac.Altitude() <= float32(database.Airports[ac.FlightPlan.DepartureAirport].Elevation+200)) ||
-			ac.Altitude() <= float32(database.Airports[ac.FlightPlan.ArrivalAirport].Elevation+200) {
+		if (ap != nil && ac.Altitude() <= float32(database.Airports[ac.FlightPlan.DepartureAirport].Elevation+50)) ||
+			ac.Altitude() <= float32(database.Airports[ac.FlightPlan.ArrivalAirport].Elevation+50) {
 			return true
 		}
 	}
