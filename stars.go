@@ -2074,8 +2074,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			status.output = "TPA SIZE ON"
 			return
 		case "?":
-			fmt.Println(SortedMapKeys(sp.AircraftToIndex))
-			// printERAMComputerMap(ctx.world.ERAMComputers)
+			printERAMComputerMap(ctx.world.ERAMComputers)
 			status.clear = true
 		case "*D+I":
 			// Inhibit
