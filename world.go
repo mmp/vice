@@ -897,9 +897,6 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	if artcc.TrackInformation == nil {
 		artcc.TrackInformation = make(map[Squawk]*TrackInformation)
 	}
-	artcc.TrackInformation[starsFP.AssignedSquawk] = &TrackInformation{
-		TrackOwner: ac.TrackingController,
-	}
 	starsFP.CruiseSpeed = int(ac.AircraftPerformance().Speed.CruiseTAS)
 	starsFP.CoordinationFix = starsFP.CordinationFix(w, ac)
 	fmt.Printf("Coordination fix for %v is %v.\n", starsFP.Callsign, starsFP.CoordinationFix)
@@ -924,6 +921,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	if stars == nil { // coming from an ERAM place
 		artcc.TrackInformation[flightPlan.AssignedSquawk] = &TrackInformation{
 			TrackOwner: ac.TrackingController,
+			FlightPlan: starsFP,
 		}
 	} else {
 		if stars.TrackInformation == nil {
@@ -931,6 +929,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		}
 		stars.TrackInformation[flightPlan.AssignedSquawk] = &TrackInformation{
 			TrackOwner: ac.TrackingController,
+			FlightPlan: starsFP,
 		}
 		fmt.Printf("Created an arrival %v. Under %v facility. Initial controller: %v. Fix: %v. Time: %v\n", ac.Squawk, stars.Identifier, ac.TrackingController, starsFP.CoordinationFix, starsFP.CoordinationTime)
 	}

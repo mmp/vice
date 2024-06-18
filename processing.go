@@ -802,7 +802,7 @@ func printERAMComputerMap(computers map[string]*ERAMComputer) {
 			}
 
 			fmt.Println("\tTrackInformation:")
-			for sq, trackInfo := range eramComputer.TrackInformation {
+			for sq, trackInfo := range starsComputer.TrackInformation {
 				fmt.Printf("\tSquawk: %s, TrackInfo:\n", sq)
 				fmt.Printf("\t\tTrackLocation: %+v\n", trackInfo.TrackLocation)
 				fmt.Printf("\t\tOwner: %s\n", trackInfo.TrackOwner)
