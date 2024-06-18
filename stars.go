@@ -5168,13 +5168,14 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 	}
 
 	if ps.TABList.Visible {
-		plans := make(map[int]*STARSFlightPlan)
+		plans := []*STARSFlightPlan{}
 		// Plans that are stored, but aren't associated to a track
 		_, stars := ctx.world.SafeFacility("")
 
-		for _, plan := range stars.ContainedPlans {
+		for _, idt := range SortedMapKeys(stars.ContainedPlans) {
 			if stars.ContainedPlans != nil {
-				plans[sp.getAircraftIndex(plan)] = plan
+				plan := stars.ContainedPlans[idt]
+				plans = append(plans, plan)
 			}
 
 		}
@@ -5183,9 +5184,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		if len(plans) > ps.TABList.Lines {
 			text += fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(plans))
 		}
-		for i, acIdx := range SortedMapKeys(plans) {
-			plan := plans[acIdx]
-			text += fmt.Sprintf("%2d %-7s %s\n", acIdx, plan.Callsign, plan.AssignedSquawk.String())
+		for i, plan := range plans {
+			text += fmt.Sprintf("%2d %-7s %s\n", i, plan.Callsign, plan.AssignedSquawk.String())
 
 			// Limit to the user limit
 			if i == ps.TABList.Lines {
