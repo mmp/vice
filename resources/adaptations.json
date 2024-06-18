@@ -17,9 +17,24 @@
                 "from": "ZNY"
             },
             "RBV": {
-                "type": "zone",
+                "type": "route",
                 "to": "N90",
                 "from": "PHL"
+            },
+            "MUGZY": {
+                "type": "route",
+                "to": "N90",
+                "from": "ZNY"
+            },
+            "MAZIE": {
+                "type": "route",
+                "to": "N90",
+                "from": "PHL"
+            },
+            "HUO": {
+                "type": "route",
+                "to": "N90",
+                "from": "ZBW"
             },
             "MERIT": {
                 "type": "route",
@@ -41,6 +56,11 @@
     "ZBW": {
         "coordination_fixes": {
             "FLOSI": {
+                "type": "route",
+                "to": "ZNY",
+                "from": "ZBW"
+            },
+            "HUO": {
                 "type": "route",
                 "to": "ZNY",
                 "from": "ZBW"

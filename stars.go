@@ -3715,7 +3715,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				}
 				_, stars := ctx.world.SafeFacility("")
 				if db := sp.datablockType(ctx, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
-					state.FullLDB = time.Now().Add(5 * time.Second)
+					state.FullLDB = time.Now().Add(10 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
 				} else if db == FullDatablock && stars.TrackInformation[ac.Callsign].TrackOwner != ctx.world.Callsign {
 					state.DatablockType = PartialDatablock
@@ -6382,11 +6382,16 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	switch ty {
 	case LimitedDatablock:
 		db := baseDB.Duplicate()
-		db.Lines[1].Text = fmt.Sprintf("%v", ac.Squawk)
 		db.Lines[2].Text = fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
-		if time.Until(state.FullLDB) > 0 {
-			db.Lines[2].Text += fmt.Sprintf(" %02d", (state.TrackGroundspeed()+5)/10)
+		if f1{
+			db.Lines[1].Text = fmt.Sprintf("%v", Select(f1, ac.Callsign, ac.Squawk.String()))
 		}
+		if time.Until(state.FullLDB) > 0 {
+			if !f1 {
+				db.Lines[1].Text = fmt.Sprintf("%v", ac.Squawk.String())
+			}
+			db.Lines[2].Text += fmt.Sprintf(" %02d", (state.TrackGroundspeed()+5)/10)
+			}
 
 		if state.Ident() {
 			// flash ID after squawk code
@@ -6496,8 +6501,12 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else if info.FlightPlan == nil {
 			// fmt.Printf("fp info for %v is nil: %v.\n", ac.Squawk, stars.TrackInformation[ac.Squawk])
 			sp.Aircraft[ac.Callsign].DatablockType = LimitedDatablock
+			break
 		} else {
 			field1 = info.FlightPlan.Callsign
+			if f1 {
+				field1 = ac.Squawk.String()
+			}
 		}
 
 		field2 := ""
@@ -6787,10 +6796,14 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*Aircraft, ctx *PaneContext, tra
 		if len(dbs) == 0 {
 			continue
 		}
+		typ := sp.datablockType(ctx, ac)
 
 		baseColor, brightness := sp.datablockColor(ctx, ac)
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
 		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac, ctx.world))
+		if typ == LimitedDatablock && !f1 && time.Until(state.FullLDB) <= 0 {
+			v = scale2f(v, 0.5)
+		}
 		ld.AddLine(pac, add2f(pac, v), brightness.ScaleRGB(baseColor))
 	}
 

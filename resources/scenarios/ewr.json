@@ -3090,7 +3090,7 @@
         "initial_speed": 250,
         "star": "MAZIE",
         "speed_restriction": null,
-        "waypoints": "MAZIE/a4000/ho SBJ/h059"
+        "waypoints": "N040.16.57.073,W075.16.42.035 MAZIE/a4000/ho SBJ/h059"
       }
     ],
     "JAIKE4": [
@@ -4549,136 +4549,150 @@
         "from": "ZNY"
       },
       "RBV": {
-        "type": "zone",
+        "type": "route",
         "to": "N90",
         "from": "PHL"
-      }
-      
-    },
-    "inhibit_ca_volumes": [
-      {
-        "name": "EWR NO CA",
-        "type": "circle",
-        "floor": 0,
-        "ceiling": 1200,
-        "radius": 7,
-        "center": "KEWR"
-      }
-    ],
-    "radar_sites": {
-      "EWR": {
-        "char": "E",
-        "position": "KEWR",
-        "elevation": 136,
-        "primary_range": 60,
-        "secondary_range": 120,
-        "silence_angle": 30,
-        "slope_angle": 0.175
       },
-      "HPN": {
-        "char": "H",
-        "position": "KHPN",
-        "elevation": 708,
-        "primary_range": 60,
-        "secondary_range": 120,
-        "silence_angle": 30,
-        "slope_angle": 0.175
+      "MUGZY": {
+        "type": "route",
+        "to": "N90",
+        "from": "ZNY"
       },
-      "ISP": {
-        "char": "I",
-        "position": "KISP",
-        "elevation": 185,
-        "primary_range": 60,
-        "secondary_range": 120,
-        "silence_angle": 30,
-        "slope_angle": 0.175
+      "MAZIE": {
+        "type": "route",
+        "to": "N90",
+        "from": "PHL"
       },
-      "JFK": {
-        "char": "J",
-        "position": "KJFK",
-        "elevation": 143,
-        "primary_range": 60,
-        "secondary_range": 120,
-        "silence_angle": 30,
-        "slope_angle": 0.175
-      },
-      "SWF": {
-        "char": "S",
-        "position": "KSWF",
-        "elevation": 972,
-        "primary_range": 60,
-        "secondary_range": 120,
-        "silence_angle": 30,
-        "slope_angle": 0.175
+      "HUO": {
+        "type": "route",
+        "to": "N90",
+        "from": "ZNY"
       }
     },
-    "allow_long_scratchpad": [
-      false,
-      false
-    ],
-    "force_ql_self": true,
-    "scratchpads": {
-      "BAYYS": "BAY",
-      "BDR": "BDR",
-      "BIGGY": "BIG",
-      "BREZY": "BRE",
-      "COATE": "COA",
-      "DIXIE": "DIX",
-      "ELIOT": "ELI",
-      "GAYEL": "GAY",
-      "GREKI": "GRE",
-      "HAAYS": "HAY",
-      "LANNA": "LAN",
-      "MERIT": "MER",
-      "NEION": "NEI",
-      "NEWEL": "NWL",
-      "None": null,
-      "PARKE": "PAR",
-      "SAX": "SAX",
-      "SBJ": "SBJ",
-      "SHIPP": "SHI",
-      "WAVEY": "WAV",
-      "WHITE": "WHI",
-      "ARD": "ARD",
-      "ZIMMZ": "ZIM"
+  "inhibit_ca_volumes": [
+    {
+      "name": "EWR NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 7,
+      "center": "KEWR"
+    }
+  ],
+  "radar_sites": {
+    "EWR": {
+      "char": "E",
+      "position": "KEWR",
+      "elevation": 136,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
     },
-    "stars_maps": [
-      "EWR ARR/DEP",
-      "MVA",
-      "NY Class B",
-      "EOVM",
-      "MMU ILS 23",
-      "CDW RNAV",
-      "EWR CRDA",
-      "EWR GLS",
-      "TEB RNAV (GPS) RWY 6",
-      "RNAVX 29",
-      "TEB RNAV",
-      "LGA & VAP",
-      "EWR RNAV",
-      "STW/SAX RNAV",
-      "N07 RNAV",
-      "DEPARTURE RNAV",
-      "SMQ/N51",
-      "39N/47N",
-      "JFK ARR/DEP RWY 4L/R",
-      "JFK ARR/DEP RWY 13L/R",
-      "JFK ARR/DEP",
-      "N90 TFR",
-      "Coast",
-      "EOVM",
-      "",
-      "EWR GPS",
-      "",
-      "",
-      "NE HELI RNAV ROUTES",
-      "CATSKILL AREA",
-      "LIBERTY DEP",
-      "ISP ARR/DEP",
-      "LGA-HPN ARR/DEP",
-      "JFK ARR/DEP RWY 22L/R",
-      "JFK ARR/DEP RWY 31L/R"
-    ],
-    "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
-  }
+    "HPN": {
+      "char": "H",
+      "position": "KHPN",
+      "elevation": 708,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "ISP": {
+      "char": "I",
+      "position": "KISP",
+      "elevation": 185,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "JFK": {
+      "char": "J",
+      "position": "KJFK",
+      "elevation": 143,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "SWF": {
+      "char": "S",
+      "position": "KSWF",
+      "elevation": 972,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    }
+  },
+  "allow_long_scratchpad": [
+    false,
+    false
+  ],
+  "force_ql_self": true,
+  "scratchpads": {
+    "BAYYS": "BAY",
+    "BDR": "BDR",
+    "BIGGY": "BIG",
+    "BREZY": "BRE",
+    "COATE": "COA",
+    "DIXIE": "DIX",
+    "ELIOT": "ELI",
+    "GAYEL": "GAY",
+    "GREKI": "GRE",
+    "HAAYS": "HAY",
+    "LANNA": "LAN",
+    "MERIT": "MER",
+    "NEION": "NEI",
+    "NEWEL": "NWL",
+    "None": null,
+    "PARKE": "PAR",
+    "SAX": "SAX",
+    "SBJ": "SBJ",
+    "SHIPP": "SHI",
+    "WAVEY": "WAV",
+    "WHITE": "WHI",
+    "ARD": "ARD",
+    "ZIMMZ": "ZIM"
+  },
+  "stars_maps": [
+    "EWR ARR/DEP",
+    "MVA",
+    "NY Class B",
+    "EOVM",
+    "MMU ILS 23",
+    "CDW RNAV",
+    "EWR CRDA",
+    "EWR GLS",
+    "TEB RNAV (GPS) RWY 6",
+    "RNAVX 29",
+    "TEB RNAV",
+    "LGA & VAP",
+    "EWR RNAV",
+    "STW/SAX RNAV",
+    "N07 RNAV",
+    "DEPARTURE RNAV",
+    "SMQ/N51",
+    "39N/47N",
+    "JFK ARR/DEP RWY 4L/R",
+    "JFK ARR/DEP RWY 13L/R",
+    "JFK ARR/DEP",
+    "N90 TFR",
+    "Coast",
+    "EOVM",
+    "",
+    "EWR GPS",
+    "",
+    "",
+    "NE HELI RNAV ROUTES",
+    "CATSKILL AREA",
+    "LIBERTY DEP",
+    "ISP ARR/DEP",
+    "LGA-HPN ARR/DEP",
+    "JFK ARR/DEP RWY 22L/R",
+    "JFK ARR/DEP RWY 31L/R"
+  ],
+  "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
+}
 }
