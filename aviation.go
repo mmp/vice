@@ -39,6 +39,7 @@ type AdaptationFix struct {
 	Type           string `json:"type"`
 	ToController   string `json:"to"`   // controller to handoff to
 	FromController string `json:"from"` // controller to handoff from
+	Altitude int `json:"altitude"` // cruising alt. RBV is 6000 from WRI and 7000 from PHL
 }
 
 type FAAAirport struct {

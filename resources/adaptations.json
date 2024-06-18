@@ -11,16 +11,27 @@
                 "to": "N90",
                 "from": "ZDC"
             },
-            "SWEET": {
-                "type": "route",
-                "to": "N90",
-                "from": "ZNY"
-            },
-            "RBV": {
-                "type": "route",
-                "to": "N90",
-                "from": "PHL"
-            },
+            "SWEET": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "RBV": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "PHL",
+                    "altitude": 7000
+                },
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "WRI",
+                    "altitude": 6000
+                }
+            ],
             "MUGZY": {
                 "type": "route",
                 "to": "N90",
