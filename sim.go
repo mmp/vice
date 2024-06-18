@@ -2112,18 +2112,35 @@ func (s *Sim) SetSecondaryScratchpad(token, callsign, scratchpad string) error {
 		})
 }
 
+func (s *Sim) ChangeSquawk(token, callsign, squawk string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			sq, err := ParseSquawk(squawk)
+			if err != nil {
+				return []RadioTransmission{RadioTransmission{
+					Controller: ctrl.Callsign,
+					Message:    "bad squawk",
+					Type:       RadioTransmissionUnexpected,
+				}}
+			}
+			ac.Squawk = sq
+
+			return []RadioTransmission{RadioTransmission{
+				Controller: ctrl.Callsign,
+				Message:    "squawk",
+				Type:       RadioTransmissionReadback,
+			}}
+		})
+}
+
 func (s *Sim) Ident(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchCommand(token, callsign,
-		func(c *Controller, ac *Aircraft) error {
-			// Can't ask for ident if they're on someone else's frequency.
-			if ac.ControllingController != "" && ac.ControllingController != c.Callsign {
-				return ErrOtherControllerHasTrack
-			}
-			return nil
-		},
+	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			s.eventStream.Post(Event{
 				Type:     IdentEvent,

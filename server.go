@@ -1225,6 +1225,11 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					rewriteError(err)
 					return nil
 				}
+			} else if len(command) == 6 && command[:2] == "SQ" {
+				if err := sim.ChangeSquawk(token, callsign, command[2:]); err != nil {
+					rewriteError(err)
+					return nil
+				}
 			} else {
 				if kts, err := strconv.Atoi(command[1:]); err != nil {
 					rewriteError(err)
@@ -1234,6 +1239,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					return nil
 				}
 			}
+			fmt.Printf("Command: %s\n", command)
 
 		case 'T':
 			if command == "TO" {

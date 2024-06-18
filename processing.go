@@ -624,11 +624,18 @@ func (w *World) getSTARSFlightPlan(identifier string) (*STARSFlightPlan, error) 
 
 // This should be facility-defined in the json file, but for now it's 30nm near their departure airport
 func (ac *Aircraft) inAcquisitionArea(w *World) bool {
-	ap := w.GetAirport(ac.FlightPlan.DepartureAirport)
-	ap2 := w.GetAirport(ac.FlightPlan.ArrivalAirport)
-	if ap != nil {
-		if (nmdistance2ll(ap.Location, ac.Position()) <= 2 || nmdistance2ll(ap2.Location, ac.Position()) <= 2) && !ac.inDropArea(w) {
-			return true
+	if ac != nil {
+		ap := w.GetAirport(ac.FlightPlan.DepartureAirport)
+		ap2 := w.GetAirport(ac.FlightPlan.ArrivalAirport)
+		if ap != nil {
+			if nmdistance2ll(ap.Location, ac.Position()) <= 2 && !ac.inDropArea(w) {
+				return true
+			}
+		}
+		if ap2 != nil {
+			if nmdistance2ll(ap2.Location, ac.Position()) <= 2 && !ac.inDropArea(w) {
+				return true
+			}
 		}
 	}
 	return false
