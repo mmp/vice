@@ -314,7 +314,7 @@ func (w *World) AcceptHandoff(callsign string, success func(any), err func(error
 	_, stars := w.SafeFacility("")
 	ac := w.GetAircraft(callsign, false)
 	if ac != nil {
-		if info := stars.TrackInformation[ac.Squawk]; info != nil && info.HandoffController == w.Callsign {
+		if info := stars.TrackInformation[ac.Callsign]; info != nil && info.HandoffController == w.Callsign {
 			ac.ControllingController = w.Callsign
 		}
 	}
@@ -895,7 +895,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		FlightPlan: *flightPlan,
 	}
 	if artcc.TrackInformation == nil {
-		artcc.TrackInformation = make(map[Squawk]*TrackInformation)
+		artcc.TrackInformation = make(map[string]*TrackInformation)
 	}
 	starsFP.CruiseSpeed = int(ac.AircraftPerformance().Speed.CruiseTAS)
 	starsFP.CoordinationFix = starsFP.CordinationFix(w, ac)
@@ -919,15 +919,15 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	}
 	artcc.FlightPlans[flightPlan.AssignedSquawk] = starsFP
 	if stars == nil { // coming from an ERAM place
-		artcc.TrackInformation[flightPlan.AssignedSquawk] = &TrackInformation{
+		artcc.TrackInformation[ac.Callsign] = &TrackInformation{
 			TrackOwner: ac.TrackingController,
 			FlightPlan: starsFP,
 		}
 	} else {
 		if stars.TrackInformation == nil {
-			stars.TrackInformation = make(map[Squawk]*TrackInformation)
+			stars.TrackInformation = make(map[string]*TrackInformation)
 		}
-		stars.TrackInformation[flightPlan.AssignedSquawk] = &TrackInformation{
+		stars.TrackInformation[ac.Callsign] = &TrackInformation{
 			TrackOwner: ac.TrackingController,
 			FlightPlan: starsFP,
 		}

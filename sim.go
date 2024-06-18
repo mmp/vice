@@ -1538,22 +1538,23 @@ func (s *Sim) updateState() {
 			ac.HandoffTrackController = ""
 			w := s.World
 			_, stars := w.SafeFacility(t.ReceivingFacility)
-			bcn := w.GetAircraft(callsign, false).Squawk
-			currentlyTracking := stars.TrackInformation[bcn].TrackOwner
+			bcn := ac.Squawk
+			idt := ac.Callsign
+			currentlyTracking := stars.TrackInformation[idt].TrackOwner
 			if w.GetControllerByCallsign(currentlyTracking).FacilityIdentifier != "" { // inter-facility
 				msg := stars.ContainedPlans[bcn].Message()
 				msg.SourceID = w.FacilityFromController(currentlyTracking) + s.SimTime.Format("1504Z")
 				info := TrackInformation{
-					TrackOwner:        stars.TrackInformation[bcn].HandoffController,
+					TrackOwner:        stars.TrackInformation[idt].HandoffController,
 					HandoffController: "",
 				}
 				msg.TrackInformation = info
 				stars.SendTrackInfo(w.FacilityFromController(currentlyTracking), msg, w.SimTime, AcceptRecallTransfer)
 			} else {
-				if entry, ok := stars.TrackInformation[w.GetAircraft(callsign, false).Squawk]; ok {
-					entry.TrackOwner = stars.TrackInformation[bcn].HandoffController
+				if entry, ok := stars.TrackInformation[ac.Callsign]; ok {
+					entry.TrackOwner = stars.TrackInformation[idt].HandoffController
 					entry.HandoffController = ""
-					stars.TrackInformation[bcn] = entry
+					stars.TrackInformation[idt] = entry
 				}
 			}
 		}
@@ -1610,6 +1611,7 @@ func (s *Sim) updateState() {
 						info := TrackInformation{
 							TrackOwner:        ac.TrackingController,
 							HandoffController: ctrl,
+							Identifier: 	  ac.Callsign,
 						}
 						msg.MessageType = InitiateTransfer
 						fmt.Printf("WaypointHndOff: %v. Tracking: %v. Ctrl: %v.\n", ac.WaypointHandoffController, ac.TrackingController, ctrl)
@@ -1626,6 +1628,7 @@ func (s *Sim) updateState() {
 							info := TrackInformation{
 								TrackOwner:        ac.TrackingController,
 								HandoffController: ctrl,
+								Identifier: 	  ac.Callsign,
 							}
 							msg.TrackInformation = info
 							msg.MessageType = InitiateTransfer
@@ -2066,7 +2069,7 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			_, stars := s.World.SafeFacility("")
-			if entry, ok := stars.TrackInformation[ac.Squawk]; !ok || entry.TrackOwner == "" {
+			if entry, ok := stars.TrackInformation[ac.Callsign]; !ok || entry.TrackOwner == "" {
 				return ErrOtherControllerHasTrack
 			}
 			return nil
@@ -2183,7 +2186,7 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 		func(c *Controller, ac *Aircraft) error {
 			// Make sure no one has the track already
 			_, stars := s.World.SafeFacility("")
-			if entry, ok := stars.TrackInformation[ac.Squawk]; ok || entry != nil && entry.TrackOwner != "" {
+			if entry, ok := stars.TrackInformation[ac.Callsign]; ok || entry != nil && entry.TrackOwner != "" {
 				return ErrOtherControllerHasTrack
 			}
 			return nil
@@ -2207,13 +2210,13 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 			_, stars := w.SafeFacility("")
 
 			if stars.TrackInformation == nil {
-				stars.TrackInformation = make(map[Squawk]*TrackInformation)
+				stars.TrackInformation = make(map[string]*TrackInformation)
 			}
 			if fp == nil {
 				lg.Errorf("nil flight plan for %v/%v", ac.Callsign, ac.Squawk)
 				return nil
 			}
-			stars.TrackInformation[fp.AssignedSquawk] = &TrackInformation{
+			stars.TrackInformation[ac.Callsign] = &TrackInformation{
 				TrackOwner: ctrl.Callsign,
 				FlightPlan: fp,
 			}
@@ -2231,7 +2234,7 @@ func (s *Sim) DropTrack(token, callsign string) error {
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			w := s.World
 			_, stars := w.SafeFacility("")
-			delete(stars.TrackInformation, ac.Squawk)
+			delete(stars.TrackInformation, ac.Callsign)
 			delete(stars.ContainedPlans, ac.Squawk)
 
 			ac.ControllingController = ""
@@ -2277,23 +2280,23 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			_, stars := s.World.SafeFacility("")
 
 			if octrl.Facility != ctrl.Facility { // inter-facility
-				msg := stars.TrackInformation[ac.Squawk].FlightPlan.Message()
+				msg := stars.TrackInformation[ac.Callsign].FlightPlan.Message()
 				msg.SourceID = s.World.FacilityFromController(ctrl.Callsign) + s.SimTime.Format("1504Z")
 				msg.TrackInformation = TrackInformation{
 					TrackOwner:        ctrl.Callsign,
 					HandoffController: octrl.Callsign,
 				}
 
-				stars.TrackInformation[ac.Squawk] = &TrackInformation{
+				stars.TrackInformation[ac.Callsign] = &TrackInformation{
 					TrackOwner:        ctrl.Callsign,
 					HandoffController: octrl.Callsign,
-					FlightPlan:        stars.TrackInformation[ac.Squawk].FlightPlan,
+					FlightPlan:        stars.TrackInformation[ac.Callsign].FlightPlan,
 				}
 				stars.SendTrackInfo(s.World.FacilityFromController(octrl.Callsign), msg, s.SimTime, InitiateTransfer)
 			} else {
-				entry := stars.TrackInformation[ac.Squawk]
+				entry := stars.TrackInformation[ac.Callsign]
 				entry.HandoffController = octrl.Callsign
-				stars.TrackInformation[ac.Squawk] = entry
+				stars.TrackInformation[ac.Callsign] = entry
 			}
 
 			// Add them to the auto-accept map even if the target is
@@ -2373,7 +2376,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			_, stars := s.World.SafeFacility("")
-			if info := stars.TrackInformation[ac.Squawk]; info != nil && info.HandoffController != ctrl.Callsign {
+			if info := stars.TrackInformation[ac.Callsign]; info != nil && info.HandoffController != ctrl.Callsign {
 				return ErrNotBeingHandedOffToMe
 			}
 			return nil
@@ -2390,12 +2393,13 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 			ac.TrackingController = ctrl.Callsign
 			w := s.World
 			_, stars := w.SafeFacility("")
-			bcn := w.GetAircraft(callsign, false).Squawk
-			currentlyTracking := stars.TrackInformation[bcn].TrackOwner
+			bcn := ac.Squawk
+			idt := ac.Callsign
+			currentlyTracking := stars.TrackInformation[idt].TrackOwner
 			if w.GetControllerByCallsign(currentlyTracking).FacilityIdentifier != "" { // inter-facility
 				fp := stars.ContainedPlans[bcn]
 				if fp == nil {
-					fp = stars.TrackInformation[bcn].FlightPlan
+					fp = stars.TrackInformation[idt].FlightPlan
 					if fp == nil {
 						lg.Errorf("fp is still nil after reassignment for %v.\n", bcn)
 					}
@@ -2403,7 +2407,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				msg := FlightPlanMessage{}
 				if fp != nil {
 					msg = fp.Message()
-				} else if track := stars.TrackInformation[bcn]; track != nil {
+				} else if track := stars.TrackInformation[idt]; track != nil {
 					msg = track.FlightPlan.Message()
 				} else {
 					lg.Errorf("both track & flightplan are nil for %v.\n", bcn)
@@ -2430,10 +2434,10 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				}
 
 			}
-			if entry, ok := stars.TrackInformation[w.GetAircraft(callsign, false).Squawk]; ok {
+			if entry, ok := stars.TrackInformation[ac.Callsign]; ok {
 				entry.HandoffController = ""
 				entry.TrackOwner = ctrl.Callsign
-				stars.TrackInformation[w.GetAircraft(callsign, false).Squawk] = entry
+				stars.TrackInformation[ac.Callsign] = entry
 			}
 
 			if !s.controllerIsSignedIn(ac.ControllingController) {
@@ -2457,25 +2461,25 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			_, stars := s.World.SafeFacility("")
-			trackInfo := stars.TrackInformation[ac.Squawk]
+			trackInfo := stars.TrackInformation[ac.Callsign]
 			octrl := s.World.GetControllerByCallsign(trackInfo.HandoffController)
 
 			if octrl.Facility != ctrl.Facility { // inter-facility
-				msg := stars.TrackInformation[ac.Squawk].FlightPlan.Message()
+				msg := stars.TrackInformation[ac.Callsign].FlightPlan.Message()
 				msg.SourceID = s.World.FacilityFromController(ctrl.Callsign) + s.SimTime.Format("1504Z")
 				msg.TrackInformation = TrackInformation{
 					TrackOwner: ctrl.Callsign,
 				}
 
-				stars.TrackInformation[ac.Squawk] = &TrackInformation{
+				stars.TrackInformation[ac.Callsign] = &TrackInformation{
 					TrackOwner: ctrl.Callsign,
-					FlightPlan: stars.TrackInformation[ac.Squawk].FlightPlan,
+					FlightPlan: stars.TrackInformation[ac.Callsign].FlightPlan,
 				}
 				stars.SendTrackInfo(s.World.FacilityFromController(octrl.Callsign), msg, s.SimTime, InitiateTransfer)
 			} else {
-				entry := stars.TrackInformation[ac.Squawk]
+				entry := stars.TrackInformation[ac.Callsign]
 				entry.HandoffController = octrl.Callsign
-				stars.TrackInformation[ac.Squawk] = entry
+				stars.TrackInformation[ac.Callsign] = entry
 			}
 
 			return nil
