@@ -434,6 +434,7 @@ type STARSAircraftState struct {
 	MinimumMIT               float32
 	ATPALeadAircraftCallsign string
 	POFlashingEndTime        time.Time
+	UNFlashingEndTime        time.Time
 
 	// These are only set if a leader line direction was specified for this
 	// aircraft individually:
@@ -1373,6 +1374,7 @@ func (sp *STARSPane) processEvents(w *World) {
 		case AcknowledgedPointOutEvent:
 			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
 				if ctrl := w.GetControllerByCallsign(event.FromController); ctrl != nil && ctrl.SectorId == id {
+					sp.Aircraft[event.Callsign].POFlashingEndTime = time.Now().Add(5 * time.Second)
 					delete(sp.OutboundPointOuts, event.Callsign)
 				}
 			}
@@ -1381,6 +1383,7 @@ func (sp *STARSPane) processEvents(w *World) {
 					delete(sp.InboundPointOuts, event.Callsign)
 					sp.Aircraft[event.Callsign].PointedOut = true
 					sp.Aircraft[event.Callsign].POFlashingEndTime = time.Now().Add(5 * time.Second)
+					fmt.Println(event.Callsign, sp.Aircraft[event.Callsign].POFlashingEndTime)
 				}
 			}
 
@@ -1389,6 +1392,7 @@ func (sp *STARSPane) processEvents(w *World) {
 				if ctrl := w.GetControllerByCallsign(event.FromController); ctrl != nil && ctrl.SectorId == id {
 					delete(sp.OutboundPointOuts, event.Callsign)
 					sp.RejectedPointOuts[event.Callsign] = nil
+					sp.Aircraft[event.Callsign].UNFlashingEndTime = time.Now().Add(5 * time.Second)
 				}
 			}
 			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
@@ -3576,8 +3580,18 @@ func (sp *STARSPane) RemoveForceQL(ctx *PaneContext, callsign, controller string
 	ctx.world.RemoveForceQL(callsign, controller, nil, nil) // Just a slew so the slew could be for other things
 }
 
-func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
+func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) error {
+	if f := ctx.world.GetControllerByCallsign(controller); f.Facility != ctx.world.TRACON {
+		fmt.Println(f.Callsign, f.Facility)
+		return ErrSTARSIllegalPosition
+	}
+	_, stars := ctx.world.SafeFacility("")
+	trk := stars.TrackInformation[callsign]
+	if trk.PointOut != "" {
+		return ErrSTARSIllegalTrack
+	}
 	ctx.world.PointOut(callsign, controller, nil, func(err error) { sp.displayError(err) })
+	return nil
 }
 
 func (sp *STARSPane) acknowledgePointOut(ctx *PaneContext, callsign string) {
@@ -3982,7 +3996,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					status.err = ErrSTARSIllegalPosition
 				} else {
 					status.clear = true
-					sp.pointOut(ctx, ac.Callsign, control.Callsign)
+					status.err = sp.pointOut(ctx, ac.Callsign, control.Callsign)
 				}
 				return
 
@@ -6525,13 +6539,13 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = []string{" PO"}
 		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
 			field8 = []string{" PO" + id}
-		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+		} else if time.Until(state.UNFlashingEndTime) > 0*time.Second {
 			field8 = []string{"", " UN"}
 		} else if time.Until(state.POFlashingEndTime) > 0*time.Second {
 			field8 = []string{"", " PO"}
 		} else if ac.RedirectedHandoff.ShowRDIndicator(ctx.world.Callsign, state.RDIndicatorEnd) {
 			field8 = []string{" RD"}
-		}
+		} 
 
 		// Line 2: fields 3, 4, 5
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
@@ -6701,7 +6715,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			db.Lines[2].Text = field3[i%len(field3)] + field4[i%len(field4)] + field5[i%len(field5)]
 			db.Lines[3].Text = field6[i%len(field6)] + field7[i%len(field7)]
 			if line3FieldColors != nil && i&1 == 1 {
-				// Flash the 
+				// Flash the correct squawk
 				fc := *line3FieldColors
 				fc.Start += len(field6[i%len(field6)]) - 7
 				fc.End += len(field6[i%len(field6)]) - 7

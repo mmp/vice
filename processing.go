@@ -50,9 +50,6 @@ func (w *World) initComputers() {
 		}
 		for _, stars := range eram.STARSComputers {
 			inboxes[stars.Identifier] = &stars.RecievedMessages
-			if stars.MessageMap == nil {
-				stars.MessageMap = make(map[FlightPlanMessage]string)
-			}
 			if stars.UnsupportedTracks == nil {
 				stars.UnsupportedTracks = make(map[int]*UnsupportedTrack)
 			}
@@ -444,7 +441,6 @@ type STARSComputer struct {
 	ERAMInbox         *[]FlightPlanMessage // The address of the overlying ERAM's message inbox.
 	Identifier        string
 	STARSInbox        map[string]*[]FlightPlanMessage // Other STARS Facilities inbox.
-	MessageMap        map[FlightPlanMessage]string
 	UnsupportedTracks map[int]*UnsupportedTrack
 }
 
@@ -514,6 +510,8 @@ type TrackInformation struct {
 	TrackOwner        string
 	HandoffController string
 	FlightPlan        *STARSFlightPlan
+	PointOut 		  string
+	PointOutHistory   []string
 }
 
 func (comp *STARSComputer) SendTrackInfo(receivingFacility string, msg FlightPlanMessage, simTime time.Time, Type int) {
@@ -689,9 +687,7 @@ func (comp *STARSComputer) SortReceivedMessages() {
 					FlightPlan:        fp,
 				}
 				delete(comp.ContainedPlans, msg.BCN)
-				if len(msg.SourceID) > 3 {
-					comp.MessageMap[msg] = msg.SourceID[:3]
-				} else {
+				if len(msg.SourceID) <= 3 {
 					fmt.Printf("init transfer msg nil? %v\n", msg)
 				}
 				fmt.Printf("Message for %v has been received and sorted: %v.\n", msg.BCN, comp.TrackInformation[msg.Identifier])

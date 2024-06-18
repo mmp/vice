@@ -2608,6 +2608,9 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 				Callsign:       ac.Callsign,
 			})
 
+			_, stars := s.World.SafeFacility("")
+			stars.TrackInformation[ac.Callsign].PointOut = octrl.Callsign
+
 			// As with handoffs, always add it to the auto-accept list for now.
 			acceptDelay := 4 + rand.Intn(10)
 			if s.PointOuts[ac.Callsign] == nil {
@@ -2641,11 +2644,14 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 				ToController:   s.PointOuts[callsign][ctrl.Callsign].FromController,
 				Callsign:       ac.Callsign,
 			})
-			if len(ac.PointOutHistory) < 20 {
-				ac.PointOutHistory = append([]string{ctrl.Callsign}, ac.PointOutHistory...)
+			_, stars := s.World.SafeFacility("")
+			trk := stars.TrackInformation[ac.Callsign]
+			trk.PointOut = ""
+			if len(trk.PointOutHistory) < 20 {
+				trk.PointOutHistory = append([]string{ctrl.Callsign}, ac.PointOutHistory...)
 			} else {
-				ac.PointOutHistory = ac.PointOutHistory[:19]
-				ac.PointOutHistory = append([]string{ctrl.Callsign}, ac.PointOutHistory...)
+				trk.PointOutHistory = ac.PointOutHistory[:19]
+				trk.PointOutHistory = append([]string{ctrl.Callsign}, ac.PointOutHistory...)
 			}
 
 			delete(s.PointOuts[callsign], ctrl.Callsign)
