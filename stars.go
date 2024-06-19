@@ -76,6 +76,9 @@ type STARSPane struct {
 	systemOutlineFont [6]*Font
 	dcbFont           [3]*Font // 0, 1, 2 only
 
+	historyTrackVertices [][2]float32
+	fusedTrackVertices   [][2]float32
+
 	events *EventsSubscription
 
 	// All of the aircraft in the world, each with additional information
@@ -5448,6 +5451,13 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	defer ReturnColoredTrianglesDrawBuilder(trid)
 	// TODO: square icon if it's squawking a beacon code we're monitoring
 
+	// Update cached command buffers for tracks
+	const historyTrackDiameter = 8
+	sp.historyTrackVertices = getTrackVertices(ctx, historyTrackDiameter)
+	sp.fusedTrackVertices = getTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
+
+	scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+
 	now := ctx.world.CurrentTime()
 	for _, ac := range aircraft {
 		state := sp.Aircraft[ac.Callsign]
@@ -5476,7 +5486,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 			state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(), ac.Heading())
 
 		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, trackBuilder, historyBuilder,
-			ld, trid, td)
+			ld, trid, td, scale)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -5614,14 +5624,13 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, heading float32, ctx *PaneContext,
 	transforms ScopeTransformations, trackId string, trackBuilder *ColoredTrianglesDrawBuilder,
 	historyBuilder *ColoredTrianglesDrawBuilder, ld *ColoredLinesDrawBuilder,
-	trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder) {
+	trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder, scale float32) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
 
 	pos := state.TrackPosition()
 	pw := transforms.WindowFromLatLongP(pos)
 	// On high DPI windows displays we need to scale up the tracks
-	scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 
 	primaryTargetBrightness := ps.Brightness.PrimarySymbols
 	if primaryTargetBrightness > 0 {
@@ -5688,8 +5697,7 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 		case RadarModeFused:
 			if ps.Brightness.PrimarySymbols > 0 {
 				color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
-				trackSize := sp.getTrackSize(ctx, transforms) // bigger points for fused mode primary tracks
-				drawTrack(ctx, trackBuilder, pw, trackSize, color)
+				drawTrack(trackBuilder, pw, sp.fusedTrackVertices, color)
 			}
 		}
 	}
@@ -5739,8 +5747,7 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 
 			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
 				if p := state.historyTracks[idx].Position; !p.IsZero() {
-					const historyTrackDiameter = 8
-					drawTrack(ctx, historyBuilder, transforms.WindowFromLatLongP(p), historyTrackDiameter,
+					drawTrack(historyBuilder, transforms.WindowFromLatLongP(p), sp.historyTrackVertices,
 						trackColor)
 				}
 			}
@@ -5748,7 +5755,14 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 	}
 }
 
-func drawTrack(ctx *PaneContext, ctd *ColoredTrianglesDrawBuilder, p [2]float32, diameter float32, color RGB) {
+func drawTrack(ctd *ColoredTrianglesDrawBuilder, p [2]float32, vertices [][2]float32, color RGB) {
+	for i := range vertices {
+		v0, v1 := vertices[i], vertices[(i+1)%len(vertices)]
+		ctd.AddTriangle(p, add2f(p, v0), add2f(p, v1), color)
+	}
+}
+
+func getTrackVertices(ctx *PaneContext, diameter float32) [][2]float32 {
 	// Figure out how many points to use to approximate the circle; use
 	// more the bigger it is on the screen, but, sadly, not enough to get a
 	// nice clean circle (matching real-world..)
@@ -5770,11 +5784,7 @@ func drawTrack(ctx *PaneContext, ctd *ColoredTrianglesDrawBuilder, p [2]float32,
 	radius := scale * float32(int(diameter/2+0.5)) // round to integer
 	pts = MapSlice(pts, func(p [2]float32) [2]float32 { return scale2f(p, radius) })
 
-	// And finally draw the thing...
-	for i := range pts {
-		p0, p1 := pts[i], pts[(i+1)%len(pts)]
-		ctd.AddTriangle(p, add2f(p, p0), add2f(p, p1), color)
-	}
+	return pts
 }
 
 func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
