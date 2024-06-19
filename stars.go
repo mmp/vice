@@ -1314,31 +1314,6 @@ func (sp *STARSPane) processEvents(w *World) {
 		}
 	}
 
-	// See if there are any MVA issues
-	mvas := database.MVAs[w.TRACON]
-	for callsign, ac := range w.Aircraft {
-		state := sp.Aircraft[callsign]
-		if !ac.MVAsApply() {
-			state.MSAW = false
-			continue
-		}
-
-		warn := slices.ContainsFunc(mvas, func(mva MVA) bool {
-			return ac.Altitude() < float32(mva.MinimumLimit) && mva.Inside(ac.Position())
-		})
-
-		if !warn && state.InhibitMSAW {
-			// The warning has cleared, so the inhibit is disabled (p.7-25)
-			state.InhibitMSAW = false
-		}
-		if warn && !state.MSAW {
-			// It's a new alert
-			state.MSAWAcknowledged = false
-			state.MSAWSoundEnd = time.Now().Add(5 * time.Second)
-		}
-		state.MSAW = warn
-	}
-
 	// Filter out any removed aircraft from the CA list
 	sp.CAAircraft = FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
 		_, a := w.Aircraft[ca.Callsigns[0]]
@@ -1444,6 +1419,33 @@ func (sp *STARSPane) processEvents(w *World) {
 				state.UseGlobalLeaderLine = state.GlobalLeaderLineDirection != nil
 			}
 		}
+	}
+}
+
+func (sp *STARSPane) updateMSAWs(w *World) {
+	// See if there are any MVA issues
+	mvas := database.MVAs[w.TRACON]
+	for callsign, ac := range w.Aircraft {
+		state := sp.Aircraft[callsign]
+		if !ac.MVAsApply() {
+			state.MSAW = false
+			continue
+		}
+
+		warn := slices.ContainsFunc(mvas, func(mva MVA) bool {
+			return state.track.Altitude < mva.MinimumLimit && mva.Inside(state.track.Position)
+		})
+
+		if !warn && state.InhibitMSAW {
+			// The warning has cleared, so the inhibit is disabled (p.7-25)
+			state.InhibitMSAW = false
+		}
+		if warn && !state.MSAW {
+			// It's a new alert
+			state.MSAWAcknowledged = false
+			state.MSAWSoundEnd = time.Now().Add(5 * time.Second)
+		}
+		state.MSAW = warn
 	}
 }
 
@@ -1727,6 +1729,9 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 			Time:        now,
 		}
 	}
+
+	// Update low altitude alerts now that we have updated tracks
+	sp.updateMSAWs(w)
 
 	// History tracks are updated after a radar track update, only if
 	// H_RATE seconds have elapsed (4-94).
