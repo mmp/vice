@@ -1816,7 +1816,7 @@ func (s *Sim) spawnAircraft() {
 		ac, dep, err := s.World.CreateDeparture(airport, runway, category,
 			s.LaunchConfig.DepartureChallenge, prevDep)
 		if err != nil {
-			s.lg.Errorf("CreateDeparture error: %v", err)
+			s.lg.Infof("CreateDeparture error: %v", err)
 		} else {
 			s.lastDeparture[airport][runway][category] = dep
 			s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
