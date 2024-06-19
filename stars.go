@@ -552,8 +552,7 @@ func (s *STARSAircraftState) LostTrack(now time.Time) bool {
 	return !s.track.Position.IsZero() && now.Sub(s.track.Time) > 30*time.Second
 }
 
-func (s *STARSAircraftState) Ident() bool {
-	now := time.Now()
+func (s *STARSAircraftState) Ident(now time.Time) bool {
 	return !s.IdentStart.IsZero() && s.IdentStart.Before(now) && s.IdentEnd.After(now)
 }
 
@@ -1554,7 +1553,7 @@ func (sp *STARSPane) Upgrade(from, to int) {
 
 func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.processEvents(ctx.world)
-	sp.updateRadarTracks(ctx.world)
+	sp.updateRadarTracks(ctx)
 
 	ps := sp.CurrentPreferenceSet
 
@@ -1670,17 +1669,16 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
 
 	// Play the CA sound if any CAs or MSAWs are unacknowledged
-	now := time.Now()
 	playAlertSound := !ps.DisableCAWarnings && slices.ContainsFunc(sp.CAAircraft,
 		func(ca CAAircraft) bool {
 			return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
-				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings && now.Before(ca.SoundEnd)
+				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings && ctx.now.Before(ca.SoundEnd)
 		})
 	if !ps.DisableMSAW {
 		for _, ac := range aircraft {
 			state := sp.Aircraft[ac.Callsign]
 			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW && !state.DisableMSAW &&
-				now.Before(state.MSAWSoundEnd) {
+				ctx.now.Before(state.MSAWSoundEnd) {
 				playAlertSound = true
 				break
 			}
@@ -1703,7 +1701,8 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 }
 
-func (sp *STARSPane) updateRadarTracks(w *World) {
+func (sp *STARSPane) updateRadarTracks(ctx *PaneContext) {
+	w := ctx.world
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	now := w.CurrentTime()
 	if sp.radarMode(w) == RadarModeFused {
@@ -1753,7 +1752,7 @@ func (sp *STARSPane) updateRadarTracks(w *World) {
 		return aircraft[i].Callsign < aircraft[j].Callsign
 	})
 
-	sp.updateCAAircraft(w, aircraft)
+	sp.updateCAAircraft(ctx, aircraft)
 	sp.updateInTrailDistance(aircraft, w)
 }
 
@@ -2184,7 +2183,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			} else if f[0] == ".FIND" {
 				if pos, ok := ctx.world.Locate(f[1]); ok {
 					globalConfig.highlightedLocation = pos
-					globalConfig.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
+					globalConfig.highlightedLocationEndTime = ctx.now.Add(5 * time.Second)
 					status.clear = true
 					return
 				} else {
@@ -3559,7 +3558,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				if time.Until(state.RDIndicatorEnd) > 0 {
 					if state.OutboundHandoffAccepted {
 						state.OutboundHandoffAccepted = false
-						state.OutboundHandoffFlashEnd = time.Now()
+						state.OutboundHandoffFlashEnd = ctx.now
 					}
 					state.RDIndicatorEnd = time.Time{}
 					status.clear = true
@@ -3618,7 +3617,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					// ack an accepted handoff
 					status.clear = true
 					state.OutboundHandoffAccepted = false
-					state.OutboundHandoffFlashEnd = time.Now()
+					state.OutboundHandoffFlashEnd = ctx.now
 
 					return
 				} else if ctx.keyboard != nil {
@@ -3632,7 +3631,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					}
 				}
 				if db := sp.datablockType(ctx, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
-					state.FullLDB = time.Now().Add(5 * time.Second)
+					state.FullLDB = ctx.now.Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
 				} else if db == FullDatablock && ac.TrackingController != ctx.world.Callsign {
 					state.DatablockType = PartialDatablock
@@ -5869,7 +5868,8 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [
 	return
 }
 
-func (sp *STARSPane) updateCAAircraft(w *World, aircraft []*Aircraft) {
+func (sp *STARSPane) updateCAAircraft(ctx *PaneContext, aircraft []*Aircraft) {
+	w := ctx.world
 	inCAVolumes := func(state *STARSAircraftState) bool {
 		for _, vol := range w.InhibitCAVolumes() {
 			if vol.Inside(state.TrackPosition(), state.TrackAltitude()) {
@@ -5915,7 +5915,7 @@ func (sp *STARSPane) updateCAAircraft(w *World, aircraft []*Aircraft) {
 				}) {
 					sp.CAAircraft = append(sp.CAAircraft, CAAircraft{
 						Callsigns: [2]string{callsign, ocs},
-						SoundEnd:  time.Now().Add(5 * time.Second),
+						SoundEnd:  ctx.now.Add(5 * time.Second),
 					})
 				}
 			}
@@ -6327,7 +6327,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			db.Lines[2].Text += fmt.Sprintf(" %02d", (state.TrackGroundspeed()+5)/10)
 		}
 
-		if state.Ident() {
+		if state.Ident(ctx.now) {
 			// flash ID after squawk code
 			start := len(db.Lines[1].Text)
 			db.Lines[1].Text += "ID"
@@ -6355,7 +6355,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			dbs[1].Lines[0].Text += sq + "WHO"
 		}
 
-		if state.Ident() {
+		if state.Ident(ctx.now) {
 			alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
 			dbs[0].Lines[1].Text = alt + " ID"
 			dbs[1].Lines[1].Text = alt + " ID"
@@ -6463,7 +6463,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		// as a placeholder in field 4 otherwise.
 		field3 := []string{alt}
 		field4 := []string{""}
-		if !state.Ident() {
+		if !state.Ident(ctx.now) {
 			// Don't display these if they're identing: then it's just altitude and speed + "ID"
 			if ac.Scratchpad != "" {
 				field3 = append(field3, ac.Scratchpad)
@@ -6511,7 +6511,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 
 		field5 := []string{} // alternate speed and aircraft type
 		var line5FieldColors *STARSDatablockFieldColors
-		if state.Ident() {
+		if state.Ident(ctx.now) {
 			// Speed is followed by ID when identing (2-67, field 5)
 			field5 = append(field5, speed+"ID")
 			field5 = append(field5, speed+"ID")
@@ -6641,12 +6641,11 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 	}
 
 	// Handle cases where it should flash
-	now := time.Now()
-	if now.Second()&1 == 0 { // one second cycle
+	if ctx.now.Second()&1 == 0 { // one second cycle
 		if _, pointOut := sp.InboundPointOuts[ac.Callsign]; pointOut {
 			// point out
 			brightness /= 3
-		} else if state.OutboundHandoffAccepted && now.Before(state.OutboundHandoffFlashEnd) {
+		} else if state.OutboundHandoffAccepted && ctx.now.Before(state.OutboundHandoffFlashEnd) {
 			// we handed it off, it was accepted, but we haven't yet acknowledged
 			brightness /= 3
 		} else if (ac.HandoffTrackController == w.Callsign && !slices.Contains(ac.RedirectedHandoff.Redirector, w.Callsign)) || // handing off to us
@@ -6730,7 +6729,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 	defer ReturnTextDrawBuilder(td)
 
 	now := ctx.world.CurrentTime()
-	realNow := time.Now() // for flashing rate...
+	realNow := ctx.now // for flashing rate...
 	ps := sp.CurrentPreferenceSet
 	font := sp.systemFont[ps.CharSize.Datablocks]
 

@@ -10,6 +10,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/mmp/imgui-go/v4"
 )
@@ -47,6 +48,7 @@ type PaneContext struct {
 	mouse     *MouseState
 	keyboard  *KeyboardState
 	haveFocus bool
+	now       time.Time
 }
 
 type MouseState struct {
