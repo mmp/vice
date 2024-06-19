@@ -5039,7 +5039,9 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		}
 	}
 
+	var text strings.Builder
 	if ps.VFRList.Visible {
+		text.Reset()
 		vfr := make(map[int]*Aircraft)
 		// Find all untracked VFR aircraft
 		for _, ac := range aircraft {
@@ -5048,13 +5050,13 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			}
 		}
 
-		text := "VFR LIST\n"
+		text.WriteString("VFR LIST\n")
 		if len(vfr) > ps.VFRList.Lines {
-			text += fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr))
+			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr)))
 		}
 		for i, acIdx := range SortedMapKeys(vfr) {
 			ac := vfr[acIdx]
-			text += fmt.Sprintf("%2d %-7s VFR\n", acIdx, ac.Callsign)
+			text.WriteString(fmt.Sprintf("%2d %-7s VFR\n", acIdx, ac.Callsign))
 
 			// Limit to the user limit
 			if i == ps.VFRList.Lines {
@@ -5062,10 +5064,11 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			}
 		}
 
-		drawList(text, ps.VFRList.Position)
+		drawList(text.String(), ps.VFRList.Position)
 	}
 
 	if ps.TABList.Visible {
+		text.Reset()
 		dep := make(map[int]*Aircraft)
 		// Untracked departures departing from one of our airports
 		for _, ac := range aircraft {
@@ -5077,13 +5080,13 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			}
 		}
 
-		text := "FLIGHT PLAN\n"
+		text.WriteString("FLIGHT PLAN\n")
 		if len(dep) > ps.TABList.Lines {
-			text += fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(dep))
+			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(dep)))
 		}
 		for i, acIdx := range SortedMapKeys(dep) {
 			ac := dep[acIdx]
-			text += fmt.Sprintf("%2d %-7s %s\n", acIdx, ac.Callsign, ac.Squawk.String())
+			text.WriteString(fmt.Sprintf("%2d %-7s %s\n", acIdx, ac.Callsign, ac.Squawk.String()))
 
 			// Limit to the user limit
 			if i == ps.TABList.Lines {
@@ -5091,10 +5094,11 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			}
 		}
 
-		drawList(text, ps.TABList.Position)
+		drawList(text.String(), ps.TABList.Position)
 	}
 
 	if ps.AlertList.Visible {
+		text.Reset()
 		var lists []string
 		n := 0 // total number of aircraft in the mix
 		if !ps.DisableMSAW {
@@ -5111,9 +5115,9 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		}
 
 		if len(lists) > 0 {
-			text := strings.Join(lists, "/") + "\n"
+			text.WriteString(strings.Join(lists, "/") + "\n")
 			if n > ps.AlertList.Lines {
-				text += fmt.Sprintf("MORE: %d/%d\n", ps.AlertList.Lines, n)
+				text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.AlertList.Lines, n))
 			}
 
 			// LA
@@ -5123,7 +5127,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 						break
 					}
 					if sp.Aircraft[ac.Callsign].MSAW {
-						text += fmt.Sprintf("%-14s%03d LA\n", ac.Callsign, int((ac.Altitude()+50)/100))
+						text.WriteString(fmt.Sprintf("%-14s%03d LA\n", ac.Callsign, int((ac.Altitude()+50)/100)))
 						n--
 					}
 				}
@@ -5136,12 +5140,12 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 						break
 					}
 
-					text += fmt.Sprintf("%-17s CA\n", pair.Callsigns[0]+"*"+pair.Callsigns[1])
+					text.WriteString(fmt.Sprintf("%-17s CA\n", pair.Callsigns[0]+"*"+pair.Callsigns[1]))
 					n--
 				}
 			}
 
-			drawList(text, ps.AlertList.Position)
+			drawList(text.String(), ps.AlertList.Position)
 		}
 	}
 
@@ -5152,51 +5156,52 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 	}
 
 	if ps.VideoMapsList.Visible {
-		text := ""
-		format := func(m STARSMap, i int, vis bool) string {
-			text := Select(vis, ">", " ") + " "
-			text += fmt.Sprintf("%3d ", i)
-			text += fmt.Sprintf("%8s ", strings.ToUpper(m.Label))
-			text += strings.ToUpper(m.Name) + "\n"
-			return text
+		text.Reset()
+		format := func(m STARSMap, i int, vis bool) {
+			text.WriteString(Select(vis, ">", " ") + " ")
+			text.WriteString(fmt.Sprintf("%3d ", i))
+			text.WriteString(fmt.Sprintf("%8s ", strings.ToUpper(m.Label)))
+			text.WriteString(strings.ToUpper(m.Name) + "\n")
 		}
 		if ps.VideoMapsList.Selection == VideoMapsGroupGeo {
-			text += "GEOGRAPHIC MAPS\n"
+			text.WriteString("GEOGRAPHIC MAPS\n")
 			videoMaps, _ := ctx.world.GetVideoMaps()
 			for i, m := range videoMaps {
-				text += format(m, m.Id, ps.DisplayVideoMap[i])
+				format(m, m.Id, ps.DisplayVideoMap[i])
 			}
 		} else if ps.VideoMapsList.Selection == VideoMapsGroupSysProc {
-			text += "PROCESSING AREAS\n"
+			text.WriteString("PROCESSING AREAS\n")
 			for _, index := range SortedMapKeys(sp.systemMaps) {
 				_, vis := ps.SystemMapVisible[index]
-				text += format(*sp.systemMaps[index], index, vis)
+				format(*sp.systemMaps[index], index, vis)
 			}
 		} else if ps.VideoMapsList.Selection == VideoMapsGroupCurrent {
-			text += "MAPS\n"
+			text.WriteString("MAPS\n")
 			videoMaps, _ := ctx.world.GetVideoMaps()
 			for i, vis := range ps.DisplayVideoMap {
 				if vis {
-					text += format(videoMaps[i], videoMaps[i].Id, vis)
+					format(videoMaps[i], videoMaps[i].Id, vis)
 				}
 			}
 		} else {
 			lg.Errorf("%d: unhandled VideoMapsList.Selection", ps.VideoMapsList.Selection)
 		}
 
-		drawList(text, ps.VideoMapsList.Position)
+		drawList(text.String(), ps.VideoMapsList.Position)
 	}
 
 	if ps.CRDAStatusList.Visible {
-		text := "CRDA STATUS\n"
+		text.Reset()
+		text.WriteString("CRDA STATUS\n")
 		pairIndex := 0 // reset for each new airport
 		currentAirport := ""
+		var line strings.Builder
 		for i, crda := range ps.CRDA.RunwayPairState {
-			line := ""
+			line.Reset()
 			if !crda.Enabled {
-				line += " "
+				line.WriteString(" ")
 			} else {
-				line += Select(crda.Mode == CRDAModeStagger, "S", "T")
+				line.WriteString(Select(crda.Mode == CRDAModeStagger, "S", "T"))
 			}
 
 			pair := sp.ConvergingRunways[i]
@@ -5206,20 +5211,22 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 				pairIndex = 1
 			}
 
-			line += fmt.Sprintf("%d ", pairIndex)
+			line.WriteString(strconv.Itoa(pairIndex))
+			line.WriteByte(' ')
 			pairIndex++
-			line += ap + " "
-			line += pair.getRunwaysString()
+			line.WriteString(ap + " ")
+			line.WriteString(pair.getRunwaysString())
 			if crda.Enabled {
-				for len(line) < 16 {
-					line += " "
+				for line.Len() < 16 {
+					line.WriteByte(' ')
 				}
 				ctrl := ctx.world.Controllers[ctx.world.Callsign]
-				line += ctrl.SectorId
+				line.WriteString(ctrl.SectorId)
 			}
-			text += line + "\n"
+			line.WriteByte('\n')
+			text.WriteString(line.String())
 		}
-		drawList(text, ps.CRDAStatusList.Position)
+		drawList(text.String(), ps.CRDAStatusList.Position)
 	}
 
 	// Figure out airport<-->tower list assignments. Sort the airports
@@ -5247,9 +5254,10 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			continue
 		}
 
+		text.Reset()
 		ap := towerListAirports[i]
 		loc := ctx.world.ArrivalAirports[ap].Location
-		text := stripK(ap) + " TOWER\n"
+		text.WriteString(stripK(ap) + " TOWER\n")
 		m := make(map[float32]string)
 		for _, ac := range aircraft {
 			if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == ap {
@@ -5269,36 +5277,36 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		}
 
 		for _, key := range k {
-			text += m[key] + "\n"
+			text.WriteString(m[key] + "\n")
 		}
-		drawList(text, tl.Position)
+		drawList(text.String(), tl.Position)
 	}
 
 	if ps.SignOnList.Visible {
-		format := func(ctrl *Controller) string {
+		text.Reset()
+		format := func(ctrl *Controller) {
 			id := ctrl.SectorId
 			if ctrl.FacilityIdentifier != "" && !ctrl.ERAMFacility {
 				id = STARSTriangleCharacter + ctrl.FacilityIdentifier + id
 			}
-			return fmt.Sprintf("%4s", id) + " " + ctrl.Frequency.String() + " " +
-				ctrl.Callsign + Select(ctrl.IsHuman, "*", "") + "\n"
+			text.WriteString(fmt.Sprintf("%4s", id) + " " + ctrl.Frequency.String() + " " +
+				ctrl.Callsign + Select(ctrl.IsHuman, "*", "") + "\n")
 		}
 
 		// User first
-		text := ""
 		userCtrl := ctx.world.GetControllerByCallsign(ctx.world.Callsign)
 		if userCtrl != nil {
-			text += format(userCtrl)
+			format(userCtrl)
 		}
 
 		for _, callsign := range SortedMapKeys(ctx.world.GetAllControllers()) {
 			ctrl := ctx.world.GetControllerByCallsign(callsign)
 			if ctrl != userCtrl {
-				text += format(ctrl)
+				format(ctrl)
 			}
 		}
 
-		drawList(text, ps.SignOnList.Position)
+		drawList(text.String(), ps.SignOnList.Position)
 	}
 
 	td.GenerateCommands(cb)
