@@ -420,7 +420,7 @@ type STARSAircraftState struct {
 	historyTracksIndex int
 
 	DatablockType            DatablockType
-	FullLDB                  time.Time // If the LDB displays the groundspeed. When to stop
+	FullLDBEndTime           time.Time // If the LDB displays the groundspeed. When to stop
 	DisplayRequestedAltitude *bool     // nil if unspecified
 
 	IsSelected bool // middle click
@@ -3633,8 +3633,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 				}
-				if db := sp.datablockType(ctx, ac); db == LimitedDatablock && time.Until(state.FullLDB) <= 0 {
-					state.FullLDB = ctx.now.Add(5 * time.Second)
+				if db := sp.datablockType(ctx, ac); db == LimitedDatablock && state.FullLDBEndTime.Before(ctx.now) {
+					state.FullLDBEndTime = ctx.now.Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
 				} else if db == FullDatablock && ac.TrackingController != ctx.world.Callsign {
 					state.DatablockType = PartialDatablock
@@ -6324,7 +6324,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		db := baseDB.Duplicate()
 		db.Lines[1].Text = fmt.Sprintf("%v", ac.Squawk)
 		db.Lines[2].Text = fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
-		if time.Until(state.FullLDB) > 0 {
+		if state.FullLDBEndTime.After(ctx.now) {
 			db.Lines[2].Text += fmt.Sprintf(" %02d", (state.TrackGroundspeed()+5)/10)
 		}
 
@@ -6447,7 +6447,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = []string{" PO" + id}
 		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
 			field8 = []string{"", " UN"}
-		} else if time.Until(state.POFlashingEndTime) > 0*time.Second {
+		} else if state.POFlashingEndTime.After(ctx.now) {
 			field8 = []string{"", " PO"}
 		} else if ac.RedirectedHandoff.ShowRDIndicator(ctx.world.Callsign, state.RDIndicatorEnd) {
 			field8 = []string{" RD"}
