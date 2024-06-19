@@ -5385,7 +5385,7 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		dt = FullDatablock
 	}
 
-	if len(sp.getWarnings(ctx, ac)) > 0 {
+	if sp.haveActiveWarnings(ctx, ac) {
 		dt = FullDatablock
 	}
 
@@ -6201,6 +6201,33 @@ func (sp *STARSPane) diverging(a, b *Aircraft) bool {
 	}
 
 	return true
+}
+
+func (sp *STARSPane) haveActiveWarnings(ctx *PaneContext, ac *Aircraft) bool {
+	ps := sp.CurrentPreferenceSet
+	state := sp.Aircraft[ac.Callsign]
+
+	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
+		return true
+	}
+	if ok, _ := SquawkIsSPC(ac.Squawk); ok {
+		return true
+	}
+	if len(ac.SPCOverrides) > 0 {
+		return true
+	}
+	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
+		slices.ContainsFunc(sp.CAAircraft,
+			func(ca CAAircraft) bool {
+				return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
+			}) {
+		return true
+	}
+	if _, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
+		return true
+	}
+
+	return false
 }
 
 func (sp *STARSPane) getWarnings(ctx *PaneContext, ac *Aircraft) []string {
