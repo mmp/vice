@@ -465,6 +465,8 @@ type STARSAircraftState struct {
 	FirstRadarTrack     time.Time
 	HaveEnteredAirspace bool
 
+	CWTCategory string // cache this for performance
+
 	IdentStart, IdentEnd    time.Time
 	OutboundHandoffAccepted bool
 	OutboundHandoffFlashEnd time.Time
@@ -1297,6 +1299,7 @@ func (sp *STARSPane) processEvents(w *World) {
 			sa.GlobalLeaderLineDirection = ac.GlobalLeaderLineDirection
 			sa.UseGlobalLeaderLine = sa.GlobalLeaderLineDirection != nil
 			sa.FirstSeen = w.CurrentTime()
+			sa.CWTCategory = getCwtCategory(ac)
 
 			sp.Aircraft[callsign] = sa
 		}
@@ -5594,9 +5597,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 		if state.Ghost.PartialDatablock {
 			// Partial datablock is just airspeed and then aircraft type if it's ~heavy.
 			datablockText = fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
-			ac := ctx.world.Aircraft[ghost.Callsign]
-			cwtCategory := getCwtCategory(ac)
-			datablockText += cwtCategory
+			datablockText += state.CWTCategory
 		} else {
 			// The full datablock ain't much more...
 			datablockText = ghost.Callsign + "\n" + fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
@@ -6398,8 +6399,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		} else if sp.isOverflight(ctx, ac) {
 			field3 += "E"
 		}
-		cat := getCwtCategory(ac)
-		field3 += cat
+		field3 += state.CWTCategory
 
 		// Field 1: alternate between altitude and either primary
 		// scratchpad or destination airport.
@@ -6536,8 +6536,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			} else {
 				modifier = " "
 			}
-			cat := getCwtCategory(ac)
-			acCategory = modifier + cat
+			acCategory = modifier + state.CWTCategory
 
 			field5 = append(field5, speed+acCategory)
 
