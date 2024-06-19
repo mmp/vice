@@ -26,6 +26,8 @@ github.com/apenwarr/fixconsole v0.0.0-20191012055117-5a9f6489cc29 h1:muXWUcay7DD
 github.com/apenwarr/fixconsole v0.0.0-20191012055117-5a9f6489cc29/go.mod h1:JYWahgHer+Z2xbsgHPtaDYVWzeHDminu+YIBWkxpCAY=
 github.com/apenwarr/w32 v0.0.0-20190407065021-aa00fece76ab h1:CMGzRRCjnD50RjUFSArBLuCxiDvdp7b8YPAcikBEQ+k=
 github.com/apenwarr/w32 v0.0.0-20190407065021-aa00fece76ab/go.mod h1:nfFtvHn2Hgs9G1u0/J6LHQv//EksNC+7G8vXmd1VTJ8=
+github.com/brunoga/deep v1.2.3 h1:3k2qXf9i8pD1J7e+hcuRMi37aP31AKUHbH8Oe8lSQwk=
+github.com/brunoga/deep v1.2.3/go.mod h1:GDV6dnXqn80ezsLSZ5Wlv1PdKAWAO4L5PnKYtv2dgaI=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/checkandmate1/AirportWeatherData v1.7.0 h1:re8h+6pYZDeTiyqS0LDk4KiN/CvKIsnD7kEV5ofb07Q=
 github.com/checkandmate1/AirportWeatherData v1.7.0/go.mod h1:CI1FFqnw1jTuz6bg60dh/NcFLpb10DOWkRcHunEB/4M=
