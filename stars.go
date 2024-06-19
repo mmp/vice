@@ -6204,35 +6204,45 @@ func (sp *STARSPane) diverging(a, b *Aircraft) bool {
 }
 
 func (sp *STARSPane) getWarnings(ctx *PaneContext, ac *Aircraft) []string {
-	warnings := make(map[string]interface{})
+	var warnings []string
+	addWarning := func(w string) {
+		if !slices.Contains(warnings, w) {
+			warnings = append(warnings, w)
+		}
+	}
+
 	ps := sp.CurrentPreferenceSet
 	state := sp.Aircraft[ac.Callsign]
 
 	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
-		warnings["LA"] = nil
+		addWarning("LA")
 	}
 	if ok, code := SquawkIsSPC(ac.Squawk); ok {
-		warnings[code] = nil
+		addWarning(code)
 	}
 	for code := range ac.SPCOverrides {
-		warnings[code] = nil
+		addWarning(code)
 	}
 	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
 		slices.ContainsFunc(sp.CAAircraft,
 			func(ca CAAircraft) bool {
 				return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
 			}) {
-		warnings["CA"] = nil
+		addWarning("CA")
 	}
 	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
 		altStrs := ""
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
 		}
-		warnings["AS"+altStrs] = nil
+		addWarning("AS" + altStrs)
 	}
 
-	return SortedMapKeys(warnings)
+	if len(warnings) > 1 {
+		slices.Sort(warnings)
+	}
+
+	return warnings
 }
 
 func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
