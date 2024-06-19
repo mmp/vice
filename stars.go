@@ -1324,7 +1324,7 @@ func (sp *STARSPane) processEvents(w *World) {
 		}
 
 		warn := slices.ContainsFunc(mvas, func(mva MVA) bool {
-			return mva.Inside(ac.Position()) && ac.Altitude() < float32(mva.MinimumLimit)
+			return ac.Altitude() < float32(mva.MinimumLimit) && mva.Inside(ac.Position())
 		})
 
 		if !warn && state.InhibitMSAW {
