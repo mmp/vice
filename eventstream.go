@@ -199,6 +199,7 @@ const (
 	HandoffControllEvent
 	SetGlobalLeaderLineEvent
 	TrackClickedEvent
+	AssociateEvent
 	NumEventTypes
 )
 
@@ -213,11 +214,13 @@ func (t EventType) String() string {
 type Event struct {
 	Type                  EventType
 	Callsign              string
+	Squawk                Squawk
 	FromController        string
 	ToController          string // For radio transmissions, the controlling controller.
 	Message               string
 	RadioTransmissionType RadioTransmissionType     // For radio transmissions only
 	LeaderLineDirection   *CardinalOrdinalDirection // SetGlobalLeaderLineEvent
+
 }
 
 func (e *Event) String() string {

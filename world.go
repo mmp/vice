@@ -266,6 +266,16 @@ func (w *World) CreateUnsupportedTrack(callsign string, ut *UnsupportedTrack, su
 		})
 }
 
+func (w *World) IntermTrack(callsign, initial string, fp *STARSFlightPlan, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.IntermTrack(callsign, initial, fp),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (w *World) InitiateTrack(callsign string, fp *STARSFlightPlan, success func(any), err func(error)) {
 	// Modifying locally is not canonical but improves perceived latency in
 	// the common case; the RPC may fail, though that's fine; the next
@@ -898,7 +908,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		artcc.TrackInformation = make(map[string]*TrackInformation)
 	}
 	starsFP.CruiseSpeed = int(ac.AircraftPerformance().Speed.CruiseTAS)
-	starsFP.CoordinationFix = starsFP.CordinationFix(w, ac)
+	starsFP.CoordinationFix = starsFP.AssignCoordinationFix(w, ac)
 	fmt.Printf("Coordination fix for %v is %v.\n", starsFP.Callsign, starsFP.CoordinationFix)
 	dist, err := ac.Nav.distanceAlongRoute(starsFP.CoordinationFix)
 	time2 := dist / float32(starsFP.CruiseSpeed) * 60
@@ -923,6 +933,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 			TrackOwner: ac.TrackingController,
 			FlightPlan: starsFP,
 		}
+		fmt.Printf("%v: Track info for %v created: %v\n", artcc.Identifier, ac.Callsign, artcc.TrackInformation[ac.Callsign])
 	} else {
 		if stars.TrackInformation == nil {
 			stars.TrackInformation = make(map[string]*TrackInformation)
@@ -1031,9 +1042,10 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		if strings.Contains(flightPlan.Route, fix) {
 			msg := starsFP.Message()
 			msg.SourceID = artcc.Identifier + simTime.Format("1504Z")
-			artcc.SendMessageToERAM(info.ToController, msg)
+			coordFix := DeriveFix(info, starsFP.Altitude)
+			artcc.SendMessageToERAM(coordFix.ToController, msg)
 			starsFP.CoordinationFix = fix
-			starsFP.ContainedFacilities = append(starsFP.ContainedFacilities, info.ToController)
+			starsFP.ContainedFacilities = append(starsFP.ContainedFacilities, coordFix.ToController)
 			break
 		}
 	}

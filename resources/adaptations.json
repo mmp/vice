@@ -1,16 +1,20 @@
 {
     "ZNY": {
         "coordination_fixes": {
-            "FLOSI": {
-                "type": "route",
-                "to": "N90",
-                "from": "ZBW"
-            },
-            "DYLIN": {
-                "type": "route",
-                "to": "N90",
-                "from": "ZDC"
-            },
+            "FLOSI": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "DYLIN": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZDC"
+                }
+            ],
             "SWEET": [
                 {
                     "type": "route",
@@ -23,68 +27,318 @@
                     "type": "route",
                     "to": "N90",
                     "from": "PHL",
-                    "altitude": 7000
+                    "altitude": [7000, 7000]
                 },
                 {
                     "type": "route",
                     "to": "N90",
                     "from": "WRI",
-                    "altitude": 6000
+                    "altitude": [6000, 6000]
                 }
             ],
-            "MUGZY": {
-                "type": "route",
-                "to": "N90",
-                "from": "ZNY"
-            },
-            "MAZIE": {
-                "type": "route",
-                "to": "N90",
-                "from": "PHL"
-            },
-            "HUO": {
-                "type": "route",
-                "to": "N90",
-                "from": "ZBW"
-            },
-            "MERIT": {
-                "type": "route",
-                "to": "ZBW",
-                "from": "ZNY"
-            },
-            "GREKI": {
-                "type": "route",
-                "to": "ZBW",
-                "from": "ZNY"
-            },
-            "BAYYS": {
-                "type": "route",
-                "to": "ZBW",
-                "from": "ZNY"
-            }
+            "MUGZY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "MAZIE": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "PHL"
+                }
+            ],
+            "HUO": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "MERIT": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ],
+            "GREKI": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ],
+            "BAYYS": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ]
         }
     },
     "ZBW": {
         "coordination_fixes": {
-            "FLOSI": {
-                "type": "route",
-                "to": "ZNY",
-                "from": "ZBW"
-            },
-            "HUO": {
-                "type": "route",
-                "to": "ZNY",
-                "from": "ZBW"
-            }
+            "FLOSI": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "HUO": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ]
         }
     },
     "ZDC": {
         "coordination_fixes": {
-            "DYLIN": {
-                "type": "route",
-                "to": "ZNY",
-                "from": "ZDC"
-            }
+            "DYLIN": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZDC"
+                }
+            ]
+        }
+    },
+    "ZMA": {
+        "coordination_fixes": {
+            "RIDES": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "ZINGR": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "PRICY": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "SURFR": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "BAIRN": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "JOKRS": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ]
+        }
+    },
+    "ZJX": {
+        "coordination_fixes": {
+            "RIDES": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "ZINGR": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "PRICY": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "SURFR": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "BAIRN": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "JOKRS": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "GRNCH": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "SNFLD": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "GTOUT": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "NINJA": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "BAGGY": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "WILIT": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "VIYAP": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "PLZZZ": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "LOTTS": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "SOOOP": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "WEEEK": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "ZJX"
+                }
+            ],
+            "FONEX": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "JAX"
+                }
+            ],
+            "FOLUT": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "JAX"
+                }
+            ],
+            "KIZER": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "F11"
+                }
+            ],
+            "ROCIT": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "F11"
+                }
+            ],
+            "GOTBE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "COROE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "OHDEA": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "BASSS": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "HILIS": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ]
         }
     }
 }

@@ -155,6 +155,20 @@ func (s *SimProxy) InitiateTrack(callsign string, fp *STARSFlightPlan) *rpc.Call
 	}, nil, nil)
 }
 
+type IntermTrackArgs struct {
+	Token, Callsign, Initial string 
+	fp *STARSFlightPlan
+}
+
+func (s *SimProxy) IntermTrack(callsign, initial string, fp *STARSFlightPlan) *rpc.Call {
+	return s.Client.Go("Sim.InitiateTrack", IntermTrackArgs{
+		Token: s.ControllerToken,
+		Callsign: callsign,
+		Initial: initial,
+		fp: fp,
+	}, nil, nil)
+}
+
 func (s *SimProxy) DropTrack(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.DropTrack", &DropTrackArgs{
 		ControllerToken: s.ControllerToken,
@@ -717,6 +731,14 @@ func (sd *SimDispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *stru
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.SetGlobalLeaderLine(a.ControllerToken, a.Callsign, a.Direction)
+	}
+}
+
+func (sd *SimDispatcher) IntermTrack(it *IntermTrackArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.Token]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.IntermTrack(it.Token, it.Callsign, it.Initial, it.fp)
 	}
 }
 

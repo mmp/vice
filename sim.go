@@ -1611,7 +1611,7 @@ func (s *Sim) updateState() {
 						info := TrackInformation{
 							TrackOwner:        ac.TrackingController,
 							HandoffController: ctrl,
-							Identifier: 	  ac.Callsign,
+							Identifier:        ac.Callsign,
 						}
 						msg.MessageType = InitiateTransfer
 						fmt.Printf("WaypointHndOff: %v. Tracking: %v. Ctrl: %v.\n", ac.WaypointHandoffController, ac.TrackingController, ctrl)
@@ -1628,7 +1628,7 @@ func (s *Sim) updateState() {
 							info := TrackInformation{
 								TrackOwner:        ac.TrackingController,
 								HandoffController: ctrl,
-								Identifier: 	  ac.Callsign,
+								Identifier:        ac.Callsign,
 							}
 							msg.TrackInformation = info
 							msg.MessageType = InitiateTransfer
@@ -1698,7 +1698,7 @@ func (s *Sim) updateState() {
 	if s.LaunchConfig.Mode == LaunchAutomatic {
 		s.spawnAircraft()
 	}
-	s.World.UpdateComputers(now)
+	s.World.UpdateComputers(now, s.eventStream)
 }
 
 func (s *Sim) ResolveController(callsign string) string {
@@ -2196,6 +2196,22 @@ func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrac
 		})
 }
 
+func (s *Sim) IntermTrack(token, callsign, initial string, fp *STARSFlightPlan) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	_, stars := s.World.SafeFacility("")
+	stars.TrackInformation[callsign] = &TrackInformation{
+		TrackOwner: initial,
+		FlightPlan: fp,
+		Identifier: callsign,
+	}
+	delete(stars.ContainedPlans, fp.AssignedSquawk) // ??
+	fmt.Printf("Interm track: %v: %v\n", callsign, stars.TrackInformation[callsign])
+	return nil
+
+}
+
 func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -2436,7 +2452,9 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				}
 				msg.TrackInformation = info
 				msg.MessageType = AcceptRecallTransfer
-				if coordFix, ok := w.STARSFacilityAdaptation.CoordinationFixes[fp.CoordinationFix]; ok {
+				msg.Identifier = ac.Callsign
+				if coordFixes, ok := w.STARSFacilityAdaptation.CoordinationFixes[fp.CoordinationFix]; ok {
+					coordFix := coordFixes[0]
 					if from := coordFix.FromController; from[0] == 'Z' {
 						msg.MessageType = AcceptRecallTransfer
 						stars.ToOverlyingERAMFacility(msg)
@@ -2570,7 +2588,9 @@ func (s *Sim) ForceQL(token, callsign, controller string) error {
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			octrl := s.World.GetControllerByCallsign(controller)
-			ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
+			_, stars := s.World.SafeFacility("")
+			trk := stars.TrackInformation[ac.Callsign]
+			trk.ForceQuickLooks = append(trk.ForceQuickLooks, octrl.Callsign)
 			return nil
 		})
 }
@@ -2581,7 +2601,9 @@ func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			ac.ForceQLControllers = FilterSlice(ac.ForceQLControllers, func(qlController string) bool { return qlController != controller })
+			_, stars := s.World.SafeFacility("")
+			trk := stars.TrackInformation[ac.Callsign]
+			trk.ForceQuickLooks = FilterSlice(trk.ForceQuickLooks, func(qlController string) bool { return qlController != controller })
 			return nil
 		})
 }

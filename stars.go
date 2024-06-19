@@ -1451,6 +1451,16 @@ func (sp *STARSPane) processEvents(w *World) {
 				state.GlobalLeaderLineDirection = event.LeaderLineDirection
 				state.UseGlobalLeaderLine = state.GlobalLeaderLineDirection != nil
 			}
+		case AssociateEvent:
+			_, stars := w.SafeFacility("")
+			bcn := event.Squawk
+			fmt.Println("AssociateEvent", bcn)
+			for _, ac := range w.Aircraft {
+				if ac.Squawk == bcn {
+					w.IntermTrack(ac.Callsign, event.FromController, stars.ContainedPlans[bcn], nil, nil)
+					break
+				}
+			}
 		}
 	}
 }
@@ -3582,12 +3592,11 @@ func (sp *STARSPane) RemoveForceQL(ctx *PaneContext, callsign, controller string
 
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) error {
 	if f := ctx.world.GetControllerByCallsign(controller); f.Facility != ctx.world.TRACON {
-		fmt.Println(f.Callsign, f.Facility)
 		return ErrSTARSIllegalPosition
 	}
 	_, stars := ctx.world.SafeFacility("")
 	trk := stars.TrackInformation[callsign]
-	if trk.PointOut != "" {
+	if trk.PointOut != "" || trk.HandoffController != "" {
 		return ErrSTARSIllegalTrack
 	}
 	ctx.world.PointOut(callsign, controller, nil, func(err error) { sp.displayError(err) })
