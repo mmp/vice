@@ -2069,7 +2069,7 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			_, stars := s.World.SafeFacility("")
-			if entry, ok := stars.TrackInformation[ac.Callsign]; !ok || entry.TrackOwner == "" {
+			if entry, ok := stars.TrackInformation[ac.Callsign]; !ok || entry.TrackOwner != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
 			return nil
@@ -2509,29 +2509,34 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 }
 
 func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
+	
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
+			_, stars := s.World.SafeFacility(ctrl.Facility)
+			trk := stars.TrackInformation[ac.Callsign]
 			if octrl := s.World.GetControllerByCallsign(controller); octrl == nil {
 				return ErrNoController
-			} else if octrl.Callsign == ctrl.Callsign || octrl.Callsign == ac.TrackingController {
+			} else if octrl.Callsign == ctrl.Callsign || octrl.Callsign == trk.TrackOwner {
 				// Can't redirect to ourself and the controller who initiated the handoff
 				return ErrInvalidController
 			} else if octrl.FacilityIdentifier != ctrl.FacilityIdentifier {
-				// Can't redirect to an interfacility position
+				// Can't redirect to an interfacility position. Thank god
 				return ErrInvalidFacility
 			}
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			_, stars := s.World.SafeFacility(ctrl.Facility)
+			trk := stars.TrackInformation[ac.Callsign]
 			octrl := s.World.GetControllerByCallsign(controller)
-			ac.RedirectedHandoff.OriginalOwner = ac.TrackingController
-			if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Callsign, octrl.Callsign) {
-				ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[0]
-				ac.RedirectedHandoff = RedirectedHandoff{}
+			trk.RedirectedHandoff.OriginalOwner = ac.TrackingController
+			if trk.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Callsign, octrl.Callsign) {
+				trk.HandoffController = trk.RedirectedHandoff.Redirector[0]
+				trk.RedirectedHandoff = RedirectedHandoff{}
 				return nil
 			}
-			ac.RedirectedHandoff.AddRedirector(ctrl)
-			ac.RedirectedHandoff.RedirectedTo = octrl.Callsign
+			trk.RedirectedHandoff.AddRedirector(ctrl)
+			trk.RedirectedHandoff.RedirectedTo = octrl.Callsign
 			return nil
 		})
 }
@@ -2542,23 +2547,25 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			if ac.RedirectedHandoff.RedirectedTo == ctrl.Callsign { // Accept
+			_, stars := s.World.SafeFacility(ctrl.Facility)
+			trk := stars.TrackInformation[ac.Callsign]
+			if trk.RedirectedHandoff.RedirectedTo == ctrl.Callsign { // Accept
 				s.eventStream.Post(Event{
 					Type:           AcceptedRedirectedHandoffEvent,
-					FromController: ac.RedirectedHandoff.OriginalOwner,
+					FromController: trk.RedirectedHandoff.OriginalOwner,
 					ToController:   ctrl.Callsign,
 					Callsign:       ac.Callsign,
 				})
 				ac.ControllingController = ctrl.Callsign
-				ac.HandoffTrackController = ""
-				ac.TrackingController = ac.RedirectedHandoff.RedirectedTo
-				ac.RedirectedHandoff = RedirectedHandoff{}
-			} else if ac.RedirectedHandoff.GetLastRedirector() == ctrl.Callsign { // Recall (only the last redirector is able to recall)
-				if len(ac.RedirectedHandoff.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"
-					ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1]
+				trk.HandoffController = ""
+				trk.TrackOwner = trk.RedirectedHandoff.RedirectedTo
+				trk.RedirectedHandoff = RedirectedHandoff{}
+			} else if trk.RedirectedHandoff.GetLastRedirector() == ctrl.Callsign { // Recall (only the last redirector is able to recall)
+				if len(trk.RedirectedHandoff.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"
+					trk.RedirectedHandoff.RedirectedTo = trk.RedirectedHandoff.Redirector[len(trk.RedirectedHandoff.Redirector)-1]
 				} else { // One redirect took place, clear the RD and show it as a normal handoff
-					ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1]
-					ac.RedirectedHandoff = RedirectedHandoff{}
+					trk.HandoffController = trk.RedirectedHandoff.Redirector[len(trk.RedirectedHandoff.Redirector)-1]
+					trk.RedirectedHandoff = RedirectedHandoff{}
 				}
 			}
 			return nil
@@ -2575,7 +2582,12 @@ func (s *Sim) ForceQL(token, callsign, controller string) error {
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			octrl := s.World.GetControllerByCallsign(controller)
-			ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
+			s.eventStream.Post(Event{
+				Type:           ForceQLEvent,
+				FromController: ctrl.Callsign,
+				ToController:   octrl.Callsign,
+				Callsign:       ac.Callsign,
+			})
 			return nil
 		})
 }

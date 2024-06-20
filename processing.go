@@ -541,6 +541,7 @@ type TrackInformation struct {
 	FlightPlan        *STARSFlightPlan
 	PointOut          string
 	PointOutHistory   []string
+	RedirectedHandoff RedirectedHandoff
 }
 
 func (comp *STARSComputer) SendTrackInfo(receivingFacility string, msg FlightPlanMessage, simTime time.Time, Type int) {

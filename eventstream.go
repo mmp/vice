@@ -200,6 +200,7 @@ const (
 	SetGlobalLeaderLineEvent
 	TrackClickedEvent
 	AssociateEvent
+	ForceQLEvent
 	NumEventTypes
 )
 
@@ -208,7 +209,7 @@ func (t EventType) String() string {
 		"OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent", "CanceledHandoff", "RejectedHandoff",
 		"RadioTransmission", "StatusMessage", "ServerBroadcastMessage", "GlobalMessage",
 		"AcknowledgedPointOut", "RejectedPointOut", "Ident", "HandoffControll",
-		"SetGlobalLeaderLine", "TrackClicked"}[t]
+		"SetGlobalLeaderLine", "TrackClicked", "AutoAssociateFP", "ForceQL"}[t]
 }
 
 type Event struct {
