@@ -859,12 +859,11 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
-	
+
 	// ac.Squawk = artcc.CreateSquawk()
 
 	flightPlan := ac.NewFlightPlan(IFR, acType, airline.Airport, arrivalAirport)
-	
-	
+
 	// Figure out which controller will (for starters) get the arrival
 	// handoff. For single-user, it's easy.  Otherwise, figure out which
 	// control position is initially responsible for the arrival. Note that
@@ -879,7 +878,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		}
 	}
 	ac.FlightPlan = flightPlan
-	
+
 	if err := ac.InitializeArrival(w, arrivalGroup, idx, arrivalController, goAround); err != nil {
 		return nil, err
 	}
@@ -887,7 +886,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	sq := artcc.CreateSquawk()
 	ac.FlightPlan.AssignedSquawk = sq
 	ac.Squawk = sq
-	
+
 	if artcc.FlightPlans == nil {
 		artcc.FlightPlans = map[Squawk]*STARSFlightPlan{}
 	}
@@ -900,7 +899,6 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	starsFP.CruiseSpeed = int(ac.AircraftPerformance().Speed.CruiseTAS)
 	starsFP.CoordinationFix = starsFP.GetCoordinationFix(w, ac)
 	starsFP.Altitude = fmt.Sprint(flightPlan.Altitude)
-	fmt.Printf("Coordination fix for %v is %v.\n", starsFP.Callsign, starsFP.CoordinationFix)
 	dist, err := ac.Nav.distanceAlongRoute(starsFP.CoordinationFix)
 	time2 := dist / float32(starsFP.CruiseSpeed) * 60
 	if err == nil {
@@ -932,9 +930,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 			TrackOwner: ac.TrackingController,
 			FlightPlan: starsFP,
 		}
-		fmt.Printf("Created an arrival %v. Under %v facility. Initial controller: %v. Fix: %v. Time: %v\n", ac.Squawk, stars.Identifier, ac.TrackingController, starsFP.CoordinationFix, starsFP.CoordinationTime)
 	}
-
 	return ac, nil
 }
 
@@ -1011,8 +1007,6 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	if ac == nil {
 		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
-	
-
 
 	flightPlan := ac.NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
 	ac.FlightPlan = flightPlan
@@ -1022,7 +1016,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	}
 	artcc, _ := w.SafeFacility("")
 	// Add the flight plan to the ERAM computer
-	
+
 	if artcc.FlightPlans == nil {
 		artcc.FlightPlans = map[Squawk]*STARSFlightPlan{}
 	}

@@ -409,7 +409,7 @@ func (g *GLFWPlatform) mouseScrollChange(window *glfw.Window, x, y float64) {
 	g.imguiIO.AddMouseWheelDelta(float32(x), float32(y))
 }
 
-var f1 bool 
+var f1 bool
 
 func (g *GLFWPlatform) keyChange(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	g.anyEvents = true
@@ -421,10 +421,10 @@ func (g *GLFWPlatform) keyChange(window *glfw.Window, key glfw.Key, scancode int
 	}
 
 	if g.window.GetKey(glfw.KeyF1) == glfw.Press {
-		f1 = true 
+		f1 = true
 	}
 	if g.window.GetKey(glfw.KeyF1) == glfw.Release && f1 {
-		f1 = false 
+		f1 = false
 	}
 
 	// Modifiers are not reliable across systems

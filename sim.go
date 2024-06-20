@@ -1614,13 +1614,10 @@ func (s *Sim) updateState() {
 							Identifier:        ac.Callsign,
 						}
 						msg.MessageType = InitiateTransfer
-						fmt.Printf("WaypointHndOff: %v. Tracking: %v. Ctrl: %v.\n", ac.WaypointHandoffController, ac.TrackingController, ctrl)
 						msg.TrackInformation = info
 						stars.SendTrackInfo(w.FacilityFromController(ctrl), msg, now, InitiateTransfer)
-						fmt.Printf("Sent %v fp (auto handoff) information to %v: %v.\n", bcn, w.FacilityFromController(ctrl), msg)
 
 					} else {
-						fmt.Printf("BCN: %v. STARS is nil for %v. Is ERAM nil?: %v.\n", bcn, controller.Facility, eram == nil)
 						plan := eram.FlightPlans[bcn]
 						if plan != nil {
 							msg := plan.Message()
@@ -1634,16 +1631,12 @@ func (s *Sim) updateState() {
 							msg.MessageType = InitiateTransfer
 							if stars, ok := eram.STARSComputers[w.FacilityFromController(ctrl)]; ok { // in host ERAM
 								eram.ToSTARSFacility(stars.Identifier, msg)
-								fmt.Println("host ERAM", bcn)
 							} else { // needs to go through another ERAM
 								receivingERAM, _ := w.SafeFacility(w.FacilityFromController(ctrl))
 								eram.SendMessageToERAM(receivingERAM.Identifier, msg)
-								fmt.Println("not host", bcn)
 							}
 						}
 					}
-				} else {
-					lg.Errorf("controller %v is nil", ctrl)
 				}
 			}
 
@@ -2191,7 +2184,7 @@ func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrac
 			for ; stars.UnsupportedTracks[i] != nil; i++ {
 			}
 			stars.UnsupportedTracks[i] = ut
-			fmt.Printf("Created unsupported track: %v.\n", ut)
+			// fmt.Printf("Created unsupported track: %v.\n", ut)
 			return nil
 		})
 }
@@ -2440,21 +2433,13 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				if coordFixes, ok := w.STARSFacilityAdaptation.CoordinationFixes[fp.CoordinationFix]; ok {
 
 					coordFix := coordFixes.Fix(fp.Altitude)
-					fmt.Printf("%v: %v\n", bcn, coordFix)
 					if from := coordFix.FromFacility; from[0] == 'Z' {
 						msg.MessageType = AcceptRecallTransfer
 						stars.ToOverlyingERAMFacility(msg)
-						fmt.Printf("accept msg to overlying ERAM %v\n", bcn)
 					} else {
-						to := coordFix.ToFacility
-						fmt.Printf("Not to a center? Fac: %v, Fix: %v, From: %v, To: %v.\n", stars.Identifier, fp.CoordinationFix, from, to)
 						stars.SendTrackInfo(from, msg, s.SimTime, AcceptRecallTransfer)
 					}
-				} else {
-					fmt.Printf("No fix found: Fac: %v, Fix: %v\n", stars.Identifier, fp.CoordinationFix)
-
 				}
-
 			}
 			if entry, ok := stars.TrackInformation[ac.Callsign]; ok {
 				entry.HandoffController = ""
@@ -2509,7 +2494,7 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 }
 
 func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
-	
+
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			_, stars := s.World.SafeFacility(ctrl.Facility)

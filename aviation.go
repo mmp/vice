@@ -36,10 +36,10 @@ const (
 )
 
 type AdaptationFix struct {
-	Type           string `json:"type"`
+	Type         string `json:"type"`
 	ToFacility   string `json:"to"`   // controller to handoff to
 	FromFacility string `json:"from"` // controller to handoff from
-	Altitude [2]int `json:"altitude"`
+	Altitude     [2]int `json:"altitude"`
 }
 
 type FAAAirport struct {

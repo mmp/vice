@@ -100,7 +100,7 @@ type STARSPane struct {
 	InboundPointOuts  map[string]string
 	OutboundPointOuts map[string]string
 	RejectedPointOuts map[string]interface{}
-	ForceQLAircraft []string
+	ForceQLAircraft   []string
 
 	queryUnassociated *TransientMap[string, interface{}]
 
@@ -997,7 +997,6 @@ func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 	if fp == nil {
 		return "", ErrSTARSIllegalFlight
 	}
-	
 
 	fmtTime := func(t time.Time) string {
 		return t.UTC().Format("1504")
@@ -1006,7 +1005,7 @@ func (sp *STARSPane) flightPlanSTARS(w *World, ac *Aircraft) (string, error) {
 	// Common stuff
 	_, stars := w.SafeFacility("")
 	trk := stars.TrackInformation[ac.Callsign]
-	
+
 	owner := ""
 	if ctrl := w.GetControllerByCallsign(trk.TrackOwner); ctrl != nil {
 		owner = ctrl.SectorId
@@ -1294,7 +1293,7 @@ func (sp *STARSPane) DrawUI() {
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
 
 func (sp *STARSPane) processEvents(w *World) {
-	
+
 	// First handle changes in world.Aircraft
 	for callsign, ac := range w.Aircraft {
 		if _, ok := sp.Aircraft[callsign]; !ok {
@@ -1389,7 +1388,6 @@ func (sp *STARSPane) processEvents(w *World) {
 					delete(sp.InboundPointOuts, event.Callsign)
 					sp.Aircraft[event.Callsign].PointedOut = true
 					sp.Aircraft[event.Callsign].POFlashingEndTime = time.Now().Add(5 * time.Second)
-					fmt.Println(event.Callsign, sp.Aircraft[event.Callsign].POFlashingEndTime)
 				}
 			}
 
@@ -2258,8 +2256,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			} else {
 				status.clear = true
 			}
-			fmt.Println(ac.Callsign, 2)
-
 		}
 		return
 
@@ -3346,7 +3342,6 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir 
 }
 
 func (sp *STARSPane) initiateTrack(ctx *PaneContext, ac *Aircraft, identifier string) error { // identifier can be squawk or callsign
-	fmt.Println("stars initiate")
 	fp, err := ctx.world.getSTARSFlightPlan(identifier)
 	if err != nil {
 		return err
@@ -3396,14 +3391,12 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 	if control == nil {
 		return ErrSTARSIllegalPosition
 	}
-	fmt.Printf("Handing off %s to %s\n", callsign, control.Callsign)
-
 	ctx.world.HandoffTrack(callsign, control.Callsign, func(a any) {
 		w := ctx.world
 		_, stars := w.SafeFacility("")
 		ac := w.GetAircraft(callsign, false)
 		if control.Facility != "" { // inter-facility
-			
+
 			msg := stars.TrackInformation[ac.Callsign].FlightPlan.Message()
 			msg.SourceID = w.FacilityFromController(w.Callsign) + w.SimTime.Format("1504Z")
 			info := TrackInformation{
@@ -3670,7 +3663,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				} else if info := stars.TrackInformation[ac.Callsign]; info != nil && info.HandoffController == ctx.world.Callsign {
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
-					fmt.Println("Accept handoff init")
 					return
 				} else if slices.Contains(sp.ForceQLAircraft, ac.Callsign) {
 					sp.RemoveForceQL(ctx, ac.Callsign)
@@ -3733,7 +3725,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						} else {
 							status.clear = true
 						}
-						fmt.Println(ac.Callsign, 3)
 						return
 					}
 				}
@@ -3787,12 +3778,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				}
 				return
 			} else if cmd[0] == '?' {
-				// ctx.world.PrintInfo(ac)
-				_, stars := ctx.world.SafeFacility("")
-				// fmt.Println(stars.TrackInformation)
-				// fmt.Println(ac.Nav.distanceAlongRoute(cmd[1:]))
-
-				fmt.Println(stars.TrackInformation)
+				ctx.world.PrintInfo(ac)
 				status.clear = true
 				return
 			} else if cmd == "X" {
@@ -4050,7 +4036,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 			} else {
 				status.err = ErrSTARSCommandFormat
 			}
-			fmt.Println(ac.Callsign, 4)
 			return
 
 		case CommandModeTerminateControl:
@@ -5499,7 +5484,6 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		dt = LimitedDatablock
 	}
 
-	
 	_, stars := w.SafeFacility("")
 	trk, ok := stars.TrackInformation[ac.Callsign]
 
@@ -5511,7 +5495,7 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 		if state.OutboundHandoffAccepted {
 			dt = FullDatablock
 		}
-		if  slices.Contains(sp.ForceQLAircraft, ac.Callsign) {
+		if slices.Contains(sp.ForceQLAircraft, ac.Callsign) {
 			dt = FullDatablock
 		}
 
@@ -5957,7 +5941,7 @@ func (sp *STARSPane) getDatablockOffset(textBounds [2]float32, leaderDir Cardina
 
 func (sp *STARSPane) WarnOutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [][2]int, outside bool) {
 	// Only report on ones that are tracked by us
-	
+
 	_, stars := ctx.world.SafeFacility("")
 	if trk := stars.TrackInformation[ac.Callsign]; trk == nil || trk.TrackOwner != ctx.world.Callsign {
 		return
@@ -6409,7 +6393,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 	case LimitedDatablock:
 		db := baseDB.Duplicate()
 		db.Lines[2].Text = fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
-		if f1{
+		if f1 {
 			db.Lines[1].Text = fmt.Sprintf("%v", Select(f1, ac.Callsign, ac.Squawk.String()))
 		}
 		if time.Until(state.FullLDB) > 0 {
@@ -6417,7 +6401,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 				db.Lines[1].Text = fmt.Sprintf("%v", ac.Squawk.String())
 			}
 			db.Lines[2].Text += fmt.Sprintf(" %02d", (state.TrackGroundspeed()+5)/10)
-			}
+		}
 
 		if state.Ident() {
 			// flash ID after squawk code
@@ -6523,9 +6507,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		info := stars.TrackInformation[ac.Callsign]
 		var field1 string
 		if info == nil {
-			fmt.Printf("info for %v is nil: %v.\n", ac.Squawk, stars.TrackInformation)
-		} else if info.FlightPlan == nil {
-			// fmt.Printf("fp info for %v is nil: %v.\n", ac.Squawk, stars.TrackInformation[ac.Squawk])
+
 			sp.Aircraft[ac.Callsign].DatablockType = LimitedDatablock
 			break
 		} else {
@@ -6557,7 +6539,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			field8 = []string{"", " PO"}
 		} else if ac.RedirectedHandoff.ShowRDIndicator(ctx.world.Callsign, state.RDIndicatorEnd) {
 			field8 = []string{" RD"}
-		} 
+		}
 
 		// Line 2: fields 3, 4, 5
 		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
@@ -6681,10 +6663,10 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			}
 		}
 		for _, f := range field6 {
-		for len(f) < 5 {
-			f += " "
+			for len(f) < 5 {
+				f += " "
+			}
 		}
-	}
 		field7 := []string{}
 		if ac.TempAltitude != 0 {
 			ta := (ac.TempAltitude + 50) / 100
@@ -6698,7 +6680,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			idx := slices.Index(field6, x)
 			line3FieldColors = &STARSDatablockFieldColors{
 				Start: len(field6[idx]) + 1,
-				End:  len(field6[idx]) + 5,
+				End:   len(field6[idx]) + 5,
 				Color: color.Scale(0.3),
 			}
 		}
@@ -6708,9 +6690,6 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		if len(field6) == 0 {
 			field6 = append(field6, "")
 		}
-
-		
-
 
 		// Now make some datablocks. Note that line 1 has already been set
 		// in baseDB above.
@@ -6776,7 +6755,7 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 	}
 
 	// Handle cases where it should flash
-	
+
 	now := time.Now()
 	if now.Second()&1 == 0 { // one second cycle
 		if _, pointOut := sp.InboundPointOuts[ac.Callsign]; pointOut {
@@ -8236,7 +8215,6 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 					fp, err := w.getSTARSFlightPlan(callsign)
 					if err != nil {
 						w.InitiateTrack(callsign, fp, nil, nil) // ignore error...
-						fmt.Println(ac.Callsign, 0)
 					}
 				}
 			}
