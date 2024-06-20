@@ -1611,7 +1611,7 @@ func (s *Sim) updateState() {
 						info := TrackInformation{
 							TrackOwner:        ac.TrackingController,
 							HandoffController: ctrl,
-							Identifier: 	  ac.Callsign,
+							Identifier:        ac.Callsign,
 						}
 						msg.MessageType = InitiateTransfer
 						fmt.Printf("WaypointHndOff: %v. Tracking: %v. Ctrl: %v.\n", ac.WaypointHandoffController, ac.TrackingController, ctrl)
@@ -1628,7 +1628,7 @@ func (s *Sim) updateState() {
 							info := TrackInformation{
 								TrackOwner:        ac.TrackingController,
 								HandoffController: ctrl,
-								Identifier: 	  ac.Callsign,
+								Identifier:        ac.Callsign,
 							}
 							msg.TrackInformation = info
 							msg.MessageType = InitiateTransfer
@@ -2436,14 +2436,19 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				}
 				msg.TrackInformation = info
 				msg.MessageType = AcceptRecallTransfer
-				if coordFix, ok := w.STARSFacilityAdaptation.CoordinationFixes[fp.CoordinationFix]; ok {
-					if from := coordFix.FromController; from[0] == 'Z' {
+				msg.Identifier = idt
+				if coordFixes, ok := w.STARSFacilityAdaptation.CoordinationFixes[fp.CoordinationFix]; ok {
+
+					coordFix := coordFixes.Fix(fp.Altitude)
+					fmt.Printf("%v: %v\n", bcn, coordFix)
+					if from := coordFix.FromFacility; from[0] == 'Z' {
 						msg.MessageType = AcceptRecallTransfer
 						stars.ToOverlyingERAMFacility(msg)
 						fmt.Printf("accept msg to overlying ERAM %v\n", bcn)
 					} else {
-						to := coordFix.ToController
+						to := coordFix.ToFacility
 						fmt.Printf("Not to a center? Fac: %v, Fix: %v, From: %v, To: %v.\n", stars.Identifier, fp.CoordinationFix, from, to)
+						stars.SendTrackInfo(from, msg, s.SimTime, AcceptRecallTransfer)
 					}
 				} else {
 					fmt.Printf("No fix found: Fac: %v, Fix: %v\n", stars.Identifier, fp.CoordinationFix)

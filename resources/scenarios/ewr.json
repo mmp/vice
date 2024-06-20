@@ -3595,7 +3595,7 @@
           ]
         },
         "assigned_altitude": 6000,
-        "cruise_altitude": 39000,
+        "cruise_altitude": 6000,
         "initial_altitude": 6000,
         "initial_controller": "WRI_APP",
         "initial_speed": 300,
@@ -4533,41 +4533,68 @@
     "center": "N040.43.34.389,W074.28.54.713",
     "range": 60,
     "coordination_fixes": {
-      "FLOSI": {
-        "type": "route",
-        "to": "N90",
-        "from": "ZNY"
-      },
-      "DYLIN": {
-        "type": "route",
-        "to": "N90",
-        "from": "ZNY"
-      },
-      "SWEET": {
-        "type": "route",
-        "to": "N90",
-        "from": "ZNY"
-      },
-      "RBV": {
-        "type": "route",
-        "to": "N90",
-        "from": "PHL"
-      },
-      "MUGZY": {
-        "type": "route",
-        "to": "N90",
-        "from": "ZNY"
-      },
-      "MAZIE": {
-        "type": "route",
-        "to": "N90",
-        "from": "PHL"
-      },
-      "HUO": {
-        "type": "route",
-        "to": "N90",
-        "from": "ZNY"
-      }
+      "FLOSI": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+        }
+      ],
+      "DYLIN": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+        }
+      ],
+      "SWEET": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+        }
+      ],
+      "RBV": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "PHL",
+          "altitude": [
+            7000,
+            7000
+          ]
+        }, 
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "WRI",
+          "altitude": [
+            6000,
+            6000
+          ]
+        }
+      ],
+      "MUGZY": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+        }
+      ],
+      "MAZIE": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "PHL"
+        }
+      ],
+      "HUO": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+        }
+      ]
     },
   "inhibit_ca_volumes": [
     {

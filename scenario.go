@@ -66,7 +66,7 @@ type STARSFacilityAdaptation struct {
 	Range               float32                          `json:"range"`
 	Scratchpads         map[string]string                `json:"scratchpads"`
 	VideoMapFile        string                           `json:"video_map_file"`
-	CoordinationFixes   map[string]AdaptationFix         `json:"coordination_fixes"`
+	CoordinationFixes   map[string]AdaptationFixes        `json:"coordination_fixes"`
 }
 
 type STARSControllerConfig struct {

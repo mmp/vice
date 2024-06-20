@@ -898,7 +898,8 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		artcc.TrackInformation = make(map[string]*TrackInformation)
 	}
 	starsFP.CruiseSpeed = int(ac.AircraftPerformance().Speed.CruiseTAS)
-	starsFP.CoordinationFix = starsFP.CordinationFix(w, ac)
+	starsFP.CoordinationFix = starsFP.GetCoordinationFix(w, ac)
+	starsFP.Altitude = fmt.Sprint(flightPlan.Altitude)
 	fmt.Printf("Coordination fix for %v is %v.\n", starsFP.Callsign, starsFP.CoordinationFix)
 	dist, err := ac.Nav.distanceAlongRoute(starsFP.CoordinationFix)
 	time2 := dist / float32(starsFP.CruiseSpeed) * 60
@@ -1031,9 +1032,10 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		if strings.Contains(flightPlan.Route, fix) {
 			msg := starsFP.Message()
 			msg.SourceID = artcc.Identifier + simTime.Format("1504Z")
-			artcc.SendMessageToERAM(info.ToController, msg)
+			to := info.Fix(starsFP.Altitude).ToFacility
+			artcc.SendMessageToERAM(to, msg)
 			starsFP.CoordinationFix = fix
-			starsFP.ContainedFacilities = append(starsFP.ContainedFacilities, info.ToController)
+			starsFP.ContainedFacilities = append(starsFP.ContainedFacilities, to)
 			break
 		}
 	}
