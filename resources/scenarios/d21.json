@@ -2039,7 +2039,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "FOREY2",
-                "waypoints": "WWSHR/ho NACCA FOREY VRNRS SWETY/a4000/h300"
+                "waypoints": "WWSHR NACCA/ho FOREY VRNRS SWETY/a4000/h300"
             }
         ],
         "OKLND1": [
@@ -2072,7 +2072,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "OKLND1",
-                "waypoints": "COLTS/a36000- BOREK LOPVO ITPEG PICUP AXXIS FAEGO RIPPY OKLND/a4000+"
+                "waypoints": "COLTS/a36000- BOREK LOPVO ITPEG PICUP AXXIS/ho FAEGO RIPPY OKLND/a4000+"
             }
         ],
         "PETTE2": [
@@ -2111,7 +2111,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "PETTE2",
-                "waypoints": "QBURT/ho HEVYD HAZIT PETTE SYREN/a4000"
+                "waypoints": "QBURT HEVYD/ho HAZIT PETTE SYREN/a4000"
             }
         ],
         "RRALF3": [
@@ -2149,7 +2149,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "PETTE2",
-                "waypoints": "WEBOR/ho NIMNM CLLEM KILTT RRALF PICTR/a4000"
+                "waypoints": "WEBOR NIMNM/ho CLLEM KILTT RRALF PICTR/a4000"
             }
         ],
         "GIGGY2": [
@@ -2676,6 +2676,127 @@
     },
     "stars_config": {
         "center": "KDTW",
+        "coordination_fixes": {
+            "BONZZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "CRAKN": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "TPGUN": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "WNGNT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "GRAYT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HANBL": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HAYLL": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "SMMNS": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HUMRR": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "SHANX": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "VCTRZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "NUTTZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "NACCA": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "RIPPY": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "PETTE": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "KILIT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOBN"
+                }
+            ],
+            "LOPVO": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ]
+        },
         "inhibit_ca_volumes": [
             {
                 "name": "DTW South",

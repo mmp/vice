@@ -1202,7 +1202,7 @@
                             "initial_controller": "HOU_96_CTR",
                             "initial_speed": 280,
                             "star": "SEWZY6",
-                            "waypoints": "GABOO/a13000/s250/ho SEWZY/a12000 VADRR/a8000 MGTEC/a5000/s220 JEDYE/a4000/s210/h190"
+                            "waypoints": "N031.05.44.290,W097.14.48.052 GABOO/a13000/s250/ho SEWZY/a12000 VADRR/a8000 MGTEC/a5000/s220 JEDYE/a4000/s210/h190"
                         }
                     ],
                     "SEWZY6N": [
@@ -1260,7 +1260,7 @@
                             "initial_controller": "HOU_96_CTR",
                             "initial_speed": 280,
                             "star": "SEWZY6",
-                            "waypoints": "GABOO/a13000/s250/ho SEWZY/a12000 VADRR/a8000 HHOOF MMARE/a6000/s220 SMRFF/a5000/s210/h175"
+                            "waypoints": "N031.05.44.290,W097.14.48.052 GABOO/a13000/s250/ho SEWZY/a12000 VADRR/a8000 HHOOF MMARE/a6000/s220 SMRFF/a5000/s210/h175"
                         }
                     ],
                     "GABOO1": [
@@ -1320,6 +1320,43 @@
                     "stars_config": {
                         "allow_long_scratchpad": [false, false],
                         "force_ql_self": true,
+                        "coordination_fixes": {
+                                "DXEEE": [
+                            {
+                                "type": "route",
+                                "to": "AUS",
+                                "from": "ZHU"
+                            }
+                         ],
+                         "LAIKS": [
+                             {
+                                 "type": "route",
+                                 "to": "AUS",
+                                 "from": "ZHU"
+                             }
+                         ],
+                         "WLEEE": [
+                             {
+                                 "type": "route",
+                                 "to": "AUS",
+                                 "from": "ZHU"
+                             }
+                         ],
+                         "GABOO": [
+                             {
+                                 "type": "route",
+                                 "to": "AUS",
+                                 "from": "ZHU"
+                             }
+                         ],
+                         "TOAMY": [
+                             {
+                                 "type": "route",
+                                 "to": "AUS",
+                                 "from": "I90"
+                             }
+                         ]
+                        },
                         "airspace_awareness": [
                             {
                                 "fixes": [

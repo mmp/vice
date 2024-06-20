@@ -282,7 +282,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "route":"IRQ",
-        "waypoints": "GAIRY/ho IRQ/h158"
+        "waypoints": "GAIRY N033.31.46.745,W083.30.51.965/ho IRQ/h158"
       }
     ],
     "North": [
@@ -343,7 +343,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 290,
         "star":"STUGE3",
-        "waypoints": "ALD/ho/a14000 STUGE/a12000-/s250",
+        "waypoints": "N032.53.44.212,W081.10.56.323 ALD/ho/a14000 STUGE/a12000-/s250",
         "speed_restriction": 250
       }
     ],
@@ -577,6 +577,36 @@
       },
       "stars_config": {
         "center": "KAGS",
+        "coordination_fixes": {
+          "PYRES": [
+               {
+                "type": "route",
+                "to": "AGS",
+                "from": "ZTL"
+               }
+            ],
+            "STUGE": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZTL"
+                }
+            ],
+            "MILEN": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZTL"
+                }
+            ],
+            "STWRT": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZTL"
+                }
+            ]
+        },
         "inhibit_ca_volumes": [
           {
             "name": "BHM NO CA",

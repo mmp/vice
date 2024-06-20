@@ -538,6 +538,22 @@
 	},
 	"stars_config": {
 		"center": "41.935711707565986, -72.6940381965002",
+		"coordination_fixes": {
+			"MAD": [
+				{
+						"type": "route",
+						"to": "Y90",
+						"from": "ZBW"
+				}
+		],
+		"STELA": [
+				{
+						"type": "route",
+						"to": "Y90",
+						"from": "ZBW"
+				}
+		]
+		},
 		"radar_sites": {
 			"KBDL": {
 				"char": "Y",

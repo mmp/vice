@@ -4360,7 +4360,7 @@
         "initial_controller": "SFO_B_APP",
         "initial_speed": 250,
         "route": "ENI PYE/a5000 STINS HADLY OSI",
-        "waypoints": "ENI PYE/a5000 STINS HADLY OSI"
+        "waypoints": "ENI PYE/a5000 STINS HADLY OSI/ho"
       },
       {
         "airlines": {
@@ -4446,7 +4446,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 250,
         "route": "STUBL/a24000/s280/ho RAZRR/a20000 OUCHH/a16000 NIKKT/a10000",
-        "waypoints": "STUBL/a24000/s280/ho RAZRR/a20000 OUCHH/a16000 NIKKT/a10000",
+        "waypoints": "STUBL/a24000/s280 RAZRR/a20000/ho OUCHH/a16000 NIKKT/a10000",
         "runway_waypoints": {
             "KSJC": {
                 "30L": "NIKKT/a10000 SEKKO/a8000/s230 SCOPR/a7000 KLIDE/a4000/s230",
@@ -5256,7 +5256,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "OAKES/a24000/s280/ho GRUDG/a20000 BANND/s270/a18000 SULRR/a13000 KEENR/a8000 LOHGN/a6000/s230 WHYEE/a5000 HIRMO/a4000",
-        "waypoints": "OAKES/a24000/s280/ho GRUDG/a20000 BANND/s270/a18000 SULRR/a13000 KEENR/a8000 LOHGN/a6000/s230 WHYEE/a5000 HIRMO/a4000"
+        "waypoints": "OAKES/a24000/s280 GRUDG/a20000/ho BANND/s270/a18000 SULRR/a13000 KEENR/a8000 LOHGN/a6000/s230 WHYEE/a5000 HIRMO/a4000"
       }
     ],
     "EMZOH3": [
@@ -5387,8 +5387,8 @@
         "description": "",
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
-        "route": "BIFFY/s280/a20000/ho WRAPS MAMIE SHARR LOCKE CATTY/a8000/h280",
-        "waypoints": "BIFFY/s280/a20000/ho WRAPS MAMIE SHARR LOCKE CATTY/a8000/h280"
+        "route": "BIFFY/s280/a20000 WRAPS MAMIE SHARR LOCKE CATTY/a8000/h280",
+        "waypoints": "BIFFY/s280/a20000 WRAPS MAMIE SHARR LOCKE CATTY/a8000/h280"
       }
     ],
     "SKIZM2": [
@@ -6004,7 +6004,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "SLMMR/a13000/ho POZUR/a8000",
-        "waypoints": "SLMMR/a13000/ho POZUR/a8000",
+        "waypoints": "CARVV/a20000-22000 SLMMR/a13000/ho POZUR/a8000",
         "runway_waypoints": {
             "KSMF": {
                 "17R": "POZUR/a8000 TENCO/a4000/h255",
@@ -6056,7 +6056,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "OWLEK EWOKS LOMBO BOWLS PIECH TUDOR",
-        "waypoints": "OWLEK EWOKS LOMBO BOWLS PIECH TUDOR"
+        "waypoints": "OWLEK EWOKS/ho LOMBO BOWLS PIECH TUDOR"
       }
     ],
     "SUUTR4": [
@@ -6136,7 +6136,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "N037.32.19.540,W119.36.15.210 N037.24.59.537,W120.03.03.609/ho",
-        "waypoints": "N037.32.19.540,W119.36.15.210 N037.24.59.537,W120.03.03.609/ho"
+        "waypoints": "EVERR COGOL/ho"
       },
       {
         "airlines": {
@@ -6161,7 +6161,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "N037.31.02.635,W120.02.31.281 N037.30.27.191,W120.10.47.561/ho",
-        "waypoints": "N037.31.02.635,W120.02.31.281 N037.30.27.191,W120.10.47.561/ho"
+        "waypoints": "EVERR COGOL/ho"
       },
       {
         "airlines": {
@@ -6186,7 +6186,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "N037.18.02.963,W119.47.11.918 N037.19.45.026,W120.00.59.957/ho",
-        "waypoints": "N037.18.02.963,W119.47.11.918 N037.19.45.026,W120.00.59.957/ho"
+        "waypoints": "EVERR COGOL/ho"
       },
       {
         "airlines": {
@@ -6211,7 +6211,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "N036.53.10.951,W119.49.22.683 N037.04.12.410,W120.04.06.395/ho",
-        "waypoints": "N036.53.10.951,W119.49.22.683 N037.04.12.410,W120.04.06.395/ho"
+        "waypoints": "EVERR COGOL/ho"
       },
       {
         "airlines": {
@@ -6236,7 +6236,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "N036.53.10.951,W119.49.22.683 N037.04.12.410,W120.04.06.395/ho",
-        "waypoints": "N036.53.10.951,W119.49.22.683 N037.04.12.410,W120.04.06.395/ho"
+       "waypoints": "EVERR COGOL/ho"
       },
       {
         "airlines": {
@@ -6261,7 +6261,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "N037.53.53.935,W120.06.19.632 N037.53.09.179,W120.19.51.687/ho",
-        "waypoints": "N037.53.53.935,W120.06.19.632 N037.53.09.179,W120.19.51.687/ho"
+        "waypoints": "EVERR COGOL/ho"
       }
     ],
     "SAT.SOUTH": [
@@ -6288,7 +6288,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "N036.00.47.653,W121.21.16.309 N036.10.10.070,W121.27.44.346/ho",
-        "waypoints": "N036.00.47.653,W121.21.16.309 N036.10.10.070,W121.27.44.346/ho"
+        "waypoints": "BRALY LUCAB/ho WIGGL"
       },
       {
         "airlines": {
@@ -6313,7 +6313,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "N036.23.28.255,W120.43.25.517 N036.32.55.300,W120.40.16.387/ho",
-        "waypoints": "N036.23.28.255,W120.43.25.517 N036.32.55.300,W120.40.16.387/ho"
+        "waypoints": "BRALY LUCAB/ho WIGGL"
       },
       {
         "airlines": {
@@ -6338,7 +6338,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "N036.26.00.717,W120.33.55.958 N036.31.47.995,W120.37.39.201/ho",
-        "waypoints": "N036.26.00.717,W120.33.55.958 N036.31.47.995,W120.37.39.201/ho"
+        "waypoints": "BRALY LUCAB/ho WIGGL"
       },
       {
         "airlines": {
@@ -6363,7 +6363,7 @@
         "initial_controller": "OAK_CTR",
         "initial_speed": 300,
         "route": "N036.23.28.255,W120.43.25.517 N036.32.55.300,W120.40.16.387/ho",
-        "waypoints": "N036.23.28.255,W120.43.25.517 N036.32.55.300,W120.40.16.387/ho"
+        "waypoints": "BRALY LUCAB/ho WIGGL"
       }
     ],
     "CALWYS2": [
@@ -9055,6 +9055,302 @@
   },
   "stars_config": {
   "center": "KSJC",
+  "coordination_fixes": {
+    "OSI": [
+      {
+          "type": "route",
+          "to": "NCT",
+          "from": "ZOA"
+      }
+     ],
+     "CORKK": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "FRLON": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "RAZRR": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "BYRON": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "MOVDD": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "GOALI": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "SILCN": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "LAANE": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "LOZIT": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "ANJEE": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "FLOWZ": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "MOD": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "PIRAT": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "NRRLI": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "ZOMER": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "AANET": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "BANND": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "SKIZM": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "KARNN": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "WRAPS": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "WEBRR": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "ANAHO": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "EELZA": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "HOSME": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "HOBOA": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "RYANN": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "TEXSS": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "NEUPS": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "MYYAA": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "ISYOH": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "SLMMR": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "LOMBO": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "FOOLZ": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "FATHM": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "DYAMD": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "COGOL": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "LUCAB": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "BSR": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "PXN": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "ORRCA": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "TIPRE": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ]
+  },
   "inhibit_ca_volumes": [
     {
         "name": "SFO NO CA",

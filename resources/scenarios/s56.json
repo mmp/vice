@@ -288,12 +288,12 @@
             }
           ]
         },
-        "initial_altitude": 19000,
+        "initial_altitude": 23000,
         "initial_controller": "SLC_33_CTR",
         "initial_speed": 300,
         "star": "NORDK6",
         "spawn": "LHO",
-        "waypoints": "LHO/a19000+/ho CARTR/a19000 NORDK SETTT/a15000 DYANN/a11000+ ANNTY/a11000 CEEDR/h164",
+        "waypoints": "LAVAH LHO/a19000+/ho CARTR/a19000 NORDK SETTT/a15000 DYANN/a11000+ ANNTY/a11000 CEEDR/h164",
         "description": "NORDK6"
       },
       {
@@ -483,7 +483,7 @@
         "star": "WAATS5",
         "spawn": "WAATS",
         "route": "/. WAATS",
-        "waypoints": "KNOLE/a17000+/ho WAATS/a14000+ RAACE/a12000 CRKIT OQUIR PITTT CEEDR/h164",
+        "waypoints": "BVL KNOLE/a17000+/ho WAATS/a14000+ RAACE/a12000 CRKIT OQUIR PITTT CEEDR/h164",
         "description": "WAATS5"
       }
     ],
@@ -511,7 +511,7 @@
         "star": "WAATS5",
         "spawn": "WAATS",
         "route": "/. WAATS",
-        "waypoints": "KNOLE/a17000+/ho WAATS/a14000 DUGGY/a12000 SLAGG QUIPA LOAPP RROYY/h344",
+        "waypoints": "BVL KNOLE/a17000+/ho WAATS/a14000 DUGGY/a12000 SLAGG QUIPA LOAPP RROYY/h344",
         "description": "WAATS5"
       }
     ]
@@ -706,6 +706,50 @@
   },
   "stars_config": {
     "center": "KSLC",
+    "coordination_fixes": {
+      "CARTR": [
+        {
+            "type": "route",
+            "to": "S56",
+            "from": "ZLC"
+        }
+        ],
+        "SKEES": [
+            {
+                "type": "route",
+                "to": "S56",
+                "from": "ZLC"
+            }
+        ],
+        "NORDK": [
+            {
+                "type": "route",
+                "to": "S56",
+                "from": "ZLC"
+            }
+        ],
+        "LEEHY": [
+            {
+                "type": "route",
+                "to": "S56",
+                "from": "ZLC"
+            }
+        ],
+        "QWENN": [
+            {
+                "type": "route",
+                "to": "S56",
+                "from": "ZLC"
+            }
+        ],
+        "WAATS": [
+            {
+                "type": "route",
+                "to": "S56",
+                "from": "ZLC"
+            }
+        ]
+    },
     "scratchpads": {
       "STEWW": "SCA"
     },

@@ -642,7 +642,7 @@
               "32": "LUNNI/a8000-12000/s250 SSAWW/a6000-7000/s230 ZAXIT/a4000/s210 PALSY PEPIE/h137"
           }
         },
-        "waypoints": "GOTBE/ho LUNNI/a8000-12000/s250"
+        "waypoints": "N031.09.26.379,W081.15.52.597 GOTBE/ho LUNNI/a8000-12000/s250"
       }
     ],
     "LUNNI1_FE": [
@@ -688,7 +688,7 @@
         "initial_speed": 250,
         "star": "LUNNI1",
         "scratchpad": "I8",
-        "waypoints": "SAVAE/a6000-7000/ho PENSE/a4000/s210 RUMEE/h257"
+        "waypoints": "SAVAE/a6000-7000 PENSE/a4000/s210/ho RUMEE/h257"
       }
     ],
     "MARQO2": [
@@ -737,7 +737,7 @@
             }
           ]
         },
-        "initial_altitude": 12000,
+        "initial_altitude": 14000,
         "initial_controller": "JAX_77_CTR",
         "initial_speed": 250,
         "star": "MARQO2",
@@ -749,7 +749,7 @@
               "32": "COROE/a9000-12000/s250 GWIIZ/a5000-6000 HITTS ACENE/a4000/s210 CALIM PEPIE/h137"
           }
         },
-        "waypoints": "MARQO/ho COROE/a9000-12000/s250"
+        "waypoints": "CAMJO/a13000-16000 MARQO/ho COROE/a9000-12000/s250"
       }
     ],
     "MARQO2_FE": [
@@ -892,7 +892,7 @@
               "32": "KIPLE/a7000-10000/s250 NAMPE/a6000-7000/s230 ACENE/a4000/s230 CALIM PEPIE/h137"
           }
         },
-        "waypoints": "FORMB/a10000-13000/ho OHDEA KIPLE/a7000-11000/s250"
+        "waypoints": "N031.06.27.522,W082.19.03.402 FORMB/a10000-13000/ho OHDEA KIPLE/a7000-11000/s250"
       }
     ],
     "OHDEA1_FE": [
@@ -980,7 +980,7 @@
               "32": "BETLE/a5000+/s230 GURDE/a3000/s210/h023"
           }
         },
-        "waypoints": "SHINR/a16000-19000/ho BASSS POGIE/a12000-14000 QUBEN/a9000-12000/s250 BETLE/a5000+/s230"
+        "waypoints": "N029.30.37.758,W081.24.46.065 SHINR/a16000-19000/ho BASSS POGIE/a12000-14000 QUBEN/a9000-12000/s250 BETLE/a5000+/s230"
       }
     ],
     "QUBEN1_FE": [
@@ -1001,13 +1001,13 @@
             }
           ]
         },
-        "initial_altitude": 6000,
+        "initial_altitude": 9000,
         "expect_approach": "I8",
         "initial_controller": "JAX_W_APP",
         "initial_speed": 250,
         "star": "QUBEN1",
         "scratchpad": "I8",
-        "waypoints": "BETLE/a5000+/s230/ho PLANK WADOR/a3000/s210/h344"
+        "waypoints": "QUBEN/a9000-12000/s250 BETLE/a5000+/s230/ho PLANK WADOR/a3000/s210/h344"
       }
     ],
     "TEBOW1": [
@@ -1069,13 +1069,13 @@
             }
           ]
         },
-        "initial_altitude": 5000,
+        "initial_altitude": 9000,
         "expect_approach": "I8",
         "initial_controller": "JAX_W_APP",
         "initial_speed": 250,
         "star": "TEBOW1",
         "scratchpad": "I8",
-        "waypoints": "JERZI/a5000/s230/ho FAROT/a3000/s210/h038"
+        "waypoints": "TEBOW/a9000-12000/s250 JERZI/a5000/s230/ho FAROT/a3000/s210/h038"
       }
     ]
   },
@@ -1570,6 +1570,78 @@
   },
   "stars_config": {
   "center": "KJAX",
+  "coordination_fixes": {
+    "PENSE": [
+      {
+          "type": "route",
+          "to": "JAX",
+          "from": "ZJX"
+      }
+  ],
+  "NATII": [
+      {
+          "type": "route",
+          "to": "JAX",
+          "from": "ZJX"
+      }
+  ],
+  "MAHKA": [
+      {
+          "type": "route",
+          "to": "JAX",
+          "from": "ZJX"
+      }
+  ],
+  "BETLE": [
+      {
+          "type": "route",
+          "to": "JAX",
+          "from": "ZJX"
+      }
+  ],
+  "JERZI": [
+      {
+          "type": "route",
+          "to": "JAX",
+          "from": "ZJX"
+      }
+  ],
+    "GOTBE": [
+         {
+          "type": "route",
+          "to": "JAX",
+          "from": "ZJX"
+         }
+      ],
+      "COROE": [
+          {
+              "type": "route",
+              "to": "JAX",
+              "from": "ZJX"
+          }
+      ],
+      "OHDEA": [
+          {
+              "type": "route",
+              "to": "JAX",
+              "from": "ZJX"
+          }
+      ],
+      "BASSS": [
+          {
+              "type": "route",
+              "to": "JAX",
+              "from": "ZJX"
+          }
+      ],
+      "HILIS": [
+          {
+              "type": "route",
+              "to": "JAX",
+              "from": "ZJX"
+          }
+      ]
+  },
   "airspace_awareness": [
     {
       "fixes": [

@@ -507,7 +507,7 @@
         "initial_controller": "CLT_APP",
         "initial_speed": 250,
         "route": "/. GANTS",
-        "waypoints": "RENZI/ho GANTS/s250/h020"
+        "waypoints": "N035.15.57.994,W080.18.29.454 RENZI/ho GANTS/s250/h020"
       }
     ],
     "HENBY3": [
@@ -727,7 +727,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "star":"BLOCC2",
-        "waypoints": "MMJAY/ho VACUM BLOCC/s250/h332"
+        "waypoints": "N035.16.36.459,W079.29.02.321 MMJAY/ho VACUM BLOCC/s250/h332"
       },
       {
         "airlines": {
@@ -746,7 +746,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "star":"BLOCC2",
-        "waypoints": "MMJAY/ho VACUM BLOCC/s250/a9000/h332"
+        "waypoints": "N035.16.36.459,W079.29.02.321 MMJAY/ho VACUM BLOCC/s250/a9000/h332"
       }
     ]
   },
@@ -980,6 +980,36 @@
     }
       },
       "stars_config": {
+        "coordination_fixes": {
+          "RENZI": [
+            {
+                "type": "route",
+                "to": "GSO",
+                "from": "CLT"
+            }
+        ],
+        "TRAKS": [
+            {
+                "type": "route",
+                "to": "GSO",
+                "from": "ZTL"
+            }
+        ],
+        "MMJAY": [
+            {
+                "type": "route",
+                "to": "GSO",
+                "from": "ZTL"
+            }
+        ],
+        "HENBY": [
+            {
+                "type": "route",
+                "to": "GSO",
+                "from": "ZTL"
+            }
+        ]
+        },
         "center": "KGSO",
         "inhibit_ca_volumes": [
           {

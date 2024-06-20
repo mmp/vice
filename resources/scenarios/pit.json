@@ -887,14 +887,14 @@
               "star": "DEMME5",
               "runway_waypoints": {
                   "KPIT": {
-                      "28L": "LEJOY PLEEZ NESTO/a10000 DEMME LMBRT STILR/a6000+/h071",
-                      "28R": "LEJOY PLEEZ NESTO/a10000 DEMME LMBRT STILR/a6000+/h071",
-                      "10L": "LEJOY PLEEZ NESTO/a10000 DEMME PENGN RIVRZ HEINZ/a6000+/h281",
-                      "10R": "LEJOY PLEEZ NESTO/a10000 DEMME PENGN RIVRZ HEINZ/a6000+/h281",
-                      "32":  "LEJOY PLEEZ NESTO/a10000 DEMME GRUNZ/a6000+/h303"
+                      "28L": "NESTO/a10000 DEMME LMBRT STILR/a6000+/h071",
+                      "28R": "NESTO/a10000 DEMME LMBRT STILR/a6000+/h071",
+                      "10L": "NESTO/a10000 DEMME PENGN RIVRZ HEINZ/a6000+/h281",
+                      "10R": "NESTO/a10000 DEMME PENGN RIVRZ HEINZ/a6000+/h281",
+                      "32":  "NESTO/a10000 DEMME GRUNZ/a6000+/h303"
                   }
               },
-              "waypoints": "VINSE/ho LEJOY"
+              "waypoints": "VINSE LEJOY/ho PLEEZ NESTO/a10000"
       }
       ],
 
@@ -939,14 +939,14 @@
             "star": "FEWGA7",
             "runway_waypoints": {
                 "KPIT": {
-                    "28L": "AIR WISKE/a10000 FEWGA BBLAK GOLDH JOEPA GUINZ CYDNY/h101",
-                    "28R": "AIR WISKE/a10000 FEWGA BBLAK GOLDH JOEPA GUINZ CYDNY/h101",
-                    "10L": "AIR WISKE/a10000 FEWGA LEMEW/h301",
-                    "10R": "AIR WISKE/a10000 FEWGA LEMEW/h301",
-                    "32":  "AIR WISKE/a10000 FEWGA BBLAK GOLDH FLURY MLKIN CRSBY/h146"
+                    "28L": "WISKE/a10000 FEWGA BBLAK GOLDH JOEPA GUINZ CYDNY/h101",
+                    "28R": "WISKE/a10000 FEWGA BBLAK GOLDH JOEPA GUINZ CYDNY/h101",
+                    "10L": "WISKE/a10000 FEWGA LEMEW/h301",
+                    "10R": "WISKE/a10000 FEWGA LEMEW/h301",
+                    "32":  "WISKE/a10000 FEWGA BBLAK GOLDH FLURY MLKIN CRSBY/h146"
                 }
             },
-            "waypoints": "PYRAT AIR/ho"
+            "waypoints": "PYRAT AIR/ho WISKE/a10000"
         }
     ],
 
@@ -988,14 +988,14 @@
           "star": "HAYNZ7",
           "runway_waypoints": {
               "KPIT": {
-                  "28L": "EARED GRACE/a10000 HAYNZ MYRON/h126",
-                  "28R": "EARED GRACE/a10000 HAYNZ MYRON/h126",
-                  "10L": "EARED GRACE/a10000 HAYNZ ROOSA TERBL TOWEL/h282",
-                  "10R": "EARED GRACE/a10000 HAYNZ ROOSA TERBL TOWEL/h282",
-                  "32":  "EARED GRACE/a10000 HAYNZ MYRON COPPE/h166"
+                  "28L": "HAYNZ MYRON/h126",
+                  "28R": "HAYNZ MYRON/h126",
+                  "10L": "HAYNZ ROOSA TERBL TOWEL/h282",
+                  "10R": "HAYNZ ROOSA TERBL TOWEL/h282",
+                  "32":  "HAYNZ MYRON COPPE/h166"
               }
           },
-          "waypoints": "SLT/ho EARED"
+          "waypoints": "SLT EARED/ho GRACE/a10000 HAYNZ"
       }
   ],
 
@@ -1039,7 +1039,7 @@
                 "32":  "CUTTA/a10000 JESEY KRIKK PROGY PRUIT/h146"
             }
         },
-        "waypoints": "ACO/ho CUTTA/a10000"
+        "waypoints": "N041.06.39.229,W081.10.25.561 ACO/ho CUTTA/a10000"
     }
   ],
 
@@ -1067,7 +1067,7 @@
         "initial_controller": "CLE_55_CTR",
         "initial_speed": 280,
         "route": "LEJOY NESTO",
-        "waypoints": "LEJOY/ho NESTO"
+        "waypoints": "N039.58.05.014,W079.22.29.725 LEJOY/ho NESTO"
     }
     ],
 
@@ -1091,7 +1091,7 @@
           "initial_controller": "CLE_55_CTR",
           "initial_speed": 280,
           "route": "ETG HOMEE",
-          "waypoints": "ETG/ho HOMEE"
+          "waypoints": "N041.13.52.420,W078.06.01.779 ETG/ho HOMEE"
       }
     ],
 
@@ -1114,8 +1114,8 @@
         "assigned_altitude": 15000,
         "initial_controller": "CLE_55_CTR",
         "initial_speed": 280,
-        "route": "IR/ho WISKE",
-        "waypoints": "AIR/ho WISKE"
+        "route": "AIR/ho WISKE",
+        "waypoints": "N039.47.52.183,W081.02.56.495 AIR/ho WISKE"
     }
 ]
   },
@@ -1439,6 +1439,43 @@
     true,
     true
     ],
+    "coordination_fixes": {
+      "LEJOY": [
+        {
+            "type": "route",
+            "to": "PIT",
+            "from": "ZOB"
+        }
+    ],
+    "AIR": [
+        {
+            "type": "route",
+            "to": "PIT",
+            "from": "ZOB"
+        }
+    ],
+    "EARED": [
+        {
+            "type": "route",
+            "to": "PIT",
+            "from": "ZOB"
+        }
+    ],
+    "CUTTA": [
+        {
+            "type": "route",
+            "to": "PIT",
+            "from": "ZOB"
+        }
+    ],
+    "HOMEE": [
+        {
+            "type": "route",
+            "to": "PIT",
+            "from": "ZOB"
+        }
+    ]
+    },
     "center": "KPIT",
     "inhibit_ca_volumes": [
     {

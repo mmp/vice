@@ -1227,7 +1227,7 @@
                         "33": "RSRVE SNOBB/a3000/s210/flyover/h218"
                     }
                 },
-                "waypoints": "AMYLU/a14000-23000/ho WILIT CRAAW/a11000+ FOURD RSRVE"
+                "waypoints": "AMYLU/a14000-23000 WILIT/ho CRAAW/a11000+ FOURD RSRVE"
             }
         ],
         "BAGGY3": [
@@ -1283,7 +1283,7 @@
                     "33": "DDENA/a5000+ CZSAR/a3000/flyover/h77"
                   }
                 },
-                "waypoints": "DREWE/a11000/ho BAGGY/a7000+ DDENA/a5000+"
+                "waypoints": "N032.26.18.776,W080.43.52.406 DREWE/a11000/ho BAGGY/a7000+ DDENA/a5000+"
             }
         ],
         "OSPRI7": [
@@ -1347,7 +1347,7 @@
                         "33": "OSPRI PAMJE/a5000-10000/s250 LLEXI/a5000+/s210 JAARD/a4000+/flyover/h149"
                     }
                 },
-                "waypoints": "COBDA/ho NINJA/a11000-22000 TRTLS/a1000+ OSPRI"
+                "waypoints": "N033.27.00.359,W080.49.00.435 COBDA/ho NINJA/a11000-22000 TRTLS/a1000+ OSPRI"
             }
         ]
     },
@@ -1513,6 +1513,29 @@
     },
     "stars_config": {
         "center": "KCHS",
+        "coordination_fixes": {
+            "NINJA": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "BAGGY": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "WILIT": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ]
+        },
         "airspace_awareness": [
             {
                 "fixes": [
