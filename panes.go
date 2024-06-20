@@ -206,7 +206,7 @@ func NewKeyboardState(p Platform) *KeyboardState {
 		keyboard.Pressed[KeyAlt] = nil
 	}
 	if io.KeySuperPressed() {
-		keyboard.Pressed[KeySuper] = nil 
+		keyboard.Pressed[KeySuper] = nil
 	}
 
 	return keyboard
@@ -971,7 +971,7 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 			mp.input.cursor = len(mp.input.cmd)
 		}
 	}
-	
+
 	if (ctx.keyboard.IsPressed(KeyControl) || ctx.keyboard.IsPressed(KeySuper)) && ctx.keyboard.IsPressed(KeyV) {
 		c, err := ctx.platform.GetClipboard().Text()
 		if err == nil {
