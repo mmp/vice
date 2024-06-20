@@ -734,14 +734,6 @@ func (sd *SimDispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *stru
 	}
 }
 
-func (sd *SimDispatcher) IntermTrack(it *IntermTrackArgs, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[it.Token]; !ok {
-		return ErrNoSimForControllerToken
-	} else {
-		return sim.IntermTrack(it.Token, it.Callsign, it.Initial, it.fp)
-	}
-}
-
 type InitiateTrackArgs struct {
 	AircraftSpecifier
 	Plan *STARSFlightPlan

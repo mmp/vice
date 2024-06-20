@@ -1451,16 +1451,6 @@ func (sp *STARSPane) processEvents(w *World) {
 				state.GlobalLeaderLineDirection = event.LeaderLineDirection
 				state.UseGlobalLeaderLine = state.GlobalLeaderLineDirection != nil
 			}
-		case AssociateEvent:
-			_, stars := w.SafeFacility("")
-			bcn := event.Squawk
-			fmt.Println("AssociateEvent", bcn)
-			for _, ac := range w.Aircraft {
-				if ac.Squawk == bcn {
-					w.IntermTrack(ac.Callsign, event.FromController, stars.ContainedPlans[bcn], nil, nil)
-					break
-				}
-			}
 		}
 	}
 }
