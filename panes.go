@@ -11,7 +11,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -122,6 +121,7 @@ const (
 	KeyShift
 	KeyControl
 	KeyAlt
+	KeySuper
 	KeyF1
 	KeyF2
 	KeyF3
@@ -204,6 +204,9 @@ func NewKeyboardState(p Platform) *KeyboardState {
 	}
 	if io.KeyAltPressed() {
 		keyboard.Pressed[KeyAlt] = nil
+	}
+	if io.KeySuperPressed() {
+		keyboard.Pressed[KeySuper] = nil 
 	}
 
 	return keyboard
@@ -968,13 +971,8 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 			mp.input.cursor = len(mp.input.cmd)
 		}
 	}
-	cmd := false
-	window := glfw.GetCurrentContext()
-	if window.GetKey(glfw.KeyLeftSuper) == glfw.Press || window.GetKey(glfw.KeyRightSuper) == glfw.Press {
-		cmd = true
-	}
-
-	if (ctx.keyboard.IsPressed(KeyControl) || cmd) && ctx.keyboard.IsPressed(KeyV) {
+	
+	if (ctx.keyboard.IsPressed(KeyControl) || ctx.keyboard.IsPressed(KeySuper)) && ctx.keyboard.IsPressed(KeyV) {
 		c, err := ctx.platform.GetClipboard().Text()
 		if err == nil {
 			mp.input.InsertAtCursor(c)
