@@ -443,8 +443,8 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, w *World) { // For
 }
 
 type STARSComputer struct {
-	RecievedMessages  []FlightPlanMessage
 	ContainedPlans    map[Squawk]*STARSFlightPlan
+	RecievedMessages  []FlightPlanMessage
 	TrackInformation  map[string]*TrackInformation
 	ERAMInbox         *[]FlightPlanMessage // The address of the overlying ERAM's message inbox.
 	Identifier        string

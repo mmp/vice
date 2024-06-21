@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	// "github.com/brunoga/deep"
+	"github.com/brunoga/deep" 
 	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
 )
@@ -1381,7 +1381,7 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 		}
 
 		var err error // figure out why this isn't working:
-		*update/*, err = deep.Copy(*/ = SimWorldUpdate{
+		*update, err = deep.Copy(SimWorldUpdate{
 			Aircraft:        s.World.Aircraft,
 			Controllers:     s.World.Controllers,
 			ERAMComputers:   s.World.ERAMComputers,
@@ -1392,7 +1392,7 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 			Events:          ctrl.events.Get(),
 			TotalDepartures: s.TotalDepartures,
 			TotalArrivals:   s.TotalArrivals,
-		}//)
+		})
 
 		if err != nil {
 			panic(err)
