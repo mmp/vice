@@ -439,8 +439,8 @@ type STARSAircraftState struct {
 	ATPALeadAircraftCallsign string
 	POFlashingEndTime        time.Time
 	UNFlashingEndTime        time.Time
-	IFFlashing bool // Will continue to flash unless slewed or a successful handoff
-	NextController string
+	IFFlashing               bool // Will continue to flash unless slewed or a successful handoff
+	NextController           string
 
 	// These are only set if a leader line direction was specified for this
 	// aircraft individually:
@@ -3681,7 +3681,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
 					status.clear = true
 					return
-				} else if  trk != nil && trk.HandoffController == ctx.world.Callsign {
+				} else if trk != nil && trk.HandoffController == ctx.world.Callsign {
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
 					return
@@ -6706,7 +6706,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			if speed == "IF" {
 				line5FieldColors = &STARSDatablockFieldColors{
 					Start: len(speed) - 1,
-					End:   len(speed) + 1, 
+					End:   len(speed) + 1,
 					Color: color.Scale(0.3),
 				}
 			}

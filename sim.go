@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/brunoga/deep" 
+	"github.com/brunoga/deep"
 	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
 )

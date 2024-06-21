@@ -804,7 +804,7 @@ type MessagesPane struct {
 	scrollbar      *ScrollBar
 	events         *EventsSubscription
 	messages       []Message
-	NextController map[string]string 
+	NextController map[string]string
 
 	// Command-input-related
 	input         CLIInput
@@ -1033,7 +1033,7 @@ func (mp *MessagesPane) runCommands(w *World) {
 
 	if ok {
 		if ac := w.GetAircraft(callsign, true /*abbreviated*/); ac != nil {
-			w.RunAircraftCommands(ac.Callsign, cmd,mp.NextController[ac.Callsign], func(errorString string, remainingCommands string) {
+			w.RunAircraftCommands(ac.Callsign, cmd, mp.NextController[ac.Callsign], func(errorString string, remainingCommands string) {
 				if errorString != "" {
 					mp.messages = append(mp.messages, Message{contents: errorString, error: true})
 				}
@@ -1162,7 +1162,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 				mp.runCommands(w)
 			}
 		case AcceptedHandoffEvent, AcceptedRedirectedHandoffEvent:
-			if ac, ok := w.Aircraft[event.Callsign]; ok && event.FromController == w.Callsign{
+			if ac, ok := w.Aircraft[event.Callsign]; ok && event.FromController == w.Callsign {
 				if mp.NextController == nil {
 					mp.NextController = make(map[string]string)
 				}

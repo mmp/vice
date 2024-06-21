@@ -151,7 +151,7 @@ func (fp *STARSFlightPlan) GetCoordinationFix(w *World, ac *Aircraft) string {
 
 		info := multiple.Fix(fp.Altitude)
 
-		if info.Type == ZoneBasedFix { // Exclude zone based fixes for now. They come in after the route-based fixe	
+		if info.Type == ZoneBasedFix { // Exclude zone based fixes for now. They come in after the route-based fixe
 			continue
 		}
 		if strings.Contains(fp.Route, fix) {
@@ -689,11 +689,11 @@ func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
 				}
 				delete(comp.ContainedPlans, msg.BCN)
 				e.Post(Event{
-					Type: DataAcceptance,
-					Callsign: msg.Identifier,
+					Type:         DataAcceptance,
+					Callsign:     msg.Identifier,
 					ToController: msg.TrackOwner,
 				})
-			} else { 
+			} else {
 				if trk := comp.TrackInformation[msg.Identifier]; trk != nil {
 					comp.TrackInformation[msg.Identifier] = &TrackInformation{
 						TrackOwner:        msg.TrackOwner,
@@ -702,18 +702,18 @@ func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
 					}
 					delete(comp.ContainedPlans, msg.BCN)
 					e.Post(Event{
-						Type: DataAcceptance,
-						Callsign: msg.Identifier,
+						Type:         DataAcceptance,
+						Callsign:     msg.Identifier,
 						ToController: msg.TrackOwner,
 					})
 				} else { // send an IF msg
 					e.Post(Event{
-						Type: DataRejection,
-						Callsign: msg.Identifier,
+						Type:         DataRejection,
+						Callsign:     msg.Identifier,
 						ToController: msg.TrackOwner,
 					})
 				}
-				
+
 			}
 
 		case AcceptRecallTransfer:
