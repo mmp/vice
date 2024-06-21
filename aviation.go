@@ -1752,11 +1752,15 @@ type MVA struct {
 	MinimumLimit          int                      `xml:"minimumLimit"`
 	MinimumLimitReference string                   `xml:"minimumLimitReference"`
 	Proj                  *MVAHorizontalProjection `xml:"horizontalProjection"`
+	Bounds                Extent2D
 	ExteriorRing          [][2]float32
 	InteriorRings         [][][2]float32
 }
 
 func (m *MVA) Inside(p [2]float32) bool {
+	if !m.Bounds.Inside(p) {
+		return false
+	}
 	if !PointInPolygon(p, m.ExteriorRing) {
 		return false
 	}
@@ -1910,6 +1914,9 @@ func parseMVAs() map[string][]MVA {
 						}
 
 						m.Proj = nil // Don't hold on to the strings
+
+						// Initialize the bounding box
+						m.Bounds = Extent2DFromPoints(m.ExteriorRing)
 
 						mvas = append(mvas, m)
 					}

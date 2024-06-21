@@ -490,10 +490,15 @@ func (nav *Nav) DepartureMessage() string {
 	alt := func(a float32) string {
 		return FormatAltitude(float32(100 * int((a+50)/100)))
 	}
-	if nav.Altitude.Assigned == nil || nav.FlightState.Altitude == *nav.Altitude.Assigned {
-		return "at " + alt(nav.FlightState.Altitude) + " climbing " + alt(*nav.Altitude.Cleared)
+	target := Select(nav.Altitude.Assigned != nil, nav.Altitude.Assigned, nav.Altitude.Cleared)
+	if target != nil { // one of the two should be set, but just in case...
+		if *target-nav.FlightState.Altitude < 100 {
+			return "at " + alt(nav.FlightState.Altitude)
+		} else {
+			return "at " + alt(nav.FlightState.Altitude) + " climbing " + alt(*target)
+		}
 	} else {
-		return "at " + alt(nav.FlightState.Altitude) + " for " + alt(*nav.Altitude.Assigned)
+		return "at " + alt(nav.FlightState.Altitude)
 	}
 }
 

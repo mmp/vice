@@ -14,6 +14,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/mmp/imgui-go/v4"
 )
@@ -522,7 +523,9 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 				renderer:         r,
 				world:            w,
 				keyboard:         keyboard,
-				haveFocus:        haveFocus}
+				haveFocus:        haveFocus,
+				now:              time.Now(),
+			}
 
 			// Similarly make the mouse events available only to the
 			// one Pane that should see them.

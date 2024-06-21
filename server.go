@@ -282,7 +282,7 @@ func (s *SimProxy) DeleteAircraft(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) RunAircraftCommands(callsign string, cmds string, result *AircraftCommandsResult) *rpc.Call {
+func (s *SimProxy) RunAircraftCommands(callsign string, cmds string, result *AircraftCommandsResult, nextController string) *rpc.Call {
 	return s.Client.Go("Sim.RunAircraftCommands", &AircraftCommandsArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -921,6 +921,7 @@ type AircraftCommandsArgs struct {
 	ControllerToken string
 	Callsign        string
 	Commands        string
+	NextController  string
 }
 
 // If an RPC call returns an error, then the result argument is not returned(!?).
@@ -1113,7 +1114,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 			}
 		case 'F':
 			if command == "FC" {
-				if err := sim.HandoffControl(token, callsign); err != nil {
+				if err := sim.HandoffControl(token, callsign, cmds.NextController); err != nil {
 					rewriteError(err)
 					return nil
 				}

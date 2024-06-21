@@ -6,10 +6,12 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/mmp/imgui-go/v4"
 )
@@ -47,6 +49,7 @@ type PaneContext struct {
 	mouse     *MouseState
 	keyboard  *KeyboardState
 	haveFocus bool
+	now       time.Time
 }
 
 type MouseState struct {
@@ -801,6 +804,7 @@ type MessagesPane struct {
 	scrollbar      *ScrollBar
 	events         *EventsSubscription
 	messages       []Message
+	NextController map[string]string 
 
 	// Command-input-related
 	input         CLIInput
@@ -1029,7 +1033,7 @@ func (mp *MessagesPane) runCommands(w *World) {
 
 	if ok {
 		if ac := w.GetAircraft(callsign, true /*abbreviated*/); ac != nil {
-			w.RunAircraftCommands(ac.Callsign, cmd, func(errorString string, remainingCommands string) {
+			w.RunAircraftCommands(ac.Callsign, cmd,mp.NextController[ac.Callsign], func(errorString string, remainingCommands string) {
 				if errorString != "" {
 					mp.messages = append(mp.messages, Message{contents: errorString, error: true})
 				}
@@ -1156,6 +1160,14 @@ func (mp *MessagesPane) processEvents(w *World) {
 			if cmd := strings.TrimSpace(mp.input.cmd); cmd != "" {
 				mp.input.cmd = event.Callsign + " " + cmd
 				mp.runCommands(w)
+			}
+		case AcceptedHandoffEvent, AcceptedRedirectedHandoffEvent:
+			if ac, ok := w.Aircraft[event.Callsign]; ok && event.FromController == w.Callsign{
+				if mp.NextController == nil {
+					mp.NextController = make(map[string]string)
+				}
+				mp.NextController[ac.Callsign] = event.ToController
+				fmt.Printf("%v: setting next controller for %v to be %v.\n", w.Callsign, ac.Callsign, event.ToController)
 			}
 		}
 	}

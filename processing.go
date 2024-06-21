@@ -116,7 +116,6 @@ func (w *World) FacilityFromController(callsign string) string {
 	} else if controller != nil {
 		return w.TRACON
 	}
-	lg.Errorf("Couldn't find facility for %v: %v. \n", callsign, w.GetAllControllers())
 	if len(callsign) == 7 && (callsign[3:] == "_APP" || callsign[3:] == "_DEP") {
 		return w.TRACON // figure out why sometimes EWR_APP (primary controller) doesn't show up
 	}
@@ -125,14 +124,14 @@ func (w *World) FacilityFromController(callsign string) string {
 
 // Give the computers a chance to sort through their received messages. Messages will send when the time is appropriate (eg. handoff).
 // Some messages will be sent from recieved messages (for example a FP message from a RF message).
-func (w *World) UpdateComputers(simTime time.Time) {
+func (w *World) UpdateComputers(simTime time.Time, e *EventStream) {
 	// _, fac := w.SafeFacility("")
 	// Sort through messages made
 	for _, comp := range w.ERAMComputers {
 		comp.SortMessages(simTime, w)
 		comp.SendFlightPlans(w)
 		for _, stars := range comp.STARSComputers {
-			stars.SortReceivedMessages()
+			stars.SortReceivedMessages(e)
 		}
 	}
 }
@@ -152,7 +151,7 @@ func (fp *STARSFlightPlan) GetCoordinationFix(w *World, ac *Aircraft) string {
 
 		info := multiple.Fix(fp.Altitude)
 
-		if info.Type == ZoneBasedFix { // Exclude zone based fixes for now. They come in after the route-based fixes.
+		if info.Type == ZoneBasedFix { // Exclude zone based fixes for now. They come in after the route-based fixe	
 			continue
 		}
 		if strings.Contains(fp.Route, fix) {
@@ -227,7 +226,6 @@ const (
 
 	InitiateTransfer     // When handoff gets sent. Sends the flightplan, contains track location
 	AcceptRecallTransfer // Accept/ recall handoff
-	TrackUpdate
 	// updated track coordinates. If off by some amount that is unaccepable, you'd see "AMB" in STARS datatag.
 	// If no target is even close with same beacon code on the receiving STARS system, you'd see "NAT".
 
@@ -335,9 +333,14 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, w *World) {
 
 			for name, fixes := range comp.Adaptation.CoordinationFixes {
 				fix := fixes.Fix(comp.TrackInformation[msg.Identifier].FlightPlan.Altitude)
+
 				if name == msg.CoordinationFix && fix.ToFacility != comp.Identifier { // Forward
 					msg.SourceID = comp.Identifier + simTime.Format("1504Z")
-					comp.ToSTARSFacility(w.TRACON, msg)
+					if to := fix.ToFacility; to[0] == 'Z' { // To another ARTCC
+						comp.SendMessageToERAM(to, msg)
+					} else { // To a TRACON
+						comp.ToSTARSFacility(to, msg)
+					}
 				} else if name == msg.CoordinationFix && fix.ToFacility == comp.Identifier { // Stay ehre
 					comp.TrackInformation[msg.Identifier] = &TrackInformation{
 						TrackOwner:        msg.TrackOwner,
@@ -657,7 +660,7 @@ func (ac *Aircraft) inDropArea(w *World) bool {
 
 // Sorting the STARS messages. This will store flight plans with FP messages, change flight plans with AM messages,
 // cancel flight plans with CX messages, etc.
-func (comp *STARSComputer) SortReceivedMessages() {
+func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
 	if comp.ContainedPlans == nil {
 		comp.ContainedPlans = make(map[Squawk]*STARSFlightPlan)
 	}
@@ -677,6 +680,7 @@ func (comp *STARSComputer) SortReceivedMessages() {
 		case Cancellation: // Deletes the flight plan from the computer
 			delete(comp.ContainedPlans, msg.BCN)
 		case InitiateTransfer:
+			fmt.Printf("%v: Initiate Transfer: %v.\n", comp.Identifier, msg.Identifier)
 			// 1. Store the data comp.trackinfo. we now know whos tracking the plane. Use the squawk to get the plan
 			if fp := comp.ContainedPlans[msg.BCN]; fp != nil { // We have the plan
 				comp.TrackInformation[msg.Identifier] = &TrackInformation{
@@ -685,6 +689,32 @@ func (comp *STARSComputer) SortReceivedMessages() {
 					FlightPlan:        fp,
 				}
 				delete(comp.ContainedPlans, msg.BCN)
+				e.Post(Event{
+					Type: DataAcceptance,
+					Callsign: msg.Identifier,
+					ToController: msg.TrackOwner,
+				})
+			} else { 
+				if trk := comp.TrackInformation[msg.Identifier]; trk != nil {
+					comp.TrackInformation[msg.Identifier] = &TrackInformation{
+						TrackOwner:        msg.TrackOwner,
+						HandoffController: msg.HandoffController,
+						FlightPlan:        trk.FlightPlan,
+					}
+					delete(comp.ContainedPlans, msg.BCN)
+					e.Post(Event{
+						Type: DataAcceptance,
+						Callsign: msg.Identifier,
+						ToController: msg.TrackOwner,
+					})
+				} else { // send an IF msg
+					e.Post(Event{
+						Type: DataRejection,
+						Callsign: msg.Identifier,
+						ToController: msg.TrackOwner,
+					})
+				}
+				
 			}
 
 		case AcceptRecallTransfer:
@@ -708,7 +738,6 @@ func (comp *STARSComputer) SortReceivedMessages() {
 			} else { // has to be a recall message. (we received the handoff)
 				delete(comp.TrackInformation, msg.Identifier)
 			}
-
 		}
 	}
 	clear(comp.RecievedMessages)

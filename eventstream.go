@@ -201,6 +201,8 @@ const (
 	TrackClickedEvent
 	AssociateEvent
 	ForceQLEvent
+	DataAcceptance
+	DataRejection
 	NumEventTypes
 )
 

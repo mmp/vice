@@ -18,7 +18,8 @@ import (
 	"strings"
 	"time"
 
-	getweather "github.com/checkandmate1/AirportWeatherData"
+	// "github.com/brunoga/deep"
+	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -1379,7 +1380,8 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 			})
 		}
 
-		*update = SimWorldUpdate{
+		var err error // figure out why this isn't working:
+		*update/*, err = deep.Copy(*/ = SimWorldUpdate{
 			Aircraft:        s.World.Aircraft,
 			Controllers:     s.World.Controllers,
 			ERAMComputers:   s.World.ERAMComputers,
@@ -1390,9 +1392,12 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 			Events:          ctrl.events.Get(),
 			TotalDepartures: s.TotalDepartures,
 			TotalArrivals:   s.TotalArrivals,
-		}
+		}//)
 
-		return nil
+		if err != nil {
+			panic(err)
+		}
+		return err
 	}
 }
 
@@ -1691,7 +1696,7 @@ func (s *Sim) updateState() {
 	if s.LaunchConfig.Mode == LaunchAutomatic {
 		s.spawnAircraft()
 	}
-	s.World.UpdateComputers(now)
+	s.World.UpdateComputers(now, s.eventStream)
 }
 
 func (s *Sim) ResolveController(callsign string) string {
@@ -1887,7 +1892,7 @@ func (s *Sim) spawnAircraft() {
 		ac, dep, err := s.World.CreateDeparture(airport, runway, category,
 			s.LaunchConfig.DepartureChallenge, prevDep, now)
 		if err != nil {
-			s.lg.Errorf("CreateDeparture error: %v", err)
+			s.lg.Infof("CreateDeparture error: %v", err)
 		} else {
 			s.lastDeparture[airport][runway][category] = dep
 			s.lg.Infof("%s/%s/%s: launch departure", airport, runway, category)
@@ -2296,7 +2301,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 					TrackOwner:        ctrl.Callsign,
 					HandoffController: octrl.Callsign,
 				}
-
+				msg.Identifier = ac.Callsign
 				stars.TrackInformation[ac.Callsign] = &TrackInformation{
 					TrackOwner:        ctrl.Callsign,
 					HandoffController: octrl.Callsign,
@@ -2321,7 +2326,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 		})
 }
 
-func (s *Sim) HandoffControl(token, callsign string) error {
+func (s *Sim) HandoffControl(token, callsign, nextController string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -2334,7 +2339,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			var radioTransmissions []RadioTransmission
-			if octrl := s.World.GetControllerByCallsign(ac.TrackingController); octrl != nil {
+			if octrl := s.World.GetControllerByCallsign(nextController); octrl != nil {
 				name := Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
 				bye := Sample("good day", "seeya")
 				contact := Sample("contact ", "over to ", "")
@@ -2345,7 +2350,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 					Type:       RadioTransmissionReadback,
 				})
 				radioTransmissions = append(radioTransmissions, RadioTransmission{
-					Controller: ac.TrackingController,
+					Controller: nextController,
 					Message:    ac.ContactMessage(s.ReportingPoints),
 					Type:       RadioTransmissionContact,
 				})
@@ -2364,7 +2369,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 				Callsign:       ac.Callsign,
 			})
 
-			ac.ControllingController = ac.TrackingController
+			ac.ControllingController = nextController
 
 			// Go ahead and climb departures the rest of the way and send
 			// them direct to their first fix (if they aren't already).
@@ -2386,7 +2391,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) error {
 			_, stars := s.World.SafeFacility("")
-			if info := stars.TrackInformation[ac.Callsign]; info != nil && info.HandoffController != ctrl.Callsign {
+			if info := stars.TrackInformation[ac.Callsign]; info == nil || info.HandoffController != ctrl.Callsign {
 				return ErrNotBeingHandedOffToMe
 			}
 			return nil
@@ -2467,22 +2472,26 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			_, stars := s.World.SafeFacility("")
+			_, stars := s.World.SafeFacility(ctrl.Facility)
 			trackInfo := stars.TrackInformation[ac.Callsign]
+			if trackInfo.HandoffController == "" {
+				return nil
+			}
 			octrl := s.World.GetControllerByCallsign(trackInfo.HandoffController)
-
 			if octrl.Facility != ctrl.Facility { // inter-facility
 				msg := stars.TrackInformation[ac.Callsign].FlightPlan.Message()
 				msg.SourceID = s.World.FacilityFromController(ctrl.Callsign) + s.SimTime.Format("1504Z")
 				msg.TrackInformation = TrackInformation{
 					TrackOwner: ctrl.Callsign,
 				}
+				msg.Identifier = callsign
 
 				stars.TrackInformation[ac.Callsign] = &TrackInformation{
 					TrackOwner: ctrl.Callsign,
 					FlightPlan: stars.TrackInformation[ac.Callsign].FlightPlan,
 				}
 				stars.SendTrackInfo(s.World.FacilityFromController(octrl.Callsign), msg, s.SimTime, InitiateTransfer)
+				delete(s.Handoffs, callsign)
 			} else {
 				entry := stars.TrackInformation[ac.Callsign]
 				entry.HandoffController = octrl.Callsign
