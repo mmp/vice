@@ -680,7 +680,6 @@ func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
 		case Cancellation: // Deletes the flight plan from the computer
 			delete(comp.ContainedPlans, msg.BCN)
 		case InitiateTransfer:
-			fmt.Printf("%v: Initiate Transfer: %v.\n", comp.Identifier, msg.Identifier)
 			// 1. Store the data comp.trackinfo. we now know whos tracking the plane. Use the squawk to get the plan
 			if fp := comp.ContainedPlans[msg.BCN]; fp != nil { // We have the plan
 				comp.TrackInformation[msg.Identifier] = &TrackInformation{

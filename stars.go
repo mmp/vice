@@ -6684,11 +6684,11 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		}
 		field5 := []string{} // alternate speed and aircraft type
 		var line5FieldColors *STARSDatablockFieldColors
+		color, _ := sp.datablockColor(ctx, ac)
 		if state.Ident(ctx.now) {
 			// Speed is followed by ID when identing (2-67, field 5)
 			field5 = append(field5, speed+"ID")
 			field5 = append(field5, speed+"ID")
-			color, _ := sp.datablockColor(ctx, ac)
 
 			line5FieldColors = &STARSDatablockFieldColors{
 				Start: len(speed) + 1,
@@ -6697,12 +6697,19 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			}
 			if speed == "IF" {
 				line5FieldColors = &STARSDatablockFieldColors{
-					Start: len(speed) - 2,
+					Start: len(speed) - 3,
 					End:   len(speed) + 3,
 					Color: color.Scale(0.3),
 				}
 			}
 		} else {
+			if speed == "IF" {
+				line5FieldColors = &STARSDatablockFieldColors{
+					Start: len(speed) - 1,
+					End:   len(speed) + 1, 
+					Color: color.Scale(0.3),
+				}
+			}
 			acCategory := ""
 			actype := ac.FlightPlan.TypeWithoutSuffix()
 			if strings.Index(actype, "/") == 1 {
@@ -6803,7 +6810,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 				fc.End += len(field6[i%len(field6)]) - 7
 				db.Lines[3].Colors = append(db.Lines[3].Colors, fc)
 			}
-			if line5FieldColors != nil && i&1 == 1 {
+			if line5FieldColors != nil && i&1 == 0 {
 				// Flash "ID" for identing
 				fc := *line5FieldColors
 				fc.Start += len(field3[i%len(field3)]) + len(field4)
