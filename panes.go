@@ -123,6 +123,7 @@ const (
 	KeyShift
 	KeyControl
 	KeyAlt
+	KeySuper
 	KeyF1
 	KeyF2
 	KeyF3
@@ -135,6 +136,7 @@ const (
 	KeyF10
 	KeyF11
 	KeyF12
+	KeyV
 )
 
 type KeyboardState struct {
@@ -186,6 +188,9 @@ func NewKeyboardState(p Platform) *KeyboardState {
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageDown)) {
 		keyboard.Pressed[KeyPageDown] = nil
 	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyV)) {
+		keyboard.Pressed[KeyV] = nil
+	}
 	const ImguiF1 = 290
 	for i := 0; i < 12; i++ {
 		if imgui.IsKeyPressed(ImguiF1 + i) {
@@ -201,6 +206,9 @@ func NewKeyboardState(p Platform) *KeyboardState {
 	}
 	if io.KeyAltPressed() {
 		keyboard.Pressed[KeyAlt] = nil
+	}
+	if io.KeySuperPressed() {
+		keyboard.Pressed[KeySuper] = nil
 	}
 
 	return keyboard
@@ -966,11 +974,18 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 		}
 	}
 
+	if (ctx.keyboard.IsPressed(KeyControl) || ctx.keyboard.IsPressed(KeySuper)) && ctx.keyboard.IsPressed(KeyV) {
+		c, err := ctx.platform.GetClipboard().Text()
+		if err == nil {
+			mp.input.InsertAtCursor(c)
+		}
+	}
 	if ctx.keyboard.IsPressed(KeyLeftArrow) {
 		if mp.input.cursor > 0 {
 			mp.input.cursor--
 		}
 	}
+
 	if ctx.keyboard.IsPressed(KeyRightArrow) {
 		if mp.input.cursor < len(mp.input.cmd) {
 			mp.input.cursor++
