@@ -1380,7 +1380,7 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 			})
 		}
 
-		var err error // figure out why this isn't working:
+		var err error 
 		*update, err = deep.Copy(SimWorldUpdate{
 			Aircraft:        s.World.Aircraft,
 			Controllers:     s.World.Controllers,
