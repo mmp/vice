@@ -151,12 +151,12 @@ func isAllNumbers(s string) bool {
 }
 
 func isAllLetters(s string) bool {
-    for _, runeValue := range s {
-        if !unicode.IsLetter(runeValue) {
-            return false
-        }
-    }
-    return true
+	for _, runeValue := range s {
+		if !unicode.IsLetter(runeValue) {
+			return false
+		}
+	}
+	return true
 }
 
 var (

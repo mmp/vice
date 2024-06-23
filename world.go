@@ -276,8 +276,6 @@ func (w *World) AutoAssociateFP(callsign string, fp *STARSFlightPlan, success fu
 		})
 }
 
-
-
 func (w *World) UploadFlightPlan(fp *STARSFlightPlan, typ int, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{

@@ -2017,7 +2017,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 	}
 
 	lookupAircraft := func(callsign string, abbreviated bool) *Aircraft {
-		
+
 		if ac := ctx.world.GetAircraft(callsign, abbreviated); ac != nil {
 			return ac
 		}
@@ -2269,89 +2269,89 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				status.clear = true
 				return
 			} else {
-				var clear bool 
-				var err error 
+				var clear bool
+				var err error
 				clear, sp.previewAreaInput, err = sp.updateQL(ctx, cmd)
 				if cmd != "" {
 					_, stars := ctx.world.SafeFacility("")
 					fields := strings.Split(cmd, " ")
 					if err != nil {
-							if strings.Contains(cmd, "*") { // VFR FP; it's a required field
+						if strings.Contains(cmd, "*") { // VFR FP; it's a required field
 
-							} else { // Abbreviated FP
-								info := ctx.world.parseAbbreviatedFPFields(fields)
-								if err, ok := info[Errors].(error); ok && err != nil && err != ErrSTARSIllegalACType{
+						} else { // Abbreviated FP
+							info := ctx.world.parseAbbreviatedFPFields(fields)
+							if err, ok := info[Errors].(error); ok && err != nil && err != ErrSTARSIllegalACType {
+								status.err = err
+							} else {
+								if ok && err != nil { // These are informational errors, so the function would still work
 									status.err = err
-								} else {
-									if ok && err != nil { // These are informational errors, so the function would still work
-										status.err = err
-									}
-									rules, ok := info[Rules].(FlightRules)
-									if !ok || rules == UNKNOWN {
-										rules = VFR
-									}
-									alt, ok := info[RequestedALT].(string)
-									if !ok || alt == "" {
-										alt = "VFR"
-									}
-									sq, ok := info[BCN].(Squawk)
-									if !ok || sq == 0 {
-										sq = stars.CreateSquawk(ctx.world.STARSFacilityAdaptation.BeaconBank)
-									}
-									acType, ok := info[AircraftType].(string) 
-									if !ok {
-										acType = ""
-									}
-									dep, ok := info[DepartureAirport].(string)
-									if !ok {
-										dep = ""
-									}
-
-									sc1, ok := info[SC1].(string)
-									if !ok {
-										sc1 = ""
-									}
-									sc2, ok := info[SC2].(string)
-									if !ok {
-										sc2 = ""
-									}
-									initial, ok := info[ControllingPosition].(string)
-									if !ok {
-										initial = ""
-									}
-									fp := &STARSFlightPlan{}
-
-									*fp, err = deep.Copy(STARSFlightPlan{ // TODO: Do single char ap parsing
-										FlightPlan: FlightPlan{
-											Callsign: fields[0],
-											Rules: rules,
-											AircraftType: acType,
-											DepartureAirport: dep,
-											AssignedSquawk: sq,
-										},
-										Altitude: alt,
-										SP1: 	sc1,
-										SP2: 	sc2,
-										InitialController: initial,
-									})
-									if err == nil {
-										ctx.world.UploadFlightPlan(fp, LocalNonEnroute, nil, nil)
-										status.clear = true 
-										status.output = fmt.Sprintf("%v%v%v %o\nNO ROUTE %v", fp.Callsign, Select(fp.AircraftType != "", " ", ""), 
-										fp.AircraftType, fp.AssignedSquawk, Select(fp.Altitude != "VFR", fp.Altitude, ""))
-									} else {
-										panic(err)
-									}
-									
 								}
-								
+								rules, ok := info[Rules].(FlightRules)
+								if !ok || rules == UNKNOWN {
+									rules = VFR
+								}
+								alt, ok := info[RequestedALT].(string)
+								if !ok || alt == "" {
+									alt = "VFR"
+								}
+								sq, ok := info[BCN].(Squawk)
+								if !ok || sq == 0 {
+									sq = stars.CreateSquawk(ctx.world.STARSFacilityAdaptation.BeaconBank)
+								}
+								acType, ok := info[AircraftType].(string)
+								if !ok {
+									acType = ""
+								}
+								dep, ok := info[DepartureAirport].(string)
+								if !ok {
+									dep = ""
+								}
+
+								sc1, ok := info[SC1].(string)
+								if !ok {
+									sc1 = ""
+								}
+								sc2, ok := info[SC2].(string)
+								if !ok {
+									sc2 = ""
+								}
+								initial, ok := info[ControllingPosition].(string)
+								if !ok {
+									initial = ""
+								}
+								fp := &STARSFlightPlan{}
+
+								*fp, err = deep.Copy(STARSFlightPlan{ // TODO: Do single char ap parsing
+									FlightPlan: FlightPlan{
+										Callsign:         fields[0],
+										Rules:            rules,
+										AircraftType:     acType,
+										DepartureAirport: dep,
+										AssignedSquawk:   sq,
+									},
+									Altitude:          alt,
+									SP1:               sc1,
+									SP2:               sc2,
+									InitialController: initial,
+								})
+								if err == nil {
+									ctx.world.UploadFlightPlan(fp, LocalNonEnroute, nil, nil)
+									status.clear = true
+									status.output = fmt.Sprintf("%v%v%v %o\nNO ROUTE %v", fp.Callsign, Select(fp.AircraftType != "", " ", ""),
+										fp.AircraftType, fp.AssignedSquawk, Select(fp.Altitude != "VFR", fp.Altitude, ""))
+								} else {
+									panic(err)
+								}
+
 							}
-						
-				} else {
-					status.clear = clear 
-					status.err = err
-				}
-				
+
+						}
+
+					} else {
+						status.clear = clear
+						status.err = err
+					}
+
 				} else {
 
 					status.clear = clear
@@ -4387,7 +4387,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					return
 				}
 			case "O": //Pointout history
-				
+
 				if trk.TrackOwner != ctx.world.Callsign {
 					status.err = ErrSTARSIllegalTrack
 					return
@@ -6131,7 +6131,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *PaneContext, ac *Aircraft) (alts [
 	return
 }
 
-func  UpdateAssociatedFP(ctx *PaneContext, aircraft []*Aircraft) {
+func UpdateAssociatedFP(ctx *PaneContext, aircraft []*Aircraft) {
 	_, stars := ctx.world.SafeFacility("")
 	for _, ac := range aircraft {
 		fp, ok := stars.ContainedPlans[ac.Squawk]

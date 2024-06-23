@@ -68,7 +68,7 @@ type STARSFacilityAdaptation struct {
 	CoordinationFixes   map[string]AdaptationFixes       `json:"coordination_fixes"`
 	SingleCharAIDs      map[string]string                `json:"single_char_aids"` // Char to airport
 	BeaconBank          int                              `json:"beacon_bank"`
-	KeepLDB     bool                             `json:"keep_ldb"`
+	KeepLDB             bool                             `json:"keep_ldb"`
 }
 
 type STARSControllerConfig struct {

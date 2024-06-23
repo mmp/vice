@@ -367,13 +367,12 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, w *World) {
 // Prepare the message to sent to a STARS facility after a RF message
 func (fp FlightPlan) DepartureMessage(sendingFacility string, simTime time.Time) FlightPlanMessage {
 	message := FlightPlanMessage{}
-	zulu := simTime.Format("1504Z")
-	message.SourceID = fmt.Sprintf(sendingFacility, zulu)
+	message.SourceID = sendingFacility + simTime.Format("1504Z")
 	message.MessageType = Plan
 	message.FlightID = fp.ECID + fp.Callsign
 	message.AircraftData = AircraftDataMessage{
 		DepartureLocation: fp.DepartureAirport,
-		ArrivalLocation: fp.ArrivalAirport,
+		ArrivalLocation:   fp.ArrivalAirport,
 		NumberOfAircraft:  1, // One for now.
 		AircraftType:      fp.TypeWithoutSuffix(),
 		AircraftCategory:  fp.AircraftType, // TODO: Use a method to turn this into an aircraft category
@@ -461,9 +460,9 @@ type STARSFlightPlan struct {
 	CoordinationFix     string
 	ContainedFacilities []string
 	Altitude            string
-	SP1 			   string
-	SP2 			   string
-	InitialController string // For abbreviated FPs
+	SP1                 string
+	SP2                 string
+	InitialController   string // For abbreviated FPs
 }
 
 // Different flight plans (STARS)
@@ -508,7 +507,7 @@ func (fp STARSFlightPlan) Message() FlightPlanMessage {
 		Route:    fp.Route,
 		AircraftData: AircraftDataMessage{
 			DepartureLocation: fp.DepartureAirport,
-			ArrivalLocation: fp.ArrivalAirport,
+			ArrivalLocation:   fp.ArrivalAirport,
 			NumberOfAircraft:  1,
 			AircraftType:      fp.TypeWithoutSuffix(),
 			AircraftCategory:  fp.AircraftType, // TODO: Use a method to turn this into an aircraft category
@@ -528,9 +527,9 @@ type TrackInformation struct {
 	PointOut          string
 	PointOutHistory   []string
 	RedirectedHandoff RedirectedHandoff
-	SP1 			  string
-	SP2 			  string
-	AutoAssociateFP bool  // If it's white or not
+	SP1               string
+	SP2               string
+	AutoAssociateFP   bool // If it's white or not
 }
 
 func (comp *STARSComputer) SendTrackInfo(receivingFacility string, msg FlightPlanMessage, simTime time.Time, Type int) {
@@ -558,7 +557,7 @@ type CoordinationTime struct {
 
 type AircraftDataMessage struct {
 	DepartureLocation string // Only for departures.
-	ArrivalLocation  string // Only for arrivals. I think this is made up, but I don't know where to get the arrival info from.
+	ArrivalLocation   string // Only for arrivals. I think this is made up, but I don't know where to get the arrival info from.
 	NumberOfAircraft  int    // Default this at one for now.
 	AircraftType      string // A20N, B737, etc.
 
@@ -958,18 +957,18 @@ func (w *World) parseAbbreviatedFPFields(fields []string) map[int]any {
 				return fieldMaps
 			}
 			switch field[1] {
-				case 'V':
-					fieldMaps[Rules] = VFR
-					break // This is the last entry, so we can break here
-				case 'P':
-					fieldMaps[Rules] = VFR // vfr on top
-					break 
-				case 'E':
-					fieldMaps[Rules] = IFR // enroute 
-					break
-				default: 
-					fieldMaps[Errors] = ErrSTARSIllegalValue
-					return fieldMaps
+			case 'V':
+				fieldMaps[Rules] = VFR
+				break // This is the last entry, so we can break here
+			case 'P':
+				fieldMaps[Rules] = VFR // vfr on top
+				break
+			case 'E':
+				fieldMaps[Rules] = IFR // enroute
+				break
+			default:
+				fieldMaps[Errors] = ErrSTARSIllegalValue
+				return fieldMaps
 			}
 		}
 

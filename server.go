@@ -135,10 +135,9 @@ func (s *SimProxy) AutoAssociateFP(callsign string, fp *STARSFlightPlan) *rpc.Ca
 	return s.Client.Go("Sim.AutoAssociateFP", &InitiateTrackArgs{
 		AircraftSpecifier: AircraftSpecifier{
 			ControllerToken: s.ControllerToken,
-			Callsign: callsign,
+			Callsign:        callsign,
 		},
-		Plan:            fp,
-
+		Plan: fp,
 	}, nil, nil)
 }
 
@@ -157,16 +156,16 @@ func (s *SimProxy) CreateUnsupportedTrack(callsign string, ut *UnsupportedTrack)
 }
 
 type UploadPlanArgs struct {
-	ControllerToken string 
-	Type int 
-	Plan *STARSFlightPlan
+	ControllerToken string
+	Type            int
+	Plan            *STARSFlightPlan
 }
 
 func (s *SimProxy) UploadFlightPlan(Type int, fp *STARSFlightPlan) *rpc.Call {
 	return s.Client.Go("Sim.UploadFlightPlan", &UploadPlanArgs{
-		ControllerToken:  s.ControllerToken,
-		Type: Type,
-		Plan: fp, 
+		ControllerToken: s.ControllerToken,
+		Type:            Type,
+		Plan:            fp,
 	}, nil, nil)
 }
 

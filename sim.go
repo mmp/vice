@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/brunoga/deep" 
+	"github.com/brunoga/deep"
 	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
 )
@@ -2120,12 +2120,12 @@ func (s *Sim) AutoAssociateFP(token, callsign string, fp *STARSFlightPlan) error
 
 	return s.dispatchCommand(token, callsign, func(c *Controller, ac *Aircraft) error {
 		return nil
-	}, 
+	},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			_, stars := s.World.SafeFacility(ctrl.Facility)
 			stars.TrackInformation[callsign] = &TrackInformation{
-				TrackOwner: ac.TrackingController, // Should happen initially, so ac.TrackingController can still be used
-				FlightPlan: fp,
+				TrackOwner:      ac.TrackingController, // Should happen initially, so ac.TrackingController can still be used
+				FlightPlan:      fp,
 				AutoAssociateFP: true,
 			}
 			return nil
@@ -2223,12 +2223,12 @@ func (s *Sim) UploadFlightPlan(token string, Type int, plan *STARSFlightPlan) er
 	ctrl := s.World.GetControllerByCallsign(s.controllers[token].Callsign)
 	eram, stars := s.World.SafeFacility(ctrl.Facility)
 	switch Type {
-		case LocalNonEnroute:
-			stars.ContainedPlans[plan.FlightPlan.AssignedSquawk] = plan
-		case LocalEnroute, RemoteEnroute:
-			eram.FlightPlans[plan.FlightPlan.AssignedSquawk] = plan
+	case LocalNonEnroute:
+		stars.ContainedPlans[plan.FlightPlan.AssignedSquawk] = plan
+	case LocalEnroute, RemoteEnroute:
+		eram.FlightPlans[plan.FlightPlan.AssignedSquawk] = plan
 	}
-	return nil 
+	return nil
 }
 
 func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
