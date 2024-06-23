@@ -773,7 +773,7 @@ func (comp *ERAMComputer) CreateSquawk() Squawk {
 			}
 
 			for _, plan := range comp.FlightPlans {
-				if plan == nil || plan.AssignedSquawk == squawk {
+				if plan != nil && plan.AssignedSquawk == squawk {
 					continue
 				}
 			}
@@ -808,7 +808,7 @@ func (comp *STARSComputer) CreateSquawk(x int) Squawk {
 			}
 
 			for _, plan := range comp.ContainedPlans {
-				if plan == nil || plan.AssignedSquawk == squawk {
+				if plan != nil && plan.AssignedSquawk == squawk {
 					continue
 				}
 			}
