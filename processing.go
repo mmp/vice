@@ -279,7 +279,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, w *World) {
 	for _, msg := range *comp.ReceivedMessages {
 		switch msg.MessageType {
 		case Plan:
-			blank, _ := ParseSquawk("0000")
+			blank := Squawk(0)
 			if comp == nil {
 				lg.Errorf("comp = nil")
 			} else if msg.FlightPlan() == nil {
