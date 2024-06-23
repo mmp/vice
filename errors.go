@@ -134,6 +134,8 @@ var (
 	ErrSTARSIllegalText       = NewSTARSError("ILL TEXT")
 	ErrSTARSIllegalTrack      = NewSTARSError("ILL TRK")
 	ErrSTARSIllegalValue      = NewSTARSError("ILL VALUE")
+	ErrSTARSIllegalACType     = NewSTARSError("ACTYPE NOT\nADAPTED")
+	ErrSTARSIllegalACID       = NewSTARSError("ILL ACID")
 	ErrSTARSNoFlight          = NewSTARSError("NO FLIGHT")
 	ErrSTARSRangeLimit        = NewSTARSError("RANGE LIMIT")
 )

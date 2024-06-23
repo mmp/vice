@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 )
 
 func (w *World) initComputers() {
@@ -372,6 +373,7 @@ func (fp FlightPlan) DepartureMessage(sendingFacility string, simTime time.Time)
 	message.FlightID = fp.ECID + fp.Callsign
 	message.AircraftData = AircraftDataMessage{
 		DepartureLocation: fp.DepartureAirport,
+		ArrivalLocation: fp.ArrivalAirport,
 		NumberOfAircraft:  1, // One for now.
 		AircraftType:      fp.TypeWithoutSuffix(),
 		AircraftCategory:  fp.AircraftType, // TODO: Use a method to turn this into an aircraft category
@@ -459,6 +461,9 @@ type STARSFlightPlan struct {
 	CoordinationFix     string
 	ContainedFacilities []string
 	Altitude            string
+	SP1 			   string
+	SP2 			   string
+	InitialController string // For abbreviated FPs
 }
 
 // Different flight plans (STARS)
@@ -503,6 +508,7 @@ func (fp STARSFlightPlan) Message() FlightPlanMessage {
 		Route:    fp.Route,
 		AircraftData: AircraftDataMessage{
 			DepartureLocation: fp.DepartureAirport,
+			ArrivalLocation: fp.ArrivalAirport,
 			NumberOfAircraft:  1,
 			AircraftType:      fp.TypeWithoutSuffix(),
 			AircraftCategory:  fp.AircraftType, // TODO: Use a method to turn this into an aircraft category
@@ -522,6 +528,9 @@ type TrackInformation struct {
 	PointOut          string
 	PointOutHistory   []string
 	RedirectedHandoff RedirectedHandoff
+	SP1 			  string
+	SP2 			  string
+	AutoAssociateFP bool  // If it's white or not
 }
 
 func (comp *STARSComputer) SendTrackInfo(receivingFacility string, msg FlightPlanMessage, simTime time.Time, Type int) {
@@ -549,6 +558,7 @@ type CoordinationTime struct {
 
 type AircraftDataMessage struct {
 	DepartureLocation string // Only for departures.
+	ArrivalLocation  string // Only for arrivals. I think this is made up, but I don't know where to get the arrival info from.
 	NumberOfAircraft  int    // Default this at one for now.
 	AircraftType      string // A20N, B737, etc.
 
@@ -586,13 +596,11 @@ func (s FlightPlanMessage) FlightPlan() *STARSFlightPlan {
 	flightPlan.AircraftType = s.AircraftData.AircraftType
 	flightPlan.AssignedSquawk = s.BCN
 	flightPlan.DepartureAirport = s.AircraftData.DepartureLocation
+	flightPlan.ArrivalAirport = s.AircraftData.ArrivalLocation
 	flightPlan.Route = s.Route
 	flightPlan.CoordinationFix = s.CoordinationFix
 	flightPlan.CoordinationTime = s.CoordinationTime
 	flightPlan.Altitude = s.Altitude
-	/* TODO:
-	- Arrival Airport
-	*/
 
 	return &flightPlan
 }
@@ -813,6 +821,160 @@ func (comp *STARSComputer) CreateSquawk(x int) Squawk {
 			}
 		}
 	}
+}
+
+const (
+	ACID = iota
+	BCN
+	ControllingPosition
+	TypeOfFlight // Figure out this
+	SC1
+	SC2
+	AircraftType
+	RequestedALT
+	Rules
+	DepartureAirport // Specified with type of flight (maybe)
+	Errors
+)
+
+func (w *World) parseAbbreviatedFPFields(fields []string) map[int]any {
+	fieldMaps := make(map[int]any)
+	if len(fields[0]) >= 2 && len(fields[0]) <= 7 && unicode.IsLetter(rune(fields[0][0])) {
+		fieldMaps[ACID] = fields[0]
+
+	} else {
+		fieldMaps[Errors] = ErrSTARSIllegalACID
+		return fieldMaps
+	}
+
+	for _, field := range fields[1:] { // fields[0] is always the ACID
+		sq, err := ParseSquawk(field) // See if it's a BCN
+		if err == nil {
+			fieldMaps[BCN] = sq
+			continue
+		}
+		if len(field) == 2 { // See if its specifying the controlling position
+			fieldMaps[ControllingPosition] = field
+			continue
+		}
+		if len(field) <= 2 { // See if it's specifying the type of flight. No errors for this because this could turn into a scratchpad
+			if len(field) == 1 {
+				switch field {
+				case "A":
+					fieldMaps[TypeOfFlight] = "arrival"
+				case "P":
+					fieldMaps[TypeOfFlight] = "departure"
+				case "E":
+					fieldMaps[TypeOfFlight] = "overflight"
+				}
+			} else if len(field) == 2 { // Type first, then airport id
+				types := []string{"A", "P", "E"}
+				if slices.Contains(types, field[:1]) {
+					fieldMaps[TypeOfFlight] = field[:1]
+					fieldMaps[DepartureAirport] = field[1:]
+					continue
+				}
+			}
+		}
+
+		badScratchpads := []string{"NAT", "CST", "AMB", "RDR", "ADB", "XXX"}
+		if strings.HasPrefix(field, STARSTriangleCharacter) && len(field) > 3 && len(field) <= 5 || (len(field) <= 6 && w.STARSFacilityAdaptation.AllowLongScratchpad[0]) { // See if it's specifying the SC1
+
+			if slices.Contains(badScratchpads, field) {
+				fieldMaps[Errors] = ErrSTARSIllegalScratchpad
+				return fieldMaps
+			}
+			if isAllNumbers(field[len(field)-3:]) {
+				fieldMaps[Errors] = ErrSTARSIllegalScratchpad
+			}
+			fieldMaps[SC1] = field
+		}
+		if strings.HasPrefix(field, "+") && len(field) > 2 && (len(field) <= 4 || (len(field) <= 5 && w.STARSFacilityAdaptation.AllowLongScratchpad[1])) { // See if it's specifying the SC1
+			if slices.Contains(badScratchpads, field) {
+				fieldMaps[Errors] = ErrSTARSIllegalScratchpad
+				return fieldMaps
+			}
+			if isAllNumbers(field[len(field)-3:]) {
+				fieldMaps[Errors] = ErrSTARSIllegalScratchpad
+			}
+			fieldMaps[SC2] = field
+		}
+		if acFields := strings.Split(field, "/"); len(field) >= 4 { // See if it's specifying the type of flight
+			switch len(acFields) {
+			case 1: // Just the AC Type
+				if _, ok := database.AircraftPerformance[field]; !ok { // AC doesn't exist
+					fieldMaps[Errors] = ErrSTARSIllegalACType
+					continue
+				} else {
+					fieldMaps[AircraftType] = field
+					continue
+				}
+			case 2: // Either a formation number with the ac type or a ac type with a equipment suffix
+				if all := isAllNumbers(acFields[0]); all { // Formation number
+					if !unicode.IsLetter(rune(acFields[1][0])) {
+						fieldMaps[Errors] = ErrSTARSCommandFormat
+						return fieldMaps
+					}
+					if _, ok := database.AircraftPerformance[acFields[1]]; !ok { // AC doesn't exist
+						fieldMaps[Errors] = ErrSTARSIllegalACType // This error is informational. Shouldn't end the entire function. Just this switch statement
+						continue
+					}
+					fieldMaps[AircraftType] = field
+				} else { // AC Type with equipment suffix
+					if len(acFields[1]) > 1 || !isAllLetters(acFields[1]) {
+						fieldMaps[Errors] = ErrSTARSCommandFormat
+						return fieldMaps
+					}
+					if _, ok := database.AircraftPerformance[acFields[0]]; !ok { // AC doesn't exist
+						fieldMaps[Errors] = ErrSTARSIllegalACType
+						continue
+					}
+					fieldMaps[AircraftType] = field
+				}
+			case 3:
+				if len(acFields[2]) > 1 || !isAllLetters(acFields[2]) {
+					fieldMaps[Errors] = ErrSTARSCommandFormat
+					return fieldMaps
+				}
+				if !unicode.IsLetter(rune(acFields[1][0])) {
+					fieldMaps[Errors] = ErrSTARSCommandFormat
+					return fieldMaps
+				}
+				if _, ok := database.AircraftPerformance[acFields[1]]; !ok { // AC doesn't exist
+					fieldMaps[Errors] = ErrSTARSIllegalACType
+					break
+				}
+				fieldMaps[AircraftType] = field
+			}
+			continue
+		}
+		if len(field) == 3 && isAllNumbers(field) {
+			fieldMaps[RequestedALT] = field
+			continue
+		}
+		if len(field) == 2 {
+			if field[0] != '.' {
+				fieldMaps[Errors] = ErrSTARSCommandFormat
+				return fieldMaps
+			}
+			switch field[1] {
+				case 'V':
+					fieldMaps[Rules] = VFR
+					break // This is the last entry, so we can break here
+				case 'P':
+					fieldMaps[Rules] = VFR // vfr on top
+					break 
+				case 'E':
+					fieldMaps[Rules] = IFR // enroute 
+					break
+				default: 
+					fieldMaps[Errors] = ErrSTARSIllegalValue
+					return fieldMaps
+			}
+		}
+
+	}
+	return fieldMaps
 }
 
 // For debugging purposes

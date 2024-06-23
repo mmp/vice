@@ -150,6 +150,15 @@ func isAllNumbers(s string) bool {
 	return true
 }
 
+func isAllLetters(s string) bool {
+    for _, runeValue := range s {
+        if !unicode.IsLetter(runeValue) {
+            return false
+        }
+    }
+    return true
+}
+
 var (
 	//go:embed resources/nouns.txt
 	nounsFile string

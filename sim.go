@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/brunoga/deep"
+	"github.com/brunoga/deep" 
 	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
 )
@@ -2094,7 +2094,9 @@ func (s *Sim) SetScratchpad(token, callsign, scratchpad string) error {
 
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			ac.Scratchpad = scratchpad
+			_, stars := s.World.SafeFacility(ctrl.Facility)
+			trk := stars.TrackInformation[ac.Callsign]
+			trk.SP1 = scratchpad
 			return nil
 		})
 }
@@ -2105,9 +2107,30 @@ func (s *Sim) SetSecondaryScratchpad(token, callsign, scratchpad string) error {
 
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			ac.SecondaryScratchpad = scratchpad
+			_, stars := s.World.SafeFacility(ctrl.Facility)
+			trk := stars.TrackInformation[ac.Callsign]
+			trk.SP2 = scratchpad
 			return nil
 		})
+}
+
+func (s *Sim) AutoAssociateFP(token, callsign string, fp *STARSFlightPlan) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchCommand(token, callsign, func(c *Controller, ac *Aircraft) error {
+		return nil
+	}, 
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			_, stars := s.World.SafeFacility(ctrl.Facility)
+			stars.TrackInformation[callsign] = &TrackInformation{
+				TrackOwner: ac.TrackingController, // Should happen initially, so ac.TrackingController can still be used
+				FlightPlan: fp,
+				AutoAssociateFP: true,
+			}
+			return nil
+		})
+
 }
 
 func (s *Sim) ChangeSquawk(token, callsign, squawk string) error {
@@ -2192,6 +2215,20 @@ func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrac
 			// fmt.Printf("Created unsupported track: %v.\n", ut)
 			return nil
 		})
+}
+
+func (s *Sim) UploadFlightPlan(token string, Type int, plan *STARSFlightPlan) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	ctrl := s.World.GetControllerByCallsign(s.controllers[token].Callsign)
+	eram, stars := s.World.SafeFacility(ctrl.Facility)
+	switch Type {
+		case LocalNonEnroute:
+			stars.ContainedPlans[plan.FlightPlan.AssignedSquawk] = plan
+		case LocalEnroute, RemoteEnroute:
+			eram.FlightPlans[plan.FlightPlan.AssignedSquawk] = plan
+	}
+	return nil 
 }
 
 func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {

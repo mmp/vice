@@ -266,6 +266,28 @@ func (w *World) CreateUnsupportedTrack(callsign string, ut *UnsupportedTrack, su
 		})
 }
 
+func (w *World) AutoAssociateFP(callsign string, fp *STARSFlightPlan, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.AutoAssociateFP(callsign, fp),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+
+
+func (w *World) UploadFlightPlan(fp *STARSFlightPlan, typ int, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.UploadFlightPlan(typ, fp),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (w *World) InitiateTrack(callsign string, fp *STARSFlightPlan, success func(any), err func(error)) {
 	// Modifying locally is not canonical but improves perceived latency in
 	// the common case; the RPC may fail, though that's fine; the next

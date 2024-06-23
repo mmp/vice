@@ -131,6 +131,17 @@ func (s *SimProxy) SetSecondaryScratchpad(callsign string, scratchpad string) *r
 	}, nil, nil)
 }
 
+func (s *SimProxy) AutoAssociateFP(callsign string, fp *STARSFlightPlan) *rpc.Call {
+	return s.Client.Go("Sim.AutoAssociateFP", &InitiateTrackArgs{
+		AircraftSpecifier: AircraftSpecifier{
+			ControllerToken: s.ControllerToken,
+			Callsign: callsign,
+		},
+		Plan:            fp,
+
+	}, nil, nil)
+}
+
 type CreateUnsupportedTrackArgs struct {
 	ControllerToken  string
 	Callsign         string
@@ -142,6 +153,20 @@ func (s *SimProxy) CreateUnsupportedTrack(callsign string, ut *UnsupportedTrack)
 		ControllerToken:  s.ControllerToken,
 		Callsign:         callsign,
 		UnsupportedTrack: ut,
+	}, nil, nil)
+}
+
+type UploadPlanArgs struct {
+	ControllerToken string 
+	Type int 
+	Plan *STARSFlightPlan
+}
+
+func (s *SimProxy) UploadFlightPlan(Type int, fp *STARSFlightPlan) *rpc.Call {
+	return s.Client.Go("Sim.UploadFlightPlan", &UploadPlanArgs{
+		ControllerToken:  s.ControllerToken,
+		Type: Type,
+		Plan: fp, 
 	}, nil, nil)
 }
 
@@ -734,6 +759,14 @@ func (sd *SimDispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *stru
 	}
 }
 
+func (sd *SimDispatcher) AutoAssociateFP(it *InitiateTrackArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.AutoAssociateFP(it.ControllerToken, it.Callsign, it.Plan)
+	}
+}
+
 type InitiateTrackArgs struct {
 	AircraftSpecifier
 	Plan *STARSFlightPlan
@@ -752,6 +785,14 @@ func (sd *SimDispatcher) CreateUnsupportedTrack(it *CreateUnsupportedTrackArgs, 
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.CreateUnsupportedTrack(it.ControllerToken, it.Callsign, it.UnsupportedTrack)
+	}
+}
+
+func (sd *SimDispatcher) UploadFlightPlan(it *UploadPlanArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.UploadFlightPlan(it.ControllerToken, it.Type, it.Plan)
 	}
 }
 
