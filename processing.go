@@ -538,7 +538,7 @@ type TrackInformation struct {
 func (comp *STARSComputer) SendTrackInfo(receivingFacility string, msg FlightPlanMessage, simTime time.Time, Type int) {
 
 	msg.MessageType = Type
-	msg.SourceID = fmt.Sprintf("%v%v", comp.Identifier, simTime.Format("1504Z"))
+	msg.SourceID = comp.Identifier + simTime.Format("1504Z")
 	inbox := comp.STARSInbox[receivingFacility]
 	if inbox != nil {
 		*inbox = append(*inbox, msg)
