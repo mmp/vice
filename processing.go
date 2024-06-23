@@ -680,7 +680,7 @@ func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
 	for _, msg := range comp.RecievedMessages {
 		switch msg.MessageType {
 		case Plan:
-			sq, _ := ParseSquawk("0000")
+			sq := Squawk(0)
 			if msg.BCN == sq {
 				break
 			}
