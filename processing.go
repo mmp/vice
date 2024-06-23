@@ -414,8 +414,7 @@ func (comp *ERAMComputer) SendFlightPlans(w *World) {
 		to := comp.Adaptation.CoordinationFixes[fp.CoordinationFix].Fix(fp.Altitude).ToFacility
 		if !w.SimTime.Add(TransmitFPMessageTime).Before(fp.CoordinationTime.Time) && !slices.Contains(fp.ContainedFacilities, to) {
 			comp.SendFlightPlan(fp, w)
-		} else if !slices.Contains(fp.ContainedFacilities, to) {
-		}
+		} 
 	}
 	for _, info := range comp.FlightPlans {
 		var fp *STARSFlightPlan
@@ -427,8 +426,7 @@ func (comp *ERAMComputer) SendFlightPlans(w *World) {
 		to := comp.Adaptation.CoordinationFixes[fp.CoordinationFix].Fix(fp.Altitude).ToFacility
 		if !w.SimTime.Add(TransmitFPMessageTime).Before(fp.CoordinationTime.Time) && !slices.Contains(fp.ContainedFacilities, to) {
 			comp.SendFlightPlan(fp, w)
-		} else if !slices.Contains(fp.ContainedFacilities, to) {
-		}
+		} 
 	}
 
 }
