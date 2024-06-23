@@ -165,23 +165,20 @@ func (fp *STARSFlightPlan) GetCoordinationFix(w *World, ac *Aircraft) string {
 		}
 
 	}
-	distanceMap := make(map[string]float32) //  -->
+	var closestFix string
+	smallestValue := float32(math.MaxFloat32)
 	for fix, multiple := range fixes {
 		for _, info := range multiple {
 			if info.Type == ZoneBasedFix {
-				distanceMap[fix] = nmdistance2ll(ac.Position(), database.Fixes[fix].Location)
+				dist := nmdistance2ll(ac.Position(), database.Fixes[fix].Location)
+				if dist < smallestValue {
+					smallestValue = dist
+					closestFix = fix
+				}
 			}
 		}
 	}
 
-	var closestFix string
-	smallestValue := float32(math.MaxFloat32)
-	for key, value := range distanceMap {
-		if value < smallestValue {
-			smallestValue = value
-			closestFix = key
-		}
-	}
 	if closestFix == "" {
 		lg.Errorf("No fix for %v/%v. Route: %v.", ac.Callsign, ac.Squawk, ac.Nav.Waypoints)
 	}
