@@ -255,6 +255,8 @@ type ERAMTrackInfo struct {
 	HandoffController string
 }
 
+const TransmitFPMessageTime = 30 * time.Minute
+
 func (comp *ERAMComputer) SendMessageToERAM(facility string, msg FlightPlanMessage) error {
 	if _, ok := comp.ERAMInboxes[facility]; ok {
 		*comp.ERAMInboxes[facility] = append(*comp.ERAMInboxes[facility], msg)
@@ -410,7 +412,7 @@ func (comp *ERAMComputer) SendFlightPlans(w *World) {
 			continue
 		}
 		to := comp.Adaptation.CoordinationFixes[fp.CoordinationFix].Fix(fp.Altitude).ToFacility
-		if !w.SimTime.Add(30*time.Minute).Before(fp.CoordinationTime.Time) && !slices.Contains(fp.ContainedFacilities, to) {
+		if !w.SimTime.Add(TransmitFPMessageTime).Before(fp.CoordinationTime.Time) && !slices.Contains(fp.ContainedFacilities, to) {
 			comp.SendFlightPlan(fp, w)
 		} else if !slices.Contains(fp.ContainedFacilities, to) {
 		}
@@ -423,7 +425,7 @@ func (comp *ERAMComputer) SendFlightPlans(w *World) {
 			continue
 		}
 		to := comp.Adaptation.CoordinationFixes[fp.CoordinationFix].Fix(fp.Altitude).ToFacility
-		if !w.SimTime.Add(30*time.Minute).Before(fp.CoordinationTime.Time) && !slices.Contains(fp.ContainedFacilities, to) {
+		if !w.SimTime.Add(TransmitFPMessageTime).Before(fp.CoordinationTime.Time) && !slices.Contains(fp.ContainedFacilities, to) {
 			comp.SendFlightPlan(fp, w)
 		} else if !slices.Contains(fp.ContainedFacilities, to) {
 		}
