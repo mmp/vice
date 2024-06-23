@@ -400,6 +400,14 @@ func (comp *ERAMComputer) ToSTARSFacility(facility string, msg FlightPlanMessage
 }
 
 func (comp *ERAMComputer) SendFlightPlans(w *World) {
+
+	sendPlanIfReady := func(fp *STARSFlightPlan) {
+		to := comp.Adaptation.CoordinationFixes[fp.CoordinationFix].Fix(fp.Altitude).ToFacility
+		if !w.SimTime.Add(TransmitFPMessageTime).Before(fp.CoordinationTime.Time) && !slices.Contains(fp.ContainedFacilities, to) {
+			comp.SendFlightPlan(fp, w)
+		} 
+	}
+
 	for _, info := range comp.TrackInformation {
 		var fp *STARSFlightPlan
 		if info.FlightPlan != nil {
@@ -411,10 +419,8 @@ func (comp *ERAMComputer) SendFlightPlans(w *World) {
 			delete(comp.TrackInformation, info.Identifier) // figure out why these are sneaking in here!
 			continue
 		}
-		to := comp.Adaptation.CoordinationFixes[fp.CoordinationFix].Fix(fp.Altitude).ToFacility
-		if !w.SimTime.Add(TransmitFPMessageTime).Before(fp.CoordinationTime.Time) && !slices.Contains(fp.ContainedFacilities, to) {
-			comp.SendFlightPlan(fp, w)
-		} 
+		sendPlanIfReady(fp)
+		
 	}
 	for _, info := range comp.FlightPlans {
 		var fp *STARSFlightPlan
@@ -423,10 +429,7 @@ func (comp *ERAMComputer) SendFlightPlans(w *World) {
 		} else {
 			continue
 		}
-		to := comp.Adaptation.CoordinationFixes[fp.CoordinationFix].Fix(fp.Altitude).ToFacility
-		if !w.SimTime.Add(TransmitFPMessageTime).Before(fp.CoordinationTime.Time) && !slices.Contains(fp.ContainedFacilities, to) {
-			comp.SendFlightPlan(fp, w)
-		} 
+		sendPlanIfReady(fp)
 	}
 
 }
