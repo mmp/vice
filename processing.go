@@ -36,9 +36,12 @@ func (w *World) initComputers() {
 		availibleSquawks := make(map[int]interface{})
 		for i := 0o1001; i <= 0o7777; i++ {
 			availibleSquawks[i] = nil
+			
 		}
 		starsAvailibleSquawks := make(map[int]interface{})
-		bank := int64(w.STARSFacilityAdaptation.BeaconBank * 100)
+		
+			
+		bank := int64(w.STARSFacilityAdaptation.BeaconBank)
 		min, _ := strconv.ParseInt(fmt.Sprint(1+bank*100), 8, 64)
 		max, _ := strconv.ParseInt(fmt.Sprint(77+bank*100), 8, 64)
 		for i := min; i <= max; i++ {
@@ -358,6 +361,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, w *World) {
 			}
 			comp.TrackInformation[msg.Identifier].TrackOwner = msg.TrackOwner
 			comp.TrackInformation[msg.Identifier].HandoffController = msg.HandoffController
+			comp.AvailibleSquawks[int(msg.BCN)] = nil
 
 			for name, fixes := range comp.Adaptation.CoordinationFixes {
 				fix := fixes.Fix(comp.TrackInformation[msg.Identifier].FlightPlan.Altitude)
@@ -369,7 +373,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, w *World) {
 					} else { // To a TRACON
 						comp.ToSTARSFacility(to, msg)
 					}
-				} else if name == msg.CoordinationFix && fix.ToFacility == comp.Identifier { // Stay ehre
+				} else if name == msg.CoordinationFix && fix.ToFacility == comp.Identifier { // Stay here
 					comp.TrackInformation[msg.Identifier] = &TrackInformation{
 						TrackOwner:        msg.TrackOwner,
 						HandoffController: msg.HandoffController,
@@ -381,11 +385,15 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, w *World) {
 		case AcceptRecallTransfer:
 			fixInfo := comp.Adaptation.CoordinationFixes[msg.CoordinationFix].Fix(comp.TrackInformation[msg.Identifier].FlightPlan.Altitude)
 			if info := comp.TrackInformation[msg.Identifier]; info != nil {
+				if msg.TrackOwner == info.TrackOwner { // Recall message, we can free up this code now
+					comp.AvailibleSquawks[int(msg.BCN)] = nil
+				}
 				info.TrackOwner = msg.TrackOwner
 			}
 			if fixInfo.FromFacility != comp.Identifier { // Comes from a different ERAM facility
 				comp.SendMessageToERAM(fixInfo.FromFacility, msg)
 			}
+
 		}
 	}
 	clear(*comp.ReceivedMessages)
@@ -810,41 +818,56 @@ const (
 	Errors
 )
 
-func (w *World) parseAbbreviatedFPFields(fields []string) map[int]any {
-	fieldMaps := make(map[int]any)
+type AbbreviatedFPFields struct {
+	ACID string 
+	BCN Squawk
+	ControllingPosition string
+	TypeOfFlight string // Figure out this
+	SC1 string
+	SC2 	string 
+	AircraftType string 
+	RequestedALT string 
+	Rules FlightRules
+	DepartureAirport string  // Specified with type of flight (maybe)
+	Error error
+
+}
+
+func (w *World) parseAbbreviatedFPFields(fields []string) AbbreviatedFPFields {
+	output := AbbreviatedFPFields{}
 	if len(fields[0]) >= 2 && len(fields[0]) <= 7 && unicode.IsLetter(rune(fields[0][0])) {
-		fieldMaps[ACID] = fields[0]
+		output.ACID = fields[0]
 
 	} else {
-		fieldMaps[Errors] = ErrSTARSIllegalACID
-		return fieldMaps
+		output.Error = ErrSTARSIllegalACID
+		return output
 	}
 
 	for _, field := range fields[1:] { // fields[0] is always the ACID
 		sq, err := ParseSquawk(field) // See if it's a BCN
 		if err == nil {
-			fieldMaps[BCN] = sq
+			output.BCN = sq
 			continue
 		}
 		if len(field) == 2 { // See if its specifying the controlling position
-			fieldMaps[ControllingPosition] = field
+			output.ControllingPosition = field
 			continue
 		}
 		if len(field) <= 2 { // See if it's specifying the type of flight. No errors for this because this could turn into a scratchpad
 			if len(field) == 1 {
 				switch field {
 				case "A":
-					fieldMaps[TypeOfFlight] = "arrival"
+					output.TypeOfFlight = "arrival"
 				case "P":
-					fieldMaps[TypeOfFlight] = "departure"
+					output.TypeOfFlight = "departure"
 				case "E":
-					fieldMaps[TypeOfFlight] = "overflight"
+					output.TypeOfFlight = "overflight"
 				}
 			} else if len(field) == 2 { // Type first, then airport id
 				types := []string{"A", "P", "E"}
 				if slices.Contains(types, field[:1]) {
-					fieldMaps[TypeOfFlight] = field[:1]
-					fieldMaps[DepartureAirport] = field[1:]
+					output.TypeOfFlight = field[:1]
+					output.DepartureAirport = field[1:]
 					continue
 				}
 			}
@@ -854,100 +877,100 @@ func (w *World) parseAbbreviatedFPFields(fields []string) map[int]any {
 		if strings.HasPrefix(field, STARSTriangleCharacter) && len(field) > 3 && len(field) <= 5 || (len(field) <= 6 && w.STARSFacilityAdaptation.AllowLongScratchpad[0]) { // See if it's specifying the SC1
 
 			if slices.Contains(badScratchpads, field) {
-				fieldMaps[Errors] = ErrSTARSIllegalScratchpad
-				return fieldMaps
+				output.Error = ErrSTARSIllegalScratchpad
+				return output
 			}
 			if isAllNumbers(field[len(field)-3:]) {
-				fieldMaps[Errors] = ErrSTARSIllegalScratchpad
+				output.Error = ErrSTARSIllegalScratchpad
 			}
-			fieldMaps[SC1] = field
+			output.SC1 = field
 		}
 		if strings.HasPrefix(field, "+") && len(field) > 2 && (len(field) <= 4 || (len(field) <= 5 && w.STARSFacilityAdaptation.AllowLongScratchpad[1])) { // See if it's specifying the SC1
 			if slices.Contains(badScratchpads, field) {
-				fieldMaps[Errors] = ErrSTARSIllegalScratchpad
-				return fieldMaps
+				output.Error = ErrSTARSIllegalScratchpad
+				return output
 			}
 			if isAllNumbers(field[len(field)-3:]) {
-				fieldMaps[Errors] = ErrSTARSIllegalScratchpad
+				output.Error = ErrSTARSIllegalScratchpad
 			}
-			fieldMaps[SC2] = field
+			output.SC2 = field
 		}
 		if acFields := strings.Split(field, "/"); len(field) >= 4 { // See if it's specifying the type of flight
 			switch len(acFields) {
 			case 1: // Just the AC Type
 				if _, ok := database.AircraftPerformance[field]; !ok { // AC doesn't exist
-					fieldMaps[Errors] = ErrSTARSIllegalACType
+				output.Error = ErrSTARSIllegalACType
 					continue
 				} else {
-					fieldMaps[AircraftType] = field
+					output.AircraftType = field
 					continue
 				}
 			case 2: // Either a formation number with the ac type or a ac type with a equipment suffix
 				if all := isAllNumbers(acFields[0]); all { // Formation number
 					if !unicode.IsLetter(rune(acFields[1][0])) {
-						fieldMaps[Errors] = ErrSTARSCommandFormat
-						return fieldMaps
+						output.Error = ErrSTARSCommandFormat
+						return output
 					}
 					if _, ok := database.AircraftPerformance[acFields[1]]; !ok { // AC doesn't exist
-						fieldMaps[Errors] = ErrSTARSIllegalACType // This error is informational. Shouldn't end the entire function. Just this switch statement
+					output.Error = ErrSTARSIllegalACType // This error is informational. Shouldn't end the entire function. Just this switch statement
 						continue
 					}
-					fieldMaps[AircraftType] = field
+					output.AircraftType = field
 				} else { // AC Type with equipment suffix
 					if len(acFields[1]) > 1 || !isAllLetters(acFields[1]) {
-						fieldMaps[Errors] = ErrSTARSCommandFormat
-						return fieldMaps
+						output.Error = ErrSTARSCommandFormat
+						return output
 					}
 					if _, ok := database.AircraftPerformance[acFields[0]]; !ok { // AC doesn't exist
-						fieldMaps[Errors] = ErrSTARSIllegalACType
+					output.Error = ErrSTARSIllegalACType
 						continue
 					}
-					fieldMaps[AircraftType] = field
+					output.AircraftType = field
 				}
 			case 3:
 				if len(acFields[2]) > 1 || !isAllLetters(acFields[2]) {
-					fieldMaps[Errors] = ErrSTARSCommandFormat
-					return fieldMaps
+					output.Error = ErrSTARSCommandFormat
+					return output
 				}
 				if !unicode.IsLetter(rune(acFields[1][0])) {
-					fieldMaps[Errors] = ErrSTARSCommandFormat
-					return fieldMaps
+					output.Error = ErrSTARSCommandFormat
+					return output
 				}
 				if _, ok := database.AircraftPerformance[acFields[1]]; !ok { // AC doesn't exist
-					fieldMaps[Errors] = ErrSTARSIllegalACType
+				output.Error = ErrSTARSIllegalACType
 					break
 				}
-				fieldMaps[AircraftType] = field
+				output.AircraftType = field
 			}
 			continue
 		}
 		if len(field) == 3 && isAllNumbers(field) {
-			fieldMaps[RequestedALT] = field
+			output.RequestedALT = field
 			continue
 		}
 		if len(field) == 2 {
 			if field[0] != '.' {
-				fieldMaps[Errors] = ErrSTARSCommandFormat
-				return fieldMaps
+				output.Error = ErrSTARSCommandFormat
+				return output
 			}
 			switch field[1] {
 			case 'V':
-				fieldMaps[Rules] = VFR
+				output.Rules = VFR
 				break // This is the last entry, so we can break here
 			case 'P':
-				fieldMaps[Rules] = VFR // vfr on top
+				output.Rules = VFR // vfr on top
 				break
 			case 'E':
-				fieldMaps[Rules] = IFR // enroute
+				output.Rules = IFR // enroute
 				break
 			default:
-				fieldMaps[Errors] = ErrSTARSIllegalValue
-				return fieldMaps
+				output.Error = ErrSTARSIllegalValue
+				return output
 			}
 		}
 
 	}
-	return fieldMaps
+	return output
 }
 
 // For debugging purposes

@@ -2283,45 +2283,29 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 
 						} else { // Abbreviated FP
 							info := ctx.world.parseAbbreviatedFPFields(fields)
-							if err, ok := info[Errors].(error); ok && err != nil && err != ErrSTARSIllegalACType {
+							if err := info.Error; err != nil && err != ErrSTARSIllegalACType {
 								status.err = err
 							} else {
-								if ok && err != nil { // These are informational errors, so the function would still work
+								if err != nil { // These are informational errors, so the function would still work
 									status.err = err
 								}
-								rules, ok := info[Rules].(FlightRules)
-								if !ok || rules == UNKNOWN {
+								rules := info.Rules
+								if rules == UNKNOWN {
 									rules = VFR
 								}
-								alt, ok := info[RequestedALT].(string)
-								if !ok || alt == "" {
+								alt := info.RequestedALT
+								if alt == "" {
 									alt = "VFR"
 								}
-								sq, ok := info[BCN].(Squawk)
-								if !ok || sq == 0 {
+								sq := info.BCN
+								if sq == 0 {
 									sq = stars.CreateSquawk(ctx.world.STARSFacilityAdaptation.BeaconBank)
 								}
-								acType, ok := info[AircraftType].(string)
-								if !ok {
-									acType = ""
-								}
-								dep, ok := info[DepartureAirport].(string)
-								if !ok {
-									dep = ""
-								}
-
-								sc1, ok := info[SC1].(string)
-								if !ok {
-									sc1 = ""
-								}
-								sc2, ok := info[SC2].(string)
-								if !ok {
-									sc2 = ""
-								}
-								initial, ok := info[ControllingPosition].(string)
-								if !ok {
-									initial = ""
-								}
+								acType := info.AircraftType
+								dep := info.DepartureAirport
+								sc1 := info.SC1
+								sc2 := info.SC2
+								initial := info.ControllingPosition
 								fp := &STARSFlightPlan{}
 
 								*fp, err = deep.Copy(STARSFlightPlan{ // TODO: Do single char ap parsing
@@ -2340,7 +2324,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 								if err == nil {
 									ctx.world.UploadFlightPlan(fp, LocalNonEnroute, nil, nil)
 									status.clear = true
-									status.output = fmt.Sprintf("%v%v%v %o\nNO ROUTE %v", fp.Callsign, Select(fp.AircraftType != "", " ", ""),
+									status.output = fmt.Sprintf("%v%v%v %04o\nNO ROUTE %v", fp.Callsign, Select(fp.AircraftType != "", " ", ""),
 										fp.AircraftType, fp.AssignedSquawk, Select(fp.Altitude != "VFR", fp.Altitude, ""))
 								} else {
 									panic(err)

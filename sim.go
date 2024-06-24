@@ -1675,18 +1675,45 @@ func (s *Sim) updateState() {
 			}
 
 			// Cull far-away departures/arrivals. TODO: Delete these fps
+
+			deleteFromAll := func() {
+				for _, eram := range s.World.ERAMComputers {
+					for sq, info := range eram.TrackInformation {
+						fp := info.FlightPlan
+						if fp != nil && fp.Callsign == ac.Callsign {
+							delete(eram.TrackInformation, sq)
+						} else if fp != nil && fp.AssignedSquawk == ac.Squawk {
+							delete(eram.TrackInformation, sq)
+						}
+					}
+					for _, stars := range eram.STARSComputers {
+						for sq, info := range stars.TrackInformation {
+							fp := info.FlightPlan
+							if fp != nil && fp.Callsign == ac.Callsign {
+								delete(stars.TrackInformation, sq)
+							} else if fp != nil && fp.AssignedSquawk == ac.Squawk {
+								delete(stars.TrackInformation, sq)
+							}
+						}
+					}
+				}
+			}
+
 			if ac.IsDeparture() {
 				if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil &&
 					nmdistance2ll(ac.Position(), ap.Location) > 250 {
 					s.lg.Info("culled far-away departure", slog.String("callsign", callsign))
+					deleteFromAll()
 					delete(s.World.Aircraft, callsign)
 				}
+				
 			} else if ap := s.World.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil &&
 				nmdistance2ll(ac.Position(), ap.Location) > 250 {
 				// We only expect this case to hit for an unattended vice,
 				// where aircraft are being spawned but are then flying
 				// along on a heading without being controlled...
 				s.lg.Info("culled far-away arrival", slog.String("callsign", callsign))
+				deleteFromAll()
 				delete(s.World.Aircraft, callsign)
 			}
 		}
@@ -2274,6 +2301,7 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 			}
 			// fmt.Println(ac.Callsign, stars.TrackInformation[ac.Callsign])
 			delete(stars.ContainedPlans, fp.AssignedSquawk)
+			delete(stars.AvailibleSquawks, int(fp.AssignedSquawk))
 
 			return nil
 		})
@@ -2286,9 +2314,16 @@ func (s *Sim) DropTrack(token, callsign string) error {
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			w := s.World
-			_, stars := w.SafeFacility("")
-			delete(stars.TrackInformation, ac.Callsign)
+			artcc, stars := w.SafeFacility("")
+			
 			delete(stars.ContainedPlans, ac.Squawk)
+			stars.AvailibleSquawks[int(stars.TrackInformation[ac.Callsign].FlightPlan.AssignedSquawk)] = nil
+			delete(stars.TrackInformation, ac.Callsign)
+
+			if artcc.TrackInformation[ac.Callsign] != nil {
+				delete(artcc.FlightPlans, artcc.TrackInformation[ac.Callsign].FlightPlan.AssignedSquawk)
+			}
+			delete(artcc.TrackInformation, ac.Callsign)
 
 			ac.ControllingController = ""
 			s.eventStream.Post(Event{
