@@ -577,7 +577,7 @@
         "initial_controller": "CLE_66_CTR",
         "initial_speed": 300,
         "route": "/. BENEE",
-        "waypoints": "BENEE_HO/ho BENEE"
+        "waypoints": "N042.20.14.634,W077.59.26.574 BENEE_HO/ho BENEE"
       }
     ],
     "BUF VOR": [
@@ -600,7 +600,7 @@
         "initial_controller": "CLE_66_CTR",
         "initial_speed": 270,
         "route": "/. BUF",
-        "waypoints": "BUF_HO/ho BUF"
+        "waypoints": "N042.10.02.325,W078.16.33.411 BUF_HO/ho BUF"
       }
     ],
     "DKK VOR (West)": [
@@ -629,7 +629,7 @@
         "initial_controller": "CLE_66_CTR",
         "initial_speed": 290,
         "route": "/. DKK",
-        "waypoints": "DKK_W_HO/ho DKK"
+        "waypoints": "N042.32.12.604,W079.49.13.646 DKK_W_HO/ho DKK"
       }
     ],
       "EHMAN": [
@@ -648,7 +648,7 @@
         "initial_controller": "CLE_66_CTR",
         "initial_speed": 270,
         "route": "/. EHMAN",
-        "waypoints": "ROC/ho EHMAN"
+        "waypoints": "ROC N043.07.44.529,W077.58.28.456/ho EHMAN"
       }
     ],
     "DKK VOR (South/East)": [
@@ -689,7 +689,7 @@
         "initial_controller": "CLE_66_CTR",
         "initial_speed": 290,
         "route": "/. DKK",
-        "waypoints": "DKK_SE_HO/ho DKK BUF"
+        "waypoints": "N042.12.57.323,W079.39.47.878 DKK_SE_HO/ho DKK BUF"
       }
     ],
     "JHW VOR": [
@@ -725,7 +725,7 @@
         "initial_controller": "CLE_66_CTR",
         "initial_speed": 300,
         "route": "/. JHW",
-        "waypoints": "JHW_HO/ho JHW"
+        "waypoints": "N041.51.43.953,W079.10.13.394 JHW_HO/ho JHW"
       }
     ],
     "JHW GA": [
@@ -745,7 +745,7 @@
         "initial_controller": "CLE_66_CTR",
         "initial_speed": 140,
         "route": "/. JHW",
-        "waypoints": "JHW_HO/ho JHW"
+        "waypoints": "N041.51.43.953,W079.10.13.394 JHW_HO/ho JHW"
       }
     ],
     "WOZEE": [
@@ -765,7 +765,7 @@
         "initial_controller": "TOR_CTR",
         "initial_speed": 250,
         "route": "/. WOZEE",
-        "waypoints": "WOZEE_HO/ho WOZEE"
+        "waypoints": "N043.33.31.116,W079.02.57.319 WOZEE_HO/ho WOZEE"
       }
     ],
   "AIRCO GA": [
@@ -785,7 +785,7 @@
       "initial_controller": "CLE_66_CTR",
       "initial_speed": 140,
       "route": "/. AIRCO",
-      "waypoints": "AIRCO_HO/ho AIRCO"
+      "waypoints": "N043.04.03.113,W077.52.15.910 AIRCO_HO/ho AIRCO"
     }
   ]
 },
@@ -1045,6 +1045,57 @@
     true,
     true
     ],
+    "coordination_fixes": {
+      "BENEE": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "BUF": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "DKK": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "EHMAN": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "JHW": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "WOZEE": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "ARICO": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ]
+    },
     "stars_maps": [
         "BUF-019 (23 GPS)", "BUF-020 (32 GPS)", "BUF-018 (14 GPS)", "BUF-017 (5 GPS)", "BUF-016 (SUA)", "BUF-015 (IAG TACAN 28R)",
         "BUF-014 (IAG RNAV 28)", "BUF-013 (BUF FAC)", "BUF-012 (ERIE MVA)", "BUF-011 (ERIE TRSA)", "BUF-010 (CLASS D)",

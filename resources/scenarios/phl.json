@@ -4903,7 +4903,7 @@
         "speed_restriction": 220,
         "star": "BOJID4",
         "scratchpad": "17Z",
-        "waypoints": "N040.05.01.382,W075.44.56.319 N040.04.20.458,W075.35.49.255/ho/h110"
+        "waypoints": "N040.05.01.382,W075.44.56.319 SPERY/ho N040.04.20.458,W075.35.49.255/h110"
       }
     ],
     "JIIMS4": [
@@ -5304,6 +5304,71 @@
   },
   "stars_config": {
   "center": "KPHL",
+  "coordination_fixes": {
+    "OOD": [
+      {
+        "type": "route",
+        "to": "ZDC",
+        "from": "ZNY"
+      }
+    ],
+    "DQO": [
+      {
+        "type": "route",
+        "to": "ZDC",
+        "from": "ZNY"
+      }
+    ],
+    "BOJID": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ],
+  "HIFAL": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ],
+  "CHPMN": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ],
+  "SPERY": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ],
+  "JIIMS": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ],
+  "PAATS": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ],
+  "SPUDS": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ]
+  },
   "radar_sites": {
     "NXX": {
       "char": "N",

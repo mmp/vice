@@ -928,6 +928,36 @@
   },
   "stars_config": {
   "center": "KSAV",
+  "coordination_fixes": {
+    "VIYAP": [
+         {
+          "type": "route",
+          "to": "SAV",
+          "from": "ZJX"
+          } 
+      ],
+      "PLZZZ": [
+          {
+              "type": "route",
+              "to": "SAV",
+              "from": "ZJX"
+          }
+      ],
+      "LOTTS": [
+          {
+              "type": "route",
+              "to": "SAV",
+              "from": "ZJX"
+          }
+      ],
+      "SOOOP": [
+          {
+              "type": "route",
+              "to": "SAV",
+              "from": "ZJX"
+          }
+      ]
+  },
   "radar_sites": {
     "SAV": {
       "char": "S",

@@ -1321,7 +1321,7 @@
             "35R": "DAWKS TERNE/a8000+ ADWOW/a7000+/s220 QWAKE/a6000/s210 NICOM/flyover/h176"
           }
         },
-        "waypoints": "SCUFF/ho CAMET/a10000-15000/s250 DAWKS"
+        "waypoints": "SCUFF N035.39.03.356,W098.21.37.375/ho CAMET/a10000-15000/s250 DAWKS"
       }
     ],
     "GHOST3": [
@@ -1369,7 +1369,7 @@
             "35R": "CCASH ODOUR/a6000+ LEVEE/a4000/s210"
           }
         },
-        "waypoints": "BROMA/a13000+/s280/ho GHOST/a10000-15000/s250 CCASH"
+        "waypoints": "BROMA/a13000+/s280 N035.15.18.690,W098.29.03.942/ho GHOST/a10000-15000/s250 CCASH"
       }
     ],
     "MURAH3": [
@@ -1429,7 +1429,7 @@
             "35R": "JASKA/a9000+/s250 BOSHY/a9000+ HEDIK/a8000+ MOVIE/a7000+/s220 IMAGE/a6000/s210 HALTO/flyover/h176"
           }
         },
-        "waypoints": "FEDRL/a22000-/s280/ho MURAH/a11000-17000/s280 JASKA/a9000+/s250"
+        "waypoints": "FEDRL/a22000-/s280 MURAH/a11000-17000/s280/ho JASKA/a9000+/s250"
       }
     ],
     "TSDEL3": [
@@ -1489,7 +1489,7 @@
             "35R": "WAYMN YUKKY/a9000- CROPE/a4000+/s210"
           }
         },
-        "waypoints": "FIGET/a11000-17000/s280/ho TSDEL/a10000-15000/s250 WAYMN"
+        "waypoints": "FIGET/a11000-17000/s280 TSDEL/a10000-15000/s250/ho WAYMN"
       }
     ],
     "YUCKS3": [
@@ -1549,7 +1549,7 @@
             "35R": "BASTS SPAMS/a5000+ CROPE/a4000+/s210"
           }
         },
-        "waypoints": "FOYER/ho YUCKS SAGIE/a8000+ BASTS"
+        "waypoints": "FOYER N034.40.41.986,W098.09.56.392/ho YUCKS SAGIE/a8000+ BASTS"
       }
     ]
   },
@@ -1739,6 +1739,43 @@
     }
   },
   "stars_config": {
+    "coordination_fixes": {
+      "CAMET": [
+        {
+            "type": "route",
+            "to": "OKC",
+            "from": "ZFW"
+        }
+    ],
+    "GHOST": [
+        {
+            "type": "route",
+            "to": "OKC",
+            "from": "ZFW"
+        }
+    ],
+    "MURAH": [
+        {
+            "type": "route",
+            "to": "OKC",
+            "from": "ZFW"
+        }
+    ],
+    "TSDEL": [
+        {
+            "type" : "route",
+            "to": "OKC",
+            "from": "ZFW"
+        }
+    ],
+    "YUCKS": [
+        {
+            "type" : "route",
+            "to": "OKC",
+            "from": "ZFW"
+        }
+    ]
+    },
     "center": "KOKC",
     "airspace_awareness": [
       {
