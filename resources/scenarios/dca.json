@@ -763,15 +763,15 @@
       "star": "DEALE3",
       "runway_waypoints": {
         "KDCA": {
-            "1":  "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
-            "4":  "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
-            "15": "DEALE/a10000/s280/ho EDDGY THANE MEGGS",
-            "19": "DEALE/a10000/s280/ho EDDGY THANE MEGGS",
-            "22": "DEALE/a10000/s280/ho EDDGY THANE MEGGS",
-            "33": "DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187"
+            "1":  "DEALE/a10000/s280 YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
+            "4":  "DEALE/a10000/s280 YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187",
+            "15": "DEALE/a10000/s280 EDDGY THANE MEGGS",
+            "19": "DEALE/a10000/s280 EDDGY THANE MEGGS",
+            "22": "DEALE/a10000/s280 EDDGY THANE MEGGS",
+            "33": "DEALE/a10000/s280 YUCKK/a10000 TIRZA/a8000 HITEK/a7000 MITEY/h187"
         }
       },
-      "waypoints": "BILIT/a11000 DEALE/a10000/s280/ho"
+      "waypoints": "LAFLN BILIT/a11000/ho DEALE/a10000/s280"
     }
   ],
   "FRDMM5": [
@@ -1763,6 +1763,71 @@
 },
 "stars_config": {
 "center": "KDCA",
+"coordination_fixes": {
+  "CAPSS": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "CLIPR": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "DEALE": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "WEWIL": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "TRUPS": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "VCTRY": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "HOYAS": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "SMOOT": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "JAYOH": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ]
+},
   "inhibit_ca_volumes": [
     {
       "name": "DCA NO CA",

@@ -1849,6 +1849,36 @@
   },
   "stars_config": {
   "center": "KAAC",
+  "coordination_fixes": {
+    "ATOKA": [
+      {
+          "type": "route",
+          "to": "AAC",
+          "from": "ZFW"
+      }
+  ],
+  "BARTS": [
+      {
+          "type": "route",
+          "to":"AAC",
+          "from": "ZFW"
+      }
+  ],
+  "KILLR": [
+      {
+          "type": "route",
+          "to": "AAC",
+          "from": "ZFW"
+      }
+  ],
+  "REELI": [
+      {
+          "type": "route",
+          "to": "AAC",
+          "from": "ZFW"
+      }
+  ]
+  },
   "inhibit_ca_volumes": [
     {
       "name": "KAAC NO CA",

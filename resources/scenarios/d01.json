@@ -2026,7 +2026,7 @@
             }
           },
           "speed_restriction": 250,
-          "waypoints": "BIDDR/ho AALLE/a19000 HEDDD/a18000"
+          "waypoints": "BIDDR N040.35.42.965,W103.20.21.020/ho AALLE/a19000 HEDDD/a18000"
         }
       ],
       "CLASH4": [
@@ -2136,7 +2136,7 @@
             }
           },
           "speed_restriction": 250,
-          "waypoints": "LYNKN/ho CLASH/a19000 EVRLY/a18000"
+          "waypoints": "LYNKN N039.09.54.291,W103.26.29.144/ho CLASH/a19000 EVRLY/a18000"
         }
       ],
       "FLATI3": [
@@ -2224,7 +2224,7 @@
             }
           },
           "speed_restriction": 250,
-          "waypoints": "BBOCO/ho FLATI/a21000 ELLDO/a18000/s250"
+          "waypoints": "BBOCO N040.37.00.295,W105.36.42.429/ho FLATI/a21000 ELLDO/a18000/s250"
         }
       ],
       "LAWGR3": [
@@ -2342,7 +2342,7 @@
             }
           },
           "speed_restriction": 250,
-          "waypoints": "PLZNR/ho LAWGR/a21000 PPINT/a18000/s250"
+          "waypoints": "PLZNR N040.19.12.561,W103.12.22.153/ho LAWGR/a21000 PPINT/a18000/s250"
         }
       ],
       "LONGZ2": [
@@ -2412,7 +2412,7 @@
             }
           },
           "speed_restriction": 250,
-          "waypoints": "VESTL/ho LONGZ/a21000 FLNEL/a18000/s250"
+          "waypoints": "N040.27.24.612,W106.03.55.382 VESTL/ho LONGZ/a21000 FLNEL/a18000/s250"
         }
       ],
       "NIIXX3": [
@@ -2496,7 +2496,7 @@
             }
           },
           "speed_restriction": 250,
-          "waypoints": "IDOLL/ho NIIXX/a21000 HAGGR/a18000/s250"
+          "waypoints": "IDOLL N038.52.42.304,W103.34.51.027/ho NIIXX/a21000 HAGGR/a18000/s250"
         }
       ],
       "SSKII3": [
@@ -2586,7 +2586,7 @@
             }
           },
           "speed_restriction": 250,
-          "waypoints": "KTOOO/ho SSKII/a21000 BGDEE/a19000/s250"
+          "waypoints": "KTOOO N039.13.02.968,W105.58.11.976/ho SSKII/a21000 BGDEE/a19000/s250"
         }
       ],
       "TBARR3": [
@@ -2676,7 +2676,7 @@
             }
           },
           "speed_restriction": 250,
-          "waypoints": "LIFTE/ho TBARR/a21000 MNARK/a19000/s250"
+          "waypoints": "LIFTE N038.56.53.630,W105.46.54.340/ho TBARR/a21000 MNARK/a19000/s250"
         }
       ],
       "RAMMS8": [
@@ -2747,7 +2747,7 @@
           "initial_speed": 290,
           "star": "RAMMS8",
           "speed_restriction": 250,
-          "waypoints": "ALPOE/ho AUTIM ELKEE RAMMS/a17000/s250 NIWOT PRONG DVV"
+          "waypoints": "ALPOE AUTIM/ho ELKEE RAMMS/a17000/s250 NIWOT PRONG DVV"
         }
       ],
       "LARKS3": [
@@ -2818,7 +2818,7 @@
           "initial_speed": 290,
           "star": "LARKS3",
           "speed_restriction": 250,
-          "waypoints": "TERRO/ho MURFE LARKS/a17000/s250 PAYDD HUUGE FQF"
+          "waypoints": "TERRO MURFE/ho LARKS/a17000/s250 PAYDD HUUGE FQF"
         }
       ],
       "TOMSN8": [
@@ -2889,7 +2889,7 @@
           "initial_speed": 290,
           "star": "TOMSN8",
           "speed_restriction": 250,
-          "waypoints": "FROGS/ho RIDJE ALLAN TOMSN/a17000/s250 HYGEN SHAFT FQF"
+          "waypoints": "FROGS N040.31.09.625,W105.46.26.270/ho RIDJE ALLAN TOMSN/a17000/s250 HYGEN SHAFT FQF"
         }
       ],
       "LANDR3": [
@@ -2960,7 +2960,7 @@
           "initial_speed": 290,
           "star": "LANDR3",
           "speed_restriction": 250,
-          "waypoints": "FONTO/ho LIBIE LANDR/a17000/s250 YONDR PHLAT DVV"
+          "waypoints": "FONTO LIBIE/ho LANDR/a17000/s250 YONDR PHLAT DVV"
         }
       ],
       "POWDR1": [
@@ -3031,7 +3031,7 @@
           "initial_speed": 290,
           "star": "POWDR1",
           "speed_restriction": 250,
-          "waypoints": "BASEE/ho SKEED COLAS POWDR/a19000/s250 HLLIE SLOPE DVV"
+          "waypoints": "N039.10.24.765,W105.51.53.085 BASEE/ho SKEED COLAS POWDR/a19000/s250 HLLIE SLOPE DVV"
         }
       ],
       "DANDD1": [
@@ -3102,7 +3102,7 @@
           "initial_speed": 290,
           "star": "DANDD1",
           "speed_restriction": 250,
-          "waypoints": "KIPPY/ho CLEVE DANDD/a19000/s250 PEEDE GOAVS DVV"
+          "waypoints": "KIPPY N039.05.40.960,W103.31.49.039/ho CLEVE DANDD/a19000/s250 PEEDE GOAVS DVV"
         }
       ],
       "QUAIL1": [
@@ -3173,7 +3173,7 @@
           "initial_speed": 290,
           "star": "QUAIL1",
           "speed_restriction": 250,
-          "waypoints": "CONAL/ho QUAIL/a17000/s250 JEFEL CELMI FQF"
+          "waypoints": "N039.02.14.019,W103.52.02.122 CONAL/ho QUAIL/a17000/s250 JEFEL CELMI FQF"
         }
       ],
       "BRNKO2": [
@@ -3193,7 +3193,7 @@
           "initial_speed": 290,
           "star": "BRNKO2",
           "speed_restriction": 250,
-          "waypoints": "ELWAY/ho BRNKO/a14000 PICKK/a14000 BLTZZ/a12000/s250 ORRNG BWLIN/a10000 REDZN/a10000 PYDRT/a9000 AAYES/a9000/h150"
+          "waypoints": "ELWAY N040.46.57.018,W103.32.53.474/ho BRNKO/a14000 PICKK/a14000 BLTZZ/a12000/s250 ORRNG BWLIN/a10000 REDZN/a10000 PYDRT/a9000 AAYES/a9000/h150"
         },
         {
           "airlines": {
@@ -3211,7 +3211,7 @@
           "initial_speed": 290,
           "star": "BRNKO2",
           "speed_restriction": 250,
-          "waypoints": "ELWAY/ho BRNKO/a14000 PICKK/a14000 BLTZZ/a12000/s250 ORRNG BWLIN/a10000 REDZN/a10000 PYDRT/a9000"
+          "waypoints": "ELWAY N040.46.57.018,W103.32.53.474/ho BRNKO/a14000 PICKK/a14000 BLTZZ/a12000/s250 ORRNG BWLIN/a10000 REDZN/a10000 PYDRT/a9000"
         }
       ],
       "DUNNN5": [
@@ -3363,7 +3363,7 @@
           "initial_speed": 290,
           "star": "PINNR3",
           "speed_restriction": 250,
-          "waypoints": "CHOTS/a17000/ho FFEST/a14000/s250 PINNR/a12000 TINGE/a10000 WHOAA/a10000 REDZN/a10000 PYDRT/a9000 AAYES/a9000/h150"
+          "waypoints": "N040.52.50.475,W105.42.25.092 CHOTS/a17000/ho FFEST/a14000/s250 PINNR/a12000 TINGE/a10000 WHOAA/a10000 REDZN/a10000 PYDRT/a9000 AAYES/a9000/h150"
         },
         {
           "airlines": {
@@ -3381,7 +3381,7 @@
           "initial_speed": 290,
           "star": "PINNR3",
           "speed_restriction": 250,
-          "waypoints": "CHOTS/a17000/ho FFEST/a14000/s250 PINNR/a12000 TINGE/a10000 WHOAA/a10000 REDZN/a10000 PYDRT/a9000"
+          "waypoints": "N040.52.50.475,W105.42.25.092 CHOTS/a17000/ho FFEST/a14000/s250 PINNR/a12000 TINGE/a10000 WHOAA/a10000 REDZN/a10000 PYDRT/a9000"
         }
       ],
       "ZOMBZ5": [
@@ -3401,7 +3401,7 @@
           "initial_speed": 290,
           "star": "BRNKO2",
           "speed_restriction": 250,
-          "waypoints": "CRWLR/a16000/ho ZOMBZ XBOXX/a13000",
+          "waypoints": "N038.55.39.514,W105.28.12.883 CRWLR/a16000/ho ZOMBZ XBOXX/a13000",
           "runway_waypoints": {
             "KAPA": {
                 "35R": "XBOXX/a13000 XJOIN/a12000 XPATH/a11000/s240 XBEEE/a9000/s240",
@@ -6139,6 +6139,141 @@
       }
     },
     "stars_config": {
+      "coordination_fixes": {
+            "AALLE": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "CLASH": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "FLATI": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "PPINT": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "FLNEL": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "HAGGR": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "BGDEE": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "MNARK": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "ELKEE": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "LARKS": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "ALLAN": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "LANDR": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "POWDR": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "DANDD": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "QUAIL": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "PICKK": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "IMAGN": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "FFEST": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "ZOMBZ": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ]
+        },
     "stars_maps": [
         "D01 AR BASE", "D01 DR BASE", "D01 MVA",
         "D01 EOVM", "D01 AIRWAYS", "D01 VFR",

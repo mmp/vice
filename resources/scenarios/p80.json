@@ -484,7 +484,7 @@
         "initial_controller": "SEA_16_CTR",
         "initial_speed": 300,
         "route": "/. HHOOD",
-        "waypoints": "SODDA/a17000+ DUFUR RABBI/s270/a13000+ HHOOD/ho/s250/a9000-15000 SHAFR/s210/a6700/h259"
+        "waypoints": "SODDA/a17000+ DUFUR/ho RABBI/s270/a13000+ HHOOD/s250/a9000-15000 SHAFR/s210/a6700/h259"
       }
     ],
     "HHOOD4East": [
@@ -553,7 +553,7 @@
         "initial_controller": "SEA_16_CTR",
         "initial_speed": 300,
         "route": "/. HHOOD",
-        "waypoints": "SODDA/ho/a17000+ DUFUR RABBI/s270/a13000+ HHOOD/s250/a9000-15000 BLRUN SSDEE/a9000-11000 THEID/a8000-10000 EMZEY/s230/a7000 CIZZL/s210/a5000+ YORKY/a5000 NNUTT/h278"
+        "waypoints": "SODDA/a17000+ DUFUR/ho RABBI/s270/a13000+ HHOOD/s250/a9000-15000 BLRUN SSDEE/a9000-11000 THEID/a8000-10000 EMZEY/s230/a7000 CIZZL/s210/a5000+ YORKY/a5000 NNUTT/h278"
       }
     ],
     "KRATR2West": [
@@ -1015,7 +1015,7 @@
         "initial_controller": "SEA_42_CTR",
         "initial_speed": 300,
         "route": "/. TMBRS",
-        "waypoints": "TMBRS/ho/s270/a11000+ VANTZ/s250/a11000-15000 FLOWR/a7000-9000 WIDMR/s210/a5000 ROAGE ICEAX/h103"
+        "waypoints": "TMBRS/s270/a11000+ VANTZ/s250/a11000-15000/ho FLOWR/a7000-9000 WIDMR/s210/a5000 ROAGE ICEAX/h103"
       }
     ],
     "TMBERS2East": [
@@ -1378,7 +1378,7 @@
         "initial_controller": "SEA_42_CTR",
         "initial_speed": 300,
         "route": "/. TMBRS",
-        "waypoints": "TMBRS/ho/s270/a11000+ VANTZ/s250/a11000-15000 FLOWR/a7000-9000 FFULL/a7000-9000 SSAIL/a6000-8000 MYCRO/s210/a5000 BBREW PUBBB/h305"
+        "waypoints": "TMBRS/s270/a11000+ VANTZ/s250/a11000-15000/ho FLOWR/a7000-9000 FFULL/a7000-9000 SSAIL/a6000-8000 MYCRO/s210/a5000 BBREW PUBBB/h305"
       }
     ],
     "OCITY3West": [
@@ -2556,13 +2556,13 @@
         "assigned_altitude": 5000,
         "cruise_altitude": 34000,
         "expect_approach": "I0L",
-        "initial_altitude": 5000,
+        "initial_altitude": 7000,
         "initial_controller": "PDX_APP",
         "initial_speed": 250,
         "speed_restriction": 210,
         "star": "HHOOD4",
         "scratchpad": "I0L",
-        "waypoints": "CIZZL/ho/s210/a5000+ YORKY/a5000 NNUTT/h278"
+        "waypoints": "EMZEY/a7000-8000/s230 CIZZL/s210/a5000+/ho YORKY/a5000 NNUTT/h278"
       }
     ],
     "KRATR2East_Final":[
@@ -2644,13 +2644,13 @@
         "assigned_altitude": 5000,
         "cruise_altitude": 34000,
         "expect_approach": "I0L",
-        "initial_altitude": 5000,
+        "initial_altitude": 7000,
         "initial_controller": "PDX_APP",
         "initial_speed": 250,
         "speed_restriction": 210,
         "star": "KRATR2",
         "scratchpad": "I0L",
-        "waypoints": "VOODU/ho/s210/a5000 DOUHH NNUTT/h278"
+        "waypoints": "HYKER/a7000-9000 VOODU/ho/s210/a5000 DOUHH NNUTT/h278"
       }
     ],
     "KRATR2West_Final":[
@@ -3671,6 +3671,64 @@
   },
   "stars_config": {
     "center": "KPDX",
+    "coordination_fixes": {
+      "HHOOD": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "KRATR": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "VANTZ": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "YORKY": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "VOODU": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "SSSUN": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "FLOWR": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "MYCRO": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ]
+  },
       "airspace_awareness": [
           {
               "fixes": ["ALL"],

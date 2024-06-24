@@ -4294,6 +4294,71 @@
     }
   },
   "stars_config": {
+    "coordination_fixes": {
+      "HULKY": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "CUUDA": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "OLAHS": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "BANTY": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "WOOSA": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "YACKO": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "FROGZ": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "SNDBR": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "VIICE": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ]
+    },
   "center": "KMIA",
   "radar_sites": {
     "MIA": {

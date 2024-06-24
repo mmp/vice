@@ -521,6 +521,15 @@
     }
   },
   "stars_config": {
+    "coordination_fixes": {
+      "CYS": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ]
+    },
   "center": "KCYS",
   "inhibit_ca_volumes": [
     {

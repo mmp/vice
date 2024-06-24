@@ -4940,7 +4940,7 @@
             }
           ]
         },
-        "initial_altitude": 17000,
+        "initial_altitude": 21000,
         "initial_controller": "BOS_36_CTR",
         "initial_speed": 290,
         "star": "JFUND2",
@@ -4955,7 +4955,7 @@
           }
         },
         "speed_restriction": 270,
-        "waypoints": "DUBLE/a17000/ho BASEZ JFUND"
+        "waypoints": "SEETS/a21000+/s280 DUBLE/a17000/ho BASEZ JFUND"
       }
     ],
     "WOONS.7K": [
@@ -4992,7 +4992,7 @@
         "initial_controller": "PVD_APP",
         "initial_speed": 210,
         "route": "FOSTY WOONS KBOS",
-        "waypoints": "FOSTY/ho WOONS/h056"
+        "waypoints": "N041.47.51.510,W071.42.37.424 FOSTY/ho WOONS/h056"
       }
     ],
     "WOONS.3K": [
@@ -5107,7 +5107,7 @@
         "initial_controller": "PVD_APP",
         "initial_speed": 250,
         "route": "FOSTY WOONS",
-        "waypoints": "FOSTY/ho WOONS/flyover"
+        "waypoints": "N041.47.51.510,W071.42.37.424 FOSTY/ho WOONS/flyover"
       }
     ],
     "WOONS.5K": [
@@ -5144,7 +5144,7 @@
         "initial_controller": "PVD_APP",
         "initial_speed": 250,
         "route": "FOSTY WOONS KBOS",
-        "waypoints": "FOSTY/ho WOONS/h056"
+        "waypoints": "N041.47.51.510,W071.42.37.424 FOSTY/ho WOONS/h056"
       }
     ],
     "GDM.7K": [
@@ -5209,7 +5209,7 @@
         "initial_controller": "BOS_36_CTR",
         "initial_speed": 230,
         "route": "GDM T608 REVER",
-        "waypoints": "GDM/ho LOBBY/a7000 REVER/flyover"
+        "waypoints": "N042.33.50.218,W072.08.59.236 GDM/ho LOBBY/a7000 REVER/flyover"
       }
     ],
     "GDM.9K": [
@@ -5278,7 +5278,7 @@
         "initial_controller": "BOS_36_CTR",
         "initial_speed": 250,
         "route": "GDM T608 REVER",
-        "waypoints": "GDM/ho LOBBY/a9000 REVER/flyover"
+        "waypoints": "N042.33.50.218,W072.08.59.236 GDM/ho LOBBY/a9000 REVER/flyover"
       }
     ],
     "FREDO.4K": [
@@ -5340,7 +5340,7 @@
         "initial_controller": "ACK_N_APP",
         "initial_speed": 250,
         "route": "ACK FREDO KBOS",
-        "waypoints": "ACK/ho FREDO/flyover"
+        "waypoints": "ACK N041.37.29.519,W070.19.53.417/ho FREDO/flyover"
       }
     ],
     "FREDO.6K": [
@@ -5405,7 +5405,7 @@
         "initial_controller": "ACK_N_APP",
         "initial_speed": 230,
         "route": "ACK FREDO KBOS",
-        "waypoints": "ACK/ho FREDO/flyover"
+        "waypoints": "ACK N041.37.29.519,W070.19.53.417/ho FREDO/flyover"
       }
     ],
     "FREDO.8K": [
@@ -5470,7 +5470,7 @@
         "initial_controller": "ACK_N_APP",
         "initial_speed": 210,
         "route": "ACK FREDO KBOS",
-        "waypoints": "ACK/ho FREDO/h339"
+        "waypoints": "ACK N041.37.29.519,W070.19.53.417/ho FREDO/h339"
       }
     ],
     "PSM..LWRNC.SAT": [
@@ -5521,7 +5521,7 @@
         "initial_controller": "MHT_E_APP",
         "initial_speed": 230,
         "route": "PSM LWRNC",
-        "waypoints": "PSM/ho LWRNC/flyover"
+        "waypoints": "PSM N043.01.32.463,W070.52.39.146/ho LWRNC/flyover"
       }
     ],
     "MANCH..LWRNC.SAT": [
@@ -5572,7 +5572,7 @@
         "initial_controller": "MHT_Z_APP",
         "initial_speed": 230,
         "route": "MANCH LWRNC",
-        "waypoints": "MANCH/ho LWRNC/flyover"
+        "waypoints": "MANCH N042.51.03.798,W071.19.42.348/ho LWRNC/flyover"
       }
     ],
     "PSM..LWRNC": [
@@ -5593,7 +5593,7 @@
         "initial_controller": "MHT_E_APP",
         "initial_speed": 230,
         "route": "PSM LWRNC KBOS",
-        "waypoints": "PSM/ho LWRNC/h182"
+        "waypoints": "PSM N043.01.32.463,W070.52.39.146/ho LWRNC/h182"
       }
     ],
     "MANCH..LWRNC": [
@@ -5614,7 +5614,7 @@
         "initial_controller": "MHT_Z_APP",
         "initial_speed": 230,
         "route": "MANCH LWRNC KBOS",
-        "waypoints": "MANCH/ho LWRNC/h182"
+        "waypoints": "MANCH N042.51.03.798,W071.19.42.348/ho LWRNC/h182"
       }
     ],
     "NORTH_4FINAL": [
@@ -5802,7 +5802,7 @@
         "speed_restriction": 220,
         "star": "JFUND2",
         "scratchpad": "I4R",
-        "waypoints": "N42.23.29.343,W70.59.16.890/ho GRIFI GGABE/a6000/s220 JOBEE/a6000/s210/h213"
+        "waypoints": "N42.23.29.343,W70.59.16.890 GRIFI/ho GGABE/a6000/s220 JOBEE/a6000/s210/h213"
       }
     ],
     "OOSHN5": [
@@ -5935,7 +5935,7 @@
           }
         },
         "speed_restriction": 250,
-        "waypoints": "EURRO/a10000+/ho OOSHN/a9000-14000/s250"
+        "waypoints": "NIKKO/a11000+ EURRO/a10000+/ho OOSHN/a9000-14000/s250"
       }
     ],
     "ZELKA2": [
@@ -5982,7 +5982,7 @@
             "initial_controller": "BOS_36_CTR",
             "star": "ZELKA2",
              "scratchpad": "RBED",
-            "waypoints": "HAUKS/a14000+/ho WORIA/a11000-13000 BCATS/a8000-9000 GOLEE/a6000 ZELKA RIKAH/a6000/s210 EXXRO/a6000/s210/h097"
+            "waypoints": "HAUKS/a14000+ WORIA/a11000-13000/ho BCATS/a8000-9000 GOLEE/a6000 ZELKA RIKAH/a6000/s210 EXXRO/a6000/s210/h097"
         }
     ],
     "ZELKA2.LWM": [
@@ -6029,7 +6029,7 @@
           "initial_controller": "BOS_36_CTR",
           "star": "ZELKA2",
            "scratchpad": "RLWM",
-          "waypoints": "HAUKS/a14000+/ho WORIA/a11000-13000 BCATS/a8000-9000 GOLEE/a6000 ZELKA RIKAH/a6000/s210 EXXRO/a6000/s210/h097"
+          "waypoints": "HAUKS/a14000+ WORIA/a11000-13000/ho BCATS/a8000-9000 GOLEE/a6000 ZELKA RIKAH/a6000/s210 EXXRO/a6000/s210/h097"
       }
   ],
   "ZELKA2.BVY": [
@@ -6076,7 +6076,7 @@
         "initial_controller": "BOS_36_CTR",
         "star": "ZELKA2",
          "scratchpad": "RBVY",
-        "waypoints": "HAUKS/a14000+/ho WORIA/a11000-13000 BCATS/a8000-9000 GOLEE/a6000 ZELKA RIKAH/a6000/s210 EXXRO/a6000/s210/h097"
+        "waypoints": "HAUKS/a14000+ WORIA/a11000-13000/ho BCATS/a8000-9000 GOLEE/a6000 ZELKA RIKAH/a6000/s210 EXXRO/a6000/s210/h097"
     }
 ],
 "ZELKA2.BED": [
@@ -6123,7 +6123,7 @@
         "initial_controller": "BOS_36_CTR",
         "star": "ZELKA2",
          "scratchpad": "RBED",
-        "waypoints": "HAUKS/a14000+/ho WORIA/a11000-13000 BCATS/a8000-9000 GOLEE/a6000 ZELKA RIKAH/a6000/s210 EXXRO/a6000/s210/h097"
+        "waypoints": "HAUKS/a14000+ WORIA/a11000-13000/ho BCATS/a8000-9000 GOLEE/a6000 ZELKA RIKAH/a6000/s210 EXXRO/a6000/s210/h097"
     }
 ],
     "DREEM2.BED": [
@@ -6359,7 +6359,7 @@
             }
           ]
         },
-        "initial_altitude": 16000,
+        "initial_altitude": 17000,
         "initial_controller": "BOS_34_CTR",
         "initial_speed": 290,
         "star": "ROBUC3",
@@ -6374,7 +6374,7 @@
           }
         },
         "speed_restriction": 260,
-        "waypoints": "BANKI/a16000+/ho ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY"
+        "waypoints": "AWLIN/a17000+ BANKI/a16000+/ho ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY"
       }
     ],
     "ROBUC3_4FINAL": [
@@ -6464,13 +6464,13 @@
         },
         "cruise_altitude": 35000,
         "expect_approach": "I4R",
-        "initial_altitude": 8000,
+        "initial_altitude": 9000,
         "initial_controller": "BOS_S_APP",
         "initial_speed": 230,
         "speed_restriction": 220,
         "star": "ROBUC3",
         "scratchpad": "I4R",
-        "waypoints": "ERNEI/a7000/ho GOSHI/a6000/s210/h035"
+        "waypoints": "SOFEE/a9000-10000/s220 ERNEI/a7000/ho GOSHI/a6000/s210/h035"
       }
     ]
   },
@@ -7896,6 +7896,127 @@
    },
   "stars_config": {
     "center": "KBOS",
+    "coordination_fixes": {
+      "GGABE": [
+        {
+            "type": "route",
+            "to": "A90",
+            "from": "ZBW"
+        }
+    ],
+    "GOSHI": [
+        {
+            "type": "route",
+            "to": "A90",
+            "from": "ZBW"
+        }
+    ],
+    "ROZZE": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "LFV": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "MINNK": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "NEWBE": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "ENE": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "CAMTN": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "GDM": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "JFUND": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "WOONS": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "PVD"
+      }
+  ],
+  "FREDO": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "PVD"
+      }
+  ],
+  "JAMMA": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "JOODY": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "OOSHN": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "ZELKA": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "DREEM": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ]
+    },
    "inhibit_ca_volumes": [
     {
       "name": "BOS NO CA",
