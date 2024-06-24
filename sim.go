@@ -1706,7 +1706,7 @@ func (s *Sim) updateState() {
 					deleteFromAll()
 					delete(s.World.Aircraft, callsign)
 				}
-				
+
 			} else if ap := s.World.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil &&
 				nmdistance2ll(ac.Position(), ap.Location) > 250 {
 				// We only expect this case to hit for an unattended vice,
@@ -2315,7 +2315,7 @@ func (s *Sim) DropTrack(token, callsign string) error {
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			w := s.World
 			artcc, stars := w.SafeFacility("")
-			
+
 			delete(stars.ContainedPlans, ac.Squawk)
 			stars.AvailibleSquawks[int(stars.TrackInformation[ac.Callsign].FlightPlan.AssignedSquawk)] = nil
 			delete(stars.TrackInformation, ac.Callsign)

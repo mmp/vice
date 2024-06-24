@@ -6,7 +6,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"slices"
 	"strconv"
@@ -1182,7 +1181,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 					mp.NextController = make(map[string]string)
 				}
 				mp.NextController[ac.Callsign] = event.ToController
-				fmt.Printf("%v: setting next controller for %v to be %v.\n", w.Callsign, ac.Callsign, event.ToController)
+				lg.Infof("%v: setting next controller for %v to be %v.\n", w.Callsign, ac.Callsign, event.ToController)
 			}
 		}
 	}

@@ -36,11 +36,10 @@ func (w *World) initComputers() {
 		availibleSquawks := make(map[int]interface{})
 		for i := 0o1001; i <= 0o7777; i++ {
 			availibleSquawks[i] = nil
-			
+
 		}
 		starsAvailibleSquawks := make(map[int]interface{})
-		
-			
+
 		bank := int64(w.STARSFacilityAdaptation.BeaconBank)
 		min, _ := strconv.ParseInt(fmt.Sprint(1+bank*100), 8, 64)
 		max, _ := strconv.ParseInt(fmt.Sprint(77+bank*100), 8, 64)
@@ -819,18 +818,17 @@ const (
 )
 
 type AbbreviatedFPFields struct {
-	ACID string 
-	BCN Squawk
+	ACID                string
+	BCN                 Squawk
 	ControllingPosition string
-	TypeOfFlight string // Figure out this
-	SC1 string
-	SC2 	string 
-	AircraftType string 
-	RequestedALT string 
-	Rules FlightRules
-	DepartureAirport string  // Specified with type of flight (maybe)
-	Error error
-
+	TypeOfFlight        string // Figure out this
+	SC1                 string
+	SC2                 string
+	AircraftType        string
+	RequestedALT        string
+	Rules               FlightRules
+	DepartureAirport    string // Specified with type of flight (maybe)
+	Error               error
 }
 
 func (w *World) parseAbbreviatedFPFields(fields []string) AbbreviatedFPFields {
@@ -899,7 +897,7 @@ func (w *World) parseAbbreviatedFPFields(fields []string) AbbreviatedFPFields {
 			switch len(acFields) {
 			case 1: // Just the AC Type
 				if _, ok := database.AircraftPerformance[field]; !ok { // AC doesn't exist
-				output.Error = ErrSTARSIllegalACType
+					output.Error = ErrSTARSIllegalACType
 					continue
 				} else {
 					output.AircraftType = field
@@ -912,7 +910,7 @@ func (w *World) parseAbbreviatedFPFields(fields []string) AbbreviatedFPFields {
 						return output
 					}
 					if _, ok := database.AircraftPerformance[acFields[1]]; !ok { // AC doesn't exist
-					output.Error = ErrSTARSIllegalACType // This error is informational. Shouldn't end the entire function. Just this switch statement
+						output.Error = ErrSTARSIllegalACType // This error is informational. Shouldn't end the entire function. Just this switch statement
 						continue
 					}
 					output.AircraftType = field
@@ -922,7 +920,7 @@ func (w *World) parseAbbreviatedFPFields(fields []string) AbbreviatedFPFields {
 						return output
 					}
 					if _, ok := database.AircraftPerformance[acFields[0]]; !ok { // AC doesn't exist
-					output.Error = ErrSTARSIllegalACType
+						output.Error = ErrSTARSIllegalACType
 						continue
 					}
 					output.AircraftType = field
@@ -937,7 +935,7 @@ func (w *World) parseAbbreviatedFPFields(fields []string) AbbreviatedFPFields {
 					return output
 				}
 				if _, ok := database.AircraftPerformance[acFields[1]]; !ok { // AC doesn't exist
-				output.Error = ErrSTARSIllegalACType
+					output.Error = ErrSTARSIllegalACType
 					break
 				}
 				output.AircraftType = field
