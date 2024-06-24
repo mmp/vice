@@ -1,0 +1,887 @@
+{
+    "tracon": "P31",
+    "airports": {
+        "KPNS": {
+            "approaches": {
+                "I17": {
+                    "cifp_id": "I17",
+                    "tower_controller": "PNS_TWR"
+                },
+                "R17": {
+                    "cifp_id": "R17",
+                    "tower_controller": "PNS_TWR"
+                },
+                "R26": {
+                    "cifp_id": "R26",
+                    "tower_controller": "PNS_TWR"
+                },
+                "R35": {
+                    "cifp_id": "R35",
+                    "tower_controller": "PNS_TWR"
+                },
+                "R8": {
+                    "cifp_id": "R8",
+                    "tower_controller": "PNS_TWR"
+                }
+            },
+            "departure_routes": {
+                "17" {
+                    "AEX,BDOCK,BRATT,CEW,COLIN,IPTAY,JAYDI,ORRTH,PENCL,PENSI,ROMMY,SARGE,SJI,TCATE,VOAXA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "KPNS-17/h169"
+                    }
+                },
+                "26" {
+                    "AEX,BDOCK,BRATT,CEW,COLIN,IPTAY,JAYDI,ORRTH,PENCL,PENSI,ROMMY,SARGE,SJI,TCATE,VOAXA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "KPNS-26/h260"
+                    }
+                },
+                "35" {
+                    "AEX,BDOCK,BRATT,CEW,COLIN,IPTAY,JAYDI,ORRTH,PENCL,PENSI,ROMMY,SARGE,SJI,TCATE,VOAXA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "KPNS-35/h349"
+                    }
+                },
+                "8" {
+                    "AEX,BDOCK,BRATT,CEW,COLIN,IPTAY,JAYDI,ORRTH,PENCL,PENSI,ROMMY,SARGE,SJI,TCATE,VOAXA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "KPNS-8/h080"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "exit": "PENSI",
+                    "destination": "KMCI",
+                    "altitude": 38000,
+                    "route": "PENSI V198 LOXLY KH06M KM21K KM36I KRTNY MHOMS3",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "short"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KCLT",
+                    "altitude": 35000,
+                    "route": "CEW OTK SAV JROSS FLLGG STOCR4",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "ORRTH",
+                    "destination": "KEWR",
+                    "altitude": 37000,
+                    "route": "LURIC8 ORRTH CRAMM HITMN Q34 GVE PHLBO4",
+                    "airlines": [
+                        {
+                            "icao": "UAL",
+                            "fleet": "short"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KMCO",
+                    "altitude": 33000,
+                    "route": "CEW DEFUN GRNCH5",
+                    "airlines": [
+                        {
+                            "icao": "NKS",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "TCATE",
+                    "destination": "KHOU",
+                    "altitude": 39000,
+                    "route": "FRITR3 TCATE IPL J2 ELP J2 FST LLO KIDDZ4",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "SJI",
+                    "destination": "KDFW",
+                    "altitude": 34000,
+                    "route": "SJI AEX PNUTS BEREE2",
+                    "airlines": [
+                        {
+                            "icao": "AAL",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PENSI",
+                    "destination": "KDFW",
+                    "altitude": 38000,
+                    "route": "PENSI LOXLY SJI AEX PNUTS BEREE2",
+                    "airlines": [
+                        {
+                            "icao": "NKS",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "SARGE",
+                    "destination": "KATL",
+                    "altitude": 26000,
+                    "route": "HAALO3 SARGE DARED CEW PENSI",
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "short"
+                        }
+                    ]
+                },
+                {
+                    "exit": "VOAXA",
+                    "destination": "KSFO",
+                    "altitude": 38000,
+                    "route": "COORZ6 VOAXA Q136 CRLES Q136 RUMPS INYOE DYAMD5",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "short"
+                        }
+                    ]
+                },
+                {
+                    "exit": "ROMMY",
+                    "destination": "KIAH",
+                    "altitude": 30000,
+                    "route": "ROMMY HRV NNCEE2",
+                    "airlines": [
+                        {
+                            "icao": "UCA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KATL",
+                    "altitude": 29000,
+                    "route": "CEW ENNTT HOBTT2",
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "short"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PENSI",
+                    "destination": "KMCI",
+                    "altitude": 38000,
+                    "route": "PENSI V198 LOXLY KH06M KM21K KM36I KRTNY MHOMS3",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PENCL",
+                    "destination": "KBNA",
+                    "altitude": 28000,
+                    "route": "PENCL2 PENCL JAGIR SWFFT2",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KCLT",
+                    "altitude": 35000,
+                    "route": "CEW OTK SAV JROSS FLLGG STOCR4",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PENSI",
+                    "destination": "KIAH",
+                    "altitude": 32000,
+                    "route": "PENSI V198 LOXLY ROMMY HRV NNCEE2",
+                    "airlines": [
+                        {
+                            "icao": "UCA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KDCA",
+                    "altitude": 29000,
+                    "route": "CEW MGM KELLN Q56 KIWII WAVES CAPSS3",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KATL",
+                    "altitude": 29000,
+                    "route": "CEW ENNTT HOBTT2",
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "short"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KPHL",
+                    "altitude": 35000,
+                    "route": "CEW MCN IRQ GSO CREWE BBDOL PAATS4",
+                    "airlines": [
+                        {
+                            "icao": "AAL",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PENSI",
+                    "destination": "KDFW",
+                    "altitude": 34000,
+                    "route": "PENSI V198 LOXLY SJI AEX PNUTS BEREE2",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KDCA",
+                    "altitude": 35000,
+                    "route": "CEW MAI AMG RAYVO Q113 AARNN WAVES CAPSS3",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "BDOCK",
+                    "destination": "KBWI",
+                    "altitude": 35000,
+                    "route": "MAREO5 BDOCK APE NUSMM ANTHM3",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KMIA",
+                    "altitude": 31000,
+                    "route": "CEW J2 DEFUN FROGZ4",
+                    "airlines": [
+                        {
+                            "icao": "ENY",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KATL",
+                    "altitude": 29000,
+                    "route": "CEW ENNTT HOBTT2",
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "AEX",
+                    "destination": "KDAL",
+                    "altitude": 38000,
+                    "route": "AEX PNUTS REDDN4",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "short"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PENSI",
+                    "destination": "KDFW",
+                    "altitude": 34000,
+                    "route": "PENSI V198 LOXLY SJI AEX PNUTS BEREE2",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KATL",
+                    "altitude": 29000,
+                    "route": "CEW ENNTT HOBTT2",
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KCVG",
+                    "altitude": 37000,
+                    "route": "CEW GONDR ARTUR JAKIE6",
+                    "airlines": [
+                        {
+                            "icao": "FFT",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "BRATT",
+                    "destination": "KBNA",
+                    "altitude": 32000,
+                    "route": "BRATT MEI IGB HRTUN CHSNE2",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KCLT",
+                    "altitude": 33000,
+                    "route": "CEW MCN PONZE BANKR5",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "ORRTH",
+                    "destination": "KEWR",
+                    "altitude": 37000,
+                    "route": "LURIC8 ORRTH CRAMM HITMN Q34 GVE PHLBO4",
+                    "airlines": [
+                        {
+                            "icao": "UAL",
+                            "fleet": "short"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KATL",
+                    "altitude": 27000,
+                    "route": "CEW ENNTT GNDLF2",
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "long"
+                        }
+                    ]
+                },
+                {
+                    "exit": "JAYDI",
+                    "destination": "KMIA",
+                    "altitude": 35000,
+                    "route": "JAYDI NICKI Q81 ENDEW SRQ RSW MARCI FROGZ4",
+                    "airlines": [
+                        {
+                            "icao": "ENY",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KATL",
+                    "altitude": 29000,
+                    "route": "CEW ENNTT HOBTT2",
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "b73x"
+                        }
+                    ]
+                },
+                {
+                    "exit": "ROMMY",
+                    "destination": "KHOU",
+                    "altitude": 38000,
+                    "route": "ROMMY HRV KCEEE BAYYY5",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KCLT",
+                    "altitude": 33000,
+                    "route": "CEW MCN PONZE BANKR5",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "JAYDI",
+                    "destination": "KMIA",
+                    "altitude": 35000,
+                    "route": "JAYDI NICKI Q81 ENDEW SRQ RSW MARCI FROGZ4",
+                    "airlines": [
+                        {
+                            "icao": "ENY",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "ROMMY",
+                    "destination": "KHOU",
+                    "altitude": 40000,
+                    "route": "ROMMY HRV KCEEE BAYYY5",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "SJI",
+                    "destination": "KDFW",
+                    "altitude": 24000,
+                    "route": "SJI AEX PNUTS BEREE2",
+                    "airlines": [
+                        {
+                            "icao": "AAL",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PENSI",
+                    "destination": "KSTL",
+                    "altitude": 38000,
+                    "route": "PENSI V198 LOXLY CBM VISQA BOOSH3",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "short"
+                        }
+                    ]
+                },
+                {
+                    "exit": "AEX",
+                    "destination": "KDAL",
+                    "altitude": 38000,
+                    "route": "AEX PNUTS REDDN4",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "IPTAY",
+                    "destination": "KCLT",
+                    "altitude": 34000,
+                    "route": "ESTRR5 IPTAY CHOPZ MGM CEW PENSI",
+                    "airlines": [
+                        {
+                            "icao": "AAL",
+                            "fleet": "short"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PENSI",
+                    "destination": "KDFW",
+                    "altitude": 38000,
+                    "route": "PENSI LOXLY SJI AEX PNUTS BEREE2",
+                    "airlines": [
+                        {
+                            "icao": "NKS",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "SARGE",
+                    "destination": "KATL",
+                    "altitude": 26000,
+                    "route": "HAALO3 SARGE DARED CEW PENSI",
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "ROMMY",
+                    "destination": "KIAH",
+                    "altitude": 30000,
+                    "route": "ROMMY HRV NNCEE2",
+                    "airlines": [
+                        {
+                            "icao": "UCA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KATL",
+                    "altitude": 29000,
+                    "route": "CEW ENNTT HOBTT2",
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KPHL",
+                    "altitude": 25000,
+                    "route": "CEW MGMRY TWOUP Q22 BEARI BBDOL PAATS4",
+                    "airlines": [
+                        {
+                            "icao": "AAL",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "COLIN",
+                    "destination": "KORF",
+                    "altitude": 14000,
+                    "route": "CONLE4 COLIN T291 FAGED V286 STEIN",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PENSI",
+                    "destination": "KMCI",
+                    "altitude": 38000,
+                    "route": "PENSI V198 LOXLY KH06M KM21K KM36I KRTNY MHOMS3",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KCLT",
+                    "altitude": 35000,
+                    "route": "CEW OTK SAV JROSS FLLGG STOCR4",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CEW",
+                    "destination": "KLGA",
+                    "altitude": 33000,
+                    "route": "CEW MGMRY TWOUP Q22 BURGG Q60 HURTS PROUD2",
+                    "airlines": [
+                        {
+                            "icao": "EDV",
+                            "fleet": "default"
+                        }
+                    ]
+                }
+            ],
+            "exit_categories": {
+                "AEX": "all",
+                "BDOCK": "all",
+                "BRATT": "all",
+                "CEW": "all",
+                "COLIN": "all",
+                "IPTAY": "all",
+                "JAYDI": "all",
+                "ORRTH": "all",
+                "PENCL": "all",
+                "PENSI": "all",
+                "ROMMY": "all",
+                "SARGE": "all",
+                "SJI": "all",
+                "TCATE": "all",
+                "VOAXA": "all"            
+            },
+            "tower_list": 1
+        }
+    },
+    "arrival_groups": {
+        "SJI": [
+            {
+                "airlines": {
+                    "KPNS": [
+                        {
+                            "airport": "KIAH",
+                            "icao": "UCA"
+                        },
+                        {
+                            "airport": "KHOU",
+                            "icao": "SWA"
+                        },
+                        {
+                            "airport": "KORD",
+                            "icao": "UAL"
+                        }
+                    ]
+                },
+                "assigned_altitude": 11000,
+                "initial_altitude": 13000,
+                "inital_controller": "HOU_24_CTR",
+                "initial_speed": 250,
+                "route": "SJI PENSI",
+                "waypoints": "APCHE SJI/ho PENSI"
+            }
+        ],
+        "LOXLY": [
+            {
+                "airlines": {
+                    "KPNS": [
+                        {
+                            "airport": "KORD",
+                            "icao": "UAL"
+                        },
+                        {
+                            "airport": "KDAL",
+                            "icao": "SWA"
+                        },
+                        {
+                            "airport": "KMCI",
+                            "icao": "SWA"
+                        },
+                        {
+                            "airport": "KSTL",
+                            "icao": "SWA"
+                        },
+                        {
+                            "airport": "KDFW",
+                            "icao": "NKS"
+                        },
+                        {
+                            "airport": "KDFW",
+                            "icao": "JIA"
+                        },
+                        {
+                            "airport": "KDFW",
+                            "icao": "AAL"
+                        },
+                        {
+                            "airport": "KDEN",
+                            "icao": "FFT"
+                        },
+                        {
+                            "airport": "KDEN",
+                            "icao": "SWA"
+                        }
+                    ]
+                },
+                "assigned_altitude": 11000,
+                "initial_altitude": 13000,
+                "inital_controller": "HOU_24_CTR",
+                "initial_speed": 250,
+                "route": "LOXLY PENSI",
+                "waypoints": "ACMEY LOXLY/ho V198 PENSI"
+            }
+        ],
+        "CEW": [
+            {
+                "airlines": {
+                    "KPNS": [
+                        {
+                            "airport": "KATL",
+                            "icao": "DAL"
+                        },
+                        {
+                            "airport": "KDCA",
+                            "icao": "JIA"
+                        },
+                        {
+                            "airport": "KCLT",
+                            "icao": "JIA"
+                        },
+                        {
+                            "airport": "KFLL",
+                            "icao": "NKS"
+                        },
+                        {
+                            "airport": "KCLT",
+                            "icao": "AAL"
+                        },
+                        {
+                            "airport": "KBNA",
+                            "icao": "SWA"
+                        },
+                        {
+                            "airport": "KMCO",
+                            "icao": "NKS"
+                        },
+                        {
+                            "airport": "KMIA",
+                            "icao": "ENY"
+                        },
+                        {
+                            "airport": "KCLE",
+                            "icao": "FFT"
+                        },
+                        {
+                            "airport": "KMCO",
+                            "icao": "SIL"
+                        },
+                        {
+                            "airport": "KTPA",
+                            "icao": "SIL"
+                        }
+                    ]
+                },  
+                "assigned_altitude": 11000,
+                "initial_altitude": 14000,
+                "inital_controller": "JAX_10_CTR",
+                "initial_speed": 250,
+                "route": "CEW PENSI",
+                "waypoints": "KOBRA CEW/ho PENSI"
+            }                
+        ]
+    },
+    "control_positions": {
+        "JAX_10_CTR": {
+          "frequency": 120200,
+          "full_name": "Jacksonville center",
+          "scope_char": "C",
+          "sector_id": "C10",
+          "facility_id": "C",
+          "eram_facility": true
+        },
+        "HOU_25_CTR": {
+            "frequency": 127650,
+            "full_name": "Houston center",
+            "scope_char": "H",
+            "sector_id": "H25",
+            "facility_id": "H",
+            "eram_facility": true
+        },
+        "PNS_E_APP ": {
+            "frequency": 119000,
+            "full_name": "Pensacola approach",
+            "scope_char": "E",
+            "sector_id": "1E"
+        },
+        "PNS_W_APP": {
+            "frequency": 118600,
+            "full_name": "Pensacola approach",
+            "scope_char": "W",
+            "sector_id": "1W"
+        },
+        "PNS_P_APP": {
+            "frequency": 118000,
+            "full_name": "Pensacola approach",
+            "scope_char": "P",
+            "sector_id": "1P"
+        },
+        "PNS_K_APP": {
+            "frequency": 126850,
+            "full_name": "Pensacola approach",
+            "scope_char": "K",
+            "sector_id": "1K"
+        },
+        "PNS_F_APP": {
+            "frequency": 125350,
+            "full_name": "Pensacola approach",
+            "scope_char": "F",
+            "sector_id": "1F"
+        },
+        "PNS_Z_APP": {
+            "frequency": 124850,
+            "full_name": "Pensacola approach",
+            "scope_char": "Z",
+            "sector_id": "1Z"
+        },
+        "PNS_S_APP": {
+            "frequency": 120050,
+            "full_name": "Pensacola approach",
+            "scope_char": "S",
+            "sector_id": "1S"
+        },
+        "PNS_A_APP": {
+            "frequency": 120650,
+            "full_name": "Pensacola approach",
+            "scope_char": "A",
+            "sector_id": "1A"
+        },
+        "PNS_TWR": {
+            "frequency": 119900,
+            "full_name": "Pensacola tower",
+            "scope_char": "T",
+            "sector_id": "1T"
+        }
+    },
+    "default_scenario":  "KPNS Depart 8 Land 17",
+    "magnetic_adjustment": -2,
+    "name": "KPNS",
+    "primary_airport": "KPNS"
+}
