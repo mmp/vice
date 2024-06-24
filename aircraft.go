@@ -13,8 +13,8 @@ import (
 )
 
 type Aircraft struct {
-	Callsign            string // This is ADS-B callsign of the aircraft. Just because different the callsign in the flight plan can be different
-	// across multiple STARS facilities, so two different facilities can show different callsigns; however, the ADS-B callsign is transmitted from 
+	Callsign string // This is ADS-B callsign of the aircraft. Just because different the callsign in the flight plan can be different
+	// across multiple STARS facilities, so two different facilities can show different callsigns; however, the ADS-B callsign is transmitted from
 	// the aircraft and would be the same to all facilities.
 	Scratchpad          string
 	SecondaryScratchpad string
@@ -70,6 +70,18 @@ type PilotResponse struct {
 
 ///////////////////////////////////////////////////////////////////////////
 // Aircraft
+
+func (aircraft *Aircraft) NewFlightPlan(r FlightRules, ac, dep, arr string) *FlightPlan {
+	return &FlightPlan{
+		Callsign:         aircraft.Callsign,
+		Rules:            r,
+		AircraftType:     ac,
+		DepartureAirport: dep,
+		ArrivalAirport:   arr,
+		AssignedSquawk:   aircraft.Squawk,
+		ECID:             "XXX", // TODO. (Mainly for FDIO and ERAM so not super high priority. )
+	}
+}
 
 func (ac *Aircraft) TAS() float32 {
 	return ac.Nav.TAS()

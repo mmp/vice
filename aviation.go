@@ -410,18 +410,6 @@ type Fix struct {
 	Location Point2LL
 }
 
-func (aircraft *Aircraft) NewFlightPlan(r FlightRules, ac, dep, arr string) *FlightPlan {
-	return &FlightPlan{
-		Callsign:         aircraft.Callsign,
-		Rules:            r,
-		AircraftType:     ac,
-		DepartureAirport: dep,
-		ArrivalAirport:   arr,
-		AssignedSquawk:   aircraft.Squawk,
-		ECID:             "XXX", // TODO. (Mainly for FDIO and ERAM so not super high priority. )
-	}
-}
-
 func (fp FlightPlan) BaseType() string {
 	s := strings.TrimPrefix(fp.TypeWithoutSuffix(), "H/")
 	s = strings.TrimPrefix(s, "S/")
