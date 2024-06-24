@@ -1774,7 +1774,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *PaneContext) {
 		for sq, info := range stars.ContainedPlans { // auto associate
 			if sp.AutoTrackDepartures && sq == ac.Squawk && ac.inAcquisitionArea(w) && w.DepartureController(ac) == w.Callsign {
 				w.InitiateTrack(ac.Callsign, info, nil, nil)
-				if stars.TrackInformation[ac.Callsign] != nil  {
+				if stars.TrackInformation[ac.Callsign] != nil {
 					fmt.Printf("%v: Initiating track for .%v.\n", ac.Callsign, stars.TrackInformation[ac.Callsign].TrackOwner)
 				}
 			}
