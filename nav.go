@@ -2040,9 +2040,9 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *Arrival, w *World
 			found := false
 			for i, wp := range waypoints {
 				if idx := slices.IndexFunc(nav.Waypoints, func(w Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
-					// Keep the waypoints up to the match but not the destination airport.
-					nav.Waypoints = nav.Waypoints[idx : len(nav.Waypoints)-1]
-					// Add the approach waypoints
+					// Keep the waypoints up to but not including the match.
+					nav.Waypoints = nav.Waypoints[:idx]
+					// Add the approach waypoints; take the matching one from there.
 					nav.Waypoints = append(nav.Waypoints, waypoints[i:]...)
 					// And add the destination airport again at the end.
 					nav.Waypoints = append(nav.Waypoints, nav.FlightState.ArrivalAirport)
