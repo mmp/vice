@@ -289,12 +289,12 @@ func (f FlightRules) String() string {
 }
 
 type FlightPlan struct {
-	Callsign               string
-	Rules                  FlightRules
-	AircraftType           string
-	CruiseSpeed            int
-	AssignedSquawk         Squawk // from ATC
-	ECID                   string // An ECID (CID) are three alpha-numeric characters (eg. 971, 43A, etc.) and is what ERAM assigns to a track to act as 
+	Callsign       string
+	Rules          FlightRules
+	AircraftType   string
+	CruiseSpeed    int
+	AssignedSquawk Squawk // from ATC
+	ECID           string // An ECID (CID) are three alpha-numeric characters (eg. 971, 43A, etc.) and is what ERAM assigns to a track to act as
 	//another way to identify that track. To execute commands, controllers may use the ECID instead of the aircrafts callsign.
 	DepartureAirport       string
 	DepartTimeEst          int
