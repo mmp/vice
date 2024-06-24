@@ -56,7 +56,6 @@ type World struct {
 	}
 
 	ERAMComputers  map[string]*ERAMComputer
-	NonSortedPlans []*FlightPlan
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
