@@ -3896,12 +3896,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				ctx.world.PrintInfo(ac)
 				status.clear = true
 				return
-			} else if cmd == "X" {
-				ctx.world.DeleteAircraft(ac, func(e error) {
-					status.err = ErrSTARSIllegalTrack
-				})
-				status.clear = true
-				return
 			} else if cmd == "*J" {
 				// remove j-ring for aircraft
 				state.JRingRadius = 0

@@ -8540,7 +8540,7 @@
         "initial_speed": 280,
         "star": "SNFLD3",
         "speed_restriction": 250,
-        "waypoints": "NICCK/a12000/ho SNFLD GTOUT/a12000/s280 TUGLE HIGGZ/a10000/s250 VOSSS/a8000/s230 SUNDE/a6000 CUBAL/a5000/s210"
+        "waypoints": "NICCK/a12000/ho SNFLD GTOUT/a12000/s280 TUGLE HIGGZ/a10000/s250 VOSSS/a8000/s230 SUNDE/a6000 CUBAL/a5000/s210/h186"
       }
     ]
   },
