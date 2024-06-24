@@ -281,7 +281,6 @@ func main() {
 		var world *World
 
 		localServer = <-localSimServerChan
-		globalConfig.Sim = nil
 		if globalConfig.Sim != nil && !*resetSim {
 			if err := globalConfig.Sim.PostLoad(mapLibrary); err != nil {
 				lg.Errorf("Error in Sim PostLoad: %v", err)

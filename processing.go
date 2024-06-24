@@ -10,6 +10,22 @@ import (
 	"unicode"
 )
 
+/*
+idt
+receivedmessages
+adaptation
+starscomputers
+eraminboxes
+trackinfo
+stars:
+receivesmessages
+idt
+eraminbox
+unsupported
+starsinboxes
+trackinfo
+*/
+
 func (w *World) initComputers() {
 	w.ERAMComputers = make(map[string]*ERAMComputer)
 	for fac := range database.ARTCCs {
@@ -17,12 +33,31 @@ func (w *World) initComputers() {
 			Identifier:       fac,
 			ReceivedMessages: &[]FlightPlanMessage{},
 		}
+		availibleSquawks := make(map[int]interface{})
+		for i := 0o1001; i <= 0o7777; i++ {
+			availibleSquawks[i] = nil
+		}
+		starsAvailibleSquawks := make(map[int]interface{})
+		bank := int64(w.STARSFacilityAdaptation.BeaconBank * 100)
+		min, _ := strconv.ParseInt(fmt.Sprint(1+bank*100), 8, 64)
+		max, _ := strconv.ParseInt(fmt.Sprint(77+bank*100), 8, 64)
+		for i := min; i <= max; i++ {
+			starsAvailibleSquawks[int(i)] = nil
+		}
+
 		w.ERAMComputers[fac].Adaptation = database.ERAMAdaptations[fac]
 		w.ERAMComputers[fac].STARSComputers = make(map[string]*STARSComputer)
+		w.ERAMComputers[fac].TrackInformation = make(map[string]*TrackInformation)
+		w.ERAMComputers[fac].FlightPlans = make(map[Squawk]*STARSFlightPlan)
+		w.ERAMComputers[fac].AvailibleSquawks = availibleSquawks
 		for name, stars := range database.TRACONs {
 			if stars.ARTCC == fac { // if the artcc of the tracon is the same
 				w.ERAMComputers[fac].STARSComputers[name] = &STARSComputer{ // make a news stars comp for this new fac (with var name)
-					Identifier: name,
+					Identifier:        name,
+					AvailibleSquawks:  starsAvailibleSquawks,
+					UnsupportedTracks: make(map[int]*UnsupportedTrack), // Using one value for the bank is good enough (for now)
+					TrackInformation:  make(map[string]*TrackInformation),
+					ContainedPlans:    make(map[Squawk]*STARSFlightPlan),
 				}
 				w.ERAMComputers[fac].STARSComputers[name].ERAMInbox = w.ERAMComputers[fac].ReceivedMessages // make the eram inbox
 			}
@@ -47,14 +82,8 @@ func (w *World) initComputers() {
 	inboxes := make(map[string]*[]FlightPlanMessage)
 
 	for _, eram := range w.ERAMComputers {
-		if eram.PendingMessages == nil {
-			eram.PendingMessages = make(map[*FlightPlanMessage]string)
-		}
 		for _, stars := range eram.STARSComputers {
 			inboxes[stars.Identifier] = &stars.RecievedMessages
-			if stars.UnsupportedTracks == nil {
-				stars.UnsupportedTracks = make(map[int]*UnsupportedTrack)
-			}
 		}
 	}
 
@@ -240,10 +269,9 @@ type ERAMComputer struct {
 	ReceivedMessages *[]FlightPlanMessage
 	FlightPlans      map[Squawk]*STARSFlightPlan
 	TrackInformation map[string]*TrackInformation
-	PendingMessages  map[*FlightPlanMessage]string // if a ZBW to N90 handoff goes through ZNY, ZNY needs to keep track of who sent that handoff initially, so that
-	// when N90 sends the accept handoff message, it can go back to ZBW.
-	Identifier string
-	Adaptation ERAMAdaptation
+	AvailibleSquawks map[int]interface{}
+	Identifier       string
+	Adaptation       ERAMAdaptation
 }
 
 type ERAMTrackInfo struct {
@@ -402,7 +430,7 @@ func (comp *ERAMComputer) SendFlightPlans(w *World) {
 		to := comp.Adaptation.CoordinationFixes[fp.CoordinationFix].Fix(fp.Altitude).ToFacility
 		if !w.SimTime.Add(TransmitFPMessageTime).Before(fp.CoordinationTime.Time) && !slices.Contains(fp.ContainedFacilities, to) {
 			comp.SendFlightPlan(fp, w)
-		} 
+		}
 	}
 
 	for _, info := range comp.TrackInformation {
@@ -417,7 +445,7 @@ func (comp *ERAMComputer) SendFlightPlans(w *World) {
 			continue
 		}
 		sendPlanIfReady(fp)
-		
+
 	}
 	for _, info := range comp.FlightPlans {
 		var fp *STARSFlightPlan
@@ -451,6 +479,7 @@ type STARSComputer struct {
 	Identifier        string
 	STARSInbox        map[string]*[]FlightPlanMessage // Other STARS Facilities inbox.
 	UnsupportedTracks map[int]*UnsupportedTrack
+	AvailibleSquawks  map[int]interface{}
 }
 
 type STARSFlightPlan struct {
@@ -751,75 +780,20 @@ func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
 
 // For NAS codes
 func (comp *ERAMComputer) CreateSquawk() Squawk {
-	for {
-		// Generate a squawk between 1001 and 7777.
-		squawk := Squawk(0o1001 + rand.Intn(0o6776))
-		badCodes := []Squawk{0o1200, 0o7500, 0o7600, 0o7700, 0o7777}
-		if slices.Contains(badCodes, squawk) {
-			continue
-		}
-		// Check if the squawk ends in 00 or is 0000.
-		if squawk%100 != 0 && squawk != 0 {
-			// Check if any digit is greater than 7.
-			valid := true
-			for _, digit := range fmt.Sprintf("%04d", squawk) {
-				if digit > '7' {
-					valid = false
-					break
-				}
-			}
-
-			for _, plan := range comp.FlightPlans {
-				if plan != nil && plan.AssignedSquawk == squawk {
-					continue
-				}
-			}
-			for _, info := range comp.TrackInformation {
-				if info.FlightPlan.AssignedSquawk == squawk {
-					continue
-				}
-			}
-
-			if valid {
-				return squawk
-			}
-		}
+	for sq := range comp.AvailibleSquawks {
+		delete(comp.AvailibleSquawks, sq)
+		return Squawk(sq)
 	}
+	return -1 // 0000 could theoretically be a squawk code(?)
 }
 
 // For local codes
 func (comp *STARSComputer) CreateSquawk(x int) Squawk {
-	for {
-		// Generate a squawk between 0X01 and 0X77.
-		squawk := Squawk(x*100 + 1 + rand.Intn(76))
-
-		// Check if the squawk ends in 00 or is 0000.
-		if squawk%100 != 0 && squawk != 0 {
-			// Check if any digit is greater than 7.
-			valid := true
-			for _, digit := range fmt.Sprintf("%04d", squawk) {
-				if digit > '7' {
-					valid = false
-					break
-				}
-			}
-
-			for _, plan := range comp.ContainedPlans {
-				if plan != nil && plan.AssignedSquawk == squawk {
-					continue
-				}
-			}
-			for _, info := range comp.TrackInformation {
-				if info.FlightPlan.AssignedSquawk == squawk {
-					continue
-				}
-			}
-
-			if valid {
-				return squawk
-			}
-		}
+	for sq := range comp.AvailibleSquawks {
+		delete(comp.AvailibleSquawks, sq)
+		return Squawk(sq)
 	}
+	return -1
 }
 
 const (

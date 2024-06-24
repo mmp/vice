@@ -1674,7 +1674,7 @@ func (s *Sim) updateState() {
 				ac.ControllingController = ctrl
 			}
 
-			// Cull far-away departures/arrivals
+			// Cull far-away departures/arrivals. TODO: Delete these fps
 			if ac.IsDeparture() {
 				if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil &&
 					nmdistance2ll(ac.Position(), ap.Location) > 250 {
@@ -2238,7 +2238,7 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 		func(c *Controller, ac *Aircraft) error {
 			// Make sure no one has the track already
 			_, stars := s.World.SafeFacility("")
-			if entry, ok := stars.TrackInformation[ac.Callsign]; ok || entry != nil && entry.TrackOwner != "" {
+			if _, ok := stars.TrackInformation[ac.Callsign]; ok {
 				return ErrOtherControllerHasTrack
 			}
 			return nil
@@ -2272,6 +2272,7 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 				TrackOwner: ctrl.Callsign,
 				FlightPlan: fp,
 			}
+			// fmt.Println(ac.Callsign, stars.TrackInformation[ac.Callsign])
 			delete(stars.ContainedPlans, fp.AssignedSquawk)
 
 			return nil

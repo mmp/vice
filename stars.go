@@ -1774,6 +1774,9 @@ func (sp *STARSPane) updateRadarTracks(ctx *PaneContext) {
 		for sq, info := range stars.ContainedPlans { // auto associate
 			if sp.AutoTrackDepartures && sq == ac.Squawk && ac.inAcquisitionArea(w) && w.DepartureController(ac) == w.Callsign {
 				w.InitiateTrack(ac.Callsign, info, nil, nil)
+				if stars.TrackInformation[ac.Callsign] != nil  {
+					fmt.Printf("%v: Initiating track for .%v.\n", ac.Callsign, stars.TrackInformation[ac.Callsign].TrackOwner)
+				}
 			}
 		}
 	}
@@ -6135,7 +6138,7 @@ func UpdateAssociatedFP(ctx *PaneContext, aircraft []*Aircraft) {
 	_, stars := ctx.world.SafeFacility("")
 	for _, ac := range aircraft {
 		fp, ok := stars.ContainedPlans[ac.Squawk]
-		if ok {
+		if ok && (!ac.inAcquisitionArea(ctx.world) && !ac.inDropArea(ctx.world)) && stars.TrackInformation[ac.Callsign] == nil { // Prevent departures
 			ctx.world.AutoAssociateFP(ac.Callsign, fp, nil, nil)
 		}
 	}
