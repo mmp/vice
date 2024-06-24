@@ -13,7 +13,9 @@ import (
 )
 
 type Aircraft struct {
-	Callsign            string
+	Callsign            string // This is ADS-B callsign of the aircraft. Just because different the callsign in the flight plan can be different
+	// across multiple STARS facilities, so two different facilities can show different callsigns; however, the ADS-B callsign is transmitted from 
+	// the aircraft and would be the same to all facilities.
 	Scratchpad          string
 	SecondaryScratchpad string
 	Squawk              Squawk // actually squawking
