@@ -887,6 +887,49 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *ErrorLogger, sg *ScenarioGr
 		e.Pop()
 	}
 
+	for fix, fixes := range s.CoordinationFixes {
+		e.Push("Coordination fix " + fix)
+		if _, ok := sg.locate(fix); !ok {
+			e.ErrorString("coordination fix \"%v\" cannot be located", fix)
+		}
+		acceptableTypes := []string{"route", "zone"} 
+		for i, fix := range fixes {
+			e.Push(fmt.Sprintf("Number %v", i)) 
+			if !slices.Contains(acceptableTypes, fix.Type) {
+				e.ErrorString("type \"%v\" is invalid. Valid types are \"route\" and \"zone\"", fix.Type)
+			}
+			if fix.Altitude[0] < 0 {
+				e.ErrorString("bottom altitude \"%v\" is below zero", fix.Altitude[0])
+			}
+			if fix.Altitude[0] > fix.Altitude[1] {
+				e.ErrorString("bottom altitude \"%v\" is higher than the top altitude \"%v\"", fix.Altitude[0], fix.Altitude[1])
+			}
+			if _, ok := database.TRACONs[fix.ToFacility]; !ok {
+				if _, ok := database.ARTCCs[fix.ToFacility]; !ok {
+					e.ErrorString("to facility \"%v\" is invalid", fix.ToFacility)
+				}
+			}
+			if _, ok := database.TRACONs[fix.FromFacility]; !ok {
+				if _, ok := database.ARTCCs[fix.FromFacility]; !ok {
+					e.ErrorString("from facility \"%v\" is invalid", fix.FromFacility)
+				}
+			}
+			e.Pop()
+		}
+		e.Pop()
+	}
+
+	for char, airport := range s.SingleCharAIDs {
+		e.Push("Airport ID " + char)
+		if _, ok := sg.Airports[airport]; !ok {
+			e.ErrorString("airport\"%v\" isn't specified", airport)
+		}
+		e.Pop()
+	}
+	if s.BeaconBank > 7 || s.BeaconBank < 1 {
+		e.ErrorString("beacon bank \"%v\" is invalid. Must be between 1 and 7", s.BeaconBank)
+	}
+
 	e.Pop() // stars_config
 }
 
