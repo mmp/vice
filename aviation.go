@@ -294,7 +294,8 @@ type FlightPlan struct {
 	AircraftType           string
 	CruiseSpeed            int
 	AssignedSquawk         Squawk // from ATC
-	ECID                   string // Mainly for ERAM
+	ECID                   string // An ECID (CID) are three alpha-numeric characters (eg. 971, 43A, etc.) and is what ERAM assigns to a track to act as 
+	//another way to identify that track. To execute commands, controllers may use the ECID instead of the aircrafts callsign.
 	DepartureAirport       string
 	DepartTimeEst          int
 	DepartTimeActual       int
