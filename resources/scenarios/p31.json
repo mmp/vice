@@ -879,7 +879,7 @@
             "scope_char": "T",
             "sector_id": "1T"
         }
-    ,
+    },
     "default_scenario":  "KPNS Depart 8 Land 17",
     "magnetic_adjustment": -2,
     "name": "KPNS",
@@ -1009,15 +1009,55 @@
     "wind": {
         "direction": 320,
         "speed": 10
-    }
     },
     "scratchpads": {
         "SJI": "",
         "LOXLY": "",
         "CEW": ""
     },
-    "star_maps": [
-        
-    ]
-
-}
+    "stars_config": {
+    "center": "KPNS",
+    "stars_maps": [
+        "NEW NPA 25 MAP",
+        "PNS MVA",
+        "EMERGENCY",
+        "NSE MVA",
+        "PENSACOLA SOUTH MOA OUTLINE",
+        "PENSACOLA SOUTH MOA LABELS",
+        "NPA07/PNS & NSE",
+        "NPA25/PNS & NSE",
+        "PNS FINAL",
+        "NSE-NDZ FINALS",
+        "NPA 01",
+        "NPA 25",
+        "NPA 07",
+        "NPA 19",
+        "SPECIAL USE AIRSPACE",
+        "JKA FINAL",
+        "5R4 FINAL",
+        "12J FINAL",
+        "0R1 FINAL",
+        "2R4 FINAL",
+        "P31 GPS LABELS",
+        "P31 GPS WAYPOINTS",
+        "P-AR 17",
+        "P-AR 26",
+        "P-AR 35",
+        "P-AR 8",
+        "PNS TWR 1",
+        "PNS TWR 2",
+        "WEEKEND SPLIT NPA RW 01",
+        "WEEKEND SPLIT NPA RW 25",
+        "WEEKEND SPLIT NPA RW 07/19",
+        "P31 ",
+        "AIRPORT DIAGRAMS",
+        "NDZ - NORTH WHITING MAP 1",
+        "NDZ - NORTH WHITING MAP 2",
+        "NDZ - NORTH WHITING MAP 3",
+        "P31 AIRWAYS",
+        "P31 CLASS C",
+        "NEW NPA 07 MAP"
+    ],
+    "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
+    }
+}    
