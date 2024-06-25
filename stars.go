@@ -1143,6 +1143,7 @@ func (sp *STARSPane) Activate(w *World, r Renderer, eventStream *EventStream) {
 	}
 
 	sp.lastTrackUpdate = time.Time{} // force immediate update at start
+	sp.lastHistoryTrackUpdate = time.Time{}
 }
 
 func (sp *STARSPane) Deactivate() {
@@ -1203,6 +1204,7 @@ func (sp *STARSPane) ResetWorld(w *World) {
 	}
 
 	sp.lastTrackUpdate = time.Time{} // force update
+	sp.lastHistoryTrackUpdate = time.Time{}
 }
 
 func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
@@ -1700,6 +1702,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			state.historyTracksIndex = 0
 		}
 		sp.lastTrackUpdate = time.Time{} // force update
+		sp.lastHistoryTrackUpdate = time.Time{}
 		sp.discardTracks = false
 	}
 }
