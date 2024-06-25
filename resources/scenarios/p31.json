@@ -879,9 +879,46 @@
             "scope_char": "T",
             "sector_id": "1T"
         }
-    },
+    ,
     "default_scenario":  "KPNS Depart 8 Land 17",
     "magnetic_adjustment": -2,
     "name": "KPNS",
-    "primary_airport": "KPNS"
+    "primary_airport": "KPNS",
+    "scenarios": {
+        "KPNS Depart 8 Land 17": {
+            "approach_airspace": [
+                "PNS_E_APP"
+            ],
+            "arrival_runways": [
+                {
+                    "airport ": "KPNS",
+                    "runway": "17"
+                }
+            ],
+            "arrivals": {
+                "SJI": {
+                "KPNS": 10
+                },
+                "LOXLY": {
+                "KPNS": 10
+                },
+                "CEW": {
+                "KPNS": 10
+                }
+            }
+        },
+        "solo_controller": "PNS_E_APP",
+        "multi_controllers": {
+            "default": {
+                "PNS_E_APP": {"primary": true, "arrivals": ["SJI", "LOXLY", "CEW"]},
+                "PNS_W_APP": {"backup": "PNS_E_APP"},
+                "PNS_P_APP": {"backup": "PNS_E_APP"},
+                "PNS_K_APP": {"backup": "PNS_E_APP"},
+                "PNS_F_APP": {"backup": "PNS_E_APP"},
+                "PNS_Z_APP":
+                "PNS_S_APP":
+                "PNS_A_APP":
+            }
+        }
+    }
 }
