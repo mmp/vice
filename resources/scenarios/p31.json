@@ -693,7 +693,7 @@
                 },
                 "assigned_altitude": 11000,
                 "initial_altitude": 13000,
-                "inital_controller": "HOU_24_CTR",
+                "initial_controller": "HOU_25_CTR",
                 "initial_speed": 250,
                 "route": "SJI PENSI",
                 "waypoints": "APCHE SJI/ho PENSI"
@@ -743,10 +743,10 @@
                 },
                 "assigned_altitude": 11000,
                 "initial_altitude": 13000,
-                "inital_controller": "HOU_24_CTR",
+                "initial_controller": "HOU_25_CTR",
                 "initial_speed": 250,
                 "route": "LOXLY PENSI",
-                "waypoints": "ACMEY LOXLY/ho V198 PENSI"
+                "waypoints": "ZUGTI LOXLY/ho PENSI"
             }
         ],
         "CEW": [
@@ -801,7 +801,7 @@
                 },  
                 "assigned_altitude": 11000,
                 "initial_altitude": 14000,
-                "inital_controller": "JAX_10_CTR",
+                "initial_controller": "JAX_10_CTR",
                 "initial_speed": 250,
                 "route": "CEW PENSI",
                 "waypoints": "KOBRA CEW/ho PENSI"
@@ -825,7 +825,7 @@
             "facility_id": "H",
             "eram_facility": true
         },
-        "PNS_E_APP ": {
+        "PNS_E_APP": {
             "frequency": 119000,
             "full_name": "Pensacola approach",
             "scope_char": "E",
@@ -886,12 +886,9 @@
     "primary_airport": "KPNS",
     "scenarios": {
         "KPNS Depart 8 Land 17": {
-            "approach_airspace": [
-                "PNS_E_APP"
-            ],
             "arrival_runways": [
                 {
-                    "airport ": "KPNS",
+                    "airport": "KPNS",
                     "runway": "17"
                 }
             ],
@@ -905,8 +902,7 @@
                 "CEW": {
                 "KPNS": 10
                 }
-            }
-        },
+            },
         "solo_controller": "PNS_E_APP",
         "multi_controllers": {
             "default": {
@@ -933,9 +929,6 @@
             "HOU_25_CTR"
         ],
         "default_maps": ["NPA07/PNS & NSE"],
-        "departure_airspace": [
-            "PNS_E_APP"
-        ],
         "departure_runways": [
             {
                 "airport": "KPNS",
@@ -949,12 +942,9 @@
         }
     },
     "KPNS Depart 26 Land 35": {
-        "approach_airspace": [
-            "PNS_E_APP"
-        ],
         "arrival_runways": [
             {
-                "airport ": "KPNS",
+                "airport": "KPNS",
                 "runway": "35"
             }
         ],
@@ -968,8 +958,7 @@
             "CEW": {
             "KPNS": 10
             }
-        }
-    },
+        },
     "solo_controller": "PNS_E_APP",
     "multi_controllers": {
         "default": {
@@ -996,9 +985,6 @@
         "HOU_25_CTR"
     ],
     "default_maps": ["NPA25/PNS & NSE"],
-    "departure_airspace": [
-        "PNS_E_APP"
-    ],
     "departure_runways": [
         {
             "airport": "KPNS",
@@ -1009,14 +995,70 @@
     "wind": {
         "direction": 320,
         "speed": 10
-    },
-    "scratchpads": {
-        "SJI": "",
-        "LOXLY": "",
-        "CEW": ""
+    }
+}
     },
     "stars_config": {
     "center": "KPNS",
+    "airspace_awareness": [
+        {
+            "fixes": [
+                "AEX",
+                "BRATT",
+                "ORRTH",
+                "ROMMY",
+                "SJI",
+                "TCATE",
+                "VOAXA"
+            ],
+            "receiving_controller": "HOU_25_CTR"
+        },
+        {
+            "fixes": [
+                "BDOCK",
+                "CEW",
+                "COLIN",
+                "IPTAY",
+                "JAYDI",
+                "PENCL",
+                "PENSI",
+                "SARGE"
+            ],
+            "receiving_controller": "JAX_10_CTR"
+        }
+    ],
+    "inhibit_ca_volumes": [
+        {
+            "name": "PNS NO CA",
+            "type": "circle",
+            "floor": 0,
+            "ceiling": 3000,
+            "radius": 7,
+            "center": "KPNS"
+        }
+    ],
+    "allow_long_scratchpad": [
+        false,
+        false
+    ],
+    "force_ql_self": true,
+    "scratchpads": {
+        "AEX":   "",
+        "BDOCK": "",
+        "BRATT": "",
+        "CEW":   "",
+        "COLIN": "",
+        "IPTAY": "",
+        "JAYDI": "",
+        "ORRTH": "",
+        "PENCL": "",
+        "PENSI": "",
+        "ROMMY": "",
+        "SARGE": "",
+        "SJI":   "",
+        "TCATE": "",
+        "VOAXA": ""          
+    },
     "stars_maps": [
         "NEW NPA 25 MAP",
         "PNS MVA",
@@ -1026,18 +1068,7 @@
         "PENSACOLA SOUTH MOA LABELS",
         "NPA07/PNS & NSE",
         "NPA25/PNS & NSE",
-        "PNS FINAL",
-        "NSE-NDZ FINALS",
-        "NPA 01",
-        "NPA 25",
-        "NPA 07",
-        "NPA 19",
         "SPECIAL USE AIRSPACE",
-        "JKA FINAL",
-        "5R4 FINAL",
-        "12J FINAL",
-        "0R1 FINAL",
-        "2R4 FINAL",
         "P31 GPS LABELS",
         "P31 GPS WAYPOINTS",
         "P-AR 17",
@@ -1049,11 +1080,6 @@
         "WEEKEND SPLIT NPA RW 01",
         "WEEKEND SPLIT NPA RW 25",
         "WEEKEND SPLIT NPA RW 07/19",
-        "P31",
-        "AIRPORT DIAGRAMS",
-        "NDZ - NORTH WHITING MAP 1",
-        "NDZ - NORTH WHITING MAP 2",
-        "NDZ - NORTH WHITING MAP 3",
         "P31 AIRWAYS",
         "P31 CLASS C",
         "NEW NPA 07 MAP"
