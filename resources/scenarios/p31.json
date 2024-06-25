@@ -932,7 +932,7 @@
             "JAX_10_CTR",
             "HOU_25_CTR"
         ],
-        "default_maps": [""],
+        "default_maps": ["NPA07/PNS & NSE"],
         "departure_airspace": [
             "PNS_E_APP"
         ],
@@ -995,7 +995,7 @@
         "JAX_10_CTR",
         "HOU_25_CTR"
     ],
-    "default_maps": [""],
+    "default_maps": ["NPA25/PNS & NSE"],
     "departure_airspace": [
         "PNS_E_APP"
     ],
@@ -1049,7 +1049,7 @@
         "WEEKEND SPLIT NPA RW 01",
         "WEEKEND SPLIT NPA RW 25",
         "WEEKEND SPLIT NPA RW 07/19",
-        "P31 ",
+        "P31",
         "AIRPORT DIAGRAMS",
         "NDZ - NORTH WHITING MAP 1",
         "NDZ - NORTH WHITING MAP 2",
