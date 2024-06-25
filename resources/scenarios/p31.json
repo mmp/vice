@@ -25,25 +25,25 @@
                 }
             },
             "departure_routes": {
-                "17" {
+                "17": {
                     "AEX,BDOCK,BRATT,CEW,COLIN,IPTAY,JAYDI,ORRTH,PENCL,PENSI,ROMMY,SARGE,SJI,TCATE,VOAXA": {
                         "cleared_altitude": 3000,
                         "waypoints": "KPNS-17/h169"
                     }
                 },
-                "26" {
+                "26": {
                     "AEX,BDOCK,BRATT,CEW,COLIN,IPTAY,JAYDI,ORRTH,PENCL,PENSI,ROMMY,SARGE,SJI,TCATE,VOAXA": {
                         "cleared_altitude": 3000,
                         "waypoints": "KPNS-26/h260"
                     }
                 },
-                "35" {
+                "35": {
                     "AEX,BDOCK,BRATT,CEW,COLIN,IPTAY,JAYDI,ORRTH,PENCL,PENSI,ROMMY,SARGE,SJI,TCATE,VOAXA": {
                         "cleared_altitude": 3000,
                         "waypoints": "KPNS-35/h349"
                     }
                 },
-                "8" {
+                "8": {
                     "AEX,BDOCK,BRATT,CEW,COLIN,IPTAY,JAYDI,ORRTH,PENCL,PENSI,ROMMY,SARGE,SJI,TCATE,VOAXA": {
                         "cleared_altitude": 3000,
                         "waypoints": "KPNS-8/h080"
@@ -910,15 +910,114 @@
         "solo_controller": "PNS_E_APP",
         "multi_controllers": {
             "default": {
-                "PNS_E_APP": {"primary": true, "arrivals": ["SJI", "LOXLY", "CEW"]},
-                "PNS_W_APP": {"backup": "PNS_E_APP"},
+                "PNS_E_APP": {"primary": true, "arrivals": ["CEW"], "departures": ["KPNS"]},
+                "PNS_W_APP": {"backup": "PNS_E_APP", "arrivals": ["SJI", "LOXLY"]},
                 "PNS_P_APP": {"backup": "PNS_E_APP"},
                 "PNS_K_APP": {"backup": "PNS_E_APP"},
                 "PNS_F_APP": {"backup": "PNS_E_APP"},
-                "PNS_Z_APP":
-                "PNS_S_APP":
-                "PNS_A_APP":
+                "PNS_Z_APP": {"backup": "PNS_E_APP"},
+                "PNS_S_APP": {"backup": "PNS_E_APP"},
+                "PNS_A_APP": {"backup": "PNS_E_APP"} 
+            }
+        },
+        "controllers": [
+            "PNS_E_APP",
+            "PNS_W_APP",
+            "PNS_P_APP",
+            "PNS_K_APP",
+            "PNS_F_APP",
+            "PNS_Z_APP",
+            "PNS_S_APP",
+            "PNS_A_APP",
+            "JAX_10_CTR",
+            "HOU_25_CTR"
+        ],
+        "default_maps": [""],
+        "departure_airspace": [
+            "PNS_E_APP"
+        ],
+        "departure_runways": [
+            {
+                "airport": "KPNS",
+                "rate": 25,
+                "runway": "8"
+            }
+        ],
+        "wind": {
+            "direction": 150,
+            "speed": 10
+        }
+    },
+    "KPNS Depart 26 Land 35": {
+        "approach_airspace": [
+            "PNS_E_APP"
+        ],
+        "arrival_runways": [
+            {
+                "airport ": "KPNS",
+                "runway": "35"
+            }
+        ],
+        "arrivals": {
+            "SJI": {
+            "KPNS": 10
+            },
+            "LOXLY": {
+            "KPNS": 10
+            },
+            "CEW": {
+            "KPNS": 10
             }
         }
+    },
+    "solo_controller": "PNS_E_APP",
+    "multi_controllers": {
+        "default": {
+            "PNS_E_APP": {"primary": true, "arrivals": ["CEW"], "departures": ["KPNS"]},
+            "PNS_W_APP": {"backup": "PNS_E_APP", "arrivals": ["SJI", "LOXLY"]},
+            "PNS_P_APP": {"backup": "PNS_E_APP"},
+            "PNS_K_APP": {"backup": "PNS_E_APP"},
+            "PNS_F_APP": {"backup": "PNS_E_APP"},
+            "PNS_Z_APP": {"backup": "PNS_E_APP"},
+            "PNS_S_APP": {"backup": "PNS_E_APP"},
+            "PNS_A_APP": {"backup": "PNS_E_APP"} 
+        }
+    },
+    "controllers": [
+        "PNS_E_APP",
+        "PNS_W_APP",
+        "PNS_P_APP",
+        "PNS_K_APP",
+        "PNS_F_APP",
+        "PNS_Z_APP",
+        "PNS_S_APP",
+        "PNS_A_APP",
+        "JAX_10_CTR",
+        "HOU_25_CTR"
+    ],
+    "default_maps": [""],
+    "departure_airspace": [
+        "PNS_E_APP"
+    ],
+    "departure_runways": [
+        {
+            "airport": "KPNS",
+            "rate": 25,
+            "runway": "26"
+        }
+    ],
+    "wind": {
+        "direction": 320,
+        "speed": 10
     }
+    },
+    "scratchpads": {
+        "SJI": "",
+        "LOXLY": "",
+        "CEW": ""
+    },
+    "star_maps": [
+        
+    ]
+
 }
