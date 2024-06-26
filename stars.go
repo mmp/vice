@@ -3839,6 +3839,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						status.err = ErrSTARSIllegalValue
 					} else {
 						state.JRingRadius = float32(r)
+						state.ConeLength = 0 // can't have both
 					}
 					status.clear = true
 				} else if r, err := strconv.ParseFloat(cmd[2:], 32); err == nil {
@@ -3846,6 +3847,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						status.err = ErrSTARSIllegalValue
 					} else {
 						state.JRingRadius = float32(r)
+						state.ConeLength = 0 // can't have both
 					}
 					status.clear = true
 				} else {
@@ -3858,6 +3860,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						status.err = ErrSTARSIllegalValue
 					} else {
 						state.ConeLength = float32(r)
+						state.JRingRadius = 0 // can't have both
 					}
 					status.clear = true
 				} else if r, err := strconv.ParseFloat(cmd[2:], 32); err == nil {
@@ -3865,6 +3868,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						status.err = ErrSTARSIllegalValue
 					} else {
 						state.ConeLength = float32(r)
+						state.JRingRadius = 0 // can't have both
 					}
 					status.clear = true
 				} else {
