@@ -1700,7 +1700,17 @@ func (w *World) DrawSettingsWindow() {
 		globalConfig.Audio.DrawUI()
 	}
 	if imgui.CollapsingHeader("Display") {
+		if imgui.Checkbox("Enable anti-aliasing", &globalConfig.EnableMSAA) {
+			uiShowModalDialog(NewModalDialogBox(
+				&MessageModalClient{
+					title: "Alert",
+					message: "You must restart vice for changes to the anti-aliasing " +
+						"mode to take effect.",
+				}), true)
+		}
+
 		imgui.Checkbox("Start in full-screen", &globalConfig.StartInFullScreen)
+
 		monitorNames := platform.GetAllMonitorNames()
 		if imgui.BeginComboV("Monitor", monitorNames[globalConfig.FullScreenMonitor], imgui.ComboFlagsHeightLarge) {
 			for index, monitor := range monitorNames {

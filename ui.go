@@ -1337,6 +1337,24 @@ func (fs *FileSelectDialogBox) Draw() {
 	}
 }
 
+type MessageModalClient struct {
+	title   string
+	message string
+}
+
+func (m *MessageModalClient) Title() string { return m.title }
+func (m *MessageModalClient) Opening()      {}
+
+func (m *MessageModalClient) Buttons() []ModalDialogButton {
+	return []ModalDialogButton{{text: "Ok", action: func() bool { return true }}}
+}
+
+func (m *MessageModalClient) Draw() int {
+	text, _ := wrapText(m.message, 80, 0, true)
+	imgui.Text("\n\n" + text + "\n\n")
+	return -1
+}
+
 type ErrorModalClient struct {
 	message string
 }

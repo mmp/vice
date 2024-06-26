@@ -56,6 +56,7 @@ type GlobalConfigNoSim struct {
 	LastServer            string
 	LastTRACON            string
 	UIFontSize            int
+	EnableMSAA            bool
 
 	Audio AudioEngine
 
