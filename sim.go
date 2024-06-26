@@ -2731,6 +2731,11 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 				s.TotalArrivals--
 			}
 
+			s.eventStream.Post(Event{
+				Type:    StatusMessageEvent,
+				Message: fmt.Sprintf("%s deleted %s", ctrl.Callsign, ac.Callsign),
+			})
+
 			s.lg.Info("deleted aircraft", slog.String("callsign", ac.Callsign),
 				slog.String("controller", ctrl.Callsign))
 			delete(s.World.Aircraft, ac.Callsign)
