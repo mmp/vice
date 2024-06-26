@@ -2509,6 +2509,43 @@
   },
       "allow_long_scratchpad": [false, false],
       "force_ql_self": true,
+      "coordination_fixes": {
+        "MERIT": [
+          {
+              "type": "route",
+              "to": "ZBW",
+              "from": "ZNY"
+          }
+      ],
+      "GREKI": [
+          {
+              "type": "route",
+              "to": "ZBW",
+              "from": "ZNY"
+          }
+      ],
+      "BAYYS": [
+          {
+              "type": "route",
+              "to": "ZBW",
+              "from": "ZNY"
+          }
+      ],
+      "BETTE": [
+          {
+              "type": "route",
+              "to": "ZBW",
+              "from": "ZNY"
+          }
+      ],
+      "HAPIE": [
+          {
+              "type": "route",
+              "to": "ZBW",
+              "from": "ZNY"
+          }
+      ]
+      },
     "airspace_awareness": [
       {
         "fixes": ["MERIT", "BAYYS", "GREKI"],

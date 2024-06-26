@@ -1350,7 +1350,7 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "BANKR3",
-                            "waypoints": "BANKR/a13000-22000/s270/ho DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000/s250 STKUP DOSBE AAIRE JRDEN/h003"
+                            "waypoints": "BANKR/a13000-22000/s270 DEBBT/a12000-21000/s250/ho ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000/s250 STKUP DOSBE AAIRE JRDEN/h003"
                         }
                     ],
                     "BANKR3N": [
@@ -1394,7 +1394,7 @@
                             "initial_controller": "ATL_CTR",
                             "initial_speed": 280,
                             "star": "BANKR3",
-                            "waypoints": "BANKR/a13000-22000/s270/ho DEBBT/a12000-21000/s250 CONTR/a11000+ OPALS/a10000-12000 BLNCE/a9000/s210/h090"
+                            "waypoints": "BANKR/a13000-22000/s270 DEBBT/a12000-21000/s250/ho CONTR/a11000+ OPALS/a10000-12000 BLNCE/a9000/s210/h090"
                         }
                     ],
                     "CHSLY5S": [
@@ -2082,7 +2082,7 @@
                             "initial_controller": "JAX_30_CTR",
                             "initial_speed": 280,
                             "star": "STOCR3",
-                            "waypoints": "FFNSH/a16000-23000/s280/ho STOCR/a12000-19000/s270 LLAPP/a11000-16000/s270 ZYMKO/a11000-13000/s250 DOOMY/a9000-11000 POORE LEEKS/a9000/s210 INNOR HANDO/a8000/s210/h003"
+                            "waypoints": "FFNSH/a16000-23000/s280 STOCR/a12000-19000/s270/ho LLAPP/a11000-16000/s270 ZYMKO/a11000-13000/s250 DOOMY/a9000-11000 POORE LEEKS/a9000/s210 INNOR HANDO/a8000/s210/h003"
                         }
                     ],
                     "STOCR3N": [
@@ -2148,7 +2148,7 @@
                             "initial_controller": "JAX_30_CTR",
                             "initial_speed": 280,
                             "star": "STOCR3",
-                            "waypoints": "FFNSH/a16000-23000/s280/ho STOCR/a12000-19000/s250 FIBBR/a11000-16000/s250 TYMER/a8000-11000 TERIE/a6000-8000 GATEE/a6000/s210/h273"
+                            "waypoints": "FFNSH/a16000-23000/s280 STOCR/a12000-19000/s250/ho FIBBR/a11000-16000/s250 TYMER/a8000-11000 TERIE/a6000-8000 GATEE/a6000/s210/h273"
                         }
                     ]
                 },
@@ -2547,6 +2547,57 @@
                         }
                     },
                     "stars_config": {
+                    "coordination_fixes": {
+                        "DEBBT": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ],
+                        "CHSLY": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ],
+                        "FILPZ": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ],
+                        "JONZE": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ],
+                        "STOCR": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ],
+                        "PARQR": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ],
+                        "GAIRY": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ]
+                    },
                     "center": "KCLT",
                     "inhibit_ca_volumes": [
                         {

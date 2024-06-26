@@ -345,7 +345,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 280,
         "route": "/. TYRES",
-        "waypoints": "PROVN/ho MCHLN/a11000 TYRES/h004"
+        "waypoints": "PROVN N033.55.53.562,W081.58.05.906/ho MCHLN/a11000 TYRES/h004"
       }
     ],
     "RCTOR2": [
@@ -378,7 +378,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "route": "/. UNMAN",
-        "waypoints": "LUVTT/ho/s250/a11000 RCTOR/a7000 UNMAN/h181"
+        "waypoints": "LUVTT/s250/a11000 N035.28.03.174,W082.22.49.198/ho RCTOR/a7000 UNMAN/h181"
       }
     ],
     "JUNNR3": [
@@ -408,7 +408,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 280,
         "route": "/. SPA",
-        "waypoints": "KWOOD/ho TANCE/a10000 SPA/h264"
+        "waypoints": "KWOOD N035.09.38.540,W081.13.00.331/ho TANCE/a10000 SPA/h264"
       }
     ]
   },
@@ -567,6 +567,36 @@
   },
   "stars_config": {
   "center": "KGSP",
+  "coordination_fixes": {
+    "ANGRI": [
+      {
+          "type": "route",
+          "to": "GSP",
+          "from": "ZTL"
+      }
+      ],
+      "MCHLN": [
+          {
+              "type": "route",
+              "to": "GSP",
+              "from": "ZTL"
+          }
+      ],
+      "RCTOR": [
+          {
+              "type": "route",
+              "to": "GSP",
+              "from": "ZTL"
+          }
+      ],
+      "TANCE": [
+          {
+              "type": "route",
+              "to": "GSP",
+              "from": "ZTL"
+          }
+      ]
+  },
   "radar_sites": {
       "GSP": {
         "char": "G",

@@ -338,6 +338,36 @@
     }
   },
   "stars_config": {
+    "coordination_fixes": {
+            "CRAZI": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "BGHRN": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "KUSTR": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "YLSTN": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ]
+        },
     "center": "KBIL",
     "scratchpads": {},
       "stars_maps": ["STARS-BIL_E-FLOW__East Flow Map", "STARS-BIL_W-FLOW__West Flow Map", "STARS-BIL_E-APP__East Flow Approaches",

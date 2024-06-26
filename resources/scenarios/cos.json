@@ -582,7 +582,7 @@
         "initial_controller": "PUB_APP",
         "initial_speed": 160,
         "route": "KCOS",
-        "waypoints": "N038.18.27.106,W104.38.51.298 N038.21.18.080,W104.38.42.427/ho"
+        "waypoints": "N038.18.27.106,W104.38.51.298 PUB/ho BRK"
       }
     ],
     "DEN.NW": [
@@ -798,6 +798,43 @@
   },
   "stars_config": {
   "center": "N038.47.36.733,W104.35.10.501",
+  "coordination_fixes": {
+    "OZZZY": [
+         {
+          "type": "route",
+          "to": "COS",
+          "from": "ZDV"
+         }
+      ],
+      "FSHER": [
+          {
+              "type": "route",
+              "to": "COS",
+              "from": "ZDV"
+          }
+      ],
+      "LUFSE": [
+          {
+              "type": "route",
+              "to": "COS",
+              "from": "ZDV"
+          }
+      ],
+      "PUB": [
+          {
+              "type": "route",
+              "to": "COS",
+              "from": "ZDV"
+          }
+      ],
+      "ADANE": [
+          {
+              "type": "route",
+              "to": "COS",
+              "from": "ZDV"
+          }
+      ]
+  },
   "inhibit_ca_volumes": [
     {
         "name": "COS NO CA",

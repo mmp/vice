@@ -458,7 +458,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "route": "/. KIOSK",
-        "waypoints": "KOCEY/ho KIOSK/s250/h272"
+        "waypoints": "N033.35.22.819,W085.27.19.242 KOCEY/ho KIOSK/s250/h272"
       }
     ],
       "KIOSK6": [
@@ -493,7 +493,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 290,
         "route": "/. KIOSK",
-        "waypoints": "KOCEY/ho KIOSK/h272"
+        "waypoints": "N033.35.43.927,W085.25.08.505 KOCEY/ho KIOSK/h272"
       }
     ],
     "NULLS24": [
@@ -522,7 +522,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "route": "/. NULLS",
-        "waypoints": "QECKE/ho NULLS/s250/h166"
+        "waypoints": "N034.24.23.557,W086.56.49.881 QECKE/ho NULLS/s250/h166"
       }
     ],
     "NULLS6": [
@@ -551,7 +551,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "route": "/. NULLS",
-        "waypoints": "QECKE/ho NULLS/s250/h166"
+        "waypoints": "N034.23.43.265,W086.56.22.141 QECKE/ho NULLS/s250/h166"
       }
     ],
     "NESTS6": [
@@ -574,7 +574,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "route": "/. NESTS",
-        "waypoints": "BESOM/ho NESTS/s250/h099"
+        "waypoints": "N033.34.20.691,W087.47.20.652 BESOM/ho NESTS/s250/h099"
       }
     ],
     "NESTS24": [
@@ -597,7 +597,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "route": "/. NESTS",
-        "waypoints": "BESOM/ho NESTS/s250/h099"
+        "waypoints": "N033.33.30.896,W087.52.40.272 BESOM/ho NESTS/s250/h099"
       }
     ],
     "HERKO6": [
@@ -620,7 +620,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "route": "/. HERKO",
-        "waypoints": "IXUSE/ho HERKO/s250/h013"
+        "waypoints": "N032.53.51.806,W086.44.57.912 IXUSE/ho HERKO/s250/h013"
       }
     ],
     "HERKO24": [
@@ -643,7 +643,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "route": "/. HERKO",
-        "waypoints": "IXUSE/ho HERKO/s250/h013"
+        "waypoints": "N032.53.32.402,W086.42.21.824 IXUSE/ho HERKO/s250/h013"
       }
     ],
     "SHIMS": [
@@ -670,7 +670,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 290,
         "route": "/. EXIST SHIMS",
-        "waypoints": "EXIST/ho SHIMS/h122"
+        "waypoints": "N034.05.27.447,W087.43.13.020 EXIST/ho SHIMS/h122"
       }
     ],
     "DIODE24": [
@@ -693,7 +693,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "route": "/. DIODE",
-        "waypoints": "CIVMA/ho DIODE/s250/h211"
+        "waypoints": "N034.28.50.731,W085.47.13.181 CIVMA/ho DIODE/s250/h211"
       }
     ],
     "DIODE6": [
@@ -716,7 +716,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 250,
         "route": "/. DIODE",
-        "waypoints": "CIVMA/ho DIODE/s250/h211"
+        "waypoints": "N034.27.32.124,W085.49.13.207 CIVMA/ho DIODE/s250/h211"
       }
     ],
     "WANDS": [
@@ -739,7 +739,7 @@
         "initial_controller": "ATL_CTR",
         "initial_speed": 290,
         "route": "/. WANDS",
-        "waypoints": "FAYEZ/ho WANDS/h326"
+        "waypoints": "N032.54.36.287,W086.06.45.972 FAYEZ/ho WANDS/h326"
       }
     ]
   },
@@ -951,6 +951,64 @@
     }
   },
     "stars_config": {
+  "coordination_fixes": {
+    "EXIST": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "CIVMA": [
+      {
+          "type": "route",
+           "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "FAYEZ": [
+      {
+          "type": "route",
+           "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "IXUSE": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "BESOM": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "QECKE": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "KOCEY": [
+      {
+          "type": "route",
+           "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "BOYDD": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ]
+  },
   "center": "KBHM",
   "inhibit_ca_volumes": [
     {

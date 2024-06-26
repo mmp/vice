@@ -631,6 +631,10 @@
         "Name": "Tucson TRACON",
         "ARTCC": "ZAB"
     },
+    "WRI": {
+        "Name": "McGuire RAPCON",
+        "ARTCC": "ZNY"
+    },
     "Y90": {
         "Name": "Yankee TRACON",
         "ARTCC": "ZBW"

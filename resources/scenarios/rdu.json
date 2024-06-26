@@ -1464,7 +1464,7 @@
                         "23R": "ALDAN/a9000-12000/s250 GAZER/a9000- HARSH/a8000-9000/s210 BUTTS/a6000/flyover/h143"
                     }
                 },
-                "waypoints": "MCDON/a17000-/ho FAVKO/a12000- ALDAN/a9000-12000/s250"
+                "waypoints": "MCDON/a17000- N036.36.33.653,W078.59.31.160/ho FAVKO/a12000- ALDAN/a9000-12000/s250"
             }
         ],
         "BLOGS3": [
@@ -1533,7 +1533,7 @@
                         "5R": "CABED/a8000-9000 ORLAC/a8000/s220 OCHRE/a7000+ STINT/a6000/s210/flyover/h234"
                     }
                 },
-                "waypoints": "VEJAY/ho BLOGS/a11000-12000/s250 CABED/a8000-9000"
+                "waypoints": "TILTZ VEJAY/ho BLOGS/a11000-12000/s250 CABED/a8000-9000"
             }
         ],
         "DMSTR2": [
@@ -1593,7 +1593,7 @@
                         "23R": "DMSTR WISPY/a11000-12000/s280 CAKEY/a8000 FRETO/a7000+/s220 ORENG GLEYS/a6000/s210/flyover/h54"
                     }
                 },
-                "waypoints": "ETBUY/ho DMSTR"
+                "waypoints": "HOGIL ETBUY/ho DMSTR"
             }
         ],
         "TAQLE2": [
@@ -1683,7 +1683,7 @@
                         "23R": "KAROO/a12000- ESELL/a6000/s210/flyover/h267"
                     }
                 },
-                "waypoints": "DUFFI/ho TAQLE/a10000-17000 KAROO/a12000-"
+                "waypoints": "BEETN DUFFI/ho TAQLE/a10000-17000 KAROO/a12000-"
             }
         ]
     },
@@ -1894,6 +1894,36 @@
     },
     "stars_config": {
         "center": "KRDU",
+        "coordination_fixes": {
+            "FAVKO": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "VEJAY": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "DMSTR": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "TAQLE": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ]
+        },
         "airspace_awareness": [
             {
                 "fixes": [

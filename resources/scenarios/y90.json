@@ -1,970 +1,583 @@
 {
-    "tracon": "Y90",
-    "airports": {
-        "KBDL": {
-            "approaches": {
-                "I6": {
-                    "cifp_id": "I6"
-                },
-                "I33": {
-                    "cifp_id": "I33"
-                },
-                "I24": {
-                    "cifp_id": "I24"
-                }
-            },
-            "departure_routes": {
-                "6": {
-                    "PVD": {
-                        "cleared_altitude": 4000,
-                        "sid": "BDL6",
-                        "waypoints": "PVD/a4000/h064"
-                    },
-                    "CTR": {
-                        "cleared_altitude": 4000,
-                        "sid": "BDL6",
-                        "waypoints": "CTR/a4000/h064"
-                    }
-                },
-                "33": {
-                    "VEERS": {
-                        "cleared_altitude": 4000,
-                        "sid": "BDL6",
-                        "waypoints": "VEERS/a4000/h330"
-                    },
-                    "MAD": {
-                        "cleared_altitude": 4000,
-                        "sid": "BDL6",
-                        "waypoints": "MAD/a4000/h330"
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ],
-                    "destination": "KBOS",
-                    "exit": "PVD",
-                    "route": "PVD WOONS ROBUC3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ],
-                    "destination": "KSJC",
-                    "exit": "VEERS",
-                    "route": "VEERS PWL IGN Q480 AIR J80 ILC KNGRY RAZRR4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ],
-                    "destination": "KPHX",
-                    "exit": "VEERS",
-                    "route": "VEERS PWL IGN Q480 AIR J110 STL BUM ICT LBL FTI J244 ZUN EAGUL6"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "ASA",
-                            "fleet": "short"
-                        }
-                    ],
-                    "destination": "KSEA",
-                    "exit": "CTR",
-                    "route": "CTR CAM ARNII NOVON KENPA COLDD TTAIL Q140 LEWIT MLP GLASR1"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "JBU"
-                        }
-                    ],
-                    "destination": "KJFK",
-                    "exit": "MAD",
-                    "route": "MAD V1 DPK"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SKW"
-                        }
-                    ],
-                    "destination": "KSFO",
-                    "exit": "CTR",
-                    "route": "CTR CAM Q822 GONZZ ROC KELTI Q812 AGDOX Q816 HOCKE MONEE DABJU SUDDS BAE J16 SIBER VIKNG ROKKK MAASI SAUGI NUXRO HAAND CYS J148 MTU GAROT CNT TATOO INYOE DYAMD5"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "NKS"
-                        }
-                    ],
-                    "destination": "KLAS",
-                    "exit": "CTR",
-                    "route": "CTR HNK WOZEE DAYYY GRB KP87I SCHEP KP84E KP81C KD78A KEEFF BFF EKR KU54Q PROMT Q88 HAKMN ANJLL4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KOAK",
-                    "exit": "CTR",
-                    "route": "CTR CAM ARNII Q816 HOCKE Q935 MONEE BAE J16 MCW J148 ONL J94 BFF J157 MTU J148 DTA TATOO MONOH OAKES2"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SKW"
-                        }
-                    ],
-                    "destination": "KSLC",
-                    "exit": "CTR",
-                    "route": "CTR HNK CFB RAAKK GETCH DABJU KG81M HILRO EMORE CUDET FSD KP81C GUDDY KD78W DDY NORDK6"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "EJA"
-                        }
-                    ],
-                    "destination": "TJIG",
-                    "exit": "MAD",
-                    "route": "MAD GEDIC Y486 SAVIK L455 LENNT M423 PLING RTE7 SAALR SJU"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SKW"
-                        }
-                    ],
-                    "destination": "KEUG",
-                    "exit": "CTR",
-                    "route": "CTR CAM ARNII Q816 AGDOX NOSIK TVC KP90M STC KP06A LEM BIL KU03O BKE"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KRDM",
-                    "exit": "CTR",
-                    "route": "CTR CAM ARNII Q816 AGDOX NOSIK TVC KP90M STC KP06A LEM BIL KU03O BKE"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "FDX"
-                        }
-                    ],
-                    "destination": "KSLE",
-                    "exit": "CTR",
-                    "route": "CTR ALB SYR Q812 AHPAH Q140 LEWIT PDT J16 KOTAA TIMEE"
-                }
-            ],
-            "exit_categories": {
-                "HFD": "South",
-                "CTR": "Northwest",
-                "GDM": "Northeast",
-                "BAF": "North",
-                "PVD": "East",
-                "GON": "Southeast",
-                "MAD": "South",
-                "VEERS": "West"
-            },
-            "tower_list": 3
-        },
-        "KHFD": {
-            "approaches": {
-                "R2": {
-                    "cifp_id": "R2"
-                },
-                "RV20": {
-                    "full_name": "CT River Visual Runway 20",
-                    "type": "Visual",
-                    "waypoints": [
-                        "CRV/a1500"
-                    ],
-                    "runway": "20"
-                }
-            },
-            "departure_routes": {
-                "2": {
-                    "CCC": {
-                        "cleared_altitude": 4000,
-                        "sid": "CSTL9",
-                        "waypoints": "CCC/a6000"
-                    }
-                },
-                "20": {
-                    "CCC": {
-                        "cleared_altitude": 4000,
-                        "sid": "CSTL9",
-                        "waypoints": "CCC/a6000"
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KJFK",
-                    "exit": "CCC",
-                    "route": "CCC ROBER2"
-                }
-            ]
-        },
-        "KORH": {
-            "approaches": {
-                "R33": {
-                    "cifp_id": "R33",
-                    "runway": "33"
-                },
-                "D33": {
-                    "cifp_id": "D33",
-                    "runway": "33"
-                },
-                "V11": {
-                    "full_name": "College Visual Runway 11",
-                    "type": "Visual",
-                    "runway": "11",
-                    "waypoints": ["WV/a2000"]
-                }
-                
-            },
-            "departure_routes": {
-                "33": {
-                    "THUMB": {
-                        "cleared_altitude": 3000
-                    },
-                    "MAD": {
-                        "cleared_altitude": 3000
-                    }
-                },
-                "11": {
-                    "THUMB": {
-                        "cleared_altitude": 3000
-                    },
-                    "MAD": {
-                        "cleared_altitude": 3000
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KISP",
-                    "exit": "MAD",
-                    "route": "MAD BELTT"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KHFD",
-                    "exit": "THUMB",
-                    "route": "THUMB"
-                }
-            ]
-        },
-        "KCEF": {
-            "approaches": {
-                "I5": {
-                    "type": "ILS",
-                    "waypoints": ["FOBBS/arc18.24 WHALY HERKK/hilpt BIGEE"],
-                    "runway": "5",
-                    "tower_controller": "CEF_TWR"
-                },
-                "I23": {
-                    "type": "ILS",
-                    "waypoints": ["FOBBS/arc13 BEENS BELCH/hilpt"],
-                    "runway": "23",
-                    "tower_controller": "CEF_TWR"
-                }
-            },
-            "departure_routes": {
-                "5": {
-                    "THUMB": {
-                        "cleared_altitude": 3000
-                    },
-                    "MAD": {
-                        "cleared_altitude": 3000
-                    }
-                },
-                "33": {
-                    "THUMB": {
-                        "cleared_altitude": 3000
-                    },
-                    "MAD": {
-                        "cleared_altitude": 3000
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KISP",
-                    "exit": "MAD",
-                    "route": "MAD BELTT"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KHFD",
-                    "exit": "THUMB",
-                    "route": "THUMB"
-                }
-            ]
-        },
-        "KBAF": {
-            "approaches": {
-                "S2": {
-                    "cifp_id": "S2",
-                    "runway": "2"
-                },
-                "R20": {
-                    "cifp_id": "R20",
-                    "runway": "20"
-                },
-                "V15": {
-                    "full_name": "Cemetary Visual Runway 15",
-                    "type": "Visual",
-                    "runway": "15",
-                    "waypoints": ["BV/a2000"]
-                },
-                "V33": {
-                    "full_name": "Visual Runway 33",
-                    "type": "Visual",
-                    "runway": "33",
-                    "waypoints": ["BGE/a2000"]
-                }
-                
-            },
-            "departure_routes": {
-                "2": {
-                    "THUMB": {
-                        "cleared_altitude": 3000
-                    },
-                    "MAD": {
-                        "cleared_altitude": 3000
-                    }
-                },
-                "33": {
-                    "THUMB": {
-                        "cleared_altitude": 3000
-                    },
-                    "MAD": {
-                        "cleared_altitude": 3000
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KISP",
-                    "exit": "MAD",
-                    "route": "MAD BELTT"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KHFD",
-                    "exit": "THUMB",
-                    "route": "THUMB"
-                }
-            ]
-        }
-    },
-    "arrival_groups": {
-        "DPK3": [
-            {
-                "airlines": {
-                    "KBDL": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "DAL"
-                        },
-                        {
-                            "airport": "KCOS",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KMSP",
-                            "icao": "UAL"
-                        }
-                    ]
-                },
-                "cruise_altitude": 36000,
-                "initial_altitude": 24000,
-                "initial_controller": "BOS_37_CTR",
-                "initial_speed": 250,
-                "star": "DPK3",
-                "waypoints": "DPK/a19000 BELTT/ho MAD/a11000 BRISS"
-            }
-        ],
-        "STELA1.Jets": [
-            {
-                "airlines": {
-                    "KBDL": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KCOS",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KMSP",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 36000,
-                "initial_altitude": 24000,
-                "initial_controller": "BOS_37_CTR",
-                "initial_speed": 250,
-                "star": "STELA1",
-                "waypoints": "SYR WILET RKA SWEDE/a23000 CANAN/ho STELA/a11000 MOLDS TOMES"
-            }
-        ],
-        "STELA1.Ga": [
-            {
-                "airlines": {
-                    "KBDL": [
-                        {
-                            "airport": "KMDW",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KSBN",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KSYR",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KPIT",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KBUF",
-                            "icao": "N"                         
-                        }
-                    ],
-                    "KORH": [
-                        {
-                            "airport": "KMDW",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KSBN",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KSYR",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KPIT",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KBUF",
-                            "icao": "N"                         
-                        }
-                    ],
-                    "KHFD": [
-                        {
-                            "airport": "KMDW",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KSBN",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KSYR",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KPIT",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KBUF",
-                            "icao": "N"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 18000,
-                "initial_altitude": 16000,
-                "initial_controller": "BOS_37_CTR",
-                "initial_speed": 250,
-                "star": "STELA1",
-                "waypoints": "SYR WILET RKA SWEDE/a14000 CANAN/ho STELA/a9000 MOLDS TOMES"
-            }
-        ]
-    },
-    "control_positions": {
-        "BOS_37_CTR": {
-            "frequency": 134700,
-            "full_name": "Boston Center",
-            "scope_char": "C",
-            "sector_id": "C37",
-            "facility_id": "C",
-            "eram_facility": true
-        },
-        "BDL_B_APP": {
-            "frequency": 123950,
-            "full_name": "Bradley Approach",
-            "scope_char": "B",
-            "sector_id": "1B"
-        },
-        "BDL_F_APP": {
-            "frequency": 127225,
-            "full_name": "Bradley Approach",
-            "scope_char": "F",
-            "sector_id": "1F"
-        },
-        "BDL_H_APP": {
-            "frequency": 127800,
-            "full_name": "Bradley Approach",
-            "scope_char": "H",
-            "sector_id": "1H"
-        },
-        "BDL_W_APP": {
-            "frequency": 125350,
-            "full_name": "Bradley Approach",
-            "scope_char": "H",
-            "sector_id": "1H"
-        },
-        "BDL_E_APP": {
-            "frequency": 119000,
-            "full_name": "Bradley Approach",
-            "scope_char": "E",
-            "sector_id": "1E"
-        },
-        "BDL_TWR": {
-            "frequency": 120300,
-            "full_name": "Bradley Tower",
-            "scope_char": "T",
-            "sector_id": "1T"
-        },
-        "HFD_TWR": {
-            "frequency": 119600,
-            "full_name": "Brainard Tower",
-            "scope_char": "H",
-            "sector_id": "1S"
-        },
-        "ORH_TWR": {
-            "frequency": 120500,
-            "full_name": "Worcester Tower",
-            "scope_char": "W",
-            "sector_id": "1W"
-        },
-        "CEF_TWR": {
-            "frequency": 118900,
-            "full_name": "Westover Tower",
-            "scope_char": "C",
-            "sector_id": "1C"
-        },
-        "BAF_TWR": {
-            "frequency": 134850,
-            "full_name": "Westfield Tower",
-            "scope_char": "F",
-            "sector_id": "1F"
-        },
-        "PVD_APP": {
-            "frequency": 123675,
-            "full_name": "Providence Approach",
-            "scope_char": "P",
-            "sector_id": "2P",
-            "facility_id": "1"
-        },
-        "BOS_APP": {
-            "frequency": 133000,
-            "full_name": "Boston Approach",
-            "scope_char": "A",
-            "sector_id": "21D",
-            "facility_id": "2"
-        },
-        "ISP_APP": {
-            "frequency": 120050,
-            "full_name": "New York Approach",
-            "scope_char": "N",
-            "sector_id": "43N",
-            "facility_id": "3"
-        },
-        "ALB_APP": {
-            "frequency": 118050,
-            "full_name": "Albany Approach",
-            "scope_char": "A",
-            "sector_id": "1A",
-            "facility_id": "4"
-        }
-    },
-    "default_scenario": "Y90 RWY 6/33",
-    "fixes": {
-        "_BDL_24": "41.95042067842684, -72.67226068246363",
-        "_BDL_6": "41.93227984351269, -72.69592231050565",
-        "KBDL": "41.93834738587104, -72.68776591312599",
-        "BDL": "41.93834738587104, -72.68776591312599",
-        "CRV": "41.811090869590856, -72.63349544383891",
-        "BV": "42.24302459476532, -72.7923705542953",
-        "BGE": "42.09170103828053, -72.61499963404388",
-        "WV": "42.329245317543226, -71.91885540900438"
-    },
-    "name": "KBDL",
-    "primary_airport": "KBDL",
-    "scenarios": {
-        "Y90 RWY 6/33": {
-            "arrival_runways": [
-                {
-                    "airport": "KBDL",
-                    "runway": "6"
-                },
-                {
-                    "airport": "KBDL",
-                    "runway": "33"
-                },
-                {
-                    "airport": "KHFD",
-                    "runway": "2"
-                },
-                {
-                    "airport": "KORH",
-                    "runway": "11"
-                },
-                {
-                    "airport": "KCEF",
-                    "runway": "5"
-                },
-                {
-                    "airport": "KBAF",
-                    "runway": "15"
-                }
-            ],
-            "arrivals": {
-                "STELA1.Jets": {
-                    "KBDL": 15
-                },
-                "STELA1.Ga": {
-                    "KHFD": 8,
-                    "KORH": 8
-                },
-                "DPK3": {
-                    "KBDL": 18
-                }
-            },
-            "solo_controller": "BDL_B_APP",
-            "multi_controllers": {
-                "default": {
-                    "BDL_B_APP": {
-                        "primary": true,
-                        "departures": [
-                            "KBDL"
-                        ],
-                        "arrivals": [
-                            "DPK3"
-                        ]
-                    },
-                    "BDL_F_APP": {
-                        "backup": "BDL_B_APP"
-                    },
-                    "BDL_H_APP": {
-                        "backup": "BDL_B_APP"
-                    },
-                    "BDL_W_APP": {
-                        "backup": "BDL_B_APP",
-                        "arrivals": [
-                            "STELA1.Ga",
-                            "STELA1.Jets"
-                        ]
-                    },
-                    "BDL_E_APP": {
-                        "backup": "BDL_B_APP"
-                    }
-                }
-            },
-            "controllers": [
-                "BDL_TWR",
-                "BDL_B_APP",
-                "BDL_F_APP",
-                "BDL_H_APP",
-                "BDL_W_APP",
-                "BDL_E_APP",
-                "BOS_37_CTR",
-                "HFD_TWR",
-                "ORH_TWR",
-                "PVD_APP",
-                "BOS_APP",
-                "ISP_APP",
-                "ALB_APP"
-            ],
-            "default_maps": [
-                "Y90 RWY 6/33",
-                "BDL_TWR 6/33",
-                "Y90 COASTLINE"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "KBDL",
-                    "rate": 20,
-                    "runway": "6"
-                },
-                {
-                    "airport": "KBDL",
-                    "rate": 20,
-                    "runway": "33"
-                },
-                {
-                    "airport": "KHFD",
-                    "rate": 10,
-                    "runway": "2"
-                },
-                {
-                    "airport": "KORH",
-                    "rate": 10,
-                    "runway": "33"
-                },
-                {
-                    "airport": "KCEF",
-                    "rate": 7,
-                    "runway": "5"
-                },
-                {
-                    "airport": "KBAF",
-                    "rate": 8,
-                    "runway": "2"
-                }
-            ],
-            "wind": {
-                "direction": 0,
-                "gust": 0,
-                "speed": 0
-            }
-        },
-        "Y90 RWY 24/33": {
-            "arrival_runways": [
-                {
-                    "airport": "KBDL",
-                    "runway": "24"
-                },
-                {
-                    "airport": "KBDL",
-                    "runway": "33"
-                },
-                {
-                    "airport": "KHFD",
-                    "runway": "20"
-                },
-                {
-                    "airport": "KORH",
-                    "runway": "33"
-                },
-                {
-                    "airport": "KCEF",
-                    "runway": "23"
-                },
-                {
-                    "airport": "KBAF",
-                    "runway": "33"
-                }
-            ],
-            "arrivals": {
-                "STELA1.Jets": {
-                    "KBDL": 15
-                },
-                "STELA1.Ga": {
-                    "KHFD": 8,
-                    "KORH": 8
-                },
-                "DPK3": {
-                    "KBDL": 15
-                }
-            },
-            "solo_controller": "BDL_B_APP",
-            "multi_controllers": {
-                "default": {
-                    "BDL_B_APP": {
-                        "primary": true,
-                        "departures": [
-                            "KBDL"
-                        ],
-                        "arrivals": [
-                            "DPK3"
-                        ]
-                    },
-                    "BDL_F_APP": {
-                        "backup": "BDL_B_APP"
-                    },
-                    "BDL_H_APP": {
-                        "backup": "BDL_B_APP"
-                    },
-                    "BDL_W_APP": {
-                        "backup": "BDL_B_APP",
-                        "arrivals": [
-                            "STELA1.Ga",
-                            "STELA1.Jets"
-                        ]
-                    },
-                    "BDL_E_APP": {
-                        "backup": "BDL_B_APP"
-                    }
-                }
-            },
-            "controllers": [
-                "BDL_TWR",
-                "BDL_B_APP",
-                "BDL_F_APP",
-                "BDL_H_APP",
-                "BDL_W_APP",
-                "BDL_E_APP",
-                "BOS_37_CTR",
-                "HFD_TWR",
-                "ORH_TWR",
-                "PVD_APP",
-                "BOS_APP",
-                "ISP_APP"
-            ],
-            "default_maps": [
-                "Y90 RWY 24/33",
-                "BDL_TWR 24/33",
-                "Y90 COASTLINE"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "KBDL",
-                    "rate": 20,
-                    "runway": "6"
-                },
-                {
-                    "airport": "KBDL",
-                    "rate": 20,
-                    "runway": "33"
-                },
-                {
-                    "airport": "KHFD",
-                    "rate": 10,
-                    "runway": "20"
-                },
-                {
-                    "airport": "KORH",
-                    "rate": 10,
-                    "runway": "33"
-                },
-                {
-                    "airport": "KCEF",
-                    "rate": 7,
-                    "runway": "33"
-                },
-                {
-                    "airport": "KBAF",
-                    "rate": 8,
-                    "runway": "33"
-                }
-            ],
-            "wind": {
-                "direction": 260,
-                "gust": 10,
-                "speed": 5
-            }
-        }
-    },
-    "stars_config": {
-        "center": "41.935711707565986, -72.6940381965002",
-        "radar_sites": {
-            "KBDL": {
-                "char": "Y",
-                "position": "KBDL",
-                "elevation": 173,
-                "primary_range": 60,
-                "secondary_range": 120,
-                "slope_angle": 0.175
-            }
-        },
-        "scratchpads": {
-            "HFD": "HFD",
-            "CTR": "CTR",
-            "GDM": "GDM",
-            "BAF": "BAF",
-            "PVD": "PVD",
-            "GON": "GON",
-            "MAD": "MAD",
-            "VEERS": "VEERS",
-            "CCC": "CCC",
-            "THUMB": "THUMB,"
-        },
-        "stars_maps": [
-            "Y90 RWY 6/33",
-            "Y90 SATS FAC",
-            "Y90 COASTLINE",
-            "BDL_TWR 6/33",
-            "BDL_TWR 24/33",
-            "Y90 RWY 24/33"
-        ],
-        "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
-    }
+	"tracon": "Y90",
+	"airports": {
+		"KBDL": {
+			"approaches": {
+				"I6": {
+					"cifp_id": "I6"
+				},
+				"I33": {
+					"cifp_id": "I33"
+				},
+				"I24": {
+					"cifp_id": "I24"
+				}
+			},
+			"departure_routes": {
+				"6": {
+					"PVD": {
+						"cleared_altitude": 4000,
+						"sid": "BDL6",
+						"waypoints": "PVD/a4000/h064"
+					},
+					"CTR": {
+						"cleared_altitude": 4000,
+						"sid": "BDL6",
+						"waypoints": "CTR/a4000/h064"
+					}
+				},
+				"33": {
+					"VEERS": {
+						"cleared_altitude": 4000,
+						"sid": "BDL6",
+						"waypoints": "VEERS/a4000/h330"
+					},
+					"MAD": {
+						"cleared_altitude": 4000,
+						"sid": "BDL6",
+						"waypoints": "MAD/a4000/h330"
+					}
+				}
+			},
+			"departures": [
+				{
+					"airlines": [
+						{
+							"icao": "SWA",
+							"fleet": "short"
+						}
+					],
+					"destination": "KBOS",
+					"exit": "PVD",
+					"route": "PVD WOONS ROBUC3"
+				},
+				{
+					"airlines": [
+						{
+							"icao": "SWA",
+							"fleet": "short"
+						}
+					],
+					"destination": "KSJC",
+					"exit": "VEERS",
+					"route": "VEERS PWL IGN Q480 AIR J80 ILC KNGRY RAZRR4"
+				},
+				{
+					"airlines": [
+						{
+							"icao": "SWA",
+							"fleet": "short"
+						}
+					],
+					"destination": "KPHX",
+					"exit": "VEERS",
+					"route": "VEERS PWL IGN Q480 AIR J110 STL BUM ICT LBL FTI J244 ZUN EAGUL6"
+				},
+				{
+					"airlines": [
+						{
+							"icao": "ASA",
+							"fleet": "short"
+						}
+					],
+					"destination": "KSEA",
+					"exit": "CTR",
+					"route": "CTR CAM ARNII NOVON KENPA COLDD TTAIL Q140 LEWIT MLP GLASR1"
+				},
+				{
+					"airlines": [
+						{
+							"icao": "JBU"
+						}
+					],
+					"destination": "KJFK",
+					"exit": "MAD",
+					"route": "MAD V1 DPK"
+				},
+				{
+					"airlines": [
+						{
+							"icao": "SKW"
+						}
+					],
+					"destination": "KSFO",
+					"exit": "CTR",
+					"route": "CTR CAM Q822 GONZZ ROC KELTI Q812 AGDOX Q816 HOCKE MONEE DABJU SUDDS BAE J16 SIBER VIKNG ROKKK MAASI SAUGI NUXRO HAAND CYS J148 MTU GAROT CNT TATOO INYOE DYAMD5"
+				},
+				{
+					"airlines": [
+						{
+							"icao": "NKS"
+						}
+					],
+					"destination": "KLAS",
+					"exit": "CTR",
+					"route": "CTR HNK WOZEE DAYYY GRB KP87I SCHEP KP84E KP81C KD78A KEEFF BFF EKR KU54Q PROMT Q88 HAKMN ANJLL4"
+				},
+				{
+					"airlines": [
+						{
+							"icao": "SWA"
+						}
+					],
+					"destination": "KOAK",
+					"exit": "CTR",
+					"route": "CTR CAM ARNII Q816 HOCKE Q935 MONEE BAE J16 MCW J148 ONL J94 BFF J157 MTU J148 DTA TATOO MONOH OAKES2"
+				},
+				{
+					"airlines": [
+						{
+							"icao": "SKW"
+						}
+					],
+					"destination": "KSLC",
+					"exit": "CTR",
+					"route": "CTR HNK CFB RAAKK GETCH DABJU KG81M HILRO EMORE CUDET FSD KP81C GUDDY KD78W DDY NORDK6"
+				},
+				{
+					"airlines": [
+						{
+							"icao": "EJA"
+						}
+					],
+					"destination": "TJIG",
+					"exit": "MAD",
+					"route": "MAD GEDIC Y486 SAVIK L455 LENNT M423 PLING RTE7 SAALR SJU"
+				},
+				{
+					"airlines": [
+						{
+							"icao": "SKW"
+						}
+					],
+					"destination": "KEUG",
+					"exit": "CTR",
+					"route": "CTR CAM ARNII Q816 AGDOX NOSIK TVC KP90M STC KP06A LEM BIL KU03O BKE"
+				},
+				{
+					"airlines": [
+						{
+							"icao": "N"
+						}
+					],
+					"destination": "KRDM",
+					"exit": "CTR",
+					"route": "CTR CAM ARNII Q816 AGDOX NOSIK TVC KP90M STC KP06A LEM BIL KU03O BKE"
+				},
+				{
+					"airlines": [
+						{
+							"icao": "FDX"
+						}
+					],
+					"destination": "KSLE",
+					"exit": "CTR",
+					"route": "CTR ALB SYR Q812 AHPAH Q140 LEWIT PDT J16 KOTAA TIMEE"
+				}
+			],
+			"exit_categories": {
+				"HFD": "South",
+				"CTR": "Northwest",
+				"GDM": "Northeast",
+				"BAF": "North",
+				"PVD": "East",
+				"GON": "Southeast",
+				"MAD": "South",
+				"VEERS": "West"
+			},
+			"tower_list": 2
+		},
+		"KHFD": {
+			"approaches": {
+				"R2": {
+					"cifp_id": "R2"
+				},
+				"RV20": {
+					"full_name": "CT River Visual Runway 20",
+					"type": "Visual",
+					"waypoints": ["CRV/a1500"],
+					"runway": "20"
+				}
+			},
+			"departure_routes": {
+				"2": {
+					"CCC": {
+						"cleared_altitude": 4000,
+						"sid": "CSTL9",
+						"waypoints": "CCC/a6000"
+					}
+				},
+				"20": {
+					"CCC": {
+						"cleared_altitude": 4000,
+						"sid": "CSTL9",
+						"waypoints": "CCC/a6000"
+					}
+				}
+			},
+			"departures": [
+				{
+					"airlines": [
+						{
+							"icao": "N"
+						}
+					],
+					"destination": "KJFK",
+					"exit": "CCC",
+					"route": "CCC ROBER2"
+				}
+			]
+		}
+	},
+	"arrival_groups": {
+		"DPK3": [
+			{
+				"airlines": {
+					"KBDL": [
+						{
+							"airport": "KORD",
+							"icao": "AAL"
+						},
+						{
+							"airport": "KDEN",
+							"icao": "DAL"
+						},
+						{
+							"airport": "KCOS",
+							"icao": "SWA"
+						},
+						{
+							"airport": "KBOS",
+							"icao": "JBU"
+						},
+						{
+							"airport": "KDEN",
+							"icao": "SWA"
+						},
+						{
+							"airport": "KMSP",
+							"icao": "UAL"
+						}
+					]
+				},
+				"cruise_altitude": 36000,
+				"initial_altitude": 24000,
+				"initial_controller": "BOS_37_CTR",
+				"initial_speed": 250,
+				"star": "DPK3",
+				"waypoints": "DPK/a19000 BELTT/ho MAD/a11000 BRISS"
+			}
+		],
+		"STELA1": [
+			{
+				"airlines": {
+					"KBDL": [
+						{
+							"airport": "KORD",
+							"icao": "AAL"
+						},
+						{
+							"airport": "KDEN",
+							"icao": "DAL"
+						},
+						{
+							"airport": "KCOS",
+							"icao": "SWA"
+						},
+						{
+							"airport": "KBOS",
+							"icao": "JBU"
+						},
+						{
+							"airport": "KDEN",
+							"icao": "SWA"
+						},
+						{
+							"airport": "KMSP",
+							"icao": "UAL"
+						}
+					],
+					"KHFD": [
+						{
+							"airport": "KALB",
+							"icao": "N"
+						}
+					]
+				},
+				"cruise_altitude": 36000,
+				"initial_altitude": 24000,
+				"initial_controller": "BOS_37_CTR",
+				"initial_speed": 250,
+				"star": "STELA1",
+				"waypoints": "SYR WILET RKA SWEDE/a23000 CANAN/ho STELA/a11000 MOLDS TOMES"
+			}
+		]
+	},
+	"control_positions": {
+		"BOS_37_CTR": {
+			"frequency": 134700,
+			"full_name": "Boston Center",
+			"scope_char": "C",
+			"sector_id": "C37",
+			"facility_id": "C",
+			"eram_facility": true
+		},
+		"BDL_APP": {
+			"frequency": 123950,
+			"full_name": "Bradley Approach",
+			"scope_char": "B",
+			"sector_id": "1B"
+		},
+		"BDL_DEP": {
+			"frequency": 125350,
+			"full_name": "Bradley Departure",
+			"scope_char": "N",
+			"sector_id": "1N"
+		},
+		"BDL_TWR": {
+			"frequency": 120300,
+			"full_name": "Bradley Tower",
+			"scope_char": "T",
+			"sector_id": "1T"
+		},
+		"HFD_TWR": {
+			"frequency": 119600,
+			"full_name": "Brainard Tower",
+			"scope_char": "H",
+			"sector_id": "1S"
+		},
+		"PVD_APP": {
+			"frequency": 123675,
+			"full_name": "Providence Approach",
+			"scope_char": "P",
+			"sector_id": "2P"
+		},
+		"BOS_APP": {
+			"frequency": 133000,
+			"full_name": "Boston Approach",
+			"scope_char": "A",
+			"sector_id": "21D"
+		},
+		"ISP_APP": {
+			"frequency": 120050,
+			"full_name": "New York Approach",
+			"scope_char": "N",
+			"sector_id": "43N"
+		}
+	},
+	"default_scenario": "Y90 RWY 6/33",
+	"fixes": {
+		"_BDL_24": "41.95042067842684, -72.67226068246363",
+		"_BDL_6": "41.93227984351269, -72.69592231050565",
+		"KBDL": "41.93834738587104, -72.68776591312599",
+		"BDL": "41.93834738587104, -72.68776591312599",
+		"CRV": "41.811090869590856, -72.63349544383891"
+	},
+	"name": "KBDL",
+	"primary_airport": "KBDL",
+	"scenarios": {
+		"Y90 RWY 6/33": {
+			"arrival_runways": [
+				{
+					"airport": "KBDL",
+					"runway": "6"
+				},
+				{
+					"airport": "KBDL",
+					"runway": "33"
+				},
+				{
+					"airport": "KHFD",
+					"runway": "2"
+				}
+			],
+			"arrivals": {
+				"STELA1": {
+					"KBDL": 15,
+					"KHFD": 3
+				},
+				"DPK3": {
+					"KBDL": 18
+				}
+			},
+			"solo_controller": "BDL_APP",
+			"multi_controllers": {
+				"default": {
+					"BDL_DEP": {
+						"primary": true,
+						"departures": [
+							"KBDL"
+						]
+					},
+					"BDL_APP": {
+						"backup": "BDL_DEP",
+						"arrivals": [
+							"STELA1",
+							"DPK3"
+						]
+					}
+				}
+			},
+			"controllers": [
+				"BDL_TWR",
+				"BDL_APP",
+				"BOS_37_CTR",
+				"HFD_TWR",
+				"PVD_APP",
+				"BOS_APP",
+				"ISP_APP"
+			],
+			"default_maps": [
+				"Y90 RWY 6/33",
+				"BDL_TWR 6/33",
+				"Y90 COASTLINE"
+			],
+			"departure_runways": [
+				{
+					"airport": "KBDL",
+					"rate": 20,
+					"runway": "6"
+				},
+				{
+					"airport": "KBDL",
+					"rate": 20,
+					"runway": "33"
+				},
+			{
+				"airport": "KHFD",
+				"rate": 20,
+				"runway": "2"
+			}
+			],
+			"wind": {
+				"direction": 260,
+				"gust": 10,
+				"speed": 5
+			}
+		},
+		"Y90 RWY 24/33": {
+			"arrival_runways": [
+				{
+					"airport": "KBDL",
+					"runway": "24"
+				},
+				{
+					"airport": "KBDL",
+					"runway": "33"
+				},
+				{
+					"airport": "KHFD",
+					"runway": "20"
+				}
+			],
+			"arrivals": {
+				"STELA1": {
+					"KBDL": 15,
+					"KHFD": 12
+				},
+				"DPK3": {
+					"KBDL": 15
+				}
+			},
+			"solo_controller": "BDL_APP",
+			"multi_controllers": {
+				"default": {
+					"BDL_DEP": {
+						"primary": true,
+						"departures": [
+							"KBDL"
+						]
+					},
+					"BDL_APP": {
+						"backup": "BDL_DEP",
+						"arrivals": [
+							"STELA1",
+							"DPK3"
+						]
+					}
+				}
+			},
+			"controllers": [
+				"BDL_TWR",
+				"BDL_APP",
+				"BOS_37_CTR",
+				"HFD_TWR",
+				"PVD_APP",
+				"BOS_APP",
+				"ISP_APP"
+			],
+			"default_maps": [
+				"Y90 RWY 24/33",
+				"BDL_TWR 24/33",
+				"Y90 COASTLINE"
+			],
+			"departure_runways": [
+				{
+					"airport": "KBDL",
+					"rate": 20,
+					"runway": "6"
+				},
+				{
+					"airport": "KBDL",
+					"rate": 20,
+					"runway": "33"
+				},
+				
+				{	
+					"airport": "KHFD",
+					"rate": 20,
+					"runway": "20"
+				}
+			],
+			"wind": {
+				"direction": 260,
+				"gust": 10,
+				"speed": 5
+			}
+		}
+	},
+	"stars_config": {
+		"center": "41.935711707565986, -72.6940381965002",
+		"coordination_fixes": {
+			"MAD": [
+				{
+						"type": "route",
+						"to": "Y90",
+						"from": "ZBW"
+				}
+		],
+		"STELA": [
+				{
+						"type": "route",
+						"to": "Y90",
+						"from": "ZBW"
+				}
+		]
+		},
+		"radar_sites": {
+			"KBDL": {
+				"char": "Y",
+				"position": "KBDL",
+				"elevation": 173,
+				"primary_range": 60,
+				"secondary_range": 120,
+				"slope_angle": 0.175
+			}
+		},
+		"scratchpads": {
+			"HFD": "HFD",
+			"CTR": "CTR",
+			"GDM": "GDM",
+			"BAF": "BAF",
+			"PVD": "PVD",
+			"GON": "GON",
+			"MAD": "MAD",
+			"VEERS": "VEERS",
+			"CCC": "CCC"
+		},
+		"stars_maps": [
+                    "Y90 RWY 6/33", "Y90 SATS FAC", "Y90 COASTLINE", "BDL_TWR 6/33", "BDL_TWR 24/33", "Y90 RWY 24/33"
+		],
+		"video_map_file": "videomaps/ZBW-videomaps.gob.zst"
+	}
 }

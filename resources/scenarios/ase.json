@@ -378,7 +378,7 @@
         "initial_controller": "DEN_11_CTR",
         "initial_speed": 210,
         "route": "KASE",
-        "waypoints": "N039.07.43.211,W107.31.40.772/a19000 N039.08.45.805,W107.27.37.672/s210/a17000/ho"
+        "waypoints": "N039.07.43.211,W107.31.40.772/a19000 N039.08.45.805,W107.27.37.672/s210/a17000/ho DBL"
       }
     ]
   },
@@ -456,6 +456,22 @@
   },
   "stars_config": {
   "center": "N039.19.41.442,W106.53.21.361",
+  "coordination_fixes": {
+    "WERNR": [
+       {
+          "type": "route",
+          "to": "ASE",
+          "from": "ZDV"
+        }
+    ],
+    "DBL": [
+        {
+            "type": "route",
+            "to": "ASE",
+            "from": "ZDV"
+        }
+    ]
+  },
   "range": 25,
   "inhibit_ca_volumes": [
     {

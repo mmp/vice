@@ -2346,7 +2346,7 @@
     }
   },
   "arrival_groups": {
-    "ALYNA3": [
+    "ALYNA4": [
       {
         "airlines": {
           "KMCO": [
@@ -2411,7 +2411,7 @@
         "initial_altitude": 18000,
         "initial_controller": "MIA_23_CTR",
         "initial_speed": 300,
-        "star": "ALYNA3",
+        "star": "ALYNA4",
         "runway_waypoints": {
             "KMCO": {
                 "17L": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
@@ -2429,10 +2429,10 @@
             }
         },
         "speed_restriction": 250,
-        "waypoints": "BEAUX/ho SURFR/a14000"
+        "waypoints": "BEAUX N028.54.13.415,W080.13.05.824/ho SURFR/a14000"
       }
     ],
-    "ALYNA3_BNU": [
+    "ALYNA4_BNU": [
       {
         "airlines": {
           "KMCO": [
@@ -2487,12 +2487,12 @@
         "initial_altitude": 15000,
         "initial_controller": "MCO_E_DEP",
         "initial_speed": 300,
-        "star": "ALYNA3",
+        "star": "ALYNA4",
         "speed_restriction": 250,
         "waypoints": "BEAUX SURFR/a14000 ALYNA/ho HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210 _MCO_35R_BITHO/a2500 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
       }
     ],
-    "ALYNA3_BSU": [
+    "ALYNA4_BSU": [
       {
         "airlines": {
           "KMCO": [
@@ -2547,12 +2547,12 @@
         "initial_altitude": 15000,
         "initial_controller": "MCO_E_DEP",
         "initial_speed": 300,
-        "star": "ALYNA3",
+        "star": "ALYNA4",
         "speed_restriction": 250,
         "waypoints": "BEAUX SURFR/a14000/ho ALYNA BANYA/a7000/s210 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540"
       }
     ],
-    "ALYNA3_SFINAL": [
+    "ALYNA4_SFINAL": [
       {
         "airlines": {
           "KMCO": [
@@ -2753,7 +2753,7 @@
         "initial_speed": 250,
         "star": "GOOFY7",
         "speed_restriction": 250,
-        "waypoints": "TRV/ho BAIRN ODDEL SABOT"
+        "waypoints": "TRV N027.46.56.970,W080.43.59.492/ho BAIRN ODDEL SABOT"
       }
     ],
     "FINAL_S_GRNCH5": [
@@ -3779,7 +3779,7 @@
           }
         },
         "speed_restriction": 290,
-        "waypoints": "GRTNG/a17000+/s290/ho GRNCH"
+        "waypoints": "COAXE/a26000- GRTNG/a17000+/s290/ho GRNCH"
       }
     ],
     "GRNCH5_LSU": [
@@ -4115,7 +4115,7 @@
         "initial_speed": 290,
         "star": "GRNCH5",
         "speed_restriction": 290,
-        "waypoints": "GRTNG/a17000+/s290/ho GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210 NAVAL/a4000 ONNER/a3000 HAMMY/a3000 TUFFE/a2200 _MCO_18R/a94"
+        "waypoints": "COAXE/a26000- GRTNG/a17000+/s290/ho GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210 NAVAL/a4000 ONNER/a3000 HAMMY/a3000 TUFFE/a2200 _MCO_18R/a94"
       }
     ],
     "GRNCH5_LNU": [
@@ -4446,12 +4446,12 @@
             }
           ]
         },
-        "initial_altitude": 17000,
+        "initial_altitude": 21000,
         "initial_controller": "JAX_15_CTR",
         "initial_speed": 290,
         "star": "GRNCH5",
         "speed_restriction": 290,
-        "waypoints": "GRTNG/a17000+/s290/ho GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210 _MCO_36L_GRNCH_FINAL/a2500 BERDY/a1600 _MCO_36L/a93"
+        "waypoints": "COAXE/a26000- GRTNG/a17000+/s290/ho GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210 _MCO_36L_GRNCH_FINAL/a2500 BERDY/a1600 _MCO_36L/a93"
       }
     ],
     "GTOUT1": [
@@ -4880,7 +4880,7 @@
         "initial_speed": 280,
         "star": "GTOUT1",
         "speed_restriction": 250,
-        "waypoints": "NICCK/a12000-14000/ho BGBBY/a10000+/s250 GTOUT/a9000-11000 TUGLE BANYA/a7000/s210/h250"
+        "waypoints": "FORYU/a13000+/s280 NICCK/a12000-14000/ho BGBBY/a10000+/s250 GTOUT/a9000-11000 TUGLE BANYA/a7000/s210/h250"
       }
     ],
     "GTOUT1_BSU": [
@@ -5309,7 +5309,7 @@
         "initial_speed": 280,
         "star": "GTOUT1",
         "speed_restriction": 250,
-        "waypoints": "NICCK/a12000-14000/ho BGBBY/a10000+/s250 GTOUT/a9000-11000 TUGLE BANYA/a7000/s210 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540 _MCO_17L/a90"
+        "waypoints": "FORYU/a13000+/s280 NICCK/a12000-14000/ho BGBBY/a10000+/s250 GTOUT/a9000-11000 TUGLE BANYA/a7000/s210 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540 _MCO_17L/a90"
       }
     ],
     "GTOUT1_SFINAL": [
@@ -5779,7 +5779,7 @@
           }
         },
         "speed_restriction": 280,
-        "waypoints": "BRKWL/ho JAFAR CRPIT LAMMP"
+        "waypoints": "DOWNO BRKWL/ho JAFAR CRPIT LAMMP"
       }
     ],
     "JOKRS3": [
@@ -5860,7 +5860,7 @@
         "initial_speed": 250,
         "star": "JOKRS3",
         "speed_restriction": 250,
-        "waypoints": "FAZES/ho MOANS JOKRS ZALEK/h043"
+        "waypoints": "SIMIE FAZES/ho MOANS JOKRS ZALEK/h043"
       }
     ],
     "PRICY3": [
@@ -6067,7 +6067,7 @@
           }
         },
         "speed_restriction": 250,
-        "waypoints": "BULKS/a19000-20000/s280/ho PRICY/a13000-16000"
+        "waypoints": "DECKS BULKS/a19000-20000/s280/ho PRICY/a13000-16000"
       }
     ],
     "PRICY3_LNU": [
@@ -6262,7 +6262,7 @@
         "initial_speed": 280,
         "star": "PRICY3",
         "speed_restriction": 250,
-        "waypoints": "BULKS/a19000-20000/ho PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210 EXBAN/a4000 AMEBE/a3000 BERDY/a1600 RUTNE/a780 _MCO_36L/a93"
+        "waypoints": "DECKS BULKS/a19000-20000/ho PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210 EXBAN/a4000 AMEBE/a3000 BERDY/a1600 RUTNE/a780 _MCO_36L/a93"
       }
     ],
     "PRICY3_LSU": [
@@ -6457,7 +6457,7 @@
         "initial_speed": 280,
         "star": "PRICY3",
         "speed_restriction": 250,
-        "waypoints": "BULKS/a19000/ho PRICY/a15000 BOCCE JUMBA TAYYE/a10000/s250 ARHIP GIRAF/a8000/s220 DVOLA LYENS/a5000/s210 _MCO_18R_PRICY_FINAL/a3000 HAMMY/a3000 TUFFE/a2200 _MCO_18R/a94 "
+        "waypoints": "DECKS BULKS/a19000/ho PRICY/a15000 BOCCE JUMBA TAYYE/a10000/s250 ARHIP GIRAF/a8000/s220 DVOLA LYENS/a5000/s210 _MCO_18R_PRICY_FINAL/a3000 HAMMY/a3000 TUFFE/a2200 _MCO_18R/a94 "
       }
     ],
     "PRICY3_SFINAL": [
@@ -6923,12 +6923,12 @@
             }
           ]
         },
-        "initial_altitude": 15000,
+        "initial_altitude": 19000,
         "initial_controller": "MIA_22_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
         "speed_restriction": 250,
-        "waypoints": "MOOTS/a15000/ho RIDES/a8000+ HAHNA/a6000/s210 SERAY/a4000 FESHA/a3000 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
+        "waypoints": "CHEFS/a19000-21000/s280 MOOTS/a15000/ho RIDES/a8000+ HAHNA/a6000/s210 SERAY/a4000 FESHA/a3000 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
       }
     ],
     "RIDES2_BSU": [
@@ -6999,12 +6999,12 @@
             }
           ]
         },
-        "initial_altitude": 15000,
+        "initial_altitude": 19000,
         "initial_controller": "MIA_22_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
         "speed_restriction": 250,
-        "waypoints": "MOOTS/a15000/ho RIDES THEAM/a10000 PARRX/a10000/s250 HAANZ/a8000/s220 PTMAN/a5000/s210 _MCO_17L_BITHO COCAS/a1500 JAXES/a540 _MCO_17L/a90"
+        "waypoints": "CHEFS/a19000-21000/s280 MOOTS/a15000/ho RIDES THEAM/a10000 PARRX/a10000/s250 HAANZ/a8000/s220 PTMAN/a5000/s210 _MCO_17L_BITHO COCAS/a1500 JAXES/a540 _MCO_17L/a90"
       }
     ],
     "RIDES2": [
@@ -7075,7 +7075,7 @@
             }
           ]
         },
-        "initial_altitude": 15000,
+        "initial_altitude": 19000,
         "initial_controller": "MIA_22_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
@@ -7092,7 +7092,7 @@
           }
         },
         "speed_restriction": 250,
-        "waypoints": "MOOTS/a15000+/ho RIDES"
+        "waypoints": "CHEFS/a19000-21000/s280 MOOTS/a15000+/ho RIDES"
       }
     ],
     "RIDES2_SFINAL": [
@@ -7165,13 +7165,13 @@
         },
         "cruise_altitude": 39000,
         "expect_approach": "I7L",
-        "initial_altitude": 8000,
+        "initial_altitude": 10000,
         "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "RIDES2",
         "scratchpad": "I7l",
-        "waypoints": "HAANZ/a8000/s220/ho PTMAN/a5000/s210/h006"
+        "waypoints": "PARRX/a9000-11000 HAANZ/a8000/s220/ho PTMAN/a5000/s210/h006"
       }
     ],
     "RIDES2_NFINAL": [
@@ -8106,12 +8106,12 @@
             }
           ]
         },
-        "initial_altitude": 12000,
+        "initial_altitude": 13000,
         "initial_controller": "JAX_58_CTR",
         "initial_speed": 280,
         "star": "SNFLD3",
         "speed_restriction": 250,
-        "waypoints": "NICCK/a12000/ho SNFLD GTOUT/a12000/s280 TUGLE HIGGZ/a10000/s250 VOSSS/a8000/s230 SUNDE/a6000 CUBAL/a5000/s210 _MCO_35R_BITHO/a2500 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
+        "waypoints": "FORYU/a13000+ NICCK/a12000/ho SNFLD GTOUT/a12000/s280 TUGLE HIGGZ/a10000/s250 VOSSS/a8000/s230 SUNDE/a6000 CUBAL/a5000/s210 _MCO_35R_BITHO/a2500 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
       }
     ],
     "SNFLD3": [
@@ -8535,12 +8535,12 @@
             }
           ]
         },
-        "initial_altitude": 12000,
+        "initial_altitude": 13000,
         "initial_controller": "JAX_58_CTR",
         "initial_speed": 280,
         "star": "SNFLD3",
         "speed_restriction": 250,
-        "waypoints": "NICCK/a12000/ho SNFLD GTOUT/a12000/s280 TUGLE HIGGZ/a10000/s250 VOSSS/a8000/s230 SUNDE/a6000 CUBAL/a5000/s210/h186"
+        "waypoints": "FORYU/a13000+ NICCK/a12000/ho SNFLD GTOUT/a12000/s280 TUGLE HIGGZ/a10000/s250 VOSSS/a8000/s230 SUNDE/a6000 CUBAL/a5000/s210"
       }
     ]
   },
@@ -8844,7 +8844,7 @@
         }
       ],
       "arrivals": {
-        "ALYNA3": {
+        "ALYNA4": {
           "KMCO": 5,
           "KSFB": 2
         },
@@ -8876,7 +8876,7 @@
       "solo_controller": "MCO_E_APP",
       "multi_controllers": {
         "default": {
-          "MCO_E_APP": {"primary": true, "departures": ["KMCO/17R"], "arrivals": ["ALYNA3", "DADES1"]},
+          "MCO_E_APP": {"primary": true, "departures": ["KMCO/17R"], "arrivals": ["ALYNA4", "DADES1"]},
           "MCO_W_APP": {"backup": "MCO_E_APP", "departures": ["KMCO/18L"]},
           "MCO_D_APP": {"backup": "MCO_W_APP"},
           "MCO_M_APP": {"backup": "MCO_W_APP"},
@@ -9006,7 +9006,7 @@
         }
       ],
       "arrivals": {
-        "ALYNA3": {
+        "ALYNA4": {
           "KMCO": 5,
           "KSFB": 2
         },
@@ -9038,7 +9038,7 @@
       "solo_controller": "MCO_E_APP",
       "multi_controllers": {
         "default": {
-          "MCO_E_APP": {"primary": true, "departures": ["KMCO/35L"], "arrivals": ["ALYNA3", "DADES1"]},
+          "MCO_E_APP": {"primary": true, "departures": ["KMCO/35L"], "arrivals": ["ALYNA4", "DADES1"]},
           "MCO_W_APP": {"backup": "MCO_E_APP", "departures": ["KMCO/36R"]},
           "MCO_D_APP": {"backup": "MCO_W_APP", "departures": ["KISM"]},
           "MCO_M_APP": {"backup": "MCO_W_APP"},
@@ -9254,7 +9254,7 @@
         "FINAL_S_GRNCH5": {
           "KMCO": 10
         },
-        "ALYNA3_SFINAL": {
+        "ALYNA4_SFINAL": {
           "KMCO": 5
         },
         "GTOUT1_SFINAL": {
@@ -9366,7 +9366,7 @@
         "GTOUT1_BSU": {
           "KMCO": 10
         },
-        "ALYNA3_BSU": {
+        "ALYNA4_BSU": {
           "KMCO": 5
         },
         "RIDES2_BSU": {
@@ -9418,7 +9418,7 @@
         "RIDES2_BSU": {
           "KMCO": 10
         },
-        "ALYNA3_BSU": {
+        "ALYNA4_BSU": {
           "KMCO": 10
         }
         },
@@ -9524,7 +9524,7 @@
         "RIDES2_BNU": {
           "KMCO": 10
         },
-        "ALYNA3_BNU": {
+        "ALYNA4_BNU": {
           "KMCO": 5
         }
       },
@@ -9573,7 +9573,7 @@
         "RIDES2_BNU": {
           "KMCO": 10
         },
-        "ALYNA3_BNU": {
+        "ALYNA4_BNU": {
           "KMCO": 10
         }
         },
@@ -9755,6 +9755,211 @@
   },
   "stars_config": {
   "center": "N028.25.45.781,W081.18.32.260",
+  "coordination_fixes": {
+    "BANYA": [
+      {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+      }
+  ],
+  "YAGGO": [
+      {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+      }
+  ],
+  "SUNDE": [
+      {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+      }
+  ],
+  "GIRAF": [
+      {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+      }
+  ],
+  "HARAM": [
+      {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+      }
+  ],
+  "ALYNA": [
+    {
+        "type": "route",
+        "to": "F11",
+        "from": "ZJX"
+    }
+],
+"WISRD": [
+    {
+        "type": "route",
+        "to": "F11",
+        "from": "ZJX"
+    }
+],
+"HAANZ": [
+    {
+        "type": "route",
+        "to": "F11",
+        "from": "ZJX"
+    }
+],
+    "PLUMR": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "FSHUN": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "KLMAN": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "BORRD": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "VALKA": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "JIPOD": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "ZALEN": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "ETECK": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "FAROV": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "LENDS": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "MLB": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "DDANY": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+    "RIDES": [
+          {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+          }
+      ],
+      "ZINGR": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "PRICY": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "SURFR": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "BAIRN": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "JOKRS": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "GRNCH": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "SNFLD": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "GTOUT": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ]
+  },
   "airspace_awareness": [
     {
         "fixes": [
@@ -9800,7 +10005,9 @@
     },
     {
         "fixes": [
-            "PLUMR"
+            "PLUMR",
+            "FSHUN",
+            "KLMAN"
         ],
         "altitude_range": [
             0,

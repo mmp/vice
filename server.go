@@ -131,10 +131,65 @@ func (s *SimProxy) SetSecondaryScratchpad(callsign string, scratchpad string) *r
 	}, nil, nil)
 }
 
-func (s *SimProxy) InitiateTrack(callsign string) *rpc.Call {
-	return s.Client.Go("Sim.InitiateTrack", &InitiateTrackArgs{
+func (s *SimProxy) AutoAssociateFP(callsign string, fp *STARSFlightPlan) *rpc.Call {
+	return s.Client.Go("Sim.AutoAssociateFP", &InitiateTrackArgs{
+		AircraftSpecifier: AircraftSpecifier{
+			ControllerToken: s.ControllerToken,
+			Callsign:        callsign,
+		},
+		Plan: fp,
+	}, nil, nil)
+}
+
+type CreateUnsupportedTrackArgs struct {
+	ControllerToken  string
+	Callsign         string
+	UnsupportedTrack *UnsupportedTrack
+}
+
+func (s *SimProxy) CreateUnsupportedTrack(callsign string, ut *UnsupportedTrack) *rpc.Call {
+	return s.Client.Go("Sim.CreateUnsupportedTrack", &CreateUnsupportedTrackArgs{
+		ControllerToken:  s.ControllerToken,
+		Callsign:         callsign,
+		UnsupportedTrack: ut,
+	}, nil, nil)
+}
+
+type UploadPlanArgs struct {
+	ControllerToken string
+	Type            int
+	Plan            *STARSFlightPlan
+}
+
+func (s *SimProxy) UploadFlightPlan(Type int, fp *STARSFlightPlan) *rpc.Call {
+	return s.Client.Go("Sim.UploadFlightPlan", &UploadPlanArgs{
 		ControllerToken: s.ControllerToken,
-		Callsign:        callsign,
+		Type:            Type,
+		Plan:            fp,
+	}, nil, nil)
+}
+
+func (s *SimProxy) InitiateTrack(callsign string, fp *STARSFlightPlan) *rpc.Call {
+	return s.Client.Go("Sim.InitiateTrack", InitiateTrackArgs{
+		AircraftSpecifier: AircraftSpecifier{
+			ControllerToken: s.ControllerToken,
+			Callsign:        callsign,
+		},
+		Plan: fp,
+	}, nil, nil)
+}
+
+type IntermTrackArgs struct {
+	Token, Callsign, Initial string
+	fp                       *STARSFlightPlan
+}
+
+func (s *SimProxy) IntermTrack(callsign, initial string, fp *STARSFlightPlan) *rpc.Call {
+	return s.Client.Go("Sim.InitiateTrack", IntermTrackArgs{
+		Token:    s.ControllerToken,
+		Callsign: callsign,
+		Initial:  initial,
+		fp:       fp,
 	}, nil, nil)
 }
 
@@ -251,7 +306,7 @@ func (s *SimProxy) DeleteAircraft(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) RunAircraftCommands(callsign string, cmds string, result *AircraftCommandsResult) *rpc.Call {
+func (s *SimProxy) RunAircraftCommands(callsign string, cmds string, result *AircraftCommandsResult, nextController string) *rpc.Call {
 	return s.Client.Go("Sim.RunAircraftCommands", &AircraftCommandsArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -703,13 +758,40 @@ func (sd *SimDispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *stru
 	}
 }
 
-type InitiateTrackArgs AircraftSpecifier
+func (sd *SimDispatcher) AutoAssociateFP(it *InitiateTrackArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.AutoAssociateFP(it.ControllerToken, it.Callsign, it.Plan)
+	}
+}
+
+type InitiateTrackArgs struct {
+	AircraftSpecifier
+	Plan *STARSFlightPlan
+}
 
 func (sd *SimDispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.InitiateTrack(it.ControllerToken, it.Callsign)
+		return sim.InitiateTrack(it.ControllerToken, it.Callsign, it.Plan)
+	}
+}
+
+func (sd *SimDispatcher) CreateUnsupportedTrack(it *CreateUnsupportedTrackArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.CreateUnsupportedTrack(it.ControllerToken, it.Callsign, it.UnsupportedTrack)
+	}
+}
+
+func (sd *SimDispatcher) UploadFlightPlan(it *UploadPlanArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.UploadFlightPlan(it.ControllerToken, it.Type, it.Plan)
 	}
 }
 
@@ -879,6 +961,7 @@ type AircraftCommandsArgs struct {
 	ControllerToken string
 	Callsign        string
 	Commands        string
+	NextController  string
 }
 
 // If an RPC call returns an error, then the result argument is not returned(!?).
@@ -1071,7 +1154,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 			}
 		case 'F':
 			if command == "FC" {
-				if err := sim.HandoffControl(token, callsign); err != nil {
+				if err := sim.HandoffControl(token, callsign, cmds.NextController); err != nil {
 					rewriteError(err)
 					return nil
 				}
@@ -1197,6 +1280,11 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					rewriteError(err)
 					return nil
 				}
+			} else if len(command) == 6 && command[:2] == "SQ" {
+				if err := sim.ChangeSquawk(token, callsign, command[2:]); err != nil {
+					rewriteError(err)
+					return nil
+				}
 			} else {
 				if kts, err := strconv.Atoi(command[1:]); err != nil {
 					rewriteError(err)
@@ -1206,6 +1294,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					return nil
 				}
 			}
+			fmt.Printf("Command: %s\n", command)
 
 		case 'T':
 			if command == "TO" {

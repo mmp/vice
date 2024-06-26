@@ -1911,7 +1911,7 @@
               "20R": "OLNAH/a6000-11000/s250 GDSTF/a6000+/s250 NUVOO/a6000+/s220 JOGLO/a5000/s210/flyover/h21"
             }
           },
-          "waypoints": "CHSNE/a12000-19000/ho BAWLS/a9000+ JATGO OLNAH/a6000-11000/s250"
+          "waypoints": "CHSNE/a12000-19000 N035.49.05.613,W087.30.17.523/ho BAWLS/a9000+ JATGO OLNAH/a6000-11000/s250"
         }
       ],
       "PASLY4": [
@@ -1977,7 +1977,7 @@
               "20R": "BODDY/a7000-12000/s250 MUUDD/a6000/s250/flyover/h270"
             }
           },
-          "waypoints": "PASLY/a12000-20000/ho CARAP/a10000+ DAANG BODDY/a7000-12000/s250"
+          "waypoints": "PASLY/a12000-20000 N036.32.58.431,W085.49.40.068/ho CARAP/a10000+ DAANG BODDY/a7000-12000/s250"
         }
       ],
       "RYYMN2":[
@@ -2029,7 +2029,7 @@
               "2R":  "OBATE/a6000-12000/s250 JNKNS/a6000+/s250 WAMAR/a5000/s210/flyover/h200"
             }
           },
-          "waypoints": "RYYMN/a11000-19000/ho PEKIE/a10000+ JONIL/a9000+ OBATE/a6000-12000/s250"
+          "waypoints": "RYYMN/a11000-19000 N036.48.06.026,W087.05.18.383/ho PEKIE/a10000+ JONIL/a9000+ OBATE/a6000-12000/s250"
         }
       ],
       "SWFFT2": [
@@ -2085,7 +2085,7 @@
               "20R": "ADAAY/a8000-12000/s250 BRETH/a6000+/s250 CORRA/a6000+/s220 HAKUM SIPPO/a5000/s210/flyover/h21"
             }
           },
-          "waypoints": "SWFFT/a13000-20000/ho HIMAT/a10000+ WEMAL ADAAY/a8000-12000/s250"
+          "waypoints": "SWFFT/a13000-20000 N035.34.40.810,W085.56.53.369/ho HIMAT/a10000+ WEMAL ADAAY/a8000-12000/s250"
         }
       ]
     },
@@ -2300,6 +2300,36 @@
     },
     "stars_config": {
       "center": "KBNA",
+      "coordination_fixes": {
+        "BAWLS": [
+            {
+                "type": "route",
+                "to": "BNA",
+                "from": "ZME"
+            }
+        ],
+        "CARAP": [
+            {
+                "type": "route",
+                "to": "BNA",
+                "from": "ZME"
+            }
+        ],
+        "PEKIE": [
+            {
+                "type": "route",
+                "to": "BNA",
+                "from": "ZME"
+            }
+        ],
+        "HIMAT": [
+            {
+                "type": "route",
+                "to": "BNA",
+                "from": "ZME"
+            }
+        ]
+      },    
       "airspace_awareness": [
         {
           "fixes": [

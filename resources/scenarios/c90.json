@@ -3440,7 +3440,7 @@
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "BYLAW/a20000/ho BENKY/a12000 NEWRK AHSTN"
+                    "waypoints": "BYLAW/a20000 BENKY/a12000/ho NEWRK AHSTN"
                 }
             ],
             "TRTLL6": [
@@ -3516,7 +3516,7 @@
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "TRICH/a14000/ho TRTLL/a11000 HIHRY"
+                    "waypoints": "PNTAC TRICH/a14000/ho TRTLL/a11000 HIHRY"
                 }
             ],
             "BENKY6_FINALWW": [
@@ -3629,7 +3629,7 @@
                             }
                         ]
                     },
-                    "initial_altitude": 7000,
+                    "initial_altitude": 10000,
                     "initial_controller": "CHI_81_CTR",
                     "initial_speed" : 250,
                     "star": "ENDEE6",
@@ -3642,7 +3642,7 @@
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "ENDEE/a7000/s250/ho STKNY/a6000"
+                    "waypoints": "JILLZ/a10000 ENDEE/a7000/s250/ho STKNY/a6000"
                 }
             ],
             "ERNNY8": [
@@ -3685,7 +3685,7 @@
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "SWIIS/ho ERNNY"
+                    "waypoints": "LYNNI PHRLY/ho SWIIS ERNNY"
                 }
             ],
             "FINALW_WN": [
@@ -3892,7 +3892,7 @@
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "AZUMO/ho HALIE/a6000"
+                    "waypoints": "OZZEY AZUMO/ho HALIE/a6000"
                 }
             ],
             "FYTTE7": [
@@ -3972,7 +3972,7 @@
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "CUUPP/ho CHMPN CLSBY/a13000/s270 FYTTE/a11000/s250 MOTRR COGSS MADII"
+                    "waypoints": "CUUPP CHMPN/ho CLSBY/a13000/s270 FYTTE/a11000/s250 MOTRR COGSS MADII"
                 }
             ],
             "FYTTE7_FINALNW": [
@@ -4151,7 +4151,7 @@
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "HOPSS/ho HUNKA MADII"
+                    "waypoints": "ZANDI HOPSS/ho HUNKA MADII"
                 }
             ],
             "PANGG5": [
@@ -4192,7 +4192,7 @@
                             }
                         ]
                     },
-                    "initial_altitude": 7000,
+                    "initial_altitude": 10000,
                     "initial_controller": "CHI_81_CTR",
                     "initial_speed": 250,
                     "star": "PANGG5",
@@ -4205,7 +4205,7 @@
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "IROCK/ho HALIE/a6000"
+                    "waypoints": "AWSUM/a10000 IROCK/ho HALIE/a6000"
                 }
             ],
             "SHAIN2": [
@@ -4256,12 +4256,12 @@
                             }
                         ]
                     },
-                    "initial_altitude": 15000,
+                    "initial_altitude": 17000,
                     "initial_controller": "CHI_81_CTR",
                     "initial_speed": 280,
                     "star": "SHAIN2",
                     "speed_restriction": 250,
-                    "waypoints": "TRIDE/a15000/ho SHAIN/a12000 RAGSS JUMPN NUNWS/h072 "
+                    "waypoints": "FNBAR/a17000 TRIDE/a15000/ho SHAIN/a12000 RAGSS JUMPN NUNWS/h072 "
                 }
             ],
             "VEECK5": [
@@ -4339,7 +4339,7 @@
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "VEECK/ho BOONE/a11000 HANNI CLUSO"
+                    "waypoints": "VEECK BOONE/a11000/ho HANNI CLUSO"
                 }
             ],
             "VEECK5_FINALWW": [
@@ -4479,7 +4479,7 @@
                         "initial_speed": 280,
                         "star": "WATSN4",
                         "speed_restriction": 250,
-                        "waypoints": "PRISE/ho HULLS/a12000 STYLE DWEEB CENAK/h270"
+                        "waypoints": "MKITA PRISE/ho HULLS/a12000 STYLE DWEEB CENAK/h270"
                     }
                 ],
             "WYNDE2": [
@@ -4624,7 +4624,7 @@
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "PAITN/ho WYNDE FIYER/a9000 ERNNY"
+                    "waypoints": "RHIVR PAITN/ho WYNDE FIYER/a9000 ERNNY"
                 }
             ],
             "FIYER": [
@@ -4691,7 +4691,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "FIYER/ho OBK"
+                    "waypoints": "WYNDE FIYER/ho OBK"
                 }
             ],
             "KRENA": [
@@ -4746,7 +4746,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "JVL KRENA/ho"
+                    "waypoints": "JVL N042.30.12.139,W088.55.33.059/ho KRENA/h114"
                 }
             ],
             "PLANO": [
@@ -4890,7 +4890,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "PLANO/ho DPA"
+                    "waypoints": "AHMED SHOOZ/ho PLANO DPA"
                 }
             ],
             "MOTIF": [
@@ -4948,7 +4948,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "MOTIF/ho JOT"
+                    "waypoints": "PNT MOTIF/ho JOT"
                 }
             ]
         },
@@ -7838,6 +7838,134 @@
         },
         "stars_config": {
             "center": "N41.58.34.897,W87.54.27.062",
+            "coordination_fixes": {
+                "NEWRK": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "TRTLL": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "ENDEE": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "SWIIS": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "PAPPI": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "HALIE": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "FYTTE": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "KURKK": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "MADII": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "SHAIN": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "VEECK": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "CLUSO": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "HULLS": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "WYNDE": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "FIYER": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "KRENA": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "PLANO": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "PNT": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ]
+            },
             "airspace_awareness": [
                 {
                     "fixes": ["ALL"],

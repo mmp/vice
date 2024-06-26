@@ -2914,7 +2914,7 @@
         "initial_speed": 250,
         "speed_restriction": 250,
         "star": "CAMRN4",
-        "waypoints": "N040.12.34.307,W073.43.07.417 N040.16.13.896,W073.40.17.843/ho/h040"
+        "waypoints": "N040.12.34.307,W073.43.07.417 N040.16.13.896,W073.40.17.843/ho CREEL/h040"
       }
       ]
   },
@@ -3864,6 +3864,162 @@
   },
   "stars_config": {
     "center": "KJFK",
+    "coordination_fixes": {
+      "MERIT": [
+        {
+            "type": "route",
+            "to": "ZBW",
+            "from": "ZNY"
+        }
+    ],
+    "GREKI": [
+        {
+            "type": "route",
+            "to": "ZBW",
+            "from": "ZNY"
+        }
+    ],
+    "BAYYS": [
+        {
+            "type": "route",
+            "to": "ZBW",
+            "from": "ZNY"
+        }
+    ],
+    "BETTE": [
+        {
+            "type": "route",
+            "to": "ZBW",
+            "from": "ZNY"
+        }
+    ],
+    "HAPIE": [
+        {
+            "type": "route",
+            "to": "ZBW",
+            "from": "ZNY"
+        }
+    ],
+      "CAMRN": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "HTO": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "CCC": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "BELIT": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "JFK": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "SARDI": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "CREAM": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "CMK": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "BDR": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "DPK": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "ZIGGI": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "COL": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "LENDY": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "LOVES": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "NELIE": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "ROBER": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ],
+    "CREEL": [
+        {
+            "type": "route",
+            "to": "N90",
+            "from": "ZNY"
+        }
+    ]
+    },
   "radar_sites": {
     "EWR": {
       "char": "E",

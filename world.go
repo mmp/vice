@@ -55,6 +55,8 @@ type World struct {
 		departures map[string]map[string]map[string]bool // airport->runway->exit
 	}
 
+	ERAMComputers  map[string]*ERAMComputer
+
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
 	TRACON                   string
@@ -102,6 +104,7 @@ func (w *World) Assign(other *World) {
 	w.METAR = DuplicateMap(other.METAR)
 	w.Controllers = DuplicateMap(other.Controllers)
 	w.MultiControllers = DuplicateMap(other.MultiControllers)
+	w.ERAMComputers = other.ERAMComputers
 }
 
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
@@ -252,7 +255,37 @@ func (w *World) SetGlobalLeaderLine(callsign string, dir *CardinalOrdinalDirecti
 		})
 }
 
-func (w *World) InitiateTrack(callsign string, success func(any), err func(error)) {
+func (w *World) CreateUnsupportedTrack(callsign string, ut *UnsupportedTrack, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.CreateUnsupportedTrack(callsign, ut),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) AutoAssociateFP(callsign string, fp *STARSFlightPlan, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.AutoAssociateFP(callsign, fp),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) UploadFlightPlan(fp *STARSFlightPlan, typ int, success func(any), err func(error)) {
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.UploadFlightPlan(typ, fp),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (w *World) InitiateTrack(callsign string, fp *STARSFlightPlan, success func(any), err func(error)) {
 	// Modifying locally is not canonical but improves perceived latency in
 	// the common case; the RPC may fail, though that's fine; the next
 	// world update will roll back these changes anyway.
@@ -262,10 +295,9 @@ func (w *World) InitiateTrack(callsign string, success func(any), err func(error
 	if ac := w.Aircraft[callsign]; ac != nil && ac.TrackingController == "" {
 		ac.TrackingController = w.Callsign
 	}
-
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
-			Call:      w.simProxy.InitiateTrack(callsign),
+			Call:      w.simProxy.InitiateTrack(callsign, fp),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
@@ -298,10 +330,12 @@ func (w *World) HandoffTrack(callsign string, controller string, success func(an
 }
 
 func (w *World) AcceptHandoff(callsign string, success func(any), err func(error)) {
-	if ac := w.Aircraft[callsign]; ac != nil && ac.HandoffTrackController == w.Callsign {
-		ac.HandoffTrackController = ""
-		ac.TrackingController = w.Callsign
-		ac.ControllingController = w.Callsign
+	_, stars := w.SafeFacility("")
+	ac := w.GetAircraft(callsign, false)
+	if ac != nil {
+		if info := stars.TrackInformation[ac.Callsign]; info != nil && info.HandoffController == w.Callsign {
+			ac.ControllingController = w.Callsign
+		}
 	}
 
 	w.pendingCalls = append(w.pendingCalls,
@@ -685,11 +719,11 @@ func (w *World) DeleteAircraft(ac *Aircraft, onErr func(err error)) {
 	}
 }
 
-func (w *World) RunAircraftCommands(callsign string, cmds string, handleResult func(message string, remainingInput string)) {
+func (w *World) RunAircraftCommands(callsign string, cmds, nextController string, handleResult func(message string, remainingInput string)) {
 	var result AircraftCommandsResult
 	w.pendingCalls = append(w.pendingCalls,
 		&PendingCall{
-			Call:      w.simProxy.RunAircraftCommands(callsign, cmds, &result),
+			Call:      w.simProxy.RunAircraftCommands(callsign, cmds, &result, nextController),
 			IssueTime: time.Now(),
 			OnSuccess: func(any) {
 				handleResult(result.ErrorMessage, result.RemainingInput)
@@ -820,10 +854,9 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 	}
 
 	return &Aircraft{
-		Callsign:       callsign,
-		AssignedSquawk: squawk,
-		Squawk:         squawk,
-		Mode:           Charlie,
+		Callsign: callsign,
+		Squawk:   squawk,
+		Mode:     Charlie,
 	}, acType
 }
 
@@ -846,7 +879,9 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.FlightPlan = NewFlightPlan(IFR, acType, airline.Airport, arrivalAirport)
+	// ac.Squawk = artcc.CreateSquawk()
+
+	flightPlan := ac.NewFlightPlan(IFR, acType, airline.Airport, arrivalAirport)
 
 	// Figure out which controller will (for starters) get the arrival
 	// handoff. For single-user, it's easy.  Otherwise, figure out which
@@ -861,16 +896,66 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 			arrivalController = w.PrimaryController
 		}
 	}
+	ac.FlightPlan = flightPlan
 
 	if err := ac.InitializeArrival(w, arrivalGroup, idx, arrivalController, goAround); err != nil {
 		return nil, err
+	}
+	artcc, stars := w.SafeFacility(w.FacilityFromController(ac.TrackingController))
+	sq := artcc.CreateSquawk()
+	ac.FlightPlan.AssignedSquawk = sq
+	ac.Squawk = sq
+
+	if artcc.FlightPlans == nil {
+		artcc.FlightPlans = map[Squawk]*STARSFlightPlan{}
+	}
+	starsFP := &STARSFlightPlan{
+		FlightPlan: *flightPlan,
+	}
+	if artcc.TrackInformation == nil {
+		artcc.TrackInformation = make(map[string]*TrackInformation)
+	}
+	starsFP.CruiseSpeed = int(ac.AircraftPerformance().Speed.CruiseTAS)
+	starsFP.CoordinationFix = starsFP.GetCoordinationFix(w, ac)
+	starsFP.Altitude = fmt.Sprint(flightPlan.Altitude)
+	dist, err := ac.Nav.distanceAlongRoute(starsFP.CoordinationFix)
+	time2 := dist / float32(starsFP.CruiseSpeed) * 60
+	if err == nil {
+		starsFP.CoordinationTime = CoordinationTime{
+			Time: w.SimTime.Add(time.Duration(time2 * float32(time.Minute))),
+		}
+	} else { // zone based fixes.
+		loc := database.Fixes[starsFP.CoordinationFix].Location
+		if loc == (Point2LL{}) {
+			loc = database.Navaids[starsFP.CoordinationFix].Location
+		}
+		dist = nmdistance2ll(ac.Position(), loc)
+		time2 = dist / float32(starsFP.CruiseSpeed) * 60
+		starsFP.CoordinationTime = CoordinationTime{
+			Time: w.SimTime.Add(time.Duration(time2 * float32(time.Minute))),
+		}
+	}
+	artcc.FlightPlans[flightPlan.AssignedSquawk] = starsFP
+	if stars == nil { // coming from an ERAM place
+		artcc.TrackInformation[ac.Callsign] = &TrackInformation{
+			TrackOwner: ac.TrackingController,
+			FlightPlan: starsFP,
+		}
+	} else {
+		if stars.TrackInformation == nil {
+			stars.TrackInformation = make(map[string]*TrackInformation)
+		}
+		stars.TrackInformation[ac.Callsign] = &TrackInformation{
+			TrackOwner: ac.TrackingController,
+			FlightPlan: starsFP,
+		}
 	}
 
 	return ac, nil
 }
 
 func (w *World) CreateDeparture(departureAirport, runway, category string, challenge float32,
-	lastDeparture *Departure) (*Aircraft, *Departure, error) {
+	lastDeparture *Departure, simTime time.Time) (*Aircraft, *Departure, error) {
 	ap := w.Airports[departureAirport]
 	if ap == nil {
 		return nil, nil, ErrUnknownAirport
@@ -943,11 +1028,33 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.FlightPlan = NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
+	flightPlan := ac.NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
+	ac.FlightPlan = flightPlan
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
 		return nil, nil, err
 	}
+	artcc, _ := w.SafeFacility("")
+	// Add the flight plan to the ERAM computer
+
+	if artcc.FlightPlans == nil {
+		artcc.FlightPlans = map[Squawk]*STARSFlightPlan{}
+	}
+
+	starsFP := flightPlan.STARS()
+	for fix, info := range artcc.Adaptation.CoordinationFixes {
+		if strings.Contains(flightPlan.Route, fix) {
+			msg := starsFP.Message()
+			msg.SourceID = artcc.Identifier + simTime.Format("1504Z")
+			to := info.Fix(starsFP.Altitude).ToFacility
+			artcc.SendMessageToERAM(to, msg)
+			starsFP.CoordinationFix = fix
+			starsFP.ContainedFacilities = append(starsFP.ContainedFacilities, to)
+			break
+		}
+	}
+	artcc.FlightPlans[flightPlan.AssignedSquawk] = starsFP
+	artcc.ToSTARSFacility(w.TRACON, flightPlan.DepartureMessage(artcc.Identifier, w.SimTime))
 
 	/* Keep adding to World sameGateDepartures number until the departure cap + the buffer so that no more
 	same-gate departures are launched, then reset it to zero. Once the buffer is reached, it will reset World sameGateDepartures to zero*/

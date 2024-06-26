@@ -3398,6 +3398,239 @@
   },
   "stars_config": {
   "center": "KLGA",
+  "coordination_fixes": {
+    "FLOSI": [
+      {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+    }
+  ],
+    "DYLIN": [
+      {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+    }
+  ],
+    "SWEET": [
+      {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+    }
+  ],
+    "RBV": [
+      {
+      "type": "route",
+      "to": "N90",
+      "from": "PHL"
+    } 
+  ],
+    "MUGZY": [
+      {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+    }
+  ],
+    "MAZIE": [
+      {
+      "type": "route",
+      "to": "N90",
+      "from": "PHL"
+    }
+  ],
+    "HUO": [
+      {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+    }
+  ],
+  "KORRY": [
+    {
+        "type": "route",
+        "to": "N90",
+        "from": "ZNY"
+    }
+],
+"VIBES": [
+    {
+        "type": "route",
+        "to": "N90",
+        "from": "ZDC"
+    }
+],
+"VALRE": [
+    {
+        "type": "route",
+        "to": "N90",
+        "from": "ZBW"
+    }
+],
+"CRALY": [
+    {
+        "type": "route",
+        "to": "N90",
+        "from": "ZNY"
+    }
+],
+"MINKS": [
+    {
+        "type": "route",
+        "to": "N90",
+        "from": "ZNY"
+    }
+],
+"HEROS": [
+    {
+        "type": "route",
+        "to": "N90",
+        "from": "ZNY"
+    }
+],
+"DIALS": [
+    {
+        "type": "route",
+        "to": "N90",
+        "from": "ZNY"
+    }
+],
+"JERZY": [
+    {
+        "type": "route",
+        "to": "N90",
+        "from": "ZNY"
+    }
+],
+"GGREG": [
+    {
+        "type": "route",
+        "to": "N90",
+        "from": "ZNY"
+    }
+],
+"CAMRN": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"HTO": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"CCC": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"BELIT": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"JFK": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"SARDI": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"CREAM": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"CMK": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"BDR": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"DPK": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"ZIGGI": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"COL": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"LENDY": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"LOVES": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"NELIE": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"ROBER": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+],
+"CREEL": [
+  {
+      "type": "route",
+      "to": "N90",
+      "from": "ZNY"
+  }
+]
+  },
   "range": 80,
   "inhibit_ca_volumes": [
     {

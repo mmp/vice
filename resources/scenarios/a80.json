@@ -1147,7 +1147,7 @@
               }
         },
         "speed_restriction": 250,
-        "waypoints": "OWNNS/ho CHPPR/a13000 MRCHH"
+        "waypoints": "OWNNS N034.11.48.384,W085.09.38.649/ho CHPPR/a13000 MRCHH"
      }
    ],
    "CHPPR1 EAST": [
@@ -1236,7 +1236,7 @@
             }
       },
       "speed_restriction": 250,
-      "waypoints": "OWNNS/ho CHPPR/a13000/s250 MRCHH"
+      "waypoints": "OWNNS N034.11.48.384,W085.09.38.649/ho CHPPR/a13000/s250 MRCHH"
    }
  ],
    "NW_FINALTRIPS": [
@@ -1314,7 +1314,7 @@
       "speed_restriction": 220,
       "star": "GLAVN1",
       "scratchpad": "I6R",
-      "waypoints": "KLOWD/ho SWEPT KYMMY KEAVY/h095"
+      "waypoints": "RAIIN KLOWD/ho SWEPT KYMMY KEAVY/h095"
     }
    ],
    "GLAVN1": [
@@ -1402,7 +1402,7 @@
             }
       },
       "speed_restriction": 250,
-      "waypoints": "MADDX/ho GLAVN/a14000 STHRN"
+      "waypoints": "MADDX N034.07.17.461,W085.19.31.691/ho GLAVN/a14000 STHRN"
     }
    ],
    "GLAVN1 EAST": [
@@ -1490,7 +1490,7 @@
             }
       },
       "speed_restriction": 250,
-      "waypoints": "MADDX/ho GLAVN/a12000/s250 STHRN"
+      "waypoints": "MADDX N034.07.17.461,W085.19.31.691/ho GLAVN/a12000/s250 STHRN"
     }
    ],
    "GNDLF2": [
@@ -1551,7 +1551,7 @@
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "star": "GNDLF2",
-      "waypoints": "SMAWG/ho GNDLF/a11000/s250 HALRR/a10000/s250 SHULR/a8000 JNGLE QUBIT/h005",
+      "waypoints": "N032.59.38.137,W085.16.30.966 SMAWG/ho GNDLF/a11000/s250 HALRR/a10000/s250 SHULR/a8000 JNGLE QUBIT/h005",
       "speed_restriction": 250
     }
    ],
@@ -1623,7 +1623,7 @@
             }
       },
       "speed_restriction": 250,
-      "waypoints": "SMAWG/a17000/ho HOBTT/a14000 ENSLL/a12000"
+      "waypoints": "N032.59.06.908,W085.17.45.948 SMAWG/a17000/ho HOBTT/a14000 ENSLL/a12000"
     }
    ],
    "HOBTT2_AFINALT": [
@@ -1689,7 +1689,7 @@
       "speed_restriction": 220,
       "star": "HOBTT2",
       "scratchpad": "I28",
-      "waypoints": "SHURT/ho FOGER HITTT YURII/h095"
+      "waypoints": "EAGYL SHURT/ho FOGER HITTT YURII/h095"
     }
    ],
    "HOBTT2_AFINALD": [
@@ -1755,7 +1755,7 @@
       "speed_restriction": 220,
       "star": "HOBTT2",
       "scratchpad": "I7L",
-      "waypoints": "SHURT/ho FOGER HITTT YURII/h095"
+      "waypoints": "EAGYL SHURT/ho FOGER HITTT YURII/h095"
     }
    ],
    "JJEDI3": [
@@ -1837,7 +1837,7 @@
       "initial_speed": 290,
       "star": "JJEDI3",
       "speed_restriction": 250,
-      "waypoints": "DTSTR/a14000/s280/ho WOKIE/a11000/s250 JJEDI/a10000/s250 DAFII/a8000 GRHAM POOBA/h004"
+      "waypoints": "NEWHP DTSTR/a14000/s280/ho WOKIE/a11000/s250 JJEDI/a10000/s250 DAFII/a8000 GRHAM POOBA/h004"
     }
    ],"JJEDI3_FINALD": [
     {
@@ -1913,7 +1913,7 @@
           }
         ]
       },
-      "assigned_altitude": 6000,
+      "assigned_altitude": 5000,
       "cruise_altitude": 35000,
       "expect_approach": "I7L",
       "initial_altitude": 8000,
@@ -1922,7 +1922,7 @@
       "speed_restriction": 220,
       "star": "JJEDI3",
       "scratchpad" : "I7L",
-      "waypoints": "GRHAM/ho POOBA/h004"
+      "waypoints": "DAFII/a8000 GRHAM/ho POOBA/h004"
     }
    ],
    "JJEDI3_FINALT": [
@@ -1999,7 +1999,7 @@
           }
         ]
       },
-      "assigned_altitude": 6000,
+      "assigned_altitude": 5000,
       "cruise_altitude": 35000,
       "expect_approach": "I28",
       "initial_altitude": 8000,
@@ -2008,7 +2008,7 @@
       "speed_restriction": 220,
       "star": "JJEDI3",
       "scratchpad" : "I28",
-      "waypoints": "GRHAM/ho POOBA/h004"
+      "waypoints": "DAFII/a8000 GRHAM/ho POOBA/h004"
     }
    ],
    "ONDRE1": [
@@ -2085,7 +2085,7 @@
             }
       },
       "speed_restriction": 250,
-      "waypoints": "STRWY/ho ONDRE/a13000/s250 SMELY"
+      "waypoints": "KNOWW STRWY/ho ONDRE/a13000/s250 SMELY"
     }
    ],
    "ONDRE1 EAST": [
@@ -2162,7 +2162,7 @@
             }
       },
       "speed_restriction": 250,
-      "waypoints": "STRWY/ho ONDRE/a13000 SMELY"
+      "waypoints": "KNOWW STRWY/ho ONDRE/a13000 SMELY"
     }
    ],
    "ONDRE1_FINALWT": [
@@ -2296,7 +2296,7 @@
             }
       },
       "speed_restriction": 250,
-      "waypoints": "WINNG/ho OZZZI/a12000/s250 HAARY"
+      "waypoints": "GBAKE WINNG/ho OZZZI/a12000/s250 HAARY"
     }
    ],
    "OZZZI1 EAST": [
@@ -2368,7 +2368,7 @@
             }
       },
       "speed_restriction": 250,
-      "waypoints": "WINNG/ho OZZZI/a14000 HAARY"
+      "waypoints": "GBAKE WINNG/ho OZZZI/a14000 HAARY"
     }
    ],
    "OZZZI1_FINALWT": [
@@ -2430,7 +2430,7 @@
       "speed_restriction": 220,
       "star": "OZZZI1",
       "scratchpad" : "I7L",
-      "waypoints": "CALLA/ho POSEY SLVAA ROMMM/h275"
+      "waypoints": "HAARY CALLA/ho POSEY SLVAA ROMMM/h275"
     }
    ],
    "SITTH2": [
@@ -2521,7 +2521,7 @@
             }
       },
       "speed_restriction": 250,
-      "waypoints": "FORCC/ho SITTH/a14000 TIZZY/a12000"
+      "waypoints": "FORCC N033.03.48.433,W083.41.22.305/ho SITTH/a14000 TIZZY/a12000"
     }
    ]
   },
@@ -2529,6 +2529,50 @@
       "center": "N33.38.24.846,W84.25.42.088",
       "allow_long_scratchpad": [false, false],
       "force_ql_self": true,
+      "coordination_fixes": {
+        "CHPPR": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "GLAVN": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "HOBTT": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "JJEDI": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "ONDRE": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "OZZZI": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ]
+      },
       "radar_sites": {
           "KATL": {
               "char": "A",

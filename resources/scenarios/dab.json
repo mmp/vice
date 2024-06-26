@@ -476,7 +476,7 @@
         "initial_controller": "MCO_B_APP",
         "initial_speed": 130,
         "route": "/. DOMES EYORE",
-        "waypoints": "ROCIT APEAK/ho DOMES EYORE"
+        "waypoints": "N028.44.48.560,W080.47.01.563 ROCIT/ho APEAK DOMES EYORE"
       }
     ]
   },
@@ -580,7 +580,8 @@
       "approach_airspace": [
         "DAB_H_APP"
       ],
-      "arrival_runways": [
+      "arrival_runways": [
+
         {
           "airport": "KDAB",
           "runway": "7L"
@@ -713,6 +714,43 @@
   },
   "stars_config": {
   "center": "KDAB",
+  "coordination_fixes": {
+    "WEEEK": [
+         {
+          "type": "route",
+          "to": "DAB",
+          "from": "ZJX"
+          }
+      ],
+      "FONEX": [
+          {
+              "type": "route",
+              "to": "DAB",
+              "from": "JAX"
+          }
+      ],
+      "FOLUT": [
+          {
+              "type": "route",
+              "to": "DAB",
+              "from": "JAX"
+          }
+      ],
+      "KIZER": [
+          {
+              "type": "route",
+              "to": "DAB",
+              "from": "F11"
+          }
+      ],
+      "ROCIT": [
+          {
+              "type": "route",
+              "to": "DAB",
+              "from": "F11"
+          }
+      ]
+  },
   "radar_sites": {
     "DAB": {
       "char": "D",

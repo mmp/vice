@@ -26,6 +26,22 @@ import (
 	"github.com/klauspost/compress/zstd"
 )
 
+type ERAMAdaptation struct { // add more later
+	CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
+}
+
+const (
+	RouteBasedFix = "route"
+	ZoneBasedFix  = "zone"
+)
+
+type AdaptationFix struct {
+	Type         string `json:"type"`
+	ToFacility   string `json:"to"`   // controller to handoff to
+	FromFacility string `json:"from"` // controller to handoff from
+	Altitude     [2]int `json:"altitude"`
+}
+
 type FAAAirport struct {
 	Id         string
 	Name       string
@@ -34,6 +50,7 @@ type FAAAirport struct {
 	Runways    []Runway
 	Approaches map[string][]WaypointArray
 	STARs      map[string]STAR
+	ARTCC      string
 }
 
 type TRACON struct {
@@ -67,6 +84,7 @@ type Arrival struct {
 	Scratchpad          string  `json:"scratchpad"`
 	SecondaryScratchpad string  `json:"secondary_scratchpad"`
 	Description         string  `json:"description"`
+	CoordinationFix     string  `json:"coordination_fix"`
 
 	// Airport -> arrival airlines
 	Airlines map[string][]ArrivalAirline `json:"airlines"`
@@ -252,6 +270,7 @@ type Controller struct {
 	IsHuman            bool      // Not provided in scenario JSON
 	FacilityIdentifier string    `json:"facility_id"`     // For example the "N" in "N4P" showing the N90 TRACON
 	ERAMFacility       bool      `json:"eram_facility"`   // To weed out N56 and N4P being the same fac
+	Facility           string    `json:"facility"`        // So we can get the STARS facility from a controller
 	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
 }
 
@@ -270,9 +289,13 @@ func (f FlightRules) String() string {
 }
 
 type FlightPlan struct {
-	Rules                  FlightRules
-	AircraftType           string
-	CruiseSpeed            int
+	Callsign       string
+	Rules          FlightRules
+	AircraftType   string
+	CruiseSpeed    int
+	AssignedSquawk Squawk // from ATC
+	ECID           string // An ECID (CID) are three alpha-numeric characters (eg. 971, 43A, etc.) and is what ERAM assigns to a track to act as
+	//another way to identify that track. To execute commands, controllers may use the ECID instead of the aircrafts callsign.
 	DepartureAirport       string
 	DepartTimeEst          int
 	DepartTimeActual       int
@@ -281,6 +304,7 @@ type FlightPlan struct {
 	Hours, Minutes         int
 	FuelHours, FuelMinutes int
 	AlternateAirport       string
+	Exit                   string
 	Route                  string
 	Remarks                string
 }
@@ -385,15 +409,6 @@ type Navaid struct {
 type Fix struct {
 	Id       string
 	Location Point2LL
-}
-
-func NewFlightPlan(r FlightRules, ac, dep, arr string) *FlightPlan {
-	return &FlightPlan{
-		Rules:            r,
-		AircraftType:     ac,
-		DepartureAirport: dep,
-		ArrivalAirport:   arr,
-	}
 }
 
 func (fp FlightPlan) BaseType() string {
@@ -1364,6 +1379,7 @@ type StaticDatabase struct {
 	Airlines            map[string]Airline
 	MagneticGrid        MagneticGrid
 	ARTCCs              map[string]ARTCC
+	ERAMAdaptations     map[string]ERAMAdaptation
 	TRACONs             map[string]TRACON
 	MVAs                map[string][]MVA // TRACON -> MVAs
 }
@@ -1449,6 +1465,8 @@ func InitializeStaticDatabase() *StaticDatabase {
 	go func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.MVAs = parseMVAs(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.ERAMAdaptations = parseAdaptations(); wg.Done() }()
 	wg.Wait()
 
 	for icao, ap := range airports {
@@ -1562,6 +1580,17 @@ func parseAirports() map[string]FAAAirport {
 				airports[ap.Id] = ap
 			}
 		})
+
+	artccsRaw := LoadResource("airport_artccs.json")
+	data := make(map[string]string) // Airport -> ARTCC
+	json.Unmarshal(artccsRaw, &data)
+
+	for name, artcc := range data {
+		if entry, ok := airports[name]; ok {
+			entry.ARTCC = artcc
+			airports[name] = entry
+		}
+	}
 
 	return airports
 }
@@ -1960,6 +1989,17 @@ func (db *StaticDatabase) CheckAirline(icao, fleet string, e *ErrorLogger) {
 		}
 		e.Pop()
 	}
+}
+
+func parseAdaptations() map[string]ERAMAdaptation {
+	adaptations := make(map[string]ERAMAdaptation)
+
+	adaptationsRaw := LoadResource("adaptations.json")
+	if err := json.Unmarshal(adaptationsRaw, &adaptations); err != nil {
+		panic(err)
+	}
+
+	return adaptations
 }
 
 func FixReadback(fix string) string {

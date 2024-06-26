@@ -767,7 +767,7 @@
               "32": "EKEKE/a10000+ FRENY/a7000+/s230 PNFLD/a6000/s210 ZASNI/h139"
           }
         },
-        "waypoints": "N039.50.43.583,W087.02.13.483/ho CIRGO/a11000+ EKEKE/a10000+"
+        "waypoints": "N039.50.38.310,W087.15.01.593 N039.50.43.583,W087.02.13.483/ho CIRGO/a11000+ EKEKE/a10000+"
       }
     ],
     "SMUKE2": [
@@ -802,7 +802,7 @@
               "32": "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 ZASNI/h139"
           }
         },
-        "waypoints": "RACYR/a12000-19000/ho SMUKE FIIRE"
+        "waypoints": "RACYR/a12000-19000 N039.07.12.998,W086.53.25.865/ho SMUKE FIIRE"
       }
     ]
   },
@@ -1390,6 +1390,43 @@
   },
   "stars_config": {
   "center": "KIND",
+  "coordination_fixes": {
+            "BABNE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "EASEL": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "OPPIE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "CIRGO": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "SMUKE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ]
+        },
   "inhibit_ca_volumes": [
     {
       "name": "IND CA SUPPRESSION",

@@ -199,6 +199,10 @@ const (
 	HandoffControllEvent
 	SetGlobalLeaderLineEvent
 	TrackClickedEvent
+	AssociateEvent
+	ForceQLEvent
+	DataAcceptance
+	DataRejection
 	NumEventTypes
 )
 
@@ -207,17 +211,19 @@ func (t EventType) String() string {
 		"OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent", "CanceledHandoff", "RejectedHandoff",
 		"RadioTransmission", "StatusMessage", "ServerBroadcastMessage", "GlobalMessage",
 		"AcknowledgedPointOut", "RejectedPointOut", "Ident", "HandoffControll",
-		"SetGlobalLeaderLine", "TrackClicked"}[t]
+		"SetGlobalLeaderLine", "TrackClicked", "AutoAssociateFP", "ForceQL"}[t]
 }
 
 type Event struct {
 	Type                  EventType
 	Callsign              string
+	Squawk                Squawk
 	FromController        string
 	ToController          string // For radio transmissions, the controlling controller.
 	Message               string
 	RadioTransmissionType RadioTransmissionType     // For radio transmissions only
 	LeaderLineDirection   *CardinalOrdinalDirection // SetGlobalLeaderLineEvent
+
 }
 
 func (e *Event) String() string {

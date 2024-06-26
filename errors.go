@@ -53,6 +53,12 @@ var (
 	ErrInvalidPassword           = errors.New("Invalid password")
 )
 
+// flight plan processing related
+var (
+	ErrNoSTARSFacility = errors.New("No STARS Facility in ERAM computer")
+	ErrNoERAMFacility  = errors.New("No ERAM facility exists")
+)
+
 var errorStringToError = map[string]error{
 	ErrClearedForUnexpectedApproach.Error(): ErrClearedForUnexpectedApproach,
 	ErrFixNotInRoute.Error():                ErrFixNotInRoute,
@@ -85,6 +91,8 @@ var errorStringToError = map[string]error{
 	ErrRPCVersionMismatch.Error():           ErrRPCVersionMismatch,
 	ErrRestoringSavedState.Error():          ErrRestoringSavedState,
 	ErrInvalidPassword.Error():              ErrInvalidPassword,
+	ErrNoSTARSFacility.Error():              ErrNoSTARSFacility,
+	ErrNoERAMFacility.Error():               ErrNoERAMFacility,
 }
 
 func TryDecodeError(e error) error {
@@ -126,6 +134,8 @@ var (
 	ErrSTARSIllegalText       = NewSTARSError("ILL TEXT")
 	ErrSTARSIllegalTrack      = NewSTARSError("ILL TRK")
 	ErrSTARSIllegalValue      = NewSTARSError("ILL VALUE")
+	ErrSTARSIllegalACType     = NewSTARSError("ACTYPE NOT\nADAPTED")
+	ErrSTARSIllegalACID       = NewSTARSError("ILL ACID")
 	ErrSTARSNoFlight          = NewSTARSError("NO FLIGHT")
 	ErrSTARSRangeLimit        = NewSTARSError("RANGE LIMIT")
 )

@@ -581,7 +581,7 @@
         "initial_controller": "SEA_CTR",
         "initial_speed": 300,
         "route": "/. GLASR",
-        "waypoints": "GLASR/ho JAKSN/a16000+/s270 WOODI/a14000- HETHR/a12000/s250/h163"
+        "waypoints": "ODAHL GLASR/ho JAKSN/a16000+/s270 WOODI/a14000- HETHR/a12000/s250/h163"
       }
     ],
     "GLASR2South": [
@@ -665,7 +665,7 @@
         "initial_controller": "SEA_CTR",
         "initial_speed": 300,
         "route": "/. GLASR",
-        "waypoints": "GLASR/ho JAKSN/a12000/s250 WOODI HETHR/h250"
+        "waypoints": "ODAHL GLASR/ho JAKSN/a12000/s250 WOODI HETHR/h250"
       }
     ],
     "HAWKZ7South": [
@@ -959,7 +959,7 @@
         "initial_controller": "SEA_CTR",
         "initial_speed": 300,
         "route": "/. KRIEG",
-        "waypoints": "KRIEG/ho HAWKZ/a12000+/s270 LIINE PIKEZ/a12000/s250 COFAY BREVE/a10000/s250 NETTZ/a8000+/s230 KWEST/a7000+ VASHN/a6000/s210/h344"
+        "waypoints": "KRIEG HAWKZ/a12000+/s270/ho LIINE PIKEZ/a12000/s250 COFAY BREVE/a10000/s250 NETTZ/a8000+/s230 KWEST/a7000+ VASHN/a6000/s210/h344"
       }
     ],
     "HAWKZ7North": [
@@ -1322,7 +1322,7 @@
         "initial_controller": "SEA_CTR",
         "initial_speed": 300,
         "route": "/. KRIEG",
-        "waypoints": "KRIEG/ho HAWKZ/a12000+/s270 LIINE FOOTT/a10000/s250 GOALZ/a8000+ SONDR/a6000/s230"
+        "waypoints": "KRIEG HAWKZ/a12000+/s270/ho LIINE FOOTT/a10000/s250 GOALZ/a8000+ SONDR/a6000/s230"
       }
     ],
     "JAWBN6North": [
@@ -1573,11 +1573,11 @@
           ]
         },
         "cruise_altitude": 34000,
-        "initial_altitude": 16000,
+        "initial_altitude": 17000,
         "initial_controller": "SEA_CTR",
         "initial_speed": 300,
         "route": "/. MARNR",
-        "waypoints": "MARNR/a12000+/s270/ho BOANE/a11000+/s250 NEHOS/a8000+/s230 GRIFY/a6000/s210"
+        "waypoints": "ORCUS/a17000+/s280 MARNR/a12000+/s270/ho BOANE/a11000+/s250 NEHOS/a8000+/s230 GRIFY/a6000/s210"
       }
     ],
     "MARNR7North": [
@@ -1658,11 +1658,11 @@
           ]
         },
         "cruise_altitude": 34000,
-        "initial_altitude": 16000,
+        "initial_altitude": 17000,
         "initial_controller": "SEA_CTR",
         "initial_speed": 280,
         "route": "/. MARNR",
-        "waypoints": "MARNR/a12000+/s270/ho PNELA/a12000+/s270 VEGGN/a11000-15000/s250 UNITT/a10000+/s230 WUBET/a8000+ SHIPZ/a7000/s210 EMMSS/h164"
+        "waypoints": "ORCUS/a17000+/s280 MARNR/a12000+/s270/ho PNELA/a12000+/s270 VEGGN/a11000-15000/s250 UNITT/a10000+/s230 WUBET/a8000+ SHIPZ/a7000/s210 EMMSS/h164"
       }
     ],
     "OLM2South": [
@@ -1956,7 +1956,7 @@
         "initial_controller": "SEA_CTR",
         "initial_speed": 300,
         "route": "/. OLM",
-        "waypoints": "TONNO/ho OLM/a17000+/s270 LACEE ARVAD/a13000/s250 FOURT/h343"
+        "waypoints": "TONNO OLM/a17000+/s270/ho LACEE ARVAD/a13000/s250 FOURT/h343"
       }
     ],
     "OLM2North": [
@@ -2250,7 +2250,7 @@
         "initial_controller": "SEA_CTR",
         "initial_speed": 300,
         "route": "/. OLM",
-        "waypoints": "TONNO/ho OLM/a13000/s250 LACEE ARVAD FOURT/h070"
+        "waypoints": "TONNO OLM/a13000/s250/ho LACEE ARVAD FOURT/h070"
       }
     ],
     "SKYKO1South": [
@@ -2284,7 +2284,7 @@
         "initial_controller": "SEA_CTR",
         "initial_speed": 300,
         "route": "/. SKYKO",
-        "waypoints": "SKYKO/a14000/ho HUVUS/a11000 HETHR/a10000/h250"
+        "waypoints": "N047.42.57.571,W121.06.00.955 SKYKO/a14000/ho HUVUS/a11000 HETHR/a10000/h250"
       }
     ],
     "SKYKO1North": [
@@ -2318,7 +2318,7 @@
         "initial_controller": "SEA_CTR",
         "initial_speed": 200,
         "route": "/. SKYKO",
-        "waypoints": "SKYKO/a14000/ho HUVUS/a11000 HETHR/a10000/h163"
+        "waypoints": "N047.42.57.571,W121.06.00.955 SKYKO/a14000/ho HUVUS/a11000 HETHR/a10000/h163"
       }
     ]
   },
@@ -2548,6 +2548,57 @@
     }
   },
   "stars_config": {
+    "coordination_fixes": {
+      "HUMPP": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ],
+    "GLASR": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ],
+    "LIINE": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ],
+    "DIGGN": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ],
+    "MARNR": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ],
+    "LACEE": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ],
+    "HUVUS": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ]
+    },
   "center": "KSEA",
   "radar_sites": {
     "SEA": {

@@ -412,291 +412,6 @@
         "route": "RAYNR BRTMN TAAYZ",
         "waypoints": "N042.14.04.395,W087.49.32.213 RAYNR/ho BRTMN TAAYZ/h360"
       }
-    ],
-    "19R_Final_SouthEast": [
-      {
-        "airlines":{
-          "KMKE":[
-            {
-              "airport": "KORD",
-              "icao": "SWA",
-              "fleet": "short"
-            },
-            {
-              "airport": "KMDW",
-              "icao": "SWA",
-              "fleet": "short"
-            },
-            {
-              "airport": "KARR",
-              "icao": "AWI",
-              "fleet": "default"
-            }
-          ]
-        },
-        "initial_altitude": 7000,
-        "initial_controller": "MKE_E_APP",
-        "initial_speed": 250,
-        "route": "BRAVE EXARR",
-        "expect_approach": "I9R",
-        "waypoints": "N042.45.48.655,W087.45.21.752 N042.48.19.291,W087.44.46.953/ho N042.49.33.381,W087.44.30.721/h010"
-      }
-    ],
-    "19R_Final_SouthWest": [
-      {
-        "airlines": {
-          "KMKE": [
-            {
-              "airport": "KDAL",
-              "icao": "UAL",
-              "fleet": "short"
-            },
-            {
-              "airport": "KSFO",
-              "icao": "DAL",
-              "fleet": "b73x"
-            },
-            {
-              "airport": "KSTL",
-              "icao": "SWA",
-              "fleet": "short"
-            }
-          ]
-        },
-        "initial_altitude": 7000,
-        "initial_controller": "MKE_E_APP",
-        "initial_speed": 250,
-        "star": "GOPAC3",
-        "expect_approach": "I9R",
-        "waypoints": "N042.45.56.593,W088.02.19.279/ho N042.48.42.926,W088.02.08.979 N042.53.28.900,W088.01.47.226/h367"
-      }
-    ],
-    "19R_Final_West": [
-      {
-        "airlines":{
-          "KMKE":[
-            {
-              "airport": "CYVR",
-              "icao": "ACA",
-              "fleet": "short"
-            },
-            {
-              "airport": "KSEA",
-              "icao": "UAL",
-              "fleet": "short"
-            },
-            {
-              "airport": "KMSP",
-              "icao": "SWA",
-              "fleet": "short"
-            },
-            {
-              "airport": "KPDX",
-              "icao": "AAL",
-              "fleet": "short"
-            }
-          ]
-        },
-        "initial_altitude": 7000,
-        "initial_controller": "MKE_E_APP",
-        "initial_speed": 250,
-        "route": "BAE",
-        "expect_approach": "I9R",
-        "waypoints": "N043.08.00.363,W088.22.38.157 BAE/h070/ho"
-      }
-    ],
-    "19R_Final_East": [
-      {
-        "airlines": {
-          "KMKE": [
-            {
-              "airport": "KDTW",
-              "icao":"DAL",
-              "fleet": "b73x"
-            },
-            {
-              "airport": "KBOS",
-              "icao":"UAL",
-              "fleet": "short"
-            },
-            {
-              "airport":"KLGA",
-              "icao":"AAL",
-              "fleet": "short"
-            },
-            {
-              "airport": "KJFK",
-              "icao": "SWA",
-              "fleet": "short"
-            }
-          ]
-        },
-        "initial_altitude":7000,
-        "initial_controller": "MKE_E_APP",
-        "initial_speed": 250,
-        "route":"LYSTR SUDDS",
-        "expect_approach": "I9R",
-        "waypoints":"N043.09.17.267,W087.14.42.366 SUDDS/h280/ho"
-      }
-    ],
-    "1L_Final_NorthEast": [
-      {
-        "airlines":{
-          "KMKE":[
-            {
-              "airport": "KORD",
-              "icao": "SWA",
-              "fleet": "short"
-            },
-            {
-              "airport": "KMDW",
-              "icao": "SWA",
-              "fleet": "short"
-            },
-            {
-              "airport": "KARR",
-              "icao": "AWI",
-              "fleet": "default"
-            }
-          ]
-        },
-        "initial_altitude": 7000,
-        "initial_controller": "MKE_E_APP",
-        "initial_speed": 250,
-        "route": "LYSTR SUDDS",
-        "expect_approach": "I1L",
-        "waypoints": "N043.05.45.932,W087.38.02.601 N043.02.57.058,W087.39.56.475/ho N042.57.15.864,W087.43.39.195"
-      }
-    ],
-    "1L_Final_NorthWest": [
-      {
-        "airlines": {
-          "KMKE": [
-            {
-              "airport": "KDAL",
-              "icao": "UAL",
-              "fleet": "short"
-            },
-            {
-              "airport": "KSFO",
-              "icao": "DAL",
-              "fleet": "b73x"
-            },
-            {
-              "airport": "KSTL",
-              "icao": "SWA",
-              "fleet": "short"
-            }
-          ]
-        },
-        "initial_altitude": 7000,
-        "initial_controller": "MKE_E_APP",
-        "initial_speed": 250,
-        "star": "BAE",
-        "expect_approach": "I1L",
-        "waypoints": " BAE N043.04.28.931,W088.12.18.006/ho N043.01.13.210,W088.03.40.495"
-      }
-    ],
-    "1L_Final_West": [
-      {
-        "airlines":{
-          "KMKE":[
-            {
-              "airport": "CYVR",
-              "icao": "ACA",
-              "fleet": "short"
-            },
-            {
-              "airport": "KSEA",
-              "icao": "UAL",
-              "fleet": "short"
-            },
-            {
-              "airport": "KMSP",
-              "icao": "SWA",
-              "fleet": "short"
-            },
-            {
-              "airport": "KPDX",
-              "icao": "AAL",
-              "fleet": "short"
-            }
-          ]
-        },
-        "initial_altitude": 7000,
-        "initial_controller": "MKE_E_APP",
-        "initial_speed": 250,
-        "route": "GOPAC3",
-        "expect_approach": "I1L",
-        "waypoints": "N042.48.05.325,W088.29.49.096 N042.46.55.617,W088.24.22.280/h110/ho"
-      }
-    ],
-    "1L_Final_East": [
-      {
-        "airlines": {
-          "KMKE": [
-            {
-              "airport": "KDTW",
-              "icao":"DAL",
-              "fleet": "b73x"
-            },
-            {
-              "airport": "KBOS",
-              "icao":"UAL",
-              "fleet": "short"
-            },
-            {
-              "airport":"KLGA",
-              "icao":"AAL",
-              "fleet": "short"
-            },
-            {
-              "airport": "KJFK",
-              "icao": "SWA",
-              "fleet": "short"
-            }
-          ]
-        },
-        "initial_altitude":7000,
-        "initial_controller": "MKE_E_APP",
-        "initial_speed": 250,
-        "route":"BRAVE EXARR",
-        "expect_approach": "I1L",
-        "waypoints":"N042.43.27.508,W087.31.12.454/ho N042.43.27.838,W087.32.46.360/h280"
-      }
-    ],
-    "1L_Final_South": [
-      {
-        "airlines": {
-          "KMKE": [
-            {
-              "airport": "KDTW",
-              "icao":"DAL",
-              "fleet": "b73x"
-            },
-            {
-              "airport": "KBOS",
-              "icao":"UAL",
-              "fleet": "short"
-            },
-            {
-              "airport":"KLGA",
-              "icao":"AAL",
-              "fleet": "short"
-            },
-            {
-              "airport": "KJFK",
-              "icao": "SWA",
-              "fleet": "short"
-            }
-          ]
-        },
-        "initial_altitude":7000,
-        "initial_controller": "CHI_Z_APP",
-        "initial_speed": 250,
-        "route":"RAYNR BRTMN TAAYZ",
-        "waypoints":"RAYNR/ho BRTMN TAAYZ/h350"
-      }
     ]
   },
   "control_positions": {
@@ -756,81 +471,6 @@
     "RAYNR"
   ],
   "scenarios": {
-    "KMKE 19R Finals": {
-      "arrival_runways": [
-        {
-          "airport": "KMKE",
-          "runway": "19R"
-        }
-      ],
-      "arrivals": {
-        "19R_Final_SouthEast": {
-          "KMKE": 5
-        },
-        "19R_Final_SouthWest":{
-          "KMKE": 5
-        },
-        "19R_Final_West": {
-          "KMKE": 5
-        },
-        "19R_Final_East": {
-          "KMKE": 5
-        }
-      },
-      "solo_controller": "MKE_F_APP",
-      "controllers": [
-        "CHI_81_CTR",
-        "CHI_Z_APP",
-        "MKE_TWR",
-        "RFD_E_APP"
-      ],
-      "default_maps": [
-        "MKE RWY 19R"
-      ],
-      "wind": {
-        "direction": 200,
-        "speed": 10
-      }
-    },
-    "KMKE 1L Finals": {
-      "arrival_runways": [
-        {
-          "airport": "KMKE",
-          "runway": "1L"
-        }
-      ],
-      "arrivals": {
-        "1L_Final_NorthEast": {
-          "KMKE": 5
-        },
-        "1L_Final_NorthWest":{
-          "KMKE": 5
-        },
-        "1L_Final_West": {
-          "KMKE": 5
-        },
-        "1L_Final_East": {
-          "KMKE": 5
-        },
-        "1L_Final_South": {
-          "KMKE": 5
-        }
-      },
-      "solo_controller": "MKE_F_APP",
-      "controllers": [
-        "CHI_81_CTR",
-        "CHI_Z_APP",
-        "MKE_TWR",
-        "RFD_E_APP"
-      ],
-      "default_maps": [
-        "MKE RWY 1L"
-      ],
-      "wind": {
-        "direction": 20,
-        "speed": 10
-      }
-    },
     "KMKE RWY 1L": {
       "arrival_runways": [
         {
@@ -1129,6 +769,43 @@
   },
   "stars_config": {
   "center": "KMKE",
+  "coordination_fixes": {
+    "LEEDR": [
+      {
+          "type": "route",
+          "to": "MKE",
+          "from": "ZAU"
+      }
+  ],
+  "LYSTR": [
+      {
+          "type": "route",
+          "to": "MKE",
+          "from": "ZAU"
+      }
+  ],
+  "BRAVE": [
+      {
+          "type": "route",
+          "to": "MKE",
+          "from": "ZAU"
+      }
+  ],
+  "BAE": [
+      {
+          "type": "route",
+          "to": "MKE",
+          "from": "ZAU"
+      }
+  ],
+  "BRTMN": [
+      {
+          "type": "route",
+          "to": "MKE",
+          "from": "ZAU"
+      }
+  ]
+  },
   "inhibit_ca_volumes": [
     {
         "name": "MKE 19R NO CA",

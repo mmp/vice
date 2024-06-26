@@ -575,7 +575,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 		// Second column; 3 entries
 		x += width0
-		td.AddText(ac.AssignedSquawk.String(), [2]float32{x, y}, style)
+		td.AddText(ac.FlightPlan.AssignedSquawk.String(), [2]float32{x, y}, style)
 		td.AddText(strconv.Itoa(ac.TempAltitude), [2]float32{x, y - fh*3/2}, style)
 		if fp != nil {
 			td.AddText(strconv.Itoa(fp.Altitude), [2]float32{x, y - fh*3}, style)
@@ -811,6 +811,7 @@ type MessagesPane struct {
 	scrollbar      *ScrollBar
 	events         *EventsSubscription
 	messages       []Message
+	NextController map[string]string
 
 	// Command-input-related
 	input         CLIInput
@@ -1046,7 +1047,7 @@ func (mp *MessagesPane) runCommands(w *World) {
 
 	if ok {
 		if ac := w.GetAircraft(callsign, true /*abbreviated*/); ac != nil {
-			w.RunAircraftCommands(ac.Callsign, cmd, func(errorString string, remainingCommands string) {
+			w.RunAircraftCommands(ac.Callsign, cmd, mp.NextController[ac.Callsign], func(errorString string, remainingCommands string) {
 				if errorString != "" {
 					mp.messages = append(mp.messages, Message{contents: errorString, error: true})
 				}
@@ -1173,6 +1174,14 @@ func (mp *MessagesPane) processEvents(w *World) {
 			if cmd := strings.TrimSpace(mp.input.cmd); cmd != "" {
 				mp.input.cmd = event.Callsign + " " + cmd
 				mp.runCommands(w)
+			}
+		case AcceptedHandoffEvent, AcceptedRedirectedHandoffEvent:
+			if ac, ok := w.Aircraft[event.Callsign]; ok && event.FromController == w.Callsign {
+				if mp.NextController == nil {
+					mp.NextController = make(map[string]string)
+				}
+				mp.NextController[ac.Callsign] = event.ToController
+				lg.Infof("%v: setting next controller for %v to be %v.\n", w.Callsign, ac.Callsign, event.ToController)
 			}
 		}
 	}

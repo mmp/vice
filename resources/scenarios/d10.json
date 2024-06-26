@@ -2325,11 +2325,11 @@
                         }
                     ]
                 },
-                "initial_altitude": 13000,
+                "initial_altitude": 20000,
                 "initial_controller": "FTW_62_CTR",
                 "initial_speed": 290,
                 "star": "SOCKK4",
-                "waypoints": "DARRB/a12000-14000/s270/ho GRCIA/a11000+/s270 BOOVE/a9000-11000/s250 ISABL/a7000-9000/s250 SOCKK/a5000/s230/h077"
+                "waypoints": "NNJUH/a20000-23000/s290 DARRB/a12000-14000/s270/ho GRCIA/a11000+/s270 BOOVE/a9000-11000/s250 ISABL/a7000-9000/s250 SOCKK/a5000/s230/h077"
             }
         ],
         "BRDJE4": [
@@ -2433,7 +2433,7 @@
                 "initial_controller": "FTW_29_CTR",
                 "initial_speed": 290,
                 "star": "WHINY4",
-                "waypoints": "POWND/a20000-23000/s290/ho BEREE/a13000-16000/s270 WHINY/a12000+/s260 HOWDY/a11000-12000/s250 BERMS/a8000/s240 HLLZZ/a6000/s230/h270"
+                "waypoints": "POWND/a20000-23000/s290 BEREE/a13000-16000/s270/ho WHINY/a12000+/s260 HOWDY/a11000-12000/s250 BERMS/a8000/s240 HLLZZ/a6000/s230/h270"
             }
         ],
         "SEEVR4": [
@@ -2587,7 +2587,7 @@
                     "initial_controller": "FTW_75_CTR",
                     "initial_speed": 280,
                     "star": "VKTRY2",
-                    "waypoints": "COWNE/a17000-19000/s290/ho JEYAR/a13000-16000/s270 VKTRY/a10000-11000/s250",
+                    "waypoints": "COWNE/a17000-19000/s290 JEYAR/a13000-16000/s270/ho VKTRY/a10000-11000/s250",
                     "runway_waypoints": {
                       "KDFW": {
                         "13R": "VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 THASA/a5000/s240 MORRY POPPA/h135",
@@ -2704,7 +2704,7 @@
                 "initial_speed": 280, 
                 "initial_controller": "FTW_62_CTR",
                 "star": "DRYYE2",
-                "waypoints": "PUNKY/a15000-18000/ho/s280 KNEAD/a12000/s250 DRYYE SCOPS SWVAY/h086"
+                "waypoints": "PUNKY/a15000-18000/s280 N032.15.11.727,W097.48.41.539/ho KNEAD/a12000/s250 DRYYE SCOPS SWVAY/h086"
             }
         ],
         "HERBZ1": [
@@ -2750,7 +2750,7 @@
                 "initial_speed": 280,
                 "initial_controller": "FTW_75_CTR",
                 "star": "HERBZ1",
-                "waypoints": "MASTY/a16000+/ho GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240/h113"
+                "waypoints": "MASTY/a16000+ N033.41.26.604,W097.42.46.049/ho GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240/h113"
             }
         ],
         "HIBIL3": [
@@ -2843,7 +2843,7 @@
                 "initial_speed": 280,
                 "initial_controller": "FTW_75_CTR",
                 "star": "HERBZ1",
-                "waypoints": "MASTY/a16000+/ho GREGS/a11000/s250 MNKEE JFRYE/h143"
+                "waypoints": "MASTY/a16000+ N033.41.38.345,W097.42.47.559/ho GREGS/a11000/s250 MNKEE JFRYE/h143"
             }
         ],
         "MNNDO4": [
@@ -2969,7 +2969,7 @@
                 "initial_speed": 270,
                 "initial_controller": "FTW_62_CTR",
                 "star": "LIKES3",
-                "waypoints": "BRRUS/ho SLUGG/a8000 LIKES/h044"
+                "waypoints": "BRRUS N032.26.37.755,W098.01.43.518/ho SLUGG/a8000 LIKES/h044"
             }
         ],
         "LIKES3_N": [
@@ -2995,7 +2995,7 @@
                 "initial_speed": 270,
                 "initial_controller": "FTW_62_CTR",
                 "star": "LIKES3",
-                "waypoints": "BRRUS/ho SLUGG/a6000 LIKES/h044"
+                "waypoints": "BRRUS N032.26.37.755,W098.01.43.518/ho SLUGG/a6000 LIKES/h044"
             }
         ],
         "REEKO3": [
@@ -3110,6 +3110,92 @@
     "stars_config": {
         "allow_long_scratchpad": [false, false],
         "force_ql_self": true,
+        "coordination_fixes": {
+            "BEREE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "BOOVE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "BRDJE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "VKTRY": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "KNEAD": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "FINGR": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "GREGS": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "ORVLL": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "SLUGG": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "DODJE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "SASIE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "MOTZA": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ]
+        },
         "airspace_awareness": [
             {
                 "fixes": [

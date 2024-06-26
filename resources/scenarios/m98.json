@@ -1138,6 +1138,50 @@
       },
       "stars_config": {
         "center": "KMSP",
+        "coordination_fixes": {
+            "LUCCY": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "BLUEM": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "KKILR": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "BAYKS": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "NITZR": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "OFSON": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ]
+        },
         "airspace_awareness": [
           {
               "fixes": ["ALL"],
