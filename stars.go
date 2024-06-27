@@ -6887,41 +6887,29 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 		drawATPACone := drawATPAMonitor || drawATPAWarning || drawATPAAlert
 
 		if state.HaveHeading() && (state.ConeLength > 0 || drawATPACone) {
-			// We'll draw in window coordinates. First figure out the
-			// coordinates of the vertices of the cone triangle. We'll
-			// start with a canonical triangle in nm coordinates, going one
-			// unit up the +y axis with a small spread in x.
-			v := [][2]float32{[2]float32{0, 0}, [2]float32{-.04, 1}, [2]float32{.04, 1}}
+			// Find the length of the cone in pixel coordinates)
+			lengthNM := max(state.ConeLength, state.MinimumMIT)
+			length := lengthNM / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
 
-			// Now we want to get that triangle in window coordinates...
+			// Form a triangle; the end of the cone is 10 pixels wide
+			pts := [3][2]float32{{0, 0}, {-5, length}, {5, length}}
 
-			// The cone length is at minimum the required MIT if the aircraft is
-			// in the ATPA volume.
-			coneLength := max(state.ConeLength, state.MinimumMIT)
-			length := coneLength / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
-
+			// Now we'll rotate the vertices so that it points in the
+			// appropriate direction.
 			var coneHeading float32
 			if drawATPACone {
-				// Cone is oriented to point toward the leading aircraft
-				sfront, ok := sp.Aircraft[state.ATPALeadAircraftCallsign]
-				if ok {
+				// The cone is oriented to point toward the leading aircraft.
+				if sfront, ok := sp.Aircraft[state.ATPALeadAircraftCallsign]; ok {
 					coneHeading = headingp2ll(state.TrackPosition(), sfront.TrackPosition(),
 						ac.NmPerLongitude(), ac.MagneticVariation())
 				}
 			} else {
-				// Cone is oriented along the aircraft's heading
+				// The cone is oriented along the aircraft's heading.
 				coneHeading = state.TrackHeading(ac.NmPerLongitude()) + ac.MagneticVariation()
 			}
-
 			rot := rotator2f(coneHeading)
-			for i := range v {
-				// First scale it to make it the desired length in nautical
-				// miles; while we're at it, we'll convert that over to
-				// window coordinates.
-				v[i] = scale2f(v[i], length)
-				// Now we just need to rotate it from the +y axis to be
-				// aligned with the aircraft's heading.
-				v[i] = rot(v[i])
+			for i := range pts {
+				pts[i] = rot(pts[i])
 			}
 
 			coneColor := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
@@ -6934,12 +6922,14 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			// We've got what we need to draw a polyline with the
 			// aircraft's position as an anchor.
 			pw := transforms.WindowFromLatLongP(state.TrackPosition())
-			v = MapSlice(v, func(p [2]float32) [2]float32 { return add2f(p, pw) })
-			ld.AddLineLoop(coneColor, v)
+			for i := range pts {
+				pts[i] = add2f(pts[i], pw)
+			}
+			ld.AddLineLoop(coneColor, pts[:])
 
 			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
 				ptext := add2f(pw, rot(scale2f([2]float32{0, 0.5}, length)))
-				td.AddTextCentered(format(coneLength), ptext, textStyle)
+				td.AddTextCentered(format(lengthNM), ptext, textStyle)
 			}
 		}
 	}
