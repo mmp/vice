@@ -6830,6 +6830,8 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 	defer ReturnColoredLinesDrawBuilder(ld)
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
+	trid := GetTrianglesDrawBuilder()
+	defer ReturnTrianglesDrawBuilder(trid)
 
 	ps := sp.CurrentPreferenceSet
 	font := sp.systemFont[ps.CharSize.Datablocks]
@@ -6928,14 +6930,26 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			ld.AddLineLoop(coneColor, pts[:])
 
 			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
-				ptext := add2f(pw, rot(scale2f([2]float32{0, 0.5}, length)))
-				td.AddTextCentered(format(lengthNM), ptext, textStyle)
+				pCenter := add2f(pw, rot(scale2f([2]float32{0, 0.5}, length)))
+
+				// Draw a quad in the background color behind the text
+				text := format(lengthNM)
+				bx, by := textStyle.Font.BoundText(" "+text+" ", 0)
+				fbx, fby := float32(bx), float32(by+2)
+				trid.AddQuad(add2f(pCenter, [2]float32{-fbx / 2, -fby / 2}),
+					add2f(pCenter, [2]float32{fbx / 2, -fby / 2}),
+					add2f(pCenter, [2]float32{fbx / 2, fby / 2}),
+					add2f(pCenter, [2]float32{-fbx / 2, fby / 2}))
+
+				td.AddTextCentered(text, pCenter, textStyle)
 			}
 		}
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 	ld.GenerateCommands(cb)
+	cb.SetRGB(ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor))
+	trid.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }
 
