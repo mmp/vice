@@ -905,7 +905,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 			case nil:
 				//
 			case ErrOtherControllerHasTrack:
-				result.ErrorMessage = "Another controller is controlling this aircraft's"
+				result.ErrorMessage = "Another controller is controlling this aircraft"
 			default:
 				result.ErrorMessage = "Invalid or unknown command"
 			}
