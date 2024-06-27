@@ -6848,7 +6848,6 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 	ps := sp.CurrentPreferenceSet
 	font := sp.systemFont[ps.CharSize.Datablocks]
 	color := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
-	textStyle := TextStyle{Font: font, Color: color}
 
 	for _, ac := range aircraft {
 		state := sp.Aircraft[ac.Callsign]
@@ -6879,6 +6878,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 				// move up to make space for the text
 				v[1] += float32(font.size) + 3
 				pt := add2f(pc, v)
+				textStyle := TextStyle{Font: font, Color: color}
 				td.AddText(format(state.JRingRadius), pt, textStyle)
 			}
 		}
@@ -6942,6 +6942,8 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			ld.AddLineLoop(coneColor, pts[:])
 
 			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
+				textStyle := TextStyle{Font: font, Color: coneColor}
+
 				pCenter := add2f(pw, rot(scale2f([2]float32{0, 0.5}, length)))
 
 				// Draw a quad in the background color behind the text
