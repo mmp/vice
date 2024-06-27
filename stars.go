@@ -5676,7 +5676,7 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 			}
 
 			// green line
-			line := [2][2]float32{[2]float32{-16, -3}, [2]float32{16, -3}}
+			line := [2][2]float32{[2]float32{-16, 3}, [2]float32{16, 3}}
 			for i := range line {
 				line[i] = add2f(rot(scale2f(line[i], scale)), pw)
 				line[i] = transforms.LatLongFromWindowP(line[i])
