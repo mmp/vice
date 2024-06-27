@@ -1007,7 +1007,7 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.PrimaryAirport = sg.PrimaryAirport
 	fa := sg.STARSFacilityAdaptation
 	w.RadarSites = fa.RadarSites
-	w.Center = Select(fa.Center.IsZero(), fa.Center, fa.Center)
+	w.Center = Select(sc.Center.IsZero(), fa.Center, sc.Center)
 	w.Range = Select(sc.Range == 0, fa.Range, sc.Range)
 	w.ScenarioDefaultVideoMaps = sc.DefaultMaps
 	w.Scratchpads = fa.Scratchpads
