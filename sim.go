@@ -1191,11 +1191,15 @@ func (s *Sim) SignOn(callsign string) (*World, string, error) {
 		events:         s.eventStream.Subscribe(),
 	}
 
-	w := NewWorld()
-	w.Assign(s.World)
+	// Make a deep copy so that if the server is running on the same
+	// system, that the client doesn't see updates until they're explicitly
+	// sent. (And similarly, that any speculative client changes to the
+	// World state to improve responsiveness don't actually affect the
+	// server.)
+	w, err := deep.Copy(s.World)
 	w.Callsign = callsign
 
-	return w, token, nil
+	return w, token, err
 }
 
 func (s *Sim) signOn(callsign string) error {

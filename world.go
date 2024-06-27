@@ -96,14 +96,6 @@ func NewWorld() *World {
 	}
 }
 
-func (w *World) Assign(other *World) {
-	*w = *other
-	w.Aircraft = DuplicateMap(other.Aircraft)
-	w.METAR = DuplicateMap(other.METAR)
-	w.Controllers = DuplicateMap(other.Controllers)
-	w.MultiControllers = DuplicateMap(other.MultiControllers)
-}
-
 func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
 	// Sinusoidal wind speed variation from the base speed up to base +
 	// gust and then back...
