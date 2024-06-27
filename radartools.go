@@ -12,7 +12,6 @@ import (
 	"image/draw"
 	"image/png"
 	"log/slog"
-	"math"
 	"net/http"
 	"net/url"
 	"sort"
@@ -689,84 +688,4 @@ func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *Comm
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(3)
 	ld.GenerateCommands(cb)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Minimum separation lines
-
-// DrawMinimumSeparationLine estimates the time at which the given two
-// aircraft will be the closest together and then draws lines indicating
-// where they will be at that point and also text indicating their
-// estimated separation then.
-func DrawMinimumSeparationLine(p0ll, d0ll, p1ll, d1ll Point2LL, nmPerLongitude float32, color RGB, backgroundColor RGB,
-	font *Font, ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
-	p0, d0 := ll2nm(p0ll, nmPerLongitude), ll2nm(d0ll, nmPerLongitude)
-	p1, d1 := ll2nm(p1ll, nmPerLongitude), ll2nm(d1ll, nmPerLongitude)
-
-	// Find the parametric distance along the respective rays of the
-	// aircrafts' courses where they at at a minimum distance; this is
-	// linearly extrapolating their positions.
-	tmin := RayRayMinimumDistance(p0, d0, p1, d1)
-
-	// If something blew up in RayRayMinimumDistance then just bail out here.
-	if math.IsInf(float64(tmin), 0) || math.IsNaN(float64(tmin)) {
-		return
-	}
-
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
-	trid := GetTrianglesDrawBuilder()
-	defer ReturnTrianglesDrawBuilder(trid)
-
-	// Draw the separator lines (and triangles, if appropriate.)
-	var pw0, pw1 [2]float32     // Window coordinates of the points of minimum approach
-	var p0tmin, p1tmin Point2LL // Lat-long coordinates of the points of minimum approach
-	if tmin < 0 {
-		// The closest approach was in the past; just draw a line between
-		// the two tracks and initialize the above coordinates.
-		ld.AddLine(p0ll, p1ll, color)
-		p0tmin, p1tmin = p0ll, p1ll
-		pw0, pw1 = transforms.WindowFromLatLongP(p0ll), transforms.WindowFromLatLongP(p1ll)
-	} else {
-		// Closest approach in the future: draw a line from each track to
-		// the minimum separation line as well as the minimum separation
-		// line itself.
-		p0tmin = nm2ll(add2f(p0, scale2f(d0, tmin)), nmPerLongitude)
-		p1tmin = nm2ll(add2f(p1, scale2f(d1, tmin)), nmPerLongitude)
-		ld.AddLine(p0ll, p0tmin, color)
-		ld.AddLine(p0tmin, p1tmin, color)
-		ld.AddLine(p1tmin, p1ll, color)
-
-		// Draw small filled triangles centered at p0tmin and p1tmin.
-		pw0, pw1 = transforms.WindowFromLatLongP(p0tmin), transforms.WindowFromLatLongP(p1tmin)
-		uptri := EquilateralTriangleVertices(6)
-		trid.AddTriangle(add2f(pw0, uptri[0]), add2f(pw0, uptri[1]), add2f(pw0, uptri[2]))
-		trid.AddTriangle(add2f(pw1, uptri[0]), add2f(pw1, uptri[1]), add2f(pw1, uptri[2]))
-	}
-
-	// Draw the text for the minimum distance
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
-	// Center the text along the minimum distance line
-	pText := mid2f(pw0, pw1)
-	style := TextStyle{
-		Font:            font,
-		Color:           color,
-		DrawBackground:  true,
-		BackgroundColor: backgroundColor,
-	}
-	text := fmt.Sprintf("%.2fNM", nmdistance2ll(p0tmin, p1tmin))
-	if tmin < 0 {
-		text = "NO XING\n" + text
-	}
-	td.AddTextCentered(text, pText, style)
-
-	// Add the corresponding drawing commands to the CommandBuffer.
-	transforms.LoadLatLongViewingMatrices(cb)
-	ld.GenerateCommands(cb)
-
-	transforms.LoadWindowViewingMatrices(cb)
-	cb.SetRGB(color)
-	trid.GenerateCommands(cb)
-	td.GenerateCommands(cb)
 }
