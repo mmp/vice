@@ -1327,6 +1327,11 @@ func (sp *STARSPane) processEvents(w *World) {
 		return a && b
 	})
 
+	// In the following, note that we may see events that refer to aircraft
+	// that no longer exist (e.g., due to deletion). Thus, this is a case
+	// where we have to check our accesses to the sp.Aircraft map and not
+	// crash if we don't find an entry for an aircraft we have an event
+	// for.
 	for _, event := range sp.events.Get() {
 		switch event.Type {
 		case PointOutEvent:
@@ -1336,7 +1341,9 @@ func (sp *STARSPane) processEvents(w *World) {
 				} else {
 					sp.InboundPointOuts[event.Callsign] = ""
 				}
-				sp.Aircraft[event.Callsign].DatablockType = FullDatablock
+				if state, ok := sp.Aircraft[event.Callsign]; ok {
+					state.DatablockType = FullDatablock
+				}
 			}
 			if event.FromController == w.Callsign {
 				if ctrl := w.GetControllerByCallsign(event.ToController); ctrl != nil {
@@ -1344,7 +1351,9 @@ func (sp *STARSPane) processEvents(w *World) {
 				} else {
 					sp.OutboundPointOuts[event.Callsign] = ""
 				}
-				sp.Aircraft[event.Callsign].DatablockType = FullDatablock
+				if state, ok := sp.Aircraft[event.Callsign]; ok {
+					state.DatablockType = FullDatablock
+				}
 			}
 
 		case AcknowledgedPointOutEvent:
@@ -1356,8 +1365,10 @@ func (sp *STARSPane) processEvents(w *World) {
 			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
 				if ctrl := w.GetControllerByCallsign(event.ToController); ctrl != nil && ctrl.SectorId == id {
 					delete(sp.InboundPointOuts, event.Callsign)
-					sp.Aircraft[event.Callsign].PointedOut = true
-					sp.Aircraft[event.Callsign].POFlashingEndTime = time.Now().Add(5 * time.Second)
+					if state, ok := sp.Aircraft[event.Callsign]; ok {
+						state.PointedOut = true
+						state.POFlashingEndTime = time.Now().Add(5 * time.Second)
+					}
 				}
 			}
 
@@ -1376,8 +1387,9 @@ func (sp *STARSPane) processEvents(w *World) {
 
 		case InitiatedTrackEvent:
 			if event.ToController == w.Callsign {
-				state := sp.Aircraft[event.Callsign]
-				state.DatablockType = FullDatablock
+				if state, ok := sp.Aircraft[event.Callsign]; ok {
+					state.DatablockType = FullDatablock
+				}
 			}
 
 		case OfferedHandoffEvent:
@@ -1387,9 +1399,7 @@ func (sp *STARSPane) processEvents(w *World) {
 
 		case AcceptedHandoffEvent:
 			if event.FromController == w.Callsign && event.ToController != w.Callsign {
-				if state, ok := sp.Aircraft[event.Callsign]; !ok {
-					lg.Errorf("%s: have AcceptedHandoffEvent but missing STARS state?", event.Callsign)
-				} else {
+				if state, ok := sp.Aircraft[event.Callsign]; ok {
 					globalConfig.Audio.PlayOnce(AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
@@ -1398,9 +1408,7 @@ func (sp *STARSPane) processEvents(w *World) {
 
 		case AcceptedRedirectedHandoffEvent:
 			if event.FromController == w.Callsign && event.ToController != w.Callsign {
-				if state, ok := sp.Aircraft[event.Callsign]; !ok {
-					lg.Errorf("%s: have AcceptedRedirectedHandoffEvent but missing STARS state?", event.Callsign)
-				} else {
+				if state, ok := sp.Aircraft[event.Callsign]; ok {
 					globalConfig.Audio.PlayOnce(AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
@@ -1410,17 +1418,13 @@ func (sp *STARSPane) processEvents(w *World) {
 			}
 
 		case IdentEvent:
-			if state, ok := sp.Aircraft[event.Callsign]; !ok {
-				lg.Errorf("%s: have IdentEvent but missing STARS state?", event.Callsign)
-			} else {
+			if state, ok := sp.Aircraft[event.Callsign]; ok {
 				state.IdentStart = time.Now().Add(time.Duration(2+rand.Intn(3)) * time.Second)
 				state.IdentEnd = state.IdentStart.Add(10 * time.Second)
 			}
 
 		case SetGlobalLeaderLineEvent:
-			if state, ok := sp.Aircraft[event.Callsign]; !ok {
-				lg.Errorf("%s: have SetGlobalLeaderLineEvent but missing STARS state?", event.Callsign)
-			} else {
+			if state, ok := sp.Aircraft[event.Callsign]; ok {
 				state.GlobalLeaderLineDirection = event.LeaderLineDirection
 				state.UseGlobalLeaderLine = state.GlobalLeaderLineDirection != nil
 			}
