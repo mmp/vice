@@ -402,9 +402,8 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Display information about vice")
 		}
-		if imgui.BeginMenu(FontAwesomeIconDiscord) {
+		if imgui.Button(FontAwesomeIconDiscord) {
 			browser.OpenURL("https://discord.gg/y993vgQxhY")
-			imgui.EndMenu()
 		}
 
 		if imgui.Button(Select(platform.IsFullScreen(), FontAwesomeIconCompressAlt, FontAwesomeIconExpandAlt)) {
