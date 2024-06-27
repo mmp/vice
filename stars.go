@@ -76,8 +76,7 @@ type STARSPane struct {
 	systemOutlineFont [6]*Font
 	dcbFont           [3]*Font // 0, 1, 2 only
 
-	historyTrackVertices [][2]float32
-	fusedTrackVertices   [][2]float32
+	fusedTrackVertices [][2]float32
 
 	events *EventsSubscription
 
@@ -1655,7 +1654,8 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	sp.drawSystemLists(aircraft, ctx, ctx.paneExtent, transforms, cb)
 
-	// Tools before datablocks
+	sp.drawHistoryTrails(aircraft, ctx, transforms, cb)
+
 	sp.drawPTLs(aircraft, ctx, transforms, cb)
 	sp.drawRingsAndCones(aircraft, ctx, transforms, cb)
 	sp.drawRBLs(aircraft, ctx, transforms, cb)
@@ -5446,8 +5446,6 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	defer ReturnTextDrawBuilder(td)
 	trackBuilder := GetColoredTrianglesDrawBuilder()
 	defer ReturnColoredTrianglesDrawBuilder(trackBuilder)
-	historyBuilder := GetColoredTrianglesDrawBuilder()
-	defer ReturnColoredTrianglesDrawBuilder(historyBuilder)
 	ld := GetColoredLinesDrawBuilder()
 	defer ReturnColoredLinesDrawBuilder(ld)
 	trid := GetColoredTrianglesDrawBuilder()
@@ -5455,8 +5453,6 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	// TODO: square icon if it's squawking a beacon code we're monitoring
 
 	// Update cached command buffers for tracks
-	const historyTrackDiameter = 8
-	sp.historyTrackVertices = getTrackVertices(ctx, historyTrackDiameter)
 	sp.fusedTrackVertices = getTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
 
 	scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
@@ -5488,12 +5484,11 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		heading := Select(state.HaveHeading(),
 			state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(), ac.Heading())
 
-		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, trackBuilder, historyBuilder,
+		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, trackBuilder,
 			ld, trid, td, scale)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	historyBuilder.GenerateCommands(cb)
 	trackBuilder.GenerateCommands(cb)
 
 	transforms.LoadLatLongViewingMatrices(cb)
@@ -5624,8 +5619,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 
 func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, heading float32, ctx *PaneContext,
 	transforms ScopeTransformations, trackId string, trackBuilder *ColoredTrianglesDrawBuilder,
-	historyBuilder *ColoredTrianglesDrawBuilder, ld *ColoredLinesDrawBuilder,
-	trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder, scale float32) {
+	ld *ColoredLinesDrawBuilder, trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder, scale float32) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
 
@@ -5739,21 +5733,6 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 			ld.AddLine(delta(pos, 0, -px), delta(pos, 0, px), trackColor)
 		}
 	}
-
-	if ps.Brightness.History > 0 { // Don't draw if brightness == 0.
-		// Draw history from new to old
-		for i := range ps.RadarTrackHistory {
-			trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
-			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
-
-			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
-				if p := state.historyTracks[idx].Position; !p.IsZero() {
-					drawTrack(historyBuilder, transforms.WindowFromLatLongP(p), sp.historyTrackVertices,
-						trackColor)
-				}
-			}
-		}
-	}
 }
 
 func drawTrack(ctd *ColoredTrianglesDrawBuilder, p [2]float32, vertices [][2]float32, color RGB) {
@@ -5786,6 +5765,46 @@ func getTrackVertices(ctx *PaneContext, diameter float32) [][2]float32 {
 	pts = MapSlice(pts, func(p [2]float32) [2]float32 { return scale2f(p, radius) })
 
 	return pts
+}
+
+func (sp *STARSPane) drawHistoryTrails(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations,
+	cb *CommandBuffer) {
+	ps := sp.CurrentPreferenceSet
+	if ps.Brightness.History == 0 {
+		// Don't draw if brightness == 0.
+		return
+	}
+
+	historyBuilder := GetColoredTrianglesDrawBuilder()
+	defer ReturnColoredTrianglesDrawBuilder(historyBuilder)
+
+	const historyTrackDiameter = 8
+	historyTrackVertices := getTrackVertices(ctx, historyTrackDiameter)
+
+	now := ctx.world.CurrentTime()
+	for _, ac := range aircraft {
+		state := sp.Aircraft[ac.Callsign]
+
+		if state.LostTrack(now) {
+			continue
+		}
+
+		// Draw history from new to old
+		for i := range ps.RadarTrackHistory {
+			trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
+			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
+
+			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
+				if p := state.historyTracks[idx].Position; !p.IsZero() {
+					drawTrack(historyBuilder, transforms.WindowFromLatLongP(p), historyTrackVertices,
+						trackColor)
+				}
+			}
+		}
+	}
+
+	transforms.LoadWindowViewingMatrices(cb)
+	historyBuilder.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
