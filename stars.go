@@ -7080,23 +7080,13 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 		return
 	}
 
-	sp.drawMinimumSeparationLine(s0.TrackPosition(),
-		s0.HeadingVector(ac0.NmPerLongitude(), ac0.MagneticVariation()),
-		s1.TrackPosition(),
-		s1.HeadingVector(ac1.NmPerLongitude(), ac1.MagneticVariation()),
-		ac0.NmPerLongitude(), color, RGB{}, sp.systemFont[ps.CharSize.Tools],
-		ctx, transforms, cb)
-}
+	// Go ahead and draw the minimum separation lines and text.
+	p0ll, p1ll := s0.TrackPosition(), s1.TrackPosition()
+	d0ll := s0.HeadingVector(ac0.NmPerLongitude(), ac0.MagneticVariation())
+	d1ll := s1.HeadingVector(ac1.NmPerLongitude(), ac1.MagneticVariation())
 
-// drawMinimumSeparationLine estimates the time at which the given two
-// aircraft will be the closest together and then draws lines indicating
-// where they will be at that point and also text indicating their
-// estimated separation then.
-func (sp *STARSPane) drawMinimumSeparationLine(p0ll, d0ll, p1ll, d1ll Point2LL, nmPerLongitude float32,
-	color RGB, backgroundColor RGB, font *Font, ctx *PaneContext, transforms ScopeTransformations,
-	cb *CommandBuffer) {
-	p0, d0 := ll2nm(p0ll, nmPerLongitude), ll2nm(d0ll, nmPerLongitude)
-	p1, d1 := ll2nm(p1ll, nmPerLongitude), ll2nm(d1ll, nmPerLongitude)
+	p0, d0 := ll2nm(p0ll, ac0.NmPerLongitude()), ll2nm(d0ll, ac0.NmPerLongitude())
+	p1, d1 := ll2nm(p1ll, ac1.NmPerLongitude()), ll2nm(d1ll, ac1.NmPerLongitude())
 
 	// Find the parametric distance along the respective rays of the
 	// aircrafts' courses where they at at a minimum distance; this is
@@ -7115,6 +7105,8 @@ func (sp *STARSPane) drawMinimumSeparationLine(p0ll, d0ll, p1ll, d1ll Point2LL, 
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
 
+	font := sp.systemFont[ps.CharSize.Tools]
+
 	// Draw the separator lines (and triangles, if appropriate.)
 	var pw0, pw1 [2]float32     // Window coordinates of the points of minimum approach
 	var p0tmin, p1tmin Point2LL // Lat-long coordinates of the points of minimum approach
@@ -7128,8 +7120,8 @@ func (sp *STARSPane) drawMinimumSeparationLine(p0ll, d0ll, p1ll, d1ll Point2LL, 
 		// Closest approach in the future: draw a line from each track to
 		// the minimum separation line as well as the minimum separation
 		// line itself.
-		p0tmin = nm2ll(add2f(p0, scale2f(d0, tmin)), nmPerLongitude)
-		p1tmin = nm2ll(add2f(p1, scale2f(d1, tmin)), nmPerLongitude)
+		p0tmin = nm2ll(add2f(p0, scale2f(d0, tmin)), ac0.NmPerLongitude())
+		p1tmin = nm2ll(add2f(p1, scale2f(d1, tmin)), ac1.NmPerLongitude())
 		ld.AddLine(p0ll, p0tmin, color)
 		ld.AddLine(p0tmin, p1tmin, color)
 		ld.AddLine(p1tmin, p1ll, color)
@@ -7148,7 +7140,7 @@ func (sp *STARSPane) drawMinimumSeparationLine(p0ll, d0ll, p1ll, d1ll Point2LL, 
 		Font:            font,
 		Color:           color,
 		DrawBackground:  true,
-		BackgroundColor: backgroundColor,
+		BackgroundColor: RGB{},
 	}
 	text := fmt.Sprintf("%.2fNM", nmdistance2ll(p0tmin, p1tmin))
 	if tmin < 0 {
