@@ -4837,8 +4837,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		if len(alt) == 4 {
 			alt = alt[:2] + "." + alt[2:]
 		}
-		wind := strings.TrimSuffix(metar.Wind, "KT")
-		return stripK(ap) + " " + alt + " " + wind
+		return stripK(ap) + " " + alt
 	}
 
 	if ps.SSAList.Visible {
@@ -4962,7 +4961,6 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		}
 
 		if filter.All || filter.AirportWeather {
-			var lines []string
 			airports := SortedMapKeys(ctx.world.AllAirports())
 			// Sort via 1. primary? 2. tower list index, 3. alphabetic
 			sort.Slice(airports, func(i, j int) bool {
@@ -4981,13 +4979,23 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 				return airports[i] < airports[j]
 			})
 
+			// 2-78: apparently it's limited to 6 airports; there are also
+			// some nuances about automatically-entered versus manually
+			// entered, stale entries, and a possible "*" for airports
+			// where "instrument approach statistics are maintained".
+			var altimeters []string
 			for _, icao := range airports {
 				if metar := ctx.world.GetMETAR(icao); metar != nil {
-					lines = append(lines, formatMETAR(icao, metar))
+					altimeters = append(altimeters, formatMETAR(icao, metar))
 				}
 			}
-			if len(lines) > 0 {
-				pw = td.AddText(strings.Join(lines, "\n"), pw, style)
+			for len(altimeters) >= 3 {
+				pw = td.AddText(strings.Join(altimeters[:3], " "), pw, style)
+				altimeters = altimeters[3:]
+				newline()
+			}
+			if len(altimeters) > 0 {
+				pw = td.AddText(strings.Join(altimeters, " "), pw, style)
 				newline()
 			}
 		}
