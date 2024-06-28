@@ -926,9 +926,9 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *ErrorLogger, sg *ScenarioGr
 		}
 		e.Pop()
 	}
-	if s.BeaconBank > 7 || s.BeaconBank < 1 {
-		e.ErrorString("beacon bank \"%v\" is invalid. Must be between 1 and 7", s.BeaconBank)
-	}
+	// if s.BeaconBank > 7 || s.BeaconBank < 1 {
+	// 	e.ErrorString("beacon bank \"%v\" is invalid. Must be between 1 and 7", s.BeaconBank)
+	// }
 
 	e.Pop() // stars_config
 }

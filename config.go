@@ -34,7 +34,7 @@ import (
 // 22: draw points using triangles, remove some CommandBuffer commands
 // 23: video map format update
 // 24: flight plan processing
-const CurrentConfigVersion = 23
+const CurrentConfigVersion = 24
 
 // Slightly convoluted, but the full GlobalConfig definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first
