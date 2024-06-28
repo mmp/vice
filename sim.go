@@ -1566,18 +1566,25 @@ func (s *Sim) updateState() {
 		s.lastSimUpdate = now
 		for callsign, ac := range s.World.Aircraft {
 			passedWaypoint := ac.Update(s.World, s, s.lg)
-			if passedWaypoint != nil && passedWaypoint.Handoff {
-				// Handoff from virtual controller to a human controller.
-				ctrl := s.ResolveController(ac.WaypointHandoffController)
+			if passedWaypoint != nil {
+				if passedWaypoint.Handoff {
+					// Handoff from virtual controller to a human controller.
+					ctrl := s.ResolveController(ac.WaypointHandoffController)
 
-				s.eventStream.Post(Event{
-					Type:           OfferedHandoffEvent,
-					Callsign:       ac.Callsign,
-					FromController: ac.TrackingController,
-					ToController:   ctrl,
-				})
+					s.eventStream.Post(Event{
+						Type:           OfferedHandoffEvent,
+						Callsign:       ac.Callsign,
+						FromController: ac.TrackingController,
+						ToController:   ctrl,
+					})
 
-				ac.HandoffTrackController = ctrl
+					ac.HandoffTrackController = ctrl
+				}
+
+				if passedWaypoint.Delete {
+					lg.Info("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
+					delete(s.World.Aircraft, ac.Callsign)
+				}
 			}
 
 			// Contact the departure controller

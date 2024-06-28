@@ -159,11 +159,6 @@ func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
 	passedWaypoint := ac.Nav.Update(w, lg)
 	if passedWaypoint != nil {
 		lg.Info("passed", slog.Any("waypoint", passedWaypoint))
-
-		if passedWaypoint.Delete {
-			lg.Info("deleting aircraft after landing")
-			w.DeleteAircraft(ac, nil)
-		}
 	}
 
 	if ac.GoAroundDistance != nil {
