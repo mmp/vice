@@ -2381,25 +2381,27 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			octrl := s.World.GetControllerByCallsign(controller)
-			s.eventStream.Post(Event{
-				Type:           PointOutEvent,
-				FromController: ctrl.Callsign,
-				ToController:   octrl.Callsign,
-				Callsign:       ac.Callsign,
-			})
-
-			// As with handoffs, always add it to the auto-accept list for now.
-			acceptDelay := 4 + rand.Intn(10)
-			if s.PointOuts[ac.Callsign] == nil {
-				s.PointOuts[ac.Callsign] = make(map[string]PointOut)
-			}
-			s.PointOuts[ac.Callsign][octrl.Callsign] = PointOut{
-				FromController: ctrl.Callsign,
-				AcceptTime:     s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
-			}
-
+			s.pointOut(ac.Callsign, ctrl, octrl)
 			return nil
 		})
+}
+
+func (s *Sim) pointOut(callsign string, from *Controller, to *Controller) {
+	s.eventStream.Post(Event{
+		Type:           PointOutEvent,
+		FromController: from.Callsign,
+		ToController:   to.Callsign,
+		Callsign:       callsign,
+	})
+
+	acceptDelay := 4 + rand.Intn(10)
+	if s.PointOuts[callsign] == nil {
+		s.PointOuts[callsign] = make(map[string]PointOut)
+	}
+	s.PointOuts[callsign][to.Callsign] = PointOut{
+		FromController: from.Callsign,
+		AcceptTime:     s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+	}
 }
 
 func (s *Sim) AcknowledgePointOut(token, callsign string) error {
