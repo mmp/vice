@@ -5763,6 +5763,24 @@
     }
   },
   {
+    "icao": "epi",
+    "name": "Epic Flight Academy",
+    "callsign": {
+      "name": "Epic Red",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C172",
+          29
+        ]
+      ]
+    }
+  },
+  {
     "icao": "9n",
     "name": "General Aviation Nepal",
     "callsign": {

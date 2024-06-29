@@ -3900,6 +3900,7 @@
         "initial_altitude": 5000,
         "initial_controller": "MIA_23_CTR",
         "route": "CLEFF T208 SMYRA",
+        "initial_speed": 150,
         "waypoints": "WIXED SULTY/ho VALKA DIMBY INDIA TICCO MALET OAKIE SMYRA KDAB/a5"
       }
     ],
@@ -3932,6 +3933,7 @@
         },
         "assigned_altitude": 4000,
         "initial_altitude": 4000,
+        "initial_speed": 150,
         "initial_controller": "DAB_N_APP",
         "route": "SMYRA T208 CLEFF",
         "waypoints": "SMYRA OAKIE/ho MALET TICCO INDIA DIMBY VALKA SULTY WIXED KPBI/a5"
@@ -10632,6 +10634,20 @@
       "facility_id": "2",
       "sector_id": "1W"
     },
+    "DAB_TWR": {
+      "frequency": 120700,
+      "full_name": "Daytona Beach tower",
+      "scope_char": "T",
+      "facility_id": "5",
+      "sector_id": "1T"
+    },
+    "PBI_TWR": {
+      "frequency": 119100,
+      "full_name": "Palm Beach Tower",
+      "scope_char": "T",
+      "facility_id": "7",
+      "sector_id": "1T"
+    },
     "MCO_G_APP": {
       "frequency": 127750,
       "full_name": "Orlando approach",
@@ -10712,6 +10728,14 @@
         {
           "airport": "KTPA",
           "runway": "1L"
+        },
+        {
+          "airport": "KDAB",
+          "runway": "7L"
+        },
+        {
+          "airport": "KPBI",
+          "runway": "10L"
         },
         {
           "airport": "KMLB",
@@ -10952,6 +10976,14 @@
         {
           "airport": "KTPA",
           "runway": "1L"
+        },
+        {
+          "airport": "KDAB",
+          "runway": "7L"
+        },
+        {
+          "airport": "KPBI",
+          "runway": "10L"
         },
         {
           "airport": "KMLB",
