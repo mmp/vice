@@ -392,6 +392,7 @@
           "altitude": 35000,
           "destination": "KATL",
           "exit": "PAINN",
+          "scratchpad": "J35",
           "route": "PAINN SHRKS LAIRI LARZZ JJEDI3"
         },
         {
@@ -403,6 +404,7 @@
           "altitude": 17000,
           "destination": "KEYW",
           "exit": "FSHUN",
+          "scratchpad": "F17",
           "route": "FSHUN PLUMR EYW"
         },
         {
@@ -414,6 +416,7 @@
           "altitude": 17000,
           "destination": "KEYW",
           "exit": "FSHUN",
+          "scratchpad": "F17",
           "route": "FSHUN PLUMR EYW"
         },
         {
@@ -425,6 +428,7 @@
           "altitude": 18000,
           "destination": "KPNS",
           "exit": "VIZTA",
+          "scratchpad": "V18",
           "route": "VIZTA CTY PENSI"
         },
         {
@@ -436,6 +440,7 @@
           "altitude": 17000,
           "destination": "KGSO",
           "exit": "WORMS",
+          "scratchpad": "W17",
           "route": "WORMS GUANO BKENI VIYAP GSO"
         },
         {
@@ -447,6 +452,7 @@
           "altitude": 17000,
           "destination": "KFLL",
           "exit": "DDANY",
+          "scratchpad": "D17",
           "route": "DDANY JIPOD TARPN3"
         },
         {
@@ -458,6 +464,7 @@
           "altitude": 39000,
           "destination": "TTPP",
           "exit": "BORRD",
+          "scratchpad": "D39",
           "route": "BORRD ANGEE BR62V ZFP BR65V PEACH Y421 MEEGL ANADA UG449 PERGA ITRAK NAPKO LEXOR TALUS"
         },
         {
@@ -474,6 +481,7 @@
           "altitude": 39000,
           "destination": "EGLL",
           "exit": "JIPOD",
+          "scratchpad": "D39",
           "route": "JIPOD SNAGY FLUPS SAVON M327 JIMAC BALOO 3500N/06000W 3800N/05000W 4100N/04000W 4400N/03000W 4700N/02000W 4800N/01500W OMOKO GUNSO GAPLI SIDDI DAWLY OTMET"
         },
         {
@@ -488,6 +496,7 @@
           "altitude": 35000,
           "destination": "KJFK",
           "exit": "VIYAP",
+          "scratchpad": "W35",
           "route": "VIYAP Q87 JROSS BARTL J121 SIE CARMN4"
         },
         {
@@ -508,6 +517,7 @@
           "altitude": 35000,
           "destination": "KBOS",
           "exit": "VIYAP",
+          "scratchpad": "W35",
           "route": "VIYAP Q87 JROSS MULLS J79 JFK ROBUC3"
         },
         {
@@ -520,6 +530,7 @@
           "altitude": 31000,
           "destination": "EHAM",
           "exit": "VIYAP",
+          "scratchpad": "W31",
           "route": " VIYAP Q87 JROSS BARTL J121 SWL J174 RIFLE ACK VITOL N45D NANSO N45D RAFIN NATX BEDRA NATX NASBA GAPLI SIDDI DAWLY GIBSO L620 MID UM185 KOBBI M197 REDFA"
         },
         {
@@ -531,6 +542,7 @@
           "altitude": 39000,
           "destination": "TNCA",
           "exit": "VALKA",
+          "scratchpad": "D39",
           "route": "VALKA TRV BR62V JAKEL BR62V ZFP BR65V ZQA A555 DUKKY A756 KNSLY Y398 JOSES UA315 VESKA VESK2A"
         },
         {
@@ -545,6 +557,7 @@
           "altitude": 37000,
           "destination": "SKBO",
           "exit": "BORRD",
+          "scratchpad": "D37",
           "route": "BORRD EBAYY Q97 TOVAR Y297 URSUS UP406 AKPEK UQ121 RNG ISVAT ISVA4W"
         },
         {
@@ -556,6 +569,7 @@
           "altitude": 30000,
           "destination": "CYYC",
           "exit": "JFRYS",
+          "scratchpad": "R30",
           "route": "JFRYS PATOY Q116 MICES Q116 JAWJA MGMRY STEIT GAGLE KM33I KK42G KK51E DRABS KD75A KD87Y KIXCO KU21S GGRBI VESDO Q832 EBGAL EBGAL6"
         },
         {
@@ -567,6 +581,7 @@
           "altitude": 37000,
           "destination": "SKCG",
           "exit": "BORRD",
+          "scratchpad": "D37",
           "route": "BORRD EBAYY Q97 TOVAR Y297 URSUS UP406 UBSUX VARON VARO2B"
         },
         {
@@ -584,6 +599,7 @@
           "altitude": 34000,
           "destination": "MMUN",
           "exit": "PLUMR",
+          "scratchpad": "D34",
           "route": "PLUMR TUNSL Y196 CANOA UB879 NOSAT NOSAT1B"
         },
         {
@@ -596,6 +612,7 @@
           "altitude": 37000,
           "destination": "EIDW",
           "exit": "VIYAP",
+          "scratchpad": "W37",
           "route": "VIYAP 3808N/07402W VITOL PORTI NATU DINIM NATU ELSOX OSGAR OSGAR3X"
         },
         {
@@ -607,6 +624,7 @@
           "altitude": 31000,
           "destination": "OMDB",
           "exit": "ETECK",
+          "scratchpad": "G31",
           "route": "MZULO3 ETECK M202 UKOKA BEXUM M204 LUNKR 3800N/06000W 4100N/05000W 4300N/04000W 4500N/03000W 4600N/02000W HIDRA STG SUSOS NUBLO NEDUS RATAS DGO VASUM YAKXU ELSAP VAKIN DIRMU LOBAR MECKI ARBEK SADUR BCN UN725 ORKUM UM603 ELSAG ALG GIANO BELIX PLH UM978 AMAXI UM978 SIT UM1 KAVOS EVORA LAKTO L560 SERMA L550 KARIK B411 ULINA UB411 DEESA Y415 LOTOK P559 DAROR P559 NALPO P559 VUTEB"
         },
         {
@@ -619,6 +637,7 @@
           "altitude": 37000,
           "destination": "EDDF",
           "exit": "VIYAP",
+          "scratchpad": "W37",
           "route": "FATHE3 VIYAP Q87 JROSS BARTL J121 SWL J174 WARNN J174 RIFLE ACK KANNI N139A PORTI NATU DINIM NATU ELSOX LESLU OXLOW M142 ROKKE M140 DVR UL9 KONAN UL607 KOK SPI T180 UNOKO UNOKO3A"
         },
         {
@@ -630,6 +649,7 @@
           "altitude": 38000,
           "destination": "CYEG",
           "exit": "PAINN",
+          "scratchpad": "J38",
           "route": "PAINN SHRKS THRSR BNA J45 IRK J45 FSD DIK YEA CAMRA IGSOX3"
         },
         {
@@ -641,6 +661,7 @@
           "altitude": 38000,
           "destination": "MGGT",
           "exit": "PLUMR",
+          "scratchpad": "F38",
           "route": "PLUMR RSW KARTR LULLS Y262 MAXIM UG765 IMATA MISOM MISOM1B"
         },
         {
@@ -652,6 +673,7 @@
           "altitude": 38000,
           "destination": "MMGL",
           "exit": "CIGAR",
+          "scratchpad": "O38",
           "route": "OSPRY1 CIGAR IRDOV UM580 COFRE UT23 TAM UJ14 TMN UT147 AGU UT44 MEZCA UT44 LIVRI LIVRI1D"
         },
         {
@@ -667,6 +689,7 @@
           "altitude": 33000,
           "destination": "CYHZ",
           "exit": "VIYAP",
+          "scratchpad": "W33",
           "route": "VIYAP Q87 JROSS MULLS J79 VILLS J79 JFK FOXWD TUSKY PEGGY5"
         },
         {
@@ -679,6 +702,7 @@
           "altitude": 39000,
           "destination": "EGLL",
           "exit": "VIYAP",
+          "scratchpad": "W39",
           "route": "VIYAP Q87 TAALN Q87 JROSS BARTL J121 ORF SIE SHLEP PUT EBONY ELSIR 5000N/05000W 5200N/04000W 5300N/03000W 5300N/02000W TOBOR RILED EVRIN INFEC JETZI OGLUN OCTIZ P2 SIRIC"
         },
         {
@@ -691,6 +715,7 @@
           "altitude": 35000,
           "destination": "EGKK",
           "exit": "LENDS",
+          "scratchpad": "G35",
           "route": "LENDS TROUT 3200N/07000W 3600N/06000W 4000N/05000W 4300N/04000W 4500N/03000W 4700N/02000W 4800N/01500W OMOKO GUNSO GAPLI Y8 RIGDI N17 OTMET OTMET1G"
         },
         {
@@ -703,6 +728,7 @@
           "altitude": 35000,
           "destination": "EGCC",
           "exit": "VIYAP",
+          "scratchpad": "W35",
           "route": "VIYAP Q87 SUSYQ Q87 JROSS BARTL J121 ORF SIE SHLEP PUT EBONY ELSIR 5000N/05000W 5200N/04000W 5300N/03000W 5300N/02000W MALOT GISTI BOFUM Q37 MALUD"
         },
         {
@@ -714,6 +740,7 @@
           "altitude": 37000,
           "destination": "SKRG",
           "exit": "VALKA",
+          "scratchpad": "D37",
           "route": "VALKA TRV URSUS UP406 AKPEK AKPE3C"
         },
         {
@@ -729,6 +756,7 @@
           "altitude": 38000,
           "destination": "MMMX",
           "exit": "CIGAR",
+          "scratchpad": "O38",
           "route": "CIGAR M215 MINOW M580 IRDOV UM580 TADET UT154 ENAGA ENAGA2A"
         },
         {
@@ -740,6 +768,7 @@
           "altitude": 35000,
           "destination": "CYQM",
           "exit": "VIYAP",
+          "scratchpad": "W35",
           "route": "VIYAP RAPZZ ISO J121 ORF J121 SWL J174 HTO BOS BGR DANOL Q951 PUXOP"
         },
         {
@@ -760,6 +789,7 @@
           "altitude": 35000,
           "destination": "MKJS",
           "exit": "VALKA",
+          "scratchpad": "D35",
           "route": "VALKA EBAYY Q97 TOVAR Y297 URSUS UL780 TASNO UM221 NIBEO ADSEL LENAR6"
         },
         {
@@ -775,6 +805,7 @@
           "altitude": 33000,
           "destination": "CYUL",
           "exit": "VIYAP",
+          "scratchpad": "W33",
           "route": "VIYAP Q87 TAALN Q87 JROSS MULLS J79 JFK LLUND CAM JASDU PBERG CARTR4"
         },
         {
@@ -789,6 +820,7 @@
           "altitude": 23000,
           "destination": "MYNN",
           "exit": "VALKA",
+          "scratchpad": "D23",
           "route": "VALKA TRV BR62V ZFP BR63V MELON BR63V ZQA"
         },
         {
@@ -800,6 +832,7 @@
           "altitude": 37000,
           "destination": "MPTO",
           "exit": "PLUMR",
+          "scratchpad": "F37",
           "route": "PLUMR FEMID Q79 VAULT Q79 MCLAW Y442 FUNDI UM335 ARNAL SEKMA OSUPA OSUPA1B"
         },
         {
@@ -811,6 +844,7 @@
           "altitude": 39000,
           "destination": "TTPP",
           "exit": "BORRD",
+          "scratchpad": "D39",
           "route": " BORRD ANGEE BR62V ZFP BR65V PEACH Y421 MEEGL ANADA UG449 PERGA ITRAK NAPKO LEXOR TALUS"
         },
         {
@@ -837,6 +871,7 @@
           "altitude": 36000,
           "destination": "KLAX",
           "exit": "REMIS",
+          "scratchpad": "O36",
           "route": "REMIS Y280 LEV J86 PEKON SBI IAH JCT ELP WOBUG J184 BXK J4 MESSI ESTWD HLYWD1"
         },
         {
@@ -851,6 +886,7 @@
           "altitude": 32000,
           "destination": "KLAS",
           "exit": "JFRYS",
+          "scratchpad": "R32",
           "route": "JFRYS PATOY Q116 JAWJA CABLO MERDN LIT J6 IRW KA33Y GUP HAHAA RKSTR3"
         },
         {
@@ -869,6 +905,7 @@
           "altitude": 36000,
           "destination": "KLAS",
           "exit": "JFRYS",
+          "scratchpad": "R36",
           "route": "JFRYS PATOY Q116 JAWJA CABLO MCB ACT INK EWM DRRVR PINNG1"
         },
         {
@@ -890,6 +927,7 @@
           "altitude": 34000,
           "destination": "KDEN",
           "exit": "JFRYS",
+          "scratchpad": "R34",
           "route": "JFRYS PATOY Q116 JAWJA MGM SQS KF33E KK39C HALEN NIIXX3"
         }
       ],
@@ -1093,6 +1131,7 @@
           "altitude": 27000,
           "destination": "KMIA",
           "exit": "DDANY",
+          "scratchpad": "D27",
           "route": "DDANY CSTAL2"
         },
         {
@@ -1114,6 +1153,7 @@
           "altitude": 25000,
           "destination": "KFLL",
           "exit": "MLB",
+          "scratchpad": "D25",
           "route": "MLB BLUFI4"
         },
         {
@@ -1135,6 +1175,7 @@
           "altitude": 33000,
           "destination": "KJQF",
           "exit": "WORMS",
+          "scratchpad": "W33",
           "route": "WORMS GUANO MMKAY CRG"
         },
         {
@@ -1159,6 +1200,7 @@
           "altitude": 38000,
           "destination": "KBNA",
           "exit": "RDSOX",
+          "scratchpad": "R38",
           "route": "RDSOX JFRYS BRUTS Q118 THRSR WESSN JAGIR SWFFT2"
         },
         {
@@ -1183,6 +1225,7 @@
           "altitude": 16000,
           "destination": "KAPF",
           "exit": "FSHUN",
+          "scratchpad": "F16",
           "route": "FSHUN SHFTY SHFTY5"
         }
       ],
@@ -1294,12 +1337,14 @@
           "altitude": 35000,
           "destination": "KORF",
           "exit": "WORMS",
+          "scratchpad": "W35",
           "route": "WORMS GUANO BKENI VIYAP Q87 JROSS BARTL J121 ISO DRONE2"
         },
         {
         "exit": "WORMS",
         "destination": "KBNA",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS THRSR WESSN JAGIR SWFFT2",
         "airlines": [
             {
@@ -1312,6 +1357,7 @@
         "exit": "RDSOX",
         "destination": "KMEM",
         "altitude": 36000,
+        "scratchpad": "R36",
         "route": "RDSOX JFRYS BRUTS Q118 JAMIZ OTK VLKNN WASER VANZE3",
         "airlines": [
             {
@@ -1324,6 +1370,7 @@
         "exit": "WORMS",
         "destination": "KABE",
         "altitude": 35000,
+        "scratchpad": "W35",
         "route": "WORMS GUANO BKENI VIYAP Q87 ALWZZ OGRAE Q99 SHIRY THEOO COURG BAMMY T299 SCAPE T299 DUMMR",
         "airlines": [
             {
@@ -1336,6 +1383,7 @@
         "exit": "WORMS",
         "destination": "KCKB",
         "altitude": 35000,
+        "scratchpad": "W35",
         "route": "WORMS GUANO BKENI VIYAP Q69 GURGE BLAAN Q69 RICCS",
         "airlines": [
             {
@@ -1348,6 +1396,7 @@
         "exit": "RDSOX",
         "destination": "KIND",
         "altitude": 36000,
+        "scratchpad": "R36",
         "route": "RDSOX JFRYS BRUTS Q118 THRSR WUDEE RESPE SWAPP HAGAL GIIBS3",
         "airlines": [
             {
@@ -1360,6 +1409,7 @@
         "exit": "WORMS",
         "destination": "KBLV",
         "altitude": 34000,
+        "scratchpad": "W34",
         "route": "WORMS GUANO BKENI VIYAP SAV IRQ GQO BNA J45 DENNI ENL ENL2",
         "airlines": [
             {
@@ -1372,6 +1422,7 @@
         "exit": "WORMS",
         "destination": "KGSP",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 WIGVO PROVN MCHLN2",
         "airlines": [
             {
@@ -1384,6 +1435,7 @@
         "exit": "WORMS",
         "destination": "KACY",
         "altitude": 31000,
+        "scratchpad": "W31",
         "route": "WORMS GUANO BKENI VIYAP Q87 JROSS Q135 CUDLE Q117 SAWED Q97 ZJAAY RADDS SIE",
         "airlines": [
             {
@@ -1396,6 +1448,7 @@
         "exit": "WORMS",
         "destination": "KFWA",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL IRQ J99 VXV J43 FLM RID",
         "airlines": [
             {
@@ -1408,6 +1461,7 @@
         "exit": "WORMS",
         "destination": "KLIT",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q89 YANTI MCN VUZ J14 LIT",
         "airlines": [
             {
@@ -1420,6 +1474,7 @@
         "exit": "WORMS",
         "destination": "KTYS",
         "altitude": 34000,
+        "scratchpad": "W34",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL ODF",
         "airlines": [
             {
@@ -1432,6 +1487,7 @@
         "exit": "WORMS",
         "destination": "KCAK",
         "altitude": 35000,
+        "scratchpad": "W35",
         "route": "WORMS GUANO BKENI VIYAP Q69 GURGE Q93 QUIWE SPA J85 HVQ JPU ZZIPS1",
         "airlines": [
             {
@@ -1444,6 +1500,7 @@
         "exit": "WORMS",
         "destination": "KMDT",
         "altitude": 35000,
+        "scratchpad": "W35",
         "route": "WORMS GUANO BKENI VIYAP Q69 GURGE BLAAN Q69 ILLSA COURG BAMMY T299 SCAPE T299 HAR",
         "airlines": [
             {
@@ -1456,6 +1513,7 @@
         "exit": "RDSOX",
         "destination": "KAUS",
         "altitude": 36000,
+        "scratchpad": "R36",
         "route": "RDSOX JFRYS PATOY CTY MGR EUF LBY LCH IAH LUKKN WLEEE7",
         "airlines": [
             {
@@ -1468,6 +1526,7 @@
         "exit": "WORMS",
         "destination": "KCVG",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 WIGVO IRQ J99 VXV JAKIE6",
         "airlines": [
             {
@@ -1480,6 +1539,7 @@
         "exit": "WORMS",
         "destination": "KABE",
         "altitude": 35000,
+        "scratchpad": "W35",
         "route": "WORMS GUANO BKENI VIYAP Q87 ALWZZ OGRAE Q99 SHIRY THEOO COURG BAMMY T299 SCAPE T299 DUMMR",
         "airlines": [
             {
@@ -1492,6 +1552,7 @@
         "exit": "WORMS",
         "destination": "KPIT",
         "altitude": 35000,
+        "scratchpad": "W35",
         "route": "WORMS GUANO BKENI VIYAP Q69 GURGE BLAAN Q69 ILLSA Q69 RICCS LEJOY DEMME5",
         "airlines": [
             {
@@ -1504,6 +1565,7 @@
         "exit": "FSHUN",
         "destination": "KEYW",
         "altitude": 22000,
+        "scratchpad": "F22",
         "route": "FSHUN ROGAN RSW KARTR GIGIH",
         "airlines": [
             {
@@ -1516,6 +1578,7 @@
         "exit": "WORMS",
         "destination": "KOMA",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q89 YANTI MCN BEATS J151 FAM LMN MARWI4",
         "airlines": [
             {
@@ -1528,6 +1591,7 @@
         "exit": "RDSOX",
         "destination": "KTUL",
         "altitude": 36000,
+        "scratchpad": "R36",
         "route": "RDSOX JFRYS PATOY Q116 JAWJA MGMRY LIT",
         "airlines": [
             {
@@ -1540,6 +1604,7 @@
         "exit": "WORMS",
         "destination": "KCVG",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 WIGVO IRQ J99 VXV JAKIE6",
         "airlines": [
             {
@@ -1552,6 +1617,7 @@
         "exit": "RDSOX",
         "destination": "KBMI",
         "altitude": 34000,
+        "scratchpad": "R34",
         "route": "RDSOX JFRYS BRUTS Q118 KAILL BNA J73 PXV AXC",
         "airlines": [
             {
@@ -1564,6 +1630,7 @@
         "exit": "WORMS",
         "destination": "KJQF",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 WIGVO WANSA JOOLS1",
         "airlines": [
             {
@@ -1576,6 +1643,7 @@
         "exit": "WORMS",
         "destination": "KFSD",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q89 YANTI MCN THRSR BNA FAM IRK J45 FSD",
         "airlines": [
             {
@@ -1588,6 +1656,7 @@
         "exit": "WORMS",
         "destination": "KTVC",
         "altitude": 34000,
+        "scratchpad": "W34",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q89 YANTI VXV J43 FLM FWA VIO",
         "airlines": [
             {
@@ -1600,6 +1669,7 @@
         "exit": "WORMS",
         "destination": "KAVL",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL TWINS PLYRR",
         "airlines": [
             {
@@ -1612,6 +1682,7 @@
         "exit": "OSPRY",
         "destination": "KLAS",
         "altitude": 34000,
+        "scratchpad": "O34",
         "route": "OSPRY GDUNN KNOST REMIS Y280 REDFN Q105 HRV J58 FUZ TXO J72 ABQ HAHAA RKSTR3",
         "airlines": [
             {
@@ -1624,6 +1695,7 @@
         "exit": "WORMS",
         "destination": "KAVL",
         "altitude": 32000,
+        "scratchpad": "W32",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL TWINS PLYRR",
         "airlines": [
             {
@@ -1636,6 +1708,7 @@
         "exit": "WORMS",
         "destination": "KJQF",
         "altitude": 31000,
+        "scratchpad": "W31",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 WIGVO WANSA JOOLS1",
         "airlines": [
             {
@@ -1648,6 +1721,7 @@
         "exit": "WORMS",
         "destination": "KTYS",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL ODF",
         "airlines": [
             {
@@ -1660,6 +1734,7 @@
         "exit": "WORMS",
         "destination": "KHTS",
         "altitude": 34000,
+        "scratchpad": "W34",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 WIGVO IRQ SPA",
         "airlines": [
             {
@@ -1672,6 +1747,7 @@
         "exit": "WORMS",
         "destination": "KABE",
         "altitude": 35000,
+        "scratchpad": "W35",
         "route": "WORMS GUANO BKENI VIYAP Q87 ALWZZ OGRAE Q99 SHIRY THEOO COURG BAMMY T299 SCAPE T299 DUMMR",
         "airlines": [
             {
@@ -1684,6 +1760,7 @@
         "exit": "WORMS",
         "destination": "KGRR",
         "altitude": 34000,
+        "scratchpad": "W34",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q89 YANTI VXV J43 FLM FWA",
         "airlines": [
             {
@@ -1696,6 +1773,7 @@
         "exit": "WORMS",
         "destination": "KEVV",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS YANTI THRSR GQO BWG",
         "airlines": [
             {
@@ -1708,6 +1786,7 @@
         "exit": "WORMS",
         "destination": "KTYS",
         "altitude": 34000,
+        "scratchpad": "W34",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL ODF",
         "airlines": [
             {
@@ -1720,6 +1799,7 @@
         "exit": "OSPRY",
         "destination": "KMFE",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "OSPRY GDUNN KNOST REMIS Y280 NAITE Y280 LEV PEKON PSX J22 CRP",
         "airlines": [
             {
@@ -1732,6 +1812,7 @@
         "exit": "RDSOX",
         "destination": "KBMI",
         "altitude": 34000,
+        "scratchpad": "W34",
         "route": "RDSOX JFRYS BRUTS Q118 KAILL BNA J73 PXV AXC",
         "airlines": [
             {
@@ -1744,6 +1825,7 @@
         "exit": "WORMS",
         "destination": "KBNA",
         "altitude": 36000,
+        "scratchpad": "W36",
         "route": "WORMS JEEMY ACCHE PAINN SHRKS THRSR WESSN JAGIR SWFFT2",
         "airlines": [
             {
@@ -1761,6 +1843,7 @@
           "altitude": 34000,
           "destination": "KBNA",
           "exit": "WORMS",
+          "scratchpad": "W34",
           "route": "WORMS GUANO JEEMY ACCHE PAINN SHRKS THRSR WESSN JAGIR SWFFT2"
         },
         {
@@ -1770,7 +1853,9 @@
             }
           ],
           "destination": "KHGR",
+          "altitude": 34000,
           "exit": "WORMS",
+          "scratchpad": "W34",
           "route": "WORMS GUANO BKENI VIYAP Q69 GURGE BLAAN SLOJO Q75 GSO ESL ELGEE V377 HGR"
         },
         {
@@ -1781,6 +1866,8 @@
           ],
           "destination": "KSGF",
           "exit": "OSPRY",
+          "altitude": 32000,
+          "scratchpad": "O32",
           "route": "OSPRY GDUNN KNOST REMIS Y280 REDFN Q105 HRV J58 AEX KF15G TXK"
         },
         {
@@ -1791,6 +1878,8 @@
           ],
           "destination": "KSBN",
           "exit": "WORMS",
+          "altitude": 32000,
+          "scratchpad": "W32",
           "route": " WORMS GUANO ACCHE PAINN SHRKS Q77 TEUFL VXV J43 FLM FWA GSH"
         },
         {
@@ -1801,6 +1890,8 @@
           ],
           "destination": "KABE",
           "exit": "WORMS",
+          "altitude": 37000,
+          "scratchpad": "W37",
           "route": "WORMS GUANO BKENI VIYAP Q87 JROSS FLO RDU FAK COURG LOYDD SCAPE HAR V162 DUMMR"
         },
         {
@@ -1811,6 +1902,8 @@
           ],
           "destination": "KTYS",
           "exit": "WORMS",
+          "altitude": 37000,
+          "scratchpad": "W37",
           "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL ODF"
         },
         {
@@ -1821,6 +1914,8 @@
           ],
           "destination": "KEYW",
           "exit": "FSHUN",
+          "altitude": 22000,
+          "scratchpad": "F22",
           "route": "FSHUN FSHUN ROGAN RSW KARTR GIGIH"
         }
       ],
@@ -1902,6 +1997,8 @@
           ],
           "destination": "KCLT",
           "exit": "WORMS",
+          "altitude": 33000,
+          "scratchpad": "W33",
           "route": "WORMS GUANO BKENI VIYAP CHS STOCR3"
         },
         {
@@ -1922,6 +2019,8 @@
           ],
           "destination": "KFLL",
           "exit": "MLB",
+          "altitude": 22000,
+          "scratchpad": "D22",
           "route": "MLB BLUFI4"
         },
         {
@@ -1942,6 +2041,8 @@
           ],
           "destination": "KHOT",
           "exit": "RDSOX",
+          "altitude": 34000,
+          "scratchpad": "R34",
           "route": "RDSOX JFRYS PATOY Q116 JAWJA CABLO TOOTI MATIE"
         }
       ],
@@ -1991,6 +2092,7 @@
           "altitude": 36000,
           "destination": "KPIT",
           "exit": "WORMS",
+          "scratchpad": "W36",
           "route": "WORMS GUANO BKENI VIYAP Q69 OLBEC Q69 ISUZO Q69 RICCS IHD DEMME4"
         },
         {
@@ -2003,12 +2105,14 @@
           "altitude": 31000,
           "destination": "KATL",
           "exit": "WORMS",
+          "scratchpad": "W31",
           "route": "WORMS JEEMY ACCHE PAINN SHRKS LAIRI LARZZ SITTH2"
         },
           {
               "exit": "MZULO",
               "destination": "EGCC",
               "altitude": 41000,
+              "scratchpad": "G41",
               "route": "MZULO HESTA LENDS COACH Y494 WHOOS Y494 VIRST M201 CARAC N47C NANSO PORTI 4700N/05000W 5200N/04000W 5400N/03000W 5400N/02000W DOGAL BEXET DEVOL RINUS BOFUM Q37 MALUD MALUD1M",
               "airlines": [
                   {
@@ -2021,6 +2125,7 @@
               "exit": "WORMS",
               "destination": "KCLT",
               "altitude": 34000,
+              "scratchpad": "W34",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS Q89 HESPI BESTT JONZE5",
               "airlines": [
                   {
@@ -2033,6 +2138,7 @@
               "exit": "WORMS",
               "destination": "KATL",
               "altitude": 34000,
+              "scratchpad": "W34",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS LAIRI LARZZ SITTH2",
               "airlines": [
                   {
@@ -2045,6 +2151,7 @@
               "exit": "RDSOX",
               "destination": "KCLT",
               "altitude": 37000,
+              "scratchpad": "R37",
               "route": "RDSOX JFRYS WILON PONZE BANKR5",
               "airlines": [
                   {
@@ -2057,6 +2164,7 @@
               "exit": "WORMS",
               "destination": "KATL",
               "altitude": 30000,
+              "scratchpad": "W30",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS LAIRI LARZZ SITTH2",
               "airlines": [
                   {
@@ -2069,6 +2177,7 @@
               "exit": "WORMS",
               "destination": "KATL",
               "altitude": 34000,
+              "scratchpad": "W34",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS LAIRI LARZZ SITTH2",
               "airlines": [
                   {
@@ -2081,6 +2190,7 @@
               "exit": "WORMS",
               "destination": "KCLT",
               "altitude": 37000,
+              "scratchpad": "W37",
               "route": "WORMS GUANO BKENI VIYAP CHECR STOCR4",
               "airlines": [
                   {
@@ -2093,6 +2203,7 @@
               "exit": "WORMS",
               "destination": "KCLT",
               "altitude": 34000,
+              "scratchpad": "W34",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS Q89 HESPI BESTT JONZE5",
               "airlines": [
                   {
@@ -2105,6 +2216,7 @@
               "exit": "MZULO",
               "destination": "EGKK",
               "altitude": 41000,
+              "scratchpad": "G41",
               "route": "MZULO HESTA LENDS ETECK M202 UKOKA M202 JEBBY JAROM RAFIN 4500N/05000W 4800N/04000W 5100N/03000W 5100N/02000W SOMAX ATSUR LULOX SIDDI DAWLY ELRIP OTMET OTMET1G",
               "airlines": [
                   {
@@ -2117,6 +2229,7 @@
               "exit": "WORMS",
               "destination": "KCLT",
               "altitude": 37000,
+              "scratchpad": "W37",
               "route": "WORMS GUANO BKENI VIYAP CHECR STOCR4",
               "airlines": [
                   {
@@ -2129,6 +2242,7 @@
               "exit": "WORMS",
               "destination": "KATL",
               "altitude": 34000,
+              "scratchpad": "W34",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS LAIRI LARZZ SITTH2",
               "airlines": [
                   {
@@ -2141,6 +2255,7 @@
               "exit": "WORMS",
               "destination": "KCLT",
               "altitude": 34000,
+              "scratchpad": "W34",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS Q89 HESPI BESTT JONZE5",
               "airlines": [
                   {
@@ -2153,6 +2268,7 @@
               "exit": "WORMS",
               "destination": "KATL",
               "altitude": 34000,
+              "scratchpad": "W34",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS LAIRI LARZZ SITTH2",
               "airlines": [
                   {
@@ -2165,6 +2281,7 @@
               "exit": "RDSOX",
               "destination": "KCLT",
               "altitude": 37000,
+              "scratchpad": "R37",
               "route": "RDSOX JFRYS WILON PONZE BANKR5",
               "airlines": [
                   {
@@ -2177,6 +2294,7 @@
               "exit": "WORMS",
               "destination": "KATL",
               "altitude": 30000,
+              "scratchpad": "W30",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS LAIRI LARZZ SITTH2",
               "airlines": [
                   {
@@ -2201,6 +2319,7 @@
               "exit": "WORMS",
               "destination": "KATL",
               "altitude": 34000,
+              "scratchpad": "W34",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS LAIRI LARZZ SITTH2",
               "airlines": [
                   {
@@ -2213,6 +2332,7 @@
               "exit": "WORMS",
               "destination": "KCLT",
               "altitude": 37000,
+              "scratchpad": "W37",
               "route": "WORMS GUANO BKENI VIYAP CHECR STOCR4",
               "airlines": [
                   {
@@ -2225,6 +2345,7 @@
               "exit": "WORMS",
               "destination": "KCLT",
               "altitude": 34000,
+              "scratchpad": "W34",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS Q89 HESPI BESTT JONZE5",
               "airlines": [
                   {
@@ -2237,6 +2358,7 @@
               "exit": "WORMS",
               "destination": "KATL",
               "altitude": 30000,
+              "scratchpad": "W30",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS LAIRI LARZZ SITTH2",
               "airlines": [
                   {
@@ -2249,6 +2371,7 @@
               "exit": "WORMS",
               "destination": "KATL",
               "altitude": 34000,
+              "scratchpad": "W34",
               "route": "WORMS JEEMY ACCHE PAINN SHRKS LAIRI LARZZ SITTH2",
               "airlines": [
                   {
@@ -2315,6 +2438,7 @@
           "exit": "MLB",
           "destination": "KFXE",
           "altitude": 20000,
+          "scratchpad": "D20",
           "route": "MLB BLUFI4",
           "airlines": [
             {
@@ -2333,6 +2457,7 @@
           "exit": "MLB",
           "destination": "KFXE",
           "altitude": 20000,
+          "scratchpad": "D20",
           "route": "MLB BLUFI4",
           "airlines": [
             {
@@ -2351,6 +2476,7 @@
           "exit": "WORMS",
           "destination": "KPDK",
           "altitude": 33000,
+          "scratchpad": "W33",
           "route": "WORMS JEEMY ACCHE PAINN SHRKS",
           "airlines": [
             {
@@ -2369,6 +2495,7 @@
           "exit": "RDSOX",
           "destination": "KAUS",
           "altitude": 36000,
+          "scratchpad": "R36",
           "route": "RDSOX JFRYS PATOY Q116 JAWJA DYEES LLA WEEED WLEEE7",
           "airlines": [
             {
@@ -2387,6 +2514,7 @@
           "exit": "OSPRY",
           "destination": "KAUS",
           "altitude": 36000,
+          "scratchpad": "O36",
           "route": "OSPRY JFRYS PATOY Q116 JAWJA DYEES LLA WEEED WLEEE7",
           "airlines": [
             {
@@ -3901,7 +4029,7 @@
         "initial_controller": "MIA_23_CTR",
         "route": "CLEFF T208 SMYRA",
         "initial_speed": 150,
-        "waypoints": "WIXED SULTY/ho VALKA DIMBY INDIA TICCO MALET OAKIE SMYRA KDAB/a5"
+        "waypoints": "WIXED SULTY/ho VALKA DIMBY INDIA TICCO MALET OAKIE SMYRA N029.07.31.229,W081.01.48.297 KDAB/a5"
       }
     ],
     "EAST_COAST_OVERFLIGHTN": [
@@ -3936,7 +4064,7 @@
         "initial_speed": 150,
         "initial_controller": "DAB_N_APP",
         "route": "SMYRA T208 CLEFF",
-        "waypoints": "SMYRA OAKIE/ho MALET TICCO INDIA DIMBY VALKA SULTY WIXED KPBI/a5"
+        "waypoints": "N029.07.31.229,W081.01.48.297/ho SMYRA OAKIE MALET TICCO INDIA DIMBY VALKA SULTY WIXED KPBI/a5"
       }
     ],
     "ALYNA4_BNU": [
@@ -8943,7 +9071,7 @@
             }
           ]
         },
-        "initial_altitude": 19000,
+        "initial_altitude": 15000,
         "initial_controller": "MIA_22_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
@@ -8972,7 +9100,7 @@
           }
         },
         "speed_restriction": 250,
-        "waypoints": "CHEFS/a19000/s280 MOOTS/a15000+/ho RIDES"
+        "waypoints": "CHEFS/a15000/s280 MOOTS/a13000+/ho RIDES"
       }
     ],
     "RIDES2_SFINAL": [
