@@ -1404,7 +1404,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 
 				for _, name := range fa.VideoMapNames {
 					if name != "" && !maplib.HaveMap(vf, name) {
-						e.ErrorString("video map \"%s\" not found. Use -listmaps <ARTCC> to show available video maps.",
+						e.ErrorString("video map \"%s\" not found. Use -listmaps <path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.",
 							name)
 					}
 				}
