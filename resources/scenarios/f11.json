@@ -7667,7 +7667,7 @@
             }
           ]
         },
-        "initial_altitude": 13000,
+        "initial_altitude": 9000,
         "assigned_altitude": 7000,
         "initial_controller": "JAX_V_APP",
         "initial_speed": 250,
@@ -7724,7 +7724,7 @@
             }
           ]
         },
-        "initial_altitude": 13000,
+        "initial_altitude": 9000,
         "assigned_altitude": 9000,
         "initial_controller": "JAX_V_APP",
         "initial_speed": 250,
