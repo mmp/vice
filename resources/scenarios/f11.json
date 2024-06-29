@@ -2573,6 +2573,7 @@
       }
     },
     "KPBI": {
+      "omit_arrival_scratchpad": true,
       "approaches": {
         "I7L": {
           "runway": "10L",
