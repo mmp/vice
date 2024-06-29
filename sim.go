@@ -1581,6 +1581,20 @@ func (s *Sim) updateState() {
 					ac.HandoffTrackController = ctrl
 				}
 
+				if passedWaypoint.PointOut != "" {
+					for _, ctrl := range s.World.GetAllControllers() {
+						// Look for a controller with a matching TCP id.
+						if ctrl.SectorId == passedWaypoint.PointOut {
+							// Don't do the point out if a human is
+							// controlling the aircraft.
+							if fromCtrl := s.World.GetControllerByCallsign(ac.ControllingController); fromCtrl != nil && !fromCtrl.IsHuman {
+								s.pointOut(ac.Callsign, fromCtrl, ctrl)
+								break
+							}
+						}
+					}
+				}
+
 				if passedWaypoint.Delete {
 					lg.Info("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
 					delete(s.World.Aircraft, ac.Callsign)
