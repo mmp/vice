@@ -1747,6 +1747,45 @@ func (nav *Nav) SaySpeed() PilotResponse {
 	return PilotResponse{Message: output}
 }
 
+func (nav *Nav) SayHeading() PilotResponse {
+	currentHeading := nav.FlightState.Heading
+	var output string
+
+	if nav.Heading.Assigned != nil {
+		assignedHeading := *nav.Heading.Assigned
+		if assignedHeading != currentHeading {
+			output = fmt.Sprintf("flying heading %.0f, assigned heading %.0f", currentHeading, assignedHeading)
+		} else {
+			output = fmt.Sprintf("flying heading %.0f", currentHeading)
+		}
+	} else {
+		output = fmt.Sprintf("flying heading %.0f", currentHeading)
+	}
+
+	return PilotResponse{Message: output}
+}
+
+func (nav *Nav) SayAltitude() PilotResponse {
+	currentAltitude := nav.FlightState.Altitude
+	var output string
+
+	if nav.Altitude.Assigned != nil {
+		assignedAltitude := *nav.Altitude.Assigned
+		if assignedAltitude < currentAltitude {
+			output = Sample(fmt.Sprintf("at %s feet descending to %s feet", FormatAltitude(currentAltitude), FormatAltitude(assignedAltitude)),
+				fmt.Sprintf("at %s feet and descending", FormatAltitude(currentAltitude)))
+		} else if assignedAltitude > currentAltitude {
+			output = fmt.Sprintf("at %s feet climbing to %s feet", FormatAltitude(currentAltitude), FormatAltitude(assignedAltitude))
+		} else {
+			output = Sample(fmt.Sprintf("maintaining %s feet", FormatAltitude(currentAltitude)), fmt.Sprintf("at %s feet", FormatAltitude(currentAltitude)))
+		}
+	} else {
+		output = Sample(fmt.Sprintf("maintaining %s feet", FormatAltitude(currentAltitude)), fmt.Sprintf("at %s feet", FormatAltitude(currentAltitude)))
+	}
+
+	return PilotResponse{Message: output}
+}
+
 func (nav *Nav) ExpediteDescent() PilotResponse {
 	alt, _ := nav.TargetAltitude(nil)
 	if alt >= nav.FlightState.Altitude {

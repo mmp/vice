@@ -219,6 +219,14 @@ func (ac *Aircraft) SaySpeed() []RadioTransmission {
 	return ac.transmitResponse(ac.Nav.SaySpeed())
 }
 
+func (ac *Aircraft) SayHeading() []RadioTransmission {
+	return ac.transmitResponse(ac.Nav.SayHeading())
+}
+
+func (ac *Aircraft) SayAltitude() []RadioTransmission {
+	return ac.transmitResponse(ac.Nav.SayAltitude())
+}
+
 func (ac *Aircraft) ExpediteDescent() []RadioTransmission {
 	return ac.transmitResponse(ac.Nav.ExpediteDescent())
 }

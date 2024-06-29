@@ -1197,6 +1197,16 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					rewriteError(err)
 					return nil
 				}
+			} else if command == "SH" {
+				if err := sim.SayHeading(token, callsign); err != nil {
+					rewriteError(err)
+					return nil
+				}
+			} else if command == "SA" {
+				if err := sim.SayAltitude(token, callsign); err != nil {
+					rewriteError(err)
+					return nil
+				}
 			} else {
 				if kts, err := strconv.Atoi(command[1:]); err != nil {
 					rewriteError(err)
