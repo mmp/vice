@@ -7673,7 +7673,7 @@
         "initial_speed": 250,
         "star": "SHREK2",
         "speed_restriction": 250,
-        "waypoints": "WAKOS WANDD/a11000/ho SHREK/a9000 STNKY/h115"
+        "waypoints": "WAKOS WANDD/ho SHREK/a9000 STNKY/h115"
       }
     ],
     "SHREK2W": [
@@ -7730,7 +7730,7 @@
         "initial_speed": 250,
         "star": "SHREK2",
         "speed_restriction": 250,
-        "waypoints": "WAKOS WANDD/a11000/ho SHREK/a7000 STNKY/h115"
+        "waypoints": "WAKOS WANDD/ho SHREK/a7000 STNKY/h115"
       }
     ],
     "SHREK2.MCO": [
