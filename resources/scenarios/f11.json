@@ -178,6 +178,26 @@
             "cleared_altitude": 7000,
             "sid": "ORLA6",
             "waypoints": "_MCO_35L/h200"
+          },
+          "CITR2.DDANY": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_35L/h090 DDANY"
+          },
+          "CITR2.FSHUN": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_35L/h270 FSHUN"
+          },
+          "CITR2.VIZTA": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_35L/h270 VIZTA"
+          },
+          "CITR2.WORMS": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_35L/h090 WORMS"
           }
         },
         "35L": {
@@ -235,6 +255,26 @@
             "cleared_altitude": 7000,
             "sid": "ORLA6",
             "waypoints": "_MCO_17R/h010"
+          },
+          "CITR2.DDANY": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_17R/h090 DDANY"
+          },
+          "CITR2.FSHUN": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_17R/h270 FSHUN"
+          },
+          "CITR2.VIZTA": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_17R/h270 VIZTA"
+          },
+          "CITR2.WORMS": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_17R/h090 WORMS"
           }
         },
         "18L": {
@@ -292,6 +332,26 @@
             "cleared_altitude": 7000,
             "sid": "ORLA6",
             "waypoints": "_MCO_36R/h220"
+          },
+          "CITR2.DDANY": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_36R/h090 DDANY"
+          },
+          "CITR2.FSHUN": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_36R/h270 FSHUN"
+          },
+          "CITR2.VIZTA": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_36R/h270 VIZTA"
+          },
+          "CITR2.WORMS": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_36R/h090 WORMS"
           }
         },
         "36R": {
@@ -349,6 +409,26 @@
             "cleared_altitude": 7000,
             "sid": "ORLA6",
             "waypoints": "_MCO_18L/h340"
+          },
+          "CITR2.DDANY": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_18L/h090 DDANY"
+          },
+          "CITR2.FSHUN": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_18L/h270 FSHUN"
+          },
+          "CITR2.VIZTA": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_18L/h270 VIZTA"
+          },
+          "CITR2.WORMS": {
+            "cleared_altitude": 2000,
+            "sid": "CITR2",
+            "waypoints": "MCO_18L/h090 WORMS"
           }
         }
       },
@@ -838,7 +918,11 @@
         "SZW": "CAMAN",
         "VALKA": "DDANY",
         "VIYAP": "FATHE",
-        "ZALEN": "DDANY"
+        "ZALEN": "DDANY",
+        "CITR2.WORMS": "Prop.East",
+        "CITR2.DDANY": "Prop.East",
+        "CITR2.FSHUN": "Prop.West",
+        "CITR2.VIZTA": "Prop.West"
       },
       "tower_list": 2,
       "atpa_volumes": {
@@ -3844,6 +3928,26 @@
         "initial_speed":  280,
         "star": "BITHO7",
         "waypoints": "OMN N029.13.31.930,W081.06.17.352/ho LAMMA/a15000 JESUP COZMO BITHO/h176"
+      },
+      {
+        "airlines": {
+          "KMCO": [
+            {
+              "airport": "KGSO",
+              "icao": "SIL"
+            },
+            {
+              "aiprort": "KCHS",
+              "icao": "SIL"
+            }
+          ]
+        },
+        "assigned_altitude": 12000,
+        "initial_altitude": 12000,
+        "initial_controller": "JAX_58_CTR",
+        "initial_speed": 280,
+        "star": "BITHO7",
+        "waypoints": "OMN N029.13.31.930,W081.06.17.352/ho LAMMA/a12000 JESUP COZMO BITHO/h176"
       }
     ],
     "ALYNA4_BSU": [
@@ -4113,7 +4217,37 @@
         "initial_speed": 250,
         "star": "GOOFY7",
         "speed_restriction": 250,
-        "waypoints": "TRV/ho BAIRN ODDEL SABOT"
+        "waypoints": "TRV N027.45.37.854,W080.41.03.766/ho BAIRN ODDEL SABOT"
+      },
+      {
+        "airlines": {
+          "KMCO": [
+            {
+              "airport": "KEYW",
+              "icao": "SIL"
+            },
+            {
+              "airport": "KFLL",
+              "icao": "SIL"
+            }
+          ]
+        },
+        "initial_altitude": 13000,
+        "initial_controller": "MIA_22_CTR",
+        "initial_speed": 250,
+        "waypoints": "TRV N027.45.37.854,W080.41.03.766/ho N027.49.35.365,W080.49.55.257",
+        "runway_waypoints": {
+          "KMCO": {
+            "36L": "BAIRN/a8000 ODDEL SABOT/h342",
+            "35R": "BAIRN/a8000 ODDEL SABOT/h342",
+            "35L": "BAIRN/a8000 ODDEL SABOT/h342",
+            "36R": "BAIRN/a8000 ODDEL SABOT/h342",
+            "17L": "BAIRN/a11000/h360",
+            "17R": "BAIRN/a11000/h360",
+            "18L": "BAIRN/a11000/h360",
+            "18R": "BAIRN/a11000/h360"
+          }
+        }
       }
     ],
     "FINAL_S_GRNCH5": [
@@ -7190,6 +7324,40 @@
         "waypoints": "SIMIE FAZES/ho MOANS JOKRS ZALEK/h043"
       }
     ],
+    "JOKRS3.MCO": [
+      {
+        "airlines": {
+          "KMCO": [
+            {
+              "airport": "KEYW",
+              "icao": "SIL"
+            },
+            {
+              "airport": "KLAL",
+              "icao": "SIL"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "MIA_67_CTR",
+        "initial_speed": 250,
+        "star": "JOKRS3",
+        "speed_restriction": 250,
+        "waypoints": "SIMIE FAZES/ho MOANS JOKRS",
+        "runway_waypoints": {
+          "KMCO": {
+            "36L": "JOKRS LORRA/a7000/s210/h096",
+            "36R": "JOKRS LORRA/a7000/s210/h096",
+            "35L": "JOKRS LORRA/a7000/s210/h096",
+            "35R": "JOKRS LORRA/a7000/s210/h096",
+            "17R": "JOKRS TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
+            "17L": "JOKRS TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
+            "18R": "JOKRS TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006",
+            "18L": "JOKRS TAYYE/a10000-12000/s250 ARHIP GIRAF/a8000+/s220 DVOLA LYENS/a5000/s210/h006"
+          }
+        }
+      }
+    ],
     "TTHOR3": [
       {
         "airlines": {
@@ -7320,6 +7488,25 @@
         "star": "SHREK2",
         "speed_restriction": 250,
         "waypoints": "WAKOS WANDD/a11000/ho SHREK/a7000 STNKY/h115"
+      }
+    ],
+    "SHREK2.MCO": [
+      {
+        "airlines": {
+          "KSFB": [
+            {
+              "airport": "KPNS",
+              "icao": "SIL"
+            }
+          ]
+        },
+        "initial_altitude": 13000,
+        "assigned_altitude": 11000,
+        "initial_controller": "JAX_15_CTR",
+        "initial_speed": 250,
+        "star": "SHREK2",
+        "speed_restriction": 250,
+        "waypoints": "WAKOS WANDD/a11000/ho STNKY/h115"
       }
     ],
     "PRICY3": [
@@ -10436,13 +10623,15 @@
         },
         "BITHO7": {
           "KMLB": 3,
-          "KTIX": 1
+          "KTIX": 1,
+          "KMCO": 2
         },
         "GOOFY7": {
           "KISM": 2,
           "KORL": 3,
           "KSFB": 1,
-          "KTIX": 1
+          "KTIX": 1,
+          "KMCO": 2
         },
         "GRNCH5": {
           "KMCO": 15
@@ -10455,6 +10644,9 @@
           "KISM": 3,
           "KMLB": 2
         },
+        "JOKRS3.MCO": {
+          "KMCO": 2
+        },
         "TTHOR3": {
           "KSFB": 15,
           "KORL": 3
@@ -10463,6 +10655,9 @@
           "KSFB": 5,
           "KORL": 2,
           "KISM": 2
+        },
+        "SHREK2": {
+          "KMCO": 2
         },
         "PRICY3": {
           "KMCO": 10,
@@ -10493,7 +10688,7 @@
           "MCO_M_APP": {"backup": "MCO_W_DEP"},
           "MCO_G_APP": {"backup": "MCO_M_APP"},
           "MCO_B_APP": {"backup": "MCO_E_DEP","arrivals": ["GTOUT1", "RIDES2", "BITHO7", "SNFLD3"]},
-          "MCO_L_APP": {"backup": "MCO_B_APP", "arrivals": ["PRICY3", "GRNCH5", "SHREK2W"]},
+          "MCO_L_APP": {"backup": "MCO_B_APP", "arrivals": ["PRICY3", "GRNCH5", "SHREK2W", "SHREK2", "JOKRS3.MCO"]},
           "MCO_A_APP": {"backup": "MCO_D_APP", "departures": ["KMLB"]},
           "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KTIX"]},
           "MCO_N_APP": {"backup": "MCO_D_APP", "departures": ["KSFB"]},
@@ -10527,43 +10722,43 @@
       "departure_runways": [
         {
           "airport": "KMCO",
-          "rate": 5,
+          "rate": 15,
           "runway": "17R",
           "category": "DDANY"
         },
         {
           "airport": "KMCO",
-          "rate": 10,
+          "rate": 15,
           "runway": "17R",
           "category": "FATHE"
         },
         {
           "airport": "KMCO",
-          "rate": 5,
+          "rate": 3,
           "runway": "17R",
           "category": "MZULO"
         },
         {
           "airport": "KMCO",
-          "rate": 5,
+          "rate":15,
           "runway": "18L",
           "category": "OSPRY"
         },
         {
           "airport": "KMCO",
-          "rate": 5,
+          "rate": 10,
           "runway": "18L",
           "category": "FSHUN"
         },
         {
           "airport": "KMCO",
-          "rate": 5,
+          "rate": 10,
           "runway": "18L",
           "category": "RDSOX"
         },
         {
           "airport": "KMCO",
-          "rate": 10,
+          "rate": 15,
           "runway": "18L",
           "category": "JEEMY"
         },
@@ -10591,6 +10786,18 @@
           "airport": "KTIX",
           "runway": "18",
           "rate": 3
+        },
+        {
+          "airport": "KMCO",
+          "runway": "17R",
+          "rate": 2,
+          "category": "Prop.East"
+        },
+        {
+          "airport": "KMCO",
+          "runway": "18L",
+          "rate": 3,
+          "category": "Prop.West"
         }
       ],
       "wind": {
@@ -10650,13 +10857,15 @@
         },
         "BITHO7": {
           "KMLB": 3,
-          "KTIX": 1
+          "KTIX": 1,
+          "KMCO": 2
         },
         "GOOFY7": {
           "KISM": 2,
           "KORL": 3,
           "KSFB": 1,
-          "KTIX": 1
+          "KTIX": 1,
+          "KMCO": 2
         },
         "GRNCH5": {
           "KMCO": 15
@@ -10669,6 +10878,12 @@
           "KORL": 3,
           "KISM": 3,
           "KMLB": 2
+        },
+        "JOKRS3.MCO": {
+          "KMCO": 2
+        },
+        "SHREK2.MCO": {
+          "KMCO": 2
         },
         "TTHOR3": {
           "KSFB": 15,
@@ -10704,7 +10919,7 @@
           "MCO_M_APP": {"backup": "MCO_W_DEP"},
           "MCO_G_APP": {"backup": "MCO_M_APP"},
           "MCO_B_APP": {"backup": "MCO_E_DEP","arrivals": ["SNFLD3", "RIDES2", "BITHO7"]},
-          "MCO_L_APP": {"backup": "MCO_B_APP", "arrivals": ["PRICY3", "GRNCH5", "SHREK2E"]},
+          "MCO_L_APP": {"backup": "MCO_B_APP", "arrivals": ["PRICY3", "GRNCH5", "SHREK2E", "SHREK2.MCO", "JOKRS3.MCO"]},
           "MCO_A_APP": {"backup": "MCO_D_APP", "departures": ["KMLB"]},
           "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KTIX"]},
           "MCO_N_APP": {"backup": "MCO_D_APP"},
@@ -10738,45 +10953,57 @@
       "departure_runways": [
         {
           "airport": "KMCO",
-          "rate": 5,
+          "rate": 15,
           "runway": "35L",
           "category": "DDANY"
         },
         {
           "airport": "KMCO",
-          "rate": 10,
+          "rate": 15,
           "runway": "35L",
           "category": "FATHE"
         },
         {
           "airport": "KMCO",
-          "rate": 5,
+          "rate": 3,
           "runway": "35L",
           "category": "MZULO"
         },
         {
           "airport": "KMCO",
-          "rate": 5,
+          "rate": 15,
           "runway": "36R",
           "category": "OSPRY"
         },
         {
           "airport": "KMCO",
-          "rate": 5,
+          "rate": 10,
           "runway": "36R",
           "category": "FSHUN"
         },
         {
           "airport": "KMCO",
-          "rate": 5,
+          "rate": 15,
           "runway": "36R",
           "category": "RDSOX"
         },
         {
           "airport": "KMCO",
           "rate": 10,
-          "runway": "36R",
+          "runway": "35L",
           "category": "JEEMY"
+        },
+        {
+          "airport": "KMCO",
+          "rate": 2,
+          "runway": "35L",
+          "category": "Prop.East"
+        },
+        {
+          "airport": "KMCO",
+          "rate": 2,
+          "runway": "36R",
+          "category": "Prop.West"
         },
         {
           "airport": "KSFB",
