@@ -1566,18 +1566,39 @@ func (s *Sim) updateState() {
 		s.lastSimUpdate = now
 		for callsign, ac := range s.World.Aircraft {
 			passedWaypoint := ac.Update(s.World, s, s.lg)
-			if passedWaypoint != nil && passedWaypoint.Handoff {
-				// Handoff from virtual controller to a human controller.
-				ctrl := s.ResolveController(ac.WaypointHandoffController)
+			if passedWaypoint != nil {
+				if passedWaypoint.Handoff {
+					// Handoff from virtual controller to a human controller.
+					ctrl := s.ResolveController(ac.WaypointHandoffController)
 
-				s.eventStream.Post(Event{
-					Type:           OfferedHandoffEvent,
-					Callsign:       ac.Callsign,
-					FromController: ac.TrackingController,
-					ToController:   ctrl,
-				})
+					s.eventStream.Post(Event{
+						Type:           OfferedHandoffEvent,
+						Callsign:       ac.Callsign,
+						FromController: ac.TrackingController,
+						ToController:   ctrl,
+					})
 
-				ac.HandoffTrackController = ctrl
+					ac.HandoffTrackController = ctrl
+				}
+
+				if passedWaypoint.PointOut != "" {
+					for _, ctrl := range s.World.GetAllControllers() {
+						// Look for a controller with a matching TCP id.
+						if ctrl.SectorId == passedWaypoint.PointOut {
+							// Don't do the point out if a human is
+							// controlling the aircraft.
+							if fromCtrl := s.World.GetControllerByCallsign(ac.ControllingController); fromCtrl != nil && !fromCtrl.IsHuman {
+								s.pointOut(ac.Callsign, fromCtrl, ctrl)
+								break
+							}
+						}
+					}
+				}
+
+				if passedWaypoint.Delete {
+					lg.Info("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
+					delete(s.World.Aircraft, ac.Callsign)
+				}
 			}
 
 			// Contact the departure controller
@@ -2381,25 +2402,27 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			octrl := s.World.GetControllerByCallsign(controller)
-			s.eventStream.Post(Event{
-				Type:           PointOutEvent,
-				FromController: ctrl.Callsign,
-				ToController:   octrl.Callsign,
-				Callsign:       ac.Callsign,
-			})
-
-			// As with handoffs, always add it to the auto-accept list for now.
-			acceptDelay := 4 + rand.Intn(10)
-			if s.PointOuts[ac.Callsign] == nil {
-				s.PointOuts[ac.Callsign] = make(map[string]PointOut)
-			}
-			s.PointOuts[ac.Callsign][octrl.Callsign] = PointOut{
-				FromController: ctrl.Callsign,
-				AcceptTime:     s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
-			}
-
+			s.pointOut(ac.Callsign, ctrl, octrl)
 			return nil
 		})
+}
+
+func (s *Sim) pointOut(callsign string, from *Controller, to *Controller) {
+	s.eventStream.Post(Event{
+		Type:           PointOutEvent,
+		FromController: from.Callsign,
+		ToController:   to.Callsign,
+		Callsign:       callsign,
+	})
+
+	acceptDelay := 4 + rand.Intn(10)
+	if s.PointOuts[callsign] == nil {
+		s.PointOuts[callsign] = make(map[string]PointOut)
+	}
+	s.PointOuts[callsign][to.Callsign] = PointOut{
+		FromController: from.Callsign,
+		AcceptTime:     s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+	}
 }
 
 func (s *Sim) AcknowledgePointOut(token, callsign string) error {

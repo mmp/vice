@@ -149,6 +149,12 @@ func NewKeyboardState(p Platform) *KeyboardState {
 
 	keyboard.Input = p.InputCharacters()
 
+	// Map \ to END for laptops (hacky...)
+	if strings.Contains(keyboard.Input, `\`) {
+		keyboard.Input = strings.ReplaceAll(keyboard.Input, `\`, "")
+		keyboard.Pressed[KeyEnd] = nil
+	}
+
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnter)) {
 		keyboard.Pressed[KeyEnter] = nil
 	}

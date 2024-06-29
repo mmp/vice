@@ -661,20 +661,16 @@ func (w *World) PrintInfo(ac *Aircraft) {
 }
 
 func (w *World) DeleteAircraft(ac *Aircraft, onErr func(err error)) {
-	if w.simProxy != nil {
-		if lctrl := w.LaunchConfig.Controller; lctrl == "" || lctrl == w.Callsign {
-			delete(w.Aircraft, ac.Callsign)
-		}
-
-		w.pendingCalls = append(w.pendingCalls,
-			&PendingCall{
-				Call:      w.simProxy.DeleteAircraft(ac.Callsign),
-				IssueTime: time.Now(),
-				OnErr:     onErr,
-			})
-	} else {
+	if lctrl := w.LaunchConfig.Controller; lctrl == "" || lctrl == w.Callsign {
 		delete(w.Aircraft, ac.Callsign)
 	}
+
+	w.pendingCalls = append(w.pendingCalls,
+		&PendingCall{
+			Call:      w.simProxy.DeleteAircraft(ac.Callsign),
+			IssueTime: time.Now(),
+			OnErr:     onErr,
+		})
 }
 
 func (w *World) RunAircraftCommands(callsign string, cmds string, handleResult func(message string, remainingInput string)) {

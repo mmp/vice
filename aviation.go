@@ -793,6 +793,7 @@ type Waypoint struct {
 	ProcedureTurn       *ProcedureTurn       `json:"pt,omitempty"`
 	NoPT                bool                 `json:"nopt,omitempty"`
 	Handoff             bool                 `json:"handoff,omitempty"`
+	PointOut            string               `json:"pointout,omitempty"`
 	FlyOver             bool                 `json:"flyover,omitempty"`
 	Delete              bool                 `json:"delete,omitempty"`
 	Arc                 *DMEArc              `json:"arc,omitempty"`
@@ -827,6 +828,9 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.Handoff {
 		attrs = append(attrs, slog.Bool("handoff", wp.Handoff))
+	}
+	if wp.PointOut != "" {
+		attrs = append(attrs, slog.String("pointout", wp.PointOut))
 	}
 	if wp.FlyOver {
 		attrs = append(attrs, slog.Bool("fly_over", wp.FlyOver))
@@ -900,6 +904,9 @@ func (wslice WaypointArray) Encode() string {
 		if w.Handoff {
 			s += "/ho"
 		}
+		if w.PointOut != "" {
+			s += "/po" + w.PointOut
+		}
 		if w.FlyOver {
 			s += "/flyover"
 		}
@@ -943,8 +950,8 @@ func (w *WaypointArray) UnmarshalJSON(b []byte) error {
 	}
 }
 
-func (w WaypointArray) CheckDeparture(e *ErrorLogger) {
-	w.checkBasics(e)
+func (w WaypointArray) CheckDeparture(e *ErrorLogger, controllers map[string]*Controller) {
+	w.checkBasics(e, controllers)
 
 	var lastMin float32 // previous minimum altitude restriction
 	var minFix string
@@ -975,18 +982,25 @@ func (w WaypointArray) CheckDeparture(e *ErrorLogger) {
 	}
 }
 
-func (w WaypointArray) checkBasics(e *ErrorLogger) {
+func (w WaypointArray) checkBasics(e *ErrorLogger, controllers map[string]*Controller) {
 	for _, wp := range w {
 		e.Push(wp.Fix)
 		if wp.Speed < 0 || wp.Speed > 300 {
 			e.ErrorString("invalid speed restriction %d", wp.Speed)
 		}
+
+		if wp.PointOut != "" {
+			if !MapContains(controllers,
+				func(callsign string, ctrl *Controller) bool { return ctrl.SectorId == wp.PointOut }) {
+				e.ErrorString("No controller found with TCP id \"%s\" for point out", wp.PointOut)
+			}
+		}
 		e.Pop()
 	}
 }
 
-func (w WaypointArray) CheckApproach(e *ErrorLogger) {
-	w.checkBasics(e)
+func (w WaypointArray) CheckApproach(e *ErrorLogger, controllers map[string]*Controller) {
+	w.checkBasics(e, controllers)
 	w.checkDescending(e)
 
 	if len(w) < 2 {
@@ -1008,8 +1022,8 @@ func (w WaypointArray) CheckApproach(e *ErrorLogger) {
 	*/
 }
 
-func (w WaypointArray) CheckArrival(e *ErrorLogger) {
-	w.checkBasics(e)
+func (w WaypointArray) CheckArrival(e *ErrorLogger, ctrl map[string]*Controller) {
+	w.checkBasics(e, ctrl)
 	w.checkDescending(e)
 
 	for _, wp := range w {
@@ -1110,6 +1124,8 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 					wp.IF = true
 				} else if f == "faf" {
 					wp.FAF = true
+				} else if len(f) > 2 && f[:2] == "po" {
+					wp.PointOut = f[2:]
 				} else if (len(f) >= 4 && f[:4] == "pt45") || len(f) >= 5 && f[:5] == "lpt45" {
 					if wp.ProcedureTurn == nil {
 						wp.ProcedureTurn = &ProcedureTurn{}
@@ -2228,7 +2244,7 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				// us a repeated first fix, but this way we can check
 				// compliance with restrictions at that fix...
 				ewp := append([]Waypoint{ar.Waypoints[len(ar.Waypoints)-1]}, wp...)
-				WaypointArray(ewp).CheckArrival(e)
+				WaypointArray(ewp).CheckArrival(e, sg.ControlPositions)
 
 				e.Pop()
 			}
@@ -2236,7 +2252,7 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		}
 	}
 
-	ar.Waypoints.CheckArrival(e)
+	ar.Waypoints.CheckArrival(e, sg.ControlPositions)
 
 	for arrivalAirport, airlines := range ar.Airlines {
 		e.Push("Arrival airport " + arrivalAirport)
