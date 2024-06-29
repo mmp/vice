@@ -11011,7 +11011,7 @@
         },
         {
           "airport": "KMCO",
-          "rate":15,
+          "rate":10,
           "runway": "18L",
           "category": "OSPRY"
         },
@@ -11256,7 +11256,7 @@
         },
         {
           "airport": "KMCO",
-          "rate": 15,
+          "rate": 10,
           "runway": "36R",
           "category": "OSPRY"
         },
