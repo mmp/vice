@@ -1772,15 +1772,15 @@ func (nav *Nav) SayAltitude() PilotResponse {
 	if nav.Altitude.Assigned != nil {
 		assignedAltitude := *nav.Altitude.Assigned
 		if assignedAltitude < currentAltitude {
-			output = Sample(fmt.Sprintf("at %s feet descending to %s feet", FormatAltitude(currentAltitude), FormatAltitude(assignedAltitude)),
-				fmt.Sprintf("at %s feet and descending", FormatAltitude(currentAltitude)))
+			output = Sample(fmt.Sprintf("at %sdescending to %s", FormatAltitude(currentAltitude), FormatAltitude(assignedAltitude)),
+				fmt.Sprintf("at %s and descending", FormatAltitude(currentAltitude)))
 		} else if assignedAltitude > currentAltitude {
-			output = fmt.Sprintf("at %s feet climbing to %s feet", FormatAltitude(currentAltitude), FormatAltitude(assignedAltitude))
+			output = fmt.Sprintf("at %s climbing to %s", FormatAltitude(currentAltitude), FormatAltitude(assignedAltitude))
 		} else {
-			output = Sample(fmt.Sprintf("maintaining %s feet", FormatAltitude(currentAltitude)), fmt.Sprintf("at %s feet", FormatAltitude(currentAltitude)))
+			output = Sample(fmt.Sprintf("maintaining %s", FormatAltitude(currentAltitude)), fmt.Sprintf("at %s", FormatAltitude(currentAltitude)))
 		}
 	} else {
-		output = Sample(fmt.Sprintf("maintaining %s feet", FormatAltitude(currentAltitude)), fmt.Sprintf("at %s feet", FormatAltitude(currentAltitude)))
+		output = Sample(fmt.Sprintf("maintaining %s", FormatAltitude(currentAltitude)), fmt.Sprintf("at %s", FormatAltitude(currentAltitude)))
 	}
 
 	return PilotResponse{Message: output}
