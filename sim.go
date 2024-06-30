@@ -19,7 +19,7 @@ import (
 	"time"
 
 	"github.com/brunoga/deep"
-	"github.com/checkandmate1/AirportWeatherData"
+	getweather "github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -2578,6 +2578,26 @@ func (s *Sim) SaySpeed(token, callsign string) error {
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			return ac.SaySpeed()
+		})
+}
+
+func (s *Sim) SayAltitude(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			return ac.SayAltitude()
+		})
+}
+
+func (s *Sim) SayHeading(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
+			return ac.SayHeading()
 		})
 }
 
