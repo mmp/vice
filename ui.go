@@ -1119,7 +1119,8 @@ func showAboutDialog() {
   Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC,
   ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
-  ZSE, and ZTL VATSIM ARTCCs.
+  ZSE, and ZTL VATSIM ARTCCs and to the
+  FAA, from whence the original maps came.
 - Additionally: OpenScope for the aircraft
   performance and airline databases,
   ourairports.com for the airport database,
