@@ -10608,22 +10608,22 @@
     "JAX_V_APP": {
       "frequency": 118600,
       "full_name": "Jacksonville approach",
-      "facility_id": "3",
-      "scope_char": "3",
+      "facility_id": "2",
+      "scope_char": "2",
       "sector_id": "1V"
     },
     "DAB_N_APP": {
       "frequency": 125800,
       "full_name": "Daytona Beach approach",
-      "facility_id": "5",
-      "scope_char": "5",
+      "facility_id": "1",
+      "scope_char": "1",
       "sector_id": "1N"
     },
     "TPA_E_APP": {
       "frequency": 118150,
       "full_name": "Tampa approach",
-      "scope_char": "2",
-      "facility_id": "2",
+      "scope_char": "3",
+      "facility_id": "3",
       "sector_id": "1E"
     },
     "MCO_E_APP": {
