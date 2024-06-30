@@ -326,7 +326,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 				e.Pop()
 			}
 
-			appr.Waypoints[i].CheckApproach(e)
+			appr.Waypoints[i].CheckApproach(e, sg.ControlPositions)
 		}
 
 		if appr.FullName == "" {
@@ -397,7 +397,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 					Location: lerp2f(0.75, r.Threshold, rend.Threshold),
 				}}, route.Waypoints...)
 
-			route.Waypoints.CheckDeparture(e)
+			route.Waypoints.CheckDeparture(e, sg.ControlPositions)
 
 			for _, exit := range strings.Split(exitList, ",") {
 				exit = strings.TrimSpace(exit)
