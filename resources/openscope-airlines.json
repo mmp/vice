@@ -141,6 +141,24 @@
     }
   },
   {
+    "icao": "TMB",
+    "name": "Volato",
+    "callsign": {
+      "name": "Tombo",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "HDJT",
+          21
+        ]
+      ]
+    }
+  },
+  {
     "icao": "3a",
     "name": "General Aviation Monaco",
     "callsign": {
@@ -5740,6 +5758,24 @@
         [
           "E55P",
           1
+        ]
+      ]
+    }
+  },
+  {
+    "icao": "epi",
+    "name": "Epic Flight Academy",
+    "callsign": {
+      "name": "Epic Red",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C172",
+          29
         ]
       ]
     }
@@ -21522,6 +21558,47 @@
         [
           "GLF4",
           1
+        ]
+      ]
+    }
+  },
+  {
+    "icao": "fit",
+    "name": "Florida Institue of Technology",
+    "callsign": {
+      "name": "Fit",
+      "callsignFormats": [
+        "##",
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "P28A",
+          55
+        ]
+      ]
+    }
+  },
+  {
+    "icao": "lfa",
+    "name": "L3 Harris Flight Academy",
+    "callsign": {
+      "name": "Bucky",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "P28A",
+          55
+        ],
+        [
+          "C172",
+          55
         ]
       ]
     }
