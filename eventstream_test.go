@@ -6,6 +6,8 @@ package main
 
 import (
 	"testing"
+
+	"github.com/mmp/vice/pkg/rand"
 )
 
 func TestEventStream(t *testing.T) {

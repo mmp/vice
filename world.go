@@ -15,6 +15,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
+	"github.com/mmp/vice/pkg/rand"
 )
 
 const initialSimSeconds = 45
@@ -770,7 +771,7 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 	for {
 		format := "####"
 		if len(al.Callsign.CallsignFormats) > 0 {
-			format = SampleSlice(al.Callsign.CallsignFormats)
+			format = rand.SampleSlice(al.Callsign.CallsignFormats)
 		}
 
 		id := ""
@@ -818,17 +819,18 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goAround bool) (*Aircraft, error) {
 	arrivals := w.ArrivalGroups[arrivalGroup]
 	// Randomly sample from the arrivals that have a route to this airport.
-	idx := SampleFiltered(arrivals, func(ar Arrival) bool {
+	idx := rand.SampleFiltered(arrivals, func(ar Arrival) bool {
 		_, ok := ar.Airlines[arrivalAirport]
 		return ok
 	})
+
 	if idx == -1 {
 		return nil, fmt.Errorf("unable to find route in arrival group %s for airport %s?!",
 			arrivalGroup, arrivalAirport)
 	}
 	arr := arrivals[idx]
 
-	airline := SampleSlice(arr.Airlines[arrivalAirport])
+	airline := rand.SampleSlice(arr.Airlines[arrivalAirport])
 	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
@@ -887,7 +889,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 				return ok && ap.ExitCategories[d.Exit] == ap.ExitCategories[lastDeparture.Exit]
 			})
 
-		if idx := SampleFiltered(ap.Departures, pred); idx == -1 {
+		if idx := rand.SampleFiltered(ap.Departures, pred); idx == -1 {
 			// This should never happen...
 			lg.Errorf("%s/%s/%s: unable to sample departure", departureAirport, runway, category)
 		} else {
@@ -898,11 +900,12 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 
 	if dep == nil {
 		// Sample uniformly, minding the category, if specified
-		idx := SampleFiltered(ap.Departures,
+		idx := rand.SampleFiltered(ap.Departures,
 			func(d Departure) bool {
 				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
 				return ok && (rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
 			})
+
 		if idx == -1 {
 			// This shouldn't ever happen...
 			return nil, nil, fmt.Errorf("%s/%s: unable to find a valid departure",
@@ -925,7 +928,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		w.sameGateDepartures = 0
 	}
 
-	airline := SampleSlice(dep.Airlines)
+	airline := rand.SampleSlice(dep.Airlines)
 	ac, acType := w.sampleAircraft(airline.ICAO, airline.Fleet)
 	if ac == nil {
 		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")

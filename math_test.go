@@ -6,6 +6,8 @@ package main
 
 import (
 	"testing"
+
+	"github.com/mmp/vice/pkg/rand"
 )
 
 func TestArgmin(t *testing.T) {
@@ -102,19 +104,19 @@ func TestParseLatLong(t *testing.T) {
 }
 
 func TestSampleFiltered(t *testing.T) {
-	if SampleFiltered([]int{}, func(int) bool { return true }) != -1 {
+	if rand.SampleFiltered([]int{}, func(int) bool { return true }) != -1 {
 		t.Errorf("Returned non-zero for empty slice")
 	}
-	if SampleFiltered([]int{0, 1, 2, 3, 4}, func(int) bool { return false }) != -1 {
+	if rand.SampleFiltered([]int{0, 1, 2, 3, 4}, func(int) bool { return false }) != -1 {
 		t.Errorf("Returned non-zero for fully filtered")
 	}
-	if idx := SampleFiltered([]int{0, 1, 2, 3, 4}, func(v int) bool { return v == 3 }); idx != 3 {
+	if idx := rand.SampleFiltered([]int{0, 1, 2, 3, 4}, func(v int) bool { return v == 3 }); idx != 3 {
 		t.Errorf("Returned %d rather than 3 for filtered slice", idx)
 	}
 
 	var counts [5]int
 	for i := 0; i < 9000; i++ {
-		idx := SampleFiltered([]int{0, 1, 2, 3, 4}, func(v int) bool { return v&1 == 0 })
+		idx := rand.SampleFiltered([]int{0, 1, 2, 3, 4}, func(v int) bool { return v&1 == 0 })
 		counts[idx]++
 	}
 	if counts[1] != 0 || counts[3] != 0 {
@@ -135,7 +137,7 @@ func TestSampleWeighted(t *testing.T) {
 
 	n := 100000
 	for i := 0; i < n; i++ {
-		idx := SampleWeighted(a, func(v int) int { return v })
+		idx := rand.SampleWeighted(a, func(v int) int { return v })
 		counts[idx]++
 	}
 
@@ -294,7 +296,7 @@ func TestPermutationElement(t *testing.T) {
 			m := make(map[int]int)
 
 			for i := 0; i < n; i++ {
-				perm := PermutationElement(i, n, h)
+				perm := rand.PermutationElement(i, n, h)
 				if _, ok := m[perm]; ok {
 					t.Errorf("%d: appeared multiple times", perm)
 				}

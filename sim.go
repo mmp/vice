@@ -18,6 +18,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mmp/vice/pkg/rand"
+
 	"github.com/brunoga/deep"
 	getweather "github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
@@ -287,7 +289,7 @@ const (
 func MakeNewSimConfiguration() NewSimConfiguration {
 	c := NewSimConfiguration{
 		selectedServer: localServer,
-		NewSimName:     getRandomAdjectiveNoun(),
+		NewSimName:     rand.AdjectiveNoun(),
 	}
 
 	c.SetTRACON(globalConfig.LastTRACON)
@@ -2213,8 +2215,8 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 			var radioTransmissions []RadioTransmission
 			if octrl := s.World.GetControllerByCallsign(ac.TrackingController); octrl != nil {
 				name := Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
-				bye := Sample("good day", "seeya")
-				contact := Sample("contact ", "over to ", "")
+				bye := rand.Sample("good day", "seeya")
+				contact := rand.Sample("contact ", "over to ", "")
 				goodbye := contact + name + " on " + octrl.Frequency.String() + ", " + bye
 				radioTransmissions = append(radioTransmissions, RadioTransmission{
 					Controller: ac.ControllingController,

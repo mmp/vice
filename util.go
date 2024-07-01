@@ -150,28 +150,6 @@ func isAllNumbers(s string) bool {
 	return true
 }
 
-var (
-	//go:embed resources/nouns.txt
-	nounsFile string
-	nounList  []string
-
-	//go:embed resources/adjectives.txt
-	adjectivesFile string
-	adjectiveList  []string
-)
-
-func getRandomAdjectiveNoun() string {
-	if nounList == nil {
-		nounList = strings.Split(nounsFile, "\n")
-	}
-	if adjectiveList == nil {
-		adjectiveList = strings.Split(adjectivesFile, "\n")
-	}
-
-	return strings.TrimSpace(adjectiveList[rand.Intn(len(adjectiveList))]) + "-" +
-		strings.TrimSpace(nounList[rand.Intn(len(nounList))])
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // headings and directions
 
@@ -490,56 +468,6 @@ func FilterSlice[V any](s []V, pred func(V) bool) []V {
 		}
 	}
 	return filtered
-}
-
-// SampleSlice uniformly randomly samples an element of a non-empty slice.
-func SampleSlice[T any](slice []T) T {
-	return slice[rand.Intn(len(slice))]
-}
-
-func Sample[T any](t ...T) T {
-	return t[rand.Intn(len(t))]
-}
-
-// SampleFiltered uniformly randomly samples a slice, returning the index
-// of the sampled item, using provided predicate function to filter the
-// items that may be sampled.  An index of -1 is returned if the slice is
-// empty or the predicate returns false for all items.
-func SampleFiltered[T any](slice []T, pred func(T) bool) int {
-	idx := -1
-	candidates := 0
-	for i, v := range slice {
-		if pred(v) {
-			candidates++
-			p := float32(1) / float32(candidates)
-			if rand.Float32() < p {
-				idx = i
-			}
-		}
-	}
-	return idx
-}
-
-// SampleWeighted randomly samples an element from the given slice with the
-// probability of choosing each element proportional to the value returned
-// by the provided callback.
-func SampleWeighted[T any](slice []T, weight func(T) int) int {
-	// Weighted reservoir sampling...
-	idx := -1
-	sumWt := 0
-	for i, v := range slice {
-		w := weight(v)
-		if w == 0 {
-			continue
-		}
-
-		sumWt += w
-		p := float32(w) / float32(sumWt)
-		if rand.Float32() < p {
-			idx = i
-		}
-	}
-	return idx
 }
 
 // Given a map from strings to some type T where the keys are assumed to be

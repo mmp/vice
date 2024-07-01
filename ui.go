@@ -21,6 +21,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mmp/vice/pkg/rand"
+
 	"github.com/mmp/imgui-go/v4"
 	"github.com/pkg/browser"
 )

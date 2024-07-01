@@ -3,7 +3,6 @@ module github.com/mmp/vice
 go 1.22
 
 require (
-	github.com/MichaelTJones/pcg v0.0.0-20180122055547-df440c6ed7ed
 	github.com/apenwarr/fixconsole v0.0.0-20191012055117-5a9f6489cc29
 	github.com/checkandmate1/AirportWeatherData v1.11.0
 	github.com/davecgh/go-spew v1.1.1

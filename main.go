@@ -24,6 +24,8 @@ import (
 	"sort"
 	"time"
 
+	"github.com/mmp/vice/pkg/rand"
+
 	"github.com/apenwarr/fixconsole"
 	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"

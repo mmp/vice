@@ -18,6 +18,8 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/mmp/vice/pkg/rand"
+
 	"github.com/mmp/imgui-go/v4"
 )
 
