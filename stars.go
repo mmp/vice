@@ -20,6 +20,7 @@ import (
 
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/mmp/imgui-go/v4"
@@ -36,36 +37,36 @@ const STARSTriangleCharacter = string(rune(0x80))
 const STARSFilledUpTriangle = string(rune(0x1e))
 
 var (
-	STARSBackgroundColor    = RGB{.2, .2, .2} // at 100 contrast
-	STARSListColor          = RGB{.1, .9, .1}
-	STARSTextAlertColor     = RGB{1, 0, 0}
-	STARSMapColor           = RGB{.55, .55, .55}
-	STARSCompassColor       = RGB{.55, .55, .55}
-	STARSRangeRingColor     = RGB{.55, .55, .55}
-	STARSTrackBlockColor    = RGB{0.12, 0.48, 1}
-	STARSTrackHistoryColors = [5]RGB{
-		RGB{.12, .31, .78},
-		RGB{.28, .28, .67},
-		RGB{.2, .2, .51},
-		RGB{.16, .16, .43},
-		RGB{.12, .12, .35},
+	STARSBackgroundColor    = renderer.RGB{.2, .2, .2} // at 100 contrast
+	STARSListColor          = renderer.RGB{.1, .9, .1}
+	STARSTextAlertColor     = renderer.RGB{1, 0, 0}
+	STARSMapColor           = renderer.RGB{.55, .55, .55}
+	STARSCompassColor       = renderer.RGB{.55, .55, .55}
+	STARSRangeRingColor     = renderer.RGB{.55, .55, .55}
+	STARSTrackBlockColor    = renderer.RGB{0.12, 0.48, 1}
+	STARSTrackHistoryColors = [5]renderer.RGB{
+		renderer.RGB{.12, .31, .78},
+		renderer.RGB{.28, .28, .67},
+		renderer.RGB{.2, .2, .51},
+		renderer.RGB{.16, .16, .43},
+		renderer.RGB{.12, .12, .35},
 	}
-	STARSJRingConeColor         = RGB{.5, .5, 1}
-	STARSTrackedAircraftColor   = RGB{1, 1, 1}
-	STARSUntrackedAircraftColor = RGB{0, 1, 0}
-	STARSInboundPointOutColor   = RGB{1, 1, 0}
-	STARSGhostColor             = RGB{1, 1, 0}
-	STARSSelectedAircraftColor  = RGB{0, 1, 1}
+	STARSJRingConeColor         = renderer.RGB{.5, .5, 1}
+	STARSTrackedAircraftColor   = renderer.RGB{1, 1, 1}
+	STARSUntrackedAircraftColor = renderer.RGB{0, 1, 0}
+	STARSInboundPointOutColor   = renderer.RGB{1, 1, 0}
+	STARSGhostColor             = renderer.RGB{1, 1, 0}
+	STARSSelectedAircraftColor  = renderer.RGB{0, 1, 1}
 
-	STARSATPAWarningColor = RGB{1, 1, 0}
-	STARSATPAAlertColor   = RGB{1, .215, 0}
+	STARSATPAWarningColor = renderer.RGB{1, 1, 0}
+	STARSATPAAlertColor   = renderer.RGB{1, .215, 0}
 
-	STARSDCBButtonColor         = RGB{0, .4, 0}
-	STARSDCBActiveButtonColor   = RGB{0, .8, 0}
-	STARSDCBTextColor           = RGB{1, 1, 1}
-	STARSDCBTextSelectedColor   = RGB{1, 1, 0}
-	STARSDCBDisabledButtonColor = RGB{.4, .4, .4}
-	STARSDCBDisabledTextColor   = RGB{.8, .8, .8}
+	STARSDCBButtonColor         = renderer.RGB{0, .4, 0}
+	STARSDCBActiveButtonColor   = renderer.RGB{0, .8, 0}
+	STARSDCBTextColor           = renderer.RGB{1, 1, 1}
+	STARSDCBTextSelectedColor   = renderer.RGB{1, 1, 0}
+	STARSDCBDisabledButtonColor = renderer.RGB{.4, .4, .4}
+	STARSDCBDisabledTextColor   = renderer.RGB{.8, .8, .8}
 )
 
 const NumSTARSPreferenceSets = 32
@@ -80,9 +81,9 @@ type STARSPane struct {
 
 	weatherRadar WeatherRadar
 
-	systemFont        [6]*Font
-	systemOutlineFont [6]*Font
-	dcbFont           [3]*Font // 0, 1, 2 only
+	systemFont        [6]*renderer.Font
+	systemOutlineFont [6]*renderer.Font
+	dcbFont           [3]*renderer.Font // 0, 1, 2 only
 
 	fusedTrackVertices [][2]float32
 
@@ -233,7 +234,7 @@ type STARSConvergingRunways struct {
 
 type STARSDatablockFieldColors struct {
 	Start, End int
-	Color      RGB
+	Color      renderer.RGB
 }
 
 type STARSDatablockLine struct {
@@ -272,7 +273,7 @@ func (s *STARSDatablock) Duplicate() STARSDatablock {
 	return sd
 }
 
-func (s *STARSDatablock) BoundText(font *Font) (int, int) {
+func (s *STARSDatablock) BoundText(font *renderer.Font) (int, int) {
 	text := ""
 	for i, l := range s.Lines {
 		text += l.Text
@@ -283,9 +284,9 @@ func (s *STARSDatablock) BoundText(font *Font) (int, int) {
 	return font.BoundText(text, 0)
 }
 
-func (s *STARSDatablock) DrawText(td *TextDrawBuilder, pt [2]float32, font *Font, baseColor RGB,
+func (s *STARSDatablock) DrawText(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, baseColor renderer.RGB,
 	brightness STARSBrightness) {
-	style := TextStyle{
+	style := renderer.TextStyle{
 		Font:        font,
 		Color:       brightness.ScaleRGB(baseColor),
 		LineSpacing: 0}
@@ -299,9 +300,9 @@ func (s *STARSDatablock) DrawText(td *TextDrawBuilder, pt [2]float32, font *Font
 			spanColor := baseColor
 			start, end := 0, 0
 
-			flush := func(newColor RGB) {
+			flush := func(newColor renderer.RGB) {
 				if end > start {
-					style := TextStyle{
+					style := renderer.TextStyle{
 						Font:        font,
 						Color:       brightness.ScaleRGB(spanColor),
 						LineSpacing: 0}
@@ -572,7 +573,7 @@ type STARSMap struct {
 	Name          string
 	Id            int
 	Lines         [][]math.Point2LL
-	CommandBuffer CommandBuffer
+	CommandBuffer renderer.CommandBuffer
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1079,12 +1080,12 @@ type STARSCommandStatus struct {
 
 type STARSBrightness int
 
-func (b STARSBrightness) RGB() RGB {
+func (b STARSBrightness) RGB() renderer.RGB {
 	v := float32(b) / 100
-	return RGB{v, v, v}
+	return renderer.RGB{v, v, v}
 }
 
-func (b STARSBrightness) ScaleRGB(r RGB) RGB {
+func (b STARSBrightness) ScaleRGB(r renderer.RGB) renderer.RGB {
 	return r.Scale(float32(b) / 100)
 }
 
@@ -1101,7 +1102,7 @@ func NewSTARSPane(w *World) *STARSPane {
 
 func (sp *STARSPane) Name() string { return "STARS" }
 
-func (sp *STARSPane) Activate(w *World, r Renderer, eventStream *EventStream) {
+func (sp *STARSPane) Activate(w *World, r renderer.Renderer, eventStream *EventStream) {
 	if sp.CurrentPreferenceSet.Range == 0 || sp.CurrentPreferenceSet.Center.IsZero() {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
 		sp.CurrentPreferenceSet = sp.MakePreferenceSet("", w)
@@ -1231,14 +1232,14 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 		Label: w.TRACON + " MVA",
 		Name:  "ALL MINIMUM VECTORING ALTITUDES",
 	}
-	ld := GetLinesDrawBuilder()
+	ld := renderer.GetLinesDrawBuilder()
 	for _, mva := range database.MVAs[w.TRACON] {
 		ld.AddLineLoop(mva.ExteriorRing)
 		p := math.Extent2DFromPoints(mva.ExteriorRing).Center()
 		ld.AddNumber(p, 0.005, fmt.Sprintf("%d", mva.MinimumLimit/100))
 	}
 	ld.GenerateCommands(&mvas.CommandBuffer)
-	ReturnLinesDrawBuilder(ld)
+	renderer.ReturnLinesDrawBuilder(ld)
 	maps[701] = mvas
 
 	// Radar maps
@@ -1250,14 +1251,14 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 		}
 
 		site := w.RadarSites[name]
-		ld := GetLinesDrawBuilder()
+		ld := renderer.GetLinesDrawBuilder()
 		ld.AddLatLongCircle(site.Position, w.NmPerLongitude, float32(site.PrimaryRange), 360)
 		ld.AddLatLongCircle(site.Position, w.NmPerLongitude, float32(site.SecondaryRange), 360)
 		ld.GenerateCommands(&sm.CommandBuffer)
 		maps[radarIndex] = sm
 
 		radarIndex++
-		ReturnLinesDrawBuilder(ld)
+		renderer.ReturnLinesDrawBuilder(ld)
 	}
 
 	// ATPA approach volumes
@@ -1272,7 +1273,7 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 				Name:  name + rwy + " ATPA APPROACH VOLUME",
 			}
 
-			ld := GetLinesDrawBuilder()
+			ld := renderer.GetLinesDrawBuilder()
 			rect := vol.GetRect(w.NmPerLongitude, w.MagneticVariation)
 			for i := range rect {
 				ld.AddLine(rect[i], rect[(i+1)%len(rect)])
@@ -1281,7 +1282,7 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 
 			maps[atpaIndex] = sm
 			atpaIndex++
-			ReturnLinesDrawBuilder(ld)
+			renderer.ReturnLinesDrawBuilder(ld)
 		}
 	}
 
@@ -1566,7 +1567,7 @@ func (sp *STARSPane) Upgrade(from, to int) {
 	}
 }
 
-func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
+func (sp *STARSPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	sp.processEvents(ctx.world)
 	sp.updateRadarTracks(ctx)
 
@@ -1580,6 +1581,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	transforms := GetScopeTransformations(ctx.paneExtent, ctx.world.MagneticVariation, ctx.world.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range), 0)
 
+	dpiScale := platform.DPIScale()
 	paneExtent := ctx.paneExtent
 	if ps.DisplayDCB {
 		paneExtent = sp.DrawDCB(ctx, transforms, cb)
@@ -1587,7 +1589,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		// Update scissor for what's left and to protect the DCB (even
 		// though this is apparently unrealistic, at least as far as radar
 		// tracks go...)
-		cb.SetScissorBounds(paneExtent)
+		cb.SetScissorBounds(paneExtent, platform.FramebufferSize()[1]/platform.DisplaySize()[1])
 
 		if ctx.mouse != nil {
 			// The mouse position is provided in Pane coordinates, so that needs to be updated unless
@@ -1606,14 +1608,14 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	if ps.Brightness.RangeRings > 0 {
 		color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
-		cb.LineWidth(1)
+		cb.LineWidth(1, dpiScale)
 		DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 
 	// Maps
-	cb.LineWidth(1)
+	cb.LineWidth(1, dpiScale)
 	videoMaps, _ := ctx.world.GetVideoMaps()
 	for i, disp := range ps.DisplayVideoMap {
 		if !disp {
@@ -1646,7 +1648,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	transforms.LoadWindowViewingMatrices(cb)
 
 	if ps.Brightness.Compass > 0 {
-		cb.LineWidth(1)
+		cb.LineWidth(1, dpiScale)
 		cbright := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
 		font := sp.systemFont[ps.CharSize.Tools]
 		DrawCompass(ps.CurrentCenter, ctx, 0, font, cbright, paneExtent, transforms, cb)
@@ -4360,7 +4362,7 @@ func rblSecondClickHandler(ctx *PaneContext, sp *STARSPane) func([2]float32, Sco
 	}
 }
 
-func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) math.Extent2D {
+func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, cb *renderer.CommandBuffer) math.Extent2D {
 	ps := &sp.CurrentPreferenceSet
 
 	// Find a scale factor so that the buttons all fit in the window, if necessary
@@ -4773,23 +4775,23 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 }
 
 func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, paneExtent math.Extent2D,
-	transforms ScopeTransformations, cb *CommandBuffer) {
+	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.CurrentPreferenceSet
 
 	transforms.LoadWindowViewingMatrices(cb)
 
 	font := sp.systemFont[ps.CharSize.Lists]
-	style := TextStyle{
+	style := renderer.TextStyle{
 		Font:  font,
 		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
 	}
-	alertStyle := TextStyle{
+	alertStyle := renderer.TextStyle{
 		Font:  font,
 		Color: ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor),
 	}
 
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
 
 	normalizedToWindow := func(p [2]float32) [2]float32 {
 		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
@@ -4857,14 +4859,14 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		x := pw[0]
 		newline := func() {
 			pw[0] = x
-			pw[1] -= float32(font.size)
+			pw[1] -= float32(font.Size)
 		}
 
 		// Inverted red triangle and green box...
-		trid := GetColoredTrianglesDrawBuilder()
-		defer ReturnColoredTrianglesDrawBuilder(trid)
-		ld := GetColoredLinesDrawBuilder()
-		defer ReturnColoredLinesDrawBuilder(ld)
+		trid := renderer.GetColoredTrianglesDrawBuilder()
+		defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
+		ld := renderer.GetColoredLinesDrawBuilder()
+		defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 		pIndicator := math.Add2f(pw, [2]float32{5, 0})
 		tv := math.EquilateralTriangleVertices(7)
@@ -5339,7 +5341,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawCRDARegions(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+func (sp *STARSPane) drawCRDARegions(ctx *PaneContext, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	ps := sp.CurrentPreferenceSet
@@ -5349,30 +5351,30 @@ func (sp *STARSPane) drawCRDARegions(ctx *PaneContext, transforms ScopeTransform
 				region := sp.ConvergingRunways[i].ApproachRegions[j]
 				line, _ := region.GetLateralGeometry(ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
 
-				ld := GetLinesDrawBuilder()
+				ld := renderer.GetLinesDrawBuilder()
 				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
 				ld.AddLine(line[0], line[1])
 
 				ld.GenerateCommands(cb)
-				ReturnLinesDrawBuilder(ld)
+				renderer.ReturnLinesDrawBuilder(ld)
 			}
 
 			if rwyState.DrawQualificationRegion {
 				region := sp.ConvergingRunways[i].ApproachRegions[j]
 				_, quad := region.GetLateralGeometry(ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
 
-				ld := GetLinesDrawBuilder()
+				ld := renderer.GetLinesDrawBuilder()
 				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
 				ld.AddLineLoop([][2]float32{quad[0], quad[1], quad[2], quad[3]})
 
 				ld.GenerateCommands(cb)
-				ReturnLinesDrawBuilder(ld)
+				renderer.ReturnLinesDrawBuilder(ld)
 			}
 		}
 	}
 }
 
-func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	if sp.drawRouteAircraft == "" {
 		return
 	}
@@ -5382,8 +5384,8 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 		return
 	}
 
-	ld := GetLinesDrawBuilder()
-	defer ReturnLinesDrawBuilder(ld)
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
 
 	prev := ac.Position()
 	for _, wp := range ac.Nav.Waypoints {
@@ -5392,7 +5394,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 	}
 
 	ps := sp.CurrentPreferenceSet
-	cb.LineWidth(3)
+	cb.LineWidth(3, platform.DPIScale())
 	cb.SetRGB(ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
 	transforms.LoadLatLongViewingMatrices(cb)
 	ld.GenerateCommands(cb)
@@ -5462,15 +5464,15 @@ func (sp *STARSPane) datablockType(ctx *PaneContext, ac *Aircraft) DatablockType
 }
 
 func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations,
-	cb *CommandBuffer) {
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
-	trackBuilder := GetColoredTrianglesDrawBuilder()
-	defer ReturnColoredTrianglesDrawBuilder(trackBuilder)
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
-	trid := GetColoredTrianglesDrawBuilder()
-	defer ReturnColoredTrianglesDrawBuilder(trid)
+	cb *renderer.CommandBuffer) {
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	trackBuilder := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trackBuilder)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	trid := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	// TODO: square icon if it's squawking a beacon code we're monitoring
 
 	// Update cached command buffers for tracks
@@ -5514,7 +5516,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	trid.GenerateCommands(cb)
-	cb.LineWidth(1)
+	cb.LineWidth(1, platform.DPIScale())
 	ld.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -5588,18 +5590,18 @@ func (sp *STARSPane) getGhostAircraft(aircraft []*Aircraft, ctx *PaneContext) []
 }
 
 func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, transforms ScopeTransformations,
-	cb *CommandBuffer) {
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
+	cb *renderer.CommandBuffer) {
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	ps := sp.CurrentPreferenceSet
 	color := ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor)
 	trackFont := sp.systemFont[ps.CharSize.PositionSymbols]
-	trackStyle := TextStyle{Font: trackFont, Color: color, LineSpacing: 0}
+	trackStyle := renderer.TextStyle{Font: trackFont, Color: color, LineSpacing: 0}
 	datablockFont := sp.systemFont[ps.CharSize.Datablocks]
-	datablockStyle := TextStyle{Font: datablockFont, Color: color, LineSpacing: 0}
+	datablockStyle := renderer.TextStyle{Font: datablockFont, Color: color, LineSpacing: 0}
 
 	for _, ghost := range ghosts {
 		state := sp.Aircraft[ghost.Callsign]
@@ -5641,8 +5643,8 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 }
 
 func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, heading float32, ctx *PaneContext,
-	transforms ScopeTransformations, trackId string, trackBuilder *ColoredTrianglesDrawBuilder,
-	ld *ColoredLinesDrawBuilder, trid *ColoredTrianglesDrawBuilder, td *TextDrawBuilder, scale float32) {
+	transforms ScopeTransformations, trackId string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
+	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder, scale float32) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
 
@@ -5688,7 +5690,7 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 				line[i] = math.Add2f(rot(math.Scale2f(line[i], scale)), pw)
 				line[i] = transforms.LatLongFromWindowP(line[i])
 			}
-			ld.AddLine(line[0], line[1], primaryTargetBrightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
+			ld.AddLine(line[0], line[1], primaryTargetBrightness.ScaleRGB(renderer.RGB{R: .1, G: .8, B: .1}))
 
 		case RadarModeMulti:
 			primary, secondary, _ := sp.radarVisibility(ctx.world, pos, state.TrackAltitude())
@@ -5731,8 +5733,8 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 		if trackId != "" {
 			font := sp.systemFont[ps.CharSize.PositionSymbols]
 			outlineFont := sp.systemOutlineFont[ps.CharSize.PositionSymbols]
-			td.AddTextCentered(trackId, pw, TextStyle{Font: outlineFont, Color: RGB{}})
-			td.AddTextCentered(trackId, pw, TextStyle{Font: font, Color: trackIdBrightness.ScaleRGB(color)})
+			td.AddTextCentered(trackId, pw, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
+			td.AddTextCentered(trackId, pw, renderer.TextStyle{Font: font, Color: trackIdBrightness.ScaleRGB(color)})
 		} else {
 			// TODO: draw box if in range of squawks we have selected
 
@@ -5746,8 +5748,8 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 
 			px := float32(3) * scale
 			// diagonals
-			diagPx := px * 0.707107                                            /* 1/sqrt(2) */
-			trackColor := trackIdBrightness.ScaleRGB(RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
+			diagPx := px * 0.707107                                                     /* 1/sqrt(2) */
+			trackColor := trackIdBrightness.ScaleRGB(renderer.RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
 			ld.AddLine(delta(pos, -diagPx, -diagPx), delta(pos, diagPx, diagPx), trackColor)
 			ld.AddLine(delta(pos, diagPx, -diagPx), delta(pos, -diagPx, diagPx), trackColor)
 			// horizontal line
@@ -5758,7 +5760,7 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 	}
 }
 
-func drawTrack(ctd *ColoredTrianglesDrawBuilder, p [2]float32, vertices [][2]float32, color RGB) {
+func drawTrack(ctd *renderer.ColoredTrianglesDrawBuilder, p [2]float32, vertices [][2]float32, color renderer.RGB) {
 	for i := range vertices {
 		v0, v1 := vertices[i], vertices[(i+1)%len(vertices)]
 		ctd.AddTriangle(p, math.Add2f(p, v0), math.Add2f(p, v1), color)
@@ -5791,15 +5793,15 @@ func getTrackVertices(ctx *PaneContext, diameter float32) [][2]float32 {
 }
 
 func (sp *STARSPane) drawHistoryTrails(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations,
-	cb *CommandBuffer) {
+	cb *renderer.CommandBuffer) {
 	ps := sp.CurrentPreferenceSet
 	if ps.Brightness.History == 0 {
 		// Don't draw if brightness == 0.
 		return
 	}
 
-	historyBuilder := GetColoredTrianglesDrawBuilder()
-	defer ReturnColoredTrianglesDrawBuilder(historyBuilder)
+	historyBuilder := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(historyBuilder)
 
 	const historyTrackDiameter = 8
 	historyTrackVertices := getTrackVertices(ctx, historyTrackDiameter)
@@ -6664,7 +6666,7 @@ func sameFacility(ctx *PaneContext, receiving string) bool {
 		ctx.world.GetControllerByCallsign(receiving).FacilityIdentifier
 }
 
-func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, brightness STARSBrightness) {
+func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color renderer.RGB, brightness STARSBrightness) {
 	ps := sp.CurrentPreferenceSet
 	dt := sp.datablockType(ctx, ac)
 	state := sp.Aircraft[ac.Callsign]
@@ -6738,9 +6740,9 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 }
 
 func (sp *STARSPane) drawLeaderLines(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations,
-	cb *CommandBuffer) {
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
+	cb *renderer.CommandBuffer) {
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	now := ctx.world.CurrentTime()
 
 	for _, ac := range aircraft {
@@ -6761,14 +6763,14 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*Aircraft, ctx *PaneContext, tra
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1)
+	cb.LineWidth(1, platform.DPIScale())
 	ld.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
-	transforms ScopeTransformations, cb *CommandBuffer) {
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
+	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
 
 	now := ctx.world.CurrentTime()
 	realNow := ctx.now // for flashing rate...
@@ -6809,11 +6811,11 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.CurrentPreferenceSet
 
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	color := ps.Brightness.Lines.RGB()
 
@@ -6847,14 +6849,14 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 }
 
 func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations,
-	cb *CommandBuffer) {
+	cb *renderer.CommandBuffer) {
 	now := ctx.world.CurrentTime()
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
-	trid := GetTrianglesDrawBuilder()
-	defer ReturnTrianglesDrawBuilder(trid)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	trid := renderer.GetTrianglesDrawBuilder()
+	defer renderer.ReturnTrianglesDrawBuilder(trid)
 
 	ps := sp.CurrentPreferenceSet
 	font := sp.systemFont[ps.CharSize.Datablocks]
@@ -6887,9 +6889,9 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 				// vector from center to the circle there
 				v := [2]float32{-.707106 * radius, -.707106 * radius} // -sqrt(2)/2
 				// move up to make space for the text
-				v[1] += float32(font.size) + 3
+				v[1] += float32(font.Size) + 3
 				pt := math.Add2f(pc, v)
-				textStyle := TextStyle{Font: font, Color: color}
+				textStyle := renderer.TextStyle{Font: font, Color: color}
 				td.AddText(format(state.JRingRadius), pt, textStyle)
 			}
 		}
@@ -6954,7 +6956,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			ld.AddLineLoop(coneColor, pts[:])
 
 			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
-				textStyle := TextStyle{Font: font, Color: coneColor}
+				textStyle := renderer.TextStyle{Font: font, Color: coneColor}
 
 				pCenter := math.Add2f(pw, rot(math.Scale2f([2]float32{0, 0.5}, length)))
 
@@ -6980,15 +6982,15 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 }
 
 // Draw all of the range-bearing lines that have been specified.
-func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
+func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	ps := sp.CurrentPreferenceSet
 	color := ps.Brightness.Lines.RGB() // check
-	style := TextStyle{
+	style := renderer.TextStyle{
 		Font:  sp.systemFont[ps.CharSize.Tools],
 		Color: color,
 	}
@@ -7066,7 +7068,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 }
 
 // Draw the minimum separation line between two aircraft, if selected.
-func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	cs0, cs1 := sp.MinSepAircraft[0], sp.MinSepAircraft[1]
 	if cs0 == "" || cs1 == "" {
 		// Two aircraft haven't been specified.
@@ -7106,12 +7108,12 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 		return
 	}
 
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
-	trid := GetTrianglesDrawBuilder()
-	defer ReturnTrianglesDrawBuilder(trid)
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	trid := renderer.GetTrianglesDrawBuilder()
+	defer renderer.ReturnTrianglesDrawBuilder(trid)
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
 
 	font := sp.systemFont[ps.CharSize.Tools]
 
@@ -7136,7 +7138,7 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 
 		// Draw filled triangles centered at p0tmin and p1tmin.
 		pw0, pw1 = transforms.WindowFromLatLongP(p0tmin), transforms.WindowFromLatLongP(p1tmin)
-		style := TextStyle{Font: font, Color: color}
+		style := renderer.TextStyle{Font: font, Color: color}
 		td.AddTextCentered(STARSFilledUpTriangle, pw0, style)
 		td.AddTextCentered(STARSFilledUpTriangle, pw1, style)
 	}
@@ -7144,11 +7146,11 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 	// Draw the text for the minimum distance
 	// Center the text along the minimum distance line
 	pText := math.Mid2f(pw0, pw1)
-	style := TextStyle{
+	style := renderer.TextStyle{
 		Font:            font,
 		Color:           color,
 		DrawBackground:  true,
-		BackgroundColor: RGB{},
+		BackgroundColor: renderer.RGB{},
 	}
 	text := fmt.Sprintf("%.2fNM", math.NMDistance2LL(p0tmin, p1tmin))
 	if tmin < 0 {
@@ -7166,11 +7168,11 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
+func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
 
 	ps := sp.CurrentPreferenceSet
 	rgb := ps.Brightness.Lists.ScaleRGB(STARSListColor)
@@ -7190,7 +7192,7 @@ func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformati
 
 			center := e.Center()
 			ps := sp.CurrentPreferenceSet
-			style := TextStyle{
+			style := renderer.TextStyle{
 				Font:           sp.systemFont[ps.CharSize.Tools],
 				Color:          rgb,
 				DrawBackground: true, // default BackgroundColor is fine
@@ -7215,7 +7217,7 @@ func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformati
 }
 
 func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraft,
-	transforms ScopeTransformations, cb *CommandBuffer) {
+	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	if ctx.mouse == nil {
 		return
 	}
@@ -7328,12 +7330,12 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 		}
 	} else {
 		if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
-			td := GetTextDrawBuilder()
-			defer ReturnTextDrawBuilder(td)
+			td := renderer.GetTextDrawBuilder()
+			defer renderer.ReturnTextDrawBuilder(td)
 
 			ps := sp.CurrentPreferenceSet
 			font := sp.systemFont[ps.CharSize.Datablocks]
-			style := TextStyle{
+			style := renderer.TextStyle{
 				Font:        font,
 				Color:       ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor),
 				LineSpacing: 0}
@@ -7349,8 +7351,8 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			td.AddText(info, ptext, style)
 
 			// Draw an alpha-blended quad behind the text to make it more legible.
-			trid := GetTrianglesDrawBuilder()
-			defer ReturnTrianglesDrawBuilder(trid)
+			trid := renderer.GetTrianglesDrawBuilder()
+			defer renderer.ReturnTrianglesDrawBuilder(trid)
 			bx, by := font.BoundText(info, style.LineSpacing)
 			trid.AddQuad(math.Add2f(ptext, [2]float32{-pad, 0}),
 				math.Add2f(ptext, [2]float32{float32(bx) + pad, 0}),
@@ -7359,7 +7361,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 
 			// Get it all into the command buffer
 			transforms.LoadWindowViewingMatrices(cb)
-			cb.SetRGBA(RGBA{R: 0.25, G: 0.25, B: 0.25, A: 0.75})
+			cb.SetRGBA(renderer.RGBA{R: 0.25, G: 0.25, B: 0.25, A: 0.75})
 			cb.Blend()
 			trid.GenerateCommands(cb)
 			cb.DisableBlend()
@@ -7369,7 +7371,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 }
 
 func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent math.Extent2D, transforms ScopeTransformations,
-	cb *CommandBuffer) {
+	cb *renderer.CommandBuffer) {
 	if ctx.mouse == nil {
 		return
 	}
@@ -7380,8 +7382,8 @@ func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent math.Extent2D,
 	if ctx.mouse.Pos[0] >= 0 && ctx.mouse.Pos[0] < paneExtent.Width() &&
 		ctx.mouse.Pos[1] >= 0 && ctx.mouse.Pos[1] < paneExtent.Height() {
 		ctx.mouse.SetCursor(imgui.MouseCursorNone)
-		ld := GetLinesDrawBuilder()
-		defer ReturnLinesDrawBuilder(ld)
+		ld := renderer.GetLinesDrawBuilder()
+		defer renderer.ReturnLinesDrawBuilder(ld)
 
 		w := float32(7) * util.Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 		ld.AddLine(math.Add2f(ctx.mouse.Pos, [2]float32{-w, 0}), math.Add2f(ctx.mouse.Pos, [2]float32{w, 0}))
@@ -7425,18 +7427,18 @@ func starsButtonSize(flags int, scale float32) [2]float32 {
 }
 
 var dcbDrawState struct {
-	cb           *CommandBuffer
+	cb           *renderer.CommandBuffer
 	mouse        *MouseState
 	mouseDownPos []float32
 	cursor       [2]float32
 	drawStartPos [2]float32
-	style        TextStyle
+	style        renderer.TextStyle
 	brightness   STARSBrightness
 	position     int
 }
 
 func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, buttonScale float32, transforms ScopeTransformations,
-	cb *CommandBuffer) {
+	cb *renderer.CommandBuffer) {
 	dcbDrawState.cb = cb
 	dcbDrawState.mouse = ctx.mouse
 
@@ -7458,9 +7460,9 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, buttonScale float32, transfo
 
 	dcbDrawState.cursor = dcbDrawState.drawStartPos
 
-	dcbDrawState.style = TextStyle{
+	dcbDrawState.style = renderer.TextStyle{
 		Font:        sp.dcbFont[ps.CharSize.DCB],
-		Color:       RGB{1, 1, 1},
+		Color:       renderer.RGB{1, 1, 1},
 		LineSpacing: 0,
 	}
 	if dcbDrawState.style.Font == nil {
@@ -7469,7 +7471,7 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, buttonScale float32, transfo
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1)
+	cb.LineWidth(1, platform.DPIScale())
 
 	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
 		dcbDrawState.mouseDownPos = ctx.mouse.Pos[:]
@@ -7494,7 +7496,7 @@ func (sp *STARSPane) EndDrawDCB() {
 	}
 }
 
-func drawDCBText(text string, td *TextDrawBuilder, buttonSize [2]float32, color RGB) {
+func drawDCBText(text string, td *renderer.TextDrawBuilder, buttonSize [2]float32, color renderer.RGB) {
 	// Clean up the text
 	lines := strings.Split(strings.TrimSpace(text), "\n")
 	for i := range lines {
@@ -7502,7 +7504,7 @@ func drawDCBText(text string, td *TextDrawBuilder, buttonSize [2]float32, color 
 	}
 
 	style := dcbDrawState.style
-	style.Color = lerpRGB(.5, color, dcbDrawState.brightness.ScaleRGB(color))
+	style.Color = renderer.LerpRGB(.5, color, dcbDrawState.brightness.ScaleRGB(color))
 	_, h := style.Font.BoundText(strings.Join(lines, "\n"), dcbDrawState.style.LineSpacing)
 
 	slop := buttonSize[1] - float32(h) // todo: what if negative...
@@ -7520,12 +7522,12 @@ func drawDCBText(text string, td *TextDrawBuilder, buttonSize [2]float32, color 
 }
 
 func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32, pushedIn bool, disabled bool) (math.Extent2D, bool) {
-	ld := GetColoredLinesDrawBuilder()
-	trid := GetColoredTrianglesDrawBuilder()
-	td := GetTextDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
-	defer ReturnColoredTrianglesDrawBuilder(trid)
-	defer ReturnTextDrawBuilder(td)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	trid := renderer.GetColoredTrianglesDrawBuilder()
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
+	defer renderer.ReturnTextDrawBuilder(td)
 
 	sz := starsButtonSize(flags, buttonScale)
 
@@ -7542,7 +7544,7 @@ func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32
 	mouseDownInside := dcbDrawState.mouseDownPos != nil &&
 		ext.Inside([2]float32{dcbDrawState.mouseDownPos[0], dcbDrawState.mouseDownPos[1]})
 
-	var buttonColor, textColor RGB
+	var buttonColor, textColor renderer.RGB
 	if disabled {
 		buttonColor = STARSDCBDisabledButtonColor
 		textColor = STARSDCBDisabledTextColor
@@ -7564,16 +7566,16 @@ func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32
 
 	if !disabled && pushedIn { //((selected && !mouseInside) || (!selected && mouseInside && mouse.Down[MouseButtonPrimary])) {
 		// Depressed bevel scheme: darker top/left, highlight bottom/right
-		ld.AddLine(p0, p1, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
-		ld.AddLine(p0, p3, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
-		ld.AddLine(p1, p2, lerpRGB(.25, buttonColor, RGB{1, 1, 1}))
-		ld.AddLine(p2, p3, lerpRGB(.25, buttonColor, RGB{1, 1, 1}))
+		ld.AddLine(p0, p1, renderer.LerpRGB(.5, buttonColor, renderer.RGB{0, 0, 0}))
+		ld.AddLine(p0, p3, renderer.LerpRGB(.5, buttonColor, renderer.RGB{0, 0, 0}))
+		ld.AddLine(p1, p2, renderer.LerpRGB(.25, buttonColor, renderer.RGB{1, 1, 1}))
+		ld.AddLine(p2, p3, renderer.LerpRGB(.25, buttonColor, renderer.RGB{1, 1, 1}))
 	} else {
 		// Normal bevel scheme: highlight top and left, darker bottom and right
-		ld.AddLine(p0, p1, lerpRGB(.25, buttonColor, RGB{1, 1, 1}))
-		ld.AddLine(p0, p3, lerpRGB(.25, buttonColor, RGB{1, 1, 1}))
-		ld.AddLine(p1, p2, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
-		ld.AddLine(p2, p3, lerpRGB(.5, buttonColor, RGB{0, 0, 0}))
+		ld.AddLine(p0, p1, renderer.LerpRGB(.25, buttonColor, renderer.RGB{1, 1, 1}))
+		ld.AddLine(p0, p3, renderer.LerpRGB(.25, buttonColor, renderer.RGB{1, 1, 1}))
+		ld.AddLine(p1, p2, renderer.LerpRGB(.5, buttonColor, renderer.RGB{0, 0, 0}))
+		ld.AddLine(p2, p3, renderer.LerpRGB(.5, buttonColor, renderer.RGB{0, 0, 0}))
 	}
 
 	// Scissor to just the extent of the button. Note that we need to give
@@ -7583,7 +7585,7 @@ func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32
 	dcbDrawState.cb.SetScissorBounds(math.Extent2D{
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
-	})
+	}, platform.FramebufferSize()[1]/platform.DisplaySize()[1])
 
 	updateDCBCursor(flags, sz)
 
@@ -8088,21 +8090,21 @@ func amendFlightPlan(w *World, callsign string, amend func(fp *FlightPlan)) erro
 }
 
 func (sp *STARSPane) initializeFonts() {
-	sp.systemFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
-	sp.systemFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
-	sp.systemFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
-	sp.systemFont[3] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize3", Size: 16})
-	sp.systemFont[4] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize4", Size: 18})
-	sp.systemFont[5] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize5", Size: 19})
-	sp.systemOutlineFont[0] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 11})
-	sp.systemOutlineFont[1] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize1", Size: 12})
-	sp.systemOutlineFont[2] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize2", Size: 15})
-	sp.systemOutlineFont[3] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize3", Size: 16})
-	sp.systemOutlineFont[4] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize4", Size: 18})
-	sp.systemOutlineFont[5] = GetFont(FontIdentifier{Name: "sddCharOutlineFontSetBSize5", Size: 19})
-	sp.dcbFont[0] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
-	sp.dcbFont[1] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
-	sp.dcbFont[2] = GetFont(FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
+	sp.systemFont[0] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
+	sp.systemFont[1] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
+	sp.systemFont[2] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
+	sp.systemFont[3] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize3", Size: 16})
+	sp.systemFont[4] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize4", Size: 18})
+	sp.systemFont[5] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize5", Size: 19})
+	sp.systemOutlineFont[0] = GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 11})
+	sp.systemOutlineFont[1] = GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize1", Size: 12})
+	sp.systemOutlineFont[2] = GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize2", Size: 15})
+	sp.systemOutlineFont[3] = GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize3", Size: 16})
+	sp.systemOutlineFont[4] = GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize4", Size: 18})
+	sp.systemOutlineFont[5] = GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize5", Size: 19})
+	sp.dcbFont[0] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
+	sp.dcbFont[1] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
+	sp.dcbFont[2] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
 }
 
 func (sp *STARSPane) resetInputState() {

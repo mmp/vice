@@ -14,6 +14,7 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -23,13 +24,13 @@ import (
 type Pane interface {
 	Name() string
 
-	Activate(w *World, r Renderer, eventStream *EventStream)
+	Activate(w *World, r renderer.Renderer, eventStream *EventStream)
 	Deactivate()
 	ResetWorld(w *World)
 
 	CanTakeKeyboardFocus() bool
 
-	Draw(ctx *PaneContext, cb *CommandBuffer)
+	Draw(ctx *PaneContext, cb *renderer.CommandBuffer)
 }
 
 type PaneUIDrawer interface {
@@ -45,7 +46,7 @@ type PaneContext struct {
 	parentPaneExtent math.Extent2D
 
 	platform  Platform
-	renderer  Renderer
+	renderer  renderer.Renderer
 	world     *World
 	mouse     *MouseState
 	keyboard  *KeyboardState
@@ -227,7 +228,7 @@ func (k *KeyboardState) IsPressed(key Key) bool {
 	return ok
 }
 
-func (ctx *PaneContext) SetWindowCoordinateMatrices(cb *CommandBuffer) {
+func (ctx *PaneContext) SetWindowCoordinateMatrices(cb *renderer.CommandBuffer) {
 	w := float32(int(ctx.paneExtent.Width() + 0.5))
 	h := float32(int(ctx.paneExtent.Height() + 0.5))
 	cb.LoadProjectionMatrix(math.Identity3x3().Ortho(0, w, 0, h))
@@ -276,21 +277,21 @@ type EmptyPane struct {
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
-func (ep *EmptyPane) Activate(*World, Renderer, *EventStream) {}
-func (ep *EmptyPane) Deactivate()                             {}
-func (ep *EmptyPane) ResetWorld(w *World)                     {}
-func (ep *EmptyPane) CanTakeKeyboardFocus() bool              { return false }
+func (ep *EmptyPane) Activate(*World, renderer.Renderer, *EventStream) {}
+func (ep *EmptyPane) Deactivate()                                      {}
+func (ep *EmptyPane) ResetWorld(w *World)                              {}
+func (ep *EmptyPane) CanTakeKeyboardFocus() bool                       { return false }
 
 func (ep *EmptyPane) Name() string { return "(Empty)" }
 
-func (ep *EmptyPane) Draw(ctx *PaneContext, cb *CommandBuffer) {}
+func (ep *EmptyPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {}
 
 ///////////////////////////////////////////////////////////////////////////
 // FlightStripPane
 
 type FlightStripPane struct {
 	FontSize int
-	font     *Font
+	font     *renderer.Font
 
 	HideFlightStrips          bool
 	AutoAddDepartures         bool
@@ -326,11 +327,11 @@ func NewFlightStripPane() *FlightStripPane {
 	}
 }
 
-func (fsp *FlightStripPane) Activate(w *World, r Renderer, eventStream *EventStream) {
+func (fsp *FlightStripPane) Activate(w *World, r renderer.Renderer, eventStream *EventStream) {
 	if fsp.FontSize == 0 {
 		fsp.FontSize = 12
 	}
-	if fsp.font = GetFont(FontIdentifier{Name: "Flight Strip Printer", Size: fsp.FontSize}); fsp.font == nil {
+	if fsp.font = GetFont(renderer.FontIdentifier{Name: "Flight Strip Printer", Size: fsp.FontSize}); fsp.font == nil {
 		fsp.font = GetDefaultFont()
 	}
 	if fsp.addedAircraft == nil {
@@ -477,22 +478,22 @@ func (fsp *FlightStripPane) DrawUI() {
 
 	imgui.Checkbox("Collect departures and arrivals together", &fsp.CollectDeparturesArrivals)
 
-	id := FontIdentifier{Name: fsp.font.id.Name, Size: fsp.FontSize}
+	id := renderer.FontIdentifier{Name: fsp.font.Id.Name, Size: fsp.FontSize}
 	if newFont, changed := DrawFontSizeSelector(&id); changed {
-		fsp.FontSize = newFont.size
+		fsp.FontSize = newFont.Size
 		fsp.font = newFont
 	}
 	uiEndDisable(fsp.HideFlightStrips)
 }
 
-func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
+func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	fsp.processEvents(ctx.world)
 
 	// Font width and height
 	// the 'Flight Strip Printer' font seems to have an unusually thin space,
 	// so instead use 'X' to get the expected per-character width for layout.
 	bx, _ := fsp.font.BoundText("X", 0)
-	fw, fh := float32(bx), float32(fsp.font.size)
+	fw, fh := float32(bx), float32(fsp.font.Size)
 
 	ctx.SetWindowCoordinateMatrices(cb)
 
@@ -534,12 +535,12 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		fsp.selectedStrip = len(fsp.strips) - 1
 	}
 
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
-	ld := GetLinesDrawBuilder()
-	defer ReturnLinesDrawBuilder(ld)
-	trid := GetTrianglesDrawBuilder()
-	defer ReturnTrianglesDrawBuilder(trid)
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+	trid := renderer.GetTrianglesDrawBuilder()
+	defer renderer.ReturnTrianglesDrawBuilder(trid)
 
 	// Draw from the bottom
 	scrollOffset := fsp.scrollbar.Offset()
@@ -554,18 +555,18 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		}
 		fp := ac.FlightPlan
 
-		style := TextStyle{Font: fsp.font, Color: RGB{.1, .1, .1}}
+		style := renderer.TextStyle{Font: fsp.font, Color: renderer.RGB{.1, .1, .1}}
 
 		// Draw background quad for this flight strip
-		qb := GetColoredTrianglesDrawBuilder()
-		defer ReturnColoredTrianglesDrawBuilder(qb)
-		bgColor := func() RGB {
+		qb := renderer.GetColoredTrianglesDrawBuilder()
+		defer renderer.ReturnColoredTrianglesDrawBuilder(qb)
+		bgColor := func() renderer.RGB {
 			/*if fsp.isDeparture(ac) {
 				return ctx.cs.DepartureStrip
 			} else {
 				return ctx.cs.ArrivalStrip
 			}*/
-			return RGB{.9, .9, .85}
+			return renderer.RGB{.9, .9, .85}
 		}()
 		y0, y1 := y+1+vpad-stripHeight, y+1+vpad
 		qb.AddQuad([2]float32{0, y0}, [2]float32{drawWidth, y0}, [2]float32{drawWidth, y1}, [2]float32{0, y1}, bgColor)
@@ -643,7 +644,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				// If were currently editing this annotation, don't draw it
 				// normally but instead draw it including a cursor, update
 				// it according to keyboard input, etc.
-				cursorStyle := TextStyle{Font: fsp.font, Color: bgColor,
+				cursorStyle := renderer.TextStyle{Font: fsp.font, Color: bgColor,
 					DrawBackground: true, BackgroundColor: style.Color}
 				editResult, _ = uiDrawTextEdit(&strip.Annotations[fsp.selectedAnnotation], &fsp.annotationCursorPos,
 					ctx.keyboard, [2]float32{xp, yp}, style, cursorStyle, cb)
@@ -790,7 +791,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	fsp.scrollbar.Draw(ctx, cb)
 
 	cb.SetRGB(UIControlColor)
-	cb.LineWidth(1)
+	cb.LineWidth(1, platform.DPIScale())
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 
@@ -814,8 +815,8 @@ type CLIInput struct {
 }
 
 type MessagesPane struct {
-	FontIdentifier FontIdentifier
-	font           *Font
+	FontIdentifier renderer.FontIdentifier
+	font           *renderer.Font
 	scrollbar      *ScrollBar
 	events         *EventsSubscription
 	messages       []Message
@@ -829,16 +830,16 @@ type MessagesPane struct {
 
 func NewMessagesPane() *MessagesPane {
 	return &MessagesPane{
-		FontIdentifier: FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 16},
+		FontIdentifier: renderer.FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 16},
 	}
 }
 
 func (mp *MessagesPane) Name() string { return "Messages" }
 
-func (mp *MessagesPane) Activate(w *World, r Renderer, eventStream *EventStream) {
+func (mp *MessagesPane) Activate(w *World, r renderer.Renderer, eventStream *EventStream) {
 	if mp.font = GetFont(mp.FontIdentifier); mp.font == nil {
 		mp.font = GetDefaultFont()
-		mp.FontIdentifier = mp.font.id
+		mp.FontIdentifier = mp.font.Id
 	}
 	if mp.scrollbar == nil {
 		mp.scrollbar = NewVerticalScrollBar(4, true)
@@ -863,7 +864,7 @@ func (mp *MessagesPane) DrawUI() {
 	}
 }
 
-func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
+func (mp *MessagesPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	mp.processEvents(ctx.world)
 
 	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
@@ -872,7 +873,7 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	mp.processKeyboard(ctx)
 
 	nLines := len(mp.messages) + 1 /* prompt */
-	lineHeight := float32(mp.font.size + 1)
+	lineHeight := float32(mp.font.Size + 1)
 	visibleLines := int(ctx.paneExtent.Height() / lineHeight)
 	mp.scrollbar.Update(nLines, visibleLines, ctx)
 
@@ -881,8 +882,8 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		drawWidth -= float32(mp.scrollbar.PixelExtent())
 	}
 
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
 
 	indent := float32(2)
 
@@ -890,9 +891,9 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	y := lineHeight
 
 	// Draw the prompt and any input text
-	cliStyle := TextStyle{Font: mp.font, Color: RGB{1, 1, .2}}
-	cursorStyle := TextStyle{Font: mp.font, LineSpacing: 0,
-		Color: RGB{1, 1, .2}, DrawBackground: true, BackgroundColor: RGB{1, 1, 1}}
+	cliStyle := renderer.TextStyle{Font: mp.font, Color: renderer.RGB{1, 1, .2}}
+	cursorStyle := renderer.TextStyle{Font: mp.font, LineSpacing: 0,
+		Color: renderer.RGB{1, 1, .2}, DrawBackground: true, BackgroundColor: renderer.RGB{1, 1, 1}}
 	ci := mp.input
 
 	prompt := "> "
@@ -902,13 +903,13 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	} else if ci.cursor == len(ci.cmd) {
 		// cursor at the end
 		td.AddTextMulti([]string{prompt + string(ci.cmd), " "}, [2]float32{indent, y},
-			[]TextStyle{cliStyle, cursorStyle})
+			[]renderer.TextStyle{cliStyle, cursorStyle})
 	} else {
 		// cursor in the middle
 		sb := prompt + ci.cmd[:ci.cursor]
 		sc := ci.cmd[ci.cursor : ci.cursor+1]
 		se := ci.cmd[ci.cursor+1:]
-		styles := []TextStyle{cliStyle, cursorStyle, cliStyle}
+		styles := []renderer.TextStyle{cliStyle, cursorStyle, cliStyle}
 		td.AddTextMulti([]string{sb, sc, se}, [2]float32{indent, y}, styles)
 	}
 	y += lineHeight
@@ -917,7 +918,7 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		// TODO? wrap text
 		msg := mp.messages[len(mp.messages)-1-i]
 
-		s := TextStyle{Font: mp.font, Color: msg.Color()}
+		s := renderer.TextStyle{Font: mp.font, Color: msg.Color()}
 		td.AddText(msg.contents, [2]float32{indent, y}, s)
 		y += lineHeight
 	}
@@ -925,12 +926,12 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	ctx.SetWindowCoordinateMatrices(cb)
 	if ctx.haveFocus {
 		// Yellow border around the edges
-		ld := GetLinesDrawBuilder()
-		defer ReturnLinesDrawBuilder(ld)
+		ld := renderer.GetLinesDrawBuilder()
+		defer renderer.ReturnLinesDrawBuilder(ld)
 
 		w, h := ctx.paneExtent.Width(), ctx.paneExtent.Height()
 		ld.AddLineLoop([][2]float32{{0, 0}, {w, 0}, {w, h}, {0, h}})
-		cb.SetRGB(RGB{1, 1, 0}) // yellow
+		cb.SetRGB(renderer.RGB{1, 1, 0}) // yellow
 		ld.GenerateCommands(cb)
 	}
 	mp.scrollbar.Draw(ctx, cb)
@@ -1022,14 +1023,14 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 	}
 }
 
-func (msg *Message) Color() RGB {
+func (msg *Message) Color() renderer.RGB {
 	switch {
 	case msg.error:
-		return RGB{.9, .1, .1}
+		return renderer.RGB{.9, .1, .1}
 	case msg.global:
-		return RGB{0.012, 0.78, 0.016}
+		return renderer.RGB{0.012, 0.78, 0.016}
 	default:
-		return RGB{1, 1, 1}
+		return renderer.RGB{1, 1, 1}
 	}
 }
 

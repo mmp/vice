@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -1206,20 +1207,20 @@ func (w *World) DrawScenarioInfoWindow() {
 	imgui.End()
 }
 
-func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, color RGB,
-	cb *CommandBuffer) {
+func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *renderer.Font, color renderer.RGB,
+	cb *renderer.CommandBuffer) {
 	if !w.showScenarioInfo {
 		return
 	}
 
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
-	ld := GetLinesDrawBuilder()
-	defer ReturnLinesDrawBuilder(ld)
-	pd := GetTrianglesDrawBuilder() // for circles
-	defer ReturnTrianglesDrawBuilder(pd)
-	ldr := GetLinesDrawBuilder() // for restrictions--in window coords...
-	defer ReturnLinesDrawBuilder(ldr)
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+	pd := renderer.GetTrianglesDrawBuilder() // for circles
+	defer renderer.ReturnTrianglesDrawBuilder(pd)
+	ldr := renderer.GetLinesDrawBuilder() // for restrictions--in window coords...
+	defer renderer.ReturnLinesDrawBuilder(ldr)
 
 	// Track which waypoints have been drawn so that we don't repeatedly
 	// draw the same one.  (This is especially important since the
@@ -1227,7 +1228,7 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 	// which may be different for different uses of the waypoint...)
 	drawnWaypoints := make(map[string]interface{})
 
-	style := TextStyle{
+	style := renderer.TextStyle{
 		Font:           font,
 		Color:          color,
 		DrawBackground: true}
@@ -1314,18 +1315,18 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 	// drawn.
 	cb.SetRGB(color)
 	transforms.LoadLatLongViewingMatrices(cb)
-	cb.LineWidth(2)
+	cb.LineWidth(2, platform.DPIScale())
 	ld.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
 	pd.GenerateCommands(cb)
 	td.GenerateCommands(cb)
-	cb.LineWidth(1)
+	cb.LineWidth(1, platform.DPIScale())
 	ldr.GenerateCommands(cb)
 }
 
 // pt should return nm-based coordinates
-func calculateOffset(font *Font, pt func(int) ([2]float32, bool)) [2]float32 {
+func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]float32 {
 	prev, pok := pt(-1)
 	cur, _ := pt(0)
 	next, nok := pt(1)
@@ -1362,14 +1363,14 @@ func calculateOffset(font *Font, pt func(int) ([2]float32, bool)) [2]float32 {
 	h := math.NormalizeHeading(math.Degrees(angle))
 	if (h >= 160 && h < 200) || (h >= 340 || h < 20) {
 		// Center(ish) the text if the line is more or less horizontal.
-		offset[0] -= 2.5 * float32(font.size)
+		offset[0] -= 2.5 * float32(font.Size)
 	}
 	return offset
 }
 
 func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]interface{},
-	transforms ScopeTransformations, td *TextDrawBuilder, style TextStyle,
-	ld *LinesDrawBuilder, pd *TrianglesDrawBuilder, ldr *LinesDrawBuilder) {
+	transforms ScopeTransformations, td *renderer.TextDrawBuilder, style renderer.TextStyle,
+	ld *renderer.LinesDrawBuilder, pd *renderer.TrianglesDrawBuilder, ldr *renderer.LinesDrawBuilder) {
 
 	// Draw an arrow at the point p (in nm coordinates) pointing in the
 	// direction given by the angle a.
@@ -1591,7 +1592,7 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 		}
 
 		if wp.Speed != 0 || wp.AltitudeRestriction != nil {
-			p[1] -= 0.25 * float32(style.Font.size) // extra space for lines above if needed
+			p[1] -= 0.25 * float32(style.Font.Size) // extra space for lines above if needed
 
 			if ar := wp.AltitudeRestriction; ar != nil {
 				pt := p       // draw position for text
@@ -1600,13 +1601,13 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 					// Upper altitude
 					pp := td.AddText(FormatAltitude(ar.Range[1]), pt, style)
 					w = pp[0] - pt[0]
-					pt[1] -= float32(style.Font.size)
+					pt[1] -= float32(style.Font.Size)
 				}
 				if ar.Range[0] != 0 && ar.Range[0] != ar.Range[1] {
 					// Lower altitude, if present and different than upper.
 					pp := td.AddText(FormatAltitude(ar.Range[0]), pt, style)
 					w = math.Max(w, pp[0]-pt[0])
-					pt[1] -= float32(style.Font.size)
+					pt[1] -= float32(style.Font.Size)
 				}
 
 				// Now that we have w, we can draw lines the specify the
@@ -1630,7 +1631,7 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 			if wp.Speed != 0 {
 				p0 := p
 				p1 := td.AddText(fmt.Sprintf("%dK", wp.Speed), p, style)
-				p1[1] -= float32(style.Font.size)
+				p1[1] -= float32(style.Font.Size)
 
 				// All speed restrictions are currently 'at'...
 				ldr.AddLine([2]float32{p0[0], p0[1] + 2}, [2]float32{p1[0], p0[1] + 2})
@@ -1665,7 +1666,7 @@ func (w *World) DrawSettingsWindow() {
 		for _, size := range util.SortedMapKeys(sizes) {
 			if imgui.SelectableV(strconv.Itoa(size), size == globalConfig.UIFontSize, 0, imgui.Vec2{}) {
 				globalConfig.UIFontSize = size
-				ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
+				ui.font = GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
 			}
 		}
 		imgui.EndCombo()

@@ -18,6 +18,7 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/renderer"
 )
 
 var (
@@ -71,16 +72,16 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 	return &SplitLine{}
 }
 
-func (s *SplitLine) Activate(*World, Renderer, *EventStream) {}
-func (s *SplitLine) Deactivate()                             {}
-func (s *SplitLine) ResetWorld(w *World)                     {}
-func (s *SplitLine) CanTakeKeyboardFocus() bool              { return false }
+func (s *SplitLine) Activate(*World, renderer.Renderer, *EventStream) {}
+func (s *SplitLine) Deactivate()                                      {}
+func (s *SplitLine) ResetWorld(w *World)                              {}
+func (s *SplitLine) CanTakeKeyboardFocus() bool                       { return false }
 
 func (s *SplitLine) Name() string {
 	return "Split Line"
 }
 
-func (s *SplitLine) Draw(ctx *PaneContext, cb *CommandBuffer) {
+func (s *SplitLine) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	if ctx.mouse != nil {
 		if s.Axis == SplitAxisX {
 			ctx.mouse.SetCursor(imgui.MouseCursorResizeEW)
@@ -436,7 +437,7 @@ func wmPaneIsPresent(pane Pane, root *DisplayNode) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
+func wmDrawPanes(p Platform, r renderer.Renderer, w *World, stats *Stats) {
 	var filter func(d *DisplayNode) *DisplayNode
 	filter = func(d *DisplayNode) *DisplayNode {
 		if fsp, ok := d.Children[0].Pane.(*FlightStripPane); ok && fsp.HideFlightStrips {
@@ -502,12 +503,12 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 	imgui.SetMouseCursor(imgui.MouseCursorArrow)
 
 	// All of the Panes' draw commands will be added to commandBuffer.
-	commandBuffer := GetCommandBuffer()
-	defer ReturnCommandBuffer(commandBuffer)
+	commandBuffer := renderer.GetCommandBuffer()
+	defer renderer.ReturnCommandBuffer(commandBuffer)
 
 	// Now traverse all of the Panes...
 	// First clear the entire window to the background color.
-	commandBuffer.ClearRGB(RGB{})
+	commandBuffer.ClearRGB(renderer.RGB{})
 
 	// Actually visit the panes.
 	var keyboard *KeyboardState
@@ -546,7 +547,7 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 			// Pane coordinates, independent of where it is actually
 			// placed in the overall window, but this also ensures that
 			// the Pane can't inadvertently draw over other Panes.
-			commandBuffer.SetDrawBounds(paneExtent)
+			commandBuffer.SetDrawBounds(paneExtent, platform.FramebufferSize()[1]/platform.DisplaySize()[1])
 
 			// Let the Pane do its thing
 			pane.Draw(&ctx, commandBuffer)

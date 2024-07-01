@@ -25,6 +25,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/klauspost/compress/zstd"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -1347,8 +1348,8 @@ func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
 	}
 }
 
-func (a *AirspaceVolume) GenerateDrawCommands(cb *CommandBuffer, nmPerLongitude float32) {
-	ld := GetLinesDrawBuilder()
+func (a *AirspaceVolume) GenerateDrawCommands(cb *renderer.CommandBuffer, nmPerLongitude float32) {
+	ld := renderer.GetLinesDrawBuilder()
 
 	switch a.Type {
 	case AirspaceVolumePolygon:
@@ -1364,7 +1365,7 @@ func (a *AirspaceVolume) GenerateDrawCommands(cb *CommandBuffer, nmPerLongitude 
 	}
 
 	ld.GenerateCommands(cb)
-	ReturnLinesDrawBuilder(ld)
+	renderer.ReturnLinesDrawBuilder(ld)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -2442,7 +2443,7 @@ func (ml *VideoMapLibrary) loadVideoMap(f io.ReadCloser, filename string, refere
 				panic(fmt.Sprintf("%s: map \"%s\" not found in manifest file", filename, sm.Name))
 			}
 
-			ld := GetLinesDrawBuilder()
+			ld := renderer.GetLinesDrawBuilder()
 			for _, lines := range sm.Lines {
 				// Slightly annoying: the line vertices are stored with
 				// Point2LLs but AddLineStrip() expects [2]float32s.

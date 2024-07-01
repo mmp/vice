@@ -23,6 +23,7 @@ import (
 
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/mmp/imgui-go/v4"
@@ -31,9 +32,9 @@ import (
 
 var (
 	ui struct {
-		font           *Font
-		aboutFont      *Font
-		aboutFontSmall *Font
+		font           *renderer.Font
+		aboutFont      *renderer.Font
+		aboutFontSmall *renderer.Font
 
 		eventsSubscription *EventsSubscription
 
@@ -222,11 +223,11 @@ var (
 	}
 )
 
-var UIControlColor RGB = RGB{R: 0.2754237, G: 0.2754237, B: 0.2754237}
-var UICautionColor RGB = RGBFromHex(0xB7B513)
-var UITextColor RGB = RGB{R: 0.85, G: 0.85, B: 0.85}
-var UITextHighlightColor RGB = RGBFromHex(0xB2B338)
-var UIErrorColor RGB = RGBFromHex(0xE94242)
+var UIControlColor renderer.RGB = renderer.RGB{R: 0.2754237, G: 0.2754237, B: 0.2754237}
+var UICautionColor renderer.RGB = renderer.RGBFromHex(0xB7B513)
+var UITextColor renderer.RGB = renderer.RGB{R: 0.85, G: 0.85, B: 0.85}
+var UITextHighlightColor renderer.RGB = renderer.RGBFromHex(0xB2B338)
+var UIErrorColor renderer.RGB = renderer.RGBFromHex(0xE94242)
 
 func imguiInit() *imgui.Context {
 	context := imgui.CreateContext(nil)
@@ -243,14 +244,14 @@ func imguiInit() *imgui.Context {
 	return context
 }
 
-func uiInit(r Renderer, p Platform, es *EventStream) {
+func uiInit(r renderer.Renderer, p Platform, es *EventStream) {
 	if runtime.GOOS == "windows" {
 		imgui.CurrentStyle().ScaleAllSizes(p.DPIScale())
 	}
 
-	ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
-	ui.aboutFont = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 18})
-	ui.aboutFontSmall = GetFont(FontIdentifier{Name: "Roboto Regular", Size: 14})
+	ui.font = GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
+	ui.aboutFont = GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: 18})
+	ui.aboutFontSmall = GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: 14})
 	ui.eventsSubscription = es.Subscribe()
 
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
@@ -319,7 +320,7 @@ func uiEndDisable(b bool) {
 	}
 }
 
-func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *Stats) {
+func drawUI(p Platform, r renderer.Renderer, w *World, eventStream *EventStream, stats *Stats) {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -334,7 +335,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 		}
 	}
 
-	imgui.PushFont(ui.font.ifont)
+	imgui.PushFont(ui.font.Ifont)
 	if imgui.BeginMainMenuBar() {
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
 
@@ -465,9 +466,9 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 
 	// Finalize and submit the imgui draw lists
 	imgui.Render()
-	cb := GetCommandBuffer()
-	defer ReturnCommandBuffer(cb)
-	GenerateImguiCommandBuffer(cb)
+	cb := renderer.GetCommandBuffer()
+	defer renderer.ReturnCommandBuffer(cb)
+	renderer.GenerateImguiCommandBuffer(cb, platform.DisplaySize(), platform.FramebufferSize(), lg)
 	stats.renderUI = r.RenderCommandBuffer(cb)
 }
 
@@ -540,12 +541,12 @@ func DrawComboBox(state *ComboBoxState, config ComboBoxDisplayConfig,
 	sz := config.Size
 	if config.FixedDisplayed != 0 {
 		flags = flags | imgui.TableFlagsScrollY
-		sz.Y = float32(config.FixedDisplayed * (4 + ui.font.size))
+		sz.Y = float32(config.FixedDisplayed * (4 + ui.font.Size))
 	} else if config.MaxDisplayed == 0 || len(firstColumn) < config.MaxDisplayed {
 		sz.Y = 0
 	} else {
 		flags = flags | imgui.TableFlagsScrollY
-		sz.Y = float32((1 + config.MaxDisplayed) * (6 + ui.font.size))
+		sz.Y = float32((1 + config.MaxDisplayed) * (6 + ui.font.Size))
 	}
 
 	sz.X *= util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
@@ -1097,7 +1098,7 @@ func showAboutDialog() {
 		imgui.Text(s)
 	}
 
-	imgui.PushFont(ui.aboutFont.ifont)
+	imgui.PushFont(ui.aboutFont.Ifont)
 	center("vice")
 	center(FontAwesomeIconCopyright + "2023 Matt Pharr")
 	center("Licensed under the GPL, Version 3")
@@ -1113,7 +1114,7 @@ func showAboutDialog() {
 
 	imgui.Separator()
 
-	imgui.PushFont(ui.aboutFontSmall.ifont)
+	imgui.PushFont(ui.aboutFontSmall.Ifont)
 	// We would very much like to use imgui.{Push,Pop}TextWrapPos()
 	// here, but for unclear reasons that makes the info window
 	// vertically maximized. So we hand-wrap the lines for the
@@ -1411,7 +1412,7 @@ func ShowErrorDialog(s string, args ...interface{}) {
 	lg.Errorf(s, args...)
 }
 
-func ShowFatalErrorDialog(r Renderer, p Platform, s string, args ...interface{}) {
+func ShowFatalErrorDialog(r renderer.Renderer, p Platform, s string, args ...interface{}) {
 	lg.Errorf(s, args...)
 
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
@@ -1420,13 +1421,14 @@ func ShowFatalErrorDialog(r Renderer, p Platform, s string, args ...interface{})
 		p.ProcessEvents()
 		p.NewFrame()
 		imgui.NewFrame()
-		imgui.PushFont(ui.font.ifont)
+		imgui.PushFont(ui.font.Ifont)
 		d.Draw()
 		imgui.PopFont()
 
 		imgui.Render()
-		var cb CommandBuffer
-		GenerateImguiCommandBuffer(&cb)
+		var cb renderer.CommandBuffer
+		renderer.GenerateImguiCommandBuffer(&cb, platform.DisplaySize(),
+			platform.FramebufferSize(), lg)
 		r.RenderCommandBuffer(&cb)
 
 		p.PostRender()
@@ -1516,7 +1518,7 @@ func (sb *ScrollBar) Visible() bool {
 
 // Draw emits the drawing commands for the scrollbar into the provided
 // CommandBuffer.
-func (sb *ScrollBar) Draw(ctx *PaneContext, cb *CommandBuffer) {
+func (sb *ScrollBar) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	if !sb.Visible() {
 		return
 	}
@@ -1528,8 +1530,8 @@ func (sb *ScrollBar) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		v0, v1 = 1-v0, 1-v1
 	}
 
-	quad := GetColoredTrianglesDrawBuilder()
-	defer ReturnColoredTrianglesDrawBuilder(quad)
+	quad := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(quad)
 
 	const edgeSpace = 2
 	pw, ph := ctx.paneExtent.Width(), ctx.paneExtent.Height()
@@ -1571,21 +1573,21 @@ const (
 // a string and cursor position and then renders them with the specified
 // style, processes keyboard inputs and updates the string accordingly.
 func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]float32, style,
-	cursorStyle TextStyle, cb *CommandBuffer) (exit int, posOut [2]float32) {
+	cursorStyle renderer.TextStyle, cb *renderer.CommandBuffer) (exit int, posOut [2]float32) {
 	// Make sure we can depend on it being sensible for the following
 	*cursor = math.Clamp(*cursor, 0, len(*s))
 	originalText := *s
 
 	// Draw the text and the cursor
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
 	if *cursor == len(*s) {
 		// cursor at the end
-		posOut = td.AddTextMulti([]string{*s, " "}, pos, []TextStyle{style, cursorStyle})
+		posOut = td.AddTextMulti([]string{*s, " "}, pos, []renderer.TextStyle{style, cursorStyle})
 	} else {
 		// cursor in the middle
 		sb, sc, se := (*s)[:*cursor], (*s)[*cursor:*cursor+1], (*s)[*cursor+1:]
-		styles := []TextStyle{style, cursorStyle, style}
+		styles := []renderer.TextStyle{style, cursorStyle, style}
 		posOut = td.AddTextMulti([]string{sb, sc, se}, pos, styles)
 	}
 	td.GenerateCommands(cb)
@@ -2049,8 +2051,8 @@ func uiDrawKeyboardWindow(w *World) {
 
 	imgui.Separator()
 
-	fixedFont := GetFont(FontIdentifier{Name: "Roboto Mono", Size: globalConfig.UIFontSize})
-	italicFont := GetFont(FontIdentifier{Name: "Roboto Mono Italic", Size: globalConfig.UIFontSize})
+	fixedFont := GetFont(renderer.FontIdentifier{Name: "Roboto Mono", Size: globalConfig.UIFontSize})
+	italicFont := GetFont(renderer.FontIdentifier{Name: "Roboto Mono Italic", Size: globalConfig.UIFontSize})
 
 	// Tighten up the line spacing
 	spc := style.ItemSpacing()
@@ -2173,16 +2175,16 @@ control positions in the controller list on the upper right side of the scope (u
 // necessary to denote the end of the old formatting. Thus, one may write
 // "*D_alt" to have "D" fixed-width and "alt" in italics; it is not
 // necessary to write "*D*_alt_".
-func uiDrawMarkedupText(regularFont *Font, fixedFont *Font, italicFont *Font, str string) {
+func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, italicFont *renderer.Font, str string) {
 	// regularFont is the default and starting point
-	imgui.PushFont(regularFont.ifont)
+	imgui.PushFont(regularFont.Ifont)
 
 	// textWidth approximates the width of the given string in pixels; it
 	// may slightly over-estimate the width, but that's fine since we use
 	// it to decide when to wrap lines of text.
 	textWidth := func(s string) float32 {
 		s = strings.Trim(s, `_*\`) // remove markup characters
-		imgui.PushFont(fixedFont.ifont)
+		imgui.PushFont(fixedFont.Ifont)
 		sz := imgui.CalcTextSize(s, false, 0)
 		imgui.PopFont()
 		return sz.X
@@ -2234,7 +2236,7 @@ func uiDrawMarkedupText(regularFont *Font, fixedFont *Font, italicFont *Font, st
 						imgui.PopFont()
 					}
 					fixed, italic = true, false
-					imgui.PushFont(fixedFont.ifont)
+					imgui.PushFont(fixedFont.Ifont)
 				}
 
 			case '_':
@@ -2249,7 +2251,7 @@ func uiDrawMarkedupText(regularFont *Font, fixedFont *Font, italicFont *Font, st
 						imgui.PopFont()
 					}
 					fixed, italic = false, true
-					imgui.PushFont(italicFont.ifont)
+					imgui.PushFont(italicFont.Ifont)
 				}
 
 			default:

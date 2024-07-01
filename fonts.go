@@ -15,15 +15,13 @@ import (
 	"unicode/utf8"
 	"unsafe"
 
+	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/util"
+
 	"github.com/mmp/IconFontCppHeaders"
 	"github.com/mmp/imgui-go/v4"
 	"github.com/nfnt/resize"
-)
-import (
-	gomath "math"
-
-	"github.com/mmp/vice/pkg/math"
-	"github.com/mmp/vice/pkg/util"
 )
 
 // imgui lets us to embed icons within regular fonts which makes it
@@ -70,7 +68,7 @@ var (
 
 var (
 	// All of the available fonts.
-	fonts map[FontIdentifier]*Font
+	fonts map[renderer.FontIdentifier]*renderer.Font
 
 	// This and the following faBrandsUsedIcons map are what drives
 	// determining which icons are copied into regular fonts; see
@@ -113,92 +111,6 @@ var (
 	}
 )
 
-// Each loaded (font,size) combination is represented by (surprise) a Font.
-type Font struct {
-	// Glyphs for the commonly-used ASCII range can be looked up using a
-	// directly-mapped array, for efficiency.
-	lowGlyphs [128]*Glyph
-	// The remaining glyphs (generally, the used FontAwesome icons, are
-	// stored in a map.
-	glyphs map[rune]*Glyph
-	// Font size
-	size  int
-	mono  bool
-	ifont imgui.Font // may be unset if the font isn't used with imgui (e.g. the STARS fonts)
-	id    FontIdentifier
-	texId uint32 // texture that holds the glyph texture atlas
-}
-
-// While the following could be found via the imgui.FontGlyph interface, cgo calls into C++ code are
-// slow, especially if we do ~10 of them for each character drawn. So we cache the information we need
-// to draw each one here.
-type Glyph struct {
-	// Vertex positions for the quad to draw
-	X0, Y0, X1, Y1 float32
-	// Texture coordinates in the font atlas
-	U0, V0, U1, V1 float32
-	// Distance to advance in x after the character.
-	AdvanceX float32
-	// Is it a visible character (i.e., not space, tab, CR, ...)
-	Visible bool
-}
-
-// FontIdentifier is used for looking up
-type FontIdentifier struct {
-	Name string
-	Size int
-}
-
-// Internal: lookup the glyph for a rune in imgui's font atlas and then
-// copy over the necessary information into our Glyph structure.
-func (f *Font) createGlyph(ch rune) *Glyph {
-	ig := f.ifont.FindGlyph(ch)
-	return &Glyph{X0: ig.X0(), Y0: ig.Y0(), X1: ig.X1(), Y1: ig.Y1(),
-		U0: ig.U0(), V0: ig.V0(), U1: ig.U1(), V1: ig.V1(),
-		AdvanceX: ig.AdvanceX(), Visible: ig.Visible()}
-}
-
-// LookupGlyph returns the Glyph for the specified rune.
-func (f *Font) LookupGlyph(ch rune) *Glyph {
-	if int(ch) < len(f.lowGlyphs) {
-		if g := f.lowGlyphs[ch]; g == nil {
-			g = f.createGlyph(ch)
-			f.lowGlyphs[ch] = g
-			return g
-		} else {
-			return g
-		}
-	} else if g, ok := f.glyphs[ch]; !ok {
-		g = f.createGlyph(ch)
-		f.glyphs[ch] = g
-		return g
-	} else {
-		return g
-	}
-}
-
-// Returns the bound of the specified text in the given font, assuming the
-// given pixel spacing between lines.
-func (font *Font) BoundText(s string, spacing int) (int, int) {
-	dy := font.size + spacing
-	py := dy
-	var px, xmax float32
-	for _, ch := range s {
-		if ch == '\n' {
-			px = 0
-			py += dy
-		} else {
-			glyph := font.LookupGlyph(ch)
-			px += glyph.AdvanceX
-			if px > xmax {
-				xmax = px
-			}
-		}
-	}
-
-	return int(gomath.Ceil(float64(xmax))), py
-}
-
 // From imgui-go:
 // unrealisticLargePointer is used to cast an arbitrary native pointer to a slice.
 // Its value is chosen to fit into a 32bit architecture, and still be large
@@ -209,9 +121,9 @@ func ptrToUint16Slice(p unsafe.Pointer) []uint16 {
 	return (*[unrealisticLargePointer / 2]uint16)(p)[:]
 }
 
-func fontsInit(r Renderer, platform Platform) {
+func fontsInit(r renderer.Renderer, platform Platform) {
 	lg.Info("Starting to initialize fonts")
-	fonts = make(map[FontIdentifier]*Font)
+	fonts = make(map[renderer.FontIdentifier]*renderer.Font)
 	io := imgui.CurrentIO()
 
 	// Given a map that specifies the icons used in an icon font, returns
@@ -269,14 +181,8 @@ func fontsInit(r Renderer, platform Platform) {
 			io.Fonts().AddFontFromMemoryTTFV(faTTF, .8*sp, config, faGlyphRange)
 			io.Fonts().AddFontFromMemoryTTFV(fabrTTF, .8*sp, config, faBrandsGlyphRange)
 
-			id := FontIdentifier{Name: name, Size: size}
-			fonts[id] = &Font{
-				glyphs: make(map[rune]*Glyph),
-				size:   int(sp),
-				mono:   mono,
-				ifont:  ifont,
-				id:     id,
-			}
+			id := renderer.FontIdentifier{Name: name, Size: size}
+			fonts[id] = renderer.MakeFont(int(sp), mono, id, &ifont)
 		}
 	}
 
@@ -301,7 +207,7 @@ func fontsInit(r Renderer, platform Platform) {
 	// Patch up the texture id after the atlas was created with the
 	// TextureDataRGBA32 call above.
 	for _, font := range fonts {
-		font.texId = atlasId
+		font.TexId = atlasId
 	}
 
 	// The STARS fonts are bitmaps and don't come in via TTF files so get
@@ -314,8 +220,8 @@ func fontsInit(r Renderer, platform Platform) {
 // GetAllFonts returns a FontIdentifier slice that gives identifiers for
 // all of the available fonts, sorted by font name and then within each
 // name, by font size.
-func GetAllFonts() []FontIdentifier {
-	var fs []FontIdentifier
+func GetAllFonts() []renderer.FontIdentifier {
+	var fs []renderer.FontIdentifier
 	for f := range fonts {
 		fs = append(fs, f)
 	}
@@ -330,7 +236,7 @@ func GetAllFonts() []FontIdentifier {
 	return fs
 }
 
-func DrawFontPicker(id *FontIdentifier, label string) (newFont *Font, changed bool) {
+func DrawFontPicker(id *renderer.FontIdentifier, label string) (newFont *renderer.Font, changed bool) {
 	f := GetAllFonts()
 	lastFontName := ""
 	if imgui.BeginComboV(label+fmt.Sprintf("##%p", id), id.Name, imgui.ComboFlagsHeightLarge) {
@@ -345,8 +251,8 @@ func DrawFontPicker(id *FontIdentifier, label string) (newFont *Font, changed bo
 			if font.Name != lastFontName {
 				lastFontName = font.Name
 				// Use the 14pt version of the font in the combo box.
-				displayFont := GetFont(FontIdentifier{Name: font.Name, Size: 14})
-				imgui.PushFont(displayFont.ifont)
+				displayFont := GetFont(renderer.FontIdentifier{Name: font.Name, Size: 14})
+				imgui.PushFont(displayFont.Ifont)
 				if imgui.SelectableV(font.Name, id.Name == font.Name, 0, imgui.Vec2{}) {
 					id.Name = font.Name
 					changed = true
@@ -366,7 +272,7 @@ func DrawFontPicker(id *FontIdentifier, label string) (newFont *Font, changed bo
 	return
 }
 
-func DrawFontSizeSelector(id *FontIdentifier) (newFont *Font, changed bool) {
+func DrawFontSizeSelector(id *renderer.FontIdentifier) (newFont *renderer.Font, changed bool) {
 	if imgui.BeginComboV(fmt.Sprintf("Font Size##%s", id.Name), strconv.Itoa(id.Size), imgui.ComboFlagsHeightLarge) {
 		for _, font := range GetAllFonts() {
 			if font.Name == id.Name {
@@ -382,7 +288,7 @@ func DrawFontSizeSelector(id *FontIdentifier) (newFont *Font, changed bool) {
 	return
 }
 
-func GetFont(id FontIdentifier) *Font {
+func GetFont(id renderer.FontIdentifier) *renderer.Font {
 	if font, ok := fonts[id]; ok {
 		return font
 	} else {
@@ -390,8 +296,8 @@ func GetFont(id FontIdentifier) *Font {
 	}
 }
 
-func GetDefaultFont() *Font {
-	return GetFont(FontIdentifier{Name: "Roboto Regular", Size: 14})
+func GetDefaultFont() *renderer.Font {
+	return GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: 14})
 }
 
 func FontAwesomeString(id string) string {
@@ -410,7 +316,7 @@ func FontAwesomeBrandsString(id string) string {
 	return s
 }
 
-func initializeSTARSFonts(r Renderer) {
+func initializeSTARSFonts(r renderer.Renderer) {
 	// See stars-fonts.go (which is automatically-generated) for the
 	// definition of starsFonts, which stores the bitmaps and additional
 	// information about the glyphs in the STARS fonts.
@@ -467,19 +373,19 @@ func initializeSTARSFonts(r Renderer) {
 
 	atlas := image.NewRGBA(image.Rectangle{Max: image.Point{X: res, Y: res}})
 
-	var newFonts []*Font
+	var newFonts []*renderer.Font
 
 	// Iterate over the fonts, create Font/Glyph objects for them, and copy
 	// their bitmaps into the atlas image.
 	x, y := 0, 0
 	for _, fontName := range util.SortedMapKeys(starsFonts) { // consistent order
 		sf := starsFonts[fontName]
-		f := &Font{
-			glyphs: make(map[rune]*Glyph),
-			size:   sf.Height,
-			mono:   true,
-			id:     FontIdentifier{Name: fontName, Size: util.Select(doublePixels, sf.Height/2, sf.Height)},
+		id := renderer.FontIdentifier{
+			Name: fontName,
+			Size: util.Select(doublePixels, sf.Height/2, sf.Height),
 		}
+
+		f := renderer.MakeFont(sf.Height, true /* mono */, id, nil)
 		newFonts = append(newFonts, f)
 
 		if y+sf.Height >= res {
@@ -515,14 +421,11 @@ func initializeSTARSFonts(r Renderer) {
 			sf.Width -= delta
 			sf.Height -= delta
 
-			f := &Font{
-				glyphs: make(map[rune]*Glyph),
-				size:   sf.Height,
-				mono:   true,
-				// The FontIdentifier is still w.r.t. the original font
-				// size, not the possibly-doubled size.
-				id: FontIdentifier{Name: fontName, Size: util.Select(doublePixels, sf.Height/2, sf.Height)},
+			id := renderer.FontIdentifier{
+				Name: fontName,
+				Size: util.Select(doublePixels, sf.Height/2, sf.Height),
 			}
+			f := renderer.MakeFont(sf.Height, true /* mono */, id, nil)
 			newFonts = append(newFonts, f)
 
 			for ch, glyph := range sf.Glyphs {
@@ -592,8 +495,8 @@ func initializeSTARSFonts(r Renderer) {
 
 	atlasId := r.CreateTextureFromImage(atlas, true /* nearest filter */)
 	for _, font := range newFonts {
-		font.texId = atlasId
-		fonts[font.id] = font // add them to the global table
+		font.TexId = atlasId
+		fonts[font.Id] = font // add them to the global table
 	}
 }
 
@@ -615,8 +518,8 @@ func (glyph STARSGlyph) rasterize(img *image.RGBA, dx, dy int) {
 	}
 }
 
-func (glyph STARSGlyph) addToFont(ch, x, y, res int, f *Font) {
-	g := &Glyph{
+func (glyph STARSGlyph) addToFont(ch, x, y, res int, f *renderer.Font) {
+	g := &renderer.Glyph{
 		X0:       0,
 		X1:       float32(glyph.Bounds[0]),
 		Y0:       0,
@@ -628,9 +531,5 @@ func (glyph STARSGlyph) addToFont(ch, x, y, res int, f *Font) {
 		AdvanceX: float32(glyph.StepX),
 		Visible:  true,
 	}
-	if ch < 128 {
-		f.lowGlyphs[ch] = g
-	} else {
-		f.glyphs[rune(ch)] = g
-	}
+	f.AddGlyph(ch, g)
 }

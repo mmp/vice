@@ -26,6 +26,7 @@ import (
 
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/apenwarr/fixconsole"
@@ -236,7 +237,7 @@ func main() {
 		remoteSimServerChan := TryConnectRemoteServer(*serverAddress)
 
 		var stats Stats
-		var renderer Renderer
+		var render renderer.Renderer
 
 		// Catch any panics so that we can put up a dialog box and hopefully
 		// get a bug report.
@@ -245,14 +246,14 @@ func main() {
 			defer func() {
 				if err := recover(); err != nil {
 					lg.Error("Caught panic!", slog.String("stack", string(debug.Stack())))
-					ShowFatalErrorDialog(renderer, platform,
+					ShowFatalErrorDialog(render, platform,
 						"Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
 							"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
 							"this bug can be fixed.\n\nError: %v", err)
 				}
 
 				// Clean up in backwards order from how things were created.
-				renderer.Dispose()
+				render.Dispose()
 				platform.Dispose()
 				context.Destroy()
 			}()
@@ -273,12 +274,12 @@ func main() {
 		}
 		imgui.CurrentIO().SetClipboard(platform.GetClipboard())
 
-		renderer, err = NewOpenGL2Renderer()
+		render, err = renderer.NewOpenGL2Renderer(lg)
 		if err != nil {
 			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 		}
 
-		fontsInit(renderer, platform)
+		fontsInit(render, platform)
 
 		newWorldChan = make(chan *World, 2)
 		var world *World
@@ -305,9 +306,9 @@ func main() {
 
 		wmInit()
 
-		uiInit(renderer, platform, eventStream)
+		uiInit(render, platform, eventStream)
 
-		globalConfig.Activate(world, renderer, eventStream)
+		globalConfig.Activate(world, render, eventStream)
 
 		if world == nil {
 			uiShowConnectDialog(false)
@@ -432,18 +433,18 @@ func main() {
 
 			// Generate and render vice draw lists
 			if world != nil {
-				wmDrawPanes(platform, renderer, world, &stats)
+				wmDrawPanes(platform, render, world, &stats)
 			} else {
-				commandBuffer := GetCommandBuffer()
-				commandBuffer.ClearRGB(RGB{})
-				stats.render = renderer.RenderCommandBuffer(commandBuffer)
-				ReturnCommandBuffer(commandBuffer)
+				commandBuffer := renderer.GetCommandBuffer()
+				commandBuffer.ClearRGB(renderer.RGB{})
+				stats.render = render.RenderCommandBuffer(commandBuffer)
+				renderer.ReturnCommandBuffer(commandBuffer)
 			}
 
 			timeMarker(&stats.drawPanes)
 
 			// Draw the user interface
-			drawUI(platform, renderer, world, eventStream, &stats)
+			drawUI(platform, render, world, eventStream, &stats)
 			timeMarker(&stats.drawImgui)
 
 			// Wait for vsync
@@ -458,7 +459,7 @@ func main() {
 			if platform.ShouldStop() && len(ui.activeModalDialogs) == 0 {
 				// Do this while we're still running the event loop.
 				saveSim := world != nil && world.simProxy.Client == localServer.RPCClient
-				globalConfig.SaveIfChanged(renderer, platform, world, saveSim)
+				globalConfig.SaveIfChanged(render, platform, world, saveSim)
 
 				if world != nil {
 					world.Disconnect()

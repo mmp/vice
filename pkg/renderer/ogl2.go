@@ -2,30 +2,35 @@
 // Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package renderer
 
 import (
 	"C"
 	"fmt"
 	"image"
 	"image/draw"
+	gomath "math"
 	"unsafe"
+
+	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/util"
 
 	"github.com/go-gl/gl/v2.1/gl"
 )
-import (
-	gomath "math"
 
-	"github.com/mmp/vice/pkg/util"
-)
+// Also available as a global, though only used by CommandBuffer
+var lg *log.Logger
 
 type OpenGL2Renderer struct {
+	lg              *log.Logger
 	createdTextures map[uint32]int
 }
 
 // NewOpenGL2Renderer creates an OpenGL context and creates a texture for the imgui fonts.
 // Thus, all font creation must be finished before the renderer is created.
-func NewOpenGL2Renderer() (Renderer, error) {
+func NewOpenGL2Renderer(l *log.Logger) (Renderer, error) {
+	lg = l
+
 	lg.Info("Starting OpenGL2Renderer initialization")
 	if err := gl.Init(); err != nil {
 		return nil, fmt.Errorf("failed to initialize OpenGL: %w", err)
@@ -36,6 +41,7 @@ func NewOpenGL2Renderer() (Renderer, error) {
 
 	lg.Info("Finished OpenGL2Renderer initialization")
 	return &OpenGL2Renderer{
+		lg:              lg,
 		createdTextures: make(map[uint32]int),
 	}, nil
 }
@@ -56,9 +62,9 @@ func (ogl2 *OpenGL2Renderer) createdTexture(texid uint32, bytes int) {
 	mb := float32(total) / (1024 * 1024)
 
 	if exists {
-		lg.Infof("Updated tex id %d: %d bytes -> %.2f MiB of textures total", texid, bytes, mb)
+		ogl2.lg.Infof("Updated tex id %d: %d bytes -> %.2f MiB of textures total", texid, bytes, mb)
 	} else {
-		lg.Infof("Created tex id %d: %d bytes -> %.2f MiB of textures total", texid, bytes, mb)
+		ogl2.lg.Infof("Created tex id %d: %d bytes -> %.2f MiB of textures total", texid, bytes, mb)
 	}
 }
 
@@ -283,7 +289,7 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 			stats.Merge(s2)
 
 		default:
-			lg.Error("unhandled command")
+			ogl2.lg.Error("unhandled command")
 		}
 	}
 

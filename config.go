@@ -15,6 +15,7 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -112,7 +113,7 @@ func (c *GlobalConfig) Save() error {
 	return c.Encode(f)
 }
 
-func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *World, saveSim bool) bool {
+func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform Platform, w *World, saveSim bool) bool {
 	gc.Sim = nil
 	gc.Callsign = ""
 	if saveSim {
@@ -222,7 +223,7 @@ func LoadOrMakeDefaultConfig() {
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }
 
-func (gc *GlobalConfig) Activate(w *World, r Renderer, eventStream *EventStream) {
+func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, eventStream *EventStream) {
 	// Upgrade old ones without a MessagesPane
 	if gc.DisplayRoot != nil {
 		haveMessages := false

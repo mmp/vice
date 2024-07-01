@@ -8,13 +8,15 @@ import (
 	"log/slog"
 	"runtime"
 	"time"
+
+	"github.com/mmp/vice/pkg/renderer"
 )
 
 // Stats collects a few statistics related to rendering and time spent in
 // various phases of the system.
 type Stats struct {
-	render    RendererStats
-	renderUI  RendererStats
+	render    renderer.RendererStats
+	renderUI  renderer.RendererStats
 	drawImgui time.Duration
 	drawPanes time.Duration
 	startTime time.Time

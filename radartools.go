@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -35,11 +36,11 @@ type WeatherRadar struct {
 	// reqChan and command buffers to draw each of the 6 weather levels are
 	// returned by cbChan.
 	reqChan chan math.Point2LL
-	cbChan  chan [NumWxLevels]CommandBuffer
+	cbChan  chan [NumWxLevels]renderer.CommandBuffer
 
 	// Texture id for each wx level's image.
 	texId [NumWxLevels]uint32
-	wxCb  [NumWxLevels]CommandBuffer
+	wxCb  [NumWxLevels]renderer.CommandBuffer
 }
 
 const NumWxLevels = 6
@@ -55,7 +56,7 @@ const WxLatLongExtent = 2.5
 // Activate must be called for the WeatherRadar to start fetching weather
 // radar images; it is called with an initial center position in
 // latitude-longitude coordinates.
-func (w *WeatherRadar) Activate(center math.Point2LL, r Renderer) {
+func (w *WeatherRadar) Activate(center math.Point2LL, r renderer.Renderer) {
 	if w.active {
 		w.reqChan <- center
 		return
@@ -64,7 +65,7 @@ func (w *WeatherRadar) Activate(center math.Point2LL, r Renderer) {
 
 	w.reqChan = make(chan math.Point2LL, 1000) // lots of buffering
 	w.reqChan <- center
-	w.cbChan = make(chan [NumWxLevels]CommandBuffer, 8)
+	w.cbChan = make(chan [NumWxLevels]renderer.CommandBuffer, 8)
 
 	if w.texId[0] == 0 {
 		// Create a small texture for each weather level
@@ -274,7 +275,7 @@ func invertRadarReflectivity(rgb [3]byte) float32 {
 // reqChan, fetching corresponding radar images from the NOAA, and sending
 // the results back on cbChan.  New images are also automatically
 // fetched periodically, with a wait time specified by the delay parameter.
-func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]CommandBuffer) {
+func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]renderer.CommandBuffer) {
 	// NOAA posts new maps every 2 minutes, so fetch a new map at minimum
 	// every 100s to stay current.
 	fetchRate := 100 * time.Second
@@ -354,7 +355,7 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]CommandBu
 	}
 }
 
-func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]CommandBuffer {
+func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]renderer.CommandBuffer {
 	// Convert the Image returned by png.Decode to a simple 8-bit RGBA image.
 	rgba := image.NewRGBA(img.Bounds())
 	draw.Draw(rgba, img.Bounds(), img, image.Point{}, draw.Over)
@@ -362,7 +363,7 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]C
 	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
 	if ny%WxBlockRes != 0 || nx%WxBlockRes != 0 {
 		lg.Errorf("invalid weather image resolution; must be multiple of WxBlockRes")
-		return [NumWxLevels]CommandBuffer{}
+		return [NumWxLevels]renderer.CommandBuffer{}
 	}
 	nby, nbx := ny/WxBlockRes, nx/WxBlockRes
 
@@ -388,9 +389,9 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]C
 	// Now generate the command buffer for each weather level.  We don't
 	// draw anything for level==0, so the indexing into cb is off by 1
 	// below.
-	var cb [NumWxLevels]CommandBuffer
-	tb := GetTexturedTrianglesDrawBuilder()
-	defer ReturnTexturedTrianglesDrawBuilder(tb)
+	var cb [NumWxLevels]renderer.CommandBuffer
+	tb := renderer.GetTexturedTrianglesDrawBuilder()
+	defer renderer.ReturnTexturedTrianglesDrawBuilder(tb)
 
 	for level := 1; level <= NumWxLevels; level++ {
 		tb.Reset()
@@ -440,7 +441,7 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]C
 // Draw draws the current weather radar image, if available. (If none is yet
 // available, it returns rather than stalling waiting for it).
 func (w *WeatherRadar) Draw(ctx *PaneContext, intensity float32, contrast float32,
-	active [NumWxLevels]bool, transforms ScopeTransformations, cb *CommandBuffer) {
+	active [NumWxLevels]bool, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	select {
 	case w.wxCb = <-w.cbChan:
 		// got updated command buffers, yaay.  Note that we always go ahead
@@ -452,7 +453,7 @@ func (w *WeatherRadar) Draw(ctx *PaneContext, intensity float32, contrast float3
 
 	if w.active {
 		transforms.LoadLatLongViewingMatrices(cb)
-		cb.SetRGBA(RGBA{1, 1, 1, intensity})
+		cb.SetRGBA(renderer.RGBA{1, 1, 1, intensity})
 		cb.Blend()
 		for i, wcb := range w.wxCb {
 			if active[i] {
@@ -474,17 +475,17 @@ func (w *WeatherRadar) Draw(ctx *PaneContext, intensity float32, contrast float3
 // rotation angle, if any.  Drawing commands are added to the provided
 // command buffer, which is assumed to have projection matrices set up for
 // drawing using window coordinates.
-func DrawCompass(p math.Point2LL, ctx *PaneContext, rotationAngle float32, font *Font, color RGB,
-	paneBounds math.Extent2D, transforms ScopeTransformations, cb *CommandBuffer) {
+func DrawCompass(p math.Point2LL, ctx *PaneContext, rotationAngle float32, font *renderer.Font, color renderer.RGB,
+	paneBounds math.Extent2D, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	// Window coordinates of the center point.
 	// TODO: should we explicitly handle the case of this being outside the window?
 	pw := transforms.WindowFromLatLongP(p)
 	bounds := math.Extent2D{P1: [2]float32{paneBounds.Width(), paneBounds.Height()}}
 
-	td := GetTextDrawBuilder()
-	defer ReturnTextDrawBuilder(td)
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	// Draw lines at a 5 degree spacing.
 	for h := float32(5); h <= 360; h += 5 {
@@ -542,7 +543,7 @@ func DrawCompass(p math.Point2LL, ctx *PaneContext, rotationAngle float32, font 
 				lg.Infof("Edge borkage! pEdge %+v, bounds %+v", pEdge, bounds)
 			}
 
-			td.AddText(string(label), pText, TextStyle{Font: font, Color: color})
+			td.AddText(string(label), pText, renderer.TextStyle{Font: font, Color: color})
 		}
 	}
 
@@ -553,13 +554,13 @@ func DrawCompass(p math.Point2LL, ctx *PaneContext, rotationAngle float32, font 
 
 // DrawRangeRings draws ten circles around the specified lat-long point in
 // steps of the specified radius (in nm).
-func DrawRangeRings(ctx *PaneContext, center math.Point2LL, radius float32, color RGB, transforms ScopeTransformations,
-	cb *CommandBuffer) {
+func DrawRangeRings(ctx *PaneContext, center math.Point2LL, radius float32, color renderer.RGB, transforms ScopeTransformations,
+	cb *renderer.CommandBuffer) {
 	pixelDistanceNm := transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
 	centerWindow := transforms.WindowFromLatLongP(center)
 
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	for i := 1; i < 40; i++ {
 		// Radius of this ring in pixels
@@ -620,7 +621,7 @@ func GetScopeTransformations(paneExtent math.Extent2D, magneticVariation float32
 // LoadLatLongViewingMatrices adds commands to the provided command buffer
 // to load viewing matrices so that latitude-longiture positions can be
 // provided for subsequent vertices.
-func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *CommandBuffer) {
+func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *renderer.CommandBuffer) {
 	cb.LoadProjectionMatrix(st.ndcFromLatLong)
 	cb.LoadModelViewMatrix(math.Identity3x3())
 }
@@ -628,7 +629,7 @@ func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *CommandBuffer) {
 // LoadWindowViewingMatrices adds commands to the provided command buffer
 // to load viewing matrices so that window-coordinate positions can be
 // provided for subsequent vertices.
-func (st *ScopeTransformations) LoadWindowViewingMatrices(cb *CommandBuffer) {
+func (st *ScopeTransformations) LoadWindowViewingMatrices(cb *renderer.CommandBuffer) {
 	cb.LoadProjectionMatrix(st.ndcFromWindow)
 	cb.LoadModelViewMatrix(math.Identity3x3())
 }
@@ -670,7 +671,7 @@ func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 
 
 // If the user has run the "find" command to highlight a point in the
 // world, draw a red circle around that point for a few seconds.
-func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) {
+func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	remaining := time.Until(globalConfig.highlightedLocationEndTime)
 	if remaining < 0 {
 		return
@@ -680,16 +681,16 @@ func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *Comm
 	fade := 1.5
 	if sec := remaining.Seconds(); sec < fade {
 		x := float32(sec / fade)
-		color = lerpRGB(x, RGB{}, color)
+		color = renderer.LerpRGB(x, renderer.RGB{}, color)
 	}
 
 	p := transforms.WindowFromLatLongP(globalConfig.highlightedLocation)
 	radius := float32(10) // 10 pixel radius
-	ld := GetColoredLinesDrawBuilder()
-	defer ReturnColoredLinesDrawBuilder(ld)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	ld.AddCircle(p, radius, 360, color)
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(3)
+	cb.LineWidth(3, platform.DPIScale())
 	ld.GenerateCommands(cb)
 }
