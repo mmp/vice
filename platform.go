@@ -9,13 +9,14 @@ package main
 
 import (
 	"fmt"
-	"math"
+	gomath "math"
 	"runtime"
 	"strconv"
 
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/mmp/imgui-go/v4"
+	"github.com/mmp/vice/pkg/math"
 )
 
 // Platform is the interface that abstracts platform-specific features like
@@ -62,7 +63,7 @@ type Platform interface {
 	GetClipboard() imgui.Clipboard
 	// Enables a mode where the mouse is constrained to be within the
 	// specified pixel extent, specified in window coordinates.
-	StartCaptureMouse(e Extent2D)
+	StartCaptureMouse(e math.Extent2D)
 	// Disable mouse capture.
 	EndCaptureMouse()
 	// Scaling factor to account for Retina-style displays
@@ -86,7 +87,7 @@ type GLFWPlatform struct {
 	lastMouseX, lastMouseY float64
 	multisample            bool
 	windowTitle            string
-	mouseCapture           Extent2D
+	mouseCapture           math.Extent2D
 }
 
 // NewGLFWPlatform returns a new instance of a GLFWPlatform with a window
@@ -302,7 +303,7 @@ func (g *GLFWPlatform) NewFrame() {
 		}
 		g.imguiIO.SetMousePosition(imgui.Vec2{X: xy32[0], Y: xy32[1]})
 	} else {
-		g.imguiIO.SetMousePosition(imgui.Vec2{X: -math.MaxFloat32, Y: -math.MaxFloat32})
+		g.imguiIO.SetMousePosition(imgui.Vec2{X: -gomath.MaxFloat32, Y: -gomath.MaxFloat32})
 	}
 
 	for i := 0; i < len(g.mouseJustPressed); i++ {
@@ -466,12 +467,12 @@ func (cb GLFWClipboard) SetText(text string) {
 	cb.window.SetClipboardString(text)
 }
 
-func (g *GLFWPlatform) StartCaptureMouse(e Extent2D) {
-	g.mouseCapture = Extent2D{
-		p0: [2]float32{ceil(e.p0[0]), ceil(e.p0[1])},
-		p1: [2]float32{floor(e.p1[0]), floor(e.p1[1])}}
+func (g *GLFWPlatform) StartCaptureMouse(e math.Extent2D) {
+	g.mouseCapture = math.Extent2D{
+		P0: [2]float32{math.Ceil(e.P0[0]), math.Ceil(e.P0[1])},
+		P1: [2]float32{math.Floor(e.P1[0]), math.Floor(e.P1[1])}}
 }
 
 func (g *GLFWPlatform) EndCaptureMouse() {
-	g.mouseCapture = Extent2D{}
+	g.mouseCapture = math.Extent2D{}
 }

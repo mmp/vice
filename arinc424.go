@@ -12,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/mmp/vice/pkg/math"
 )
 
 const ARINC424LineLength = 134 // 132 chars + \r + \n
@@ -69,8 +71,8 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 		}
 		return float32(deg) + float32(min)/60 + float32(sec)/100/3600
 	}
-	parseLatLong := func(lat, long []byte) Point2LL {
-		var p Point2LL
+	parseLatLong := func(lat, long []byte) math.Point2LL {
+		var p math.Point2LL
 
 		p[1] = parseLLDigits(lat[1:3], lat[3:5], lat[5:])
 		p[0] = parseLLDigits(long[1:4], long[4:6], long[6:])
@@ -444,7 +446,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 		case '-':
 			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{0, float32(alt0)}}
 		case 'B':
-			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(min(alt0, alt1)), float32(max(alt0, alt1))}}
+			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(math.Min(alt0, alt1)), float32(math.Max(alt0, alt1))}}
 		case 'G', 'I':
 			// glideslope alt in second, 'at' in first
 			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt0)}}

@@ -2,70 +2,13 @@
 // Copyright(c) 2023 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package math
 
 import (
 	"testing"
 
 	"github.com/mmp/vice/pkg/rand"
 )
-
-func TestArgmin(t *testing.T) {
-	if argmin(1) != 0 {
-		t.Errorf("argmin single failed: %d", argmin(1))
-	}
-	if argmin(1, 2) != 0 {
-		t.Errorf("argmin 1,2 failed: %d", argmin(1, 2))
-	}
-	if argmin(2, 1) != 1 {
-		t.Errorf("argmin 2,1 failed: %d", argmin(2, 1))
-	}
-	if argmin(1, -3, 1, 10) != 1 {
-		t.Errorf("argmin 1,-3,1,10 failed: %d", argmin(1, -3, 1, 10))
-	}
-}
-
-func TestCompass(t *testing.T) {
-	type ch struct {
-		h     float32
-		dir   string
-		short string
-		hour  int
-	}
-
-	for _, c := range []ch{ch{0, "North", "N", 12}, ch{22, "North", "N", 1}, ch{338, "North", "N", 11},
-		ch{337, "Northwest", "NW", 11}, ch{95, "East", "E", 3}, ch{47, "Northeast", "NE", 2},
-		ch{140, "Southeast", "SE", 5}, ch{170, "South", "S", 6}, ch{205, "Southwest", "SW", 7},
-		ch{260, "West", "W", 9}} {
-		if compass(c.h) != c.dir {
-			t.Errorf("compass gave %s for %f; expected %s", compass(c.h), c.h, c.dir)
-		}
-		if shortCompass(c.h) != c.short {
-			t.Errorf("shortCompass gave %s for %f; expected %s", shortCompass(c.h), c.h, c.short)
-		}
-		if headingAsHour(c.h) != c.hour {
-			t.Errorf("headingAsHour gave %d for %f; expected %d", headingAsHour(c.h), c.h, c.hour)
-		}
-	}
-}
-
-func TestHeadingDifference(t *testing.T) {
-	type hd struct {
-		a, b, d float32
-	}
-
-	for _, h := range []hd{hd{10, 90, 80}, hd{350, 12, 22}, hd{340, 120, 140}, hd{-90, 80, 170},
-		hd{40, 181, 141}, hd{-170, 160, 30}, hd{-120, -150, 30}} {
-		if headingDifference(h.a, h.b) != h.d {
-			t.Errorf("headingDifference(%f, %f) -> %f, expected %f", h.a, h.b,
-				headingDifference(h.a, h.b), h.d)
-		}
-		if headingDifference(h.b, h.a) != h.d {
-			t.Errorf("headingDifference(%f, %f) -> %f, expected %f", h.b, h.a,
-				headingDifference(h.b, h.a), h.d)
-		}
-	}
-}
 
 func TestParseLatLong(t *testing.T) {
 	type LL struct {
@@ -99,59 +42,6 @@ func TestParseLatLong(t *testing.T) {
 	} {
 		if _, err := ParseLatLong([]byte(invalid)); err == nil {
 			t.Errorf("%s: no error was returned for invalid latlong string!", invalid)
-		}
-	}
-}
-
-func TestSampleFiltered(t *testing.T) {
-	if rand.SampleFiltered([]int{}, func(int) bool { return true }) != -1 {
-		t.Errorf("Returned non-zero for empty slice")
-	}
-	if rand.SampleFiltered([]int{0, 1, 2, 3, 4}, func(int) bool { return false }) != -1 {
-		t.Errorf("Returned non-zero for fully filtered")
-	}
-	if idx := rand.SampleFiltered([]int{0, 1, 2, 3, 4}, func(v int) bool { return v == 3 }); idx != 3 {
-		t.Errorf("Returned %d rather than 3 for filtered slice", idx)
-	}
-
-	var counts [5]int
-	for i := 0; i < 9000; i++ {
-		idx := rand.SampleFiltered([]int{0, 1, 2, 3, 4}, func(v int) bool { return v&1 == 0 })
-		counts[idx]++
-	}
-	if counts[1] != 0 || counts[3] != 0 {
-		t.Errorf("Incorrectly sampled odd items. Counts: %+v", counts)
-	}
-
-	slop := 100
-	if counts[0] < 3000-slop || counts[0] > 3000+slop ||
-		counts[2] < 3000-slop || counts[2] > 3000+slop ||
-		counts[4] < 3000-slop || counts[4] > 3000+slop {
-		t.Errorf("Didn't find roughly 3000 samples for the even items. Counts: %+v", counts)
-	}
-}
-
-func TestSampleWeighted(t *testing.T) {
-	a := []int{1, 2, 3, 4, 5, 0, 10, 13}
-	counts := make([]int, len(a))
-
-	n := 100000
-	for i := 0; i < n; i++ {
-		idx := rand.SampleWeighted(a, func(v int) int { return v })
-		counts[idx]++
-	}
-
-	sum := 0
-	for _, v := range a {
-		sum += v
-	}
-
-	for i, c := range counts {
-		expected := a[i] * n / sum
-		if a[0] == 0 && c != 0 {
-			t.Errorf("Expected 0 samples for a[%d]. Got %d", i, c)
-		} else if c < expected-300 || c > expected+300 {
-			t.Errorf("Expected roughly %d samples for a[%d]=%d. Got %d", expected, i, a[i], c)
 		}
 	}
 }
@@ -220,38 +110,14 @@ func TestPointInPolygon(t *testing.T) {
 	}
 }
 
-func TestOppositeHeading(t *testing.T) {
-	h := [][2]float32{{90, 270}, {1, 181}, {2, 182}, {350, 170}}
-	for _, pair := range h {
-		if OppositeHeading(pair[0]) != pair[1] {
-			t.Errorf("opposite heading error: %f -> %f, expected %f",
-				pair[0], OppositeHeading(pair[0]), pair[1])
-		}
-		if OppositeHeading(pair[1]) != pair[0] {
-			t.Errorf("opposite heading error: %f -> %f, expected %f",
-				pair[1], OppositeHeading(pair[1]), pair[0])
-		}
-	}
-}
-
-func TestNormalizeHeading(t *testing.T) {
-	h := [][2]float32{{90, 90}, {360, 0}, {-10, 350}, {380, 20}, {-380, 340}}
-	for _, pair := range h {
-		if NormalizeHeading(pair[0]) != pair[1] {
-			t.Errorf("normalize heading error: %f -> %f, expected %f",
-				pair[0], NormalizeHeading(pair[0]), pair[1])
-		}
-	}
-}
-
 func TestPointSegmentDistance(t *testing.T) {
 	refSampled := func(p, v, w [2]float32) float32 {
 		const n = 16384
 		dmin := float32(1e30)
 		for i := 0; i < n; i++ {
 			t := float32(i) / float32(n-1)
-			pp := lerp2f(t, v, w)
-			dmin = min(dmin, distance2f(pp, p))
+			pp := Lerp2f(t, v, w)
+			dmin = Min(dmin, Distance2f(pp, p))
 		}
 		return dmin
 	}
@@ -271,7 +137,7 @@ func TestPointSegmentDistance(t *testing.T) {
 		}
 
 		d := PointSegmentDistance(c.p, c.v, c.w)
-		if abs(d-ref) > .001 {
+		if Abs(d-ref) > .001 {
 			t.Errorf("p %v v %v w %v expected %f got %f", c.p, c.v, c.w, ref, d)
 		}
 	}
@@ -284,24 +150,8 @@ func TestPointSegmentDistance(t *testing.T) {
 		w := [2]float32{r(), r()}
 		ref := refSampled(p, v, w)
 		d := PointSegmentDistance(p, v, w)
-		if abs(d-ref) > .001 {
+		if Abs(d-ref) > .001 {
 			t.Errorf("p %v v %v w %v expected %f got %f", p, v, w, ref, d)
-		}
-	}
-}
-
-func TestPermutationElement(t *testing.T) {
-	for _, n := range []int{8, 31, 10523} {
-		for _, h := range []uint32{0, 0xff, 0xfeedface} {
-			m := make(map[int]int)
-
-			for i := 0; i < n; i++ {
-				perm := rand.PermutationElement(i, n, h)
-				if _, ok := m[perm]; ok {
-					t.Errorf("%d: appeared multiple times", perm)
-				}
-				m[perm] = i
-			}
 		}
 	}
 }
@@ -318,7 +168,7 @@ func TestGCD(t *testing.T) {
 		Test{a: 2, b: 8, result: 2},
 		Test{a: 13, b: 31, result: 1},
 	} {
-		g := gcd(test.a, test.b)
+		g := GCD(test.a, test.b)
 		if g != test.result {
 			t.Errorf("incorrect gcd for (%d,%d): wanted %d, got %d", test.a, test.b, test.result, g)
 		}
@@ -341,7 +191,7 @@ func TestLCM(t *testing.T) {
 		Test{a: 1, b: 11, result: 11},
 		Test{a: 12, b: 12, result: 12},
 	} {
-		g := lcm(test.a, test.b)
+		g := LCM(test.a, test.b)
 		if g != test.result {
 			t.Errorf("incorrect lcm for (%d,%d): wanted %d, got %d", test.a, test.b, test.result, g)
 		}

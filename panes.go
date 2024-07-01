@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/mmp/imgui-go/v4"
+	"github.com/mmp/vice/pkg/math"
 )
 
 // Panes (should) mostly operate in window coordinates: (0,0) is lower
@@ -39,8 +40,8 @@ type PaneUpgrader interface {
 }
 
 type PaneContext struct {
-	paneExtent       Extent2D
-	parentPaneExtent Extent2D
+	paneExtent       math.Extent2D
+	parentPaneExtent math.Extent2D
 
 	platform  Platform
 	renderer  Renderer
@@ -73,7 +74,7 @@ const (
 	MouseButtonCount     = 3
 )
 
-func (ctx *PaneContext) InitializeMouse(fullDisplayExtent Extent2D) {
+func (ctx *PaneContext) InitializeMouse(fullDisplayExtent math.Extent2D) {
 	ctx.mouse = &MouseState{}
 
 	// Convert to pane coordinates:
@@ -82,8 +83,8 @@ func (ctx *PaneContext) InitializeMouse(fullDisplayExtent Extent2D) {
 	// current pane.  Further, it has (0,0) in the upper left corner of the
 	// window, so we need to flip y w.r.t. the full window resolution.
 	pos := imgui.MousePos()
-	ctx.mouse.Pos[0] = pos.X - ctx.paneExtent.p0[0]
-	ctx.mouse.Pos[1] = fullDisplayExtent.p1[1] - 1 - ctx.paneExtent.p0[1] - pos.Y
+	ctx.mouse.Pos[0] = pos.X - ctx.paneExtent.P0[0]
+	ctx.mouse.Pos[1] = fullDisplayExtent.P1[1] - 1 - ctx.paneExtent.P0[1] - pos.Y
 
 	io := imgui.CurrentIO()
 	wx, wy := io.MouseWheel()
@@ -228,8 +229,8 @@ func (k *KeyboardState) IsPressed(key Key) bool {
 func (ctx *PaneContext) SetWindowCoordinateMatrices(cb *CommandBuffer) {
 	w := float32(int(ctx.paneExtent.Width() + 0.5))
 	h := float32(int(ctx.paneExtent.Height() + 0.5))
-	cb.LoadProjectionMatrix(Identity3x3().Ortho(0, w, 0, h))
-	cb.LoadModelViewMatrix(Identity3x3())
+	cb.LoadProjectionMatrix(math.Identity3x3().Ortho(0, w, 0, h))
+	cb.LoadModelViewMatrix(math.Identity3x3())
 }
 
 // Helper function to unmarshal the JSON of a Pane of a given type T.
@@ -542,7 +543,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	// Draw from the bottom
 	scrollOffset := fsp.scrollbar.Offset()
 	y := stripHeight - 1 - vpad
-	for i := scrollOffset; i < min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
+	for i := scrollOffset; i < math.Min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
 		callsign := fsp.strips[i]
 		strip := ctx.world.GetFlightStrip(callsign)
 		ac := ctx.world.GetAircraft(callsign, false)
@@ -648,7 +649,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				if len(strip.Annotations[fsp.selectedAnnotation]) >= 3 {
 					// Limit it to three characters
 					strip.Annotations[fsp.selectedAnnotation] = strip.Annotations[fsp.selectedAnnotation][:3]
-					fsp.annotationCursorPos = min(fsp.annotationCursorPos, len(strip.Annotations[fsp.selectedAnnotation]))
+					fsp.annotationCursorPos = math.Min(fsp.annotationCursorPos, len(strip.Annotations[fsp.selectedAnnotation]))
 				}
 			} else {
 				td.AddText(ann, [2]float32{xp, yp}, style)
@@ -743,7 +744,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			// the button was released.
 			destinationIndex := int(fsp.lastMousePos[1]/stripHeight + 0.5)
 			destinationIndex += scrollOffset
-			destinationIndex = clamp(destinationIndex, 0, len(fsp.strips))
+			destinationIndex = math.Clamp(destinationIndex, 0, len(fsp.strips))
 
 			if selectedIndex != -1 && selectedIndex != destinationIndex {
 				// First remove it from the slice
@@ -911,7 +912,7 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 	}
 	y += lineHeight
 
-	for i := scrollOffset; i < min(len(mp.messages), visibleLines+scrollOffset+1); i++ {
+	for i := scrollOffset; i < math.Min(len(mp.messages), visibleLines+scrollOffset+1); i++ {
 		// TODO? wrap text
 		msg := mp.messages[len(mp.messages)-1-i]
 
@@ -1165,7 +1166,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 		case StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.
 			n := len(mp.messages)
-			start := max(0, n-5)
+			start := math.Max(0, n-5)
 			if !slices.ContainsFunc(mp.messages[start:],
 				func(m Message) bool { return m.contents == event.Message }) {
 				mp.messages = append(mp.messages,

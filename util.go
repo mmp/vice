@@ -36,6 +36,7 @@ import (
 	discord_client "github.com/hugolgst/rich-go/client"
 	"github.com/iancoleman/orderedmap"
 	"github.com/klauspost/compress/zstd"
+	"github.com/mmp/vice/pkg/math"
 	"golang.org/x/exp/constraints"
 )
 
@@ -216,7 +217,7 @@ func ParseCardinalOrdinalDirection(s string) (CardinalOrdinalDirection, error) {
 	return CardinalOrdinalDirection(0), fmt.Errorf("invalid direction")
 }
 
-func nmPerLongitude(p Point2LL) float32 {
+func nmPerLongitude(p math.Point2LL) float32 {
 	return 45
 	// WANT: return 60 * sin(radians(p[1]))
 }
@@ -225,14 +226,14 @@ func nmPerLongitude(p Point2LL) float32 {
 // in degrees.  The provided points should be in latitude-longitude
 // coordinates and the provided magnetic correction is applied to the
 // result.
-func headingp2ll(from Point2LL, to Point2LL, nmPerLongitude float32, magCorrection float32) float32 {
-	v := Point2LL{to[0] - from[0], to[1] - from[1]}
+func headingp2ll(from math.Point2LL, to math.Point2LL, nmPerLongitude float32, magCorrection float32) float32 {
+	v := math.Point2LL{to[0] - from[0], to[1] - from[1]}
 
 	// Note that atan2() normally measures w.r.t. the +x axis and angles
 	// are positive for counter-clockwise. We want to measure w.r.t. +y and
 	// to have positive angles be clockwise. Happily, swapping the order of
 	// values passed to atan2()--passing (x,y), gives what we want.
-	angle := degrees(atan2(v[0]*nmPerLongitude, v[1]*nmPerLatitude))
+	angle := math.Degrees(math.Atan2(v[0]*nmPerLongitude, v[1]*math.NMPerLatitude))
 	return NormalizeHeading(angle + magCorrection)
 }
 
@@ -281,7 +282,7 @@ func NormalizeHeading(h float32) float32 {
 	if h < 0 {
 		return 360 - NormalizeHeading(-h)
 	}
-	return mod(h, 360)
+	return math.Mod(h, 360)
 }
 
 func OppositeHeading(h float32) float32 {
@@ -300,7 +301,7 @@ type RGBA struct {
 }
 
 func lerpRGB(x float32, a, b RGB) RGB {
-	return RGB{R: lerp(x, a.R, b.R), G: lerp(x, a.G, b.G), B: lerp(x, a.B, b.B)}
+	return RGB{R: math.Lerp(x, a.R, b.R), G: math.Lerp(x, a.G, b.G), B: math.Lerp(x, a.B, b.B)}
 }
 
 func (r RGB) Equals(other RGB) bool {
@@ -569,7 +570,7 @@ func (r *RingBuffer[V]) Add(values ...V) {
 
 // Size returns the total number of items stored in the ring buffer.
 func (r *RingBuffer[V]) Size() int {
-	return min(len(r.entries), r.max)
+	return math.Min(len(r.entries), r.max)
 }
 
 // Get returns the specified element of the ring buffer where the index i
@@ -613,7 +614,7 @@ func GenerateImagePyramid(img image.Image) []image.Image {
 
 	for nx != 1 || ny != 1 {
 		ox, oy := nx, ny
-		nx, ny = max(nx/2, 1), max(ny/2, 1)
+		nx, ny = math.Max(nx/2, 1), math.Max(ny/2, 1)
 
 		next := make([]uint8, nx*ny*4)
 		lookup := func(x, y int) color.RGBA {

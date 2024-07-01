@@ -10,7 +10,7 @@ import (
 	"html/template"
 	"io"
 	"log/slog"
-	"math"
+	gomath "math"
 	"net"
 	"net/http"
 	"net/rpc"
@@ -1599,7 +1599,7 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 		SysMemory:        m.Sys / (1024 * 1024),
 		NumGC:            m.NumGC,
 		NumGoRoutines:    runtime.NumGoroutine(),
-		CPUUsage:         int(math.Round(usage[0])),
+		CPUUsage:         int(gomath.Round(usage[0])),
 
 		SimStatus: sm.GetSimStatus(),
 	}

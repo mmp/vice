@@ -18,19 +18,20 @@ import (
 	"time"
 
 	"github.com/iancoleman/orderedmap"
+	"github.com/mmp/vice/pkg/math"
 )
 
 type ScenarioGroup struct {
-	TRACON           string                 `json:"tracon"`
-	Name             string                 `json:"name"`
-	Airports         map[string]*Airport    `json:"airports"`
-	Fixes            map[string]Point2LL    `json:"-"`
-	FixesStrings     orderedmap.OrderedMap  `json:"fixes"`
-	Scenarios        map[string]*Scenario   `json:"scenarios"`
-	DefaultScenario  string                 `json:"default_scenario"`
-	ControlPositions map[string]*Controller `json:"control_positions"`
-	Airspace         Airspace               `json:"airspace"`
-	ArrivalGroups    map[string][]Arrival   `json:"arrival_groups"`
+	TRACON           string                   `json:"tracon"`
+	Name             string                   `json:"name"`
+	Airports         map[string]*Airport      `json:"airports"`
+	Fixes            map[string]math.Point2LL `json:"-"`
+	FixesStrings     orderedmap.OrderedMap    `json:"fixes"`
+	Scenarios        map[string]*Scenario     `json:"scenarios"`
+	DefaultScenario  string                   `json:"default_scenario"`
+	ControlPositions map[string]*Controller   `json:"control_positions"`
+	Airspace         Airspace                 `json:"airspace"`
+	ArrivalGroups    map[string][]Arrival     `json:"arrival_groups"`
 
 	PrimaryAirport string `json:"primary_airport"`
 
@@ -60,7 +61,7 @@ type STARSFacilityAdaptation struct {
 	ControllerConfigs   map[string]STARSControllerConfig `json:"controller_configs"`
 	InhibitCAVolumes    []AirspaceVolume                 `json:"inhibit_ca_volumes"`
 	RadarSites          map[string]*RadarSite            `json:"radar_sites"`
-	Center              Point2LL                         `json:"-"`
+	Center              math.Point2LL                    `json:"-"`
 	CenterString        string                           `json:"center"`
 	Range               float32                          `json:"range"`
 	Scratchpads         map[string]string                `json:"scratchpads"`
@@ -70,22 +71,22 @@ type STARSFacilityAdaptation struct {
 type STARSControllerConfig struct {
 	VideoMapNames []string `json:"video_maps"`
 	VideoMaps     []STARSMap
-	DefaultMaps   []string `json:"default_maps"`
-	Center        Point2LL `json:"-"`
-	CenterString  string   `json:"center"`
-	Range         float32  `json:"range"`
+	DefaultMaps   []string      `json:"default_maps"`
+	Center        math.Point2LL `json:"-"`
+	CenterString  string        `json:"center"`
+	Range         float32       `json:"range"`
 }
 
 type Airspace struct {
-	Boundaries map[string][]Point2LL                 `json:"boundaries"`
+	Boundaries map[string][]math.Point2LL            `json:"boundaries"`
 	Volumes    map[string][]ControllerAirspaceVolume `json:"volumes"`
 }
 
 type ControllerAirspaceVolume struct {
-	LowerLimit    int          `json:"lower"`
-	UpperLimit    int          `json:"upper"`
-	Boundaries    [][]Point2LL `json:"boundary_polylines"` // not in JSON
-	BoundaryNames []string     `json:"boundaries"`
+	LowerLimit    int               `json:"lower"`
+	UpperLimit    int               `json:"upper"`
+	Boundaries    [][]math.Point2LL `json:"boundary_polylines"` // not in JSON
+	BoundaryNames []string          `json:"boundaries"`
 }
 
 type Scenario struct {
@@ -106,10 +107,10 @@ type Scenario struct {
 	DepartureRunways []ScenarioGroupDepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []ScenarioGroupArrivalRunway   `json:"arrival_runways,omitempty"`
 
-	Center       Point2LL `json:"-"`
-	CenterString string   `json:"center"`
-	Range        float32  `json:"range"`
-	DefaultMaps  []string `json:"default_maps"`
+	Center       math.Point2LL `json:"-"`
+	CenterString string        `json:"center"`
+	Range        float32       `json:"range"`
+	DefaultMaps  []string      `json:"default_maps"`
 }
 
 // split -> config
@@ -583,7 +584,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 ///////////////////////////////////////////////////////////////////////////
 // ScenarioGroup
 
-func (sg *ScenarioGroup) locate(s string) (Point2LL, bool) {
+func (sg *ScenarioGroup) locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
 	if p, ok := sg.Fixes[s]; ok {
@@ -594,7 +595,7 @@ func (sg *ScenarioGroup) locate(s string) (Point2LL, bool) {
 		return ap.Location, ok
 	} else if f, ok := database.Fixes[strings.ToUpper(s)]; ok {
 		return f.Location, ok
-	} else if p, err := ParseLatLong([]byte(s)); err == nil {
+	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
 	} else if len(s) > 5 && s[0] == 'K' && s[4] == '-' {
 		if rwy, ok := LookupRunway(s[:4], s[5:]); ok {
@@ -602,7 +603,7 @@ func (sg *ScenarioGroup) locate(s string) (Point2LL, bool) {
 		}
 	}
 
-	return Point2LL{}, false
+	return math.Point2LL{}, false
 }
 
 var (
@@ -616,7 +617,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 	sg.STARSFacilityAdaptation.PostDeserialize(e, sg)
 
 	sg.NmPerLatitude = 60
-	sg.NmPerLongitude = 60 * cos(radians(sg.STARSFacilityAdaptation.Center[1]))
+	sg.NmPerLongitude = 60 * math.Cos(math.Radians(sg.STARSFacilityAdaptation.Center[1]))
 
 	if sg.TRACON == "" {
 		e.ErrorString("\"tracon\" must be specified")
@@ -626,7 +627,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 			sg.TRACON)
 	}
 
-	sg.Fixes = make(map[string]Point2LL)
+	sg.Fixes = make(map[string]math.Point2LL)
 	for _, fix := range sg.FixesStrings.Keys() {
 		loc, _ := sg.FixesStrings.Get(fix)
 		location, ok := loc.(string)
@@ -651,12 +652,12 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 				e.ErrorString("distance \"%s\": %v", strs[3], err)
 			} else {
 				// Offset along the given heading and distance from the fix.
-				p := ll2nm(pll, sg.NmPerLongitude)
-				h := radians(float32(hdg))
-				v := [2]float32{sin(h), cos(h)}
-				v = scale2f(v, float32(dist))
-				p = add2f(p, v)
-				sg.Fixes[fix] = nm2ll(p, sg.NmPerLongitude)
+				p := math.LL2NM(pll, sg.NmPerLongitude)
+				h := math.Radians(float32(hdg))
+				v := [2]float32{math.Sin(h), math.Cos(h)}
+				v = math.Scale2f(v, float32(dist))
+				p = math.Add2f(p, v)
+				sg.Fixes[fix] = math.NM2LL(p, sg.NmPerLongitude)
 			}
 		} else if pos, ok := sg.locate(location); ok {
 			// It's something simple. Check this after FIX@HDG/DIST,
@@ -986,7 +987,7 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 }
 
 func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *ErrorLogger) {
-	var prev Point2LL
+	var prev math.Point2LL
 
 	for i, wp := range waypoints {
 		if e != nil {
@@ -999,7 +1000,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 		} else {
 			waypoints[i].Location = pos
 
-			d := nmdistance2ll(prev, waypoints[i].Location)
+			d := math.NMDistance2LL(prev, waypoints[i].Location)
 			if i > 1 && d > 120 && e != nil {
 				e.ErrorString("waypoint at %s is suspiciously far from previous one (%s at %s): %f nm",
 					waypoints[i].Location.DDString(), waypoints[i-1].Fix, waypoints[i-1].Location.DDString(), d)
@@ -1034,10 +1035,10 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 		// previous waypoint or the next one after the end of the arc
 		// to figure it out.
 		var v0, v1 [2]float32
-		p0, p1 := ll2nm(wp.Location, sg.NmPerLongitude), ll2nm(waypoints[i+1].Location, sg.NmPerLongitude)
+		p0, p1 := math.LL2NM(wp.Location, sg.NmPerLongitude), math.LL2NM(waypoints[i+1].Location, sg.NmPerLongitude)
 		if i > 0 {
-			v0 = sub2f(p0, ll2nm(waypoints[i-1].Location, sg.NmPerLongitude))
-			v1 = sub2f(p1, p0)
+			v0 = math.Sub2f(p0, math.LL2NM(waypoints[i-1].Location, sg.NmPerLongitude))
+			v1 = math.Sub2f(p1, p0)
 		} else {
 			if i+2 == len(waypoints) {
 				if e != nil {
@@ -1046,8 +1047,8 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 				}
 				continue
 			}
-			v0 = sub2f(p1, p0)
-			v1 = sub2f(ll2nm(waypoints[i+2].Location, sg.NmPerLongitude), p1)
+			v0 = math.Sub2f(p1, p0)
+			v1 = math.Sub2f(math.LL2NM(waypoints[i+2].Location, sg.NmPerLongitude), p1)
 		}
 		// cross product
 		x := v0[0]*v1[1] - v0[1]*v1[0]
@@ -1066,7 +1067,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 		} else {
 			// Just the arc length was specified; need to figure out the
 			// center and radius of the circle that gives that.
-			d := distance2f(p0, p1)
+			d := math.Distance2f(p0, p1)
 			if d >= wp.Arc.Length {
 				if e != nil {
 					e.ErrorString("distance between waypoints %.2fnm is greater than specified arc length %.2fnm",
@@ -1099,21 +1100,21 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 			// We will search with uniform small steps along the line. Some
 			// sort of bisection search would probably be better, but...
 			t := delta
-			limit := 100 * distance2f(p0, p1) // ad-hoc
-			v := normalize2f(sub2f(p1, p0))
+			limit := 100 * math.Distance2f(p0, p1) // ad-hoc
+			v := math.Normalize2f(math.Sub2f(p1, p0))
 			v[0], v[1] = -v[1], v[0] // perp!
 			for t < limit {
-				center := add2f(mid2f(p0, p1), scale2f(v, t))
-				radius := distance2f(center, p0)
+				center := math.Add2f(math.Mid2f(p0, p1), math.Scale2f(v, t))
+				radius := math.Distance2f(center, p0)
 
 				// Angle subtended by p0 and p1 w.r.t. center
-				cosTheta := dot(sub2f(p0, center), sub2f(p1, center)) / sqr(radius)
-				theta := safeACos(cosTheta)
+				cosTheta := math.Dot(math.Sub2f(p0, center), math.Sub2f(p1, center)) / math.Sqr(radius)
+				theta := math.SafeACos(cosTheta)
 
 				arcLength := theta * radius
 
 				if arcLength < wp.Arc.Length {
-					wp.Arc.Center = nm2ll(center, sg.NmPerLongitude)
+					wp.Arc.Center = math.NM2LL(center, sg.NmPerLongitude)
 					wp.Arc.Radius = radius
 					break
 				}
@@ -1145,12 +1146,12 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 ///////////////////////////////////////////////////////////////////////////
 // Airspace
 
-func InAirspace(p Point2LL, alt float32, volumes []ControllerAirspaceVolume) (bool, [][2]int) {
+func InAirspace(p math.Point2LL, alt float32, volumes []ControllerAirspaceVolume) (bool, [][2]int) {
 	var altRanges [][2]int
 	for _, v := range volumes {
 		inside := false
 		for _, pts := range v.Boundaries {
-			if PointInPolygon2LL(p, pts) {
+			if math.PointInPolygon2LL(p, pts) {
 				inside = !inside
 			}
 		}
@@ -1228,6 +1229,20 @@ func (r RootFS) Open(filename string) (fs.File, error) {
 	return os.Open(filename)
 }
 
+type dbResolver struct{}
+
+func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
+	if n, ok := database.Navaids[s]; ok {
+		return n.Location, nil
+	} else if n, ok := database.Airports[s]; ok {
+		return n.Location, nil
+	} else if f, ok := database.Fixes[s]; ok {
+		return f.Location, nil
+	} else {
+		return math.Point2LL{}, fmt.Errorf("%s: unknown fix", s)
+	}
+}
+
 // LoadScenarioGroups loads all of the available scenarios, both from the
 // scenarios/ directory in the source code distribution as well as,
 // optionally, a scenario file provided on the command line.  It doesn't
@@ -1237,6 +1252,8 @@ func (r RootFS) Open(filename string) (fs.File, error) {
 // due to invalid scenario definitions to be fixed...
 func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration, *VideoMapLibrary) {
 	start := time.Now()
+
+	math.SetLocationResolver(&dbResolver{})
 
 	// First load the scenarios.
 	scenarioGroups := make(map[string]map[string]*ScenarioGroup)

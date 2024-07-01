@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
 )
 
@@ -502,7 +503,7 @@ func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, departureAirport 
 
 		ac.DepartureContactAltitude =
 			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
-		ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
+		ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
 		ac.DepartureContactController = ctrl
 	}
 
@@ -534,7 +535,7 @@ func (ac *Aircraft) Check(lg *Logger) {
 	ac.Nav.Check(lg)
 }
 
-func (ac *Aircraft) Position() Point2LL {
+func (ac *Aircraft) Position() math.Point2LL {
 	return ac.Nav.FlightState.Position
 }
 
@@ -590,7 +591,7 @@ func (ac *Aircraft) MVAsApply() bool {
 	if ac.IsDeparture() {
 		// Start issuing MVAs 5 miles from the field
 		// TODO: are there better criteria?
-		return nmdistance2ll(ac.Position(), ac.Nav.FlightState.DepartureAirportLocation) > 5
+		return math.NMDistance2LL(ac.Position(), ac.Nav.FlightState.DepartureAirportLocation) > 5
 	} else {
 		// If they're established on the approach, they're good.
 		return !ac.OnApproach(true)

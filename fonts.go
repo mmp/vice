@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"math"
 	"runtime"
 	"sort"
 	"strconv"
@@ -19,6 +18,11 @@ import (
 	"github.com/mmp/IconFontCppHeaders"
 	"github.com/mmp/imgui-go/v4"
 	"github.com/nfnt/resize"
+)
+import (
+	gomath "math"
+
+	"github.com/mmp/vice/pkg/math"
 )
 
 // imgui lets us to embed icons within regular fonts which makes it
@@ -191,7 +195,7 @@ func (font *Font) BoundText(s string, spacing int) (int, int) {
 		}
 	}
 
-	return int(math.Ceil(float64(xmax))), py
+	return int(gomath.Ceil(float64(xmax))), py
 }
 
 // From imgui-go:
@@ -560,15 +564,15 @@ func initializeSTARSFonts(r Renderer) {
 						sharpen := func(v uint32) uint16 {
 							f := float32(v) / 0xffff
 							// The sqrt pushes values toward up
-							f = sqrt(f)
+							f = math.Sqrt(f)
 							// And now we threshold to zero-out the smaller
 							// values completely.
 							if f < .6 {
 								f = 0
 							}
 							// One last sqrt for more chunky.
-							f = sqrt(f)
-							return uint16(min(0xffff, f*0xffff))
+							f = math.Sqrt(f)
+							return uint16(math.Min(0xffff, f*0xffff))
 						}
 
 						sr, sg, sb, sa := sharpen(r), sharpen(g), sharpen(b), sharpen(a)

@@ -9,11 +9,11 @@ import (
 	"fmt"
 	"image"
 	"image/draw"
-	"math"
 	"unsafe"
 
 	"github.com/go-gl/gl/v2.1/gl"
 )
+import gomath "math"
 
 type OpenGL2Renderer struct {
 	createdTextures map[uint32]int
@@ -125,7 +125,7 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 		return int32(ui32())
 	}
 	float := func() float32 {
-		return math.Float32frombits(ui32())
+		return gomath.Float32frombits(ui32())
 	}
 
 	for i < len(cb.Buf) {

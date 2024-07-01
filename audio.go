@@ -17,6 +17,7 @@ import (
 	"github.com/tosone/minimp3"
 	"github.com/veandco/go-sdl2/sdl"
 )
+import "github.com/mmp/vice/pkg/math"
 
 const AudioSampleRate = 12000
 
@@ -134,7 +135,7 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	}
 
 	for i := 0; i < n/2; i++ {
-		v := int16(clamp(accum[i], -32768, 32767))
+		v := int16(math.Clamp(accum[i], -32768, 32767))
 		out[2*i] = C.uint8(v & 0xff)
 		out[2*i+1] = C.uint8((v >> 8) & 0xff)
 	}

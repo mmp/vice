@@ -8,11 +8,12 @@ import (
 	"fmt"
 	"image"
 	"log/slog"
-	"math"
+	gomath "math"
 	"sync"
 	"unsafe"
 
 	"github.com/mmp/imgui-go/v4"
+	"github.com/mmp/vice/pkg/math"
 )
 
 // Renderer defines an interface for all of the various drawing that happens in vice.
@@ -179,7 +180,7 @@ func (cb *CommandBuffer) appendFloats(floats ...float32) {
 	for _, f := range floats {
 		// Convert each one to a uint32 since that's the type that is
 		// actually stored...
-		cb.Buf = append(cb.Buf, math.Float32bits(f))
+		cb.Buf = append(cb.Buf, gomath.Float32bits(f))
 	}
 }
 
@@ -208,7 +209,7 @@ func (cb *CommandBuffer) FloatSlice(start, length int) []float32 {
 	return unsafe.Slice(ptr, length)
 }
 
-func (cb *CommandBuffer) LoadProjectionMatrix(m Matrix3) {
+func (cb *CommandBuffer) LoadProjectionMatrix(m math.Matrix3) {
 	cb.appendInts(RendererLoadProjectionMatrix)
 	cb.appendFloats(
 		m[0][0], m[1][0], 0, m[2][0],
@@ -217,7 +218,7 @@ func (cb *CommandBuffer) LoadProjectionMatrix(m Matrix3) {
 		m[0][2], m[1][2], 0, m[2][2])
 }
 
-func (cb *CommandBuffer) LoadModelViewMatrix(m Matrix3) {
+func (cb *CommandBuffer) LoadModelViewMatrix(m math.Matrix3) {
 	cb.appendInts(RendererLoadModelViewMatrix)
 	cb.appendFloats(
 		m[0][0], m[1][0], 0, m[2][0],
@@ -248,14 +249,14 @@ func (cb *CommandBuffer) Viewport(x, y, w, h int) {
 // SetDrawBounds sets the scissor rectangle and viewport according to the
 // specified bounds so that subsequent code can assume window (or Pane)
 // coordinates from (0,0)-(width,height) when drawing things.
-func (cb *CommandBuffer) SetDrawBounds(b Extent2D) {
+func (cb *CommandBuffer) SetDrawBounds(b math.Extent2D) {
 	// One messy detail here is that these windows are specified in
 	// framebuffer coordinates, not display coordinates, so they must be
 	// scaled for e.g., retina displays.
 	scale := platform.FramebufferSize()[1] / platform.DisplaySize()[1]
-	x0, y0 := int(scale*b.p0[0]), int(scale*b.p0[1])
+	x0, y0 := int(scale*b.P0[0]), int(scale*b.P0[1])
 	w, h := int(scale*b.Width()), int(scale*b.Height())
-	w, h = max(w, 0), max(h, 0)
+	w, h = math.Max(w, 0), math.Max(h, 0)
 	cb.Scissor(x0, y0, w, h)
 	cb.Viewport(x0, y0, w, h)
 }
@@ -263,14 +264,14 @@ func (cb *CommandBuffer) SetDrawBounds(b Extent2D) {
 // SetScissorBounds sets the scissor rectangle according to the
 // specified bounds so that subsequent code can assume window (or Pane)
 // coordinates from (0,0)-(width,height) when drawing things.
-func (cb *CommandBuffer) SetScissorBounds(b Extent2D) {
+func (cb *CommandBuffer) SetScissorBounds(b math.Extent2D) {
 	// One messy detail here is that these windows are specified in
 	// framebuffer coordinates, not display coordinates, so they must be
 	// scaled for e.g., retina displays.
 	scale := platform.FramebufferSize()[1] / platform.DisplaySize()[1]
-	x0, y0 := int(scale*b.p0[0]), int(scale*b.p0[1])
+	x0, y0 := int(scale*b.P0[0]), int(scale*b.P0[1])
 	w, h := int(scale*b.Width()), int(scale*b.Height())
-	w, h = max(w, 0), max(h, 0)
+	w, h = math.Max(w, 0), math.Max(h, 0)
 	cb.Scissor(x0, y0, w, h)
 }
 
@@ -543,7 +544,7 @@ func (l *LinesDrawBuilder) AddLineLoop(p [][2]float32) {
 // and color centered at the specified point p. The nsegs parameter
 // specifies the tessellation rate for the circle.
 func (l *LinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int) {
-	circle := GetCirclePoints(nsegs)
+	circle := math.CirclePoints(nsegs)
 
 	idx := int32(len(l.p))
 	for i := 0; i < nsegs; i++ {
@@ -559,16 +560,16 @@ func (l *LinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int) {
 	}
 }
 
-func (l *LinesDrawBuilder) AddLatLongCircle(p Point2LL, nmPerLongitude float32, r float32, nsegs int) {
+func (l *LinesDrawBuilder) AddLatLongCircle(p math.Point2LL, nmPerLongitude float32, r float32, nsegs int) {
 	// We want vertices in lat-long space but will draw the circle in
 	// nm space since distance is uniform there.
-	pc := ll2nm(p, nmPerLongitude)
+	pc := math.LL2NM(p, nmPerLongitude)
 	for i := 0; i < nsegs; i++ {
 		pt := func(i int) [2]float32 {
-			a := float32(i) / float32(nsegs) * 2 * math.Pi
-			v := [2]float32{sin(a), cos(a)}
-			v = scale2f(v, r)
-			return nm2ll(add2f(pc, v), nmPerLongitude)
+			a := float32(i) / float32(nsegs) * 2 * gomath.Pi
+			v := [2]float32{math.Sin(a), math.Cos(a)}
+			v = math.Scale2f(v, r)
+			return math.NM2LL(math.Add2f(pc, v), nmPerLongitude)
 		}
 		l.AddLine(pt(i), pt(i+1))
 	}
@@ -596,20 +597,20 @@ func (l *LinesDrawBuilder) AddNumber(p [2]float32, sz float32, v string) {
 		d := digit - '0'
 		if d >= 0 && d <= 9 {
 			for _, seg := range coords[d] {
-				l.AddLine(add2f(p, scale2f(seg[0], sz)), add2f(p, scale2f(seg[1], sz)))
+				l.AddLine(math.Add2f(p, math.Scale2f(seg[0], sz)), math.Add2f(p, math.Scale2f(seg[1], sz)))
 			}
 		} else {
 			// draw an x
-			l.AddLine(p, add2f(p, scale2f([2]float32{2, 2}, sz)))
-			l.AddLine(add2f(p, [2]float32{2 * sz, 0}), add2f(p, [2]float32{0, 2 * sz}))
+			l.AddLine(p, math.Add2f(p, math.Scale2f([2]float32{2, 2}, sz)))
+			l.AddLine(math.Add2f(p, [2]float32{2 * sz, 0}), math.Add2f(p, [2]float32{0, 2 * sz}))
 		}
 		p[0] += 2.5 * sz
 	}
 }
 
 // Bounds returns the 2D bounding box of the specified lines.
-func (l *LinesDrawBuilder) Bounds() Extent2D {
-	return Extent2DFromPoints(l.p)
+func (l *LinesDrawBuilder) Bounds() math.Extent2D {
+	return math.Extent2DFromPoints(l.p)
 }
 
 // GenerateCommands adds commands to the specified command buffer to draw
@@ -741,7 +742,7 @@ func (t *TrianglesDrawBuilder) AddQuad(p0, p1, p2, p3 [2]float32) {
 // specified position to be drawn using triangles. The specified number of
 // segments, nsegs, sets the tessellation rate for the circle.
 func (t *TrianglesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int) {
-	circle := GetCirclePoints(nsegs)
+	circle := math.CirclePoints(nsegs)
 
 	idx := int32(len(t.p))
 	t.p = append(t.p, p) // center point
@@ -754,8 +755,8 @@ func (t *TrianglesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int
 	}
 }
 
-func (t *TrianglesDrawBuilder) Bounds() Extent2D {
-	return Extent2DFromPoints(t.p)
+func (t *TrianglesDrawBuilder) Bounds() math.Extent2D {
+	return math.Extent2DFromPoints(t.p)
 }
 
 func (t *TrianglesDrawBuilder) GenerateCommands(cb *CommandBuffer) {
@@ -942,10 +943,10 @@ func (t *TextBuffers) Add(p [2]float32, glyph *Glyph, color RGB) {
 	t.uv = append(t.uv, [][2]float32{{u0, v0}, {u1, v0}, {u1, v1}, {u0, v1}}...)
 	t.rgb = append(t.rgb, color, color, color, color)
 	t.p = append(t.p, [][2]float32{
-		add2f(p, [2]float32{x0, -y0}),
-		add2f(p, [2]float32{x1, -y0}),
-		add2f(p, [2]float32{x1, -y1}),
-		add2f(p, [2]float32{x0, -y1})}...)
+		math.Add2f(p, [2]float32{x0, -y0}),
+		math.Add2f(p, [2]float32{x1, -y0}),
+		math.Add2f(p, [2]float32{x1, -y1}),
+		math.Add2f(p, [2]float32{x0, -y1})}...)
 	t.indices = append(t.indices, startIdx, startIdx+1, startIdx+2, startIdx+3)
 }
 
@@ -1179,8 +1180,8 @@ func GenerateImguiCommandBuffer(cb *CommandBuffer) {
 	// space lies from draw_data->DisplayPos (top left) to
 	// draw_data->DisplayPos+data_data->DisplaySize (bottom right).
 	// DisplayMin is typically (0,0) for single viewport apps.
-	cb.LoadProjectionMatrix(Identity3x3().Ortho(0, float32(displayWidth), float32(displayHeight), 0))
-	cb.LoadModelViewMatrix(Identity3x3())
+	cb.LoadProjectionMatrix(math.Identity3x3().Ortho(0, float32(displayWidth), float32(displayHeight), 0))
+	cb.LoadModelViewMatrix(math.Identity3x3())
 	cb.Viewport(0, 0, int(fbWidth), int(fbHeight))
 	cb.Blend()
 

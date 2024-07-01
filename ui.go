@@ -21,6 +21,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
 
 	"github.com/mmp/imgui-go/v4"
@@ -1481,13 +1482,13 @@ func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
 				axis := Select(sb.vertical, 1, 0)
 				wh := Select(sb.vertical, ctx.paneExtent.Height(), ctx.paneExtent.Width())
 				sb.accumDrag += -sign * ctx.mouse.DragDelta[axis] * float32(sb.nItems) / wh
-				if abs(sb.accumDrag) >= 1 {
+				if math.Abs(sb.accumDrag) >= 1 {
 					sb.offset += int(sb.accumDrag)
 					sb.accumDrag -= float32(int(sb.accumDrag))
 				}
 			}
 		}
-		sb.offset = clamp(sb.offset, 0, sb.nItems-sb.nVisible)
+		sb.offset = math.Clamp(sb.offset, 0, sb.nItems-sb.nVisible)
 	} else {
 		sb.offset = 0
 	}
@@ -1532,13 +1533,13 @@ func (sb *ScrollBar) Draw(ctx *PaneContext, cb *CommandBuffer) {
 
 	if sb.vertical {
 		// Visible region in window coordinates
-		wy0, wy1 := lerp(v0, ph-edgeSpace, edgeSpace), lerp(v1, ph-edgeSpace, edgeSpace)
+		wy0, wy1 := math.Lerp(v0, ph-edgeSpace, edgeSpace), math.Lerp(v1, ph-edgeSpace, edgeSpace)
 		quad.AddQuad([2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy0},
 			[2]float32{pw - float32(edgeSpace), wy0},
 			[2]float32{pw - float32(edgeSpace), wy1},
 			[2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy1}, UIControlColor)
 	} else {
-		wx0, wx1 := lerp(v0, pw-edgeSpace, edgeSpace), lerp(v1, pw-edgeSpace, edgeSpace)
+		wx0, wx1 := math.Lerp(v0, pw-edgeSpace, edgeSpace), math.Lerp(v1, pw-edgeSpace, edgeSpace)
 		quad.AddQuad([2]float32{wx0, ph - float32(sb.barWidth) - float32(edgeSpace)},
 			[2]float32{wx0, ph - float32(edgeSpace)},
 			[2]float32{wx1, ph - float32(edgeSpace)},
@@ -1569,7 +1570,7 @@ const (
 func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]float32, style,
 	cursorStyle TextStyle, cb *CommandBuffer) (exit int, posOut [2]float32) {
 	// Make sure we can depend on it being sensible for the following
-	*cursor = clamp(*cursor, 0, len(*s))
+	*cursor = math.Clamp(*cursor, 0, len(*s))
 	originalText := *s
 
 	// Draw the text and the cursor
@@ -1596,10 +1597,10 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 			*s = (*s)[:*cursor] + (*s)[*cursor+1:]
 		}
 		if keyboard.IsPressed(KeyLeftArrow) {
-			*cursor = max(*cursor-1, 0)
+			*cursor = math.Max(*cursor-1, 0)
 		}
 		if keyboard.IsPressed(KeyRightArrow) {
-			*cursor = min(*cursor+1, len(*s))
+			*cursor = math.Min(*cursor+1, len(*s))
 		}
 		if keyboard.IsPressed(KeyEscape) {
 			// clear out the string
@@ -1786,12 +1787,12 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 	imgui.Separator()
 
 	if lc.w.LaunchConfig.Mode == LaunchManual {
-		mitAndTime := func(ac *Aircraft, launchPosition Point2LL,
+		mitAndTime := func(ac *Aircraft, launchPosition math.Point2LL,
 			lastLaunchCallsign string, lastLaunchTime time.Time) {
 			imgui.TableNextColumn()
 			if lastLaunchCallsign != "" {
 				if ac := lc.w.Aircraft[lastLaunchCallsign]; ac != nil {
-					d := nmdistance2ll(ac.Position(), launchPosition)
+					d := math.NMDistance2LL(ac.Position(), launchPosition)
 					imgui.Text(fmt.Sprintf("%.1f", d))
 				}
 			}

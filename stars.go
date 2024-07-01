@@ -9,7 +9,7 @@ package main
 
 import (
 	"fmt"
-	"math"
+	gomath "math"
 	"runtime"
 	"slices"
 	"sort"
@@ -18,6 +18,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
 
 	"github.com/mmp/imgui-go/v4"
@@ -148,12 +149,12 @@ type STARSRangeBearingLine struct {
 	P [2]struct {
 		// If callsign is given, use that aircraft's position;
 		// otherwise we have a fixed position.
-		Loc      Point2LL
+		Loc      math.Point2LL
 		Callsign string
 	}
 }
 
-func (rbl STARSRangeBearingLine) GetPoints(ctx *PaneContext, aircraft []*Aircraft, sp *STARSPane) (p0, p1 Point2LL) {
+func (rbl STARSRangeBearingLine) GetPoints(ctx *PaneContext, aircraft []*Aircraft, sp *STARSPane) (p0, p1 math.Point2LL) {
 	// Each line endpoint may be specified either by an aircraft's
 	// position or by a fixed position. We'll start with the fixed
 	// position and then override it if there's a valid *Aircraft.
@@ -516,7 +517,7 @@ func (s *STARSAircraftState) TrackDeltaAltitude() int {
 	return s.track.Altitude - s.previousTrack.Altitude
 }
 
-func (s *STARSAircraftState) TrackPosition() Point2LL {
+func (s *STARSAircraftState) TrackPosition() math.Point2LL {
 	return s.track.Position
 }
 
@@ -532,18 +533,18 @@ func (s *STARSAircraftState) HaveHeading() bool {
 // extrapolated path.  Thus, it includes the effect of wind.  The returned
 // vector is scaled so that it represents where it is expected to be one
 // minute in the future.
-func (s *STARSAircraftState) HeadingVector(nmPerLongitude, magneticVariation float32) Point2LL {
+func (s *STARSAircraftState) HeadingVector(nmPerLongitude, magneticVariation float32) math.Point2LL {
 	if !s.HaveHeading() {
-		return Point2LL{}
+		return math.Point2LL{}
 	}
 
-	p0 := ll2nm(s.track.Position, nmPerLongitude)
-	p1 := ll2nm(s.previousTrack.Position, nmPerLongitude)
-	v := sub2ll(p0, p1)
-	v = normalize2f(v)
+	p0 := math.LL2NM(s.track.Position, nmPerLongitude)
+	p1 := math.LL2NM(s.previousTrack.Position, nmPerLongitude)
+	v := math.Sub2LL(p0, p1)
+	v = math.Normalize2f(v)
 	// v's length should be groundspeed / 60 nm.
-	v = scale2f(v, float32(s.TrackGroundspeed())/60) // hours to minutes
-	return nm2ll(v, nmPerLongitude)
+	v = math.Scale2f(v, float32(s.TrackGroundspeed())/60) // hours to minutes
+	return math.NM2LL(v, nmPerLongitude)
 }
 
 func (s *STARSAircraftState) TrackHeading(nmPerLongitude float32) float32 {
@@ -569,7 +570,7 @@ type STARSMap struct {
 	Group         int // 0 -> A, 1 -> B
 	Name          string
 	Id            int
-	Lines         [][]Point2LL
+	Lines         [][]math.Point2LL
 	CommandBuffer CommandBuffer
 }
 
@@ -582,13 +583,13 @@ type STARSPreferenceSet struct {
 	DisplayDCB  bool
 	DCBPosition int
 
-	Center Point2LL
+	Center math.Point2LL
 	Range  float32
 
-	CurrentCenter Point2LL
+	CurrentCenter math.Point2LL
 	OffCenter     bool
 
-	RangeRingsCenter Point2LL
+	RangeRingsCenter math.Point2LL
 	RangeRingRadius  int
 
 	// TODO? cursor speed
@@ -668,7 +669,7 @@ type STARSPreferenceSet struct {
 	GroundRangeMode bool
 
 	Bookmarks [10]struct {
-		Center      Point2LL
+		Center      math.Point2LL
 		Range       float32
 		TopDownMode bool
 	}
@@ -830,7 +831,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 		ps.Center = w.GetInitialCenter()
 		ps.Range = w.GetInitialRange()
 	} else {
-		ps.Center = Point2LL{73.475, 40.395} // JFK-ish
+		ps.Center = math.Point2LL{73.475, 40.395} // JFK-ish
 		ps.Range = 50
 	}
 
@@ -956,7 +957,7 @@ func (ps *STARSPreferenceSet) Activate(w *World, sp *STARSPane) {
 	// Brightness goes in steps of 5 (similarly not enforced previously...)
 	remapBrightness := func(b *STARSBrightness) {
 		*b = (*b + 2) / 5 * 5
-		*b = clamp(*b, 0, 100)
+		*b = math.Clamp(*b, 0, 100)
 	}
 	remapBrightness(&ps.Brightness.DCB)
 	remapBrightness(&ps.Brightness.BackgroundContrast)
@@ -1233,7 +1234,7 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 	ld := GetLinesDrawBuilder()
 	for _, mva := range database.MVAs[w.TRACON] {
 		ld.AddLineLoop(mva.ExteriorRing)
-		p := Extent2DFromPoints(mva.ExteriorRing).Center()
+		p := math.Extent2DFromPoints(mva.ExteriorRing).Center()
 		ld.AddNumber(p, 0.005, fmt.Sprintf("%d", mva.MinimumLimit/100))
 	}
 	ld.GenerateCommands(&mvas.CommandBuffer)
@@ -1476,7 +1477,7 @@ func (sp *STARSPane) Upgrade(from, to int) {
 	}
 	if from < 9 {
 		remap := func(b *STARSBrightness) {
-			*b = STARSBrightness(min(*b*2, 100))
+			*b = STARSBrightness(math.Min(*b*2, 100))
 		}
 		remap(&sp.CurrentPreferenceSet.Brightness.VideoGroupA)
 		remap(&sp.CurrentPreferenceSet.Brightness.VideoGroupB)
@@ -1523,15 +1524,15 @@ func (sp *STARSPane) Upgrade(from, to int) {
 		// System list offsets changed from updated handling of
 		// transformation matrices with and without the DCB visible.
 		update := func(ps *STARSPreferenceSet) {
-			ps.CharSize.DCB = max(0, ps.CharSize.DCB-1)
-			ps.CharSize.Datablocks = max(0, ps.CharSize.Datablocks-1)
-			ps.CharSize.Lists = max(0, ps.CharSize.Lists-1)
-			ps.CharSize.Tools = max(0, ps.CharSize.Tools-1)
-			ps.CharSize.PositionSymbols = max(0, ps.CharSize.PositionSymbols-1)
+			ps.CharSize.DCB = math.Max(0, ps.CharSize.DCB-1)
+			ps.CharSize.Datablocks = math.Max(0, ps.CharSize.Datablocks-1)
+			ps.CharSize.Lists = math.Max(0, ps.CharSize.Lists-1)
+			ps.CharSize.Tools = math.Max(0, ps.CharSize.Tools-1)
+			ps.CharSize.PositionSymbols = math.Max(0, ps.CharSize.PositionSymbols-1)
 
 			if ps.DisplayDCB && ps.DCBPosition == DCBPositionTop {
 				shift := func(y *float32) {
-					*y = max(0, *y-.05)
+					*y = math.Max(0, *y-.05)
 				}
 				shift(&ps.SSAList.Position[1])
 				shift(&ps.VFRList.Position[1])
@@ -1593,8 +1594,8 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 			// the DCB is at the top, in which case it's unchanged.
 			ms := *ctx.mouse
 			ctx.mouse = &ms
-			ctx.mouse.Pos[0] += ctx.paneExtent.p0[0] - paneExtent.p0[0]
-			ctx.mouse.Pos[1] += ctx.paneExtent.p0[1] - paneExtent.p0[1]
+			ctx.mouse.Pos[0] += ctx.paneExtent.P0[0] - paneExtent.P0[0]
+			ctx.mouse.Pos[1] += ctx.paneExtent.P0[1] - paneExtent.P0[1]
 		}
 	}
 
@@ -2294,7 +2295,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				}
 
 				state := sp.Aircraft[ac.Callsign]
-				d := nmdistance2ll(ps.RangeRingsCenter, state.TrackPosition())
+				d := math.NMDistance2LL(ps.RangeRingsCenter, state.TrackPosition())
 				if closest == nil || d < closestDistance {
 					closest = ac
 					closestDistance = d
@@ -2809,7 +2810,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					status.clear = true
 				} else {
 					if n, err := strconv.Atoi(cmd[1:]); err == nil {
-						n = clamp(n, 1, 100)
+						n = math.Clamp(n, 1, 100)
 						ps.TowerLists[idx].Lines = n
 					} else {
 						status.err = ErrSTARSIllegalParam
@@ -2950,7 +2951,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					*visible = !*visible
 				} else if lines != nil {
 					if n, err := strconv.Atoi(cmd); err == nil {
-						*lines = clamp(n, 1, 100) // TODO: or error if out of range? (and below..)
+						*lines = math.Clamp(n, 1, 100) // TODO: or error if out of range? (and below..)
 					} else {
 						status.err = ErrSTARSIllegalParam
 					}
@@ -3678,7 +3679,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 					p := transforms.LatLongFromWindowP(pw)
 					hdg := headingp2ll(from, p, ac.NmPerLongitude(), ac.MagneticVariation())
-					dist := nmdistance2ll(from, p)
+					dist := math.NMDistance2LL(from, p)
 
 					status.output = fmt.Sprintf("%03d/%.2f", int(hdg+.5), dist)
 					status.clear = true
@@ -4233,7 +4234,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 		if cmd == "D*" {
 			pll := transforms.LatLongFromWindowP(mousePosition)
 			format := func(v float32) string {
-				v = abs(v)
+				v = math.Abs(v)
 				d := int(v)
 				v = 60 * (v - float32(d))
 				return fmt.Sprintf("%d %.2f", d, v)
@@ -4358,7 +4359,7 @@ func rblSecondClickHandler(ctx *PaneContext, sp *STARSPane) func([2]float32, Sco
 	}
 }
 
-func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) Extent2D {
+func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, cb *CommandBuffer) math.Extent2D {
 	ps := &sp.CurrentPreferenceSet
 
 	// Find a scale factor so that the buttons all fit in the window, if necessary
@@ -4368,9 +4369,9 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 	var buttonScale float32
 	// Scale based on width or height available depending on DCB position
 	if ps.DCBPosition == DCBPositionTop || ps.DCBPosition == DCBPositionBottom {
-		buttonScale = min(ds, (ds*ctx.paneExtent.Width()-4)/(NumDCBSlots*STARSButtonSize))
+		buttonScale = math.Min(ds, (ds*ctx.paneExtent.Width()-4)/(NumDCBSlots*STARSButtonSize))
 	} else {
-		buttonScale = min(ds, (ds*ctx.paneExtent.Height()-4)/(NumDCBSlots*STARSButtonSize))
+		buttonScale = math.Min(ds, (ds*ctx.paneExtent.Height()-4)/(NumDCBSlots*STARSButtonSize))
 	}
 
 	sp.StartDrawDCB(ctx, buttonScale, transforms, cb)
@@ -4755,22 +4756,22 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 	paneExtent := ctx.paneExtent
 	switch ps.DCBPosition {
 	case DCBPositionTop:
-		paneExtent.p1[1] -= sz[1]
+		paneExtent.P1[1] -= sz[1]
 
 	case DCBPositionLeft:
-		paneExtent.p0[0] += sz[0]
+		paneExtent.P0[0] += sz[0]
 
 	case DCBPositionRight:
-		paneExtent.p1[0] -= sz[0]
+		paneExtent.P1[0] -= sz[0]
 
 	case DCBPositionBottom:
-		paneExtent.p0[1] += sz[1]
+		paneExtent.P0[1] += sz[1]
 	}
 
 	return paneExtent
 }
 
-func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, paneExtent Extent2D,
+func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, paneExtent math.Extent2D,
 	transforms ScopeTransformations, cb *CommandBuffer) {
 	ps := sp.CurrentPreferenceSet
 
@@ -4864,16 +4865,16 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		ld := GetColoredLinesDrawBuilder()
 		defer ReturnColoredLinesDrawBuilder(ld)
 
-		pIndicator := add2f(pw, [2]float32{5, 0})
-		tv := EquilateralTriangleVertices(7)
+		pIndicator := math.Add2f(pw, [2]float32{5, 0})
+		tv := math.EquilateralTriangleVertices(7)
 		for i := range tv {
-			tv[i] = add2f(pIndicator, scale2f(tv[i], -1))
+			tv[i] = math.Add2f(pIndicator, math.Scale2f(tv[i], -1))
 		}
 		trid.AddTriangle(tv[0], tv[1], tv[2], ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor))
 		trid.GenerateCommands(cb)
 
 		square := [][2]float32{[2]float32{-5, -5}, [2]float32{5, -5}, [2]float32{5, 5}, [2]float32{-5, 5}}
-		square = MapSlice(square, func(p [2]float32) [2]float32 { return add2f(p, pIndicator) })
+		square = MapSlice(square, func(p [2]float32) [2]float32 { return math.Add2f(p, pIndicator) })
 		ld.AddLineLoop(ps.Brightness.Lists.ScaleRGB(STARSListColor), square)
 		ld.GenerateCommands(cb)
 
@@ -5285,7 +5286,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		m := make(map[float32]string)
 		for _, ac := range aircraft {
 			if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == ap {
-				dist := nmdistance2ll(loc, sp.Aircraft[ac.Callsign].TrackPosition())
+				dist := math.NMDistance2LL(loc, sp.Aircraft[ac.Callsign].TrackPosition())
 				actype := ac.FlightPlan.TypeWithoutSuffix()
 				actype = strings.TrimPrefix(actype, "H/")
 				actype = strings.TrimPrefix(actype, "S/")
@@ -5622,12 +5623,12 @@ func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, trans
 
 		// Draw datablock
 		pac := transforms.WindowFromLatLongP(ghost.Position)
-		pt := add2f(datablockOffset, pac)
+		pt := math.Add2f(datablockOffset, pac)
 		td.AddText(datablockText, pt, datablockStyle)
 
 		// Leader line
 		v := sp.getLeaderLineVector(ghost.LeaderLineDirection)
-		ld.AddLine(pac, add2f(pac, v), color)
+		ld.AddLine(pac, math.Add2f(pac, v), color)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -5654,16 +5655,16 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 
 			// Orient the box toward the radar
 			h := headingp2ll(site.Position, pos, ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
-			rot := rotator2f(h)
+			rot := math.Rotator2f(h)
 
 			// blue box: x +/-9 pixels, y +/-3 pixels
 			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
 
 			// Scale box based on distance from the radar; TODO: what exactly should this be?
-			scale *= float32(clamp(dist/40, .5, 1.5))
+			scale *= float32(math.Clamp(dist/40, .5, 1.5))
 			for i := range box {
-				box[i] = scale2f(box[i], scale)
-				box[i] = add2f(rot(box[i]), pw)
+				box[i] = math.Scale2f(box[i], scale)
+				box[i] = math.Add2f(rot(box[i]), pw)
 				box[i] = transforms.LatLongFromWindowP(box[i])
 			}
 
@@ -5680,20 +5681,20 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 			// green line
 			line := [2][2]float32{[2]float32{-16, 3}, [2]float32{16, 3}}
 			for i := range line {
-				line[i] = add2f(rot(scale2f(line[i], scale)), pw)
+				line[i] = math.Add2f(rot(math.Scale2f(line[i], scale)), pw)
 				line[i] = transforms.LatLongFromWindowP(line[i])
 			}
 			ld.AddLine(line[0], line[1], primaryTargetBrightness.ScaleRGB(RGB{R: .1, G: .8, B: .1}))
 
 		case RadarModeMulti:
 			primary, secondary, _ := sp.radarVisibility(ctx.world, pos, state.TrackAltitude())
-			rot := rotator2f(heading)
+			rot := math.Rotator2f(heading)
 
 			// blue box: x +/-9 pixels, y +/-3 pixels
 			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
 			for i := range box {
-				box[i] = scale2f(box[i], scale)
-				box[i] = add2f(rot(box[i]), pw)
+				box[i] = math.Scale2f(box[i], scale)
+				box[i] = math.Add2f(rot(box[i]), pw)
 				box[i] = transforms.LatLongFromWindowP(box[i])
 			}
 
@@ -5735,8 +5736,8 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 			dx := transforms.LatLongFromWindowV([2]float32{1, 0})
 			dy := transforms.LatLongFromWindowV([2]float32{0, 1})
 			// Returns lat-long point w.r.t. p with a window coordinates vector (x,y) added.
-			delta := func(p Point2LL, x, y float32) Point2LL {
-				return add2ll(p, add2ll(scale2f(dx, x), scale2f(dy, y)))
+			delta := func(p math.Point2LL, x, y float32) math.Point2LL {
+				return math.Add2LL(p, math.Add2LL(math.Scale2f(dx, x), math.Scale2f(dy, y)))
 			}
 
 			px := float32(3) * scale
@@ -5756,7 +5757,7 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 func drawTrack(ctd *ColoredTrianglesDrawBuilder, p [2]float32, vertices [][2]float32, color RGB) {
 	for i := range vertices {
 		v0, v1 := vertices[i], vertices[(i+1)%len(vertices)]
-		ctd.AddTriangle(p, add2f(p, v0), add2f(p, v1), color)
+		ctd.AddTriangle(p, math.Add2f(p, v0), math.Add2f(p, v1), color)
 	}
 }
 
@@ -5773,14 +5774,14 @@ func getTrackVertices(ctx *PaneContext, diameter float32) [][2]float32 {
 	// angular spacing so that we have vertical and horizontal edges at the
 	// sides (e.g., a octagon like a stop-sign with 8 points, rather than
 	// having a vertex at the top of the circle.)
-	rot := rotator2f(360 / (2 * float32(np)))
-	pts := MapSlice(GetCirclePoints(np), func(p [2]float32) [2]float32 { return rot(p) })
+	rot := math.Rotator2f(360 / (2 * float32(np)))
+	pts := MapSlice(math.CirclePoints(np), func(p [2]float32) [2]float32 { return rot(p) })
 
 	// Scale the points based on the circle radius (and deal with the usual
 	// Windows high-DPI borkage...)
 	scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 	radius := scale * float32(int(diameter/2+0.5)) // round to integer
-	pts = MapSlice(pts, func(p [2]float32) [2]float32 { return scale2f(p, radius) })
+	pts = MapSlice(pts, func(p [2]float32) [2]float32 { return math.Scale2f(p, radius) })
 
 	return pts
 }
@@ -5809,7 +5810,7 @@ func (sp *STARSPane) drawHistoryTrails(aircraft []*Aircraft, ctx *PaneContext, t
 
 		// Draw history from new to old
 		for i := range ps.RadarTrackHistory {
-			trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
+			trackColorNum := math.Min(i, len(STARSTrackHistoryColors)-1)
 			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
 
 			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
@@ -5843,7 +5844,7 @@ func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatabl
 		maxLen := 0
 		for _, db := range dbs {
 			for _, line := range db.Lines {
-				maxLen = max(maxLen, len(line.Text))
+				maxLen = math.Max(maxLen, len(line.Text))
 			}
 		}
 		for i := range dbs {
@@ -5863,9 +5864,9 @@ func (sp *STARSPane) getDatablockOffset(textBounds [2]float32, leaderDir Cardina
 	lineHeight := textBounds[1] / 4
 	switch leaderDir {
 	case North, NorthEast, East, SouthEast:
-		drawOffset = add2f(drawOffset, [2]float32{2, lineHeight * 3 / 2})
+		drawOffset = math.Add2f(drawOffset, [2]float32{2, lineHeight * 3 / 2})
 	case South, SouthWest, West, NorthWest:
-		drawOffset = add2f(drawOffset, [2]float32{-2 - textBounds[0], lineHeight * 3 / 2})
+		drawOffset = math.Add2f(drawOffset, [2]float32{-2 - textBounds[0], lineHeight * 3 / 2})
 	}
 
 	return drawOffset
@@ -5926,9 +5927,9 @@ func (sp *STARSPane) updateCAAircraft(ctx *PaneContext, aircraft []*Aircraft) {
 		if inCAVolumes(sa) || inCAVolumes(sb) {
 			return false
 		}
-		return nmdistance2ll(sa.TrackPosition(), sb.TrackPosition()) <= LateralMinimum &&
+		return math.NMDistance2LL(sa.TrackPosition(), sb.TrackPosition()) <= LateralMinimum &&
 			/*small slop for fp error*/
-			abs(sa.TrackAltitude()-sb.TrackAltitude()) <= VerticalMinimum-5 &&
+			math.Abs(sa.TrackAltitude()-sb.TrackAltitude()) <= VerticalMinimum-5 &&
 			!sp.diverging(w.Aircraft[callsigna], w.Aircraft[callsignb])
 	}
 
@@ -6018,7 +6019,7 @@ func (sp *STARSPane) updateInTrailDistance(aircraft []*Aircraft, w *World) {
 		sort.Slice(runwayAircraft, func(i, j int) bool {
 			pi := sp.Aircraft[runwayAircraft[i].Callsign].TrackPosition()
 			pj := sp.Aircraft[runwayAircraft[j].Callsign].TrackPosition()
-			return nmdistance2ll(pi, vol.Threshold) < nmdistance2ll(pj, vol.Threshold)
+			return math.NMDistance2LL(pi, vol.Threshold) < math.NMDistance2LL(pj, vol.Threshold)
 		})
 
 		for i := range runwayAircraft {
@@ -6029,7 +6030,7 @@ func (sp *STARSPane) updateInTrailDistance(aircraft []*Aircraft, w *World) {
 			leading, trailing := runwayAircraft[i-1], runwayAircraft[i]
 			leadingState, trailingState := sp.Aircraft[leading.Callsign], sp.Aircraft[trailing.Callsign]
 			trailingState.IntrailDistance =
-				nmdistance2ll(leadingState.TrackPosition(), trailingState.TrackPosition())
+				math.NMDistance2LL(leadingState.TrackPosition(), trailingState.TrackPosition())
 			sp.checkInTrailCwtSeparation(trailing, leading)
 		}
 		handledVolumes[vol.Id] = nil
@@ -6047,14 +6048,14 @@ type ModeledAircraft struct {
 	landingSpeed float32
 }
 
-func MakeModeledAircraft(ac *Aircraft, state *STARSAircraftState, threshold Point2LL) ModeledAircraft {
+func MakeModeledAircraft(ac *Aircraft, state *STARSAircraftState, threshold math.Point2LL) ModeledAircraft {
 	ma := ModeledAircraft{
 		callsign:  ac.Callsign,
-		p:         ll2nm(state.TrackPosition(), ac.NmPerLongitude()),
+		p:         math.LL2NM(state.TrackPosition(), ac.NmPerLongitude()),
 		gs:        float32(state.TrackGroundspeed()),
 		alt:       float32(state.TrackAltitude()),
 		dalt:      float32(state.TrackDeltaAltitude()),
-		threshold: ll2nm(threshold, ac.NmPerLongitude()),
+		threshold: math.LL2NM(threshold, ac.NmPerLongitude()),
 	}
 	if perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]; ok {
 		ma.landingSpeed = perf.Speed.Landing
@@ -6062,8 +6063,8 @@ func MakeModeledAircraft(ac *Aircraft, state *STARSAircraftState, threshold Poin
 		ma.landingSpeed = 120 // ....
 	}
 	ma.v = state.HeadingVector(ac.NmPerLongitude(), ac.MagneticVariation())
-	ma.v = ll2nm(ma.v, ac.NmPerLongitude())
-	ma.v = normalize2f(ma.v)
+	ma.v = math.LL2NM(ma.v, ac.NmPerLongitude())
+	ma.v = math.Normalize2f(ma.v)
 	return ma
 }
 
@@ -6076,17 +6077,17 @@ func (ma *ModeledAircraft) EstimatedAltitude(s float32) float32 {
 // Return estimated position 1s in the future
 func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	gs := ma.gs // current speed
-	td := distance2f(p, ma.threshold)
+	td := math.Distance2f(p, ma.threshold)
 	if td < 2 {
-		gs = min(gs, ma.landingSpeed)
+		gs = math.Min(gs, ma.landingSpeed)
 	} else if td < 5 {
 		t := (td - 2) / 3 // [0,1]
 		// lerp from current speed down to landing speed
-		gs = lerp(t, ma.landingSpeed, gs)
+		gs = math.Lerp(t, ma.landingSpeed, gs)
 	}
 
 	gs /= 3600 // nm / second
-	return add2f(p, scale2f(ma.v, gs))
+	return math.Add2f(p, math.Scale2f(ma.v, gs))
 }
 
 func getCwtCategory(ac *Aircraft) string {
@@ -6189,7 +6190,7 @@ func (sp *STARSPane) checkInTrailCwtSeparation(back, front *Aircraft) {
 		// 7110.126B replaces 7110.65Z 5-5-4(j), which is now 7110.65AA 5-5-4(i)
 		// Reduced separation allowed 10 NM out (also enabled for the ATPA volume)
 		if vol.Enable25nmApproach &&
-			nmdistance2ll(vol.Threshold, state.TrackPosition()) < vol.Dist25nmApproach {
+			math.NMDistance2LL(vol.Threshold, state.TrackPosition()) < vol.Dist25nmApproach {
 
 			// between aircraft established on the final approach course
 			// Note 1: checked with OnExtendedCenterline since reduced separation probably
@@ -6222,7 +6223,7 @@ func (sp *STARSPane) checkInTrailCwtSeparation(back, front *Aircraft) {
 	frontPosition, backPosition := frontModel.p, backModel.p
 	for s := 0; s < 45; s++ {
 		frontPosition, backPosition = frontModel.NextPosition(frontPosition), backModel.NextPosition(backPosition)
-		distance := distance2f(frontPosition, backPosition)
+		distance := math.Distance2f(frontPosition, backPosition)
 		if distance < cwtSeparation { // no bueno
 			if s <= 24 {
 				// Error if conflict expected within 24 seconds (6-159).
@@ -6240,19 +6241,19 @@ func (sp *STARSPane) checkInTrailCwtSeparation(back, front *Aircraft) {
 func (sp *STARSPane) diverging(a, b *Aircraft) bool {
 	sa, sb := sp.Aircraft[a.Callsign], sp.Aircraft[b.Callsign]
 
-	pa := ll2nm(sa.TrackPosition(), a.NmPerLongitude())
-	da := ll2nm(sa.HeadingVector(a.NmPerLongitude(), a.MagneticVariation()), a.NmPerLongitude())
-	pb := ll2nm(sb.TrackPosition(), b.NmPerLongitude())
-	db := ll2nm(sb.HeadingVector(b.NmPerLongitude(), b.MagneticVariation()), b.NmPerLongitude())
+	pa := math.LL2NM(sa.TrackPosition(), a.NmPerLongitude())
+	da := math.LL2NM(sa.HeadingVector(a.NmPerLongitude(), a.MagneticVariation()), a.NmPerLongitude())
+	pb := math.LL2NM(sb.TrackPosition(), b.NmPerLongitude())
+	db := math.LL2NM(sb.HeadingVector(b.NmPerLongitude(), b.MagneticVariation()), b.NmPerLongitude())
 
-	pint, ok := LineLineIntersect(pa, add2f(pa, da), pb, add2f(pb, db))
+	pint, ok := math.LineLineIntersect(pa, math.Add2f(pa, da), pb, math.Add2f(pb, db))
 	if !ok {
 		// This generally happens at the start when we don't have a valid
 		// track heading vector yet.
 		return false
 	}
 
-	if dot(da, sub2f(pint, pa)) > 0 && dot(db, sub2f(pint, pb)) > 0 {
+	if math.Dot(da, math.Sub2f(pint, pa)) > 0 && math.Dot(db, math.Sub2f(pint, pb)) > 0 {
 		// intersection is in front of one of them
 		return false
 	}
@@ -6630,7 +6631,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		// of their lengths.  and 8 may be time multiplexed, which
 		// simplifies db creation here.
 		dbs := []STARSDatablock{}
-		n := lcm(lcm(len(field3), len(field4)), lcm(len(field5), len(field8)))
+		n := math.LCM(math.LCM(len(field3), len(field4)), math.LCM(len(field5), len(field8)))
 		for i := 0; i < n; i++ {
 			db := baseDB.Duplicate()
 			db.Lines[1].Text = field1 + field2 + field8[i%len(field8)]
@@ -6752,7 +6753,7 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*Aircraft, ctx *PaneContext, tra
 		baseColor, brightness := sp.datablockColor(ctx, ac)
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
 		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac, ctx.world))
-		ld.AddLine(pac, add2f(pac, v), brightness.ScaleRGB(baseColor))
+		ld.AddLine(pac, math.Add2f(pac, v), brightness.ScaleRGB(baseColor))
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -6795,7 +6796,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*Aircraft, ctx *PaneContext,
 
 		// Draw characters starting at the upper left.
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
-		pt := add2f(datablockOffset, pac)
+		pt := math.Add2f(datablockOffset, pac)
 		idx := (realNow.Second() / 2) % len(dbs) // 2 second cycle
 		dbs[idx].DrawText(td, pt, font, color, brightness)
 	}
@@ -6830,11 +6831,11 @@ func (sp *STARSPane) drawPTLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 
 		// h is a vector in nm coordinates with length l=dist
 		hdg := state.TrackHeading(ac.NmPerLongitude())
-		h := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
-		h = scale2f(h, dist)
-		end := add2f(ll2nm(state.TrackPosition(), ac.NmPerLongitude()), h)
+		h := [2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}
+		h = math.Scale2f(h, dist)
+		end := math.Add2f(math.LL2NM(state.TrackPosition(), ac.NmPerLongitude()), h)
 
-		ld.AddLine(state.TrackPosition(), nm2ll(end, ac.NmPerLongitude()), color)
+		ld.AddLine(state.TrackPosition(), math.NM2LL(end, ac.NmPerLongitude()), color)
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
@@ -6883,7 +6884,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 				v := [2]float32{-.707106 * radius, -.707106 * radius} // -sqrt(2)/2
 				// move up to make space for the text
 				v[1] += float32(font.size) + 3
-				pt := add2f(pc, v)
+				pt := math.Add2f(pc, v)
 				textStyle := TextStyle{Font: font, Color: color}
 				td.AddText(format(state.JRingRadius), pt, textStyle)
 			}
@@ -6908,7 +6909,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 
 		if state.HaveHeading() && (state.ConeLength > 0 || drawATPACone) {
 			// Find the length of the cone in pixel coordinates)
-			lengthNM := max(state.ConeLength, state.MinimumMIT)
+			lengthNM := math.Max(state.ConeLength, state.MinimumMIT)
 			length := lengthNM / transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
 
 			// Form a triangle; the end of the cone is 10 pixels wide
@@ -6927,7 +6928,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 				// The cone is oriented along the aircraft's heading.
 				coneHeading = state.TrackHeading(ac.NmPerLongitude()) + ac.MagneticVariation()
 			}
-			rot := rotator2f(coneHeading)
+			rot := math.Rotator2f(coneHeading)
 			for i := range pts {
 				pts[i] = rot(pts[i])
 			}
@@ -6943,23 +6944,23 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			// aircraft's position as an anchor.
 			pw := transforms.WindowFromLatLongP(state.TrackPosition())
 			for i := range pts {
-				pts[i] = add2f(pts[i], pw)
+				pts[i] = math.Add2f(pts[i], pw)
 			}
 			ld.AddLineLoop(coneColor, pts[:])
 
 			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
 				textStyle := TextStyle{Font: font, Color: coneColor}
 
-				pCenter := add2f(pw, rot(scale2f([2]float32{0, 0.5}, length)))
+				pCenter := math.Add2f(pw, rot(math.Scale2f([2]float32{0, 0.5}, length)))
 
 				// Draw a quad in the background color behind the text
 				text := format(lengthNM)
 				bx, by := textStyle.Font.BoundText(" "+text+" ", 0)
 				fbx, fby := float32(bx), float32(by+2)
-				trid.AddQuad(add2f(pCenter, [2]float32{-fbx / 2, -fby / 2}),
-					add2f(pCenter, [2]float32{fbx / 2, -fby / 2}),
-					add2f(pCenter, [2]float32{fbx / 2, fby / 2}),
-					add2f(pCenter, [2]float32{-fbx / 2, fby / 2}))
+				trid.AddQuad(math.Add2f(pCenter, [2]float32{-fbx / 2, -fby / 2}),
+					math.Add2f(pCenter, [2]float32{fbx / 2, -fby / 2}),
+					math.Add2f(pCenter, [2]float32{fbx / 2, fby / 2}),
+					math.Add2f(pCenter, [2]float32{-fbx / 2, fby / 2}))
 
 				td.AddTextCentered(text, pCenter, textStyle)
 			}
@@ -6987,10 +6988,10 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		Color: color,
 	}
 
-	drawRBL := func(p0 Point2LL, p1 Point2LL, idx int, gs float32) {
+	drawRBL := func(p0 math.Point2LL, p1 math.Point2LL, idx int, gs float32) {
 		// Format the range-bearing line text for the two positions.
 		hdg := headingp2ll(p0, p1, ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
-		dist := nmdistance2ll(p0, p1)
+		dist := math.NMDistance2LL(p0, p1)
 		text := fmt.Sprintf("%3d/%.2f", int(hdg+.5), dist)
 		if gs != 0 {
 			// Add ETA in minutes
@@ -7000,7 +7001,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 		text += fmt.Sprintf("-%d", idx)
 
 		// And draw the line and the text.
-		pText := transforms.WindowFromLatLongP(mid2ll(p0, p1))
+		pText := transforms.WindowFromLatLongP(math.Mid2LL(p0, p1))
 		td.AddTextCentered(text, pText, style)
 		ld.AddLine(p0, p1, color)
 	}
@@ -7087,16 +7088,16 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 	d0ll := s0.HeadingVector(ac0.NmPerLongitude(), ac0.MagneticVariation())
 	d1ll := s1.HeadingVector(ac1.NmPerLongitude(), ac1.MagneticVariation())
 
-	p0, d0 := ll2nm(p0ll, ac0.NmPerLongitude()), ll2nm(d0ll, ac0.NmPerLongitude())
-	p1, d1 := ll2nm(p1ll, ac1.NmPerLongitude()), ll2nm(d1ll, ac1.NmPerLongitude())
+	p0, d0 := math.LL2NM(p0ll, ac0.NmPerLongitude()), math.LL2NM(d0ll, ac0.NmPerLongitude())
+	p1, d1 := math.LL2NM(p1ll, ac1.NmPerLongitude()), math.LL2NM(d1ll, ac1.NmPerLongitude())
 
 	// Find the parametric distance along the respective rays of the
 	// aircrafts' courses where they at at a minimum distance; this is
 	// linearly extrapolating their positions.
-	tmin := RayRayMinimumDistance(p0, d0, p1, d1)
+	tmin := math.RayRayMinimumDistance(p0, d0, p1, d1)
 
 	// If something blew up in RayRayMinimumDistance then just bail out here.
-	if math.IsInf(float64(tmin), 0) || math.IsNaN(float64(tmin)) {
+	if gomath.IsInf(float64(tmin), 0) || gomath.IsNaN(float64(tmin)) {
 		return
 	}
 
@@ -7110,8 +7111,8 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 	font := sp.systemFont[ps.CharSize.Tools]
 
 	// Draw the separator lines (and triangles, if appropriate.)
-	var pw0, pw1 [2]float32     // Window coordinates of the points of minimum approach
-	var p0tmin, p1tmin Point2LL // Lat-long coordinates of the points of minimum approach
+	var pw0, pw1 [2]float32          // Window coordinates of the points of minimum approach
+	var p0tmin, p1tmin math.Point2LL // Lat-long coordinates of the points of minimum approach
 	if tmin < 0 {
 		// The closest approach was in the past; just draw a line between
 		// the two tracks and initialize the above coordinates.
@@ -7122,8 +7123,8 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 		// Closest approach in the future: draw a line from each track to
 		// the minimum separation line as well as the minimum separation
 		// line itself.
-		p0tmin = nm2ll(add2f(p0, scale2f(d0, tmin)), ac0.NmPerLongitude())
-		p1tmin = nm2ll(add2f(p1, scale2f(d1, tmin)), ac1.NmPerLongitude())
+		p0tmin = math.NM2LL(math.Add2f(p0, math.Scale2f(d0, tmin)), ac0.NmPerLongitude())
+		p1tmin = math.NM2LL(math.Add2f(p1, math.Scale2f(d1, tmin)), ac1.NmPerLongitude())
 		ld.AddLine(p0ll, p0tmin, color)
 		ld.AddLine(p0tmin, p1tmin, color)
 		ld.AddLine(p1tmin, p1ll, color)
@@ -7137,14 +7138,14 @@ func (sp *STARSPane) drawMinSep(ctx *PaneContext, transforms ScopeTransformation
 
 	// Draw the text for the minimum distance
 	// Center the text along the minimum distance line
-	pText := mid2f(pw0, pw1)
+	pText := math.Mid2f(pw0, pw1)
 	style := TextStyle{
 		Font:            font,
 		Color:           color,
 		DrawBackground:  true,
 		BackgroundColor: RGB{},
 	}
-	text := fmt.Sprintf("%.2fNM", nmdistance2ll(p0tmin, p1tmin))
+	text := fmt.Sprintf("%.2fNM", math.NMDistance2LL(p0tmin, p1tmin))
 	if tmin < 0 {
 		text = "NO XING\n" + text
 	}
@@ -7171,11 +7172,11 @@ func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformati
 
 	drawSectors := func(volumes []ControllerAirspaceVolume) {
 		for _, v := range volumes {
-			e := EmptyExtent2D()
+			e := math.EmptyExtent2D()
 
 			for _, pts := range v.Boundaries {
 				for i := range pts {
-					e = Union(e, pts[i])
+					e = math.Union(e, pts[i])
 					if i < len(pts)-1 {
 						ld.AddLine(pts[i], pts[i+1], rgb)
 					}
@@ -7234,7 +7235,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			delta := mouse.DragDelta
 			if delta[0] != 0 || delta[1] != 0 {
 				deltaLL := transforms.LatLongFromWindowV(delta)
-				ps.CurrentCenter = sub2f(ps.CurrentCenter, deltaLL)
+				ps.CurrentCenter = math.Sub2f(ps.CurrentCenter, deltaLL)
 			}
 		}
 
@@ -7246,14 +7247,14 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			} else {
 				ps.Range += mouse.Wheel[1]
 			}
-			ps.Range = clamp(ps.Range, 6, 256) // 4-33
+			ps.Range = math.Clamp(ps.Range, 6, 256) // 4-33
 
 			// We want to zoom in centered at the mouse position; this affects
 			// the scope center after the zoom, so we'll find the
 			// transformation that gives the new center position.
 			mouseLL := transforms.LatLongFromWindowP(mouse.Pos)
 			scale := ps.Range / r
-			centerTransform := Identity3x3().
+			centerTransform := math.Identity3x3().
 				Translate(mouseLL[0], mouseLL[1]).
 				Scale(scale, scale).
 				Translate(-mouseLL[0], -mouseLL[1])
@@ -7338,7 +7339,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 
 			// Upper-left corner of where we start drawing the text
 			pad := float32(5)
-			ptext := add2f([2]float32{2 * pad, 0}, pac)
+			ptext := math.Add2f([2]float32{2 * pad, 0}, pac)
 			info := ac.NavSummary()
 			td.AddText(info, ptext, style)
 
@@ -7346,10 +7347,10 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			trid := GetTrianglesDrawBuilder()
 			defer ReturnTrianglesDrawBuilder(trid)
 			bx, by := font.BoundText(info, style.LineSpacing)
-			trid.AddQuad(add2f(ptext, [2]float32{-pad, 0}),
-				add2f(ptext, [2]float32{float32(bx) + pad, 0}),
-				add2f(ptext, [2]float32{float32(bx) + pad, -float32(by) - pad}),
-				add2f(ptext, [2]float32{-pad, -float32(by) - pad}))
+			trid.AddQuad(math.Add2f(ptext, [2]float32{-pad, 0}),
+				math.Add2f(ptext, [2]float32{float32(bx) + pad, 0}),
+				math.Add2f(ptext, [2]float32{float32(bx) + pad, -float32(by) - pad}),
+				math.Add2f(ptext, [2]float32{-pad, -float32(by) - pad}))
 
 			// Get it all into the command buffer
 			transforms.LoadWindowViewingMatrices(cb)
@@ -7362,7 +7363,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 	}
 }
 
-func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent Extent2D, transforms ScopeTransformations,
+func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent math.Extent2D, transforms ScopeTransformations,
 	cb *CommandBuffer) {
 	if ctx.mouse == nil {
 		return
@@ -7378,8 +7379,8 @@ func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent Extent2D, tran
 		defer ReturnLinesDrawBuilder(ld)
 
 		w := float32(7) * Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
-		ld.AddLine(add2f(ctx.mouse.Pos, [2]float32{-w, 0}), add2f(ctx.mouse.Pos, [2]float32{w, 0}))
-		ld.AddLine(add2f(ctx.mouse.Pos, [2]float32{0, -w}), add2f(ctx.mouse.Pos, [2]float32{0, w}))
+		ld.AddLine(math.Add2f(ctx.mouse.Pos, [2]float32{-w, 0}), math.Add2f(ctx.mouse.Pos, [2]float32{w, 0}))
+		ld.AddLine(math.Add2f(ctx.mouse.Pos, [2]float32{0, -w}), math.Add2f(ctx.mouse.Pos, [2]float32{0, w}))
 
 		transforms.LoadWindowViewingMatrices(cb)
 		// STARS Operators Manual 4-74: FDB brightness is used for the cursor
@@ -7506,14 +7507,14 @@ func drawDCBText(text string, td *TextDrawBuilder, buttonSize [2]float32, color 
 		// Try to center the text, though if it's too big to fit in the
 		// button then draw it starting from the left edge of the button so
 		// that the trailing characters are the ones that are lost.
-		x0 := dcbDrawState.cursor[0] + max(1, (buttonSize[0]-float32(lw))/2)
+		x0 := dcbDrawState.cursor[0] + math.Max(1, (buttonSize[0]-float32(lw))/2)
 
 		td.AddText(line, [2]float32{x0, y0}, style)
 		y0 -= float32(lh)
 	}
 }
 
-func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32, pushedIn bool, disabled bool) (Extent2D, bool) {
+func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32, pushedIn bool, disabled bool) (math.Extent2D, bool) {
 	ld := GetColoredLinesDrawBuilder()
 	trid := GetColoredTrianglesDrawBuilder()
 	td := GetTextDrawBuilder()
@@ -7525,12 +7526,12 @@ func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32
 
 	// Offset for spacing
 	const delta = 1
-	p0 := add2f(dcbDrawState.cursor, [2]float32{delta, -delta})
-	p1 := add2f(p0, [2]float32{sz[0] - 2*delta, 0})
-	p2 := add2f(p1, [2]float32{0, -sz[1] + 2*delta})
-	p3 := add2f(p2, [2]float32{-sz[0] + 2*delta, 0})
+	p0 := math.Add2f(dcbDrawState.cursor, [2]float32{delta, -delta})
+	p1 := math.Add2f(p0, [2]float32{sz[0] - 2*delta, 0})
+	p2 := math.Add2f(p1, [2]float32{0, -sz[1] + 2*delta})
+	p3 := math.Add2f(p2, [2]float32{-sz[0] + 2*delta, 0})
 
-	ext := Extent2DFromPoints([][2]float32{p0, p2})
+	ext := math.Extent2DFromPoints([][2]float32{p0, p2})
 	mouse := dcbDrawState.mouse
 	mouseInside := mouse != nil && ext.Inside(mouse.Pos)
 	mouseDownInside := dcbDrawState.mouseDownPos != nil &&
@@ -7573,10 +7574,10 @@ func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32
 	// Scissor to just the extent of the button. Note that we need to give
 	// this in window coordinates, not our local pane coordinates, so
 	// translating by ctx.paneExtent.p0 is needed...
-	winBase := add2f(dcbDrawState.cursor, ctx.paneExtent.p0)
-	dcbDrawState.cb.SetScissorBounds(Extent2D{
-		p0: [2]float32{winBase[0], winBase[1] - sz[1]},
-		p1: [2]float32{winBase[0] + sz[0], winBase[1]},
+	winBase := math.Add2f(dcbDrawState.cursor, ctx.paneExtent.P0)
+	dcbDrawState.cb.SetScissorBounds(math.Extent2D{
+		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
+		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	})
 
 	updateDCBCursor(flags, sz)
@@ -7666,7 +7667,7 @@ func (sp *STARSPane) DrawDCBSpinner(ctx *PaneContext, spinner DCBSpinner, comman
 		// call that lets us draw things oblivious to the menubar as well
 		// as flip things in y.
 		h := ctx.paneExtent.Height() + ui.menuBarHeight
-		buttonBounds.p0[1], buttonBounds.p1[1] = h-buttonBounds.p1[1], h-buttonBounds.p0[1]
+		buttonBounds.P0[1], buttonBounds.P1[1] = h-buttonBounds.P1[1], h-buttonBounds.P0[1]
 		ctx.platform.StartCaptureMouse(buttonBounds)
 
 		if clicked {
@@ -7708,7 +7709,7 @@ func (s DCBRadarRangeSpinner) Equals(other DCBSpinner) bool {
 }
 
 func (s *DCBRadarRangeSpinner) MouseWheel(delta int) {
-	*s.r = clamp(*s.r+float32(delta), 6, 256)
+	*s.r = math.Clamp(*s.r+float32(delta), 6, 256)
 }
 
 func (s *DCBRadarRangeSpinner) KeyboardInput(text string) error {
@@ -7747,7 +7748,7 @@ func (s *DCBIntegerRangeSpinner) Equals(other DCBSpinner) bool {
 }
 
 func (s *DCBIntegerRangeSpinner) MouseWheel(delta int) {
-	*s.value = clamp(*s.value+delta, s.min, s.max)
+	*s.value = math.Clamp(*s.value+delta, s.min, s.max)
 }
 
 func (s *DCBIntegerRangeSpinner) KeyboardInput(text string) error {
@@ -7825,9 +7826,9 @@ func (s *DCBHistoryRateSpinner) Equals(other DCBSpinner) bool {
 func (s *DCBHistoryRateSpinner) MouseWheel(delta int) {
 	// 4-94 the spinner goes in steps of 0.5.
 	if delta > 0 {
-		*s.r = clamp(*s.r+0.5, 0, 4.5)
+		*s.r = math.Clamp(*s.r+0.5, 0, 4.5)
 	} else if delta < 0 {
-		*s.r = clamp(*s.r-0.5, 0, 4.5)
+		*s.r = math.Clamp(*s.r-0.5, 0, 4.5)
 	}
 }
 
@@ -7882,9 +7883,9 @@ func (s *DCBPTLLengthSpinner) MouseWheel(delta int) {
 	// 6-16: PTLs are between 0 and 5 minutes, specified in 0.5 minute
 	// increments.
 	if delta > 0 {
-		*s.l = min(*s.l+0.5, 5)
+		*s.l = math.Min(*s.l+0.5, 5)
 	} else if delta < 0 {
-		*s.l = max(*s.l-0.5, 0)
+		*s.l = math.Max(*s.l-0.5, 0)
 	}
 }
 
@@ -8029,7 +8030,7 @@ func (s *DCBBrightnessSpinner) MouseWheel(delta int) {
 	if *s.b < s.min && s.allowOff {
 		*s.b = STARSBrightness(0)
 	} else {
-		*s.b = STARSBrightness(clamp(*s.b, s.min, 100))
+		*s.b = STARSBrightness(math.Clamp(*s.b, s.min, 100))
 	}
 }
 
@@ -8138,7 +8139,7 @@ func (sp *STARSPane) radarMode(w *World) int {
 	}
 }
 
-func (sp *STARSPane) radarVisibility(w *World, pos Point2LL, alt int) (primary, secondary bool, distance float32) {
+func (sp *STARSPane) radarVisibility(w *World, pos math.Point2LL, alt int) (primary, secondary bool, distance float32) {
 	ps := sp.CurrentPreferenceSet
 	distance = 1e30
 	single := sp.radarMode(w) == RadarModeSingle
@@ -8150,7 +8151,7 @@ func (sp *STARSPane) radarVisibility(w *World, pos Point2LL, alt int) (primary, 
 		if p, s, dist := site.CheckVisibility(w, pos, alt); p || s {
 			primary = primary || p
 			secondary = secondary || s
-			distance = min(distance, dist)
+			distance = math.Min(distance, dist)
 		}
 	}
 
@@ -8288,9 +8289,9 @@ func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft, w *World) CardinalOrdi
 
 func (sp *STARSPane) getLeaderLineVector(dir CardinalOrdinalDirection) [2]float32 {
 	angle := dir.Heading()
-	v := [2]float32{sin(radians(angle)), cos(radians(angle))}
+	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
 	ps := sp.CurrentPreferenceSet
-	return scale2f(v, float32(10+10*ps.LeaderLineLength))
+	return math.Scale2f(v, float32(10+10*ps.LeaderLineLength))
 }
 
 func (sp *STARSPane) isOverflight(ctx *PaneContext, ac *Aircraft) bool {
@@ -8305,7 +8306,7 @@ func (sp *STARSPane) tryGetClosestAircraft(w *World, mousePosition [2]float32, t
 
 	for _, a := range sp.visibleAircraft(w) {
 		pw := transforms.WindowFromLatLongP(sp.Aircraft[a.Callsign].TrackPosition())
-		dist := distance2f(pw, mousePosition)
+		dist := math.Distance2f(pw, mousePosition)
 		if dist < distance {
 			ac = a
 			distance = dist
@@ -8321,7 +8322,7 @@ func (sp *STARSPane) tryGetClosestGhost(ghosts []*GhostAircraft, mousePosition [
 
 	for _, g := range ghosts {
 		pw := transforms.WindowFromLatLongP(g.Position)
-		dist := distance2f(pw, mousePosition)
+		dist := math.Distance2f(pw, mousePosition)
 		if dist < distance {
 			ghost = g
 			distance = dist

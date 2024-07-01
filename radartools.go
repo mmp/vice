@@ -16,6 +16,8 @@ import (
 	"net/url"
 	"sort"
 	"time"
+
+	"github.com/mmp/vice/pkg/math"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -31,7 +33,7 @@ type WeatherRadar struct {
 	// updated radar center locations are sent from the main thread via
 	// reqChan and command buffers to draw each of the 6 weather levels are
 	// returned by cbChan.
-	reqChan chan Point2LL
+	reqChan chan math.Point2LL
 	cbChan  chan [NumWxLevels]CommandBuffer
 
 	// Texture id for each wx level's image.
@@ -52,14 +54,14 @@ const WxLatLongExtent = 2.5
 // Activate must be called for the WeatherRadar to start fetching weather
 // radar images; it is called with an initial center position in
 // latitude-longitude coordinates.
-func (w *WeatherRadar) Activate(center Point2LL, r Renderer) {
+func (w *WeatherRadar) Activate(center math.Point2LL, r Renderer) {
 	if w.active {
 		w.reqChan <- center
 		return
 	}
 	w.active = true
 
-	w.reqChan = make(chan Point2LL, 1000) // lots of buffering
+	w.reqChan = make(chan math.Point2LL, 1000) // lots of buffering
 	w.reqChan <- center
 	w.cbChan = make(chan [NumWxLevels]CommandBuffer, 8)
 
@@ -112,7 +114,7 @@ func (w *WeatherRadar) Deactivate() {
 
 // UpdateCenter provides a new center point for the radar image, causing a
 // new image to be fetched.
-func (w *WeatherRadar) UpdateCenter(center Point2LL) {
+func (w *WeatherRadar) UpdateCenter(center math.Point2LL) {
 	select {
 	case w.reqChan <- center:
 		// success
@@ -191,8 +193,8 @@ func invertRadarReflectivity(rgb [3]byte) float32 {
 	// Returns the distnace between the specified RGB and the RGB passed to
 	// invertRadarReflectivity.
 	dist := func(o []byte) float32 {
-		d2 := sqr(int(o[0])-int(rgb[0])) + sqr(int(o[1])-int(rgb[1])) + sqr(int(o[2])-int(rgb[2]))
-		return sqrt(float32(d2))
+		d2 := math.Sqr(int(o[0])-int(rgb[0])) + math.Sqr(int(o[1])-int(rgb[1])) + math.Sqr(int(o[2])-int(rgb[2]))
+		return math.Sqrt(float32(d2))
 	}
 
 	var searchTree func(n *kdNode, closestNode *kdNode, closestDist float32, depth int) (*kdNode, float32)
@@ -225,7 +227,7 @@ func invertRadarReflectivity(rgb [3]byte) float32 {
 		// If the distance to the split plane is less than the distance to
 		// the closest point found so far, we need to check the other side
 		// of the split.
-		if float32(abs(int(rgb[dim])-int(n.rgb[dim]))) < closestDist {
+		if float32(math.Abs(int(rgb[dim])-int(n.rgb[dim]))) < closestDist {
 			closestNode, closestDist = searchTree(second, closestNode, closestDist, depth+1)
 		}
 
@@ -270,13 +272,13 @@ func invertRadarReflectivity(rgb [3]byte) float32 {
 // reqChan, fetching corresponding radar images from the NOAA, and sending
 // the results back on cbChan.  New images are also automatically
 // fetched periodically, with a wait time specified by the delay parameter.
-func fetchWeather(reqChan chan Point2LL, cbChan chan [NumWxLevels]CommandBuffer) {
+func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]CommandBuffer) {
 	// NOAA posts new maps every 2 minutes, so fetch a new map at minimum
 	// every 100s to stay current.
 	fetchRate := 100 * time.Second
 
 	// center stores the current center position of the radar image
-	var center Point2LL
+	var center math.Point2LL
 	var lastFetch time.Time
 	for {
 		var ok, timedOut bool
@@ -306,9 +308,9 @@ func fetchWeather(reqChan chan Point2LL, cbChan chan [NumWxLevels]CommandBuffer)
 		}
 		lastFetch = time.Now()
 
-		// Lat-long bounds of the region we're going to request weater for.
-		rb := Extent2D{p0: sub2ll(center, Point2LL{WxLatLongExtent, WxLatLongExtent}),
-			p1: add2ll(center, Point2LL{WxLatLongExtent, WxLatLongExtent})}
+		// Lat-long bounds of the region we're going to request weather for.
+		rb := math.Extent2D{P0: math.Sub2LL(center, math.Point2LL{WxLatLongExtent, WxLatLongExtent}),
+			P1: math.Add2LL(center, math.Point2LL{WxLatLongExtent, WxLatLongExtent})}
 
 		// The weather radar image comes via a WMS GetMap request from the NOAA.
 		//
@@ -324,7 +326,7 @@ func fetchWeather(reqChan chan Point2LL, cbChan chan [NumWxLevels]CommandBuffer)
 		params.Add("WIDTH", "2048")
 		params.Add("HEIGHT", "2048")
 		params.Add("LAYERS", "conus_bref_qcd")
-		params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", rb.p0[0], rb.p0[1], rb.p1[0], rb.p1[1]))
+		params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", rb.P0[0], rb.P0[1], rb.P1[0], rb.P1[1]))
 
 		url := "https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?" + params.Encode()
 
@@ -350,7 +352,7 @@ func fetchWeather(reqChan chan Point2LL, cbChan chan [NumWxLevels]CommandBuffer)
 	}
 }
 
-func makeWeatherCommandBuffers(img image.Image, rb Extent2D) [NumWxLevels]CommandBuffer {
+func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]CommandBuffer {
 	// Convert the Image returned by png.Decode to a simple 8-bit RGBA image.
 	rgba := image.NewRGBA(img.Bounds())
 	draw.Draw(rgba, img.Bounds(), img, image.Point{}, draw.Over)
@@ -376,7 +378,7 @@ func makeWeatherCommandBuffers(img image.Image, rb Extent2D) [NumWxLevels]Comman
 			}
 
 			// levels from [0,6].
-			level := int(min(avg*7/(WxBlockRes*WxBlockRes), 6))
+			level := int(math.Min(avg*7/(WxBlockRes*WxBlockRes), 6))
 			levels[x+y*nbx] = level
 		}
 	}
@@ -470,12 +472,12 @@ func (w *WeatherRadar) Draw(ctx *PaneContext, intensity float32, contrast float3
 // rotation angle, if any.  Drawing commands are added to the provided
 // command buffer, which is assumed to have projection matrices set up for
 // drawing using window coordinates.
-func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font, color RGB,
-	paneBounds Extent2D, transforms ScopeTransformations, cb *CommandBuffer) {
+func DrawCompass(p math.Point2LL, ctx *PaneContext, rotationAngle float32, font *Font, color RGB,
+	paneBounds math.Extent2D, transforms ScopeTransformations, cb *CommandBuffer) {
 	// Window coordinates of the center point.
 	// TODO: should we explicitly handle the case of this being outside the window?
 	pw := transforms.WindowFromLatLongP(p)
-	bounds := Extent2D{p1: [2]float32{paneBounds.Width(), paneBounds.Height()}}
+	bounds := math.Extent2D{P1: [2]float32{paneBounds.Width(), paneBounds.Height()}}
 
 	td := GetTextDrawBuilder()
 	defer ReturnTextDrawBuilder(td)
@@ -485,7 +487,7 @@ func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font
 	// Draw lines at a 5 degree spacing.
 	for h := float32(5); h <= 360; h += 5 {
 		hr := h + rotationAngle
-		dir := [2]float32{sin(radians(hr)), cos(radians(hr))}
+		dir := [2]float32{math.Sin(math.Radians(hr)), math.Cos(math.Radians(hr))}
 		// Find the intersection of the line from the center point to the edge of the window.
 		isect, _, t := bounds.IntersectRay(pw, dir)
 		if !isect {
@@ -496,8 +498,8 @@ func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font
 
 		// Draw a short line from the intersection point at the edge to the
 		// point ten pixels back inside the window toward the center.
-		pEdge := add2f(pw, scale2f(dir, t))
-		pInset := add2f(pw, scale2f(dir, t-10))
+		pEdge := math.Add2f(pw, math.Scale2f(dir, t))
+		pInset := math.Add2f(pw, math.Scale2f(dir, t-10))
 		ld.AddLine(pEdge, pInset, color)
 
 		// Every 10 degrees draw a heading label.
@@ -515,23 +517,23 @@ func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font
 
 			// Initial inset to place the text--a little past the end of
 			// the line.
-			pText := add2f(pw, scale2f(dir, t-14))
+			pText := math.Add2f(pw, math.Scale2f(dir, t-14))
 
 			// Finer text positioning depends on which edge of the window
 			// pane we're on; this is made more grungy because text drawing
 			// is specified w.r.t. the position of the upper-left corner...
-			if abs(pEdge[0]) < .125 {
+			if math.Abs(pEdge[0]) < .125 {
 				// left edge
 				pText[1] += float32(by) / 2
-			} else if abs(pEdge[0]-bounds.p1[0]) < .125 {
+			} else if math.Abs(pEdge[0]-bounds.P1[0]) < .125 {
 				// right edge
 				pText[0] -= float32(bx)
 				pText[1] += float32(by) / 2
-			} else if abs(pEdge[1]) < .125 {
+			} else if math.Abs(pEdge[1]) < .125 {
 				// bottom edge
 				pText[0] -= float32(bx) / 2
 				pText[1] += float32(by)
-			} else if abs(pEdge[1]-bounds.p1[1]) < .125 {
+			} else if math.Abs(pEdge[1]-bounds.P1[1]) < .125 {
 				// top edge
 				pText[0] -= float32(bx) / 2
 			} else {
@@ -549,7 +551,7 @@ func DrawCompass(p Point2LL, ctx *PaneContext, rotationAngle float32, font *Font
 
 // DrawRangeRings draws ten circles around the specified lat-long point in
 // steps of the specified radius (in nm).
-func DrawRangeRings(ctx *PaneContext, center Point2LL, radius float32, color RGB, transforms ScopeTransformations,
+func DrawRangeRings(ctx *PaneContext, center math.Point2LL, radius float32, color RGB, transforms ScopeTransformations,
 	cb *CommandBuffer) {
 	pixelDistanceNm := transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
 	centerWindow := transforms.WindowFromLatLongP(center)
@@ -574,30 +576,30 @@ func DrawRangeRings(ctx *PaneContext, center Point2LL, radius float32, color RGB
 // useful when drawing radar scopes and provides a number of useful methods
 // to transform among related coordinate spaces.
 type ScopeTransformations struct {
-	ndcFromLatLong                       Matrix3
-	ndcFromWindow                        Matrix3
-	latLongFromWindow, windowFromLatLong Matrix3
+	ndcFromLatLong                       math.Matrix3
+	ndcFromWindow                        math.Matrix3
+	latLongFromWindow, windowFromLatLong math.Matrix3
 }
 
 // GetScopeTransformations returns a ScopeTransformations object
 // corresponding to the specified radar scope center, range, and rotation
 // angle.
-func GetScopeTransformations(paneExtent Extent2D, magneticVariation float32, nmPerLongitude float32,
-	center Point2LL, rangenm float32, rotationAngle float32) ScopeTransformations {
+func GetScopeTransformations(paneExtent math.Extent2D, magneticVariation float32, nmPerLongitude float32,
+	center math.Point2LL, rangenm float32, rotationAngle float32) ScopeTransformations {
 	width, height := paneExtent.Width(), paneExtent.Height()
 	aspect := width / height
-	ndcFromLatLong := Identity3x3().
+	ndcFromLatLong := math.Identity3x3().
 		// Final orthographic projection including the effect of the
 		// window's aspect ratio.
 		Ortho(-aspect, aspect, -1, 1).
 		// Account for magnetic variation and any user-specified rotation
-		Rotate(-radians(rotationAngle+magneticVariation)).
+		Rotate(-math.Radians(rotationAngle+magneticVariation)).
 		// Scale based on range and nm per latitude / longitude
-		Scale(nmPerLongitude/rangenm, nmPerLatitude/rangenm).
+		Scale(nmPerLongitude/rangenm, math.NMPerLatitude/rangenm).
 		// Translate to center point
 		Translate(-center[0], -center[1])
 
-	ndcFromWindow := Identity3x3().
+	ndcFromWindow := math.Identity3x3().
 		Translate(-1, -1).
 		Scale(2/width, 2/height)
 
@@ -618,7 +620,7 @@ func GetScopeTransformations(paneExtent Extent2D, magneticVariation float32, nmP
 // provided for subsequent vertices.
 func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *CommandBuffer) {
 	cb.LoadProjectionMatrix(st.ndcFromLatLong)
-	cb.LoadModelViewMatrix(Identity3x3())
+	cb.LoadModelViewMatrix(math.Identity3x3())
 }
 
 // LoadWindowViewingMatrices adds commands to the provided command buffer
@@ -626,18 +628,18 @@ func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *CommandBuffer) {
 // provided for subsequent vertices.
 func (st *ScopeTransformations) LoadWindowViewingMatrices(cb *CommandBuffer) {
 	cb.LoadProjectionMatrix(st.ndcFromWindow)
-	cb.LoadModelViewMatrix(Identity3x3())
+	cb.LoadModelViewMatrix(math.Identity3x3())
 }
 
 // WindowFromLatLongP transforms a point given in latitude-longitude
 // coordinates to window coordinates.
-func (st *ScopeTransformations) WindowFromLatLongP(p Point2LL) [2]float32 {
+func (st *ScopeTransformations) WindowFromLatLongP(p math.Point2LL) [2]float32 {
 	return st.windowFromLatLong.TransformPoint(p)
 }
 
 // LatLongFromWindowP transforms a point p in window coordinates to
 // latitude-longitude.
-func (st *ScopeTransformations) LatLongFromWindowP(p [2]float32) Point2LL {
+func (st *ScopeTransformations) LatLongFromWindowP(p [2]float32) math.Point2LL {
 	return st.latLongFromWindow.TransformPoint(p)
 }
 
@@ -650,7 +652,7 @@ func (st *ScopeTransformations) NormalizedFromWindowP(p [2]float32) [2]float32 {
 
 // LatLongFromWindowV transforms a vector in window coordinates to a vector
 // in latitude-longitude coordinates.
-func (st *ScopeTransformations) LatLongFromWindowV(v [2]float32) Point2LL {
+func (st *ScopeTransformations) LatLongFromWindowV(v [2]float32) math.Point2LL {
 	return st.latLongFromWindow.TransformVector(v)
 }
 
@@ -658,7 +660,7 @@ func (st *ScopeTransformations) LatLongFromWindowV(v [2]float32) Point2LL {
 // nautical miles.
 func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 {
 	ll := st.LatLongFromWindowV([2]float32{1, 0})
-	return nmlength2ll(ll, nmPerLongitude)
+	return math.NMLength2LL(ll, nmPerLongitude)
 }
 
 ///////////////////////////////////////////////////////////////////////////

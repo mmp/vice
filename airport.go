@@ -9,10 +9,12 @@ import (
 	"slices"
 	"strings"
 	"unicode"
+
+	"github.com/mmp/vice/pkg/math"
 )
 
 type Airport struct {
-	Location       Point2LL
+	Location       math.Point2LL
 	TowerListIndex int `json:"tower_list"`
 
 	Name string `json:"name"`
@@ -43,17 +45,17 @@ type ConvergingRunways struct {
 	TieOffset              float32                     `json:"tie_offset"`
 	LeaderDirectionStrings [2]string                   `json:"leader_directions"`
 	LeaderDirections       [2]CardinalOrdinalDirection // not in JSON, set during deserialize
-	RunwayIntersection     Point2LL                    // not in JSON, set during deserialize
+	RunwayIntersection     math.Point2LL               // not in JSON, set during deserialize
 }
 
 type ApproachRegion struct {
 	Runway           string  // set during deserialization
 	HeadingTolerance float32 `json:"heading_tolerance"`
 
-	ReferenceLineHeading   float32  `json:"reference_heading"`
-	ReferenceLineLength    float32  `json:"reference_length"`
-	ReferencePointAltitude float32  `json:"reference_altitude"`
-	ReferencePoint         Point2LL `json:"reference_point"`
+	ReferenceLineHeading   float32       `json:"reference_heading"`
+	ReferenceLineLength    float32       `json:"reference_length"`
+	ReferencePointAltitude float32       `json:"reference_altitude"`
+	ReferencePoint         math.Point2LL `json:"reference_point"`
 
 	// lateral qualification region
 	NearDistance  float32 `json:"near_distance"`
@@ -73,7 +75,7 @@ type ApproachRegion struct {
 type ATPAVolume struct {
 	Id                  string // Unique identifier, set after deserialization
 	ThresholdString     string `json:"runway_threshold"`
-	Threshold           Point2LL
+	Threshold           math.Point2LL
 	Heading             float32  `json:"heading"`
 	MaxHeadingDeviation float32  `json:"max_heading_deviation"`
 	Floor               float32  `json:"floor"`
@@ -90,10 +92,10 @@ type ATPAVolume struct {
 // returns a point along the reference line with given distance from the
 // reference point, in nm coordinates.
 func (ar *ApproachRegion) referenceLinePoint(dist, nmPerLongitude, magneticVariation float32) [2]float32 {
-	hdg := radians(ar.ReferenceLineHeading + 180 - magneticVariation)
-	v := [2]float32{sin(hdg), cos(hdg)}
-	pref := ll2nm(ar.ReferencePoint, nmPerLongitude)
-	return add2f(pref, scale2f(v, dist))
+	hdg := math.Radians(ar.ReferenceLineHeading + 180 - magneticVariation)
+	v := [2]float32{math.Sin(hdg), math.Cos(hdg)}
+	pref := math.LL2NM(ar.ReferencePoint, nmPerLongitude)
+	return math.Add2f(pref, math.Scale2f(v, dist))
 }
 
 func (ar *ApproachRegion) NearPoint(nmPerLongitude, magneticVariation float32) [2]float32 {
@@ -104,50 +106,50 @@ func (ar *ApproachRegion) FarPoint(nmPerLongitude, magneticVariation float32) [2
 	return ar.referenceLinePoint(ar.NearDistance+ar.RegionLength, nmPerLongitude, magneticVariation)
 }
 
-func (ar *ApproachRegion) GetLateralGeometry(nmPerLongitude, magneticVariation float32) (line [2]Point2LL, quad [4]Point2LL) {
+func (ar *ApproachRegion) GetLateralGeometry(nmPerLongitude, magneticVariation float32) (line [2]math.Point2LL, quad [4]math.Point2LL) {
 	// Start with the reference line
 	p0 := ar.referenceLinePoint(0, nmPerLongitude, magneticVariation)
 	p1 := ar.referenceLinePoint(ar.ReferenceLineLength, nmPerLongitude, magneticVariation)
-	line = [2]Point2LL{nm2ll(p0, nmPerLongitude), nm2ll(p1, nmPerLongitude)}
+	line = [2]math.Point2LL{math.NM2LL(p0, nmPerLongitude), math.NM2LL(p1, nmPerLongitude)}
 
 	// Get the unit vector perpendicular to the reference line
-	v := normalize2f(sub2f(p1, p0))
+	v := math.Normalize2f(math.Sub2f(p1, p0))
 	vperp := [2]float32{-v[1], v[0]}
 
 	pNear := ar.referenceLinePoint(ar.NearDistance, nmPerLongitude, magneticVariation)
 	pFar := ar.referenceLinePoint(ar.NearDistance+ar.RegionLength, nmPerLongitude, magneticVariation)
-	q0 := add2f(pNear, scale2f(vperp, ar.NearHalfWidth))
-	q1 := add2f(pFar, scale2f(vperp, ar.FarHalfWidth))
-	q2 := add2f(pFar, scale2f(vperp, -ar.FarHalfWidth))
-	q3 := add2f(pNear, scale2f(vperp, -ar.NearHalfWidth))
-	quad = [4]Point2LL{nm2ll(q0, nmPerLongitude), nm2ll(q1, nmPerLongitude),
-		nm2ll(q2, nmPerLongitude), nm2ll(q3, nmPerLongitude)}
+	q0 := math.Add2f(pNear, math.Scale2f(vperp, ar.NearHalfWidth))
+	q1 := math.Add2f(pFar, math.Scale2f(vperp, ar.FarHalfWidth))
+	q2 := math.Add2f(pFar, math.Scale2f(vperp, -ar.FarHalfWidth))
+	q3 := math.Add2f(pNear, math.Scale2f(vperp, -ar.NearHalfWidth))
+	quad = [4]math.Point2LL{math.NM2LL(q0, nmPerLongitude), math.NM2LL(q1, nmPerLongitude),
+		math.NM2LL(q2, nmPerLongitude), math.NM2LL(q3, nmPerLongitude)}
 
 	return
 }
 
 type GhostAircraft struct {
 	Callsign            string
-	Position            Point2LL
+	Position            math.Point2LL
 	Groundspeed         int
 	LeaderLineDirection CardinalOrdinalDirection
 	TrackId             string
 }
 
-func (ar *ApproachRegion) Inside(p Point2LL, alt float32, nmPerLongitude, magneticVariation float32) (lateral, vertical bool) {
+func (ar *ApproachRegion) Inside(p math.Point2LL, alt float32, nmPerLongitude, magneticVariation float32) (lateral, vertical bool) {
 	line, quad := ar.GetLateralGeometry(nmPerLongitude, magneticVariation)
-	lateral = PointInPolygon2LL(p, quad[:])
+	lateral = math.PointInPolygon2LL(p, quad[:])
 
 	// Work in nm here...
-	l := [2][2]float32{ll2nm(line[0], nmPerLongitude), ll2nm(line[1], nmPerLongitude)}
-	pc := ClosestPointOnLine(l, ll2nm(p, nmPerLongitude))
-	d := distance2f(pc, l[0])
+	l := [2][2]float32{math.LL2NM(line[0], nmPerLongitude), math.LL2NM(line[1], nmPerLongitude)}
+	pc := math.ClosestPointOnLine(l, math.LL2NM(p, nmPerLongitude))
+	d := math.Distance2f(pc, l[0])
 	if d > ar.DescentPointDistance {
 		vertical = alt <= ar.DescentPointAltitude+ar.AboveAltitudeTolerance &&
 			alt >= ar.DescentPointAltitude-ar.BelowAltitudeTolerance
 	} else {
 		t := (d - ar.NearDistance) / (ar.DescentPointDistance - ar.NearDistance)
-		approachAlt := lerp(t, ar.ReferencePointAltitude, ar.DescentPointAltitude)
+		approachAlt := math.Lerp(t, ar.ReferencePointAltitude, ar.DescentPointAltitude)
 		vertical = alt <= approachAlt+ar.AboveAltitudeTolerance &&
 			alt >= alt-ar.BelowAltitudeTolerance
 	}
@@ -182,20 +184,20 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 		}
 	}
 
-	isectNm := ll2nm(runwayIntersection, nmPerLongitude)
-	remap := func(pll Point2LL) Point2LL {
+	isectNm := math.LL2NM(runwayIntersection, nmPerLongitude)
+	remap := func(pll math.Point2LL) math.Point2LL {
 		// Switch to nm for transformations to compute ghost position
-		p := ll2nm(pll, nmPerLongitude)
+		p := math.LL2NM(pll, nmPerLongitude)
 		// Vector to reference point
-		v := sub2f(p, isectNm)
+		v := math.Sub2f(p, isectNm)
 		// Rotate it to be oriented with respect to the other runway's reference point
-		v = rotator2f(other.ReferenceLineHeading - ar.ReferenceLineHeading)(v)
+		v = math.Rotator2f(other.ReferenceLineHeading - ar.ReferenceLineHeading)(v)
 		// Offset as appropriate
-		v = add2f(v, scale2f(normalize2f(v), offset))
+		v = math.Add2f(v, math.Scale2f(math.Normalize2f(v), offset))
 		// Back to a nm point with regards to the other reference point
-		p = add2f(isectNm, v)
+		p = math.Add2f(isectNm, v)
 		// And lat-long for the final result
-		return nm2ll(p, nmPerLongitude)
+		return math.NM2LL(p, nmPerLongitude)
 	}
 
 	ghost := &GhostAircraft{
@@ -208,7 +210,7 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 	return ghost
 }
 
-func (a *ATPAVolume) Inside(p Point2LL, alt, hdg, nmPerLongitude, magneticVariation float32) bool {
+func (a *ATPAVolume) Inside(p math.Point2LL, alt, hdg, nmPerLongitude, magneticVariation float32) bool {
 	if alt < a.Floor || alt > a.Ceiling {
 		return false
 	}
@@ -217,25 +219,25 @@ func (a *ATPAVolume) Inside(p Point2LL, alt, hdg, nmPerLongitude, magneticVariat
 	}
 
 	rect := a.GetRect(nmPerLongitude, magneticVariation)
-	return PointInPolygon2LL(p, rect[:])
+	return math.PointInPolygon2LL(p, rect[:])
 }
 
-func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]Point2LL {
+func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]math.Point2LL {
 	// Segment along the approach course
-	p0 := ll2nm(a.Threshold, nmPerLongitude)
+	p0 := math.LL2NM(a.Threshold, nmPerLongitude)
 	hdg := a.Heading - magneticVariation + 180
-	v := [2]float32{sin(radians(hdg)), cos(radians(hdg))}
-	p1 := add2f(p0, scale2f(v, a.Length))
+	v := [2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}
+	p1 := math.Add2f(p0, math.Scale2f(v, a.Length))
 
 	vp := [2]float32{-v[1], v[0]} // perp
-	left, right := a.LeftWidth/NauticalMilesToFeet, a.RightWidth/NauticalMilesToFeet
+	left, right := a.LeftWidth/math.NauticalMilesToFeet, a.RightWidth/math.NauticalMilesToFeet
 
 	quad := [4][2]float32{
-		add2f(p0, scale2f(vp, -left)), add2f(p1, scale2f(vp, -left)),
-		add2f(p1, scale2f(vp, right)), add2f(p0, scale2f(vp, right))}
-	return [4]Point2LL{
-		nm2ll(quad[0], nmPerLongitude), nm2ll(quad[1], nmPerLongitude),
-		nm2ll(quad[2], nmPerLongitude), nm2ll(quad[3], nmPerLongitude)}
+		math.Add2f(p0, math.Scale2f(vp, -left)), math.Add2f(p1, math.Scale2f(vp, -left)),
+		math.Add2f(p1, math.Scale2f(vp, right)), math.Add2f(p0, math.Scale2f(vp, right))}
+	return [4]math.Point2LL{
+		math.NM2LL(quad[0], nmPerLongitude), math.NM2LL(quad[1], nmPerLongitude),
+		math.NM2LL(quad[2], nmPerLongitude), math.NM2LL(quad[3], nmPerLongitude)}
 }
 
 func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogger) {
@@ -394,7 +396,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 				},
 				Waypoint{
 					Fix:      rwy + "-mid",
-					Location: lerp2f(0.75, r.Threshold, rend.Threshold),
+					Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold),
 				}}, route.Waypoints...)
 
 			route.Waypoints.CheckDeparture(e, sg.ControlPositions)
@@ -547,13 +549,15 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			r1n := reg1.NearPoint(sg.NmPerLongitude, sg.MagneticVariation)
 			r1f := reg1.FarPoint(sg.NmPerLongitude, sg.MagneticVariation)
 
-			p, ok := LineLineIntersect(r0n, r0f, r1n, r1f)
-			if ok && distance2f(p, r0n) < 10 && distance2f(p, r1n) < 10 {
-				ap.ConvergingRunways[i].RunwayIntersection = nm2ll(p, sg.NmPerLongitude)
+			p, ok := math.LineLineIntersect(r0n, r0f, r1n, r1f)
+			if ok && math.Distance2f(p, r0n) < 10 && math.Distance2f(p, r1n) < 10 {
+				ap.ConvergingRunways[i].RunwayIntersection = math.NM2LL(p, sg.NmPerLongitude)
 			} else {
-				mid := scale2f(add2f(ll2nm(reg0.ReferencePoint, sg.NmPerLongitude),
-					ll2nm(reg1.ReferencePoint, sg.NmPerLongitude)), 0.5)
-				ap.ConvergingRunways[i].RunwayIntersection = nm2ll(mid, sg.NmPerLongitude)
+				mid := math.Scale2f(math.Add2f(math.LL2NM(reg0.ReferencePoint, sg.NmPerLongitude),
+					math.LL2NM(reg1.ReferencePoint, sg.NmPerLongitude)),
+					0.5)
+
+				ap.ConvergingRunways[i].RunwayIntersection = math.NM2LL(mid, sg.NmPerLongitude)
 			}
 		}
 
@@ -714,13 +718,13 @@ type Approach struct {
 	TowerController string          `json:"tower_controller"`
 }
 
-func (ap *Approach) Line() [2]Point2LL {
+func (ap *Approach) Line() [2]math.Point2LL {
 	// assume we have at least one set of waypoints and that it has >= 2 waypoints!
 	wp := ap.Waypoints[0]
 
 	// use the last two waypoints of the approach
 	n := len(wp)
-	return [2]Point2LL{wp[n-2].Location, wp[n-1].Location}
+	return [2]math.Point2LL{wp[n-2].Location, wp[n-1].Location}
 }
 
 func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {

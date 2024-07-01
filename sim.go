@@ -18,6 +18,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
 
 	"github.com/brunoga/deep"
@@ -1635,12 +1636,12 @@ func (s *Sim) updateState() {
 			// Cull far-away departures/arrivals
 			if ac.IsDeparture() {
 				if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil &&
-					nmdistance2ll(ac.Position(), ap.Location) > 250 {
+					math.NMDistance2LL(ac.Position(), ap.Location) > 250 {
 					s.lg.Info("culled far-away departure", slog.String("callsign", callsign))
 					delete(s.World.Aircraft, callsign)
 				}
 			} else if ap := s.World.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil &&
-				nmdistance2ll(ac.Position(), ap.Location) > 250 {
+				math.NMDistance2LL(ac.Position(), ap.Location) > 250 {
 				// We only expect this case to hit for an unattended vice,
 				// where aircraft are being spawned but are then flying
 				// along on a heading without being controlled...
@@ -1794,7 +1795,7 @@ func randomWait(rate int, pushActive bool) time.Duration {
 	}
 
 	avgSeconds := 3600 / float32(rate)
-	seconds := lerp(rand.Float32(), .85*avgSeconds, 1.15*avgSeconds)
+	seconds := math.Lerp(rand.Float32(), .85*avgSeconds, 1.15*avgSeconds)
 	return time.Duration(seconds * float32(time.Second))
 }
 

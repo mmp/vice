@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/mmp/imgui-go/v4"
+	"github.com/mmp/vice/pkg/math"
 )
 
 var (
@@ -96,7 +97,7 @@ func (s *SplitLine) Draw(ctx *PaneContext, cb *CommandBuffer) {
 				s.Pos += delta[1] / ctx.parentPaneExtent.Height()
 			}
 			// Just in case
-			s.Pos = clamp(s.Pos, .01, .99)
+			s.Pos = math.Clamp(s.Pos, .01, .99)
 		}
 	}
 
@@ -235,8 +236,8 @@ func (d *DisplayNode) VisitPanes(visit func(Pane)) {
 // VisitPanesWithBounds visits all of the panes in a DisplayNode hierarchy,
 // giving each one both its own bounding box in window coordinates as well
 // the bounding box of its parent node in the DisplayNodeTree.
-func (d *DisplayNode) VisitPanesWithBounds(displayExtent Extent2D, parentDisplayExtent Extent2D,
-	visit func(Extent2D, Extent2D, Pane)) {
+func (d *DisplayNode) VisitPanesWithBounds(displayExtent math.Extent2D, parentDisplayExtent math.Extent2D,
+	visit func(math.Extent2D, math.Extent2D, Pane)) {
 	switch d.SplitLine.Axis {
 	case SplitAxisNone:
 		visit(displayExtent, parentDisplayExtent, d.Pane)
@@ -275,38 +276,38 @@ func (d *DisplayNode) SplitY(y float32, newChild *DisplayNode) *DisplayNode {
 		Children: [2]*DisplayNode{d, newChild}}
 }
 
-func splitX(e Extent2D, x float32, lineWidth int) (Extent2D, Extent2D, Extent2D) {
+func splitX(e math.Extent2D, x float32, lineWidth int) (math.Extent2D, math.Extent2D, math.Extent2D) {
 	e0 := e
 	es := e
 	e1 := e
-	split := (1-x)*e.p0[0] + x*e.p1[0]
+	split := (1-x)*e.P0[0] + x*e.P1[0]
 	s0 := split - float32(lineWidth)/2
 	s1 := split + float32(lineWidth)/2
-	s0, s1 = floor(s0), ceil(s1)
-	e0.p1[0] = s0
-	es.p0[0] = s0
-	es.p1[0] = s1
-	e1.p0[0] = s1
+	s0, s1 = math.Floor(s0), math.Ceil(s1)
+	e0.P1[0] = s0
+	es.P0[0] = s0
+	es.P1[0] = s1
+	e1.P0[0] = s1
 	return e0, es, e1
 }
 
-func splitY(e Extent2D, y float32, lineWidth int) (Extent2D, Extent2D, Extent2D) {
+func splitY(e math.Extent2D, y float32, lineWidth int) (math.Extent2D, math.Extent2D, math.Extent2D) {
 	e0 := e
 	es := e
 	e1 := e
-	split := (1-y)*e.p0[1] + y*e.p1[1]
+	split := (1-y)*e.P0[1] + y*e.P1[1]
 	s0 := split - float32(lineWidth)/2
 	s1 := split + float32(lineWidth)/2
-	s0, s1 = floor(s0), ceil(s1)
-	e0.p1[1] = s0
-	es.p0[1] = s0
-	es.p1[1] = s1
-	e1.p0[1] = s1
+	s0, s1 = math.Floor(s0), math.Ceil(s1)
+	e0.P1[1] = s0
+	es.P0[1] = s0
+	es.P1[1] = s1
+	e1.P0[1] = s1
 	return e0, es, e1
 }
 
 // FindPaneForMouse returns the Pane that the provided mouse position p is inside.
-func (d *DisplayNode) FindPaneForMouse(displayExtent Extent2D, p [2]float32) Pane {
+func (d *DisplayNode) FindPaneForMouse(displayExtent math.Extent2D, p [2]float32) Pane {
 	if !displayExtent.Inside(p) {
 		return nil
 	}
@@ -316,27 +317,27 @@ func (d *DisplayNode) FindPaneForMouse(displayExtent Extent2D, p [2]float32) Pan
 	}
 
 	// Compute the extents of the two nodes and the split line.
-	var d0, ds, d1 Extent2D
+	var d0, ds, d1 math.Extent2D
 	if d.SplitLine.Axis == SplitAxisX {
 		d0, ds, d1 = splitX(displayExtent, d.SplitLine.Pos, splitLineWidth())
 
 		// Round the X extents to integer coordinates, to benefit the split
 		// line--since it's relatively small, it's helpful to make it a
 		// larger target.
-		d0.p1[0] = floor(d0.p1[0])
-		ds.p0[0] = floor(ds.p0[0])
-		ds.p1[0] = ceil(ds.p1[0])
-		d1.p0[0] = ceil(d1.p0[0])
+		d0.P1[0] = math.Floor(d0.P1[0])
+		ds.P0[0] = math.Floor(ds.P0[0])
+		ds.P1[0] = math.Ceil(ds.P1[0])
+		d1.P0[0] = math.Ceil(d1.P0[0])
 
 	} else {
 		d0, ds, d1 = splitY(displayExtent, d.SplitLine.Pos, splitLineWidth())
 
 		// For a y split, similarly round y bounds up/down to integer
 		// coordinates to give the split line a better chance.
-		d0.p1[1] = floor(d0.p1[1])
-		ds.p0[1] = floor(ds.p0[1])
-		ds.p1[1] = ceil(ds.p1[1])
-		d1.p0[1] = ceil(d1.p0[1])
+		d0.P1[1] = math.Floor(d0.P1[1])
+		ds.P0[1] = math.Floor(ds.P0[1])
+		ds.P1[1] = math.Ceil(ds.P1[1])
+		d1.P0[1] = math.Ceil(d1.P0[1])
 	}
 
 	// Now figure out which it is inside.
@@ -468,7 +469,7 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 	displaySize := p.DisplaySize()
 
 	// Area left for actually drawing Panes
-	paneDisplayExtent := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{displaySize[0], displaySize[1] - ui.menuBarHeight}}
+	paneDisplayExtent := math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1] - ui.menuBarHeight}}
 
 	// Get the mouse position from imgui; flip y so that it lines up with
 	// our window coordinates.
@@ -514,7 +515,7 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 		keyboard = NewKeyboardState(p)
 	}
 	root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent,
-		func(paneExtent Extent2D, parentExtent Extent2D, pane Pane) {
+		func(paneExtent math.Extent2D, parentExtent math.Extent2D, pane Pane) {
 			haveFocus := pane == wm.keyboardFocusPane && !imgui.CurrentIO().WantCaptureKeyboard()
 			ctx := PaneContext{
 				paneExtent:       paneExtent,
@@ -535,7 +536,7 @@ func wmDrawPanes(p Platform, r Renderer, w *World, stats *Stats) {
 					paneExtent.Inside(mousePos))
 			if ownsMouse {
 				// Full display size, including the menu and status bar.
-				displayTrueFull := Extent2D{p0: [2]float32{0, 0}, p1: [2]float32{displaySize[0], displaySize[1]}}
+				displayTrueFull := math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}}
 				ctx.InitializeMouse(displayTrueFull)
 			}
 

@@ -7,7 +7,7 @@ package main
 import (
 	"fmt"
 	"log/slog"
-	"math"
+	gomath "math"
 	"slices"
 	"strconv"
 	"strings"
@@ -15,6 +15,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
+	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
 )
 
@@ -70,10 +71,10 @@ type World struct {
 	MagneticVariation        float32
 	NmPerLongitude           float32
 	Airports                 map[string]*Airport
-	Fixes                    map[string]Point2LL
+	Fixes                    map[string]math.Point2LL
 	PrimaryAirport           string
 	RadarSites               map[string]*RadarSite
-	Center                   Point2LL
+	Center                   math.Point2LL
 	Range                    float32
 	Wind                     Wind
 	Callsign                 string
@@ -97,33 +98,33 @@ func NewWorld() *World {
 	}
 }
 
-func (w *World) GetWindVector(p Point2LL, alt float32) Point2LL {
+func (w *World) GetWindVector(p math.Point2LL, alt float32) math.Point2LL {
 	// Sinusoidal wind speed variation from the base speed up to base +
 	// gust and then back...
 	base := time.UnixMicro(0)
 	sec := w.SimTime.Sub(base).Seconds()
 	windSpeed := float32(w.Wind.Speed) +
-		float32(w.Wind.Gust-w.Wind.Speed)*float32(1+math.Cos(sec/4))/2
+		float32(w.Wind.Gust-w.Wind.Speed)*float32(1+gomath.Cos(sec/4))/2
 
 	// Wind.Direction is where it's coming from, so +180 to get the vector
 	// that affects the aircraft's course.
 	d := OppositeHeading(float32(w.Wind.Direction))
-	vWind := [2]float32{sin(radians(d)), cos(radians(d))}
-	vWind = scale2f(vWind, windSpeed/3600)
+	vWind := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
+	vWind = math.Scale2f(vWind, windSpeed/3600)
 	return vWind
 }
 
 func (w *World) AverageWindVector() [2]float32 {
 	d := OppositeHeading(float32(w.Wind.Direction))
-	v := [2]float32{sin(radians(d)), cos(radians(d))}
-	return scale2f(v, float32(w.Wind.Speed))
+	v := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
+	return math.Scale2f(v, float32(w.Wind.Speed))
 }
 
 func (w *World) GetAirport(icao string) *Airport {
 	return w.Airports[icao]
 }
 
-func (w *World) Locate(s string) (Point2LL, bool) {
+func (w *World) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
 	if ap, ok := w.Airports[s]; ok {
@@ -136,10 +137,10 @@ func (w *World) Locate(s string) (Point2LL, bool) {
 		return ap.Location, ok
 	} else if f, ok := database.Fixes[strings.ToUpper(s)]; ok {
 		return f.Location, ok
-	} else if p, err := ParseLatLong([]byte(s)); err == nil {
+	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
 	} else {
-		return Point2LL{}, false
+		return math.Point2LL{}, false
 	}
 }
 
@@ -506,7 +507,7 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 	w.checkPendingRPCs(eventStream)
 
 	// Wait in seconds between update fetches; no less than 50ms
-	rate := clamp(1/w.SimRate, 0.05, 1)
+	rate := math.Clamp(1/w.SimRate, 0.05, 1)
 	if d := time.Since(w.lastUpdateRequest); d > time.Duration(rate*float32(time.Second)) {
 		if w.updateCall != nil {
 			lg.Warnf("GetUpdates still waiting for %s on last update call", d)
@@ -600,7 +601,7 @@ func (w *World) CurrentTime() time.Time {
 		} else {
 			d -= 50 * time.Millisecond
 		}
-		d = max(0, d)
+		d = math.Max(0, d)
 
 		// Account for sim rate
 		d = time.Duration(float64(d) * float64(w.SimRate))
@@ -644,7 +645,7 @@ func (w *World) GetInitialRange() float32 {
 	return w.Range
 }
 
-func (w *World) GetInitialCenter() Point2LL {
+func (w *World) GetInitialCenter() math.Point2LL {
 	if config, ok := w.STARSFacilityAdaptation.ControllerConfigs[w.Callsign]; ok && !config.Center.IsZero() {
 		return config.Center
 	}
@@ -1253,16 +1254,16 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 					if len(wp) > 1 {
 						// Draw the runway number in the middle of the line
 						// between the first two waypoints.
-						pmid := mid2ll(wp[0].Location, wp[1].Location)
+						pmid := math.Mid2LL(wp[0].Location, wp[1].Location)
 						td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pmid), style)
 					} else if wp[0].Heading != 0 {
 						// This should be the only other case... The heading arrow is drawn
 						// up to 2nm out, so put the runway 1nm along its axis.
-						a := radians(float32(wp[0].Heading) - w.MagneticVariation)
-						v := [2]float32{sin(a), cos(a)}
-						pend := ll2nm(wp[0].Location, w.NmPerLongitude)
-						pend = add2f(pend, v)
-						pell := nm2ll(pend, w.NmPerLongitude)
+						a := math.Radians(float32(wp[0].Heading) - w.MagneticVariation)
+						v := [2]float32{math.Sin(a), math.Cos(a)}
+						pend := math.LL2NM(wp[0].Location, w.NmPerLongitude)
+						pend = math.Add2f(pend, v)
+						pell := math.NM2LL(pend, w.NmPerLongitude)
 						td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pell), style)
 					}
 				}
@@ -1329,8 +1330,8 @@ func calculateOffset(font *Font, pt func(int) ([2]float32, bool)) [2]float32 {
 	next, nok := pt(1)
 
 	vecAngle := func(p0, p1 [2]float32) float32 {
-		v := normalize2f(sub2f(p1, p0))
-		return atan2(v[0], v[1])
+		v := math.Normalize2f(math.Sub2f(p1, p0))
+		return math.Atan2(v[0], v[1])
 	}
 
 	const Pi = 3.1415926535
@@ -1355,9 +1356,9 @@ func calculateOffset(font *Font, pt func(int) ([2]float32, bool)) [2]float32 {
 		angle += Pi / 2
 	}
 
-	offset := scale2f([2]float32{sin(angle), cos(angle)}, 8)
+	offset := math.Scale2f([2]float32{math.Sin(angle), math.Cos(angle)}, 8)
 
-	h := NormalizeHeading(degrees(angle))
+	h := NormalizeHeading(math.Degrees(angle))
 	if (h >= 160 && h < 200) || (h >= 340 || h < 20) {
 		// Center(ish) the text if the line is more or less horizontal.
 		offset[0] -= 2.5 * float32(font.size)
@@ -1372,27 +1373,27 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 	// Draw an arrow at the point p (in nm coordinates) pointing in the
 	// direction given by the angle a.
 	drawArrow := func(p [2]float32, a float32) {
-		aa := a + radians(180+30)
-		pa := add2f(p, scale2f([2]float32{sin(aa), cos(aa)}, 0.5))
-		ld.AddLine(nm2ll(p, w.NmPerLongitude), nm2ll(pa, w.NmPerLongitude))
+		aa := a + math.Radians(180+30)
+		pa := math.Add2f(p, math.Scale2f([2]float32{math.Sin(aa), math.Cos(aa)}, 0.5))
+		ld.AddLine(math.NM2LL(p, w.NmPerLongitude), math.NM2LL(pa, w.NmPerLongitude))
 
-		ba := a - radians(180+30)
-		pb := add2f(p, scale2f([2]float32{sin(ba), cos(ba)}, 0.5))
-		ld.AddLine(nm2ll(p, w.NmPerLongitude), nm2ll(pb, w.NmPerLongitude))
+		ba := a - math.Radians(180+30)
+		pb := math.Add2f(p, math.Scale2f([2]float32{math.Sin(ba), math.Cos(ba)}, 0.5))
+		ld.AddLine(math.NM2LL(p, w.NmPerLongitude), math.NM2LL(pb, w.NmPerLongitude))
 	}
 
 	for i, wp := range waypoints {
 		if wp.Heading != 0 {
 			// Don't draw a segment to the next waypoint (if there is one)
 			// but instead draw an arrow showing the heading.
-			a := radians(float32(wp.Heading) - w.MagneticVariation)
-			v := [2]float32{sin(a), cos(a)}
-			v = scale2f(v, 2)
-			pend := ll2nm(waypoints[i].Location, w.NmPerLongitude)
-			pend = add2f(pend, v)
+			a := math.Radians(float32(wp.Heading) - w.MagneticVariation)
+			v := [2]float32{math.Sin(a), math.Cos(a)}
+			v = math.Scale2f(v, 2)
+			pend := math.LL2NM(waypoints[i].Location, w.NmPerLongitude)
+			pend = math.Add2f(pend, v)
 
 			// center line
-			ld.AddLine(waypoints[i].Location, nm2ll(pend, w.NmPerLongitude))
+			ld.AddLine(waypoints[i].Location, math.NM2LL(pend, w.NmPerLongitude))
 
 			// arrowhead at the end
 			drawArrow(pend, a)
@@ -1406,16 +1407,16 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 				// point in nm coordinates and store it in r0 and do the
 				// same for the end point. Then we will interpolate those
 				// radii along the arc.
-				pc := ll2nm(wp.Arc.Center, w.NmPerLongitude)
-				p0 := ll2nm(waypoints[i].Location, w.NmPerLongitude)
-				r0 := distance2f(p0, pc)
-				v0 := normalize2f(sub2f(p0, pc))
-				a0 := NormalizeHeading(degrees(atan2(v0[0], v0[1]))) // angle w.r.t. the arc center
+				pc := math.LL2NM(wp.Arc.Center, w.NmPerLongitude)
+				p0 := math.LL2NM(waypoints[i].Location, w.NmPerLongitude)
+				r0 := math.Distance2f(p0, pc)
+				v0 := math.Normalize2f(math.Sub2f(p0, pc))
+				a0 := NormalizeHeading(math.Degrees(math.Atan2(v0[0], v0[1]))) // angle w.r.t. the arc center
 
-				p1 := ll2nm(waypoints[i+1].Location, w.NmPerLongitude)
-				r1 := distance2f(p1, pc)
-				v1 := normalize2f(sub2f(p1, pc))
-				a1 := NormalizeHeading(degrees(atan2(v1[0], v1[1])))
+				p1 := math.LL2NM(waypoints[i+1].Location, w.NmPerLongitude)
+				r1 := math.Distance2f(p1, pc)
+				v1 := math.Normalize2f(math.Sub2f(p1, pc))
+				a1 := NormalizeHeading(math.Degrees(math.Atan2(v1[0], v1[1])))
 
 				// Draw a segment every degree
 				n := int(headingDifference(a0, a1))
@@ -1428,15 +1429,15 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 						a -= 1
 					}
 					a = NormalizeHeading(a)
-					r := lerp(float32(i)/float32(n), r0, r1)
-					v := scale2f([2]float32{sin(radians(a)), cos(radians(a))}, r)
-					pnext := nm2ll(add2f(pc, v), w.NmPerLongitude)
+					r := math.Lerp(float32(i)/float32(n), r0, r1)
+					v := math.Scale2f([2]float32{math.Sin(math.Radians(a)), math.Cos(math.Radians(a))}, r)
+					pnext := math.NM2LL(math.Add2f(pc, v), w.NmPerLongitude)
 					ld.AddLine(pprev, pnext)
 					pprev = pnext
 
 					if i == n/2 {
 						// Draw an arrow at the midpoint showing the arc's direction
-						drawArrow(add2f(pc, v), Select(wp.Arc.Clockwise, radians(a+90), radians(a-90)))
+						drawArrow(math.Add2f(pc, v), Select(wp.Arc.Clockwise, math.Radians(a+90), math.Radians(a-90)))
 					}
 				}
 				ld.AddLine(pprev, waypoints[i+1].Location)
@@ -1449,10 +1450,10 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 					// the segment, unless the next waypoint has a
 					// procedure turn. In that case, we'll let the PT draw
 					// the arrow..
-					p0 := ll2nm(waypoints[i].Location, w.NmPerLongitude)
-					p1 := ll2nm(waypoints[i+1].Location, w.NmPerLongitude)
-					v := sub2f(p1, p0)
-					drawArrow(mid2f(p0, p1), atan2(v[0], v[1]))
+					p0 := math.LL2NM(waypoints[i].Location, w.NmPerLongitude)
+					p1 := math.LL2NM(waypoints[i+1].Location, w.NmPerLongitude)
+					v := math.Sub2f(p1, p0)
+					drawArrow(math.Mid2f(p0, p1), math.Atan2(v[0], v[1]))
 				}
 			}
 		}
@@ -1466,14 +1467,14 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 				// the origin at the left side of the arc at the top.  The
 				// toNM transformation takes that to nm coordinates which
 				// we'll later transform to lat-long to draw on the scope.
-				toNM := Identity3x3()
+				toNM := math.Identity3x3()
 
-				pnm := ll2nm(wp.Location, w.NmPerLongitude)
+				pnm := math.LL2NM(wp.Location, w.NmPerLongitude)
 				toNM = toNM.Translate(pnm[0], pnm[1])
 
-				p1nm := ll2nm(waypoints[i+1].Location, w.NmPerLongitude)
-				v := sub2f(p1nm, pnm)
-				hdg := atan2(v[0], v[1])
+				p1nm := math.LL2NM(waypoints[i+1].Location, w.NmPerLongitude)
+				v := math.Sub2f(p1nm, pnm)
+				hdg := math.Atan2(v[0], v[1])
 				toNM = toNM.Rotate(-hdg)
 				if !pt.RightTurns {
 					toNM = toNM.Translate(-2, 0)
@@ -1505,33 +1506,33 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 				prevt := toNM.TransformPoint([2]float32{0, 0})
 				prevb := toNM.TransformPoint([2]float32{2, -len})
 				for i := -90; i <= 90; i++ {
-					v := [2]float32{sin(radians(float32(i))), cos(radians(float32(i)))}
+					v := [2]float32{math.Sin(math.Radians(float32(i))), math.Cos(math.Radians(float32(i)))}
 
 					// top
-					pt := add2f([2]float32{1, 0}, v)
+					pt := math.Add2f([2]float32{1, 0}, v)
 					pt = toNM.TransformPoint(pt)
 					lines = append(lines, [2][2]float32{prevt, pt})
 					prevt = pt
 
 					// bottom
-					pb := sub2f([2]float32{1, -len}, v)
+					pb := math.Sub2f([2]float32{1, -len}, v)
 					pb = toNM.TransformPoint(pb)
 					lines = append(lines, [2][2]float32{prevb, pb})
 					prevb = pb
 				}
 
 				for _, l := range lines {
-					l0, l1 := nm2ll(l[0], w.NmPerLongitude), nm2ll(l[1], w.NmPerLongitude)
+					l0, l1 := math.NM2LL(l[0], w.NmPerLongitude), math.NM2LL(l[1], w.NmPerLongitude)
 					ld.AddLine(l0, l1)
 				}
 
 				drawArrow(toNM.TransformPoint([2]float32{0, -len / 2}), hdg)
-				drawArrow(toNM.TransformPoint([2]float32{2, -len / 2}), hdg+radians(180))
+				drawArrow(toNM.TransformPoint([2]float32{2, -len / 2}), hdg+math.Radians(180))
 			}
 		}
 
 		drawName := wp.Fix[0] != '_'
-		if _, err := ParseLatLong([]byte(wp.Fix)); err == nil {
+		if _, err := math.ParseLatLong([]byte(wp.Fix)); err == nil {
 			// Also don't draw names that are directly specified as latlongs.
 			drawName = false
 		}
@@ -1557,13 +1558,13 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 			if idx < 0 || idx >= len(waypoints) {
 				return [2]float32{}, false
 			}
-			return ll2nm(waypoints[idx].Location, w.NmPerLongitude), true
+			return math.LL2NM(waypoints[idx].Location, w.NmPerLongitude), true
 		})
 
 		// Draw the text for the waypoint, including fix name, any
 		// properties, and altitude/speed restrictions.
 		p := transforms.WindowFromLatLongP(wp.Location)
-		p = add2f(p, offset)
+		p = math.Add2f(p, offset)
 		if drawName {
 			p = td.AddText(wp.Fix+"\n", p, style)
 		}
@@ -1603,7 +1604,7 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 				if ar.Range[0] != 0 && ar.Range[0] != ar.Range[1] {
 					// Lower altitude, if present and different than upper.
 					pp := td.AddText(FormatAltitude(ar.Range[0]), pt, style)
-					w = max(w, pp[0]-pt[0])
+					w = math.Max(w, pp[0]-pt[0])
 					pt[1] -= float32(style.Font.size)
 				}
 

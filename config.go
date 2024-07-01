@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/mmp/imgui-go/v4"
+	"github.com/mmp/vice/pkg/math"
 )
 
 // Version history 0-7 not explicitly recorded
@@ -69,7 +70,7 @@ type GlobalConfigNoSim struct {
 
 	Callsign string
 
-	highlightedLocation        Point2LL
+	highlightedLocation        math.Point2LL
 	highlightedLocationEndTime time.Time
 }
 

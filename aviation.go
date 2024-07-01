@@ -24,13 +24,14 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/klauspost/compress/zstd"
+	"github.com/mmp/vice/pkg/math"
 )
 
 type FAAAirport struct {
 	Id         string
 	Name       string
 	Elevation  int
-	Location   Point2LL
+	Location   math.Point2LL
 	Runways    []Runway
 	Approaches map[string][]WaypointArray
 	STARs      map[string]STAR
@@ -47,7 +48,7 @@ type ARTCC struct {
 
 type ReportingPoint struct {
 	Fix      string
-	Location Point2LL
+	Location math.Point2LL
 }
 
 type Arrival struct {
@@ -150,7 +151,7 @@ func (s STAR) Print(name string) {
 type Runway struct {
 	Id        string
 	Heading   float32
-	Threshold Point2LL
+	Threshold math.Point2LL
 	Elevation int
 }
 
@@ -339,7 +340,7 @@ func StringIsSPC(code string) bool {
 }
 
 type RadarTrack struct {
-	Position    Point2LL
+	Position    math.Point2LL
 	Altitude    int
 	Groundspeed int
 	Time        time.Time
@@ -379,12 +380,12 @@ type Navaid struct {
 	Id       string
 	Type     string
 	Name     string
-	Location Point2LL
+	Location math.Point2LL
 }
 
 type Fix struct {
 	Id       string
-	Location Point2LL
+	Location math.Point2LL
 }
 
 func NewFlightPlan(r FlightRules, ac, dep, arr string) *FlightPlan {
@@ -433,22 +434,22 @@ func PlausibleFinalAltitude(w *World, fp *FlightPlan, perf AircraftPerformance) 
 	}
 
 	pDep, pArr := dep.Location, arr.Location
-	if nmdistance2ll(pDep, pArr) < 100 {
+	if math.NMDistance2LL(pDep, pArr) < 100 {
 		altitude = 7000
 		if dep.Elevation > 3000 || arr.Elevation > 3000 {
 			altitude += 1000
 		}
-	} else if nmdistance2ll(pDep, pArr) < 200 {
+	} else if math.NMDistance2LL(pDep, pArr) < 200 {
 		altitude = 11000
 		if dep.Elevation > 3000 || arr.Elevation > 3000 {
 			altitude += 1000
 		}
-	} else if nmdistance2ll(pDep, pArr) < 300 {
+	} else if math.NMDistance2LL(pDep, pArr) < 300 {
 		altitude = 21000
 	} else {
 		altitude = 37000
 	}
-	altitude = min(altitude, int(perf.Ceiling))
+	altitude = math.Min(altitude, int(perf.Ceiling))
 
 	if headingp2ll(pDep, pArr, w.NmPerLongitude, w.MagneticVariation) > 180 {
 		altitude += 1000
@@ -523,7 +524,7 @@ func TurnAngle(from, to float32, turn TurnMethod) float32 {
 		return NormalizeHeading(to - from)
 
 	case TurnClosest:
-		return abs(headingDifference(from, to))
+		return math.Abs(headingDifference(from, to))
 
 	default:
 		panic("unhandled TurnMethod")
@@ -632,7 +633,7 @@ type Wind struct {
 }
 
 type WindModel interface {
-	GetWindVector(p Point2LL, alt float32) Point2LL
+	GetWindVector(p math.Point2LL, alt float32) math.Point2LL
 	AverageWindVector() [2]float32
 }
 
@@ -668,9 +669,9 @@ func (a *AltitudeRestriction) UnmarshalJSON(b []byte) error {
 
 func (a AltitudeRestriction) TargetAltitude(alt float32) float32 {
 	if a.Range[1] != 0 {
-		return clamp(alt, a.Range[0], a.Range[1])
+		return math.Clamp(alt, a.Range[0], a.Range[1])
 	} else {
-		return max(alt, a.Range[0])
+		return math.Max(alt, a.Range[0])
 	}
 }
 
@@ -684,7 +685,7 @@ func (a AltitudeRestriction) ClampRange(r [2]float32) ([2]float32, bool) {
 	}
 
 	ok := r[0] <= a1 || r[1] >= a0
-	return [2]float32{clamp(r[0], a0, a1), clamp(r[1], a0, a1)}, ok
+	return [2]float32{math.Clamp(r[0], a0, a1), math.Clamp(r[1], a0, a1)}, ok
 }
 
 // Summary returns a human-readable summary of the altitude
@@ -774,7 +775,7 @@ func ParseAltitudeRestriction(s string) (*AltitudeRestriction, error) {
 // remaining fields are then derived from those.
 type DMEArc struct {
 	Fix            string
-	Center         Point2LL
+	Center         math.Point2LL
 	Radius         float32
 	Length         float32
 	InitialHeading float32
@@ -786,7 +787,7 @@ type DMEArc struct {
 
 type Waypoint struct {
 	Fix                 string               `json:"fix"`
-	Location            Point2LL             // not provided in scenario JSON; derived from fix
+	Location            math.Point2LL        // not provided in scenario JSON; derived from fix
 	AltitudeRestriction *AltitudeRestriction `json:"altitude_restriction,omitempty"`
 	Speed               int                  `json:"speed,omitempty"`
 	Heading             int                  `json:"heading,omitempty"` // outbound heading after waypoint
@@ -845,8 +846,8 @@ func (wp Waypoint) LogValue() slog.Value {
 	return slog.GroupValue(attrs...)
 }
 
-func (wp *Waypoint) ETA(p Point2LL, gs float32) time.Duration {
-	dist := nmdistance2ll(p, wp.Location)
+func (wp *Waypoint) ETA(p math.Point2LL, gs float32) time.Duration {
+	dist := math.NMDistance2LL(p, wp.Location)
 	eta := dist / gs
 	return time.Duration(eta * float32(time.Hour))
 }
@@ -1238,9 +1239,9 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 ///////////////////////////////////////////////////////////////////////////
 
 type RadarSite struct {
-	Char           string   `json:"char"`
-	PositionString string   `json:"position"`
-	Position       Point2LL // not in JSON, set during deserialize
+	Char           string        `json:"char"`
+	PositionString string        `json:"position"`
+	Position       math.Point2LL // not in JSON, set during deserialize
 
 	Elevation      int32   `json:"elevation"`
 	PrimaryRange   int32   `json:"primary_range"`
@@ -1249,7 +1250,7 @@ type RadarSite struct {
 	SilenceAngle   float32 `json:"silence_angle"`
 }
 
-func (rs *RadarSite) CheckVisibility(w *World, p Point2LL, altitude int) (primary, secondary bool, distance float32) {
+func (rs *RadarSite) CheckVisibility(w *World, p math.Point2LL, altitude int) (primary, secondary bool, distance float32) {
 	// Check altitude first; this is a quick first cull that
 	// e.g. takes care of everyone on the ground.
 	if altitude <= int(rs.Elevation) {
@@ -1257,11 +1258,11 @@ func (rs *RadarSite) CheckVisibility(w *World, p Point2LL, altitude int) (primar
 	}
 
 	// Time to check the angles..
-	palt := float32(altitude) * FeetToNauticalMiles
-	ralt := float32(rs.Elevation) * FeetToNauticalMiles
+	palt := float32(altitude) * math.FeetToNauticalMiles
+	ralt := float32(rs.Elevation) * math.FeetToNauticalMiles
 	dalt := palt - ralt
 	// not quite true distance, but close enough
-	distance = nmdistance2ll(rs.Position, p) + abs(palt-ralt)
+	distance = math.NMDistance2LL(rs.Position, p) + math.Abs(palt-ralt)
 
 	// If we normalize the vector from the radar site to the aircraft, then
 	// the z (altitude) component gives the cosine of the angle with the
@@ -1270,13 +1271,13 @@ func (rs *RadarSite) CheckVisibility(w *World, p Point2LL, altitude int) (primar
 	// if angle < silence angle, we can't see it, but the test flips since
 	// we're testing cosines.
 	// FIXME: it's annoying to be repeatedly computing these cosines here...
-	if cosAngle > cos(radians(rs.SilenceAngle)) {
+	if cosAngle > math.Cos(math.Radians(rs.SilenceAngle)) {
 		// inside the cone of silence
 		return
 	}
 	// similarly, if angle > 90-slope angle, we can't see it, but again the
 	// test flips.
-	if cosAngle < cos(radians(90-rs.SlopeAngle)) {
+	if cosAngle < math.Cos(math.Radians(90-rs.SlopeAngle)) {
 		// below the slope angle
 		return
 	}
@@ -1292,10 +1293,10 @@ type AirspaceVolume struct {
 	Floor   int                `json:"floor"`
 	Ceiling int                `json:"ceiling"`
 	// Polygon
-	Vertices []Point2LL `json:"vertices"`
+	Vertices []math.Point2LL `json:"vertices"`
 	// Circle
-	Center Point2LL `json:"center"`
-	Radius float32  `json:"radius"`
+	Center math.Point2LL `json:"center"`
+	Radius float32       `json:"radius"`
 }
 
 type AirspaceVolumeType int
@@ -1329,16 +1330,16 @@ func (t *AirspaceVolumeType) UnmarshalJSON(b []byte) error {
 	}
 }
 
-func (a *AirspaceVolume) Inside(p Point2LL, alt int) bool {
+func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
 	if alt <= a.Floor || alt > a.Ceiling {
 		return false
 	}
 
 	switch a.Type {
 	case AirspaceVolumePolygon:
-		return PointInPolygon2LL(p, a.Vertices)
+		return math.PointInPolygon2LL(p, a.Vertices)
 	case AirspaceVolumeCircle:
-		return nmdistance2ll(p, a.Center) < a.Radius
+		return math.NMDistance2LL(p, a.Center) < a.Radius
 	default:
 		lg.Errorf("%d: unhandled airspace volume type", a.Type)
 		return false
@@ -1384,13 +1385,13 @@ type StaticDatabase struct {
 	MVAs                map[string][]MVA // TRACON -> MVAs
 }
 
-func (d StaticDatabase) LookupWaypoint(f string) (Point2LL, bool) {
+func (d StaticDatabase) LookupWaypoint(f string) (math.Point2LL, bool) {
 	if n, ok := d.Navaids[f]; ok {
 		return n.Location, true
 	} else if f, ok := d.Fixes[f]; ok {
 		return f.Location, true
 	} else {
-		return Point2LL{}, false
+		return math.Point2LL{}, false
 	}
 }
 
@@ -1531,8 +1532,8 @@ func parseAirports() map[string]FAAAirport {
 
 	airportsRaw := LoadResource("airports.csv.zst") // https://ourairports.com/data/
 
-	parse := func(s string) Point2LL {
-		loc, err := ParseLatLong([]byte(s))
+	parse := func(s string) math.Point2LL {
+		loc, err := math.ParseLatLong([]byte(s))
 		if err != nil {
 			panic(err)
 		}
@@ -1572,7 +1573,7 @@ func parseAirports() map[string]FAAAirport {
 			if s[2] != "" {
 				elevation = atof(s[2])
 			}
-			loc := Point2LL{float32(atof(s[1])), float32(atof(s[0]))}
+			loc := math.Point2LL{float32(atof(s[1])), float32(atof(s[0]))}
 			ap := FAAAirport{Id: s[3], Name: s[4], Location: loc, Elevation: int(elevation)}
 			if ap.Id != "" {
 				airports[ap.Id] = ap
@@ -1707,7 +1708,7 @@ func parseMagneticGrid() MagneticGrid {
 	return mg
 }
 
-func (mg *MagneticGrid) Lookup(p Point2LL) (float32, error) {
+func (mg *MagneticGrid) Lookup(p math.Point2LL) (float32, error) {
 	if p[0] < mg.MinLongitude || p[0] > mg.MaxLongitude ||
 		p[1] < mg.MinLatitude || p[1] > mg.MaxLatitude {
 		return 0, fmt.Errorf("lookup point outside sampled grid")
@@ -1717,8 +1718,8 @@ func (mg *MagneticGrid) Lookup(p Point2LL) (float32, error) {
 	nlong := int(1 + (mg.MaxLongitude-mg.MinLongitude)/mg.LatLongStep)
 
 	// Round to nearest
-	lat := min(int((p[1]-mg.MinLatitude)/mg.LatLongStep+0.5), nlat-1)
-	long := min(int((p[0]-mg.MinLongitude)/mg.LatLongStep+0.5), nlong-1)
+	lat := math.Min(int((p[1]-mg.MinLatitude)/mg.LatLongStep+0.5), nlat-1)
+	long := math.Min(int((p[0]-mg.MinLongitude)/mg.LatLongStep+0.5), nlong-1)
 
 	// Note: we flip the sign
 	return -mg.Samples[long+nlong*lat], nil
@@ -1728,7 +1729,7 @@ type MVA struct {
 	MinimumLimit          int                      `xml:"minimumLimit"`
 	MinimumLimitReference string                   `xml:"minimumLimitReference"`
 	Proj                  *MVAHorizontalProjection `xml:"horizontalProjection"`
-	Bounds                Extent2D
+	Bounds                math.Extent2D
 	ExteriorRing          [][2]float32
 	InteriorRings         [][][2]float32
 }
@@ -1737,11 +1738,11 @@ func (m *MVA) Inside(p [2]float32) bool {
 	if !m.Bounds.Inside(p) {
 		return false
 	}
-	if !PointInPolygon(p, m.ExteriorRing) {
+	if !math.PointInPolygon(p, m.ExteriorRing) {
 		return false
 	}
 	for _, in := range m.InteriorRings {
-		if PointInPolygon(p, in) {
+		if math.PointInPolygon(p, in) {
 			return false
 		}
 	}
@@ -1892,7 +1893,7 @@ func parseMVAs() map[string][]MVA {
 						m.Proj = nil // Don't hold on to the strings
 
 						// Initialize the bounding box
-						m.Bounds = Extent2DFromPoints(m.ExteriorRing)
+						m.Bounds = math.Extent2DFromPoints(m.ExteriorRing)
 
 						mvas = append(mvas, m)
 					}
@@ -2076,15 +2077,15 @@ func DensityRatioAtAltitude(alt float32) float32 {
 	const R = 8.314463    // universal gas constant J/(mol K)
 	const T_b = 288.15    // reference temperature at sea level, degrees K
 
-	return exp(-g0 * M_air * altm / (R * T_b))
+	return math.Exp(-g0 * M_air * altm / (R * T_b))
 }
 
 func IASToTAS(ias, altitude float32) float32 {
-	return ias / sqrt(DensityRatioAtAltitude(altitude))
+	return ias / math.Sqrt(DensityRatioAtAltitude(altitude))
 }
 
 func TASToIAS(tas, altitude float32) float32 {
-	return tas * sqrt(DensityRatioAtAltitude(altitude))
+	return tas * math.Sqrt(DensityRatioAtAltitude(altitude))
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -2155,7 +2156,7 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 						sg.InitializeWaypointLocations(ar.Waypoints, e)
 
 						if len(ar.Waypoints) >= 2 && spawnT != 0 {
-							ar.Waypoints[0].Location = lerp2f(spawnT, ar.Waypoints[0].Location, ar.Waypoints[1].Location)
+							ar.Waypoints[0].Location = math.Lerp2f(spawnT, ar.Waypoints[0].Location, ar.Waypoints[1].Location)
 							ar.Waypoints[0].Fix = "_" + ar.Waypoints[0].Fix
 						}
 
@@ -2204,7 +2205,7 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 				Fix: "_handoff",
 				// FIXME: it's a little sketchy to lerp Point2ll coordinates
 				// but probably ok over short distances here...
-				Location: lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
+				Location: math.Lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
 				Handoff:  true,
 			}
 			ar.Waypoints = append([]Waypoint{ar.Waypoints[0], mid}, ar.Waypoints[1:]...)
@@ -2432,7 +2433,7 @@ func (ml *VideoMapLibrary) loadVideoMap(f io.ReadCloser, filename string, refere
 			for _, lines := range sm.Lines {
 				// Slightly annoying: the line vertices are stored with
 				// Point2LLs but AddLineStrip() expects [2]float32s.
-				fl := MapSlice(lines, func(p Point2LL) [2]float32 { return p })
+				fl := MapSlice(lines, func(p math.Point2LL) [2]float32 { return p })
 				ld.AddLineStrip(fl)
 			}
 			ld.GenerateCommands(&sm.CommandBuffer)
