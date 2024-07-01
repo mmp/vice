@@ -22,13 +22,16 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/util"
 	"github.com/shirou/gopsutil/cpu"
 )
 
 const ViceRPCVersion = 15
 
 type SimServer struct {
-	*RPCClient
+	*util.RPCClient
 	name        string
 	configs     map[string]map[string]*SimConfiguration
 	runningSims map[string]*RemoteSim
@@ -47,7 +50,7 @@ func (s *SimServer) Close() error {
 
 type SimProxy struct {
 	ControllerToken string
-	Client          *RPCClient
+	Client          *util.RPCClient
 }
 
 type AircraftSpecifier struct {
@@ -107,7 +110,7 @@ func (s *SimProxy) TakeOrReturnLaunchControl() *rpc.Call {
 	return s.Client.Go("Sim.TakeOrReturnLaunchControl", s.ControllerToken, nil, nil)
 }
 
-func (s *SimProxy) SetGlobalLeaderLine(callsign string, direction *CardinalOrdinalDirection) *rpc.Call {
+func (s *SimProxy) SetGlobalLeaderLine(callsign string, direction *math.CardinalOrdinalDirection) *rpc.Call {
 	return s.Client.Go("Sim.SetGlobalLeaderLine", &SetGlobalLeaderLineArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -274,15 +277,15 @@ type SimManager struct {
 	configs              map[string]map[string]*SimConfiguration
 	activeSims           map[string]*Sim
 	controllerTokenToSim map[string]*Sim
-	mu                   LoggingMutex
+	mu                   util.LoggingMutex
 	mapLibrary           *VideoMapLibrary
 	startTime            time.Time
-	lg                   *Logger
+	lg                   *log.Logger
 }
 
 func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
 	simConfigurations map[string]map[string]*SimConfiguration, mapLib *VideoMapLibrary,
-	lg *Logger) *SimManager {
+	lg *log.Logger) *SimManager {
 	return &SimManager{
 		scenarioGroups:       scenarioGroups,
 		configs:              simConfigurations,
@@ -514,7 +517,7 @@ func (sm *SimManager) GetSimStatus() []SimStatus {
 	defer sm.mu.Unlock(sm.lg)
 
 	var ss []SimStatus
-	for _, name := range SortedMapKeys(sm.activeSims) {
+	for _, name := range util.SortedMapKeys(sm.activeSims) {
 		sim := sm.activeSims[name]
 		status := SimStatus{
 			Name:            name,
@@ -692,7 +695,7 @@ func (sd *SimDispatcher) SetSecondaryScratchpad(a *SetScratchpadArgs, _ *struct{
 type SetGlobalLeaderLineArgs struct {
 	ControllerToken string
 	Callsign        string
-	Direction       *CardinalOrdinalDirection
+	Direction       *math.CardinalOrdinalDirection
 }
 
 func (sd *SimDispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *struct{}) error {
@@ -924,13 +927,13 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					rewriteError(err)
 					return nil
 				}
-			} else if len(command) > 4 && command[:3] == "CSI" && !isAllNumbers(command[3:]) {
+			} else if len(command) > 4 && command[:3] == "CSI" && !util.IsAllNumbers(command[3:]) {
 				// Cleared straight in approach.
 				if err := sim.ClearedApproach(token, callsign, command[3:], true); err != nil {
 					rewriteError(err)
 					return nil
 				}
-			} else if command[0] == 'C' && len(command) > 2 && !isAllNumbers(command[1:]) {
+			} else if command[0] == 'C' && len(command) > 2 && !util.IsAllNumbers(command[1:]) {
 				if components := strings.Split(command, "/"); len(components) > 1 {
 					// Cross fix [at altitude] [at speed]
 					fix := components[0][1:]
@@ -1314,20 +1317,20 @@ func RunSimServer() {
 	runServer(l, false)
 }
 
-func getClient(hostname string) (*RPCClient, error) {
+func getClient(hostname string) (*util.RPCClient, error) {
 	conn, err := net.Dial("tcp", hostname)
 	if err != nil {
 		return nil, err
 	}
 
-	cc, err := MakeCompressedConn(conn)
+	cc, err := util.MakeCompressedConn(conn)
 	if err != nil {
 		return nil, err
 	}
 
-	codec := MakeGOBClientCodec(cc)
-	codec = MakeLoggingClientCodec(hostname, codec)
-	return &RPCClient{rpc.NewClientWithCodec(codec)}, nil
+	codec := util.MakeGOBClientCodec(cc)
+	codec = util.MakeLoggingClientCodec(hostname, codec, lg)
+	return &util.RPCClient{rpc.NewClientWithCodec(codec)}, nil
 }
 
 func TryConnectRemoteServer(hostname string) chan *SimServerConnection {
@@ -1391,7 +1394,7 @@ func LaunchLocalSimServer() (chan *SimServer, *VideoMapLibrary, error) {
 func runServer(l net.Listener, isLocal bool) (chan map[string]map[string]*SimConfiguration, *VideoMapLibrary) {
 	ch := make(chan map[string]map[string]*SimConfiguration, 1)
 
-	var e ErrorLogger
+	var e util.ErrorLogger
 	scenarioGroups, simConfigurations, mapLib := LoadScenarioGroups(&e)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
@@ -1422,11 +1425,11 @@ func runServer(l net.Listener, isLocal bool) (chan map[string]map[string]*SimCon
 			lg.Infof("%s: new connection", conn.RemoteAddr())
 			if err != nil {
 				lg.Errorf("Accept error: %v", err)
-			} else if cc, err := MakeCompressedConn(MakeLoggingConn(conn)); err != nil {
+			} else if cc, err := util.MakeCompressedConn(util.MakeLoggingConn(conn, lg)); err != nil {
 				lg.Errorf("MakeCompressedConn: %v", err)
 			} else {
-				codec := MakeGOBServerCodec(cc)
-				codec = MakeLoggingServerCodec(conn.RemoteAddr().String(), codec)
+				codec := util.MakeGOBServerCodec(cc, lg)
+				codec = util.MakeLoggingServerCodec(conn.RemoteAddr().String(), codec, lg)
 				go server.ServeCodec(codec)
 			}
 		}
@@ -1606,7 +1609,7 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 
 	// process logs
 	cmd := exec.Command("jq", `select(.level == "WARN" or .level == "ERROR")|.callstack = .callstack[0]`,
-		lg.logFile)
+		lg.LogFile)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
@@ -1616,7 +1619,7 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 		stats.Errors = stdout.String()
 	}
 
-	stats.RX, stats.TX = GetLoggedRPCBandwidth()
+	stats.RX, stats.TX = util.GetLoggedRPCBandwidth()
 
 	statsTemplate.Execute(w, stats)
 }

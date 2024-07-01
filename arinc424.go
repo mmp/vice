@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/util"
 )
 
 const ARINC424LineLength = 134 // 132 chars + \r + \n
@@ -86,7 +87,11 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 		return p
 	}
 
-	contents := decompressZstd(string(file))
+	contents, err := util.DecompressZstd(string(file))
+	if err != nil {
+		panic(err)
+	}
+
 	br := bufio.NewReader(strings.NewReader(contents))
 	var lines [][]byte
 
@@ -168,7 +173,7 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 				if !empty(line[32:51]) {
 					navaids[id] = Navaid{
 						Id:       id,
-						Type:     Select(subsectionCode == ' ', "VOR", "NDB"),
+						Type:     util.Select(subsectionCode == ' ', "VOR", "NDB"),
 						Name:     name,
 						Location: parseLatLong(line[32:41], line[41:51]),
 					}
@@ -482,7 +487,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 			fmt.Printf("%s/%s/%s: HF no alt0?\n", r.icao, r.id, r.fix)
 		}
 		pt := &ProcedureTurn{
-			Type:       PTType(Select(r.pathAndTermination == "HF", PTRacetrack, PTStandard45)),
+			Type:       PTType(util.Select(r.pathAndTermination == "HF", PTRacetrack, PTStandard45)),
 			RightTurns: r.turnDirection != 'L',
 			// TODO: when do we set Entry180NoPt /nopt180?
 			ExitAltitude: alt0,

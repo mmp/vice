@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/util"
 )
 
 const initialSimSeconds = 45
@@ -37,13 +38,13 @@ type World struct {
 
 	lastUpdateRequest time.Time
 	lastReturnedTime  time.Time
-	updateCall        *PendingCall
+	updateCall        *util.PendingCall
 	showSettings      bool
 	showScenarioInfo  bool
 
 	launchControlWindow *LaunchControlWindow
 
-	pendingCalls []*PendingCall
+	pendingCalls []*util.PendingCall
 
 	missingPrimaryDialog *ModalDialogBox
 
@@ -108,14 +109,14 @@ func (w *World) GetWindVector(p math.Point2LL, alt float32) math.Point2LL {
 
 	// Wind.Direction is where it's coming from, so +180 to get the vector
 	// that affects the aircraft's course.
-	d := OppositeHeading(float32(w.Wind.Direction))
+	d := math.OppositeHeading(float32(w.Wind.Direction))
 	vWind := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
 	vWind = math.Scale2f(vWind, windSpeed/3600)
 	return vWind
 }
 
 func (w *World) AverageWindVector() [2]float32 {
-	d := OppositeHeading(float32(w.Wind.Direction))
+	d := math.OppositeHeading(float32(w.Wind.Direction))
 	v := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
 	return math.Scale2f(v, float32(w.Wind.Speed))
 }
@@ -145,7 +146,7 @@ func (w *World) Locate(s string) (math.Point2LL, bool) {
 }
 
 func (w *World) AllAirports() map[string]*Airport {
-	all := DuplicateMap(w.DepartureAirports)
+	all := util.DuplicateMap(w.DepartureAirports)
 	for name, ap := range w.ArrivalAirports {
 		all[name] = ap
 	}
@@ -162,7 +163,7 @@ func (w *World) SetSquawkAutomatic(callsign string) error {
 
 func (w *World) TakeOrReturnLaunchControl(eventStream *EventStream) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.TakeOrReturnLaunchControl(),
 			IssueTime: time.Now(),
 			OnErr: func(e error) {
@@ -176,7 +177,7 @@ func (w *World) TakeOrReturnLaunchControl(eventStream *EventStream) {
 
 func (w *World) LaunchAircraft(ac Aircraft) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.LaunchAircraft(ac),
 			IssueTime: time.Now(),
 		})
@@ -184,7 +185,7 @@ func (w *World) LaunchAircraft(ac Aircraft) {
 
 func (w *World) SendGlobalMessage(global GlobalMessage) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.GlobalMessage(global),
 			IssueTime: time.Now(),
 		})
@@ -196,7 +197,7 @@ func (w *World) SetScratchpad(callsign string, scratchpad string, success func(a
 	}
 
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.SetScratchpad(callsign, scratchpad),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -210,7 +211,7 @@ func (w *World) SetSecondaryScratchpad(callsign string, scratchpad string, succe
 	}
 
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.SetSecondaryScratchpad(callsign, scratchpad),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -224,7 +225,7 @@ func (w *World) SetTemporaryAltitude(callsign string, alt int, success func(any)
 	}
 
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.SetTemporaryAltitude(callsign, alt),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -236,9 +237,9 @@ func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (w *World) SetGlobalLeaderLine(callsign string, dir *CardinalOrdinalDirection, success func(any), err func(error)) {
+func (w *World) SetGlobalLeaderLine(callsign string, dir *math.CardinalOrdinalDirection, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.SetGlobalLeaderLine(callsign, dir),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -258,7 +259,7 @@ func (w *World) InitiateTrack(callsign string, success func(any), err func(error
 	}
 
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.InitiateTrack(callsign),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -273,7 +274,7 @@ func (w *World) DropTrack(callsign string, success func(any), err func(error)) {
 	}
 
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.DropTrack(callsign),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -283,7 +284,7 @@ func (w *World) DropTrack(callsign string, success func(any), err func(error)) {
 
 func (w *World) HandoffTrack(callsign string, controller string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.HandoffTrack(callsign, controller),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -299,7 +300,7 @@ func (w *World) AcceptHandoff(callsign string, success func(any), err func(error
 	}
 
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.AcceptHandoff(callsign),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -309,7 +310,7 @@ func (w *World) AcceptHandoff(callsign string, success func(any), err func(error
 
 func (w *World) RedirectHandoff(callsign, controller string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.RedirectHandoff(callsign, controller),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -319,7 +320,7 @@ func (w *World) RedirectHandoff(callsign, controller string, success func(any), 
 
 func (w *World) AcceptRedirectedHandoff(callsign string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.AcceptRedirectedHandoff(callsign),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -329,7 +330,7 @@ func (w *World) AcceptRedirectedHandoff(callsign string, success func(any), err 
 
 func (w *World) CancelHandoff(callsign string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.CancelHandoff(callsign),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -339,7 +340,7 @@ func (w *World) CancelHandoff(callsign string, success func(any), err func(error
 
 func (w *World) ForceQL(callsign, controller string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.ForceQL(callsign, controller),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -349,7 +350,7 @@ func (w *World) ForceQL(callsign, controller string, success func(any), err func
 
 func (w *World) RemoveForceQL(callsign, controller string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.RemoveForceQL(callsign, controller),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -359,7 +360,7 @@ func (w *World) RemoveForceQL(callsign, controller string, success func(any), er
 
 func (w *World) PointOut(callsign string, controller string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.PointOut(callsign, controller),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -369,7 +370,7 @@ func (w *World) PointOut(callsign string, controller string, success func(any), 
 
 func (w *World) AcknowledgePointOut(callsign string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.AcknowledgePointOut(callsign),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -379,7 +380,7 @@ func (w *World) AcknowledgePointOut(callsign string, success func(any), err func
 
 func (w *World) RejectPointOut(callsign string, success func(any), err func(error)) {
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.RejectPointOut(callsign),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -393,7 +394,7 @@ func (w *World) ToggleSPCOverride(callsign string, spc string, success func(any)
 	}
 
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.ToggleSPCOverride(callsign, spc),
 			IssueTime: time.Now(),
 			OnSuccess: success,
@@ -488,7 +489,7 @@ func (w *World) DepartureController(ac *Aircraft) string {
 				ctrl, ok := w.Controllers[callsign]
 				return ok && ctrl.IsHuman
 			})
-		return Select(callsign != "", callsign, w.PrimaryController)
+		return util.Select(callsign != "", callsign, w.PrimaryController)
 	} else {
 		return w.PrimaryController
 	}
@@ -499,7 +500,7 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 		return
 	}
 
-	if w.updateCall != nil && w.updateCall.CheckFinished(eventStream) {
+	if w.updateCall != nil && w.updateCall.CheckFinished() {
 		w.updateCall = nil
 		return
 	}
@@ -516,7 +517,7 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 		w.lastUpdateRequest = time.Now()
 
 		wu := &SimWorldUpdate{}
-		w.updateCall = &PendingCall{
+		w.updateCall = &util.PendingCall{
 			Call:      w.simProxy.GetWorldUpdate(wu),
 			IssueTime: time.Now(),
 			OnSuccess: func(any) {
@@ -534,8 +535,8 @@ func (w *World) GetUpdates(eventStream *EventStream, onErr func(error)) {
 }
 
 func (w *World) checkPendingRPCs(eventStream *EventStream) {
-	w.pendingCalls = FilterSlice(w.pendingCalls,
-		func(call *PendingCall) bool { return !call.CheckFinished(eventStream) })
+	w.pendingCalls = util.FilterSlice(w.pendingCalls,
+		func(call *util.PendingCall) bool { return !call.CheckFinished() })
 }
 
 func (w *World) Connected() bool {
@@ -555,7 +556,7 @@ func (w *World) PostLoad(ml *VideoMapLibrary) error {
 }
 
 func (w *World) ToggleSimPause() {
-	w.pendingCalls = append(w.pendingCalls, &PendingCall{
+	w.pendingCalls = append(w.pendingCalls, &util.PendingCall{
 		Call:      w.simProxy.TogglePause(),
 		IssueTime: time.Now(),
 	})
@@ -569,7 +570,7 @@ func (w *World) GetSimRate() float32 {
 }
 
 func (w *World) SetSimRate(r float32) {
-	w.pendingCalls = append(w.pendingCalls, &PendingCall{
+	w.pendingCalls = append(w.pendingCalls, &util.PendingCall{
 		Call:      w.simProxy.SetSimRate(r),
 		IssueTime: time.Now(),
 	})
@@ -577,7 +578,7 @@ func (w *World) SetSimRate(r float32) {
 }
 
 func (w *World) SetLaunchConfig(lc LaunchConfig) {
-	w.pendingCalls = append(w.pendingCalls, &PendingCall{
+	w.pendingCalls = append(w.pendingCalls, &util.PendingCall{
 		Call:      w.simProxy.SetLaunchConfig(lc),
 		IssueTime: time.Now(),
 	})
@@ -668,7 +669,7 @@ func (w *World) DeleteAircraft(ac *Aircraft, onErr func(err error)) {
 	}
 
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.DeleteAircraft(ac.Callsign),
 			IssueTime: time.Now(),
 			OnErr:     onErr,
@@ -678,7 +679,7 @@ func (w *World) DeleteAircraft(ac *Aircraft, onErr func(err error)) {
 func (w *World) RunAircraftCommands(callsign string, cmds string, handleResult func(message string, remainingInput string)) {
 	var result AircraftCommandsResult
 	w.pendingCalls = append(w.pendingCalls,
-		&PendingCall{
+		&util.PendingCall{
 			Call:      w.simProxy.RunAircraftCommands(callsign, cmds, &result),
 			IssueTime: time.Now(),
 			OnSuccess: func(any) {
@@ -883,7 +884,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	if rand.Float32() < challenge && lastDeparture != nil && w.sameGateDepartures < w.sameDepartureCap {
 		// 50/50 split between the exact same departure and a departure to
 		// the same gate as the last departure.
-		pred := Select(rand.Float32() < .5,
+		pred := util.Select(rand.Float32() < .5,
 			func(d Departure) bool { return d.Exit == lastDeparture.Exit },
 			func(d Departure) bool {
 				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
@@ -1029,7 +1030,7 @@ func (w *World) DrawScenarioInfoWindow() {
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
-			for _, name := range SortedMapKeys(w.ArrivalGroups) {
+			for _, name := range util.SortedMapKeys(w.ArrivalGroups) {
 				arrivals := w.ArrivalGroups[name]
 				if w.scopeDraw.arrivals[name] == nil {
 					w.scopeDraw.arrivals[name] = make(map[int]bool)
@@ -1051,7 +1052,7 @@ func (w *World) DrawScenarioInfoWindow() {
 					imgui.Text(name)
 
 					imgui.TableNextColumn()
-					airports := SortedMapKeys(arr.Airlines)
+					airports := util.SortedMapKeys(arr.Airlines)
 					imgui.Text(strings.Join(airports, ", "))
 
 					imgui.TableNextColumn()
@@ -1090,7 +1091,7 @@ func (w *World) DrawScenarioInfoWindow() {
 					if w.scopeDraw.approaches[rwy.Airport] == nil {
 						w.scopeDraw.approaches[rwy.Airport] = make(map[string]bool)
 					}
-					for _, name := range SortedMapKeys(ap.Approaches) {
+					for _, name := range util.SortedMapKeys(ap.Approaches) {
 						appr := ap.Approaches[name]
 						if appr.Runway == rwy.Runway {
 							imgui.TableNextRow()
@@ -1140,14 +1141,14 @@ func (w *World) DrawScenarioInfoWindow() {
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
-			for _, airport := range SortedMapKeys(w.LaunchConfig.DepartureRates) {
+			for _, airport := range util.SortedMapKeys(w.LaunchConfig.DepartureRates) {
 				if w.scopeDraw.departures[airport] == nil {
 					w.scopeDraw.departures[airport] = make(map[string]map[string]bool)
 				}
 				ap := w.Airports[airport]
 
 				runwayRates := w.LaunchConfig.DepartureRates[airport]
-				for _, rwy := range SortedMapKeys(runwayRates) {
+				for _, rwy := range util.SortedMapKeys(runwayRates) {
 					if w.scopeDraw.departures[airport][rwy] == nil {
 						w.scopeDraw.departures[airport][rwy] = make(map[string]bool)
 					}
@@ -1158,13 +1159,13 @@ func (w *World) DrawScenarioInfoWindow() {
 					// we'll reverse-engineer that here so we can present
 					// them together in the UI.
 					routeToExit := make(map[string][]string)
-					for _, exit := range SortedMapKeys(exitRoutes) {
+					for _, exit := range util.SortedMapKeys(exitRoutes) {
 						exitRoute := ap.DepartureRoutes[rwy][exit]
 						r := exitRoute.Waypoints.Encode()
 						routeToExit[r] = append(routeToExit[r], exit)
 					}
 
-					for _, exit := range SortedMapKeys(exitRoutes) {
+					for _, exit := range util.SortedMapKeys(exitRoutes) {
 						// Draw the row only when we hit the first exit
 						// that uses the corresponding route route.
 						r := exitRoutes[exit].Waypoints.Encode()
@@ -1232,7 +1233,7 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 		DrawBackground: true}
 
 	// STARS
-	for _, name := range SortedMapKeys(w.ArrivalGroups) {
+	for _, name := range util.SortedMapKeys(w.ArrivalGroups) {
 		if w.scopeDraw.arrivals == nil || w.scopeDraw.arrivals[name] == nil {
 			continue
 		}
@@ -1246,8 +1247,8 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 			w.drawWaypoints(arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr)
 
 			// Draw runway-specific waypoints
-			for _, ap := range SortedMapKeys(arr.RunwayWaypoints) {
-				for _, rwy := range SortedMapKeys(arr.RunwayWaypoints[ap]) {
+			for _, ap := range util.SortedMapKeys(arr.RunwayWaypoints) {
+				for _, rwy := range util.SortedMapKeys(arr.RunwayWaypoints[ap]) {
 					wp := arr.RunwayWaypoints[ap][rwy]
 					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
 
@@ -1277,7 +1278,7 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 			continue
 		}
 		ap := w.Airports[rwy.Airport]
-		for _, name := range SortedMapKeys(ap.Approaches) {
+		for _, name := range util.SortedMapKeys(ap.Approaches) {
 			appr := ap.Approaches[name]
 			if appr.Runway == rwy.Runway && w.scopeDraw.approaches[rwy.Airport][name] {
 				for _, wp := range appr.Waypoints {
@@ -1288,19 +1289,19 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *Font, 
 	}
 
 	// Departure routes
-	for _, name := range SortedMapKeys(w.Airports) {
+	for _, name := range util.SortedMapKeys(w.Airports) {
 		if w.scopeDraw.departures == nil || w.scopeDraw.departures[name] == nil {
 			continue
 		}
 
 		ap := w.Airports[name]
-		for _, rwy := range SortedMapKeys(ap.DepartureRoutes) {
+		for _, rwy := range util.SortedMapKeys(ap.DepartureRoutes) {
 			if w.scopeDraw.departures[name][rwy] == nil {
 				continue
 			}
 
 			exitRoutes := ap.DepartureRoutes[rwy]
-			for _, exit := range SortedMapKeys(exitRoutes) {
+			for _, exit := range util.SortedMapKeys(exitRoutes) {
 				if w.scopeDraw.departures[name][rwy][exit] {
 					w.drawWaypoints(exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
 						td, style, ld, pd, ldr)
@@ -1358,7 +1359,7 @@ func calculateOffset(font *Font, pt func(int) ([2]float32, bool)) [2]float32 {
 
 	offset := math.Scale2f([2]float32{math.Sin(angle), math.Cos(angle)}, 8)
 
-	h := NormalizeHeading(math.Degrees(angle))
+	h := math.NormalizeHeading(math.Degrees(angle))
 	if (h >= 160 && h < 200) || (h >= 340 || h < 20) {
 		// Center(ish) the text if the line is more or less horizontal.
 		offset[0] -= 2.5 * float32(font.size)
@@ -1411,15 +1412,15 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 				p0 := math.LL2NM(waypoints[i].Location, w.NmPerLongitude)
 				r0 := math.Distance2f(p0, pc)
 				v0 := math.Normalize2f(math.Sub2f(p0, pc))
-				a0 := NormalizeHeading(math.Degrees(math.Atan2(v0[0], v0[1]))) // angle w.r.t. the arc center
+				a0 := math.NormalizeHeading(math.Degrees(math.Atan2(v0[0], v0[1]))) // angle w.r.t. the arc center
 
 				p1 := math.LL2NM(waypoints[i+1].Location, w.NmPerLongitude)
 				r1 := math.Distance2f(p1, pc)
 				v1 := math.Normalize2f(math.Sub2f(p1, pc))
-				a1 := NormalizeHeading(math.Degrees(math.Atan2(v1[0], v1[1])))
+				a1 := math.NormalizeHeading(math.Degrees(math.Atan2(v1[0], v1[1])))
 
 				// Draw a segment every degree
-				n := int(headingDifference(a0, a1))
+				n := int(math.HeadingDifference(a0, a1))
 				a := a0
 				pprev := waypoints[i].Location
 				for i := 1; i < n-1; i++ {
@@ -1428,7 +1429,7 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 					} else {
 						a -= 1
 					}
-					a = NormalizeHeading(a)
+					a = math.NormalizeHeading(a)
 					r := math.Lerp(float32(i)/float32(n), r0, r1)
 					v := math.Scale2f([2]float32{math.Sin(math.Radians(a)), math.Cos(math.Radians(a))}, r)
 					pnext := math.NM2LL(math.Add2f(pc, v), w.NmPerLongitude)
@@ -1437,7 +1438,7 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 
 					if i == n/2 {
 						// Draw an arrow at the midpoint showing the arc's direction
-						drawArrow(math.Add2f(pc, v), Select(wp.Arc.Clockwise, math.Radians(a+90), math.Radians(a-90)))
+						drawArrow(math.Add2f(pc, v), util.Select(wp.Arc.Clockwise, math.Radians(a+90), math.Radians(a-90)))
 					}
 				}
 				ld.AddLine(pprev, waypoints[i+1].Location)
@@ -1661,7 +1662,7 @@ func (w *World) DrawSettingsWindow() {
 				sizes[fontid.Size] = nil
 			}
 		}
-		for _, size := range SortedMapKeys(sizes) {
+		for _, size := range util.SortedMapKeys(sizes) {
 			if imgui.SelectableV(strconv.Itoa(size), size == globalConfig.UIFontSize, 0, imgui.Vec2{}) {
 				globalConfig.UIFontSize = size
 				ui.font = GetFont(FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})

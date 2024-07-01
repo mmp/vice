@@ -19,6 +19,7 @@ import (
 
 	"github.com/iancoleman/orderedmap"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/util"
 )
 
 type ScenarioGroup struct {
@@ -140,7 +141,7 @@ type ScenarioGroupArrivalRunway struct {
 	Runway  string `json:"runway"`
 }
 
-func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
+func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 	for _, as := range s.ApproachAirspaceNames {
 		if vol, ok := sg.Airspace.Volumes[as]; !ok {
 			e.ErrorString("unknown approach airspace \"%s\"", as)
@@ -471,7 +472,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 		e.Pop()
 	}
 
-	for _, name := range SortedMapKeys(s.ArrivalGroupDefaultRates) {
+	for _, name := range util.SortedMapKeys(s.ArrivalGroupDefaultRates) {
 		e.Push("Arrival group " + name)
 		// Make sure the arrival group has been defined
 		if arrivals, ok := sg.ArrivalGroups[name]; !ok {
@@ -611,7 +612,7 @@ var (
 	reFixHeadingDistance = regexp.MustCompile(`^([\w-]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
 )
 
-func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[string]map[string]*SimConfiguration) {
+func (sg *ScenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations map[string]map[string]*SimConfiguration) {
 	// stars_config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
 	sg.STARSFacilityAdaptation.PostDeserialize(e, sg)
@@ -709,7 +710,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 	if len(fa.VideoMapNames) == 0 {
 		if len(fa.ControllerConfigs) == 0 {
 			e.ErrorString("must provide one of \"stars_maps\" or \"controller_configs\" in \"stars_config\"")
-			fa.ControllerConfigs = CommaKeyExpand(fa.ControllerConfigs)
+			fa.ControllerConfigs = util.CommaKeyExpand(fa.ControllerConfigs)
 		}
 	} else if len(fa.ControllerConfigs) > 0 {
 		e.ErrorString("cannot provide both \"stars_maps\" and \"controller_configs\" in \"stars_config\"")
@@ -799,7 +800,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *ErrorLogger, simConfigurations map[s
 	initializeSimConfigurations(sg, simConfigurations, *server)
 }
 
-func (s *STARSFacilityAdaptation) PostDeserialize(e *ErrorLogger, sg *ScenarioGroup) {
+func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *ScenarioGroup) {
 	e.Push("stars_config")
 
 	// Video maps
@@ -809,7 +810,7 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *ErrorLogger, sg *ScenarioGr
 		// loading maps to figure out which ones we need rendering command
 		// buffers for, so hence we haven't loaded them at this point.)
 	} else if len(s.ControllerConfigs) > 0 {
-		s.ControllerConfigs = CommaKeyExpand(s.ControllerConfigs)
+		s.ControllerConfigs = util.CommaKeyExpand(s.ControllerConfigs)
 
 		for ctrl, config := range s.ControllerConfigs {
 			if pos, ok := sg.locate(config.CenterString); !ok {
@@ -976,7 +977,7 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 		// controller but we're gathering multi-controller here. Pick
 		// something valid in that case.
 		if _, ok := config.ScenarioConfigs[config.DefaultScenario]; !ok {
-			config.DefaultScenario = SortedMapKeys(config.ScenarioConfigs)[0]
+			config.DefaultScenario = util.SortedMapKeys(config.ScenarioConfigs)[0]
 		}
 
 		if simConfigurations[sg.TRACON] == nil {
@@ -986,7 +987,7 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 	}
 }
 
-func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *ErrorLogger) {
+func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *util.ErrorLogger) {
 	var prev math.Point2LL
 
 	for i, wp := range waypoints {
@@ -1095,7 +1096,7 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 			// negative steps in parametric t along the perpendicular line
 			// so that we're searching in the right direction to get the
 			// clockwise/counter clockwise route we want.
-			delta := float32(Select(wp.Arc.Clockwise, -.01, .01))
+			delta := float32(util.Select(wp.Arc.Clockwise, -.01, .01))
 
 			// We will search with uniform small steps along the line. Some
 			// sort of bisection search would probably be better, but...
@@ -1132,10 +1133,11 @@ func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *Er
 		}
 
 		// Heading from the center of the arc to the current fix
-		hfix := headingp2ll(wp.Arc.Center, wp.Location,
+		hfix := math.Heading2LL(wp.Arc.Center, wp.Location,
 			sg.NmPerLongitude, sg.MagneticVariation)
+
 		// Then perpendicular to that, depending on the arc's direction
-		wp.Arc.InitialHeading = NormalizeHeading(hfix + float32(Select(wp.Arc.Clockwise, 90, -90)))
+		wp.Arc.InitialHeading = math.NormalizeHeading(hfix + float32(util.Select(wp.Arc.Clockwise, 90, -90)))
 
 		if e != nil {
 			e.Pop()
@@ -1192,7 +1194,7 @@ func InAirspace(p math.Point2LL, alt float32, volumes []ControllerAirspaceVolume
 ///////////////////////////////////////////////////////////////////////////
 // LoadScenarioGroups
 
-func loadScenarioGroup(filesystem fs.FS, path string, e *ErrorLogger) *ScenarioGroup {
+func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *ScenarioGroup {
 	e.Push("File " + path)
 	defer e.Pop()
 
@@ -1202,13 +1204,13 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *ErrorLogger) *ScenarioG
 		return nil
 	}
 
-	CheckJSONVsSchema[ScenarioGroup](contents, e)
+	util.CheckJSONVsSchema[ScenarioGroup](contents, e)
 	if e.HaveErrors() {
 		return nil
 	}
 
 	var s ScenarioGroup
-	if err := UnmarshalJSON(contents, &s); err != nil {
+	if err := util.UnmarshalJSON(contents, &s); err != nil {
 		e.Error(err)
 		return nil
 	}
@@ -1250,7 +1252,7 @@ func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
 // continue on in the presence of errors; all errors will be printed and
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
-func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration, *VideoMapLibrary) {
+func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration, *VideoMapLibrary) {
 	start := time.Now()
 
 	math.SetLocationResolver(&dbResolver{})
@@ -1443,7 +1445,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 			for _, ap := range sg.Airports {
 				for _, dep := range ap.Departures {
 					for _, al := range dep.Airlines {
-						fleet := Select(al.Fleet != "", al.Fleet, "default")
+						fleet := util.Select(al.Fleet != "", al.Fleet, "default")
 						for _, ac := range database.Airlines[al.ICAO].Fleets[fleet] {
 							acTypes[ac.ICAO] = struct{}{}
 						}
@@ -1453,7 +1455,7 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 		}
 	}
 	var missing []string
-	for _, t := range SortedMapKeys(acTypes) {
+	for _, t := range util.SortedMapKeys(acTypes) {
 		if database.AircraftPerformance[t].Speed.V2 == 0 {
 			missing = append(missing, t)
 		}
@@ -1473,8 +1475,8 @@ func LoadScenarioGroups(e *ErrorLogger) (map[string]map[string]*ScenarioGroup, m
 			}
 		}
 
-		for _, tracon := range SortedMapKeys(scenarioAirports) {
-			airports := SortedMapKeys(scenarioAirports[tracon])
+		for _, tracon := range util.SortedMapKeys(scenarioAirports) {
+			airports := util.SortedMapKeys(scenarioAirports[tracon])
 			fmt.Printf("%s (%s),\n", tracon, strings.Join(airports, ", "))
 		}
 		os.Exit(0)
@@ -1517,7 +1519,7 @@ func (sc SplitConfigurationSet) Len() int {
 }
 
 func (sc SplitConfigurationSet) Splits() []string {
-	return SortedMapKeys(sc)
+	return util.SortedMapKeys(sc)
 }
 
 ///////////////////////////////////////////////////////////////////////////

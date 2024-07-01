@@ -14,6 +14,7 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/util"
 )
 
 // Renderer defines an interface for all of the various drawing that happens in vice.
@@ -1117,7 +1118,7 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 	// draw order from the user, so drawing from two atlases where
 	// characters from different atlases overlap may not turn out as
 	// expected. We'll assume that's not worth worrying about...
-	for _, id := range SortedMapKeys(td.regular) {
+	for _, id := range util.SortedMapKeys(td.regular) {
 		regular := td.regular[id]
 		if len(regular.indices) == 0 {
 			continue

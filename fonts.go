@@ -23,6 +23,7 @@ import (
 	gomath "math"
 
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/util"
 )
 
 // imgui lets us to embed icons within regular fonts which makes it
@@ -471,13 +472,13 @@ func initializeSTARSFonts(r Renderer) {
 	// Iterate over the fonts, create Font/Glyph objects for them, and copy
 	// their bitmaps into the atlas image.
 	x, y := 0, 0
-	for _, fontName := range SortedMapKeys(starsFonts) { // consistent order
+	for _, fontName := range util.SortedMapKeys(starsFonts) { // consistent order
 		sf := starsFonts[fontName]
 		f := &Font{
 			glyphs: make(map[rune]*Glyph),
 			size:   sf.Height,
 			mono:   true,
-			id:     FontIdentifier{Name: fontName, Size: Select(doublePixels, sf.Height/2, sf.Height)},
+			id:     FontIdentifier{Name: fontName, Size: util.Select(doublePixels, sf.Height/2, sf.Height)},
 		}
 		newFonts = append(newFonts, f)
 
@@ -520,7 +521,7 @@ func initializeSTARSFonts(r Renderer) {
 				mono:   true,
 				// The FontIdentifier is still w.r.t. the original font
 				// size, not the possibly-doubled size.
-				id: FontIdentifier{Name: fontName, Size: Select(doublePixels, sf.Height/2, sf.Height)},
+				id: FontIdentifier{Name: fontName, Size: util.Select(doublePixels, sf.Height/2, sf.Height)},
 			}
 			newFonts = append(newFonts, f)
 

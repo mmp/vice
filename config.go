@@ -15,6 +15,7 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/util"
 )
 
 // Version history 0-7 not explicitly recorded
@@ -64,7 +65,7 @@ type GlobalConfigNoSim struct {
 	DisplayRoot *DisplayNode
 
 	AskedDiscordOptIn        bool
-	InhibitDiscordActivity   AtomicBool
+	InhibitDiscordActivity   util.AtomicBool
 	NotifiedNewCommandSyntax bool
 	StartInFullScreen        bool
 

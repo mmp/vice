@@ -7,6 +7,7 @@ package main
 import (
 	"testing"
 
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/rand"
 )
 
@@ -39,7 +40,7 @@ func TestEventStream(t *testing.T) {
 }
 
 func TestEventStreamCompact(t *testing.T) {
-	lg = NewLogger(false, "debug")
+	lg = log.New(false, "debug")
 	es := NewEventStream()
 
 	// multiple consumers, at different offsets

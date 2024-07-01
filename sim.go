@@ -18,8 +18,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/util"
 
 	"github.com/brunoga/deep"
 	getweather "github.com/checkandmate1/AirportWeatherData"
@@ -140,7 +142,7 @@ func (lc *LaunchConfig) DrawDepartureUI() (changed bool) {
 	changed = imgui.SliderFloatV("Sequencing challenge", &lc.DepartureChallenge, 0, 1, "%.02f", 0) || changed
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
-	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+	tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 	if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
 		imgui.TableSetupColumn("Runway")
@@ -148,11 +150,11 @@ func (lc *LaunchConfig) DrawDepartureUI() (changed bool) {
 		imgui.TableSetupColumn("ADR")
 		imgui.TableHeadersRow()
 
-		for _, airport := range SortedMapKeys(lc.DepartureRates) {
+		for _, airport := range util.SortedMapKeys(lc.DepartureRates) {
 			imgui.PushID(airport)
-			for _, runway := range SortedMapKeys(lc.DepartureRates[airport]) {
+			for _, runway := range util.SortedMapKeys(lc.DepartureRates[airport]) {
 				imgui.PushID(runway)
-				for _, category := range SortedMapKeys(lc.DepartureRates[airport][runway]) {
+				for _, category := range util.SortedMapKeys(lc.DepartureRates[airport][runway]) {
 					imgui.PushID(category)
 
 					imgui.TableNextRow()
@@ -217,16 +219,16 @@ func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
 	uiEndDisable(!lc.ArrivalPushes)
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+	tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 	if imgui.BeginTableV("arrivalgroups", 3, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
 		imgui.TableSetupColumn("Arrival")
 		imgui.TableSetupColumn("AAR")
 		imgui.TableHeadersRow()
 
-		for _, group := range SortedMapKeys(lc.ArrivalGroupRates) {
+		for _, group := range util.SortedMapKeys(lc.ArrivalGroupRates) {
 			imgui.PushID(group)
-			for _, ap := range SortedMapKeys(allAirports) {
+			for _, ap := range util.SortedMapKeys(allAirports) {
 				imgui.PushID(ap)
 				if rate, ok := lc.ArrivalGroupRates[group][ap]; ok {
 					imgui.TableNextRow()
@@ -267,7 +269,7 @@ type NewSimConfiguration struct {
 	RemoteSimPassword         string // for join remote only
 
 	lastRemoteSimsUpdate time.Time
-	updateRemoteSimsCall *PendingCall
+	updateRemoteSimsCall *util.PendingCall
 
 	displayError error
 }
@@ -302,7 +304,7 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && remoteServer != nil {
 		c.lastRemoteSimsUpdate = time.Now()
 		var rs map[string]*RemoteSim
-		c.updateRemoteSimsCall = &PendingCall{
+		c.updateRemoteSimsCall = &util.PendingCall{
 			Call:      remoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
 			IssueTime: time.Now(),
 			OnSuccess: func(result any) {
@@ -315,7 +317,7 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 
 				// nil out the server if we've lost the connection; the
 				// main loop will attempt to reconnect.
-				if isRPCServerError(e) {
+				if util.IsRPCServerError(e) {
 					remoteServer = nil
 				}
 			},
@@ -331,11 +333,11 @@ func (c *NewSimConfiguration) SetTRACON(name string) {
 		}
 		configs := c.selectedServer.configs
 		// Pick one at random
-		name = SortedMapKeys(configs)[rand.Intn(len(configs))]
+		name = util.SortedMapKeys(configs)[rand.Intn(len(configs))]
 		c.TRACON = configs[name]
 	}
 	c.TRACONName = name
-	c.GroupName = SortedMapKeys(c.TRACON)[0]
+	c.GroupName = util.SortedMapKeys(c.TRACON)[0]
 
 	c.SetScenario(c.GroupName, c.TRACON[c.GroupName].DefaultScenario)
 }
@@ -345,7 +347,7 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	var groupConfig *SimConfiguration
 	if groupConfig, ok = c.TRACON[groupName]; !ok {
 		lg.Errorf("%s: group not found in TRACON %s", groupName, c.TRACONName)
-		groupName = SortedMapKeys(c.TRACON)[0]
+		groupName = util.SortedMapKeys(c.TRACON)[0]
 		groupConfig = c.TRACON[c.GroupName]
 	}
 	c.GroupName = groupName
@@ -361,7 +363,7 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 }
 
 func (c *NewSimConfiguration) UIButtonText() string {
-	return Select(c.NewSimType == NewSimJoinRemote, "Join", "Next")
+	return util.Select(c.NewSimType == NewSimJoinRemote, "Join", "Next")
 }
 
 func (c *NewSimConfiguration) ShowRatesWindow() bool {
@@ -369,7 +371,7 @@ func (c *NewSimConfiguration) ShowRatesWindow() bool {
 }
 
 func (c *NewSimConfiguration) DrawUI() bool {
-	if c.updateRemoteSimsCall != nil && c.updateRemoteSimsCall.CheckFinished(nil) {
+	if c.updateRemoteSimsCall != nil && c.updateRemoteSimsCall.CheckFinished() {
 		c.updateRemoteSimsCall = nil
 	} else {
 		c.updateRemoteSims()
@@ -377,7 +379,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 	if c.displayError != nil {
 		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .5, .5, 1})
-		if errors.Is(c.displayError, ErrRPCTimeout) || isRPCServerError(c.displayError) {
+		if errors.Is(c.displayError, ErrRPCTimeout) || util.IsRPCServerError(c.displayError) {
 			imgui.Text("Unable to reach vice server")
 		} else {
 			imgui.Text(c.displayError.Error())
@@ -386,7 +388,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.Separator()
 	}
 
-	tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+	tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 	if remoteServer != nil {
 		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			imgui.TableNextRow()
@@ -439,7 +441,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	if c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote {
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingStretchProp
-		tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+		tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 		if imgui.BeginTableV("SelectScenario", 3, flags, imgui.Vec2{tableScale * 600, tableScale * 300}, 0.) {
 			imgui.TableSetupColumn("ARTCC")
 			imgui.TableSetupColumn("ATCT/TRACON")
@@ -449,14 +451,14 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 			// ARTCCs
 			artccs := make(map[string]interface{})
-			allTRACONs := SortedMapKeys(c.selectedServer.configs)
+			allTRACONs := util.SortedMapKeys(c.selectedServer.configs)
 			for _, tracon := range allTRACONs {
 				artccs[database.TRACONs[tracon].ARTCC] = nil
 			}
 			imgui.TableNextColumn()
 			if imgui.BeginChildV("artccs", imgui.Vec2{tableScale * 150, tableScale * 350}, false, /* border */
 				imgui.WindowFlagsNoResize) {
-				for _, artcc := range SortedMapKeys(artccs) {
+				for _, artcc := range util.SortedMapKeys(artccs) {
 					label := fmt.Sprintf("%s (%s)", artcc, strings.ReplaceAll(database.ARTCCs[artcc].Name, " Center", ""))
 					if imgui.SelectableV(label, artcc == database.TRACONs[c.TRACONName].ARTCC, 0, imgui.Vec2{}) &&
 						artcc != database.TRACONs[c.TRACONName].ARTCC {
@@ -492,9 +494,9 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.TableNextColumn()
 			if imgui.BeginChildV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, false, /* border */
 				imgui.WindowFlagsNoResize) {
-				for _, groupName := range SortedMapKeys(c.TRACON) {
+				for _, groupName := range util.SortedMapKeys(c.TRACON) {
 					group := c.TRACON[groupName]
-					for _, name := range SortedMapKeys(group.ScenarioConfigs) {
+					for _, name := range util.SortedMapKeys(group.ScenarioConfigs) {
 						if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
 							c.SetScenario(groupName, name)
 						}
@@ -621,7 +623,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 		rs, ok := runningSims[c.SelectedRemoteSim]
 		if !ok || c.SelectedRemoteSim == "" {
-			c.SelectedRemoteSim = SortedMapKeys(runningSims)[0]
+			c.SelectedRemoteSim = util.SortedMapKeys(runningSims)[0]
 
 			rs = runningSims[c.SelectedRemoteSim]
 			if _, ok := rs.CoveredPositions[rs.PrimaryController]; !ok {
@@ -640,7 +642,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 			imgui.TableSetupColumn("Controllers")
 			imgui.TableHeadersRow()
 
-			for _, simName := range SortedMapKeys(runningSims) {
+			for _, simName := range util.SortedMapKeys(runningSims) {
 				rs := runningSims[simName]
 				if len(rs.AvailablePositions) == 0 {
 					// No open positions left; don't even offer it.
@@ -677,7 +679,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 				controllers := fmt.Sprintf("%d / %d", covered, covered+available)
 				imgui.Text(controllers)
 				if imgui.IsItemHovered() && len(rs.CoveredPositions) > 0 {
-					imgui.SetTooltip(strings.Join(SortedMapKeys(rs.CoveredPositions), ", "))
+					imgui.SetTooltip(strings.Join(util.SortedMapKeys(rs.CoveredPositions), ", "))
 				}
 
 				imgui.PopID()
@@ -687,11 +689,11 @@ func (c *NewSimConfiguration) DrawUI() bool {
 
 		// Handle the case of someone else signing in to the position
 		if _, ok := rs.AvailablePositions[c.SelectedRemoteSimPosition]; c.SelectedRemoteSimPosition != "Observer" && !ok {
-			c.SelectedRemoteSimPosition = SortedMapKeys(rs.AvailablePositions)[0]
+			c.SelectedRemoteSimPosition = util.SortedMapKeys(rs.AvailablePositions)[0]
 		}
 
 		if imgui.BeginComboV("Position", c.SelectedRemoteSimPosition, 0) {
-			for _, pos := range SortedMapKeys(rs.AvailablePositions) {
+			for _, pos := range util.SortedMapKeys(rs.AvailablePositions) {
 				if pos[0] == '_' {
 					continue
 				}
@@ -798,7 +800,7 @@ func (c *NewSimConfiguration) Start() error {
 type Sim struct {
 	Name string
 
-	mu LoggingMutex
+	mu util.LoggingMutex
 
 	ScenarioGroup string
 	Scenario      string
@@ -808,7 +810,7 @@ type Sim struct {
 	SignOnPositions map[string]*Controller
 
 	eventStream *EventStream
-	lg          *Logger
+	lg          *log.Logger
 
 	LaunchConfig LaunchConfig
 
@@ -870,7 +872,7 @@ func (sc *ServerController) LogValue() slog.Value {
 }
 
 func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*ScenarioGroup, isLocal bool,
-	mapLib *VideoMapLibrary, lg *Logger) *Sim {
+	mapLib *VideoMapLibrary, lg *log.Logger) *Sim {
 	lg = lg.With(slog.String("sim_name", ssc.NewSimName))
 
 	tracon, ok := scenarioGroups[ssc.TRACONName]
@@ -1010,8 +1012,8 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w.PrimaryAirport = sg.PrimaryAirport
 	fa := sg.STARSFacilityAdaptation
 	w.RadarSites = fa.RadarSites
-	w.Center = Select(sc.Center.IsZero(), fa.Center, sc.Center)
-	w.Range = Select(sc.Range == 0, fa.Range, sc.Range)
+	w.Center = util.Select(sc.Center.IsZero(), fa.Center, sc.Center)
+	w.Range = util.Select(sc.Range == 0, fa.Range, sc.Range)
 	w.ScenarioDefaultVideoMaps = sc.DefaultMaps
 	w.Scratchpads = fa.Scratchpads
 	w.ArrivalGroups = sg.ArrivalGroups
@@ -1396,7 +1398,7 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 	}
 }
 
-func (s *Sim) Activate(lg *Logger) {
+func (s *Sim) Activate(lg *log.Logger) {
 	if s.Name == "" {
 		s.lg = lg
 	} else {
@@ -2092,7 +2094,7 @@ func (s *Sim) Ident(token, callsign string) error {
 		})
 }
 
-func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *CardinalOrdinalDirection) error {
+func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *math.CardinalOrdinalDirection) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -2215,7 +2217,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
 			var radioTransmissions []RadioTransmission
 			if octrl := s.World.GetControllerByCallsign(ac.TrackingController); octrl != nil {
-				name := Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
+				name := util.Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
 				bye := rand.Sample("good day", "seeya")
 				contact := rand.Sample("contact ", "over to ", "")
 				goodbye := contact + name + " on " + octrl.Frequency.String() + ", " + bye
@@ -2385,7 +2387,7 @@ func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
 			return nil
 		},
 		func(ctrl *Controller, ac *Aircraft) []RadioTransmission {
-			ac.ForceQLControllers = FilterSlice(ac.ForceQLControllers, func(qlController string) bool { return qlController != controller })
+			ac.ForceQLControllers = util.FilterSlice(ac.ForceQLControllers, func(qlController string) bool { return qlController != controller })
 			return nil
 		})
 }

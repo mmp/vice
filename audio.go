@@ -17,7 +17,10 @@ import (
 	"github.com/tosone/minimp3"
 	"github.com/veandco/go-sdl2/sdl"
 )
-import "github.com/mmp/vice/pkg/math"
+import (
+	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/util"
+)
 
 const AudioSampleRate = 12000
 
@@ -189,7 +192,7 @@ func (a *AudioEngine) DrawUI() {
 	// Not all of the ones available in the engine are used, so only offer these up:
 	for _, i := range []AudioType{AudioConflictAlert, AudioInboundHandoff, AudioHandoffAccepted, AudioCommandError} {
 		if imgui.Checkbox(AudioType(i).String(), &a.EffectEnabled[i]) && a.EffectEnabled[i] {
-			n := Select(i == AudioConflictAlert, 5, 1)
+			n := util.Select(i == AudioConflictAlert, 5, 1)
 			for j := 0; j < n; j++ {
 				a.PlayOnce(i)
 			}

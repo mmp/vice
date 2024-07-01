@@ -25,6 +25,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/klauspost/compress/zstd"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/util"
 )
 
 type FAAAirport struct {
@@ -84,7 +85,7 @@ type STAR struct {
 	RunwayWaypoints map[string]WaypointArray
 }
 
-func (s STAR) Check(e *ErrorLogger) {
+func (s STAR) Check(e *util.ErrorLogger) {
 	check := func(wps WaypointArray) {
 		for _, wp := range wps {
 			_, okn := database.Navaids[wp.Fix]
@@ -117,13 +118,13 @@ func (s STAR) HasWaypoint(wp string) bool {
 }
 
 func (s STAR) GetWaypointsFrom(fix string) WaypointArray {
-	for _, tr := range SortedMapKeys(s.Transitions) {
+	for _, tr := range util.SortedMapKeys(s.Transitions) {
 		wps := s.Transitions[tr]
 		if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == fix }); idx != -1 {
 			return wps[idx:]
 		}
 	}
-	for _, tr := range SortedMapKeys(s.RunwayWaypoints) {
+	for _, tr := range util.SortedMapKeys(s.RunwayWaypoints) {
 		wps := s.RunwayWaypoints[tr]
 		if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == fix }); idx != -1 {
 			return wps[idx:]
@@ -451,7 +452,7 @@ func PlausibleFinalAltitude(w *World, fp *FlightPlan, perf AircraftPerformance) 
 	}
 	altitude = math.Min(altitude, int(perf.Ceiling))
 
-	if headingp2ll(pDep, pArr, w.NmPerLongitude, w.MagneticVariation) > 180 {
+	if math.Heading2LL(pDep, pArr, w.NmPerLongitude, w.MagneticVariation) > 180 {
 		altitude += 1000
 	}
 
@@ -518,13 +519,13 @@ const StandardTurnRate = 3
 func TurnAngle(from, to float32, turn TurnMethod) float32 {
 	switch turn {
 	case TurnLeft:
-		return NormalizeHeading(from - to)
+		return math.NormalizeHeading(from - to)
 
 	case TurnRight:
-		return NormalizeHeading(to - from)
+		return math.NormalizeHeading(to - from)
 
 	case TurnClosest:
-		return math.Abs(headingDifference(from, to))
+		return math.Abs(math.HeadingDifference(from, to))
 
 	default:
 		panic("unhandled TurnMethod")
@@ -951,7 +952,7 @@ func (w *WaypointArray) UnmarshalJSON(b []byte) error {
 	}
 }
 
-func (w WaypointArray) CheckDeparture(e *ErrorLogger, controllers map[string]*Controller) {
+func (w WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[string]*Controller) {
 	w.checkBasics(e, controllers)
 
 	var lastMin float32 // previous minimum altitude restriction
@@ -983,7 +984,7 @@ func (w WaypointArray) CheckDeparture(e *ErrorLogger, controllers map[string]*Co
 	}
 }
 
-func (w WaypointArray) checkBasics(e *ErrorLogger, controllers map[string]*Controller) {
+func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*Controller) {
 	for _, wp := range w {
 		e.Push(wp.Fix)
 		if wp.Speed < 0 || wp.Speed > 300 {
@@ -991,7 +992,7 @@ func (w WaypointArray) checkBasics(e *ErrorLogger, controllers map[string]*Contr
 		}
 
 		if wp.PointOut != "" {
-			if !MapContains(controllers,
+			if !util.MapContains(controllers,
 				func(callsign string, ctrl *Controller) bool { return ctrl.SectorId == wp.PointOut }) {
 				e.ErrorString("No controller found with TCP id \"%s\" for point out", wp.PointOut)
 			}
@@ -1000,7 +1001,7 @@ func (w WaypointArray) checkBasics(e *ErrorLogger, controllers map[string]*Contr
 	}
 }
 
-func (w WaypointArray) CheckApproach(e *ErrorLogger, controllers map[string]*Controller) {
+func (w WaypointArray) CheckApproach(e *util.ErrorLogger, controllers map[string]*Controller) {
 	w.checkBasics(e, controllers)
 	w.checkDescending(e)
 
@@ -1023,7 +1024,7 @@ func (w WaypointArray) CheckApproach(e *ErrorLogger, controllers map[string]*Con
 	*/
 }
 
-func (w WaypointArray) CheckArrival(e *ErrorLogger, ctrl map[string]*Controller) {
+func (w WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Controller) {
 	w.checkBasics(e, ctrl)
 	w.checkDescending(e)
 
@@ -1036,7 +1037,7 @@ func (w WaypointArray) CheckArrival(e *ErrorLogger, ctrl map[string]*Controller)
 	}
 }
 
-func (w WaypointArray) checkDescending(e *ErrorLogger) {
+func (w WaypointArray) checkDescending(e *util.ErrorLogger) {
 	// or at least, check not climbing...
 	var lastMin float32
 	var minFix string // last fix that established a specific minimum alt
@@ -1569,6 +1570,14 @@ func parseAirports() map[string]FAAAirport {
 	mungeCSV("airports", string(airportsRaw),
 		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "name"},
 		func(s []string) {
+			atof := func(s string) float64 {
+				v, err := util.Atof(s)
+				if err != nil {
+					panic(err)
+				}
+				return v
+			}
+
 			elevation := float64(0)
 			if s[2] != "" {
 				elevation = atof(s[2])
@@ -1838,8 +1847,12 @@ func parseMVAs() map[string][]MVA {
 				panic(err)
 			}
 
-			contents := []byte(decompressZstd(string(b)))
-			decoder := xml.NewDecoder(bytes.NewReader(contents))
+			contents, err := util.DecompressZstd(string(b))
+			if err != nil {
+				panic(err)
+			}
+
+			decoder := xml.NewDecoder(strings.NewReader(contents))
 
 			var mvas []MVA
 			tracon := ""
@@ -1941,7 +1954,7 @@ func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
 ///////////////////////////////////////////////////////////////////////////
 // Utility methods
 
-func (db *StaticDatabase) CheckAirline(icao, fleet string, e *ErrorLogger) {
+func (db *StaticDatabase) CheckAirline(icao, fleet string, e *util.ErrorLogger) {
 	e.Push("Airline " + icao + ", fleet " + fleet)
 	defer e.Pop()
 
@@ -1981,7 +1994,7 @@ func (db *StaticDatabase) CheckAirline(icao, fleet string, e *ErrorLogger) {
 
 func FixReadback(fix string) string {
 	if aid, ok := database.Navaids[fix]; ok {
-		return stopShouting(aid.Name)
+		return util.StopShouting(aid.Name)
 	} else {
 		return fix
 	}
@@ -2063,7 +2076,7 @@ func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
 }
 
 func (ap FAAAirport) ValidRunways() string {
-	return strings.Join(MapSlice(ap.Runways, func(r Runway) string { return r.Id }), ", ")
+	return strings.Join(util.MapSlice(ap.Runways, func(r Runway) string { return r.Id }), ", ")
 }
 
 // returns the ratio of air density at the given altitude (in feet) to the
@@ -2091,7 +2104,7 @@ func TASToIAS(tas, altitude float32) float32 {
 ///////////////////////////////////////////////////////////////////////////
 // Arrival
 
-func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
+func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 	if ar.Route == "" && ar.STAR == "" {
 		e.ErrorString("neither \"route\" nor \"star\" specified")
 		return
@@ -2137,14 +2150,14 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 			star, ok := airport.STARs[ar.STAR]
 			if !ok {
 				e.ErrorString("STAR \"%s\" not available for %s. Options: %s",
-					ar.STAR, icao, strings.Join(SortedMapKeys(airport.STARs), ", "))
+					ar.STAR, icao, strings.Join(util.SortedMapKeys(airport.STARs), ", "))
 				continue
 			}
 
 			star.Check(e)
 
 			if len(ar.Waypoints) == 0 {
-				for _, tr := range SortedMapKeys(star.Transitions) {
+				for _, tr := range util.SortedMapKeys(star.Transitions) {
 					wps := star.Transitions[tr]
 					if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == spawnPoint }); idx != -1 {
 						if idx == len(wps)-1 {
@@ -2152,7 +2165,7 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 								wps[idx].Fix)
 						}
 
-						ar.Waypoints = DuplicateSlice(wps[idx:])
+						ar.Waypoints = util.DuplicateSlice(wps[idx:])
 						sg.InitializeWaypointLocations(ar.Waypoints, e)
 
 						if len(ar.Waypoints) >= 2 && spawnT != 0 {
@@ -2183,7 +2196,7 @@ func (ar *Arrival) PostDeserialize(sg *ScenarioGroup, e *ErrorLogger) {
 						n := len(starRwy)
 						if starRwy == rwy.Id ||
 							(n == len(rwy.Id) && starRwy[n-1] == 'B' /* both */ && starRwy[:n-1] == rwy.Id[:n-1]) {
-							ar.RunwayWaypoints[icao][rwy.Id] = DuplicateSlice(wp)
+							ar.RunwayWaypoints[icao][rwy.Id] = util.DuplicateSlice(wp)
 							sg.InitializeWaypointLocations(ar.RunwayWaypoints[icao][rwy.Id], e)
 							break
 						}
@@ -2348,7 +2361,7 @@ func MakeVideoMapLibrary() *VideoMapLibrary {
 // AddFile adds a video map to the library. referenced encodes which maps
 // in the file are actually used; the loading code uses this information to
 // skip the work of generating CommandBuffers for unused video maps.
-func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, referenced map[string]interface{}, e *ErrorLogger) {
+func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, referenced map[string]interface{}, e *util.ErrorLogger) {
 	// Load the manifest and do initial error checking
 	mf, _ := strings.CutSuffix(filename, ".zst")
 	mf, _ = strings.CutSuffix(mf, "-videomaps.gob")
@@ -2433,7 +2446,7 @@ func (ml *VideoMapLibrary) loadVideoMap(f io.ReadCloser, filename string, refere
 			for _, lines := range sm.Lines {
 				// Slightly annoying: the line vertices are stored with
 				// Point2LLs but AddLineStrip() expects [2]float32s.
-				fl := MapSlice(lines, func(p math.Point2LL) [2]float32 { return p })
+				fl := util.MapSlice(lines, func(p math.Point2LL) [2]float32 { return p })
 				ld.AddLineStrip(fl)
 			}
 			ld.GenerateCommands(&sm.CommandBuffer)
@@ -2498,19 +2511,20 @@ func (ml VideoMapLibrary) HaveFile(filename string) bool {
 }
 
 func (ml VideoMapLibrary) AvailableFiles() []string {
-	return MapSlice(SortedMapKeys(ml.manifests),
+	return util.MapSlice(util.SortedMapKeys(ml.manifests),
 		func(s string) string {
 			s = strings.TrimPrefix(s, "videomaps/")
 			s, _, _ = strings.Cut(s, "-")
 			return s
 		})
+
 }
 
 func (ml VideoMapLibrary) AvailableMaps(filename string) []string {
 	if mf, ok := ml.manifests[filename]; !ok {
 		return nil
 	} else {
-		return SortedMapKeys(mf)
+		return util.SortedMapKeys(mf)
 	}
 }
 

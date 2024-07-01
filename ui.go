@@ -23,6 +23,7 @@ import (
 
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/util"
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/pkg/browser"
@@ -283,8 +284,9 @@ func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
 }
 
 func uiCloseModalDialog(d *ModalDialogBox) {
-	ui.activeModalDialogs = FilterSlice(ui.activeModalDialogs,
+	ui.activeModalDialogs = util.FilterSlice(ui.activeModalDialogs,
 		func(m *ModalDialogBox) bool { return m != d })
+
 }
 
 func uiShowConnectDialog(allowCancel bool) {
@@ -391,7 +393,7 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 			w.TakeOrReturnLaunchControl(eventStream)
 		}
 		if imgui.IsItemHovered() {
-			verb := Select(w.LaunchConfig.Controller == "", "Start", "Stop")
+			verb := util.Select(w.LaunchConfig.Controller == "", "Start", "Stop")
 			tip := verb + " manually control spawning new aircraft"
 			if w.LaunchConfig.Controller != "" {
 				tip += "\nCurrent controller: " + w.LaunchConfig.Controller
@@ -419,11 +421,11 @@ func drawUI(p Platform, r Renderer, w *World, eventStream *EventStream, stats *S
 			browser.OpenURL("https://discord.gg/y993vgQxhY")
 		}
 
-		if imgui.Button(Select(platform.IsFullScreen(), FontAwesomeIconCompressAlt, FontAwesomeIconExpandAlt)) {
+		if imgui.Button(util.Select(platform.IsFullScreen(), FontAwesomeIconCompressAlt, FontAwesomeIconExpandAlt)) {
 			platform.EnableFullScreen(!platform.IsFullScreen())
 		}
 		if imgui.IsItemHovered() {
-			imgui.SetTooltip(Select(platform.IsFullScreen(), "Exit", "Enter") + " full-screen mode")
+			imgui.SetTooltip(util.Select(platform.IsFullScreen(), "Exit", "Enter") + " full-screen mode")
 		}
 
 		imgui.PopStyleColor()
@@ -546,7 +548,7 @@ func DrawComboBox(state *ComboBoxState, config ComboBoxDisplayConfig,
 		sz.Y = float32((1 + config.MaxDisplayed) * (6 + ui.font.size))
 	}
 
-	sz.X *= Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+	sz.X *= util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 	if imgui.BeginTableV("##"+id, len(config.ColumnHeaders), flags, sz, 0.0) {
 		for _, name := range config.ColumnHeaders {
 			imgui.TableSetupColumn(name)
@@ -1282,7 +1284,7 @@ func (fs *FileSelectDialogBox) Draw() {
 		fileSelected := false
 		// unique per-directory id maintains the scroll position in each
 		// directory (and starts newly visited ones at the top!)
-		tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+		tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 		if imgui.BeginTableV("Files##"+fs.directory, 1, flags,
 			imgui.Vec2{tableScale * 500, float32(platform.WindowSize()[1] * 3 / 4)}, 0) {
 			imgui.TableSetupColumn("Filename")
@@ -1364,7 +1366,7 @@ func (m *MessageModalClient) Buttons() []ModalDialogButton {
 }
 
 func (m *MessageModalClient) Draw() int {
-	text, _ := wrapText(m.message, 80, 0, true)
+	text, _ := util.WrapText(m.message, 80, 0, true)
 	imgui.Text("\n\n" + text + "\n\n")
 	return -1
 }
@@ -1394,7 +1396,7 @@ func (e *ErrorModalClient) Draw() int {
 		imgui.Image(imgui.TextureID(ui.sadTowerTextureID), imgui.Vec2{128, 128})
 
 		imgui.TableNextColumn()
-		text, _ := wrapText(e.message, 80, 0, true)
+		text, _ := util.WrapText(e.message, 80, 0, true)
 		imgui.Text("\n\n" + text)
 
 		imgui.EndTable()
@@ -1472,15 +1474,16 @@ func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
 			sb.offset += int(sign * ctx.mouse.Wheel[1])
 
 			if ctx.mouse.Clicked[0] {
-				sb.mouseClickedInBar = Select(sb.vertical,
+				sb.mouseClickedInBar = util.Select(sb.vertical,
 					ctx.mouse.Pos[0] >= ctx.paneExtent.Width()-float32(sb.PixelExtent()),
 					ctx.mouse.Pos[1] >= ctx.paneExtent.Height()-float32(sb.PixelExtent()))
+
 				sb.accumDrag = 0
 			}
 
 			if ctx.mouse.Dragging[0] && sb.mouseClickedInBar {
-				axis := Select(sb.vertical, 1, 0)
-				wh := Select(sb.vertical, ctx.paneExtent.Height(), ctx.paneExtent.Width())
+				axis := util.Select(sb.vertical, 1, 0)
+				wh := util.Select(sb.vertical, ctx.paneExtent.Height(), ctx.paneExtent.Width())
 				sb.accumDrag += -sign * ctx.mouse.DragDelta[axis] * float32(sb.nItems) / wh
 				if math.Abs(sb.accumDrag) >= 1 {
 					sb.offset += int(sb.accumDrag)
@@ -1677,10 +1680,10 @@ func MakeLaunchControlWindow(w *World) *LaunchControlWindow {
 	lc := &LaunchControlWindow{w: w}
 
 	config := &w.LaunchConfig
-	for _, airport := range SortedMapKeys(config.DepartureRates) {
+	for _, airport := range util.SortedMapKeys(config.DepartureRates) {
 		runwayRates := config.DepartureRates[airport]
-		for _, rwy := range SortedMapKeys(runwayRates) {
-			for _, category := range SortedMapKeys(runwayRates[rwy]) {
+		for _, rwy := range util.SortedMapKeys(runwayRates) {
+			for _, category := range util.SortedMapKeys(runwayRates[rwy]) {
 				lc.departures = append(lc.departures, &LaunchDeparture{
 					Aircraft: lc.spawnDeparture(airport, rwy, category),
 					Airport:  airport,
@@ -1691,8 +1694,8 @@ func MakeLaunchControlWindow(w *World) *LaunchControlWindow {
 		}
 	}
 
-	for _, group := range SortedMapKeys(config.ArrivalGroupRates) {
-		for _, airport := range SortedMapKeys(config.ArrivalGroupRates[group]) {
+	for _, group := range util.SortedMapKeys(config.ArrivalGroupRates) {
+		for _, airport := range util.SortedMapKeys(config.ArrivalGroupRates[group]) {
 			lc.arrivals = append(lc.arrivals, &LaunchArrival{
 				Aircraft: lc.spawnArrival(group, airport),
 				Airport:  airport,
@@ -1805,14 +1808,15 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 			}
 		}
 
-		ndep := ReduceSlice(lc.departures, func(dep *LaunchDeparture, n int) int {
+		ndep := util.ReduceSlice(lc.departures, func(dep *LaunchDeparture, n int) int {
 			return n + dep.TotalLaunches
 		}, 0)
+
 		imgui.Text(fmt.Sprintf("Departures: %d total", ndep))
 
 		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingStretchProp
-		tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+		tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 		if imgui.BeginTableV("dep", 9, flags, imgui.Vec2{tableScale * 600, 0}, 0.0) {
 			imgui.TableSetupColumn("Airport")
 			imgui.TableSetupColumn("Launches")
@@ -1869,9 +1873,10 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 
 		imgui.Separator()
 
-		narr := ReduceSlice(lc.arrivals, func(arr *LaunchArrival, n int) int {
+		narr := util.ReduceSlice(lc.arrivals, func(arr *LaunchArrival, n int) int {
 			return n + arr.TotalLaunches
 		}, 0)
+
 		imgui.Text(fmt.Sprintf("Arrivals: %d total", narr))
 
 		if imgui.BeginTableV("arr", 9, flags, imgui.Vec2{tableScale * 600, 0}, 0.0) {
@@ -1929,7 +1934,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 		}
 	} else {
 		// Slightly messy, but DrawActiveDepartureRunways expects a table context...
-		tableScale := Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+		tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
 		if imgui.BeginTableV("runways", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			lc.w.LaunchConfig.DrawActiveDepartureRunways()
 			imgui.EndTable()
@@ -2095,7 +2100,7 @@ after the first.`)
 			var apprNames []string
 			for _, rwy := range w.ArrivalRunways {
 				ap := w.Airports[rwy.Airport]
-				for _, name := range SortedMapKeys(ap.Approaches) {
+				for _, name := range util.SortedMapKeys(ap.Approaches) {
 					appr := ap.Approaches[name]
 					if appr.Runway == rwy.Runway {
 						apprNames = append(apprNames, name+" ("+rwy.Airport+")")
@@ -2114,7 +2119,7 @@ after the first.`)
 			imgui.TableSetupColumn("Example")
 			imgui.TableHeadersRow()
 
-			cmds := Select(selectedCommandTypes == ACControlPrimary, primaryAcCommands, secondaryAcCommands)
+			cmds := util.Select(selectedCommandTypes == ACControlPrimary, primaryAcCommands, secondaryAcCommands)
 			for _, cmd := range cmds {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()

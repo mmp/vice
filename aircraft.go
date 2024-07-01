@@ -11,8 +11,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/util"
 )
 
 type Aircraft struct {
@@ -31,7 +33,7 @@ type Aircraft struct {
 	TrackingController        string // Who has the radar track
 	ControllingController     string // Who has control; not necessarily the same as TrackingController
 	HandoffTrackController    string // Handoff offered but not yet accepted
-	GlobalLeaderLineDirection *CardinalOrdinalDirection
+	GlobalLeaderLineDirection *math.CardinalOrdinalDirection
 	RedirectedHandoff         RedirectedHandoff
 	SPCOverrides              map[string]interface{}
 
@@ -152,11 +154,11 @@ func (ac *Aircraft) transmitResponse(r PilotResponse) []RadioTransmission {
 	return []RadioTransmission{RadioTransmission{
 		Controller: ac.ControllingController,
 		Message:    r.Message,
-		Type:       RadioTransmissionType(Select(r.Unexpected, RadioTransmissionUnexpected, RadioTransmissionReadback)),
+		Type:       RadioTransmissionType(util.Select(r.Unexpected, RadioTransmissionUnexpected, RadioTransmissionReadback)),
 	}}
 }
 
-func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *Logger) *Waypoint {
+func (ac *Aircraft) Update(w *World, ep EventPoster, simlg *log.Logger) *Waypoint {
 	lg := simlg.With(slog.String("callsign", ac.Callsign))
 
 	passedWaypoint := ac.Nav.Update(w, lg)
@@ -196,7 +198,7 @@ func (ac *Aircraft) GoAround() []RadioTransmission {
 	return []RadioTransmission{RadioTransmission{
 		Controller: ac.ControllingController,
 		Message:    resp.Message,
-		Type:       RadioTransmissionType(Select(resp.Unexpected, RadioTransmissionUnexpected, RadioTransmissionContact)),
+		Type:       RadioTransmissionType(util.Select(resp.Unexpected, RadioTransmissionUnexpected, RadioTransmissionContact)),
 	}}
 }
 
@@ -244,13 +246,13 @@ func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) []RadioTransmiss
 }
 
 func (ac *Aircraft) TurnLeft(deg int) []RadioTransmission {
-	hdg := NormalizeHeading(ac.Nav.FlightState.Heading - float32(deg))
+	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading - float32(deg))
 	ac.Nav.AssignHeading(hdg, TurnLeft)
 	return ac.readback(rand.Sample("turn %d degrees left", "%d to the left"), deg)
 }
 
 func (ac *Aircraft) TurnRight(deg int) []RadioTransmission {
-	hdg := NormalizeHeading(ac.Nav.FlightState.Heading + float32(deg))
+	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading + float32(deg))
 	ac.Nav.AssignHeading(hdg, TurnRight)
 	return ac.readback(rand.Sample("turn %d degrees right", "%d to the right"), deg)
 }
@@ -290,7 +292,7 @@ func (ac *Aircraft) getArrival(w *World) (*Arrival, error) {
 	}
 }
 
-func (ac *Aircraft) ExpectApproach(id string, w *World, lg *Logger) []RadioTransmission {
+func (ac *Aircraft) ExpectApproach(id string, w *World, lg *log.Logger) []RadioTransmission {
 	if ac.IsDeparture() {
 		return ac.readbackUnexpected("unable. This aircraft is a departure.")
 	}
@@ -450,9 +452,9 @@ func (ac *Aircraft) InitializeArrival(w *World, arrivalGroup string,
 
 func (ac *Aircraft) InitializeDeparture(w *World, ap *Airport, departureAirport string, dep *Departure, runway string,
 	exitRoute ExitRoute) error {
-	wp := DuplicateSlice(exitRoute.Waypoints)
+	wp := util.DuplicateSlice(exitRoute.Waypoints)
 	wp = append(wp, dep.RouteWaypoints...)
-	wp = FilterSlice(wp, func(wp Waypoint) bool { return !wp.Location.IsZero() })
+	wp = util.FilterSlice(wp, func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
 	if exitRoute.SID != "" {
 		ac.FlightPlan.Route = exitRoute.SID + " " + dep.Route
@@ -531,7 +533,7 @@ func (ac *Aircraft) IsDeparture() bool {
 	return ac.Nav.FlightState.IsDeparture
 }
 
-func (ac *Aircraft) Check(lg *Logger) {
+func (ac *Aircraft) Check(lg *log.Logger) {
 	ac.Nav.Check(lg)
 }
 

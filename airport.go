@@ -11,6 +11,7 @@ import (
 	"unicode"
 
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/util"
 )
 
 type Airport struct {
@@ -39,13 +40,13 @@ type Airport struct {
 }
 
 type ConvergingRunways struct {
-	Runways                [2]string                   `json:"runways"`
-	TieSymbol              string                      `json:"tie_symbol"`
-	StaggerSymbol          string                      `json:"stagger_symbol"`
-	TieOffset              float32                     `json:"tie_offset"`
-	LeaderDirectionStrings [2]string                   `json:"leader_directions"`
-	LeaderDirections       [2]CardinalOrdinalDirection // not in JSON, set during deserialize
-	RunwayIntersection     math.Point2LL               // not in JSON, set during deserialize
+	Runways                [2]string                        `json:"runways"`
+	TieSymbol              string                           `json:"tie_symbol"`
+	StaggerSymbol          string                           `json:"stagger_symbol"`
+	TieOffset              float32                          `json:"tie_offset"`
+	LeaderDirectionStrings [2]string                        `json:"leader_directions"`
+	LeaderDirections       [2]math.CardinalOrdinalDirection // not in JSON, set during deserialize
+	RunwayIntersection     math.Point2LL                    // not in JSON, set during deserialize
 }
 
 type ApproachRegion struct {
@@ -132,7 +133,7 @@ type GhostAircraft struct {
 	Callsign            string
 	Position            math.Point2LL
 	Groundspeed         int
-	LeaderLineDirection CardinalOrdinalDirection
+	LeaderLineDirection math.CardinalOrdinalDirection
 	TrackId             string
 }
 
@@ -157,7 +158,7 @@ func (ar *ApproachRegion) Inside(p math.Point2LL, alt float32, nmPerLongitude, m
 }
 
 func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, heading float32, scratchpad string,
-	forceGhost bool, offset float32, leaderDirection CardinalOrdinalDirection, runwayIntersection [2]float32,
+	forceGhost bool, offset float32, leaderDirection math.CardinalOrdinalDirection, runwayIntersection [2]float32,
 	nmPerLongitude float32, magneticVariation float32, other *ApproachRegion) *GhostAircraft {
 	// Start with lateral extent since even if it's forced, the aircraft still must be inside it.
 	lat, vert := ar.Inside(track.Position, float32(track.Altitude), nmPerLongitude, magneticVariation)
@@ -167,7 +168,7 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 
 	if !forceGhost {
 		// Heading must be in range
-		if headingDifference(heading, ar.ReferenceLineHeading) > ar.HeadingTolerance {
+		if math.HeadingDifference(heading, ar.ReferenceLineHeading) > ar.HeadingTolerance {
 			return nil
 		}
 
@@ -214,7 +215,7 @@ func (a *ATPAVolume) Inside(p math.Point2LL, alt, hdg, nmPerLongitude, magneticV
 	if alt < a.Floor || alt > a.Ceiling {
 		return false
 	}
-	if headingDifference(hdg, a.Heading) > a.MaxHeadingDeviation {
+	if math.HeadingDifference(hdg, a.Heading) > a.MaxHeadingDeviation {
 		return false
 	}
 
@@ -240,7 +241,7 @@ func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]math.
 		math.NM2LL(quad[2], nmPerLongitude), math.NM2LL(quad[3], nmPerLongitude)}
 }
 
-func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogger) {
+func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.ErrorLogger) {
 	if info, ok := database.Airports[icao]; !ok {
 		e.ErrorString("airport \"%s\" not found in airport database", icao)
 	} else {
@@ -254,14 +255,14 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 	for name, appr := range ap.Approaches {
 		e.Push("Approach " + name)
 
-		if isAllNumbers(name) {
+		if util.IsAllNumbers(name) {
 			e.ErrorString("Approach names cannot only have numbers in them")
 		}
 
 		if appr.Id != "" {
 			if wps, ok := database.Airports[icao].Approaches[appr.Id]; !ok {
 				e.ErrorString("Approach \"%s\" not in database. Options: %s", appr.Id,
-					strings.Join(SortedMapKeys(database.Airports[icao].Approaches), ", "))
+					strings.Join(util.SortedMapKeys(database.Airports[icao].Approaches), ", "))
 				e.Pop()
 				continue
 			} else {
@@ -286,7 +287,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 				// runway threshold.  This leads to errors if a CIFP
 				// approach is referenced in two scenario files.
 				for _, w := range wps {
-					appr.Waypoints = append(appr.Waypoints, DuplicateSlice(w))
+					appr.Waypoints = append(appr.Waypoints, util.DuplicateSlice(w))
 				}
 			}
 		}
@@ -565,7 +566,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *ErrorLogge
 			e.Push(rwy)
 			var err error
 			ap.ConvergingRunways[i].LeaderDirections[j], err =
-				ParseCardinalOrdinalDirection(pair.LeaderDirectionStrings[j])
+				math.ParseCardinalOrdinalDirection(pair.LeaderDirectionStrings[j])
 			if err != nil {
 				e.Error(err)
 			}
@@ -729,5 +730,5 @@ func (ap *Approach) Line() [2]math.Point2LL {
 
 func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {
 	p := ap.Line()
-	return headingp2ll(p[0], p[1], nmPerLongitude, magneticVariation)
+	return math.Heading2LL(p[0], p[1], nmPerLongitude, magneticVariation)
 }

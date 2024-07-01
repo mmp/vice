@@ -13,7 +13,11 @@ import (
 
 	"github.com/go-gl/gl/v2.1/gl"
 )
-import gomath "math"
+import (
+	gomath "math"
+
+	"github.com/mmp/vice/pkg/util"
+)
 
 type OpenGL2Renderer struct {
 	createdTextures map[uint32]int
@@ -48,7 +52,7 @@ func (ogl2 *OpenGL2Renderer) createdTexture(texid uint32, bytes int) {
 	ogl2.createdTextures[texid] = bytes
 
 	reduce := func(id uint32, bytes int, total int) int { return total + bytes }
-	total := ReduceMap[uint32, int, int](ogl2.createdTextures, reduce, 0)
+	total := util.ReduceMap[uint32, int, int](ogl2.createdTextures, reduce, 0)
 	mb := float32(total) / (1024 * 1024)
 
 	if exists {
@@ -83,7 +87,7 @@ func (ogl2 *OpenGL2Renderer) UpdateTextureFromImages(texid uint32, pyramid []ima
 	} else {
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
 	}
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, int32(Select(magNearest, gl.NEAREST, gl.LINEAR)))
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, int32(util.Select(magNearest, gl.NEAREST, gl.LINEAR)))
 	gl.PixelStorei(gl.UNPACK_ROW_LENGTH, 0)
 
 	bytes := 0

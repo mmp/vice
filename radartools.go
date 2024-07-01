@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/util"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -71,8 +72,9 @@ func (w *WeatherRadar) Activate(center math.Point2LL, r Renderer) {
 
 		for i := 0; i < NumWxLevels; i++ {
 			// RGBs from STARS Manual, B-5
-			baseColor := Select(i < 3, color.RGBA{R: 37, G: 77, B: 77, A: 255},
+			baseColor := util.Select(i < 3, color.RGBA{R: 37, G: 77, B: 77, A: 255},
 				color.RGBA{R: 100, G: 100, B: 51, A: 255})
+
 			stipple := i % 3
 
 			for y := 0; y < WxBlockRes; y++ {

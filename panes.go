@@ -14,6 +14,7 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/util"
 )
 
 // Panes (should) mostly operate in window coordinates: (0,0) is lower
@@ -391,13 +392,13 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 		}
 	}
 	// Removed aircraft
-	fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool {
+	fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool {
 		_, ok := w.Aircraft[callsign]
 		return ok
 	})
 
 	remove := func(c string) {
-		fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool { return callsign != c })
+		fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool { return callsign != c })
 		if fsp.selectedAircraft == c {
 			fsp.selectedAircraft = ""
 		}
@@ -439,7 +440,7 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 	}
 
 	// TODO: is this needed? Shouldn't there be a RemovedAircraftEvent?
-	fsp.strips = FilterSlice(fsp.strips, func(callsign string) bool {
+	fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool {
 		ac := w.GetAircraft(callsign, false)
 		return ac != nil
 	})
@@ -449,8 +450,8 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 			ac := w.GetAircraft(callsign, false)
 			return ac != nil && ac.IsDeparture()
 		}
-		dep := FilterSlice(fsp.strips, isDeparture)
-		arr := FilterSlice(fsp.strips, func(callsign string) bool { return !isDeparture(callsign) })
+		dep := util.FilterSlice(fsp.strips, isDeparture)
+		arr := util.FilterSlice(fsp.strips, func(callsign string) bool { return !isDeparture(callsign) })
 
 		fsp.strips = fsp.strips[:0]
 		fsp.strips = append(fsp.strips, dep...)
@@ -607,14 +608,14 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		if fp != nil {
 			cols := int(widthCenter / fw)
 			// Line-wrap the route to fit the box and break it into lines.
-			route, _ := wrapText(fp.Route, cols, 2 /* indent */, true)
+			route, _ := util.WrapText(fp.Route, cols, 2 /* indent */, true)
 			text := strings.Split(route, "\n")
 			// Add a blank line if the route only used one line.
 			if len(text) < 2 {
 				text = append(text, "")
 			}
 			// Similarly for the remarks
-			remarks, _ := wrapText(fp.Remarks, cols, 2 /* indent */, true)
+			remarks, _ := util.WrapText(fp.Remarks, cols, 2 /* indent */, true)
 			text = append(text, strings.Split(remarks, "\n")...)
 			// Limit to the first four lines so we don't spill over.
 			if len(text) > 4 {

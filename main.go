@@ -24,7 +24,9 @@ import (
 	"sort"
 	"time"
 
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/util"
 
 	"github.com/apenwarr/fixconsole"
 	"github.com/checkandmate1/AirportWeatherData"
@@ -45,7 +47,7 @@ var (
 	globalConfig *GlobalConfig
 	platform     Platform
 	database     *StaticDatabase
-	lg           *Logger
+	lg           *log.Logger
 	resourcesFS  fs.StatFS
 
 	// client only
@@ -97,7 +99,7 @@ func main() {
 	}
 
 	// Initialize the logging system first and foremost.
-	lg = NewLogger(*server, *logLevel)
+	lg = log.New(*server, *logLevel)
 
 	// If the path is non-absolute, convert it to an absolute path
 	// w.r.t. the current directory.  (This is to work around that vice
@@ -165,7 +167,7 @@ func main() {
 	database = InitializeStaticDatabase()
 
 	if *lintScenarios {
-		var e ErrorLogger
+		var e util.ErrorLogger
 		_, _, _ = LoadScenarioGroups(&e)
 		if e.HaveErrors() {
 			e.PrintErrors(nil)
@@ -182,11 +184,11 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Printf("STARs:\n")
-		for _, s := range SortedMapKeys(ap.STARs) {
+		for _, s := range util.SortedMapKeys(ap.STARs) {
 			ap.STARs[s].Print(s)
 		}
 		fmt.Printf("\nApproaches:\n")
-		for _, appr := range SortedMapKeys(ap.Approaches) {
+		for _, appr := range util.SortedMapKeys(ap.Approaches) {
 			fmt.Printf("%-5s: ", appr)
 			for i, wp := range ap.Approaches[appr] {
 				if i > 0 {
@@ -196,7 +198,7 @@ func main() {
 			}
 		}
 	} else if *listMaps != "" {
-		var e ErrorLogger
+		var e util.ErrorLogger
 		lib := MakeVideoMapLibrary()
 		path := *listMaps
 		lib.AddFile(os.DirFS("."), path, make(map[string]interface{}), &e)
@@ -373,16 +375,16 @@ func main() {
 
 			if world == nil {
 				platform.SetWindowTitle("vice: [disconnected]")
-				SetDiscordStatus(discordStatus{start: simStartTime})
+				SetDiscordStatus(DiscordStatus{Start: simStartTime}, lg)
 			} else {
 				platform.SetWindowTitle("vice: " + world.GetWindowTitle())
 				// Update discord RPC
-				SetDiscordStatus(discordStatus{
-					totalDepartures: world.TotalDepartures,
-					totalArrivals:   world.TotalArrivals,
-					callsign:        world.Callsign,
-					start:           simStartTime,
-				})
+				SetDiscordStatus(DiscordStatus{
+					TotalDepartures: world.TotalDepartures,
+					TotalArrivals:   world.TotalArrivals,
+					Callsign:        world.Callsign,
+					Start:           simStartTime,
+				}, lg)
 			}
 
 			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second && !stopConnectingRemoteServer {
@@ -412,7 +414,7 @@ func main() {
 							Type:    StatusMessageEvent,
 							Message: "Error getting update from server: " + err.Error(),
 						})
-						if isRPCServerError(err) {
+						if util.IsRPCServerError(err) {
 							uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
 								message: "Lost connection to the vice server.",
 							}), true)

@@ -20,6 +20,7 @@ import (
 
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/util"
 
 	"github.com/mmp/imgui-go/v4"
 )
@@ -109,7 +110,7 @@ type STARSPane struct {
 	OutboundPointOuts map[string]string
 	RejectedPointOuts map[string]interface{}
 
-	queryUnassociated *TransientMap[string, interface{}]
+	queryUnassociated *util.TransientMap[string, interface{}]
 
 	RangeBearingLines []STARSRangeBearingLine
 	MinSepAircraft    [2]string
@@ -266,7 +267,7 @@ func (s *STARSDatablock) Duplicate() STARSDatablock {
 	var sd STARSDatablock
 	for i := range s.Lines {
 		sd.Lines[i].Text = s.Lines[i].Text
-		sd.Lines[i].Colors = DuplicateSlice(s.Lines[i].Colors)
+		sd.Lines[i].Colors = util.DuplicateSlice(s.Lines[i].Colors)
 	}
 	return sd
 }
@@ -339,7 +340,7 @@ func (s *STARSDatablock) DrawText(td *TextDrawBuilder, pt [2]float32, font *Font
 
 type CRDARunwayState struct {
 	Enabled                 bool
-	LeaderLineDirection     *CardinalOrdinalDirection // nil -> unset
+	LeaderLineDirection     *math.CardinalOrdinalDirection // nil -> unset
 	DrawCourseLines         bool
 	DrawQualificationRegion bool
 }
@@ -445,8 +446,8 @@ type STARSAircraftState struct {
 
 	// These are only set if a leader line direction was specified for this
 	// aircraft individually:
-	LeaderLineDirection       *CardinalOrdinalDirection
-	GlobalLeaderLineDirection *CardinalOrdinalDirection
+	LeaderLineDirection       *math.CardinalOrdinalDirection
+	GlobalLeaderLineDirection *math.CardinalOrdinalDirection
 	UseGlobalLeaderLine       bool
 
 	Ghost struct {
@@ -551,7 +552,7 @@ func (s *STARSAircraftState) TrackHeading(nmPerLongitude float32) float32 {
 	if !s.HaveHeading() {
 		return 0
 	}
-	return headingp2ll(s.previousTrack.Position, s.track.Position, nmPerLongitude, 0)
+	return math.Heading2LL(s.previousTrack.Position, s.track.Position, nmPerLongitude, 0)
 }
 
 func (s *STARSAircraftState) LostTrack(now time.Time) bool {
@@ -611,14 +612,14 @@ type STARSPreferenceSet struct {
 	FusedRadarMode    bool
 
 	// For tracked by the user
-	LeaderLineDirection CardinalOrdinalDirection
+	LeaderLineDirection math.CardinalOrdinalDirection
 	LeaderLineLength    int // 0-7
 	// For tracked by other controllers
-	ControllerLeaderLineDirections map[string]CardinalOrdinalDirection
+	ControllerLeaderLineDirections map[string]math.CardinalOrdinalDirection
 	// If not specified in ControllerLeaderLineDirections...
-	OtherControllerLeaderLineDirection *CardinalOrdinalDirection
+	OtherControllerLeaderLineDirection *math.CardinalOrdinalDirection
 	// Only set if specified by the user (and not used currently...)
-	UnassociatedLeaderLineDirection *CardinalOrdinalDirection
+	UnassociatedLeaderLineDirection *math.CardinalOrdinalDirection
 
 	AltitudeFilters struct {
 		Unassociated [2]int // low, high
@@ -846,8 +847,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 	ps.SystemMapVisible = make(map[int]interface{})
 
 	ps.FusedRadarMode = true
-
-	ps.LeaderLineDirection = North
+	ps.LeaderLineDirection = math.North
 	ps.LeaderLineLength = 1
 
 	ps.AltitudeFilters.Unassociated = [2]int{100, 60000}
@@ -935,9 +935,9 @@ func (sp *STARSPane) MakePreferenceSet(name string, w *World) STARSPreferenceSet
 
 func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 	dupe := *ps
-	dupe.SelectedBeaconCodes = DuplicateSlice(ps.SelectedBeaconCodes)
-	dupe.CRDA.RunwayPairState = DuplicateSlice(ps.CRDA.RunwayPairState)
-	dupe.SystemMapVisible = DuplicateMap(ps.SystemMapVisible)
+	dupe.SelectedBeaconCodes = util.DuplicateSlice(ps.SelectedBeaconCodes)
+	dupe.CRDA.RunwayPairState = util.DuplicateSlice(ps.CRDA.RunwayPairState)
+	dupe.SystemMapVisible = util.DuplicateMap(ps.SystemMapVisible)
 	return dupe
 }
 
@@ -1121,7 +1121,7 @@ func (sp *STARSPane) Activate(w *World, r Renderer, eventStream *EventStream) {
 		sp.RejectedPointOuts = make(map[string]interface{})
 	}
 	if sp.queryUnassociated == nil {
-		sp.queryUnassociated = NewTransientMap[string, interface{}]()
+		sp.queryUnassociated = util.NewTransientMap[string, interface{}]()
 	}
 
 	sp.initializeFonts()
@@ -1191,7 +1191,7 @@ func (sp *STARSPane) ResetWorld(w *World) {
 	ps.RadarSiteSelected = ""
 
 	sp.ConvergingRunways = nil
-	for _, name := range SortedMapKeys(w.Airports) {
+	for _, name := range util.SortedMapKeys(w.Airports) {
 		ap := w.Airports[name]
 		for idx, pair := range ap.ConvergingRunways {
 			sp.ConvergingRunways = append(sp.ConvergingRunways, STARSConvergingRunways{
@@ -1243,7 +1243,7 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 
 	// Radar maps
 	radarIndex := 801
-	for _, name := range SortedMapKeys(w.RadarSites) {
+	for _, name := range util.SortedMapKeys(w.RadarSites) {
 		sm := &STARSMap{
 			Label: name + "RCM",
 			Name:  name + " RADAR COVERAGE MAP",
@@ -1262,9 +1262,9 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 
 	// ATPA approach volumes
 	atpaIndex := 901
-	for _, name := range SortedMapKeys(w.ArrivalAirports) {
+	for _, name := range util.SortedMapKeys(w.ArrivalAirports) {
 		ap := w.ArrivalAirports[name]
-		for _, rwy := range SortedMapKeys(ap.ATPAVolumes) {
+		for _, rwy := range util.SortedMapKeys(ap.ATPAVolumes) {
 			vol := ap.ATPAVolumes[rwy]
 
 			sm := &STARSMap{
@@ -1328,7 +1328,7 @@ func (sp *STARSPane) processEvents(w *World) {
 	}
 
 	// Filter out any removed aircraft from the CA list
-	sp.CAAircraft = FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
+	sp.CAAircraft = util.FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
 		_, a := w.Aircraft[ca.Callsigns[0]]
 		_, b := w.Aircraft[ca.Callsigns[1]]
 		return a && b
@@ -1630,7 +1630,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *CommandBuffer) {
 		cb.Call(vmap.CommandBuffer)
 	}
 
-	for _, idx := range SortedMapKeys(ps.SystemMapVisible) {
+	for _, idx := range util.SortedMapKeys(ps.SystemMapVisible) {
 		color := ps.Brightness.VideoGroupA.ScaleRGB(STARSMapColor)
 		cb.SetRGB(color)
 		transforms.LoadLatLongViewingMatrices(cb)
@@ -2058,7 +2058,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			for _, state := range sp.Aircraft {
 				state.DisplayTPASize = nil
 			}
-			status.output = Select(ps.DisplayTPASize, "TPA SIZE ON", "TPA SIZE OFF")
+			status.output = util.Select(ps.DisplayTPASize, "TPA SIZE ON", "TPA SIZE OFF")
 			status.clear = true
 			return
 
@@ -2161,7 +2161,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				// Delete specified rbl
 				idx--
 				if idx >= 0 && idx < len(sp.RangeBearingLines) {
-					sp.RangeBearingLines = DeleteSliceElement(sp.RangeBearingLines, idx)
+					sp.RangeBearingLines = util.DeleteSliceElement(sp.RangeBearingLines, idx)
 					status.clear = true
 				} else {
 					status.err = ErrSTARSIllegalParam
@@ -2338,8 +2338,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				return true
 			}
 			toggleBeacon := func(code string) {
-				sfilt := FilterSlice(ps.SelectedBeaconCodes,
+				sfilt := util.FilterSlice(ps.SelectedBeaconCodes,
 					func(c string) bool { return c == code })
+
 				if len(sfilt) < len(ps.SelectedBeaconCodes) {
 					// it was in there, so we'll toggle it off
 					ps.SelectedBeaconCodes = sfilt
@@ -2503,7 +2504,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 					if dir, ok := numpadToDirection(cmd[2]); ok {
 						// Per-controller leaderline
 						if ps.ControllerLeaderLineDirections == nil {
-							ps.ControllerLeaderLineDirections = make(map[string]CardinalOrdinalDirection)
+							ps.ControllerLeaderLineDirections = make(map[string]math.CardinalOrdinalDirection)
 						}
 						if dir != nil {
 							ps.ControllerLeaderLineDirections[controller.Callsign] = *dir
@@ -3181,7 +3182,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				if i < 0 || i >= len(ctx.world.RadarSites) {
 					status.err = ErrSTARSIllegalValue
 				} else {
-					ps.RadarSiteSelected = SortedMapKeys(ctx.world.RadarSites)[i]
+					ps.RadarSiteSelected = util.SortedMapKeys(ctx.world.RadarSites)[i]
 					status.clear = true
 				}
 				return
@@ -3221,7 +3222,7 @@ func (sp *STARSPane) updateQL(ctx *PaneContext, input string) (ok bool, previewI
 			matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
 			if slices.ContainsFunc(ps.QuickLookPositions, match) {
 				nomatch := func(q QuickLookPosition) bool { return !match(q) }
-				ps.QuickLookPositions = FilterSlice(ps.QuickLookPositions, nomatch)
+				ps.QuickLookPositions = util.FilterSlice(ps.QuickLookPositions, nomatch)
 			} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
 				// Toggle plus
 				ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus
@@ -3310,7 +3311,7 @@ func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt
 		func(err error) { sp.displayError(err) })
 }
 
-func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir *CardinalOrdinalDirection) {
+func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir *math.CardinalOrdinalDirection) {
 	state := sp.Aircraft[callsign]
 	state.GlobalLeaderLineDirection = dir // hack for instant update
 	state.UseGlobalLeaderLine = dir != nil
@@ -3678,7 +3679,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				from := sp.Aircraft[ac.Callsign].TrackPosition()
 				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
 					p := transforms.LatLongFromWindowP(pw)
-					hdg := headingp2ll(from, p, ac.NmPerLongitude(), ac.MagneticVariation())
+					hdg := math.Heading2LL(from, p, ac.NmPerLongitude(), ac.MagneticVariation())
 					dist := math.NMDistance2LL(from, p)
 
 					status.output = fmt.Sprintf("%03d/%.2f", int(hdg+.5), dist)
@@ -4305,34 +4306,34 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 // Returns the cardinal-ordinal direction associated with the numbpad keys,
 // interpreting 5 as the center; (nil, true) is returned for '5' and
 // (nil, false) is returned for an invalid key.
-func numpadToDirection(key byte) (*CardinalOrdinalDirection, bool) {
-	var dir CardinalOrdinalDirection
+func numpadToDirection(key byte) (*math.CardinalOrdinalDirection, bool) {
+	var dir math.CardinalOrdinalDirection
 	switch key {
 	case '1':
-		dir = CardinalOrdinalDirection(SouthWest)
+		dir = math.CardinalOrdinalDirection(math.SouthWest)
 		return &dir, true
 	case '2':
-		dir = CardinalOrdinalDirection(South)
+		dir = math.CardinalOrdinalDirection(math.South)
 		return &dir, true
 	case '3':
-		dir = CardinalOrdinalDirection(SouthEast)
+		dir = math.CardinalOrdinalDirection(math.SouthEast)
 		return &dir, true
 	case '4':
-		dir = CardinalOrdinalDirection(West)
+		dir = math.CardinalOrdinalDirection(math.West)
 		return &dir, true
 	case '5':
 		return nil, true
 	case '6':
-		dir = CardinalOrdinalDirection(East)
+		dir = math.CardinalOrdinalDirection(math.East)
 		return &dir, true
 	case '7':
-		dir = CardinalOrdinalDirection(NorthWest)
+		dir = math.CardinalOrdinalDirection(math.NorthWest)
 		return &dir, true
 	case '8':
-		dir = CardinalOrdinalDirection(North)
+		dir = math.CardinalOrdinalDirection(math.North)
 		return &dir, true
 	case '9':
-		dir = CardinalOrdinalDirection(NorthEast)
+		dir = math.CardinalOrdinalDirection(math.NorthEast)
 		return &dir, true
 	}
 
@@ -4365,7 +4366,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 	// Find a scale factor so that the buttons all fit in the window, if necessary
 	const NumDCBSlots = 20
 	// Sigh; on windows we want the button size in pixels on high DPI displays
-	ds := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+	ds := util.Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 	var buttonScale float32
 	// Scale based on width or height available depending on DCB position
 	if ps.DCBPosition == DCBPositionTop || ps.DCBPosition == DCBPositionBottom {
@@ -4412,9 +4413,9 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 			// Maps are given left->right, top->down, but we draw the
 			// buttons top->down, left->right, so the indexing is a little
 			// funny.
-			idx := Select(i&1 == 0, i/2, 3+i/2)
+			idx := util.Select(i&1 == 0, i/2, 3+i/2)
 			m := videoMaps[idx]
-			text := Select(m.Id == 0, "", fmt.Sprintf("%d\n%s", m.Id, m.Label))
+			text := util.Select(m.Id == 0, "", fmt.Sprintf("%d\n%s", m.Id, m.Label))
 			STARSToggleButton(ctx, text, &ps.DisplayVideoMap[idx], STARSButtonHalfVertical, buttonScale)
 		}
 		for i := range ps.DisplayWeatherLevel {
@@ -4520,9 +4521,9 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 			// maps, which are shown in the main DCB, but also because we
 			// draw top->down, left->right while the maps are specified
 			// left->right, top->down...
-			idx := Select(i&1 == 0, 6+i/2, 22+i/2)
+			idx := util.Select(i&1 == 0, 6+i/2, 22+i/2)
 			m := videoMaps[idx]
-			text := Select(m.Id == 0, "", fmt.Sprintf("%d\n%s", m.Id, m.Label))
+			text := util.Select(m.Id == 0, "", fmt.Sprintf("%d\n%s", m.Id, m.Label))
 			STARSToggleButton(ctx, text, &ps.DisplayVideoMap[idx], STARSButtonHalfVertical, buttonScale)
 		}
 
@@ -4647,7 +4648,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 		if validSelection {
 			if STARSSelectButton(ctx, "DELETE", STARSButtonHalfVertical, buttonScale) {
-				sp.PreferenceSets = DeleteSliceElement(sp.PreferenceSets, sp.SelectedPreferenceSet)
+				sp.PreferenceSets = util.DeleteSliceElement(sp.PreferenceSets, sp.SelectedPreferenceSet)
 			}
 		} else {
 			STARSDisabledButton(ctx, "DELETE", STARSButtonHalfVertical, buttonScale)
@@ -4658,7 +4659,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 
 	case DCBMenuSite:
-		for _, id := range SortedMapKeys(ctx.world.RadarSites) {
+		for _, id := range util.SortedMapKeys(ctx.world.RadarSites) {
 			site := ctx.world.RadarSites[id]
 			label := " " + site.Char + " " + "\n" + id
 			selected := ps.RadarSiteSelected == id
@@ -4732,7 +4733,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		}
 
 	case DCBMenuTPA:
-		onoff := func(b bool) string { return Select(b, "ENABLED", "INHIBTD") }
+		onoff := func(b bool) string { return util.Select(b, "ENABLED", "INHIBTD") }
 		if STARSSelectButton(ctx, "A/TPA\nMILEAGE\n"+onoff(ps.DisplayTPASize), STARSButtonFull, buttonScale) {
 			ps.DisplayTPASize = !ps.DisplayTPASize
 		}
@@ -4874,7 +4875,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		trid.GenerateCommands(cb)
 
 		square := [][2]float32{[2]float32{-5, -5}, [2]float32{5, -5}, [2]float32{5, 5}, [2]float32{-5, 5}}
-		square = MapSlice(square, func(p [2]float32) [2]float32 { return math.Add2f(p, pIndicator) })
+		square = util.MapSlice(square, func(p [2]float32) [2]float32 { return math.Add2f(p, pIndicator) })
 		ld.AddLineLoop(ps.Brightness.Lists.ScaleRGB(STARSListColor), square)
 		ld.GenerateCommands(cb)
 
@@ -4945,7 +4946,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			}
 
 			if len(codes) > 0 {
-				td.AddText(strings.Join(SortedMapKeys(codes), " "), pw, alertStyle)
+				td.AddText(strings.Join(util.SortedMapKeys(codes), " "), pw, alertStyle)
 				newline()
 			}
 		}
@@ -4972,7 +4973,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		}
 
 		if filter.All || filter.AirportWeather {
-			airports := SortedMapKeys(ctx.world.AllAirports())
+			airports := util.SortedMapKeys(ctx.world.AllAirports())
 			// Sort via 1. primary? 2. tower list index, 3. alphabetic
 			sort.Slice(airports, func(i, j int) bool {
 				if airports[i] == ctx.world.PrimaryAirport {
@@ -4981,8 +4982,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 					return false
 				} else {
 					a, b := ctx.world.GetAirport(airports[i]), ctx.world.GetAirport(airports[j])
-					ai := Select(a.TowerListIndex != 0, a.TowerListIndex, 1000)
-					bi := Select(b.TowerListIndex != 0, b.TowerListIndex, 1000)
+					ai := util.Select(a.TowerListIndex != 0, a.TowerListIndex, 1000)
+					bi := util.Select(b.TowerListIndex != 0, b.TowerListIndex, 1000)
 					if ai != bi {
 						return ai < bi
 					}
@@ -5019,10 +5020,11 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 					pw = td.AddText("QL: ALL", pw, style)
 				}
 			} else {
-				pos := MapSlice(ps.QuickLookPositions,
+				pos := util.MapSlice(ps.QuickLookPositions,
 					func(q QuickLookPosition) string {
-						return q.Id + Select(q.Plus, "+", "")
+						return q.Id + util.Select(q.Plus, "+", "")
 					})
+
 				pw = td.AddText("QL: "+strings.Join(pos, " "), pw, style)
 			}
 			newline()
@@ -5054,7 +5056,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 				}
 
 				text := "*"
-				text += Select(crda.Mode == CRDAModeStagger, "S ", "T ")
+				text += util.Select(crda.Mode == CRDAModeStagger, "S ", "T ")
 				text += sp.ConvergingRunways[i].Airport + " "
 				text += sp.ConvergingRunways[i].getRunwaysString()
 
@@ -5079,7 +5081,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		if len(vfr) > ps.VFRList.Lines {
 			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr)))
 		}
-		for i, acIdx := range SortedMapKeys(vfr) {
+		for i, acIdx := range util.SortedMapKeys(vfr) {
 			ac := vfr[acIdx]
 			text.WriteString(fmt.Sprintf("%2d %-7s VFR\n", acIdx, ac.Callsign))
 
@@ -5109,7 +5111,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		if len(dep) > ps.TABList.Lines {
 			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(dep)))
 		}
-		for i, acIdx := range SortedMapKeys(dep) {
+		for i, acIdx := range util.SortedMapKeys(dep) {
 			ac := dep[acIdx]
 			text.WriteString(fmt.Sprintf("%2d %-7s %s\n", acIdx, ac.Callsign, ac.Squawk.String()))
 
@@ -5183,7 +5185,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 	if ps.VideoMapsList.Visible {
 		text.Reset()
 		format := func(m STARSMap, i int, vis bool) {
-			text.WriteString(Select(vis, ">", " ") + " ")
+			text.WriteString(util.Select(vis, ">", " ") + " ")
 			text.WriteString(fmt.Sprintf("%3d ", i))
 			text.WriteString(fmt.Sprintf("%8s ", strings.ToUpper(m.Label)))
 			text.WriteString(strings.ToUpper(m.Name) + "\n")
@@ -5196,7 +5198,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			}
 		} else if ps.VideoMapsList.Selection == VideoMapsGroupSysProc {
 			text.WriteString("PROCESSING AREAS\n")
-			for _, index := range SortedMapKeys(sp.systemMaps) {
+			for _, index := range util.SortedMapKeys(sp.systemMaps) {
 				_, vis := ps.SystemMapVisible[index]
 				format(*sp.systemMaps[index], index, vis)
 			}
@@ -5226,7 +5228,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			if !crda.Enabled {
 				line.WriteString(" ")
 			} else {
-				line.WriteString(Select(crda.Mode == CRDAModeStagger, "S", "T"))
+				line.WriteString(util.Select(crda.Mode == CRDAModeStagger, "S", "T"))
 			}
 
 			pair := sp.ConvergingRunways[i]
@@ -5258,7 +5260,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 	// according to their TowerListIndex, putting zero (i.e., unassigned)
 	// indices at the end. Break ties alphabetically by airport name. The
 	// first three then are assigned to the corresponding tower list.
-	towerListAirports := SortedMapKeys(ctx.world.ArrivalAirports)
+	towerListAirports := util.SortedMapKeys(ctx.world.ArrivalAirports)
 	sort.Slice(towerListAirports, func(a, b int) bool {
 		ai := ctx.world.ArrivalAirports[towerListAirports[a]].TowerListIndex
 		if ai == 0 {
@@ -5296,7 +5298,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			}
 		}
 
-		k := SortedMapKeys(m)
+		k := util.SortedMapKeys(m)
 		if len(k) > tl.Lines {
 			k = k[:tl.Lines]
 		}
@@ -5315,7 +5317,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 				id = STARSTriangleCharacter + ctrl.FacilityIdentifier + id
 			}
 			text.WriteString(fmt.Sprintf("%4s", id) + " " + ctrl.Frequency.String() + " " +
-				ctrl.Callsign + Select(ctrl.IsHuman, "*", "") + "\n")
+				ctrl.Callsign + util.Select(ctrl.IsHuman, "*", "") + "\n")
 		}
 
 		// User first
@@ -5324,7 +5326,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 			format(userCtrl)
 		}
 
-		for _, callsign := range SortedMapKeys(ctx.world.GetAllControllers()) {
+		for _, callsign := range util.SortedMapKeys(ctx.world.GetAllControllers()) {
 			ctrl := ctx.world.GetControllerByCallsign(callsign)
 			if ctrl != userCtrl {
 				format(ctrl)
@@ -5474,7 +5476,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 	// Update cached command buffers for tracks
 	sp.fusedTrackVertices = getTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
 
-	scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+	scale := util.Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 
 	now := ctx.world.CurrentTime()
 	for _, ac := range aircraft {
@@ -5500,7 +5502,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 		// "cheat" by using ac.Heading() if we don't yet have two radar tracks to compute the
 		// heading with; this makes things look better when we first see a track or when
 		// restarting a simulation...
-		heading := Select(state.HaveHeading(),
+		heading := util.Select(state.HaveHeading(),
 			state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(), ac.Heading())
 
 		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, trackBuilder,
@@ -5554,9 +5556,10 @@ func (sp *STARSPane) getGhostAircraft(aircraft []*Aircraft, ctx *PaneContext) []
 			region := sp.ConvergingRunways[i].ApproachRegions[j]
 			otherRegion := sp.ConvergingRunways[i].ApproachRegions[(j+1)%2]
 
-			trackId := Select(pairState.Mode == CRDAModeStagger, sp.ConvergingRunways[i].StaggerSymbol,
+			trackId := util.Select(pairState.Mode == CRDAModeStagger, sp.ConvergingRunways[i].StaggerSymbol,
 				sp.ConvergingRunways[i].TieSymbol)
-			offset := Select(pairState.Mode == CRDAModeTie, sp.ConvergingRunways[i].TieOffset, float32(0))
+
+			offset := util.Select(pairState.Mode == CRDAModeTie, sp.ConvergingRunways[i].TieOffset, float32(0))
 
 			for _, ac := range aircraft {
 				state := sp.Aircraft[ac.Callsign]
@@ -5567,8 +5570,9 @@ func (sp *STARSPane) getGhostAircraft(aircraft []*Aircraft, ctx *PaneContext) []
 				// Create a ghost track if appropriate, add it to the
 				// ghosts slice, and draw its radar track.
 				force := state.Ghost.State == GhostStateForced || ps.CRDA.ForceAllGhosts
-				heading := Select(state.HaveHeading(), state.TrackHeading(ac.NmPerLongitude()),
+				heading := util.Select(state.HaveHeading(), state.TrackHeading(ac.NmPerLongitude()),
 					ac.Heading())
+
 				ghost := region.TryMakeGhost(ac.Callsign, state.track, heading, ac.Scratchpad, force,
 					offset, leaderDirection, runwayIntersection, ac.NmPerLongitude(), ac.MagneticVariation(),
 					otherRegion)
@@ -5654,7 +5658,7 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 			primary, secondary, dist := site.CheckVisibility(ctx.world, pos, state.TrackAltitude())
 
 			// Orient the box toward the radar
-			h := headingp2ll(site.Position, pos, ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
+			h := math.Heading2LL(site.Position, pos, ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
 			rot := math.Rotator2f(h)
 
 			// blue box: x +/-9 pixels, y +/-3 pixels
@@ -5767,7 +5771,7 @@ func getTrackVertices(ctx *PaneContext, diameter float32) [][2]float32 {
 	// nice clean circle (matching real-world..)
 	np := 8
 	if diameter > 20 {
-		np = Select(diameter <= 40, 16, 32)
+		np = util.Select(diameter <= 40, 16, 32)
 	}
 
 	// Prepare the points around the unit circle; rotate them by 1/2 their
@@ -5775,13 +5779,13 @@ func getTrackVertices(ctx *PaneContext, diameter float32) [][2]float32 {
 	// sides (e.g., a octagon like a stop-sign with 8 points, rather than
 	// having a vertex at the top of the circle.)
 	rot := math.Rotator2f(360 / (2 * float32(np)))
-	pts := MapSlice(math.CirclePoints(np), func(p [2]float32) [2]float32 { return rot(p) })
+	pts := util.MapSlice(math.CirclePoints(np), func(p [2]float32) [2]float32 { return rot(p) })
 
 	// Scale the points based on the circle radius (and deal with the usual
 	// Windows high-DPI borkage...)
-	scale := Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+	scale := util.Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 	radius := scale * float32(int(diameter/2+0.5)) // round to integer
-	pts = MapSlice(pts, func(p [2]float32) [2]float32 { return math.Scale2f(p, radius) })
+	pts = util.MapSlice(pts, func(p [2]float32) [2]float32 { return math.Scale2f(p, radius) })
 
 	return pts
 }
@@ -5839,7 +5843,7 @@ func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatabl
 	// right justified, since the leader line will be connecting on that
 	// side.
 	dir := sp.getLeaderLineDirection(ac, ctx.world)
-	rightJustify := dir >= South
+	rightJustify := dir >= math.South
 	if rightJustify {
 		maxLen := 0
 		for _, db := range dbs {
@@ -5855,7 +5859,7 @@ func (sp *STARSPane) getDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatabl
 	return dbs
 }
 
-func (sp *STARSPane) getDatablockOffset(textBounds [2]float32, leaderDir CardinalOrdinalDirection) [2]float32 {
+func (sp *STARSPane) getDatablockOffset(textBounds [2]float32, leaderDir math.CardinalOrdinalDirection) [2]float32 {
 	// To place the datablock, start with the vector for the leader line.
 	drawOffset := sp.getLeaderLineVector(leaderDir)
 
@@ -5863,9 +5867,9 @@ func (sp *STARSPane) getDatablockOffset(textBounds [2]float32, leaderDir Cardina
 	// of the line that includes the callsign.
 	lineHeight := textBounds[1] / 4
 	switch leaderDir {
-	case North, NorthEast, East, SouthEast:
+	case math.North, math.NorthEast, math.East, math.SouthEast:
 		drawOffset = math.Add2f(drawOffset, [2]float32{2, lineHeight * 3 / 2})
-	case South, SouthWest, West, NorthWest:
+	case math.South, math.SouthWest, math.West, math.NorthWest:
 		drawOffset = math.Add2f(drawOffset, [2]float32{-2 - textBounds[0], lineHeight * 3 / 2})
 	}
 
@@ -5934,19 +5938,19 @@ func (sp *STARSPane) updateCAAircraft(ctx *PaneContext, aircraft []*Aircraft) {
 	}
 
 	// Remove ones that are no longer conflicting
-	sp.CAAircraft = FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
+	sp.CAAircraft = util.FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
 		return conflicting(ca.Callsigns[0], ca.Callsigns[1])
 	})
 
 	// Remove ones that are no longer visible
-	sp.CAAircraft = FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
+	sp.CAAircraft = util.FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
 		return slices.ContainsFunc(aircraft, func(ac *Aircraft) bool { return ac.Callsign == ca.Callsigns[0] }) &&
 			slices.ContainsFunc(aircraft, func(ac *Aircraft) bool { return ac.Callsign == ca.Callsigns[1] })
 	})
 
 	// Add new conflicts; by appending we keep them sorted by when they
 	// were first detected...
-	callsigns := MapSlice(aircraft, func(ac *Aircraft) string { return ac.Callsign })
+	callsigns := util.MapSlice(aircraft, func(ac *Aircraft) string { return ac.Callsign })
 	for i, callsign := range callsigns {
 		for _, ocs := range callsigns[i+1:] {
 			if conflicting(callsign, ocs) {
@@ -5996,7 +6000,7 @@ func (sp *STARSPane) updateInTrailDistance(aircraft []*Aircraft, w *World) {
 		}
 
 		// Get all aircraft on approach to this runway
-		runwayAircraft := FilterSlice(aircraft, func(ac *Aircraft) bool {
+		runwayAircraft := util.FilterSlice(aircraft, func(ac *Aircraft) bool {
 			if v := ac.ATPAVolume(); v == nil || v.Id != vol.Id {
 				return false
 			}
@@ -6259,7 +6263,7 @@ func (sp *STARSPane) diverging(a, b *Aircraft) bool {
 	}
 
 	// Intersection behind both; make sure headings are at least 15 degrees apart.
-	if headingDifference(sa.TrackHeading(a.NmPerLongitude()), sb.TrackHeading(b.NmPerLongitude())) < 15 {
+	if math.HeadingDifference(sa.TrackHeading(a.NmPerLongitude()), sb.TrackHeading(b.NmPerLongitude())) < 15 {
 		return false
 	}
 
@@ -6664,7 +6668,7 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *Aircraft) (color RGB, 
 	ps := sp.CurrentPreferenceSet
 	dt := sp.datablockType(ctx, ac)
 	state := sp.Aircraft[ac.Callsign]
-	brightness = Select(dt == PartialDatablock || dt == LimitedDatablock,
+	brightness = util.Select(dt == PartialDatablock || dt == LimitedDatablock,
 		ps.Brightness.LimitedDatablocks, ps.Brightness.FullDatablocks)
 
 	if ac.Callsign == sp.dwellAircraft {
@@ -6921,8 +6925,9 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*Aircraft, ctx *PaneContext, t
 			if drawATPACone {
 				// The cone is oriented to point toward the leading aircraft.
 				if sfront, ok := sp.Aircraft[state.ATPALeadAircraftCallsign]; ok {
-					coneHeading = headingp2ll(state.TrackPosition(), sfront.TrackPosition(),
+					coneHeading = math.Heading2LL(state.TrackPosition(), sfront.TrackPosition(),
 						ac.NmPerLongitude(), ac.MagneticVariation())
+
 				}
 			} else {
 				// The cone is oriented along the aircraft's heading.
@@ -6990,7 +6995,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 
 	drawRBL := func(p0 math.Point2LL, p1 math.Point2LL, idx int, gs float32) {
 		// Format the range-bearing line text for the two positions.
-		hdg := headingp2ll(p0, p1, ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
+		hdg := math.Heading2LL(p0, p1, ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
 		dist := math.NMDistance2LL(p0, p1)
 		text := fmt.Sprintf("%3d/%.2f", int(hdg+.5), dist)
 		if gs != 0 {
@@ -7049,7 +7054,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*Aircraft, ctx *PaneContext, transforms
 	}
 
 	// Remove stale ones that include aircraft that have landed, etc.
-	sp.RangeBearingLines = FilterSlice(sp.RangeBearingLines, func(rbl STARSRangeBearingLine) bool {
+	sp.RangeBearingLines = util.FilterSlice(sp.RangeBearingLines, func(rbl STARSRangeBearingLine) bool {
 		p0, p1 := rbl.GetPoints(ctx, aircraft, sp)
 		return !p0.IsZero() && !p1.IsZero()
 	})
@@ -7378,7 +7383,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent math.Extent2D,
 		ld := GetLinesDrawBuilder()
 		defer ReturnLinesDrawBuilder(ld)
 
-		w := float32(7) * Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+		w := float32(7) * util.Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
 		ld.AddLine(math.Add2f(ctx.mouse.Pos, [2]float32{-w, 0}), math.Add2f(ctx.mouse.Pos, [2]float32{w, 0}))
 		ld.AddLine(math.Add2f(ctx.mouse.Pos, [2]float32{0, -w}), math.Add2f(ctx.mouse.Pos, [2]float32{0, w}))
 
@@ -7548,8 +7553,8 @@ func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32
 		}
 
 		// Swap selected/regular color to indicate the tentative result
-		buttonColor = Select(pushedIn, STARSDCBActiveButtonColor, STARSDCBButtonColor)
-		textColor = Select(mouseInside, STARSDCBTextSelectedColor, STARSDCBTextColor)
+		buttonColor = util.Select(pushedIn, STARSDCBActiveButtonColor, STARSDCBButtonColor)
+		textColor = util.Select(mouseInside, STARSDCBTextSelectedColor, STARSDCBTextColor)
 	}
 	buttonColor = dcbDrawState.brightness.ScaleRGB(buttonColor)
 	//textColor = dcbDrawState.brightness.ScaleRGB(textColor)
@@ -7677,7 +7682,7 @@ func (sp *STARSPane) DrawDCBSpinner(ctx *PaneContext, spinner DCBSpinner, comman
 		}
 
 		if ctx.mouse != nil && ctx.mouse.Wheel[1] != 0 {
-			delta := Select(ctx.mouse.Wheel[1] > 0, -1, 1)
+			delta := util.Select(ctx.mouse.Wheel[1] > 0, -1, 1)
 			spinner.MouseWheel(delta)
 		}
 	} else {
@@ -7769,10 +7774,10 @@ func MakeLeaderLineLengthSpinner(l *int) DCBSpinner {
 }
 
 type DCBLeaderLineDirectionSpinner struct {
-	d *CardinalOrdinalDirection
+	d *math.CardinalOrdinalDirection
 }
 
-func MakeLeaderLineDirectionSpinner(dir *CardinalOrdinalDirection) DCBSpinner {
+func MakeLeaderLineDirectionSpinner(dir *math.CardinalOrdinalDirection) DCBSpinner {
 	return &DCBLeaderLineDirectionSpinner{dir}
 }
 
@@ -7789,9 +7794,9 @@ func (s *DCBLeaderLineDirectionSpinner) MouseWheel(delta int) {
 	// The CardinalOrdinalDirection enum goes clockwise, so adding one (mod
 	// 8) goes forward, and subtracting 1 (mod 8) goes backwards.
 	if delta < 0 {
-		*s.d = CardinalOrdinalDirection((*s.d + 7) % 8)
+		*s.d = math.CardinalOrdinalDirection((*s.d + 7) % 8)
 	} else {
-		*s.d = CardinalOrdinalDirection((*s.d + 1) % 8)
+		*s.d = math.CardinalOrdinalDirection((*s.d + 1) % 8)
 	}
 }
 
@@ -8017,7 +8022,7 @@ func MakeBrightnessSpinner(t string, b *STARSBrightness, min STARSBrightness, al
 }
 
 func (s *DCBBrightnessSpinner) Label() string {
-	return s.text + " " + Select(*s.b == 0, "OFF", fmt.Sprintf("%2d", int(*s.b)))
+	return s.text + " " + util.Select(*s.b == 0, "OFF", fmt.Sprintf("%2d", int(*s.b)))
 }
 
 func (s *DCBBrightnessSpinner) Equals(other DCBSpinner) bool {
@@ -8076,7 +8081,7 @@ func amendFlightPlan(w *World, callsign string, amend func(fp *FlightPlan)) erro
 	if ac := w.GetAircraft(callsign, false); ac == nil {
 		return ErrNoAircraftForCallsign
 	} else {
-		fp := Select(ac.FlightPlan != nil, ac.FlightPlan, &FlightPlan{})
+		fp := util.Select(ac.FlightPlan != nil, ac.FlightPlan, &FlightPlan{})
 		amend(fp)
 		return w.AmendFlightPlan(callsign, *fp)
 	}
@@ -8263,7 +8268,7 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 	}
 }
 
-func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft, w *World) CardinalOrdinalDirection {
+func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft, w *World) math.CardinalOrdinalDirection {
 	ps := sp.CurrentPreferenceSet
 	state := sp.Aircraft[ac.Callsign]
 
@@ -8283,11 +8288,11 @@ func (sp *STARSPane) getLeaderLineDirection(ac *Aircraft, w *World) CardinalOrdi
 		return *ps.OtherControllerLeaderLineDirection
 	} else {
 		// TODO: should this case have a user-specifiable default?
-		return CardinalOrdinalDirection(North)
+		return math.CardinalOrdinalDirection(math.North)
 	}
 }
 
-func (sp *STARSPane) getLeaderLineVector(dir CardinalOrdinalDirection) [2]float32 {
+func (sp *STARSPane) getLeaderLineVector(dir math.CardinalOrdinalDirection) [2]float32 {
 	angle := dir.Heading()
 	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
 	ps := sp.CurrentPreferenceSet

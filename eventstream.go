@@ -10,6 +10,8 @@ import (
 	"runtime"
 	"sync"
 	"time"
+
+	"github.com/mmp/vice/pkg/math"
 )
 
 type EventSubscriberId int
@@ -216,8 +218,8 @@ type Event struct {
 	FromController        string
 	ToController          string // For radio transmissions, the controlling controller.
 	Message               string
-	RadioTransmissionType RadioTransmissionType     // For radio transmissions only
-	LeaderLineDirection   *CardinalOrdinalDirection // SetGlobalLeaderLineEvent
+	RadioTransmissionType RadioTransmissionType          // For radio transmissions only
+	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
 }
 
 func (e *Event) String() string {
