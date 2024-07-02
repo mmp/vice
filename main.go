@@ -268,7 +268,7 @@ func main() {
 
 		LoadOrMakeDefaultConfig(plat)
 
-		plat, err = platform.NewGLFW(imgui.CurrentIO(), &globalConfig.Config, lg)
+		plat, err = platform.New(&globalConfig.Config, lg)
 		if err != nil {
 			panic(fmt.Sprintf("Unable to create application window: %v", err))
 		}
@@ -308,7 +308,7 @@ func main() {
 
 		uiInit(render, plat, eventStream)
 
-		globalConfig.Activate(world, render, eventStream)
+		globalConfig.Activate(world, render, plat, eventStream)
 
 		if world == nil {
 			uiShowConnectDialog(false, plat)

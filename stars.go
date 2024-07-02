@@ -25,6 +25,7 @@ import (
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/mmp/imgui-go/v4"
+	"github.com/tosone/minimp3"
 )
 
 // IFR TRACON separation requirements
@@ -146,6 +147,35 @@ type STARSPane struct {
 
 	// The start of a RBL--one click received, waiting for the second.
 	wipRBL *STARSRangeBearingLine
+
+	audioEffects map[AudioType]int // to handle from Platform.AddPCM()
+}
+
+type AudioType int
+
+// The types of events we may play audio for; note that not all are
+// currently used.
+const (
+	AudioConflictAlert = iota
+	AudioEmergencySquawk
+	AudioMinimumSafeAltitudeWarning
+	AudioModeCIntruder
+	AudioInboundHandoff
+	AudioCommandError
+	AudioHandoffAccepted
+	AudioNumTypes
+)
+
+func (ae AudioType) String() string {
+	return [...]string{
+		"Conflict Alert",
+		"Emergency Squawk Code",
+		"Minimum Safe Altitude Warning",
+		"Mode C Intruder",
+		"Inbound Handoff",
+		"Command Error",
+		"Handoff Accepted",
+	}[ae]
 }
 
 type STARSRangeBearingLine struct {
@@ -613,6 +643,8 @@ type STARSPreferenceSet struct {
 	RadarSiteSelected string `json:"RadarSiteSelectedName"`
 	FusedRadarMode    bool
 
+	AudioEffectEnabled []bool
+
 	// For tracked by the user
 	LeaderLineDirection math.CardinalOrdinalDirection
 	LeaderLineLength    int // 0-7
@@ -979,6 +1011,10 @@ func (ps *STARSPreferenceSet) Activate(w *World, sp *STARSPane) {
 	remapBrightness(&ps.Brightness.Weather)
 	remapBrightness(&ps.Brightness.WxContrast)
 
+	for len(ps.AudioEffectEnabled) < AudioNumTypes {
+		ps.AudioEffectEnabled = append(ps.AudioEffectEnabled, true)
+	}
+
 	if ps.SystemMapVisible == nil {
 		ps.SystemMapVisible = make(map[int]interface{})
 	}
@@ -1103,7 +1139,8 @@ func NewSTARSPane(w *World) *STARSPane {
 
 func (sp *STARSPane) Name() string { return "STARS" }
 
-func (sp *STARSPane) Activate(w *World, r renderer.Renderer, eventStream *EventStream) {
+func (sp *STARSPane) Activate(w *World, r renderer.Renderer, p platform.Platform,
+	eventStream *EventStream) {
 	if sp.CurrentPreferenceSet.Range == 0 || sp.CurrentPreferenceSet.Center.IsZero() {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
 		sp.CurrentPreferenceSet = sp.MakePreferenceSet("", w)
@@ -1127,6 +1164,7 @@ func (sp *STARSPane) Activate(w *World, r renderer.Renderer, eventStream *EventS
 	}
 
 	sp.initializeFonts()
+	sp.initializeAudio(p)
 
 	if w != nil {
 		sp.systemMaps = sp.makeSystemMaps(w)
@@ -1290,14 +1328,35 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 	return maps
 }
 
-func (sp *STARSPane) DrawUI() {
+func (sp *STARSPane) DrawUI(p platform.Platform) {
+	ps := &sp.CurrentPreferenceSet
+
 	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
+
 	imgui.Checkbox("Lock display", &sp.LockDisplay)
+
+	imgui.Checkbox("Enable Sound Effects", &globalConfig.AudioEnabled)
+	uiStartDisable(!globalConfig.AudioEnabled)
+	// Not all of the ones available in the engine are used, so only offer these up:
+	for _, i := range []AudioType{AudioConflictAlert, AudioInboundHandoff,
+		AudioHandoffAccepted, AudioCommandError} {
+		imgui.Text("  ")
+		imgui.SameLine()
+		if imgui.Checkbox(AudioType(i).String(), &ps.AudioEffectEnabled[i]) && ps.AudioEffectEnabled[i] {
+			n := util.Select(i == AudioConflictAlert, 5, 1)
+			for j := 0; j < n; j++ {
+				sp.playOnce(p, i)
+			}
+		}
+	}
+	uiEndDisable(!globalConfig.AudioEnabled)
 }
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
 
-func (sp *STARSPane) processEvents(w *World) {
+func (sp *STARSPane) processEvents(ctx *PaneContext) {
+	w := ctx.world
+
 	// First handle changes in world.Aircraft
 	for callsign, ac := range w.Aircraft {
 		if _, ok := sp.Aircraft[callsign]; !ok {
@@ -1317,7 +1376,6 @@ func (sp *STARSPane) processEvents(w *World) {
 		if ok, _ := SquawkIsSPC(ac.Squawk); ok {
 			if _, ok := sp.HavePlayedSPCAlertSound[ac.Callsign]; !ok {
 				sp.HavePlayedSPCAlertSound[ac.Callsign] = nil
-				//globalConfig.AudioSettings.HandleEvent(AudioEventAlert)
 			}
 		}
 	}
@@ -1403,13 +1461,13 @@ func (sp *STARSPane) processEvents(w *World) {
 
 		case OfferedHandoffEvent:
 			if event.ToController == w.Callsign {
-				globalConfig.Audio.PlayOnce(AudioInboundHandoff)
+				sp.playOnce(ctx.platform, AudioInboundHandoff)
 			}
 
 		case AcceptedHandoffEvent:
 			if event.FromController == w.Callsign && event.ToController != w.Callsign {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
-					globalConfig.Audio.PlayOnce(AudioHandoffAccepted)
+					sp.playOnce(ctx.platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
 				}
@@ -1418,7 +1476,7 @@ func (sp *STARSPane) processEvents(w *World) {
 		case AcceptedRedirectedHandoffEvent:
 			if event.FromController == w.Callsign && event.ToController != w.Callsign {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
-					globalConfig.Audio.PlayOnce(AudioHandoffAccepted)
+					sp.playOnce(ctx.platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
 					state.RDIndicatorEnd = time.Now().Add(30 * time.Second)
@@ -1569,7 +1627,7 @@ func (sp *STARSPane) Upgrade(from, to int) {
 }
 
 func (sp *STARSPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
-	sp.processEvents(ctx.world)
+	sp.processEvents(ctx)
 	sp.updateRadarTracks(ctx)
 
 	ps := sp.CurrentPreferenceSet
@@ -1704,9 +1762,9 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 		}
 	}
 	if playAlertSound {
-		globalConfig.Audio.StartPlayContinuous(AudioConflictAlert)
+		sp.startPlayContinuous(ctx.platform, AudioConflictAlert)
 	} else {
-		globalConfig.Audio.StopPlayContinuous(AudioConflictAlert)
+		sp.stopPlayContinuous(ctx.platform, AudioConflictAlert)
 	}
 
 	// Do this at the end of drawing so that we hold on to the tracks we
@@ -1834,7 +1892,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			sp.commandMode = CommandModeMin
 		case platform.KeyEnter:
 			if status := sp.executeSTARSCommand(sp.previewAreaInput, ctx); status.err != nil {
-				sp.displayError(status.err)
+				sp.displayError(status.err, ctx.platform)
 			} else {
 				if status.clear {
 					sp.resetInputState()
@@ -3287,17 +3345,17 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 
 	if isSecondary {
 		ctx.world.SetSecondaryScratchpad(callsign, contents, nil,
-			func(err error) { sp.displayError(err) })
+			func(err error) { sp.displayError(err, ctx.platform) })
 	} else {
 		ctx.world.SetScratchpad(callsign, contents, nil,
-			func(err error) { sp.displayError(err) })
+			func(err error) { sp.displayError(err, ctx.platform) })
 	}
 	return nil
 }
 
 func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt int) {
 	ctx.world.SetTemporaryAltitude(callsign, alt, nil,
-		func(err error) { sp.displayError(err) })
+		func(err error) { sp.displayError(err, ctx.platform) })
 }
 
 func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir *math.CardinalOrdinalDirection) {
@@ -3306,7 +3364,7 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir 
 	state.UseGlobalLeaderLine = dir != nil
 
 	ctx.world.SetGlobalLeaderLine(callsign, dir, nil,
-		func(err error) { sp.displayError(err) })
+		func(err error) { sp.displayError(err, ctx.platform) })
 }
 
 func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
@@ -3319,11 +3377,11 @@ func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
 				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.world, ac)
 			}
 		},
-		func(err error) { sp.displayError(err) })
+		func(err error) { sp.displayError(err, ctx.platform) })
 }
 
 func (sp *STARSPane) dropTrack(ctx *PaneContext, callsign string) {
-	ctx.world.DropTrack(callsign, nil, func(err error) { sp.displayError(err) })
+	ctx.world.DropTrack(callsign, nil, func(err error) { sp.displayError(err, ctx.platform) })
 }
 
 func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
@@ -3336,7 +3394,7 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.world, ac)
 			}
 		},
-		func(err error) { sp.displayError(err) })
+		func(err error) { sp.displayError(err, ctx.platform) })
 }
 
 func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) error {
@@ -3346,7 +3404,7 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 	}
 
 	ctx.world.HandoffTrack(callsign, control.Callsign, nil,
-		func(err error) { sp.displayError(err) })
+		func(err error) { sp.displayError(err, ctx.platform) })
 
 	return nil
 }
@@ -3491,17 +3549,18 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *Aircraft, cmd string) e
 }
 
 func (sp *STARSPane) forceQL(ctx *PaneContext, callsign, controller string) {
-	ctx.world.ForceQL(callsign, controller, nil, func(err error) { sp.displayError(err) })
+	ctx.world.ForceQL(callsign, controller, nil,
+		func(err error) { sp.displayError(err, ctx.platform) })
 }
 
 func (sp *STARSPane) redirectHandoff(ctx *PaneContext, callsign, controller string) {
 	ctx.world.RedirectHandoff(callsign, controller, nil,
-		func(err error) { sp.displayError(err) })
+		func(err error) { sp.displayError(err, ctx.platform) })
 }
 
 func (sp *STARSPane) acceptRedirectedHandoff(ctx *PaneContext, callsign string) {
 	ctx.world.AcceptRedirectedHandoff(callsign, nil,
-		func(err error) { sp.displayError(err) })
+		func(err error) { sp.displayError(err, ctx.platform) })
 }
 
 func (sp *STARSPane) RemoveForceQL(ctx *PaneContext, callsign, controller string) {
@@ -3509,15 +3568,18 @@ func (sp *STARSPane) RemoveForceQL(ctx *PaneContext, callsign, controller string
 }
 
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
-	ctx.world.PointOut(callsign, controller, nil, func(err error) { sp.displayError(err) })
+	ctx.world.PointOut(callsign, controller, nil,
+		func(err error) { sp.displayError(err, ctx.platform) })
 }
 
 func (sp *STARSPane) acknowledgePointOut(ctx *PaneContext, callsign string) {
-	ctx.world.AcknowledgePointOut(callsign, nil, func(err error) { sp.displayError(err) })
+	ctx.world.AcknowledgePointOut(callsign, nil,
+		func(err error) { sp.displayError(err, ctx.platform) })
 }
 
 func (sp *STARSPane) cancelHandoff(ctx *PaneContext, callsign string) {
-	ctx.world.CancelHandoff(callsign, nil, func(err error) { sp.displayError(err) })
+	ctx.world.CancelHandoff(callsign, nil,
+		func(err error) { sp.displayError(err, ctx.platform) })
 }
 
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mousePosition [2]float32,
@@ -3708,12 +3770,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if StringIsSPC(cmd) {
 				ctx.world.ToggleSPCOverride(ac.Callsign, cmd, nil,
-					func(err error) { sp.displayError(err) })
+					func(err error) { sp.displayError(err, ctx.platform) })
 				status.clear = true
 				return
 			} else if cmd == "UN" {
 				ctx.world.RejectPointOut(ac.Callsign, nil,
-					func(err error) { sp.displayError(err) })
+					func(err error) { sp.displayError(err, ctx.platform) })
 				status.clear = true
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
@@ -7284,7 +7346,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 		}
 
 		if status.err != nil {
-			sp.displayError(status.err)
+			sp.displayError(status.err, ctx.platform)
 		} else {
 			if status.clear {
 				sp.resetInputState()
@@ -8104,9 +8166,9 @@ func (sp *STARSPane) resetInputState() {
 	sp.selectedPlaceButton = ""
 }
 
-func (sp *STARSPane) displayError(err error) {
+func (sp *STARSPane) displayError(err error, p platform.Platform) {
 	if err != nil { // it should be, but...
-		globalConfig.Audio.PlayOnce(AudioCommandError)
+		sp.playOnce(p, AudioCommandError)
 		sp.previewAreaOutput = GetSTARSError(err).Error()
 	}
 }
@@ -8337,4 +8399,50 @@ func (sp *STARSPane) radarSiteId(w *World) string {
 	default:
 		return "UNKNOWN"
 	}
+}
+
+func (sp *STARSPane) initializeAudio(p platform.Platform) {
+	if sp.audioEffects == nil {
+		sp.audioEffects = make(map[AudioType]int)
+
+		loadMP3 := func(filename string) int {
+			dec, pcm, err := minimp3.DecodeFull(LoadResource("audio/" + filename))
+			if err != nil {
+				lg.Errorf("%s: unable to decode mp3: %v", filename, err)
+			}
+			if dec.Channels != 1 {
+				lg.Errorf("expected 1 channel, got %d", dec.Channels)
+			}
+
+			idx, err := p.AddPCM(pcm, dec.SampleRate)
+			if err != nil {
+				lg.Errorf("%s: %v", filename, err)
+			}
+			return idx
+		}
+
+		sp.audioEffects[AudioConflictAlert] = loadMP3("ca.mp3")
+		sp.audioEffects[AudioEmergencySquawk] = loadMP3("emergency.mp3")
+		sp.audioEffects[AudioMinimumSafeAltitudeWarning] = loadMP3("msaw.mp3")
+		sp.audioEffects[AudioModeCIntruder] = loadMP3("intruder.mp3")
+		sp.audioEffects[AudioInboundHandoff] = loadMP3("263124__pan14__sine-octaves-up-beep.mp3")
+		sp.audioEffects[AudioCommandError] = loadMP3("426888__thisusernameis__beep4.mp3")
+		sp.audioEffects[AudioHandoffAccepted] = loadMP3("321104__nsstudios__blip2.mp3")
+	}
+}
+
+func (sp *STARSPane) playOnce(p platform.Platform, a AudioType) {
+	if sp.CurrentPreferenceSet.AudioEffectEnabled[a] {
+		p.PlayAudioOnce(sp.audioEffects[a])
+	}
+}
+
+func (sp *STARSPane) startPlayContinuous(p platform.Platform, a AudioType) {
+	if sp.CurrentPreferenceSet.AudioEffectEnabled[a] {
+		p.StartPlayAudioContinuous(sp.audioEffects[a])
+	}
+}
+
+func (sp *STARSPane) stopPlayContinuous(p platform.Platform, a AudioType) {
+	p.StopPlayAudioContinuous(sp.audioEffects[a])
 }

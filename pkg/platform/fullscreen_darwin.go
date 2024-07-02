@@ -24,12 +24,12 @@ int isNativeFullscreen(void *window) {
 */
 import "C"
 
-func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
+func (g *glfwPlatform) EnableFullScreen(fullscreen bool) {
 	window := g.window.GetCocoaWindow()
 	C.makeFullscreenNative(window)
 }
 
-func (g *GLFWPlatform) IsFullScreen() bool {
+func (g *glfwPlatform) IsFullScreen() bool {
 	if g.window.GetMonitor() != nil {
 		return true
 	} else if C.isNativeFullscreen(g.window.GetCocoaWindow()) == 1 {

@@ -37,7 +37,8 @@ import (
 // 21: STARS DCB drawing changes, so system list positions changed
 // 22: draw points using triangles, remove some CommandBuffer commands
 // 23: video map format update
-const CurrentConfigVersion = 23
+// 24: packages, audio to platform
+const CurrentConfigVersion = 24
 
 // Slightly convoluted, but the full GlobalConfig definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first
@@ -59,8 +60,6 @@ type GlobalConfigNoSim struct {
 	LastServer    string
 	LastTRACON    string
 	UIFontSize    int
-
-	Audio AudioEngine
 
 	DisplayRoot *DisplayNode
 
@@ -155,7 +154,7 @@ func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform platf
 func SetDefaultConfig() {
 	globalConfig = &GlobalConfig{}
 
-	globalConfig.Audio.SetDefaults()
+	globalConfig.AudioEnabled = true
 	globalConfig.Version = CurrentConfigVersion
 	globalConfig.WhatsNewIndex = len(whatsNew)
 	globalConfig.InitialWindowPosition = [2]int{100, 100}
@@ -184,10 +183,8 @@ func LoadOrMakeDefaultConfig(p platform.Platform) {
 		if globalConfig.Version < 5 {
 			globalConfig.Callsign = ""
 		}
-		if globalConfig.Version < 15 && globalConfig.Audio.AudioEnabled {
-			for i := 0; i < AudioNumTypes; i++ {
-				globalConfig.Audio.EffectEnabled[i] = true
-			}
+		if globalConfig.Version < 24 {
+			globalConfig.AudioEnabled = true
 		}
 
 		if globalConfig.Version < CurrentConfigVersion {
@@ -214,14 +211,11 @@ func LoadOrMakeDefaultConfig(p platform.Platform) {
 	}
 	globalConfig.Version = CurrentConfigVersion
 
-	if err := globalConfig.Audio.Activate(); err != nil {
-		lg.Errorf("Audio: %v", err)
-	}
-
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }
 
-func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, eventStream *EventStream) {
+func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, p platform.Platform,
+	eventStream *EventStream) {
 	// Upgrade old ones without a MessagesPane
 	if gc.DisplayRoot != nil {
 		haveMessages := false
@@ -282,5 +276,5 @@ func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, eventStream *Eve
 		}
 	}
 
-	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(w, r, eventStream) })
+	gc.DisplayRoot.VisitPanes(func(pane Pane) { pane.Activate(w, r, p, eventStream) })
 }

@@ -28,7 +28,7 @@ func (ms *MouseState) SetCursor(id imgui.MouseCursorID) {
 	imgui.SetMouseCursor(id)
 }
 
-func (g *GLFWPlatform) GetMouse() *MouseState {
+func (g *glfwPlatform) GetMouse() *MouseState {
 	io := imgui.CurrentIO()
 	pos := imgui.MousePos()
 	wx, wy := io.MouseWheel()
@@ -94,7 +94,7 @@ type KeyboardState struct {
 	Pressed map[Key]interface{}
 }
 
-func (g *GLFWPlatform) GetKeyboard() *KeyboardState {
+func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	keyboard := &KeyboardState{Pressed: make(map[Key]interface{})}
 
 	keyboard.Input = g.InputCharacters()

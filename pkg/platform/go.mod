@@ -7,11 +7,16 @@ require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20240506104042-037f3cc74f2a
 	github.com/mmp/imgui-go/v4 v4.0.0-20220911181801-968a517f674f
 	github.com/mmp/vice/pkg/log v0.0.0-00010101000000-000000000000
-	github.com/mmp/vice/pkg/math v0.0.0-00010101000000-000000000000
+	github.com/mmp/vice/pkg/math v0.0.0
 )
 
 require (
+	github.com/iancoleman/orderedmap v0.3.0 // indirect
 	github.com/inkyblackness/imgui-go/v4 v4.7.0 // indirect
+	github.com/klauspost/compress v1.17.9 // indirect
+	github.com/mmp/vice/pkg/util v0.0.0-00010101000000-000000000000 // indirect
+	github.com/tosone/minimp3 v1.0.2 // indirect
+	github.com/veandco/go-sdl2 v0.4.40 // indirect
 	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 )

@@ -26,7 +26,7 @@ import (
 type Pane interface {
 	Name() string
 
-	Activate(w *World, r renderer.Renderer, eventStream *EventStream)
+	Activate(w *World, r renderer.Renderer, p platform.Platform, eventStream *EventStream)
 	Deactivate()
 	ResetWorld(w *World)
 
@@ -121,10 +121,10 @@ type EmptyPane struct {
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
-func (ep *EmptyPane) Activate(*World, renderer.Renderer, *EventStream) {}
-func (ep *EmptyPane) Deactivate()                                      {}
-func (ep *EmptyPane) ResetWorld(w *World)                              {}
-func (ep *EmptyPane) CanTakeKeyboardFocus() bool                       { return false }
+func (ep *EmptyPane) Activate(*World, renderer.Renderer, platform.Platform, *EventStream) {}
+func (ep *EmptyPane) Deactivate()                                                         {}
+func (ep *EmptyPane) ResetWorld(w *World)                                                 {}
+func (ep *EmptyPane) CanTakeKeyboardFocus() bool                                          { return false }
 
 func (ep *EmptyPane) Name() string { return "(Empty)" }
 
@@ -171,7 +171,8 @@ func NewFlightStripPane() *FlightStripPane {
 	}
 }
 
-func (fsp *FlightStripPane) Activate(w *World, r renderer.Renderer, eventStream *EventStream) {
+func (fsp *FlightStripPane) Activate(w *World, r renderer.Renderer, p platform.Platform,
+	eventStream *EventStream) {
 	if fsp.FontSize == 0 {
 		fsp.FontSize = 12
 	}
@@ -680,7 +681,8 @@ func NewMessagesPane() *MessagesPane {
 
 func (mp *MessagesPane) Name() string { return "Messages" }
 
-func (mp *MessagesPane) Activate(w *World, r renderer.Renderer, eventStream *EventStream) {
+func (mp *MessagesPane) Activate(w *World, r renderer.Renderer, p platform.Platform,
+	eventStream *EventStream) {
 	if mp.font = GetFont(mp.FontIdentifier); mp.font == nil {
 		mp.font = GetDefaultFont()
 		mp.FontIdentifier = mp.font.Id

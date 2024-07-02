@@ -1688,13 +1688,10 @@ func (w *World) DrawSettingsWindow(p platform.Platform) {
 		}
 	})
 
-	stars.DrawUI()
-
-	imgui.Separator()
-
-	if imgui.CollapsingHeader("Audio") {
-		globalConfig.Audio.DrawUI()
+	if imgui.CollapsingHeader("STARS") {
+		stars.DrawUI(p)
 	}
+
 	if imgui.CollapsingHeader("Display") {
 		if imgui.Checkbox("Enable anti-aliasing", &globalConfig.EnableMSAA) {
 			uiShowModalDialog(NewModalDialogBox(

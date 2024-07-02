@@ -14,8 +14,10 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
-// GLFWPlatform implements the Platform interface using GLFW.
-type GLFWPlatform struct {
+// glfwPlatform implements the Platform interface using GLFW.
+type glfwPlatform struct {
+	audioEngine
+
 	imguiIO imgui.IO
 
 	window *glfw.Window
@@ -34,6 +36,8 @@ type GLFWPlatform struct {
 }
 
 type Config struct {
+	AudioEnabled bool
+
 	InitialWindowSize     [2]int
 	InitialWindowPosition [2]int
 
@@ -43,9 +47,9 @@ type Config struct {
 	FullScreenMonitor int
 }
 
-// NewGLFWPlatform returns a new instance of a GLFWPlatform with a window
+// New returns a new instance of a Platform implemented with a window
 // of the specified size open at the specified position on the screen.
-func NewGLFW(io imgui.IO, config *Config, lg *log.Logger) (Platform, error) {
+func New(config *Config, lg *log.Logger) (Platform, error) {
 	lg.Info("Starting GLFW initialization")
 	err := glfw.Init()
 	if err != nil {
@@ -53,6 +57,7 @@ func NewGLFW(io imgui.IO, config *Config, lg *log.Logger) (Platform, error) {
 	}
 	lg.Infof("GLFW: %s", glfw.GetVersionString())
 
+	io := imgui.CurrentIO()
 	io.SetBackendFlags(io.GetBackendFlags() | imgui.BackendFlagsHasMouseCursors)
 
 	glfw.WindowHint(glfw.ContextVersionMajor, 2)
@@ -102,7 +107,7 @@ func NewGLFW(io imgui.IO, config *Config, lg *log.Logger) (Platform, error) {
 	window.Show()
 	window.MakeContextCurrent()
 
-	platform := &GLFWPlatform{
+	platform := &glfwPlatform{
 		config:      config,
 		imguiIO:     io,
 		window:      window,
@@ -116,10 +121,13 @@ func NewGLFW(io imgui.IO, config *Config, lg *log.Logger) (Platform, error) {
 	glfw.SetMonitorCallback(platform.MonitorCallback)
 
 	lg.Info("Finished GLFW initialization")
+
+	platform.audioEngine.Initialize(config, lg)
+
 	return platform, nil
 }
 
-func (g *GLFWPlatform) DPIScale() float32 {
+func (g *glfwPlatform) DPIScale() float32 {
 	if runtime.GOOS == "windows" {
 		sx, sy := g.window.GetContentScale()
 		return float32(int((sx + sy) / 2))
@@ -128,7 +136,7 @@ func (g *GLFWPlatform) DPIScale() float32 {
 	}
 }
 
-func (g *GLFWPlatform) EnableVSync(sync bool) {
+func (g *glfwPlatform) EnableVSync(sync bool) {
 	if sync {
 		glfw.SwapInterval(1)
 	} else {
@@ -139,7 +147,7 @@ func (g *GLFWPlatform) EnableVSync(sync bool) {
 // Detecting whether the window is already in native (MacOS) fullscreen is a bit tricky, since GLFW doesn't have
 // a function for this. To prevent unexpected behavior, it needs to only allow to either fullscreen natively or through SetWindowMonitor.
 // The function assumes the window is in native fullscreen if it's maximized and the window size matches one of the monitor's size.
-func (g *GLFWPlatform) IsMacOSNativeFullScreen() bool {
+func (g *glfwPlatform) IsMacOSNativeFullScreen() bool {
 	if runtime.GOOS == "darwin" && g.window.GetAttrib(glfw.Maximized) == glfw.True {
 		monitors := glfw.GetMonitors()
 		windowSize := g.WindowSize()
@@ -154,7 +162,7 @@ func (g *GLFWPlatform) IsMacOSNativeFullScreen() bool {
 	return false
 }
 
-func (g *GLFWPlatform) GetAllMonitorNames() []string {
+func (g *glfwPlatform) GetAllMonitorNames() []string {
 	var monitorNames []string
 	monitors := glfw.GetMonitors()
 	for index, monitor := range monitors {
@@ -163,31 +171,31 @@ func (g *GLFWPlatform) GetAllMonitorNames() []string {
 	return monitorNames
 }
 
-func (g *GLFWPlatform) MonitorCallback(monitor *glfw.Monitor, event glfw.PeripheralEvent) {
+func (g *glfwPlatform) MonitorCallback(monitor *glfw.Monitor, event glfw.PeripheralEvent) {
 	if event == glfw.Disconnected {
 		g.config.FullScreenMonitor = 0
 		g.config.StartInFullScreen = false
 	}
 }
 
-func (g *GLFWPlatform) Dispose() {
+func (g *glfwPlatform) Dispose() {
 	g.window.Destroy()
 	glfw.Terminate()
 }
 
-func (g *GLFWPlatform) InputCharacters() string {
+func (g *glfwPlatform) InputCharacters() string {
 	return g.inputCharacters
 }
 
-func (g *GLFWPlatform) ShouldStop() bool {
+func (g *glfwPlatform) ShouldStop() bool {
 	return g.window.ShouldClose()
 }
 
-func (g *GLFWPlatform) CancelShouldStop() {
+func (g *glfwPlatform) CancelShouldStop() {
 	g.window.SetShouldClose(false)
 }
 
-func (g *GLFWPlatform) ProcessEvents() bool {
+func (g *glfwPlatform) ProcessEvents() bool {
 	g.inputCharacters = ""
 	g.anyEvents = false
 
@@ -212,27 +220,27 @@ func (g *GLFWPlatform) ProcessEvents() bool {
 	return false
 }
 
-func (g *GLFWPlatform) DisplaySize() [2]float32 {
+func (g *glfwPlatform) DisplaySize() [2]float32 {
 	w, h := g.window.GetSize()
 	return [2]float32{float32(w), float32(h)}
 }
 
-func (g *GLFWPlatform) WindowSize() [2]int {
+func (g *glfwPlatform) WindowSize() [2]int {
 	w, h := g.window.GetSize()
 	return [2]int{w, h}
 }
 
-func (g *GLFWPlatform) WindowPosition() [2]int {
+func (g *glfwPlatform) WindowPosition() [2]int {
 	x, y := g.window.GetPos()
 	return [2]int{x, y}
 }
 
-func (g *GLFWPlatform) FramebufferSize() [2]float32 {
+func (g *glfwPlatform) FramebufferSize() [2]float32 {
 	w, h := g.window.GetFramebufferSize()
 	return [2]float32{float32(w), float32(h)}
 }
 
-func (g *GLFWPlatform) NewFrame() {
+func (g *glfwPlatform) NewFrame() {
 	if g.multisample {
 		gl.Enable(gl.MULTISAMPLE)
 	}
@@ -298,11 +306,11 @@ func (g *GLFWPlatform) NewFrame() {
 	}
 }
 
-func (g *GLFWPlatform) PostRender() {
+func (g *glfwPlatform) PostRender() {
 	g.window.SwapBuffers()
 }
 
-func (g *GLFWPlatform) setKeyMapping() {
+func (g *glfwPlatform) setKeyMapping() {
 	// Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
 	g.imguiIO.KeyMap(imgui.KeyTab, int(glfw.KeyTab))
 	g.imguiIO.KeyMap(imgui.KeyLeftArrow, int(glfw.KeyLeft))
@@ -327,7 +335,7 @@ func (g *GLFWPlatform) setKeyMapping() {
 	g.imguiIO.KeyMap(imgui.KeyZ, int(glfw.KeyZ))
 }
 
-func (g *GLFWPlatform) installCallbacks() {
+func (g *glfwPlatform) installCallbacks() {
 	g.window.SetMouseButtonCallback(g.mouseButtonChange)
 	g.window.SetScrollCallback(g.mouseScrollChange)
 	g.window.SetKeyCallback(g.keyChange)
@@ -346,7 +354,7 @@ var glfwButtonIDByIndex = map[int]glfw.MouseButton{
 	MouseButtonTertiary:  glfw.MouseButton3,
 }
 
-func (g *GLFWPlatform) mouseButtonChange(window *glfw.Window, rawButton glfw.MouseButton, action glfw.Action, mods glfw.ModifierKey) {
+func (g *glfwPlatform) mouseButtonChange(window *glfw.Window, rawButton glfw.MouseButton, action glfw.Action, mods glfw.ModifierKey) {
 	buttonIndex, known := glfwButtonIndexByID[rawButton]
 
 	if !known {
@@ -359,12 +367,12 @@ func (g *GLFWPlatform) mouseButtonChange(window *glfw.Window, rawButton glfw.Mou
 	}
 }
 
-func (g *GLFWPlatform) mouseScrollChange(window *glfw.Window, x, y float64) {
+func (g *glfwPlatform) mouseScrollChange(window *glfw.Window, x, y float64) {
 	g.anyEvents = true
 	g.imguiIO.AddMouseWheelDelta(float32(x), float32(y))
 }
 
-func (g *GLFWPlatform) keyChange(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+func (g *glfwPlatform) keyChange(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	g.anyEvents = true
 	if action == glfw.Press {
 		g.imguiIO.KeyPress(int(key))
@@ -380,13 +388,13 @@ func (g *GLFWPlatform) keyChange(window *glfw.Window, key glfw.Key, scancode int
 	g.imguiIO.KeySuper(int(glfw.KeyLeftSuper), int(glfw.KeyRightSuper))
 }
 
-func (g *GLFWPlatform) charChange(window *glfw.Window, char rune) {
+func (g *glfwPlatform) charChange(window *glfw.Window, char rune) {
 	g.anyEvents = true
 	g.imguiIO.AddInputCharacters(string(char))
 	g.inputCharacters = g.inputCharacters + string(char)
 }
 
-func (g *GLFWPlatform) createMouseCursors() {
+func (g *glfwPlatform) createMouseCursors() {
 	g.mouseCursors[imgui.MouseCursorArrow] = glfw.CreateStandardCursor(glfw.ArrowCursor)
 	g.mouseCursors[imgui.MouseCursorTextInput] = glfw.CreateStandardCursor(glfw.IBeamCursor)
 	g.mouseCursors[imgui.MouseCursorResizeAll] = glfw.CreateStandardCursor(glfw.ArrowCursor) // FIXME: GLFW doesn't have this.
@@ -398,35 +406,35 @@ func (g *GLFWPlatform) createMouseCursors() {
 
 }
 
-func (g *GLFWPlatform) SetWindowTitle(text string) {
+func (g *glfwPlatform) SetWindowTitle(text string) {
 	if text != g.windowTitle {
 		g.window.SetTitle(text)
 		g.windowTitle = text
 	}
 }
 
-func (g *GLFWPlatform) GetClipboard() imgui.Clipboard {
-	return GLFWClipboard{window: g.window}
+func (g *glfwPlatform) GetClipboard() imgui.Clipboard {
+	return glfwClipboard{window: g.window}
 }
 
-type GLFWClipboard struct {
+type glfwClipboard struct {
 	window *glfw.Window
 }
 
-func (cb GLFWClipboard) Text() (string, error) {
+func (cb glfwClipboard) Text() (string, error) {
 	return cb.window.GetClipboardString(), nil
 }
 
-func (cb GLFWClipboard) SetText(text string) {
+func (cb glfwClipboard) SetText(text string) {
 	cb.window.SetClipboardString(text)
 }
 
-func (g *GLFWPlatform) StartCaptureMouse(e math.Extent2D) {
+func (g *glfwPlatform) StartCaptureMouse(e math.Extent2D) {
 	g.mouseCapture = math.Extent2D{
 		P0: [2]float32{math.Ceil(e.P0[0]), math.Ceil(e.P0[1])},
 		P1: [2]float32{math.Floor(e.P1[0]), math.Floor(e.P1[1])}}
 }
 
-func (g *GLFWPlatform) EndCaptureMouse() {
+func (g *glfwPlatform) EndCaptureMouse() {
 	g.mouseCapture = math.Extent2D{}
 }

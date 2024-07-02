@@ -6,11 +6,11 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
-func (g *GLFWPlatform) IsFullScreen() bool {
+func (g *glfwPlatform) IsFullScreen() bool {
 	return g.window.GetMonitor() != nil
 }
 
-func (g *GLFWPlatform) EnableFullScreen(fullscreen bool) {
+func (g *glfwPlatform) EnableFullScreen(fullscreen bool) {
 
 	monitors := glfw.GetMonitors()
 	if globalConfig.FullScreenMonitor >= len(monitors) {

@@ -73,10 +73,10 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 	return &SplitLine{}
 }
 
-func (s *SplitLine) Activate(*World, renderer.Renderer, *EventStream) {}
-func (s *SplitLine) Deactivate()                                      {}
-func (s *SplitLine) ResetWorld(w *World)                              {}
-func (s *SplitLine) CanTakeKeyboardFocus() bool                       { return false }
+func (s *SplitLine) Activate(*World, renderer.Renderer, platform.Platform, *EventStream) {}
+func (s *SplitLine) Deactivate()                                                         {}
+func (s *SplitLine) ResetWorld(w *World)                                                 {}
+func (s *SplitLine) CanTakeKeyboardFocus() bool                                          { return false }
 
 func (s *SplitLine) Name() string {
 	return "Split Line"
