@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/imgui-go/v4"
 	"github.com/nfnt/resize"
 )
+import "github.com/mmp/vice/pkg/platform"
 
 // imgui lets us to embed icons within regular fonts which makes it
 // possible to use them directly in text without changing to the icon
@@ -121,7 +122,7 @@ func ptrToUint16Slice(p unsafe.Pointer) []uint16 {
 	return (*[unrealisticLargePointer / 2]uint16)(p)[:]
 }
 
-func fontsInit(r renderer.Renderer, platform Platform) {
+func fontsInit(r renderer.Renderer, p platform.Platform) {
 	lg.Info("Starting to initialize fonts")
 	fonts = make(map[renderer.FontIdentifier]*renderer.Font)
 	io := imgui.CurrentIO()
@@ -162,8 +163,8 @@ func fontsInit(r renderer.Renderer, platform Platform) {
 		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
 			sp := float32(size)
 			if runtime.GOOS == "windows" {
-				if dpis := platform.DPIScale(); dpis > 1 {
-					sp *= platform.DPIScale()
+				if dpis := p.DPIScale(); dpis > 1 {
+					sp *= p.DPIScale()
 				} else {
 					// Fix font sizes to account for Windows using 96dpi but
 					// everyone else using 72...
@@ -212,7 +213,7 @@ func fontsInit(r renderer.Renderer, platform Platform) {
 
 	// The STARS fonts are bitmaps and don't come in via TTF files so get
 	// handled specially.
-	initializeSTARSFonts(r)
+	initializeSTARSFonts(r, p)
 
 	lg.Info("Finished initializing fonts")
 }
@@ -316,7 +317,7 @@ func FontAwesomeBrandsString(id string) string {
 	return s
 }
 
-func initializeSTARSFonts(r renderer.Renderer) {
+func initializeSTARSFonts(r renderer.Renderer, p platform.Platform) {
 	// See stars-fonts.go (which is automatically-generated) for the
 	// definition of starsFonts, which stores the bitmaps and additional
 	// information about the glyphs in the STARS fonts.
@@ -328,7 +329,7 @@ func initializeSTARSFonts(r renderer.Renderer) {
 	// expose the actual pixel count.  So we need to scale the font atlas
 	// accordingly. Here we just double up pixels since we want to maintain
 	// the realistic chunkiness of the original fonts.
-	doublePixels := runtime.GOOS == "windows" && platform.DPIScale() > 1.5
+	doublePixels := runtime.GOOS == "windows" && p.DPIScale() > 1.5
 
 	if doublePixels {
 		res *= 2

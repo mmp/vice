@@ -15,6 +15,7 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 )
@@ -50,16 +51,14 @@ type GlobalConfig struct {
 }
 
 type GlobalConfigNoSim struct {
-	Version               int
-	FullScreenMonitor     int
-	InitialWindowSize     [2]int
-	InitialWindowPosition [2]int
-	ImGuiSettings         string
-	WhatsNewIndex         int
-	LastServer            string
-	LastTRACON            string
-	UIFontSize            int
-	EnableMSAA            bool
+	platform.Config
+
+	Version       int
+	ImGuiSettings string
+	WhatsNewIndex int
+	LastServer    string
+	LastTRACON    string
+	UIFontSize    int
 
 	Audio AudioEngine
 
@@ -68,7 +67,6 @@ type GlobalConfigNoSim struct {
 	AskedDiscordOptIn        bool
 	InhibitDiscordActivity   util.AtomicBool
 	NotifiedNewCommandSyntax bool
-	StartInFullScreen        bool
 
 	Callsign string
 
@@ -113,7 +111,7 @@ func (c *GlobalConfig) Save() error {
 	return c.Encode(f)
 }
 
-func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform Platform, w *World, saveSim bool) bool {
+func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform, w *World, saveSim bool) bool {
 	gc.Sim = nil
 	gc.Callsign = ""
 	if saveSim {
@@ -148,7 +146,7 @@ func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform Platf
 	}
 
 	if err := globalConfig.Save(); err != nil {
-		ShowErrorDialog("Error saving configuration file: %v", err)
+		ShowErrorDialog(platform, "Error saving configuration file: %v", err)
 	}
 
 	return true
@@ -164,7 +162,7 @@ func SetDefaultConfig() {
 	globalConfig.NotifiedNewCommandSyntax = true // don't warn for new installs
 }
 
-func LoadOrMakeDefaultConfig() {
+func LoadOrMakeDefaultConfig(p platform.Platform) {
 	fn := configFilePath()
 	lg.Infof("Loading config from: %s", fn)
 
@@ -176,7 +174,7 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig = &GlobalConfig{}
 		if err := d.Decode(&globalConfig.GlobalConfigNoSim); err != nil {
 			SetDefaultConfig()
-			ShowErrorDialog("Configuration file is corrupt: %v", err)
+			ShowErrorDialog(p, "Configuration file is corrupt: %v", err)
 		}
 
 		if globalConfig.Version < 1 {
@@ -206,7 +204,7 @@ func LoadOrMakeDefaultConfig() {
 			// Go ahead and deserialize the Sim
 			r.Seek(0, io.SeekStart)
 			if err := d.Decode(&globalConfig.GlobalConfigSim); err != nil {
-				ShowErrorDialog("Configuration file is corrupt: %v", err)
+				ShowErrorDialog(p, "Configuration file is corrupt: %v", err)
 			}
 		}
 	}

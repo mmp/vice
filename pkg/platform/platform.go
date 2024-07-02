@@ -5,7 +5,7 @@
 // (backported from imgui's backends/imgui_impl_glfw.cpp), and some
 // additional handling of text input outside of the imgui path.
 
-package main
+package platform
 
 import (
 	"fmt"
@@ -13,10 +13,12 @@ import (
 	"runtime"
 	"strconv"
 
+	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/math"
+
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/mmp/imgui-go/v4"
-	"github.com/mmp/vice/pkg/math"
 )
 
 // Platform is the interface that abstracts platform-specific features like
@@ -70,6 +72,13 @@ type Platform interface {
 	DPIScale() float32
 }
 
+const (
+	MouseButtonPrimary   = 0
+	MouseButtonSecondary = 1
+	MouseButtonTertiary  = 2
+	MouseButtonCount     = 3
+)
+
 ///////////////////////////////////////////////////////////////////////////
 
 // GLFWPlatform implements the Platform interface using GLFW.
@@ -77,6 +86,7 @@ type GLFWPlatform struct {
 	imguiIO imgui.IO
 
 	window *glfw.Window
+	config *Config
 
 	time                   float64
 	mouseJustPressed       [3]bool
@@ -90,9 +100,19 @@ type GLFWPlatform struct {
 	mouseCapture           math.Extent2D
 }
 
+type Config struct {
+	InitialWindowSize     [2]int
+	InitialWindowPosition [2]int
+
+	EnableMSAA bool
+
+	StartInFullScreen bool
+	FullScreenMonitor int
+}
+
 // NewGLFWPlatform returns a new instance of a GLFWPlatform with a window
 // of the specified size open at the specified position on the screen.
-func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, multisample bool) (Platform, error) {
+func NewGLFW(io imgui.IO, config *Config, lg *log.Logger) (Platform, error) {
 	lg.Info("Starting GLFW initialization")
 	err := glfw.Init()
 	if err != nil {
@@ -106,53 +126,54 @@ func NewGLFWPlatform(io imgui.IO, windowSize [2]int, windowPosition [2]int, mult
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 
 	vm := glfw.GetPrimaryMonitor().GetVideoMode()
-	if windowSize[0] == 0 || windowSize[1] == 0 {
+	if config.InitialWindowSize[0] == 0 || config.InitialWindowSize[1] == 0 {
 		if runtime.GOOS == "windows" {
-			windowSize[0] = vm.Width - 200
-			windowSize[1] = vm.Height - 300
+			config.InitialWindowSize[0] = vm.Width - 200
+			config.InitialWindowSize[1] = vm.Height - 300
 		} else {
-			windowSize[0] = vm.Width - 150
-			windowSize[1] = vm.Height - 150
+			config.InitialWindowSize[0] = vm.Width - 150
+			config.InitialWindowSize[1] = vm.Height - 150
 		}
 	}
 
 	// If window position is out of bounds, create the window at (100, 100)
-	if windowPosition[0] < 0 || windowPosition[1] < 0 || windowPosition[0] > vm.Width || windowPosition[1] > vm.Height {
-		globalConfig.InitialWindowPosition = [2]int{100, 100}
-		windowPosition = [2]int{100, 100}
+	if config.InitialWindowPosition[0] < 0 || config.InitialWindowPosition[1] < 0 ||
+		config.InitialWindowPosition[0] > vm.Width || config.InitialWindowPosition[1] > vm.Height {
+		config.InitialWindowPosition = [2]int{100, 100}
 	}
 	// Start with an invisible window so that we can position it first
 	glfw.WindowHint(glfw.Visible, 0)
 	// Disable GLFW_AUTO_ICONIFY to stop the window from automatically minimizing in fullscreen
 	glfw.WindowHint(glfw.AutoIconify, 0)
 	// Maybe enable multisampling
-	if multisample {
+	if config.EnableMSAA {
 		glfw.WindowHint(glfw.Samples, 4)
 	}
 	var window *glfw.Window
 	monitors := glfw.GetMonitors()
-	if globalConfig.FullScreenMonitor >= len(monitors) {
+	if config.FullScreenMonitor >= len(monitors) {
 		// Monitor saved in config not found, fallback to default
-		globalConfig.FullScreenMonitor = 0
+		config.FullScreenMonitor = 0
 	}
-	if globalConfig.StartInFullScreen {
-		vm := monitors[globalConfig.FullScreenMonitor].GetVideoMode()
-		window, err = glfw.CreateWindow(vm.Width, vm.Height, "vice", monitors[globalConfig.FullScreenMonitor], nil)
+	if config.StartInFullScreen {
+		vm := monitors[config.FullScreenMonitor].GetVideoMode()
+		window, err = glfw.CreateWindow(vm.Width, vm.Height, "vice", monitors[config.FullScreenMonitor], nil)
 	} else {
-		window, err = glfw.CreateWindow(windowSize[0], windowSize[1], "vice", nil, nil)
+		window, err = glfw.CreateWindow(config.InitialWindowSize[0], config.InitialWindowSize[1], "vice", nil, nil)
 	}
 	if err != nil {
 		glfw.Terminate()
 		return nil, fmt.Errorf("failed to create window: %w", err)
 	}
-	window.SetPos(windowPosition[0], windowPosition[1])
+	window.SetPos(config.InitialWindowPosition[0], config.InitialWindowPosition[1])
 	window.Show()
 	window.MakeContextCurrent()
 
 	platform := &GLFWPlatform{
+		config:      config,
 		imguiIO:     io,
 		window:      window,
-		multisample: multisample,
+		multisample: config.EnableMSAA,
 	}
 	platform.setKeyMapping()
 	platform.installCallbacks()
@@ -211,8 +232,8 @@ func (g *GLFWPlatform) GetAllMonitorNames() []string {
 
 func (g *GLFWPlatform) MonitorCallback(monitor *glfw.Monitor, event glfw.PeripheralEvent) {
 	if event == glfw.Disconnected {
-		globalConfig.FullScreenMonitor = 0
-		globalConfig.StartInFullScreen = false
+		g.config.FullScreenMonitor = 0
+		g.config.StartInFullScreen = false
 	}
 }
 

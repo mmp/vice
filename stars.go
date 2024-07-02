@@ -19,6 +19,7 @@ import (
 	"unicode"
 
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
@@ -1581,7 +1582,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	transforms := GetScopeTransformations(ctx.paneExtent, ctx.world.MagneticVariation, ctx.world.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range), 0)
 
-	dpiScale := platform.DPIScale()
+	dpiScale := ctx.platform.DPIScale()
 	paneExtent := ctx.paneExtent
 	if ps.DisplayDCB {
 		paneExtent = sp.DrawDCB(ctx, transforms, cb)
@@ -1589,7 +1590,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 		// Update scissor for what's left and to protect the DCB (even
 		// though this is apparently unrealistic, at least as far as radar
 		// tracks go...)
-		cb.SetScissorBounds(paneExtent, platform.FramebufferSize()[1]/platform.DisplaySize()[1])
+		cb.SetScissorBounds(paneExtent, ctx.platform.FramebufferSize()[1]/ctx.platform.DisplaySize()[1])
 
 		if ctx.mouse != nil {
 			// The mouse position is provided in Pane coordinates, so that needs to be updated unless
@@ -1639,7 +1640,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 		cb.Call(sp.systemMaps[idx].CommandBuffer)
 	}
 
-	ctx.world.DrawScenarioRoutes(transforms, sp.systemFont[ps.CharSize.Tools],
+	ctx.world.DrawScenarioRoutes(ctx.platform, transforms, sp.systemFont[ps.CharSize.Tools],
 		ps.Brightness.Lists.ScaleRGB(STARSListColor), cb)
 
 	sp.drawCRDARegions(ctx, transforms, cb)
@@ -5394,7 +5395,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 	}
 
 	ps := sp.CurrentPreferenceSet
-	cb.LineWidth(3, platform.DPIScale())
+	cb.LineWidth(3, ctx.platform.DPIScale())
 	cb.SetRGB(ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
 	transforms.LoadLatLongViewingMatrices(cb)
 	ld.GenerateCommands(cb)
@@ -5516,7 +5517,7 @@ func (sp *STARSPane) drawTracks(aircraft []*Aircraft, ctx *PaneContext, transfor
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	trid.GenerateCommands(cb)
-	cb.LineWidth(1, platform.DPIScale())
+	cb.LineWidth(1, ctx.platform.DPIScale())
 	ld.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -6763,7 +6764,7 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*Aircraft, ctx *PaneContext, tra
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1, platform.DPIScale())
+	cb.LineWidth(1, ctx.platform.DPIScale())
 	ld.GenerateCommands(cb)
 }
 
@@ -7225,20 +7226,20 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 	mouse := ctx.mouse
 	ps := &sp.CurrentPreferenceSet
 
-	if ctx.mouse.Clicked[MouseButtonPrimary] && !ctx.haveFocus {
+	if ctx.mouse.Clicked[platform.MouseButtonPrimary] && !ctx.haveFocus {
 		if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
 			sp.events.PostEvent(Event{Type: TrackClickedEvent, Callsign: ac.Callsign})
 		}
 		wmTakeKeyboardFocus(sp, false)
 		return
 	}
-	if (ctx.mouse.Clicked[MouseButtonSecondary] || ctx.mouse.Clicked[MouseButtonTertiary]) && !ctx.haveFocus {
+	if (ctx.mouse.Clicked[platform.MouseButtonSecondary] || ctx.mouse.Clicked[platform.MouseButtonTertiary]) && !ctx.haveFocus {
 		wmTakeKeyboardFocus(sp, false)
 	}
 
 	if activeSpinner == nil && !sp.LockDisplay {
 		// Handle dragging the scope center
-		if mouse.Dragging[MouseButtonSecondary] {
+		if mouse.Dragging[platform.MouseButtonSecondary] {
 			delta := mouse.DragDelta
 			if delta[0] != 0 || delta[1] != 0 {
 				deltaLL := transforms.LatLongFromWindowV(delta)
@@ -7270,7 +7271,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 		}
 	}
 
-	if ctx.mouse.Clicked[MouseButtonPrimary] {
+	if ctx.mouse.Clicked[platform.MouseButtonPrimary] {
 		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyShift) && ctx.keyboard.IsPressed(KeyControl) {
 			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
 			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
@@ -7304,7 +7305,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 			}
 			sp.previewAreaOutput = status.output
 		}
-	} else if ctx.mouse.Clicked[MouseButtonTertiary] {
+	} else if ctx.mouse.Clicked[platform.MouseButtonTertiary] {
 		if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
 			if state := sp.Aircraft[ac.Callsign]; state != nil {
 				state.IsSelected = !state.IsSelected
@@ -7471,9 +7472,9 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, buttonScale float32, transfo
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1, platform.DPIScale())
+	cb.LineWidth(1, ctx.platform.DPIScale())
 
-	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
+	if ctx.mouse != nil && ctx.mouse.Clicked[platform.MouseButtonPrimary] {
 		dcbDrawState.mouseDownPos = ctx.mouse.Pos[:]
 	}
 
@@ -7490,7 +7491,7 @@ func (sp *STARSPane) EndDrawDCB() {
 	dcbDrawState.cb.ResetState()
 
 	if mouse := dcbDrawState.mouse; mouse != nil {
-		if mouse.Released[MouseButtonPrimary] {
+		if mouse.Released[platform.MouseButtonPrimary] {
 			dcbDrawState.mouseDownPos = nil
 		}
 	}
@@ -7585,7 +7586,7 @@ func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32
 	dcbDrawState.cb.SetScissorBounds(math.Extent2D{
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
-	}, platform.FramebufferSize()[1]/platform.DisplaySize()[1])
+	}, ctx.platform.FramebufferSize()[1]/ctx.platform.DisplaySize()[1])
 
 	updateDCBCursor(flags, sz)
 
@@ -7594,7 +7595,7 @@ func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32
 	ld.GenerateCommands(dcbDrawState.cb)
 	td.GenerateCommands(dcbDrawState.cb)
 
-	if mouse != nil && mouseInside && mouse.Released[MouseButtonPrimary] && mouseDownInside {
+	if mouse != nil && mouseInside && mouse.Released[platform.MouseButtonPrimary] && mouseDownInside {
 		return ext, true /* clicked and released */
 	}
 	return ext, false

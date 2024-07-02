@@ -20,6 +20,7 @@ import (
 
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
 
@@ -121,7 +122,7 @@ func (lc *LaunchConfig) DrawActiveDepartureRunways() {
 	}
 }
 
-func (lc *LaunchConfig) DrawDepartureUI() (changed bool) {
+func (lc *LaunchConfig) DrawDepartureUI(p platform.Platform) (changed bool) {
 	if len(lc.DepartureRates) == 0 {
 		return
 	}
@@ -142,7 +143,7 @@ func (lc *LaunchConfig) DrawDepartureUI() (changed bool) {
 	changed = imgui.SliderFloatV("Sequencing challenge", &lc.DepartureChallenge, 0, 1, "%.02f", 0) || changed
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
-	tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 	if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
 		imgui.TableSetupColumn("Runway")
@@ -188,7 +189,7 @@ func (lc *LaunchConfig) DrawDepartureUI() (changed bool) {
 	return
 }
 
-func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
+func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 	if len(lc.ArrivalGroupRates) == 0 {
 		return
 	}
@@ -219,7 +220,7 @@ func (lc *LaunchConfig) DrawArrivalUI() (changed bool) {
 	uiEndDisable(!lc.ArrivalPushes)
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-	tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 	if imgui.BeginTableV("arrivalgroups", 3, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
 		imgui.TableSetupColumn("Arrival")
@@ -370,7 +371,7 @@ func (c *NewSimConfiguration) ShowRatesWindow() bool {
 	return c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote
 }
 
-func (c *NewSimConfiguration) DrawUI() bool {
+func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 	if c.updateRemoteSimsCall != nil && c.updateRemoteSimsCall.CheckFinished() {
 		c.updateRemoteSimsCall = nil
 	} else {
@@ -388,7 +389,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 		imgui.Separator()
 	}
 
-	tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 	if remoteServer != nil {
 		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			imgui.TableNextRow()
@@ -441,7 +442,7 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	if c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote {
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingStretchProp
-		tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 		if imgui.BeginTableV("SelectScenario", 3, flags, imgui.Vec2{tableScale * 600, tableScale * 300}, 0.) {
 			imgui.TableSetupColumn("ARTCC")
 			imgui.TableSetupColumn("ATCT/TRACON")
@@ -716,9 +717,9 @@ func (c *NewSimConfiguration) DrawUI() bool {
 	return false
 }
 
-func (c *NewSimConfiguration) DrawRatesUI() bool {
-	c.Scenario.LaunchConfig.DrawDepartureUI()
-	c.Scenario.LaunchConfig.DrawArrivalUI()
+func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
+	c.Scenario.LaunchConfig.DrawDepartureUI(p)
+	c.Scenario.LaunchConfig.DrawArrivalUI(p)
 	return false
 }
 

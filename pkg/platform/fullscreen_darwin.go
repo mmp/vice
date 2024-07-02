@@ -1,6 +1,6 @@
 // fullscreen_darwin.go
 
-package main
+package platform
 
 /*
 #cgo darwin CFLAGS: -x objective-c

@@ -13,12 +13,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
-	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/davecgh/go-spew/spew"
+	"github.com/mmp/imgui-go/v4"
 )
 
 const initialSimSeconds = 45
@@ -990,7 +992,7 @@ func (mp *MissingPrimaryModalClient) Draw() int {
 	return -1
 }
 
-func (w *World) DrawMissingPrimaryDialog() {
+func (w *World) DrawMissingPrimaryDialog(p platform.Platform) {
 	if _, ok := w.Controllers[w.PrimaryController]; ok {
 		if w.missingPrimaryDialog != nil {
 			uiCloseModalDialog(w.missingPrimaryDialog)
@@ -998,7 +1000,7 @@ func (w *World) DrawMissingPrimaryDialog() {
 		}
 	} else {
 		if w.missingPrimaryDialog == nil {
-			w.missingPrimaryDialog = NewModalDialogBox(&MissingPrimaryModalClient{world: w})
+			w.missingPrimaryDialog = NewModalDialogBox(&MissingPrimaryModalClient{world: w}, p)
 			uiShowModalDialog(w.missingPrimaryDialog, true)
 		}
 	}
@@ -1207,7 +1209,7 @@ func (w *World) DrawScenarioInfoWindow() {
 	imgui.End()
 }
 
-func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *renderer.Font, color renderer.RGB,
+func (w *World) DrawScenarioRoutes(p platform.Platform, transforms ScopeTransformations, font *renderer.Font, color renderer.RGB,
 	cb *renderer.CommandBuffer) {
 	if !w.showScenarioInfo {
 		return
@@ -1315,13 +1317,13 @@ func (w *World) DrawScenarioRoutes(transforms ScopeTransformations, font *render
 	// drawn.
 	cb.SetRGB(color)
 	transforms.LoadLatLongViewingMatrices(cb)
-	cb.LineWidth(2, platform.DPIScale())
+	cb.LineWidth(2, p.DPIScale())
 	ld.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
 	pd.GenerateCommands(cb)
 	td.GenerateCommands(cb)
-	cb.LineWidth(1, platform.DPIScale())
+	cb.LineWidth(1, p.DPIScale())
 	ldr.GenerateCommands(cb)
 }
 
@@ -1641,7 +1643,7 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 	}
 }
 
-func (w *World) DrawSettingsWindow() {
+func (w *World) DrawSettingsWindow(p platform.Platform) {
 	if !w.showSettings {
 		return
 	}
@@ -1700,18 +1702,18 @@ func (w *World) DrawSettingsWindow() {
 					title: "Alert",
 					message: "You must restart vice for changes to the anti-aliasing " +
 						"mode to take effect.",
-				}), true)
+				}, p), true)
 		}
 
 		imgui.Checkbox("Start in full-screen", &globalConfig.StartInFullScreen)
 
-		monitorNames := platform.GetAllMonitorNames()
+		monitorNames := p.GetAllMonitorNames()
 		if imgui.BeginComboV("Monitor", monitorNames[globalConfig.FullScreenMonitor], imgui.ComboFlagsHeightLarge) {
 			for index, monitor := range monitorNames {
 				if imgui.SelectableV(monitor, monitor == monitorNames[globalConfig.FullScreenMonitor], 0, imgui.Vec2{}) {
 					globalConfig.FullScreenMonitor = index
 
-					platform.EnableFullScreen(platform.IsFullScreen())
+					p.EnableFullScreen(p.IsFullScreen())
 				}
 			}
 

@@ -14,6 +14,7 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 )
@@ -45,7 +46,7 @@ type PaneContext struct {
 	paneExtent       math.Extent2D
 	parentPaneExtent math.Extent2D
 
-	platform  Platform
+	platform  platform.Platform
 	renderer  renderer.Renderer
 	world     *World
 	mouse     *MouseState
@@ -56,11 +57,11 @@ type PaneContext struct {
 
 type MouseState struct {
 	Pos           [2]float32
-	Down          [MouseButtonCount]bool
-	Clicked       [MouseButtonCount]bool
-	Released      [MouseButtonCount]bool
-	DoubleClicked [MouseButtonCount]bool
-	Dragging      [MouseButtonCount]bool
+	Down          [platform.MouseButtonCount]bool
+	Clicked       [platform.MouseButtonCount]bool
+	Released      [platform.MouseButtonCount]bool
+	DoubleClicked [platform.MouseButtonCount]bool
+	Dragging      [platform.MouseButtonCount]bool
 	DragDelta     [2]float32
 	Wheel         [2]float32
 }
@@ -68,13 +69,6 @@ type MouseState struct {
 func (ms *MouseState) SetCursor(id imgui.MouseCursorID) {
 	imgui.SetMouseCursor(id)
 }
-
-const (
-	MouseButtonPrimary   = 0
-	MouseButtonSecondary = 1
-	MouseButtonTertiary  = 2
-	MouseButtonCount     = 3
-)
 
 func (ctx *PaneContext) InitializeMouse(fullDisplayExtent math.Extent2D) {
 	ctx.mouse = &MouseState{}
@@ -92,7 +86,7 @@ func (ctx *PaneContext) InitializeMouse(fullDisplayExtent math.Extent2D) {
 	wx, wy := io.MouseWheel()
 	ctx.mouse.Wheel = [2]float32{wx, -wy}
 
-	for b := 0; b < MouseButtonCount; b++ {
+	for b := 0; b < platform.MouseButtonCount; b++ {
 		ctx.mouse.Down[b] = imgui.IsMouseDown(b)
 		ctx.mouse.Released[b] = imgui.IsMouseReleased(b)
 		ctx.mouse.Clicked[b] = imgui.IsMouseClicked(b)
@@ -147,7 +141,7 @@ type KeyboardState struct {
 	Pressed map[Key]interface{}
 }
 
-func NewKeyboardState(p Platform) *KeyboardState {
+func NewKeyboardState(p platform.Platform) *KeyboardState {
 	keyboard := &KeyboardState{Pressed: make(map[Key]interface{})}
 
 	keyboard.Input = p.InputCharacters()
@@ -695,7 +689,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	// Handle selection, deletion, and reordering
 	if ctx.mouse != nil {
 		// Ignore clicks if the mouse is over the scrollbar (and it's being drawn)
-		if ctx.mouse.Clicked[MouseButtonPrimary] && ctx.mouse.Pos[0] <= drawWidth {
+		if ctx.mouse.Clicked[platform.MouseButtonPrimary] && ctx.mouse.Pos[0] <= drawWidth {
 			// from the bottom
 			stripIndex := int(ctx.mouse.Pos[1] / stripHeight)
 			stripIndex += scrollOffset
@@ -712,7 +706,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 				}
 			}
 		}
-		if ctx.mouse.Dragging[MouseButtonPrimary] {
+		if ctx.mouse.Dragging[platform.MouseButtonPrimary] {
 			fsp.mouseDragging = true
 			fsp.lastMousePos = ctx.mouse.Pos
 
@@ -724,7 +718,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 				[2]float32{drawWidth, yl + 1}, [2]float32{0, yl + 1})
 		}
 	}
-	if fsp.mouseDragging && (ctx.mouse == nil || !ctx.mouse.Dragging[MouseButtonPrimary]) {
+	if fsp.mouseDragging && (ctx.mouse == nil || !ctx.mouse.Dragging[platform.MouseButtonPrimary]) {
 		fsp.mouseDragging = false
 
 		if fsp.selectedAircraft == "" {
@@ -791,7 +785,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	fsp.scrollbar.Draw(ctx, cb)
 
 	cb.SetRGB(UIControlColor)
-	cb.LineWidth(1, platform.DPIScale())
+	cb.LineWidth(1, ctx.platform.DPIScale())
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 
@@ -867,7 +861,7 @@ func (mp *MessagesPane) DrawUI() {
 func (mp *MessagesPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	mp.processEvents(ctx.world)
 
-	if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
+	if ctx.mouse != nil && ctx.mouse.Clicked[platform.MouseButtonPrimary] {
 		wmTakeKeyboardFocus(mp, false)
 	}
 	mp.processKeyboard(ctx)

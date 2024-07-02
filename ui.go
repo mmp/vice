@@ -13,15 +13,14 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"path"
 	"runtime"
 	"runtime/debug"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
@@ -244,7 +243,7 @@ func imguiInit() *imgui.Context {
 	return context
 }
 
-func uiInit(r renderer.Renderer, p Platform, es *EventStream) {
+func uiInit(r renderer.Renderer, p platform.Platform, es *EventStream) {
 	if runtime.GOOS == "windows" {
 		imgui.CurrentStyle().ScaleAllSizes(p.DPIScale())
 	}
@@ -272,7 +271,7 @@ func uiInit(r renderer.Renderer, p Platform, es *EventStream) {
 	go checkForNewRelease(ui.newReleaseDialogChan)
 
 	if globalConfig.WhatsNewIndex < len(whatsNew) {
-		uiShowModalDialog(NewModalDialogBox(&WhatsNewModalClient{}), false)
+		uiShowModalDialog(NewModalDialogBox(&WhatsNewModalClient{}, p), false)
 	}
 }
 
@@ -290,16 +289,17 @@ func uiCloseModalDialog(d *ModalDialogBox) {
 
 }
 
-func uiShowConnectDialog(allowCancel bool) {
-	uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{allowCancel: allowCancel}), false)
+func uiShowConnectDialog(allowCancel bool, p platform.Platform) {
+	client := &ConnectModalClient{allowCancel: allowCancel, platform: p}
+	uiShowModalDialog(NewModalDialogBox(client, p), false)
 }
 
-func uiShowDiscordOptInDialog() {
-	uiShowModalDialog(NewModalDialogBox(&DiscordOptInModalClient{}), true)
+func uiShowDiscordOptInDialog(p platform.Platform) {
+	uiShowModalDialog(NewModalDialogBox(&DiscordOptInModalClient{}, p), true)
 }
 
-func uiShowNewCommandSyntaxDialog() {
-	uiShowModalDialog(NewModalDialogBox(&NewCommandSyntaxModalClient{}), true)
+func uiShowNewCommandSyntaxDialog(p platform.Platform) {
+	uiShowModalDialog(NewModalDialogBox(&NewCommandSyntaxModalClient{}, p), true)
 }
 
 // If |b| is true, all following imgui elements will be disabled (and drawn
@@ -320,12 +320,12 @@ func uiEndDisable(b bool) {
 	}
 }
 
-func drawUI(p Platform, r renderer.Renderer, w *World, eventStream *EventStream, stats *Stats) {
+func drawUI(p platform.Platform, r renderer.Renderer, w *World, eventStream *EventStream, stats *Stats) {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
 			if ok {
-				uiShowModalDialog(NewModalDialogBox(dialog), false)
+				uiShowModalDialog(NewModalDialogBox(dialog, p), false)
 			} else {
 				// channel was closed
 				ui.newReleaseDialogChan = nil
@@ -358,7 +358,7 @@ func drawUI(p Platform, r renderer.Renderer, w *World, eventStream *EventStream,
 		}
 
 		if imgui.Button(FontAwesomeIconRedo) {
-			uiShowConnectDialog(true)
+			uiShowConnectDialog(true, p)
 		}
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Start new simulation")
@@ -422,11 +422,11 @@ func drawUI(p Platform, r renderer.Renderer, w *World, eventStream *EventStream,
 			browser.OpenURL("https://discord.gg/y993vgQxhY")
 		}
 
-		if imgui.Button(util.Select(platform.IsFullScreen(), FontAwesomeIconCompressAlt, FontAwesomeIconExpandAlt)) {
-			platform.EnableFullScreen(!platform.IsFullScreen())
+		if imgui.Button(util.Select(p.IsFullScreen(), FontAwesomeIconCompressAlt, FontAwesomeIconExpandAlt)) {
+			p.EnableFullScreen(!p.IsFullScreen())
 		}
 		if imgui.IsItemHovered() {
-			imgui.SetTooltip(util.Select(platform.IsFullScreen(), "Exit", "Enter") + " full-screen mode")
+			imgui.SetTooltip(util.Select(p.IsFullScreen(), "Exit", "Enter") + " full-screen mode")
 		}
 
 		imgui.PopStyleColor()
@@ -436,23 +436,23 @@ func drawUI(p Platform, r renderer.Renderer, w *World, eventStream *EventStream,
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
 	if w != nil {
-		w.DrawSettingsWindow()
+		w.DrawSettingsWindow(p)
 
 		w.DrawScenarioInfoWindow()
 
-		w.DrawMissingPrimaryDialog()
+		w.DrawMissingPrimaryDialog(p)
 
 		if w.LaunchConfig.Controller == w.Callsign {
 			if w.launchControlWindow == nil {
 				w.launchControlWindow = MakeLaunchControlWindow(w)
 			}
-			w.launchControlWindow.Draw(w, eventStream)
+			w.launchControlWindow.Draw(w, eventStream, p)
 		}
 	}
 
 	for _, event := range ui.eventsSubscription.Get() {
 		if event.Type == ServerBroadcastMessageEvent {
-			uiShowModalDialog(NewModalDialogBox(&BroadcastModalDialog{Message: event.Message}), false)
+			uiShowModalDialog(NewModalDialogBox(&BroadcastModalDialog{Message: event.Message}, p), false)
 		}
 	}
 
@@ -468,7 +468,7 @@ func drawUI(p Platform, r renderer.Renderer, w *World, eventStream *EventStream,
 	imgui.Render()
 	cb := renderer.GetCommandBuffer()
 	defer renderer.ReturnCommandBuffer(cb)
-	renderer.GenerateImguiCommandBuffer(cb, platform.DisplaySize(), platform.FramebufferSize(), lg)
+	renderer.GenerateImguiCommandBuffer(cb, p.DisplaySize(), p.FramebufferSize(), lg)
 	stats.renderUI = r.RenderCommandBuffer(cb)
 }
 
@@ -505,149 +505,10 @@ func setCursorForRightButtons(text []string) {
 
 ///////////////////////////////////////////////////////////////////////////
 
-type ComboBoxState struct {
-	inputValues  []*string
-	selected     map[string]interface{}
-	lastSelected *string
-}
-
-func NewComboBoxState(nentry int) *ComboBoxState {
-	s := &ComboBoxState{}
-	for i := 0; i < nentry; i++ {
-		s.inputValues = append(s.inputValues, new(string))
-	}
-	s.selected = make(map[string]interface{})
-	s.lastSelected = new(string)
-	return s
-}
-
-type ComboBoxDisplayConfig struct {
-	ColumnHeaders    []string
-	DrawHeaders      bool
-	EntryNames       []string
-	InputFlags       []imgui.InputTextFlags
-	SelectAllColumns bool
-	Size             imgui.Vec2
-	MaxDisplayed     int
-	FixedDisplayed   int
-}
-
-func DrawComboBox(state *ComboBoxState, config ComboBoxDisplayConfig,
-	firstColumn []string, drawColumn func(s string, col int),
-	inputValid func([]*string) bool, add func([]*string), deleteSelection func(map[string]interface{})) {
-	id := fmt.Sprintf("%p", state)
-	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg
-
-	sz := config.Size
-	if config.FixedDisplayed != 0 {
-		flags = flags | imgui.TableFlagsScrollY
-		sz.Y = float32(config.FixedDisplayed * (4 + ui.font.Size))
-	} else if config.MaxDisplayed == 0 || len(firstColumn) < config.MaxDisplayed {
-		sz.Y = 0
-	} else {
-		flags = flags | imgui.TableFlagsScrollY
-		sz.Y = float32((1 + config.MaxDisplayed) * (6 + ui.font.Size))
-	}
-
-	sz.X *= util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
-	if imgui.BeginTableV("##"+id, len(config.ColumnHeaders), flags, sz, 0.0) {
-		for _, name := range config.ColumnHeaders {
-			imgui.TableSetupColumn(name)
-		}
-		if config.DrawHeaders {
-			imgui.TableHeadersRow()
-		}
-
-		io := imgui.CurrentIO()
-		for _, entry := range firstColumn {
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			_, isSelected := state.selected[entry]
-			var selFlags imgui.SelectableFlags
-			if config.SelectAllColumns {
-				selFlags = imgui.SelectableFlagsSpanAllColumns
-			}
-			if imgui.SelectableV(entry, isSelected, selFlags, imgui.Vec2{}) {
-				if io.KeyCtrlPressed() {
-					// Toggle selection of this one
-					if isSelected {
-						delete(state.selected, entry)
-					} else {
-						state.selected[entry] = nil
-						*state.lastSelected = entry
-					}
-				} else if io.KeyShiftPressed() {
-					for _, e := range firstColumn {
-						if entry > *state.lastSelected {
-							if e > *state.lastSelected && e <= entry {
-								state.selected[e] = nil
-							}
-						} else {
-							if e >= entry && e <= *state.lastSelected {
-								state.selected[e] = nil
-							}
-						}
-					}
-					*state.lastSelected = entry
-				} else {
-					// Select only this one
-					for k := range state.selected {
-						delete(state.selected, k)
-					}
-					state.selected[entry] = nil
-					*state.lastSelected = entry
-				}
-			}
-			for i := 1; i < len(config.ColumnHeaders); i++ {
-				imgui.TableNextColumn()
-				drawColumn(entry, i)
-			}
-		}
-		imgui.EndTable()
-	}
-
-	valid := inputValid(state.inputValues)
-	for i, entry := range config.EntryNames {
-		flags := imgui.InputTextFlagsEnterReturnsTrue
-		if config.InputFlags != nil {
-			flags |= config.InputFlags[i]
-		}
-		if imgui.InputTextV(entry+"##"+id, state.inputValues[i], flags, nil) && valid {
-			add(state.inputValues)
-			for _, s := range state.inputValues {
-				*s = ""
-			}
-			imgui.SetKeyboardFocusHereV(-1)
-		}
-	}
-
-	uiStartDisable(!valid)
-	imgui.SameLine()
-	if imgui.Button("+##" + id) {
-		add(state.inputValues)
-		for _, s := range state.inputValues {
-			*s = ""
-		}
-	}
-	uiEndDisable(!valid)
-
-	enableDelete := len(state.selected) > 0
-	uiStartDisable(!enableDelete)
-	imgui.SameLine()
-	if imgui.Button(FontAwesomeIconTrash + "##" + id) {
-		deleteSelection(state.selected)
-		for k := range state.selected {
-			delete(state.selected, k)
-		}
-	}
-	uiEndDisable(!enableDelete)
-}
-
-///////////////////////////////////////////////////////////////////////////
-
 type ModalDialogBox struct {
 	closed, isOpen bool
 	client         ModalDialogClient
+	platform       platform.Platform
 }
 
 type ModalDialogButton struct {
@@ -663,8 +524,8 @@ type ModalDialogClient interface {
 	Draw() int /* returns index of equivalently-clicked button; out of range if none */
 }
 
-func NewModalDialogBox(c ModalDialogClient) *ModalDialogBox {
-	return &ModalDialogBox{client: c}
+func NewModalDialogBox(c ModalDialogClient, p platform.Platform) *ModalDialogBox {
+	return &ModalDialogBox{client: c, platform: p}
 }
 
 func (m *ModalDialogBox) Draw() {
@@ -676,7 +537,7 @@ func (m *ModalDialogBox) Draw() {
 	imgui.OpenPopup(title)
 
 	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(platform.WindowSize()[1]) * 19 / 20})
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(m.platform.WindowSize()[1]) * 19 / 20})
 	if imgui.BeginPopupModalV(title, nil, flags) {
 		if !m.isOpen {
 			imgui.SetKeyboardFocusHere()
@@ -719,6 +580,7 @@ func (m *ModalDialogBox) Draw() {
 type ConnectModalClient struct {
 	config      NewSimConfiguration
 	allowCancel bool
+	platform    platform.Platform
 }
 
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
@@ -738,9 +600,12 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 		disabled: c.config.OkDisabled(),
 		action: func() bool {
 			if c.config.ShowRatesWindow() {
-				uiShowModalDialog(NewModalDialogBox(&RatesModalClient{
+				client := &RatesModalClient{
+					platform:    c.platform,
 					config:      c.config,
-					allowCancel: c.allowCancel}), false)
+					allowCancel: c.allowCancel,
+				}
+				uiShowModalDialog(NewModalDialogBox(client, c.platform), false)
 				return true
 			} else {
 				c.config.displayError = c.config.Start()
@@ -753,7 +618,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 }
 
 func (c *ConnectModalClient) Draw() int {
-	if enter := c.config.DrawUI(); enter {
+	if enter := c.config.DrawUI(c.platform); enter {
 		return 1
 	} else {
 		return -1
@@ -763,6 +628,7 @@ func (c *ConnectModalClient) Draw() int {
 type RatesModalClient struct {
 	config      NewSimConfiguration
 	allowCancel bool
+	platform    platform.Platform
 }
 
 func (c *RatesModalClient) Title() string { return "Arrival / Departure Rates" }
@@ -777,7 +643,7 @@ func (c *RatesModalClient) Buttons() []ModalDialogButton {
 		action: func() bool {
 			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{
 				config:      c.config,
-				allowCancel: c.allowCancel}), false)
+				allowCancel: c.allowCancel}, c.platform), false)
 			return true
 		},
 	}
@@ -800,7 +666,7 @@ func (c *RatesModalClient) Buttons() []ModalDialogButton {
 }
 
 func (c *RatesModalClient) Draw() int {
-	if enter := c.config.DrawRatesUI(); enter {
+	if enter := c.config.DrawRatesUI(c.platform); enter {
 		return 1
 	} else {
 		return -1
@@ -1155,204 +1021,6 @@ func showAboutDialog() {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// FileSelectDialogBox
-
-type FileSelectDialogBox struct {
-	show, isOpen bool
-	filename     string
-	directory    string
-
-	dirEntries            []DirEntry
-	dirEntriesLastUpdated time.Time
-
-	selectDirectory bool
-	title           string
-	filter          []string
-	callback        func(string)
-}
-
-type DirEntry struct {
-	name  string
-	isDir bool
-}
-
-func NewFileSelectDialogBox(title string, filter []string, filename string,
-	callback func(string)) *FileSelectDialogBox {
-	return &FileSelectDialogBox{
-		title:     title,
-		directory: defaultDirectory(filename),
-		filter:    filter,
-		callback:  callback}
-}
-
-func NewDirectorySelectDialogBox(title string, current string,
-	callback func(string)) *FileSelectDialogBox {
-	fsd := &FileSelectDialogBox{
-		title:           title,
-		selectDirectory: true,
-		callback:        callback}
-	if current != "" {
-		fsd.directory = current
-	} else {
-		fsd.directory = defaultDirectory("")
-	}
-	return fsd
-}
-
-func defaultDirectory(filename string) string {
-	var dir string
-	if filename != "" {
-		dir = path.Dir(filename)
-	} else {
-		var err error
-		if dir, err = os.UserHomeDir(); err != nil {
-			lg.Errorf("Unable to get user home directory: %v", err)
-			dir = "."
-		}
-	}
-	return path.Clean(dir)
-}
-
-func (fs *FileSelectDialogBox) Activate() {
-	fs.show = true
-	fs.isOpen = false
-}
-
-func (fs *FileSelectDialogBox) Draw() {
-	if !fs.show {
-		return
-	}
-
-	if !fs.isOpen {
-		imgui.OpenPopup(fs.title)
-	}
-
-	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
-	if imgui.BeginPopupModalV(fs.title, nil, flags) {
-		if !fs.isOpen {
-			imgui.SetKeyboardFocusHere()
-			fs.isOpen = true
-		}
-
-		if imgui.Button(FontAwesomeIconHome) {
-			var err error
-			fs.directory, err = os.UserHomeDir()
-			if err != nil {
-				lg.Errorf("Unable to get user home dir: %v", err)
-				fs.directory = "."
-			}
-		}
-		imgui.SameLine()
-		if imgui.Button(FontAwesomeIconLevelUpAlt) {
-			fs.directory, _ = path.Split(fs.directory)
-			fs.directory = path.Clean(fs.directory) // get rid of trailing slash
-			fs.dirEntriesLastUpdated = time.Time{}
-			fs.filename = ""
-		}
-
-		imgui.SameLine()
-		imgui.Text(fs.directory)
-
-		// Only rescan the directory contents once a second.
-		if time.Since(fs.dirEntriesLastUpdated) > 1*time.Second {
-			if dirEntries, err := os.ReadDir(fs.directory); err != nil {
-				lg.Errorf("%s: unable to read directory: %v", fs.directory, err)
-			} else {
-				fs.dirEntries = nil
-				for _, entry := range dirEntries {
-					if entry.Type()&os.ModeSymlink != 0 {
-						info, err := os.Stat(path.Join(fs.directory, entry.Name()))
-						if err == nil {
-							e := DirEntry{name: entry.Name(), isDir: info.IsDir()}
-							fs.dirEntries = append(fs.dirEntries, e)
-						} else {
-							e := DirEntry{name: entry.Name(), isDir: false}
-							fs.dirEntries = append(fs.dirEntries, e)
-						}
-					} else {
-						e := DirEntry{name: entry.Name(), isDir: entry.IsDir()}
-						fs.dirEntries = append(fs.dirEntries, e)
-					}
-				}
-				sort.Slice(fs.dirEntries, func(i, j int) bool {
-					return fs.dirEntries[i].name < fs.dirEntries[j].name
-				})
-			}
-			fs.dirEntriesLastUpdated = time.Now()
-		}
-
-		flags := imgui.TableFlagsScrollY | imgui.TableFlagsRowBg
-		fileSelected := false
-		// unique per-directory id maintains the scroll position in each
-		// directory (and starts newly visited ones at the top!)
-		tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
-		if imgui.BeginTableV("Files##"+fs.directory, 1, flags,
-			imgui.Vec2{tableScale * 500, float32(platform.WindowSize()[1] * 3 / 4)}, 0) {
-			imgui.TableSetupColumn("Filename")
-			for _, entry := range fs.dirEntries {
-				icon := ""
-				if entry.isDir {
-					icon = FontAwesomeIconFolder
-				} else {
-					icon = FontAwesomeIconFile
-				}
-
-				canSelect := entry.isDir
-				if !entry.isDir {
-					if fs.filter == nil && !fs.selectDirectory {
-						canSelect = true
-					}
-					for _, f := range fs.filter {
-						if strings.HasSuffix(strings.ToUpper(entry.name), strings.ToUpper(f)) {
-							canSelect = true
-							break
-						}
-					}
-				}
-
-				uiStartDisable(!canSelect)
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				selFlags := imgui.SelectableFlagsSpanAllColumns
-				if imgui.SelectableV(icon+" "+entry.name, entry.name == fs.filename, selFlags, imgui.Vec2{}) {
-					fs.filename = entry.name
-				}
-				if imgui.IsItemHovered() && imgui.IsMouseDoubleClicked(0) {
-					if entry.isDir {
-						fs.directory = path.Join(fs.directory, entry.name)
-						fs.filename = ""
-						fs.dirEntriesLastUpdated = time.Time{}
-					} else {
-						fileSelected = true
-					}
-				}
-				uiEndDisable(!canSelect)
-			}
-			imgui.EndTable()
-		}
-
-		if imgui.Button("Cancel") {
-			imgui.CloseCurrentPopup()
-			fs.show = false
-			fs.isOpen = false
-			fs.filename = ""
-		}
-
-		disableOk := !fileSelected && !fs.selectDirectory
-		uiStartDisable(disableOk)
-		imgui.SameLine()
-		if imgui.Button("Ok") || fileSelected {
-			imgui.CloseCurrentPopup()
-			fs.show = false
-			fs.isOpen = false
-			fs.callback(path.Join(fs.directory, fs.filename))
-			fs.filename = ""
-		}
-		uiEndDisable(disableOk)
-
-		imgui.EndPopup()
-	}
-}
 
 type MessageModalClient struct {
 	title   string
@@ -1405,17 +1073,17 @@ func (e *ErrorModalClient) Draw() int {
 	return -1
 }
 
-func ShowErrorDialog(s string, args ...interface{}) {
-	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
+func ShowErrorDialog(p platform.Platform, s string, args ...interface{}) {
+	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
 	uiShowModalDialog(d, true)
 
 	lg.Errorf(s, args...)
 }
 
-func ShowFatalErrorDialog(r renderer.Renderer, p Platform, s string, args ...interface{}) {
+func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, s string, args ...interface{}) {
 	lg.Errorf(s, args...)
 
-	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)})
+	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
 
 	for !d.closed {
 		p.ProcessEvents()
@@ -1427,8 +1095,7 @@ func ShowFatalErrorDialog(r renderer.Renderer, p Platform, s string, args ...int
 
 		imgui.Render()
 		var cb renderer.CommandBuffer
-		renderer.GenerateImguiCommandBuffer(&cb, platform.DisplaySize(),
-			platform.FramebufferSize(), lg)
+		renderer.GenerateImguiCommandBuffer(&cb, p.DisplaySize(), p.FramebufferSize(), lg)
 		r.RenderCommandBuffer(&cb)
 
 		p.PostRender()
@@ -1729,9 +1396,9 @@ func (lc *LaunchControlWindow) spawnArrival(group, airport string) *Aircraft {
 	panic("unable to spawn an arrival")
 }
 
-func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
+func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream, p platform.Platform) {
 	showLaunchControls := true
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(platform.WindowSize()[1]) * 19 / 20})
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(p.WindowSize()[1]) * 19 / 20})
 	imgui.BeginV("Launch Control", &showLaunchControls, imgui.WindowFlagsAlwaysAutoResize)
 
 	imgui.Text("Mode:")
@@ -1783,7 +1450,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 					}
 				}
 			},
-		}), true)
+		}, p), true)
 	}
 	if imgui.IsItemHovered() {
 		imgui.SetTooltip("Delete all aircraft and restart")
@@ -1818,7 +1485,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 
 		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingStretchProp
-		tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 		if imgui.BeginTableV("dep", 9, flags, imgui.Vec2{tableScale * 600, 0}, 0.0) {
 			imgui.TableSetupColumn("Airport")
 			imgui.TableSetupColumn("Launches")
@@ -1936,13 +1603,13 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream) {
 		}
 	} else {
 		// Slightly messy, but DrawActiveDepartureRunways expects a table context...
-		tableScale := util.Select(runtime.GOOS == "windows", platform.DPIScale(), float32(1))
+		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 		if imgui.BeginTableV("runways", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			lc.w.LaunchConfig.DrawActiveDepartureRunways()
 			imgui.EndTable()
 		}
-		changed := lc.w.LaunchConfig.DrawDepartureUI()
-		changed = lc.w.LaunchConfig.DrawArrivalUI() || changed
+		changed := lc.w.LaunchConfig.DrawDepartureUI(p)
+		changed = lc.w.LaunchConfig.DrawArrivalUI(p) || changed
 
 		if changed {
 			lc.w.SetLaunchConfig(lc.w.LaunchConfig)

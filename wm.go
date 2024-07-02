@@ -18,6 +18,7 @@ import (
 
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 )
 
@@ -89,7 +90,7 @@ func (s *SplitLine) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 			ctx.mouse.SetCursor(imgui.MouseCursorResizeNS)
 		}
 
-		if ctx.mouse.Dragging[MouseButtonSecondary] {
+		if ctx.mouse.Dragging[platform.MouseButtonSecondary] {
 			delta := ctx.mouse.DragDelta
 
 			if s.Axis == SplitAxisX {
@@ -108,8 +109,8 @@ func (s *SplitLine) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	cb.ClearRGB(UIControlColor)
 }
 
-func splitLineWidth() int {
-	return int(2*platform.DPIScale() + 0.5)
+func splitLineWidth(p platform.Platform) int {
+	return int(2*p.DPIScale() + 0.5)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -237,21 +238,21 @@ func (d *DisplayNode) VisitPanes(visit func(Pane)) {
 // VisitPanesWithBounds visits all of the panes in a DisplayNode hierarchy,
 // giving each one both its own bounding box in window coordinates as well
 // the bounding box of its parent node in the DisplayNodeTree.
-func (d *DisplayNode) VisitPanesWithBounds(displayExtent math.Extent2D, parentDisplayExtent math.Extent2D,
+func (d *DisplayNode) VisitPanesWithBounds(displayExtent math.Extent2D, parentDisplayExtent math.Extent2D, p platform.Platform,
 	visit func(math.Extent2D, math.Extent2D, Pane)) {
 	switch d.SplitLine.Axis {
 	case SplitAxisNone:
 		visit(displayExtent, parentDisplayExtent, d.Pane)
 	case SplitAxisX:
-		d0, ds, d1 := splitX(displayExtent, d.SplitLine.Pos, splitLineWidth())
-		d.Children[0].VisitPanesWithBounds(d0, displayExtent, visit)
+		d0, ds, d1 := splitX(displayExtent, d.SplitLine.Pos, splitLineWidth(p))
+		d.Children[0].VisitPanesWithBounds(d0, displayExtent, p, visit)
 		visit(ds, displayExtent, &d.SplitLine)
-		d.Children[1].VisitPanesWithBounds(d1, displayExtent, visit)
+		d.Children[1].VisitPanesWithBounds(d1, displayExtent, p, visit)
 	case SplitAxisY:
-		d0, ds, d1 := splitY(displayExtent, d.SplitLine.Pos, splitLineWidth())
-		d.Children[0].VisitPanesWithBounds(d0, displayExtent, visit)
+		d0, ds, d1 := splitY(displayExtent, d.SplitLine.Pos, splitLineWidth(p))
+		d.Children[0].VisitPanesWithBounds(d0, displayExtent, p, visit)
 		visit(ds, displayExtent, &d.SplitLine)
-		d.Children[1].VisitPanesWithBounds(d1, displayExtent, visit)
+		d.Children[1].VisitPanesWithBounds(d1, displayExtent, p, visit)
 	}
 }
 
@@ -308,7 +309,8 @@ func splitY(e math.Extent2D, y float32, lineWidth int) (math.Extent2D, math.Exte
 }
 
 // FindPaneForMouse returns the Pane that the provided mouse position p is inside.
-func (d *DisplayNode) FindPaneForMouse(displayExtent math.Extent2D, p [2]float32) Pane {
+func (d *DisplayNode) FindPaneForMouse(displayExtent math.Extent2D, p [2]float32,
+	plat platform.Platform) Pane {
 	if !displayExtent.Inside(p) {
 		return nil
 	}
@@ -320,7 +322,7 @@ func (d *DisplayNode) FindPaneForMouse(displayExtent math.Extent2D, p [2]float32
 	// Compute the extents of the two nodes and the split line.
 	var d0, ds, d1 math.Extent2D
 	if d.SplitLine.Axis == SplitAxisX {
-		d0, ds, d1 = splitX(displayExtent, d.SplitLine.Pos, splitLineWidth())
+		d0, ds, d1 = splitX(displayExtent, d.SplitLine.Pos, splitLineWidth(plat))
 
 		// Round the X extents to integer coordinates, to benefit the split
 		// line--since it's relatively small, it's helpful to make it a
@@ -331,7 +333,7 @@ func (d *DisplayNode) FindPaneForMouse(displayExtent math.Extent2D, p [2]float32
 		d1.P0[0] = math.Ceil(d1.P0[0])
 
 	} else {
-		d0, ds, d1 = splitY(displayExtent, d.SplitLine.Pos, splitLineWidth())
+		d0, ds, d1 = splitY(displayExtent, d.SplitLine.Pos, splitLineWidth(plat))
 
 		// For a y split, similarly round y bounds up/down to integer
 		// coordinates to give the split line a better chance.
@@ -343,11 +345,11 @@ func (d *DisplayNode) FindPaneForMouse(displayExtent math.Extent2D, p [2]float32
 
 	// Now figure out which it is inside.
 	if d0.Inside(p) {
-		return d.Children[0].FindPaneForMouse(d0, p)
+		return d.Children[0].FindPaneForMouse(d0, p, plat)
 	} else if ds.Inside(p) {
 		return &d.SplitLine
 	} else if d1.Inside(p) {
-		return d.Children[1].FindPaneForMouse(d1, p)
+		return d.Children[1].FindPaneForMouse(d1, p, plat)
 	} else {
 		lg.Errorf("Mouse not overlapping anything?")
 		return nil
@@ -380,7 +382,7 @@ func wmInit() {
 // wmAddPaneMenuSettings is called to populate the top-level "Subwindows"
 // menu.
 // wmDrawUI draws any open Pane settings windows.
-func wmDrawUI(p Platform) {
+func wmDrawUI(p platform.Platform) {
 	globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
 		if show, ok := wm.showPaneSettings[pane]; ok && *show {
 			if uid, ok := pane.(PaneUIDrawer); ok {
@@ -437,7 +439,7 @@ func wmPaneIsPresent(pane Pane, root *DisplayNode) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func wmDrawPanes(p Platform, r renderer.Renderer, w *World, stats *Stats) {
+func wmDrawPanes(p platform.Platform, r renderer.Renderer, w *World, stats *Stats) {
 	var filter func(d *DisplayNode) *DisplayNode
 	filter = func(d *DisplayNode) *DisplayNode {
 		if fsp, ok := d.Children[0].Pane.(*FlightStripPane); ok && fsp.HideFlightStrips {
@@ -477,7 +479,7 @@ func wmDrawPanes(p Platform, r renderer.Renderer, w *World, stats *Stats) {
 	mousePos := [2]float32{imgui.MousePos().X, displaySize[1] - 1 - imgui.MousePos().Y}
 
 	// Figure out which Pane the mouse is in.
-	mousePane := root.FindPaneForMouse(paneDisplayExtent, mousePos)
+	mousePane := root.FindPaneForMouse(paneDisplayExtent, mousePos, p)
 
 	io := imgui.CurrentIO()
 
@@ -485,12 +487,12 @@ func wmDrawPanes(p Platform, r renderer.Renderer, w *World, stats *Stats) {
 	// mouseConsumerOverride so that we can continue to dispatch mouse
 	// events to that Pane until the mouse button is released, even if the
 	// mouse is no longer above it.
-	isDragging := imgui.IsMouseDragging(MouseButtonPrimary, 0.) ||
-		imgui.IsMouseDragging(MouseButtonSecondary, 0.) ||
-		imgui.IsMouseDragging(MouseButtonTertiary, 0.)
-	isClicked := imgui.IsMouseClicked(MouseButtonPrimary) ||
-		imgui.IsMouseClicked(MouseButtonSecondary) ||
-		imgui.IsMouseClicked(MouseButtonTertiary)
+	isDragging := imgui.IsMouseDragging(platform.MouseButtonPrimary, 0.) ||
+		imgui.IsMouseDragging(platform.MouseButtonSecondary, 0.) ||
+		imgui.IsMouseDragging(platform.MouseButtonTertiary, 0.)
+	isClicked := imgui.IsMouseClicked(platform.MouseButtonPrimary) ||
+		imgui.IsMouseClicked(platform.MouseButtonSecondary) ||
+		imgui.IsMouseClicked(platform.MouseButtonTertiary)
 	if !io.WantCaptureMouse() && (isDragging || isClicked) && wm.mouseConsumerOverride == nil {
 		wm.mouseConsumerOverride = mousePane
 	} else if io.WantCaptureMouse() {
@@ -515,7 +517,7 @@ func wmDrawPanes(p Platform, r renderer.Renderer, w *World, stats *Stats) {
 	if !imgui.CurrentIO().WantCaptureKeyboard() {
 		keyboard = NewKeyboardState(p)
 	}
-	root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent,
+	root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent, p,
 		func(paneExtent math.Extent2D, parentExtent math.Extent2D, pane Pane) {
 			haveFocus := pane == wm.keyboardFocusPane && !imgui.CurrentIO().WantCaptureKeyboard()
 			ctx := PaneContext{
@@ -547,7 +549,7 @@ func wmDrawPanes(p Platform, r renderer.Renderer, w *World, stats *Stats) {
 			// Pane coordinates, independent of where it is actually
 			// placed in the overall window, but this also ensures that
 			// the Pane can't inadvertently draw over other Panes.
-			commandBuffer.SetDrawBounds(paneExtent, platform.FramebufferSize()[1]/platform.DisplaySize()[1])
+			commandBuffer.SetDrawBounds(paneExtent, p.FramebufferSize()[1]/p.DisplaySize()[1])
 
 			// Let the Pane do its thing
 			pane.Draw(&ctx, commandBuffer)

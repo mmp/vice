@@ -691,6 +691,6 @@ func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *rend
 	ld.AddCircle(p, radius, 360, color)
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(3, platform.DPIScale())
+	cb.LineWidth(3, ctx.platform.DPIScale())
 	ld.GenerateCommands(cb)
 }

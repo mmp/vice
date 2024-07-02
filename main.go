@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
@@ -42,11 +43,10 @@ var (
 	// defined here.  While in principle it would be nice to have fewer (or
 	// no!) globals, it's cleaner to have these easily accessible where in
 	// the system without having to pass them through deep callchains.
-	// Note that in some cases they are passed down from main (e.g.,
-	// platform); this is plumbing in preparation for reducing the
-	// number of these in the future.
+	// Note that in some cases they are passed down from main; this is
+	// plumbing in preparation for reducing the number of these in the
+	// future.
 	globalConfig *GlobalConfig
-	platform     Platform
 	database     *StaticDatabase
 	lg           *log.Logger
 	resourcesFS  fs.StatFS
@@ -238,6 +238,7 @@ func main() {
 
 		var stats Stats
 		var render renderer.Renderer
+		var plat platform.Platform
 
 		// Catch any panics so that we can put up a dialog box and hopefully
 		// get a bug report.
@@ -246,7 +247,7 @@ func main() {
 			defer func() {
 				if err := recover(); err != nil {
 					lg.Error("Caught panic!", slog.String("stack", string(debug.Stack())))
-					ShowFatalErrorDialog(render, platform,
+					ShowFatalErrorDialog(render, plat,
 						"Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
 							"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
 							"this bug can be fixed.\n\nError: %v", err)
@@ -254,7 +255,7 @@ func main() {
 
 				// Clean up in backwards order from how things were created.
 				render.Dispose()
-				platform.Dispose()
+				plat.Dispose()
 				context.Destroy()
 			}()
 		}
@@ -265,21 +266,20 @@ func main() {
 
 		context = imguiInit()
 
-		LoadOrMakeDefaultConfig()
+		LoadOrMakeDefaultConfig(plat)
 
-		platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
-			globalConfig.InitialWindowPosition, globalConfig.EnableMSAA)
+		plat, err = platform.NewGLFW(imgui.CurrentIO(), &globalConfig.Config, lg)
 		if err != nil {
 			panic(fmt.Sprintf("Unable to create application window: %v", err))
 		}
-		imgui.CurrentIO().SetClipboard(platform.GetClipboard())
+		imgui.CurrentIO().SetClipboard(plat.GetClipboard())
 
 		render, err = renderer.NewOpenGL2Renderer(lg)
 		if err != nil {
 			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 		}
 
-		fontsInit(render, platform)
+		fontsInit(render, plat)
 
 		newWorldChan = make(chan *World, 2)
 		var world *World
@@ -306,19 +306,19 @@ func main() {
 
 		wmInit()
 
-		uiInit(render, platform, eventStream)
+		uiInit(render, plat, eventStream)
 
 		globalConfig.Activate(world, render, eventStream)
 
 		if world == nil {
-			uiShowConnectDialog(false)
+			uiShowConnectDialog(false, plat)
 		}
 
 		if !globalConfig.AskedDiscordOptIn {
-			uiShowDiscordOptInDialog()
+			uiShowDiscordOptInDialog(plat)
 		}
 		if !globalConfig.NotifiedNewCommandSyntax {
-			uiShowNewCommandSyntaxDialog()
+			uiShowNewCommandSyntaxDialog(plat)
 		}
 
 		simStartTime := time.Now()
@@ -343,7 +343,7 @@ func main() {
 				simStartTime = time.Now()
 
 				if world == nil {
-					uiShowConnectDialog(false)
+					uiShowConnectDialog(false, plat)
 				} else if world != nil {
 					world.ToggleShowScenarioInfoWindow()
 					globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
@@ -362,7 +362,7 @@ func main() {
 								"version for multi-controller support. (If you're using a beta build, then\n" +
 								"thanks for your help testing vice; when the beta is released, the server\n" +
 								"will be updated as well.)",
-						}), true)
+						}, plat), true)
 
 						stopConnectingRemoteServer = true
 					}
@@ -375,10 +375,10 @@ func main() {
 			}
 
 			if world == nil {
-				platform.SetWindowTitle("vice: [disconnected]")
+				plat.SetWindowTitle("vice: [disconnected]")
 				SetDiscordStatus(DiscordStatus{Start: simStartTime}, lg)
 			} else {
-				platform.SetWindowTitle("vice: " + world.GetWindowTitle())
+				plat.SetWindowTitle("vice: " + world.GetWindowTitle())
 				// Update discord RPC
 				SetDiscordStatus(DiscordStatus{
 					TotalDepartures: world.TotalDepartures,
@@ -394,7 +394,7 @@ func main() {
 			}
 
 			// Inform imgui about input events from the user.
-			platform.ProcessEvents()
+			plat.ProcessEvents()
 
 			stats.redraws++
 
@@ -418,22 +418,22 @@ func main() {
 						if util.IsRPCServerError(err) {
 							uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
 								message: "Lost connection to the vice server.",
-							}), true)
+							}, plat), true)
 
 							remoteServer = nil
 							world = nil
 
-							uiShowConnectDialog(false)
+							uiShowConnectDialog(false, plat)
 						}
 					})
 			}
 
-			platform.NewFrame()
+			plat.NewFrame()
 			imgui.NewFrame()
 
 			// Generate and render vice draw lists
 			if world != nil {
-				wmDrawPanes(platform, render, world, &stats)
+				wmDrawPanes(plat, render, world, &stats)
 			} else {
 				commandBuffer := renderer.GetCommandBuffer()
 				commandBuffer.ClearRGB(renderer.RGB{})
@@ -444,11 +444,11 @@ func main() {
 			timeMarker(&stats.drawPanes)
 
 			// Draw the user interface
-			drawUI(platform, render, world, eventStream, &stats)
+			drawUI(plat, render, world, eventStream, &stats)
 			timeMarker(&stats.drawImgui)
 
 			// Wait for vsync
-			platform.PostRender()
+			plat.PostRender()
 
 			// Periodically log current memory use, etc.
 			if frameIndex%18000 == 0 {
@@ -456,10 +456,10 @@ func main() {
 			}
 			frameIndex++
 
-			if platform.ShouldStop() && len(ui.activeModalDialogs) == 0 {
+			if plat.ShouldStop() && len(ui.activeModalDialogs) == 0 {
 				// Do this while we're still running the event loop.
 				saveSim := world != nil && world.simProxy.Client == localServer.RPCClient
-				globalConfig.SaveIfChanged(render, platform, world, saveSim)
+				globalConfig.SaveIfChanged(render, plat, world, saveSim)
 
 				if world != nil {
 					world.Disconnect()
