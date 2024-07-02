@@ -7,8 +7,8 @@ require (
 	github.com/brunoga/deep v1.2.3
 	github.com/checkandmate1/AirportWeatherData v1.11.0
 	github.com/davecgh/go-spew v1.1.1
-	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6
-	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20221017161538-93cebf72946b
+	github.com/go-gl/gl v0.0.0-20231021071112-07e5d0ea2e71
+	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20240506104042-037f3cc74f2a
 	github.com/gocolly/colly/v2 v2.1.0
 	github.com/hugolgst/rich-go v0.0.0-20230917173849-4a4fb1d3c362
 	github.com/iancoleman/orderedmap v0.3.0
@@ -39,8 +39,10 @@ require (
 	github.com/gocolly/colly v1.2.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/inkyblackness/imgui-go/v4 v4.5.0 // indirect
+	github.com/inkyblackness/imgui-go/v4 v4.7.0 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
+	github.com/mmp/vice/pkg/platform v0.0.0-00010101000000-000000000000 // indirect
+	github.com/mmp/vice/pkg/renderer v0.0.0-00010101000000-000000000000 // indirect
 	github.com/mmp/vice/pkg/util v0.0.0-00010101000000-000000000000 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
@@ -63,3 +65,7 @@ replace github.com/mmp/vice/pkg/log => /Users/mmp/vice/pkg/log
 replace github.com/mmp/vice/pkg/util => /Users/mmp/vice/pkg/util
 
 replace github.com/mmp/vice/pkg/rand => /Users/mmp/vice/pkg/rand
+
+replace github.com/mmp/vice/pkg/renderer => /Users/mmp/vice/pkg/renderer
+
+replace github.com/mmp/vice/pkg/platform => /Users/mmp/vice/pkg/platform

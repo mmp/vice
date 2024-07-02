@@ -1781,12 +1781,12 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		return
 	}
 
-	if ctx.keyboard.IsPressed(KeyTab) {
+	if ctx.keyboard.IsPressed(platform.KeyTab) {
 		// focus back to the MessagesPane
 		globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
 			if mp, ok := pane.(*MessagesPane); ok {
 				wmTakeKeyboardFocus(mp, false)
-				delete(ctx.keyboard.Pressed, KeyTab) // prevent cycling back and forth
+				delete(ctx.keyboard.Pressed, platform.KeyTab) // prevent cycling back and forth
 			}
 		})
 	}
@@ -1800,11 +1800,11 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 	ps := &sp.CurrentPreferenceSet
 
-	if ctx.keyboard.IsPressed(KeyControl) && len(input) == 1 && unicode.IsDigit(rune(input[0])) {
+	if ctx.keyboard.IsPressed(platform.KeyControl) && len(input) == 1 && unicode.IsDigit(rune(input[0])) {
 		idx := byte(input[0]) - '0'
 		// This test should be redundant given the IsDigit check, but just to be safe...
 		if int(idx) < len(ps.Bookmarks) {
-			if ctx.keyboard.IsPressed(KeyAlt) {
+			if ctx.keyboard.IsPressed(platform.KeyAlt) {
 				// Record bookmark
 				ps.Bookmarks[idx].Center = ps.CurrentCenter
 				ps.Bookmarks[idx].Range = ps.Range
@@ -1821,7 +1821,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 	for key := range ctx.keyboard.Pressed {
 		switch key {
-		case KeyBackspace:
+		case platform.KeyBackspace:
 			if len(sp.previewAreaInput) > 0 {
 				// We need to be careful to deal with UTF8 for the triangle...
 				r := []rune(sp.previewAreaInput)
@@ -1829,12 +1829,10 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			} else {
 				sp.multiFuncPrefix = ""
 			}
-
-		case KeyEnd:
+		case platform.KeyEnd:
 			sp.resetInputState()
 			sp.commandMode = CommandModeMin
-
-		case KeyEnter:
+		case platform.KeyEnter:
 			if status := sp.executeSTARSCommand(sp.previewAreaInput, ctx); status.err != nil {
 				sp.displayError(status.err)
 			} else {
@@ -1843,24 +1841,21 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 				}
 				sp.previewAreaOutput = status.output
 			}
-
-		case KeyEscape:
+		case platform.KeyEscape:
 			sp.resetInputState()
 			sp.activeDCBMenu = DCBMenuMain
 			// Also disable any mouse capture from spinners, just in case
 			// the user is mashing escape to get out of one.
 			sp.disableMenuSpinner(ctx)
 			sp.wipRBL = nil
-
-		case KeyF1:
-			if ctx.keyboard.IsPressed(KeyControl) {
+		case platform.KeyF1:
+			if ctx.keyboard.IsPressed(platform.KeyControl) {
 				// Recenter
 				ps.Center = ctx.world.GetInitialCenter()
 				ps.CurrentCenter = ps.Center
 			}
-
-		case KeyF2:
-			if ctx.keyboard.IsPressed(KeyControl) {
+		case platform.KeyF2:
+			if ctx.keyboard.IsPressed(platform.KeyControl) {
 				if ps.DisplayDCB {
 					sp.disableMenuSpinner(ctx)
 					sp.activeDCBMenu = DCBMenuMaps
@@ -1868,18 +1863,16 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 				sp.resetInputState()
 				sp.commandMode = CommandModeMaps
 			}
-
-		case KeyF3:
-			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
+		case platform.KeyF3:
+			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuBrite
 			} else {
 				sp.resetInputState()
 				sp.commandMode = CommandModeInitiateControl
 			}
-
-		case KeyF4:
-			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
+		case platform.KeyF4:
+			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.activeDCBMenu = DCBMenuMain
 				sp.activateMenuSpinner(MakeLeaderLineLengthSpinner(&ps.LeaderLineLength))
 				sp.resetInputState()
@@ -1888,22 +1881,19 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 				sp.resetInputState()
 				sp.commandMode = CommandModeTerminateControl
 			}
-
-		case KeyF5:
-			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
+		case platform.KeyF5:
+			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuCharSize
 			} else {
 				sp.resetInputState()
 				sp.commandMode = CommandModeHandOff
 			}
-
-		case KeyF6:
+		case platform.KeyF6:
 			sp.resetInputState()
 			sp.commandMode = CommandModeFlightData
-
-		case KeyF7:
-			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
+		case platform.KeyF7:
+			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				if sp.activeDCBMenu == DCBMenuMain {
 					sp.activeDCBMenu = DCBMenuAux
@@ -1914,15 +1904,13 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 				sp.resetInputState()
 				sp.commandMode = CommandModeMultiFunc
 			}
-
-		case KeyF8:
-			if ctx.keyboard.IsPressed(KeyControl) {
+		case platform.KeyF8:
+			if ctx.keyboard.IsPressed(platform.KeyControl) {
 				sp.disableMenuSpinner(ctx)
 				ps.DisplayDCB = !ps.DisplayDCB
 			}
-
-		case KeyF9:
-			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
+		case platform.KeyF9:
+			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activateMenuSpinner(MakeRangeRingRadiusSpinner(&ps.RangeRingRadius))
 				sp.resetInputState()
@@ -1931,17 +1919,15 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 				sp.resetInputState()
 				sp.commandMode = CommandModeVFRPlan
 			}
-
-		case KeyF10:
-			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
+		case platform.KeyF10:
+			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activateMenuSpinner(MakeRadarRangeSpinner(&ps.Range))
 				sp.resetInputState()
 				sp.commandMode = CommandModeRange
 			}
-
-		case KeyF11:
-			if ctx.keyboard.IsPressed(KeyControl) && ps.DisplayDCB {
+		case platform.KeyF11:
+			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuSite
 			} else {
@@ -3642,8 +3628,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 
 					return
 				} else if ctx.keyboard != nil {
-					_, ctrl := ctx.keyboard.Pressed[KeyControl]
-					_, shift := ctx.keyboard.Pressed[KeyShift]
+					_, ctrl := ctx.keyboard.Pressed[platform.KeyControl]
+					_, shift := ctx.keyboard.Pressed[platform.KeyShift]
 					if ctrl && shift {
 						// initiate track, CRC style
 						status.clear = true
@@ -7250,7 +7236,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 		// Consume mouse wheel
 		if mouse.Wheel[1] != 0 {
 			r := ps.Range
-			if _, ok := ctx.keyboard.Pressed[KeyControl]; ok {
+			if _, ok := ctx.keyboard.Pressed[platform.KeyControl]; ok {
 				ps.Range += 3 * mouse.Wheel[1]
 			} else {
 				ps.Range += mouse.Wheel[1]
@@ -7272,13 +7258,13 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraf
 	}
 
 	if ctx.mouse.Clicked[platform.MouseButtonPrimary] {
-		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyShift) && ctx.keyboard.IsPressed(KeyControl) {
+		if ctx.keyboard != nil && ctx.keyboard.IsPressed(platform.KeyShift) && ctx.keyboard.IsPressed(platform.KeyControl) {
 			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
 			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
 			ctx.platform.GetClipboard().SetText(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 		}
 
-		if ctx.keyboard != nil && ctx.keyboard.IsPressed(KeyControl) && !ctx.keyboard.IsPressed(KeyShift) { // There is a conflict between this and initating a track CRC-style,
+		if ctx.keyboard != nil && ctx.keyboard.IsPressed(platform.KeyControl) && !ctx.keyboard.IsPressed(platform.KeyShift) { // There is a conflict between this and initating a track CRC-style,
 			// so making sure that shift isn't being pressed would be a good idea.
 			if ac, _ := sp.tryGetClosestAircraft(ctx.world, ctx.mouse.Pos, transforms); ac != nil {
 				if state := sp.Aircraft[ac.Callsign]; state != nil {
@@ -7429,7 +7415,7 @@ func starsButtonSize(flags int, scale float32) [2]float32 {
 
 var dcbDrawState struct {
 	cb           *renderer.CommandBuffer
-	mouse        *MouseState
+	mouse        *platform.MouseState
 	mouseDownPos []float32
 	cursor       [2]float32
 	drawStartPos [2]float32

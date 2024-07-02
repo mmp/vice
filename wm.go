@@ -513,9 +513,9 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, w *World, stats *Stat
 	commandBuffer.ClearRGB(renderer.RGB{})
 
 	// Actually visit the panes.
-	var keyboard *KeyboardState
+	var keyboard *platform.KeyboardState
 	if !imgui.CurrentIO().WantCaptureKeyboard() {
-		keyboard = NewKeyboardState(p)
+		keyboard = p.GetKeyboard()
 	}
 	root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent, p,
 		func(paneExtent math.Extent2D, parentExtent math.Extent2D, pane Pane) {
@@ -540,7 +540,7 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, w *World, stats *Stat
 			if ownsMouse {
 				// Full display size, including the menu and status bar.
 				displayTrueFull := math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}}
-				ctx.InitializeMouse(displayTrueFull)
+				ctx.InitializeMouse(displayTrueFull, p)
 			}
 
 			// Specify the scissor rectangle and viewport that

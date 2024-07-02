@@ -1239,7 +1239,7 @@ const (
 // uiDrawTextEdit handles the basics of interactive text editing; it takes
 // a string and cursor position and then renders them with the specified
 // style, processes keyboard inputs and updates the string accordingly.
-func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]float32, style,
+func uiDrawTextEdit(s *string, cursor *int, keyboard *platform.KeyboardState, pos [2]float32, style,
 	cursorStyle renderer.TextStyle, cb *renderer.CommandBuffer) (exit int, posOut [2]float32) {
 	// Make sure we can depend on it being sensible for the following
 	*cursor = math.Clamp(*cursor, 0, len(*s))
@@ -1261,30 +1261,30 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *KeyboardState, pos [2]floa
 
 	// Handle various special keys.
 	if keyboard != nil {
-		if keyboard.IsPressed(KeyBackspace) && *cursor > 0 {
+		if keyboard.IsPressed(platform.KeyBackspace) && *cursor > 0 {
 			*s = (*s)[:*cursor-1] + (*s)[*cursor:]
 			*cursor--
 		}
-		if keyboard.IsPressed(KeyDelete) && *cursor < len(*s)-1 {
+		if keyboard.IsPressed(platform.KeyDelete) && *cursor < len(*s)-1 {
 			*s = (*s)[:*cursor] + (*s)[*cursor+1:]
 		}
-		if keyboard.IsPressed(KeyLeftArrow) {
+		if keyboard.IsPressed(platform.KeyLeftArrow) {
 			*cursor = math.Max(*cursor-1, 0)
 		}
-		if keyboard.IsPressed(KeyRightArrow) {
+		if keyboard.IsPressed(platform.KeyRightArrow) {
 			*cursor = math.Min(*cursor+1, len(*s))
 		}
-		if keyboard.IsPressed(KeyEscape) {
+		if keyboard.IsPressed(platform.KeyEscape) {
 			// clear out the string
 			*s = ""
 			*cursor = 0
 		}
-		if keyboard.IsPressed(KeyEnter) {
+		if keyboard.IsPressed(platform.KeyEnter) {
 			wmReleaseKeyboardFocus()
 			exit = TextEditReturnEnter
 		}
-		if keyboard.IsPressed(KeyTab) {
-			if keyboard.IsPressed(KeyShift) {
+		if keyboard.IsPressed(platform.KeyTab) {
+			if keyboard.IsPressed(platform.KeyShift) {
 				exit = TextEditReturnPrev
 			} else {
 				exit = TextEditReturnNext

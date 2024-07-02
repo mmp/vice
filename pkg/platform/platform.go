@@ -70,14 +70,10 @@ type Platform interface {
 	EndCaptureMouse()
 	// Scaling factor to account for Retina-style displays
 	DPIScale() float32
-}
 
-const (
-	MouseButtonPrimary   = 0
-	MouseButtonSecondary = 1
-	MouseButtonTertiary  = 2
-	MouseButtonCount     = 3
-)
+	GetMouse() *MouseState
+	GetKeyboard() *KeyboardState
+}
 
 ///////////////////////////////////////////////////////////////////////////
 

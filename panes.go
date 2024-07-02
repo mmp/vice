@@ -12,11 +12,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/mmp/imgui-go/v4"
 )
 
 // Panes (should) mostly operate in window coordinates: (0,0) is lower
@@ -49,177 +50,26 @@ type PaneContext struct {
 	platform  platform.Platform
 	renderer  renderer.Renderer
 	world     *World
-	mouse     *MouseState
-	keyboard  *KeyboardState
+	mouse     *platform.MouseState
+	keyboard  *platform.KeyboardState
 	haveFocus bool
 	now       time.Time
 }
 
-type MouseState struct {
-	Pos           [2]float32
-	Down          [platform.MouseButtonCount]bool
-	Clicked       [platform.MouseButtonCount]bool
-	Released      [platform.MouseButtonCount]bool
-	DoubleClicked [platform.MouseButtonCount]bool
-	Dragging      [platform.MouseButtonCount]bool
-	DragDelta     [2]float32
-	Wheel         [2]float32
-}
-
-func (ms *MouseState) SetCursor(id imgui.MouseCursorID) {
-	imgui.SetMouseCursor(id)
-}
-
-func (ctx *PaneContext) InitializeMouse(fullDisplayExtent math.Extent2D) {
-	ctx.mouse = &MouseState{}
+func (ctx *PaneContext) InitializeMouse(fullDisplayExtent math.Extent2D, p platform.Platform) {
+	ctx.mouse = p.GetMouse()
 
 	// Convert to pane coordinates:
-	// imgui gives us the mouse position w.r.t. the full window, so we need
+	// platform gives us the mouse position w.r.t. the full window, so we need
 	// to subtract out displayExtent.p0 to get coordinates w.r.t. the
 	// current pane.  Further, it has (0,0) in the upper left corner of the
 	// window, so we need to flip y w.r.t. the full window resolution.
-	pos := imgui.MousePos()
-	ctx.mouse.Pos[0] = pos.X - ctx.paneExtent.P0[0]
-	ctx.mouse.Pos[1] = fullDisplayExtent.P1[1] - 1 - ctx.paneExtent.P0[1] - pos.Y
+	ctx.mouse.Pos[0] = ctx.mouse.Pos[0] - ctx.paneExtent.P0[0]
+	ctx.mouse.Pos[1] = fullDisplayExtent.P1[1] - 1 - ctx.paneExtent.P0[1] - ctx.mouse.Pos[1]
 
-	io := imgui.CurrentIO()
-	wx, wy := io.MouseWheel()
-	ctx.mouse.Wheel = [2]float32{wx, -wy}
-
-	for b := 0; b < platform.MouseButtonCount; b++ {
-		ctx.mouse.Down[b] = imgui.IsMouseDown(b)
-		ctx.mouse.Released[b] = imgui.IsMouseReleased(b)
-		ctx.mouse.Clicked[b] = imgui.IsMouseClicked(b)
-		ctx.mouse.DoubleClicked[b] = imgui.IsMouseDoubleClicked(b)
-		ctx.mouse.Dragging[b] = imgui.IsMouseDragging(b, 0)
-		if ctx.mouse.Dragging[b] {
-			delta := imgui.MouseDragDelta(b, 0.)
-			// Negate y to go to pane coordinates
-			ctx.mouse.DragDelta = [2]float32{delta.X, -delta.Y}
-			imgui.ResetMouseDragDelta(b)
-		}
-	}
-}
-
-type Key int
-
-const (
-	KeyEnter = iota
-	KeyUpArrow
-	KeyDownArrow
-	KeyLeftArrow
-	KeyRightArrow
-	KeyHome
-	KeyEnd
-	KeyBackspace
-	KeyDelete
-	KeyEscape
-	KeyTab
-	KeyPageUp
-	KeyPageDown
-	KeyShift
-	KeyControl
-	KeyAlt
-	KeySuper
-	KeyF1
-	KeyF2
-	KeyF3
-	KeyF4
-	KeyF5
-	KeyF6
-	KeyF7
-	KeyF8
-	KeyF9
-	KeyF10
-	KeyF11
-	KeyF12
-	KeyV
-)
-
-type KeyboardState struct {
-	Input   string
-	Pressed map[Key]interface{}
-}
-
-func NewKeyboardState(p platform.Platform) *KeyboardState {
-	keyboard := &KeyboardState{Pressed: make(map[Key]interface{})}
-
-	keyboard.Input = p.InputCharacters()
-
-	// Map \ to END for laptops (hacky...)
-	if strings.Contains(keyboard.Input, `\`) {
-		keyboard.Input = strings.ReplaceAll(keyboard.Input, `\`, "")
-		keyboard.Pressed[KeyEnd] = nil
-	}
-
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnter)) {
-		keyboard.Pressed[KeyEnter] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDownArrow)) {
-		keyboard.Pressed[KeyDownArrow] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyUpArrow)) {
-		keyboard.Pressed[KeyUpArrow] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyLeftArrow)) {
-		keyboard.Pressed[KeyLeftArrow] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyRightArrow)) {
-		keyboard.Pressed[KeyRightArrow] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyHome)) {
-		keyboard.Pressed[KeyHome] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnd)) {
-		keyboard.Pressed[KeyEnd] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyBackspace)) {
-		keyboard.Pressed[KeyBackspace] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDelete)) {
-		keyboard.Pressed[KeyDelete] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEscape)) {
-		keyboard.Pressed[KeyEscape] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyTab)) {
-		keyboard.Pressed[KeyTab] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageUp)) {
-		keyboard.Pressed[KeyPageUp] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageDown)) {
-		keyboard.Pressed[KeyPageDown] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyV)) {
-		keyboard.Pressed[KeyV] = nil
-	}
-	const ImguiF1 = 290
-	for i := 0; i < 12; i++ {
-		if imgui.IsKeyPressed(ImguiF1 + i) {
-			keyboard.Pressed[Key(int(KeyF1)+i)] = nil
-		}
-	}
-	io := imgui.CurrentIO()
-	if io.KeyShiftPressed() {
-		keyboard.Pressed[KeyShift] = nil
-	}
-	if io.KeyCtrlPressed() {
-		keyboard.Pressed[KeyControl] = nil
-	}
-	if io.KeyAltPressed() {
-		keyboard.Pressed[KeyAlt] = nil
-	}
-	if io.KeySuperPressed() {
-		keyboard.Pressed[KeySuper] = nil
-	}
-
-	return keyboard
-}
-
-func (k *KeyboardState) IsPressed(key Key) bool {
-	_, ok := k.Pressed[key]
-	return ok
+	// Negate y to go to pane coordinates
+	ctx.mouse.Wheel[1] *= -1
+	ctx.mouse.DragDelta[1] *= -1
 }
 
 func (ctx *PaneContext) SetWindowCoordinateMatrices(cb *renderer.CommandBuffer) {
@@ -937,12 +787,12 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 		return
 	}
 
-	if ctx.keyboard.IsPressed(KeyTab) {
+	if ctx.keyboard.IsPressed(platform.KeyTab) {
 		// focus back to the STARS Pane (assume just one...)
 		globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
 			if sp, ok := pane.(*STARSPane); ok {
 				wmTakeKeyboardFocus(sp, false)
-				delete(ctx.keyboard.Pressed, KeyTab) // prevent cycling back and forth
+				delete(ctx.keyboard.Pressed, platform.KeyTab) // prevent cycling back and forth
 			}
 		})
 	}
@@ -954,7 +804,7 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 		mp.input.InsertAtCursor(strings.ToUpper(ctx.keyboard.Input))
 	}
 
-	if ctx.keyboard.IsPressed(KeyUpArrow) {
+	if ctx.keyboard.IsPressed(platform.KeyUpArrow) {
 		if mp.historyOffset < len(mp.history) {
 			if mp.historyOffset == 0 {
 				mp.savedInput = mp.input // save current input in case we return
@@ -964,7 +814,7 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 			mp.input.cursor = len(mp.input.cmd)
 		}
 	}
-	if ctx.keyboard.IsPressed(KeyDownArrow) {
+	if ctx.keyboard.IsPressed(platform.KeyDownArrow) {
 		if mp.historyOffset > 0 {
 			mp.historyOffset--
 			if mp.historyOffset == 0 {
@@ -977,42 +827,42 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 		}
 	}
 
-	if (ctx.keyboard.IsPressed(KeyControl) || ctx.keyboard.IsPressed(KeySuper)) && ctx.keyboard.IsPressed(KeyV) {
+	if (ctx.keyboard.IsPressed(platform.KeyControl) || ctx.keyboard.IsPressed(platform.KeySuper)) && ctx.keyboard.IsPressed(platform.KeyV) {
 		c, err := ctx.platform.GetClipboard().Text()
 		if err == nil {
 			mp.input.InsertAtCursor(c)
 		}
 	}
-	if ctx.keyboard.IsPressed(KeyLeftArrow) {
+	if ctx.keyboard.IsPressed(platform.KeyLeftArrow) {
 		if mp.input.cursor > 0 {
 			mp.input.cursor--
 		}
 	}
 
-	if ctx.keyboard.IsPressed(KeyRightArrow) {
+	if ctx.keyboard.IsPressed(platform.KeyRightArrow) {
 		if mp.input.cursor < len(mp.input.cmd) {
 			mp.input.cursor++
 		}
 	}
-	if ctx.keyboard.IsPressed(KeyHome) {
+	if ctx.keyboard.IsPressed(platform.KeyHome) {
 		mp.input.cursor = 0
 	}
-	if ctx.keyboard.IsPressed(KeyEnd) {
+	if ctx.keyboard.IsPressed(platform.KeyEnd) {
 		mp.input.cursor = len(mp.input.cmd)
 	}
-	if ctx.keyboard.IsPressed(KeyBackspace) {
+	if ctx.keyboard.IsPressed(platform.KeyBackspace) {
 		mp.input.DeleteBeforeCursor()
 	}
-	if ctx.keyboard.IsPressed(KeyDelete) {
+	if ctx.keyboard.IsPressed(platform.KeyDelete) {
 		mp.input.DeleteAfterCursor()
 	}
-	if ctx.keyboard.IsPressed(KeyEscape) {
+	if ctx.keyboard.IsPressed(platform.KeyEscape) {
 		if mp.input.cursor > 0 {
 			mp.input = CLIInput{}
 		}
 	}
 
-	if ctx.keyboard.IsPressed(KeyEnter) && strings.TrimSpace(mp.input.cmd) != "" {
+	if ctx.keyboard.IsPressed(platform.KeyEnter) && strings.TrimSpace(mp.input.cmd) != "" {
 		mp.runCommands(ctx.world)
 	}
 }
