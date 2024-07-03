@@ -262,9 +262,8 @@ func main() {
 
 		LoadOrMakeDefaultConfig()
 
-		multisample := runtime.GOOS != "darwin"
 		platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
-			globalConfig.InitialWindowPosition, multisample)
+			globalConfig.InitialWindowPosition, globalConfig.EnableMSAA)
 		if err != nil {
 			panic(fmt.Sprintf("Unable to create application window: %v", err))
 		}
