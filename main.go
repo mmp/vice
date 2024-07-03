@@ -12,7 +12,6 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
-	"io/fs"
 	"log/slog"
 	_ "net/http/pprof"
 	"os"
@@ -24,6 +23,7 @@ import (
 	"sort"
 	"time"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
@@ -47,15 +47,13 @@ var (
 	// plumbing in preparation for reducing the number of these in the
 	// future.
 	globalConfig *GlobalConfig
-	database     *StaticDatabase
 	lg           *log.Logger
-	resourcesFS  fs.StatFS
 
 	// client only
 	newWorldChan chan *World
 	localServer  *SimServer
 	remoteServer *SimServer
-	airportWind  map[string]Wind
+	airportWind  map[string]av.Wind
 	windRequest  map[string]chan getweather.MetarData
 
 	//go:embed resources/version.txt
@@ -161,11 +159,7 @@ func main() {
 		}()
 	}
 
-	resourcesFS = getResourcesFS()
-
 	eventStream := NewEventStream()
-
-	database = InitializeStaticDatabase()
 
 	if *lintScenarios {
 		var e util.ErrorLogger
@@ -179,7 +173,7 @@ func main() {
 	} else if *server {
 		RunSimServer()
 	} else if *showRoutes != "" {
-		ap, ok := database.Airports[*showRoutes]
+		ap, ok := av.DB.Airports[*showRoutes]
 		if !ok {
 			fmt.Printf("%s: airport not present in database\n", *showRoutes)
 			os.Exit(1)
@@ -200,18 +194,22 @@ func main() {
 		}
 	} else if *listMaps != "" {
 		var e util.ErrorLogger
-		lib := MakeVideoMapLibrary()
+		lib := av.MakeVideoMapLibrary()
 		path := *listMaps
-		lib.AddFile(os.DirFS("."), path, make(map[string]interface{}), &e)
+		lib.AddFile(os.DirFS("."), path, true, make(map[string]interface{}), &e)
 
 		if e.HaveErrors() {
 			e.PrintErrors(lg)
 			os.Exit(1)
 		}
 
-		var videoMaps []STARSMap
+		var videoMaps []av.VideoMap
 		for _, name := range lib.AvailableMaps(path) {
-			videoMaps = append(videoMaps, *lib.GetMap(path, name))
+			if m, err := lib.GetMap(path, name); err != nil {
+				panic(err)
+			} else {
+				videoMaps = append(videoMaps, *m)
+			}
 		}
 
 		sort.Slice(videoMaps, func(i, j int) bool {
@@ -327,7 +325,7 @@ func main() {
 		// Main event / rendering loop
 		lg.Info("Starting main loop")
 		// Init the wind maps
-		airportWind = make(map[string]Wind)
+		airportWind = make(map[string]av.Wind)
 		windRequest = make(map[string]chan getweather.MetarData)
 
 		stopConnectingRemoteServer := false

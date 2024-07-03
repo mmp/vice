@@ -18,6 +18,7 @@ import (
 	"time"
 	"unicode"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
@@ -79,7 +80,7 @@ type STARSPane struct {
 	SelectedPreferenceSet int
 	PreferenceSets        []STARSPreferenceSet
 
-	systemMaps map[int]*STARSMap
+	systemMaps map[int]*av.VideoMap
 
 	weatherRadar WeatherRadar
 
@@ -257,8 +258,8 @@ const (
 
 // this is read-only, stored in STARSPane for convenience
 type STARSConvergingRunways struct {
-	ConvergingRunways
-	ApproachRegions [2]*ApproachRegion
+	av.ConvergingRunways
+	ApproachRegions [2]*av.ApproachRegion
 	Airport         string
 	Index           int
 }
@@ -447,15 +448,15 @@ type STARSAircraftState struct {
 	// from the sensor as well as the previous one. This gives us the
 	// freshest possible information for things like calculating headings,
 	// rates of altitude change, etc.
-	track         RadarTrack
-	previousTrack RadarTrack
+	track         av.RadarTrack
+	previousTrack av.RadarTrack
 
 	// Radar track history is maintained with a ring buffer where
 	// historyTracksIndex is the index of the next track to be written.
 	// (Thus, historyTracksIndex==0 implies that there are no tracks.)
 	// Changing to/from FUSED mode causes tracksIndex to be reset, thus
 	// discarding previous tracks.
-	historyTracks      [10]RadarTrack
+	historyTracks      [10]av.RadarTrack
 	historyTracksIndex int
 
 	DatablockType            DatablockType
@@ -595,16 +596,6 @@ func (s *STARSAircraftState) LostTrack(now time.Time) bool {
 
 func (s *STARSAircraftState) Ident(now time.Time) bool {
 	return !s.IdentStart.IsZero() && s.IdentStart.Before(now) && s.IdentEnd.After(now)
-}
-
-// Note: this should match ViceMapSpec in crc2vice (except for the command buffer)
-type STARSMap struct {
-	Label         string
-	Group         int // 0 -> A, 1 -> B
-	Name          string
-	Id            int
-	Lines         [][]math.Point2LL
-	CommandBuffer renderer.CommandBuffer
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1214,7 +1205,7 @@ func (sp *STARSPane) ResetWorld(w *World) {
 	clear(ps.DisplayVideoMap[:])
 	// Make the scenario's default video maps visible
 	for _, dm := range defaultVideoMaps {
-		if idx := slices.IndexFunc(videoMaps, func(m STARSMap) bool { return m.Name == dm }); idx != -1 {
+		if idx := slices.IndexFunc(videoMaps, func(m av.VideoMap) bool { return m.Name == dm }); idx != -1 {
 			ps.DisplayVideoMap[idx] = true
 		} else {
 			lg.Errorf("%s: \"default_map\" not found in \"stars_maps\"", dm)
@@ -1236,7 +1227,7 @@ func (sp *STARSPane) ResetWorld(w *World) {
 		for idx, pair := range ap.ConvergingRunways {
 			sp.ConvergingRunways = append(sp.ConvergingRunways, STARSConvergingRunways{
 				ConvergingRunways: pair,
-				ApproachRegions: [2]*ApproachRegion{ap.ApproachRegions[pair.Runways[0]],
+				ApproachRegions: [2]*av.ApproachRegion{ap.ApproachRegions[pair.Runways[0]],
 					ap.ApproachRegions[pair.Runways[1]]},
 				Airport: name[1:], // drop the leading "K"
 				Index:   idx + 1,  // 1-based
@@ -1253,11 +1244,11 @@ func (sp *STARSPane) ResetWorld(w *World) {
 	sp.lastHistoryTrackUpdate = time.Time{}
 }
 
-func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
-	maps := make(map[int]*STARSMap)
+func (sp *STARSPane) makeSystemMaps(w *World) map[int]*av.VideoMap {
+	maps := make(map[int]*av.VideoMap)
 
 	// CA suppression filters
-	csf := &STARSMap{
+	csf := &av.VideoMap{
 		Label: "ALLCASU",
 		Name:  "ALL CA SUPPRESSION FILTERS",
 	}
@@ -1267,12 +1258,12 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 	maps[700] = csf
 
 	// MVAs
-	mvas := &STARSMap{
+	mvas := &av.VideoMap{
 		Label: w.TRACON + " MVA",
 		Name:  "ALL MINIMUM VECTORING ALTITUDES",
 	}
 	ld := renderer.GetLinesDrawBuilder()
-	for _, mva := range database.MVAs[w.TRACON] {
+	for _, mva := range av.DB.MVAs[w.TRACON] {
 		ld.AddLineLoop(mva.ExteriorRing)
 		p := math.Extent2DFromPoints(mva.ExteriorRing).Center()
 		ld.AddNumber(p, 0.005, fmt.Sprintf("%d", mva.MinimumLimit/100))
@@ -1284,7 +1275,7 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 	// Radar maps
 	radarIndex := 801
 	for _, name := range util.SortedMapKeys(w.RadarSites) {
-		sm := &STARSMap{
+		sm := &av.VideoMap{
 			Label: name + "RCM",
 			Name:  name + " RADAR COVERAGE MAP",
 		}
@@ -1307,7 +1298,7 @@ func (sp *STARSPane) makeSystemMaps(w *World) map[int]*STARSMap {
 		for _, rwy := range util.SortedMapKeys(ap.ATPAVolumes) {
 			vol := ap.ATPAVolumes[rwy]
 
-			sm := &STARSMap{
+			sm := &av.VideoMap{
 				Label: name + rwy + " VOL",
 				Name:  name + rwy + " ATPA APPROACH VOLUME",
 			}
@@ -1373,7 +1364,7 @@ func (sp *STARSPane) processEvents(ctx *PaneContext) {
 			sp.Aircraft[callsign] = sa
 		}
 
-		if ok, _ := SquawkIsSPC(ac.Squawk); ok {
+		if ok, _ := av.SquawkIsSPC(ac.Squawk); ok {
 			if _, ok := sp.HavePlayedSPCAlertSound[ac.Callsign]; !ok {
 				sp.HavePlayedSPCAlertSound[ac.Callsign] = nil
 			}
@@ -1501,7 +1492,7 @@ func (sp *STARSPane) processEvents(ctx *PaneContext) {
 
 func (sp *STARSPane) updateMSAWs(w *World) {
 	// See if there are any MVA issues
-	mvas := database.MVAs[w.TRACON]
+	mvas := av.DB.MVAs[w.TRACON]
 	for callsign, ac := range w.Aircraft {
 		state := sp.Aircraft[callsign]
 		if !ac.MVAsApply() {
@@ -1509,7 +1500,7 @@ func (sp *STARSPane) updateMSAWs(w *World) {
 			continue
 		}
 
-		warn := slices.ContainsFunc(mvas, func(mva MVA) bool {
+		warn := slices.ContainsFunc(mvas, func(mva av.MVA) bool {
 			return state.track.Altitude < mva.MinimumLimit && mva.Inside(state.track.Position)
 		})
 
@@ -1802,7 +1793,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *PaneContext) {
 		}
 
 		state.previousTrack = state.track
-		state.track = RadarTrack{
+		state.track = av.RadarTrack{
 			Position:    ac.Position(),
 			Altitude:    int(ac.Altitude()),
 			Groundspeed: int(ac.Nav.FlightState.GS),
@@ -3113,7 +3104,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 			callsign := lookupCallsign(f[0], false)
 			status.err = ctx.world.SetSquawkAutomatic(callsign)
 		} else if len(f) == 2 {
-			if squawk, err := ParseSquawk(f[1]); err == nil {
+			if squawk, err := av.ParseSquawk(f[1]); err == nil {
 				callsign := lookupCallsign(f[0], false)
 				status.err = ctx.world.SetSquawk(callsign, squawk)
 			} else {
@@ -3191,7 +3182,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				status.err = ErrSTARSCommandFormat
 			} else if idx <= 0 {
 				status.err = ErrSTARSIllegalMap
-			} else if mi := slices.IndexFunc(videoMaps, func(m STARSMap) bool { return m.Id == idx }); mi != -1 {
+			} else if mi := slices.IndexFunc(videoMaps, func(m av.VideoMap) bool { return m.Id == idx }); mi != -1 {
 				if (ps.DisplayVideoMap[mi] && op == "T") || op == "I" {
 					ps.DisplayVideoMap[mi] = false
 				} else if (!ps.DisplayVideoMap[mi] && op == "T") || op == "E" {
@@ -3443,9 +3434,9 @@ func calculateAirspace(ctx *PaneContext, callsign string) (string, error) {
 	return "", ErrSTARSIllegalPosition
 }
 
-func singleScope(ctx *PaneContext, facilityIdentifier string) *Controller {
+func singleScope(ctx *PaneContext, facilityIdentifier string) *av.Controller {
 	controllers := ctx.world.GetAllControllers()
-	var controllersInFacility []*Controller
+	var controllersInFacility []*av.Controller
 	for _, controller := range controllers {
 		if controller.FacilityIdentifier == facilityIdentifier {
 			controllersInFacility = append(controllersInFacility, controller)
@@ -3460,7 +3451,7 @@ func singleScope(ctx *PaneContext, facilityIdentifier string) *Controller {
 
 // Given a controller TCP id and optionally an aircraft callsign, returns
 // the associated Controller.
-func (sp *STARSPane) lookupControllerForId(ctx *PaneContext, id, callsign string) *Controller {
+func (sp *STARSPane) lookupControllerForId(ctx *PaneContext, id, callsign string) *av.Controller {
 	haveTrianglePrefix := strings.HasPrefix(id, STARSTriangleCharacter)
 	id = strings.TrimPrefix(id, STARSTriangleCharacter)
 
@@ -3583,7 +3574,7 @@ func (sp *STARSPane) cancelHandoff(ctx *PaneContext, callsign string) {
 }
 
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mousePosition [2]float32,
-	ghosts []*GhostAircraft, transforms ScopeTransformations) (status STARSCommandStatus) {
+	ghosts []*av.GhostAircraft, transforms ScopeTransformations) (status STARSCommandStatus) {
 	// See if an aircraft was clicked
 	ac, acDistance := sp.tryGetClosestAircraft(ctx.world, mousePosition, transforms)
 	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
@@ -3768,7 +3759,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
 				// Do not clear the input area to allow entering a fix for the second location
 				return
-			} else if StringIsSPC(cmd) {
+			} else if av.StringIsSPC(cmd) {
 				ctx.world.ToggleSPCOverride(ac.Callsign, cmd, nil,
 					func(err error) { sp.displayError(err, ctx.platform) })
 				status.clear = true
@@ -3872,7 +3863,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if len(cmd) == 5 && cmd[:2] == "++" {
 				if alt, err := strconv.Atoi(cmd[2:]); err == nil {
-					status.err = amendFlightPlan(ctx.world, ac.Callsign, func(fp *FlightPlan) {
+					status.err = amendFlightPlan(ctx.world, ac.Callsign, func(fp *av.FlightPlan) {
 						fp.Altitude = alt * 100
 					})
 					status.clear = true
@@ -4067,7 +4058,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					clickedGhost := ghost != nil && ghostDistance < acDistance
 					if clickedGhost {
 						state.Ghost.State = GhostStateSuppressed
-					} else if slices.ContainsFunc(ghosts, func(g *GhostAircraft) bool { return g.Callsign == ac.Callsign }) {
+					} else if slices.ContainsFunc(ghosts, func(g *av.GhostAircraft) bool { return g.Callsign == ac.Callsign }) {
 						state.Ghost.State = GhostStateRegular
 					} else {
 						status.err = ErrSTARSIllegalTrack
@@ -4084,7 +4075,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						}
 					} else {
 						// 6-29: force/unforce ghost qualification
-						if !slices.ContainsFunc(ghosts, func(g *GhostAircraft) bool { return g.Callsign == ac.Callsign }) {
+						if !slices.ContainsFunc(ghosts, func(g *av.GhostAircraft) bool { return g.Callsign == ac.Callsign }) {
 							status.err = ErrSTARSIllegalTrack
 						} else {
 							// Is it inside an enabled approach region?
@@ -4233,7 +4224,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				status.err = ctx.world.SetSquawkAutomatic(ac.Callsign)
 				return
 			} else {
-				if squawk, err := ParseSquawk(cmd); err == nil {
+				if squawk, err := av.ParseSquawk(cmd); err == nil {
 					status.err = ctx.world.SetSquawk(ac.Callsign, squawk)
 				} else {
 					status.err = ErrSTARSIllegalParam
@@ -4895,7 +4886,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 		}
 	}
 
-	formatMETAR := func(ap string, metar *METAR) string {
+	formatMETAR := func(ap string, metar *av.METAR) string {
 		alt := strings.TrimPrefix(metar.Altimeter, "A")
 		if len(alt) == 4 {
 			alt = alt[:2] + "." + alt[2:]
@@ -4991,7 +4982,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 				for code := range ac.SPCOverrides {
 					codes[code] = nil
 				}
-				if ok, code := SquawkIsSPC(ac.Squawk); ok {
+				if ok, code := av.SquawkIsSPC(ac.Squawk); ok {
 					codes[code] = nil
 				}
 			}
@@ -5121,20 +5112,20 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 	if ps.VFRList.Visible {
 		text.Reset()
 		vfr := make(map[int]*Aircraft)
-		// Find all untracked VFR aircraft
+		// Find all untracked av.VFR aircraft
 		for _, ac := range aircraft {
-			if ac.Squawk == Squawk(0o1200) && ac.TrackingController == "" {
+			if ac.Squawk == av.Squawk(0o1200) && ac.TrackingController == "" {
 				vfr[sp.getAircraftIndex(ac)] = ac
 			}
 		}
 
-		text.WriteString("VFR LIST\n")
+		text.WriteString("av.VFR LIST\n")
 		if len(vfr) > ps.VFRList.Lines {
 			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr)))
 		}
 		for i, acIdx := range util.SortedMapKeys(vfr) {
 			ac := vfr[acIdx]
-			text.WriteString(fmt.Sprintf("%2d %-7s VFR\n", acIdx, ac.Callsign))
+			text.WriteString(fmt.Sprintf("%2d %-7s av.VFR\n", acIdx, ac.Callsign))
 
 			// Limit to the user limit
 			if i == ps.VFRList.Lines {
@@ -5235,7 +5226,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 
 	if ps.VideoMapsList.Visible {
 		text.Reset()
-		format := func(m STARSMap, i int, vis bool) {
+		format := func(m av.VideoMap, i int, vis bool) {
 			text.WriteString(util.Select(vis, ">", " ") + " ")
 			text.WriteString(fmt.Sprintf("%3d ", i))
 			text.WriteString(fmt.Sprintf("%8s ", strings.ToUpper(m.Label)))
@@ -5362,7 +5353,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*Aircraft, ctx *PaneContext, pan
 
 	if ps.SignOnList.Visible {
 		text.Reset()
-		format := func(ctrl *Controller) {
+		format := func(ctrl *av.Controller) {
 			id := ctrl.SectorId
 			if ctrl.FacilityIdentifier != "" && !ctrl.ERAMFacility {
 				id = STARSTriangleCharacter + ctrl.FacilityIdentifier + id
@@ -5582,8 +5573,8 @@ func (sp *STARSPane) getTrackSize(ctx *PaneContext, transforms ScopeTransformati
 	return size
 }
 
-func (sp *STARSPane) getGhostAircraft(aircraft []*Aircraft, ctx *PaneContext) []*GhostAircraft {
-	var ghosts []*GhostAircraft
+func (sp *STARSPane) getGhostAircraft(aircraft []*Aircraft, ctx *PaneContext) []*av.GhostAircraft {
+	var ghosts []*av.GhostAircraft
 	ps := sp.CurrentPreferenceSet
 	now := ctx.world.CurrentTime()
 
@@ -5638,7 +5629,7 @@ func (sp *STARSPane) getGhostAircraft(aircraft []*Aircraft, ctx *PaneContext) []
 	return ghosts
 }
 
-func (sp *STARSPane) drawGhosts(ghosts []*GhostAircraft, ctx *PaneContext, transforms ScopeTransformations,
+func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *PaneContext, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -5706,7 +5697,7 @@ func (sp *STARSPane) drawRadarTrack(ac *Aircraft, state *STARSAircraftState, hea
 		switch mode := sp.radarMode(ctx.world); mode {
 		case RadarModeSingle:
 			site := ctx.world.RadarSites[ps.RadarSiteSelected]
-			primary, secondary, dist := site.CheckVisibility(ctx.world, pos, state.TrackAltitude())
+			primary, secondary, dist := site.CheckVisibility(pos, state.TrackAltitude())
 
 			// Orient the box toward the radar
 			h := math.Heading2LL(site.Position, pos, ctx.world.NmPerLongitude, ctx.world.MagneticVariation)
@@ -6112,7 +6103,7 @@ func MakeModeledAircraft(ac *Aircraft, state *STARSAircraftState, threshold math
 		dalt:      float32(state.TrackDeltaAltitude()),
 		threshold: math.LL2NM(threshold, ac.NmPerLongitude()),
 	}
-	if perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]; ok {
+	if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.BaseType()]; ok {
 		ma.landingSpeed = perf.Speed.Landing
 	} else {
 		ma.landingSpeed = 120 // ....
@@ -6146,7 +6137,7 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 }
 
 func getCwtCategory(ac *Aircraft) string {
-	perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
+	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
 		return "NOWGT"
@@ -6187,7 +6178,7 @@ func getCwtCategory(ac *Aircraft) string {
 
 func (sp *STARSPane) checkInTrailCwtSeparation(back, front *Aircraft) {
 	cwtClass := func(ac *Aircraft) int {
-		perf, ok := database.AircraftPerformance[ac.FlightPlan.BaseType()]
+		perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.BaseType()]
 		if !ok {
 			lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
 			return 9
@@ -6328,7 +6319,7 @@ func (sp *STARSPane) haveActiveWarnings(ctx *PaneContext, ac *Aircraft) bool {
 	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
 		return true
 	}
-	if ok, _ := SquawkIsSPC(ac.Squawk); ok {
+	if ok, _ := av.SquawkIsSPC(ac.Squawk); ok {
 		return true
 	}
 	if len(ac.SPCOverrides) > 0 {
@@ -6362,7 +6353,7 @@ func (sp *STARSPane) getWarnings(ctx *PaneContext, ac *Aircraft) []string {
 	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
 		addWarning("LA")
 	}
-	if ok, code := SquawkIsSPC(ac.Squawk); ok {
+	if ok, code := av.SquawkIsSPC(ac.Squawk); ok {
 		addWarning(code)
 	}
 	for code := range ac.SPCOverrides {
@@ -6391,7 +6382,7 @@ func (sp *STARSPane) getWarnings(ctx *PaneContext, ac *Aircraft) []string {
 }
 
 func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDatablock {
-	if ac.Mode == Standby {
+	if ac.Mode == av.Standby {
 		return nil
 	}
 
@@ -6462,7 +6453,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 			return dbs
 		}
 
-		if fp := ac.FlightPlan; fp != nil && fp.Rules == VFR {
+		if fp := ac.FlightPlan; fp != nil && fp.Rules == av.VFR {
 			as := fmt.Sprintf("%03d  %02d", (state.TrackAltitude()+50)/100, (state.TrackGroundspeed()+5)/10)
 			dbs[0].Lines[1].Text = as
 			dbs[1].Lines[1].Text = as
@@ -6488,7 +6479,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 		}
 
 		field3 := ""
-		if ac.FlightPlan.Rules == VFR {
+		if ac.FlightPlan.Rules == av.VFR {
 			field3 += "V"
 		} else if sp.isOverflight(ctx, ac) {
 			field3 += "E"
@@ -6623,7 +6614,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *Aircraft) []STARSDat
 				actype = actype[2:]
 			}
 			modifier := ""
-			if ac.FlightPlan.Rules == VFR {
+			if ac.FlightPlan.Rules == av.VFR {
 				modifier += "V"
 			} else if sp.isOverflight(ctx, ac) {
 				modifier += "E"
@@ -7265,7 +7256,7 @@ func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformati
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*GhostAircraft,
+func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*av.GhostAircraft,
 	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	if ctx.mouse == nil {
 		return
@@ -8128,11 +8119,11 @@ func STARSDisabledButton(ctx *PaneContext, text string, flags int, buttonScale f
 // amendFlightPlan is a useful utility function for changing an entry in
 // the flightplan; the provided callback function should make the update
 // and the rest of the details are handled here.
-func amendFlightPlan(w *World, callsign string, amend func(fp *FlightPlan)) error {
+func amendFlightPlan(w *World, callsign string, amend func(fp *av.FlightPlan)) error {
 	if ac := w.GetAircraft(callsign, false); ac == nil {
 		return ErrNoAircraftForCallsign
 	} else {
-		fp := util.Select(ac.FlightPlan != nil, ac.FlightPlan, &FlightPlan{})
+		fp := util.Select(ac.FlightPlan != nil, ac.FlightPlan, &av.FlightPlan{})
 		amend(fp)
 		return w.AmendFlightPlan(callsign, *fp)
 	}
@@ -8204,7 +8195,7 @@ func (sp *STARSPane) radarVisibility(w *World, pos math.Point2LL, alt int) (prim
 			continue
 		}
 
-		if p, s, dist := site.CheckVisibility(w, pos, alt); p || s {
+		if p, s, dist := site.CheckVisibility(pos, alt); p || s {
 			primary = primary || p
 			secondary = secondary || s
 			distance = math.Min(distance, dist)
@@ -8244,7 +8235,7 @@ func (sp *STARSPane) visibleAircraft(w *World) []*Aircraft {
 					continue
 				}
 
-				if p, s, _ := site.CheckVisibility(w, state.TrackPosition(), state.TrackAltitude()); p || s {
+				if p, s, _ := site.CheckVisibility(state.TrackPosition(), state.TrackAltitude()); p || s {
 					visible = true
 				}
 			}
@@ -8284,7 +8275,7 @@ func (sp *STARSPane) datablockVisible(ac *Aircraft, ctx *PaneContext) bool {
 		// Pointouts: This is if its been accepted,
 		// for an incoming pointout, it falls to the FDB check
 		return true
-	} else if ok, _ := SquawkIsSPC(ac.Squawk); ok {
+	} else if ok, _ := av.SquawkIsSPC(ac.Squawk); ok {
 		// Special purpose codes
 		return true
 	} else if sp.Aircraft[ac.Callsign].DatablockType == FullDatablock {
@@ -8372,8 +8363,8 @@ func (sp *STARSPane) tryGetClosestAircraft(w *World, mousePosition [2]float32, t
 	return ac, distance
 }
 
-func (sp *STARSPane) tryGetClosestGhost(ghosts []*GhostAircraft, mousePosition [2]float32, transforms ScopeTransformations) (*GhostAircraft, float32) {
-	var ghost *GhostAircraft
+func (sp *STARSPane) tryGetClosestGhost(ghosts []*av.GhostAircraft, mousePosition [2]float32, transforms ScopeTransformations) (*av.GhostAircraft, float32) {
+	var ghost *av.GhostAircraft
 	distance := float32(20) // in pixels; don't consider anything farther away
 
 	for _, g := range ghosts {
@@ -8406,7 +8397,7 @@ func (sp *STARSPane) initializeAudio(p platform.Platform) {
 		sp.audioEffects = make(map[AudioType]int)
 
 		loadMP3 := func(filename string) int {
-			dec, pcm, err := minimp3.DecodeFull(LoadResource("audio/" + filename))
+			dec, pcm, err := minimp3.DecodeFull(util.LoadResource("audio/" + filename))
 			if err != nil {
 				lg.Errorf("%s: unable to decode mp3: %v", filename, err)
 			}

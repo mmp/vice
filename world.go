@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
@@ -33,11 +34,11 @@ type World struct {
 	simProxy *SimProxy
 
 	Aircraft    map[string]*Aircraft
-	METAR       map[string]*METAR
-	Controllers map[string]*Controller
+	METAR       map[string]*av.METAR
+	Controllers map[string]*av.Controller
 
-	DepartureAirports map[string]*Airport
-	ArrivalAirports   map[string]*Airport
+	DepartureAirports map[string]*av.Airport
+	ArrivalAirports   map[string]*av.Airport
 
 	lastUpdateRequest time.Time
 	lastReturnedTime  time.Time
@@ -74,13 +75,13 @@ type World struct {
 	SimTime                  time.Time
 	MagneticVariation        float32
 	NmPerLongitude           float32
-	Airports                 map[string]*Airport
+	Airports                 map[string]*av.Airport
 	Fixes                    map[string]math.Point2LL
 	PrimaryAirport           string
-	RadarSites               map[string]*RadarSite
+	RadarSites               map[string]*av.RadarSite
 	Center                   math.Point2LL
 	Range                    float32
-	Wind                     Wind
+	Wind                     av.Wind
 	Callsign                 string
 	ScenarioDefaultVideoMaps []string
 	ApproachAirspace         []ControllerAirspaceVolume
@@ -88,7 +89,7 @@ type World struct {
 	DepartureRunways         []ScenarioGroupDepartureRunway
 	ArrivalRunways           []ScenarioGroupArrivalRunway
 	Scratchpads              map[string]string
-	ArrivalGroups            map[string][]Arrival
+	ArrivalGroups            map[string][]av.Arrival
 	TotalDepartures          int
 	TotalArrivals            int
 	STARSFacilityAdaptation  STARSFacilityAdaptation
@@ -97,8 +98,8 @@ type World struct {
 func NewWorld() *World {
 	return &World{
 		Aircraft:    make(map[string]*Aircraft),
-		METAR:       make(map[string]*METAR),
-		Controllers: make(map[string]*Controller),
+		METAR:       make(map[string]*av.METAR),
+		Controllers: make(map[string]*av.Controller),
 	}
 }
 
@@ -124,7 +125,7 @@ func (w *World) AverageWindVector() [2]float32 {
 	return math.Scale2f(v, float32(w.Wind.Speed))
 }
 
-func (w *World) GetAirport(icao string) *Airport {
+func (w *World) GetAirport(icao string) *av.Airport {
 	return w.Airports[icao]
 }
 
@@ -135,11 +136,11 @@ func (w *World) Locate(s string) (math.Point2LL, bool) {
 		return ap.Location, true
 	} else if p, ok := w.Fixes[s]; ok {
 		return p, true
-	} else if n, ok := database.Navaids[strings.ToUpper(s)]; ok {
+	} else if n, ok := av.DB.Navaids[strings.ToUpper(s)]; ok {
 		return n.Location, ok
-	} else if ap, ok := database.Airports[strings.ToUpper(s)]; ok {
+	} else if ap, ok := av.DB.Airports[strings.ToUpper(s)]; ok {
 		return ap.Location, ok
-	} else if f, ok := database.Fixes[strings.ToUpper(s)]; ok {
+	} else if f, ok := av.DB.Fixes[strings.ToUpper(s)]; ok {
 		return f.Location, ok
 	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
@@ -148,7 +149,7 @@ func (w *World) Locate(s string) (math.Point2LL, bool) {
 	}
 }
 
-func (w *World) AllAirports() map[string]*Airport {
+func (w *World) AllAirports() map[string]*av.Airport {
 	all := util.DuplicateMap(w.DepartureAirports)
 	for name, ap := range w.ArrivalAirports {
 		all[name] = ap
@@ -156,7 +157,7 @@ func (w *World) AllAirports() map[string]*Airport {
 	return all
 }
 
-func (w *World) SetSquawk(callsign string, squawk Squawk) error {
+func (w *World) SetSquawk(callsign string, squawk av.Squawk) error {
 	return nil // UNIMPLEMENTED
 }
 
@@ -236,7 +237,7 @@ func (w *World) SetTemporaryAltitude(callsign string, alt int, success func(any)
 		})
 }
 
-func (w *World) AmendFlightPlan(callsign string, fp FlightPlan) error {
+func (w *World) AmendFlightPlan(callsign string, fp av.FlightPlan) error {
 	return nil // UNIMPLEMENTED
 }
 
@@ -463,25 +464,25 @@ func (w *World) GetAllAircraft() []*Aircraft {
 	return w.GetFilteredAircraft(func(*Aircraft) bool { return true })
 }
 
-func (w *World) GetFlightStrip(callsign string) *FlightStrip {
+func (w *World) GetFlightStrip(callsign string) *av.FlightStrip {
 	if ac, ok := w.Aircraft[callsign]; ok {
 		return &ac.Strip
 	}
 	return nil
 }
 
-func (w *World) GetMETAR(location string) *METAR {
+func (w *World) GetMETAR(location string) *av.METAR {
 	return w.METAR[location]
 }
 
-func (w *World) GetControllerByCallsign(callsign string) *Controller {
+func (w *World) GetControllerByCallsign(callsign string) *av.Controller {
 	if ctrl := w.Controllers[callsign]; ctrl != nil {
 		return ctrl
 	}
 	return nil
 }
 
-func (w *World) GetAllControllers() map[string]*Controller {
+func (w *World) GetAllControllers() map[string]*av.Controller {
 	return w.Controllers
 }
 
@@ -554,7 +555,7 @@ func (w *World) PreSave() {
 	w.STARSFacilityAdaptation.PreSave()
 }
 
-func (w *World) PostLoad(ml *VideoMapLibrary) error {
+func (w *World) PostLoad(ml *av.VideoMapLibrary) error {
 	return w.STARSFacilityAdaptation.PostLoad(ml)
 }
 
@@ -635,7 +636,7 @@ func (w *World) GetWindowTitle() string {
 	}
 }
 
-func (w *World) GetVideoMaps() ([]STARSMap, []string) {
+func (w *World) GetVideoMaps() ([]av.VideoMap, []string) {
 	if config, ok := w.STARSFacilityAdaptation.ControllerConfigs[w.Callsign]; ok {
 		return config.VideoMaps, config.DefaultMaps
 	}
@@ -656,7 +657,7 @@ func (w *World) GetInitialCenter() math.Point2LL {
 	return w.Center
 }
 
-func (w *World) InhibitCAVolumes() []AirspaceVolume {
+func (w *World) InhibitCAVolumes() []av.AirspaceVolume {
 	return w.STARSFacilityAdaptation.InhibitCAVolumes
 }
 
@@ -734,7 +735,7 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 }
 
 func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
-	al, ok := database.Airlines[icao]
+	al, ok := av.DB.Airlines[icao]
 	if !ok {
 		// TODO: this should be caught at load validation time...
 		lg.Errorf("Chose airline %s, not found in database", icao)
@@ -763,7 +764,7 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 		}
 	}
 
-	perf, ok := database.AircraftPerformance[aircraft]
+	perf, ok := av.DB.AircraftPerformance[aircraft]
 	if !ok {
 		// TODO: validation stage...
 		lg.Errorf("Aircraft %s not found in performance database from fleet %+v, airline %s",
@@ -803,7 +804,7 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 		}
 	}
 
-	squawk := Squawk(rand.Intn(0o7000))
+	squawk := av.Squawk(rand.Intn(0o7000))
 
 	acType := aircraft
 	if perf.WeightClass == "H" {
@@ -817,14 +818,14 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 		Callsign:       callsign,
 		AssignedSquawk: squawk,
 		Squawk:         squawk,
-		Mode:           Charlie,
+		Mode:           av.Charlie,
 	}, acType
 }
 
 func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goAround bool) (*Aircraft, error) {
 	arrivals := w.ArrivalGroups[arrivalGroup]
 	// Randomly sample from the arrivals that have a route to this airport.
-	idx := rand.SampleFiltered(arrivals, func(ar Arrival) bool {
+	idx := rand.SampleFiltered(arrivals, func(ar av.Arrival) bool {
 		_, ok := ar.Airlines[arrivalAirport]
 		return ok
 	})
@@ -841,7 +842,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.FlightPlan = NewFlightPlan(IFR, acType, airline.Airport, arrivalAirport)
+	ac.FlightPlan = av.NewFlightPlan(av.IFR, acType, airline.Airport, arrivalAirport)
 
 	// Figure out which controller will (for starters) get the arrival
 	// handoff. For single-user, it's easy.  Otherwise, figure out which
@@ -865,7 +866,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 }
 
 func (w *World) CreateDeparture(departureAirport, runway, category string, challenge float32,
-	lastDeparture *Departure) (*Aircraft, *Departure, error) {
+	lastDeparture *av.Departure) (*Aircraft, *av.Departure, error) {
 	ap := w.Airports[departureAirport]
 	if ap == nil {
 		return nil, nil, ErrUnknownAirport
@@ -880,7 +881,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	}
 	rwy := &w.DepartureRunways[idx]
 
-	var dep *Departure
+	var dep *av.Departure
 	if w.sameDepartureCap == 0 {
 		w.sameDepartureCap = rand.Intn(3) + 1 // Set the initial max same departure cap (1-3)
 	}
@@ -888,8 +889,8 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		// 50/50 split between the exact same departure and a departure to
 		// the same gate as the last departure.
 		pred := util.Select(rand.Float32() < .5,
-			func(d Departure) bool { return d.Exit == lastDeparture.Exit },
-			func(d Departure) bool {
+			func(d av.Departure) bool { return d.Exit == lastDeparture.Exit },
+			func(d av.Departure) bool {
 				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
 				return ok && ap.ExitCategories[d.Exit] == ap.ExitCategories[lastDeparture.Exit]
 			})
@@ -906,7 +907,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 	if dep == nil {
 		// Sample uniformly, minding the category, if specified
 		idx := rand.SampleFiltered(ap.Departures,
-			func(d Departure) bool {
+			func(d av.Departure) bool {
 				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
 				return ok && (rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
 			})
@@ -939,7 +940,7 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.FlightPlan = NewFlightPlan(IFR, acType, departureAirport, dep.Destination)
+	ac.FlightPlan = av.NewFlightPlan(av.IFR, acType, departureAirport, dep.Destination)
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
 		return nil, nil, err
@@ -1370,7 +1371,7 @@ func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]fl
 	return offset
 }
 
-func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]interface{},
+func (w *World) drawWaypoints(waypoints []av.Waypoint, drawnWaypoints map[string]interface{},
 	transforms ScopeTransformations, td *renderer.TextDrawBuilder, style renderer.TextStyle,
 	ld *renderer.LinesDrawBuilder, pd *renderer.TrianglesDrawBuilder, ldr *renderer.LinesDrawBuilder) {
 
@@ -1601,13 +1602,13 @@ func (w *World) drawWaypoints(waypoints []Waypoint, drawnWaypoints map[string]in
 				var w float32 // max width of altitudes drawn
 				if ar.Range[1] != 0 {
 					// Upper altitude
-					pp := td.AddText(FormatAltitude(ar.Range[1]), pt, style)
+					pp := td.AddText(av.FormatAltitude(ar.Range[1]), pt, style)
 					w = pp[0] - pt[0]
 					pt[1] -= float32(style.Font.Size)
 				}
 				if ar.Range[0] != 0 && ar.Range[0] != ar.Range[1] {
 					// Lower altitude, if present and different than upper.
-					pp := td.AddText(FormatAltitude(ar.Range[0]), pt, style)
+					pp := td.AddText(av.FormatAltitude(ar.Range[0]), pt, style)
 					w = math.Max(w, pp[0]-pt[0])
 					pt[1] -= float32(style.Font.Size)
 				}

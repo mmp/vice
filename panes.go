@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
@@ -957,7 +958,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 		if idx := strings.IndexAny(callsign, "0123456789"); idx != -1 {
 			// Try to get the telephony.
 			icao, flight := callsign[:idx], callsign[idx:]
-			if telephony, ok := database.Callsigns[icao]; ok {
+			if telephony, ok := av.DB.Callsigns[icao]; ok {
 				radioCallsign = telephony + " " + flight
 				if ac := w.GetAircraft(callsign, false); ac != nil {
 					if fp := ac.FlightPlan; fp != nil {

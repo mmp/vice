@@ -2,7 +2,7 @@
 // Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package aviation
 
 import (
 	"fmt"
@@ -241,8 +241,10 @@ func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]math.
 		math.NM2LL(quad[2], nmPerLongitude), math.NM2LL(quad[3], nmPerLongitude)}
 }
 
-func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.ErrorLogger) {
-	if info, ok := database.Airports[icao]; !ok {
+func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude float32,
+	magneticVariation float32, controlPositions map[string]*Controller, scratchpads map[string]string,
+	e *util.ErrorLogger) {
+	if info, ok := DB.Airports[icao]; !ok {
 		e.ErrorString("airport \"%s\" not found in airport database", icao)
 	} else {
 		ap.Location = info.Location
@@ -260,9 +262,9 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 		}
 
 		if appr.Id != "" {
-			if wps, ok := database.Airports[icao].Approaches[appr.Id]; !ok {
+			if wps, ok := DB.Airports[icao].Approaches[appr.Id]; !ok {
 				e.ErrorString("Approach \"%s\" not in database. Options: %s", appr.Id,
-					strings.Join(util.SortedMapKeys(database.Airports[icao].Approaches), ", "))
+					strings.Join(util.SortedMapKeys(DB.Airports[icao].Approaches), ", "))
 				e.Pop()
 				continue
 			} else {
@@ -298,11 +300,11 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 		rwy, ok := LookupRunway(icao, appr.Runway)
 		if !ok {
 			e.ErrorString("\"runway\" \"%s\" is unknown. Options: %s", appr.Runway,
-				database.Airports[icao].ValidRunways())
+				DB.Airports[icao].ValidRunways())
 		}
 
 		for i := range appr.Waypoints {
-			sg.InitializeWaypointLocations(appr.Waypoints[i], e)
+			initializeWaypointLocations(appr.Waypoints[i], loc, nmPerLongitude, magneticVariation, e)
 
 			// Add the final fix at the runway threshold.
 			appr.Waypoints[i] = append(appr.Waypoints[i], Waypoint{
@@ -329,7 +331,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 				e.Pop()
 			}
 
-			appr.Waypoints[i].CheckApproach(e, sg.ControlPositions)
+			appr.Waypoints[i].CheckApproach(e, controlPositions)
 		}
 
 		if appr.FullName == "" {
@@ -347,11 +349,11 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 
 		if appr.TowerController == "" {
 			appr.TowerController = icao[1:] + "_TWR"
-			if _, ok := sg.ControlPositions[appr.TowerController]; !ok {
+			if _, ok := controlPositions[appr.TowerController]; !ok {
 				e.ErrorString("No position specified for \"tower_controller\" and \"" +
 					appr.TowerController + "\" is not a valid controller")
 			}
-		} else if _, ok := sg.ControlPositions[appr.TowerController]; !ok {
+		} else if _, ok := controlPositions[appr.TowerController]; !ok {
 			e.ErrorString("No control position \"" + appr.TowerController + "\" for \"tower_controller\"")
 		}
 
@@ -364,7 +366,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 		e.Pop()
 	}
 
-	if _, ok := sg.ControlPositions[ap.DepartureController]; !ok && ap.DepartureController != "" {
+	if _, ok := controlPositions[ap.DepartureController]; !ok && ap.DepartureController != "" {
 		e.ErrorString("departure_controller \"%s\" unknown", ap.DepartureController)
 	}
 
@@ -388,7 +390,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 
 		for exitList, route := range rwyRoutes {
 			e.Push("Exit " + exitList)
-			sg.InitializeWaypointLocations(route.Waypoints, e)
+			initializeWaypointLocations(route.Waypoints, loc, nmPerLongitude, magneticVariation, e)
 
 			route.Waypoints = append([]Waypoint{
 				Waypoint{
@@ -400,7 +402,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 					Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold),
 				}}, route.Waypoints...)
 
-			route.Waypoints.CheckDeparture(e, sg.ControlPositions)
+			route.Waypoints.CheckDeparture(e, controlPositions)
 
 			for _, exit := range strings.Split(exitList, ",") {
 				exit = strings.TrimSpace(exit)
@@ -428,7 +430,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 			if ap.DepartureController != "" {
 				if route.HandoffController == "" {
 					e.ErrorString("no \"handoff_controller\" specified even though airport has a \"departure_controller\"")
-				} else if _, ok := sg.ControlPositions[route.HandoffController]; !ok {
+				} else if _, ok := controlPositions[route.HandoffController]; !ok {
 					e.ErrorString("control position \"%s\" unknown in scenario", route.HandoffController)
 				}
 			} else if route.HandoffController != "" {
@@ -450,7 +452,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 		e.Push("Departure exit " + dep.Exit)
 		e.Push("Destination " + dep.Destination)
 
-		if _, ok := sg.STARSFacilityAdaptation.Scratchpads[dep.Exit]; dep.Scratchpad == "" && !ok {
+		if _, ok := scratchpads[dep.Exit]; dep.Scratchpad == "" && !ok {
 			e.ErrorString("exit not in scenario group \"scratchpads\"")
 		}
 
@@ -458,7 +460,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 			e.ErrorString("altitude of %v is too low to be used. Is it supposed to be %v?", dep.Altitude, dep.Altitude*100)
 		}
 
-		if _, ok := database.Airports[dep.Destination]; !ok {
+		if _, ok := DB.Airports[dep.Destination]; !ok {
 			e.ErrorString("destination airport \"%s\" unknown", dep.Destination)
 		}
 
@@ -469,7 +471,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 		// Make sure that all runways have a route to the exit
 		for rwy := range ap.DepartureRoutes {
 			if _, ok := LookupRunway(icao, rwy); !ok {
-				e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
+				e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
 			}
 		}
 
@@ -494,10 +496,10 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 			// for airways, international ones not in the FAA database,
 			// latlongs in the flight plan, etc.
 			if fix == depExit {
-				sg.InitializeWaypointLocations(wp, e)
+				initializeWaypointLocations(wp, loc, nmPerLongitude, magneticVariation, e)
 			} else {
 				// nil here so errors aren't logged if it's not the actual exit.
-				sg.InitializeWaypointLocations(wp, nil)
+				initializeWaypointLocations(wp, loc, nmPerLongitude, magneticVariation, nil)
 			}
 			if !wp[0].Location.IsZero() {
 				ap.Departures[i].RouteWaypoints = append(ap.Departures[i].RouteWaypoints, wp[0])
@@ -508,7 +510,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 		}
 
 		for _, al := range dep.Airlines {
-			database.CheckAirline(al.ICAO, al.Fleet, e)
+			DB.CheckAirline(al.ICAO, al.Fleet, e)
 		}
 
 		e.Pop()
@@ -521,7 +523,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 
 		if _, ok := LookupRunway(icao, rwy); !ok {
 			e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy,
-				database.Airports[icao].ValidRunways())
+				DB.Airports[icao].ValidRunways())
 		}
 
 		if !slices.ContainsFunc(ap.ConvergingRunways,
@@ -537,7 +539,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 
 		for _, rwy := range pair.Runways {
 			if _, ok := LookupRunway(icao, rwy); !ok {
-				e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
+				e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
 			}
 		}
 
@@ -545,20 +547,20 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 		reg0, reg1 := ap.ApproachRegions[pair.Runways[0]], ap.ApproachRegions[pair.Runways[1]]
 		if reg0 != nil && reg1 != nil {
 			// If either is nil, we'll flag the error below, so it's fine to ignore that here.
-			r0n := reg0.NearPoint(sg.NmPerLongitude, sg.MagneticVariation)
-			r0f := reg0.FarPoint(sg.NmPerLongitude, sg.MagneticVariation)
-			r1n := reg1.NearPoint(sg.NmPerLongitude, sg.MagneticVariation)
-			r1f := reg1.FarPoint(sg.NmPerLongitude, sg.MagneticVariation)
+			r0n := reg0.NearPoint(nmPerLongitude, magneticVariation)
+			r0f := reg0.FarPoint(nmPerLongitude, magneticVariation)
+			r1n := reg1.NearPoint(nmPerLongitude, magneticVariation)
+			r1f := reg1.FarPoint(nmPerLongitude, magneticVariation)
 
 			p, ok := math.LineLineIntersect(r0n, r0f, r1n, r1f)
 			if ok && math.Distance2f(p, r0n) < 10 && math.Distance2f(p, r1n) < 10 {
-				ap.ConvergingRunways[i].RunwayIntersection = math.NM2LL(p, sg.NmPerLongitude)
+				ap.ConvergingRunways[i].RunwayIntersection = math.NM2LL(p, nmPerLongitude)
 			} else {
-				mid := math.Scale2f(math.Add2f(math.LL2NM(reg0.ReferencePoint, sg.NmPerLongitude),
-					math.LL2NM(reg1.ReferencePoint, sg.NmPerLongitude)),
+				mid := math.Scale2f(math.Add2f(math.LL2NM(reg0.ReferencePoint, nmPerLongitude),
+					math.LL2NM(reg1.ReferencePoint, nmPerLongitude)),
 					0.5)
 
-				ap.ConvergingRunways[i].RunwayIntersection = math.NM2LL(mid, sg.NmPerLongitude)
+				ap.ConvergingRunways[i].RunwayIntersection = math.NM2LL(mid, nmPerLongitude)
 			}
 		}
 
@@ -584,7 +586,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 	if ap.ATPAVolumes == nil {
 		ap.ATPAVolumes = make(map[string]*ATPAVolume)
 	}
-	for _, rwy := range database.Airports[icao].Runways {
+	for _, rwy := range DB.Airports[icao].Runways {
 		if _, ok := ap.ATPAVolumes[rwy.Id]; !ok {
 			// Make a default volume
 			ap.ATPAVolumes[rwy.Id] = &ATPAVolume{
@@ -601,7 +603,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 		vol.Id = icao + rwy
 
 		if _, ok := LookupRunway(icao, rwy); !ok {
-			e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, database.Airports[icao].ValidRunways())
+			e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
 		}
 
 		if vol.Threshold.IsZero() { // the location is set directly for default volumes
@@ -609,7 +611,7 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 				e.ErrorString("\"runway_threshold\" not specified.")
 			} else {
 				var ok bool
-				if vol.Threshold, ok = sg.locate(vol.ThresholdString); !ok {
+				if vol.Threshold, ok = loc.Locate(vol.ThresholdString); !ok {
 					e.ErrorString("\"%s\" unknown for \"runway_threshold\".", vol.ThresholdString)
 				}
 			}
@@ -620,10 +622,10 @@ func (ap *Airport) PostDeserialize(icao string, sg *ScenarioGroup, e *util.Error
 			vol.MaxHeadingDeviation = 90
 		}
 		if vol.Floor == 0 {
-			vol.Floor = float32(database.Airports[icao].Elevation + 100)
+			vol.Floor = float32(DB.Airports[icao].Elevation + 100)
 		}
 		if vol.Ceiling == 0 {
-			vol.Ceiling = float32(database.Airports[icao].Elevation + 5000)
+			vol.Ceiling = float32(DB.Airports[icao].Elevation + 5000)
 		}
 		if vol.Length == 0 {
 			vol.Length = 15
@@ -731,4 +733,166 @@ func (ap *Approach) Line() [2]math.Point2LL {
 func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {
 	p := ap.Line()
 	return math.Heading2LL(p[0], p[1], nmPerLongitude, magneticVariation)
+}
+
+type Locator interface {
+	Locate(fix string) (math.Point2LL, bool)
+}
+
+func initializeWaypointLocations(waypoints []Waypoint, loc Locator, nmPerLongitude float32,
+	magneticVariation float32, e *util.ErrorLogger) {
+	var prev math.Point2LL
+
+	for i, wp := range waypoints {
+		if e != nil {
+			e.Push("Fix " + wp.Fix)
+		}
+		if pos, ok := loc.Locate(wp.Fix); !ok {
+			if e != nil {
+				e.ErrorString("unable to locate waypoint")
+			}
+		} else {
+			waypoints[i].Location = pos
+
+			d := math.NMDistance2LL(prev, waypoints[i].Location)
+			if i > 1 && d > 120 && e != nil {
+				e.ErrorString("waypoint at %s is suspiciously far from previous one (%s at %s): %f nm",
+					waypoints[i].Location.DDString(), waypoints[i-1].Fix, waypoints[i-1].Location.DDString(), d)
+			}
+			prev = waypoints[i].Location
+		}
+
+		if e != nil {
+			e.Pop()
+		}
+	}
+
+	// Do (DME) arcs after wp.Locations have been initialized
+	for i, wp := range waypoints {
+		if wp.Arc == nil {
+			continue
+		}
+
+		if e != nil {
+			e.Push("Fix " + wp.Fix)
+		}
+
+		if i+1 == len(waypoints) {
+			if e != nil {
+				e.ErrorString("can't have DME arc starting at the final waypoint")
+				e.Pop()
+			}
+			break
+		}
+
+		// Which way are we turning as we depart p0? Use either the
+		// previous waypoint or the next one after the end of the arc
+		// to figure it out.
+		var v0, v1 [2]float32
+		p0, p1 := math.LL2NM(wp.Location, nmPerLongitude), math.LL2NM(waypoints[i+1].Location, nmPerLongitude)
+		if i > 0 {
+			v0 = math.Sub2f(p0, math.LL2NM(waypoints[i-1].Location, nmPerLongitude))
+			v1 = math.Sub2f(p1, p0)
+		} else {
+			if i+2 == len(waypoints) {
+				if e != nil {
+					e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
+					e.Pop()
+				}
+				continue
+			}
+			v0 = math.Sub2f(p1, p0)
+			v1 = math.Sub2f(math.LL2NM(waypoints[i+2].Location, nmPerLongitude), p1)
+		}
+		// cross product
+		x := v0[0]*v1[1] - v0[1]*v1[0]
+		wp.Arc.Clockwise = x < 0
+
+		if wp.Arc.Fix != "" {
+			// Center point was specified
+			var ok bool
+			if wp.Arc.Center, ok = loc.Locate(wp.Arc.Fix); !ok {
+				if e != nil {
+					e.ErrorString("unable to locate arc center \"" + wp.Arc.Fix + "\"")
+					e.Pop()
+				}
+				continue
+			}
+		} else {
+			// Just the arc length was specified; need to figure out the
+			// center and radius of the circle that gives that.
+			d := math.Distance2f(p0, p1)
+			if d >= wp.Arc.Length {
+				if e != nil {
+					e.ErrorString("distance between waypoints %.2fnm is greater than specified arc length %.2fnm",
+						d, wp.Arc.Length)
+					e.Pop()
+				}
+				continue
+			}
+			if wp.Arc.Length > d*3.14159 {
+				// No circle is possible to give an arc that long
+				if e != nil {
+					e.ErrorString("no valid circle will give a distance between waypoints %.2fnm", wp.Arc.Length)
+					e.Pop()
+				}
+				continue
+			}
+
+			// Now search for a center point of a circle that goes through
+			// p0 and p1 and has the desired arc length.  We will search
+			// along the line perpendicular to the vector p1-p0 that goes
+			// through its center point.
+
+			// There are two possible center points for the circle, one on
+			// each side of the line p0-p1.  We will take positive or
+			// negative steps in parametric t along the perpendicular line
+			// so that we're searching in the right direction to get the
+			// clockwise/counter clockwise route we want.
+			delta := float32(util.Select(wp.Arc.Clockwise, -.01, .01))
+
+			// We will search with uniform small steps along the line. Some
+			// sort of bisection search would probably be better, but...
+			t := delta
+			limit := 100 * math.Distance2f(p0, p1) // ad-hoc
+			v := math.Normalize2f(math.Sub2f(p1, p0))
+			v[0], v[1] = -v[1], v[0] // perp!
+			for t < limit {
+				center := math.Add2f(math.Mid2f(p0, p1), math.Scale2f(v, t))
+				radius := math.Distance2f(center, p0)
+
+				// Angle subtended by p0 and p1 w.r.t. center
+				cosTheta := math.Dot(math.Sub2f(p0, center), math.Sub2f(p1, center)) / math.Sqr(radius)
+				theta := math.SafeACos(cosTheta)
+
+				arcLength := theta * radius
+
+				if arcLength < wp.Arc.Length {
+					wp.Arc.Center = math.NM2LL(center, nmPerLongitude)
+					wp.Arc.Radius = radius
+					break
+				}
+
+				t += delta
+			}
+
+			if t >= limit {
+				if e != nil {
+					e.ErrorString("unable to find valid circle radius for arc")
+					e.Pop()
+				}
+				continue
+			}
+		}
+
+		// Heading from the center of the arc to the current fix
+		hfix := math.Heading2LL(wp.Arc.Center, wp.Location, nmPerLongitude, magneticVariation)
+
+		// Then perpendicular to that, depending on the arc's direction
+		wp.Arc.InitialHeading = math.NormalizeHeading(hfix + float32(util.Select(wp.Arc.Clockwise, 90, -90)))
+
+		if e != nil {
+			e.Pop()
+		}
+	}
 }

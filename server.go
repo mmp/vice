@@ -22,6 +22,7 @@ import (
 	"strings"
 	"time"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/util"
@@ -278,13 +279,13 @@ type SimManager struct {
 	activeSims           map[string]*Sim
 	controllerTokenToSim map[string]*Sim
 	mu                   util.LoggingMutex
-	mapLibrary           *VideoMapLibrary
+	mapLibrary           *av.VideoMapLibrary
 	startTime            time.Time
 	lg                   *log.Logger
 }
 
 func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
-	simConfigurations map[string]map[string]*SimConfiguration, mapLib *VideoMapLibrary,
+	simConfigurations map[string]map[string]*SimConfiguration, mapLib *av.VideoMapLibrary,
 	lg *log.Logger) *SimManager {
 	return &SimManager{
 		scenarioGroups:       scenarioGroups,
@@ -937,7 +938,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 				if components := strings.Split(command, "/"); len(components) > 1 {
 					// Cross fix [at altitude] [at speed]
 					fix := components[0][1:]
-					var ar *AltitudeRestriction
+					var ar *av.AltitudeRestriction
 					speed := 0
 
 					for _, cmd := range components[1:] {
@@ -948,7 +949,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 
 						var err error
 						if cmd[0] == 'A' && len(cmd) > 1 {
-							if ar, err = ParseAltitudeRestriction(cmd[1:]); err != nil {
+							if ar, err = av.ParseAltitudeRestriction(cmd[1:]); err != nil {
 								rewriteError(err)
 								return nil
 							}
@@ -1361,7 +1362,7 @@ func TryConnectRemoteServer(hostname string) chan *SimServerConnection {
 	return ch
 }
 
-func LaunchLocalSimServer() (chan *SimServer, *VideoMapLibrary, error) {
+func LaunchLocalSimServer() (chan *SimServer, *av.VideoMapLibrary, error) {
 	l, err := net.Listen("tcp", ":0")
 	if err != nil {
 		return nil, nil, err
@@ -1391,7 +1392,7 @@ func LaunchLocalSimServer() (chan *SimServer, *VideoMapLibrary, error) {
 	return ch, mapLibrary, nil
 }
 
-func runServer(l net.Listener, isLocal bool) (chan map[string]map[string]*SimConfiguration, *VideoMapLibrary) {
+func runServer(l net.Listener, isLocal bool) (chan map[string]map[string]*SimConfiguration, *av.VideoMapLibrary) {
 	ch := make(chan map[string]map[string]*SimConfiguration, 1)
 
 	var e util.ErrorLogger

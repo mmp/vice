@@ -41,6 +41,7 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/inkyblackness/imgui-go/v4 v4.7.0 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
+	github.com/mmp/vice/pkg/aviation v0.0.0-00010101000000-000000000000 // indirect
 	github.com/mmp/vice/pkg/platform v0.0.0-00010101000000-000000000000 // indirect
 	github.com/mmp/vice/pkg/renderer v0.0.0-00010101000000-000000000000 // indirect
 	github.com/mmp/vice/pkg/util v0.0.0-00010101000000-000000000000 // indirect
@@ -69,3 +70,5 @@ replace github.com/mmp/vice/pkg/rand => /Users/mmp/vice/pkg/rand
 replace github.com/mmp/vice/pkg/renderer => /Users/mmp/vice/pkg/renderer
 
 replace github.com/mmp/vice/pkg/platform => /Users/mmp/vice/pkg/platform
+
+replace github.com/mmp/vice/pkg/aviation => /Users/mmp/vice/pkg/aviation

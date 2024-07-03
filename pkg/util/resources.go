@@ -1,21 +1,13 @@
-// util.go
-// Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
-// SPDX: GPL-3.0-only
-
-package main
+package util
 
 import (
 	"io/fs"
 	"os"
 	"path/filepath"
 	"runtime"
-
-	"github.com/mmp/vice/pkg/util"
 )
 
-///////////////////////////////////////////////////////////////////////////
-
-func getResourcesFS() fs.StatFS {
+func getResourcesFS() *fs.StatFS {
 	path, err := os.Executable()
 	if err != nil {
 		panic(err)
@@ -40,14 +32,11 @@ func getResourcesFS() fs.StatFS {
 	}
 
 	if check(fsys) {
-		lg.Infof("%s: resources directory", dir)
-		return fsys
+		return &fsys
 	}
 
 	// Try CWD (this is useful for development and debugging but shouldn't
 	// be needed for release builds.
-	lg.Infof("Trying CWD for resources FS")
-
 	wd, err := os.Getwd()
 	if err != nil {
 		panic(err)
@@ -61,22 +50,21 @@ func getResourcesFS() fs.StatFS {
 	}
 
 	if check(fsys) {
-		return fsys
+		return &fsys
 	}
 	panic("unable to find videomaps in CWD")
 }
+
+var resourcesFS *fs.StatFS
 
 // LoadResource loads the specified file from the resources directory, decompressing it if
 // it is zstd compressed. It panics if the file is not found; missing resources are pretty
 // much impossible to recover from.
 func LoadResource(path string) []byte {
-	b, err := fs.ReadFile(resourcesFS, path)
-	if err != nil {
-		panic(err)
-	}
+	b := LoadRawResource(path)
 
 	if filepath.Ext(path) == ".zst" {
-		s, err := util.DecompressZstd(string(b))
+		s, err := DecompressZstd(string(b))
 		if err != nil {
 			panic(err)
 		}
@@ -84,4 +72,28 @@ func LoadResource(path string) []byte {
 	}
 
 	return b
+}
+
+func LoadRawResource(path string) []byte {
+	if resourcesFS == nil {
+		resourcesFS = getResourcesFS()
+	}
+
+	b, err := fs.ReadFile(*resourcesFS, path)
+	if err != nil {
+		panic(err)
+	}
+
+	return b
+}
+
+func WalkResources(root string, fn func(path string, d fs.DirEntry, filesystem fs.FS, err error) error) error {
+	if resourcesFS == nil {
+		resourcesFS = getResourcesFS()
+	}
+
+	return fs.WalkDir(*resourcesFS, root,
+		func(path string, d fs.DirEntry, err error) error {
+			return fn(path, d, *resourcesFS, err)
+		})
 }

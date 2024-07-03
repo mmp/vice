@@ -18,26 +18,27 @@ import (
 	"time"
 
 	"github.com/iancoleman/orderedmap"
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/util"
 )
 
 type ScenarioGroup struct {
-	TRACON           string                   `json:"tracon"`
-	Name             string                   `json:"name"`
-	Airports         map[string]*Airport      `json:"airports"`
-	Fixes            map[string]math.Point2LL `json:"-"`
-	FixesStrings     orderedmap.OrderedMap    `json:"fixes"`
-	Scenarios        map[string]*Scenario     `json:"scenarios"`
-	DefaultScenario  string                   `json:"default_scenario"`
-	ControlPositions map[string]*Controller   `json:"control_positions"`
-	Airspace         Airspace                 `json:"airspace"`
-	ArrivalGroups    map[string][]Arrival     `json:"arrival_groups"`
+	TRACON           string                    `json:"tracon"`
+	Name             string                    `json:"name"`
+	Airports         map[string]*av.Airport    `json:"airports"`
+	Fixes            map[string]math.Point2LL  `json:"-"`
+	FixesStrings     orderedmap.OrderedMap     `json:"fixes"`
+	Scenarios        map[string]*Scenario      `json:"scenarios"`
+	DefaultScenario  string                    `json:"default_scenario"`
+	ControlPositions map[string]*av.Controller `json:"control_positions"`
+	Airspace         Airspace                  `json:"airspace"`
+	ArrivalGroups    map[string][]av.Arrival   `json:"arrival_groups"`
 
 	PrimaryAirport string `json:"primary_airport"`
 
-	ReportingPointStrings []string         `json:"reporting_points"`
-	ReportingPoints       []ReportingPoint // not in JSON
+	ReportingPointStrings []string            `json:"reporting_points"`
+	ReportingPoints       []av.ReportingPoint // not in JSON
 
 	NmPerLatitude           float32 // Always 60
 	NmPerLongitude          float32 // Derived from Center
@@ -58,10 +59,10 @@ type STARSFacilityAdaptation struct {
 	ForceQLToSelf       bool                `json:"force_ql_self"`
 	AllowLongScratchpad [2]bool             `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
 	VideoMapNames       []string            `json:"stars_maps"`
-	VideoMaps           []STARSMap
+	VideoMaps           []av.VideoMap
 	ControllerConfigs   map[string]STARSControllerConfig `json:"controller_configs"`
-	InhibitCAVolumes    []AirspaceVolume                 `json:"inhibit_ca_volumes"`
-	RadarSites          map[string]*RadarSite            `json:"radar_sites"`
+	InhibitCAVolumes    []av.AirspaceVolume              `json:"inhibit_ca_volumes"`
+	RadarSites          map[string]*av.RadarSite         `json:"radar_sites"`
 	Center              math.Point2LL                    `json:"-"`
 	CenterString        string                           `json:"center"`
 	Range               float32                          `json:"range"`
@@ -71,7 +72,7 @@ type STARSFacilityAdaptation struct {
 
 type STARSControllerConfig struct {
 	VideoMapNames []string `json:"video_maps"`
-	VideoMaps     []STARSMap
+	VideoMaps     []av.VideoMap
 	DefaultMaps   []string      `json:"default_maps"`
 	Center        math.Point2LL `json:"-"`
 	CenterString  string        `json:"center"`
@@ -94,7 +95,7 @@ type Scenario struct {
 	SoloController      string                `json:"solo_controller"`
 	SplitConfigurations SplitConfigurationSet `json:"multi_controllers"`
 	DefaultSplit        string                `json:"default_split"`
-	Wind                Wind                  `json:"wind"`
+	Wind                av.Wind               `json:"wind"`
 	VirtualControllers  []string              `json:"controllers"`
 
 	// Map from arrival group name to map from airport name to default rate...
@@ -133,7 +134,7 @@ type ScenarioGroupDepartureRunway struct {
 	Category    string `json:"category,omitempty"`
 	DefaultRate int    `json:"rate"`
 
-	ExitRoutes map[string]ExitRoute // copied from airport's  departure_routes
+	ExitRoutes map[string]av.ExitRoute // copied from airport's  departure_routes
 }
 
 type ScenarioGroupArrivalRunway struct {
@@ -233,7 +234,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 		return s.ArrivalRunways[i].Airport < s.ArrivalRunways[j].Airport
 	})
 
-	activeAirports := make(map[*Airport]interface{}) // all airports with departures or arrivals
+	activeAirports := make(map[*av.Airport]interface{}) // all airports with departures or arrivals
 	for _, rwy := range s.ArrivalRunways {
 		e.Push("Arrival runway " + rwy.Airport + " " + rwy.Runway)
 
@@ -308,7 +309,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 	}
 	if haveCRDA {
 		// Make sure all of the controllers involved have a valid default airport
-		check := func(ctrl *Controller) {
+		check := func(ctrl *av.Controller) {
 			if ctrl.DefaultAirport == "" {
 				if ap, _, ok := strings.Cut(ctrl.Callsign, "_"); ok { // see if the first part of the callsign is an airport
 					if _, ok := sg.Airports["K"+ap]; ok {
@@ -546,7 +547,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 	}
 
 	if s.CenterString != "" {
-		if pos, ok := sg.locate(s.CenterString); !ok {
+		if pos, ok := sg.Locate(s.CenterString); !ok {
 			e.ErrorString("unknown location \"%s\" specified for \"center\"", s.CenterString)
 		} else {
 			s.Center = pos
@@ -585,21 +586,21 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 ///////////////////////////////////////////////////////////////////////////
 // ScenarioGroup
 
-func (sg *ScenarioGroup) locate(s string) (math.Point2LL, bool) {
+func (sg *ScenarioGroup) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
 	if p, ok := sg.Fixes[s]; ok {
 		return p, true
-	} else if n, ok := database.Navaids[strings.ToUpper(s)]; ok {
+	} else if n, ok := av.DB.Navaids[strings.ToUpper(s)]; ok {
 		return n.Location, ok
-	} else if ap, ok := database.Airports[strings.ToUpper(s)]; ok {
+	} else if ap, ok := av.DB.Airports[strings.ToUpper(s)]; ok {
 		return ap.Location, ok
-	} else if f, ok := database.Fixes[strings.ToUpper(s)]; ok {
+	} else if f, ok := av.DB.Fixes[strings.ToUpper(s)]; ok {
 		return f.Location, ok
 	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
 	} else if len(s) > 5 && s[0] == 'K' && s[4] == '-' {
-		if rwy, ok := LookupRunway(s[:4], s[5:]); ok {
+		if rwy, ok := av.LookupRunway(s[:4], s[5:]); ok {
 			return rwy.Threshold, true
 		}
 	}
@@ -622,7 +623,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 
 	if sg.TRACON == "" {
 		e.ErrorString("\"tracon\" must be specified")
-	} else if _, ok := database.TRACONs[sg.TRACON]; !ok {
+	} else if _, ok := av.DB.TRACONs[sg.TRACON]; !ok {
 		e.ErrorString("TRACON %s is unknown; it must be a 3-letter identifier listed at "+
 			"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon.",
 			sg.TRACON)
@@ -645,7 +646,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 		} else if strs := reFixHeadingDistance.FindStringSubmatch(location); len(strs) >= 4 {
 			// "FIX@HDG/DIST"
 			//fmt.Printf("A loc %s -> strs %+v\n", location, strs)
-			if pll, ok := sg.locate(strs[1]); !ok {
+			if pll, ok := sg.Locate(strs[1]); !ok {
 				e.ErrorString("base fix \"" + strs[1] + "\" unknown")
 			} else if hdg, err := strconv.Atoi(strs[2]); err != nil {
 				e.ErrorString("heading \"%s\": %v", strs[2], err)
@@ -660,7 +661,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 				p = math.Add2f(p, v)
 				sg.Fixes[fix] = math.NM2LL(p, sg.NmPerLongitude)
 			}
-		} else if pos, ok := sg.locate(location); ok {
+		} else if pos, ok := sg.Locate(location); ok {
 			// It's something simple. Check this after FIX@HDG/DIST,
 			// though, since the runway matching KJFK-31L discards stuff
 			// after the runway and we don't want that to match in that
@@ -687,23 +688,24 @@ func (sg *ScenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 		}
 	}
 
+	if sg.PrimaryAirport == "" {
+		e.ErrorString("\"primary_airport\" not specified")
+	} else if ap, ok := av.DB.Airports[sg.PrimaryAirport]; !ok {
+		e.ErrorString("\"primary_airport\" \"%s\" unknown", sg.PrimaryAirport)
+	} else if mvar, err := av.DB.MagneticGrid.Lookup(ap.Location); err != nil {
+		e.ErrorString("%s: unable to find magnetic declination: %v", sg.PrimaryAirport, err)
+	} else {
+		sg.MagneticVariation = mvar + sg.MagneticAdjustment
+	}
+
 	if len(sg.Airports) == 0 {
 		e.ErrorString("No \"airports\" specified in scenario group")
 	}
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + name)
-		ap.PostDeserialize(name, sg, e)
+		ap.PostDeserialize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
+			sg.ControlPositions, sg.STARSFacilityAdaptation.Scratchpads, e)
 		e.Pop()
-	}
-
-	if sg.PrimaryAirport == "" {
-		e.ErrorString("\"primary_airport\" not specified")
-	} else if ap, ok := database.Airports[sg.PrimaryAirport]; !ok {
-		e.ErrorString("\"primary_airport\" \"%s\" unknown", sg.PrimaryAirport)
-	} else if mvar, err := database.MagneticGrid.Lookup(ap.Location); err != nil {
-		e.ErrorString("%s: unable to find magnetic declination: %v", sg.PrimaryAirport, err)
-	} else {
-		sg.MagneticVariation = mvar + sg.MagneticAdjustment
 	}
 
 	fa := sg.STARSFacilityAdaptation
@@ -724,7 +726,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 		e.Push("stars_adaptation")
 
 		for _, fix := range aa.Fix {
-			if _, ok := sg.locate(fix); !ok && fix != "ALL" {
+			if _, ok := sg.Locate(fix); !ok && fix != "ALL" {
 				e.ErrorString(fix + ": fix unknown")
 			}
 		}
@@ -774,16 +776,17 @@ func (sg *ScenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 		}
 
 		for i := range arrivals {
-			arrivals[i].PostDeserialize(sg, e)
+			arrivals[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
+				sg.Airports, sg.ControlPositions, e)
 		}
 		e.Pop()
 	}
 
 	for _, rp := range sg.ReportingPointStrings {
-		if loc, ok := sg.locate(rp); !ok {
+		if loc, ok := sg.Locate(rp); !ok {
 			e.ErrorString("unknown \"reporting_point\" \"%s\"", rp)
 		} else {
-			sg.ReportingPoints = append(sg.ReportingPoints, ReportingPoint{Fix: rp, Location: loc})
+			sg.ReportingPoints = append(sg.ReportingPoints, av.ReportingPoint{Fix: rp, Location: loc})
 		}
 	}
 
@@ -813,7 +816,7 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		s.ControllerConfigs = util.CommaKeyExpand(s.ControllerConfigs)
 
 		for ctrl, config := range s.ControllerConfigs {
-			if pos, ok := sg.locate(config.CenterString); !ok {
+			if pos, ok := sg.Locate(config.CenterString); !ok {
 				e.ErrorString("unknown location \"%s\" specified for \"center\"", s.CenterString)
 			} else {
 				config.Center = pos
@@ -859,7 +862,7 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 
 	if s.CenterString == "" {
 		e.ErrorString("No \"center\" specified")
-	} else if pos, ok := sg.locate(s.CenterString); !ok {
+	} else if pos, ok := sg.Locate(s.CenterString); !ok {
 		e.ErrorString("unknown location \"%s\" specified for \"center\"", s.CenterString)
 	} else {
 		s.Center = pos
@@ -871,7 +874,7 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 
 	for name, rs := range s.RadarSites {
 		e.Push("Radar site " + name)
-		if p, ok := sg.locate(rs.PositionString); rs.PositionString == "" || !ok {
+		if p, ok := sg.Locate(rs.PositionString); rs.PositionString == "" || !ok {
 			e.ErrorString("radar site position \"%s\" not found", rs.PositionString)
 		} else {
 			rs.Position = p
@@ -899,22 +902,22 @@ func (s *STARSFacilityAdaptation) PreSave() {
 	}
 }
 
-func (s *STARSFacilityAdaptation) PostLoad(ml *VideoMapLibrary) error {
+func (s *STARSFacilityAdaptation) PostLoad(ml *av.VideoMapLibrary) error {
 	// And conversely, PostLoad patches things up by restoring the
 	// STARSMaps for the video maps in the STARSFacilityAdaptation.
-	initMaps := func(names []string) ([]STARSMap, error) {
-		var maps []STARSMap
+	initMaps := func(names []string) ([]av.VideoMap, error) {
+		var maps []av.VideoMap
 		for _, name := range names {
 			if name == "" {
-				maps = append(maps, STARSMap{})
-			} else if m := ml.GetMap(s.VideoMapFile, name); m != nil {
+				maps = append(maps, av.VideoMap{})
+			} else if m, err := ml.GetMap(s.VideoMapFile, name); err == nil {
 				maps = append(maps, *m)
 			} else {
-				return nil, fmt.Errorf("%s: map \"%s\" not found", s.VideoMapFile, name)
+				return nil, err
 			}
 		}
 		for len(maps) < NumSTARSMaps {
-			maps = append(maps, STARSMap{})
+			maps = append(maps, av.VideoMap{})
 		}
 
 		return maps, nil
@@ -984,164 +987,6 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 			simConfigurations[sg.TRACON] = make(map[string]*SimConfiguration)
 		}
 		simConfigurations[sg.TRACON][sg.Name] = config
-	}
-}
-
-func (sg *ScenarioGroup) InitializeWaypointLocations(waypoints []Waypoint, e *util.ErrorLogger) {
-	var prev math.Point2LL
-
-	for i, wp := range waypoints {
-		if e != nil {
-			e.Push("Fix " + wp.Fix)
-		}
-		if pos, ok := sg.locate(wp.Fix); !ok {
-			if e != nil {
-				e.ErrorString("unable to locate waypoint")
-			}
-		} else {
-			waypoints[i].Location = pos
-
-			d := math.NMDistance2LL(prev, waypoints[i].Location)
-			if i > 1 && d > 120 && e != nil {
-				e.ErrorString("waypoint at %s is suspiciously far from previous one (%s at %s): %f nm",
-					waypoints[i].Location.DDString(), waypoints[i-1].Fix, waypoints[i-1].Location.DDString(), d)
-			}
-			prev = waypoints[i].Location
-		}
-
-		if e != nil {
-			e.Pop()
-		}
-	}
-
-	// Do (DME) arcs after wp.Locations have been initialized
-	for i, wp := range waypoints {
-		if wp.Arc == nil {
-			continue
-		}
-
-		if e != nil {
-			e.Push("Fix " + wp.Fix)
-		}
-
-		if i+1 == len(waypoints) {
-			if e != nil {
-				e.ErrorString("can't have DME arc starting at the final waypoint")
-				e.Pop()
-			}
-			break
-		}
-
-		// Which way are we turning as we depart p0? Use either the
-		// previous waypoint or the next one after the end of the arc
-		// to figure it out.
-		var v0, v1 [2]float32
-		p0, p1 := math.LL2NM(wp.Location, sg.NmPerLongitude), math.LL2NM(waypoints[i+1].Location, sg.NmPerLongitude)
-		if i > 0 {
-			v0 = math.Sub2f(p0, math.LL2NM(waypoints[i-1].Location, sg.NmPerLongitude))
-			v1 = math.Sub2f(p1, p0)
-		} else {
-			if i+2 == len(waypoints) {
-				if e != nil {
-					e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
-					e.Pop()
-				}
-				continue
-			}
-			v0 = math.Sub2f(p1, p0)
-			v1 = math.Sub2f(math.LL2NM(waypoints[i+2].Location, sg.NmPerLongitude), p1)
-		}
-		// cross product
-		x := v0[0]*v1[1] - v0[1]*v1[0]
-		wp.Arc.Clockwise = x < 0
-
-		if wp.Arc.Fix != "" {
-			// Center point was specified
-			var ok bool
-			if wp.Arc.Center, ok = sg.locate(wp.Arc.Fix); !ok {
-				if e != nil {
-					e.ErrorString("unable to locate arc center \"" + wp.Arc.Fix + "\"")
-					e.Pop()
-				}
-				continue
-			}
-		} else {
-			// Just the arc length was specified; need to figure out the
-			// center and radius of the circle that gives that.
-			d := math.Distance2f(p0, p1)
-			if d >= wp.Arc.Length {
-				if e != nil {
-					e.ErrorString("distance between waypoints %.2fnm is greater than specified arc length %.2fnm",
-						d, wp.Arc.Length)
-					e.Pop()
-				}
-				continue
-			}
-			if wp.Arc.Length > d*3.14159 {
-				// No circle is possible to give an arc that long
-				if e != nil {
-					e.ErrorString("no valid circle will give a distance between waypoints %.2fnm", wp.Arc.Length)
-					e.Pop()
-				}
-				continue
-			}
-
-			// Now search for a center point of a circle that goes through
-			// p0 and p1 and has the desired arc length.  We will search
-			// along the line perpendicular to the vector p1-p0 that goes
-			// through its center point.
-
-			// There are two possible center points for the circle, one on
-			// each side of the line p0-p1.  We will take positive or
-			// negative steps in parametric t along the perpendicular line
-			// so that we're searching in the right direction to get the
-			// clockwise/counter clockwise route we want.
-			delta := float32(util.Select(wp.Arc.Clockwise, -.01, .01))
-
-			// We will search with uniform small steps along the line. Some
-			// sort of bisection search would probably be better, but...
-			t := delta
-			limit := 100 * math.Distance2f(p0, p1) // ad-hoc
-			v := math.Normalize2f(math.Sub2f(p1, p0))
-			v[0], v[1] = -v[1], v[0] // perp!
-			for t < limit {
-				center := math.Add2f(math.Mid2f(p0, p1), math.Scale2f(v, t))
-				radius := math.Distance2f(center, p0)
-
-				// Angle subtended by p0 and p1 w.r.t. center
-				cosTheta := math.Dot(math.Sub2f(p0, center), math.Sub2f(p1, center)) / math.Sqr(radius)
-				theta := math.SafeACos(cosTheta)
-
-				arcLength := theta * radius
-
-				if arcLength < wp.Arc.Length {
-					wp.Arc.Center = math.NM2LL(center, sg.NmPerLongitude)
-					wp.Arc.Radius = radius
-					break
-				}
-
-				t += delta
-			}
-
-			if t >= limit {
-				if e != nil {
-					e.ErrorString("unable to find valid circle radius for arc")
-					e.Pop()
-				}
-				continue
-			}
-		}
-
-		// Heading from the center of the arc to the current fix
-		hfix := math.Heading2LL(wp.Arc.Center, wp.Location,
-			sg.NmPerLongitude, sg.MagneticVariation)
-
-		// Then perpendicular to that, depending on the arc's direction
-		wp.Arc.InitialHeading = math.NormalizeHeading(hfix + float32(util.Select(wp.Arc.Clockwise, 90, -90)))
-
-		if e != nil {
-			e.Pop()
-		}
 	}
 }
 
@@ -1234,11 +1079,11 @@ func (r RootFS) Open(filename string) (fs.File, error) {
 type dbResolver struct{}
 
 func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
-	if n, ok := database.Navaids[s]; ok {
+	if n, ok := av.DB.Navaids[s]; ok {
 		return n.Location, nil
-	} else if n, ok := database.Airports[s]; ok {
+	} else if n, ok := av.DB.Airports[s]; ok {
 		return n.Location, nil
-	} else if f, ok := database.Fixes[s]; ok {
+	} else if f, ok := av.DB.Fixes[s]; ok {
 		return f.Location, nil
 	} else {
 		return math.Point2LL{}, fmt.Errorf("%s: unknown fix", s)
@@ -1252,7 +1097,7 @@ func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
 // continue on in the presence of errors; all errors will be printed and
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
-func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration, *VideoMapLibrary) {
+func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration, *av.VideoMapLibrary) {
 	start := time.Now()
 
 	math.SetLocationResolver(&dbResolver{})
@@ -1275,7 +1120,7 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 		}
 	}
 
-	err := fs.WalkDir(resourcesFS, "scenarios", func(path string, d fs.DirEntry, err error) error {
+	err := util.WalkResources("scenarios", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
 		if err != nil {
 			lg.Errorf("error walking scenarios/: %v", err)
 			return nil
@@ -1299,7 +1144,7 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 		}
 
 		lg.Infof("%s: loading scenario", path)
-		s := loadScenarioGroup(resourcesFS, path, e)
+		s := loadScenarioGroup(fs, path, e)
 		if s != nil {
 			if _, ok := scenarioGroups[s.TRACON][s.Name]; ok {
 				e.ErrorString("%s / %s: scenario redefined", s.TRACON, s.Name)
@@ -1353,8 +1198,8 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 	}
 
 	// Next load the video maps; we will kick off work to load
-	maplib := MakeVideoMapLibrary()
-	err = fs.WalkDir(resourcesFS, "videomaps", func(path string, d fs.DirEntry, err error) error {
+	maplib := av.MakeVideoMapLibrary()
+	err = util.WalkResources("videomaps", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
 		if err != nil {
 			lg.Errorf("error walking videomaps: %v", err)
 			return nil
@@ -1365,7 +1210,8 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 		}
 
 		if strings.HasSuffix(path, "-videomaps.gob") || strings.HasSuffix(path, "-videomaps.gob.zst") {
-			maplib.AddFile(resourcesFS, path, referencedVideoMaps[path], e)
+			loadSerially := *server
+			maplib.AddFile(fs, path, loadSerially, referencedVideoMaps[path], e)
 		}
 
 		return nil
@@ -1386,7 +1232,8 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 				return os.DirFS(".")
 			}
 		}()
-		maplib.AddFile(fs, *videoMapFilename, referencedVideoMaps[*videoMapFilename], e)
+		loadSerially := *server
+		maplib.AddFile(fs, *videoMapFilename, loadSerially, referencedVideoMaps[*videoMapFilename], e)
 	}
 
 	// Final tidying before we return the loaded scenarios.
@@ -1446,7 +1293,7 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 				for _, dep := range ap.Departures {
 					for _, al := range dep.Airlines {
 						fleet := util.Select(al.Fleet != "", al.Fleet, "default")
-						for _, ac := range database.Airlines[al.ICAO].Fleets[fleet] {
+						for _, ac := range av.DB.Airlines[al.ICAO].Fleets[fleet] {
 							acTypes[ac.ICAO] = struct{}{}
 						}
 					}
@@ -1456,7 +1303,7 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 	}
 	var missing []string
 	for _, t := range util.SortedMapKeys(acTypes) {
-		if database.AircraftPerformance[t].Speed.V2 == 0 {
+		if av.DB.AircraftPerformance[t].Speed.V2 == 0 {
 			missing = append(missing, t)
 		}
 	}
