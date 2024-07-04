@@ -19,6 +19,7 @@ import (
 	"strings"
 	"time"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
@@ -1315,7 +1316,7 @@ type LaunchControlWindow struct {
 }
 
 type LaunchDeparture struct {
-	Aircraft           *Aircraft
+	Aircraft           *av.Aircraft
 	Airport            string
 	Runway             string
 	Category           string
@@ -1331,7 +1332,7 @@ func (ld *LaunchDeparture) Reset() {
 }
 
 type LaunchArrival struct {
-	Aircraft           *Aircraft
+	Aircraft           *av.Aircraft
 	Airport            string
 	Group              string
 	LastLaunchCallsign string
@@ -1376,7 +1377,7 @@ func MakeLaunchControlWindow(w *World) *LaunchControlWindow {
 	return lc
 }
 
-func (lc *LaunchControlWindow) spawnDeparture(airport, rwy, category string) *Aircraft {
+func (lc *LaunchControlWindow) spawnDeparture(airport, rwy, category string) *av.Aircraft {
 	for i := 0; i < 100; i++ {
 		if ac, _, err := lc.w.CreateDeparture(airport, rwy, category, 0, nil); err == nil {
 			return ac
@@ -1385,7 +1386,7 @@ func (lc *LaunchControlWindow) spawnDeparture(airport, rwy, category string) *Ai
 	panic("unable to spawn a departure")
 }
 
-func (lc *LaunchControlWindow) spawnArrival(group, airport string) *Aircraft {
+func (lc *LaunchControlWindow) spawnArrival(group, airport string) *av.Aircraft {
 	for i := 0; i < 100; i++ {
 		goAround := rand.Float32() < lc.w.LaunchConfig.GoAroundRate
 
@@ -1459,7 +1460,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *EventStream, p platfo
 	imgui.Separator()
 
 	if lc.w.LaunchConfig.Mode == LaunchManual {
-		mitAndTime := func(ac *Aircraft, launchPosition math.Point2LL,
+		mitAndTime := func(ac *av.Aircraft, launchPosition math.Point2LL,
 			lastLaunchCallsign string, lastLaunchTime time.Time) {
 			imgui.TableNextColumn()
 			if lastLaunchCallsign != "" {

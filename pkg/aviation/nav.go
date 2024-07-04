@@ -2,7 +2,7 @@
 // Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package aviation
 
 import (
 	"fmt"
@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
@@ -22,7 +21,7 @@ import (
 // -> unset/unspecified.
 type Nav struct {
 	FlightState    FlightState
-	Perf           av.AircraftPerformance
+	Perf           AircraftPerformance
 	Altitude       NavAltitude
 	Speed          NavSpeed
 	Heading        NavHeading
@@ -37,7 +36,7 @@ type Nav struct {
 	DeferredHeading *DeferredHeading
 
 	FinalAltitude float32
-	Waypoints     []av.Waypoint
+	Waypoints     []Waypoint
 }
 
 // DeferredHeading stores a heading assignment from the controller and the
@@ -59,7 +58,7 @@ type FlightState struct {
 	IsDeparture               bool
 	DepartureAirportLocation  math.Point2LL
 	DepartureAirportElevation float32
-	ArrivalAirport            av.Waypoint
+	ArrivalAirport            Waypoint
 	ArrivalAirportLocation    math.Point2LL
 	ArrivalAirportElevation   float32
 
@@ -97,7 +96,7 @@ type NavAltitude struct {
 	// Carried after passing a waypoint if we were unable to meet the
 	// restriction at the way point; we keep trying until we get there (or
 	// are given another instruction..)
-	Restriction *av.AltitudeRestriction
+	Restriction *AltitudeRestriction
 }
 
 type NavSpeed struct {
@@ -115,30 +114,30 @@ const MaxIAS = 290
 type NavHeading struct {
 	Assigned     *float32
 	Turn         *TurnMethod
-	Arc          *av.DMEArc
+	Arc          *DMEArc
 	JoiningArc   bool
 	RacetrackPT  *FlyRacetrackPT
 	Standard45PT *FlyStandard45PT
 }
 
 type NavApproach struct {
-	Assigned          *av.Approach
+	Assigned          *Approach
 	AssignedId        string
-	ATPAVolume        *av.ATPAVolume
+	ATPAVolume        *ATPAVolume
 	Cleared           bool
 	InterceptState    InterceptLocalizerState
 	PassedApproachFix bool // have we passed a fix on the approach yet?
 	NoPT              bool
-	AtFixClearedRoute []av.Waypoint
+	AtFixClearedRoute []Waypoint
 }
 
 type NavFixAssignment struct {
 	Arrive struct {
-		Altitude *av.AltitudeRestriction
+		Altitude *AltitudeRestriction
 		Speed    *float32
 	}
 	Depart struct {
-		Fix     *av.Waypoint
+		Fix     *Waypoint
 		Heading *float32
 	}
 }
@@ -152,8 +151,9 @@ const (
 	HoldingLocalizer
 )
 
-func MakeArrivalNav(w *World, arr *av.Arrival, fp av.FlightPlan, perf av.AircraftPerformance) *Nav {
-	if nav := makeNav(w, fp, perf, arr.Waypoints); nav != nil {
+func MakeArrivalNav(arr *Arrival, fp FlightPlan, perf AircraftPerformance,
+	nmPerLongitude float32, magneticVariation float32, lg *log.Logger) *Nav {
+	if nav := makeNav(fp, perf, arr.Waypoints, nmPerLongitude, magneticVariation, lg); nav != nil {
 		spd := arr.SpeedRestriction
 		nav.Speed.Restriction = util.Select(spd != 0, &spd, nil)
 		if arr.AssignedAltitude > 0 {
@@ -176,9 +176,9 @@ func MakeArrivalNav(w *World, arr *av.Arrival, fp av.FlightPlan, perf av.Aircraf
 	return nil
 }
 
-func MakeDepartureNav(w *World, fp av.FlightPlan, perf av.AircraftPerformance, assignedAlt, clearedAlt int,
-	wp []av.Waypoint) *Nav {
-	if nav := makeNav(w, fp, perf, wp); nav != nil {
+func MakeDepartureNav(fp FlightPlan, perf AircraftPerformance, assignedAlt, clearedAlt int,
+	wp []Waypoint, nmPerLongitude float32, magneticVariation float32, lg *log.Logger) *Nav {
+	if nav := makeNav(fp, perf, wp, nmPerLongitude, magneticVariation, lg); nav != nil {
 		if assignedAlt != 0 {
 			alt := float32(math.Min(assignedAlt, fp.Altitude))
 			nav.Altitude.Assigned = &alt
@@ -193,7 +193,8 @@ func MakeDepartureNav(w *World, fp av.FlightPlan, perf av.AircraftPerformance, a
 	return nil
 }
 
-func makeNav(w *World, fp av.FlightPlan, perf av.AircraftPerformance, wp []av.Waypoint) *Nav {
+func makeNav(fp FlightPlan, perf AircraftPerformance, wp []Waypoint, nmPerLongitude float32,
+	magneticVariation float32, lg *log.Logger) *Nav {
 	nav := &Nav{
 		Perf:           perf,
 		FinalAltitude:  float32(fp.Altitude),
@@ -202,8 +203,8 @@ func makeNav(w *World, fp av.FlightPlan, perf av.AircraftPerformance, wp []av.Wa
 	}
 
 	nav.FlightState = FlightState{
-		MagneticVariation: w.MagneticVariation,
-		NmPerLongitude:    w.NmPerLongitude,
+		MagneticVariation: magneticVariation,
+		NmPerLongitude:    nmPerLongitude,
 		Position:          nav.Waypoints[0].Location,
 		Heading:           float32(nav.Waypoints[0].Heading),
 	}
@@ -222,16 +223,16 @@ func makeNav(w *World, fp av.FlightPlan, perf av.AircraftPerformance, wp []av.Wa
 
 	// Filter out airways...
 	nav.Waypoints = util.FilterSlice(nav.Waypoints,
-		func(wp av.Waypoint) bool { return !wp.Location.IsZero() })
+		func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
-	if ap, ok := av.DB.Airports[fp.DepartureAirport]; !ok {
+	if ap, ok := DB.Airports[fp.DepartureAirport]; !ok {
 		lg.Errorf("%s: departure airport unknown", fp.DepartureAirport)
 		return nil
 	} else {
 		nav.FlightState.DepartureAirportLocation = ap.Location
 		nav.FlightState.DepartureAirportElevation = float32(ap.Elevation)
 	}
-	if ap, ok := av.DB.Airports[fp.ArrivalAirport]; !ok {
+	if ap, ok := DB.Airports[fp.ArrivalAirport]; !ok {
 		lg.Errorf("%s: arrival airport unknown", fp.ArrivalAirport)
 		return nil
 	} else {
@@ -240,7 +241,7 @@ func makeNav(w *World, fp av.FlightPlan, perf av.AircraftPerformance, wp []av.Wa
 
 		// Squirrel away the arrival airport as a fix and add it to the end
 		// of the waypoints.
-		nav.FlightState.ArrivalAirport = av.Waypoint{
+		nav.FlightState.ArrivalAirport = Waypoint{
 			Fix:      fp.ArrivalAirport,
 			Location: ap.Location,
 		}
@@ -251,7 +252,7 @@ func makeNav(w *World, fp av.FlightPlan, perf av.AircraftPerformance, wp []av.Wa
 }
 
 func (nav *Nav) TAS() float32 {
-	tas := av.IASToTAS(nav.FlightState.IAS, nav.FlightState.Altitude)
+	tas := IASToTAS(nav.FlightState.IAS, nav.FlightState.Altitude)
 	tas = math.Min(tas, nav.Perf.Speed.CruiseTAS)
 	return tas
 }
@@ -344,7 +345,7 @@ func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 
 // Full human-readable summary of nav state for use when paused and mouse
 // hover on the scope
-func (nav *Nav) Summary(fp av.FlightPlan) string {
+func (nav *Nav) Summary(fp FlightPlan, lg *log.Logger) string {
 	var lines []string
 
 	fs := nav.FlightState
@@ -357,10 +358,10 @@ func (nav *Nav) Summary(fp av.FlightPlan) string {
 	if nav.Altitude.Assigned != nil {
 		if math.Abs(nav.FlightState.Altitude-*nav.Altitude.Assigned) < 100 {
 			lines = append(lines, "At assigned altitude "+
-				av.FormatAltitude(*nav.Altitude.Assigned))
+				FormatAltitude(*nav.Altitude.Assigned))
 		} else {
-			line := "At " + av.FormatAltitude(nav.FlightState.Altitude) + " for " +
-				av.FormatAltitude(*nav.Altitude.Assigned)
+			line := "At " + FormatAltitude(nav.FlightState.Altitude) + " for " +
+				FormatAltitude(*nav.Altitude.Assigned)
 			if nav.Altitude.Expedite {
 				line += ", expediting"
 			}
@@ -369,21 +370,21 @@ func (nav *Nav) Summary(fp av.FlightPlan) string {
 	} else if nav.Altitude.AfterSpeed != nil {
 		dir := util.Select(*nav.Altitude.AfterSpeed > nav.FlightState.Altitude, "climb", "descend")
 		lines = append(lines, fmt.Sprintf("At %.0f kts, %s to %s",
-			*nav.Altitude.AfterSpeedSpeed, dir, av.FormatAltitude(*nav.Altitude.AfterSpeed)))
+			*nav.Altitude.AfterSpeedSpeed, dir, FormatAltitude(*nav.Altitude.AfterSpeed)))
 	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		dir := util.Select(c.Altitude > nav.FlightState.Altitude, "Climbing", "Descending")
 		alt := c.Altitude
 		if nav.Altitude.Cleared != nil {
 			alt = math.Min(alt, *nav.Altitude.Cleared)
 		}
-		lines = append(lines, dir+" to "+av.FormatAltitude(alt)+" for alt. restriction at "+c.Fix)
+		lines = append(lines, dir+" to "+FormatAltitude(alt)+" for alt. restriction at "+c.Fix)
 	} else if nav.Altitude.Cleared != nil {
 		if math.Abs(nav.FlightState.Altitude-*nav.Altitude.Cleared) < 100 {
 			lines = append(lines, "At cleared altitude "+
-				av.FormatAltitude(*nav.Altitude.Cleared))
+				FormatAltitude(*nav.Altitude.Cleared))
 		} else {
-			line := "At " + av.FormatAltitude(nav.FlightState.Altitude) + " for " +
-				av.FormatAltitude(*nav.Altitude.Cleared)
+			line := "At " + FormatAltitude(nav.FlightState.Altitude) + " for " +
+				FormatAltitude(*nav.Altitude.Cleared)
 			if nav.Altitude.Expedite {
 				line += ", expediting"
 			}
@@ -395,11 +396,11 @@ func (nav *Nav) Summary(fp av.FlightPlan) string {
 			tgt = math.Min(tgt, nav.FinalAltitude)
 		}
 		if tgt < nav.FlightState.Altitude {
-			lines = append(lines, "Descending "+av.FormatAltitude(nav.FlightState.Altitude)+
-				" to "+av.FormatAltitude(tgt)+" from previous crossing restriction")
+			lines = append(lines, "Descending "+FormatAltitude(nav.FlightState.Altitude)+
+				" to "+FormatAltitude(tgt)+" from previous crossing restriction")
 		} else {
-			lines = append(lines, "Climbing "+av.FormatAltitude(nav.FlightState.Altitude)+
-				" to "+av.FormatAltitude(tgt)+" from previous crossing restriction")
+			lines = append(lines, "Climbing "+FormatAltitude(nav.FlightState.Altitude)+
+				" to "+FormatAltitude(tgt)+" from previous crossing restriction")
 		}
 	}
 
@@ -432,7 +433,7 @@ func (nav *Nav) Summary(fp av.FlightPlan) string {
 	} else if nav.Speed.Assigned != nil {
 		lines = append(lines, fmt.Sprintf("Maintaining %.0f kts assignment", *nav.Speed.Assigned))
 	} else if nav.Speed.AfterAltitude != nil && nav.Speed.AfterAltitudeAltitude != nil {
-		lines = append(lines, fmt.Sprintf("At %s, maintain %0.f kts", av.FormatAltitude(*nav.Speed.AfterAltitudeAltitude),
+		lines = append(lines, fmt.Sprintf("At %s, maintain %0.f kts", FormatAltitude(*nav.Speed.AfterAltitudeAltitude),
 			*nav.Speed.AfterAltitude))
 	}
 
@@ -488,14 +489,14 @@ func (nav *Nav) Summary(fp av.FlightPlan) string {
 		}
 	}
 
-	lines = append(lines, "Route: "+av.WaypointArray(nav.Waypoints).Encode())
+	lines = append(lines, "Route: "+WaypointArray(nav.Waypoints).Encode())
 
 	return strings.Join(lines, "\n")
 }
 
 func (nav *Nav) DepartureMessage() string {
 	alt := func(a float32) string {
-		return av.FormatAltitude(float32(100 * int((a+50)/100)))
+		return FormatAltitude(float32(100 * int((a+50)/100)))
 	}
 	target := util.Select(nav.Altitude.Assigned != nil, nav.Altitude.Assigned, nav.Altitude.Cleared)
 	if target != nil { // one of the two should be set, but just in case...
@@ -509,11 +510,11 @@ func (nav *Nav) DepartureMessage() string {
 	}
 }
 
-func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string) string {
+func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint, star string) string {
 	// We'll just handle a few cases here; this isn't supposed to be exhaustive..
 	msgs := []string{}
 
-	var closestRP *av.ReportingPoint
+	var closestRP *ReportingPoint
 	closestRPDistance := float32(10000)
 	for i, rp := range reportingPoints {
 		if d := math.NMDistance2LL(nav.FlightState.Position, rp.Location); d < closestRPDistance {
@@ -526,10 +527,10 @@ func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string)
 			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation))
 
 		if dist := int(closestRPDistance + 0.5); dist <= 1 {
-			msgs = append(msgs, "passing "+av.FixReadback(closestRP.Fix))
+			msgs = append(msgs, "passing "+FixReadback(closestRP.Fix))
 		} else {
 			msgs = append(msgs, fmt.Sprintf("%d miles %s of %s", dist, direction,
-				av.FixReadback(closestRP.Fix)))
+				FixReadback(closestRP.Fix)))
 		}
 	}
 
@@ -544,10 +545,10 @@ func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string)
 	}
 
 	if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude {
-		msgs = append(msgs, "at "+av.FormatAltitude(nav.FlightState.Altitude)+" for "+
-			av.FormatAltitude(*nav.Altitude.Assigned)+" assigned")
+		msgs = append(msgs, "at "+FormatAltitude(nav.FlightState.Altitude)+" for "+
+			FormatAltitude(*nav.Altitude.Assigned)+" assigned")
 	} else {
-		msgs = append(msgs, "at "+av.FormatAltitude(nav.FlightState.Altitude))
+		msgs = append(msgs, "at "+FormatAltitude(nav.FlightState.Altitude))
 	}
 
 	if nav.Speed.Assigned != nil {
@@ -682,7 +683,7 @@ func (nav *Nav) updateAltitude(lg *log.Logger) {
 	}
 }
 
-func (nav *Nav) updateHeading(wind av.WindModel, lg *log.Logger) {
+func (nav *Nav) updateHeading(wind WindModel, lg *log.Logger) {
 	targetHeading, turnDirection, turnRate := nav.TargetHeading(wind, lg)
 
 	if nav.FlightState.Heading == targetHeading {
@@ -718,7 +719,7 @@ func (nav *Nav) updateHeading(wind av.WindModel, lg *log.Logger) {
 	nav.FlightState.Heading = math.NormalizeHeading(nav.FlightState.Heading + turn)
 }
 
-func (nav *Nav) updatePositionAndGS(wind av.WindModel, lg *log.Logger) {
+func (nav *Nav) updatePositionAndGS(wind WindModel, lg *log.Logger) {
 	// Calculate offset vector based on heading and current TAS.
 	hdg := nav.FlightState.Heading - nav.FlightState.MagneticVariation
 	TAS := nav.TAS() / 3600
@@ -749,7 +750,7 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string) {
 	}
 
 	// Make sure we are going direct to the exit.
-	if idx := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == exit }); idx != -1 {
+	if idx := slices.IndexFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == exit }); idx != -1 {
 		nav.Waypoints = nav.Waypoints[idx:]
 	}
 	nav.Altitude = NavAltitude{Assigned: &alt}
@@ -758,7 +759,7 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string) {
 }
 
 func (nav *Nav) Check(lg *log.Logger) {
-	check := func(waypoints []av.Waypoint, what string) {
+	check := func(waypoints []Waypoint, what string) {
 		for _, wp := range waypoints {
 			if wp.Location.IsZero() {
 				lg.Errorf("zero waypoint location for %s in %s", wp.Fix, what)
@@ -775,7 +776,7 @@ func (nav *Nav) Check(lg *log.Logger) {
 }
 
 // returns passed waypoint if any
-func (nav *Nav) Update(wind av.WindModel, lg *log.Logger) *av.Waypoint {
+func (nav *Nav) Update(wind WindModel, lg *log.Logger) *Waypoint {
 	nav.updateAirspeed(lg)
 	nav.updateAltitude(lg)
 	nav.updateHeading(wind, lg)
@@ -793,7 +794,7 @@ func (nav *Nav) Update(wind av.WindModel, lg *log.Logger) *av.Waypoint {
 	return nil
 }
 
-func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float32, turn TurnMethod, rate float32) {
+func (nav *Nav) TargetHeading(wind WindModel, lg *log.Logger) (heading float32, turn TurnMethod, rate float32) {
 	// Is it time to start following a heading given by the controller a
 	// few seconds ago?
 	if dh := nav.DeferredHeading; dh != nil && time.Now().After(dh.Time) {
@@ -898,7 +899,7 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 	}
 }
 
-func (nav *Nav) LocalizerHeading(wind av.WindModel, lg *log.Logger) (heading float32, turn TurnMethod, rate float32) {
+func (nav *Nav) LocalizerHeading(wind WindModel, lg *log.Logger) (heading float32, turn TurnMethod, rate float32) {
 	// Baseline
 	heading, turn, rate = *nav.Heading.Assigned, TurnClosest, 3
 
@@ -927,7 +928,7 @@ func (nav *Nav) LocalizerHeading(wind av.WindModel, lg *log.Logger) (heading flo
 			nav.Heading = NavHeading{Assigned: &hdg}
 			// Just in case.. Thus we will be ready to pick up the
 			// approach waypoints once we capture.
-			nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
+			nav.Waypoints = []Waypoint{nav.FlightState.ArrivalAirport}
 		}
 		return
 
@@ -1038,7 +1039,7 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (alt, rate float32) {
 	getAssignedRate := func() float32 {
 		if nav.FlightState.IsDeparture {
 			if nav.FlightState.Altitude < 10000 {
-				targetSpeed := math.Min(250, av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude))
+				targetSpeed := math.Min(250, TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude))
 				if nav.FlightState.IAS < 0.8*targetSpeed {
 					// Prioritize accelerate over climb starting at 1500 AGL
 					return 0.8 * nav.Perf.Rate.Climb
@@ -1101,7 +1102,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		return nil
 	}
 
-	getRestriction := func(i int) *av.AltitudeRestriction {
+	getRestriction := func(i int) *AltitudeRestriction {
 		wp := nav.Waypoints[i]
 		// Return any controller-assigned constraint in preference to a
 		// charted one.
@@ -1171,7 +1172,6 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	fix := nav.Waypoints[lastWp].Fix // first one with an alt restriction
 	for i := lastWp - 1; i >= 0; i-- {
 		sumDist += math.NMDistance2LL(nav.Waypoints[i+1].Location, nav.Waypoints[i].Location)
-		wp := nav.Waypoints[i]
 
 		// Does this one have a relevant altitude restriction?
 		restr := getRestriction(i)
@@ -1217,8 +1217,8 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		var ok bool
 		altRange, ok = restr.ClampRange(possibleRange)
 		if !ok {
-			lg.Infof("unable to fulfill altitude restriction at %s: possible %v required %v",
-				wp.Fix, possibleRange, restr.Range)
+			//lg.Infof("unable to fulfill altitude restriction at %s: possible %v required %v",
+			// nav.Waypoints[i].Fix, possibleRange, restr.Range)
 			// Keep using altRange, FWIW; it will be clamped to whichever of the
 			// low and high of the restriction's range it is closest to.
 		}
@@ -1240,7 +1240,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	// But leave arrivals at their current altitude if it's acceptable;
 	// don't climb just because we can.
 	if !nav.FlightState.IsDeparture {
-		ar := av.AltitudeRestriction{Range: altRange}
+		ar := AltitudeRestriction{Range: altRange}
 		if ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
 			alt = nav.FlightState.Altitude
 		}
@@ -1273,14 +1273,14 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 			// (We expect this to usually be the case.) Ad-hoc speed based
 			// on V2, also assuming some flaps are out, so we don't just
 			// want to return 250 knots here...
-			cruiseIAS := av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
+			cruiseIAS := TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
 			return math.Min(nav.v2()*1.6, math.Min(250, cruiseIAS)), MaximumRate
 		}
 		return nav.targetAltitudeIAS()
 	}
 
 	if nav.FlightState.IsDeparture {
-		cruiseIAS := av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
+		cruiseIAS := TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
 		targetSpeed := math.Min(250, cruiseIAS)
 
 		if !nav.IsAirborne() {
@@ -1359,7 +1359,7 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 // to cruise speed based on altitude.
 func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 	maxAccel := nav.Perf.Rate.Accelerate * 30 // per minute
-	cruiseIAS := av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
+	cruiseIAS := TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
 
 	if nav.FlightState.Altitude < 10000 {
 		// 250kts under 10k.  We can assume a high acceleration rate for
@@ -1373,7 +1373,7 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 	return math.Lerp(x, math.Min(cruiseIAS, 250), cruiseIAS), 0.8 * maxAccel
 }
 
-func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (*av.Waypoint, float32, float32) {
+func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (*Waypoint, float32, float32) {
 	var eta float32
 	for i, wp := range nav.Waypoints {
 		if i == 0 {
@@ -1429,7 +1429,7 @@ func (nav *Nav) distanceToEndOfApproach() (float32, error) {
 	}
 }
 
-func (nav *Nav) updateWaypoints(wind av.WindModel, lg *log.Logger) *av.Waypoint {
+func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 	if len(nav.Waypoints) == 0 {
 		return nil
 	}
@@ -1522,7 +1522,7 @@ func (nav *Nav) updateWaypoints(wind av.WindModel, lg *log.Logger) *av.Waypoint 
 				// Hacky: directFix updates the route but below we peel off
 				// the current waypoint, so re-add it here so everything
 				// works out.
-				nav.Waypoints = append([]av.Waypoint{wp}, nav.Waypoints...)
+				nav.Waypoints = append([]Waypoint{wp}, nav.Waypoints...)
 			}
 		} else if wp.Heading != 0 && !clearedAtFix {
 			// We have an outbound heading
@@ -1562,7 +1562,7 @@ func (nav *Nav) updateWaypoints(wind av.WindModel, lg *log.Logger) *av.Waypoint 
 // Given a fix location and an outbound heading, returns true when the
 // aircraft should start the turn to outbound to intercept the outbound
 // radial.
-func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMethod, wind av.WindModel, lg *log.Logger) bool {
+func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMethod, wind WindModel, lg *log.Logger) bool {
 	dist := math.NMDistance2LL(nav.FlightState.Position, p)
 	eta := dist / nav.FlightState.GS * 3600 // in seconds
 
@@ -1613,7 +1613,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 
 // Given a point and a radial, returns true when the aircraft should
 // start turning to intercept the radial.
-func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMethod, wind av.WindModel, lg *log.Logger) bool {
+func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMethod, wind WindModel, lg *log.Logger) bool {
 	p0 = math.LL2NM(p0, nav.FlightState.NmPerLongitude)
 	p1 := math.Add2f(p0, [2]float32{math.Sin(math.Radians(hdg - nav.FlightState.MagneticVariation)),
 		math.Cos(math.Radians(hdg - nav.FlightState.MagneticVariation))})
@@ -1692,7 +1692,7 @@ func (nav *Nav) GoAround() PilotResponse {
 
 	nav.Approach = NavApproach{}
 	// Keep the destination airport at the end of the route.
-	nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
+	nav.Waypoints = []Waypoint{nav.FlightState.ArrivalAirport}
 
 	s := rand.Sample("going around", "on the go")
 	return PilotResponse{Message: s}
@@ -1705,11 +1705,11 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) PilotResponse {
 
 	var response string
 	if alt > nav.FlightState.Altitude {
-		response = rand.Sample("climb and maintain ", "up to ") + av.FormatAltitude(alt)
+		response = rand.Sample("climb and maintain ", "up to ") + FormatAltitude(alt)
 	} else if alt == nav.FlightState.Altitude {
-		response = rand.Sample("maintain ", "we'll keep it at ") + av.FormatAltitude(alt)
+		response = rand.Sample("maintain ", "we'll keep it at ") + FormatAltitude(alt)
 	} else {
-		response = rand.Sample("descend and maintain ", "down to ") + av.FormatAltitude(alt)
+		response = rand.Sample("descend and maintain ", "down to ") + FormatAltitude(alt)
 	}
 
 	if afterSpeed && nav.Speed.Assigned != nil && *nav.Speed.Assigned != nav.FlightState.IAS {
@@ -1725,7 +1725,7 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) PilotResponse {
 }
 
 func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) PilotResponse {
-	maxIAS := av.TASToIAS(nav.Perf.Speed.MaxTAS, nav.FlightState.Altitude)
+	maxIAS := TASToIAS(nav.Perf.Speed.MaxTAS, nav.FlightState.Altitude)
 	maxIAS = 10 * float32(int((maxIAS+5)/10)) // round to 10s
 
 	var response string
@@ -1746,7 +1746,7 @@ func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) PilotResponse {
 		alt := *nav.Altitude.Assigned
 		nav.Speed.AfterAltitudeAltitude = &alt
 
-		response = fmt.Sprintf("at %s feet maintain %.0f knots", av.FormatAltitude(alt), speed)
+		response = fmt.Sprintf("at %s feet maintain %.0f knots", FormatAltitude(alt), speed)
 	} else {
 		nav.Speed = NavSpeed{Assigned: &speed}
 		if speed < nav.FlightState.IAS {
@@ -1821,16 +1821,16 @@ func (nav *Nav) SayAltitude() PilotResponse {
 	if nav.Altitude.Assigned != nil {
 		assignedAltitude := *nav.Altitude.Assigned
 		if assignedAltitude < currentAltitude {
-			output = rand.Sample(fmt.Sprintf("at %s descending to %s", av.FormatAltitude(currentAltitude), av.FormatAltitude(assignedAltitude)),
-				fmt.Sprintf("at %s and descending", av.FormatAltitude(currentAltitude)))
+			output = rand.Sample(fmt.Sprintf("at %s descending to %s", FormatAltitude(currentAltitude), FormatAltitude(assignedAltitude)),
+				fmt.Sprintf("at %s and descending", FormatAltitude(currentAltitude)))
 
 		} else if assignedAltitude > currentAltitude {
-			output = fmt.Sprintf("at %s climbing to %s", av.FormatAltitude(currentAltitude), av.FormatAltitude(assignedAltitude))
+			output = fmt.Sprintf("at %s climbing to %s", FormatAltitude(currentAltitude), FormatAltitude(assignedAltitude))
 		} else {
-			output = rand.Sample(fmt.Sprintf("maintaining %s", av.FormatAltitude(currentAltitude)), fmt.Sprintf("at %s", av.FormatAltitude(currentAltitude)))
+			output = rand.Sample(fmt.Sprintf("maintaining %s", FormatAltitude(currentAltitude)), fmt.Sprintf("at %s", FormatAltitude(currentAltitude)))
 		}
 	} else {
-		output = rand.Sample(fmt.Sprintf("maintaining %s", av.FormatAltitude(currentAltitude)), fmt.Sprintf("at %s", av.FormatAltitude(currentAltitude)))
+		output = rand.Sample(fmt.Sprintf("maintaining %s", FormatAltitude(currentAltitude)), fmt.Sprintf("at %s", FormatAltitude(currentAltitude)))
 	}
 
 	return PilotResponse{Message: output}
@@ -1847,7 +1847,7 @@ func (nav *Nav) ExpediteDescent() PilotResponse {
 
 	nav.Altitude.Expedite = true
 	resp := rand.Sample("expediting down to", "expedite to")
-	return PilotResponse{Message: resp + " " + av.FormatAltitude(alt)}
+	return PilotResponse{Message: resp + " " + FormatAltitude(alt)}
 }
 
 func (nav *Nav) ExpediteClimb() PilotResponse {
@@ -1862,7 +1862,7 @@ func (nav *Nav) ExpediteClimb() PilotResponse {
 
 	nav.Altitude.Expedite = true
 	resp := rand.Sample("expediting up to", "expedite to")
-	return PilotResponse{Message: resp + " " + av.FormatAltitude(alt)}
+	return PilotResponse{Message: resp + " " + FormatAltitude(alt)}
 }
 
 func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) PilotResponse {
@@ -1881,7 +1881,7 @@ func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) PilotResponse {
 		return PilotResponse{Message: fmt.Sprintf("turn left heading %03d", int(hdg))}
 
 	default:
-		lg.Errorf("%03d: unhandled turn type", turn)
+		panic(fmt.Sprintf("%03d: unhandled turn type", turn))
 		return PilotResponse{Message: fmt.Sprintf("fly heading %03d", int(hdg))}
 	}
 }
@@ -1936,12 +1936,12 @@ func (nav *Nav) fixInRoute(fix string) bool {
 	return false
 }
 
-func (nav *Nav) fixPairInRoute(fixa, fixb string) (fa *av.Waypoint, fb *av.Waypoint) {
-	find := func(f string, wp []av.Waypoint) int {
-		return slices.IndexFunc(wp, func(wp av.Waypoint) bool { return wp.Fix == f })
+func (nav *Nav) fixPairInRoute(fixa, fixb string) (fa *Waypoint, fb *Waypoint) {
+	find := func(f string, wp []Waypoint) int {
+		return slices.IndexFunc(wp, func(wp Waypoint) bool { return wp.Fix == f })
 	}
 
-	var apWaypoints []av.WaypointArray
+	var apWaypoints []WaypointArray
 	if nav.Approach.Assigned != nil {
 		apWaypoints = nav.Approach.Assigned.Waypoints
 	}
@@ -2014,9 +2014,9 @@ func (nav *Nav) DirectFix(fix string) PilotResponse {
 		nav.Approach.NoPT = false
 		nav.Approach.InterceptState = NotIntercepting
 
-		return PilotResponse{Message: "direct " + av.FixReadback(fix)}
+		return PilotResponse{Message: "direct " + FixReadback(fix)}
 	} else {
-		return PilotResponse{Message: "unable. " + av.FixReadback(fix) + " isn't in our route", Unexpected: true}
+		return PilotResponse{Message: "unable. " + FixReadback(fix) + " isn't in our route", Unexpected: true}
 	}
 }
 
@@ -2033,7 +2033,7 @@ func (nav *Nav) DepartFixDirect(fixa string, fixb string) PilotResponse {
 	nfa.Depart.Fix = fb
 	nav.FixAssignments[fixa] = nfa
 
-	return PilotResponse{Message: "depart " + av.FixReadback(fixa) + " direct " + av.FixReadback(fixb)}
+	return PilotResponse{Message: "depart " + FixReadback(fixa) + " direct " + FixReadback(fixb)}
 }
 
 func (nav *Nav) DepartFixHeading(fix string, hdg float32) PilotResponse {
@@ -2049,16 +2049,16 @@ func (nav *Nav) DepartFixHeading(fix string, hdg float32) PilotResponse {
 	nfa.Depart.Heading = &h
 	nav.FixAssignments[fix] = nfa
 
-	response := "depart " + av.FixReadback(fix)
+	response := "depart " + FixReadback(fix)
 	return PilotResponse{Message: fmt.Sprintf(response+" heading %03d", int(hdg))}
 }
 
-func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int) PilotResponse {
+func (nav *Nav) CrossFixAt(fix string, ar *AltitudeRestriction, speed int) PilotResponse {
 	if !nav.fixInRoute(fix) {
 		return PilotResponse{Message: "unable. " + fix + " isn't in our route", Unexpected: true}
 	}
 
-	response := "cross " + av.FixReadback(fix) + " "
+	response := "cross " + FixReadback(fix) + " "
 
 	nfa := nav.FixAssignments[fix]
 	if ar != nil {
@@ -2079,18 +2079,12 @@ func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int) Pi
 	return PilotResponse{Message: response}
 }
 
-func (nav *Nav) getApproach(airport string, id string, w *World) (*av.Approach, error) {
+func (nav *Nav) getApproach(airport *Airport, id string, lg *log.Logger) (*Approach, error) {
 	if id == "" {
 		return nil, ErrInvalidApproach
 	}
 
-	ap := w.GetAirport(airport)
-	if ap == nil {
-		lg.Errorf("Can't find airport %s for %s approach", airport, id)
-		return nil, ErrUnknownAirport
-	}
-
-	for name, appr := range ap.Approaches {
+	for name, appr := range airport.Approaches {
 		if name == id {
 			return appr, nil
 		}
@@ -2098,8 +2092,8 @@ func (nav *Nav) getApproach(airport string, id string, w *World) (*av.Approach, 
 	return nil, ErrUnknownApproach
 }
 
-func (nav *Nav) ExpectApproach(airport string, id string, arr *av.Arrival, w *World, lg *log.Logger) PilotResponse {
-	ap, err := nav.getApproach(airport, id, w)
+func (nav *Nav) ExpectApproach(airportICAO string, airport *Airport, id string, arr *Arrival, lg *log.Logger) PilotResponse {
+	ap, err := nav.getApproach(airport, id, lg)
 	if err != nil {
 		return PilotResponse{Message: "unable. We don't know the " + id + " approach.", Unexpected: true}
 	}
@@ -2110,12 +2104,9 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *av.Arrival, w *Wo
 
 	nav.Approach.Assigned = ap
 	nav.Approach.AssignedId = id
-	nav.Approach.ATPAVolume = nil
-	if airp := w.GetAirport(airport); airp != nil {
-		nav.Approach.ATPAVolume = airp.ATPAVolumes[ap.Runway]
-	}
+	nav.Approach.ATPAVolume = airport.ATPAVolumes[ap.Runway]
 
-	if waypoints := arr.GetRunwayWaypoints(airport, ap.Runway); len(waypoints) > 0 {
+	if waypoints := arr.GetRunwayWaypoints(airportICAO, ap.Runway); len(waypoints) > 0 {
 		if len(nav.Waypoints) == 0 {
 			// Nothing left on our route; this shouldn't ever happen but
 			// just in case patch the runway waypoints in there and hope it
@@ -2126,7 +2117,7 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *av.Arrival, w *Wo
 			// aircraft's current waypoints...
 			found := false
 			for i, wp := range waypoints {
-				if idx := slices.IndexFunc(nav.Waypoints, func(w av.Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
+				if idx := slices.IndexFunc(nav.Waypoints, func(w Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
 					// Keep the waypoints up to but not including the match.
 					nav.Waypoints = nav.Waypoints[:idx]
 					// Add the approach waypoints; take the matching one from there.
@@ -2161,13 +2152,13 @@ func (nav *Nav) ExpectApproach(airport string, id string, arr *av.Arrival, w *Wo
 	return PilotResponse{Message: opener + " " + ap.FullName + " approach"}
 }
 
-func (nav *Nav) InterceptLocalizer(airport string, arr *av.Arrival, w *World) PilotResponse {
+func (nav *Nav) InterceptLocalizer(airport string, arr *Arrival) PilotResponse {
 	if nav.Approach.AssignedId == "" {
 		return PilotResponse{Message: "you never told us to expect an approach", Unexpected: true}
 	}
 
 	ap := nav.Approach.Assigned
-	if ap.Type != av.ILSApproach {
+	if ap.Type != ILSApproach {
 		return PilotResponse{Message: "we can only intercept an ILS approach", Unexpected: true}
 	}
 	if _, ok := nav.AssignedHeading(); !ok {
@@ -2196,7 +2187,7 @@ func (nav *Nav) AtFixCleared(fix, id string) PilotResponse {
 		return PilotResponse{Message: "unable. We were told to expect the " + ap.FullName + " approach...", Unexpected: true}
 	}
 
-	if !slices.ContainsFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == fix }) {
+	if !slices.ContainsFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == fix }) {
 		return PilotResponse{Message: "unable. " + fix + " is not in our route", Unexpected: true}
 	}
 	nav.Approach.AtFixClearedRoute = nil
@@ -2221,7 +2212,7 @@ func (nav *Nav) prepareForApproach(straightIn bool) (PilotResponse, error) {
 	ap := nav.Approach.Assigned
 
 	// Charted visual is special in all sorts of ways
-	if ap.Type == av.ChartedVisualApproach {
+	if ap.Type == ChartedVisualApproach {
 		return nav.prepareForChartedVisual()
 	}
 
@@ -2296,7 +2287,7 @@ func (nav *Nav) prepareForChartedVisual() (PilotResponse, error) {
 	dir := [2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}
 	pac1 := math.Add2f(pac0, dir)
 
-	checkSegment := func(i int) *av.Waypoint {
+	checkSegment := func(i int) *Waypoint {
 		if i+1 == len(wp) {
 			return nil
 		}
@@ -2308,7 +2299,7 @@ func (nav *Nav) prepareForChartedVisual() (PilotResponse, error) {
 			// and not along the infinite line they define, so this is a
 			// hacky check to limit to that.
 			if math.Extent2DFromPoints([][2]float32{pl0, pl1}).Inside(pi) {
-				return &av.Waypoint{
+				return &Waypoint{
 					Fix:      "intercept",
 					Location: math.NM2LL(pi, nav.FlightState.NmPerLongitude),
 				}
@@ -2319,20 +2310,20 @@ func (nav *Nav) prepareForChartedVisual() (PilotResponse, error) {
 
 	// wi will store the route the aircraft will fly if it is going to join
 	// the approach.
-	var wi []av.Waypoint
+	var wi []Waypoint
 
 	if intercept == -1 { // check all of the segments
 		for i := range wp {
 			if w := checkSegment(i); w != nil {
 				// Take the first one that works
-				wi = append([]av.Waypoint{*w}, wp[i+1:]...)
+				wi = append([]Waypoint{*w}, wp[i+1:]...)
 				break
 			}
 		}
 	} else {
 		// Just check the segment after the waypoint we're considering
 		if w := checkSegment(intercept); w != nil {
-			wi = append([]av.Waypoint{*w}, wp[intercept+1:]...)
+			wi = append([]Waypoint{*w}, wp[intercept+1:]...)
 		} else {
 			// No problem if it doesn't intersect that segment; just start
 			// the route from that waypoint.
@@ -2352,8 +2343,7 @@ func (nav *Nav) prepareForChartedVisual() (PilotResponse, error) {
 		ErrUnableCommand
 }
 
-func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, arr *av.Arrival,
-	w *World) (PilotResponse, error) {
+func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, arr *Arrival) (PilotResponse, error) {
 	ap := nav.Approach.Assigned
 	if ap == nil {
 		return PilotResponse{Message: "unable. We haven't been told to expect an approach", Unexpected: true},
@@ -2429,10 +2419,10 @@ func (nav *Nav) DescendViaSTAR() PilotResponse {
 // Procedure turns
 
 type FlyRacetrackPT struct {
-	ProcedureTurn      *av.ProcedureTurn
+	ProcedureTurn      *ProcedureTurn
 	Fix                string
 	FixLocation        math.Point2LL
-	Entry              av.RacetrackPTEntry
+	Entry              RacetrackPTEntry
 	InboundHeading     float32
 	OutboundHeading    float32
 	OutboundTurnRate   float32
@@ -2450,7 +2440,7 @@ const (
 )
 
 type FlyStandard45PT struct {
-	ProcedureTurn    *av.ProcedureTurn
+	ProcedureTurn    *ProcedureTurn
 	Fix              string
 	FixLocation      math.Point2LL
 	InboundHeading   float32 // fix->airport
@@ -2489,29 +2479,29 @@ func (nav *Nav) flyProcedureTurnIfNecessary() {
 	}
 
 	switch wp[0].ProcedureTurn.Type {
-	case av.PTRacetrack:
+	case PTRacetrack:
 		// Immediate heading update here (and below) since it's the
 		// autopilot doing this at the appropriate time (vs. a controller
 		// instruction.)
 		nav.Heading = NavHeading{RacetrackPT: MakeFlyRacetrackPT(nav, wp)}
 		nav.DeferredHeading = nil
-	case av.PTStandard45:
+	case PTStandard45:
 		nav.Heading = NavHeading{Standard45PT: MakeFlyStandard45PT(nav, wp)}
 		nav.DeferredHeading = nil
 
 	default:
-		lg.Error("Unhandled procedure turn type")
+		panic("Unhandled procedure turn type")
 	}
 }
 
-func MakeFlyStandard45PT(nav *Nav, wp []av.Waypoint) *FlyStandard45PT {
+func MakeFlyStandard45PT(nav *Nav, wp []Waypoint) *FlyStandard45PT {
 	inboundHeading := math.Heading2LL(wp[0].Location, wp[1].Location, nav.FlightState.NmPerLongitude,
 		nav.FlightState.MagneticVariation)
 
 	awayHeading := math.OppositeHeading(inboundHeading)
 	awayHeading += float32(util.Select(wp[0].ProcedureTurn.RightTurns, -45, 45))
 
-	pt := &FlyStandard45PT{
+	return &FlyStandard45PT{
 		ProcedureTurn:  wp[0].ProcedureTurn,
 		Fix:            wp[0].Fix,
 		FixLocation:    wp[0].Location,
@@ -2519,13 +2509,9 @@ func MakeFlyStandard45PT(nav *Nav, wp []av.Waypoint) *FlyStandard45PT {
 		AwayHeading:    math.NormalizeHeading(awayHeading),
 		State:          PTStateApproaching,
 	}
-
-	lg.Debug("made FlyStandard45PT", slog.Any("pt", pt))
-
-	return pt
 }
 
-func MakeFlyRacetrackPT(nav *Nav, wp []av.Waypoint) *FlyRacetrackPT {
+func MakeFlyRacetrackPT(nav *Nav, wp []Waypoint) *FlyRacetrackPT {
 	inboundHeading := math.Heading2LL(wp[0].Location, wp[1].Location, nav.FlightState.NmPerLongitude,
 		nav.FlightState.MagneticVariation)
 
@@ -2546,7 +2532,7 @@ func MakeFlyRacetrackPT(nav *Nav, wp []av.Waypoint) *FlyRacetrackPT {
 	// Set the outbound heading. For everything but teardrop, it's the
 	// opposite of the inbound heading.
 	fp.OutboundHeading = math.OppositeHeading(fp.InboundHeading)
-	if fp.Entry == av.TeardropEntry {
+	if fp.Entry == TeardropEntry {
 		// For teardrop, it's offset by 30 degrees, toward the outbound
 		// track.
 		if pt.RightTurns {
@@ -2558,7 +2544,7 @@ func MakeFlyRacetrackPT(nav *Nav, wp []av.Waypoint) *FlyRacetrackPT {
 
 	// Set the outbound turn rate
 	fp.OutboundTurnRate = float32(StandardTurnRate)
-	if fp.Entry == av.DirectEntryShortTurn {
+	if fp.Entry == DirectEntryShortTurn {
 		// Since we have less than 180 degrees in our turn, turn more
 		// slowly so that we more or less end up the right offset distance
 		// from the inbound path.
@@ -2568,17 +2554,17 @@ func MakeFlyRacetrackPT(nav *Nav, wp []av.Waypoint) *FlyRacetrackPT {
 		diff := math.HeadingDifference(fp.OutboundHeading, acFixHeading)
 		fp.OutboundTurnRate = 3 * diff / 180
 
-		lg.Debugf("hdg %.0f outbound hdg %.0f diff %.0f -> rate %.1f",
-			acFixHeading, fp.OutboundHeading, math.HeadingDifference(fp.OutboundHeading, acFixHeading),
-			fp.OutboundTurnRate)
+		//lg.Debugf("hdg %.0f outbound hdg %.0f diff %.0f -> rate %.1f",
+		//acFixHeading, fp.OutboundHeading, math.HeadingDifference(fp.OutboundHeading, acFixHeading),
+		//fp.OutboundTurnRate)
 	}
 
 	// Set the outbound turn method.
 	fp.OutboundTurnMethod = TurnMethod(util.Select(pt.RightTurns, TurnRight, TurnLeft))
-	if fp.Entry == av.ParallelEntry {
+	if fp.Entry == ParallelEntry {
 		// Swapped turn direction
 		fp.OutboundTurnMethod = TurnMethod(util.Select(pt.RightTurns, TurnLeft, TurnRight))
-	} else if fp.Entry == av.TeardropEntry {
+	} else if fp.Entry == TeardropEntry {
 		fp.OutboundTurnMethod = TurnClosest
 	}
 
@@ -2591,32 +2577,30 @@ func MakeFlyRacetrackPT(nav *Nav, wp []av.Waypoint) *FlyRacetrackPT {
 	if fp.OutboundLegLength == 0 {
 		// Select a default based on the approach type.
 		switch nav.Approach.Assigned.Type {
-		case av.ILSApproach:
+		case ILSApproach:
 			// 1 minute by default on ILS
 			fp.OutboundLegLength = nav.FlightState.GS / 60
-		case av.RNAVApproach:
+		case RNAVApproach:
 			// 4nm by default for RNAV, though that's the distance from the
 			// fix, so turn earlier...
 			fp.OutboundLegLength = 2
 
 		default:
-			lg.Errorf("unhandled approach type: %s", nav.Approach.Assigned.Type)
+			panic(fmt.Sprintf("unhandled approach type: %s", nav.Approach.Assigned.Type))
 			fp.OutboundLegLength = nav.FlightState.GS / 60
 
 		}
 	}
 	// Lengthen it a bit for teardrop since we're flying along the
 	// diagonal.
-	if fp.Entry == av.TeardropEntry {
+	if fp.Entry == TeardropEntry {
 		fp.OutboundLegLength *= 1.5
 	}
-
-	lg.Debug("made FlyRacetrackPT", slog.Any("pt", fp))
 
 	return fp
 }
 
-func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind av.WindModel, lg *log.Logger) (float32, TurnMethod, float32) {
+func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind WindModel, lg *log.Logger) (float32, TurnMethod, float32) {
 	pt := fp.ProcedureTurn
 
 	switch fp.State {
@@ -2626,15 +2610,15 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind av.WindModel, lg *log.Logger
 		startTurn := false
 
 		switch fp.Entry {
-		case av.DirectEntryShortTurn:
+		case DirectEntryShortTurn:
 			startTurn = eta < 2
 
-		case av.DirectEntryLongTurn:
+		case DirectEntryLongTurn:
 			// Turn start is based on lining up for the inbound heading,
 			// even though the actual turn will be that plus 180.
 			startTurn = nav.shouldTurnForOutbound(fp.FixLocation, fp.InboundHeading,
 				fp.OutboundTurnMethod, wind, lg)
-		case av.ParallelEntry, av.TeardropEntry:
+		case ParallelEntry, TeardropEntry:
 			startTurn = nav.shouldTurnForOutbound(fp.FixLocation, fp.OutboundHeading,
 				fp.OutboundTurnMethod, wind, lg)
 		}
@@ -2664,7 +2648,7 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind av.WindModel, lg *log.Logger
 	case PTStateFlyingOutbound:
 		d := math.NMDistance2LL(nav.FlightState.Position, fp.FixLocation)
 
-		if fp.Entry == av.TeardropEntry {
+		if fp.Entry == TeardropEntry {
 			// start the turn when we will intercept the inbound radial
 			turn := TurnMethod(util.Select(pt.RightTurns, TurnRight, TurnLeft))
 			if d > 0.5 && nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wind, lg) {
@@ -2678,7 +2662,7 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wind av.WindModel, lg *log.Logger
 		return fp.OutboundHeading, TurnClosest, fp.OutboundTurnRate
 
 	case PTStateTurningInbound:
-		if fp.Entry == av.ParallelEntry {
+		if fp.Entry == ParallelEntry {
 			// Parallel is special: we fly at the 30 degree
 			// offset-from-true-inbound heading until it is time to turn to
 			// intercept.
@@ -2724,7 +2708,7 @@ func (fp *FlyRacetrackPT) GetAltitude(nav *Nav) (float32, bool) {
 	return float32(fp.ProcedureTurn.ExitAltitude), descend
 }
 
-func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind av.WindModel, lg *log.Logger) (float32, TurnMethod, float32) {
+func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel, lg *log.Logger) (float32, TurnMethod, float32) {
 	outboundHeading := math.OppositeHeading(fp.InboundHeading)
 
 	switch fp.State {

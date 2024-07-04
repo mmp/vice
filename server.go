@@ -263,7 +263,7 @@ func (s *SimProxy) RunAircraftCommands(callsign string, cmds string, result *Air
 	}, result, nil)
 }
 
-func (s *SimProxy) LaunchAircraft(ac Aircraft) *rpc.Call {
+func (s *SimProxy) LaunchAircraft(ac av.Aircraft) *rpc.Call {
 	return s.Client.Go("Sim.LaunchAircraft", &LaunchAircraftArgs{
 		ControllerToken: s.ControllerToken,
 		Aircraft:        ac,
@@ -1097,7 +1097,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 				ControllerToken: token,
 				Callsign:        callsign,
 				Heading:         hdg,
-				Turn:            TurnClosest,
+				Turn:            av.TurnClosest,
 			}); err != nil {
 				rewriteError(err)
 				return nil
@@ -1142,7 +1142,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					ControllerToken: token,
 					Callsign:        callsign,
 					Heading:         hdg,
-					Turn:            TurnLeft,
+					Turn:            av.TurnLeft,
 				}); err != nil {
 					rewriteError(err)
 					return nil
@@ -1172,7 +1172,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					ControllerToken: token,
 					Callsign:        callsign,
 					Heading:         hdg,
-					Turn:            TurnRight,
+					Turn:            av.TurnRight,
 				}); err != nil {
 					rewriteError(err)
 					return nil
@@ -1294,7 +1294,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 
 type LaunchAircraftArgs struct {
 	ControllerToken string
-	Aircraft        Aircraft
+	Aircraft        av.Aircraft
 }
 
 func (sd *SimDispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error {

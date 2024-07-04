@@ -39,7 +39,7 @@ type SimConfiguration struct {
 type SimScenarioConfiguration struct {
 	SelectedController  string
 	SelectedSplit       string
-	SplitConfigurations SplitConfigurationSet
+	SplitConfigurations av.SplitConfigurationSet
 	PrimaryAirport      string
 
 	Wind         av.Wind
@@ -514,8 +514,12 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			if imgui.BeginComboV("Split", c.Scenario.SelectedSplit, imgui.ComboFlagsHeightLarge) {
 				for _, split := range sc.Splits() {
 					if imgui.SelectableV(split, split == c.Scenario.SelectedSplit, 0, imgui.Vec2{}) {
+						var err error
 						c.Scenario.SelectedSplit = split
-						c.Scenario.SelectedController = sc.GetPrimaryController(split)
+						c.Scenario.SelectedController, err = sc.GetPrimaryController(split)
+						if err != nil {
+							lg.Errorf("unable to find primary controller: %v", err)
+						}
 					}
 				}
 				imgui.EndCombo()
@@ -982,7 +986,11 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		}
 	}
 	if *server {
-		for callsign := range sc.SplitConfigurations.GetConfiguration(ssc.Scenario.SelectedSplit) {
+		configs, err := sc.SplitConfigurations.GetConfiguration(ssc.Scenario.SelectedSplit)
+		if err != nil {
+			lg.Errorf("unable to get configurations for split: %v", err)
+		}
+		for callsign := range configs {
 			add(callsign)
 		}
 	} else {
@@ -1000,8 +1008,15 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 	w := NewWorld()
 	w.Callsign = "__SERVER__"
 	if *server {
-		w.PrimaryController = sc.SplitConfigurations.GetPrimaryController(ssc.Scenario.SelectedSplit)
-		w.MultiControllers = sc.SplitConfigurations.GetConfiguration(ssc.Scenario.SelectedSplit)
+		var err error
+		w.PrimaryController, err = sc.SplitConfigurations.GetPrimaryController(ssc.Scenario.SelectedSplit)
+		if err != nil {
+			lg.Errorf("Unable to get primary controller: %v", err)
+		}
+		w.MultiControllers, err = sc.SplitConfigurations.GetConfiguration(ssc.Scenario.SelectedSplit)
+		if err != nil {
+			lg.Errorf("Unable to get multi controllers: %v", err)
+		}
 	} else {
 		w.PrimaryController = sc.SoloController
 	}
@@ -1250,7 +1265,7 @@ func (s *Sim) SignOff(token string) error {
 	} else {
 		// Drop track on controlled aircraft
 		for _, ac := range s.World.Aircraft {
-			ac.HandleControllerDisconnect(ctrl.Callsign, s.World)
+			ac.HandleControllerDisconnect(ctrl.Callsign, s.World.PrimaryController)
 		}
 
 		if ctrl.Callsign == s.LaunchConfig.Controller {
@@ -1298,7 +1313,7 @@ func (s *Sim) ChangeControlPosition(token string, callsign string, keepTracks bo
 		if keepTracks {
 			ac.TransferTracks(oldCallsign, ctrl.Callsign)
 		} else {
-			ac.HandleControllerDisconnect(ctrl.Callsign, s.World)
+			ac.HandleControllerDisconnect(ctrl.Callsign, s.World.PrimaryController)
 		}
 	}
 
@@ -1329,7 +1344,7 @@ type GlobalMessage struct {
 }
 
 type SimWorldUpdate struct {
-	Aircraft    map[string]*Aircraft
+	Aircraft    map[string]*av.Aircraft
 	Controllers map[string]*av.Controller
 	Time        time.Time
 
@@ -1572,7 +1587,7 @@ func (s *Sim) updateState() {
 	if now.Sub(s.lastSimUpdate) >= time.Second {
 		s.lastSimUpdate = now
 		for callsign, ac := range s.World.Aircraft {
-			passedWaypoint := ac.Update(s.World, s, s.lg)
+			passedWaypoint := ac.Update(s.World, s.lg)
 			if passedWaypoint != nil {
 				if passedWaypoint.Handoff {
 					// Handoff from virtual controller to a human controller.
@@ -1608,6 +1623,32 @@ func (s *Sim) updateState() {
 				}
 			}
 
+			// Possibly go around
+			// FIXME: maintain GoAroundDistance, state, in Sim, not Aircraft
+			if ac.GoAroundDistance != nil {
+				if d, err := ac.DistanceToEndOfApproach(); err == nil && d < *ac.GoAroundDistance {
+					lg.Info("randomly going around")
+					ac.GoAroundDistance = nil // only go around once
+					rt := ac.GoAround()
+					ac.ControllingController = s.World.DepartureController(ac)
+					PostRadioEvents(ac.Callsign, rt, s)
+
+					// If it was handed off to tower, hand it back to us
+					if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
+						ac.HandoffTrackController = s.World.DepartureController(ac)
+						if ac.HandoffTrackController == "" {
+							ac.HandoffTrackController = ac.ApproachController
+						}
+						s.PostEvent(Event{
+							Type:           OfferedHandoffEvent,
+							Callsign:       ac.Callsign,
+							FromController: ac.TrackingController,
+							ToController:   ac.ApproachController,
+						})
+					}
+				}
+			}
+
 			// Contact the departure controller
 			if ac.IsDeparture() && ac.DepartureContactAltitude != 0 &&
 				ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
@@ -1621,10 +1662,10 @@ func (s *Sim) updateState() {
 				}
 
 				msg := "departing " + airportName + ", " + ac.Nav.DepartureMessage()
-				PostRadioEvents(ac.Callsign, []RadioTransmission{RadioTransmission{
+				PostRadioEvents(ac.Callsign, []av.RadioTransmission{av.RadioTransmission{
 					Controller: ctrl,
 					Message:    msg,
-					Type:       RadioTransmissionContact,
+					Type:       av.RadioTransmissionContact,
 				}}, s)
 
 				// Clear this out so we only send one contact message
@@ -1661,6 +1702,18 @@ func (s *Sim) updateState() {
 	}
 }
 
+func PostRadioEvents(from string, transmissions []av.RadioTransmission, ep EventPoster) {
+	for _, rt := range transmissions {
+		ep.PostEvent(Event{
+			Type:                  RadioTransmissionEvent,
+			Callsign:              from,
+			ToController:          rt.Controller,
+			Message:               rt.Message,
+			RadioTransmissionType: rt.Type,
+		})
+	}
+}
+
 func (s *Sim) ResolveController(callsign string) string {
 	if s.World.MultiControllers == nil {
 		// Single controller
@@ -1670,10 +1723,14 @@ func (s *Sim) ResolveController(callsign string) string {
 		// before the user has been signed in.
 		return s.World.PrimaryController
 	} else {
-		c := s.World.MultiControllers.ResolveController(callsign,
+		c, err := s.World.MultiControllers.ResolveController(callsign,
 			func(callsign string) bool {
 				return s.controllerIsSignedIn(callsign)
 			})
+		if err != nil {
+			lg.Errorf("%s: unable to resolve controller: %v", callsign, err)
+		}
+
 		if c == "" { // This shouldn't happen...
 			return s.World.PrimaryController
 		}
@@ -1948,7 +2005,7 @@ func (s *Sim) TakeOrReturnLaunchControl(token string) error {
 	}
 }
 
-func (s *Sim) LaunchAircraft(ac Aircraft) {
+func (s *Sim) LaunchAircraft(ac av.Aircraft) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -1956,7 +2013,7 @@ func (s *Sim) LaunchAircraft(ac Aircraft) {
 }
 
 // Assumes the lock is already held (as is the case e.g. for automatic spawning...)
-func (s *Sim) launchAircraftNoLock(ac Aircraft) {
+func (s *Sim) launchAircraftNoLock(ac av.Aircraft) {
 	if _, ok := s.World.Aircraft[ac.Callsign]; ok {
 		s.lg.Warn("already have an aircraft with that callsign!", slog.String("callsign", ac.Callsign))
 		return
@@ -1976,8 +2033,8 @@ func (s *Sim) launchAircraftNoLock(ac Aircraft) {
 }
 
 func (s *Sim) dispatchCommand(token string, callsign string,
-	check func(c *av.Controller, ac *Aircraft) error,
-	cmd func(*av.Controller, *Aircraft) []RadioTransmission) error {
+	check func(c *av.Controller, ac *av.Aircraft) error,
+	cmd func(*av.Controller, *av.Aircraft) []av.RadioTransmission) error {
 	if sc, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
 	} else if ac, ok := s.World.Aircraft[callsign]; !ok {
@@ -2000,7 +2057,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 			preAc := *ac
 			radioTransmissions := cmd(ctrl, ac)
 			s.lg.Info("dispatch_command", slog.String("callsign", ac.Callsign),
-				slog.Any("prepost_aircraft", []Aircraft{preAc, *ac}),
+				slog.Any("prepost_aircraft", []av.Aircraft{preAc, *ac}),
 				slog.Any("radio_transmissions", radioTransmissions))
 			PostRadioEvents(ac.Callsign, radioTransmissions, s)
 			return nil
@@ -2011,9 +2068,9 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 // Commands that are allowed by the controlling controller, who may not still have the track;
 // e.g., turns after handoffs.
 func (s *Sim) dispatchControllingCommand(token string, callsign string,
-	cmd func(*av.Controller, *Aircraft) []RadioTransmission) error {
+	cmd func(*av.Controller, *av.Aircraft) []av.RadioTransmission) error {
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.ControllingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
@@ -2024,9 +2081,9 @@ func (s *Sim) dispatchControllingCommand(token string, callsign string,
 
 // Commands that are allowed by tracking controller only.
 func (s *Sim) dispatchTrackingCommand(token string, callsign string,
-	cmd func(*av.Controller, *Aircraft) []RadioTransmission) error {
+	cmd func(*av.Controller, *av.Aircraft) []av.RadioTransmission) error {
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
@@ -2053,7 +2110,7 @@ func (s *Sim) SetScratchpad(token, callsign, scratchpad string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			ac.Scratchpad = scratchpad
 			return nil
 		})
@@ -2064,7 +2121,7 @@ func (s *Sim) SetSecondaryScratchpad(token, callsign, scratchpad string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			ac.SecondaryScratchpad = scratchpad
 			return nil
 		})
@@ -2075,23 +2132,23 @@ func (s *Sim) Ident(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
-		func(c *av.Controller, ac *Aircraft) error {
+		func(c *av.Controller, ac *av.Aircraft) error {
 			// Can't ask for ident if they're on someone else's frequency.
 			if ac.ControllingController != "" && ac.ControllingController != c.Callsign {
 				return ErrOtherControllerHasTrack
 			}
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			s.eventStream.Post(Event{
 				Type:     IdentEvent,
 				Callsign: ac.Callsign,
 			})
 
-			return []RadioTransmission{RadioTransmission{
+			return []av.RadioTransmission{av.RadioTransmission{
 				Controller: ctrl.Callsign,
 				Message:    "ident",
-				Type:       RadioTransmissionReadback,
+				Type:       av.RadioTransmissionReadback,
 			}}
 		})
 }
@@ -2101,14 +2158,14 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *math.CardinalOrdi
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
-		func(c *av.Controller, ac *Aircraft) error {
+		func(c *av.Controller, ac *av.Aircraft) error {
 			// Make sure no one has the track already
 			if ac.TrackingController != c.Callsign {
 				return ErrOtherControllerHasTrack
 			}
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			ac.GlobalLeaderLineDirection = dir
 			s.eventStream.Post(Event{
 				Type:                SetGlobalLeaderLineEvent,
@@ -2125,14 +2182,14 @@ func (s *Sim) InitiateTrack(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
-		func(c *av.Controller, ac *Aircraft) error {
+		func(c *av.Controller, ac *av.Aircraft) error {
 			// Make sure no one has the track already
 			if ac.TrackingController != "" {
 				return ErrOtherControllerHasTrack
 			}
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			ac.TrackingController = ctrl.Callsign
 			if ac.DepartureContactAltitude == 0 {
 				// If they have already contacted departure, then
@@ -2155,7 +2212,7 @@ func (s *Sim) DropTrack(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			ac.TrackingController = ""
 			ac.ControllingController = ""
 			s.eventStream.Post(Event{
@@ -2172,7 +2229,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
@@ -2184,7 +2241,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			}
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			octrl := s.World.GetControllerByCallsign(controller)
 
 			s.eventStream.Post(Event{
@@ -2210,34 +2267,34 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.ControllingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
-			var radioTransmissions []RadioTransmission
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			var radioTransmissions []av.RadioTransmission
 			if octrl := s.World.GetControllerByCallsign(ac.TrackingController); octrl != nil {
 				name := util.Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
 				bye := rand.Sample("good day", "seeya")
 				contact := rand.Sample("contact ", "over to ", "")
 				goodbye := contact + name + " on " + octrl.Frequency.String() + ", " + bye
-				radioTransmissions = append(radioTransmissions, RadioTransmission{
+				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
 					Controller: ac.ControllingController,
 					Message:    goodbye,
-					Type:       RadioTransmissionReadback,
+					Type:       av.RadioTransmissionReadback,
 				})
-				radioTransmissions = append(radioTransmissions, RadioTransmission{
+				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
 					Controller: ac.TrackingController,
 					Message:    ac.ContactMessage(s.ReportingPoints),
-					Type:       RadioTransmissionContact,
+					Type:       av.RadioTransmissionContact,
 				})
 			} else {
-				radioTransmissions = append(radioTransmissions, RadioTransmission{
+				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
 					Controller: ac.ControllingController,
 					Message:    "goodbye",
-					Type:       RadioTransmissionReadback,
+					Type:       av.RadioTransmissionReadback,
 				})
 			}
 
@@ -2256,7 +2313,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 			if ac.IsDeparture() && octrl != nil && !octrl.IsHuman {
 				s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 					slog.Int("final_altitude", ac.FlightPlan.Altitude))
-				ac.DepartOnCourse()
+				ac.DepartOnCourse(lg)
 			}
 
 			return radioTransmissions
@@ -2268,13 +2325,13 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.HandoffTrackController != ctrl.Callsign {
 				return ErrNotBeingHandedOffToMe
 			}
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
 				FromController: ac.ControllingController,
@@ -2287,10 +2344,10 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 			if !s.controllerIsSignedIn(ac.ControllingController) {
 				// Take immediate control on handoffs from virtual
 				ac.ControllingController = ctrl.Callsign
-				return []RadioTransmission{RadioTransmission{
+				return []av.RadioTransmission{av.RadioTransmission{
 					Controller: ctrl.Callsign,
 					Message:    ac.ContactMessage(s.ReportingPoints),
-					Type:       RadioTransmissionContact,
+					Type:       av.RadioTransmissionContact,
 				}}
 			} else {
 				return nil
@@ -2303,17 +2360,17 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			delete(s.Handoffs, ac.Callsign)
 			ac.HandoffTrackController = ""
-			ac.RedirectedHandoff = RedirectedHandoff{}
+			ac.RedirectedHandoff = av.RedirectedHandoff{}
 			return nil
 		})
 }
 
 func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if octrl := s.World.GetControllerByCallsign(controller); octrl == nil {
 				return ErrNoController
 			} else if octrl.Callsign == ctrl.Callsign || octrl.Callsign == ac.TrackingController {
@@ -2325,12 +2382,12 @@ func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 			}
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			octrl := s.World.GetControllerByCallsign(controller)
 			ac.RedirectedHandoff.OriginalOwner = ac.TrackingController
 			if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Callsign, octrl.Callsign) {
 				ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[0]
-				ac.RedirectedHandoff = RedirectedHandoff{}
+				ac.RedirectedHandoff = av.RedirectedHandoff{}
 				return nil
 			}
 			ac.RedirectedHandoff.AddRedirector(ctrl)
@@ -2341,10 +2398,10 @@ func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 
 func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			if ac.RedirectedHandoff.RedirectedTo == ctrl.Callsign { // Accept
 				s.eventStream.Post(Event{
 					Type:           AcceptedRedirectedHandoffEvent,
@@ -2355,13 +2412,13 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 				ac.ControllingController = ctrl.Callsign
 				ac.HandoffTrackController = ""
 				ac.TrackingController = ac.RedirectedHandoff.RedirectedTo
-				ac.RedirectedHandoff = RedirectedHandoff{}
+				ac.RedirectedHandoff = av.RedirectedHandoff{}
 			} else if ac.RedirectedHandoff.GetLastRedirector() == ctrl.Callsign { // Recall (only the last redirector is able to recall)
 				if len(ac.RedirectedHandoff.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"
 					ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1]
 				} else { // One redirect took place, clear the RD and show it as a normal handoff
 					ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1]
-					ac.RedirectedHandoff = RedirectedHandoff{}
+					ac.RedirectedHandoff = av.RedirectedHandoff{}
 				}
 			}
 			return nil
@@ -2370,13 +2427,13 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 
 func (s *Sim) ForceQL(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if s.World.GetControllerByCallsign(controller) == nil {
 				return ErrNoController
 			}
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			octrl := s.World.GetControllerByCallsign(controller)
 			ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
 			return nil
@@ -2385,10 +2442,10 @@ func (s *Sim) ForceQL(token, callsign, controller string) error {
 
 func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			ac.ForceQLControllers = util.FilterSlice(ac.ForceQLControllers, func(qlController string) bool { return qlController != controller })
 			return nil
 		})
@@ -2396,7 +2453,7 @@ func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
 
 func (s *Sim) PointOut(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			} else if octrl := s.World.GetControllerByCallsign(controller); octrl == nil {
@@ -2407,7 +2464,7 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 			}
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			octrl := s.World.GetControllerByCallsign(controller)
 			s.pointOut(ac.Callsign, ctrl, octrl)
 			return nil
@@ -2434,7 +2491,7 @@ func (s *Sim) pointOut(callsign string, from *av.Controller, to *av.Controller) 
 
 func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if _, ok := s.PointOuts[callsign]; !ok {
 				return ErrNotPointedOutToMe
 			} else if _, ok := s.PointOuts[callsign][ctrl.Callsign]; !ok {
@@ -2442,7 +2499,7 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 			}
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			// As with auto accepts, "to" and "from" are swapped in the
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
@@ -2465,7 +2522,7 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 
 func (s *Sim) RejectPointOut(token, callsign string) error {
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if _, ok := s.PointOuts[callsign]; !ok {
 				return ErrNotPointedOutToMe
 			} else if _, ok := s.PointOuts[callsign][ctrl.Callsign]; !ok {
@@ -2473,7 +2530,7 @@ func (s *Sim) RejectPointOut(token, callsign string) error {
 			}
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			// As with auto accepts, "to" and "from" are swapped in the
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
@@ -2493,7 +2550,7 @@ func (s *Sim) ToggleSPCOverride(token, callsign, spc string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			ac.ToggleSPCOverride(spc)
 			return nil
 		})
@@ -2504,7 +2561,7 @@ func (s *Sim) AssignAltitude(token, callsign string, altitude int, afterSpeed bo
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.AssignAltitude(altitude, afterSpeed)
 		})
 }
@@ -2514,7 +2571,7 @@ func (s *Sim) SetTemporaryAltitude(token, callsign string, altitude int) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			ac.TempAltitude = altitude
 			return nil
 		})
@@ -2527,7 +2584,7 @@ type HeadingArgs struct {
 	Present         bool
 	LeftDegrees     int
 	RightDegrees    int
-	Turn            TurnMethod
+	Turn            av.TurnMethod
 }
 
 func (s *Sim) AssignHeading(hdg *HeadingArgs) error {
@@ -2535,7 +2592,7 @@ func (s *Sim) AssignHeading(hdg *HeadingArgs) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(hdg.ControllerToken, hdg.Callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			if hdg.Present {
 				return ac.FlyPresentHeading()
 			} else if hdg.LeftDegrees != 0 {
@@ -2553,7 +2610,7 @@ func (s *Sim) AssignSpeed(token, callsign string, speed int, afterAltitude bool)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.AssignSpeed(speed, afterAltitude)
 		})
 }
@@ -2563,7 +2620,7 @@ func (s *Sim) MaintainSlowestPractical(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.MaintainSlowestPractical()
 		})
 }
@@ -2573,7 +2630,7 @@ func (s *Sim) MaintainMaximumForward(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.MaintainMaximumForward()
 		})
 }
@@ -2583,7 +2640,7 @@ func (s *Sim) SaySpeed(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.SaySpeed()
 		})
 }
@@ -2593,7 +2650,7 @@ func (s *Sim) SayAltitude(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.SayAltitude()
 		})
 }
@@ -2603,7 +2660,7 @@ func (s *Sim) SayHeading(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.SayHeading()
 		})
 }
@@ -2613,7 +2670,7 @@ func (s *Sim) ExpediteDescent(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.ExpediteDescent()
 		})
 }
@@ -2623,7 +2680,7 @@ func (s *Sim) ExpediteClimb(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.ExpediteClimb()
 		})
 }
@@ -2633,7 +2690,7 @@ func (s *Sim) DirectFix(token, callsign, fix string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.DirectFix(fix)
 		})
 }
@@ -2643,7 +2700,7 @@ func (s *Sim) DepartFixDirect(token, callsign, fixa string, fixb string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.DepartFixDirect(fixa, fixb)
 		})
 }
@@ -2653,7 +2710,7 @@ func (s *Sim) DepartFixHeading(token, callsign, fix string, heading int) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.DepartFixHeading(fix, heading)
 		})
 }
@@ -2663,7 +2720,7 @@ func (s *Sim) CrossFixAt(token, callsign, fix string, ar *av.AltitudeRestriction
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.CrossFixAt(fix, ar, speed)
 		})
 }
@@ -2673,7 +2730,7 @@ func (s *Sim) AtFixCleared(token, callsign, fix, approach string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.AtFixCleared(fix, approach)
 		})
 }
@@ -2682,9 +2739,17 @@ func (s *Sim) ExpectApproach(token, callsign, approach string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	var ap *av.Airport
+	if ac, ok := s.World.Aircraft[callsign]; ok {
+		ap = s.World.GetAirport(ac.FlightPlan.ArrivalAirport)
+		if ap == nil {
+			return ErrUnknownAirport
+		}
+	}
+
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
-			return ac.ExpectApproach(approach, s.World, s.lg)
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			return ac.ExpectApproach(approach, ap, s.World.ArrivalGroups, s.lg)
 		})
 }
 
@@ -2693,11 +2758,11 @@ func (s *Sim) ClearedApproach(token, callsign, approach string, straightIn bool)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			if straightIn {
-				return ac.ClearedStraightInApproach(approach, s.World)
+				return ac.ClearedStraightInApproach(approach, s.World.ArrivalGroups)
 			} else {
-				return ac.ClearedApproach(approach, s.World)
+				return ac.ClearedApproach(approach, s.World.ArrivalGroups, s.lg)
 			}
 		})
 }
@@ -2707,8 +2772,8 @@ func (s *Sim) InterceptLocalizer(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
-			return ac.InterceptLocalizer(s.World)
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			return ac.InterceptLocalizer(s.World.ArrivalGroups)
 		})
 }
 
@@ -2717,7 +2782,7 @@ func (s *Sim) CancelApproachClearance(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.CancelApproachClearance()
 		})
 }
@@ -2727,7 +2792,7 @@ func (s *Sim) ClimbViaSID(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.ClimbViaSID()
 		})
 }
@@ -2737,7 +2802,7 @@ func (s *Sim) DescendViaSTAR(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			return ac.DescendViaSTAR()
 		})
 }
@@ -2747,11 +2812,10 @@ func (s *Sim) GoAround(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			resp := ac.GoAround()
 			for i := range resp {
-				// Upgrade to unexpected versus it just being controller initiated.
-				resp[i].Type = RadioTransmissionUnexpected
+				resp[i].Type = av.RadioTransmissionUnexpected
 			}
 			return resp
 		})
@@ -2762,8 +2826,8 @@ func (s *Sim) ContactTower(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
-			return ac.ContactTower(s.World)
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			return ac.ContactTower(s.World.Controllers, s.lg)
 		})
 }
 
@@ -2772,13 +2836,13 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *Aircraft) error {
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if lctrl := s.LaunchConfig.Controller; lctrl != "" && lctrl != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
 			return nil
 		},
-		func(ctrl *av.Controller, ac *Aircraft) []RadioTransmission {
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			if ac.IsDeparture() {
 				s.TotalDepartures--
 			} else {

@@ -1775,3 +1775,128 @@ func (ml VideoMapLibrary) HaveMap(filename, mapname string) bool {
 	}
 	return ok
 }
+
+///////////////////////////////////////////////////////////////////////////
+
+// split -> config
+type SplitConfigurationSet map[string]SplitConfiguration
+
+// callsign -> controller contig
+type SplitConfiguration map[string]*MultiUserController
+
+type MultiUserController struct {
+	Primary          bool     `json:"primary"`
+	BackupController string   `json:"backup"`
+	Departures       []string `json:"departures"`
+	Arrivals         []string `json:"arrivals"`
+}
+
+///////////////////////////////////////////////////////////////////////////
+// SplitConfigurations
+
+func (sc SplitConfigurationSet) GetConfiguration(split string) (SplitConfiguration, error) {
+	if len(sc) == 1 {
+		// ignore split
+		for _, config := range sc {
+			return config, nil
+		}
+	}
+
+	config, ok := sc[split]
+	if !ok {
+		return config, fmt.Errorf("%s: split not found", split)
+	}
+	return config, nil
+}
+
+func (sc SplitConfigurationSet) GetPrimaryController(split string) (string, error) {
+	configs, err := sc.GetConfiguration(split)
+	if err != nil {
+		return "", err
+	}
+
+	for callsign, mc := range configs {
+		if mc.Primary {
+			return callsign, nil
+		}
+	}
+
+	return "", fmt.Errorf("No primary controller in split")
+}
+
+func (sc SplitConfigurationSet) Len() int {
+	return len(sc)
+}
+
+func (sc SplitConfigurationSet) Splits() []string {
+	return util.SortedMapKeys(sc)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// SplitConfiguration
+
+// ResolveController takes a controller callsign and returns the signed-in
+// controller that is responsible for that position (possibly just the
+// provided callsign).
+func (sc SplitConfiguration) ResolveController(callsign string, active func(callsign string) bool) (string, error) {
+	i := 0
+	for {
+		if active(callsign) {
+			return callsign, nil
+		}
+
+		if ctrl, ok := sc[callsign]; !ok {
+			return "", fmt.Errorf("%s: failed to find controller in MultiControllers", callsign)
+		} else {
+			callsign = ctrl.BackupController
+		}
+
+		i++
+		if i == 20 {
+			return "", fmt.Errorf("%s: unable to find backup for arrival handoff controller", callsign)
+		}
+	}
+}
+
+func (sc SplitConfiguration) GetArrivalController(arrivalGroup string) (string, error) {
+	for callsign, ctrl := range sc {
+		if ctrl.IsArrivalController(arrivalGroup) {
+			return callsign, nil
+		}
+	}
+
+	return "", fmt.Errorf("%s: couldn't find arrival controller", arrivalGroup)
+}
+
+func (sc SplitConfiguration) GetDepartureController(airport, runway, sid string) (string, error) {
+	for callsign, ctrl := range sc {
+		if ctrl.IsDepartureController(airport, runway, sid) {
+			return callsign, nil
+		}
+	}
+
+	return "", fmt.Errorf("%s/%s: couldn't find departure controller", airport, sid)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// MultiUserController
+
+func (c *MultiUserController) IsDepartureController(ap, rwy, sid string) bool {
+	for _, d := range c.Departures {
+		depAirport, depSIDRwy, ok := strings.Cut(d, "/")
+		if ok { // have a runway or SID
+			if ap == depAirport && (rwy == depSIDRwy || sid == depSIDRwy) {
+				return true
+			}
+		} else { // no runway/SID, so only match airport
+			if ap == depAirport {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (c *MultiUserController) IsArrivalController(arrivalGroup string) bool {
+	return slices.Contains(c.Arrivals, arrivalGroup)
+}

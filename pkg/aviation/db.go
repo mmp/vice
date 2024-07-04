@@ -186,7 +186,7 @@ func mungeCSV(filename string, raw string, fields []string, callback func([]stri
 				}
 			}
 			if len(fieldIndices) != fi+1 {
-				panic(fmt.Sprintf("%s: did not find requested field header \"%s\"", f))
+				panic(fmt.Sprintf("%s: did not find requested field header", f))
 			}
 		}
 	}

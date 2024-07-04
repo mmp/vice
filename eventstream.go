@@ -11,6 +11,7 @@ import (
 	"sync"
 	"time"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 )
 
@@ -218,7 +219,7 @@ type Event struct {
 	FromController        string
 	ToController          string // For radio transmissions, the controlling controller.
 	Message               string
-	RadioTransmissionType RadioTransmissionType          // For radio transmissions only
+	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
 }
 

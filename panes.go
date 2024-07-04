@@ -215,7 +215,7 @@ func (fsp *FlightStripPane) ResetWorld(w *World) {
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
 
 func (fsp *FlightStripPane) processEvents(w *World) {
-	possiblyAdd := func(ac *Aircraft) {
+	possiblyAdd := func(ac *av.Aircraft) {
 		if _, ok := fsp.addedAircraft[ac.Callsign]; ok {
 			return
 		}
@@ -945,7 +945,7 @@ func (ci *CLIInput) DeleteAfterCursor() {
 
 func (mp *MessagesPane) processEvents(w *World) {
 	lastRadioCallsign := ""
-	var lastRadioType RadioTransmissionType
+	var lastRadioType av.RadioTransmissionType
 	var unexpectedTransmission bool
 	var transmissions []string
 
@@ -974,7 +974,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 
 		response := strings.Join(transmissions, ", ")
 		var msg Message
-		if lastRadioType == RadioTransmissionContact {
+		if lastRadioType == av.RadioTransmissionContact {
 			ctrl := w.Controllers[w.Callsign]
 			fullName := ctrl.FullName
 			if ac := w.Aircraft[callsign]; ac != nil && ac.IsDeparture() {
@@ -1006,7 +1006,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 					lastRadioType = event.RadioTransmissionType
 				}
 				transmissions = append(transmissions, event.Message)
-				unexpectedTransmission = unexpectedTransmission || (event.RadioTransmissionType == RadioTransmissionUnexpected)
+				unexpectedTransmission = unexpectedTransmission || (event.RadioTransmissionType == av.RadioTransmissionUnexpected)
 			}
 		case GlobalMessageEvent:
 			if event.FromController != w.Callsign {

@@ -7,7 +7,6 @@ package main
 import (
 	"fmt"
 	"io/fs"
-	"log/slog"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -92,11 +91,11 @@ type ControllerAirspaceVolume struct {
 }
 
 type Scenario struct {
-	SoloController      string                `json:"solo_controller"`
-	SplitConfigurations SplitConfigurationSet `json:"multi_controllers"`
-	DefaultSplit        string                `json:"default_split"`
-	Wind                av.Wind               `json:"wind"`
-	VirtualControllers  []string              `json:"controllers"`
+	SoloController      string                   `json:"solo_controller"`
+	SplitConfigurations av.SplitConfigurationSet `json:"multi_controllers"`
+	DefaultSplit        string                   `json:"default_split"`
+	Wind                av.Wind                  `json:"wind"`
+	VirtualControllers  []string                 `json:"controllers"`
 
 	// Map from arrival group name to map from airport name to default rate...
 	ArrivalGroupDefaultRates map[string]map[string]int `json:"arrivals"`
@@ -113,19 +112,6 @@ type Scenario struct {
 	CenterString string        `json:"center"`
 	Range        float32       `json:"range"`
 	DefaultMaps  []string      `json:"default_maps"`
-}
-
-// split -> config
-type SplitConfigurationSet map[string]SplitConfiguration
-
-// callsign -> controller contig
-type SplitConfiguration map[string]*MultiUserController
-
-type MultiUserController struct {
-	Primary          bool     `json:"primary"`
-	BackupController string   `json:"backup"`
-	Departures       []string `json:"departures"`
-	Arrivals         []string `json:"arrivals"`
 }
 
 type ScenarioGroupDepartureRunway struct {
@@ -406,7 +392,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 
 		// Make sure each active departure config (airport and possibly
 		// SID) has exactly one controller handling its departures.
-		validateDep := func(active map[string]map[string]interface{}, check func(ctrl *MultiUserController, airport, spec string) bool) {
+		validateDep := func(active map[string]map[string]interface{}, check func(ctrl *av.MultiUserController, airport, spec string) bool) {
 			for airport, specs := range active {
 				for spec := range specs {
 					controller := ""
@@ -426,12 +412,12 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 			}
 		}
 		if haveDepartureSIDSpec {
-			validateDep(activeAirportSIDs, func(ctrl *MultiUserController, airport, spec string) bool {
+			validateDep(activeAirportSIDs, func(ctrl *av.MultiUserController, airport, spec string) bool {
 				return ctrl.IsDepartureController(airport, "", spec)
 			})
 		}
 		if haveDepartureRunwaySpec {
-			validateDep(activeAirportRunways, func(ctrl *MultiUserController, airport, spec string) bool {
+			validateDep(activeAirportRunways, func(ctrl *av.MultiUserController, airport, spec string) bool {
 				return ctrl.IsDepartureController(airport, spec, "")
 			})
 		}
@@ -440,8 +426,8 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 		// of backup controllers that eventually ends with the primary.
 		havePathToPrimary := make(map[string]interface{})
 		havePathToPrimary[primaryController] = nil
-		var followPathToPrimary func(callsign string, mc *MultiUserController, depth int) bool
-		followPathToPrimary = func(callsign string, mc *MultiUserController, depth int) bool {
+		var followPathToPrimary func(callsign string, mc *av.MultiUserController, depth int) bool
+		followPathToPrimary = func(callsign string, mc *av.MultiUserController, depth int) bool {
 			if callsign == "" {
 				return false
 			}
@@ -800,7 +786,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 		e.Pop()
 	}
 
-	initializeSimConfigurations(sg, simConfigurations, *server)
+	initializeSimConfigurations(sg, simConfigurations, *server, e)
 }
 
 func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *ScenarioGroup) {
@@ -937,7 +923,7 @@ func (s *STARSFacilityAdaptation) PostLoad(ml *av.VideoMapLibrary) error {
 }
 
 func initializeSimConfigurations(sg *ScenarioGroup,
-	simConfigurations map[string]map[string]*SimConfiguration, multiController bool) {
+	simConfigurations map[string]map[string]*SimConfiguration, multiController bool, e *util.ErrorLogger) {
 	config := &SimConfiguration{
 		ScenarioConfigs:  make(map[string]*SimScenarioConfiguration),
 		ControlPositions: sg.ControlPositions,
@@ -960,7 +946,11 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 				// not a multi-controller scenario
 				continue
 			}
-			sc.SelectedController = scenario.SplitConfigurations.GetPrimaryController(scenario.DefaultSplit)
+			var err error
+			sc.SelectedController, err = scenario.SplitConfigurations.GetPrimaryController(scenario.DefaultSplit)
+			if err != nil {
+				e.Error(err)
+			}
 			sc.SelectedSplit = scenario.DefaultSplit
 		} else {
 			if scenario.SoloController == "" {
@@ -1330,114 +1320,4 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 	}
 
 	return scenarioGroups, simConfigurations, maplib
-}
-
-///////////////////////////////////////////////////////////////////////////
-// SplitConfigurations
-
-func (sc SplitConfigurationSet) GetConfiguration(split string) SplitConfiguration {
-	if len(sc) == 1 {
-		// ignore split
-		for _, config := range sc {
-			return config
-		}
-	}
-
-	config, ok := sc[split]
-	if !ok {
-		lg.Error("split not found: \""+split+"\"", slog.Any("splits", sc))
-	}
-	return config
-}
-
-func (sc SplitConfigurationSet) GetPrimaryController(split string) string {
-	for callsign, mc := range sc.GetConfiguration(split) {
-		if mc.Primary {
-			return callsign
-		}
-	}
-
-	lg.Error("No primary in split: \""+split+"\"", slog.Any("splits", sc))
-	return ""
-}
-
-func (sc SplitConfigurationSet) Len() int {
-	return len(sc)
-}
-
-func (sc SplitConfigurationSet) Splits() []string {
-	return util.SortedMapKeys(sc)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// SplitConfiguration
-
-// ResolveController takes a controller callsign and returns the signed-in
-// controller that is responsible for that position (possibly just the
-// provided callsign).
-func (sc SplitConfiguration) ResolveController(callsign string, active func(callsign string) bool) string {
-	i := 0
-	for {
-		if active(callsign) {
-			return callsign
-		}
-
-		if ctrl, ok := sc[callsign]; !ok {
-			lg.Errorf("%s: failed to find controller in MultiControllers", callsign)
-			return ""
-		} else {
-			callsign = ctrl.BackupController
-		}
-
-		i++
-		if i == 20 {
-			lg.Errorf("%s: unable to find backup for arrival handoff controller", callsign)
-			return ""
-		}
-	}
-}
-
-func (sc SplitConfiguration) GetArrivalController(arrivalGroup string) string {
-	for callsign, ctrl := range sc {
-		if ctrl.IsArrivalController(arrivalGroup) {
-			return callsign
-		}
-	}
-
-	lg.Error(arrivalGroup+": couldn't find arrival controller", slog.Any("config", sc))
-	return ""
-}
-
-func (sc SplitConfiguration) GetDepartureController(airport, runway, sid string) string {
-	for callsign, ctrl := range sc {
-		if ctrl.IsDepartureController(airport, runway, sid) {
-			return callsign
-		}
-	}
-
-	lg.Error(airport+"/"+sid+": couldn't find departure controller", slog.Any("config", sc))
-	return ""
-}
-
-///////////////////////////////////////////////////////////////////////////
-// MultiUserController
-
-func (c *MultiUserController) IsDepartureController(ap, rwy, sid string) bool {
-	for _, d := range c.Departures {
-		depAirport, depSIDRwy, ok := strings.Cut(d, "/")
-		if ok { // have a runway or SID
-			if ap == depAirport && (rwy == depSIDRwy || sid == depSIDRwy) {
-				return true
-			}
-		} else { // no runway/SID, so only match airport
-			if ap == depAirport {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func (c *MultiUserController) IsArrivalController(arrivalGroup string) bool {
-	return slices.Contains(c.Arrivals, arrivalGroup)
 }

@@ -33,7 +33,7 @@ type World struct {
 	// Used on the client side only
 	simProxy *SimProxy
 
-	Aircraft    map[string]*Aircraft
+	Aircraft    map[string]*av.Aircraft
 	METAR       map[string]*av.METAR
 	Controllers map[string]*av.Controller
 
@@ -67,7 +67,7 @@ type World struct {
 	TRACON                   string
 	LaunchConfig             LaunchConfig
 	PrimaryController        string
-	MultiControllers         SplitConfiguration
+	MultiControllers         av.SplitConfiguration
 	SimIsPaused              bool
 	SimRate                  float32
 	SimName                  string
@@ -97,7 +97,7 @@ type World struct {
 
 func NewWorld() *World {
 	return &World{
-		Aircraft:    make(map[string]*Aircraft),
+		Aircraft:    make(map[string]*av.Aircraft),
 		METAR:       make(map[string]*av.METAR),
 		Controllers: make(map[string]*av.Controller),
 	}
@@ -179,7 +179,7 @@ func (w *World) TakeOrReturnLaunchControl(eventStream *EventStream) {
 		})
 }
 
-func (w *World) LaunchAircraft(ac Aircraft) {
+func (w *World) LaunchAircraft(ac av.Aircraft) {
 	w.pendingCalls = append(w.pendingCalls,
 		&util.PendingCall{
 			Call:      w.simProxy.LaunchAircraft(ac),
@@ -423,7 +423,7 @@ func (w *World) Disconnect() {
 }
 
 // Bool is if the callsign can be abbreviated
-func (w *World) GetAircraft(callsign string, abbreviated bool) *Aircraft { // If the callsign can be abbreivated (for radio commands, not STARS commands)
+func (w *World) GetAircraft(callsign string, abbreviated bool) *av.Aircraft { // If the callsign can be abbreivated (for radio commands, not STARS commands)
 	if ac, ok := w.Aircraft[callsign]; ok {
 		return ac
 	}
@@ -436,8 +436,8 @@ func (w *World) GetAircraft(callsign string, abbreviated bool) *Aircraft { // If
 	return nil
 }
 
-func (w *World) findAircraft(sample string, aircraft []*Aircraft) *Aircraft {
-	var final []*Aircraft
+func (w *World) findAircraft(sample string, aircraft []*av.Aircraft) *av.Aircraft {
+	var final []*av.Aircraft
 	for _, icao := range aircraft {
 		if icao.ControllingController == w.Callsign && strings.Contains(icao.Callsign, sample) {
 			final = append(final, icao)
@@ -450,8 +450,8 @@ func (w *World) findAircraft(sample string, aircraft []*Aircraft) *Aircraft {
 	}
 }
 
-func (w *World) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
-	var filtered []*Aircraft
+func (w *World) GetFilteredAircraft(filter func(*av.Aircraft) bool) []*av.Aircraft {
+	var filtered []*av.Aircraft
 	for _, ac := range w.Aircraft {
 		if filter(ac) {
 			filtered = append(filtered, ac)
@@ -460,8 +460,8 @@ func (w *World) GetFilteredAircraft(filter func(*Aircraft) bool) []*Aircraft {
 	return filtered
 }
 
-func (w *World) GetAllAircraft() []*Aircraft {
-	return w.GetFilteredAircraft(func(*Aircraft) bool { return true })
+func (w *World) GetAllAircraft() []*av.Aircraft {
+	return w.GetFilteredAircraft(func(*av.Aircraft) bool { return true })
 }
 
 func (w *World) GetFlightStrip(callsign string) *av.FlightStrip {
@@ -486,13 +486,17 @@ func (w *World) GetAllControllers() map[string]*av.Controller {
 	return w.Controllers
 }
 
-func (w *World) DepartureController(ac *Aircraft) string {
+func (w *World) DepartureController(ac *av.Aircraft) string {
 	if len(w.MultiControllers) > 0 {
-		callsign := w.MultiControllers.ResolveController(ac.DepartureContactController,
+		callsign, err := w.MultiControllers.ResolveController(ac.DepartureContactController,
 			func(callsign string) bool {
 				ctrl, ok := w.Controllers[callsign]
 				return ok && ctrl.IsHuman
 			})
+		if err != nil {
+			lg.Error("Unable to resolve departure controller", slog.Any("error", err),
+				slog.Any("aircraft", ac))
+		}
 		return util.Select(callsign != "", callsign, w.PrimaryController)
 	} else {
 		return w.PrimaryController
@@ -661,13 +665,13 @@ func (w *World) InhibitCAVolumes() []av.AirspaceVolume {
 	return w.STARSFacilityAdaptation.InhibitCAVolumes
 }
 
-func (w *World) PrintInfo(ac *Aircraft) {
+func (w *World) PrintInfo(ac *av.Aircraft) {
 	lg.Info("print aircraft", slog.String("callsign", ac.Callsign),
 		slog.Any("aircraft", ac))
 	fmt.Println(spew.Sdump(ac) + "\n" + ac.Nav.FlightState.Summary())
 }
 
-func (w *World) DeleteAircraft(ac *Aircraft, onErr func(err error)) {
+func (w *World) DeleteAircraft(ac *av.Aircraft, onErr func(err error)) {
 	if lctrl := w.LaunchConfig.Controller; lctrl == "" || lctrl == w.Callsign {
 		delete(w.Aircraft, ac.Callsign)
 	}
@@ -734,7 +738,7 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 	"ICE001":  nil,
 }
 
-func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
+func (w *World) sampleAircraft(icao, fleet string) (*av.Aircraft, string) {
 	al, ok := av.DB.Airlines[icao]
 	if !ok {
 		// TODO: this should be caught at load validation time...
@@ -814,7 +818,7 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 		acType = "J/" + acType
 	}
 
-	return &Aircraft{
+	return &av.Aircraft{
 		Callsign:       callsign,
 		AssignedSquawk: squawk,
 		Squawk:         squawk,
@@ -822,7 +826,7 @@ func (w *World) sampleAircraft(icao, fleet string) (*Aircraft, string) {
 	}, acType
 }
 
-func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goAround bool) (*Aircraft, error) {
+func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goAround bool) (*av.Aircraft, error) {
 	arrivals := w.ArrivalGroups[arrivalGroup]
 	// Randomly sample from the arrivals that have a route to this airport.
 	idx := rand.SampleFiltered(arrivals, func(ar av.Arrival) bool {
@@ -852,13 +856,20 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 	// actually signed in at that point.
 	arrivalController := w.PrimaryController
 	if len(w.MultiControllers) > 0 {
-		arrivalController = w.MultiControllers.GetArrivalController(arrivalGroup)
+		var err error
+		arrivalController, err = w.MultiControllers.GetArrivalController(arrivalGroup)
+		if err != nil {
+			lg.Error("Unable to resolve arrival controller", slog.Any("error", err),
+				slog.Any("aircraft", ac))
+		}
+
 		if arrivalController == "" {
 			arrivalController = w.PrimaryController
 		}
 	}
 
-	if err := ac.InitializeArrival(w, arrivalGroup, idx, arrivalController, goAround); err != nil {
+	if err := ac.InitializeArrival(w.Airports[arrivalAirport], w.ArrivalGroups,
+		arrivalGroup, idx, arrivalController, goAround, w.NmPerLongitude, w.MagneticVariation, lg); err != nil {
 		return nil, err
 	}
 
@@ -866,7 +877,7 @@ func (w *World) CreateArrival(arrivalGroup string, arrivalAirport string, goArou
 }
 
 func (w *World) CreateDeparture(departureAirport, runway, category string, challenge float32,
-	lastDeparture *av.Departure) (*Aircraft, *av.Departure, error) {
+	lastDeparture *av.Departure) (*av.Aircraft, *av.Departure, error) {
 	ap := w.Airports[departureAirport]
 	if ap == nil {
 		return nil, nil, ErrUnknownAirport
@@ -942,7 +953,9 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 
 	ac.FlightPlan = av.NewFlightPlan(av.IFR, acType, departureAirport, dep.Destination)
 	exitRoute := rwy.ExitRoutes[dep.Exit]
-	if err := ac.InitializeDeparture(w, ap, departureAirport, dep, runway, exitRoute); err != nil {
+	if err := ac.InitializeDeparture(ap, departureAirport, dep, runway, exitRoute,
+		w.NmPerLongitude, w.MagneticVariation, w.Scratchpads,
+		w.PrimaryController, w.MultiControllers, lg); err != nil {
 		return nil, nil, err
 	}
 
