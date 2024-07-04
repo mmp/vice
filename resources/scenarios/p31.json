@@ -1,4 +1,4 @@
-{
+ {
     "tracon": "P31",
     "airports": {
         "KPNS": {
@@ -28,25 +28,25 @@
                 "17": {
                     "AEX,BDOCK,BRATT,CEW,COLIN,IPTAY,JAYDI,ORRTH,PENCL,PENSI,ROMMY,SARGE,SJI,TCATE,VOAXA": {
                         "cleared_altitude": 3000,
-                        "waypoints": "KPNS-17/h169"
+                        "waypoints": "KPNS-35/h169"
                     }
                 },
                 "26": {
                     "AEX,BDOCK,BRATT,CEW,COLIN,IPTAY,JAYDI,ORRTH,PENCL,PENSI,ROMMY,SARGE,SJI,TCATE,VOAXA": {
                         "cleared_altitude": 3000,
-                        "waypoints": "KPNS-26/h260"
+                        "waypoints": "KPNS-8/h260"
                     }
                 },
                 "35": {
                     "AEX,BDOCK,BRATT,CEW,COLIN,IPTAY,JAYDI,ORRTH,PENCL,PENSI,ROMMY,SARGE,SJI,TCATE,VOAXA": {
                         "cleared_altitude": 3000,
-                        "waypoints": "KPNS-35/h349"
+                        "waypoints": "KPNS-17/h349"
                     }
                 },
                 "8": {
                     "AEX,BDOCK,BRATT,CEW,COLIN,IPTAY,JAYDI,ORRTH,PENCL,PENSI,ROMMY,SARGE,SJI,TCATE,VOAXA": {
                         "cleared_altitude": 3000,
-                        "waypoints": "KPNS-8/h080"
+                        "waypoints": "KPNS-26/h080"
                     }
                 }
             },
