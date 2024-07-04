@@ -11911,6 +11911,40 @@
     }
   },
   {
+    "icao": "brg",
+    "name": "Bering Air",
+    "callsign": {
+      "name": "Bering Air",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "B190",
+          4
+        ],
+        [
+          "BE20",
+          4
+        ],
+        [
+          "C208",
+          17
+        ],
+        [
+          "C212",
+          2
+        ],
+        [
+          "C408",
+          2
+        ]
+      ]
+    }
+  },
+  {
     "icao": "brq",
     "name": "Buraq Air",
     "callsign": {
@@ -44235,6 +44269,88 @@
     }
   },
   {
+    "icao": "vts",
+    "name": "Everts Air Alaska",
+    "callsign": {
+      "name": "Everts",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "B463",
+          2
+        ],
+        [
+          "C172",
+          1
+        ],
+        [
+          "C208",
+          5
+        ],
+        [
+          "C408",
+          2
+        ],
+        [
+          "PC12",
+          3
+        ],
+        [
+          "MD82",
+          1
+        ],
+        [
+          "MD83",
+          5
+        ],
+        [
+          "MD88",
+          1
+        ]
+      ],
+      "prop": [
+        [
+          "B463",
+          2
+        ],
+        [
+          "C172",
+          1
+        ],
+        [
+          "C208",
+          5
+        ],
+        [
+          "C408",
+          2
+        ],
+        [
+          "PC12",
+          3
+        ]
+      ],
+      "jet": [
+        [
+          "MD82",
+          1
+        ],
+        [
+          "MD83",
+          5
+        ],
+        [
+          "MD88",
+          1
+        ]
+      ]
+    }
+  },
+  {
     "icao": "vte",
     "name": "Contour Airlines",
     "callsign": {
@@ -44503,6 +44619,45 @@
         [
           "B738",
           39
+        ]
+      ]
+    }
+  },
+  {
+    "icao": "wsn",
+    "name": "Advanced Air",
+    "callsign": {
+      "name": "Wingspan",
+      "callsignFormats": [
+        "##",
+        "#"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "B350",
+          10
+        ],
+        [
+          "CL30",
+          1
+        ],
+        [
+          "J328",
+          4
+        ],
+        [
+          "LJ45",
+          1
+        ],
+        [
+          "LJ75",
+        1
+        ],
+        [
+          "PC12",
+          4
         ]
       ]
     }
