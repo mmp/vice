@@ -11777,6 +11777,7 @@
       "name": "Gosling",
       "callsignFormats": [
         "###"
+      ]
     },
     "fleets": {
       "default": [
