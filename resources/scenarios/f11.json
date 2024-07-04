@@ -599,7 +599,7 @@
           "altitude": 34000,
           "destination": "MMUN",
           "exit": "PLUMR",
-          "scratchpad": "D34",
+          "scratchpad": "F34",
           "route": "PLUMR TUNSL Y196 CANOA UB879 NOSAT NOSAT1B"
         },
         {
@@ -10554,7 +10554,7 @@
         "full_name": "Miami Center",
         "facility_id": "R",
         "eram_facility": true, 
-        "scope_char": "R",
+        "scope_char": "Z",
         "sector_id": "R23"
     },
     "MIA_22_CTR": {
@@ -10562,7 +10562,7 @@
         "full_name": "Miami Center",
         "facility_id": "R",
         "eram_facility": true,
-        "scope_char": "R",
+        "scope_char": "Z",
         "sector_id": "R22"
     },
     "MIA_67_CTR": { 
@@ -10570,7 +10570,7 @@
         "full_name": "Miami Center",
         "facility_id": "R",
         "eram_facility": true,
-        "scope_char": "R",
+        "scope_char": "Z",
         "sector_id": "R67"
     },
     "JAX_14_CTR": {
