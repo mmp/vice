@@ -33,10 +33,22 @@
             "Y1R": {
                 "cifp_id": "RY1R"
             },
+            "V1L": {
+                "cifp_id": "RY1L"
+            },
+            "V1R": {
+                "cifp_id": "RY1R"
+            },
             "Y27": {
                 "cifp_id": "RY27"
             },
+            "V27": {
+                "cifp_id": "RY27"
+            },
             "Y9": {
+                "cifp_id": "RY9"
+            },
+            "V9": {
                 "cifp_id": "RY9"
             },
             "Z9L": {
@@ -215,6 +227,120 @@
                 "cleared_altitude": 10000,
                 "sid": "WLDCT6",
                 "waypoints": "KMCI-1L/h200 MCI TYTUS KENTN ICT"
+            }
+          },
+          "27": {
+            "SPI": {
+                "cleared_altitude": 10000,
+                "sid": "LAKES5",
+                "waypoints": "KMCI-19L/h020 MCI BLUZY TWAIN SPI"
+            },
+            "COU": {
+                "cleared_altitude": 10000,
+                "sid": "LAKES5",
+                "waypoints": "KMCI-19L/h020 MCI BLUZY TWAIN SPI"
+            },
+            "SGF": {
+                "cleared_altitude": 10000,
+                "sid": "RACER8",
+                "waypoints": "KMCI-19L/h020 MCI GRILD BUM SGF"
+            },
+            "BUM": {
+                "cleared_altitude": 10000,
+                "sid": "RACER8",
+                "waypoints": "KMCI-19L/h020 MCI GRILD BUM"
+            },
+            "STJ": {
+                "cleared_altitude": 10000,
+                "sid": "CHIEF9",
+                "waypoints": "KMCI-1L/h200 MCI STJ"
+            },
+            "CATTS": {
+                "cleared_altitude": 10000,
+                "sid": "CHIEF9",
+                "waypoints": "KMCI-1L/h200 MCI OZAKI CATTS"
+            },
+            "DOSOA": {
+                "cleared_altitude": 10000,
+                "sid": "RACER8",
+                "waypoints": "KMCI-1L/h200 MCI SPRNT DOSOA"
+            },
+            "ARENZ": {
+                "cleared_altitude": 10000,
+                "sid": "ROYAL1",
+                "waypoints": "KMCI-1L/h200 MCI CAYKO JTHRO ARENZ"
+            },
+            "TONCE": {
+                "cleared_altitude": 10000,
+                "sid": "ROYAL1",
+                "waypoints": "KMCI-1L/h200 MCI JDOGG TONCE"
+            },
+            "BODYN": {
+                "cleared_altitude": 10000,
+                "sid": "ROYAL1",
+                "waypoints": "KMCI-1L/h200 MCI CAYKO JTHRO ARENZ BODYN"
+            },
+            "TIFTO": {
+                "cleared_altitude": 10000,
+                "sid": "TIFTO8",
+                "waypoints": "KMCI-1L/h200 MCI DIGGY TIFTO"
+            },
+            "SLN": {
+                "cleared_altitude": 10000,
+                "sid": "WLDCT6",
+                "waypoints": "KMCI-1L/h200 MCI TYTUS KENTN SLN"
+            },
+            "ICT": {
+                "cleared_altitude": 10000,
+                "sid": "WLDCT6",
+                "waypoints": "KMCI-1L/h200 MCI TYTUS KENTN ICT"
+            }
+          },
+          "9": {
+            "STJ": {
+                "cleared_altitude": 10000,
+                "sid": "CHIEF9",
+                "waypoints": "KMCI-27/h270 MCI STJ"
+            },
+            "CATTS": {
+                "cleared_altitude": 10000,
+                "sid": "CHIEF9",
+                "waypoints": "KMCI-27/h270 MCI OZAKI CATTS"
+            },
+            "DOSOA": {
+                "cleared_altitude": 10000,
+                "sid": "RACER8",
+                "waypoints": "KMCI-27/h270 MCI SPRNT DOSOA"
+            },
+            "ARENZ": {
+                "cleared_altitude": 10000,
+                "sid": "ROYAL1",
+                "waypoints": "KMCI-27/h270 MCI CAYKO JTHRO ARENZ"
+            },
+            "TONCE": {
+                "cleared_altitude": 10000,
+                "sid": "ROYAL1",
+                "waypoints": "KMCI-27/h270 MCI JDOGG TONCE"
+            },
+            "BODYN": {
+                "cleared_altitude": 10000,
+                "sid": "ROYAL1",
+                "waypoints": "KMCI-27/h270 MCI CAYKO JTHRO ARENZ BODYN"
+            },
+            "TIFTO": {
+                "cleared_altitude": 10000,
+                "sid": "TIFTO8",
+                "waypoints": "KMCI-27/h270 MCI DIGGY TIFTO"
+            },
+            "SLN": {
+                "cleared_altitude": 10000,
+                "sid": "WLDCT6",
+                "waypoints": "KMCI-27/h270 MCI TYTUS KENTN SLN"
+            },
+            "ICT": {
+                "cleared_altitude": 10000,
+                "sid": "WLDCT6",
+                "waypoints": "KMCI-27/h270 MCI TYTUS KENTN ICT"
             }
           }
         },
@@ -1076,6 +1202,404 @@
             
         },
         "tower_list": 1
+      },
+      "KSTJ": {
+        "approaches": {
+            "I35": {
+                "cifp_id": "I35"
+            },
+            "R13": {
+                "cifp_id": "R13"
+            },
+            "R17": {
+                "cifp_id": "R17"
+            },
+            "R31": {
+                "cifp_id": "R31"
+            },
+            "R35": {
+                "cifp_id": "R35"
+            },
+            "V35": {
+                "cifp_id": "R35",
+                "full_name": "Visual Approach Runway 35"
+            },
+            "V17": {
+                "cifp_id": "R17",
+                "full_name": "Visual Approach Runway 17"
+            },
+            "V13": {
+                "cifp_id": "R13",
+                "full_name": "Visual Approach Runway 13"
+            },
+            "V31": {
+                "cifp_id": "R31",
+                "full_name": "Visual Approach Runway 31"
+            }
+        },
+        "departure_routes": {
+          "35": {
+            "STJ": {
+                "cleared_altitude": 5000,
+                "sid": "CHIEF9",
+                "waypoints": "KSTJ-17/h350 STJ"
+            },
+            "BUM": {
+                "cleared_altitude": 5000,
+                "sid": "RACER8",
+                "waypoints": "KSTJ-17/h350 MCI OZAKI CATTS"
+            }
+          },
+          "17": {
+            "STJ": {
+                "cleared_altitude": 5000,
+                "sid": "CHIEF9",
+                "waypoints": "KSTJ-35/h170 STJ"
+            },
+            "BUM": {
+                "cleared_altitude": 5000,
+                "sid": "RACER8",
+                "waypoints": "KSTJ-35/h170 MCI GRILD"
+            }
+          }
+        },
+        "departures": [
+            {
+                "exit": "BUM",
+                "destination": "KOZS",
+                "altitude": 33000,
+                "route": "RACER8 BUM V234 ROACH V63 LOJOV",
+                "airlines": [
+                    {
+                        "icao": "N"
+                    },
+                    {
+                        "icao": "N",
+                        "fleet": "fastGA"
+                    },
+                    {
+                        "icao": "EJA"
+                    }
+                ]
+            },
+            {
+                "exit": "STJ",
+                "destination": "KOZS",
+                "altitude": 33000,
+                "route": "CHIEF9 STJ V159 LASSO V13 ANX V12 OCTAM",
+                "airlines": [
+                    {
+                        "icao": "N"
+                    }
+                ]
+            },
+            {
+                "exit": "STJ",
+                "destination": "KCHT",
+                "altitude": 33000,
+                "route": "CHIEF9 STJ V159 LASSO V502 CUTAN",
+                "airlines": [
+                    {
+                        "icao": "N"
+                    }
+                ]
+            }
+        ],
+        "exit_categories": {
+            
+        },
+        "tower_list": 2
+      },
+      "KIXD": {
+        "approaches": {
+            "I36": {
+                "cifp_id": "I36"
+            },
+            "R18": {
+                "cifp_id": "R18"
+            },
+            "V18": {
+                "cifp_id": "R18",
+                "full_name": "Visual Approach Runway 18"
+            },
+            "V36": {
+                "cifp_id": "R36",
+                "full_name": "Visual Approach Runway 36"
+            },
+            "R22": {
+                "cifp_id": "R22"
+            },
+            "R36": {
+                "cifp_id": "R36"
+            },
+            "R4": {
+                "cifp_id": "I36"
+            }
+        },
+        "departure_routes": {
+            "36": {
+              "STJ": {
+                  "cleared_altitude": 5000,
+                  "sid": "CHIEF9",
+                  "waypoints": "KIXD-18/h350 STJ"
+              },
+              "BUM": {
+                  "cleared_altitude": 5000,
+                  "sid": "RACER8",
+                  "waypoints": "KIXD-18/h350 MCI OZAKI CATTS"
+              }
+            },
+            "18": {
+              "STJ": {
+                  "cleared_altitude": 5000,
+                  "sid": "CHIEF9",
+                  "waypoints": "KIXD-36/h170 STJ"
+              },
+              "BUM": {
+                  "cleared_altitude": 5000,
+                  "sid": "RACER8",
+                  "waypoints": "KIXD-36/h170 MCI GRILD"
+              }
+            }
+          },
+          "departures": [
+              {
+                  "exit": "BUM",
+                  "destination": "KOZS",
+                  "altitude": 33000,
+                  "route": "RACER8 BUM V234 ROACH V63 LOJOV",
+                  "airlines": [
+                      {
+                          "icao": "N"
+                      },
+                      {
+                          "icao": "N",
+                          "fleet": "fastGA"
+                      },
+                      {
+                          "icao": "EJA"
+                      }
+                  ]
+              },
+              {
+                  "exit": "STJ",
+                  "destination": "KOZS",
+                  "altitude": 33000,
+                  "route": "CHIEF9 STJ V159 LASSO V13 ANX V12 OCTAM",
+                  "airlines": [
+                      {
+                          "icao": "N"
+                      }
+                  ]
+              },
+              {
+                  "exit": "STJ",
+                  "destination": "KCHT",
+                  "altitude": 33000,
+                  "route": "CHIEF9 STJ V159 LASSO V502 CUTAN",
+                  "airlines": [
+                      {
+                          "icao": "N"
+                      }
+                  ]
+              }
+          ],
+        "exit_categories": {
+            
+        },
+        "tower_list": 3
+      },
+      "KOJC": {
+        "approaches": {
+            "R18": {
+                "cifp_id": "R18"
+            },
+            "R36": {
+                "cifp_id": "R36"
+            },
+            "V18": {
+                "cifp_id": "R18",
+                "full_name": "Visual Approach Runway 18"
+            },
+            "V36": {
+                "cifp_id": "R36",
+                "full_name": "Visual Approach Runway 36"
+            }
+        },
+        "departure_routes": {
+            "36": {
+              "STJ": {
+                  "cleared_altitude": 5000,
+                  "sid": "CHIEF9",
+                  "waypoints": "KOJC-18/h350 STJ"
+              },
+              "BUM": {
+                  "cleared_altitude": 5000,
+                  "sid": "RACER8",
+                  "waypoints": "KOJC-18/h350  MCI OZAKI CATTS"
+              }
+            },
+            "18": {
+              "STJ": {
+                  "cleared_altitude": 5000,
+                  "sid": "CHIEF9",
+                  "waypoints": "KOJC-36/h180 STJ"
+              },
+              "BUM": {
+                  "cleared_altitude": 5000,
+                  "sid": "RACER8",
+                  "waypoints": "KOJC-36/h180 MCI GRILD"
+              }
+            }
+          },
+          "departures": [
+              {
+                  "exit": "BUM",
+                  "destination": "KOZS",
+                  "altitude": 33000,
+                  "route": "RACER8 BUM V234 ROACH V63 LOJOV",
+                  "airlines": [
+                      {
+                          "icao": "N"
+                      },
+                      {
+                          "icao": "N",
+                          "fleet": "fastGA"
+                      },
+                      {
+                          "icao": "EJA"
+                      }
+                  ]
+              },
+              {
+                  "exit": "STJ",
+                  "destination": "KOZS",
+                  "altitude": 33000,
+                  "route": "CHIEF9 STJ V159 LASSO V13 ANX V12 OCTAM",
+                  "airlines": [
+                      {
+                          "icao": "N"
+                      }
+                  ]
+              },
+              {
+                  "exit": "STJ",
+                  "destination": "KCHT",
+                  "altitude": 33000,
+                  "route": "CHIEF9 STJ V159 LASSO V502 CUTAN",
+                  "airlines": [
+                      {
+                          "icao": "N"
+                      }
+                  ]
+              }
+          ],
+        "exit_categories": {
+            
+        },
+        "tower_list": 4
+      },
+      "KMKC": {
+        "approaches": {
+            "I19": {
+                "cifp_id": "I19"
+            },
+            "I4": {
+                "cifp_id": "I4"
+            },
+            "R22": {
+                "cifp_id": "R22"
+            },
+            "R4": {
+                "cifp_id": "R4"
+            },
+            "Y19": {
+                "cifp_id": "RY19"
+            },
+            "Z19": {
+                "cifp_id": "RZ19"
+            },
+            "V1": {
+                "runway": "1",
+                "type": "RNAV",
+                "full_name": "Visual Approach Runway 1",
+                "waypoints": [
+                  "GRILD WETZL N038.59.52.941,W094.36.51.520"
+                ]
+            }
+        },
+        "departure_routes": {
+            "1": {
+              "STJ": {
+                  "cleared_altitude": 5000,
+                  "sid": "CHIEF9",
+                  "waypoints": "KMKC-19/h360 STJ"
+              },
+              "BUM": {
+                  "cleared_altitude": 5000,
+                  "sid": "RACER8",
+                  "waypoints": "KMKC-19/h360 MCI OZAKI CATTS"
+              }
+            },
+            "19": {
+              "STJ": {
+                  "cleared_altitude": 5000,
+                  "sid": "CHIEF9",
+                  "waypoints": "KMKC-1/h170 STJ"
+              },
+              "BUM": {
+                  "cleared_altitude": 5000,
+                  "sid": "RACER8",
+                  "waypoints": "KMKC-1/h170 MCI GRILD"
+              }
+            }
+          },
+          "departures": [
+              {
+                  "exit": "BUM",
+                  "destination": "KOZS",
+                  "altitude": 33000,
+                  "route": "RACER8 BUM V234 ROACH V63 LOJOV",
+                  "airlines": [
+                      {
+                          "icao": "N"
+                      },
+                      {
+                          "icao": "N",
+                          "fleet": "fastGA"
+                      },
+                      {
+                          "icao": "EJA"
+                      }
+                  ]
+              },
+              {
+                  "exit": "STJ",
+                  "destination": "KOZS",
+                  "altitude": 33000,
+                  "route": "CHIEF9 STJ V159 LASSO V13 ANX V12 OCTAM",
+                  "airlines": [
+                      {
+                          "icao": "N"
+                      }
+                  ]
+              },
+              {
+                  "exit": "STJ",
+                  "destination": "KCHT",
+                  "altitude": 33000,
+                  "route": "CHIEF9 STJ V159 LASSO V502 CUTAN",
+                  "airlines": [
+                      {
+                          "icao": "N"
+                      }
+                  ]
+              }
+          ],
+        "exit_categories": {
+            
+        },
+        "tower_list": 5
       }
     },
     "arrival_groups": {
@@ -1222,6 +1746,46 @@
                     {
                         "airport": "KDFW",
                         "icao": "ENY"
+                    }
+                ],
+                "KSTJ": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
+                ],
+                "KIXD": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
+                ],
+                "KOJC": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
+                ],
+                "KMKC": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
                     }
                 ]
             },
@@ -1386,6 +1950,46 @@
                         "airport": "KDFW",
                         "icao": "ENY"
                     }
+                ],
+                "KSTJ": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
+                ],
+                "KIXD": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
+                ],
+                "KOJC": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
+                ],
+                "KMKC": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
                 ]
             },
             "initial_altitude": 21000,
@@ -1548,6 +2152,46 @@
                     {
                         "airport": "KDFW",
                         "icao": "ENY"
+                    }
+                ],
+                "KSTJ": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
+                ],
+                "KIXD": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
+                ],
+                "KOJC": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
+                ],
+                "KMKC": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
                     }
                 ]
             },
@@ -1712,6 +2356,46 @@
                         "airport": "KDFW",
                         "icao": "ENY"
                     }
+                ],
+                "KSTJ": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
+                ],
+                "KIXD": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
+                ],
+                "KOJC": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
+                ],
+                "KMKC": [
+                    {
+                        "airport": "KLRY",
+                        "icao": "N"
+                    },
+                    {
+                        "airport": "KGJT",
+                        "icao": "EJA"
+                    }
                 ]
             },
             "initial_altitude": 21000,
@@ -1733,99 +2417,135 @@
       ]
     },
     "control_positions": {
-      "KC_46_CTR": {
-          "frequency": 127900,
+        "KC_46_CTR": {
+            "frequency": 127900,
+            "full_name": "Kansas City Center",
+            "scope_char": "C",
+            "sector_id": "C46",
+            "facility_id": "C",
+            "eram_facility": true
+        },
+        "KC_40_CTR": {
+          "frequency": 125250,
           "full_name": "Kansas City Center",
           "scope_char": "C",
-          "sector_id": "C46",
+          "sector_id": "C40",
           "facility_id": "C",
           "eram_facility": true
-      },
-      "KC_40_CTR": {
-        "frequency": 125250,
-        "full_name": "Kansas City Center",
-        "scope_char": "C",
-        "sector_id": "C40",
-        "facility_id": "C",
-        "eram_facility": true
-      },
-      "KC_42_CTR": {
-        "frequency": 125550,
-        "full_name": "Kansas City Center",
-        "scope_char": "C",
-        "sector_id": "C42",
-        "facility_id": "C",
-        "eram_facility": true
-      },
-      "KC_48_CTR": {
-        "frequency": 127725,
-        "full_name": "Kansas City Center",
-        "scope_char": "C",
-        "sector_id": "C48",
-        "facility_id": "C",
-        "eram_facility": true
-      },
-      "KC_44_CTR": {
-        "frequency": 123800,
-        "full_name": "Kansas City Center",
-        "scope_char": "C",
-        "sector_id": "C44",
-        "facility_id": "C",
-        "eram_facility": true
-      },
-      "KC_APP" : {
+        },
+        "KC_42_CTR": {
+          "frequency": 125550,
+          "full_name": "Kansas City Center",
+          "scope_char": "C",
+          "sector_id": "C42",
+          "facility_id": "C",
+          "eram_facility": true
+        },
+        "KC_48_CTR": {
+          "frequency": 127725,
+          "full_name": "Kansas City Center",
+          "scope_char": "C",
+          "sector_id": "C48",
+          "facility_id": "C",
+          "eram_facility": true
+        },
+        "KC_44_CTR": {
+          "frequency": 123800,
+          "full_name": "Kansas City Center",
+          "scope_char": "C",
+          "sector_id": "C44",
+          "facility_id": "C",
+          "eram_facility": true
+        },
+      "MCI_APP" : {
         "frequency": 123950,
         "full_name": "Kansas City Approach",
         "scope_char": "E",
         "sector_id": "1E"
       },
-      "KC_E_APP": {
+      "MCI_E_APP": {
         "frequency": 123950,
         "full_name": "Kansas City Approach",
         "scope_char": "E",
         "sector_id": "1E"
       },
-      "KC_A_APP": {
+      "MCI_A_APP": {
         "frequency": 120950,
         "full_name": "Kansas City Approach",
         "scope_char": "A",
         "sector_id": "1A"
       },
-      "KC_B_APP": {
+      "MCI_B_APP": {
         "frequency": 135375,
         "full_name":"Kansas City Approach",
         "scope_char": "B",
         "sector_id": "1B"
       },
-      "KC_W_APP": {
+      "MCI_W_APP": {
         "frequency": 124700,
         "full_name": "Kansas City Approach",
         "scope_char": "W",
         "sector_id": "1W"
       },
-      "KC_F_APP": {
+      "MCI_F_APP": {
         "frequency": 119825,
         "full_name": "Kansas City Approach",
         "scope_char": "F",
         "sector_id": "1F"
       },
-      "KC_N_APP": {
+      "MCI_N_APP": {
         "frequency": 118400,
         "full_name": "Kansas City Approach",
         "scope_char": "N",
         "sector_id": "1N"
       },
-      "KC_S_DEP": {
+      "MCI_S_DEP": {
         "frequency": 125200,
         "full_name": "Kansas City Approach",
         "scope_char": "S",
         "sector_id": "1S"
+      },
+      "MCI_S_APP": {
+        "frequency": 118900,
+        "full_name": "Kansas City Approach",
+        "scope_char": "S",
+        "sector_id": "1S"
+      },
+      "MCI_P_APP": {
+        "frequency": 119825,
+        "full_name": "Kansas City Approach",
+        "scope_char": "P",
+        "sector_id": "1P"
       },
       "MCI_TWR": {
         "frequency": 128200,
         "full_name": "International Tower",
         "scope_char": "T",
         "sector_id": "1T"
+      },
+      "STJ_TWR": {
+        "frequency": 126900,
+        "full_name": "St. Joseph Tower",
+        "scope_char": "J",
+        "sector_id": "5J"
+      },
+      "IXD_TWR": {
+        "frequency": 133000,
+        "full_name": "New Century Tower",
+        "scope_char": "C",
+        "sector_id": "2C"
+      },
+      "OJC_TWR": {
+        "frequency": 126000,
+        "full_name": "Johnson County Tower",
+        "scope_char": "R",
+        "sector_id": "2R"
+      },
+      "MKC_TWR": {
+        "frequency": 133300,
+        "full_name": "Wheeler Tower",
+        "scope_char": "W",
+        "sector_id": "4W"
       }
     },
     "default_scenario": "KMCI North",
@@ -1841,38 +2561,72 @@
                 {
                     "airport": "KMCI",
                     "runway": "1R"
+                },
+                {
+                    "airport": "KIXD",
+                    "runway": "36"
+                },
+                {
+                    "airport": "KSTJ",
+                    "runway": "35"
+                },
+                {
+                    "airport": "KOJC",
+                    "runway": "36"
+                },
+                {
+                    "airport": "KMKC",
+                    "runway": "1"
                 }
             ],
             "arrivals": {
                 "JSONN4": {
-                    "KMCI": 10
+                    "KMCI": 10,
+                    "KSTJ": 1,
+                    "KIXD": 1,
+                    "KOJC": 1,
+                    "KMKC": 1
                 },
                 "RUDDH3": {
-                    "KMCI": 10
+                    "KMCI": 10,
+                    "KSTJ": 1,
+                    "KIXD": 1,
+                    "KOJC": 1,
+                    "KMKC": 1
                 },
                 "MHOMS3": {
-                    "KMCI": 10
+                    "KMCI": 10,
+                    "KSTJ": 1,
+                    "KIXD": 1,
+                    "KOJC": 1,
+                    "KMKC": 1
                 },
                 "WUTNG3": {
-                    "KMCI": 10
+                    "KMCI": 10,
+                    "KSTJ": 1,
+                    "KIXD": 1,
+                    "KOJC": 1,
+                    "KMKC": 1
                 }
             },
-            "solo_controller": "KC_E_APP",
+            "solo_controller": "MCI_E_APP",
             "multi_controllers": {
                 "default": {
-                    "KC_E_APP": {"primary": true,
+                    "MCI_E_APP": {"primary": true,
                         "departures": ["KMCI/LAKES5", "KMCI/RACER8", "KMCI/ROYAL1"]},
-                    "KC_W_APP": {"backup": "KC_E_APP",
+                    "MCI_W_APP": {"backup": "MCI_E_APP",
                         "departures": ["KMCI/CHIEF9", "KMCI/TIFTO8", "KMCI/WLDCT6"]},
-                    "KC_A_APP": {"backup": "KC_E_APP",
+                    "MCI_A_APP": {"backup": "MCI_E_APP",
                         "arrivals": ["MHOMS3", "RUDDH3"]},
-                    "KC_B_APP": {"backup": "KC_A_APP",
+                    "MCI_B_APP": {"backup": "MCI_A_APP",
                         "arrivals": ["WUTNG3", "JSONN4"]},
-                    "KC_N_APP": {"backup": "KC_E_APP"},
-                    "KC_S_DEP": {"backup": "KC_E_APP"},
-                    "KC_F_APP": {"backup": "KC_A_APP"}
-                }
-            },
+                    "MCI_N_APP": {"backup": "MCI_E_APP",                    "departures": ["KSTJ"]},
+                    "MCI_S_APP": {"backup": "MCI_E_APP",
+                        "departures": ["KMKC","KOJC","KIXD"]},
+                    "MCI_F_APP": {"backup": "MCI_A_APP"},
+                    "MCI_P_APP": {"backup": "MCI_F_APP"}
+            }
+        },
             "controllers": [
                 "KC_40_CTR",
                 "KC_42_CTR",
@@ -1892,6 +2646,26 @@
                     "airport": "KMCI",
                     "rate": 15,
                     "runway": "1R"
+                },
+                {
+                    "airport": "KOJC",
+                    "rate": 1,
+                    "runway": "36"
+                },
+                {
+                    "airport": "KIXD",
+                    "rate": 1,
+                    "runway": "36"
+                },
+                {
+                    "airport": "KSTJ",
+                    "rate": 1,
+                    "runway": "35"
+                },
+                {
+                    "airport": "KMKC",
+                    "rate": 1,
+                    "runway": "1"
                 }
             ],
             "wind": {
@@ -1908,6 +2682,22 @@
                 {
                     "airport": "KMCI",
                     "runway": "19R"
+                },
+                {
+                    "airport": "KIXD",
+                    "runway": "18"
+                },
+                {
+                    "airport": "KSTJ",
+                    "runway": "17"
+                },
+                {
+                    "airport": "KOJC",
+                    "runway": "18"
+                },
+                {
+                    "airport": "KMKC",
+                    "runway": "19"
                 }
             ],
             "arrivals": {
@@ -1924,20 +2714,22 @@
                     "KMCI": 10
                 }
             },
-            "solo_controller": "KC_E_APP",
+            "solo_controller": "MCI_E_APP",
             "multi_controllers": {
                 "default": {
-                    "KC_E_APP": {"primary": true,
+                    "MCI_E_APP": {"primary": true,
                         "departures": ["KMCI/LAKES5", "KMCI/RACER8", "KMCI/ROYAL1"]},
-                    "KC_W_APP": {"backup": "KC_E_APP",
+                    "MCI_W_APP": {"backup": "MCI_E_APP",
                         "departures": ["KMCI/CHIEF9", "KMCI/TIFTO8", "KMCI/WLDCT6"]},
-                    "KC_A_APP": {"backup": "KC_E_APP",
+                    "MCI_A_APP": {"backup": "MCI_E_APP",
                         "arrivals": ["MHOMS3", "RUDDH3"]},
-                    "KC_B_APP": {"backup": "KC_A_APP",
+                    "MCI_B_APP": {"backup": "MCI_A_APP",
                         "arrivals": ["WUTNG3", "JSONN4"]},
-                    "KC_N_APP": {"backup": "KC_E_APP"},
-                    "KC_S_DEP": {"backup": "KC_E_APP"},
-                    "KC_F_APP": {"backup": "KC_A_APP"}
+                    "MCI_N_APP": {"backup": "MCI_E_APP",                    "departures": ["KSTJ"]},
+                    "MCI_S_APP": {"backup": "MCI_E_APP",
+                        "departures": ["KMKC","KOJC","KIXD"]},
+                    "MCI_F_APP": {"backup": "MCI_A_APP"},
+                    "MCI_P_APP": {"backup": "MCI_F_APP"}
                 }
             },
             "controllers": [
@@ -1959,6 +2751,218 @@
                     "airport": "KMCI",
                     "rate": 15,
                     "runway": "19R"
+                },
+                {
+                    "airport": "KOJC",
+                    "rate": 1,
+                    "runway": "18"
+                },
+                {
+                    "airport": "KIXD",
+                    "rate": 1,
+                    "runway": "18"
+                },
+                {
+                    "airport": "KSTJ",
+                    "rate": 1,
+                    "runway": "17"
+                },
+                {
+                    "airport": "KMKC",
+                    "rate": 1,
+                    "runway": "19"
+                }
+            ],
+            "wind": {
+                "direction": 180,
+                "speed": 8
+            }
+        },
+        "KMCI East": {
+            "arrival_runways": [
+                {
+                    "airport": "KMCI",
+                    "runway": "27"
+                },
+                {
+                    "airport": "KIXD",
+                    "runway": "36"
+                },
+                {
+                    "airport": "KSTJ",
+                    "runway": "35"
+                },
+                {
+                    "airport": "KOJC",
+                    "runway": "36"
+                },
+                {
+                    "airport": "KMKC",
+                    "runway": "1"
+                }
+            ],
+            "arrivals": {
+                "JSONN4": {
+                    "KMCI": 10
+                },
+                "RUDDH3": {
+                    "KMCI": 10
+                },
+                "MHOMS3": {
+                    "KMCI": 10
+                },
+                "WUTNG3": {
+                    "KMCI": 10
+                }
+            },
+            "solo_controller": "MCI_E_APP",
+            "multi_controllers": {
+                "default": {
+                    "MCI_E_APP": {"primary": true,
+                        "departures": ["KMCI/LAKES5", "KMCI/RACER8", "KMCI/ROYAL1"]},
+                    "MCI_W_APP": {"backup": "MCI_E_APP",
+                        "departures": ["KMCI/CHIEF9", "KMCI/TIFTO8", "KMCI/WLDCT6"]},
+                    "MCI_A_APP": {"backup": "MCI_E_APP",
+                        "arrivals": ["MHOMS3", "RUDDH3"]},
+                    "MCI_B_APP": {"backup": "MCI_A_APP",
+                        "arrivals": ["WUTNG3", "JSONN4"]},
+                    "MCI_N_APP": {"backup": "MCI_E_APP",                    "departures": ["KSTJ"]},
+                    "MCI_S_APP": {"backup": "MCI_E_APP",
+                        "departures": ["KMKC","KOJC","KIXD"]},
+                    "MCI_F_APP": {"backup": "MCI_A_APP"},
+                    "MCI_P_APP": {"backup": "MCI_F_APP"}
+                }
+            },
+            "controllers": [
+                "KC_40_CTR",
+                "KC_42_CTR",
+                "KC_44_CTR",
+                "KC_46_CTR",
+                "KC_48_CTR",
+                "MCI_TWR"
+            ],
+            "default_maps": ["KC East Flow"],
+            "departure_runways": [
+                {
+                    "airport": "KMCI",
+                    "rate": 15,
+                    "runway": "27"
+                },
+                {
+                    "airport": "KOJC",
+                    "rate": 1,
+                    "runway": "36"
+                },
+                {
+                    "airport": "KIXD",
+                    "rate": 1,
+                    "runway": "36"
+                },
+                {
+                    "airport": "KSTJ",
+                    "rate": 1,
+                    "runway": "35"
+                },
+                {
+                    "airport": "KMKC",
+                    "rate": 1,
+                    "runway": "1"
+                }
+            ],
+            "wind": {
+                "direction": 360,
+                "speed": 8
+            }
+        },
+        "KMCI West": {
+            "arrival_runways": [
+                {
+                    "airport": "KMCI",
+                    "runway": "27"
+                },
+                {
+                    "airport": "KIXD",
+                    "runway": "36"
+                },
+                {
+                    "airport": "KSTJ",
+                    "runway": "35"
+                },
+                {
+                    "airport": "KOJC",
+                    "runway": "36"
+                },
+                {
+                    "airport": "KMKC",
+                    "runway": "1"
+                }
+            ],
+            "arrivals": {
+                "JSONN4": {
+                    "KMCI": 10
+                },
+                "RUDDH3": {
+                    "KMCI": 10
+                },
+                "MHOMS3": {
+                    "KMCI": 10
+                },
+                "WUTNG3": {
+                    "KMCI": 10
+                }
+            },
+            "solo_controller": "MCI_E_APP",
+            "multi_controllers": {
+                "default": {
+                    "MCI_E_APP": {"primary": true,
+                        "departures": ["KMCI/LAKES5", "KMCI/RACER8", "KMCI/ROYAL1"]},
+                    "MCI_W_APP": {"backup": "MCI_E_APP",
+                        "departures": ["KMCI/CHIEF9", "KMCI/TIFTO8", "KMCI/WLDCT6"]},
+                    "MCI_A_APP": {"backup": "MCI_E_APP",
+                        "arrivals": ["MHOMS3", "RUDDH3"]},
+                    "MCI_B_APP": {"backup": "MCI_A_APP",
+                        "arrivals": ["WUTNG3", "JSONN4"]},
+                    "MCI_N_APP": {"backup": "MCI_E_APP",                    "departures": ["KSTJ"]},
+                    "MCI_S_APP": {"backup": "MCI_E_APP",
+                        "departures": ["KMKC","KOJC","KIXD"]},
+                    "MCI_F_APP": {"backup": "MCI_A_APP"},
+                    "MCI_P_APP": {"backup": "MCI_F_APP"}
+                }
+            },
+            "controllers": [
+                "KC_40_CTR",
+                "KC_42_CTR",
+                "KC_44_CTR",
+                "KC_46_CTR",
+                "KC_48_CTR",
+                "MCI_TWR"
+            ],
+            "default_maps": ["KC South Flow"],
+            "departure_runways": [
+                {
+                    "airport": "KMCI",
+                    "rate": 15,
+                    "runway": "27"
+                },
+                {
+                    "airport": "KOJC",
+                    "rate": 1,
+                    "runway": "36"
+                },
+                {
+                    "airport": "KIXD",
+                    "rate": 1,
+                    "runway": "36"
+                },
+                {
+                    "airport": "KSTJ",
+                    "rate": 1,
+                    "runway": "35"
+                },
+                {
+                    "airport": "KMKC",
+                    "rate": 1,
+                    "runway": "1"
                 }
             ],
             "wind": {
@@ -1999,14 +3003,17 @@
                     "ANX",
                     "FRANC",
                     "GRILD",
-                    "BUM"
+                    "BUM",
+                    "COU"
                 ],
                 "receiving_controller": "KC_42_CTR"
             },
             {
                 "fixes": [
                     "SPRNT",
-                    "DOSOA"
+                    "DOSOA",
+                    "SPI",
+                    "SGF"
                 ],
                 "receiving_controller": "KC_48_CTR"
             }
