@@ -48,6 +48,13 @@ var (
 		activeModalDialogs []*ModalDialogBox
 
 		newReleaseDialogChan chan *NewReleaseModalClient
+
+		launchControlWindow  *LaunchControlWindow
+		missingPrimaryDialog *ModalDialogBox
+
+		// Scenario routes to draw on the scope
+		showSettings     bool
+		showScenarioInfo bool
 	}
 
 	//go:embed icons/tower-256x256.png
@@ -439,15 +446,17 @@ func drawUI(p platform.Platform, r renderer.Renderer, w *World, eventStream *sim
 	if w != nil {
 		w.DrawSettingsWindow(p)
 
-		DrawScenarioInfoWindow(w.State, &w.client)
+		if ui.showScenarioInfo {
+			sim.DrawScenarioInfoWindow(w.State, &w.client, lg)
+		}
 
 		w.DrawMissingPrimaryDialog(p)
 
 		if w.LaunchConfig.Controller == w.Callsign {
-			if w.client.launchControlWindow == nil {
-				w.client.launchControlWindow = MakeLaunchControlWindow(w)
+			if ui.launchControlWindow == nil {
+				ui.launchControlWindow = MakeLaunchControlWindow(w)
 			}
-			w.client.launchControlWindow.Draw(w, eventStream, p)
+			ui.launchControlWindow.Draw(w, eventStream, p)
 		}
 	}
 
@@ -1934,207 +1943,4 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 	}
 
 	imgui.PopFont() // regular font
-}
-
-func DrawScenarioInfoWindow(sim sim.State, client *ClientState) {
-	if !client.showScenarioInfo {
-		return
-	}
-
-	// Ensure that the window is wide enough to show the description
-	sz := imgui.CalcTextSize(sim.SimDescription, false, 0)
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
-
-	imgui.BeginV(sim.SimDescription, &client.showScenarioInfo, imgui.WindowFlagsAlwaysAutoResize)
-
-	// Make big(ish) tables somewhat more legible
-	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
-		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-
-	if imgui.CollapsingHeader("Arrivals") {
-		if imgui.BeginTableV("arr", 4, tableFlags, imgui.Vec2{}, 0) {
-			if client.scopeDraw.arrivals == nil {
-				client.scopeDraw.arrivals = make(map[string]map[int]bool)
-			}
-
-			imgui.TableSetupColumn("Draw")
-			imgui.TableSetupColumn("Arrival")
-			imgui.TableSetupColumn("Airport(s)")
-			imgui.TableSetupColumn("Description")
-			imgui.TableHeadersRow()
-
-			for _, name := range util.SortedMapKeys(sim.ArrivalGroups) {
-				arrivals := sim.ArrivalGroups[name]
-				if client.scopeDraw.arrivals[name] == nil {
-					client.scopeDraw.arrivals[name] = make(map[int]bool)
-				}
-
-				for i, arr := range arrivals {
-					if len(sim.LaunchConfig.ArrivalGroupRates[name]) == 0 {
-						// Not used in the current scenario.
-						continue
-					}
-
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					enabled := client.scopeDraw.arrivals[name][i]
-					imgui.Checkbox(fmt.Sprintf("##arr-%s-%d", name, i), &enabled)
-					client.scopeDraw.arrivals[name][i] = enabled
-
-					imgui.TableNextColumn()
-					imgui.Text(name)
-
-					imgui.TableNextColumn()
-					airports := util.SortedMapKeys(arr.Airlines)
-					imgui.Text(strings.Join(airports, ", "))
-
-					imgui.TableNextColumn()
-					if arr.Description != "" {
-						imgui.Text(arr.Description)
-					} else {
-						imgui.Text("--")
-					}
-				}
-			}
-
-			imgui.EndTable()
-		}
-	}
-
-	imgui.Separator()
-
-	if imgui.CollapsingHeader("Approaches") {
-		if imgui.BeginTableV("appr", 6, tableFlags, imgui.Vec2{}, 0) {
-			if client.scopeDraw.approaches == nil {
-				client.scopeDraw.approaches = make(map[string]map[string]bool)
-			}
-
-			imgui.TableSetupColumn("Draw")
-			imgui.TableSetupColumn("Airport")
-			imgui.TableSetupColumn("Runway")
-			imgui.TableSetupColumn("Code")
-			imgui.TableSetupColumn("Description")
-			imgui.TableSetupColumn("FAF")
-			imgui.TableHeadersRow()
-
-			for _, rwy := range sim.ArrivalRunways {
-				if ap, ok := sim.Airports[rwy.Airport]; !ok {
-					lg.Errorf("%s: arrival airport not in world airports", rwy.Airport)
-				} else {
-					if client.scopeDraw.approaches[rwy.Airport] == nil {
-						client.scopeDraw.approaches[rwy.Airport] = make(map[string]bool)
-					}
-					for _, name := range util.SortedMapKeys(ap.Approaches) {
-						appr := ap.Approaches[name]
-						if appr.Runway == rwy.Runway {
-							imgui.TableNextRow()
-							imgui.TableNextColumn()
-							enabled := client.scopeDraw.approaches[rwy.Airport][name]
-							imgui.Checkbox("##enable-"+rwy.Airport+"-"+rwy.Runway+"-"+name, &enabled)
-							client.scopeDraw.approaches[rwy.Airport][name] = enabled
-
-							imgui.TableNextColumn()
-							imgui.Text(rwy.Airport)
-
-							imgui.TableNextColumn()
-							imgui.Text(rwy.Runway)
-
-							imgui.TableNextColumn()
-							imgui.Text(name)
-
-							imgui.TableNextColumn()
-							imgui.Text(appr.FullName)
-
-							imgui.TableNextColumn()
-							for _, wp := range appr.Waypoints[0] {
-								if wp.FAF {
-									imgui.Text(wp.Fix)
-									break
-								}
-							}
-						}
-					}
-				}
-			}
-			imgui.EndTable()
-		}
-	}
-
-	imgui.Separator()
-	if imgui.CollapsingHeader("Departures") {
-		if imgui.BeginTableV("departures", 5, tableFlags, imgui.Vec2{}, 0) {
-			if client.scopeDraw.departures == nil {
-				client.scopeDraw.departures = make(map[string]map[string]map[string]bool)
-			}
-
-			imgui.TableSetupColumn("Draw")
-			imgui.TableSetupColumn("Airport")
-			imgui.TableSetupColumn("Runway")
-			imgui.TableSetupColumn("Exit")
-			imgui.TableSetupColumn("Description")
-			imgui.TableHeadersRow()
-
-			for _, airport := range util.SortedMapKeys(sim.LaunchConfig.DepartureRates) {
-				if client.scopeDraw.departures[airport] == nil {
-					client.scopeDraw.departures[airport] = make(map[string]map[string]bool)
-				}
-				ap := sim.Airports[airport]
-
-				runwayRates := sim.LaunchConfig.DepartureRates[airport]
-				for _, rwy := range util.SortedMapKeys(runwayRates) {
-					if client.scopeDraw.departures[airport][rwy] == nil {
-						client.scopeDraw.departures[airport][rwy] = make(map[string]bool)
-					}
-
-					exitRoutes := ap.DepartureRoutes[rwy]
-
-					// Multiple routes may have the same waypoints, so
-					// we'll reverse-engineer that here so we can present
-					// them together in the UI.
-					routeToExit := make(map[string][]string)
-					for _, exit := range util.SortedMapKeys(exitRoutes) {
-						exitRoute := ap.DepartureRoutes[rwy][exit]
-						r := exitRoute.Waypoints.Encode()
-						routeToExit[r] = append(routeToExit[r], exit)
-					}
-
-					for _, exit := range util.SortedMapKeys(exitRoutes) {
-						// Draw the row only when we hit the first exit
-						// that uses the corresponding route route.
-						r := exitRoutes[exit].Waypoints.Encode()
-						if routeToExit[r][0] != exit {
-							continue
-						}
-
-						imgui.TableNextRow()
-						imgui.TableNextColumn()
-						enabled := client.scopeDraw.departures[airport][rwy][exit]
-						imgui.Checkbox("##enable-"+airport+"-"+rwy+"-"+exit, &enabled)
-						client.scopeDraw.departures[airport][rwy][exit] = enabled
-
-						imgui.TableNextColumn()
-						imgui.Text(airport)
-						imgui.TableNextColumn()
-						rwyBase, _, _ := strings.Cut(rwy, ".")
-						imgui.Text(rwyBase)
-						imgui.TableNextColumn()
-						if len(routeToExit) == 1 {
-							// If we only saw a single departure route, no
-							// need to list all of the exits in the UI
-							// (there are often a lot of them!)
-							imgui.Text("(all)")
-						} else {
-							// List all of the exits that use this route.
-							imgui.Text(strings.Join(routeToExit[r], ", "))
-						}
-						imgui.TableNextColumn()
-						imgui.Text(exitRoutes[exit].Description)
-					}
-				}
-			}
-			imgui.EndTable()
-		}
-	}
-
-	imgui.End()
 }

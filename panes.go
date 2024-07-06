@@ -56,8 +56,8 @@ type PaneContext struct {
 	haveFocus bool
 	now       time.Time
 
-	Control     AircraftController
-	ClientState ClientState
+	Control     sim.AircraftController
+	ClientState sim.ClientState
 	SimState    sim.State
 }
 

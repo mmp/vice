@@ -32,7 +32,7 @@ type World struct {
 
 	pendingCalls []*util.PendingCall
 
-	client ClientState
+	client sim.ClientState
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
@@ -505,11 +505,11 @@ func (w *World) RunAircraftCommands(callsign string, cmds string, handleResult f
 // Settings
 
 func (w *World) ToggleActivateSettingsWindow() {
-	w.client.showSettings = !w.client.showSettings
+	ui.showSettings = !ui.showSettings
 }
 
 func (w *World) ToggleShowScenarioInfoWindow() {
-	w.client.showScenarioInfo = !w.client.showScenarioInfo
+	ui.showScenarioInfo = !ui.showScenarioInfo
 }
 
 type MissingPrimaryModalClient struct {
@@ -530,7 +530,7 @@ func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
 	}})
 	b = append(b, ModalDialogButton{text: "Disconnect", action: func() bool {
 		newSimConnectionChan <- nil // This will lead to a World Disconnect() call in main.go
-		uiCloseModalDialog(mp.world.client.missingPrimaryDialog)
+		uiCloseModalDialog(ui.missingPrimaryDialog)
 		return true
 	}})
 	return b
@@ -543,24 +543,24 @@ func (mp *MissingPrimaryModalClient) Draw() int {
 
 func (w *World) DrawMissingPrimaryDialog(p platform.Platform) {
 	if _, ok := w.State.Controllers[w.PrimaryController]; ok {
-		if w.client.missingPrimaryDialog != nil {
-			uiCloseModalDialog(w.client.missingPrimaryDialog)
-			w.client.missingPrimaryDialog = nil
+		if ui.missingPrimaryDialog != nil {
+			uiCloseModalDialog(ui.missingPrimaryDialog)
+			ui.missingPrimaryDialog = nil
 		}
 	} else {
-		if w.client.missingPrimaryDialog == nil {
-			w.client.missingPrimaryDialog = NewModalDialogBox(&MissingPrimaryModalClient{world: w}, p)
-			uiShowModalDialog(w.client.missingPrimaryDialog, true)
+		if ui.missingPrimaryDialog == nil {
+			ui.missingPrimaryDialog = NewModalDialogBox(&MissingPrimaryModalClient{world: w}, p)
+			uiShowModalDialog(ui.missingPrimaryDialog, true)
 		}
 	}
 }
 
 func (w *World) DrawSettingsWindow(p platform.Platform) {
-	if !w.client.showSettings {
+	if !ui.showSettings {
 		return
 	}
 
-	imgui.BeginV("Settings", &w.client.showSettings, imgui.WindowFlagsAlwaysAutoResize)
+	imgui.BeginV("Settings", &ui.showSettings, imgui.WindowFlagsAlwaysAutoResize)
 
 	if imgui.SliderFloatV("Simulation speed", &w.SimRate, 1, 20, "%.1f", 0) {
 		w.SetSimRate(w.SimRate)

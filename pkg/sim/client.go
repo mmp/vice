@@ -1,22 +1,13 @@
-package main
+package sim
 
 import (
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
-	"github.com/mmp/vice/pkg/sim"
-	"github.com/mmp/vice/pkg/util"
 )
 
 type ClientState struct {
-	// Scenario routes to draw on the scope
-	showSettings     bool
-	showScenarioInfo bool
-
-	launchControlWindow  *LaunchControlWindow
-	missingPrimaryDialog *ModalDialogBox
-
 	scopeDraw struct {
 		arrivals   map[string]map[int]bool               // group->index
 		approaches map[string]map[string]bool            // airport->approach
@@ -25,15 +16,15 @@ type ClientState struct {
 }
 
 func (c ClientState) ScopeDrawArrivals() map[string]map[int]bool {
-	return util.Select(c.showScenarioInfo, c.scopeDraw.arrivals, nil)
+	return c.scopeDraw.arrivals
 }
 
 func (c ClientState) ScopeDrawApproaches() map[string]map[string]bool {
-	return util.Select(c.showScenarioInfo, c.scopeDraw.approaches, nil)
+	return c.scopeDraw.approaches
 }
 
 func (c ClientState) ScopeDrawDepartures() map[string]map[string]map[string]bool {
-	return util.Select(c.showScenarioInfo, c.scopeDraw.departures, nil)
+	return c.scopeDraw.departures
 }
 
 type AircraftController interface {
@@ -66,7 +57,7 @@ type AircraftController interface {
 	ToggleSPCOverride(callsign string, spc string, success func(any), err func(error))
 	AmendFlightPlan(callsign string, fp av.FlightPlan) error
 
-	SendGlobalMessage(global sim.GlobalMessage)
+	SendGlobalMessage(global GlobalMessage)
 
 	RunAircraftCommands(callsign string, cmds string,
 		handleResult func(message string, remainingInput string))
