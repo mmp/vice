@@ -27,9 +27,9 @@ import (
 type Pane interface {
 	Name() string
 
-	Activate(w *World, r renderer.Renderer, p platform.Platform, eventStream *EventStream)
+	Activate(ss *SimState, r renderer.Renderer, p platform.Platform, eventStream *EventStream)
 	Deactivate()
-	ResetWorld(w *World)
+	Reset(ss SimState)
 
 	CanTakeKeyboardFocus() bool
 
@@ -50,11 +50,14 @@ type PaneContext struct {
 
 	platform  platform.Platform
 	renderer  renderer.Renderer
-	world     *World
 	mouse     *platform.MouseState
 	keyboard  *platform.KeyboardState
 	haveFocus bool
 	now       time.Time
+
+	Control     AircraftController
+	ClientState ClientState
+	SimState    SimState
 }
 
 func (ctx *PaneContext) InitializeMouse(fullDisplayExtent math.Extent2D, p platform.Platform) {
@@ -122,10 +125,10 @@ type EmptyPane struct {
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
-func (ep *EmptyPane) Activate(*World, renderer.Renderer, platform.Platform, *EventStream) {}
-func (ep *EmptyPane) Deactivate()                                                         {}
-func (ep *EmptyPane) ResetWorld(w *World)                                                 {}
-func (ep *EmptyPane) CanTakeKeyboardFocus() bool                                          { return false }
+func (ep *EmptyPane) Activate(*SimState, renderer.Renderer, platform.Platform, *EventStream) {}
+func (ep *EmptyPane) Deactivate()                                                            {}
+func (ep *EmptyPane) Reset(ss SimState)                                                      {}
+func (ep *EmptyPane) CanTakeKeyboardFocus() bool                                             { return false }
 
 func (ep *EmptyPane) Name() string { return "(Empty)" }
 
@@ -172,7 +175,7 @@ func NewFlightStripPane() *FlightStripPane {
 	}
 }
 
-func (fsp *FlightStripPane) Activate(w *World, r renderer.Renderer, p platform.Platform,
+func (fsp *FlightStripPane) Activate(ss *SimState, r renderer.Renderer, p platform.Platform,
 	eventStream *EventStream) {
 	if fsp.FontSize == 0 {
 		fsp.FontSize = 12
@@ -188,9 +191,9 @@ func (fsp *FlightStripPane) Activate(w *World, r renderer.Renderer, p platform.P
 	}
 	fsp.events = eventStream.Subscribe()
 
-	if w != nil {
-		for _, ac := range w.GetAllAircraft() {
-			if fsp.AutoAddTracked && ac.TrackingController == w.Callsign && ac.FlightPlan != nil {
+	if ss != nil {
+		for _, ac := range ss.Aircraft {
+			if fsp.AutoAddTracked && ac.TrackingController == ss.Callsign && ac.FlightPlan != nil {
 				fsp.strips = append(fsp.strips, ac.Callsign)
 				fsp.addedAircraft[ac.Callsign] = nil
 			} else if ac.TrackingController == "" &&
@@ -207,14 +210,14 @@ func (fsp *FlightStripPane) Deactivate() {
 	fsp.events = nil
 }
 
-func (fsp *FlightStripPane) ResetWorld(w *World) {
+func (fsp *FlightStripPane) Reset(ss SimState) {
 	fsp.strips = nil
 	fsp.addedAircraft = make(map[string]interface{})
 }
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
 
-func (fsp *FlightStripPane) processEvents(w *World) {
+func (fsp *FlightStripPane) processEvents(ctx *PaneContext) {
 	possiblyAdd := func(ac *av.Aircraft) {
 		if _, ok := fsp.addedAircraft[ac.Callsign]; ok {
 			return
@@ -230,8 +233,8 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 
 	// First account for changes in world.Aircraft
 	// Added aircraft
-	for _, ac := range w.Aircraft {
-		if fsp.AutoAddTracked && ac.TrackingController == w.Callsign {
+	for _, ac := range ctx.SimState.Aircraft {
+		if fsp.AutoAddTracked && ac.TrackingController == ctx.SimState.Callsign {
 			possiblyAdd(ac)
 		} else if ac.TrackingController == "" &&
 			((fsp.AutoAddDepartures && ac.IsDeparture()) || (fsp.AutoAddArrivals && !ac.IsDeparture())) {
@@ -240,7 +243,7 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 	}
 	// Removed aircraft
 	fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool {
-		_, ok := w.Aircraft[callsign]
+		_, ok := ctx.SimState.Aircraft[callsign]
 		return ok
 	})
 
@@ -254,13 +257,13 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 	for _, event := range fsp.events.Get() {
 		switch event.Type {
 		case PushedFlightStripEvent:
-			if ac, ok := w.Aircraft[event.Callsign]; ok && fsp.AddPushed {
+			if ac, ok := ctx.SimState.Aircraft[event.Callsign]; ok && fsp.AddPushed {
 				possiblyAdd(ac)
 			}
 
 		case InitiatedTrackEvent:
-			if ac, ok := w.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddTracked && ac.TrackingController == w.Callsign {
+			if ac, ok := ctx.SimState.Aircraft[event.Callsign]; ok {
+				if fsp.AutoAddTracked && ac.TrackingController == ctx.SimState.Callsign {
 					possiblyAdd(ac)
 				}
 			}
@@ -271,15 +274,15 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 			}
 
 		case AcceptedHandoffEvent, AcceptedRedirectedHandoffEvent:
-			if ac, ok := w.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == w.Callsign {
+			if ac, ok := ctx.SimState.Aircraft[event.Callsign]; ok {
+				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == ctx.SimState.Callsign {
 					possiblyAdd(ac)
 				}
 			}
 
 		case HandoffControllEvent:
-			if ac, ok := w.Aircraft[event.Callsign]; ok {
-				if fsp.AutoRemoveHandoffs && ac.TrackingController != w.Callsign {
+			if ac, ok := ctx.SimState.Aircraft[event.Callsign]; ok {
+				if fsp.AutoRemoveHandoffs && ac.TrackingController != ctx.SimState.Callsign {
 					remove(event.Callsign)
 				}
 			}
@@ -288,13 +291,12 @@ func (fsp *FlightStripPane) processEvents(w *World) {
 
 	// TODO: is this needed? Shouldn't there be a RemovedAircraftEvent?
 	fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool {
-		ac := w.GetAircraft(callsign, false)
-		return ac != nil
+		return ctx.SimState.Aircraft[callsign] != nil
 	})
 
 	if fsp.CollectDeparturesArrivals {
 		isDeparture := func(callsign string) bool {
-			ac := w.GetAircraft(callsign, false)
+			ac := ctx.SimState.Aircraft[callsign]
 			return ac != nil && ac.IsDeparture()
 		}
 		dep := util.FilterSlice(fsp.strips, isDeparture)
@@ -333,7 +335,7 @@ func (fsp *FlightStripPane) DrawUI() {
 }
 
 func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
-	fsp.processEvents(ctx.world)
+	fsp.processEvents(ctx)
 
 	// Font width and height
 	// the 'Flight Strip Printer' font seems to have an unusually thin space,
@@ -393,8 +395,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	y := stripHeight - 1 - vpad
 	for i := scrollOffset; i < math.Min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
 		callsign := fsp.strips[i]
-		strip := ctx.world.GetFlightStrip(callsign)
-		ac := ctx.world.GetAircraft(callsign, false)
+		strip := ctx.SimState.Aircraft[callsign].Strip
+		ac := ctx.SimState.Aircraft[callsign]
 		if ac == nil {
 			lg.Errorf("%s: no aircraft for callsign?!", strip.Callsign)
 			continue
@@ -682,7 +684,7 @@ func NewMessagesPane() *MessagesPane {
 
 func (mp *MessagesPane) Name() string { return "Messages" }
 
-func (mp *MessagesPane) Activate(w *World, r renderer.Renderer, p platform.Platform,
+func (mp *MessagesPane) Activate(ss *SimState, r renderer.Renderer, p platform.Platform,
 	eventStream *EventStream) {
 	if mp.font = GetFont(mp.FontIdentifier); mp.font == nil {
 		mp.font = GetDefaultFont()
@@ -699,7 +701,7 @@ func (mp *MessagesPane) Deactivate() {
 	mp.events = nil
 }
 
-func (mp *MessagesPane) ResetWorld(w *World) {
+func (mp *MessagesPane) Reset(ss SimState) {
 	mp.messages = nil
 }
 
@@ -712,7 +714,7 @@ func (mp *MessagesPane) DrawUI() {
 }
 
 func (mp *MessagesPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
-	mp.processEvents(ctx.world)
+	mp.processEvents(ctx)
 
 	if ctx.mouse != nil && ctx.mouse.Clicked[platform.MouseButtonPrimary] {
 		wmTakeKeyboardFocus(mp, false)
@@ -866,7 +868,7 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 	}
 
 	if ctx.keyboard.IsPressed(platform.KeyEnter) && strings.TrimSpace(mp.input.cmd) != "" {
-		mp.runCommands(ctx.world)
+		mp.runCommands(ctx)
 	}
 }
 
@@ -881,15 +883,15 @@ func (msg *Message) Color() renderer.RGB {
 	}
 }
 
-func (mp *MessagesPane) runCommands(w *World) {
+func (mp *MessagesPane) runCommands(ctx *PaneContext) {
 	mp.input.cmd = strings.TrimSpace(mp.input.cmd)
 
 	if mp.input.cmd[0] == '/' {
-		w.SendGlobalMessage(GlobalMessage{
-			FromController: w.Callsign,
-			Message:        w.Callsign + ": " + mp.input.cmd[1:],
+		ctx.Control.SendGlobalMessage(GlobalMessage{
+			FromController: ctx.SimState.Callsign,
+			Message:        ctx.SimState.Callsign + ": " + mp.input.cmd[1:],
 		})
-		mp.messages = append(mp.messages, Message{contents: w.Callsign + ": " + mp.input.cmd[1:], global: true})
+		mp.messages = append(mp.messages, Message{contents: ctx.SimState.Callsign + ": " + mp.input.cmd[1:], global: true})
 		mp.history = append(mp.history, mp.input)
 		mp.input = CLIInput{}
 		return
@@ -901,16 +903,17 @@ func (mp *MessagesPane) runCommands(w *World) {
 	mp.input = CLIInput{}
 
 	if ok {
-		if ac := w.GetAircraft(callsign, true /*abbreviated*/); ac != nil {
-			w.RunAircraftCommands(ac.Callsign, cmd, func(errorString string, remainingCommands string) {
-				if errorString != "" {
-					mp.messages = append(mp.messages, Message{contents: errorString, error: true})
-				}
-				if remainingCommands != "" && mp.input.cmd == "" {
-					mp.input.cmd = callsign + " " + remainingCommands
-					mp.input.cursor = len(mp.input.cmd)
-				}
-			})
+		if ac := ctx.SimState.AircraftFromPartialCallsign(callsign); ac != nil {
+			ctx.Control.RunAircraftCommands(ac.Callsign, cmd,
+				func(errorString string, remainingCommands string) {
+					if errorString != "" {
+						mp.messages = append(mp.messages, Message{contents: errorString, error: true})
+					}
+					if remainingCommands != "" && mp.input.cmd == "" {
+						mp.input.cmd = callsign + " " + remainingCommands
+						mp.input.cursor = len(mp.input.cmd)
+					}
+				})
 		} else {
 			mp.messages = append(mp.messages, Message{contents: callsign + ": no such aircraft", error: true})
 		}
@@ -943,7 +946,7 @@ func (ci *CLIInput) DeleteAfterCursor() {
 	}
 }
 
-func (mp *MessagesPane) processEvents(w *World) {
+func (mp *MessagesPane) processEvents(ctx *PaneContext) {
 	lastRadioCallsign := ""
 	var lastRadioType av.RadioTransmissionType
 	var unexpectedTransmission bool
@@ -960,7 +963,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 			icao, flight := callsign[:idx], callsign[idx:]
 			if telephony, ok := av.DB.Callsigns[icao]; ok {
 				radioCallsign = telephony + " " + flight
-				if ac := w.GetAircraft(callsign, false); ac != nil {
+				if ac := ctx.SimState.Aircraft[callsign]; ac != nil {
 					if fp := ac.FlightPlan; fp != nil {
 						if strings.HasPrefix(fp.AircraftType, "H/") {
 							radioCallsign += " heavy"
@@ -975,9 +978,9 @@ func (mp *MessagesPane) processEvents(w *World) {
 		response := strings.Join(transmissions, ", ")
 		var msg Message
 		if lastRadioType == av.RadioTransmissionContact {
-			ctrl := w.Controllers[w.Callsign]
+			ctrl := ctx.SimState.Controllers[ctx.SimState.Callsign]
 			fullName := ctrl.FullName
-			if ac := w.Aircraft[callsign]; ac != nil && ac.IsDeparture() {
+			if ac := ctx.SimState.Aircraft[callsign]; ac != nil && ac.IsDeparture() {
 				// Always refer to the controller as "departure" for departing aircraft.
 				fullName = strings.ReplaceAll(fullName, "approach", "departure")
 			}
@@ -995,7 +998,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 	for _, event := range mp.events.Get() {
 		switch event.Type {
 		case RadioTransmissionEvent:
-			if event.ToController == w.Callsign {
+			if event.ToController == ctx.SimState.Callsign {
 				if event.Callsign != lastRadioCallsign || event.RadioTransmissionType != lastRadioType {
 					if len(transmissions) > 0 {
 						addTransmissions()
@@ -1009,7 +1012,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 				unexpectedTransmission = unexpectedTransmission || (event.RadioTransmissionType == av.RadioTransmissionUnexpected)
 			}
 		case GlobalMessageEvent:
-			if event.FromController != w.Callsign {
+			if event.FromController != ctx.SimState.Callsign {
 				mp.messages = append(mp.messages, Message{contents: event.Message, global: true})
 			}
 		case StatusMessageEvent:
@@ -1028,7 +1031,7 @@ func (mp *MessagesPane) processEvents(w *World) {
 		case TrackClickedEvent:
 			if cmd := strings.TrimSpace(mp.input.cmd); cmd != "" {
 				mp.input.cmd = event.Callsign + " " + cmd
-				mp.runCommands(w)
+				mp.runCommands(ctx)
 			}
 		}
 	}

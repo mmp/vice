@@ -73,10 +73,10 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 	return &SplitLine{}
 }
 
-func (s *SplitLine) Activate(*World, renderer.Renderer, platform.Platform, *EventStream) {}
-func (s *SplitLine) Deactivate()                                                         {}
-func (s *SplitLine) ResetWorld(w *World)                                                 {}
-func (s *SplitLine) CanTakeKeyboardFocus() bool                                          { return false }
+func (s *SplitLine) Activate(*SimState, renderer.Renderer, platform.Platform, *EventStream) {}
+func (s *SplitLine) Deactivate()                                                            {}
+func (s *SplitLine) Reset(SimState)                                                         {}
+func (s *SplitLine) CanTakeKeyboardFocus() bool                                             { return false }
 
 func (s *SplitLine) Name() string {
 	return "Split Line"
@@ -525,10 +525,13 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, w *World, stats *Stat
 				parentPaneExtent: parentExtent,
 				platform:         p,
 				renderer:         r,
-				world:            w,
 				keyboard:         keyboard,
 				haveFocus:        haveFocus,
 				now:              time.Now(),
+
+				Control:     w,
+				ClientState: w.client,
+				SimState:    w.SimState,
 			}
 
 			// Similarly make the mouse events available only to the

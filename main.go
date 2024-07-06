@@ -50,11 +50,11 @@ var (
 	lg           *log.Logger
 
 	// client only
-	newWorldChan chan *World
-	localServer  *SimServer
-	remoteServer *SimServer
-	airportWind  map[string]av.Wind
-	windRequest  map[string]chan getweather.MetarData
+	newSimConnectionChan chan *SimConnection
+	localServer          *SimServer
+	remoteServer         *SimServer
+	airportWind          map[string]av.Wind
+	windRequest          map[string]chan getweather.MetarData
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -279,7 +279,7 @@ func main() {
 
 		fontsInit(render, plat)
 
-		newWorldChan = make(chan *World, 2)
+		newSimConnectionChan = make(chan *SimConnection, 2)
 		var world *World
 
 		localServer = <-localSimServerChan
@@ -292,11 +292,7 @@ func main() {
 				if err := localServer.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
 					lg.Errorf("error restoring saved Sim: %v", err)
 				} else {
-					world = result.World
-					world.simProxy = &SimProxy{
-						ControllerToken: result.ControllerToken,
-						Client:          localServer.RPCClient,
-					}
+					world = NewWorldFromSimState(*result.SimState, result.ControllerToken, localServer.RPCClient)
 					world.ToggleShowScenarioInfoWindow()
 				}
 			}
@@ -333,11 +329,12 @@ func main() {
 		stats.startTime = time.Now()
 		for {
 			select {
-			case nw := <-newWorldChan:
+			case ns := <-newSimConnectionChan:
 				if world != nil {
 					world.Disconnect()
 				}
-				world = nw
+				world = NewWorldFromSimState(ns.SimState, ns.SimProxy.ControllerToken,
+					ns.SimProxy.Client)
 				simStartTime = time.Now()
 
 				if world == nil {
@@ -345,7 +342,7 @@ func main() {
 				} else if world != nil {
 					world.ToggleShowScenarioInfoWindow()
 					globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-						p.ResetWorld(world)
+						p.Reset(world.SimState)
 					})
 				}
 

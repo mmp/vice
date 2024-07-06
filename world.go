@@ -20,7 +20,6 @@ import (
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -33,6 +32,23 @@ type World struct {
 	// Used on the client side only
 	simProxy *SimProxy
 
+	lastUpdateRequest time.Time
+	lastReturnedTime  time.Time
+	updateCall        *util.PendingCall
+
+	pendingCalls []*util.PendingCall
+
+	sameGateDepartures int
+	sameDepartureCap   int
+
+	client ClientState
+
+	// This is all read-only data that we expect other parts of the system
+	// to access directly.
+	SimState
+}
+
+type SimState struct {
 	Aircraft    map[string]*av.Aircraft
 	METAR       map[string]*av.METAR
 	Controllers map[string]*av.Controller
@@ -40,30 +56,6 @@ type World struct {
 	DepartureAirports map[string]*av.Airport
 	ArrivalAirports   map[string]*av.Airport
 
-	lastUpdateRequest time.Time
-	lastReturnedTime  time.Time
-	updateCall        *util.PendingCall
-	showSettings      bool
-	showScenarioInfo  bool
-
-	launchControlWindow *LaunchControlWindow
-
-	pendingCalls []*util.PendingCall
-
-	missingPrimaryDialog *ModalDialogBox
-
-	sameGateDepartures int
-	sameDepartureCap   int
-
-	// Scenario routes to draw on the scope
-	scopeDraw struct {
-		arrivals   map[string]map[int]bool               // group->index
-		approaches map[string]map[string]bool            // airport->approach
-		departures map[string]map[string]map[string]bool // airport->runway->exit
-	}
-
-	// This is all read-only data that we expect other parts of the system
-	// to access directly.
 	TRACON                   string
 	LaunchConfig             LaunchConfig
 	PrimaryController        string
@@ -95,11 +87,23 @@ type World struct {
 	STARSFacilityAdaptation  STARSFacilityAdaptation
 }
 
+func NewWorldFromSimState(ss SimState, controllerToken string, client *util.RPCClient) *World {
+	return &World{
+		SimState: ss,
+		simProxy: &SimProxy{
+			ControllerToken: controllerToken,
+			Client:          client,
+		},
+	}
+}
+
 func NewWorld() *World {
 	return &World{
-		Aircraft:    make(map[string]*av.Aircraft),
-		METAR:       make(map[string]*av.METAR),
-		Controllers: make(map[string]*av.Controller),
+		SimState: SimState{
+			Aircraft:    make(map[string]*av.Aircraft),
+			METAR:       make(map[string]*av.METAR),
+			Controllers: make(map[string]*av.Controller),
+		},
 	}
 }
 
@@ -129,12 +133,12 @@ func (w *World) GetAirport(icao string) *av.Airport {
 	return w.Airports[icao]
 }
 
-func (w *World) Locate(s string) (math.Point2LL, bool) {
+func (ss *SimState) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
-	if ap, ok := w.Airports[s]; ok {
+	if ap, ok := ss.Airports[s]; ok {
 		return ap.Location, true
-	} else if p, ok := w.Fixes[s]; ok {
+	} else if p, ok := ss.Fixes[s]; ok {
 		return p, true
 	} else if n, ok := av.DB.Navaids[strings.ToUpper(s)]; ok {
 		return n.Location, ok
@@ -422,25 +426,15 @@ func (w *World) Disconnect() {
 	w.Controllers = nil
 }
 
-// Bool is if the callsign can be abbreviated
-func (w *World) GetAircraft(callsign string, abbreviated bool) *av.Aircraft { // If the callsign can be abbreivated (for radio commands, not STARS commands)
-	if ac, ok := w.Aircraft[callsign]; ok {
+func (ss *SimState) AircraftFromPartialCallsign(c string) *av.Aircraft {
+	if ac, ok := ss.Aircraft[c]; ok {
 		return ac
 	}
-	if abbreviated {
-		ac := w.GetAllAircraft()
-		aircraft := w.findAircraft(callsign, ac)
-		return aircraft
-	}
 
-	return nil
-}
-
-func (w *World) findAircraft(sample string, aircraft []*av.Aircraft) *av.Aircraft {
 	var final []*av.Aircraft
-	for _, icao := range aircraft {
-		if icao.ControllingController == w.Callsign && strings.Contains(icao.Callsign, sample) {
-			final = append(final, icao)
+	for callsign, ac := range ss.Aircraft {
+		if ac.ControllingController == ss.Callsign && strings.Contains(callsign, c) {
+			final = append(final, ac)
 		}
 	}
 	if len(final) == 1 {
@@ -450,56 +444,20 @@ func (w *World) findAircraft(sample string, aircraft []*av.Aircraft) *av.Aircraf
 	}
 }
 
-func (w *World) GetFilteredAircraft(filter func(*av.Aircraft) bool) []*av.Aircraft {
-	var filtered []*av.Aircraft
-	for _, ac := range w.Aircraft {
-		if filter(ac) {
-			filtered = append(filtered, ac)
-		}
-	}
-	return filtered
-}
-
-func (w *World) GetAllAircraft() []*av.Aircraft {
-	return w.GetFilteredAircraft(func(*av.Aircraft) bool { return true })
-}
-
-func (w *World) GetFlightStrip(callsign string) *av.FlightStrip {
-	if ac, ok := w.Aircraft[callsign]; ok {
-		return &ac.Strip
-	}
-	return nil
-}
-
-func (w *World) GetMETAR(location string) *av.METAR {
-	return w.METAR[location]
-}
-
-func (w *World) GetControllerByCallsign(callsign string) *av.Controller {
-	if ctrl := w.Controllers[callsign]; ctrl != nil {
-		return ctrl
-	}
-	return nil
-}
-
-func (w *World) GetAllControllers() map[string]*av.Controller {
-	return w.Controllers
-}
-
-func (w *World) DepartureController(ac *av.Aircraft) string {
-	if len(w.MultiControllers) > 0 {
-		callsign, err := w.MultiControllers.ResolveController(ac.DepartureContactController,
+func (ss *SimState) DepartureController(ac *av.Aircraft) string {
+	if len(ss.MultiControllers) > 0 {
+		callsign, err := ss.MultiControllers.ResolveController(ac.DepartureContactController,
 			func(callsign string) bool {
-				ctrl, ok := w.Controllers[callsign]
+				ctrl, ok := ss.Controllers[callsign]
 				return ok && ctrl.IsHuman
 			})
 		if err != nil {
 			lg.Error("Unable to resolve departure controller", slog.Any("error", err),
 				slog.Any("aircraft", ac))
 		}
-		return util.Select(callsign != "", callsign, w.PrimaryController)
+		return util.Select(callsign != "", callsign, ss.PrimaryController)
 	} else {
-		return w.PrimaryController
+		return ss.PrimaryController
 	}
 }
 
@@ -640,45 +598,39 @@ func (w *World) GetWindowTitle() string {
 	}
 }
 
-func (w *World) GetVideoMaps() ([]av.VideoMap, []string) {
-	if config, ok := w.STARSFacilityAdaptation.ControllerConfigs[w.Callsign]; ok {
+func (ss *SimState) GetVideoMaps() ([]av.VideoMap, []string) {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.Callsign]; ok {
 		return config.VideoMaps, config.DefaultMaps
 	}
-	return w.STARSFacilityAdaptation.VideoMaps, w.ScenarioDefaultVideoMaps
+	return ss.STARSFacilityAdaptation.VideoMaps, ss.ScenarioDefaultVideoMaps
 }
 
-func (w *World) GetInitialRange() float32 {
-	if config, ok := w.STARSFacilityAdaptation.ControllerConfigs[w.Callsign]; ok && config.Range != 0 {
+func (ss *SimState) GetInitialRange() float32 {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.Callsign]; ok && config.Range != 0 {
 		return config.Range
 	}
-	return w.Range
+	return ss.Range
 }
 
-func (w *World) GetInitialCenter() math.Point2LL {
-	if config, ok := w.STARSFacilityAdaptation.ControllerConfigs[w.Callsign]; ok && !config.Center.IsZero() {
+func (ss *SimState) GetInitialCenter() math.Point2LL {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.Callsign]; ok && !config.Center.IsZero() {
 		return config.Center
 	}
-	return w.Center
+	return ss.Center
 }
 
-func (w *World) InhibitCAVolumes() []av.AirspaceVolume {
-	return w.STARSFacilityAdaptation.InhibitCAVolumes
+func (ss *SimState) InhibitCAVolumes() []av.AirspaceVolume {
+	return ss.STARSFacilityAdaptation.InhibitCAVolumes
 }
 
-func (w *World) PrintInfo(ac *av.Aircraft) {
-	lg.Info("print aircraft", slog.String("callsign", ac.Callsign),
-		slog.Any("aircraft", ac))
-	fmt.Println(spew.Sdump(ac) + "\n" + ac.Nav.FlightState.Summary())
-}
-
-func (w *World) DeleteAircraft(ac *av.Aircraft, onErr func(err error)) {
+func (w *World) DeleteAllAircraft(onErr func(err error)) {
 	if lctrl := w.LaunchConfig.Controller; lctrl == "" || lctrl == w.Callsign {
-		delete(w.Aircraft, ac.Callsign)
+		w.Aircraft = nil
 	}
 
 	w.pendingCalls = append(w.pendingCalls,
 		&util.PendingCall{
-			Call:      w.simProxy.DeleteAircraft(ac.Callsign),
+			Call:      w.simProxy.DeleteAllAircraft(),
 			IssueTime: time.Now(),
 			OnErr:     onErr,
 		})
@@ -970,11 +922,11 @@ func (w *World) CreateDeparture(departureAirport, runway, category string, chall
 // Settings
 
 func (w *World) ToggleActivateSettingsWindow() {
-	w.showSettings = !w.showSettings
+	w.client.showSettings = !w.client.showSettings
 }
 
 func (w *World) ToggleShowScenarioInfoWindow() {
-	w.showScenarioInfo = !w.showScenarioInfo
+	w.client.showScenarioInfo = !w.client.showScenarioInfo
 }
 
 type MissingPrimaryModalClient struct {
@@ -994,8 +946,8 @@ func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
 		return err == nil
 	}})
 	b = append(b, ModalDialogButton{text: "Disconnect", action: func() bool {
-		newWorldChan <- nil // This will lead to a World Disconnect() call in main.go
-		uiCloseModalDialog(mp.world.missingPrimaryDialog)
+		newSimConnectionChan <- nil // This will lead to a World Disconnect() call in main.go
+		uiCloseModalDialog(mp.world.client.missingPrimaryDialog)
 		return true
 	}})
 	return b
@@ -1008,661 +960,24 @@ func (mp *MissingPrimaryModalClient) Draw() int {
 
 func (w *World) DrawMissingPrimaryDialog(p platform.Platform) {
 	if _, ok := w.Controllers[w.PrimaryController]; ok {
-		if w.missingPrimaryDialog != nil {
-			uiCloseModalDialog(w.missingPrimaryDialog)
-			w.missingPrimaryDialog = nil
+		if w.client.missingPrimaryDialog != nil {
+			uiCloseModalDialog(w.client.missingPrimaryDialog)
+			w.client.missingPrimaryDialog = nil
 		}
 	} else {
-		if w.missingPrimaryDialog == nil {
-			w.missingPrimaryDialog = NewModalDialogBox(&MissingPrimaryModalClient{world: w}, p)
-			uiShowModalDialog(w.missingPrimaryDialog, true)
-		}
-	}
-}
-
-func (w *World) DrawScenarioInfoWindow() {
-	if !w.showScenarioInfo {
-		return
-	}
-
-	// Ensure that the window is wide enough to show the description
-	sz := imgui.CalcTextSize(w.SimDescription, false, 0)
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
-
-	imgui.BeginV(w.SimDescription, &w.showScenarioInfo, imgui.WindowFlagsAlwaysAutoResize)
-
-	// Make big(ish) tables somewhat more legible
-	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
-		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-
-	if imgui.CollapsingHeader("Arrivals") {
-		if imgui.BeginTableV("arr", 4, tableFlags, imgui.Vec2{}, 0) {
-			if w.scopeDraw.arrivals == nil {
-				w.scopeDraw.arrivals = make(map[string]map[int]bool)
-			}
-
-			imgui.TableSetupColumn("Draw")
-			imgui.TableSetupColumn("Arrival")
-			imgui.TableSetupColumn("Airport(s)")
-			imgui.TableSetupColumn("Description")
-			imgui.TableHeadersRow()
-
-			for _, name := range util.SortedMapKeys(w.ArrivalGroups) {
-				arrivals := w.ArrivalGroups[name]
-				if w.scopeDraw.arrivals[name] == nil {
-					w.scopeDraw.arrivals[name] = make(map[int]bool)
-				}
-
-				for i, arr := range arrivals {
-					if len(w.LaunchConfig.ArrivalGroupRates[name]) == 0 {
-						// Not used in the current scenario.
-						continue
-					}
-
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					enabled := w.scopeDraw.arrivals[name][i]
-					imgui.Checkbox(fmt.Sprintf("##arr-%s-%d", name, i), &enabled)
-					w.scopeDraw.arrivals[name][i] = enabled
-
-					imgui.TableNextColumn()
-					imgui.Text(name)
-
-					imgui.TableNextColumn()
-					airports := util.SortedMapKeys(arr.Airlines)
-					imgui.Text(strings.Join(airports, ", "))
-
-					imgui.TableNextColumn()
-					if arr.Description != "" {
-						imgui.Text(arr.Description)
-					} else {
-						imgui.Text("--")
-					}
-				}
-			}
-
-			imgui.EndTable()
-		}
-	}
-
-	imgui.Separator()
-
-	if imgui.CollapsingHeader("Approaches") {
-		if imgui.BeginTableV("appr", 6, tableFlags, imgui.Vec2{}, 0) {
-			if w.scopeDraw.approaches == nil {
-				w.scopeDraw.approaches = make(map[string]map[string]bool)
-			}
-
-			imgui.TableSetupColumn("Draw")
-			imgui.TableSetupColumn("Airport")
-			imgui.TableSetupColumn("Runway")
-			imgui.TableSetupColumn("Code")
-			imgui.TableSetupColumn("Description")
-			imgui.TableSetupColumn("FAF")
-			imgui.TableHeadersRow()
-
-			for _, rwy := range w.ArrivalRunways {
-				if ap, ok := w.Airports[rwy.Airport]; !ok {
-					lg.Errorf("%s: arrival airport not in world airports", rwy.Airport)
-				} else {
-					if w.scopeDraw.approaches[rwy.Airport] == nil {
-						w.scopeDraw.approaches[rwy.Airport] = make(map[string]bool)
-					}
-					for _, name := range util.SortedMapKeys(ap.Approaches) {
-						appr := ap.Approaches[name]
-						if appr.Runway == rwy.Runway {
-							imgui.TableNextRow()
-							imgui.TableNextColumn()
-							enabled := w.scopeDraw.approaches[rwy.Airport][name]
-							imgui.Checkbox("##enable-"+rwy.Airport+"-"+rwy.Runway+"-"+name, &enabled)
-							w.scopeDraw.approaches[rwy.Airport][name] = enabled
-
-							imgui.TableNextColumn()
-							imgui.Text(rwy.Airport)
-
-							imgui.TableNextColumn()
-							imgui.Text(rwy.Runway)
-
-							imgui.TableNextColumn()
-							imgui.Text(name)
-
-							imgui.TableNextColumn()
-							imgui.Text(appr.FullName)
-
-							imgui.TableNextColumn()
-							for _, wp := range appr.Waypoints[0] {
-								if wp.FAF {
-									imgui.Text(wp.Fix)
-									break
-								}
-							}
-						}
-					}
-				}
-			}
-			imgui.EndTable()
-		}
-	}
-
-	imgui.Separator()
-	if imgui.CollapsingHeader("Departures") {
-		if imgui.BeginTableV("departures", 5, tableFlags, imgui.Vec2{}, 0) {
-			if w.scopeDraw.departures == nil {
-				w.scopeDraw.departures = make(map[string]map[string]map[string]bool)
-			}
-
-			imgui.TableSetupColumn("Draw")
-			imgui.TableSetupColumn("Airport")
-			imgui.TableSetupColumn("Runway")
-			imgui.TableSetupColumn("Exit")
-			imgui.TableSetupColumn("Description")
-			imgui.TableHeadersRow()
-
-			for _, airport := range util.SortedMapKeys(w.LaunchConfig.DepartureRates) {
-				if w.scopeDraw.departures[airport] == nil {
-					w.scopeDraw.departures[airport] = make(map[string]map[string]bool)
-				}
-				ap := w.Airports[airport]
-
-				runwayRates := w.LaunchConfig.DepartureRates[airport]
-				for _, rwy := range util.SortedMapKeys(runwayRates) {
-					if w.scopeDraw.departures[airport][rwy] == nil {
-						w.scopeDraw.departures[airport][rwy] = make(map[string]bool)
-					}
-
-					exitRoutes := ap.DepartureRoutes[rwy]
-
-					// Multiple routes may have the same waypoints, so
-					// we'll reverse-engineer that here so we can present
-					// them together in the UI.
-					routeToExit := make(map[string][]string)
-					for _, exit := range util.SortedMapKeys(exitRoutes) {
-						exitRoute := ap.DepartureRoutes[rwy][exit]
-						r := exitRoute.Waypoints.Encode()
-						routeToExit[r] = append(routeToExit[r], exit)
-					}
-
-					for _, exit := range util.SortedMapKeys(exitRoutes) {
-						// Draw the row only when we hit the first exit
-						// that uses the corresponding route route.
-						r := exitRoutes[exit].Waypoints.Encode()
-						if routeToExit[r][0] != exit {
-							continue
-						}
-
-						imgui.TableNextRow()
-						imgui.TableNextColumn()
-						enabled := w.scopeDraw.departures[airport][rwy][exit]
-						imgui.Checkbox("##enable-"+airport+"-"+rwy+"-"+exit, &enabled)
-						w.scopeDraw.departures[airport][rwy][exit] = enabled
-
-						imgui.TableNextColumn()
-						imgui.Text(airport)
-						imgui.TableNextColumn()
-						rwyBase, _, _ := strings.Cut(rwy, ".")
-						imgui.Text(rwyBase)
-						imgui.TableNextColumn()
-						if len(routeToExit) == 1 {
-							// If we only saw a single departure route, no
-							// need to list all of the exits in the UI
-							// (there are often a lot of them!)
-							imgui.Text("(all)")
-						} else {
-							// List all of the exits that use this route.
-							imgui.Text(strings.Join(routeToExit[r], ", "))
-						}
-						imgui.TableNextColumn()
-						imgui.Text(exitRoutes[exit].Description)
-					}
-				}
-			}
-			imgui.EndTable()
-		}
-	}
-
-	imgui.End()
-}
-
-func (w *World) DrawScenarioRoutes(p platform.Platform, transforms ScopeTransformations, font *renderer.Font, color renderer.RGB,
-	cb *renderer.CommandBuffer) {
-	if !w.showScenarioInfo {
-		return
-	}
-
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-	ld := renderer.GetLinesDrawBuilder()
-	defer renderer.ReturnLinesDrawBuilder(ld)
-	pd := renderer.GetTrianglesDrawBuilder() // for circles
-	defer renderer.ReturnTrianglesDrawBuilder(pd)
-	ldr := renderer.GetLinesDrawBuilder() // for restrictions--in window coords...
-	defer renderer.ReturnLinesDrawBuilder(ldr)
-
-	// Track which waypoints have been drawn so that we don't repeatedly
-	// draw the same one.  (This is especially important since the
-	// placement of the labels depends on the inbound/outbound segments,
-	// which may be different for different uses of the waypoint...)
-	drawnWaypoints := make(map[string]interface{})
-
-	style := renderer.TextStyle{
-		Font:           font,
-		Color:          color,
-		DrawBackground: true}
-
-	// STARS
-	for _, name := range util.SortedMapKeys(w.ArrivalGroups) {
-		if w.scopeDraw.arrivals == nil || w.scopeDraw.arrivals[name] == nil {
-			continue
-		}
-
-		arrivals := w.ArrivalGroups[name]
-		for i, arr := range arrivals {
-			if !w.scopeDraw.arrivals[name][i] {
-				continue
-			}
-
-			w.drawWaypoints(arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr)
-
-			// Draw runway-specific waypoints
-			for _, ap := range util.SortedMapKeys(arr.RunwayWaypoints) {
-				for _, rwy := range util.SortedMapKeys(arr.RunwayWaypoints[ap]) {
-					wp := arr.RunwayWaypoints[ap][rwy]
-					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
-
-					if len(wp) > 1 {
-						// Draw the runway number in the middle of the line
-						// between the first two waypoints.
-						pmid := math.Mid2LL(wp[0].Location, wp[1].Location)
-						td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pmid), style)
-					} else if wp[0].Heading != 0 {
-						// This should be the only other case... The heading arrow is drawn
-						// up to 2nm out, so put the runway 1nm along its axis.
-						a := math.Radians(float32(wp[0].Heading) - w.MagneticVariation)
-						v := [2]float32{math.Sin(a), math.Cos(a)}
-						pend := math.LL2NM(wp[0].Location, w.NmPerLongitude)
-						pend = math.Add2f(pend, v)
-						pell := math.NM2LL(pend, w.NmPerLongitude)
-						td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pell), style)
-					}
-				}
-			}
-		}
-	}
-
-	// Approaches
-	for _, rwy := range w.ArrivalRunways {
-		if w.scopeDraw.approaches == nil || w.scopeDraw.approaches[rwy.Airport] == nil {
-			continue
-		}
-		ap := w.Airports[rwy.Airport]
-		for _, name := range util.SortedMapKeys(ap.Approaches) {
-			appr := ap.Approaches[name]
-			if appr.Runway == rwy.Runway && w.scopeDraw.approaches[rwy.Airport][name] {
-				for _, wp := range appr.Waypoints {
-					w.drawWaypoints(wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
-				}
-			}
-		}
-	}
-
-	// Departure routes
-	for _, name := range util.SortedMapKeys(w.Airports) {
-		if w.scopeDraw.departures == nil || w.scopeDraw.departures[name] == nil {
-			continue
-		}
-
-		ap := w.Airports[name]
-		for _, rwy := range util.SortedMapKeys(ap.DepartureRoutes) {
-			if w.scopeDraw.departures[name][rwy] == nil {
-				continue
-			}
-
-			exitRoutes := ap.DepartureRoutes[rwy]
-			for _, exit := range util.SortedMapKeys(exitRoutes) {
-				if w.scopeDraw.departures[name][rwy][exit] {
-					w.drawWaypoints(exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
-						td, style, ld, pd, ldr)
-				}
-			}
-		}
-	}
-
-	// And now finally update the command buffer with everything we've
-	// drawn.
-	cb.SetRGB(color)
-	transforms.LoadLatLongViewingMatrices(cb)
-	cb.LineWidth(2, p.DPIScale())
-	ld.GenerateCommands(cb)
-
-	transforms.LoadWindowViewingMatrices(cb)
-	pd.GenerateCommands(cb)
-	td.GenerateCommands(cb)
-	cb.LineWidth(1, p.DPIScale())
-	ldr.GenerateCommands(cb)
-}
-
-// pt should return nm-based coordinates
-func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]float32 {
-	prev, pok := pt(-1)
-	cur, _ := pt(0)
-	next, nok := pt(1)
-
-	vecAngle := func(p0, p1 [2]float32) float32 {
-		v := math.Normalize2f(math.Sub2f(p1, p0))
-		return math.Atan2(v[0], v[1])
-	}
-
-	const Pi = 3.1415926535
-	angle := float32(0)
-	if !pok {
-		if !nok {
-			// wtf?
-		}
-		// first point
-		angle = vecAngle(cur, next)
-	} else if !nok {
-		// last point
-		angle = vecAngle(prev, cur)
-	} else {
-		// have both prev and next
-		angle = (vecAngle(prev, cur) + vecAngle(cur, next)) / 2 // ??
-	}
-
-	if angle < 0 {
-		angle -= Pi / 2
-	} else {
-		angle += Pi / 2
-	}
-
-	offset := math.Scale2f([2]float32{math.Sin(angle), math.Cos(angle)}, 8)
-
-	h := math.NormalizeHeading(math.Degrees(angle))
-	if (h >= 160 && h < 200) || (h >= 340 || h < 20) {
-		// Center(ish) the text if the line is more or less horizontal.
-		offset[0] -= 2.5 * float32(font.Size)
-	}
-	return offset
-}
-
-func (w *World) drawWaypoints(waypoints []av.Waypoint, drawnWaypoints map[string]interface{},
-	transforms ScopeTransformations, td *renderer.TextDrawBuilder, style renderer.TextStyle,
-	ld *renderer.LinesDrawBuilder, pd *renderer.TrianglesDrawBuilder, ldr *renderer.LinesDrawBuilder) {
-
-	// Draw an arrow at the point p (in nm coordinates) pointing in the
-	// direction given by the angle a.
-	drawArrow := func(p [2]float32, a float32) {
-		aa := a + math.Radians(180+30)
-		pa := math.Add2f(p, math.Scale2f([2]float32{math.Sin(aa), math.Cos(aa)}, 0.5))
-		ld.AddLine(math.NM2LL(p, w.NmPerLongitude), math.NM2LL(pa, w.NmPerLongitude))
-
-		ba := a - math.Radians(180+30)
-		pb := math.Add2f(p, math.Scale2f([2]float32{math.Sin(ba), math.Cos(ba)}, 0.5))
-		ld.AddLine(math.NM2LL(p, w.NmPerLongitude), math.NM2LL(pb, w.NmPerLongitude))
-	}
-
-	for i, wp := range waypoints {
-		if wp.Heading != 0 {
-			// Don't draw a segment to the next waypoint (if there is one)
-			// but instead draw an arrow showing the heading.
-			a := math.Radians(float32(wp.Heading) - w.MagneticVariation)
-			v := [2]float32{math.Sin(a), math.Cos(a)}
-			v = math.Scale2f(v, 2)
-			pend := math.LL2NM(waypoints[i].Location, w.NmPerLongitude)
-			pend = math.Add2f(pend, v)
-
-			// center line
-			ld.AddLine(waypoints[i].Location, math.NM2LL(pend, w.NmPerLongitude))
-
-			// arrowhead at the end
-			drawArrow(pend, a)
-		} else if i+1 < len(waypoints) {
-			if wp.Arc != nil {
-				// Draw DME arc. One subtlety is that although the arc's
-				// radius should cause it to pass through the waypoint, it
-				// may be slightly off due to error from using nm
-				// coordinates and the approximation of a fixed nm per
-				// longitude value.  So, we'll compute the radius to the
-				// point in nm coordinates and store it in r0 and do the
-				// same for the end point. Then we will interpolate those
-				// radii along the arc.
-				pc := math.LL2NM(wp.Arc.Center, w.NmPerLongitude)
-				p0 := math.LL2NM(waypoints[i].Location, w.NmPerLongitude)
-				r0 := math.Distance2f(p0, pc)
-				v0 := math.Normalize2f(math.Sub2f(p0, pc))
-				a0 := math.NormalizeHeading(math.Degrees(math.Atan2(v0[0], v0[1]))) // angle w.r.t. the arc center
-
-				p1 := math.LL2NM(waypoints[i+1].Location, w.NmPerLongitude)
-				r1 := math.Distance2f(p1, pc)
-				v1 := math.Normalize2f(math.Sub2f(p1, pc))
-				a1 := math.NormalizeHeading(math.Degrees(math.Atan2(v1[0], v1[1])))
-
-				// Draw a segment every degree
-				n := int(math.HeadingDifference(a0, a1))
-				a := a0
-				pprev := waypoints[i].Location
-				for i := 1; i < n-1; i++ {
-					if wp.Arc.Clockwise {
-						a += 1
-					} else {
-						a -= 1
-					}
-					a = math.NormalizeHeading(a)
-					r := math.Lerp(float32(i)/float32(n), r0, r1)
-					v := math.Scale2f([2]float32{math.Sin(math.Radians(a)), math.Cos(math.Radians(a))}, r)
-					pnext := math.NM2LL(math.Add2f(pc, v), w.NmPerLongitude)
-					ld.AddLine(pprev, pnext)
-					pprev = pnext
-
-					if i == n/2 {
-						// Draw an arrow at the midpoint showing the arc's direction
-						drawArrow(math.Add2f(pc, v), util.Select(wp.Arc.Clockwise, math.Radians(a+90), math.Radians(a-90)))
-					}
-				}
-				ld.AddLine(pprev, waypoints[i+1].Location)
-			} else {
-				// Regular segment between waypoints: draw the line
-				ld.AddLine(waypoints[i].Location, waypoints[i+1].Location)
-
-				if waypoints[i+1].ProcedureTurn == nil {
-					// Draw an arrow indicating direction of flight along
-					// the segment, unless the next waypoint has a
-					// procedure turn. In that case, we'll let the PT draw
-					// the arrow..
-					p0 := math.LL2NM(waypoints[i].Location, w.NmPerLongitude)
-					p1 := math.LL2NM(waypoints[i+1].Location, w.NmPerLongitude)
-					v := math.Sub2f(p1, p0)
-					drawArrow(math.Mid2f(p0, p1), math.Atan2(v[0], v[1]))
-				}
-			}
-		}
-
-		if pt := wp.ProcedureTurn; pt != nil {
-			if i+1 >= len(waypoints) {
-				lg.Errorf("Expected another waypoint after the procedure turn?")
-			} else {
-				// In the following, we will generate points a canonical
-				// racetrack vertically-oriented, with width 2, and with
-				// the origin at the left side of the arc at the top.  The
-				// toNM transformation takes that to nm coordinates which
-				// we'll later transform to lat-long to draw on the scope.
-				toNM := math.Identity3x3()
-
-				pnm := math.LL2NM(wp.Location, w.NmPerLongitude)
-				toNM = toNM.Translate(pnm[0], pnm[1])
-
-				p1nm := math.LL2NM(waypoints[i+1].Location, w.NmPerLongitude)
-				v := math.Sub2f(p1nm, pnm)
-				hdg := math.Atan2(v[0], v[1])
-				toNM = toNM.Rotate(-hdg)
-				if !pt.RightTurns {
-					toNM = toNM.Translate(-2, 0)
-				}
-
-				// FIXME: reuse the logic in nav.go to compute the leg lengths.
-				len := float32(pt.NmLimit)
-				if len == 0 {
-					len = float32(pt.MinuteLimit * 3) // assume 180 GS...
-				}
-				if len == 0 {
-					len = 4
-				}
-
-				var lines [][2][2]float32
-				// Lines for the two sides
-				lines = append(lines,
-					[2][2]float32{
-						toNM.TransformPoint([2]float32{0, 0}),
-						toNM.TransformPoint([2]float32{0, -len})},
-					[2][2]float32{
-						toNM.TransformPoint([2]float32{2, 0}),
-						toNM.TransformPoint([2]float32{2, -len})})
-
-				// Arcs at each end; all of this is slightly simpler since
-				// the width of the racetrack is 2, so the radius of the
-				// arcs is 1...
-				// previous top and bottom points
-				prevt := toNM.TransformPoint([2]float32{0, 0})
-				prevb := toNM.TransformPoint([2]float32{2, -len})
-				for i := -90; i <= 90; i++ {
-					v := [2]float32{math.Sin(math.Radians(float32(i))), math.Cos(math.Radians(float32(i)))}
-
-					// top
-					pt := math.Add2f([2]float32{1, 0}, v)
-					pt = toNM.TransformPoint(pt)
-					lines = append(lines, [2][2]float32{prevt, pt})
-					prevt = pt
-
-					// bottom
-					pb := math.Sub2f([2]float32{1, -len}, v)
-					pb = toNM.TransformPoint(pb)
-					lines = append(lines, [2][2]float32{prevb, pb})
-					prevb = pb
-				}
-
-				for _, l := range lines {
-					l0, l1 := math.NM2LL(l[0], w.NmPerLongitude), math.NM2LL(l[1], w.NmPerLongitude)
-					ld.AddLine(l0, l1)
-				}
-
-				drawArrow(toNM.TransformPoint([2]float32{0, -len / 2}), hdg)
-				drawArrow(toNM.TransformPoint([2]float32{2, -len / 2}), hdg+math.Radians(180))
-			}
-		}
-
-		drawName := wp.Fix[0] != '_'
-		if _, err := math.ParseLatLong([]byte(wp.Fix)); err == nil {
-			// Also don't draw names that are directly specified as latlongs.
-			drawName = false
-		}
-
-		if _, ok := drawnWaypoints[wp.Fix]; ok {
-			// And if we're given the same fix more than once (as may
-			// happen with T-shaped RNAV arrivals for example), only draw
-			// it once. We'll assume/hope that we're not seeing it with
-			// different restrictions...
-			continue
-		}
-
-		// Record that we have drawn this waypoint
-		drawnWaypoints[wp.Fix] = nil
-
-		// Draw a circle at the waypoint's location
-		const pointRadius = 2.5
-		const nSegments = 8
-		pd.AddCircle(transforms.WindowFromLatLongP(wp.Location), pointRadius, nSegments)
-
-		offset := calculateOffset(style.Font, func(j int) ([2]float32, bool) {
-			idx := i + j
-			if idx < 0 || idx >= len(waypoints) {
-				return [2]float32{}, false
-			}
-			return math.LL2NM(waypoints[idx].Location, w.NmPerLongitude), true
-		})
-
-		// Draw the text for the waypoint, including fix name, any
-		// properties, and altitude/speed restrictions.
-		p := transforms.WindowFromLatLongP(wp.Location)
-		p = math.Add2f(p, offset)
-		if drawName {
-			p = td.AddText(wp.Fix+"\n", p, style)
-		}
-
-		if wp.IAF || wp.IF || wp.FAF || wp.NoPT || wp.FlyOver {
-			var s []string
-			if wp.IAF {
-				s = append(s, "IAF")
-			}
-			if wp.IF {
-				s = append(s, "IF")
-			}
-			if wp.FAF {
-				s = append(s, "FAF")
-			}
-			if wp.NoPT {
-				s = append(s, "NoPT")
-			}
-			if wp.FlyOver {
-				s = append(s, "FlyOver")
-			}
-			p = td.AddText(strings.Join(s, "/")+"\n", p, style)
-		}
-
-		if wp.Speed != 0 || wp.AltitudeRestriction != nil {
-			p[1] -= 0.25 * float32(style.Font.Size) // extra space for lines above if needed
-
-			if ar := wp.AltitudeRestriction; ar != nil {
-				pt := p       // draw position for text
-				var w float32 // max width of altitudes drawn
-				if ar.Range[1] != 0 {
-					// Upper altitude
-					pp := td.AddText(av.FormatAltitude(ar.Range[1]), pt, style)
-					w = pp[0] - pt[0]
-					pt[1] -= float32(style.Font.Size)
-				}
-				if ar.Range[0] != 0 && ar.Range[0] != ar.Range[1] {
-					// Lower altitude, if present and different than upper.
-					pp := td.AddText(av.FormatAltitude(ar.Range[0]), pt, style)
-					w = math.Max(w, pp[0]-pt[0])
-					pt[1] -= float32(style.Font.Size)
-				}
-
-				// Now that we have w, we can draw lines the specify the
-				// restrictions.
-				if ar.Range[1] != 0 {
-					// At or below (or at)
-					ldr.AddLine([2]float32{p[0], p[1] + 2}, [2]float32{p[0] + w, p[1] + 2})
-				}
-				if ar.Range[0] != 0 {
-					// At or above (or at)
-					ldr.AddLine([2]float32{p[0], pt[1] - 2}, [2]float32{p[0] + w, pt[1] - 2})
-				}
-
-				// update text draw position so that speed restrictions are
-				// drawn in a reasonable place; note that we maintain the
-				// original p[1] regardless of how many lines were drawn
-				// for altitude restrictions.
-				p[0] += w + 4
-			}
-
-			if wp.Speed != 0 {
-				p0 := p
-				p1 := td.AddText(fmt.Sprintf("%dK", wp.Speed), p, style)
-				p1[1] -= float32(style.Font.Size)
-
-				// All speed restrictions are currently 'at'...
-				ldr.AddLine([2]float32{p0[0], p0[1] + 2}, [2]float32{p1[0], p0[1] + 2})
-				ldr.AddLine([2]float32{p0[0], p1[1] - 2}, [2]float32{p1[0], p1[1] - 2})
-			}
+		if w.client.missingPrimaryDialog == nil {
+			w.client.missingPrimaryDialog = NewModalDialogBox(&MissingPrimaryModalClient{world: w}, p)
+			uiShowModalDialog(w.client.missingPrimaryDialog, true)
 		}
 	}
 }
 
 func (w *World) DrawSettingsWindow(p platform.Platform) {
-	if !w.showSettings {
+	if !w.client.showSettings {
 		return
 	}
 
-	imgui.BeginV("Settings", &w.showSettings, imgui.WindowFlagsAlwaysAutoResize)
+	imgui.BeginV("Settings", &w.client.showSettings, imgui.WindowFlagsAlwaysAutoResize)
 
 	if imgui.SliderFloatV("Simulation speed", &w.SimRate, 1, 20, "%.1f", 0) {
 		w.SetSimRate(w.SimRate)

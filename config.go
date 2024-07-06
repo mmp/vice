@@ -245,7 +245,7 @@ func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, p platform.Platf
 	}
 
 	if gc.DisplayRoot == nil {
-		stars := NewSTARSPane(w)
+		stars := NewSTARSPane(w.SimState)
 		messages := NewMessagesPane()
 
 		fsp := NewFlightStripPane()
@@ -276,5 +276,11 @@ func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, p platform.Platf
 		}
 	}
 
-	gc.DisplayRoot.VisitPanes(func(pane Pane) { pane.Activate(w, r, p, eventStream) })
+	gc.DisplayRoot.VisitPanes(func(pane Pane) {
+		if w != nil {
+			pane.Activate(&w.SimState, r, p, eventStream)
+		} else {
+			pane.Activate(nil, r, p, eventStream)
+		}
+	})
 }

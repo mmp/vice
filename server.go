@@ -248,10 +248,9 @@ func (s *SimProxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) DeleteAircraft(callsign string) *rpc.Call {
-	return s.Client.Go("Sim.DeleteAircraft", &DeleteAircraftArgs{
+func (s *SimProxy) DeleteAllAircraft() *rpc.Call {
+	return s.Client.Go("Sim.DeleteAllAircraft", &DeleteAircraftArgs{
 		ControllerToken: s.ControllerToken,
-		Callsign:        callsign,
 	}, nil, nil)
 }
 
@@ -299,7 +298,7 @@ func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
 }
 
 type NewSimResult struct {
-	World           *World
+	SimState        *SimState
 	ControllerToken string
 }
 
@@ -324,7 +323,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 			return ErrInvalidPassword
 		}
 
-		world, token, err := sim.SignOn(config.SelectedRemoteSimPosition)
+		ss, token, err := sim.SignOn(config.SelectedRemoteSimPosition)
 		if err != nil {
 			return err
 		}
@@ -332,7 +331,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 		sm.controllerTokenToSim[token] = sim
 
 		*result = NewSimResult{
-			World:           world,
+			SimState:        ss,
 			ControllerToken: token,
 		}
 		return nil
@@ -355,7 +354,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 
 	sm.mu.Unlock(sm.lg)
 
-	world, token, err := sim.SignOn(sim.World.PrimaryController)
+	ss, token, err := sim.SignOn(sim.World.PrimaryController)
 	if err != nil {
 		return err
 	}
@@ -385,7 +384,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	}()
 
 	*result = NewSimResult{
-		World:           world,
+		SimState:        ss,
 		ControllerToken: token,
 	}
 
@@ -871,11 +870,11 @@ func (sd *SimDispatcher) SetTemporaryAltitude(alt *AssignAltitudeArgs, _ *struct
 
 type DeleteAircraftArgs AircraftSpecifier
 
-func (sd *SimDispatcher) DeleteAircraft(da *DeleteAircraftArgs, _ *struct{}) error {
+func (sd *SimDispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[da.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.DeleteAircraft(da.ControllerToken, da.Callsign)
+		return sim.DeleteAllAircraft(da.ControllerToken)
 	}
 }
 

@@ -556,7 +556,7 @@ func DrawCompass(p math.Point2LL, ctx *PaneContext, rotationAngle float32, font 
 // steps of the specified radius (in nm).
 func DrawRangeRings(ctx *PaneContext, center math.Point2LL, radius float32, color renderer.RGB, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
-	pixelDistanceNm := transforms.PixelDistanceNM(ctx.world.NmPerLongitude)
+	pixelDistanceNm := transforms.PixelDistanceNM(ctx.SimState.NmPerLongitude)
 	centerWindow := transforms.WindowFromLatLongP(center)
 
 	ld := renderer.GetColoredLinesDrawBuilder()

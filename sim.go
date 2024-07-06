@@ -788,16 +788,22 @@ func (c *NewSimConfiguration) Start() error {
 		return err
 	}
 
-	result.World.simProxy = &SimProxy{
-		ControllerToken: result.ControllerToken,
-		Client:          c.selectedServer.RPCClient,
-	}
-
 	globalConfig.LastTRACON = c.TRACONName
 
-	newWorldChan <- result.World
+	newSimConnectionChan <- &SimConnection{
+		SimState: *result.SimState,
+		SimProxy: &SimProxy{
+			ControllerToken: result.ControllerToken,
+			Client:          c.selectedServer.RPCClient,
+		},
+	}
 
 	return nil
+}
+
+type SimConnection struct {
+	SimState SimState
+	SimProxy *SimProxy
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1196,7 +1202,7 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Any("aircraft", s.World.Aircraft))
 }
 
-func (s *Sim) SignOn(callsign string) (*World, string, error) {
+func (s *Sim) SignOn(callsign string) (*SimState, string, error) {
 	if err := s.signOn(callsign); err != nil {
 		return nil, "", err
 	}
@@ -1218,10 +1224,10 @@ func (s *Sim) SignOn(callsign string) (*World, string, error) {
 	// sent. (And similarly, that any speculative client changes to the
 	// World state to improve responsiveness don't actually affect the
 	// server.)
-	w, err := deep.Copy(s.World)
-	w.Callsign = callsign
+	ss, err := deep.Copy(s.World.SimState)
+	ss.Callsign = callsign
 
-	return w, token, err
+	return &ss, token, err
 }
 
 func (s *Sim) signOn(callsign string) error {
@@ -1604,12 +1610,12 @@ func (s *Sim) updateState() {
 				}
 
 				if passedWaypoint.PointOut != "" {
-					for _, ctrl := range s.World.GetAllControllers() {
+					for _, ctrl := range s.World.Controllers {
 						// Look for a controller with a matching TCP id.
 						if ctrl.SectorId == passedWaypoint.PointOut {
 							// Don't do the point out if a human is
 							// controlling the aircraft.
-							if fromCtrl := s.World.GetControllerByCallsign(ac.ControllingController); fromCtrl != nil && !fromCtrl.IsHuman {
+							if fromCtrl := s.World.Controllers[ac.ControllingController]; fromCtrl != nil && !fromCtrl.IsHuman {
 								s.pointOut(ac.Callsign, fromCtrl, ctrl)
 								break
 							}
@@ -2044,7 +2050,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 			return ErrOtherControllerHasTrack
 		}
 
-		ctrl := s.World.GetControllerByCallsign(sc.Callsign)
+		ctrl := s.World.Controllers[sc.Callsign]
 		if ctrl == nil {
 			s.lg.Error("controller unknown", slog.String("controller", sc.Callsign),
 				slog.Any("world_controllers", s.World.Controllers))
@@ -2233,7 +2239,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
 			}
-			if octrl := s.World.GetControllerByCallsign(controller); octrl == nil {
+			if octrl := s.World.Controllers[controller]; octrl == nil {
 				return ErrNoController
 			} else if octrl.Callsign == ctrl.Callsign {
 				// Can't handoff to ourself
@@ -2242,7 +2248,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			octrl := s.World.GetControllerByCallsign(controller)
+			octrl := s.World.Controllers[controller]
 
 			s.eventStream.Post(Event{
 				Type:           OfferedHandoffEvent,
@@ -2275,7 +2281,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			var radioTransmissions []av.RadioTransmission
-			if octrl := s.World.GetControllerByCallsign(ac.TrackingController); octrl != nil {
+			if octrl := s.World.Controllers[ac.TrackingController]; octrl != nil {
 				name := util.Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
 				bye := rand.Sample("good day", "seeya")
 				contact := rand.Sample("contact ", "over to ", "")
@@ -2309,7 +2315,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 
 			// Go ahead and climb departures the rest of the way and send
 			// them direct to their first fix (if they aren't already).
-			octrl := s.World.GetControllerByCallsign(ac.TrackingController)
+			octrl := s.World.Controllers[ac.TrackingController]
 			if ac.IsDeparture() && octrl != nil && !octrl.IsHuman {
 				s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 					slog.Int("final_altitude", ac.FlightPlan.Altitude))
@@ -2371,7 +2377,7 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if octrl := s.World.GetControllerByCallsign(controller); octrl == nil {
+			if octrl := s.World.Controllers[controller]; octrl == nil {
 				return ErrNoController
 			} else if octrl.Callsign == ctrl.Callsign || octrl.Callsign == ac.TrackingController {
 				// Can't redirect to ourself and the controller who initiated the handoff
@@ -2383,7 +2389,7 @@ func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			octrl := s.World.GetControllerByCallsign(controller)
+			octrl := s.World.Controllers[controller]
 			ac.RedirectedHandoff.OriginalOwner = ac.TrackingController
 			if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Callsign, octrl.Callsign) {
 				ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[0]
@@ -2428,13 +2434,13 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 func (s *Sim) ForceQL(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if s.World.GetControllerByCallsign(controller) == nil {
+			if s.World.Controllers[controller] == nil {
 				return ErrNoController
 			}
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			octrl := s.World.GetControllerByCallsign(controller)
+			octrl := s.World.Controllers[controller]
 			ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
 			return nil
 		})
@@ -2456,7 +2462,7 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.TrackingController != ctrl.Callsign {
 				return ErrOtherControllerHasTrack
-			} else if octrl := s.World.GetControllerByCallsign(controller); octrl == nil {
+			} else if octrl := s.World.Controllers[controller]; octrl == nil {
 				return ErrNoController
 			} else if octrl.Callsign == ctrl.Callsign {
 				// Can't point out to ourself
@@ -2465,7 +2471,7 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			octrl := s.World.GetControllerByCallsign(controller)
+			octrl := s.World.Controllers[controller]
 			s.pointOut(ac.Callsign, ctrl, octrl)
 			return nil
 		})
@@ -2859,4 +2865,13 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 			delete(s.World.Aircraft, ac.Callsign)
 			return nil
 		})
+}
+
+func (s *Sim) DeleteAllAircraft(token string) error {
+	for cs := range s.World.Aircraft {
+		if err := s.DeleteAircraft(token, cs); err != nil {
+			return err
+		}
+	}
+	return nil
 }
