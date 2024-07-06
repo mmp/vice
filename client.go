@@ -5,6 +5,7 @@ import (
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -65,7 +66,7 @@ type AircraftController interface {
 	ToggleSPCOverride(callsign string, spc string, success func(any), err func(error))
 	AmendFlightPlan(callsign string, fp av.FlightPlan) error
 
-	SendGlobalMessage(global GlobalMessage)
+	SendGlobalMessage(global sim.GlobalMessage)
 
 	RunAircraftCommands(callsign string, cmds string,
 		handleResult func(message string, remainingInput string))

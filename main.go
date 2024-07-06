@@ -21,6 +21,7 @@ import (
 	"runtime/debug"
 	"runtime/pprof"
 	"sort"
+	"strings"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -28,10 +29,10 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/apenwarr/fixconsole"
-	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -50,11 +51,9 @@ var (
 	lg           *log.Logger
 
 	// client only
-	newSimConnectionChan chan *SimConnection
-	localServer          *SimServer
-	remoteServer         *SimServer
-	airportWind          map[string]av.Wind
-	windRequest          map[string]chan getweather.MetarData
+	newSimConnectionChan chan *sim.SimConnection
+	localServer          *sim.SimServer
+	remoteServer         *sim.SimServer
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -159,19 +158,38 @@ func main() {
 		}()
 	}
 
-	eventStream := NewEventStream()
+	eventStream := sim.NewEventStream(lg)
 
 	if *lintScenarios {
 		var e util.ErrorLogger
-		_, _, _ = LoadScenarioGroups(&e)
+		scenarioGroups, _, _ :=
+			sim.LoadScenarioGroups(true, *scenarioFilename, *videoMapFilename, &e, lg)
 		if e.HaveErrors() {
 			e.PrintErrors(nil)
 			os.Exit(1)
 		}
+
+		scenarioAirports := make(map[string]map[string]interface{})
+		for tracon, scenarios := range scenarioGroups {
+			if scenarioAirports[tracon] == nil {
+				scenarioAirports[tracon] = make(map[string]interface{})
+			}
+			for _, sg := range scenarios {
+				for name := range sg.Airports {
+					scenarioAirports[tracon][name] = nil
+				}
+			}
+		}
+
+		for _, tracon := range util.SortedMapKeys(scenarioAirports) {
+			airports := util.SortedMapKeys(scenarioAirports[tracon])
+			fmt.Printf("%s (%s),\n", tracon, strings.Join(airports, ", "))
+		}
+		os.Exit(0)
 	} else if *broadcastMessage != "" {
-		BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword)
+		sim.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
 	} else if *server {
-		RunSimServer()
+		sim.RunSimServer(*scenarioFilename, *videoMapFilename, *serverPort, lg)
 	} else if *showRoutes != "" {
 		ap, ok := av.DB.Airports[*showRoutes]
 		if !ok {
@@ -225,14 +243,15 @@ func main() {
 			fmt.Printf("%5d\t%20s\t%s\n", m.Id, m.Label, m.Name)
 		}
 	} else {
-		localSimServerChan, mapLibrary, err := LaunchLocalSimServer()
+		localSimServerChan, mapLibrary, err :=
+			sim.LaunchLocalSimServer(*scenarioFilename, *videoMapFilename, lg)
 		if err != nil {
 			lg.Errorf("error launching local SimServer: %v", err)
 			os.Exit(1)
 		}
 
 		lastRemoteServerAttempt := time.Now()
-		remoteSimServerChan := TryConnectRemoteServer(*serverAddress)
+		remoteSimServerChan := sim.TryConnectRemoteServer(*serverAddress, lg)
 
 		var stats Stats
 		var render renderer.Renderer
@@ -277,9 +296,9 @@ func main() {
 			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 		}
 
-		fontsInit(render, plat)
+		renderer.FontsInit(render, plat)
 
-		newSimConnectionChan = make(chan *SimConnection, 2)
+		newSimConnectionChan = make(chan *sim.SimConnection, 2)
 		var world *World
 
 		localServer = <-localSimServerChan
@@ -288,11 +307,12 @@ func main() {
 			if err := globalConfig.Sim.PostLoad(mapLibrary); err != nil {
 				lg.Errorf("Error in Sim PostLoad: %v", err)
 			} else {
-				var result NewSimResult
+				var result sim.NewSimResult
 				if err := localServer.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
 					lg.Errorf("error restoring saved Sim: %v", err)
 				} else {
-					world = NewWorldFromSimState(*result.SimState, result.ControllerToken, localServer.RPCClient)
+					world = NewWorldFromSimState(*result.SimState, result.ControllerToken,
+						localServer.RPCClient)
 					world.ToggleShowScenarioInfoWindow()
 				}
 			}
@@ -320,9 +340,6 @@ func main() {
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
 		lg.Info("Starting main loop")
-		// Init the wind maps
-		airportWind = make(map[string]av.Wind)
-		windRequest = make(map[string]chan getweather.MetarData)
 
 		stopConnectingRemoteServer := false
 		frameIndex := 0
@@ -342,15 +359,15 @@ func main() {
 				} else if world != nil {
 					world.ToggleShowScenarioInfoWindow()
 					globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-						p.Reset(world.SimState)
+						p.Reset(world.State)
 					})
 				}
 
 			case remoteServerConn := <-remoteSimServerChan:
-				if err := remoteServerConn.err; err != nil {
+				if err := remoteServerConn.Err; err != nil {
 					lg.Warn("Unable to connect to remote server", slog.Any("error", err))
 
-					if err.Error() == ErrRPCVersionMismatch.Error() {
+					if err.Error() == sim.ErrRPCVersionMismatch.Error() {
 						uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
 							message: "This version of vice is incompatible with the vice multi-controller server.\n" +
 								"If you're using an older version of vice, please upgrade to the latest\n" +
@@ -363,7 +380,7 @@ func main() {
 					}
 					remoteServer = nil
 				} else {
-					remoteServer = remoteServerConn.server
+					remoteServer = remoteServerConn.Server
 				}
 
 			default:
@@ -385,7 +402,7 @@ func main() {
 
 			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second && !stopConnectingRemoteServer {
 				lastRemoteServerAttempt = time.Now()
-				remoteSimServerChan = TryConnectRemoteServer(*serverAddress)
+				remoteSimServerChan = sim.TryConnectRemoteServer(*serverAddress, lg)
 			}
 
 			// Inform imgui about input events from the user.
@@ -406,8 +423,8 @@ func main() {
 			if world != nil {
 				world.GetUpdates(eventStream,
 					func(err error) {
-						eventStream.Post(Event{
-							Type:    StatusMessageEvent,
+						eventStream.Post(sim.Event{
+							Type:    sim.StatusMessageEvent,
 							Message: "Error getting update from server: " + err.Error(),
 						})
 						if util.IsRPCServerError(err) {

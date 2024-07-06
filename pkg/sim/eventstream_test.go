@@ -2,7 +2,7 @@
 // Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package sim
 
 import (
 	"testing"

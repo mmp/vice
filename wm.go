@@ -20,6 +20,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/sim"
 )
 
 var (
@@ -73,10 +74,10 @@ func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 	return &SplitLine{}
 }
 
-func (s *SplitLine) Activate(*SimState, renderer.Renderer, platform.Platform, *EventStream) {}
-func (s *SplitLine) Deactivate()                                                            {}
-func (s *SplitLine) Reset(SimState)                                                         {}
-func (s *SplitLine) CanTakeKeyboardFocus() bool                                             { return false }
+func (s *SplitLine) Activate(*sim.State, renderer.Renderer, platform.Platform, *sim.EventStream) {}
+func (s *SplitLine) Deactivate()                                                                 {}
+func (s *SplitLine) Reset(sim.State)                                                             {}
+func (s *SplitLine) CanTakeKeyboardFocus() bool                                                  { return false }
 
 func (s *SplitLine) Name() string {
 	return "Split Line"
@@ -531,7 +532,7 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, w *World, stats *Stat
 
 				Control:     w,
 				ClientState: w.client,
-				SimState:    w.SimState,
+				SimState:    w.State,
 			}
 
 			// Similarly make the mouse events available only to the

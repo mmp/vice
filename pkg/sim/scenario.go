@@ -2,7 +2,7 @@
 // Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package sim
 
 import (
 	"fmt"
@@ -18,9 +18,13 @@ import (
 
 	"github.com/iancoleman/orderedmap"
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/util"
 )
+
+// FIXME
+const NumSTARSMaps = 38
 
 type ScenarioGroup struct {
 	TRACON           string                    `json:"tracon"`
@@ -599,7 +603,7 @@ var (
 	reFixHeadingDistance = regexp.MustCompile(`^([\w-]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
 )
 
-func (sg *ScenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations map[string]map[string]*SimConfiguration) {
+func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogger, simConfigurations map[string]map[string]*SimConfiguration) {
 	// stars_config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
 	sg.STARSFacilityAdaptation.PostDeserialize(e, sg)
@@ -786,7 +790,7 @@ func (sg *ScenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 		e.Pop()
 	}
 
-	initializeSimConfigurations(sg, simConfigurations, *server, e)
+	initializeSimConfigurations(sg, simConfigurations, multiController, e)
 }
 
 func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *ScenarioGroup) {
@@ -1087,7 +1091,8 @@ func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
 // continue on in the presence of errors; all errors will be printed and
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
-func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration, *av.VideoMapLibrary) {
+func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMapFilename string,
+	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration, *av.VideoMapLibrary) {
 	start := time.Now()
 
 	math.SetLocationResolver(&dbResolver{})
@@ -1157,15 +1162,15 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 	}
 
 	// Load the scenario specified on command line, if any.
-	if *scenarioFilename != "" {
+	if extraScenarioFilename != "" {
 		fs := func() fs.FS {
-			if filepath.IsAbs(*scenarioFilename) {
+			if filepath.IsAbs(extraScenarioFilename) {
 				return RootFS{}
 			} else {
 				return os.DirFS(".")
 			}
 		}()
-		s := loadScenarioGroup(fs, *scenarioFilename, e)
+		s := loadScenarioGroup(fs, extraScenarioFilename, e)
 		if s != nil {
 			// These are allowed to redefine an existing scenario.
 			if scenarioGroups[s.TRACON] == nil {
@@ -1176,11 +1181,11 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 			// These may have an empty "video_map_file" member, which
 			// is automatically patched up here...
 			if s.STARSFacilityAdaptation.VideoMapFile == "" {
-				if *videoMapFilename != "" {
-					s.STARSFacilityAdaptation.VideoMapFile = *videoMapFilename
+				if extraVideoMapFilename != "" {
+					s.STARSFacilityAdaptation.VideoMapFile = extraVideoMapFilename
 				} else {
 					e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
-						*scenarioFilename)
+						extraScenarioFilename)
 				}
 			}
 			updateReferencedMaps(s.STARSFacilityAdaptation)
@@ -1200,7 +1205,7 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 		}
 
 		if strings.HasSuffix(path, "-videomaps.gob") || strings.HasSuffix(path, "-videomaps.gob.zst") {
-			loadSerially := *server
+			loadSerially := !isLocal
 			maplib.AddFile(fs, path, loadSerially, referencedVideoMaps[path], e)
 		}
 
@@ -1214,16 +1219,16 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 	lg.Infof("scenario/video map manifest load time: %s\n", time.Since(start))
 
 	// Load the video map specified on the command line, if any.
-	if *videoMapFilename != "" {
+	if extraVideoMapFilename != "" {
 		fs := func() fs.FS {
-			if filepath.IsAbs(*videoMapFilename) {
+			if filepath.IsAbs(extraVideoMapFilename) {
 				return RootFS{}
 			} else {
 				return os.DirFS(".")
 			}
 		}()
-		loadSerially := *server
-		maplib.AddFile(fs, *videoMapFilename, loadSerially, referencedVideoMaps[*videoMapFilename], e)
+		loadSerially := !isLocal
+		maplib.AddFile(fs, extraVideoMapFilename, loadSerially, referencedVideoMaps[extraVideoMapFilename], e)
 	}
 
 	// Final tidying before we return the loaded scenarios.
@@ -1266,7 +1271,8 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 				}
 			}
 
-			sgroup.PostDeserialize(e, simConfigurations)
+			multiController := !isLocal
+			sgroup.PostDeserialize(multiController, e, simConfigurations)
 
 			e.Pop()
 		}
@@ -1298,26 +1304,6 @@ func LoadScenarioGroups(e *util.ErrorLogger) (map[string]map[string]*ScenarioGro
 		}
 	}
 	lg.Warnf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
-
-	if *listScenarios {
-		scenarioAirports := make(map[string]map[string]interface{})
-		for tracon, scenarios := range scenarioGroups {
-			if scenarioAirports[tracon] == nil {
-				scenarioAirports[tracon] = make(map[string]interface{})
-			}
-			for _, sg := range scenarios {
-				for name := range sg.Airports {
-					scenarioAirports[tracon][name] = nil
-				}
-			}
-		}
-
-		for _, tracon := range util.SortedMapKeys(scenarioAirports) {
-			airports := util.SortedMapKeys(scenarioAirports[tracon])
-			fmt.Printf("%s (%s),\n", tracon, strings.Join(airports, ", "))
-		}
-		os.Exit(0)
-	}
 
 	return scenarioGroups, simConfigurations, maplib
 }

@@ -2,7 +2,7 @@
 // Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package sim
 
 import (
 	"fmt"
@@ -12,6 +12,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 )
 
@@ -27,6 +28,7 @@ type EventStream struct {
 	events        []Event
 	lastCompact   time.Time
 	subscriptions map[*EventsSubscription]interface{}
+	lg            *log.Logger
 }
 
 type EventPoster interface {
@@ -51,8 +53,11 @@ func (e *EventsSubscription) PostEvent(event Event) {
 	e.stream.Post(event)
 }
 
-func NewEventStream() *EventStream {
-	return &EventStream{subscriptions: make(map[*EventsSubscription]interface{})}
+func NewEventStream(lg *log.Logger) *EventStream {
+	return &EventStream{
+		subscriptions: make(map[*EventsSubscription]interface{}),
+		lg:            lg,
+	}
 }
 
 // Subscribe registers a new subscriber to the stream and returns an
@@ -83,7 +88,7 @@ func (e *EventsSubscription) Unsubscribe() {
 	defer e.stream.mu.Unlock()
 
 	if _, ok := e.stream.subscriptions[e]; !ok {
-		lg.Errorf("Attempted to unsubscribe invalid subscription: %+v", e)
+		e.stream.lg.Errorf("Attempted to unsubscribe invalid subscription: %+v", e)
 	}
 	delete(e.stream.subscriptions, e)
 	e.stream = nil
@@ -96,7 +101,7 @@ func (e *EventStream) Post(event Event) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
-	lg.Debug("posted event", slog.Any("event", event))
+	e.lg.Debug("posted event", slog.Any("event", event))
 
 	// Ignore the event if no one's paying attention.
 	if len(e.subscriptions) > 0 {
@@ -105,7 +110,7 @@ func (e *EventStream) Post(event Event) {
 			// general we expect it to pretty quickly reach steady state
 			// with just a handful of entries.
 			e.mu.Unlock()
-			lg.Debug("current event stream", slog.Any("event_stream", e))
+			e.lg.Debug("current event stream", slog.Any("event_stream", e))
 			e.mu.Lock()
 		}
 
@@ -121,7 +126,7 @@ func (e *EventsSubscription) Get() []Event {
 	defer e.stream.mu.Unlock()
 
 	if _, ok := e.stream.subscriptions[e]; !ok {
-		lg.Errorf("Attempted to get with unregistered subscription: %+v", e)
+		e.stream.lg.Errorf("Attempted to get with unregistered subscription: %+v", e)
 		return nil
 	}
 
@@ -147,8 +152,8 @@ func (e *EventStream) compact() {
 		}
 	}
 
-	if len(e.events) > 1000 && lg != nil {
-		lg.Warnf("EventStream length %d", len(e.events))
+	if len(e.events) > 1000 && e.lg != nil {
+		e.lg.Warnf("EventStream length %d", len(e.events))
 	}
 
 	if minOffset > cap(e.events)/2 {

@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -74,7 +75,7 @@ type GlobalConfigNoSim struct {
 }
 
 type GlobalConfigSim struct {
-	Sim *Sim
+	Sim *sim.Sim
 }
 
 func configFilePath() string {
@@ -215,7 +216,7 @@ func LoadOrMakeDefaultConfig(p platform.Platform) {
 }
 
 func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, p platform.Platform,
-	eventStream *EventStream) {
+	eventStream *sim.EventStream) {
 	// Upgrade old ones without a MessagesPane
 	if gc.DisplayRoot != nil {
 		haveMessages := false
@@ -245,7 +246,7 @@ func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, p platform.Platf
 	}
 
 	if gc.DisplayRoot == nil {
-		stars := NewSTARSPane(w.SimState)
+		stars := NewSTARSPane(w.State)
 		messages := NewMessagesPane()
 
 		fsp := NewFlightStripPane()
@@ -278,7 +279,7 @@ func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, p platform.Platf
 
 	gc.DisplayRoot.VisitPanes(func(pane Pane) {
 		if w != nil {
-			pane.Activate(&w.SimState, r, p, eventStream)
+			pane.Activate(&w.State, r, p, eventStream)
 		} else {
 			pane.Activate(nil, r, p, eventStream)
 		}

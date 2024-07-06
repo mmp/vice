@@ -24,6 +24,7 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/davecgh/go-spew/spew"
@@ -75,7 +76,6 @@ var (
 )
 
 const NumSTARSPreferenceSets = 32
-const NumSTARSMaps = 38
 
 type STARSPane struct {
 	CurrentPreferenceSet  STARSPreferenceSet
@@ -92,7 +92,7 @@ type STARSPane struct {
 
 	fusedTrackVertices [][2]float32
 
-	events *EventsSubscription
+	events *sim.EventsSubscription
 
 	// All of the aircraft in the world, each with additional information
 	// carried along in an STARSAircraftState.
@@ -683,7 +683,7 @@ type STARSPreferenceSet struct {
 	DisplayATPAWarningAlertCones bool
 	DisplayATPAMonitorCones      bool
 
-	DisplayVideoMap  [NumSTARSMaps]bool
+	DisplayVideoMap  [sim.NumSTARSMaps]bool
 	SystemMapVisible map[int]interface{}
 
 	PTLLength      float32
@@ -847,7 +847,7 @@ const (
 	DCBPositionBottom
 )
 
-func (sp *STARSPane) MakePreferenceSet(name string, ss *SimState) STARSPreferenceSet {
+func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) STARSPreferenceSet {
 	var ps STARSPreferenceSet
 
 	ps.Name = name
@@ -1122,7 +1122,7 @@ func (b STARSBrightness) ScaleRGB(r renderer.RGB) renderer.RGB {
 ///////////////////////////////////////////////////////////////////////////
 // STARSPane proper
 
-func NewSTARSPane(ss SimState) *STARSPane {
+func NewSTARSPane(ss sim.State) *STARSPane {
 	sp := &STARSPane{
 		SelectedPreferenceSet: -1,
 	}
@@ -1132,8 +1132,8 @@ func NewSTARSPane(ss SimState) *STARSPane {
 
 func (sp *STARSPane) Name() string { return "STARS" }
 
-func (sp *STARSPane) Activate(ss *SimState, r renderer.Renderer, p platform.Platform,
-	eventStream *EventStream) {
+func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
+	eventStream *sim.EventStream) {
 	if sp.CurrentPreferenceSet.Range == 0 || sp.CurrentPreferenceSet.Center.IsZero() {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
 		sp.CurrentPreferenceSet = sp.MakePreferenceSet("", ss)
@@ -1195,7 +1195,7 @@ func (sp *STARSPane) Deactivate() {
 	sp.weatherRadar.Deactivate()
 }
 
-func (sp *STARSPane) Reset(ss SimState) {
+func (sp *STARSPane) Reset(ss sim.State) {
 	ps := &sp.CurrentPreferenceSet
 
 	ps.Center = ss.GetInitialCenter()
@@ -1246,7 +1246,7 @@ func (sp *STARSPane) Reset(ss SimState) {
 	sp.lastHistoryTrackUpdate = time.Time{}
 }
 
-func (sp *STARSPane) makeSystemMaps(ss SimState) map[int]*av.VideoMap {
+func (sp *STARSPane) makeSystemMaps(ss sim.State) map[int]*av.VideoMap {
 	maps := make(map[int]*av.VideoMap)
 
 	// CA suppression filters
@@ -1392,7 +1392,7 @@ func (sp *STARSPane) processEvents(ctx *PaneContext) {
 	// for.
 	for _, event := range sp.events.Get() {
 		switch event.Type {
-		case PointOutEvent:
+		case sim.PointOutEvent:
 			if event.ToController == ctx.SimState.Callsign {
 				if ctrl, ok := ctx.SimState.Controllers[event.FromController]; ok && ctrl != nil {
 					sp.InboundPointOuts[event.Callsign] = ctrl.SectorId
@@ -1413,8 +1413,7 @@ func (sp *STARSPane) processEvents(ctx *PaneContext) {
 					state.DatablockType = FullDatablock
 				}
 			}
-
-		case AcknowledgedPointOutEvent:
+		case sim.AcknowledgedPointOutEvent:
 			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
 				if ctrl, ok := ctx.SimState.Controllers[event.FromController]; ok && ctrl != nil && ctrl.SectorId == id {
 					delete(sp.OutboundPointOuts, event.Callsign)
@@ -1429,8 +1428,7 @@ func (sp *STARSPane) processEvents(ctx *PaneContext) {
 					}
 				}
 			}
-
-		case RejectedPointOutEvent:
+		case sim.RejectedPointOutEvent:
 			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
 				if ctrl, ok := ctx.SimState.Controllers[event.FromController]; ok && ctrl != nil && ctrl.SectorId == id {
 					delete(sp.OutboundPointOuts, event.Callsign)
@@ -1442,20 +1440,17 @@ func (sp *STARSPane) processEvents(ctx *PaneContext) {
 					delete(sp.InboundPointOuts, event.Callsign)
 				}
 			}
-
-		case InitiatedTrackEvent:
+		case sim.InitiatedTrackEvent:
 			if event.ToController == ctx.SimState.Callsign {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
 					state.DatablockType = FullDatablock
 				}
 			}
-
-		case OfferedHandoffEvent:
+		case sim.OfferedHandoffEvent:
 			if event.ToController == ctx.SimState.Callsign {
 				sp.playOnce(ctx.platform, AudioInboundHandoff)
 			}
-
-		case AcceptedHandoffEvent:
+		case sim.AcceptedHandoffEvent:
 			if event.FromController == ctx.SimState.Callsign && event.ToController != ctx.SimState.Callsign {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
 					sp.playOnce(ctx.platform, AudioHandoffAccepted)
@@ -1463,8 +1458,7 @@ func (sp *STARSPane) processEvents(ctx *PaneContext) {
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
 				}
 			}
-
-		case AcceptedRedirectedHandoffEvent:
+		case sim.AcceptedRedirectedHandoffEvent:
 			if event.FromController == ctx.SimState.Callsign && event.ToController != ctx.SimState.Callsign {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
 					sp.playOnce(ctx.platform, AudioHandoffAccepted)
@@ -1474,14 +1468,12 @@ func (sp *STARSPane) processEvents(ctx *PaneContext) {
 					state.DatablockType = FullDatablock
 				}
 			}
-
-		case IdentEvent:
+		case sim.IdentEvent:
 			if state, ok := sp.Aircraft[event.Callsign]; ok {
 				state.IdentStart = time.Now().Add(time.Duration(2+rand.Intn(3)) * time.Second)
 				state.IdentEnd = state.IdentStart.Add(10 * time.Second)
 			}
-
-		case SetGlobalLeaderLineEvent:
+		case sim.SetGlobalLeaderLineEvent:
 			if state, ok := sp.Aircraft[event.Callsign]; ok {
 				state.GlobalLeaderLineDirection = event.LeaderLineDirection
 				state.UseGlobalLeaderLine = state.GlobalLeaderLineDirection != nil
@@ -4561,7 +4553,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 			ps.SystemMapVisible = make(map[int]interface{})
 		}
 		videoMaps, _ := ctx.SimState.GetVideoMaps()
-		for i := 0; i < NumSTARSMaps-6; i++ {
+		for i := 0; i < sim.NumSTARSMaps-6; i++ {
 			// Indexing is tricky both because we are skipping the first 6
 			// maps, which are shown in the main DCB, but also because we
 			// draw top->down, left->right while the maps are specified
@@ -5933,7 +5925,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *PaneContext, ac *av.Aircraft) (alt
 	state := sp.Aircraft[ac.Callsign]
 	if ac.IsDeparture() {
 		if len(ctx.SimState.DepartureAirspace) > 0 {
-			inDepartureAirspace, depAlts := InAirspace(ac.Position(), ac.Altitude(), ctx.SimState.DepartureAirspace)
+			inDepartureAirspace, depAlts := sim.InAirspace(ac.Position(), ac.Altitude(), ctx.SimState.DepartureAirspace)
 			if !state.HaveEnteredAirspace {
 				state.HaveEnteredAirspace = inDepartureAirspace
 			} else {
@@ -5943,7 +5935,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *PaneContext, ac *av.Aircraft) (alt
 		}
 	} else {
 		if len(ctx.SimState.ApproachAirspace) > 0 {
-			inApproachAirspace, depAlts := InAirspace(ac.Position(), ac.Altitude(), ctx.SimState.ApproachAirspace)
+			inApproachAirspace, depAlts := sim.InAirspace(ac.Position(), ac.Altitude(), ctx.SimState.ApproachAirspace)
 			if !state.HaveEnteredAirspace {
 				state.HaveEnteredAirspace = inApproachAirspace
 			} else {
@@ -7221,7 +7213,7 @@ func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformati
 	ps := sp.CurrentPreferenceSet
 	rgb := ps.Brightness.Lists.ScaleRGB(STARSListColor)
 
-	drawSectors := func(volumes []ControllerAirspaceVolume) {
+	drawSectors := func(volumes []sim.ControllerAirspaceVolume) {
 		for _, v := range volumes {
 			e := math.EmptyExtent2D()
 
@@ -7271,7 +7263,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*av.GhostAirc
 
 	if ctx.mouse.Clicked[platform.MouseButtonPrimary] && !ctx.haveFocus {
 		if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.mouse.Pos, transforms); ac != nil {
-			sp.events.PostEvent(Event{Type: TrackClickedEvent, Callsign: ac.Callsign})
+			sp.events.PostEvent(sim.Event{Type: sim.TrackClickedEvent, Callsign: ac.Callsign})
 		}
 		wmTakeKeyboardFocus(sp, false)
 		return
@@ -7511,7 +7503,7 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, buttonScale float32, transfo
 	}
 	if dcbDrawState.style.Font == nil {
 		lg.Errorf("nil buttonFont??")
-		dcbDrawState.style.Font = GetDefaultFont()
+		dcbDrawState.style.Font = renderer.GetDefaultFont()
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -8125,7 +8117,7 @@ func STARSDisabledButton(ctx *PaneContext, text string, flags int, buttonScale f
 // and the rest of the details are handled here.
 func amendFlightPlan(ctx *PaneContext, callsign string, amend func(fp *av.FlightPlan)) error {
 	if ac := ctx.SimState.Aircraft[callsign]; ac == nil {
-		return ErrNoAircraftForCallsign
+		return av.ErrNoAircraftForCallsign
 	} else {
 		fp := util.Select(ac.FlightPlan != nil, ac.FlightPlan, &av.FlightPlan{})
 		amend(fp)
@@ -8134,21 +8126,21 @@ func amendFlightPlan(ctx *PaneContext, callsign string, amend func(fp *av.Flight
 }
 
 func (sp *STARSPane) initializeFonts() {
-	sp.systemFont[0] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
-	sp.systemFont[1] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
-	sp.systemFont[2] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
-	sp.systemFont[3] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize3", Size: 16})
-	sp.systemFont[4] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize4", Size: 18})
-	sp.systemFont[5] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize5", Size: 19})
-	sp.systemOutlineFont[0] = GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 11})
-	sp.systemOutlineFont[1] = GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize1", Size: 12})
-	sp.systemOutlineFont[2] = GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize2", Size: 15})
-	sp.systemOutlineFont[3] = GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize3", Size: 16})
-	sp.systemOutlineFont[4] = GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize4", Size: 18})
-	sp.systemOutlineFont[5] = GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize5", Size: 19})
-	sp.dcbFont[0] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
-	sp.dcbFont[1] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
-	sp.dcbFont[2] = GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
+	sp.systemFont[0] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
+	sp.systemFont[1] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
+	sp.systemFont[2] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
+	sp.systemFont[3] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize3", Size: 16})
+	sp.systemFont[4] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize4", Size: 18})
+	sp.systemFont[5] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize5", Size: 19})
+	sp.systemOutlineFont[0] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 11})
+	sp.systemOutlineFont[1] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize1", Size: 12})
+	sp.systemOutlineFont[2] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize2", Size: 15})
+	sp.systemOutlineFont[3] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize3", Size: 16})
+	sp.systemOutlineFont[4] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize4", Size: 18})
+	sp.systemOutlineFont[5] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize5", Size: 19})
+	sp.dcbFont[0] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
+	sp.dcbFont[1] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
+	sp.dcbFont[2] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
 }
 
 func (sp *STARSPane) resetInputState() {
@@ -8253,7 +8245,7 @@ func (sp *STARSPane) visibleAircraft(ctx *PaneContext) []*av.Aircraft {
 				state.FirstRadarTrack = now
 
 				if sp.AutoTrackDepartures && ac.TrackingController == "" &&
-					ctx.SimState.DepartureController(ac) == ctx.SimState.Callsign {
+					ctx.SimState.DepartureController(ac, lg) == ctx.SimState.Callsign {
 					ctx.Control.InitiateTrack(callsign, nil, nil) // ignore error...
 				}
 			}

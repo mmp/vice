@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/mmp/imgui-go/v4"
@@ -27,9 +28,9 @@ import (
 type Pane interface {
 	Name() string
 
-	Activate(ss *SimState, r renderer.Renderer, p platform.Platform, eventStream *EventStream)
+	Activate(ss *sim.State, r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream)
 	Deactivate()
-	Reset(ss SimState)
+	Reset(ss sim.State)
 
 	CanTakeKeyboardFocus() bool
 
@@ -57,7 +58,7 @@ type PaneContext struct {
 
 	Control     AircraftController
 	ClientState ClientState
-	SimState    SimState
+	SimState    sim.State
 }
 
 func (ctx *PaneContext) InitializeMouse(fullDisplayExtent math.Extent2D, p platform.Platform) {
@@ -125,10 +126,10 @@ type EmptyPane struct {
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
-func (ep *EmptyPane) Activate(*SimState, renderer.Renderer, platform.Platform, *EventStream) {}
-func (ep *EmptyPane) Deactivate()                                                            {}
-func (ep *EmptyPane) Reset(ss SimState)                                                      {}
-func (ep *EmptyPane) CanTakeKeyboardFocus() bool                                             { return false }
+func (ep *EmptyPane) Activate(*sim.State, renderer.Renderer, platform.Platform, *sim.EventStream) {}
+func (ep *EmptyPane) Deactivate()                                                                 {}
+func (ep *EmptyPane) Reset(ss sim.State)                                                          {}
+func (ep *EmptyPane) CanTakeKeyboardFocus() bool                                                  { return false }
 
 func (ep *EmptyPane) Name() string { return "(Empty)" }
 
@@ -160,7 +161,7 @@ type FlightStripPane struct {
 	selectedAnnotation  int
 	annotationCursorPos int
 
-	events    *EventsSubscription
+	events    *sim.EventsSubscription
 	scrollbar *ScrollBar
 
 	selectedAircraft string
@@ -175,13 +176,13 @@ func NewFlightStripPane() *FlightStripPane {
 	}
 }
 
-func (fsp *FlightStripPane) Activate(ss *SimState, r renderer.Renderer, p platform.Platform,
-	eventStream *EventStream) {
+func (fsp *FlightStripPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
+	eventStream *sim.EventStream) {
 	if fsp.FontSize == 0 {
 		fsp.FontSize = 12
 	}
-	if fsp.font = GetFont(renderer.FontIdentifier{Name: "Flight Strip Printer", Size: fsp.FontSize}); fsp.font == nil {
-		fsp.font = GetDefaultFont()
+	if fsp.font = renderer.GetFont(renderer.FontIdentifier{Name: "Flight Strip Printer", Size: fsp.FontSize}); fsp.font == nil {
+		fsp.font = renderer.GetDefaultFont()
 	}
 	if fsp.addedAircraft == nil {
 		fsp.addedAircraft = make(map[string]interface{})
@@ -210,7 +211,7 @@ func (fsp *FlightStripPane) Deactivate() {
 	fsp.events = nil
 }
 
-func (fsp *FlightStripPane) Reset(ss SimState) {
+func (fsp *FlightStripPane) Reset(ss sim.State) {
 	fsp.strips = nil
 	fsp.addedAircraft = make(map[string]interface{})
 }
@@ -256,31 +257,27 @@ func (fsp *FlightStripPane) processEvents(ctx *PaneContext) {
 
 	for _, event := range fsp.events.Get() {
 		switch event.Type {
-		case PushedFlightStripEvent:
+		case sim.PushedFlightStripEvent:
 			if ac, ok := ctx.SimState.Aircraft[event.Callsign]; ok && fsp.AddPushed {
 				possiblyAdd(ac)
 			}
-
-		case InitiatedTrackEvent:
+		case sim.InitiatedTrackEvent:
 			if ac, ok := ctx.SimState.Aircraft[event.Callsign]; ok {
 				if fsp.AutoAddTracked && ac.TrackingController == ctx.SimState.Callsign {
 					possiblyAdd(ac)
 				}
 			}
-
-		case DroppedTrackEvent:
+		case sim.DroppedTrackEvent:
 			if fsp.AutoRemoveDropped {
 				remove(event.Callsign)
 			}
-
-		case AcceptedHandoffEvent, AcceptedRedirectedHandoffEvent:
+		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
 			if ac, ok := ctx.SimState.Aircraft[event.Callsign]; ok {
 				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == ctx.SimState.Callsign {
 					possiblyAdd(ac)
 				}
 			}
-
-		case HandoffControllEvent:
+		case sim.HandoffControllEvent:
 			if ac, ok := ctx.SimState.Aircraft[event.Callsign]; ok {
 				if fsp.AutoRemoveHandoffs && ac.TrackingController != ctx.SimState.Callsign {
 					remove(event.Callsign)
@@ -327,7 +324,7 @@ func (fsp *FlightStripPane) DrawUI() {
 	imgui.Checkbox("Collect departures and arrivals together", &fsp.CollectDeparturesArrivals)
 
 	id := renderer.FontIdentifier{Name: fsp.font.Id.Name, Size: fsp.FontSize}
-	if newFont, changed := DrawFontSizeSelector(&id); changed {
+	if newFont, changed := renderer.DrawFontSizeSelector(&id); changed {
 		fsp.FontSize = newFont.Size
 		fsp.font = newFont
 	}
@@ -666,7 +663,7 @@ type MessagesPane struct {
 	FontIdentifier renderer.FontIdentifier
 	font           *renderer.Font
 	scrollbar      *ScrollBar
-	events         *EventsSubscription
+	events         *sim.EventsSubscription
 	messages       []Message
 
 	// Command-input-related
@@ -684,10 +681,10 @@ func NewMessagesPane() *MessagesPane {
 
 func (mp *MessagesPane) Name() string { return "Messages" }
 
-func (mp *MessagesPane) Activate(ss *SimState, r renderer.Renderer, p platform.Platform,
-	eventStream *EventStream) {
-	if mp.font = GetFont(mp.FontIdentifier); mp.font == nil {
-		mp.font = GetDefaultFont()
+func (mp *MessagesPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
+	eventStream *sim.EventStream) {
+	if mp.font = renderer.GetFont(mp.FontIdentifier); mp.font == nil {
+		mp.font = renderer.GetDefaultFont()
 		mp.FontIdentifier = mp.font.Id
 	}
 	if mp.scrollbar == nil {
@@ -701,14 +698,14 @@ func (mp *MessagesPane) Deactivate() {
 	mp.events = nil
 }
 
-func (mp *MessagesPane) Reset(ss SimState) {
+func (mp *MessagesPane) Reset(ss sim.State) {
 	mp.messages = nil
 }
 
 func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return true }
 
 func (mp *MessagesPane) DrawUI() {
-	if newFont, changed := DrawFontPicker(&mp.FontIdentifier, "Font"); changed {
+	if newFont, changed := renderer.DrawFontPicker(&mp.FontIdentifier, "Font"); changed {
 		mp.font = newFont
 	}
 }
@@ -887,7 +884,7 @@ func (mp *MessagesPane) runCommands(ctx *PaneContext) {
 	mp.input.cmd = strings.TrimSpace(mp.input.cmd)
 
 	if mp.input.cmd[0] == '/' {
-		ctx.Control.SendGlobalMessage(GlobalMessage{
+		ctx.Control.SendGlobalMessage(sim.GlobalMessage{
 			FromController: ctx.SimState.Callsign,
 			Message:        ctx.SimState.Callsign + ": " + mp.input.cmd[1:],
 		})
@@ -997,7 +994,7 @@ func (mp *MessagesPane) processEvents(ctx *PaneContext) {
 
 	for _, event := range mp.events.Get() {
 		switch event.Type {
-		case RadioTransmissionEvent:
+		case sim.RadioTransmissionEvent:
 			if event.ToController == ctx.SimState.Callsign {
 				if event.Callsign != lastRadioCallsign || event.RadioTransmissionType != lastRadioType {
 					if len(transmissions) > 0 {
@@ -1011,11 +1008,11 @@ func (mp *MessagesPane) processEvents(ctx *PaneContext) {
 				transmissions = append(transmissions, event.Message)
 				unexpectedTransmission = unexpectedTransmission || (event.RadioTransmissionType == av.RadioTransmissionUnexpected)
 			}
-		case GlobalMessageEvent:
+		case sim.GlobalMessageEvent:
 			if event.FromController != ctx.SimState.Callsign {
 				mp.messages = append(mp.messages, Message{contents: event.Message, global: true})
 			}
-		case StatusMessageEvent:
+		case sim.StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.
 			n := len(mp.messages)
 			start := math.Max(0, n-5)
@@ -1027,8 +1024,7 @@ func (mp *MessagesPane) processEvents(ctx *PaneContext) {
 						system:   true,
 					})
 			}
-
-		case TrackClickedEvent:
+		case sim.TrackClickedEvent:
 			if cmd := strings.TrimSpace(mp.input.cmd); cmd != "" {
 				mp.input.cmd = event.Callsign + " " + cmd
 				mp.runCommands(ctx)

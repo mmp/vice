@@ -2,7 +2,7 @@
 // Copyright(c) 2023 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package sim
 
 import (
 	"bytes"
@@ -39,8 +39,8 @@ type SimServer struct {
 }
 
 type SimServerConnection struct {
-	server *SimServer
-	err    error
+	Server *SimServer
+	Err    error
 }
 
 func (s *SimServer) Close() error {
@@ -298,7 +298,7 @@ func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
 }
 
 type NewSimResult struct {
-	SimState        *SimState
+	SimState        *State
 	ControllerToken string
 }
 
@@ -315,8 +315,8 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 		if !ok {
 			return ErrNoNamedSim
 		}
-		if _, ok := sim.World.Controllers[config.SelectedRemoteSimPosition]; ok {
-			return ErrNoController
+		if _, ok := sim.State.Controllers[config.SelectedRemoteSimPosition]; ok {
+			return av.ErrNoController
 		}
 
 		if sim.RequirePassword && config.RemoteSimPassword != sim.Password {
@@ -341,7 +341,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	sim.Activate(sm.lg)
 
-	sm.mu.Lock(lg)
+	sm.mu.Lock(sm.lg)
 
 	// Empty sim name is just a local sim, so no problem with replacing it...
 	if _, ok := sm.activeSims[sim.Name]; ok && sim.Name != "" {
@@ -349,17 +349,17 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 		return ErrDuplicateSimName
 	}
 
-	lg.Infof("%s: adding sim", sim.Name)
+	sm.lg.Infof("%s: adding sim", sim.Name)
 	sm.activeSims[sim.Name] = sim
 
 	sm.mu.Unlock(sm.lg)
 
-	ss, token, err := sim.SignOn(sim.World.PrimaryController)
+	ss, token, err := sim.SignOn(sim.State.PrimaryController)
 	if err != nil {
 		return err
 	}
 
-	sm.mu.Lock(lg)
+	sm.mu.Lock(sm.lg)
 	sm.controllerTokenToSim[token] = sim
 	sm.mu.Unlock(sm.lg)
 
@@ -371,8 +371,8 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 			time.Sleep(100 * time.Millisecond)
 		}
 
-		lg.Infof("%s: terminating sim after %s idle", sim.Name, sim.IdleTime())
-		sm.mu.Lock(lg)
+		sm.lg.Infof("%s: terminating sim after %s idle", sim.Name, sim.IdleTime())
+		sm.mu.Lock(sm.lg)
 		delete(sm.activeSims, sim.Name)
 		// FIXME: these don't get cleaned up during Sim SignOff()
 		for tok, s := range sm.controllerTokenToSim {
@@ -406,7 +406,7 @@ func (sm *SimManager) SignOn(version int, result *SignOnResult) error {
 		return err
 	}
 
-	sm.mu.Lock(lg)
+	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
 	result.Configurations = sm.configs
@@ -415,7 +415,7 @@ func (sm *SimManager) SignOn(version int, result *SignOnResult) error {
 }
 
 func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error {
-	sm.mu.Lock(lg)
+	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
 	running := make(map[string]*RemoteSim)
@@ -424,7 +424,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 		rs := &RemoteSim{
 			GroupName:          s.ScenarioGroup,
 			ScenarioName:       s.Scenario,
-			PrimaryController:  s.World.PrimaryController,
+			PrimaryController:  s.State.PrimaryController,
 			RequirePassword:    s.RequirePassword,
 			AvailablePositions: make(map[string]struct{}),
 			CoveredPositions:   make(map[string]struct{}),
@@ -432,13 +432,13 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 
 		// Figure out which positions are available; start with all of the possible ones,
 		// then delete those that are active
-		rs.AvailablePositions[s.World.PrimaryController] = struct{}{}
-		for callsign := range s.World.MultiControllers {
+		rs.AvailablePositions[s.State.PrimaryController] = struct{}{}
+		for callsign := range s.State.MultiControllers {
 			rs.AvailablePositions[callsign] = struct{}{}
 		}
 		for _, ctrl := range s.controllers {
 			delete(rs.AvailablePositions, ctrl.Callsign)
-			if wc, ok := s.World.Controllers[ctrl.Callsign]; ok && wc.IsHuman {
+			if wc, ok := s.State.Controllers[ctrl.Callsign]; ok && wc.IsHuman {
 				rs.CoveredPositions[ctrl.Callsign] = struct{}{}
 			}
 		}
@@ -458,7 +458,7 @@ func (sm *SimManager) SimShouldExit(sim *Sim) bool {
 		return false
 	}
 
-	sm.mu.Lock(lg)
+	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
 	nIdle := 0
@@ -471,7 +471,7 @@ func (sm *SimManager) SimShouldExit(sim *Sim) bool {
 }
 
 func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
-	sm.mu.Lock(lg)
+	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
 	if sm.controllerTokenToSim == nil {
@@ -486,7 +486,7 @@ func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
 }
 
 func (sm *SimManager) ControllerTokenToSim(token string) (*Sim, bool) {
-	sm.mu.Lock(lg)
+	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
 	sim, ok := sm.controllerTokenToSim[token]
@@ -513,7 +513,7 @@ func (ss SimStatus) LogValue() slog.Value {
 }
 
 func (sm *SimManager) GetSimStatus() []SimStatus {
-	sm.mu.Lock(lg)
+	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
 	var ss []SimStatus
@@ -556,10 +556,10 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 		return ErrInvalidPassword
 	}
 
-	sm.mu.Lock(lg)
+	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
-	lg.Infof("Broadcasting message: %s", m.Message)
+	sm.lg.Infof("Broadcasting message: %s", m.Message)
 
 	for _, sim := range sm.activeSims {
 		sim.mu.Lock(sim.lg)
@@ -574,8 +574,8 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 	return nil
 }
 
-func BroadcastMessage(hostname, msg, password string) {
-	client, err := getClient(hostname)
+func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
+	client, err := getClient(hostname, lg)
 	if err != nil {
 		lg.Errorf("unable to get client for broadcast: %v", err)
 		return
@@ -907,7 +907,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 			switch err {
 			case nil:
 				//
-			case ErrOtherControllerHasTrack:
+			case av.ErrOtherControllerHasTrack:
 				result.ErrorMessage = "Another controller is controlling this aircraft"
 			default:
 				result.ErrorMessage = "Invalid or unknown command"
@@ -1041,7 +1041,7 @@ func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result 
 					rewriteError(err)
 					return nil
 				}
-			} else if _, ok := sim.World.Locate(string(command[1:])); ok {
+			} else if _, ok := sim.State.Locate(string(command[1:])); ok {
 				if err := sim.DirectFix(token, callsign, command[1:]); err != nil {
 					rewriteError(err)
 					return nil
@@ -1305,8 +1305,8 @@ func (sd *SimDispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) err
 	return nil
 }
 
-func RunSimServer() {
-	l, err := net.Listen("tcp", fmt.Sprintf(":%d", *serverPort))
+func RunSimServer(extraScenario string, extraVideoMap string, serverPort int, lg *log.Logger) {
+	l, err := net.Listen("tcp", fmt.Sprintf(":%d", serverPort))
 	if err != nil {
 		lg.Errorf("tcp listen: %v", err)
 		return
@@ -1314,10 +1314,10 @@ func RunSimServer() {
 
 	// If we're just running the server, we don't care about the returned
 	// configs...
-	runServer(l, false)
+	runServer(l, false, extraScenario, extraVideoMap, lg)
 }
 
-func getClient(hostname string) (*util.RPCClient, error) {
+func getClient(hostname string, lg *log.Logger) (*util.RPCClient, error) {
 	conn, err := net.Dial("tcp", hostname)
 	if err != nil {
 		return nil, err
@@ -1333,21 +1333,21 @@ func getClient(hostname string) (*util.RPCClient, error) {
 	return &util.RPCClient{rpc.NewClientWithCodec(codec)}, nil
 }
 
-func TryConnectRemoteServer(hostname string) chan *SimServerConnection {
+func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *SimServerConnection {
 	ch := make(chan *SimServerConnection, 1)
 	go func() {
-		if client, err := getClient(hostname); err != nil {
-			ch <- &SimServerConnection{err: err}
+		if client, err := getClient(hostname, lg); err != nil {
+			ch <- &SimServerConnection{Err: err}
 			return
 		} else {
 			var so SignOnResult
 			start := time.Now()
 			if err := client.CallWithTimeout("SimManager.SignOn", ViceRPCVersion, &so); err != nil {
-				ch <- &SimServerConnection{err: err}
+				ch <- &SimServerConnection{Err: err}
 			} else {
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
 				ch <- &SimServerConnection{
-					server: &SimServer{
+					Server: &SimServer{
 						RPCClient:   client,
 						name:        "Network (Multi-controller)",
 						configs:     so.Configurations,
@@ -1361,7 +1361,7 @@ func TryConnectRemoteServer(hostname string) chan *SimServerConnection {
 	return ch
 }
 
-func LaunchLocalSimServer() (chan *SimServer, *av.VideoMapLibrary, error) {
+func LaunchLocalSimServer(extraScenario string, extraVideoMap string, lg *log.Logger) (chan *SimServer, *av.VideoMapLibrary, error) {
 	l, err := net.Listen("tcp", ":0")
 	if err != nil {
 		return nil, nil, err
@@ -1369,13 +1369,13 @@ func LaunchLocalSimServer() (chan *SimServer, *av.VideoMapLibrary, error) {
 
 	port := l.Addr().(*net.TCPAddr).Port
 
-	configsChan, mapLibrary := runServer(l, true)
+	configsChan, mapLibrary := runServer(l, true, extraScenario, extraVideoMap, lg)
 
 	ch := make(chan *SimServer, 1)
 	go func() {
 		configs := <-configsChan
 
-		client, err := getClient(fmt.Sprintf("localhost:%d", port))
+		client, err := getClient(fmt.Sprintf("localhost:%d", port), lg)
 		if err != nil {
 			lg.Errorf("unable to get client: %v", err)
 			os.Exit(1)
@@ -1391,11 +1391,13 @@ func LaunchLocalSimServer() (chan *SimServer, *av.VideoMapLibrary, error) {
 	return ch, mapLibrary, nil
 }
 
-func runServer(l net.Listener, isLocal bool) (chan map[string]map[string]*SimConfiguration, *av.VideoMapLibrary) {
+func runServer(l net.Listener, isLocal bool, extraScenario string, extraVideoMap string,
+	lg *log.Logger) (chan map[string]map[string]*SimConfiguration, *av.VideoMapLibrary) {
 	ch := make(chan map[string]map[string]*SimConfiguration, 1)
 
 	var e util.ErrorLogger
-	scenarioGroups, simConfigurations, mapLib := LoadScenarioGroups(&e)
+	scenarioGroups, simConfigurations, mapLib :=
+		LoadScenarioGroups(isLocal, extraScenario, extraVideoMap, &e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		os.Exit(1)
@@ -1452,21 +1454,21 @@ func launchHTTPStats(sm *SimManager) {
 	launchTime = time.Now()
 	http.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
 		statsHandler(w, r, sm)
-		lg.Infof("%s: served stats request", r.URL.String())
+		sm.lg.Infof("%s: served stats request", r.URL.String())
 	})
 	http.HandleFunc("/vice-logs/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
 		if f, err := os.Open("." + r.URL.String()); err == nil {
 			if n, err := io.Copy(w, f); err != nil {
-				lg.Errorf("%s: %v", r.URL.String(), err)
+				sm.lg.Errorf("%s: %v", r.URL.String(), err)
 			} else {
-				lg.Infof("%s: served %d bytes", r.URL.String(), n)
+				sm.lg.Infof("%s: served %d bytes", r.URL.String(), n)
 			}
 		}
 	})
 
 	if err := http.ListenAndServe(":6502", nil); err != nil {
-		lg.Errorf("Failed to start HTTP server for stats: %v\n", err)
+		sm.lg.Errorf("Failed to start HTTP server for stats: %v\n", err)
 	}
 }
 
@@ -1609,7 +1611,7 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 
 	// process logs
 	cmd := exec.Command("jq", `select(.level == "WARN" or .level == "ERROR")|.callstack = .callstack[0]`,
-		lg.LogFile)
+		sm.lg.LogFile)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr

@@ -2,7 +2,7 @@
 // Copyright(c) 2023 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package sim
 
 import (
 	crand "crypto/rand"
@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	gomath "math"
 	"net/rpc"
 	"runtime"
 	"slices"
@@ -23,11 +24,19 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/brunoga/deep"
 	getweather "github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
+)
+
+const initialSimSeconds = 45
+
+var (
+	airportWind = make(map[string]av.Wind)
+	windRequest = make(map[string]chan getweather.MetarData)
 )
 
 type SimConfiguration struct {
@@ -259,6 +268,8 @@ type NewSimConfiguration struct {
 	GroupName       string
 	Scenario        *SimScenarioConfiguration
 	ScenarioName    string
+	localServer     **SimServer
+	remoteServer    **SimServer
 	selectedServer  *SimServer
 	NewSimName      string // for create remote only
 	RequirePassword bool   // for create remote only
@@ -273,7 +284,11 @@ type NewSimConfiguration struct {
 	lastRemoteSimsUpdate time.Time
 	updateRemoteSimsCall *util.PendingCall
 
-	displayError error
+	DisplayError error
+
+	lg            *log.Logger
+	ch            chan *SimConnection
+	defaultTRACON *string
 }
 
 type RemoteSim struct {
@@ -291,36 +306,42 @@ const (
 	NewSimJoinRemote
 )
 
-func MakeNewSimConfiguration() NewSimConfiguration {
+func MakeNewSimConfiguration(ch chan *SimConnection, defaultTRACON *string, localServer **SimServer,
+	remoteServer **SimServer, lg *log.Logger) NewSimConfiguration {
 	c := NewSimConfiguration{
-		selectedServer: localServer,
+		lg:             lg,
+		ch:             ch,
+		localServer:    localServer,
+		remoteServer:   remoteServer,
+		selectedServer: *localServer,
+		defaultTRACON:  defaultTRACON,
 		NewSimName:     rand.AdjectiveNoun(),
 	}
 
-	c.SetTRACON(globalConfig.LastTRACON)
+	c.SetTRACON(*defaultTRACON)
 
 	return c
 }
 
 func (c *NewSimConfiguration) updateRemoteSims() {
-	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && remoteServer != nil {
+	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && *c.remoteServer != nil {
 		c.lastRemoteSimsUpdate = time.Now()
 		var rs map[string]*RemoteSim
 		c.updateRemoteSimsCall = &util.PendingCall{
-			Call:      remoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
+			Call:      (*c.remoteServer).Go("SimManager.GetRunningSims", 0, &rs, nil),
 			IssueTime: time.Now(),
 			OnSuccess: func(result any) {
-				if remoteServer != nil {
-					remoteServer.runningSims = rs
+				if *c.remoteServer != nil {
+					(*c.remoteServer).runningSims = rs
 				}
 			},
 			OnErr: func(e error) {
-				lg.Errorf("GetRunningSims error: %v", e)
+				c.lg.Errorf("GetRunningSims error: %v", e)
 
 				// nil out the server if we've lost the connection; the
 				// main loop will attempt to reconnect.
 				if util.IsRPCServerError(e) {
-					remoteServer = nil
+					*c.remoteServer = nil
 				}
 			},
 		}
@@ -331,7 +352,7 @@ func (c *NewSimConfiguration) SetTRACON(name string) {
 	var ok bool
 	if c.TRACON, ok = c.selectedServer.configs[name]; !ok {
 		if name != "" {
-			lg.Errorf("%s: TRACON not found!", name)
+			c.lg.Errorf("%s: TRACON not found!", name)
 		}
 		configs := c.selectedServer.configs
 		// Pick one at random
@@ -348,7 +369,7 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	var ok bool
 	var groupConfig *SimConfiguration
 	if groupConfig, ok = c.TRACON[groupName]; !ok {
-		lg.Errorf("%s: group not found in TRACON %s", groupName, c.TRACONName)
+		c.lg.Errorf("%s: group not found in TRACON %s", groupName, c.TRACONName)
 		groupName = util.SortedMapKeys(c.TRACON)[0]
 		groupConfig = c.TRACON[c.GroupName]
 	}
@@ -356,7 +377,7 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 
 	if c.Scenario, ok = groupConfig.ScenarioConfigs[scenarioName]; !ok {
 		if scenarioName != "" {
-			lg.Errorf("%s: scenario not found in group %s", scenarioName, c.GroupName)
+			c.lg.Errorf("%s: scenario not found in group %s", scenarioName, c.GroupName)
 		}
 		scenarioName = groupConfig.DefaultScenario
 		c.Scenario = groupConfig.ScenarioConfigs[scenarioName]
@@ -379,19 +400,19 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		c.updateRemoteSims()
 	}
 
-	if c.displayError != nil {
+	if c.DisplayError != nil {
 		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .5, .5, 1})
-		if errors.Is(c.displayError, ErrRPCTimeout) || util.IsRPCServerError(c.displayError) {
+		if errors.Is(c.DisplayError, ErrRPCTimeout) || util.IsRPCServerError(c.DisplayError) {
 			imgui.Text("Unable to reach vice server")
 		} else {
-			imgui.Text(c.displayError.Error())
+			imgui.Text(c.DisplayError.Error())
 		}
 		imgui.PopStyleColor()
 		imgui.Separator()
 	}
 
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-	if remoteServer != nil {
+	if *c.remoteServer != nil {
 		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
@@ -402,9 +423,9 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextColumn()
 			if imgui.RadioButtonInt("Create single-controller", &c.NewSimType, NewSimCreateLocal) &&
 				origType != NewSimCreateLocal {
-				c.selectedServer = localServer
-				c.SetTRACON(globalConfig.LastTRACON)
-				c.displayError = nil
+				c.selectedServer = *c.localServer
+				c.SetTRACON(*c.defaultTRACON)
+				c.DisplayError = nil
 			}
 
 			imgui.TableNextRow()
@@ -412,22 +433,22 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextColumn()
 			if imgui.RadioButtonInt("Create multi-controller", &c.NewSimType, NewSimCreateRemote) &&
 				origType != NewSimCreateRemote {
-				c.selectedServer = remoteServer
-				c.SetTRACON(globalConfig.LastTRACON)
-				c.displayError = nil
+				c.selectedServer = *c.remoteServer
+				c.SetTRACON(*c.defaultTRACON)
+				c.DisplayError = nil
 			}
 
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.TableNextColumn()
 
-			uiStartDisable(len(remoteServer.runningSims) == 0)
+			uiStartDisable(len((*c.remoteServer).runningSims) == 0)
 			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, NewSimJoinRemote) &&
 				origType != NewSimJoinRemote {
-				c.selectedServer = remoteServer
-				c.displayError = nil
+				c.selectedServer = *c.remoteServer
+				c.DisplayError = nil
 			}
-			uiEndDisable(len(remoteServer.runningSims) == 0)
+			uiEndDisable(len((*c.remoteServer).runningSims) == 0)
 
 			imgui.EndTable()
 		}
@@ -518,7 +539,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 						c.Scenario.SelectedSplit = split
 						c.Scenario.SelectedController, err = sc.GetPrimaryController(split)
 						if err != nil {
-							lg.Errorf("unable to find primary controller: %v", err)
+							c.lg.Errorf("unable to find primary controller: %v", err)
 						}
 					}
 				}
@@ -536,12 +557,12 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 					}
 					return 0
 				}) {
-				c.displayError = nil
+				c.DisplayError = nil
 			}
 			if c.NewSimName == "" {
 				imgui.SameLine()
 				imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .1, .1, 1})
-				imgui.Text(FontAwesomeIconExclamationTriangle)
+				imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
 				imgui.PopStyleColor()
 			}
 
@@ -551,7 +572,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				if c.Password == "" {
 					imgui.SameLine()
 					imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .1, .1, 1})
-					imgui.Text(FontAwesomeIconExclamationTriangle)
+					imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
 					imgui.PopStyleColor()
 				}
 			}
@@ -579,7 +600,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				sort.Strings(a)
 				imgui.Text(strings.Join(a, ", "))
 			}
-			validAirport := c.Scenario.PrimaryAirport != "KAAC" && remoteServer != nil
+			validAirport := c.Scenario.PrimaryAirport != "KAAC" && *c.remoteServer != nil
 
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
@@ -596,7 +617,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				var ok bool
 				if wind, ok = airportWind[c.Scenario.PrimaryAirport]; !ok {
 					primary := c.Scenario.PrimaryAirport
-					wind, ok = getWind(primary)
+					wind, ok = getWind(primary, c.lg)
 					if !ok {
 						wind = c.Scenario.Wind
 					}
@@ -625,7 +646,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		}
 	} else {
 		// Join remote
-		runningSims := remoteServer.runningSims
+		runningSims := (*c.remoteServer).runningSims
 
 		rs, ok := runningSims[c.SelectedRemoteSim]
 		if !ok || c.SelectedRemoteSim == "" {
@@ -661,7 +682,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 
 				// Indicate if a password is required
 				if rs.RequirePassword {
-					imgui.Text(FontAwesomeIconLock)
+					imgui.Text(renderer.FontAwesomeIconLock)
 				}
 				imgui.TableNextColumn()
 
@@ -728,7 +749,7 @@ func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 	return false
 }
 
-func getWind(airport string) (av.Wind, bool) {
+func getWind(airport string, lg *log.Logger) (av.Wind, bool) {
 	for airport, ch := range windRequest {
 		select {
 		case w := <-ch:
@@ -782,15 +803,15 @@ func (c *NewSimConfiguration) Start() error {
 		if err == ErrRPCTimeout || err == ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
 			// loop try to reconnect.
-			remoteServer = nil
+			*c.remoteServer = nil
 		}
 
 		return err
 	}
 
-	globalConfig.LastTRACON = c.TRACONName
+	*c.defaultTRACON = c.TRACONName
 
-	newSimConnectionChan <- &SimConnection{
+	c.ch <- &SimConnection{
 		SimState: *result.SimState,
 		SimProxy: &SimProxy{
 			ControllerToken: result.ControllerToken,
@@ -802,7 +823,7 @@ func (c *NewSimConfiguration) Start() error {
 }
 
 type SimConnection struct {
-	SimState SimState
+	SimState State
 	SimProxy *SimProxy
 }
 
@@ -817,7 +838,8 @@ type Sim struct {
 	ScenarioGroup string
 	Scenario      string
 
-	World           *World
+	State *State
+
 	controllers     map[string]*ServerController // from token
 	SignOnPositions map[string]*av.Controller
 
@@ -828,6 +850,9 @@ type Sim struct {
 
 	// airport -> runway -> category
 	lastDeparture map[string]map[string]map[string]*av.Departure
+
+	sameGateDepartures int
+	sameDepartureCap   int
 
 	// We track an overall "at what time do we launch the next departure"
 	// time for each airport. When that time is reached, we'll pick a
@@ -946,7 +971,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 
 		controllers: make(map[string]*ServerController),
 
-		eventStream: NewEventStream(),
+		eventStream: NewEventStream(lg),
 		lg:          lg,
 
 		lastDeparture: make(map[string]map[string]map[string]*av.Departure),
@@ -991,7 +1016,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 			s.SignOnPositions[callsign] = &ctrlCopy
 		}
 	}
-	if *server {
+	if !isLocal {
 		configs, err := sc.SplitConfigurations.GetConfiguration(ssc.Scenario.SelectedSplit)
 		if err != nil {
 			lg.Errorf("unable to get configurations for split: %v", err)
@@ -1003,65 +1028,71 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		add(sc.SoloController)
 	}
 
-	s.World = newWorld(ssc, s, sg, sc)
+	s.State = newState(ssc, isLocal, s, sg, sc, lg)
 
 	s.setInitialSpawnTimes()
 
 	return s
 }
 
-func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) *World {
-	w := NewWorld()
-	w.Callsign = "__SERVER__"
-	if *server {
+func newState(ssc NewSimConfiguration, isLocal bool, s *Sim, sg *ScenarioGroup, sc *Scenario,
+	lg *log.Logger) *State {
+	ss := &State{
+		Callsign:    "__SERVER__",
+		Aircraft:    make(map[string]*av.Aircraft),
+		METAR:       make(map[string]*av.METAR),
+		Controllers: make(map[string]*av.Controller),
+	}
+
+	if !isLocal {
 		var err error
-		w.PrimaryController, err = sc.SplitConfigurations.GetPrimaryController(ssc.Scenario.SelectedSplit)
+		ss.PrimaryController, err = sc.SplitConfigurations.GetPrimaryController(ssc.Scenario.SelectedSplit)
 		if err != nil {
 			lg.Errorf("Unable to get primary controller: %v", err)
 		}
-		w.MultiControllers, err = sc.SplitConfigurations.GetConfiguration(ssc.Scenario.SelectedSplit)
+		ss.MultiControllers, err = sc.SplitConfigurations.GetConfiguration(ssc.Scenario.SelectedSplit)
 		if err != nil {
 			lg.Errorf("Unable to get multi controllers: %v", err)
 		}
 	} else {
-		w.PrimaryController = sc.SoloController
+		ss.PrimaryController = sc.SoloController
 	}
-	w.TRACON = sg.TRACON
-	w.MagneticVariation = sg.MagneticVariation
-	w.NmPerLongitude = sg.NmPerLongitude
-	w.Wind = sc.Wind
-	w.Airports = sg.Airports
-	w.Fixes = sg.Fixes
-	w.PrimaryAirport = sg.PrimaryAirport
+	ss.TRACON = sg.TRACON
+	ss.MagneticVariation = sg.MagneticVariation
+	ss.NmPerLongitude = sg.NmPerLongitude
+	ss.Wind = sc.Wind
+	ss.Airports = sg.Airports
+	ss.Fixes = sg.Fixes
+	ss.PrimaryAirport = sg.PrimaryAirport
 	fa := sg.STARSFacilityAdaptation
-	w.RadarSites = fa.RadarSites
-	w.Center = util.Select(sc.Center.IsZero(), fa.Center, sc.Center)
-	w.Range = util.Select(sc.Range == 0, fa.Range, sc.Range)
-	w.ScenarioDefaultVideoMaps = sc.DefaultMaps
-	w.Scratchpads = fa.Scratchpads
-	w.ArrivalGroups = sg.ArrivalGroups
-	w.ApproachAirspace = sc.ApproachAirspace
-	w.DepartureAirspace = sc.DepartureAirspace
-	w.DepartureRunways = sc.DepartureRunways
-	w.ArrivalRunways = sc.ArrivalRunways
-	w.LaunchConfig = s.LaunchConfig
-	w.SimIsPaused = s.Paused
-	w.SimRate = s.SimRate
-	w.SimName = s.Name
-	w.SimDescription = s.Scenario
-	w.SimTime = s.SimTime
-	w.STARSFacilityAdaptation = sg.STARSFacilityAdaptation
+	ss.RadarSites = fa.RadarSites
+	ss.Center = util.Select(sc.Center.IsZero(), fa.Center, sc.Center)
+	ss.Range = util.Select(sc.Range == 0, fa.Range, sc.Range)
+	ss.ScenarioDefaultVideoMaps = sc.DefaultMaps
+	ss.Scratchpads = fa.Scratchpads
+	ss.ArrivalGroups = sg.ArrivalGroups
+	ss.ApproachAirspace = sc.ApproachAirspace
+	ss.DepartureAirspace = sc.DepartureAirspace
+	ss.DepartureRunways = sc.DepartureRunways
+	ss.ArrivalRunways = sc.ArrivalRunways
+	ss.LaunchConfig = s.LaunchConfig
+	ss.SimIsPaused = s.Paused
+	ss.SimRate = s.SimRate
+	ss.SimName = s.Name
+	ss.SimDescription = s.Scenario
+	ss.SimTime = s.SimTime
+	ss.STARSFacilityAdaptation = sg.STARSFacilityAdaptation
 
 	for _, callsign := range sc.VirtualControllers {
 		// Skip controllers that are in MultiControllers
-		if w.MultiControllers != nil {
-			if _, ok := w.MultiControllers[callsign]; ok {
+		if ss.MultiControllers != nil {
+			if _, ok := ss.MultiControllers[callsign]; ok {
 				continue
 			}
 		}
 
 		if ctrl, ok := sg.ControlPositions[callsign]; ok {
-			w.Controllers[callsign] = ctrl
+			ss.Controllers[callsign] = ctrl
 		} else {
 			s.lg.Errorf("%s: controller not found in ControlPositions??", callsign)
 		}
@@ -1072,25 +1103,25 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 
 	fakeMETAR := func(icao string) {
 		alt = 2980 + rand.Intn(40)
-		spd := w.Wind.Speed - 3 + rand.Int31n(6)
+		spd := ss.Wind.Speed - 3 + rand.Int31n(6)
 		var wind string
 		if spd < 0 {
 			wind = "00000KT"
 		} else if spd < 4 {
 			wind = fmt.Sprintf("VRB%02dKT", spd)
 		} else {
-			dir := 10 * ((w.Wind.Direction + 5) / 10)
+			dir := 10 * ((ss.Wind.Direction + 5) / 10)
 			dir += [3]int32{-10, 0, 10}[rand.Intn(3)]
 			wind = fmt.Sprintf("%03d%02d", dir, spd)
-			gst := w.Wind.Gust - 3 + rand.Int31n(6)
-			if gst-w.Wind.Speed > 5 {
+			gst := ss.Wind.Gust - 3 + rand.Int31n(6)
+			if gst-ss.Wind.Speed > 5 {
 				wind += fmt.Sprintf("G%02d", gst)
 			}
 			wind += "KT"
 		}
 
 		// Just provide the stuff that the STARS display shows
-		w.METAR[icao] = &av.METAR{
+		ss.METAR[icao] = &av.METAR{
 			AirportICAO: icao,
 			Wind:        wind,
 			Altimeter:   fmt.Sprintf("A%d", alt-2+rand.Intn(4)),
@@ -1135,40 +1166,40 @@ func newWorld(ssc NewSimConfiguration, s *Sim, sg *ScenarioGroup, sc *Scenario) 
 		}
 
 		// Just provide the stuff that the STARS display shows
-		w.METAR[icao] = &av.METAR{
+		ss.METAR[icao] = &av.METAR{
 			AirportICAO: icao,
 			Wind:        wind,
 			Altimeter:   "A" + altimiter,
 		}
 	}
 
-	w.DepartureAirports = make(map[string]*av.Airport)
+	ss.DepartureAirports = make(map[string]*av.Airport)
 	for name := range s.LaunchConfig.DepartureRates {
-		w.DepartureAirports[name] = w.GetAirport(name)
+		ss.DepartureAirports[name] = ss.Airports[name]
 	}
-	w.ArrivalAirports = make(map[string]*av.Airport)
+	ss.ArrivalAirports = make(map[string]*av.Airport)
 	for _, airportRates := range s.LaunchConfig.ArrivalGroupRates {
 		for name := range airportRates {
-			w.ArrivalAirports[name] = w.GetAirport(name)
+			ss.ArrivalAirports[name] = ss.Airports[name]
 		}
 	}
 	if ssc.LiveWeather {
-		for ap := range w.DepartureAirports {
+		for ap := range ss.DepartureAirports {
 			realMETAR(ap)
 		}
-		for ap := range w.ArrivalAirports {
+		for ap := range ss.ArrivalAirports {
 			realMETAR(ap)
 		}
 	} else {
-		for ap := range w.DepartureAirports {
+		for ap := range ss.DepartureAirports {
 			fakeMETAR(ap)
 		}
-		for ap := range w.ArrivalAirports {
+		for ap := range ss.ArrivalAirports {
 			fakeMETAR(ap)
 		}
 	}
 
-	return w
+	return ss
 }
 
 func getAltimiter(metar string) string {
@@ -1186,7 +1217,7 @@ func (s *Sim) LogValue() slog.Value {
 		slog.String("name", s.Name),
 		slog.String("scenario_group", s.ScenarioGroup),
 		slog.String("scenario", s.Scenario),
-		slog.Any("controllers", s.World.Controllers),
+		slog.Any("controllers", s.State.Controllers),
 		slog.Any("launch_config", s.LaunchConfig),
 		slog.Any("next_departure_spawn", s.NextDepartureSpawn),
 		slog.Any("next_arrival_spawn", s.NextArrivalSpawn),
@@ -1199,10 +1230,10 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Bool("paused", s.Paused),
 		slog.Time("next_push_start", s.NextPushStart),
 		slog.Time("push_end", s.PushEnd),
-		slog.Any("aircraft", s.World.Aircraft))
+		slog.Any("aircraft", s.State.Aircraft))
 }
 
-func (s *Sim) SignOn(callsign string) (*SimState, string, error) {
+func (s *Sim) SignOn(callsign string) (*State, string, error) {
 	if err := s.signOn(callsign); err != nil {
 		return nil, "", err
 	}
@@ -1224,7 +1255,7 @@ func (s *Sim) SignOn(callsign string) (*SimState, string, error) {
 	// sent. (And similarly, that any speculative client changes to the
 	// World state to improve responsiveness don't actually affect the
 	// server.)
-	ss, err := deep.Copy(s.World.SimState)
+	ss, err := deep.Copy(*s.State)
 	ss.Callsign = callsign
 
 	return &ss, token, err
@@ -1241,11 +1272,11 @@ func (s *Sim) signOn(callsign string) error {
 
 		ctrl, ok := s.SignOnPositions[callsign]
 		if !ok {
-			return ErrNoController
+			return av.ErrNoController
 		}
-		s.World.Controllers[callsign] = ctrl
+		s.State.Controllers[callsign] = ctrl
 
-		if callsign == s.World.PrimaryController {
+		if callsign == s.State.PrimaryController {
 			// The primary controller signed in so the sim will resume.
 			// Reset lastUpdateTime so that the next time Update() is
 			// called for the sim, we don't try to run a ton of steps.
@@ -1270,8 +1301,8 @@ func (s *Sim) SignOff(token string) error {
 		return ErrInvalidControllerToken
 	} else {
 		// Drop track on controlled aircraft
-		for _, ac := range s.World.Aircraft {
-			ac.HandleControllerDisconnect(ctrl.Callsign, s.World.PrimaryController)
+		for _, ac := range s.State.Aircraft {
+			ac.HandleControllerDisconnect(ctrl.Callsign, s.State.PrimaryController)
 		}
 
 		if ctrl.Callsign == s.LaunchConfig.Controller {
@@ -1281,7 +1312,7 @@ func (s *Sim) SignOff(token string) error {
 
 		ctrl.events.Unsubscribe()
 		delete(s.controllers, token)
-		delete(s.World.Controllers, ctrl.Callsign)
+		delete(s.State.Controllers, ctrl.Callsign)
 
 		s.eventStream.Post(Event{
 			Type:    StatusMessageEvent,
@@ -1308,18 +1339,18 @@ func (s *Sim) ChangeControlPosition(token string, callsign string, keepTracks bo
 	}
 	ctrl.Callsign = callsign
 
-	delete(s.World.Controllers, oldCallsign)
+	delete(s.State.Controllers, oldCallsign)
 
 	s.eventStream.Post(Event{
 		Type:    StatusMessageEvent,
 		Message: oldCallsign + " has signed off.",
 	})
 
-	for _, ac := range s.World.Aircraft {
+	for _, ac := range s.State.Aircraft {
 		if keepTracks {
 			ac.TransferTracks(oldCallsign, ctrl.Callsign)
 		} else {
-			ac.HandleControllerDisconnect(ctrl.Callsign, s.World.PrimaryController)
+			ac.HandleControllerDisconnect(ctrl.Callsign, s.State.PrimaryController)
 		}
 	}
 
@@ -1363,27 +1394,6 @@ type SimWorldUpdate struct {
 	TotalArrivals   int
 }
 
-func (wu *SimWorldUpdate) UpdateWorld(w *World, eventStream *EventStream) {
-	w.Aircraft = wu.Aircraft
-	if wu.Controllers != nil {
-		w.Controllers = wu.Controllers
-	}
-
-	w.LaunchConfig = wu.LaunchConfig
-
-	w.SimTime = wu.Time
-	w.SimIsPaused = wu.SimIsPaused
-	w.SimRate = wu.SimRate
-	w.TotalDepartures = wu.TotalDepartures
-	w.TotalArrivals = wu.TotalArrivals
-
-	// Important: do this after updating aircraft, controllers, etc.,
-	// so that they reflect any changes the events are flagging.
-	for _, e := range wu.Events {
-		eventStream.Post(e)
-	}
-}
-
 func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -1403,8 +1413,8 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 
 		var err error
 		*update, err = deep.Copy(SimWorldUpdate{
-			Aircraft:        s.World.Aircraft,
-			Controllers:     s.World.Controllers,
+			Aircraft:        s.State.Aircraft,
+			Controllers:     s.State.Controllers,
 			Time:            s.SimTime,
 			LaunchConfig:    s.LaunchConfig,
 			SimIsPaused:     s.Paused,
@@ -1432,12 +1442,11 @@ func (s *Sim) Activate(lg *log.Logger) {
 		s.controllers = make(map[string]*ServerController)
 	}
 	if s.eventStream == nil {
-		s.eventStream = NewEventStream()
+		s.eventStream = NewEventStream(lg)
 	}
 
 	now := time.Now()
 	s.lastUpdateTime = now
-	s.World.lastUpdateRequest = now
 
 	s.lastDeparture = make(map[string]map[string]map[string]*av.Departure)
 	for ap := range s.LaunchConfig.DepartureRates {
@@ -1449,11 +1458,24 @@ func (s *Sim) Activate(lg *log.Logger) {
 }
 
 func (s *Sim) PreSave() {
-	s.World.PreSave()
+	if s.State != nil {
+		s.State.PreSave()
+	}
 }
 
 func (s *Sim) PostLoad(ml *av.VideoMapLibrary) error {
-	return s.World.PostLoad(ml)
+	if s.State != nil {
+		return s.State.PostLoad(ml)
+	}
+	return nil
+}
+
+func (s *State) PreSave() {
+	s.STARSFacilityAdaptation.PreSave()
+}
+
+func (s *State) PostLoad(ml *av.VideoMapLibrary) error {
+	return s.STARSFacilityAdaptation.PostLoad(ml)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1466,12 +1488,12 @@ func (s *Sim) Update() {
 	startUpdate := time.Now()
 	defer func() {
 		if d := time.Since(startUpdate); d > 200*time.Millisecond {
-			lg.Warn("unexpectedly long Sim Update() call", slog.Duration("duration", d),
+			s.lg.Warn("unexpectedly long Sim Update() call", slog.Duration("duration", d),
 				slog.Any("sim", s))
 		}
 	}()
 
-	for _, ac := range s.World.Aircraft {
+	for _, ac := range s.State.Aircraft {
 		ac.Check(s.lg)
 	}
 
@@ -1506,7 +1528,7 @@ func (s *Sim) Update() {
 		return
 	}
 
-	if !s.controllerIsSignedIn(s.World.PrimaryController) {
+	if !s.controllerIsSignedIn(s.State.PrimaryController) {
 		// Pause the sim if the primary controller is gone
 		return
 	}
@@ -1527,7 +1549,7 @@ func (s *Sim) Update() {
 		s.updateState()
 	}
 	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
-	s.World.SimTime = s.SimTime
+	s.State.SimTime = s.SimTime
 
 	s.lastUpdateTime = time.Now()
 
@@ -1547,7 +1569,7 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if ac, ok := s.World.Aircraft[callsign]; ok && ac.HandoffTrackController != "" &&
+		if ac, ok := s.State.Aircraft[callsign]; ok && ac.HandoffTrackController != "" &&
 			!s.controllerIsSignedIn(ac.HandoffTrackController) {
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
@@ -1571,7 +1593,7 @@ func (s *Sim) updateState() {
 				continue
 			}
 
-			if ac, ok := s.World.Aircraft[callsign]; ok && !s.controllerIsSignedIn(toController) {
+			if ac, ok := s.State.Aircraft[callsign]; ok && !s.controllerIsSignedIn(toController) {
 				// Note that "to" and "from" are swapped in the event,
 				// since the ack is coming from the "to" controller of the
 				// original point out.
@@ -1592,8 +1614,8 @@ func (s *Sim) updateState() {
 	// Update the simulation state once a second.
 	if now.Sub(s.lastSimUpdate) >= time.Second {
 		s.lastSimUpdate = now
-		for callsign, ac := range s.World.Aircraft {
-			passedWaypoint := ac.Update(s.World, s.lg)
+		for callsign, ac := range s.State.Aircraft {
+			passedWaypoint := ac.Update(s.State, s.lg)
 			if passedWaypoint != nil {
 				if passedWaypoint.Handoff {
 					// Handoff from virtual controller to a human controller.
@@ -1610,12 +1632,12 @@ func (s *Sim) updateState() {
 				}
 
 				if passedWaypoint.PointOut != "" {
-					for _, ctrl := range s.World.Controllers {
+					for _, ctrl := range s.State.Controllers {
 						// Look for a controller with a matching TCP id.
 						if ctrl.SectorId == passedWaypoint.PointOut {
 							// Don't do the point out if a human is
 							// controlling the aircraft.
-							if fromCtrl := s.World.Controllers[ac.ControllingController]; fromCtrl != nil && !fromCtrl.IsHuman {
+							if fromCtrl := s.State.Controllers[ac.ControllingController]; fromCtrl != nil && !fromCtrl.IsHuman {
 								s.pointOut(ac.Callsign, fromCtrl, ctrl)
 								break
 							}
@@ -1624,8 +1646,8 @@ func (s *Sim) updateState() {
 				}
 
 				if passedWaypoint.Delete {
-					lg.Info("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
-					delete(s.World.Aircraft, ac.Callsign)
+					s.lg.Info("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
+					delete(s.State.Aircraft, ac.Callsign)
 				}
 			}
 
@@ -1633,15 +1655,15 @@ func (s *Sim) updateState() {
 			// FIXME: maintain GoAroundDistance, state, in Sim, not Aircraft
 			if ac.GoAroundDistance != nil {
 				if d, err := ac.DistanceToEndOfApproach(); err == nil && d < *ac.GoAroundDistance {
-					lg.Info("randomly going around")
+					s.lg.Info("randomly going around")
 					ac.GoAroundDistance = nil // only go around once
 					rt := ac.GoAround()
-					ac.ControllingController = s.World.DepartureController(ac)
+					ac.ControllingController = s.State.DepartureController(ac, s.lg)
 					PostRadioEvents(ac.Callsign, rt, s)
 
 					// If it was handed off to tower, hand it back to us
 					if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
-						ac.HandoffTrackController = s.World.DepartureController(ac)
+						ac.HandoffTrackController = s.State.DepartureController(ac, s.lg)
 						if ac.HandoffTrackController == "" {
 							ac.HandoffTrackController = ac.ApproachController
 						}
@@ -1660,10 +1682,10 @@ func (s *Sim) updateState() {
 				ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
 				// Time to check in
 				ctrl := s.ResolveController(ac.DepartureContactController)
-				lg.Info("contacting departure controller", slog.String("callsign", ctrl))
+				s.lg.Info("contacting departure controller", slog.String("callsign", ctrl))
 
 				airportName := ac.FlightPlan.DepartureAirport
-				if ap, ok := s.World.Airports[airportName]; ok && ap.Name != "" {
+				if ap, ok := s.State.Airports[airportName]; ok && ap.Name != "" {
 					airportName = ap.Name
 				}
 
@@ -1686,18 +1708,18 @@ func (s *Sim) updateState() {
 
 			// Cull far-away departures/arrivals
 			if ac.IsDeparture() {
-				if ap := s.World.GetAirport(ac.FlightPlan.DepartureAirport); ap != nil &&
+				if ap := s.State.Airports[ac.FlightPlan.DepartureAirport]; ap != nil &&
 					math.NMDistance2LL(ac.Position(), ap.Location) > 250 {
 					s.lg.Info("culled far-away departure", slog.String("callsign", callsign))
-					delete(s.World.Aircraft, callsign)
+					delete(s.State.Aircraft, callsign)
 				}
-			} else if ap := s.World.GetAirport(ac.FlightPlan.ArrivalAirport); ap != nil &&
+			} else if ap := s.State.Airports[ac.FlightPlan.ArrivalAirport]; ap != nil &&
 				math.NMDistance2LL(ac.Position(), ap.Location) > 250 {
 				// We only expect this case to hit for an unattended vice,
 				// where aircraft are being spawned but are then flying
 				// along on a heading without being controlled...
 				s.lg.Info("culled far-away arrival", slog.String("callsign", callsign))
-				delete(s.World.Aircraft, callsign)
+				delete(s.State.Aircraft, callsign)
 			}
 		}
 	}
@@ -1721,24 +1743,24 @@ func PostRadioEvents(from string, transmissions []av.RadioTransmission, ep Event
 }
 
 func (s *Sim) ResolveController(callsign string) string {
-	if s.World.MultiControllers == nil {
+	if s.State.MultiControllers == nil {
 		// Single controller
-		return s.World.PrimaryController
+		return s.State.PrimaryController
 	} else if len(s.controllers) == 0 {
 		// This can happen during the prespawn phase right after launching but
 		// before the user has been signed in.
-		return s.World.PrimaryController
+		return s.State.PrimaryController
 	} else {
-		c, err := s.World.MultiControllers.ResolveController(callsign,
+		c, err := s.State.MultiControllers.ResolveController(callsign,
 			func(callsign string) bool {
 				return s.controllerIsSignedIn(callsign)
 			})
 		if err != nil {
-			lg.Errorf("%s: unable to resolve controller: %v", callsign, err)
+			s.lg.Errorf("%s: unable to resolve controller: %v", callsign, err)
 		}
 
 		if c == "" { // This shouldn't happen...
-			return s.World.PrimaryController
+			return s.State.PrimaryController
 		}
 		return c
 	}
@@ -1772,7 +1794,7 @@ func (s *Sim) prespawn() {
 		s.updateState()
 	}
 	s.SimTime = time.Now()
-	s.World.SimTime = s.SimTime
+	s.State.SimTime = s.SimTime
 	s.lastUpdateTime = time.Now()
 
 	s.lg.Info("finished aircraft prespawn")
@@ -1890,7 +1912,7 @@ func (s *Sim) spawnAircraft() {
 			arrivalAirport, rateSum := sampleRateMap(airportRates)
 
 			goAround := rand.Float32() < s.LaunchConfig.GoAroundRate
-			if ac, err := s.World.CreateArrival(group, arrivalAirport, goAround); err != nil {
+			if ac, err := s.CreateArrival(group, arrivalAirport, goAround, s.lg); err != nil {
 				s.lg.Error("CreateArrival error: %v", err)
 			} else if ac != nil {
 				s.launchAircraftNoLock(*ac)
@@ -1913,8 +1935,8 @@ func (s *Sim) spawnAircraft() {
 
 		prevDep := s.lastDeparture[airport][runway][category]
 		s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
-		ac, dep, err := s.World.CreateDeparture(airport, runway, category,
-			s.LaunchConfig.DepartureChallenge, prevDep)
+		ac, dep, err := s.CreateDeparture(airport, runway, category,
+			s.LaunchConfig.DepartureChallenge, prevDep, s.lg)
 		if err != nil {
 			s.lg.Infof("CreateDeparture error: %v", err)
 		} else {
@@ -2020,12 +2042,12 @@ func (s *Sim) LaunchAircraft(ac av.Aircraft) {
 
 // Assumes the lock is already held (as is the case e.g. for automatic spawning...)
 func (s *Sim) launchAircraftNoLock(ac av.Aircraft) {
-	if _, ok := s.World.Aircraft[ac.Callsign]; ok {
+	if _, ok := s.State.Aircraft[ac.Callsign]; ok {
 		s.lg.Warn("already have an aircraft with that callsign!", slog.String("callsign", ac.Callsign))
 		return
 	}
 
-	s.World.Aircraft[ac.Callsign] = &ac
+	s.State.Aircraft[ac.Callsign] = &ac
 
 	ac.Nav.Check(s.lg)
 
@@ -2043,18 +2065,18 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 	cmd func(*av.Controller, *av.Aircraft) []av.RadioTransmission) error {
 	if sc, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
-	} else if ac, ok := s.World.Aircraft[callsign]; !ok {
-		return ErrNoAircraftForCallsign
+	} else if ac, ok := s.State.Aircraft[callsign]; !ok {
+		return av.ErrNoAircraftForCallsign
 	} else {
 		if sc.Callsign == "Observer" {
-			return ErrOtherControllerHasTrack
+			return av.ErrOtherControllerHasTrack
 		}
 
-		ctrl := s.World.Controllers[sc.Callsign]
+		ctrl := s.State.Controllers[sc.Callsign]
 		if ctrl == nil {
 			s.lg.Error("controller unknown", slog.String("controller", sc.Callsign),
-				slog.Any("world_controllers", s.World.Controllers))
-			return ErrNoController
+				slog.Any("world_controllers", s.State.Controllers))
+			return av.ErrNoController
 		}
 
 		if err := check(ctrl, ac); err != nil {
@@ -2078,7 +2100,7 @@ func (s *Sim) dispatchControllingCommand(token string, callsign string,
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.ControllingController != ctrl.Callsign {
-				return ErrOtherControllerHasTrack
+				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
@@ -2091,7 +2113,7 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.TrackingController != ctrl.Callsign {
-				return ErrOtherControllerHasTrack
+				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
@@ -2141,7 +2163,7 @@ func (s *Sim) Ident(token, callsign string) error {
 		func(c *av.Controller, ac *av.Aircraft) error {
 			// Can't ask for ident if they're on someone else's frequency.
 			if ac.ControllingController != "" && ac.ControllingController != c.Callsign {
-				return ErrOtherControllerHasTrack
+				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
@@ -2167,7 +2189,7 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *math.CardinalOrdi
 		func(c *av.Controller, ac *av.Aircraft) error {
 			// Make sure no one has the track already
 			if ac.TrackingController != c.Callsign {
-				return ErrOtherControllerHasTrack
+				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
@@ -2191,7 +2213,7 @@ func (s *Sim) InitiateTrack(token, callsign string) error {
 		func(c *av.Controller, ac *av.Aircraft) error {
 			// Make sure no one has the track already
 			if ac.TrackingController != "" {
-				return ErrOtherControllerHasTrack
+				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
@@ -2237,18 +2259,18 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.TrackingController != ctrl.Callsign {
-				return ErrOtherControllerHasTrack
+				return av.ErrOtherControllerHasTrack
 			}
-			if octrl := s.World.Controllers[controller]; octrl == nil {
-				return ErrNoController
+			if octrl := s.State.Controllers[controller]; octrl == nil {
+				return av.ErrNoController
 			} else if octrl.Callsign == ctrl.Callsign {
 				// Can't handoff to ourself
-				return ErrInvalidController
+				return av.ErrInvalidController
 			}
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			octrl := s.World.Controllers[controller]
+			octrl := s.State.Controllers[controller]
 
 			s.eventStream.Post(Event{
 				Type:           OfferedHandoffEvent,
@@ -2275,13 +2297,13 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.ControllingController != ctrl.Callsign {
-				return ErrOtherControllerHasTrack
+				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			var radioTransmissions []av.RadioTransmission
-			if octrl := s.World.Controllers[ac.TrackingController]; octrl != nil {
+			if octrl := s.State.Controllers[ac.TrackingController]; octrl != nil {
 				name := util.Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
 				bye := rand.Sample("good day", "seeya")
 				contact := rand.Sample("contact ", "over to ", "")
@@ -2315,11 +2337,11 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 
 			// Go ahead and climb departures the rest of the way and send
 			// them direct to their first fix (if they aren't already).
-			octrl := s.World.Controllers[ac.TrackingController]
+			octrl := s.State.Controllers[ac.TrackingController]
 			if ac.IsDeparture() && octrl != nil && !octrl.IsHuman {
 				s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 					slog.Int("final_altitude", ac.FlightPlan.Altitude))
-				ac.DepartOnCourse(lg)
+				ac.DepartOnCourse(s.lg)
 			}
 
 			return radioTransmissions
@@ -2333,7 +2355,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.HandoffTrackController != ctrl.Callsign {
-				return ErrNotBeingHandedOffToMe
+				return av.ErrNotBeingHandedOffToMe
 			}
 			return nil
 		},
@@ -2377,19 +2399,19 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if octrl := s.World.Controllers[controller]; octrl == nil {
-				return ErrNoController
+			if octrl := s.State.Controllers[controller]; octrl == nil {
+				return av.ErrNoController
 			} else if octrl.Callsign == ctrl.Callsign || octrl.Callsign == ac.TrackingController {
 				// Can't redirect to ourself and the controller who initiated the handoff
-				return ErrInvalidController
+				return av.ErrInvalidController
 			} else if octrl.FacilityIdentifier != ctrl.FacilityIdentifier {
 				// Can't redirect to an interfacility position
-				return ErrInvalidFacility
+				return av.ErrInvalidFacility
 			}
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			octrl := s.World.Controllers[controller]
+			octrl := s.State.Controllers[controller]
 			ac.RedirectedHandoff.OriginalOwner = ac.TrackingController
 			if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Callsign, octrl.Callsign) {
 				ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[0]
@@ -2434,13 +2456,13 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 func (s *Sim) ForceQL(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if s.World.Controllers[controller] == nil {
-				return ErrNoController
+			if s.State.Controllers[controller] == nil {
+				return av.ErrNoController
 			}
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			octrl := s.World.Controllers[controller]
+			octrl := s.State.Controllers[controller]
 			ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
 			return nil
 		})
@@ -2461,17 +2483,17 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.TrackingController != ctrl.Callsign {
-				return ErrOtherControllerHasTrack
-			} else if octrl := s.World.Controllers[controller]; octrl == nil {
-				return ErrNoController
+				return av.ErrOtherControllerHasTrack
+			} else if octrl := s.State.Controllers[controller]; octrl == nil {
+				return av.ErrNoController
 			} else if octrl.Callsign == ctrl.Callsign {
 				// Can't point out to ourself
-				return ErrInvalidController
+				return av.ErrInvalidController
 			}
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			octrl := s.World.Controllers[controller]
+			octrl := s.State.Controllers[controller]
 			s.pointOut(ac.Callsign, ctrl, octrl)
 			return nil
 		})
@@ -2499,9 +2521,9 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if _, ok := s.PointOuts[callsign]; !ok {
-				return ErrNotPointedOutToMe
+				return av.ErrNotPointedOutToMe
 			} else if _, ok := s.PointOuts[callsign][ctrl.Callsign]; !ok {
-				return ErrNotPointedOutToMe
+				return av.ErrNotPointedOutToMe
 			}
 			return nil
 		},
@@ -2530,9 +2552,9 @@ func (s *Sim) RejectPointOut(token, callsign string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if _, ok := s.PointOuts[callsign]; !ok {
-				return ErrNotPointedOutToMe
+				return av.ErrNotPointedOutToMe
 			} else if _, ok := s.PointOuts[callsign][ctrl.Callsign]; !ok {
-				return ErrNotPointedOutToMe
+				return av.ErrNotPointedOutToMe
 			}
 			return nil
 		},
@@ -2746,16 +2768,16 @@ func (s *Sim) ExpectApproach(token, callsign, approach string) error {
 	defer s.mu.Unlock(s.lg)
 
 	var ap *av.Airport
-	if ac, ok := s.World.Aircraft[callsign]; ok {
-		ap = s.World.GetAirport(ac.FlightPlan.ArrivalAirport)
+	if ac, ok := s.State.Aircraft[callsign]; ok {
+		ap = s.State.Airports[ac.FlightPlan.ArrivalAirport]
 		if ap == nil {
-			return ErrUnknownAirport
+			return av.ErrUnknownAirport
 		}
 	}
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			return ac.ExpectApproach(approach, ap, s.World.ArrivalGroups, s.lg)
+			return ac.ExpectApproach(approach, ap, s.State.ArrivalGroups, s.lg)
 		})
 }
 
@@ -2766,9 +2788,9 @@ func (s *Sim) ClearedApproach(token, callsign, approach string, straightIn bool)
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			if straightIn {
-				return ac.ClearedStraightInApproach(approach, s.World.ArrivalGroups)
+				return ac.ClearedStraightInApproach(approach, s.State.ArrivalGroups)
 			} else {
-				return ac.ClearedApproach(approach, s.World.ArrivalGroups, s.lg)
+				return ac.ClearedApproach(approach, s.State.ArrivalGroups, s.lg)
 			}
 		})
 }
@@ -2779,7 +2801,7 @@ func (s *Sim) InterceptLocalizer(token, callsign string) error {
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			return ac.InterceptLocalizer(s.World.ArrivalGroups)
+			return ac.InterceptLocalizer(s.State.ArrivalGroups)
 		})
 }
 
@@ -2833,7 +2855,7 @@ func (s *Sim) ContactTower(token, callsign string) error {
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			return ac.ContactTower(s.World.Controllers, s.lg)
+			return ac.ContactTower(s.State.Controllers, s.lg)
 		})
 }
 
@@ -2844,7 +2866,7 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if lctrl := s.LaunchConfig.Controller; lctrl != "" && lctrl != ctrl.Callsign {
-				return ErrOtherControllerHasTrack
+				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
@@ -2862,16 +2884,179 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 
 			s.lg.Info("deleted aircraft", slog.String("callsign", ac.Callsign),
 				slog.String("controller", ctrl.Callsign))
-			delete(s.World.Aircraft, ac.Callsign)
+			delete(s.State.Aircraft, ac.Callsign)
 			return nil
 		})
 }
 
 func (s *Sim) DeleteAllAircraft(token string) error {
-	for cs := range s.World.Aircraft {
+	for cs := range s.State.Aircraft {
 		if err := s.DeleteAircraft(token, cs); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// State
+
+type State struct {
+	Aircraft    map[string]*av.Aircraft
+	METAR       map[string]*av.METAR
+	Controllers map[string]*av.Controller
+
+	DepartureAirports map[string]*av.Airport
+	ArrivalAirports   map[string]*av.Airport
+
+	TRACON                   string
+	LaunchConfig             LaunchConfig
+	PrimaryController        string
+	MultiControllers         av.SplitConfiguration
+	SimIsPaused              bool
+	SimRate                  float32
+	SimName                  string
+	SimDescription           string
+	SimTime                  time.Time
+	MagneticVariation        float32
+	NmPerLongitude           float32
+	Airports                 map[string]*av.Airport
+	Fixes                    map[string]math.Point2LL
+	PrimaryAirport           string
+	RadarSites               map[string]*av.RadarSite
+	Center                   math.Point2LL
+	Range                    float32
+	Wind                     av.Wind
+	Callsign                 string
+	ScenarioDefaultVideoMaps []string
+	ApproachAirspace         []ControllerAirspaceVolume
+	DepartureAirspace        []ControllerAirspaceVolume
+	DepartureRunways         []ScenarioGroupDepartureRunway
+	ArrivalRunways           []ScenarioGroupArrivalRunway
+	Scratchpads              map[string]string
+	ArrivalGroups            map[string][]av.Arrival
+	TotalDepartures          int
+	TotalArrivals            int
+	STARSFacilityAdaptation  STARSFacilityAdaptation
+}
+
+func (ss *State) Locate(s string) (math.Point2LL, bool) {
+	s = strings.ToUpper(s)
+	// ScenarioGroup's definitions take precedence...
+	if ap, ok := ss.Airports[s]; ok {
+		return ap.Location, true
+	} else if p, ok := ss.Fixes[s]; ok {
+		return p, true
+	} else if n, ok := av.DB.Navaids[strings.ToUpper(s)]; ok {
+		return n.Location, ok
+	} else if ap, ok := av.DB.Airports[strings.ToUpper(s)]; ok {
+		return ap.Location, ok
+	} else if f, ok := av.DB.Fixes[strings.ToUpper(s)]; ok {
+		return f.Location, ok
+	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
+		return p, true
+	} else {
+		return math.Point2LL{}, false
+	}
+}
+
+func (ss *State) AircraftFromPartialCallsign(c string) *av.Aircraft {
+	if ac, ok := ss.Aircraft[c]; ok {
+		return ac
+	}
+
+	var final []*av.Aircraft
+	for callsign, ac := range ss.Aircraft {
+		if ac.ControllingController == ss.Callsign && strings.Contains(callsign, c) {
+			final = append(final, ac)
+		}
+	}
+	if len(final) == 1 {
+		return final[0]
+	} else {
+		return nil
+	}
+}
+
+func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
+	if len(ss.MultiControllers) > 0 {
+		callsign, err := ss.MultiControllers.ResolveController(ac.DepartureContactController,
+			func(callsign string) bool {
+				ctrl, ok := ss.Controllers[callsign]
+				return ok && ctrl.IsHuman
+			})
+		if err != nil {
+			lg.Error("Unable to resolve departure controller", slog.Any("error", err),
+				slog.Any("aircraft", ac))
+		}
+		return util.Select(callsign != "", callsign, ss.PrimaryController)
+	} else {
+		return ss.PrimaryController
+	}
+}
+
+func (ss *State) GetVideoMaps() ([]av.VideoMap, []string) {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.Callsign]; ok {
+		return config.VideoMaps, config.DefaultMaps
+	}
+	return ss.STARSFacilityAdaptation.VideoMaps, ss.ScenarioDefaultVideoMaps
+}
+
+func (ss *State) GetInitialRange() float32 {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.Callsign]; ok && config.Range != 0 {
+		return config.Range
+	}
+	return ss.Range
+}
+
+func (ss *State) GetInitialCenter() math.Point2LL {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.Callsign]; ok && !config.Center.IsZero() {
+		return config.Center
+	}
+	return ss.Center
+}
+
+func (ss *State) InhibitCAVolumes() []av.AirspaceVolume {
+	return ss.STARSFacilityAdaptation.InhibitCAVolumes
+}
+
+// If |b| is true, all following imgui elements will be disabled (and drawn
+// accordingly).
+func uiStartDisable(b bool) {
+	if b {
+		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
+		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
+	}
+}
+
+// Each call to uiStartDisable should have a matching call to uiEndDisable,
+// with the same Boolean value passed to it.
+func uiEndDisable(b bool) {
+	if b {
+		imgui.PopItemFlag()
+		imgui.PopStyleVar()
+	}
+}
+
+func (ss *State) AverageWindVector() [2]float32 {
+	d := math.OppositeHeading(float32(ss.Wind.Direction))
+	v := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
+	return math.Scale2f(v, float32(ss.Wind.Speed))
+}
+
+func (ss *State) GetWindVector(p math.Point2LL, alt float32) math.Point2LL {
+	// Sinusoidal wind speed variation from the base speed up to base +
+	// gust and then back...
+	base := time.UnixMicro(0)
+	sec := ss.SimTime.Sub(base).Seconds()
+	windSpeed := float32(ss.Wind.Speed) +
+		float32(ss.Wind.Gust-ss.Wind.Speed)*float32(1+gomath.Cos(sec/4))/2
+
+	// Wind.Direction is where it's coming from, so +180 to get the vector
+	// that affects the aircraft's course.
+	d := math.OppositeHeading(float32(ss.Wind.Direction))
+	vWind := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
+	vWind = math.Scale2f(vWind, windSpeed/3600)
+	return vWind
 }

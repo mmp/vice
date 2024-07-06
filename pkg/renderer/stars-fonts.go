@@ -1,6 +1,6 @@
 // Automatically generated from STARS PCF font files using util/pcg2go.cc
 
-package main
+package renderer
 
 type STARSFont struct {
 	PointSize     int
