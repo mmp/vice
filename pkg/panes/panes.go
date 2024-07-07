@@ -78,9 +78,7 @@ type PaneContext struct {
 
 	KeyboardFocus KeyboardFocus
 
-	Control     sim.AircraftController
-	ClientState sim.ClientState
-	SimState    sim.State
+	ControlClient *sim.ControlClient
 }
 
 func (ctx *PaneContext) InitializeMouse(fullDisplayExtent math.Extent2D, p platform.Platform) {
@@ -257,8 +255,8 @@ func (fsp *FlightStripPane) processEvents(ctx *PaneContext) {
 
 	// First account for changes in world.Aircraft
 	// Added aircraft
-	for _, ac := range ctx.SimState.Aircraft {
-		if fsp.AutoAddTracked && ac.TrackingController == ctx.SimState.Callsign {
+	for _, ac := range ctx.ControlClient.Aircraft {
+		if fsp.AutoAddTracked && ac.TrackingController == ctx.ControlClient.Callsign {
 			possiblyAdd(ac)
 		} else if ac.TrackingController == "" &&
 			((fsp.AutoAddDepartures && ac.IsDeparture()) || (fsp.AutoAddArrivals && !ac.IsDeparture())) {
@@ -267,7 +265,7 @@ func (fsp *FlightStripPane) processEvents(ctx *PaneContext) {
 	}
 	// Removed aircraft
 	fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool {
-		_, ok := ctx.SimState.Aircraft[callsign]
+		_, ok := ctx.ControlClient.Aircraft[callsign]
 		return ok
 	})
 
@@ -281,12 +279,12 @@ func (fsp *FlightStripPane) processEvents(ctx *PaneContext) {
 	for _, event := range fsp.events.Get() {
 		switch event.Type {
 		case sim.PushedFlightStripEvent:
-			if ac, ok := ctx.SimState.Aircraft[event.Callsign]; ok && fsp.AddPushed {
+			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok && fsp.AddPushed {
 				possiblyAdd(ac)
 			}
 		case sim.InitiatedTrackEvent:
-			if ac, ok := ctx.SimState.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddTracked && ac.TrackingController == ctx.SimState.Callsign {
+			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
+				if fsp.AutoAddTracked && ac.TrackingController == ctx.ControlClient.Callsign {
 					possiblyAdd(ac)
 				}
 			}
@@ -295,14 +293,14 @@ func (fsp *FlightStripPane) processEvents(ctx *PaneContext) {
 				remove(event.Callsign)
 			}
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
-			if ac, ok := ctx.SimState.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == ctx.SimState.Callsign {
+			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
+				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == ctx.ControlClient.Callsign {
 					possiblyAdd(ac)
 				}
 			}
 		case sim.HandoffControllEvent:
-			if ac, ok := ctx.SimState.Aircraft[event.Callsign]; ok {
-				if fsp.AutoRemoveHandoffs && ac.TrackingController != ctx.SimState.Callsign {
+			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
+				if fsp.AutoRemoveHandoffs && ac.TrackingController != ctx.ControlClient.Callsign {
 					remove(event.Callsign)
 				}
 			}
@@ -311,12 +309,12 @@ func (fsp *FlightStripPane) processEvents(ctx *PaneContext) {
 
 	// TODO: is this needed? Shouldn't there be a RemovedAircraftEvent?
 	fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool {
-		return ctx.SimState.Aircraft[callsign] != nil
+		return ctx.ControlClient.Aircraft[callsign] != nil
 	})
 
 	if fsp.CollectDeparturesArrivals {
 		isDeparture := func(callsign string) bool {
-			ac := ctx.SimState.Aircraft[callsign]
+			ac := ctx.ControlClient.Aircraft[callsign]
 			return ac != nil && ac.IsDeparture()
 		}
 		dep := util.FilterSlice(fsp.strips, isDeparture)
@@ -415,8 +413,8 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	y := stripHeight - 1 - vpad
 	for i := scrollOffset; i < math.Min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
 		callsign := fsp.strips[i]
-		strip := ctx.SimState.Aircraft[callsign].Strip
-		ac := ctx.SimState.Aircraft[callsign]
+		strip := ctx.ControlClient.Aircraft[callsign].Strip
+		ac := ctx.ControlClient.Aircraft[callsign]
 		if ac == nil {
 			ctx.Lg.Errorf("%s: no aircraft for callsign?!", strip.Callsign)
 			continue
@@ -897,11 +895,11 @@ func (mp *MessagesPane) runCommands(ctx *PaneContext) {
 	mp.input.cmd = strings.TrimSpace(mp.input.cmd)
 
 	if mp.input.cmd[0] == '/' {
-		ctx.Control.SendGlobalMessage(sim.GlobalMessage{
-			FromController: ctx.SimState.Callsign,
-			Message:        ctx.SimState.Callsign + ": " + mp.input.cmd[1:],
+		ctx.ControlClient.SendGlobalMessage(sim.GlobalMessage{
+			FromController: ctx.ControlClient.Callsign,
+			Message:        ctx.ControlClient.Callsign + ": " + mp.input.cmd[1:],
 		})
-		mp.messages = append(mp.messages, Message{contents: ctx.SimState.Callsign + ": " + mp.input.cmd[1:], global: true})
+		mp.messages = append(mp.messages, Message{contents: ctx.ControlClient.Callsign + ": " + mp.input.cmd[1:], global: true})
 		mp.history = append(mp.history, mp.input)
 		mp.input = CLIInput{}
 		return
@@ -913,8 +911,8 @@ func (mp *MessagesPane) runCommands(ctx *PaneContext) {
 	mp.input = CLIInput{}
 
 	if ok {
-		if ac := ctx.SimState.AircraftFromPartialCallsign(callsign); ac != nil {
-			ctx.Control.RunAircraftCommands(ac.Callsign, cmd,
+		if ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign); ac != nil {
+			ctx.ControlClient.RunAircraftCommands(ac.Callsign, cmd,
 				func(errorString string, remainingCommands string) {
 					if errorString != "" {
 						mp.messages = append(mp.messages, Message{contents: errorString, error: true})
@@ -973,7 +971,7 @@ func (mp *MessagesPane) processEvents(ctx *PaneContext) {
 			icao, flight := callsign[:idx], callsign[idx:]
 			if telephony, ok := av.DB.Callsigns[icao]; ok {
 				radioCallsign = telephony + " " + flight
-				if ac := ctx.SimState.Aircraft[callsign]; ac != nil {
+				if ac := ctx.ControlClient.Aircraft[callsign]; ac != nil {
 					if fp := ac.FlightPlan; fp != nil {
 						if strings.HasPrefix(fp.AircraftType, "H/") {
 							radioCallsign += " heavy"
@@ -988,9 +986,9 @@ func (mp *MessagesPane) processEvents(ctx *PaneContext) {
 		response := strings.Join(transmissions, ", ")
 		var msg Message
 		if lastRadioType == av.RadioTransmissionContact {
-			ctrl := ctx.SimState.Controllers[ctx.SimState.Callsign]
+			ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]
 			fullName := ctrl.FullName
-			if ac := ctx.SimState.Aircraft[callsign]; ac != nil && ac.IsDeparture() {
+			if ac := ctx.ControlClient.Aircraft[callsign]; ac != nil && ac.IsDeparture() {
 				// Always refer to the controller as "departure" for departing aircraft.
 				fullName = strings.ReplaceAll(fullName, "approach", "departure")
 			}
@@ -1008,7 +1006,7 @@ func (mp *MessagesPane) processEvents(ctx *PaneContext) {
 	for _, event := range mp.events.Get() {
 		switch event.Type {
 		case sim.RadioTransmissionEvent:
-			if event.ToController == ctx.SimState.Callsign {
+			if event.ToController == ctx.ControlClient.Callsign {
 				if event.Callsign != lastRadioCallsign || event.RadioTransmissionType != lastRadioType {
 					if len(transmissions) > 0 {
 						addTransmissions()
@@ -1022,7 +1020,7 @@ func (mp *MessagesPane) processEvents(ctx *PaneContext) {
 				unexpectedTransmission = unexpectedTransmission || (event.RadioTransmissionType == av.RadioTransmissionUnexpected)
 			}
 		case sim.GlobalMessageEvent:
-			if event.FromController != ctx.SimState.Callsign {
+			if event.FromController != ctx.ControlClient.Callsign {
 				mp.messages = append(mp.messages, Message{contents: event.Message, global: true})
 			}
 		case sim.StatusMessageEvent:

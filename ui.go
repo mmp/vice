@@ -21,6 +21,7 @@ import (
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
@@ -291,8 +292,8 @@ func uiCloseModalDialog(d *ModalDialogBox) {
 
 }
 
-func uiShowConnectDialog(allowCancel bool, p platform.Platform) {
-	client := &ConnectModalClient{allowCancel: allowCancel, platform: p}
+func uiShowConnectDialog(ch chan *sim.Connection, allowCancel bool, p platform.Platform) {
+	client := &ConnectModalClient{ch: ch, allowCancel: allowCancel, platform: p}
 	uiShowModalDialog(NewModalDialogBox(client, p), false)
 }
 
@@ -322,7 +323,8 @@ func uiEndDisable(b bool) {
 	}
 }
 
-func drawUI(p platform.Platform, r renderer.Renderer, w *World, eventStream *sim.EventStream, stats *Stats) {
+func drawUI(ch chan *sim.Connection, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
+	eventStream *sim.EventStream, stats *Stats) {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -341,17 +343,17 @@ func drawUI(p platform.Platform, r renderer.Renderer, w *World, eventStream *sim
 	if imgui.BeginMainMenuBar() {
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
 
-		if w != nil && w.Connected() {
-			if w.SimIsPaused {
+		if controlClient != nil && controlClient.Connected() {
+			if controlClient.SimIsPaused {
 				if imgui.Button(renderer.FontAwesomeIconPlayCircle) {
-					w.ToggleSimPause()
+					controlClient.ToggleSimPause()
 				}
 				if imgui.IsItemHovered() {
 					imgui.SetTooltip("Resume simulation")
 				}
 			} else {
 				if imgui.Button(renderer.FontAwesomeIconPauseCircle) {
-					w.ToggleSimPause()
+					controlClient.ToggleSimPause()
 				}
 				if imgui.IsItemHovered() {
 					imgui.SetTooltip("Pause simulation")
@@ -360,22 +362,22 @@ func drawUI(p platform.Platform, r renderer.Renderer, w *World, eventStream *sim
 		}
 
 		if imgui.Button(renderer.FontAwesomeIconRedo) {
-			uiShowConnectDialog(true, p)
+			uiShowConnectDialog(ch, true, p)
 		}
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Start new simulation")
 		}
 
-		if w != nil && w.Connected() {
+		if controlClient != nil && controlClient.Connected() {
 			if imgui.Button(renderer.FontAwesomeIconCog) {
-				w.ToggleActivateSettingsWindow()
+				ui.showSettings = !ui.showSettings
 			}
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip("Open settings window")
 			}
 
 			if imgui.Button(renderer.FontAwesomeIconQuestionCircle) {
-				w.ToggleShowScenarioInfoWindow()
+				ui.showScenarioInfo = !ui.showScenarioInfo
 			}
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip("Show available departures, arrivals, and approaches")
@@ -389,17 +391,17 @@ func drawUI(p platform.Platform, r renderer.Renderer, w *World, eventStream *sim
 			imgui.SetTooltip("Show summary of keyboard commands")
 		}
 
-		enableLaunch := w != nil &&
-			(w.LaunchConfig.Controller == "" || w.LaunchConfig.Controller == w.Callsign)
+		enableLaunch := controlClient != nil &&
+			(controlClient.LaunchConfig.Controller == "" || controlClient.LaunchConfig.Controller == controlClient.Callsign)
 		uiStartDisable(!enableLaunch)
 		if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-			w.TakeOrReturnLaunchControl(eventStream)
+			controlClient.TakeOrReturnLaunchControl(eventStream)
 		}
 		if imgui.IsItemHovered() {
-			verb := util.Select(w.LaunchConfig.Controller == "", "Start", "Stop")
+			verb := util.Select(controlClient.LaunchConfig.Controller == "", "Start", "Stop")
 			tip := verb + " manually control spawning new aircraft"
-			if w.LaunchConfig.Controller != "" {
-				tip += "\nCurrent controller: " + w.LaunchConfig.Controller
+			if controlClient.LaunchConfig.Controller != "" {
+				tip += "\nCurrent controller: " + controlClient.LaunchConfig.Controller
 			}
 			imgui.SetTooltip(tip)
 		}
@@ -437,20 +439,20 @@ func drawUI(p platform.Platform, r renderer.Renderer, w *World, eventStream *sim
 	}
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
-	if w != nil {
-		w.DrawSettingsWindow(p)
+	if controlClient != nil {
+		uiDrawSettingsWindow(controlClient, p)
 
 		if ui.showScenarioInfo {
-			ui.showScenarioInfo = w.State.DrawScenarioInfoWindow(&w.client, lg)
+			ui.showScenarioInfo = controlClient.DrawScenarioInfoWindow(lg)
 		}
 
-		w.DrawMissingPrimaryDialog(p)
+		uiDrawMissingPrimaryDialog(ch, controlClient, p)
 
-		if w.LaunchConfig.Controller == w.Callsign {
+		if controlClient.LaunchConfig.Controller == controlClient.Callsign {
 			if ui.launchControlWindow == nil {
-				ui.launchControlWindow = MakeLaunchControlWindow(w)
+				ui.launchControlWindow = MakeLaunchControlWindow(controlClient)
 			}
-			ui.launchControlWindow.Draw(w, eventStream, p)
+			ui.launchControlWindow.Draw(eventStream, p)
 		}
 	}
 
@@ -464,7 +466,7 @@ func drawUI(p platform.Platform, r renderer.Renderer, w *World, eventStream *sim
 
 	wmDrawUI(p)
 
-	uiDrawKeyboardWindow(w)
+	uiDrawKeyboardWindow(controlClient)
 
 	imgui.PopFont()
 
@@ -582,6 +584,7 @@ func (m *ModalDialogBox) Draw() {
 }
 
 type ConnectModalClient struct {
+	ch          chan *sim.Connection
 	config      sim.NewSimConfiguration
 	allowCancel bool
 	platform    platform.Platform
@@ -590,7 +593,7 @@ type ConnectModalClient struct {
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
-	c.config = sim.MakeNewSimConfiguration(newSimConnectionChan, &globalConfig.LastTRACON,
+	c.config = sim.MakeNewSimConfiguration(c.ch, &globalConfig.LastTRACON,
 		&localServer, &remoteServer, lg)
 }
 
@@ -606,6 +609,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 		action: func() bool {
 			if c.config.ShowRatesWindow() {
 				client := &RatesModalClient{
+					ch:          c.ch,
 					platform:    c.platform,
 					config:      c.config,
 					allowCancel: c.allowCancel,
@@ -631,6 +635,7 @@ func (c *ConnectModalClient) Draw() int {
 }
 
 type RatesModalClient struct {
+	ch          chan *sim.Connection
 	config      sim.NewSimConfiguration
 	allowCancel bool
 	platform    platform.Platform
@@ -647,6 +652,7 @@ func (c *RatesModalClient) Buttons() []ModalDialogButton {
 		text: "Previous",
 		action: func() bool {
 			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{
+				ch:          c.ch,
 				config:      c.config,
 				allowCancel: c.allowCancel}, c.platform), false)
 			return true
@@ -1110,9 +1116,9 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, s string, ar
 ///////////////////////////////////////////////////////////////////////////
 
 type LaunchControlWindow struct {
-	w          *World
-	departures []*LaunchDeparture
-	arrivals   []*LaunchArrival
+	controlClient *sim.ControlClient
+	departures    []*LaunchDeparture
+	arrivals      []*LaunchArrival
 }
 
 type LaunchDeparture struct {
@@ -1146,10 +1152,10 @@ func (la *LaunchArrival) Reset() {
 	la.TotalLaunches = 0
 }
 
-func MakeLaunchControlWindow(w *World) *LaunchControlWindow {
-	lc := &LaunchControlWindow{w: w}
+func MakeLaunchControlWindow(controlClient *sim.ControlClient) *LaunchControlWindow {
+	lc := &LaunchControlWindow{controlClient: controlClient}
 
-	config := &w.LaunchConfig
+	config := &controlClient.LaunchConfig
 	for _, airport := range util.SortedMapKeys(config.DepartureRates) {
 		runwayRates := config.DepartureRates[airport]
 		for _, rwy := range util.SortedMapKeys(runwayRates) {
@@ -1179,7 +1185,7 @@ func MakeLaunchControlWindow(w *World) *LaunchControlWindow {
 
 func (lc *LaunchControlWindow) spawnDeparture(airport, rwy, category string) *av.Aircraft {
 	for i := 0; i < 100; i++ {
-		//		if ac, _, err := lc.w.CreateDeparture(airport, rwy, category, 0, nil); err == nil {
+		//		if ac, _, err := lc.controlClient.CreateDeparture(airport, rwy, category, 0, nil); err == nil {
 		//return ac
 		//}
 	}
@@ -1188,28 +1194,28 @@ func (lc *LaunchControlWindow) spawnDeparture(airport, rwy, category string) *av
 
 func (lc *LaunchControlWindow) spawnArrival(group, airport string) *av.Aircraft {
 	for i := 0; i < 100; i++ {
-		//		goAround := rand.Float32() < lc.w.LaunchConfig.GoAroundRate
+		//		goAround := rand.Float32() < lc.controlClient.LaunchConfig.GoAroundRate
 
-		//		if ac, err := lc.w.CreateArrival(group, airport, goAround); err == nil {
+		//		if ac, err := lc.controlClient.CreateArrival(group, airport, goAround); err == nil {
 		//			return ac
 		//		}
 	}
 	panic("unable to spawn an arrival")
 }
 
-func (lc *LaunchControlWindow) Draw(w *World, eventStream *sim.EventStream, p platform.Platform) {
+func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Platform) {
 	showLaunchControls := true
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(p.WindowSize()[1]) * 19 / 20})
 	imgui.BeginV("Launch Control", &showLaunchControls, imgui.WindowFlagsAlwaysAutoResize)
 
 	imgui.Text("Mode:")
 	imgui.SameLine()
-	if imgui.RadioButtonInt("Manual", &lc.w.LaunchConfig.Mode, sim.LaunchManual) {
-		w.SetLaunchConfig(lc.w.LaunchConfig)
+	if imgui.RadioButtonInt("Manual", &lc.controlClient.LaunchConfig.Mode, sim.LaunchManual) {
+		lc.controlClient.SetLaunchConfig(lc.controlClient.LaunchConfig)
 	}
 	imgui.SameLine()
-	if imgui.RadioButtonInt("Automatic", &lc.w.LaunchConfig.Mode, sim.LaunchAutomatic) {
-		w.SetLaunchConfig(lc.w.LaunchConfig)
+	if imgui.RadioButtonInt("Automatic", &lc.controlClient.LaunchConfig.Mode, sim.LaunchAutomatic) {
+		lc.controlClient.SetLaunchConfig(lc.controlClient.LaunchConfig)
 	}
 
 	width, _ := ui.font.BoundText(renderer.FontAwesomeIconPlayCircle, 0)
@@ -1217,17 +1223,17 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *sim.EventStream, p pl
 	imgui.SameLine()
 	//	imgui.SetCursorPos(imgui.Vec2{imgui.CursorPosX() + imgui.ContentRegionAvail().X - float32(3*width+10),
 	imgui.SetCursorPos(imgui.Vec2{imgui.WindowWidth() - float32(7*width), imgui.CursorPosY()})
-	if lc.w != nil && lc.w.Connected() {
-		if lc.w.SimIsPaused {
+	if lc.controlClient != nil && lc.controlClient.Connected() {
+		if lc.controlClient.SimIsPaused {
 			if imgui.Button(renderer.FontAwesomeIconPlayCircle) {
-				lc.w.ToggleSimPause()
+				lc.controlClient.ToggleSimPause()
 			}
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip("Resume simulation")
 			}
 		} else {
 			if imgui.Button(renderer.FontAwesomeIconPauseCircle) {
-				lc.w.ToggleSimPause()
+				lc.controlClient.ToggleSimPause()
 			}
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip("Pause simulation")
@@ -1241,7 +1247,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *sim.EventStream, p pl
 			title: "Are you sure?",
 			query: "All aircraft will be deleted. Go ahead?",
 			ok: func() {
-				lc.w.DeleteAllAircraft(nil)
+				lc.controlClient.DeleteAllAircraft(nil)
 				for _, dep := range lc.departures {
 					dep.Reset()
 				}
@@ -1257,12 +1263,12 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *sim.EventStream, p pl
 
 	imgui.Separator()
 
-	if lc.w.LaunchConfig.Mode == sim.LaunchManual {
+	if lc.controlClient.LaunchConfig.Mode == sim.LaunchManual {
 		mitAndTime := func(ac *av.Aircraft, launchPosition math.Point2LL,
 			lastLaunchCallsign string, lastLaunchTime time.Time) {
 			imgui.TableNextColumn()
 			if lastLaunchCallsign != "" {
-				if ac := lc.w.Aircraft[lastLaunchCallsign]; ac != nil {
+				if ac := lc.controlClient.Aircraft[lastLaunchCallsign]; ac != nil {
 					d := math.NMDistance2LL(ac.Position(), launchPosition)
 					imgui.Text(fmt.Sprintf("%.1f", d))
 				}
@@ -1270,7 +1276,7 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *sim.EventStream, p pl
 
 			imgui.TableNextColumn()
 			if lastLaunchCallsign != "" {
-				d := lc.w.CurrentTime().Sub(lastLaunchTime).Round(time.Second).Seconds()
+				d := lc.controlClient.CurrentTime().Sub(lastLaunchTime).Round(time.Second).Seconds()
 				m, s := int(d)/60, int(d)%60
 				imgui.Text(fmt.Sprintf("%02d:%02d", m, s))
 			}
@@ -1320,9 +1326,9 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *sim.EventStream, p pl
 
 				imgui.TableNextColumn()
 				if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-					lc.w.LaunchAircraft(*dep.Aircraft)
+					lc.controlClient.LaunchAircraft(*dep.Aircraft)
 					dep.LastLaunchCallsign = dep.Aircraft.Callsign
-					dep.LastLaunchTime = lc.w.CurrentTime()
+					dep.LastLaunchTime = lc.controlClient.CurrentTime()
 					dep.TotalLaunches++
 
 					dep.Aircraft = lc.spawnDeparture(dep.Airport, dep.Runway, dep.Category)
@@ -1382,9 +1388,9 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *sim.EventStream, p pl
 
 				imgui.TableNextColumn()
 				if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-					lc.w.LaunchAircraft(*arr.Aircraft)
+					lc.controlClient.LaunchAircraft(*arr.Aircraft)
 					arr.LastLaunchCallsign = arr.Aircraft.Callsign
-					arr.LastLaunchTime = lc.w.CurrentTime()
+					arr.LastLaunchTime = lc.controlClient.CurrentTime()
 					arr.TotalLaunches++
 
 					arr.Aircraft = lc.spawnArrival(arr.Group, arr.Airport)
@@ -1404,21 +1410,21 @@ func (lc *LaunchControlWindow) Draw(w *World, eventStream *sim.EventStream, p pl
 		// Slightly messy, but DrawActiveDepartureRunways expects a table context...
 		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 		if imgui.BeginTableV("runways", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
-			lc.w.LaunchConfig.DrawActiveDepartureRunways()
+			lc.controlClient.LaunchConfig.DrawActiveDepartureRunways()
 			imgui.EndTable()
 		}
-		changed := lc.w.LaunchConfig.DrawDepartureUI(p)
-		changed = lc.w.LaunchConfig.DrawArrivalUI(p) || changed
+		changed := lc.controlClient.LaunchConfig.DrawDepartureUI(p)
+		changed = lc.controlClient.LaunchConfig.DrawArrivalUI(p) || changed
 
 		if changed {
-			lc.w.SetLaunchConfig(lc.w.LaunchConfig)
+			lc.controlClient.SetLaunchConfig(lc.controlClient.LaunchConfig)
 		}
 	}
 
 	imgui.End()
 
 	if !showLaunchControls {
-		lc.w.TakeOrReturnLaunchControl(eventStream)
+		lc.controlClient.TakeOrReturnLaunchControl(eventStream)
 	}
 }
 
@@ -1490,7 +1496,7 @@ which must be 3 digits (e.g., *040*).`},
 }
 
 // draw the windows that shows the available keyboard commands
-func uiDrawKeyboardWindow(w *World) {
+func uiDrawKeyboardWindow(c *sim.ControlClient) {
 	if !keyboardWindowVisible {
 		return
 	}
@@ -1506,8 +1512,8 @@ func uiDrawKeyboardWindow(w *World) {
 	imgui.Text("vice website")
 	// Underline the link
 	min, max := imgui.ItemRectMin(), imgui.ItemRectMax()
-	c := style.Color(imgui.StyleColorText)
-	imgui.WindowDrawList().AddLine(imgui.Vec2{min.X, max.Y}, max, imgui.PackedColorFromVec4(c))
+	color := style.Color(imgui.StyleColorText)
+	imgui.WindowDrawList().AddLine(imgui.Vec2{min.X, max.Y}, max, imgui.PackedColorFromVec4(color))
 	if imgui.IsItemHovered() && imgui.IsMouseClicked(0) {
 		browser.OpenURL("https://pharr.org/vice/")
 	}
@@ -1564,10 +1570,10 @@ simultaneously unless the *TC*, *TD*, or *TS* commands are used to specify the c
 after the first.`)
 		imgui.Text("\n\n")
 
-		if w != nil {
+		if c != nil {
 			var apprNames []string
-			for _, rwy := range w.ArrivalRunways {
-				ap := w.Airports[rwy.Airport]
+			for _, rwy := range c.State.ArrivalRunways {
+				ap := c.State.Airports[rwy.Airport]
 				for _, name := range util.SortedMapKeys(ap.Approaches) {
 					appr := ap.Approaches[name]
 					if appr.Runway == rwy.Runway {
@@ -1733,4 +1739,130 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 	}
 
 	imgui.PopFont() // regular font
+}
+
+type MissingPrimaryModalClient struct {
+	ch            chan *sim.Connection
+	controlClient *sim.ControlClient
+}
+
+func (mp *MissingPrimaryModalClient) Title() string {
+	return "Missing Primary Controller"
+}
+
+func (mp *MissingPrimaryModalClient) Opening() {}
+
+func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
+	var b []ModalDialogButton
+	b = append(b, ModalDialogButton{text: "Sign in to " + mp.controlClient.PrimaryController, action: func() bool {
+		err := mp.controlClient.ChangeControlPosition(mp.controlClient.PrimaryController, true)
+		return err == nil
+	}})
+	b = append(b, ModalDialogButton{text: "Disconnect", action: func() bool {
+		mp.ch <- nil // This will lead to a Disconnect() call in main.go
+		uiCloseModalDialog(ui.missingPrimaryDialog)
+		return true
+	}})
+	return b
+}
+
+func (mp *MissingPrimaryModalClient) Draw() int {
+	imgui.Text("The primary controller, " + mp.controlClient.PrimaryController + ", has disconnected from the server or is otherwise unreachable.\nThe simulation will be paused until a primary controller signs in.")
+	return -1
+}
+
+func uiDrawMissingPrimaryDialog(ch chan *sim.Connection, c *sim.ControlClient, p platform.Platform) {
+	if _, ok := c.Controllers[c.PrimaryController]; ok {
+		if ui.missingPrimaryDialog != nil {
+			uiCloseModalDialog(ui.missingPrimaryDialog)
+			ui.missingPrimaryDialog = nil
+		}
+	} else {
+		if ui.missingPrimaryDialog == nil {
+			ui.missingPrimaryDialog = NewModalDialogBox(&MissingPrimaryModalClient{
+				ch:            ch,
+				controlClient: c,
+			}, p)
+			uiShowModalDialog(ui.missingPrimaryDialog, true)
+		}
+	}
+}
+
+func uiDrawSettingsWindow(c *sim.ControlClient, p platform.Platform) {
+	if !ui.showSettings {
+		return
+	}
+
+	imgui.BeginV("Settings", &ui.showSettings, imgui.WindowFlagsAlwaysAutoResize)
+
+	if imgui.SliderFloatV("Simulation speed", &c.SimRate, 1, 20, "%.1f", 0) {
+		c.SetSimRate(c.SimRate)
+	}
+
+	update := !globalConfig.InhibitDiscordActivity.Load()
+	imgui.Checkbox("Update Discord activity status", &update)
+	globalConfig.InhibitDiscordActivity.Store(!update)
+
+	if imgui.BeginComboV("UI Font Size", strconv.Itoa(globalConfig.UIFontSize), imgui.ComboFlagsHeightLarge) {
+		sizes := renderer.AvailableFontSizes("Roboto Regular")
+		for _, size := range sizes {
+			if imgui.SelectableV(strconv.Itoa(size), size == globalConfig.UIFontSize, 0, imgui.Vec2{}) {
+				globalConfig.UIFontSize = size
+				ui.font = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
+			}
+		}
+		imgui.EndCombo()
+	}
+
+	var fsp *panes.FlightStripPane
+	var messages *panes.MessagesPane
+	var stars *panes.STARSPane
+	globalConfig.DisplayRoot.VisitPanes(func(p panes.Pane) {
+		switch pane := p.(type) {
+		case *panes.FlightStripPane:
+			fsp = pane
+		case *panes.STARSPane:
+			stars = pane
+		case *panes.MessagesPane:
+			messages = pane
+		}
+	})
+
+	if imgui.CollapsingHeader("STARS") {
+		stars.DrawUI(p, &globalConfig.Config)
+	}
+
+	if imgui.CollapsingHeader("Display") {
+		if imgui.Checkbox("Enable anti-aliasing", &globalConfig.EnableMSAA) {
+			uiShowModalDialog(NewModalDialogBox(
+				&MessageModalClient{
+					title: "Alert",
+					message: "You must restart vice for changes to the anti-aliasing " +
+						"mode to take effect.",
+				}, p), true)
+		}
+
+		imgui.Checkbox("Start in full-screen", &globalConfig.StartInFullScreen)
+
+		monitorNames := p.GetAllMonitorNames()
+		if imgui.BeginComboV("Monitor", monitorNames[globalConfig.FullScreenMonitor], imgui.ComboFlagsHeightLarge) {
+			for index, monitor := range monitorNames {
+				if imgui.SelectableV(monitor, monitor == monitorNames[globalConfig.FullScreenMonitor], 0, imgui.Vec2{}) {
+					globalConfig.FullScreenMonitor = index
+
+					p.EnableFullScreen(p.IsFullScreen())
+				}
+			}
+
+			imgui.EndCombo()
+		}
+	}
+	if fsp != nil && imgui.CollapsingHeader("Flight Strips") {
+		fsp.DrawUI(p, &globalConfig.Config)
+	}
+	if messages != nil && imgui.CollapsingHeader("Messages") {
+		messages.DrawUI(p, &globalConfig.Config)
+	}
+
+	imgui.End()
 }

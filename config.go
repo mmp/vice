@@ -107,16 +107,16 @@ func (c *GlobalConfig) Save() error {
 	return c.Encode(f)
 }
 
-func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform, w *World, saveSim bool) bool {
+func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform, c *sim.ControlClient, saveSim bool) bool {
 	gc.Sim = nil
 	gc.Callsign = ""
 	if saveSim {
-		if sim, err := w.GetSerializeSim(); err != nil {
+		if sim, err := c.GetSerializeSim(); err != nil {
 			lg.Errorf("%v", err)
 		} else {
 			sim.PreSave()
 			gc.Sim = sim
-			gc.Callsign = w.Callsign
+			gc.Callsign = c.Callsign
 		}
 	}
 
@@ -211,7 +211,7 @@ func LoadOrMakeDefaultConfig(p platform.Platform) {
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }
 
-func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, p platform.Platform,
+func (gc *GlobalConfig) Activate(c *sim.ControlClient, r renderer.Renderer, p platform.Platform,
 	eventStream *sim.EventStream) {
 	// Upgrade old ones without a MessagesPane
 	if gc.DisplayRoot != nil {
@@ -242,7 +242,7 @@ func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, p platform.Platf
 	}
 
 	if gc.DisplayRoot == nil {
-		stars := panes.NewSTARSPane(w.State)
+		stars := panes.NewSTARSPane(c.State)
 		messages := panes.NewMessagesPane()
 
 		fsp := panes.NewFlightStripPane()
@@ -274,8 +274,8 @@ func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, p platform.Platf
 	}
 
 	gc.DisplayRoot.VisitPanes(func(pane panes.Pane) {
-		if w != nil {
-			pane.Activate(&w.State, r, p, eventStream, lg)
+		if c != nil {
+			pane.Activate(&c.State, r, p, eventStream, lg)
 		} else {
 			pane.Activate(nil, r, p, eventStream, lg)
 		}

@@ -448,7 +448,7 @@ func wmPaneIsPresent(pane panes.Pane, root *DisplayNode) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func wmDrawPanes(p platform.Platform, r renderer.Renderer, w *World, stats *Stats) {
+func wmDrawPanes(p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient, stats *Stats) {
 	var filter func(d *DisplayNode) *DisplayNode
 	filter = func(d *DisplayNode) *DisplayNode {
 		if fsp, ok := d.Children[0].Pane.(*panes.FlightStripPane); ok && fsp.HideFlightStrips {
@@ -551,9 +551,7 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, w *World, stats *Stat
 				AudioEnabled:  &globalConfig.AudioEnabled,
 				KeyboardFocus: &wm.focus,
 
-				Control:     w,
-				ClientState: w.client,
-				SimState:    w.State,
+				ControlClient: controlClient,
 			}
 
 			// Similarly make the mouse events available only to the

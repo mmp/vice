@@ -52,9 +52,8 @@ var (
 	lg           *log.Logger
 
 	// client only
-	newSimConnectionChan chan *sim.Connection
-	localServer          *sim.Server
-	remoteServer         *sim.Server
+	localServer  *sim.Server
+	remoteServer *sim.Server
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -298,8 +297,8 @@ func main() {
 
 		renderer.FontsInit(render, plat)
 
-		newSimConnectionChan = make(chan *sim.Connection, 2)
-		var world *World
+		newSimConnectionChan := make(chan *sim.Connection, 2)
+		var controlClient *sim.ControlClient
 
 		localServer = <-localSimServerChan
 
@@ -311,9 +310,9 @@ func main() {
 				if err := localServer.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
 					lg.Errorf("error restoring saved Sim: %v", err)
 				} else {
-					world = NewWorldFromSimState(*result.SimState, result.ControllerToken,
-						localServer.RPCClient)
-					world.ToggleShowScenarioInfoWindow()
+					controlClient = sim.NewControlClient(*result.SimState, result.ControllerToken,
+						localServer.RPCClient, lg)
+					ui.showScenarioInfo = !ui.showScenarioInfo
 				}
 			}
 		}
@@ -322,10 +321,10 @@ func main() {
 
 		uiInit(render, plat, eventStream)
 
-		globalConfig.Activate(world, render, plat, eventStream)
+		globalConfig.Activate(controlClient, render, plat, eventStream)
 
-		if world == nil {
-			uiShowConnectDialog(false, plat)
+		if controlClient == nil {
+			uiShowConnectDialog(newSimConnectionChan, false, plat)
 		}
 
 		if !globalConfig.AskedDiscordOptIn {
@@ -347,19 +346,19 @@ func main() {
 		for {
 			select {
 			case ns := <-newSimConnectionChan:
-				if world != nil {
-					world.Disconnect()
+				if controlClient != nil {
+					controlClient.Disconnect()
 				}
-				world = NewWorldFromSimState(ns.SimState, ns.SimProxy.ControllerToken,
-					ns.SimProxy.Client)
+				controlClient = sim.NewControlClient(ns.SimState, ns.SimProxy.ControllerToken,
+					ns.SimProxy.Client, lg)
 				simStartTime = time.Now()
 
-				if world == nil {
-					uiShowConnectDialog(false, plat)
-				} else if world != nil {
-					world.ToggleShowScenarioInfoWindow()
+				if controlClient == nil {
+					uiShowConnectDialog(newSimConnectionChan, false, plat)
+				} else if controlClient != nil {
+					ui.showScenarioInfo = !ui.showScenarioInfo
 					globalConfig.DisplayRoot.VisitPanes(func(p panes.Pane) {
-						p.Reset(world.State, lg)
+						p.Reset(controlClient.State, lg)
 					})
 				}
 
@@ -386,16 +385,26 @@ func main() {
 			default:
 			}
 
-			if world == nil {
+			if controlClient == nil {
 				plat.SetWindowTitle("vice: [disconnected]")
 				SetDiscordStatus(DiscordStatus{Start: simStartTime}, lg)
 			} else {
-				plat.SetWindowTitle("vice: " + world.GetWindowTitle())
+				title := "(disconnected)"
+				if controlClient.SimDescription != "" {
+					deparr := fmt.Sprintf(" [ %d departures %d arrivals ]", controlClient.TotalDepartures, controlClient.TotalArrivals)
+					if controlClient.SimName == "" {
+						title = controlClient.State.Callsign + ": " + controlClient.SimDescription + deparr
+					} else {
+						title = controlClient.State.Callsign + "@" + controlClient.SimName + ": " + controlClient.SimDescription + deparr
+					}
+				}
+
+				plat.SetWindowTitle("vice: " + title)
 				// Update discord RPC
 				SetDiscordStatus(DiscordStatus{
-					TotalDepartures: world.TotalDepartures,
-					TotalArrivals:   world.TotalArrivals,
-					Callsign:        world.Callsign,
+					TotalDepartures: controlClient.State.TotalDepartures,
+					TotalArrivals:   controlClient.State.TotalArrivals,
+					Callsign:        controlClient.State.Callsign,
 					Start:           simStartTime,
 				}, lg)
 			}
@@ -420,8 +429,8 @@ func main() {
 			// Let the world update its state based on messages from the
 			// network; a synopsis of changes to aircraft is then passed along
 			// to the window panes.
-			if world != nil {
-				world.GetUpdates(eventStream,
+			if controlClient != nil {
+				controlClient.GetUpdates(eventStream,
 					func(err error) {
 						eventStream.Post(sim.Event{
 							Type:    sim.StatusMessageEvent,
@@ -433,9 +442,9 @@ func main() {
 							}, plat), true)
 
 							remoteServer = nil
-							world = nil
+							controlClient = nil
 
-							uiShowConnectDialog(false, plat)
+							uiShowConnectDialog(newSimConnectionChan, false, plat)
 						}
 					})
 			}
@@ -444,8 +453,8 @@ func main() {
 			imgui.NewFrame()
 
 			// Generate and render vice draw lists
-			if world != nil {
-				wmDrawPanes(plat, render, world, &stats)
+			if controlClient != nil {
+				wmDrawPanes(plat, render, controlClient, &stats)
 			} else {
 				commandBuffer := renderer.GetCommandBuffer()
 				commandBuffer.ClearRGB(renderer.RGB{})
@@ -456,7 +465,7 @@ func main() {
 			timeMarker(&stats.drawPanes)
 
 			// Draw the user interface
-			drawUI(plat, render, world, eventStream, &stats)
+			drawUI(newSimConnectionChan, plat, render, controlClient, eventStream, &stats)
 			timeMarker(&stats.drawImgui)
 
 			// Wait for vsync
@@ -470,11 +479,11 @@ func main() {
 
 			if plat.ShouldStop() && len(ui.activeModalDialogs) == 0 {
 				// Do this while we're still running the event loop.
-				saveSim := world != nil && world.simProxy.Client == localServer.RPCClient
-				globalConfig.SaveIfChanged(render, plat, world, saveSim)
+				saveSim := controlClient != nil && controlClient.RPCClient() == localServer.RPCClient
+				globalConfig.SaveIfChanged(render, plat, controlClient, saveSim)
 
-				if world != nil {
-					world.Disconnect()
+				if controlClient != nil {
+					controlClient.Disconnect()
 				}
 				break
 			}
