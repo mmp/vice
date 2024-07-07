@@ -15,11 +15,9 @@ import (
 	"log/slog"
 	_ "net/http/pprof"
 	"os"
-	"os/signal"
 	"path"
 	"runtime"
 	"runtime/debug"
-	"runtime/pprof"
 	"sort"
 	"strings"
 	"time"
@@ -80,7 +78,7 @@ func main() {
 	if err := fixconsole.FixConsoleIfNeeded(); err != nil {
 		// Not sure this will actually appear, but what else are we going
 		// to do...
-		fmt.Printf("FixConsole: %v", err)
+		fmt.Printf("FixConsole: %v\n", err)
 	}
 
 	// Initialize the logging system first and foremost.
@@ -101,49 +99,11 @@ func main() {
 	absPath(memprofile)
 	absPath(cpuprofile)
 
-	writeMemProfile := func() {
-		f, err := os.Create(*memprofile)
-		if err != nil {
-			lg.Errorf("%s: unable to create memory profile file: %v", *memprofile, err)
-		}
-		if err = pprof.WriteHeapProfile(f); err != nil {
-			lg.Errorf("%s: unable to write memory profile file: %v", *memprofile, err)
-		}
-		f.Close()
+	profiler, err := util.CreateProfiler(*cpuprofile, *memprofile)
+	if err != nil {
+		lg.Errorf("%v", err)
 	}
-
-	if *cpuprofile != "" {
-		if f, err := os.Create(*cpuprofile); err != nil {
-			lg.Errorf("%s: unable to create CPU profile file: %v", *cpuprofile, err)
-		} else {
-			if err = pprof.StartCPUProfile(f); err != nil {
-				lg.Errorf("unable to start CPU profile: %v", err)
-			} else {
-				defer pprof.StopCPUProfile()
-
-				// Catch ctrl-c and to write out the profile before exiting
-				sig := make(chan os.Signal, 1)
-				signal.Notify(sig, os.Interrupt)
-
-				go func() {
-					<-sig
-					pprof.StopCPUProfile()
-					f.Close()
-					os.Exit(0)
-				}()
-			}
-		}
-	}
-	if *memprofile != "" {
-		// Catch ctrl-c
-		sig := make(chan os.Signal, 1)
-		signal.Notify(sig, os.Interrupt)
-		go func() {
-			<-sig
-			writeMemProfile()
-			os.Exit(0)
-		}()
-	}
+	defer profiler.Cleanup()
 
 	eventStream := sim.NewEventStream(lg)
 
@@ -470,10 +430,5 @@ func main() {
 				break
 			}
 		}
-	}
-
-	// Common cleanup
-	if *memprofile != "" {
-		writeMemProfile()
 	}
 }
