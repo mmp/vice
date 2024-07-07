@@ -35,6 +35,7 @@ type StaticDatabase struct {
 	Airlines            map[string]Airline
 	MagneticGrid        MagneticGrid
 	ARTCCs              map[string]ARTCC
+	ERAMAdaptations     map[string]ERAMAdaptation
 	TRACONs             map[string]TRACON
 	MVAs                map[string][]MVA // TRACON -> MVAs
 }
@@ -47,6 +48,7 @@ type FAAAirport struct {
 	Runways    []Runway
 	Approaches map[string][]WaypointArray
 	STARs      map[string]STAR
+	ARTCC      string
 }
 
 type TRACON struct {
@@ -151,6 +153,8 @@ func init() {
 	go func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.MVAs = parseMVAs(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.ERAMAdaptations = parseAdaptations(); wg.Done() }()
 	wg.Wait()
 
 	for icao, ap := range airports {
@@ -267,6 +271,17 @@ func parseAirports() map[string]FAAAirport {
 				airports[ap.Id] = ap
 			}
 		})
+
+	artccsRaw := util.LoadResource("airport_artccs.json")
+	data := make(map[string]string) // Airport -> ARTCC
+	json.Unmarshal(artccsRaw, &data)
+
+	for name, artcc := range data {
+		if entry, ok := airports[name]; ok {
+			entry.ARTCC = artcc
+			airports[name] = entry
+		}
+	}
 
 	return airports
 }
@@ -389,6 +404,17 @@ func parseMagneticGrid() MagneticGrid {
 	}
 
 	return mg
+}
+
+func parseAdaptations() map[string]ERAMAdaptation {
+	adaptations := make(map[string]ERAMAdaptation)
+
+	adaptationsRaw := util.LoadResource("adaptations.json")
+	if err := json.Unmarshal(adaptationsRaw, &adaptations); err != nil {
+		panic(err)
+	}
+
+	return adaptations
 }
 
 func (mg *MagneticGrid) Lookup(p math.Point2LL) (float32, error) {
