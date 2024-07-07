@@ -464,8 +464,6 @@ func drawUI(ch chan *sim.Connection, p platform.Platform, r renderer.Renderer, c
 
 	drawActiveDialogBoxes()
 
-	wmDrawUI(p)
-
 	uiDrawKeyboardWindow(controlClient)
 
 	imgui.PopFont()
@@ -1814,24 +1812,6 @@ func uiDrawSettingsWindow(c *sim.ControlClient, p platform.Platform) {
 		imgui.EndCombo()
 	}
 
-	var fsp *panes.FlightStripPane
-	var messages *panes.MessagesPane
-	var stars *panes.STARSPane
-	globalConfig.DisplayRoot.VisitPanes(func(p panes.Pane) {
-		switch pane := p.(type) {
-		case *panes.FlightStripPane:
-			fsp = pane
-		case *panes.STARSPane:
-			stars = pane
-		case *panes.MessagesPane:
-			messages = pane
-		}
-	})
-
-	if imgui.CollapsingHeader("STARS") {
-		stars.DrawUI(p, &globalConfig.Config)
-	}
-
 	if imgui.CollapsingHeader("Display") {
 		if imgui.Checkbox("Enable anti-aliasing", &globalConfig.EnableMSAA) {
 			uiShowModalDialog(NewModalDialogBox(
@@ -1857,12 +1837,14 @@ func uiDrawSettingsWindow(c *sim.ControlClient, p platform.Platform) {
 			imgui.EndCombo()
 		}
 	}
-	if fsp != nil && imgui.CollapsingHeader("Flight Strips") {
-		fsp.DrawUI(p, &globalConfig.Config)
-	}
-	if messages != nil && imgui.CollapsingHeader("Messages") {
-		messages.DrawUI(p, &globalConfig.Config)
-	}
+
+	globalConfig.DisplayRoot.VisitPanes(func(pane panes.Pane) {
+		if draw, ok := pane.(panes.UIDrawer); ok {
+			if imgui.CollapsingHeader(pane.Name()) {
+				draw.DrawUI(p, &globalConfig.Config)
+			}
+		}
+	})
 
 	imgui.End()
 }

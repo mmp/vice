@@ -317,8 +317,6 @@ func main() {
 			}
 		}
 
-		wmInit()
-
 		uiInit(render, plat, eventStream)
 
 		globalConfig.Activate(controlClient, render, plat, eventStream)

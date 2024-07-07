@@ -29,12 +29,6 @@ var (
 	// Assorted state related to the window tiling is collected in the wm
 	// struct.
 	wm struct {
-		// When a Pane's entry in the "Subwindows" menu is selected, these
-		// two maps are populated to indicate that the Pane's configuration
-		// window should be shown.
-		showPaneSettings map[panes.Pane]*bool
-		showPaneName     map[panes.Pane]string
-
 		// Normally the Pane that the mouse is over gets mouse events,
 		// though if the user has started a click-drag, then the Pane that
 		// received the click keeps getting events until the mouse button
@@ -408,28 +402,6 @@ func (d *DisplayNode) getString(indent string) string {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-
-// wmInit handles general initialization for the window (pane) management
-// system.
-func wmInit() {
-	wm.showPaneSettings = make(map[panes.Pane]*bool)
-	wm.showPaneName = make(map[panes.Pane]string)
-}
-
-// wmAddPaneMenuSettings is called to populate the top-level "Subwindows"
-// menu.
-// wmDrawUI draws any open Pane settings windows.
-func wmDrawUI(p platform.Platform) {
-	globalConfig.DisplayRoot.VisitPanes(func(pane panes.Pane) {
-		if show, ok := wm.showPaneSettings[pane]; ok && *show {
-			if uid, ok := pane.(panes.UIDrawer); ok {
-				imgui.BeginV(wm.showPaneName[pane]+" settings", show, imgui.WindowFlagsAlwaysAutoResize)
-				uid.DrawUI(p, &globalConfig.Config)
-				imgui.End()
-			}
-		}
-	})
-}
 
 // wmPaneIsPresent checks to see if the specified Pane is present in the
 // display hierarchy.
