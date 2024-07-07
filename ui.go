@@ -292,8 +292,15 @@ func uiCloseModalDialog(d *ModalDialogBox) {
 
 }
 
-func uiShowConnectDialog(ch chan *sim.Connection, allowCancel bool, p platform.Platform) {
-	client := &ConnectModalClient{ch: ch, allowCancel: allowCancel, platform: p}
+func uiShowConnectDialog(ch chan *sim.Connection, localServer **sim.Server, remoteServer **sim.Server,
+	allowCancel bool, p platform.Platform) {
+	client := &ConnectModalClient{
+		ch:           ch,
+		localServer:  localServer,
+		remoteServer: remoteServer,
+		allowCancel:  allowCancel,
+		platform:     p,
+	}
 	uiShowModalDialog(NewModalDialogBox(client, p), false)
 }
 
@@ -323,7 +330,8 @@ func uiEndDisable(b bool) {
 	}
 }
 
-func drawUI(ch chan *sim.Connection, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
+func drawUI(ch chan *sim.Connection, localServer **sim.Server, remoteServer **sim.Server,
+	p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
 	eventStream *sim.EventStream, stats *Stats) {
 	if ui.newReleaseDialogChan != nil {
 		select {
@@ -362,7 +370,7 @@ func drawUI(ch chan *sim.Connection, p platform.Platform, r renderer.Renderer, c
 		}
 
 		if imgui.Button(renderer.FontAwesomeIconRedo) {
-			uiShowConnectDialog(ch, true, p)
+			uiShowConnectDialog(ch, localServer, remoteServer, true, p)
 		}
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Start new simulation")
@@ -582,17 +590,19 @@ func (m *ModalDialogBox) Draw() {
 }
 
 type ConnectModalClient struct {
-	ch          chan *sim.Connection
-	config      sim.NewSimConfiguration
-	allowCancel bool
-	platform    platform.Platform
+	ch           chan *sim.Connection
+	localServer  **sim.Server
+	remoteServer **sim.Server
+	config       sim.NewSimConfiguration
+	allowCancel  bool
+	platform     platform.Platform
 }
 
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
 	c.config = sim.MakeNewSimConfiguration(c.ch, &globalConfig.LastTRACON,
-		&localServer, &remoteServer, lg)
+		c.localServer, c.remoteServer, lg)
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {
@@ -607,10 +617,12 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 		action: func() bool {
 			if c.config.ShowRatesWindow() {
 				client := &RatesModalClient{
-					ch:          c.ch,
-					platform:    c.platform,
-					config:      c.config,
-					allowCancel: c.allowCancel,
+					ch:           c.ch,
+					localServer:  c.localServer,
+					remoteServer: c.remoteServer,
+					platform:     c.platform,
+					config:       c.config,
+					allowCancel:  c.allowCancel,
 				}
 				uiShowModalDialog(NewModalDialogBox(client, c.platform), false)
 				return true
@@ -633,10 +645,12 @@ func (c *ConnectModalClient) Draw() int {
 }
 
 type RatesModalClient struct {
-	ch          chan *sim.Connection
-	config      sim.NewSimConfiguration
-	allowCancel bool
-	platform    platform.Platform
+	ch           chan *sim.Connection
+	localServer  **sim.Server
+	remoteServer **sim.Server
+	config       sim.NewSimConfiguration
+	allowCancel  bool
+	platform     platform.Platform
 }
 
 func (c *RatesModalClient) Title() string { return "Arrival / Departure Rates" }
@@ -650,9 +664,11 @@ func (c *RatesModalClient) Buttons() []ModalDialogButton {
 		text: "Previous",
 		action: func() bool {
 			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{
-				ch:          c.ch,
-				config:      c.config,
-				allowCancel: c.allowCancel}, c.platform), false)
+				ch:           c.ch,
+				localServer:  c.localServer,
+				remoteServer: c.remoteServer,
+				config:       c.config,
+				allowCancel:  c.allowCancel}, c.platform), false)
 			return true
 		},
 	}

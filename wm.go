@@ -421,6 +421,14 @@ func wmPaneIsPresent(pane panes.Pane, root *DisplayNode) bool {
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
 func wmDrawPanes(p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient, stats *Stats) {
+	if controlClient == nil {
+		commandBuffer := renderer.GetCommandBuffer()
+		commandBuffer.ClearRGB(renderer.RGB{})
+		stats.render = r.RenderCommandBuffer(commandBuffer)
+		renderer.ReturnCommandBuffer(commandBuffer)
+		return
+	}
+
 	var filter func(d *DisplayNode) *DisplayNode
 	filter = func(d *DisplayNode) *DisplayNode {
 		if fsp, ok := d.Children[0].Pane.(*panes.FlightStripPane); ok && fsp.HideFlightStrips {

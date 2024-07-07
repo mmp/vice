@@ -51,10 +51,6 @@ var (
 	globalConfig *GlobalConfig
 	lg           *log.Logger
 
-	// client only
-	localServer  *sim.Server
-	remoteServer *sim.Server
-
 	//go:embed resources/version.txt
 	buildVersion string
 
@@ -255,6 +251,8 @@ func main() {
 		var stats Stats
 		var render renderer.Renderer
 		var plat platform.Platform
+		var localServer *sim.Server
+		var remoteServer *sim.Server
 
 		// Catch any panics so that we can put up a dialog box and hopefully
 		// get a bug report.
@@ -322,7 +320,7 @@ func main() {
 		globalConfig.Activate(controlClient, render, plat, eventStream)
 
 		if controlClient == nil {
-			uiShowConnectDialog(newSimConnectionChan, false, plat)
+			uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false, plat)
 		}
 
 		if !globalConfig.AskedDiscordOptIn {
@@ -352,7 +350,7 @@ func main() {
 				simStartTime = time.Now()
 
 				if controlClient == nil {
-					uiShowConnectDialog(newSimConnectionChan, false, plat)
+					uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false, plat)
 				} else if controlClient != nil {
 					ui.showScenarioInfo = !ui.showScenarioInfo
 					globalConfig.DisplayRoot.VisitPanes(func(p panes.Pane) {
@@ -442,7 +440,7 @@ func main() {
 							remoteServer = nil
 							controlClient = nil
 
-							uiShowConnectDialog(newSimConnectionChan, false, plat)
+							uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false, plat)
 						}
 					})
 			}
@@ -451,19 +449,13 @@ func main() {
 			imgui.NewFrame()
 
 			// Generate and render vice draw lists
-			if controlClient != nil {
-				wmDrawPanes(plat, render, controlClient, &stats)
-			} else {
-				commandBuffer := renderer.GetCommandBuffer()
-				commandBuffer.ClearRGB(renderer.RGB{})
-				stats.render = render.RenderCommandBuffer(commandBuffer)
-				renderer.ReturnCommandBuffer(commandBuffer)
-			}
+			wmDrawPanes(plat, render, controlClient, &stats)
 
 			timeMarker(&stats.drawPanes)
 
 			// Draw the user interface
-			drawUI(newSimConnectionChan, plat, render, controlClient, eventStream, &stats)
+			drawUI(newSimConnectionChan, &localServer, &remoteServer, plat, render,
+				controlClient, eventStream, &stats)
 			timeMarker(&stats.drawImgui)
 
 			// Wait for vsync
