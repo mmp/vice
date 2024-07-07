@@ -35,22 +35,23 @@ func getResourcesFS() *fs.StatFS {
 		return &fsys
 	}
 
-	// Try CWD (this is useful for development and debugging but shouldn't
-	// be needed for release builds.
+	// Try CWD as well as CWD/../..; these are useful for development and
+	// debugging but shouldn't be needed for release builds.
 	wd, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
+	for _, alts := range []string{".", "../.."} {
+		dir = filepath.Join(wd, alts, "resources")
 
-	dir = filepath.Join(wd, "resources")
+		fsys, ok = os.DirFS(dir).(fs.StatFS)
+		if !ok {
+			panic("FS from DirFS is not a StatFS?")
+		}
 
-	fsys, ok = os.DirFS(dir).(fs.StatFS)
-	if !ok {
-		panic("FS from DirFS is not a StatFS?")
-	}
-
-	if check(fsys) {
-		return &fsys
+		if check(fsys) {
+			return &fsys
+		}
 	}
 	panic("unable to find videomaps in CWD")
 }
