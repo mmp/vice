@@ -603,7 +603,7 @@ var (
 	reFixHeadingDistance = regexp.MustCompile(`^([\w-]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
 )
 
-func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogger, simConfigurations map[string]map[string]*SimConfiguration) {
+func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogger, simConfigurations map[string]map[string]*Configuration) {
 	// stars_config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
 	sg.STARSFacilityAdaptation.PostDeserialize(e, sg)
@@ -927,8 +927,8 @@ func (s *STARSFacilityAdaptation) PostLoad(ml *av.VideoMapLibrary) error {
 }
 
 func initializeSimConfigurations(sg *ScenarioGroup,
-	simConfigurations map[string]map[string]*SimConfiguration, multiController bool, e *util.ErrorLogger) {
-	config := &SimConfiguration{
+	simConfigurations map[string]map[string]*Configuration, multiController bool, e *util.ErrorLogger) {
+	config := &Configuration{
 		ScenarioConfigs:  make(map[string]*SimScenarioConfiguration),
 		ControlPositions: sg.ControlPositions,
 		DefaultScenario:  sg.DefaultScenario,
@@ -978,7 +978,7 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 		}
 
 		if simConfigurations[sg.TRACON] == nil {
-			simConfigurations[sg.TRACON] = make(map[string]*SimConfiguration)
+			simConfigurations[sg.TRACON] = make(map[string]*Configuration)
 		}
 		simConfigurations[sg.TRACON][sg.Name] = config
 	}
@@ -1092,14 +1092,14 @@ func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
 func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMapFilename string,
-	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*SimConfiguration, *av.VideoMapLibrary) {
+	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*Configuration, *av.VideoMapLibrary) {
 	start := time.Now()
 
 	math.SetLocationResolver(&dbResolver{})
 
 	// First load the scenarios.
 	scenarioGroups := make(map[string]map[string]*ScenarioGroup)
-	simConfigurations := make(map[string]map[string]*SimConfiguration)
+	simConfigurations := make(map[string]map[string]*Configuration)
 	referencedVideoMaps := make(map[string]map[string]interface{}) // filename -> map name -> used
 	updateReferencedMaps := func(fa STARSFacilityAdaptation) {
 		if referencedVideoMaps[fa.VideoMapFile] == nil {

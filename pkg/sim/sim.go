@@ -39,7 +39,7 @@ var (
 	windRequest = make(map[string]chan getweather.MetarData)
 )
 
-type SimConfiguration struct {
+type Configuration struct {
 	ScenarioConfigs  map[string]*SimScenarioConfiguration
 	ControlPositions map[string]*av.Controller
 	DefaultScenario  string
@@ -264,13 +264,13 @@ func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 
 type NewSimConfiguration struct {
 	TRACONName      string
-	TRACON          map[string]*SimConfiguration
+	TRACON          map[string]*Configuration
 	GroupName       string
 	Scenario        *SimScenarioConfiguration
 	ScenarioName    string
-	localServer     **SimServer
-	remoteServer    **SimServer
-	selectedServer  *SimServer
+	localServer     **Server
+	remoteServer    **Server
+	selectedServer  *Server
 	NewSimName      string // for create remote only
 	RequirePassword bool   // for create remote only
 	Password        string // for create remote only
@@ -287,7 +287,7 @@ type NewSimConfiguration struct {
 	DisplayError error
 
 	lg            *log.Logger
-	ch            chan *SimConnection
+	ch            chan *Connection
 	defaultTRACON *string
 }
 
@@ -306,8 +306,8 @@ const (
 	NewSimJoinRemote
 )
 
-func MakeNewSimConfiguration(ch chan *SimConnection, defaultTRACON *string, localServer **SimServer,
-	remoteServer **SimServer, lg *log.Logger) NewSimConfiguration {
+func MakeNewSimConfiguration(ch chan *Connection, defaultTRACON *string, localServer **Server,
+	remoteServer **Server, lg *log.Logger) NewSimConfiguration {
 	c := NewSimConfiguration{
 		lg:             lg,
 		ch:             ch,
@@ -367,7 +367,7 @@ func (c *NewSimConfiguration) SetTRACON(name string) {
 
 func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	var ok bool
-	var groupConfig *SimConfiguration
+	var groupConfig *Configuration
 	if groupConfig, ok = c.TRACON[groupName]; !ok {
 		c.lg.Errorf("%s: group not found in TRACON %s", groupName, c.TRACONName)
 		groupName = util.SortedMapKeys(c.TRACON)[0]
@@ -811,9 +811,9 @@ func (c *NewSimConfiguration) Start() error {
 
 	*c.defaultTRACON = c.TRACONName
 
-	c.ch <- &SimConnection{
+	c.ch <- &Connection{
 		SimState: *result.SimState,
-		SimProxy: &SimProxy{
+		SimProxy: &Proxy{
 			ControllerToken: result.ControllerToken,
 			Client:          c.selectedServer.RPCClient,
 		},
@@ -822,9 +822,9 @@ func (c *NewSimConfiguration) Start() error {
 	return nil
 }
 
-type SimConnection struct {
+type Connection struct {
 	SimState State
-	SimProxy *SimProxy
+	SimProxy *Proxy
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1380,7 +1380,7 @@ type GlobalMessage struct {
 	FromController string
 }
 
-type SimWorldUpdate struct {
+type WorldUpdate struct {
 	Aircraft    map[string]*av.Aircraft
 	Controllers map[string]*av.Controller
 	Time        time.Time
@@ -1394,7 +1394,7 @@ type SimWorldUpdate struct {
 	TotalArrivals   int
 }
 
-func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
+func (s *Sim) GetWorldUpdate(token string, update *WorldUpdate) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -1412,7 +1412,7 @@ func (s *Sim) GetWorldUpdate(token string, update *SimWorldUpdate) error {
 		}
 
 		var err error
-		*update, err = deep.Copy(SimWorldUpdate{
+		*update, err = deep.Copy(WorldUpdate{
 			Aircraft:        s.State.Aircraft,
 			Controllers:     s.State.Controllers,
 			Time:            s.SimTime,

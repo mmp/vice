@@ -52,9 +52,9 @@ var (
 	lg           *log.Logger
 
 	// client only
-	newSimConnectionChan chan *sim.SimConnection
-	localServer          *sim.SimServer
-	remoteServer         *sim.SimServer
+	newSimConnectionChan chan *sim.Connection
+	localServer          *sim.Server
+	remoteServer         *sim.Server
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -189,7 +189,7 @@ func main() {
 	} else if *broadcastMessage != "" {
 		sim.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
 	} else if *server {
-		sim.RunSimServer(*scenarioFilename, *videoMapFilename, *serverPort, lg)
+		sim.RunServer(*scenarioFilename, *videoMapFilename, *serverPort, lg)
 	} else if *showRoutes != "" {
 		ap, ok := av.DB.Airports[*showRoutes]
 		if !ok {
@@ -244,7 +244,7 @@ func main() {
 		}
 	} else {
 		localSimServerChan, mapLibrary, err :=
-			sim.LaunchLocalSimServer(*scenarioFilename, *videoMapFilename, lg)
+			sim.LaunchLocalServer(*scenarioFilename, *videoMapFilename, lg)
 		if err != nil {
 			lg.Errorf("error launching local SimServer: %v", err)
 			os.Exit(1)
@@ -298,7 +298,7 @@ func main() {
 
 		renderer.FontsInit(render, plat)
 
-		newSimConnectionChan = make(chan *sim.SimConnection, 2)
+		newSimConnectionChan = make(chan *sim.Connection, 2)
 		var world *World
 
 		localServer = <-localSimServerChan

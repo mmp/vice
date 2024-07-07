@@ -31,25 +31,25 @@ import (
 
 const ViceRPCVersion = 15
 
-type SimServer struct {
+type Server struct {
 	*util.RPCClient
 	name        string
-	configs     map[string]map[string]*SimConfiguration
+	configs     map[string]map[string]*Configuration
 	runningSims map[string]*RemoteSim
 }
 
-type SimServerConnection struct {
-	Server *SimServer
+type ServerConnection struct {
+	Server *Server
 	Err    error
 }
 
-func (s *SimServer) Close() error {
+func (s *Server) Close() error {
 	return s.RPCClient.Close()
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
-type SimProxy struct {
+type Proxy struct {
 	ControllerToken string
 	Client          *util.RPCClient
 }
@@ -59,11 +59,11 @@ type AircraftSpecifier struct {
 	Callsign        string
 }
 
-func (s *SimProxy) TogglePause() *rpc.Call {
+func (s *Proxy) TogglePause() *rpc.Call {
 	return s.Client.Go("Sim.TogglePause", s.ControllerToken, nil, nil)
 }
 
-func (s *SimProxy) SignOff(_, _ *struct{}) error {
+func (s *Proxy) SignOff(_, _ *struct{}) error {
 	if err := s.Client.CallWithTimeout("Sim.SignOff", s.ControllerToken, nil); err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func (s *SimProxy) SignOff(_, _ *struct{}) error {
 	return nil
 }
 
-func (s *SimProxy) ChangeControlPosition(callsign string, keepTracks bool) error {
+func (s *Proxy) ChangeControlPosition(callsign string, keepTracks bool) error {
 	return s.Client.CallWithTimeout("Sim.ChangeControlPosition",
 		&ChangeControlPositionArgs{
 			ControllerToken: s.ControllerToken,
@@ -81,17 +81,17 @@ func (s *SimProxy) ChangeControlPosition(callsign string, keepTracks bool) error
 		}, nil)
 }
 
-func (s *SimProxy) GetSerializeSim() (*Sim, error) {
+func (s *Proxy) GetSerializeSim() (*Sim, error) {
 	var sim Sim
 	err := s.Client.CallWithTimeout("SimManager.GetSerializeSim", s.ControllerToken, &sim)
 	return &sim, err
 }
 
-func (s *SimProxy) GetWorldUpdate(wu *SimWorldUpdate) *rpc.Call {
+func (s *Proxy) GetWorldUpdate(wu *WorldUpdate) *rpc.Call {
 	return s.Client.Go("Sim.GetWorldUpdate", s.ControllerToken, wu, nil)
 }
 
-func (s *SimProxy) SetSimRate(r float32) *rpc.Call {
+func (s *Proxy) SetSimRate(r float32) *rpc.Call {
 	return s.Client.Go("Sim.SetSimRate",
 		&SetSimRateArgs{
 			ControllerToken: s.ControllerToken,
@@ -99,7 +99,7 @@ func (s *SimProxy) SetSimRate(r float32) *rpc.Call {
 		}, nil, nil)
 }
 
-func (s *SimProxy) SetLaunchConfig(lc LaunchConfig) *rpc.Call {
+func (s *Proxy) SetLaunchConfig(lc LaunchConfig) *rpc.Call {
 	return s.Client.Go("Sim.SetLaunchConfig",
 		&SetLaunchConfigArgs{
 			ControllerToken: s.ControllerToken,
@@ -107,11 +107,11 @@ func (s *SimProxy) SetLaunchConfig(lc LaunchConfig) *rpc.Call {
 		}, nil, nil)
 }
 
-func (s *SimProxy) TakeOrReturnLaunchControl() *rpc.Call {
+func (s *Proxy) TakeOrReturnLaunchControl() *rpc.Call {
 	return s.Client.Go("Sim.TakeOrReturnLaunchControl", s.ControllerToken, nil, nil)
 }
 
-func (s *SimProxy) SetGlobalLeaderLine(callsign string, direction *math.CardinalOrdinalDirection) *rpc.Call {
+func (s *Proxy) SetGlobalLeaderLine(callsign string, direction *math.CardinalOrdinalDirection) *rpc.Call {
 	return s.Client.Go("Sim.SetGlobalLeaderLine", &SetGlobalLeaderLineArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -119,7 +119,7 @@ func (s *SimProxy) SetGlobalLeaderLine(callsign string, direction *math.Cardinal
 	}, nil, nil)
 }
 
-func (s *SimProxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
+func (s *Proxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
 	return s.Client.Go("Sim.SetScratchpad", &SetScratchpadArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -127,7 +127,7 @@ func (s *SimProxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) SetSecondaryScratchpad(callsign string, scratchpad string) *rpc.Call {
+func (s *Proxy) SetSecondaryScratchpad(callsign string, scratchpad string) *rpc.Call {
 	return s.Client.Go("Sim.SetSecondaryScratchpad", &SetScratchpadArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -135,21 +135,21 @@ func (s *SimProxy) SetSecondaryScratchpad(callsign string, scratchpad string) *r
 	}, nil, nil)
 }
 
-func (s *SimProxy) InitiateTrack(callsign string) *rpc.Call {
+func (s *Proxy) InitiateTrack(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.InitiateTrack", &InitiateTrackArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
-func (s *SimProxy) DropTrack(callsign string) *rpc.Call {
+func (s *Proxy) DropTrack(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.DropTrack", &DropTrackArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
-func (s *SimProxy) HandoffTrack(callsign string, controller string) *rpc.Call {
+func (s *Proxy) HandoffTrack(callsign string, controller string) *rpc.Call {
 	return s.Client.Go("Sim.HandoffTrack", &HandoffArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -157,21 +157,21 @@ func (s *SimProxy) HandoffTrack(callsign string, controller string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) AcceptHandoff(callsign string) *rpc.Call {
+func (s *Proxy) AcceptHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.AcceptHandoff", &AcceptHandoffArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
-func (s *SimProxy) CancelHandoff(callsign string) *rpc.Call {
+func (s *Proxy) CancelHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.CancelHandoff", &CancelHandoffArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
-func (s *SimProxy) GlobalMessage(global GlobalMessage) *rpc.Call {
+func (s *Proxy) GlobalMessage(global GlobalMessage) *rpc.Call {
 	return s.Client.Go("Sim.GlobalMessage", &GlobalMessageArgs{
 		ControllerToken: s.ControllerToken,
 		Message:         global.Message,
@@ -179,7 +179,7 @@ func (s *SimProxy) GlobalMessage(global GlobalMessage) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) ForceQL(callsign, controller string) *rpc.Call {
+func (s *Proxy) ForceQL(callsign, controller string) *rpc.Call {
 	return s.Client.Go("Sim.ForceQL", &ForceQLArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -187,7 +187,7 @@ func (s *SimProxy) ForceQL(callsign, controller string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) RedirectHandoff(callsign, controller string) *rpc.Call {
+func (s *Proxy) RedirectHandoff(callsign, controller string) *rpc.Call {
 	return s.Client.Go("Sim.RedirectHandoff", &HandoffArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -195,14 +195,14 @@ func (s *SimProxy) RedirectHandoff(callsign, controller string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) AcceptRedirectedHandoff(callsign string) *rpc.Call {
+func (s *Proxy) AcceptRedirectedHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.AcceptRedirectedHandoff", &AcceptHandoffArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
-func (s *SimProxy) RemoveForceQL(callsign, controller string) *rpc.Call {
+func (s *Proxy) RemoveForceQL(callsign, controller string) *rpc.Call {
 	return s.Client.Go("Sim.RemoveForceQL", &ForceQLArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -210,7 +210,7 @@ func (s *SimProxy) RemoveForceQL(callsign, controller string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) PointOut(callsign string, controller string) *rpc.Call {
+func (s *Proxy) PointOut(callsign string, controller string) *rpc.Call {
 	return s.Client.Go("Sim.PointOut", &PointOutArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -218,21 +218,21 @@ func (s *SimProxy) PointOut(callsign string, controller string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) AcknowledgePointOut(callsign string) *rpc.Call {
+func (s *Proxy) AcknowledgePointOut(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.AcknowledgePointOut", &PointOutArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
-func (s *SimProxy) RejectPointOut(callsign string) *rpc.Call {
+func (s *Proxy) RejectPointOut(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.RejectPointOut", &PointOutArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)
 }
 
-func (s *SimProxy) ToggleSPCOverride(callsign string, spc string) *rpc.Call {
+func (s *Proxy) ToggleSPCOverride(callsign string, spc string) *rpc.Call {
 	return s.Client.Go("Sim.ToggleSPCOverride", &ToggleSPCArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -240,7 +240,7 @@ func (s *SimProxy) ToggleSPCOverride(callsign string, spc string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
+func (s *Proxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
 	return s.Client.Go("Sim.SetTemporaryAltitude", &AssignAltitudeArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -248,13 +248,13 @@ func (s *SimProxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *SimProxy) DeleteAllAircraft() *rpc.Call {
+func (s *Proxy) DeleteAllAircraft() *rpc.Call {
 	return s.Client.Go("Sim.DeleteAllAircraft", &DeleteAircraftArgs{
 		ControllerToken: s.ControllerToken,
 	}, nil, nil)
 }
 
-func (s *SimProxy) RunAircraftCommands(callsign string, cmds string, result *AircraftCommandsResult) *rpc.Call {
+func (s *Proxy) RunAircraftCommands(callsign string, cmds string, result *AircraftCommandsResult) *rpc.Call {
 	return s.Client.Go("Sim.RunAircraftCommands", &AircraftCommandsArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
@@ -262,7 +262,7 @@ func (s *SimProxy) RunAircraftCommands(callsign string, cmds string, result *Air
 	}, result, nil)
 }
 
-func (s *SimProxy) LaunchAircraft(ac av.Aircraft) *rpc.Call {
+func (s *Proxy) LaunchAircraft(ac av.Aircraft) *rpc.Call {
 	return s.Client.Go("Sim.LaunchAircraft", &LaunchAircraftArgs{
 		ControllerToken: s.ControllerToken,
 		Aircraft:        ac,
@@ -274,7 +274,7 @@ func (s *SimProxy) LaunchAircraft(ac av.Aircraft) *rpc.Call {
 
 type SimManager struct {
 	scenarioGroups       map[string]map[string]*ScenarioGroup
-	configs              map[string]map[string]*SimConfiguration
+	configs              map[string]map[string]*Configuration
 	activeSims           map[string]*Sim
 	controllerTokenToSim map[string]*Sim
 	mu                   util.LoggingMutex
@@ -284,7 +284,7 @@ type SimManager struct {
 }
 
 func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
-	simConfigurations map[string]map[string]*SimConfiguration, mapLib *av.VideoMapLibrary,
+	simConfigurations map[string]map[string]*Configuration, mapLib *av.VideoMapLibrary,
 	lg *log.Logger) *SimManager {
 	return &SimManager{
 		scenarioGroups:       scenarioGroups,
@@ -392,7 +392,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 }
 
 type SignOnResult struct {
-	Configurations map[string]map[string]*SimConfiguration
+	Configurations map[string]map[string]*Configuration
 	RunningSims    map[string]*RemoteSim
 }
 
@@ -493,7 +493,7 @@ func (sm *SimManager) ControllerTokenToSim(token string) (*Sim, bool) {
 	return sim, ok
 }
 
-type SimStatus struct {
+type simStatus struct {
 	Name            string
 	Config          string
 	IdleTime        time.Duration
@@ -502,7 +502,7 @@ type SimStatus struct {
 	TotalArrivals   int
 }
 
-func (ss SimStatus) LogValue() slog.Value {
+func (ss simStatus) LogValue() slog.Value {
 	return slog.GroupValue(
 		slog.String("name", ss.Name),
 		slog.String("config", ss.Config),
@@ -512,14 +512,14 @@ func (ss SimStatus) LogValue() slog.Value {
 		slog.Int("arrivals", ss.TotalArrivals))
 }
 
-func (sm *SimManager) GetSimStatus() []SimStatus {
+func (sm *SimManager) getSimStatus() []simStatus {
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
-	var ss []SimStatus
+	var ss []simStatus
 	for _, name := range util.SortedMapKeys(sm.activeSims) {
 		sim := sm.activeSims[name]
-		status := SimStatus{
+		status := simStatus{
 			Name:            name,
 			Config:          sim.Scenario,
 			IdleTime:        sim.IdleTime().Round(time.Second),
@@ -592,13 +592,13 @@ func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// SimDispatcher
+// Dispatcher
 
-type SimDispatcher struct {
+type Dispatcher struct {
 	sm *SimManager
 }
 
-func (sd *SimDispatcher) GetWorldUpdate(token string, update *SimWorldUpdate) error {
+func (sd *Dispatcher) GetWorldUpdate(token string, update *WorldUpdate) error {
 	if sim, ok := sd.sm.ControllerTokenToSim(token); !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -606,7 +606,7 @@ func (sd *SimDispatcher) GetWorldUpdate(token string, update *SimWorldUpdate) er
 	}
 }
 
-func (sd *SimDispatcher) SignOff(token string, _ *struct{}) error {
+func (sd *Dispatcher) SignOff(token string, _ *struct{}) error {
 	if sim, ok := sd.sm.ControllerTokenToSim(token); !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -620,7 +620,7 @@ type ChangeControlPositionArgs struct {
 	KeepTracks      bool
 }
 
-func (sd *SimDispatcher) ChangeControlPosition(cs *ChangeControlPositionArgs, _ *struct{}) error {
+func (sd *Dispatcher) ChangeControlPosition(cs *ChangeControlPositionArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.ControllerTokenToSim(cs.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -628,7 +628,7 @@ func (sd *SimDispatcher) ChangeControlPosition(cs *ChangeControlPositionArgs, _ 
 	}
 }
 
-func (sd *SimDispatcher) TakeOrReturnLaunchControl(token string, _ *struct{}) error {
+func (sd *Dispatcher) TakeOrReturnLaunchControl(token string, _ *struct{}) error {
 	if sim, ok := sd.sm.ControllerTokenToSim(token); !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -641,7 +641,7 @@ type SetSimRateArgs struct {
 	Rate            float32
 }
 
-func (sd *SimDispatcher) SetSimRate(r *SetSimRateArgs, _ *struct{}) error {
+func (sd *Dispatcher) SetSimRate(r *SetSimRateArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[r.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -654,7 +654,7 @@ type SetLaunchConfigArgs struct {
 	Config          LaunchConfig
 }
 
-func (sd *SimDispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) error {
+func (sd *Dispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[lc.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -662,7 +662,7 @@ func (sd *SimDispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) e
 	}
 }
 
-func (sd *SimDispatcher) TogglePause(token string, _ *struct{}) error {
+func (sd *Dispatcher) TogglePause(token string, _ *struct{}) error {
 	if sim, ok := sd.sm.ControllerTokenToSim(token); !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -676,7 +676,7 @@ type SetScratchpadArgs struct {
 	Scratchpad      string
 }
 
-func (sd *SimDispatcher) SetScratchpad(a *SetScratchpadArgs, _ *struct{}) error {
+func (sd *Dispatcher) SetScratchpad(a *SetScratchpadArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -684,7 +684,7 @@ func (sd *SimDispatcher) SetScratchpad(a *SetScratchpadArgs, _ *struct{}) error 
 	}
 }
 
-func (sd *SimDispatcher) SetSecondaryScratchpad(a *SetScratchpadArgs, _ *struct{}) error {
+func (sd *Dispatcher) SetSecondaryScratchpad(a *SetScratchpadArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -698,7 +698,7 @@ type SetGlobalLeaderLineArgs struct {
 	Direction       *math.CardinalOrdinalDirection
 }
 
-func (sd *SimDispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *struct{}) error {
+func (sd *Dispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[a.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -708,7 +708,7 @@ func (sd *SimDispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *stru
 
 type InitiateTrackArgs AircraftSpecifier
 
-func (sd *SimDispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error {
+func (sd *Dispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -718,7 +718,7 @@ func (sd *SimDispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error
 
 type DropTrackArgs AircraftSpecifier
 
-func (sd *SimDispatcher) DropTrack(dt *DropTrackArgs, _ *struct{}) error {
+func (sd *Dispatcher) DropTrack(dt *DropTrackArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[dt.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -732,7 +732,7 @@ type HandoffArgs struct {
 	Controller      string
 }
 
-func (sd *SimDispatcher) HandoffTrack(h *HandoffArgs, _ *struct{}) error {
+func (sd *Dispatcher) HandoffTrack(h *HandoffArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -740,7 +740,7 @@ func (sd *SimDispatcher) HandoffTrack(h *HandoffArgs, _ *struct{}) error {
 	}
 }
 
-func (sd *SimDispatcher) RedirectHandoff(h *HandoffArgs, _ *struct{}) error {
+func (sd *Dispatcher) RedirectHandoff(h *HandoffArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[h.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -748,7 +748,7 @@ func (sd *SimDispatcher) RedirectHandoff(h *HandoffArgs, _ *struct{}) error {
 	}
 }
 
-func (sd *SimDispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, _ *struct{}) error {
+func (sd *Dispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -758,7 +758,7 @@ func (sd *SimDispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, _ *struc
 
 type AcceptHandoffArgs AircraftSpecifier
 
-func (sd *SimDispatcher) AcceptHandoff(ah *AcceptHandoffArgs, _ *struct{}) error {
+func (sd *Dispatcher) AcceptHandoff(ah *AcceptHandoffArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[ah.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -768,7 +768,7 @@ func (sd *SimDispatcher) AcceptHandoff(ah *AcceptHandoffArgs, _ *struct{}) error
 
 type CancelHandoffArgs AircraftSpecifier
 
-func (sd *SimDispatcher) CancelHandoff(ch *CancelHandoffArgs, _ *struct{}) error {
+func (sd *Dispatcher) CancelHandoff(ch *CancelHandoffArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[ch.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -781,18 +781,20 @@ type PointOutArgs struct {
 	Callsign        string
 	Controller      string
 }
+
 type ForceQLArgs struct {
 	ControllerToken string
 	Callsign        string
 	Controller      string
 }
+
 type GlobalMessageArgs struct {
 	ControllerToken string
 	FromController  string
 	Message         string
 }
 
-func (sd *SimDispatcher) GlobalMessage(po *GlobalMessageArgs, _ *struct{}) error {
+func (sd *Dispatcher) GlobalMessage(po *GlobalMessageArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -800,7 +802,7 @@ func (sd *SimDispatcher) GlobalMessage(po *GlobalMessageArgs, _ *struct{}) error
 	}
 }
 
-func (sd *SimDispatcher) ForceQL(po *ForceQLArgs, _ *struct{}) error {
+func (sd *Dispatcher) ForceQL(po *ForceQLArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -808,7 +810,7 @@ func (sd *SimDispatcher) ForceQL(po *ForceQLArgs, _ *struct{}) error {
 	}
 }
 
-func (sd *SimDispatcher) RemoveForceQL(po *ForceQLArgs, _ *struct{}) error {
+func (sd *Dispatcher) RemoveForceQL(po *ForceQLArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -816,7 +818,7 @@ func (sd *SimDispatcher) RemoveForceQL(po *ForceQLArgs, _ *struct{}) error {
 	}
 }
 
-func (sd *SimDispatcher) PointOut(po *PointOutArgs, _ *struct{}) error {
+func (sd *Dispatcher) PointOut(po *PointOutArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -824,7 +826,7 @@ func (sd *SimDispatcher) PointOut(po *PointOutArgs, _ *struct{}) error {
 	}
 }
 
-func (sd *SimDispatcher) AcknowledgePointOut(po *PointOutArgs, _ *struct{}) error {
+func (sd *Dispatcher) AcknowledgePointOut(po *PointOutArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -832,7 +834,7 @@ func (sd *SimDispatcher) AcknowledgePointOut(po *PointOutArgs, _ *struct{}) erro
 	}
 }
 
-func (sd *SimDispatcher) RejectPointOut(po *PointOutArgs, _ *struct{}) error {
+func (sd *Dispatcher) RejectPointOut(po *PointOutArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -846,7 +848,7 @@ type ToggleSPCArgs struct {
 	SPC             string
 }
 
-func (sd *SimDispatcher) ToggleSPCOverride(ts *ToggleSPCArgs, _ *struct{}) error {
+func (sd *Dispatcher) ToggleSPCOverride(ts *ToggleSPCArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[ts.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -860,7 +862,7 @@ type AssignAltitudeArgs struct {
 	Altitude        int
 }
 
-func (sd *SimDispatcher) SetTemporaryAltitude(alt *AssignAltitudeArgs, _ *struct{}) error {
+func (sd *Dispatcher) SetTemporaryAltitude(alt *AssignAltitudeArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[alt.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -870,7 +872,7 @@ func (sd *SimDispatcher) SetTemporaryAltitude(alt *AssignAltitudeArgs, _ *struct
 
 type DeleteAircraftArgs AircraftSpecifier
 
-func (sd *SimDispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, _ *struct{}) error {
+func (sd *Dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[da.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
@@ -891,7 +893,7 @@ type AircraftCommandsResult struct {
 	RemainingInput string
 }
 
-func (sd *SimDispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *AircraftCommandsResult) error {
+func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *AircraftCommandsResult) error {
 	token, callsign := cmds.ControllerToken, cmds.Callsign
 	sim, ok := sd.sm.controllerTokenToSim[token]
 	if !ok {
@@ -1296,7 +1298,7 @@ type LaunchAircraftArgs struct {
 	Aircraft        av.Aircraft
 }
 
-func (sd *SimDispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error {
+func (sd *Dispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error {
 	sim, ok := sd.sm.controllerTokenToSim[ls.ControllerToken]
 	if !ok {
 		return ErrNoSimForControllerToken
@@ -1305,7 +1307,7 @@ func (sd *SimDispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) err
 	return nil
 }
 
-func RunSimServer(extraScenario string, extraVideoMap string, serverPort int, lg *log.Logger) {
+func RunServer(extraScenario string, extraVideoMap string, serverPort int, lg *log.Logger) {
 	l, err := net.Listen("tcp", fmt.Sprintf(":%d", serverPort))
 	if err != nil {
 		lg.Errorf("tcp listen: %v", err)
@@ -1333,21 +1335,21 @@ func getClient(hostname string, lg *log.Logger) (*util.RPCClient, error) {
 	return &util.RPCClient{rpc.NewClientWithCodec(codec)}, nil
 }
 
-func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *SimServerConnection {
-	ch := make(chan *SimServerConnection, 1)
+func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *ServerConnection {
+	ch := make(chan *ServerConnection, 1)
 	go func() {
 		if client, err := getClient(hostname, lg); err != nil {
-			ch <- &SimServerConnection{Err: err}
+			ch <- &ServerConnection{Err: err}
 			return
 		} else {
 			var so SignOnResult
 			start := time.Now()
 			if err := client.CallWithTimeout("SimManager.SignOn", ViceRPCVersion, &so); err != nil {
-				ch <- &SimServerConnection{Err: err}
+				ch <- &ServerConnection{Err: err}
 			} else {
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
-				ch <- &SimServerConnection{
-					Server: &SimServer{
+				ch <- &ServerConnection{
+					Server: &Server{
 						RPCClient:   client,
 						name:        "Network (Multi-controller)",
 						configs:     so.Configurations,
@@ -1361,7 +1363,7 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *SimServerConn
 	return ch
 }
 
-func LaunchLocalSimServer(extraScenario string, extraVideoMap string, lg *log.Logger) (chan *SimServer, *av.VideoMapLibrary, error) {
+func LaunchLocalServer(extraScenario string, extraVideoMap string, lg *log.Logger) (chan *Server, *av.VideoMapLibrary, error) {
 	l, err := net.Listen("tcp", ":0")
 	if err != nil {
 		return nil, nil, err
@@ -1371,7 +1373,7 @@ func LaunchLocalSimServer(extraScenario string, extraVideoMap string, lg *log.Lo
 
 	configsChan, mapLibrary := runServer(l, true, extraScenario, extraVideoMap, lg)
 
-	ch := make(chan *SimServer, 1)
+	ch := make(chan *Server, 1)
 	go func() {
 		configs := <-configsChan
 
@@ -1381,7 +1383,7 @@ func LaunchLocalSimServer(extraScenario string, extraVideoMap string, lg *log.Lo
 			os.Exit(1)
 		}
 
-		ch <- &SimServer{
+		ch <- &Server{
 			RPCClient: client,
 			name:      "Local (Single controller)",
 			configs:   configs,
@@ -1392,8 +1394,8 @@ func LaunchLocalSimServer(extraScenario string, extraVideoMap string, lg *log.Lo
 }
 
 func runServer(l net.Listener, isLocal bool, extraScenario string, extraVideoMap string,
-	lg *log.Logger) (chan map[string]map[string]*SimConfiguration, *av.VideoMapLibrary) {
-	ch := make(chan map[string]map[string]*SimConfiguration, 1)
+	lg *log.Logger) (chan map[string]map[string]*Configuration, *av.VideoMapLibrary) {
+	ch := make(chan map[string]map[string]*Configuration, 1)
 
 	var e util.ErrorLogger
 	scenarioGroups, simConfigurations, mapLib :=
@@ -1411,8 +1413,8 @@ func runServer(l net.Listener, isLocal bool, extraScenario string, extraVideoMap
 			lg.Errorf("unable to register SimManager: %v", err)
 			os.Exit(1)
 		}
-		if err := server.RegisterName("Sim", &SimDispatcher{sm: sm}); err != nil {
-			lg.Errorf("unable to register SimDispatcher: %v", err)
+		if err := server.RegisterName("Sim", &Dispatcher{sm: sm}); err != nil {
+			lg.Errorf("unable to register dispatcher: %v", err)
 			os.Exit(1)
 		}
 
@@ -1482,7 +1484,7 @@ type ServerStats struct {
 	NumGoRoutines    int
 	CPUUsage         int
 
-	SimStatus []SimStatus
+	SimStatus []simStatus
 	Errors    string
 }
 
@@ -1606,7 +1608,7 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 		NumGoRoutines:    runtime.NumGoroutine(),
 		CPUUsage:         int(gomath.Round(usage[0])),
 
-		SimStatus: sm.GetSimStatus(),
+		SimStatus: sm.getSimStatus(),
 	}
 
 	// process logs

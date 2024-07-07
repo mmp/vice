@@ -25,7 +25,7 @@ import (
 
 type World struct {
 	// Used on the client side only
-	simProxy *sim.SimProxy
+	simProxy *sim.Proxy
 
 	lastUpdateRequest time.Time
 	lastReturnedTime  time.Time
@@ -43,7 +43,7 @@ type World struct {
 func NewWorldFromSimState(ss sim.State, controllerToken string, client *util.RPCClient) *World {
 	return &World{
 		State: ss,
-		simProxy: &sim.SimProxy{
+		simProxy: &sim.Proxy{
 			ControllerToken: controllerToken,
 			Client:          client,
 		},
@@ -345,7 +345,7 @@ func (w *World) GetUpdates(eventStream *sim.EventStream, onErr func(error)) {
 		}
 		w.lastUpdateRequest = time.Now()
 
-		wu := &sim.SimWorldUpdate{}
+		wu := &sim.WorldUpdate{}
 		w.updateCall = &util.PendingCall{
 			Call:      w.simProxy.GetWorldUpdate(wu),
 			IssueTime: time.Now(),
@@ -363,7 +363,7 @@ func (w *World) GetUpdates(eventStream *sim.EventStream, onErr func(error)) {
 	}
 }
 
-func (w *World) UpdateWorld(wu *sim.SimWorldUpdate, eventStream *sim.EventStream) {
+func (w *World) UpdateWorld(wu *sim.WorldUpdate, eventStream *sim.EventStream) {
 	w.State.Aircraft = wu.Aircraft
 	if wu.Controllers != nil {
 		w.State.Controllers = wu.Controllers
