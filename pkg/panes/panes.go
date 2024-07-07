@@ -37,7 +37,7 @@ type Pane interface {
 
 	CanTakeKeyboardFocus() bool
 
-	Draw(ctx *PaneContext, cb *renderer.CommandBuffer)
+	Draw(ctx *Context, cb *renderer.CommandBuffer)
 }
 
 type UIDrawer interface {
@@ -61,7 +61,7 @@ var UITextColor renderer.RGB = renderer.RGB{R: 0.85, G: 0.85, B: 0.85}
 var UITextHighlightColor renderer.RGB = renderer.RGBFromHex(0xB2B338)
 var UIErrorColor renderer.RGB = renderer.RGBFromHex(0xE94242)
 
-type PaneContext struct {
+type Context struct {
 	PaneExtent       math.Extent2D
 	ParentPaneExtent math.Extent2D
 
@@ -81,7 +81,7 @@ type PaneContext struct {
 	ControlClient *sim.ControlClient
 }
 
-func (ctx *PaneContext) InitializeMouse(fullDisplayExtent math.Extent2D, p platform.Platform) {
+func (ctx *Context) InitializeMouse(fullDisplayExtent math.Extent2D, p platform.Platform) {
 	ctx.Mouse = p.GetMouse()
 
 	// Convert to pane coordinates:
@@ -97,7 +97,7 @@ func (ctx *PaneContext) InitializeMouse(fullDisplayExtent math.Extent2D, p platf
 	ctx.Mouse.DragDelta[1] *= -1
 }
 
-func (ctx *PaneContext) SetWindowCoordinateMatrices(cb *renderer.CommandBuffer) {
+func (ctx *Context) SetWindowCoordinateMatrices(cb *renderer.CommandBuffer) {
 	w := float32(int(ctx.PaneExtent.Width() + 0.5))
 	h := float32(int(ctx.PaneExtent.Height() + 0.5))
 	cb.LoadProjectionMatrix(math.Identity3x3().Ortho(0, w, 0, h))
@@ -154,7 +154,7 @@ func (ep *EmptyPane) CanTakeKeyboardFocus() bool         { return false }
 
 func (ep *EmptyPane) Name() string { return "(Empty)" }
 
-func (ep *EmptyPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {}
+func (ep *EmptyPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {}
 
 ///////////////////////////////////////////////////////////////////////////
 // FlightStripPane
@@ -239,7 +239,7 @@ func (fsp *FlightStripPane) Reset(ss sim.State, lg *log.Logger) {
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
 
-func (fsp *FlightStripPane) processEvents(ctx *PaneContext) {
+func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	possiblyAdd := func(ac *av.Aircraft) {
 		if _, ok := fsp.addedAircraft[ac.Callsign]; ok {
 			return
@@ -352,7 +352,7 @@ func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config)
 	uiEndDisable(fsp.HideFlightStrips)
 }
 
-func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
+func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	fsp.processEvents(ctx)
 
 	// Font width and height
@@ -731,7 +731,7 @@ func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 	}
 }
 
-func (mp *MessagesPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
+func (mp *MessagesPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	mp.processEvents(ctx)
 
 	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
@@ -805,7 +805,7 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	td.GenerateCommands(cb)
 }
 
-func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
+func (mp *MessagesPane) processKeyboard(ctx *Context) {
 	if ctx.Keyboard == nil || !ctx.HaveFocus {
 		return
 	}
@@ -891,7 +891,7 @@ func (msg *Message) Color() renderer.RGB {
 	}
 }
 
-func (mp *MessagesPane) runCommands(ctx *PaneContext) {
+func (mp *MessagesPane) runCommands(ctx *Context) {
 	mp.input.cmd = strings.TrimSpace(mp.input.cmd)
 
 	if mp.input.cmd[0] == '/' {
@@ -954,7 +954,7 @@ func (ci *CLIInput) DeleteAfterCursor() {
 	}
 }
 
-func (mp *MessagesPane) processEvents(ctx *PaneContext) {
+func (mp *MessagesPane) processEvents(ctx *Context) {
 	lastRadioCallsign := ""
 	var lastRadioType av.RadioTransmissionType
 	var unexpectedTransmission bool
@@ -1073,9 +1073,9 @@ func NewVerticalScrollBar(width int, invert bool) *ScrollBar {
 }
 
 // Update should be called once per frame, providing the total number of things
-// being drawn, the number of them that are visible, and the PaneContext passed
+// being drawn, the number of them that are visible, and the Context passed
 // to the Pane's Draw method (so that mouse events can be handled, if appropriate.
-func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
+func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *Context) {
 	sb.nItems = nItems
 	sb.nVisible = nVisible
 
@@ -1131,7 +1131,7 @@ func (sb *ScrollBar) Visible() bool {
 
 // Draw emits the drawing commands for the scrollbar into the provided
 // CommandBuffer.
-func (sb *ScrollBar) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
+func (sb *ScrollBar) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	if !sb.Visible() {
 		return
 	}

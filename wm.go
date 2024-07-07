@@ -112,7 +112,7 @@ func (s *SplitLine) Name() string {
 	return "Split Line"
 }
 
-func (s *SplitLine) Draw(ctx *panes.PaneContext, cb *renderer.CommandBuffer) {
+func (s *SplitLine) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	if ctx.Mouse != nil {
 		if s.Axis == SplitAxisX {
 			ctx.Mouse.SetCursor(imgui.MouseCursorResizeEW)
@@ -516,7 +516,7 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, controlClient *sim.Co
 	root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent, p,
 		func(paneExtent math.Extent2D, parentExtent math.Extent2D, pane panes.Pane) {
 			haveFocus := pane == wm.focus.Current() && !imgui.CurrentIO().WantCaptureKeyboard()
-			ctx := panes.PaneContext{
+			ctx := panes.Context{
 				PaneExtent:       paneExtent,
 				ParentPaneExtent: parentExtent,
 				Platform:         p,
@@ -525,12 +525,10 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, controlClient *sim.Co
 				HaveFocus:        haveFocus,
 				Now:              time.Now(),
 				Lg:               lg,
-
-				MenuBarHeight: ui.menuBarHeight,
-				AudioEnabled:  &globalConfig.AudioEnabled,
-				KeyboardFocus: &wm.focus,
-
-				ControlClient: controlClient,
+				MenuBarHeight:    ui.menuBarHeight,
+				AudioEnabled:     &globalConfig.AudioEnabled,
+				KeyboardFocus:    &wm.focus,
+				ControlClient:    controlClient,
 			}
 
 			// Similarly make the mouse events available only to the

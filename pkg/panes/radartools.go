@@ -442,7 +442,7 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D, lg *log.Logger
 
 // Draw draws the current weather radar image, if available. (If none is yet
 // available, it returns rather than stalling waiting for it).
-func (w *WeatherRadar) Draw(ctx *PaneContext, intensity float32, contrast float32,
+func (w *WeatherRadar) Draw(ctx *Context, intensity float32, contrast float32,
 	active [NumWxLevels]bool, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	select {
 	case w.wxCb = <-w.cbChan:
@@ -477,7 +477,7 @@ func (w *WeatherRadar) Draw(ctx *PaneContext, intensity float32, contrast float3
 // rotation angle, if any.  Drawing commands are added to the provided
 // command buffer, which is assumed to have projection matrices set up for
 // drawing using window coordinates.
-func DrawCompass(p math.Point2LL, ctx *PaneContext, rotationAngle float32, font *renderer.Font, color renderer.RGB,
+func DrawCompass(p math.Point2LL, ctx *Context, rotationAngle float32, font *renderer.Font, color renderer.RGB,
 	paneBounds math.Extent2D, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	// Window coordinates of the center point.
 	// TODO: should we explicitly handle the case of this being outside the window?
@@ -556,7 +556,7 @@ func DrawCompass(p math.Point2LL, ctx *PaneContext, rotationAngle float32, font 
 
 // DrawRangeRings draws ten circles around the specified lat-long point in
 // steps of the specified radius (in nm).
-func DrawRangeRings(ctx *PaneContext, center math.Point2LL, radius float32, color renderer.RGB, transforms ScopeTransformations,
+func DrawRangeRings(ctx *Context, center math.Point2LL, radius float32, color renderer.RGB, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	pixelDistanceNm := transforms.PixelDistanceNM(ctx.ControlClient.NmPerLongitude)
 	centerWindow := transforms.WindowFromLatLongP(center)
@@ -678,7 +678,7 @@ var (
 
 // If the user has run the "find" command to highlight a point in the
 // world, draw a red circle around that point for a few seconds.
-func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func DrawHighlighted(ctx *Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	remaining := time.Until(highlightedLocationEndTime)
 	if remaining < 0 {
 		return
