@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
-	gomath "math"
 	"net/rpc"
 	"runtime"
 	"slices"
@@ -2898,129 +2897,6 @@ func (s *Sim) DeleteAllAircraft(token string) error {
 	return nil
 }
 
-///////////////////////////////////////////////////////////////////////////
-
-// State
-
-type State struct {
-	Aircraft    map[string]*av.Aircraft
-	METAR       map[string]*av.METAR
-	Controllers map[string]*av.Controller
-
-	DepartureAirports map[string]*av.Airport
-	ArrivalAirports   map[string]*av.Airport
-
-	TRACON                   string
-	LaunchConfig             LaunchConfig
-	PrimaryController        string
-	MultiControllers         av.SplitConfiguration
-	SimIsPaused              bool
-	SimRate                  float32
-	SimName                  string
-	SimDescription           string
-	SimTime                  time.Time
-	MagneticVariation        float32
-	NmPerLongitude           float32
-	Airports                 map[string]*av.Airport
-	Fixes                    map[string]math.Point2LL
-	PrimaryAirport           string
-	RadarSites               map[string]*av.RadarSite
-	Center                   math.Point2LL
-	Range                    float32
-	Wind                     av.Wind
-	Callsign                 string
-	ScenarioDefaultVideoMaps []string
-	ApproachAirspace         []ControllerAirspaceVolume
-	DepartureAirspace        []ControllerAirspaceVolume
-	DepartureRunways         []ScenarioGroupDepartureRunway
-	ArrivalRunways           []ScenarioGroupArrivalRunway
-	Scratchpads              map[string]string
-	ArrivalGroups            map[string][]av.Arrival
-	TotalDepartures          int
-	TotalArrivals            int
-	STARSFacilityAdaptation  STARSFacilityAdaptation
-}
-
-func (ss *State) Locate(s string) (math.Point2LL, bool) {
-	s = strings.ToUpper(s)
-	// ScenarioGroup's definitions take precedence...
-	if ap, ok := ss.Airports[s]; ok {
-		return ap.Location, true
-	} else if p, ok := ss.Fixes[s]; ok {
-		return p, true
-	} else if n, ok := av.DB.Navaids[strings.ToUpper(s)]; ok {
-		return n.Location, ok
-	} else if ap, ok := av.DB.Airports[strings.ToUpper(s)]; ok {
-		return ap.Location, ok
-	} else if f, ok := av.DB.Fixes[strings.ToUpper(s)]; ok {
-		return f.Location, ok
-	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
-		return p, true
-	} else {
-		return math.Point2LL{}, false
-	}
-}
-
-func (ss *State) AircraftFromPartialCallsign(c string) *av.Aircraft {
-	if ac, ok := ss.Aircraft[c]; ok {
-		return ac
-	}
-
-	var final []*av.Aircraft
-	for callsign, ac := range ss.Aircraft {
-		if ac.ControllingController == ss.Callsign && strings.Contains(callsign, c) {
-			final = append(final, ac)
-		}
-	}
-	if len(final) == 1 {
-		return final[0]
-	} else {
-		return nil
-	}
-}
-
-func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
-	if len(ss.MultiControllers) > 0 {
-		callsign, err := ss.MultiControllers.ResolveController(ac.DepartureContactController,
-			func(callsign string) bool {
-				ctrl, ok := ss.Controllers[callsign]
-				return ok && ctrl.IsHuman
-			})
-		if err != nil {
-			lg.Error("Unable to resolve departure controller", slog.Any("error", err),
-				slog.Any("aircraft", ac))
-		}
-		return util.Select(callsign != "", callsign, ss.PrimaryController)
-	} else {
-		return ss.PrimaryController
-	}
-}
-
-func (ss *State) GetVideoMaps() ([]av.VideoMap, []string) {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.Callsign]; ok {
-		return config.VideoMaps, config.DefaultMaps
-	}
-	return ss.STARSFacilityAdaptation.VideoMaps, ss.ScenarioDefaultVideoMaps
-}
-
-func (ss *State) GetInitialRange() float32 {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.Callsign]; ok && config.Range != 0 {
-		return config.Range
-	}
-	return ss.Range
-}
-
-func (ss *State) GetInitialCenter() math.Point2LL {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.Callsign]; ok && !config.Center.IsZero() {
-		return config.Center
-	}
-	return ss.Center
-}
-
-func (ss *State) InhibitCAVolumes() []av.AirspaceVolume {
-	return ss.STARSFacilityAdaptation.InhibitCAVolumes
-}
-
 // If |b| is true, all following imgui elements will be disabled (and drawn
 // accordingly).
 func uiStartDisable(b bool) {
@@ -3039,224 +2915,269 @@ func uiEndDisable(b bool) {
 	}
 }
 
-func (ss *State) AverageWindVector() [2]float32 {
-	d := math.OppositeHeading(float32(ss.Wind.Direction))
-	v := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
-	return math.Scale2f(v, float32(ss.Wind.Speed))
+var badCallsigns map[string]interface{} = map[string]interface{}{
+	// 9/11
+	"AAL11":  nil,
+	"UAL175": nil,
+	"AAL77":  nil,
+	"UAL93":  nil,
+
+	// Pilot suicide
+	"MAS17":   nil,
+	"MAS370":  nil,
+	"GWI18G":  nil,
+	"GWI9525": nil,
+	"MSR990":  nil,
+
+	// Hijackings
+	"FDX705":  nil,
+	"AFR8969": nil,
+
+	// Selected major crashes (leaning toward callsigns vice uses or is
+	// likely to use in the future, via
+	// https://en.wikipedia.org/wiki/List_of_deadliest_aircraft_accidents_and_incidents
+	"PAA1736": nil,
+	"KLM4805": nil,
+	"JAL123":  nil,
+	"AIC182":  nil,
+	"AAL191":  nil,
+	"PAA103":  nil,
+	"KAL007":  nil,
+	"AAL587":  nil,
+	"CAL140":  nil,
+	"TWA800":  nil,
+	"SWR111":  nil,
+	"KAL801":  nil,
+	"AFR447":  nil,
+	"CAL611":  nil,
+	"LOT5055": nil,
+	"ICE001":  nil,
 }
 
-func (ss *State) GetWindVector(p math.Point2LL, alt float32) math.Point2LL {
-	// Sinusoidal wind speed variation from the base speed up to base +
-	// gust and then back...
-	base := time.UnixMicro(0)
-	sec := ss.SimTime.Sub(base).Seconds()
-	windSpeed := float32(ss.Wind.Speed) +
-		float32(ss.Wind.Gust-ss.Wind.Speed)*float32(1+gomath.Cos(sec/4))/2
+func (ss *State) sampleAircraft(icao, fleet string, lg *log.Logger) (*av.Aircraft, string) {
+	al, ok := av.DB.Airlines[icao]
+	if !ok {
+		// TODO: this should be caught at load validation time...
+		lg.Errorf("Chose airline %s, not found in database", icao)
+		return nil, ""
+	}
 
-	// Wind.Direction is where it's coming from, so +180 to get the vector
-	// that affects the aircraft's course.
-	d := math.OppositeHeading(float32(ss.Wind.Direction))
-	vWind := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
-	vWind = math.Scale2f(vWind, windSpeed/3600)
-	return vWind
-}
+	if fleet == "" {
+		fleet = "default"
+	}
 
-func DrawScenarioInfoWindow(sim State, client *ClientState, lg *log.Logger) (show bool) {
-	// Ensure that the window is wide enough to show the description
-	sz := imgui.CalcTextSize(sim.SimDescription, false, 0)
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
+	fl, ok := al.Fleets[fleet]
+	if !ok {
+		// TODO: this also should be caught at validation time...
+		lg.Errorf("Airline %s doesn't have a \"%s\" fleet!", icao, fleet)
+		return nil, ""
+	}
 
-	imgui.BeginV(sim.SimDescription, &show, imgui.WindowFlagsAlwaysAutoResize)
-
-	// Make big(ish) tables somewhat more legible
-	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
-		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-
-	if imgui.CollapsingHeader("Arrivals") {
-		if imgui.BeginTableV("arr", 4, tableFlags, imgui.Vec2{}, 0) {
-			if client.scopeDraw.arrivals == nil {
-				client.scopeDraw.arrivals = make(map[string]map[int]bool)
-			}
-
-			imgui.TableSetupColumn("Draw")
-			imgui.TableSetupColumn("Arrival")
-			imgui.TableSetupColumn("Airport(s)")
-			imgui.TableSetupColumn("Description")
-			imgui.TableHeadersRow()
-
-			for _, name := range util.SortedMapKeys(sim.ArrivalGroups) {
-				arrivals := sim.ArrivalGroups[name]
-				if client.scopeDraw.arrivals[name] == nil {
-					client.scopeDraw.arrivals[name] = make(map[int]bool)
-				}
-
-				for i, arr := range arrivals {
-					if len(sim.LaunchConfig.ArrivalGroupRates[name]) == 0 {
-						// Not used in the current scenario.
-						continue
-					}
-
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					enabled := client.scopeDraw.arrivals[name][i]
-					imgui.Checkbox(fmt.Sprintf("##arr-%s-%d", name, i), &enabled)
-					client.scopeDraw.arrivals[name][i] = enabled
-
-					imgui.TableNextColumn()
-					imgui.Text(name)
-
-					imgui.TableNextColumn()
-					airports := util.SortedMapKeys(arr.Airlines)
-					imgui.Text(strings.Join(airports, ", "))
-
-					imgui.TableNextColumn()
-					if arr.Description != "" {
-						imgui.Text(arr.Description)
-					} else {
-						imgui.Text("--")
-					}
-				}
-			}
-
-			imgui.EndTable()
+	// Sample according to fleet count
+	var aircraft string
+	acCount := 0
+	for _, ac := range fl {
+		// Reservoir sampling...
+		acCount += ac.Count
+		if rand.Float32() < float32(ac.Count)/float32(acCount) {
+			aircraft = ac.ICAO
 		}
 	}
 
-	imgui.Separator()
+	perf, ok := av.DB.AircraftPerformance[aircraft]
+	if !ok {
+		// TODO: validation stage...
+		lg.Errorf("Aircraft %s not found in performance database from fleet %+v, airline %s",
+			aircraft, fleet, icao)
+		return nil, ""
+	}
 
-	if imgui.CollapsingHeader("Approaches") {
-		if imgui.BeginTableV("appr", 6, tableFlags, imgui.Vec2{}, 0) {
-			if client.scopeDraw.approaches == nil {
-				client.scopeDraw.approaches = make(map[string]map[string]bool)
-			}
+	// random callsign
+	callsign := strings.ToUpper(icao)
+	for {
+		format := "####"
+		if len(al.Callsign.CallsignFormats) > 0 {
+			format = rand.SampleSlice(al.Callsign.CallsignFormats)
+		}
 
-			imgui.TableSetupColumn("Draw")
-			imgui.TableSetupColumn("Airport")
-			imgui.TableSetupColumn("Runway")
-			imgui.TableSetupColumn("Code")
-			imgui.TableSetupColumn("Description")
-			imgui.TableSetupColumn("FAF")
-			imgui.TableHeadersRow()
-
-			for _, rwy := range sim.ArrivalRunways {
-				if ap, ok := sim.Airports[rwy.Airport]; !ok {
-					lg.Errorf("%s: arrival airport not in world airports", rwy.Airport)
+		id := ""
+		for i, ch := range format {
+			switch ch {
+			case '#':
+				if i == 0 {
+					// Don't start with a 0.
+					id += strconv.Itoa(1 + rand.Intn(9))
 				} else {
-					if client.scopeDraw.approaches[rwy.Airport] == nil {
-						client.scopeDraw.approaches[rwy.Airport] = make(map[string]bool)
-					}
-					for _, name := range util.SortedMapKeys(ap.Approaches) {
-						appr := ap.Approaches[name]
-						if appr.Runway == rwy.Runway {
-							imgui.TableNextRow()
-							imgui.TableNextColumn()
-							enabled := client.scopeDraw.approaches[rwy.Airport][name]
-							imgui.Checkbox("##enable-"+rwy.Airport+"-"+rwy.Runway+"-"+name, &enabled)
-							client.scopeDraw.approaches[rwy.Airport][name] = enabled
-
-							imgui.TableNextColumn()
-							imgui.Text(rwy.Airport)
-
-							imgui.TableNextColumn()
-							imgui.Text(rwy.Runway)
-
-							imgui.TableNextColumn()
-							imgui.Text(name)
-
-							imgui.TableNextColumn()
-							imgui.Text(appr.FullName)
-
-							imgui.TableNextColumn()
-							for _, wp := range appr.Waypoints[0] {
-								if wp.FAF {
-									imgui.Text(wp.Fix)
-									break
-								}
-							}
-						}
-					}
+					id += strconv.Itoa(rand.Intn(10))
 				}
+			case '@':
+				id += string(rune('A' + rand.Intn(26)))
 			}
-			imgui.EndTable()
+		}
+		if _, ok := ss.Aircraft[callsign+id]; ok {
+			continue // it already exits
+		} else if _, ok := badCallsigns[callsign+id]; ok {
+			continue // nope
+		} else {
+			callsign += id
+			break
 		}
 	}
 
-	imgui.Separator()
-	if imgui.CollapsingHeader("Departures") {
-		if imgui.BeginTableV("departures", 5, tableFlags, imgui.Vec2{}, 0) {
-			if client.scopeDraw.departures == nil {
-				client.scopeDraw.departures = make(map[string]map[string]map[string]bool)
-			}
+	squawk := av.Squawk(rand.Intn(0o7000))
 
-			imgui.TableSetupColumn("Draw")
-			imgui.TableSetupColumn("Airport")
-			imgui.TableSetupColumn("Runway")
-			imgui.TableSetupColumn("Exit")
-			imgui.TableSetupColumn("Description")
-			imgui.TableHeadersRow()
+	acType := aircraft
+	if perf.WeightClass == "H" {
+		acType = "H/" + acType
+	}
+	if perf.WeightClass == "J" {
+		acType = "J/" + acType
+	}
 
-			for _, airport := range util.SortedMapKeys(sim.LaunchConfig.DepartureRates) {
-				if client.scopeDraw.departures[airport] == nil {
-					client.scopeDraw.departures[airport] = make(map[string]map[string]bool)
-				}
-				ap := sim.Airports[airport]
+	return &av.Aircraft{
+		Callsign:       callsign,
+		AssignedSquawk: squawk,
+		Squawk:         squawk,
+		Mode:           av.Charlie,
+	}, acType
+}
 
-				runwayRates := sim.LaunchConfig.DepartureRates[airport]
-				for _, rwy := range util.SortedMapKeys(runwayRates) {
-					if client.scopeDraw.departures[airport][rwy] == nil {
-						client.scopeDraw.departures[airport][rwy] = make(map[string]bool)
-					}
+func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string, goAround bool, lg *log.Logger) (*av.Aircraft, error) {
+	arrivals := s.State.ArrivalGroups[arrivalGroup]
+	// Randomly sample from the arrivals that have a route to this airport.
+	idx := rand.SampleFiltered(arrivals, func(ar av.Arrival) bool {
+		_, ok := ar.Airlines[arrivalAirport]
+		return ok
+	})
 
-					exitRoutes := ap.DepartureRoutes[rwy]
+	if idx == -1 {
+		return nil, fmt.Errorf("unable to find route in arrival group %s for airport %s?!",
+			arrivalGroup, arrivalAirport)
+	}
+	arr := arrivals[idx]
 
-					// Multiple routes may have the same waypoints, so
-					// we'll reverse-engineer that here so we can present
-					// them together in the UI.
-					routeToExit := make(map[string][]string)
-					for _, exit := range util.SortedMapKeys(exitRoutes) {
-						exitRoute := ap.DepartureRoutes[rwy][exit]
-						r := exitRoute.Waypoints.Encode()
-						routeToExit[r] = append(routeToExit[r], exit)
-					}
+	airline := rand.SampleSlice(arr.Airlines[arrivalAirport])
+	ac, acType := s.State.sampleAircraft(airline.ICAO, airline.Fleet, lg)
+	if ac == nil {
+		return nil, fmt.Errorf("unable to sample a valid aircraft")
+	}
 
-					for _, exit := range util.SortedMapKeys(exitRoutes) {
-						// Draw the row only when we hit the first exit
-						// that uses the corresponding route route.
-						r := exitRoutes[exit].Waypoints.Encode()
-						if routeToExit[r][0] != exit {
-							continue
-						}
+	ac.FlightPlan = av.NewFlightPlan(av.IFR, acType, airline.Airport, arrivalAirport)
 
-						imgui.TableNextRow()
-						imgui.TableNextColumn()
-						enabled := client.scopeDraw.departures[airport][rwy][exit]
-						imgui.Checkbox("##enable-"+airport+"-"+rwy+"-"+exit, &enabled)
-						client.scopeDraw.departures[airport][rwy][exit] = enabled
+	// Figure out which controller will (for starters) get the arrival
+	// handoff. For single-user, it's easy.  Otherwise, figure out which
+	// control position is initially responsible for the arrival. Note that
+	// the actual handoff controller will be resolved later when the
+	// handoff happens, so that it can reflect which controllers are
+	// actually signed in at that point.
+	arrivalController := s.State.PrimaryController
+	if len(s.State.MultiControllers) > 0 {
+		var err error
+		arrivalController, err = s.State.MultiControllers.GetArrivalController(arrivalGroup)
+		if err != nil {
+			lg.Error("Unable to resolve arrival controller", slog.Any("error", err),
+				slog.Any("aircraft", ac))
+		}
 
-						imgui.TableNextColumn()
-						imgui.Text(airport)
-						imgui.TableNextColumn()
-						rwyBase, _, _ := strings.Cut(rwy, ".")
-						imgui.Text(rwyBase)
-						imgui.TableNextColumn()
-						if len(routeToExit) == 1 {
-							// If we only saw a single departure route, no
-							// need to list all of the exits in the UI
-							// (there are often a lot of them!)
-							imgui.Text("(all)")
-						} else {
-							// List all of the exits that use this route.
-							imgui.Text(strings.Join(routeToExit[r], ", "))
-						}
-						imgui.TableNextColumn()
-						imgui.Text(exitRoutes[exit].Description)
-					}
-				}
-			}
-			imgui.EndTable()
+		if arrivalController == "" {
+			arrivalController = s.State.PrimaryController
 		}
 	}
 
-	imgui.End()
-	return
+	if err := ac.InitializeArrival(s.State.Airports[arrivalAirport], s.State.ArrivalGroups,
+		arrivalGroup, idx, arrivalController, goAround, s.State.NmPerLongitude, s.State.MagneticVariation, lg); err != nil {
+		return nil, err
+	}
+
+	return ac, nil
+}
+
+func (s *Sim) CreateDeparture(departureAirport, runway, category string, challenge float32,
+	lastDeparture *av.Departure, lg *log.Logger) (*av.Aircraft, *av.Departure, error) {
+	ap := s.State.Airports[departureAirport]
+	if ap == nil {
+		return nil, nil, av.ErrUnknownAirport
+	}
+
+	idx := slices.IndexFunc(s.State.DepartureRunways,
+		func(r ScenarioGroupDepartureRunway) bool {
+			return r.Airport == departureAirport && r.Runway == runway && r.Category == category
+		})
+	if idx == -1 {
+		return nil, nil, av.ErrUnknownRunway
+	}
+	rwy := &s.State.DepartureRunways[idx]
+
+	var dep *av.Departure
+	if s.sameDepartureCap == 0 {
+		s.sameDepartureCap = rand.Intn(3) + 1 // Set the initial max same departure cap (1-3)
+	}
+	if rand.Float32() < challenge && lastDeparture != nil && s.sameGateDepartures < s.sameDepartureCap {
+		// 50/50 split between the exact same departure and a departure to
+		// the same gate as the last departure.
+		pred := util.Select(rand.Float32() < .5,
+			func(d av.Departure) bool { return d.Exit == lastDeparture.Exit },
+			func(d av.Departure) bool {
+				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
+				return ok && ap.ExitCategories[d.Exit] == ap.ExitCategories[lastDeparture.Exit]
+			})
+
+		if idx := rand.SampleFiltered(ap.Departures, pred); idx == -1 {
+			// This should never happen...
+			lg.Errorf("%s/%s/%s: unable to sample departure", departureAirport, runway, category)
+		} else {
+			dep = &ap.Departures[idx]
+		}
+
+	}
+
+	if dep == nil {
+		// Sample uniformly, minding the category, if specified
+		idx := rand.SampleFiltered(ap.Departures,
+			func(d av.Departure) bool {
+				_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
+				return ok && (rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
+			})
+
+		if idx == -1 {
+			// This shouldn't ever happen...
+			return nil, nil, fmt.Errorf("%s/%s: unable to find a valid departure",
+				departureAirport, rwy.Runway)
+		}
+		dep = &ap.Departures[idx]
+	}
+
+	if lastDeparture != nil && (dep.Exit == lastDeparture.Exit && s.sameGateDepartures >= s.sameDepartureCap) {
+		return nil, nil, fmt.Errorf("couldn't make a departure")
+	}
+
+	// Same gate buffer is a random int between 3-4 that gives a period after a few same gate departures.
+	// For example, WHITE, WHITE, WHITE, DIXIE, NEWEL, GAYEL, MERIT, DIXIE, DIXIE
+	// Another same-gate departure will not be happen untill after MERIT (in this example) because of the buffer.
+	sameGateBuffer := rand.Intn(2) + 3
+
+	if s.sameGateDepartures >= s.sameDepartureCap+sameGateBuffer || (lastDeparture != nil && dep.Exit != lastDeparture.Exit) { // reset back to zero if its at 7 or if there is a new gate
+		s.sameDepartureCap = rand.Intn(3) + 1
+		s.sameGateDepartures = 0
+	}
+
+	airline := rand.SampleSlice(dep.Airlines)
+	ac, acType := s.State.sampleAircraft(airline.ICAO, airline.Fleet, lg)
+	if ac == nil {
+		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")
+	}
+
+	ac.FlightPlan = av.NewFlightPlan(av.IFR, acType, departureAirport, dep.Destination)
+	exitRoute := rwy.ExitRoutes[dep.Exit]
+	if err := ac.InitializeDeparture(ap, departureAirport, dep, runway, exitRoute,
+		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.Scratchpads,
+		s.State.PrimaryController, s.State.MultiControllers, lg); err != nil {
+		return nil, nil, err
+	}
+
+	/* Keep adding to World sameGateDepartures number until the departure cap + the buffer so that no more
+	same-gate departures are launched, then reset it to zero. Once the buffer is reached, it will reset World sameGateDepartures to zero*/
+	s.sameGateDepartures += 1
+
+	return ac, dep, nil
 }

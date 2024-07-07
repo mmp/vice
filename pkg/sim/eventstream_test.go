@@ -7,12 +7,11 @@ package sim
 import (
 	"testing"
 
-	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/rand"
 )
 
 func TestEventStream(t *testing.T) {
-	es := NewEventStream()
+	es := NewEventStream(nil)
 
 	es.Post(Event{})
 	sub := es.Subscribe()
@@ -40,8 +39,7 @@ func TestEventStream(t *testing.T) {
 }
 
 func TestEventStreamCompact(t *testing.T) {
-	lg = log.New(false, "debug")
-	es := NewEventStream()
+	es := NewEventStream(nil)
 
 	// multiple consumers, at different offsets
 	subs := [4]*EventsSubscription{es.Subscribe(), es.Subscribe(), es.Subscribe(), es.Subscribe()}

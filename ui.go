@@ -441,7 +441,7 @@ func drawUI(p platform.Platform, r renderer.Renderer, w *World, eventStream *sim
 		w.DrawSettingsWindow(p)
 
 		if ui.showScenarioInfo {
-			sim.DrawScenarioInfoWindow(w.State, &w.client, lg)
+			ui.showScenarioInfo = w.State.DrawScenarioInfoWindow(&w.client, lg)
 		}
 
 		w.DrawMissingPrimaryDialog(p)
