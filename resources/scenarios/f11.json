@@ -11933,6 +11933,211 @@
   },
   "stars_config": {
   "center": "N028.25.45.781,W081.18.32.260",
+  "coordination_fixes": {
+    "BANYA": [
+      {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+      }
+  ],
+  "YAGGO": [
+      {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+      }
+  ],
+  "SUNDE": [
+      {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+      }
+  ],
+  "GIRAF": [
+      {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+      }
+  ],
+  "HARAM": [
+      {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+      }
+  ],
+  "ALYNA": [
+    {
+        "type": "route",
+        "to": "F11",
+        "from": "ZJX"
+    }
+],
+"WISRD": [
+    {
+        "type": "route",
+        "to": "F11",
+        "from": "ZJX"
+    }
+],
+"HAANZ": [
+    {
+        "type": "route",
+        "to": "F11",
+        "from": "ZJX"
+    }
+],
+    "PLUMR": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "FSHUN": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "KLMAN": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "BORRD": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "VALKA": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "JIPOD": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "ZALEN": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "ETECK": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "FAROV": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "LENDS": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "MLB": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+  "DDANY": [
+      {
+          "type": "route",
+          "to": "ZMA",
+          "from": "ZJX"
+      }
+  ],
+    "RIDES": [
+          {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+          }
+      ],
+      "ZINGR": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "PRICY": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "SURFR": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "BAIRN": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "JOKRS": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "GRNCH": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "SNFLD": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ],
+      "GTOUT": [
+          {
+              "type": "route",
+              "to": "F11",
+              "from": "ZJX"
+          }
+      ]
+  },
   "airspace_awareness": [
     {
         "fixes": [

@@ -980,6 +980,36 @@
     }
       },
       "stars_config": {
+        "coordination_fixes": {
+          "RENZI": [
+            {
+                "type": "route",
+                "to": "GSO",
+                "from": "CLT"
+            }
+        ],
+        "TRAKS": [
+            {
+                "type": "route",
+                "to": "GSO",
+                "from": "ZTL"
+            }
+        ],
+        "MMJAY": [
+            {
+                "type": "route",
+                "to": "GSO",
+                "from": "ZTL"
+            }
+        ],
+        "HENBY": [
+            {
+                "type": "route",
+                "to": "GSO",
+                "from": "ZTL"
+            }
+        ]
+        },
         "center": "KGSO",
         "inhibit_ca_volumes": [
           {

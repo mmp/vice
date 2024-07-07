@@ -6139,6 +6139,141 @@
       }
     },
     "stars_config": {
+      "coordination_fixes": {
+            "AALLE": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "CLASH": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "FLATI": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "PPINT": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "FLNEL": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "HAGGR": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "BGDEE": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "MNARK": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "ELKEE": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "LARKS": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "ALLAN": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "LANDR": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "POWDR": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "DANDD": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "QUAIL": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "PICKK": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "IMAGN": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "FFEST": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "ZOMBZ": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ]
+        },
     "stars_maps": [
         "D01 AR BASE", "D01 DR BASE", "D01 MVA",
         "D01 EOVM", "D01 AIRWAYS", "D01 VFR",

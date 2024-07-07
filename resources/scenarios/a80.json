@@ -2529,6 +2529,50 @@
       "center": "N33.38.24.846,W84.25.42.088",
       "allow_long_scratchpad": [false, false],
       "force_ql_self": true,
+      "coordination_fixes": {
+        "CHPPR": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "GLAVN": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "HOBTT": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "JJEDI": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "ONDRE": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "OZZZI": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ]
+      },
       "radar_sites": {
           "KATL": {
               "char": "A",

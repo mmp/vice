@@ -456,6 +456,22 @@
   },
   "stars_config": {
   "center": "N039.19.41.442,W106.53.21.361",
+  "coordination_fixes": {
+    "WERNR": [
+       {
+          "type": "route",
+          "to": "ASE",
+          "from": "ZDV"
+        }
+    ],
+    "DBL": [
+        {
+            "type": "route",
+            "to": "ASE",
+            "from": "ZDV"
+        }
+    ]
+  },
   "range": 25,
   "inhibit_ca_volumes": [
     {

@@ -1390,6 +1390,43 @@
   },
   "stars_config": {
   "center": "KIND",
+  "coordination_fixes": {
+            "BABNE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "EASEL": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "OPPIE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "CIRGO": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "SMUKE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ]
+        },
   "inhibit_ca_volumes": [
     {
       "name": "IND CA SUPPRESSION",

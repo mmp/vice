@@ -3655,6 +3655,127 @@
     },
     "stars_config": {
         "center": "KDTW",
+        "coordination_fixes": {
+            "BONZZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "CRAKN": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "TPGUN": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "WNGNT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "GRAYT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HANBL": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HAYLL": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "SMMNS": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HUMRR": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "SHANX": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "VCTRZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "NUTTZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "NACCA": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "RIPPY": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "PETTE": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "KILIT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "LOPVO": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ]
+        },
         "inhibit_ca_volumes": [
             {
                 "name": "DTW South",

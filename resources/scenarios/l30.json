@@ -1787,6 +1787,78 @@
     },
     "stars_config": {
     "center": "N36.4.59.17,W115.8.53.52",
+    "coordination_fixes": {
+            "CHOWW": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "ZLLDA": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "WHIGG": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "GAMES": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "ISHEE": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "WAPID": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "LARKK": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "FABLE": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "RKSTR": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "RNDRZ": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ]
+        },
     "radar_sites": {
         "KLAS": {
             "char": "A",

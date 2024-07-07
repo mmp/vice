@@ -2746,6 +2746,127 @@
     },
     "stars_config": {
         "center": "KIAH",
+        "coordination_fixes": {
+            "BEATL": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "GILLL": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "HOWLN": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "BOPPR": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "DOMNO": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "SSTAX": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "ZEEKK": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "WUUDZ": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "CATTT": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "BBQUE": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "JJACK": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "BAYYY": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "BELLR": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "CAASE": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "CESAN": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "TKNIQ": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "WAPPL": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ]
+        },
         "radar_sites": {
             "I90": {
               "char": "A",

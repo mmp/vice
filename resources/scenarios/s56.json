@@ -706,6 +706,50 @@
   },
   "stars_config": {
     "center": "KSLC",
+    "coordination_fixes": {
+      "CARTR": [
+        {
+            "type": "route",
+            "to": "S56",
+            "from": "ZLC"
+        }
+        ],
+        "SKEES": [
+            {
+                "type": "route",
+                "to": "S56",
+                "from": "ZLC"
+            }
+        ],
+        "NORDK": [
+            {
+                "type": "route",
+                "to": "S56",
+                "from": "ZLC"
+            }
+        ],
+        "LEEHY": [
+            {
+                "type": "route",
+                "to": "S56",
+                "from": "ZLC"
+            }
+        ],
+        "QWENN": [
+            {
+                "type": "route",
+                "to": "S56",
+                "from": "ZLC"
+            }
+        ],
+        "WAATS": [
+            {
+                "type": "route",
+                "to": "S56",
+                "from": "ZLC"
+            }
+        ]
+    },
     "scratchpads": {
       "STEWW": "SCA"
     },

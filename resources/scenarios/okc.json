@@ -1739,6 +1739,43 @@
     }
   },
   "stars_config": {
+    "coordination_fixes": {
+      "CAMET": [
+        {
+            "type": "route",
+            "to": "OKC",
+            "from": "ZFW"
+        }
+    ],
+    "GHOST": [
+        {
+            "type": "route",
+            "to": "OKC",
+            "from": "ZFW"
+        }
+    ],
+    "MURAH": [
+        {
+            "type": "route",
+            "to": "OKC",
+            "from": "ZFW"
+        }
+    ],
+    "TSDEL": [
+        {
+            "type" : "route",
+            "to": "OKC",
+            "from": "ZFW"
+        }
+    ],
+    "YUCKS": [
+        {
+            "type" : "route",
+            "to": "OKC",
+            "from": "ZFW"
+        }
+    ]
+    },
     "center": "KOKC",
     "airspace_awareness": [
       {

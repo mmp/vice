@@ -951,6 +951,64 @@
     }
   },
     "stars_config": {
+  "coordination_fixes": {
+    "EXIST": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "CIVMA": [
+      {
+          "type": "route",
+           "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "FAYEZ": [
+      {
+          "type": "route",
+           "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "IXUSE": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "BESOM": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "QECKE": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "KOCEY": [
+      {
+          "type": "route",
+           "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "BOYDD": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ]
+  },
   "center": "KBHM",
   "inhibit_ca_volumes": [
     {

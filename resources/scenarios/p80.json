@@ -3671,6 +3671,64 @@
   },
   "stars_config": {
     "center": "KPDX",
+    "coordination_fixes": {
+      "HHOOD": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "KRATR": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "VANTZ": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "YORKY": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "VOODU": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "SSSUN": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "FLOWR": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ],
+      "MYCRO": [
+          {
+              "type": "route",
+              "to": "P80",
+              "from": "ZSE"
+          }
+      ]
+  },
       "airspace_awareness": [
           {
               "fixes": ["ALL"],

@@ -71,6 +71,10 @@ type STARSFacilityAdaptation struct {
 	Range               float32                          `json:"range"`
 	Scratchpads         map[string]string                `json:"scratchpads"`
 	VideoMapFile        string                           `json:"video_map_file"`
+	CoordinationFixes   map[string]av.AdaptationFixes    `json:"coordination_fixes"`
+	SingleCharAIDs      map[string]string                `json:"single_char_aids"` // Char to airport
+	BeaconBank          int                              `json:"beacon_bank"`
+	KeepLDB             bool                             `json:"keep_ldb"`
 }
 
 type STARSControllerConfig struct {
@@ -877,6 +881,52 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		}
 		e.Pop()
 	}
+
+	for fix, fixes := range s.CoordinationFixes {
+		e.Push("Coordination fix " + fix)
+		// FIXME(mtrokel)
+		/*
+			if _, ok := sg.Locate(fix); !ok {
+				e.ErrorString("coordination fix \"%v\" cannot be located", fix)
+			}
+		*/
+		acceptableTypes := []string{"route", "zone"}
+		for i, fix := range fixes {
+			e.Push(fmt.Sprintf("Number %v", i))
+			if !slices.Contains(acceptableTypes, fix.Type) {
+				e.ErrorString("type \"%v\" is invalid. Valid types are \"route\" and \"zone\"", fix.Type)
+			}
+			if fix.Altitude[0] < 0 {
+				e.ErrorString("bottom altitude \"%v\" is below zero", fix.Altitude[0])
+			}
+			if fix.Altitude[0] > fix.Altitude[1] {
+				e.ErrorString("bottom altitude \"%v\" is higher than the top altitude \"%v\"", fix.Altitude[0], fix.Altitude[1])
+			}
+			if _, ok := av.DB.TRACONs[fix.ToFacility]; !ok {
+				if _, ok := av.DB.ARTCCs[fix.ToFacility]; !ok {
+					e.ErrorString("to facility \"%v\" is invalid", fix.ToFacility)
+				}
+			}
+			if _, ok := av.DB.TRACONs[fix.FromFacility]; !ok {
+				if _, ok := av.DB.ARTCCs[fix.FromFacility]; !ok {
+					e.ErrorString("from facility \"%v\" is invalid", fix.FromFacility)
+				}
+			}
+			e.Pop()
+		}
+		e.Pop()
+	}
+
+	for char, airport := range s.SingleCharAIDs {
+		e.Push("Airport ID " + char)
+		if _, ok := sg.Airports[airport]; !ok {
+			e.ErrorString("airport\"%v\" isn't specified", airport)
+		}
+		e.Pop()
+	}
+	// if s.BeaconBank > 7 || s.BeaconBank < 1 {
+	// 	e.ErrorString("beacon bank \"%v\" is invalid. Must be between 1 and 7", s.BeaconBank)
+	// }
 
 	e.Pop() // stars_config
 }

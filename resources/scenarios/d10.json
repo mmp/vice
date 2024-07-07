@@ -3110,6 +3110,92 @@
     "stars_config": {
         "allow_long_scratchpad": [false, false],
         "force_ql_self": true,
+        "coordination_fixes": {
+            "BEREE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "BOOVE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "BRDJE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "VKTRY": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "KNEAD": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "FINGR": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "GREGS": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "ORVLL": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "SLUGG": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "DODJE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "SASIE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "MOTZA": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ]
+        },
         "airspace_awareness": [
             {
                 "fixes": [

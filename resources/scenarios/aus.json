@@ -1320,6 +1320,43 @@
                     "stars_config": {
                         "allow_long_scratchpad": [false, false],
                         "force_ql_self": true,
+                        "coordination_fixes": {
+                                "DXEEE": [
+                            {
+                                "type": "route",
+                                "to": "AUS",
+                                "from": "ZHU"
+                            }
+                         ],
+                         "LAIKS": [
+                             {
+                                 "type": "route",
+                                 "to": "AUS",
+                                 "from": "ZHU"
+                             }
+                         ],
+                         "WLEEE": [
+                             {
+                                 "type": "route",
+                                 "to": "AUS",
+                                 "from": "ZHU"
+                             }
+                         ],
+                         "GABOO": [
+                             {
+                                 "type": "route",
+                                 "to": "AUS",
+                                 "from": "ZHU"
+                             }
+                         ],
+                         "TOAMY": [
+                             {
+                                 "type": "route",
+                                 "to": "AUS",
+                                 "from": "I90"
+                             }
+                         ]
+                        },
                         "airspace_awareness": [
                             {
                                 "fixes": [

@@ -2486,6 +2486,106 @@
   },
   "stars_config": {
   "center": "KLGA",
+  "coordination_fixes": {
+    "MERIT": [
+      {
+          "type": "route",
+          "to": "ZBW",
+          "from": "ZNY"
+      }
+  ],
+  "GREKI": [
+      {
+          "type": "route",
+          "to": "ZBW",
+          "from": "ZNY"
+      }
+  ],
+  "BAYYS": [
+      {
+          "type": "route",
+          "to": "ZBW",
+          "from": "ZNY"
+      }
+  ],
+  "BETTE": [
+      {
+          "type": "route",
+          "to": "ZBW",
+          "from": "ZNY"
+      }
+  ],
+  "HAPIE": [
+      {
+          "type": "route",
+          "to": "ZBW",
+          "from": "ZNY"
+      }
+  ],
+    "KORRY": [
+      {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+      }
+  ],
+  "VIBES": [
+      {
+          "type": "route",
+          "to": "N90",
+          "from": "ZDC"
+      }
+  ],
+  "VALRE": [
+      {
+          "type": "route",
+          "to": "N90",
+          "from": "ZBW"
+      }
+  ],
+  "CRALY": [
+      {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+      }
+  ],
+  "MINKS": [
+      {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+      }
+  ],
+  "HEROS": [
+      {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+      }
+  ],
+  "DIALS": [
+      {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+      }
+  ],
+  "JERZY": [
+      {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+      }
+  ],
+  "GGREG": [
+      {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+      }
+  ]
+  },
   "range": 60,
       "allow_long_scratchpad": [false, false],
       "force_ql_self": true,

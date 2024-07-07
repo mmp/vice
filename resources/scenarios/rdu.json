@@ -1894,6 +1894,36 @@
     },
     "stars_config": {
         "center": "KRDU",
+        "coordination_fixes": {
+            "FAVKO": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "VEJAY": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "DMSTR": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "TAQLE": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ]
+        },
         "airspace_awareness": [
             {
                 "fixes": [

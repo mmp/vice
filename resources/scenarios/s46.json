@@ -2548,6 +2548,57 @@
     }
   },
   "stars_config": {
+    "coordination_fixes": {
+      "HUMPP": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ],
+    "GLASR": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ],
+    "LIINE": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ],
+    "DIGGN": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ],
+    "MARNR": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ],
+    "LACEE": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ],
+    "HUVUS": [
+        {
+            "type": "route",
+            "to": "S46",
+            "from": "ZSE"
+        }
+    ]
+    },
   "center": "KSEA",
   "radar_sites": {
     "SEA": {

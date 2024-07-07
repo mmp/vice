@@ -7896,6 +7896,127 @@
    },
   "stars_config": {
     "center": "KBOS",
+    "coordination_fixes": {
+      "GGABE": [
+        {
+            "type": "route",
+            "to": "A90",
+            "from": "ZBW"
+        }
+    ],
+    "GOSHI": [
+        {
+            "type": "route",
+            "to": "A90",
+            "from": "ZBW"
+        }
+    ],
+    "ROZZE": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "LFV": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "MINNK": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "NEWBE": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "ENE": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "CAMTN": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "GDM": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "JFUND": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "WOONS": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "PVD"
+      }
+  ],
+  "FREDO": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "PVD"
+      }
+  ],
+  "JAMMA": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "JOODY": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "OOSHN": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "ZELKA": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ],
+  "DREEM": [
+      {
+          "type": "route",
+          "to": "A90",
+          "from": "ZBW"
+      }
+  ]
+    },
    "inhibit_ca_volumes": [
     {
       "name": "BOS NO CA",

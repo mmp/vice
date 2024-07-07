@@ -1129,6 +1129,43 @@
   },
   "stars_config": {
   "center": "KMKE",
+  "coordination_fixes": {
+    "LEEDR": [
+      {
+          "type": "route",
+          "to": "MKE",
+          "from": "ZAU"
+      }
+  ],
+  "LYSTR": [
+      {
+          "type": "route",
+          "to": "MKE",
+          "from": "ZAU"
+      }
+  ],
+  "BRAVE": [
+      {
+          "type": "route",
+          "to": "MKE",
+          "from": "ZAU"
+      }
+  ],
+  "BAE": [
+      {
+          "type": "route",
+          "to": "MKE",
+          "from": "ZAU"
+      }
+  ],
+  "BRTMN": [
+      {
+          "type": "route",
+          "to": "MKE",
+          "from": "ZAU"
+      }
+  ]
+  },
   "inhibit_ca_volumes": [
     {
         "name": "MKE 19R NO CA",

@@ -1513,6 +1513,29 @@
     },
     "stars_config": {
         "center": "KCHS",
+        "coordination_fixes": {
+            "NINJA": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "BAGGY": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "WILIT": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ]
+        },
         "airspace_awareness": [
             {
                 "fixes": [

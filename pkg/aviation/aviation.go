@@ -23,6 +23,24 @@ import (
 	"github.com/klauspost/compress/zstd"
 )
 
+type ERAMAdaptation struct { // add more later
+	CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
+}
+
+const (
+	RouteBasedFix = "route"
+	ZoneBasedFix  = "zone"
+)
+
+type AdaptationFix struct {
+	Type         string `json:"type"`
+	ToFacility   string `json:"to"`   // controller to handoff to
+	FromFacility string `json:"from"` // controller to handoff from
+	Altitude     [2]int `json:"altitude"`
+}
+
+type AdaptationFixes []AdaptationFix
+
 type ReportingPoint struct {
 	Fix      string
 	Location math.Point2LL
@@ -45,6 +63,7 @@ type Arrival struct {
 	Scratchpad          string  `json:"scratchpad"`
 	SecondaryScratchpad string  `json:"secondary_scratchpad"`
 	Description         string  `json:"description"`
+	CoordinationFix     string  `json:"coordination_fix"`
 
 	// Airport -> arrival airlines
 	Airlines map[string][]ArrivalAirline `json:"airlines"`
@@ -230,6 +249,7 @@ type Controller struct {
 	IsHuman            bool      // Not provided in scenario JSON
 	FacilityIdentifier string    `json:"facility_id"`     // For example the "N" in "N4P" showing the N90 TRACON
 	ERAMFacility       bool      `json:"eram_facility"`   // To weed out N56 and N4P being the same fac
+	Facility           string    `json:"facility"`        // So we can get the STARS facility from a controller
 	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
 }
 
@@ -1223,9 +1243,6 @@ func (a *AirspaceVolume) GenerateDrawCommands(cb *renderer.CommandBuffer, nmPerL
 	ld.GenerateCommands(cb)
 	renderer.ReturnLinesDrawBuilder(ld)
 }
-
-///////////////////////////////////////////////////////////////////////////
-// Utility methods
 
 func FixReadback(fix string) string {
 	if aid, ok := DB.Navaids[fix]; ok {

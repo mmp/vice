@@ -3146,6 +3146,64 @@
   },
   "stars_config": {
   "center": "N27.58.31.700,W82.31.59.700",
+  "coordination_fixes": {
+  "DSIDE":  [
+    {
+        "type": "route",
+        "to": "TPA",
+        "from": "ZMA"
+    }
+    ],
+    "RAYZZ":  [
+        {
+            "type": "route",
+            "to": "TPA",
+            "from": "ZMA"
+        }
+    ],
+    "OLENE": [
+        {
+            "type": "route",
+            "to": "TPA",
+            "from": "ZMA"
+        }
+    ],
+    "MAATY": [
+        {
+            "type": "route",
+            "to": "TPA",
+            "from": "ZMA"
+        }
+    ],
+    "BANGZ": [
+        {
+            "type": "route",
+            "to": "TPA",
+            "from": "ZMA"
+        }
+    ],
+    "LUBBR": [
+        {
+            "type": "route",
+            "to": "TPA",
+            "from": "ZMA"
+        }
+    ],
+    "ECAKE": [
+      {
+          "type": "route",
+          "to": "ZJX",
+          "from": "ZMA"
+      }
+  ],
+  "LACEN": [
+      {
+          "type": "route",
+          "to": "ZJX",
+          "from": "ZMA"
+      }
+  ]
+  },
   "inhibit_ca_volumes": [
     {
       "name": "TPA FINAL S OPS",

@@ -577,6 +577,36 @@
       },
       "stars_config": {
         "center": "KAGS",
+        "coordination_fixes": {
+          "PYRES": [
+               {
+                "type": "route",
+                "to": "AGS",
+                "from": "ZTL"
+               }
+            ],
+            "STUGE": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZTL"
+                }
+            ],
+            "MILEN": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZTL"
+                }
+            ],
+            "STWRT": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZTL"
+                }
+            ]
+        },
         "inhibit_ca_volumes": [
           {
             "name": "BHM NO CA",

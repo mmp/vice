@@ -1681,6 +1681,78 @@
   "stars_config": {
     "center": "KJAX",
     "force_ql_self": true,
+    "coordination_fixes": {
+          "PENSE": [
+              {
+                  "type": "route",
+                  "to": "JAX",
+                  "from": "ZJX"
+              }
+          ],
+          "NATII": [
+              {
+                  "type": "route",
+                  "to": "JAX",
+                  "from": "ZJX"
+              }
+          ],
+          "MAHKA": [
+              {
+                  "type": "route",
+                  "to": "JAX",
+                  "from": "ZJX"
+              }
+          ],
+          "BETLE": [
+              {
+                  "type": "route",
+                  "to": "JAX",
+                  "from": "ZJX"
+              }
+          ],
+          "JERZI": [
+              {
+                  "type": "route",
+                  "to": "JAX",
+                  "from": "ZJX"
+              }
+          ],
+          "GOTBE": [
+              {
+                  "type": "route",
+                  "to": "JAX",
+                  "from": "ZJX"
+              }
+          ],
+          "COROE": [
+              {
+                  "type": "route",
+                  "to": "JAX",
+                  "from": "ZJX"
+              }
+          ],
+          "OHDEA": [
+              {
+                  "type": "route",
+                  "to": "JAX",
+                  "from": "ZJX"
+              }
+          ],
+          "BASSS": [
+              {
+                  "type": "route",
+                  "to": "JAX",
+                  "from": "ZJX"
+              }
+          ],
+          "HILIS": [
+              {
+                  "type": "route",
+                  "to": "JAX",
+                  "from": "ZJX"
+              }
+          ]
+      },
     "airspace_awareness": [
       {
         "fixes": [

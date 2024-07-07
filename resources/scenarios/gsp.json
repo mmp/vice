@@ -567,6 +567,36 @@
   },
   "stars_config": {
   "center": "KGSP",
+  "coordination_fixes": {
+    "ANGRI": [
+      {
+          "type": "route",
+          "to": "GSP",
+          "from": "ZTL"
+      }
+      ],
+      "MCHLN": [
+          {
+              "type": "route",
+              "to": "GSP",
+              "from": "ZTL"
+          }
+      ],
+      "RCTOR": [
+          {
+              "type": "route",
+              "to": "GSP",
+              "from": "ZTL"
+          }
+      ],
+      "TANCE": [
+          {
+              "type": "route",
+              "to": "GSP",
+              "from": "ZTL"
+          }
+      ]
+  },
   "radar_sites": {
       "GSP": {
         "char": "G",

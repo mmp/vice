@@ -9055,6 +9055,302 @@
   },
   "stars_config": {
   "center": "KSJC",
+  "coordination_fixes": {
+    "OSI": [
+      {
+          "type": "route",
+          "to": "NCT",
+          "from": "ZOA"
+      }
+     ],
+     "CORKK": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "FRLON": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "RAZRR": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "BYRON": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "MOVDD": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "GOALI": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "SILCN": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "LAANE": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "LOZIT": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "ANJEE": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "FLOWZ": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "MOD": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "PIRAT": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "NRRLI": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "ZOMER": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "AANET": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "BANND": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "SKIZM": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "KARNN": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "WRAPS": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "WEBRR": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "ANAHO": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "EELZA": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "HOSME": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "HOBOA": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "RYANN": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "TEXSS": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "NEUPS": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "MYYAA": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "ISYOH": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "SLMMR": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "LOMBO": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "FOOLZ": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "FATHM": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "DYAMD": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "COGOL": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "LUCAB": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "BSR": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "PXN": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "ORRCA": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ],
+     "TIPRE": [
+         {
+             "type": "route",
+             "to": "NCT",
+             "from": "ZOA"
+         }
+     ]
+  },
   "inhibit_ca_volumes": [
     {
         "name": "SFO NO CA",

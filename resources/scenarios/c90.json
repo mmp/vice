@@ -7838,6 +7838,134 @@
         },
         "stars_config": {
             "center": "N41.58.34.897,W87.54.27.062",
+            "coordination_fixes": {
+                "NEWRK": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "TRTLL": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "ENDEE": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "SWIIS": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "PAPPI": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "HALIE": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "FYTTE": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "KURKK": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "MADII": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "SHAIN": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "VEECK": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "CLUSO": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "HULLS": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "WYNDE": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "FIYER": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "KRENA": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "PLANO": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "PNT": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ]
+            },
             "airspace_awareness": [
                 {
                     "fixes": ["ALL"],

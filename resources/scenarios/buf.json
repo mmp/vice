@@ -1045,6 +1045,57 @@
     true,
     true
     ],
+    "coordination_fixes": {
+      "BENEE": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "BUF": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "DKK": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "EHMAN": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "JHW": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "WOZEE": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "ARICO": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ]
+    },
     "stars_maps": [
         "BUF-019 (23 GPS)", "BUF-020 (32 GPS)", "BUF-018 (14 GPS)", "BUF-017 (5 GPS)", "BUF-016 (SUA)", "BUF-015 (IAG TACAN 28R)",
         "BUF-014 (IAG RNAV 28)", "BUF-013 (BUF FAC)", "BUF-012 (ERIE MVA)", "BUF-011 (ERIE TRSA)", "BUF-010 (CLASS D)",

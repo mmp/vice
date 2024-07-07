@@ -763,6 +763,50 @@
       },
       "stars_config": {
         "center": "KAVL",
+        "coordination_fixes": {
+          "LEAVI": [
+            {
+                "type": "route",
+                "to": "AVL",
+                "from": "ZTL"
+            }
+        ],
+        "JONEB": [
+            {
+                "type": "route",
+                "to": "AVL",
+                "from": "ZTL"
+            }
+        ],
+        "TUSRE": [
+            {
+                "type": "route",
+                "to": "AVL",
+                "from": "ZTL"
+            }
+        ],
+        "OBURY": [
+            {
+                "type": "route",
+                "to": "AVL",
+                "from": "ZTL"
+            }
+        ],
+        "PUPDG": [
+            {
+                "type": "route",
+                "to": "AVL",
+                "from": "ZTL"
+            }
+        ],
+        "BARRD": [
+            {
+                "type": "route",
+                "to": "AVL",
+                "from": "ZTL"
+            }
+        ]
+        },
         "inhibit_ca_volumes": [
           {
             "name": "BHM NO CA",

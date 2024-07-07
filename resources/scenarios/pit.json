@@ -1439,6 +1439,43 @@
     true,
     true
     ],
+    "coordination_fixes": {
+      "LEJOY": [
+        {
+            "type": "route",
+            "to": "PIT",
+            "from": "ZOB"
+        }
+    ],
+    "AIR": [
+        {
+            "type": "route",
+            "to": "PIT",
+            "from": "ZOB"
+        }
+    ],
+    "EARED": [
+        {
+            "type": "route",
+            "to": "PIT",
+            "from": "ZOB"
+        }
+    ],
+    "CUTTA": [
+        {
+            "type": "route",
+            "to": "PIT",
+            "from": "ZOB"
+        }
+    ],
+    "HOMEE": [
+        {
+            "type": "route",
+            "to": "PIT",
+            "from": "ZOB"
+        }
+    ]
+    },
     "center": "KPIT",
     "inhibit_ca_volumes": [
     {

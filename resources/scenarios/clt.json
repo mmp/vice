@@ -2547,6 +2547,57 @@
                         }
                     },
                     "stars_config": {
+                    "coordination_fixes": {
+                        "DEBBT": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ],
+                        "CHSLY": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ],
+                        "FILPZ": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ],
+                        "JONZE": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ],
+                        "STOCR": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ],
+                        "PARQR": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ],
+                        "GAIRY": [
+                            {
+                                "type": "route",
+                                "to": "CLT",
+                                "from": "ZTL"
+                            }
+                        ]
+                    },
                     "center": "KCLT",
                     "inhibit_ca_volumes": [
                         {

@@ -713,6 +713,43 @@
   },
   "stars_config": {
   "center": "KDAB",
+  "coordination_fixes": {
+    "WEEEK": [
+         {
+          "type": "route",
+          "to": "DAB",
+          "from": "ZJX"
+          }
+      ],
+      "FONEX": [
+          {
+              "type": "route",
+              "to": "DAB",
+              "from": "JAX"
+          }
+      ],
+      "FOLUT": [
+          {
+              "type": "route",
+              "to": "DAB",
+              "from": "JAX"
+          }
+      ],
+      "KIZER": [
+          {
+              "type": "route",
+              "to": "DAB",
+              "from": "F11"
+          }
+      ],
+      "ROCIT": [
+          {
+              "type": "route",
+              "to": "DAB",
+              "from": "F11"
+          }
+      ]
+  },
   "radar_sites": {
     "DAB": {
       "char": "D",
