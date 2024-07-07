@@ -98,8 +98,7 @@ type SplitLine struct {
 }
 
 func (s *SplitLine) Duplicate(nameAsCopy bool) panes.Pane {
-	lg.Errorf("SplitLine Duplicate shouldn't have been called...")
-	return &SplitLine{}
+	panic("SplitLine Duplicate shouldn't have been called...")
 }
 
 func (s *SplitLine) Activate(*sim.State, renderer.Renderer, platform.Platform,
@@ -293,7 +292,7 @@ func (d *DisplayNode) VisitPanesWithBounds(displayExtent math.Extent2D, parentDi
 // storing newChild as the's second child.
 func (d *DisplayNode) SplitX(x float32, newChild *DisplayNode) *DisplayNode {
 	if d.SplitLine.Axis != SplitAxisNone {
-		lg.Errorf("DisplayNode splitting a non-leaf node: %v", d)
+		panic(fmt.Sprintf("DisplayNode splitting a non-leaf node: %v", d))
 	}
 	return &DisplayNode{SplitLine: SplitLine{Axis: SplitAxisX, Pos: x},
 		Children: [2]*DisplayNode{d, newChild}}
@@ -303,7 +302,7 @@ func (d *DisplayNode) SplitX(x float32, newChild *DisplayNode) *DisplayNode {
 // vertically, analogous to the SplitX method.
 func (d *DisplayNode) SplitY(y float32, newChild *DisplayNode) *DisplayNode {
 	if d.SplitLine.Axis != SplitAxisNone {
-		lg.Errorf("DisplayNode splitting a non-leaf node: %v", d)
+		panic(fmt.Sprintf("DisplayNode splitting a non-leaf node: %v", d))
 	}
 	return &DisplayNode{SplitLine: SplitLine{Axis: SplitAxisX, Pos: y},
 		Children: [2]*DisplayNode{d, newChild}}
@@ -382,7 +381,7 @@ func (d *DisplayNode) FindPaneForMouse(displayExtent math.Extent2D, p [2]float32
 	} else if d1.Inside(p) {
 		return d.Children[1].FindPaneForMouse(d1, p, plat)
 	} else {
-		lg.Errorf("Mouse not overlapping anything?")
+		panic("Mouse not overlapping anything?")
 		return nil
 	}
 }
@@ -420,7 +419,7 @@ func wmPaneIsPresent(pane panes.Pane, root *DisplayNode) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func wmDrawPanes(p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient, stats *Stats) {
+func wmDrawPanes(p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient, stats *Stats, lg *log.Logger) {
 	if controlClient == nil {
 		commandBuffer := renderer.GetCommandBuffer()
 		commandBuffer.ClearRGB(renderer.RGB{})

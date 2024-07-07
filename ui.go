@@ -20,6 +20,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
@@ -246,7 +247,7 @@ func imguiInit() *imgui.Context {
 	return context
 }
 
-func uiInit(r renderer.Renderer, p platform.Platform, es *sim.EventStream) {
+func uiInit(r renderer.Renderer, p platform.Platform, es *sim.EventStream, lg *log.Logger) {
 	if runtime.GOOS == "windows" {
 		imgui.CurrentStyle().ScaleAllSizes(p.DPIScale())
 	}
@@ -271,7 +272,7 @@ func uiInit(r renderer.Renderer, p platform.Platform, es *sim.EventStream) {
 	// Do this asynchronously since it involves network traffic and may
 	// take some time (or may even time out, etc.)
 	ui.newReleaseDialogChan = make(chan *NewReleaseModalClient)
-	go checkForNewRelease(ui.newReleaseDialogChan)
+	go checkForNewRelease(ui.newReleaseDialogChan, lg)
 
 	if globalConfig.WhatsNewIndex < len(whatsNew) {
 		uiShowModalDialog(NewModalDialogBox(&WhatsNewModalClient{}, p), false)
@@ -332,7 +333,7 @@ func uiEndDisable(b bool) {
 
 func drawUI(ch chan *sim.Connection, localServer **sim.Server, remoteServer **sim.Server,
 	p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
-	eventStream *sim.EventStream, stats *Stats) {
+	eventStream *sim.EventStream, stats *Stats, lg *log.Logger) {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -591,6 +592,7 @@ func (m *ModalDialogBox) Draw() {
 
 type ConnectModalClient struct {
 	ch           chan *sim.Connection
+	lg           *log.Logger
 	localServer  **sim.Server
 	remoteServer **sim.Server
 	config       sim.NewSimConfiguration
@@ -602,7 +604,7 @@ func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
 	c.config = sim.MakeNewSimConfiguration(c.ch, &globalConfig.LastTRACON,
-		c.localServer, c.remoteServer, lg)
+		c.localServer, c.remoteServer, c.lg)
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {
@@ -618,6 +620,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 			if c.config.ShowRatesWindow() {
 				client := &RatesModalClient{
 					ch:           c.ch,
+					lg:           c.lg,
 					localServer:  c.localServer,
 					remoteServer: c.remoteServer,
 					platform:     c.platform,
@@ -646,6 +649,7 @@ func (c *ConnectModalClient) Draw() int {
 
 type RatesModalClient struct {
 	ch           chan *sim.Connection
+	lg           *log.Logger
 	localServer  **sim.Server
 	remoteServer **sim.Server
 	config       sim.NewSimConfiguration
@@ -665,6 +669,7 @@ func (c *RatesModalClient) Buttons() []ModalDialogButton {
 		action: func() bool {
 			uiShowModalDialog(NewModalDialogBox(&ConnectModalClient{
 				ch:           c.ch,
+				lg:           c.lg,
 				localServer:  c.localServer,
 				remoteServer: c.remoteServer,
 				config:       c.config,
@@ -729,7 +734,7 @@ func (yn *YesOrNoModalClient) Draw() int {
 	return -1
 }
 
-func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient) {
+func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient, lg *log.Logger) {
 	defer close(newReleaseDialogChan)
 
 	url := "https://api.github.com/repos/mmp/vice/releases"
@@ -1098,14 +1103,14 @@ func (e *ErrorModalClient) Draw() int {
 	return -1
 }
 
-func ShowErrorDialog(p platform.Platform, s string, args ...interface{}) {
+func ShowErrorDialog(p platform.Platform, lg *log.Logger, s string, args ...interface{}) {
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
 	uiShowModalDialog(d, true)
 
 	lg.Errorf(s, args...)
 }
 
-func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, s string, args ...interface{}) {
+func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logger, s string, args ...interface{}) {
 	lg.Errorf(s, args...)
 
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)

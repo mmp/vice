@@ -41,15 +41,7 @@ const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8001
 
 var (
-	// There are a handful of widely-used global variables in vice, all
-	// defined here.  While in principle it would be nice to have fewer (or
-	// no!) globals, it's cleaner to have these easily accessible where in
-	// the system without having to pass them through deep callchains.
-	// Note that in some cases they are passed down from main; this is
-	// plumbing in preparation for reducing the number of these in the
-	// future.
 	globalConfig *GlobalConfig
-	lg           *log.Logger
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -92,7 +84,7 @@ func main() {
 	}
 
 	// Initialize the logging system first and foremost.
-	lg = log.New(*server, *logLevel)
+	lg := log.New(*server, *logLevel)
 
 	// If the path is non-absolute, convert it to an absolute path
 	// w.r.t. the current directory.  (This is to work around that vice
@@ -261,7 +253,7 @@ func main() {
 			defer func() {
 				if err := recover(); err != nil {
 					lg.Error("Caught panic!", slog.String("stack", string(debug.Stack())))
-					ShowFatalErrorDialog(render, plat,
+					ShowFatalErrorDialog(render, plat, lg,
 						"Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
 							"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
 							"this bug can be fixed.\n\nError: %v", err)
@@ -280,7 +272,7 @@ func main() {
 
 		context = imguiInit()
 
-		LoadOrMakeDefaultConfig(plat)
+		LoadOrMakeDefaultConfig(plat, lg)
 
 		plat, err = platform.New(&globalConfig.Config, lg)
 		if err != nil {
@@ -315,9 +307,9 @@ func main() {
 			}
 		}
 
-		uiInit(render, plat, eventStream)
+		uiInit(render, plat, eventStream, lg)
 
-		globalConfig.Activate(controlClient, render, plat, eventStream)
+		globalConfig.Activate(controlClient, render, plat, eventStream, lg)
 
 		if controlClient == nil {
 			uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false, plat)
@@ -449,13 +441,13 @@ func main() {
 			imgui.NewFrame()
 
 			// Generate and render vice draw lists
-			wmDrawPanes(plat, render, controlClient, &stats)
+			wmDrawPanes(plat, render, controlClient, &stats, lg)
 
 			timeMarker(&stats.drawPanes)
 
 			// Draw the user interface
 			drawUI(newSimConnectionChan, &localServer, &remoteServer, plat, render,
-				controlClient, eventStream, &stats)
+				controlClient, eventStream, &stats, lg)
 			timeMarker(&stats.drawImgui)
 
 			// Wait for vsync
@@ -470,7 +462,7 @@ func main() {
 			if plat.ShouldStop() && len(ui.activeModalDialogs) == 0 {
 				// Do this while we're still running the event loop.
 				saveSim := controlClient != nil && controlClient.RPCClient() == localServer.RPCClient
-				globalConfig.SaveIfChanged(render, plat, controlClient, saveSim)
+				globalConfig.SaveIfChanged(render, plat, controlClient, saveSim, lg)
 
 				if controlClient != nil {
 					controlClient.Disconnect()

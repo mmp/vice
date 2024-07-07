@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/mmp/imgui-go/v4"
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
@@ -74,7 +75,7 @@ type GlobalConfigSim struct {
 	Sim *sim.Sim
 }
 
-func configFilePath() string {
+func configFilePath(lg *log.Logger) string {
 	dir, err := os.UserConfigDir()
 	if err != nil {
 		lg.Errorf("Unable to find user config dir: %v", err)
@@ -96,9 +97,9 @@ func (gc *GlobalConfig) Encode(w io.Writer) error {
 	return enc.Encode(gc)
 }
 
-func (c *GlobalConfig) Save() error {
-	lg.Infof("Saving config to: %s", configFilePath())
-	f, err := os.Create(configFilePath())
+func (c *GlobalConfig) Save(lg *log.Logger) error {
+	lg.Infof("Saving config to: %s", configFilePath(lg))
+	f, err := os.Create(configFilePath(lg))
 	if err != nil {
 		return err
 	}
@@ -107,7 +108,8 @@ func (c *GlobalConfig) Save() error {
 	return c.Encode(f)
 }
 
-func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform, c *sim.ControlClient, saveSim bool) bool {
+func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
+	c *sim.ControlClient, saveSim bool, lg *log.Logger) bool {
 	gc.Sim = nil
 	gc.Callsign = ""
 	if saveSim {
@@ -125,7 +127,7 @@ func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform platf
 	gc.InitialWindowSize = platform.WindowSize()
 	gc.InitialWindowPosition = platform.WindowPosition()
 
-	fn := configFilePath()
+	fn := configFilePath(lg)
 	onDisk, err := os.ReadFile(fn)
 	if err != nil {
 		lg.Warnf("%s: unable to read config file: %v", fn, err)
@@ -141,8 +143,8 @@ func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform platf
 		return false
 	}
 
-	if err := globalConfig.Save(); err != nil {
-		ShowErrorDialog(platform, "Error saving configuration file: %v", err)
+	if err := globalConfig.Save(lg); err != nil {
+		ShowErrorDialog(platform, lg, "Error saving configuration file: %v", err)
 	}
 
 	return true
@@ -158,8 +160,8 @@ func SetDefaultConfig() {
 	globalConfig.NotifiedNewCommandSyntax = true // don't warn for new installs
 }
 
-func LoadOrMakeDefaultConfig(p platform.Platform) {
-	fn := configFilePath()
+func LoadOrMakeDefaultConfig(p platform.Platform, lg *log.Logger) {
+	fn := configFilePath(lg)
 	lg.Infof("Loading config from: %s", fn)
 
 	SetDefaultConfig()
@@ -170,7 +172,7 @@ func LoadOrMakeDefaultConfig(p platform.Platform) {
 		globalConfig = &GlobalConfig{}
 		if err := d.Decode(&globalConfig.GlobalConfigNoSim); err != nil {
 			SetDefaultConfig()
-			ShowErrorDialog(p, "Configuration file is corrupt: %v", err)
+			ShowErrorDialog(p, lg, "Configuration file is corrupt: %v", err)
 		}
 
 		if globalConfig.Version < 1 {
@@ -198,7 +200,7 @@ func LoadOrMakeDefaultConfig(p platform.Platform) {
 			// Go ahead and deserialize the Sim
 			r.Seek(0, io.SeekStart)
 			if err := d.Decode(&globalConfig.GlobalConfigSim); err != nil {
-				ShowErrorDialog(p, "Configuration file is corrupt: %v", err)
+				ShowErrorDialog(p, lg, "Configuration file is corrupt: %v", err)
 			}
 		}
 	}
@@ -212,7 +214,7 @@ func LoadOrMakeDefaultConfig(p platform.Platform) {
 }
 
 func (gc *GlobalConfig) Activate(c *sim.ControlClient, r renderer.Renderer, p platform.Platform,
-	eventStream *sim.EventStream) {
+	eventStream *sim.EventStream, lg *log.Logger) {
 	// Upgrade old ones without a MessagesPane
 	if gc.DisplayRoot != nil {
 		haveMessages := false
