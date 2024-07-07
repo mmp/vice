@@ -197,7 +197,6 @@ func mungeCSV(filename string, raw string, fields []string, callback func([]stri
 			return
 		} else if err != nil {
 			panic(fmt.Sprintf("%s: error parsing CSV file: %s", filename, err))
-			return
 		} else {
 			for _, i := range fieldIndices {
 				strs = append(strs, record[i])

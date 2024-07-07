@@ -74,7 +74,6 @@ var (
 	resetSim          = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
 	showRoutes        = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given airport")
 	listMaps          = flag.String("listmaps", "", "path to a video map file to list maps of (e.g., resources/videomaps/ZNY-videomaps.gob.zst)")
-	listScenarios     = flag.Bool("listscenarios", false, "list all of the available scenarios")
 )
 
 func init() {

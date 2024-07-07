@@ -7449,7 +7449,6 @@ func starsButtonSize(flags int, scale float32) [2]float32 {
 		return [2]float32{bs(scale / 2), bs(scale)}
 	} else {
 		panic(fmt.Sprintf("unhandled starsButtonFlags %d", flags))
-		return [2]float32{bs(scale), bs(scale)}
 	}
 }
 

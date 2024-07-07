@@ -1201,7 +1201,6 @@ func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
 		return math.NMDistance2LL(p, a.Center) < a.Radius
 	default:
 		panic("unhandled AirspaceVolume type")
-		return false
 	}
 }
 
