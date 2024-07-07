@@ -2,13 +2,14 @@
 // Copyright(c) 2023 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package panes
 
 import (
 	"errors"
 	"net/rpc"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/sim"
 )
 
@@ -72,7 +73,7 @@ var starsErrorRemap = map[error]*STARSError{
 	av.ErrUnknownRunway:                ErrSTARSIllegalValue,
 }
 
-func GetSTARSError(e error) *STARSError {
+func GetSTARSError(e error, lg *log.Logger) *STARSError {
 	if se, ok := e.(*STARSError); ok {
 		return se
 	}

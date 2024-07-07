@@ -17,7 +17,9 @@ import (
 	"time"
 
 	"github.com/mmp/imgui-go/v4"
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
@@ -30,24 +32,56 @@ var (
 		// When a Pane's entry in the "Subwindows" menu is selected, these
 		// two maps are populated to indicate that the Pane's configuration
 		// window should be shown.
-		showPaneSettings map[Pane]*bool
-		showPaneName     map[Pane]string
+		showPaneSettings map[panes.Pane]*bool
+		showPaneName     map[panes.Pane]string
 
 		// Normally the Pane that the mouse is over gets mouse events,
 		// though if the user has started a click-drag, then the Pane that
 		// received the click keeps getting events until the mouse button
 		// is released.  mouseConsumerOverride records such a pane.
-		mouseConsumerOverride Pane
-		// Pane that currently holds the keyboard focus
-		keyboardFocusPane Pane
-		// Stack of Panes that previously held focus; if a Pane takes focus
-		// temporarily (e.g., the FlightStripPane), then this lets us pop
-		// back to the previous one (e.g., the CLIPane.)
-		keyboardFocusStack []Pane
+		mouseConsumerOverride panes.Pane
+
+		focus WMKeyboardFocus
 
 		lastAircraftResponse string
 	}
 )
+
+type WMKeyboardFocus struct {
+	initial panes.Pane
+
+	// Pane that currently holds the keyboard focus
+	current panes.Pane
+	// Stack of Panes that previously held focus; if a Pane takes focus
+	// temporarily (e.g., the FlightStripPane), then this lets us pop
+	// back to the previous one (e.g., the CLIPane.)
+	stack []panes.Pane
+}
+
+func (f *WMKeyboardFocus) Take(p panes.Pane) {
+	f.current = p
+	f.stack = nil
+}
+
+func (f *WMKeyboardFocus) TakeTemporary(p panes.Pane) {
+	if f.current != p {
+		f.stack = append(f.stack, f.current)
+		f.current = p
+	}
+}
+
+func (f *WMKeyboardFocus) Release() {
+	if n := len(f.stack); n > 0 {
+		f.current = f.stack[n-1]
+		f.stack = f.stack[:n-1]
+	} else {
+		f.current = f.initial
+	}
+}
+
+func (f *WMKeyboardFocus) Current() panes.Pane {
+	return f.current
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // SplitLine
@@ -69,35 +103,37 @@ type SplitLine struct {
 	Axis SplitType
 }
 
-func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
+func (s *SplitLine) Duplicate(nameAsCopy bool) panes.Pane {
 	lg.Errorf("SplitLine Duplicate shouldn't have been called...")
 	return &SplitLine{}
 }
 
-func (s *SplitLine) Activate(*sim.State, renderer.Renderer, platform.Platform, *sim.EventStream) {}
-func (s *SplitLine) Deactivate()                                                                 {}
-func (s *SplitLine) Reset(sim.State)                                                             {}
-func (s *SplitLine) CanTakeKeyboardFocus() bool                                                  { return false }
+func (s *SplitLine) Activate(*sim.State, renderer.Renderer, platform.Platform,
+	*sim.EventStream, *log.Logger) {
+}
+func (s *SplitLine) Deactivate()                  {}
+func (s *SplitLine) Reset(sim.State, *log.Logger) {}
+func (s *SplitLine) CanTakeKeyboardFocus() bool   { return false }
 
 func (s *SplitLine) Name() string {
 	return "Split Line"
 }
 
-func (s *SplitLine) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
-	if ctx.mouse != nil {
+func (s *SplitLine) Draw(ctx *panes.PaneContext, cb *renderer.CommandBuffer) {
+	if ctx.Mouse != nil {
 		if s.Axis == SplitAxisX {
-			ctx.mouse.SetCursor(imgui.MouseCursorResizeEW)
+			ctx.Mouse.SetCursor(imgui.MouseCursorResizeEW)
 		} else {
-			ctx.mouse.SetCursor(imgui.MouseCursorResizeNS)
+			ctx.Mouse.SetCursor(imgui.MouseCursorResizeNS)
 		}
 
-		if ctx.mouse.Dragging[platform.MouseButtonSecondary] {
-			delta := ctx.mouse.DragDelta
+		if ctx.Mouse.Dragging[platform.MouseButtonSecondary] {
+			delta := ctx.Mouse.DragDelta
 
 			if s.Axis == SplitAxisX {
-				s.Pos += delta[0] / ctx.parentPaneExtent.Width()
+				s.Pos += delta[0] / ctx.ParentPaneExtent.Width()
 			} else {
-				s.Pos += delta[1] / ctx.parentPaneExtent.Height()
+				s.Pos += delta[1] / ctx.ParentPaneExtent.Height()
 			}
 			// Just in case
 			s.Pos = math.Clamp(s.Pos, .01, .99)
@@ -107,7 +143,7 @@ func (s *SplitLine) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	// The drawing code sets the scissor and viewport to cover just the
 	// pixel area of each pane so an easy way to draw a split line is to
 	// just issue a clear.
-	cb.ClearRGB(UIControlColor)
+	cb.ClearRGB(panes.UIControlColor)
 }
 
 func splitLineWidth(p platform.Platform) int {
@@ -121,7 +157,7 @@ func splitLineWidth(p platform.Platform) int {
 // kd-tree.
 type DisplayNode struct {
 	// non-nil only for leaf nodes: iff splitAxis == SplitAxisNone
-	Pane      Pane
+	Pane      panes.Pane
 	SplitLine SplitLine
 	// non-nil only for interior notes: iff splitAxis != SplitAxisNone
 	Children [2]*DisplayNode
@@ -129,7 +165,7 @@ type DisplayNode struct {
 
 // NodeForPane searches a display node hierarchy for a given Pane,
 // returning the associated DisplayNode.
-func (d *DisplayNode) NodeForPane(pane Pane) *DisplayNode {
+func (d *DisplayNode) NodeForPane(pane panes.Pane) *DisplayNode {
 	if d.Pane == pane {
 		return d
 	}
@@ -147,7 +183,7 @@ func (d *DisplayNode) NodeForPane(pane Pane) *DisplayNode {
 // ParentNodeForPane returns both the DisplayNode one level up the
 // hierarchy from the specified Pane and the index into the children nodes
 // for that node that leads to the specified Pane.
-func (d *DisplayNode) ParentNodeForPane(pane Pane) (*DisplayNode, int) {
+func (d *DisplayNode) ParentNodeForPane(pane panes.Pane) (*DisplayNode, int) {
 	if d == nil {
 		return nil, -1
 	}
@@ -215,7 +251,7 @@ func (d *DisplayNode) UnmarshalJSON(s []byte) error {
 	if paneType == "" {
 		return nil
 	}
-	pane, err := unmarshalPane(paneType, *m["Pane"])
+	pane, err := panes.UnmarshalPane(paneType, *m["Pane"])
 
 	if err == nil {
 		d.Pane = pane
@@ -225,7 +261,7 @@ func (d *DisplayNode) UnmarshalJSON(s []byte) error {
 
 // VisitPanes visits all of the Panes in a DisplayNode hierarchy, calling
 // the provided callback function for each one.
-func (d *DisplayNode) VisitPanes(visit func(Pane)) {
+func (d *DisplayNode) VisitPanes(visit func(panes.Pane)) {
 	switch d.SplitLine.Axis {
 	case SplitAxisNone:
 		visit(d.Pane)
@@ -240,7 +276,7 @@ func (d *DisplayNode) VisitPanes(visit func(Pane)) {
 // giving each one both its own bounding box in window coordinates as well
 // the bounding box of its parent node in the DisplayNodeTree.
 func (d *DisplayNode) VisitPanesWithBounds(displayExtent math.Extent2D, parentDisplayExtent math.Extent2D, p platform.Platform,
-	visit func(math.Extent2D, math.Extent2D, Pane)) {
+	visit func(math.Extent2D, math.Extent2D, panes.Pane)) {
 	switch d.SplitLine.Axis {
 	case SplitAxisNone:
 		visit(displayExtent, parentDisplayExtent, d.Pane)
@@ -311,7 +347,7 @@ func splitY(e math.Extent2D, y float32, lineWidth int) (math.Extent2D, math.Exte
 
 // FindPaneForMouse returns the Pane that the provided mouse position p is inside.
 func (d *DisplayNode) FindPaneForMouse(displayExtent math.Extent2D, p [2]float32,
-	plat platform.Platform) Pane {
+	plat platform.Platform) panes.Pane {
 	if !displayExtent.Inside(p) {
 		return nil
 	}
@@ -376,58 +412,30 @@ func (d *DisplayNode) getString(indent string) string {
 // wmInit handles general initialization for the window (pane) management
 // system.
 func wmInit() {
-	wm.showPaneSettings = make(map[Pane]*bool)
-	wm.showPaneName = make(map[Pane]string)
+	wm.showPaneSettings = make(map[panes.Pane]*bool)
+	wm.showPaneName = make(map[panes.Pane]string)
 }
 
 // wmAddPaneMenuSettings is called to populate the top-level "Subwindows"
 // menu.
 // wmDrawUI draws any open Pane settings windows.
 func wmDrawUI(p platform.Platform) {
-	globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
+	globalConfig.DisplayRoot.VisitPanes(func(pane panes.Pane) {
 		if show, ok := wm.showPaneSettings[pane]; ok && *show {
-			if uid, ok := pane.(PaneUIDrawer); ok {
+			if uid, ok := pane.(panes.UIDrawer); ok {
 				imgui.BeginV(wm.showPaneName[pane]+" settings", show, imgui.WindowFlagsAlwaysAutoResize)
-				uid.DrawUI()
+				uid.DrawUI(p, &globalConfig.Config)
 				imgui.End()
 			}
 		}
 	})
 }
 
-// wmTakeKeyboardFocus allows a Pane to take the keyboard
-// focus. isTransient can be used to indicate that the focus will later be
-// given up, at which point the previously-focused Pane should get the
-// keyboard focus back.
-func wmTakeKeyboardFocus(pane Pane, isTransient bool) {
-	if wm.keyboardFocusPane == pane {
-		return
-	}
-	if isTransient && wm.keyboardFocusPane != nil {
-		wm.keyboardFocusStack = append(wm.keyboardFocusStack, wm.keyboardFocusPane)
-	}
-	if !isTransient {
-		// We can discard anything in the stack if this pane is not
-		// planning on giving it back.
-		wm.keyboardFocusStack = nil
-	}
-	wm.keyboardFocusPane = pane
-}
-
-// wmReleaseKeyboardFocus allows a Pane to give up the keyboard focus; it
-// is returned to the last item on the stack.
-func wmReleaseKeyboardFocus() {
-	if n := len(wm.keyboardFocusStack); n > 0 {
-		wm.keyboardFocusPane = wm.keyboardFocusStack[n-1]
-		wm.keyboardFocusStack = wm.keyboardFocusStack[:n-1]
-	}
-}
-
 // wmPaneIsPresent checks to see if the specified Pane is present in the
 // display hierarchy.
-func wmPaneIsPresent(pane Pane, root *DisplayNode) bool {
+func wmPaneIsPresent(pane panes.Pane, root *DisplayNode) bool {
 	found := false
-	root.VisitPanes(func(p Pane) {
+	root.VisitPanes(func(p panes.Pane) {
 		if p == pane {
 			found = true
 		}
@@ -443,9 +451,9 @@ func wmPaneIsPresent(pane Pane, root *DisplayNode) bool {
 func wmDrawPanes(p platform.Platform, r renderer.Renderer, w *World, stats *Stats) {
 	var filter func(d *DisplayNode) *DisplayNode
 	filter = func(d *DisplayNode) *DisplayNode {
-		if fsp, ok := d.Children[0].Pane.(*FlightStripPane); ok && fsp.HideFlightStrips {
+		if fsp, ok := d.Children[0].Pane.(*panes.FlightStripPane); ok && fsp.HideFlightStrips {
 			return filter(d.Children[1])
-		} else if fsp, ok := d.Children[1].Pane.(*FlightStripPane); ok && fsp.HideFlightStrips {
+		} else if fsp, ok := d.Children[1].Pane.(*panes.FlightStripPane); ok && fsp.HideFlightStrips {
 			return filter(d.Children[0])
 		} else {
 			return d
@@ -453,19 +461,12 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, w *World, stats *Stat
 	}
 	root := filter(globalConfig.DisplayRoot)
 
-	if !wmPaneIsPresent(wm.keyboardFocusPane, root) {
-		// It was deleted in the config editor or a new config was loaded.
-		wm.keyboardFocusPane = nil
-	}
-	if wm.keyboardFocusPane == nil {
-		// Take any one that can take keyboard events.
-		if wm.keyboardFocusPane == nil {
-			root.VisitPanes(func(pane Pane) {
-				if pane.CanTakeKeyboardFocus() {
-					wm.keyboardFocusPane = pane
-				}
-			})
+	if wm.focus.Current() == nil || !wmPaneIsPresent(wm.focus.Current(), root) {
+		sp := getPaneByType[*panes.STARSPane]()
+		if sp == nil {
+			panic("No STARSPane?")
 		}
+		wm.focus = WMKeyboardFocus{initial: sp, current: sp}
 	}
 
 	// Useful values related to the display size.
@@ -513,22 +514,42 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, w *World, stats *Stat
 	// First clear the entire window to the background color.
 	commandBuffer.ClearRGB(renderer.RGB{})
 
-	// Actually visit the panes.
+	// Handle tabbing between STARS/Messages pane
 	var keyboard *platform.KeyboardState
 	if !imgui.CurrentIO().WantCaptureKeyboard() {
 		keyboard = p.GetKeyboard()
 	}
+
+	if keyboard != nil && keyboard.IsPressed(platform.KeyTab) {
+		cur := wm.focus.Current()
+		if _, ok := cur.(*panes.MessagesPane); ok {
+			if s := getPaneByType[*panes.STARSPane](); s != nil {
+				wm.focus.Take(s)
+			}
+		} else if _, ok := cur.(*panes.STARSPane); ok {
+			if m := getPaneByType[*panes.MessagesPane](); m != nil {
+				wm.focus.Take(m)
+			}
+		}
+	}
+
+	// Actually visit the panes.
 	root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent, p,
-		func(paneExtent math.Extent2D, parentExtent math.Extent2D, pane Pane) {
-			haveFocus := pane == wm.keyboardFocusPane && !imgui.CurrentIO().WantCaptureKeyboard()
-			ctx := PaneContext{
-				paneExtent:       paneExtent,
-				parentPaneExtent: parentExtent,
-				platform:         p,
-				renderer:         r,
-				keyboard:         keyboard,
-				haveFocus:        haveFocus,
-				now:              time.Now(),
+		func(paneExtent math.Extent2D, parentExtent math.Extent2D, pane panes.Pane) {
+			haveFocus := pane == wm.focus.Current() && !imgui.CurrentIO().WantCaptureKeyboard()
+			ctx := panes.PaneContext{
+				PaneExtent:       paneExtent,
+				ParentPaneExtent: parentExtent,
+				Platform:         p,
+				Renderer:         r,
+				Keyboard:         keyboard,
+				HaveFocus:        haveFocus,
+				Now:              time.Now(),
+				Lg:               lg,
+
+				MenuBarHeight: ui.menuBarHeight,
+				AudioEnabled:  &globalConfig.AudioEnabled,
+				KeyboardFocus: &wm.focus,
 
 				Control:     w,
 				ClientState: w.client,
@@ -577,4 +598,14 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, w *World, stats *Stat
 	if fbSize[0] > 0 && fbSize[1] > 0 {
 		stats.render = r.RenderCommandBuffer(commandBuffer)
 	}
+}
+
+func getPaneByType[T any]() T {
+	var t T
+	globalConfig.DisplayRoot.VisitPanes(func(pane panes.Pane) {
+		if p, ok := pane.(T); ok {
+			t = p
+		}
+	})
+	return t
 }

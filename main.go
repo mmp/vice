@@ -26,6 +26,7 @@ import (
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
@@ -358,8 +359,8 @@ func main() {
 					uiShowConnectDialog(false, plat)
 				} else if world != nil {
 					world.ToggleShowScenarioInfoWindow()
-					globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-						p.Reset(world.State)
+					globalConfig.DisplayRoot.VisitPanes(func(p panes.Pane) {
+						p.Reset(world.State, lg)
 					})
 				}
 

@@ -2,7 +2,7 @@
 // Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package panes
 
 import (
 	_ "embed"
@@ -17,6 +17,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
@@ -56,7 +57,7 @@ const WxLatLongExtent = 2.5
 // Activate must be called for the WeatherRadar to start fetching weather
 // radar images; it is called with an initial center position in
 // latitude-longitude coordinates.
-func (w *WeatherRadar) Activate(center math.Point2LL, r renderer.Renderer) {
+func (w *WeatherRadar) Activate(center math.Point2LL, r renderer.Renderer, lg *log.Logger) {
 	if w.active {
 		w.reqChan <- center
 		return
@@ -104,7 +105,7 @@ func (w *WeatherRadar) Activate(center math.Point2LL, r renderer.Renderer) {
 		}
 	}
 
-	go fetchWeather(w.reqChan, w.cbChan)
+	go fetchWeather(w.reqChan, w.cbChan, lg)
 }
 
 // Deactivate causes the WeatherRadar to stop fetching weather updates.
@@ -131,7 +132,7 @@ func (w *WeatherRadar) UpdateCenter(center math.Point2LL) {
 // A single scanline of this color map, converted to RGB bytes:
 // https://opengeo.ncep.noaa.gov/geoserver/styles/reflectivity.png
 //
-//go:embed resources/radar_reflectivity.rgb
+//go:embed radar_reflectivity.rgb
 var radarReflectivity []byte
 
 type kdNode struct {
@@ -275,7 +276,8 @@ func invertRadarReflectivity(rgb [3]byte) float32 {
 // reqChan, fetching corresponding radar images from the NOAA, and sending
 // the results back on cbChan.  New images are also automatically
 // fetched periodically, with a wait time specified by the delay parameter.
-func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]renderer.CommandBuffer) {
+func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]renderer.CommandBuffer,
+	lg *log.Logger) {
 	// NOAA posts new maps every 2 minutes, so fetch a new map at minimum
 	// every 100s to stay current.
 	fetchRate := 100 * time.Second
@@ -349,13 +351,13 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]renderer.
 		}
 
 		// Send the command buffers back to the main thread.
-		cbChan <- makeWeatherCommandBuffers(img, rb)
+		cbChan <- makeWeatherCommandBuffers(img, rb, lg)
 
 		lg.Info("finish weather fetch")
 	}
 }
 
-func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]renderer.CommandBuffer {
+func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D, lg *log.Logger) [NumWxLevels]renderer.CommandBuffer {
 	// Convert the Image returned by png.Decode to a simple 8-bit RGBA image.
 	rgba := image.NewRGBA(img.Bounds())
 	draw.Draw(rgba, img.Bounds(), img, image.Point{}, draw.Over)
@@ -540,7 +542,7 @@ func DrawCompass(p math.Point2LL, ctx *PaneContext, rotationAngle float32, font 
 				// top edge
 				pText[0] -= float32(bx) / 2
 			} else {
-				lg.Infof("Edge borkage! pEdge %+v, bounds %+v", pEdge, bounds)
+				ctx.Lg.Infof("Edge borkage! pEdge %+v, bounds %+v", pEdge, bounds)
 			}
 
 			td.AddText(string(label), pText, renderer.TextStyle{Font: font, Color: color})
@@ -669,10 +671,15 @@ func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 
 ///////////////////////////////////////////////////////////////////////////
 // Other utilities
 
+var (
+	highlightedLocation        math.Point2LL
+	highlightedLocationEndTime time.Time
+)
+
 // If the user has run the "find" command to highlight a point in the
 // world, draw a red circle around that point for a few seconds.
 func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
-	remaining := time.Until(globalConfig.highlightedLocationEndTime)
+	remaining := time.Until(highlightedLocationEndTime)
 	if remaining < 0 {
 		return
 	}
@@ -684,13 +691,13 @@ func DrawHighlighted(ctx *PaneContext, transforms ScopeTransformations, cb *rend
 		color = renderer.LerpRGB(x, renderer.RGB{}, color)
 	}
 
-	p := transforms.WindowFromLatLongP(globalConfig.highlightedLocation)
+	p := transforms.WindowFromLatLongP(highlightedLocation)
 	radius := float32(10) // 10 pixel radius
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	ld.AddCircle(p, radius, 360, color)
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(3, ctx.platform.DPIScale())
+	cb.LineWidth(3, ctx.Platform.DPIScale())
 	ld.GenerateCommands(cb)
 }

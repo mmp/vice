@@ -75,3 +75,5 @@ replace github.com/mmp/vice/pkg/platform => /Users/mmp/vice/pkg/platform
 replace github.com/mmp/vice/pkg/aviation => /Users/mmp/vice/pkg/aviation
 
 replace github.com/mmp/vice/pkg/sim => /Users/mmp/vice/pkg/sim
+
+replace github.com/mmp/vice/pkg/panes => /Users/mmp/vice/pkg/panes

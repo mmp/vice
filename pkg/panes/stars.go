@@ -5,7 +5,7 @@
 // Main missing features:
 // Altitude alerts
 
-package main
+package panes
 
 import (
 	"fmt"
@@ -20,6 +20,7 @@ import (
 	"unicode"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
@@ -1133,7 +1134,7 @@ func NewSTARSPane(ss sim.State) *STARSPane {
 func (sp *STARSPane) Name() string { return "STARS" }
 
 func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
-	eventStream *sim.EventStream) {
+	eventStream *sim.EventStream, lg *log.Logger) {
 	if sp.CurrentPreferenceSet.Range == 0 || sp.CurrentPreferenceSet.Center.IsZero() {
 		// First launch after switching over to serializing the CurrentPreferenceSet...
 		sp.CurrentPreferenceSet = sp.MakePreferenceSet("", ss)
@@ -1157,7 +1158,7 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 	}
 
 	sp.initializeFonts()
-	sp.initializeAudio(p)
+	sp.initializeAudio(p, lg)
 
 	if ss != nil {
 		sp.systemMaps = sp.makeSystemMaps(*ss)
@@ -1178,7 +1179,7 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 
 	ps := sp.CurrentPreferenceSet
 	if ps.Brightness.Weather != 0 {
-		sp.weatherRadar.Activate(ps.Center, r)
+		sp.weatherRadar.Activate(ps.Center, r, lg)
 	}
 
 	sp.lastTrackUpdate = time.Time{} // force immediate update at start
@@ -1195,7 +1196,7 @@ func (sp *STARSPane) Deactivate() {
 	sp.weatherRadar.Deactivate()
 }
 
-func (sp *STARSPane) Reset(ss sim.State) {
+func (sp *STARSPane) Reset(ss sim.State, lg *log.Logger) {
 	ps := &sp.CurrentPreferenceSet
 
 	ps.Center = ss.GetInitialCenter()
@@ -1321,15 +1322,15 @@ func (sp *STARSPane) makeSystemMaps(ss sim.State) map[int]*av.VideoMap {
 	return maps
 }
 
-func (sp *STARSPane) DrawUI(p platform.Platform) {
+func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	ps := &sp.CurrentPreferenceSet
 
 	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
 
 	imgui.Checkbox("Lock display", &sp.LockDisplay)
 
-	imgui.Checkbox("Enable Sound Effects", &globalConfig.AudioEnabled)
-	uiStartDisable(!globalConfig.AudioEnabled)
+	imgui.Checkbox("Enable Sound Effects", &config.AudioEnabled)
+	uiStartDisable(!config.AudioEnabled)
 	// Not all of the ones available in the engine are used, so only offer these up:
 	for _, i := range []AudioType{AudioConflictAlert, AudioInboundHandoff,
 		AudioHandoffAccepted, AudioCommandError} {
@@ -1342,7 +1343,7 @@ func (sp *STARSPane) DrawUI(p platform.Platform) {
 			}
 		}
 	}
-	uiEndDisable(!globalConfig.AudioEnabled)
+	uiEndDisable(!config.AudioEnabled)
 }
 
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
@@ -1359,7 +1360,7 @@ func (sp *STARSPane) processEvents(ctx *PaneContext) {
 			sa.GlobalLeaderLineDirection = ac.GlobalLeaderLineDirection
 			sa.UseGlobalLeaderLine = sa.GlobalLeaderLineDirection != nil
 			sa.FirstSeen = ctx.SimState.SimTime
-			sa.CWTCategory = getCwtCategory(ac)
+			sa.CWTCategory = getCwtCategory(ctx, ac)
 
 			sp.Aircraft[callsign] = sa
 		}
@@ -1448,12 +1449,12 @@ func (sp *STARSPane) processEvents(ctx *PaneContext) {
 			}
 		case sim.OfferedHandoffEvent:
 			if event.ToController == ctx.SimState.Callsign {
-				sp.playOnce(ctx.platform, AudioInboundHandoff)
+				sp.playOnce(ctx.Platform, AudioInboundHandoff)
 			}
 		case sim.AcceptedHandoffEvent:
 			if event.FromController == ctx.SimState.Callsign && event.ToController != ctx.SimState.Callsign {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
-					sp.playOnce(ctx.platform, AudioHandoffAccepted)
+					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
 				}
@@ -1461,7 +1462,7 @@ func (sp *STARSPane) processEvents(ctx *PaneContext) {
 		case sim.AcceptedRedirectedHandoffEvent:
 			if event.FromController == ctx.SimState.Callsign && event.ToController != ctx.SimState.Callsign {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
-					sp.playOnce(ctx.platform, AudioHandoffAccepted)
+					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
 					state.RDIndicatorEnd = time.Now().Add(30 * time.Second)
@@ -1620,26 +1621,26 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 
 	sp.processKeyboardInput(ctx)
 
-	transforms := GetScopeTransformations(ctx.paneExtent, ctx.SimState.MagneticVariation, ctx.SimState.NmPerLongitude,
+	transforms := GetScopeTransformations(ctx.PaneExtent, ctx.SimState.MagneticVariation, ctx.SimState.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range), 0)
 
-	dpiScale := ctx.platform.DPIScale()
-	paneExtent := ctx.paneExtent
+	dpiScale := ctx.Platform.DPIScale()
+	paneExtent := ctx.PaneExtent
 	if ps.DisplayDCB {
 		paneExtent = sp.DrawDCB(ctx, transforms, cb)
 
 		// Update scissor for what's left and to protect the DCB (even
 		// though this is apparently unrealistic, at least as far as radar
 		// tracks go...)
-		cb.SetScissorBounds(paneExtent, ctx.platform.FramebufferSize()[1]/ctx.platform.DisplaySize()[1])
+		cb.SetScissorBounds(paneExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 
-		if ctx.mouse != nil {
+		if ctx.Mouse != nil {
 			// The mouse position is provided in Pane coordinates, so that needs to be updated unless
 			// the DCB is at the top, in which case it's unchanged.
-			ms := *ctx.mouse
-			ctx.mouse = &ms
-			ctx.mouse.Pos[0] += ctx.paneExtent.P0[0] - paneExtent.P0[0]
-			ctx.mouse.Pos[1] += ctx.paneExtent.P0[1] - paneExtent.P0[1]
+			ms := *ctx.Mouse
+			ctx.Mouse = &ms
+			ctx.Mouse.Pos[0] += ctx.PaneExtent.P0[0] - paneExtent.P0[0]
+			ctx.Mouse.Pos[1] += ctx.PaneExtent.P0[1] - paneExtent.P0[1]
 		}
 	}
 
@@ -1707,7 +1708,7 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 		return aircraft[i].Callsign < aircraft[j].Callsign
 	})
 
-	sp.drawSystemLists(aircraft, ctx, ctx.paneExtent, transforms, cb)
+	sp.drawSystemLists(aircraft, ctx, ctx.PaneExtent, transforms, cb)
 
 	sp.drawHistoryTrails(aircraft, ctx, transforms, cb)
 
@@ -1732,22 +1733,22 @@ func (sp *STARSPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	playAlertSound := !ps.DisableCAWarnings && slices.ContainsFunc(sp.CAAircraft,
 		func(ca CAAircraft) bool {
 			return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
-				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings && ctx.now.Before(ca.SoundEnd)
+				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings && ctx.Now.Before(ca.SoundEnd)
 		})
 	if !ps.DisableMSAW {
 		for _, ac := range aircraft {
 			state := sp.Aircraft[ac.Callsign]
 			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW && !state.DisableMSAW &&
-				ctx.now.Before(state.MSAWSoundEnd) {
+				ctx.Now.Before(state.MSAWSoundEnd) {
 				playAlertSound = true
 				break
 			}
 		}
 	}
 	if playAlertSound {
-		sp.startPlayContinuous(ctx.platform, AudioConflictAlert)
+		sp.startPlayContinuous(ctx.Platform, AudioConflictAlert)
 	} else {
-		sp.stopPlayContinuous(ctx.platform, AudioConflictAlert)
+		sp.stopPlayContinuous(ctx.Platform, AudioConflictAlert)
 	}
 
 	// Do this at the end of drawing so that we hold on to the tracks we
@@ -1779,7 +1780,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *PaneContext) {
 	for callsign, state := range sp.Aircraft {
 		ac, ok := ctx.SimState.Aircraft[callsign]
 		if !ok {
-			lg.Errorf("%s: not found in Aircraft?", callsign)
+			ctx.Lg.Errorf("%s: not found in Aircraft?", callsign)
 			continue
 		}
 
@@ -1813,25 +1814,15 @@ func (sp *STARSPane) updateRadarTracks(ctx *PaneContext) {
 	})
 
 	sp.updateCAAircraft(ctx, aircraft)
-	sp.updateInTrailDistance(aircraft)
+	sp.updateInTrailDistance(ctx, aircraft)
 }
 
 func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
-	if !ctx.haveFocus || ctx.keyboard == nil {
+	if !ctx.HaveFocus || ctx.Keyboard == nil {
 		return
 	}
 
-	if ctx.keyboard.IsPressed(platform.KeyTab) {
-		// focus back to the MessagesPane
-		globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
-			if mp, ok := pane.(*MessagesPane); ok {
-				wmTakeKeyboardFocus(mp, false)
-				delete(ctx.keyboard.Pressed, platform.KeyTab) // prevent cycling back and forth
-			}
-		})
-	}
-
-	input := strings.ToUpper(ctx.keyboard.Input)
+	input := strings.ToUpper(ctx.Keyboard.Input)
 	if sp.commandMode == CommandModeMultiFunc && sp.multiFuncPrefix == "" && len(input) > 0 {
 		sp.multiFuncPrefix = string(input[0])
 		input = input[1:]
@@ -1840,11 +1831,11 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 	ps := &sp.CurrentPreferenceSet
 
-	if ctx.keyboard.IsPressed(platform.KeyControl) && len(input) == 1 && unicode.IsDigit(rune(input[0])) {
+	if ctx.Keyboard.IsPressed(platform.KeyControl) && len(input) == 1 && unicode.IsDigit(rune(input[0])) {
 		idx := byte(input[0]) - '0'
 		// This test should be redundant given the IsDigit check, but just to be safe...
 		if int(idx) < len(ps.Bookmarks) {
-			if ctx.keyboard.IsPressed(platform.KeyAlt) {
+			if ctx.Keyboard.IsPressed(platform.KeyAlt) {
 				// Record bookmark
 				ps.Bookmarks[idx].Center = ps.CurrentCenter
 				ps.Bookmarks[idx].Range = ps.Range
@@ -1859,7 +1850,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 		}
 	}
 
-	for key := range ctx.keyboard.Pressed {
+	for key := range ctx.Keyboard.Pressed {
 		switch key {
 		case platform.KeyBackspace:
 			if len(sp.previewAreaInput) > 0 {
@@ -1874,7 +1865,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			sp.commandMode = CommandModeMin
 		case platform.KeyEnter:
 			if status := sp.executeSTARSCommand(sp.previewAreaInput, ctx); status.err != nil {
-				sp.displayError(status.err, ctx.platform)
+				sp.displayError(status.err, ctx)
 			} else {
 				if status.clear {
 					sp.resetInputState()
@@ -1889,13 +1880,13 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			sp.disableMenuSpinner(ctx)
 			sp.wipRBL = nil
 		case platform.KeyF1:
-			if ctx.keyboard.IsPressed(platform.KeyControl) {
+			if ctx.Keyboard.IsPressed(platform.KeyControl) {
 				// Recenter
 				ps.Center = ctx.SimState.GetInitialCenter()
 				ps.CurrentCenter = ps.Center
 			}
 		case platform.KeyF2:
-			if ctx.keyboard.IsPressed(platform.KeyControl) {
+			if ctx.Keyboard.IsPressed(platform.KeyControl) {
 				if ps.DisplayDCB {
 					sp.disableMenuSpinner(ctx)
 					sp.activeDCBMenu = DCBMenuMaps
@@ -1904,7 +1895,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 				sp.commandMode = CommandModeMaps
 			}
 		case platform.KeyF3:
-			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuBrite
 			} else {
@@ -1912,7 +1903,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 				sp.commandMode = CommandModeInitiateControl
 			}
 		case platform.KeyF4:
-			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.activeDCBMenu = DCBMenuMain
 				sp.activateMenuSpinner(MakeLeaderLineLengthSpinner(&ps.LeaderLineLength))
 				sp.resetInputState()
@@ -1922,7 +1913,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 				sp.commandMode = CommandModeTerminateControl
 			}
 		case platform.KeyF5:
-			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuCharSize
 			} else {
@@ -1933,7 +1924,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 			sp.resetInputState()
 			sp.commandMode = CommandModeFlightData
 		case platform.KeyF7:
-			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				if sp.activeDCBMenu == DCBMenuMain {
 					sp.activeDCBMenu = DCBMenuAux
@@ -1945,12 +1936,12 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 				sp.commandMode = CommandModeMultiFunc
 			}
 		case platform.KeyF8:
-			if ctx.keyboard.IsPressed(platform.KeyControl) {
+			if ctx.Keyboard.IsPressed(platform.KeyControl) {
 				sp.disableMenuSpinner(ctx)
 				ps.DisplayDCB = !ps.DisplayDCB
 			}
 		case platform.KeyF9:
-			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activateMenuSpinner(MakeRangeRingRadiusSpinner(&ps.RangeRingRadius))
 				sp.resetInputState()
@@ -1960,14 +1951,14 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 				sp.commandMode = CommandModeVFRPlan
 			}
 		case platform.KeyF10:
-			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activateMenuSpinner(MakeRadarRangeSpinner(&ps.Range))
 				sp.resetInputState()
 				sp.commandMode = CommandModeRange
 			}
 		case platform.KeyF11:
-			if ctx.keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuSite
 			} else {
@@ -1980,7 +1971,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *PaneContext) {
 
 func (sp *STARSPane) disableMenuSpinner(ctx *PaneContext) {
 	activeSpinner = nil
-	ctx.platform.EndCaptureMouse()
+	ctx.Platform.EndCaptureMouse()
 	sp.commandMode = CommandModeNone
 }
 
@@ -2228,8 +2219,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 				}
 			} else if f[0] == ".FIND" {
 				if pos, ok := ctx.SimState.Locate(f[1]); ok {
-					globalConfig.highlightedLocation = pos
-					globalConfig.highlightedLocationEndTime = ctx.now.Add(5 * time.Second)
+					highlightedLocation = pos
+					highlightedLocationEndTime = ctx.Now.Add(5 * time.Second)
 					status.clear = true
 					return
 				} else {
@@ -3145,7 +3136,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *PaneContext) (status S
 		sp.PreferenceSets = append(sp.PreferenceSets, psave)
 		sp.SelectedPreferenceSet = len(sp.PreferenceSets) - 1
 		status.clear = true
-		globalConfig.Save()
+		// FIXME? globalConfig.Save()
 		return
 
 	case CommandModeMaps:
@@ -3330,17 +3321,17 @@ func (sp *STARSPane) setScratchpad(ctx *PaneContext, callsign string, contents s
 
 	if isSecondary {
 		ctx.Control.SetSecondaryScratchpad(callsign, contents, nil,
-			func(err error) { sp.displayError(err, ctx.platform) })
+			func(err error) { sp.displayError(err, ctx) })
 	} else {
 		ctx.Control.SetScratchpad(callsign, contents, nil,
-			func(err error) { sp.displayError(err, ctx.platform) })
+			func(err error) { sp.displayError(err, ctx) })
 	}
 	return nil
 }
 
 func (sp *STARSPane) setTemporaryAltitude(ctx *PaneContext, callsign string, alt int) {
 	ctx.Control.SetTemporaryAltitude(callsign, alt, nil,
-		func(err error) { sp.displayError(err, ctx.platform) })
+		func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir *math.CardinalOrdinalDirection) {
@@ -3349,7 +3340,7 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *PaneContext, callsign string, dir 
 	state.UseGlobalLeaderLine = dir != nil
 
 	ctx.Control.SetGlobalLeaderLine(callsign, dir, nil,
-		func(err error) { sp.displayError(err, ctx.platform) })
+		func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
@@ -3362,11 +3353,11 @@ func (sp *STARSPane) initiateTrack(ctx *PaneContext, callsign string) {
 				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.SimState.Controllers, ac)
 			}
 		},
-		func(err error) { sp.displayError(err, ctx.platform) })
+		func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) dropTrack(ctx *PaneContext, callsign string) {
-	ctx.Control.DropTrack(callsign, nil, func(err error) { sp.displayError(err, ctx.platform) })
+	ctx.Control.DropTrack(callsign, nil, func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
@@ -3379,7 +3370,7 @@ func (sp *STARSPane) acceptHandoff(ctx *PaneContext, callsign string) {
 				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.SimState.Controllers, ac)
 			}
 		},
-		func(err error) { sp.displayError(err, ctx.platform) })
+		func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller string) error {
@@ -3389,7 +3380,7 @@ func (sp *STARSPane) handoffTrack(ctx *PaneContext, callsign string, controller 
 	}
 
 	ctx.Control.HandoffTrack(callsign, control.Callsign, nil,
-		func(err error) { sp.displayError(err, ctx.platform) })
+		func(err error) { sp.displayError(err, ctx) })
 
 	return nil
 }
@@ -3534,17 +3525,17 @@ func (sp *STARSPane) setLeaderLine(ctx *PaneContext, ac *av.Aircraft, cmd string
 
 func (sp *STARSPane) forceQL(ctx *PaneContext, callsign, controller string) {
 	ctx.Control.ForceQL(callsign, controller, nil,
-		func(err error) { sp.displayError(err, ctx.platform) })
+		func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) redirectHandoff(ctx *PaneContext, callsign, controller string) {
 	ctx.Control.RedirectHandoff(callsign, controller, nil,
-		func(err error) { sp.displayError(err, ctx.platform) })
+		func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) acceptRedirectedHandoff(ctx *PaneContext, callsign string) {
 	ctx.Control.AcceptRedirectedHandoff(callsign, nil,
-		func(err error) { sp.displayError(err, ctx.platform) })
+		func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) RemoveForceQL(ctx *PaneContext, callsign, controller string) {
@@ -3553,17 +3544,17 @@ func (sp *STARSPane) RemoveForceQL(ctx *PaneContext, callsign, controller string
 
 func (sp *STARSPane) pointOut(ctx *PaneContext, callsign string, controller string) {
 	ctx.Control.PointOut(callsign, controller, nil,
-		func(err error) { sp.displayError(err, ctx.platform) })
+		func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) acknowledgePointOut(ctx *PaneContext, callsign string) {
 	ctx.Control.AcknowledgePointOut(callsign, nil,
-		func(err error) { sp.displayError(err, ctx.platform) })
+		func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) cancelHandoff(ctx *PaneContext, callsign string) {
 	ctx.Control.CancelHandoff(callsign, nil,
-		func(err error) { sp.displayError(err, ctx.platform) })
+		func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mousePosition [2]float32,
@@ -3611,7 +3602,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				if time.Until(state.RDIndicatorEnd) > 0 {
 					if state.OutboundHandoffAccepted {
 						state.OutboundHandoffAccepted = false
-						state.OutboundHandoffFlashEnd = ctx.now
+						state.OutboundHandoffFlashEnd = ctx.Now
 					}
 					state.RDIndicatorEnd = time.Time{}
 					status.clear = true
@@ -3670,12 +3661,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 					// ack an accepted handoff
 					status.clear = true
 					state.OutboundHandoffAccepted = false
-					state.OutboundHandoffFlashEnd = ctx.now
+					state.OutboundHandoffFlashEnd = ctx.Now
 
 					return
-				} else if ctx.keyboard != nil {
-					_, ctrl := ctx.keyboard.Pressed[platform.KeyControl]
-					_, shift := ctx.keyboard.Pressed[platform.KeyShift]
+				} else if ctx.Keyboard != nil {
+					_, ctrl := ctx.Keyboard.Pressed[platform.KeyControl]
+					_, shift := ctx.Keyboard.Pressed[platform.KeyShift]
 					if ctrl && shift {
 						// initiate track, CRC style
 						status.clear = true
@@ -3683,8 +3674,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 						return
 					}
 				}
-				if db := sp.datablockType(ctx, ac); db == LimitedDatablock && state.FullLDBEndTime.Before(ctx.now) {
-					state.FullLDBEndTime = ctx.now.Add(5 * time.Second)
+				if db := sp.datablockType(ctx, ac); db == LimitedDatablock && state.FullLDBEndTime.Before(ctx.Now) {
+					state.FullLDBEndTime = ctx.Now.Add(5 * time.Second)
 					// do not collapse datablock if user is tracking the aircraft
 				} else if db == FullDatablock && ac.TrackingController != ctx.SimState.Callsign {
 					state.DatablockType = PartialDatablock
@@ -3732,7 +3723,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				}
 				return
 			} else if cmd == "?" {
-				lg.Info("print aircraft", slog.String("callsign", ac.Callsign),
+				ctx.Lg.Info("print aircraft", slog.String("callsign", ac.Callsign),
 					slog.Any("aircraft", ac))
 				fmt.Println(spew.Sdump(ac) + "\n" + ac.Nav.FlightState.Summary())
 				status.clear = true
@@ -3756,12 +3747,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *PaneContext, cmd string, mo
 				return
 			} else if av.StringIsSPC(cmd) {
 				ctx.Control.ToggleSPCOverride(ac.Callsign, cmd, nil,
-					func(err error) { sp.displayError(err, ctx.platform) })
+					func(err error) { sp.displayError(err, ctx) })
 				status.clear = true
 				return
 			} else if cmd == "UN" {
 				ctx.Control.RejectPointOut(ac.Callsign, nil,
-					func(err error) { sp.displayError(err, ctx.platform) })
+					func(err error) { sp.displayError(err, ctx) })
 				status.clear = true
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
@@ -4403,13 +4394,13 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 	// Find a scale factor so that the buttons all fit in the window, if necessary
 	const NumDCBSlots = 20
 	// Sigh; on windows we want the button size in pixels on high DPI displays
-	ds := util.Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+	ds := util.Select(runtime.GOOS == "windows", ctx.Platform.DPIScale(), float32(1))
 	var buttonScale float32
 	// Scale based on width or height available depending on DCB position
 	if ps.DCBPosition == DCBPositionTop || ps.DCBPosition == DCBPositionBottom {
-		buttonScale = math.Min(ds, (ds*ctx.paneExtent.Width()-4)/(NumDCBSlots*STARSButtonSize))
+		buttonScale = math.Min(ds, (ds*ctx.PaneExtent.Width()-4)/(NumDCBSlots*STARSButtonSize))
 	} else {
-		buttonScale = math.Min(ds, (ds*ctx.paneExtent.Height()-4)/(NumDCBSlots*STARSButtonSize))
+		buttonScale = math.Min(ds, (ds*ctx.PaneExtent.Height()-4)/(NumDCBSlots*STARSButtonSize))
 	}
 
 	sp.StartDrawDCB(ctx, buttonScale, transforms, cb)
@@ -4439,7 +4430,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 				return
 			})
 		if STARSSelectButton(ctx, "RR\nCNTR", STARSButtonHalfVertical, buttonScale) {
-			cw := [2]float32{ctx.paneExtent.Width() / 2, ctx.paneExtent.Height() / 2}
+			cw := [2]float32{ctx.PaneExtent.Width() / 2, ctx.PaneExtent.Height() / 2}
 			ps.RangeRingsCenter = transforms.LatLongFromWindowP(cw)
 		}
 		if STARSSelectButton(ctx, "MAPS", STARSButtonFull, buttonScale) {
@@ -4618,7 +4609,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("WXC", &ps.Brightness.WxContrast, 5, false),
 			CommandModeNone, STARSButtonHalfVertical, buttonScale)
 		if ps.Brightness.Weather != 0 {
-			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.renderer)
+			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.Renderer, ctx.Lg)
 		} else {
 			// Don't fetch weather maps if they're not going to be displayed.
 			sp.weatherRadar.Deactivate()
@@ -4653,7 +4644,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 				// Make this one current
 				sp.SelectedPreferenceSet = i
 				sp.CurrentPreferenceSet = sp.PreferenceSets[i]
-				sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.renderer)
+				sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.Renderer, ctx.Lg)
 			}
 		}
 		for i := len(sp.PreferenceSets); i < NumSTARSPreferenceSets; i++ {
@@ -4672,7 +4663,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 		if validSelection {
 			if STARSSelectButton(ctx, "SAVE", STARSButtonHalfVertical, buttonScale) {
 				sp.PreferenceSets[sp.SelectedPreferenceSet] = sp.CurrentPreferenceSet
-				globalConfig.Save()
+				// FIXME? globalConfig.Save()
 			}
 		} else {
 			STARSDisabledButton(ctx, "SAVE", STARSButtonHalfVertical, buttonScale)
@@ -4791,7 +4782,7 @@ func (sp *STARSPane) DrawDCB(ctx *PaneContext, transforms ScopeTransformations, 
 	sp.EndDrawDCB()
 
 	sz := starsButtonSize(STARSButtonFull, buttonScale)
-	paneExtent := ctx.paneExtent
+	paneExtent := ctx.PaneExtent
 	switch ps.DCBPosition {
 	case DCBPositionTop:
 		paneExtent.P1[1] -= sz[1]
@@ -5248,7 +5239,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *PaneContext, 
 				}
 			}
 		} else {
-			lg.Errorf("%d: unhandled VideoMapsList.Selection", ps.VideoMapsList.Selection)
+			ctx.Lg.Errorf("%d: unhandled VideoMapsList.Selection", ps.VideoMapsList.Selection)
 		}
 
 		drawList(text.String(), ps.VideoMapsList.Position)
@@ -5428,7 +5419,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *PaneContext, transforms ScopeTransfo
 	}
 
 	ps := sp.CurrentPreferenceSet
-	cb.LineWidth(3, ctx.platform.DPIScale())
+	cb.LineWidth(3, ctx.Platform.DPIScale())
 	cb.SetRGB(ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
 	transforms.LoadLatLongViewingMatrices(cb)
 	ld.GenerateCommands(cb)
@@ -5511,7 +5502,7 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *PaneContext, trans
 	// Update cached command buffers for tracks
 	sp.fusedTrackVertices = getTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
 
-	scale := util.Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+	scale := util.Select(runtime.GOOS == "windows", ctx.Platform.DPIScale(), float32(1))
 
 	now := ctx.SimState.SimTime
 	for _, ac := range aircraft {
@@ -5549,7 +5540,7 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *PaneContext, trans
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	trid.GenerateCommands(cb)
-	cb.LineWidth(1, ctx.platform.DPIScale())
+	cb.LineWidth(1, ctx.Platform.DPIScale())
 	ld.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -5818,7 +5809,7 @@ func getTrackVertices(ctx *PaneContext, diameter float32) [][2]float32 {
 
 	// Scale the points based on the circle radius (and deal with the usual
 	// Windows high-DPI borkage...)
-	scale := util.Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
+	scale := util.Select(runtime.GOOS == "windows", ctx.Platform.DPIScale(), float32(1))
 	radius := scale * float32(int(diameter/2+0.5)) // round to integer
 	pts = util.MapSlice(pts, func(p [2]float32) [2]float32 { return math.Scale2f(p, radius) })
 
@@ -5993,7 +5984,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *PaneContext, aircraft []*av.Aircraft)
 				}) {
 					sp.CAAircraft = append(sp.CAAircraft, CAAircraft{
 						Callsigns: [2]string{callsign, ocs},
-						SoundEnd:  ctx.now.Add(5 * time.Second),
+						SoundEnd:  ctx.Now.Add(5 * time.Second),
 					})
 				}
 			}
@@ -6001,7 +5992,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *PaneContext, aircraft []*av.Aircraft)
 	}
 }
 
-func (sp *STARSPane) updateInTrailDistance(aircraft []*av.Aircraft) {
+func (sp *STARSPane) updateInTrailDistance(ctx *PaneContext, aircraft []*av.Aircraft) {
 	// Zero out the previous distance
 	for _, ac := range aircraft {
 		sp.Aircraft[ac.Callsign].IntrailDistance = 0
@@ -6069,7 +6060,7 @@ func (sp *STARSPane) updateInTrailDistance(aircraft []*av.Aircraft) {
 			leadingState, trailingState := sp.Aircraft[leading.Callsign], sp.Aircraft[trailing.Callsign]
 			trailingState.IntrailDistance =
 				math.NMDistance2LL(leadingState.TrackPosition(), trailingState.TrackPosition())
-			sp.checkInTrailCwtSeparation(trailing, leading)
+			sp.checkInTrailCwtSeparation(ctx, trailing, leading)
 		}
 		handledVolumes[vol.Id] = nil
 	}
@@ -6128,15 +6119,15 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	return math.Add2f(p, math.Scale2f(ma.v, gs))
 }
 
-func getCwtCategory(ac *av.Aircraft) string {
+func getCwtCategory(ctx *PaneContext, ac *av.Aircraft) string {
 	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.BaseType()]
 	if !ok {
-		lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
+		ctx.Lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
 		return "NOWGT"
 	}
 	wc := perf.Category.CWT
 	if len(wc) == 0 {
-		lg.Errorf("%s: no CWT category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
+		ctx.Lg.Errorf("%s: no CWT category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
 		return "NOWGT"
 	}
 
@@ -6162,22 +6153,22 @@ func getCwtCategory(ac *av.Aircraft) string {
 	case "A":
 		return "A"
 	default:
-		lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
+		ctx.Lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
 		return "NOWGT"
 	}
 
 }
 
-func (sp *STARSPane) checkInTrailCwtSeparation(back, front *av.Aircraft) {
+func (sp *STARSPane) checkInTrailCwtSeparation(ctx *PaneContext, back, front *av.Aircraft) {
 	cwtClass := func(ac *av.Aircraft) int {
 		perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.BaseType()]
 		if !ok {
-			lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
+			ctx.Lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
 			return 9
 		}
 		wc := perf.Category.CWT
 		if len(wc) == 0 {
-			lg.Errorf("%s: no CWT category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
+			ctx.Lg.Errorf("%s: no CWT category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
 			return 9
 		}
 		switch wc[0] {
@@ -6200,7 +6191,7 @@ func (sp *STARSPane) checkInTrailCwtSeparation(back, front *av.Aircraft) {
 		case 'A':
 			return 8
 		default:
-			lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
+			ctx.Lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
 			return 9
 		}
 	}
@@ -6401,11 +6392,11 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *av.Aircraft) []STARS
 		db := baseDB.Duplicate()
 		db.Lines[1].Text = fmt.Sprintf("%v", ac.Squawk)
 		db.Lines[2].Text = fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
-		if state.FullLDBEndTime.After(ctx.now) {
+		if state.FullLDBEndTime.After(ctx.Now) {
 			db.Lines[2].Text += fmt.Sprintf(" %02d", (state.TrackGroundspeed()+5)/10)
 		}
 
-		if state.Ident(ctx.now) {
+		if state.Ident(ctx.Now) {
 			// flash ID after squawk code
 			start := len(db.Lines[1].Text)
 			db.Lines[1].Text += "ID"
@@ -6433,7 +6424,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *av.Aircraft) []STARS
 			dbs[1].Lines[0].Text += sq + "WHO"
 		}
 
-		if state.Ident(ctx.now) {
+		if state.Ident(ctx.Now) {
 			alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
 			dbs[0].Lines[1].Text = alt + " ID"
 			dbs[1].Lines[1].Text = alt + " ID"
@@ -6526,7 +6517,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *av.Aircraft) []STARS
 			field8 = []string{" PO" + id}
 		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
 			field8 = []string{"", " UN"}
-		} else if state.POFlashingEndTime.After(ctx.now) {
+		} else if state.POFlashingEndTime.After(ctx.Now) {
 			field8 = []string{"", " PO"}
 		} else if ac.RedirectedHandoff.ShowRDIndicator(ctx.SimState.Callsign, state.RDIndicatorEnd) {
 			field8 = []string{" RD"}
@@ -6542,7 +6533,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *av.Aircraft) []STARS
 		// as a placeholder in field 4 otherwise.
 		field3 := []string{alt}
 		field4 := []string{""}
-		if !state.Ident(ctx.now) {
+		if !state.Ident(ctx.Now) {
 			// Don't display these if they're identing: then it's just altitude and speed + "ID"
 			if ac.Scratchpad != "" {
 				field3 = append(field3, ac.Scratchpad)
@@ -6592,7 +6583,7 @@ func (sp *STARSPane) formatDatablocks(ctx *PaneContext, ac *av.Aircraft) []STARS
 
 		field5 := []string{} // alternate speed and aircraft type
 		var line5FieldColors *STARSDatablockFieldColors
-		if state.Ident(ctx.now) {
+		if state.Ident(ctx.Now) {
 			// Speed is followed by ID when identing (2-67, field 5)
 			field5 = append(field5, speed+"ID")
 			field5 = append(field5, speed+"ID")
@@ -6721,11 +6712,11 @@ func (sp *STARSPane) datablockColor(ctx *PaneContext, ac *av.Aircraft) (color re
 	}
 
 	// Handle cases where it should flash
-	if ctx.now.Second()&1 == 0 { // one second cycle
+	if ctx.Now.Second()&1 == 0 { // one second cycle
 		if _, pointOut := sp.InboundPointOuts[ac.Callsign]; pointOut {
 			// point out
 			brightness /= 3
-		} else if state.OutboundHandoffAccepted && ctx.now.Before(state.OutboundHandoffFlashEnd) {
+		} else if state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd) {
 			// we handed it off, it was accepted, but we haven't yet acknowledged
 			brightness /= 3
 		} else if (ac.HandoffTrackController == ctx.SimState.Callsign && !slices.Contains(ac.RedirectedHandoff.Redirector, ctx.SimState.Callsign)) || // handing off to us
@@ -6799,7 +6790,7 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, ctx *PaneContext, 
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1, ctx.platform.DPIScale())
+	cb.LineWidth(1, ctx.Platform.DPIScale())
 	ld.GenerateCommands(cb)
 }
 
@@ -6809,7 +6800,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *PaneContext,
 	defer renderer.ReturnTextDrawBuilder(td)
 
 	now := ctx.SimState.SimTime
-	realNow := ctx.now // for flashing rate...
+	realNow := ctx.Now // for flashing rate...
 	ps := sp.CurrentPreferenceSet
 	font := sp.systemFont[ps.CharSize.Datablocks]
 
@@ -7052,8 +7043,8 @@ func (sp *STARSPane) drawRBLs(aircraft []*av.Aircraft, ctx *PaneContext, transfo
 	// Maybe draw a wip RBL with p1 as the mouse's position
 	if sp.wipRBL != nil {
 		wp := sp.wipRBL.P[0]
-		if ctx.mouse != nil {
-			p1 := transforms.LatLongFromWindowP(ctx.mouse.Pos)
+		if ctx.Mouse != nil {
+			p1 := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
 			if wp.Callsign != "" {
 				if ac := ctx.SimState.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac, ctx) &&
 					slices.Contains(aircraft, ac) {
@@ -7254,22 +7245,22 @@ func (sp *STARSPane) drawAirspace(ctx *PaneContext, transforms ScopeTransformati
 
 func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*av.GhostAircraft,
 	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
-	if ctx.mouse == nil {
+	if ctx.Mouse == nil {
 		return
 	}
 
-	mouse := ctx.mouse
+	mouse := ctx.Mouse
 	ps := &sp.CurrentPreferenceSet
 
-	if ctx.mouse.Clicked[platform.MouseButtonPrimary] && !ctx.haveFocus {
-		if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.mouse.Pos, transforms); ac != nil {
+	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] && !ctx.HaveFocus {
+		if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.Mouse.Pos, transforms); ac != nil {
 			sp.events.PostEvent(sim.Event{Type: sim.TrackClickedEvent, Callsign: ac.Callsign})
 		}
-		wmTakeKeyboardFocus(sp, false)
+		ctx.KeyboardFocus.Take(sp)
 		return
 	}
-	if (ctx.mouse.Clicked[platform.MouseButtonSecondary] || ctx.mouse.Clicked[platform.MouseButtonTertiary]) && !ctx.haveFocus {
-		wmTakeKeyboardFocus(sp, false)
+	if (ctx.Mouse.Clicked[platform.MouseButtonSecondary] || ctx.Mouse.Clicked[platform.MouseButtonTertiary]) && !ctx.HaveFocus {
+		ctx.KeyboardFocus.Take(sp)
 	}
 
 	if activeSpinner == nil && !sp.LockDisplay {
@@ -7285,7 +7276,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*av.GhostAirc
 		// Consume mouse wheel
 		if mouse.Wheel[1] != 0 {
 			r := ps.Range
-			if _, ok := ctx.keyboard.Pressed[platform.KeyControl]; ok {
+			if _, ok := ctx.Keyboard.Pressed[platform.KeyControl]; ok {
 				ps.Range += 3 * mouse.Wheel[1]
 			} else {
 				ps.Range += mouse.Wheel[1]
@@ -7306,16 +7297,16 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*av.GhostAirc
 		}
 	}
 
-	if ctx.mouse.Clicked[platform.MouseButtonPrimary] {
-		if ctx.keyboard != nil && ctx.keyboard.IsPressed(platform.KeyShift) && ctx.keyboard.IsPressed(platform.KeyControl) {
+	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
+		if ctx.Keyboard != nil && ctx.Keyboard.IsPressed(platform.KeyShift) && ctx.Keyboard.IsPressed(platform.KeyControl) {
 			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
-			mouseLatLong := transforms.LatLongFromWindowP(ctx.mouse.Pos)
-			ctx.platform.GetClipboard().SetText(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
+			mouseLatLong := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
+			ctx.Platform.GetClipboard().SetText(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 		}
 
-		if ctx.keyboard != nil && ctx.keyboard.IsPressed(platform.KeyControl) && !ctx.keyboard.IsPressed(platform.KeyShift) { // There is a conflict between this and initating a track CRC-style,
+		if ctx.Keyboard != nil && ctx.Keyboard.IsPressed(platform.KeyControl) && !ctx.Keyboard.IsPressed(platform.KeyShift) { // There is a conflict between this and initating a track CRC-style,
 			// so making sure that shift isn't being pressed would be a good idea.
-			if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.mouse.Pos, transforms); ac != nil {
+			if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.Mouse.Pos, transforms); ac != nil {
 				if state := sp.Aircraft[ac.Callsign]; state != nil {
 					state.IsSelected = !state.IsSelected
 					return
@@ -7327,21 +7318,21 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*av.GhostAirc
 		// and then clear it out.
 		var status STARSCommandStatus
 		if sp.scopeClickHandler != nil {
-			status = sp.scopeClickHandler(ctx.mouse.Pos, transforms)
+			status = sp.scopeClickHandler(ctx.Mouse.Pos, transforms)
 		} else {
-			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.mouse.Pos, ghosts, transforms)
+			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.Mouse.Pos, ghosts, transforms)
 		}
 
 		if status.err != nil {
-			sp.displayError(status.err, ctx.platform)
+			sp.displayError(status.err, ctx)
 		} else {
 			if status.clear {
 				sp.resetInputState()
 			}
 			sp.previewAreaOutput = status.output
 		}
-	} else if ctx.mouse.Clicked[platform.MouseButtonTertiary] {
-		if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.mouse.Pos, transforms); ac != nil {
+	} else if ctx.Mouse.Clicked[platform.MouseButtonTertiary] {
+		if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.Mouse.Pos, transforms); ac != nil {
 			if state := sp.Aircraft[ac.Callsign]; state != nil {
 				state.IsSelected = !state.IsSelected
 			}
@@ -7352,20 +7343,20 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*av.GhostAirc
 			sp.dwellAircraft = ""
 
 		case DwellModeOn:
-			if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.mouse.Pos, transforms); ac != nil {
+			if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.Mouse.Pos, transforms); ac != nil {
 				sp.dwellAircraft = ac.Callsign
 			} else {
 				sp.dwellAircraft = ""
 			}
 
 		case DwellModeLock:
-			if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.mouse.Pos, transforms); ac != nil {
+			if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.Mouse.Pos, transforms); ac != nil {
 				sp.dwellAircraft = ac.Callsign
 			}
 			// Otherwise leave sp.dwellAircraft as is
 		}
 	} else {
-		if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.mouse.Pos, transforms); ac != nil {
+		if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.Mouse.Pos, transforms); ac != nil {
 			td := renderer.GetTextDrawBuilder()
 			defer renderer.ReturnTextDrawBuilder(td)
 
@@ -7383,7 +7374,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*av.GhostAirc
 			// Upper-left corner of where we start drawing the text
 			pad := float32(5)
 			ptext := math.Add2f([2]float32{2 * pad, 0}, pac)
-			info := ac.NavSummary(lg)
+			info := ac.NavSummary(ctx.Lg)
 			td.AddText(info, ptext, style)
 
 			// Draw an alpha-blended quad behind the text to make it more legible.
@@ -7408,22 +7399,22 @@ func (sp *STARSPane) consumeMouseEvents(ctx *PaneContext, ghosts []*av.GhostAirc
 
 func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent math.Extent2D, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
-	if ctx.mouse == nil {
+	if ctx.Mouse == nil {
 		return
 	}
 
 	// If the mouse is inside the scope, disable the standard mouse cursor
 	// and draw a cross for the cursor; otherwise leave the default arrow
 	// for the DCB.
-	if ctx.mouse.Pos[0] >= 0 && ctx.mouse.Pos[0] < paneExtent.Width() &&
-		ctx.mouse.Pos[1] >= 0 && ctx.mouse.Pos[1] < paneExtent.Height() {
-		ctx.mouse.SetCursor(imgui.MouseCursorNone)
+	if ctx.Mouse.Pos[0] >= 0 && ctx.Mouse.Pos[0] < paneExtent.Width() &&
+		ctx.Mouse.Pos[1] >= 0 && ctx.Mouse.Pos[1] < paneExtent.Height() {
+		ctx.Mouse.SetCursor(imgui.MouseCursorNone)
 		ld := renderer.GetLinesDrawBuilder()
 		defer renderer.ReturnLinesDrawBuilder(ld)
 
-		w := float32(7) * util.Select(runtime.GOOS == "windows", ctx.platform.DPIScale(), float32(1))
-		ld.AddLine(math.Add2f(ctx.mouse.Pos, [2]float32{-w, 0}), math.Add2f(ctx.mouse.Pos, [2]float32{w, 0}))
-		ld.AddLine(math.Add2f(ctx.mouse.Pos, [2]float32{0, -w}), math.Add2f(ctx.mouse.Pos, [2]float32{0, w}))
+		w := float32(7) * util.Select(runtime.GOOS == "windows", ctx.Platform.DPIScale(), float32(1))
+		ld.AddLine(math.Add2f(ctx.Mouse.Pos, [2]float32{-w, 0}), math.Add2f(ctx.Mouse.Pos, [2]float32{w, 0}))
+		ld.AddLine(math.Add2f(ctx.Mouse.Pos, [2]float32{0, -w}), math.Add2f(ctx.Mouse.Pos, [2]float32{0, w}))
 
 		transforms.LoadWindowViewingMatrices(cb)
 		// STARS Operators Manual 4-74: FDB brightness is used for the cursor
@@ -7431,7 +7422,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *PaneContext, paneExtent math.Extent2D,
 		cb.SetRGB(ps.Brightness.FullDatablocks.RGB())
 		ld.GenerateCommands(cb)
 	} else {
-		ctx.mouse.SetCursor(imgui.MouseCursorArrow)
+		ctx.Mouse.SetCursor(imgui.MouseCursorArrow)
 	}
 }
 
@@ -7457,7 +7448,7 @@ func starsButtonSize(flags int, scale float32) [2]float32 {
 	} else if (flags & STARSButtonHalfHorizontal) != 0 {
 		return [2]float32{bs(scale / 2), bs(scale)}
 	} else {
-		lg.Errorf("unhandled starsButtonFlags %d", flags)
+		panic(fmt.Sprintf("unhandled starsButtonFlags %d", flags))
 		return [2]float32{bs(scale), bs(scale)}
 	}
 }
@@ -7476,18 +7467,18 @@ var dcbDrawState struct {
 func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, buttonScale float32, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	dcbDrawState.cb = cb
-	dcbDrawState.mouse = ctx.mouse
+	dcbDrawState.mouse = ctx.Mouse
 
 	ps := sp.CurrentPreferenceSet
 	dcbDrawState.brightness = ps.Brightness.DCB
 	dcbDrawState.position = ps.DCBPosition
 	switch dcbDrawState.position {
 	case DCBPositionTop, DCBPositionLeft:
-		dcbDrawState.drawStartPos = [2]float32{0, ctx.paneExtent.Height()}
+		dcbDrawState.drawStartPos = [2]float32{0, ctx.PaneExtent.Height()}
 
 	case DCBPositionRight:
 		sz := starsButtonSize(STARSButtonFull, buttonScale) // FIXME: there should be a better way to get the default
-		dcbDrawState.drawStartPos = [2]float32{ctx.paneExtent.Width() - sz[0], ctx.paneExtent.Height()}
+		dcbDrawState.drawStartPos = [2]float32{ctx.PaneExtent.Width() - sz[0], ctx.PaneExtent.Height()}
 
 	case DCBPositionBottom:
 		sz := starsButtonSize(STARSButtonFull, buttonScale)
@@ -7502,15 +7493,15 @@ func (sp *STARSPane) StartDrawDCB(ctx *PaneContext, buttonScale float32, transfo
 		LineSpacing: 0,
 	}
 	if dcbDrawState.style.Font == nil {
-		lg.Errorf("nil buttonFont??")
+		ctx.Lg.Errorf("nil buttonFont??")
 		dcbDrawState.style.Font = renderer.GetDefaultFont()
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1, ctx.platform.DPIScale())
+	cb.LineWidth(1, ctx.Platform.DPIScale())
 
-	if ctx.mouse != nil && ctx.mouse.Clicked[platform.MouseButtonPrimary] {
-		dcbDrawState.mouseDownPos = ctx.mouse.Pos[:]
+	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
+		dcbDrawState.mouseDownPos = ctx.Mouse.Pos[:]
 	}
 
 	/*
@@ -7616,14 +7607,14 @@ func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32
 
 	// Scissor to just the extent of the button. Note that we need to give
 	// this in window coordinates, not our local pane coordinates, so
-	// translating by ctx.paneExtent.p0 is needed...
-	winBase := math.Add2f(dcbDrawState.cursor, ctx.paneExtent.P0)
+	// translating by ctx.PaneExtent.p0 is needed...
+	winBase := math.Add2f(dcbDrawState.cursor, ctx.PaneExtent.P0)
 	dcbDrawState.cb.SetScissorBounds(math.Extent2D{
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
-	}, ctx.platform.FramebufferSize()[1]/ctx.platform.DisplaySize()[1])
+	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 
-	updateDCBCursor(flags, sz)
+	updateDCBCursor(flags, sz, ctx)
 
 	// Text last!
 	trid.GenerateCommands(dcbDrawState.cb)
@@ -7636,7 +7627,7 @@ func drawDCBButton(ctx *PaneContext, text string, flags int, buttonScale float32
 	return ext, false
 }
 
-func updateDCBCursor(flags int, sz [2]float32) {
+func updateDCBCursor(flags int, sz [2]float32, ctx *PaneContext) {
 	if dcbDrawState.position == DCBPositionTop || dcbDrawState.position == DCBPositionBottom {
 		// Drawing left to right
 		if (flags&STARSButtonFull) != 0 || (flags&STARSButtonHalfHorizontal) != 0 {
@@ -7653,7 +7644,7 @@ func updateDCBCursor(flags int, sz [2]float32) {
 				dcbDrawState.cursor[1] = dcbDrawState.drawStartPos[1]
 			}
 		} else {
-			lg.Errorf("unhandled starsButtonFlags %d", flags)
+			ctx.Lg.Errorf("unhandled starsButtonFlags %d", flags)
 			dcbDrawState.cursor[0] += sz[0]
 			dcbDrawState.cursor[1] = dcbDrawState.drawStartPos[1]
 		}
@@ -7673,7 +7664,7 @@ func updateDCBCursor(flags int, sz [2]float32) {
 				dcbDrawState.cursor[1] -= sz[1]
 			}
 		} else {
-			lg.Errorf("unhandled starsButtonFlags %d", flags)
+			ctx.Lg.Errorf("unhandled starsButtonFlags %d", flags)
 			dcbDrawState.cursor[0] = dcbDrawState.drawStartPos[0]
 			dcbDrawState.cursor[1] -= sz[0]
 		}
@@ -7709,18 +7700,18 @@ func (sp *STARSPane) DrawDCBSpinner(ctx *PaneContext, spinner DCBSpinner, comman
 		// window coordinates, so need to both account for the viewport
 		// call that lets us draw things oblivious to the menubar as well
 		// as flip things in y.
-		h := ctx.paneExtent.Height() + ui.menuBarHeight
+		h := ctx.PaneExtent.Height() + ctx.MenuBarHeight
 		buttonBounds.P0[1], buttonBounds.P1[1] = h-buttonBounds.P1[1], h-buttonBounds.P0[1]
-		ctx.platform.StartCaptureMouse(buttonBounds)
+		ctx.Platform.StartCaptureMouse(buttonBounds)
 
 		if clicked {
 			activeSpinner = nil
-			ctx.platform.EndCaptureMouse()
+			ctx.Platform.EndCaptureMouse()
 			sp.commandMode = CommandModeNone
 		}
 
-		if ctx.mouse != nil && ctx.mouse.Wheel[1] != 0 {
-			delta := util.Select(ctx.mouse.Wheel[1] > 0, -1, 1)
+		if ctx.Mouse != nil && ctx.Mouse.Wheel[1] != 0 {
+			delta := util.Select(ctx.Mouse.Wheel[1] > 0, -1, 1)
 			spinner.MouseWheel(delta)
 		}
 	} else {
@@ -8153,10 +8144,10 @@ func (sp *STARSPane) resetInputState() {
 	sp.selectedPlaceButton = ""
 }
 
-func (sp *STARSPane) displayError(err error, p platform.Platform) {
+func (sp *STARSPane) displayError(err error, ctx *PaneContext) {
 	if err != nil { // it should be, but...
-		sp.playOnce(p, AudioCommandError)
-		sp.previewAreaOutput = GetSTARSError(err).Error()
+		sp.playOnce(ctx.Platform, AudioCommandError)
+		sp.previewAreaOutput = GetSTARSError(err, ctx.Lg).Error()
 	}
 }
 
@@ -8245,7 +8236,7 @@ func (sp *STARSPane) visibleAircraft(ctx *PaneContext) []*av.Aircraft {
 				state.FirstRadarTrack = now
 
 				if sp.AutoTrackDepartures && ac.TrackingController == "" &&
-					ctx.SimState.DepartureController(ac, lg) == ctx.SimState.Callsign {
+					ctx.SimState.DepartureController(ac, ctx.Lg) == ctx.SimState.Callsign {
 					ctx.Control.InitiateTrack(callsign, nil, nil) // ignore error...
 				}
 			}
@@ -8388,7 +8379,7 @@ func (sp *STARSPane) radarSiteId(radarSites map[string]*av.RadarSite) string {
 	}
 }
 
-func (sp *STARSPane) initializeAudio(p platform.Platform) {
+func (sp *STARSPane) initializeAudio(p platform.Platform, lg *log.Logger) {
 	if sp.audioEffects == nil {
 		sp.audioEffects = make(map[AudioType]int)
 
@@ -8552,13 +8543,13 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *PaneContext, transforms ScopeTransf
 	// drawn.
 	cb.SetRGB(color)
 	transforms.LoadLatLongViewingMatrices(cb)
-	cb.LineWidth(2, ctx.platform.DPIScale())
+	cb.LineWidth(2, ctx.Platform.DPIScale())
 	ld.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
 	pd.GenerateCommands(cb)
 	td.GenerateCommands(cb)
-	cb.LineWidth(1, ctx.platform.DPIScale())
+	cb.LineWidth(1, ctx.Platform.DPIScale())
 	ldr.GenerateCommands(cb)
 }
 
@@ -8699,7 +8690,7 @@ func drawWaypoints(ctx *PaneContext, waypoints []av.Waypoint, drawnWaypoints map
 
 		if pt := wp.ProcedureTurn; pt != nil {
 			if i+1 >= len(waypoints) {
-				lg.Errorf("Expected another waypoint after the procedure turn?")
+				ctx.Lg.Errorf("Expected another waypoint after the procedure turn?")
 			} else {
 				// In the following, we will generate points a canonical
 				// racetrack vertically-oriented, with width 2, and with

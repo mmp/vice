@@ -11,10 +11,9 @@ import (
 	"os"
 	"path"
 	"strings"
-	"time"
 
 	"github.com/mmp/imgui-go/v4"
-	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
@@ -69,9 +68,6 @@ type GlobalConfigNoSim struct {
 	NotifiedNewCommandSyntax bool
 
 	Callsign string
-
-	highlightedLocation        math.Point2LL
-	highlightedLocationEndTime time.Time
 }
 
 type GlobalConfigSim struct {
@@ -190,8 +186,8 @@ func LoadOrMakeDefaultConfig(p platform.Platform) {
 
 		if globalConfig.Version < CurrentConfigVersion {
 			if globalConfig.DisplayRoot != nil {
-				globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-					if up, ok := p.(PaneUpgrader); ok {
+				globalConfig.DisplayRoot.VisitPanes(func(p panes.Pane) {
+					if up, ok := p.(panes.PaneUpgrader); ok {
 						up.Upgrade(globalConfig.Version, CurrentConfigVersion)
 					}
 				})
@@ -220,15 +216,15 @@ func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, p platform.Platf
 	// Upgrade old ones without a MessagesPane
 	if gc.DisplayRoot != nil {
 		haveMessages := false
-		gc.DisplayRoot.VisitPanes(func(p Pane) {
-			if _, ok := p.(*MessagesPane); ok {
+		gc.DisplayRoot.VisitPanes(func(p panes.Pane) {
+			if _, ok := p.(*panes.MessagesPane); ok {
 				haveMessages = true
 			}
 		})
 		if !haveMessages {
 			root := gc.DisplayRoot
 			if root.SplitLine.Axis == SplitAxisX && root.Children[0] != nil {
-				messages := NewMessagesPane()
+				messages := panes.NewMessagesPane()
 				root.Children[0] = &DisplayNode{
 					SplitLine: SplitLine{
 						Pos:  0.075,
@@ -246,10 +242,10 @@ func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, p platform.Platf
 	}
 
 	if gc.DisplayRoot == nil {
-		stars := NewSTARSPane(w.State)
-		messages := NewMessagesPane()
+		stars := panes.NewSTARSPane(w.State)
+		messages := panes.NewMessagesPane()
 
-		fsp := NewFlightStripPane()
+		fsp := panes.NewFlightStripPane()
 		fsp.AutoAddDepartures = true
 		fsp.AutoAddTracked = true
 		fsp.AutoAddAcceptedHandoffs = true
@@ -277,11 +273,11 @@ func (gc *GlobalConfig) Activate(w *World, r renderer.Renderer, p platform.Platf
 		}
 	}
 
-	gc.DisplayRoot.VisitPanes(func(pane Pane) {
+	gc.DisplayRoot.VisitPanes(func(pane panes.Pane) {
 		if w != nil {
-			pane.Activate(&w.State, r, p, eventStream)
+			pane.Activate(&w.State, r, p, eventStream, lg)
 		} else {
-			pane.Activate(nil, r, p, eventStream)
+			pane.Activate(nil, r, p, eventStream, lg)
 		}
 	})
 }

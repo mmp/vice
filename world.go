@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
@@ -581,22 +582,22 @@ func (w *World) DrawSettingsWindow(p platform.Platform) {
 		imgui.EndCombo()
 	}
 
-	var fsp *FlightStripPane
-	var messages *MessagesPane
-	var stars *STARSPane
-	globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
+	var fsp *panes.FlightStripPane
+	var messages *panes.MessagesPane
+	var stars *panes.STARSPane
+	globalConfig.DisplayRoot.VisitPanes(func(p panes.Pane) {
 		switch pane := p.(type) {
-		case *FlightStripPane:
+		case *panes.FlightStripPane:
 			fsp = pane
-		case *STARSPane:
+		case *panes.STARSPane:
 			stars = pane
-		case *MessagesPane:
+		case *panes.MessagesPane:
 			messages = pane
 		}
 	})
 
 	if imgui.CollapsingHeader("STARS") {
-		stars.DrawUI(p)
+		stars.DrawUI(p, &globalConfig.Config)
 	}
 
 	if imgui.CollapsingHeader("Display") {
@@ -625,10 +626,10 @@ func (w *World) DrawSettingsWindow(p platform.Platform) {
 		}
 	}
 	if fsp != nil && imgui.CollapsingHeader("Flight Strips") {
-		fsp.DrawUI()
+		fsp.DrawUI(p, &globalConfig.Config)
 	}
 	if messages != nil && imgui.CollapsingHeader("Messages") {
-		messages.DrawUI()
+		messages.DrawUI(p, &globalConfig.Config)
 	}
 
 	imgui.End()

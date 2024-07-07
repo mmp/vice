@@ -2,10 +2,11 @@
 // Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package panes
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"slices"
 	"strconv"
@@ -13,6 +14,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
@@ -28,33 +30,53 @@ import (
 type Pane interface {
 	Name() string
 
-	Activate(ss *sim.State, r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream)
+	Activate(ss *sim.State, r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream,
+		lg *log.Logger)
 	Deactivate()
-	Reset(ss sim.State)
+	Reset(ss sim.State, lg *log.Logger)
 
 	CanTakeKeyboardFocus() bool
 
 	Draw(ctx *PaneContext, cb *renderer.CommandBuffer)
 }
 
-type PaneUIDrawer interface {
-	DrawUI()
+type UIDrawer interface {
+	DrawUI(p platform.Platform, config *platform.Config)
+}
+
+type KeyboardFocus interface {
+	Take(p Pane)
+	TakeTemporary(p Pane)
+	Release()
+	Current() Pane
 }
 
 type PaneUpgrader interface {
 	Upgrade(prev, current int)
 }
 
-type PaneContext struct {
-	paneExtent       math.Extent2D
-	parentPaneExtent math.Extent2D
+var UIControlColor renderer.RGB = renderer.RGB{R: 0.2754237, G: 0.2754237, B: 0.2754237}
+var UICautionColor renderer.RGB = renderer.RGBFromHex(0xB7B513)
+var UITextColor renderer.RGB = renderer.RGB{R: 0.85, G: 0.85, B: 0.85}
+var UITextHighlightColor renderer.RGB = renderer.RGBFromHex(0xB2B338)
+var UIErrorColor renderer.RGB = renderer.RGBFromHex(0xE94242)
 
-	platform  platform.Platform
-	renderer  renderer.Renderer
-	mouse     *platform.MouseState
-	keyboard  *platform.KeyboardState
-	haveFocus bool
-	now       time.Time
+type PaneContext struct {
+	PaneExtent       math.Extent2D
+	ParentPaneExtent math.Extent2D
+
+	Platform  platform.Platform
+	Renderer  renderer.Renderer
+	Mouse     *platform.MouseState
+	Keyboard  *platform.KeyboardState
+	HaveFocus bool
+	Now       time.Time
+	Lg        *log.Logger
+
+	MenuBarHeight float32
+	AudioEnabled  *bool
+
+	KeyboardFocus KeyboardFocus
 
 	Control     sim.AircraftController
 	ClientState sim.ClientState
@@ -62,24 +84,24 @@ type PaneContext struct {
 }
 
 func (ctx *PaneContext) InitializeMouse(fullDisplayExtent math.Extent2D, p platform.Platform) {
-	ctx.mouse = p.GetMouse()
+	ctx.Mouse = p.GetMouse()
 
 	// Convert to pane coordinates:
 	// platform gives us the mouse position w.r.t. the full window, so we need
 	// to subtract out displayExtent.p0 to get coordinates w.r.t. the
 	// current pane.  Further, it has (0,0) in the upper left corner of the
 	// window, so we need to flip y w.r.t. the full window resolution.
-	ctx.mouse.Pos[0] = ctx.mouse.Pos[0] - ctx.paneExtent.P0[0]
-	ctx.mouse.Pos[1] = fullDisplayExtent.P1[1] - 1 - ctx.paneExtent.P0[1] - ctx.mouse.Pos[1]
+	ctx.Mouse.Pos[0] = ctx.Mouse.Pos[0] - ctx.PaneExtent.P0[0]
+	ctx.Mouse.Pos[1] = fullDisplayExtent.P1[1] - 1 - ctx.PaneExtent.P0[1] - ctx.Mouse.Pos[1]
 
 	// Negate y to go to pane coordinates
-	ctx.mouse.Wheel[1] *= -1
-	ctx.mouse.DragDelta[1] *= -1
+	ctx.Mouse.Wheel[1] *= -1
+	ctx.Mouse.DragDelta[1] *= -1
 }
 
 func (ctx *PaneContext) SetWindowCoordinateMatrices(cb *renderer.CommandBuffer) {
-	w := float32(int(ctx.paneExtent.Width() + 0.5))
-	h := float32(int(ctx.paneExtent.Height() + 0.5))
+	w := float32(int(ctx.PaneExtent.Width() + 0.5))
+	h := float32(int(ctx.PaneExtent.Height() + 0.5))
 	cb.LoadProjectionMatrix(math.Identity3x3().Ortho(0, w, 0, h))
 	cb.LoadModelViewMatrix(math.Identity3x3())
 }
@@ -91,27 +113,26 @@ func unmarshalPaneHelper[T Pane](data []byte) (Pane, error) {
 	return p, err
 }
 
-func unmarshalPane(paneType string, data []byte) (Pane, error) {
+func UnmarshalPane(paneType string, data []byte) (Pane, error) {
 	switch paneType {
 	case "":
 		// nil pane
 		return nil, nil
 
-	case "*main.EmptyPane":
+	case "*main.EmptyPane", "*panes.EmptyPane":
 		return unmarshalPaneHelper[*EmptyPane](data)
 
-	case "*main.FlightStripPane":
+	case "*main.FlightStripPane", "*panes.FlightStripPane":
 		return unmarshalPaneHelper[*FlightStripPane](data)
 
-	case "*main.MessagesPane":
+	case "*main.MessagesPane", "*panes.MessagesPane":
 		return unmarshalPaneHelper[*MessagesPane](data)
 
-	case "*main.STARSPane":
+	case "*main.STARSPane", "*panes.STARSPane":
 		return unmarshalPaneHelper[*STARSPane](data)
 
 	default:
-		lg.Errorf("%s: Unhandled type in config file", paneType)
-		return NewEmptyPane(), nil
+		return NewEmptyPane(), fmt.Errorf("%s: Unhandled type in config file", paneType)
 	}
 }
 
@@ -126,10 +147,12 @@ type EmptyPane struct {
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
-func (ep *EmptyPane) Activate(*sim.State, renderer.Renderer, platform.Platform, *sim.EventStream) {}
-func (ep *EmptyPane) Deactivate()                                                                 {}
-func (ep *EmptyPane) Reset(ss sim.State)                                                          {}
-func (ep *EmptyPane) CanTakeKeyboardFocus() bool                                                  { return false }
+func (ep *EmptyPane) Activate(*sim.State, renderer.Renderer, platform.Platform,
+	*sim.EventStream, *log.Logger) {
+}
+func (ep *EmptyPane) Deactivate()                        {}
+func (ep *EmptyPane) Reset(ss sim.State, lg *log.Logger) {}
+func (ep *EmptyPane) CanTakeKeyboardFocus() bool         { return false }
 
 func (ep *EmptyPane) Name() string { return "(Empty)" }
 
@@ -177,7 +200,7 @@ func NewFlightStripPane() *FlightStripPane {
 }
 
 func (fsp *FlightStripPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
-	eventStream *sim.EventStream) {
+	eventStream *sim.EventStream, lg *log.Logger) {
 	if fsp.FontSize == 0 {
 		fsp.FontSize = 12
 	}
@@ -211,7 +234,7 @@ func (fsp *FlightStripPane) Deactivate() {
 	fsp.events = nil
 }
 
-func (fsp *FlightStripPane) Reset(ss sim.State) {
+func (fsp *FlightStripPane) Reset(ss sim.State, lg *log.Logger) {
 	fsp.strips = nil
 	fsp.addedAircraft = make(map[string]interface{})
 }
@@ -307,7 +330,7 @@ func (fsp *FlightStripPane) processEvents(ctx *PaneContext) {
 
 func (fsp *FlightStripPane) Name() string { return "Flight Strips" }
 
-func (fsp *FlightStripPane) DrawUI() {
+func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config) {
 	show := !fsp.HideFlightStrips
 	imgui.Checkbox("Show flight strips", &show)
 	fsp.HideFlightStrips = !show
@@ -346,7 +369,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	vpad := float32(2)
 	stripHeight := 1 + 2*vpad + 4*fh
 
-	visibleStrips := int(ctx.paneExtent.Height() / stripHeight)
+	visibleStrips := int(ctx.PaneExtent.Height() / stripHeight)
 	fsp.scrollbar.Update(len(fsp.strips), visibleStrips, ctx)
 
 	indent := float32(int32(fw / 2))
@@ -356,7 +379,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	width2 := 5 * fw
 	widthAnn := 5 * fw
 
-	widthCenter := ctx.paneExtent.Width() - width0 - width1 - width2 - 3*widthAnn
+	widthCenter := ctx.PaneExtent.Width() - width0 - width1 - width2 - 3*widthAnn
 	if fsp.scrollbar.Visible() {
 		widthCenter -= float32(fsp.scrollbar.PixelExtent())
 	}
@@ -365,7 +388,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 		widthCenter = 20 * fw
 	}
 
-	drawWidth := ctx.paneExtent.Width()
+	drawWidth := ctx.PaneExtent.Width()
 	if fsp.scrollbar.Visible() {
 		drawWidth -= float32(fsp.scrollbar.PixelExtent())
 	}
@@ -395,7 +418,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 		strip := ctx.SimState.Aircraft[callsign].Strip
 		ac := ctx.SimState.Aircraft[callsign]
 		if ac == nil {
-			lg.Errorf("%s: no aircraft for callsign?!", strip.Callsign)
+			ctx.Lg.Errorf("%s: no aircraft for callsign?!", strip.Callsign)
 			continue
 		}
 		fp := ac.FlightPlan
@@ -485,14 +508,14 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 			ix, iy := ai%3, ai/3
 			xp, yp := x+float32(ix)*widthAnn+indent, y-float32(iy)*1.5*fh
 
-			if ctx.haveFocus && fsp.selectedStrip == i && ai == fsp.selectedAnnotation {
+			if ctx.HaveFocus && fsp.selectedStrip == i && ai == fsp.selectedAnnotation {
 				// If were currently editing this annotation, don't draw it
 				// normally but instead draw it including a cursor, update
 				// it according to keyboard input, etc.
 				cursorStyle := renderer.TextStyle{Font: fsp.font, Color: bgColor,
 					DrawBackground: true, BackgroundColor: style.Color}
 				editResult, _ = uiDrawTextEdit(&strip.Annotations[fsp.selectedAnnotation], &fsp.annotationCursorPos,
-					ctx.keyboard, [2]float32{xp, yp}, style, cursorStyle, cb)
+					ctx.Keyboard, [2]float32{xp, yp}, style, cursorStyle, ctx.KeyboardFocus, cb)
 				if len(strip.Annotations[fsp.selectedAnnotation]) >= 3 {
 					// Limit it to three characters
 					strip.Annotations[fsp.selectedAnnotation] = strip.Annotations[fsp.selectedAnnotation][:3]
@@ -511,7 +534,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 			// nothing to do
 		case TextEditReturnEnter:
 			fsp.selectedStrip = -1
-			wmReleaseKeyboardFocus()
+			ctx.KeyboardFocus.Release()
 		case TextEditReturnNext:
 			fsp.selectedAnnotation = (fsp.selectedAnnotation + 1) % 9
 			fsp.annotationCursorPos = len(strip.Annotations[fsp.selectedAnnotation])
@@ -538,11 +561,11 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	}
 
 	// Handle selection, deletion, and reordering
-	if ctx.mouse != nil {
+	if ctx.Mouse != nil {
 		// Ignore clicks if the mouse is over the scrollbar (and it's being drawn)
-		if ctx.mouse.Clicked[platform.MouseButtonPrimary] && ctx.mouse.Pos[0] <= drawWidth {
+		if ctx.Mouse.Clicked[platform.MouseButtonPrimary] && ctx.Mouse.Pos[0] <= drawWidth {
 			// from the bottom
-			stripIndex := int(ctx.mouse.Pos[1] / stripHeight)
+			stripIndex := int(ctx.Mouse.Pos[1] / stripHeight)
 			stripIndex += scrollOffset
 			if stripIndex < len(fsp.strips) {
 				io := imgui.CurrentIO()
@@ -557,23 +580,23 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 				}
 			}
 		}
-		if ctx.mouse.Dragging[platform.MouseButtonPrimary] {
+		if ctx.Mouse.Dragging[platform.MouseButtonPrimary] {
 			fsp.mouseDragging = true
-			fsp.lastMousePos = ctx.mouse.Pos
+			fsp.lastMousePos = ctx.Mouse.Pos
 
 			// Offset so that the selection region is centered over the
 			// line between two strips; the index then is to the lower one.
-			splitIndex := int(ctx.mouse.Pos[1]/stripHeight + 0.5)
+			splitIndex := int(ctx.Mouse.Pos[1]/stripHeight + 0.5)
 			yl := float32(splitIndex) * stripHeight
 			trid.AddQuad([2]float32{0, yl - 1}, [2]float32{drawWidth, yl - 1},
 				[2]float32{drawWidth, yl + 1}, [2]float32{0, yl + 1})
 		}
 	}
-	if fsp.mouseDragging && (ctx.mouse == nil || !ctx.mouse.Dragging[platform.MouseButtonPrimary]) {
+	if fsp.mouseDragging && (ctx.Mouse == nil || !ctx.Mouse.Dragging[platform.MouseButtonPrimary]) {
 		fsp.mouseDragging = false
 
 		if fsp.selectedAircraft == "" {
-			lg.Debug("No selected aircraft for flight strip drag?!")
+			ctx.Lg.Debug("No selected aircraft for flight strip drag?!")
 		} else {
 			// Figure out the index for the selected aircraft.
 			selectedIndex := func() int {
@@ -582,7 +605,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 						return i
 					}
 				}
-				lg.Warnf("Couldn't find %s in flight strips?!", fsp.selectedAircraft)
+				ctx.Lg.Warnf("Couldn't find %s in flight strips?!", fsp.selectedAircraft)
 				return -1
 			}()
 
@@ -612,17 +635,17 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	}
 	// Take focus if the user clicks in the annotations
 	/*
-		if ctx.mouse != nil && ctx.mouse.Clicked[MouseButtonPrimary] {
+		if ctx.Mouse != nil && ctx.Mouse.Clicked[MouseButtonPrimary] {
 			annotationStartX := drawWidth - 3*widthAnn
-			if xp := ctx.mouse.Pos[0]; xp >= annotationStartX && xp < drawWidth {
-				stripIndex := int(ctx.mouse.Pos[1]/stripHeight) + scrollOffset
+			if xp := ctx.Mouse.Pos[0]; xp >= annotationStartX && xp < drawWidth {
+				stripIndex := int(ctx.Mouse.Pos[1]/stripHeight) + scrollOffset
 				if stripIndex < len(fsp.strips) {
 					wmTakeKeyboardFocus(fsp, true)
 					fsp.selectedStrip = stripIndex
 
 					// Figure out which annotation was selected
-					xa := int(ctx.mouse.Pos[0]-annotationStartX) / int(widthAnn)
-					ya := 2 - (int(ctx.mouse.Pos[1])%int(stripHeight))/(int(stripHeight)/3)
+					xa := int(ctx.Mouse.Pos[0]-annotationStartX) / int(widthAnn)
+					ya := 2 - (int(ctx.Mouse.Pos[1])%int(stripHeight))/(int(stripHeight)/3)
 					xa, ya = clamp(xa, 0, 2), clamp(ya, 0, 2) // just in case
 					fsp.selectedAnnotation = 3*ya + xa
 
@@ -636,7 +659,7 @@ func (fsp *FlightStripPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	fsp.scrollbar.Draw(ctx, cb)
 
 	cb.SetRGB(UIControlColor)
-	cb.LineWidth(1, ctx.platform.DPIScale())
+	cb.LineWidth(1, ctx.Platform.DPIScale())
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 
@@ -682,7 +705,7 @@ func NewMessagesPane() *MessagesPane {
 func (mp *MessagesPane) Name() string { return "Messages" }
 
 func (mp *MessagesPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
-	eventStream *sim.EventStream) {
+	eventStream *sim.EventStream, lg *log.Logger) {
 	if mp.font = renderer.GetFont(mp.FontIdentifier); mp.font == nil {
 		mp.font = renderer.GetDefaultFont()
 		mp.FontIdentifier = mp.font.Id
@@ -698,13 +721,13 @@ func (mp *MessagesPane) Deactivate() {
 	mp.events = nil
 }
 
-func (mp *MessagesPane) Reset(ss sim.State) {
+func (mp *MessagesPane) Reset(ss sim.State, lg *log.Logger) {
 	mp.messages = nil
 }
 
 func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return true }
 
-func (mp *MessagesPane) DrawUI() {
+func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 	if newFont, changed := renderer.DrawFontPicker(&mp.FontIdentifier, "Font"); changed {
 		mp.font = newFont
 	}
@@ -713,17 +736,17 @@ func (mp *MessagesPane) DrawUI() {
 func (mp *MessagesPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	mp.processEvents(ctx)
 
-	if ctx.mouse != nil && ctx.mouse.Clicked[platform.MouseButtonPrimary] {
-		wmTakeKeyboardFocus(mp, false)
+	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
+		ctx.KeyboardFocus.Take(mp)
 	}
 	mp.processKeyboard(ctx)
 
 	nLines := len(mp.messages) + 1 /* prompt */
 	lineHeight := float32(mp.font.Size + 1)
-	visibleLines := int(ctx.paneExtent.Height() / lineHeight)
+	visibleLines := int(ctx.PaneExtent.Height() / lineHeight)
 	mp.scrollbar.Update(nLines, visibleLines, ctx)
 
-	drawWidth := ctx.paneExtent.Width()
+	drawWidth := ctx.PaneExtent.Width()
 	if mp.scrollbar.Visible() {
 		drawWidth -= float32(mp.scrollbar.PixelExtent())
 	}
@@ -743,7 +766,7 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	ci := mp.input
 
 	prompt := "> "
-	if !ctx.haveFocus {
+	if !ctx.HaveFocus {
 		// Don't draw the cursor if we don't have keyboard focus
 		td.AddText(prompt+ci.cmd, [2]float32{indent, y}, cliStyle)
 	} else if ci.cursor == len(ci.cmd) {
@@ -770,12 +793,12 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 	}
 
 	ctx.SetWindowCoordinateMatrices(cb)
-	if ctx.haveFocus {
+	if ctx.HaveFocus {
 		// Yellow border around the edges
 		ld := renderer.GetLinesDrawBuilder()
 		defer renderer.ReturnLinesDrawBuilder(ld)
 
-		w, h := ctx.paneExtent.Width(), ctx.paneExtent.Height()
+		w, h := ctx.PaneExtent.Width(), ctx.PaneExtent.Height()
 		ld.AddLineLoop([][2]float32{{0, 0}, {w, 0}, {w, h}, {0, h}})
 		cb.SetRGB(renderer.RGB{1, 1, 0}) // yellow
 		ld.GenerateCommands(cb)
@@ -785,28 +808,18 @@ func (mp *MessagesPane) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
 }
 
 func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
-	if ctx.keyboard == nil || !ctx.haveFocus {
+	if ctx.Keyboard == nil || !ctx.HaveFocus {
 		return
-	}
-
-	if ctx.keyboard.IsPressed(platform.KeyTab) {
-		// focus back to the STARS Pane (assume just one...)
-		globalConfig.DisplayRoot.VisitPanes(func(pane Pane) {
-			if sp, ok := pane.(*STARSPane); ok {
-				wmTakeKeyboardFocus(sp, false)
-				delete(ctx.keyboard.Pressed, platform.KeyTab) // prevent cycling back and forth
-			}
-		})
 	}
 
 	// Grab keyboard input
 	if len(mp.input.cmd) > 0 && mp.input.cmd[0] == '/' {
-		mp.input.InsertAtCursor(ctx.keyboard.Input)
+		mp.input.InsertAtCursor(ctx.Keyboard.Input)
 	} else {
-		mp.input.InsertAtCursor(strings.ToUpper(ctx.keyboard.Input))
+		mp.input.InsertAtCursor(strings.ToUpper(ctx.Keyboard.Input))
 	}
 
-	if ctx.keyboard.IsPressed(platform.KeyUpArrow) {
+	if ctx.Keyboard.IsPressed(platform.KeyUpArrow) {
 		if mp.historyOffset < len(mp.history) {
 			if mp.historyOffset == 0 {
 				mp.savedInput = mp.input // save current input in case we return
@@ -816,7 +829,7 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 			mp.input.cursor = len(mp.input.cmd)
 		}
 	}
-	if ctx.keyboard.IsPressed(platform.KeyDownArrow) {
+	if ctx.Keyboard.IsPressed(platform.KeyDownArrow) {
 		if mp.historyOffset > 0 {
 			mp.historyOffset--
 			if mp.historyOffset == 0 {
@@ -829,42 +842,42 @@ func (mp *MessagesPane) processKeyboard(ctx *PaneContext) {
 		}
 	}
 
-	if (ctx.keyboard.IsPressed(platform.KeyControl) || ctx.keyboard.IsPressed(platform.KeySuper)) && ctx.keyboard.IsPressed(platform.KeyV) {
-		c, err := ctx.platform.GetClipboard().Text()
+	if (ctx.Keyboard.IsPressed(platform.KeyControl) || ctx.Keyboard.IsPressed(platform.KeySuper)) && ctx.Keyboard.IsPressed(platform.KeyV) {
+		c, err := ctx.Platform.GetClipboard().Text()
 		if err == nil {
 			mp.input.InsertAtCursor(c)
 		}
 	}
-	if ctx.keyboard.IsPressed(platform.KeyLeftArrow) {
+	if ctx.Keyboard.IsPressed(platform.KeyLeftArrow) {
 		if mp.input.cursor > 0 {
 			mp.input.cursor--
 		}
 	}
 
-	if ctx.keyboard.IsPressed(platform.KeyRightArrow) {
+	if ctx.Keyboard.IsPressed(platform.KeyRightArrow) {
 		if mp.input.cursor < len(mp.input.cmd) {
 			mp.input.cursor++
 		}
 	}
-	if ctx.keyboard.IsPressed(platform.KeyHome) {
+	if ctx.Keyboard.IsPressed(platform.KeyHome) {
 		mp.input.cursor = 0
 	}
-	if ctx.keyboard.IsPressed(platform.KeyEnd) {
+	if ctx.Keyboard.IsPressed(platform.KeyEnd) {
 		mp.input.cursor = len(mp.input.cmd)
 	}
-	if ctx.keyboard.IsPressed(platform.KeyBackspace) {
+	if ctx.Keyboard.IsPressed(platform.KeyBackspace) {
 		mp.input.DeleteBeforeCursor()
 	}
-	if ctx.keyboard.IsPressed(platform.KeyDelete) {
+	if ctx.Keyboard.IsPressed(platform.KeyDelete) {
 		mp.input.DeleteAfterCursor()
 	}
-	if ctx.keyboard.IsPressed(platform.KeyEscape) {
+	if ctx.Keyboard.IsPressed(platform.KeyEscape) {
 		if mp.input.cursor > 0 {
 			mp.input = CLIInput{}
 		}
 	}
 
-	if ctx.keyboard.IsPressed(platform.KeyEnter) && strings.TrimSpace(mp.input.cmd) != "" {
+	if ctx.Keyboard.IsPressed(platform.KeyEnter) && strings.TrimSpace(mp.input.cmd) != "" {
 		mp.runCommands(ctx)
 	}
 }
@@ -988,7 +1001,7 @@ func (mp *MessagesPane) processEvents(ctx *PaneContext) {
 			}
 			msg = Message{contents: response + ". " + radioCallsign, error: unexpectedTransmission}
 		}
-		lg.Debug("radio_transmission", slog.String("callsign", callsign), slog.Any("message", msg))
+		ctx.Lg.Debug("radio_transmission", slog.String("callsign", callsign), slog.Any("message", msg))
 		mp.messages = append(mp.messages, msg)
 	}
 
@@ -1034,5 +1047,227 @@ func (mp *MessagesPane) processEvents(ctx *PaneContext) {
 
 	if len(transmissions) > 0 {
 		addTransmissions()
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// ScrollBar
+
+// ScrollBar provides functionality for a basic scrollbar for use in Pane
+// implementations.  (Since those are not handled by imgui, we can't use
+// imgui's scrollbar there.)
+type ScrollBar struct {
+	offset            int
+	barWidth          int
+	nItems, nVisible  int
+	accumDrag         float32
+	invert            bool
+	vertical          bool
+	mouseClickedInBar bool
+}
+
+// NewVerticalScrollBar returns a new ScrollBar instance with the given width.
+// invert indicates whether the scrolled items are drawn from the bottom
+// of the Pane or the top; invert should be true if they are being drawn
+// from the bottom.
+func NewVerticalScrollBar(width int, invert bool) *ScrollBar {
+	return &ScrollBar{barWidth: width, invert: invert, vertical: true}
+}
+
+// Update should be called once per frame, providing the total number of things
+// being drawn, the number of them that are visible, and the PaneContext passed
+// to the Pane's Draw method (so that mouse events can be handled, if appropriate.
+func (sb *ScrollBar) Update(nItems int, nVisible int, ctx *PaneContext) {
+	sb.nItems = nItems
+	sb.nVisible = nVisible
+
+	if sb.nItems > sb.nVisible {
+		sign := float32(1)
+		if sb.invert {
+			sign = -1
+		}
+
+		if ctx.Mouse != nil {
+			sb.offset += int(sign * ctx.Mouse.Wheel[1])
+
+			if ctx.Mouse.Clicked[0] {
+				sb.mouseClickedInBar = util.Select(sb.vertical,
+					ctx.Mouse.Pos[0] >= ctx.PaneExtent.Width()-float32(sb.PixelExtent()),
+					ctx.Mouse.Pos[1] >= ctx.PaneExtent.Height()-float32(sb.PixelExtent()))
+
+				sb.accumDrag = 0
+			}
+
+			if ctx.Mouse.Dragging[0] && sb.mouseClickedInBar {
+				axis := util.Select(sb.vertical, 1, 0)
+				wh := util.Select(sb.vertical, ctx.PaneExtent.Height(), ctx.PaneExtent.Width())
+				sb.accumDrag += -sign * ctx.Mouse.DragDelta[axis] * float32(sb.nItems) / wh
+				if math.Abs(sb.accumDrag) >= 1 {
+					sb.offset += int(sb.accumDrag)
+					sb.accumDrag -= float32(int(sb.accumDrag))
+				}
+			}
+		}
+		sb.offset = math.Clamp(sb.offset, 0, sb.nItems-sb.nVisible)
+	} else {
+		sb.offset = 0
+	}
+}
+
+// Offset returns the offset into the items at which drawing should start
+// (i.e., the items before the offset are offscreen.)  Note that the scroll
+// offset is reported in units of the number of items passed to Update;
+// thus, if scrolling text, the number of items might be measured in lines
+// of text, or it might be measured in scanlines.  The choice determines
+// whether scrolling happens at the granularity of entire lines at a time
+// or is continuous.
+func (sb *ScrollBar) Offset() int {
+	return sb.offset
+}
+
+// Visible indicates whether the scrollbar will be drawn (it disappears if
+// all of the items can fit onscreen.)
+func (sb *ScrollBar) Visible() bool {
+	return sb.nItems > sb.nVisible
+}
+
+// Draw emits the drawing commands for the scrollbar into the provided
+// CommandBuffer.
+func (sb *ScrollBar) Draw(ctx *PaneContext, cb *renderer.CommandBuffer) {
+	if !sb.Visible() {
+		return
+	}
+
+	// The visible region is [offset,offset+nVisible].
+	// Visible region w.r.t. [0,1]
+	v0, v1 := float32(sb.offset)/float32(sb.nItems), float32(sb.offset+sb.nVisible)/float32(sb.nItems)
+	if sb.invert {
+		v0, v1 = 1-v0, 1-v1
+	}
+
+	quad := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(quad)
+
+	const edgeSpace = 2
+	pw, ph := ctx.PaneExtent.Width(), ctx.PaneExtent.Height()
+
+	if sb.vertical {
+		// Visible region in window coordinates
+		wy0, wy1 := math.Lerp(v0, ph-edgeSpace, edgeSpace), math.Lerp(v1, ph-edgeSpace, edgeSpace)
+		quad.AddQuad([2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy0},
+			[2]float32{pw - float32(edgeSpace), wy0},
+			[2]float32{pw - float32(edgeSpace), wy1},
+			[2]float32{pw - float32(sb.barWidth) - float32(edgeSpace), wy1}, UIControlColor)
+	} else {
+		wx0, wx1 := math.Lerp(v0, pw-edgeSpace, edgeSpace), math.Lerp(v1, pw-edgeSpace, edgeSpace)
+		quad.AddQuad([2]float32{wx0, ph - float32(sb.barWidth) - float32(edgeSpace)},
+			[2]float32{wx0, ph - float32(edgeSpace)},
+			[2]float32{wx1, ph - float32(edgeSpace)},
+			[2]float32{wx1, ph - float32(sb.barWidth) - float32(edgeSpace)}, UIControlColor)
+	}
+
+	quad.GenerateCommands(cb)
+}
+
+func (sb *ScrollBar) PixelExtent() int {
+	return sb.barWidth + 4 /* for edge space... */
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Text editing
+
+const (
+	TextEditReturnNone = iota
+	TextEditReturnTextChanged
+	TextEditReturnEnter
+	TextEditReturnNext
+	TextEditReturnPrev
+)
+
+// uiDrawTextEdit handles the basics of interactive text editing; it takes
+// a string and cursor position and then renders them with the specified
+// style, processes keyboard inputs and updates the string accordingly.
+func uiDrawTextEdit(s *string, cursor *int, keyboard *platform.KeyboardState, pos [2]float32, style,
+	cursorStyle renderer.TextStyle, focus KeyboardFocus, cb *renderer.CommandBuffer) (exit int, posOut [2]float32) {
+	// Make sure we can depend on it being sensible for the following
+	*cursor = math.Clamp(*cursor, 0, len(*s))
+	originalText := *s
+
+	// Draw the text and the cursor
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	if *cursor == len(*s) {
+		// cursor at the end
+		posOut = td.AddTextMulti([]string{*s, " "}, pos, []renderer.TextStyle{style, cursorStyle})
+	} else {
+		// cursor in the middle
+		sb, sc, se := (*s)[:*cursor], (*s)[*cursor:*cursor+1], (*s)[*cursor+1:]
+		styles := []renderer.TextStyle{style, cursorStyle, style}
+		posOut = td.AddTextMulti([]string{sb, sc, se}, pos, styles)
+	}
+	td.GenerateCommands(cb)
+
+	// Handle various special keys.
+	if keyboard != nil {
+		if keyboard.IsPressed(platform.KeyBackspace) && *cursor > 0 {
+			*s = (*s)[:*cursor-1] + (*s)[*cursor:]
+			*cursor--
+		}
+		if keyboard.IsPressed(platform.KeyDelete) && *cursor < len(*s)-1 {
+			*s = (*s)[:*cursor] + (*s)[*cursor+1:]
+		}
+		if keyboard.IsPressed(platform.KeyLeftArrow) {
+			*cursor = math.Max(*cursor-1, 0)
+		}
+		if keyboard.IsPressed(platform.KeyRightArrow) {
+			*cursor = math.Min(*cursor+1, len(*s))
+		}
+		if keyboard.IsPressed(platform.KeyEscape) {
+			// clear out the string
+			*s = ""
+			*cursor = 0
+		}
+		if keyboard.IsPressed(platform.KeyEnter) {
+			focus.Release()
+			exit = TextEditReturnEnter
+		}
+		if keyboard.IsPressed(platform.KeyTab) {
+			if keyboard.IsPressed(platform.KeyShift) {
+				exit = TextEditReturnPrev
+			} else {
+				exit = TextEditReturnNext
+			}
+		}
+
+		// And finally insert any regular characters into the appropriate spot
+		// in the string.
+		if keyboard.Input != "" {
+			*s = (*s)[:*cursor] + keyboard.Input + (*s)[*cursor:]
+			*cursor += len(keyboard.Input)
+		}
+	}
+
+	if exit == TextEditReturnNone && *s != originalText {
+		exit = TextEditReturnTextChanged
+	}
+
+	return
+}
+
+// If |b| is true, all following imgui elements will be disabled (and drawn
+// accordingly).
+func uiStartDisable(b bool) {
+	if b {
+		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
+		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
+	}
+}
+
+// Each call to uiStartDisable should have a matching call to uiEndDisable,
+// with the same Boolean value passed to it.
+func uiEndDisable(b bool) {
+	if b {
+		imgui.PopItemFlag()
+		imgui.PopStyleVar()
 	}
 }
