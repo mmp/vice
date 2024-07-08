@@ -272,7 +272,7 @@ func main() {
 		globalConfig.Activate(controlClient, render, plat, eventStream, lg)
 
 		if controlClient == nil {
-			uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false, plat)
+			uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false, plat, lg)
 		}
 
 		if !globalConfig.AskedDiscordOptIn {
@@ -302,7 +302,8 @@ func main() {
 				simStartTime = time.Now()
 
 				if controlClient == nil {
-					uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false, plat)
+					uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer,
+						false, plat, lg)
 				} else if controlClient != nil {
 					ui.showScenarioInfo = !ui.showScenarioInfo
 					globalConfig.DisplayRoot.VisitPanes(func(p panes.Pane) {
@@ -392,7 +393,8 @@ func main() {
 							remoteServer = nil
 							controlClient = nil
 
-							uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false, plat)
+							uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer,
+								false, plat, lg)
 						}
 					})
 			}
