@@ -339,18 +339,17 @@ type STARSComputer struct {
 	TrackInformation  map[string]*TrackInformation
 	ERAMInbox         *[]FlightPlanMessage            // The address of the overlying ERAM's message inbox.
 	STARSInbox        map[string]*[]FlightPlanMessage // Other STARS Facilities' inboxes
-	UnsupportedTracks map[int]*UnsupportedTrack
+	UnsupportedTracks []UnsupportedTrack
 	AvailableSquawks  map[av.Squawk]interface{}
 }
 
 func MakeSTARSComputer(id string, sq map[av.Squawk]interface{}) *STARSComputer {
 	return &STARSComputer{
-		Identifier:        id,
-		ContainedPlans:    make(map[av.Squawk]*STARSFlightPlan),
-		TrackInformation:  make(map[string]*TrackInformation),
-		STARSInbox:        make(map[string]*[]FlightPlanMessage),
-		UnsupportedTracks: make(map[int]*UnsupportedTrack), // Using one value for the bank is good enough (for now)
-		AvailableSquawks:  sq,
+		Identifier:       id,
+		ContainedPlans:   make(map[av.Squawk]*STARSFlightPlan),
+		TrackInformation: make(map[string]*TrackInformation),
+		STARSInbox:       make(map[string]*[]FlightPlanMessage),
+		AvailableSquawks: sq,
 	}
 }
 
@@ -405,6 +404,14 @@ func (comp *STARSComputer) GetFlightPlan(identifier string) (*STARSFlightPlan, e
 		}
 	}
 	return nil, ErrNoMatchingFlight
+}
+
+func (comp *STARSComputer) AddTrackInformation(callsign string, info TrackInformation) {
+	comp.TrackInformation[callsign] = &info
+}
+
+func (comp *STARSComputer) AddUnsupportedTrack(ut UnsupportedTrack) {
+	comp.UnsupportedTracks = append(comp.UnsupportedTracks, ut)
 }
 
 // Sorting the STARS messages. This will store flight plans with FP

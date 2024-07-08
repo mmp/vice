@@ -145,7 +145,40 @@ func (c *ControlClient) SetGlobalLeaderLine(callsign string, dir *math.CardinalO
 		})
 }
 
-func (c *ControlClient) InitiateTrack(callsign string, success func(any), err func(error)) {
+func (c *ControlClient) CreateUnsupportedTrack(callsign string, ut *UnsupportedTrack,
+	success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.CreateUnsupportedTrack(callsign, ut),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) AutoAssociateFP(callsign string, fp *STARSFlightPlan, success func(any),
+	err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.AutoAssociateFP(callsign, fp),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) UploadFlightPlan(fp *STARSFlightPlan, typ int, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.UploadFlightPlan(typ, fp),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) InitiateTrack(callsign string, fp *STARSFlightPlan, success func(any),
+	err func(error)) {
 	// Modifying locally is not canonical but improves perceived latency in
 	// the common case; the RPC may fail, though that's fine; the next
 	// world update will roll back these changes anyway.
@@ -158,7 +191,7 @@ func (c *ControlClient) InitiateTrack(callsign string, success func(any), err fu
 
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.InitiateTrack(callsign),
+			Call:      c.proxy.InitiateTrack(callsign, fp),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
@@ -240,16 +273,6 @@ func (c *ControlClient) ForceQL(callsign, controller string, success func(any), 
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.ForceQL(callsign, controller),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
-func (c *ControlClient) RemoveForceQL(callsign, controller string, success func(any), err func(error)) {
-	c.pendingCalls = append(c.pendingCalls,
-		&util.PendingCall{
-			Call:      c.proxy.RemoveForceQL(callsign, controller),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,

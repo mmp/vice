@@ -89,10 +89,53 @@ func (s *Proxy) SetSecondaryScratchpad(callsign string, scratchpad string) *rpc.
 	}, nil, nil)
 }
 
-func (s *Proxy) InitiateTrack(callsign string) *rpc.Call {
-	return s.Client.Go("Sim.InitiateTrack", &InitiateTrackArgs{
+func (s *Proxy) AutoAssociateFP(callsign string, fp *STARSFlightPlan) *rpc.Call {
+	return s.Client.Go("Sim.AutoAssociateFP", &InitiateTrackArgs{
+		AircraftSpecifier: AircraftSpecifier{
+			ControllerToken: s.ControllerToken,
+			Callsign:        callsign,
+		},
+		Plan: fp,
+	}, nil, nil)
+}
+
+func (s *Proxy) CreateUnsupportedTrack(callsign string, ut *UnsupportedTrack) *rpc.Call {
+	return s.Client.Go("Sim.CreateUnsupportedTrack", &CreateUnsupportedTrackArgs{
+		ControllerToken:  s.ControllerToken,
+		Callsign:         callsign,
+		UnsupportedTrack: ut,
+	}, nil, nil)
+}
+
+func (s *Proxy) UploadFlightPlan(Type int, fp *STARSFlightPlan) *rpc.Call {
+	return s.Client.Go("Sim.UploadFlightPlan", &UploadPlanArgs{
 		ControllerToken: s.ControllerToken,
-		Callsign:        callsign,
+		Type:            Type,
+		Plan:            fp,
+	}, nil, nil)
+}
+
+func (s *Proxy) InitiateTrack(callsign string, fp *STARSFlightPlan) *rpc.Call {
+	return s.Client.Go("Sim.InitiateTrack", InitiateTrackArgs{
+		AircraftSpecifier: AircraftSpecifier{
+			ControllerToken: s.ControllerToken,
+			Callsign:        callsign,
+		},
+		Plan: fp,
+	}, nil, nil)
+}
+
+type IntermTrackArgs struct {
+	Token, Callsign, Initial string
+	fp                       *STARSFlightPlan
+}
+
+func (s *Proxy) IntermTrack(callsign, initial string, fp *STARSFlightPlan) *rpc.Call {
+	return s.Client.Go("Sim.InitiateTrack", IntermTrackArgs{
+		Token:    s.ControllerToken,
+		Callsign: callsign,
+		Initial:  initial,
+		fp:       fp,
 	}, nil, nil)
 }
 
@@ -153,14 +196,6 @@ func (s *Proxy) AcceptRedirectedHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.AcceptRedirectedHandoff", &AcceptHandoffArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
-	}, nil, nil)
-}
-
-func (s *Proxy) RemoveForceQL(callsign, controller string) *rpc.Call {
-	return s.Client.Go("Sim.RemoveForceQL", &ForceQLArgs{
-		ControllerToken: s.ControllerToken,
-		Callsign:        callsign,
-		Controller:      controller,
 	}, nil, nil)
 }
 

@@ -107,6 +107,14 @@ func (sd *Dispatcher) SetSecondaryScratchpad(a *SetScratchpadArgs, _ *struct{}) 
 	}
 }
 
+func (sd *Dispatcher) AutoAssociateFP(it *InitiateTrackArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.AutoAssociateFP(it.ControllerToken, it.Callsign, it.Plan)
+	}
+}
+
 type SetGlobalLeaderLineArgs struct {
 	ControllerToken string
 	Callsign        string
@@ -121,19 +129,50 @@ func (sd *Dispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *struct{
 	}
 }
 
-type AircraftSpecifier struct {
-	ControllerToken string
-	Callsign        string
+type InitiateTrackArgs struct {
+	AircraftSpecifier
+	Plan *STARSFlightPlan
 }
-
-type InitiateTrackArgs AircraftSpecifier
 
 func (sd *Dispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error {
 	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.InitiateTrack(it.ControllerToken, it.Callsign)
+		return sim.InitiateTrack(it.ControllerToken, it.Callsign, it.Plan)
 	}
+}
+
+type CreateUnsupportedTrackArgs struct {
+	ControllerToken  string
+	Callsign         string
+	UnsupportedTrack *UnsupportedTrack
+}
+
+func (sd *Dispatcher) CreateUnsupportedTrack(it *CreateUnsupportedTrackArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.CreateUnsupportedTrack(it.ControllerToken, it.Callsign, it.UnsupportedTrack)
+	}
+}
+
+type UploadPlanArgs struct {
+	ControllerToken string
+	Type            int
+	Plan            *STARSFlightPlan
+}
+
+func (sd *Dispatcher) UploadFlightPlan(it *UploadPlanArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.UploadFlightPlan(it.ControllerToken, it.Type, it.Plan)
+	}
+}
+
+type AircraftSpecifier struct {
+	ControllerToken string
+	Callsign        string
 }
 
 type DropTrackArgs AircraftSpecifier
@@ -219,22 +258,6 @@ func (sd *Dispatcher) GlobalMessage(po *GlobalMessageArgs, _ *struct{}) error {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.GlobalMessage(*po)
-	}
-}
-
-func (sd *Dispatcher) ForceQL(po *ForceQLArgs, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
-		return ErrNoSimForControllerToken
-	} else {
-		return sim.ForceQL(po.ControllerToken, po.Callsign, po.Controller)
-	}
-}
-
-func (sd *Dispatcher) RemoveForceQL(po *ForceQLArgs, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
-		return ErrNoSimForControllerToken
-	} else {
-		return sim.RemoveForceQL(po.ControllerToken, po.Callsign, po.Controller)
 	}
 }
 

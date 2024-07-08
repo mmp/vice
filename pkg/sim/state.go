@@ -20,6 +20,8 @@ type State struct {
 	DepartureAirports map[string]*av.Airport
 	ArrivalAirports   map[string]*av.Airport
 
+	ERAMComputers ERAMComputers
+
 	TRACON                   string
 	LaunchConfig             LaunchConfig
 	PrimaryController        string

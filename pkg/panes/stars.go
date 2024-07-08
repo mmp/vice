@@ -116,6 +116,7 @@ type STARSPane struct {
 	InboundPointOuts  map[string]string
 	OutboundPointOuts map[string]string
 	RejectedPointOuts map[string]interface{}
+	ForceQLAircraft   []string
 
 	queryUnassociated *util.TransientMap[string, interface{}]
 
@@ -1479,6 +1480,8 @@ func (sp *STARSPane) processEvents(ctx *Context) {
 				state.GlobalLeaderLineDirection = event.LeaderLineDirection
 				state.UseGlobalLeaderLine = state.GlobalLeaderLineDirection != nil
 			}
+		case sim.ForceQLEvent:
+			sp.ForceQLAircraft = append(sp.ForceQLAircraft, event.Callsign)
 		}
 	}
 }
@@ -3344,7 +3347,7 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *Context, callsign string, dir *mat
 }
 
 func (sp *STARSPane) initiateTrack(ctx *Context, callsign string) {
-	ctx.ControlClient.InitiateTrack(callsign,
+	ctx.ControlClient.InitiateTrack(callsign, nil, // FIXME: *STARSFlightPlan
 		func(any) {
 			if state, ok := sp.Aircraft[callsign]; ok {
 				state.DatablockType = FullDatablock
@@ -3538,8 +3541,10 @@ func (sp *STARSPane) acceptRedirectedHandoff(ctx *Context, callsign string) {
 		func(err error) { sp.displayError(err, ctx) })
 }
 
-func (sp *STARSPane) RemoveForceQL(ctx *Context, callsign, controller string) {
-	ctx.ControlClient.RemoveForceQL(callsign, controller, nil, nil) // Just a slew so the slew could be for other things
+func (sp *STARSPane) RemoveForceQL(ctx *Context, callsign string) {
+	if i := slices.Index(sp.ForceQLAircraft, callsign); i != -1 {
+		sp.ForceQLAircraft = append(sp.ForceQLAircraft[:i], sp.ForceQLAircraft[:i+1]...)
+	}
 }
 
 func (sp *STARSPane) pointOut(ctx *Context, callsign string, controller string) {
@@ -3615,8 +3620,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *Context, cmd string, mouseP
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
 					return
-				} else if slices.Contains(ac.ForceQLControllers, ctx.ControlClient.Callsign) {
-					sp.RemoveForceQL(ctx, ac.Callsign, ctx.ControlClient.Callsign)
+				} else if slices.Contains(sp.ForceQLAircraft, ac.Callsign) {
+					sp.RemoveForceQL(ctx, ac.Callsign)
 					status.clear = true
 					return
 				} else if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
@@ -5442,9 +5447,6 @@ func (sp *STARSPane) datablockType(ctx *Context, ac *av.Aircraft) DatablockType 
 		// it's under our control
 		dt = FullDatablock
 	}
-	if ac.ForceQLControllers != nil && slices.Contains(ac.ForceQLControllers, ctx.ControlClient.Callsign) {
-		dt = FullDatablock
-	}
 
 	if ac.HandoffTrackController == ctx.ControlClient.Callsign && ac.RedirectedHandoff.RedirectedTo == "" {
 		// it's being handed off to us
@@ -6726,14 +6728,10 @@ func (sp *STARSPane) datablockColor(ctx *Context, ac *av.Aircraft) (color render
 	}
 
 	// Check if were the controller being ForceQL
-	for _, control := range ac.ForceQLControllers {
-		if control == ctx.ControlClient.Callsign {
-			color = STARSInboundPointOutColor
-			return
-		}
-	}
 
-	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut || state.ForceQL {
+	if slices.Contains(sp.ForceQLAircraft, ac.Callsign) {
+		color = STARSInboundPointOutColor
+	} else if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut || state.ForceQL {
 		// yellow for pointed out by someone else or uncleared after acknowledged.
 		color = STARSInboundPointOutColor
 	} else if state.IsSelected {
@@ -8236,7 +8234,8 @@ func (sp *STARSPane) visibleAircraft(ctx *Context) []*av.Aircraft {
 
 				if sp.AutoTrackDepartures && ac.TrackingController == "" &&
 					ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.Callsign {
-					ctx.ControlClient.InitiateTrack(callsign, nil, nil) // ignore error...
+					var starsFlightPlan *sim.STARSFlightPlan                             // FIXME
+					ctx.ControlClient.InitiateTrack(callsign, starsFlightPlan, nil, nil) // ignore error...
 				}
 			}
 		}

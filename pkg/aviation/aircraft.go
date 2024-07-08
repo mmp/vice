@@ -31,7 +31,6 @@ type Aircraft struct {
 	Mode                TransponderMode
 	TempAltitude        int
 	FlightPlan          *FlightPlan
-	ForceQLControllers  []string
 	PointOutHistory     []string
 
 	// STARS-related state that is globally visible

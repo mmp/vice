@@ -2208,7 +2208,67 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *math.CardinalOrdi
 		})
 }
 
-func (s *Sim) InitiateTrack(token, callsign string) error {
+func (s *Sim) AutoAssociateFP(token, callsign string, fp *STARSFlightPlan) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
+			_, _, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+			return err
+		},
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			_, stars, _ := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+			stars.AddTrackInformation(callsign, TrackInformation{
+				TrackOwner:      ac.TrackingController, // Should happen initially, so ac.TrackingController can still be used
+				FlightPlan:      fp,
+				AutoAssociateFP: true,
+			})
+
+			return nil
+		})
+
+}
+
+func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrack) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	callsign = util.SortedMapKeys(s.State.Aircraft)[0]
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
+			_, _, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+			return err
+		},
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			_, stars, _ := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+			stars.AddUnsupportedTrack(*ut)
+			return nil
+		})
+}
+
+func (s *Sim) UploadFlightPlan(token string, Type int, plan *STARSFlightPlan) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	ctrl := s.State.Controllers[s.controllers[token].Callsign]
+	eram, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+	if err != nil {
+		return err
+
+	}
+
+	switch Type {
+	case LocalNonEnroute:
+		stars.ContainedPlans[plan.FlightPlan.AssignedSquawk] = plan
+	case LocalEnroute, RemoteEnroute:
+		eram.FlightPlans[plan.FlightPlan.AssignedSquawk] = plan
+	}
+
+	return nil
+}
+
+func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -2468,18 +2528,13 @@ func (s *Sim) ForceQL(token, callsign, controller string) error {
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			octrl := s.State.Controllers[controller]
-			ac.ForceQLControllers = append(ac.ForceQLControllers, octrl.Callsign)
-			return nil
-		})
-}
+			s.eventStream.Post(Event{
+				Type:           ForceQLEvent,
+				FromController: ctrl.Callsign,
+				ToController:   octrl.Callsign,
+				Callsign:       ac.Callsign,
+			})
 
-func (s *Sim) RemoveForceQL(token, callsign, controller string) error {
-	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			return nil
-		},
-		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			ac.ForceQLControllers = util.FilterSlice(ac.ForceQLControllers, func(qlController string) bool { return qlController != controller })
 			return nil
 		})
 }
