@@ -1,3 +1,7 @@
+// nas.go
+// Copyright(c) 2024 the vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
 package sim
 
 import (
@@ -6,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
@@ -384,6 +389,24 @@ func (comp *STARSComputer) RequestFlightPlan(bcn av.Squawk, simTime time.Time) {
 	comp.SendToOverlyingERAMFacility(message)
 }
 
+func (comp *STARSComputer) GetFlightPlan(identifier string) (*STARSFlightPlan, error) {
+	if squawk, err := av.ParseSquawk(identifier); err == nil {
+		// Squawk code was entered
+		if fp, ok := comp.ContainedPlans[squawk]; ok {
+			// The flight plan is stored in the system
+			return fp, nil
+		}
+	} else {
+		// See if it matches a callsign we know about
+		for _, plan := range comp.ContainedPlans {
+			if plan.Callsign == identifier { // We have this plan in our system
+				return plan, nil
+			}
+		}
+	}
+	return nil, ErrNoMatchingFlight
+}
+
 // Sorting the STARS messages. This will store flight plans with FP
 // messages, change flight plans with AM messages, cancel flight plans with
 // CX messages, etc.
@@ -608,7 +631,10 @@ type AbbreviatedFPFields struct {
 	RequestedALT        string
 	Rules               av.FlightRules
 	DepartureAirport    string // Specified with type of flight (maybe)
-	Error               error
+
+	// TODO: why is there an error stored here (vs just returned from the
+	// parsing function)?
+	Error error
 }
 
 type UnsupportedTrack struct {
@@ -711,6 +737,16 @@ func (ec ERAMComputers) UpdateComputers(tracon string, simTime time.Time, e *Eve
 			stars.SortReceivedMessages(e)
 		}
 	}
+}
+
+// identifier can be bcn or callsign
+func (ec ERAMComputers) GetSTARSFlightPlan(tracon string, identifier string) (*STARSFlightPlan, error) {
+	_, starsComputer, err := ec.FacilityComputers(tracon)
+	if err != nil {
+		return nil, err
+	}
+
+	return starsComputer.GetFlightPlan(identifier)
 }
 
 // For debugging purposes
@@ -828,138 +864,34 @@ func FlightPlanDepartureMessage(fp av.FlightPlan, sendingFacility string, simTim
 	}
 }
 
-/*
+// FIXME: yuck, duplicated here
+const STARSTriangleCharacter = string(rune(0x80))
 
-func (w *World) FacilityFromController(callsign string) string {
-	controller := w.GetControllerByCallsign(callsign)
-	if controller != nil && controller.Facility != "" {
-		return controller.Facility
-	} else if controller != nil {
-		return w.TRACON
-	}
-	if len(callsign) == 7 && (callsign[3:] == "_APP" || callsign[3:] == "_DEP") {
-		return w.TRACON // figure out why sometimes EWR_APP (primary controller) doesn't show up
-	}
-	return ""
-}
-
-func (fp *STARSFlightPlan) GetCoordinationFix(w *World, ac *Aircraft) string {
-	fixes := w.STARSFacilityAdaptation.CoordinationFixes
-	for fix, multiple := range fixes {
-
-		info := multiple.Fix(fp.Altitude)
-
-		if info.Type == ZoneBasedFix { // Exclude zone based fixes for now. They come in after the route-based fix
-			continue
-		}
-		if strings.Contains(fp.Route, fix) {
-			return fix
-		}
-		for _, waypoint := range ac.Nav.Waypoints {
-			if waypoint.Fix == fix {
-				return fix
-			}
-		}
-
-	}
-	var closestFix string
-	smallestValue := float32(math.MaxFloat32)
-	for fix, multiple := range fixes {
-		for _, info := range multiple {
-			if info.Type == ZoneBasedFix {
-				dist := math.NMDistance2LL(ac.Position(), database.Fixes[fix].Location)
-				if dist < smallestValue {
-					smallestValue = dist
-					closestFix = fix
-				}
-			}
-		}
-	}
-
-	if closestFix == "" {
-		lg.Errorf("No fix for %v/%v. Route: %v.", ac.Callsign, ac.Squawk, ac.Nav.Waypoints)
-	}
-	return closestFix
-}
-
-func (fp *FlightPlan) STARS() *STARSFlightPlan {
-	return &STARSFlightPlan{
-		FlightPlan: *fp,
-	}
-}
-
-// identifier can be bcn or callsign
-func (w *World) getSTARSFlightPlan(identifier string) (*STARSFlightPlan, error) {
-	_, stars := w.FacilityComputers(FIXME)
-	squawk, err := ParseSquawk(identifier)
-	if err == nil { // Squawk code was entered
-		fp, ok := stars.ContainedPlans[squawk]
-		if ok { // The flight plan is stored in the system
-			return fp, nil
-		}
-	} else { // Callsign was entered
-		for _, plan := range stars.ContainedPlans {
-			if plan.Callsign == identifier { // We have this plan in our system
-				return plan, nil
-			}
-		}
-	}
-	return nil, ErrSTARSNoFlight
-}
-
-// This should be facility-defined in the json file, but for now it's 30nm near their departure airport
-func (ac *Aircraft) inAcquisitionArea(w *World) bool {
-	if ac != nil {
-		ap := w.GetAirport(ac.FlightPlan.DepartureAirport)
-		ap2 := w.GetAirport(ac.FlightPlan.ArrivalAirport)
-		if ap != nil {
-			if math.NMDistance2LL(ap.Location, ac.Position()) <= 2 && !ac.inDropArea(w) {
-				return true
-			}
-		}
-		if ap2 != nil {
-			if math.NMDistance2LL(ap2.Location, ac.Position()) <= 2 && !ac.inDropArea(w) {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func (ac *Aircraft) inDropArea(w *World) bool {
-	ap := w.GetAirport(ac.FlightPlan.DepartureAirport)
-	ap2 := w.GetAirport(ac.FlightPlan.ArrivalAirport)
-	if (ap != nil && math.NMDistance2LL(ap.Location, ac.Position()) <= 1) || (ap2 != nil && math.NMDistance2LL(ap2.Location, ac.Position()) <= 1) {
-		if (ap != nil && ac.Altitude() <= float32(database.Airports[ac.FlightPlan.DepartureAirport].Elevation+50)) ||
-			ac.Altitude() <= float32(database.Airports[ac.FlightPlan.ArrivalAirport].Elevation+50) {
-			return true
-		}
-	}
-
-	return false
-}
-
-func (w *World) parseAbbreviatedFPFields(fields []string) AbbreviatedFPFields {
+func ParseAbbreviatedFPFields(facilityAdaptation STARSFacilityAdaptation, fields []string) AbbreviatedFPFields {
 	output := AbbreviatedFPFields{}
 	if len(fields[0]) >= 2 && len(fields[0]) <= 7 && unicode.IsLetter(rune(fields[0][0])) {
 		output.ACID = fields[0]
-
 	} else {
-		output.Error = ErrSTARSIllegalACID
+		output.Error = ErrIllegalACID
 		return output
 	}
 
 	for _, field := range fields[1:] { // fields[0] is always the ACID
-		sq, err := ParseSquawk(field) // See if it's a BCN
-		if err == nil {
+		// See if it's a BCN
+		if sq, err := av.ParseSquawk(field); err == nil {
 			output.BCN = sq
 			continue
 		}
-		if len(field) == 2 { // See if its specifying the controlling position
+
+		// See if its specifying the controlling position
+		if len(field) == 2 {
 			output.ControllingPosition = field
 			continue
 		}
-		if len(field) <= 2 { // See if it's specifying the type of flight. No errors for this because this could turn into a scratchpad
+
+		// See if it's specifying the type of flight. No errors for this
+		// because this could turn into a scratchpad.
+		if len(field) <= 2 {
 			if len(field) == 1 {
 				switch field {
 				case "A":
@@ -980,32 +912,32 @@ func (w *World) parseAbbreviatedFPFields(fields []string) AbbreviatedFPFields {
 		}
 
 		badScratchpads := []string{"NAT", "CST", "AMB", "RDR", "ADB", "XXX"}
-		if strings.HasPrefix(field, STARSTriangleCharacter) && len(field) > 3 && len(field) <= 5 || (len(field) <= 6 && w.STARSFacilityAdaptation.AllowLongScratchpad[0]) { // See if it's specifying the SC1
+		if strings.HasPrefix(field, STARSTriangleCharacter) && len(field) > 3 && len(field) <= 5 || (len(field) <= 6 && facilityAdaptation.AllowLongScratchpad[0]) { // See if it's specifying the SC1
 
 			if slices.Contains(badScratchpads, field) {
-				output.Error = ErrSTARSIllegalScratchpad
+				output.Error = ErrIllegalScratchpad
 				return output
 			}
 			if util.IsAllNumbers(field[len(field)-3:]) {
-				output.Error = ErrSTARSIllegalScratchpad
+				output.Error = ErrIllegalScratchpad
 			}
 			output.SC1 = field
 		}
-		if strings.HasPrefix(field, "+") && len(field) > 2 && (len(field) <= 4 || (len(field) <= 5 && w.STARSFacilityAdaptation.AllowLongScratchpad[1])) { // See if it's specifying the SC1
+		if strings.HasPrefix(field, "+") && len(field) > 2 && (len(field) <= 4 || (len(field) <= 5 && facilityAdaptation.AllowLongScratchpad[1])) { // See if it's specifying the SC1
 			if slices.Contains(badScratchpads, field) {
-				output.Error = ErrSTARSIllegalScratchpad
+				output.Error = ErrIllegalScratchpad
 				return output
 			}
 			if util.IsAllNumbers(field[len(field)-3:]) {
-				output.Error = ErrSTARSIllegalScratchpad
+				output.Error = ErrIllegalScratchpad
 			}
 			output.SC2 = field
 		}
 		if acFields := strings.Split(field, "/"); len(field) >= 4 { // See if it's specifying the type of flight
 			switch len(acFields) {
 			case 1: // Just the AC Type
-				if _, ok := database.AircraftPerformance[field]; !ok { // AC doesn't exist
-					output.Error = ErrSTARSIllegalACType
+				if _, ok := av.DB.AircraftPerformance[field]; !ok { // AC doesn't exist
+					output.Error = ErrIllegalACType
 					continue
 				} else {
 					output.AircraftType = field
@@ -1014,36 +946,36 @@ func (w *World) parseAbbreviatedFPFields(fields []string) AbbreviatedFPFields {
 			case 2: // Either a formation number with the ac type or a ac type with a equipment suffix
 				if all := util.IsAllNumbers(acFields[0]); all { // Formation number
 					if !unicode.IsLetter(rune(acFields[1][0])) {
-						output.Error = ErrSTARSCommandFormat
+						output.Error = ErrInvalidAbbreviatedFP
 						return output
 					}
-					if _, ok := database.AircraftPerformance[acFields[1]]; !ok { // AC doesn't exist
-						output.Error = ErrSTARSIllegalACType // This error is informational. Shouldn't end the entire function. Just this switch statement
+					if _, ok := av.DB.AircraftPerformance[acFields[1]]; !ok { // AC doesn't exist
+						output.Error = ErrIllegalACType // This error is informational. Shouldn't end the entire function. Just this switch statement
 						continue
 					}
 					output.AircraftType = field
 				} else { // AC Type with equipment suffix
 					if len(acFields[1]) > 1 || !util.IsAllLetters(acFields[1]) {
-						output.Error = ErrSTARSCommandFormat
+						output.Error = ErrInvalidAbbreviatedFP
 						return output
 					}
-					if _, ok := database.AircraftPerformance[acFields[0]]; !ok { // AC doesn't exist
-						output.Error = ErrSTARSIllegalACType
+					if _, ok := av.DB.AircraftPerformance[acFields[0]]; !ok { // AC doesn't exist
+						output.Error = ErrIllegalACType
 						continue
 					}
 					output.AircraftType = field
 				}
 			case 3:
 				if len(acFields[2]) > 1 || !util.IsAllLetters(acFields[2]) {
-					output.Error = ErrSTARSCommandFormat
+					output.Error = ErrInvalidAbbreviatedFP
 					return output
 				}
 				if !unicode.IsLetter(rune(acFields[1][0])) {
-					output.Error = ErrSTARSCommandFormat
+					output.Error = ErrInvalidAbbreviatedFP
 					return output
 				}
-				if _, ok := database.AircraftPerformance[acFields[1]]; !ok { // AC doesn't exist
-					output.Error = ErrSTARSIllegalACType
+				if _, ok := av.DB.AircraftPerformance[acFields[1]]; !ok { // AC doesn't exist
+					output.Error = ErrIllegalACType
 					break
 				}
 				output.AircraftType = field
@@ -1056,21 +988,18 @@ func (w *World) parseAbbreviatedFPFields(fields []string) AbbreviatedFPFields {
 		}
 		if len(field) == 2 {
 			if field[0] != '.' {
-				output.Error = ErrSTARSCommandFormat
+				output.Error = ErrInvalidAbbreviatedFP
 				return output
 			}
 			switch field[1] {
 			case 'V':
-				output.Rules = VFR
-				break // This is the last entry, so we can break here
+				output.Rules = av.VFR
 			case 'P':
-				output.Rules = VFR // vfr on top
-				break
+				output.Rules = av.VFR // vfr on top
 			case 'E':
-				output.Rules = IFR // enroute
-				break
+				output.Rules = av.IFR // enroute
 			default:
-				output.Error = ErrSTARSIllegalValue
+				output.Error = ErrInvalidAbbreviatedFP
 				return output
 			}
 		}
@@ -1078,4 +1007,47 @@ func (w *World) parseAbbreviatedFPFields(fields []string) AbbreviatedFPFields {
 	}
 	return output
 }
-*/
+
+func (fp *STARSFlightPlan) GetCoordinationFix(facilityAdaptation STARSFacilityAdaptation, ac *av.Aircraft) (string, bool) {
+	for fix, adaptationFixes := range facilityAdaptation.CoordinationFixes {
+		if adaptationFix, err := adaptationFixes.Fix(fp.Altitude); err == nil {
+			if adaptationFix.Type == av.ZoneBasedFix {
+				// Exclude zone based fixes for now. They come in after the route-based fix
+				continue
+			}
+
+			// FIXME (as elsewhere): make this more robust
+			if strings.Contains(fp.Route, fix) {
+				return fix, true
+			}
+
+			// FIXME: why both this and checking fp.Route?
+			for _, waypoint := range ac.Nav.Waypoints {
+				if waypoint.Fix == fix {
+					return fix, true
+				}
+			}
+		}
+
+	}
+
+	var closestFix string
+	minDist := float32(1e30)
+	for fix, adaptationFixes := range facilityAdaptation.CoordinationFixes {
+		for _, adaptationFix := range adaptationFixes {
+			if adaptationFix.Type == av.ZoneBasedFix {
+				if av.DB.Fixes[fix].Location.IsZero() {
+					// FIXME: check this (if it isn't already) at scenario load time.
+					panic(fix + ": not found in fixes database")
+				}
+
+				if dist := math.NMDistance2LL(ac.Position(), av.DB.Fixes[fix].Location); dist < minDist {
+					minDist = dist
+					closestFix = fix
+				}
+			}
+		}
+	}
+
+	return closestFix, closestFix != ""
+}

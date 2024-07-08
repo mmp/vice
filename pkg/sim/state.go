@@ -152,3 +152,45 @@ func (ss *State) GetWindVector(p math.Point2LL, alt float32) math.Point2LL {
 	vWind = math.Scale2f(vWind, windSpeed/3600)
 	return vWind
 }
+
+// This should be facility-defined in the json file, but for now it's 30nm
+// near their departure airport.
+func (ss *State) InAcquisitionArea(ac *av.Aircraft) bool {
+	if ss.InDropArea(ac) {
+		return false
+	}
+
+	for _, icao := range []string{ac.FlightPlan.DepartureAirport, ac.FlightPlan.ArrivalAirport} {
+		ap := av.DB.Airports[icao]
+		if math.NMDistance2LL(ap.Location, ac.Position()) <= 2 {
+			return true
+		}
+	}
+	return false
+}
+
+func (ss *State) InDropArea(ac *av.Aircraft) bool {
+	for _, icao := range []string{ac.FlightPlan.DepartureAirport, ac.FlightPlan.ArrivalAirport} {
+		ap := av.DB.Airports[icao]
+		if math.NMDistance2LL(ap.Location, ac.Position()) <= 1 &&
+			ac.Altitude() <= float32(ap.Elevation+50) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (ss *State) FacilityFromController(callsign string) (string, bool) {
+	if controller := ss.Controllers[callsign]; controller != nil {
+		if controller.Facility != "" {
+			return controller.Facility, true
+		} else if controller != nil {
+			return ss.TRACON, true
+		}
+	}
+	if strings.HasSuffix(callsign, "_APP") || strings.HasSuffix(callsign, "DEP") {
+		return ss.TRACON, true
+	}
+	return "", false
+}
