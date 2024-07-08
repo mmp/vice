@@ -64,12 +64,11 @@ type ERAMComputer struct {
 	AvailableSquawks map[av.Squawk]interface{}
 	Identifier       string
 	Adaptation       av.ERAMAdaptation
-
-	lg *log.Logger
 }
 
-func MakeERAMComputer(fac string, starsBeaconBank int, lg *log.Logger) (*ERAMComputer, error) {
+func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsBeaconBank int) *ERAMComputer {
 	ec := &ERAMComputer{
+		Adaptation:       adapt,
 		STARSComputers:   make(map[string]*STARSComputer),
 		ERAMInboxes:      make(map[string]*[]FlightPlanMessage),
 		ReceivedMessages: &[]FlightPlanMessage{},
@@ -77,12 +76,6 @@ func MakeERAMComputer(fac string, starsBeaconBank int, lg *log.Logger) (*ERAMCom
 		TrackInformation: make(map[string]*TrackInformation),
 		AvailableSquawks: getValidSquawkCodes(),
 		Identifier:       fac,
-		lg:               lg,
-	}
-
-	var ok bool
-	if ec.Adaptation, ok = av.DB.ERAMAdaptations[fac]; !ok {
-		return nil, ErrUnknownFacility
 	}
 
 	starsAvailableSquawks := getBeaconBankSquawks(starsBeaconBank)
@@ -96,7 +89,7 @@ func MakeERAMComputer(fac string, starsBeaconBank int, lg *log.Logger) (*ERAMCom
 		}
 	}
 
-	return ec, nil
+	return ec
 }
 
 func getValidSquawkCodes() map[av.Squawk]interface{} {
@@ -130,17 +123,17 @@ func (comp *ERAMComputer) CreateSquawk() (av.Squawk, error) {
 	return av.Squawk(0), ErrNoMoreAvailableSquawkCodes
 }
 
-func (comp *ERAMComputer) SendFlightPlans(tracon string, simTime time.Time) {
+func (comp *ERAMComputer) SendFlightPlans(tracon string, simTime time.Time, lg *log.Logger) {
 	sendPlanIfReady := func(fp *STARSFlightPlan) {
 		if simTime.Add(TransmitFPMessageTime).Before(fp.CoordinationTime.Time) {
 			return
 		}
 
 		if coordFix, ok := comp.Adaptation.CoordinationFixes[fp.CoordinationFix]; !ok {
-			comp.lg.Errorf("%s: no coordination fix found for STARSFlightPlan CoordinationFix",
+			lg.Errorf("%s: no coordination fix found for STARSFlightPlan CoordinationFix",
 				fp.CoordinationFix)
 		} else if adaptFix, err := coordFix.Fix(fp.Altitude); err != nil {
-			comp.lg.Errorf("%s @ %s", fp.CoordinationFix, fp.Altitude)
+			lg.Errorf("%s @ %s", fp.CoordinationFix, fp.Altitude)
 		} else if !slices.Contains(fp.ContainedFacilities, adaptFix.ToFacility) {
 			comp.SendFlightPlan(fp, tracon, simTime)
 		}
@@ -203,7 +196,7 @@ func (comp *ERAMComputer) SendMessageToERAM(facility string, msg FlightPlanMessa
 	}
 }
 
-func (comp *ERAMComputer) SortMessages(simTime time.Time) {
+func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 	for _, msg := range *comp.ReceivedMessages {
 		switch msg.MessageType {
 		case Plan:
@@ -221,7 +214,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time) {
 				var ok bool
 				fp.CoordinationFix, ok = comp.FixForRouteAndAltitude(fp.Route, fp.Altitude)
 				if !ok {
-					comp.lg.Warnf("Coordination fix not found for route \"%s\", altitude \"%s",
+					lg.Warnf("Coordination fix not found for route \"%s\", altitude \"%s",
 						fp.Route, fp.Altitude)
 					continue
 				}
@@ -266,7 +259,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time) {
 			for name, fixes := range comp.Adaptation.CoordinationFixes {
 				alt := comp.TrackInformation[msg.Identifier].FlightPlan.Altitude
 				if fix, err := fixes.Fix(alt); err != nil {
-					comp.lg.Warnf("Couldn't find adaptation fix: %v. Altitude \"%s\", Fixes %+v",
+					lg.Warnf("Couldn't find adaptation fix: %v. Altitude \"%s\", Fixes %+v",
 						err, alt, fixes)
 				} else {
 					if name == msg.CoordinationFix && fix.ToFacility != comp.Identifier { // Forward
@@ -289,7 +282,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time) {
 		case AcceptRecallTransfer:
 			adaptationFixes, ok := comp.Adaptation.CoordinationFixes[msg.CoordinationFix]
 			if !ok {
-				comp.lg.Warnf("%s: adaptation fixes not found for coordination fix",
+				lg.Warnf("%s: adaptation fixes not found for coordination fix",
 					msg.CoordinationFix)
 			} else {
 				if info := comp.TrackInformation[msg.Identifier]; info != nil {
@@ -651,16 +644,12 @@ type UnsupportedTrack struct {
 	FlightPlan        *STARSFlightPlan
 }
 
-// starsBeaconBank -> w.STARSFacilityAdaptation.BeaconBank
-func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) (ERAMComputers, error) {
+func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) ERAMComputers {
 	ec := make(map[string]*ERAMComputer)
 
-	// Make the ERAM computer for each ARTCC
-	for fac := range av.DB.ARTCCs {
-		var err error
-		if ec[fac], err = MakeERAMComputer(fac, starsBeaconBank, lg); err != nil {
-			return nil, err
-		}
+	// Make the ERAM computer for each ARTCC that we have adaptations defined for.
+	for fac, adapt := range av.DB.ERAMAdaptations {
+		ec[fac] = MakeERAMComputer(fac, adapt, starsBeaconBank)
 	}
 
 	// Let each ERAM computer know about the other ARTCC ERAM computers'
@@ -699,7 +688,7 @@ func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) (ERAMComputers, erro
 		}
 	}
 
-	return ERAMComputers(ec), nil
+	return ERAMComputers(ec)
 }
 
 // If given an ARTCC, returns the corresponding ERAMComputer; if given a TRACON,
@@ -734,12 +723,12 @@ func (ec *ERAMComputers) FacilityComputers(fac string) (*ERAMComputer, *STARSCom
 // messages. Messages will send when the time is appropriate (e.g.,
 // handoff).  Some messages will be sent from recieved messages (for
 // example a FP message from a RF message).
-func (ec ERAMComputers) UpdateComputers(tracon string, simTime time.Time, e *EventStream) {
+func (ec ERAMComputers) Update(tracon string, simTime time.Time, e *EventStream, lg *log.Logger) {
 	// _, fac := w.FacilityComputers(FIXME)
 	// Sort through messages made
 	for _, comp := range ec {
-		comp.SortMessages(simTime)
-		comp.SendFlightPlans(tracon, simTime)
+		comp.SortMessages(simTime, lg)
+		comp.SendFlightPlans(tracon, simTime, lg)
 		for _, stars := range comp.STARSComputers {
 			stars.SortReceivedMessages(e)
 		}

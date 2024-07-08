@@ -383,6 +383,7 @@ func (c *ControlClient) UpdateWorld(wu *WorldUpdate, eventStream *EventStream) {
 	if wu.Controllers != nil {
 		c.State.Controllers = wu.Controllers
 	}
+	c.State.ERAMComputers = wu.ERAMComputers
 
 	c.State.LaunchConfig = wu.LaunchConfig
 
