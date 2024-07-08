@@ -2158,6 +2158,22 @@ func (s *Sim) SetSecondaryScratchpad(token, callsign, scratchpad string) error {
 		})
 }
 
+func (s *Sim) ChangeSquawk(token, callsign string, sq av.Squawk) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			ac.Squawk = sq
+
+			return []av.RadioTransmission{av.RadioTransmission{
+				Controller: ctrl.Callsign,
+				Message:    "squawk " + sq.String(),
+				Type:       av.RadioTransmissionReadback,
+			}}
+		})
+}
+
 func (s *Sim) Ident(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

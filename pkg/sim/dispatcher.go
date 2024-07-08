@@ -645,6 +645,14 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					rewriteError(err)
 					return nil
 				}
+			} else if len(command) == 6 && command[:2] == "SQ" {
+				if sq, err := av.ParseSquawk(command[2:]); err != nil {
+					rewriteError(err)
+					return nil
+				} else if err := sim.ChangeSquawk(token, callsign, sq); err != nil {
+					rewriteError(err)
+					return nil
+				}
 			} else if command == "SH" {
 				if err := sim.SayHeading(token, callsign); err != nil {
 					rewriteError(err)
