@@ -99,8 +99,9 @@ type STARSPane struct {
 	// carried along in an STARSAircraftState.
 	Aircraft map[string]*STARSAircraftState
 
-	AircraftToIndex map[string]int // for use in lists
-	IndexToAircraft map[int]string // map is sort of wasteful since it's dense, but...
+	AircraftToIndex   map[string]int     // for use in lists
+	IndexToAircraft   map[int]string     // map is sort of wasteful since it's dense, but...
+	UnsupportedTracks map[av.Squawk]bool // visible or not
 
 	// explicit JSON name to avoid errors during config deserialization for
 	// backwards compatibility, since this used to be a
@@ -470,16 +471,21 @@ type STARSAircraftState struct {
 	IsSelected bool // middle click
 
 	// Only drawn if non-zero
-	JRingRadius              float32
-	ConeLength               float32
-	DisplayTPASize           *bool // unspecified->system default if nil
+	JRingRadius    float32
+	ConeLength     float32
+	DisplayTPASize *bool // unspecified->system default if nil
+
 	DisplayATPAMonitor       *bool // unspecified->system default if nil
 	DisplayATPAWarnAlert     *bool // unspecified->system default if nil
 	IntrailDistance          float32
 	ATPAStatus               ATPAStatus
 	MinimumMIT               float32
 	ATPALeadAircraftCallsign string
-	POFlashingEndTime        time.Time
+
+	POFlashingEndTime time.Time
+	UNFlashingEndTime time.Time
+	IFFlashing        bool // Will continue to flash unless slewed or a successful handoff
+	NextController    string
 
 	// These are only set if a leader line direction was specified for this
 	// aircraft individually:
@@ -1032,7 +1038,7 @@ func slewAircaft(ac *av.Aircraft) string {
 }
 
 // See STARS Operators Manual 5-184...
-func (sp *STARSPane) flightPlanSTARS(controllers map[string]*av.Controller, ac *av.Aircraft) (string, error) {
+func (sp *STARSPane) flightPlanSTARS(ctx *Context, ac *av.Aircraft) (string, error) {
 	fp := ac.FlightPlan
 	if fp == nil {
 		return "", ErrSTARSIllegalFlight
@@ -1044,7 +1050,7 @@ func (sp *STARSPane) flightPlanSTARS(controllers map[string]*av.Controller, ac *
 
 	// Common stuff
 	owner := ""
-	if ctrl, ok := controllers[ac.TrackingController]; ok {
+	if ctrl, ok := ctx.ControlClient.Controllers[ac.TrackingController]; ok {
 		owner = ctrl.SectorId
 	}
 
@@ -1066,7 +1072,7 @@ func (sp *STARSPane) flightPlanSTARS(controllers map[string]*av.Controller, ac *
 			if len(fp.DepartureAirport) > 0 {
 				result += fp.DepartureAirport[1:] + " "
 			}
-			result += ac.Scratchpad + " "
+			result += ac.Callsign + " "
 			result += "P" + fmtTime(state.FirstSeen) + " "
 			result += "R" + fmt.Sprintf("%03d", fp.Altitude/100)
 		} else {
@@ -1174,6 +1180,9 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 	}
 	if sp.IndexToAircraft == nil {
 		sp.IndexToAircraft = make(map[int]string)
+	}
+	if sp.UnsupportedTracks == nil {
+		sp.UnsupportedTracks = make(map[av.Squawk]bool)
 	}
 
 	sp.events = eventStream.Subscribe()
@@ -1418,6 +1427,7 @@ func (sp *STARSPane) processEvents(ctx *Context) {
 		case sim.AcknowledgedPointOutEvent:
 			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
 				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil && ctrl.SectorId == id {
+					sp.Aircraft[event.Callsign].POFlashingEndTime = time.Now().Add(5 * time.Second)
 					delete(sp.OutboundPointOuts, event.Callsign)
 				}
 			}
@@ -1435,6 +1445,7 @@ func (sp *STARSPane) processEvents(ctx *Context) {
 				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil && ctrl.SectorId == id {
 					delete(sp.OutboundPointOuts, event.Callsign)
 					sp.RejectedPointOuts[event.Callsign] = nil
+					sp.Aircraft[event.Callsign].UNFlashingEndTime = time.Now().Add(5 * time.Second)
 				}
 			}
 			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
@@ -2135,6 +2146,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *Context) (status STARS
 			sp.drawRouteAircraft = ""
 			status.clear = true
 			return
+
+		case "?":
+			ctx.ControlClient.State.ERAMComputers.DumpMap()
+			status.clear = true
+			return
 		}
 
 		if len(cmd) > 5 && cmd[:2] == "**" { // Force QL
@@ -2415,7 +2431,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *Context) (status STARS
 			} else if ac := lookupAircraft(cmd, false); ac != nil {
 				// D(callsign)
 				// Display flight plan
-				status.output, status.err = sp.flightPlanSTARS(ctx.ControlClient.Controllers, ac)
+				status.output, status.err = sp.flightPlanSTARS(ctx, ac)
 				if status.err == nil {
 					status.clear = true
 				}
@@ -3353,7 +3369,7 @@ func (sp *STARSPane) initiateTrack(ctx *Context, callsign string) {
 				state.DatablockType = FullDatablock
 			}
 			if ac, ok := ctx.ControlClient.Aircraft[callsign]; ok {
-				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.ControlClient.Controllers, ac)
+				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx, ac)
 			}
 		},
 		func(err error) { sp.displayError(err, ctx) })
@@ -3370,7 +3386,7 @@ func (sp *STARSPane) acceptHandoff(ctx *Context, callsign string) {
 				state.DatablockType = FullDatablock
 			}
 			if ac, ok := ctx.ControlClient.Aircraft[callsign]; ok {
-				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx.ControlClient.Controllers, ac)
+				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx, ac)
 			}
 		},
 		func(err error) { sp.displayError(err, ctx) })
@@ -3589,7 +3605,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *Context, cmd string, mouseP
 			} else if cmd == "*" {
 				// Display parent aircraft flight plan
 				ac := ctx.ControlClient.Aircraft[ghost.Callsign]
-				status.output, status.err = sp.flightPlanSTARS(ctx.ControlClient.Controllers, ac)
+				status.output, status.err = sp.flightPlanSTARS(ctx, ac)
 				if status.err == nil {
 					status.clear = true
 				}
@@ -4017,7 +4033,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *Context, cmd string, mouseP
 
 			case "D":
 				if cmd == "" {
-					status.output, status.err = sp.flightPlanSTARS(ctx.ControlClient.Controllers, ac)
+					status.output, status.err = sp.flightPlanSTARS(ctx, ac)
 					if status.err == nil {
 						status.clear = true
 					}
@@ -4058,7 +4074,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *Context, cmd string, mouseP
 					clickedGhost := ghost != nil && ghostDistance < acDistance
 					if clickedGhost {
 						// 6-27: display track information in preview area (as an arrival)
-						if fp, err := sp.flightPlanSTARS(ctx.ControlClient.Controllers, ac); err != nil {
+						if fp, err := sp.flightPlanSTARS(ctx, ac); err != nil {
 							status.err = err
 						} else {
 							status.output = fp

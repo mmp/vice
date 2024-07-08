@@ -1970,7 +1970,14 @@ func (s *Sim) SetScratchpad(token, callsign, scratchpad string) error {
 
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			// FIXME: both for now
 			ac.Scratchpad = scratchpad
+
+			err := s.State.ERAMComputers.SetScratchpad(ac.Callsign, ctrl.Facility, scratchpad)
+			if err != nil {
+				s.lg.Errorf("%s/%s: SetScratchPad %s: %v", ac.Callsign, ctrl.Facility,
+					scratchpad, err)
+			}
 			return nil
 		})
 }
@@ -1981,7 +1988,14 @@ func (s *Sim) SetSecondaryScratchpad(token, callsign, scratchpad string) error {
 
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			// FIXME: both for now
 			ac.SecondaryScratchpad = scratchpad
+
+			err := s.State.ERAMComputers.SetSecondaryScratchpad(ac.Callsign, ctrl.Facility, scratchpad)
+			if err != nil {
+				s.lg.Errorf("%s/%s: SetSecondaryScratchPad %s: %v", ac.Callsign, ctrl.Facility,
+					scratchpad, err)
+			}
 			return nil
 		})
 }
@@ -2781,7 +2795,9 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 
 			s.lg.Info("deleted aircraft", slog.String("callsign", ac.Callsign),
 				slog.String("controller", ctrl.Callsign))
-			delete(s.State.Aircraft, ac.Callsign)
+
+			s.State.DeleteAircraft(ac)
+
 			return nil
 		})
 }

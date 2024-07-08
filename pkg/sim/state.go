@@ -383,3 +383,8 @@ func (ss *State) DeleteAircraft(ac *av.Aircraft) {
 	delete(ss.Aircraft, ac.Callsign)
 	ss.ERAMComputers.CompletelyDeleteAircraft(ac)
 }
+
+func (ss *State) STARSComputer() *STARSComputer {
+	_, stars, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
+	return stars
+}

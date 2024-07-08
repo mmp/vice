@@ -784,6 +784,25 @@ func (ec *ERAMComputers) CompletelyDeleteAircraft(ac *av.Aircraft) {
 	}
 }
 
+func (ec *ERAMComputers) SetScratchpad(callsign, facility, scratchpad string) error {
+	_, stars, err := ec.FacilityComputers(facility)
+	if err != nil {
+		return err
+	}
+
+	stars.TrackInformation[callsign].SP1 = scratchpad
+	return nil
+}
+func (ec *ERAMComputers) SetSecondaryScratchpad(callsign, facility, scratchpad string) error {
+	_, stars, err := ec.FacilityComputers(facility)
+	if err != nil {
+		return err
+	}
+
+	stars.TrackInformation[callsign].SP2 = scratchpad
+	return nil
+}
+
 // For debugging purposes
 func (e ERAMComputers) DumpMap() {
 	for key, eramComputer := range e.Computers {
