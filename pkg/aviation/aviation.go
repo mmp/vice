@@ -268,9 +268,16 @@ func (f FlightRules) String() string {
 }
 
 type FlightPlan struct {
-	Rules                  FlightRules
-	AircraftType           string
-	CruiseSpeed            int
+	Callsign       string
+	Rules          FlightRules
+	AircraftType   string
+	CruiseSpeed    int
+	AssignedSquawk Squawk // from ATC
+	// An ECID (CID) are three alpha-numeric characters (eg. 971, 43A,
+	// etc.) and is what ERAM assigns to a track to act as another way to
+	// identify that track. To execute commands, controllers may use the
+	// ECID instead of the aircrafts callsign.
+	ECID                   string
 	DepartureAirport       string
 	DepartTimeEst          int
 	DepartTimeActual       int
@@ -279,6 +286,7 @@ type FlightPlan struct {
 	Hours, Minutes         int
 	FuelHours, FuelMinutes int
 	AlternateAirport       string
+	Exit                   string
 	Route                  string
 	Remarks                string
 }
@@ -371,15 +379,6 @@ const (
 
 func (t TransponderMode) String() string {
 	return [...]string{"Standby", "C"}[t]
-}
-
-func NewFlightPlan(r FlightRules, ac, dep, arr string) *FlightPlan {
-	return &FlightPlan{
-		Rules:            r,
-		AircraftType:     ac,
-		DepartureAirport: dep,
-		ArrivalAirport:   arr,
-	}
 }
 
 func (fp FlightPlan) BaseType() string {
@@ -1915,4 +1914,31 @@ func (c *MultiUserController) IsDepartureController(ap, rwy, sid string) bool {
 
 func (c *MultiUserController) IsArrivalController(arrivalGroup string) bool {
 	return slices.Contains(c.Arrivals, arrivalGroup)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// AdaptationFix(es)
+
+func (fixes AdaptationFixes) Fix(altitude string) (AdaptationFix, error) {
+	switch len(fixes) {
+	case 0:
+		return AdaptationFix{}, ErrNoMatchingFix
+
+	case 1:
+		return fixes[0], nil
+
+	default:
+		// TODO: eventually make a function to parse a string that has a block altitude (for example)
+		// and return an int (figure out how STARS handles that). For now strconv.Atoi can be used
+		if alt, err := strconv.Atoi(altitude); err != nil {
+			return AdaptationFix{}, err
+		} else {
+			for _, fix := range fixes {
+				if alt >= fix.Altitude[0] && alt <= fix.Altitude[1] {
+					return fix, nil
+				}
+			}
+			return AdaptationFix{}, ErrNoMatchingFix
+		}
+	}
 }

@@ -108,6 +108,15 @@ func IsAllNumbers(s string) bool {
 	return true
 }
 
+func IsAllLetters(s string) bool {
+	for _, runeValue := range s {
+		if !unicode.IsLetter(runeValue) {
+			return false
+		}
+	}
+	return true
+}
+
 // Given a map from strings to some type T where the keys are assumed to be
 // of the form "foo,bar,bat", return a new map where each comma-delineated
 // string in the keys has its own entry in the returned map.  Panics if a

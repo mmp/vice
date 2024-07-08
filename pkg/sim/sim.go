@@ -861,8 +861,7 @@ type Sim struct {
 	// Key is arrival group name
 	NextArrivalSpawn map[string]time.Time
 
-	// callsign -> auto accept time
-	Handoffs map[string]time.Time
+	Handoffs map[string]Handoff
 	// callsign -> "to" controller
 	PointOuts map[string]map[string]PointOut
 
@@ -886,6 +885,11 @@ type Sim struct {
 
 	NextPushStart time.Time // both w.r.t. sim time
 	PushEnd       time.Time
+}
+
+type Handoff struct {
+	Time              time.Time
+	ReceivingFacility string // only for auto accept
 }
 
 type PointOut struct {
@@ -984,7 +988,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		lastUpdateTime: time.Now(),
 
 		SimRate:   1,
-		Handoffs:  make(map[string]time.Time),
+		Handoffs:  make(map[string]Handoff),
 		PointOuts: make(map[string]map[string]PointOut),
 	}
 
@@ -1564,7 +1568,7 @@ func (s *Sim) updateState() {
 	now := s.SimTime
 
 	for callsign, t := range s.Handoffs {
-		if !now.After(t) {
+		if !now.After(t.Time) {
 			continue
 		}
 
@@ -2284,7 +2288,9 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			// covered; this way, if they sign off in the interim, we still
 			// end up accepting it automatically.
 			acceptDelay := 4 + rand.Intn(10)
-			s.Handoffs[ac.Callsign] = s.SimTime.Add(time.Duration(acceptDelay) * time.Second)
+			s.Handoffs[ac.Callsign] = Handoff{
+				Time: s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+			}
 			return nil
 		})
 }
@@ -3035,10 +3041,9 @@ func (ss *State) sampleAircraft(icao, fleet string, lg *log.Logger) (*av.Aircraf
 	}
 
 	return &av.Aircraft{
-		Callsign:       callsign,
-		AssignedSquawk: squawk,
-		Squawk:         squawk,
-		Mode:           av.Charlie,
+		Callsign: callsign,
+		Squawk:   squawk,
+		Mode:     av.Charlie,
 	}, acType
 }
 
@@ -3062,7 +3067,8 @@ func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string, goAround
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.FlightPlan = av.NewFlightPlan(av.IFR, acType, airline.Airport, arrivalAirport)
+	// ac.Squawk = artcc.CreateSquawk()
+	ac.FlightPlan = ac.NewFlightPlan(av.IFR, acType, airline.Airport, arrivalAirport)
 
 	// Figure out which controller will (for starters) get the arrival
 	// handoff. For single-user, it's easy.  Otherwise, figure out which
@@ -3167,7 +3173,7 @@ func (s *Sim) CreateDeparture(departureAirport, runway, category string, challen
 		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.FlightPlan = av.NewFlightPlan(av.IFR, acType, departureAirport, dep.Destination)
+	ac.FlightPlan = ac.NewFlightPlan(av.IFR, acType, departureAirport, dep.Destination)
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	if err := ac.InitializeDeparture(ap, departureAirport, dep, runway, exitRoute,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.Scratchpads,

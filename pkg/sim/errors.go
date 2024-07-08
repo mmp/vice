@@ -7,17 +7,19 @@ import (
 )
 
 var (
-	ErrControllerAlreadySignedIn = errors.New("Controller with that callsign already signed in")
-	ErrDuplicateSimName          = errors.New("A sim with that name already exists")
-	ErrInvalidCommandSyntax      = errors.New("Invalid command syntax")
-	ErrInvalidControllerToken    = errors.New("Invalid controller token")
-	ErrInvalidPassword           = errors.New("Invalid password")
-	ErrNoNamedSim                = errors.New("No Sim with that name")
-	ErrNoSimForControllerToken   = errors.New("No Sim running for controller token")
-	ErrNotLaunchController       = errors.New("Not signed in as the launch controller")
-	ErrRPCTimeout                = errors.New("RPC call timed out")
-	ErrRPCVersionMismatch        = errors.New("Client and server RPC versions don't match")
-	ErrRestoringSavedState       = errors.New("Errors during state restoration")
+	ErrControllerAlreadySignedIn  = errors.New("Controller with that callsign already signed in")
+	ErrDuplicateSimName           = errors.New("A sim with that name already exists")
+	ErrInvalidCommandSyntax       = errors.New("Invalid command syntax")
+	ErrInvalidControllerToken     = errors.New("Invalid controller token")
+	ErrInvalidPassword            = errors.New("Invalid password")
+	ErrNoMoreAvailableSquawkCodes = errors.New("No more available squawk codes")
+	ErrNoNamedSim                 = errors.New("No Sim with that name")
+	ErrNoSimForControllerToken    = errors.New("No Sim running for controller token")
+	ErrNotLaunchController        = errors.New("Not signed in as the launch controller")
+	ErrRPCTimeout                 = errors.New("RPC call timed out")
+	ErrRPCVersionMismatch         = errors.New("Client and server RPC versions don't match")
+	ErrRestoringSavedState        = errors.New("Errors during state restoration")
+	ErrUnknownFacility            = errors.New("Unknown facility (ARTCC/TRACON)")
 )
 
 var errorStringToError = map[string]error{
@@ -32,7 +34,10 @@ var errorStringToError = map[string]error{
 	av.ErrNoAircraftForCallsign.Error():        av.ErrNoAircraftForCallsign,
 	av.ErrNoController.Error():                 av.ErrNoController,
 	av.ErrNoFlightPlan.Error():                 av.ErrNoFlightPlan,
+	ErrNoMoreAvailableSquawkCodes.Error():      ErrNoMoreAvailableSquawkCodes,
 	av.ErrNoValidArrivalFound.Error():          av.ErrNoValidArrivalFound,
+	av.ErrNoSTARSFacility.Error():              av.ErrNoSTARSFacility,
+	av.ErrNoERAMFacility.Error():               av.ErrNoERAMFacility,
 	av.ErrNotBeingHandedOffToMe.Error():        av.ErrNotBeingHandedOffToMe,
 	av.ErrNotPointedOutToMe.Error():            av.ErrNotPointedOutToMe,
 	av.ErrNotClearedForApproach.Error():        av.ErrNotClearedForApproach,
@@ -42,16 +47,16 @@ var errorStringToError = map[string]error{
 	av.ErrUnknownAircraftType.Error():          av.ErrUnknownAircraftType,
 	av.ErrUnknownAirport.Error():               av.ErrUnknownAirport,
 	av.ErrUnknownApproach.Error():              av.ErrUnknownApproach,
-	av.ErrUnknownRunway.Error():                av.ErrUnknownRunway,
-	ErrControllerAlreadySignedIn.Error():       ErrControllerAlreadySignedIn,
-	ErrDuplicateSimName.Error():                ErrDuplicateSimName,
-	ErrInvalidControllerToken.Error():          ErrInvalidControllerToken,
-	ErrNoNamedSim.Error():                      ErrNoNamedSim,
-	ErrNoSimForControllerToken.Error():         ErrNoSimForControllerToken,
-	ErrRPCTimeout.Error():                      ErrRPCTimeout,
-	ErrRPCVersionMismatch.Error():              ErrRPCVersionMismatch,
-	ErrRestoringSavedState.Error():             ErrRestoringSavedState,
-	ErrInvalidPassword.Error():                 ErrInvalidPassword,
+	ErrUnknownFacility.Error():                 ErrUnknownFacility, av.ErrUnknownRunway.Error(): av.ErrUnknownRunway,
+	ErrControllerAlreadySignedIn.Error(): ErrControllerAlreadySignedIn,
+	ErrDuplicateSimName.Error():          ErrDuplicateSimName,
+	ErrInvalidControllerToken.Error():    ErrInvalidControllerToken,
+	ErrNoNamedSim.Error():                ErrNoNamedSim,
+	ErrNoSimForControllerToken.Error():   ErrNoSimForControllerToken,
+	ErrRPCTimeout.Error():                ErrRPCTimeout,
+	ErrRPCVersionMismatch.Error():        ErrRPCVersionMismatch,
+	ErrRestoringSavedState.Error():       ErrRestoringSavedState,
+	ErrInvalidPassword.Error():           ErrInvalidPassword,
 }
 
 func TryDecodeError(e error) error {

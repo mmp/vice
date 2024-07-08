@@ -207,15 +207,18 @@ const (
 	HandoffControllEvent
 	SetGlobalLeaderLineEvent
 	TrackClickedEvent
+	ForceQLEvent
+	TransferAcceptedEvent
+	TransferRejectedEvent
 	NumEventTypes
 )
 
 func (t EventType) String() string {
 	return []string{"InitiatedTrack", "DroppedTrack", "PushedFlightStrip", "PointOut",
-		"OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent", "CanceledHandoff", "RejectedHandoff",
-		"RadioTransmission", "StatusMessage", "ServerBroadcastMessage", "GlobalMessage",
-		"AcknowledgedPointOut", "RejectedPointOut", "Ident", "HandoffControll",
-		"SetGlobalLeaderLine", "TrackClicked"}[t]
+		"OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent", "CanceledHandoff",
+		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ServerBroadcastMessage",
+		"GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut", "Ident", "HandoffControl",
+		"SetGlobalLeaderLine", "TrackClicked", "ForceQL", "TransferAccepted", "TransferRejected"}[t]
 }
 
 type Event struct {

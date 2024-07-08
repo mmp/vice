@@ -2415,6 +2415,26 @@ func (nav *Nav) DescendViaSTAR() PilotResponse {
 	return PilotResponse{Message: "descend via the STAR"}
 }
 
+func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
+	if nav.Heading.Assigned != nil {
+		return 0, ErrNotFlyingRoute
+	}
+	if len(nav.Waypoints) == 0 {
+		return 0, nil
+	} else {
+		index := slices.IndexFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == fix })
+		if index == -1 {
+			return 0, ErrFixNotInRoute
+		}
+		wp := nav.Waypoints[:index+1]
+		distance := math.NMDistance2LL(nav.FlightState.Position, wp[0].Location)
+		for i := 0; i < len(wp)-1; i++ {
+			distance += math.NMDistance2LL(wp[i].Location, wp[i+1].Location)
+		}
+		return distance, nil
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Procedure turns
 

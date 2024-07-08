@@ -27,6 +27,8 @@ func NewSTARSError(msg string) *STARSError {
 var (
 	ErrSTARSCommandFormat     = NewSTARSError("FORMAT")
 	ErrSTARSDuplicateBeacon   = NewSTARSError("DUP BCN")
+	ErrSTARSIllegalACID       = NewSTARSError("ILL ACID")
+	ErrSTARSIllegalACType     = NewSTARSError("ACTYPE NOT\nADAPTED")
 	ErrSTARSIllegalATIS       = NewSTARSError("ILL ATIS")
 	ErrSTARSIllegalAirport    = NewSTARSError("ILL AIRPORT")
 	ErrSTARSIllegalCode       = NewSTARSError("ILL CODE")

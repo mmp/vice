@@ -38,7 +38,7 @@ import (
 // 21: STARS DCB drawing changes, so system list positions changed
 // 22: draw points using triangles, remove some CommandBuffer commands
 // 23: video map format update
-// 24: packages, audio to platform
+// 24: packages, audio to platform, flight plan processing
 const CurrentConfigVersion = 24
 
 // Slightly convoluted, but the full GlobalConfig definition is split into
