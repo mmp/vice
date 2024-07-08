@@ -1540,7 +1540,7 @@ func (s *Sim) updateState() {
 				if ap := s.State.Airports[ac.FlightPlan.DepartureAirport]; ap != nil &&
 					math.NMDistance2LL(ac.Position(), ap.Location) > 250 {
 					s.lg.Info("culled far-away departure", slog.String("callsign", callsign))
-					delete(s.State.Aircraft, callsign)
+					s.State.DeleteAircraft(ac)
 				}
 			} else if ap := s.State.Airports[ac.FlightPlan.ArrivalAirport]; ap != nil &&
 				math.NMDistance2LL(ac.Position(), ap.Location) > 250 {
@@ -1548,7 +1548,7 @@ func (s *Sim) updateState() {
 				// where aircraft are being spawned but are then flying
 				// along on a heading without being controlled...
 				s.lg.Info("culled far-away arrival", slog.String("callsign", callsign))
-				delete(s.State.Aircraft, callsign)
+				s.State.DeleteAircraft(ac)
 			}
 		}
 	}

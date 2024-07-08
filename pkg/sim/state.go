@@ -378,3 +378,8 @@ func (ss *State) FacilityFromController(callsign string) (string, bool) {
 	}
 	return "", false
 }
+
+func (ss *State) DeleteAircraft(ac *av.Aircraft) {
+	delete(ss.Aircraft, ac.Callsign)
+	ss.ERAMComputers.CompletelyDeleteAircraft(ac)
+}

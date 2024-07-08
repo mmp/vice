@@ -315,7 +315,25 @@ func (ec *ERAMComputer) AdaptationFixForAltitude(fix string, altitude string) (a
 	return ec.Adaptation.AdaptationFixForAltitude(fix, altitude)
 }
 
-type ERAMComputers map[string]*ERAMComputer
+func (comp *ERAMComputer) CompletelyDeleteAircraft(ac *av.Aircraft) {
+	for sq, trk := range comp.TrackInformation {
+		if fp := trk.FlightPlan; fp != nil {
+			if fp.Callsign == ac.Callsign {
+				delete(comp.TrackInformation, sq)
+			} else if fp.AssignedSquawk == ac.Squawk {
+				delete(comp.TrackInformation, sq)
+			}
+		}
+	}
+
+	for _, stars := range comp.STARSComputers {
+		stars.CompletelyDeleteAircraft(ac)
+	}
+}
+
+type ERAMComputers struct {
+	Computers map[string]*ERAMComputer
+}
 
 type ERAMTrackInfo struct {
 	Location          math.Point2LL
@@ -494,6 +512,18 @@ func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
 	clear(comp.ReceivedMessages)
 }
 
+func (comp *STARSComputer) CompletelyDeleteAircraft(ac *av.Aircraft) {
+	for sq, info := range comp.TrackInformation {
+		if fp := info.FlightPlan; fp != nil {
+			if fp.Callsign == ac.Callsign {
+				delete(comp.TrackInformation, sq)
+			} else if fp.AssignedSquawk == ac.Squawk {
+				delete(comp.TrackInformation, sq)
+			}
+		}
+	}
+}
+
 type STARSFlightPlan struct {
 	av.FlightPlan
 	FlightPlanType      int
@@ -645,11 +675,13 @@ type UnsupportedTrack struct {
 }
 
 func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) ERAMComputers {
-	ec := make(map[string]*ERAMComputer)
+	ec := ERAMComputers{
+		Computers: make(map[string]*ERAMComputer),
+	}
 
 	// Make the ERAM computer for each ARTCC that we have adaptations defined for.
 	for fac, adapt := range av.DB.ERAMAdaptations {
-		ec[fac] = MakeERAMComputer(fac, adapt, starsBeaconBank)
+		ec.Computers[fac] = MakeERAMComputer(fac, adapt, starsBeaconBank)
 	}
 
 	// Let each ERAM computer know about the other ARTCC ERAM computers'
@@ -657,8 +689,8 @@ func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) ERAMComputers {
 	//
 	// TODO: remove this, just look it up from ERAMComputers when we need
 	// it.
-	for fac, comp := range ec {
-		for fac2, comp2 := range ec {
+	for fac, comp := range ec.Computers {
+		for fac2, comp2 := range ec.Computers {
 			// Don't add our own ERAM to the inbox.
 			if fac != fac2 {
 				comp.ERAMInboxes[fac2] = comp2.ReceivedMessages
@@ -667,7 +699,7 @@ func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) ERAMComputers {
 	}
 
 	allSTARSInboxes := make(map[string]*[]FlightPlanMessage)
-	for _, eram := range ec {
+	for _, eram := range ec.Computers {
 		for _, stars := range eram.STARSComputers {
 			allSTARSInboxes[stars.Identifier] = &stars.ReceivedMessages
 		}
@@ -678,7 +710,7 @@ func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) ERAMComputers {
 	//
 	// TODO: this also should probably be removed, to be looked up when
 	// needed.
-	for _, eram := range ec {
+	for _, eram := range ec.Computers {
 		for _, stars := range eram.STARSComputers {
 			for tracon, address := range allSTARSInboxes {
 				if tracon != stars.Identifier {
@@ -694,7 +726,7 @@ func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) ERAMComputers {
 // If given an ARTCC, returns the corresponding ERAMComputer; if given a TRACON,
 // returns both the associated ERMANComputer and STARSComputer
 func (ec *ERAMComputers) FacilityComputers(fac string) (*ERAMComputer, *STARSComputer, error) {
-	if ec, ok := (*ec)[fac]; ok {
+	if ec, ok := ec.Computers[fac]; ok {
 		// fac is an ARTCC
 		return ec, nil, nil
 	}
@@ -704,7 +736,7 @@ func (ec *ERAMComputers) FacilityComputers(fac string) (*ERAMComputer, *STARSCom
 		return nil, nil, ErrUnknownFacility
 	}
 
-	eram, ok := (*ec)[tracon.ARTCC]
+	eram, ok := ec.Computers[tracon.ARTCC]
 	if !ok {
 		// This shouldn't happen...
 		panic("no ERAM computer found for " + tracon.ARTCC + " from TRACON " + fac)
@@ -723,10 +755,10 @@ func (ec *ERAMComputers) FacilityComputers(fac string) (*ERAMComputer, *STARSCom
 // messages. Messages will send when the time is appropriate (e.g.,
 // handoff).  Some messages will be sent from recieved messages (for
 // example a FP message from a RF message).
-func (ec ERAMComputers) Update(tracon string, simTime time.Time, e *EventStream, lg *log.Logger) {
+func (ec *ERAMComputers) Update(tracon string, simTime time.Time, e *EventStream, lg *log.Logger) {
 	// _, fac := w.FacilityComputers(FIXME)
 	// Sort through messages made
-	for _, comp := range ec {
+	for _, comp := range ec.Computers {
 		comp.SortMessages(simTime, lg)
 		comp.SendFlightPlans(tracon, simTime, lg)
 		for _, stars := range comp.STARSComputers {
@@ -745,9 +777,16 @@ func (ec ERAMComputers) GetSTARSFlightPlan(tracon string, identifier string) (*S
 	return starsComputer.GetFlightPlan(identifier)
 }
 
+func (ec *ERAMComputers) CompletelyDeleteAircraft(ac *av.Aircraft) {
+	// TODO: update these FPs
+	for _, eram := range ec.Computers {
+		eram.CompletelyDeleteAircraft(ac)
+	}
+}
+
 // For debugging purposes
 func (e ERAMComputers) DumpMap() {
-	for key, eramComputer := range e {
+	for key, eramComputer := range e.Computers {
 		allowedFacilities := []string{"ZNY", "ZDC", "ZBW"} // Just so the console doesn't get flodded with empty ARTCCs (I debug with EWR)
 		if !slices.Contains(allowedFacilities, key) {
 			continue
