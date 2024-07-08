@@ -23,24 +23,6 @@ import (
 	"github.com/klauspost/compress/zstd"
 )
 
-type ERAMAdaptation struct { // add more later
-	CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
-}
-
-const (
-	RouteBasedFix = "route"
-	ZoneBasedFix  = "zone"
-)
-
-type AdaptationFix struct {
-	Type         string `json:"type"`
-	ToFacility   string `json:"to"`   // controller to handoff to
-	FromFacility string `json:"from"` // controller to handoff from
-	Altitude     [2]int `json:"altitude"`
-}
-
-type AdaptationFixes []AdaptationFix
-
 type ReportingPoint struct {
 	Fix      string
 	Location math.Point2LL
@@ -1914,31 +1896,4 @@ func (c *MultiUserController) IsDepartureController(ap, rwy, sid string) bool {
 
 func (c *MultiUserController) IsArrivalController(arrivalGroup string) bool {
 	return slices.Contains(c.Arrivals, arrivalGroup)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// AdaptationFix(es)
-
-func (fixes AdaptationFixes) Fix(altitude string) (AdaptationFix, error) {
-	switch len(fixes) {
-	case 0:
-		return AdaptationFix{}, ErrNoMatchingFix
-
-	case 1:
-		return fixes[0], nil
-
-	default:
-		// TODO: eventually make a function to parse a string that has a block altitude (for example)
-		// and return an int (figure out how STARS handles that). For now strconv.Atoi can be used
-		if alt, err := strconv.Atoi(altitude); err != nil {
-			return AdaptationFix{}, err
-		} else {
-			for _, fix := range fixes {
-				if alt >= fix.Altitude[0] && alt <= fix.Altitude[1] {
-					return fix, nil
-				}
-			}
-			return AdaptationFix{}, ErrNoMatchingFix
-		}
-	}
 }

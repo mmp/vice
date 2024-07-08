@@ -3,13 +3,30 @@ package sim
 import (
 	"fmt"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/util"
 )
+
+// TODO:
+// idt
+// receivedmessages
+// adaptation
+// starscomputers
+// eraminboxes
+// trackinfo
+// stars:
+// receivesmessages
+// idt
+// eraminbox
+// unsupported
+// starsinboxes
+// trackinfo
 
 // Message types sent from either ERAM or STARS
 const (
@@ -166,7 +183,7 @@ func (comp *ERAMComputer) ToSTARSFacility(facility string, msg FlightPlanMessage
 	if stars, ok := comp.STARSComputers[facility]; !ok {
 		return ErrUnknownFacility
 	} else {
-		stars.RecievedMessages = append(stars.RecievedMessages, msg)
+		stars.ReceivedMessages = append(stars.ReceivedMessages, msg)
 		return nil
 	}
 }
@@ -179,6 +196,125 @@ func (comp *ERAMComputer) SendMessageToERAM(facility string, msg FlightPlanMessa
 		return nil
 
 	}
+}
+
+func (comp *ERAMComputer) SortMessages(simTime time.Time) {
+	for _, msg := range *comp.ReceivedMessages {
+		switch msg.MessageType {
+		case Plan:
+			fp := msg.FlightPlan()
+
+			if fp.AssignedSquawk == av.Squawk(0) {
+				// TODO: Figure out why it's sending a blank fp
+				panic("zero squawk")
+			}
+
+			// Ensure comp.FlightPlans[msg.BCN] is initialized
+			comp.FlightPlans[msg.BCN] = fp
+
+			if fp.CoordinationFix == "" {
+				var ok bool
+				fp.CoordinationFix, ok = comp.FixForRouteAndAltitude(fp.Route, fp.Altitude)
+				if !ok {
+					comp.lg.Warnf("Coordination fix not found for route \"%s\", altitude \"%s",
+						fp.Route, fp.Altitude)
+					continue
+				}
+			}
+
+			// Check if another facility needs this plan.
+			if af, ok := comp.AdaptationFixForAltitude(fp.CoordinationFix, fp.Altitude); ok {
+				if af.ToFacility != comp.Identifier {
+					// Send the plan to the STARS facility that needs it.
+					comp.ToSTARSFacility(af.ToFacility, msg)
+				}
+			}
+
+		case RequestFlightPlan:
+			facility := msg.SourceID[:3] // Facility asking for FP
+			// Find the flight plan
+			plan, ok := comp.FlightPlans[msg.BCN]
+			if ok {
+				msg := FlightPlanDepartureMessage(plan.FlightPlan, comp.Identifier, simTime)
+				comp.ToSTARSFacility(facility, msg)
+			}
+
+			// FIXME: why is this here?
+			*comp.ReceivedMessages = (*comp.ReceivedMessages)[1:]
+
+		case DepartureDM: // Stars ERAM coordination time tracking
+
+		case BeaconTerminate: // TODO: Find out what this does
+
+		case InitiateTransfer:
+			// Forward these to w.TRACON for now. ERAM adaptations will have to fix this eventually...
+
+			if comp.TrackInformation[msg.Identifier] == nil {
+				comp.TrackInformation[msg.Identifier] = &TrackInformation{
+					FlightPlan: comp.FlightPlans[msg.BCN],
+				}
+			}
+			comp.TrackInformation[msg.Identifier].TrackOwner = msg.TrackOwner
+			comp.TrackInformation[msg.Identifier].HandoffController = msg.HandoffController
+			comp.AvailableSquawks[msg.BCN] = nil
+
+			for name, fixes := range comp.Adaptation.CoordinationFixes {
+				alt := comp.TrackInformation[msg.Identifier].FlightPlan.Altitude
+				if fix, err := fixes.Fix(alt); err != nil {
+					comp.lg.Warnf("Couldn't find adaptation fix: %v. Altitude \"%s\", Fixes %+v",
+						err, alt, fixes)
+				} else {
+					if name == msg.CoordinationFix && fix.ToFacility != comp.Identifier { // Forward
+						msg.SourceID = formatSourceID(comp.Identifier, simTime)
+						if to := fix.ToFacility; len(to) > 0 && to[0] == 'Z' { // To another ARTCC
+							comp.SendMessageToERAM(to, msg)
+						} else { // To a TRACON
+							comp.ToSTARSFacility(to, msg)
+						}
+					} else if name == msg.CoordinationFix && fix.ToFacility == comp.Identifier { // Stay here
+						comp.TrackInformation[msg.Identifier] = &TrackInformation{
+							TrackOwner:        msg.TrackOwner,
+							HandoffController: msg.HandoffController,
+							FlightPlan:        comp.FlightPlans[msg.BCN],
+						}
+					}
+				}
+			}
+
+		case AcceptRecallTransfer:
+			adaptationFixes, ok := comp.Adaptation.CoordinationFixes[msg.CoordinationFix]
+			if !ok {
+				comp.lg.Warnf("%s: adaptation fixes not found for coordination fix",
+					msg.CoordinationFix)
+			} else {
+				if info := comp.TrackInformation[msg.Identifier]; info != nil {
+					// Recall message, we can free up this code now
+					if msg.TrackOwner == info.TrackOwner {
+						comp.AvailableSquawks[msg.BCN] = nil
+					}
+					info.TrackOwner = msg.TrackOwner
+				}
+
+				altitude := comp.TrackInformation[msg.Identifier].FlightPlan.Altitude
+				if adaptationFix, err := adaptationFixes.Fix(altitude); err == nil {
+					if adaptationFix.FromFacility != comp.Identifier {
+						// Comes from a different ERAM facility
+						comp.SendMessageToERAM(adaptationFix.FromFacility, msg)
+					}
+				}
+			}
+		}
+	}
+
+	clear(*comp.ReceivedMessages)
+}
+
+func (ec *ERAMComputer) FixForRouteAndAltitude(route string, altitude string) (string, bool) {
+	return ec.Adaptation.FixForRouteAndAltitude(route, altitude)
+}
+
+func (ec *ERAMComputer) AdaptationFixForAltitude(fix string, altitude string) (av.AdaptationFix, bool) {
+	return ec.Adaptation.AdaptationFixForAltitude(fix, altitude)
 }
 
 type ERAMComputers map[string]*ERAMComputer
@@ -194,10 +330,10 @@ const TransmitFPMessageTime = 30 * time.Minute
 type STARSComputer struct {
 	Identifier        string
 	ContainedPlans    map[av.Squawk]*STARSFlightPlan
-	RecievedMessages  []FlightPlanMessage
+	ReceivedMessages  []FlightPlanMessage
 	TrackInformation  map[string]*TrackInformation
 	ERAMInbox         *[]FlightPlanMessage            // The address of the overlying ERAM's message inbox.
-	STARSInbox        map[string]*[]FlightPlanMessage // Other STARS Facilities inbox.
+	STARSInbox        map[string]*[]FlightPlanMessage // Other STARS Facilities' inboxes
 	UnsupportedTracks map[int]*UnsupportedTrack
 	AvailableSquawks  map[av.Squawk]interface{}
 }
@@ -246,6 +382,93 @@ func (comp *STARSComputer) RequestFlightPlan(bcn av.Squawk, simTime time.Time) {
 		SourceID:    formatSourceID(comp.Identifier, simTime),
 	}
 	comp.SendToOverlyingERAMFacility(message)
+}
+
+// Sorting the STARS messages. This will store flight plans with FP
+// messages, change flight plans with AM messages, cancel flight plans with
+// CX messages, etc.
+func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
+	for _, msg := range comp.ReceivedMessages {
+		switch msg.MessageType {
+		case Plan:
+			if msg.BCN != av.Squawk(0) {
+				comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
+			}
+
+		case Amendment:
+			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
+
+		case Cancellation: // Deletes the flight plan from the computer
+			delete(comp.ContainedPlans, msg.BCN)
+
+		case InitiateTransfer:
+			// 1. Store the data comp.trackinfo. We now know who's tracking
+			// the plane. Use the squawk to get the plan.
+			if fp := comp.ContainedPlans[msg.BCN]; fp != nil { // We have the plan
+				comp.TrackInformation[msg.Identifier] = &TrackInformation{
+					TrackOwner:        msg.TrackOwner,
+					HandoffController: msg.HandoffController,
+					FlightPlan:        fp,
+				}
+
+				delete(comp.ContainedPlans, msg.BCN)
+
+				e.Post(Event{
+					Type:         TransferAcceptedEvent,
+					Callsign:     msg.Identifier,
+					ToController: msg.TrackOwner,
+				})
+			} else {
+				if trk := comp.TrackInformation[msg.Identifier]; trk != nil {
+					comp.TrackInformation[msg.Identifier] = &TrackInformation{
+						TrackOwner:        msg.TrackOwner,
+						HandoffController: msg.HandoffController,
+						FlightPlan:        trk.FlightPlan,
+					}
+
+					delete(comp.ContainedPlans, msg.BCN)
+
+					e.Post(Event{
+						Type:         TransferAcceptedEvent,
+						Callsign:     msg.Identifier,
+						ToController: msg.TrackOwner,
+					})
+				} else { // send an IF msg
+					e.Post(Event{
+						Type:         TransferRejectedEvent,
+						Callsign:     msg.Identifier,
+						ToController: msg.TrackOwner,
+					})
+				}
+
+			}
+
+		case AcceptRecallTransfer:
+			// - When we send an accept message, we set the track ownership to us.
+			// - When we receive an accept message, we change the track
+			//   ownership to the receiving controller.
+			// - When we send a recall message, we tell our system to stop the flashing.
+			// - When we receive a recall message, we keep the plan and if
+			//   we click the track, it is no longer able to be accepted
+			//
+			// We can infer whether its a recall/ accept by the track ownership that gets sent back.
+			info := comp.TrackInformation[msg.Identifier]
+			if info == nil {
+				break
+			}
+
+			if msg.TrackOwner != info.TrackOwner {
+				// It has to be an accept message. (We initiated the handoff here)
+				info.TrackOwner = msg.TrackOwner
+				info.HandoffController = ""
+			} else {
+				// It has to be a recall message. (we received the handoff)
+				delete(comp.TrackInformation, msg.Identifier)
+			}
+		}
+	}
+
+	clear(comp.ReceivedMessages)
 }
 
 type STARSFlightPlan struct {
@@ -424,7 +647,7 @@ func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) (ERAMComputers, erro
 	allSTARSInboxes := make(map[string]*[]FlightPlanMessage)
 	for _, eram := range ec {
 		for _, stars := range eram.STARSComputers {
-			allSTARSInboxes[stars.Identifier] = &stars.RecievedMessages
+			allSTARSInboxes[stars.Identifier] = &stars.ReceivedMessages
 		}
 	}
 
@@ -474,6 +697,22 @@ func (ec *ERAMComputers) FacilityComputers(fac string) (*ERAMComputer, *STARSCom
 	return eram, stars, nil
 }
 
+// Give the computers a chance to sort through their received
+// messages. Messages will send when the time is appropriate (e.g.,
+// handoff).  Some messages will be sent from recieved messages (for
+// example a FP message from a RF message).
+func (ec ERAMComputers) UpdateComputers(tracon string, simTime time.Time, e *EventStream) {
+	// _, fac := w.FacilityComputers(FIXME)
+	// Sort through messages made
+	for _, comp := range ec {
+		comp.SortMessages(simTime)
+		comp.SendFlightPlans(tracon, simTime)
+		for _, stars := range comp.STARSComputers {
+			stars.SortReceivedMessages(e)
+		}
+	}
+}
+
 // For debugging purposes
 func (e ERAMComputers) DumpMap() {
 	for key, eramComputer := range e {
@@ -487,7 +726,7 @@ func (e ERAMComputers) DumpMap() {
 		fmt.Println("STARSComputers:")
 		for scKey, starsComputer := range eramComputer.STARSComputers {
 			fmt.Printf("\tKey: %s, Identifier: %s\n", scKey, starsComputer.Identifier)
-			fmt.Printf("\tReceivedMessages: %v\n\n", starsComputer.RecievedMessages)
+			fmt.Printf("\tReceivedMessages: %v\n\n", starsComputer.ReceivedMessages)
 
 			fmt.Println("\tContainedPlans:")
 			for sq, plan := range starsComputer.ContainedPlans {
@@ -543,22 +782,53 @@ func (e ERAMComputers) DumpMap() {
 	}
 }
 
-/*
+// Converts the message to a STARS flight plan.
+func (s FlightPlanMessage) FlightPlan() *STARSFlightPlan {
+	rules := av.FlightRules(util.Select(strings.Contains(s.Altitude, "VFR"), av.VFR, av.IFR))
+	flightPlan := &STARSFlightPlan{
+		FlightPlan: av.FlightPlan{
+			Rules:            rules,
+			AircraftType:     s.AircraftData.AircraftType,
+			AssignedSquawk:   s.BCN,
+			DepartureAirport: s.AircraftData.DepartureLocation,
+			ArrivalAirport:   s.AircraftData.ArrivalLocation,
+			Route:            s.Route,
+		},
+		CoordinationFix:  s.CoordinationFix,
+		CoordinationTime: s.CoordinationTime,
+		Altitude:         s.Altitude,
+	}
 
-// TODO:
-// idt
-// receivedmessages
-// adaptation
-// starscomputers
-// eraminboxes
-// trackinfo
-// stars:
-// receivesmessages
-// idt
-// eraminbox
-// unsupported
-// starsinboxes
-// trackinfo
+	if len(s.FlightID) > 3 {
+		flightPlan.ECID = s.FlightID[:3]
+		flightPlan.Callsign = s.FlightID[3:]
+	}
+
+	return flightPlan
+}
+
+// Prepare the message to sent to a STARS facility after a RF message
+func FlightPlanDepartureMessage(fp av.FlightPlan, sendingFacility string, simTime time.Time) FlightPlanMessage {
+	return FlightPlanMessage{
+		SourceID:    formatSourceID(sendingFacility, simTime),
+		MessageType: Plan,
+		FlightID:    fp.ECID + fp.Callsign,
+		AircraftData: AircraftDataMessage{
+			DepartureLocation: fp.DepartureAirport,
+			ArrivalLocation:   fp.ArrivalAirport,
+			NumberOfAircraft:  1, // One for now.
+			AircraftType:      fp.TypeWithoutSuffix(),
+			AircraftCategory:  fp.AircraftType, // TODO: Use a method to turn this into an aircraft category
+			Equipment:         strings.TrimPrefix(fp.AircraftType, fp.TypeWithoutSuffix()),
+		},
+		BCN:             fp.AssignedSquawk,
+		CoordinationFix: fp.Exit,
+		Altitude:        util.Select(fp.Rules == av.VFR, "VFR/", "") + strconv.Itoa(fp.Altitude),
+		Route:           fp.Route,
+	}
+}
+
+/*
 
 func (w *World) FacilityFromController(callsign string) string {
 	controller := w.GetControllerByCallsign(callsign)
@@ -573,27 +843,13 @@ func (w *World) FacilityFromController(callsign string) string {
 	return ""
 }
 
-// Give the computers a chance to sort through their received messages. Messages will send when the time is appropriate (eg. handoff).
-// Some messages will be sent from recieved messages (for example a FP message from a RF message).
-func (w *World) UpdateComputers(simTime time.Time, e *EventStream) {
-	// _, fac := w.FacilityComputers("")
-	// Sort through messages made
-	for _, comp := range w.ERAMComputers {
-		comp.SortMessages(simTime, w)
-		comp.SendFlightPlans(w)
-		for _, stars := range comp.STARSComputers {
-			stars.SortReceivedMessages(e)
-		}
-	}
-}
-
 func (fp *STARSFlightPlan) GetCoordinationFix(w *World, ac *Aircraft) string {
 	fixes := w.STARSFacilityAdaptation.CoordinationFixes
 	for fix, multiple := range fixes {
 
 		info := multiple.Fix(fp.Altitude)
 
-		if info.Type == ZoneBasedFix { // Exclude zone based fixes for now. They come in after the route-based fixe
+		if info.Type == ZoneBasedFix { // Exclude zone based fixes for now. They come in after the route-based fix
 			continue
 		}
 		if strings.Contains(fp.Route, fix) {
@@ -632,152 +888,9 @@ func (fp *FlightPlan) STARS() *STARSFlightPlan {
 	}
 }
 
-func (comp *ERAMComputer) SortMessages(simTime time.Time, w *World) {
-	if comp.ReceivedMessages == nil {
-		comp.ReceivedMessages = &[]FlightPlanMessage{}
-	}
-	for _, msg := range *comp.ReceivedMessages {
-		switch msg.MessageType {
-		case Plan:
-			blank := Squawk(0)
-			if comp == nil {
-				lg.Errorf("comp = nil")
-			} else if msg.FlightPlan() == nil {
-				lg.Errorf("msg.plan = nil")
-			} else if msg.FlightPlan().AssignedSquawk != blank { // TODO: Figure out why it's sending a blank fp
-				if comp.FlightPlans == nil {
-					comp.FlightPlans = make(map[Squawk]*STARSFlightPlan) // Use appropriate types here
-				}
-				// Ensure comp.FlightPlans[msg.BCN] is initialized
-				comp.FlightPlans[msg.BCN] = msg.FlightPlan()
-				fp := comp.FlightPlans[msg.BCN]
-				if fp.CoordinationFix == "" {
-					for fix, fixes := range comp.Adaptation.CoordinationFixes {
-						properties := fixes.Fix(fp.Altitude)
-						if properties.Type == ZoneBasedFix {
-							continue
-						}
-						if strings.Contains(fp.Route, fix) {
-							fp.CoordinationFix = fix
-							break
-						}
-					}
-					if fp.CoordinationFix == "" {
-					}
-				}
-				// check if another facility needs this plan.
-				if to := comp.Adaptation.CoordinationFixes[fp.CoordinationFix].Fix(fp.Altitude).ToFacility; to != comp.Identifier {
-					// Send the plan to the STARS facility that needs it.
-					comp.ToSTARSFacility(to, msg)
-				}
-			}
-		case RequestFlightPlan:
-			facility := msg.SourceID[:3] // Facility asking for FP
-			// Find the flight plan
-			plan, ok := comp.FlightPlans[msg.BCN]
-			if ok {
-				comp.ToSTARSFacility(facility, plan.DepartureMessage(comp.Identifier, simTime))
-			}
-			*comp.ReceivedMessages = (*comp.ReceivedMessages)[1:]
-		case DepartureDM: // Stars ERAM coordination time tracking
-		case BeaconTerminate: // TODO: Find out what this does
-		case InitiateTransfer:
-			// Forward these to w.TRACON for now. ERAM adaptations will have to fix this eventually...
-
-			if comp.TrackInformation[msg.Identifier] == nil {
-				comp.TrackInformation[msg.Identifier] = &TrackInformation{
-					FlightPlan: comp.FlightPlans[msg.BCN],
-				}
-			}
-			comp.TrackInformation[msg.Identifier].TrackOwner = msg.TrackOwner
-			comp.TrackInformation[msg.Identifier].HandoffController = msg.HandoffController
-			comp.AvailableSquawks[int(msg.BCN)] = nil
-
-			for name, fixes := range comp.Adaptation.CoordinationFixes {
-				fix := fixes.Fix(comp.TrackInformation[msg.Identifier].FlightPlan.Altitude)
-
-				if name == msg.CoordinationFix && fix.ToFacility != comp.Identifier { // Forward
-					msg.SourceID = comp.Identifier + simTime.Format("1504Z")
-					if to := fix.ToFacility; len(to) > 0 && to[0] == 'Z' { // To another ARTCC
-						comp.SendMessageToERAM(to, msg)
-					} else { // To a TRACON
-						comp.ToSTARSFacility(to, msg)
-					}
-				} else if name == msg.CoordinationFix && fix.ToFacility == comp.Identifier { // Stay here
-					comp.TrackInformation[msg.Identifier] = &TrackInformation{
-						TrackOwner:        msg.TrackOwner,
-						HandoffController: msg.HandoffController,
-						FlightPlan:        comp.FlightPlans[msg.BCN],
-					}
-				}
-			}
-
-		case AcceptRecallTransfer:
-			fixInfo := comp.Adaptation.CoordinationFixes[msg.CoordinationFix].Fix(comp.TrackInformation[msg.Identifier].FlightPlan.Altitude)
-			if info := comp.TrackInformation[msg.Identifier]; info != nil {
-				if msg.TrackOwner == info.TrackOwner { // Recall message, we can free up this code now
-					comp.AvailableSquawks[int(msg.BCN)] = nil
-				}
-				info.TrackOwner = msg.TrackOwner
-			}
-			if fixInfo.FromFacility != comp.Identifier { // Comes from a different ERAM facility
-				comp.SendMessageToERAM(fixInfo.FromFacility, msg)
-			}
-
-		}
-	}
-	clear(*comp.ReceivedMessages)
-}
-
-// Prepare the message to sent to a STARS facility after a RF message
-func (fp FlightPlan) DepartureMessage(sendingFacility string, simTime time.Time) FlightPlanMessage {
-	message := FlightPlanMessage{}
-	message.SourceID = sendingFacility + simTime.Format("1504Z")
-	message.MessageType = Plan
-	message.FlightID = fp.ECID + fp.Callsign
-	message.AircraftData = AircraftDataMessage{
-		DepartureLocation: fp.DepartureAirport,
-		ArrivalLocation:   fp.ArrivalAirport,
-		NumberOfAircraft:  1, // One for now.
-		AircraftType:      fp.TypeWithoutSuffix(),
-		AircraftCategory:  fp.AircraftType, // TODO: Use a method to turn this into an aircraft category
-		Equipment:         strings.TrimPrefix(fp.AircraftType, fp.TypeWithoutSuffix()),
-	}
-	message.BCN = fp.AssignedSquawk
-	message.CoordinationFix = fp.Exit
-	message.Altitude = fmt.Sprintf("%v%v", Select(fp.Rules == VFR, "VFR/", ""), fp.Altitude)
-	message.Route = fp.Route
-
-	return message
-}
-
-// Converts the message to a STARS flight plan.
-func (s FlightPlanMessage) FlightPlan() *STARSFlightPlan {
-	flightPlan := STARSFlightPlan{}
-	if !strings.Contains(s.Altitude, "VFR") {
-		flightPlan.Rules = IFR
-	} else {
-		flightPlan.Rules = VFR
-	}
-	if len(s.FlightID) > 3 {
-		flightPlan.ECID = s.FlightID[:3]
-		flightPlan.Callsign = s.FlightID[3:]
-	}
-	flightPlan.AircraftType = s.AircraftData.AircraftType
-	flightPlan.AssignedSquawk = s.BCN
-	flightPlan.DepartureAirport = s.AircraftData.DepartureLocation
-	flightPlan.ArrivalAirport = s.AircraftData.ArrivalLocation
-	flightPlan.Route = s.Route
-	flightPlan.CoordinationFix = s.CoordinationFix
-	flightPlan.CoordinationTime = s.CoordinationTime
-	flightPlan.Altitude = s.Altitude
-
-	return &flightPlan
-}
-
 // identifier can be bcn or callsign
 func (w *World) getSTARSFlightPlan(identifier string) (*STARSFlightPlan, error) {
-	_, stars := w.FacilityComputers("")
+	_, stars := w.FacilityComputers(FIXME)
 	squawk, err := ParseSquawk(identifier)
 	if err == nil { // Squawk code was entered
 		fp, ok := stars.ContainedPlans[squawk]
@@ -824,86 +937,6 @@ func (ac *Aircraft) inDropArea(w *World) bool {
 	}
 
 	return false
-}
-
-// Sorting the STARS messages. This will store flight plans with FP messages, change flight plans with AM messages,
-// cancel flight plans with CX messages, etc.
-func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
-	for _, msg := range comp.RecievedMessages {
-		switch msg.MessageType {
-		case Plan:
-			if msg.BCN == Squawk(0) {
-				break
-			}
-			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
-
-		case Amendment:
-			comp.ContainedPlans[msg.BCN] = msg.FlightPlan()
-
-		case Cancellation: // Deletes the flight plan from the computer
-			delete(comp.ContainedPlans, msg.BCN)
-
-		case InitiateTransfer:
-			// 1. Store the data comp.trackinfo. we now know whos tracking the plane. Use the squawk to get the plan
-			if fp := comp.ContainedPlans[msg.BCN]; fp != nil { // We have the plan
-				comp.TrackInformation[msg.Identifier] = &TrackInformation{
-					TrackOwner:        msg.TrackOwner,
-					HandoffController: msg.HandoffController,
-					FlightPlan:        fp,
-				}
-				delete(comp.ContainedPlans, msg.BCN)
-				e.Post(Event{
-					Type:         TransferAccepted,
-					Callsign:     msg.Identifier,
-					ToController: msg.TrackOwner,
-				})
-			} else {
-				if trk := comp.TrackInformation[msg.Identifier]; trk != nil {
-					comp.TrackInformation[msg.Identifier] = &TrackInformation{
-						TrackOwner:        msg.TrackOwner,
-						HandoffController: msg.HandoffController,
-						FlightPlan:        trk.FlightPlan,
-					}
-					delete(comp.ContainedPlans, msg.BCN)
-					e.Post(Event{
-						Type:         TransferAccepted,
-						Callsign:     msg.Identifier,
-						ToController: msg.TrackOwner,
-					})
-				} else { // send an IF msg
-					e.Post(Event{
-						Type:         TransferRejected,
-						Callsign:     msg.Identifier,
-						ToController: msg.TrackOwner,
-					})
-				}
-
-			}
-
-		case AcceptRecallTransfer:
-			// When we send an accept message, we set the track ownership to us.
-			// when we receive an accept message, we change the track ownership to the receiving controller.
-			// When we send a recall message, we tell our system to stop the flashing.
-			// When we receive a recall message, we keep the plan and if we click the track, it is no longer able to be accepted
-			// We can infer whether its a recall/ accept by the track ownership that gets sent back.
-
-			info := comp.TrackInformation[msg.Identifier]
-			if info == nil {
-				break
-			}
-
-			if msg.TrackOwner != comp.TrackInformation[msg.Identifier].TrackOwner { // has to be an accept message. (We initiated the handoff here)
-				if entry, ok := comp.TrackInformation[msg.Identifier]; ok {
-					entry.TrackOwner = msg.TrackOwner
-					entry.HandoffController = ""
-					comp.TrackInformation[msg.Identifier] = entry
-				}
-			} else { // has to be a recall message. (we received the handoff)
-				delete(comp.TrackInformation, msg.Identifier)
-			}
-		}
-	}
-	clear(comp.RecievedMessages)
 }
 
 func (w *World) parseAbbreviatedFPFields(fields []string) AbbreviatedFPFields {
