@@ -11,19 +11,18 @@ func (g *glfwPlatform) IsFullScreen() bool {
 }
 
 func (g *glfwPlatform) EnableFullScreen(fullscreen bool) {
-
 	monitors := glfw.GetMonitors()
-	if globalConfig.FullScreenMonitor >= len(monitors) {
+	if g.config.FullScreenMonitor >= len(monitors) {
 		// Shouldn't happen, but just to be sure
-		globalConfig.FullScreenMonitor = 0
+		g.config.FullScreenMonitor = 0
 	}
 
-	monitor := monitors[globalConfig.FullScreenMonitor]
+	monitor := monitors[g.config.FullScreenMonitor]
 	vm := monitor.GetVideoMode()
 	if fullscreen {
 		g.window.SetMonitor(monitor, 0, 0, vm.Width, vm.Height, vm.RefreshRate)
 	} else {
-		windowSize := [2]int{globalConfig.InitialWindowSize[0], globalConfig.InitialWindowSize[1]}
+		windowSize := [2]int{g.config.InitialWindowSize[0], g.config.InitialWindowSize[1]}
 
 		if windowSize[0] == 0 || windowSize[1] == 0 {
 			windowSize[0] = vm.Width - 150
@@ -31,6 +30,7 @@ func (g *glfwPlatform) EnableFullScreen(fullscreen bool) {
 
 		}
 
-		g.window.SetMonitor(nil, globalConfig.InitialWindowPosition[0], globalConfig.InitialWindowPosition[1], windowSize[0], windowSize[1], glfw.DontCare)
+		g.window.SetMonitor(nil, g.config.InitialWindowPosition[0], g.config.InitialWindowPosition[1],
+			windowSize[0], windowSize[1], glfw.DontCare)
 	}
 }
