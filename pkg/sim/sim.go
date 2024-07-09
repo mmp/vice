@@ -3003,6 +3003,12 @@ func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string, goAround
 		return nil, err
 	}
 
+	facility, ok := s.State.FacilityFromController(ac.TrackingController)
+	if !ok {
+		return nil, ErrUnknownControllerFacility
+	}
+	s.State.ERAMComputers.AddArrival(ac, facility, s.State.STARSFacilityAdaptation, s.SimTime)
+
 	return ac, nil
 }
 
@@ -3088,6 +3094,9 @@ func (s *Sim) CreateDeparture(departureAirport, runway, category string, challen
 		s.State.PrimaryController, s.State.MultiControllers, lg); err != nil {
 		return nil, nil, err
 	}
+
+	eram := s.State.ERAMComputer()
+	eram.AddDeparture(ac.FlightPlan, s.State.TRACON, s.SimTime)
 
 	/* Keep adding to World sameGateDepartures number until the departure cap + the buffer so that no more
 	same-gate departures are launched, then reset it to zero. Once the buffer is reached, it will reset World sameGateDepartures to zero*/

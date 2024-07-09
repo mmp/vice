@@ -20,6 +20,7 @@ var (
 	ErrInvalidCommandSyntax       = errors.New("Invalid command syntax")
 	ErrInvalidControllerToken     = errors.New("Invalid controller token")
 	ErrInvalidPassword            = errors.New("Invalid password")
+	ErrNoCoordinationFix          = errors.New("No coordination fix found")
 	ErrNoMatchingFlight           = errors.New("No matching flight")
 	ErrNoMoreAvailableSquawkCodes = errors.New("No more available squawk codes")
 	ErrNoNamedSim                 = errors.New("No Sim with that name")
@@ -29,6 +30,7 @@ var (
 	ErrRPCVersionMismatch         = errors.New("Client and server RPC versions don't match")
 	ErrRestoringSavedState        = errors.New("Errors during state restoration")
 	ErrUnknownFacility            = errors.New("Unknown facility (ARTCC/TRACON)")
+	ErrUnknownControllerFacility  = errors.New("Unknown controller facility")
 )
 
 var errorStringToError = map[string]error{
@@ -65,6 +67,7 @@ var errorStringToError = map[string]error{
 	ErrInvalidCommandSyntax.Error():       ErrInvalidCommandSyntax,
 	ErrInvalidControllerToken.Error():     ErrInvalidControllerToken,
 	ErrInvalidPassword.Error():            ErrInvalidPassword,
+	ErrNoCoordinationFix.Error():          ErrNoCoordinationFix,
 	ErrNoMatchingFlight.Error():           ErrNoMatchingFlight,
 	ErrNoMoreAvailableSquawkCodes.Error(): ErrNoMoreAvailableSquawkCodes,
 	ErrNoNamedSim.Error():                 ErrNoNamedSim,
@@ -73,6 +76,7 @@ var errorStringToError = map[string]error{
 	ErrRPCVersionMismatch.Error():         ErrRPCVersionMismatch,
 	ErrRestoringSavedState.Error():        ErrRestoringSavedState,
 	ErrUnknownFacility.Error():            ErrUnknownFacility,
+	ErrUnknownControllerFacility.Error():  ErrUnknownControllerFacility,
 }
 
 func TryDecodeError(e error) error {

@@ -392,3 +392,8 @@ func (ss *State) STARSComputer() *STARSComputer {
 	_, stars, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
 	return stars
 }
+
+func (ss *State) ERAMComputer() *ERAMComputer {
+	eram, _, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
+	return eram
+}

@@ -86,6 +86,7 @@ func (ac *Aircraft) NewFlightPlan(r FlightRules, acType, dep, arr string) *Fligh
 		AircraftType:     acType,
 		DepartureAirport: dep,
 		ArrivalAirport:   arr,
+		CruiseSpeed:      int(ac.AircraftPerformance().Speed.CruiseTAS),
 		AssignedSquawk:   ac.Squawk,
 		ECID:             "XXX", // TODO. (Mainly for FDIO and ERAM so not super high priority. )
 	}
@@ -619,6 +620,14 @@ func (ac *Aircraft) RouteIncludesFix(fix string) bool {
 
 func (ac *Aircraft) DistanceToEndOfApproach() (float32, error) {
 	return ac.Nav.distanceToEndOfApproach()
+}
+
+func (ac *Aircraft) Waypoints() []Waypoint {
+	return ac.Nav.Waypoints
+}
+
+func (ac *Aircraft) DistanceAlongRoute(fix string) (float32, error) {
+	return ac.Nav.DistanceAlongRoute(fix)
 }
 
 ///////////////////////////////////////////////////////////////////////////

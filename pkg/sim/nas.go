@@ -179,6 +179,34 @@ func (comp *ERAMComputer) AddFlightPlan(plan *STARSFlightPlan) {
 	comp.FlightPlans[plan.FlightPlan.AssignedSquawk] = plan
 }
 
+func (comp *ERAMComputer) AddTrackInformation(callsign string, info TrackInformation) {
+	comp.TrackInformation[callsign] = &info
+}
+
+func (comp *ERAMComputer) AddDeparture(fp *av.FlightPlan, tracon string, simTime time.Time) {
+	starsFP := MakeSTARSFlightPlan(fp)
+
+	for fix, adaptationFixes := range comp.Adaptation.CoordinationFixes {
+		// FIXME: make this check robust (same issue as elsewhere)
+		if strings.Contains(fp.Route, fix) {
+			adaptationFix, err := adaptationFixes.Fix(fmt.Sprintf("%v", fp.Altitude))
+			if err == nil {
+				msg := starsFP.Message()
+				msg.SourceID = formatSourceID(comp.Identifier, simTime)
+				comp.SendMessageToERAM(adaptationFix.ToFacility, msg)
+
+				starsFP.CoordinationFix = fix
+				starsFP.ContainedFacilities = []string{adaptationFix.ToFacility}
+
+				break
+			}
+		}
+	}
+
+	comp.FlightPlans[fp.AssignedSquawk] = starsFP
+	comp.ToSTARSFacility(tracon, FlightPlanDepartureMessage(*fp, comp.Identifier, simTime))
+}
+
 // Sends a message, whether that be a flight plan or any other message type to a STARS computer.
 // The STARS computer will sort messages by itself
 func (comp *ERAMComputer) ToSTARSFacility(facility string, msg FlightPlanMessage) error {
@@ -237,7 +265,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 			// Find the flight plan
 			plan, ok := comp.FlightPlans[msg.BCN]
 			if ok {
-				msg := FlightPlanDepartureMessage(plan.FlightPlan, comp.Identifier, simTime)
+				msg := FlightPlanDepartureMessage(*plan.FlightPlan, comp.Identifier, simTime)
 				comp.ToSTARSFacility(facility, msg)
 			}
 
@@ -533,7 +561,7 @@ func (comp *STARSComputer) CompletelyDeleteAircraft(ac *av.Aircraft) {
 }
 
 type STARSFlightPlan struct {
-	av.FlightPlan
+	*av.FlightPlan
 	FlightPlanType      int
 	CoordinationTime    CoordinationTime
 	CoordinationFix     string
@@ -565,6 +593,13 @@ const (
 	LocalNonEnroute
 )
 
+func MakeSTARSFlightPlan(fp *av.FlightPlan) *STARSFlightPlan {
+	return &STARSFlightPlan{
+		FlightPlan: fp,
+		Altitude:   fmt.Sprint(fp.Altitude),
+	}
+}
+
 func (fp STARSFlightPlan) Message() FlightPlanMessage {
 	return FlightPlanMessage{
 		BCN:      fp.AssignedSquawk,
@@ -582,6 +617,33 @@ func (fp STARSFlightPlan) Message() FlightPlanMessage {
 		CoordinationFix:  fp.CoordinationFix,
 		CoordinationTime: fp.CoordinationTime,
 	}
+}
+
+func (fp *STARSFlightPlan) SetCoordinationFix(fa STARSFacilityAdaptation, ac *av.Aircraft, simTime time.Time) error {
+	cf, ok := fa.GetCoordinationFix(fp, ac.Position(), ac.Waypoints())
+	if !ok {
+		return ErrNoCoordinationFix
+	}
+	fp.CoordinationFix = cf
+
+	if dist, err := ac.DistanceAlongRoute(cf); err == nil {
+		m := dist / float32(fp.CruiseSpeed) * 60
+		fp.CoordinationTime = CoordinationTime{
+			Time: simTime.Add(time.Duration(m * float32(time.Minute))),
+		}
+	} else { // zone based fixes.
+		loc, ok := av.DB.LookupWaypoint(fp.CoordinationFix)
+		if !ok {
+			return ErrNoCoordinationFix
+		}
+
+		dist := math.NMDistance2LL(ac.Position(), loc)
+		m := dist / float32(fp.CruiseSpeed) * 60
+		fp.CoordinationTime = CoordinationTime{
+			Time: simTime.Add(time.Duration(m * float32(time.Minute))),
+		}
+	}
+	return nil
 }
 
 type FlightPlanMessage struct {
@@ -785,6 +847,40 @@ func (ec ERAMComputers) GetSTARSFlightPlan(tracon string, identifier string) (*S
 	return starsComputer.GetFlightPlan(identifier)
 }
 
+func (ec *ERAMComputers) AddArrival(ac *av.Aircraft, facility string, fa STARSFacilityAdaptation, simTime time.Time) error {
+	starsFP := MakeSTARSFlightPlan(ac.FlightPlan)
+	if err := starsFP.SetCoordinationFix(fa, ac, simTime); err != nil {
+		return err
+	}
+
+	artcc, stars, err := ec.FacilityComputers(facility)
+	if err != nil {
+		return err
+	}
+
+	sq, err := artcc.CreateSquawk()
+	if err != nil {
+		return err
+	}
+
+	ac.FlightPlan.AssignedSquawk = sq
+	ac.Squawk = sq
+
+	artcc.AddFlightPlan(starsFP)
+
+	trk := TrackInformation{
+		TrackOwner: ac.TrackingController,
+		FlightPlan: starsFP,
+	}
+
+	if artcc != nil {
+		artcc.AddTrackInformation(ac.Callsign, trk)
+	} else {
+		stars.AddTrackInformation(ac.Callsign, trk)
+	}
+	return nil
+}
+
 func (ec *ERAMComputers) CompletelyDeleteAircraft(ac *av.Aircraft) {
 	// TODO: update these FPs
 	for _, eram := range ec.Computers {
@@ -884,7 +980,7 @@ func (e ERAMComputers) DumpMap() {
 func (s FlightPlanMessage) FlightPlan() *STARSFlightPlan {
 	rules := av.FlightRules(util.Select(strings.Contains(s.Altitude, "VFR"), av.VFR, av.IFR))
 	flightPlan := &STARSFlightPlan{
-		FlightPlan: av.FlightPlan{
+		FlightPlan: &av.FlightPlan{
 			Rules:            rules,
 			AircraftType:     s.AircraftData.AircraftType,
 			AssignedSquawk:   s.BCN,
@@ -1068,48 +1164,4 @@ func ParseAbbreviatedFPFields(facilityAdaptation STARSFacilityAdaptation, fields
 
 	}
 	return output
-}
-
-func (fp *STARSFlightPlan) GetCoordinationFix(facilityAdaptation STARSFacilityAdaptation, ac *av.Aircraft) (string, bool) {
-	for fix, adaptationFixes := range facilityAdaptation.CoordinationFixes {
-		if adaptationFix, err := adaptationFixes.Fix(fp.Altitude); err == nil {
-			if adaptationFix.Type == av.ZoneBasedFix {
-				// Exclude zone based fixes for now. They come in after the route-based fix
-				continue
-			}
-
-			// FIXME (as elsewhere): make this more robust
-			if strings.Contains(fp.Route, fix) {
-				return fix, true
-			}
-
-			// FIXME: why both this and checking fp.Route?
-			for _, waypoint := range ac.Nav.Waypoints {
-				if waypoint.Fix == fix {
-					return fix, true
-				}
-			}
-		}
-
-	}
-
-	var closestFix string
-	minDist := float32(1e30)
-	for fix, adaptationFixes := range facilityAdaptation.CoordinationFixes {
-		for _, adaptationFix := range adaptationFixes {
-			if adaptationFix.Type == av.ZoneBasedFix {
-				if av.DB.Fixes[fix].Location.IsZero() {
-					// FIXME: check this (if it isn't already) at scenario load time.
-					panic(fix + ": not found in fixes database")
-				}
-
-				if dist := math.NMDistance2LL(ac.Position(), av.DB.Fixes[fix].Location); dist < minDist {
-					minDist = dist
-					closestFix = fix
-				}
-			}
-		}
-	}
-
-	return closestFix, closestFix != ""
 }

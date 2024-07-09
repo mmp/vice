@@ -976,6 +976,48 @@ func (s *STARSFacilityAdaptation) PostLoad(ml *av.VideoMapLibrary) error {
 	return nil
 }
 
+func (fa *STARSFacilityAdaptation) GetCoordinationFix(fp *STARSFlightPlan, acpos math.Point2LL, waypoints []av.Waypoint) (string, bool) {
+	for fix, adaptationFixes := range fa.CoordinationFixes {
+		if adaptationFix, err := adaptationFixes.Fix(fp.Altitude); err == nil {
+			if adaptationFix.Type == av.ZoneBasedFix {
+				// Exclude zone based fixes for now. They come in after the route-based fix
+				continue
+			}
+
+			// FIXME (as elsewhere): make this more robust
+			if strings.Contains(fp.Route, fix) {
+				return fix, true
+			}
+
+			// FIXME: why both this and checking fp.Route?
+			for _, waypoint := range waypoints {
+				if waypoint.Fix == fix {
+					return fix, true
+				}
+			}
+		}
+
+	}
+
+	var closestFix string
+	minDist := float32(1e30)
+	for fix, adaptationFixes := range fa.CoordinationFixes {
+		for _, adaptationFix := range adaptationFixes {
+			if adaptationFix.Type == av.ZoneBasedFix {
+				if loc, ok := av.DB.LookupWaypoint(fix); !ok {
+					// FIXME: check this (if it isn't already) at scenario load time.
+					panic(fix + ": not found in fixes database")
+				} else if dist := math.NMDistance2LL(acpos, loc); dist < minDist {
+					minDist = dist
+					closestFix = fix
+				}
+			}
+		}
+	}
+
+	return closestFix, closestFix != ""
+}
+
 func initializeSimConfigurations(sg *ScenarioGroup,
 	simConfigurations map[string]map[string]*Configuration, multiController bool, e *util.ErrorLogger) {
 	config := &Configuration{
