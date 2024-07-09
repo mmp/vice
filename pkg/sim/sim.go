@@ -812,7 +812,7 @@ func (c *NewSimConfiguration) Start() error {
 
 	c.ch <- &Connection{
 		SimState: *result.SimState,
-		SimProxy: &Proxy{
+		SimProxy: &proxy{
 			ControllerToken: result.ControllerToken,
 			Client:          c.selectedServer.RPCClient,
 		},
@@ -823,7 +823,7 @@ func (c *NewSimConfiguration) Start() error {
 
 type Connection struct {
 	SimState State
-	SimProxy *Proxy
+	SimProxy *proxy
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -2111,9 +2111,9 @@ func (s *Sim) UploadFlightPlan(token string, Type int, plan *STARSFlightPlan) er
 
 	switch Type {
 	case LocalNonEnroute:
-		stars.ContainedPlans[plan.FlightPlan.AssignedSquawk] = plan
+		stars.AddFlightPlan(plan)
 	case LocalEnroute, RemoteEnroute:
-		eram.FlightPlans[plan.FlightPlan.AssignedSquawk] = plan
+		eram.AddFlightPlan(plan)
 	}
 
 	return nil

@@ -18,7 +18,7 @@ import (
 )
 
 type ControlClient struct {
-	proxy *Proxy
+	proxy *proxy
 
 	lg *log.Logger
 
@@ -47,7 +47,7 @@ func NewControlClient(ss State, controllerToken string, client *util.RPCClient, 
 	return &ControlClient{
 		State: ss,
 		lg:    lg,
-		proxy: &Proxy{
+		proxy: &proxy{
 			ControllerToken: controllerToken,
 			Client:          client,
 		},

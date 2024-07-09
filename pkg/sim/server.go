@@ -33,7 +33,7 @@ type Server struct {
 	runningSims map[string]*RemoteSim
 }
 
-type ServerConnection struct {
+type serverConnection struct {
 	Server *Server
 	Err    error
 }
@@ -70,20 +70,20 @@ func getClient(hostname string, lg *log.Logger) (*util.RPCClient, error) {
 	return &util.RPCClient{rpc.NewClientWithCodec(codec)}, nil
 }
 
-func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *ServerConnection {
-	ch := make(chan *ServerConnection, 1)
+func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnection {
+	ch := make(chan *serverConnection, 1)
 	go func() {
 		if client, err := getClient(hostname, lg); err != nil {
-			ch <- &ServerConnection{Err: err}
+			ch <- &serverConnection{Err: err}
 			return
 		} else {
 			var so SignOnResult
 			start := time.Now()
 			if err := client.CallWithTimeout("SimManager.SignOn", ViceRPCVersion, &so); err != nil {
-				ch <- &ServerConnection{Err: err}
+				ch <- &serverConnection{Err: err}
 			} else {
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
-				ch <- &ServerConnection{
+				ch <- &serverConnection{
 					Server: &Server{
 						RPCClient:   client,
 						name:        "Network (Multi-controller)",
@@ -209,7 +209,7 @@ func launchHTTPStats(sm *SimManager) {
 	}
 }
 
-type ServerStats struct {
+type serverStats struct {
 	Uptime           time.Duration
 	AllocMemory      uint64
 	TotalAllocMemory uint64
@@ -223,7 +223,7 @@ type ServerStats struct {
 	Errors    string
 }
 
-type ServerLogFile struct {
+type serverLogFile struct {
 	Filename string
 	Date     string
 	Size     int64
@@ -334,7 +334,7 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 	runtime.ReadMemStats(&m)
 
 	usage, _ := cpu.Percent(time.Second, false)
-	stats := ServerStats{
+	stats := serverStats{
 		Uptime:           time.Since(launchTime).Round(time.Second),
 		AllocMemory:      m.Alloc / (1024 * 1024),
 		TotalAllocMemory: m.TotalAlloc / (1024 * 1024),

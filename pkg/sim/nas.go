@@ -175,6 +175,10 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, tracon string, sim
 	}
 }
 
+func (comp *ERAMComputer) AddFlightPlan(plan *STARSFlightPlan) {
+	comp.FlightPlans[plan.FlightPlan.AssignedSquawk] = plan
+}
+
 // Sends a message, whether that be a flight plan or any other message type to a STARS computer.
 // The STARS computer will sort messages by itself
 func (comp *ERAMComputer) ToSTARSFacility(facility string, msg FlightPlanMessage) error {
@@ -415,6 +419,10 @@ func (comp *STARSComputer) GetFlightPlan(identifier string) (*STARSFlightPlan, e
 		}
 	}
 	return nil, ErrNoMatchingFlight
+}
+
+func (comp *STARSComputer) AddFlightPlan(plan *STARSFlightPlan) {
+	comp.ContainedPlans[plan.FlightPlan.AssignedSquawk] = plan
 }
 
 func (comp *STARSComputer) AddTrackInformation(callsign string, info TrackInformation) {
