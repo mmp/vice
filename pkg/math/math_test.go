@@ -1,5 +1,5 @@
-// math_test.go
-// Copyright(c) 2023 Matt Pharr, licensed under the GNU Public License, Version 3.
+// pkg/math/math_test.go
+// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package math

@@ -1,9 +1,6 @@
-// platform.go
-//
-// This a slightly modified version of the GLFW/SDL2 infrastructure from
-// imgui-go-examples, where the main addition is cursor handling
-// (backported from imgui's backends/imgui_impl_glfw.cpp), and some
-// additional handling of text input outside of the imgui path.
+// pkg/platform/platform.go
+// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
 
 package platform
 
