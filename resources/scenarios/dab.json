@@ -713,6 +713,43 @@
   },
   "stars_config": {
   "center": "KDAB",
+  "coordination_fixes": {
+    "WEEEK": [
+         {
+          "type": "route",
+          "to": "DAB",
+          "from": "ZJX"
+          }
+      ],
+      "FONEX": [
+          {
+              "type": "route",
+              "to": "DAB",
+              "from": "JAX"
+          }
+      ],
+      "FOLUT": [
+          {
+              "type": "route",
+              "to": "DAB",
+              "from": "JAX"
+          }
+      ],
+      "KIZER": [
+          {
+              "type": "route",
+              "to": "DAB",
+              "from": "F11"
+          }
+      ],
+      "ROCIT": [
+          {
+              "type": "route",
+              "to": "DAB",
+              "from": "F11"
+          }
+      ]
+  },
   "radar_sites": {
     "DAB": {
       "char": "D",
@@ -775,52 +812,9 @@
     "ROYES": "ROY"
   },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "DAB_E",
-      "name": "DAB EAST FLOW"
-    },
-    {
-      "group": 0,
-      "label": "DAB_W",
-      "name": "DAB WEST FLOW"
-    },
-    {
-      "group": 1,
-      "label": "CLASS C",
-      "name": "DAB CLASS C"
-    },
-    {
-      "group": 1,
-      "label": "CLASS D",
-      "name": "DAB CLASS D"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "DAB MVA"
-    },
-    {
-      "group": 0,
-      "label": "FIN_R",
-      "name": "FIN RNAV APPROACHES"
-    },
-    {
-      "group": 0,
-      "label": "SAT_APP",
-      "name": "SATELLITE APPROACHES"
-    },
-    {
-      "group": 0,
-      "label": "RNAV",
-      "name": "RNAV"
-    },
-    {
-      "group": 0,
-      "label": "SEC_BDY",
-      "name": "SECTOR BOUNDARY"
-    }
+      "DAB EAST FLOW", "DAB WEST FLOW", "DAB CLASS C", "DAB CLASS D", "DAB MVA", "FIN RNAV APPROACHES", "SATELLITE APPROACHES",
+      "RNAV", "SECTOR BOUNDARY"
   ],
-  "video_map_file": "videomaps/ZJX-videomaps.json.zst"
+  "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
   }
 }

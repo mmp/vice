@@ -1,5 +1,5 @@
 // main.go
-// Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
+// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package main
@@ -12,19 +12,26 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
-	"io/fs"
 	"log/slog"
 	_ "net/http/pprof"
 	"os"
-	"os/signal"
 	"path"
 	"runtime"
 	"runtime/debug"
-	"runtime/pprof"
+	"sort"
+	"strings"
 	"time"
 
+	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/panes"
+	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/util"
+
 	"github.com/apenwarr/fixconsole"
-	"github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
 )
 
@@ -32,25 +39,7 @@ const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8001
 
 var (
-	// There are a handful of widely-used global variables in vice, all
-	// defined here.  While in principle it would be nice to have fewer (or
-	// no!) globals, it's cleaner to have these easily accessible where in
-	// the system without having to pass them through deep callchains.
-	// Note that in some cases they are passed down from main (e.g.,
-	// platform); this is plumbing in preparation for reducing the
-	// number of these in the future.
 	globalConfig *GlobalConfig
-	platform     Platform
-	database     *StaticDatabase
-	lg           *Logger
-	resourcesFS  fs.StatFS
-
-	// client only
-	newWorldChan chan *World
-	localServer  *SimServer
-	remoteServer *SimServer
-	airportWind  map[string]Wind
-	windRequest  map[string]chan getweather.MetarData
 
 	//go:embed resources/version.txt
 	buildVersion string
@@ -69,6 +58,7 @@ var (
 	broadcastPassword = flag.String("password", "", "password to authenticate with server for broadcast message")
 	resetSim          = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
 	showRoutes        = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given airport")
+	listMaps          = flag.String("listmaps", "", "path to a video map file to list maps of (e.g., resources/videomaps/ZNY-videomaps.gob.zst)")
 )
 
 func init() {
@@ -88,11 +78,11 @@ func main() {
 	if err := fixconsole.FixConsoleIfNeeded(); err != nil {
 		// Not sure this will actually appear, but what else are we going
 		// to do...
-		fmt.Printf("FixConsole: %v", err)
+		fmt.Printf("FixConsole: %v\n", err)
 	}
 
 	// Initialize the logging system first and foremost.
-	lg = NewLogger(*server, *logLevel)
+	lg := log.New(*server, *logLevel)
 
 	// If the path is non-absolute, convert it to an absolute path
 	// w.r.t. the current directory.  (This is to work around that vice
@@ -109,79 +99,56 @@ func main() {
 	absPath(memprofile)
 	absPath(cpuprofile)
 
-	writeMemProfile := func() {
-		f, err := os.Create(*memprofile)
-		if err != nil {
-			lg.Errorf("%s: unable to create memory profile file: %v", *memprofile, err)
-		}
-		if err = pprof.WriteHeapProfile(f); err != nil {
-			lg.Errorf("%s: unable to write memory profile file: %v", *memprofile, err)
-		}
-		f.Close()
+	profiler, err := util.CreateProfiler(*cpuprofile, *memprofile)
+	if err != nil {
+		lg.Errorf("%v", err)
 	}
+	defer profiler.Cleanup()
 
-	if *cpuprofile != "" {
-		if f, err := os.Create(*cpuprofile); err != nil {
-			lg.Errorf("%s: unable to create CPU profile file: %v", *cpuprofile, err)
-		} else {
-			if err = pprof.StartCPUProfile(f); err != nil {
-				lg.Errorf("unable to start CPU profile: %v", err)
-			} else {
-				defer pprof.StopCPUProfile()
-
-				// Catch ctrl-c and to write out the profile before exiting
-				sig := make(chan os.Signal, 1)
-				signal.Notify(sig, os.Interrupt)
-
-				go func() {
-					<-sig
-					pprof.StopCPUProfile()
-					f.Close()
-					os.Exit(0)
-				}()
-			}
-		}
-	}
-	if *memprofile != "" {
-		// Catch ctrl-c
-		sig := make(chan os.Signal, 1)
-		signal.Notify(sig, os.Interrupt)
-		go func() {
-			<-sig
-			writeMemProfile()
-			os.Exit(0)
-		}()
-	}
-
-	resourcesFS = getResourcesFS()
-
-	eventStream := NewEventStream()
-
-	database = InitializeStaticDatabase()
+	eventStream := sim.NewEventStream(lg)
 
 	if *lintScenarios {
-		var e ErrorLogger
-		_, _ = LoadScenarioGroups(&e)
+		var e util.ErrorLogger
+		scenarioGroups, _, _ :=
+			sim.LoadScenarioGroups(true, *scenarioFilename, *videoMapFilename, &e, lg)
 		if e.HaveErrors() {
 			e.PrintErrors(nil)
 			os.Exit(1)
 		}
+
+		scenarioAirports := make(map[string]map[string]interface{})
+		for tracon, scenarios := range scenarioGroups {
+			if scenarioAirports[tracon] == nil {
+				scenarioAirports[tracon] = make(map[string]interface{})
+			}
+			for _, sg := range scenarios {
+				for name := range sg.Airports {
+					scenarioAirports[tracon][name] = nil
+				}
+			}
+		}
+
+		for _, tracon := range util.SortedMapKeys(scenarioAirports) {
+			airports := util.SortedMapKeys(scenarioAirports[tracon])
+			fmt.Printf("%s (%s),\n", tracon, strings.Join(airports, ", "))
+		}
+		os.Exit(0)
 	} else if *broadcastMessage != "" {
-		BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword)
+		sim.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
 	} else if *server {
-		RunSimServer()
+		sim.RunServer(*scenarioFilename, *videoMapFilename, *serverPort, lg)
 	} else if *showRoutes != "" {
-		ap, ok := database.Airports[*showRoutes]
+		ap, ok := av.DB.Airports[*showRoutes]
 		if !ok {
 			fmt.Printf("%s: airport not present in database\n", *showRoutes)
 			os.Exit(1)
 		}
 		fmt.Printf("STARs:\n")
-		for _, s := range SortedMapKeys(ap.STARs) {
+		for _, s := range util.SortedMapKeys(ap.STARs) {
 			ap.STARs[s].Print(s)
 		}
 		fmt.Printf("\nApproaches:\n")
-		for _, appr := range SortedMapKeys(ap.Approaches) {
+		for _, appr := range util.SortedMapKeys(ap.Approaches) {
 			fmt.Printf("%-5s: ", appr)
 			for i, wp := range ap.Approaches[appr] {
 				if i > 0 {
@@ -190,18 +157,54 @@ func main() {
 				fmt.Println(wp.Encode())
 			}
 		}
+	} else if *listMaps != "" {
+		var e util.ErrorLogger
+		lib := av.MakeVideoMapLibrary()
+		path := *listMaps
+		lib.AddFile(os.DirFS("."), path, true, make(map[string]interface{}), &e)
+
+		if e.HaveErrors() {
+			e.PrintErrors(lg)
+			os.Exit(1)
+		}
+
+		var videoMaps []av.VideoMap
+		for _, name := range lib.AvailableMaps(path) {
+			if m, err := lib.GetMap(path, name); err != nil {
+				panic(err)
+			} else {
+				videoMaps = append(videoMaps, *m)
+			}
+		}
+
+		sort.Slice(videoMaps, func(i, j int) bool {
+			vi, vj := videoMaps[i], videoMaps[j]
+			if vi.Id != vj.Id {
+				return vi.Id < vj.Id
+			}
+			return vi.Name < vj.Name
+		})
+
+		fmt.Printf("%5s\t%20s\t%s\n", "Id", "Label", "Name")
+		for _, m := range videoMaps {
+			fmt.Printf("%5d\t%20s\t%s\n", m.Id, m.Label, m.Name)
+		}
 	} else {
-		localSimServerChan, err := LaunchLocalSimServer()
+		localSimServerChan, mapLibrary, err :=
+			sim.LaunchLocalServer(*scenarioFilename, *videoMapFilename, lg)
 		if err != nil {
 			lg.Errorf("error launching local SimServer: %v", err)
 			os.Exit(1)
 		}
 
 		lastRemoteServerAttempt := time.Now()
-		remoteSimServerChan := TryConnectRemoteServer(*serverAddress)
+		remoteSimServerChan := sim.TryConnectRemoteServer(*serverAddress, lg)
 
 		var stats Stats
-		var renderer Renderer
+		var render renderer.Renderer
+		var plat platform.Platform
+		var localServer *sim.Server
+		var remoteServer *sim.Server
 
 		// Catch any panics so that we can put up a dialog box and hopefully
 		// get a bug report.
@@ -210,15 +213,15 @@ func main() {
 			defer func() {
 				if err := recover(); err != nil {
 					lg.Error("Caught panic!", slog.String("stack", string(debug.Stack())))
-					ShowFatalErrorDialog(renderer, platform,
+					ShowFatalErrorDialog(render, plat, lg,
 						"Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
 							"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
 							"this bug can be fixed.\n\nError: %v", err)
 				}
 
 				// Clean up in backwards order from how things were created.
-				renderer.Dispose()
-				platform.Dispose()
+				render.Dispose()
+				plat.Dispose()
 				context.Destroy()
 			}()
 		}
@@ -229,57 +232,54 @@ func main() {
 
 		context = imguiInit()
 
-		LoadOrMakeDefaultConfig()
+		LoadOrMakeDefaultConfig(plat, lg)
 
-		multisample := runtime.GOOS != "darwin"
-		platform, err = NewGLFWPlatform(imgui.CurrentIO(), globalConfig.InitialWindowSize,
-			globalConfig.InitialWindowPosition, multisample)
+		plat, err = platform.New(&globalConfig.Config, lg)
 		if err != nil {
 			panic(fmt.Sprintf("Unable to create application window: %v", err))
 		}
-		imgui.CurrentIO().SetClipboard(platform.GetClipboard())
+		imgui.CurrentIO().SetClipboard(plat.GetClipboard())
 
-		renderer, err = NewOpenGL2Renderer()
+		render, err = renderer.NewOpenGL2Renderer(lg)
 		if err != nil {
 			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 		}
 
-		fontsInit(renderer, platform)
+		renderer.FontsInit(render, plat)
 
-		newWorldChan = make(chan *World, 2)
-		var world *World
+		newSimConnectionChan := make(chan *sim.Connection, 2)
+		var controlClient *sim.ControlClient
 
 		localServer = <-localSimServerChan
 
 		if globalConfig.Sim != nil && !*resetSim {
-			var result NewSimResult
-			if err := localServer.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
-				lg.Errorf("error restoring saved Sim: %v", err)
+			if err := globalConfig.Sim.PostLoad(mapLibrary); err != nil {
+				lg.Errorf("Error in Sim PostLoad: %v", err)
 			} else {
-				world = result.World
-				world.simProxy = &SimProxy{
-					ControllerToken: result.ControllerToken,
-					Client:          localServer.RPCClient,
+				var result sim.NewSimResult
+				if err := localServer.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
+					lg.Errorf("error restoring saved Sim: %v", err)
+				} else {
+					controlClient = sim.NewControlClient(*result.SimState, result.ControllerToken,
+						localServer.RPCClient, lg)
+					ui.showScenarioInfo = !ui.showScenarioInfo
 				}
-				world.ToggleShowScenarioInfoWindow()
 			}
 		}
 
-		wmInit()
+		uiInit(render, plat, eventStream, lg)
 
-		uiInit(renderer, platform, eventStream)
+		globalConfig.Activate(controlClient, render, plat, eventStream, lg)
 
-		globalConfig.Activate(world, renderer, eventStream)
-
-		if world == nil {
-			uiShowConnectDialog(false)
+		if controlClient == nil {
+			uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false, plat, lg)
 		}
 
 		if !globalConfig.AskedDiscordOptIn {
-			uiShowDiscordOptInDialog()
+			uiShowDiscordOptInDialog(plat)
 		}
 		if !globalConfig.NotifiedNewCommandSyntax {
-			uiShowNewCommandSyntaxDialog()
+			uiShowNewCommandSyntaxDialog(plat)
 		}
 
 		simStartTime := time.Now()
@@ -287,75 +287,84 @@ func main() {
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
 		lg.Info("Starting main loop")
-		// Init the wind maps
-		airportWind = make(map[string]Wind)
-		windRequest = make(map[string]chan getweather.MetarData)
 
 		stopConnectingRemoteServer := false
 		frameIndex := 0
 		stats.startTime = time.Now()
 		for {
 			select {
-			case nw := <-newWorldChan:
-				if world != nil {
-					world.Disconnect()
+			case ns := <-newSimConnectionChan:
+				if controlClient != nil {
+					controlClient.Disconnect()
 				}
-				world = nw
+				controlClient = sim.NewControlClient(ns.SimState, ns.SimProxy.ControllerToken,
+					ns.SimProxy.Client, lg)
 				simStartTime = time.Now()
 
-				if world == nil {
-					uiShowConnectDialog(false)
-				} else if world != nil {
-					world.ToggleShowScenarioInfoWindow()
-					globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-						p.ResetWorld(world)
+				if controlClient == nil {
+					uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer,
+						false, plat, lg)
+				} else if controlClient != nil {
+					ui.showScenarioInfo = !ui.showScenarioInfo
+					globalConfig.DisplayRoot.VisitPanes(func(p panes.Pane) {
+						p.Reset(controlClient.State, lg)
 					})
 				}
 
 			case remoteServerConn := <-remoteSimServerChan:
-				if err := remoteServerConn.err; err != nil {
+				if err := remoteServerConn.Err; err != nil {
 					lg.Warn("Unable to connect to remote server", slog.Any("error", err))
 
-					if err.Error() == ErrRPCVersionMismatch.Error() {
+					if err.Error() == sim.ErrRPCVersionMismatch.Error() {
 						uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
 							message: "This version of vice is incompatible with the vice multi-controller server.\n" +
 								"If you're using an older version of vice, please upgrade to the latest\n" +
 								"version for multi-controller support. (If you're using a beta build, then\n" +
 								"thanks for your help testing vice; when the beta is released, the server\n" +
 								"will be updated as well.)",
-						}), true)
+						}, plat), true)
 
 						stopConnectingRemoteServer = true
 					}
 					remoteServer = nil
 				} else {
-					remoteServer = remoteServerConn.server
+					remoteServer = remoteServerConn.Server
 				}
 
 			default:
 			}
 
-			if world == nil {
-				platform.SetWindowTitle("vice: [disconnected]")
-				SetDiscordStatus(discordStatus{start: simStartTime})
+			if controlClient == nil {
+				plat.SetWindowTitle("vice: [disconnected]")
+				SetDiscordStatus(DiscordStatus{Start: simStartTime}, lg)
 			} else {
-				platform.SetWindowTitle("vice: " + world.GetWindowTitle())
+				title := "(disconnected)"
+				if controlClient.SimDescription != "" {
+					deparr := fmt.Sprintf(" [ %d departures %d arrivals ]", controlClient.TotalDepartures, controlClient.TotalArrivals)
+					if controlClient.SimName == "" {
+						title = controlClient.State.Callsign + ": " + controlClient.SimDescription + deparr
+					} else {
+						title = controlClient.State.Callsign + "@" + controlClient.SimName + ": " + controlClient.SimDescription + deparr
+					}
+				}
+
+				plat.SetWindowTitle("vice: " + title)
 				// Update discord RPC
-				SetDiscordStatus(discordStatus{
-					totalDepartures: world.TotalDepartures,
-					totalArrivals:   world.TotalArrivals,
-					callsign:        world.Callsign,
-					start:           simStartTime,
-				})
+				SetDiscordStatus(DiscordStatus{
+					TotalDepartures: controlClient.State.TotalDepartures,
+					TotalArrivals:   controlClient.State.TotalArrivals,
+					Callsign:        controlClient.State.Callsign,
+					Start:           simStartTime,
+				}, lg)
 			}
 
 			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second && !stopConnectingRemoteServer {
 				lastRemoteServerAttempt = time.Now()
-				remoteSimServerChan = TryConnectRemoteServer(*serverAddress)
+				remoteSimServerChan = sim.TryConnectRemoteServer(*serverAddress, lg)
 			}
 
 			// Inform imgui about input events from the user.
-			platform.ProcessEvents()
+			plat.ProcessEvents()
 
 			stats.redraws++
 
@@ -369,47 +378,42 @@ func main() {
 			// Let the world update its state based on messages from the
 			// network; a synopsis of changes to aircraft is then passed along
 			// to the window panes.
-			if world != nil {
-				world.GetUpdates(eventStream,
+			if controlClient != nil {
+				controlClient.GetUpdates(eventStream,
 					func(err error) {
-						eventStream.Post(Event{
-							Type:    StatusMessageEvent,
+						eventStream.Post(sim.Event{
+							Type:    sim.StatusMessageEvent,
 							Message: "Error getting update from server: " + err.Error(),
 						})
-						if isRPCServerError(err) {
+						if util.IsRPCServerError(err) {
 							uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
 								message: "Lost connection to the vice server.",
-							}), true)
+							}, plat), true)
 
 							remoteServer = nil
-							world = nil
+							controlClient = nil
 
-							uiShowConnectDialog(false)
+							uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer,
+								false, plat, lg)
 						}
 					})
 			}
 
-			platform.NewFrame()
+			plat.NewFrame()
 			imgui.NewFrame()
 
 			// Generate and render vice draw lists
-			if world != nil {
-				wmDrawPanes(platform, renderer, world, &stats)
-			} else {
-				commandBuffer := GetCommandBuffer()
-				commandBuffer.ClearRGB(RGB{})
-				stats.render = renderer.RenderCommandBuffer(commandBuffer)
-				ReturnCommandBuffer(commandBuffer)
-			}
+			wmDrawPanes(plat, render, controlClient, &stats, lg)
 
 			timeMarker(&stats.drawPanes)
 
 			// Draw the user interface
-			drawUI(platform, renderer, world, eventStream, &stats)
+			drawUI(newSimConnectionChan, &localServer, &remoteServer, plat, render,
+				controlClient, eventStream, &stats, lg)
 			timeMarker(&stats.drawImgui)
 
 			// Wait for vsync
-			platform.PostRender()
+			plat.PostRender()
 
 			// Periodically log current memory use, etc.
 			if frameIndex%18000 == 0 {
@@ -417,21 +421,16 @@ func main() {
 			}
 			frameIndex++
 
-			if platform.ShouldStop() && len(ui.activeModalDialogs) == 0 {
+			if plat.ShouldStop() && len(ui.activeModalDialogs) == 0 {
 				// Do this while we're still running the event loop.
-				saveSim := world != nil && world.simProxy.Client == localServer.RPCClient
-				globalConfig.SaveIfChanged(renderer, platform, world, saveSim)
+				saveSim := controlClient != nil && controlClient.RPCClient() == localServer.RPCClient
+				globalConfig.SaveIfChanged(render, plat, controlClient, saveSim, lg)
 
-				if world != nil {
-					world.Disconnect()
+				if controlClient != nil {
+					controlClient.Disconnect()
 				}
 				break
 			}
 		}
-	}
-
-	// Common cleanup
-	if *memprofile != "" {
-		writeMemProfile()
 	}
 }

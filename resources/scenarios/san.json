@@ -788,6 +788,204 @@
         }
     },
     "stars_config": {
+        "coordination_fixes": {
+            "ANJLL": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "HLYWD": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "MDOTS": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "COWWS": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "RUKKI": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "GOATZ": [
+                      {
+                          "type": "route",
+                          "to":"SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "GNZZO": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "SOLAY": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "ALMST": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "CYNDE": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "GNKEE": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "DUNNN": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "CHURO": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "PCIFC": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "PMD": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "PEPRZ": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "THRNE": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "GRRIT": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "OHIGH": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "CMA": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "KIMMO": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "LRSON": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "MCHNE": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "ARRAN": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "BITTY": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "COMIX": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "HNAHH": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ],
+                  "ISEMN": [
+                      {
+                          "type": "route",
+                          "to": "SCT",
+                          "from": "ZLA"
+                      }
+                  ]
+        },
     "center": "N032.73.00.036,W117.17.57.109",
     "radar_sites": {
         "KSAN": {
@@ -818,57 +1016,9 @@
 
     },
     "stars_maps": [
-        {
-            "group": 0,
-            "label": "SAN W",
-            "name": "540S SAN W SCT"
-        },
-        {
-            "group": 0,
-            "label": "SAN Cab",
-            "name": "SAN Cab"
-        },
-        {
-            "group": 0,
-            "label": "SAN E",
-            "name": "541S SAN E SCT"
-        },
-        {
-            "group": 1,
-            "label": " B-C A-S",
-            "name": "723S B-C A-S SCT"
-        },
-        {
-            "group": 1,
-            "label": "D-E A-S",
-            "name": "722S D-E A-S SCT"
-        },
-        {
-            "group": 1,
-            "label": "3NM MVA",
-            "name": "701S FUS 3NM MVA SCT"
-        },
-        {
-            "group": 0,
-            "label": "SB WEST",
-            "name": "500S SB WEST SCT"
-        },
-        {
-            "group": 2,
-            "label": "SAN 1 SCT",
-            "name": "563S SAN 1 SCT"
-        },
-        {
-            "group": 2,
-            "label": "SAN 2 SCT",
-            "name": "564S SAN 2 SCT"
-        },
-        {
-            "group": 2,
-            "label": "SAN 9-27 SCT",
-            "name": "542S SAN 9-27 SCT"
-        }
+        "540S SAN W SCT", "SAN Cab", "541S SAN E SCT", "723S B-C A-S SCT", "722S D-E A-S SCT", "701S FUS 3NM MVA SCT", "500S SB WEST SCT",
+        "563S SAN 1 SCT", "564S SAN 2 SCT", "542S SAN 9-27 SCT"
     ],
-    "video_map_file": "videomaps/ZLA-videomaps.json.zst"
+    "video_map_file": "videomaps/ZLA-videomaps.gob.zst"
     }
 }

@@ -19,12 +19,13 @@
             "TRAVA/iaf/a3000+ BERKI/faf/a2300",
             "TOPKE/iaf/a3000/h325",
             "WASKI/iaf/a3000/h145"
+      
           ]
         },
         "Z23": {
           "full_name": "RNAV Z Runway 23",
           "runway": "23",
-          "type": "RNAV",
+          "type" : "RNAV",
           "waypoints": [
             "COZZS/if/a5000/s210 EFFCT/a4000 JEDAR/a3200 ZUDAT/a2600 BIILS/faf/a1800",
             "WNNGS/if/a4000/s210 JEDAR/a3200 ZUDAT/a2600 BIILS/faf/a1800",
@@ -32,6 +33,7 @@
             "SUSKE/iaf/a5500/h063 BUFST/h063/a5000 FOTBL/a5000/s210 ZADUM/a3900 JABET/a2700 BIILS/faf/a1800",
             "FOTBL/if/a5000/s210 ZADUM/a3900 JABET/a2700 BIILS/faf/a1800",
             "BUULS/if/a2700/s210 BIILS/faf/a1800"
+            
           ]
         },
         "I5": {
@@ -52,6 +54,7 @@
             "LKERI/if/a4000/s210 EBBED/a2300 JAXYN/faf/a1700",
             "ROZWL/if/a4000/s210 ZURUS/a2300 JAXYN/faf/a1700",
             "SNOPO/if/a5000/s210 GLUTE/a3900 FORMN/a2400 JAXYN/faf/a1700"
+
           ]
         },
         "Y5": {
@@ -129,8 +132,8 @@
             "cleared_altitude": 10000,
             "sid": "BUF8",
             "waypoints": "_BUF_5/h235"
-          },
-          "SLT": {
+		      },
+		      "SLT": {
             "cleared_altitude": 10000,
             "sid": "BUF8",
             "waypoints": "_BUF_5/h235"
@@ -186,8 +189,8 @@
             "cleared_altitude": 10000,
             "sid": "BUF8",
             "waypoints": "_BUF_23/h055"
-          },
-          "SLT": {
+		  },
+		  "SLT": {
             "cleared_altitude": 10000,
             "sid": "BUF8",
             "waypoints": "_BUF_23/h055"
@@ -377,127 +380,127 @@
     },
     "KIAG": {
       "approaches": {
-        "R6": {
-          "full_name": "RNAV Runway 6",
-          "runway": "6",
-          "type": "RNAV",
-          "waypoints": [
-            "WOTGU/iaf/a3300 YULUC/faf/a2300 ZEXOD"
-          ]
-        },
-        "R0L": {
-          "full_name": "RNAV Runway 10L",
-          "runway": "10L",
-          "type": "RNAV",
-          "waypoints": [
-            "WINUD/iaf/a3100 UGOCO/faf/a2300 WURSI ZUKDU"
-          ]
-        },
-        "Z24": {
-          "runway": "24",
-          "full_name": "RNAV Z Runway 24",
-          "type": "RNAV",
-          "waypoints": [
-            "ZUPUV/iaf/a3600 WUVBI/faf/a2300 YEPNU"
-          ]
-        },
-        "Y24": {
-          "runway": "24",
-          "full_name": "RNAV Y Runway 24",
-          "type": "RNAV",
-          "waypoints": [
-            "ZUPUV/iaf/a3600 WUVBI/faf/a2300"
-          ]
-        },
-        "Y8R": {
-          "runway": "28R",
-          "full_name": "ILS Y Runway 28R",
-          "type": "ILS",
-          "waypoints": [
-            "KATHI/faf/a2000"
-          ]
-        },
-        "Z8R": {
-          "runway": "28R",
-          "full_name": "ILS Z Runway 28R",
-          "type": "ILS",
-          "waypoints": [
-            "DIONE/iaf/a2200 KATHI/faf/a2000"
-          ]
-        },
-        "R8R": {
-          "runway": "28R",
-          "full_name": "RNAV Runway 28R",
-          "type": "RNAV",
-          "waypoints": [
-            "CUVTU/iaf/a3100 APIWO/faf/a2300 KIGUW"
-          ]
-        }
+            "R6": {
+              "full_name": "RNAV Runway 6",
+              "runway": "6",
+              "type": "RNAV",
+              "waypoints": [
+                "WOTGU/iaf/a3300 YULUC/faf/a2300 ZEXOD"
+              ]
+            },
+            "R0L": {
+              "full_name": "RNAV Runway 10L",
+              "runway": "10L",
+              "type": "RNAV",
+              "waypoints": [
+                "WINUD/iaf/a3100 UGOCO/faf/a2300 WURSI ZUKDU"
+              ]
+            },
+            "Z24": {
+              "runway": "24",
+              "full_name": "RNAV Z Runway 24",
+              "type": "RNAV",
+              "waypoints": [
+                "ZUPUV/iaf/a3600 WUVBI/faf/a2300 YEPNU"
+              ]
+            },
+            "Y24": {
+              "runway": "24",
+              "full_name": "RNAV Y Runway 24",
+              "type": "RNAV",
+              "waypoints": [
+                "ZUPUV/iaf/a3600 WUVBI/faf/a2300"
+              ]
+            },
+            "Y8R": {
+              "runway": "28R",
+              "full_name": "ILS Y Runway 28R",
+              "type": "ILS",
+              "waypoints": [
+                "KATHI/faf/a2000"
+              ]
+            },
+            "Z8R": {
+              "runway": "28R",
+              "full_name": "ILS Z Runway 28R",
+              "type": "ILS",
+              "waypoints": [
+                "DIONE/iaf/a2200 KATHI/faf/a2000"
+              ]
+            },
+            "R8R": {
+              "runway": "28R",
+              "full_name": "RNAV Runway 28R",
+              "type": "RNAV",
+              "waypoints": [
+                "CUVTU/iaf/a3100 APIWO/faf/a2300 KIGUW"
+              ]
+            }
       },
       "departure_routes": {
-        "28R": {
-          "JHW": {
-            "cleared_altitude": 3000,
-            "sid": "BUF8",
-            "waypoints": "_IAG_10L/h200"
-          }
-        },
-        "10L": {
-          "JHW": {
-            "cleared_altitude": 3000,
-            "sid": "BUF8",
-            "waypoints": "_IAG_28R/h190"
-          }
-        },
-        "6": {
-          "JHW": {
-            "cleared_altitude": 3000,
-            "sid": "BUF8",
-            "waypoints": "_IAG_24/h190"
-          }
-        },
-        "24": {
-          "JHW": {
-            "cleared_altitude": 3000,
-            "sid": "BUF8",
-            "waypoints": "_IAG_6/h200"
-          }
+      "28R": {
+        "JHW": {
+          "cleared_altitude": 3000,
+          "sid": "BUF8",
+          "waypoints": "_IAG_10L/h200"
         }
       },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "fleet": "default",
-              "icao": "AAY"
-            }
-          ],
-          "destination": "KSFB",
-          "exit": "JHW",
-          "route": "JHW RICCS Q103 SLOJO Q83 ROYCO Q85 LPERD TTHOR3"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "default",
-              "icao": "AAY"
-            }
-          ],
-          "destination": "KPGD",
-          "exit": "JHW",
-          "route": "JHW RICCS Q103 PUPYY KYYUU LUBBR3"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "default",
-              "icao": "DPJ"
-            }
-          ],
-          "destination": "KMKY",
-          "exit": "JHW",
-          "route": "JHW HVQ CYNTA SHFTY SHFTY5"
+      "10L": {
+        "JHW": {
+          "cleared_altitude": 3000,
+          "sid": "BUF8",
+          "waypoints": "_IAG_28R/h190"
         }
+      },
+      "6": {
+        "JHW": {
+          "cleared_altitude": 3000,
+          "sid": "BUF8",
+          "waypoints": "_IAG_24/h190"
+        }
+      },
+      "24": {
+        "JHW": {
+          "cleared_altitude": 3000,
+          "sid": "BUF8",
+          "waypoints": "_IAG_6/h200"
+        }
+      }
+      },
+      "departures": [
+      {
+        "airlines": [
+          {
+            "fleet": "default",
+            "icao": "AAY"
+          }
+        ],
+        "destination": "KSFB",
+        "exit": "JHW",
+        "route": "JHW RICCS Q103 SLOJO Q83 ROYCO Q85 LPERD TTHOR3"
+      },
+      {
+        "airlines": [
+          {
+            "fleet": "default",
+            "icao": "AAY"
+          }
+        ],
+        "destination": "KPGD",
+        "exit": "JHW",
+        "route": "JHW RICCS Q103 PUPYY KYYUU LUBBR3"
+      },
+      {
+        "airlines": [
+          {
+            "fleet": "default",
+            "icao": "DPJ"
+          }
+        ],
+        "destination": "KMKY",
+        "exit": "JHW",
+        "route": "JHW HVQ CYNTA SHFTY SHFTY5"
+      }
       ],
       "exit_categories": {
         "DAVVK": "ALL",
@@ -511,8 +514,8 @@
         "DJB": "ALL"
       },
       "tower_list": 1
-    }
-  },
+  }
+},
   "airspace": {
     "boundaries": {
       "BUFAPP0100": [
@@ -629,7 +632,7 @@
         "waypoints": "DKK_W_HO/ho DKK"
       }
     ],
-    "EHMAN": [
+      "EHMAN": [
       {
         "airlines": {
           "KBUF": [
@@ -765,35 +768,35 @@
         "waypoints": "WOZEE_HO/ho WOZEE"
       }
     ],
-    "AIRCO GA": [
-      {
-        "airlines": {
-          "KIAG": [
-            {
-              "airport": "KITH",
-              "fleet": "lightGA",
-              "icao": "N"
-            }
-          ]
-        },
-        "assigned_altitude": 6000,
-        "cruise_altitude": 6000,
-        "initial_altitude": 6000,
-        "initial_controller": "CLE_66_CTR",
-        "initial_speed": 140,
-        "route": "/. AIRCO",
-        "waypoints": "AIRCO_HO/ho AIRCO"
-      }
-    ]
-  },
+  "AIRCO GA": [
+    {
+      "airlines": {
+        "KIAG": [
+          {
+            "airport": "KITH",
+            "fleet": "lightGA",
+            "icao": "N"
+          }
+        ]
+      },
+      "assigned_altitude": 6000,
+      "cruise_altitude": 6000,
+      "initial_altitude": 6000,
+      "initial_controller": "CLE_66_CTR",
+      "initial_speed": 140,
+      "route": "/. AIRCO",
+      "waypoints": "AIRCO_HO/ho AIRCO"
+    }
+  ]
+},
   "control_positions": {
     "CLE_66_CTR": {
       "eram_facility": true,
       "frequency": 125425,
       "full_name": "Cleveland Center",
       "scope_char": "C",
-      "sector_id": "C66",
-      "facility_id": "C"
+      "facility_id": "C",
+      "sector_id": "66"
     },
     "BUF_TWR": {
       "frequency": 120500,
@@ -917,51 +920,30 @@
         "JHW GA": {
           "KIAG": 1
         }
-      },
+        },
       "solo_controller": "BUF_E_APP",
       "multi_controllers": {
-        "default": {
-          "BUF_E_APP": {
-            "primary": true,
-            "arrivals": [
-              "EHMAN",
-              "BENEE",
-              "DKK VOR (South/East)",
-              "BUF VOR",
-              "JHW VOR",
-              "JHW GA",
-              "AIRCO GA"
-            ]
-          },
-          "BUF_W_APP": {
-            "backup": "BUF_E_APP",
-            "arrivals": [
-              "DKK VOR (West)",
-              "WOZEE"
-            ],
-            "departures": [
-              "KBUF",
-              "KIAG"
-            ]
-          }
+        "default" : {
+            "BUF_E_APP": {"primary": true, "arrivals": ["EHMAN", "BENEE", "DKK VOR (South/East)", "BUF VOR", "JHW VOR", "JHW GA", "AIRCO GA"]},
+            "BUF_W_APP": {"backup": "BUF_E_APP", "arrivals": ["DKK VOR (West)", "WOZEE"], "departures": ["KBUF", "KIAG"]},
+            "BUF_F_APP": {"backup": "BUF_W_APP"}
         }
-      },
+    },
       "controllers": [
         "BUF_TWR",
         "IAG_TWR",
         "CLE_66_CTR",
+        "CLE_66_CTR", 
         "TOR_CTR"
       ],
-      "default_maps": [
-        "BUF-003 (23 FLOW)"
-      ],
+      "default_maps": [ "BUF-003 (23 FLOW)" ],
       "departure_airspace": [
         "BUFAPP"
       ],
       "departure_runways": [
         {
           "airport": "KBUF",
-          "rate": 10,
+          "rate" : 10,
           "runway": "23"
         },
         {
@@ -1019,50 +1001,30 @@
         "WOZEE": {
           "KBUF": 2
         }
-      },
+        },
       "solo_controller": "BUF_E_APP",
       "multi_controllers": {
-        "default": {
-          "BUF_E_APP": {
-            "primary": true,
-            "arrivals": [
-              "EHMAN",
-              "BENEE",
-              "DKK VOR (South/East)",
-              "BUF VOR",
-              "JHW VOR",
-              "JHW GA",
-              "AIRCO GA"
-            ],
-            "departures": [
-              "KBUF"
-            ]
-          },
-          "BUF_W_APP": {
-            "backup": "BUF_E_APP",
-            "arrivals": [
-              "DKK VOR (West)",
-              "WOZEE"
-            ]
-          }
+        "default" : {
+            "BUF_E_APP": {"primary": true, "arrivals": ["EHMAN", "BENEE", "DKK VOR (South/East)", "BUF VOR", "JHW VOR", "JHW GA", "AIRCO GA"]},
+            "BUF_W_APP": {"backup": "BUF_E_APP", "arrivals": ["DKK VOR (West)", "WOZEE"], "departures": ["KBUF", "KIAG"]},
+            "BUF_F_APP": {"backup": "BUF_W_APP"}
         }
-      },
+    },
       "controllers": [
         "BUF_TWR",
         "IAG_TWR",
         "CLE_66_CTR",
+        "CLE_66_CTR",
         "TOR_CTR"
       ],
-      "default_maps": [
-        "BUF-001 (5 FLOW)"
-      ],
+      "default_maps": [ "BUF-001 (5 FLOW)" ],
       "departure_airspace": [
         "BUFAPP"
       ],
       "departure_runways": [
         {
           "airport": "KBUF",
-          "rate": 10,
+          "rate" : 10,
           "runway": "5"
         },
         {
@@ -1078,163 +1040,120 @@
     }
   },
   "stars_config": {
-    "force_ql_self": true,
-    "allow_long_scratchpad": [true,true],
-    "airspace_awareness": [
-      {
-        "fixes": ["ALL"],
-        "receiving_controller": "CLE_66_CTR"
-      }
+  "force_ql_self": true,
+  "allow_long_scratchpad": [
+    true,
+    true
     ],
-    "center": "KBUF",
-    "inhibit_ca_volumes": [
-      {
-        "name": "BUF NO CA",
-        "type": "circle",
-        "floor": 0,
-        "ceiling": 2300,
-        "center": "N042.56.25.162,W078.43.47.297",
-        "radius": 6
-      }
+    "coordination_fixes": {
+      "BENEE": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
     ],
-    "radar_sites": {
-      "KBUF": {
-        "char": "A",
-        "position": "42.939898010396576, -78.73013362979619",
-        "elevation": 707,
-        "primary_range": 60,
-        "secondary_range": 120,
-        "silence_angle": 30,
-        "slope_angle": 0.175
-      }
-    },
-    "range": 60,
-    "scratchpads": {
-      "SLT": "SLT",
-      "BUF": "BUF",
-      "GEE": "GEE",
-      "SFK": "SFK",
-      "DJB": "DJB",
-      "JHW": "JHW",
-      "YXU": "YXU",
-      "SYR": "SYR",
-      "ROC": "ROC",
-      "EHMAN": "EHM",
-      "WOZEE": "WOZ",
-      "AIRCO": "AIR",
-      "DKK": "DKK",
-      "VAIRS": "VAIR",
-      "YQO": "YQO",
-      "WELA": "WELLA",
-      "FKL": "FKL",
-      "YNG": "YNG",
-      "EWC": "EWC",
-      "CXR": "CXR",
-      "DONEO": "DONE",
-      "DAVVK": "DAVK"
+    "BUF": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "DKK": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "EHMAN": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "JHW": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "WOZEE": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ],
+    "ARICO": [
+        {
+            "type": "route",
+            "to": "BUF",
+            "from": "ZOB"
+        }
+    ]
     },
     "stars_maps": [
-      {
-        "group": 1,
-        "label": "23_GPS",
-        "name": "BUF-019 (23 GPS)"
-      },
-      {
-        "group": 1,
-        "label": "32_GPS",
-        "name": "BUF-020 (32 GPS)"
-      },
-      {
-        "group": 1,
-        "label": "14_GPS",
-        "name": "BUF-018 (14 GPS)"
-      },
-      {
-        "group": 1,
-        "label": "5_GPS",
-        "name": "BUF-017 (5 GPS)"
-      },
-      {
-        "group": 1,
-        "label": "SUA",
-        "name": "BUF-016 (SUA)"
-      },
-      {
-        "group": 1,
-        "label": "TACAN",
-        "name": "BUF-015 (IAG TACAN 28R)"
-      },
-      {
-        "group": 1,
-        "label": "IAGRNAV",
-        "name": "BUF-014 (IAG RNAV 28)"
-      },
-      {
-        "group": 0,
-        "label": "FAC",
-        "name": "BUF-013 (BUF FAC)"
-      },
-      {
-        "group": 1,
-        "label": "ERI_MVA",
-        "name": "BUF-012 (ERIE MVA)"
-      },
-      {
-        "group": 1,
-        "label": "TRSA",
-        "name": "BUF-011 (ERIE TRSA)"
-      },
-      {
-        "group": 1,
-        "label": "CLASS_D",
-        "name": "BUF-010 (CLASS D)"
-      },
-      {
-        "group": 1,
-        "label": "CLASS_C",
-        "name": "BUF-009 (CLASS C)"
-      },
-      {
-        "group": 1,
-        "label": "ZOB",
-        "name": "BUF-008 (ZOB)"
-      },
-      {
-        "group": 1,
-        "label": "VFR",
-        "name": "BUF-007 (VFR)"
-      },
-      {
-        "group": 1,
-        "label": "MVA",
-        "name": "BUF-006 (MVA)"
-      },
-      {
-        "group": 0,
-        "label": "ERIE",
-        "name": "BUF-005 (ERIE RVM)"
-      },
-      {
-        "group": 0,
-        "label": "32_FLOW",
-        "name": "BUF-004 (32 FLOW)"
-      },
-      {
-        "group": 0,
-        "label": "23_FLOW",
-        "name": "BUF-003 (23 FLOW)"
-      },
-      {
-        "group": 0,
-        "label": "14_FLOW",
-        "name": "BUF-002 (14 FLOW)"
-      },
-      {
-        "group": 0,
-        "label": "5_FLOW",
-        "name": "BUF-001 (5 FLOW)"
-      }
+        "BUF-019 (23 GPS)", "BUF-020 (32 GPS)", "BUF-018 (14 GPS)", "BUF-017 (5 GPS)", "BUF-016 (SUA)", "BUF-015 (IAG TACAN 28R)",
+        "BUF-014 (IAG RNAV 28)", "BUF-013 (BUF FAC)", "BUF-012 (ERIE MVA)", "BUF-011 (ERIE TRSA)", "BUF-010 (CLASS D)",
+        "BUF-009 (CLASS C)", "BUF-008 (ZOB)", "BUF-007 (VFR)", "BUF-006 (MVA)", "BUF-005 (ERIE RVM)", "BUF-004 (32 FLOW)",
+        "BUF-003 (23 FLOW)", "BUF-002 (14 FLOW)", "BUF-001 (5 FLOW)"
     ],
-    "video_map_file": "videomaps/ZOB-videomaps.json.zst"
+      "video_map_file": "videomaps/ZOB-videomaps.gob.zst",
+  "airspace_awareness": [
+                        {"fixes": ["ALL"], "receiving_controller": "CLE_66_CTR"}
+                    ],
+  "center": "KBUF",
+  "inhibit_ca_volumes": [
+    {
+      "name": "BUF NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 2300,
+      "center": "N042.56.25.162,W078.43.47.297",
+      "radius": 6
+  }
+  ],
+  "radar_sites": {
+    "BUF": {
+      "char": "A",
+      "position": "42.939898010396576, -78.73013362979619",
+      "elevation": 707,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    }
+  },
+  "range": 60,
+  "scratchpads":{
+    "SLT": "SLT",
+    "BUF": "BUF",
+    "GEE": "GEE",
+    "SFK": "SFK",
+    "DJB": "DJB",
+    "JHW": "JHW",
+    "YXU": "YXU",
+    "SYR": "SYR",
+    "ROC": "ROC",
+    "EHMAN": "EHM",
+    "WOZEE": "WOZ",
+    "AIRCO": "AIR",
+    "DKK": "DKK",
+    "VAIRS": "VAIR",
+    "YQO": "YQO",
+    "WELA": "WELLA",
+    "FKL": "FKL",
+    "YNG": "YNG",
+    "EWC": "EWC",
+    "CXR": "CXR",
+    "DONEO": "DONE",
+    "DAVVK": "DAVK"
+  }
   }
 }
+
+

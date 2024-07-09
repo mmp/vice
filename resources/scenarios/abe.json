@@ -642,7 +642,7 @@
         "MDT_SE_APP",
         "NY_D_CTR"
       ],
-      "default_maps": [ "Allentown TRACON Video Map" ],
+      "default_maps": [ "ABE-101 (MAP 5)" ],
       "departure_runways": [
         {
           "airport": "KABE",
@@ -690,7 +690,7 @@
         "MDT_SE_APP",
         "NY_D_CTR"
       ],
-      "default_maps": [ "Allentown TRACON Video Map" ],
+      "default_maps": [ "ABE-101 (MAP 5)" ],
       "departure_runways": [
         {
           "airport": "KABE",
@@ -705,6 +705,57 @@
     }
   },
   "stars_config": {
+    "coordination_fixes": {
+    "FJC": [
+      {
+          "type": "route",
+          "to": "ABE",
+          "from": "N90"
+      }
+  ],
+  "BOYER": [
+      {
+          "type": "route",
+          "to": "ABE",
+          "from": "MDT"
+      }
+  ],
+  "ETX": [
+      {
+          "type": "route",
+          "to": "ABE",
+          "from": "MDT"
+      }
+  ],
+  "KRAZE": [
+      {
+          "type": "route",
+          "to": "ABE",
+          "from": "ZNY"
+      }
+  ],
+  "SNOWY": [
+      {
+          "type": "route",
+          "to": "ABE",
+          "from": "ZNY"
+      }
+  ],
+  "SLATT": [
+      {
+          "type": "route",
+          "to": "ABE",
+          "from": "ZNY"
+      }
+  ],
+  "DUMMR": [
+      {
+          "type": "route",
+          "to": "ABE",
+          "from": "ZNY"
+      }
+  ]
+  },
   "center": "KABE",
   "inhibit_ca_volumes": [
       {
@@ -744,18 +795,10 @@
     "RBV": "RBV",
     "SAX": "SAX"
   },
-  "stars_maps": [
-    {
-      "group": 0,
-      "label": "ABE",
-      "name": "Allentown TRACON Video Map"
-    },
-    {
-      "group": 1,
-      "label": "ABE MVA",
-      "name": "ABE MVA"
-    }
-  ],
-  "video_map_file": "videomaps/abe-maps.json.zst"
+      "stars_maps": [ "ABE-103 (MAP 1)", "ABE-105 (VFR)", "ABE-101 (MAP 5)",
+                      "ABE-102 (MVA)", "ABE-106 (EOVM)", "ABE-112 (SAT)",
+                      "ABE-113 (RNAV)", "", "", "", "", "", "", "", "", "", "", "", "", "",
+                      "ABE-114 (WAYPT NAMES)", "", "", "", "", "", "", "", "", "", "", "", "", "" ],
+  "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
   }
 }

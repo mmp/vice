@@ -3110,6 +3110,92 @@
     "stars_config": {
         "allow_long_scratchpad": [false, false],
         "force_ql_self": true,
+        "coordination_fixes": {
+            "BEREE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "BOOVE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "BRDJE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "VKTRY": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "KNEAD": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "FINGR": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "GREGS": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "ORVLL": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "SLUGG": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "DODJE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "SASIE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "MOTZA": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ]
+        },
         "airspace_awareness": [
             {
                 "fixes": [
@@ -3953,212 +4039,14 @@
         "TIKYS": "AKU"
     },
     "stars_maps": [
-        {
-            "group": 1,
-            "label": "EMERGCY",
-            "name": "RVMD10024S"
-        },
-        {
-            "group": 0,
-            "label": "MVA_3NM",
-            "name": "RVMD10027S"
-        },
-        {
-            "group": 0,
-            "label": "CLASS_B",
-            "name": "RVMD10026S"
-        },
-        {
-            "group": 0,
-            "label": "FIXES",
-            "name": "RVMD10104S"
-        },
-        {
-            "group": 0,
-            "label": "AIRPRTS",
-            "name": "RVMD10043S"
-        },
-        {
-            "group": 0,
-            "label": "DR_RNAV",
-            "name": "RVMD10050S"
-        },
-        {
-            "group": 0,
-            "label": "MID_S",
-            "name": "RVMD10139S"
-        },
-        {
-            "group": 0,
-            "label": "MID_N",
-            "name": "RVMD10140S"
-        },
-        {
-            "group": 0,
-            "label": "AR_S",
-            "name": "RVMD10103S"
-        },
-        {
-            "group": 0,
-            "label": "AR_N",
-            "name": "RVMD10102S"
-        },
-        {
-            "group": 0,
-            "label": "FEEDR_S",
-            "name": "RVMD10121S"
-        },
-        {
-            "group": 0,
-            "label": "FEEDR_N",
-            "name": "RVMD10120S"
-        },
-        {
-            "group": 0,
-            "label": "DR_S",
-            "name": "RVMD10119S"
-        },
-        {
-            "group": 0,
-            "label": "DR_N",
-            "name": "RVMD10118S"
-        },
-        {
-            "group": 0,
-            "label": "SAT_S",
-            "name": "RVMD10123S"
-        },
-        {
-            "group": 0,
-            "label": "SAT_N",
-            "name": "RVMD10122S"
-        },
-        {
-            "group": 0,
-            "label": "RNAV_S",
-            "name": "RVMD10125S"
-        },
-        {
-            "group": 0,
-            "label": "RNAV_N",
-            "name": "RVMD10124S"
-        },
-        {
-            "group": 0,
-            "label": "DALRNVS",
-            "name": "RVMD10133S"
-        },
-        {
-            "group": 0,
-            "label": "DALRNVN",
-            "name": "RVMD10132S"
-        },
-        {
-            "group": 0,
-            "label": "TWR_SOU",
-            "name": "RVMD10032S"
-        },
-        {
-            "group": 0,
-            "label": "TWR_NOR",
-            "name": "RVMD10029S"
-        },
-        {
-            "group": 0,
-            "label": "CAPBOXW",
-            "name": "RVMD10035S"
-        },
-        {
-            "group": 0,
-            "label": "CAPBOXE",
-            "name": "RVMD10034S"
-        },
-        {
-            "group": 0,
-            "label": "CAPBOXA",
-            "name": "RVMD10036S"
-        },
-        {
-            "group": 0,
-            "label": "FIN_MON",
-            "name": "RVMD10025S"
-        },
-        {
-            "group": 0,
-            "label": "SAT_FNL",
-            "name": "RVMD10028S"
-        },
-        {
-            "group": 0,
-            "label": "DR_CONV",
-            "name": "RVMD10106S"
-        },
-        {
-            "group": 0,
-            "label": "DFWRNVS",
-            "name": "RVMD10107S"
-        },
-        {
-            "group": 0,
-            "label": "DFWRNVN",
-            "name": "RVMD10108S"
-        },
-        {
-            "group": 0,
-            "label": "RIVAS",
-            "name": "RVMD10013S"
-        },
-        {
-            "group": 0,
-            "label": "ARSHELF",
-            "name": "RVMD10101S"
-        },
-        {
-            "group": 0,
-            "label": "HELO_RT",
-            "name": "RVMD10017S"
-        },
-        {
-            "group": 0,
-            "label": "CAREFLT",
-            "name": "RVMD10033S"
-        },
-        {
-            "group": 0,
-            "label": "RWY_31L",
-            "name": "RVMD10011S"
-        },
-        {
-            "group": 0,
-            "label": "31LDEP",
-            "name": "31L DEPARTURE MAP"
-        },
-        {
-            "group": 1,
-            "label": "DALRNPS",
-            "name": "RVMD10053S"
-        },
-        {
-            "group": 1,
-            "label": "DALRNPN",
-            "name": "RVMD10054S"
-        },
-        {
-            "group": 0,
-            "label": "SATSONO",
-            "name": "RVMD10058S "
-        },
-        {
-            "group": 0,
-            "label": "DRNOSO",
-            "name": "RVMD10057S"
-        },
-        {
-        "group": 0,
-        "label": "DRSONO",
-        "name": "RVMD10056S"
-        }
+        "RVMD10024S", "RVMD10027S", "RVMD10026S",
+        "RVMD10104S", "RVMD10043S", "RVMD10050S",
+        "RVMD10139S", "RVMD10140S", "RVMD10103S", "RVMD10102S", "RVMD10121S", "RVMD10120S", "RVMD10119S", "RVMD10118S", "RVMD10123S", "RVMD10122S", "RVMD10125S", "RVMD10124S",
+        "RVMD10133S", "RVMD10132S", "RVMD10032S", "RVMD10029S",
+        "RVMD10035S", "RVMD10034S", "RVMD10036S", "RVMD10025S", "RVMD10028S",
+        "RVMD10106S", "RVMD10107S", "RVMD10108S", "RVMD10013S", "RVMD10101S", "RVMD10017S", "RVMD10033S", "RVMD10011S", "31L DEPARTURE MAP",
+        "RVMD10053S", "RVMD10054S"
     ],
-    "video_map_file": "videomaps/ZFW-videomaps.json.zst"
+    "video_map_file": "videomaps/ZFW-videomaps.gob.zst"
     }
 }

@@ -317,7 +317,7 @@
     },
     "I90": {
         "Name": "Houston TRACON",
-        "ARTCC": "ZFW"
+        "ARTCC": "ZHU"
     },
     "ICT": {
         "Name": "Wichita TRACON",
@@ -630,6 +630,10 @@
     "U90": {
         "Name": "Tucson TRACON",
         "ARTCC": "ZAB"
+    },
+    "WRI": {
+        "Name": "McGuire RAPCON",
+        "ARTCC": "ZNY"
     },
     "Y90": {
         "Name": "Yankee TRACON",

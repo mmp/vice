@@ -858,8 +858,9 @@
       "solo_controller": "BHM_S_APP",
       "multi_controllers": {
         "default" : {
-            "BHM_S_APP": {"primary": true, "arrivals": ["KIOSK24", "WANDS", "HERKO24"], "departures": ["KBHM"]},
-            "BHM_N_APP": {"backup": "BHM_S_APP", "arrivals": ["NULLS24", "SHIMS", "NESTS24", "DIODE24", "LYMPH24"]}
+          "BHM_S_APP": {"primary": true, "arrivals": ["KIOSK24", "WANDS", "HERKO24"], "departures": ["KBHM"]},
+          "BHM_N_APP": {"backup": "BHM_S_APP", "arrivals": ["NULLS24", "SHIMS", "NESTS24", "DIODE24","LYMPH24"]},
+          "BHM_F_APP": {"backup": "BHM_S_APP"}
         }
     },
       "controllers": [
@@ -922,8 +923,9 @@
       "solo_controller": "BHM_S_APP",
       "multi_controllers": {
         "default" : {
-            "BHM_S_APP": {"primary": true, "arrivals": ["KIOSK6", "WANDS", "HERKO6"], "departures": ["KBHM"]},
-            "BHM_N_APP": {"backup": "BHM_S_APP", "arrivals": ["NULLS6", "SHIMS", "NESTS6", "DIODE6", "LYMPH6"]}
+          "BHM_S_APP": {"primary": true, "arrivals": ["KIOSK6", "WANDS", "HERKO6"], "departures": ["KBHM"]},
+          "BHM_N_APP": {"backup": "BHM_S_APP", "arrivals": ["NULLS6", "SHIMS", "NESTS6", "DIODE6","LYMPH6"]},
+          "BHM_F_APP": {"backup": "BHM_S_APP"}
         }
     },
       "controllers": [
@@ -949,6 +951,64 @@
     }
   },
     "stars_config": {
+  "coordination_fixes": {
+    "EXIST": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "CIVMA": [
+      {
+          "type": "route",
+           "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "FAYEZ": [
+      {
+          "type": "route",
+           "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "IXUSE": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "BESOM": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "QECKE": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "KOCEY": [
+      {
+          "type": "route",
+           "to": "BHM",
+          "from": "ZTL"
+      }
+  ],
+  "BOYDD": [
+      {
+          "type": "route",
+          "to": "BHM",
+          "from": "ZTL"
+      }
+  ]
+  },
   "center": "KBHM",
   "inhibit_ca_volumes": [
     {
@@ -1008,112 +1068,11 @@
       "MEM": "MEM"
   },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "MAIN",
-      "name": "BHM MAIN"
-    },
-    {
-      "group": 0,
-      "label": "CLASS C",
-      "name": "BHM CLASS C"
-    },
-    {
-      "group": 1,
-      "label": "EMRGCY",
-      "name": "BHM EMERGENCY"
-    },
-    {
-      "group": 0,
-      "label": "RNV0624",
-      "name": "BHM RNAV RUNWAY 06/24 APPROACH"
-    },
-    {
-      "group": 0,
-      "label": "ANNEX",
-      "name": "BHM/TCL ANNEX"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "BHM MINIMUM VECTORING ALTITUDE"
-    },
-    {
-      "group": 1,
-      "label": "IR RTE",
-      "name": "BHM IFR MILITARY TRAINING ROUTES"
-    },
-    {
-      "group": 1,
-      "label": "EOVM",
-      "name": "BHM EMERGENCY OBSTRUCTION VIDEO MAP"
-    },
-    {
-      "group": 0,
-      "label": "INTXN",
-      "name": "BHM INTERSECTIONS"
-    },
-    {
-      "group": 0,
-      "label": "STADIUM",
-      "name": "BHM STADIUMS"
-    },
-    {
-      "group": 0,
-      "label": "RNV1836",
-      "name": "BHM RNAV RUNWAY 18/36 APPROACHES"
-    },
-    {
-      "group": 0,
-      "label": "VORS",
-      "name": "BHM VORS WITHIN 250NM"
-    },
-    {
-      "group": 0,
-      "label": "ARR FIX",
-      "name": "BHM ARRIVAL FIXES"
-    },
-    {
-      "group": 1,
-      "label": "DEP FIX",
-      "name": "BHM DEPARTURE FIX LABELS"
-    },
-    {
-      "group": 1,
-      "label": "ARR LBL",
-      "name": "BHM ARRIVAL FIX LABELS"
-    },
-    {
-      "group": 0,
-      "label": "RNP24",
-      "name": "BHM RNAV (RNP) Z RWY 24 APPROACH"
-    },
-    {
-      "group": 0,
-      "label": "2436BDY",
-      "name": "RWY 24/36 FINAL BOUNDARY"
-    },
-    {
-      "group": 0,
-      "label": "RNP6",
-      "name": "BHM RNAV (RNP) Z RWY 6 APPROACH"
-    },
-    {
-      "group": 0,
-      "label": "2418BDY",
-      "name": "RWY 24/18 FINAL BOUNDARY"
-    },
-    {
-      "group": 1,
-      "label": "INTXNAM",
-      "name": "BHM INTERSECTIONS WITH NAMES"
-    },
-    {
-      "group": 0,
-      "label": "SAT BDY",
-      "name": "BHM SAT BOUNDARY"
-    }
+      "BHM MAIN", "BHM CLASS C", "BHM EMERGENCY", "BHM RNAV RUNWAY 06/24 APPROACH", "BHM/TCL ANNEX", "BHM MINIMUM VECTORING ALTITUDE",
+      "BHM IFR MILITARY TRAINING ROUTES", "BHM EMERGENCY OBSTRUCTION VIDEO MAP", "BHM INTERSECTIONS", "BHM STADIUMS", "BHM RNAV RUNWAY 18/36 APPROACHES",
+      "BHM VORS WITHIN 250NM", "BHM ARRIVAL FIXES", "BHM DEPARTURE FIX LABELS", "BHM ARRIVAL FIX LABELS", "BHM RNAV (RNP) Z RWY 24 APPROACH",
+      "RWY 24/36 FINAL BOUNDARY", "BHM RNAV (RNP) Z RWY 6 APPROACH", "RWY 24/18 FINAL BOUNDARY", "BHM INTERSECTIONS WITH NAMES", "BHM SAT BOUNDARY"
   ],
-"video_map_file": "videomaps/ZTL-videomaps.json.zst"
+"video_map_file": "videomaps/ZTL-videomaps.gob.zst"
     }
 }

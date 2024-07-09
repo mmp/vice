@@ -2,6 +2,128 @@
     "tracon": "C90",
       "airports": {
           "KORD": {
+            "atpa_volumes": {
+              "28L":{
+                    "runway_threshold": "KORD-28L",
+                    "heading": 274,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 15000,
+                    "length": 40,
+                    "left_width": 3000,
+                    "right_width": 2500
+                },
+                "28C":{
+                    "runway_threshold": "KORD-28C",
+                    "heading": 274,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 15000,
+                    "length": 40,
+                    "left_width": 3000,
+                    "right_width": 2500
+                },
+                "28R":{
+                    "runway_threshold": "KORD-28R",
+                    "heading": 274,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 15000,
+                    "length": 40,
+                    "left_width": 3000,
+                    "right_width": 2500
+                },
+                "27L":{
+                    "runway_threshold": "KORD-27L",
+                    "heading": 274,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 15000,
+                    "length": 40,
+                    "left_width": 3000,
+                    "right_width": 2500
+                },
+                "27C":{
+                    "runway_threshold": "KORD-27C",
+                    "heading": 274,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 15000,
+                    "length": 40,
+                    "left_width": 3000,
+                    "right_width": 2500
+                },
+                "27R":{
+                    "runway_threshold": "KORD-27R",
+                    "heading": 274,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 15000,
+                    "length": 40,
+                    "left_width": 3000,
+                    "right_width": 2500
+                },
+                "10C":{
+                    "runway_threshold": "KORD-10C",
+                    "heading": 93.5,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 15000,
+                    "length": 40,
+                    "left_width": 3000,
+                    "right_width": 2500
+                },
+                "10L":{
+                    "runway_threshold": "KORD-10L",
+                    "heading": 93.5,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 15000,
+                    "length": 40,
+                    "left_width": 3000,
+                    "right_width": 2500
+                },
+                "10R":{
+                    "runway_threshold": "KORD-10R",
+                    "heading": 91,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 15000,
+                    "length": 40,
+                    "left_width": 3000,
+                    "right_width": 2500
+                },
+                "9R":{
+                    "runway_threshold": "KORD-9R",
+                    "heading": 93.5,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 15000,
+                    "length": 40,
+                    "left_width": 3000,
+                    "right_width": 2500
+                },
+                "9C":{
+                    "runway_threshold": "KORD-9C",
+                    "heading": 93.5,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 15000,
+                    "length": 40,
+                    "left_width": 3000,
+                    "right_width": 2500
+                },
+                "9L":{
+                    "runway_threshold": "KORD-9L",
+                    "heading": 93.5,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 15000,
+                    "length": 40,
+                    "left_width": 3000,
+                    "right_width": 2500
+                }
+                },
               "approaches": {
                   "I9L": {
                       "runway": "9L",
@@ -100,78 +222,78 @@
                       ]
                   }
               },
-                  "departure_routes": {
-                      "10L": {
-                          "ACITO,BACEN,CMSKY,DENNT,EARND": {
-                              "cleared_altitude": 5000,
-                              "sid": "ORD8.SW",
-                              "waypoints": "KORD-28R/h180"
-                          },
-                          "MOBLE": {
-                              "cleared_altitude": 5000,
-                              "sid": "ORD8.NE",
-                              "waypoints": "KORD-28R/h110"
-                          },
-                          "PEKUE": {
-                              "cleared_altitude": 5000,
-                              "sid": "ORD8.SW",
-                              "waypoints": "KORD-28R/h220"
-                          }
-                      },
-                      "9R": {
-                          "DUFEE": {
-                              "cleared_altitude": 5000,
-                              "sid": "ORD8.NE",
-                              "waypoints": "KORD-27L/h090"
-                          },
-                          "EBAKE": {
-                              "cleared_altitude": 5000,
-                              "sid": "ORD8.NE",
-                              "waypoints": "KORD-27L/h070"
-                          },
-                          "PMPKN,RAYNR": {
-                              "cleared_altitude": 5000,
-                              "sid": "ORD8.NE",
-                              "waypoints": "KORD-27L/h360"
-                          },
-                          "MYKIE,NOONY,OLINN,SIMMN": {
-                              "cleared_altitude": 5000,
-                              "sid": "ORD8.SW",
-                              "waypoints": "KORD-27L/h320"
-                          }
-                      },
-                      "22L": {
-                          "ACITO,BACEN,CMSKY,DENNT,EARND": {
-                              "cleared_altitude": 5000,
-                              "sid": "ORD8.SW",
-                              "waypoints": "KORD-4R/h180"
-                          },
-                          "MOBLE": {
-                              "cleared_altitude": 5000,
-                              "sid": "ORD8.NE",
-                              "waypoints": "KORD-4R/h140"
-                          }
-                      },
-                      "28R": {
-                          "MYKIE,NOONY,OLINN,SIMMN,PEKUE": {
-                              "cleared_altitude": 5000,
-                              "sid": "ORD8.SW",
-                              "waypoints": "KORD-10L/h270"
-                          }
-                      },
-                      "27L": {
-                          "PMPKN,RAYNR": {
-                              "cleared_altitude": 5000,
-                              "sid": "ORD8.NE",
-                              "waypoints": "KORD-9R/h360"
-                          },
-                          "EBAKE,DUFEE": {
-                              "cleared_altitude": 5000,
-                              "sid": "ORD8.NE",
-                              "waypoints": "KORD-9R/h040"
-                          }
-                      }
-                  },
+              "departure_routes": {
+                "10L": {
+                    "ACITO,BACEN,CMSKY,DENNT,EARND": {
+                        "cleared_altitude": 5000,
+                        "sid": "ORD8.S",
+                        "waypoints": "KORD-28R/h180"
+                    },
+                    "MOBLE": {
+                        "cleared_altitude": 5000,
+                        "sid": "ORD8.E",
+                        "waypoints": "KORD-28R/h110"
+                    },
+                    "PEKUE": {
+                        "cleared_altitude": 5000,
+                        "sid": "ORD8.W",
+                        "waypoints": "KORD-28R/h220"
+                    }
+                },
+                "9R": {
+                    "DUFEE": {
+                        "cleared_altitude": 5000,
+                        "sid": "ORD8.E",
+                        "waypoints": "KORD-27L/h090"
+                    },
+                    "EBAKE": {
+                        "cleared_altitude": 5000,
+                        "sid": "ORD8.E",
+                        "waypoints": "KORD-27L/h070"
+                    },
+                    "PMPKN,RAYNR": {
+                        "cleared_altitude": 5000,
+                        "sid": "ORD8.N",
+                        "waypoints": "KORD-27L/h360"
+                    },
+                    "MYKIE,NOONY,OLINN,SIMMN": {
+                        "cleared_altitude": 5000,
+                        "sid": "ORD8.W",
+                        "waypoints": "KORD-27L/h320"
+                    }
+                },
+                "22L": {
+                    "ACITO,BACEN,CMSKY,DENNT,EARND": {
+                        "cleared_altitude": 5000,
+                        "sid": "ORD8.S",
+                        "waypoints": "KORD-4R/h180"
+                    },
+                    "MOBLE": {
+                        "cleared_altitude": 5000,
+                        "sid": "ORD8.E",
+                        "waypoints": "KORD-4R/h140"
+                    }
+                },
+                "28R": {
+                    "MYKIE,NOONY,OLINN,SIMMN,PEKUE": {
+                        "cleared_altitude": 5000,
+                        "sid": "ORD8.W",
+                        "waypoints": "KORD-10L/h270"
+                    }
+                },
+                "27L": {
+                    "PMPKN,RAYNR": {
+                        "cleared_altitude": 5000,
+                        "sid": "ORD8.N",
+                        "waypoints": "KORD-9R/h360"
+                    },
+                    "EBAKE,DUFEE": {
+                        "cleared_altitude": 5000,
+                        "sid": "ORD8.E",
+                        "waypoints": "KORD-9R/h040"
+                    }
+                }
+            },
                   "departures": [
                       {
                           "airlines": [
@@ -2982,8 +3104,8 @@
                         "boundaries": [
                             "CHIAPPF"
                         ],
-                        "lower": 11000,
-                        "upper": 15000
+                        "lower": 9000,
+                        "upper": 12000
                     },
                     {
                         "boundaries": [
@@ -3181,8 +3303,8 @@
                         "boundaries": [
                             "CHIAPPF"
                         ],
-                        "lower": 11000,
-                        "upper": 15000
+                        "lower": 9000,
+                        "upper": 12000
                     },
                     {
                         "boundaries": [
@@ -3303,12 +3425,12 @@
                     "star": "BENKY6",
                     "runway_waypoints": {
                     "KORD": {
-                        "9L": "AHSTN/h350",
-                        "10L": "AHSTN/h350",
-                        "9C": "AHSTN/h350",
-                        "10C": "AHSTN/h350",
-                        "10R": "AHSTN/h350",
-                        "9R": "AHSTN/h350",
+                        "9L": "AHSTN PETAH JORJO MONKZ TONIE/h093",
+                        "10L": "AHSTN PETAH JORJO MONKZ TONIE/h093",
+                        "9C": "AHSTN PETAH JORJO MONKZ TONIE/h093",
+                        "10C": "AHSTN PETAH JORJO MONKZ TONIE/h093",
+                        "10R": "AHSTN PETAH JORJO MONKZ TONIE/h093",
+                        "9R": "AHSTN PETAH JORJO MONKZ TONIE/h093",
                         "27L": "AHSTN PETAH JORJO MONKZ TONIE/h093",
                         "27C": "AHSTN PETAH JORJO MONKZ TONIE/h093",
                         "27R": "AHSTN PETAH KURKK VULCN HIMGO/h093",
@@ -3319,6 +3441,82 @@
                     },
                     "speed_restriction": 250,
                     "waypoints": "BYLAW/a20000/ho BENKY/a12000 NEWRK AHSTN"
+                }
+            ],
+            "TRTLL6": [
+                {
+                    "airlines": {
+                        "KORD": [
+                            {
+                                "airport": "KDEN",
+                                "icao": "UAL"
+                            },
+                            {
+                                "airport": "KDEN",
+                                "icao": "FFT"
+                            },
+                            {
+                                "airport": "KCOS",
+                                "icao": "AWI"
+                            },
+                            {
+                                "airport": "KSLC",
+                                "icao": "DAL"
+                            },
+                            {
+                                "airport": "KSLC",
+                                "fleet": "short",
+                                "icao": "UAL"
+                            },
+                            {
+                                "airport": "KSLC",
+                                "fleet": "short",
+                                "icao": "AAL"
+                            },
+                            {
+                                "airport": "KSFO",
+                                "icao": "UAL"
+                            },
+                            {
+                                "airport": "KLAX",
+                                "icao": "UAL"
+                            },
+                            {
+                                "airport": "KLAX",
+                                "icao": "AAL"
+                            },
+                            {
+                                "airport": "KLAX",
+                                "icao": "NKS"
+                            },
+                            {
+                                "airport": "KLAS",
+                                "icao": "AAL"
+                            }
+                        ]
+                    },
+                    "initial_altitude": 27000,
+                    "initial_controller": "CHI_81_CTR",
+                    "initial_speed" : 280,
+                    "star": "TRTLL6",
+                    "runway_waypoints": {
+                    "KORD": {
+                        "9L": "HIHRY RINNO JORJO MONKZ TONIE/h093",
+                        "10L": "HIHRY RINNO JORJO MONKZ TONIE/h093",
+                        "9C": "HIHRY RINNO JORJO MONKZ TONIE/h093",
+                        "10C": "HIHRY RINNO JORJO MONKZ TONIE/h093",
+                        "10R": "HIHRY RINNO JORJO MONKZ TONIE/h093",
+                        "9R": "HIHRY RINNO JORJO MONKZ TONIE/h093",
+                        "27L": "HIHRY RINNO JORJO MONKZ TONIE/h093",
+                        "27C": "HIHRY RINNO JORJO MONKZ TONIE/h093",
+                        "27R": "HIHRY RINNO KURKK VULCN HIMGO/h093",
+                        "28L": "HIHRY RINNO JORJO MONKZ RREGY/h095",
+                        "28C": "HIHRY RINNO JORJO MONKZ TONIE/h093",
+                        "28R": "HIHRY RINNO JORJO MONKZ TONIE/h093"
+                    }
+                    },
+                    "speed_restriction": 250,
+                    "waypoints": "TRICH/a14000/ho TRTLL/a11000 HIHRY"
                 }
             ],
             "BENKY6_FINALWW": [
@@ -3478,12 +3676,12 @@
                         "10L": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
                         "10C": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
                         "10R": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
-                        "27L": "ERNNY/h150",
-                        "27C": "ERNNY/h150",
-                        "27R": "ERNNY/h150",
-                        "28L": "ERNNY/h150",
-                        "28C": "ERNNY/h150",
-                        "28R": "ERNNY/h150"
+                        "27L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                        "27C": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                        "27R": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                        "28L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                        "28C": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                        "28R": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273"
                     }
                     },
                     "speed_restriction": 250,
@@ -3759,16 +3957,16 @@
                     "star": "FYTTE7",
                     "runway_waypoints": {
                     "KORD": {
-                        "9L": "MADII/h200",
-                        "9C": "MADII/h200",
-                        "9R": "MADII/h200",
-                        "10L": "MADII/h200",
-                        "10C": "MADII/h200",
-                        "10R": "MADII/h200",
+                        "9L": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                        "9C": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                        "9R": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                        "10L": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                        "10C": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                        "10R": "MADII SOOLU KURKK VULCN HIMGO/h093",
                         "27L": "MADII SOOLU KURKK VULCN HIMGO/h093",
-                        "27C": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                        "27C": "MADII SOOLU JORJO MONKZ TONIE/h093",
                         "27R": "MADII SOOLU KURKK VULCN HIMGO/h093",
-                        "28L": "MADII SOOLU JORJO MONKZ TONIE/h093",
+                        "28L": "MADII SOOLU JORJO MONKZ RREGY/h095",
                         "28C": "MADII SOOLU JORJO MONKZ TONIE/h093",
                         "28R": "MADII SOOLU JORJO MONKZ TONIE/h093"
                     }
@@ -3938,12 +4136,12 @@
                     "star": "MADII7",
                     "runway_waypoints": {
                     "KORD": {
-                        "9L": "MADII/h200",
-                        "9C": "MADII/h200",
-                        "9R": "MADII/h200",
-                        "10L": "MADII/h200",
-                        "10C": "MADII/h200",
-                        "10R": "MADII/h200",
+                        "9L": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                        "9C": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                        "9R": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                        "10L": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                        "10C": "MADII SOOLU KURKK VULCN HIMGO/h093",
+                        "10R": "MADII SOOLU KURKK VULCN HIMGO/h093",
                         "27L": "MADII SOOLU KURKK VULCN HIMGO/h093",
                         "27C": "MADII SOOLU JORJO MONKZ TONIE/h093",
                         "27R": "MADII SOOLU KURKK VULCN HIMGO/h093",
@@ -3953,7 +4151,7 @@
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "HUNKA/ho MADII"
+                    "waypoints": "HOPSS/ho HUNKA MADII"
                 }
             ],
             "PANGG5": [
@@ -4132,16 +4330,16 @@
                         "10L": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
                         "10C": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
                         "10R": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
-                        "27L": "CLUSO/h030",
-                        "27C": "CLUSO/h030",
-                        "27R": "CLUSO/h030",
-                        "28L": "CLUSO/h030",
-                        "28C": "CLUSO/h030",
-                        "28R": "CLUSO/h030"
+                        "27L": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
+                        "27C": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
+                        "27R": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
+                        "28L": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
+                        "28C": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270",
+                        "28R": "CLUSO KAYTO PINKK MONKZ JORJO POSSM/h270"
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "BOONE/a11000/ho HANNI CLUSO"
+                    "waypoints": "VEECK/ho BOONE/a11000 HANNI CLUSO"
                 }
             ],
             "VEECK5_FINALWW": [
@@ -4281,7 +4479,7 @@
                         "initial_speed": 280,
                         "star": "WATSN4",
                         "speed_restriction": 250,
-                        "waypoints": "PRISE/ho HULLS/a11000 STYLE DWEEB CENAK/h270"
+                        "waypoints": "PRISE/ho HULLS/a12000 STYLE DWEEB CENAK/h270"
                     }
                 ],
             "WYNDE2": [
@@ -4417,16 +4615,16 @@
                         "10L": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
                         "10C": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
                         "10R": "ERNNY PAPPI TUBEZ MONKZ JORJO POSSM/h270",
-                        "27L": "ERNNY/h150",
-                        "27C": "ERNNY/h150",
-                        "27R": "ERNNY/h150",
-                        "28L": "ERNNY/h150",
-                        "28C": "ERNNY/h150",
-                        "28R": "ERNNY/h150"
+                        "27L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                        "27C": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                        "27R": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                        "28L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                        "28C": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
+                        "28R": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273"
                     }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "WYNDE/ho FIYER/a11000 ERNNY"
+                    "waypoints": "PAITN/ho WYNDE FIYER/a9000 ERNNY"
                 }
             ],
             "FIYER": [
@@ -4862,8 +5060,10 @@
             "CHI_81_CTR": {
                 "frequency": 120350,
                 "full_name": "Chicago Center",
+                "facility_id": "C",
+                "eram_facility": true,
                 "scope_char": "C",
-                "sector_id": "81"
+                "sector_id": "C81"
             },
             "ORD_S_TWR": {
                 "frequency": 120750,
@@ -4996,24 +5196,30 @@
                     },
                     "WYNDE2": {
                         "KORD": 10
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
+                    },
+                    "VEECK5": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"],"backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP"},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7", "MADII7"]},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP"},
                         "CHI_U_APP": {"backup": "CHI_S_APP"},
                         "CHI_P_APP": {"backup": "CHI_S_APP"},
@@ -5119,24 +5325,30 @@
                     },
                     "PANGG5": {
                         "KMDW": 10
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
+                    },
+                    "VEECK5": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"],"backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP"},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7", "MADII7"]},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP", "departures": ["KMDW"]},
                         "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6", "PANGG5"]},
                         "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
@@ -5260,24 +5472,30 @@
                     },
                     "PLANO": {
                         "KPWK": 3
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
+                    },
+                    "VEECK5": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK"], "backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP"},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7", "MADII7"]},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP", "departures": ["KMDW"]},
                         "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6", "PANGG5"]},
                         "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
@@ -5443,24 +5661,30 @@
                     },
                     "MOTIF": {
                         "KLOT": 3
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
+                    },
+                    "VEECK5": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK"], "backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP"},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7", "MADII7"]},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP", "departures": ["KMDW"]},
                         "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6", "PANGG5"]},
                         "CHI_P_APP": {"departures": ["KLOT"], "backup": "CHI_S_APP", "arrivals": ["ENDEE6", "MOTIF"]},
@@ -5665,24 +5889,30 @@
                     },
                     "MOTIF": {
                         "KLOT": 3
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
+                    },
+                    "VEECK5": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK"], "backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP"},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7", "MADII7"]},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP", "departures": ["KMDW"]},
                         "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6", "PANGG5"]},
                         "CHI_P_APP": {"departures": ["KLOT"], "backup": "CHI_S_APP", "arrivals": ["ENDEE6", "MOTIF"]},
@@ -5857,24 +6087,30 @@
                     },
                     "PLANO": {
                         "KPWK": 3
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
+                    },
+                    "VEECK5": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK"], "backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP"},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7", "MADII7"]},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP"},
                         "CHI_U_APP": {"backup": "CHI_S_APP"},
                         "CHI_P_APP": {"backup": "CHI_S_APP"},
@@ -6005,24 +6241,30 @@
                     },
                     "PANGG5": {
                         "KMDW": 10
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
+                    },
+                    "VEECK5": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"], "backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP"},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7", "MADII7"]},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP", "departures": ["KMDW"]},
                         "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6", "PANGG5"]},
                         "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
@@ -6120,24 +6362,30 @@
                     },
                     "WYNDE2": {
                         "KORD": 10
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
+                    },
+                    "BENKY6": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"], "backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP"},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
                         "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2","ERNNY8"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP"},
                         "CHI_U_APP": {"backup": "CHI_S_APP"},
                         "CHI_P_APP": {"backup": "CHI_S_APP"},
@@ -6242,24 +6490,30 @@
                     },
                     "PANGG5": {
                         "KMDW": 10
+                    },
+                    "BENKY6": {
+                        "KORD": 10
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"], "backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP"},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
                         "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2","ERNNY8"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP", "departures": ["KMDW"]},
                         "CHI_U_APP": {"backup": "CHI_S_APP","arrivals": ["FISSK6", "PANGG5"]},
                         "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
@@ -6369,24 +6623,30 @@
                     },
                     "PANGG5": {
                         "KMDW": 10
+                    },
+                    "BENKY6": {
+                        "KORD": 10
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"], "backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP"},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
                         "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP", "departures": ["KMDW"]},
                         "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6", "PANGG5"]},
                         "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
@@ -6526,24 +6786,30 @@
                     },
                     "MOTIF": {
                         "KLOT": 3
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
+                    },
+                    "VEECK5": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK"], "backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP"},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "ERNNY8"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP", "departures": ["KMDW"]},
                         "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6", "PANGG5"]},
                         "CHI_P_APP": {"departures": ["KLOT"], "backup": "CHI_S_APP", "arrivals": ["ENDEE6", "MOTIF"]},
@@ -6748,24 +7014,30 @@
                     },
                     "MOTIF": {
                         "KLOT": 3
+                    },
+                    "VEECK5": {
+                        "KORD": 10
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK"], "backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP"},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2","ERNNY8"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP", "departures": ["KMDW"]},
                         "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6", "PANGG5"]},
                         "CHI_P_APP": {"departures": ["KLOT"], "backup": "CHI_S_APP", "arrivals": ["ENDEE6", "MOTIF"]},
@@ -6940,24 +7212,30 @@
                     },
                     "PLANO": {
                         "KPWK": 3
+                    },
+                    "TRTLL6": {
+                        "KORD": 10
+                    },
+                    "VEECK5": {
+                        "KORD": 10
                     }
                 },
                 "solo_controller": "CHI_Z_APP",
                 "multi_controllers": {
                     "default" : {
                         "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.NE"], "backup": "CHI_Z_APP"},
+                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
                         "CHI_F_APP": {"backup": "CHI_Z_APP"},
                         "CHI_W_APP": {"backup": "CHI_Z_APP"},
                         "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK"], "backup": "CHI_B_DEP"},
+                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
                         "CHI_A_APP": {"backup": "CHI_B_DEP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.SW"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP", "arrivals": ["BENKY6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP"},
-                        "CHI_J_APP": {"backup": "CHI_F_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP", "arrivals": ["FYTTE7"]},
+                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
+                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2","ERNNY8"]},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7"]},
                         "CHI_S_APP": {"backup": "CHI_Z_APP"},
                         "CHI_U_APP": {"backup": "CHI_S_APP"},
                         "CHI_P_APP": {"backup": "CHI_S_APP"},
@@ -7467,10 +7745,10 @@
                         "CHI_A_APP": {"backup": "CHI_B_DEP", "arrivals": ["FIYER", "KRENA"]},
                         "CHI_M_DEP": {"backup": "CHI_B_DEP"},
                         "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_W_APP"},
+                        "CHI_X_APP": {"backup": "CHI_Z_APP"},
                         "CHI_E_APP": {"backup": "CHI_X_APP"},
-                        "CHI_J_APP": {"backup": "CHI_F_APP"},
-                        "CHI_Y_APP": {"backup": "CHI_J_APP"},
+                        "CHI_J_APP": {"backup": "CHI_Y_APP"},
+                        "CHI_Y_APP": {"backup": "CHI_X_APP"},
                         "CHI_S_APP": {"backup": "CHI_Z_APP"},
                         "CHI_U_APP": {"backup": "CHI_S_APP"},
                         "CHI_P_APP": {"departures": ["KLOT"], "backup": "CHI_S_APP", "arrivals": ["MOTIF"]},
@@ -7560,6 +7838,140 @@
         },
         "stars_config": {
             "center": "N41.58.34.897,W87.54.27.062",
+            "coordination_fixes": {
+                "NEWRK": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "TRTLL": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "ENDEE": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "SWIIS": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "PAPPI": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "HALIE": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "FYTTE": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "KURKK": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "MADII": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "SHAIN": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "VEECK": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "CLUSO": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "HULLS": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "WYNDE": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "FIYER": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "KRENA": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "PLANO": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ],
+                "PNT": [
+                    {
+                        "type": "route",
+                        "to": "C90",
+                        "from": "ZAU"
+                    }
+                ]
+            },
+            "airspace_awareness": [
+                {
+                    "fixes": ["ALL"],
+                    "receiving_controller": "CHI_81_CTR"
+                }
+            ],
             "inhibit_ca_volumes": [
                 {
                     "name": "ORD FINAL NO CA",
@@ -7606,7 +8018,7 @@
                 "DUFEE": "DUF",
                 "EBAKE": "EBA",
                 "RAYNR": "RAY",
-                "PMPKN": "PMK",
+                "PMPKN": "PMP",
                 "OLINN": "OLI",
                 "LEWKE": "LEW",
                 "ERECO": "EAR",
@@ -7619,143 +8031,12 @@
                 "ARLYN": "ACI"
             },
             "stars_maps": [
-                {
-                    "group": 1,
-                    "label": "MVA",
-                    "name": "C90 MVA"
-                },
-                {
-                    "group": 1,
-                    "label": "CLASSBC",
-                    "name": "C90 CLASS B C"
-                },
-                {
-                    "group": 0,
-                    "label": "STAR WP",
-                    "name": "C90 ORD STAR WP"
-                },
-                {
-                    "group": 0,
-                    "label": "CAP BAR",
-                    "name": "C90 CAPTURE BARS"
-                },
-                {
-                    "group": 1,
-                    "label": "SATAPCH",
-                    "name": "C90 SAT APCHS"
-                },
-                {
-                    "group": 0,
-                    "label": "ROADS",
-                    "name": "C90 VFR"
-                },
-                {
-                    "group": 0,
-                    "label": "MAIN",
-                    "name": "C90 MAIN"
-                },
-                {
-                    "group": 0,
-                    "label": "DEP",
-                    "name": "C90 DEPS"
-                },
-                {
-                    "group": 0,
-                    "label": "FEED E",
-                    "name": "C90 EAST FLOW"
-                },
-                {
-                    "group": 0,
-                    "label": "FEED W",
-                    "name": "C90 WEST FLOW"
-                },
-                {
-                    "group": 0,
-                    "label": "FEED 4R",
-                    "name": "C90 ORD 4R"
-                },
-                {
-                    "group": 0,
-                    "label": "FEED 22",
-                    "name": "C90 ORD 22"
-                },
-                {
-                    "group": 0,
-                    "label": "SSAT 4R",
-                    "name": "C90 SSAT MDW 4R"
-                },
-                {
-                    "group": 0,
-                    "label": "SSAT 13C",
-                    "name": "C90 SSAT MDW 13C"
-                },
-                {
-                    "group": 0,
-                    "label": "SSAT 22L",
-                    "name": "C90 SSAT MDW 22L"
-                },
-                {
-                    "group": 0,
-                    "label": "SSAT 31C",
-                    "name": "C90 SSAT MDW 31C"
-                },
-                {
-                    "group": 0,
-                    "label": "MDW 4RY",
-                    "name": "MDW RNAV Y RWY 4R"
-                },
-                {
-                    "group": 0,
-                    "label": "MDW 13Y",
-                    "name": "MDW RNAV Y RWY 13C"
-                },
-                {
-                    "group": 0,
-                    "label": "MDW 22X",
-                    "name": "MDW RNAV X RWY 22L"
-                },
-                {
-                    "group": 0,
-                    "label": "MDW 31Y",
-                    "name": "MDW RNAV Y RWY 31C"
-                },
-                {
-                    "group": 0,
-                    "label": "ZAU SECT",
-                    "name": "C90 ZAU LOW SECTORS"
-                },
-                {
-                    "group": 1,
-                    "label": "SHORE",
-                    "name": "C90 SHORE"
-                },
-                {
-                    "group": 0,
-                    "label": "ORD 10L",
-                    "name": "ORD ILS RWY 10L"
-                },
-                {
-                    "group": 0,
-                    "label": "ORD 28R",
-                    "name": "ORD ILS RWY 28R"
-                },
-                {
-                    "group": 0,
-                    "label": "9R-27L",
-                    "name": "ZAU C90 9C-27C 9R-27L"
-                },
-                {
-                    "group": 0,
-                    "label": "ARR FIX",
-                    "name": "ZAU C90 Arrival Fixes"
-                },
-                {
-                    "group": 0,
-                    "label": "NSAT",
-                    "name": "ZAU C90 NSAT RNAV"
-                }
+                "C90 MVA", "C90 CLASS B C", "C90 ORD STAR WP", "C90 CAPTURE BARS", "C90 SAT APCHS", "C90 VFR", "C90 MAIN", "C90 DEPS",
+                "C90 EAST FLOW", "C90 WEST FLOW", "C90 ORD 4R", "C90 ORD 22", "C90 SSAT MDW 4R", "C90 SSAT MDW 13C", "C90 SSAT MDW 22L",
+                "C90 SSAT MDW 31C", "MDW RNAV Y RWY 4R", "MDW RNAV Y RWY 13C", "MDW RNAV X RWY 22L", "MDW RNAV Y RWY 31C", "C90 ZAU LOW SECTORS",
+                "C90 SHORE", "ORD ILS RWY 10L", "ORD ILS RWY 28R", "ZAU C90 9C-27C 9R-27L", "ZAU C90 Arrival Fixes", "ZAU C90 NSAT RNAV"
             ],
-            "video_map_file": "videomaps/ZAU-videomaps.json.zst"
+            "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
         }
 }
   

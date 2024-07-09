@@ -1,5 +1,5 @@
 // config.go
-// Copyright(c) 2022 Matt Pharr, licensed under the GNU Public License, Version 3.
+// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package main
@@ -11,9 +11,14 @@ import (
 	"os"
 	"path"
 	"strings"
-	"time"
 
 	"github.com/mmp/imgui-go/v4"
+	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/panes"
+	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/util"
 )
 
 // Version history 0-7 not explicitly recorded
@@ -30,7 +35,11 @@ import (
 // 18: STARS ATPA
 // 19: runway waypoints now per-airport
 // 20: "stars_config" and various scenario fields moved there, plus STARSFacilityAdaptation
-const CurrentConfigVersion = 20
+// 21: STARS DCB drawing changes, so system list positions changed
+// 22: draw points using triangles, remove some CommandBuffer commands
+// 23: video map format update
+// 24: packages, audio to platform, flight plan processing
+const CurrentConfigVersion = 24
 
 // Slightly convoluted, but the full GlobalConfig definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first
@@ -44,34 +53,29 @@ type GlobalConfig struct {
 }
 
 type GlobalConfigNoSim struct {
-	Version               int
-	InitialWindowSize     [2]int
-	InitialWindowPosition [2]int
-	ImGuiSettings         string
-	WhatsNewIndex         int
-	LastServer            string
-	LastTRACON            string
-	UIFontSize            int
+	platform.Config
 
-	Audio AudioEngine
+	Version       int
+	ImGuiSettings string
+	WhatsNewIndex int
+	LastServer    string
+	LastTRACON    string
+	UIFontSize    int
 
 	DisplayRoot *DisplayNode
 
 	AskedDiscordOptIn        bool
-	InhibitDiscordActivity   AtomicBool
+	InhibitDiscordActivity   util.AtomicBool
 	NotifiedNewCommandSyntax bool
 
 	Callsign string
-
-	highlightedLocation        Point2LL
-	highlightedLocationEndTime time.Time
 }
 
 type GlobalConfigSim struct {
-	Sim *Sim
+	Sim *sim.Sim
 }
 
-func configFilePath() string {
+func configFilePath(lg *log.Logger) string {
 	dir, err := os.UserConfigDir()
 	if err != nil {
 		lg.Errorf("Unable to find user config dir: %v", err)
@@ -93,9 +97,9 @@ func (gc *GlobalConfig) Encode(w io.Writer) error {
 	return enc.Encode(gc)
 }
 
-func (c *GlobalConfig) Save() error {
-	lg.Infof("Saving config to: %s", configFilePath())
-	f, err := os.Create(configFilePath())
+func (c *GlobalConfig) Save(lg *log.Logger) error {
+	lg.Infof("Saving config to: %s", configFilePath(lg))
+	f, err := os.Create(configFilePath(lg))
 	if err != nil {
 		return err
 	}
@@ -104,15 +108,17 @@ func (c *GlobalConfig) Save() error {
 	return c.Encode(f)
 }
 
-func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *World, saveSim bool) bool {
+func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
+	c *sim.ControlClient, saveSim bool, lg *log.Logger) bool {
 	gc.Sim = nil
 	gc.Callsign = ""
 	if saveSim {
-		if sim, err := w.GetSerializeSim(); err != nil {
+		if sim, err := c.GetSerializeSim(); err != nil {
 			lg.Errorf("%v", err)
 		} else {
+			sim.PreSave()
 			gc.Sim = sim
-			gc.Callsign = w.Callsign
+			gc.Callsign = c.Callsign
 		}
 	}
 
@@ -121,7 +127,7 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *W
 	gc.InitialWindowSize = platform.WindowSize()
 	gc.InitialWindowPosition = platform.WindowPosition()
 
-	fn := configFilePath()
+	fn := configFilePath(lg)
 	onDisk, err := os.ReadFile(fn)
 	if err != nil {
 		lg.Warnf("%s: unable to read config file: %v", fn, err)
@@ -137,8 +143,8 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *W
 		return false
 	}
 
-	if err := globalConfig.Save(); err != nil {
-		ShowErrorDialog("Error saving configuration file: %v", err)
+	if err := globalConfig.Save(lg); err != nil {
+		ShowErrorDialog(platform, lg, "Error saving configuration file: %v", err)
 	}
 
 	return true
@@ -147,15 +153,15 @@ func (gc *GlobalConfig) SaveIfChanged(renderer Renderer, platform Platform, w *W
 func SetDefaultConfig() {
 	globalConfig = &GlobalConfig{}
 
-	globalConfig.Audio.SetDefaults()
+	globalConfig.AudioEnabled = true
 	globalConfig.Version = CurrentConfigVersion
 	globalConfig.WhatsNewIndex = len(whatsNew)
 	globalConfig.InitialWindowPosition = [2]int{100, 100}
 	globalConfig.NotifiedNewCommandSyntax = true // don't warn for new installs
 }
 
-func LoadOrMakeDefaultConfig() {
-	fn := configFilePath()
+func LoadOrMakeDefaultConfig(p platform.Platform, lg *log.Logger) {
+	fn := configFilePath(lg)
 	lg.Infof("Loading config from: %s", fn)
 
 	SetDefaultConfig()
@@ -166,7 +172,7 @@ func LoadOrMakeDefaultConfig() {
 		globalConfig = &GlobalConfig{}
 		if err := d.Decode(&globalConfig.GlobalConfigNoSim); err != nil {
 			SetDefaultConfig()
-			ShowErrorDialog("Configuration file is corrupt: %v", err)
+			ShowErrorDialog(p, lg, "Configuration file is corrupt: %v", err)
 		}
 
 		if globalConfig.Version < 1 {
@@ -176,16 +182,14 @@ func LoadOrMakeDefaultConfig() {
 		if globalConfig.Version < 5 {
 			globalConfig.Callsign = ""
 		}
-		if globalConfig.Version < 15 && globalConfig.Audio.AudioEnabled {
-			for i := 0; i < AudioNumTypes; i++ {
-				globalConfig.Audio.EffectEnabled[i] = true
-			}
+		if globalConfig.Version < 24 {
+			globalConfig.AudioEnabled = true
 		}
 
 		if globalConfig.Version < CurrentConfigVersion {
 			if globalConfig.DisplayRoot != nil {
-				globalConfig.DisplayRoot.VisitPanes(func(p Pane) {
-					if up, ok := p.(PaneUpgrader); ok {
+				globalConfig.DisplayRoot.VisitPanes(func(p panes.Pane) {
+					if up, ok := p.(panes.PaneUpgrader); ok {
 						up.Upgrade(globalConfig.Version, CurrentConfigVersion)
 					}
 				})
@@ -196,7 +200,7 @@ func LoadOrMakeDefaultConfig() {
 			// Go ahead and deserialize the Sim
 			r.Seek(0, io.SeekStart)
 			if err := d.Decode(&globalConfig.GlobalConfigSim); err != nil {
-				ShowErrorDialog("Configuration file is corrupt: %v", err)
+				ShowErrorDialog(p, lg, "Configuration file is corrupt: %v", err)
 			}
 		}
 	}
@@ -206,26 +210,23 @@ func LoadOrMakeDefaultConfig() {
 	}
 	globalConfig.Version = CurrentConfigVersion
 
-	if err := globalConfig.Audio.Activate(); err != nil {
-		lg.Errorf("Audio: %v", err)
-	}
-
 	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
 }
 
-func (gc *GlobalConfig) Activate(w *World, r Renderer, eventStream *EventStream) {
+func (gc *GlobalConfig) Activate(c *sim.ControlClient, r renderer.Renderer, p platform.Platform,
+	eventStream *sim.EventStream, lg *log.Logger) {
 	// Upgrade old ones without a MessagesPane
 	if gc.DisplayRoot != nil {
 		haveMessages := false
-		gc.DisplayRoot.VisitPanes(func(p Pane) {
-			if _, ok := p.(*MessagesPane); ok {
+		gc.DisplayRoot.VisitPanes(func(p panes.Pane) {
+			if _, ok := p.(*panes.MessagesPane); ok {
 				haveMessages = true
 			}
 		})
 		if !haveMessages {
 			root := gc.DisplayRoot
 			if root.SplitLine.Axis == SplitAxisX && root.Children[0] != nil {
-				messages := NewMessagesPane()
+				messages := panes.NewMessagesPane()
 				root.Children[0] = &DisplayNode{
 					SplitLine: SplitLine{
 						Pos:  0.075,
@@ -243,10 +244,10 @@ func (gc *GlobalConfig) Activate(w *World, r Renderer, eventStream *EventStream)
 	}
 
 	if gc.DisplayRoot == nil {
-		stars := NewSTARSPane(w)
-		messages := NewMessagesPane()
+		stars := panes.NewSTARSPane(c.State)
+		messages := panes.NewMessagesPane()
 
-		fsp := NewFlightStripPane()
+		fsp := panes.NewFlightStripPane()
 		fsp.AutoAddDepartures = true
 		fsp.AutoAddTracked = true
 		fsp.AutoAddAcceptedHandoffs = true
@@ -274,5 +275,11 @@ func (gc *GlobalConfig) Activate(w *World, r Renderer, eventStream *EventStream)
 		}
 	}
 
-	gc.DisplayRoot.VisitPanes(func(p Pane) { p.Activate(w, r, eventStream) })
+	gc.DisplayRoot.VisitPanes(func(pane panes.Pane) {
+		if c != nil {
+			pane.Activate(&c.State, r, p, eventStream, lg)
+		} else {
+			pane.Activate(nil, r, p, eventStream, lg)
+		}
+	})
 }

@@ -1119,36 +1119,44 @@
         "WAVEY": "South",
         "WHITE": "South",
         "ZIMMZ": "West"
-      },      
+      },
       "tower_list": 1,
       "atpa_volumes": {
         "4R": {
-            "runway_threshold": "KEWR-4R",
-            "heading": 39,
-            "max_heading_deviation": 90,
-            "floor": 100,
-            "ceiling": 5000,
-            "length": 50,
-            "left_width": 20000,
-            "right_width": 20000,
-            "filtered_scratchpads": [ "VAP" ],
-            "excluded_scratchpads": [ "I4L" ],
-            "enable_2.5nm": true,
-            "2.5nm_distance": 10
-          },
-          "22L": {
-              "runway_threshold": "KEWR-22L",
-              "heading": 219,
-              "max_heading_deviation": 90,
-              "floor": 100,
-              "ceiling": 5000,
-              "length": 50,
-              "left_width": 20000,
-              "right_width": 20000,
-              "filtered_scratchpads": [ "VAP" ],
-              "excluded_scratchpads": [ "I2R" ],
-              "enable_2.5nm": true,
-              "2.5nm_distance": 10
+          "runway_threshold": "KEWR-4R",
+          "heading": 39,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 5000,
+          "length": 50,
+          "left_width": 20000,
+          "right_width": 20000,
+          "filtered_scratchpads": [
+            "VAP"
+          ],
+          "excluded_scratchpads": [
+            "I4L"
+          ],
+          "enable_2.5nm": true,
+          "2.5nm_distance": 10
+        },
+        "22L": {
+          "runway_threshold": "KEWR-22L",
+          "heading": 219,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 5000,
+          "length": 50,
+          "left_width": 20000,
+          "right_width": 20000,
+          "filtered_scratchpads": [
+            "VAP"
+          ],
+          "excluded_scratchpads": [
+            "I2R"
+          ],
+          "enable_2.5nm": true,
+          "2.5nm_distance": 10
         }
       }
     },
@@ -1866,32 +1874,32 @@
         "WAVEY": "South",
         "WHITE": "South",
         "ZIMMZ": "West"
-      },     
+      },
       "tower_list": 1,
       "atpa_volumes": {
         "6": {
-            "runway_threshold": "KTEB-6",
-            "heading": 60,
-            "max_heading_deviation": 90,
-            "floor": 100,
-            "ceiling": 5000,
-            "length": 50,
-            "left_width": 20000,
-            "right_width": 20000,
-            "enable_2.5nm": false,
-            "2.5nm_distance": 10
-          },
-          "19": {
-              "runway_threshold": "KTEB-19",
-              "heading": 195,
-              "max_heading_deviation": 90,
-              "floor": 100,
-              "ceiling": 5000,
-              "length": 50,
-              "left_width": 20000,
-              "right_width": 20000,
-              "enable_2.5nm": false,
-              "2.5nm_distance": 10
+          "runway_threshold": "KTEB-6",
+          "heading": 60,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 5000,
+          "length": 50,
+          "left_width": 20000,
+          "right_width": 20000,
+          "enable_2.5nm": false,
+          "2.5nm_distance": 10
+        },
+        "19": {
+          "runway_threshold": "KTEB-19",
+          "heading": 195,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 5000,
+          "length": 50,
+          "left_width": 20000,
+          "right_width": 20000,
+          "enable_2.5nm": false,
+          "2.5nm_distance": 10
         }
       }
     },
@@ -2564,7 +2572,7 @@
         "WAVEY": "South",
         "WHITE": "South",
         "ZIMMZ": "West"
-      }      
+      }
     }
   },
   "arrival_groups": {
@@ -3082,7 +3090,7 @@
         "initial_speed": 250,
         "star": "MAZIE",
         "speed_restriction": null,
-        "waypoints": "MAZIE/a4000/ho SBJ/h059"
+        "waypoints": "N040.16.57.073,W075.16.42.035 MAZIE/a4000/ho SBJ/h059"
       }
     ],
     "JAIKE4": [
@@ -3587,7 +3595,7 @@
           ]
         },
         "assigned_altitude": 6000,
-        "cruise_altitude": 39000,
+        "cruise_altitude": 6000,
         "initial_altitude": 6000,
         "initial_controller": "WRI_APP",
         "initial_speed": 300,
@@ -3603,7 +3611,8 @@
       "full_name": "Allentown approach",
       "scope_char": "4",
       "sector_id": "1A",
-      "facility_id": "4"
+      "facility_id": "4",
+      "facility": "ABE"
     },
     "BOS_CTR": {
       "frequency": 134700,
@@ -3611,13 +3620,15 @@
       "scope_char": "C",
       "sector_id": "B37",
       "facility_id": "B",
-      "eram_facility": true
+      "eram_facility": true,
+      "facility": "ZBW"
     },
     "CDW_TWR": {
       "frequency": 119800,
       "full_name": "Caldwell tower",
       "scope_char": "T",
-      "sector_id": "4T"
+      "sector_id": "4T",
+      "facility": "N90"
     },
     "DC_CTR": {
       "frequency": 133725,
@@ -3625,85 +3636,99 @@
       "scope_char": "C",
       "sector_id": "W32",
       "facility_id": "W",
-      "eram_facility": true
+      "eram_facility": true,
+      "facility": "ZDC"
     },
     "EWR_APP": {
       "frequency": 128550,
       "full_name": "New York approach",
       "scope_char": "P",
-      "sector_id": "4P"
+      "sector_id": "4P",
+      "facility": "N90"
     },
     "EWR_A_APP": {
       "frequency": 120150,
       "full_name": "New York approach",
       "scope_char": "A",
-      "sector_id": "4A"
+      "sector_id": "4A",
+      "facility": "N90"
     },
     "EWR_DEP": {
       "frequency": 119200,
       "full_name": "New York departure",
       "scope_char": "N",
-      "sector_id": "4N"
+      "sector_id": "4N",
+      "facility": "N90"
     },
     "EWR_H_APP": {
       "frequency": 132800,
       "full_name": "New York approach",
       "scope_char": "H",
-      "sector_id": "4H"
+      "sector_id": "4H",
+      "facility": "N90"
     },
     "EWR_P_APP": {
       "frequency": 128550,
       "full_name": "New York approach",
       "scope_char": "P",
-      "sector_id": "4P"
+      "sector_id": "4P",
+      "facility": "N90"
     },
     "EWR_M_APP": {
       "frequency": 125550,
       "full_name": "New York approach",
       "scope_char": "M",
-      "sector_id": "4M"
+      "sector_id": "4M",
+      "facility": "N90"
     },
     "EWR_Q_APP": {
       "frequency": 125500,
       "full_name": "New York approach",
       "scope_char": "Q",
-      "sector_id": "4Q"
+      "sector_id": "4Q",
+      "facility": "N90"
     },
     "EWR_S_APP": {
       "frequency": 123770,
       "full_name": "New York approach",
       "scope_char": "S",
-      "sector_id": "4S"
+      "sector_id": "4S",
+      "facility": "N90"
     },
     "EWR_TWR": {
       "frequency": 118300,
       "full_name": "Newark tower",
       "scope_char": "T",
-      "sector_id": "4Z"
+      "sector_id": "4Z",
+      "facility": "N90"
     },
     "EWR_U_APP": {
       "frequency": 127600,
       "full_name": "New York approach",
       "scope_char": "U",
-      "sector_id": "4U"
+      "sector_id": "4U",
+      "facility": "N90"
     },
     "LGA_APP": {
       "frequency": 120800,
       "full_name": "New York approach",
       "scope_char": "V",
-      "sector_id": "1V"
+      "sector_id": "1V",
+      "facility": "N90"
     },
     "LGA_DEP": {
       "frequency": 120400,
       "full_name": "New York approach",
       "scope_char": "L",
-      "sector_id": "1L"
+      "sector_id": "1L",
+      "facility": "N90"
     },
     "MMU_TWR": {
       "frequency": 118100,
       "full_name": "Morristown tower",
       "scope_char": "T",
-      "sector_id": "4K"
+      "sector_id": "4K",
+      "facility": "N90"
     },
     "NY_CTR": {
       "frequency": 125325,
@@ -3711,51 +3736,59 @@
       "scope_char": "C",
       "sector_id": "C56",
       "facility_id": "C",
-      "eram_facility": true
+      "eram_facility": true,
+      "facility": "ZNY"
     },
     "NY_LE_DEP": {
       "frequency": 126800,
       "full_name": "New York departure",
       "scope_char": "E",
-      "sector_id": "5E"
+      "sector_id": "5E",
+      "facility": "N90"
     },
     "NY_LN_DEP": {
       "frequency": 118170,
       "full_name": "New York departure",
       "scope_char": "T",
-      "sector_id": "5T"
+      "sector_id": "5T",
+      "facility": "N90"
     },
     "NY_LS_DEP": {
       "frequency": 124750,
       "full_name": "New York departure",
       "scope_char": "S",
-      "sector_id": "5S"
+      "sector_id": "5S",
+      "facility": "N90"
     },
     "NY_LW_DEP": {
       "frequency": 120850,
       "full_name": "New York departure",
       "scope_char": "W",
-      "sector_id": "5W"
+      "sector_id": "5W",
+      "facility": "N90"
     },
     "PHL_E_APP": {
       "frequency": 128400,
       "full_name": "Philly approach",
       "scope_char": "2",
       "sector_id": "1N",
-      "facility_id": "2"
+      "facility_id": "2",
+      "facility": "PHL"
     },
     "TEB_TWR": {
       "frequency": 119500,
       "full_name": "Teterboro tower",
       "scope_char": "T",
-      "sector_id": "4J"
+      "sector_id": "4J",
+      "facility": "N90"
     },
     "WRI_APP": {
       "frequency": 126470,
       "full_name": "McGuire approach",
       "scope_char": "5",
       "sector_id": "1Y",
-      "facility_id": "5"
+      "facility_id": "5",
+      "facility": "WRI"
     }
   },
   "default_scenario": "KEWR Depart 22R Land 22L",
@@ -3839,11 +3872,11 @@
         },
         "JAIKE4": {
           "KTEB": 2,
-          "KMMU":5
+          "KMMU": 5
         },
         "MAZIE": {
           "KTEB": 5,
-          "KMMU":2
+          "KMMU": 2
         },
         "PHL": {
           "KEWR": 2
@@ -3922,7 +3955,7 @@
         "WRI_APP"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "departure_runways": [
         {
@@ -3970,7 +4003,9 @@
         "PHL_E_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR" ],
+      "default_maps": [
+        "EWR ARR/DEP"
+      ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -4017,7 +4052,9 @@
         "PHL_E_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR" ],
+      "default_maps": [
+        "EWR ARR/DEP"
+      ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -4077,7 +4114,7 @@
         },
         "MAZIE": {
           "KTEB": 5,
-          "KMMU":2
+          "KMMU": 2
         },
         "PHL": {
           "KEWR": 2
@@ -4156,7 +4193,7 @@
         "WRI_APP"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "departure_runways": [
         {
@@ -4196,7 +4233,7 @@
         "COATE": {
           "KTEB": 7,
           "KMMU": 2
-        },        
+        },
         "LVZ4": {
           "KTEB": 7,
           "KMMU": 2
@@ -4210,7 +4247,7 @@
           "KMMU": 1
         }
       },
-      "solo_controller": "EWR_U_APP",    
+      "solo_controller": "EWR_U_APP",
       "controllers": [
         "LGA_DEP",
         "LGA_APP",
@@ -4229,7 +4266,9 @@
         "PHL_E_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR" ],      
+      "default_maps": [
+        "EWR ARR/DEP"
+      ],
       "wind": {
         "direction": 60,
         "gust": 13,
@@ -4251,7 +4290,7 @@
         "COATE": {
           "KTEB": 7,
           "KMMU": 2
-        },        
+        },
         "LVZ4": {
           "KTEB": 7,
           "KMMU": 2
@@ -4265,7 +4304,7 @@
           "KMMU": 1
         }
       },
-      "solo_controller": "EWR_U_APP",    
+      "solo_controller": "EWR_U_APP",
       "controllers": [
         "LGA_DEP",
         "LGA_APP",
@@ -4284,7 +4323,9 @@
         "PHL_E_APP",
         "WRI_APP"
       ],
-      "default_maps": [ "EWR" ],      
+      "default_maps": [
+        "EWR ARR/DEP"
+      ],
       "wind": {
         "direction": 240,
         "gust": 18,
@@ -4327,7 +4368,7 @@
         "CDW_TWR"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "wind": {
         "direction": 220,
@@ -4365,7 +4406,7 @@
         "CDW_TWR"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "wind": {
         "direction": 230,
@@ -4403,7 +4444,7 @@
         "CDW_TWR"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "wind": {
         "direction": 300,
@@ -4441,7 +4482,7 @@
         "CDW_TWR"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "wind": {
         "direction": 60,
@@ -4479,7 +4520,7 @@
         "CDW_TWR"
       ],
       "default_maps": [
-        "EWR"
+        "EWR ARR/DEP"
       ],
       "wind": {
         "direction": 30,
@@ -4489,8 +4530,73 @@
     }
   },
   "stars_config": {
-  "center": "N040.43.34.389,W074.28.54.713",
-  "range": 60,
+    "center": "N040.43.34.389,W074.28.54.713",
+    "range": 60,
+    "beacon_bank": 6,
+    "coordination_fixes": {
+      "FLOSI": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+        }
+      ],
+      "DYLIN": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+        }
+      ],
+      "SWEET": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+        }
+      ],
+      "RBV": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "PHL",
+          "altitude": [
+            7000,
+            7000
+          ]
+        }, 
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "WRI",
+          "altitude": [
+            6000,
+            6000
+          ]
+        }
+      ],
+      "MUGZY": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+        }
+      ],
+      "MAZIE": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "PHL"
+        }
+      ],
+      "HUO": [
+        {
+          "type": "route",
+          "to": "N90",
+          "from": "ZNY"
+        }
+      ]
+    },
   "inhibit_ca_volumes": [
     {
       "name": "EWR NO CA",
@@ -4548,11 +4654,11 @@
       "slope_angle": 0.175
     }
   },
-    "allow_long_scratchpad": [
-      false,
-      false
-    ],
-    "force_ql_self": true,
+  "allow_long_scratchpad": [
+    false,
+    false
+  ],
+  "force_ql_self": true,
   "scratchpads": {
     "BAYYS": "BAY",
     "BDR": "BDR",
@@ -4579,77 +4685,42 @@
     "ZIMMZ": "ZIM"
   },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "EWR",
-      "name": "EWR"
-    },
-    {
-      "group": 0,
-      "label": "EWR SAT",
-      "name": "EWR Satellites"
-    },
-    {
-      "group": 0,
-      "label": "EWR CRDA",
-      "name": "EWR CRDA"
-    },
-    {
-      "group": 1,
-      "label": "NY B",
-      "name": "N90 CLASS B"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "N90 MVA"
-    },
-    {
-      "group": 0,
-      "label": "JFK4",
-      "name": "JFK 4s"
-    },
-    {
-      "group": 0,
-      "label": "JFK13",
-      "name": "JFK 13s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22",
-      "name": "JFK 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31",
-      "name": "JFK 31s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22 ILS",
-      "name": "JFK ILS 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31 NTZ",
-      "name": "JFK 31s NTZ"
-    },
-    {
-      "group": 0,
-      "label": "LGA",
-      "name": "LGA"
-    },
-    {
-      "group": 0,
-      "label": "LIB D",
-      "name": "LIB Departure"
-    },
-    {
-      "group": 0,
-      "label": "LIB C",
-      "name": "LIB Catskill"
-    }
+    "EWR ARR/DEP",
+    "MVA",
+    "NY Class B",
+    "EOVM",
+    "MMU ILS 23",
+    "CDW RNAV",
+    "EWR CRDA",
+    "EWR GLS",
+    "TEB RNAV (GPS) RWY 6",
+    "RNAVX 29",
+    "TEB RNAV",
+    "LGA & VAP",
+    "EWR RNAV",
+    "STW/SAX RNAV",
+    "N07 RNAV",
+    "DEPARTURE RNAV",
+    "SMQ/N51",
+    "39N/47N",
+    "JFK ARR/DEP RWY 4L/R",
+    "JFK ARR/DEP RWY 13L/R",
+    "JFK ARR/DEP",
+    "N90 TFR",
+    "Coast",
+    "EOVM",
+    "",
+    "EWR GPS",
+    "",
+    "",
+    "NE HELI RNAV ROUTES",
+    "CATSKILL AREA",
+    "LIBERTY DEP",
+    "ISP ARR/DEP",
+    "LGA-HPN ARR/DEP",
+    "JFK ARR/DEP RWY 22L/R",
+    "JFK ARR/DEP RWY 31L/R"
   ],
-  "video_map_file": "videomaps/n90-maps.json.zst"
-  }
+  "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
+}
 }

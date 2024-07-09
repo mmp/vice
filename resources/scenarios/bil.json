@@ -1,0 +1,384 @@
+{
+  "tracon": "BIL",
+  "airports": {
+    "KBIL": {
+      "approaches": {
+        "I8R": {
+          "tower_controller": "BIL_TWR",
+          "cifp_id": "I28R"
+        },
+        "I0L": {
+          "tower_controller": "BIL_TWR",
+          "cifp_id": "IY10L"
+        },
+        "R25": {
+          "tower_controller": "BIL_TWR",
+          "cifp_id": "R25"
+        },
+        "R7": {
+          "tower_controller": "BIL_TWR",
+          "cifp_id": "R7"
+        }
+      },
+      "departure_routes": {
+        "10L": {
+          "GTF, LWT, GGW, MLS, DPR, RAP, CZI, SHR, BOY, DNW, COD, LVM, BZN, DBS, HIA, HLN, LAYLY, ANJLA, NELKS, ARMTY, GAITZ": {
+            "assigned_altitude": 15000,
+            "waypoints": "KBIL-28R/h100"
+          }
+        },
+        "28R": {
+          "GTF, LWT, GGW, MLS, DPR, RAP, CZI, SHR, BOY, DNW, COD, LVM, BZN, DBS, HIA, HLN, LAYLY, ANJLA, NELKS, ARMTY, GAITZ": {
+            "assigned_altitude": 15000,
+            "waypoints": "KBIL-10L/h280"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "KAP"
+            }
+          ],
+          "destination": "KMLS",
+          "exit": "LAYLY",
+          "route": "LAYLY",
+          "scratchpad": "LAY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "KAP"
+            }
+          ],
+          "destination": "KGDV",
+          "exit": "ANJLA",
+          "route": "ANJLA",
+          "scratchpad": "ANJ"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "KAP"
+            }
+          ],
+          "destination": "KSDY",
+          "exit": "LAYLY",
+          "route": "LAYLY",
+          "scratchpad": "LAY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "KAP"
+            }
+          ],
+          "destination": "K4U6",
+          "exit": "LAYLY",
+          "route": "LAYLY",
+          "scratchpad": "LAY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KSLC",
+          "exit": "NELKS",
+          "route": "NELKS SYMPL JAC NORDK6",
+          "scratchpad": "NEL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KDEN",
+          "exit": "BOY",
+          "route": "BOY TOFUU FLATI3",
+          "scratchpad": "BOY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "QXE"
+            }
+          ],
+          "destination": "KPDX",
+          "exit": "ARMTY",
+          "route": "BIL ARMTY ASHUW HIA J16 PDT JKNOX HHOOD4",
+          "scratchpad": "ARM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "QXE"
+            }
+          ],
+          "destination": "KSEA",
+          "exit": "ARMTY",
+          "route": "BIL ARMTY ASHUW HLN J136 MLP GLASR3",
+          "scratchpad": "ARM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KDEN",
+          "exit": "GAITZ",
+          "route": "BIL GAITZ GRYNS TOFUU FLATI3",
+          "scratchpad": "GAI"
+        }
+      ],
+      "tower_list": 1
+    }
+  },
+  "arrival_groups": {
+    "CRAZI4": [
+      {
+        "airlines": {
+          "KBIL": [
+            {
+              "airport": "KSEA",
+              "icao": "QXE"
+            },
+            {
+              "airport": "KPDX",
+              "icao": "QXE"
+            }
+          ]
+        },
+        "initial_altitude": 16000,
+        "initial_controller": "SLC_17_CTR",
+        "initial_speed": 270,
+        "spawn": "LOKOW@0.8",
+        "star": "CRAZI4"
+      }
+    ],
+    "BGHRN3": [
+      {
+        "airlines": {
+          "KBIL": [
+            {
+              "airport": "KDEN",
+              "icao": "SKW"
+            },
+            {
+              "airport": "KDEN",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KAPA",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KDFW",
+              "icao": "ENY"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "SLC_17_CTR",
+        "initial_speed": 270,
+        "spawn": "CUSGA@0.5",
+        "star": "BGHRN3"
+      }
+    ],
+    "KUSTR3": [
+      {
+        "airlines": {
+          "KBIL": [
+            {
+              "airport": "CYWG",
+              "icao": "ACA"
+            }
+          ]
+        },
+        "initial_altitude": 17000,
+        "initial_controller": "SLC_17_CTR",
+        "initial_speed": 250,
+        "spawn": "CONUK@0.85",
+        "star": "KUSTR3"
+      }
+    ],
+    "YLSTN3": [
+      {
+        "airlines": {
+          "KBIL": [
+            {
+              "airport": "KSLC",
+              "icao": "SKW"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "SLC_17_CTR",
+        "initial_speed": 250,
+        "spawn": "JEKUG@0.9",
+        "star": "YLSTN3"
+      }
+    ]
+  },
+  "control_positions": {
+    "BIL_TWR": {
+      "frequency": 127200,
+      "full_name": "Billings Tower",
+      "scope_char": "T",
+      "sector_id": "1T"
+    },
+    "BIL_APP": {
+      "frequency": 119200,
+      "full_name": "Billings Approach",
+      "scope_char": "W",
+      "sector_id": "1W"
+    },
+    "SLC_17_CTR": {
+      "frequency": 126850,
+      "full_name": "Salt Lake City Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "scope_char": "C",
+      "sector_id": "C17"
+    }
+  },
+  "default_scenario": "Land West",
+  "name": "BIL",
+  "primary_airport": "KBIL",
+  "scenarios": {
+    "Land West": {
+      "arrival_runways": [
+        {
+          "airport": "KBIL",
+          "runway": "28R"
+        }
+      ],
+      "arrivals": {
+        "CRAZI4": {
+          "KBIL": 5
+        },
+        "BGHRN3": {
+          "KBIL": 5
+        },
+        "KUSTR3": {
+          "KBIL": 5
+        },
+        "YLSTN3": {
+          "KBIL": 5
+        }
+      },
+      "solo_controller": "BIL_APP",
+      "controllers": [
+        "BIL_TWR",
+        "BIL_APP",
+        "SLC_17_CTR"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KBIL",
+          "rate": 10,
+          "runway": "28R"
+        }
+      ],
+      "wind": {
+        "direction": 270,
+        "speed": 12
+      },
+      "default_maps": [
+        "STARS-BIL_MVA__Minimum Vectoring Altitudes",
+        "STARS-BIL_W-FLOW__West Flow Map"
+      ]
+    },
+    "Land East": {
+      "arrival_runways": [
+        {
+          "airport": "KBIL",
+          "runway": "10L"
+        }
+      ],
+      "arrivals": {
+        "CRAZI4": {
+          "KBIL": 5
+        },
+        "BGHRN3": {
+          "KBIL": 5
+        },
+        "KUSTR3": {
+          "KBIL": 5
+        },
+        "YLSTN3": {
+          "KBIL": 5
+        }
+      },
+      "solo_controller": "BIL_APP",
+      "controllers": [
+        "BIL_TWR",
+        "BIL_APP",
+        "SLC_17_CTR"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KBIL",
+          "rate": 10,
+          "runway": "10L"
+        }
+      ],
+      "wind": {
+        "direction": 110,
+        "speed": 9
+      },
+      "default_maps": [
+        "STARS-BIL_MVA__Minimum Vectoring Altitudes",
+        "STARS-BIL_E-FLOW__East Flow Map"
+      ]
+    }
+  },
+  "stars_config": {
+    "coordination_fixes": {
+            "CRAZI": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "BGHRN": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "KUSTR": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "YLSTN": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ]
+        },
+    "center": "KBIL",
+    "scratchpads": {},
+      "stars_maps": ["STARS-BIL_E-FLOW__East Flow Map", "STARS-BIL_W-FLOW__West Flow Map", "STARS-BIL_E-APP__East Flow Approaches",
+                     "STARS-BIL_W-APP__West Flow Approaches", "STARS-BIL_MVA__Minimum Vectoring Altitudes", "STARS-BIL_EOVM__Emerg. Obstruction Video Map",
+                     "STARS-BIL_R28Z-N__RNAV Z RWY28R APP", "STARS-BIL_R28Z__RNAV Z RWY28R APP W-NAMES", "STARS-BIL_SAT__Sattelite Airport Approaches",
+                     "STARS-BIL_ARPTS__SURROUNDING AIRPORTS", "STARS-BIL_BGHRN-N__BGHRN STAR", "STARS-BIL_BGHRN__BGHRN STAR W-NAMES",
+                     "STARS-BIL_CRAZI-N__CRAZI STAR", "STARS-BIL_CRAZI__CRAZI STAR W-NAMES", "STARS-BIL_KUSTR-N__KUSTR STAR",
+                     "STARS-BIL_KUSTR__KUSTR STAR W-NAMES", "STARS-BIL_YLSTN-N__YLSTN STAR", "STARS-BIL_YLSTN__YLSTN STAR W-NAMES",
+                     "STARS-BIL_CTR__ZLC 15-39 CTR SPLIT", "STARS-BIL_MOA 1A__POWDER RIVER 1A MOA", "STARS-BIL_MOA 1C__POWDER RIVER 1C MOA",
+                     "STARS-BIL_MTR__Military Training Route IR-473"
+    ],
+    "video_map_file": "videomaps/ZLC-videomaps.gob.zst"
+  }
+}

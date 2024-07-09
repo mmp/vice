@@ -4066,7 +4066,7 @@
     "category": {
       "srs": 3,
       "lahso": null,
-      "cwt": "D"
+      "cwt": "H"
     },
     "ceiling": 45000,
     "rate": {
@@ -4103,7 +4103,7 @@
     "category": {
       "srs": 3,
       "lahso": 7,
-      "cwt": "E"
+      "cwt": "G"
     },
     "ceiling": 41000,
     "rate": {

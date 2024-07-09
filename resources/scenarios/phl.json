@@ -5157,7 +5157,7 @@
         "DC_CTR",
         "NY_A_CTR"
       ],
-      "default_maps": [ "Philadelphia Map West" ],
+      "default_maps": [ "PHL West" ],
       "wind": {
         "direction": 290,
         "speed": 8
@@ -5212,7 +5212,7 @@
         "DC_CTR",
         "NY_A_CTR"
       ],
-      "default_maps": [ "Philadelphia Map West" ],
+      "default_maps": [ "PHL West" ],
       "departure_airspace": [
         "PHL_N_DEP27",
         "PHL_S_DEP27",
@@ -5281,7 +5281,7 @@
         "DC_CTR",
         "NY_A_CTR"
       ],
-      "default_maps": [ "Philadelphia Map East" ],
+      "default_maps": [ "PHL East" ],
       "departure_airspace": [
         "PHL_N_DEP9",
         "PHL_N_HIGH9",
@@ -5304,6 +5304,71 @@
   },
   "stars_config": {
   "center": "KPHL",
+  "coordination_fixes": {
+    "OOD": [
+      {
+        "type": "route",
+        "to": "ZDC",
+        "from": "ZNY"
+      }
+    ],
+    "DQO": [
+      {
+        "type": "route",
+        "to": "ZDC",
+        "from": "ZNY"
+      }
+    ],
+    "BOJID": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ],
+  "HIFAL": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ],
+  "CHPMN": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ],
+  "SPERY": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ],
+  "JIIMS": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ],
+  "PAATS": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ],
+  "SPUDS": [
+      {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+      }
+  ]
+  },
   "radar_sites": {
     "NXX": {
       "char": "N",
@@ -5417,33 +5482,10 @@
     "STOEN": "STO",
     "WHITE": "WHI"
   },
-  "stars_maps": [
-    {
-      "group": 0,
-      "label": "PHL WEST",
-      "name": "Philadelphia Map West"
-    },
-    {
-      "group": 0,
-      "label": "PHL EAST",
-      "name": "Philadelphia Map East"
-    },
-    {
-      "group": 1,
-      "label": "PHL MVA",
-      "name": "Philly MVA"
-    },
-    {
-      "group": 1,
-      "label": "PHL B",
-      "name": "Philly Class B"
-    },
-    {
-      "group": 1,
-      "label": "COAST",
-      "name": "Coastline"
-    }
-  ],
-  "video_map_file": "videomaps/phl-maps.json.zst"
+      "stars_maps": [ "PHL West", "P Class B", "",
+                      "PHL East", "PHL MVA", "",
+                      "PHL ATCT West", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+                      "PHL ATCT East", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" ],
+  "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
   }
 }

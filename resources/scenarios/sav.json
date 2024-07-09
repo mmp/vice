@@ -928,6 +928,36 @@
   },
   "stars_config": {
   "center": "KSAV",
+  "coordination_fixes": {
+    "VIYAP": [
+         {
+          "type": "route",
+          "to": "SAV",
+          "from": "ZJX"
+          } 
+      ],
+      "PLZZZ": [
+          {
+              "type": "route",
+              "to": "SAV",
+              "from": "ZJX"
+          }
+      ],
+      "LOTTS": [
+          {
+              "type": "route",
+              "to": "SAV",
+              "from": "ZJX"
+          }
+      ],
+      "SOOOP": [
+          {
+              "type": "route",
+              "to": "SAV",
+              "from": "ZJX"
+          }
+      ]
+  },
   "radar_sites": {
     "SAV": {
       "char": "S",
@@ -955,52 +985,8 @@
     "SMALZ": "SMA"
   },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "MAP",
-      "name": "RADAR MAP"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "MVA "
-    },
-    {
-      "group": 1,
-      "label": "CLASS C",
-      "name": "CLASS C D AIRSPACE"
-    },
-    {
-      "group": 1,
-      "label": "LOWAIRW",
-      "name": "LOW AIRWAYS SAV"
-    },
-    {
-    "group": 1,
-    "label": "COAST",
-    "name": "COASTLINE"
-    },
-    {
-      "group": 0,
-      "label": "RVAV 28",
-      "name": "RNAV Z - 28"
-    },
-    {
-        "group": 0,
-        "label": "RVAV 10",
-        "name": "RNAV-10"
-    },
-    {
-        "group": 0,
-        "label": "RNAV 19",
-        "name": "RNAV-19"
-    },
-    {
-        "group": 0,
-        "label": "RNAV 01",
-        "name": "RNAV - 01"
-    }
+      "RADAR MAP", "MVA ", "CLASS C D AIRSPACE", "LOW AIRWAYS SAV", "COASTLINE", "RNAV Z - 28", "RNAV-10", "RNAV-19", "RNAV - 01"
   ],
-  "video_map_file": "videomaps/ZJX-videomaps.json.zst"
+  "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
   }
 }

@@ -2529,6 +2529,50 @@
       "center": "N33.38.24.846,W84.25.42.088",
       "allow_long_scratchpad": [false, false],
       "force_ql_self": true,
+      "coordination_fixes": {
+        "CHPPR": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "GLAVN": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "HOBTT": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "JJEDI": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "ONDRE": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ],
+      "OZZZI": [
+          {
+              "type": "route",
+              "to": "A80",
+              "from": "ZTL"
+          }
+      ]
+      },
       "radar_sites": {
           "KATL": {
               "char": "A",
@@ -2565,58 +2609,10 @@
         "NOKIE": "VRS"
       },
       "stars_maps": [
-        {
-          "group": 0,
-          "label": "CLASS B",
-          "name": "CLASS BRAVO"
-        },
-        {
-          "group": 0,
-          "label": "TAR WEST",
-          "name": "TERMINAL ARRIVAL RADAR WEST"
-        },
-        {
-          "group": 0,
-          "label": "AR WEST TRIPS",
-          "name": "ARRIVAL RADAR WEST TRIPLES"
-        },
-        {
-          "group": 0,
-          "label": "TAR EAST",
-          "name": "TERMINAL ARRIVAL RADAR EAST"
-        },
-        {
-          "group": 0,
-          "label": "AR EAST TRIPS",
-          "name": "ARRIVAL RADAR EAST TRIPLES"
-        },
-        {
-          "group": 0,
-          "label": "MVA",
-          "name": "FUSION MINIMUM VECTORING ALTITUDE"
-        },
-        {
-          "group": 0,
-          "label": "DR EAST",
-          "name": "DEPARTURE RADAR EAST"
-        },
-        {
-          "group": 0,
-          "label": "DR WEST",
-          "name": "DEPARTURE RADAR WEST"
-        },
-        {
-          "group": 0,
-          "label": "AR WEST DUALS",
-          "name": "ARRIVAL RADAR WEST DUALS"
-        },
-        {
-          "group": 0,
-          "label": "AR EAST DUALS",
-          "name": "ARRIVAL RADAR EAST DUALS"
-        }
+          "ATL CLASS B", "TERMINAL ARRIVAL RADAR WEST", "ARRIVAL RADAR WEST TRIPS", "TERMINAL ARRIVAL RADAR EAST", "ARRIVAL RADAR EAST TRIPS",
+          "DEPARTURE RADAR EAST", "DEPARTURE RADAR WEST", "ARRIVAL RADAR WEST DUALS", "ARRIVAL RADAR EAST DUALS"
       ],
-    "video_map_file": "videomaps/atl-maps.json.zst",
+    "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
     "airspace_awareness": [
       {
         "fixes": [
@@ -3061,7 +3057,7 @@
                 "ATL_5_TWR",
                 "ATL_CTR"
               ],
-              "default_maps": [ "ARRIVAL RADAR WEST TRIPLES" ],
+              "default_maps": [ "ARRIVAL RADAR WEST TRIPS" ],
               "wind": {
                 "direction": 270,
                 "speed": 5

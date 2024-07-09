@@ -1398,6 +1398,36 @@
     },
     "stars_config": {
     "center": "KPHX",
+    "coordination_fixes": {
+        "BRUSR": [
+            {
+                "type": "route",
+                "to": "P50",
+                "from": "ZAB"
+            }
+        ],
+        "HOMRR": [
+            {
+                "type": "route",
+                "to": "P50",
+                "from": "ZAB"
+            }
+        ],
+        "GEELA": [
+            {
+                "type": "route",
+                "to": "P50",
+                "from": "ZAB"
+            }
+        ],
+        "BRDEY": [
+            {
+                "type": "route",
+                "to": "P50",
+                "from": "ZAB"
+            }
+        ]
+    },
     "radar_sites": {
         "PHX": {
           "char": "P",
@@ -1459,107 +1489,10 @@
         "RRSTA": "ZEP"
     },
     "stars_maps": [
-        {
-            "group": 0,
-            "label": "RWY7R_8",
-            "name": "PHX667 RWY7R_8"
-        },
-        {
-            "group": 0,
-            "label": "RWY2526",
-            "name": "PHX668 RWY2526"
-        },
-        {
-            "group": 1,
-            "label": "CLASS_B",
-            "name": "PHX101 CLASS_B"
-        },
-        {
-            "group": 1,
-            "label": "PTACWRD",
-            "name": "PHX165 PTACWRD"
-        },
-        {
-            "group": 1,
-            "label": "EOVM",
-            "name": "PHX307 EOVM"
-        },
-        {
-            "group": 1,
-            "label": "PHX003",
-            "name": "PHX003 PHX003"
-        },
-        {
-            "group": 0,
-            "label": "E_ARR",
-            "name": "PHX166 E_ARR"
-        },
-        {
-            "group": 0,
-            "label": "W_ARR",
-            "name": "PHX167 W_ARR"
-        },
-        {
-            "group": 0,
-            "label": "E_DEP",
-            "name": "PHX168 E_DEP"
-        },
-        {
-            "group": 0,
-            "label": "W_DEP",
-            "name": "PHX169 W_DEP"
-        },
-        {
-            "group": 0,
-            "label": "EFINSAT",
-            "name": "PHX170 EFINSAT"
-        },
-        {
-            "group": 0,
-            "label": "WFINSAT",
-            "name": "PHX171 WFINSAT"
-        },
-        {
-            "group": 1,
-            "label": "HIGHWAY",
-            "name": "PHX305 HIGHWAY"
-        },
-        {
-            "group": 1,
-            "label": "ZABSCT",
-            "name": "PHX302 ZABSCT"
-        },
-        {
-            "group": 1,
-            "label": "V_AIRWY",
-            "name": "PHX317 V_AIRWY"
-        },
-        {
-            "group": 1,
-            "label": "J_AIRWY",
-            "name": "PHX318 J_AIRWY"
-        },
-        {
-            "group": 1,
-            "label": "CITY",
-            "name": "PHX315 CITY"
-        },
-        {
-            "group": 1,
-            "label": "HWY_RWY",
-            "name": "PHX308 HWY_RWY"
-        },
-        {
-            "group": 1,
-            "label": "Y7L_25R",
-            "name": "PHX322 Y7L_25R"
-        },
-        {
-            "group": 0,
-            "label": "LUFOPEN",
-            "name": "PHX366 LUFOPEN"
-        }
+        "PHX667 RWY7R_8", "PHX668 RWY2526", "PHX101 CLASS_B", "PHX165 PTACWRD", "PHX307 EOVM", "PHX003 PHX003", "PHX166 E_ARR", "PHX167 W_ARR", "PHX168 E_DEP",
+        "PHX169 W_DEP", "PHX170 EFINSAT", "PHX171 WFINSAT", "PHX305 HIGHWAY", "PHX302 ZABSCT", "PHX317 V_AIRWY", "PHX318 J_AIRWY", "PHX315 CITY",
+        "PHX308 HWY_RWY", "PHX322 Y7L_25R", "PHX366 LUFOPEN"
     ],
-    "video_map_file": "videomaps/ZAB-videomaps.json.zst"
+    "video_map_file": "videomaps/ZAB-videomaps.gob.zst"
     }
 }

@@ -2509,6 +2509,43 @@
   },
       "allow_long_scratchpad": [false, false],
       "force_ql_self": true,
+      "coordination_fixes": {
+        "MERIT": [
+          {
+              "type": "route",
+              "to": "ZBW",
+              "from": "ZNY"
+          }
+      ],
+      "GREKI": [
+          {
+              "type": "route",
+              "to": "ZBW",
+              "from": "ZNY"
+          }
+      ],
+      "BAYYS": [
+          {
+              "type": "route",
+              "to": "ZBW",
+              "from": "ZNY"
+          }
+      ],
+      "BETTE": [
+          {
+              "type": "route",
+              "to": "ZBW",
+              "from": "ZNY"
+          }
+      ],
+      "HAPIE": [
+          {
+              "type": "route",
+              "to": "ZBW",
+              "from": "ZNY"
+          }
+      ]
+      },
     "airspace_awareness": [
       {
         "fixes": ["MERIT", "BAYYS", "GREKI"],
@@ -2628,79 +2665,14 @@
     "WHITE": "WHI",
     "ZIMMZ": "ZIM"
   },
-  "stars_maps": [
-    {
-      "group": 0,
-      "label": "LIB D",
-      "name": "LIB Departure"
-    },
-    {
-      "group": 0,
-      "label": "LIB C",
-      "name": "LIB Catskill"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "N90 MVA"
-    },
-    {
-      "group": 0,
-      "label": "EWR",
-      "name": "EWR"
-    },
-    {
-      "group": 0,
-      "label": "EWR SAT",
-      "name": "EWR Satellites"
-    },
-    {
-      "group": 0,
-      "label": "EWR CRDA",
-      "name": "EWR CRDA"
-    },
-    {
-      "group": 1,
-      "label": "NY B",
-      "name": "N90 CLASS B"
-    },
-    {
-      "group": 0,
-      "label": "JFK4",
-      "name": "JFK 4s"
-    },
-    {
-      "group": 0,
-      "label": "JFK13",
-      "name": "JFK 13s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22",
-      "name": "JFK 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31",
-      "name": "JFK 31s"
-    },
-    {
-      "group": 0,
-      "label": "JFK22 ILS",
-      "name": "JFK ILS 22s"
-    },
-    {
-      "group": 0,
-      "label": "JFK31 NTZ",
-      "name": "JFK 31s NTZ"
-    },
-    {
-      "group": 0,
-      "label": "LGA",
-      "name": "LGA"
-    }
+  "stars_maps": [ "", "", "",
+                  "", "", "",
+                  "LIBERTY DEP", "CATSKILL AREA", "LGA-HPN ARR/DEP", "JFK ARR/DEP", "ISP ARR/DEP", "EWR ARR/DEP", "SWF/MSV", "POU/MGJ",
+                  "SAT GPS", "", "", "", "N90 TFR", "", "",
+                  "MVA", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 13L/R", "JFK ARR/DEP RWY 22L/R", "JFK ARR/DEP RWY 31L/R",
+                  "", "", "", "", "", "", "Coast", "EOVM", "", ""
   ],
-  "video_map_file": "videomaps/n90-maps.json.zst"
+  "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
   },
   "control_positions": {
     "BOS_SW_CTR": {
@@ -2919,7 +2891,7 @@
         "NY_39_CTR",
         "BOS_SW_CTR"
       ],
-      "default_maps": [ "LIB Departure" ],
+      "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3005,7 +2977,7 @@
         "BOS_SW_CTR",
         "BOS_SW_CTR"
       ],
-      "default_maps": [ "LIB Departure" ],
+      "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3073,7 +3045,7 @@
         "BOS_SW_CTR",
         "BOS_SW_CTR"
       ],
-      "default_maps": [ "LIB Departure" ],
+      "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3168,7 +3140,7 @@
         "BOS_SW_CTR",
         "BOS_SW_CTR"
       ],
-      "default_maps": [ "LIB Departure" ],
+      "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3227,7 +3199,7 @@
         "BOS_SW_CTR",
         "BOS_SW_CTR"
       ],
-      "default_maps": [ "LIB Departure" ],
+      "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3310,7 +3282,7 @@
         "BOS_SW_CTR",
         "BOS_SW_CTR"
       ],
-      "default_maps": [ "LIB Departure" ],
+      "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3387,7 +3359,7 @@
         "BOS_SW_CTR",
         "BOS_SW_CTR"
       ],
-      "default_maps": [ "LIB Departure" ],
+      "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
         {
           "airport": "KEWR",

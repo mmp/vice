@@ -923,6 +923,43 @@
 },
 "stars_config": {
 "center": "KSDF",
+"coordination_fixes": {
+    "CHERI": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "NERVE": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "CVG"
+                }
+            ],
+            "FRIZN": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "MAUDD": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "MBELL": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ]
+},
 "inhibit_ca_volumes": [
   {
     "name": "SDF NO CA",
@@ -983,157 +1020,11 @@
     "STREP": "STR"
 },
 "stars_maps": [
-  {
-    "group": 0,
-    "label": "17s",
-    "name": "RWY 17s BASE"
-  },
-  {
-      "group": 0,
-      "label": "35s",
-      "name": "RWY 35s BASE"
-  },
-  {
-      "group": 0,
-      "label": "29",
-      "name": "RWY 29 BASE"
-  },
-  {
-      "group": 1,
-      "label": "MVA",
-      "name": "SDF MVA"
-  },
-  {
-    "group": 1,
-    "label": "CLASS C",
-    "name": "SDF Class C"
-  },
-  {
-    "group": 1,
-    "label": "FRIZN",
-    "name": "FRIZN STAR"
-  },
-  {
-      "group": 1,
-      "label": "CHERI",
-      "name": "CHERI STAR"
-  },
-  {
-      "group": 1,
-      "label": "DAMEN",
-      "name": "DAMEN STAR"
-  },
-  {
-      "group": 1,
-      "label": "DARBY",
-      "name": "DARBY STAR"
-  },
-  {
-      "group": 1,
-      "label": "MAUDD",
-      "name": "MAUDD STAR"
-  },
-  {
-      "group": 1,
-      "label": "RDSTN",
-      "name": "RDSTN STAR"
-  },
-  {
-      "group": 1,
-      "label": "DLAMP",
-      "name": "DLAMP STAR"
-  },
-  {
-      "group": 1,
-      "label": "MBELL",
-      "name": "MBELL STAR"
-  },
-  {
-      "group": 1,
-      "label": "APALO",
-      "name": "APALO SID"
-  },
-  {
-      "group": 1,
-      "label": "CRRGO",
-      "name": "CRRGO SID"
-  },
-  {
-      "group": 1,
-      "label": "FEDRA",
-      "name": "FEDRA  SID"
-  },
-  {
-      "group": 1,
-      "label": "STREP",
-      "name": "STREP SID"
-  },
-  {
-      "group": 1,
-      "label": "LOU GPS",
-      "name": "LOU RNAV 24/33"
-  },
-  {
-      "group": 1,
-      "label": "FTK GPS",
-      "name": "FTK RNAV 15/18/36"
-  },
-  {
-      "group": 1,
-      "label": "JVY GPS",
-      "name": "JVY RNAV 18/36"
-  },
-  {
-      "group": 1,
-      "label": "BRY GPS",
-      "name": "BRY RNAV 3/21"
-  },
-  {
-      "group": 1,
-      "label": "EKX GPS",
-      "name": "EKX RNAV 5/23"
-  },
-  {
-      "group": 1,
-      "label": "IMS GPS",
-      "name": "IMS RNAV 3/21"
-  },
-  {
-      "group": 1,
-      "label": "FRH GPS",
-      "name": "FRH RNAV 8/26"
-  },
-  {
-      "group": 1,
-      "label": "6I2 GPS",
-      "name": "6I2 RNAV 11/29"
-  },
-  {
-    "group": 1,
-    "label": "I93 GPS",
-    "name": "I93 RNAV RWY 10-28"
-  },
-  {
-    "group": 1,
-    "label": "VFR",
-    "name": "SDF VFR"
-  },
-  {
-    "group": 1,
-    "label": "IR618",
-    "name": "IR618 Training Route"
-  },
-  {
-    "group": 1,
-    "label": "RIVERS",
-    "name": "Rivers"
-  },
-  {
-    "group": 1,
-    "label": "STADIUM",
-    "name": "Stadiums"
-  }
+    "RWY 17s BASE", "RWY 35s BASE", "RWY 29 BASE", "SDF 3 NM MVA", "SDF Class C", "FRIZN STAR", "CHERI STAR", "DAMEN STAR", "DARBY STAR",
+    "MAUDD STAR", "RDSTN STAR", "DLAMP STAR", "MBELL STAR", "APALO SID", "CRRGO SID", "FEDRA  SID", "STREP SID", "LOU RNAV 24/33",
+    "FTK RNAV 15/18/36", "JVY RNAV 18/36", "BRY RNAV 3/21", "EKX RNAV 5/23", "IMS RNAV 3/21", "FRH RNAV 8/26", "6I2 RNAV 11/29",
+    "I93 RNAV RWY 10-28", "SDF VFR", "IR618 Training Route", "Rivers", "Stadiums"
 ],
-"video_map_file": "videomaps/ZID-videomaps.json.zst"
+"video_map_file": "videomaps/ZID-videomaps.gob.zst"
 }
 }

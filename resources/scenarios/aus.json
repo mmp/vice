@@ -1320,6 +1320,43 @@
                     "stars_config": {
                         "allow_long_scratchpad": [false, false],
                         "force_ql_self": true,
+                        "coordination_fixes": {
+                                "DXEEE": [
+                            {
+                                "type": "route",
+                                "to": "AUS",
+                                "from": "ZHU"
+                            }
+                         ],
+                         "LAIKS": [
+                             {
+                                 "type": "route",
+                                 "to": "AUS",
+                                 "from": "ZHU"
+                             }
+                         ],
+                         "WLEEE": [
+                             {
+                                 "type": "route",
+                                 "to": "AUS",
+                                 "from": "ZHU"
+                             }
+                         ],
+                         "GABOO": [
+                             {
+                                 "type": "route",
+                                 "to": "AUS",
+                                 "from": "ZHU"
+                             }
+                         ],
+                         "TOAMY": [
+                             {
+                                 "type": "route",
+                                 "to": "AUS",
+                                 "from": "I90"
+                             }
+                         ]
+                        },
                         "airspace_awareness": [
                             {
                                 "fixes": [
@@ -1760,107 +1797,11 @@
                         "KHYI": ""
                     },
                     "stars_maps": [
-                        {
-                            "group": 0,
-                            "label": "BASE",
-                            "name": "AUS BASE"
-                        },
-                        {
-                            "group": 0,
-                            "label": "VFR",
-                            "name": "AUS VFR"
-                        },
-                        {
-                            "group": 0,
-                            "label": "CLASS C",
-                            "name": "AUS CLASS C"
-                        },
-                        {
-                            "group": 0,
-                            "label": "SF FAC",
-                            "name": "SF FINAL APP COURSE"
-                        },
-                        {
-                            "group": 0,
-                            "label": "NF FAC",
-                            "name": "NF FINAL APP COURSE"
-                        },
-                        {
-                            "group": 0,
-                            "label": "SF REST",
-                            "name": "SOUTH FLOW STAR RESTRICTIONS"
-                        },
-                        {
-                            "group": 1,
-                            "label": "SF STAR",
-                            "name": "STARS SOUTH FLOW"
-                        },
-                        {
-                            "group": 1,
-                            "label": "NF REST",
-                            "name": "NORTH FLOW STAR RESTRICTIONS"
-                        },
-                        {
-                            "group": 0,
-                            "label": "NF STAR",
-                            "name": "STARS NORTH FLOW"
-                        },
-                        {
-                            "group": 0,
-                            "label": "NTZ",
-                            "name": "AUS NTZ"
-                        },
-                        {
-                            "group": 0,
-                            "label": "NF S OF",
-                            "name": "NORTH FLOW SOUTH APP CLSD"
-                        },
-                        {
-                            "group": 0,
-                            "label": "SF S OF",
-                            "name": "SOUTH FLOW SOUTH APP CLSD"
-                        },
-                        {
-                            "group": 0,
-                            "label": "ZHU",
-                            "name": "AUS ZHU SECTORS"
-                        },
-                        {
-                            "group": 0,
-                            "label": "SF FNL",
-                            "name": "SOUTH FLOW FINAL AIRSPACE"
-                        },
-                        {
-                            "group": 0,
-                            "label": "NF FNL",
-                            "name": "NORTH FLOW FINAL AIRSPACE"
-                        },
-                        {
-                            "group": 0,
-                            "label": "EDC FAC",
-                            "name": "EDC FINALS"
-                        },
-                        {
-                            "group": 0,
-                            "label": "EDC D",
-                            "name": "EDC CLASS D"
-                        },
-                        {
-                            "group": 0,
-                            "label": "HYI FAC",
-                            "name": "HYI FINALS" 
-                        },
-                        {
-                            "group": 0,
-                            "label": "HYI LBL",
-                            "name": "HYI FINALS LABELS"
-                        },
-                        {
-                            "group": 0,
-                            "label": "GTU FAC",
-                            "name": "GTU FINALS"
-                        }
+                        "AUS BASE", "AUS VFR", "AUS CLASS C", "SF FINAL APP COURSE", "NF FINAL APP COURSE", "SOUTH FLOW STAR RESTRICTIONS",
+                        "STARS SOUTH FLOW", "NORTH FLOW STAR RESTRICTIONS", "STARS NORTH FLOW", "AUS NTZ", "NORTH FLOW SOUTH APP CLSD",
+                        "SOUTH FLOW SOUTH APP CLSD", "AUS ZHU SECTORS", "SOUTH FLOW FINAL AIRSPACE", "NORTH FLOW FINAL AIRSPACE",
+                        "EDC FINALS", "EDC CLASS D", "HYI FINALS" , "HYI FINALS LABELS", "GTU FINALS" 
                     ],
-                    "video_map_file": "videomaps/ZHU-videomaps.json.zst"
+                    "video_map_file": "videomaps/ZHU-videomaps.gob.zst"
                     }
     }

@@ -1,0 +1,1085 @@
+{
+  "tracon": "GSO",
+  "airports": {
+    "KGSO": {
+      "approaches": {
+        "I5L": {
+          "runway": "5L",
+          "type": "ILS",
+          "waypoints": [
+            "JEVEN/iaf/hilpt/a2500 CIVES/faf/a2500"
+          ]
+        },
+        "R5L": {
+          "full_name": "RNAV GPS Runway 5L",
+          "runway": "5L",
+          "type": "RNAV",
+            "waypoints": [
+                "WAKIM/iaf/nopt/a2900 JEVEN/iaf/hilpt/a2900 CIVES/faf/a2500 CONLO/a1600",
+                "NUMUE/iaf/nopt/a2900 JEVEN/iaf/hilpt/a2900 CIVES/faf/a2500 CONLO/a1600",
+                "JEVEN/iaf/hilpt/nopt180/a2900 CIVES/faf/a2500 CONLO/a1600"
+            ]
+        },
+        "I5R": {
+          "full_name":"ILS Runway 5R",
+          "runway": "5R",
+          "type" : "ILS",
+          "waypoints": [
+            "PAGAN/iaf/a2900/pt45 PAGAN/faf/a2800"
+          ]
+        },
+        "R5R": {
+            "full_name": "RNAV GPS Runway 5R",
+            "runway": "5R",
+            "type": "RNAV",
+            "waypoints": [
+                "CUPET/iaf/nopt/a3000 COSIS/iaf/hilpt/a3000 FONIT/faf/a2500",
+                "COSIS/iaf/hilpt/nopt180/a3000 FONIT/faf/a2500",
+                "FINIR/iaf/nopt/a3000 COSIS/iaf/hilpt/a3000 FONIT/faf/a2500"
+            ]
+        },
+        "Z32": {
+          "full_name": "ILS Z Runway 32",
+          "runway": "32",
+          "type": "ILS",
+          "waypoints": [
+            "GSO/iaf/a3700 LLINK/if/hilpt/a3700 ULIDE/faf/a2500 ZEPIX/a1600",
+            "LLINK/iaf/hilpt/nopt180/a3700 ULIDE/faf/a2500 ZEPIX/a1600"
+          ]
+        },
+        "Y32": {
+            "full_name": "ILS Y Runway 32",
+            "runway": "32",
+            "type": "ILS",
+            "waypoints": [
+                "LLINK/iaf/hilpt/nopt180/a3700 ULIDE/faf/a2500 ZEPIX/a1600"
+            ]
+        },
+        "I23L": {
+          "full_name": "ILS Runway 23L",
+          "runway": "23L",
+          "type": "ILS",
+          "waypoints": [
+            "LIB/iaf/a3100 BRANT/iaf/pt45/a3100 BRANT/faf/a2900"
+          ]
+        },
+        "R32": {
+          "full_name": "RNAV GPS Runway 32",
+          "runway": "32",
+          "type": "RNAV",
+          "waypoints": [
+            "ZIGDI/iaf/nopt/a3700 IRKUW/if/hilpt/nopt180/a3700 OKZIF/faf/a2700",
+            "IRKUW/iaf/hilpt/nopt180/a3700 OKZIF/faf/a2700",
+            "PUXEE/iaf/nopt/a3700 IRKUW/if/hilpt/nopt180/a3700 OKZIF/faf/a2700"
+          ]
+        },
+        "I23R": {
+            "full_name": "ILS Runway 23R",
+            "runway": "23R",
+            "type": "ILS",
+            "waypoints": [
+                "LIB/iaf/a3100 HEVED/iaf/pt45/a3100 HEVED/faf/a2800"
+            ]
+        },
+        "R23L": {
+            "full_name": "RNAV GPS Runway 23L",
+            "runway": "23L",
+            "type": "RNAV",
+            "waypoints": [
+                "JUTSO/iaf/nopt/a3200 JELEB/iaf/hilpt/nopt180/a3200 NERLE/faf/a2900",
+                "GICES/iaf/nopt/a3200 JELEB/iaf/hilpt/nopt180/a3200 NERLE/faf/a2900",
+                "JELEB/iaf/hilpt/nopt180/a3200 NERLE/faf/a2900"
+            ]
+        },
+        "R23R": {
+            "full_name": "RNAV GPS Runway 23R",
+            "runway": "23R",
+            "type": "RNAV",
+            "waypoints": [
+                "HEROR/iaf/nopt/a2800 TUPUE/iaf/hilpt/nopt180/a2800 HEVED/faf/a2800",
+                "TUPUE/iaf/hilpt/nopt180/a2800 HEVED/faf/a2800",
+                "COLKI/iaf/nopt/a2800 TUPUE/iaf/hilpt/nopt180/a2800 HEVED/faf/a2800"
+            ]
+        },
+        "R14": {
+            "full_name": "RNAV GPS Runway 14",
+            "runway": "14",
+            "type": "RNAV",
+            "waypoints": [
+                "HERIP/iaf/nopt/a3200 FAMOV/iaf/hilpt/nopt180/a3200 GUKPE/faf/a2700 ZOLPO/a1520",
+                "FAMOV/iaf/hilpt/nopt180/a3200 GUKPE/faf/a2700 ZOLPO/a1520",
+                "COKIM/iaf/nopt/a3200 FAMOV/iaf/hilpt/nopt180/a3200 GUKPE/faf/a2700 ZOLPO/a1520"
+            ]
+        }
+      },
+      "departure_routes": {
+        "23L": {
+          "BAWDS, TAARZ": {
+            "cleared_altitude": 5000,
+            "description": "TRSHA1",
+            "sid": "TRSHA1",
+            "waypoints": "_GSO_5R/h235 WHAYN TRSHA"
+          },
+          "ROA, LYH, SBV, CREWE, RDU": {
+            "cleared_altitude": 5000,
+            "description": "QUAK8",
+            "sid": "QUAK8",
+            "waypoints": "_GSO_5R/h235 JEANY"
+          },
+          "CLINE, CARWN, YADKI, BOTTM": {
+            "cleared_altitude": 5000,
+            "description": "TRI9",
+            "sid": "TRI9",
+            "waypoints": "_GSO_5R/h235 BOLTT"
+          },
+          "CHSLY": {
+            "cleared_altitude": 5000,
+            "waypoints": "_GSO_5R/h235 CHSLY"
+          }
+        },
+        "5R": {
+          "BAWDS, TAARZ": {
+            "cleared_altitude": 5000,
+            "description": "TRSHA1",
+            "sid": "TRSHA1",
+            "waypoints": "_GSO_23L/h055 WHAYN TRSHA"
+          },
+          "ROA, LYH, SBV, CREWE, RDU": {
+            "cleared_altitude": 5000,
+            "description": "QUAK8",
+            "sid": "QUAK8",
+            "waypoints": "_GSO_23L/h055 JEANY"
+          },
+          "CLINE, CARWN, YADKI, BOTTM": {
+            "cleared_altitude": 5000,
+            "description": "TRI9",
+            "sid": "TRI9",
+            "waypoints": "_GSO_23L/h055 BOLTT"
+          },
+          "CHSLY": {
+            "cleared_altitude": 5000,
+            "waypoints": "_GSO_23L/h055 CHSLY"
+          }
+       }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "fleet": "long",
+              "icao": "FDX"
+            },
+            {
+              "icao": "UPS"
+            }
+          ],
+          "destination": "KIND",
+          "exit": "BAWDS",
+          "route": "BAWDS"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "long",
+              "icao": "FDX"
+            },
+            {
+              "fleet":"short",
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KMEM",
+          "exit": "CARWN",
+          "route": "CARWN SLOJO TASTY WOPNR COBOK DEBRL CSTAL2"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "CHSLY",
+          "route": "CHSLY CHSLY6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "RPA"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KLGA",
+          "exit": "SBV",
+          "route": "SBV"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "ENY"
+            }
+          ],
+          "destination": "KORD",
+          "exit": "BAWDS",
+          "route": "BAWDS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "PDT"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KPHL",
+          "exit": "SBV",
+          "route": "SBV BBDOL PAATS4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KATL",
+          "exit": "CARWN",
+          "route": "CARWN SLOJO TASTY WOPNR COBOK DEBRL CSTAL2"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "long",
+              "icao": "FDX"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "SBV",
+          "route": "SBV"
+        },
+        {
+          "airlines": [
+            {
+              "fleet":"short",
+              "icao": "DAL"
+            },
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KDTW",
+          "exit": "BAWDS",
+          "route": "BAWDS VXV FOUNT CVG VHP WWODD HANBL3"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KBWI",
+          "exit": "SBV",
+          "route": "SBV"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "icao": "ENY"
+            }
+          ],
+          "destination": "KMIA",
+          "exit": "CARWN",
+          "route": "CARWN SLOJO TASTY WOPNR COBOK DEBRL CSTAL2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KIAH",
+          "exit": "CARWN",
+          "route": "CARWN SLOJO TASTY WOPNR COBOK DEBRL CSTAL2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KDEN",
+          "exit": "BAWDS",
+          "route": "TRSHA BAWDS"
+        }
+      ],
+      "exit_categories": {
+        "BAWDS": "TRSHA1",
+        "CARWN": "TRI9",
+        "SBV": "QUAK8",
+        "CHSLY": "CHSLY"
+      },
+      "tower_list": 1
+    },
+    "KINT": {
+      "approaches": {
+        "I33": {
+          "runway": "33",
+          "type": "ILS",
+          "waypoints": [
+            "AZELL/iaf/nopt/a3000 BACHE/if/hilpt/nopt180/a3000 WUXOG/faf/a2500",
+            "BACHE/iaf/hilpt/a3000 WUXOG/faf/a2500"
+          ]
+        },
+        "R15": {
+          "full_name": "RNAV GPS Runway 15",
+          "runway": "15",
+          "type": "RNAV",
+          "waypoints": [
+            "FREON/iaf/nopt/a4100 ADKAW/if/hilpt5nm/nopt180/a4100 GASTN/faf/a2700",
+            "ADKAW/iaf/hilpt5nm/a4100 GASTN/faf/a2700",
+            "PROVE/iaf/a4600 ADKAW/if/hilpt5nm/a4100 GASTN/faf/a2700"
+          ]
+        },
+        "R33": {
+          "full_name": "RNAV GPS Runway 33",
+          "runway": "33",
+          "type": "RNAV",
+          "waypoints": [
+            "AZELL/iaf/a3000 BACHE/if/a3000 COLEB/faf/a2500 EARLL/a1520",
+            "GSO/iaf/a3000 BACHE/if/a3000 COLEB/faf/a2500 EARLL/a1520",
+            "BACHE/if/a3000 COLEB/a2500 EARLL/a1520"
+          ]
+        }
+      },
+      "departure_routes": {
+        "33": {
+          "BAWDS, TAARZ": {
+            "cleared_altitude": 4000,
+            "description": "TRSHA1",
+            "sid": "TRSHA1",
+            "waypoints": "_INT_15/h333 WHAYN TRSHA"
+          },
+          "ROA, LYH, SBV, CREWE, RDU": {
+            "cleared_altitude": 4000,
+            "description": "QUAK8",
+            "sid": "QUAK8",
+            "waypoints": "_INT_15/h333 JEANY"
+          },
+          "CLINE, CARWN, YADKI, BOTTM": {
+            "cleared_altitude": 4000,
+            "description": "TRI9",
+            "sid": "TRI9",
+            "waypoints": "_INT_15/h333 BOLTT"
+          },
+          "CHSLY": {
+            "cleared_altitude": 4000,
+            "waypoints": "_INT_15/h333 CHSLY"
+          }
+        },
+        "15": {
+          "BAWDS, TAARZ": {
+            "cleared_altitude": 4000,
+            "description": "TRSHA1",
+            "sid": "TRSHA1",
+            "waypoints": "_INT_33/h240 WHAYN TRSHA"
+          },
+          "ROA, LYH, SBV, CREWE, RDU": {
+            "cleared_altitude": 4000,
+            "description": "QUAK8",
+            "sid": "QUAK8",
+            "waypoints": "_INT_33/h240 JEANY"
+          },
+          "CLINE, CARWN, YADKI, BOTTM": {
+            "cleared_altitude": 4000,
+            "description": "TRI9",
+            "sid": "TRI9",
+            "waypoints": "_INT_33/h240 BOLTT"
+          },
+          "CHSLY": {
+            "cleared_altitude": 4000,
+            "waypoints": "_INT_33/h240 CHSLY"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 23000,
+          "destination": "KILM",
+          "exit": "CARWN",
+          "route": "CARWN FAY HOMKU"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 25000,
+          "destination": "KFLL",
+          "exit": "BAWDS",
+          "route": "BAWDS VAN KENLL JIPOD"
+        }
+      ],
+      "exit_categories": {
+        "CARWN": "TRI9",
+        "BAWDS": "TRSHA1"
+      },
+      "tower_list": 1
+    }
+  },
+  "airspace": {
+    "boundaries": {
+      "GSOAPP": [
+        "N36.36.49.998,W80.39.27.731",
+        "N36.48.29.364,W80.19.18.563",
+        "N36.41.06.575,W80.15.27.446",
+        "N36.47.32.171,W80.04.10.378",
+        "N36.41.51.702,W79.55.13.495",
+        "N36.17.28.856,W79.28.21.204",
+        "N36.14.30.189,W79.19.25.921",
+        "N35.25.33.546,W79.34.42.600",
+        "N35.22.59.321,W79.48.13.038",
+        "N35.18.13.407,W79.59.56.228",
+        "N35.48.28.383,W80.35.28.587",
+        "N36.36.49.998,W80.39.27.731"
+      ]
+    },
+    "volumes": {
+      "GSOAPP": [
+        {
+          "boundaries": [
+            "GSOAPP"
+          ],
+          "lower": 0,
+          "upper": 12000
+        }
+      ]
+    }
+  },
+  "arrival_groups": {
+    "GANTS": [
+      {
+        "airlines": {
+          "KGSO": [
+            {
+              "airport": "KCLT",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KCLT",
+              "icao": "JIA"
+            },
+            {
+              "airport": "KCLT",
+              "icao": "RPA"
+            }
+          ]
+        },
+        "initial_altitude": 9000,
+        "initial_controller": "CLT_APP",
+        "initial_speed": 250,
+        "route": "/. GANTS",
+        "waypoints": "RENZI/ho GANTS/s250/h020"
+      }
+    ],
+    "HENBY3": [
+      {
+        "airlines": {
+          "KGSO": [
+            {
+              "airport": "KCLT",
+              "icao": "ENY"
+            },
+            {
+              "airport": "KDTW",
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ]
+        },
+        "initial_altitude": 12000,
+        "initial_controller": "DC_CTR",
+        "initial_speed": 280,
+        "star":"HENBY3",
+        "waypoints": "HOKEE PIGGS/ho HENBY/s280/h180"
+      },
+      {
+        "airlines": {
+          "KINT": [
+            {
+              "airport": "KRSW",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KFLL",
+              "icao": "EJA"
+            }
+          ]
+        },
+        "initial_altitude": 10000,
+        "initial_controller": "DC_CTR",
+        "initial_speed": 250,
+        "star":"HENBY3",
+        "waypoints": "LYH PIGGS/ho HENBY/h180"
+      }
+    ],
+  "BROOK4": [
+      {
+        "airlines": {
+          "KGSO": [
+            {
+              "airport": "KCLT",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KATL",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KJFK",
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ]
+        },
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "star":"BROOK4",
+        "waypoints": "BROOK BURCH/ho TRAKS WALLK/h107"
+      },
+      {
+        "airlines": {
+          "KINT": [
+            {
+              "airport": "KRSW",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KFLL",
+              "icao": "EJA"
+            }
+          ]
+        },
+        "initial_altitude": 9000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "star":"BROOK4",
+        "waypoints": "KHAOS BROOK/ho TRAKS WALLK/h282"
+      }
+    ],
+      "TRAKS3S": [
+      {
+        "airlines": {
+          "KGSO": [
+            {
+              "airport": "KCLT",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KATL",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KGSO",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KJFK",
+              "fleet": "short",
+              "icao": "DAL"
+            }
+          ]
+        },
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 290,
+        "star":"TRAKS3S",
+        "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL GLFRD/h060",
+        "speed_restriction": 250
+      },
+      {
+        "airlines": {
+          "KINT": [
+            {
+              "airport": "KRSW",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KFLL",
+              "icao": "EJA"
+            }
+          ]
+        },
+        "initial_altitude": 9000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "star":"TRAKS3",
+        "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL/h098"
+      }
+    ],
+      "TRAKS3N": [
+        {
+          "airlines": {
+            "KGSO": [
+              {
+                "airport": "KCLT",
+                "fleet": "short",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KATL",
+                "fleet": "short",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KGSO",
+                "fleet": "short",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KJFK",
+                "fleet": "short",
+                "icao": "DAL"
+              }
+            ]
+          },
+          "initial_altitude": 11000,
+          "initial_controller": "ATL_CTR",
+          "initial_speed": 290,
+          "star": "TRAKS3N",
+          "waypoints": "KHAOS TRAKS/ho DEMNZ PDMNT/h080",
+          "speed_restriction": 250
+        },
+        {
+          "airlines": {
+            "KINT": [
+              {
+                "airport": "KRSW",
+                "icao": "EJA"
+              },
+              {
+                "airport": "KFLL",
+                "icao": "EJA"
+              }
+            ]
+          },
+          "initial_altitude": 9000,
+          "initial_controller": "ATL_CTR",
+          "initial_speed": 250,
+          "star":"TRAKS3",
+          "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL/h098"
+        }
+    ],
+    "BLOCC2": [
+      {
+        "airlines": {
+          "KGSO": [
+            {
+              "airport": "KMDW",
+              "icao": "ENY"
+            },
+            {
+              "airport": "KORD",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KMEM",
+              "fleet": "long",
+              "icao": "FDX"
+            }
+          ]
+        },
+        "initial_altitude": 11000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "star":"BLOCC2",
+        "waypoints": "MMJAY/ho VACUM BLOCC/s250/h332"
+      },
+      {
+        "airlines": {
+          "KINT": [
+            {
+              "airport": "KRSW",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KFLL",
+              "icao": "EJA"
+            }
+          ]
+        },
+        "initial_altitude": 9000,
+        "initial_controller": "ATL_CTR",
+        "initial_speed": 250,
+        "star":"BLOCC2",
+        "waypoints": "MMJAY/ho VACUM BLOCC/s250/a9000/h332"
+      }
+    ]
+  },
+  "control_positions": {
+    "ATL_CTR": {
+      "frequency": 132975,
+      "full_name": "Atlanta Center",
+      "scope_char": "C",
+      "sector_id": "C43",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "DC_CTR": {
+      "frequency": 133725,
+      "full_name": "Washington Center",
+      "scope_char": "W",
+      "sector_id": "W32",
+      "facility_id": "W",
+      "eram_facility": true
+    },
+    "CLT_APP": {
+      "frequency": 120500,
+      "full_name": "Charlotte Approach",
+      "scope_char": "W",
+      "sector_id": "1W",
+      "facility_id": "1"
+    },
+    "GSO_TWR": {
+      "frequency": 119100,
+      "full_name": "Greensboro Tower",
+      "scope_char": "T",
+      "sector_id": "1T"
+    },
+    "GSO_W_APP": {
+      "frequency": 124350,
+      "full_name": "Greensboro Approach",
+      "scope_char": "W",
+      "sector_id": "1W"
+    },
+    "GSO_E_APP": {
+      "frequency": 120900,
+      "full_name": "Greensboro Approach",
+      "scope_char": "E",
+      "sector_id": "1H"
+    },
+    "GSO_F_APP": {
+      "frequency": 125600,
+      "full_name": "Greensboro Approach",
+      "scope_char": "F",
+      "sector_id": "1F"
+    },
+    "GSO_S_APP": {
+      "frequency": 126000,
+      "full_name": "Greensboro Approach",
+      "scope_char": "S",
+      "sector_id": "1S"
+    },
+    "INT_TWR": {
+      "frequency": 123750,
+      "full_name": "Winston-Salem Tower",
+      "scope_char": "L",
+      "sector_id": "1L"
+    }
+  },
+  "default_scenario": "KGSO Runway 5L/5R, KINT Runway 33",
+  "fixes": {
+    "_GSO_5L": "N36.05.57.260,W79.57.32.349",
+    "_GSO_5R": "N36.05.27.676,W79.56.40.635",
+    "_GSO_23L": "N36.06.36.447,W79.55.13.018",
+    "_GSO_23R": "N36.06.59.053,W79.56.13.269",
+    "_GSO_14": "N36.05.58.020,W79.57.08.698",
+    "_GSO_32": "N36.05.13.288,W79.56.13.872",
+    "_INT_33":"N36.07.26.087,W80.12.47.621",
+    "_INT_15":"N36.08.19.656,W80.13.34.718",
+    "KGSO": "N36.06.04.579,W79.56.27.830",
+    "KINT": "N36.08.01.288,W80.13.19.035"
+  },
+  "magnetic_adjustment": -1,
+  "name": "KGSO",
+  "primary_airport": "KGSO",
+  "scenarios": {
+    "KGSO Runway 5L/5R, KINT Runway 33": {
+      "approach_airspace": [
+        "GSOAPP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KGSO",
+          "runway": "5R"
+        },
+        {
+          "airport": "KGSO",
+          "runway": "5L"
+        },
+        {
+          "airport": "KINT",
+          "runway": "33"
+        }
+      ],
+      "arrivals": {
+        "BROOK4": {
+          "KGSO": 5,
+          "KINT": 3
+        },
+        "TRAKS3N": {
+          "KGSO": 6,
+          "KINT": 3
+        },
+        "BLOCC2": {
+          "KGSO": 7,
+          "KINT": 3
+        },
+        "GANTS": {
+          "KGSO": 8
+        },
+        "HENBY3": {
+          "KGSO": 8,
+          "KINT": 3
+        }
+      },
+      "solo_controller": "GSO_W_APP",
+      "multi_controllers": {
+        "default" : {
+            "GSO_W_APP": {"primary": true, "arrivals": ["BROOK4", "TRAKS3N"], "departures": ["KINT"]},
+            "GSO_S_APP": {"backup": "GSO_W_APP", "arrivals": ["BLOCC2", "GANTS"]},
+            "GSO_E_APP": {"backup": "GSO_S_APP", "arrivals": ["HENBY3"], "departures": ["KGSO"]}
+        }
+    },
+      "controllers": [
+        "GSO_TWR",
+        "ATL_CTR",
+        "DC_CTR",
+        "CLT_APP",
+        "INT_TWR"
+      ],
+      "default_maps": [ "RUNWAY 5L/R BASE MAP" ],
+      "departure_airspace": [
+        "GSOAPP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KGSO",
+          "rate" : 20,
+          "runway": "5R"
+        },
+        {
+          "airport": "KINT",
+          "rate" : 12,
+          "runway": "33"
+        }
+      ],
+      "wind": {
+        "direction": 50,
+        "speed": 5
+      }
+    },
+    "KGSO Runway 23L/23R, KINT Runway 15": {
+      "approach_airspace": [
+        "GSOAPP"
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KGSO",
+          "runway": "23R"
+        },
+        {
+          "airport": "KGSO",
+          "runway": "23L"
+        },
+        {
+          "airport": "KINT",
+          "runway": "15"
+        }
+      ],
+      "arrivals": {
+        "BROOK4": {
+          "KGSO": 5,
+          "KINT": 3
+        },
+        "TRAKS3S": {
+          "KGSO": 6,
+          "KINT": 3
+        },
+        "BLOCC2": {
+          "KGSO": 7,
+          "KINT": 3
+        },
+        "GANTS": {
+          "KGSO": 8
+        },
+        "HENBY3": {
+          "KGSO": 8,
+          "KINT": 3
+        }
+      },
+      "solo_controller": "GSO_W_APP",
+      "multi_controllers": {
+        "default" : {
+          "GSO_W_APP": {"primary": true, "arrivals": ["BROOK4", "TRAKS3S"], "departures": ["KINT"]},
+          "GSO_S_APP": {"backup": "GSO_W_APP", "arrivals": ["BLOCC2", "GANTS"]},
+          "GSO_E_APP": {"backup": "GSO_S_APP", "arrivals": ["HENBY3"], "departures": ["KGSO"]}
+      }
+    },
+      "controllers": [
+        "GSO_TWR",
+        "ATL_CTR",
+        "DC_CTR",
+        "CLT_APP",
+        "INT_TWR"
+      ],
+      "default_maps": [ "RUNWAY 23L/R BASE MAP" ],
+      "departure_airspace": [
+        "GSOAPP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KGSO",
+          "rate" : 20,
+          "runway": "23L"
+        },
+        {
+          "airport": "KINT",
+          "rate" : 12,
+          "runway": "15"
+        }
+      ],
+      "wind": {
+        "direction": 50,
+        "speed": 5
+      }
+    }
+      },
+      "stars_config": {
+        "coordination_fixes": {
+          "RENZI": [
+            {
+                "type": "route",
+                "to": "GSO",
+                "from": "CLT"
+            }
+        ],
+        "TRAKS": [
+            {
+                "type": "route",
+                "to": "GSO",
+                "from": "ZTL"
+            }
+        ],
+        "MMJAY": [
+            {
+                "type": "route",
+                "to": "GSO",
+                "from": "ZTL"
+            }
+        ],
+        "HENBY": [
+            {
+                "type": "route",
+                "to": "GSO",
+                "from": "ZTL"
+            }
+        ]
+        },
+        "center": "KGSO",
+        "inhibit_ca_volumes": [
+          {
+            "name": "BHM NO CA",
+            "type": "polygon",
+            "floor": 0,
+            "ceiling": 3500,
+            "vertices": [
+                "-86.897208,33.532504",
+                "-86.641151,33.677967",
+                "-86.584176,33.611529",
+                "-86.839472,33.462847"
+            ]
+        },
+        {
+          "name": "BHM NO CA",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 3500,
+          "vertices": [
+              "-86.695616,33.672883",
+              "-86.695274,33.453065",
+              "-86.79461,33.453311",
+              "-86.794879,33.672271"
+          ]
+        }
+      ],
+      "radar_sites": {
+        "BHM": {
+          "char": "B",
+          "position": "33.573611,-86.75611",
+          "elevation": 705,
+          "primary_range": 100,
+          "secondary_range": 150,
+          "silence_angle": 50.4,
+          "slope_angle": 0.3
+        }
+    },
+    "scratchpads": {
+      "BAWDS": "TSH",
+        "CARWN": "TRI",
+        "SBV": "QKR",
+        "CHSLY": "CHSLY"
+  },
+  "stars_maps": ["RUNWAY 5L/R BASE MAP", "RUNWAY 14 FINAL RADAR, 3 SECTORS", "RUNWAY 14 FINAL RADAR, 2 SECTORS", "RUNWAY 14 BASE MAP",
+                 "RUNWAY 23 FINAL RADAR, 3 SECTORS", "RUNWAY 23 FINAL RADAR, 2 SECTORS", "RUNWAY 23L/R BASE MAP", "RUNWAY 32 FINAL RADAR, 3 SECTORS",
+                 "RUNWAY 32 FINAL RADAR, 2 SECTORS", "RUNWAY 32 BASE MAP", "RUNWAY 5L/R FINAL RADAR, 3 SECTORS", "RUNWAY 5L/R FINAL RADAR, 2 SECTORS",
+                 "BASE MAP", "RNAV IFR/EMERGENCY OBSTRUCTION VIDEO MAP", "GSO MINIMUM VECTORING ALTITUDE", "INT RNAV RUNWAY 33 APPROACH",
+                 "INT RNAV RUNWAY 33 APPROACH FIX NAMES", "MTV RNAV RUNWAY 13/31 APPROACHES",
+                 "GSO STADIUMS",
+"INT RNAV RUNWAY 15 APPROACH",
+"INT RNAV RUNWAY 15 APPROACH FIX NAMES",
+"INT ILS RUNWAY 33 APPROACH",
+"GSO COUNTIES",
+"GSO RNAV RUNWAY 5R APPROACH",
+"GSO RNAV RUNWAY 5L APPROACH",
+"GSO RNAV RUNWAY 5L/R APPROACHES FIX NAMES",
+ "GSO RNAV RUNWAY 14 APPROACH",
+"GSO RNAV RUNWAY 14 APPROACH FIX NAMES",
+"GSO RNAV RUNWAY 23L/R APPROACH FIX NAMES",
+"GSO RNAV RUNWAY 23L APPROACH",
+"GSO RNAV RUNWAY 23R APPROACH",
+"GSO RNAV RUNWAY 32 APPROACH",
+"GSO RNAV RUNWAY 32 APPROACH FIX NAMES",
+"ALL RNAV APPROACHES",
+"ALL RNAV APPROACH T FIXES",
+"TRSHA DEPARTURE",
+"TRIAD DEPARTURE",
+"TRAKS ARRIVAL"],
+
+  "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
+      }
+    } 

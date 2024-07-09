@@ -4294,6 +4294,71 @@
     }
   },
   "stars_config": {
+    "coordination_fixes": {
+      "HULKY": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "CUUDA": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "OLAHS": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "BANTY": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "WOOSA": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "YACKO": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "FROGZ": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "SNDBR": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ],
+    "VIICE": [
+        {
+            "type": "route",
+            "to": "MIA",
+            "from": "ZMA"
+        }
+    ]
+    },
   "center": "KMIA",
   "radar_sites": {
     "MIA": {
@@ -4427,397 +4492,19 @@
     "MELLZ": "MEL"
   },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "MIA E",
-      "name": "MIA-001S EAST OPERATIONS ARRIVAL"
-    },
-    {
-      "group": 0,
-      "label": "MIA W",
-      "name": "MIA-002S WEST OPERATIONS ARRIVAL"
-    },
-    {
-      "group": 0,
-      "label": "DEP E",
-      "name": "MIA-003S MIA DEPARTURE EAST"
-    },
-    {
-      "group": 0,
-      "label": "DEP W",
-      "name": "MIA-036S MIA DEPARTURE WEST"
-    },
-    {
-      "group": 0,
-      "label": "FLL E",
-      "name": "FLL-001S EAST OPERATIONS"
-    },
-    {
-      "group": 0,
-      "label": "FLL W",
-      "name": "FLL-002S WEST OPERATIONS"
-    },
-    {
-      "group": 1,
-      "label": "CLASS D",
-      "name": "MIA-850S CLASS D AIRSPACE"
-    },
-    {
-      "group": 1,
-      "label": "CLASS C",
-      "name": "MIA-225S FLL CLASS C"
-    },
-    {
-      "group": 1,
-      "label": "FLL RNP",
-      "name": "FLL-015S RNAV (RNP) APPCHS"
-    },
-    {
-      "group": 1,
-      "label": "GPS",
-      "name": "MIA-007S RNAV/GPS APPROACHES"
-    },
-    {
-      "group": 1,
-      "label": "ZMA OVR",
-      "name": "MIA-018S ZMA OVR"
-    },
-    {
-      "group": 1,
-      "label": "SHORE",
-      "name": "MIA-010S SHORELINE / PRIMARY ARPTS"
-    },
-    {
-      "group": 1,
-      "label": "MVA 5NM",
-      "name": "MIA-009S MULTI MVA"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "MIA-048S MVA"
-    },
-    {
-      "group": 1,
-      "label": "L DEP E",
-      "name": "MIA-301S FLL DEP EAST"
-    },
-    {
-      "group": 1,
-      "label": "L DEP W",
-      "name": "MIA-300S FLL DEP WEST"
-    },
-    {
-      "group": 1,
-      "label": "D DEP E",
-      "name": "MIA-304S MIA NORTH DEP EAST"
-    },
-    {
-      "group": 1,
-      "label": "D DEP W",
-      "name": "MIA-303S MIA NORTH DEP WEST"
-    },
-    {
-      "group": 1,
-      "label": "W DEP E",
-      "name": "MIA-306S MIA SOUTH DEP EAST"
-    },
-    {
-      "group": 1,
-      "label": "W DEP W",
-      "name": "MIA-305S MIA SOUTH DEP WEST"
-    },
-    {
-      "group": 1,
-      "label": "12 CLSD",
-      "name": "MIA-131S 12 CLSD"
-    },
-    {
-      "group": 1,
-      "label": "27 CLSD",
-      "name": "MIA-132S 27 CLSD"
-    },
-    {
-      "group": 1,
-      "label": "30 CLSD",
-      "name": "MIA-130S 30 CLSD"
-    },
-    {
-      "group": 1,
-      "label": "26RCLSD",
-      "name": "MIA-135S 26R CLSD"
-    },
-    {
-      "group": 1,
-      "label": "26LCLSD",
-      "name": "MIA-136S 26L CLSD"
-    },
-    {
-      "group": 1,
-      "label": "8L CLSD",
-      "name": "MIA-137S 8L CLSD"
-    },
-    {
-      "group": 1,
-      "label": "8R CLSD",
-      "name": "MIA-138S 8R CLSD"
-    },
-    {
-      "group": 1,
-      "label": "9 CLSD",
-      "name": "MIA-139S 9 CLSD"
-    },
-    {
-      "group": 1,
-      "label": "FLL GEO",
-      "name": "FLL-006S FLL GEO MAP"
-    },
-    {
-      "group": 0,
-      "label": "FLL MID",
-      "name": "FLL-013S BRITE 2/FLL"
-    },
-    {
-      "group": 1,
-      "label": "EM ILS",
-      "name": "MIA-004S EMERGENCY-ILS MONITOR"
-    },
-    {
-      "group": 1,
-      "label": "EMERGCY",
-      "name": "MIA-049S EMERGENCY MAP"
-    },
-    {
-      "group": 1,
-      "label": "D DEP E",
-      "name": "MIA-304S MIA NORTH DEP EAST"
-    },
-    {
-      "group": 1,
-      "label": "W DEP E",
-      "name": "MIA-306S MIA SOUTH DEP EAST"
-    },
-    {
-      "group": 1,
-      "label": "D DEP W",
-      "name": "MIA-303S MIA NORTH DEP WEST"
-    },
-    {
-      "group": 1,
-      "label": "W DEP W",
-      "name": "MIA-305S MIA SOUTH DEP WEST"
-    },
-    {
-      "group": 1,
-      "label": "L DEP E",
-      "name": "MIA-301S FLL DEP EAST"
-    },
-    {
-      "group": 1,
-      "label": "L DEP W",
-      "name": "MIA-300S FLL DEP WEST"
-    },
-    {
-      "group": 0,
-      "label": "NEAST",
-      "name": "MIA-026S N EAST AIRSPACE WO/WORPP"
-    },
-    {
-      "group": 0,
-      "label": "NWEST",
-      "name": "MIA-028S N WEST AIRSPACE WO/WORPP"
-    },
-    {
-      "group": 0,
-      "label": "VWEST",
-      "name": "MIA-023S V WEST AIRSPACE"
-    },
-    {
-        "group": 0,
-        "label": "WEAST",
-        "name": "MIA-024S W EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "AEAST",
-      "name": "MIA-016S A EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "VEAST",
-      "name": "MIA-022S V EAST AIRSPACE"
-    },
-    {
-        "group": 0,
-        "label": "AWEST",
-        "name": "MIA-017S A WEST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "S EAST",
-      "name": "MIA-013S S EAST AIRSPACE WO/WORPP"
-    },
-    {
-      "group": 0,
-      "label": "SWEST",
-      "name": "MIA-015S S WEST AIRSPACE WO/WORPP"
-    },
-    {
-      "group": 0,
-      "label": "WORPP E",
-      "name": "MIA-025S WORPP EAST"
-    },
-    {
-      "group": 0,
-      "label": "WORPP W",
-      "name": "MIA-027S WORPP WEST"
-    },
-    {
-      "group": 0,
-      "label": "DE-E",
-      "name": "MIA-019S D EAST EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "DW-W",
-      "name": "MIA-020S D WEST WEST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "DE-W",
-      "name": "MIA-012S D EAST WEST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "DW-E",
-      "name": "MIA-014S D WEST EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "WEAST",
-      "name": "MIA-024S W EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "WWEST",
-      "name": "MIA-035S W WEST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "H EAST",
-      "name": "MIA-021S H EAST"
-    },
-    {
-      "group": 0,
-      "label": "H EAST",
-      "name": "MIA-021S H EAST"
-    },
-    {
-      "group": 0,
-      "label": "H WEST",
-      "name": "MIA-141S H WEST"
-    },
-    {
-      "group": 0,
-      "label": "REAST",
-      "name": "FLL-017S R EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "RWEST",
-      "name": "FLL-025S R WEST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "FEAST",
-      "name": "FLL-018S F EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "FWEST",
-      "name": "FLL-022S F WEST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "JEAST",
-      "name": "FLL-023S J EAST FINAL"
-    },
-    {
-      "group": 0,
-      "label": "JWEST",
-      "name": "FLL-027S J WEST FINAL"
-    },
-    {
-      "group": 0,
-      "label": "QE-E",
-      "name": "MIA-029S Q EAST EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "QW-W",
-      "name": "MIA-031S Q WEST WEST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "QE-W",
-      "name": "MIA-037S Q EAST WEST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "QW-E",
-      "name": "MIA-034S Q WEST EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "ZE-E",
-      "name": "MIA-032S Z FLL EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "ZW-W",
-      "name": "MIA-033S Z FLL WEST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "ZE-W",
-      "name": "MIA-030S Z EAST WEST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "ZW-E",
-      "name": "MIA-148S Z WEST EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "LE-E",
-      "name": "FLL-019S L EAST EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "LE-W",
-      "name": "FLL-020S L EAST WEST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "LW-W",
-      "name": "FLL-024S L WEST WEST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "LW-E",
-      "name": "FLL-026S L WEST EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "GEAST",
-      "name": "FLL-016S G EAST AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "GWEST",
-      "name": "FLL-021S G WEST AIRSPACE"
-    }
+      "MIA-001S EAST OPERATIONS ARRIVAL", "MIA-002S WEST OPERATIONS ARRIVAL", "MIA-003S MIA DEPARTURE EAST",
+      "MIA-036S MIA DEPARTURE WEST", "FLL-001S EAST OPERATIONS", "FLL-002S WEST OPERATIONS",
+      "MIA-850S CLASS D AIRSPACE", "MIA-225S FLL CLASS C", "FLL-015S RNAV (RNP) APPCHS",
+      "MIA-007S RNAV/GPS APPROACHES", "MIA-018S ZMA OVR", "MIA-010S SHORELINE / PRIMARY ARPTS",
+      "MIA-009S MULTI MVA", "MIA-048S MVA", "MIA-301S FLL DEP EAST", "MIA-300S FLL DEP WEST",
+      "MIA-304S MIA NORTH DEP EAST", "MIA-303S MIA NORTH DEP WEST", "MIA-306S MIA SOUTH DEP EAST",
+      "MIA-305S MIA SOUTH DEP WEST", "MIA-131S 12 CLSD", "MIA-132S 27 CLSD",
+      "MIA-130S 30 CLSD", "MIA-135S 26R CLSD", "MIA-136S 26L CLSD", "MIA-137S 8L CLSD", "MIA-138S 8R CLSD",
+      "MIA-139S 9 CLSD", "FLL-006S FLL GEO MAP", "FLL-013S BRITE 2/FLL", "MIA-004S EMERGENCY-ILS MONITOR",
+      "MIA-049S EMERGENCY MAP", "MIA-304S MIA NORTH DEP EAST", "MIA-306S MIA SOUTH DEP EAST",
+      "MIA-303S MIA NORTH DEP WEST", "MIA-305S MIA SOUTH DEP WEST",
+      "MIA-301S FLL DEP EAST", "MIA-300S FLL DEP WEST"
   ],
-  "video_map_file": "videomaps/ZMA-videomaps.json.zst"
+  "video_map_file": "videomaps/ZMA-videomaps.gob.zst"
   }
 }

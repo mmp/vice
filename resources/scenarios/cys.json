@@ -521,6 +521,15 @@
     }
   },
   "stars_config": {
+    "coordination_fixes": {
+      "CYS": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ]
+    },
   "center": "KCYS",
   "inhibit_ca_volumes": [
     {
@@ -558,62 +567,9 @@
     "SNY": "SNY"
   },
   "stars_maps": [
-    {
-      "group": 0,
-      "label": "ARSPC",
-      "name": "ARSPC__CYS AIRSPACE"
-    },
-    {
-      "group": 0,
-      "label": "CLS D",
-      "name": "CLS D__CYS CLASS DELTA"
-    },
-    {
-      "group": 1,
-      "label": "MVA",
-      "name": "MVA__MVA"
-    },
-    {
-      "group": 0,
-      "label": "RWYS",
-      "name": "RWYS__CYS RUNWAYS"
-    },
-    {
-      "group": 0,
-      "label": "RWYS",
-      "name": "RWYS__CYS RUNWAYS"
-    },
-    {
-      "group": 0,
-      "label": "ILS 27",
-      "name": "ILS27__CYS ILS RWY 27"
-    },
-    {
-      "group": 0,
-      "label": "RNAV 27",
-      "name": "RNAV27__CYS RNAV RWY 27"
-    },
-    {
-      "group": 0,
-      "label": "RNAV 27",
-      "name": "RNAV27__CYS RNAV RWY 27"
-    },
-    {
-      "group": 0,
-      "label": "RNAV 31",
-      "name": "RNAV31__CYS RNAV RWY 31"
-    },
-    {
-      "group": 0,
-      "label": "ARWYS",
-      "name": "AWYS__VICTOR AIRWAYS"
-    },
-    {
-      "group": 0,
-      "label": "RNAV 09",
-      "name": "RNAV9__CYS RNAV RWY 09"
-    }
+      "ARSPC__CYS AIRSPACE", "CLS D__CYS CLASS DELTA", "MVA__MVA", "RWYS__CYS RUNWAYS", "RWYS__CYS RUNWAYS", "ILS27__CYS ILS RWY 27",
+      "RNAV27__CYS RNAV RWY 27", "RNAV27__CYS RNAV RWY 27", "RNAV31__CYS RNAV RWY 31", "AWYS__VICTOR AIRWAYS", "RNAV9__CYS RNAV RWY 09"
   ],
-  "video_map_file": "videomaps/ZDV-videomaps.json.zst"
+  "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
   }
 }

@@ -1279,7 +1279,51 @@
         }
       },
       "stars_config": {
-        "center": "44.890395, -93.230667",
+        "center": "KMSP",
+        "coordination_fixes": {
+            "LUCCY": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "BLUEM": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "KKILR": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "BAYKS": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "NITZR": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "OFSON": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ]
+        },
         "airspace_awareness": [
           {
               "fixes": ["GRB", "DLL", "ODI"],
@@ -1346,107 +1390,9 @@
           "ODI": "ODI"
         },
         "stars_maps": [
-          {
-      "group": 0,
-      "label": "12 A",
-      "name": "M98 219 12 A"
-          },
-          {
-            "group": 0,
-            "label": "12 D",
-            "name": "M98 220 12 D"
-        },
-        {
-    "group": 0,
-    "label": "12-17 A",
-    "name": "M98 224 12-17 A"
-        },
-        {
-          "group": 0,
-          "label": "12-17 D",
-          "name": "M98 226 12-17 D"
-      },
-        {
-    "group": 0,
-    "label": "30 A",
-    "name": "M98 216 30 A"
-        },
-        {
-          "group": 0,
-          "label": "30 D",
-          "name": "M98 217 30 D"
-        },
-        {
-    "group": 0,
-    "label": "30-35 A",
-    "name": "M98 250 30-35 A"
-        },
-        {
-          "group": 0,
-          "label": "30-35 D",
-          "name": "M98 249 30-35 D"
-      },
-      {
-        "group": 0,
-        "label": "30-17 D",
-        "name": "M98 246 30-17 D"
-    },
-    {
-      "group": 0,
-      "label": "30-17 A",
-      "name": "M98 247 30-17 A"
-  },
-  {
-  "group": 1,
-  "label": "12INTER",
-  "name": "M98 152 12INTER"
-      },
-  {
-  "group": 1,
-  "label": "30INTER",
-  "name": "M98 151 30INTER"
-      },
-      {
-    "group": 1,
-    "label": "RNAV 12",
-    "name": "M98 313 RNAV 12"
-      },
-      {
-  "group": 1,
-  "label": "RNAV 30",
-  "name": "M98 331 RNAV 30"
-      },
-      {
-      "group": 1,
-      "label": "SID",
-      "name": "M98 157 SID"
-          },
-      {
-        "group": 1,
-        "label": "FIXES",
-        "name": "M98 110 FIXES"
-      },
-      {
-      "group": 1,
-      "label": "ZMPEVNT",
-      "name": "M98 ZMPEVNT"
-          },
-        {
-          "group": 1,
-          "label": "BRAV0",
-          "name": "M98 105 BRAV0"
-        },
-          {
-            "group": 1,
-            "label": "MVA",
-            "name": "M98 153 MVA"
-          },
-          {
-			"group": 1,
-			"label": "R0ADS",
-			"name": "M98 113 R0ADS"
-          }
+            "M98 219 12 A", "M98 220 12 D", "M98 216 30 A", "M98 217 30 D", "M98 224 12-17 A", "M98 226 12-17 D", "M98 231 30-35 B", 
+            "M98 110 FIXES", "M98 153 MVA", "M98 106 AIRSPAC"
         ],
-        "video_map_file": "videomaps/ZMP-videomaps.json.zst"
+        "video_map_file": "videomaps/ZMP-videomaps.gob.zst"
         }
 }

@@ -124,12 +124,10 @@
 	<article class="docs-article" id="section-using">
 	  <header class="docs-header">
             <div class="text-center">
-              <img src="vice-demo.gif" srcset="vice-demo-2x.gif 2x"
-                   width="1069" height="512" class="img-fluid" alt="screen
-                   capture of demo">
+              <img src="vice-demo.gif" srcset="vice-demo-2x.gif 2x" width="1250" height="619" class="img-fluid" alt="screen capture of demo">
             </div>
             <br>
-	    <h1 class="docs-heading">About Vice <span class="docs-time">Last updated: 2023-10-10</span></h1>
+	    <h1 class="docs-heading">About Vice</h1>
 
 	    <section class="docs-intro">
 	      <p><i>vice</i> is an air traffic control simulator, focused on TRACON.
@@ -137,39 +135,60 @@
                 It also supports multiple users, where each person controls a different position at a facility.
               </p>
               <p><i>vice</i> supports departure and arrival control
-                scenarios in a number of TRACONs:
-                A80 (ATL),
-                A90 (BOS),
-                C90 (ORD, MDW),
-                D01 (DEN, GJT),
-                D10 (DFW),
-                F11 (JAX, MCO, SFB, ISM, ORL),
-                L30 (LAS),
-                M98 (MSP),
-                N90 (EWR, JFK, LGA, FRG, ISP, HVN),
-                NCT (SJC, SFO, OAK, RNO, SMF, MRY, MER, MOD, SCK, SAC, LVK, SNS),
-                P50 (PHX),
-                P80 (PDX),
-                S46 (SEA),
-                SCT (BUR, LAX, LGB, ONT, PSP, SAN, SNA, VNY, WHP),
-                Y90 (BDL),
-                as well as the
-                AAC, ABE, ASE, AUS, BHM, CLE, CLT, COS, CYS, DAB, DCA, GSP, IND, JAX, MIA, MKE, PHL, SAV, SDF, and TPA
-                ATCT/TRACONs.
+                scenarios in numerous TRACONs and ATCT/TRACONs:
+A80,
+A90,
+AAC,
+ABE,
+AGS,
+ASE,
+AUS,
+AVL,
+BHM,
+BIL,
+BNA,
+BUF,
+C90,
+CHS,
+CLE,
+CLT,
+COS,
+D01,
+D10,
+D21,
+DAB,
+F11,
+GSO,
+GSP,
+I90,
+IND,
+JAX,
+L30,
+M98,
+MIA,
+MKE,
+N90,
+NCT,
+OKC,
+P50,
+P80,
+PCT,
+PHL,
+PIT,
+RDU,
+S46,
+S56,
+SAV,
+SCT,
+SDF,
+TPA, and
+Y90.
                 New scenarios are regularly added.
                 Adding scenarios at additional airports is a matter of writing JSON configuration files that describe them;
                 see <a href="#section-facility-engineering">below</a> for
                 documentation about how scenarios are defined.</p>
-              <p>There are also two <i>discord</i> servers related
-                to <i>vice</i>:</p>
-              <ul>
-                <li> The original <a href="https://discord.gg/y993vgQxhY">Vice ATC Simulator</a> server, for general discussion,
-                  bug reports and feature requests, and for discussing facility engineering.
-                </li>
-                <li> <a href="https://discord.gg/MRDfS3yyhA">Vice ATC Hub</a>, for general discussion and organizing multi-controller
-                  <i>vice</i> sessions.
-                </li>
-              </ul>
+              <p>There is a <i>discord</i> server for <i>vice</i>: the <a href="https://discord.gg/y993vgQxhY">Vice ATC Simulator</a> server,
+                for general discussion, bug reports and feature requests, and for discussing facility engineering.
               </p>
               <p>
                 There is a short <a href="https://youtu.be/MNFpFaT1k7s">video overview</a> that gives a tour of <i>vice</i>. (Note: this video was recorded with an older version of <i>vice</i>, so some details are different in the latest version.)
@@ -269,6 +288,7 @@
                 <li> <i class="fas fa-book"></i>: open this webpage to review <i>vice</i>'s documentation.</li>
                 <li> <i class="fas fa-info-circle"></i>: display information about the version of <i>vice</i> you have installed.</li>
                 <li> <i class="fab fa-discord"></i>: join the <i>vice</i> Discord.</li>
+                <li> <i class="fas fa-expand-alt"></i>: Toggle full-screen mode.</li>
               </ul>
             <p>
               When you exit <i>vice</i>, it remembers everything going on&mdash;all of the aircraft in flight, the instructions they have been given, etc.
@@ -399,10 +419,16 @@
               track in the STARS window or you can enter the aircraft's callsign, a space, 
               the command, and then press the "enter" key. The aircraft's callsign may
               be abbreviated if unambiguously identifies a single aircraft.
-              After you issue a command, the virtual pilot's readback is shown.
-              The aircraft will then start following that instruction, to the best of its abilities.
-              Unlike VATSIM, the pilots will always do exactly what you tell them to. Starting
-              a message with a slash to send a message in ATC chat and will be seen by all other users.
+              After you issue a command, the virtual pilot's readback is
+              shown and keyboard focus returns to the STARS window.
+            </p>
+            <p>
+              After receiving an instruction, the aircraft will start
+              following that instruction, to the best of its abilities.
+              Unlike VATSIM, the pilots will always do exactly what you
+              tell them to.
+            </p>
+            <p>Start a message with a slash to send a message in ATC chat that will be seen by all other users.
             </p>
             <p>If you'd like to issue multiple commands to an aircraft,
               enter the commands one after another with a space between them and
@@ -545,6 +571,21 @@
                     <td><code>SMAX</code></td>
                   </tr>
                   <tr>
+                    <td><code>SS</code></td>
+                    <td>Directs the aircraft to say its indicated airspeed.</td>
+                    <td><code>SS</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>SH</code></td>
+                    <td>Directs the aircraft to say its current heading.</td>
+                    <td><code>SH</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>SA</code></td>
+                    <td>Directs the aircraft to say its current altitude.</td>
+                    <td><code>SA</code></td>
+                  </tr>
+                  <tr>
                     <td><code>E</code><i>approach</i></td>
                     <td>Tells the aircraft to expect the specified
                     approach. This command must be used before an aircraft
@@ -680,7 +721,7 @@
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.10.22/Vice-v0.10.22-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.10.22 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.10.27/Vice-v0.10.27-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.10.27 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -689,7 +730,7 @@
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Big Sur or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.10.22/Vice-v0.10.22-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.10.22 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.10.27/Vice-v0.10.27-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.10.27 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -716,10 +757,96 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
-            <h3>0.10.23 (TODO)</h3>
+            <h3>0.10.27 (4 July 2024)</h3>
+            <ul>
+	      <li>New scenarios: MCI (Brody Carty), P31 (Josh Lambert).</li>
+              <li>Scenario updates: F11, JAX (Samuel Valencia), Y90 (Merry Aribrary).</li>
+              <li>Added "say altitude" (SA) and "say heading" commands (SH) (Samuel Valencia).</li>
+              <li>Aircraft delete is now a CLI command, not a STARS command (Samuel Valencia).</li>
+              <li>"Paste" is now supported in the messages pane (Michael Trokel).</li>
+              <li>The "\" key can be used in place of END to activate the
+                STARS minimum separation tool.</li>
+              <li>Bug fixes:
+                <ul>
+                  <li>Clicking the discord icon in the menubar no longer
+                    endlessly opens web browser tabs.</li>
+                  <li>Fixed a bug where runway-specific routes in STARs
+                    would be followed too early.</li>
+                  <li>Fixed a bug where handoffs from virtual controllers would sometimes
+                    not be made.</li>
+                </ul>
+              </li>
+              <li>Facility engineering changes / fixes:
+                <ul>
+                  <li>Point outs from virtual controllers can be specified
+                    via "/po<i>TCP-id</i>" in routes.</li>
+                  <li>"center" is now handled as intended: per-controller takes
+                    precedence over per-scenario, with the scenario group "center"
+                    as the lowest priority.</li>
+                </ul>
+              </li>
+              <li>Anti-aliasing is disabled by default
+                (but can be re-enabled via the "settings" menu).</li>
+	      <li>Multiple fixes to improve accuracy of drawing in STARS.</li>
+            </ul>
+
+            <h3>0.10.26 (16 June 2024)</h3>
+            <ul>
+	      <li>Fixed a bug where vice would sometimes crash at startup or when MAPS was clicked.</li>
+	      <li>New scenario: SCT (Jud Lopez).</li>
+	      <li>Scenario updates: AVL (Giovanni), A90 and BOS (Michael K).</li>
+	      <li>Fixed "ID" flashing when aircraft ident</li>
+            </ul>
+
+            <h3>0.10.25 (16 June 2024)</h3>
+            <ul>
+	      <li>New scenarios: PIT (Gavin V), AVL, AGS, and GSO (Giovanni), ACK, BNA, BOS, CHS, MHT, OKC, RDU (Michael K).</li>
+	      <li>Updates to BUF, CLE, D21 (Gavin), BHM (Giovanni), JAX and F11 (Michael K), D01 (Jud Lopez, Andrew S), C90 (Jud Lopez, Yahya Nazimuddin), A90 (Michael K).</li>
+              <li>STARS: multiple improvements to handling of redirected handoffs (Artem Dorofeev).</li>
+	      <li>Fixed a bug where <i>vice</i> would crash on launch if it was exited while minimized (Artem Dorofeev).</li>
+	      <li>Added a short pause before aircraft ident.</li>
+	      <li>Aircraft can now be sent 'direct' to their destination airport.</li>
+	      <li>STARS: more realistic video map handling (per controller maps, map id #s).</li>
+	      <li>STARS: multiple improvements to drawing aircraft tracks.</li>
+              <li>Facility engineering changes:
+                <ul>
+                  <li>In "stars_maps", video maps are now specified as single strings giving the video map's name;
+                    the other information (short name for DCB, map id number) is found automatically.
+                    Run <code>vice.exe -listmaps [path-to-XXX-videomaps.gob.zst]</code> to list the available
+                    maps for an ARTCC.</li>
+                  <li>"stars_config" has a new "controller_configs" field that can be used to specify controller-adapted
+                    sets of video maps in the DCB, which maps are enabled by default, as well
+                    as the initial center and range of the STARS scope for each controller.</li>
+                </ul>
+              </li>
+            </ul>
+
+            <h3>0.10.24 (16 June 2024)</h3>
+            <p>(Incomplete&mdash;not released.)</p>
+
+            <h3>0.10.23 (28 May 2024)</h3>
             <ul>
               <li>Added ATC chat functionality.</li>
-              <li>Improved handling of keyboard input when spinners in the STARS DCB are active.</li>
+              <li>New scenario: I90, including IAH, HOU, GLS, SGR (Jace Martin).</li>
+              <li>Scenario Updates: D01 and COS (Andrew S), Y90 (Merry Arbitrary), C90 (Jud Lopez, Yahya Nazimuddin).</li>
+              <li>Added <code>FC</code> command to tell aircraft to change
+                to the next controller's frequency.</li>
+              <li>Full-screen mode is now available.</li>
+	      <li>Improved sequencing of departures.</li>
+	      <li>Updated command entry so keyboard focus returns to STARS after issuing a control command.</li>
+              <li>STARS improvements:
+                <ul>
+                  <li>Updated the fonts to the real-world STARS display fonts.</li>
+                  <li>Allow entering values for DCB spinners using the keyboard.</li>
+                  <li>Add support for displaying requested altitude in FDB.</li>
+                  <li>Fixed bug where controller ids would be drawn as
+                    question marks in tracks in observer mode.</li>
+                  <li>Fixed scope drawing so that hiding / displaying the
+                    DCB doesn't cause the scope contents to shift.</li>
+                </ul>
+              </li>
+              <li>Fixed various minor bugs with aircraft command input.</li>
+              <li>Fixed bug where aircraft callsign numbers could start with 0.</li>
             </ul>
 
             <h3>0.10.22 (28 April 2024)</h3>
@@ -1410,7 +1537,7 @@ how it simulates aircraft or the STARS interface.
                 </thead>
                 <tbody>
                   <tr><td><code>[TRIANGLE] / ∆</code></td><td>`</td></tr>
-                  <tr><td><code>[MIN]</code></td><td>[End]</td></tr>
+                  <tr><td><code>[MIN]</code></td><td>[End] or \</td></tr>
                   <tr><td><code>[INIT CNTL]</code></td><td>[F3] or [CTRL][SHIFT]</td></tr>
                   <tr><td><code>[TERM CNTL]</code></td><td>[F4]</td></tr>
                   <tr><td><code>[HND OFF]</code></td><td>[F5]</td></tr>
@@ -2894,6 +3021,10 @@ above</a> for information about the CRDA system list.</p>
               <li> <code>/h</code><i>heading</i>: depart the fix at specified heading</li>
               <li> <code>/s</code><i>speed</i>: cross the fix at the given speed</li>
               <li> <code>/ho</code>: the aircraft should be handed off from the virtual controller to the user when it departs the fix</li>       
+              <li> <code>/po</code><i>TCP id</i>: when the aircraft passes the waypoint
+                and if it is under the control of a virtual controller,
+                issue a point out to the controller identified by the given TCP id (i.e., the
+                controller ID that would be used when doing a point out in STARS.)</li>
               <li> <code>/iaf</code>: indicates that the fix is an IAF (initial approach fix)</li>
               <li> <code>/if</code>: indicates that the fix is the IF (intermediate fix)</li>
               <li> <code>/faf</code>: indicates that the fix is the FAF (final approach fix)</li>
@@ -3850,7 +3981,10 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"default_maps"</td>
                 <td>Array of strings</td>
-                <td>The names of the initial video maps that should be displayed when this scenario is selected.</td>
+                <td>The names of the initial video maps that should be displayed when this scenario is selected.
+                  Note that "default_maps" may not be used if "controller_configs" is specified in "stars_maps";
+                  in that case controller-specific default maps can be specified there.
+                </td>
               </tr>
               <tr>
                 <td>"departure_airspace"</td>
@@ -3955,7 +4089,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 on their own scope.</td>
               </tr>
               <tr>
-                <td>"allow_long_scrachpad"</td>
+                <td>"allow_long_scratchpad"</td>
                 <td>Array of two Booleans</td>
                 <td>These indicate whether the primary and secondary scratchpad (respectively)
                   may be four characters long (rather than the default of three).
@@ -3983,6 +4117,25 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"center"</td>
                 <td>String</td>
                 <td>Default radar scope center (as a <a href="#fe-locations">latitude-longitude position</a>.)</td>
+              </tr>
+              <tr>
+                <td>"controller_configs"</td>
+                <td>Object</td>
+                <td>Each entry specifies controller-specific configuration properties.
+                  The applicable control positions are specified via members given as a comma-separated string of positions
+                  (e.g., "JFK_G_APP,JFK_K_APP"). The following properties may be specified for each one:
+                  <br>
+                  <ul>
+                    <li>"video_maps": an array of strings specifying which video maps should be displayed
+                      in the DCB for the controller.  See "stars_maps" below for further details.</li>
+                    <li>"default_maps": an array of strings that specifies which maps in "video_maps"
+                      should be initially displayed.</li>
+                    <li>"center": the initial center of the controller's STARS scope.
+                      If specified, this overrides any center specified in the scenario or scenario group.</li>
+                    <li>"range": the initial range for the controller's scope in nautical miles.
+                      If specified, this overrides any range specified in the scenario or scenario group.</li>
+                  </ul>
+                </td>
               </tr>
               <tr>
                 <td>"inhibit_ca_volumes"</td>
@@ -4045,61 +4198,27 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               </tr>
               <tr>
                 <td>"stars_maps"</td>
-                <td>Array of objects</td>
-                <td>These objects specify the available video maps in the STARS scope; the first 6 are shown in the main DCB and all are available under the "MAPS" sub-menu.
-                  Each one has three member values:
-                  <ul>
-                    <li>"group": either 0 or 1, to denote map group "A" or "B".  (STARS allows setting the brightness of these separately.)</li>
-                    <li>"label": a short string giving the map's label to show in the STARS DCB (e.g., "JFK4")</li>
-                    <li>"name": a string giving the name of the map in the video map file (e.g., "N90 JFK - 4s")</li>
-                    </ul>
+                <td>Array of strings</td>
+                <td>These strings specify the available video maps shown in the STARS DCB;
+                  the first 6 are shown in the main DCB and all are available under the "MAPS" sub-menu.
+                  An empty string, <code>""</code>, may be given to specify an empty map button in the DCB.
+                  No more than 38 maps may be specified.
+                  Run <code>vice.exe -listmaps [path-to-XXX-videomaps.gob.zst]</code> to list the available
+                  maps for an ARTCC.
                 </td>
               </tr>
               <tr>
                 <td>"video_map_file"</td>
                 <td>String</td>
-                <td>Filename of the video map file from which the maps specified in "stars_maps" are found (e.g., "videomaps/zny-maps.json.zst")</td>
+                <td>Filename of the video map file from which the maps specified in "stars_maps" are found (e.g., "videomaps/ZNY-videomaps.gob.zst")</td>
               </tr>
             </tbody>
             </table>
 
             <h3>Video Maps</h3>
-            <p>Video maps are specified separately from the rest of the configuration since they require fairly large files and are not normally edited by hand.
-              Video map files are simply JSON files with a series of members, each one of which stores an array of strings giving latitude-longitude positions.
-              Each successive pair of positions specifies a line to be draw when rendering the video map.
-              The following shows an excerpt from the ZNY video maps file that gives a sense of the format.
-            </p>
-            <pre>
-{
-  "ABE": [
-    "N041.00.05.616,W075.32.00.217",
-    "N041.00.01.277,W075.32.29.551",
-    ...
-  ],
-  "ABE - MVA": [
-    "N040.31.00.726,W076.31.35.993",
-    "N040.30.09.063,W076.31.21.985",
-    ...
-  ],
-  ...
-}
-            </pre>
-            <p>
-              There are utility programs available for extracting video maps from
-              both vSTARS configuration files and from installed CRC
-              ARTCCs.
-            </p>
-            <ul>
-              <li> <i>vstars2vice</i> is available from the
-              <a href="https://github.com/mmp/vstars2vice/releases">vstars2vice
-              releases</a> page.
-              It is a command-line program: the first argument should be
-              the path to a VSTARS configuration file and the second a path
-              to an output file.
-              </li>
-              <li> <i>crc2vice</i> is available from the
-                <a href="https://github.com/mmp/crc2vice/releases">crc2vice
-                releases</a> page.  See
+            <p>Video maps are specified separately from the rest of the configuration since they require fairly large files and are not generally edited by hand.
+              Video maps for <i>vice</i> can be generated from CRC video maps <i>crc2vice</i> utility program, which is available from the
+                <a href="https://github.com/mmp/crc2vice/releases">crc2vice releases</a> page.  See
                 its <a href="https://github.com/mmp/crc2vice/blob/master/README.md">README</a>
                 file for information about how to use it.
               </li>
