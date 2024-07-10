@@ -186,21 +186,13 @@ func (comp *ERAMComputer) AddTrackInformation(callsign string, info TrackInforma
 func (comp *ERAMComputer) AddDeparture(fp *av.FlightPlan, tracon string, simTime time.Time) {
 	starsFP := MakeSTARSFlightPlan(fp)
 
-	for fix, adaptationFixes := range comp.Adaptation.CoordinationFixes {
-		// FIXME: make this check robust (same issue as elsewhere)
-		if strings.Contains(fp.Route, fix) {
-			adaptationFix, err := adaptationFixes.Fix(fmt.Sprintf("%v", fp.Altitude))
-			if err == nil {
-				msg := starsFP.Message()
-				msg.SourceID = formatSourceID(comp.Identifier, simTime)
-				comp.SendMessageToERAM(adaptationFix.ToFacility, msg)
+	if fix := comp.Adaptation.FixForRouteAndAltitude(starsFP.Route, starsFP.Altitude); fix != nil {
+		msg := starsFP.Message()
+		msg.SourceID = formatSourceID(comp.Identifier, simTime)
+		comp.SendMessageToERAM(fix.ToFacility, msg)
 
-				starsFP.CoordinationFix = fix
-				starsFP.ContainedFacilities = []string{adaptationFix.ToFacility}
-
-				break
-			}
-		}
+		starsFP.CoordinationFix = fix.Name
+		starsFP.ContainedFacilities = []string{fix.ToFacility}
 	}
 
 	comp.FlightPlans[fp.AssignedSquawk] = starsFP
@@ -224,7 +216,6 @@ func (comp *ERAMComputer) SendMessageToERAM(facility string, msg FlightPlanMessa
 	} else {
 		*inbox = append(*inbox, msg)
 		return nil
-
 	}
 }
 
@@ -243,9 +234,9 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 			comp.FlightPlans[msg.BCN] = fp
 
 			if fp.CoordinationFix == "" {
-				var ok bool
-				fp.CoordinationFix, ok = comp.FixForRouteAndAltitude(fp.Route, fp.Altitude)
-				if !ok {
+				if fix := comp.FixForRouteAndAltitude(fp.Route, fp.Altitude); fix != nil {
+					fp.CoordinationFix = fix.Name
+				} else {
 					lg.Warnf("Coordination fix not found for route \"%s\", altitude \"%s",
 						fp.Route, fp.Altitude)
 					continue
@@ -253,7 +244,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 			}
 
 			// Check if another facility needs this plan.
-			if af, ok := comp.AdaptationFixForAltitude(fp.CoordinationFix, fp.Altitude); ok {
+			if af := comp.AdaptationFixForAltitude(fp.CoordinationFix, fp.Altitude); af != nil {
 				if af.ToFacility != comp.Identifier {
 					// Send the plan to the STARS facility that needs it.
 					comp.ToSTARSFacility(af.ToFacility, msg)
@@ -339,11 +330,11 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 	clear(*comp.ReceivedMessages)
 }
 
-func (ec *ERAMComputer) FixForRouteAndAltitude(route string, altitude string) (string, bool) {
+func (ec *ERAMComputer) FixForRouteAndAltitude(route string, altitude string) *av.AdaptationFix {
 	return ec.Adaptation.FixForRouteAndAltitude(route, altitude)
 }
 
-func (ec *ERAMComputer) AdaptationFixForAltitude(fix string, altitude string) (av.AdaptationFix, bool) {
+func (ec *ERAMComputer) AdaptationFixForAltitude(fix string, altitude string) *av.AdaptationFix {
 	return ec.Adaptation.AdaptationFixForAltitude(fix, altitude)
 }
 

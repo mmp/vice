@@ -77,6 +77,7 @@ type Fix struct {
 }
 
 type ERAMAdaptation struct { // add more later
+	ARTCC             string                     // not in JSON
 	CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
 }
 
@@ -86,6 +87,7 @@ const (
 )
 
 type AdaptationFix struct {
+	Name         string // not in JSON
 	Type         string `json:"type"`
 	ToFacility   string `json:"to"`   // controller to handoff to
 	FromFacility string `json:"from"` // controller to handoff from
@@ -438,6 +440,19 @@ func parseAdaptations() map[string]ERAMAdaptation {
 		panic(err)
 	}
 
+	// Wire up names in the structs
+	for artcc, adapt := range adaptations {
+		adapt.ARTCC = artcc
+
+		for fix, fixes := range adapt.CoordinationFixes {
+			for i := range fixes {
+				fixes[i].Name = fix
+			}
+		}
+
+		adaptations[artcc] = adapt
+	}
+
 	return adaptations
 }
 
@@ -719,25 +734,29 @@ func (ap FAAAirport) ValidRunways() string {
 
 ///////////////////////////////////////////////////////////////////////////
 
-func (ea ERAMAdaptation) FixForRouteAndAltitude(route string, altitude string) (string, bool) {
+func (ea ERAMAdaptation) FixForRouteAndAltitude(route string, altitude string) *AdaptationFix {
 	for fix, adaptationFixes := range ea.CoordinationFixes {
-		if adaptationFix, err := adaptationFixes.Fix(altitude); err == nil {
-			// FIXME: make the route check more robust: break the route into components, etc.
-			if adaptationFix.Type != ZoneBasedFix && strings.Contains(route, fix) {
-				return fix, true
-			}
+		// FIXME: make the route check more robust: break the route into
+		// components, etc.
+		if !strings.Contains(route, fix) {
+			continue
+		}
+
+		adaptationFix, err := adaptationFixes.Fix(altitude)
+		if err == nil && adaptationFix.Type != ZoneBasedFix {
+			return &adaptationFix
 		}
 	}
-	return "", false
+	return nil
 }
 
-func (ea ERAMAdaptation) AdaptationFixForAltitude(fix string, altitude string) (AdaptationFix, bool) {
+func (ea ERAMAdaptation) AdaptationFixForAltitude(fix string, altitude string) *AdaptationFix {
 	if adaptationFixes, ok := ea.CoordinationFixes[fix]; !ok {
-		return AdaptationFix{}, false
+		return nil
 	} else if af, err := adaptationFixes.Fix(altitude); err != nil {
-		return AdaptationFix{}, false
+		return nil
 	} else {
-		return af, true
+		return &af
 	}
 }
 
