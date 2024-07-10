@@ -6329,6 +6329,43 @@
       "ils": true,
       "fix": true
     }
+  },
+  {
+    "name": "Boeing RC-135",
+    "icao": "R135",
+    "engines": {
+      "number": 4,
+      "type": "J"
+    },
+    "weightClass": "H",
+    "category": {
+      "srs": null,
+      "lahso": null,
+      "cwt": "C"
+    },
+    "ceiling": 50000,
+    "rate": {
+      "climb": 2500,
+      "descent": 1500,
+      "accelerate": 7,
+      "decelerate": 5
+    },
+    "runway": {
+      "takeoff": 2.700,
+      "landing": 0.800
+    },
+    "speed": {
+      "min": 150,
+      "landing": 150,
+      "cruise": 480,
+      "cruiseM": 0.77,
+      "max": 540,
+      "maxM": 0.80
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
   }
   ]
 }
