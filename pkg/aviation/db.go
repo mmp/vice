@@ -13,6 +13,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -735,16 +736,13 @@ func (ap FAAAirport) ValidRunways() string {
 ///////////////////////////////////////////////////////////////////////////
 
 func (ea ERAMAdaptation) FixForRouteAndAltitude(route string, altitude string) *AdaptationFix {
+	waypoints := strings.Fields(route)
 	for fix, adaptationFixes := range ea.CoordinationFixes {
-		// FIXME: make the route check more robust: break the route into
-		// components, etc.
-		if !strings.Contains(route, fix) {
-			continue
-		}
-
-		adaptationFix, err := adaptationFixes.Fix(altitude)
-		if err == nil && adaptationFix.Type != ZoneBasedFix {
-			return &adaptationFix
+		if slices.Contains(waypoints, fix) {
+			adaptationFix, err := adaptationFixes.Fix(altitude)
+			if err == nil && adaptationFix.Type != ZoneBasedFix {
+				return &adaptationFix
+			}
 		}
 	}
 	return nil
