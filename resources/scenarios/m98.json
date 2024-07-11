@@ -4,7 +4,7 @@
           "KMSP": {
               "name": "Minneapolis St. Paul Intl",
               "approaches": {
-                  "I2L": {
+                  "12L": {
                       "full_name": "ILS Runway 12L",
                       "runway": "12L",
                       "type": "ILS",
@@ -14,7 +14,7 @@
                           "KAYQU/a7000/s210/iaf SHUUT HAMML/a4000 WASHY/a3000 AASUN/a1420"
                       ]
                   },
-                  "I2R": {
+                  "12R": {
                       "full_name": "ILS Runway 12R",
                       "runway": "12R",
                       "type": "ILS",
@@ -24,7 +24,7 @@
                           "KRUGG/a7000/s210/iaf EFEXX ZESTY/a4000 KINNS/a3000 WABBS/a1420"
                       ]
                   },
-                  "I0L": {
+                  "30L": {
                     "full_name": "ILS Runway 30L",
                     "runway": "30L",
                     "type": "ILS",
@@ -34,7 +34,7 @@
                         "HAPTN/a7000/s210/iaf DBLEM AABEZ/a4000 NARCO/a3000 EAGAN/a1520"
                     ]
                   },
-                  "I0R": {
+                  "30R": {
                     "full_name": "ILS Runway 30R",
                     "runway": "30R",
                     "type": "ILS",
@@ -190,6 +190,28 @@
                     "cleared_altitude": 7000,
                     "sid": "ZMBRO7",
                     "waypoints": "_MSP_35/h140 JEDET/a4000+ ZMBRO"
+                  }
+                },
+                "17_30s": {
+                  "ONTIJ": {
+                    "cleared_altitude": 7000,
+                    "sid": "ORSKY3",
+                    "waypoints": "_MSP_35/h210 JURNY RUMLE PEDLN/a9000+ ORSKY/a11000+"
+                  },
+                  "ALO": {
+                    "cleared_altitude": 7000,
+                    "sid": "RST1",
+                    "waypoints": "_MSP_35/h170 FGT FOBUG/a4000+ DOKTR CORDY RST"
+                  },
+                  "RXANN": {
+                    "cleared_altitude": 7000,
+                    "sid": "SCHEP1",
+                    "waypoints": "_MSP_35/h230 HUGIR MCONL ARREX SCHEP"
+                  },
+                  "ODI": {
+                    "cleared_altitude": 7000,
+                    "sid": "ZMBRO7",
+                    "waypoints": "_MSP_35/h170 JEDET/a4000+ ZMBRO"
                   }
                 }
               },
@@ -353,7 +375,7 @@
               ]
             },
             "initial_altitude": 16000,
-              "initial_controller": "MSP_05_CTR",
+              "initial_controller": "MSP_10_CTR",
               "initial_speed": 280,
               "star": "BAINY3",
               "runway_waypoints": {
@@ -362,11 +384,11 @@
                   "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210",
                   "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 JJENI/h121",
                   "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210 IRRRV/h122",
-                  "35": "SAUGR GEP/a10000/s250 PRRPL/a9000 BRNVL/a8000/s210 GWAIT/h176"
+                  "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 GWAIT/h176"
                 }
               },
               "waypoints": "BAINY/a15000-19000/s280 LUCCY/a11000+/s280/ho SAUGR",
-              "expect_approach": "I0L"
+              "expect_approach": "12L"
           }
         ],
         "BLUEM4": [
@@ -393,7 +415,7 @@
               ]
             },
             "initial_altitude": 24000,
-            "initial_controller": "MSP_05_CTR",
+            "initial_controller": "MSP_09_CTR",
             "initial_speed": 280,
             "star": "BLUEM4",
             "runway_waypoints": {
@@ -402,11 +424,11 @@
                 "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 COZZZ/h301",
                 "30L": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
                 "30R": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
-                "35": "FARBO JAMEZ/a7000"
+                "35": "FARBO JAMEZ/a7000+"
               }
             },
             "waypoints": "OOPEE/a24000+ LAZYY/a16000+/s280/ho BLUEM/a11000+/s280 HHAMR/a10000+ FARBO",
-            "expect_approach": "I2R"
+            "expect_approach": "12R"
           }
         ],
         "KKILR3": [
@@ -437,15 +459,15 @@
               "star": "KKILR3",
               "runway_waypoints": {
                 "KMSP": {
-                  "12R": "KRISP AFTYN/a10000+/s250 CMMOE/a8000/s210 COZZZ/h301",
-                  "12L": "KRISP AFTYN/a10000+/s250 GREAK/a8000/s230 DOLEE/h301",
-                  "30L": "KRISP GEEQU/a210",
-                  "30R": "KRISP GEEQU/a210",
-                  "35": "KRISP AFTYN/a10000+/s230 CMMOE/a8000/s210"
+                  "12L": "KRISP AFTYN/a10000+/s250 CMMOE/a8000/s230 COZZZ/h301",
+                  "12R": "KRISP AFTYN/a10000+/s250 GREAK/a8000/s230 DOLEE/h301",
+                  "30L": "KRISP GEEQU/a7000/s210",
+                  "30R": "KRISP GEEQU/a7000/s210",
+                  "35": "KRISP AFTYN/a10000+/s250 GREAK/a8000/s230 DOLEE/h301"
                 }
               },
               "waypoints": "HENDR/a14000+ CMAAC/a14000+/s280/ho KKILR/a12000+/s280 HUGGI/a10000+ KRISP",
-              "expect_approach": "I2R"
+              "expect_approach": "12R"
           }
         ],
         "MUSCL3": [
@@ -476,15 +498,15 @@
               "star": "MUSCL3",
               "runway_waypoints": {
                 "KMSP": {
-                  "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 COZZZ/h301",
-                  "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
+                  "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 COZZZ/h301",
+                  "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                   "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210",
                   "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210",
-                  "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 COZZZ/h301"
+                  "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301"
                 }
               },
               "waypoints": "JERMN/a22000+/s280 MUSCL/a17000+/s280/ho BAYKS/a15000+/s280 WOLVS",
-              "expect_approach": "I2R"
+              "expect_approach": "12L"
           }
         ],
         "NITZR3": [
@@ -510,7 +532,7 @@
               ]
             },
             "initial_altitude": 24000,
-              "initial_controller": "MSP_05_CTR",
+              "initial_controller": "MSP_09_CTR",
               "initial_speed": 280,
               "star": "NITZR3",
               "runway_waypoints": {
@@ -523,7 +545,7 @@
                 }
               },
               "waypoints": "KBEEE/a24000+ DEMLL/a16000+/s280/ho NITZR/a12000+/s280 WRSAW/a11000+ DAHRL",
-              "expect_approach": "I2R"
+              "expect_approach": "12R"
           }
         ],
         "TORGY3": [
@@ -553,7 +575,7 @@
               ]
             },
             "initial_altitude": 24000,
-              "initial_controller": "MSP_05_CTR",
+              "initial_controller": "MSP_10_CTR",
               "initial_speed": 280,
               "star": "TORGY3",
               "runway_waypoints": {
@@ -561,12 +583,12 @@
                   "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210",
                   "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210",
                   "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 JJENI/h121",
-                  "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000 OSMOH/a8000/s210 IRRRV/h122",
+                  "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ OSMOH/a8000/s210 IRRRV/h122",
                   "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 GWAIT/h176"
                   }
               },
               "waypoints": "ERICX/a24000+/s280 TORGY/a13000+/s280/ho OFSON/a12000 HMBRG CONIA",
-              "expect_approach": "I0L"
+              "expect_approach": "12R"
           }
         ]
       },
@@ -579,12 +601,20 @@
           "facility_id": "C",
           "eram_facility": true
         },
-        "MSP_08_CTR": {
-          "frequency": 135000,
+        "MSP_09_CTR": {
+          "frequency": 125500,
           "full_name": "Minnieapolis Center",
           "scope_char": "C",
           "facility_id": "C",
-          "sector_id": "C08",
+          "sector_id": "C09",
+          "eram_facility": true
+        },
+        "MSP_10_CTR": {
+          "frequency": 121050,
+          "full_name": "Minnieapolis Center",
+          "scope_char": "C",
+          "facility_id": "C",
+          "sector_id": "C10",
           "eram_facility": true
         },
         "MSP_R_DEP": {
@@ -640,18 +670,12 @@
           "full_name": "Minnieapolis Tower",
           "scope_char": "T",
           "sector_id": "03"
-        },
-        "FCM_TWR": {
-          "frequency": 119150,
-          "full_name": "Flying Cloud Tower",
-          "scope_char": "T",
-          "sector_id": "04"
         }
       },
-      "default_scenario": "MSP 12R/L/17",
+      "default_scenario": "MSP 12R/L",
       "fixes": {
-        "MSP": "N044.52.94.000,W093.13.32.000",
-        "KMSP": "N044.52.94.000,W093.13.32.000",
+        "MSP": "44.896506, -93.236539",
+        "KMSP": "44.890390, -93.230670",
         "_MSP_12L": "44.894759, -93.225624",
         "_MSP_12R": "44.889524, -93.238306",
         "_MSP_30L": "44.871826, -93.196807",
@@ -705,12 +729,12 @@
           },
           "controllers": [
             "MSP_05_CTR",
-            "MSP_08_CTR",
+            "MSP_09_CTR",
+			"MSP_10_CTR",
             "MSP_N_TWR",
-            "MSP_S_TWR",
-            "FCM_TWR"
+            "MSP_S_TWR"
           ],
-          "default_maps": ["M98 219 12 A"],
+          "default_maps": ["M98 219 12 A", "M98 220 12 D"],
           "departure_runways": [
             {
               "airport": "KMSP",
@@ -822,13 +846,13 @@
           },
           "controllers": [
             "MSP_05_CTR",
-            "MSP_08_CTR",
+            "MSP_09_CTR",
+			"MSP_10_CTR",
             "MSP_N_TWR",
             "MSP_S_TWR",
-            "MSP_W_TWR",
-            "FCM_TWR"
+            "MSP_W_TWR"
           ],
-          "default_maps": ["M98 224 12-17 A"],
+          "default_maps": ["M98 224 12-17 A", "M98 226 12-17 D"],
           "departure_runways": [
             {
               "airport": "KMSP",
@@ -940,12 +964,12 @@
           },
           "controllers": [
             "MSP_05_CTR",
-            "MSP_08_CTR",
+            "MSP_09_CTR",
+			"MSP_10_CTR",
             "MSP_N_TWR",
-            "MSP_S_TWR",
-            "FCM_TWR"
+            "MSP_S_TWR"
           ],
-          "default_maps": ["M98 216 30 A"],
+          "default_maps": ["M98 216 30 A", "M98 217 30 D"],
           "departure_runways": [
             {
               "airport": "KMSP",
@@ -1061,13 +1085,13 @@
           },
           "controllers": [
             "MSP_05_CTR",
-            "MSP_08_CTR",
+            "MSP_09_CTR",
+			      "MSP_10_CTR",
             "MSP_N_TWR",
             "MSP_S_TWR",
-            "MSP_W_TWR",
-            "FCM_TWR"
+            "MSP_W_TWR"
           ],
-          "default_maps": ["M98 231 30-35 B"],
+          "default_maps": ["M98 250 30-35 A", "M98 249 30-35 D"],
           "departure_runways": [
             {
               "airport": "KMSP",
@@ -1134,58 +1158,140 @@
             "direction": 310,
             "speed": 7
           }
+        },
+        "MSP 30s/17": {
+          "arrival_runways": [
+            {
+              "airport": "KMSP",
+              "runway": "30R"
+            },
+            {
+              "airport": "KMSP",
+              "runway": "30L"
+            }
+          ],
+          "arrivals": {
+            "BAINY3": {
+              "KMSP": 12
+            },
+            "BLUEM4": {
+              "KMSP": 8
+            },
+            "KKILR3": {
+              "KMSP": 6
+            },
+            "MUSCL3": {
+              "KMSP": 8
+            },
+            "NITZR3": {
+              "KMSP": 6
+            },
+            "TORGY3": {
+              "KMSP": 12
+            }
+        },
+        "solo_controller": "MSP_H_APP",
+          "multi_controllers": {
+            "default": {
+              "MSP_H_APP": {"primary": true, "arrivals": ["BLUEM4", "NITZR3", "TORGY3"]},
+              "MSP_I_APP": {"backup": "MSP_H_APP", "arrivals": ["BAINY3", "KKILR3", "MUSCL3"]},
+              "MSP_N_APP": {"backup": "MSP_I_APP"},
+              "MSP_S_APP": {"backup": "MSP_H_APP"},
+              "MSP_R_DEP": {"departures": ["KMSP"], "backup": "MSP_H_APP"},
+              "MSP_E_APP": {"backup": "MSP_H_APP"}
+            }
+          },
+          "controllers": [
+            "MSP_05_CTR",
+            "MSP_09_CTR",
+			      "MSP_10_CTR",
+            "MSP_N_TWR",
+            "MSP_S_TWR",
+            "MSP_W_TWR"
+          ],
+          "default_maps": ["M98 247 30-17 A", "M98 246 30-17 D"],
+          "departure_runways": [
+            {
+              "airport": "KMSP",
+              "rate": 3,
+              "runway": "17_30s",
+              "category": "ORSKY"
+            },
+            {
+              "airport": "KMSP",
+              "rate": 5,
+              "runway": "17_30s",
+              "category": "RST"
+            },
+            {
+              "airport": "KMSP",
+              "rate": 5,
+              "runway": "17_30s",
+              "category": "SCHEP"
+            },
+            {
+              "airport": "KMSP",
+              "rate": 3,
+              "runway": "17_30s",
+              "category": "ZMBRO"
+            },
+            {
+              "airport": "KMSP",
+              "rate": 4,
+              "runway": "30R",
+              "category": "COULT"
+            },
+            {
+              "airport": "KMSP",
+              "rate": 3,
+              "runway": "30R",
+              "category": "DWN"
+            },
+            {
+              "airport": "KMSP",
+              "rate": 3,
+              "runway": "30R",
+              "category": "KBREW"
+            },
+            {
+              "airport": "KMSP",
+              "rate": 5,
+              "runway": "30R",
+              "category": "WLSTN"
+            },
+            {
+              "airport": "KMSP",
+              "rate": 3,
+              "runway": "30R",
+              "category": "SMERF"
+            },
+            {
+              "airport": "KMSP",
+              "rate": 4,
+              "runway": "30R",
+              "category": "LEINY"
+            }
+          ],
+          "wind": {
+            "direction": 240,
+            "speed": 5
+          }
         }
       },
       "stars_config": {
         "center": "KMSP",
-        "coordination_fixes": {
-            "LUCCY": [
-                {
-                    "type": "route",
-                    "to": "M98",
-                    "from": "ZMP"
-                }
-            ],
-            "BLUEM": [
-                {
-                    "type": "route",
-                    "to": "M98",
-                    "from": "ZMP"
-                }
-            ],
-            "KKILR": [
-                {
-                    "type": "route",
-                    "to": "M98",
-                    "from": "ZMP"
-                }
-            ],
-            "BAYKS": [
-                {
-                    "type": "route",
-                    "to": "M98",
-                    "from": "ZMP"
-                }
-            ],
-            "NITZR": [
-                {
-                    "type": "route",
-                    "to": "M98",
-                    "from": "ZMP"
-                }
-            ],
-            "OFSON": [
-                {
-                    "type": "route",
-                    "to": "M98",
-                    "from": "ZMP"
-                }
-            ]
-        },
         "airspace_awareness": [
           {
-              "fixes": ["ALL"],
+              "fixes": ["GRB", "DLL", "ODI"],
               "receiving_controller": "MSP_05_CTR"
+          },
+          {
+            "fixes": ["ALO", "ONTIJ", "RXANN"],
+            "receiving_controller": "MSP_09_CTR"
+          },
+          {
+            "fixes": ["LEINY", "ABR", "SMERF", "FAR"],
+            "receiving_controller": "MSP_10_CTR"
           }
       ],
         "inhibit_ca_volumes": [
@@ -1219,7 +1325,7 @@
         "radar_sites": {
           "MSP": {
             "char": "A",
-            "position": "KMSP",
+            "position": "44.890395, -93.230667",
             "elevation": 842,
             "primary_range": 60,
             "secondary_range": 120,
@@ -1240,8 +1346,8 @@
           "ODI": "ODI"
         },
         "stars_maps": [
-            "M98 219 12 A", "M98 220 12 D", "M98 216 30 A", "M98 217 30 D", "M98 224 12-17 A", "M98 226 12-17 D", "M98 231 30-35 B", 
-            "M98 110 FIXES", "M98 153 MVA", "M98 106 AIRSPAC"
+            "M98 219 12 A", "M98 220 12 D", "M98 224 12-17 A", "M98 226 12-17 D", "M98 216 30 A", "M98 217 30 D", "M98 250 30-35 A", "M98 249 30-35 D", "M98 247 30-17 A", "M98 246 30-17 D", "M98 152 12INTER", "M98 151 30INTER", "M98 313 RNAV 12", "M98 331 RNAV 30", "M98 157 SID", "M98 110 FIXES", "M98 ZMPEVNT", "M98 105 BRAV0", "M98 153 MVA", "M98 113 R0ADS"
+
         ],
         "video_map_file": "videomaps/ZMP-videomaps.gob.zst"
         }
