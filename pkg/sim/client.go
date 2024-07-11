@@ -353,7 +353,7 @@ func (c *ControlClient) GetUpdates(eventStream *EventStream, onErr func(error)) 
 		return
 	}
 
-	c.checkPendingRPCs(eventStream)
+	c.checkPendingRPCs(eventStream, onErr)
 
 	// Wait in seconds between update fetches; no less than 50ms
 	rate := math.Clamp(1/c.State.SimRate, 0.05, 1)
@@ -404,9 +404,22 @@ func (c *ControlClient) UpdateWorld(wu *WorldUpdate, eventStream *EventStream) {
 	}
 }
 
-func (c *ControlClient) checkPendingRPCs(eventStream *EventStream) {
+func (c *ControlClient) checkPendingRPCs(eventStream *EventStream, onErr func(error)) {
 	c.pendingCalls = util.FilterSlice(c.pendingCalls,
 		func(call *util.PendingCall) bool { return !call.CheckFinished() })
+
+	for _, call := range c.pendingCalls {
+		if time.Since(call.IssueTime) > 5*time.Second {
+			eventStream.Post(Event{
+				Type:    StatusMessageEvent,
+				Message: "No response from server for over 5 seconds. Network connection may be lost.",
+			})
+			if onErr != nil {
+				onErr(ErrRPCTimeout)
+			}
+			break
+		}
+	}
 }
 
 func (c *ControlClient) Connected() bool {
