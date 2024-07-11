@@ -48545,6 +48545,288 @@
         ]
       ]
     }
+  },
+  {
+    "icao": "jre",
+    "name": "FlyExclusive",
+    "callsign": {
+      "name": "JetShare",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C750",
+          2
+        ]
+      ] 
+    }
+  },
+{
+    "icao": "jtl",
+    "name": "Jet Linx Aviation",
+    "callsign": {
+      "name": "JetLinx",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "LJ60",
+          2
+        ],
+        [
+          "BE40",
+          2
+        ],
+        [
+          "LJ45",
+          2
+        ],
+        [
+          "CL60",
+          2
+        ],
+        [
+          "GALX",
+          2
+        ]
+      ] 
+    }
+  },
+{
+    "icao": "kii",
+    "name": "Kalitta Charters II",
+    "callsign": {
+      "name": "Dragster",
+      "callsignFormats": [
+        "####"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "B722",
+          4
+        ],
+        [
+          "B733",
+          5
+        ],
+        [
+          "B734",
+          6
+        ]
+      ] 
+    }
+  },
+{
+    "icao": "slh",
+    "name": "Silverhawk Aviation",
+    "callsign": {
+      "name": "Silverhawk",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C550",
+          1
+        ],
+        [
+          "C560",
+          11
+        ],
+        [
+          "C680",
+          1
+        ]
+      ] 
+    }
+  },
+{
+    "icao": "okc",
+    "name": "Private Jets Inc.",
+    "callsign": {
+      "name": "Thunder Wings",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "BE40",
+          5
+        ],
+        [
+          "E35L",
+          3
+        ],
+        [
+          "LJ40",
+          2
+        ],
+        [
+          "LJ45",
+          1
+        ],
+        [
+          "LJ75",
+          3
+        ]
+      ] 
+    }
+  },
+{
+    "icao": "zippy",
+    "name": "US AirForce",
+    "callsign": {
+      "name": "ZIPPY",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "R135",
+          1
+        ]
+      ] 
+    }
+  },
+{
+    "icao": "toxic",
+    "name": "US AirForce",
+    "callsign": {
+      "name": "TOXIC",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "R135",
+          1
+        ]
+      ] 
+    }
+  },
+{
+    "icao": "rivet",
+    "name": "US AirForce",
+    "callsign": {
+      "name": "RIVET",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "R135",
+          1
+        ]
+      ] 
+    }
+  },
+{
+    "icao": "goofy",
+    "name": "US AirForce",
+    "callsign": {
+      "name": "GOOFY",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "R135",
+          1
+        ]
+      ] 
+    }
+  },
+{
+    "icao": "bazoo",
+    "name": "US AirForce",
+    "callsign": {
+      "name": "BAZOO",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "R135",
+          1
+        ]
+      ] 
+    }
+  },
+{
+    "icao": "cobra",
+    "name": "US AirForce",
+    "callsign": {
+      "name": "COBRA",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "R135",
+          1
+        ]
+      ] 
+    }
+  },
+{
+    "icao": "poker",
+    "name": "US AirForce",
+    "callsign": {
+      "name": "POKER",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "R135",
+          1
+        ]
+      ] 
+    }
+  },
+{
+    "icao": "snoop",
+    "name": "US AirForce",
+    "callsign": {
+      "name": "SNOOP",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "R135",
+          1
+        ]
+      ] 
+    }
   }
     ]
 }
