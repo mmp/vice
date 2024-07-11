@@ -239,6 +239,14 @@ func getAltimiter(metar string) string {
 	return ""
 }
 
+func (s *State) PreSave() {
+	s.STARSFacilityAdaptation.PreSave()
+}
+
+func (s *State) PostLoad(ml *av.VideoMapLibrary) error {
+	return s.STARSFacilityAdaptation.PostLoad(ml)
+}
+
 func (ss *State) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...

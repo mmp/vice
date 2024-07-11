@@ -1299,14 +1299,6 @@ func (s *Sim) PostLoad(ml *av.VideoMapLibrary) error {
 	return nil
 }
 
-func (s *State) PreSave() {
-	s.STARSFacilityAdaptation.PreSave()
-}
-
-func (s *State) PostLoad(ml *av.VideoMapLibrary) error {
-	return s.STARSFacilityAdaptation.PostLoad(ml)
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // Simulation
 
