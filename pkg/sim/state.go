@@ -28,7 +28,7 @@ type State struct {
 	DepartureAirports map[string]*av.Airport
 	ArrivalAirports   map[string]*av.Airport
 
-	ERAMComputers ERAMComputers
+	ERAMComputers *ERAMComputers
 
 	TRACON                   string
 	LaunchConfig             LaunchConfig
@@ -240,10 +240,16 @@ func getAltimiter(metar string) string {
 }
 
 func (s *State) PreSave() {
+	// Clean up before staving; here we clear out all of the video map data
+	// so we don't pay the cost of writing it out to disk, since it's
+	// available to us anyway.
 	s.STARSFacilityAdaptation.PreSave()
 }
 
 func (s *State) PostLoad(ml *av.VideoMapLibrary) error {
+	// Tidy things up after loading from disk: reinitialize the video maps
+	// and also make ERAMComputers aware of each other.
+	s.ERAMComputers.PostLoad()
 	return s.STARSFacilityAdaptation.PostLoad(ml)
 }
 

@@ -58,25 +58,25 @@ const (
 
 type ERAMComputer struct {
 	STARSComputers   map[string]*STARSComputer
-	ERAMInboxes      map[string]*[]FlightPlanMessage
-	ReceivedMessages *[]FlightPlanMessage
+	ReceivedMessages []FlightPlanMessage
 	FlightPlans      map[av.Squawk]*STARSFlightPlan
 	TrackInformation map[string]*TrackInformation
 	AvailableSquawks map[av.Squawk]interface{}
 	Identifier       string
 	Adaptation       av.ERAMAdaptation
+
+	eramComputers *ERAMComputers // do not include when we serialize
 }
 
-func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsBeaconBank int) *ERAMComputer {
+func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsBeaconBank int, eramComputers *ERAMComputers) *ERAMComputer {
 	ec := &ERAMComputer{
 		Adaptation:       adapt,
 		STARSComputers:   make(map[string]*STARSComputer),
-		ERAMInboxes:      make(map[string]*[]FlightPlanMessage),
-		ReceivedMessages: &[]FlightPlanMessage{},
 		FlightPlans:      make(map[av.Squawk]*STARSFlightPlan),
 		TrackInformation: make(map[string]*TrackInformation),
 		AvailableSquawks: getValidSquawkCodes(),
 		Identifier:       fac,
+		eramComputers:    eramComputers,
 	}
 
 	starsAvailableSquawks := getBeaconBankSquawks(starsBeaconBank)
@@ -84,8 +84,6 @@ func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsBeaconBank int) 
 	for id, tracon := range av.DB.TRACONs {
 		if tracon.ARTCC == fac {
 			sc := MakeSTARSComputer(id, starsAvailableSquawks)
-			// make the ERAM inbox
-			sc.ERAMInbox = ec.ReceivedMessages
 			ec.STARSComputers[id] = sc
 		}
 	}
@@ -225,16 +223,16 @@ func (comp *ERAMComputer) SendMessageToERAM(facility string, msg FlightPlanMessa
 		panic("unset message type")
 	}
 
-	if inbox, ok := comp.ERAMInboxes[facility]; !ok {
+	if facERAM, ok := comp.eramComputers.Computers[facility]; !ok {
 		return ErrUnknownFacility
 	} else {
-		*inbox = append(*inbox, msg)
+		facERAM.ReceivedMessages = append(facERAM.ReceivedMessages, msg)
 		return nil
 	}
 }
 
 func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
-	for _, msg := range *comp.ReceivedMessages {
+	for _, msg := range comp.ReceivedMessages {
 		switch msg.MessageType {
 		case Plan:
 			fp := msg.FlightPlan()
@@ -276,7 +274,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 			}
 
 			// FIXME: why is this here?
-			*comp.ReceivedMessages = (*comp.ReceivedMessages)[1:]
+			comp.ReceivedMessages = (comp.ReceivedMessages)[1:]
 
 		case DepartureDM: // Stars ERAM coordination time tracking
 
@@ -341,7 +339,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 		}
 	}
 
-	clear(*comp.ReceivedMessages)
+	clear(comp.ReceivedMessages)
 }
 
 func (ec *ERAMComputer) FixForRouteAndAltitude(route string, altitude string) *av.AdaptationFix {
@@ -1051,53 +1049,23 @@ type UnsupportedTrack struct {
 	FlightPlan        *STARSFlightPlan
 }
 
-func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) ERAMComputers {
-	ec := ERAMComputers{
+func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) *ERAMComputers {
+	ec := &ERAMComputers{
 		Computers: make(map[string]*ERAMComputer),
 	}
 
 	// Make the ERAM computer for each ARTCC that we have adaptations defined for.
 	for fac, adapt := range av.DB.ERAMAdaptations {
-		ec.Computers[fac] = MakeERAMComputer(fac, adapt, starsBeaconBank)
+		ec.Computers[fac] = MakeERAMComputer(fac, adapt, starsBeaconBank, ec)
 	}
 
-	// Let each ERAM computer know about the other ARTCC ERAM computers'
-	// inboxes.
-	//
-	// TODO: remove this, just look it up from ERAMComputers when we need
-	// it.
-	for fac, comp := range ec.Computers {
-		for fac2, comp2 := range ec.Computers {
-			// Don't add our own ERAM to the inbox.
-			if fac != fac2 {
-				comp.ERAMInboxes[fac2] = comp2.ReceivedMessages
-			}
-		}
-	}
+	return ec
+}
 
-	allSTARSInboxes := make(map[string]*[]FlightPlanMessage)
-	for _, eram := range ec.Computers {
-		for _, stars := range eram.STARSComputers {
-			allSTARSInboxes[stars.Identifier] = &stars.ReceivedMessages
-		}
+func (ec *ERAMComputers) PostLoad() {
+	for _, comp := range ec.Computers {
+		comp.eramComputers = ec
 	}
-
-	// Initialize STARSInbox in the STARSComputers; we store a pointer to
-	// all other STARSComputers' inboxes in each STARSComputer.
-	//
-	// TODO: this also should probably be removed, to be looked up when
-	// needed.
-	for _, eram := range ec.Computers {
-		for _, stars := range eram.STARSComputers {
-			for tracon, address := range allSTARSInboxes {
-				if tracon != stars.Identifier {
-					stars.STARSInbox[tracon] = address
-				}
-			}
-		}
-	}
-
-	return ERAMComputers(ec)
 }
 
 // If given an ARTCC, returns the corresponding ERAMComputer; if given a TRACON,
@@ -1272,13 +1240,8 @@ func (e ERAMComputers) DumpMap() {
 
 		}
 
-		fmt.Println("ERAMInboxes:")
-		for eiKey, inbox := range eramComputer.ERAMInboxes {
-			fmt.Printf("\tKey: %s, Messages: %v\n\n", eiKey, *inbox)
-		}
-
-		if eramComputer.ReceivedMessages != nil {
-			fmt.Printf("ReceivedMessages: %v\n\n", *eramComputer.ReceivedMessages)
+		if len(eramComputer.ReceivedMessages) > 0 {
+			fmt.Printf("ReceivedMessages: %v\n\n", eramComputer.ReceivedMessages)
 		}
 
 		fmt.Println("FlightPlans:")

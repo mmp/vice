@@ -1211,7 +1211,7 @@ type WorldUpdate struct {
 	Controllers map[string]*av.Controller
 	Time        time.Time
 
-	ERAMComputers ERAMComputers
+	ERAMComputers *ERAMComputers
 
 	LaunchConfig LaunchConfig
 
