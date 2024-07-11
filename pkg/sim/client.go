@@ -526,6 +526,7 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 	sz := imgui.CalcTextSize(c.State.SimDescription, false, 0)
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
 
+	show = true
 	imgui.BeginV(c.State.SimDescription, &show, imgui.WindowFlagsAlwaysAutoResize)
 
 	// Make big(ish) tables somewhat more legible
