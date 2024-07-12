@@ -1563,7 +1563,7 @@ func (s *Sim) updateState() {
 		s.spawnAircraft()
 	}
 
-	s.State.ERAMComputers.Update(s.State.TRACON, now, s.eventStream, s.lg)
+	s.State.ERAMComputers.Update(s)
 }
 
 func PostRadioEvents(from string, transmissions []av.RadioTransmission, ep EventPoster) {
@@ -2477,6 +2477,9 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 				return av.ErrOtherControllerHasTrack
 			} else if octrl := s.State.Controllers[controller]; octrl == nil {
 				return av.ErrNoController
+			} else if octrl.Facility != ctrl.Facility {
+				// Can't point out to another STARS facility.
+				return av.ErrInvalidController
 			} else if octrl.Callsign == ctrl.Callsign {
 				// Can't point out to ourself
 				return av.ErrInvalidController

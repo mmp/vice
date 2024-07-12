@@ -218,6 +218,15 @@ func (comp *ERAMComputer) SendMessageToSTARSFacility(facility string, msg Flight
 	}
 }
 
+func (comp *ERAMComputer) Update(s *Sim) {
+	comp.SortMessages(s.SimTime, s.lg)
+	comp.SendFlightPlans(s.State.TRACON, s.SimTime, s.lg)
+
+	for _, stars := range comp.STARSComputers {
+		stars.Update(s)
+	}
+}
+
 func (comp *ERAMComputer) SendMessageToERAM(facility string, msg FlightPlanMessage) error {
 	if msg.MessageType == Unset {
 		panic("unset message type")
@@ -766,6 +775,11 @@ func (comp *STARSComputer) RejectPointOut(callsign, controller string) error {
 	return nil
 }
 
+func (comp *STARSComputer) Update(s *Sim) {
+	comp.SortReceivedMessages(s.eventStream)
+	comp.AssociateFlightPlans(s)
+}
+
 // Sorting the STARS messages. This will store flight plans with FP
 // messages, change flight plans with AM messages, cancel flight plans with
 // CX messages, etc.
@@ -851,6 +865,56 @@ func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
 	}
 
 	clear(comp.ReceivedMessages)
+}
+
+func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
+	for _, ac := range s.State.Aircraft {
+		if trk, ok := comp.TrackInformation[ac.Callsign]; ok { // Someone is tracking this
+			if trk.FlightPlan != nil {
+				if trk.FlightPlan.AssignedSquawk == ac.Squawk && s.State.InDropArea(ac) {
+					ac.TrackingController = ""
+					ac.ControllingController = ""
+
+					if err := comp.DropTrack(ac); err != nil {
+						//s.lg.Errorf("STARS DropTrack: %v", err)
+					}
+
+					s.eventStream.Post(Event{
+						Type:           DroppedTrackEvent,
+						Callsign:       ac.Callsign,
+						FromController: s.State.Callsign,
+					})
+				}
+			} else {
+				//s.lg.Errorf("%s: no flight plan for squawk %s\n", ac.Callsign, ac.Squawk)
+			}
+		}
+
+		// FIXME: should only happen if sp.AutoTrackDepartures is set?
+		if fp, ok := comp.ContainedPlans[ac.Squawk]; ok { // auto associate
+			ctrl := s.State.Callsign
+			if s.State.InAcquisitionArea(ac) && s.State.DepartureController(ac, s.lg) == ctrl {
+				// If they have already contacted departure, then initiating
+				// track gives control as well; otherwise ControllingController
+				// is left unset until contact.
+				haveControl := ac.DepartureContactAltitude == 0
+
+				if err := comp.InitiateTrack(ac.Callsign, ctrl, fp, haveControl); err != nil {
+					//s.lg.Errorf("InitiateTrack: %v", err)
+				}
+
+				s.eventStream.Post(Event{
+					Type:         InitiatedTrackEvent,
+					Callsign:     ac.Callsign,
+					ToController: ctrl,
+				})
+
+				if comp.TrackInformation[ac.Callsign] != nil {
+					//s.lg.Errorf("%v: Initiating track for .%v.\n", ac.Callsign, trk[ac.Callsign].TrackOwner)
+				}
+			}
+		}
+	}
 }
 
 func (comp *STARSComputer) CompletelyDeleteAircraft(ac *av.Aircraft) {
@@ -1097,18 +1161,10 @@ func (ec *ERAMComputers) FacilityComputers(fac string) (*ERAMComputer, *STARSCom
 }
 
 // Give the computers a chance to sort through their received
-// messages. Messages will send when the time is appropriate (e.g.,
-// handoff).  Some messages will be sent from recieved messages (for
-// example a FP message from a RF message).
-func (ec *ERAMComputers) Update(tracon string, simTime time.Time, e *EventStream, lg *log.Logger) {
-	// _, fac := w.FacilityComputers(FIXME)
-	// Sort through messages made
+// messages and do assorted housekeeping.
+func (ec ERAMComputers) Update(s *Sim) {
 	for _, comp := range ec.Computers {
-		comp.SortMessages(simTime, lg)
-		comp.SendFlightPlans(tracon, simTime, lg)
-		for _, stars := range comp.STARSComputers {
-			stars.SortReceivedMessages(e)
-		}
+		comp.Update(s)
 	}
 }
 
