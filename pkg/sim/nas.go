@@ -1378,6 +1378,47 @@ func FlightPlanDepartureMessage(fp av.FlightPlan, sendingFacility string, simTim
 	}
 }
 
+func MakeSTARSFlightPlanFromAbbreviated(abbr string, stars *STARSComputer, facilityAdaptation STARSFacilityAdaptation) (*STARSFlightPlan, error) {
+	if strings.Contains(abbr, "*") {
+		// VFR FP; it's a required field
+		// TODO(mtrokel)
+		return nil, nil
+	} else {
+		// Abbreviated FP
+		fields := strings.Fields(abbr)
+		if len(fields) == 0 {
+			return nil, ErrInvalidAbbreviatedFP
+		}
+
+		info := ParseAbbreviatedFPFields(facilityAdaptation, fields)
+		if err := info.Error; err != nil && err != ErrIllegalACType {
+			return nil, err
+		} else {
+			if info.BCN == av.Squawk(0) {
+				var err error
+				if info.BCN, err = stars.CreateSquawk(); err != nil {
+					return nil, err
+				}
+			}
+
+			fp := &STARSFlightPlan{ // TODO: Do single char ap parsing
+				FlightPlan: &av.FlightPlan{
+					Callsign:         info.ACID,
+					Rules:            util.Select(info.Rules == av.UNKNOWN, av.VFR, info.Rules),
+					AircraftType:     info.AircraftType,
+					DepartureAirport: info.DepartureAirport,
+					AssignedSquawk:   info.BCN,
+				},
+				Altitude:          util.Select(info.RequestedALT == "", "VFR", info.RequestedALT),
+				SP1:               info.SC1,
+				SP2:               info.SC1,
+				InitialController: info.ControllingPosition,
+			}
+			return fp, err
+		}
+	}
+}
+
 // FIXME: yuck, duplicated here
 const STARSTriangleCharacter = string(rune(0x80))
 

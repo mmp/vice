@@ -261,6 +261,9 @@ func (sp *STARSPane) parseQuickLookPositions(ctx *Context, s string) ([]QuickLoo
 // maintained in Aircraft, so we'll make an ad-hoc TrackInformation here.
 func (sp *STARSPane) getTrack(ctx *Context, ac *av.Aircraft) *sim.TrackInformation {
 	trk := ctx.ControlClient.STARSComputer().TrackInformation[ac.Callsign]
+	if trk == nil {
+		trk = &sim.TrackInformation{}
+	}
 
 	trk.Identifier = ac.Callsign
 	trk.TrackOwner = ac.TrackingController
@@ -2314,8 +2317,23 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *Context) (status STARS
 				}
 				status.clear = true
 				return
+			} else if sp.previewAreaInput, status.err = sp.updateQL(ctx, cmd); status.err == nil {
+				// It was valid quicklook positions
+				status.clear = true
+				return
 			} else {
-				status.clear, sp.previewAreaInput, status.err = sp.updateQL(ctx, cmd)
+				// Is it an abbreviated flight plan?
+				fp, err := sim.MakeSTARSFlightPlanFromAbbreviated(cmd, ctx.ControlClient.STARSComputer(),
+					ctx.ControlClient.STARSFacilityAdaptation)
+				if fp != nil {
+					ctx.ControlClient.UploadFlightPlan(fp, sim.LocalNonEnroute, nil,
+						func(err error) { sp.displayError(err, ctx) })
+					status.output = fmt.Sprintf("%v%v%v %04o\nNO ROUTE %v", fp.Callsign,
+						util.Select(fp.AircraftType != "", " ", ""), fp.AircraftType, fp.AssignedSquawk,
+						util.Select(fp.Altitude != "VFR", fp.Altitude, ""))
+				}
+				status.clear = err == nil
+				status.err = err
 				return
 			}
 		}
@@ -2952,7 +2970,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *Context) (status STARS
 				status.clear = true
 				return
 			} else {
-				status.clear, sp.previewAreaInput, status.err = sp.updateQL(ctx, cmd)
+				sp.previewAreaInput, status.err = sp.updateQL(ctx, cmd)
+				status.clear = status.err == nil
 				return
 			}
 
@@ -3293,10 +3312,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *Context) (status STARS
 	return
 }
 
-func (sp *STARSPane) updateQL(ctx *Context, input string) (ok bool, previewInput string, err error) {
+func (sp *STARSPane) updateQL(ctx *Context, input string) (previewInput string, err error) {
 	positions, input, err := sp.parseQuickLookPositions(ctx, input)
 	if err != nil {
-		ok = false
 		previewInput = input
 		return
 	}
@@ -3323,9 +3341,7 @@ func (sp *STARSPane) updateQL(ctx *Context, input string) (ok bool, previewInput
 			func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
 	}
 
-	if err == nil {
-		ok = true
-	} else {
+	if err != nil {
 		previewInput = input
 	}
 	return
@@ -5507,62 +5523,66 @@ func (sp *STARSPane) drawSelectedRoute(ctx *Context, transforms ScopeTransformat
 }
 
 func (sp *STARSPane) datablockType(ctx *Context, ac *av.Aircraft) DatablockType {
-	state := sp.Aircraft[ac.Callsign]
-	dt := state.DatablockType
+	trk := sp.getTrack(ctx, ac)
 
-	// TODO: when do we do a partial vs limited datablock?
-	if ac.Squawk != ac.FlightPlan.AssignedSquawk {
-		dt = PartialDatablock
-	}
+	if trk == nil || trk.TrackOwner == "" {
+		// Must be limited, regardless of anything else.
+		return LimitedDatablock
+	} else {
+		// The track owner is known, so it will be a P/FDB
+		state := sp.Aircraft[ac.Callsign]
+		dt := state.DatablockType
 
-	if ac.TrackingController == "" {
-		dt = LimitedDatablock
-	}
+		// TODO: when do we do a partial vs limited datablock?
+		if ac.Squawk != trk.FlightPlan.AssignedSquawk {
+			dt = PartialDatablock
+		}
 
-	if ac.TrackingController == ctx.ControlClient.Callsign {
-		// it's under our control
-		dt = FullDatablock
-	}
-
-	if ac.HandoffTrackController == ctx.ControlClient.Callsign && ac.RedirectedHandoff.RedirectedTo == "" {
-		// it's being handed off to us
-		dt = FullDatablock
-	}
-
-	if sp.haveActiveWarnings(ctx, ac) {
-		dt = FullDatablock
-	}
-
-	// Point outs are FDB until acked.
-	if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
-		dt = FullDatablock
-	}
-	if state.PointedOut {
-		dt = FullDatablock
-	}
-	if state.ForceQL {
-		dt = FullDatablock
-	}
-	if len(ac.RedirectedHandoff.Redirector) > 0 {
-		if ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.Callsign {
+		if trk.TrackOwner == ctx.ControlClient.Callsign {
+			// it's under our control
 			dt = FullDatablock
 		}
-	}
 
-	if ac.RedirectedHandoff.OriginalOwner == ctx.ControlClient.Callsign {
-		dt = FullDatablock
-	}
+		if ac.HandoffTrackController == ctx.ControlClient.Callsign && ac.RedirectedHandoff.RedirectedTo == "" {
+			// it's being handed off to us
+			dt = FullDatablock
+		}
 
-	// Quicklook
-	ps := sp.CurrentPreferenceSet
-	if ps.QuickLookAll {
-		dt = FullDatablock
-	} else if slices.ContainsFunc(ps.QuickLookPositions,
-		func(q QuickLookPosition) bool { return q.Callsign == ac.TrackingController }) {
-		dt = FullDatablock
-	}
+		if sp.haveActiveWarnings(ctx, ac) {
+			dt = FullDatablock
+		}
 
-	return dt
+		// Point outs are FDB until acked.
+		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
+			dt = FullDatablock
+		}
+		if state.PointedOut {
+			dt = FullDatablock
+		}
+		if state.ForceQL {
+			dt = FullDatablock
+		}
+		if len(trk.RedirectedHandoff.Redirector) > 0 {
+			if trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.Callsign {
+				dt = FullDatablock
+			}
+		}
+
+		if trk.RedirectedHandoff.OriginalOwner == ctx.ControlClient.Callsign {
+			dt = FullDatablock
+		}
+
+		// Quicklook
+		ps := sp.CurrentPreferenceSet
+		if ps.QuickLookAll {
+			dt = FullDatablock
+		} else if slices.ContainsFunc(ps.QuickLookPositions,
+			func(q QuickLookPosition) bool { return q.Callsign == trk.TrackOwner }) {
+			dt = FullDatablock
+		}
+
+		return dt
+	}
 }
 
 func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *Context, transforms ScopeTransformations,
@@ -6625,7 +6645,7 @@ func (sp *STARSPane) formatDatablocks(ctx *Context, ac *av.Aircraft) []STARSData
 				field4 = append(field4, "+") // 2-67, "Field 4 Contents"
 			}
 			if len(field3) == 1 {
-				if ap := ctx.ControlClient.Airports[ac.FlightPlan.ArrivalAirport]; ap != nil && !ap.OmitArrivalScratchpad {
+				if ap := ctx.ControlClient.Airports[trk.FlightPlan.ArrivalAirport]; ap != nil && !ap.OmitArrivalScratchpad {
 					ap := ac.FlightPlan.ArrivalAirport
 					if len(ap) == 4 {
 						ap = ap[1:] // drop the leading K
@@ -6638,10 +6658,10 @@ func (sp *STARSPane) formatDatablocks(ctx *Context, ac *av.Aircraft) []STARSData
 
 		// Fill in empty field4 entries.
 		for i := range field4 {
-			if field4[i] == "" && ac.HandoffTrackController != "" {
-				if ctrl := ctx.ControlClient.Controllers[ac.HandoffTrackController]; ctrl != nil {
-					if ac.RedirectedHandoff.RedirectedTo != "" {
-						if toctrl := ctx.ControlClient.Controllers[ac.RedirectedHandoff.RedirectedTo]; toctrl != nil {
+			if field4[i] == "" && trk.HandoffController != "" {
+				if ctrl := ctx.ControlClient.Controllers[trk.HandoffController]; ctrl != nil {
+					if trk.RedirectedHandoff.RedirectedTo != "" {
+						if toctrl := ctx.ControlClient.Controllers[trk.RedirectedHandoff.RedirectedTo]; toctrl != nil {
 							field4 = append(field4, toctrl.SectorId[len(ctrl.SectorId)-1:])
 						}
 					} else {
@@ -6661,21 +6681,40 @@ func (sp *STARSPane) formatDatablocks(ctx *Context, ac *av.Aircraft) []STARSData
 		}
 
 		speed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
+		if state.IFFlashing {
+			speed = "IF"
+		}
 
 		field5 := []string{} // alternate speed and aircraft type
 		var line5FieldColors *STARSDatablockFieldColors
+		color, _ := sp.datablockColor(ctx, ac)
 		if state.Ident(ctx.Now) {
 			// Speed is followed by ID when identing (2-67, field 5)
 			field5 = append(field5, speed+"ID")
 			field5 = append(field5, speed+"ID")
-			color, _ := sp.datablockColor(ctx, ac)
 
-			line5FieldColors = &STARSDatablockFieldColors{
-				Start: len(speed) + 1,
-				End:   len(speed) + 3,
-				Color: color.Scale(0.3),
+			if speed == "IF" {
+				line5FieldColors = &STARSDatablockFieldColors{
+					Start: len(speed) - 3,
+					End:   len(speed) + 3,
+					Color: color.Scale(0.3),
+				}
+			} else {
+				line5FieldColors = &STARSDatablockFieldColors{
+					Start: len(speed) + 1,
+					End:   len(speed) + 3,
+					Color: color.Scale(0.3),
+				}
 			}
 		} else {
+			if speed == "IF" {
+				line5FieldColors = &STARSDatablockFieldColors{
+					Start: len(speed) - 1,
+					End:   len(speed) + 1,
+					Color: color.Scale(0.3),
+				}
+			}
+
 			acCategory := ""
 			actype := ac.FlightPlan.TypeWithoutSuffix()
 			if strings.Index(actype, "/") == 1 {
