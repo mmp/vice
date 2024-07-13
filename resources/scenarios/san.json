@@ -445,8 +445,103 @@
           },
         "tower_list": 1
 
-
-
+        },
+        "KMYF": {
+            "approaches": {
+                "I8R": {
+                    "full_name": "ILS Runway 28R",
+                    "runway": "28R",
+                    "type": "ILS",
+                    "waypoints": [
+                        "MIBBY/a4200 NESTY/a3600 PENYY/a2500 PALOS/a1380",
+                        "BAKEL MIBBY/a4200 NESTY/a3600 PENYY/a2500 PALOS/a1380",
+                        "BARET/a6100 BAKEL MIBBY/a4200 NESTY/a3600 PENYY/a2500 PALOS/a1380"
+                    ]
+                },
+                "R8R": {
+                    "full_name": "RNAV GPS Runway 28R",
+                    "runway": "28R",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "MIBBY/a4200 NESTY/a3600 PENYY/a2500 PALOS/a1380",
+                        "BAKEL/a5900 MIBBY/a4200 NESTY/a3600 PENYY/a2500 PALOS/a1380",
+                        "BARET/a6100 OGOTE/a5900 BAKEL MIBBY/a4200 NESTY/a3600 PENYY/a2500 PALOS/a1380"
+                    ]
+                }
+            },
+            "departure_routes":{
+                "28R":{
+                    "OCN":{
+                        "cleared_altitude": 6000,
+                        "waypoints": "MZB OCN"
+                    }
+                }
+            },
+            "departures":[
+                {
+                    "airlines":[
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KCRQ",
+                    "exit": "OCN",
+                    "route": "MZB OCN"
+                }
+            ],
+            "exit_categories": {
+                "OCN": "North"
+            },
+            "tower_list": 1
+        },
+        "KCRQ": {
+            "approaches": {
+                "RZ4": {
+                    "full_name": "RNAV Z Runway 24",
+                    "runway": "24",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "OCN/a5000 ZAVAN/a4100 PALCI/a3200/s180 EGIVE/a2400/s180 JUBIM/a2400",
+                        "TANNR/a5500 WAGAV/a3200 EGIVE/a2400/s180 JUBIM/a2400",
+                        "ICUGA/a3600/s210 CARCA/a2400 JUBIM/a2400",
+                        "TRM/a10000 ZASOG/a8000 URIJI/a5400 COGID/a3600 CARCA/a2400 JUBIM/a2400",
+                        "JLI/a7200 VIVOF/a5200 GAETS/a3600 CARCA/a2400 JUBIM/a2400"
+                    ]
+                },
+                "I4": {
+                    "full_name": "ILS Runway 24",
+                    "runway": "24",
+                    "type": "ILS",
+                    "waypoints": [
+                        "OCN/a4500 HOMLY/a4000 ESCON/a3300 WUNUB/a2600 CIDRU/a2300 HUSET/a1640",
+                        "JLI/a7200 ESCON/a3300 WUNUB/a2600 CIDRU/a2300 HUSET/a1640"
+                    ]
+                }
+            },
+            "departure_routes":{
+                "24":{
+                    "BAKEL":{
+                        "cleared_altitude": 8000,
+                        "waypoints": "OCN BAKEL"
+                    }
+                }
+            },
+            "departures":[
+                {
+                    "airlines":[
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KMYF",
+                    "exit": "BAKEL",
+                    "route": "OCN BAKEL"
+                }
+            ],
+            "exit_categories": {
+                "BAKEL": "South"
+            },
+            "tower_list": 1
         }
     },
     "arrival_groups": {
@@ -482,7 +577,7 @@
                 },
                 "cruise_altitude": 28000,
                 "initial_altitude": 16000,
-                "initial_controller": "LAX_55_CTR",
+                "initial_controller": "LAX_30_CTR",
                 "initial_speed": 250,
                 "star": "COMIX2",
                 "waypoints": "LEJEN/ho COMIX/a12000+/a15000- FLSHH LNTRN/a9000+ XMANS/a7000 KLOMN/a6000 NADDO/a6000"
@@ -521,7 +616,7 @@
                 },
                 "cruise_altitude": 36000,
                 "initial_altitude": 24000,
-                "initial_controller": "LAX_55_CTR",
+                "initial_controller": "LAX_30_CTR",
                 "initial_speed": 280,
                 "star": "LUCKI1",
                 "waypoints": "MOMAR/a24000 DSURT/a19000 TRIXI/a14000-/ho HSKER/a8700 BARET/a8000 HNAHH/a6100 LUCKI/a6000 LYNDI/a5000"
@@ -560,7 +655,7 @@
                 },
                 "cruise_altitude": 36000,
                 "initial_altitude": 19000,
-                "initial_controller": "LAX_55_CTR",
+                "initial_controller": "LAX_30_CTR",
                 "initial_speed": 280,
                 "star": "TOPGN2",
                 "waypoints": "DSURT/a19000+/a23000- TRIXI/a12000/s270/ho TOPGN/a9000 ISEMN/a6400 ZIPPP/a6000 TMCAT/a6000/s210"
@@ -598,37 +693,75 @@
                 },
                 "cruise_altitude": 35000,
                 "initial_altitude": 24000,
-                "initial_controller": "LAX_55_CTR",
+                "initial_controller": "LAX_30_CTR",
                 "initial_speed": 280,
                 "star": "PLYYA1",
                 "waypoints": "LAX/a24000 TASCO/a19000 SWAMI/a17000 OHBEA/a15000/ho PLYYA/a11000 MNLYT/a4000 SARGS/a2100"
             }
+        ],
+        "EAST MYF": [
+            {
+                "airlines":{
+                    "KMYF": [ 
+                        {
+                            "airport": "KIPL",
+                            "icao": "N"
+                        }
+                    ]
+                },
+                "cruise_altitude": 10000,
+                "initial_altitude": 10000,
+                "initial_controller": "LAX_30_CTR",
+                "initial_speed": 200,
+                "star": "EAST MYF",
+                "waypoints": "GILYY/ho BARET/a6100"
+            }
+        ],
+        "NORTH MYF": [
+            {
+                "airlines":{
+                    "KMYF": [ 
+                        {
+                            "airport": "KPSP",
+                            "icao": "N"
+                        }
+                    ]
+                },
+                "cruise_altitude": 10000,
+                "initial_altitude": 10000,
+                "initial_controller": "LAX_30_CTR",
+                "initial_speed": 200,
+                "star": "NORTH MYF",
+                "waypoints": "KARRO/ho BARET/a6100"
+            }
+        ],
+        "NORTH CRQ": [
+            {
+                "airlines":{
+                    "KCRQ": [ 
+                        {
+                            "airport": "KCNO",
+                            "icao": "N"
+                        }
+                    ]
+                },
+                "cruise_altitude": 11000,
+                "initial_altitude": 10000,
+                "initial_controller": "LAX_30_CTR",
+                "initial_speed": 180,
+                "star": "NORTH CRQ",
+                "waypoints": "WESIN/ho ROBNN OCN"
+            }
         ]
     },
     "control_positions":{
-        "LAX_55_CTR": {
-            "frequency": 135550,
+        "LAX_30_CTR": {
+            "frequency": 119950,
             "full_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
-            "sector_id": "55"
-        },
-        "LAX_36_CTR": {
-            "frequency": 127350,
-            "full_name": "Los Angeles Center",
-            "facility_id": "C",
-            "eram_facility": true,
-            "scope_char": "C",
-            "sector_id": "36"
-        },
-        "LAX_04_CTR": {
-            "frequency": 119050,
-            "full_name": "Los Angeles Center",
-            "facility_id": "C",
-            "eram_facility": true,
-            "scope_char": "C",
-            "sector_id": "04"
+            "sector_id": "C30"
         },
         "SAN_W_APP": {
             "frequency": 119600,
@@ -659,6 +792,18 @@
             "full_name": "Lindbergh Tower",
             "scope_char": "S",
             "sector_id": "5S"
+        },
+        "MYF_TWR": {
+            "frequency": 125700,
+            "full_name": "Montgomery Tower",
+            "scope_char": "Y",
+            "sector_id": "5Y" 
+        },
+        "CRQ_TWR": {
+            "frequency": 118400,
+            "full_name": "Palomar Tower",
+            "scope_char": "U",
+            "sector_id": "5U"
         }
     },
     "default_scenario": "KSAN West",
@@ -666,7 +811,15 @@
         "_SAN_27": "N032.43.48.008,W117.10.29.901",
         "_SAN_9": "N032.44.13.641,W117.12.15.684",
         "KSAN": "N032.44.00.800,W117.11.22.800",
-        "SAN": "N032.44.00.800,W117.11.22.800"
+        "SAN": "N032.44.00.800,W117.11.22.800",
+        "KMYF": "N32.48.56.600,W117.08.22.400",
+        "MYF": "N32.48.56.600,W117.08.22.400",
+        "_MYF_28R": "N032.48.46.262,W117.07.52.254",
+        "_MYF_10L": "N032.49.05.388,W117.08.40.860",
+        "KCRQ": "N033.07.41.700,W117.16.48.300",
+        "CRQ": "N033.07.41.700,W117.16.48.300",
+        "_CRQ_24": "N033.07.46.287,W117.16.19.978",
+        "_CRQ_6": "N033.07.37.158,W117.17.16.529"
     },
     "name": "KSAN",
     "primary_airport": "KSAN",
@@ -676,6 +829,14 @@
                 {
                     "airport": "KSAN",
                     "runway": "27"
+                },
+                {
+                    "airport": "KMYF",
+                    "runway": "28R"
+                },
+                {
+                    "airport": "KCRQ",
+                    "runway": "24"
                 }
             ],
             "arrivals": {
@@ -684,35 +845,46 @@
                 },
                 "COMIX2":{
                     "KSAN": 15
+                },
+                "EAST MYF":{
+                    "KMYF": 10
+                },
+                "NORTH MYF":{
+                    "KMYF": 10
+                },
+                "NORTH CRQ":{
+                    "KCRQ": 10
                 }
             },
             "solo_controller": "SAN_W_APP",
             "multi_controllers":{
                 "default": {
-                    "SAN_W_APP":{"departures": ["KSAN"],
+                    "SAN_W_APP":{"departures": ["KSAN","KMYF"],
                         "primary": true
                     },
 
                     "SAN_E_APP":{ "backup": "SAN_W_APP",
-                    "arrivals": ["LUCKI1"]
+                    "arrivals": ["LUCKI1", "EAST MYF", "NORTH MYF"]
                     },
 
                     "SAN_N_APP":{"backup": "SAN_W_APP",
                     "arrivals": ["COMIX2"]
                     },
-                    "SAN_D_APP":{"backup": "SAN_W_APP"
+                    "SAN_D_APP":{"backup": "SAN_W_APP",
+                    "departures": ["KCRQ"],
+                    "arrivals": ["NORTH CRQ"]
                     }
                 }
             },
             "controllers": [
+                "CRQ_TWR",
+                "MYF_TWR",
                 "SAN_TWR",
                 "SAN_W_APP",
                 "SAN_E_APP",
                 "SAN_N_APP",
                 "SAN_D_APP",
-                "LAX_55_CTR",
-                "LAX_36_CTR",
-                "LAX_04_CTR"
+                "LAX_30_CTR"
             ],
             "default_maps": ["500S SB WEST SCT"],
             "departure_runways": [
@@ -720,6 +892,16 @@
                     "airport":"KSAN",
                     "rate": 20,
                     "runway": "27"
+                },
+                {
+                    "airport": "KMYF",
+                    "rate": 10,
+                    "runway": "28R"
+                },
+                {
+                    "airport": "KCRQ",
+                    "rate": 10,
+                    "runway": "24"
                 }
             ],
             "wind": {
@@ -768,9 +950,7 @@
                 "SAN_E_APP",
                 "SAN_N_APP",
                 "SAN_D_APP",
-                "LAX_55_CTR",
-                "LAX_36_CTR",
-                "LAX_04_CTR"
+                "LAX_30_CTR"
             ],
             "default_maps": ["500S SB WEST SCT"],
             "departure_runways": [
@@ -1012,7 +1192,8 @@
         "IKAYE": "IKA",
         "DINTY": "DIN",
         "OCN": "OCN",
-        "TANNR": "TAN"
+        "TANNR": "TAN",
+        "BAKEL": "BAK"
 
     },
     "stars_maps": [
