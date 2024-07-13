@@ -517,6 +517,17 @@ func (comp *STARSComputer) AddUnsupportedTrack(ut UnsupportedTrack) {
 	comp.UnsupportedTracks = append(comp.UnsupportedTracks, ut)
 }
 
+func (comp *STARSComputer) LookupTrackIndex(idx int) *TrackInformation {
+	if idx >= len(comp.TrackInformation) {
+		return nil
+	}
+
+	// FIXME: this is assigning indices alphabetically; I think they are
+	// supposed to be done first-come first-served.
+	k := util.SortedMapKeys(comp.TrackInformation)
+	return comp.TrackInformation[k[idx]]
+}
+
 func (comp *STARSComputer) AutoAssociateFP(ac *av.Aircraft, fp *STARSFlightPlan) {
 	comp.AddTrackInformation(ac.Callsign, TrackInformation{
 		TrackOwner:      ac.TrackingController, // Should happen initially, so ac.TrackingController can still be used
