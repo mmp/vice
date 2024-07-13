@@ -1,0 +1,355 @@
+{
+  "tracon": "BOI",
+  "airports": {
+    "KBOI": {
+      "approaches": {
+        "R8L": {
+          "tower_controller": "BOI_TWR",
+          "cifp_id": "RX28L"
+        },
+        "I8R": {
+          "tower_controller": "BOI_TWR",
+          "cifp_id": "I28R"
+        },
+        "I0R": {
+          "tower_controller": "BOI_TWR",
+          "cifp_id": "IY10R"
+        },
+        "R0L": {
+          "tower_controller": "BOI_TWR",
+          "cifp_id": "RY10L"
+        }
+      },
+      "departure_routes": {
+        "10L": {
+          "HYVAL, SAILL, OLAAH, VALYY, BARNR, FETHR, ROARR": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-28R/h100"
+          }
+        },
+        "28R": {
+          "HYVAL, SAILL, OLAAH, VALYY, BARNR, FETHR, ROARR": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-10L/h280"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            },
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KBUR",
+          "exit": "HYVAL",
+          "route": "HYVAL REO J7 FMG FRA REBRG ROKKR2",
+          "scratchpad": "HYV"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KDEN",
+          "exit": "ROARR",
+          "route": "ROARR PIH MJANE FLATI4",
+          "scratchpad": "ROA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "fleet": "short"
+            }
+          ],
+          "destination": "KSDY",
+          "exit": "FETHR",
+          "route": "FETHR DBS J82 RAP FOD MYRRS FYTTE7",
+          "scratchpad": "FET"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL",
+              "fleet": "short"
+            }
+          ],
+          "destination": "KDFW",
+          "exit": "ROARR",
+          "route": "ROARR LYONS TWF J15 JNC ALS PNH MDANO VKTRY2",
+          "scratchpad": "ROA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            }
+          ],
+          "destination": "KPHX",
+          "exit": "ROARR",
+          "route": "ROARR LYONS CRITO WINEN Q35 CORKR TENTS BRUSR1",
+          "scratchpad": "ROA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "QXE"
+            },
+            {
+              "icao": "ASA",
+              "fleet": "short"
+            }
+          ],
+          "destination": "KSEA",
+          "exit": "OLAAH",
+          "route": "OLAAH PREIS PDT CHINS5",
+          "scratchpad": "OLA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KSLC",
+          "exit": "ROARR",
+          "route": "ROARR BYI SKEES5",
+          "scratchpad": "ROA"
+        }
+      ],
+      "tower_list": 1
+    }
+  },
+  "arrival_groups": {
+    "KYAAN4": [
+      {
+        "airlines": {
+          "KBOI": [
+            {
+              "airport": "KSEA",
+              "icao": "ASA"
+            },
+            {
+              "airport": "KPDX",
+              "icao": "QXE"
+            }
+          ]
+        },
+        "initial_altitude": 16000,
+        "initial_controller": "SLC_17_CTR",
+        "initial_speed": 270,
+        "spawn": "DEVLE@0.8",
+        "star": "KYAAN4"
+      }
+    ],
+    "KOURT4": [
+      {
+        "airlines": {
+          "KBOI": [
+            {
+              "airport": "KDEN",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KDEN",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "initial_altitude": 15000,
+        "initial_controller": "SLC_17_CTR",
+        "initial_speed": 260,
+        "spawn": "DERSO@0.2",
+        "star": "KOURT4"
+      }
+    ],
+    "SADYL4": [
+      {
+        "airlines": {
+          "KBOI": [
+            {
+              "airport": "KSJC",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KLAS",
+              "icao": "NKS"
+            },
+            {
+              "airport": "KPHX",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KSFO",
+              "icao": "UAL"
+            }
+          ]
+        },
+        "initial_altitude": 21000,
+        "initial_controller": "SLC_17_CTR",
+        "initial_speed": 270,
+        "spawn": "PELYT@0.5",
+        "star": "SADYL4"
+      }
+    ],
+    "SPUUD4": [
+      {
+        "airlines": {
+          "KBOI": [
+            {
+              "airport": "KSDF",
+              "icao": "UPS"
+            },
+            {
+              "airport": "KMEM",
+              "icao": "FDX"
+            },
+            {
+              "airport": "KSLC",
+              "icao": "DAL"
+            }
+          ]
+        },
+        "initial_altitude": 13000,
+        "initial_controller": "SLC_17_CTR",
+        "initial_speed": 250,
+        "spawn": "ORYDA@0.9",
+        "star": "SPUUD4"
+      }
+    ]
+  },
+  "control_positions": {
+    "BOI_TWR": {
+      "frequency": 118100,
+      "full_name": "Boise Tower",
+      "scope_char": "T",
+      "sector_id": "1T"
+    },
+    "BOI_APP": {
+      "frequency": 126900,
+      "full_name": "Big Sky Approach",
+      "scope_char": "W",
+      "sector_id": "1W"
+    },
+    "SLC_17_CTR": {
+      "frequency": 126850,
+      "full_name": "Salt Lake City Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "scope_char": "C",
+      "sector_id": "C17"
+    }
+  },
+  "default_scenario": "Land West",
+  "name": "Big Sky - BOI",
+  "primary_airport": "KBOI",
+  "scenarios": {
+    "Land West": {
+      "arrival_runways": [
+        {
+          "airport": "KBOI",
+          "runway": "28L"
+        }
+      ],
+      "arrivals": {
+        "KYAAN4": {
+          "KBOI": 5
+        },
+        "KOURT4": {
+          "KBOI": 5
+        },
+        "SADYL4": {
+          "KBOI": 5
+        },
+        "SPUUD4": {
+          "KBOI": 5
+        }
+      },
+      "solo_controller": "BOI_APP",
+      "controllers": [
+        "BOI_TWR",
+        "BOI_APP",
+        "SLC_17_CTR"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KBOI",
+          "rate": 10,
+          "runway": "28R"
+        }
+      ],
+      "wind": {
+        "direction": 270,
+        "speed": 12
+      },
+      "default_maps": [
+        "BOI_002S - RWY 28 WEST FLOW",
+        "STARS-BOI_MVA__MVA"
+      ]
+    },
+    "Land East": {
+      "arrival_runways": [
+        {
+          "airport": "KBOI",
+          "runway": "10R"
+        }
+      ],
+      "arrivals": {
+        "KYAAN4": {
+          "KBOI": 5
+        },
+        "KOURT4": {
+          "KBOI": 5
+        },
+        "SADYL4": {
+          "KBOI": 5
+        },
+        "SPUUD4": {
+          "KBOI": 5
+        }
+      },
+      "solo_controller": "BOI_APP",
+      "controllers": [
+        "BOI_TWR",
+        "BOI_APP",
+        "SLC_17_CTR"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KBOI",
+          "rate": 10,
+          "runway": "10L"
+        }
+      ],
+      "wind": {
+        "direction": 110,
+        "speed": 9
+      },
+      "default_maps": [
+        "BOI_001S - RWY 10 EAST FLOW",
+        "STARS-BOI_MVA__MVA"
+      ]
+    }
+  },
+  "stars_config": {
+    "center": "KBOI",
+    "scratchpads": {},
+    "stars_maps": [
+      "BOI_001S - RWY 10 EAST FLOW",
+      "BOI_002S - RWY 28 WEST FLOW",
+      "BOI_005S - MOUNTAIN HOME SHELF",
+      "BOI_006S - ZLC SECTORS AND MILITARY DATA",
+      "STARS-BOI_MVA__MVA",
+      "STARS-BOI_EOVM__EOVM",
+      "STARS-BOI_VFR__VFR Video Map ",
+      "BOI_003S - BOI TOWER AIRSPACE RWY 10",
+      "BOI_004S - BOI TOWER AIRSPACE RWY 28"
+    ],
+    "video_map_file": "videomaps/ZLC-videomaps.gob.zst"
+  }
+}
