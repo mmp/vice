@@ -1563,7 +1563,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "CRAKN2",
-                "waypoints": "BUCKN/a24000-27000/s280 FIYUR/a20000+ N041.29.57.308,W082.48.30.635/ho CRAKN/a12000+/s260 CLDON/a9000-10000 MERCA/a7000/s210"
+                "waypoints": "BUCKN/a24000-27000/s280 FIYUR/a20000+ N041.29.57.308,W082.48.30.635/ho CRAKN/a12000+/s260 CLDON/a9000-10000 MERCA/a7000/s210/h284"
             }
         ],
         "CRAKN2_FINALN": [
@@ -1590,7 +1590,7 @@
                 "expect_approach": "I3R",
                 "scratchpad": "I3R",
                 "star": "CRAKN2",
-                "waypoints": "CLDON/a9000-10000/ho MERCA/a7000/s210"
+                "waypoints": "CLDON/a9000-10000/ho MERCA/a7000/s210/h284"
             }
         ],
         "CRAKN2_FINALW": [
@@ -1708,7 +1708,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "FERRL2",
-                "waypoints": "SAYCH/a24000+/s280 NUTTZ WNGNT/a11000-14000/s280 N042.28.06.648,W082.05.57.879/ho FERRL/a8000-10000 GMOTR/a7000 CHEWZ/a6000/s210 COBBO/a6000/s210"
+                "waypoints": "SAYCH/a24000+/s280 NUTTZ WNGNT/a11000-14000/s280 N042.28.06.648,W082.05.57.879/ho FERRL/a8000-10000 GMOTR/a7000 CHEWZ/a6000/s210 COBBO/a6000/s210/h306"
             }
         ],
         "FERRL2_FINALS": [
@@ -1733,7 +1733,7 @@
                 "scratchpad": "I1L",
                 "initial_speed": 260,
                 "star": "FERRL2",
-                "waypoints": "WNGNT/a11000-14000/s280 FERRL/a8000-10000 GMOTR/a7000/ho CHEWZ/a6000/s210 COBBO/a6000/s210"
+                "waypoints": "WNGNT/a11000-14000/s280 FERRL/a8000-10000 GMOTR/a7000/ho CHEWZ/a6000/s210 COBBO/a6000/s210/h306"
             }
         ],
         "FERRL2_FINALW": [
@@ -1914,10 +1914,10 @@
                 "star": "HANBL3",
                 "runway_waypoints": {
                     "KDTW": {
-                        "22R": "HEMIE/a10000-11000/s250 TRPRS/a8000+ DZMND/a8000/s210",
-                        "21L":"HEMIE/a10000-11000/s250 RAAMM TBRRD/a8000/s210",
-                        "27R": "HEMIE/a10000-11000/s250 WUDSN/a8000/s210 BRDDY/a8000",
-                        "27L": "HEMIE/a10000-11000/s250 WUDSN/a8000/s210 BRDDY/a8000"
+                        "22R": "HEMIE/a10000-11000/s250 TRPRS/a8000+ DZMND/a8000/s210/h033",
+                        "21L":"HEMIE/a10000-11000/s250 RAAMM TBRRD/a8000/s210/h036",
+                        "27R": "HEMIE/a10000-11000/s250 WUDSN/a8000/s210 BRDDY/a8000/h096",
+                        "27L": "HEMIE/a10000-11000/s250 WUDSN/a8000/s210 BRDDY/a8000/h096"
                     }
                 },
                 "waypoints": "PRWLR/a12000-15000 HEMIE/a10000-11000/s250/ho"
@@ -1953,10 +1953,8 @@
                 "star": "HANBL3",
                 "runway_waypoints": {
                     "KDTW": {
-                        "22R": "HEMIE/a10000-11000/s250 TRPRS/a8000+ DZMND/a8000/s210",
-                        "21L":"HEMIE/a10000-11000/s250 RAAMM TBRRD/a8000/s210",
-                        "27R": "HEMIE/a10000-11000/s250 WUDSN/a8000/s210 BRDDY/a8000",
-                        "27L": "HEMIE/a10000-11000/s250 WUDSN/a8000/s210 BRDDY/a8000"
+                        "22R": "HEMIE/a10000-11000/s250 TRPRS/a8000+ DZMND/a8000/s210/h033",
+                        "21L":"HEMIE/a10000-11000/s250 RAAMM TBRRD/a8000/s210/h036"
                     }
                 },
                 "waypoints": "PRWLR/a12000-15000 HEMIE/a10000-11000/s250/ho"
@@ -2031,7 +2029,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "HAYLL3",
-                "waypoints": "HOSSA KRABN/a16000-19000/s280 URBAN N041.58.25.215,W084.28.58.806/ho HAYLL/a11000+ VCTRZ/a8000-10000 MAAZE GRBAC/a5000/s210"
+                "waypoints": "HOSSA KRABN/a16000-19000/s280 URBAN N041.58.25.215,W084.28.58.806/ho HAYLL/a11000+ VCTRZ/a8000-10000 MAAZE GRBAC/a5000/s210/h141"
             }
         ],
         "HAYLL3_FINALN": [
@@ -2068,7 +2066,7 @@
                 "expect_approach": "I4L",
                 "scratchpad": "I4L",
                 "star": "HAYLL3",
-                "waypoints": "MAAZE GRBAC/a5000/s210"
+                "waypoints": "MAAZE GRBAC/a5000/s210/h141"
             }
         ],
         "HTROD2": [
@@ -2095,8 +2093,8 @@
                 "star": "HTROD2",
                 "runway_waypoints": {
                     "KDTW": {
-                        "22R": "HTROD/a12000/s250 TRPRS SEEGR/a12000/s210",
-                        "21L": "HTROD/a12000/s250 FFORK MODLT/a12000/s210"   
+                        "22R": "HTROD/a12000/s250 TRPRS SEEGR/a12000/s210/h033",
+                        "21L": "HTROD/a12000/s250 FFORK MODLT/a12000/s210/h036"   
                     }
                 },
                 "waypoints": "BUCKN/a24000-27000/s280 FIYUR/a20000+ N041.29.17.139,W082.47.54.957/ho CRAKN/a15000-21000/s280 BEERR/a12000-15000 HTROD/a12000/s250"
@@ -2128,8 +2126,8 @@
                 "star": "HTROD2",
                 "runway_waypoints": {
                     "KDTW": {
-                        "22R": "HTROD/a12000/s250 TRPRS SEEGR/a12000/s210",
-                        "21L": "HTROD/a12000/s250 FFORK MODLT/a12000/s210"   
+                        "22R": "HTROD/a12000/s250 TRPRS SEEGR/a12000/s210/h033",
+                        "21L": "HTROD/a12000/s250 FFORK MODLT/a12000/s210/h036"   
                     }
                 },
                 "waypoints": " BEERR/a12000-15000 HTROD/a12000/s250/ho"
@@ -2168,10 +2166,10 @@
                 "star": "KKISS2",
                 "runway_waypoints": {
                     "KDTW": {
-                        "4L": "ZUBBY SKRUG/a8000/s210",
-                        "3R": "ZUBBY QWYNN ROYYY/a8000/s210",
-                        "27R": "ZUBBY TMTOM/a8000/s210 TUUBR/a8000",
-                        "27L": "ZUBBY TMTOM/a8000/s210 TUUBR/a8000"
+                        "4L": "ZUBBY SKRUG/a8000/s210/h218",
+                        "3R": "ZUBBY QWYNN ROYYY/a8000/s210/h216",
+                        "27R": "ZUBBY TMTOM/a8000/s210 TUUBR/a8000/h096",
+                        "27L": "ZUBBY TMTOM/a8000/s210 TUUBR/a8000/h096"
                     }
                 },
                 "waypoints": "FRELE/a19000-21000/s280 SMMNS N042.47.01.000,W084.09.27.883/ho RKCTY/a16000-21000/s280 KKISS/a12000-15000 STLEY/a10000-11000/s250 ZUBBY"
@@ -2212,10 +2210,8 @@
                 "star": "KKISS2",
                 "runway_waypoints": {
                     "KDTW": {
-                        "4L": "ZUBBY SKRUG/a8000/s210",
-                        "3R": "ZUBBY QWYNN ROYYY/a8000/s210",
-                        "27R": "ZUBBY TMTOM/a8000/s210 TUUBR/a8000",
-                        "27L": "ZUBBY TMTOM/a8000/s210 TUUBR/a8000"
+                        "4L": "ZUBBY SKRUG/a8000/s210/h218",
+                        "3R": "ZUBBY QWYNN ROYYY/a8000/s210/h216"
                     }
                 },
                 "waypoints": "STLEY/a10000-11000/s250 ZUBBY/ho"
@@ -2289,7 +2285,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "KLYNK3",
-                "waypoints": "EEEZI/a24000-27000/s280 HUMRR/a17000+ N041.35.14.717,W082.37.42.359/ho BONZZ/a12000+/s260 KLYNK/a9000-10000 BRDER/a6000/s210"
+                "waypoints": "EEEZI/a24000-27000/s280 HUMRR/a17000+ N041.35.14.717,W082.37.42.359/ho BONZZ/a12000+/s260 KLYNK/a9000-10000 BRDER/a6000/s210/h281"
             }
         ],
         "KLYNK3_FINALN": [
@@ -2326,7 +2322,7 @@
                 "expect_approach": "I3R",
                 "scratchpad": "I3R",
                 "star": "KLYNK3",
-                "waypoints": "KLYNK/a9000-10000/ho BRDER/a6000/s210"
+                "waypoints": "KLYNK/a9000-10000/ho BRDER/a6000/s210/h281"
             }
         ],
         "KLYNK3_FINALW": [
@@ -2396,7 +2392,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "LAYKS2",
-                "waypoints": "YUUPR/a21000-23000 THEEE/a16000-20000/s280 N043.04.39.876,W083.44.04.848/ho GRAYT/a11000-12000/s280 LAYKS/a10000+ STAAT/a9000+ MCHGN/a6000 HRRON/a6000/s210"
+                "waypoints": "YUUPR/a21000-23000 THEEE/a16000-20000/s280 N043.04.39.876,W083.44.04.848/ho GRAYT/a11000-12000/s280 LAYKS/a10000+ STAAT/a9000+ MCHGN/a6000 HRRON/a6000/s210/h118"
             }
         ],
         "LAYKS2_FINALS": [
@@ -2431,7 +2427,7 @@
                 "expect_approach": "I2R",
                 "scratchpad": "I2R",
                 "star": "LAYKS2",
-                "waypoints": "STAAT/a9000+/ho MCHGN/a6000 HRRON/a6000/s210"
+                "waypoints": "STAAT/a9000+/ho MCHGN/a6000 HRRON/a6000/s210/h118"
             }
         ],
         "LECTR3": [
@@ -2460,7 +2456,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "LECTR3",
-                "waypoints": "CLRIC/a17000-23000/s280 SHANX/a16000+ N041.37.27.679,W084.16.14.047/ho HANBL/a11000+ LECTR/a8000-10000 FAAVA/a6000 SIZOR/a6000/s210"
+                "waypoints": "CLRIC/a17000-23000/s280 SHANX/a16000+ N041.37.27.679,W084.16.14.047/ho HANBL/a11000+ LECTR/a8000-10000 FAAVA/a6000 SIZOR/a6000/s210/h123"
             }
         ],
         "LECTR3_FINALN": [
@@ -2491,7 +2487,7 @@
                 "expect_approach": "I4L",
                 "scratchpad": "I4L",
                 "star": "LECTR3",
-                "waypoints": "FAAVA/a6000/ho SIZOR/a6000/s210"
+                "waypoints": "FAAVA/a6000/ho SIZOR/a6000/s210/h123"
             }
         ],
         "RKCTY2": [
@@ -2525,7 +2521,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "RKCTY2",
-                "waypoints": "FRELE/a16000-19000/s280 SMMNS/a12000+ N042.47.18.276,W084.10.15.426/ho RKCTY/a11000-13000/s260 DREME/a8000-10000/s230 VALLI/a6000/s210"
+                "waypoints": "FRELE/a16000-19000/s280 SMMNS/a12000+ N042.47.18.276,W084.10.15.426/ho RKCTY/a11000-13000/s260 DREME/a8000-10000/s230 VALLI/a6000/s210/h113"
             }
         ],
         "RKCTY2_FINALS": [
@@ -2561,7 +2557,7 @@
                 "expect_approach": "I2R",
                 "scratchpad": "I2R",
                 "star": "RKCTY2",
-                "waypoints": "DREME/a8000-10000/s230/ho VALLI/a6000/s210"
+                "waypoints": "DREME/a8000-10000/s230/ho VALLI/a6000/s210/h113"
             }
         ],
         "TPGUN2": [
@@ -2584,7 +2580,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "TPGUN2",
-                "waypoints": "WLFMN/a24000+/s280 MAVVV N042.37.01.641,W082.06.53.278/ho TPGUN/a11000-14000/s280 HLIWD/a8000-10000 CHZTR/a7000 GOHST/a7000/s210 RYEDR/a7000/s210"
+                "waypoints": "WLFMN/a24000+/s280 MAVVV N042.37.01.641,W082.06.53.278/ho TPGUN/a11000-14000/s280 HLIWD/a8000-10000 CHZTR/a7000 GOHST/a7000/s210 RYEDR/a7000/s210/h306"
             }
         ],
         "TPGUN2_FINALS": [
@@ -2609,7 +2605,7 @@
                 "star": "TPGUN2",
                 "expect_approach": "I1L",
                 "scratchpad": "I1L",
-                "waypoints": "TPGUN/a11000-14000/s280 HLIWD/a8000-10000 CHZTR/a7000/ho GOHST/a7000/s210 RYEDR/a7000/s210"
+                "waypoints": "TPGUN/a11000-14000/s280 HLIWD/a8000-10000 CHZTR/a7000/ho GOHST/a7000/s210 RYEDR/a7000/s210/h306"
             }
         ],
         "TPGUN2_FINALW": [
@@ -2671,10 +2667,10 @@
                 "star": "VCTRZ2",
                 "runway_waypoints": {
                     "KDTW": {
-                        "22R": "UUOFM/a12000/s250 TRPRS SEEGR/a12000/s210",
-                        "21L": "UUOFM/a12000/s250 RAAMM MODLT/a12000/s210",
-                        "27R": "UUOFM/a12000/s250 WUDSN BRDDY/a12000", 
-                        "27L": "UUOFM/a12000/s250 WUDSN BRDDY/a12000"
+                        "22R": "UUOFM/a12000/s250 TRPRS SEEGR/a12000/s210/h036",
+                        "21L": "UUOFM/a12000/s250 RAAMM MODLT/a12000/s210/h037",
+                        "27R": "UUOFM/a12000/s250 WUDSN BRDDY/a12000/h096", 
+                        "27L": "UUOFM/a12000/s250 WUDSN BRDDY/a12000/h096"
                     }
                 },
                 "waypoints": "KRABN/a17000-19000/s280 URBAN HAYLL/a17000+/s280 N041.58.13.061,W084.26.37.412/ho VCTRZ HYSMN/a12000-15000 UUOFM/a12000/s250"
@@ -2716,8 +2712,8 @@
                 "scratchpad": "I2R",
                 "runway_waypoints": {
                     "KDTW": {
-                        "22R": "UUOFM/a12000/s250 TRPRS SEEGR/a12000/s210",
-                        "21L": "UUOFM/a12000/s250 RAAMM MODLT/a12000/s210"
+                        "22R": "UUOFM/a12000/s250 TRPRS SEEGR/a12000/s210/h036",
+                        "21L": "UUOFM/a12000/s250 RAAMM MODLT/a12000/s210/h037"
                     }
                 },
                 "waypoints": "HYSMN/a12000-15000 UUOFM/a12000/s250/ho"
@@ -2757,7 +2753,7 @@
                 "star": "VCTRZ2",
                 "expect_approach": "I7L",
                 "scratchpad": "I7L",
-                "waypoints": "HYSMN/a12000-15000 UUOFM/a12000/s250 N042.07.49.253,W083.21.23.944/ho WUDSN/a8000/s210 BRDDY "
+                "waypoints": "HYSMN/a12000-15000 UUOFM/a12000/s250 N042.07.49.253,W083.21.23.944/ho WUDSN/a8000/s210 BRDDY/h096"
             }
         ],
         "WNGNT2": [
@@ -2782,8 +2778,8 @@
                 "star": "WNGNT2",
                 "runway_waypoints": {
                     "KDTW": {
-                        "4L": "ROOAD/a12000/s250 CADLC YNDER/a12000/s210",
-                        "3R": "ROOAD/a12000/s250 SPRTS/a12000/s210"
+                        "4L": "ROOAD/a12000/s250 CADLC YNDER/a12000/s210/h216",
+                        "3R": "ROOAD/a12000/s250 SPRTS/a12000/s210/h216"
                     }
                 },
                 "waypoints": "SAYCH/a24000+/s280 NUTTZ N042.28.18.994,W082.03.05.696/ho WNGNT/a16000-23000/s280 BOUTU/a12000-15000 ROOAD/a12000/s250"
@@ -2813,8 +2809,8 @@
                 "star": "WNGNT2",
                 "runway_waypoints": {
                     "KDTW": {
-                        "4L": "ROOAD/a12000/s250 CADLC YNDER/a12000/s210",
-                        "3R": "ROOAD/a12000/s250 SPRTS/a12000/s210"
+                        "4L": "ROOAD/a12000/s250 CADLC YNDER/a12000/s210/h216",
+                        "3R": "ROOAD/a12000/s250 SPRTS/a12000/s210/h216"
                     }
                 },
                 "waypoints": "BOUTU/a12000-15000 ROOAD/a12000/s250/ho"
@@ -2901,7 +2897,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "OKLND1",
-                "waypoints": "COLTS/a36000- BOREK LOPVO ITPEG PICUP AXXIS FAEGO RIPPY OKLND/a4000+"
+                "waypoints": "COLTS/a36000- BOREK LOPVO ITPEG PICUP AXXIS FAEGO RIPPY OKLND/a4000+/h272"
             }
         ],
         "PETTE2": [
@@ -2940,7 +2936,21 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "PETTE2",
-                "waypoints": "QBURT/ho HEVYD HAZIT PETTE SYREN/a4000"
+                "runway_waypoints": {
+                    "KPTK": {
+                        "27L": "PETTE SYREN/a4000/h025",
+                        "9R": "PETTE SYREN/a4000/h025"
+                    },
+                    "KDET": {
+                        "33": "PETTE SYREN/a4000/h071",
+                        "15": "PETTE SYREN/a4000/h071"
+                    },
+                    "KYIP": {
+                        "23": "PETTE SYREN/a4000/h071",
+                        "5": "PETTE SYREN/a4000/h071"
+                    }
+                },
+                "waypoints": "QBURT/ho HEVYD HAZIT PETTE"
             }
         ],
         "RRALF3": [
@@ -2978,7 +2988,7 @@
                 "initial_controller": "CLE_48_CTR",
                 "initial_speed": 280,
                 "star": "PETTE2",
-                "waypoints": "WEBOR/ho NIMNM CLLEM KILTT RRALF PICTR/a4000"
+                "waypoints": "WEBOR/ho NIMNM CLLEM KILTT RRALF PICTR/a4000/h085"
             }
         ],
         "GIGGY2": [
