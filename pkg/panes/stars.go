@@ -5533,6 +5533,13 @@ func (sp *STARSPane) datablockType(ctx *Context, ac *av.Aircraft) DatablockType 
 		state := sp.Aircraft[ac.Callsign]
 		dt := state.DatablockType
 
+		beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(platform.KeyF1)
+		if beaconator {
+			// Partial is always full with the beaconator, so we're done
+			// here in that case.
+			return FullDatablock
+		}
+
 		// TODO: when do we do a partial vs limited datablock?
 		if ac.Squawk != trk.FlightPlan.AssignedSquawk {
 			dt = PartialDatablock
@@ -6489,7 +6496,7 @@ func (sp *STARSPane) formatDatablocks(ctx *Context, ac *av.Aircraft) []STARSData
 	switch ty {
 	case LimitedDatablock:
 		db := baseDB.Duplicate()
-		db.Lines[1].Text = fmt.Sprintf("%v", ac.Squawk)
+		db.Lines[1].Text = util.Select(beaconator, ac.Callsign, ac.Squawk.String()) // TODO(mtrokel): confirm
 		db.Lines[2].Text = fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
 		if state.FullLDBEndTime.After(ctx.Now) {
 			db.Lines[2].Text += fmt.Sprintf(" %02d", (state.TrackGroundspeed()+5)/10)
@@ -6599,7 +6606,7 @@ func (sp *STARSPane) formatDatablocks(ctx *Context, ac *av.Aircraft) []STARSData
 		trk := sp.getTrack(ctx, ac)
 
 		// Line 1: fields 1, 2, and 8 (surprisingly). Field 8 may be multiplexed.
-		field1 := ac.Callsign
+		field1 := util.Select(beaconator, ac.Squawk.String(), ac.Callsign)
 
 		field2 := ""
 		if state.InhibitMSAW || state.DisableMSAW {
