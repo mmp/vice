@@ -1892,11 +1892,11 @@ func (sp *STARSPane) processKeyboardInput(ctx *Context) {
 
 	ps := &sp.CurrentPreferenceSet
 
-	if ctx.Keyboard.IsPressed(platform.KeyControl) && len(input) == 1 && unicode.IsDigit(rune(input[0])) {
+	if ctx.Keyboard.WasPressed(platform.KeyControl) && len(input) == 1 && unicode.IsDigit(rune(input[0])) {
 		idx := byte(input[0]) - '0'
 		// This test should be redundant given the IsDigit check, but just to be safe...
 		if int(idx) < len(ps.Bookmarks) {
-			if ctx.Keyboard.IsPressed(platform.KeyAlt) {
+			if ctx.Keyboard.WasPressed(platform.KeyAlt) {
 				// Record bookmark
 				ps.Bookmarks[idx].Center = ps.CurrentCenter
 				ps.Bookmarks[idx].Range = ps.Range
@@ -1941,13 +1941,13 @@ func (sp *STARSPane) processKeyboardInput(ctx *Context) {
 			sp.disableMenuSpinner(ctx)
 			sp.wipRBL = nil
 		case platform.KeyF1:
-			if ctx.Keyboard.IsPressed(platform.KeyControl) {
+			if ctx.Keyboard.WasPressed(platform.KeyControl) {
 				// Recenter
 				ps.Center = ctx.ControlClient.GetInitialCenter()
 				ps.CurrentCenter = ps.Center
 			}
 		case platform.KeyF2:
-			if ctx.Keyboard.IsPressed(platform.KeyControl) {
+			if ctx.Keyboard.WasPressed(platform.KeyControl) {
 				if ps.DisplayDCB {
 					sp.disableMenuSpinner(ctx)
 					sp.activeDCBMenu = DCBMenuMaps
@@ -1956,7 +1956,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *Context) {
 				sp.commandMode = CommandModeMaps
 			}
 		case platform.KeyF3:
-			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuBrite
 			} else {
@@ -1964,7 +1964,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *Context) {
 				sp.commandMode = CommandModeInitiateControl
 			}
 		case platform.KeyF4:
-			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.activeDCBMenu = DCBMenuMain
 				sp.activateMenuSpinner(MakeLeaderLineLengthSpinner(&ps.LeaderLineLength))
 				sp.resetInputState()
@@ -1974,7 +1974,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *Context) {
 				sp.commandMode = CommandModeTerminateControl
 			}
 		case platform.KeyF5:
-			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuCharSize
 			} else {
@@ -1985,7 +1985,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *Context) {
 			sp.resetInputState()
 			sp.commandMode = CommandModeFlightData
 		case platform.KeyF7:
-			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				if sp.activeDCBMenu == DCBMenuMain {
 					sp.activeDCBMenu = DCBMenuAux
@@ -1997,12 +1997,12 @@ func (sp *STARSPane) processKeyboardInput(ctx *Context) {
 				sp.commandMode = CommandModeMultiFunc
 			}
 		case platform.KeyF8:
-			if ctx.Keyboard.IsPressed(platform.KeyControl) {
+			if ctx.Keyboard.WasPressed(platform.KeyControl) {
 				sp.disableMenuSpinner(ctx)
 				ps.DisplayDCB = !ps.DisplayDCB
 			}
 		case platform.KeyF9:
-			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activateMenuSpinner(MakeRangeRingRadiusSpinner(&ps.RangeRingRadius))
 				sp.resetInputState()
@@ -2012,14 +2012,14 @@ func (sp *STARSPane) processKeyboardInput(ctx *Context) {
 				sp.commandMode = CommandModeVFRPlan
 			}
 		case platform.KeyF10:
-			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activateMenuSpinner(MakeRadarRangeSpinner(&ps.Range))
 				sp.resetInputState()
 				sp.commandMode = CommandModeRange
 			}
 		case platform.KeyF11:
-			if ctx.Keyboard.IsPressed(platform.KeyControl) && ps.DisplayDCB {
+			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = DCBMenuSite
 			} else {
@@ -6484,6 +6484,7 @@ func (sp *STARSPane) formatDatablocks(ctx *Context, ac *av.Aircraft) []STARSData
 	}
 
 	ty := sp.datablockType(ctx, ac)
+	beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(platform.KeyF1)
 
 	switch ty {
 	case LimitedDatablock:
@@ -7430,13 +7431,13 @@ func (sp *STARSPane) consumeMouseEvents(ctx *Context, ghosts []*av.GhostAircraft
 	}
 
 	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
-		if ctx.Keyboard != nil && ctx.Keyboard.IsPressed(platform.KeyShift) && ctx.Keyboard.IsPressed(platform.KeyControl) {
+		if ctx.Keyboard != nil && ctx.Keyboard.WasPressed(platform.KeyShift) && ctx.Keyboard.WasPressed(platform.KeyControl) {
 			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
 			mouseLatLong := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
 			ctx.Platform.GetClipboard().SetText(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 		}
 
-		if ctx.Keyboard != nil && ctx.Keyboard.IsPressed(platform.KeyControl) && !ctx.Keyboard.IsPressed(platform.KeyShift) { // There is a conflict between this and initating a track CRC-style,
+		if ctx.Keyboard != nil && ctx.Keyboard.WasPressed(platform.KeyControl) && !ctx.Keyboard.WasPressed(platform.KeyShift) { // There is a conflict between this and initating a track CRC-style,
 			// so making sure that shift isn't being pressed would be a good idea.
 			if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.Mouse.Pos, transforms); ac != nil {
 				if state := sp.Aircraft[ac.Callsign]; state != nil {

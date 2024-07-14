@@ -499,7 +499,7 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, controlClient *sim.Co
 		keyboard = p.GetKeyboard()
 	}
 
-	if keyboard != nil && keyboard.IsPressed(platform.KeyTab) {
+	if keyboard != nil && keyboard.WasPressed(platform.KeyTab) {
 		cur := wm.focus.Current()
 		if _, ok := cur.(*panes.MessagesPane); ok {
 			if s := getPaneByType[*panes.STARSPane](); s != nil {

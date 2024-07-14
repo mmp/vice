@@ -42,6 +42,9 @@ type glfwPlatform struct {
 	multisample            bool
 	windowTitle            string
 	mouseCapture           math.Extent2D
+	// These are the keys that are actively held down; for now just the
+	// function keys, since all we currently need is F1 for beaconator.
+	heldFKeys map[Key]interface{}
 }
 
 type Config struct {
@@ -121,6 +124,7 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 		imguiIO:     io,
 		window:      window,
 		multisample: config.EnableMSAA,
+		heldFKeys:   make(map[Key]interface{}),
 	}
 	platform.setKeyMapping()
 	platform.installCallbacks()
@@ -388,6 +392,16 @@ func (g *glfwPlatform) keyChange(window *glfw.Window, key glfw.Key, scancode int
 	}
 	if action == glfw.Release {
 		g.imguiIO.KeyRelease(int(key))
+	}
+
+	for i, k := range []glfw.Key{glfw.KeyF1, glfw.KeyF2, glfw.KeyF3, glfw.KeyF4, glfw.KeyF5, glfw.KeyF6, glfw.KeyF7, glfw.KeyF8,
+		glfw.KeyF9, glfw.KeyF10, glfw.KeyF11, glfw.KeyF12} {
+		if g.window.GetKey(k) == glfw.Press {
+			g.heldFKeys[Key(KeyF1+i)] = nil
+		}
+		if g.window.GetKey(k) == glfw.Release {
+			delete(g.heldFKeys, Key(KeyF1+i))
+		}
 	}
 
 	// Modifiers are not reliable across systems

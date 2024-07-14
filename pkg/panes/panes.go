@@ -817,7 +817,7 @@ func (mp *MessagesPane) processKeyboard(ctx *Context) {
 		mp.input.InsertAtCursor(strings.ToUpper(ctx.Keyboard.Input))
 	}
 
-	if ctx.Keyboard.IsPressed(platform.KeyUpArrow) {
+	if ctx.Keyboard.WasPressed(platform.KeyUpArrow) {
 		if mp.historyOffset < len(mp.history) {
 			if mp.historyOffset == 0 {
 				mp.savedInput = mp.input // save current input in case we return
@@ -827,7 +827,7 @@ func (mp *MessagesPane) processKeyboard(ctx *Context) {
 			mp.input.cursor = len(mp.input.cmd)
 		}
 	}
-	if ctx.Keyboard.IsPressed(platform.KeyDownArrow) {
+	if ctx.Keyboard.WasPressed(platform.KeyDownArrow) {
 		if mp.historyOffset > 0 {
 			mp.historyOffset--
 			if mp.historyOffset == 0 {
@@ -840,42 +840,42 @@ func (mp *MessagesPane) processKeyboard(ctx *Context) {
 		}
 	}
 
-	if (ctx.Keyboard.IsPressed(platform.KeyControl) || ctx.Keyboard.IsPressed(platform.KeySuper)) && ctx.Keyboard.IsPressed(platform.KeyV) {
+	if (ctx.Keyboard.WasPressed(platform.KeyControl) || ctx.Keyboard.WasPressed(platform.KeySuper)) && ctx.Keyboard.WasPressed(platform.KeyV) {
 		c, err := ctx.Platform.GetClipboard().Text()
 		if err == nil {
 			mp.input.InsertAtCursor(c)
 		}
 	}
-	if ctx.Keyboard.IsPressed(platform.KeyLeftArrow) {
+	if ctx.Keyboard.WasPressed(platform.KeyLeftArrow) {
 		if mp.input.cursor > 0 {
 			mp.input.cursor--
 		}
 	}
 
-	if ctx.Keyboard.IsPressed(platform.KeyRightArrow) {
+	if ctx.Keyboard.WasPressed(platform.KeyRightArrow) {
 		if mp.input.cursor < len(mp.input.cmd) {
 			mp.input.cursor++
 		}
 	}
-	if ctx.Keyboard.IsPressed(platform.KeyHome) {
+	if ctx.Keyboard.WasPressed(platform.KeyHome) {
 		mp.input.cursor = 0
 	}
-	if ctx.Keyboard.IsPressed(platform.KeyEnd) {
+	if ctx.Keyboard.WasPressed(platform.KeyEnd) {
 		mp.input.cursor = len(mp.input.cmd)
 	}
-	if ctx.Keyboard.IsPressed(platform.KeyBackspace) {
+	if ctx.Keyboard.WasPressed(platform.KeyBackspace) {
 		mp.input.DeleteBeforeCursor()
 	}
-	if ctx.Keyboard.IsPressed(platform.KeyDelete) {
+	if ctx.Keyboard.WasPressed(platform.KeyDelete) {
 		mp.input.DeleteAfterCursor()
 	}
-	if ctx.Keyboard.IsPressed(platform.KeyEscape) {
+	if ctx.Keyboard.WasPressed(platform.KeyEscape) {
 		if mp.input.cursor > 0 {
 			mp.input = CLIInput{}
 		}
 	}
 
-	if ctx.Keyboard.IsPressed(platform.KeyEnter) && strings.TrimSpace(mp.input.cmd) != "" {
+	if ctx.Keyboard.WasPressed(platform.KeyEnter) && strings.TrimSpace(mp.input.cmd) != "" {
 		mp.runCommands(ctx)
 	}
 }
@@ -1207,30 +1207,30 @@ func uiDrawTextEdit(s *string, cursor *int, keyboard *platform.KeyboardState, po
 
 	// Handle various special keys.
 	if keyboard != nil {
-		if keyboard.IsPressed(platform.KeyBackspace) && *cursor > 0 {
+		if keyboard.WasPressed(platform.KeyBackspace) && *cursor > 0 {
 			*s = (*s)[:*cursor-1] + (*s)[*cursor:]
 			*cursor--
 		}
-		if keyboard.IsPressed(platform.KeyDelete) && *cursor < len(*s)-1 {
+		if keyboard.WasPressed(platform.KeyDelete) && *cursor < len(*s)-1 {
 			*s = (*s)[:*cursor] + (*s)[*cursor+1:]
 		}
-		if keyboard.IsPressed(platform.KeyLeftArrow) {
+		if keyboard.WasPressed(platform.KeyLeftArrow) {
 			*cursor = math.Max(*cursor-1, 0)
 		}
-		if keyboard.IsPressed(platform.KeyRightArrow) {
+		if keyboard.WasPressed(platform.KeyRightArrow) {
 			*cursor = math.Min(*cursor+1, len(*s))
 		}
-		if keyboard.IsPressed(platform.KeyEscape) {
+		if keyboard.WasPressed(platform.KeyEscape) {
 			// clear out the string
 			*s = ""
 			*cursor = 0
 		}
-		if keyboard.IsPressed(platform.KeyEnter) {
+		if keyboard.WasPressed(platform.KeyEnter) {
 			focus.Release()
 			exit = TextEditReturnEnter
 		}
-		if keyboard.IsPressed(platform.KeyTab) {
-			if keyboard.IsPressed(platform.KeyShift) {
+		if keyboard.WasPressed(platform.KeyTab) {
+			if keyboard.WasPressed(platform.KeyShift) {
 				exit = TextEditReturnPrev
 			} else {
 				exit = TextEditReturnNext

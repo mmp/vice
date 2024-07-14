@@ -94,12 +94,18 @@ const (
 )
 
 type KeyboardState struct {
-	Input   string
-	Pressed map[Key]interface{}
+	Input string
+	// A key shows up here once each time it is pressed (though repeatedly
+	// if key repeat kicks in.)
+	Pressed   map[Key]interface{}
+	HeldFKeys map[Key]interface{}
 }
 
 func (g *glfwPlatform) GetKeyboard() *KeyboardState {
-	keyboard := &KeyboardState{Pressed: make(map[Key]interface{})}
+	keyboard := &KeyboardState{
+		Pressed:   make(map[Key]interface{}),
+		HeldFKeys: g.heldFKeys,
+	}
 
 	keyboard.Input = g.InputCharacters()
 
@@ -174,7 +180,12 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	return keyboard
 }
 
-func (k *KeyboardState) IsPressed(key Key) bool {
+func (k *KeyboardState) WasPressed(key Key) bool {
 	_, ok := k.Pressed[key]
+	return ok
+}
+
+func (k *KeyboardState) IsFKeyHeld(key Key) bool {
+	_, ok := k.HeldFKeys[key]
 	return ok
 }
