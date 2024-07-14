@@ -1137,9 +1137,9 @@ func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) *ERAMComputers {
 	return ec
 }
 
-func (ec *ERAMComputers) PostLoad() {
-	for _, comp := range ec.Computers {
-		comp.eramComputers = ec
+func (ec *ERAMComputers) Activate() {
+	for artcc := range ec.Computers {
+		ec.Computers[artcc].eramComputers = ec
 	}
 }
 

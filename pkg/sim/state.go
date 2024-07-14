@@ -247,10 +247,13 @@ func (s *State) PreSave() {
 }
 
 func (s *State) PostLoad(ml *av.VideoMapLibrary) error {
-	// Tidy things up after loading from disk: reinitialize the video maps
-	// and also make ERAMComputers aware of each other.
-	s.ERAMComputers.PostLoad()
+	// Tidy things up after loading from disk: reinitialize the video maps.
 	return s.STARSFacilityAdaptation.PostLoad(ml)
+}
+
+func (s *State) Activate() {
+	// Make the ERAMComputers aware of each other.
+	s.ERAMComputers.Activate()
 }
 
 func (ss *State) Locate(s string) (math.Point2LL, bool) {

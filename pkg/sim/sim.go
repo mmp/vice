@@ -1284,6 +1284,8 @@ func (s *Sim) Activate(lg *log.Logger) {
 			s.lastDeparture[ap][rwy] = make(map[string]*av.Departure)
 		}
 	}
+
+	s.State.Activate()
 }
 
 func (s *Sim) PreSave() {
