@@ -158,36 +158,25 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	realMETAR := func(icao string) {
 		weather, errors := getweather.GetWeather(icao)
 		if len(errors) != 0 {
-			lg.Errorf("Error getting weather for %v.", icao)
+			lg.Errorf("%s: error getting weather: %+v", icao, errors)
 		}
-		fullMETAR := weather.RawMETAR
-		altimiter := getAltimiter(fullMETAR)
-		var err error
 
-		if err != nil {
-			lg.Errorf("Error converting altimiter to an intiger: %v.", altimiter)
+		dir := -1 // VRB by default
+		if d, ok := weather.Wdir.(int); ok {
+			dir = d
+		} else if d, ok := weather.Wdir.(float64); ok {
+			dir = int(d)
 		}
+
 		var wind string
-		spd := weather.Wspd
-		var dir float64
-		if weather.Wdir == -1 {
-			dirInt := weather.Wdir.(int)
-			dir = float64(dirInt)
-		}
-		var ok bool
-		dir, ok = weather.Wdir.(float64)
-		if !ok {
-			lg.Errorf("Error converting %v into a float64: actual type %T", dir, dir)
-		}
-		if spd <= 0 {
+		if spd := weather.Wspd; spd <= 0 {
 			wind = "00000KT"
 		} else if dir == -1 {
 			wind = fmt.Sprintf("VRB%vKT", spd)
 		} else {
-			wind = fmt.Sprintf("%03d%02d", int(dir), spd)
-			gst := weather.Wgst
-			if gst > 5 {
-				wind += fmt.Sprintf("G%02d", gst)
+			wind = fmt.Sprintf("%03d%02d", dir, spd)
+			if weather.Wgst > 5 {
+				wind += fmt.Sprintf("G%02d", weather.Wgst)
 			}
 			wind += "KT"
 		}
@@ -196,7 +185,7 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 		ss.METAR[icao] = &av.METAR{
 			AirportICAO: icao,
 			Wind:        wind,
-			Altimeter:   "A" + altimiter,
+			Altimeter:   "A" + getAltimiter(weather.RawMETAR),
 		}
 	}
 
