@@ -41,18 +41,18 @@ import (
 // 24: packages, audio to platform, flight plan processing
 const CurrentConfigVersion = 24
 
-// Slightly convoluted, but the full GlobalConfig definition is split into
+// Slightly convoluted, but the full Config definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first
 // deserialize the non-Sim part and then only try to deserialize the Sim if
 // its version matches CurrentConfigVersion.  This saves us from displaying
 // errors about corrupt JSON in cases where fields in the Sim have changed
 // (and we're going to throw it away anyway...)
-type GlobalConfig struct {
-	GlobalConfigNoSim
-	GlobalConfigSim
+type Config struct {
+	ConfigNoSim
+	ConfigSim
 }
 
-type GlobalConfigNoSim struct {
+type ConfigNoSim struct {
 	platform.Config
 
 	Version       int
@@ -71,7 +71,7 @@ type GlobalConfigNoSim struct {
 	Callsign string
 }
 
-type GlobalConfigSim struct {
+type ConfigSim struct {
 	Sim *sim.Sim
 }
 
@@ -91,13 +91,13 @@ func configFilePath(lg *log.Logger) string {
 	return path.Join(dir, "config.json")
 }
 
-func (gc *GlobalConfig) Encode(w io.Writer) error {
+func (gc *Config) Encode(w io.Writer) error {
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "    ")
 	return enc.Encode(gc)
 }
 
-func (c *GlobalConfig) Save(lg *log.Logger) error {
+func (c *Config) Save(lg *log.Logger) error {
 	lg.Infof("Saving config to: %s", configFilePath(lg))
 	f, err := os.Create(configFilePath(lg))
 	if err != nil {
@@ -108,7 +108,7 @@ func (c *GlobalConfig) Save(lg *log.Logger) error {
 	return c.Encode(f)
 }
 
-func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
+func (gc *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
 	c *sim.ControlClient, saveSim bool, lg *log.Logger) bool {
 	gc.Sim = nil
 	gc.Callsign = ""
@@ -150,9 +150,9 @@ func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform platf
 	return true
 }
 
-func getDefaultConfig() *GlobalConfig {
-	return &GlobalConfig{
-		GlobalConfigNoSim: GlobalConfigNoSim{
+func getDefaultConfig() *Config {
+	return &Config{
+		ConfigNoSim: ConfigNoSim{
 			Config: platform.Config{
 				AudioEnabled:          true,
 				InitialWindowPosition: [2]int{100, 100},
@@ -164,7 +164,7 @@ func getDefaultConfig() *GlobalConfig {
 	}
 }
 
-func LoadOrMakeDefaultConfig(lg *log.Logger) (config *GlobalConfig, configErr error) {
+func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 	fn := configFilePath(lg)
 	lg.Infof("Loading config from: %s", fn)
 
@@ -174,8 +174,8 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *GlobalConfig, configErr er
 		r := bytes.NewReader(contents)
 		d := json.NewDecoder(r)
 
-		config = &GlobalConfig{}
-		if err := d.Decode(&config.GlobalConfigNoSim); err != nil {
+		config = &Config{}
+		if err := d.Decode(&config.ConfigNoSim); err != nil {
 			configErr = err
 			config = getDefaultConfig()
 		}
@@ -204,7 +204,7 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *GlobalConfig, configErr er
 		if config.Version == CurrentConfigVersion {
 			// Go ahead and deserialize the Sim
 			r.Seek(0, io.SeekStart)
-			if err := d.Decode(&config.GlobalConfigSim); err != nil {
+			if err := d.Decode(&config.ConfigSim); err != nil {
 				configErr = err
 			}
 		}
@@ -220,7 +220,7 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *GlobalConfig, configErr er
 	return
 }
 
-func (gc *GlobalConfig) Activate(c *sim.ControlClient, r renderer.Renderer, p platform.Platform,
+func (gc *Config) Activate(c *sim.ControlClient, r renderer.Renderer, p platform.Platform,
 	eventStream *sim.EventStream, lg *log.Logger) {
 	// Upgrade old ones without a MessagesPane
 	if gc.DisplayRoot != nil {

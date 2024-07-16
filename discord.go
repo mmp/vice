@@ -37,7 +37,7 @@ var discord struct {
 	updaterLaunched bool
 }
 
-func SetDiscordStatus(s DiscordStatus, config *GlobalConfig, lg *log.Logger) {
+func SetDiscordStatus(s DiscordStatus, config *Config, lg *log.Logger) {
 	discord.mu.Lock()
 	defer discord.mu.Unlock()
 
@@ -60,7 +60,7 @@ func SetDiscordStatus(s DiscordStatus, config *GlobalConfig, lg *log.Logger) {
 	}
 }
 
-func updateDiscordStatus(config *GlobalConfig, lg *log.Logger) {
+func updateDiscordStatus(config *Config, lg *log.Logger) {
 	// Sign in to the Vice app on Discord
 	discord_err := discord_client.Login("1158289394717970473")
 	if discord_err != nil {

@@ -419,7 +419,7 @@ func wmPaneIsPresent(pane panes.Pane, root *DisplayNode) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func wmDrawPanes(config *GlobalConfig, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient, stats *Stats, lg *log.Logger) {
+func wmDrawPanes(config *Config, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient, stats *Stats, lg *log.Logger) {
 	if controlClient == nil {
 		commandBuffer := renderer.GetCommandBuffer()
 		commandBuffer.ClearRGB(renderer.RGB{})

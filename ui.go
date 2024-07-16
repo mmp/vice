@@ -247,7 +247,7 @@ func imguiInit() *imgui.Context {
 	return context
 }
 
-func uiInit(r renderer.Renderer, p platform.Platform, config *GlobalConfig, es *sim.EventStream, lg *log.Logger) {
+func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.EventStream, lg *log.Logger) {
 	if runtime.GOOS == "windows" {
 		imgui.CurrentStyle().ScaleAllSizes(p.DPIScale())
 	}
@@ -294,7 +294,7 @@ func uiCloseModalDialog(d *ModalDialogBox) {
 }
 
 func uiShowConnectDialog(ch chan *sim.Connection, localServer **sim.Server, remoteServer **sim.Server,
-	allowCancel bool, config *GlobalConfig, p platform.Platform, lg *log.Logger) {
+	allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
 
 	client := &ConnectModalClient{
 		ch:           ch,
@@ -308,11 +308,11 @@ func uiShowConnectDialog(ch chan *sim.Connection, localServer **sim.Server, remo
 	uiShowModalDialog(NewModalDialogBox(client, p), false)
 }
 
-func uiShowDiscordOptInDialog(p platform.Platform, config *GlobalConfig) {
+func uiShowDiscordOptInDialog(p platform.Platform, config *Config) {
 	uiShowModalDialog(NewModalDialogBox(&DiscordOptInModalClient{config: config}, p), true)
 }
 
-func uiShowNewCommandSyntaxDialog(p platform.Platform, config *GlobalConfig) {
+func uiShowNewCommandSyntaxDialog(p platform.Platform, config *Config) {
 	client := &NewCommandSyntaxModalClient{notifiedNew: &config.NotifiedNewCommandSyntax}
 	uiShowModalDialog(NewModalDialogBox(client, p), true)
 }
@@ -336,7 +336,7 @@ func uiEndDisable(b bool) {
 }
 
 func drawUI(ch chan *sim.Connection, localServer **sim.Server, remoteServer **sim.Server,
-	config *GlobalConfig, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
+	config *Config, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
 	eventStream *sim.EventStream, stats *Stats, lg *log.Logger) {
 	if ui.newReleaseDialogChan != nil {
 		select {
@@ -602,7 +602,7 @@ type ConnectModalClient struct {
 	simConfig    sim.NewSimConfiguration
 	allowCancel  bool
 	platform     platform.Platform
-	config       *GlobalConfig
+	config       *Config
 }
 
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
@@ -729,7 +729,7 @@ func (yn *YesOrNoModalClient) Draw() int {
 	return -1
 }
 
-func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient, config *GlobalConfig, lg *log.Logger) {
+func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient, config *Config, lg *log.Logger) {
 	defer close(newReleaseDialogChan)
 
 	url := "https://api.github.com/repos/mmp/vice/releases"
@@ -834,7 +834,7 @@ func (nr *NewReleaseModalClient) Draw() int {
 }
 
 type WhatsNewModalClient struct {
-	config *GlobalConfig
+	config *Config
 }
 
 func (nr *WhatsNewModalClient) Title() string {
@@ -896,7 +896,7 @@ func (b *BroadcastModalDialog) Draw() int {
 }
 
 type DiscordOptInModalClient struct {
-	config *GlobalConfig
+	config *Config
 }
 
 func (d *DiscordOptInModalClient) Title() string {
@@ -1516,7 +1516,7 @@ which must be 3 digits (e.g., *040*).`},
 }
 
 // draw the windows that shows the available keyboard commands
-func uiDrawKeyboardWindow(c *sim.ControlClient, config *GlobalConfig) {
+func uiDrawKeyboardWindow(c *sim.ControlClient, config *Config) {
 	if !keyboardWindowVisible {
 		return
 	}
@@ -1808,7 +1808,7 @@ func uiDrawMissingPrimaryDialog(ch chan *sim.Connection, c *sim.ControlClient, p
 	}
 }
 
-func uiDrawSettingsWindow(c *sim.ControlClient, config *GlobalConfig, p platform.Platform) {
+func uiDrawSettingsWindow(c *sim.ControlClient, config *Config, p platform.Platform) {
 	if !ui.showSettings {
 		return
 	}
