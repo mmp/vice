@@ -18,7 +18,6 @@ import (
 	"path"
 	"runtime"
 	"runtime/debug"
-	"sort"
 	"strings"
 	"time"
 
@@ -103,8 +102,6 @@ func main() {
 	}
 	defer profiler.Cleanup()
 
-	eventStream := sim.NewEventStream(lg)
-
 	if *lintScenarios {
 		var e util.ErrorLogger
 		scenarioGroups, _, _ :=
@@ -136,56 +133,14 @@ func main() {
 	} else if *server {
 		sim.RunServer(*scenarioFilename, *videoMapFilename, *serverPort, lg)
 	} else if *showRoutes != "" {
-		ap, ok := av.DB.Airports[*showRoutes]
-		if !ok {
-			fmt.Printf("%s: airport not present in database\n", *showRoutes)
-			os.Exit(1)
-		}
-		fmt.Printf("STARs:\n")
-		for _, s := range util.SortedMapKeys(ap.STARs) {
-			ap.STARs[s].Print(s)
-		}
-		fmt.Printf("\nApproaches:\n")
-		for _, appr := range util.SortedMapKeys(ap.Approaches) {
-			fmt.Printf("%-5s: ", appr)
-			for i, wp := range ap.Approaches[appr] {
-				if i > 0 {
-					fmt.Printf("       ")
-				}
-				fmt.Println(wp.Encode())
-			}
+		if err := av.PrintCIFPRoutes(*showRoutes); err != nil {
+			lg.Errorf("%s", err)
 		}
 	} else if *listMaps != "" {
 		var e util.ErrorLogger
-		lib := av.MakeVideoMapLibrary()
-		path := *listMaps
-		lib.AddFile(os.DirFS("."), path, true, make(map[string]interface{}), &e)
-
+		av.PrintVideoMaps(*listMaps, &e)
 		if e.HaveErrors() {
 			e.PrintErrors(lg)
-			os.Exit(1)
-		}
-
-		var videoMaps []av.VideoMap
-		for _, name := range lib.AvailableMaps(path) {
-			if m, err := lib.GetMap(path, name); err != nil {
-				panic(err)
-			} else {
-				videoMaps = append(videoMaps, *m)
-			}
-		}
-
-		sort.Slice(videoMaps, func(i, j int) bool {
-			vi, vj := videoMaps[i], videoMaps[j]
-			if vi.Id != vj.Id {
-				return vi.Id < vj.Id
-			}
-			return vi.Name < vj.Name
-		})
-
-		fmt.Printf("%5s\t%20s\t%s\n", "Id", "Label", "Name")
-		for _, m := range videoMaps {
-			fmt.Printf("%5d\t%20s\t%s\n", m.Id, m.Label, m.Name)
 		}
 	} else {
 		localSimServerChan, mapLibrary, err :=
@@ -267,6 +222,8 @@ func main() {
 				}
 			}
 		}
+
+		eventStream := sim.NewEventStream(lg)
 
 		uiInit(render, plat, config, eventStream, lg)
 

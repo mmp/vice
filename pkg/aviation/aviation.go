@@ -11,7 +11,9 @@ import (
 	"io"
 	"io/fs"
 	"log/slog"
+	"os"
 	"slices"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -1771,6 +1773,33 @@ func (ml VideoMapLibrary) HaveMap(filename, mapname string) bool {
 		_, ok = mf[mapname]
 	}
 	return ok
+}
+
+func PrintVideoMaps(path string, e *util.ErrorLogger) {
+	lib := MakeVideoMapLibrary()
+	lib.AddFile(os.DirFS("."), path, true, make(map[string]interface{}), e)
+
+	var videoMaps []VideoMap
+	for _, name := range lib.AvailableMaps(path) {
+		if m, err := lib.GetMap(path, name); err != nil {
+			e.Error(err)
+		} else {
+			videoMaps = append(videoMaps, *m)
+		}
+	}
+
+	sort.Slice(videoMaps, func(i, j int) bool {
+		vi, vj := videoMaps[i], videoMaps[j]
+		if vi.Id != vj.Id {
+			return vi.Id < vj.Id
+		}
+		return vi.Name < vj.Name
+	})
+
+	fmt.Printf("%5s\t%20s\t%s\n", "Id", "Label", "Name")
+	for _, m := range videoMaps {
+		fmt.Printf("%5d\t%20s\t%s\n", m.Id, m.Label, m.Name)
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -733,6 +733,29 @@ func (ap FAAAirport) ValidRunways() string {
 	return strings.Join(util.MapSlice(ap.Runways, func(r Runway) string { return r.Id }), ", ")
 }
 
+func PrintCIFPRoutes(airport string) error {
+	ap, ok := DB.Airports[airport]
+	if !ok {
+		return fmt.Errorf("%s: airport not present in database\n", airport)
+	}
+
+	fmt.Printf("STARs:\n")
+	for _, s := range util.SortedMapKeys(ap.STARs) {
+		ap.STARs[s].Print(s)
+	}
+	fmt.Printf("\nApproaches:\n")
+	for _, appr := range util.SortedMapKeys(ap.Approaches) {
+		fmt.Printf("%-5s: ", appr)
+		for i, wp := range ap.Approaches[appr] {
+			if i > 0 {
+				fmt.Printf("       ")
+			}
+			fmt.Println(wp.Encode())
+		}
+	}
+	return nil
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 func (ea ERAMAdaptation) FixForRouteAndAltitude(route string, altitude string) *AdaptationFix {
