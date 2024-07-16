@@ -658,40 +658,40 @@ type RatesModalClient struct {
 	platform      platform.Platform
 }
 
-func (c *RatesModalClient) Title() string { return "Arrival / Departure Rates" }
+func (r *RatesModalClient) Title() string { return "Arrival / Departure Rates" }
 
-func (c *RatesModalClient) Opening() {}
+func (r *RatesModalClient) Opening() {}
 
-func (c *RatesModalClient) Buttons() []ModalDialogButton {
+func (r *RatesModalClient) Buttons() []ModalDialogButton {
 	var b []ModalDialogButton
 
 	prev := ModalDialogButton{
 		text: "Previous",
 		action: func() bool {
-			uiShowModalDialog(NewModalDialogBox(c.connectClient, c.platform), false)
+			uiShowModalDialog(NewModalDialogBox(r.connectClient, r.platform), false)
 			return true
 		},
 	}
 	b = append(b, prev)
 
-	if c.connectClient.allowCancel {
+	if r.connectClient.allowCancel {
 		b = append(b, ModalDialogButton{text: "Cancel"})
 	}
 
 	ok := ModalDialogButton{
 		text:     "Create",
-		disabled: c.connectClient.simConfig.OkDisabled(),
+		disabled: r.connectClient.simConfig.OkDisabled(),
 		action: func() bool {
-			c.connectClient.simConfig.DisplayError = c.connectClient.simConfig.Start()
-			return c.connectClient.simConfig.DisplayError == nil
+			r.connectClient.simConfig.DisplayError = r.connectClient.simConfig.Start()
+			return r.connectClient.simConfig.DisplayError == nil
 		},
 	}
 
 	return append(b, ok)
 }
 
-func (c *RatesModalClient) Draw() int {
-	if enter := c.connectClient.simConfig.DrawRatesUI(c.platform); enter {
+func (r *RatesModalClient) Draw() int {
+	if enter := r.connectClient.simConfig.DrawRatesUI(r.platform); enter {
 		return 1
 	} else {
 		return -1
@@ -837,13 +837,13 @@ type WhatsNewModalClient struct {
 	config *Config
 }
 
-func (nr *WhatsNewModalClient) Title() string {
+func (wn *WhatsNewModalClient) Title() string {
 	return "What's new in this version of vice"
 }
 
-func (nr *WhatsNewModalClient) Opening() {}
+func (wn *WhatsNewModalClient) Opening() {}
 
-func (nr *WhatsNewModalClient) Buttons() []ModalDialogButton {
+func (wn *WhatsNewModalClient) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
 		ModalDialogButton{
 			text: "View Release Notes",
@@ -855,15 +855,15 @@ func (nr *WhatsNewModalClient) Buttons() []ModalDialogButton {
 		ModalDialogButton{
 			text: "Ok",
 			action: func() bool {
-				nr.config.WhatsNewIndex = len(whatsNew)
+				wn.config.WhatsNewIndex = len(whatsNew)
 				return true
 			},
 		},
 	}
 }
 
-func (nr *WhatsNewModalClient) Draw() int {
-	for i := nr.config.WhatsNewIndex; i < len(whatsNew); i++ {
+func (wn *WhatsNewModalClient) Draw() int {
+	for i := wn.config.WhatsNewIndex; i < len(whatsNew); i++ {
 		imgui.Text(renderer.FontAwesomeIconSquare + " " + whatsNew[i])
 	}
 	return -1
@@ -944,25 +944,25 @@ type NewCommandSyntaxModalClient struct {
 	notifiedNew *bool
 }
 
-func (d *NewCommandSyntaxModalClient) Title() string {
+func (ns *NewCommandSyntaxModalClient) Title() string {
 	return "Aircraft Control Command Syntax Has Changed"
 }
 
-func (d *NewCommandSyntaxModalClient) Opening() {}
+func (ns *NewCommandSyntaxModalClient) Opening() {}
 
-func (d *NewCommandSyntaxModalClient) Buttons() []ModalDialogButton {
+func (ns *NewCommandSyntaxModalClient) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
 		ModalDialogButton{
 			text: "Ok",
 			action: func() bool {
-				*d.notifiedNew = true
+				*ns.notifiedNew = true
 				return true
 			},
 		},
 	}
 }
 
-func (d *NewCommandSyntaxModalClient) Draw() int {
+func (ns *NewCommandSyntaxModalClient) Draw() int {
 	style := imgui.CurrentStyle()
 	spc := style.ItemSpacing()
 	spc.Y -= 4
