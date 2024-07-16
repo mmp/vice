@@ -143,74 +143,81 @@ func (gc *GlobalConfig) SaveIfChanged(renderer renderer.Renderer, platform platf
 		return false
 	}
 
-	if err := globalConfig.Save(lg); err != nil {
+	if err := gc.Save(lg); err != nil {
 		ShowErrorDialog(platform, lg, "Error saving configuration file: %v", err)
 	}
 
 	return true
 }
 
-func SetDefaultConfig() {
-	globalConfig = &GlobalConfig{}
-
-	globalConfig.AudioEnabled = true
-	globalConfig.Version = CurrentConfigVersion
-	globalConfig.WhatsNewIndex = len(whatsNew)
-	globalConfig.InitialWindowPosition = [2]int{100, 100}
-	globalConfig.NotifiedNewCommandSyntax = true // don't warn for new installs
+func getDefaultConfig() *GlobalConfig {
+	return &GlobalConfig{
+		GlobalConfigNoSim: GlobalConfigNoSim{
+			Config: platform.Config{
+				AudioEnabled:          true,
+				InitialWindowPosition: [2]int{100, 100},
+			},
+			Version:                  CurrentConfigVersion,
+			WhatsNewIndex:            len(whatsNew),
+			NotifiedNewCommandSyntax: true, // don't warn for new installs
+		},
+	}
 }
 
-func LoadOrMakeDefaultConfig(p platform.Platform, lg *log.Logger) {
+func LoadOrMakeDefaultConfig(lg *log.Logger) (config *GlobalConfig, configErr error) {
 	fn := configFilePath(lg)
 	lg.Infof("Loading config from: %s", fn)
 
-	SetDefaultConfig()
-	if config, err := os.ReadFile(fn); err == nil {
-		r := bytes.NewReader(config)
+	config = getDefaultConfig()
+
+	if contents, err := os.ReadFile(fn); err == nil {
+		r := bytes.NewReader(contents)
 		d := json.NewDecoder(r)
 
-		globalConfig = &GlobalConfig{}
-		if err := d.Decode(&globalConfig.GlobalConfigNoSim); err != nil {
-			SetDefaultConfig()
-			ShowErrorDialog(p, lg, "Configuration file is corrupt: %v", err)
+		config = &GlobalConfig{}
+		if err := d.Decode(&config.GlobalConfigNoSim); err != nil {
+			configErr = err
+			config = getDefaultConfig()
 		}
 
-		if globalConfig.Version < 1 {
+		if config.Version < 1 {
 			// Force upgrade via upcoming Activate() call...
-			globalConfig.DisplayRoot = nil
+			config.DisplayRoot = nil
 		}
-		if globalConfig.Version < 5 {
-			globalConfig.Callsign = ""
+		if config.Version < 5 {
+			config.Callsign = ""
 		}
-		if globalConfig.Version < 24 {
-			globalConfig.AudioEnabled = true
+		if config.Version < 24 {
+			config.AudioEnabled = true
 		}
 
-		if globalConfig.Version < CurrentConfigVersion {
-			if globalConfig.DisplayRoot != nil {
-				globalConfig.DisplayRoot.VisitPanes(func(p panes.Pane) {
+		if config.Version < CurrentConfigVersion {
+			if config.DisplayRoot != nil {
+				config.DisplayRoot.VisitPanes(func(p panes.Pane) {
 					if up, ok := p.(panes.PaneUpgrader); ok {
-						up.Upgrade(globalConfig.Version, CurrentConfigVersion)
+						up.Upgrade(config.Version, CurrentConfigVersion)
 					}
 				})
 			}
 		}
 
-		if globalConfig.Version == CurrentConfigVersion {
+		if config.Version == CurrentConfigVersion {
 			// Go ahead and deserialize the Sim
 			r.Seek(0, io.SeekStart)
-			if err := d.Decode(&globalConfig.GlobalConfigSim); err != nil {
-				ShowErrorDialog(p, lg, "Configuration file is corrupt: %v", err)
+			if err := d.Decode(&config.GlobalConfigSim); err != nil {
+				configErr = err
 			}
 		}
 	}
 
-	if globalConfig.UIFontSize == 0 {
-		globalConfig.UIFontSize = 16
+	if config.UIFontSize == 0 {
+		config.UIFontSize = 16
 	}
-	globalConfig.Version = CurrentConfigVersion
+	config.Version = CurrentConfigVersion
 
-	imgui.LoadIniSettingsFromMemory(globalConfig.ImGuiSettings)
+	imgui.LoadIniSettingsFromMemory(config.ImGuiSettings)
+
+	return
 }
 
 func (gc *GlobalConfig) Activate(c *sim.ControlClient, r renderer.Renderer, p platform.Platform,

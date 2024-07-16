@@ -419,7 +419,7 @@ func wmPaneIsPresent(pane panes.Pane, root *DisplayNode) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func wmDrawPanes(p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient, stats *Stats, lg *log.Logger) {
+func wmDrawPanes(config *GlobalConfig, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient, stats *Stats, lg *log.Logger) {
 	if controlClient == nil {
 		commandBuffer := renderer.GetCommandBuffer()
 		commandBuffer.ClearRGB(renderer.RGB{})
@@ -438,10 +438,10 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, controlClient *sim.Co
 			return d
 		}
 	}
-	root := filter(globalConfig.DisplayRoot)
+	root := filter(config.DisplayRoot)
 
 	if wm.focus.Current() == nil || !wmPaneIsPresent(wm.focus.Current(), root) {
-		sp := getPaneByType[*panes.STARSPane]()
+		sp := getPaneByType[*panes.STARSPane](config.DisplayRoot)
 		if sp == nil {
 			panic("No STARSPane?")
 		}
@@ -502,11 +502,11 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, controlClient *sim.Co
 	if keyboard != nil && keyboard.WasPressed(platform.KeyTab) {
 		cur := wm.focus.Current()
 		if _, ok := cur.(*panes.MessagesPane); ok {
-			if s := getPaneByType[*panes.STARSPane](); s != nil {
+			if s := getPaneByType[*panes.STARSPane](config.DisplayRoot); s != nil {
 				wm.focus.Take(s)
 			}
 		} else if _, ok := cur.(*panes.STARSPane); ok {
-			if m := getPaneByType[*panes.MessagesPane](); m != nil {
+			if m := getPaneByType[*panes.MessagesPane](config.DisplayRoot); m != nil {
 				wm.focus.Take(m)
 			}
 		}
@@ -526,7 +526,7 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, controlClient *sim.Co
 				Now:              time.Now(),
 				Lg:               lg,
 				MenuBarHeight:    ui.menuBarHeight,
-				AudioEnabled:     &globalConfig.AudioEnabled,
+				AudioEnabled:     &config.AudioEnabled,
 				KeyboardFocus:    &wm.focus,
 				ControlClient:    controlClient,
 			}
@@ -575,9 +575,9 @@ func wmDrawPanes(p platform.Platform, r renderer.Renderer, controlClient *sim.Co
 	}
 }
 
-func getPaneByType[T any]() T {
+func getPaneByType[T any](root *DisplayNode) T {
 	var t T
-	globalConfig.DisplayRoot.VisitPanes(func(pane panes.Pane) {
+	root.VisitPanes(func(pane panes.Pane) {
 		if p, ok := pane.(T); ok {
 			t = p
 		}

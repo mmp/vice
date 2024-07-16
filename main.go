@@ -39,8 +39,6 @@ const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8001
 
 var (
-	globalConfig *GlobalConfig
-
 	//go:embed resources/version.txt
 	buildVersion string
 
@@ -232,11 +230,14 @@ func main() {
 
 		context = imguiInit()
 
-		LoadOrMakeDefaultConfig(plat, lg)
+		config, configErr := LoadOrMakeDefaultConfig(lg)
 
-		plat, err = platform.New(&globalConfig.Config, lg)
+		plat, err = platform.New(&config.Config, lg)
 		if err != nil {
 			panic(fmt.Sprintf("Unable to create application window: %v", err))
+		}
+		if configErr != nil {
+			ShowErrorDialog(plat, lg, "Configuration file is corrupt: %v", configErr)
 		}
 		imgui.CurrentIO().SetClipboard(plat.GetClipboard())
 
@@ -252,12 +253,12 @@ func main() {
 
 		localServer = <-localSimServerChan
 
-		if globalConfig.Sim != nil && !*resetSim {
-			if err := globalConfig.Sim.PostLoad(mapLibrary); err != nil {
+		if config.Sim != nil && !*resetSim {
+			if err := config.Sim.PostLoad(mapLibrary); err != nil {
 				lg.Errorf("Error in Sim PostLoad: %v", err)
 			} else {
 				var result sim.NewSimResult
-				if err := localServer.Call("SimManager.Add", globalConfig.Sim, &result); err != nil {
+				if err := localServer.Call("SimManager.Add", config.Sim, &result); err != nil {
 					lg.Errorf("error restoring saved Sim: %v", err)
 				} else {
 					controlClient = sim.NewControlClient(*result.SimState, result.ControllerToken,
@@ -267,19 +268,19 @@ func main() {
 			}
 		}
 
-		uiInit(render, plat, eventStream, lg)
+		uiInit(render, plat, config, eventStream, lg)
 
-		globalConfig.Activate(controlClient, render, plat, eventStream, lg)
+		config.Activate(controlClient, render, plat, eventStream, lg)
 
 		if controlClient == nil {
-			uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false, plat, lg)
+			uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false, config, plat, lg)
 		}
 
-		if !globalConfig.AskedDiscordOptIn {
-			uiShowDiscordOptInDialog(plat)
+		if !config.AskedDiscordOptIn {
+			uiShowDiscordOptInDialog(plat, config)
 		}
-		if !globalConfig.NotifiedNewCommandSyntax {
-			uiShowNewCommandSyntaxDialog(plat)
+		if !config.NotifiedNewCommandSyntax {
+			uiShowNewCommandSyntaxDialog(plat, config)
 		}
 
 		simStartTime := time.Now()
@@ -303,10 +304,10 @@ func main() {
 
 				if controlClient == nil {
 					uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer,
-						false, plat, lg)
+						false, config, plat, lg)
 				} else if controlClient != nil {
 					ui.showScenarioInfo = !ui.showScenarioInfo
-					globalConfig.DisplayRoot.VisitPanes(func(p panes.Pane) {
+					config.DisplayRoot.VisitPanes(func(p panes.Pane) {
 						p.Reset(controlClient.State, lg)
 					})
 				}
@@ -316,14 +317,12 @@ func main() {
 					lg.Warn("Unable to connect to remote server", slog.Any("error", err))
 
 					if err.Error() == sim.ErrRPCVersionMismatch.Error() {
-						uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
-							message: "This version of vice is incompatible with the vice multi-controller server.\n" +
-								"If you're using an older version of vice, please upgrade to the latest\n" +
-								"version for multi-controller support. (If you're using a beta build, then\n" +
-								"thanks for your help testing vice; when the beta is released, the server\n" +
-								"will be updated as well.)",
-						}, plat), true)
-
+						ShowErrorDialog(plat, lg,
+							"This version of vice is incompatible with the vice multi-controller server.\n"+
+								"If you're using an older version of vice, please upgrade to the latest\n"+
+								"version for multi-controller support. (If you're using a beta build, then\n"+
+								"thanks for your help testing vice; when the beta is released, the server\n"+
+								"will be updated as well.)")
 						stopConnectingRemoteServer = true
 					}
 					remoteServer = nil
@@ -336,7 +335,7 @@ func main() {
 
 			if controlClient == nil {
 				plat.SetWindowTitle("vice: [disconnected]")
-				SetDiscordStatus(DiscordStatus{Start: simStartTime}, lg)
+				SetDiscordStatus(DiscordStatus{Start: simStartTime}, config, lg)
 			} else {
 				title := "(disconnected)"
 				if controlClient.SimDescription != "" {
@@ -355,7 +354,7 @@ func main() {
 					TotalArrivals:   controlClient.State.TotalArrivals,
 					Callsign:        controlClient.State.Callsign,
 					Start:           simStartTime,
-				}, lg)
+				}, config, lg)
 			}
 
 			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second && !stopConnectingRemoteServer {
@@ -394,7 +393,7 @@ func main() {
 							controlClient = nil
 
 							uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer,
-								false, plat, lg)
+								false, config, plat, lg)
 						}
 					})
 			}
@@ -403,12 +402,12 @@ func main() {
 			imgui.NewFrame()
 
 			// Generate and render vice draw lists
-			wmDrawPanes(plat, render, controlClient, &stats, lg)
+			wmDrawPanes(config, plat, render, controlClient, &stats, lg)
 
 			timeMarker(&stats.drawPanes)
 
 			// Draw the user interface
-			drawUI(newSimConnectionChan, &localServer, &remoteServer, plat, render,
+			drawUI(newSimConnectionChan, &localServer, &remoteServer, config, plat, render,
 				controlClient, eventStream, &stats, lg)
 			timeMarker(&stats.drawImgui)
 
@@ -424,7 +423,7 @@ func main() {
 			if plat.ShouldStop() && len(ui.activeModalDialogs) == 0 {
 				// Do this while we're still running the event loop.
 				saveSim := controlClient != nil && controlClient.RPCClient() == localServer.RPCClient
-				globalConfig.SaveIfChanged(render, plat, controlClient, saveSim, lg)
+				config.SaveIfChanged(render, plat, controlClient, saveSim, lg)
 
 				if controlClient != nil {
 					controlClient.Disconnect()

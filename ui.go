@@ -247,12 +247,12 @@ func imguiInit() *imgui.Context {
 	return context
 }
 
-func uiInit(r renderer.Renderer, p platform.Platform, es *sim.EventStream, lg *log.Logger) {
+func uiInit(r renderer.Renderer, p platform.Platform, config *GlobalConfig, es *sim.EventStream, lg *log.Logger) {
 	if runtime.GOOS == "windows" {
 		imgui.CurrentStyle().ScaleAllSizes(p.DPIScale())
 	}
 
-	ui.font = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
+	ui.font = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: config.UIFontSize})
 	ui.aboutFont = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: 18})
 	ui.aboutFontSmall = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: 14})
 	ui.eventsSubscription = es.Subscribe()
@@ -272,10 +272,10 @@ func uiInit(r renderer.Renderer, p platform.Platform, es *sim.EventStream, lg *l
 	// Do this asynchronously since it involves network traffic and may
 	// take some time (or may even time out, etc.)
 	ui.newReleaseDialogChan = make(chan *NewReleaseModalClient)
-	go checkForNewRelease(ui.newReleaseDialogChan, lg)
+	go checkForNewRelease(ui.newReleaseDialogChan, config, lg)
 
-	if globalConfig.WhatsNewIndex < len(whatsNew) {
-		uiShowModalDialog(NewModalDialogBox(&WhatsNewModalClient{}, p), false)
+	if config.WhatsNewIndex < len(whatsNew) {
+		uiShowModalDialog(NewModalDialogBox(&WhatsNewModalClient{config: config}, p), false)
 	}
 }
 
@@ -294,7 +294,7 @@ func uiCloseModalDialog(d *ModalDialogBox) {
 }
 
 func uiShowConnectDialog(ch chan *sim.Connection, localServer **sim.Server, remoteServer **sim.Server,
-	allowCancel bool, p platform.Platform, lg *log.Logger) {
+	allowCancel bool, config *GlobalConfig, p platform.Platform, lg *log.Logger) {
 
 	client := &ConnectModalClient{
 		ch:           ch,
@@ -303,16 +303,18 @@ func uiShowConnectDialog(ch chan *sim.Connection, localServer **sim.Server, remo
 		remoteServer: remoteServer,
 		allowCancel:  allowCancel,
 		platform:     p,
+		config:       config,
 	}
 	uiShowModalDialog(NewModalDialogBox(client, p), false)
 }
 
-func uiShowDiscordOptInDialog(p platform.Platform) {
-	uiShowModalDialog(NewModalDialogBox(&DiscordOptInModalClient{}, p), true)
+func uiShowDiscordOptInDialog(p platform.Platform, config *GlobalConfig) {
+	uiShowModalDialog(NewModalDialogBox(&DiscordOptInModalClient{config: config}, p), true)
 }
 
-func uiShowNewCommandSyntaxDialog(p platform.Platform) {
-	uiShowModalDialog(NewModalDialogBox(&NewCommandSyntaxModalClient{}, p), true)
+func uiShowNewCommandSyntaxDialog(p platform.Platform, config *GlobalConfig) {
+	client := &NewCommandSyntaxModalClient{notifiedNew: &config.NotifiedNewCommandSyntax}
+	uiShowModalDialog(NewModalDialogBox(client, p), true)
 }
 
 // If |b| is true, all following imgui elements will be disabled (and drawn
@@ -334,7 +336,7 @@ func uiEndDisable(b bool) {
 }
 
 func drawUI(ch chan *sim.Connection, localServer **sim.Server, remoteServer **sim.Server,
-	p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
+	config *GlobalConfig, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
 	eventStream *sim.EventStream, stats *Stats, lg *log.Logger) {
 	if ui.newReleaseDialogChan != nil {
 		select {
@@ -373,7 +375,7 @@ func drawUI(ch chan *sim.Connection, localServer **sim.Server, remoteServer **si
 		}
 
 		if imgui.Button(renderer.FontAwesomeIconRedo) {
-			uiShowConnectDialog(ch, localServer, remoteServer, true, p, lg)
+			uiShowConnectDialog(ch, localServer, remoteServer, true, config, p, lg)
 		}
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Start new simulation")
@@ -451,7 +453,7 @@ func drawUI(ch chan *sim.Connection, localServer **sim.Server, remoteServer **si
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
 	if controlClient != nil {
-		uiDrawSettingsWindow(controlClient, p)
+		uiDrawSettingsWindow(controlClient, config, p)
 
 		if ui.showScenarioInfo {
 			ui.showScenarioInfo = controlClient.DrawScenarioInfoWindow(lg)
@@ -475,7 +477,7 @@ func drawUI(ch chan *sim.Connection, localServer **sim.Server, remoteServer **si
 
 	drawActiveDialogBoxes()
 
-	uiDrawKeyboardWindow(controlClient)
+	uiDrawKeyboardWindow(controlClient, config)
 
 	imgui.PopFont()
 
@@ -597,15 +599,16 @@ type ConnectModalClient struct {
 	lg           *log.Logger
 	localServer  **sim.Server
 	remoteServer **sim.Server
-	config       sim.NewSimConfiguration
+	simConfig    sim.NewSimConfiguration
 	allowCancel  bool
 	platform     platform.Platform
+	config       *GlobalConfig
 }
 
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
-	c.config = sim.MakeNewSimConfiguration(c.ch, &globalConfig.LastTRACON,
+	c.simConfig = sim.MakeNewSimConfiguration(c.ch, &c.config.LastTRACON,
 		c.localServer, c.remoteServer, c.lg)
 }
 
@@ -616,10 +619,10 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	}
 
 	next := ModalDialogButton{
-		text:     c.config.UIButtonText(),
-		disabled: c.config.OkDisabled(),
+		text:     c.simConfig.UIButtonText(),
+		disabled: c.simConfig.OkDisabled(),
 		action: func() bool {
-			if c.config.ShowRatesWindow() {
+			if c.simConfig.ShowRatesWindow() {
 				client := &RatesModalClient{
 					ch:            c.ch,
 					lg:            c.lg,
@@ -629,8 +632,8 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 				uiShowModalDialog(NewModalDialogBox(client, c.platform), false)
 				return true
 			} else {
-				c.config.DisplayError = c.config.Start()
-				return c.config.DisplayError == nil
+				c.simConfig.DisplayError = c.simConfig.Start()
+				return c.simConfig.DisplayError == nil
 			}
 		},
 	}
@@ -639,7 +642,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 }
 
 func (c *ConnectModalClient) Draw() int {
-	if enter := c.config.DrawUI(c.platform); enter {
+	if enter := c.simConfig.DrawUI(c.platform); enter {
 		return 1
 	} else {
 		return -1
@@ -677,10 +680,10 @@ func (c *RatesModalClient) Buttons() []ModalDialogButton {
 
 	ok := ModalDialogButton{
 		text:     "Create",
-		disabled: c.connectClient.config.OkDisabled(),
+		disabled: c.connectClient.simConfig.OkDisabled(),
 		action: func() bool {
-			c.connectClient.config.DisplayError = c.connectClient.config.Start()
-			return c.connectClient.config.DisplayError == nil
+			c.connectClient.simConfig.DisplayError = c.connectClient.simConfig.Start()
+			return c.connectClient.simConfig.DisplayError == nil
 		},
 	}
 
@@ -688,7 +691,7 @@ func (c *RatesModalClient) Buttons() []ModalDialogButton {
 }
 
 func (c *RatesModalClient) Draw() int {
-	if enter := c.connectClient.config.DrawRatesUI(c.platform); enter {
+	if enter := c.connectClient.simConfig.DrawRatesUI(c.platform); enter {
 		return 1
 	} else {
 		return -1
@@ -726,7 +729,7 @@ func (yn *YesOrNoModalClient) Draw() int {
 	return -1
 }
 
-func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient, lg *log.Logger) {
+func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient, config *GlobalConfig, lg *log.Logger) {
 	defer close(newReleaseDialogChan)
 
 	url := "https://api.github.com/repos/mmp/vice/releases"
@@ -830,7 +833,9 @@ func (nr *NewReleaseModalClient) Draw() int {
 	return -1
 }
 
-type WhatsNewModalClient struct{}
+type WhatsNewModalClient struct {
+	config *GlobalConfig
+}
 
 func (nr *WhatsNewModalClient) Title() string {
 	return "What's new in this version of vice"
@@ -850,7 +855,7 @@ func (nr *WhatsNewModalClient) Buttons() []ModalDialogButton {
 		ModalDialogButton{
 			text: "Ok",
 			action: func() bool {
-				globalConfig.WhatsNewIndex = len(whatsNew)
+				nr.config.WhatsNewIndex = len(whatsNew)
 				return true
 			},
 		},
@@ -858,7 +863,7 @@ func (nr *WhatsNewModalClient) Buttons() []ModalDialogButton {
 }
 
 func (nr *WhatsNewModalClient) Draw() int {
-	for i := globalConfig.WhatsNewIndex; i < len(whatsNew); i++ {
+	for i := nr.config.WhatsNewIndex; i < len(whatsNew); i++ {
 		imgui.Text(renderer.FontAwesomeIconSquare + " " + whatsNew[i])
 	}
 	return -1
@@ -890,7 +895,9 @@ func (b *BroadcastModalDialog) Draw() int {
 	return -1
 }
 
-type DiscordOptInModalClient struct{}
+type DiscordOptInModalClient struct {
+	config *GlobalConfig
+}
 
 func (d *DiscordOptInModalClient) Title() string {
 	return "Discord Activity Updates"
@@ -903,7 +910,7 @@ func (d *DiscordOptInModalClient) Buttons() []ModalDialogButton {
 		ModalDialogButton{
 			text: "Ok",
 			action: func() bool {
-				globalConfig.AskedDiscordOptIn = true
+				d.config.AskedDiscordOptIn = true
 				return true
 			},
 		},
@@ -926,14 +933,16 @@ func (d *DiscordOptInModalClient) Draw() int {
 
 	imgui.Text("")
 
-	update := !globalConfig.InhibitDiscordActivity.Load()
+	update := !d.config.InhibitDiscordActivity.Load()
 	imgui.Checkbox("Update Discord activity status", &update)
-	globalConfig.InhibitDiscordActivity.Store(!update)
+	d.config.InhibitDiscordActivity.Store(!update)
 
 	return -1
 }
 
-type NewCommandSyntaxModalClient struct{}
+type NewCommandSyntaxModalClient struct {
+	notifiedNew *bool
+}
 
 func (d *NewCommandSyntaxModalClient) Title() string {
 	return "Aircraft Control Command Syntax Has Changed"
@@ -946,7 +955,7 @@ func (d *NewCommandSyntaxModalClient) Buttons() []ModalDialogButton {
 		ModalDialogButton{
 			text: "Ok",
 			action: func() bool {
-				globalConfig.NotifiedNewCommandSyntax = true
+				*d.notifiedNew = true
 				return true
 			},
 		},
@@ -1507,7 +1516,7 @@ which must be 3 digits (e.g., *040*).`},
 }
 
 // draw the windows that shows the available keyboard commands
-func uiDrawKeyboardWindow(c *sim.ControlClient) {
+func uiDrawKeyboardWindow(c *sim.ControlClient, config *GlobalConfig) {
 	if !keyboardWindowVisible {
 		return
 	}
@@ -1534,8 +1543,8 @@ func uiDrawKeyboardWindow(c *sim.ControlClient) {
 
 	imgui.Separator()
 
-	fixedFont := renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Mono", Size: globalConfig.UIFontSize})
-	italicFont := renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Mono Italic", Size: globalConfig.UIFontSize})
+	fixedFont := renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Mono", Size: config.UIFontSize})
+	italicFont := renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Mono Italic", Size: config.UIFontSize})
 
 	// Tighten up the line spacing
 	spc := style.ItemSpacing()
@@ -1799,7 +1808,7 @@ func uiDrawMissingPrimaryDialog(ch chan *sim.Connection, c *sim.ControlClient, p
 	}
 }
 
-func uiDrawSettingsWindow(c *sim.ControlClient, p platform.Platform) {
+func uiDrawSettingsWindow(c *sim.ControlClient, config *GlobalConfig, p platform.Platform) {
 	if !ui.showSettings {
 		return
 	}
@@ -1810,23 +1819,23 @@ func uiDrawSettingsWindow(c *sim.ControlClient, p platform.Platform) {
 		c.SetSimRate(c.SimRate)
 	}
 
-	update := !globalConfig.InhibitDiscordActivity.Load()
+	update := !config.InhibitDiscordActivity.Load()
 	imgui.Checkbox("Update Discord activity status", &update)
-	globalConfig.InhibitDiscordActivity.Store(!update)
+	config.InhibitDiscordActivity.Store(!update)
 
-	if imgui.BeginComboV("UI Font Size", strconv.Itoa(globalConfig.UIFontSize), imgui.ComboFlagsHeightLarge) {
+	if imgui.BeginComboV("UI Font Size", strconv.Itoa(config.UIFontSize), imgui.ComboFlagsHeightLarge) {
 		sizes := renderer.AvailableFontSizes("Roboto Regular")
 		for _, size := range sizes {
-			if imgui.SelectableV(strconv.Itoa(size), size == globalConfig.UIFontSize, 0, imgui.Vec2{}) {
-				globalConfig.UIFontSize = size
-				ui.font = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: globalConfig.UIFontSize})
+			if imgui.SelectableV(strconv.Itoa(size), size == config.UIFontSize, 0, imgui.Vec2{}) {
+				config.UIFontSize = size
+				ui.font = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: config.UIFontSize})
 			}
 		}
 		imgui.EndCombo()
 	}
 
 	if imgui.CollapsingHeader("Display") {
-		if imgui.Checkbox("Enable anti-aliasing", &globalConfig.EnableMSAA) {
+		if imgui.Checkbox("Enable anti-aliasing", &config.EnableMSAA) {
 			uiShowModalDialog(NewModalDialogBox(
 				&MessageModalClient{
 					title: "Alert",
@@ -1835,13 +1844,13 @@ func uiDrawSettingsWindow(c *sim.ControlClient, p platform.Platform) {
 				}, p), true)
 		}
 
-		imgui.Checkbox("Start in full-screen", &globalConfig.StartInFullScreen)
+		imgui.Checkbox("Start in full-screen", &config.StartInFullScreen)
 
 		monitorNames := p.GetAllMonitorNames()
-		if imgui.BeginComboV("Monitor", monitorNames[globalConfig.FullScreenMonitor], imgui.ComboFlagsHeightLarge) {
+		if imgui.BeginComboV("Monitor", monitorNames[config.FullScreenMonitor], imgui.ComboFlagsHeightLarge) {
 			for index, monitor := range monitorNames {
-				if imgui.SelectableV(monitor, monitor == monitorNames[globalConfig.FullScreenMonitor], 0, imgui.Vec2{}) {
-					globalConfig.FullScreenMonitor = index
+				if imgui.SelectableV(monitor, monitor == monitorNames[config.FullScreenMonitor], 0, imgui.Vec2{}) {
+					config.FullScreenMonitor = index
 
 					p.EnableFullScreen(p.IsFullScreen())
 				}
@@ -1851,10 +1860,10 @@ func uiDrawSettingsWindow(c *sim.ControlClient, p platform.Platform) {
 		}
 	}
 
-	globalConfig.DisplayRoot.VisitPanes(func(pane panes.Pane) {
+	config.DisplayRoot.VisitPanes(func(pane panes.Pane) {
 		if draw, ok := pane.(panes.UIDrawer); ok {
 			if imgui.CollapsingHeader(pane.Name()) {
-				draw.DrawUI(p, &globalConfig.Config)
+				draw.DrawUI(p, &config.Config)
 			}
 		}
 	})

@@ -37,7 +37,7 @@ var discord struct {
 	updaterLaunched bool
 }
 
-func SetDiscordStatus(s DiscordStatus, lg *log.Logger) {
+func SetDiscordStatus(s DiscordStatus, config *GlobalConfig, lg *log.Logger) {
 	discord.mu.Lock()
 	defer discord.mu.Unlock()
 
@@ -54,13 +54,13 @@ func SetDiscordStatus(s DiscordStatus, lg *log.Logger) {
 
 	// Don't even launch the update goroutine if the user has asked to not
 	// update their discord status.
-	if !discord.updaterLaunched && !globalConfig.InhibitDiscordActivity.Load() {
+	if !discord.updaterLaunched && !config.InhibitDiscordActivity.Load() {
 		discord.updaterLaunched = true
-		go updateDiscordStatus(lg)
+		go updateDiscordStatus(config, lg)
 	}
 }
 
-func updateDiscordStatus(lg *log.Logger) {
+func updateDiscordStatus(config *GlobalConfig, lg *log.Logger) {
 	// Sign in to the Vice app on Discord
 	discord_err := discord_client.Login("1158289394717970473")
 	if discord_err != nil {
@@ -79,7 +79,7 @@ func updateDiscordStatus(lg *log.Logger) {
 		discord.mu.Unlock()
 
 		// Skip updates if the user has disabled discord updates.
-		if changed && !globalConfig.InhibitDiscordActivity.Load() {
+		if changed && !config.InhibitDiscordActivity.Load() {
 			// Common discord_client.Activity initialization regardless of
 			// whether we're connected or not.
 			activity := discord_client.Activity{
