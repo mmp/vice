@@ -263,6 +263,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 	// Figure out which airports/runways and airports/SIDs are used in the scenario.
 	activeAirportSIDs := make(map[string]map[string]interface{})
 	activeAirportRunways := make(map[string]map[string]interface{})
+	activeDepartureAirports := make(map[string]interface{})
 	for _, rwy := range s.DepartureRunways {
 		e.Push("departure runway " + rwy.Runway)
 
@@ -272,6 +273,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 		}
 
 		activeAirports[ap] = nil
+		activeDepartureAirports[rwy.Airport] = nil
 
 		if ap.DepartureController == "" {
 			// Only check for a human controller to be covering the track if there isn't
@@ -407,7 +409,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 					for callsign, ctrl := range controllers {
 						if check(ctrl, airport, spec) {
 							if controller != "" {
-								e.ErrorString("both \"%s\" and \"%s\" expect to handle %s/%s departures",
+								e.ErrorString("both %s and %s expect to handle %s/%s departures",
 									controller, callsign, airport, spec)
 							}
 							controller = callsign
@@ -423,11 +425,32 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 			validateDep(activeAirportSIDs, func(ctrl *av.MultiUserController, airport, spec string) bool {
 				return ctrl.IsDepartureController(airport, "", spec)
 			})
-		}
-		if haveDepartureRunwaySpec {
+		} else if haveDepartureRunwaySpec {
 			validateDep(activeAirportRunways, func(ctrl *av.MultiUserController, airport, spec string) bool {
 				return ctrl.IsDepartureController(airport, spec, "")
 			})
+		} else {
+			// Just airports
+			for airport := range activeDepartureAirports {
+				if sg.Airports[airport].DepartureController != "" {
+					// It's covered by a virtual controller
+					continue
+				}
+
+				controller := ""
+				for callsign, ctrl := range controllers {
+					if ctrl.IsDepartureController(airport, "", "") {
+						if controller != "" {
+							e.ErrorString("both %s and %s expect to handle %s departures",
+								controller, callsign, airport)
+						}
+						controller = callsign
+					}
+				}
+				if controller == "" {
+					e.ErrorString("no controller found that is covering %s departures", airport)
+				}
+			}
 		}
 
 		// Make sure all controllers are either the primary or have a path

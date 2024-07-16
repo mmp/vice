@@ -603,10 +603,10 @@
             "default" : {
                 "ACK_N_APP": {"arrivals": ["DEEPO1","NEWBE3"], "primary": true},
                 "ACK_DEP": {"departures": ["KACK","KMVY"], "backup": "ACK_N_APP"},
-                "ACK_O_APP": {"departures": ["KACK"],  "backup": "ACK_DEP"},
-                "ACK_Y_APP": {"departures": ["KACK"],  "backup": "ACK_O_APP"},
-                "ACK_S_APP": {"departures": ["KACK"],  "backup": "ACK_Y_APP"},
-                "ACK_A_APP": {"departures": ["KACK"],  "backup": "ACK_S_APP"}
+                "ACK_O_APP": {"backup": "ACK_DEP"},
+                "ACK_Y_APP": {"backup": "ACK_O_APP"},
+                "ACK_S_APP": {"backup": "ACK_Y_APP"},
+                "ACK_A_APP": {"backup": "ACK_S_APP"}
             }
         },
         "controllers": [
@@ -654,10 +654,10 @@
             "default" : {
                 "ACK_N_APP": {"arrivals": ["DEEPO1","NEWBE3"], "primary": true},
                 "ACK_DEP": {"departures": ["KACK","KMVY"], "backup": "ACK_N_APP"},
-                "ACK_O_APP": {"departures": ["KACK"],  "backup": "ACK_DEP"},
-                "ACK_Y_APP": {"departures": ["KACK"],  "backup": "ACK_O_APP"},
-                "ACK_S_APP": {"departures": ["KACK"],  "backup": "ACK_Y_APP"},
-                "ACK_A_APP": {"departures": ["KACK"],  "backup": "ACK_S_APP"}
+                "ACK_O_APP": {"backup": "ACK_DEP"},
+                "ACK_Y_APP": {"backup": "ACK_O_APP"},
+                "ACK_S_APP": {"backup": "ACK_Y_APP"},
+                "ACK_A_APP": {"backup": "ACK_S_APP"}
             }
         },
         "controllers": [

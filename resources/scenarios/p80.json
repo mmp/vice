@@ -3472,7 +3472,7 @@
       "solo_controller": "PDX_APP",
       "multi_controllers": {
         "default" : {
-          "PDX_APP": {"primary": true, "arrivals": ["HHOOD4West","KRATR2West"], "departures": ["KPDX"]},
+          "PDX_APP": {"primary": true, "arrivals": ["HHOOD4West","KRATR2West"]},
           "PDX_S_APP": {"backup": "PDX_APP", "arrivals": ["OCITY3West","TMBERS2West"]},
           "PDX_DEP": {"backup": "PDX_APP", "departures": ["KPDX"]},
           "PDX_F_APP": {"backup": "PDX_APP"}
@@ -3543,7 +3543,7 @@
       "solo_controller": "PDX_APP",
       "multi_controllers": {
         "default" : {
-          "PDX_APP": {"primary": true, "arrivals": ["HHOOD4East","KRATR2East"], "departures": ["KPDX"]},
+          "PDX_APP": {"primary": true, "arrivals": ["HHOOD4East","KRATR2East"]},
           "PDX_S_APP": {"backup": "PDX_APP", "arrivals": ["OCITY3East","TMBERS2East"]},
           "PDX_DEP": {"backup": "PDX_APP", "departures": ["KPDX"]},
           "PDX_F_APP": {"backup": "PDX_APP"}

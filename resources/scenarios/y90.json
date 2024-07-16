@@ -734,17 +734,20 @@
                         "backup": "BDL_B_APP"
                     },
                     "BDL_H_APP": {
-                        "backup": "BDL_B_APP"
+                        "backup": "BDL_B_APP",
+                        "departures": [ "KHFD" ]
                     },
                     "BDL_W_APP": {
                         "backup": "BDL_B_APP",
+                        "departures": [ "KBAF", "KCEF" ],
                         "arrivals": [
                             "STELA1.Ga",
                             "STELA1.Jets"
                         ]
                     },
                     "BDL_E_APP": {
-                        "backup": "BDL_B_APP"
+                        "backup": "BDL_B_APP",
+                        "departures": [ "KORH" ]
                     }
                 }
             },
@@ -861,17 +864,20 @@
                         "backup": "BDL_B_APP"
                     },
                     "BDL_H_APP": {
-                        "backup": "BDL_B_APP"
+                        "backup": "BDL_B_APP",
+                        "departures": [ "KHFD" ]
                     },
                     "BDL_W_APP": {
                         "backup": "BDL_B_APP",
+                        "departures": [ "KBAF", "KCEF" ],
                         "arrivals": [
                             "STELA1.Ga",
                             "STELA1.Jets"
                         ]
                     },
                     "BDL_E_APP": {
-                        "backup": "BDL_B_APP"
+                        "backup": "BDL_B_APP",
+                        "departures": [ "KORH" ]
                     }
                 }
             },

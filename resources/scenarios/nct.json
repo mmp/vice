@@ -7399,7 +7399,8 @@
               "arrivals": ["BRINY2", "BRIXX3", "FRLON2", "RAZRR5", "RISTI1.TIPRE", "RISTI1.ORRCA", "ROBIE5", "SLCN6","SAT.EAST","SAT.SOUTH"]
               },
               "MRY_APP": {
-                  "backup": "SJC_M_APP"
+                  "backup": "SJC_M_APP",
+                  "departures": ["KMRY"]
               },
               "SJC_L_APP": {
                   "backup": "SJC_M_APP"
@@ -7943,6 +7944,7 @@
               "departures": ["KSCK","KLVK","KMOD","KMER"],
               "arrivals": ["AANET1","BANND2","EMZOH3","PXN6","PIRAT2","SHARR1","SKIZM2","WNDSR2","SAT.EAST"]
             },
+            "NCT_DEP": { "departures": ["KOAK" ], "backup": "MOD_APP" },
             "OAK_S_APP": {
                 "backup": "MOD_APP"
             },
@@ -8072,6 +8074,7 @@
               "departures": ["KSCK","KLVK","KMOD","KMER"],
               "arrivals": ["AANET1","BANND2","EMZOH3","PXN6","PIRAT2","SHARR1","SKIZM2","WNDSR2","SAT.EAST"]
             },
+            "NCT_DEP": { "departures": ["KOAK"], "backup": "MOD_APP" },
             "OAK_S_APP": {
                 "backup": "MOD_APP"
             },
@@ -8890,7 +8893,7 @@
             },
             "NCT_3_APP": {
               "backup": "NCT_2_APP",
-              "departures": ["KSCK","KSMF"],
+                "departures": ["KSCK","KSMF","KSAC"],
                 "arrivals": ["SLMMR5","TUDOR2","SUUTR4","CRISTI1.ORRCA","CRISTI1.TIPRE"]
             }
         }

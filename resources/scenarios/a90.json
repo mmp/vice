@@ -7289,7 +7289,7 @@
               "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.4K", "FREDO.6K",  "FREDO.8K"]},
               "BOS_F_APP": {"backup": "BOS_N_APP"},
               "BOS_I_APP": {"backup": "BOS_F_APP"},
-              "BOS_B_APP": {"backup": "BOS_N_APP", "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
+              "BOS_B_APP": {"backup": "BOS_N_APP", "departures": ["KBED"], "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
               "BOS_L_APP": {"backup": "BOS_S_APP"},
               "BOS_U_APP": {"backup": "BOS_DEP",  "arrivals": ["WOONS.3K", "WOONS.5K", "WOONS.7K"]},
                 "MHT_Z_APP": {"backup": "BOS_DEP", "departures": ["KMHT"]},
@@ -7299,10 +7299,10 @@
                 "MHT_W_APP": {"backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"]},
                 "ACK_N_APP": {"arrivals": ["DEEPO1","NEWBE3"], "backup": "BOS_DEP"},
                 "ACK_DEP": {"departures": ["KACK","KMVY"], "backup": "ACK_N_APP"},
-                "ACK_O_APP": {"departures": ["KACK"],  "backup": "ACK_DEP"},
-                "ACK_Y_APP": {"departures": ["KACK"],  "backup": "ACK_O_APP"},
-                "ACK_S_APP": {"departures": ["KACK"],  "backup": "ACK_Y_APP"},
-                "ACK_A_APP": {"departures": ["KACK"],  "backup": "ACK_S_APP"}
+                "ACK_O_APP": {"backup": "ACK_DEP"},
+                "ACK_Y_APP": {"backup": "ACK_O_APP"},
+                "ACK_S_APP": {"backup": "ACK_Y_APP"},
+                "ACK_A_APP": {"backup": "ACK_S_APP"}
             }
         },
         "controllers": [
@@ -7529,7 +7529,7 @@
               "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.4K", "FREDO.6K",  "FREDO.8K"]},
               "BOS_F_APP": {"backup": "BOS_N_APP"},
               "BOS_I_APP": {"backup": "BOS_F_APP"},
-              "BOS_B_APP": {"backup": "BOS_N_APP", "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
+              "BOS_B_APP": {"backup": "BOS_N_APP", "departures": ["KBED"], "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
               "BOS_L_APP": {"backup": "BOS_S_APP"},
               "BOS_U_APP": {"backup": "BOS_DEP",  "arrivals": ["WOONS.3K", "WOONS.5K", "WOONS.7K"]},
                 "MHT_J_APP": {"backup": "BOS_DEP", "departures": ["KMHT"]},
@@ -7539,10 +7539,10 @@
                 "MHT_W_APP": {"backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"]},
                 "ACK_N_APP": {"arrivals": ["DEEPO1","NEWBE3"], "backup": "BOS_DEP"},
                 "ACK_DEP": {"departures": ["KACK","KMVY"], "backup": "ACK_N_APP"},
-                "ACK_O_APP": {"departures": ["KACK"],  "backup": "ACK_DEP"},
-                "ACK_Y_APP": {"departures": ["KACK"],  "backup": "ACK_O_APP"},
-                "ACK_S_APP": {"departures": ["KACK"],  "backup": "ACK_Y_APP"},
-                "ACK_A_APP": {"departures": ["KACK"],  "backup": "ACK_S_APP"}
+                "ACK_O_APP": {"backup": "ACK_DEP"},
+                "ACK_Y_APP": {"backup": "ACK_O_APP"},
+                "ACK_S_APP": {"backup": "ACK_Y_APP"},
+                "ACK_A_APP": {"backup": "ACK_S_APP"}
             }
         },
         "controllers": [
@@ -7769,7 +7769,7 @@
               "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.4K", "FREDO.6K",  "FREDO.8K"]},
               "BOS_F_APP": {"backup": "BOS_N_APP"},
               "BOS_I_APP": {"backup": "BOS_F_APP"},
-              "BOS_B_APP": {"backup": "BOS_N_APP", "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
+              "BOS_B_APP": {"backup": "BOS_N_APP", "departures": ["KBED"], "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
               "BOS_L_APP": {"backup": "BOS_S_APP"},
               "BOS_U_APP": {"backup": "BOS_DEP",  "arrivals": ["WOONS.3K", "WOONS.5K", "WOONS.7K"]},
                 "MHT_J_APP": {"backup": "BOS_DEP", "departures": ["KMHT"]},
@@ -7779,10 +7779,10 @@
                 "MHT_W_APP": {"backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"]},
                 "ACK_N_APP": {"arrivals": ["DEEPO1","NEWBE3"], "backup": "BOS_DEP"},
                 "ACK_DEP": {"departures": ["KACK","KMVY"], "backup": "ACK_N_APP"},
-                "ACK_O_APP": {"departures": ["KACK"],  "backup": "ACK_DEP"},
-                "ACK_Y_APP": {"departures": ["KACK"],  "backup": "ACK_O_APP"},
-                "ACK_S_APP": {"departures": ["KACK"],  "backup": "ACK_Y_APP"},
-                "ACK_A_APP": {"departures": ["KACK"],  "backup": "ACK_S_APP"}
+                "ACK_O_APP": {"backup": "ACK_DEP"},
+                "ACK_Y_APP": {"backup": "ACK_O_APP"},
+                "ACK_S_APP": {"backup": "ACK_Y_APP"},
+                "ACK_A_APP": {"backup": "ACK_S_APP"}
             }
         },
         "controllers": [
@@ -8001,7 +8001,7 @@
               "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.4K", "FREDO.6K",  "FREDO.8K"]},
               "BOS_F_APP": {"backup": "BOS_N_APP"},
               "BOS_I_APP": {"backup": "BOS_F_APP"},
-              "BOS_B_APP": {"backup": "BOS_N_APP", "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
+              "BOS_B_APP": {"backup": "BOS_N_APP", "departures": ["KBED"], "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
               "BOS_L_APP": {"backup": "BOS_S_APP"},
               "BOS_U_APP": {"backup": "BOS_DEP",  "arrivals": ["WOONS.3K", "WOONS.5K", "WOONS.7K"]},
                 "MHT_J_APP": {"backup": "BOS_DEP", "departures": ["KMHT"]},
@@ -8011,10 +8011,10 @@
                 "MHT_W_APP": {"backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"]},
                 "ACK_N_APP": {"arrivals": ["DEEPO1","NEWBE3"], "backup": "BOS_DEP"},
                 "ACK_DEP": {"departures": ["KACK","KMVY"], "backup": "ACK_N_APP"},
-                "ACK_O_APP": {"departures": ["KACK"],  "backup": "ACK_DEP"},
-                "ACK_Y_APP": {"departures": ["KACK"],  "backup": "ACK_O_APP"},
-                "ACK_S_APP": {"departures": ["KACK"],  "backup": "ACK_Y_APP"},
-                "ACK_A_APP": {"departures": ["KACK"],  "backup": "ACK_S_APP"}
+                "ACK_O_APP": {"backup": "ACK_DEP"},
+                "ACK_Y_APP": {"backup": "ACK_O_APP"},
+                "ACK_S_APP": {"backup": "ACK_Y_APP"},
+                "ACK_A_APP": {"backup": "ACK_S_APP"}
             }
         },
         "controllers": [

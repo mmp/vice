@@ -6801,8 +6801,8 @@
               "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.4K", "FREDO.6K",  "FREDO.8K"]},
               "BOS_F_APP": {"backup": "BOS_N_APP"},
               "BOS_I_APP": {"backup": "BOS_F_APP"},
-              "BOS_B_APP": {"backup": "BOS_N_APP", "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
-              "BOS_L_APP": {"backup": "BOS_S_APP"},
+              "BOS_B_APP": {"backup": "BOS_N_APP", "departures": ["KBED","KBVY","KLWM"], "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
+              "BOS_L_APP": {"backup": "BOS_S_APP", "departures": ["KOWD"]},
               "BOS_U_APP": {"backup": "BOS_DEP",  "arrivals": ["WOONS.3K", "WOONS.5K", "WOONS.7K"]}
             }
         },
@@ -7008,8 +7008,8 @@
             "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.4K", "FREDO.6K",  "FREDO.8K"]},
             "BOS_F_APP": {"backup": "BOS_N_APP"},
             "BOS_I_APP": {"backup": "BOS_F_APP"},
-            "BOS_B_APP": {"backup": "BOS_N_APP", "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
-            "BOS_L_APP": {"backup": "BOS_S_APP"},
+            "BOS_B_APP": {"backup": "BOS_N_APP", "departures": ["KBED","KBVY","KLWM"], "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
+            "BOS_L_APP": {"backup": "BOS_S_APP", "departures": ["KOWD"]},
             "BOS_U_APP": {"backup": "BOS_DEP",  "arrivals": ["WOONS.3K", "WOONS.5K", "WOONS.7K"]}
           }
         },
@@ -7212,8 +7212,8 @@
             "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.4K", "FREDO.6K",  "FREDO.8K"]},
             "BOS_F_APP": {"backup": "BOS_N_APP"},
             "BOS_I_APP": {"backup": "BOS_F_APP"},
-            "BOS_B_APP": {"backup": "BOS_N_APP", "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
-            "BOS_L_APP": {"backup": "BOS_S_APP"},
+            "BOS_B_APP": {"backup": "BOS_N_APP", "departures": ["KBED","KBVY","KLWM"], "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
+            "BOS_L_APP": {"backup": "BOS_S_APP", "departures": ["KOWD"]},
             "BOS_U_APP": {"backup": "BOS_DEP",  "arrivals": ["WOONS.3K", "WOONS.5K", "WOONS.7K"]}
           }
         },
@@ -7408,8 +7408,8 @@
             "BOS_S_APP": {"backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.4K", "FREDO.6K",  "FREDO.8K"]},
             "BOS_F_APP": {"backup": "BOS_N_APP"},
             "BOS_I_APP": {"backup": "BOS_F_APP"},
-            "BOS_B_APP": {"backup": "BOS_N_APP", "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
-            "BOS_L_APP": {"backup": "BOS_S_APP"},
+            "BOS_B_APP": {"backup": "BOS_N_APP", "departures": ["KBED","KBVY","KLWM"], "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]},
+            "BOS_L_APP": {"backup": "BOS_S_APP", "departures": ["KOWD"]},
             "BOS_U_APP": {"backup": "BOS_DEP",  "arrivals": ["WOONS.3K", "WOONS.5K", "WOONS.7K"]}
           }
         },
