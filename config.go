@@ -62,7 +62,7 @@ type ConfigNoSim struct {
 	LastTRACON    string
 	UIFontSize    int
 
-	DisplayRoot *DisplayNode
+	DisplayRoot *panes.DisplayNode
 
 	AskedDiscordOptIn        bool
 	InhibitDiscordActivity   util.AtomicBool
@@ -222,71 +222,14 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 
 func (gc *Config) Activate(c *sim.ControlClient, r renderer.Renderer, p platform.Platform,
 	eventStream *sim.EventStream, lg *log.Logger) {
-	// Upgrade old ones without a MessagesPane
-	if gc.DisplayRoot != nil {
-		haveMessages := false
-		gc.DisplayRoot.VisitPanes(func(p panes.Pane) {
-			if _, ok := p.(*panes.MessagesPane); ok {
-				haveMessages = true
-			}
-		})
-		if !haveMessages {
-			root := gc.DisplayRoot
-			if root.SplitLine.Axis == SplitAxisX && root.Children[0] != nil {
-				messages := panes.NewMessagesPane()
-				root.Children[0] = &DisplayNode{
-					SplitLine: SplitLine{
-						Pos:  0.075,
-						Axis: SplitAxisY,
-					},
-					Children: [2]*DisplayNode{
-						&DisplayNode{Pane: messages},
-						&DisplayNode{Pane: root.Children[0].Pane},
-					},
-				}
-			} else {
-				gc.DisplayRoot = nil
-			}
-		}
+	var state *sim.State
+	if c != nil {
+		state = &c.State
 	}
 
 	if gc.DisplayRoot == nil {
-		stars := panes.NewSTARSPane(c.State)
-		messages := panes.NewMessagesPane()
-
-		fsp := panes.NewFlightStripPane()
-		fsp.AutoAddDepartures = true
-		fsp.AutoAddTracked = true
-		fsp.AutoAddAcceptedHandoffs = true
-		fsp.AutoRemoveDropped = true
-		fsp.AutoRemoveHandoffs = true
-
-		gc.DisplayRoot = &DisplayNode{
-			SplitLine: SplitLine{
-				Pos:  0.8,
-				Axis: SplitAxisX,
-			},
-			Children: [2]*DisplayNode{
-				&DisplayNode{
-					SplitLine: SplitLine{
-						Pos:  0.075,
-						Axis: SplitAxisY,
-					},
-					Children: [2]*DisplayNode{
-						&DisplayNode{Pane: messages},
-						&DisplayNode{Pane: stars},
-					},
-				},
-				&DisplayNode{Pane: fsp},
-			},
-		}
+		gc.DisplayRoot = panes.NewDisplayPanes(state)
 	}
 
-	gc.DisplayRoot.VisitPanes(func(pane panes.Pane) {
-		if c != nil {
-			pane.Activate(&c.State, r, p, eventStream, lg)
-		} else {
-			pane.Activate(nil, r, p, eventStream, lg)
-		}
-	})
+	panes.Activate(gc.DisplayRoot, state, r, p, eventStream, lg)
 }

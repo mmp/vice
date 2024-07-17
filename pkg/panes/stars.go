@@ -1157,11 +1157,11 @@ func (b STARSBrightness) ScaleRGB(r renderer.RGB) renderer.RGB {
 ///////////////////////////////////////////////////////////////////////////
 // STARSPane proper
 
-func NewSTARSPane(ss sim.State) *STARSPane {
+func NewSTARSPane(ss *sim.State) *STARSPane {
 	sp := &STARSPane{
 		SelectedPreferenceSet: -1,
 	}
-	sp.CurrentPreferenceSet = sp.MakePreferenceSet("", &ss)
+	sp.CurrentPreferenceSet = sp.MakePreferenceSet("", ss)
 	return sp
 }
 

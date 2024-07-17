@@ -1,4 +1,4 @@
-// wm.go
+// display.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -9,7 +9,7 @@
 // At the top is the status bar and then the rest of the window is
 // a kd-tree of Panes, separated by SplitLines.
 
-package main
+package panes
 
 import (
 	"encoding/json"
@@ -19,7 +19,6 @@ import (
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
-	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
@@ -33,7 +32,7 @@ var (
 		// though if the user has started a click-drag, then the Pane that
 		// received the click keeps getting events until the mouse button
 		// is released.  mouseConsumerOverride records such a pane.
-		mouseConsumerOverride panes.Pane
+		mouseConsumerOverride Pane
 
 		focus WMKeyboardFocus
 
@@ -42,22 +41,22 @@ var (
 )
 
 type WMKeyboardFocus struct {
-	initial panes.Pane
+	initial Pane
 
 	// Pane that currently holds the keyboard focus
-	current panes.Pane
+	current Pane
 	// Stack of Panes that previously held focus; if a Pane takes focus
 	// temporarily (e.g., the FlightStripPane), then this lets us pop
 	// back to the previous one (e.g., the CLIPane.)
-	stack []panes.Pane
+	stack []Pane
 }
 
-func (f *WMKeyboardFocus) Take(p panes.Pane) {
+func (f *WMKeyboardFocus) Take(p Pane) {
 	f.current = p
 	f.stack = nil
 }
 
-func (f *WMKeyboardFocus) TakeTemporary(p panes.Pane) {
+func (f *WMKeyboardFocus) TakeTemporary(p Pane) {
 	if f.current != p {
 		f.stack = append(f.stack, f.current)
 		f.current = p
@@ -73,7 +72,7 @@ func (f *WMKeyboardFocus) Release() {
 	}
 }
 
-func (f *WMKeyboardFocus) Current() panes.Pane {
+func (f *WMKeyboardFocus) Current() Pane {
 	return f.current
 }
 
@@ -97,7 +96,7 @@ type SplitLine struct {
 	Axis SplitType
 }
 
-func (s *SplitLine) Duplicate(nameAsCopy bool) panes.Pane {
+func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
 	panic("SplitLine Duplicate shouldn't have been called...")
 }
 
@@ -112,7 +111,7 @@ func (s *SplitLine) Name() string {
 	return "Split Line"
 }
 
-func (s *SplitLine) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
+func (s *SplitLine) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	if ctx.Mouse != nil {
 		if s.Axis == SplitAxisX {
 			ctx.Mouse.SetCursor(imgui.MouseCursorResizeEW)
@@ -136,7 +135,7 @@ func (s *SplitLine) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// The drawing code sets the scissor and viewport to cover just the
 	// pixel area of each pane so an easy way to draw a split line is to
 	// just issue a clear.
-	cb.ClearRGB(panes.UIControlColor)
+	cb.ClearRGB(UIControlColor)
 }
 
 func splitLineWidth(p platform.Platform) int {
@@ -150,7 +149,7 @@ func splitLineWidth(p platform.Platform) int {
 // kd-tree.
 type DisplayNode struct {
 	// non-nil only for leaf nodes: iff splitAxis == SplitAxisNone
-	Pane      panes.Pane
+	Pane      Pane
 	SplitLine SplitLine
 	// non-nil only for interior notes: iff splitAxis != SplitAxisNone
 	Children [2]*DisplayNode
@@ -158,7 +157,7 @@ type DisplayNode struct {
 
 // NodeForPane searches a display node hierarchy for a given Pane,
 // returning the associated DisplayNode.
-func (d *DisplayNode) NodeForPane(pane panes.Pane) *DisplayNode {
+func (d *DisplayNode) NodeForPane(pane Pane) *DisplayNode {
 	if d.Pane == pane {
 		return d
 	}
@@ -176,7 +175,7 @@ func (d *DisplayNode) NodeForPane(pane panes.Pane) *DisplayNode {
 // ParentNodeForPane returns both the DisplayNode one level up the
 // hierarchy from the specified Pane and the index into the children nodes
 // for that node that leads to the specified Pane.
-func (d *DisplayNode) ParentNodeForPane(pane panes.Pane) (*DisplayNode, int) {
+func (d *DisplayNode) ParentNodeForPane(pane Pane) (*DisplayNode, int) {
 	if d == nil {
 		return nil, -1
 	}
@@ -244,7 +243,7 @@ func (d *DisplayNode) UnmarshalJSON(s []byte) error {
 	if paneType == "" {
 		return nil
 	}
-	pane, err := panes.UnmarshalPane(paneType, *m["Pane"])
+	pane, err := UnmarshalPane(paneType, *m["Pane"])
 
 	if err == nil {
 		d.Pane = pane
@@ -254,7 +253,7 @@ func (d *DisplayNode) UnmarshalJSON(s []byte) error {
 
 // VisitPanes visits all of the Panes in a DisplayNode hierarchy, calling
 // the provided callback function for each one.
-func (d *DisplayNode) VisitPanes(visit func(panes.Pane)) {
+func (d *DisplayNode) VisitPanes(visit func(Pane)) {
 	switch d.SplitLine.Axis {
 	case SplitAxisNone:
 		visit(d.Pane)
@@ -269,7 +268,7 @@ func (d *DisplayNode) VisitPanes(visit func(panes.Pane)) {
 // giving each one both its own bounding box in window coordinates as well
 // the bounding box of its parent node in the DisplayNodeTree.
 func (d *DisplayNode) VisitPanesWithBounds(displayExtent math.Extent2D, parentDisplayExtent math.Extent2D, p platform.Platform,
-	visit func(math.Extent2D, math.Extent2D, panes.Pane)) {
+	visit func(math.Extent2D, math.Extent2D, Pane)) {
 	switch d.SplitLine.Axis {
 	case SplitAxisNone:
 		visit(displayExtent, parentDisplayExtent, d.Pane)
@@ -340,7 +339,7 @@ func splitY(e math.Extent2D, y float32, lineWidth int) (math.Extent2D, math.Exte
 
 // FindPaneForMouse returns the Pane that the provided mouse position p is inside.
 func (d *DisplayNode) FindPaneForMouse(displayExtent math.Extent2D, p [2]float32,
-	plat platform.Platform) panes.Pane {
+	plat platform.Platform) Pane {
 	if !displayExtent.Inside(p) {
 		return nil
 	}
@@ -404,9 +403,9 @@ func (d *DisplayNode) getString(indent string) string {
 
 // wmPaneIsPresent checks to see if the specified Pane is present in the
 // display hierarchy.
-func wmPaneIsPresent(pane panes.Pane, root *DisplayNode) bool {
+func wmPaneIsPresent(pane Pane, root *DisplayNode) bool {
 	found := false
-	root.VisitPanes(func(p panes.Pane) {
+	root.VisitPanes(func(p Pane) {
 		if p == pane {
 			found = true
 		}
@@ -419,29 +418,29 @@ func wmPaneIsPresent(pane panes.Pane, root *DisplayNode) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func wmDrawPanes(config *Config, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient, stats *Stats, lg *log.Logger) {
+func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
+	menuBarHeight float32, audioEnabled *bool, lg *log.Logger) renderer.RendererStats {
 	if controlClient == nil {
 		commandBuffer := renderer.GetCommandBuffer()
+		defer renderer.ReturnCommandBuffer(commandBuffer)
 		commandBuffer.ClearRGB(renderer.RGB{})
-		stats.render = r.RenderCommandBuffer(commandBuffer)
-		renderer.ReturnCommandBuffer(commandBuffer)
-		return
+		return r.RenderCommandBuffer(commandBuffer)
 	}
 
 	var filter func(d *DisplayNode) *DisplayNode
 	filter = func(d *DisplayNode) *DisplayNode {
-		if fsp, ok := d.Children[0].Pane.(*panes.FlightStripPane); ok && fsp.HideFlightStrips {
+		if fsp, ok := d.Children[0].Pane.(*FlightStripPane); ok && fsp.HideFlightStrips {
 			return filter(d.Children[1])
-		} else if fsp, ok := d.Children[1].Pane.(*panes.FlightStripPane); ok && fsp.HideFlightStrips {
+		} else if fsp, ok := d.Children[1].Pane.(*FlightStripPane); ok && fsp.HideFlightStrips {
 			return filter(d.Children[0])
 		} else {
 			return d
 		}
 	}
-	root := filter(config.DisplayRoot)
+	root = filter(root)
 
 	if wm.focus.Current() == nil || !wmPaneIsPresent(wm.focus.Current(), root) {
-		sp := getPaneByType[*panes.STARSPane](config.DisplayRoot)
+		sp := getPaneByType[*STARSPane](root)
 		if sp == nil {
 			panic("No STARSPane?")
 		}
@@ -453,7 +452,7 @@ func wmDrawPanes(config *Config, p platform.Platform, r renderer.Renderer, contr
 	displaySize := p.DisplaySize()
 
 	// Area left for actually drawing Panes
-	paneDisplayExtent := math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1] - ui.menuBarHeight}}
+	paneDisplayExtent := math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1] - menuBarHeight}}
 
 	// Get the mouse position from imgui; flip y so that it lines up with
 	// our window coordinates.
@@ -501,12 +500,12 @@ func wmDrawPanes(config *Config, p platform.Platform, r renderer.Renderer, contr
 
 	if keyboard != nil && keyboard.WasPressed(platform.KeyTab) {
 		cur := wm.focus.Current()
-		if _, ok := cur.(*panes.MessagesPane); ok {
-			if s := getPaneByType[*panes.STARSPane](config.DisplayRoot); s != nil {
+		if _, ok := cur.(*MessagesPane); ok {
+			if s := getPaneByType[*STARSPane](root); s != nil {
 				wm.focus.Take(s)
 			}
-		} else if _, ok := cur.(*panes.STARSPane); ok {
-			if m := getPaneByType[*panes.MessagesPane](config.DisplayRoot); m != nil {
+		} else if _, ok := cur.(*STARSPane); ok {
+			if m := getPaneByType[*MessagesPane](root); m != nil {
 				wm.focus.Take(m)
 			}
 		}
@@ -514,9 +513,9 @@ func wmDrawPanes(config *Config, p platform.Platform, r renderer.Renderer, contr
 
 	// Actually visit the panes.
 	root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent, p,
-		func(paneExtent math.Extent2D, parentExtent math.Extent2D, pane panes.Pane) {
+		func(paneExtent math.Extent2D, parentExtent math.Extent2D, pane Pane) {
 			haveFocus := pane == wm.focus.Current() && !imgui.CurrentIO().WantCaptureKeyboard()
-			ctx := panes.Context{
+			ctx := Context{
 				PaneExtent:       paneExtent,
 				ParentPaneExtent: parentExtent,
 				Platform:         p,
@@ -525,8 +524,8 @@ func wmDrawPanes(config *Config, p platform.Platform, r renderer.Renderer, contr
 				HaveFocus:        haveFocus,
 				Now:              time.Now(),
 				Lg:               lg,
-				MenuBarHeight:    ui.menuBarHeight,
-				AudioEnabled:     &config.AudioEnabled,
+				MenuBarHeight:    menuBarHeight,
+				AudioEnabled:     audioEnabled,
 				KeyboardFocus:    &wm.focus,
 				ControlClient:    controlClient,
 			}
@@ -571,16 +570,82 @@ func wmDrawPanes(config *Config, p platform.Platform, r renderer.Renderer, contr
 	// traversal, etc., though, so that events are still consumed and
 	// memory use doesn't grow.
 	if fbSize[0] > 0 && fbSize[1] > 0 {
-		stats.render = r.RenderCommandBuffer(commandBuffer)
+		return r.RenderCommandBuffer(commandBuffer)
 	}
+	return renderer.RendererStats{}
 }
 
 func getPaneByType[T any](root *DisplayNode) T {
 	var t T
-	root.VisitPanes(func(pane panes.Pane) {
+	root.VisitPanes(func(pane Pane) {
 		if p, ok := pane.(T); ok {
 			t = p
 		}
 	})
 	return t
+}
+
+func NewDisplayPanes(state *sim.State) *DisplayNode {
+	stars := NewSTARSPane(state)
+	messages := NewMessagesPane()
+
+	fsp := NewFlightStripPane()
+	fsp.AutoAddDepartures = true
+	fsp.AutoAddTracked = true
+	fsp.AutoAddAcceptedHandoffs = true
+	fsp.AutoRemoveDropped = true
+	fsp.AutoRemoveHandoffs = true
+
+	return &DisplayNode{
+		SplitLine: SplitLine{
+			Pos:  0.8,
+			Axis: SplitAxisX,
+		},
+		Children: [2]*DisplayNode{
+			&DisplayNode{
+				SplitLine: SplitLine{
+					Pos:  0.075,
+					Axis: SplitAxisY,
+				},
+				Children: [2]*DisplayNode{
+					&DisplayNode{Pane: messages},
+					&DisplayNode{Pane: stars},
+				},
+			},
+			&DisplayNode{Pane: fsp},
+		},
+	}
+}
+
+func Activate(root *DisplayNode, state *sim.State, r renderer.Renderer, p platform.Platform,
+	eventStream *sim.EventStream, lg *log.Logger) {
+	// Upgrade old ones without a MessagesPane
+	haveMessages := false
+	root.VisitPanes(func(p Pane) {
+		if _, ok := p.(*MessagesPane); ok {
+			haveMessages = true
+		}
+	})
+	if !haveMessages {
+		root := root
+		if root.SplitLine.Axis == SplitAxisX && root.Children[0] != nil {
+			messages := NewMessagesPane()
+			root.Children[0] = &DisplayNode{
+				SplitLine: SplitLine{
+					Pos:  0.075,
+					Axis: SplitAxisY,
+				},
+				Children: [2]*DisplayNode{
+					&DisplayNode{Pane: messages},
+					&DisplayNode{Pane: root.Children[0].Pane},
+				},
+			}
+		} else {
+			root = nil
+		}
+	}
+
+	root.VisitPanes(func(pane Pane) {
+		pane.Activate(state, r, p, eventStream, lg)
+	})
 }

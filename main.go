@@ -359,7 +359,8 @@ func main() {
 			imgui.NewFrame()
 
 			// Generate and render vice draw lists
-			wmDrawPanes(config, plat, render, controlClient, &stats, lg)
+			stats.render = panes.DrawPanes(config.DisplayRoot, plat, render, controlClient,
+				ui.menuBarHeight, &config.AudioEnabled, lg)
 
 			timeMarker(&stats.drawPanes)
 
