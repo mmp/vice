@@ -55,6 +55,19 @@ func NewControlClient(ss State, controllerToken string, client *util.RPCClient, 
 	}
 }
 
+func (c *ControlClient) Status() string {
+	if c == nil || c.SimDescription == "" {
+		return "[disconnected]"
+	} else {
+		deparr := fmt.Sprintf(" [ %d departures %d arrivals ]", c.TotalDepartures, c.TotalArrivals)
+		if c.SimName == "" {
+			return c.State.Callsign + ": " + c.SimDescription + deparr
+		} else {
+			return c.State.Callsign + "@" + c.SimName + ": " + c.SimDescription + deparr
+		}
+	}
+}
+
 func (c *ControlClient) SetSquawk(callsign string, squawk av.Squawk) error {
 	return nil // UNIMPLEMENTED
 }

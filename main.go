@@ -264,22 +264,11 @@ func main() {
 
 			default:
 			}
+			plat.SetWindowTitle("vice: " + controlClient.Status())
 
 			if controlClient == nil {
-				plat.SetWindowTitle("vice: [disconnected]")
 				SetDiscordStatus(DiscordStatus{Start: simStartTime}, config, lg)
 			} else {
-				title := "(disconnected)"
-				if controlClient.SimDescription != "" {
-					deparr := fmt.Sprintf(" [ %d departures %d arrivals ]", controlClient.TotalDepartures, controlClient.TotalArrivals)
-					if controlClient.SimName == "" {
-						title = controlClient.State.Callsign + ": " + controlClient.SimDescription + deparr
-					} else {
-						title = controlClient.State.Callsign + "@" + controlClient.SimName + ": " + controlClient.SimDescription + deparr
-					}
-				}
-
-				plat.SetWindowTitle("vice: " + title)
 				// Update discord RPC
 				SetDiscordStatus(DiscordStatus{
 					TotalDepartures: controlClient.State.TotalDepartures,
