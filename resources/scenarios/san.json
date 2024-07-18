@@ -44,7 +44,7 @@
                         "SARGS/a2100 GATTO/a2000"
                     ]
                 },
-                "L7":{
+                "L27":{
                     "full_name": "Localizer Runway 27",
                     "runway": "27",
                     "type": "ILS",
@@ -473,7 +473,8 @@
                 "28R":{
                     "OCN":{
                         "cleared_altitude": 6000,
-                        "waypoints": "MZB OCN"
+                        "sid": "SANP3",
+                        "waypoints": "OCN SLI"
                     }
                 }
             },
@@ -484,9 +485,9 @@
                             "icao": "N"
                         }
                     ],
-                    "destination": "KCRQ",
+                    "destination": "KTOA",
                     "exit": "OCN",
-                    "route": "MZB OCN"
+                    "route": "OCN SLI"
                 }
             ],
             "exit_categories": {
@@ -520,9 +521,9 @@
             },
             "departure_routes":{
                 "24":{
-                    "BAKEL":{
-                        "cleared_altitude": 8000,
-                        "waypoints": "OCN BAKEL"
+                    "IPL":{
+                        "cleared_altitude": 9000,
+                        "waypoints": "OCN BAKEL IPL"
                     }
                 }
             },
@@ -533,13 +534,13 @@
                             "icao": "N"
                         }
                     ],
-                    "destination": "KMYF",
-                    "exit": "BAKEL",
-                    "route": "OCN BAKEL"
+                    "destination": "KIPL",
+                    "exit": "IPL",
+                    "route": "OCN BAKEL IPL"
                 }
             ],
             "exit_categories": {
-                "BAKEL": "South"
+                "IPL": "East"
             },
             "tower_list": 1
         }
@@ -699,7 +700,7 @@
                 "waypoints": "LAX/a24000 TASCO/a19000 SWAMI/a17000 OHBEA/a15000/ho PLYYA/a11000 MNLYT/a4000 SARGS/a2100"
             }
         ],
-        "EAST MYF": [
+        "EAST MYF ARR": [
             {
                 "airlines":{
                     "KMYF": [ 
@@ -713,11 +714,11 @@
                 "initial_altitude": 10000,
                 "initial_controller": "LAX_30_CTR",
                 "initial_speed": 200,
-                "star": "EAST MYF",
-                "waypoints": "GILYY/ho BARET/a6100"
+                "star": "GILYY BARET",
+                "waypoints": "GILYY/ho BARET/a9000"
             }
         ],
-        "NORTH MYF": [
+        "NORTH MYF ARR": [
             {
                 "airlines":{
                     "KMYF": [ 
@@ -731,11 +732,11 @@
                 "initial_altitude": 10000,
                 "initial_controller": "LAX_30_CTR",
                 "initial_speed": 200,
-                "star": "NORTH MYF",
-                "waypoints": "KARRO/ho BARET/a6100"
+                "star": "KARRO BARET",
+                "waypoints": "KARRO/ho BARET/a9000"
             }
         ],
-        "NORTH CRQ": [
+        "NORTH CRQ ARR": [
             {
                 "airlines":{
                     "KCRQ": [ 
@@ -749,8 +750,26 @@
                 "initial_altitude": 10000,
                 "initial_controller": "LAX_30_CTR",
                 "initial_speed": 180,
-                "star": "NORTH CRQ",
+                "star": "ROBNN OCN",
                 "waypoints": "WESIN/ho ROBNN OCN"
+            }
+        ],
+        "LEGOZ2": [
+            {
+                "airlines":{
+                    "KCRQ": [ 
+                        {
+                            "airport": "KSBA",
+                            "icao": "N"
+                        }
+                    ]
+                },
+                "cruise_altitude": 13000,
+                "initial_altitude": 11000,
+                "initial_controller": "LAX_30_CTR",
+                "initial_speed": 200,
+                "star": "LEGOZ2",
+                "waypoints": "AVOLS/a11000/s250 PACIF/a7000/ho OCN/a5000/h085"
             }
         ]
     },
@@ -846,13 +865,16 @@
                 "COMIX2":{
                     "KSAN": 15
                 },
-                "EAST MYF":{
+                "EAST MYF ARR":{
                     "KMYF": 10
                 },
-                "NORTH MYF":{
+                "NORTH MYF ARR":{
                     "KMYF": 10
                 },
-                "NORTH CRQ":{
+                "NORTH CRQ ARR":{
+                    "KCRQ": 10
+                },
+                "LEGOZ2":{
                     "KCRQ": 10
                 }
             },
@@ -864,7 +886,7 @@
                     },
 
                     "SAN_E_APP":{ "backup": "SAN_W_APP",
-                    "arrivals": ["LUCKI1", "EAST MYF", "NORTH MYF"]
+                    "arrivals": ["LUCKI1", "EAST MYF ARR", "NORTH MYF ARR"]
                     },
 
                     "SAN_N_APP":{"backup": "SAN_W_APP",
@@ -872,7 +894,7 @@
                     },
                     "SAN_D_APP":{"backup": "SAN_W_APP",
                     "departures": ["KCRQ"],
-                    "arrivals": ["NORTH CRQ"]
+                    "arrivals": ["NORTH CRQ ARR", "LEGOZ2"]
                     }
                 }
             },
@@ -895,12 +917,12 @@
                 },
                 {
                     "airport": "KMYF",
-                    "rate": 10,
+                    "rate": 5,
                     "runway": "28R"
                 },
                 {
                     "airport": "KCRQ",
-                    "rate": 10,
+                    "rate": 5,
                     "runway": "24"
                 }
             ],
