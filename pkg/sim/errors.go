@@ -29,6 +29,7 @@ var (
 	ErrRPCTimeout                 = errors.New("RPC call timed out")
 	ErrRPCVersionMismatch         = errors.New("Client and server RPC versions don't match")
 	ErrRestoringSavedState        = errors.New("Errors during state restoration")
+	ErrServerDisconnected         = errors.New("Server disconnected")
 	ErrUnknownFacility            = errors.New("Unknown facility (ARTCC/TRACON)")
 	ErrUnknownControllerFacility  = errors.New("Unknown controller facility")
 )
@@ -75,6 +76,7 @@ var errorStringToError = map[string]error{
 	ErrRPCTimeout.Error():                 ErrRPCTimeout,
 	ErrRPCVersionMismatch.Error():         ErrRPCVersionMismatch,
 	ErrRestoringSavedState.Error():        ErrRestoringSavedState,
+	ErrServerDisconnected.Error():         ErrServerDisconnected,
 	ErrUnknownFacility.Error():            ErrUnknownFacility,
 	ErrUnknownControllerFacility.Error():  ErrUnknownControllerFacility,
 }

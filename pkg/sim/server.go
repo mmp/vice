@@ -24,7 +24,7 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
-const ViceRPCVersion = 15
+const ViceRPCVersion = 16
 
 type Server struct {
 	*util.RPCClient

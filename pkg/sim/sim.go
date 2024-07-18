@@ -267,8 +267,6 @@ type NewSimConfiguration struct {
 	GroupName       string
 	Scenario        *SimScenarioConfiguration
 	ScenarioName    string
-	localServer     **Server
-	remoteServer    **Server
 	selectedServer  *Server
 	NewSimName      string // for create remote only
 	RequirePassword bool   // for create remote only
@@ -285,8 +283,8 @@ type NewSimConfiguration struct {
 
 	DisplayError error
 
+	mgr           *ConnectionManager
 	lg            *log.Logger
-	ch            chan *Connection
 	defaultTRACON *string
 }
 
@@ -305,14 +303,11 @@ const (
 	NewSimJoinRemote
 )
 
-func MakeNewSimConfiguration(ch chan *Connection, defaultTRACON *string, localServer **Server,
-	remoteServer **Server, lg *log.Logger) NewSimConfiguration {
+func MakeNewSimConfiguration(mgr *ConnectionManager, defaultTRACON *string, lg *log.Logger) NewSimConfiguration {
 	c := NewSimConfiguration{
 		lg:             lg,
-		ch:             ch,
-		localServer:    localServer,
-		remoteServer:   remoteServer,
-		selectedServer: *localServer,
+		mgr:            mgr,
+		selectedServer: mgr.localServer,
 		defaultTRACON:  defaultTRACON,
 		NewSimName:     rand.AdjectiveNoun(),
 	}
@@ -323,15 +318,15 @@ func MakeNewSimConfiguration(ch chan *Connection, defaultTRACON *string, localSe
 }
 
 func (c *NewSimConfiguration) updateRemoteSims() {
-	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && *c.remoteServer != nil {
+	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && c.mgr.remoteServer != nil {
 		c.lastRemoteSimsUpdate = time.Now()
 		var rs map[string]*RemoteSim
 		c.updateRemoteSimsCall = &util.PendingCall{
-			Call:      (*c.remoteServer).Go("SimManager.GetRunningSims", 0, &rs, nil),
+			Call:      c.mgr.remoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
 			IssueTime: time.Now(),
 			OnSuccess: func(result any) {
-				if *c.remoteServer != nil {
-					(*c.remoteServer).runningSims = rs
+				if c.mgr.remoteServer != nil {
+					c.mgr.remoteServer.runningSims = rs
 				}
 			},
 			OnErr: func(e error) {
@@ -340,7 +335,7 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 				// nil out the server if we've lost the connection; the
 				// main loop will attempt to reconnect.
 				if util.IsRPCServerError(e) {
-					*c.remoteServer = nil
+					c.mgr.remoteServer = nil
 				}
 			},
 		}
@@ -411,7 +406,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 	}
 
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-	if *c.remoteServer != nil {
+	if c.mgr.remoteServer != nil {
 		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
@@ -422,7 +417,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextColumn()
 			if imgui.RadioButtonInt("Create single-controller", &c.NewSimType, NewSimCreateLocal) &&
 				origType != NewSimCreateLocal {
-				c.selectedServer = *c.localServer
+				c.selectedServer = c.mgr.localServer
 				c.SetTRACON(*c.defaultTRACON)
 				c.DisplayError = nil
 			}
@@ -432,7 +427,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextColumn()
 			if imgui.RadioButtonInt("Create multi-controller", &c.NewSimType, NewSimCreateRemote) &&
 				origType != NewSimCreateRemote {
-				c.selectedServer = *c.remoteServer
+				c.selectedServer = c.mgr.remoteServer
 				c.SetTRACON(*c.defaultTRACON)
 				c.DisplayError = nil
 			}
@@ -441,13 +436,13 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextColumn()
 			imgui.TableNextColumn()
 
-			uiStartDisable(len((*c.remoteServer).runningSims) == 0)
+			uiStartDisable(len(c.mgr.remoteServer.runningSims) == 0)
 			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, NewSimJoinRemote) &&
 				origType != NewSimJoinRemote {
-				c.selectedServer = *c.remoteServer
+				c.selectedServer = c.mgr.remoteServer
 				c.DisplayError = nil
 			}
-			uiEndDisable(len((*c.remoteServer).runningSims) == 0)
+			uiEndDisable(len(c.mgr.remoteServer.runningSims) == 0)
 
 			imgui.EndTable()
 		}
@@ -599,7 +594,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				sort.Strings(a)
 				imgui.Text(strings.Join(a, ", "))
 			}
-			validAirport := c.Scenario.PrimaryAirport != "KAAC" && *c.remoteServer != nil
+			validAirport := c.Scenario.PrimaryAirport != "KAAC" && c.mgr.remoteServer != nil
 
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
@@ -645,7 +640,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		}
 	} else {
 		// Join remote
-		runningSims := (*c.remoteServer).runningSims
+		runningSims := c.mgr.remoteServer.runningSims
 
 		rs, ok := runningSims[c.SelectedRemoteSim]
 		if !ok || c.SelectedRemoteSim == "" {
@@ -802,7 +797,7 @@ func (c *NewSimConfiguration) Start() error {
 		if err == ErrRPCTimeout || err == ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
 			// loop try to reconnect.
-			*c.remoteServer = nil
+			c.mgr.remoteServer = nil
 		}
 
 		return err
@@ -810,13 +805,13 @@ func (c *NewSimConfiguration) Start() error {
 
 	*c.defaultTRACON = c.TRACONName
 
-	c.ch <- &Connection{
+	c.mgr.NewConnection(Connection{
 		SimState: *result.SimState,
 		SimProxy: &proxy{
 			ControllerToken: result.ControllerToken,
 			Client:          c.selectedServer.RPCClient,
 		},
-	}
+	})
 
 	return nil
 }

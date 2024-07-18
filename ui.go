@@ -300,17 +300,14 @@ func uiCloseModalDialog(d *ModalDialogBox) {
 
 }
 
-func uiShowConnectDialog(ch chan *sim.Connection, localServer **sim.Server, remoteServer **sim.Server,
-	allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
+func uiShowConnectDialog(mgr *sim.ConnectionManager, allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
 
 	client := &ConnectModalClient{
-		ch:           ch,
-		lg:           lg,
-		localServer:  localServer,
-		remoteServer: remoteServer,
-		allowCancel:  allowCancel,
-		platform:     p,
-		config:       config,
+		mgr:         mgr,
+		lg:          lg,
+		allowCancel: allowCancel,
+		platform:    p,
+		config:      config,
 	}
 	uiShowModalDialog(NewModalDialogBox(client, p), false)
 }
@@ -342,9 +339,8 @@ func uiEndDisable(b bool) {
 	}
 }
 
-func drawUI(ch chan *sim.Connection, localServer **sim.Server, remoteServer **sim.Server,
-	config *Config, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
-	eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
+func drawUI(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
+	controlClient *sim.ControlClient, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -382,7 +378,7 @@ func drawUI(ch chan *sim.Connection, localServer **sim.Server, remoteServer **si
 		}
 
 		if imgui.Button(renderer.FontAwesomeIconRedo) {
-			uiShowConnectDialog(ch, localServer, remoteServer, true, config, p, lg)
+			uiShowConnectDialog(mgr, true, config, p, lg)
 		}
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Start new simulation")
@@ -466,7 +462,7 @@ func drawUI(ch chan *sim.Connection, localServer **sim.Server, remoteServer **si
 			ui.showScenarioInfo = controlClient.DrawScenarioInfoWindow(lg)
 		}
 
-		uiDrawMissingPrimaryDialog(ch, controlClient, p)
+		uiDrawMissingPrimaryDialog(mgr, controlClient, p)
 
 		if controlClient.LaunchConfig.Controller == controlClient.Callsign {
 			if ui.launchControlWindow == nil {
@@ -602,21 +598,18 @@ func (m *ModalDialogBox) Draw() {
 }
 
 type ConnectModalClient struct {
-	ch           chan *sim.Connection
-	lg           *log.Logger
-	localServer  **sim.Server
-	remoteServer **sim.Server
-	simConfig    sim.NewSimConfiguration
-	allowCancel  bool
-	platform     platform.Platform
-	config       *Config
+	mgr         *sim.ConnectionManager
+	lg          *log.Logger
+	simConfig   sim.NewSimConfiguration
+	allowCancel bool
+	platform    platform.Platform
+	config      *Config
 }
 
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
-	c.simConfig = sim.MakeNewSimConfiguration(c.ch, &c.config.LastTRACON,
-		c.localServer, c.remoteServer, c.lg)
+	c.simConfig = sim.MakeNewSimConfiguration(c.mgr, &c.config.LastTRACON, c.lg)
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {
@@ -631,7 +624,6 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 		action: func() bool {
 			if c.simConfig.ShowRatesWindow() {
 				client := &RatesModalClient{
-					ch:            c.ch,
 					lg:            c.lg,
 					connectClient: c,
 					platform:      c.platform,
@@ -1769,7 +1761,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 }
 
 type MissingPrimaryModalClient struct {
-	ch            chan *sim.Connection
+	mgr           *sim.ConnectionManager
 	controlClient *sim.ControlClient
 }
 
@@ -1786,7 +1778,7 @@ func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
 		return err == nil
 	}})
 	b = append(b, ModalDialogButton{text: "Disconnect", action: func() bool {
-		mp.ch <- nil // This will lead to a Disconnect() call in main.go
+		mp.mgr.Disconnect()
 		uiCloseModalDialog(ui.missingPrimaryDialog)
 		return true
 	}})
@@ -1798,7 +1790,7 @@ func (mp *MissingPrimaryModalClient) Draw() int {
 	return -1
 }
 
-func uiDrawMissingPrimaryDialog(ch chan *sim.Connection, c *sim.ControlClient, p platform.Platform) {
+func uiDrawMissingPrimaryDialog(mgr *sim.ConnectionManager, c *sim.ControlClient, p platform.Platform) {
 	if _, ok := c.Controllers[c.PrimaryController]; ok {
 		if ui.missingPrimaryDialog != nil {
 			uiCloseModalDialog(ui.missingPrimaryDialog)
@@ -1807,7 +1799,7 @@ func uiDrawMissingPrimaryDialog(ch chan *sim.Connection, c *sim.ControlClient, p
 	} else {
 		if ui.missingPrimaryDialog == nil {
 			ui.missingPrimaryDialog = NewModalDialogBox(&MissingPrimaryModalClient{
-				ch:            ch,
+				mgr:           mgr,
 				controlClient: c,
 			}, p)
 			uiShowModalDialog(ui.missingPrimaryDialog, true)

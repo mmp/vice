@@ -127,25 +127,12 @@ func main() {
 			e.PrintErrors(lg)
 		}
 	} else {
-		localSimServerChan, mapLibrary, err :=
-			sim.LaunchLocalServer(*scenarioFilename, *videoMapFilename, lg)
-		if err != nil {
-			lg.Errorf("error launching local SimServer: %v", err)
-			os.Exit(1)
-		}
-
-		lastRemoteServerAttempt := time.Now()
-		remoteSimServerChan := sim.TryConnectRemoteServer(*serverAddress, lg)
-
 		var stats Stats
 		var render renderer.Renderer
 		var plat platform.Platform
-		var localServer *sim.Server
-		var remoteServer *sim.Server
 
 		// Catch any panics so that we can put up a dialog box and hopefully
 		// get a bug report.
-		var context *imgui.Context
 		if os.Getenv("DELVE_GOVERSION") == "" { // hack: don't catch panics when debugging..
 			defer func() {
 				if err := recover(); err != nil {
@@ -155,11 +142,6 @@ func main() {
 							"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
 							"this bug can be fixed.\n\nError: %v", err)
 				}
-
-				// Clean up in backwards order from how things were created.
-				render.Dispose()
-				plat.Dispose()
-				context.Destroy()
 			}()
 		}
 
@@ -167,9 +149,43 @@ func main() {
 		// Global initialization and set up. Note that there are some subtle
 		// inter-dependencies in the following; the order is carefully crafted.
 
-		context = imguiInit()
+		_ = imguiInit()
 
 		config, configErr := LoadOrMakeDefaultConfig(lg)
+
+		var controlClient *sim.ControlClient
+		var mgr *sim.ConnectionManager
+		var err error
+		mgr, err = sim.MakeServerConnection(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
+			func(c *sim.ControlClient) { // updated client
+				if c != nil {
+					panes.Reset(config.DisplayRoot, c.State, lg)
+				}
+				controlClient = c
+			},
+			func(err error) {
+				switch err {
+				case sim.ErrRPCVersionMismatch:
+					ShowErrorDialog(plat, lg,
+						"This version of vice is incompatible with the vice multi-controller server.\n"+
+							"If you're using an older version of vice, please upgrade to the latest\n"+
+							"version for multi-controller support. (If you're using a beta build, then\n"+
+							"thanks for your help testing vice; when the beta is released, the server\n"+
+							"will be updated as well.)")
+
+				case sim.ErrServerDisconnected:
+					ShowErrorDialog(plat, lg, "Lost connection to the vice server.")
+					uiShowConnectDialog(mgr, false, config, plat, lg)
+
+				default:
+					lg.Error("Server connection error: %v", err)
+				}
+			},
+		)
+		if err != nil {
+			lg.Errorf("%v", err)
+			os.Exit(1)
+		}
 
 		plat, err = platform.New(&config.Config, lg)
 		if err != nil {
@@ -184,26 +200,11 @@ func main() {
 		if err != nil {
 			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 		}
-
 		renderer.FontsInit(render, plat)
 
-		newSimConnectionChan := make(chan *sim.Connection, 2)
-		var controlClient *sim.ControlClient
-
-		localServer = <-localSimServerChan
-
 		if config.Sim != nil && !*resetSim {
-			if err := config.Sim.PostLoad(mapLibrary); err != nil {
-				lg.Errorf("Error in Sim PostLoad: %v", err)
-			} else {
-				var result sim.NewSimResult
-				if err := localServer.Call("SimManager.Add", config.Sim, &result); err != nil {
-					lg.Errorf("error restoring saved Sim: %v", err)
-				} else {
-					controlClient = sim.NewControlClient(*result.SimState, result.ControllerToken,
-						localServer.RPCClient, lg)
-					ui.showScenarioInfo = !ui.showScenarioInfo
-				}
+			if err := mgr.LoadLocalSim(config.Sim, lg); err != nil {
+				lg.Errorf("Error loading local sim: %v", err)
 			}
 		}
 
@@ -213,104 +214,35 @@ func main() {
 
 		config.Activate(controlClient, render, plat, eventStream, lg)
 
-		if controlClient == nil {
-			uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false,
-				config, plat, lg)
+		if !mgr.Connected() {
+			uiShowConnectDialog(mgr, false, config, plat, lg)
 		}
-
-		simStartTime := time.Now()
 
 		///////////////////////////////////////////////////////////////////////////
 		// Main event / rendering loop
 		lg.Info("Starting main loop")
 
-		stopConnectingRemoteServer := false
 		stats.startTime = time.Now()
 		for {
-			select {
-			case ns := <-newSimConnectionChan:
-				if controlClient != nil {
-					controlClient.Disconnect()
-				}
-				controlClient = sim.NewControlClient(ns.SimState, ns.SimProxy.ControllerToken,
-					ns.SimProxy.Client, lg)
-				simStartTime = time.Now()
-
-				if controlClient == nil {
-					uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer,
-						false, config, plat, lg)
-				} else {
-					ui.showScenarioInfo = !ui.showScenarioInfo
-					panes.Reset(config.DisplayRoot, controlClient.State, lg)
-				}
-
-			case remoteServerConn := <-remoteSimServerChan:
-				if err := remoteServerConn.Err; err != nil {
-					lg.Warn("Unable to connect to remote server", slog.Any("error", err))
-
-					if err.Error() == sim.ErrRPCVersionMismatch.Error() {
-						ShowErrorDialog(plat, lg,
-							"This version of vice is incompatible with the vice multi-controller server.\n"+
-								"If you're using an older version of vice, please upgrade to the latest\n"+
-								"version for multi-controller support. (If you're using a beta build, then\n"+
-								"thanks for your help testing vice; when the beta is released, the server\n"+
-								"will be updated as well.)")
-						stopConnectingRemoteServer = true
-					}
-					remoteServer = nil
-				} else {
-					remoteServer = remoteServerConn.Server
-				}
-
-			default:
-			}
 			plat.SetWindowTitle("vice: " + controlClient.Status())
 
 			if controlClient == nil {
-				SetDiscordStatus(DiscordStatus{Start: simStartTime}, config, lg)
+				SetDiscordStatus(DiscordStatus{Start: mgr.ConnectionStartTime()}, config, lg)
 			} else {
-				// Update discord RPC
 				SetDiscordStatus(DiscordStatus{
 					TotalDepartures: controlClient.State.TotalDepartures,
 					TotalArrivals:   controlClient.State.TotalArrivals,
 					Callsign:        controlClient.State.Callsign,
-					Start:           simStartTime,
+					Start:           mgr.ConnectionStartTime(),
 				}, config, lg)
 			}
 
-			if remoteServer == nil && time.Since(lastRemoteServerAttempt) > 10*time.Second && !stopConnectingRemoteServer {
-				lastRemoteServerAttempt = time.Now()
-				remoteSimServerChan = sim.TryConnectRemoteServer(*serverAddress, lg)
-			}
+			mgr.Update(eventStream, lg)
 
 			// Inform imgui about input events from the user.
 			plat.ProcessEvents()
 
 			stats.redraws++
-
-			// Let the world update its state based on messages from the
-			// network; a synopsis of changes to aircraft is then passed along
-			// to the window panes.
-			if controlClient != nil {
-				controlClient.GetUpdates(eventStream,
-					func(err error) {
-						eventStream.Post(sim.Event{
-							Type:    sim.StatusMessageEvent,
-							Message: "Error getting update from server: " + err.Error(),
-						})
-						if util.IsRPCServerError(err) {
-							uiShowModalDialog(NewModalDialogBox(&ErrorModalClient{
-								message: "Lost connection to the vice server.",
-							}, plat), true)
-
-							remoteServer = nil
-							controlClient = nil
-
-							uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer,
-								false, config, plat, lg)
-						}
-					})
-			}
 
 			plat.NewFrame()
 			imgui.NewFrame()
@@ -320,8 +252,7 @@ func main() {
 				ui.menuBarHeight, &config.AudioEnabled, lg)
 
 			// Draw the user interface
-			stats.drawUI = drawUI(newSimConnectionChan, &localServer, &remoteServer,
-				config, plat, render, controlClient, eventStream, lg)
+			stats.drawUI = drawUI(mgr, config, plat, render, controlClient, eventStream, lg)
 
 			// Wait for vsync
 			plat.PostRender()
@@ -333,12 +264,9 @@ func main() {
 
 			if plat.ShouldStop() && len(ui.activeModalDialogs) == 0 {
 				// Do this while we're still running the event loop.
-				saveSim := controlClient != nil && controlClient.RPCClient() == localServer.RPCClient
+				saveSim := mgr.ClientIsLocal()
 				config.SaveIfChanged(render, plat, controlClient, saveSim, lg)
-
-				if controlClient != nil {
-					controlClient.Disconnect()
-				}
+				mgr.Disconnect()
 				break
 			}
 		}
