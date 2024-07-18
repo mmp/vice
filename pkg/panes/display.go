@@ -413,7 +413,7 @@ func wmPaneIsPresent(pane Pane, root *DisplayNode) bool {
 	return found
 }
 
-// wmDrawPanes is called each time through the main rendering loop; it
+// DrawPanes is called each time through the main rendering loop; it
 // handles all of the details of drawing the Panes in the display
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should

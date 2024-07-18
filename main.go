@@ -225,7 +225,6 @@ func main() {
 		lg.Info("Starting main loop")
 
 		stopConnectingRemoteServer := false
-		frameIndex := 0
 		stats.startTime = time.Now()
 		for {
 			select {
@@ -300,13 +299,6 @@ func main() {
 
 			stats.redraws++
 
-			lastTime := time.Now()
-			timeMarker := func(d *time.Duration) {
-				now := time.Now()
-				*d = now.Sub(lastTime)
-				lastTime = now
-			}
-
 			// Let the world update its state based on messages from the
 			// network; a synopsis of changes to aircraft is then passed along
 			// to the window panes.
@@ -335,24 +327,20 @@ func main() {
 			imgui.NewFrame()
 
 			// Generate and render vice draw lists
-			stats.render = panes.DrawPanes(config.DisplayRoot, plat, render, controlClient,
+			stats.drawPanes = panes.DrawPanes(config.DisplayRoot, plat, render, controlClient,
 				ui.menuBarHeight, &config.AudioEnabled, lg)
 
-			timeMarker(&stats.drawPanes)
-
 			// Draw the user interface
-			drawUI(newSimConnectionChan, &localServer, &remoteServer, config, plat, render,
-				controlClient, eventStream, &stats, lg)
-			timeMarker(&stats.drawImgui)
+			stats.drawUI = drawUI(newSimConnectionChan, &localServer, &remoteServer,
+				config, plat, render, controlClient, eventStream, lg)
 
 			// Wait for vsync
 			plat.PostRender()
 
 			// Periodically log current memory use, etc.
-			if frameIndex%18000 == 0 {
+			if stats.redraws%18000 == 0 {
 				lg.Debug("performance", slog.Any("stats", stats))
 			}
-			frameIndex++
 
 			if plat.ShouldStop() && len(ui.activeModalDialogs) == 0 {
 				// Do this while we're still running the event loop.

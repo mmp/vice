@@ -16,10 +16,8 @@ import (
 // Stats collects a few statistics related to rendering and time spent in
 // various phases of the system.
 type Stats struct {
-	render    renderer.RendererStats
-	renderUI  renderer.RendererStats
-	drawImgui time.Duration
-	drawPanes time.Duration
+	drawPanes renderer.RendererStats
+	drawUI    renderer.RendererStats
 	startTime time.Time
 	redraws   int
 }
@@ -42,8 +40,6 @@ func (stats Stats) LogValue(lg *log.Logger) slog.Value {
 		slog.Float64("mallocs_per_second", mallocsPerSecond),
 		slog.Int64("active_mallocs", int64(mem.Mallocs-mem.Frees)),
 		slog.Int64("memory_in_use", int64(mem.HeapAlloc)),
-		slog.Duration("draw_panes", stats.drawPanes),
-		slog.Duration("draw_imgui", stats.drawImgui),
-		slog.Any("render", stats.render),
-		slog.Any("ui", stats.renderUI))
+		slog.Any("draw_panes", stats.drawPanes),
+		slog.Any("draw_ui", stats.drawUI))
 }

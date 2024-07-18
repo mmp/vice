@@ -344,7 +344,7 @@ func uiEndDisable(b bool) {
 
 func drawUI(ch chan *sim.Connection, localServer **sim.Server, remoteServer **sim.Server,
 	config *Config, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
-	eventStream *sim.EventStream, stats *Stats, lg *log.Logger) {
+	eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -493,7 +493,7 @@ func drawUI(ch chan *sim.Connection, localServer **sim.Server, remoteServer **si
 	cb := renderer.GetCommandBuffer()
 	defer renderer.ReturnCommandBuffer(cb)
 	renderer.GenerateImguiCommandBuffer(cb, p.DisplaySize(), p.FramebufferSize(), lg)
-	stats.renderUI = r.RenderCommandBuffer(cb)
+	return r.RenderCommandBuffer(cb)
 }
 
 func drawActiveDialogBoxes() {
