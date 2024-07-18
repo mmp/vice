@@ -15,7 +15,6 @@ import (
 	"log/slog"
 	_ "net/http/pprof"
 	"os"
-	"path"
 	"runtime"
 	"runtime/debug"
 	"strings"
@@ -80,21 +79,6 @@ func main() {
 
 	// Initialize the logging system first and foremost.
 	lg := log.New(*server, *logLevel)
-
-	// If the path is non-absolute, convert it to an absolute path
-	// w.r.t. the current directory.  (This is to work around that vice
-	// changes the working directory to above where the resources are,
-	// which in turn was causing profiling data to be written in an
-	// unexpected place...)
-	absPath := func(p *string) {
-		if p != nil && *p != "" && !path.IsAbs(*p) {
-			if cwd, err := os.Getwd(); err == nil {
-				*p = path.Join(cwd, *p)
-			}
-		}
-	}
-	absPath(memprofile)
-	absPath(cpuprofile)
 
 	profiler, err := util.CreateProfiler(*cpuprofile, *memprofile)
 	if err != nil {
@@ -230,14 +214,8 @@ func main() {
 		config.Activate(controlClient, render, plat, eventStream, lg)
 
 		if controlClient == nil {
-			uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false, config, plat, lg)
-		}
-
-		if !config.AskedDiscordOptIn {
-			uiShowDiscordOptInDialog(plat, config)
-		}
-		if !config.NotifiedNewCommandSyntax {
-			uiShowNewCommandSyntaxDialog(plat, config)
+			uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer, false,
+				config, plat, lg)
 		}
 
 		simStartTime := time.Now()
@@ -262,11 +240,9 @@ func main() {
 				if controlClient == nil {
 					uiShowConnectDialog(newSimConnectionChan, &localServer, &remoteServer,
 						false, config, plat, lg)
-				} else if controlClient != nil {
+				} else {
 					ui.showScenarioInfo = !ui.showScenarioInfo
-					config.DisplayRoot.VisitPanes(func(p panes.Pane) {
-						p.Reset(controlClient.State, lg)
-					})
+					panes.Reset(config.DisplayRoot, controlClient.State, lg)
 				}
 
 			case remoteServerConn := <-remoteSimServerChan:

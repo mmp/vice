@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"path"
 	"runtime/pprof"
 )
 
@@ -17,6 +18,22 @@ type Profiler struct {
 
 func CreateProfiler(cpu, mem string) (Profiler, error) {
 	p := Profiler{}
+
+	// If the path is non-absolute, convert it to an absolute path
+	// w.r.t. the current directory.  (This is to work around that vice
+	// changes the working directory to above where the resources are,
+	// which in turn was causing profiling data to be written in an
+	// unexpected place...)
+	absPath := func(p string) string {
+		if p != "" && !path.IsAbs(p) {
+			if cwd, err := os.Getwd(); err == nil {
+				return path.Join(cwd, p)
+			}
+		}
+		return p
+	}
+	cpu = absPath(cpu)
+	cpu = absPath(mem)
 
 	var err error
 	if cpu != "" {

@@ -649,3 +649,9 @@ func Activate(root *DisplayNode, state *sim.State, r renderer.Renderer, p platfo
 		pane.Activate(state, r, p, eventStream, lg)
 	})
 }
+
+func Reset(root *DisplayNode, state sim.State, lg *log.Logger) {
+	root.VisitPanes(func(p Pane) {
+		p.Reset(state, lg)
+	})
+}

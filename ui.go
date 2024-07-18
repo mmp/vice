@@ -277,6 +277,13 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 	if config.WhatsNewIndex < len(whatsNew) {
 		uiShowModalDialog(NewModalDialogBox(&WhatsNewModalClient{config: config}, p), false)
 	}
+
+	if !config.AskedDiscordOptIn {
+		uiShowDiscordOptInDialog(p, config)
+	}
+	if !config.NotifiedNewCommandSyntax {
+		uiShowNewCommandSyntaxDialog(p, config)
+	}
 }
 
 func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
