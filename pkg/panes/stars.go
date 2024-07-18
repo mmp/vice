@@ -68,8 +68,8 @@ var (
 	STARSATPAWarningColor = renderer.RGB{1, 1, 0}
 	STARSATPAAlertColor   = renderer.RGB{1, .215, 0}
 
-	STARSDCBButtonColor         = renderer.RGB{0, .4, 0}
-	STARSDCBActiveButtonColor   = renderer.RGB{0, .8, 0}
+	STARSDCBButtonColor         = renderer.RGB{0, .173, 0}
+	STARSDCBActiveButtonColor   = renderer.RGB{0, .305, 0}
 	STARSDCBTextColor           = renderer.RGB{1, 1, 1}
 	STARSDCBTextSelectedColor   = renderer.RGB{1, 1, 0}
 	STARSDCBDisabledButtonColor = renderer.RGB{.4, .4, .4}
