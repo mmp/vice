@@ -33,7 +33,7 @@ func CreateProfiler(cpu, mem string) (Profiler, error) {
 		return p
 	}
 	cpu = absPath(cpu)
-	cpu = absPath(mem)
+	mem = absPath(mem)
 
 	var err error
 	if cpu != "" {
