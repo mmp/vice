@@ -60,7 +60,7 @@ func (l *LoggingMutex) Lock(lg *log.Logger) {
 	heldMutexesMutex.Unlock()
 
 	l.acq = time.Now()
-	l.acqStack = log.Callstack()
+	l.acqStack = log.Callstack(l.acqStack)
 	w := l.acq.Sub(tryTime)
 	lg.Debug("acquired mutex", slog.Any("mutex", l), slog.Duration("wait", w))
 	if w > time.Second {

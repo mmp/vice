@@ -111,7 +111,7 @@ func New(server bool, level string) *Logger {
 // go through to slog.)
 func (l *Logger) Debug(msg string, args ...any) {
 	if l != nil && l.Logger.Enabled(nil, slog.LevelDebug) {
-		args = append([]any{slog.Any("callstack", Callstack())}, args...)
+		args = append([]any{slog.Any("callstack", Callstack(nil))}, args...)
 		l.Logger.Debug(msg, args...)
 	}
 }
@@ -120,25 +120,25 @@ func (l *Logger) Debug(msg string, args ...any) {
 // printf-style formatting of the provided args.
 func (l *Logger) Debugf(msg string, args ...any) {
 	if l != nil && l.Logger.Enabled(nil, slog.LevelDebug) {
-		l.Logger.Debug(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
+		l.Logger.Debug(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil)))
 	}
 }
 
 func (l *Logger) Info(msg string, args ...any) {
 	if l != nil && l.Logger.Enabled(nil, slog.LevelInfo) {
-		args = append([]any{slog.Any("callstack", Callstack())}, args...)
+		args = append([]any{slog.Any("callstack", Callstack(nil))}, args...)
 		l.Logger.Info(msg, args...)
 	}
 }
 
 func (l *Logger) Infof(msg string, args ...any) {
 	if l != nil && l.Logger.Enabled(nil, slog.LevelInfo) {
-		l.Logger.Info(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
+		l.Logger.Info(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil)))
 	}
 }
 
 func (l *Logger) Warn(msg string, args ...any) {
-	args = append([]any{slog.Any("callstack", Callstack())}, args...)
+	args = append([]any{slog.Any("callstack", Callstack(nil))}, args...)
 	if l == nil {
 		slog.Warn(msg, args...)
 	} else {
@@ -148,14 +148,14 @@ func (l *Logger) Warn(msg string, args ...any) {
 
 func (l *Logger) Warnf(msg string, args ...any) {
 	if l == nil {
-		slog.Warn(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
+		slog.Warn(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil)))
 	} else {
-		l.Logger.Warn(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
+		l.Logger.Warn(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil)))
 	}
 }
 
 func (l *Logger) Error(msg string, args ...any) {
-	args = append([]any{slog.Any("callstack", Callstack())}, args...)
+	args = append([]any{slog.Any("callstack", Callstack(nil))}, args...)
 	slog.Error(msg, args...)
 	if l != nil {
 		l.Logger.Error(msg, args...)
@@ -163,9 +163,9 @@ func (l *Logger) Error(msg string, args ...any) {
 }
 
 func (l *Logger) Errorf(msg string, args ...any) {
-	slog.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
+	slog.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil)))
 	if l != nil {
-		l.Logger.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack()))
+		l.Logger.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil)))
 	}
 }
 
