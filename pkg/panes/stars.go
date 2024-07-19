@@ -6816,12 +6816,6 @@ func (sp *STARSPane) formatDatablocks(ctx *Context, ac *av.Aircraft) []STARSData
 	return nil
 }
 
-func sameFacility(ctx *Context, receiving string) bool {
-	ca, oka := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]
-	cb, okb := ctx.ControlClient.Controllers[receiving]
-	return oka && okb && ca.FacilityIdentifier == cb.FacilityIdentifier
-}
-
 func (sp *STARSPane) datablockColor(ctx *Context, ac *av.Aircraft) (color renderer.RGB, brightness STARSBrightness) {
 	ps := sp.CurrentPreferenceSet
 	dt := sp.datablockType(ctx, ac)

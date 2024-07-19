@@ -225,12 +225,6 @@ type serverStats struct {
 	Errors    string
 }
 
-type serverLogFile struct {
-	Filename string
-	Date     string
-	Size     int64
-}
-
 func formatBytes(v int64) string {
 	if v < 1024 {
 		return fmt.Sprintf("%d B", v)

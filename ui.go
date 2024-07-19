@@ -339,7 +339,7 @@ func uiEndDisable(b bool) {
 	}
 }
 
-func drawUI(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
+func uiDraw(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
 	controlClient *sim.ControlClient, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
 	if ui.newReleaseDialogChan != nil {
 		select {
@@ -649,7 +649,6 @@ func (c *ConnectModalClient) Draw() int {
 }
 
 type RatesModalClient struct {
-	ch chan *sim.Connection
 	lg *log.Logger
 	// Hold on to the connect client both to pick up various parameters
 	// from it but also so we can go back to it when "Previous" is pressed.

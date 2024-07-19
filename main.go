@@ -253,7 +253,7 @@ func main() {
 				ui.menuBarHeight, &config.AudioEnabled, lg)
 
 			// Draw the user interface
-			stats.drawUI = drawUI(mgr, config, plat, render, controlClient, eventStream, lg)
+			stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, eventStream, lg)
 
 			// Wait for vsync
 			plat.PostRender()

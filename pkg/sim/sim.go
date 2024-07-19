@@ -2090,7 +2090,6 @@ func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrac
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	callsign = util.SortedMapKeys(s.State.Aircraft)[0]
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			_, _, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
