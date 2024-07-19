@@ -5,6 +5,7 @@
 package panes
 
 import (
+	"encoding/json"
 	"strconv"
 	"strings"
 
@@ -48,9 +49,23 @@ type FlightStripPane struct {
 	selectedAircraft string
 }
 
+func init() {
+	RegisterUnmarshalPane("FlightStripPane", func(d []byte) (Pane, error) {
+		var p FlightStripPane
+		err := json.Unmarshal(d, &p)
+		return &p, err
+	})
+}
+
 func NewFlightStripPane() *FlightStripPane {
 	return &FlightStripPane{
-		AddPushed:          true,
+		AddPushed:               true,
+		AutoAddDepartures:       true,
+		AutoAddTracked:          true,
+		AutoAddAcceptedHandoffs: true,
+		AutoRemoveDropped:       true,
+		AutoRemoveHandoffs:      true,
+
 		FontSize:           12,
 		selectedStrip:      -1,
 		selectedAnnotation: -1,

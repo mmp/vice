@@ -7,6 +7,7 @@ package panes
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/mmp/vice/pkg/log"
@@ -104,27 +105,25 @@ func unmarshalPaneHelper[T Pane](data []byte) (Pane, error) {
 	return p, err
 }
 
-func UnmarshalPane(paneType string, data []byte) (Pane, error) {
-	switch paneType {
-	case "":
-		// nil pane
-		return nil, nil
+var paneUnmarshalRegistry map[string]func([]byte) (Pane, error) = make(map[string]func([]byte) (Pane, error))
 
-	case "*main.EmptyPane", "*panes.EmptyPane":
-		return unmarshalPaneHelper[*EmptyPane](data)
-
-	case "*main.FlightStripPane", "*panes.FlightStripPane":
-		return unmarshalPaneHelper[*FlightStripPane](data)
-
-	case "*main.MessagesPane", "*panes.MessagesPane":
-		return unmarshalPaneHelper[*MessagesPane](data)
-
-	case "*main.STARSPane", "*panes.STARSPane":
-		return unmarshalPaneHelper[*STARSPane](data)
-
-	default:
-		return NewEmptyPane(), fmt.Errorf("%s: Unhandled type in config file", paneType)
+func RegisterUnmarshalPane(name string, fn func([]byte) (Pane, error)) {
+	if _, ok := paneUnmarshalRegistry[name]; ok {
+		panic(name + " registered multiple times")
 	}
+	paneUnmarshalRegistry[name] = fn
+}
+
+func UnmarshalPane(paneType string, data []byte) (Pane, error) {
+	if paneType == "" {
+		return nil, nil
+	} else if _, name, ok := strings.Cut(paneType, "."); ok { // e.g. "*panes.MessagesPane"
+		if fn, ok := paneUnmarshalRegistry[name]; ok {
+			return fn(data)
+		}
+	}
+	fmt.Printf("reg %+v\n\n", paneUnmarshalRegistry)
+	return NewEmptyPane(), fmt.Errorf("%s: Unhandled type in config file", paneType)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -137,6 +136,14 @@ type EmptyPane struct {
 }
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
+
+func init() {
+	RegisterUnmarshalPane("EmptyPane", func(d []byte) (Pane, error) {
+		var p EmptyPane
+		err := json.Unmarshal(d, &p)
+		return &p, err
+	})
+}
 
 func (ep *EmptyPane) Activate(*sim.State, renderer.Renderer, platform.Platform,
 	*sim.EventStream, *log.Logger) {

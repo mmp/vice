@@ -1,8 +1,8 @@
-// pkg/panes/radartools.go
+// pkg/panes/stars/radartools.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package panes
+package stars
 
 import (
 	_ "embed"
@@ -19,6 +19,7 @@ import (
 
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 )
@@ -442,7 +443,7 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D, lg *log.Logger
 
 // Draw draws the current weather radar image, if available. (If none is yet
 // available, it returns rather than stalling waiting for it).
-func (w *WeatherRadar) Draw(ctx *Context, intensity float32, contrast float32,
+func (w *WeatherRadar) Draw(ctx *panes.Context, intensity float32, contrast float32,
 	active [NumWxLevels]bool, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	select {
 	case w.wxCb = <-w.cbChan:
@@ -477,8 +478,8 @@ func (w *WeatherRadar) Draw(ctx *Context, intensity float32, contrast float32,
 // rotation angle, if any.  Drawing commands are added to the provided
 // command buffer, which is assumed to have projection matrices set up for
 // drawing using window coordinates.
-func DrawCompass(p math.Point2LL, ctx *Context, rotationAngle float32, font *renderer.Font, color renderer.RGB,
-	paneBounds math.Extent2D, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func DrawCompass(p math.Point2LL, ctx *panes.Context, rotationAngle float32, font *renderer.Font,
+	color renderer.RGB, paneBounds math.Extent2D, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	// Window coordinates of the center point.
 	// TODO: should we explicitly handle the case of this being outside the window?
 	pw := transforms.WindowFromLatLongP(p)
@@ -556,8 +557,8 @@ func DrawCompass(p math.Point2LL, ctx *Context, rotationAngle float32, font *ren
 
 // DrawRangeRings draws ten circles around the specified lat-long point in
 // steps of the specified radius (in nm).
-func DrawRangeRings(ctx *Context, center math.Point2LL, radius float32, color renderer.RGB, transforms ScopeTransformations,
-	cb *renderer.CommandBuffer) {
+func DrawRangeRings(ctx *panes.Context, center math.Point2LL, radius float32, color renderer.RGB,
+	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	pixelDistanceNm := transforms.PixelDistanceNM(ctx.ControlClient.NmPerLongitude)
 	centerWindow := transforms.WindowFromLatLongP(center)
 
@@ -678,13 +679,13 @@ var (
 
 // If the user has run the "find" command to highlight a point in the
 // world, draw a red circle around that point for a few seconds.
-func DrawHighlighted(ctx *Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func DrawHighlighted(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	remaining := time.Until(highlightedLocationEndTime)
 	if remaining < 0 {
 		return
 	}
 
-	color := UIErrorColor
+	color := panes.UIErrorColor
 	fade := 1.5
 	if sec := remaining.Seconds(); sec < fade {
 		x := float32(sec / fade)

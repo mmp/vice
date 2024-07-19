@@ -15,6 +15,7 @@ import (
 	"github.com/mmp/imgui-go/v4"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/panes"
+	"github.com/mmp/vice/pkg/panes/stars"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
@@ -228,7 +229,8 @@ func (gc *Config) Activate(c *sim.ControlClient, r renderer.Renderer, p platform
 	}
 
 	if gc.DisplayRoot == nil {
-		gc.DisplayRoot = panes.NewDisplayPanes(state)
+		gc.DisplayRoot = panes.NewDisplayPanes(stars.NewSTARSPane(state), panes.NewMessagesPane(),
+			panes.NewFlightStripPane())
 	}
 
 	panes.Activate(gc.DisplayRoot, state, r, p, eventStream, lg)

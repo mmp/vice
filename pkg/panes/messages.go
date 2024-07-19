@@ -5,6 +5,7 @@
 package panes
 
 import (
+	"encoding/json"
 	"log/slog"
 	"slices"
 	"strings"
@@ -41,6 +42,14 @@ type MessagesPane struct {
 	history       []CLIInput
 	historyOffset int // for up arrow / downarrow. Note: counts from the end! 0 when not in history
 	savedInput    CLIInput
+}
+
+func init() {
+	RegisterUnmarshalPane("MessagesPane", func(d []byte) (Pane, error) {
+		var p MessagesPane
+		err := json.Unmarshal(d, &p)
+		return &p, err
+	})
 }
 
 func NewMessagesPane() *MessagesPane {

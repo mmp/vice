@@ -14,6 +14,7 @@ package panes
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
 	"time"
 
 	"github.com/mmp/imgui-go/v4"
@@ -439,12 +440,20 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 	}
 	root = filter(root)
 
+	getKeyboardPanes := func() []Pane {
+		var kp []Pane
+		root.VisitPanes(func(p Pane) {
+			if p.CanTakeKeyboardFocus() {
+				kp = append(kp, p)
+			}
+		})
+		return kp
+	}
+
 	if wm.focus.Current() == nil || !wmPaneIsPresent(wm.focus.Current(), root) {
-		sp := getPaneByType[*STARSPane](root)
-		if sp == nil {
-			panic("No STARSPane?")
-		}
-		wm.focus = WMKeyboardFocus{initial: sp, current: sp}
+		kp := getKeyboardPanes()
+		focus := kp[0]
+		wm.focus = WMKeyboardFocus{initial: focus, current: focus}
 	}
 
 	// Useful values related to the display size.
@@ -500,14 +509,12 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 
 	if keyboard != nil && keyboard.WasPressed(platform.KeyTab) {
 		cur := wm.focus.Current()
-		if _, ok := cur.(*MessagesPane); ok {
-			if s := getPaneByType[*STARSPane](root); s != nil {
-				wm.focus.Take(s)
-			}
-		} else if _, ok := cur.(*STARSPane); ok {
-			if m := getPaneByType[*MessagesPane](root); m != nil {
-				wm.focus.Take(m)
-			}
+		kp := getKeyboardPanes()
+		if idx := slices.Index(kp, cur); idx == -1 {
+			panic("Current focus pane not found in keyboard panes?")
+		} else {
+			next := kp[(idx+1)%len(kp)]
+			wm.focus.Take(next)
 		}
 	}
 
@@ -575,27 +582,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 	return renderer.RendererStats{}
 }
 
-func getPaneByType[T any](root *DisplayNode) T {
-	var t T
-	root.VisitPanes(func(pane Pane) {
-		if p, ok := pane.(T); ok {
-			t = p
-		}
-	})
-	return t
-}
-
-func NewDisplayPanes(state *sim.State) *DisplayNode {
-	stars := NewSTARSPane(state)
-	messages := NewMessagesPane()
-
-	fsp := NewFlightStripPane()
-	fsp.AutoAddDepartures = true
-	fsp.AutoAddTracked = true
-	fsp.AutoAddAcceptedHandoffs = true
-	fsp.AutoRemoveDropped = true
-	fsp.AutoRemoveHandoffs = true
-
+func NewDisplayPanes(stars, messages, fsp Pane) *DisplayNode {
 	return &DisplayNode{
 		SplitLine: SplitLine{
 			Pos:  0.8,
