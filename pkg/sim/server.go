@@ -24,6 +24,8 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
+const ViceServerAddress = "vice.pharr.org"
+const ViceServerPort = 8000 + ViceRPCVersion
 const ViceRPCVersion = 16
 
 type Server struct {

@@ -33,9 +33,6 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
-const ViceServerAddress = "vice.pharr.org"
-const ViceServerPort = 8001
-
 var (
 	//go:embed resources/version.txt
 	buildVersion string
@@ -46,8 +43,8 @@ var (
 	logLevel          = flag.String("loglevel", "info", "logging level: debug, info, warn, error")
 	lintScenarios     = flag.Bool("lint", false, "check the validity of the built-in scenarios")
 	server            = flag.Bool("runserver", false, "run vice scenario server")
-	serverPort        = flag.Int("port", ViceServerPort, "port to listen on when running server")
-	serverAddress     = flag.String("server", ViceServerAddress+fmt.Sprintf(":%d", ViceServerPort), "IP address of vice multi-controller server")
+	serverPort        = flag.Int("port", sim.ViceServerPort, "port to listen on when running server")
+	serverAddress     = flag.String("server", sim.ViceServerAddress+fmt.Sprintf(":%d", sim.ViceServerPort), "IP address of vice multi-controller server")
 	scenarioFilename  = flag.String("scenario", "", "filename of JSON file with a scenario definition")
 	videoMapFilename  = flag.String("videomap", "", "filename of JSON file with video map definitions")
 	broadcastMessage  = flag.String("broadcast", "", "message to broadcast to all active clients on the server")
@@ -85,6 +82,10 @@ func main() {
 		lg.Errorf("%v", err)
 	}
 	defer profiler.Cleanup()
+
+	if *serverAddress != "" && !strings.Contains(*serverAddress, ":") {
+		*serverAddress += fmt.Sprintf(":%d", sim.ViceServerPort)
+	}
 
 	if *lintScenarios {
 		var e util.ErrorLogger

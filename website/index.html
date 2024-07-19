@@ -2879,11 +2879,16 @@ above</a> for information about the CRDA system list.</p>
               <ul>
                 <li><tt>-runserver</tt> launches a <i>vice</i> server on
                 your local system</li>
-                <li><tt>-server</tt> specifies the IP address and port of a <i>vice</i>
-                  server to connect to. Specifying <tt>localhost:8000</tt>
-                  will connect to a local server launched via <tt>-runserver</tt>.</li>
+                <li><tt>-server</tt> specifies the IP address and
+                  (optionally), the port of a <i>vice</i>
+                  server to connect to. Specifying <tt>localhost</tt>
+                  will connect to a local server launched
+                  via <tt>-runserver</tt>.
+                </li>
                 <li><tt>-port</tt> allows specifying a custom port number
-                for the server to listen to.</li>
+                  for the server to listen to.  If this is used, then the
+                  address supplied to <tt>-server</tt> should be of the
+                  form <i>hostname:port</i>.</li>
                 </ul>
 
             </section><!--//docs-intro-->
