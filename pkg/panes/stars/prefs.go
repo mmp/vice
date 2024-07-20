@@ -10,7 +10,7 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
-type STARSPreferenceSet struct {
+type PreferenceSet struct {
 	Name string
 
 	DisplayDCB  bool
@@ -204,7 +204,7 @@ type STARSPreferenceSet struct {
 	}
 }
 
-func (ps *STARSPreferenceSet) ResetCRDAState(rwys []STARSConvergingRunways) {
+func (ps *PreferenceSet) ResetCRDAState(rwys []STARSConvergingRunways) {
 	ps.CRDA.RunwayPairState = nil
 	state := CRDARunwayPairState{}
 	// The first runway is enabled by default
@@ -214,13 +214,13 @@ func (ps *STARSPreferenceSet) ResetCRDAState(rwys []STARSConvergingRunways) {
 	}
 }
 
-func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) STARSPreferenceSet {
-	var ps STARSPreferenceSet
+func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) PreferenceSet {
+	var ps PreferenceSet
 
 	ps.Name = name
 
 	ps.DisplayDCB = true
-	ps.DCBPosition = DCBPositionTop
+	ps.DCBPosition = dcbPositionTop
 
 	if ss != nil {
 		ps.Center = ss.GetInitialCenter()
@@ -327,7 +327,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) STARSPreferen
 	return ps
 }
 
-func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
+func (ps *PreferenceSet) Duplicate() PreferenceSet {
 	dupe := *ps
 	dupe.SelectedBeaconCodes = util.DuplicateSlice(ps.SelectedBeaconCodes)
 	dupe.CRDA.RunwayPairState = util.DuplicateSlice(ps.CRDA.RunwayPairState)
@@ -335,7 +335,7 @@ func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 	return dupe
 }
 
-func (ps *STARSPreferenceSet) Activate(sp *STARSPane) {
+func (ps *PreferenceSet) Activate(sp *STARSPane) {
 	// It should only take integer values but it's a float32 and we
 	// previously didn't enforce this...
 	ps.Range = float32(int(ps.Range))
@@ -380,7 +380,7 @@ func (ps *STARSPreferenceSet) Activate(sp *STARSPane) {
 	}
 }
 
-func (ps *STARSPreferenceSet) Upgrade(from, to int) {
+func (ps *PreferenceSet) Upgrade(from, to int) {
 	if from < 8 {
 		ps.Brightness.DCB = 60
 		ps.CharSize.DCB = 1
@@ -419,7 +419,7 @@ func (ps *STARSPreferenceSet) Upgrade(from, to int) {
 		ps.CharSize.Tools = math.Max(0, ps.CharSize.Tools-1)
 		ps.CharSize.PositionSymbols = math.Max(0, ps.CharSize.PositionSymbols-1)
 
-		if ps.DisplayDCB && ps.DCBPosition == DCBPositionTop {
+		if ps.DisplayDCB && ps.DCBPosition == dcbPositionTop {
 			shift := func(y *float32) {
 				*y = math.Max(0, *y-.05)
 			}

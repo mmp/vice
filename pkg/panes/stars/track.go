@@ -45,7 +45,7 @@ func (sp *STARSPane) getTrack(ctx *panes.Context, ac *av.Aircraft) *sim.TrackInf
 	return trk
 }
 
-type STARSAircraftState struct {
+type AircraftState struct {
 	// Independently of the track history, we store the most recent track
 	// from the sensor as well as the previous one. This gives us the
 	// freshest possible information for things like calculating headings,
@@ -146,11 +146,11 @@ const (
 	GhostStateForced
 )
 
-func (s *STARSAircraftState) TrackAltitude() int {
+func (s *AircraftState) TrackAltitude() int {
 	return s.track.Altitude
 }
 
-func (s *STARSAircraftState) TrackDeltaAltitude() int {
+func (s *AircraftState) TrackDeltaAltitude() int {
 	if s.previousTrack.Position.IsZero() {
 		// No previous track
 		return 0
@@ -158,15 +158,15 @@ func (s *STARSAircraftState) TrackDeltaAltitude() int {
 	return s.track.Altitude - s.previousTrack.Altitude
 }
 
-func (s *STARSAircraftState) TrackPosition() math.Point2LL {
+func (s *AircraftState) TrackPosition() math.Point2LL {
 	return s.track.Position
 }
 
-func (s *STARSAircraftState) TrackGroundspeed() int {
+func (s *AircraftState) TrackGroundspeed() int {
 	return s.track.Groundspeed
 }
 
-func (s *STARSAircraftState) HaveHeading() bool {
+func (s *AircraftState) HaveHeading() bool {
 	return !s.previousTrack.Position.IsZero()
 }
 
@@ -174,7 +174,7 @@ func (s *STARSAircraftState) HaveHeading() bool {
 // extrapolated path.  Thus, it includes the effect of wind.  The returned
 // vector is scaled so that it represents where it is expected to be one
 // minute in the future.
-func (s *STARSAircraftState) HeadingVector(nmPerLongitude, magneticVariation float32) math.Point2LL {
+func (s *AircraftState) HeadingVector(nmPerLongitude, magneticVariation float32) math.Point2LL {
 	if !s.HaveHeading() {
 		return math.Point2LL{}
 	}
@@ -188,20 +188,20 @@ func (s *STARSAircraftState) HeadingVector(nmPerLongitude, magneticVariation flo
 	return math.NM2LL(v, nmPerLongitude)
 }
 
-func (s *STARSAircraftState) TrackHeading(nmPerLongitude float32) float32 {
+func (s *AircraftState) TrackHeading(nmPerLongitude float32) float32 {
 	if !s.HaveHeading() {
 		return 0
 	}
 	return math.Heading2LL(s.previousTrack.Position, s.track.Position, nmPerLongitude, 0)
 }
 
-func (s *STARSAircraftState) LostTrack(now time.Time) bool {
+func (s *AircraftState) LostTrack(now time.Time) bool {
 	// Only return true if we have at least one valid track from the past
 	// but haven't heard from the aircraft recently.
 	return !s.track.Position.IsZero() && now.Sub(s.track.Time) > 30*time.Second
 }
 
-func (s *STARSAircraftState) Ident(now time.Time) bool {
+func (s *AircraftState) Ident(now time.Time) bool {
 	return !s.IdentStart.IsZero() && s.IdentStart.Before(now) && s.IdentEnd.After(now)
 }
 
@@ -209,8 +209,8 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	// First handle changes in world.Aircraft
 	for callsign, ac := range ctx.ControlClient.Aircraft {
 		if _, ok := sp.Aircraft[callsign]; !ok {
-			// First we've seen it; create the *STARSAircraftState for it
-			sa := &STARSAircraftState{}
+			// First we've seen it; create the *AircraftState for it
+			sa := &AircraftState{}
 			if ac.TrackingController == ctx.ControlClient.Callsign || ac.ControllingController == ctx.ControlClient.Callsign {
 				sa.DatablockType = FullDatablock
 			}
@@ -633,7 +633,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *STARSAircraftState, heading float32, ctx *panes.Context,
+func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, heading float32, ctx *panes.Context,
 	transforms ScopeTransformations, trackId string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder, scale float32) {
 	ps := sp.CurrentPreferenceSet
@@ -860,7 +860,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, ac *av.Aircraft) (a
 }
 
 func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, aircraft []*av.Aircraft) {
-	inCAVolumes := func(state *STARSAircraftState) bool {
+	inCAVolumes := func(state *AircraftState) bool {
 		for _, vol := range ctx.ControlClient.InhibitCAVolumes() {
 			if vol.Inside(state.TrackPosition(), state.TrackAltitude()) {
 				return true
@@ -998,7 +998,7 @@ type ModeledAircraft struct {
 	landingSpeed float32
 }
 
-func MakeModeledAircraft(ac *av.Aircraft, state *STARSAircraftState, threshold math.Point2LL) ModeledAircraft {
+func MakeModeledAircraft(ac *av.Aircraft, state *AircraftState, threshold math.Point2LL) ModeledAircraft {
 	ma := ModeledAircraft{
 		callsign:  ac.Callsign,
 		p:         math.LL2NM(state.TrackPosition(), ac.NmPerLongitude()),

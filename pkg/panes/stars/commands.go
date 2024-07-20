@@ -45,7 +45,7 @@ const (
 	CommandModeSiteMenu
 )
 
-type STARSCommandStatus struct {
+type CommandStatus struct {
 	clear  bool
 	output string
 	err    error
@@ -108,7 +108,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			}
 		case platform.KeyEscape:
 			sp.resetInputState()
-			sp.activeDCBMenu = DCBMenuMain
+			sp.activeDCBMenu = dcbMenuMain
 			// Also disable any mouse capture from spinners, just in case
 			// the user is mashing escape to get out of one.
 			sp.disableMenuSpinner(ctx)
@@ -123,7 +123,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			if ctx.Keyboard.WasPressed(platform.KeyControl) {
 				if ps.DisplayDCB {
 					sp.disableMenuSpinner(ctx)
-					sp.activeDCBMenu = DCBMenuMaps
+					sp.activeDCBMenu = dcbMenuMaps
 				}
 				sp.resetInputState()
 				sp.commandMode = CommandModeMaps
@@ -131,14 +131,14 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		case platform.KeyF3:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
-				sp.activeDCBMenu = DCBMenuBrite
+				sp.activeDCBMenu = dcbMenuBrite
 			} else {
 				sp.resetInputState()
 				sp.commandMode = CommandModeInitiateControl
 			}
 		case platform.KeyF4:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
-				sp.activeDCBMenu = DCBMenuMain
+				sp.activeDCBMenu = dcbMenuMain
 				sp.activateMenuSpinner(MakeLeaderLineLengthSpinner(&ps.LeaderLineLength))
 				sp.resetInputState()
 				sp.commandMode = CommandModeLDR
@@ -149,7 +149,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		case platform.KeyF5:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
-				sp.activeDCBMenu = DCBMenuCharSize
+				sp.activeDCBMenu = dcbMenuCharSize
 			} else {
 				sp.resetInputState()
 				sp.commandMode = CommandModeHandOff
@@ -160,10 +160,10 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		case platform.KeyF7:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
-				if sp.activeDCBMenu == DCBMenuMain {
-					sp.activeDCBMenu = DCBMenuAux
+				if sp.activeDCBMenu == dcbMenuMain {
+					sp.activeDCBMenu = dcbMenuAux
 				} else {
-					sp.activeDCBMenu = DCBMenuMain
+					sp.activeDCBMenu = dcbMenuMain
 				}
 			} else {
 				sp.resetInputState()
@@ -194,7 +194,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		case platform.KeyF11:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
-				sp.activeDCBMenu = DCBMenuSite
+				sp.activeDCBMenu = dcbMenuSite
 			} else {
 				sp.resetInputState()
 				sp.commandMode = CommandModeCollisionAlert
@@ -203,7 +203,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 	}
 }
 
-func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status STARSCommandStatus) {
+func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status CommandStatus) {
 	// If there's an active spinner, it gets keyboard input.
 	if activeSpinner != nil {
 		if err := activeSpinner.KeyboardInput(cmd); err != nil {
@@ -1385,7 +1385,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				ps.DisplayVideoMap[i] = false
 			}
 			ps.SystemMapVisible = make(map[int]interface{})
-			sp.activeDCBMenu = DCBMenuMain
+			sp.activeDCBMenu = dcbMenuMain
 			status.clear = true
 			return
 		} else if n := len(cmd); n > 0 {
@@ -1410,7 +1410,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				} else if (!ps.DisplayVideoMap[mi] && op == "T") || op == "E" {
 					ps.DisplayVideoMap[mi] = true
 				}
-				sp.activeDCBMenu = DCBMenuMain
+				sp.activeDCBMenu = dcbMenuMain
 				status.clear = true
 			} else if _, ok := sp.systemMaps[idx]; ok {
 				if _, ok := ps.SystemMapVisible[idx]; (ok && op == "T") || op == "I" {
@@ -1418,7 +1418,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				} else if (!ok && op == "T") || op == "E" {
 					ps.SystemMapVisible[idx] = nil
 				}
-				sp.activeDCBMenu = DCBMenuMain
+				sp.activeDCBMenu = dcbMenuMain
 				status.clear = true
 			} else {
 				status.err = ErrSTARSIllegalMap
@@ -1685,7 +1685,7 @@ func (sp *STARSPane) cancelHandoff(ctx *panes.Context, callsign string) {
 }
 
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, mousePosition [2]float32,
-	ghosts []*av.GhostAircraft, transforms ScopeTransformations) (status STARSCommandStatus) {
+	ghosts []*av.GhostAircraft, transforms ScopeTransformations) (status CommandStatus) {
 	// See if an aircraft was clicked
 	ac, acDistance := sp.tryGetClosestAircraft(ctx, mousePosition, transforms)
 	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
@@ -1834,7 +1834,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 			} else if cmd == "*" {
 				from := sp.Aircraft[ac.Callsign].TrackPosition()
-				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
+				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
 					p := transforms.LatLongFromWindowP(pw)
 					hdg := math.Heading2LL(from, p, ac.NmPerLongitude(), ac.MagneticVariation())
 					dist := math.NMDistance2LL(from, p)
@@ -2363,7 +2363,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		case CommandModeMin:
 			if cmd == "" {
 				sp.MinSepAircraft[0] = ac.Callsign
-				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
+				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
 					if ac, _ := sp.tryGetClosestAircraft(ctx, pw, transforms); ac != nil {
 						sp.MinSepAircraft[1] = ac.Callsign
 						status.clear = true
@@ -2499,8 +2499,8 @@ func numpadToDirection(key byte) (*math.CardinalOrdinalDirection, bool) {
 	return nil, false
 }
 
-func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, ScopeTransformations) (status STARSCommandStatus) {
-	return func(pw [2]float32, transforms ScopeTransformations) (status STARSCommandStatus) {
+func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, ScopeTransformations) (status CommandStatus) {
+	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
 		if sp.wipRBL == nil {
 			// this shouldn't happen, but let's not crash if it does...
 			return
@@ -2592,7 +2592,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 
 		// If a scope click handler has been registered, give it the click
 		// and then clear it out.
-		var status STARSCommandStatus
+		var status CommandStatus
 		if sp.scopeClickHandler != nil {
 			status = sp.scopeClickHandler(ctx.Mouse.Pos, transforms)
 		} else {

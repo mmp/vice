@@ -61,12 +61,12 @@ var (
 	STARSATPAAlertColor   = renderer.RGB{1, .215, 0}
 )
 
-const NumSTARSPreferenceSets = 32
+const NumPreferenceSets = 32
 
 type STARSPane struct {
-	CurrentPreferenceSet  STARSPreferenceSet
+	CurrentPreferenceSet  PreferenceSet
 	SelectedPreferenceSet int
-	PreferenceSets        []STARSPreferenceSet
+	PreferenceSets        []PreferenceSet
 
 	systemMaps map[int]*av.VideoMap
 
@@ -82,7 +82,7 @@ type STARSPane struct {
 
 	// All of the aircraft in the world, each with additional information
 	// carried along in an STARSAircraftState.
-	Aircraft map[string]*STARSAircraftState
+	Aircraft map[string]*AircraftState
 
 	AircraftToIndex   map[string]int     // for use in lists
 	IndexToAircraft   map[int]string     // map is sort of wasteful since it's dense, but...
@@ -115,7 +115,7 @@ type STARSPane struct {
 	ConvergingRunways []STARSConvergingRunways
 
 	// Various UI state
-	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus
+	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) CommandStatus
 	activeDCBMenu       int
 	selectedPlaceButton string
 
@@ -307,7 +307,7 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 	}
 
 	if sp.Aircraft == nil {
-		sp.Aircraft = make(map[string]*STARSAircraftState)
+		sp.Aircraft = make(map[string]*AircraftState)
 	}
 
 	if sp.AircraftToIndex == nil {
