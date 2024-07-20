@@ -761,3 +761,40 @@ func (sd *Dispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error 
 	sim.LaunchAircraft(ls.Aircraft)
 	return nil
 }
+
+type CreateDepartureArgs struct {
+	ControllerToken string
+	Airport         string
+	Runway          string
+	Category        string
+}
+
+func (sd *Dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *av.Aircraft) error {
+	sim, ok := sd.sm.controllerTokenToSim[da.ControllerToken]
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+	ac, _, err := sim.CreateDeparture(da.Airport, da.Runway, da.Category)
+	if err == nil {
+		*depAc = *ac
+	}
+	return err
+}
+
+type CreateArrivalArgs struct {
+	ControllerToken string
+	Group           string
+	Airport         string
+}
+
+func (sd *Dispatcher) CreateArrival(aa *CreateArrivalArgs, arrAc *av.Aircraft) error {
+	sim, ok := sd.sm.controllerTokenToSim[aa.ControllerToken]
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+	ac, err := sim.CreateArrival(aa.Group, aa.Airport)
+	if err == nil {
+		*arrAc = *ac
+	}
+	return err
+}
