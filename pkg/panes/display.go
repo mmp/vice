@@ -107,10 +107,7 @@ func (s *SplitLine) Activate(*sim.State, renderer.Renderer, platform.Platform,
 func (s *SplitLine) Deactivate()                  {}
 func (s *SplitLine) Reset(sim.State, *log.Logger) {}
 func (s *SplitLine) CanTakeKeyboardFocus() bool   { return false }
-
-func (s *SplitLine) Name() string {
-	return "Split Line"
-}
+func (s *SplitLine) Hide() bool                   { return false }
 
 func (s *SplitLine) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	if ctx.Mouse != nil {
@@ -430,9 +427,9 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 
 	var filter func(d *DisplayNode) *DisplayNode
 	filter = func(d *DisplayNode) *DisplayNode {
-		if fsp, ok := d.Children[0].Pane.(*FlightStripPane); ok && fsp.HideFlightStrips {
+		if d.Children[0].Pane != nil && d.Children[0].Pane.Hide() {
 			return filter(d.Children[1])
-		} else if fsp, ok := d.Children[1].Pane.(*FlightStripPane); ok && fsp.HideFlightStrips {
+		} else if d.Children[1].Pane != nil && d.Children[1].Pane.Hide() {
 			return filter(d.Children[0])
 		} else {
 			return d
@@ -501,7 +498,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 	// First clear the entire window to the background color.
 	commandBuffer.ClearRGB(renderer.RGB{})
 
-	// Handle tabbing between STARS/Messages pane
+	// Handle tabbing between panes that can take the keyboard focus.
 	var keyboard *platform.KeyboardState
 	if !imgui.CurrentIO().WantCaptureKeyboard() {
 		keyboard = p.GetKeyboard()

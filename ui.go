@@ -1860,7 +1860,7 @@ func uiDrawSettingsWindow(c *sim.ControlClient, config *Config, p platform.Platf
 
 	config.DisplayRoot.VisitPanes(func(pane panes.Pane) {
 		if draw, ok := pane.(panes.UIDrawer); ok {
-			if imgui.CollapsingHeader(pane.Name()) {
+			if imgui.CollapsingHeader(draw.DisplayName()) {
 				draw.DrawUI(p, &config.Config)
 			}
 		}

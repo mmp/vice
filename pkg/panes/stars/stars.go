@@ -271,7 +271,9 @@ func NewSTARSPane(ss *sim.State) *STARSPane {
 	return sp
 }
 
-func (sp *STARSPane) Name() string { return "STARS" }
+func (sp *STARSPane) DisplayName() string { return "STARS" }
+
+func (sp *STARSPane) Hide() bool { return false }
 
 func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
 	eventStream *sim.EventStream, lg *log.Logger) {

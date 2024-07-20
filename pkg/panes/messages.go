@@ -58,7 +58,9 @@ func NewMessagesPane() *MessagesPane {
 	}
 }
 
-func (mp *MessagesPane) Name() string { return "Messages" }
+func (mp *MessagesPane) DisplayName() string { return "Messages" }
+
+func (mp *MessagesPane) Hide() bool { return false }
 
 func (mp *MessagesPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
 	eventStream *sim.EventStream, lg *log.Logger) {
