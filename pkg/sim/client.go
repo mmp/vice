@@ -381,9 +381,12 @@ func (c *ControlClient) GetUpdates(eventStream *EventStream, onErr func(error)) 
 		return
 	}
 
-	if c.updateCall != nil && c.updateCall.CheckFinished() {
-		c.updateCall = nil
-		return
+	if c.updateCall != nil {
+		if c.updateCall.CheckFinished() {
+			c.updateCall = nil
+			return
+		}
+		checkTimeout(c.updateCall, eventStream, onErr)
 	}
 
 	c.checkPendingRPCs(eventStream, onErr)
@@ -442,17 +445,24 @@ func (c *ControlClient) checkPendingRPCs(eventStream *EventStream, onErr func(er
 		func(call *util.PendingCall) bool { return !call.CheckFinished() })
 
 	for _, call := range c.pendingCalls {
-		if time.Since(call.IssueTime) > 5*time.Second {
-			eventStream.Post(Event{
-				Type:    StatusMessageEvent,
-				Message: "No response from server for over 5 seconds. Network connection may be lost.",
-			})
-			if onErr != nil {
-				onErr(ErrRPCTimeout)
-			}
+		if checkTimeout(call, eventStream, onErr) {
 			break
 		}
 	}
+}
+
+func checkTimeout(call *util.PendingCall, eventStream *EventStream, onErr func(error)) bool {
+	if time.Since(call.IssueTime) > 5*time.Second {
+		eventStream.Post(Event{
+			Type:    StatusMessageEvent,
+			Message: "No response from server for over 5 seconds. Network connection may be lost.",
+		})
+		if onErr != nil {
+			onErr(ErrRPCTimeout)
+		}
+		return true
+	}
+	return false
 }
 
 func (c *ControlClient) Connected() bool {

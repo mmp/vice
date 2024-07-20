@@ -244,7 +244,7 @@ func (msg *Message) Color() renderer.RGB {
 	switch {
 	case msg.error:
 		return renderer.RGB{.9, .1, .1}
-	case msg.global:
+	case msg.global, msg.system:
 		return renderer.RGB{0.012, 0.78, 0.016}
 	default:
 		return renderer.RGB{1, 1, 1}

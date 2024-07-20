@@ -155,7 +155,7 @@ func (cm *ConnectionManager) Update(es *EventStream, lg *log.Logger) {
 					Type:    StatusMessageEvent,
 					Message: "Error getting update from server: " + err.Error(),
 				})
-				if util.IsRPCServerError(err) {
+				if err == ErrRPCTimeout || util.IsRPCServerError(err) {
 					cm.remoteServer = nil
 					cm.client = nil
 					if cm.onNewClient != nil {
@@ -164,6 +164,8 @@ func (cm *ConnectionManager) Update(es *EventStream, lg *log.Logger) {
 					if cm.onError != nil {
 						cm.onError(ErrServerDisconnected)
 					}
+				} else if cm.onError != nil {
+					cm.onError(err)
 				}
 			})
 	}
