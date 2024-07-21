@@ -7,7 +7,6 @@ package stars
 import (
 	"encoding/json"
 	"fmt"
-	"runtime"
 	"slices"
 	"sort"
 	"time"
@@ -515,7 +514,6 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	transforms := GetScopeTransformations(ctx.PaneExtent, ctx.ControlClient.MagneticVariation, ctx.ControlClient.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range), 0)
 
-	dpiScale := ctx.Platform.DPIScale()
 	paneExtent := ctx.PaneExtent
 	if ps.DisplayDCB {
 		paneExtent = sp.DrawDCB(ctx, transforms, cb)
@@ -542,14 +540,14 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	if ps.Brightness.RangeRings > 0 {
 		color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
-		cb.LineWidth(1, dpiScale)
+		cb.LineWidth(1, ctx.DrawPixelScale)
 		DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 
 	// Maps
-	cb.LineWidth(1, dpiScale)
+	cb.LineWidth(1, ctx.DrawPixelScale)
 	videoMaps, _ := ctx.ControlClient.GetVideoMaps()
 	for i, disp := range ps.DisplayVideoMap {
 		if !disp {
@@ -582,7 +580,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	transforms.LoadWindowViewingMatrices(cb)
 
 	if ps.Brightness.Compass > 0 {
-		cb.LineWidth(1, dpiScale)
+		cb.LineWidth(1, ctx.DrawPixelScale)
 		cbright := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
 		font := sp.systemFont[ps.CharSize.Tools]
 		DrawCompass(ps.CurrentCenter, ctx, 0, font, cbright, paneExtent, transforms, cb)
@@ -682,7 +680,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, paneExtent math.Extent2
 		ld := renderer.GetLinesDrawBuilder()
 		defer renderer.ReturnLinesDrawBuilder(ld)
 
-		w := float32(7) * util.Select(runtime.GOOS == "windows", ctx.Platform.DPIScale(), float32(1))
+		w := float32(7) * ctx.DrawPixelScale
 		ld.AddLine(math.Add2f(ctx.Mouse.Pos, [2]float32{-w, 0}), math.Add2f(ctx.Mouse.Pos, [2]float32{w, 0}))
 		ld.AddLine(math.Add2f(ctx.Mouse.Pos, [2]float32{0, -w}), math.Add2f(ctx.Mouse.Pos, [2]float32{0, w}))
 

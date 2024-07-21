@@ -14,6 +14,7 @@ package panes
 import (
 	"encoding/json"
 	"fmt"
+	"runtime"
 	"slices"
 	"time"
 
@@ -23,6 +24,7 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/util"
 )
 
 var (
@@ -137,7 +139,7 @@ func (s *SplitLine) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 }
 
 func splitLineWidth(p platform.Platform) int {
-	return int(2*p.DPIScale() + 0.5)
+	return int(util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))*2 + 0.5)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -523,6 +525,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 				PaneExtent:       paneExtent,
 				ParentPaneExtent: parentExtent,
 				Platform:         p,
+				DrawPixelScale:   util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1)),
 				Renderer:         r,
 				Keyboard:         keyboard,
 				HaveFocus:        haveFocus,

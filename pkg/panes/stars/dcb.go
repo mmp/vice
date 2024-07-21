@@ -6,7 +6,6 @@ package stars
 
 import (
 	"fmt"
-	"runtime"
 	"strconv"
 	"strings"
 
@@ -103,7 +102,7 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 	// Find a scale factor so that the buttons all fit in the window, if necessary
 	const NumDCBSlots = 20
 	// Sigh; on windows we want the button size in pixels on high DPI displays
-	ds := util.Select(runtime.GOOS == "windows", ctx.Platform.DPIScale(), float32(1))
+	ds := ctx.DrawPixelScale
 	var buttonScale float32
 	// Scale based on width or height available depending on DCB position
 	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
@@ -569,7 +568,7 @@ func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, trans
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1, ctx.Platform.DPIScale())
+	cb.LineWidth(1, ctx.DrawPixelScale)
 
 	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
 		dcbDrawState.mouseDownPos = ctx.Mouse.Pos[:]

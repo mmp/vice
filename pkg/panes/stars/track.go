@@ -6,7 +6,6 @@ package stars
 
 import (
 	"fmt"
-	"runtime"
 	"slices"
 	"sort"
 	"time"
@@ -476,8 +475,6 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 	// Update cached command buffers for tracks
 	sp.fusedTrackVertices = getTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
 
-	scale := util.Select(runtime.GOOS == "windows", ctx.Platform.DPIScale(), float32(1))
-
 	now := ctx.ControlClient.SimTime
 	for _, ac := range aircraft {
 		state := sp.Aircraft[ac.Callsign]
@@ -506,7 +503,7 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 			state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(), ac.Heading())
 
 		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, trackBuilder,
-			ld, trid, td, scale)
+			ld, trid, td)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -514,7 +511,7 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	trid.GenerateCommands(cb)
-	cb.LineWidth(1, ctx.Platform.DPIScale())
+	cb.LineWidth(1, ctx.DrawPixelScale)
 	ld.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -642,7 +639,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 
 func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, heading float32, ctx *panes.Context,
 	transforms ScopeTransformations, trackId string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
-	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder, scale float32) {
+	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
 
@@ -665,7 +662,7 @@ func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, headi
 			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
 
 			// Scale box based on distance from the radar; TODO: what exactly should this be?
-			scale *= float32(math.Clamp(dist/40, .5, 1.5))
+			scale := ctx.DrawPixelScale * float32(math.Clamp(dist/40, .5, 1.5))
 			for i := range box {
 				box[i] = math.Scale2f(box[i], scale)
 				box[i] = math.Add2f(rot(box[i]), pw)
@@ -697,7 +694,7 @@ func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, headi
 			// blue box: x +/-9 pixels, y +/-3 pixels
 			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
 			for i := range box {
-				box[i] = math.Scale2f(box[i], scale)
+				box[i] = math.Scale2f(box[i], ctx.DrawPixelScale)
 				box[i] = math.Add2f(rot(box[i]), pw)
 				box[i] = transforms.LatLongFromWindowP(box[i])
 			}
@@ -744,7 +741,7 @@ func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, headi
 				return math.Add2LL(p, math.Add2LL(math.Scale2f(dx, x), math.Scale2f(dy, y)))
 			}
 
-			px := float32(3) * scale
+			px := 3 * ctx.DrawPixelScale
 			// diagonals
 			diagPx := px * 0.707107                                                     /* 1/sqrt(2) */
 			trackColor := trackIdBrightness.ScaleRGB(renderer.RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
@@ -783,8 +780,7 @@ func getTrackVertices(ctx *panes.Context, diameter float32) [][2]float32 {
 
 	// Scale the points based on the circle radius (and deal with the usual
 	// Windows high-DPI borkage...)
-	scale := util.Select(runtime.GOOS == "windows", ctx.Platform.DPIScale(), float32(1))
-	radius := scale * float32(int(diameter/2+0.5)) // round to integer
+	radius := ctx.DrawPixelScale * float32(int(diameter/2+0.5)) // round to integer
 	pts = util.MapSlice(pts, func(p [2]float32) [2]float32 { return math.Scale2f(p, radius) })
 
 	return pts
@@ -1247,9 +1243,10 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, ctx *panes.Context
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1, ctx.Platform.DPIScale())
+	cb.LineWidth(1, ctx.DrawPixelScale)
 	ld.GenerateCommands(cb)
 }
+
 func (sp *STARSPane) getLeaderLineDirection(ac *av.Aircraft, ctx *panes.Context) math.CardinalOrdinalDirection {
 	ps := sp.CurrentPreferenceSet
 	state := sp.Aircraft[ac.Callsign]

@@ -58,7 +58,13 @@ type Context struct {
 	PaneExtent       math.Extent2D
 	ParentPaneExtent math.Extent2D
 
-	Platform  platform.Platform
+	Platform platform.Platform
+	// If we want something to be n pixels big, scale factor to apply to n.
+	// (This is necessary for Windows high-DPI displays, which just expose
+	// their native resolution to us, vs. Mac which pretends retina
+	// displays are 72dpi as far as graphics commands.)
+	DrawPixelScale float32
+
 	Renderer  renderer.Renderer
 	Mouse     *platform.MouseState
 	Keyboard  *platform.KeyboardState
