@@ -2226,6 +2226,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				}
 				return
 
+			case "O": // Pointout history
+				if trk == nil || trk.TrackOwner != ctx.ControlClient.Callsign {
+					status.err = ErrSTARSIllegalTrack
+					return
+				}
+
+				status.output = strings.Join(trk.PointOutHistory, " ")
+				status.clear = true
+				return
+
 			case "Q":
 				if cmd == "" {
 					if trk != nil && trk.TrackOwner != ctx.ControlClient.Callsign && ac.ControllingController != ctx.ControlClient.Callsign {
@@ -2324,15 +2334,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					}
 					return
 				}
-			case "O": //Pointout history
-				if trk == nil || trk.TrackOwner != ctx.ControlClient.Callsign {
-					status.err = ErrSTARSIllegalTrack
-					return
-				}
-
-				status.output = strings.Join(trk.PointOutHistory, " ")
-				status.clear = true
-				return
 			}
 
 		case CommandModeFlightData:
