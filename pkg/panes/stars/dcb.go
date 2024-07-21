@@ -64,20 +64,30 @@ const (
 type DCBSpinner interface {
 	// Label returns the text that should be shown in the DCB button.
 	Label() string
+
 	// Equal returns true if the provided spinner controls the same value
 	// as this spinner.
 	Equals(other DCBSpinner) bool
+
 	// MouseWheel is called when the spinner is active and there is mouse
 	// wheel input; implementations should update the underlying value
 	// accordingly.
 	MouseWheel(delta int)
+
 	// KeyboardInput is called if the spinner is active and the user enters
 	// text and presses enter; implementations should update the underlying
 	// value accordingly.
 	KeyboardInput(text string) error
+
+	// Disabled is called after a spinner has been disabled, e.g. due to a
+	// second click on its DCB button or pressing enter.
+	Disabled()
 }
 
 func (sp *STARSPane) disableMenuSpinner(ctx *panes.Context) {
+	if activeSpinner != nil {
+		activeSpinner.Disabled()
+	}
 	activeSpinner = nil
 	ctx.Platform.EndCaptureMouse()
 	sp.commandMode = CommandModeNone
@@ -765,9 +775,7 @@ func (sp *STARSPane) DrawDCBSpinner(ctx *panes.Context, spinner DCBSpinner, comm
 		ctx.Platform.StartCaptureMouse(buttonBounds)
 
 		if clicked {
-			activeSpinner = nil
-			ctx.Platform.EndCaptureMouse()
-			sp.commandMode = CommandModeNone
+			sp.disableMenuSpinner(ctx)
 		}
 
 		if ctx.Mouse != nil && ctx.Mouse.Wheel[1] != 0 {
@@ -820,6 +828,8 @@ func (s *DCBRadarRangeSpinner) KeyboardInput(text string) error {
 	}
 }
 
+func (s *DCBRadarRangeSpinner) Disabled() {}
+
 // DCBIntegerRangeSpinner is a generic implementation of DCBSpinner for
 // managing integers in steps of 1 within a given range.
 type DCBIntegerRangeSpinner struct {
@@ -855,6 +865,8 @@ func (s *DCBIntegerRangeSpinner) KeyboardInput(text string) error {
 		return nil
 	}
 }
+
+func (s *DCBIntegerRangeSpinner) Disabled() {}
 
 // Leader lines are integers between 0 and 7 so the IntegerRangeSpinner
 // fits.
@@ -899,6 +911,8 @@ func (s *DCBLeaderLineDirectionSpinner) KeyboardInput(text string) error {
 		return nil
 	}
 }
+
+func (s *DCBLeaderLineDirectionSpinner) Disabled() {}
 
 type DCBHistoryRateSpinner struct {
 	r *float32
@@ -956,6 +970,8 @@ func (s *DCBHistoryRateSpinner) KeyboardInput(text string) error {
 	}
 }
 
+func (s *DCBHistoryRateSpinner) Disabled() {}
+
 type DCBPTLLengthSpinner struct {
 	l *float32
 }
@@ -998,6 +1014,8 @@ func (s *DCBPTLLengthSpinner) KeyboardInput(text string) error {
 		return nil
 	}
 }
+
+func (s *DCBPTLLengthSpinner) Disabled() {}
 
 type DCBDwellModeSpinner struct {
 	m *DwellMode
@@ -1046,6 +1064,8 @@ func (s *DCBDwellModeSpinner) KeyboardInput(text string) error {
 		return ErrSTARSIllegalValue
 	}
 }
+
+func (s *DCBDwellModeSpinner) Disabled() {}
 
 type DCBRangeRingRadiusSpinner struct {
 	r *int
@@ -1098,6 +1118,8 @@ func (s *DCBRangeRingRadiusSpinner) KeyboardInput(text string) error {
 	}
 }
 
+func (s *DCBRangeRingRadiusSpinner) Disabled() {}
+
 // DCBBrightnessSpinner handles spinners in the BRITE menu
 type DCBBrightnessSpinner struct {
 	text     string
@@ -1138,6 +1160,8 @@ func (s *DCBBrightnessSpinner) KeyboardInput(text string) error {
 		return nil
 	}
 }
+
+func (s *DCBBrightnessSpinner) Disabled() {}
 
 func STARSSelectButton(ctx *panes.Context, text string, flags int, buttonScale float32) bool {
 	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, flags&buttonSelected != 0, false)
