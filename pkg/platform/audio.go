@@ -27,6 +27,7 @@ type audioEngine struct {
 	effects []audioEffect
 	mu      sync.Mutex
 	config  *Config
+	volume  int
 }
 
 type audioEffect struct {
@@ -40,6 +41,7 @@ func (a *audioEngine) Initialize(config *Config, lg *log.Logger) {
 	lg.Info("Starting to initialize audio")
 
 	a.config = config
+	a.volume = 10
 
 	user := (unsafe.Pointer)(a)
 	a.pinner.Pin(user)
@@ -66,6 +68,10 @@ func (a *audioEngine) AddPCM(pcm []byte, rate int) (int, error) {
 	}
 	a.effects = append(a.effects, audioEffect{pcm: pcm})
 	return len(a.effects), nil
+}
+
+func (a *audioEngine) SetAudioVolume(vol int) {
+	a.volume = math.Clamp(vol, 0, 10)
 }
 
 func (a *audioEngine) PlayAudioOnce(index int) {
@@ -136,7 +142,7 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	}
 
 	for i := 0; i < n/2; i++ {
-		v := int16(math.Clamp(accum[i], -32768, 32767))
+		v := int16(math.Clamp(accum[i]*a.volume/10, -32768, 32767))
 		out[2*i] = C.uint8(v & 0xff)
 		out[2*i+1] = C.uint8((v >> 8) & 0xff)
 	}
