@@ -108,6 +108,10 @@ type AircraftState struct {
 	MSAWAcknowledged bool
 	MSAWSoundEnd     time.Time
 
+	SPCAlert        bool
+	SPCAcknowledged bool
+	SPCSoundEnd     time.Time
+
 	FirstSeen           time.Time
 	FirstRadarTrack     time.Time
 	HaveEnteredAirspace bool
@@ -222,10 +226,12 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			sp.Aircraft[callsign] = sa
 		}
 
-		if ok, _ := av.SquawkIsSPC(ac.Squawk); ok {
-			if _, ok := sp.HavePlayedSPCAlertSound[ac.Callsign]; !ok {
-				sp.HavePlayedSPCAlertSound[ac.Callsign] = nil
-			}
+		if ok, _ := av.SquawkIsSPC(ac.Squawk); ok && !sp.Aircraft[callsign].SPCAlert {
+			// First we've seen it
+			state := sp.Aircraft[callsign]
+			state.SPCAlert = true
+			state.SPCAcknowledged = false
+			state.SPCSoundEnd = ctx.Now.Add(AlertAudioDuration)
 		}
 	}
 
@@ -385,11 +391,12 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 		if warn && !state.MSAW {
 			// It's a new alert
 			state.MSAWAcknowledged = false
-			state.MSAWSoundEnd = time.Now().Add(5 * time.Second)
+			state.MSAWSoundEnd = time.Now().Add(AlertAudioDuration)
 		}
 		state.MSAW = warn
 	}
 }
+
 func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	now := ctx.ControlClient.SimTime
@@ -905,7 +912,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, aircraft []*av.Aircraf
 				}) {
 					sp.CAAircraft = append(sp.CAAircraft, CAAircraft{
 						Callsigns: [2]string{callsign, ocs},
-						SoundEnd:  ctx.Now.Add(5 * time.Second),
+						SoundEnd:  ctx.Now.Add(AlertAudioDuration),
 					})
 				}
 			}

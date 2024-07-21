@@ -1302,8 +1302,19 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			}
 
 		case "Z":
-			if cmd == "A" {
-				// TODO: test audible alarm
+			switch cmd {
+			case "A": // 4-88 play test sound
+				sp.playOnce(ctx.Platform, AudioTest)
+				status.clear = true
+				return
+
+			case "EE":
+				ps.AudioEffectEnabled[AudioCommandError] = true
+				status.clear = true
+				return
+
+			case "EI":
+				ps.AudioEffectEnabled[AudioCommandError] = false
 				status.clear = true
 				return
 			}
@@ -1762,6 +1773,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				} else if state.MSAW && !state.MSAWAcknowledged {
 					// Acknowledged a MSAW
 					state.MSAWAcknowledged = true
+				} else if state.SPCAlert && !state.SPCAcknowledged {
+					// Acknowledged SPC alert
+					state.SPCAcknowledged = true
 				} else if trk != nil && trk.HandoffController != "" && trk.HandoffController != ctx.ControlClient.Callsign &&
 					trk.TrackOwner == ctx.ControlClient.Callsign {
 					// cancel offered handoff offered
@@ -1877,7 +1891,17 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				// Do not clear the input area to allow entering a fix for the second location
 				return
 			} else if av.StringIsSPC(cmd) {
-				ctx.ControlClient.ToggleSPCOverride(ac.Callsign, cmd, nil,
+				_, enabled := ac.SPCOverrides[cmd]
+				ctx.ControlClient.ToggleSPCOverride(ac.Callsign, cmd,
+					func(any) {
+						if enabled { // disabled it
+							state.SPCAlert = false
+						} else {
+							state.SPCAlert = true
+							state.SPCAcknowledged = false
+							state.SPCSoundEnd = ctx.Now.Add(AlertAudioDuration)
+						}
+					},
 					func(err error) { sp.displayError(err, ctx) })
 				status.clear = true
 				return

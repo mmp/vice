@@ -6,6 +6,7 @@ package stars
 
 import (
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
@@ -29,6 +30,8 @@ type PreferenceSet struct {
 
 	CurrentATIS string
 	GIText      [9]string
+
+	AudioVolume int // 1-10
 
 	RadarTrackHistory int
 	// 4-94: 0.5s increments via trackball but 0.1s increments allowed if
@@ -238,6 +241,8 @@ func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) PreferenceSet
 	ps.RadarTrackHistory = 5
 	ps.RadarTrackHistoryRate = 4.5
 
+	ps.AudioVolume = 10
+
 	ps.SystemMapVisible = make(map[int]interface{})
 
 	ps.FusedRadarMode = true
@@ -335,7 +340,7 @@ func (ps *PreferenceSet) Duplicate() PreferenceSet {
 	return dupe
 }
 
-func (ps *PreferenceSet) Activate(sp *STARSPane) {
+func (ps *PreferenceSet) Activate(p platform.Platform, sp *STARSPane) {
 	// It should only take integer values but it's a float32 and we
 	// previously didn't enforce this...
 	ps.Range = float32(int(ps.Range))
@@ -347,6 +352,8 @@ func (ps *PreferenceSet) Activate(sp *STARSPane) {
 	if ps.RadarTrackHistoryRate == 0 {
 		ps.RadarTrackHistoryRate = 4.5 // upgrade from old
 	}
+
+	p.SetAudioVolume(ps.AudioVolume)
 
 	// Brightness goes in steps of 5 (similarly not enforced previously...)
 	remapBrightness := func(b *STARSBrightness) {
@@ -441,5 +448,8 @@ func (ps *PreferenceSet) Upgrade(from, to int) {
 		if ps.PreviewAreaPosition[0] == .05 && ps.PreviewAreaPosition[1] == .8 {
 			ps.PreviewAreaPosition = [2]float32{.05, .75}
 		}
+	}
+	if from < 24 {
+		ps.AudioVolume = 10
 	}
 }

@@ -193,7 +193,8 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 
 	case dcbMenuAux:
-		STARSDisabledButton(ctx, "VOL\n10", buttonFull, buttonScale)
+		sp.DrawDCBSpinner(ctx, MakeAudioVolumeSpinner(ctx.Platform, sp, &ps.AudioVolume),
+			CommandModeNone, buttonFull, buttonScale)
 		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("HISTORY\n", &ps.RadarTrackHistory, 0, 10),
 			CommandModeNone, buttonHalfVertical, buttonScale)
 		sp.DrawDCBSpinner(ctx, MakeHistoryRateSpinner(&ps.RadarTrackHistoryRate),
@@ -838,7 +839,7 @@ type DCBIntegerRangeSpinner struct {
 	min, max int
 }
 
-func MakeIntegerRangeSpinner(t string, v *int, min, max int) DCBSpinner {
+func MakeIntegerRangeSpinner(t string, v *int, min, max int) *DCBIntegerRangeSpinner {
 	return &DCBIntegerRangeSpinner{text: t, value: v, min: min, max: max}
 }
 
@@ -867,6 +868,30 @@ func (s *DCBIntegerRangeSpinner) KeyboardInput(text string) error {
 }
 
 func (s *DCBIntegerRangeSpinner) Disabled() {}
+
+type DCBAudioVolumeSpinner struct {
+	*DCBIntegerRangeSpinner
+	p  platform.Platform
+	sp *STARSPane
+}
+
+func (v *DCBAudioVolumeSpinner) Equals(other DCBSpinner) bool {
+	vs, ok := other.(*DCBAudioVolumeSpinner)
+	return ok && vs.value == v.value
+}
+
+func (v *DCBAudioVolumeSpinner) Disabled() {
+	v.p.SetAudioVolume(*v.value)
+	v.sp.playOnce(v.p, AudioTest)
+}
+
+func MakeAudioVolumeSpinner(p platform.Platform, sp *STARSPane, vol *int) *DCBAudioVolumeSpinner {
+	return &DCBAudioVolumeSpinner{
+		DCBIntegerRangeSpinner: MakeIntegerRangeSpinner("VOL\n", vol, 1, 10),
+		p:                      p,
+		sp:                     sp,
+	}
+}
 
 // Leader lines are integers between 0 and 7 so the IntegerRangeSpinner
 // fits.

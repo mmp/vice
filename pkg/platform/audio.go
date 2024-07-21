@@ -20,7 +20,7 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-const AudioSampleRate = 12000
+const AudioSampleRate = 44100
 
 type audioEngine struct {
 	pinner  runtime.Pinner
@@ -51,7 +51,7 @@ func (a *audioEngine) Initialize(config *Config, lg *log.Logger) {
 		Freq:     AudioSampleRate,
 		Format:   sdl.AUDIO_S16SYS,
 		Channels: 1,
-		Samples:  512,
+		Samples:  2048,
 		Callback: sdl.AudioCallback(C.audioCallback),
 		UserData: user,
 	}
