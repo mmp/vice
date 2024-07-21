@@ -526,6 +526,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 				ParentPaneExtent: parentExtent,
 				Platform:         p,
 				DrawPixelScale:   util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1)),
+				PixelsPerInch:    util.Select(runtime.GOOS == "windows", 96*p.DPIScale(), 72),
 				Renderer:         r,
 				Keyboard:         keyboard,
 				HaveFocus:        haveFocus,

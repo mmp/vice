@@ -64,6 +64,7 @@ type Context struct {
 	// their native resolution to us, vs. Mac which pretends retina
 	// displays are 72dpi as far as graphics commands.)
 	DrawPixelScale float32
+	PixelsPerInch  float32
 
 	Renderer  renderer.Renderer
 	Mouse     *platform.MouseState
