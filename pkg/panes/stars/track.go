@@ -619,7 +619,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 			datablockText = ghost.Callsign + "\n" + fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
 		}
 		w, h := datablockFont.BoundText(datablockText, datablockStyle.LineSpacing)
-		datablockOffset := sp.getDatablockOffset([2]float32{float32(w), float32(h)},
+		datablockOffset := sp.getDatablockOffset(ctx, [2]float32{float32(w), float32(h)},
 			ghost.LeaderLineDirection)
 
 		// Draw datablock
@@ -628,7 +628,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 		td.AddText(datablockText, pt, datablockStyle)
 
 		// Leader line
-		v := sp.getLeaderLineVector(ghost.LeaderLineDirection)
+		v := sp.getLeaderLineVector(ctx, ghost.LeaderLineDirection)
 		ld.AddLine(pac, math.Add2f(pac, v), color)
 	}
 
@@ -1238,7 +1238,7 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, ctx *panes.Context
 
 		baseColor, brightness := sp.datablockColor(ctx, ac)
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
-		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac, ctx))
+		v := sp.getLeaderLineVector(ctx, sp.getLeaderLineDirection(ac, ctx))
 		ld.AddLine(pac, math.Add2f(pac, v), brightness.ScaleRGB(baseColor))
 	}
 
@@ -1280,11 +1280,12 @@ func (sp *STARSPane) getLeaderLineDirection(ac *av.Aircraft, ctx *panes.Context)
 	}
 }
 
-func (sp *STARSPane) getLeaderLineVector(dir math.CardinalOrdinalDirection) [2]float32 {
+func (sp *STARSPane) getLeaderLineVector(ctx *panes.Context, dir math.CardinalOrdinalDirection) [2]float32 {
 	angle := dir.Heading()
 	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
 	ps := sp.CurrentPreferenceSet
-	return math.Scale2f(v, float32(10+10*ps.LeaderLineLength))
+	// Each step of leader line length should be about 1/4"
+	return math.Scale2f(v, float32((ps.LeaderLineLength * int(ctx.PixelsPerInch) / 4)))
 }
 
 func (sp *STARSPane) isOverflight(ctx *panes.Context, trk *sim.TrackInformation) bool {

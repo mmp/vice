@@ -231,9 +231,9 @@ func (sp *STARSPane) getDatablocks(ctx *panes.Context, ac *av.Aircraft) []STARSD
 	return dbs
 }
 
-func (sp *STARSPane) getDatablockOffset(textBounds [2]float32, leaderDir math.CardinalOrdinalDirection) [2]float32 {
+func (sp *STARSPane) getDatablockOffset(ctx *panes.Context, textBounds [2]float32, leaderDir math.CardinalOrdinalDirection) [2]float32 {
 	// To place the datablock, start with the vector for the leader line.
-	drawOffset := sp.getLeaderLineVector(leaderDir)
+	drawOffset := sp.getLeaderLineVector(ctx, leaderDir)
 
 	// And now fine-tune so that the leader line connects with the midpoint
 	// of the line that includes the callsign.
@@ -758,7 +758,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		// things don't jump around when it switches between multiple of
 		// them.
 		w, h := dbs[0].BoundText(font)
-		datablockOffset := sp.getDatablockOffset([2]float32{float32(w), float32(h)},
+		datablockOffset := sp.getDatablockOffset(ctx, [2]float32{float32(w), float32(h)},
 			sp.getLeaderLineDirection(ac, ctx))
 
 		// Draw characters starting at the upper left.
