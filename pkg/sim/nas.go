@@ -536,6 +536,43 @@ func (comp *STARSComputer) AutoAssociateFP(ac *av.Aircraft, fp *STARSFlightPlan)
 	})
 }
 
+func (comp *STARSComputer) UpdateAssociatedFlightPlans(aircraft []*av.Aircraft) {
+	for _, ac := range aircraft {
+		fp, ok := comp.ContainedPlans[ac.Squawk]
+		if ok && (!inAcquisitionArea(ac) && !inDropArea(ac)) && comp.TrackInformation[ac.Callsign] == nil { // Prevent departures
+			comp.AutoAssociateFP(ac, fp)
+		}
+	}
+}
+
+// This should be facility-defined in the json file, but for now it's 30nm
+// near their departure airport.
+func inAcquisitionArea(ac *av.Aircraft) bool {
+	if inDropArea(ac) {
+		return false
+	}
+
+	for _, icao := range []string{ac.FlightPlan.DepartureAirport, ac.FlightPlan.ArrivalAirport} {
+		ap := av.DB.Airports[icao]
+		if math.NMDistance2LL(ap.Location, ac.Position()) <= 2 {
+			return true
+		}
+	}
+	return false
+}
+
+func inDropArea(ac *av.Aircraft) bool {
+	for _, icao := range []string{ac.FlightPlan.DepartureAirport, ac.FlightPlan.ArrivalAirport} {
+		ap := av.DB.Airports[icao]
+		if math.NMDistance2LL(ap.Location, ac.Position()) <= 1 &&
+			ac.Altitude() <= float32(ap.Elevation+50) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (comp *STARSComputer) InitiateTrack(callsign string, controller string, fp *STARSFlightPlan, haveControl bool) error {
 	if _, ok := comp.TrackInformation[callsign]; ok {
 		return av.ErrOtherControllerHasTrack
@@ -882,7 +919,7 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 	for _, ac := range s.State.Aircraft {
 		if trk, ok := comp.TrackInformation[ac.Callsign]; ok { // Someone is tracking this
 			if trk.FlightPlan != nil {
-				if trk.FlightPlan.AssignedSquawk == ac.Squawk && s.State.InDropArea(ac) {
+				if trk.FlightPlan.AssignedSquawk == ac.Squawk && inDropArea(ac) {
 					ac.TrackingController = ""
 					ac.ControllingController = ""
 
@@ -904,7 +941,7 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 		// FIXME: should only happen if sp.AutoTrackDepartures is set?
 		if fp, ok := comp.ContainedPlans[ac.Squawk]; ok { // auto associate
 			ctrl := s.State.Callsign
-			if s.State.InAcquisitionArea(ac) && s.State.DepartureController(ac, s.lg) == ctrl {
+			if inAcquisitionArea(ac) && s.State.DepartureController(ac, s.lg) == ctrl {
 				// If they have already contacted departure, then initiating
 				// track gives control as well; otherwise ControllingController
 				// is left unset until contact.

@@ -448,6 +448,11 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 
 	sp.updateCAAircraft(ctx, aircraft)
 	sp.updateInTrailDistance(ctx, aircraft)
+
+	// FIXME(mtrokel): should this be happening in the STARSComputer Update method?
+	if !ctx.ControlClient.STARSFacilityAdaptation.KeepLDB {
+		ctx.ControlClient.STARSComputer().UpdateAssociatedFlightPlans(aircraft)
+	}
 }
 
 func (sp *STARSPane) getAircraftIndex(ac *av.Aircraft) int {

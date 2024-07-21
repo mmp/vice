@@ -1597,7 +1597,13 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *panes.Context, callsign string, di
 }
 
 func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string) {
-	ctx.ControlClient.InitiateTrack(callsign, nil, // FIXME: *STARSFlightPlan
+	// TODO: should we actually be looking up the flight plan on the server
+	// side anyway?
+	fp, err := ctx.ControlClient.STARSComputer().GetFlightPlan(callsign)
+	if err != nil {
+		// TODO: do what here?
+	}
+	ctx.ControlClient.InitiateTrack(callsign, fp,
 		func(any) {
 			if state, ok := sp.Aircraft[callsign]; ok {
 				state.DatablockType = FullDatablock

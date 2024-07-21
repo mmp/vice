@@ -403,7 +403,7 @@ func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STA
 			field8 = []string{" PO"}
 		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
 			field8 = []string{" PO" + id}
-		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+		} else if ctx.Now.Before(state.UNFlashingEndTime) {
 			field8 = []string{"", " UN"}
 		} else if state.POFlashingEndTime.After(ctx.Now) {
 			field8 = []string{"", " PO"}
@@ -531,12 +531,12 @@ func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STA
 			}
 		}
 
-		field6 := ""
+		field6 := []string{}
 		var line3FieldColors *STARSDatablockFieldColors
 		if state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert {
-			field6 = "*TPA"
+			field6 = append(field6, "*TPA")
 		} else if state.IntrailDistance != 0 && sp.CurrentPreferenceSet.DisplayATPAInTrailDist {
-			field6 = fmt.Sprintf("%.2f", state.IntrailDistance)
+			field6 = append(field6, fmt.Sprintf("%.2f", state.IntrailDistance))
 
 			if state.ATPAStatus == ATPAStatusWarning {
 				line3FieldColors = &STARSDatablockFieldColors{
@@ -552,16 +552,34 @@ func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STA
 				}
 			}
 		}
-		for len(field6) < 5 {
-			field6 += " "
+		for i := range field6 {
+			for len(field6[i]) < 5 {
+				field6[i] += " "
+			}
 		}
 
-		field7 := "    "
+		field7 := []string{}
 		if ac.TempAltitude != 0 {
 			ta := (ac.TempAltitude + 50) / 100
-			field7 = fmt.Sprintf("A%03d", ta)
+			field7 = append(field7, fmt.Sprintf("A%03d", ta))
 		}
-		line3 := field6 + "  " + field7
+		if sq := trk.FlightPlan.AssignedSquawk; sq != ac.Squawk {
+			field7 = append(field7, sq.String())
+			field6 = append(field6, ac.Squawk.String()+"  ")
+			color, _ := sp.datablockColor(ctx, ac)
+			idx := len(field6) - 1
+			line3FieldColors = &STARSDatablockFieldColors{
+				Start: len(field6[idx]) + 1,
+				End:   len(field6[idx]) + 5,
+				Color: color.Scale(0.3),
+			}
+		}
+		if len(field7) == 0 {
+			field7 = append(field7, "")
+		}
+		if len(field6) == 0 {
+			field6 = append(field6, "")
+		}
 
 		// Now make some datablocks. Note that line 1 has already been set
 		// in baseDB above.
@@ -571,16 +589,20 @@ func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STA
 		// of their lengths.  and 8 may be time multiplexed, which
 		// simplifies db creation here.
 		dbs := []STARSDatablock{}
-		n := math.LCM(math.LCM(len(field3), len(field4)), math.LCM(len(field5), len(field8)))
+		n := math.LCM(math.LCM(math.LCM(len(field3), len(field4)), math.LCM(len(field5), len(field8))), math.LCM(len(field6), len(field7)))
 		for i := 0; i < n; i++ {
 			db := baseDB.Duplicate()
 			db.Lines[1].Text = field1 + field2 + field8[i%len(field8)]
 			db.Lines[2].Text = field3[i%len(field3)] + field4[i%len(field4)] + field5[i%len(field5)]
-			db.Lines[3].Text = line3
-			if line3FieldColors != nil {
-				db.Lines[3].Colors = append(db.Lines[3].Colors, *line3FieldColors)
+			db.Lines[3].Text = field6[i%len(field6)] + field7[i%len(field7)]
+			if line3FieldColors != nil && i&1 == 1 {
+				// Flash the correct squawk
+				fc := *line3FieldColors
+				fc.Start += len(field6[i%len(field6)]) - 7
+				fc.End += len(field6[i%len(field6)]) - 7
+				db.Lines[3].Colors = append(db.Lines[3].Colors, fc)
 			}
-			if line5FieldColors != nil && i&1 == 1 {
+			if line5FieldColors != nil && i&1 == 0 {
 				// Flash "ID" for identing
 				fc := *line5FieldColors
 				fc.Start += len(field3[i%len(field3)]) + len(field4)
