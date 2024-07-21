@@ -2257,6 +2257,14 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			var radioTransmissions []av.RadioTransmission
 			if octrl := s.State.Controllers[ac.TrackingController]; octrl != nil {
+				if octrl.Frequency == ctrl.Frequency {
+					radioTransmissions = append(radioTransmissions, av.RadioTransmission{
+						Controller: ac.ControllingController,
+						Message:    "Unable, we are already on " + octrl.Frequency.String(),
+						Type:       av.RadioTransmissionUnexpected,
+					})
+					return radioTransmissions
+				}
 				name := util.Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
 				bye := rand.Sample("good day", "seeya")
 				contact := rand.Sample("contact ", "over to ", "")
