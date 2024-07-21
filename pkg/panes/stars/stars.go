@@ -831,7 +831,7 @@ func (sp *STARSPane) initializeAudio(p platform.Platform, lg *log.Logger) {
 		sp.audioEffects[AudioModeCIntruder] = loadMP3("MCI_1000ms.mp3")
 		sp.audioEffects[AudioTest] = loadMP3("TEST_250ms.mp3")
 		sp.audioEffects[AudioInboundHandoff] = loadMP3("263124__pan14__sine-octaves-up-beep.mp3")
-		sp.audioEffects[AudioCommandError] = loadMP3("426888__thisusernameis__beep4.mp3")
+		sp.audioEffects[AudioCommandError] = loadMP3("ERROR.mp3")
 		sp.audioEffects[AudioHandoffAccepted] = loadMP3("321104__nsstudios__blip2.mp3")
 	}
 }

@@ -51,4 +51,4 @@ the Open Font License 1.1; Roboto is licensed under the Apache 2.0 license.
 
 Miscelaneous sound effect audio is CC0 licensed from freesound.org.  Many
 thanks to the following freesound users, whose sounds are used in vice:
-pan14, nsstudios, and thisusernameis.
+nsstudios and pan14.
