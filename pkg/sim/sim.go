@@ -2261,7 +2261,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 					radioTransmissions = append(radioTransmissions, av.RadioTransmission{
 						Controller: ac.ControllingController,
 						Message:    "Unable, we are already on " + octrl.Frequency.String(),
-						Type:       av.RadioTransmissionUnexpected,
+						Type:       av.RadioTransmissionReadback,
 					})
 					return radioTransmissions
 				}
