@@ -176,7 +176,7 @@ func MakeArrivalNav(arr *Arrival, fp FlightPlan, perf AircraftPerformance,
 	return nil
 }
 
-func MakeDepartureNav(fp FlightPlan, perf AircraftPerformance, assignedAlt, clearedAlt int,
+func MakeDepartureNav(fp FlightPlan, perf AircraftPerformance, assignedAlt, clearedAlt, speedRestriction int,
 	wp []Waypoint, nmPerLongitude float32, magneticVariation float32, lg *log.Logger) *Nav {
 	if nav := makeNav(fp, perf, wp, nmPerLongitude, magneticVariation, lg); nav != nil {
 		if assignedAlt != 0 {
@@ -185,6 +185,10 @@ func MakeDepartureNav(fp FlightPlan, perf AircraftPerformance, assignedAlt, clea
 		} else {
 			alt := float32(math.Min(clearedAlt, fp.Altitude))
 			nav.Altitude.Cleared = &alt
+		}
+		if speedRestriction != 0 {
+			speed := float32(math.Max(speedRestriction, int(perf.Speed.Min)))
+			nav.Speed.Restriction = &speed
 		}
 		nav.FlightState.IsDeparture = true
 		nav.FlightState.Altitude = nav.FlightState.DepartureAirportElevation
