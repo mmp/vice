@@ -1744,8 +1744,7 @@ func (s *Sim) spawnAircraft() {
 		if now.After(s.NextArrivalSpawn[group]) {
 			arrivalAirport, rateSum := sampleRateMap(airportRates)
 
-			goAround := rand.Float32() < s.LaunchConfig.GoAroundRate
-			if ac, err := s.CreateArrival(group, arrivalAirport, goAround, s.lg); err != nil {
+			if ac, err := s.CreateArrival(group, arrivalAirport); err != nil {
 				s.lg.Error("CreateArrival error: %v", err)
 			} else if ac != nil {
 				s.launchAircraftNoLock(*ac)
@@ -1766,10 +1765,8 @@ func (s *Sim) spawnAircraft() {
 			continue
 		}
 
-		prevDep := s.lastDeparture[airport][runway][category]
 		s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
-		ac, dep, err := s.CreateDeparture(airport, runway, category,
-			s.LaunchConfig.DepartureChallenge, prevDep, s.lg)
+		ac, dep, err := s.CreateDeparture(airport, runway, category)
 		if err != nil {
 			s.lg.Infof("CreateDeparture error: %v", err)
 		} else {
@@ -2257,6 +2254,14 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			var radioTransmissions []av.RadioTransmission
 			if octrl := s.State.Controllers[ac.TrackingController]; octrl != nil {
+				if octrl.Frequency == ctrl.Frequency {
+					radioTransmissions = append(radioTransmissions, av.RadioTransmission{
+						Controller: ac.ControllingController,
+						Message:    "Unable, we are already on " + octrl.Frequency.String(),
+						Type:       av.RadioTransmissionReadback,
+					})
+					return radioTransmissions
+				}
 				name := util.Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
 				bye := rand.Sample("good day", "seeya")
 				contact := rand.Sample("contact ", "over to ", "")
@@ -3050,7 +3055,9 @@ func (ss *State) sampleAircraft(icao, fleet string, lg *log.Logger) (*av.Aircraf
 	}, acType
 }
 
-func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string, goAround bool, lg *log.Logger) (*av.Aircraft, error) {
+func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*av.Aircraft, error) {
+	goAround := rand.Float32() < s.LaunchConfig.GoAroundRate
+
 	arrivals := s.State.ArrivalGroups[arrivalGroup]
 	// Randomly sample from the arrivals that have a route to this airport.
 	idx := rand.SampleFiltered(arrivals, func(ar av.Arrival) bool {
@@ -3065,7 +3072,7 @@ func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string, goAround
 	arr := arrivals[idx]
 
 	airline := rand.SampleSlice(arr.Airlines[arrivalAirport])
-	ac, acType := s.State.sampleAircraft(airline.ICAO, airline.Fleet, lg)
+	ac, acType := s.State.sampleAircraft(airline.ICAO, airline.Fleet, s.lg)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
@@ -3084,7 +3091,7 @@ func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string, goAround
 		var err error
 		arrivalController, err = s.State.MultiControllers.GetArrivalController(arrivalGroup)
 		if err != nil {
-			lg.Error("Unable to resolve arrival controller", slog.Any("error", err),
+			s.lg.Error("Unable to resolve arrival controller", slog.Any("error", err),
 				slog.Any("aircraft", ac))
 		}
 
@@ -3094,7 +3101,7 @@ func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string, goAround
 	}
 
 	if err := ac.InitializeArrival(s.State.Airports[arrivalAirport], s.State.ArrivalGroups,
-		arrivalGroup, idx, arrivalController, goAround, s.State.NmPerLongitude, s.State.MagneticVariation, lg); err != nil {
+		arrivalGroup, idx, arrivalController, goAround, s.State.NmPerLongitude, s.State.MagneticVariation, s.lg); err != nil {
 		return nil, err
 	}
 
@@ -3107,8 +3114,10 @@ func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string, goAround
 	return ac, nil
 }
 
-func (s *Sim) CreateDeparture(departureAirport, runway, category string, challenge float32,
-	lastDeparture *av.Departure, lg *log.Logger) (*av.Aircraft, *av.Departure, error) {
+func (s *Sim) CreateDeparture(departureAirport, runway, category string) (*av.Aircraft, *av.Departure, error) {
+	challenge := s.LaunchConfig.DepartureChallenge
+	lastDeparture := s.lastDeparture[departureAirport][runway][category]
+
 	ap := s.State.Airports[departureAirport]
 	if ap == nil {
 		return nil, nil, av.ErrUnknownAirport
@@ -3139,7 +3148,7 @@ func (s *Sim) CreateDeparture(departureAirport, runway, category string, challen
 
 		if idx := rand.SampleFiltered(ap.Departures, pred); idx == -1 {
 			// This should never happen...
-			lg.Errorf("%s/%s/%s: unable to sample departure", departureAirport, runway, category)
+			s.lg.Errorf("%s/%s/%s: unable to sample departure", departureAirport, runway, category)
 		} else {
 			dep = &ap.Departures[idx]
 		}
@@ -3177,7 +3186,7 @@ func (s *Sim) CreateDeparture(departureAirport, runway, category string, challen
 	}
 
 	airline := rand.SampleSlice(dep.Airlines)
-	ac, acType := s.State.sampleAircraft(airline.ICAO, airline.Fleet, lg)
+	ac, acType := s.State.sampleAircraft(airline.ICAO, airline.Fleet, s.lg)
 	if ac == nil {
 		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
@@ -3186,7 +3195,7 @@ func (s *Sim) CreateDeparture(departureAirport, runway, category string, challen
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	if err := ac.InitializeDeparture(ap, departureAirport, dep, runway, exitRoute,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.Scratchpads,
-		s.State.PrimaryController, s.State.MultiControllers, lg); err != nil {
+		s.State.PrimaryController, s.State.MultiControllers, s.lg); err != nil {
 		return nil, nil, err
 	}
 

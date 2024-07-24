@@ -348,6 +348,26 @@ func (c *ControlClient) ChangeControlPosition(callsign string, keepTracks bool) 
 	return err
 }
 
+func (c *ControlClient) CreateDeparture(airport, runway, category string, ac *av.Aircraft, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.CreateDeparture(airport, runway, category, ac),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) CreateArrival(group, airport string, ac *av.Aircraft, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.CreateArrival(group, airport, ac),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (c *ControlClient) Disconnect() {
 	if err := c.proxy.SignOff(nil, nil); err != nil {
 		c.lg.Errorf("Error signing off from sim: %v", err)
@@ -361,9 +381,12 @@ func (c *ControlClient) GetUpdates(eventStream *EventStream, onErr func(error)) 
 		return
 	}
 
-	if c.updateCall != nil && c.updateCall.CheckFinished() {
-		c.updateCall = nil
-		return
+	if c.updateCall != nil {
+		if c.updateCall.CheckFinished() {
+			c.updateCall = nil
+			return
+		}
+		checkTimeout(c.updateCall, eventStream, onErr)
 	}
 
 	c.checkPendingRPCs(eventStream, onErr)
@@ -422,17 +445,24 @@ func (c *ControlClient) checkPendingRPCs(eventStream *EventStream, onErr func(er
 		func(call *util.PendingCall) bool { return !call.CheckFinished() })
 
 	for _, call := range c.pendingCalls {
-		if time.Since(call.IssueTime) > 5*time.Second {
-			eventStream.Post(Event{
-				Type:    StatusMessageEvent,
-				Message: "No response from server for over 5 seconds. Network connection may be lost.",
-			})
-			if onErr != nil {
-				onErr(ErrRPCTimeout)
-			}
+		if checkTimeout(call, eventStream, onErr) {
 			break
 		}
 	}
+}
+
+func checkTimeout(call *util.PendingCall, eventStream *EventStream, onErr func(error)) bool {
+	if time.Since(call.IssueTime) > 5*time.Second {
+		eventStream.Post(Event{
+			Type:    StatusMessageEvent,
+			Message: "No response from server for over 5 seconds. Network connection may be lost.",
+		})
+		if onErr != nil {
+			onErr(ErrRPCTimeout)
+		}
+		return true
+	}
+	return false
 }
 
 func (c *ControlClient) Connected() bool {

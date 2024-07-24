@@ -6,7 +6,6 @@ package stars
 
 import (
 	"fmt"
-	"runtime"
 	"slices"
 	"sort"
 	"time"
@@ -45,7 +44,7 @@ func (sp *STARSPane) getTrack(ctx *panes.Context, ac *av.Aircraft) *sim.TrackInf
 	return trk
 }
 
-type STARSAircraftState struct {
+type AircraftState struct {
 	// Independently of the track history, we store the most recent track
 	// from the sensor as well as the previous one. This gives us the
 	// freshest possible information for things like calculating headings,
@@ -108,6 +107,10 @@ type STARSAircraftState struct {
 	MSAWAcknowledged bool
 	MSAWSoundEnd     time.Time
 
+	SPCAlert        bool
+	SPCAcknowledged bool
+	SPCSoundEnd     time.Time
+
 	FirstSeen           time.Time
 	FirstRadarTrack     time.Time
 	HaveEnteredAirspace bool
@@ -146,11 +149,11 @@ const (
 	GhostStateForced
 )
 
-func (s *STARSAircraftState) TrackAltitude() int {
+func (s *AircraftState) TrackAltitude() int {
 	return s.track.Altitude
 }
 
-func (s *STARSAircraftState) TrackDeltaAltitude() int {
+func (s *AircraftState) TrackDeltaAltitude() int {
 	if s.previousTrack.Position.IsZero() {
 		// No previous track
 		return 0
@@ -158,15 +161,15 @@ func (s *STARSAircraftState) TrackDeltaAltitude() int {
 	return s.track.Altitude - s.previousTrack.Altitude
 }
 
-func (s *STARSAircraftState) TrackPosition() math.Point2LL {
+func (s *AircraftState) TrackPosition() math.Point2LL {
 	return s.track.Position
 }
 
-func (s *STARSAircraftState) TrackGroundspeed() int {
+func (s *AircraftState) TrackGroundspeed() int {
 	return s.track.Groundspeed
 }
 
-func (s *STARSAircraftState) HaveHeading() bool {
+func (s *AircraftState) HaveHeading() bool {
 	return !s.previousTrack.Position.IsZero()
 }
 
@@ -174,7 +177,7 @@ func (s *STARSAircraftState) HaveHeading() bool {
 // extrapolated path.  Thus, it includes the effect of wind.  The returned
 // vector is scaled so that it represents where it is expected to be one
 // minute in the future.
-func (s *STARSAircraftState) HeadingVector(nmPerLongitude, magneticVariation float32) math.Point2LL {
+func (s *AircraftState) HeadingVector(nmPerLongitude, magneticVariation float32) math.Point2LL {
 	if !s.HaveHeading() {
 		return math.Point2LL{}
 	}
@@ -188,20 +191,20 @@ func (s *STARSAircraftState) HeadingVector(nmPerLongitude, magneticVariation flo
 	return math.NM2LL(v, nmPerLongitude)
 }
 
-func (s *STARSAircraftState) TrackHeading(nmPerLongitude float32) float32 {
+func (s *AircraftState) TrackHeading(nmPerLongitude float32) float32 {
 	if !s.HaveHeading() {
 		return 0
 	}
 	return math.Heading2LL(s.previousTrack.Position, s.track.Position, nmPerLongitude, 0)
 }
 
-func (s *STARSAircraftState) LostTrack(now time.Time) bool {
+func (s *AircraftState) LostTrack(now time.Time) bool {
 	// Only return true if we have at least one valid track from the past
 	// but haven't heard from the aircraft recently.
 	return !s.track.Position.IsZero() && now.Sub(s.track.Time) > 30*time.Second
 }
 
-func (s *STARSAircraftState) Ident(now time.Time) bool {
+func (s *AircraftState) Ident(now time.Time) bool {
 	return !s.IdentStart.IsZero() && s.IdentStart.Before(now) && s.IdentEnd.After(now)
 }
 
@@ -209,8 +212,8 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	// First handle changes in world.Aircraft
 	for callsign, ac := range ctx.ControlClient.Aircraft {
 		if _, ok := sp.Aircraft[callsign]; !ok {
-			// First we've seen it; create the *STARSAircraftState for it
-			sa := &STARSAircraftState{}
+			// First we've seen it; create the *AircraftState for it
+			sa := &AircraftState{}
 			if ac.TrackingController == ctx.ControlClient.Callsign || ac.ControllingController == ctx.ControlClient.Callsign {
 				sa.DatablockType = FullDatablock
 			}
@@ -222,10 +225,12 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			sp.Aircraft[callsign] = sa
 		}
 
-		if ok, _ := av.SquawkIsSPC(ac.Squawk); ok {
-			if _, ok := sp.HavePlayedSPCAlertSound[ac.Callsign]; !ok {
-				sp.HavePlayedSPCAlertSound[ac.Callsign] = nil
-			}
+		if ok, _ := av.SquawkIsSPC(ac.Squawk); ok && !sp.Aircraft[callsign].SPCAlert {
+			// First we've seen it
+			state := sp.Aircraft[callsign]
+			state.SPCAlert = true
+			state.SPCAcknowledged = false
+			state.SPCSoundEnd = ctx.Now.Add(AlertAudioDuration)
 		}
 	}
 
@@ -385,11 +390,12 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 		if warn && !state.MSAW {
 			// It's a new alert
 			state.MSAWAcknowledged = false
-			state.MSAWSoundEnd = time.Now().Add(5 * time.Second)
+			state.MSAWSoundEnd = time.Now().Add(AlertAudioDuration)
 		}
 		state.MSAW = warn
 	}
 }
+
 func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	now := ctx.ControlClient.SimTime
@@ -442,6 +448,11 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 
 	sp.updateCAAircraft(ctx, aircraft)
 	sp.updateInTrailDistance(ctx, aircraft)
+
+	// FIXME(mtrokel): should this be happening in the STARSComputer Update method?
+	if !ctx.ControlClient.STARSFacilityAdaptation.KeepLDB {
+		ctx.ControlClient.STARSComputer().UpdateAssociatedFlightPlans(aircraft)
+	}
 }
 
 func (sp *STARSPane) getAircraftIndex(ac *av.Aircraft) int {
@@ -468,8 +479,6 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 
 	// Update cached command buffers for tracks
 	sp.fusedTrackVertices = getTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
-
-	scale := util.Select(runtime.GOOS == "windows", ctx.Platform.DPIScale(), float32(1))
 
 	now := ctx.ControlClient.SimTime
 	for _, ac := range aircraft {
@@ -499,7 +508,7 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 			state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(), ac.Heading())
 
 		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, trackBuilder,
-			ld, trid, td, scale)
+			ld, trid, td)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -507,7 +516,7 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	trid.GenerateCommands(cb)
-	cb.LineWidth(1, ctx.Platform.DPIScale())
+	cb.LineWidth(1, ctx.DrawPixelScale)
 	ld.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -615,7 +624,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 			datablockText = ghost.Callsign + "\n" + fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
 		}
 		w, h := datablockFont.BoundText(datablockText, datablockStyle.LineSpacing)
-		datablockOffset := sp.getDatablockOffset([2]float32{float32(w), float32(h)},
+		datablockOffset := sp.getDatablockOffset(ctx, [2]float32{float32(w), float32(h)},
 			ghost.LeaderLineDirection)
 
 		// Draw datablock
@@ -624,7 +633,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 		td.AddText(datablockText, pt, datablockStyle)
 
 		// Leader line
-		v := sp.getLeaderLineVector(ghost.LeaderLineDirection)
+		v := sp.getLeaderLineVector(ctx, ghost.LeaderLineDirection)
 		ld.AddLine(pac, math.Add2f(pac, v), color)
 	}
 
@@ -633,9 +642,9 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *STARSAircraftState, heading float32, ctx *panes.Context,
+func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, heading float32, ctx *panes.Context,
 	transforms ScopeTransformations, trackId string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
-	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder, scale float32) {
+	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
 
@@ -658,7 +667,7 @@ func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *STARSAircraftState, 
 			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
 
 			// Scale box based on distance from the radar; TODO: what exactly should this be?
-			scale *= float32(math.Clamp(dist/40, .5, 1.5))
+			scale := ctx.DrawPixelScale * float32(math.Clamp(dist/40, .5, 1.5))
 			for i := range box {
 				box[i] = math.Scale2f(box[i], scale)
 				box[i] = math.Add2f(rot(box[i]), pw)
@@ -690,7 +699,7 @@ func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *STARSAircraftState, 
 			// blue box: x +/-9 pixels, y +/-3 pixels
 			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
 			for i := range box {
-				box[i] = math.Scale2f(box[i], scale)
+				box[i] = math.Scale2f(box[i], ctx.DrawPixelScale)
 				box[i] = math.Add2f(rot(box[i]), pw)
 				box[i] = transforms.LatLongFromWindowP(box[i])
 			}
@@ -737,7 +746,7 @@ func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *STARSAircraftState, 
 				return math.Add2LL(p, math.Add2LL(math.Scale2f(dx, x), math.Scale2f(dy, y)))
 			}
 
-			px := float32(3) * scale
+			px := 3 * ctx.DrawPixelScale
 			// diagonals
 			diagPx := px * 0.707107                                                     /* 1/sqrt(2) */
 			trackColor := trackIdBrightness.ScaleRGB(renderer.RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
@@ -776,8 +785,7 @@ func getTrackVertices(ctx *panes.Context, diameter float32) [][2]float32 {
 
 	// Scale the points based on the circle radius (and deal with the usual
 	// Windows high-DPI borkage...)
-	scale := util.Select(runtime.GOOS == "windows", ctx.Platform.DPIScale(), float32(1))
-	radius := scale * float32(int(diameter/2+0.5)) // round to integer
+	radius := ctx.DrawPixelScale * float32(int(diameter/2+0.5)) // round to integer
 	pts = util.MapSlice(pts, func(p [2]float32) [2]float32 { return math.Scale2f(p, radius) })
 
 	return pts
@@ -860,7 +868,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, ac *av.Aircraft) (a
 }
 
 func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, aircraft []*av.Aircraft) {
-	inCAVolumes := func(state *STARSAircraftState) bool {
+	inCAVolumes := func(state *AircraftState) bool {
 		for _, vol := range ctx.ControlClient.InhibitCAVolumes() {
 			if vol.Inside(state.TrackPosition(), state.TrackAltitude()) {
 				return true
@@ -905,7 +913,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, aircraft []*av.Aircraf
 				}) {
 					sp.CAAircraft = append(sp.CAAircraft, CAAircraft{
 						Callsigns: [2]string{callsign, ocs},
-						SoundEnd:  ctx.Now.Add(5 * time.Second),
+						SoundEnd:  ctx.Now.Add(AlertAudioDuration),
 					})
 				}
 			}
@@ -998,7 +1006,7 @@ type ModeledAircraft struct {
 	landingSpeed float32
 }
 
-func MakeModeledAircraft(ac *av.Aircraft, state *STARSAircraftState, threshold math.Point2LL) ModeledAircraft {
+func MakeModeledAircraft(ac *av.Aircraft, state *AircraftState, threshold math.Point2LL) ModeledAircraft {
 	ma := ModeledAircraft{
 		callsign:  ac.Callsign,
 		p:         math.LL2NM(state.TrackPosition(), ac.NmPerLongitude()),
@@ -1216,75 +1224,6 @@ func (sp *STARSPane) diverging(a, b *av.Aircraft) bool {
 	return true
 }
 
-func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) bool {
-	ps := sp.CurrentPreferenceSet
-	state := sp.Aircraft[ac.Callsign]
-
-	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
-		return true
-	}
-	if ok, _ := av.SquawkIsSPC(ac.Squawk); ok {
-		return true
-	}
-	if len(ac.SPCOverrides) > 0 {
-		return true
-	}
-	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
-		slices.ContainsFunc(sp.CAAircraft,
-			func(ca CAAircraft) bool {
-				return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
-			}) {
-		return true
-	}
-	if _, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
-		return true
-	}
-
-	return false
-}
-
-func (sp *STARSPane) getWarnings(ctx *panes.Context, ac *av.Aircraft) []string {
-	var warnings []string
-	addWarning := func(w string) {
-		if !slices.Contains(warnings, w) {
-			warnings = append(warnings, w)
-		}
-	}
-
-	ps := sp.CurrentPreferenceSet
-	state := sp.Aircraft[ac.Callsign]
-
-	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
-		addWarning("LA")
-	}
-	if ok, code := av.SquawkIsSPC(ac.Squawk); ok {
-		addWarning(code)
-	}
-	for code := range ac.SPCOverrides {
-		addWarning(code)
-	}
-	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
-		slices.ContainsFunc(sp.CAAircraft,
-			func(ca CAAircraft) bool {
-				return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
-			}) {
-		addWarning("CA")
-	}
-	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
-		altStrs := ""
-		for _, a := range alts {
-			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
-		}
-		addWarning("AS" + altStrs)
-	}
-
-	if len(warnings) > 1 {
-		slices.Sort(warnings)
-	}
-
-	return warnings
-}
-
 func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -1304,14 +1243,15 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, ctx *panes.Context
 
 		baseColor, brightness := sp.datablockColor(ctx, ac)
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
-		v := sp.getLeaderLineVector(sp.getLeaderLineDirection(ac, ctx))
+		v := sp.getLeaderLineVector(ctx, sp.getLeaderLineDirection(ac, ctx))
 		ld.AddLine(pac, math.Add2f(pac, v), brightness.ScaleRGB(baseColor))
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1, ctx.Platform.DPIScale())
+	cb.LineWidth(1, ctx.DrawPixelScale)
 	ld.GenerateCommands(cb)
 }
+
 func (sp *STARSPane) getLeaderLineDirection(ac *av.Aircraft, ctx *panes.Context) math.CardinalOrdinalDirection {
 	ps := sp.CurrentPreferenceSet
 	state := sp.Aircraft[ac.Callsign]
@@ -1345,11 +1285,12 @@ func (sp *STARSPane) getLeaderLineDirection(ac *av.Aircraft, ctx *panes.Context)
 	}
 }
 
-func (sp *STARSPane) getLeaderLineVector(dir math.CardinalOrdinalDirection) [2]float32 {
+func (sp *STARSPane) getLeaderLineVector(ctx *panes.Context, dir math.CardinalOrdinalDirection) [2]float32 {
 	angle := dir.Heading()
 	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
 	ps := sp.CurrentPreferenceSet
-	return math.Scale2f(v, float32(10+10*ps.LeaderLineLength))
+	// Each step of leader line length should be about 1/4"
+	return math.Scale2f(v, float32((ps.LeaderLineLength * int(ctx.PixelsPerInch) / 4)))
 }
 
 func (sp *STARSPane) isOverflight(ctx *panes.Context, trk *sim.TrackInformation) bool {

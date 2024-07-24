@@ -7,7 +7,6 @@ package stars
 import (
 	"encoding/json"
 	"fmt"
-	"runtime"
 	"slices"
 	"sort"
 	"time"
@@ -61,12 +60,12 @@ var (
 	STARSATPAAlertColor   = renderer.RGB{1, .215, 0}
 )
 
-const NumSTARSPreferenceSets = 32
+const NumPreferenceSets = 32
 
 type STARSPane struct {
-	CurrentPreferenceSet  STARSPreferenceSet
+	CurrentPreferenceSet  PreferenceSet
 	SelectedPreferenceSet int
-	PreferenceSets        []STARSPreferenceSet
+	PreferenceSets        []PreferenceSet
 
 	systemMaps map[int]*av.VideoMap
 
@@ -82,7 +81,7 @@ type STARSPane struct {
 
 	// All of the aircraft in the world, each with additional information
 	// carried along in an STARSAircraftState.
-	Aircraft map[string]*STARSAircraftState
+	Aircraft map[string]*AircraftState
 
 	AircraftToIndex   map[string]int     // for use in lists
 	IndexToAircraft   map[int]string     // map is sort of wasteful since it's dense, but...
@@ -115,7 +114,7 @@ type STARSPane struct {
 	ConvergingRunways []STARSConvergingRunways
 
 	// Various UI state
-	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) STARSCommandStatus
+	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) CommandStatus
 	activeDCBMenu       int
 	selectedPlaceButton string
 
@@ -126,8 +125,6 @@ type STARSPane struct {
 	multiFuncPrefix   string
 	previewAreaOutput string
 	previewAreaInput  string
-
-	HavePlayedSPCAlertSound map[string]interface{}
 
 	lastTrackUpdate        time.Time
 	lastHistoryTrackUpdate time.Time
@@ -152,13 +149,13 @@ func init() {
 
 type AudioType int
 
-// The types of events we may play audio for; note that not all are
-// currently used.
+// The types of events we may play audio for.
 const (
 	AudioConflictAlert = iota
-	AudioEmergencySquawk
+	AudioSquawkSPC
 	AudioMinimumSafeAltitudeWarning
 	AudioModeCIntruder
+	AudioTest
 	AudioInboundHandoff
 	AudioCommandError
 	AudioHandoffAccepted
@@ -171,6 +168,7 @@ func (ae AudioType) String() string {
 		"Emergency Squawk Code",
 		"Minimum Safe Altitude Warning",
 		"Mode C Intruder",
+		"Test",
 		"Inbound Handoff",
 		"Command Error",
 		"Handoff Accepted",
@@ -271,7 +269,9 @@ func NewSTARSPane(ss *sim.State) *STARSPane {
 	return sp
 }
 
-func (sp *STARSPane) Name() string { return "STARS" }
+func (sp *STARSPane) DisplayName() string { return "STARS" }
+
+func (sp *STARSPane) Hide() bool { return false }
 
 func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
 	eventStream *sim.EventStream, lg *log.Logger) {
@@ -279,11 +279,8 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 		// First launch after switching over to serializing the CurrentPreferenceSet...
 		sp.CurrentPreferenceSet = sp.MakePreferenceSet("", ss)
 	}
-	sp.CurrentPreferenceSet.Activate(sp)
+	sp.CurrentPreferenceSet.Activate(p, sp)
 
-	if sp.HavePlayedSPCAlertSound == nil {
-		sp.HavePlayedSPCAlertSound = make(map[string]interface{})
-	}
 	if sp.InboundPointOuts == nil {
 		sp.InboundPointOuts = make(map[string]string)
 	}
@@ -305,7 +302,7 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 	}
 
 	if sp.Aircraft == nil {
-		sp.Aircraft = make(map[string]*STARSAircraftState)
+		sp.Aircraft = make(map[string]*AircraftState)
 	}
 
 	if sp.AircraftToIndex == nil {
@@ -472,23 +469,19 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 
 	imgui.Checkbox("Lock display", &sp.LockDisplay)
 
-	imgui.Checkbox("Enable Sound Effects", &config.AudioEnabled)
+	imgui.Checkbox("Enable Additional Sound Effects", &config.AudioEnabled)
 
 	if !config.AudioEnabled {
 		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
 		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
 	}
 
-	// Not all of the ones available in the engine are used, so only offer these up:
-	for _, i := range []AudioType{AudioConflictAlert, AudioInboundHandoff,
-		AudioHandoffAccepted, AudioCommandError} {
+	// Only offer the non-standard ones to globally disable.
+	for _, i := range []AudioType{AudioInboundHandoff, AudioHandoffAccepted} {
 		imgui.Text("  ")
 		imgui.SameLine()
 		if imgui.Checkbox(AudioType(i).String(), &ps.AudioEffectEnabled[i]) && ps.AudioEffectEnabled[i] {
-			n := util.Select(i == AudioConflictAlert, 5, 1)
-			for j := 0; j < n; j++ {
-				sp.playOnce(p, i)
-			}
+			sp.playOnce(p, i)
 		}
 	}
 
@@ -521,7 +514,6 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	transforms := GetScopeTransformations(ctx.PaneExtent, ctx.ControlClient.MagneticVariation, ctx.ControlClient.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range), 0)
 
-	dpiScale := ctx.Platform.DPIScale()
 	paneExtent := ctx.PaneExtent
 	if ps.DisplayDCB {
 		paneExtent = sp.DrawDCB(ctx, transforms, cb)
@@ -548,14 +540,14 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	if ps.Brightness.RangeRings > 0 {
 		color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
-		cb.LineWidth(1, dpiScale)
+		cb.LineWidth(1, ctx.DrawPixelScale)
 		DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 
 	// Maps
-	cb.LineWidth(1, dpiScale)
+	cb.LineWidth(1, ctx.DrawPixelScale)
 	videoMaps, _ := ctx.ControlClient.GetVideoMaps()
 	for i, disp := range ps.DisplayVideoMap {
 		if !disp {
@@ -588,7 +580,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	transforms.LoadWindowViewingMatrices(cb)
 
 	if ps.Brightness.Compass > 0 {
-		cb.LineWidth(1, dpiScale)
+		cb.LineWidth(1, ctx.DrawPixelScale)
 		cbright := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
 		font := sp.systemFont[ps.CharSize.Tools]
 		DrawCompass(ps.CurrentCenter, ctx, 0, font, cbright, paneExtent, transforms, cb)
@@ -626,27 +618,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
 	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
 
-	// Play the CA sound if any CAs or MSAWs are unacknowledged
-	playAlertSound := !ps.DisableCAWarnings && slices.ContainsFunc(sp.CAAircraft,
-		func(ca CAAircraft) bool {
-			return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
-				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings && ctx.Now.Before(ca.SoundEnd)
-		})
-	if !ps.DisableMSAW {
-		for _, ac := range aircraft {
-			state := sp.Aircraft[ac.Callsign]
-			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW && !state.DisableMSAW &&
-				ctx.Now.Before(state.MSAWSoundEnd) {
-				playAlertSound = true
-				break
-			}
-		}
-	}
-	if playAlertSound {
-		sp.startPlayContinuous(ctx.Platform, AudioConflictAlert)
-	} else {
-		sp.stopPlayContinuous(ctx.Platform, AudioConflictAlert)
-	}
+	sp.updateAudio(ctx, aircraft)
 
 	// Do this at the end of drawing so that we hold on to the tracks we
 	// have for rendering the current frame.
@@ -708,7 +680,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, paneExtent math.Extent2
 		ld := renderer.GetLinesDrawBuilder()
 		defer renderer.ReturnLinesDrawBuilder(ld)
 
-		w := float32(7) * util.Select(runtime.GOOS == "windows", ctx.Platform.DPIScale(), float32(1))
+		w := float32(7) * ctx.DrawPixelScale
 		ld.AddLine(math.Add2f(ctx.Mouse.Pos, [2]float32{-w, 0}), math.Add2f(ctx.Mouse.Pos, [2]float32{w, 0}))
 		ld.AddLine(math.Add2f(ctx.Mouse.Pos, [2]float32{0, -w}), math.Add2f(ctx.Mouse.Pos, [2]float32{0, w}))
 
@@ -851,12 +823,13 @@ func (sp *STARSPane) initializeAudio(p platform.Platform, lg *log.Logger) {
 			return idx
 		}
 
-		sp.audioEffects[AudioConflictAlert] = loadMP3("ca.mp3")
-		sp.audioEffects[AudioEmergencySquawk] = loadMP3("emergency.mp3")
-		sp.audioEffects[AudioMinimumSafeAltitudeWarning] = loadMP3("msaw.mp3")
-		sp.audioEffects[AudioModeCIntruder] = loadMP3("intruder.mp3")
+		sp.audioEffects[AudioConflictAlert] = loadMP3("CA_1000ms.mp3")
+		sp.audioEffects[AudioSquawkSPC] = loadMP3("SPC_700ms.mp3")
+		sp.audioEffects[AudioMinimumSafeAltitudeWarning] = loadMP3("MSAW_1000ms.mp3")
+		sp.audioEffects[AudioModeCIntruder] = loadMP3("MCI_1000ms.mp3")
+		sp.audioEffects[AudioTest] = loadMP3("TEST_250ms.mp3")
 		sp.audioEffects[AudioInboundHandoff] = loadMP3("263124__pan14__sine-octaves-up-beep.mp3")
-		sp.audioEffects[AudioCommandError] = loadMP3("426888__thisusernameis__beep4.mp3")
+		sp.audioEffects[AudioCommandError] = loadMP3("ERROR.mp3")
 		sp.audioEffects[AudioHandoffAccepted] = loadMP3("321104__nsstudios__blip2.mp3")
 	}
 }
@@ -867,12 +840,53 @@ func (sp *STARSPane) playOnce(p platform.Platform, a AudioType) {
 	}
 }
 
-func (sp *STARSPane) startPlayContinuous(p platform.Platform, a AudioType) {
-	if sp.CurrentPreferenceSet.AudioEffectEnabled[a] {
-		p.StartPlayAudioContinuous(sp.audioEffects[a])
-	}
-}
+const AlertAudioDuration = 5 * time.Second
 
-func (sp *STARSPane) stopPlayContinuous(p platform.Platform, a AudioType) {
-	p.StopPlayAudioContinuous(sp.audioEffects[a])
+func (sp *STARSPane) updateAudio(ctx *panes.Context, aircraft []*av.Aircraft) {
+	ps := &sp.CurrentPreferenceSet
+
+	updateContinuous := func(play bool, effect AudioType) {
+		if ps.AudioEffectEnabled[effect] && play {
+			ctx.Platform.StartPlayAudioContinuous(sp.audioEffects[effect])
+		} else {
+			ctx.Platform.StopPlayAudioContinuous(sp.audioEffects[effect])
+		}
+	}
+
+	// Play the CA sound if any CAs or MSAWs are unacknowledged
+	playCASound := !ps.DisableCAWarnings && slices.ContainsFunc(sp.CAAircraft,
+		func(ca CAAircraft) bool {
+			return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
+				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings && ctx.Now.Before(ca.SoundEnd)
+		})
+	updateContinuous(playCASound, AudioConflictAlert)
+
+	playMSAWSound := !ps.DisableMSAW && func() bool {
+		for _, ac := range aircraft {
+			state := sp.Aircraft[ac.Callsign]
+			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW && !state.DisableMSAW &&
+				ctx.Now.Before(state.MSAWSoundEnd) {
+				return true
+			}
+		}
+		return false
+	}()
+	updateContinuous(playMSAWSound, AudioMinimumSafeAltitudeWarning)
+
+	// 2-100: play sound if:
+	// - There is an unacknowledged SPC in a track's datablock
+	// - [todo]: track is unassociated or is associated and was displaying FDB
+	// - [todo]: if unassociated, is on-screen or within an adapted distance
+	playSPCSound := func() bool {
+		for _, ac := range aircraft {
+			state := sp.Aircraft[ac.Callsign]
+			ok, _ := av.SquawkIsSPC(ac.Squawk)
+			if (ok || len(ac.SPCOverrides) > 0) && !state.SPCAcknowledged &&
+				ctx.Now.Before(state.SPCSoundEnd) {
+				return true
+			}
+		}
+		return false
+	}()
+	updateContinuous(playSPCSound, AudioSquawkSPC)
 }

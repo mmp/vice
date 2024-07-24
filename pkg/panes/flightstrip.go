@@ -201,7 +201,9 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	}
 }
 
-func (fsp *FlightStripPane) Name() string { return "Flight Strips" }
+func (fsp *FlightStripPane) DisplayName() string { return "Flight Strips" }
+
+func (fsp *FlightStripPane) Hide() bool { return fsp.HideFlightStrips }
 
 func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config) {
 	show := !fsp.HideFlightStrips
@@ -532,7 +534,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	fsp.scrollbar.Draw(ctx, cb)
 
 	cb.SetRGB(UIControlColor)
-	cb.LineWidth(1, ctx.Platform.DPIScale())
+	cb.LineWidth(1, ctx.DrawPixelScale)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 

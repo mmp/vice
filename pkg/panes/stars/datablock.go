@@ -231,9 +231,9 @@ func (sp *STARSPane) getDatablocks(ctx *panes.Context, ac *av.Aircraft) []STARSD
 	return dbs
 }
 
-func (sp *STARSPane) getDatablockOffset(textBounds [2]float32, leaderDir math.CardinalOrdinalDirection) [2]float32 {
+func (sp *STARSPane) getDatablockOffset(ctx *panes.Context, textBounds [2]float32, leaderDir math.CardinalOrdinalDirection) [2]float32 {
 	// To place the datablock, start with the vector for the leader line.
-	drawOffset := sp.getLeaderLineVector(leaderDir)
+	drawOffset := sp.getLeaderLineVector(ctx, leaderDir)
 
 	// And now fine-tune so that the leader line connects with the midpoint
 	// of the line that includes the callsign.
@@ -403,7 +403,7 @@ func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STA
 			field8 = []string{" PO"}
 		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
 			field8 = []string{" PO" + id}
-		} else if _, ok := sp.RejectedPointOuts[ac.Callsign]; ok {
+		} else if ctx.Now.Before(state.UNFlashingEndTime) {
 			field8 = []string{"", " UN"}
 		} else if state.POFlashingEndTime.After(ctx.Now) {
 			field8 = []string{"", " PO"}
@@ -531,12 +531,12 @@ func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STA
 			}
 		}
 
-		field6 := ""
+		field6 := []string{}
 		var line3FieldColors *STARSDatablockFieldColors
 		if state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert {
-			field6 = "*TPA"
+			field6 = append(field6, "*TPA")
 		} else if state.IntrailDistance != 0 && sp.CurrentPreferenceSet.DisplayATPAInTrailDist {
-			field6 = fmt.Sprintf("%.2f", state.IntrailDistance)
+			field6 = append(field6, fmt.Sprintf("%.2f", state.IntrailDistance))
 
 			if state.ATPAStatus == ATPAStatusWarning {
 				line3FieldColors = &STARSDatablockFieldColors{
@@ -552,16 +552,34 @@ func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STA
 				}
 			}
 		}
-		for len(field6) < 5 {
-			field6 += " "
+		for i := range field6 {
+			for len(field6[i]) < 5 {
+				field6[i] += " "
+			}
 		}
 
-		field7 := "    "
+		field7 := []string{}
 		if ac.TempAltitude != 0 {
 			ta := (ac.TempAltitude + 50) / 100
-			field7 = fmt.Sprintf("A%03d", ta)
+			field7 = append(field7, fmt.Sprintf("A%03d", ta))
 		}
-		line3 := field6 + "  " + field7
+		if sq := trk.FlightPlan.AssignedSquawk; sq != ac.Squawk {
+			field7 = append(field7, sq.String())
+			field6 = append(field6, ac.Squawk.String()+"  ")
+			color, _ := sp.datablockColor(ctx, ac)
+			idx := len(field6) - 1
+			line3FieldColors = &STARSDatablockFieldColors{
+				Start: len(field6[idx]) + 1,
+				End:   len(field6[idx]) + 5,
+				Color: color.Scale(0.3),
+			}
+		}
+		if len(field7) == 0 {
+			field7 = append(field7, "")
+		}
+		if len(field6) == 0 {
+			field6 = append(field6, "")
+		}
 
 		// Now make some datablocks. Note that line 1 has already been set
 		// in baseDB above.
@@ -571,16 +589,20 @@ func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STA
 		// of their lengths.  and 8 may be time multiplexed, which
 		// simplifies db creation here.
 		dbs := []STARSDatablock{}
-		n := math.LCM(math.LCM(len(field3), len(field4)), math.LCM(len(field5), len(field8)))
+		n := math.LCM(math.LCM(math.LCM(len(field3), len(field4)), math.LCM(len(field5), len(field8))), math.LCM(len(field6), len(field7)))
 		for i := 0; i < n; i++ {
 			db := baseDB.Duplicate()
 			db.Lines[1].Text = field1 + field2 + field8[i%len(field8)]
 			db.Lines[2].Text = field3[i%len(field3)] + field4[i%len(field4)] + field5[i%len(field5)]
-			db.Lines[3].Text = line3
-			if line3FieldColors != nil {
-				db.Lines[3].Colors = append(db.Lines[3].Colors, *line3FieldColors)
+			db.Lines[3].Text = field6[i%len(field6)] + field7[i%len(field7)]
+			if line3FieldColors != nil && i&1 == 1 {
+				// Flash the correct squawk
+				fc := *line3FieldColors
+				fc.Start += len(field6[i%len(field6)]) - 7
+				fc.End += len(field6[i%len(field6)]) - 7
+				db.Lines[3].Colors = append(db.Lines[3].Colors, fc)
 			}
-			if line5FieldColors != nil && i&1 == 1 {
+			if line5FieldColors != nil && i&1 == 0 {
 				// Flash "ID" for identing
 				fc := *line5FieldColors
 				fc.Start += len(field3[i%len(field3)]) + len(field4)
@@ -758,7 +780,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		// things don't jump around when it switches between multiple of
 		// them.
 		w, h := dbs[0].BoundText(font)
-		datablockOffset := sp.getDatablockOffset([2]float32{float32(w), float32(h)},
+		datablockOffset := sp.getDatablockOffset(ctx, [2]float32{float32(w), float32(h)},
 			sp.getLeaderLineDirection(ac, ctx))
 
 		// Draw characters starting at the upper left.
@@ -770,4 +792,73 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
+}
+
+func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) bool {
+	ps := sp.CurrentPreferenceSet
+	state := sp.Aircraft[ac.Callsign]
+
+	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
+		return true
+	}
+	if ok, _ := av.SquawkIsSPC(ac.Squawk); ok {
+		return true
+	}
+	if len(ac.SPCOverrides) > 0 {
+		return true
+	}
+	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
+		slices.ContainsFunc(sp.CAAircraft,
+			func(ca CAAircraft) bool {
+				return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
+			}) {
+		return true
+	}
+	if _, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
+		return true
+	}
+
+	return false
+}
+
+func (sp *STARSPane) getWarnings(ctx *panes.Context, ac *av.Aircraft) []string {
+	var warnings []string
+	addWarning := func(w string) {
+		if !slices.Contains(warnings, w) {
+			warnings = append(warnings, w)
+		}
+	}
+
+	ps := sp.CurrentPreferenceSet
+	state := sp.Aircraft[ac.Callsign]
+
+	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
+		addWarning("LA")
+	}
+	if ok, code := av.SquawkIsSPC(ac.Squawk); ok {
+		addWarning(code)
+	}
+	for code := range ac.SPCOverrides {
+		addWarning(code)
+	}
+	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
+		slices.ContainsFunc(sp.CAAircraft,
+			func(ca CAAircraft) bool {
+				return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
+			}) {
+		addWarning("CA")
+	}
+	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
+		altStrs := ""
+		for _, a := range alts {
+			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
+		}
+		addWarning("AS" + altStrs)
+	}
+
+	if len(warnings) > 1 {
+		slices.Sort(warnings)
+	}
+
+	return warnings
 }

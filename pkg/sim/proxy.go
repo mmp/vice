@@ -261,3 +261,20 @@ func (s *proxy) LaunchAircraft(ac av.Aircraft) *rpc.Call {
 		Aircraft:        ac,
 	}, nil, nil)
 }
+
+func (p *proxy) CreateDeparture(airport, runway, category string, ac *av.Aircraft) *rpc.Call {
+	return p.Client.Go("Sim.CreateDeparture", &CreateDepartureArgs{
+		ControllerToken: p.ControllerToken,
+		Airport:         airport,
+		Runway:          runway,
+		Category:        category,
+	}, ac, nil)
+}
+
+func (p *proxy) CreateArrival(group, airport string, ac *av.Aircraft) *rpc.Call {
+	return p.Client.Go("Sim.CreateArrival", &CreateArrivalArgs{
+		ControllerToken: p.ControllerToken,
+		Group:           group,
+		Airport:         airport,
+	}, ac, nil)
+}

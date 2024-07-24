@@ -58,7 +58,9 @@ func NewMessagesPane() *MessagesPane {
 	}
 }
 
-func (mp *MessagesPane) Name() string { return "Messages" }
+func (mp *MessagesPane) DisplayName() string { return "Messages" }
+
+func (mp *MessagesPane) Hide() bool { return false }
 
 func (mp *MessagesPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
 	eventStream *sim.EventStream, lg *log.Logger) {
@@ -242,7 +244,7 @@ func (msg *Message) Color() renderer.RGB {
 	switch {
 	case msg.error:
 		return renderer.RGB{.9, .1, .1}
-	case msg.global:
+	case msg.global, msg.system:
 		return renderer.RGB{0.012, 0.78, 0.016}
 	default:
 		return renderer.RGB{1, 1, 1}

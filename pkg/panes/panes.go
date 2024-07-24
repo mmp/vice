@@ -22,19 +22,18 @@ import (
 // left, just in their own pane, oblivious to the full window size.  Higher
 // level code will handle positioning the panes in the main window.
 type Pane interface {
-	Name() string
-
 	Activate(ss *sim.State, r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream,
 		lg *log.Logger)
 	Deactivate()
 	Reset(ss sim.State, lg *log.Logger)
 
 	CanTakeKeyboardFocus() bool
-
+	Hide() bool
 	Draw(ctx *Context, cb *renderer.CommandBuffer)
 }
 
 type UIDrawer interface {
+	DisplayName() string
 	DrawUI(p platform.Platform, config *platform.Config)
 }
 
@@ -59,7 +58,14 @@ type Context struct {
 	PaneExtent       math.Extent2D
 	ParentPaneExtent math.Extent2D
 
-	Platform  platform.Platform
+	Platform platform.Platform
+	// If we want something to be n pixels big, scale factor to apply to n.
+	// (This is necessary for Windows high-DPI displays, which just expose
+	// their native resolution to us, vs. Mac which pretends retina
+	// displays are 72dpi as far as graphics commands.)
+	DrawPixelScale float32
+	PixelsPerInch  float32
+
 	Renderer  renderer.Renderer
 	Mouse     *platform.MouseState
 	Keyboard  *platform.KeyboardState
@@ -151,8 +157,7 @@ func (ep *EmptyPane) Activate(*sim.State, renderer.Renderer, platform.Platform,
 func (ep *EmptyPane) Deactivate()                        {}
 func (ep *EmptyPane) Reset(ss sim.State, lg *log.Logger) {}
 func (ep *EmptyPane) CanTakeKeyboardFocus() bool         { return false }
-
-func (ep *EmptyPane) Name() string { return "(Empty)" }
+func (ep *EmptyPane) Hide() bool                         { return false }
 
 func (ep *EmptyPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {}
 

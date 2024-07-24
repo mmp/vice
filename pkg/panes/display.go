@@ -14,6 +14,7 @@ package panes
 import (
 	"encoding/json"
 	"fmt"
+	"runtime"
 	"slices"
 	"time"
 
@@ -23,6 +24,7 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/util"
 )
 
 var (
@@ -107,10 +109,7 @@ func (s *SplitLine) Activate(*sim.State, renderer.Renderer, platform.Platform,
 func (s *SplitLine) Deactivate()                  {}
 func (s *SplitLine) Reset(sim.State, *log.Logger) {}
 func (s *SplitLine) CanTakeKeyboardFocus() bool   { return false }
-
-func (s *SplitLine) Name() string {
-	return "Split Line"
-}
+func (s *SplitLine) Hide() bool                   { return false }
 
 func (s *SplitLine) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	if ctx.Mouse != nil {
@@ -140,7 +139,7 @@ func (s *SplitLine) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 }
 
 func splitLineWidth(p platform.Platform) int {
-	return int(2*p.DPIScale() + 0.5)
+	return int(util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))*2 + 0.5)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -430,9 +429,9 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 
 	var filter func(d *DisplayNode) *DisplayNode
 	filter = func(d *DisplayNode) *DisplayNode {
-		if fsp, ok := d.Children[0].Pane.(*FlightStripPane); ok && fsp.HideFlightStrips {
+		if d.Children[0].Pane != nil && d.Children[0].Pane.Hide() {
 			return filter(d.Children[1])
-		} else if fsp, ok := d.Children[1].Pane.(*FlightStripPane); ok && fsp.HideFlightStrips {
+		} else if d.Children[1].Pane != nil && d.Children[1].Pane.Hide() {
 			return filter(d.Children[0])
 		} else {
 			return d
@@ -501,7 +500,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 	// First clear the entire window to the background color.
 	commandBuffer.ClearRGB(renderer.RGB{})
 
-	// Handle tabbing between STARS/Messages pane
+	// Handle tabbing between panes that can take the keyboard focus.
 	var keyboard *platform.KeyboardState
 	if !imgui.CurrentIO().WantCaptureKeyboard() {
 		keyboard = p.GetKeyboard()
@@ -526,6 +525,8 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 				PaneExtent:       paneExtent,
 				ParentPaneExtent: parentExtent,
 				Platform:         p,
+				DrawPixelScale:   util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1)),
+				PixelsPerInch:    util.Select(runtime.GOOS == "windows", 96*p.DPIScale(), 72),
 				Renderer:         r,
 				Keyboard:         keyboard,
 				HaveFocus:        haveFocus,

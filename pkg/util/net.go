@@ -308,11 +308,10 @@ func (c *RPCClient) CallWithTimeout(serviceMethod string, args any, reply any) e
 }
 
 type PendingCall struct {
-	Call                *rpc.Call
-	IssueTime           time.Time
-	OnSuccess           func(any)
-	OnErr               func(error)
-	haveWarnedNoUpdates bool
+	Call      *rpc.Call
+	IssueTime time.Time
+	OnSuccess func(any)
+	OnErr     func(error)
 }
 
 func (p *PendingCall) CheckFinished() bool {

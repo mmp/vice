@@ -93,6 +93,10 @@ type Platform interface {
 	// the audio playing entrypoints.
 	AddPCM(pcm []byte, rate int) (int, error)
 
+	// SetAudioVolume sets the volume for audio playback; the value passed
+	// should be between 0 and 10.
+	SetAudioVolume(vol int)
+
 	// PlayAudioOnce plays the audio effect identified by the given identifier
 	// once. Multiple audio effects may be played simultaneously.
 	PlayAudioOnce(id int)

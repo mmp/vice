@@ -6,11 +6,12 @@ package stars
 
 import (
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
-type STARSPreferenceSet struct {
+type PreferenceSet struct {
 	Name string
 
 	DisplayDCB  bool
@@ -29,6 +30,8 @@ type STARSPreferenceSet struct {
 
 	CurrentATIS string
 	GIText      [9]string
+
+	AudioVolume int // 1-10
 
 	RadarTrackHistory int
 	// 4-94: 0.5s increments via trackball but 0.1s increments allowed if
@@ -204,7 +207,7 @@ type STARSPreferenceSet struct {
 	}
 }
 
-func (ps *STARSPreferenceSet) ResetCRDAState(rwys []STARSConvergingRunways) {
+func (ps *PreferenceSet) ResetCRDAState(rwys []STARSConvergingRunways) {
 	ps.CRDA.RunwayPairState = nil
 	state := CRDARunwayPairState{}
 	// The first runway is enabled by default
@@ -214,13 +217,13 @@ func (ps *STARSPreferenceSet) ResetCRDAState(rwys []STARSConvergingRunways) {
 	}
 }
 
-func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) STARSPreferenceSet {
-	var ps STARSPreferenceSet
+func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) PreferenceSet {
+	var ps PreferenceSet
 
 	ps.Name = name
 
 	ps.DisplayDCB = true
-	ps.DCBPosition = DCBPositionTop
+	ps.DCBPosition = dcbPositionTop
 
 	if ss != nil {
 		ps.Center = ss.GetInitialCenter()
@@ -237,6 +240,8 @@ func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) STARSPreferen
 
 	ps.RadarTrackHistory = 5
 	ps.RadarTrackHistoryRate = 4.5
+
+	ps.AudioVolume = 10
 
 	ps.SystemMapVisible = make(map[int]interface{})
 
@@ -327,7 +332,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) STARSPreferen
 	return ps
 }
 
-func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
+func (ps *PreferenceSet) Duplicate() PreferenceSet {
 	dupe := *ps
 	dupe.SelectedBeaconCodes = util.DuplicateSlice(ps.SelectedBeaconCodes)
 	dupe.CRDA.RunwayPairState = util.DuplicateSlice(ps.CRDA.RunwayPairState)
@@ -335,7 +340,7 @@ func (ps *STARSPreferenceSet) Duplicate() STARSPreferenceSet {
 	return dupe
 }
 
-func (ps *STARSPreferenceSet) Activate(sp *STARSPane) {
+func (ps *PreferenceSet) Activate(p platform.Platform, sp *STARSPane) {
 	// It should only take integer values but it's a float32 and we
 	// previously didn't enforce this...
 	ps.Range = float32(int(ps.Range))
@@ -347,6 +352,8 @@ func (ps *STARSPreferenceSet) Activate(sp *STARSPane) {
 	if ps.RadarTrackHistoryRate == 0 {
 		ps.RadarTrackHistoryRate = 4.5 // upgrade from old
 	}
+
+	p.SetAudioVolume(ps.AudioVolume)
 
 	// Brightness goes in steps of 5 (similarly not enforced previously...)
 	remapBrightness := func(b *STARSBrightness) {
@@ -380,7 +387,7 @@ func (ps *STARSPreferenceSet) Activate(sp *STARSPane) {
 	}
 }
 
-func (ps *STARSPreferenceSet) Upgrade(from, to int) {
+func (ps *PreferenceSet) Upgrade(from, to int) {
 	if from < 8 {
 		ps.Brightness.DCB = 60
 		ps.CharSize.DCB = 1
@@ -419,7 +426,7 @@ func (ps *STARSPreferenceSet) Upgrade(from, to int) {
 		ps.CharSize.Tools = math.Max(0, ps.CharSize.Tools-1)
 		ps.CharSize.PositionSymbols = math.Max(0, ps.CharSize.PositionSymbols-1)
 
-		if ps.DisplayDCB && ps.DCBPosition == DCBPositionTop {
+		if ps.DisplayDCB && ps.DCBPosition == dcbPositionTop {
 			shift := func(y *float32) {
 				*y = math.Max(0, *y-.05)
 			}
@@ -441,5 +448,8 @@ func (ps *STARSPreferenceSet) Upgrade(from, to int) {
 		if ps.PreviewAreaPosition[0] == .05 && ps.PreviewAreaPosition[1] == .8 {
 			ps.PreviewAreaPosition = [2]float32{.05, .75}
 		}
+	}
+	if from < 24 {
+		ps.AudioVolume = 10
 	}
 }
