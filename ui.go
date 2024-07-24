@@ -1018,7 +1018,7 @@ func showAboutDialog() {
 		`Additional credits:
 - Software Development: Artem Dorofeev,
   Dennis Graiani, Michael Trokel, Samuel
-  Valencia, and Yi Zhang.
+  Valencia, Xavier Caldwell, and Yi Zhang.
 - Facility engineering: Connor Allen, Adam
   Bolek, Brody Carty, Lucas Chan, Aaron
   Flett, Mike K, Josh Lambert, Jonah
