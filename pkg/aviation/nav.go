@@ -1286,6 +1286,9 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 	if nav.FlightState.IsDeparture {
 		cruiseIAS := TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
 		targetSpeed := math.Min(250, cruiseIAS)
+		if nav.Speed.Restriction != nil {
+			targetSpeed = math.Min(250, *nav.Speed.Restriction)
+		}
 
 		if !nav.IsAirborne() {
 			return targetSpeed, 0.8 * maxAccel
