@@ -1744,7 +1744,7 @@ func (s *Sim) spawnAircraft() {
 		if now.After(s.NextArrivalSpawn[group]) {
 			arrivalAirport, rateSum := sampleRateMap(airportRates)
 
-			if ac, err := s.CreateArrival(group, arrivalAirport); err != nil {
+			if ac, err := s.createArrivalNoLock(group, arrivalAirport); err != nil {
 				s.lg.Error("CreateArrival error: %v", err)
 			} else if ac != nil {
 				s.launchAircraftNoLock(*ac)
@@ -1766,7 +1766,7 @@ func (s *Sim) spawnAircraft() {
 		}
 
 		s.lg.Infof("%s/%s/%s: previous departure", airport, runway, category)
-		ac, dep, err := s.CreateDeparture(airport, runway, category)
+		ac, dep, err := s.createDepartureNoLock(airport, runway, category)
 		if err != nil {
 			s.lg.Infof("CreateDeparture error: %v", err)
 		} else {
@@ -3056,6 +3056,12 @@ func (ss *State) sampleAircraft(icao, fleet string, lg *log.Logger) (*av.Aircraf
 }
 
 func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*av.Aircraft, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	return s.createArrivalNoLock(arrivalGroup, arrivalAirport)
+}
+
+func (s *Sim) createArrivalNoLock(arrivalGroup string, arrivalAirport string) (*av.Aircraft, error) {
 	goAround := rand.Float32() < s.LaunchConfig.GoAroundRate
 
 	arrivals := s.State.ArrivalGroups[arrivalGroup]
@@ -3115,6 +3121,12 @@ func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*av.Air
 }
 
 func (s *Sim) CreateDeparture(departureAirport, runway, category string) (*av.Aircraft, *av.Departure, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	return s.createDepartureNoLock(departureAirport, runway, category)
+}
+
+func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (*av.Aircraft, *av.Departure, error) {
 	challenge := s.LaunchConfig.DepartureChallenge
 	lastDeparture := s.lastDeparture[departureAirport][runway][category]
 
