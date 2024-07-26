@@ -552,11 +552,6 @@ func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STA
 				}
 			}
 		}
-		for i := range field6 {
-			for len(field6[i]) < 5 {
-				field6[i] += " "
-			}
-		}
 
 		field7 := []string{}
 		if ac.TempAltitude != 0 {
@@ -580,6 +575,11 @@ func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STA
 		if len(field6) == 0 {
 			field6 = append(field6, "")
 		}
+		for i := range field6 {
+			for len(field6[i]) < 5 {
+				field6[i] += " "
+			}
+		}
 
 		// Now make some datablocks. Note that line 1 has already been set
 		// in baseDB above.
@@ -594,7 +594,7 @@ func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STA
 			db := baseDB.Duplicate()
 			db.Lines[1].Text = field1 + field2 + field8[i%len(field8)]
 			db.Lines[2].Text = field3[i%len(field3)] + field4[i%len(field4)] + field5[i%len(field5)]
-			db.Lines[3].Text = field6[i%len(field6)] + field7[i%len(field7)]
+			db.Lines[3].Text = field6[i%len(field6)] + "  " + field7[i%len(field7)]
 			if line3FieldColors != nil && i&1 == 1 {
 				// Flash the correct squawk
 				fc := *line3FieldColors
