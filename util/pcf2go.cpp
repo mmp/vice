@@ -1143,7 +1143,6 @@ package main
 type STARSFont struct {
     PointSize int
     Width, Height int
-    Offset [2]int
     Glyphs []STARSGlyph
 }
 
@@ -1162,9 +1161,7 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 fprintf(ofp, "\"%s\": STARSFont{\n", get_property_string("FONT"));
 
   fprintf(ofp, "    PointSize: %d,\n", get_property_value("POINT_SIZE") / 10);
-  fprintf(ofp, "    Width: %d,\n    Height:%d,\n    Offset: [2]int{%d, %d},\n",
-          fontbbx.widthBits(), fontbbx.height(),
-          fontbbx.leftSideBearing, -fontbbx.descent);
+  fprintf(ofp, "    Width: %d,\n    Height:%d,\n", fontbbx.widthBits(), fontbbx.height());
   fprintf(ofp, "    Glyphs: []STARSGlyph{\n");
 
   for (i = 0; i < nEncodings; i++)

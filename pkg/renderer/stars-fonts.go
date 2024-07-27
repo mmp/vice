@@ -9,7 +9,6 @@ package renderer
 type STARSFont struct {
 	PointSize     int
 	Width, Height int
-	Offset        [2]int
 	Glyphs        []STARSGlyph
 }
 
@@ -26,7 +25,6 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 		PointSize: 8,
 		Width:     9,
 		Height:    11,
-		Offset:    [2]int{0, 0},
 		Glyphs: []STARSGlyph{
 			0:   STARSGlyph{Name: "$0x0", StepX: 9, Bounds: [2]int{9, 11}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
 			1:   STARSGlyph{Name: "$0x1", StepX: 9, Bounds: [2]int{9, 11}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x1C000000, 0x36000000, 0x63000000, 0x63000000, 0x63000000, 0x36000000, 0x1C000000, 0x00000000, 0x00000000, 0x00000000}},
@@ -290,7 +288,6 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 		PointSize: 9,
 		Width:     10,
 		Height:    12,
-		Offset:    [2]int{0, 0},
 		Glyphs: []STARSGlyph{
 			0:   STARSGlyph{Name: "$0x0", StepX: 10, Bounds: [2]int{10, 12}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
 			1:   STARSGlyph{Name: "$0x1", StepX: 10, Bounds: [2]int{10, 12}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x1E000000, 0x33000000, 0x61800000, 0x61800000, 0x61800000, 0x61800000, 0x33000000, 0x1E000000, 0x00000000, 0x00000000, 0x00000000}},
@@ -554,7 +551,6 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 		PointSize: 11,
 		Width:     11,
 		Height:    15,
-		Offset:    [2]int{0, 0},
 		Glyphs: []STARSGlyph{
 			0:   STARSGlyph{Name: "$0x0", StepX: 11, Bounds: [2]int{11, 15}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
 			1:   STARSGlyph{Name: "$0x1", StepX: 11, Bounds: [2]int{11, 15}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x0E000000, 0x31800000, 0x20800000, 0x60C00000, 0x60C00000, 0x60C00000, 0x20800000, 0x31800000, 0x0E000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
@@ -818,7 +814,6 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 		PointSize: 12,
 		Width:     12,
 		Height:    16,
-		Offset:    [2]int{0, 0},
 		Glyphs: []STARSGlyph{
 			0:   STARSGlyph{Name: "$0x0", StepX: 12, Bounds: [2]int{12, 16}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
 			1:   STARSGlyph{Name: "$0x1", StepX: 12, Bounds: [2]int{12, 16}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x0F000000, 0x30C00000, 0x30C00000, 0x60600000, 0x60600000, 0x60600000, 0x60600000, 0x30C00000, 0x30C00000, 0x0F000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
@@ -1082,7 +1077,6 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 		PointSize: 13,
 		Width:     14,
 		Height:    18,
-		Offset:    [2]int{0, 0},
 		Glyphs: []STARSGlyph{
 			0:   STARSGlyph{Name: "$0x0", StepX: 14, Bounds: [2]int{14, 18}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
 			1:   STARSGlyph{Name: "$0x1", StepX: 14, Bounds: [2]int{14, 18}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x07800000, 0x18600000, 0x30300000, 0x30300000, 0x60180000, 0x60180000, 0x60180000, 0x60180000, 0x30300000, 0x30300000, 0x18600000, 0x07800000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
@@ -1346,7 +1340,6 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 		PointSize: 14,
 		Width:     15,
 		Height:    19,
-		Offset:    [2]int{0, 0},
 		Glyphs: []STARSGlyph{
 			0:   STARSGlyph{Name: "$0x0", StepX: 15, Bounds: [2]int{15, 19}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
 			1:   STARSGlyph{Name: "$0x1", StepX: 15, Bounds: [2]int{15, 19}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x07C00000, 0x18300000, 0x30180000, 0x20080000, 0x600C0000, 0x600C0000, 0x600C0000, 0x600C0000, 0x600C0000, 0x20080000, 0x30180000, 0x18300000, 0x07C00000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
@@ -1610,7 +1603,6 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 		PointSize: 11,
 		Width:     9,
 		Height:    11,
-		Offset:    [2]int{0, 0},
 		Glyphs: []STARSGlyph{
 			0:   STARSGlyph{Name: "$0x0", StepX: 9, Bounds: [2]int{9, 11}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
 			1:   STARSGlyph{Name: "$0x1", StepX: 9, Bounds: [2]int{9, 11}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x1C000000, 0x36000000, 0x63000000, 0x63000000, 0x63000000, 0x36000000, 0x1C000000, 0x00000000, 0x00000000, 0x00000000}},
@@ -1874,7 +1866,6 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 		PointSize: 12,
 		Width:     10,
 		Height:    12,
-		Offset:    [2]int{0, 0},
 		Glyphs: []STARSGlyph{
 			0:   STARSGlyph{Name: "$0x0", StepX: 10, Bounds: [2]int{10, 12}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
 			1:   STARSGlyph{Name: "$0x1", StepX: 10, Bounds: [2]int{10, 12}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x1E000000, 0x33000000, 0x61800000, 0x61800000, 0x61800000, 0x61800000, 0x33000000, 0x1E000000, 0x00000000, 0x00000000, 0x00000000}},
@@ -2138,7 +2129,6 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 		PointSize: 15,
 		Width:     11,
 		Height:    15,
-		Offset:    [2]int{0, 0},
 		Glyphs: []STARSGlyph{
 			0:   STARSGlyph{Name: "$0x0", StepX: 11, Bounds: [2]int{11, 15}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
 			1:   STARSGlyph{Name: "$0x1", StepX: 11, Bounds: [2]int{11, 15}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x0E000000, 0x31800000, 0x20800000, 0x60C00000, 0x60C00000, 0x60C00000, 0x20800000, 0x31800000, 0x0E000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
@@ -2402,7 +2392,6 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 		PointSize: 16,
 		Width:     12,
 		Height:    16,
-		Offset:    [2]int{0, 0},
 		Glyphs: []STARSGlyph{
 			0:   STARSGlyph{Name: "$0x0", StepX: 12, Bounds: [2]int{12, 16}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
 			1:   STARSGlyph{Name: "$0x1", StepX: 12, Bounds: [2]int{12, 16}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x0F000000, 0x30C00000, 0x30C00000, 0x60600000, 0x60600000, 0x60600000, 0x60600000, 0x30C00000, 0x30C00000, 0x0F000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
@@ -2666,7 +2655,6 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 		PointSize: 18,
 		Width:     14,
 		Height:    18,
-		Offset:    [2]int{0, 0},
 		Glyphs: []STARSGlyph{
 			0:   STARSGlyph{Name: "$0x0", StepX: 14, Bounds: [2]int{14, 18}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
 			1:   STARSGlyph{Name: "$0x1", StepX: 14, Bounds: [2]int{14, 18}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x07800000, 0x18600000, 0x30300000, 0x30300000, 0x60180000, 0x60180000, 0x60180000, 0x60180000, 0x30300000, 0x30300000, 0x18600000, 0x07800000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
@@ -2930,7 +2918,6 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 		PointSize: 19,
 		Width:     15,
 		Height:    19,
-		Offset:    [2]int{0, 0},
 		Glyphs: []STARSGlyph{
 			0:   STARSGlyph{Name: "$0x0", StepX: 15, Bounds: [2]int{15, 19}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
 			1:   STARSGlyph{Name: "$0x1", StepX: 15, Bounds: [2]int{15, 19}, Offset: [2]int{0, 0}, Bitmap: []uint32{0x00000000, 0x00000000, 0x07C00000, 0x18300000, 0x30180000, 0x20080000, 0x600C0000, 0x600C0000, 0x600C0000, 0x600C0000, 0x600C0000, 0x20080000, 0x30180000, 0x18300000, 0x07C00000, 0x00000000, 0x00000000, 0x00000000, 0x00000000}},
