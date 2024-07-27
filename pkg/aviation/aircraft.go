@@ -476,7 +476,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	}
 
 	nav := MakeDepartureNav(*ac.FlightPlan, perf, exitRoute.AssignedAltitude,
-		exitRoute.ClearedAltitude, wp, nmPerLongitude, magneticVariation, lg)
+		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, nmPerLongitude, magneticVariation, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
