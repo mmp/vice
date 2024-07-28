@@ -674,11 +674,14 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, scopeExtent math.Extent
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	ctx.Mouse.SetCursor(imgui.MouseCursorNone)
-
 	// Is the mouse over the DCB or over the regular STARS scope?
 	mouseOverDCB := ctx.Mouse.Pos[0] < 0 || ctx.Mouse.Pos[0] >= scopeExtent.Width() ||
 		ctx.Mouse.Pos[1] < 0 || ctx.Mouse.Pos[1] >= scopeExtent.Height()
+	if mouseOverDCB {
+		return
+	}
+
+	ctx.Mouse.SetCursor(imgui.MouseCursorNone)
 
 	// STARS Operators Manual 4-74: FDB brightness is used for the cursor
 	ps := sp.CurrentPreferenceSet
@@ -692,30 +695,18 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, scopeExtent math.Extent
 	mousePos[0] -= ctx.PaneExtent.P0[0] - scopeExtent.P0[0]
 	mousePos[1] -= ctx.PaneExtent.P0[1] - scopeExtent.P0[1]
 
-	if mouseOverDCB {
-		// Slightly offset the drawing position to line up with the actual
-		// mouse position better.
-		mousePos = math.Add2f(mousePos, [2]float32{-1, 2})
-
-		// The DCB cursors start at character 36 in the STARS cursors
-		// font. (FIXME to not hardcode this...)
-		cursorIndex := 36 + 2*ps.CharSize.Datablocks
-		td.AddText(string(byte(cursorIndex+1)), mousePos, bgStyle)
-		td.AddText(string(byte(cursorIndex)), mousePos, cursorStyle)
-	} else {
-		draw := func(idx int, style renderer.TextStyle) {
-			g := sp.cursorsFont.LookupGlyph(rune(idx))
-			p := math.Add2f(mousePos, [2]float32{-g.Width() / 2, g.Height() / 2})
-			td.AddText(string(byte(idx)), p, style)
-		}
-		// The STARS "+" cursors start at 0 in the STARS cursors font,
-		// ordered by size. There is no cursor for size 5, so we'll use 4 for that.
-		// The second of the two is the background one
-		// that establishes a mask.
-		idx := 2 * min(4, ps.CharSize.Datablocks)
-		draw(idx+1, bgStyle)
-		draw(idx, cursorStyle)
+	draw := func(idx int, style renderer.TextStyle) {
+		g := sp.cursorsFont.LookupGlyph(rune(idx))
+		p := math.Add2f(mousePos, [2]float32{-g.Width() / 2, g.Height() / 2})
+		td.AddText(string(byte(idx)), p, style)
 	}
+	// The STARS "+" cursors start at 0 in the STARS cursors font,
+	// ordered by size. There is no cursor for size 5, so we'll use 4 for that.
+	// The second of the two is the background one
+	// that establishes a mask.
+	idx := 2 * min(4, ps.CharSize.Datablocks)
+	draw(idx+1, bgStyle)
+	draw(idx, cursorStyle)
 
 	cb.SetDrawBounds(ctx.PaneExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	transforms.LoadWindowViewingMatrices(cb)
