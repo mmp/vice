@@ -68,6 +68,14 @@ type Glyph struct {
 	Visible bool
 }
 
+func (g *Glyph) Width() float32 {
+	return g.X1 - g.X0
+}
+
+func (g *Glyph) Height() float32 {
+	return g.Y1 - g.Y0
+}
+
 // FontIdentifier is used for looking up
 type FontIdentifier struct {
 	Name string
@@ -438,56 +446,55 @@ func initializeSTARSFonts(r Renderer, p platform.Platform) {
 	// the realistic chunkiness of the original fonts.
 	doublePixels := runtime.GOOS == "windows" && p.DPIScale() > 1.5
 
+	doubleSTARSFont := func(sf STARSFont) STARSFont {
+		for i := range sf.Glyphs {
+			g := &sf.Glyphs[i]
+			g.StepX *= 2
+			g.Bounds[0] *= 2
+			g.Bounds[1] *= 2
+
+			// Generate a new bitmap with 2x as many
+			// pixels. Fortunately the original bitmaps are all under
+			// 16 pixels wide, so they will still fit in an uint32.
+			var bitmap []uint32
+			for _, line := range g.Bitmap {
+				if line&0xffff != 0 {
+					panic("not enough room in 32 bits")
+				}
+
+				// Horizontal doubling: double all of the set bits in
+				// the line.
+				var newLine uint32
+				for b := 0; b < 32; b++ {
+					// 0b_abcdefghijklmnop0000000000000000 ->
+					// 0b_aabbccddeeffgghhiijjkkllmmnnoopp
+					if line&(1<<(b/2+16)) != 0 {
+						newLine |= 1 << b
+					}
+				}
+
+				// Vertical doubling: add the line twice to the bitmap.
+				bitmap = append(bitmap, newLine, newLine)
+			}
+			g.Bitmap = bitmap
+		}
+		return sf
+	}
+
 	if doublePixels {
 		res *= 2
 		for name, sf := range starsFonts {
-			sf.Width *= 2
-			sf.Height *= 2
-
-			for i := range sf.Glyphs {
-				g := &sf.Glyphs[i]
-				g.StepX *= 2
-				g.Bounds[0] *= 2
-				g.Bounds[1] *= 2
-
-				// Generate a new bitmap with 2x as many
-				// pixels. Fortunately the original bitmaps are all under
-				// 16 pixels wide, so they will still fit in an uint32.
-				var bitmap []uint32
-				for _, line := range g.Bitmap {
-					if line&0xffff != 0 {
-						panic("not enough room in 32 bits")
-					}
-
-					// Horizontal doubling: double all of the set bits in
-					// the line.
-					var newLine uint32
-					for b := 0; b < 32; b++ {
-						// 0b_abcdefghijklmnop0000000000000000 ->
-						// 0b_aabbccddeeffgghhiijjkkllmmnnoopp
-						if line&(1<<(b/2+16)) != 0 {
-							newLine |= 1 << b
-						}
-					}
-
-					// Vertical doubling: add the line twice to the bitmap.
-					bitmap = append(bitmap, newLine, newLine)
-				}
-				g.Bitmap = bitmap
-			}
-			starsFonts[name] = sf
+			starsFonts[name] = doubleSTARSFont(sf)
 		}
+		starsCursors = doubleSTARSFont(starsCursors)
 	}
 
 	atlas := image.NewRGBA(image.Rectangle{Max: image.Point{X: res, Y: res}})
+	x, y := 0, 0
 
 	var newFonts []*Font
 
-	// Iterate over the fonts, create Font/Glyph objects for them, and copy
-	// their bitmaps into the atlas image.
-	x, y := 0, 0
-	for _, fontName := range util.SortedMapKeys(starsFonts) { // consistent order
-		sf := starsFonts[fontName]
+	addFontToAtlas := func(fontName string, sf STARSFont) {
 		id := FontIdentifier{
 			Name: fontName,
 			Size: util.Select(doublePixels, sf.Height/2, sf.Height),
@@ -600,6 +607,13 @@ func initializeSTARSFonts(r Renderer, p platform.Platform) {
 			y += sf.Height + 1
 		}
 	}
+
+	// Iterate over the fonts, create Font/Glyph objects for them, and copy
+	// their bitmaps into the atlas image.
+	for _, fontName := range util.SortedMapKeys(starsFonts) { // consistent order
+		addFontToAtlas(fontName, starsFonts[fontName])
+	}
+	addFontToAtlas("STARS cursors", starsCursors)
 
 	atlasId := r.CreateTextureFromImage(atlas, true /* nearest filter */)
 	for _, font := range newFonts {
