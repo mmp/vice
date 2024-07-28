@@ -436,7 +436,8 @@
                         }
                 ]
               },
-              "initial_altitude": 25000,
+              "initial_altitude": 13000,
+              "cruise_altitude": 15000,
               "initial_controller": "BOS_37_CTR",
               "initial_speed": 310,
               "star": "DEEPO1",
@@ -509,7 +510,8 @@
                     }
             ]
             },
-            "initial_altitude": 25000,
+            "initial_altitude": 13000,
+            "cruise_altitude": 15000,
             "initial_controller": "BOS_37_CTR",
             "initial_speed": 310,
             "star": "NEWBE3",

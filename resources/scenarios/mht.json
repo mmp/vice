@@ -815,7 +815,7 @@
             "sector_id": "1J"
         },
         "BOS_DEP": {
-            "frequency": 130000,
+            "frequency": 133000,
             "full_name": "Boston Departure",
             "scope_char": "D",
             "facility_id": "1",
