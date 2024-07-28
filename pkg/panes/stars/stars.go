@@ -709,10 +709,12 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, scopeExtent math.Extent
 			td.AddText(string(byte(idx)), p, style)
 		}
 		// The STARS "+" cursors start at 0 in the STARS cursors font,
-		// ordered by size. The second of the two is the background one
+		// ordered by size. There is no cursor for size 5, so we'll use 4 for that.
+		// The second of the two is the background one
 		// that establishes a mask.
-		draw(2*ps.CharSize.Datablocks+1, bgStyle)
-		draw(2*ps.CharSize.Datablocks, cursorStyle)
+		idx := 2 * min(4, ps.CharSize.Datablocks)
+		draw(idx+1, bgStyle)
+		draw(idx, cursorStyle)
 	}
 
 	cb.SetDrawBounds(ctx.PaneExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
