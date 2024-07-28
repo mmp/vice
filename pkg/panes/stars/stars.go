@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"slices"
 	"sort"
+	"strconv"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -295,7 +296,7 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 		sp.queryUnassociated = util.NewTransientMap[string, interface{}]()
 	}
 
-	sp.initializeFonts()
+	sp.initializeFonts(r, p)
 	sp.initializeAudio(p, lg)
 
 	if ss != nil {
@@ -719,23 +720,32 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, scopeExtent math.Extent
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) initializeFonts() {
-	sp.systemFont[0] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
-	sp.systemFont[1] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
-	sp.systemFont[2] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
-	sp.systemFont[3] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize3", Size: 16})
-	sp.systemFont[4] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize4", Size: 18})
-	sp.systemFont[5] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize5", Size: 19})
-	sp.systemOutlineFont[0] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 11})
-	sp.systemOutlineFont[1] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize1", Size: 12})
-	sp.systemOutlineFont[2] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize2", Size: 15})
-	sp.systemOutlineFont[3] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize3", Size: 16})
-	sp.systemOutlineFont[4] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize4", Size: 18})
-	sp.systemOutlineFont[5] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize5", Size: 19})
-	sp.dcbFont[0] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
-	sp.dcbFont[1] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
-	sp.dcbFont[2] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
-	sp.cursorsFont = renderer.GetFont(renderer.FontIdentifier{Name: "STARS cursors", Size: 30})
+func (sp *STARSPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
+	fonts := createFontAtlas(r, p)
+	get := func(name string, size int) *renderer.Font {
+		idx := slices.IndexFunc(fonts, func(f *renderer.Font) bool { return f.Id.Name == name && f.Id.Size == size })
+		if idx == -1 {
+			panic(name + " size " + strconv.Itoa(size) + " not found in STARS fonts")
+		}
+		return fonts[idx]
+	}
+
+	sp.systemFont[0] = get("sddCharFontSetBSize0", 11)
+	sp.systemFont[1] = get("sddCharFontSetBSize1", 12)
+	sp.systemFont[2] = get("sddCharFontSetBSize2", 15)
+	sp.systemFont[3] = get("sddCharFontSetBSize3", 16)
+	sp.systemFont[4] = get("sddCharFontSetBSize4", 18)
+	sp.systemFont[5] = get("sddCharFontSetBSize5", 19)
+	sp.systemOutlineFont[0] = get("sddCharOutlineFontSetBSize0", 11)
+	sp.systemOutlineFont[1] = get("sddCharOutlineFontSetBSize1", 12)
+	sp.systemOutlineFont[2] = get("sddCharOutlineFontSetBSize2", 15)
+	sp.systemOutlineFont[3] = get("sddCharOutlineFontSetBSize3", 16)
+	sp.systemOutlineFont[4] = get("sddCharOutlineFontSetBSize4", 18)
+	sp.systemOutlineFont[5] = get("sddCharOutlineFontSetBSize5", 19)
+	sp.dcbFont[0] = get("sddCharFontSetBSize0", 11)
+	sp.dcbFont[1] = get("sddCharFontSetBSize1", 12)
+	sp.dcbFont[2] = get("sddCharFontSetBSize2", 15)
+	sp.cursorsFont = get("STARS cursors", 30)
 }
 
 const (

@@ -8,7 +8,6 @@ import (
 	"C"
 	"fmt"
 	"image"
-	"image/color"
 	gomath "math"
 	"runtime"
 	"sort"
@@ -16,13 +15,11 @@ import (
 	"unicode/utf8"
 	"unsafe"
 
-	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/mmp/IconFontCppHeaders"
 	"github.com/mmp/imgui-go/v4"
-	"github.com/nfnt/resize"
 )
 
 // Each loaded (font,size) combination is represented by (surprise) a Font.
@@ -36,7 +33,7 @@ type Font struct {
 	// Font size
 	Size  int
 	Mono  bool
-	Ifont imgui.Font // may be unset if the font isn't used with imgui (e.g. the STARS fonts)
+	Ifont imgui.Font
 	Id    FontIdentifier
 	TexId uint32 // texture that holds the glyph texture atlas
 }
@@ -326,17 +323,13 @@ func FontsInit(r Renderer, p platform.Platform) {
 		font.TexId = atlasId
 	}
 
-	// The STARS fonts are bitmaps and don't come in via TTF files so get
-	// handled specially.
-	initializeSTARSFonts(r, p)
-
 	lg.Info("Finished initializing fonts")
 }
 
-// GetAllFonts returns a FontIdentifier slice that gives identifiers for
+// getAllFonts returns a FontIdentifier slice that gives identifiers for
 // all of the available fonts, sorted by font name and then within each
 // name, by font size.
-func GetAllFonts() []FontIdentifier {
+func getAllFonts() []FontIdentifier {
 	var fs []FontIdentifier
 	for f := range fonts {
 		fs = append(fs, f)
@@ -353,17 +346,12 @@ func GetAllFonts() []FontIdentifier {
 }
 
 func DrawFontPicker(id *FontIdentifier, label string) (newFont *Font, changed bool) {
-	f := GetAllFonts()
+	f := getAllFonts()
 	lastFontName := ""
 	if imgui.BeginComboV(label+fmt.Sprintf("##%p", id), id.Name, imgui.ComboFlagsHeightLarge) {
-		// Take advantage of the sort order returned by GetAllFonts()--that
+		// Take advantage of the sort order returned by getAllFonts()--that
 		// all fonts of the same name come consecutively.
 		for _, font := range f {
-			if _, ok := starsFonts[font.Name]; ok {
-				// Don't offer up the STARS fonts.
-				continue
-			}
-
 			if font.Name != lastFontName {
 				lastFontName = font.Name
 				// Use the 14pt version of the font in the combo box.
@@ -390,7 +378,7 @@ func DrawFontPicker(id *FontIdentifier, label string) (newFont *Font, changed bo
 
 func DrawFontSizeSelector(id *FontIdentifier) (newFont *Font, changed bool) {
 	if imgui.BeginComboV(fmt.Sprintf("Font Size##%s", id.Name), strconv.Itoa(id.Size), imgui.ComboFlagsHeightLarge) {
-		for _, font := range GetAllFonts() {
+		for _, font := range getAllFonts() {
 			if font.Name == id.Name {
 				if imgui.SelectableV(strconv.Itoa(font.Size), id.Size == font.Size, 0, imgui.Vec2{}) {
 					id.Size = font.Size
@@ -430,230 +418,6 @@ func FontAwesomeBrandsString(id string) string {
 		panic(fmt.Sprintf("%s: FA string unknown", id))
 	}
 	return s
-}
-
-func initializeSTARSFonts(r Renderer, p platform.Platform) {
-	// See stars-fonts.go (which is automatically-generated) for the
-	// definition of starsFonts, which stores the bitmaps and additional
-	// information about the glyphs in the STARS fonts.
-
-	// We'll extract the font bitmaps into an atlas image; assume 1k x 1k for starters.
-	res := 1024
-
-	// Windows high DPI displays are different than Macs in that they
-	// expose the actual pixel count.  So we need to scale the font atlas
-	// accordingly. Here we just double up pixels since we want to maintain
-	// the realistic chunkiness of the original fonts.
-	doublePixels := runtime.GOOS == "windows" && p.DPIScale() > 1.5
-
-	doubleSTARSFont := func(sf STARSFont) STARSFont {
-		for i := range sf.Glyphs {
-			g := &sf.Glyphs[i]
-			g.StepX *= 2
-			g.Bounds[0] *= 2
-			g.Bounds[1] *= 2
-
-			// Generate a new bitmap with 2x as many
-			// pixels. Fortunately the original bitmaps are all under
-			// 16 pixels wide, so they will still fit in an uint32.
-			var bitmap []uint32
-			for _, line := range g.Bitmap {
-				if line&0xffff != 0 {
-					panic("not enough room in 32 bits")
-				}
-
-				// Horizontal doubling: double all of the set bits in
-				// the line.
-				var newLine uint32
-				for b := 0; b < 32; b++ {
-					// 0b_abcdefghijklmnop0000000000000000 ->
-					// 0b_aabbccddeeffgghhiijjkkllmmnnoopp
-					if line&(1<<(b/2+16)) != 0 {
-						newLine |= 1 << b
-					}
-				}
-
-				// Vertical doubling: add the line twice to the bitmap.
-				bitmap = append(bitmap, newLine, newLine)
-			}
-			g.Bitmap = bitmap
-		}
-		return sf
-	}
-
-	if doublePixels {
-		res *= 2
-		for name, sf := range starsFonts {
-			starsFonts[name] = doubleSTARSFont(sf)
-		}
-		starsCursors = doubleSTARSFont(starsCursors)
-	}
-
-	atlas := image.NewRGBA(image.Rectangle{Max: image.Point{X: res, Y: res}})
-	x, y := 0, 0
-
-	var newFonts []*Font
-
-	addFontToAtlas := func(fontName string, sf STARSFont) {
-		id := FontIdentifier{
-			Name: fontName,
-			Size: util.Select(doublePixels, sf.Height/2, sf.Height),
-		}
-
-		f := MakeFont(sf.Height, true /* mono */, id, nil)
-		newFonts = append(newFonts, f)
-
-		if y+sf.Height >= res {
-			panic("STARS font atlas texture too small")
-		}
-
-		for ch, glyph := range sf.Glyphs {
-			if x+glyph.StepX+1 > res {
-				// Start a new line
-				x = 0
-				y += sf.Height + 1
-			}
-
-			glyph.rasterize(atlas, x, y)
-			glyph.addToFont(ch, x, y, res, f)
-
-			x += glyph.StepX + 1 /* pad */
-		}
-
-		// Start a new line after finishing a font.
-		x = 0
-		y += sf.Height + 1
-
-		if fontName == "sddCharFontSetBSize0" || fontName == "sddCharOutlineFontSetBSize0" {
-			// Make a downscaled version of the smallest one for font size
-			// 0 (which we don't seem to have a bitmap for...) Note that we
-			// arguably should do this once in a preprocess and then encode
-			// the result in starsFonts/starsOutlineFonts, but this doesn't
-			// take too long and for now at least makes it easier to tweak
-			// some of the details.
-			sf.PointSize = 7
-			const delta = 2
-			sf.Width -= delta
-			sf.Height -= delta
-
-			id := FontIdentifier{
-				Name: fontName,
-				Size: util.Select(doublePixels, sf.Height/2, sf.Height),
-			}
-			f := MakeFont(sf.Height, true /* mono */, id, nil)
-			newFonts = append(newFonts, f)
-
-			for ch, glyph := range sf.Glyphs {
-				if x+glyph.StepX+1 > res {
-					// Start a new line in the atlas
-					x = 0
-					y += sf.Height + 1
-				}
-
-				// Rasterize each glyph into its own (small) image, which
-				// we will then downscale. We could probably do this more
-				// efficiently by putting them all into an image, zooming
-				// that, and then copying it into the main font atlas, but
-				// this way we don't have to worry about boundary
-				// conditions and pixels spilling into other glyphs due to
-				// the filter extent...
-				img := image.NewRGBA(image.Rectangle{Max: image.Point{X: glyph.Bounds[0], Y: glyph.Bounds[1]}})
-
-				glyph.rasterize(img, 0, 0)
-
-				imgResized := resize.Resize(uint(glyph.Bounds[0]-delta), uint(glyph.Bounds[1]-delta), img, resize.MitchellNetravali)
-
-				// Update the STARSGlyph for the zoom.
-				glyph.Bounds[0] -= delta
-				glyph.Bounds[1] -= delta
-				glyph.StepX -= delta
-
-				// Copy its pixels into the atlas.
-				for yy := 0; yy < glyph.Bounds[1]; yy++ {
-					for xx := 0; xx < glyph.Bounds[0]; xx++ {
-						c := imgResized.At(xx, yy)
-						r, g, b, a := c.RGBA()
-
-						// The Mitchell-Netravali filter gives us a nicely
-						// anti-aliased result, but we want something a
-						// little more chunky to match the other STARS
-						// fonts.  Therefore, we'll make a few adjustments
-						// to the pixel values to try to get a result more
-						// like that.
-						sharpen := func(v uint32) uint16 {
-							f := float32(v) / 0xffff
-							// The sqrt pushes values toward up
-							f = math.Sqrt(f)
-							// And now we threshold to zero-out the smaller
-							// values completely.
-							if f < .6 {
-								f = 0
-							}
-							// One last sqrt for more chunky.
-							f = math.Sqrt(f)
-							return uint16(math.Min(0xffff, f*0xffff))
-						}
-
-						sr, sg, sb, sa := sharpen(r), sharpen(g), sharpen(b), sharpen(a)
-						atlas.Set(x+xx, y+yy, color.RGBA64{R: sr, G: sg, B: sb, A: sa})
-					}
-				}
-
-				glyph.addToFont(ch, x, y, res, f)
-				x += glyph.StepX + 1 /* pad */
-			}
-
-			x = 0
-			y += sf.Height + 1
-		}
-	}
-
-	// Iterate over the fonts, create Font/Glyph objects for them, and copy
-	// their bitmaps into the atlas image.
-	for _, fontName := range util.SortedMapKeys(starsFonts) { // consistent order
-		addFontToAtlas(fontName, starsFonts[fontName])
-	}
-	addFontToAtlas("STARS cursors", starsCursors)
-
-	atlasId := r.CreateTextureFromImage(atlas, true /* nearest filter */)
-	for _, font := range newFonts {
-		font.TexId = atlasId
-		fonts[font.Id] = font // add them to the global table
-	}
-}
-
-func (glyph STARSGlyph) rasterize(img *image.RGBA, dx, dy int) {
-	// STARSGlyphs store their bitmaps as an array of uint32s, where each
-	// uint32 encodes a scanline and bits are set in it to indicate that
-	// the corresponding pixel should be drawn; thus, there are no
-	// intermediate values for anti-aliasing.
-	for y, line := range glyph.Bitmap {
-		for x := 0; x < glyph.Bounds[0]; x++ {
-			// The high bit corresponds to the first pixel in the scanline,
-			// so the bitmask is set up accordingly...
-			mask := uint32(1 << (31 - x))
-			if line&mask != 0 {
-				on := color.RGBA{R: 255, G: 255, B: 255, A: 255}
-				img.SetRGBA(x+dx, y+dy, on)
-			}
-		}
-	}
-}
-
-func (glyph STARSGlyph) addToFont(ch, x, y, res int, f *Font) {
-	g := &Glyph{
-		X0:       0,
-		X1:       float32(glyph.Bounds[0]),
-		Y0:       0,
-		Y1:       float32(glyph.Bounds[1]),
-		U0:       float32(x) / float32(res),
-		V0:       float32(y) / float32(res),
-		U1:       (float32(x + glyph.Bounds[0])) / float32(res),
-		V1:       (float32(y + glyph.Bounds[1])) / float32(res),
-		AdvanceX: float32(glyph.StepX),
-		Visible:  true,
-	}
-	f.AddGlyph(ch, g)
 }
 
 func AvailableFontSizes(name string) []int {

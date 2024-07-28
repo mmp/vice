@@ -1,10 +1,10 @@
-// pkg/renderer/stars-cursors.go
+// pkg/panes/stars/cursor-butmaps.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 // Automatically generated from STARS PCF font files using util/bdfdump.go
 
-package renderer
+package stars
 
 var starsCursors STARSFont = STARSFont{
 	PointSize: 9,
