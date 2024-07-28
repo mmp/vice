@@ -524,15 +524,6 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 		// though this is apparently unrealistic, at least as far as radar
 		// tracks go...)
 		cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-
-		if ctx.Mouse != nil {
-			// The mouse position is provided in Pane coordinates, so that needs to be updated unless
-			// the DCB is at the top, in which case it's unchanged.
-			ms := *ctx.Mouse
-			ctx.Mouse = &ms
-			ctx.Mouse.Pos[0] += ctx.PaneExtent.P0[0] - scopeExtent.P0[0]
-			ctx.Mouse.Pos[1] += ctx.PaneExtent.P0[1] - scopeExtent.P0[1]
-		}
 	}
 
 	weatherBrightness := float32(ps.Brightness.Weather) / float32(100)
@@ -674,9 +665,10 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, scopeExtent math.Extent
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	// Is the mouse over the DCB or over the regular STARS scope?
-	mouseOverDCB := ctx.Mouse.Pos[0] < 0 || ctx.Mouse.Pos[0] >= scopeExtent.Width() ||
-		ctx.Mouse.Pos[1] < 0 || ctx.Mouse.Pos[1] >= scopeExtent.Height()
+	// Is the mouse over the DCB or over the regular STARS scope? Note that
+	// we need to offset the mouse position to be w.r.t. window coordinates
+	// to match scopeExtent.
+	mouseOverDCB := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.PaneExtent.P0))
 	if mouseOverDCB {
 		return
 	}
@@ -689,15 +681,9 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, scopeExtent math.Extent
 	background := ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor)
 	bgStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: background}
 
-	// Hacky: undo the adjustment to mouse position done after drawing the
-	// DCB in the Draw() method.
-	mousePos := ctx.Mouse.Pos
-	mousePos[0] -= ctx.PaneExtent.P0[0] - scopeExtent.P0[0]
-	mousePos[1] -= ctx.PaneExtent.P0[1] - scopeExtent.P0[1]
-
 	draw := func(idx int, style renderer.TextStyle) {
 		g := sp.cursorsFont.LookupGlyph(rune(idx))
-		p := math.Add2f(mousePos, [2]float32{-g.Width() / 2, g.Height() / 2})
+		p := math.Add2f(ctx.Mouse.Pos, [2]float32{-g.Width() / 2, g.Height() / 2})
 		td.AddText(string(byte(idx)), p, style)
 	}
 	// The STARS "+" cursors start at 0 in the STARS cursors font,
