@@ -155,7 +155,7 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 			STARSToggleButton(ctx, text, &ps.DisplayVideoMap[idx], buttonHalfVertical, buttonScale)
 		}
 		for i := range ps.DisplayWeatherLevel {
-			STARSToggleButton(ctx, "WX"+strconv.Itoa(i), &ps.DisplayWeatherLevel[i], buttonHalfHorizontal, buttonScale)
+			STARSToggleButton(ctx, "WX"+strconv.Itoa(i+1), &ps.DisplayWeatherLevel[i], buttonHalfHorizontal, buttonScale)
 		}
 		if STARSSelectButton(ctx, "BRITE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuBrite
