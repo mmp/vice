@@ -1969,7 +1969,7 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 1500,
+      "climb": 3000,
       "descent": 3000,
       "accelerate": 4,
       "decelerate": 2
@@ -2006,7 +2006,7 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 1500,
+      "climb": 3000,
       "descent": 3000,
       "accelerate": 4,
       "decelerate": 2
@@ -2081,7 +2081,7 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 1500,
+      "climb": 3500,
       "descent": 3000,
       "accelerate": 4,
       "decelerate": 2
@@ -2119,7 +2119,7 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 2500,
+      "climb": 300,
       "descent": 3000,
       "accelerate": 6,
       "decelerate": 3
@@ -3448,7 +3448,7 @@
     "speed": {
       "min": 110,
       "v2": 135,
-      "landing": 100,
+      "landing": 125,
       "cruise": 424,
       "cruiseM": null,
       "max": 470,
@@ -3486,7 +3486,7 @@
     "speed": {
       "min": 110,
       "v2": 135,
-      "landing": 100,
+      "landing": 125,
       "cruise": 447,
       "cruiseM": 0.78,
       "max": 472,
@@ -3523,7 +3523,7 @@
     },
     "speed": {
       "min": 110,
-      "landing": 100,
+      "landing": 125,
       "cruise": 458,
       "cruiseM": null,
       "max": 470,
