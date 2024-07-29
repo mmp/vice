@@ -533,14 +533,14 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	if ps.Brightness.RangeRings > 0 {
 		color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
-		cb.LineWidth(1, ctx.DrawPixelScale)
+		cb.LineWidth(1, ctx.DPIScale)
 		DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 
 	// Maps
-	cb.LineWidth(1, ctx.DrawPixelScale)
+	cb.LineWidth(1, ctx.DPIScale)
 	videoMaps, _ := ctx.ControlClient.GetVideoMaps()
 	for i, disp := range ps.DisplayVideoMap {
 		if !disp {
@@ -573,7 +573,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	transforms.LoadWindowViewingMatrices(cb)
 
 	if ps.Brightness.Compass > 0 {
-		cb.LineWidth(1, ctx.DrawPixelScale)
+		cb.LineWidth(1, ctx.DPIScale)
 		cbright := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
 		font := sp.systemFont[ps.CharSize.Tools]
 		DrawCompass(ps.CurrentCenter, ctx, 0, font, cbright, scopeExtent, transforms, cb)

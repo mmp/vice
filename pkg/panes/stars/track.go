@@ -516,7 +516,7 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	trid.GenerateCommands(cb)
-	cb.LineWidth(1, ctx.DrawPixelScale)
+	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -1248,7 +1248,7 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, ctx *panes.Context
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1, ctx.DrawPixelScale)
+	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
 }
 

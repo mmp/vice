@@ -65,6 +65,10 @@ type Context struct {
 	// displays are 72dpi as far as graphics commands.)
 	DrawPixelScale float32
 	PixelsPerInch  float32
+	// DPIScale is similar to DrawPixelScale but always includes the
+	// "retina" factor; this is mostly useful for drawing "chunky" 1
+	// pixel-wide lines and the like.
+	DPIScale float32
 
 	Renderer  renderer.Renderer
 	Mouse     *platform.MouseState
