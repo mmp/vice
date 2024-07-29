@@ -27,6 +27,7 @@ var (
 )
 
 const dcbButtonSize = 76
+const numDCBSlots = 20
 
 const (
 	buttonFull = 1 << iota
@@ -96,20 +97,23 @@ func (sp *STARSPane) activateMenuSpinner(spinner dcbSpinner) {
 	activeSpinner = spinner
 }
 
+func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
+	ps := sp.CurrentPreferenceSet
+	// Sigh; on windows we want the button size in pixels on high DPI displays
+	ds := ctx.DrawPixelScale
+	// Scale based on width or height available depending on DCB position
+	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
+		return math.Min(ds, (ds*ctx.PaneExtent.Width()-4)/(numDCBSlots*dcbButtonSize))
+	} else {
+		return math.Min(ds, (ds*ctx.PaneExtent.Height()-4)/(numDCBSlots*dcbButtonSize))
+	}
+}
+
 func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) math.Extent2D {
 	ps := &sp.CurrentPreferenceSet
 
 	// Find a scale factor so that the buttons all fit in the window, if necessary
-	const NumDCBSlots = 20
-	// Sigh; on windows we want the button size in pixels on high DPI displays
-	ds := ctx.DrawPixelScale
-	var buttonScale float32
-	// Scale based on width or height available depending on DCB position
-	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
-		buttonScale = math.Min(ds, (ds*ctx.PaneExtent.Width()-4)/(NumDCBSlots*dcbButtonSize))
-	} else {
-		buttonScale = math.Min(ds, (ds*ctx.PaneExtent.Height()-4)/(NumDCBSlots*dcbButtonSize))
-	}
+	buttonScale := sp.dcbButtonScale(ctx)
 
 	sp.startDrawDCB(ctx, buttonScale, transforms, cb)
 
@@ -542,17 +546,24 @@ func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, trans
 	ps := sp.CurrentPreferenceSet
 	dcbDrawState.brightness = ps.Brightness.DCB
 	dcbDrawState.position = ps.DCBPosition
+	buttonSize := float32(int(sp.dcbButtonScale(ctx)*dcbButtonSize + 0.5))
+	var drawEndPos [2]float32
 	switch dcbDrawState.position {
-	case dcbPositionTop, dcbPositionLeft:
-		dcbDrawState.drawStartPos = [2]float32{0, ctx.PaneExtent.Height()}
+	case dcbPositionTop:
+		dcbDrawState.drawStartPos = [2]float32{0, ctx.PaneExtent.Height() - 1}
+		drawEndPos = [2]float32{ctx.PaneExtent.Width(), dcbDrawState.drawStartPos[1] - buttonSize}
+
+	case dcbPositionLeft:
+		dcbDrawState.drawStartPos = [2]float32{0, ctx.PaneExtent.Height() - 1}
+		drawEndPos = [2]float32{buttonSize, 0}
 
 	case dcbPositionRight:
-		sz := buttonSize(buttonFull, buttonScale) // FIXME: there should be a better way to get the default
-		dcbDrawState.drawStartPos = [2]float32{ctx.PaneExtent.Width() - sz[0], ctx.PaneExtent.Height()}
+		dcbDrawState.drawStartPos = [2]float32{ctx.PaneExtent.Width() - buttonSize, ctx.PaneExtent.Height()}
+		drawEndPos = [2]float32{dcbDrawState.drawStartPos[0] - buttonSize, 0}
 
 	case dcbPositionBottom:
-		sz := buttonSize(buttonFull, buttonScale)
-		dcbDrawState.drawStartPos = [2]float32{0, sz[1]}
+		dcbDrawState.drawStartPos = [2]float32{0, buttonSize}
+		drawEndPos = [2]float32{ctx.PaneExtent.Width(), 0}
 	}
 
 	dcbDrawState.cursor = dcbDrawState.drawStartPos
@@ -562,24 +573,21 @@ func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, trans
 		Color:       renderer.RGB{1, 1, 1},
 		LineSpacing: 0,
 	}
-	if dcbDrawState.style.Font == nil {
-		ctx.Lg.Errorf("nil buttonFont??")
-		dcbDrawState.style.Font = renderer.GetDefaultFont()
-	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 
+	// Draw background color quad
+	trid := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
+	trid.AddQuad(dcbDrawState.drawStartPos, [2]float32{drawEndPos[0], dcbDrawState.drawStartPos[1]},
+		drawEndPos, [2]float32{dcbDrawState.drawStartPos[0], drawEndPos[1]},
+		renderer.RGB{0, 0.05, 0})
+	trid.GenerateCommands(cb)
+
 	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
 		dcbDrawState.mouseDownPos = ctx.Mouse.Pos[:]
 	}
-
-	/*
-		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .7, .7, 1})
-		imgui.PushStyleColor(imgui.StyleColorButton, imgui.Vec4{.075, .075, .075, 1})
-		imgui.PushStyleColor(imgui.StyleColorButtonHovered, imgui.Vec4{.3, .3, .3, 1})
-		imgui.PushStyleColor(imgui.StyleColorButtonActive, imgui.Vec4{0, .2, 0, 1})
-	*/
 }
 
 func (sp *STARSPane) endDrawDCB() {
