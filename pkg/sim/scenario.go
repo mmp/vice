@@ -1320,8 +1320,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 		}
 
 		if strings.HasSuffix(path, "-videomaps.gob") || strings.HasSuffix(path, "-videomaps.gob.zst") {
-			loadSerially := !isLocal
-			maplib.AddFile(fs, path, loadSerially, referencedVideoMaps[path], e)
+			maplib.AddFile(fs, path, referencedVideoMaps[path], e)
 		}
 
 		return nil
@@ -1342,8 +1341,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 				return os.DirFS(".")
 			}
 		}()
-		loadSerially := !isLocal
-		maplib.AddFile(fs, extraVideoMapFilename, loadSerially, referencedVideoMaps[extraVideoMapFilename], e)
+		maplib.AddFile(fs, extraVideoMapFilename, referencedVideoMaps[extraVideoMapFilename], e)
 	}
 
 	// Final tidying before we return the loaded scenarios.

@@ -1248,9 +1248,6 @@ func (s *Sim) GetWorldUpdate(token string, update *WorldUpdate) error {
 			TotalArrivals:   s.TotalArrivals,
 		})
 
-		if err != nil {
-			panic(err)
-		}
 		return err
 	}
 }

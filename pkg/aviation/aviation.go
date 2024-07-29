@@ -1578,12 +1578,16 @@ type VideoMap struct {
 }
 
 // VideoMapLibrary maintains a collection of video maps loaded from multiple
-// files.  Video maps are loaded asynchronously.
+// files.  Video maps are loaded on demand.
 type VideoMapLibrary struct {
 	manifests map[string]map[string]interface{} // filename -> map name
 	maps      map[string]map[string]*VideoMap
-	ch        chan LoadedVideoMaps
-	loading   map[string]interface{}
+	toLoad    map[string]videoMapToLoad
+}
+
+type videoMapToLoad struct {
+	referenced map[string]interface{}
+	filesystem fs.FS
 }
 
 type LoadedVideoMaps struct {
@@ -1595,15 +1599,14 @@ func MakeVideoMapLibrary() *VideoMapLibrary {
 	return &VideoMapLibrary{
 		manifests: make(map[string]map[string]interface{}),
 		maps:      make(map[string]map[string]*VideoMap),
-		ch:        make(chan LoadedVideoMaps, 64),
-		loading:   make(map[string]interface{}),
+		toLoad:    make(map[string]videoMapToLoad),
 	}
 }
 
 // AddFile adds a video map to the library. referenced encodes which maps
 // in the file are actually used; the loading code uses this information to
 // skip the work of generating CommandBuffers for unused video maps.
-func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, loadSerially bool, referenced map[string]interface{}, e *util.ErrorLogger) {
+func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, referenced map[string]interface{}, e *util.ErrorLogger) {
 	// Load the manifest and do initial error checking
 	mf, _ := strings.CutSuffix(filename, ".zst")
 	mf, _ = strings.CutSuffix(mf, "-videomaps.gob")
@@ -1632,28 +1635,26 @@ func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, loadSerial
 		}
 	}
 
-	// Kick off the work to load the actual video map.
+	// Make sure the file exists but don't load it until it's needed.
 	f, err := filesystem.Open(filename)
 	if err != nil {
 		e.Error(err)
 	} else {
-		ml.loading[filename] = nil
-		if loadSerially {
-			// Load single-threaded to avoid memory spike at launch.
-			ml.loadVideoMap(f, filename, referenced, manifest)
-			m := <-ml.ch
-			delete(ml.loading, m.path)
-			ml.maps[m.path] = m.maps
-		} else {
-			go ml.loadVideoMap(f, filename, referenced, manifest)
+		f.Close()
+		ml.toLoad[filename] = videoMapToLoad{
+			referenced: util.DuplicateMap(referenced),
+			filesystem: filesystem,
 		}
 	}
 }
 
 // loadVideoMap handles loading the given map; it runs asynchronously and
 // returns the result via the ml.ch chan.
-func (ml *VideoMapLibrary) loadVideoMap(f io.ReadCloser, filename string, referenced map[string]interface{},
-	manifest map[string]interface{}) {
+func (v videoMapToLoad) load(filename string, manifest map[string]interface{}) (map[string]*VideoMap, error) {
+	f, err := v.filesystem.Open(filename)
+	if err != nil {
+		return nil, err
+	}
 	defer f.Close()
 
 	r := io.Reader(f)
@@ -1667,19 +1668,14 @@ func (ml *VideoMapLibrary) loadVideoMap(f io.ReadCloser, filename string, refere
 	var maps []VideoMap
 	dec := gob.NewDecoder(r)
 	if err := dec.Decode(&maps); err != nil {
-		panic(fmt.Sprintf("%s: %v", filename, err))
+		return nil, err
 	}
 
 	// We'll return the maps via a map from the map name to the associated
 	// *VideoMap.
 	starsMaps := make(map[string]*VideoMap)
-	for i, sm := range maps {
-		if sm.Name == "" {
-			maps[i].Lines = nil
-			continue
-		}
-
-		if _, ok := referenced[sm.Name]; ok {
+	for _, sm := range maps {
+		if _, ok := v.referenced[sm.Name]; ok {
 			if _, ok := manifest[sm.Name]; !ok {
 				panic(fmt.Sprintf("%s: map \"%s\" not found in manifest file", filename, sm.Name))
 			}
@@ -1692,54 +1688,32 @@ func (ml *VideoMapLibrary) loadVideoMap(f io.ReadCloser, filename string, refere
 				ld.AddLineStrip(fl)
 			}
 			ld.GenerateCommands(&sm.CommandBuffer)
-		}
 
-		// Clear out Lines so that the memory can be reclaimed since they
-		// aren't needed any more.
-		sm.Lines = nil
-		starsMaps[sm.Name] = &sm
+			// Clear out Lines so that the memory can be reclaimed since they
+			// aren't needed any more.
+			sm.Lines = nil
+			starsMaps[sm.Name] = &sm
+		}
 	}
 
-	ml.ch <- LoadedVideoMaps{path: filename, maps: starsMaps}
+	return starsMaps, nil
 }
 
 func (ml *VideoMapLibrary) GetMap(filename, mapname string) (*VideoMap, error) {
-	// First harvest any video map files that have been loaded. Keep going
-	// as long as there are more waiting, but don't stall if there aren't
-	// any.
-	stop := false
-	for !stop {
-		select {
-		case m := <-ml.ch:
-			delete(ml.loading, m.path)
-			ml.maps[m.path] = m.maps
-
-		default:
-			stop = true
-		}
-	}
-
-	if fmaps, ok := ml.maps[filename]; ok {
-		return fmaps[mapname], nil
-	} else {
-		// The map file hasn't been loaded, so we'll need to stall and wait
-		// for it.
-		if _, ok := ml.loading[filename]; !ok {
+	if _, ok := ml.maps[filename]; !ok {
+		if vload, ok := ml.toLoad[filename]; !ok {
 			return nil, fmt.Errorf("%s: video map \"%s\" requested from file that isn't being loaded",
 				filename, mapname)
-		}
-
-		for {
-			// Blocking channel receive here
-			m := <-ml.ch
-			delete(ml.loading, m.path)
-			ml.maps[m.path] = m.maps
-
-			if m.path == filename {
-				return m.maps[mapname], nil
+		} else {
+			var err error
+			ml.maps[filename], err = vload.load(filename, ml.manifests[filename])
+			if err != nil {
+				return nil, err
 			}
+			delete(ml.toLoad, filename)
 		}
 	}
+	return ml.maps[filename][mapname], nil
 }
 
 func (ml VideoMapLibrary) HaveFile(filename string) bool {
@@ -1777,7 +1751,7 @@ func (ml VideoMapLibrary) HaveMap(filename, mapname string) bool {
 
 func PrintVideoMaps(path string, e *util.ErrorLogger) {
 	lib := MakeVideoMapLibrary()
-	lib.AddFile(os.DirFS("."), path, true, make(map[string]interface{}), e)
+	lib.AddFile(os.DirFS("."), path, make(map[string]interface{}), e)
 
 	var videoMaps []VideoMap
 	for _, name := range lib.AvailableMaps(path) {
