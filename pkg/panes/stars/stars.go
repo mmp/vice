@@ -518,7 +518,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	scopeExtent := ctx.PaneExtent
 	if ps.DisplayDCB {
-		scopeExtent = sp.DrawDCB(ctx, transforms, cb)
+		scopeExtent = sp.drawDCB(ctx, transforms, cb)
 
 		// Update scissor for what's left and to protect the DCB (even
 		// though this is apparently unrealistic, at least as far as radar

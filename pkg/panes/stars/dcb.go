@@ -55,18 +55,18 @@ const (
 	dcbPositionBottom
 )
 
-// DCBSpinner is an interface used to manage the various spinner types in
+// dcbSpinner is an interface used to manage the various spinner types in
 // the DCB menu. Since the various spinners generally have unique
 // requirements and expectations about keyboard input, having this
 // interface allows collecting all of that in the various implementations
 // of the interface.
-type DCBSpinner interface {
+type dcbSpinner interface {
 	// Label returns the text that should be shown in the DCB button.
 	Label() string
 
 	// Equal returns true if the provided spinner controls the same value
 	// as this spinner.
-	Equals(other DCBSpinner) bool
+	Equals(other dcbSpinner) bool
 
 	// MouseWheel is called when the spinner is active and there is mouse
 	// wheel input; implementations should update the underlying value
@@ -92,11 +92,11 @@ func (sp *STARSPane) disableMenuSpinner(ctx *panes.Context) {
 	sp.commandMode = CommandModeNone
 }
 
-func (sp *STARSPane) activateMenuSpinner(spinner DCBSpinner) {
+func (sp *STARSPane) activateMenuSpinner(spinner dcbSpinner) {
 	activeSpinner = spinner
 }
 
-func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) math.Extent2D {
+func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) math.Extent2D {
 	ps := &sp.CurrentPreferenceSet
 
 	// Find a scale factor so that the buttons all fit in the window, if necessary
@@ -115,9 +115,9 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 
 	switch sp.activeDCBMenu {
 	case dcbMenuMain:
-		sp.DrawDCBSpinner(ctx, MakeRadarRangeSpinner(&ps.Range), CommandModeRange,
+		sp.drawDCBSpinner(ctx, makeRadarRangeSpinner(&ps.Range), CommandModeRange,
 			buttonFull, buttonScale)
-		sp.STARSPlaceButton(ctx, "PLACE\nCNTR", buttonHalfVertical, buttonScale,
+		sp.placeButton(ctx, "PLACE\nCNTR", buttonHalfVertical, buttonScale,
 			func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
 				ps.Center = transforms.LatLongFromWindowP(pw)
 				ps.CurrentCenter = ps.Center
@@ -126,22 +126,22 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 				return
 			})
 		ps.OffCenter = ps.CurrentCenter != ps.Center
-		if STARSToggleButton(ctx, "OFF\nCNTR", &ps.OffCenter, buttonHalfVertical, buttonScale) {
+		if toggleButton(ctx, "OFF\nCNTR", &ps.OffCenter, buttonHalfVertical, buttonScale) {
 			ps.CurrentCenter = ps.Center
 		}
-		sp.DrawDCBSpinner(ctx, MakeRangeRingRadiusSpinner(&ps.RangeRingRadius), CommandModeRangeRings,
+		sp.drawDCBSpinner(ctx, makeRangeRingRadiusSpinner(&ps.RangeRingRadius), CommandModeRangeRings,
 			buttonFull, buttonScale)
-		sp.STARSPlaceButton(ctx, "PLACE\nRR", buttonHalfVertical, buttonScale,
+		sp.placeButton(ctx, "PLACE\nRR", buttonHalfVertical, buttonScale,
 			func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
 				ps.RangeRingsCenter = transforms.LatLongFromWindowP(pw)
 				status.clear = true
 				return
 			})
-		if STARSSelectButton(ctx, "RR\nCNTR", buttonHalfVertical, buttonScale) {
+		if selectButton(ctx, "RR\nCNTR", buttonHalfVertical, buttonScale) {
 			cw := [2]float32{ctx.PaneExtent.Width() / 2, ctx.PaneExtent.Height() / 2}
 			ps.RangeRingsCenter = transforms.LatLongFromWindowP(cw)
 		}
-		if STARSSelectButton(ctx, "MAPS", buttonFull, buttonScale) {
+		if selectButton(ctx, "MAPS", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMaps
 		}
 		videoMaps, _ := ctx.ControlClient.GetVideoMaps()
@@ -152,101 +152,101 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 			idx := util.Select(i&1 == 0, i/2, 3+i/2)
 			m := videoMaps[idx]
 			text := util.Select(m.Id == 0, "", fmt.Sprintf("%d\n%s", m.Id, m.Label))
-			STARSToggleButton(ctx, text, &ps.DisplayVideoMap[idx], buttonHalfVertical, buttonScale)
+			toggleButton(ctx, text, &ps.DisplayVideoMap[idx], buttonHalfVertical, buttonScale)
 		}
 		for i := range ps.DisplayWeatherLevel {
-			STARSToggleButton(ctx, "WX"+strconv.Itoa(i+1), &ps.DisplayWeatherLevel[i], buttonHalfHorizontal, buttonScale)
+			toggleButton(ctx, "WX"+strconv.Itoa(i+1), &ps.DisplayWeatherLevel[i], buttonHalfHorizontal, buttonScale)
 		}
-		if STARSSelectButton(ctx, "BRITE", buttonFull, buttonScale) {
+		if selectButton(ctx, "BRITE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuBrite
 		}
-		sp.DrawDCBSpinner(ctx, MakeLeaderLineDirectionSpinner(&ps.LeaderLineDirection), CommandModeNone,
+		sp.drawDCBSpinner(ctx, makeLeaderLineDirectionSpinner(&ps.LeaderLineDirection), CommandModeNone,
 			buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeLeaderLineLengthSpinner(&ps.LeaderLineLength), CommandModeLDR,
+		sp.drawDCBSpinner(ctx, makeLeaderLineLengthSpinner(&ps.LeaderLineLength), CommandModeLDR,
 			buttonHalfVertical, buttonScale)
 
-		if STARSSelectButton(ctx, "CHAR\nSIZE", buttonFull, buttonScale) {
+		if selectButton(ctx, "CHAR\nSIZE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuCharSize
 		}
-		STARSDisabledButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
-		if STARSSelectButton(ctx, "PREF\n"+ps.Name, buttonFull, buttonScale) {
+		disabledButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
+		if selectButton(ctx, "PREF\n"+ps.Name, buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuPref
 		}
 
 		site := sp.radarSiteId(ctx.ControlClient.RadarSites)
 		if len(ctx.ControlClient.RadarSites) == 0 {
-			STARSDisabledButton(ctx, "SITE\n"+site, buttonFull, buttonScale)
+			disabledButton(ctx, "SITE\n"+site, buttonFull, buttonScale)
 		} else {
-			if STARSSelectButton(ctx, "SITE\n"+site, buttonFull, buttonScale) {
+			if selectButton(ctx, "SITE\n"+site, buttonFull, buttonScale) {
 				sp.activeDCBMenu = dcbMenuSite
 			}
 		}
-		if STARSSelectButton(ctx, "SSA\nFILTER", buttonHalfVertical, buttonScale) {
+		if selectButton(ctx, "SSA\nFILTER", buttonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = dcbMenuSSAFilter
 		}
-		if STARSSelectButton(ctx, "GI TEXT\nFILTER", buttonHalfVertical, buttonScale) {
+		if selectButton(ctx, "GI TEXT\nFILTER", buttonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = dcbMenuGITextFilter
 		}
-		if STARSSelectButton(ctx, "SHIFT", buttonFull, buttonScale) {
+		if selectButton(ctx, "SHIFT", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuAux
 		}
 
 	case dcbMenuAux:
-		sp.DrawDCBSpinner(ctx, MakeAudioVolumeSpinner(ctx.Platform, sp, &ps.AudioVolume),
+		sp.drawDCBSpinner(ctx, makeAudioVolumeSpinner(ctx.Platform, sp, &ps.AudioVolume),
 			CommandModeNone, buttonFull, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("HISTORY\n", &ps.RadarTrackHistory, 0, 10),
+		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("HISTORY\n", &ps.RadarTrackHistory, 0, 10),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeHistoryRateSpinner(&ps.RadarTrackHistoryRate),
+		sp.drawDCBSpinner(ctx, makeHistoryRateSpinner(&ps.RadarTrackHistoryRate),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		STARSDisabledButton(ctx, "CURSOR\nHOME", buttonFull, buttonScale)
-		STARSDisabledButton(ctx, "CSR SPD\n4", buttonFull, buttonScale)
-		STARSDisabledButton(ctx, "MAP\nUNCOR", buttonFull, buttonScale)
-		STARSDisabledButton(ctx, "UNCOR", buttonFull, buttonScale)
-		STARSDisabledButton(ctx, "BEACON\nMODE-2", buttonFull, buttonScale)
-		STARSDisabledButton(ctx, "RTQC", buttonFull, buttonScale)
-		STARSDisabledButton(ctx, "MCP", buttonFull, buttonScale)
+		disabledButton(ctx, "CURSOR\nHOME", buttonFull, buttonScale)
+		disabledButton(ctx, "CSR SPD\n4", buttonFull, buttonScale)
+		disabledButton(ctx, "MAP\nUNCOR", buttonFull, buttonScale)
+		disabledButton(ctx, "UNCOR", buttonFull, buttonScale)
+		disabledButton(ctx, "BEACON\nMODE-2", buttonFull, buttonScale)
+		disabledButton(ctx, "RTQC", buttonFull, buttonScale)
+		disabledButton(ctx, "MCP", buttonFull, buttonScale)
 		top := ps.DCBPosition == dcbPositionTop
-		if STARSToggleButton(ctx, "DCB\nTOP", &top, buttonHalfVertical, buttonScale) {
+		if toggleButton(ctx, "DCB\nTOP", &top, buttonHalfVertical, buttonScale) {
 			ps.DCBPosition = dcbPositionTop
 		}
 		left := ps.DCBPosition == dcbPositionLeft
-		if STARSToggleButton(ctx, "DCB\nLEFT", &left, buttonHalfVertical, buttonScale) {
+		if toggleButton(ctx, "DCB\nLEFT", &left, buttonHalfVertical, buttonScale) {
 			ps.DCBPosition = dcbPositionLeft
 		}
 		right := ps.DCBPosition == dcbPositionRight
-		if STARSToggleButton(ctx, "DCB\nRIGHT", &right, buttonHalfVertical, buttonScale) {
+		if toggleButton(ctx, "DCB\nRIGHT", &right, buttonHalfVertical, buttonScale) {
 			ps.DCBPosition = dcbPositionRight
 		}
 		bottom := ps.DCBPosition == dcbPositionBottom
-		if STARSToggleButton(ctx, "DCB\nBOTTOM", &bottom, buttonHalfVertical, buttonScale) {
+		if toggleButton(ctx, "DCB\nBOTTOM", &bottom, buttonHalfVertical, buttonScale) {
 			ps.DCBPosition = dcbPositionBottom
 		}
-		sp.DrawDCBSpinner(ctx, MakePTLLengthSpinner(&ps.PTLLength), CommandModeNone, buttonFull, buttonScale)
+		sp.drawDCBSpinner(ctx, makePTLLengthSpinner(&ps.PTLLength), CommandModeNone, buttonFull, buttonScale)
 		if ps.PTLLength > 0 {
-			if STARSToggleButton(ctx, "PTL OWN", &ps.PTLOwn, buttonHalfVertical, buttonScale) && ps.PTLOwn {
+			if toggleButton(ctx, "PTL OWN", &ps.PTLOwn, buttonHalfVertical, buttonScale) && ps.PTLOwn {
 				ps.PTLAll = false
 			}
-			if STARSToggleButton(ctx, "PTL ALL", &ps.PTLAll, buttonHalfVertical, buttonScale) && ps.PTLAll {
+			if toggleButton(ctx, "PTL ALL", &ps.PTLAll, buttonHalfVertical, buttonScale) && ps.PTLAll {
 				ps.PTLOwn = false
 			}
 		} else {
-			STARSDisabledButton(ctx, "PTL OWN", buttonHalfVertical, buttonScale)
-			STARSDisabledButton(ctx, "PTL ALL", buttonHalfVertical, buttonScale)
+			disabledButton(ctx, "PTL OWN", buttonHalfVertical, buttonScale)
+			disabledButton(ctx, "PTL ALL", buttonHalfVertical, buttonScale)
 
 		}
-		sp.DrawDCBSpinner(ctx, MakeDwellModeSpinner(&ps.DwellMode), CommandModeNone, buttonFull, buttonScale)
-		if STARSSelectButton(ctx, "TPA/\nATPA", buttonFull, buttonScale) {
+		sp.drawDCBSpinner(ctx, makeDwellModeSpinner(&ps.DwellMode), CommandModeNone, buttonFull, buttonScale)
+		if selectButton(ctx, "TPA/\nATPA", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuTPA
 		}
-		if STARSSelectButton(ctx, "SHIFT", buttonFull, buttonScale) {
+		if selectButton(ctx, "SHIFT", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
 		}
 
 	case dcbMenuMaps:
-		if STARSSelectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
+		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
 		}
-		if STARSSelectButton(ctx, "CLR ALL", buttonHalfVertical, buttonScale) {
+		if selectButton(ctx, "CLR ALL", buttonHalfVertical, buttonScale) {
 			for i := range ps.DisplayVideoMap {
 				ps.DisplayVideoMap[i] = false
 			}
@@ -261,61 +261,61 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 			idx := util.Select(i&1 == 0, 6+i/2, 22+i/2)
 			m := videoMaps[idx]
 			text := util.Select(m.Id == 0, "", fmt.Sprintf("%d\n%s", m.Id, m.Label))
-			STARSToggleButton(ctx, text, &ps.DisplayVideoMap[idx], buttonHalfVertical, buttonScale)
+			toggleButton(ctx, text, &ps.DisplayVideoMap[idx], buttonHalfVertical, buttonScale)
 		}
 
 		geoMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupGeo && ps.VideoMapsList.Visible
-		if STARSToggleButton(ctx, "GEO\nMAPS", &geoMapsSelected, buttonHalfVertical, buttonScale) {
+		if toggleButton(ctx, "GEO\nMAPS", &geoMapsSelected, buttonHalfVertical, buttonScale) {
 			ps.VideoMapsList.Selection = VideoMapsGroupGeo
 			ps.VideoMapsList.Visible = geoMapsSelected
 		}
-		STARSDisabledButton(ctx, "AIRPORT", buttonHalfVertical, buttonScale)
+		disabledButton(ctx, "AIRPORT", buttonHalfVertical, buttonScale)
 		sysProcSelected := ps.VideoMapsList.Selection == VideoMapsGroupSysProc && ps.VideoMapsList.Visible
-		if STARSToggleButton(ctx, "SYS\nPROC", &sysProcSelected, buttonHalfVertical, buttonScale) {
+		if toggleButton(ctx, "SYS\nPROC", &sysProcSelected, buttonHalfVertical, buttonScale) {
 			ps.VideoMapsList.Selection = VideoMapsGroupSysProc
 			ps.VideoMapsList.Visible = sysProcSelected
 		}
 		currentMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupCurrent && ps.VideoMapsList.Visible
-		if STARSToggleButton(ctx, "CURRENT", &currentMapsSelected, buttonHalfVertical, buttonScale) {
+		if toggleButton(ctx, "CURRENT", &currentMapsSelected, buttonHalfVertical, buttonScale) {
 			ps.VideoMapsList.Selection = VideoMapsGroupCurrent
 			ps.VideoMapsList.Visible = currentMapsSelected
 		}
 
 	case dcbMenuBrite:
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("DCB", &ps.Brightness.DCB, 25, false),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("DCB", &ps.Brightness.DCB, 25, false),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("BKC", &ps.Brightness.BackgroundContrast, 0, false),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("BKC", &ps.Brightness.BackgroundContrast, 0, false),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("MPA", &ps.Brightness.VideoGroupA, 5, false),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("MPA", &ps.Brightness.VideoGroupA, 5, false),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("MPB", &ps.Brightness.VideoGroupB, 5, false),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("MPB", &ps.Brightness.VideoGroupB, 5, false),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("FDB", &ps.Brightness.FullDatablocks, 5, true),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("FDB", &ps.Brightness.FullDatablocks, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("LST", &ps.Brightness.Lists, 25, false),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("LST", &ps.Brightness.Lists, 25, false),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("POS", &ps.Brightness.Positions, 5, true),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("POS", &ps.Brightness.Positions, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("LDB", &ps.Brightness.LimitedDatablocks, 5, true),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("LDB", &ps.Brightness.LimitedDatablocks, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("OTH", &ps.Brightness.OtherTracks, 5, true),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("OTH", &ps.Brightness.OtherTracks, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("TLS", &ps.Brightness.Lines, 5, true),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("TLS", &ps.Brightness.Lines, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("RR", &ps.Brightness.RangeRings, 5, true),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("RR", &ps.Brightness.RangeRings, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("CMP", &ps.Brightness.Compass, 5, true),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("CMP", &ps.Brightness.Compass, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("BCN", &ps.Brightness.BeaconSymbols, 5, true),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("BCN", &ps.Brightness.BeaconSymbols, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("PRI", &ps.Brightness.PrimarySymbols, 5, true),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("PRI", &ps.Brightness.PrimarySymbols, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("HST", &ps.Brightness.History, 5, true),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("HST", &ps.Brightness.History, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
 		// The STARS manual, p.4-74 actually says that weather can't go to OFF... FIXME?
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("WX", &ps.Brightness.Weather, 5, true),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("WX", &ps.Brightness.Weather, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeBrightnessSpinner("WXC", &ps.Brightness.WxContrast, 5, false),
+		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("WXC", &ps.Brightness.WxContrast, 5, false),
 			CommandModeNone, buttonHalfVertical, buttonScale)
 		if ps.Brightness.Weather != 0 {
 			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.Renderer, ctx.Lg)
@@ -323,22 +323,22 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 			// Don't fetch weather maps if they're not going to be displayed.
 			sp.weatherRadar.Deactivate()
 		}
-		if STARSSelectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
+		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
 		}
 
 	case dcbMenuCharSize:
-		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("DATA\nBLOCKS\n", &ps.CharSize.Datablocks, 0, 5),
+		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("DATA\nBLOCKS\n", &ps.CharSize.Datablocks, 0, 5),
 			CommandModeNone, buttonFull, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("LISTS\n", &ps.CharSize.Lists, 0, 5),
+		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("LISTS\n", &ps.CharSize.Lists, 0, 5),
 			CommandModeNone, buttonFull, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("DCB\n", &ps.CharSize.DCB, 0, 2),
+		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("DCB\n", &ps.CharSize.DCB, 0, 2),
 			CommandModeNone, buttonFull, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("TOOLS\n", &ps.CharSize.Tools, 0, 5),
+		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("TOOLS\n", &ps.CharSize.Tools, 0, 5),
 			CommandModeNone, buttonFull, buttonScale)
-		sp.DrawDCBSpinner(ctx, MakeIntegerRangeSpinner("POS\n", &ps.CharSize.PositionSymbols, 0, 5),
+		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("POS\n", &ps.CharSize.PositionSymbols, 0, 5),
 			CommandModeNone, buttonFull, buttonScale)
-		if STARSSelectButton(ctx, "DONE", buttonFull, buttonScale) {
+		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
 		}
 
@@ -349,7 +349,7 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 			if i == sp.SelectedPreferenceSet {
 				flags = flags | buttonSelected
 			}
-			if STARSSelectButton(ctx, text, flags, buttonScale) {
+			if selectButton(ctx, text, flags, buttonScale) {
 				// Make this one current
 				sp.SelectedPreferenceSet = i
 				sp.CurrentPreferenceSet = sp.PreferenceSets[i]
@@ -357,41 +357,41 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 			}
 		}
 		for i := len(sp.PreferenceSets); i < NumPreferenceSets; i++ {
-			STARSDisabledButton(ctx, fmt.Sprintf("%d\n", i+1), buttonHalfVertical, buttonScale)
+			disabledButton(ctx, fmt.Sprintf("%d\n", i+1), buttonHalfVertical, buttonScale)
 		}
 
-		if STARSSelectButton(ctx, "DEFAULT", buttonHalfVertical, buttonScale) {
+		if selectButton(ctx, "DEFAULT", buttonHalfVertical, buttonScale) {
 			sp.CurrentPreferenceSet = sp.MakePreferenceSet("", &ctx.ControlClient.State)
 		}
-		STARSDisabledButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
-		if STARSSelectButton(ctx, "RESTORE", buttonHalfVertical, buttonScale) {
+		disabledButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
+		if selectButton(ctx, "RESTORE", buttonHalfVertical, buttonScale) {
 			// TODO: restore settings in effect when entered the Pref sub-menu
 		}
 
 		validSelection := sp.SelectedPreferenceSet != -1 && sp.SelectedPreferenceSet < len(sp.PreferenceSets)
 		if validSelection {
-			if STARSSelectButton(ctx, "SAVE", buttonHalfVertical, buttonScale) {
+			if selectButton(ctx, "SAVE", buttonHalfVertical, buttonScale) {
 				sp.PreferenceSets[sp.SelectedPreferenceSet] = sp.CurrentPreferenceSet
 				// FIXME? globalConfig.Save()
 			}
 		} else {
-			STARSDisabledButton(ctx, "SAVE", buttonHalfVertical, buttonScale)
+			disabledButton(ctx, "SAVE", buttonHalfVertical, buttonScale)
 		}
-		STARSDisabledButton(ctx, "CHG PIN", buttonHalfVertical, buttonScale)
-		if STARSSelectButton(ctx, "SAVE AS", buttonHalfVertical, buttonScale) {
+		disabledButton(ctx, "CHG PIN", buttonHalfVertical, buttonScale)
+		if selectButton(ctx, "SAVE AS", buttonHalfVertical, buttonScale) {
 			// A command mode handles prompting for the name and then saves
 			// when enter is pressed.
 			sp.commandMode = CommandModeSavePrefAs
 		}
 		if validSelection {
-			if STARSSelectButton(ctx, "DELETE", buttonHalfVertical, buttonScale) {
+			if selectButton(ctx, "DELETE", buttonHalfVertical, buttonScale) {
 				sp.PreferenceSets = util.DeleteSliceElement(sp.PreferenceSets, sp.SelectedPreferenceSet)
 			}
 		} else {
-			STARSDisabledButton(ctx, "DELETE", buttonHalfVertical, buttonScale)
+			disabledButton(ctx, "DELETE", buttonHalfVertical, buttonScale)
 		}
 
-		if STARSSelectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
+		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
 		}
 
@@ -400,7 +400,7 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 			site := ctx.ControlClient.RadarSites[id]
 			label := " " + site.Char + " " + "\n" + id
 			selected := ps.RadarSiteSelected == id
-			if STARSToggleButton(ctx, label, &selected, buttonFull, buttonScale) {
+			if toggleButton(ctx, label, &selected, buttonFull, buttonScale) {
 				if selected {
 					ps.RadarSiteSelected = id
 				} else {
@@ -410,10 +410,10 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 		// Fill extras with empty disabled buttons
 		for i := len(ctx.ControlClient.RadarSites); i < 15; i++ {
-			STARSDisabledButton(ctx, "", buttonFull, buttonScale)
+			disabledButton(ctx, "", buttonFull, buttonScale)
 		}
 		multi := sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeMulti
-		if STARSToggleButton(ctx, "MULTI", &multi, buttonFull, buttonScale) && multi {
+		if toggleButton(ctx, "MULTI", &multi, buttonFull, buttonScale) && multi {
 			ps.RadarSiteSelected = ""
 			if ps.FusedRadarMode {
 				sp.discardTracks = true
@@ -421,69 +421,69 @@ func (sp *STARSPane) DrawDCB(ctx *panes.Context, transforms ScopeTransformations
 			ps.FusedRadarMode = false
 		}
 		fused := sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeFused
-		if STARSToggleButton(ctx, "FUSED", &fused, buttonFull, buttonScale) && fused {
+		if toggleButton(ctx, "FUSED", &fused, buttonFull, buttonScale) && fused {
 			ps.RadarSiteSelected = ""
 			ps.FusedRadarMode = true
 			sp.discardTracks = true
 		}
-		if STARSSelectButton(ctx, "DONE", buttonFull, buttonScale) {
+		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
 		}
 
 	case dcbMenuSSAFilter:
-		STARSToggleButton(ctx, "ALL", &ps.SSAList.Filter.All, buttonHalfVertical, buttonScale)
-		STARSDisabledButton(ctx, "WX", buttonHalfVertical, buttonScale) // ?? TODO
-		STARSToggleButton(ctx, "TIME", &ps.SSAList.Filter.Time, buttonHalfVertical, buttonScale)
-		STARSToggleButton(ctx, "ALTSTG", &ps.SSAList.Filter.Altimeter, buttonHalfVertical, buttonScale)
-		STARSToggleButton(ctx, "STATUS", &ps.SSAList.Filter.Status, buttonHalfVertical, buttonScale)
-		STARSDisabledButton(ctx, "PLAN", buttonHalfVertical, buttonScale) // ?? TODO
-		STARSToggleButton(ctx, "RADAR", &ps.SSAList.Filter.Radar, buttonHalfVertical, buttonScale)
-		STARSToggleButton(ctx, "CODES", &ps.SSAList.Filter.Codes, buttonHalfVertical, buttonScale)
-		STARSToggleButton(ctx, "SPC", &ps.SSAList.Filter.SpecialPurposeCodes, buttonHalfVertical, buttonScale)
-		STARSDisabledButton(ctx, "SYS OFF", buttonHalfVertical, buttonScale) // ?? TODO
-		STARSToggleButton(ctx, "RANGE", &ps.SSAList.Filter.Range, buttonHalfVertical, buttonScale)
-		STARSToggleButton(ctx, "PTL", &ps.SSAList.Filter.PredictedTrackLines, buttonHalfVertical, buttonScale)
-		STARSToggleButton(ctx, "ALT FIL", &ps.SSAList.Filter.AltitudeFilters, buttonHalfVertical, buttonScale)
-		STARSDisabledButton(ctx, "NAS I/F", buttonHalfVertical, buttonScale) // ?? TODO
-		STARSToggleButton(ctx, "AIRPORT", &ps.SSAList.Filter.AirportWeather, buttonHalfVertical, buttonScale)
-		STARSDisabledButton(ctx, "OP MODE", buttonHalfVertical, buttonScale) // ?? TODO
-		STARSDisabledButton(ctx, "TT", buttonHalfVertical, buttonScale)      // ?? TODO
-		STARSDisabledButton(ctx, "WX HIST", buttonHalfVertical, buttonScale) // ?? TODO
-		STARSToggleButton(ctx, "QL", &ps.SSAList.Filter.QuickLookPositions, buttonHalfVertical, buttonScale)
-		STARSToggleButton(ctx, "TW OFF", &ps.SSAList.Filter.DisabledTerminal, buttonHalfVertical, buttonScale)
-		STARSDisabledButton(ctx, "CON/CPL", buttonHalfVertical, buttonScale) // ?? TODO
-		STARSDisabledButton(ctx, "OFF IND", buttonHalfVertical, buttonScale) // ?? TODO
-		STARSToggleButton(ctx, "CRDA", &ps.SSAList.Filter.ActiveCRDAPairs, buttonHalfVertical, buttonScale)
-		STARSDisabledButton(ctx, "", buttonHalfVertical, buttonScale)
-		if STARSSelectButton(ctx, "DONE", buttonFull, buttonScale) {
+		toggleButton(ctx, "ALL", &ps.SSAList.Filter.All, buttonHalfVertical, buttonScale)
+		disabledButton(ctx, "WX", buttonHalfVertical, buttonScale) // ?? TODO
+		toggleButton(ctx, "TIME", &ps.SSAList.Filter.Time, buttonHalfVertical, buttonScale)
+		toggleButton(ctx, "ALTSTG", &ps.SSAList.Filter.Altimeter, buttonHalfVertical, buttonScale)
+		toggleButton(ctx, "STATUS", &ps.SSAList.Filter.Status, buttonHalfVertical, buttonScale)
+		disabledButton(ctx, "PLAN", buttonHalfVertical, buttonScale) // ?? TODO
+		toggleButton(ctx, "RADAR", &ps.SSAList.Filter.Radar, buttonHalfVertical, buttonScale)
+		toggleButton(ctx, "CODES", &ps.SSAList.Filter.Codes, buttonHalfVertical, buttonScale)
+		toggleButton(ctx, "SPC", &ps.SSAList.Filter.SpecialPurposeCodes, buttonHalfVertical, buttonScale)
+		disabledButton(ctx, "SYS OFF", buttonHalfVertical, buttonScale) // ?? TODO
+		toggleButton(ctx, "RANGE", &ps.SSAList.Filter.Range, buttonHalfVertical, buttonScale)
+		toggleButton(ctx, "PTL", &ps.SSAList.Filter.PredictedTrackLines, buttonHalfVertical, buttonScale)
+		toggleButton(ctx, "ALT FIL", &ps.SSAList.Filter.AltitudeFilters, buttonHalfVertical, buttonScale)
+		disabledButton(ctx, "NAS I/F", buttonHalfVertical, buttonScale) // ?? TODO
+		toggleButton(ctx, "AIRPORT", &ps.SSAList.Filter.AirportWeather, buttonHalfVertical, buttonScale)
+		disabledButton(ctx, "OP MODE", buttonHalfVertical, buttonScale) // ?? TODO
+		disabledButton(ctx, "TT", buttonHalfVertical, buttonScale)      // ?? TODO
+		disabledButton(ctx, "WX HIST", buttonHalfVertical, buttonScale) // ?? TODO
+		toggleButton(ctx, "QL", &ps.SSAList.Filter.QuickLookPositions, buttonHalfVertical, buttonScale)
+		toggleButton(ctx, "TW OFF", &ps.SSAList.Filter.DisabledTerminal, buttonHalfVertical, buttonScale)
+		disabledButton(ctx, "CON/CPL", buttonHalfVertical, buttonScale) // ?? TODO
+		disabledButton(ctx, "OFF IND", buttonHalfVertical, buttonScale) // ?? TODO
+		toggleButton(ctx, "CRDA", &ps.SSAList.Filter.ActiveCRDAPairs, buttonHalfVertical, buttonScale)
+		disabledButton(ctx, "", buttonHalfVertical, buttonScale)
+		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
 		}
 
 	case dcbMenuGITextFilter:
-		STARSToggleButton(ctx, "MAIN", &ps.SSAList.Filter.Text.Main, buttonHalfVertical, buttonScale)
+		toggleButton(ctx, "MAIN", &ps.SSAList.Filter.Text.Main, buttonHalfVertical, buttonScale)
 		for i := range ps.SSAList.Filter.Text.GI {
-			STARSToggleButton(ctx, fmt.Sprintf("GI %d", i+1), &ps.SSAList.Filter.Text.GI[i],
+			toggleButton(ctx, fmt.Sprintf("GI %d", i+1), &ps.SSAList.Filter.Text.GI[i],
 				buttonHalfVertical, buttonScale)
 		}
-		if STARSSelectButton(ctx, "DONE", buttonFull, buttonScale) {
+		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
 		}
 
 	case dcbMenuTPA:
 		onoff := func(b bool) string { return util.Select(b, "ENABLED", "INHIBTD") }
-		if STARSSelectButton(ctx, "A/TPA\nMILEAGE\n"+onoff(ps.DisplayTPASize), buttonFull, buttonScale) {
+		if selectButton(ctx, "A/TPA\nMILEAGE\n"+onoff(ps.DisplayTPASize), buttonFull, buttonScale) {
 			ps.DisplayTPASize = !ps.DisplayTPASize
 		}
-		if STARSSelectButton(ctx, "INTRAIL\nDIST\n"+onoff(ps.DisplayATPAInTrailDist), buttonFull, buttonScale) {
+		if selectButton(ctx, "INTRAIL\nDIST\n"+onoff(ps.DisplayATPAInTrailDist), buttonFull, buttonScale) {
 			ps.DisplayATPAInTrailDist = !ps.DisplayATPAInTrailDist
 		}
-		if STARSSelectButton(ctx, "ALERT\nCONES\n"+onoff(ps.DisplayATPAWarningAlertCones), buttonFull, buttonScale) {
+		if selectButton(ctx, "ALERT\nCONES\n"+onoff(ps.DisplayATPAWarningAlertCones), buttonFull, buttonScale) {
 			ps.DisplayATPAWarningAlertCones = !ps.DisplayATPAWarningAlertCones
 		}
-		if STARSSelectButton(ctx, "MONITOR\nCONES\n"+onoff(ps.DisplayATPAMonitorCones), buttonFull, buttonScale) {
+		if selectButton(ctx, "MONITOR\nCONES\n"+onoff(ps.DisplayATPAMonitorCones), buttonFull, buttonScale) {
 			ps.DisplayATPAMonitorCones = !ps.DisplayATPAMonitorCones
 		}
-		if STARSSelectButton(ctx, "DONE", buttonFull, buttonScale) {
+		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuAux
 		}
 	}
@@ -755,7 +755,7 @@ func updateDCBCursor(flags int, sz [2]float32, ctx *panes.Context) {
 	}
 }
 
-func STARSToggleButton(ctx *panes.Context, text string, state *bool, flags int, buttonScale float32) bool {
+func toggleButton(ctx *panes.Context, text string, state *bool, flags int, buttonScale float32) bool {
 	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, *state, false)
 
 	if clicked {
@@ -769,12 +769,12 @@ func STARSToggleButton(ctx *panes.Context, text string, state *bool, flags int, 
 // at once w.r.t. this.  This probably should be a member variable,
 // though we also need to think about focus capture; probably should
 // force take it when a spinner is active..
-var activeSpinner DCBSpinner
+var activeSpinner dcbSpinner
 
-// DrawDCBSpinner draws the provided spinner at the current location in the
+// drawDCBSpinner draws the provided spinner at the current location in the
 // DCB. It handles mouse capture (and release) and passing mouse wheel
 // events to the spinner.
-func (sp *STARSPane) DrawDCBSpinner(ctx *panes.Context, spinner DCBSpinner, commandMode CommandMode, flags int, buttonScale float32) {
+func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, commandMode CommandMode, flags int, buttonScale float32) {
 	if activeSpinner != nil && spinner.Equals(activeSpinner) {
 		// This spinner is active.
 		buttonBounds, clicked := drawDCBButton(ctx, spinner.Label(), flags, buttonScale, true, false)
@@ -807,28 +807,28 @@ func (sp *STARSPane) DrawDCBSpinner(ctx *panes.Context, spinner DCBSpinner, comm
 	}
 }
 
-type DCBRadarRangeSpinner struct {
+type dcbRadarRangeSpinner struct {
 	r *float32
 }
 
-func MakeRadarRangeSpinner(r *float32) DCBSpinner {
-	return &DCBRadarRangeSpinner{r}
+func makeRadarRangeSpinner(r *float32) dcbSpinner {
+	return &dcbRadarRangeSpinner{r}
 }
 
-func (s DCBRadarRangeSpinner) Label() string {
+func (s dcbRadarRangeSpinner) Label() string {
 	return "RANGE\n" + strconv.Itoa(int(*s.r+0.5)) // print it as an int
 }
 
-func (s DCBRadarRangeSpinner) Equals(other DCBSpinner) bool {
-	r, ok := other.(*DCBRadarRangeSpinner)
+func (s dcbRadarRangeSpinner) Equals(other dcbSpinner) bool {
+	r, ok := other.(*dcbRadarRangeSpinner)
 	return ok && r.r == s.r
 }
 
-func (s *DCBRadarRangeSpinner) MouseWheel(delta int) {
+func (s *dcbRadarRangeSpinner) MouseWheel(delta int) {
 	*s.r = math.Clamp(*s.r+float32(delta), 6, 256)
 }
 
-func (s *DCBRadarRangeSpinner) KeyboardInput(text string) error {
+func (s *dcbRadarRangeSpinner) KeyboardInput(text string) error {
 	// 4-33
 	if r, err := strconv.Atoi(text); err != nil {
 		return ErrSTARSCommandFormat
@@ -842,34 +842,34 @@ func (s *DCBRadarRangeSpinner) KeyboardInput(text string) error {
 	}
 }
 
-func (s *DCBRadarRangeSpinner) Disabled() {}
+func (s *dcbRadarRangeSpinner) Disabled() {}
 
-// DCBIntegerRangeSpinner is a generic implementation of DCBSpinner for
+// dcbIntegerRangeSpinner is a generic implementation of dcbSpinner for
 // managing integers in steps of 1 within a given range.
-type DCBIntegerRangeSpinner struct {
+type dcbIntegerRangeSpinner struct {
 	text     string
 	value    *int
 	min, max int
 }
 
-func MakeIntegerRangeSpinner(t string, v *int, min, max int) *DCBIntegerRangeSpinner {
-	return &DCBIntegerRangeSpinner{text: t, value: v, min: min, max: max}
+func makeIntegerRangeSpinner(t string, v *int, min, max int) *dcbIntegerRangeSpinner {
+	return &dcbIntegerRangeSpinner{text: t, value: v, min: min, max: max}
 }
 
-func (s *DCBIntegerRangeSpinner) Label() string {
+func (s *dcbIntegerRangeSpinner) Label() string {
 	return s.text + strconv.Itoa(*s.value)
 }
 
-func (s *DCBIntegerRangeSpinner) Equals(other DCBSpinner) bool {
-	ir, ok := other.(*DCBIntegerRangeSpinner)
+func (s *dcbIntegerRangeSpinner) Equals(other dcbSpinner) bool {
+	ir, ok := other.(*dcbIntegerRangeSpinner)
 	return ok && ir.value == s.value
 }
 
-func (s *DCBIntegerRangeSpinner) MouseWheel(delta int) {
+func (s *dcbIntegerRangeSpinner) MouseWheel(delta int) {
 	*s.value = math.Clamp(*s.value+delta, s.min, s.max)
 }
 
-func (s *DCBIntegerRangeSpinner) KeyboardInput(text string) error {
+func (s *dcbIntegerRangeSpinner) KeyboardInput(text string) error {
 	if v, err := strconv.Atoi(text); err != nil {
 		return ErrSTARSCommandFormat
 	} else if v < s.min || v > s.max {
@@ -880,27 +880,27 @@ func (s *DCBIntegerRangeSpinner) KeyboardInput(text string) error {
 	}
 }
 
-func (s *DCBIntegerRangeSpinner) Disabled() {}
+func (s *dcbIntegerRangeSpinner) Disabled() {}
 
-type DCBAudioVolumeSpinner struct {
-	*DCBIntegerRangeSpinner
+type dcbAudioVolumeSpinner struct {
+	*dcbIntegerRangeSpinner
 	p  platform.Platform
 	sp *STARSPane
 }
 
-func (v *DCBAudioVolumeSpinner) Equals(other DCBSpinner) bool {
-	vs, ok := other.(*DCBAudioVolumeSpinner)
+func (v *dcbAudioVolumeSpinner) Equals(other dcbSpinner) bool {
+	vs, ok := other.(*dcbAudioVolumeSpinner)
 	return ok && vs.value == v.value
 }
 
-func (v *DCBAudioVolumeSpinner) Disabled() {
+func (v *dcbAudioVolumeSpinner) Disabled() {
 	v.p.SetAudioVolume(*v.value)
 	v.sp.playOnce(v.p, AudioTest)
 }
 
-func MakeAudioVolumeSpinner(p platform.Platform, sp *STARSPane, vol *int) *DCBAudioVolumeSpinner {
-	return &DCBAudioVolumeSpinner{
-		DCBIntegerRangeSpinner: MakeIntegerRangeSpinner("VOL\n", vol, 1, 10),
+func makeAudioVolumeSpinner(p platform.Platform, sp *STARSPane, vol *int) *dcbAudioVolumeSpinner {
+	return &dcbAudioVolumeSpinner{
+		dcbIntegerRangeSpinner: makeIntegerRangeSpinner("VOL\n", vol, 1, 10),
 		p:                      p,
 		sp:                     sp,
 	}
@@ -908,28 +908,28 @@ func MakeAudioVolumeSpinner(p platform.Platform, sp *STARSPane, vol *int) *DCBAu
 
 // Leader lines are integers between 0 and 7 so the IntegerRangeSpinner
 // fits.
-func MakeLeaderLineLengthSpinner(l *int) DCBSpinner {
-	return MakeIntegerRangeSpinner("LDR\n", l, 0, 7)
+func makeLeaderLineLengthSpinner(l *int) dcbSpinner {
+	return makeIntegerRangeSpinner("LDR\n", l, 0, 7)
 }
 
-type DCBLeaderLineDirectionSpinner struct {
+type dcbLeaderLineDirectionSpinner struct {
 	d *math.CardinalOrdinalDirection
 }
 
-func MakeLeaderLineDirectionSpinner(dir *math.CardinalOrdinalDirection) DCBSpinner {
-	return &DCBLeaderLineDirectionSpinner{dir}
+func makeLeaderLineDirectionSpinner(dir *math.CardinalOrdinalDirection) dcbSpinner {
+	return &dcbLeaderLineDirectionSpinner{dir}
 }
 
-func (s *DCBLeaderLineDirectionSpinner) Label() string {
+func (s *dcbLeaderLineDirectionSpinner) Label() string {
 	return "LDR DIR\n" + s.d.ShortString()
 }
 
-func (s *DCBLeaderLineDirectionSpinner) Equals(other DCBSpinner) bool {
-	l, ok := other.(*DCBLeaderLineDirectionSpinner)
+func (s *dcbLeaderLineDirectionSpinner) Equals(other dcbSpinner) bool {
+	l, ok := other.(*dcbLeaderLineDirectionSpinner)
 	return ok && l.d == s.d
 }
 
-func (s *DCBLeaderLineDirectionSpinner) MouseWheel(delta int) {
+func (s *dcbLeaderLineDirectionSpinner) MouseWheel(delta int) {
 	// The CardinalOrdinalDirection enum goes clockwise, so adding one (mod
 	// 8) goes forward, and subtracting 1 (mod 8) goes backwards.
 	if delta < 0 {
@@ -939,7 +939,7 @@ func (s *DCBLeaderLineDirectionSpinner) MouseWheel(delta int) {
 	}
 }
 
-func (s *DCBLeaderLineDirectionSpinner) KeyboardInput(text string) error {
+func (s *dcbLeaderLineDirectionSpinner) KeyboardInput(text string) error {
 	if len(text) > 1 {
 		return ErrSTARSCommandFormat
 	} else if dir, ok := numpadToDirection(text[0]); !ok || dir == nil /* entered 5 */ {
@@ -950,26 +950,26 @@ func (s *DCBLeaderLineDirectionSpinner) KeyboardInput(text string) error {
 	}
 }
 
-func (s *DCBLeaderLineDirectionSpinner) Disabled() {}
+func (s *dcbLeaderLineDirectionSpinner) Disabled() {}
 
-type DCBHistoryRateSpinner struct {
+type dcbHistoryRateSpinner struct {
 	r *float32
 }
 
-func MakeHistoryRateSpinner(r *float32) DCBSpinner {
-	return &DCBHistoryRateSpinner{r}
+func makeHistoryRateSpinner(r *float32) dcbSpinner {
+	return &dcbHistoryRateSpinner{r}
 }
 
-func (s *DCBHistoryRateSpinner) Label() string {
+func (s *dcbHistoryRateSpinner) Label() string {
 	return "H_RATE\n" + fmt.Sprintf("%.1f", *s.r)
 }
 
-func (s *DCBHistoryRateSpinner) Equals(other DCBSpinner) bool {
-	r, ok := other.(*DCBHistoryRateSpinner)
+func (s *dcbHistoryRateSpinner) Equals(other dcbSpinner) bool {
+	r, ok := other.(*dcbHistoryRateSpinner)
 	return ok && r.r == s.r
 }
 
-func (s *DCBHistoryRateSpinner) MouseWheel(delta int) {
+func (s *dcbHistoryRateSpinner) MouseWheel(delta int) {
 	// 4-94 the spinner goes in steps of 0.5.
 	if delta > 0 {
 		*s.r = math.Clamp(*s.r+0.5, 0, 4.5)
@@ -978,7 +978,7 @@ func (s *DCBHistoryRateSpinner) MouseWheel(delta int) {
 	}
 }
 
-func (s *DCBHistoryRateSpinner) KeyboardInput(text string) error {
+func (s *dcbHistoryRateSpinner) KeyboardInput(text string) error {
 	// 4-94: however, for keyboard input, values in the range 0-4.5 in
 	// increments of 0.1 are allowed.
 
@@ -1008,26 +1008,26 @@ func (s *DCBHistoryRateSpinner) KeyboardInput(text string) error {
 	}
 }
 
-func (s *DCBHistoryRateSpinner) Disabled() {}
+func (s *dcbHistoryRateSpinner) Disabled() {}
 
-type DCBPTLLengthSpinner struct {
+type dcbPTLLengthSpinner struct {
 	l *float32
 }
 
-func MakePTLLengthSpinner(l *float32) DCBSpinner {
-	return &DCBPTLLengthSpinner{l}
+func makePTLLengthSpinner(l *float32) dcbSpinner {
+	return &dcbPTLLengthSpinner{l}
 }
 
-func (s *DCBPTLLengthSpinner) Label() string {
+func (s *dcbPTLLengthSpinner) Label() string {
 	return "PTL\nLNTH\n" + fmt.Sprintf("%.1f", *s.l)
 }
 
-func (s *DCBPTLLengthSpinner) Equals(other DCBSpinner) bool {
-	p, ok := other.(*DCBPTLLengthSpinner)
+func (s *dcbPTLLengthSpinner) Equals(other dcbSpinner) bool {
+	p, ok := other.(*dcbPTLLengthSpinner)
 	return ok && p.l == s.l
 }
 
-func (s *DCBPTLLengthSpinner) MouseWheel(delta int) {
+func (s *dcbPTLLengthSpinner) MouseWheel(delta int) {
 	// 6-16: PTLs are between 0 and 5 minutes, specified in 0.5 minute
 	// increments.
 	if delta > 0 {
@@ -1037,7 +1037,7 @@ func (s *DCBPTLLengthSpinner) MouseWheel(delta int) {
 	}
 }
 
-func (s *DCBPTLLengthSpinner) KeyboardInput(text string) error {
+func (s *dcbPTLLengthSpinner) KeyboardInput(text string) error {
 	// Here we'll just parse it as a float and then validate it.
 	if v, err := strconv.ParseFloat(text, 32); err != nil {
 		return ErrSTARSCommandFormat
@@ -1053,26 +1053,26 @@ func (s *DCBPTLLengthSpinner) KeyboardInput(text string) error {
 	}
 }
 
-func (s *DCBPTLLengthSpinner) Disabled() {}
+func (s *dcbPTLLengthSpinner) Disabled() {}
 
-type DCBDwellModeSpinner struct {
+type dcbDwellModeSpinner struct {
 	m *DwellMode
 }
 
-func MakeDwellModeSpinner(m *DwellMode) DCBSpinner {
-	return &DCBDwellModeSpinner{m}
+func makeDwellModeSpinner(m *DwellMode) dcbSpinner {
+	return &dcbDwellModeSpinner{m}
 }
 
-func (s *DCBDwellModeSpinner) Label() string {
+func (s *dcbDwellModeSpinner) Label() string {
 	return "DWELL\n" + s.m.String()
 }
 
-func (s *DCBDwellModeSpinner) Equals(other DCBSpinner) bool {
-	d, ok := other.(*DCBDwellModeSpinner)
+func (s *dcbDwellModeSpinner) Equals(other dcbSpinner) bool {
+	d, ok := other.(*dcbDwellModeSpinner)
 	return ok && s.m == d.m
 }
 
-func (s *DCBDwellModeSpinner) MouseWheel(delta int) {
+func (s *dcbDwellModeSpinner) MouseWheel(delta int) {
 	if delta > 0 {
 		// Cycle through the modes Off -> On -> Lock
 		*s.m = [3]DwellMode{DwellModeOff: DwellModeOn,
@@ -1086,7 +1086,7 @@ func (s *DCBDwellModeSpinner) MouseWheel(delta int) {
 	}
 }
 
-func (s *DCBDwellModeSpinner) KeyboardInput(text string) error {
+func (s *dcbDwellModeSpinner) KeyboardInput(text string) error {
 	// 4-109
 	switch text {
 	case "0":
@@ -1103,26 +1103,26 @@ func (s *DCBDwellModeSpinner) KeyboardInput(text string) error {
 	}
 }
 
-func (s *DCBDwellModeSpinner) Disabled() {}
+func (s *dcbDwellModeSpinner) Disabled() {}
 
-type DCBRangeRingRadiusSpinner struct {
+type dcbRangeRingRadiusSpinner struct {
 	r *int
 }
 
-func MakeRangeRingRadiusSpinner(radius *int) DCBSpinner {
-	return &DCBRangeRingRadiusSpinner{radius}
+func makeRangeRingRadiusSpinner(radius *int) dcbSpinner {
+	return &dcbRangeRingRadiusSpinner{radius}
 }
 
-func (s *DCBRangeRingRadiusSpinner) Label() string {
+func (s *dcbRangeRingRadiusSpinner) Label() string {
 	return "RR\n" + strconv.Itoa(*s.r)
 }
 
-func (s *DCBRangeRingRadiusSpinner) Equals(other DCBSpinner) bool {
-	r, ok := other.(*DCBRangeRingRadiusSpinner)
+func (s *dcbRangeRingRadiusSpinner) Equals(other dcbSpinner) bool {
+	r, ok := other.(*dcbRangeRingRadiusSpinner)
 	return ok && r.r == s.r
 }
 
-func (s *DCBRangeRingRadiusSpinner) MouseWheel(delta int) {
+func (s *dcbRangeRingRadiusSpinner) MouseWheel(delta int) {
 	// Range rings have 2, 5, 10, or 20 miles radii..
 	if delta > 0 {
 		switch *s.r {
@@ -1145,7 +1145,7 @@ func (s *DCBRangeRingRadiusSpinner) MouseWheel(delta int) {
 	}
 }
 
-func (s *DCBRangeRingRadiusSpinner) KeyboardInput(text string) error {
+func (s *dcbRangeRingRadiusSpinner) KeyboardInput(text string) error {
 	if v, err := strconv.Atoi(text); err != nil {
 		return ErrSTARSCommandFormat
 	} else if v != 2 && v != 5 && v != 10 && v != 20 {
@@ -1156,30 +1156,30 @@ func (s *DCBRangeRingRadiusSpinner) KeyboardInput(text string) error {
 	}
 }
 
-func (s *DCBRangeRingRadiusSpinner) Disabled() {}
+func (s *dcbRangeRingRadiusSpinner) Disabled() {}
 
-// DCBBrightnessSpinner handles spinners in the BRITE menu
-type DCBBrightnessSpinner struct {
+// dcbBrightnessSpinner handles spinners in the BRITE menu
+type dcbBrightnessSpinner struct {
 	text     string
 	b        *STARSBrightness
 	min      STARSBrightness
 	allowOff bool
 }
 
-func MakeBrightnessSpinner(t string, b *STARSBrightness, min STARSBrightness, allowOff bool) DCBSpinner {
-	return &DCBBrightnessSpinner{text: t, b: b, min: min, allowOff: allowOff}
+func makeBrightnessSpinner(t string, b *STARSBrightness, min STARSBrightness, allowOff bool) dcbSpinner {
+	return &dcbBrightnessSpinner{text: t, b: b, min: min, allowOff: allowOff}
 }
 
-func (s *DCBBrightnessSpinner) Label() string {
+func (s *dcbBrightnessSpinner) Label() string {
 	return s.text + " " + util.Select(*s.b == 0, "OFF", fmt.Sprintf("%2d", int(*s.b)))
 }
 
-func (s *DCBBrightnessSpinner) Equals(other DCBSpinner) bool {
-	b, ok := other.(*DCBBrightnessSpinner)
+func (s *dcbBrightnessSpinner) Equals(other dcbSpinner) bool {
+	b, ok := other.(*dcbBrightnessSpinner)
 	return ok && b.b == s.b
 }
 
-func (s *DCBBrightnessSpinner) MouseWheel(delta int) {
+func (s *dcbBrightnessSpinner) MouseWheel(delta int) {
 	*s.b += STARSBrightness(5 * delta)
 	if *s.b < s.min && s.allowOff {
 		*s.b = STARSBrightness(0)
@@ -1188,7 +1188,7 @@ func (s *DCBBrightnessSpinner) MouseWheel(delta int) {
 	}
 }
 
-func (s *DCBBrightnessSpinner) KeyboardInput(text string) error {
+func (s *dcbBrightnessSpinner) KeyboardInput(text string) error {
 	if v, err := strconv.Atoi(text); err != nil {
 		return ErrSTARSCommandFormat
 	} else if v < int(s.min) || v > 100 || (v == 0 && !s.allowOff) {
@@ -1199,14 +1199,14 @@ func (s *DCBBrightnessSpinner) KeyboardInput(text string) error {
 	}
 }
 
-func (s *DCBBrightnessSpinner) Disabled() {}
+func (s *dcbBrightnessSpinner) Disabled() {}
 
-func STARSSelectButton(ctx *panes.Context, text string, flags int, buttonScale float32) bool {
+func selectButton(ctx *panes.Context, text string, flags int, buttonScale float32) bool {
 	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, flags&buttonSelected != 0, false)
 	return clicked
 }
 
-func (sp *STARSPane) STARSPlaceButton(ctx *panes.Context, text string, flags int, buttonScale float32,
+func (sp *STARSPane) placeButton(ctx *panes.Context, text string, flags int, buttonScale float32,
 	callback func(pw [2]float32, transforms ScopeTransformations) CommandStatus) {
 	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, text == sp.selectedPlaceButton, false)
 	if clicked {
@@ -1218,6 +1218,6 @@ func (sp *STARSPane) STARSPlaceButton(ctx *panes.Context, text string, flags int
 	}
 }
 
-func STARSDisabledButton(ctx *panes.Context, text string, flags int, buttonScale float32) {
+func disabledButton(ctx *panes.Context, text string, flags int, buttonScale float32) {
 	drawDCBButton(ctx, text, flags, buttonScale, false, true)
 }

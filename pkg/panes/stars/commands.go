@@ -139,7 +139,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		case platform.KeyF4:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.activeDCBMenu = dcbMenuMain
-				sp.activateMenuSpinner(MakeLeaderLineLengthSpinner(&ps.LeaderLineLength))
+				sp.activateMenuSpinner(makeLeaderLineLengthSpinner(&ps.LeaderLineLength))
 				sp.resetInputState()
 				sp.commandMode = CommandModeLDR
 			} else {
@@ -177,7 +177,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		case platform.KeyF9:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
-				sp.activateMenuSpinner(MakeRangeRingRadiusSpinner(&ps.RangeRingRadius))
+				sp.activateMenuSpinner(makeRangeRingRadiusSpinner(&ps.RangeRingRadius))
 				sp.resetInputState()
 				sp.commandMode = CommandModeRangeRings
 			} else {
@@ -187,7 +187,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		case platform.KeyF10:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
-				sp.activateMenuSpinner(MakeRadarRangeSpinner(&ps.Range))
+				sp.activateMenuSpinner(makeRadarRangeSpinner(&ps.Range))
 				sp.resetInputState()
 				sp.commandMode = CommandModeRange
 			}
