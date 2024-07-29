@@ -117,7 +117,6 @@ func (gc *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Pl
 		if sim, err := c.GetSerializeSim(); err != nil {
 			lg.Errorf("%v", err)
 		} else {
-			sim.PreSave()
 			gc.Sim = sim
 			gc.Callsign = c.Callsign
 		}

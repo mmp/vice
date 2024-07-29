@@ -17,8 +17,11 @@ import (
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
 
+	"github.com/brunoga/deep"
 	getweather "github.com/checkandmate1/AirportWeatherData"
 )
+
+const serverCallsign = "__SERVER__"
 
 type State struct {
 	Aircraft    map[string]*av.Aircraft
@@ -59,12 +62,17 @@ type State struct {
 	TotalDepartures          int
 	TotalArrivals            int
 	STARSFacilityAdaptation  STARSFacilityAdaptation
+
+	ControllerVideoMaps        []av.VideoMap
+	ControllerDefaultVideoMaps []string
+	// Not sent to the client
+	videoMaps map[string]*av.VideoMap
 }
 
 func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *ScenarioGroup, sc *Scenario,
-	lg *log.Logger) *State {
+	ml *av.VideoMapLibrary, lg *log.Logger) *State {
 	ss := &State{
-		Callsign:      "__SERVER__",
+		Callsign:      serverCallsign,
 		Aircraft:      make(map[string]*av.Aircraft),
 		METAR:         make(map[string]*av.METAR),
 		Controllers:   make(map[string]*av.Controller),
@@ -109,6 +117,7 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	ss.SimDescription = s.Scenario
 	ss.SimTime = s.SimTime
 	ss.STARSFacilityAdaptation = sg.STARSFacilityAdaptation
+	ss.videoMaps = ss.loadVideoMaps(ml, lg)
 
 	for _, callsign := range sc.VirtualControllers {
 		// Skip controllers that are in MultiControllers
@@ -218,6 +227,68 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	return ss
 }
 
+func (s *State) loadVideoMaps(ml *av.VideoMapLibrary, lg *log.Logger) map[string]*av.VideoMap {
+	maps := make(map[string]*av.VideoMap)
+
+	add := func(name string) {
+		if _, ok := maps[name]; ok {
+			return
+		} else if name == "" {
+			maps[name] = &av.VideoMap{}
+		} else {
+			var err error
+			maps[name], err = ml.GetMap(s.STARSFacilityAdaptation.VideoMapFile, name)
+			if err != nil {
+				// This should have been caught during post deserialize...
+				lg.Errorf("%s: %v", name, err)
+			}
+		}
+	}
+
+	for _, name := range s.STARSFacilityAdaptation.VideoMapNames {
+		add(name)
+	}
+	for _, ctrl := range s.STARSFacilityAdaptation.ControllerConfigs {
+		for _, name := range ctrl.VideoMapNames {
+			add(name)
+		}
+	}
+	return maps
+}
+
+func (s *State) GetStateForController(callsign string) *State {
+	// Make a deep copy so that if the server is running on the same
+	// system, that the client doesn't see updates until they're explicitly
+	// sent. (And similarly, that any speculative client changes to the
+	// World state to improve responsiveness don't actually affect the
+	// server.)
+	state := deep.MustCopy(*s)
+	state.Callsign = callsign
+
+	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
+	if config, ok := s.STARSFacilityAdaptation.ControllerConfigs[callsign]; ok && len(config.VideoMapNames) > 0 {
+		for _, name := range config.VideoMapNames {
+			if name == "" {
+				state.ControllerVideoMaps = append(state.ControllerVideoMaps, av.VideoMap{})
+			} else {
+				state.ControllerVideoMaps = append(state.ControllerVideoMaps, *s.videoMaps[name])
+			}
+		}
+		state.ControllerDefaultVideoMaps = config.DefaultMaps
+	} else {
+		for _, name := range s.STARSFacilityAdaptation.VideoMapNames {
+			if name == "" {
+				state.ControllerVideoMaps = append(state.ControllerVideoMaps, av.VideoMap{})
+			} else {
+				state.ControllerVideoMaps = append(state.ControllerVideoMaps, *s.videoMaps[name])
+			}
+		}
+		state.ControllerDefaultVideoMaps = s.ScenarioDefaultVideoMaps
+	}
+
+	return &state
+}
+
 func getAltimiter(metar string) string {
 	for _, indexString := range []string{" A3", " A2"} {
 		index := strings.Index(metar, indexString)
@@ -228,19 +299,8 @@ func getAltimiter(metar string) string {
 	return ""
 }
 
-func (s *State) PreSave() {
-	// Clean up before staving; here we clear out all of the video map data
-	// so we don't pay the cost of writing it out to disk, since it's
-	// available to us anyway.
-	s.STARSFacilityAdaptation.PreSave()
-}
-
-func (s *State) PostLoad(ml *av.VideoMapLibrary) error {
-	// Tidy things up after loading from disk: reinitialize the video maps.
-	return s.STARSFacilityAdaptation.PostLoad(ml)
-}
-
-func (s *State) Activate() {
+func (s *State) Activate(ml *av.VideoMapLibrary, lg *log.Logger) {
+	s.videoMaps = s.loadVideoMaps(ml, lg)
 	// Make the ERAMComputers aware of each other.
 	s.ERAMComputers.Activate()
 }
@@ -300,11 +360,8 @@ func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 	}
 }
 
-func (ss *State) GetVideoMaps() ([]av.VideoMap, []string) {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.Callsign]; ok {
-		return config.VideoMaps, config.DefaultMaps
-	}
-	return ss.STARSFacilityAdaptation.VideoMaps, ss.ScenarioDefaultVideoMaps
+func (s *State) GetVideoMaps() ([]av.VideoMap, []string) {
+	return s.ControllerVideoMaps, s.ControllerDefaultVideoMaps
 }
 
 func (ss *State) GetInitialRange() float32 {

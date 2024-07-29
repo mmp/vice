@@ -1713,7 +1713,11 @@ func (ml *VideoMapLibrary) GetMap(filename, mapname string) (*VideoMap, error) {
 			delete(ml.toLoad, filename)
 		}
 	}
-	return ml.maps[filename][mapname], nil
+	if m, ok := ml.maps[filename][mapname]; !ok {
+		return nil, fmt.Errorf("%s: no video map \"%s\"", filename, mapname)
+	} else {
+		return m, nil
+	}
 }
 
 func (ml VideoMapLibrary) HaveFile(filename string) bool {

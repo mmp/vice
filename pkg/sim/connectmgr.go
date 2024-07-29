@@ -58,10 +58,6 @@ func (cm *ConnectionManager) LoadLocalSim(s *Sim, lg *log.Logger) error {
 		cm.localServer = <-cm.localServerChan
 	}
 
-	if err := s.PostLoad(cm.mapLibrary); err != nil {
-		return err
-	}
-
 	var result NewSimResult
 	if err := cm.localServer.Call("SimManager.Add", s, &result); err != nil {
 		return err

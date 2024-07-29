@@ -58,11 +58,10 @@ type AirspaceAwareness struct {
 }
 
 type STARSFacilityAdaptation struct {
-	AirspaceAwareness   []AirspaceAwareness `json:"airspace_awareness"`
-	ForceQLToSelf       bool                `json:"force_ql_self"`
-	AllowLongScratchpad [2]bool             `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
-	VideoMapNames       []string            `json:"stars_maps"`
-	VideoMaps           []av.VideoMap
+	AirspaceAwareness   []AirspaceAwareness              `json:"airspace_awareness"`
+	ForceQLToSelf       bool                             `json:"force_ql_self"`
+	AllowLongScratchpad [2]bool                          `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
+	VideoMapNames       []string                         `json:"stars_maps"`
 	ControllerConfigs   map[string]STARSControllerConfig `json:"controller_configs"`
 	InhibitCAVolumes    []av.AirspaceVolume              `json:"inhibit_ca_volumes"`
 	RadarSites          map[string]*av.RadarSite         `json:"radar_sites"`
@@ -78,8 +77,7 @@ type STARSFacilityAdaptation struct {
 }
 
 type STARSControllerConfig struct {
-	VideoMapNames []string `json:"video_maps"`
-	VideoMaps     []av.VideoMap
+	VideoMapNames []string      `json:"video_maps"`
 	DefaultMaps   []string      `json:"default_maps"`
 	Center        math.Point2LL `json:"-"`
 	CenterString  string        `json:"center"`
@@ -952,51 +950,6 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	// }
 
 	e.Pop() // stars_config
-}
-
-func (s *STARSFacilityAdaptation) PreSave() {
-	// Slim down STARSFacilityAdaptation before it is saved by discarding
-	// the video maps, which we can restore at load time through the
-	// VideoMapLibrary.
-	s.VideoMaps = nil
-	for ctrl, config := range s.ControllerConfigs {
-		config.VideoMaps = nil
-		s.ControllerConfigs[ctrl] = config
-	}
-}
-
-func (s *STARSFacilityAdaptation) PostLoad(ml *av.VideoMapLibrary) error {
-	// And conversely, PostLoad patches things up by restoring the
-	// STARSMaps for the video maps in the STARSFacilityAdaptation.
-	initMaps := func(names []string) ([]av.VideoMap, error) {
-		var maps []av.VideoMap
-		for _, name := range names {
-			if name == "" {
-				maps = append(maps, av.VideoMap{})
-			} else if m, err := ml.GetMap(s.VideoMapFile, name); err == nil {
-				maps = append(maps, *m)
-			} else {
-				return nil, err
-			}
-		}
-		for len(maps) < NumSTARSMaps {
-			maps = append(maps, av.VideoMap{})
-		}
-
-		return maps, nil
-	}
-
-	var err error
-	if s.VideoMaps, err = initMaps(s.VideoMapNames); err != nil {
-		return err
-	}
-	for ctrl, config := range s.ControllerConfigs {
-		if config.VideoMaps, err = initMaps(config.VideoMapNames); err != nil {
-			return err
-		}
-		s.ControllerConfigs[ctrl] = config
-	}
-	return nil
 }
 
 func (fa *STARSFacilityAdaptation) GetCoordinationFix(fp *STARSFlightPlan, acpos math.Point2LL, waypoints []av.Waypoint) (string, bool) {

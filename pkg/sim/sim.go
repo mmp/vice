@@ -926,42 +926,6 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		return nil
 	}
 
-	// We will finally go ahead and initialize the STARSMaps needed for the
-	// scenario (under the hope that the async load of the one we need has
-	// finished by now so that the first GetMap() call doesn't stall.
-	fa := &sg.STARSFacilityAdaptation
-	initializeMaps := func(maps []string) []av.VideoMap {
-		var sm []av.VideoMap
-		for _, name := range maps {
-			if name == "" {
-				sm = append(sm, av.VideoMap{})
-			} else {
-				m, err := mapLib.GetMap(fa.VideoMapFile, name)
-				if err != nil {
-					// This should be caught earlier, during scenario
-					// validation with the video map manifests...
-					panic(err)
-				} else {
-					sm = append(sm, *m)
-				}
-			}
-		}
-
-		// Pad out with empty maps if not enough were specified.
-		for len(sm) < NumSTARSMaps {
-			sm = append(sm, av.VideoMap{})
-		}
-		return sm
-	}
-
-	if len(fa.VideoMapNames) > 0 && len(fa.VideoMaps) == 0 {
-		fa.VideoMaps = initializeMaps(fa.VideoMapNames)
-	}
-	for ctrl, config := range fa.ControllerConfigs {
-		config.VideoMaps = initializeMaps(config.VideoMapNames)
-		fa.ControllerConfigs[ctrl] = config
-	}
-
 	s := &Sim{
 		ScenarioGroup: ssc.GroupName,
 		Scenario:      ssc.ScenarioName,
@@ -1026,7 +990,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		add(sc.SoloController)
 	}
 
-	s.State = newState(ssc.Scenario.SelectedSplit, ssc.LiveWeather, isLocal, s, sg, sc, lg)
+	s.State = newState(ssc.Scenario.SelectedSplit, ssc.LiveWeather, isLocal, s, sg, sc, mapLib, lg)
 
 	s.setInitialSpawnTimes()
 
@@ -1071,15 +1035,7 @@ func (s *Sim) SignOn(callsign string) (*State, string, error) {
 		events:         s.eventStream.Subscribe(),
 	}
 
-	// Make a deep copy so that if the server is running on the same
-	// system, that the client doesn't see updates until they're explicitly
-	// sent. (And similarly, that any speculative client changes to the
-	// World state to improve responsiveness don't actually affect the
-	// server.)
-	ss, err := deep.Copy(*s.State)
-	ss.Callsign = callsign
-
-	return &ss, token, err
+	return s.State.GetStateForController(callsign), token, nil
 }
 
 func (s *Sim) signOn(callsign string) error {
@@ -1252,7 +1208,7 @@ func (s *Sim) GetWorldUpdate(token string, update *WorldUpdate) error {
 	}
 }
 
-func (s *Sim) Activate(lg *log.Logger) {
+func (s *Sim) Activate(ml *av.VideoMapLibrary, lg *log.Logger) {
 	if s.Name == "" {
 		s.lg = lg
 	} else {
@@ -1277,20 +1233,7 @@ func (s *Sim) Activate(lg *log.Logger) {
 		}
 	}
 
-	s.State.Activate()
-}
-
-func (s *Sim) PreSave() {
-	if s.State != nil {
-		s.State.PreSave()
-	}
-}
-
-func (s *Sim) PostLoad(ml *av.VideoMapLibrary) error {
-	if s.State != nil {
-		return s.State.PostLoad(ml)
-	}
-	return nil
+	s.State.Activate(ml, s.lg)
 }
 
 ///////////////////////////////////////////////////////////////////////////

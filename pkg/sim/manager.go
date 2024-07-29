@@ -86,7 +86,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 }
 
 func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
-	sim.Activate(sm.lg)
+	sim.Activate(sm.mapLibrary, sm.lg)
 
 	sm.mu.Lock(sm.lg)
 
