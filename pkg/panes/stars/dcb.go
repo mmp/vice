@@ -901,9 +901,25 @@ func (v *dcbAudioVolumeSpinner) Equals(other dcbSpinner) bool {
 	return ok && vs.value == v.value
 }
 
-func (v *dcbAudioVolumeSpinner) Disabled() {
-	v.p.SetAudioVolume(*v.value)
-	v.sp.playOnce(v.p, AudioTest)
+func (s *dcbAudioVolumeSpinner) MouseWheel(delta int) {
+	old := *s.value
+	s.dcbIntegerRangeSpinner.MouseWheel(delta)
+	if *s.value != old {
+		s.p.SetAudioVolume(*s.value)
+		s.p.StopPlayAudio(s.sp.audioEffects[AudioTest])
+		s.p.PlayAudioOnce(s.sp.audioEffects[AudioTest])
+	}
+}
+
+func (s *dcbAudioVolumeSpinner) KeyboardInput(text string) error {
+	old := *s.value
+	err := s.dcbIntegerRangeSpinner.KeyboardInput(text)
+	if err == nil && *s.value != old {
+		s.p.SetAudioVolume(*s.value)
+		s.p.StopPlayAudio(s.sp.audioEffects[AudioTest])
+		s.p.PlayAudioOnce(s.sp.audioEffects[AudioTest])
+	}
+	return err
 }
 
 func makeAudioVolumeSpinner(p platform.Platform, sp *STARSPane, vol *int) *dcbAudioVolumeSpinner {

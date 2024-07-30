@@ -94,7 +94,7 @@ func (a *audioEngine) StartPlayAudioContinuous(index int) {
 	a.mu.Unlock()
 }
 
-func (a *audioEngine) StopPlayAudioContinuous(index int) {
+func (a *audioEngine) StopPlayAudio(index int) {
 	if index == 0 {
 		return
 	}
@@ -102,10 +102,9 @@ func (a *audioEngine) StopPlayAudioContinuous(index int) {
 	// Don't check if audio or the effect is enabled since if those were
 	// changed in the UI and the sound is playing, we still want to stop...
 	a.mu.Lock()
-	if a.effects[index-1].playContinuous {
-		a.effects[index-1].playContinuous = false
-		a.effects[index-1].playOffset = 0
-	}
+	a.effects[index-1].playContinuous = false
+	a.effects[index-1].playOffset = 0
+	a.effects[index-1].playOnceCount = 0
 	a.mu.Unlock()
 }
 

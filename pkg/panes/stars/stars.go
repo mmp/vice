@@ -864,7 +864,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, aircraft []*av.Aircraft) {
 		if ps.AudioEffectEnabled[effect] && play {
 			ctx.Platform.StartPlayAudioContinuous(sp.audioEffects[effect])
 		} else {
-			ctx.Platform.StopPlayAudioContinuous(sp.audioEffects[effect])
+			ctx.Platform.StopPlayAudio(sp.audioEffects[effect])
 		}
 	}
 

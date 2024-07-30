@@ -105,7 +105,7 @@ type Platform interface {
 	// continuously, until StopPlayAudioContinuous is called.
 	StartPlayAudioContinuous(id int)
 
-	// StopPlayAudioContinuous stops playback of the audio effect specified
+	// StopPlayAudio stops playback of the audio effect specified
 	// by the given identifier.
-	StopPlayAudioContinuous(id int)
+	StopPlayAudio(id int)
 }
