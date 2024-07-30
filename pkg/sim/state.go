@@ -286,6 +286,10 @@ func (s *State) GetStateForController(callsign string) *State {
 		state.ControllerDefaultVideoMaps = s.ScenarioDefaultVideoMaps
 	}
 
+	for len(state.ControllerVideoMaps) < NumSTARSMaps {
+		state.ControllerVideoMaps = append(state.ControllerVideoMaps, av.VideoMap{})
+	}
+
 	return &state
 }
 
