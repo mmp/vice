@@ -138,7 +138,8 @@ type STARSPane struct {
 	// The start of a RBL--one click received, waiting for the second.
 	wipRBL *STARSRangeBearingLine
 
-	audioEffects map[AudioType]int // to handle from Platform.AddPCM()
+	audioEffects     map[AudioType]int // to handle from Platform.AddPCM()
+	testAudioEndTime time.Time
 }
 
 func init() {
@@ -859,6 +860,11 @@ const AlertAudioDuration = 5 * time.Second
 
 func (sp *STARSPane) updateAudio(ctx *panes.Context, aircraft []*av.Aircraft) {
 	ps := &sp.CurrentPreferenceSet
+
+	if !sp.testAudioEndTime.IsZero() && ctx.Now.After(sp.testAudioEndTime) {
+		ctx.Platform.StopPlayAudio(sp.audioEffects[AudioTest])
+		sp.testAudioEndTime = time.Time{}
+	}
 
 	updateContinuous := func(play bool, effect AudioType) {
 		if ps.AudioEffectEnabled[effect] && play {

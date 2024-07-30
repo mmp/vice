@@ -1304,7 +1304,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		case "Z":
 			switch cmd {
 			case "A": // 4-88 play test sound
-				sp.playOnce(ctx.Platform, AudioTest)
+				sp.testAudioEndTime = ctx.Now.Add(5 * time.Second)
+				ctx.Platform.StartPlayAudioContinuous(sp.audioEffects[AudioTest])
 				status.clear = true
 				return
 
