@@ -705,7 +705,7 @@ func DrawHighlighted(ctx *panes.Context, transforms ScopeTransformations, cb *re
 	ld.AddCircle(p, radius, 360, color)
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(3, ctx.DrawPixelScale)
+	cb.LineWidth(2, ctx.DPIScale)
 	ld.GenerateCommands(cb)
 }
 
@@ -1062,13 +1062,13 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	// drawn.
 	cb.SetRGB(color)
 	transforms.LoadLatLongViewingMatrices(cb)
-	cb.LineWidth(2, ctx.DrawPixelScale)
+	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
 	pd.GenerateCommands(cb)
 	td.GenerateCommands(cb)
-	cb.LineWidth(1, ctx.DrawPixelScale)
+	cb.LineWidth(1, ctx.DPIScale)
 	ldr.GenerateCommands(cb)
 }
 
@@ -1582,7 +1582,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms ScopeTrans
 	}
 
 	ps := sp.CurrentPreferenceSet
-	cb.LineWidth(3, ctx.DrawPixelScale)
+	cb.LineWidth(1, ctx.DPIScale)
 	cb.SetRGB(ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
 	transforms.LoadLatLongViewingMatrices(cb)
 	ld.GenerateCommands(cb)

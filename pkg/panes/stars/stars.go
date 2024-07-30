@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"slices"
 	"sort"
+	"strconv"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -74,6 +75,7 @@ type STARSPane struct {
 	systemFont        [6]*renderer.Font
 	systemOutlineFont [6]*renderer.Font
 	dcbFont           [3]*renderer.Font // 0, 1, 2 only
+	cursorsFont       *renderer.Font
 
 	fusedTrackVertices [][2]float32
 
@@ -294,7 +296,7 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 		sp.queryUnassociated = util.NewTransientMap[string, interface{}]()
 	}
 
-	sp.initializeFonts()
+	sp.initializeFonts(r, p)
 	sp.initializeAudio(p, lg)
 
 	if ss != nil {
@@ -514,23 +516,14 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	transforms := GetScopeTransformations(ctx.PaneExtent, ctx.ControlClient.MagneticVariation, ctx.ControlClient.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range), 0)
 
-	paneExtent := ctx.PaneExtent
+	scopeExtent := ctx.PaneExtent
 	if ps.DisplayDCB {
-		paneExtent = sp.DrawDCB(ctx, transforms, cb)
+		scopeExtent = sp.drawDCB(ctx, transforms, cb)
 
 		// Update scissor for what's left and to protect the DCB (even
 		// though this is apparently unrealistic, at least as far as radar
 		// tracks go...)
-		cb.SetScissorBounds(paneExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-
-		if ctx.Mouse != nil {
-			// The mouse position is provided in Pane coordinates, so that needs to be updated unless
-			// the DCB is at the top, in which case it's unchanged.
-			ms := *ctx.Mouse
-			ctx.Mouse = &ms
-			ctx.Mouse.Pos[0] += ctx.PaneExtent.P0[0] - paneExtent.P0[0]
-			ctx.Mouse.Pos[1] += ctx.PaneExtent.P0[1] - paneExtent.P0[1]
-		}
+		cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	}
 
 	weatherBrightness := float32(ps.Brightness.Weather) / float32(100)
@@ -540,14 +533,14 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	if ps.Brightness.RangeRings > 0 {
 		color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
-		cb.LineWidth(1, ctx.DrawPixelScale)
+		cb.LineWidth(1, ctx.DPIScale)
 		DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 
 	// Maps
-	cb.LineWidth(1, ctx.DrawPixelScale)
+	cb.LineWidth(1, ctx.DPIScale)
 	videoMaps, _ := ctx.ControlClient.GetVideoMaps()
 	for i, disp := range ps.DisplayVideoMap {
 		if !disp {
@@ -580,10 +573,10 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	transforms.LoadWindowViewingMatrices(cb)
 
 	if ps.Brightness.Compass > 0 {
-		cb.LineWidth(1, ctx.DrawPixelScale)
+		cb.LineWidth(1, ctx.DPIScale)
 		cbright := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
 		font := sp.systemFont[ps.CharSize.Tools]
-		DrawCompass(ps.CurrentCenter, ctx, 0, font, cbright, paneExtent, transforms, cb)
+		DrawCompass(ps.CurrentCenter, ctx, 0, font, cbright, scopeExtent, transforms, cb)
 	}
 
 	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
@@ -616,7 +609,9 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ghosts := sp.getGhostAircraft(aircraft, ctx)
 	sp.drawGhosts(ghosts, ctx, transforms, cb)
 	sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
-	sp.drawMouseCursor(ctx, paneExtent, transforms, cb)
+	if ctx.Mouse != nil {
+		sp.drawMouseCursor(ctx, scopeExtent, transforms, cb)
+	}
 
 	sp.updateAudio(ctx, aircraft)
 
@@ -665,51 +660,71 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms ScopeTransfo
 	}
 }
 
-func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, paneExtent math.Extent2D, transforms ScopeTransformations,
+func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, scopeExtent math.Extent2D, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
-	if ctx.Mouse == nil {
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+
+	// Is the mouse over the DCB or over the regular STARS scope? Note that
+	// we need to offset the mouse position to be w.r.t. window coordinates
+	// to match scopeExtent.
+	mouseOverDCB := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.PaneExtent.P0))
+	if mouseOverDCB {
 		return
 	}
 
-	// If the mouse is inside the scope, disable the standard mouse cursor
-	// and draw a cross for the cursor; otherwise leave the default arrow
-	// for the DCB.
-	if ctx.Mouse.Pos[0] >= 0 && ctx.Mouse.Pos[0] < paneExtent.Width() &&
-		ctx.Mouse.Pos[1] >= 0 && ctx.Mouse.Pos[1] < paneExtent.Height() {
-		ctx.Mouse.SetCursor(imgui.MouseCursorNone)
-		ld := renderer.GetLinesDrawBuilder()
-		defer renderer.ReturnLinesDrawBuilder(ld)
+	ctx.Mouse.SetCursor(imgui.MouseCursorNone)
 
-		w := float32(7) * ctx.DrawPixelScale
-		ld.AddLine(math.Add2f(ctx.Mouse.Pos, [2]float32{-w, 0}), math.Add2f(ctx.Mouse.Pos, [2]float32{w, 0}))
-		ld.AddLine(math.Add2f(ctx.Mouse.Pos, [2]float32{0, -w}), math.Add2f(ctx.Mouse.Pos, [2]float32{0, w}))
+	// STARS Operators Manual 4-74: FDB brightness is used for the cursor
+	ps := sp.CurrentPreferenceSet
+	cursorStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: ps.Brightness.FullDatablocks.RGB()}
+	background := ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor)
+	bgStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: background}
 
-		transforms.LoadWindowViewingMatrices(cb)
-		// STARS Operators Manual 4-74: FDB brightness is used for the cursor
-		ps := sp.CurrentPreferenceSet
-		cb.SetRGB(ps.Brightness.FullDatablocks.RGB())
-		ld.GenerateCommands(cb)
-	} else {
-		ctx.Mouse.SetCursor(imgui.MouseCursorArrow)
+	draw := func(idx int, style renderer.TextStyle) {
+		g := sp.cursorsFont.LookupGlyph(rune(idx))
+		p := math.Add2f(ctx.Mouse.Pos, [2]float32{-g.Width() / 2, g.Height() / 2})
+		td.AddText(string(byte(idx)), p, style)
 	}
+	// The STARS "+" cursors start at 0 in the STARS cursors font,
+	// ordered by size. There is no cursor for size 5, so we'll use 4 for that.
+	// The second of the two is the background one
+	// that establishes a mask.
+	idx := 2 * min(4, ps.CharSize.Datablocks)
+	draw(idx+1, bgStyle)
+	draw(idx, cursorStyle)
+
+	cb.SetDrawBounds(ctx.PaneExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+	transforms.LoadWindowViewingMatrices(cb)
+	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) initializeFonts() {
-	sp.systemFont[0] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
-	sp.systemFont[1] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
-	sp.systemFont[2] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
-	sp.systemFont[3] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize3", Size: 16})
-	sp.systemFont[4] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize4", Size: 18})
-	sp.systemFont[5] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize5", Size: 19})
-	sp.systemOutlineFont[0] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize0", Size: 11})
-	sp.systemOutlineFont[1] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize1", Size: 12})
-	sp.systemOutlineFont[2] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize2", Size: 15})
-	sp.systemOutlineFont[3] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize3", Size: 16})
-	sp.systemOutlineFont[4] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize4", Size: 18})
-	sp.systemOutlineFont[5] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharOutlineFontSetBSize5", Size: 19})
-	sp.dcbFont[0] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize0", Size: 11})
-	sp.dcbFont[1] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize1", Size: 12})
-	sp.dcbFont[2] = renderer.GetFont(renderer.FontIdentifier{Name: "sddCharFontSetBSize2", Size: 15})
+func (sp *STARSPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
+	fonts := createFontAtlas(r, p)
+	get := func(name string, size int) *renderer.Font {
+		idx := slices.IndexFunc(fonts, func(f *renderer.Font) bool { return f.Id.Name == name && f.Id.Size == size })
+		if idx == -1 {
+			panic(name + " size " + strconv.Itoa(size) + " not found in STARS fonts")
+		}
+		return fonts[idx]
+	}
+
+	sp.systemFont[0] = get("sddCharFontSetBSize0", 11)
+	sp.systemFont[1] = get("sddCharFontSetBSize1", 12)
+	sp.systemFont[2] = get("sddCharFontSetBSize2", 15)
+	sp.systemFont[3] = get("sddCharFontSetBSize3", 16)
+	sp.systemFont[4] = get("sddCharFontSetBSize4", 18)
+	sp.systemFont[5] = get("sddCharFontSetBSize5", 19)
+	sp.systemOutlineFont[0] = get("sddCharOutlineFontSetBSize0", 11)
+	sp.systemOutlineFont[1] = get("sddCharOutlineFontSetBSize1", 12)
+	sp.systemOutlineFont[2] = get("sddCharOutlineFontSetBSize2", 15)
+	sp.systemOutlineFont[3] = get("sddCharOutlineFontSetBSize3", 16)
+	sp.systemOutlineFont[4] = get("sddCharOutlineFontSetBSize4", 18)
+	sp.systemOutlineFont[5] = get("sddCharOutlineFontSetBSize5", 19)
+	sp.dcbFont[0] = get("sddCharFontSetBSize0", 11)
+	sp.dcbFont[1] = get("sddCharFontSetBSize1", 12)
+	sp.dcbFont[2] = get("sddCharFontSetBSize2", 15)
+	sp.cursorsFont = get("STARS cursors", 30)
 }
 
 const (

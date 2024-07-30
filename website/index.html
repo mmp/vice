@@ -760,7 +760,8 @@ how it simulates aircraft or the STARS interface.
             TODO:
             New scenarios: R90 (Logan S, Jackson Verdoorn), BOI (Jonah Lefkoff)
             Updates: M98 (Logan S, Jackson Verdoorn),  MCI (Jud Lopez),
-            D21, CLE (Gavin V), SAN (Justin Nguyen), D01 (Andrew S)
+            D21, CLE (Gavin V), SAN (Justin Nguyen), D01 (Andrew S), MHT,
+            ACK, A90 (Michael Knight)
 
             <h3>0.10.27 (4 July 2024)</h3>
             <ul>
@@ -3578,6 +3579,11 @@ Given the id, the approach can be specified with:</p>
                 <td>the initial altitude that aircraft are cleared to. Aircraft given "cleared_altitude"
                   are implicitly given "climb via SID": they will obey altitude restrictions in the departure route and
                   climb no higher than the altitude given.</td>
+              </tr>
+              <tr>
+                <td>"speed_restriction"</td>
+                <td>Number</td>
+                <td><i>(Optional)</i> If present, gives a speed restriction in knots which aircraft will maintain until told otherwise by the controller.</td>
               </tr>
               <tr>
                 <td>"description"</td>
