@@ -26,7 +26,7 @@ var (
 	dcbDisabledTextColor   = renderer.RGB{.8, .8, .8}
 )
 
-const dcbButtonSize = 76
+const dcbButtonSize = 84
 const numDCBSlots = 20
 
 const (
