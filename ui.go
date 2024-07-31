@@ -229,6 +229,13 @@ var (
 		`Fixed a bug where handoffs from virtual controllers would sometimes not be made`,
 		`Anti-aliasing is disabled by default (but can be re-enabled via the "settings" menu)`,
 		`Multiple fixes to improve accuracy of drawing in STARS`,
+		`New scenarios: R90 (Logan S, Jackson Verdoorn), BOI (Jonah Lefkoff)`,
+		`Scenario updates (1): M98 (Logan S, Jackson Verdoorn), MCI, N90 (Jud Lopez), D21, CLE (Gavin V)`,
+		`Scenario updates (2): SAN (Justin Nguyen), D01 (Andrew S), MHT, ACK, A90 (Michael Knight), AAC`,
+		`Added an underlying simulation of the NAS and STARS/ERAM computers`,
+		`Multiple improvements to the realism of the STARS display and sounds`,
+		`"Beaconator" added to STARS (F1)`,
+		`Added "SQ" command to issue a beacon code to an aircraft`,
 	}
 )
 
@@ -1494,6 +1501,7 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*SS*", `"Say airspeed".`, "*SS*"},
 	[3]string{"*SA*", `"Say altitude".`, "*SA*"},
 	[3]string{"*SH*", `"Say heading".`, "*SH*"},
+	[3]string{"*SQ_code", `"Squawk _code_."`, "*SQ1200*"},
 	[3]string{"*A_fix*/C_appr", `"At _fix_, cleared _appr_ approach."`, "*AROSLY/CI2L*"},
 	[3]string{"*CAC*", `"Cancel approach clearance".`, "*CAC*"},
 	[3]string{"*CSI_appr", `"Cleared straight-in _appr_ approach.`, "*CSII6*"},

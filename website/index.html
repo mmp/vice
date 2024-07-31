@@ -146,6 +146,7 @@ AUS,
 AVL,
 BHM,
 BIL,
+BOI,
 BNA,
 BUF,
 C90,
@@ -176,6 +177,7 @@ PCT,
 PHL,
 PIT,
 RDU,
+R90,
 S46,
 S56,
 SAV,
@@ -586,6 +588,11 @@ Y90.
                     <td><code>SA</code></td>
                   </tr>
                   <tr>
+                    <td><code>SQ</code><i>code</i></td>
+                    <td>Instructs the aircraft to squawk the given beacon code.</td>
+                    <td><code>SQ1200</code></td>
+                  </tr>
+                  <tr>
                     <td><code>E</code><i>approach</i></td>
                     <td>Tells the aircraft to expect the specified
                     approach. This command must be used before an aircraft
@@ -757,11 +764,24 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
-            TODO:
-            New scenarios: R90 (Logan S, Jackson Verdoorn), BOI (Jonah Lefkoff)
-            Updates: M98 (Logan S, Jackson Verdoorn),  MCI (Jud Lopez),
-            D21, CLE (Gavin V), SAN (Justin Nguyen), D01 (Andrew S), MHT,
-            ACK, A90 (Michael Knight)
+            <h3>0.11.0 (31 July 2024)</h3>
+            <ul>
+              <li>New scenarios: R90 (Logan S, Jackson Verdoorn), BOI (Jonah Lefkoff).</li>
+              <li>Scenario updates: M98 (Logan S, Jackson Verdoorn), MCI, N90 (Jud Lopez),
+                D21, CLE (Gavin V), SAN (Justin Nguyen), D01 (Andrew S),
+                MHT, ACK, A90 (Michael Knight), AAC (Matt Pharr).</li>
+              <li>Added an underlying simulation of the NAS and STARS/ERAM
+              computers (Michael Trokel): this will allow the addition of
+              ERAM displays in the future and makes it possible to more
+              accurately model inter-facility coordination.</li>
+              <li>Multiple improvements to the realism of the STARS display
+                and sounds.</li>
+              <li>"Beaconator" added to STARS (F1).</li>
+              <li>Added "SQ" command to issue a beacon code to an aircraft.</li>
+              <li>Server memory use is reduced.</li>
+              <li>Facility engineering: there is now a "speed_restriction"
+              field for departures (Xavier Caldwell).</li>
+            </ul>
 
             <h3>0.10.27 (4 July 2024)</h3>
             <ul>
