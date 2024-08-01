@@ -499,6 +499,10 @@ func uiDraw(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r r
 	return r.RenderCommandBuffer(cb)
 }
 
+func uiResetControlClient(c *sim.ControlClient) {
+	ui.launchControlWindow = nil
+}
+
 func drawActiveDialogBoxes() {
 	for len(ui.activeModalDialogs) > 0 {
 		d := ui.activeModalDialogs[0]

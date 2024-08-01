@@ -162,6 +162,7 @@ func main() {
 				if c != nil {
 					panes.Reset(config.DisplayRoot, c.State, lg)
 				}
+				uiResetControlClient(c)
 				controlClient = c
 			},
 			func(err error) {
