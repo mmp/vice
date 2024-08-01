@@ -1100,6 +1100,34 @@ func ParseAltitudeRestriction(s string) (*AltitudeRestriction, error) {
 
 ///////////////////////////////////////////////////////////////////////////
 
+type AirwayLevel int
+
+const (
+	AirwayLevelAll = iota
+	AirwayLevelLow
+	AirwayLevelHigh
+)
+
+type AirwayDirection int
+
+const (
+	AirwayDirectionAny = iota
+	AirwayDirectionForward
+	AirwayDirectionBackward
+)
+
+type AirwayFix struct {
+	Fix       string
+	Level     AirwayLevel
+	Direction AirwayDirection
+}
+
+type Airway struct {
+	Fixes []AirwayFix
+}
+
+///////////////////////////////////////////////////////////////////////////
+
 type RadarSite struct {
 	Char           string        `json:"char"`
 	PositionString string        `json:"position"`

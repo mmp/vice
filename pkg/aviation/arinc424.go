@@ -50,12 +50,14 @@ func printColumnHeader() {
 	fmt.Printf("\n")
 }
 
-func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[string]Fix) {
+func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[string]Fix, map[string][]Airway) {
 	start := time.Now()
 
 	airports := make(map[string]FAAAirport)
 	navaids := make(map[string]Navaid)
 	fixes := make(map[string]Fix)
+	airways := make(map[string][]Airway)
+	airwayWIP := make(map[string]AirwayFix)
 
 	parseLLDigits := func(d, m, s []byte) float32 {
 		deg, err := strconv.Atoi(string(d))
@@ -196,8 +198,53 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 					Id:       id,
 					Location: parseLatLong(line[32:41], line[41:51]),
 				}
+
+			case 'R': // enroute airway
+				route := strings.TrimSpace(string(line[13:18]))
+				seq := string(line[25:29])
+
+				level := func() AirwayLevel {
+					switch line[45] {
+					case 'B', ' ':
+						return AirwayLevelAll
+					case 'H':
+						return AirwayLevelHigh
+					case 'L':
+						return AirwayLevelLow
+					default:
+						panic("unexpected airway level: " + string(line[45]))
+					}
+				}()
+				direction := func() AirwayDirection {
+					switch line[46] {
+					case 'F':
+						return AirwayDirectionForward
+					case 'B':
+						return AirwayDirectionBackward
+					case ' ':
+						return AirwayDirectionAny
+					default:
+						panic("unexpected airway direction")
+					}
+				}()
+
+				fix := AirwayFix{
+					Fix:       strings.TrimSpace(string(line[29:34])),
+					Level:     level,
+					Direction: direction,
+				}
+				airwayWIP[seq] = fix
+
+				if line[40] == 'E' { // description code "end of airway"
+					var a Airway
+					for _, seq := range util.SortedMapKeys(airwayWIP) { // order by sequence number, just in case
+						a.Fixes = append(a.Fixes, airwayWIP[seq])
+					}
+					airways[route] = append(airways[route], a)
+					clear(airwayWIP)
+				}
 			}
-			// TODO: holding patterns, airways, etc...
+			// TODO: holding patterns, etc...
 
 		case 'H': // Heliports
 			subsection := line[12]
@@ -305,7 +352,7 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 		fmt.Printf("parsed ARINC242 in %s\n", time.Since(start))
 	}
 
-	return airports, navaids, fixes
+	return airports, navaids, fixes, airways
 }
 
 func tidyFAAApproachId(id string) string {

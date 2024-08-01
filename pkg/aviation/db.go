@@ -34,6 +34,7 @@ type StaticDatabase struct {
 	Navaids             map[string]Navaid
 	Airports            map[string]FAAAirport
 	Fixes               map[string]Fix
+	Airways             map[string][]Airway
 	Callsigns           map[string]string // 3 letter -> callsign
 	AircraftTypeAliases map[string]string
 	AircraftPerformance map[string]AircraftPerformance
@@ -173,7 +174,7 @@ func init() {
 	go func() { db.Airlines, db.Callsigns = parseAirlines(); wg.Done() }()
 	var airports map[string]FAAAirport
 	wg.Add(1)
-	go func() { airports, db.Navaids, db.Fixes = parseCIFP(); wg.Done() }()
+	go func() { airports, db.Navaids, db.Fixes, db.Airways = parseCIFP(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.MagneticGrid = parseMagneticGrid(); wg.Done() }()
 	wg.Add(1)
@@ -379,7 +380,7 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 
 // FAA Coded Instrument Flight Procedures (CIFP)
 // https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/download/
-func parseCIFP() (map[string]FAAAirport, map[string]Navaid, map[string]Fix) {
+func parseCIFP() (map[string]FAAAirport, map[string]Navaid, map[string]Fix, map[string][]Airway) {
 	return ParseARINC424(util.LoadRawResource("FAACIFP18.zst"))
 }
 
