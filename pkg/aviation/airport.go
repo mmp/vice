@@ -313,7 +313,8 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				AltitudeRestriction: &AltitudeRestriction{
 					Range: [2]float32{float32(rwy.Elevation), float32(rwy.Elevation)},
 				},
-				Delete: true,
+				Delete:  true,
+				FlyOver: true,
 			})
 			n := len(appr.Waypoints[i])
 
