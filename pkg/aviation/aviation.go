@@ -618,6 +618,7 @@ type Waypoint struct {
 	Delete              bool                 `json:"delete,omitempty"`
 	Arc                 *DMEArc              `json:"arc,omitempty"`
 	IAF, IF, FAF        bool                 // not provided in scenario JSON; derived from fix
+	Airway              string               // when parsing waypoints, this is set if we're on an airway after the fix
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -660,6 +661,9 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.Arc != nil {
 		attrs = append(attrs, slog.Any("arc", wp.Arc))
+	}
+	if wp.Airway != "" {
+		attrs = append(attrs, slog.String("airway", wp.Airway))
 	}
 
 	return slog.GroupValue(attrs...)
@@ -742,6 +746,9 @@ func (wslice WaypointArray) Encode() string {
 			} else {
 				s += fmt.Sprintf("/arc%.1f", w.Arc.Length)
 			}
+		}
+		if w.Airway != "" {
+			s += "/airway" + w.Airway
 		}
 
 		entries = append(entries, s)
@@ -920,13 +927,34 @@ func parsePTExtent(pt *ProcedureTurn, extent string) error {
 
 func parseWaypoints(str string) ([]Waypoint, error) {
 	var waypoints []Waypoint
-	for _, field := range strings.Fields(str) {
+	entries := strings.Fields(str)
+	for ei, field := range entries {
 		if len(field) == 0 {
 			return nil, fmt.Errorf("Empty waypoint in string: \"%s\"", str)
 		}
 
+		components := strings.Split(field, "/")
+
+		// Is it an airway?
+		if _, ok := DB.Airways[components[0]]; ok {
+			if ei == 0 {
+				return nil, fmt.Errorf("%s: can't begin a route with an airway", components[0])
+			} else if ei == len(entries)-1 {
+				return nil, fmt.Errorf("%s: can't end a route with an airway", components[0])
+			} else if len(components) > 1 {
+				return nil, fmt.Errorf("%s: can't have fix modifiers with an airway", field)
+			} else {
+				// Just set the Airway field for now; we'll patch up the
+				// waypoints to include the airway waypoints at the end of
+				// this function.
+				nwp := len(waypoints)
+				waypoints[nwp-1].Airway = components[0]
+				continue
+			}
+		}
+
 		wp := Waypoint{}
-		for i, f := range strings.Split(field, "/") {
+		for i, f := range components {
 			if i == 0 {
 				wp.Fix = f
 			} else if len(f) == 0 {
@@ -1018,6 +1046,8 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 							Radius: float32(v),
 						}
 					}
+				} else if len(f) >= 7 && f[:6] == "airway" {
+					wp.Airway = f[6:]
 
 					// Do these last since they only match the first character...
 				} else if f[0] == 'a' {
@@ -1052,7 +1082,29 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 		waypoints = append(waypoints, wp)
 	}
 
-	return waypoints, nil
+	// Now go through and expand out any airways into their constituent waypoints
+	var wpExpanded []Waypoint
+	for i, wp := range waypoints {
+		wpExpanded = append(wpExpanded, wp)
+
+		if wp.Airway != "" {
+			found := false
+			wp0, wp1 := wp.Fix, waypoints[i+1].Fix
+			for _, airway := range DB.Airways[wp.Airway] {
+				if awp, ok := airway.WaypointsBetween(wp0, wp1); ok {
+					wpExpanded = append(wpExpanded, awp...)
+					found = true
+					break
+				}
+			}
+
+			if !found {
+				return nil, fmt.Errorf("%s: unable to find fix pair %s - %s in airway", wp.Airway, wp0, wp1)
+			}
+		}
+	}
+
+	return wpExpanded, nil
 }
 
 // ParseAltitudeRestriction parses an altitude restriction in the compact
@@ -1123,7 +1175,27 @@ type AirwayFix struct {
 }
 
 type Airway struct {
+	Name  string
 	Fixes []AirwayFix
+}
+
+func (a Airway) WaypointsBetween(wp0, wp1 string) ([]Waypoint, bool) {
+	start := slices.IndexFunc(a.Fixes, func(f AirwayFix) bool { return f.Fix == wp0 })
+	end := slices.IndexFunc(a.Fixes, func(f AirwayFix) bool { return f.Fix == wp1 })
+	if start == -1 || end == -1 {
+		return nil, false
+	}
+
+	var wps []Waypoint
+	delta := util.Select(start < end, 1, -1)
+	// Index so that we return waypoints exclusive of wp0 and wp1
+	for i := start + delta; i != end; i += delta {
+		wps = append(wps, Waypoint{
+			Fix:    a.Fixes[i].Fix,
+			Airway: a.Name, // maintain the identity that we're on an airway
+		})
+	}
+	return wps, true
 }
 
 ///////////////////////////////////////////////////////////////////////////

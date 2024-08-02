@@ -236,7 +236,7 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 				airwayWIP[seq] = fix
 
 				if line[40] == 'E' { // description code "end of airway"
-					var a Airway
+					a := Airway{Name: route}
 					for _, seq := range util.SortedMapKeys(airwayWIP) { // order by sequence number, just in case
 						a.Fixes = append(a.Fixes, airwayWIP[seq])
 					}
