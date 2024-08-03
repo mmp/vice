@@ -335,13 +335,13 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 						comp.AvailableSquawks[msg.BCN] = nil
 					}
 					info.TrackOwner = msg.TrackOwner
-				}
 
-				altitude := comp.TrackInformation[msg.Identifier].FlightPlan.Altitude
-				if adaptationFix, err := adaptationFixes.Fix(altitude); err == nil {
-					if adaptationFix.FromFacility != comp.Identifier {
-						// Comes from a different ERAM facility
-						comp.SendMessageToERAM(adaptationFix.FromFacility, msg)
+					altitude := info.FlightPlan.Altitude
+					if adaptationFix, err := adaptationFixes.Fix(altitude); err == nil {
+						if adaptationFix.FromFacility != comp.Identifier {
+							// Comes from a different ERAM facility
+							comp.SendMessageToERAM(adaptationFix.FromFacility, msg)
+						}
 					}
 				}
 			}
@@ -1292,7 +1292,9 @@ func (ec *ERAMComputers) SetScratchpad(callsign, facility, scratchpad string) er
 		return err
 	}
 
-	stars.TrackInformation[callsign].SP1 = scratchpad
+	if trk := stars.TrackInformation[callsign]; trk != nil {
+		trk.SP1 = scratchpad
+	}
 	return nil
 }
 func (ec *ERAMComputers) SetSecondaryScratchpad(callsign, facility, scratchpad string) error {
@@ -1301,7 +1303,9 @@ func (ec *ERAMComputers) SetSecondaryScratchpad(callsign, facility, scratchpad s
 		return err
 	}
 
-	stars.TrackInformation[callsign].SP2 = scratchpad
+	if trk := stars.TrackInformation[callsign]; trk != nil {
+		trk.SP2 = scratchpad
+	}
 	return nil
 }
 
