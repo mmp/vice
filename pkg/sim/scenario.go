@@ -268,24 +268,24 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 		ap, ok := sg.Airports[rwy.Airport]
 		if !ok {
 			e.ErrorString("%s: airport unknown", rwy.Airport)
-		}
+		} else {
+			activeAirports[ap] = nil
+			activeDepartureAirports[rwy.Airport] = nil
 
-		activeAirports[ap] = nil
-		activeDepartureAirports[rwy.Airport] = nil
-
-		if ap.DepartureController == "" {
-			// Only check for a human controller to be covering the track if there isn't
-			// a virtual controller assigned to it.
-			for fix, route := range rwy.ExitRoutes {
-				if rwy.Category == "" || ap.ExitCategories[fix] == rwy.Category {
-					if activeAirportSIDs[rwy.Airport] == nil {
-						activeAirportSIDs[rwy.Airport] = make(map[string]interface{})
+			if ap.DepartureController == "" {
+				// Only check for a human controller to be covering the track if there isn't
+				// a virtual controller assigned to it.
+				for fix, route := range rwy.ExitRoutes {
+					if rwy.Category == "" || ap.ExitCategories[fix] == rwy.Category {
+						if activeAirportSIDs[rwy.Airport] == nil {
+							activeAirportSIDs[rwy.Airport] = make(map[string]interface{})
+						}
+						if activeAirportRunways[rwy.Airport] == nil {
+							activeAirportRunways[rwy.Airport] = make(map[string]interface{})
+						}
+						activeAirportSIDs[rwy.Airport][route.SID] = nil
+						activeAirportRunways[rwy.Airport][rwy.Runway] = nil
 					}
-					if activeAirportRunways[rwy.Airport] == nil {
-						activeAirportRunways[rwy.Airport] = make(map[string]interface{})
-					}
-					activeAirportSIDs[rwy.Airport][route.SID] = nil
-					activeAirportRunways[rwy.Airport][rwy.Runway] = nil
 				}
 			}
 		}

@@ -268,19 +268,19 @@ func (s *State) GetStateForController(callsign string) *State {
 	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
 	if config, ok := s.STARSFacilityAdaptation.ControllerConfigs[callsign]; ok && len(config.VideoMapNames) > 0 {
 		for _, name := range config.VideoMapNames {
-			if name == "" {
+			if m, ok := s.videoMaps[name]; !ok || name == "" {
 				state.ControllerVideoMaps = append(state.ControllerVideoMaps, av.VideoMap{})
 			} else {
-				state.ControllerVideoMaps = append(state.ControllerVideoMaps, *s.videoMaps[name])
+				state.ControllerVideoMaps = append(state.ControllerVideoMaps, *m)
 			}
 		}
 		state.ControllerDefaultVideoMaps = config.DefaultMaps
 	} else {
 		for _, name := range s.STARSFacilityAdaptation.VideoMapNames {
-			if name == "" {
+			if m, ok := s.videoMaps[name]; !ok || name == "" {
 				state.ControllerVideoMaps = append(state.ControllerVideoMaps, av.VideoMap{})
 			} else {
-				state.ControllerVideoMaps = append(state.ControllerVideoMaps, *s.videoMaps[name])
+				state.ControllerVideoMaps = append(state.ControllerVideoMaps, *m)
 			}
 		}
 		state.ControllerDefaultVideoMaps = s.ScenarioDefaultVideoMaps
