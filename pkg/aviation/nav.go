@@ -2099,7 +2099,8 @@ func (nav *Nav) getApproach(airport *Airport, id string, lg *log.Logger) (*Appro
 	return nil, ErrUnknownApproach
 }
 
-func (nav *Nav) ExpectApproach(airportICAO string, airport *Airport, id string, arr *Arrival, lg *log.Logger) PilotResponse {
+func (nav *Nav) ExpectApproach(airport *Airport, id string, runwayWaypoints map[string]WaypointArray,
+	lg *log.Logger) PilotResponse {
 	ap, err := nav.getApproach(airport, id, lg)
 	if err != nil {
 		return PilotResponse{Message: "unable. We don't know the " + id + " approach.", Unexpected: true}
@@ -2113,7 +2114,7 @@ func (nav *Nav) ExpectApproach(airportICAO string, airport *Airport, id string, 
 	nav.Approach.AssignedId = id
 	nav.Approach.ATPAVolume = airport.ATPAVolumes[ap.Runway]
 
-	if waypoints := arr.GetRunwayWaypoints(airportICAO, ap.Runway); len(waypoints) > 0 {
+	if waypoints := runwayWaypoints[ap.Runway]; len(waypoints) > 0 {
 		if len(nav.Waypoints) == 0 {
 			// Nothing left on our route; this shouldn't ever happen but
 			// just in case patch the runway waypoints in there and hope it
@@ -2159,7 +2160,7 @@ func (nav *Nav) ExpectApproach(airportICAO string, airport *Airport, id string, 
 	return PilotResponse{Message: opener + " " + ap.FullName + " approach"}
 }
 
-func (nav *Nav) InterceptLocalizer(airport string, arr *Arrival) PilotResponse {
+func (nav *Nav) InterceptLocalizer(airport string) PilotResponse {
 	if nav.Approach.AssignedId == "" {
 		return PilotResponse{Message: "you never told us to expect an approach", Unexpected: true}
 	}
@@ -2350,7 +2351,7 @@ func (nav *Nav) prepareForChartedVisual() (PilotResponse, error) {
 		ErrUnableCommand
 }
 
-func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, arr *Arrival) (PilotResponse, error) {
+func (nav *Nav) clearedApproach(airport string, id string, straightIn bool) (PilotResponse, error) {
 	ap := nav.Approach.Assigned
 	if ap == nil {
 		return PilotResponse{Message: "unable. We haven't been told to expect an approach", Unexpected: true},

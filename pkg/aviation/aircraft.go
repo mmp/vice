@@ -55,11 +55,10 @@ type Aircraft struct {
 	DepartureContactController string
 
 	// Arrival-related state
-	STAR              string
-	GoAroundDistance  *float32
-	ArrivalGroup      string
-	ArrivalGroupIndex int
-	GotContactTower   bool
+	GoAroundDistance    *float32
+	STAR                string
+	STARRunwayWaypoints map[string]WaypointArray
+	GotContactTower     bool
 
 	// Who to try to hand off to at a waypoint with /ho
 	WaypointHandoffController string
@@ -272,26 +271,12 @@ func (ac *Aircraft) CrossFixAt(fix string, ar *AltitudeRestriction, speed int) [
 	return ac.transmitResponse(resp)
 }
 
-func (ac *Aircraft) getArrival(arrivalGroups map[string][]Arrival) (*Arrival, error) {
-	if arrivals, ok := arrivalGroups[ac.ArrivalGroup]; !ok || ac.ArrivalGroupIndex >= len(arrivals) {
-		return nil, ErrNoValidArrivalFound
-	} else {
-		return &arrivals[ac.ArrivalGroupIndex], nil
-	}
-}
-
-func (ac *Aircraft) ExpectApproach(id string, ap *Airport, arrivalGroups map[string][]Arrival,
-	lg *log.Logger) []RadioTransmission {
+func (ac *Aircraft) ExpectApproach(id string, ap *Airport, lg *log.Logger) []RadioTransmission {
 	if ac.IsDeparture() {
 		return ac.readbackUnexpected("unable. This aircraft is a departure.")
 	}
 
-	arr, err := ac.getArrival(arrivalGroups)
-	if err != nil {
-		return ac.readbackUnexpected("unable.")
-	}
-
-	resp := ac.Nav.ExpectApproach(ac.FlightPlan.ArrivalAirport, ap, id, arr, lg)
+	resp := ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints, lg)
 	return ac.transmitResponse(resp)
 }
 
@@ -299,34 +284,24 @@ func (ac *Aircraft) AtFixCleared(fix, approach string) []RadioTransmission {
 	return ac.transmitResponse(ac.Nav.AtFixCleared(fix, approach))
 }
 
-func (ac *Aircraft) ClearedApproach(id string, arrivalGroups map[string][]Arrival, lg *log.Logger) []RadioTransmission {
+func (ac *Aircraft) ClearedApproach(id string, lg *log.Logger) []RadioTransmission {
 	if ac.IsDeparture() {
 		return ac.readbackUnexpected("unable. This aircraft is a departure.")
 	}
 
-	arr, err := ac.getArrival(arrivalGroups)
-	if err != nil {
-		return ac.readbackUnexpected("unable.")
-	}
-
-	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, false, arr)
+	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, false)
 	if err == nil {
 		ac.ApproachController = ac.ControllingController
 	}
 	return ac.transmitResponse(resp)
 }
 
-func (ac *Aircraft) ClearedStraightInApproach(id string, arrivalGroups map[string][]Arrival) []RadioTransmission {
+func (ac *Aircraft) ClearedStraightInApproach(id string) []RadioTransmission {
 	if ac.IsDeparture() {
 		return ac.readbackUnexpected("unable. This aircraft is a departure.")
 	}
 
-	arr, err := ac.getArrival(arrivalGroups)
-	if err != nil {
-		return ac.readbackUnexpected("unable.")
-	}
-
-	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, true, arr)
+	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, true)
 	if err == nil {
 		ac.ApproachController = ac.ControllingController
 	}
@@ -376,30 +351,21 @@ func (ac *Aircraft) ContactTower(controllers map[string]*Controller, lg *log.Log
 	}
 }
 
-func (ac *Aircraft) InterceptLocalizer(arrivalGroups map[string][]Arrival) []RadioTransmission {
+func (ac *Aircraft) InterceptLocalizer() []RadioTransmission {
 	if ac.IsDeparture() {
 		return ac.readbackUnexpected("unable. This aircraft is a departure.")
 	}
 
-	arr, err := ac.getArrival(arrivalGroups)
-	if err != nil {
-		return ac.readbackUnexpected("unable.")
-	}
-
-	resp := ac.Nav.InterceptLocalizer(ac.FlightPlan.ArrivalAirport, arr)
+	resp := ac.Nav.InterceptLocalizer(ac.FlightPlan.ArrivalAirport)
 	return ac.transmitResponse(resp)
 }
 
-func (ac *Aircraft) InitializeArrival(ap *Airport, arrivalGroups map[string][]Arrival,
-	arrivalGroup string, arrivalGroupIndex int, arrivalHandoffController string, goAround bool,
+func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffController string, goAround bool,
 	nmPerLongitude float32, magneticVariation float32, lg *log.Logger) error {
-	arr := arrivalGroups[arrivalGroup][arrivalGroupIndex]
 	ac.STAR = arr.STAR
-	ac.ArrivalGroup = arrivalGroup
-	ac.ArrivalGroupIndex = arrivalGroupIndex
+	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.FlightPlan.ArrivalAirport]
 	ac.Scratchpad = arr.Scratchpad
 	ac.SecondaryScratchpad = arr.SecondaryScratchpad
-
 	ac.TrackingController = arr.InitialController
 	ac.ControllingController = arr.InitialController
 	ac.WaypointHandoffController = arrivalHandoffController
@@ -426,7 +392,7 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arrivalGroups map[string][]Ar
 		ac.GoAroundDistance = &d
 	}
 
-	nav := MakeArrivalNav(&arr, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation, lg)
+	nav := MakeArrivalNav(arr, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -434,7 +400,7 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arrivalGroups map[string][]Ar
 
 	if arr.ExpectApproach != "" {
 		lg = lg.With(slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
-		ac.ExpectApproach(arr.ExpectApproach, ap, arrivalGroups, lg)
+		ac.ExpectApproach(arr.ExpectApproach, ap, lg)
 	}
 
 	return nil

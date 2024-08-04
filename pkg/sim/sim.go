@@ -2728,7 +2728,7 @@ func (s *Sim) ExpectApproach(token, callsign, approach string) error {
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			return ac.ExpectApproach(approach, ap, s.State.ArrivalGroups, s.lg)
+			return ac.ExpectApproach(approach, ap, s.lg)
 		})
 }
 
@@ -2739,9 +2739,9 @@ func (s *Sim) ClearedApproach(token, callsign, approach string, straightIn bool)
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			if straightIn {
-				return ac.ClearedStraightInApproach(approach, s.State.ArrivalGroups)
+				return ac.ClearedStraightInApproach(approach)
 			} else {
-				return ac.ClearedApproach(approach, s.State.ArrivalGroups, s.lg)
+				return ac.ClearedApproach(approach, s.lg)
 			}
 		})
 }
@@ -2752,7 +2752,7 @@ func (s *Sim) InterceptLocalizer(token, callsign string) error {
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			return ac.InterceptLocalizer(s.State.ArrivalGroups)
+			return ac.InterceptLocalizer()
 		})
 }
 
@@ -3046,8 +3046,8 @@ func (s *Sim) createArrivalNoLock(arrivalGroup string, arrivalAirport string) (*
 		}
 	}
 
-	if err := ac.InitializeArrival(s.State.Airports[arrivalAirport], s.State.ArrivalGroups,
-		arrivalGroup, idx, arrivalController, goAround, s.State.NmPerLongitude, s.State.MagneticVariation, s.lg); err != nil {
+	if err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr, arrivalController,
+		goAround, s.State.NmPerLongitude, s.State.MagneticVariation, s.lg); err != nil {
 		return nil, err
 	}
 

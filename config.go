@@ -40,7 +40,8 @@ import (
 // 22: draw points using triangles, remove some CommandBuffer commands
 // 23: video map format update
 // 24: packages, audio to platform, flight plan processing
-const CurrentConfigVersion = 24
+// 25: remove ArrivalGroup/Index from Aircraft
+const CurrentConfigVersion = 25
 
 // Slightly convoluted, but the full Config definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first
