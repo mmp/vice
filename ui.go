@@ -236,6 +236,8 @@ var (
 		`Multiple improvements to the realism of the STARS display and sounds`,
 		`"Beaconator" added to STARS (F1)`,
 		`Added "SQ" command to issue a beacon code to an aircraft`,
+		`Fixed a crash when setting scratchpads`,
+		`Fixed bugs in the "launch control window" that would prevent it from refreshing`,
 	}
 )
 
