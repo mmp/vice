@@ -4732,8 +4732,9 @@
       ]
     }
   },
-  "arrival_groups": {
-    "BOJID4": [
+  "inbound_flows": {
+      "BOJID4/HAR5": {
+          "arrivals": [
       {
         "airlines": {
           "KPHL": [
@@ -4779,8 +4780,24 @@
         "spawn": "LRP",
         "star": "BOJID4"
       }
-    ],
-    "FINAL27_NORTH": [
+          ],
+          "overflights": [
+            {
+                "airlines": [
+                    { "icao": "BAZOO", "departure_airport": "KSPS", "arrival_airport": "KWRI" },
+                    { "icao": "SNOOP", "departure_airport": "KSKF", "arrival_airport": "KWRI" },
+                    { "icao": "COBRA", "departure_airport": "KCFO", "arrival_airport": "KWRI" }
+                ],
+                "waypoints": "LRP TRAGG/ho BUNTS RELNY NAGGS CYN",
+                "initial_altitude": 12000,
+                "assigned_altitude": 9000,
+                "initial_speed": 300,
+                "description": "KWRI HAR5 arrivals",
+                "initial_controller": "DC_CTR"
+            }
+          ]
+      },
+      "FINAL27_NORTH": { "arrivals": [
       {
         "airlines": {
           "KPHL": [
@@ -4829,8 +4846,8 @@
         "scratchpad": "27R",
         "waypoints": "BOJID N040.01.51.140,W075.11.43.262/ho HIFAL EYRIE FERUS/h085"
       }
-    ],
-    "FINAL27_SOUTH": [
+      ] },
+    "FINAL27_SOUTH":  { "arrivals": [
       {
         "airlines": {
           "KPHL": [
@@ -4867,8 +4884,8 @@
         "scratchpad": "27R",
         "waypoints": "N039.39.39.130,W075.08.38.554 CHPMN/ho PSOUT MKORD/h087"
       }
-    ],
-    "FINAL17_NORTH": [
+    ] },
+    "FINAL17_NORTH":  { "arrivals": [
       {
         "airlines": {
           "KPHL": [
@@ -4905,8 +4922,8 @@
         "scratchpad": "17Z",
         "waypoints": "N040.05.01.382,W075.44.56.319 N040.04.20.458,W075.35.49.255/ho/h110"
       }
-    ],
-    "JIIMS4": [
+    ] },
+    "JIIMS4":  { "arrivals": [
       {
         "airlines": {
           "KPHL": [
@@ -4954,8 +4971,8 @@
         "star": "JIIMS4",
         "spawn": "WNSTN@0.7"
       }
-    ],
-    "PAATS4": [
+    ] },
+    "PAATS4":  { "arrivals": [
       {
         "airlines": {
           "KPHL": [
@@ -4989,8 +5006,8 @@
         "star": "PAATS4",
         "spawn": "CANNY"
       }
-    ],
-    "SPUDS7": [
+    ] },
+    "SPUDS7":  { "arrivals": [
       {
         "airlines": {
           "KPHL": [
@@ -5019,9 +5036,135 @@
         "star": "SPUDS7",
         "spawn": "ETX"
       }
-    ]
-  },
+    ] },
+      "PROUD2": { "overflights": [
+            {
+                "airlines": [
+                    { "icao": "JBU", "departure_airport": "KFLL", "arrival_airport": "KLGA" },
+                    { "icao": "SWA", "departure_airport": "KATL", "arrival_airport": "KLGA" },
+                    { "icao": "NKS", "departure_airport": "KCLT", "arrival_airport": "KLGA" },
+                    { "icao": "DAL", "departure_airport": "KMIA", "arrival_airport": "KLGA" }
+                ],
+                "waypoints": "ENO/a24000+ SKIPY/a19000-22000 BESSI/a17000+ EDJER/a13000-17000 DAVYS/a13000+ HOLEY BRAND/a11000+ KORRY/a10000 DEPDY",
+                "initial_altitude": 24000,
+                "initial_speed": 350,
+                "description": "KLGA PROUD2 arrivals",
+                "initial_controller": "DC_CTR"
+            }
+      ] },
+        "PHLBO4/JAKIE4":  { "overflights": [
+            {
+                "airlines": [
+                    { "icao": "UAL", "departure_airport": "KMSY", "arrival_airport": "KEWR" },
+                    { "icao": "FFT", "departure_airport": "KATL", "arrival_airport": "KEWR" },
+                    { "icao": "AAL", "departure_airport": "KBNA", "arrival_airport": "KEWR" },
+                    { "icao": "NKS", "departure_airport": "KTPA", "arrival_airport": "KEWR" },
+                    { "icao": "DAL", "departure_airport": "KCLT", "arrival_airport": "KEWR" }
+                ],
+                "waypoints": "FUBRR DQO/a20000+ STEFE/a13000-17000 SOMTO/a11000 ARD DYLIN/a8000 MERSR METRO",
+                "initial_altitude": 24000,
+                "initial_speed": 350,
+                "description": "KEWR PHLBO4 arrivals",
+                "initial_controller": "DC_CTR"
+            },
+            {
+                "airlines": [
+                    { "icao": "LXJ", "departure_airport": "KRIC", "arrival_airport": "KTEB" },
+                    { "icao": "WUP", "departure_airport": "KTPA", "arrival_airport": "KTEB" },
+                    { "icao": "EJA", "departure_airport": "KBCT", "arrival_airport": "KTEB" }
+                ],
+                "waypoints": "JNJEN BUZIE SPNCR/ho JAIKE/a13000 ILENE/a13000 WACKI/s250/a11000 MAZIE REGLE/a7000 SBJ",
+                "initial_altitude": 22000,
+                "assigned_altitude": 13000,
+                "initial_speed": 300,
+                "description": "KTEB JAKIE4 arrivals",
+                "initial_controller": "DC_CTR"
+            }
+        ] },
+        "BRAND1":  { "overflights": [
+            {
+                "airlines": [
+                    { "icao": "FDX", "fleet": "short", "departure_airport": "KCLT", "arrival_airport": "KEWR" }
+                ],
+                "waypoints": "BACKY ODESA DQO/ho RUUTH WNDYL BRAND/a7000 KORRY WATJA",
+                "initial_altitude": 18000,
+                "initial_speed": 250,
+                "description": "KEWR BRAND1 arrivals",
+                "initial_controller": "DC_CTR"
+            }
+        ] },
+        "V29.Low":  { "overflights": [
+            {
+                "airlines": [
+                    { "icao": "N", "fleet": "lightGA", "departure_airport": "KGED", "arrival_airport": "KABE" }
+                ],
+                "waypoints": "N038.59.30.652,W075.31.03.803 N039.05.18.397,W075.31.25.034/ho ENO V29 ETX",
+                "initial_altitude": 9000,
+                "assigned_altitude": 9000,
+                "initial_speed": 150,
+                "description": "V29 overflights",
+                "initial_controller": "DC_CTR"
+            }
+        ] },
+        "V29.High":  { "overflights": [
+            {
+                "airlines": [
+                    { "icao": "LXJ", "departure_airport": "KGED", "arrival_airport": "KABE" },
+                    { "icao": "EJA", "departure_airport": "15N", "arrival_airport": "KABE" }
+                ],
+                "waypoints": "N038.59.30.652,W075.31.03.803 N039.05.18.397,W075.31.25.034/ho ENO V29 ETX",
+                "initial_altitude": 11000,
+                "assigned_altitude": 11000,
+                "initial_speed": 150,
+                "description": "V29 overflights",
+                "initial_controller": "DC_CTR"
+            }
+        ] },
+        "ABE-ACY":  { "overflights": [
+            {
+                "airlines": [
+                    { "icao": "N", "departure_airport": "KABE", "arrival_airport": "KACY" }
+                ],
+                "waypoints": "FJC N040.35.02.110,W075.18.19.346/ho ARD CYN ACY",
+                "initial_altitude": 5000,
+                "assigned_altitude": 5000,
+                "initial_speed": 150,
+                "description": "ABE-ACY flights",
+                "initial_controller": "ABE_APP"
+            }
+        ] },
+        "RDG-WRI":  { "overflights": [
+            {
+                "airlines": [
+                    { "icao": "N", "fleet": "lightGA", "departure_airport": "KRDG", "arrival_airport": "KMJX" }
+                ],
+                "waypoints": "WILEN LRP/ho V210 ARD KBLM",
+                "initial_altitude": 3000,
+                "assigned_altitude": 3000,
+                "initial_speed": 150,
+                "description": "RDG-WRI area flights (slow)",
+                "initial_controller": "RDG_APP"
+            },
+            {
+                "airlines": [
+                    { "icao": "N", "fleet": "fastGA", "departure_airport": "KRDG", "arrival_airport": "KBLM" }
+                ],
+                "waypoints": "WILEN LRP/ho V210 ARD KBLM",
+                "initial_altitude": 5000,
+                "assigned_altitude": 5000,
+                "initial_speed": 250,
+                "description": "RDG-WRI area flights (fast)",
+                "initial_controller": "RDG_APP"
+            }
+        ] }
+    },
   "control_positions": {
+    "ABE_APP": {
+      "frequency": 119650,
+      "full_name": "Allentown approach",
+      "scope_char": "F",
+      "sector_id": "SF"
+    },
     "DC_CTR": {
       "frequency": 133725,
       "full_name": "Washington center",
@@ -5029,6 +5172,12 @@
       "sector_id": "W32",
       "facility_id": "W",
       "eram_facility": true
+    },
+    "LGA_APP": {
+      "frequency": 120800,
+      "full_name": "New York approach",
+      "scope_char": "V",
+      "sector_id": "1V"
     },
     "EWR_APP": {
       "frequency": 128550,
@@ -5105,6 +5254,20 @@
       "full_name": "Philly tower",
       "scope_char": "T",
       "sector_id": "6A"
+    },
+    "RDG_APP": {
+      "frequency": 125150,
+      "full_name": "Reading approach",
+      "scope_char": "X",
+      "sector_id": "RX",
+      "facility_id": "7"
+    },
+    "WRI_APP": {
+      "frequency": 126470,
+      "full_name": "McGuire approach",
+      "scope_char": "5",
+      "sector_id": "1Y",
+      "facility_id": "5"
     }
   },
   "default_scenario": "KPHL Depart 27L Land 27R/35",
@@ -5136,7 +5299,7 @@
           "runway": "27R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FINAL27_NORTH": {
           "KPHL": 20
         },
@@ -5184,9 +5347,10 @@
           "runway": "35"
         }
       ],
-      "arrivals": {
-        "BOJID4": {
-          "KPHL": 12
+      "inbound_rates": {
+        "BOJID4/HAR5": {
+            "KPHL": 12,
+            "overflights": 5
         },
         "JIIMS4": {
           "KPHL": 12
@@ -5196,20 +5360,32 @@
         },
         "SPUDS7": {
           "KPHL": 10
-        }
+        },
+        "PROUD2": { "overflights": 5 },
+        "PHLBO4/JAKIE4": { "overflights": 5 },
+        "BRAND1": { "overflights": 5 },
+        "V29.Low": { "overflights": 5 },
+        "V29.High": { "overflights": 5 },
+        "ABE-ACY": { "overflights": 5 },
+        "RDG-WRI": { "overflights": 5 }
       },
       "solo_controller": "PHL_NA_APP",
       "multi_controllers": {
           "default" : {
-              "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID4", "SPUDS7" ] },
-              "PHL_SA_APP": { "backup": "PHL_NA_APP", "arrivals": [ "JIIMS4", "PAATS4" ] },
+              "PHL_NA_APP": { "primary": true, "inbound_flows": [ "BOJID4/HAR5", "SPUDS7", "ABE-ACY", "RDG-WRI" ] },
+              "PHL_SA_APP": { "backup": "PHL_NA_APP", "inbound_flows": [ "JIIMS4", "PAATS4", "V29.Low" ] },
               "PHL_F1_APP": { "backup": "PHL_NA_APP" },
-              "PHL_ND_DEP": { "backup": "PHL_NA_APP", "departures": ["KPHL"] }
+              "PHL_ND_DEP": { "backup": "PHL_NA_APP", "departures": ["KPHL"], "inbound_flows": [ "PHLBO4/JAKIE4", "BRAND1", "V29.High" ] }
           }
       },
       "controllers": [
         "PHL_TWR",
         "DC_CTR",
+        "EWR_APP",
+        "WRI_APP",
+        "RDG_APP",
+        "ABE_APP",
+        "LGA_APP",
         "NY_A_CTR"
       ],
       "default_maps": [ "PHL West" ],
@@ -5253,9 +5429,10 @@
           "runway": "17"
         }
       ],
-      "arrivals": {
-        "BOJID4": {
-          "KPHL": 12
+      "inbound_rates": {
+        "BOJID4/HAR5": {
+          "KPHL": 12,
+          "overflights": 5
         },
         "JIIMS4": {
           "KPHL": 12
@@ -5265,20 +5442,32 @@
         },
         "SPUDS7": {
           "KPHL": 10
-        }
+        },
+        "PROUD2": { "overflights": 5 },
+        "PHLBO4/JAKIE4": { "overflights": 5 },
+        "BRAND1": { "overflights": 5 },
+        "V29.Low": { "overflights": 5 },
+        "V29.High": { "overflights": 5 },
+        "ABE-ACY": { "overflights": 5 },
+        "RDG-WRI": { "overflights": 5 }
       },
       "solo_controller": "PHL_NA_APP",
       "multi_controllers": {
           "default" : {
-              "PHL_NA_APP": { "primary": true, "arrivals": [ "BOJID4", "SPUDS7" ] },
-              "PHL_SA_APP": { "backup": "PHL_NA_APP", "arrivals": [ "JIIMS4", "PAATS4" ] },
+              "PHL_NA_APP": { "primary": true, "inbound_flows": [ "BOJID4/HAR5", "SPUDS7", "ABE-ACY", "RDG-WRI" ] },
+              "PHL_SA_APP": { "backup": "PHL_NA_APP", "inbound_flows": [ "JIIMS4", "PAATS4", "V29.Low" ] },
               "PHL_F1_APP": { "backup": "PHL_NA_APP" },
-              "PHL_ND_DEP": { "backup": "PHL_NA_APP", "departures": ["KPHL"] }
+              "PHL_ND_DEP": { "backup": "PHL_NA_APP", "departures": ["KPHL"], "inbound_flows": [ "PHLBO4/JAKIE4", "BRAND1", "V29.High" ] }
           }
       },
       "controllers": [
         "PHL_TWR",
         "DC_CTR",
+        "EWR_APP",
+        "WRI_APP",
+        "RDG_APP",
+        "ABE_APP",
+        "LGA_APP",
         "NY_A_CTR"
       ],
       "default_maps": [ "PHL East" ],
