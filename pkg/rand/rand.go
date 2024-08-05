@@ -148,6 +148,24 @@ func SampleWeighted[T any](slice []T, weight func(T) int) int {
 	return idx
 }
 
+// SampleRateMap randomly samples elements from a map of some type T to a
+// rate with probability proportional to the element's rate.
+func SampleRateMap[T comparable](rates map[T]int) (T, int) {
+	rateSum := 0
+	var result T
+	for item, rate := range rates {
+		if rate == 0 {
+			continue
+		}
+		rateSum += rate
+		// Weighted reservoir sampling...
+		if Float32() < float32(rate)/float32(rateSum) {
+			result = item
+		}
+	}
+	return result, rateSum
+}
+
 var (
 	//go:embed nouns.txt
 	nounsFile string

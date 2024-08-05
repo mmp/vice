@@ -24,6 +24,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
@@ -405,7 +406,7 @@ func uiDraw(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r r
 				ui.showScenarioInfo = !ui.showScenarioInfo
 			}
 			if imgui.IsItemHovered() {
-				imgui.SetTooltip("Show available departures, arrivals, and approaches")
+				imgui.SetTooltip("Show available departures, arrivals, approaches, and overflights")
 			}
 		}
 
@@ -1147,10 +1148,10 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logg
 ///////////////////////////////////////////////////////////////////////////
 
 type LaunchControlWindow struct {
-	controlClient *sim.ControlClient
-	departures    []*LaunchDeparture
-	arrivals      []*LaunchArrival
-	lg            *log.Logger
+	controlClient       *sim.ControlClient
+	departures          []*LaunchDeparture
+	arrivalsOverflights []*LaunchArrivalOverflight
+	lg                  *log.Logger
 }
 
 type LaunchDeparture struct {
@@ -1169,16 +1170,15 @@ func (ld *LaunchDeparture) Reset() {
 	ld.TotalLaunches = 0
 }
 
-type LaunchArrival struct {
+type LaunchArrivalOverflight struct {
 	Aircraft           av.Aircraft
-	Airport            string
 	Group              string
 	LastLaunchCallsign string
 	LastLaunchTime     time.Time
 	TotalLaunches      int
 }
 
-func (la *LaunchArrival) Reset() {
+func (la *LaunchArrivalOverflight) Reset() {
 	la.LastLaunchCallsign = ""
 	la.LastLaunchTime = time.Time{}
 	la.TotalLaunches = 0
@@ -1204,16 +1204,14 @@ func MakeLaunchControlWindow(controlClient *sim.ControlClient, lg *log.Logger) *
 		lc.spawnDeparture(lc.departures[i])
 	}
 
-	for _, group := range util.SortedMapKeys(config.ArrivalGroupRates) {
-		for _, airport := range util.SortedMapKeys(config.ArrivalGroupRates[group]) {
-			lc.arrivals = append(lc.arrivals, &LaunchArrival{
-				Airport: airport,
-				Group:   group,
+	for _, group := range util.SortedMapKeys(config.InboundFlowRates) {
+		lc.arrivalsOverflights = append(lc.arrivalsOverflights,
+			&LaunchArrivalOverflight{
+				Group: group,
 			})
-		}
 	}
-	for i := range lc.arrivals {
-		lc.spawnArrival(lc.arrivals[i])
+	for i := range lc.arrivalsOverflights {
+		lc.spawnArrivalOverflight(lc.arrivalsOverflights[i])
 	}
 
 	return lc
@@ -1224,9 +1222,15 @@ func (lc *LaunchControlWindow) spawnDeparture(dep *LaunchDeparture) {
 		func(err error) { lc.lg.Warnf("CreateDeparture: %v", err) })
 }
 
-func (lc *LaunchControlWindow) spawnArrival(arr *LaunchArrival) {
-	lc.controlClient.CreateArrival(arr.Group, arr.Airport, &arr.Aircraft, nil,
-		func(err error) { lc.lg.Warnf("CreateArrival: %v", err) })
+func (lc *LaunchControlWindow) spawnArrivalOverflight(lac *LaunchArrivalOverflight) {
+	flow, _ := rand.SampleRateMap(lc.controlClient.LaunchConfig.InboundFlowRates[lac.Group])
+	if flow != "overflights" {
+		lc.controlClient.CreateArrival(lac.Group, flow, &lac.Aircraft, nil,
+			func(err error) { lc.lg.Warnf("CreateArrival: %v", err) })
+	} else {
+		lc.controlClient.CreateOverflight(lac.Group, &lac.Aircraft, nil,
+			func(err error) { lc.lg.Warnf("CreateOverflight: %v", err) })
+	}
 }
 
 func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Platform) {
@@ -1277,8 +1281,8 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				for _, dep := range lc.departures {
 					dep.Reset()
 				}
-				for _, arr := range lc.arrivals {
-					arr.Reset()
+				for _, ac := range lc.arrivalsOverflights {
+					ac.Reset()
 				}
 			},
 		}, p), true)
@@ -1377,13 +1381,13 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 		imgui.Separator()
 
-		narr := util.ReduceSlice(lc.arrivals, func(arr *LaunchArrival, n int) int {
+		narof := util.ReduceSlice(lc.arrivalsOverflights, func(arr *LaunchArrivalOverflight, n int) int {
 			return n + arr.TotalLaunches
 		}, 0)
 
-		imgui.Text(fmt.Sprintf("Arrivals: %d total", narr))
+		imgui.Text(fmt.Sprintf("Arrivals/Overflights: %d total", narof))
 
-		if imgui.BeginTableV("arr", 9, flags, imgui.Vec2{tableScale * 600, 0}, 0.0) {
+		if imgui.BeginTableV("arrof", 9, flags, imgui.Vec2{tableScale * 600, 0}, 0.0) {
 			imgui.TableSetupColumn("Group")
 			imgui.TableSetupColumn("Launches")
 			imgui.TableSetupColumn("Airport")
@@ -1393,45 +1397,45 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 			imgui.TableSetupColumn("Time")
 			imgui.TableHeadersRow()
 
-			for _, arr := range lc.arrivals {
-				imgui.PushID(arr.Group + arr.Airport)
+			for _, arof := range lc.arrivalsOverflights {
+				imgui.PushID(arof.Group)
 
 				imgui.TableNextRow()
 
 				imgui.TableNextColumn()
-				imgui.Text(arr.Group)
+				imgui.Text(arof.Group)
 
 				imgui.TableNextColumn()
-				imgui.Text(strconv.Itoa(arr.TotalLaunches))
+				imgui.Text(strconv.Itoa(arof.TotalLaunches))
 
-				imgui.TableNextColumn()
-				imgui.Text(arr.Airport)
-
-				if arr.Aircraft.Callsign != "" {
+				if arof.Aircraft.Callsign != "" {
 					imgui.TableNextColumn()
-					imgui.Text(arr.Aircraft.Callsign)
+					imgui.Text(arof.Aircraft.FlightPlan.ArrivalAirport)
 
 					imgui.TableNextColumn()
-					imgui.Text(arr.Aircraft.FlightPlan.TypeWithoutSuffix())
+					imgui.Text(arof.Aircraft.Callsign)
 
-					mitAndTime(&arr.Aircraft, arr.Aircraft.Position(), arr.LastLaunchCallsign,
-						arr.LastLaunchTime)
+					imgui.TableNextColumn()
+					imgui.Text(arof.Aircraft.FlightPlan.TypeWithoutSuffix())
+
+					mitAndTime(&arof.Aircraft, arof.Aircraft.Position(), arof.LastLaunchCallsign,
+						arof.LastLaunchTime)
 
 					imgui.TableNextColumn()
 					if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-						lc.controlClient.LaunchAircraft(arr.Aircraft)
-						arr.LastLaunchCallsign = arr.Aircraft.Callsign
-						arr.LastLaunchTime = lc.controlClient.CurrentTime()
-						arr.TotalLaunches++
+						lc.controlClient.LaunchAircraft(arof.Aircraft)
+						arof.LastLaunchCallsign = arof.Aircraft.Callsign
+						arof.LastLaunchTime = lc.controlClient.CurrentTime()
+						arof.TotalLaunches++
 
-						arr.Aircraft = av.Aircraft{}
-						lc.spawnArrival(arr)
+						arof.Aircraft = av.Aircraft{}
+						lc.spawnArrivalOverflight(arof)
 					}
 
 					imgui.TableNextColumn()
 					if imgui.Button(renderer.FontAwesomeIconRedo) {
-						arr.Aircraft = av.Aircraft{}
-						lc.spawnArrival(arr)
+						arof.Aircraft = av.Aircraft{}
+						lc.spawnArrivalOverflight(arof)
 					}
 				}
 
@@ -1449,6 +1453,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		}
 		changed := lc.controlClient.LaunchConfig.DrawDepartureUI(p)
 		changed = lc.controlClient.LaunchConfig.DrawArrivalUI(p) || changed
+		changed = lc.controlClient.LaunchConfig.DrawOverflightUI(p) || changed
 
 		if changed {
 			lc.controlClient.SetLaunchConfig(lc.controlClient.LaunchConfig)

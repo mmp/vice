@@ -798,3 +798,20 @@ func (sd *Dispatcher) CreateArrival(aa *CreateArrivalArgs, arrAc *av.Aircraft) e
 	}
 	return err
 }
+
+type CreateOverflightArgs struct {
+	ControllerToken string
+	Group           string
+}
+
+func (sd *Dispatcher) CreateOverflight(oa *CreateOverflightArgs, ofAc *av.Aircraft) error {
+	sim, ok := sd.sm.controllerTokenToSim[oa.ControllerToken]
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+	ac, err := sim.CreateOverflight(oa.Group)
+	if err == nil {
+		*ofAc = *ac
+	}
+	return err
+}

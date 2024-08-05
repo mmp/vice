@@ -76,18 +76,18 @@ type LaunchConfig struct {
 	GoAroundRate       float32
 	// airport -> runway -> category -> rate
 	DepartureRates map[string]map[string]map[string]int
-	// arrival group -> airport -> rate
-	ArrivalGroupRates           map[string]map[string]int
+	// inbound flow -> airport / "overflights" -> rate
+	InboundFlowRates            map[string]map[string]int
 	ArrivalPushes               bool
 	ArrivalPushFrequencyMinutes int
 	ArrivalPushLengthMinutes    int
 }
 
-func MakeLaunchConfig(dep []ScenarioGroupDepartureRunway, arr map[string]map[string]int) LaunchConfig {
+func MakeLaunchConfig(dep []ScenarioGroupDepartureRunway, inbound map[string]map[string]int) LaunchConfig {
 	lc := LaunchConfig{
 		DepartureChallenge:          0.25,
 		GoAroundRate:                0.05,
-		ArrivalGroupRates:           arr,
+		InboundFlowRates:            inbound,
 		ArrivalPushFrequencyMinutes: 20,
 		ArrivalPushLengthMinutes:    10,
 	}
@@ -199,19 +199,20 @@ func (lc *LaunchConfig) DrawDepartureUI(p platform.Platform) (changed bool) {
 }
 
 func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
-	if len(lc.ArrivalGroupRates) == 0 {
-		return
-	}
-
 	// Figure out how many unique airports we've got for AAR columns in the table
 	// and also sum up the overall arrival rate
 	allAirports := make(map[string]interface{})
 	sumRates := 0
-	for _, agr := range lc.ArrivalGroupRates {
+	for _, agr := range lc.InboundFlowRates {
 		for ap, rate := range agr {
-			allAirports[ap] = nil
-			sumRates += rate
+			if ap != "overflights" {
+				allAirports[ap] = nil
+				sumRates += rate
+			}
 		}
+	}
+	if len(allAirports) == 0 { // no arrivals
+		return
 	}
 
 	imgui.Text("Arrivals")
@@ -236,11 +237,11 @@ func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 		imgui.TableSetupColumn("AAR")
 		imgui.TableHeadersRow()
 
-		for _, group := range util.SortedMapKeys(lc.ArrivalGroupRates) {
+		for _, group := range util.SortedMapKeys(lc.InboundFlowRates) {
 			imgui.PushID(group)
 			for _, ap := range util.SortedMapKeys(allAirports) {
 				imgui.PushID(ap)
-				if rate, ok := lc.ArrivalGroupRates[group][ap]; ok {
+				if rate, ok := lc.InboundFlowRates[group][ap]; ok {
 					imgui.TableNextRow()
 					imgui.TableNextColumn()
 					imgui.Text(ap)
@@ -249,10 +250,53 @@ func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 					imgui.TableNextColumn()
 					r := int32(rate)
 					changed = imgui.InputIntV("##aar-"+ap, &r, 0, 120, 0) || changed
-					lc.ArrivalGroupRates[group][ap] = int(r)
+					lc.InboundFlowRates[group][ap] = int(r)
 				}
 				imgui.PopID()
 			}
+			imgui.PopID()
+		}
+		imgui.EndTable()
+	}
+
+	imgui.Separator()
+
+	return
+}
+
+func (lc *LaunchConfig) DrawOverflightUI(p platform.Platform) (changed bool) {
+	// Sum up the overall overflight rate
+	overflightGroups := make(map[string]interface{})
+	sumRates := 0
+	for group, rates := range lc.InboundFlowRates {
+		if rate, ok := rates["overflights"]; ok {
+			sumRates += rate
+			overflightGroups[group] = nil
+		}
+	}
+	if sumRates == 0 {
+		return
+	}
+
+	imgui.Text("Overflights")
+	imgui.Text(fmt.Sprintf("Overall overflight rate: %d / hour", sumRates))
+
+	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
+	if imgui.BeginTableV("overflights", 2, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
+		imgui.TableSetupColumn("Group")
+		imgui.TableSetupColumn("Rate")
+		imgui.TableHeadersRow()
+
+		for _, group := range util.SortedMapKeys(overflightGroups) {
+			imgui.PushID(group)
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text(group)
+			imgui.TableNextColumn()
+			r := int32(lc.InboundFlowRates[group]["overflights"])
+			changed = imgui.InputIntV("##of", &r, 0, 120, 0) || changed
+			lc.InboundFlowRates[group]["overflights"] = int(r)
 			imgui.PopID()
 		}
 		imgui.EndTable()
@@ -740,6 +784,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 	c.Scenario.LaunchConfig.DrawDepartureUI(p)
 	c.Scenario.LaunchConfig.DrawArrivalUI(p)
+	c.Scenario.LaunchConfig.DrawOverflightUI(p)
 	return false
 }
 
@@ -853,15 +898,16 @@ type Sim struct {
 	// runway, category, etc., based on the respective rates.
 	NextDepartureSpawn map[string]time.Time `json:"NextDepartureSpawn2"` // avoid parse errors on old configs
 
-	// Key is arrival group name
-	NextArrivalSpawn map[string]time.Time
+	// Key is inbound flow group name
+	NextInboundSpawn map[string]time.Time
 
 	Handoffs map[string]Handoff
 	// callsign -> "to" controller
 	PointOuts map[string]map[string]PointOut
 
-	TotalDepartures int
-	TotalArrivals   int
+	TotalDepartures  int
+	TotalArrivals    int
+	TotalOverflights int
 
 	ReportingPoints []av.ReportingPoint
 
@@ -1005,11 +1051,12 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Any("controllers", s.State.Controllers),
 		slog.Any("launch_config", s.LaunchConfig),
 		slog.Any("next_departure_spawn", s.NextDepartureSpawn),
-		slog.Any("next_arrival_spawn", s.NextArrivalSpawn),
+		slog.Any("next_inbound_spawn", s.NextInboundSpawn),
 		slog.Any("automatic_handoffs", s.Handoffs),
 		slog.Any("automatic_pointouts", s.PointOuts),
 		slog.Int("departures", s.TotalDepartures),
 		slog.Int("arrivals", s.TotalArrivals),
+		slog.Int("overflights", s.TotalOverflights),
 		slog.Time("sim_time", s.SimTime),
 		slog.Float64("sim_rate", float64(s.SimRate)),
 		slog.Bool("paused", s.Paused),
@@ -1166,11 +1213,12 @@ type WorldUpdate struct {
 
 	LaunchConfig LaunchConfig
 
-	SimIsPaused     bool
-	SimRate         float32
-	Events          []Event
-	TotalDepartures int
-	TotalArrivals   int
+	SimIsPaused      bool
+	SimRate          float32
+	Events           []Event
+	TotalDepartures  int
+	TotalArrivals    int
+	TotalOverflights int
 }
 
 func (s *Sim) GetWorldUpdate(token string, update *WorldUpdate) error {
@@ -1192,16 +1240,17 @@ func (s *Sim) GetWorldUpdate(token string, update *WorldUpdate) error {
 
 		var err error
 		*update, err = deep.Copy(WorldUpdate{
-			Aircraft:        s.State.Aircraft,
-			Controllers:     s.State.Controllers,
-			ERAMComputers:   s.State.ERAMComputers,
-			Time:            s.SimTime,
-			LaunchConfig:    s.LaunchConfig,
-			SimIsPaused:     s.Paused,
-			SimRate:         s.SimRate,
-			Events:          ctrl.events.Get(),
-			TotalDepartures: s.TotalDepartures,
-			TotalArrivals:   s.TotalArrivals,
+			Aircraft:         s.State.Aircraft,
+			Controllers:      s.State.Controllers,
+			ERAMComputers:    s.State.ERAMComputers,
+			Time:             s.SimTime,
+			LaunchConfig:     s.LaunchConfig,
+			SimIsPaused:      s.Paused,
+			SimRate:          s.SimRate,
+			Events:           ctrl.events.Get(),
+			TotalDepartures:  s.TotalDepartures,
+			TotalArrivals:    s.TotalArrivals,
+			TotalOverflights: s.TotalOverflights,
 		})
 
 		return err
@@ -1588,13 +1637,13 @@ func (s *Sim) setInitialSpawnTimes() {
 		return time.Now().Add(time.Duration(delta) * time.Second)
 	}
 
-	s.NextArrivalSpawn = make(map[string]time.Time)
-	for group, rates := range s.LaunchConfig.ArrivalGroupRates {
+	s.NextInboundSpawn = make(map[string]time.Time)
+	for group, rates := range s.LaunchConfig.InboundFlowRates {
 		rateSum := 0
 		for _, rate := range rates {
 			rateSum += rate
 		}
-		s.NextArrivalSpawn[group] = randomSpawn(rateSum)
+		s.NextInboundSpawn[group] = randomSpawn(rateSum)
 	}
 
 	s.NextDepartureSpawn = make(map[string]time.Time)
@@ -1609,23 +1658,6 @@ func (s *Sim) setInitialSpawnTimes() {
 
 		s.NextDepartureSpawn[airport] = randomSpawn(rateSum)
 	}
-}
-
-func sampleRateMap(rates map[string]int) (string, int) {
-	// Choose randomly in proportion to the rates in the map
-	rateSum := 0
-	var result string
-	for item, rate := range rates {
-		if rate == 0 {
-			continue
-		}
-		rateSum += rate
-		// Weighted reservoir sampling...
-		if rand.Float32() < float32(rate)/float32(rateSum) {
-			result = item
-		}
-	}
-	return result, rateSum
 }
 
 func sampleRateMap2(rates map[string]map[string]int) (string, string, int) {
@@ -1680,15 +1712,23 @@ func (s *Sim) spawnAircraft() {
 
 	pushActive := now.Before(s.PushEnd)
 
-	for group, airportRates := range s.LaunchConfig.ArrivalGroupRates {
-		if now.After(s.NextArrivalSpawn[group]) {
-			arrivalAirport, rateSum := sampleRateMap(airportRates)
+	for group, rates := range s.LaunchConfig.InboundFlowRates {
+		if now.After(s.NextInboundSpawn[group]) {
+			flow, rateSum := rand.SampleRateMap(rates)
 
-			if ac, err := s.createArrivalNoLock(group, arrivalAirport); err != nil {
-				s.lg.Error("CreateArrival error: %v", err)
+			var ac *av.Aircraft
+			var err error
+			if flow == "overflights" {
+				ac, err = s.createOverflightNoLock(group)
+			} else {
+				ac, err = s.createArrivalNoLock(group, flow)
+			}
+
+			if err != nil {
+				s.lg.Error("create inbound error: %v", err)
 			} else if ac != nil {
 				s.launchAircraftNoLock(*ac)
-				s.NextArrivalSpawn[group] = now.Add(randomWait(rateSum, pushActive))
+				s.NextInboundSpawn[group] = now.Add(randomWait(rateSum, pushActive))
 			}
 		}
 	}
@@ -1757,18 +1797,17 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 				s.NextDepartureSpawn[ap] = s.SimTime.Add(randomWait(newSum, false))
 			}
 		}
-		for group, groupRates := range lc.ArrivalGroupRates {
+		for group, groupRates := range lc.InboundFlowRates {
 			newSum, oldSum := 0, 0
 			for ap, rate := range groupRates {
 				newSum += rate
-				oldSum += s.LaunchConfig.ArrivalGroupRates[group][ap]
+				oldSum += s.LaunchConfig.InboundFlowRates[group][ap]
 			}
 			if newSum != oldSum {
 				pushActive := s.SimTime.Before(s.PushEnd)
-				s.lg.Infof("%s: arrival rate changed %d -> %d", group, oldSum, newSum)
-				s.NextArrivalSpawn[group] = s.SimTime.Add(randomWait(newSum, pushActive))
+				s.lg.Infof("%s: inbound flow rate changed %d -> %d", group, oldSum, newSum)
+				s.NextInboundSpawn[group] = s.SimTime.Add(randomWait(newSum, pushActive))
 			}
-
 		}
 
 		s.LaunchConfig = lc
@@ -3001,10 +3040,10 @@ func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*av.Air
 	return s.createArrivalNoLock(arrivalGroup, arrivalAirport)
 }
 
-func (s *Sim) createArrivalNoLock(arrivalGroup string, arrivalAirport string) (*av.Aircraft, error) {
+func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*av.Aircraft, error) {
 	goAround := rand.Float32() < s.LaunchConfig.GoAroundRate
 
-	arrivals := s.State.ArrivalGroups[arrivalGroup]
+	arrivals := s.State.InboundFlows[group].Arrivals
 	// Randomly sample from the arrivals that have a route to this airport.
 	idx := rand.SampleFiltered(arrivals, func(ar av.Arrival) bool {
 		_, ok := ar.Airlines[arrivalAirport]
@@ -3013,7 +3052,7 @@ func (s *Sim) createArrivalNoLock(arrivalGroup string, arrivalAirport string) (*
 
 	if idx == -1 {
 		return nil, fmt.Errorf("unable to find route in arrival group %s for airport %s?!",
-			arrivalGroup, arrivalAirport)
+			group, arrivalAirport)
 	}
 	arr := arrivals[idx]
 
@@ -3035,7 +3074,7 @@ func (s *Sim) createArrivalNoLock(arrivalGroup string, arrivalAirport string) (*
 	arrivalController := s.State.PrimaryController
 	if len(s.State.MultiControllers) > 0 {
 		var err error
-		arrivalController, err = s.State.MultiControllers.GetArrivalController(arrivalGroup)
+		arrivalController, err = s.State.MultiControllers.GetInboundController(group)
 		if err != nil {
 			s.lg.Error("Unable to resolve arrival controller", slog.Any("error", err),
 				slog.Any("aircraft", ac))
@@ -3159,4 +3198,59 @@ func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (
 	s.sameGateDepartures += 1
 
 	return ac, dep, nil
+}
+
+func (s *Sim) CreateOverflight(group string) (*av.Aircraft, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	return s.createOverflightNoLock(group)
+}
+
+func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
+	overflights := s.State.InboundFlows[group].Overflights
+	// Randomly sample an overflight
+	of := rand.SampleSlice(overflights)
+
+	airline := rand.SampleSlice(of.Airlines)
+	ac, acType := s.State.sampleAircraft(airline.ICAO, airline.Fleet, s.lg)
+	if ac == nil {
+		return nil, fmt.Errorf("unable to sample a valid aircraft")
+	}
+
+	ac.FlightPlan = ac.NewFlightPlan(av.IFR, acType, airline.DepartureAirport,
+		airline.ArrivalAirport)
+
+	// Figure out which controller will (for starters) get the handoff. For
+	// single-user, it's easy.  Otherwise, figure out which control
+	// position is initially responsible for the arrival. Note that the
+	// actual handoff controller will be resolved later when the handoff
+	// happens, so that it can reflect which controllers are actually
+	// signed in at that point.
+	controller := s.State.PrimaryController
+	if len(s.State.MultiControllers) > 0 {
+		var err error
+		controller, err = s.State.MultiControllers.GetInboundController(group)
+		if err != nil {
+			s.lg.Error("Unable to resolve overflight controller", slog.Any("error", err),
+				slog.Any("aircraft", ac))
+		}
+		if controller == "" {
+			controller = s.State.PrimaryController
+		}
+	}
+
+	if err := ac.InitializeOverflight(&of, controller, s.State.NmPerLongitude, s.State.MagneticVariation, s.lg); err != nil {
+		return nil, err
+	}
+
+	// TODO(mtrokel)
+	/*
+			facility, ok := s.State.FacilityFromController(ac.TrackingController)
+			if !ok {
+				return nil, ErrUnknownControllerFacility
+			}
+		    s.State.ERAMComputers.AddArrival(ac, facility, s.State.STARSFacilityAdaptation, s.SimTime)
+	*/
+
+	return ac, nil
 }

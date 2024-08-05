@@ -241,12 +241,13 @@ func (sm *SimManager) ControllerTokenToSim(token string) (*Sim, bool) {
 }
 
 type simStatus struct {
-	Name            string
-	Config          string
-	IdleTime        time.Duration
-	Controllers     string
-	TotalDepartures int
-	TotalArrivals   int
+	Name             string
+	Config           string
+	IdleTime         time.Duration
+	Controllers      string
+	TotalDepartures  int
+	TotalArrivals    int
+	TotalOverflights int
 }
 
 func (ss simStatus) LogValue() slog.Value {
@@ -256,7 +257,8 @@ func (ss simStatus) LogValue() slog.Value {
 		slog.Duration("idle", ss.IdleTime),
 		slog.String("controllers", ss.Controllers),
 		slog.Int("departures", ss.TotalDepartures),
-		slog.Int("arrivals", ss.TotalArrivals))
+		slog.Int("arrivals", ss.TotalArrivals),
+		slog.Int("overflights", ss.TotalOverflights))
 }
 
 func (sm *SimManager) getSimStatus() []simStatus {
@@ -267,11 +269,12 @@ func (sm *SimManager) getSimStatus() []simStatus {
 	for _, name := range util.SortedMapKeys(sm.activeSims) {
 		sim := sm.activeSims[name]
 		status := simStatus{
-			Name:            name,
-			Config:          sim.Scenario,
-			IdleTime:        sim.IdleTime().Round(time.Second),
-			TotalDepartures: sim.TotalDepartures,
-			TotalArrivals:   sim.TotalArrivals,
+			Name:             name,
+			Config:           sim.Scenario,
+			IdleTime:         sim.IdleTime().Round(time.Second),
+			TotalDepartures:  sim.TotalDepartures,
+			TotalArrivals:    sim.TotalArrivals,
+			TotalOverflights: sim.TotalOverflights,
 		}
 
 		var controllers []string

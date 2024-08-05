@@ -949,8 +949,9 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	drawArrivals := ctx.ControlClient.ScopeDrawArrivals()
 	drawApproaches := ctx.ControlClient.ScopeDrawApproaches()
 	drawDepartures := ctx.ControlClient.ScopeDrawDepartures()
+	drawOverflights := ctx.ControlClient.ScopeDrawOverflights()
 
-	if len(drawArrivals) == 0 && len(drawApproaches) == 0 && len(drawDepartures) == 0 {
+	if len(drawArrivals) == 0 && len(drawApproaches) == 0 && len(drawDepartures) == 0 && len(drawOverflights) == 0 {
 		return
 	}
 
@@ -976,12 +977,12 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 
 	// STARS
 	if drawArrivals != nil {
-		for _, name := range util.SortedMapKeys(ctx.ControlClient.ArrivalGroups) {
+		for _, name := range util.SortedMapKeys(ctx.ControlClient.InboundFlows) {
 			if drawArrivals[name] == nil {
 				continue
 			}
 
-			arrivals := ctx.ControlClient.ArrivalGroups[name]
+			arrivals := ctx.ControlClient.InboundFlows[name].Arrivals
 			for i, arr := range arrivals {
 				if drawArrivals == nil || !drawArrivals[name][i] {
 					continue
@@ -1054,6 +1055,24 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 							td, style, ld, pd, ldr)
 					}
 				}
+			}
+		}
+	}
+
+	// Overflights
+	if drawOverflights != nil {
+		for _, name := range util.SortedMapKeys(ctx.ControlClient.InboundFlows) {
+			if drawOverflights[name] == nil {
+				continue
+			}
+
+			overflights := ctx.ControlClient.InboundFlows[name].Overflights
+			for i, of := range overflights {
+				if drawOverflights == nil || !drawOverflights[name][i] {
+					continue
+				}
+
+				drawWaypoints(ctx, of.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr)
 			}
 		}
 	}

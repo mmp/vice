@@ -58,9 +58,10 @@ type State struct {
 	DepartureRunways         []ScenarioGroupDepartureRunway
 	ArrivalRunways           []ScenarioGroupArrivalRunway
 	Scratchpads              map[string]string
-	ArrivalGroups            map[string][]av.Arrival
+	InboundFlows             map[string]InboundFlow
 	TotalDepartures          int
 	TotalArrivals            int
+	TotalOverflights         int
 	STARSFacilityAdaptation  STARSFacilityAdaptation
 
 	ControllerVideoMaps        []av.VideoMap
@@ -105,7 +106,7 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	ss.Range = util.Select(sc.Range == 0, fa.Range, sc.Range)
 	ss.ScenarioDefaultVideoMaps = sc.DefaultMaps
 	ss.Scratchpads = fa.Scratchpads
-	ss.ArrivalGroups = sg.ArrivalGroups
+	ss.InboundFlows = sg.InboundFlows
 	ss.ApproachAirspace = sc.ApproachAirspace
 	ss.DepartureAirspace = sc.DepartureAirspace
 	ss.DepartureRunways = sc.DepartureRunways
@@ -203,9 +204,11 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 		ss.DepartureAirports[name] = ss.Airports[name]
 	}
 	ss.ArrivalAirports = make(map[string]*av.Airport)
-	for _, airportRates := range s.LaunchConfig.ArrivalGroupRates {
+	for _, airportRates := range s.LaunchConfig.InboundFlowRates {
 		for name := range airportRates {
-			ss.ArrivalAirports[name] = ss.Airports[name]
+			if name != "overflights" {
+				ss.ArrivalAirports[name] = ss.Airports[name]
+			}
 		}
 	}
 	if liveWeather {

@@ -36,7 +36,10 @@ type ScenarioGroup struct {
 	DefaultScenario  string                    `json:"default_scenario"`
 	ControlPositions map[string]*av.Controller `json:"control_positions"`
 	Airspace         Airspace                  `json:"airspace"`
-	ArrivalGroups    map[string][]av.Arrival   `json:"arrival_groups"`
+	InboundFlows     map[string]InboundFlow    `json:"inbound_flows"`
+
+	// Temporary for the transition to inbound_flows
+	ArrivalGroups map[string][]av.Arrival `json:"arrival_groups"`
 
 	PrimaryAirport string `json:"primary_airport"`
 
@@ -48,6 +51,11 @@ type ScenarioGroup struct {
 	MagneticVariation       float32
 	MagneticAdjustment      float32                 `json:"magnetic_adjustment"`
 	STARSFacilityAdaptation STARSFacilityAdaptation `json:"stars_config"`
+}
+
+type InboundFlow struct {
+	Arrivals    []av.Arrival    `json:"arrivals"`
+	Overflights []av.Overflight `json:"overflights"`
 }
 
 type AirspaceAwareness struct {
@@ -103,7 +111,10 @@ type Scenario struct {
 	Wind                av.Wind                  `json:"wind"`
 	VirtualControllers  []string                 `json:"controllers"`
 
-	// Map from arrival group name to map from airport name to default rate...
+	// Map from inbound flow names to a map from airport name to default rate,
+	// with "overflights" a special case to denote overflights
+	InboundFlowDefaultRates map[string]map[string]int `json:"inbound_rates"`
+	// Temporary backwards compatibility
 	ArrivalGroupDefaultRates map[string]map[string]int `json:"arrivals"`
 
 	ApproachAirspace       []ControllerAirspaceVolume `json:"approach_airspace_volumes"`  // not in JSON
@@ -135,6 +146,30 @@ type ScenarioGroupArrivalRunway struct {
 }
 
 func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
+	// Temporary backwards-compatibility for inbound flows
+	if len(s.ArrivalGroupDefaultRates) > 0 {
+		if len(s.InboundFlowDefaultRates) > 0 {
+			e.ErrorString("cannot specify both \"arrivals\" and \"inbound_rates\"")
+		} else {
+			s.InboundFlowDefaultRates = s.ArrivalGroupDefaultRates
+			s.ArrivalGroupDefaultRates = nil
+		}
+	}
+	for name, controllers := range s.SplitConfigurations {
+		e.Push("\"multi_controllers\": split \"" + name + "\"")
+		for _, ctrl := range controllers {
+			if len(ctrl.Arrivals) > 0 {
+				if len(ctrl.InboundFlows) > 0 {
+					e.ErrorString("cannot specify both \"arrivals\" and \"inbound_flows\"")
+				} else {
+					ctrl.InboundFlows = ctrl.Arrivals
+					ctrl.Arrivals = nil
+				}
+			}
+		}
+		e.Pop()
+	}
+
 	for _, as := range s.ApproachAirspaceNames {
 		if vol, ok := sg.Airspace.Volumes[as]; !ok {
 			e.ErrorString("unknown approach airspace \"%s\"", as)
@@ -385,11 +420,20 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 				}
 			}
 
-			// Make sure all arrivals are valid. Below we make sure all
+			// Make sure all inbound flows are valid. Below we make sure all
 			// included arrivals have a controller.
-			for _, arr := range ctrl.Arrivals {
-				if _, ok := s.ArrivalGroupDefaultRates[arr]; !ok {
-					e.ErrorString("arrival \"%s\" not found in scenario", arr)
+			for _, flow := range ctrl.InboundFlows {
+				if _, ok := s.InboundFlowDefaultRates[flow]; !ok {
+					e.ErrorString("inbound flow \"%s\" not found in scenario", flow)
+				} else {
+					f := sg.InboundFlows[flow]
+					overflightHasHandoff := func(of av.Overflight) bool {
+						return slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff })
+					}
+					if len(f.Arrivals) == 0 && !slices.ContainsFunc(f.Overflights, overflightHasHandoff) {
+						// It's just overflights without handoffs
+						e.ErrorString("no inbound flows in \"%s\" have handoffs", flow)
+					}
 				}
 			}
 			e.Pop()
@@ -488,68 +532,89 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 		e.Pop()
 	}
 
-	for _, name := range util.SortedMapKeys(s.ArrivalGroupDefaultRates) {
-		e.Push("Arrival group " + name)
-		// Make sure the arrival group has been defined
-		if arrivals, ok := sg.ArrivalGroups[name]; !ok {
-			e.ErrorString("arrival group not found")
+	for _, name := range util.SortedMapKeys(s.InboundFlowDefaultRates) {
+		e.Push("Inbound flow " + name)
+		// Make sure the inbound flow has been defined
+		if flow, ok := sg.InboundFlows[name]; !ok {
+			e.ErrorString("inbound flow not found")
 		} else {
 			// Add initial controllers to the controller list, if
 			// necessary.
-			for _, ar := range arrivals {
+			for _, ar := range flow.Arrivals {
 				if ar.InitialController != "" &&
 					!slices.Contains(s.VirtualControllers, ar.InitialController) {
 					s.VirtualControllers = append(s.VirtualControllers, ar.InitialController)
 				}
 			}
+			for _, of := range flow.Overflights {
+				if of.InitialController != "" &&
+					!slices.Contains(s.VirtualControllers, of.InitialController) {
+					s.VirtualControllers = append(s.VirtualControllers, of.InitialController)
+				}
+			}
 
 			// Check the airports in it
-			for airport := range s.ArrivalGroupDefaultRates[name] {
-				e.Push("Airport " + airport)
-				if _, ok := sg.Airports[airport]; !ok {
-					e.ErrorString("unknown arrival airport")
+			for category := range s.InboundFlowDefaultRates[name] {
+				if category == "overflights" {
+					if len(flow.Overflights) == 0 {
+						e.ErrorString("Rate specified for \"overflights\" but no overflights specified in \"%s\"", name)
+					}
 				} else {
-					// Make sure the airport exists in at least one of the
-					// arrivals in the group.
-					found := false
-					for _, ar := range arrivals {
-						if _, ok := ar.Airlines[airport]; ok {
-							found = true
+					airport := category
+					e.Push("Airport " + airport)
+					if _, ok := sg.Airports[airport]; !ok {
+						e.ErrorString("unknown arrival airport")
+					} else {
+						// Make sure the airport exists in at least one of the
+						// arrivals in the group.
+						found := false
+						for _, ar := range flow.Arrivals {
+							if _, ok := ar.Airlines[airport]; ok {
+								found = true
 
-							// Make sure the airport has at least one
-							// active arrival runway.
-							if !slices.ContainsFunc(s.ArrivalRunways,
-								func(r ScenarioGroupArrivalRunway) bool {
-									return r.Airport == airport
-								}) {
-								e.ErrorString("no runways listed in \"arrival_runways\" for %s even though there are %s arrivals in \"arrivals\"",
-									airport, airport)
+								// Make sure the airport has at least one
+								// active arrival runway.
+								if !slices.ContainsFunc(s.ArrivalRunways,
+									func(r ScenarioGroupArrivalRunway) bool {
+										return r.Airport == airport
+									}) {
+									e.ErrorString("no runways listed in \"arrival_runways\" for %s even though there are %s arrivals in \"arrivals\"",
+										airport, airport)
+								}
 							}
 						}
+						if !found {
+							e.ErrorString("airport not used for any arrivals")
+						}
 					}
-					if !found {
-						e.ErrorString("airport not used for any arrivals")
-					}
+					e.Pop()
 				}
-				e.Pop()
 			}
 
 			// For each multi-controller split, sure some controller covers the
-			// arrival group.
-			for split, controllers := range s.SplitConfigurations {
-				e.Push("\"multi_controllers\": split \"" + split + "\"")
-				count := 0
-				for _, mc := range controllers {
-					if slices.Contains(mc.Arrivals, name) {
-						count++
+			// flow if there will be a handoff to a non-virtual controller.
+			hasHandoff := len(flow.Arrivals) > 0
+			for _, of := range flow.Overflights {
+				if slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff }) {
+					hasHandoff = true
+				}
+			}
+			if hasHandoff {
+				for split, controllers := range s.SplitConfigurations {
+					e.Push("\"multi_controllers\": split \"" + split + "\"")
+					count := 0
+					for _, mc := range controllers {
+						if slices.Contains(mc.InboundFlows, name) {
+							count++
+						}
 					}
+					if count == 0 {
+						e.ErrorString("no controller in \"multi_controllers\" has \"%s\" in their \"inbound_flows\"", name)
+					} else if count > 1 {
+						e.ErrorString("more than one controller in \"multi_controllers\" has this in their \"inbound_flows\"")
+					}
+					e.Pop()
 				}
-				if count == 0 {
-					e.ErrorString("no controller in \"multi_controllers\" has this arrival group in their \"arrivals\"")
-				} else if count > 1 {
-					e.ErrorString("more than one controller in \"multi_controllers\" has this arrival group in their \"arrivals\"")
-				}
-				e.Pop()
 			}
 		}
 		e.Pop()
@@ -629,6 +694,22 @@ var (
 )
 
 func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogger, simConfigurations map[string]map[string]*Configuration) {
+	// Temporary backwards compatibility for inbound flows
+	if len(sg.ArrivalGroups) > 0 {
+		if len(sg.InboundFlows) > 0 {
+			e.ErrorString("cannot specify both \"arrival_groups\" and \"inbound_flows\"")
+		} else {
+			sg.InboundFlows = make(map[string]InboundFlow)
+			for name, arrivals := range sg.ArrivalGroups {
+				var flow InboundFlow
+				for _, ar := range arrivals {
+					flow.Arrivals = append(flow.Arrivals, ar)
+				}
+				sg.InboundFlows[name] = flow
+			}
+			sg.ArrivalGroups = nil
+		}
+	}
 	// stars_config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
 	sg.STARSFacilityAdaptation.PostDeserialize(e, sg)
@@ -784,16 +865,21 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		e.Pop()
 	}
 
-	for name, arrivals := range sg.ArrivalGroups {
-		e.Push("Arrival group " + name)
-		if len(arrivals) == 0 {
-			e.ErrorString("no arrivals in arrival group")
+	for name, flow := range sg.InboundFlows {
+		e.Push("Inbound flow " + name)
+		if len(flow.Arrivals) == 0 && len(flow.Overflights) == 0 {
+			e.ErrorString("no arrivals or overflights in inbound flow group")
 		}
 
-		for i := range arrivals {
-			arrivals[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
+		for i := range flow.Arrivals {
+			flow.Arrivals[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
 				sg.Airports, sg.ControlPositions, e)
 		}
+		for i := range flow.Overflights {
+			flow.Overflights[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
+				sg.Airports, sg.ControlPositions, e)
+		}
+
 		e.Pop()
 	}
 
@@ -1005,12 +1091,11 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 	for name, scenario := range sg.Scenarios {
 		sc := &SimScenarioConfiguration{
 			SplitConfigurations: scenario.SplitConfigurations,
-			LaunchConfig: MakeLaunchConfig(scenario.DepartureRunways,
-				scenario.ArrivalGroupDefaultRates),
-			Wind:             scenario.Wind,
-			DepartureRunways: scenario.DepartureRunways,
-			ArrivalRunways:   scenario.ArrivalRunways,
-			PrimaryAirport:   sg.PrimaryAirport,
+			LaunchConfig:        MakeLaunchConfig(scenario.DepartureRunways, scenario.InboundFlowDefaultRates),
+			Wind:                scenario.Wind,
+			DepartureRunways:    scenario.DepartureRunways,
+			ArrivalRunways:      scenario.ArrivalRunways,
+			PrimaryAirport:      sg.PrimaryAirport,
 		}
 
 		if multiController {

@@ -29,9 +29,10 @@ type ControlClient struct {
 	pendingCalls []*util.PendingCall
 
 	scopeDraw struct {
-		arrivals   map[string]map[int]bool               // group->index
-		approaches map[string]map[string]bool            // airport->approach
-		departures map[string]map[string]map[string]bool // airport->runway->exit
+		arrivals    map[string]map[int]bool               // group->index
+		approaches  map[string]map[string]bool            // airport->approach
+		departures  map[string]map[string]map[string]bool // airport->runway->exit
+		overflights map[string]map[int]bool               // group->index
 	}
 
 	// This is all read-only data that we expect other parts of the system
@@ -59,7 +60,8 @@ func (c *ControlClient) Status() string {
 	if c == nil || c.SimDescription == "" {
 		return "[disconnected]"
 	} else {
-		deparr := fmt.Sprintf(" [ %d departures %d arrivals ]", c.TotalDepartures, c.TotalArrivals)
+		deparr := fmt.Sprintf(" [ %d departures %d arrivals %d overflights ]",
+			c.TotalDepartures, c.TotalArrivals, c.TotalOverflights)
 		if c.SimName == "" {
 			return c.State.Callsign + ": " + c.SimDescription + deparr
 		} else {
@@ -368,6 +370,16 @@ func (c *ControlClient) CreateArrival(group, airport string, ac *av.Aircraft, su
 		})
 }
 
+func (c *ControlClient) CreateOverflight(group string, ac *av.Aircraft, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.CreateOverflight(group, ac),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (c *ControlClient) Disconnect() {
 	if err := c.proxy.SignOff(nil, nil); err != nil {
 		c.lg.Errorf("Error signing off from sim: %v", err)
@@ -432,6 +444,7 @@ func (c *ControlClient) UpdateWorld(wu *WorldUpdate, eventStream *EventStream) {
 	c.State.SimRate = wu.SimRate
 	c.State.TotalDepartures = wu.TotalDepartures
 	c.State.TotalArrivals = wu.TotalArrivals
+	c.State.TotalOverflights = wu.TotalOverflights
 
 	// Important: do this after updating aircraft, controllers, etc.,
 	// so that they reflect any changes the events are flagging.
@@ -549,6 +562,10 @@ func (c *ControlClient) ScopeDrawDepartures() map[string]map[string]map[string]b
 	return c.scopeDraw.departures
 }
 
+func (c *ControlClient) ScopeDrawOverflights() map[string]map[int]bool {
+	return c.scopeDraw.overflights
+}
+
 func (c *ControlClient) DeleteAllAircraft(onErr func(err error)) {
 	if lctrl := c.LaunchConfig.Controller; lctrl == "" || lctrl == c.State.Callsign {
 		c.State.Aircraft = nil
@@ -601,14 +618,17 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
-			for _, name := range util.SortedMapKeys(c.State.ArrivalGroups) {
-				arrivals := c.State.ArrivalGroups[name]
+			for _, name := range util.SortedMapKeys(c.State.InboundFlows) {
+				arrivals := c.State.InboundFlows[name].Arrivals
+				if len(arrivals) == 0 {
+					continue
+				}
 				if c.scopeDraw.arrivals[name] == nil {
 					c.scopeDraw.arrivals[name] = make(map[int]bool)
 				}
 
 				for i, arr := range arrivals {
-					if len(c.State.LaunchConfig.ArrivalGroupRates[name]) == 0 {
+					if len(c.State.LaunchConfig.InboundFlowRates[name]) == 0 {
 						// Not used in the current scenario.
 						continue
 					}
@@ -699,6 +719,7 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 	}
 
 	imgui.Separator()
+
 	if imgui.CollapsingHeader("Departures") {
 		if imgui.BeginTableV("departures", 5, tableFlags, imgui.Vec2{}, 0) {
 			if c.scopeDraw.departures == nil {
@@ -770,6 +791,56 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 					}
 				}
 			}
+			imgui.EndTable()
+		}
+	}
+
+	imgui.Separator()
+
+	if imgui.CollapsingHeader("Overflights") {
+		if imgui.BeginTableV("over", 3, tableFlags, imgui.Vec2{}, 0) {
+			if c.scopeDraw.overflights == nil {
+				c.scopeDraw.overflights = make(map[string]map[int]bool)
+			}
+
+			imgui.TableSetupColumn("Draw")
+			imgui.TableSetupColumn("Overflight")
+			imgui.TableSetupColumn("Description")
+			imgui.TableHeadersRow()
+
+			for _, name := range util.SortedMapKeys(c.State.InboundFlows) {
+				overflights := c.State.InboundFlows[name].Overflights
+				if len(overflights) == 0 {
+					continue
+				}
+
+				if c.scopeDraw.overflights[name] == nil {
+					c.scopeDraw.overflights[name] = make(map[int]bool)
+				}
+				if _, ok := c.State.LaunchConfig.InboundFlowRates[name]["overflights"]; !ok {
+					// Not used in the current scenario.
+					continue
+				}
+
+				for i, of := range overflights {
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					enabled := c.scopeDraw.overflights[name][i]
+					imgui.Checkbox(fmt.Sprintf("##of-%s-%d", name, i), &enabled)
+					c.scopeDraw.overflights[name][i] = enabled
+
+					imgui.TableNextColumn()
+					imgui.Text(name)
+
+					imgui.TableNextColumn()
+					if of.Description != "" {
+						imgui.Text(of.Description)
+					} else {
+						imgui.Text("--")
+					}
+				}
+			}
+
 			imgui.EndTable()
 		}
 	}

@@ -278,3 +278,10 @@ func (p *proxy) CreateArrival(group, airport string, ac *av.Aircraft) *rpc.Call 
 		Airport:         airport,
 	}, ac, nil)
 }
+
+func (p *proxy) CreateOverflight(group string, ac *av.Aircraft) *rpc.Call {
+	return p.Client.Go("Sim.CreateOverflight", &CreateOverflightArgs{
+		ControllerToken: p.ControllerToken,
+		Group:           group,
+	}, ac, nil)
+}

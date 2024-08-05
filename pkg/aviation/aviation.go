@@ -777,6 +777,26 @@ func (w *WaypointArray) UnmarshalJSON(b []byte) error {
 	}
 }
 
+func (w WaypointArray) RouteString() string {
+	var r []string
+	airway := ""
+	for _, wp := range w {
+		if airway != "" && wp.Airway == airway {
+			// This fix was automatically added for an airway so don't include it here.
+			continue
+		}
+		r = append(r, wp.Fix)
+
+		if wp.Airway != airway {
+			if wp.Airway != "" {
+				r = append(r, wp.Airway)
+			}
+			airway = wp.Airway
+		}
+	}
+	return strings.Join(r, " ")
+}
+
 func (w WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[string]*Controller) {
 	w.checkBasics(e, controllers)
 
@@ -860,6 +880,10 @@ func (w WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Contro
 		}
 		e.Pop()
 	}
+}
+
+func (w WaypointArray) CheckOverflight(e *util.ErrorLogger, ctrl map[string]*Controller) {
+	w.checkBasics(e, ctrl)
 }
 
 func (w WaypointArray) checkDescending(e *util.ErrorLogger) {
@@ -1892,7 +1916,8 @@ type MultiUserController struct {
 	Primary          bool     `json:"primary"`
 	BackupController string   `json:"backup"`
 	Departures       []string `json:"departures"`
-	Arrivals         []string `json:"arrivals"`
+	Arrivals         []string `json:"arrivals"` // TEMPORARY for inbound flows transition
+	InboundFlows     []string `json:"inbound_flows"`
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1962,14 +1987,14 @@ func (sc SplitConfiguration) ResolveController(callsign string, active func(call
 	}
 }
 
-func (sc SplitConfiguration) GetArrivalController(arrivalGroup string) (string, error) {
+func (sc SplitConfiguration) GetInboundController(group string) (string, error) {
 	for callsign, ctrl := range sc {
-		if ctrl.IsArrivalController(arrivalGroup) {
+		if ctrl.IsInboundController(group) {
 			return callsign, nil
 		}
 	}
 
-	return "", fmt.Errorf("%s: couldn't find arrival controller", arrivalGroup)
+	return "", fmt.Errorf("%s: couldn't find inbound controller", group)
 }
 
 func (sc SplitConfiguration) GetDepartureController(airport, runway, sid string) (string, error) {
@@ -2001,6 +2026,65 @@ func (c *MultiUserController) IsDepartureController(ap, rwy, sid string) bool {
 	return false
 }
 
-func (c *MultiUserController) IsArrivalController(arrivalGroup string) bool {
-	return slices.Contains(c.Arrivals, arrivalGroup)
+func (c *MultiUserController) IsInboundController(group string) bool {
+	return slices.Contains(c.InboundFlows, group)
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+type Overflight struct {
+	Waypoints           WaypointArray       `json:"waypoints"`
+	InitialAltitude     float32             `json:"initial_altitude"`
+	CruiseAltitude      float32             `json:"cruise_altitude"`
+	AssignedAltitude    float32             `json:"assigned_altitude"`
+	InitialSpeed        float32             `json:"initial_speed"`
+	SpeedRestriction    float32             `json:"speed_restriction"`
+	InitialController   string              `json:"initial_controller"`
+	Scratchpad          string              `json:"scratchpad"`
+	SecondaryScratchpad string              `json:"secondary_scratchpad"`
+	Description         string              `json:"description"`
+	CoordinationFix     string              `json:"coordination_fix"`
+	Airlines            []OverflightAirline `json:"airlines"`
+}
+
+type OverflightAirline struct {
+	ICAO             string `json:"icao"`
+	Fleet            string `json:"fleet,omitempty"`
+	DepartureAirport string `json:"departure_airport"`
+	ArrivalAirport   string `json:"arrival_airport"`
+}
+
+func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
+	airports map[string]*Airport, controlPositions map[string]*Controller, e *util.ErrorLogger) {
+	if len(of.Waypoints) < 2 {
+		e.ErrorString("must provide at least two \"waypoints\" for overflight")
+	}
+
+	initializeWaypointLocations(of.Waypoints, loc, nmPerLongitude, magneticVariation, e)
+
+	of.Waypoints[len(of.Waypoints)-1].Delete = true
+	of.Waypoints[len(of.Waypoints)-1].FlyOver = true
+
+	of.Waypoints.CheckOverflight(e, controlPositions)
+
+	if len(of.Airlines) == 0 {
+		e.ErrorString("must specify at least one airline in \"airlines\"")
+	}
+	for _, al := range of.Airlines {
+		DB.CheckAirline(al.ICAO, al.Fleet, e)
+	}
+
+	if of.InitialAltitude == 0 {
+		e.ErrorString("must specify \"initial_altitude\"")
+	}
+
+	if of.InitialSpeed == 0 {
+		e.ErrorString("must specify \"initial_speed\"")
+	}
+
+	if of.InitialController == "" {
+		e.ErrorString("\"initial_controller\" missing")
+	} else if _, ok := controlPositions[of.InitialController]; !ok {
+		e.ErrorString("controller \"%s\" not found for \"initial_controller\"", of.InitialController)
+	}
 }

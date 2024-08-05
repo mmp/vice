@@ -197,6 +197,28 @@ func MakeDepartureNav(fp FlightPlan, perf AircraftPerformance, assignedAlt, clea
 	return nil
 }
 
+func MakeOverflightNav(of *Overflight, fp FlightPlan, perf AircraftPerformance,
+	nmPerLongitude float32, magneticVariation float32, lg *log.Logger) *Nav {
+	if nav := makeNav(fp, perf, of.Waypoints, nmPerLongitude, magneticVariation, lg); nav != nil {
+		spd := of.SpeedRestriction
+		nav.Speed.Restriction = util.Select(spd != 0, &spd, nil)
+		if of.AssignedAltitude > 0 {
+			alt := of.AssignedAltitude
+			nav.Altitude.Assigned = &alt
+		}
+
+		nav.FlightState.Altitude = of.InitialAltitude
+		nav.FlightState.IAS = of.InitialSpeed
+		// This won't be quite right but it's better than leaving GS to be
+		// 0 for the first nav update tick which leads to various Inf and
+		// NaN cases...
+		nav.FlightState.GS = nav.FlightState.IAS
+
+		return nav
+	}
+	return nil
+}
+
 func makeNav(fp FlightPlan, perf AircraftPerformance, wp []Waypoint, nmPerLongitude float32,
 	magneticVariation float32, lg *log.Logger) *Nav {
 	nav := &Nav{
