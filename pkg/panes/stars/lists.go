@@ -432,14 +432,16 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		format := func(m av.VideoMap, i int, vis bool) {
 			text.WriteString(util.Select(vis, ">", " ") + " ")
 			text.WriteString(fmt.Sprintf("%3d ", i))
-			text.WriteString(fmt.Sprintf("%8s ", strings.ToUpper(m.Label)))
+			text.WriteString(fmt.Sprintf("%-8s ", strings.ToUpper(m.Label)))
 			text.WriteString(strings.ToUpper(m.Name) + "\n")
 		}
 		if ps.VideoMapsList.Selection == VideoMapsGroupGeo {
 			text.WriteString("GEOGRAPHIC MAPS\n")
 			videoMaps, _ := ctx.ControlClient.GetVideoMaps()
 			for i, m := range videoMaps {
-				format(m, m.Id, ps.DisplayVideoMap[i])
+				if m.Id != 0 {
+					format(m, m.Id, ps.DisplayVideoMap[i])
+				}
 			}
 		} else if ps.VideoMapsList.Selection == VideoMapsGroupSysProc {
 			text.WriteString("PROCESSING AREAS\n")
