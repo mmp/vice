@@ -429,32 +429,30 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 
 	if ps.VideoMapsList.Visible {
 		text.Reset()
-		format := func(m av.VideoMap, i int, vis bool) {
+		format := func(m *av.VideoMap) {
+			_, vis := ps.VideoMapVisible[m.Id]
 			text.WriteString(util.Select(vis, ">", " ") + " ")
-			text.WriteString(fmt.Sprintf("%3d ", i))
+			text.WriteString(fmt.Sprintf("%3d ", m.Id))
 			text.WriteString(fmt.Sprintf("%-8s ", strings.ToUpper(m.Label)))
 			text.WriteString(strings.ToUpper(m.Name) + "\n")
 		}
 		if ps.VideoMapsList.Selection == VideoMapsGroupGeo {
 			text.WriteString("GEOGRAPHIC MAPS\n")
-			videoMaps, _ := ctx.ControlClient.GetVideoMaps()
-			for i, m := range videoMaps {
-				if m.Id != 0 {
-					format(m, m.Id, ps.DisplayVideoMap[i])
-				}
+			for _, id := range util.SortedMapKeys(sp.videoMaps) {
+				format(sp.videoMaps[id])
 			}
 		} else if ps.VideoMapsList.Selection == VideoMapsGroupSysProc {
 			text.WriteString("PROCESSING AREAS\n")
 			for _, index := range util.SortedMapKeys(sp.systemMaps) {
-				_, vis := ps.SystemMapVisible[index]
-				format(*sp.systemMaps[index], index, vis)
+				format(sp.systemMaps[index])
 			}
 		} else if ps.VideoMapsList.Selection == VideoMapsGroupCurrent {
 			text.WriteString("MAPS\n")
-			videoMaps, _ := ctx.ControlClient.GetVideoMaps()
-			for i, vis := range ps.DisplayVideoMap {
-				if vis {
-					format(videoMaps[i], videoMaps[i].Id, vis)
+			for _, id := range util.SortedMapKeys(ps.VideoMapVisible) {
+				if vm, ok := sp.videoMaps[id]; ok {
+					format(vm)
+				} else if vm, ok := sp.systemMaps[id]; ok {
+					format(vm)
 				}
 			}
 		} else {

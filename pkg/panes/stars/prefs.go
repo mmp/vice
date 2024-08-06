@@ -93,8 +93,7 @@ type PreferenceSet struct {
 	DisplayATPAWarningAlertCones bool
 	DisplayATPAMonitorCones      bool
 
-	DisplayVideoMap  [sim.NumSTARSMaps]bool
-	SystemMapVisible map[int]interface{}
+	VideoMapVisible map[int]interface{}
 
 	PTLLength      float32
 	PTLOwn, PTLAll bool
@@ -243,7 +242,7 @@ func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) PreferenceSet
 
 	ps.AudioVolume = 10
 
-	ps.SystemMapVisible = make(map[int]interface{})
+	ps.VideoMapVisible = make(map[int]interface{})
 
 	ps.FusedRadarMode = true
 	ps.LeaderLineDirection = math.North
@@ -336,7 +335,7 @@ func (ps *PreferenceSet) Duplicate() PreferenceSet {
 	dupe := *ps
 	dupe.SelectedBeaconCodes = util.DuplicateSlice(ps.SelectedBeaconCodes)
 	dupe.CRDA.RunwayPairState = util.DuplicateSlice(ps.CRDA.RunwayPairState)
-	dupe.SystemMapVisible = util.DuplicateMap(ps.SystemMapVisible)
+	dupe.VideoMapVisible = util.DuplicateMap(ps.VideoMapVisible)
 	return dupe
 }
 
@@ -382,8 +381,8 @@ func (ps *PreferenceSet) Activate(p platform.Platform, sp *STARSPane) {
 		ps.AudioEffectEnabled = append(ps.AudioEffectEnabled, true)
 	}
 
-	if ps.SystemMapVisible == nil {
-		ps.SystemMapVisible = make(map[int]interface{})
+	if ps.VideoMapVisible == nil {
+		ps.VideoMapVisible = make(map[int]interface{})
 	}
 }
 

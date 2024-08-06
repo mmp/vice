@@ -1908,6 +1908,9 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 
 	var videoMaps []VideoMap
 	for _, name := range lib.AvailableMaps(path) {
+		if name == "" {
+			continue
+		}
 		if m, err := lib.GetMap(path, name); err != nil {
 			e.Error(err)
 		} else {

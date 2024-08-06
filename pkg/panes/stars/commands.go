@@ -1393,10 +1393,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 	case CommandModeMaps:
 		if cmd == "A" {
 			// remove all maps
-			for i := range ps.DisplayVideoMap {
-				ps.DisplayVideoMap[i] = false
-			}
-			ps.SystemMapVisible = make(map[int]interface{})
+			clear(ps.VideoMapVisible)
 			sp.activeDCBMenu = dcbMenuMain
 			status.clear = true
 			return
@@ -1406,36 +1403,30 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				op = "E"
 				cmd = cmd[:n-1]
 			} else if cmd[n-1] == 'I' { // inhibit
-				op = "T"
+				op = "I"
 				cmd = cmd[:n-1]
 			}
-
-			videoMaps, _ := ctx.ControlClient.GetVideoMaps()
 
 			if idx, err := strconv.Atoi(cmd); err != nil {
 				status.err = ErrSTARSCommandFormat
 			} else if idx <= 0 {
 				status.err = ErrSTARSIllegalMap
-			} else if mi := slices.IndexFunc(videoMaps, func(m av.VideoMap) bool { return m.Id == idx }); mi != -1 {
-				if (ps.DisplayVideoMap[mi] && op == "T") || op == "I" {
-					ps.DisplayVideoMap[mi] = false
-				} else if (!ps.DisplayVideoMap[mi] && op == "T") || op == "E" {
-					ps.DisplayVideoMap[mi] = true
-				}
-				sp.activeDCBMenu = dcbMenuMain
-				status.clear = true
-			} else if _, ok := sp.systemMaps[idx]; ok {
-				if _, ok := ps.SystemMapVisible[idx]; (ok && op == "T") || op == "I" {
-					delete(ps.SystemMapVisible, idx)
-				} else if (!ok && op == "T") || op == "E" {
-					ps.SystemMapVisible[idx] = nil
-				}
-				sp.activeDCBMenu = dcbMenuMain
-				status.clear = true
 			} else {
-				status.err = ErrSTARSIllegalMap
+				_, vok := sp.videoMaps[idx]
+				_, sok := sp.systemMaps[idx]
+				if vok || sok { // valid map index
+					_, vis := ps.VideoMapVisible[idx]
+					if (vis && op == "T") || op == "I" {
+						delete(ps.VideoMapVisible, idx)
+					} else if (!vis && op == "T") || op == "E" {
+						ps.VideoMapVisible[idx] = nil
+					}
+					sp.activeDCBMenu = dcbMenuMain
+					status.clear = true
+				} else {
+					status.err = ErrSTARSIllegalMap
+				}
 			}
-			status.clear = true
 			return
 		}
 

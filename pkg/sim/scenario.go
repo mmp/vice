@@ -23,9 +23,6 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
-// FIXME
-const NumSTARSMaps = 38
-
 type ScenarioGroup struct {
 	TRACON           string                    `json:"tracon"`
 	Name             string                    `json:"name"`
@@ -1409,11 +1406,6 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 				e.ErrorString("no manifest for video map \"%s\" found. Options: %s", vf,
 					strings.Join(maplib.AvailableFiles(), ", "))
 			} else {
-				if len(fa.VideoMapNames) > NumSTARSMaps {
-					e.ErrorString("too many \"stars_maps\": %d provided but only %d are allowed",
-						len(fa.VideoMapNames), NumSTARSMaps)
-				}
-
 				for _, name := range fa.VideoMapNames {
 					if name != "" && !maplib.HaveMap(vf, name) {
 						e.ErrorString("video map \"%s\" not found. Use -listmaps <path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.",
