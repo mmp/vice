@@ -347,8 +347,8 @@ const (
 	NewSimJoinRemote
 )
 
-func MakeNewSimConfiguration(mgr *ConnectionManager, defaultTRACON *string, lg *log.Logger) NewSimConfiguration {
-	c := NewSimConfiguration{
+func MakeNewSimConfiguration(mgr *ConnectionManager, defaultTRACON *string, lg *log.Logger) *NewSimConfiguration {
+	c := &NewSimConfiguration{
 		lg:             lg,
 		mgr:            mgr,
 		selectedServer: mgr.localServer,

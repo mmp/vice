@@ -614,7 +614,7 @@ func (m *ModalDialogBox) Draw() {
 type ConnectModalClient struct {
 	mgr         *sim.ConnectionManager
 	lg          *log.Logger
-	simConfig   sim.NewSimConfiguration
+	simConfig   *sim.NewSimConfiguration
 	allowCancel bool
 	platform    platform.Platform
 	config      *Config
@@ -623,7 +623,9 @@ type ConnectModalClient struct {
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
-	c.simConfig = sim.MakeNewSimConfiguration(c.mgr, &c.config.LastTRACON, c.lg)
+	if c.simConfig == nil {
+		c.simConfig = sim.MakeNewSimConfiguration(c.mgr, &c.config.LastTRACON, c.lg)
+	}
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {
