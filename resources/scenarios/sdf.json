@@ -36,13 +36,8 @@
           ]
         },
         "R29": {
-          "runway": "29",
           "tower_controller": "SDF_E_TWR",
-          "type": "RNAV",
-          "waypoints": [
-          "FINCH/a3000/nopt CITMO/a3000/hilpt CUCAK/a2200",
-          "MIXKO/a3000/nopt CITMO/a3000/hilpt CUCAK/a2200"
-          ]
+          "cifp_id": "RZ29"
         }
       },
       "approach_regions": {
@@ -157,51 +152,51 @@
           "APALO": {
           "cleared_altitude": 5000,
           "sid": "APALO6",
-          "waypoints": "DROPA DIIME ONMEE DOWNS"
+          "waypoints": "DROPA _DIIME ONMEE DOWNS"
         },
         "CRRGO": {
           "cleared_altitude": 5000,
           "sid": "CRRGO4",
-          "waypoints": "DROPA DIIME ONMEE DOCKE"
+          "waypoints": "DROPA _DIIME ONMEE _DOCKE"
         },
         "SHIPR,OHAGI": {
           "cleared_altitude": 5000,
           "sid": "FEDRA5",
-          "waypoints": "DROPA FRATE FEDRA"
+          "waypoints": "DROPA _FRATE FEDRA"
         },
         "STREP": {
           "cleared_altitude": 5000,
           "sid": "STREP5",
-          "waypoints": "DROPA DIIME ONMEE CANBE"
+          "waypoints": "DROPA _DIIME ONMEE CANBE"
         }
       },
       "17R": {
         "APALO": {
           "cleared_altitude": 5000,
           "sid": "APALO6",
-          "waypoints": "LEENE ONMEE DOWNS"
+          "waypoints": "_LEENE ONMEE DOWNS"
         },
         "CRRGO": {
           "cleared_altitude": 5000,
           "sid": "CRRGO4",
-          "waypoints": "LEENE ONMEE DOCKE"
+          "waypoints": "_LEENE ONMEE _DOCKE"
         },
         "SHIPR,OHAGI": {
           "cleared_altitude": 5000,
           "sid": "FEDRA5",
-          "waypoints": "LEENE PKAGE FRATE FEDRA"
+          "waypoints": "_LEENE _PKAGE _FRATE FEDRA"
         },
         "STREP": {
           "cleared_altitude": 5000,
           "sid": "STREP5",
-          "waypoints": "LEENE ONMEE CANBE"
+          "waypoints": "_LEENE ONMEE CANBE"
         }
       },
       "29": {
         "APALO": {
           "cleared_altitude": 5000,
           "sid": "APALO6",
-          "waypoints": "GADSN LUUKE ALOMY DOWNS"
+          "waypoints": "GADSN LUUKE _ALOMY DOWNS"
         },
         "CRRGO": {
           "cleared_altitude": 5000,
@@ -211,7 +206,7 @@
         "SHIPR,OHAGI": {
           "cleared_altitude": 5000,
           "sid": "FEDRA5",
-          "waypoints": "GADSN LUUKE IAMUR FADDR FRATE FEDRA"
+          "waypoints": "GADSN LUUKE _IAMUR _FADDR _FRATE FEDRA"
         },
         "STREP": {
           "cleared_altitude": 5000,
@@ -223,7 +218,7 @@
         "APALO": {
           "cleared_altitude": 5000,
           "sid": "APALO6",
-          "waypoints": "RRROE BUHBA ALOMY DOWNS"
+          "waypoints": "RRROE BUHBA _ALOMY DOWNS"
         },
         "CRRGO": {
           "cleared_altitude": 5000,
@@ -233,7 +228,7 @@
         "SHIPR,OHAGI": {
           "cleared_altitude": 5000,
           "sid": "FEDRA5",
-          "waypoints": "RRROE LLAWS GLDIE FRATE FEDRA"
+          "waypoints": "RRROE _LLAWS _GLDIE _FRATE FEDRA"
         },
         "STREP": {
           "cleared_altitude": 5000,
@@ -245,7 +240,7 @@
         "APALO": {
           "cleared_altitude": 5000,
           "sid": "APALO6",
-          "waypoints": "SLATY BUHBA ALOMY DOWNS"
+          "waypoints": "SLATY BUHBA _ALOMY DOWNS"
         },
         "CRRGO": {
           "cleared_altitude": 5000,
@@ -255,12 +250,12 @@
         "SHIPR,OHAGI": {
           "cleared_altitude": 5000,
           "sid": "FEDRA5",
-          "waypoints": "GRIPZ BAALK SIXMI GLDIE FRATE FEDRA"
+          "waypoints": "_GRIPZ BAALK SIXMI _GLDIE _FRATE FEDRA"
         },
         "STREP": {
           "cleared_altitude": 5000,
           "sid": "STREP5",
-          "waypoints": "GRIPZ YAGRR"
+          "waypoints": "_GRIPZ _YAGRR"
       }
       }
     },
@@ -534,7 +529,7 @@
       "waypoints": " PENTO N038.19.01.589,W087.03.38.490/ho CHERI/a11000/s250 DAMEN"
     }
   ],
-  "DLAMP6": [
+  "DLAMP8": [
     {
       "airlines": {
         "KSDF": [
@@ -563,20 +558,11 @@
         ]
       },
       "cruise_altitude": 32000,
-      "initial_altitude": 15000,
+      "initial_altitude": 17000,
       "initial_controller" : "CVG_APP",
       "initial_speed": 250,
-      "star": "DLAMP6",
-      "runway_waypoints": {
-          "KSDF": {
-              "17L": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP CURRT/h350",
-              "17R": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP CURRT/h350",
-              "29": "NERVE/a10000 RDSTN/h222",
-              "35L": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP BRELL/h170",
-              "35R": "NERVE/a10000 RDSTN HAYGA ZOPOM DLAMP BRELL/h170"
-          }
-      },
-      "waypoints": "CVG WARSA/ho NERVE/a10000"
+      "star": "DLAMP8",
+      "spawn": "ANCHR@0.5"
     }
   ],
   "FRIZN5": [
@@ -619,7 +605,7 @@
       "waypoints": "SUSZE UNCOD/ho FRIZN/a11000/s250 HONOS"
     }
   ],
-  "MAUDD6": [
+  "LEDDL1": [
     {
       "airlines": {
         "KSDF": [
@@ -650,20 +636,11 @@
       "initial_altitude": 16000,
       "initial_controller": "IND_CTR",
       "initial_speed": 250,
-      "star": "MAUDD6",
-      "runway_waypoints": {
-        "KSDF": {
-            "17L": "TUKKR BRELL DLAMP CURRT/h350",
-            "17R": "TUKKR BRELL DLAMP CURRT/h350",
-            "29" : "TUKKR INDAA VILLL",
-            "35L": "TUKKR RDBRD/a5000 AWLEE/a4000/h350",
-            "35R": "TUKKR PGSUS/a4000 UPSCO/a3000/h350"
-        }
-      },
-      "waypoints": "UNCKL DARBY/ho MAUDD/a10000 TUKKR"
+      "star": "LEDDL1",
+      "spawn": "COBBZ"
     }
   ],
-  "MBELL4": [
+  "MBELL5": [
     {
       "airlines": {
         "KSDF": [
@@ -690,17 +667,8 @@
       "initial_altitude": 14000,
       "initial_controller": "IND_CTR",
       "initial_speed": 250,
-      "star": "MBELL4",
-      "runway_waypoints": {
-        "KSDF": {
-            "17L": "BRBON BRELL DLAMP CURRT/h350",
-            "17R": "BRBON BULCO HAUGN CURNL/h350",
-            "29":  "BRBON TAATR SQWRL/h008",
-            "35L": "BRBON RDBRD/a5000 AWLEE/a4000/h350",
-            "35R": "BRBON PGSUS/a4000 UPSCO/a3000/h350"
-        }
-      },
-      "waypoints": "WANAV N37.22.06.541,W85.50.12.457/ho MYTON MBELL BRBON"
+      "star": "MBELL5",
+      "spawn": "XXTRA@0.5"
     }
   ]
 },
@@ -778,7 +746,20 @@
   "_SDF_11":  "N38.10.48.710,W85.44.50.394",
   "_SDF_29":  "N38.10.23.028,W85.43.25.704",
   "_SDF_35L": "N38.09.29.311,W85.44.21.201",
-  "_SDF_35R": "N38.09.56.531,W85.43.26.158"
+  "_SDF_35R": "N38.09.56.531,W85.43.26.158",
+  "_LEENE": "N038.04.40.316,W085.43.53.642",
+  "_PKAGE": "N038.04.26.075,W085.34.36.690",
+  "_GLDIE": "N038.05.29.383,W085.26.11.237",
+  "_DIIME": "N038.04.00.463,W085.46.43.573",
+  "_YAGRR": "N038.19.16.077,W085.46.36.762",
+  "_DOCKE": "N038.04.26.130,W085.56.37.439",
+  "_FRATE": "N038.04.14.100,W085.17.26.530",
+  "_IAMUR": "N038.03.57.126,W085.54.11.760",
+  "_FADDR": "N038.03.27.504,W085.42.34.211",
+  "_ALOMY": "N038.05.04.623,W086.06.07.822",
+  "_LLAWS": "N038.20.10.377,W085.41.40.296",
+  "_GRIPZ": "N038.13.20.779,W085.44.34.703",
+  "CRRGO": "N037.54.22.046,W086.13.52.708"
 },
 "name": "KSDF",
 "primary_airport": "KSDF",
@@ -808,26 +789,26 @@
       "DAMEN5": {
         "KSDF": 10
       },
-      "DLAMP6": {
+      "DLAMP8": {
         "KSDF": 5
       },
       "FRIZN5": {
         "KSDF": 5
       },
-      "MAUDD6": {
+      "LEDDL1": {
         "KSDF": 10
       },
-      "MBELL4": {
+      "MBELL5": {
         "KSDF": 10
       }
     },
     "solo_controller": "SDF_I_APP",
     "multi_controllers": {
         "default" : {
-            "SDF_I_APP": {"primary": true, "arrivals": ["DAMEN5", "FRIZN5", "MBELL4"]},
+            "SDF_I_APP": {"primary": true, "arrivals": ["DAMEN5", "FRIZN5", "MBELL5"]},
             "SDF_B_DEP": {"backup": "SDF_I_APP", "departures": ["KSDF"] },
             "SDF_W_APP": {"backup": "SDF_I_APP"},
-            "SDF_A_APP": {"backup": "SDF_I_APP", "arrivals": ["DLAMP6", "MAUDD6"]},
+            "SDF_A_APP": {"backup": "SDF_I_APP", "arrivals": ["DLAMP8", "LEDDL1"]},
             "SDF_E_APP": {"backup": "SDF_W_APP"},
             "SDF_D_DEP": {"backup": "SDF_B_DEP"}
         }
@@ -873,26 +854,26 @@
       "DAMEN5": {
         "KSDF": 10
       },
-      "DLAMP6": {
+      "DLAMP8": {
         "KSDF": 5
       },
       "FRIZN5": {
         "KSDF": 5
       },
-      "MAUDD6": {
+      "LEDDL1": {
         "KSDF": 10
       },
-      "MBELL4": {
+      "MBELL5": {
         "KSDF": 10
       }
     },
     "solo_controller": "SDF_I_APP",
     "multi_controllers": {
         "default" : {
-            "SDF_I_APP": {"primary": true, "arrivals": ["DAMEN5", "FRIZN5", "MBELL4"]},
+            "SDF_I_APP": {"primary": true, "arrivals": ["DAMEN5", "FRIZN5", "MBELL5"]},
             "SDF_B_DEP": {"backup": "SDF_I_APP", "departures": ["KSDF"]},
             "SDF_W_APP": {"backup": "SDF_I_APP"},
-            "SDF_A_APP": {"backup": "SDF_I_APP", "arrivals": ["DLAMP6", "MAUDD6"]},
+            "SDF_A_APP": {"backup": "SDF_I_APP", "arrivals": ["DLAMP8", "LEDDL1"]},
             "SDF_E_APP": {"backup": "SDF_W_APP"},
             "SDF_D_DEP": {"backup": "SDF_B_DEP"}
         }

@@ -3124,11 +3124,7 @@
           ]
         },
         "I19": {
-          "runway": "19",
-          "type": "ILS",
-          "waypoints": [
-            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ UNVIL/if/a2100 TUGGZ/faf/a1500"
-          ]
+          "cifp_id": "I19"
         },
         "R24": {
           "runway": "24",
@@ -3156,32 +3152,16 @@
           ]
         },
         "RY6": {
-          "full_name": "RNAV Y Runway 6",
-          "runway": "6",
-          "type": "RNAV",
-          "waypoints": [
-            "COATE ELIZE/a3000+ ALIDA/a3000+ DWURF/iaf/a3000+ JUGGY/if/a2000 DANDY/a1500 STICC/faf/a1300",
-            "STW ELIZE/a3000+ ALIDA/a3000+ DWURF/iaf/a3000+ JUGGY/if/a2000 DANDY/a1500 STICC/faf/a1300",
-            "SBJ ALIDA/a3000+ DWURF/iaf/a3000+ JUGGY/if/a2000 DANDY/a1500 STICC/faf/a1300"
-          ]
+            "full_name": "RNAV Y Runway 6",
+            "cifp_id": "RY6"
         },
         "RY9": {
           "full_name": "RNAV Y Runway 19",
-          "runway": "19",
-          "type": "RNAV",
-          "waypoints": [
-            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ UNVIL/if/a2100 TUGGZ/faf/a1500"
-          ]
+           "cifp_id": "RY19" 
         },
         "RZ6": {
-          "full_name": "RNAV Z Runway 6",
-          "runway": "6",
-          "type": "RNAV",
-          "waypoints": [
-            "COATE ELIZE/iaf/a3000+ GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC",
-            "STW ELIZE/iaf/a3000+ GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC",
-            "SBJ/iaf GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC"
-          ]
+         "cifp_id": "RZ6", 
+         "full_name": "RNAV Z Runway 6"
         },
         "RZ9": {
           "full_name": "RNAV Z Runway 19",
@@ -4535,7 +4515,7 @@
         },
         "RY8": {
           "full_name": "RNAV Y Runway 8",
-          "cifp_id": "R8"
+          "cifp_id": "RY8"
         },
         "RZ8": {
           "full_name": "RNAV Z Runway 8",

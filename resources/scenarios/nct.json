@@ -1013,14 +1013,6 @@
             "EDDYY/iaf/a6000 SIDBY/iaf/a4000 CEPIN/a3000 AXMUL/a1800"
           ]
         },
-        "X8R": {
-          "runway": "28R",
-          "type": "RNAV",
-          "full_name": "RNAV X Runway 28R",
-          "waypoints": [
-            "ANETE/iaf/a7000 FATUS/a6000 HEGOT/if/a5000 WASOP/a4000 MIUKE/a3000 GOBEC/a1800 DARNE/a1140"
-          ]
-        },
         "Y8R": {
           "runway": "28R",
           "type": "RNAV",
@@ -1044,7 +1036,7 @@
           "type": "Visual",
           "full_name": "Tiptoe Visual Runway 28R",
           "waypoints": [
-            "EDDYY/a6000 SIDBY/a5000 CHERA MIUKE"
+            "EDDYY/a6000 SIDBY/a5000 CHERA N037.31.36.624,W122.10.47.451"
           ]
         },
         "TTL": {

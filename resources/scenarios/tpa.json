@@ -639,25 +639,25 @@
         "32": {
           "MOMIE,CAMJO": {
             "cleared_altitude": 4000,
-            "sid": "SRKUS4",
-            "waypoints": "VECIE KIZIZ SRKUS HYRON BRUNG ENDED"
+            "sid": "TIDES1",
+            "waypoints": "URCHN/a4000+ SNAGS/a4000+/s220 THONG PHINS/a4000+ TIDES/a5000+/s250 HYRON BRUNG ENDED"
           },
-          "SIMMR": {
+          "PSTOL": {
             "cleared_altitude": 4000,
-            "sid": "SRKUS4",
-            "waypoints": "VECIE KIZIZ SRKUS GOLTY FRAAT SCHUZ SIMMR"
+            "sid": "TIDES1",
+            "waypoints": "URCHN/a4000+ SNAGS/a4000+/s220 THONG PHINS/a4000+ TIDES/a5000+/s250 GOLTY PSTOL"
           }
         },
         "14": {
           "MOMIE,CAMJO": {
             "cleared_altitude": 4000,
-            "sid": "SRKUS4",
-            "waypoints": "KSRQ-32/h139 VECIE KIZIZ SRKUS HYRON BRUNG ENDED"
+            "sid": "TIDES1",
+            "waypoints": "N027.24.37.283,W082.34.21.611 AQUAE/a2600/s220 PHINS/a4000+ TIDES/a5000+/s250 HYRON BRUNG ENDED"
           },
-          "SIMMR": {
+          "PSTOL": {
             "cleared_altitude": 4000,
-            "sid": "SRKUS4",
-            "waypoints": "KSRQ-32/h139 VECIE KIZIZ SRKUS GOLTY FRAAT SCHUZ SIMMR"
+            "sid": "TIDES1",
+            "waypoints": "N027.24.37.283,W082.34.21.611 AQUAE/a2600/s220 PHINS/a4000+ TIDES/a5000+/s250 GOLTY PSTOL"
           }
         }
       },
@@ -895,9 +895,9 @@
           ],
           "altitude": 34000,
           "destination": "KIAH",
-          "exit": "SIMMR",
+          "exit": "PSTOL",
           "scratchpad": "S34",
-          "route": "SIMMR FROOT ROZZI Y280 LEV"
+          "route": "PSTOL FROOT ROZZI Y280 LEV"
         },
         {
           "airlines": [
@@ -976,15 +976,15 @@
           ],
           "altitude": 38000,
           "destination": "KHOU",
-          "exit": "SIMMR",
+          "exit": "PSTOL",
           "scratchpad": "S38",
-          "route": "SIMMR FROOT ROZZI Y280 LEV"
+          "route": "PSTOL FROOT ROZZI Y280 LEV"
         }
       ],
       "exit_categories": {
         "CAMJO": "SRKUS",
         "MOMIE": "SRKUS",
-        "SIMMR": "SRKUS"
+        "PSTOL": "SRKUS"
       },
       "tower_list": 2
     },
@@ -1030,25 +1030,25 @@
         "36": {
           "WILON,CAMJO": {
             "cleared_altitude": 1600,
-            "sid": "MAEKO1",
-            "waypoints": "_PIE_36 _PIE_18/h356 INLTT MAEKO BAYPO ECAKE WILON"
+            "sid": "LLRGO1",
+            "waypoints": "_PIE_36 _PIE_18/h356 INLTT LLRGO BAYPO ECAKE WILON"
           },
           "LACEN": {
             "cleared_altitude": 1600,
-            "sid": "MAEKO1",
-            "waypoints": "_PIE_36 _PIE_18/h356 INLTT MAEKO ENDED LACEN"
+            "sid": "LLRGO1",
+            "waypoints": "_PIE_36 _PIE_18/h356 INLTT LLRGO ENDED LACEN"
           }
         },
         "18": {
           "WILON,CAMJO": {
             "cleared_altitude": 1600,
-            "sid": "MAEKO1",
-            "waypoints": "_PIE_18 _PIE_36/h167 INLTT MAEKO BAYPO ECAKE WILON"
+            "sid": "LLRGO1",
+            "waypoints": "_PIE_18 _PIE_36/h167 INLTT LLRGO BAYPO ECAKE WILON"
           },
           "LACEN": {
             "cleared_altitude": 1600,
-            "sid": "MAEKO1",
-            "waypoints": "_PIE_18 _PIE_36/h167 INLTT MAEKO ENDED LACEN"
+            "sid": "LLRGO1",
+            "waypoints": "_PIE_18 _PIE_36/h167 INLTT LLRGO ENDED LACEN"
           }
         }
       },

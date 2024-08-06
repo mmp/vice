@@ -1204,13 +1204,7 @@
         },
         "RY6": {
           "full_name": "RNAV Y Runway 6",
-          "runway": "6",
-          "type": "RNAV",
-          "waypoints": [
-            "COATE ELIZE/a3000+ ALIDA/a3000+ DWURF/iaf/a3000+ JUGGY/if/a2000 DANDY/a1500 STICC/faf/a1300",
-            "STW ELIZE/a3000+ ALIDA/a3000+ DWURF/iaf/a3000+ JUGGY/if/a2000 DANDY/a1500 STICC/faf/a1300",
-            "SBJ ALIDA/a3000+ DWURF/iaf/a3000+ JUGGY/if/a2000 DANDY/a1500 STICC/faf/a1300"
-          ]
+          "cifp_id": "RY6"
         },
         "RY9": {
           "full_name": "RNAV Y Runway 19",

@@ -37,7 +37,7 @@
         "runway": "19",
         "type": "RNAV",
         "waypoints": [
-          "FERGI/a3000/s210 DARIC/a2600 GREYZ/a1700/s200 SETOC/a1500 FONVI/a1200 JUBOL/a950 WIRSO/a450 FIROP/a180"
+            "DARIC/a2700+/s180/faf SUNEY/a2000+ GREYZ/arc1.4 FONVI JUBOL WIRSO/arc0.8 FIROP"
         ]
       },
       "RIV": {

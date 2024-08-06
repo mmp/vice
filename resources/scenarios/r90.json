@@ -842,12 +842,8 @@
                     },
                     "I36": {
                         "full_name": "ILS Runway 36",
-                        "runway": "36",
-                        "type": "ILS",
-                        "tower_controller": "LNK_TWR",
-                        "waypoints": [
-                            "POTTS/a2800/iaf"
-                        ]
+                        "cifp_id": "IY36",
+                        "tower_controller": "LNK_TWR"
                     }
                 },
                 "departure_routes": {
