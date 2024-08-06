@@ -120,7 +120,14 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 	drawVideoMapButton := func(idx int, videoMaps []av.VideoMap) {
 		if idx < len(videoMaps) && videoMaps[idx].Id != 0 {
 			m := videoMaps[idx]
-			text := fmt.Sprintf("%d\n%s", m.Id, m.Label)
+
+			// Get the map label, either the default or user-specified.
+			label := m.Label
+			if l, ok := ctx.ControlClient.STARSFacilityAdaptation.VideoMapLabels[m.Name]; ok {
+				label = l
+			}
+
+			text := fmt.Sprintf("%d\n%s", m.Id, label)
 			_, vis := ps.VideoMapVisible[m.Id]
 			if toggleButton(ctx, text, &vis, buttonHalfVertical, buttonScale) {
 				if vis {

@@ -67,6 +67,7 @@ type STARSFacilityAdaptation struct {
 	ForceQLToSelf       bool                             `json:"force_ql_self"`
 	AllowLongScratchpad [2]bool                          `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
 	VideoMapNames       []string                         `json:"stars_maps"`
+	VideoMapLabels      map[string]string                `json:"map_labels"`
 	ControllerConfigs   map[string]STARSControllerConfig `json:"controller_configs"`
 	InhibitCAVolumes    []av.AirspaceVolume              `json:"inhibit_ca_volumes"`
 	RadarSites          map[string]*av.RadarSite         `json:"radar_sites"`
