@@ -10,12 +10,9 @@ import (
 	"image/color"
 	"runtime"
 
-	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
-
-	"github.com/nfnt/resize"
 )
 
 func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font {
@@ -110,88 +107,6 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 		x = 0
 		y += sf.Height + 1
 
-		if fontName == "sddCharFontSetBSize0" || fontName == "sddCharOutlineFontSetBSize0" {
-			// Make a downscaled version of the smallest one for font size
-			// 0 (which we don't seem to have a bitmap for...) Note that we
-			// arguably should do this once in a preprocess and then encode
-			// the result in starsFonts/starsOutlineFonts, but this doesn't
-			// take too long and for now at least makes it easier to tweak
-			// some of the details.
-			sf.PointSize = 7
-			const delta = 2
-			sf.Width -= delta
-			sf.Height -= delta
-
-			id := renderer.FontIdentifier{
-				Name: fontName,
-				Size: util.Select(doublePixels, sf.Height/2, sf.Height),
-			}
-			f := renderer.MakeFont(sf.Height, true /* mono */, id, nil)
-			newFonts = append(newFonts, f)
-
-			for ch, glyph := range sf.Glyphs {
-				if x+glyph.StepX+1 > res {
-					// Start a new line in the atlas
-					x = 0
-					y += sf.Height + 1
-				}
-
-				// Rasterize each glyph into its own (small) image, which
-				// we will then downscale. We could probably do this more
-				// efficiently by putting them all into an image, zooming
-				// that, and then copying it into the main font atlas, but
-				// this way we don't have to worry about boundary
-				// conditions and pixels spilling into other glyphs due to
-				// the filter extent...
-				img := image.NewRGBA(image.Rectangle{Max: image.Point{X: glyph.Bounds[0], Y: glyph.Bounds[1]}})
-
-				glyph.rasterize(img, 0, 0)
-
-				imgResized := resize.Resize(uint(glyph.Bounds[0]-delta), uint(glyph.Bounds[1]-delta), img, resize.MitchellNetravali)
-
-				// Update the STARSGlyph for the zoom.
-				glyph.Bounds[0] -= delta
-				glyph.Bounds[1] -= delta
-				glyph.StepX -= delta
-
-				// Copy its pixels into the atlas.
-				for yy := 0; yy < glyph.Bounds[1]; yy++ {
-					for xx := 0; xx < glyph.Bounds[0]; xx++ {
-						c := imgResized.At(xx, yy)
-						r, g, b, a := c.RGBA()
-
-						// The Mitchell-Netravali filter gives us a nicely
-						// anti-aliased result, but we want something a
-						// little more chunky to match the other STARS
-						// fonts.  Therefore, we'll make a few adjustments
-						// to the pixel values to try to get a result more
-						// like that.
-						sharpen := func(v uint32) uint16 {
-							f := float32(v) / 0xffff
-							// The sqrt pushes values toward up
-							f = math.Sqrt(f)
-							// And now we threshold to zero-out the smaller
-							// values completely.
-							if f < .6 {
-								f = 0
-							}
-							// One last sqrt for more chunky.
-							f = math.Sqrt(f)
-							return uint16(math.Min(0xffff, f*0xffff))
-						}
-
-						sr, sg, sb, sa := sharpen(r), sharpen(g), sharpen(b), sharpen(a)
-						atlas.Set(x+xx, y+yy, color.RGBA64{R: sr, G: sg, B: sb, A: sa})
-					}
-				}
-
-				glyph.addToFont(ch, x, y, res, f)
-				x += glyph.StepX + 1 /* pad */
-			}
-
-			x = 0
-			y += sf.Height + 1
-		}
 	}
 
 	// Iterate over the fonts, create Font/Glyph objects for them, and copy
