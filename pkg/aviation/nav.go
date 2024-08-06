@@ -1007,6 +1007,10 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *log.Logger) (heading float3
 		// case, do this immediately.
 		nav.Heading = NavHeading{}
 		nav.Approach.InterceptState = HoldingLocalizer
+
+		// If we have intercepted the localizer, we don't do procedure turns.
+		nav.Approach.NoPT = true
+
 		return
 	}
 
@@ -1463,7 +1467,6 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 		nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix {
 		hdg = math.Heading2LL(wp.Location, nav.Approach.AtFixClearedRoute[0].Location,
 			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-
 	} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
 		// controller assigned heading at the fix.
 		hdg = *nfa.Depart.Heading
@@ -1471,7 +1474,6 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 		// depart fix direct
 		hdg = math.Heading2LL(wp.Location, nfa.Depart.Fix.Location,
 			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-
 	} else if wp.Heading != 0 {
 		// Leaving the next fix on a specified heading.
 		hdg = float32(wp.Heading)
@@ -1482,7 +1484,6 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 		// Otherwise, find the heading to the following fix.
 		hdg = math.Heading2LL(wp.Location, nav.Waypoints[1].Location,
 			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-
 	} else {
 		// No more waypoints (likely about to land), so just
 		// plan to stay on the current heading.
@@ -1506,6 +1507,9 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 		if clearedAtFix {
 			nav.Approach.Cleared = true
 			nav.Speed = NavSpeed{}
+			if wp.NoPT {
+				nav.Approach.NoPT = true
+			}
 			nav.Waypoints = append(nav.Approach.AtFixClearedRoute, nav.FlightState.ArrivalAirport)
 		}
 		if nav.Heading.Arc != nil {
@@ -2382,6 +2386,8 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool) (Pil
 		if nav.Approach.InterceptState == HoldingLocalizer {
 			// First intercepted then cleared, so allow it to start descending.
 			nav.Altitude = NavAltitude{}
+			// No procedure turn needed if we were vectored to intercept.
+			nav.Approach.NoPT = true
 		}
 		// Cleared approach also cancels speed restrictions.
 		nav.Speed = NavSpeed{}
