@@ -39,7 +39,7 @@ type Aircraft struct {
 	HandoffTrackController    string // Handoff offered but not yet accepted
 	GlobalLeaderLineDirection *math.CardinalOrdinalDirection
 	RedirectedHandoff         RedirectedHandoff
-	SPCOverrides              map[string]interface{}
+	SPCOverride               string
 
 	// The controller who gave approach clearance
 	ApproachController string
@@ -579,13 +579,10 @@ func (ac *Aircraft) MVAsApply() bool {
 }
 
 func (ac *Aircraft) ToggleSPCOverride(spc string) {
-	if ac.SPCOverrides == nil {
-		ac.SPCOverrides = make(map[string]interface{})
-	}
-	if _, ok := ac.SPCOverrides[spc]; ok {
-		delete(ac.SPCOverrides, spc)
+	if ac.SPCOverride == spc {
+		ac.SPCOverride = ""
 	} else {
-		ac.SPCOverrides[spc] = nil
+		ac.SPCOverride = spc
 	}
 }
 

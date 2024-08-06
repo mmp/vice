@@ -806,7 +806,7 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) boo
 	if ok, _ := av.SquawkIsSPC(ac.Squawk); ok {
 		return true
 	}
-	if len(ac.SPCOverrides) > 0 {
+	if ac.SPCOverride != "" {
 		return true
 	}
 	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
@@ -840,8 +840,8 @@ func (sp *STARSPane) getWarnings(ctx *panes.Context, ac *av.Aircraft) []string {
 	if ok, code := av.SquawkIsSPC(ac.Squawk); ok {
 		addWarning(code)
 	}
-	for code := range ac.SPCOverrides {
-		addWarning(code)
+	if ac.SPCOverride != "" {
+		addWarning(ac.SPCOverride)
 	}
 	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
 		slices.ContainsFunc(sp.CAAircraft,

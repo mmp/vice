@@ -1889,17 +1889,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				// Do not clear the input area to allow entering a fix for the second location
 				return
 			} else if av.StringIsSPC(cmd) {
-				_, enabled := ac.SPCOverrides[cmd]
-				ctx.ControlClient.ToggleSPCOverride(ac.Callsign, cmd,
-					func(any) {
-						if enabled { // disabled it
-							state.SPCAlert = false
-						} else {
-							state.SPCAlert = true
-							state.SPCAcknowledged = false
-							state.SPCSoundEnd = ctx.Now.Add(AlertAudioDuration)
-						}
-					},
+				ctx.ControlClient.ToggleSPCOverride(ac.Callsign, cmd, nil,
 					func(err error) { sp.displayError(err, ctx) })
 				status.clear = true
 				return

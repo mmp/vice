@@ -182,8 +182,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 			// those.
 			codes := make(map[string]interface{})
 			for _, ac := range aircraft {
-				for code := range ac.SPCOverrides {
-					codes[code] = nil
+				if ac.SPCOverride != "" {
+					codes[ac.SPCOverride] = nil
 				}
 				if ok, code := av.SquawkIsSPC(ac.Squawk); ok {
 					codes[code] = nil
