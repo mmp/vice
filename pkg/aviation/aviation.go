@@ -1824,7 +1824,7 @@ func (v videoMapToLoad) load(filename string, manifest map[string]interface{}) (
 	// *VideoMap.
 	starsMaps := make(map[string]*VideoMap)
 	for _, sm := range maps {
-		if _, ok := v.referenced[sm.Name]; ok {
+		if _, ok := v.referenced[sm.Name]; ok || len(v.referenced) == 0 /* empty -> load all */ {
 			if _, ok := manifest[sm.Name]; !ok {
 				panic(fmt.Sprintf("%s: map \"%s\" not found in manifest file", filename, sm.Name))
 			}
