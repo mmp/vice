@@ -843,7 +843,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, ac *av.Aircraft) (a
 	}
 
 	state := sp.Aircraft[ac.Callsign]
-	if ac.IsDeparture() {
+	if ctx.ControlClient.IsDeparture(ac) {
 		if len(ctx.ControlClient.DepartureAirspace) > 0 {
 			inDepartureAirspace, depAlts := sim.InAirspace(ac.Position(), ac.Altitude(), ctx.ControlClient.DepartureAirspace)
 			if !state.HaveEnteredAirspace {

@@ -2797,8 +2797,18 @@ func (sp *STARSPane) flightPlanSTARS(ctx *panes.Context, ac *av.Aircraft) (strin
 
 	state := sp.Aircraft[ac.Callsign]
 
-	result := ac.Callsign + " " // all start with aricraft id
-	if ac.IsDeparture() {
+	result := ac.Callsign + " "             // all start with aricraft id
+	if ctx.ControlClient.IsOverflight(ac) { // check this first
+		result += numType + " "
+		result += ac.FlightPlan.AssignedSquawk.String() + " " + owner + "\n"
+
+		// TODO: entry fix
+		result += "E" + fmtTime(state.FirstSeen) + " "
+		// TODO: exit fix
+		result += "R" + fmt.Sprintf("%03d", fp.Altitude/100) + "\n"
+
+		// TODO: [mode S equipage] [target identification] [target address]
+	} else if ctx.ControlClient.IsDeparture(ac) {
 		if state.FirstRadarTrack.IsZero() {
 			// Proposed departure
 			result += numType + " "
@@ -2807,7 +2817,7 @@ func (sp *STARSPane) flightPlanSTARS(ctx *panes.Context, ac *av.Aircraft) (strin
 			if len(fp.DepartureAirport) > 0 {
 				result += fp.DepartureAirport[1:] + " "
 			}
-			result += ac.Callsign + " "
+			result += ac.Scratchpad + " " // should be exit fix--close enough?
 			result += "P" + fmtTime(state.FirstSeen) + " "
 			result += "R" + fmt.Sprintf("%03d", fp.Altitude/100)
 		} else {
@@ -2823,9 +2833,11 @@ func (sp *STARSPane) flightPlanSTARS(ctx *panes.Context, ac *av.Aircraft) (strin
 			result += "R" + fmt.Sprintf("%03d", fp.Altitude/100) + " "
 
 			result += numType
+
+			// TODO: [mode S equipage] [target identification] [target address]
 		}
 	} else {
-		// Format it as an arrival (we don't do overflights...)
+		// Format it as an arrival
 		result += numType + " "
 		result += ac.FlightPlan.AssignedSquawk.String() + " "
 		result += owner + " "
@@ -2840,6 +2852,7 @@ func (sp *STARSPane) flightPlanSTARS(ctx *panes.Context, ac *av.Aircraft) (strin
 		if len(fp.ArrivalAirport) > 0 {
 			result += fp.ArrivalAirport[1:] + " "
 		}
+		// TODO: [mode S equipage] [target identification] [target address]
 	}
 
 	return result, nil

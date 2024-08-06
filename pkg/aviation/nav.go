@@ -55,7 +55,7 @@ type DeferredHeading struct {
 }
 
 type FlightState struct {
-	IsDeparture               bool
+	InitialDepartureClimb     bool
 	DepartureAirportLocation  math.Point2LL
 	DepartureAirportElevation float32
 	ArrivalAirport            Waypoint
@@ -78,7 +78,7 @@ func (fs *FlightState) Summary() string {
 
 func (fs FlightState) LogValue() slog.Value {
 	return slog.GroupValue(
-		slog.Bool("is_departure", fs.IsDeparture),
+		slog.Bool("initial_departure_climb", fs.InitialDepartureClimb),
 		slog.Any("position", fs.Position),
 		slog.Float64("heading", float64(fs.Heading)),
 		slog.Float64("altitude", float64(fs.Altitude)),
@@ -190,7 +190,7 @@ func MakeDepartureNav(fp FlightPlan, perf AircraftPerformance, assignedAlt, clea
 			speed := float32(math.Max(speedRestriction, int(perf.Speed.Min)))
 			nav.Speed.Restriction = &speed
 		}
-		nav.FlightState.IsDeparture = true
+		nav.FlightState.InitialDepartureClimb = true
 		nav.FlightState.Altitude = nav.FlightState.DepartureAirportElevation
 		return nav
 	}
@@ -373,13 +373,7 @@ func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 // hover on the scope
 func (nav *Nav) Summary(fp FlightPlan, lg *log.Logger) string {
 	var lines []string
-
-	fs := nav.FlightState
-	if fs.IsDeparture {
-		lines = append(lines, "Departure from "+fp.DepartureAirport)
-	} else {
-		lines = append(lines, "Arrival to "+fp.ArrivalAirport)
-	}
+	lines = append(lines, "Departure from "+fp.DepartureAirport+" to "+fp.ArrivalAirport)
 
 	if nav.Altitude.Assigned != nil {
 		if math.Abs(nav.FlightState.Altitude-*nav.Altitude.Assigned) < 100 {
@@ -1034,7 +1028,7 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (alt, rate float32) {
 		}
 	}
 
-	if nav.FlightState.IsDeparture {
+	if nav.FlightState.InitialDepartureClimb {
 		// Accel is given in "per 2 seconds...", want to return per minute..
 		maxClimb := nav.Perf.Rate.Climb
 
@@ -1062,25 +1056,19 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (alt, rate float32) {
 		}
 	}
 
-	getAssignedRate := func() float32 {
-		if nav.FlightState.IsDeparture {
-			if nav.FlightState.Altitude < 10000 {
-				targetSpeed := math.Min(250, TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude))
-				if nav.FlightState.IAS < 0.8*targetSpeed {
-					// Prioritize accelerate over climb starting at 1500 AGL
-					return 0.8 * nav.Perf.Rate.Climb
-				}
+	getAssignedRate := func(targetAltitude float32) float32 {
+		if nav.FlightState.Altitude < targetAltitude && nav.FlightState.Altitude < 10000 {
+			targetSpeed := math.Min(250, TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude))
+			if nav.FlightState.IAS < 0.8*targetSpeed {
+				// Prioritize accelerate over climb after the initial climbout
+				return 0.8 * nav.Perf.Rate.Climb
 			}
-
-			// Climb normally if at target speed or >10,000'.
-			return nav.Perf.Rate.Climb
-		} else {
-			return MaximumRate
 		}
+		return MaximumRate
 	}
 
 	if nav.Altitude.Assigned != nil {
-		alt, rate = *nav.Altitude.Assigned, getAssignedRate()
+		alt, rate = *nav.Altitude.Assigned, getAssignedRate(*nav.Altitude.Assigned)
 		lg.Debugf("alt: assigned %.0f, rate %.0f", alt, rate)
 		return
 	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
@@ -1092,7 +1080,7 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (alt, rate float32) {
 			return c.Altitude, rate * 60 // rate is in feet per minute
 		}
 	} else if nav.Altitude.Cleared != nil {
-		alt, rate = *nav.Altitude.Cleared, getAssignedRate()
+		alt, rate = *nav.Altitude.Cleared, getAssignedRate(*nav.Altitude.Cleared)
 		lg.Debugf("alt: cleared %.0f, rate %.0f", alt, rate)
 		return
 	} else if ar := nav.Altitude.Restriction; ar != nil {
@@ -1161,7 +1149,8 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	// Figure out what climb/descent rate we will use for modeling the
 	// flight path.
 	var altRate float32
-	if !nav.FlightState.IsDeparture {
+	descending := nav.FlightState.Altitude > getRestriction(lastWp).TargetAltitude(nav.FlightState.Altitude)
+	if descending {
 		altRate = nav.Perf.Rate.Descent
 		// This unfortunately mirrors logic in the Aircraft
 		// updateAltitude() method.  It would be nice to unify the nav
@@ -1232,7 +1221,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		// which one and the addition/subtraction are confusingly backwards
 		// since we're going through waypoints in reverse order...)
 		possibleRange := altRange
-		if nav.FlightState.IsDeparture {
+		if !descending {
 			possibleRange[0] -= dalt
 		} else {
 			possibleRange[1] += dalt
@@ -1265,7 +1254,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 
 	// But leave arrivals at their current altitude if it's acceptable;
 	// don't climb just because we can.
-	if !nav.FlightState.IsDeparture {
+	if descending {
 		ar := AltitudeRestriction{Range: altRange}
 		if ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
 			alt = nav.FlightState.Altitude
@@ -1305,7 +1294,7 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 		return nav.targetAltitudeIAS()
 	}
 
-	if nav.FlightState.IsDeparture {
+	if nav.FlightState.InitialDepartureClimb {
 		cruiseIAS := TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
 		targetSpeed := math.Min(250, cruiseIAS)
 		if nav.Speed.Restriction != nil {
@@ -1322,8 +1311,10 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 			}
 			lg.Debugf("speed: prioritize climb at %.0f AGL; acceleration limited", agl)
 			return targetSpeed, 0.6 * maxAccel
+		} else {
+			// We've got the altitude we want; fall through to the cases below
+			nav.FlightState.InitialDepartureClimb = false
 		}
-		// Otherwise fall through to the cases below
 	}
 
 	if nav.Speed.Assigned != nil {
@@ -1534,7 +1525,7 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 			// fix's altitude.
 			nav.Altitude.Restriction = wp.AltitudeRestriction
 		}
-		if wp.Speed != 0 && !nav.FlightState.IsDeparture {
+		if wp.Speed != 0 && wp.OnSTAR {
 			// Carry on the speed restriction only if we're an arrival.
 			spd := float32(wp.Speed)
 			nav.Speed.Restriction = &spd
@@ -1927,7 +1918,7 @@ func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
 		// If an arrival is given a heading off of a route with altitude
 		// constraints, set its cleared altitude to its current altitude
 		// for now.
-		if !nav.FlightState.IsDeparture && nav.Altitude.Assigned == nil {
+		if len(nav.Waypoints) > 0 && nav.Waypoints[0].OnSTAR && nav.Altitude.Assigned == nil {
 			if c := nav.getWaypointAltitudeConstraint(); c != nil {
 				// Don't take a direct pointer to nav.FlightState.Altitude!
 				alt := nav.FlightState.Altitude
@@ -2418,11 +2409,8 @@ func (nav *Nav) CancelApproachClearance() PilotResponse {
 }
 
 func (nav *Nav) ClimbViaSID() PilotResponse {
-	if !nav.FlightState.IsDeparture {
-		return PilotResponse{Message: "unable. We're not a departure", Unexpected: true}
-	}
-	if len(nav.Waypoints) == 0 {
-		return PilotResponse{Message: "unable. We are not on a route", Unexpected: true}
+	if len(nav.Waypoints) == 0 || !nav.Waypoints[0].OnSID {
+		return PilotResponse{Message: "unable. We're not flying a departure procedure", Unexpected: true}
 	}
 
 	nav.Altitude = NavAltitude{}
@@ -2432,11 +2420,8 @@ func (nav *Nav) ClimbViaSID() PilotResponse {
 }
 
 func (nav *Nav) DescendViaSTAR() PilotResponse {
-	if nav.FlightState.IsDeparture {
-		return PilotResponse{Message: "unable. We're not an arrival", Unexpected: true}
-	}
-	if len(nav.Waypoints) == 0 {
-		return PilotResponse{Message: "unable. We are not on a route", Unexpected: true}
+	if len(nav.Waypoints) == 0 || !nav.Waypoints[0].OnSTAR {
+		return PilotResponse{Message: "unable. We're not on a STAR", Unexpected: true}
 	}
 
 	nav.Altitude = NavAltitude{}

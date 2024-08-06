@@ -771,8 +771,16 @@ func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 		if sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeFused {
 			// visible unless if it's almost on the ground
 			alt := float32(state.TrackAltitude())
-			visible = (ac.IsDeparture() && alt > ac.DepartureAirportElevation()+100) ||
-				(!ac.IsDeparture() && alt > ac.ArrivalAirportElevation()+100)
+			if ctx.ControlClient.IsDeparture(ac) &&
+				alt < ac.DepartureAirportElevation()+100 &&
+				math.NMDistance2LL(state.TrackPosition(), ac.DepartureAirportLocation()) < 3 {
+				continue
+			} else if ctx.ControlClient.IsArrival(ac) &&
+				alt < ac.ArrivalAirportElevation()+100 &&
+				math.NMDistance2LL(state.TrackPosition(), ac.ArrivalAirportLocation()) < 3 {
+				continue
+			}
+			visible = true
 		} else {
 			// Otherwise see if any of the radars can see it
 			for id, site := range ctx.ControlClient.RadarSites {

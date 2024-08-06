@@ -272,10 +272,6 @@ func (ac *Aircraft) CrossFixAt(fix string, ar *AltitudeRestriction, speed int) [
 }
 
 func (ac *Aircraft) ExpectApproach(id string, ap *Airport, lg *log.Logger) []RadioTransmission {
-	if ac.IsDeparture() {
-		return ac.readbackUnexpected("unable. This aircraft is a departure.")
-	}
-
 	resp := ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints, lg)
 	return ac.transmitResponse(resp)
 }
@@ -285,10 +281,6 @@ func (ac *Aircraft) AtFixCleared(fix, approach string) []RadioTransmission {
 }
 
 func (ac *Aircraft) ClearedApproach(id string, lg *log.Logger) []RadioTransmission {
-	if ac.IsDeparture() {
-		return ac.readbackUnexpected("unable. This aircraft is a departure.")
-	}
-
 	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, false)
 	if err == nil {
 		ac.ApproachController = ac.ControllingController
@@ -297,10 +289,6 @@ func (ac *Aircraft) ClearedApproach(id string, lg *log.Logger) []RadioTransmissi
 }
 
 func (ac *Aircraft) ClearedStraightInApproach(id string) []RadioTransmission {
-	if ac.IsDeparture() {
-		return ac.readbackUnexpected("unable. This aircraft is a departure.")
-	}
-
 	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, true)
 	if err == nil {
 		ac.ApproachController = ac.ControllingController
@@ -321,9 +309,7 @@ func (ac *Aircraft) DescendViaSTAR() []RadioTransmission {
 }
 
 func (ac *Aircraft) ContactTower(controllers map[string]*Controller, lg *log.Logger) []RadioTransmission {
-	if ac.IsDeparture() {
-		return ac.readbackUnexpected("unable. This aircraft is a departure.")
-	} else if ac.GotContactTower {
+	if ac.GotContactTower {
 		// No response; they're not on our frequency any more.
 		return nil
 	} else if ac.Nav.Approach.Assigned == nil {
@@ -352,10 +338,6 @@ func (ac *Aircraft) ContactTower(controllers map[string]*Controller, lg *log.Log
 }
 
 func (ac *Aircraft) InterceptLocalizer() []RadioTransmission {
-	if ac.IsDeparture() {
-		return ac.readbackUnexpected("unable. This aircraft is a departure.")
-	}
-
 	resp := ac.Nav.InterceptLocalizer(ac.FlightPlan.ArrivalAirport)
 	return ac.transmitResponse(resp)
 }
@@ -524,10 +506,6 @@ func (ac *Aircraft) DepartOnCourse(lg *log.Logger) {
 	ac.Nav.DepartOnCourse(float32(ac.FlightPlan.Altitude), ac.FlightPlan.Exit)
 }
 
-func (ac *Aircraft) IsDeparture() bool {
-	return ac.Nav.FlightState.IsDeparture
-}
-
 func (ac *Aircraft) Check(lg *log.Logger) {
 	ac.Nav.Check(lg)
 }
@@ -580,19 +558,24 @@ func (ac *Aircraft) ArrivalAirportElevation() float32 {
 	return ac.Nav.FlightState.ArrivalAirportElevation
 }
 
+func (ac *Aircraft) DepartureAirportLocation() math.Point2LL {
+	return ac.Nav.FlightState.DepartureAirportLocation
+}
+
+func (ac *Aircraft) ArrivalAirportLocation() math.Point2LL {
+	return ac.Nav.FlightState.ArrivalAirportLocation
+}
+
 func (ac *Aircraft) ATPAVolume() *ATPAVolume {
 	return ac.Nav.Approach.ATPAVolume
 }
 
 func (ac *Aircraft) MVAsApply() bool {
-	if ac.IsDeparture() {
-		// Start issuing MVAs 5 miles from the field
-		// TODO: are there better criteria?
-		return math.NMDistance2LL(ac.Position(), ac.Nav.FlightState.DepartureAirportLocation) > 5
-	} else {
-		// If they're established on the approach, they're good.
-		return !ac.OnApproach(true)
-	}
+	// Start issuing MVAs 5 miles from the departure airport but not if
+	// they're established on an approach.
+	// TODO: are there better criteria?
+	return math.NMDistance2LL(ac.Position(), ac.Nav.FlightState.DepartureAirportLocation) > 5 &&
+		!ac.OnApproach(true)
 }
 
 func (ac *Aircraft) ToggleSPCOverride(spc string) {

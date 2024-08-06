@@ -1497,9 +1497,8 @@ func (s *Sim) updateState() {
 				}
 			}
 
-			// Contact the departure controller
-			if ac.IsDeparture() && ac.DepartureContactAltitude != 0 &&
-				ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
+			// Possibly contact the departure controller
+			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
 				// Time to check in
 				ctrl := s.ResolveController(ac.DepartureContactController)
 				s.lg.Info("contacting departure controller", slog.String("callsign", ctrl))
@@ -1526,19 +1525,9 @@ func (s *Sim) updateState() {
 				ac.ControllingController = ctrl
 			}
 
-			// Cull far-away departures/arrivals
-			if ac.IsDeparture() {
-				if ap := s.State.Airports[ac.FlightPlan.DepartureAirport]; ap != nil &&
-					math.NMDistance2LL(ac.Position(), ap.Location) > 250 {
-					s.lg.Info("culled far-away departure", slog.String("callsign", callsign))
-					s.State.DeleteAircraft(ac)
-				}
-			} else if ap := s.State.Airports[ac.FlightPlan.ArrivalAirport]; ap != nil &&
-				math.NMDistance2LL(ac.Position(), ap.Location) > 250 {
-				// We only expect this case to hit for an unattended vice,
-				// where aircraft are being spawned but are then flying
-				// along on a heading without being controlled...
-				s.lg.Info("culled far-away arrival", slog.String("callsign", callsign))
+			// Cull far-away aircraft
+			if math.NMDistance2LL(ac.Position(), s.State.Center) > 250 {
+				s.lg.Info("culled far-away aircraft", slog.String("callsign", callsign))
 				s.State.DeleteAircraft(ac)
 			}
 		}
@@ -1860,12 +1849,19 @@ func (s *Sim) launchAircraftNoLock(ac av.Aircraft) {
 
 	ac.Nav.Check(s.lg)
 
-	if ac.IsDeparture() {
+	if s.State.IsIntraFacility(&ac) {
+		s.TotalDepartures++
+		s.TotalArrivals++
+		s.lg.Info("launched intrafacility", slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
+	} else if s.State.IsDeparture(&ac) {
 		s.TotalDepartures++
 		s.lg.Info("launched departure", slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
-	} else {
+	} else if s.State.IsArrival(&ac) {
 		s.TotalArrivals++
 		s.lg.Info("launched arrival", slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
+	} else {
+		s.TotalOverflights++
+		s.lg.Info("launched overflight", slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
 	}
 }
 
@@ -2279,7 +2275,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 			// Go ahead and climb departures the rest of the way and send
 			// them direct to their first fix (if they aren't already).
 			octrl := s.State.Controllers[ac.TrackingController]
-			if ac.IsDeparture() && octrl != nil && !octrl.IsHuman {
+			if (s.State.IsDeparture(ac) || s.State.IsOverflight(ac)) && octrl != nil && !octrl.IsHuman {
 				s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 					slog.Int("final_altitude", ac.FlightPlan.Altitude))
 				ac.DepartOnCourse(s.lg)
@@ -2861,10 +2857,15 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			if ac.IsDeparture() {
+			if s.State.IsIntraFacility(ac) {
 				s.TotalDepartures--
-			} else {
 				s.TotalArrivals--
+			} else if s.State.IsDeparture(ac) {
+				s.TotalDepartures--
+			} else if s.State.IsArrival(ac) {
+				s.TotalArrivals--
+			} else {
+				s.TotalOverflights--
 			}
 
 			s.eventStream.Post(Event{
