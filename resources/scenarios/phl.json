@@ -5288,7 +5288,7 @@
       "TRAGG"
   ],
   "scenarios": {
-    "KPHL 27R Final": {
+    "KPHL 27R/17 Final": {
       "approach_airspace": [
         "PHL_F1_APP27",
         "PHL_F2_APP27"
@@ -5297,6 +5297,10 @@
         {
           "airport": "KPHL",
           "runway": "27R"
+        },
+        {
+          "airport": "KPHL",
+          "runway": "17"
         }
       ],
       "inbound_rates": {
