@@ -559,14 +559,16 @@ func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STA
 			field7 = append(field7, fmt.Sprintf("A%03d", ta))
 		}
 		if sq := trk.FlightPlan.AssignedSquawk; sq != ac.Squawk {
-			field7 = append(field7, sq.String())
-			field6 = append(field6, ac.Squawk.String()+"  ")
-			color, _ := sp.datablockColor(ctx, ac)
-			idx := len(field6) - 1
-			line3FieldColors = &STARSDatablockFieldColors{
-				Start: len(field6[idx]) + 1,
-				End:   len(field6[idx]) + 5,
-				Color: color.Scale(0.3),
+			if isSPC, _ := av.SquawkIsSPC(ac.Squawk); !isSPC {
+				field7 = append(field7, sq.String())
+				field6 = append(field6, ac.Squawk.String()+"  ")
+				color, _ := sp.datablockColor(ctx, ac)
+				idx := len(field6) - 1
+				line3FieldColors = &STARSDatablockFieldColors{
+					Start: len(field6[idx]) + 1,
+					End:   len(field6[idx]) + 5,
+					Color: color.Scale(0.3),
+				}
 			}
 		}
 		if len(field7) == 0 {
