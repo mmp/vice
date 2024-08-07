@@ -1517,7 +1517,7 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 		if clearedAtFix {
 			nav.Approach.Cleared = true
 			nav.Speed = NavSpeed{}
-			if wp.NoPT {
+			if wp.NoPT || nav.Approach.AtFixClearedRoute[0].NoPT {
 				nav.Approach.NoPT = true
 			}
 			nav.Waypoints = append(nav.Approach.AtFixClearedRoute, nav.FlightState.ArrivalAirport)
