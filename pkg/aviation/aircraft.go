@@ -322,11 +322,20 @@ func (ac *Aircraft) ContactTower(controllers map[string]*Controller, lg *log.Log
 		prevController := ac.ControllingController
 		ac.ControllingController = twr
 
+		phrases := []string{
+			"Contact tower, %s ",
+			"Over to tower, %s ",
+			"Tower, %s, bye",
+		}
+
+		rand.Seed(time.Now().UnixNano())
+		index := rand.Intn(len(phrases))
+
 		msg := "contact tower"
 		if ctrl, ok := controllers[twr]; !ok {
-			lg.Error("unknown tower controller", slog.String("tower_callsign", twr), slog.Any("aircraft", ac))
+			fmt.Sprintf("unknown tower controller: tower_callsign=%s, aircraft=%v", twr, ac)
 		} else {
-			msg += ", " + ctrl.Frequency.String()
+			msg = fmt.Sprintf(phrases[index], ctrl.Frequency)
 		}
 
 		return []RadioTransmission{RadioTransmission{
