@@ -1473,9 +1473,9 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 	// Are we nearly at the fix and is it time to turn for the outbound heading?
 	// First, figure out the outbound heading.
 	var hdg float32
-	if len(nav.Waypoints) == 1 && nav.Approach.AtFixClearedRoute != nil &&
+	if len(nav.Approach.AtFixClearedRoute) > 1 &&
 		nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix {
-		hdg = math.Heading2LL(wp.Location, nav.Approach.AtFixClearedRoute[0].Location,
+		hdg = math.Heading2LL(wp.Location, nav.Approach.AtFixClearedRoute[1].Location,
 			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 	} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
 		// controller assigned heading at the fix.
