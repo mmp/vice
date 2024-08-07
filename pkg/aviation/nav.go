@@ -660,6 +660,16 @@ func (nav *Nav) updateAltitude(lg *log.Logger) {
 				nav.Speed.AfterAltitudeAltitude = nil
 			}
 		}
+
+		if nav.FlightState.Altitude > 10000 && next <= 10000 {
+			// passed through 10k
+			if nav.Speed.Restriction != nil && *nav.Speed.Restriction > 250 {
+				// clear any speed restrictions >250kts we are carrying
+				// from a previous waypoint.
+				nav.Speed.Restriction = nil
+			}
+		}
+
 		nav.FlightState.Altitude = next
 	}
 
@@ -1529,8 +1539,8 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 			// fix's altitude.
 			nav.Altitude.Restriction = wp.AltitudeRestriction
 		}
-		if wp.Speed != 0 && wp.OnSTAR {
-			// Carry on the speed restriction only if we're an arrival.
+		if wp.Speed != 0 && !wp.OnSID {
+			// Carry on the speed restriction unless it's a SID
 			spd := float32(wp.Speed)
 			nav.Speed.Restriction = &spd
 		}
