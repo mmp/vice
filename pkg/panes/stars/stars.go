@@ -330,16 +330,6 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 	sp.lastHistoryTrackUpdate = time.Time{}
 }
 
-func (sp *STARSPane) Deactivate() {
-	// Drop all of them
-	sp.Aircraft = nil
-
-	sp.events.Unsubscribe()
-	sp.events = nil
-
-	sp.weatherRadar.Deactivate()
-}
-
 func (sp *STARSPane) Reset(ss sim.State, lg *log.Logger) {
 	ps := &sp.CurrentPreferenceSet
 

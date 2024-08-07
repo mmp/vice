@@ -24,7 +24,6 @@ import (
 type Pane interface {
 	Activate(ss *sim.State, r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream,
 		lg *log.Logger)
-	Deactivate()
 	Reset(ss sim.State, lg *log.Logger)
 
 	CanTakeKeyboardFocus() bool
@@ -158,7 +157,6 @@ func init() {
 func (ep *EmptyPane) Activate(*sim.State, renderer.Renderer, platform.Platform,
 	*sim.EventStream, *log.Logger) {
 }
-func (ep *EmptyPane) Deactivate()                        {}
 func (ep *EmptyPane) Reset(ss sim.State, lg *log.Logger) {}
 func (ep *EmptyPane) CanTakeKeyboardFocus() bool         { return false }
 func (ep *EmptyPane) Hide() bool                         { return false }

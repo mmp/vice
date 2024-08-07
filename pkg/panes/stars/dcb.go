@@ -342,9 +342,6 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			CommandModeNone, buttonHalfVertical, buttonScale)
 		if ps.Brightness.Weather != 0 {
 			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.Renderer, ctx.Lg)
-		} else {
-			// Don't fetch weather maps if they're not going to be displayed.
-			sp.weatherRadar.Deactivate()
 		}
 		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain

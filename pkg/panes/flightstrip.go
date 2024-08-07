@@ -115,11 +115,6 @@ func (fsp *FlightStripPane) possiblyAddAircraft(ss *sim.State, ac *av.Aircraft) 
 	}
 }
 
-func (fsp *FlightStripPane) Deactivate() {
-	fsp.events.Unsubscribe()
-	fsp.events = nil
-}
-
 func (fsp *FlightStripPane) Reset(ss sim.State, lg *log.Logger) {
 	fsp.strips = nil
 	fsp.addedAircraft = make(map[string]interface{})

@@ -74,11 +74,6 @@ func (mp *MessagesPane) Activate(ss *sim.State, r renderer.Renderer, p platform.
 	mp.events = eventStream.Subscribe()
 }
 
-func (mp *MessagesPane) Deactivate() {
-	mp.events.Unsubscribe()
-	mp.events = nil
-}
-
 func (mp *MessagesPane) Reset(ss sim.State, lg *log.Logger) {
 	mp.messages = nil
 }

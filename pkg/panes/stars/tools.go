@@ -115,14 +115,6 @@ func (w *WeatherRadar) Activate(center math.Point2LL, r renderer.Renderer, lg *l
 	go fetchWeather(w.reqChan, w.cbChan, lg)
 }
 
-// Deactivate causes the WeatherRadar to stop fetching weather updates.
-func (w *WeatherRadar) Deactivate() {
-	if w.active {
-		close(w.reqChan)
-		w.active = false
-	}
-}
-
 // UpdateCenter provides a new center point for the radar image, causing a
 // new image to be fetched.
 func (w *WeatherRadar) UpdateCenter(center math.Point2LL) {
