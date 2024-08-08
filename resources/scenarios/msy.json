@@ -1,0 +1,216 @@
+{
+  "tracon": "MSY",
+  "airports": {
+    "KMSY": {
+      "atpa_volumes": {
+        "2": {
+          "runway_threshold": "KMSY-2",
+          "heading": 16,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 6000,
+          "length": 25,
+          "left_width": 10000,
+          "right_width": 10000
+        },
+        "11": {
+          "runway_threshold": "KMSY-11",
+          "heading": 106,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 6000,
+          "length": 35,
+          "left_width": 10000,
+          "right_width": 10000
+        },
+        "20": {
+          "runway_threshold": "KMSY-20",
+          "heading": 196,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 6000,
+          "length": 25,
+          "left_width": 10000,
+          "right_width": 10000
+        },
+        "29": {
+          "runway_threshold": "KMSY-29",
+          "heading": 286,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 6000,
+          "length": 35,
+          "left_width": 10000,
+          "right_width": 10000
+        }
+      },
+      "approaches": {
+       "I11": {
+        "cifp_id": "I11",
+        "tower_controller": "MSY_TWR"
+       },
+       "I2": {
+        "cifp_id": "I2",
+        "tower_controller": "MSY_TWR"
+       },
+       "I29": {
+        "cifp_id": "I29",
+        "tower_controller": "MSY_TWR"
+       },
+       "L11": {
+        "cifp_id": "L11",
+        "type": "ILS",
+        "name": "Localizer Runway 11",
+        "tower_controller": "MSY_TWR" 
+       },
+       "L2": {
+        "cifp_id": "L2",
+        "type": "ILS",
+        "name": "Localizer Runway 2",
+        "tower_controller": "MSY_TWR" 
+       },
+       "L20": {
+        "cifp_id": "L20",
+        "type": "ILS",
+        "name": "Localizer Runway 20",
+        "tower_controller": "MSY_TWR" 
+       },
+       "L29": {
+        "cifp_id": "L29",
+        "type": "ILS",
+        "name": "Localizer Runway 29",
+        "tower_controller": "MSY_TWR" 
+       },
+       "R2": {
+        "cifp_id": "R2",
+        "tower_controller": "MSY_TWR"
+       },
+       "Y11": {
+        "cifp_id": "RY11",
+        "tower_controller": "MSY_TWR" 
+       },
+       "Y20": {
+        "cifp_id": "RY20",
+        "tower_controller": "MSY_TWR" 
+       },
+       "Y29": {
+        "cifp_id": "RY29",
+        "tower_controller": "MSY_TWR" 
+       },
+       "Z11": {
+        "cifp_id": "RZ11",
+        "tower_controller": "MSY_TWR" 
+       },
+       "Z20": {
+        "cifp_id": "RZ20",
+        "tower_controller": "MSY_TWR" 
+       },
+       "Z29": {
+        "cifp_id": "RZ29",
+        "tower_controller": "MSY_TWR" 
+       }
+      },
+      "departure_routes": {
+        "2": {
+          "AEX,GARTS,SQS,BLVNS,LBY,CALTN,REDFN,LFT,JEPEG,KCEEE,CEW,MCB,LEV,MGMRY,NTCHZ,PCU,BBURT,PEKON": {
+            "cleared_altitude": 4000,
+            "waypoints": "KMSY-20/h020"
+          }
+        },
+        "11": {
+
+        },
+        "20": {
+          
+        },
+        "29": {
+
+        }
+      }
+    },
+    "KNEW": {
+      "approaches": {
+        "I8R": {
+          "cifp_id": "I18R",
+          "tower_controller": "NEW_TWR"
+        },
+        "R8R": {
+          "cifp_id": "R18R",
+          "tower_controller": "NEW_TWR"
+        },
+        "R6L": {
+          "cifp_id": "R36L",
+          "'tower_controller": "NEW_TWR"
+        }
+      },
+      "departure_routes": {
+        "18R": {
+
+        },
+        "36L": {
+
+        }
+      }
+    }, 
+    "KHDC": {
+      "approaches": {
+        "R13": {
+          "cifp_id": "R13",
+          "tower_controller": "HDC_TWR"
+        },
+        "R36": {
+          "cifp_id": "R36",
+          "tower_controller": "HDC_TWR"
+        },
+        "R18": {
+          "cifp_id": "R18",
+          "tower_controller": "HDC_TWR"
+        },
+        "R31": {
+          "cifp_id": "R31",
+          "tower_controller": "HDC_TWR"
+        }
+      },
+      "departure_routes": {
+        "18": {
+
+        },
+        "36": {
+
+        }
+      }
+    },
+    "KHUM": {
+      "approaches": {
+        "I18": {
+          "cifp_id": "I18",
+          "tower_controller": "HUM_TWR"
+        },
+        "R12": {
+          "cifp_id": "R12",
+          "tower_controller": "HUM_TWR"
+        },
+        "R18": {
+          "cifp_id": "R18",
+          "tower_controller": "HUM_TWR"
+        },
+        "R30": {
+          "cifp_id": "R30",
+          "tower_controller": "HUM_TWR"
+        },
+        "R36": {
+          "cifp_id": "R36",
+          "tower_controller": "R36"
+        }
+      },
+      "departure_routes": {
+        "18": {
+
+        },
+        "36": {
+
+        }
+      }
+    }
+  }
+}
