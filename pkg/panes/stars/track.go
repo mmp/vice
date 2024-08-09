@@ -465,6 +465,7 @@ func (sp *STARSPane) getAircraftIndex(ac *av.Aircraft) int {
 		return idx
 	}
 }
+
 func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
@@ -734,7 +735,16 @@ func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, headi
 			font := sp.systemFont[ps.CharSize.PositionSymbols]
 			outlineFont := sp.systemOutlineFont[ps.CharSize.PositionSymbols]
 			td.AddTextCentered(trackId, pw, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
-			td.AddTextCentered(trackId, pw, renderer.TextStyle{Font: font, Color: trackIdBrightness.ScaleRGB(color)})
+
+			// Flash the id if it's an inbound handoff
+			idColor := util.Select(ac.Callsign == sp.dwellAircraft, color, trackIdBrightness.ScaleRGB(color))
+			if trk := sp.getTrack(ctx, ac); trk != nil && trk.HandingOffTo(ctx.ControlClient.Callsign) {
+				halfSeconds := ctx.Now.UnixMilli() / 500
+				if halfSeconds&1 == 0 {
+					idColor = renderer.RGB{}
+				}
+			}
+			td.AddTextCentered(trackId, pw, renderer.TextStyle{Font: font, Color: idColor})
 		} else {
 			// TODO: draw box if in range of squawks we have selected
 
