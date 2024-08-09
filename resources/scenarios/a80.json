@@ -2,6 +2,7 @@
   "tracon": "A80",
   "airports": {
     "KATL": {
+      "omit_arrival_scratchpad": true,
       "approaches": {
         "I8L": {
           "runway": "8L",
@@ -1128,9 +1129,11 @@
             }
           ]
         },
-        "initial_altitude": 15000,
+		"scratchpad": "CHP",
+        "initial_altitude": 22000,
         "initial_controller" : "ATL_CTR",
         "initial_speed": 290,
+		"speed_restriction": 290,
         "star": "CHPPR1",
           "runway_waypoints": {
               "KATL": {
@@ -1146,8 +1149,7 @@
                   "28": "MRCHH HIDRO EAGYL SHURT FOGER HITTT YURII/h095"
               }
         },
-        "speed_restriction": 250,
-        "waypoints": "OWNNS/ho CHPPR/a13000 MRCHH"
+        "waypoints": "N034.31.42.543,W085.19.39.959 LEMKE/ho CHPPR/a13000 MRCHH"
      }
    ],
    "CHPPR1 EAST": [
@@ -1383,9 +1385,11 @@
           }
         ]
       },
-      "initial_altitude": 15000,
+	  "scratchpad": "GLA",
+      "initial_altitude": 22000,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
+      "speed_restriction": 290,
       "star": "GLAVN1",
       "runway_waypoints": {
             "KATL": {
@@ -1401,8 +1405,7 @@
                 "28": "STHRN HOGGG EAGYL SHURT FOGER HITTT YURII/h095"
             }
       },
-      "speed_restriction": 250,
-      "waypoints": "MADDX/ho GLAVN/a14000 STHRN"
+      "waypoints": "N034.12.16.427,W085.39.17.473 MADDX/ho GLAVN/a14000 STHRN"
     }
    ],
    "GLAVN1 EAST": [
@@ -1609,9 +1612,10 @@
           }
         ]
       },
-      "initial_altitude": 17000,
+      "initial_altitude": 22000,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
+      "speed_restriction": 290,
       "star": "HOBTT2",
       "runway_waypoints": {
             "KATL": {
@@ -1622,8 +1626,7 @@
                 "28": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h095"
             }
       },
-      "speed_restriction": 250,
-      "waypoints": "SMAWG/a17000/ho HOBTT/a14000 ENSLL/a12000"
+      "waypoints": "N032.52.29.423,W085.29.04.189 N032.57.10.879,W085.20.50.930/ho SMAWG/a17000 HOBTT/a14000 ENSLL/a12000"
     }
    ],
    "HOBTT2_AFINALT": [
@@ -1832,12 +1835,11 @@
           }
         ]
       },
-      "initial_altitude": 14000,
+      "initial_altitude": 19000,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "star": "JJEDI3",
-      "speed_restriction": 250,
-      "waypoints": "DTSTR/a14000/s280/ho WOKIE/a11000/s250 JJEDI/a10000/s250 DAFII/a8000 GRHAM POOBA/h004"
+      "waypoints": "N032.48.59.790,W083.26.05.551 DTSTR/a14000/s280/ho WOKIE/a11000/s250 JJEDI/a10000/s250 DAFII/a8000 GRHAM POOBA/h004"
     }
    ],"JJEDI3_FINALD": [
     {
@@ -2066,7 +2068,8 @@
           }
         ]
       },
-      "initial_altitude": 15000,
+	  "scratchpad": "OND",
+      "initial_altitude": 19000,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "star": "ONDRE1",
@@ -2084,8 +2087,7 @@
                 "28": "SMELY ANVAL/a9000 POSEY/a8000/h180"
             }
       },
-      "speed_restriction": 250,
-      "waypoints": "STRWY/ho ONDRE/a13000/s250 SMELY"
+      "waypoints": "N034.38.40.806,W083.42.45.197 N034.31.35.800,W083.46.32.422/ho STRWY ONDRE/a13000/s250 SMELY"
     }
    ],
    "ONDRE1 EAST": [
@@ -2162,7 +2164,7 @@
             }
       },
       "speed_restriction": 250,
-      "waypoints": "STRWY/ho ONDRE/a13000 SMELY"
+      "waypoints": "N034.38.40.806,W083.42.45.197 N034.31.35.800,W083.46.32.422/ho STRWY ONDRE/a13000 SMELY"
     }
    ],
    "ONDRE1_FINALWT": [
@@ -2277,7 +2279,8 @@
           }
         ]
       },
-      "initial_altitude": 15000,
+	  "scratchpad": "OZZ",
+      "initial_altitude": 19000,
       "initial_controller": "ATL_CTR",
       "initial_speed": 290,
       "star": "OZZZI1",
@@ -2295,8 +2298,7 @@
               "28": "HAARY ANVAL/a9000 POSEY/a8000 BLUFF/a8000/h180"
             }
       },
-      "speed_restriction": 250,
-      "waypoints": "WINNG/ho OZZZI/a12000/s250 HAARY"
+      "waypoints": "N034.27.32.453,W083.25.42.370 N034.20.13.233,W083.34.19.277/ho  WINNG OZZZI/a12000/s250 HAARY"
     }
    ],
    "OZZZI1 EAST": [
@@ -2584,29 +2586,29 @@
           }
       },
       "scratchpads": {
-        "LUCKK": "BAN",
-        "HANKO": "CUT",
-        "IRQ": "GAI",
-        "SARGE": "HAA",
+        "LUCKK": "BNG",
+        "HANKO": "CTN",
+        "IRQ": "GRY",
+        "SARGE": "HLO",
         "KELLN": "JAC",
-        "STNGA": "KAJ",
+        "STNGA": "KJN",
         "CHOOK": "NAS",
         "YAALL": "NAS",
         "VUZ": "NAS",
-        "RAFTN": "PAD",
-        "SMTTH": "PAD",
+        "RAFTN": "PGT",
+        "SMTTH": "PGT",
         "BNA": "PEN",
         "EMAHH": "PEN",
         "JAACE": "PEN",
-        "HRTWL": "PHI",
-        "BURGG": "PLM",
+        "HRTWL": "PHL",
+        "BURGG": "PLR",
         "STEIT": "POU",
         "GRGIA": "POU",
-        "BOBBD": "SMK",
-        "WALET": "SML",
-        "GLAZR": "VAR",
-        "RESPE": "VAR",
-        "NOKIE": "VRS"
+        "BOBBD": "SKY",
+        "WALET": "SMZ",
+        "GLAZR": "VNM",
+        "RESPE": "VNM",
+        "NOKIE": "VTY"
       },
       "stars_maps": [
           "ATL CLASS B", "TERMINAL ARRIVAL RADAR WEST", "ARRIVAL RADAR WEST TRIPS", "TERMINAL ARRIVAL RADAR EAST", "ARRIVAL RADAR EAST TRIPS",
