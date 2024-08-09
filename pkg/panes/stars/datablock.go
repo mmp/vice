@@ -845,9 +845,21 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 
 		// Calculate the endpoint of the leader line
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
-		vll := sp.getLeaderLineVector(ctx, sp.getLeaderLineDirection(ac, ctx))
+		leaderLineDirection := sp.getLeaderLineDirection(ac, ctx)
+		vll := sp.getLeaderLineVector(ctx, leaderLineDirection)
 		pll := math.Add2f(pac, vll)
-		pll[1] += float32(font.Size / 2)
+		if math.Length2f(vll) == 0 {
+			// no leader line is being drawn; make sure that the datablock
+			// doesn't overlap the target track.
+			sz := sp.getTrackSize(ctx, transforms) / 2
+			rightJustify := leaderLineDirection >= math.South
+			pll[0] += util.Select(rightJustify, -sz, sz)
+			pll[1] += float32(font.Size)
+		} else {
+			// Start drawing down a half line-height to align the leader
+			// line in the middle of the db line.
+			pll[1] += float32(font.Size / 2)
+		}
 
 		halfSeconds := realNow.UnixMilli() / 500
 		db.draw(td, pll, font, brightness, sp.getLeaderLineDirection(ac, ctx), halfSeconds)

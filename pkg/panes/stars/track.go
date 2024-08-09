@@ -623,8 +623,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 		db.draw(td, pll, datablockFont, brightness, ghost.LeaderLineDirection, ctx.Now.Unix())
 
 		// Leader line
-		v := sp.getLeaderLineVector(ctx, ghost.LeaderLineDirection)
-		ld.AddLine(pac, math.Add2f(pac, v), color)
+		ld.AddLine(pac, math.Add2f(pac, vll), color)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
