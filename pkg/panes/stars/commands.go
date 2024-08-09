@@ -1518,17 +1518,15 @@ func (sp *STARSPane) setScratchpad(ctx *panes.Context, callsign string, contents
 		return ErrSTARSIllegalTrack
 	}
 
+	// 5-148
 	fac := ctx.ControlClient.STARSFacilityAdaptation
-	if isSecondary {
-		// 5-148: secondary is 1 to 3-maybe-4 characters
-		if (fac.AllowLongScratchpad[1] && lc > 4) || (!fac.AllowLongScratchpad[1] && lc > 3) {
-			return ErrSTARSCommandFormat
-		}
-	} else {
-		// 5-148: primary is 2 to 3-maybe-4 characters
-		if lc == 1 || (fac.AllowLongScratchpad[0] && lc > 4) || (!fac.AllowLongScratchpad[0] && lc > 3) {
-			return ErrSTARSCommandFormat
-		}
+	long := util.Select(isSecondary, 1, 0)
+	if (fac.AllowLongScratchpad[long] && lc > 4) || (!fac.AllowLongScratchpad[long] && lc > 3) {
+		return ErrSTARSCommandFormat
+	}
+	if !isSecondary && isImplied && lc == 1 {
+		// One-character for primary is only allowed via [MF]Y
+		return ErrSTARSCommandFormat
 	}
 
 	// Make sure it's only allowed characters
@@ -1637,7 +1635,7 @@ func (sp *STARSPane) handoffTrack(ctx *panes.Context, callsign string, controlle
 }
 func (sp *STARSPane) setLeaderLine(ctx *panes.Context, ac *av.Aircraft, cmd string) error {
 	state := sp.Aircraft[ac.Callsign]
-	if len(cmd) == 1 {
+	if len(cmd) == 1 { // Local 6-81
 		if dir, ok := numpadToDirection(cmd[0]); ok {
 			state.LeaderLineDirection = dir
 			if dir != nil {
@@ -1645,7 +1643,7 @@ func (sp *STARSPane) setLeaderLine(ctx *panes.Context, ac *av.Aircraft, cmd stri
 			}
 			return nil
 		}
-	} else if len(cmd) == 2 && cmd[0] == cmd[1] { // Global leader lines
+	} else if len(cmd) == 2 && cmd[0] == cmd[1] { // Global leader lines 6-101
 		trk := sp.getTrack(ctx, ac)
 		if trk == nil || trk.TrackOwner != ctx.ControlClient.Callsign {
 			return ErrSTARSIllegalTrack
@@ -1727,6 +1725,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 			}
 		}
+	}
+
+	trySetLeaderLine := func(spec string) bool {
+		err := sp.setLeaderLine(ctx, ac, cmd)
+		return err == nil
 	}
 
 	if ac != nil {
@@ -1856,14 +1859,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					return
 				}
 				return
-			} else if (unicode.IsDigit(rune(cmd[0])) && len(cmd) == 1) ||
-				(len(cmd) == 2 && unicode.IsDigit(rune(cmd[1]))) {
-				// 6-81: set locally, 6-101: set system wide
-				if err := sp.setLeaderLine(ctx, ac, cmd); err != nil {
-					status.err = err
-				} else {
-					status.clear = true
-				}
+			} else if trySetLeaderLine(cmd) {
+				status.clear = true
 				return
 			} else if cmd == "?" {
 				ctx.Lg.Info("print aircraft", slog.String("callsign", ac.Callsign),
