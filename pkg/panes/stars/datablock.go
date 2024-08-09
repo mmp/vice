@@ -623,14 +623,18 @@ func (sp *STARSPane) datablockColor(ctx *panes.Context, ac *av.Aircraft) (color 
 	ps := sp.CurrentPreferenceSet
 	dt := sp.datablockType(ctx, ac)
 	state := sp.Aircraft[ac.Callsign]
-	brightness = util.Select(dt == PartialDatablock || dt == LimitedDatablock,
-		ps.Brightness.LimitedDatablocks, ps.Brightness.FullDatablocks)
+	trk := sp.getTrack(ctx, ac)
 
+	brightness = ps.Brightness.FullDatablocks
+	if dt == PartialDatablock || dt == LimitedDatablock {
+		brightness = ps.Brightness.LimitedDatablocks
+	} else if dt == FullDatablock && trk != nil && trk.TrackOwner != ctx.ControlClient.Callsign {
+		brightness = ps.Brightness.OtherTracks
+	}
 	if ac.Callsign == sp.dwellAircraft {
 		brightness = STARSBrightness(100)
 	}
 
-	trk := sp.getTrack(ctx, ac)
 	if trk == nil {
 		return STARSUntrackedAircraftColor, brightness
 	}
