@@ -5,7 +5,6 @@
 package stars
 
 import (
-	"fmt"
 	"slices"
 	"sort"
 	"time"
@@ -598,11 +597,11 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	ps := sp.CurrentPreferenceSet
-	color := ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor)
+	brightness := ps.Brightness.OtherTracks
+	color := brightness.ScaleRGB(STARSGhostColor)
 	trackFont := sp.systemFont[ps.CharSize.PositionSymbols]
 	trackStyle := renderer.TextStyle{Font: trackFont, Color: color, LineSpacing: 0}
 	datablockFont := sp.systemFont[ps.CharSize.Datablocks]
-	datablockStyle := renderer.TextStyle{Font: datablockFont, Color: color, LineSpacing: 0}
 
 	for _, ghost := range ghosts {
 		state := sp.Aircraft[ghost.Callsign]
@@ -615,23 +614,13 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 		pw := transforms.WindowFromLatLongP(ghost.Position)
 		td.AddTextCentered(ghost.TrackId, pw, trackStyle)
 
-		var datablockText string
-		if state.Ghost.PartialDatablock {
-			// Partial datablock is just airspeed and then aircraft type if it's ~heavy.
-			datablockText = fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
-			datablockText += state.CWTCategory
-		} else {
-			// The full datablock ain't much more...
-			datablockText = ghost.Callsign + "\n" + fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
-		}
-		w, h := datablockFont.BoundText(datablockText, datablockStyle.LineSpacing)
-		datablockOffset := sp.getDatablockOffset(ctx, [2]float32{float32(w), float32(h)},
-			ghost.LeaderLineDirection)
-
 		// Draw datablock
+		db := sp.getGhostDatablock(ghost, color)
 		pac := transforms.WindowFromLatLongP(ghost.Position)
-		pt := math.Add2f(datablockOffset, pac)
-		td.AddText(datablockText, pt, datablockStyle)
+		vll := sp.getLeaderLineVector(ctx, ghost.LeaderLineDirection)
+		pll := math.Add2f(pac, vll)
+
+		db.draw(td, pll, datablockFont, brightness, ghost.LeaderLineDirection, ctx.Now.Unix())
 
 		// Leader line
 		v := sp.getLeaderLineVector(ctx, ghost.LeaderLineDirection)
@@ -1246,15 +1235,12 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, ctx *panes.Context
 			continue
 		}
 
-		dbs := sp.getDatablocks(ctx, ac)
-		if len(dbs) == 0 {
-			continue
+		if sp.getDatablock(ctx, ac) != nil {
+			baseColor, brightness := sp.datablockColor(ctx, ac)
+			pac := transforms.WindowFromLatLongP(state.TrackPosition())
+			v := sp.getLeaderLineVector(ctx, sp.getLeaderLineDirection(ac, ctx))
+			ld.AddLine(pac, math.Add2f(pac, v), brightness.ScaleRGB(baseColor))
 		}
-
-		baseColor, brightness := sp.datablockColor(ctx, ac)
-		pac := transforms.WindowFromLatLongP(state.TrackPosition())
-		v := sp.getLeaderLineVector(ctx, sp.getLeaderLineDirection(ac, ctx))
-		ld.AddLine(pac, math.Add2f(pac, v), brightness.ScaleRGB(baseColor))
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
