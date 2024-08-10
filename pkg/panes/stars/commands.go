@@ -1393,10 +1393,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 	case CommandModeMaps:
 		if cmd == "A" {
 			// remove all maps
-			for i := range ps.DisplayVideoMap {
-				ps.DisplayVideoMap[i] = false
-			}
-			ps.SystemMapVisible = make(map[int]interface{})
+			clear(ps.VideoMapVisible)
 			sp.activeDCBMenu = dcbMenuMain
 			status.clear = true
 			return
@@ -1406,36 +1403,30 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				op = "E"
 				cmd = cmd[:n-1]
 			} else if cmd[n-1] == 'I' { // inhibit
-				op = "T"
+				op = "I"
 				cmd = cmd[:n-1]
 			}
-
-			videoMaps, _ := ctx.ControlClient.GetVideoMaps()
 
 			if idx, err := strconv.Atoi(cmd); err != nil {
 				status.err = ErrSTARSCommandFormat
 			} else if idx <= 0 {
 				status.err = ErrSTARSIllegalMap
-			} else if mi := slices.IndexFunc(videoMaps, func(m av.VideoMap) bool { return m.Id == idx }); mi != -1 {
-				if (ps.DisplayVideoMap[mi] && op == "T") || op == "I" {
-					ps.DisplayVideoMap[mi] = false
-				} else if (!ps.DisplayVideoMap[mi] && op == "T") || op == "E" {
-					ps.DisplayVideoMap[mi] = true
-				}
-				sp.activeDCBMenu = dcbMenuMain
-				status.clear = true
-			} else if _, ok := sp.systemMaps[idx]; ok {
-				if _, ok := ps.SystemMapVisible[idx]; (ok && op == "T") || op == "I" {
-					delete(ps.SystemMapVisible, idx)
-				} else if (!ok && op == "T") || op == "E" {
-					ps.SystemMapVisible[idx] = nil
-				}
-				sp.activeDCBMenu = dcbMenuMain
-				status.clear = true
 			} else {
-				status.err = ErrSTARSIllegalMap
+				_, vok := sp.videoMaps[idx]
+				_, sok := sp.systemMaps[idx]
+				if vok || sok { // valid map index
+					_, vis := ps.VideoMapVisible[idx]
+					if (vis && op == "T") || op == "I" {
+						delete(ps.VideoMapVisible, idx)
+					} else if (!vis && op == "T") || op == "E" {
+						ps.VideoMapVisible[idx] = nil
+					}
+					sp.activeDCBMenu = dcbMenuMain
+					status.clear = true
+				} else {
+					status.err = ErrSTARSIllegalMap
+				}
 			}
-			status.clear = true
 			return
 		}
 
@@ -1527,17 +1518,15 @@ func (sp *STARSPane) setScratchpad(ctx *panes.Context, callsign string, contents
 		return ErrSTARSIllegalTrack
 	}
 
+	// 5-148
 	fac := ctx.ControlClient.STARSFacilityAdaptation
-	if isSecondary {
-		// 5-148: secondary is 1 to 3-maybe-4 characters
-		if (fac.AllowLongScratchpad[1] && lc > 4) || (!fac.AllowLongScratchpad[1] && lc > 3) {
-			return ErrSTARSCommandFormat
-		}
-	} else {
-		// 5-148: primary is 2 to 3-maybe-4 characters
-		if lc == 1 || (fac.AllowLongScratchpad[0] && lc > 4) || (!fac.AllowLongScratchpad[0] && lc > 3) {
-			return ErrSTARSCommandFormat
-		}
+	long := util.Select(isSecondary, 1, 0)
+	if (fac.AllowLongScratchpad[long] && lc > 4) || (!fac.AllowLongScratchpad[long] && lc > 3) {
+		return ErrSTARSCommandFormat
+	}
+	if !isSecondary && isImplied && lc == 1 {
+		// One-character for primary is only allowed via [MF]Y
+		return ErrSTARSCommandFormat
 	}
 
 	// Make sure it's only allowed characters
@@ -1646,7 +1635,7 @@ func (sp *STARSPane) handoffTrack(ctx *panes.Context, callsign string, controlle
 }
 func (sp *STARSPane) setLeaderLine(ctx *panes.Context, ac *av.Aircraft, cmd string) error {
 	state := sp.Aircraft[ac.Callsign]
-	if len(cmd) == 1 {
+	if len(cmd) == 1 { // Local 6-81
 		if dir, ok := numpadToDirection(cmd[0]); ok {
 			state.LeaderLineDirection = dir
 			if dir != nil {
@@ -1654,7 +1643,7 @@ func (sp *STARSPane) setLeaderLine(ctx *panes.Context, ac *av.Aircraft, cmd stri
 			}
 			return nil
 		}
-	} else if len(cmd) == 2 && cmd[0] == cmd[1] { // Global leader lines
+	} else if len(cmd) == 2 && cmd[0] == cmd[1] { // Global leader lines 6-101
 		trk := sp.getTrack(ctx, ac)
 		if trk == nil || trk.TrackOwner != ctx.ControlClient.Callsign {
 			return ErrSTARSIllegalTrack
@@ -1736,6 +1725,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 			}
 		}
+	}
+
+	trySetLeaderLine := func(spec string) bool {
+		err := sp.setLeaderLine(ctx, ac, cmd)
+		return err == nil
 	}
 
 	if ac != nil {
@@ -1865,14 +1859,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					return
 				}
 				return
-			} else if (unicode.IsDigit(rune(cmd[0])) && len(cmd) == 1) ||
-				(len(cmd) == 2 && unicode.IsDigit(rune(cmd[1]))) {
-				// 6-81: set locally, 6-101: set system wide
-				if err := sp.setLeaderLine(ctx, ac, cmd); err != nil {
-					status.err = err
-				} else {
-					status.clear = true
-				}
+			} else if trySetLeaderLine(cmd) {
+				status.clear = true
 				return
 			} else if cmd == "?" {
 				ctx.Lg.Info("print aircraft", slog.String("callsign", ac.Callsign),
@@ -1898,17 +1886,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				// Do not clear the input area to allow entering a fix for the second location
 				return
 			} else if av.StringIsSPC(cmd) {
-				_, enabled := ac.SPCOverrides[cmd]
-				ctx.ControlClient.ToggleSPCOverride(ac.Callsign, cmd,
-					func(any) {
-						if enabled { // disabled it
-							state.SPCAlert = false
-						} else {
-							state.SPCAlert = true
-							state.SPCAcknowledged = false
-							state.SPCSoundEnd = ctx.Now.Add(AlertAudioDuration)
-						}
-					},
+				ctx.ControlClient.ToggleSPCOverride(ac.Callsign, cmd, nil,
 					func(err error) { sp.displayError(err, ctx) })
 				status.clear = true
 				return
@@ -2797,8 +2775,18 @@ func (sp *STARSPane) flightPlanSTARS(ctx *panes.Context, ac *av.Aircraft) (strin
 
 	state := sp.Aircraft[ac.Callsign]
 
-	result := ac.Callsign + " " // all start with aricraft id
-	if ac.IsDeparture() {
+	result := ac.Callsign + " "             // all start with aricraft id
+	if ctx.ControlClient.IsOverflight(ac) { // check this first
+		result += numType + " "
+		result += ac.FlightPlan.AssignedSquawk.String() + " " + owner + "\n"
+
+		// TODO: entry fix
+		result += "E" + fmtTime(state.FirstSeen) + " "
+		// TODO: exit fix
+		result += "R" + fmt.Sprintf("%03d", fp.Altitude/100) + "\n"
+
+		// TODO: [mode S equipage] [target identification] [target address]
+	} else if ctx.ControlClient.IsDeparture(ac) {
 		if state.FirstRadarTrack.IsZero() {
 			// Proposed departure
 			result += numType + " "
@@ -2807,7 +2795,7 @@ func (sp *STARSPane) flightPlanSTARS(ctx *panes.Context, ac *av.Aircraft) (strin
 			if len(fp.DepartureAirport) > 0 {
 				result += fp.DepartureAirport[1:] + " "
 			}
-			result += ac.Callsign + " "
+			result += ac.Scratchpad + " " // should be exit fix--close enough?
 			result += "P" + fmtTime(state.FirstSeen) + " "
 			result += "R" + fmt.Sprintf("%03d", fp.Altitude/100)
 		} else {
@@ -2823,9 +2811,11 @@ func (sp *STARSPane) flightPlanSTARS(ctx *panes.Context, ac *av.Aircraft) (strin
 			result += "R" + fmt.Sprintf("%03d", fp.Altitude/100) + " "
 
 			result += numType
+
+			// TODO: [mode S equipage] [target identification] [target address]
 		}
 	} else {
-		// Format it as an arrival (we don't do overflights...)
+		// Format it as an arrival
 		result += numType + " "
 		result += ac.FlightPlan.AssignedSquawk.String() + " "
 		result += owner + " "
@@ -2840,6 +2830,7 @@ func (sp *STARSPane) flightPlanSTARS(ctx *panes.Context, ac *av.Aircraft) (strin
 		if len(fp.ArrivalAirport) > 0 {
 			result += fp.ArrivalAirport[1:] + " "
 		}
+		// TODO: [mode S equipage] [target identification] [target address]
 	}
 
 	return result, nil

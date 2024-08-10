@@ -22,15 +22,7 @@
           ]
         },
         "RZ11": {
-          "runway": "11",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 11",
-          "waypoints": [
-            "MACKS/iaf/a8900 LOMMA/a8200 CARKU/a6700/if VUXOH/a6700 KAREC/faf",
-            "PACES/iaf/a9900 NATLL/a9300 CULIP/if/a8600 FEKVA/a7800 WURNI/a6700 VUXOH/a6700 KAREC/faf",
-            "SINSY/a11000/iaf HONTU/a9900 IWUGO/a8900 TADUY/if/a8200 YOVCU/a6700 VUXOH/a6700 KAREC/faf",
-            "SPADA/iaf/a8800 OLILE/a8500 HEBUT/if/a8200 YOVCU/a6700 VUXOH/a6700 KAREC/faf"
-          ]
+          "cifp_id": "RZ11"
         },
         "L29": {
           "runway": "29",
@@ -42,11 +34,7 @@
         },
         "R29": {
           "runway": "29",
-          "type": "RNAV",
-          "full_name": "RNAV GPS Runway 29",
-          "waypoints": [
-            "CESBA/iaf/a8500 HANSU/a8500 TELSE/a7800 EKIRE/a6900"
-          ]
+          "cifp_id": "R29"
         }
       },
       "departure_routes": {

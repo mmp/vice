@@ -74,11 +74,6 @@ func (mp *MessagesPane) Activate(ss *sim.State, r renderer.Renderer, p platform.
 	mp.events = eventStream.Subscribe()
 }
 
-func (mp *MessagesPane) Deactivate() {
-	mp.events.Unsubscribe()
-	mp.events = nil
-}
-
 func (mp *MessagesPane) Reset(ss sim.State, lg *log.Logger) {
 	mp.messages = nil
 }
@@ -348,7 +343,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 		if lastRadioType == av.RadioTransmissionContact {
 			ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]
 			fullName := ctrl.FullName
-			if ac := ctx.ControlClient.Aircraft[callsign]; ac != nil && ac.IsDeparture() {
+			if ac := ctx.ControlClient.Aircraft[callsign]; ac != nil && ctx.ControlClient.State.IsDeparture(ac) {
 				// Always refer to the controller as "departure" for departing aircraft.
 				fullName = strings.ReplaceAll(fullName, "approach", "departure")
 			}

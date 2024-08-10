@@ -25,112 +25,276 @@ const (
 	FullDatablock
 )
 
-type STARSDatablockFieldColors struct {
-	Start, End int
-	Color      renderer.RGB
+// datablock is a simple interface that abstracts the various types of
+// datablock. The only operation that exposes is drawing the datablock.
+type datablock interface {
+	// pt is end of leader line--attachment point
+	draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, brightness STARSBrightness,
+		leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64)
 }
 
-type STARSDatablockLine struct {
-	Text   string
-	Colors []STARSDatablockFieldColors
+// dbChar represents a single character in a datablock.
+type dbChar struct {
+	ch       byte
+	color    renderer.RGB
+	flashing bool
 }
 
-func (s *STARSDatablockLine) RightJustify(n int) {
-	if n > len(s.Text) {
-		delta := n - len(s.Text)
-		s.Text = fmt.Sprintf("%*c", delta, ' ') + s.Text
-		// Keep the formatting aligned.
-		for i := range s.Colors {
-			s.Colors[i].Start += delta
-			s.Colors[i].End += delta
+///////////////////////////////////////////////////////////////////////////
+// fullDatablock
+
+type fullDatablock struct {
+	longScratchpad [2]bool
+
+	// line 0
+	field0 [16]dbChar
+	// line 1
+	field1 [7]dbChar
+	field2 [1]dbChar
+	field8 [4]dbChar
+	// line 2
+	field34 [3][5]dbChar // field 3 and 4 together, since they're connected
+	field5  [3][7]dbChar
+	// line 3
+	field6 [2][5]dbChar
+	field7 [2][4]dbChar
+}
+
+func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
+	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	// Figure out the maximum number of values any field is cycling through.
+	numVariants := func(fields [][]dbChar) int {
+		n := 0
+		for _, field := range fields {
+			if fieldEmpty(field) {
+				break
+			}
+			n++
+		}
+		return n
+	}
+
+	// Find the maximum number of field values that we are cycling through.
+	nc := math.Max(numVariants([][]dbChar{db.field34[0][:], db.field34[1][:], db.field34[2][:]}),
+		numVariants([][]dbChar{db.field5[0][:], db.field5[1][:], db.field5[2][:]}))
+	nc = math.Max(nc, numVariants([][]dbChar{db.field6[0][:], db.field6[1][:]}))
+	nc = math.Max(nc, numVariants([][]dbChar{db.field7[0][:], db.field7[1][:]}))
+
+	// Cycle 1 is 2s, others are 1.5s. Then get that in half seconds.
+	fullCycleHalfSeconds := 4 + 3*(nc-1)
+	// Figure out which cycle we are in
+	cycle := 0
+	for idx := halfSeconds % int64(fullCycleHalfSeconds); idx > 4; idx -= 3 {
+		cycle++
+	}
+
+	selectMultiplexed := func(fields [][]dbChar) []dbChar {
+		n := numVariants(fields)
+		if cycle < n {
+			return fields[cycle]
+		}
+		return fields[0]
+	}
+
+	lines := []dbLine{
+		dbMakeLine(db.field0[:]),
+		dbMakeLine(dbChopTrailing(db.field1[:]), db.field2[:], db.field8[:]),
+		dbMakeLine(dbChopTrailing(selectMultiplexed([][]dbChar{db.field34[0][:], db.field34[1][:], db.field34[2][:]})),
+			selectMultiplexed([][]dbChar{db.field5[0][:], db.field5[1][:], db.field5[2][:]})),
+		dbMakeLine(selectMultiplexed([][]dbChar{db.field6[0][:], db.field6[1][:]}),
+			selectMultiplexed([][]dbChar{db.field7[0][:], db.field7[1][:]})),
+	}
+	pt[1] += float32(font.Size) // align leader with line 1
+	dbDrawLines(lines, td, pt, font, brightness, leaderLineDirection, halfSeconds)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// partialDatablock
+
+type partialDatablock struct {
+	// line 0
+	field0 [16]dbChar
+	// line 1
+	field1 [2][3]dbChar
+	field2 [1]dbChar
+	field3 [4]dbChar
+	field4 [2]dbChar
+}
+
+func (db partialDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
+	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	f1 := util.Select(fieldEmpty(db.field1[1][:]), 0, (halfSeconds/4)&1)
+	lines := []dbLine{
+		dbMakeLine(db.field0[:]),
+		dbMakeLine(db.field1[f1][:], db.field2[:], db.field3[:], db.field4[:]),
+	}
+	pt[1] += float32(font.Size) // align leader with line 1
+	dbDrawLines(lines, td, pt, font, brightness, leaderLineDirection, halfSeconds)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// limitedDatablock
+
+type limitedDatablock struct {
+	// Line 0
+	field0 [8]dbChar
+	// Line 1
+	field1 [7]dbChar
+	field2 [1]dbChar // unused
+	// Line 2
+	field3 [3]dbChar
+	field4 [2]dbChar // unused
+	field5 [4]dbChar
+	// Line 3 (not in manual, but for beaconator callsign)
+	field6 [8]dbChar
+}
+
+func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
+	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	lines := []dbLine{
+		dbMakeLine(db.field0[:]),
+		dbMakeLine(db.field1[:], db.field2[:]),
+		dbMakeLine(db.field3[:], db.field4[:], db.field5[:]),
+		dbMakeLine(db.field6[:]),
+	}
+	pt[1] += 2 * float32(font.Size) // align leader with line 2
+	dbDrawLines(lines, td, pt, font, brightness, leaderLineDirection, halfSeconds)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// ghostDatablock
+
+// both partial and full in the same one
+type ghostDatablock struct {
+	// line 0
+	field0 [8]dbChar
+	// line 1
+	field1 [3]dbChar
+}
+
+func (db ghostDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
+	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	lines := []dbLine{
+		dbMakeLine(db.field0[:]),
+		dbMakeLine(db.field1[:]),
+	}
+	// Leader aligns with line 0, so no offset is needed
+	dbDrawLines(lines, td, pt, font, brightness, leaderLineDirection, halfSeconds)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// dbLine
+
+// dbLine stores the characters in a line of a datablock; it allows drawing
+// code to not worry about the details of the individual fields on a line.
+type dbLine struct {
+	length int
+	ch     [16]dbChar // maximum length of a datablock field
+}
+
+// dbMakeLine flattens the given datablock fields into a single contiguous
+// line of characters.
+func dbMakeLine(fields ...[]dbChar) dbLine {
+	var l dbLine
+	for _, f := range fields {
+		for _, ch := range f {
+			l.ch[l.length] = ch
+			l.length++
 		}
 	}
+	return l
 }
 
-type STARSDatablock struct {
-	Lines [4]STARSDatablockLine
-}
-
-func (s *STARSDatablock) RightJustify(n int) {
-	for i := range s.Lines {
-		s.Lines[i].RightJustify(n)
-	}
-}
-
-func (s *STARSDatablock) Duplicate() STARSDatablock {
-	var sd STARSDatablock
-	for i := range s.Lines {
-		sd.Lines[i].Text = s.Lines[i].Text
-		sd.Lines[i].Colors = util.DuplicateSlice(s.Lines[i].Colors)
-	}
-	return sd
-}
-
-func (s *STARSDatablock) BoundText(font *renderer.Font) (int, int) {
-	text := ""
-	for i, l := range s.Lines {
-		text += l.Text
-		if i+1 < len(s.Lines) {
-			text += "\n"
+// Len returns the number of valid characters in the line (i.e., how many
+// will be drawn). Note that it does include spaces but not unset ones.
+func (l dbLine) Len() int {
+	for i := l.length - 1; i >= 0; i-- {
+		if l.ch[i].ch != 0 {
+			return i + 1
 		}
 	}
-	return font.BoundText(text, 0)
+	return 0
 }
 
-func (s *STARSDatablock) DrawText(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, baseColor renderer.RGB,
-	brightness STARSBrightness) {
-	style := renderer.TextStyle{
-		Font:        font,
-		Color:       brightness.ScaleRGB(baseColor),
-		LineSpacing: 0}
+///////////////////////////////////////////////////////////////////////////
 
-	for _, line := range s.Lines {
-		haveFormatting := len(line.Colors) > 0
-		if haveFormatting {
-			p0 := pt // save starting point
+// dbChopTrailing takes a datablock field and returns a shortened slice
+// with trailing unset characters removed.
+func dbChopTrailing(f []dbChar) []dbChar {
+	for i := len(f) - 1; i >= 0; i-- {
+		if f[i].ch != 0 {
+			return f[:i+1]
+		}
+	}
+	return nil
+}
 
-			// Gather spans of characters that have the same color
-			spanColor := baseColor
-			start, end := 0, 0
+func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
+	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	rightJustify := leaderLineDirection >= math.South
+	glyph := font.LookupGlyph(' ')
+	fontWidth := glyph.AdvanceX
 
-			flush := func(newColor renderer.RGB) {
-				if end > start {
-					style := renderer.TextStyle{
-						Font:        font,
-						Color:       brightness.ScaleRGB(spanColor),
-						LineSpacing: 0}
-					pt = td.AddText(line.Text[start:end], pt, style)
-					start = end
-				}
-				spanColor = newColor
-			}
+	for _, line := range lines {
+		xOffset := float32(2)
+		if rightJustify {
+			xOffset = -2 - float32(line.Len())*fontWidth
+		}
+		dbDrawLine(line, td, math.Add2f(pt, [2]float32{xOffset, 0}), font, brightness, halfSeconds)
+		// Step down to the next line
+		pt[1] -= float32(font.Size)
+	}
+}
 
-			for ; end < len(line.Text); end++ {
-				if line.Text[end] == ' ' {
-					// let spaces ride regardless of style
-					continue
-				}
-				// Does this character have a new color?
-				chColor := baseColor
-				for _, format := range line.Colors {
-					if end >= format.Start && end < format.End {
-						chColor = format.Color
-						break
-					}
-				}
-				if !spanColor.Equals(chColor) {
-					flush(chColor)
-				}
-			}
-			flush(spanColor)
+func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
+	brightness STARSBrightness, halfSeconds int64) {
+	// We will batch characters to be drawn up into str and flush them out
+	// in a call to TextDrawBuider AddText() only when the color
+	// changes. (This is some effort to minimize the number of AddText()
+	// calls.)
+	str := ""
+	style := renderer.TextStyle{Font: font}
 
-			// newline from start so we maintain aligned columns.
-			pt = td.AddText("\n", p0, style)
+	flush := func() {
+		if len(str) > 0 {
+			pt = td.AddText(str, pt, style)
+			str = ""
+		}
+	}
+
+	for i := range line.length {
+		ch := line.ch[i]
+		if ch.ch == 0 {
+			// Treat unset as a space
+			str += " "
 		} else {
-			pt = td.AddText(line.Text+"\n", pt, style)
+			// Flashing text goes on a 0.5 second cycle.
+			br := brightness
+			if ch.flashing && halfSeconds&1 == 1 {
+				br /= 3
+			}
+
+			c := br.ScaleRGB(ch.color)
+			if !c.Equals(style.Color) {
+				flush()
+				style.Color = c
+			}
+			str += string(ch.ch)
 		}
 	}
+	flush()
 }
+
+func fieldEmpty(f []dbChar) bool {
+	for _, ch := range f {
+		if ch.ch != 0 {
+			return false
+		}
+	}
+	return true
+}
+
+///////////////////////////////////////////////////////////////////////////
 
 func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) DatablockType {
 	trk := sp.getTrack(ctx, ac)
@@ -202,433 +366,337 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 	}
 }
 
-func (sp *STARSPane) getDatablocks(ctx *panes.Context, ac *av.Aircraft) []STARSDatablock {
+// Utility function for assembling datablocks: puts the given string into
+// the field with associated properties; returns the number of characters
+// added.
+func formatDBText(field []dbChar, s string, c renderer.RGB, flashing bool) int {
+	for i, ch := range []byte(s) {
+		if i == len(field) {
+			return i
+		}
+		field[i] = dbChar{ch: ch, color: c, flashing: flashing}
+	}
+	return len(s)
+}
+
+func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock {
 	now := ctx.ControlClient.CurrentTime()
 	state := sp.Aircraft[ac.Callsign]
 	if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 		return nil
 	}
 
-	dbs := sp.formatDatablocks(ctx, ac)
-
-	// For Southern or Westerly directions the datablock text should be
-	// right justified, since the leader line will be connecting on that
-	// side.
-	dir := sp.getLeaderLineDirection(ac, ctx)
-	rightJustify := dir >= math.South
-	if rightJustify {
-		maxLen := 0
-		for _, db := range dbs {
-			for _, line := range db.Lines {
-				maxLen = math.Max(maxLen, len(line.Text))
-			}
-		}
-		for i := range dbs {
-			dbs[i].RightJustify(maxLen)
-		}
-	}
-
-	return dbs
-}
-
-func (sp *STARSPane) getDatablockOffset(ctx *panes.Context, textBounds [2]float32, leaderDir math.CardinalOrdinalDirection) [2]float32 {
-	// To place the datablock, start with the vector for the leader line.
-	drawOffset := sp.getLeaderLineVector(ctx, leaderDir)
-
-	// And now fine-tune so that the leader line connects with the midpoint
-	// of the line that includes the callsign.
-	lineHeight := textBounds[1] / 4
-	switch leaderDir {
-	case math.North, math.NorthEast, math.East, math.SouthEast:
-		drawOffset = math.Add2f(drawOffset, [2]float32{2, lineHeight * 3 / 2})
-	case math.South, math.SouthWest, math.West, math.NorthWest:
-		drawOffset = math.Add2f(drawOffset, [2]float32{-2 - textBounds[0], lineHeight * 3 / 2})
-	}
-
-	return drawOffset
-}
-
-func (sp *STARSPane) formatDatablocks(ctx *panes.Context, ac *av.Aircraft) []STARSDatablock {
 	if ac.Mode == av.Standby {
 		return nil
 	}
 
-	state := sp.Aircraft[ac.Callsign]
+	color, _ := sp.datablockColor(ctx, ac)
 
-	warnings := sp.getWarnings(ctx, ac)
+	// Alerts are common to all datablock types
+	var alerts [16]dbChar
+	formatDBText(alerts[:], strings.Join(sp.getWarnings(ctx, ac), "/"), STARSTextAlertColor,
+		false /* do these ever flash? */)
 
-	// baseDB is what stays the same for all datablock variants
-	baseDB := STARSDatablock{}
-	baseDB.Lines[0].Text = strings.Join(warnings, "/") // want e.g., EM/LA if multiple things going on
-	if len(warnings) > 0 {
-		baseDB.Lines[0].Colors = append(baseDB.Lines[0].Colors,
-			STARSDatablockFieldColors{
-				Start: 0,
-				End:   len(baseDB.Lines[0].Text),
-				Color: STARSTextAlertColor,
-			})
+	trk := sp.getTrack(ctx, ac)
+
+	// Check if the track is being handed off.
+	handoffTCP, handoffCtr := "", ""
+	if trk.HandoffController != "" {
+		// For inbound to us, we want to show who owns it currently; for
+		// outbound, we show who it's going to.
+		callsign := util.Select(trk.HandoffController == ctx.ControlClient.Callsign,
+			trk.TrackOwner, trk.HandoffController)
+
+		if ctrl := ctx.ControlClient.Controllers[callsign]; ctrl != nil {
+			if trk.RedirectedHandoff.RedirectedTo != "" {
+				if toctrl := ctx.ControlClient.Controllers[trk.RedirectedHandoff.RedirectedTo]; toctrl != nil {
+					handoffTCP = toctrl.SectorId[len(ctrl.SectorId)-1:]
+				}
+			} else {
+				if ctrl.ERAMFacility { // Same facility
+					handoffTCP = "C"
+					handoffCtr = ctrl.SectorId
+				} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
+					handoffTCP = ctrl.SectorId[len(ctrl.SectorId)-1:]
+				} else { // Different facility
+					handoffTCP = ctrl.FacilityIdentifier
+				}
+			}
+		}
 	}
 
-	ty := sp.datablockType(ctx, ac)
+	// Various other values that will be repeatedly useful below...
 	beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(platform.KeyF1)
+	ident := state.Ident(ctx.Now)
+	squawkingSPC, _ := av.SquawkIsSPC(ac.Squawk)
+	altitude := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
+	groundspeed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
+	// Note arrivalAirport is only set if it should be shown when there is no scratchpad set
+	arrivalAirport := ""
+	if ap := ctx.ControlClient.Airports[trk.FlightPlan.ArrivalAirport]; ap != nil && !ap.OmitArrivalScratchpad {
+		arrivalAirport = trk.FlightPlan.ArrivalAirport
+		if len(arrivalAirport) == 4 && arrivalAirport[0] == 'K' {
+			arrivalAirport = arrivalAirport[1:]
+		}
+	}
+	beaconMismatch := ac.Squawk != trk.FlightPlan.AssignedSquawk && !squawkingSPC
 
-	switch ty {
+	switch sp.datablockType(ctx, ac) {
 	case LimitedDatablock:
-		db := baseDB.Duplicate()
-		db.Lines[1].Text = util.Select(beaconator, ac.Callsign, ac.Squawk.String()) // TODO(mtrokel): confirm
-		db.Lines[2].Text = fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
-		if state.FullLDBEndTime.After(ctx.Now) {
-			db.Lines[2].Text += fmt.Sprintf(" %02d", (state.TrackGroundspeed()+5)/10)
+		db := &limitedDatablock{}
+
+		// Field 0: CA, MCI, and SPCs
+		copy(db.field0[:], alerts[:])
+
+		extended := state.FullLDBEndTime.After(ctx.Now)
+
+		if beaconator || extended || ident {
+			// Field 1: reported beacon code
+			// TODO: Field 1: WHO if unassociated and no flight plan
+			f1 := formatDBText(db.field1[:], ac.Squawk.String(), color, false)
+			// Field 1: flashing ID after beacon code if ident.
+			if ident {
+				formatDBText(db.field1[f1:], "ID", color, true)
+			}
 		}
 
-		if state.Ident(ctx.Now) {
-			// flash ID after squawk code
-			start := len(db.Lines[1].Text)
-			db.Lines[1].Text += "ID"
+		// Field 3: mode C altitude
+		formatDBText(db.field3[:], altitude, color, false)
 
-			// The text is the same but the "ID" is much dimmer for the flash.
-			db2 := db.Duplicate()
-			color, _ := sp.datablockColor(ctx, ac)
-			db2.Lines[1].Colors = append(db2.Lines[1].Colors,
-				STARSDatablockFieldColors{Start: start, End: start + 2, Color: color.Scale(0.3)})
-			return []STARSDatablock{db, db2}
-		} else {
-			return []STARSDatablock{db}
+		if extended {
+			// Field 5: groundspeed
+			formatDBText(db.field5[:], groundspeed, color, false)
 		}
+
+		if beaconator {
+			// Field 6: callsign
+			formatDBText(db.field6[:], ac.Callsign, color, false)
+		}
+
+		return db
 
 	case PartialDatablock:
-		dbs := []STARSDatablock{baseDB.Duplicate(), baseDB.Duplicate()}
-		trk := sp.getTrack(ctx, ac)
+		db := &partialDatablock{}
 
-		if ac.Squawk != trk.FlightPlan.AssignedSquawk && ac.Squawk != 0o1200 {
-			sq := ac.Squawk.String()
-			if len(baseDB.Lines[0].Text) > 0 {
-				dbs[0].Lines[0].Text += " "
-				dbs[1].Lines[0].Text += " "
-			}
-			dbs[0].Lines[0].Text += sq
-			dbs[1].Lines[0].Text += sq + "WHO"
-		}
+		// Field0: TODO cautions in yellow
+		// TODO: 2-69 doesn't list CA/MCI, so should this be blank even in
+		// those cases? (Note that SPC upgrades partial to full datablocks.)
+		//
+		// TODO: previously we had the following check:
+		// if ac.Squawk != trk.FlightPlan.AssignedSquawk && ac.Squawk != 0o1200 {
+		// and would display ac.Squawk + flashing WHO in field0
+		copy(db.field0[:], alerts[:])
 
-		if state.Ident(ctx.Now) {
-			alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
-			dbs[0].Lines[1].Text = alt + " ID"
-			dbs[1].Lines[1].Text = alt + " ID"
-
-			color, _ := sp.datablockColor(ctx, ac)
-			dbs[1].Lines[1].Colors = append(dbs[1].Lines[1].Colors,
-				STARSDatablockFieldColors{Start: 4, End: 6, Color: color.Scale(0.3)})
-
-			return dbs
-		}
-
-		if fp := trk.FlightPlan; fp != nil && fp.Rules == av.VFR {
-			as := fmt.Sprintf("%03d  %02d", (state.TrackAltitude()+50)/100, (state.TrackGroundspeed()+5)/10)
-			dbs[0].Lines[1].Text = as
-			dbs[1].Lines[1].Text = as
-			return dbs
-		}
-
-		field2 := " "
-		if trk.HandoffController != "" {
-			if ctrl := ctx.ControlClient.Controllers[trk.HandoffController]; ctrl != nil {
-				if trk.RedirectedHandoff.RedirectedTo != "" {
-					if toctrl := ctx.ControlClient.Controllers[trk.RedirectedHandoff.RedirectedTo]; toctrl != nil {
-						field2 = toctrl.SectorId[len(ctrl.SectorId)-1:]
-					}
-				} else {
-					if ctrl.ERAMFacility { // Same facility
-						field2 = "C"
-					} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
-						field2 = ctrl.SectorId[len(ctrl.SectorId)-1:]
-					} else { // Different facility
-						field2 = ctrl.FacilityIdentifier
-					}
-
-				}
-			}
-		}
-
-		field3 := ""
-		if trk.FlightPlan.Rules == av.VFR {
-			field3 += "V"
-		} else if sp.isOverflight(ctx, trk) {
-			field3 += "E"
-		}
-		field3 += state.CWTCategory
-
-		// Field 1: alternate between altitude and either primary
-		// scratchpad or destination airport.
-		ap := trk.FlightPlan.ArrivalAirport
-		if len(ap) == 4 {
-			ap = ap[1:] // drop the leading K
-		}
-		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
-		sp := fmt.Sprintf("%3s", trk.SP1)
-
-		field1 := [2]string{}
-		field1[0] = alt
+		// Field 1: a) mode-c or pilot reported altitude, b) scratchpad 1
+		// or possibly arrival airport (adapted)
+		// TODO: this can be 4 characters based on adaptation
+		formatDBText(db.field1[0][:], altitude, color, false)
 		if trk.SP1 != "" {
-			field1[1] = sp
-		} else if airport := ctx.ControlClient.Airports[trk.FlightPlan.ArrivalAirport]; airport != nil && !airport.OmitArrivalScratchpad {
-			field1[1] = ap
-		} else {
-			field1[1] = alt
+			formatDBText(db.field1[1][:], trk.SP1, color, false)
+		} else if arrivalAirport != "" {
+			formatDBText(db.field1[1][:], arrivalAirport, color, false)
 		}
 
-		dbs[0].Lines[1].Text = field1[0] + field2 + field3
-		dbs[1].Lines[1].Text = field1[1] + field2 + field3
+		// Field 2: receiving TCP if being handed off.
+		// TODO: * if field 1 is showing pilot-reported altitude
+		formatDBText(db.field2[:], handoffTCP, color, false)
 
-		return dbs
+		// Field 3: groundspeed + "V" for VFR, "E" for overflight, followed by ac-category, else ac category
+		ve := ""
+		if trk.FlightPlan.Rules == av.VFR {
+			ve = "V"
+		} else if sp.isOverflight(ctx, trk) {
+			ve = "E"
+		}
+		formatDBText(db.field3[:], groundspeed+ve+state.CWTCategory, color, false)
+
+		// Field 4: ident
+		if ident {
+			formatDBText(db.field4[:], "ID", color, true)
+		}
+
+		return db
 
 	case FullDatablock:
-		trk := sp.getTrack(ctx, ac)
+		db := &fullDatablock{longScratchpad: ctx.ControlClient.STARSFacilityAdaptation.AllowLongScratchpad}
 
-		// Line 1: fields 1, 2, and 8 (surprisingly). Field 8 may be multiplexed.
-		field1 := util.Select(beaconator, ac.Squawk.String(), ac.Callsign)
+		// Line 0
+		// Field 0: special conditions, safety alerts (red), cautions (yellow)
+		copy(db.field0[:], alerts[:])
 
-		field2 := ""
+		// Line 1
+		// Field 1: callsign (ACID) (or squawk if beaconator)
+		if beaconator {
+			formatDBText(db.field1[:], ac.Squawk.String(), color, false)
+		} else {
+			formatDBText(db.field1[:], ac.Callsign, color, false)
+		}
+
+		// Field 2: various symbols for inhibited stuff
 		if state.InhibitMSAW || state.DisableMSAW {
 			if state.DisableCAWarnings {
-				field2 = "+"
+				formatDBText(db.field2[:], "+", color, false)
 			} else {
-				field2 = "*"
+				formatDBText(db.field2[:], "*", color, false)
 			}
 		} else if state.DisableCAWarnings {
-			field2 = STARSTriangleCharacter
+			formatDBText(db.field2[:], STARSTriangleCharacter, color, false)
 		}
 
-		field8 := []string{""}
+		// Field 8: point out, rejected pointout, redirected
+		// handoffs... Some flash, some don't.
 		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
-			field8 = []string{" PO"}
+			formatDBText(db.field8[:], "PO", color, false)
 		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
-			field8 = []string{" PO" + id}
+			if len(id) > 1 && id[0] >= '0' && id[0] <= '9' {
+				id = id[1:]
+			}
+			formatDBText(db.field8[:], "PO"+id, color, false)
 		} else if ctx.Now.Before(state.UNFlashingEndTime) {
-			field8 = []string{"", " UN"}
+			formatDBText(db.field8[:], "UN", color, true)
 		} else if state.POFlashingEndTime.After(ctx.Now) {
-			field8 = []string{"", " PO"}
+			formatDBText(db.field8[:], "PO", color, true)
 		} else if ac.RedirectedHandoff.ShowRDIndicator(ctx.ControlClient.Callsign, state.RDIndicatorEnd) {
-			field8 = []string{" RD"}
+			formatDBText(db.field8[:], "RD", color, false)
 		}
 
-		// Line 2: fields 3, 4, 5
-		alt := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
-		if state.LostTrack(ctx.ControlClient.SimTime) {
-			alt = "CST"
-		}
-		// Build up field3 and field4 in tandem because 4 gets a "+" if 3
-		// is displaying the secondary scratchpad.  Leave the empty string
-		// as a placeholder in field 4 otherwise.
-		field3 := []string{alt}
-		field4 := []string{""}
-		if !state.Ident(ctx.Now) {
-			// Don't display these if they're identing: then it's just altitude and speed + "ID"
-			if ac.Scratchpad != "" {
-				field3 = append(field3, ac.Scratchpad)
-				field4 = append(field4, "")
+		// Line 2
+		// Fields 3 and 4: 3 is altitude plus possibly other stuff; 4 is
+		// special indicators, possible associated with 3, so they're a
+		// single field
+		field3Length := util.Select(db.longScratchpad[0] || db.longScratchpad[1], 4, 3)
+		fmt3 := func(s string) string {
+			for len(s) < field3Length {
+				s += " "
 			}
-			if ac.SecondaryScratchpad != "" {
-				field3 = append(field3, ac.SecondaryScratchpad)
-				field4 = append(field4, "+") // 2-67, "Field 4 Contents"
-			}
-			if len(field3) == 1 {
-				if ap := ctx.ControlClient.Airports[trk.FlightPlan.ArrivalAirport]; ap != nil && !ap.OmitArrivalScratchpad {
-					ap := ac.FlightPlan.ArrivalAirport
-					if len(ap) == 4 {
-						ap = ap[1:] // drop the leading K
-					}
-					field3 = append(field3, ap)
-					field4 = append(field4, "")
-				}
-			}
+			return s
 		}
 
-		// Fill in empty field4 entries.
-		for i := range field4 {
-			if field4[i] == "" && trk.HandoffController != "" {
-				if ctrl := ctx.ControlClient.Controllers[trk.HandoffController]; ctrl != nil {
-					if trk.RedirectedHandoff.RedirectedTo != "" {
-						if toctrl := ctx.ControlClient.Controllers[trk.RedirectedHandoff.RedirectedTo]; toctrl != nil {
-							field4 = append(field4, toctrl.SectorId[len(ctrl.SectorId)-1:])
-						}
-					} else {
-						if ctrl.ERAMFacility { // Same facility
-							field4 = append(field4, "C")
-						} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
-							field4 = append(field4, ctrl.SectorId[len(ctrl.SectorId)-1:])
-						} else { // Different facility
-							field4 = append(field4, ctrl.FacilityIdentifier)
-						}
-					}
-				}
-			}
-			for len(field4[i]) < 2 {
-				field4[i] += " "
-			}
+		ho := util.Select(handoffTCP != "", handoffTCP, " ")
+		formatDBText(db.field34[0][:], fmt3(altitude)+ho, color, false)
+		idx34 := 1
+		if trk.SP1 != "" {
+			formatDBText(db.field34[idx34][:], fmt3(trk.SP1)+ho, color, false)
+			idx34++
+		}
+		if handoffCtr != "" {
+			formatDBText(db.field34[idx34][:], fmt3(handoffCtr)+handoffTCP, color, false)
+			idx34++
+		} else if ac.SecondaryScratchpad != "" { // don't show secondary if we're showing a center
+			// TODO: confirm no handoffTCP here
+			formatDBText(db.field34[idx34][:], fmt3(trk.SP2)+"+", color, false)
+			idx34++
+		}
+		if idx34 == 1 && arrivalAirport != "" { // no scratchpad, so maybe show the airport (adapted)
+			formatDBText(db.field34[idx34][:], fmt3(arrivalAirport)+ho, color, false)
 		}
 
-		speed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
+		// Field 5: groundspeed
+		rulesCategory := " "
+		if ac.FlightPlan.Rules == av.VFR {
+			rulesCategory = "V"
+		} else if sp.isOverflight(ctx, trk) {
+			rulesCategory = "E"
+		}
+		rulesCategory += state.CWTCategory + " "
+
 		if state.IFFlashing {
-			speed = "IF"
-		}
-
-		field5 := []string{} // alternate speed and aircraft type
-		var line5FieldColors *STARSDatablockFieldColors
-		color, _ := sp.datablockColor(ctx, ac)
-		if state.Ident(ctx.Now) {
-			// Speed is followed by ID when identing (2-67, field 5)
-			field5 = append(field5, speed+"ID")
-			field5 = append(field5, speed+"ID")
-
-			if speed == "IF" {
-				line5FieldColors = &STARSDatablockFieldColors{
-					Start: len(speed) - 3,
-					End:   len(speed) + 3,
-					Color: color.Scale(0.3),
-				}
+			if ident {
+				formatDBText(db.field5[0][:], "IF"+"ID", color, true)
 			} else {
-				line5FieldColors = &STARSDatablockFieldColors{
-					Start: len(speed) + 1,
-					End:   len(speed) + 3,
-					Color: color.Scale(0.3),
-				}
+				formatDBText(db.field5[0][:], "IF"+rulesCategory, color, true)
 			}
 		} else {
-			if speed == "IF" {
-				line5FieldColors = &STARSDatablockFieldColors{
-					Start: len(speed) - 1,
-					End:   len(speed) + 1,
-					Color: color.Scale(0.3),
-				}
+			idx := formatDBText(db.field5[0][:], groundspeed, color, false)
+			if ident {
+				formatDBText(db.field5[0][idx:], "ID", color, true)
+			} else {
+				formatDBText(db.field5[0][idx:], rulesCategory, color, false)
 			}
-
-			acCategory := ""
+		}
+		// Field 5: +aircraft type and possibly requested altitude, if not
+		// identing.
+		if !ident {
 			actype := ac.FlightPlan.TypeWithoutSuffix()
 			if strings.Index(actype, "/") == 1 {
 				actype = actype[2:]
 			}
-			modifier := ""
-			if ac.FlightPlan.Rules == av.VFR {
-				modifier += "V"
-			} else if sp.isOverflight(ctx, trk) {
-				modifier += "E"
-			} else {
-				modifier = " "
-			}
-			acCategory = modifier + state.CWTCategory
+			formatDBText(db.field5[1][:], actype+" ", color, false)
 
-			field5 = append(field5, speed+acCategory)
-
-			field5 = append(field5, actype)
 			if (state.DisplayRequestedAltitude != nil && *state.DisplayRequestedAltitude) ||
 				(state.DisplayRequestedAltitude == nil && sp.CurrentPreferenceSet.DisplayRequestedAltitude) {
-				field5 = append(field5, fmt.Sprintf("R%03d", ac.FlightPlan.Altitude/100))
-			}
-		}
-		for i := range field5 {
-			if len(field5[i]) < 5 {
-				field5[i] = fmt.Sprintf("%-5s", field5[i])
+				formatDBText(db.field5[2][:], fmt.Sprintf("R%03d ", ac.FlightPlan.Altitude/100), color, false)
 			}
 		}
 
-		field6 := []string{}
-		var line3FieldColors *STARSDatablockFieldColors
+		// Field 6: ATPA info and possibly beacon code
+		// TODO: DB for duplicate beacon code as well
 		if state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert {
-			field6 = append(field6, "*TPA")
+			formatDBText(db.field6[0][:], "*TPA", color, false)
 		} else if state.IntrailDistance != 0 && sp.CurrentPreferenceSet.DisplayATPAInTrailDist {
-			field6 = append(field6, fmt.Sprintf("%.2f", state.IntrailDistance))
-
+			distColor := color
 			if state.ATPAStatus == ATPAStatusWarning {
-				line3FieldColors = &STARSDatablockFieldColors{
-					Start: 0,
-					End:   len(field6),
-					Color: STARSATPAWarningColor,
-				}
+				distColor = STARSATPAWarningColor
 			} else if state.ATPAStatus == ATPAStatusAlert {
-				line3FieldColors = &STARSDatablockFieldColors{
-					Start: 0,
-					End:   len(field6),
-					Color: STARSATPAAlertColor,
-				}
+				distColor = STARSATPAAlertColor
 			}
+			formatDBText(db.field6[0][:], fmt.Sprintf("%.2f", state.IntrailDistance), distColor, false)
+		}
+		if beaconMismatch {
+			idx := util.Select(fieldEmpty(db.field6[0][:]), 0, 1)
+			formatDBText(db.field6[idx][:], ac.Squawk.String(), color, beaconMismatch)
 		}
 
-		field7 := []string{}
+		// Field 7: assigned altitude, assigned beacon if mismatch
 		if ac.TempAltitude != 0 {
 			ta := (ac.TempAltitude + 50) / 100
-			field7 = append(field7, fmt.Sprintf("A%03d", ta))
+			formatDBText(db.field7[0][:], fmt.Sprintf("A%03d", ta), color, false)
 		}
-		if sq := trk.FlightPlan.AssignedSquawk; sq != ac.Squawk {
-			field7 = append(field7, sq.String())
-			field6 = append(field6, ac.Squawk.String()+"  ")
-			color, _ := sp.datablockColor(ctx, ac)
-			idx := len(field6) - 1
-			line3FieldColors = &STARSDatablockFieldColors{
-				Start: len(field6[idx]) + 1,
-				End:   len(field6[idx]) + 5,
-				Color: color.Scale(0.3),
-			}
-		}
-		if len(field7) == 0 {
-			field7 = append(field7, "")
-		}
-		if len(field6) == 0 {
-			field6 = append(field6, "")
-		}
-		for i := range field6 {
-			for len(field6[i]) < 5 {
-				field6[i] += " "
-			}
+		beaconMismatch := ac.Squawk != trk.FlightPlan.AssignedSquawk && !squawkingSPC
+		if beaconMismatch {
+			idx := util.Select(fieldEmpty(db.field7[0][:]), 0, 1)
+			formatDBText(db.field7[idx][:], trk.FlightPlan.AssignedSquawk.String(), color, true)
 		}
 
-		// Now make some datablocks. Note that line 1 has already been set
-		// in baseDB above.
-		//
-		// A number of the fields may be multiplexed; the total number of
-		// unique datablock variations is the least common multiple of all
-		// of their lengths.  and 8 may be time multiplexed, which
-		// simplifies db creation here.
-		dbs := []STARSDatablock{}
-		n := math.LCM(math.LCM(math.LCM(len(field3), len(field4)), math.LCM(len(field5), len(field8))), math.LCM(len(field6), len(field7)))
-		for i := 0; i < n; i++ {
-			db := baseDB.Duplicate()
-			db.Lines[1].Text = field1 + field2 + field8[i%len(field8)]
-			db.Lines[2].Text = field3[i%len(field3)] + field4[i%len(field4)] + field5[i%len(field5)]
-			db.Lines[3].Text = field6[i%len(field6)] + "  " + field7[i%len(field7)]
-			if line3FieldColors != nil && i&1 == 1 {
-				// Flash the correct squawk
-				fc := *line3FieldColors
-				fc.Start += len(field6[i%len(field6)]) - 7
-				fc.End += len(field6[i%len(field6)]) - 7
-				db.Lines[3].Colors = append(db.Lines[3].Colors, fc)
-			}
-			if line5FieldColors != nil && i&1 == 0 {
-				// Flash "ID" for identing
-				fc := *line5FieldColors
-				fc.Start += len(field3[i%len(field3)]) + len(field4)
-				fc.End += len(field3[i%len(field3)]) + len(field4)
-				db.Lines[2].Colors = append(db.Lines[2].Colors, fc)
-			}
-			dbs = append(dbs, db)
-		}
-		return dbs
+		return db
 	}
 
 	return nil
+}
+
+func (sp *STARSPane) getGhostDatablock(ghost *av.GhostAircraft, color renderer.RGB) ghostDatablock {
+	var db ghostDatablock
+
+	state := sp.Aircraft[ghost.Callsign]
+	groundspeed := fmt.Sprintf("%02d", (ghost.Groundspeed+5)/10)
+	if state.Ghost.PartialDatablock {
+		// Partial datablock is just airspeed and then aircraft CWT type
+		formatDBText(db.field0[:], groundspeed+state.CWTCategory, color, false)
+	} else {
+		// The full datablock ain't much more...
+		formatDBText(db.field0[:], ghost.Callsign, color, false)
+		formatDBText(db.field1[:], groundspeed, color, false) // TODO: no CWT?
+	}
+
+	return db
 }
 
 func (sp *STARSPane) datablockColor(ctx *panes.Context, ac *av.Aircraft) (color renderer.RGB, brightness STARSBrightness) {
 	ps := sp.CurrentPreferenceSet
 	dt := sp.datablockType(ctx, ac)
 	state := sp.Aircraft[ac.Callsign]
-	brightness = util.Select(dt == PartialDatablock || dt == LimitedDatablock,
-		ps.Brightness.LimitedDatablocks, ps.Brightness.FullDatablocks)
+	trk := sp.getTrack(ctx, ac)
 
+	brightness = ps.Brightness.FullDatablocks
+	if dt == PartialDatablock || dt == LimitedDatablock {
+		brightness = ps.Brightness.LimitedDatablocks
+	} else if dt == FullDatablock && trk != nil && trk.TrackOwner != ctx.ControlClient.Callsign {
+		brightness = ps.Brightness.OtherTracks
+	}
 	if ac.Callsign == sp.dwellAircraft {
 		brightness = STARSBrightness(100)
 	}
 
-	trk := sp.getTrack(ctx, ac)
 	if trk == nil {
 		return STARSUntrackedAircraftColor, brightness
 	}
@@ -639,17 +707,16 @@ func (sp *STARSPane) datablockColor(ctx *panes.Context, ac *av.Aircraft) (color 
 		}
 	}
 
-	// Handle cases where it should flash
-	if ctx.Now.Second()&1 == 0 { // one second cycle
+	// Handle cases where the whole thing should flash
+	halfSeconds := ctx.Now.UnixMilli() / 500
+	if halfSeconds&1 == 0 { // one second cycle
 		if _, pointOut := sp.InboundPointOuts[ac.Callsign]; pointOut {
 			// point out
 			brightness /= 3
 		} else if state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd) {
 			// we handed it off, it was accepted, but we haven't yet acknowledged
 			brightness /= 3
-		} else if (trk.HandoffController == ctx.ControlClient.Callsign && // handing off to us
-			!slices.Contains(trk.RedirectedHandoff.Redirector, ctx.ControlClient.Callsign)) || // not a redirector
-			trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.Callsign { // redirected to
+		} else if trk.HandingOffTo(ctx.ControlClient.Callsign) {
 			brightness /= 3
 		}
 	}
@@ -766,28 +833,36 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 			continue
 		}
 
-		dbs := sp.getDatablocks(ctx, ac)
-		if len(dbs) == 0 {
+		db := sp.getDatablock(ctx, ac)
+		if db == nil {
 			continue
 		}
 
-		color, brightness := sp.datablockColor(ctx, ac)
+		_, brightness := sp.datablockColor(ctx, ac)
 		if brightness == 0 {
 			continue
 		}
 
-		// Compute the bounds of the datablock; always use the first one so
-		// things don't jump around when it switches between multiple of
-		// them.
-		w, h := dbs[0].BoundText(font)
-		datablockOffset := sp.getDatablockOffset(ctx, [2]float32{float32(w), float32(h)},
-			sp.getLeaderLineDirection(ac, ctx))
-
-		// Draw characters starting at the upper left.
+		// Calculate the endpoint of the leader line
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
-		pt := math.Add2f(datablockOffset, pac)
-		idx := (realNow.Second() / 2) % len(dbs) // 2 second cycle
-		dbs[idx].DrawText(td, pt, font, color, brightness)
+		leaderLineDirection := sp.getLeaderLineDirection(ac, ctx)
+		vll := sp.getLeaderLineVector(ctx, leaderLineDirection)
+		pll := math.Add2f(pac, vll)
+		if math.Length2f(vll) == 0 {
+			// no leader line is being drawn; make sure that the datablock
+			// doesn't overlap the target track.
+			sz := sp.getTrackSize(ctx, transforms) / 2
+			rightJustify := leaderLineDirection >= math.South
+			pll[0] += util.Select(rightJustify, -sz, sz)
+			pll[1] += float32(font.Size)
+		} else {
+			// Start drawing down a half line-height to align the leader
+			// line in the middle of the db line.
+			pll[1] += float32(font.Size / 2)
+		}
+
+		halfSeconds := realNow.UnixMilli() / 500
+		db.draw(td, pll, font, brightness, sp.getLeaderLineDirection(ac, ctx), halfSeconds)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -804,7 +879,7 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) boo
 	if ok, _ := av.SquawkIsSPC(ac.Squawk); ok {
 		return true
 	}
-	if len(ac.SPCOverrides) > 0 {
+	if ac.SPCOverride != "" {
 		return true
 	}
 	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
@@ -838,8 +913,8 @@ func (sp *STARSPane) getWarnings(ctx *panes.Context, ac *av.Aircraft) []string {
 	if ok, code := av.SquawkIsSPC(ac.Squawk); ok {
 		addWarning(code)
 	}
-	for code := range ac.SPCOverrides {
-		addWarning(code)
+	if ac.SPCOverride != "" {
+		addWarning(ac.SPCOverride)
 	}
 	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
 		slices.ContainsFunc(sp.CAAircraft,

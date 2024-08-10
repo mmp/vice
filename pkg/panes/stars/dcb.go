@@ -9,11 +9,11 @@ import (
 	"strconv"
 	"strings"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -117,6 +117,32 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 
 	sp.startDrawDCB(ctx, buttonScale, transforms, cb)
 
+	drawVideoMapButton := func(idx int, videoMaps []av.VideoMap) {
+		if idx < len(videoMaps) && videoMaps[idx].Id != 0 {
+			m := videoMaps[idx]
+
+			// Get the map label, either the default or user-specified.
+			label := m.Label
+			if l, ok := ctx.ControlClient.STARSFacilityAdaptation.VideoMapLabels[m.Name]; ok {
+				label = l
+			}
+
+			text := fmt.Sprintf("%d\n%s", m.Id, label)
+			_, vis := ps.VideoMapVisible[m.Id]
+			if toggleButton(ctx, text, &vis, buttonHalfVertical, buttonScale) {
+				if vis {
+					ps.VideoMapVisible[m.Id] = nil
+				} else {
+					delete(ps.VideoMapVisible, m.Id)
+				}
+			}
+		} else {
+			// Inert button
+			off := false
+			toggleButton(ctx, "", &off, buttonHalfVertical, buttonScale)
+		}
+	}
+
 	switch sp.activeDCBMenu {
 	case dcbMenuMain:
 		sp.drawDCBSpinner(ctx, makeRadarRangeSpinner(&ps.Range), CommandModeRange,
@@ -154,9 +180,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			// buttons top->down, left->right, so the indexing is a little
 			// funny.
 			idx := util.Select(i&1 == 0, i/2, 3+i/2)
-			m := videoMaps[idx]
-			text := util.Select(m.Id == 0, "", fmt.Sprintf("%d\n%s", m.Id, m.Label))
-			toggleButton(ctx, text, &ps.DisplayVideoMap[idx], buttonHalfVertical, buttonScale)
+			drawVideoMapButton(idx, videoMaps)
 		}
 		for i := range ps.DisplayWeatherLevel {
 			toggleButton(ctx, "WX"+strconv.Itoa(i+1), &ps.DisplayWeatherLevel[i], buttonHalfHorizontal, buttonScale)
@@ -251,21 +275,16 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			sp.activeDCBMenu = dcbMenuMain
 		}
 		if selectButton(ctx, "CLR ALL", buttonHalfVertical, buttonScale) {
-			for i := range ps.DisplayVideoMap {
-				ps.DisplayVideoMap[i] = false
-			}
-			ps.SystemMapVisible = make(map[int]interface{})
+			clear(ps.VideoMapVisible)
 		}
 		videoMaps, _ := ctx.ControlClient.GetVideoMaps()
-		for i := 0; i < sim.NumSTARSMaps-6; i++ {
+		for i := 0; i < 32; i++ {
 			// Indexing is tricky both because we are skipping the first 6
 			// maps, which are shown in the main DCB, but also because we
 			// draw top->down, left->right while the maps are specified
 			// left->right, top->down...
 			idx := util.Select(i&1 == 0, 6+i/2, 22+i/2)
-			m := videoMaps[idx]
-			text := util.Select(m.Id == 0, "", fmt.Sprintf("%d\n%s", m.Id, m.Label))
-			toggleButton(ctx, text, &ps.DisplayVideoMap[idx], buttonHalfVertical, buttonScale)
+			drawVideoMapButton(idx, videoMaps)
 		}
 
 		geoMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupGeo && ps.VideoMapsList.Visible
@@ -323,9 +342,6 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			CommandModeNone, buttonHalfVertical, buttonScale)
 		if ps.Brightness.Weather != 0 {
 			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.Renderer, ctx.Lg)
-		} else {
-			// Don't fetch weather maps if they're not going to be displayed.
-			sp.weatherRadar.Deactivate()
 		}
 		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain

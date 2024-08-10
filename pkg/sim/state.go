@@ -289,10 +289,6 @@ func (s *State) GetStateForController(callsign string) *State {
 		state.ControllerDefaultVideoMaps = s.ScenarioDefaultVideoMaps
 	}
 
-	for len(state.ControllerVideoMaps) < NumSTARSMaps {
-		state.ControllerVideoMaps = append(state.ControllerVideoMaps, av.VideoMap{})
-	}
-
 	return &state
 }
 
@@ -383,6 +379,28 @@ func (ss *State) GetInitialCenter() math.Point2LL {
 		return config.Center
 	}
 	return ss.Center
+}
+
+func (s *State) IsDeparture(ac *av.Aircraft) bool {
+	if _, ok := s.DepartureAirports[ac.FlightPlan.DepartureAirport]; ok {
+		return true
+	}
+	return false
+}
+
+func (s *State) IsArrival(ac *av.Aircraft) bool {
+	if _, ok := s.ArrivalAirports[ac.FlightPlan.ArrivalAirport]; ok {
+		return true
+	}
+	return false
+}
+
+func (s *State) IsOverflight(ac *av.Aircraft) bool {
+	return !s.IsDeparture(ac) && !s.IsArrival(ac)
+}
+
+func (s *State) IsIntraFacility(ac *av.Aircraft) bool {
+	return s.IsDeparture(ac) && s.IsArrival(ac)
 }
 
 func (ss *State) InhibitCAVolumes() []av.AirspaceVolume {

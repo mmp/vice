@@ -88,15 +88,15 @@
           },
           "EKR": {
             "cleared_altitude": 21000,
-            "sid": "PITKN4",
-            "description": "PITKN4.EKR",
-            "waypoints": "KASE-15 ADINY/a8320 BOYET LINDZ GLENO/a16000 SLOLM RIL"
+            "sid": "PITKN5",
+            "description": "PITKN5.EKR",
+            "waypoints": "KASE-15 BOYET/a9400+ LINDZ GLENO SLOLM/a15000-19000 NOVJO"
           },
           "JNC": {
             "cleared_altitude": 21000,
-            "sid": "PITKN4",
-            "description": "PITKN4.JNC",
-            "waypoints": "KASE-15 ADINY/a8320 BOYET LINDZ GLENO/a16000 SLOLM"
+            "sid": "PITKN5",
+            "description": "PITKN5.JNC",
+            "waypoints": "KASE-15 BOYET/a9400+ LINDZ GLENO SLOLM/a15000-19000"
           }
         }
       },

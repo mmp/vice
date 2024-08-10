@@ -27,6 +27,7 @@ type FlightStripPane struct {
 	HideFlightStrips          bool
 	AutoAddDepartures         bool
 	AutoAddArrivals           bool
+	AutoAddOverflights        bool
 	AutoAddTracked            bool
 	AutoAddAcceptedHandoffs   bool
 	AutoRemoveDropped         bool
@@ -90,21 +91,28 @@ func (fsp *FlightStripPane) Activate(ss *sim.State, r renderer.Renderer, p platf
 
 	if ss != nil {
 		for _, ac := range ss.Aircraft {
-			if fsp.AutoAddTracked && ac.TrackingController == ss.Callsign && ac.FlightPlan != nil {
-				fsp.strips = append(fsp.strips, ac.Callsign)
-				fsp.addedAircraft[ac.Callsign] = nil
-			} else if ac.TrackingController == "" &&
-				((fsp.AutoAddDepartures && ac.IsDeparture()) || (fsp.AutoAddArrivals && !ac.IsDeparture())) {
-				fsp.strips = append(fsp.strips, ac.Callsign)
-				fsp.addedAircraft[ac.Callsign] = nil
-			}
+			fsp.possiblyAddAircraft(ss, ac)
 		}
 	}
 }
 
-func (fsp *FlightStripPane) Deactivate() {
-	fsp.events.Unsubscribe()
-	fsp.events = nil
+func (fsp *FlightStripPane) possiblyAddAircraft(ss *sim.State, ac *av.Aircraft) {
+	if _, ok := fsp.addedAircraft[ac.Callsign]; ok {
+		return
+	}
+	if ac.FlightPlan == nil {
+		return
+	}
+
+	add := fsp.AutoAddTracked && ac.TrackingController == ss.Callsign && ac.FlightPlan != nil
+	add = add || ac.TrackingController == "" && fsp.AutoAddDepartures && ss.IsDeparture(ac)
+	add = add || ac.TrackingController == "" && fsp.AutoAddArrivals && ss.IsArrival(ac)
+	add = add || ac.TrackingController == "" && fsp.AutoAddOverflights && ss.IsOverflight(ac)
+
+	if add {
+		fsp.strips = append(fsp.strips, ac.Callsign)
+		fsp.addedAircraft[ac.Callsign] = nil
+	}
 }
 
 func (fsp *FlightStripPane) Reset(ss sim.State, lg *log.Logger) {
@@ -115,29 +123,12 @@ func (fsp *FlightStripPane) Reset(ss sim.State, lg *log.Logger) {
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
 
 func (fsp *FlightStripPane) processEvents(ctx *Context) {
-	possiblyAdd := func(ac *av.Aircraft) {
-		if _, ok := fsp.addedAircraft[ac.Callsign]; ok {
-			return
-		}
-
-		if ac.FlightPlan == nil {
-			return
-		}
-
-		fsp.strips = append(fsp.strips, ac.Callsign)
-		fsp.addedAircraft[ac.Callsign] = nil
-	}
-
 	// First account for changes in world.Aircraft
 	// Added aircraft
 	for _, ac := range ctx.ControlClient.Aircraft {
-		if fsp.AutoAddTracked && ac.TrackingController == ctx.ControlClient.Callsign {
-			possiblyAdd(ac)
-		} else if ac.TrackingController == "" &&
-			((fsp.AutoAddDepartures && ac.IsDeparture()) || (fsp.AutoAddArrivals && !ac.IsDeparture())) {
-			possiblyAdd(ac)
-		}
+		fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 	}
+
 	// Removed aircraft
 	fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool {
 		_, ok := ctx.ControlClient.Aircraft[callsign]
@@ -155,12 +146,12 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 		switch event.Type {
 		case sim.PushedFlightStripEvent:
 			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok && fsp.AddPushed {
-				possiblyAdd(ac)
+				fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 			}
 		case sim.InitiatedTrackEvent:
 			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
 				if fsp.AutoAddTracked && ac.TrackingController == ctx.ControlClient.Callsign {
-					possiblyAdd(ac)
+					fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 				}
 			}
 		case sim.DroppedTrackEvent:
@@ -170,7 +161,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
 			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
 				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == ctx.ControlClient.Callsign {
-					possiblyAdd(ac)
+					fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 				}
 			}
 		case sim.HandoffControllEvent:
@@ -190,7 +181,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	if fsp.CollectDeparturesArrivals {
 		isDeparture := func(callsign string) bool {
 			ac := ctx.ControlClient.Aircraft[callsign]
-			return ac != nil && ac.IsDeparture()
+			return ac != nil && ctx.ControlClient.State.IsDeparture(ac)
 		}
 		dep := util.FilterSlice(fsp.strips, isDeparture)
 		arr := util.FilterSlice(fsp.strips, func(callsign string) bool { return !isDeparture(callsign) })
@@ -213,6 +204,7 @@ func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config)
 	uiStartDisable(fsp.HideFlightStrips)
 	imgui.Checkbox("Automatically add departures", &fsp.AutoAddDepartures)
 	imgui.Checkbox("Automatically add arrivals", &fsp.AutoAddArrivals)
+	imgui.Checkbox("Automatically add overflights", &fsp.AutoAddOverflights)
 	imgui.Checkbox("Add pushed flight strips", &fsp.AddPushed)
 	imgui.Checkbox("Automatically add when track is initiated", &fsp.AutoAddTracked)
 	imgui.Checkbox("Automatically add handoffs", &fsp.AutoAddAcceptedHandoffs)

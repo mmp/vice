@@ -1098,6 +1098,12 @@ type TrackInformation struct {
 	AutoAssociateFP   bool // If it's white or not
 }
 
+func (trk TrackInformation) HandingOffTo(ctrl string) bool {
+	return (trk.HandoffController == ctrl && // handing off to them
+		!slices.Contains(trk.RedirectedHandoff.Redirector, ctrl)) || // not a redirector
+		trk.RedirectedHandoff.RedirectedTo == ctrl // redirected to
+}
+
 const (
 	DepartureTime  = "P"
 	ArrivalTime    = "A"

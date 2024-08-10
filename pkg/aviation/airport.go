@@ -322,6 +322,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				e.ErrorString("ProcedureTurn cannot be specified at the final waypoint")
 			}
 			for j, wp := range appr.Waypoints[i] {
+				appr.Waypoints[i][j].OnSTAR = true // close enough
 				e.Push("Fix " + wp.Fix)
 				if wp.NoPT {
 					if !slices.ContainsFunc(appr.Waypoints[i][j+1:],
@@ -402,6 +403,10 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 					Fix:      rwy + "-mid",
 					Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold),
 				}}, route.Waypoints...)
+
+			for i := range route.Waypoints {
+				route.Waypoints[i].OnSID = true
+			}
 
 			route.Waypoints.CheckDeparture(e, controlPositions)
 

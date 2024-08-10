@@ -795,9 +795,11 @@ how it simulates aircraft or the STARS interface.
             <h3>0.10.27 (4 July 2024)</h3>
             <ul>
 	      <li>New scenarios: MCI (Brody Carty), P31 (Josh Lambert).</li>
-              <li>Scenario updates: F11, JAX (Samuel Valencia), Y90 (Merry Aribrary).</li>
-              <li>Added "say altitude" (SA) and "say heading" commands (SH) (Samuel Valencia).</li>
-              <li>Aircraft delete is now a CLI command, not a STARS command (Samuel Valencia).</li>
+              <li>Scenario updates: F11, JAX (Michael K), Y90 (Merry Aribrary).</li>
+              <li>Added "say altitude" (SA) and "say heading" commands (SH)
+              (Michael K).</li>
+              <li>Aircraft delete is now a CLI command, not a STARS command
+              (Michael K).</li>
               <li>"Paste" is now supported in the messages pane (Michael Trokel).</li>
               <li>The "\" key can be used in place of END to activate the
                 STARS minimum separation tool.</li>
@@ -3703,6 +3705,11 @@ Given the id, the approach can be specified with:</p>
                 <td>Optional String</td>
                 <td>If specified, this gives the aircraft's initial scratchpad. Otherwise, the scratchpad
               is set based on the exit, using the "scratchpads" dictionary in the scenario definition.</td>
+              </tr>
+              <tr>
+                <td>"secondary_scratchpad"</td>
+                <td>Optional String</td>
+                <td>If specified, this gives the aircraft's initial secondary scratchpad.</td>
               </tr>
             </tbody>
             </table>

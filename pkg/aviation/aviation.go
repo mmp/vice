@@ -619,6 +619,7 @@ type Waypoint struct {
 	Arc                 *DMEArc              `json:"arc,omitempty"`
 	IAF, IF, FAF        bool                 // not provided in scenario JSON; derived from fix
 	Airway              string               // when parsing waypoints, this is set if we're on an airway after the fix
+	OnSID, OnSTAR       bool                 // set during deserialization
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -664,6 +665,12 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.Airway != "" {
 		attrs = append(attrs, slog.String("airway", wp.Airway))
+	}
+	if wp.OnSID {
+		attrs = append(attrs, slog.Bool("on_sid", wp.OnSID))
+	}
+	if wp.OnSTAR {
+		attrs = append(attrs, slog.Bool("on_star", wp.OnSTAR))
 	}
 
 	return slog.GroupValue(attrs...)
@@ -749,6 +756,12 @@ func (wslice WaypointArray) Encode() string {
 		}
 		if w.Airway != "" {
 			s += "/airway" + w.Airway
+		}
+		if w.OnSID {
+			s += "/sid"
+		}
+		if w.OnSTAR {
+			s += "/star"
 		}
 
 		entries = append(entries, s)
@@ -996,6 +1009,10 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 					wp.IF = true
 				} else if f == "faf" {
 					wp.FAF = true
+				} else if f == "sid" {
+					wp.OnSID = true
+				} else if f == "star" {
+					wp.OnSTAR = true
 				} else if len(f) > 2 && f[:2] == "po" {
 					wp.PointOut = f[2:]
 				} else if (len(f) >= 4 && f[:4] == "pt45") || len(f) >= 5 && f[:5] == "lpt45" {
@@ -1604,6 +1621,10 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 				initializeWaypointLocations(wp, loc, nmPerLongitude, magneticVariation, e)
 
+				for i := range wp {
+					wp[i].OnSTAR = true
+				}
+
 				if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {
 					e.ErrorString("initial \"runway_waypoints\" fix must match " +
 						"last \"waypoints\" fix")
@@ -1620,6 +1641,10 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			}
 			e.Pop()
 		}
+	}
+
+	for i := range ar.Waypoints {
+		ar.Waypoints[i].OnSTAR = true
 	}
 
 	ar.Waypoints.CheckArrival(e, controlPositions)
@@ -1799,7 +1824,7 @@ func (v videoMapToLoad) load(filename string, manifest map[string]interface{}) (
 	// *VideoMap.
 	starsMaps := make(map[string]*VideoMap)
 	for _, sm := range maps {
-		if _, ok := v.referenced[sm.Name]; ok {
+		if _, ok := v.referenced[sm.Name]; ok || len(v.referenced) == 0 /* empty -> load all */ {
 			if _, ok := manifest[sm.Name]; !ok {
 				panic(fmt.Sprintf("%s: map \"%s\" not found in manifest file", filename, sm.Name))
 			}
@@ -1883,6 +1908,9 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 
 	var videoMaps []VideoMap
 	for _, name := range lib.AvailableMaps(path) {
+		if name == "" {
+			continue
+		}
 		if m, err := lib.GetMap(path, name); err != nil {
 			e.Error(err)
 		} else {

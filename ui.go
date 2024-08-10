@@ -614,7 +614,7 @@ func (m *ModalDialogBox) Draw() {
 type ConnectModalClient struct {
 	mgr         *sim.ConnectionManager
 	lg          *log.Logger
-	simConfig   sim.NewSimConfiguration
+	simConfig   *sim.NewSimConfiguration
 	allowCancel bool
 	platform    platform.Platform
 	config      *Config
@@ -623,7 +623,9 @@ type ConnectModalClient struct {
 func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
-	c.simConfig = sim.MakeNewSimConfiguration(c.mgr, &c.config.LastTRACON, c.lg)
+	if c.simConfig == nil {
+		c.simConfig = sim.MakeNewSimConfiguration(c.mgr, &c.config.LastTRACON, c.lg)
+	}
 }
 
 func (c *ConnectModalClient) Buttons() []ModalDialogButton {
@@ -1035,13 +1037,13 @@ func showAboutDialog() {
   Valencia, Xavier Caldwell, and Yi Zhang.
 - Facility engineering: Connor Allen, Adam
   Bolek, Brody Carty, Lucas Chan, Aaron
-  Flett, Mike K, Josh Lambert, Jonah
-  Lefkoff, Jud Lopez, Ethan Malimon, Jace
-  Martin, Merry, Yahya Nazimuddin, Justin
-  Nguyen, Giovanni, Andrew S, Logan S,
-  Arya T, Nelson T, Eli Thompson, Michael
-  Trokel, Samuel Valencia, Gavin Velicevic,
-  and Jackson Verdoorn.
+  Flett, Mike K, Josh Lambert, Make LeGall,
+  Jonah Lefkoff, Jud Lopez, Ethan Malimon,
+  Jace Martin, Merry, Yahya Nazimuddin,
+  Justin Nguyen, Giovanni, Andrew S,
+  Logan S, Arya T, Nelson T, Eli Thompson,
+  Michael Trokel, Samuel Valencia, Gavin
+  Velicevic, and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC,
   ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
   ZSE, and ZTL VATSIM ARTCCs and to the

@@ -154,12 +154,9 @@ func SampleRateMap[T comparable](rates map[T]int) (T, int) {
 	rateSum := 0
 	var result T
 	for item, rate := range rates {
-		if rate == 0 {
-			continue
-		}
 		rateSum += rate
 		// Weighted reservoir sampling...
-		if Float32() < float32(rate)/float32(rateSum) {
+		if rateSum == 0 || Float32() < float32(rate)/float32(rateSum) {
 			result = item
 		}
 	}

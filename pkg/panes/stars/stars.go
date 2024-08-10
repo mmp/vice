@@ -68,6 +68,7 @@ type STARSPane struct {
 	SelectedPreferenceSet int
 	PreferenceSets        []PreferenceSet
 
+	videoMaps  map[int]*av.VideoMap
 	systemMaps map[int]*av.VideoMap
 
 	weatherRadar WeatherRadar
@@ -301,7 +302,7 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 	sp.initializeAudio(p, lg)
 
 	if ss != nil {
-		sp.systemMaps = sp.makeSystemMaps(*ss)
+		sp.makeMaps(*ss, lg)
 	}
 
 	if sp.Aircraft == nil {
@@ -329,16 +330,6 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 	sp.lastHistoryTrackUpdate = time.Time{}
 }
 
-func (sp *STARSPane) Deactivate() {
-	// Drop all of them
-	sp.Aircraft = nil
-
-	sp.events.Unsubscribe()
-	sp.events = nil
-
-	sp.weatherRadar.Deactivate()
-}
-
 func (sp *STARSPane) Reset(ss sim.State, lg *log.Logger) {
 	ps := &sp.CurrentPreferenceSet
 
@@ -347,19 +338,7 @@ func (sp *STARSPane) Reset(ss sim.State, lg *log.Logger) {
 	ps.CurrentCenter = ps.Center
 	ps.RangeRingsCenter = ps.Center
 
-	videoMaps, defaultVideoMaps := ss.GetVideoMaps()
-	clear(ps.DisplayVideoMap[:])
-	// Make the scenario's default video maps visible
-	for _, dm := range defaultVideoMaps {
-		if idx := slices.IndexFunc(videoMaps, func(m av.VideoMap) bool { return m.Name == dm }); idx != -1 {
-			ps.DisplayVideoMap[idx] = true
-		} else {
-			lg.Errorf("%s: \"default_map\" not found in \"stars_maps\"", dm)
-		}
-	}
-	ps.SystemMapVisible = make(map[int]interface{})
-
-	sp.systemMaps = sp.makeSystemMaps(ss)
+	sp.makeMaps(ss, lg)
 
 	ps.CurrentATIS = ""
 	for i := range ps.GIText {
@@ -390,9 +369,44 @@ func (sp *STARSPane) Reset(ss sim.State, lg *log.Logger) {
 	sp.lastHistoryTrackUpdate = time.Time{}
 }
 
-func (sp *STARSPane) makeSystemMaps(ss sim.State) map[int]*av.VideoMap {
-	maps := make(map[int]*av.VideoMap)
+func (sp *STARSPane) makeMaps(ss sim.State, lg *log.Logger) {
+	ps := &sp.CurrentPreferenceSet
+	ps.VideoMapVisible = make(map[int]interface{})
 
+	// Return an unused video map id starting from base
+	getId := func(base int) int {
+		for i := range 999 {
+			id := (base + i) % 1000
+			_, vok := sp.videoMaps[id]
+			_, sok := sp.systemMaps[id]
+			if !vok && !sok {
+				return id
+			}
+		}
+		return base
+	}
+
+	// Put the maps into a map; increment ids as necessary so that they are
+	// all unique.
+	sp.videoMaps = make(map[int]*av.VideoMap)
+	videoMaps, defaultVideoMaps := ss.GetVideoMaps()
+	for _, vm := range videoMaps {
+		id := getId(vm.Id)
+		vm.Id = id
+		sp.videoMaps[vm.Id] = &vm
+	}
+
+	// Make the scenario's default video maps visible
+	for _, dm := range defaultVideoMaps {
+		if idx := slices.IndexFunc(videoMaps, func(m av.VideoMap) bool { return m.Name == dm }); idx != -1 {
+			ps.VideoMapVisible[videoMaps[idx].Id] = nil
+		} else {
+			lg.Errorf("%s: \"default_map\" not found in \"stars_maps\"", dm)
+		}
+	}
+
+	// System maps
+	sp.systemMaps = make(map[int]*av.VideoMap)
 	// CA suppression filters
 	csf := &av.VideoMap{
 		Label: "ALLCASU",
@@ -401,7 +415,8 @@ func (sp *STARSPane) makeSystemMaps(ss sim.State) map[int]*av.VideoMap {
 	for _, vol := range ss.InhibitCAVolumes() {
 		vol.GenerateDrawCommands(&csf.CommandBuffer, ss.NmPerLongitude)
 	}
-	maps[700] = csf
+	csf.Id = getId(700)
+	sp.systemMaps[csf.Id] = csf
 
 	// MVAs
 	mvas := &av.VideoMap{
@@ -416,7 +431,8 @@ func (sp *STARSPane) makeSystemMaps(ss sim.State) map[int]*av.VideoMap {
 	}
 	ld.GenerateCommands(&mvas.CommandBuffer)
 	renderer.ReturnLinesDrawBuilder(ld)
-	maps[701] = mvas
+	mvas.Id = getId(701)
+	sp.systemMaps[mvas.Id] = mvas
 
 	// Radar maps
 	radarIndex := 801
@@ -431,7 +447,9 @@ func (sp *STARSPane) makeSystemMaps(ss sim.State) map[int]*av.VideoMap {
 		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.PrimaryRange), 360)
 		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.SecondaryRange), 360)
 		ld.GenerateCommands(&sm.CommandBuffer)
-		maps[radarIndex] = sm
+		radarIndex = getId(radarIndex)
+		sm.Id = radarIndex
+		sp.systemMaps[radarIndex] = sm
 
 		radarIndex++
 		renderer.ReturnLinesDrawBuilder(ld)
@@ -456,13 +474,13 @@ func (sp *STARSPane) makeSystemMaps(ss sim.State) map[int]*av.VideoMap {
 			}
 			ld.GenerateCommands(&sm.CommandBuffer)
 
-			maps[atpaIndex] = sm
+			atpaIndex = getId(atpaIndex)
+			sm.Id = atpaIndex
+			sp.systemMaps[atpaIndex] = sm
 			atpaIndex++
 			renderer.ReturnLinesDrawBuilder(ld)
 		}
 	}
-
-	return maps
 }
 
 func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
@@ -542,27 +560,23 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	// Maps
 	cb.LineWidth(1, ctx.DPIScale)
-	videoMaps, _ := ctx.ControlClient.GetVideoMaps()
-	for i, disp := range ps.DisplayVideoMap {
-		if !disp {
-			continue
+	for _, id := range util.SortedMapKeys(ps.VideoMapVisible) {
+		vm, ok := sp.videoMaps[id]
+		if !ok {
+			vm, ok = sp.systemMaps[id]
+			if !ok {
+				ctx.Lg.Errorf("Video map %d visible but not found?", id)
+				continue
+			}
 		}
 
-		vmap := videoMaps[i]
 		color := ps.Brightness.VideoGroupA.ScaleRGB(STARSMapColor)
-		if vmap.Group == 1 {
+		if vm.Group == 1 {
 			color = ps.Brightness.VideoGroupB.ScaleRGB(STARSMapColor)
 		}
 		cb.SetRGB(color)
 		transforms.LoadLatLongViewingMatrices(cb)
-		cb.Call(vmap.CommandBuffer)
-	}
-
-	for _, idx := range util.SortedMapKeys(ps.SystemMapVisible) {
-		color := ps.Brightness.VideoGroupA.ScaleRGB(STARSMapColor)
-		cb.SetRGB(color)
-		transforms.LoadLatLongViewingMatrices(cb)
-		cb.Call(sp.systemMaps[idx].CommandBuffer)
+		cb.Call(vm.CommandBuffer)
 	}
 
 	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont[ps.CharSize.Tools],
@@ -771,8 +785,16 @@ func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 		if sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeFused {
 			// visible unless if it's almost on the ground
 			alt := float32(state.TrackAltitude())
-			visible = (ac.IsDeparture() && alt > ac.DepartureAirportElevation()+100) ||
-				(!ac.IsDeparture() && alt > ac.ArrivalAirportElevation()+100)
+			if ctx.ControlClient.IsDeparture(ac) &&
+				alt < ac.DepartureAirportElevation()+100 &&
+				math.NMDistance2LL(state.TrackPosition(), ac.DepartureAirportLocation()) < 3 {
+				continue
+			} else if ctx.ControlClient.IsArrival(ac) &&
+				alt < ac.ArrivalAirportElevation()+100 &&
+				math.NMDistance2LL(state.TrackPosition(), ac.ArrivalAirportLocation()) < 3 {
+				continue
+			}
+			visible = true
 		} else {
 			// Otherwise see if any of the radars can see it
 			for id, site := range ctx.ControlClient.RadarSites {
