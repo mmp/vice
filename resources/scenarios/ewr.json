@@ -2586,14 +2586,14 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 2000,
             "sid": "CDW7",
-            "waypoints": "KCDW-22/h040"
+            "waypoints": "KCDW-22/h180"
           }
         },
         "22": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 2000,
             "sid": "CDW7",
-            "waypoints": "KCDW-4/h220"
+            "waypoints": "KCDW-4/h180"
           }
         }
       },
