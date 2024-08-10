@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"math/bits"
 	"os"
 	"slices"
 	"sort"
@@ -1153,4 +1154,123 @@ func (c *MultiUserController) IsDepartureController(ap, rwy, sid string) bool {
 
 func (c *MultiUserController) IsInboundController(group string) bool {
 	return slices.Contains(c.InboundFlows, group)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// SquawkCodePool
+
+type SquawkCodePool struct {
+	First, Last Squawk // inclusive range of codes
+	GetOffset   int
+	// Available squawk codes are represented by a bitset
+	AssignedBits []uint64
+}
+
+func makePool(first, last int) *SquawkCodePool {
+	ncodes := last - first + 1
+	nalloc := (ncodes + 63) / 64
+
+	return &SquawkCodePool{
+		First:        Squawk(first),
+		Last:         Squawk(last),
+		AssignedBits: make([]uint64, nalloc),
+	}
+}
+
+func MakeCompleteSquawkCodePool() *SquawkCodePool {
+	p := makePool(0o1001, 0o7777)
+
+	// Don't issue VFR or any SPCs
+	p.Claim(0o1200)
+	for _, spc := range spcs {
+		p.Claim(spc.Squawk)
+	}
+
+	return p
+}
+
+func MakeSquawkBankCodePool(bank int) *SquawkCodePool {
+	return makePool(bank*0o100+1, bank*0o100+0o77)
+}
+
+func (p *SquawkCodePool) Get() (Squawk, error) {
+	for i := range len(p.AssignedBits) {
+		// Start the search at p.GetOffset, then wrap around.
+		idx := (p.GetOffset + i) % len(p.AssignedBits)
+
+		if p.AssignedBits[idx] == ^uint64(0) {
+			// All are assigned in this chunk of 64.
+			continue
+		}
+
+		// "available" is a bit of a misnomer since we may have bits
+		// corresponding to invalid codes in the last entry.
+		available := ^p.AssignedBits[idx]
+		// Pick the last set bit
+		bit := bits.TrailingZeros64(available)
+
+		sq := p.First + Squawk(64*idx+bit)
+		if sq <= p.Last {
+			// It is in fact in our range of valid codes; take it.
+			p.AssignedBits[idx] |= (1 << bit)
+
+			// Update GetOffset so that our next search starts from where
+			// we last successfully found an available code.
+			p.GetOffset = idx
+
+			return sq, nil
+		}
+	}
+
+	return Squawk(0), ErrNoMoreAvailableSquawkCodes
+}
+
+func (p *SquawkCodePool) indices(code Squawk) (int, int, error) {
+	if code < p.First || code > p.Last {
+		return 0, 0, ErrSquawkCodeNotManagedByPool
+	}
+	offset := int(code - p.First)
+	return offset / 64, offset % 64, nil
+}
+
+func (p *SquawkCodePool) IsAssigned(code Squawk) bool {
+	if idx, bit, err := p.indices(code); err == nil {
+		return p.AssignedBits[idx]&(1<<bit) != 0
+	}
+	return false
+}
+
+func (p *SquawkCodePool) Return(code Squawk) error {
+	if !p.IsAssigned(code) {
+		return ErrSquawkCodeUnassigned
+	}
+	if idx, bit, err := p.indices(code); err != nil {
+		return err
+	} else {
+		// Clear the bit
+		p.AssignedBits[idx] &= ^(1 << bit)
+		return nil
+	}
+}
+
+func (p *SquawkCodePool) Claim(code Squawk) error {
+	if p.IsAssigned(code) {
+		return ErrSquawkCodeAlreadyAssigned
+	}
+	if idx, bit, err := p.indices(code); err != nil {
+		return err
+	} else {
+		// Set the bit
+		p.AssignedBits[idx] |= (1 << bit)
+		return nil
+	}
+}
+
+func (p *SquawkCodePool) NumAvailable() int {
+	n := int(p.Last - p.First + 1) // total possible
+	for _, b := range p.AssignedBits {
+		// Reduce the count based on how many are assigned.
+		n -= bits.OnesCount64(b)
+	}
+	return n
 }

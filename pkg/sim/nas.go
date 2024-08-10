@@ -61,9 +61,13 @@ type ERAMComputer struct {
 	ReceivedMessages []FlightPlanMessage
 	FlightPlans      map[av.Squawk]*STARSFlightPlan
 	TrackInformation map[string]*TrackInformation
-	AvailableSquawks map[av.Squawk]interface{}
-	Identifier       string
-	Adaptation       av.ERAMAdaptation
+	SquawkCodePool   *av.SquawkCodePool
+	// This is shared among all STARS computers for our facility; we keep a
+	// copy in ERAMComputer so that when we deserialize after loading a
+	// saved sim, we are still sharing the same one.
+	STARSCodePool *av.SquawkCodePool
+	Identifier    string
+	Adaptation    av.ERAMAdaptation
 
 	eramComputers *ERAMComputers // do not include when we serialize
 }
@@ -74,16 +78,15 @@ func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsBeaconBank int, 
 		STARSComputers:   make(map[string]*STARSComputer),
 		FlightPlans:      make(map[av.Squawk]*STARSFlightPlan),
 		TrackInformation: make(map[string]*TrackInformation),
-		AvailableSquawks: getValidSquawkCodes(),
+		SquawkCodePool:   av.MakeCompleteSquawkCodePool(),
+		STARSCodePool:    av.MakeSquawkBankCodePool(starsBeaconBank),
 		Identifier:       fac,
 		eramComputers:    eramComputers,
 	}
 
-	starsAvailableSquawks := getBeaconBankSquawks(starsBeaconBank)
-
 	for id, tracon := range av.DB.TRACONs {
 		if tracon.ARTCC == fac {
-			sc := MakeSTARSComputer(id, starsAvailableSquawks)
+			sc := MakeSTARSComputer(id, ec.STARSCodePool)
 			ec.STARSComputers[id] = sc
 		}
 	}
@@ -91,35 +94,20 @@ func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsBeaconBank int, 
 	return ec
 }
 
-func getValidSquawkCodes() map[av.Squawk]interface{} {
-	sq := make(map[av.Squawk]interface{})
+func (comp *ERAMComputer) Activate(ec *ERAMComputers) {
+	comp.eramComputers = ec
 
-	for i := 0o1001; i <= 0o7777; i++ {
-		// Skip SPCs and VFR
-		if spc, _ := av.SquawkIsSPC(av.Squawk(i)); !spc && i != 0o1200 {
-			sq[av.Squawk(i)] = nil
-		}
+	// When a sim is saved, we lose the fact that the STARSComputers all
+	// share the same SquawkCodePool; so we will reestablish that now from
+	// the copy saved in ERAMComputer.
+	for _, sc := range comp.STARSComputers {
+		sc.Activate(comp.STARSCodePool)
 	}
-	return sq
-}
-
-func getBeaconBankSquawks(bank int) map[av.Squawk]interface{} {
-	sq := make(map[av.Squawk]interface{})
-
-	for i := bank*0o100 + 1; i <= bank*0o100+0o77; i++ {
-		sq[av.Squawk(i)] = nil
-	}
-	return sq
 }
 
 // For NAS codes
 func (comp *ERAMComputer) CreateSquawk() (av.Squawk, error) {
-	// Pick an available one at random
-	for sq := range comp.AvailableSquawks {
-		delete(comp.AvailableSquawks, sq)
-		return sq, nil
-	}
-	return av.Squawk(0), ErrNoMoreAvailableSquawkCodes
+	return comp.SquawkCodePool.Get()
 }
 
 func (comp *ERAMComputer) SendFlightPlans(tracon string, simTime time.Time, lg *log.Logger) {
@@ -298,7 +286,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 			}
 			comp.TrackInformation[msg.Identifier].TrackOwner = msg.TrackOwner
 			comp.TrackInformation[msg.Identifier].HandoffController = msg.HandoffController
-			comp.AvailableSquawks[msg.BCN] = nil
+			comp.SquawkCodePool.Return(msg.BCN)
 
 			for name, fixes := range comp.Adaptation.CoordinationFixes {
 				alt := comp.TrackInformation[msg.Identifier].FlightPlan.Altitude
@@ -332,7 +320,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 				if info := comp.TrackInformation[msg.Identifier]; info != nil {
 					// Recall message, we can free up this code now
 					if msg.TrackOwner == info.TrackOwner {
-						comp.AvailableSquawks[msg.BCN] = nil
+						comp.SquawkCodePool.Return(msg.BCN)
 					}
 					info.TrackOwner = msg.TrackOwner
 
@@ -361,7 +349,7 @@ func (ec *ERAMComputer) AdaptationFixForAltitude(fix string, altitude string) *a
 
 func (comp *ERAMComputer) InitiateTrack(callsign string, controller string, fp *STARSFlightPlan) error {
 	if fp != nil { // FIXME: why is this nil?
-		delete(comp.AvailableSquawks, fp.AssignedSquawk)
+		comp.SquawkCodePool.Claim(fp.AssignedSquawk)
 	}
 	return nil
 }
@@ -439,26 +427,26 @@ type STARSComputer struct {
 	ERAMInbox         *[]FlightPlanMessage            // The address of the overlying ERAM's message inbox.
 	STARSInbox        map[string]*[]FlightPlanMessage // Other STARS Facilities' inboxes
 	UnsupportedTracks []UnsupportedTrack
-	AvailableSquawks  map[av.Squawk]interface{}
+	SquawkCodePool    *av.SquawkCodePool
 }
 
-func MakeSTARSComputer(id string, sq map[av.Squawk]interface{}) *STARSComputer {
+func MakeSTARSComputer(id string, sq *av.SquawkCodePool) *STARSComputer {
 	return &STARSComputer{
 		Identifier:       id,
 		ContainedPlans:   make(map[av.Squawk]*STARSFlightPlan),
 		TrackInformation: make(map[string]*TrackInformation),
 		STARSInbox:       make(map[string]*[]FlightPlanMessage),
-		AvailableSquawks: sq,
+		SquawkCodePool:   sq,
 	}
+}
+
+func (comp *STARSComputer) Activate(pool *av.SquawkCodePool) {
+	comp.SquawkCodePool = pool
 }
 
 // For local codes
 func (comp *STARSComputer) CreateSquawk() (av.Squawk, error) {
-	for sq := range comp.AvailableSquawks {
-		delete(comp.AvailableSquawks, sq)
-		return sq, nil
-	}
-	return av.Squawk(0), ErrNoMoreAvailableSquawkCodes
+	return comp.SquawkCodePool.Get()
 }
 
 func (comp *STARSComputer) SendTrackInfo(receivingFacility string, msg FlightPlanMessage, simTime time.Time) {
@@ -1182,7 +1170,7 @@ func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) *ERAMComputers {
 
 func (ec *ERAMComputers) Activate() {
 	for artcc := range ec.Computers {
-		ec.Computers[artcc].eramComputers = ec
+		ec.Computers[artcc].Activate(ec)
 	}
 }
 
