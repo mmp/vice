@@ -724,9 +724,15 @@ func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, headi
 			outlineFont := sp.systemOutlineFont[ps.CharSize.PositionSymbols]
 			td.AddTextCentered(trackId, pw, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
 
-			// Flash the id if it's an inbound handoff
 			idColor := util.Select(ac.Callsign == sp.dwellAircraft, color, trackIdBrightness.ScaleRGB(color))
+
+			// Flash the id if it's an outbound handoff that was recently
+			// accepted or an inbound handoff.
+			flash := state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd)
 			if trk := sp.getTrack(ctx, ac); trk != nil && trk.HandingOffTo(ctx.ControlClient.Callsign) {
+				flash = true
+			}
+			if flash {
 				halfSeconds := ctx.Now.UnixMilli() / 500
 				if halfSeconds&1 == 0 {
 					idColor = renderer.RGB{}
