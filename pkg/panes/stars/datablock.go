@@ -35,7 +35,7 @@ type datablock interface {
 
 // dbChar represents a single character in a datablock.
 type dbChar struct {
-	ch       byte
+	ch       rune
 	color    renderer.RGB
 	flashing bool
 }
@@ -370,11 +370,13 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 // the field with associated properties; returns the number of characters
 // added.
 func formatDBText(field []dbChar, s string, c renderer.RGB, flashing bool) int {
-	for i, ch := range []byte(s) {
+	i := 0
+	for _, ch := range s {
 		if i == len(field) {
 			return i
 		}
 		field[i] = dbChar{ch: ch, color: c, flashing: flashing}
+		i++
 	}
 	return len(s)
 }
