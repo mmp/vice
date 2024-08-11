@@ -906,6 +906,11 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	e.Push("stars_config")
 
 	// Video maps
+	for m := range s.VideoMapLabels {
+		if !slices.Contains(s.VideoMapNames, m) {
+			e.ErrorString("video map \"%s\" in \"map_labels\" is not in \"stars_maps\"", m)
+		}
+	}
 	if len(s.VideoMapNames) > 0 {
 		// Don't try to validate the map names here since we haven't loaded
 		// the video maps yet. (Chicken and egg: we use the map names when
