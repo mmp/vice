@@ -42,6 +42,10 @@ func RGBFromHex(c int) RGB {
 	return RGB{R: float32(r) / 255, G: float32(g) / 255, B: float32(b) / 255}
 }
 
+func RGBFromUInt8(r uint8, g uint8, b uint8) RGB {
+	return RGB{R: float32(r) / 255, G: float32(g) / 255, B: float32(b) / 255}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Image processing
 

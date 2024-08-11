@@ -8,11 +8,11 @@ import (
 	_ "embed"
 	"fmt"
 	"image"
-	"image/color"
 	"image/draw"
 	"image/png"
 	"log/slog"
 	gomath "math"
+	"math/bits"
 	"net/http"
 	"net/url"
 	"slices"
@@ -45,17 +45,14 @@ type WeatherRadar struct {
 	// returned by cbChan.
 	reqChan chan math.Point2LL
 	cbChan  chan [NumWxLevels]renderer.CommandBuffer
-
-	// Texture id for each wx level's image.
-	texId [NumWxLevels]uint32
-	wxCb  [NumWxLevels]renderer.CommandBuffer
+	cb      [NumWxLevels]renderer.CommandBuffer
 }
 
 const NumWxLevels = 6
 
 // Block size in pixels of the quads in the converted radar image used for
 // display.
-const WxBlockRes = 4
+const WxBlockRes = 2
 
 // Latitude-longitude extent of the fetched image; the requests are +/-
 // this much from the current center.
@@ -69,48 +66,11 @@ func (w *WeatherRadar) Activate(center math.Point2LL, r renderer.Renderer, lg *l
 		w.reqChan <- center
 		return
 	}
-	w.active = true
 
+	w.active = true
 	w.reqChan = make(chan math.Point2LL, 1000) // lots of buffering
 	w.reqChan <- center
 	w.cbChan = make(chan [NumWxLevels]renderer.CommandBuffer, 8)
-
-	if w.texId[0] == 0 {
-		// Create a small texture for each weather level
-		img := image.NewRGBA(image.Rectangle{Max: image.Point{X: WxBlockRes, Y: WxBlockRes}})
-
-		for i := 0; i < NumWxLevels; i++ {
-			// RGBs from STARS Manual, B-5
-			baseColor := util.Select(i < 3, color.RGBA{R: 37, G: 77, B: 77, A: 255},
-				color.RGBA{R: 100, G: 100, B: 51, A: 255})
-
-			stipple := i % 3
-
-			for y := 0; y < WxBlockRes; y++ {
-				for x := 0; x < WxBlockRes; x++ {
-					c := baseColor
-					switch stipple {
-					case 1: // light stipple: every other line, every 4th pixel
-						if y&1 == 1 {
-							offset := y & 2 // alternating 0 and 2
-							if x%4 == offset {
-								c = color.RGBA{R: 250, G: 250, B: 250, A: 255}
-							}
-						}
-
-					case 2: // dense stipple: every other line, every other pixel
-						if x&1 == 1 && y&1 == 1 {
-							c = color.RGBA{R: 250, G: 250, B: 250, A: 255}
-						}
-					}
-					img.Set(x, y, c)
-				}
-			}
-
-			// Nearest filter for magnification
-			w.texId[i] = r.CreateTextureFromImage(img, true)
-		}
-	}
 
 	go fetchWeather(w.reqChan, w.cbChan, lg)
 }
@@ -275,8 +235,7 @@ func invertRadarReflectivity(rgb [3]byte) float32 {
 // reqChan, fetching corresponding radar images from the NOAA, and sending
 // the results back on cbChan.  New images are also automatically
 // fetched periodically, with a wait time specified by the delay parameter.
-func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]renderer.CommandBuffer,
-	lg *log.Logger) {
+func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]renderer.CommandBuffer, lg *log.Logger) {
 	// NOAA posts new maps every 2 minutes, so fetch a new map at minimum
 	// every 100s to stay current.
 	fetchRate := 100 * time.Second
@@ -349,23 +308,18 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]renderer.
 			continue
 		}
 
-		// Send the command buffers back to the main thread.
-		cbChan <- makeWeatherCommandBuffers(img, rb, lg)
+		cbChan <- makeWeatherCommandBuffers(img, rb)
 
 		lg.Info("finish weather fetch")
 	}
 }
 
-func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D, lg *log.Logger) [NumWxLevels]renderer.CommandBuffer {
+func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]renderer.CommandBuffer {
 	// Convert the Image returned by png.Decode to a simple 8-bit RGBA image.
 	rgba := image.NewRGBA(img.Bounds())
 	draw.Draw(rgba, img.Bounds(), img, image.Point{}, draw.Over)
 
 	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
-	if ny%WxBlockRes != 0 || nx%WxBlockRes != 0 {
-		lg.Errorf("invalid weather image resolution; must be multiple of WxBlockRes")
-		return [NumWxLevels]renderer.CommandBuffer{}
-	}
 	nby, nbx := ny/WxBlockRes, nx/WxBlockRes
 
 	// First determine the weather level for each WxBlockRes*WxBlockRes
@@ -391,8 +345,8 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D, lg *log.Logger
 	// draw anything for level==0, so the indexing into cb is off by 1
 	// below.
 	var cb [NumWxLevels]renderer.CommandBuffer
-	tb := renderer.GetTexturedTrianglesDrawBuilder()
-	defer renderer.ReturnTexturedTrianglesDrawBuilder(tb)
+	tb := renderer.GetTrianglesDrawBuilder()
+	defer renderer.ReturnTrianglesDrawBuilder(tb)
 
 	for level := 1; level <= NumWxLevels; level++ {
 		tb.Reset()
@@ -426,8 +380,7 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D, lg *log.Logger
 
 				// Draw a single quad
 				tb.AddQuad([2]float32{p0[0], p0[1]}, [2]float32{p1[0], p0[1]},
-					[2]float32{p1[0], p1[1]}, [2]float32{p0[0], p1[1]},
-					[2]float32{0, 1}, [2]float32{u1, 1}, [2]float32{u1, 0}, [2]float32{0, 0})
+					[2]float32{p1[0], p1[1]}, [2]float32{p0[0], p1[1]})
 			}
 		}
 
@@ -439,31 +392,139 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D, lg *log.Logger
 	return cb
 }
 
+// Stipple patterns. We expect glPixelStore(GL_PACK_LSB_FIRST, GL_TRUE) to
+// be set for these.
+var wxStippleLight [32]uint32 = [32]uint32{
+	0b00000000000000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00000000000011000000000000000000,
+	0b00000000000011000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000000000001100000000,
+	0b00000000000000000000001100000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00000001100000000000000000000000,
+	0b00000001100000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000110000000000000000,
+	0b00000000000000110000000000000000,
+	0b00000000000000000000000000001100,
+	0b00000000000000000000000000001100,
+	0b00000000000000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00000000110000000000000000000000,
+	0b00000000110000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000000011000000000000,
+	0b00000000000000000011000000000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b11000000000000000000000000000000,
+	0b11000000000000000000000000000000,
+}
+
+// Note that the basis pattern in the lower 16x16 is repeated both
+// horizontally and vertically.
+var wxStippleDense [32]uint32 = [32]uint32{
+	0b00000000000000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00001000000000000000100000000000,
+	0b00001000000000000000100000000000,
+	0b00000000000110000000000000011000,
+	0b01000000000000000100000000000000,
+	0b01000000000000000100000000000000,
+	0b00000001100000000000000110000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000110000000000000011,
+	0b00000000000000000000000000000000,
+	0b00011000000000000001100000000000,
+	0b00000000000000000000000000000000,
+	0b00000000001000000000000000100000,
+	0b00000000001000000000000000100000,
+	0b11000000000000001100000000000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000000000000000000000,
+	0b00001000000000000000100000000000,
+	0b00001000000000000000100000000000,
+	0b00000000000110000000000000011000,
+	0b01000000000000000100000000000000,
+	0b01000000000000000100000000000000,
+	0b00000001100000000000000110000000,
+	0b00000000000000000000000000000000,
+	0b00000000000000110000000000000011,
+	0b00000000000000000000000000000000,
+	0b00011000000000000001100000000000,
+	0b00000000000000000000000000000000,
+	0b00000000001000000000000000100000,
+	0b00000000001000000000000000100000,
+	0b11000000000000001100000000000000,
+}
+
+// The above stipple masks are ordered so that they match the orientation
+// of how we want them drawn on the screen, though that doesn't seem to be
+// how glPolygonStipple expects them, which is with the bits in each byte
+// reversed. I think that we should just be able to call
+// gl.PixelStorei(gl.PACK_LSB_FIRST, gl.FALSE) and provide them as above,
+// though that doesn't seem to work.  Hence, we just reverse the bytes by
+// hand.
+func reverseStippleBytes(stipple [32]uint32) [32]uint32 {
+	var result [32]uint32
+	for i, line := range stipple {
+		a, b, c, d := uint8(line>>24), uint8(line>>16), uint8(line>>8), uint8(line)
+		a, b, c, d = bits.Reverse8(a), bits.Reverse8(b), bits.Reverse8(c), bits.Reverse8(d)
+		result[i] = uint32(a)<<24 + uint32(b)<<16 + uint32(c)<<8 + uint32(d)
+	}
+	return result
+}
+
 // Draw draws the current weather radar image, if available. (If none is yet
 // available, it returns rather than stalling waiting for it).
 func (w *WeatherRadar) Draw(ctx *panes.Context, intensity float32, contrast float32,
 	active [NumWxLevels]bool, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	select {
-	case w.wxCb = <-w.cbChan:
-		// got updated command buffers, yaay.  Note that we always go ahead
-		// and drain the cbChan, even if if the WeatherRadar is inactive.
+	case w.cb = <-w.cbChan:
+		// Got updated command buffers, yaay.  Note that we always drain
+		// the cbChan, even if if the WeatherRadar is inactive.
 
 	default:
 		// no message
 	}
 
-	if w.active {
-		transforms.LoadLatLongViewingMatrices(cb)
-		cb.SetRGBA(renderer.RGBA{1, 1, 1, intensity})
-		cb.Blend()
-		for i, wcb := range w.wxCb {
-			if active[i] {
-				cb.EnableTexture(w.texId[i])
-				cb.Call(wcb)
-				cb.DisableTexture()
+	if !w.active {
+		return
+	}
+
+	transforms.LoadLatLongViewingMatrices(cb)
+	for i := range w.cb {
+		if active[i] {
+			// RGBs from STARS Manual, B-5
+			baseColor := util.Select(i < 3,
+				renderer.RGBFromUInt8(37, 77, 77), renderer.RGBFromUInt8(100, 100, 51))
+			cb.SetRGB(baseColor.Scale(intensity))
+			cb.Call(w.cb[i])
+
+			if i == 0 || i == 3 {
+				// No stipple
+				continue
 			}
+
+			cb.EnablePolygonStipple()
+			if i == 1 || i == 4 {
+				cb.PolygonStipple(reverseStippleBytes(wxStippleLight))
+			} else if i == 2 || i == 5 {
+				cb.PolygonStipple(reverseStippleBytes(wxStippleDense))
+			}
+			// Draw the same quads again, just with a different color and stippled.
+			cb.SetRGB(renderer.RGB{contrast, contrast, contrast})
+			cb.Call(w.cb[i])
+			cb.DisablePolygonStipple()
 		}
-		cb.DisableBlend()
 	}
 }
 
