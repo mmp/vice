@@ -1163,7 +1163,7 @@
     "KTEB": {
       "name": "Teterboro",
       "approaches": {
-        "I06": {
+        "I6": {
           "runway": "6",
           "type": "ILS",
           "waypoints": [
@@ -1924,7 +1924,7 @@
             "STW/iaf ELIZE/a3000+ SHOTT/if/a2000+ FIGON/a2000+ BINGG/faf/a2000"
           ]
         },
-        "R05": {
+        "R5": {
           "runway": "5",
           "type": "RNAV",
           "waypoints": [
