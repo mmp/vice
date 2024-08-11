@@ -711,34 +711,16 @@ func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, headi
 		}
 	}
 
-	// Draw main track symbol letter
-	trackIdBrightness := ps.Brightness.Positions
-	if trackIdBrightness > 0 {
-		dt := sp.datablockType(ctx, ac)
-		color, _ := sp.datablockColor(ctx, ac)
-		if dt == PartialDatablock || dt == LimitedDatablock {
-			trackIdBrightness = ps.Brightness.LimitedDatablocks
-		}
+	// Draw main track position symbol
+	color, _, posBrightness := sp.trackDatablockColorBrightness(ctx, ac)
+	if posBrightness > 0 {
 		if trackId != "" {
 			font := sp.systemFont[ps.CharSize.PositionSymbols]
 			outlineFont := sp.systemOutlineFont[ps.CharSize.PositionSymbols]
 			td.AddTextCentered(trackId, pw, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
 
-			idColor := util.Select(ac.Callsign == sp.dwellAircraft, color, trackIdBrightness.ScaleRGB(color))
-
-			// Flash the id if it's an outbound handoff that was recently
-			// accepted or an inbound handoff.
-			flash := state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd)
-			if trk := sp.getTrack(ctx, ac); trk != nil && trk.HandingOffTo(ctx.ControlClient.Callsign) {
-				flash = true
-			}
-			if flash {
-				halfSeconds := ctx.Now.UnixMilli() / 500
-				if halfSeconds&1 == 0 {
-					idColor = renderer.RGB{}
-				}
-			}
-			td.AddTextCentered(trackId, pw, renderer.TextStyle{Font: font, Color: idColor})
+			posColor := posBrightness.ScaleRGB(color)
+			td.AddTextCentered(trackId, pw, renderer.TextStyle{Font: font, Color: posColor})
 		} else {
 			// TODO: draw box if in range of squawks we have selected
 
@@ -752,8 +734,8 @@ func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, headi
 
 			px := 3 * ctx.DrawPixelScale
 			// diagonals
-			diagPx := px * 0.707107                                                     /* 1/sqrt(2) */
-			trackColor := trackIdBrightness.ScaleRGB(renderer.RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
+			diagPx := px * 0.707107                                                 /* 1/sqrt(2) */
+			trackColor := posBrightness.ScaleRGB(renderer.RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
 			ld.AddLine(delta(pos, -diagPx, -diagPx), delta(pos, diagPx, diagPx), trackColor)
 			ld.AddLine(delta(pos, diagPx, -diagPx), delta(pos, -diagPx, diagPx), trackColor)
 			// horizontal line
@@ -1241,7 +1223,7 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, ctx *panes.Context
 		}
 
 		if sp.getDatablock(ctx, ac) != nil {
-			baseColor, brightness := sp.datablockColor(ctx, ac)
+			baseColor, brightness, _ := sp.trackDatablockColorBrightness(ctx, ac)
 			pac := transforms.WindowFromLatLongP(state.TrackPosition())
 			v := sp.getLeaderLineVector(ctx, sp.getLeaderLineDirection(ac, ctx))
 			ld.AddLine(pac, math.Add2f(pac, v), brightness.ScaleRGB(baseColor))

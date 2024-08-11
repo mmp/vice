@@ -392,7 +392,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		return nil
 	}
 
-	color, _ := sp.datablockColor(ctx, ac)
+	color, _, _ := sp.trackDatablockColorBrightness(ctx, ac)
 
 	// Alerts are common to all datablock types
 	var alerts [16]dbChar
@@ -683,24 +683,48 @@ func (sp *STARSPane) getGhostDatablock(ghost *av.GhostAircraft, color renderer.R
 	return db
 }
 
-func (sp *STARSPane) datablockColor(ctx *panes.Context, ac *av.Aircraft) (color renderer.RGB, brightness STARSBrightness) {
+func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Aircraft) (color renderer.RGB, dbBrightness, posBrightness STARSBrightness) {
 	ps := sp.CurrentPreferenceSet
 	dt := sp.datablockType(ctx, ac)
 	state := sp.Aircraft[ac.Callsign]
 	trk := sp.getTrack(ctx, ac)
 
-	brightness = ps.Brightness.FullDatablocks
-	if dt == PartialDatablock || dt == LimitedDatablock {
-		brightness = ps.Brightness.LimitedDatablocks
-	} else if dt == FullDatablock && trk != nil && trk.TrackOwner != ctx.ControlClient.Callsign {
-		brightness = ps.Brightness.OtherTracks
+	// Cases where it's always a full datablock
+	_, forceFDB := sp.InboundPointOuts[ac.Callsign]
+	forceFDB = forceFDB || (state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd))
+	forceFDB = forceFDB || trk.HandingOffTo(ctx.ControlClient.Callsign)
+
+	// Figure out the datablock and position symbol brightness first
+	if ac.Callsign == sp.dwellAircraft { // dwell overrides everything as far as brightness
+		dbBrightness = STARSBrightness(100)
+		posBrightness = STARSBrightness(100)
+	} else if forceFDB {
+		dbBrightness = ps.Brightness.FullDatablocks
+		posBrightness = ps.Brightness.Positions
+	} else if dt == PartialDatablock || dt == LimitedDatablock {
+		dbBrightness = ps.Brightness.LimitedDatablocks
+		posBrightness = ps.Brightness.LimitedDatablocks
+	} else /* dt == FullDatablock */ {
+		if trk != nil && trk.TrackOwner != ctx.ControlClient.Callsign {
+			dbBrightness = ps.Brightness.OtherTracks
+			posBrightness = ps.Brightness.OtherTracks
+		} else {
+			// Regular FDB that we own
+			dbBrightness = ps.Brightness.FullDatablocks
+			posBrightness = ps.Brightness.Positions
+		}
 	}
-	if ac.Callsign == sp.dwellAircraft {
-		brightness = STARSBrightness(100)
+
+	// Possibly adjust brightness if it should be flashing.
+	halfSeconds := ctx.Now.UnixMilli() / 500
+	if forceFDB && halfSeconds&1 == 0 { // half-second cycle
+		dbBrightness /= 3
+		posBrightness /= 3
 	}
 
 	if trk == nil {
-		return STARSUntrackedAircraftColor, brightness
+		color = STARSUntrackedAircraftColor
+		return
 	}
 
 	for _, controller := range trk.RedirectedHandoff.Redirector {
@@ -709,21 +733,7 @@ func (sp *STARSPane) datablockColor(ctx *panes.Context, ac *av.Aircraft) (color 
 		}
 	}
 
-	// Handle cases where the whole thing should flash
-	halfSeconds := ctx.Now.UnixMilli() / 500
-	if halfSeconds&1 == 0 { // one second cycle
-		if _, pointOut := sp.InboundPointOuts[ac.Callsign]; pointOut {
-			// point out
-			brightness /= 3
-		} else if state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd) {
-			// we handed it off, it was accepted, but we haven't yet acknowledged
-			brightness /= 3
-		} else if trk.HandingOffTo(ctx.ControlClient.Callsign) {
-			brightness /= 3
-		}
-	}
-
-	// Check if were the controller being ForceQL
+	// Check if we're the controller being ForceQL
 	if slices.Contains(sp.ForceQLAircraft, ac.Callsign) {
 		color = STARSInboundPointOutColor
 	}
@@ -840,7 +850,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 			continue
 		}
 
-		_, brightness := sp.datablockColor(ctx, ac)
+		_, brightness, _ := sp.trackDatablockColorBrightness(ctx, ac)
 		if brightness == 0 {
 			continue
 		}
