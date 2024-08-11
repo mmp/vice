@@ -29,32 +29,35 @@ import (
 // CommandBuffer.
 
 const (
-	RendererLoadProjectionMatrix = iota // 16 float32: matrix
-	RendererLoadModelViewMatrix         // 16 float32: matrix
-	RendererClearRGBA                   // 4 float32: RGBA
-	RendererScissor                     // 4 int32: x, y, width, height
-	RendererViewport                    // 4 int32: x, y, width, height
-	RendererBlend                       // no args: for now always src alpha, 1-src alpha
-	RendererSetRGBA                     // 4 float32: RGBA
-	RendererDisableBlend                // no args
-	RendererFloatBuffer                 // int32 size, then size*float32 values
-	RendererIntBuffer                   // int32: size, then size*int32 values
-	RendererRawBuffer                   // int32: size *in bytes*, then (3+size)/4 int32 values
-	RendererEnableTexture               // int32 handle
-	RendererDisableTexture              // no args
-	RendererVertexArray                 // byte offset to array values, n components, stride (bytes)
-	RendererDisableVertexArray          // no args
-	RendererRGB8Array                   // byte offset to array values, n components, stride (bytes)
-	RendererRGB32Array                  // byte offset to array values, n components, stride (bytes)
-	RendererDisableColorArray           // no args
-	RendererTexCoordArray               // byte offset to array values, n components, stride (bytes)
-	RendererDisableTexCoordArray        // no args
-	RendererLineWidth                   // float32
-	RendererDrawLines                   // 2 int32: offset to the index buffer, count
-	RendererDrawTriangles               // 2 int32: offset to the index buffer, count
-	RendererDrawQuads                   // 2 int32: offset to the index buffer, count
-	RendererCallBuffer                  // 1 int32: buffer index
-	RendererResetState                  // no args
+	RendererLoadProjectionMatrix  = iota // 16 float32: matrix
+	RendererLoadModelViewMatrix          // 16 float32: matrix
+	RendererClearRGBA                    // 4 float32: RGBA
+	RendererScissor                      // 4 int32: x, y, width, height
+	RendererViewport                     // 4 int32: x, y, width, height
+	RendererBlend                        // no args: for now always src alpha, 1-src alpha
+	RendererSetRGBA                      // 4 float32: RGBA
+	RendererDisableBlend                 // no args
+	RendererFloatBuffer                  // int32 size, then size*float32 values
+	RendererIntBuffer                    // int32: size, then size*int32 values
+	RendererRawBuffer                    // int32: size *in bytes*, then (3+size)/4 int32 values
+	RendererEnableTexture                // int32 handle
+	RendererDisableTexture               // no args
+	RendererVertexArray                  // byte offset to array values, n components, stride (bytes)
+	RendererDisableVertexArray           // no args
+	RendererRGB8Array                    // byte offset to array values, n components, stride (bytes)
+	RendererRGB32Array                   // byte offset to array values, n components, stride (bytes)
+	RendererDisableColorArray            // no args
+	RendererTexCoordArray                // byte offset to array values, n components, stride (bytes)
+	RendererDisableTexCoordArray         // no args
+	RendererLineWidth                    // float32
+	RendererDrawLines                    // 2 int32: offset to the index buffer, count
+	RendererDrawTriangles                // 2 int32: offset to the index buffer, count
+	RendererDrawQuads                    // 2 int32: offset to the index buffer, count
+	RendererCallBuffer                   // 1 int32: buffer index
+	RendererResetState                   // no args
+	RendererEnablePolygonStipple         // no args
+	RendererDisablePolygonStipple        // no args
+	RendererPolygonStipple               // 32 uint32: stipple pattern
 )
 
 // CommandBuffer encodes a sequence of rendering commands in an
@@ -397,4 +400,23 @@ func (cb *CommandBuffer) Call(sub CommandBuffer) {
 // arrays, etc.) to default values.
 func (cb *CommandBuffer) ResetState() {
 	cb.appendInts(RendererResetState)
+}
+
+// EnablePolygonStipple adds a command to the command buffer that enables
+// stipple when drawing polygons.
+func (cb *CommandBuffer) EnablePolygonStipple() {
+	cb.appendInts(RendererEnablePolygonStipple)
+}
+
+// DisablePolygonStipple adds a command to the command buffer that disables
+// stipple when drawing polygons.
+func (cb *CommandBuffer) DisablePolygonStipple() {
+	cb.appendInts(RendererDisablePolygonStipple)
+}
+
+// PolygonStipple adds a command to the command buffer that specifies the
+// polygon stipple pattern.
+func (cb *CommandBuffer) PolygonStipple(pattern [32]uint32) {
+	cb.appendInts(RendererPolygonStipple)
+	cb.Buf = append(cb.Buf, pattern[:]...)
 }

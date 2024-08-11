@@ -282,11 +282,23 @@ func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStat
 			gl.DisableClientState(gl.COLOR_ARRAY)
 			gl.DisableClientState(gl.TEXTURE_COORD_ARRAY)
 			gl.Disable(gl.TEXTURE_2D)
+			gl.Disable(gl.POLYGON_STIPPLE)
 
 		case RendererCallBuffer:
 			idx := ui32()
 			s2 := ogl2.RenderCommandBuffer(&cb.called[idx])
 			stats.Merge(s2)
+
+		case RendererEnablePolygonStipple:
+			gl.Enable(gl.POLYGON_STIPPLE)
+
+		case RendererDisablePolygonStipple:
+			gl.Disable(gl.POLYGON_STIPPLE)
+
+		case RendererPolygonStipple:
+			mask := unsafe.Pointer(&cb.Buf[i])
+			i += 32
+			gl.PolygonStipple((*uint8)(mask))
 
 		default:
 			ogl2.lg.Error("unhandled command")
