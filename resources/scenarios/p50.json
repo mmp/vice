@@ -729,6 +729,7 @@
                         }
                     ]
                 },
+				"scratchpad": "RBR",
                 "cruise_altitude": 34000,
                 "initial_altitude": 19000,
                 "initial_controller": "ABQ_CTR",
@@ -872,6 +873,7 @@
                         }
                     ]
                 },
+				"scratchpad": "REA",
                 "cruise_altitude": 34000,
                 "initial_altitude": 17000,
                 "initial_controller": "ABQ_CTR",
@@ -1025,6 +1027,7 @@
                         }
                     ]
                 },
+				"scratchpad": "RHY",
                 "cruise_altitude": 35000,
                 "initial_altitude": 15000,
                 "initial_controller": "ABQ_CTR",
@@ -1177,6 +1180,7 @@
                         }
                     ]
                 },
+				"scratchpad": "RPI",
                 "initial_altitude": 22000,
                 "initial_controller": "ABQ_CTR",
                 "initial_speed": 270,
