@@ -766,8 +766,10 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 			func(q QuickLookPosition) bool { return q.Callsign == trk.TrackOwner && q.Plus }) {
 			// individual quicklook plus controller
 			color = STARSTrackedAircraftColor
-		} else if trk.AutoAssociateFP {
-			color = STARSTrackedAircraftColor
+			/* FIXME(mtrokel): temporarily disabled. This flashes in and out e.g. in JFK scenarios for the LGA water gate departures.
+			} else if trk.AutoAssociateFP {
+				color = STARSTrackedAircraftColor
+			*/
 		} else {
 			color = STARSUntrackedAircraftColor
 		}
