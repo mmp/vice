@@ -236,9 +236,9 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32, fo
 	fontWidth := glyph.AdvanceX
 
 	for _, line := range lines {
-		xOffset := float32(2)
+		xOffset := float32(4)
 		if rightJustify {
-			xOffset = -2 - float32(line.Len())*fontWidth
+			xOffset = -4 - float32(line.Len())*fontWidth
 		}
 		dbDrawLine(line, td, math.Add2f(pt, [2]float32{xOffset, 0}), font, brightness, halfSeconds)
 		// Step down to the next line

@@ -1272,8 +1272,9 @@ func (sp *STARSPane) getLeaderLineVector(ctx *panes.Context, dir math.CardinalOr
 	angle := dir.Heading()
 	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
 	ps := sp.CurrentPreferenceSet
-	// Each step of leader line length should be about 1/4"
-	return math.Scale2f(v, float32((ps.LeaderLineLength * int(ctx.PixelsPerInch) / 4)))
+	pxLengths := []float32{0, 17, 32, 47, 62, 77, 114, 152}
+	idx := min(ps.LeaderLineLength, len(pxLengths)-1)
+	return math.Scale2f(v, pxLengths[idx])
 }
 
 func (sp *STARSPane) isOverflight(ctx *panes.Context, trk *sim.TrackInformation) bool {
