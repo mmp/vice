@@ -1,0 +1,452 @@
+{
+    "tracon": "CPR",
+    "airports": {
+        "KCPR": {
+            "approaches": {
+                "I3": {
+                    "cifp_id": "I3"
+                },
+                "R21": {
+                    "cifp_id": "R21"
+                },
+                "R26": {
+                    "cifp_id": "R26"
+                },
+                "R3": {
+                    "cifp_id": "R3"
+                },
+                "R8": {
+                    "cifp_id": "R8"
+                }
+            },
+            "departure_routes": {
+                "3": {
+                    "CUSGA": {
+                        "cleared_altitude": 10000,
+                        "sid": "CPR3",
+                        "waypoints": "_CPR21/h025 DDY CUSGA"
+                    }
+                },
+                "8": {
+                    "HIPEE": {
+                        "cleared_altitude": 10000,
+                        "sid": "CPR3",
+                        "waypoints": "_CPR26/h090 MBW HIPEE"
+                    },
+                    "KURSE": {
+                        "cleared_altitude": 10000,
+                        "sid": "CPR3",
+                        "waypoints": "_CPR26/h090 KURSE SNY"
+                    },
+                    "LHO": {
+                        "cleared_altitude": 10000,
+                        "sid": "CPR3",
+                        "waypoints": "_CPR26/h090 LHO"
+                    }
+                },
+                "21": {
+                    "HIPEE": {
+                        "cleared_altitude": 10000,
+                        "sid": "CPR3",
+                        "waypoints": "_CPR3/h200 MBW HIPEE"
+                    },
+                    "KURSE": {
+                        "cleared_altitude": 10000,
+                        "sid": "CPR3",
+                        "waypoints": "_CPR3/h200 KURSE SNY"
+                    },
+                    "LHO": {
+                        "cleared_altitude": 10000,
+                        "sid": "CPR3",
+                        "waypoints": "_CPR3/h230 LHO"
+                    }
+                },
+                "26": {
+                    "CUSGA": {
+                        "cleared_altitude": 10000,
+                        "sid": "CPR3",
+                        "waypoints": "_CPR8/h275 DDY CUSGA"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "fleet": "b752",
+                            "icao": "FDX"
+                        },
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 26000,
+                    "destination": "KBIL",
+                    "route": "DDY CUSGA BGHRN3",
+                    "exit": "CUSGA"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "default",
+                            "icao": "SKW"
+                        },
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 29000,
+                    "destination": "KDEN",
+                    "route": "MBW HIPEE FLATI4",
+                    "exit": "HIPEE"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "b752",
+                            "icao": "FDX"
+                        }
+                    ],
+                    "altitude": 37000,
+                    "destination": "KMEM",
+                    "route": "KURSE SNY KD63Y",
+                    "exit": "KURSE"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SKW"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "KSLC",
+                    "route": "LHO NORDK6",
+                    "exit": "LHO"
+                }
+            ],
+            "exit_categories": {
+                "CUSGA": "North",
+                "HIPEE": "South",
+                "KURSE": "South",
+                "LHO": "South"
+            },
+            "tower_list": 1
+        }
+    },
+    "inbound_flows": {
+        "SLC": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCPR": [
+                            {
+                                "airport": "KSLC",
+                                "icao": "SKW"
+                            }
+                        ]
+                    },
+                    "assigned_altitude": 15000,
+                    "cruise_altitude": 33000,
+                    "initial_altitude": 16000,
+                    "initial_controller": "DEN_17_CTR",
+                    "initial_speed": 270,
+                    "route": "OCS CHOMP",
+                    "waypoints": "N042.25.26.275,W107.09.51.421 N042.29.21.822,W107.01.04.352/ho CHOMP/h050"
+                }
+            ]
+        },
+        "DEN": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCPR": [
+                            {
+                                "airport": "KDEN",
+                                "icao": "SKW"
+                            },
+                            {
+                                "airport": "KAPA",
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KBJC",
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 16000,
+                    "initial_altitude": 16000,
+                    "assigned_altitude": 15000,
+                    "initial_controller": "DEN_17_CTR",
+                    "initial_speed": 260,
+                    "route": "MBW DDY",
+                    "waypoints": "N042.12.38.537,W106.05.11.297 N042.21.15.979,W106.06.53.415/ho DDY"
+                }
+            ]
+        },
+        "JAC": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCPR": [
+                            {
+                                "airport": "KJAC",
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "assigned_altitude": 15000,
+                    "cruise_altitude": 27000,
+                    "initial_altitude": 16000,
+                    "initial_controller": "DEN_17_CTR",
+                    "initial_speed": 160,
+                    "route": "DDY",
+                    "waypoints": "N043.11.17.980,W107.27.09.821 N043.10.01.693,W107.12.00.812/ho DDY/h090"
+                }
+            ]
+        },
+        "MEM": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCPR": [
+                            {
+                                "airport": "KMEM",
+                                "fleet": "b752",
+                                "icao": "FDX"
+                            }
+                        ]
+                    },
+                    "assigned_altitude": 15000,
+                    "cruise_altitude": 11000,
+                    "initial_altitude": 16000,
+                    "initial_controller": "DEN_17_CTR",
+                    "initial_speed": 260,
+                    "route": "DDY",
+                    "waypoints": "N042.40.59.619,W105.27.28.333 N042.44.46.363,W105.34.37.377/ho DDY/h300"
+                }
+            ]
+        },
+        "NE-GA": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCPR": [
+                            {
+                                "airport": "KRAP",
+                                "fleet": "lightGA",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 8000,
+                    "initial_altitude": 8000,
+                    "initial_controller": "DEN_17_CTR",
+                    "initial_speed": 110,
+                    "route": "DDY",
+                    "waypoints": "N043.19.58.704,W105.32.13.895 N043.16.01.784,W105.44.02.651/ho DDY/h237"
+                }
+            ]
+        },
+        "SE-GA": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCPR": [
+                            {
+                                "airport": "KGUR",
+                                "fleet": "lightGA",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 10000,
+                    "initial_altitude": 10000,
+                    "initial_controller": "DEN_17_CTR",
+                    "initial_speed": 110,
+                    "route": "DDY",
+                    "waypoints": "N042.45.31.887,W105.39.20.165 N042.47.30.828,W105.43.14.641/ho DDY/h297"
+                }
+            ]
+        }
+    },
+    "control_positions": {
+        "CPR_APP": {
+            "frequency": 120650,
+            "full_name": "Capser approach",
+            "scope_char": "A",
+            "sector_id": "1A"
+        },
+        "CPR_TWR": {
+            "frequency": 118300,
+            "full_name": "Casper tower",
+            "scope_char": "1",
+            "sector_id": "1T"
+        },
+        "DEN_17_CTR": {
+            "frequency": 127650,
+            "full_name": "Denver center",
+            "facility_id": "C",
+            "eram_facility": true,
+            "scope_char": "C",
+            "sector_id": "D17"
+        }
+    },
+    "default_scenario": "Land West",
+    "fixes": {
+        "_CPR": "42.9058611,-106.4636389",
+        "_CPR3": "N042.53.36.600,W106.28.30.000",
+        "_CPR8": "N042.54.30.000,W106.28.54.000",
+        "_CPR21": "N042.54.48.600,W106.26.55.800",
+        "_CPR26": "N042.54.31.800,W106.26.58.800"
+    },
+    "name": "KCPR",
+    "primary_airport": "KCPR",
+    "scenarios": {
+        "Land West": {
+            "arrival_runways": [
+                {
+                    "airport": "KCPR",
+                    "runway": "21"
+                },
+                {
+                    "airport": "KCPR",
+                    "runway": "26"
+                }
+            ],
+            "inbound_rates": {
+                "SLC": {
+                    "KCPR": 4
+                },
+                "DEN": {
+                    "KCPR": 5
+                },
+                "JAC": {
+                    "KCPR": 4
+                },
+                "MEM": {
+                    "KCPR": 1
+                },
+                "NE-GA": {
+                    "KCPR": 4
+                },
+                "SE-GA": {
+                    "KCPR": 4
+                }
+            },
+            "solo_controller": "CPR_APP",
+            "controllers": [
+                "CPR_TWR",
+                "DEN_17_CTR"
+            ],
+            "default_maps": [
+                "CPR BASE"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KCPR",
+                    "category": "North",
+                    "rate": 2,
+                    "runway": "26"
+                },
+                {
+                    "airport": "KCPR",
+                    "category": "South",
+                    "rate": 10,
+                    "runway": "21"
+                }
+            ],
+            "wind": {
+                "direction": 240,
+                "speed": 11
+            }
+        },
+        "Land East": {
+            "arrival_runways": [
+                {
+                    "airport": "KCPR",
+                    "runway": "3"
+                },
+                {
+                    "airport": "KCPR",
+                    "runway": "8"
+                }
+            ],
+            "inbound_rates": {
+                "SLC": {
+                    "KCPR": 4
+                },
+                "DEN": {
+                    "KCPR": 5
+                },
+                "JAC": {
+                    "KCPR": 4
+                },
+                "MEM": {
+                    "KCPR": 1
+                },
+                "NE-GA": {
+                    "KCPR": 4
+                },
+                "SE-GA": {
+                    "KCPR": 4
+                }
+            },
+            "solo_controller": "CPR_APP",
+            "controllers": [
+                "CPR_TWR",
+                "DEN_17_CTR"
+            ],
+            "default_maps": [
+                "CPR BASE"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KCPR",
+                    "category": "North",
+                    "rate": 2,
+                    "runway": "3"
+                },
+                {
+                    "airport": "KCPR",
+                    "category": "South",
+                    "rate": 10,
+                    "runway": "8"
+                }
+            ],
+            "wind": {
+                "direction": 50,
+                "speed": 10
+            }
+        }
+    },
+    "stars_config": {
+        "center": "42.9058611,-106.4636389",
+        "range": 40,
+        "scratchpads": {
+            "CUSGA": "CUS",
+            "HIPEE": "DEN",
+            "KURSE": "KUR",
+            "LHO": "LHO"
+        },
+        "stars_maps": [
+            "CPR BASE",
+            "CPR MVA",
+            "CPR ILS 3",
+            "CPR GPS 21",
+            "CPR GPS 26",
+            "CPR EOVM",
+            "CPR CLASS",
+            "CPR GPS 3",
+            "CPR GPS 8",
+            "CPR LCL",
+            "CPR VOR 21"
+        ],
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
+    }
+}
