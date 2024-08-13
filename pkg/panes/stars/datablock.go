@@ -402,7 +402,11 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 	trk := sp.getTrack(ctx, ac)
 
 	// Check if the track is being handed off.
-	handoffTCP, handoffCtr := "", ""
+	//
+	// handoffTCP is only set if it's coming from an enroute position or
+	// from a different facility; otherwise we just show the
+	// single-character id.
+	handoffId, handoffTCP := "", ""
 	if trk.HandoffController != "" {
 		// For inbound to us, we want to show who owns it currently; for
 		// outbound, we show who it's going to.
@@ -412,16 +416,17 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		if ctrl := ctx.ControlClient.Controllers[callsign]; ctrl != nil {
 			if trk.RedirectedHandoff.RedirectedTo != "" {
 				if toctrl := ctx.ControlClient.Controllers[trk.RedirectedHandoff.RedirectedTo]; toctrl != nil {
-					handoffTCP = toctrl.SectorId[len(ctrl.SectorId)-1:]
+					handoffId = toctrl.SectorId[len(ctrl.SectorId)-1:]
 				}
 			} else {
 				if ctrl.ERAMFacility { // Same facility
-					handoffTCP = "C"
-					handoffCtr = ctrl.SectorId
+					handoffId = "C"
+					handoffTCP = ctrl.SectorId
 				} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
-					handoffTCP = ctrl.SectorId[len(ctrl.SectorId)-1:]
+					handoffId = ctrl.SectorId[len(ctrl.SectorId)-1:]
 				} else { // Different facility
-					handoffTCP = ctrl.FacilityIdentifier
+					handoffId = ctrl.FacilityIdentifier
+					handoffTCP = ctrl.FacilityIdentifier + ctrl.SectorId
 				}
 			}
 		}
@@ -501,7 +506,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 		// Field 2: receiving TCP if being handed off.
 		// TODO: * if field 1 is showing pilot-reported altitude
-		formatDBText(db.field2[:], handoffTCP, color, false)
+		formatDBText(db.field2[:], handoffId, color, false)
 
 		// Field 3: groundspeed + "V" for VFR, "E" for overflight, followed by ac-category, else ac category
 		ve := ""
@@ -574,18 +579,18 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			return s
 		}
 
-		ho := util.Select(handoffTCP != "", handoffTCP, " ")
+		ho := util.Select(handoffId != "", handoffId, " ")
 		formatDBText(db.field34[0][:], fmt3(altitude)+ho, color, false)
 		idx34 := 1
 		if trk.SP1 != "" {
 			formatDBText(db.field34[idx34][:], fmt3(trk.SP1)+ho, color, false)
 			idx34++
 		}
-		if handoffCtr != "" {
-			formatDBText(db.field34[idx34][:], fmt3(handoffCtr)+handoffTCP, color, false)
+		if handoffTCP != "" {
+			formatDBText(db.field34[idx34][:], fmt3(handoffTCP)+handoffId, color, false)
 			idx34++
 		} else if ac.SecondaryScratchpad != "" { // don't show secondary if we're showing a center
-			// TODO: confirm no handoffTCP here
+			// TODO: confirm no handoffId here
 			formatDBText(db.field34[idx34][:], fmt3(trk.SP2)+"+", color, false)
 			idx34++
 		}
