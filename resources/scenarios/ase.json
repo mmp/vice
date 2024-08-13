@@ -1,515 +1,464 @@
 {
-  "tracon": "ASE",
-  "airports": {
-    "KASE": {
-      "approaches": {
-        "L15": {
-          "runway": "15",
-          "full_name": "Localizer DME Runway 15",
-          "type": "ILS",
-          "waypoints": [
-            "AJAXX/iaf/a13600 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG",
-            "WOKUV/a14000/arc4DBL/iaf IVKEF/arc4DBL/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG",
-            "BULDG/a16500 WERNR/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG"
-          ]
-        },
-        "RG15": {
-          "runway": "15",
-          "type": "RNAV",
-          "full_name": "RNAV GPS Runway 15",
-          "waypoints": [
-            "DBL/iaf/if/a13700 HEPEB/a12900 ALLIX/a12200 MAFMU"
-          ]
-        },
-        "RY15": {
-          "runway": "15",
-          "type": "RNAV",
-          "full_name": "RNAV Y Runway 15",
-          "waypoints": [
-            "DBL/a14000 BASLT/iaf/s210 GLDEN/if/a12800 GNTRI/a10600 PHPPS/a9414 OSLEE/a8798 UCISE/a8325 SAYYO/a7917",
-            "LINDZ/iaf/a12800 GLDEN/if/a12800 GNTRI/a10600 PHPPS/a9414 OSLEE/a8798 UCISE/a8325 SAYYO/a7917"
-          ]
-        },
-        "RZ15": {
-          "runway": "15",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 15",
-          "waypoints": [
-            "DBL SITWO/iaf/a13000 NALDY/if/a13000 WASLO/a11900 ONCAP/a10800  WIDMI",
-            "LINDZ/iaf/a13000 NALDY/if/a13000 WASLO/a11900 ONCAP/a10800 WIDMI"
-          ]
-        },
-        "V33": {
-          "full_name": "Visual Approach Runway 33",
-          "runway": "33",
-          "type": "Visual",
-          "waypoints": [
-            "GUILT/iaf/a10000 N039.06.26.924,W106.45.53.640/faf"
-          ]
-        }
-      },
-      "departure_routes": {
-        "33": {
-          "DBL": {
-            "cleared_altitude": 21000,
-            "sid": "LINDZ9",
-            "description": "LINDZ9.DBL",
-            "waypoints": "KASE-15/h343 LINDZ"
-          },
-          "RLG": {
-            "cleared_altitude": 21000,
-            "sid": "LINDZ9",
-            "description": "LINDZ9.RLG",
-            "waypoints": "KASE-15/h343 LINDZ SXW JESIE"
-          },
-          "33.EKR": {
-            "cleared_altitude": 21000,
-            "sid": "LINDZ9",
-            "description": "LINDZ9.EKR",
-            "waypoints": "KASE-15/h343 LINDZ SLOLM RIL"
-          },
-          "33.JNC": {
-            "cleared_altitude": 21000,
-            "sid": "LINDZ9",
-            "description": "LINDZ9.JNC",
-            "waypoints": "KASE-15/h343 LINDZ SLOLM PACES"
-          },
-          "HBU": {
-            "cleared_altitude": 21000,
-            "sid": "ASPE7",
-            "description": "ASPE7.HBU",
-            "waypoints": "KASE-15/h348"
-          },
-          "MTJ": {
-            "cleared_altitude": 21000,
-            "sid": "ASPE7",
-            "description": "ASPE7.MTJ",
-            "waypoints": "KASE-15/h348"
-          },
-          "EKR": {
-            "cleared_altitude": 21000,
-            "sid": "PITKN5",
-            "description": "PITKN5.EKR",
-            "waypoints": "KASE-15 BOYET/a9400+ LINDZ GLENO SLOLM/a15000-19000 NOVJO"
-          },
-          "JNC": {
-            "cleared_altitude": 21000,
-            "sid": "PITKN5",
-            "description": "PITKN5.JNC",
-            "waypoints": "KASE-15 BOYET/a9400+ LINDZ GLENO SLOLM/a15000-19000"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ],
-          "altitude": 23000,
-          "destination": "KDEN",
-          "route": "DBL FQF",
-          "exit": "DBL"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "N"
-            }
-          ],
-          "altitude": 17000,
-          "destination": "KCYS",
-          "route": "RLG KGXY",
-          "exit": "RLG"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ],
-          "altitude": 23000,
-          "destination": "KCOS",
-          "route": "RLG LUFSE",
-          "exit": "RLG"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ],
-          "altitude": 23000,
-          "destination": "KPUB",
-          "route": "HBU PUB",
-          "exit": "HBU"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SKW"
-            }
-          ],
-          "altitude": 28000,
-          "destination": "KSLC",
-          "route": "JNC KSLC",
-          "exit": "JNC"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ],
-          "altitude": 23000,
-          "destination": "KDEN",
-          "route": "RLG ADANE",
-          "exit": "RLG"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ],
-          "altitude": 23000,
-          "destination": "KABQ",
-          "route": "MTJ KABQ",
-          "exit": "MTJ"
-        }
-      ],
-      "exit_categories": {
-        "RLG": "Northeast",
-        "JNC": "West",
-        "EKR": "Northwest",
-        "HBU": "Southwest",
-        "MTJ": "Southwest"
-      },
-      "tower_list": 1
-    }
-  },
-  "airspace": {
-    "boundaries": {
-        "ASE_APP_MAIN": [
-          "N039.10.27.401,W107.25.57.943",
-          "N039.29.35.885,W107.22.12.806",
-          "N039.29.33.509,W107.13.18.513",
-          "N039.33.49.010,W107.13.13.212",
-          "N039.31.59.970,W107.02.52.677",
-          "N039.32.01.714,W106.59.35.747",
-          "N039.31.58.789,W106.59.55.056",
-          "N039.37.17.956,W106.32.16.285",
-          "N039.31.27.561,W106.26.39.224",
-          "N039.08.34.311,W106.25.24.270",
-          "N039.01.57.306,W106.41.09.451",
-          "N039.01.59.792,W107.14.53.627",
-          "N039.10.12.501,W107.25.56.872",
-          "N039.10.27.401,W107.25.57.943"
-        ],
-        "RIL_SHELF": [
-          "N039.29.35.885,W107.22.12.806",
-          "N039.29.33.509,W107.13.18.513",
-          "N039.33.49.010,W107.13.13.212",
-          "N039.37.24.918,W107.13.13.817",
-          "N039.35.35.302,W107.18.09.733",
-          "N039.30.03.694,W107.22.07.423",
-          "N039.29.35.747,W107.22.12.504"
-        ],
-        "EGE_SHELF": [
-          "N039.33.49.010,W107.13.13.212",
-          "N039.31.59.970,W107.02.52.677",
-          "N039.32.01.714,W106.59.35.747",
-          "N039.31.58.789,W106.59.55.056",
-          "N039.37.17.956,W106.32.16.285",
-          "N039.42.06.031,W106.35.52.029",
-          "N039.37.24.918,W107.13.13.817"
-        ]
-    },
-    "volumes": {
-        "ASE_APP": [
-            {
-                "boundaries": [
-                    "ASE_APP_MAIN"
-                ],
-                "lower": 0,
-                "upper": 21000
+    "tracon": "ASE",
+    "airports": {
+        "KASE": {
+            "approaches": {
+                "L15": {
+                    "runway": "15",
+                    "full_name": "Localizer DME Runway 15",
+                    "type": "ILS",
+                    "waypoints": [
+                        "AJAXX/iaf/a13600 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG",
+                        "WOKUV/a14000/arc4DBL/iaf IVKEF/arc4DBL/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG",
+                        "BULDG/a16500 WERNR/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG"
+                    ]
+                },
+				"R15": {
+					"cifp_id": "RFNV",
+					"runway": "15"
+				},
+                "V33": {
+                    "full_name": "Visual Approach Runway 33",
+                    "runway": "33",
+                    "type": "Visual",
+                    "waypoints": [
+                        "GUILT/iaf/a10000 N039.06.26.924,W106.45.53.640/faf"
+                    ]
+                }
             },
-            {
-                "boundaries": [
-                    "RIL_SHELF"
-                ],
-                "lower": 15000,
-                "upper": 21000
+            "departure_routes": {
+                "33": {
+                    "DBL": {
+                        "cleared_altitude": 16000,
+                        "sid": "LINDZ1",
+                        "description": "LINDZ1.DBL",
+                        "waypoints": "KASE-15 N039.16.46.814,W106.52.56.394/a9100+ N039.18.21.846,W107.02.26.420 LINDZ DBL"
+                    },
+					"LINDZ": {
+                        "cleared_altitude": 16000,
+                        "sid": "LINDZ1",
+                        "description": "LINDZ1.LINDZ",
+                        "waypoints": "KASE-15 N039.16.46.814,W106.52.56.394/a9100+ N039.18.21.846,W107.02.26.420 LINDZ"
+                    },
+                    "RLG": {
+                        "cleared_altitude": 16000,
+                        "sid": "LINDZ1",
+                        "description": "LINDZ1.RLG",
+                        "waypoints": "KASE-15 N039.16.46.814,W106.52.56.394/a9100+ N039.18.21.846,W107.02.26.420 LINDZ SXW JESIE RLG"
+                    },
+                    "EKR": {
+                        "cleared_altitude": 16000,
+                        "sid": "LINDZ1",
+                        "description": "LINDZ1.EKR",
+                        "waypoints": "KASE-15 N039.16.46.814,W106.52.56.394/a9100+ N039.18.21.846,W107.02.26.420 LINDZ SLOLM RIL EKR"
+                    },
+					"RIL": {
+                        "cleared_altitude": 16000,
+                        "sid": "LINDZ1",
+                        "description": "LINDZ1.RIL",
+                        "waypoints": "KASE-15 N039.16.46.814,W106.52.56.394/a9100+ N039.18.21.846,W107.02.26.420 LINDZ SLOLM RIL"
+                    },
+                    "JNC": {
+                        "cleared_altitude": 16000,
+                        "sid": "LINDZ1",
+                        "description": "LINDZ1.JNC",
+                        "waypoints": "KASE-15 N039.16.46.814,W106.52.56.394/a9100+ N039.18.21.846,W107.02.26.420 LINDZ SLOLM PACES JNC"
+                    }
+                }
             },
-            {
-                "boundaries": [
-                    "EGE_SHELF"
-                ],
-                "lower": 16000,
-                "upper": 21000
-            }
-        ]
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        },
+						{
+							"icao": "SKW"
+						}
+                    ],
+                    "altitude": 23000,
+                    "destination": "KDEN",
+                    "route": "LINDZ IDENE JNETT HAMIC SSKII/a20000-22000 BGDEE/a17000-21000/s250/delete",
+                    "exit": "LINDZ"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "N",
+							"fleet": "fastGA"
+                        }
+                    ],
+                    "altitude": 23000,
+                    "destination": "KCYS",
+                    "route": "RLG KGXY/delete",
+                    "exit": "RLG"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 18000,
+                    "destination": "KCOS",
+                    "route": "LINDZ KEEPP CLIMN MROON HBU/delete",
+                    "exit": "LINDZ"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SKW"
+                        },
+						{
+							"icao": "N",
+							"fleet": "fastGA"
+						}
+                    ],
+                    "altitude": 28000,
+                    "destination": "KSLC",
+                    "route": "RIL HELPR/delete",
+                    "exit": "RIL"
+                },
+				{
+                    "airlines": [
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 23000,
+                    "destination": "KPUB",
+                    "route": "LINDZ KEEPP CLIMN MROON HBU PUB/delete",
+                    "exit": "LINDZ"
+                }
+            ],
+            "exit_categories": {
+                "RLG": "Northeast",
+				"RIL": "Northwest",
+                "JNC": "West",
+                "EKR": "Northwest"
+            },
+            "tower_list": 1
         }
     },
-  "arrival_groups": {
-    "EAST": [
-      {
-        "airlines": {
-          "KASE": [
-            {
-              "airport": "KDEN",
-              "fleet": "fastGA",
-              "icao": "N"
-            },
-            {
-              "airport": "KCOS",
-              "fleet": "fastGA",
-              "icao": "N"
-            },
-            {
-              "airport": "KOMA",
-              "fleet": "fastGA",
-              "icao": "N"
-            },
-            {
-              "airport": "KTEX",
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ]
+    "airspace": {
+        "boundaries": {
+            "ASE_APP_MAIN": [
+                "N039.10.27.401,W107.25.57.943",
+                "N039.29.35.885,W107.22.12.806",
+                "N039.29.33.509,W107.13.18.513",
+                "N039.33.49.010,W107.13.13.212",
+                "N039.31.59.970,W107.02.52.677",
+                "N039.32.01.714,W106.59.35.747",
+                "N039.31.58.789,W106.59.55.056",
+                "N039.37.17.956,W106.32.16.285",
+                "N039.31.27.561,W106.26.39.224",
+                "N039.08.34.311,W106.25.24.270",
+                "N039.01.57.306,W106.41.09.451",
+                "N039.01.59.792,W107.14.53.627",
+                "N039.10.12.501,W107.25.56.872",
+                "N039.10.27.401,W107.25.57.943"
+            ],
+            "RIL_SHELF": [
+                "N039.29.35.885,W107.22.12.806",
+                "N039.29.33.509,W107.13.18.513",
+                "N039.33.49.010,W107.13.13.212",
+                "N039.37.24.918,W107.13.13.817",
+                "N039.35.35.302,W107.18.09.733",
+                "N039.30.03.694,W107.22.07.423",
+                "N039.29.35.747,W107.22.12.504"
+            ],
+            "EGE_SHELF": [
+                "N039.33.49.010,W107.13.13.212",
+                "N039.31.59.970,W107.02.52.677",
+                "N039.32.01.714,W106.59.35.747",
+                "N039.31.58.789,W106.59.55.056",
+                "N039.37.17.956,W106.32.16.285",
+                "N039.42.06.031,W106.35.52.029",
+                "N039.37.24.918,W107.13.13.817"
+            ]
         },
-        "cruise_altitude": 24000,
-        "initial_altitude": 17000,
-        "description": "",
-        "initial_controller": "DEN_11_CTR",
-        "initial_speed": 210,
-        "route": "BULDG WERNR",
-        "waypoints": "BULDG N039.35.44.764,W106.27.16.715/ho WERNR"
-      },
-      {
-        "airlines": {
-          "KASE": [
-            {
-              "airport": "KDEN",
-              "icao": "N"
-            },
-            {
-              "airport": "KCOS",
-              "icao": "N"
-            },
-            {
-              "airport": "KPUB",
-              "icao": "N"
-            },
-            {
-              "airport": "KAPA",
-              "icao": "N"
-            }
-          ]
-        },
-        "cruise_altitude": 24000,
-        "initial_altitude": 18000,
-        "description": "",
-        "initial_controller": "DEN_11_CTR",
-        "initial_speed": 180,
-        "route": "DBL KASE",
-        "waypoints": "N039.32.32.792,W106.20.38.351/a17000 N039.31.38.629,W106.25.10.070/s210/ho DBL"
-      }
-    ],
-    "SOUTH": [
-      {
-        "airlines": {
-          "KASE": [
-            {
-              "airport": "KCOS",
-              "icao": "SKW"
-            },
-            {
-              "airport": "KOMA",
-              "icao": "EDV"
-            },
-            {
-              "airport": "KSAT",
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ]
-        },
-        "cruise_altitude": 26000,
-        "initial_altitude": 18000,
-        "description": "",
-        "initial_controller": "DEN_11_CTR",
-        "initial_speed": 210,
-        "route": "DBL KASE",
-        "waypoints": "N038.50.33.682,W106.22.23.325 N038.58.54.837,W106.29.24.074 N038.58.54.837,W106.29.24.074/s210/ho DBL"
-      }
-    ],
-    "WEST": [
-      {
-        "airlines": {
-          "KASE": [
-            {
-              "airport": "KSLC",
-              "icao": "EDV"
-            },
-            {
-              "airport": "KLAX",
-              "icao": "DPJ"
-            },
-            {
-              "airport": "KHND",
-              "icao": "JIA"
-            },
-            {
-              "airport": "KSAN",
-              "icao": "SKW"
-            }
-          ]
-        },
-        "cruise_altitude": 23000,
-        "initial_altitude": 19000,
-        "description": "",
-        "initial_controller": "DEN_11_CTR",
-        "initial_speed": 210,
-        "route": "KASE",
-        "waypoints": "N039.07.43.211,W107.31.40.772/a19000 N039.08.45.805,W107.27.37.672/s210/a17000/ho"
-      }
-    ]
-  },
-  "control_positions": {
-    "ASE_APP": {
-      "frequency": 123800,
-      "full_name": "Aspen approach",
-      "scope_char": "A",
-      "sector_id": "1A"
-    },
-    "ASE_TWR": {
-      "frequency": 118850,
-      "full_name": "Aspen tower",
-      "scope_char": "T",
-      "sector_id": "AT"
-    },
-    "DEN_11_CTR": {
-      "frequency": 120475,
-      "full_name": "Denver center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "scope_char": "C",
-      "sector_id": "D11"
-    }
-  },
-  "default_scenario": "VMC 15",
-  "fixes": {
-    "_ASE": "39.223202,-106.869003",
-    "BASLT": "N039.28.21.466,W107.03.18.550",
-    "GLDEN": "N039.23.22.761,W107.04.05.516"
-  },
-  "name": "KASE",
-  "primary_airport": "KASE",
-  "scenarios": {
-    "VMC 15": {
-      "approach_airspace": ["ASE_APP"],
-      "departure_airspace": ["ASE_APP"],
-      "arrival_runways": [
-        {
-          "airport": "KASE",
-          "runway": "15"
+        "volumes": {
+            "ASE_APP": [
+                {
+                    "boundaries": [
+                        "ASE_APP_MAIN"
+                    ],
+                    "lower": 0,
+                    "upper": 21000
+                },
+                {
+                    "boundaries": [
+                        "RIL_SHELF"
+                    ],
+                    "lower": 15000,
+                    "upper": 21000
+                },
+                {
+                    "boundaries": [
+                        "EGE_SHELF"
+                    ],
+                    "lower": 16000,
+                    "upper": 21000
+                }
+            ]
         }
-      ],
-      "arrivals": {
-        "WEST": {
-          "KASE": 5
-        },
+    },
+    "inbound_flows": {
         "EAST": {
-          "KASE": 5
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KASE": [
+                            {
+                                "airport": "KDEN",
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KCOS",
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KOMA",
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KTEX",
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 24000,
+                    "initial_altitude": 17000,
+                    "description": "",
+                    "initial_controller": "DEN_11_CTR",
+                    "initial_speed": 210,
+                    "route": "BULDG WERNR",
+                    "waypoints": "BULDG N039.35.44.764,W106.27.16.715/ho WERNR"
+                },
+                {
+                    "airlines": {
+                        "KASE": [
+                            {
+                                "airport": "KPUB",
+								"fleet": "fastGA",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KAPA",
+								"fleet": "fastGA",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 24000,
+                    "initial_altitude": 18000,
+                    "description": "",
+                    "initial_controller": "DEN_11_CTR",
+                    "initial_speed": 180,
+                    "route": "DBL KASE",
+                    "waypoints": "N039.32.32.792,W106.20.38.351/a17000 N039.31.38.629,W106.25.10.070/s210/ho DBL"
+                }
+            ]
         },
         "SOUTH": {
-          "KASE": 5
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KASE": [
+                            {
+                                "airport": "KCOS",
+                                "icao": "SKW"
+                            },
+                            {
+                                "airport": "KOMA",
+                                "icao": "EDV"
+                            },
+                            {
+                                "airport": "KSAT",
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 26000,
+                    "initial_altitude": 18000,
+                    "description": "",
+                    "initial_controller": "DEN_11_CTR",
+                    "initial_speed": 210,
+                    "route": "DBL KASE",
+                    "waypoints": "N038.50.33.682,W106.22.23.325 N038.58.54.837,W106.29.24.074 N038.58.54.837,W106.29.24.074/s210/ho DBL"
+                }
+            ]
+        },
+        "WEST": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KASE": [
+                            {
+                                "airport": "KSLC",
+                                "icao": "EDV"
+                            },
+                            {
+                                "airport": "KLAX",
+                                "icao": "DPJ"
+                            },
+                            {
+                                "airport": "KHND",
+                                "icao": "JIA"
+                            },
+                            {
+                                "airport": "KSAN",
+                                "icao": "SKW"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 23000,
+                    "initial_altitude": 19000,
+                    "description": "",
+                    "initial_controller": "DEN_11_CTR",
+                    "initial_speed": 210,
+                    "route": "KASE",
+                    "waypoints": "N039.07.43.211,W107.31.40.772/a19000 N039.08.45.805,W107.27.37.672/s210/a17000/ho"
+                }
+            ]
         }
-      },
-      "solo_controller": "ASE_APP",
-      "controllers": [
-        "ASE_TWR",
-        "ASE_APP",
-        "DEN_11_CTR"
-      ],
-      "default_maps": [ "ASE BASE" ],
-      "departure_runways": [
-        {
-          "airport": "KASE",
-          "rate": 15,
-          "runway": "33"
+    },
+    "control_positions": {
+        "ASE_APP": {
+            "frequency": 123800,
+            "full_name": "Aspen approach",
+            "scope_char": "A",
+            "sector_id": "1A"
+        },
+        "ASE_TWR": {
+            "frequency": 118850,
+            "full_name": "Aspen tower",
+            "scope_char": "T",
+            "sector_id": "AT"
+        },
+        "DEN_11_CTR": {
+            "frequency": 120475,
+            "full_name": "Denver center",
+            "facility_id": "C",
+            "eram_facility": true,
+            "scope_char": "C",
+            "sector_id": "D11"
         }
-      ],
-      "wind": {
-        "direction": 360,
-        "gust": 5,
-        "speed": 10
-      }
+    },
+    "default_scenario": "VMC 15",
+    "fixes": {
+        "_ASE": "39.223202,-106.869003",
+        "BASLT": "N039.28.21.466,W107.03.18.550",
+        "GLDEN": "N039.23.22.761,W107.04.05.516"
+    },
+    "name": "KASE",
+    "primary_airport": "KASE",
+    "scenarios": {
+        "VMC 15": {
+            "approach_airspace": [
+                "ASE_APP"
+            ],
+            "departure_airspace": [
+                "ASE_APP"
+            ],
+            "arrival_runways": [
+                {
+                    "airport": "KASE",
+                    "runway": "15"
+                }
+            ],
+            "inbound_rates": {
+                "WEST": {
+                    "KASE": 5
+                },
+                "EAST": {
+                    "KASE": 5
+                },
+                "SOUTH": {
+                    "KASE": 5
+                }
+            },
+            "solo_controller": "ASE_APP",
+            "controllers": [
+                "ASE_TWR",
+                "ASE_APP",
+                "DEN_11_CTR"
+            ],
+            "default_maps": [
+                "ASE BASE"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KASE",
+                    "rate": 15,
+                    "runway": "33"
+                }
+            ],
+            "wind": {
+                "direction": 360,
+                "speed": 10
+            }
+        }
+    },
+    "stars_config": {
+        "center": "N039.19.41.442,W106.53.21.361",
+        "range": 25,
+        "inhibit_ca_volumes": [
+            {
+                "name": "ASE FNL CA",
+                "type": "polygon",
+                "floor": 6155,
+                "ceiling": 10000,
+                "vertices": [
+                    "N039.10.33.155,W106.55.16.442",
+                    "N039.17.10.915,W106.56.44.278",
+                    "N039.17.52.732,W106.48.56.947",
+                    "N039.11.23.500,W106.46.07.620"
+                ]
+            }
+        ],
+        "radar_sites": {
+            "KASE": {
+                "char": "A",
+                "position": "39.223202,-106.869003",
+                "elevation": 7820,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "scratchpads": {
+            "RLG": "RLG",
+			"RIL": "RIL",
+            "JNC": "JNC",
+            "EKR": "EKR",
+            "DBL": "DBL",
+			"LINDZ": "LIN"
+        },
+        "stars_maps": [
+            "ASE BASE",
+            "ASE MVA",
+            "ASE LOC-DME",
+            "ASE LOC-E",
+            "ASE Airwy",
+            "ASE ODO",
+            "ASE EOVM",
+            "ASE RIL ILS",
+            "ASE RNAV-F",
+            "ASE RNVY-15",
+            "ASE RNVZ 15",
+            "ASE VFR",
+            "ASE WRAP-D"
+        ],
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
     }
-  },
-  "stars_config": {
-  "center": "N039.19.41.442,W106.53.21.361",
-  "coordination_fixes": {
-    "WERNR": [
-       {
-          "type": "route",
-          "to": "ASE",
-          "from": "ZDV"
-        }
-    ],
-    "DBL": [
-        {
-            "type": "route",
-            "to": "ASE",
-            "from": "ZDV"
-        }
-    ]
-  },
-  "range": 25,
-  "inhibit_ca_volumes": [
-    {
-      "name": "ASE FNL CA",
-      "type": "polygon",
-      "floor": 6155,
-      "ceiling": 10000,
-      "vertices": [
-        "N039.10.33.155,W106.55.16.442",
-        "N039.17.10.915,W106.56.44.278",
-        "N039.17.52.732,W106.48.56.947",
-        "N039.11.23.500,W106.46.07.620"
-      ]
-    }
-  ],
-  "radar_sites": {
-    "KASE": {
-      "char": "A",
-      "position": "39.223202,-106.869003",
-      "elevation": 7820,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    }
-  },
-  "scratchpads": {
-    "RLG": "RLG",
-    "JNC": "JNC",
-    "EKR": "EKR",
-    "HBU": "HBU",
-    "MTJ": "MTJ",
-    "DBL": "DBL"
-  },
-  "stars_maps": [
-      "ASE BASE", "ASE MVA", "ASE LOC-DME", "ASE LOC-E", "ASE Airwy", "ASE ODO", "ASE EOVM", "ASE RIL ILS", "ASE RNAV-F", "ASE RNVY-15",
-      "ASE RNVZ 15", "ASE VFR", "ASE WRAP-D"
-  ],
-  "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
-  }
 }

@@ -1,575 +1,594 @@
 {
-  "tracon": "D01",
-  "airports": {
-    "KCYS": {
-      "approaches": {
-        "R9": {
-          "runway": "9",
-          "type": "RNAV",
-          "waypoints": [
-            "TODVE/iaf/a10600 SIGSE/if/a9600 HAXUG/faf/a7800 WIKAR/a7060"
-          ]
-        },
-        "R13": {
-          "runway": "13",
-          "type": "RNAV",
-          "waypoints": [
-            "MILKY/iaf EMOTY/if/iaf/a9000 EXUMY/faf/a7900 JIMIG/a7180"
-          ]
-        },
-        "I27": {
-          "runway": "27",
-          "type": "ILS",
-          "waypoints": [
-            "HAMER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800"
-          ]
-        },
-        "R27": {
-          "runway": "27",
-          "type": "RNAV",
-          "waypoints": [
-            "CRIMS/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800",
-            "EGBER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800",
-            "POGTE/a8200 VIDEE/a8100 FERBU/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800"
-          ]
-        },
-        "R31": {
-          "runway": "31",
-          "type": "RNAV",
-          "waypoints": [
-            "CIKNU/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800",
-            "HAMER/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800"
-          ]
-        }
-      },
-      "departure_routes": {
-        "9": {
-          "DEN": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-27/h090"
-          },
-          "BENNE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-27/h090"
-          },
-          "POGTE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-27/h090"
-          },
-          "MILKY": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-27/h090"
-          },
-          "EGBER": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-27/h090"
-          },
-          "SNY": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-27/h090"
-          }
-        },
-        "27": {
-          "DEN": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-9/h270"
-          },
-          "BENNE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-9/h270"
-          },
-          "POGTE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-9/h270"
-          },
-          "MILKY": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-9/h270"
-          },
-          "EGBER": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-9/h270"
-          },
-          "SNY": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-9/h270"
-          }
-        },
-        "31": {
-          "DEN": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-13/h310"
-          },
-          "BENNE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-13/h310"
-          },
-          "POGTE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-13/h310"
-          },
-          "MILKY": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-13/h310"
-          },
-          "EGBER": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-13/h310"
-          },
-          "SNY": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-13/h310"
-          }
-        },
-        "13": {
-          "DEN": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-31/h130"
-          },
-          "BENNE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-31/h130"
-          },
-          "POGTE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-31/h130"
-          },
-          "MILKY": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-31/h130"
-          },
-          "EGBER": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-31/h130"
-          },
-          "SNY": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-31/h130"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "fleet": "fastGA",
-              "icao": "N"
+    "tracon": "D01",
+    "airports": {
+        "KCYS": {
+            "approaches": {
+                "R9": {
+                    "runway": "9",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "TODVE/iaf/a10600 SIGSE/if/a9600 HAXUG/faf/a7800 WIKAR/a7060"
+                    ]
+                },
+                "R13": {
+                    "runway": "13",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "MILKY/iaf EMOTY/if/iaf/a9000 EXUMY/faf/a7900 JIMIG/a7180"
+                    ]
+                },
+                "I27": {
+                    "runway": "27",
+                    "type": "ILS",
+                    "waypoints": [
+                        "HAMER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800"
+                    ]
+                },
+                "R27": {
+                    "runway": "27",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "CRIMS/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800",
+                        "EGBER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800",
+                        "POGTE/a8200 VIDEE/a8100 FERBU/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800"
+                    ]
+                },
+                "R31": {
+                    "runway": "31",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "CIKNU/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800",
+                        "HAMER/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800"
+                    ]
+                }
             },
-            {
-              "icao": "N"
-            }
-          ],
-          "altitude": 15000,
-          "destination": "KDEN",
-          "route": "BENNE DEN",
-          "exit": "BENNE"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "fastGA",
-              "icao": "N"
+            "departure_routes": {
+                "9": {
+                    "DEN": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-27/h090"
+                    },
+                    "BENNE": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-27/h090"
+                    },
+                    "POGTE": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-27/h090"
+                    },
+                    "MILKY": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-27/h090"
+                    },
+                    "EGBER": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-27/h090"
+                    },
+                    "SNY": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-27/h090"
+                    }
+                },
+                "13": {
+                    "DEN": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-31/h130"
+                    },
+                    "BENNE": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-31/h130"
+                    },
+                    "POGTE": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-31/h130"
+                    },
+                    "MILKY": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-31/h130"
+                    },
+                    "EGBER": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-31/h130"
+                    },
+                    "SNY": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-31/h130"
+                    }
+                },
+                "27": {
+                    "DEN": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-9/h270"
+                    },
+                    "BENNE": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-9/h270"
+                    },
+                    "POGTE": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-9/h270"
+                    },
+                    "MILKY": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-9/h270"
+                    },
+                    "EGBER": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-9/h270"
+                    },
+                    "SNY": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-9/h270"
+                    }
+                },
+                "31": {
+                    "DEN": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-13/h310"
+                    },
+                    "BENNE": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-13/h310"
+                    },
+                    "POGTE": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-13/h310"
+                    },
+                    "MILKY": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-13/h310"
+                    },
+                    "EGBER": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-13/h310"
+                    },
+                    "SNY": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "KCYS-13/h310"
+                    }
+                }
             },
-            {
-              "icao": "N"
-            }
-          ],
-          "altitude": 15000,
-          "destination": "KDEN",
-          "route": "BENNE KGXY",
-          "exit": "BENNE"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "fastGA",
-              "icao": "N"
-            },
-            {
-              "icao": "N"
-            }
-          ],
-          "altitude": 20000,
-          "destination": "KBZN",
-          "route": "CYS POGTE",
-          "exit": "POGTE"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            }
-          ],
-          "altitude": 24000,
-          "destination": "KSEA",
-          "route": "MILKY CKW",
-          "exit": "MILKY"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "JIA"
-            }
-          ],
-          "altitude": 23000,
-          "destination": "KSAT",
-          "route": "EGBER LAA",
-          "exit": "EGBER"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DPJ"
-            }
-          ],
-          "altitude": 23000,
-          "destination": "KOMA",
-          "route": "SNY LBF",
-          "exit": "SNY"
-        }
-      ],
-      "exit_categories": {
-        "DEN": "South",
-        "CYS": "North",
-        "BENNE": "South",
-        "BARGR": "Southwest",
-        "SENSE": "Northwest",
-        "POGTE": "Northeast",
-        "HAMER": "Southeast",
-        "SHOOP": "Southeast",
-        "MILKY": "Northweast",
-        "EGBER": "East",
-        "SNY": "East"
-      },
-      "tower_list": 1
-    }
-  },
-  "airspace": {
-    "boundaries": {
-        "CYS_ARSPC": [
-          "N041.03.58.389,W105.10.15.866",
-          "N041.24.19.643,W105.08.40.120",
-          "N041.30.19.871,W104.50.56.011",
-          "N041.20.44.929,W104.10.48.495",
-          "N041.10.38.607,W104.09.21.264",
-          "N040.48.00.628,W104.27.18.555",
-          "N040.46.30.527,W104.31.57.059",
-          "N040.47.58.610,W104.47.58.417",
-          "N041.03.58.389,W105.10.15.866"
-        ]
-    },
-    "volumes": {
-        "CYS_APP": [
-            {
-                "boundaries": [
-                    "CYS_ARSPC"
-                ],
-                "lower": 0,
-                "upper": 12000
-            }
-        ]
-        }
-    },
-  "arrival_groups": {
-    "DEN": [
-      {
-        "airlines": {
-          "KCYS": [
-            {
-              "airport": "KDEN",
-              "icao": "N"
-            }
-          ]
-        },
-        "cruise_altitude": 11000,
-        "initial_altitude": 10000,
-        "description": "",
-        "initial_controller": "DEN_D_APP",
-        "initial_speed": 170,
-        "route": "DVV CYS",
-        "waypoints": "N040.35.21.116,W104.40.28.363 N040.42.33.469,W104.41.22.113/ho CYS"
-      }
-    ],
-    "BZN": [
-      {
-        "airlines": {
-          "KCYS": [
-            {
-              "airport": "KBZN",
-              "icao": "JIA"
-            }
-          ]
-        },
-        "cruise_altitude": 23000,
-        "initial_altitude": 13000,
-        "description": "",
-        "initial_controller": "DEN_21_CTR",
-        "initial_speed": 210,
-        "route": "KBZN CYS",
-        "waypoints": "N041.32.11.410,W105.08.03.096 N041.28.59.135,W105.01.56.290/ho CYS"
-      }
-    ],
-    "OMA": [
-      {
-        "airlines": {
-          "KCYS": [
-            {
-              "airport": "KOMA",
-              "icao": "EDV"
-            },
-            {
-              "airport": "KOMA",
-              "icao": "DPJ"
-            },
-            {
-              "airport": "KOMA",
-              "icao": "SKW"
-            },
-            {
-              "airport": "KOMA",
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ]
-        },
-        "cruise_altitude": 24000,
-        "initial_altitude": 13000,
-        "description": "",
-        "initial_controller": "DEN_21_CTR",
-        "initial_speed": 210,
-        "route": "KOMA CYS",
-        "waypoints": "N041.18.10.434,W103.54.45.241/s210 N041.16.44.891,W104.05.57.192/ho CYS"
-      }
-    ],
-    "SEA": [
-      {
-        "airlines": {
-          "KCYS": [
-            {
-              "airport": "KSEA",
-              "icao": "EDV"
-            },
-            {
-              "airport": "KSEA",
-              "icao": "SKW"
-            },
-            {
-              "airport": "KSEA",
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ]
-        },
-        "cruise_altitude": 24000,
-        "initial_altitude": 11000,
-        "description": "",
-        "initial_controller": "DEN_21_CTR",
-        "initial_speed": 210,
-        "route": "KSEA CYS",
-        "waypoints": "N041.17.17.782,W105.20.14.730/s210 N041.16.40.964,W105.12.14.738/ho CYS"
-      }
-    ]
-  },
-  "control_positions": {
-    "CYS_APP": {
-      "frequency": 124550,
-      "full_name": "Cheyenne approach",
-      "scope_char": "A",
-      "sector_id": "6A",
-      "facility_id": "6"
-    },
-    "CYS_TWR": {
-      "frequency": 118700,
-      "full_name": "Cheyenne tower",
-      "scope_char": "T",
-      "sector_id": "CT"
-    },
-    "DEN_D_APP": {
-      "frequency": 134850,
-      "full_name": "Denver approach",
-      "facility_id": "1",
-      "scope_char": "D",
-      "sector_id": "1D"
-    },
-    "DEN_21_CTR": {
-      "frequency": 125900,
-      "full_name": "Denver center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "scope_char": "C",
-      "sector_id": "D21"
-    }
-  },
-  "default_scenario": "KCYS Landing East",
-  "magnetic_adjustment": -2,
-  "name": "KCYS",
-  "primary_airport": "KCYS",
-  "scenarios": {
-    "KCYS Landing East": {
-      "approach_airspace": [
-        "CYS_APP"
-      ],
-      "departure_airspace": [
-        "CYS_APP"
-      ],
-      "arrival_runways": [
-        {
-          "airport": "KCYS",
-          "runway": "9"
-        },
-        {
-          "airport": "KCYS",
-          "runway": "13"
-        }
-      ],
-      "arrivals": {
-        "DEN": {
-          "KCYS": 5
-        },
-        "BZN": {
-          "KCYS": 5
-        },
-        "OMA": {
-          "KCYS": 5
-        },
-        "SEA": {
-          "KCYS": 5
-        }
-      },
-      "solo_controller": "CYS_APP",
-      "controllers": [
-        "CYS_TWR",
-        "CYS_APP",
-        "DEN_D_APP",
-        "DEN_21_CTR"
-      ],
-      "default_maps": [ "ARSPC__CYS AIRSPACE" ],
-      "departure_runways": [
-        {
-          "airport": "KCYS",
-          "rate": 5,
-          "runway": "9"
-        },
-        {
-          "airport": "KCYS",
-          "rate": 5,
-          "runway": "13"
-        }
-      ],
-      "wind": {
-        "direction": 100,
-        "gust": 5,
-        "speed": 10
-      }
-    },
-    "KCYS Landing West": {
-      "approach_airspace": [
-        "CYS_APP"
-      ],
-      "departure_airspace": [
-        "CYS_APP"
-      ],
-      "arrival_runways": [
-        {
-          "airport": "KCYS",
-          "runway": "27"
-        },
-        {
-          "airport": "KCYS",
-          "runway": "31"
-        }
-      ],
-      "arrivals": {
-        "DEN": {
-          "KCYS": 5
-        },
-        "BZN": {
-          "KCYS": 5
-        },
-        "OMA": {
-          "KCYS": 5
-        },
-        "SEA": {
-          "KCYS": 5
-        }
-      },
-      "solo_controller": "CYS_APP",
-      "controllers": [
-        "CYS_TWR",
-        "CYS_APP",
-        "DEN_D_APP",
-        "DEN_21_CTR"
-      ],
-      "default_maps": [ "ARSPC__CYS AIRSPACE" ],
-      "departure_runways": [
-        {
-          "airport": "KCYS",
-          "rate": 5,
-          "runway": "31"
-        },
-        {
-          "airport": "KCYS",
-          "rate": 5,
-          "runway": "27"
-        }
-      ],
-      "wind": {
-        "direction": 100,
-        "gust": 5,
-        "speed": 10
-      }
-    }
-  },
-  "stars_config": {
-    "coordination_fixes": {
-      "CYS": [
+            "departures": [
                 {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
+                    "airlines": [
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        },
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 11000,
+                    "destination": "KDEN",
+                    "route": "DEN",
+                    "exit": "DEN"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        },
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 11000,
+                    "destination": "KDEN",
+                    "route": "BENNE KGXY",
+                    "exit": "BENNE"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        },
+                        {
+                            "icao": "EJA"
+                        }
+                    ],
+                    "altitude": 20000,
+                    "destination": "KBZN",
+                    "route": "CYS POGTE",
+                    "exit": "POGTE"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "EDV"
+                        }
+                    ],
+                    "altitude": 24000,
+                    "destination": "KSEA",
+                    "route": "MILKY CKW",
+                    "exit": "MILKY"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "JIA"
+                        }
+                    ],
+                    "altitude": 23000,
+                    "destination": "KSAT",
+                    "route": "EGBER LAA",
+                    "exit": "EGBER"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DPJ"
+                        }
+                    ],
+                    "altitude": 23000,
+                    "destination": "KOMA",
+                    "route": "SNY LBF",
+                    "exit": "SNY"
+                }
+            ],
+            "exit_categories": {
+                "DEN": "South",
+                "CYS": "North",
+                "BENNE": "South",
+                "BARGR": "Southwest",
+                "SENSE": "Northwest",
+                "POGTE": "Northeast",
+                "HAMER": "Southeast",
+                "SHOOP": "Southeast",
+                "MILKY": "Northweast",
+                "EGBER": "East",
+                "SNY": "East"
+            },
+            "tower_list": 1
+        }
+    },
+    "airspace": {
+        "boundaries": {
+            "CYS_ARSPC": [
+                "N041.03.58.389,W105.10.15.866",
+                "N041.24.19.643,W105.08.40.120",
+                "N041.30.19.871,W104.50.56.011",
+                "N041.20.44.929,W104.10.48.495",
+                "N041.10.38.607,W104.09.21.264",
+                "N040.48.00.628,W104.27.18.555",
+                "N040.46.30.527,W104.31.57.059",
+                "N040.47.58.610,W104.47.58.417",
+                "N041.03.58.389,W105.10.15.866"
+            ]
+        },
+        "volumes": {
+            "CYS_APP": [
+                {
+                    "boundaries": [
+                        "CYS_ARSPC"
+                    ],
+                    "lower": 0,
+                    "upper": 12000
                 }
             ]
+        }
     },
-  "center": "KCYS",
-  "inhibit_ca_volumes": [
-    {
-        "name": "CYS NO CA",
-        "type": "circle",
-        "floor": 0,
-        "ceiling": 9500,
-        "radius": 10,
-        "center": "N041.09.19.519,W104.48.39.012"
+    "inbound_flows": {
+        "DEN": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCYS": [
+                            {
+                                "airport": "KDEN",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 11000,
+                    "initial_altitude": 10000,
+                    "description": "",
+                    "initial_controller": "DEN_D_APP",
+                    "initial_speed": 170,
+                    "route": "DVV CYS",
+                    "waypoints": "N040.35.21.116,W104.40.28.363 N040.42.33.469,W104.41.22.113/ho CYS"
+                }
+            ]
+        },
+        "BZN": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCYS": [
+                            {
+                                "airport": "KBZN",
+                                "icao": "JIA"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 23000,
+                    "initial_altitude": 13000,
+                    "description": "",
+                    "initial_controller": "DEN_21_CTR",
+                    "initial_speed": 210,
+                    "route": "KBZN CYS",
+                    "waypoints": "N041.32.11.410,W105.08.03.096 N041.28.59.135,W105.01.56.290/ho CYS"
+                }
+            ]
+        },
+        "OMA": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCYS": [
+                            {
+                                "airport": "KOMA",
+                                "icao": "EDV"
+                            },
+                            {
+                                "airport": "KOMA",
+                                "icao": "DPJ"
+                            },
+                            {
+                                "airport": "KOMA",
+                                "icao": "SKW"
+                            },
+                            {
+                                "airport": "KOMA",
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 24000,
+                    "initial_altitude": 13000,
+                    "description": "",
+                    "initial_controller": "DEN_21_CTR",
+                    "initial_speed": 210,
+                    "route": "KOMA CYS",
+                    "waypoints": "N041.18.10.434,W103.54.45.241/s210 N041.16.44.891,W104.05.57.192/ho CYS"
+                }
+            ]
+        },
+        "SEA": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCYS": [
+                            {
+                                "airport": "KSEA",
+                                "icao": "EDV"
+                            },
+                            {
+                                "airport": "KSEA",
+                                "icao": "SKW"
+                            },
+                            {
+                                "airport": "KSEA",
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 24000,
+                    "initial_altitude": 11000,
+                    "description": "",
+                    "initial_controller": "DEN_21_CTR",
+                    "initial_speed": 210,
+                    "route": "KSEA CYS",
+                    "waypoints": "N041.17.17.782,W105.20.14.730/s210 N041.16.40.964,W105.12.14.738/ho CYS"
+                }
+            ]
+        }
+    },
+    "control_positions": {
+        "CYS_APP": {
+            "frequency": 124550,
+            "full_name": "Cheyenne approach",
+            "scope_char": "A",
+            "sector_id": "6A",
+            "facility_id": "6"
+        },
+        "CYS_TWR": {
+            "frequency": 118700,
+            "full_name": "Cheyenne tower",
+            "scope_char": "T",
+            "sector_id": "CT"
+        },
+        "DEN_D_APP": {
+            "frequency": 134850,
+            "full_name": "Denver approach",
+            "facility_id": "1",
+            "scope_char": "D",
+            "sector_id": "1D"
+        },
+        "DEN_21_CTR": {
+            "frequency": 125900,
+            "full_name": "Denver center",
+            "facility_id": "C",
+            "eram_facility": true,
+            "scope_char": "C",
+            "sector_id": "D21"
+        }
+    },
+    "default_scenario": "KCYS Landing East",
+    "magnetic_adjustment": -2,
+    "name": "KCYS",
+    "primary_airport": "KCYS",
+    "scenarios": {
+        "KCYS Landing East": {
+            "approach_airspace": [
+                "CYS_APP"
+            ],
+            "departure_airspace": [
+                "CYS_APP"
+            ],
+            "arrival_runways": [
+                {
+                    "airport": "KCYS",
+                    "runway": "9"
+                },
+                {
+                    "airport": "KCYS",
+                    "runway": "13"
+                }
+            ],
+            "inbound_rates": {
+                "DEN": {
+                    "KCYS": 5
+                },
+                "BZN": {
+                    "KCYS": 5
+                },
+                "OMA": {
+                    "KCYS": 5
+                },
+                "SEA": {
+                    "KCYS": 5
+                }
+            },
+            "solo_controller": "CYS_APP",
+            "controllers": [
+                "CYS_TWR",
+                "CYS_APP",
+                "DEN_D_APP",
+                "DEN_21_CTR"
+            ],
+            "default_maps": [
+                "ARSPC__CYS AIRSPACE"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KCYS",
+                    "rate": 5,
+                    "runway": "9"
+                },
+                {
+                    "airport": "KCYS",
+                    "rate": 5,
+                    "runway": "13"
+                }
+            ],
+            "wind": {
+                "direction": 100,
+                "speed": 10
+            }
+        },
+        "KCYS Landing West": {
+            "approach_airspace": [
+                "CYS_APP"
+            ],
+            "departure_airspace": [
+                "CYS_APP"
+            ],
+            "arrival_runways": [
+                {
+                    "airport": "KCYS",
+                    "runway": "27"
+                },
+                {
+                    "airport": "KCYS",
+                    "runway": "31"
+                }
+            ],
+            "inbound_rates": {
+                "DEN": {
+                    "KCYS": 5
+                },
+                "BZN": {
+                    "KCYS": 5
+                },
+                "OMA": {
+                    "KCYS": 5
+                },
+                "SEA": {
+                    "KCYS": 5
+                }
+            },
+            "solo_controller": "CYS_APP",
+            "controllers": [
+                "CYS_TWR",
+                "CYS_APP",
+                "DEN_D_APP",
+                "DEN_21_CTR"
+            ],
+            "default_maps": [
+                "ARSPC__CYS AIRSPACE"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KCYS",
+                    "rate": 5,
+                    "runway": "31"
+                },
+                {
+                    "airport": "KCYS",
+                    "rate": 5,
+                    "runway": "27"
+                }
+            ],
+            "wind": {
+                "direction": 100,
+                "speed": 10
+            }
+        }
+    },
+    "stars_config": {
+       "center": "KCYS",
+       "coordination_fixes": {
+           "CYS": [
+               {
+                   "type": "route",
+                   "to": "D01",
+                   "from": "ZDV"
+               }
+           ]
+       },
+       "inhibit_ca_volumes": [
+            {
+                "name": "CYS NO CA",
+                "type": "circle",
+                "floor": 0,
+                "ceiling": 9500,
+                "radius": 10,
+                "center": "N041.09.19.519,W104.48.39.012"
+            }
+        ],
+        "radar_sites": {
+            "CYS": {
+                "char": "A",
+                "position": "KCYS",
+                "elevation": 6155,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "range": 30,
+        "scratchpads": {
+            "DEN": "DEN",
+            "CYS": "DEN",
+            "BENNE": "BEN",
+            "BARGR": "BRG",
+            "SENSE": "SNS",
+            "POGTE": "PGT",
+            "HAMER": "HAM",
+            "SHOOP": "SHP",
+            "MILKY": "MLK",
+            "EGBER": "EGB",
+            "SNY": "SNY"
+        },
+        "stars_maps": [
+            "ARSPC__CYS AIRSPACE",
+            "CLS D__CYS CLASS DELTA",
+            "MVA__MVA",
+            "RWYS__CYS RUNWAYS",
+            "RWYS__CYS RUNWAYS",
+            "ILS27__CYS ILS RWY 27",
+            "RNAV27__CYS RNAV RWY 27",
+            "RNAV27__CYS RNAV RWY 27",
+            "RNAV31__CYS RNAV RWY 31",
+            "AWYS__VICTOR AIRWAYS",
+            "RNAV9__CYS RNAV RWY 09"
+        ],
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
     }
-  ],
-  "radar_sites": {
-    "CYS": {
-      "char": "A",
-      "position": "KCYS",
-      "elevation": 6155,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.3
-    }
-  },
-  "range": 30,
-  "scratchpads": {
-    "DEN": "DEN",
-    "CYS": "DEN",
-    "BENNE": "BEN",
-    "BARGR": "BRG",
-    "SENSE": "SNS",
-    "POGTE": "PGT",
-    "HAMER": "HAM",
-    "SHOOP": "SHP",
-    "MILKY": "MLK",
-    "EGBER": "EGB",
-    "SNY": "SNY"
-  },
-  "stars_maps": [
-      "ARSPC__CYS AIRSPACE", "CLS D__CYS CLASS DELTA", "MVA__MVA", "RWYS__CYS RUNWAYS", "RWYS__CYS RUNWAYS", "ILS27__CYS ILS RWY 27",
-      "RNAV27__CYS RNAV RWY 27", "RNAV27__CYS RNAV RWY 27", "RNAV31__CYS RNAV RWY 31", "AWYS__VICTOR AIRWAYS", "RNAV9__CYS RNAV RWY 09"
-  ],
-  "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
-  }
 }
