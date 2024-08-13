@@ -934,6 +934,7 @@ type Overflight struct {
 	CruiseAltitude      float32             `json:"cruise_altitude"`
 	AssignedAltitude    float32             `json:"assigned_altitude"`
 	InitialSpeed        float32             `json:"initial_speed"`
+	AssignedSpeed       float32             `json:"assigned_speed"`
 	SpeedRestriction    float32             `json:"speed_restriction"`
 	InitialController   string              `json:"initial_controller"`
 	Scratchpad          string              `json:"scratchpad"`

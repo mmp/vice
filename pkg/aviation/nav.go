@@ -206,6 +206,10 @@ func MakeOverflightNav(of *Overflight, fp FlightPlan, perf AircraftPerformance,
 			alt := of.AssignedAltitude
 			nav.Altitude.Assigned = &alt
 		}
+		if of.AssignedSpeed > 0 {
+			spd := of.AssignedSpeed
+			nav.Speed.Assigned = &spd
+		}
 
 		nav.FlightState.Altitude = of.InitialAltitude
 		nav.FlightState.IAS = of.InitialSpeed
