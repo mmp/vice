@@ -1043,9 +1043,10 @@ func showAboutDialog() {
   Jud Lopez, Ethan Malimon, Jace Martin,
   Merry, Yahya Nazimuddin, Justin Nguyen,
   Giovanni, Andrew S, Logan S, Arya T,
-  Nelson T, Eli Thompson, Michael Trokel,
-  Samuel Valencia, Gavin Velicevic, and
-  Jackson Verdoorn.
+  Nelson T, Tyler Temerowski, Eli
+  Thompson, Michael Trokel, Samuel
+  Valencia, Gavin Velicevic, and Jackson
+  Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC,
   ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
   ZSE, and ZTL VATSIM ARTCCs and to the
