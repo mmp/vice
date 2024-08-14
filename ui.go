@@ -239,6 +239,14 @@ var (
 		`Added "SQ" command to issue a beacon code to an aircraft`,
 		`Fixed a crash when setting scratchpads`,
 		`Fixed bugs in the "launch control window" that would prevent it from refreshing`,
+		`New scenarios: CPR (Andrew S), CID (Tyler Temerowski)`,
+		`Scenario updates (1): ASE, COS, CYS, D01 (Andrew S), N90 (Kayden Lambert), P50, A80 (radarcontacto)`,
+		`Scenario updates (2): CDW (Mike LeGall), TPA, MIA (Connor Allen), F11 (Michael Knight), Y90 (Merry Arbitrary)`,
+		`Fixed a crash on Windows systems with high-DPI displays`,
+		`Fixed some cases where a procedure turn would be flown even after aircraft passed a "no pt" fix`,
+		`STARS weather radar rendering is much closer to real-world`,
+		`STARS: many small fixes to how datablocks and tracks / track ids are drawn`,
+		`STARS: fixed some bugs where valid scratchpad entries were rejected`,
 	}
 )
 
