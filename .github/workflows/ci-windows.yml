@@ -61,9 +61,9 @@ jobs:
         go build -tags static -ldflags -H=windowsgui -o ./vice.exe .
         ls
       env:
-        CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
-        CGO_CPPFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
-        CGO_LDFLAGS: "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib"
+        CGO_CFLAGS: "-I ../SDL2-2.24.0/x86_64-w64-mingw32/include"
+        CGO_CPPFLAGS: "-I ../SDL2-2.24.0/x86_64-w64-mingw32/include"
+        CGO_LDFLAGS: "-L ../SDL2-2.24.0/x86_64-w64-mingw32/lib"
 
     - name: Check scenarios
       run:
@@ -97,4 +97,5 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
+
         files: 'Vice-${{ github.ref_name }}-installer.msi'

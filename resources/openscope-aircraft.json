@@ -1,6 +1,6 @@
 {
   "aircraft": [
-  {
+    {
     "name": "Airbus A320 Neo",
     "icao": "A20N",
     "engines": {
@@ -107,6 +107,43 @@
       "cruiseM": null,
       "max": 496,
       "maxM": 0.84
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },{
+    "name": "Boeing F-15 Eagle",
+    "icao": "F15",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "L",
+    "category": {
+      "srs": 3,
+      "lahso": 0,
+      "cwt": "G"
+    },
+    "ceiling": 65000,
+    "rate": {
+      "climb": 50000,
+      "descent": 40000,
+      "accelerate": 7,
+      "decelerate": 4
+    },
+    "runway": {
+      "takeoff": 1.9,
+      "landing": 1.4
+    },
+    "speed": {
+      "min": 61,
+      "v2": 145,
+      "landing": 150,
+      "cruise": 495,
+      "cruiseM": null,
+      "max": 600,
+      "maxM": 0.83
     },
     "capability": {
       "ils": true,

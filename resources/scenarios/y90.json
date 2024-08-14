@@ -54,6 +54,17 @@
                 {
                     "airlines": [
                         {
+                            "icao": "BNDIT",
+                            "fleet": "F15"
+                        }
+                    ],
+                    "destination": "KACK",
+                    "exit": "HFD",
+                    "route": "HFD GON MINNK DEEPO DEEPO1"
+                },
+                {
+                    "airlines": [
+                        {
                             "icao": "SWA",
                             "fleet": "short"
                         }
@@ -276,16 +287,6 @@
                     "destination": "KISP",
                     "exit": "MAD",
                     "route": "MAD BELTT"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KHFD",
-                    "exit": "THUMB",
-                    "route": "THUMB"
                 }
             ]
         },
@@ -388,6 +389,16 @@
                 }
             },
             "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "BNDIT"
+                        }
+                    ],
+                    "destination": "KISP",
+                    "exit": "MAD",
+                    "route": "MAD BELTT"
+                },
                 {
                     "airlines": [
                         {
@@ -568,6 +579,12 @@
         ]
     },
     "control_positions": {
+        "BDL_C_APP": {
+            "frequency": 123950,
+            "full_name": "Bradley Approach",
+            "scope_char": "B",
+            "sector_id": "C1"
+        },
         "BOS_37_CTR": {
             "frequency": 134700,
             "full_name": "Boston Center",
@@ -647,15 +664,15 @@
             "frequency": 133000,
             "full_name": "Boston Approach",
             "scope_char": "A",
-            "sector_id": "21D",
-            "facility_id": "2"
+            "sector_id": "D",
+            "facility_id": "1"
         },
         "ISP_APP": {
             "frequency": 120050,
             "full_name": "New York Approach",
             "scope_char": "N",
-            "sector_id": "43N",
-            "facility_id": "3"
+            "sector_id": "3N",
+            "facility_id": "4"
         },
         "ALB_APP": {
             "frequency": 118050,
@@ -718,7 +735,7 @@
                     "KBDL": 18
                 }
             },
-            "solo_controller": "BDL_B_APP",
+            "solo_controller": "BDL_C_APP",
             "multi_controllers": {
                 "default": {
                     "BDL_B_APP": {
@@ -753,6 +770,7 @@
             },
             "controllers": [
                 "BDL_TWR",
+                "BDL_C_APP",
                 "BDL_B_APP",
                 "BDL_F_APP",
                 "BDL_H_APP",
@@ -848,7 +866,7 @@
                     "KBDL": 15
                 }
             },
-            "solo_controller": "BDL_B_APP",
+            "solo_controller": "BDL_C_APP",
             "multi_controllers": {
                 "default": {
                     "BDL_B_APP": {
@@ -883,6 +901,7 @@
             },
             "controllers": [
                 "BDL_TWR",
+                "BDL_C_APP",
                 "BDL_B_APP",
                 "BDL_F_APP",
                 "BDL_H_APP",
@@ -977,7 +996,7 @@
             "MAD": "MAD",
             "VEERS": "VEERS",
             "CCC": "CCC",
-            "THUMB": "THUMB,"
+            "THUMB": "THUMB"
         },
         "stars_maps": [
             "Y90 RWY 6/33",

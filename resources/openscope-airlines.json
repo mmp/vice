@@ -1,6 +1,24 @@
 {
     "airlines": [
-  {
+      {
+        
+        "icao": "BNDIT",
+        "name": "BNDIT",
+        "callsign": {
+          "name": "Bandit",
+          "callsignFormats": [
+            "##"
+          ]
+        },
+        "fleets": {
+          "military": [
+            [
+              "F15",
+              5
+            ]
+          ]
+        }
+      },{
     "icao": "2",
     "name": "General Aviation Guernsey",
     "callsign": {
