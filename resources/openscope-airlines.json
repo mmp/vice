@@ -5763,6 +5763,29 @@
     }
   },
   {
+    "icao": "JED",
+    "name": "Pheonix East Aviation",
+    "callsign": {
+      "name": "Jed East",
+      "callsignFormats": [
+        "##",
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C172",
+          51
+        ],
+        [
+          "DA42",
+          5
+        ]
+      ]
+    }
+  },
+  {
     "icao": "epi",
     "name": "Epic Flight Academy",
     "callsign": {

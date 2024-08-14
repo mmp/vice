@@ -166,22 +166,22 @@
           },
           "DDANY": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2E",
             "waypoints": "_MCO_35L/h090 DDANY"
           },
           "FSHUN": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2W",
             "waypoints": "_MCO_35L/h270 FSHUN"
           },
           "VIZTA": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2W",
             "waypoints": "_MCO_35L/h270 VIZTA"
           },
           "WORMS": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2E",
             "waypoints": "_MCO_35L/h090 WORMS"
           }
         },
@@ -228,22 +228,22 @@
           },
           "DDANY": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2E",
             "waypoints": "_MCO_17R/h090 DDANY"
           },
           "FSHUN": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2W",
             "waypoints": "_MCO_17R/h270 FSHUN"
           },
           "VIZTA": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2W",
             "waypoints": "_MCO_17R/h270 VIZTA"
           },
           "WORMS": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2W",
             "waypoints": "_MCO_17R/h090 WORMS"
           }
         },
@@ -290,22 +290,22 @@
           },
           "DDANY": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2E",
             "waypoints": "_MCO_36R/h090 DDANY"
           },
           "FSUHN": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2W",
             "waypoints": "_MCO_36R/h270 FSHUN"
           },
           "VIZTA": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2W",
             "waypoints": "_MCO_36R/h270 VIZTA"
           },
           "WORMS": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2E",
             "waypoints": "_MCO_36R/h090 WORMS"
           }
         },
@@ -352,22 +352,22 @@
           },
           "DDANY": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2E",
             "waypoints": "_MCO_18L/h090 DDANY"
           },
           "FSHUN": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2E",
             "waypoints": "_MCO_18L/h270 FSHUN"
           },
           "VIZTA": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2W",
             "waypoints": "_MCO_18L/h270 VIZTA"
           },
           "WORMS": {
             "cleared_altitude": 2000,
-            "sid": "CITR2",
+            "sid": "CITR2E",
             "waypoints": "_MCO_18L/h090 WORMS"
           }
         }
@@ -2549,40 +2549,6 @@
         "RDSOX": "ALL",
         "OSPRY": "ALL"
       }
-    },
-    "KTPA": {
-      "approaches": {
-        "I1L": {
-          "runway": "1L",
-          "type": "ILS",
-          "waypoints": [
-            "LAGOO/if/iaf/hilpt/a2600 SELMN/a2600 ZERUR/a540/faf"
-          ]
-        }
-      }
-    },
-    "KDAB": {
-      "approaches": {
-        "I7L": {
-          "runway": "7L",
-          "type": "ILS",
-          "waypoints": [
-            "LAGOO/if/iaf/hilpt/a2600 SELMN/a2600 ZERUR/a540/faf"
-          ]
-        }
-      }
-    },
-    "KPBI": {
-      "omit_arrival_scratchpad": true,
-      "approaches": {
-        "I7L": {
-          "runway": "10L",
-          "type": "ILS",
-          "waypoints": [
-            "LAGOO/if/iaf/hilpt/a2600 SELMN/a2600 ZERUR/a540/faf"
-          ]
-        }
-      }
     }
   },
   "airspace": {
@@ -3873,202 +3839,135 @@
       ]
     }
   },
-  "arrival_groups": {
-    "ALYNA4": [
-      {
-        "airlines": {
-          "KMCO": [
-            {
-              "airport": "KJFK",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KJFK",
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KJFK",
-              "icao": "JBU"
-            },
-            {
-              "airport": "KEWR",
-              "fleet": "short",
-              "icao": "UAL"
-            },
-            {
-              "airport": "KBOS",
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KBOS",
-              "icao": "JBU"
-            },
-            {
-              "airport": "CYHZ",
-              "fleet": "jfk",
-              "icao": "WJA"
-            },
-            {
-              "airport": "EGCC",
-              "icao": "VIR"
-            },
-            {
-              "airport": "EIDW",
-              "icao": "EIN"
-            },
-            {
-              "airport": "EDDF",
-              "icao": "DLH"
-            }
-          ],
-          "KSFB": [
-            {
-              "airport": "KISP",
-              "icao": "AAY"
-            },
-            {
-              "airport": "KACY",
-              "icao": "AAY"
-            }
-          ],
-          "KORL": [
-            {
-              "airport": "KISP",
-              "icao": "LXJ"
-            },
-            {
-              "airport": "KISP",
-              "icao": "EJA"
-            },
-            {
-              "airport": "KISP",
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ],
-          "KISM": [
-            {
-              "airport": "KISP",
-              "icao": "LXJ"
-            },
-            {
-              "airport": "KISP",
-              "icao": "EJA"
-            },
-            {
-              "airport": "KISP",
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ]
-        },
-        "assigned_altitude": 14000,
-        "initial_altitude": 18000,
-        "initial_controller": "MIA_23_CTR",
-        "initial_speed": 300,
-        "star": "ALYNA4",
-        "runway_waypoints": {
-            "KMCO": {
-                "17L": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
-                "17R": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
-                "18L": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
-                "18R": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
-                "35R": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
-                "35L": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
-                "36R": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
-                "36L": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186"
-            },
-            "KSFB": {
-                "27L": "SURFR/a14000 ALYNA BUDLE/a6000/h263",
-                "9R": "SURFR/a14000 ALYNA BUDLE/a6000/h263"
-            },
-            "KISM": {
-              "15": "SURFR/a14000 ALYNA BUDLE/a6000/h263",
-              "33": "SURFR/a14000 ALYNA BUDLE/a6000/h263"
-            },
-            "KORL": {
-              "7": "SURFR/a14000 ALYNA BUDLE/a6000/h263",
-              "25": "SURFR/a14000 ALYNA BUDLE/a6000/h263"
-            }
-        },
-        "speed_restriction": 250,
-        "waypoints": "BEAUX/ho SURFR/a14000"
-      }
-    ],
-    "EAST_COAST_OVERFLIGHTS": [
-      {
-        "airlines": {
-          "KDAB": [
-            {
-              "airport": "KPBI",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KPBI",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KPBI",
-              "icao": "LFA"
-            },
-            {
-              "airport": "KPBI",
-              "icao": "EPI"
-            },
-            {
-              "airport": "KPBI",
-              "icao": "N",
-              "fleet": "lightGA"
-            }
-          ]
-        },
-        "assigned_altitude": 5000,
-        "initial_altitude": 5000,
-        "initial_controller": "MIA_23_CTR",
-        "route": "CLEFF T208 SMYRA",
-        "initial_speed": 150,
-        "waypoints": "WIXED SULTY/ho VALKA DIMBY INDIA TICCO MALET OAKIE SMYRA N029.07.31.229,W081.01.48.297 KDAB/a5"
-      }
-    ],
-    "EAST_COAST_OVERFLIGHTN": [
-      {
-        "airlines": {
-          "KPBI": [
-            {
-              "airport": "KDAB",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KDAB",
-              "icao": "EPI"
-            },
-            {
-              "airport": "KDAB",
-              "icao": "LFA"
-            },
-            {
-              "airport": "KDAB",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KDAB",
-              "icao": "N",
-              "fleet": "lightGA"
-            }
-          ]
-        },
-        "assigned_altitude": 4000,
-        "initial_altitude": 4000,
-        "initial_speed": 150,
-        "initial_controller": "DAB_N_APP",
-        "route": "SMYRA T208 CLEFF",
-        "waypoints": "N029.07.31.229,W081.01.48.297/ho SMYRA OAKIE MALET TICCO INDIA DIMBY VALKA SULTY WIXED KPBI/a5"
-      }
-    ],
-    "ALYNA4_BNU": [
+  "inbound_flows": {
+    "ALYNA4": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KMCO": [
+              {
+                "airport": "KJFK",
+                "fleet": "short",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KJFK",
+                "fleet": "short",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KJFK",
+                "icao": "JBU"
+              },
+              {
+                "airport": "KEWR",
+                "fleet": "short",
+                "icao": "UAL"
+              },
+              {
+                "airport": "KBOS",
+                "fleet": "short",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KBOS",
+                "icao": "JBU"
+              },
+              {
+                "airport": "CYHZ",
+                "fleet": "jfk",
+                "icao": "WJA"
+              },
+              {
+                "airport": "EGCC",
+                "icao": "VIR"
+              },
+              {
+                "airport": "EIDW",
+                "icao": "EIN"
+              },
+              {
+                "airport": "EDDF",
+                "icao": "DLH"
+              }
+            ],
+            "KSFB": [
+              {
+                "airport": "KISP",
+                "icao": "AAY"
+              },
+              {
+                "airport": "KACY",
+                "icao": "AAY"
+              }
+            ],
+            "KORL": [
+              {
+                "airport": "KISP",
+                "icao": "LXJ"
+              },
+              {
+                "airport": "KISP",
+                "icao": "EJA"
+              },
+              {
+                "airport": "KISP",
+                "icao": "N",
+                "fleet": "fastGA"
+              }
+            ],
+            "KISM": [
+              {
+                "airport": "KISP",
+                "icao": "LXJ"
+              },
+              {
+                "airport": "KISP",
+                "icao": "EJA"
+              },
+              {
+                "airport": "KISP",
+                "icao": "N",
+                "fleet": "fastGA"
+              }
+            ]
+          },
+          "assigned_altitude": 14000,
+          "initial_altitude": 18000,
+          "initial_controller": "MIA_23_CTR",
+          "initial_speed": 300,
+          "star": "ALYNA4",
+          "runway_waypoints": {
+              "KMCO": {
+                  "17L": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
+                  "17R": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
+                  "18L": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
+                  "18R": "SURFR/a14000 ALYNA BANYA/a7000/s210/h246",
+                  "35R": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
+                  "35L": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
+                  "36R": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
+                  "36L": "SURFR/a14000 ALYNA HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186"
+              },
+              "KSFB": {
+                  "27L": "SURFR/a14000 ALYNA BUDLE/a6000/h263",
+                  "9R": "SURFR/a14000 ALYNA BUDLE/a6000/h263"
+              },
+              "KISM": {
+                "15": "SURFR/a14000 ALYNA BUDLE/a6000/h263",
+                "33": "SURFR/a14000 ALYNA BUDLE/a6000/h263"
+              },
+              "KORL": {
+                "7": "SURFR/a14000 ALYNA BUDLE/a6000/h263",
+                "25": "SURFR/a14000 ALYNA BUDLE/a6000/h263"
+              }
+          },
+          "speed_restriction": 250,
+          "waypoints": "BEAUX/ho SURFR/a14000"
+        }
+      ]
+    },
+    "ALYNA4_BNU": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -4127,8 +4026,10 @@
         "speed_restriction": 250,
         "waypoints": "BEAUX SURFR/a14000 ALYNA/ho HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210 _MCO_35R_BITHO/a2500 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
       }
-    ],
-    "BITHO7": [
+    ]
+  },
+    "BITHO7": {
+      "arrivals": [
       {
         "airlines": {
           "KMLB": [
@@ -4201,8 +4102,10 @@
         "star": "BITHO7",
         "waypoints": "OMN N029.13.31.930,W081.06.17.352/ho LAMMA/a12000 JESUP COZMO BITHO/h176"
       }
-    ],
-    "ALYNA4_BSU": [
+    ]
+  },
+    "ALYNA4_BSU":{ 
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -4261,8 +4164,10 @@
         "speed_restriction": 250,
         "waypoints": "BEAUX SURFR/a14000/ho ALYNA BANYA/a7000/s210 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540"
       }
-    ],
-    "ALYNA4_SFINAL": [
+    ]
+  },
+    "ALYNA4_SFINAL":{
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -4350,63 +4255,100 @@
         "scratchpad": "I9L",
         "waypoints": "BURNE ALYNA/ho BANYA/a7000/s210 HERVI/a4000 FONIK/a3000"
       }
-    ],
-    "DADES1": [
+    ]
+  },
+    "DADES1": {
+      "overflights": [
       {
-        "airlines": {
-          "KTPA": [
+        "airlines": [
             {
-              "airport": "EGKK",
+              "departure_airport": "EGKK",
+              "arrival_airport": "KTPA",
               "fleet": "short",
               "icao": "BAW"
             },
             {
-              "airport": "EGLL",
+              "departure_airport": "EGLL",
+              "arrival_airport": "KTPA",
               "icao": "VIR"
             },
             {
-              "airport": "EDDF",
+              "departure_airport": "EDDF",
+              "arrival_airport": "KTPA",
               "fleet": "long",
               "icao": "DLH"
             },
             {
-              "airport": "KBOS",
+              "departure_airport": "KBOS",
+              "arrival_airport": "KTPA",
               "icao": "JBU"
             },
             {
-              "airport": "KISP",
+              "departure_airport": "KISP",
+              "arrival_airport": "KTPA",
               "icao": "FFT"
             },
             {
-              "airport": "KJFK",
+              "departure_airport": "KJFK",
+              "arrival_airport": "KTPA",
               "icao": "JBU"
             },
             {
-              "airport": "KLGA",
+              "departure_airport": "KLGA",
+              "arrival_airport": "KTPA",
               "fleet": "short",
               "icao": "DAL"
             },
             {
-              "airport": "KEWR",
+              "departure_airport": "KEWR",
+              "arrival_airport": "KTPA",
               "fleet": "short",
               "icao": "UAL"
             },
             {
-              "airport": "KPVD",
+              "departure_airport": "KPVD",
+              "arrival_airport": "KTPA",
               "icao": "SWA"
             }
-          ]
-        },
+          ],
         "initial_altitude": 17000,
         "assigned_altitude": 17000,
         "initial_controller": "MIA_23_CTR",
         "initial_speed": 290,
-        "star": "DADES1",
+        "description": "KTPA DADES1 arrivals",
+        "speed_restriction": 290,
+        "waypoints": "BEAUX N028.56.53.610,W080.02.46.827/a17000/ho ZINGR WORAK ZOPER CAMKO ROSTR GUURR DADES LZARD LISAF GUZDA BORST/a5000/s210 JSTRM/a5000/s210 KTPA/a5"
+      },
+      {
+        "airlines": [
+            {
+              "departure_airport": "KPSM",
+              "arrival_airport": "KPIE",
+              "icao": "AAY"
+            },
+            {
+              "departure_airport": "KSWF",
+              "arrival_airport": "KPIE",
+              "icao": "AAY"
+            },
+            {
+              "departure_airport": "KCON",
+              "arrival_airport": "KPIE",
+              "icao": "AAY"
+            }
+          ],
+        "initial_altitude": 17000,
+        "assigned_altitude": 17000,
+        "initial_controller": "MIA_23_CTR",
+        "initial_speed": 290,
+        "description": "KPIE DADES1 arrivals",
         "speed_restriction": 290,
         "waypoints": "BEAUX N028.56.53.610,W080.02.46.827/a17000/ho ZINGR WORAK ZOPER CAMKO ROSTR GUURR DADES LZARD LISAF GUZDA BORST/a5000/s210 JSTRM/a5000/s210 KTPA/a5"
       }
-    ],
-    "GOOFY7": [
+    ]
+  },
+    "GOOFY7": {
+      "arrivals": [
       {
         "airlines": {
           "KISM": [
@@ -4492,8 +4434,10 @@
           }
         }
       }
-    ],
-    "FINAL_S_GRNCH5": [
+    ]
+  },
+    "FINAL_S_GRNCH5": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -4827,8 +4771,10 @@
         "scratchpad": "I8R",
         "waypoints": "BLAYK BUNIE/a7000/s230/ho YAGGO/a6000/s210 NAVAL/a4000 ONNER/a000"
       }
-    ],
-    "GRNCH_NFINAL": [
+    ]
+  },
+    "GRNCH_NFINAL": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -5162,8 +5108,10 @@
         "scratchpad": "R6L",
         "waypoints": "HARAM DORII/a8000+/s220/ho BRICE/a5000/s210/h186"
       }
-    ],
-    "GRNCH5": [
+    ]
+  },
+    "GRNCH5": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -5506,8 +5454,10 @@
         "speed_restriction": 290,
         "waypoints": "GRTNG/a17000+/s290/ho GRNCH BUGGZ/a11000-16000/s280 BLAYK"
       }
-    ],
-    "GRNCH5_LSU": [
+    ]
+  },
+    "GRNCH5_LSU": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -5838,8 +5788,10 @@
         "speed_restriction": 290,
         "waypoints": "GRTNG/a17000+/s290/ho GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210 NAVAL/a4000 ONNER/a3000 HAMMY/a3000 TUFFE/a2200 _MCO_18R/a94"
       }
-    ],
-    "GRNCH5_LNU": [
+    ]
+  },
+    "GRNCH5_LNU": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -6170,8 +6122,10 @@
         "speed_restriction": 290,
         "waypoints": "GRTNG/a17000+/s290/ho GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210 _MCO_36L_GRNCH_FINAL/a2500 BERDY/a1600 _MCO_36L/a93"
       }
-    ],
-    "GTOUT1": [
+    ]
+  },
+    "GTOUT1": {
+      "arrivals" : [
       {
         "airlines": {
           "KMCO": [
@@ -6591,8 +6545,10 @@
         "speed_restriction": 250,
         "waypoints": "N029.25.33.114,W081.11.10.495 FORYU/a13000+/s280/ho NICCK/a12000-14000 BGBBY/a10000+/s250 GTOUT/a9000-11000 TUGLE BANYA/a7000/s210/h250"
       }
-    ],
-    "GTOUT1_BSU": [
+    ]
+  },
+    "GTOUT1_BSU": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -7012,8 +6968,10 @@
         "speed_restriction": 250,
         "waypoints": "N029.25.33.114,W081.11.10.495 FORYU/a13000+/s280/ho NICCK/a12000-14000 BGBBY/a10000+/s250 GTOUT/a9000-11000 TUGLE BANYA/a7000/s210 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 JAXES/a540 _MCO_17L/a90"
       }
-    ],
-    "GTOUT1_SFINAL": [
+    ]
+  },
+    "GTOUT1_SFINAL": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -7436,8 +7394,10 @@
         "scratchpad": "I7L",
         "waypoints": "GTOUT/a9000-11000 TUGLE/ho BANYA/a7000/s210 HERVI/a4000 FONIK/a3000"
       }
-    ],
-    "JAFAR3": [
+    ]
+  },
+    "JAFAR3": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -7474,8 +7434,10 @@
         "speed_restriction": 280,
         "waypoints": "BRKWL/ho JAFAR CRPIT LAMMP"
       }
-    ],
-    "JOKRS3": [
+    ]
+  },
+    "JOKRS3": {
+      "arrivals": [
       {
         "airlines": {
           "KISM": [
@@ -7566,8 +7528,10 @@
         "speed_restriction": 250,
         "waypoints": "SIMIE FAZES/ho MOANS JOKRS ZALEK/h043"
       }
-    ],
-    "JOKRS3.MCO": [
+    ]
+  },
+    "JOKRS3.MCO": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -7600,8 +7564,10 @@
           }
         }
       }
-    ],
-    "TTHOR3": [
+    ]
+  },
+    "TTHOR3": {
+      "arrivals": [
       {
         "airlines": {
           "KSFB": [
@@ -7637,8 +7603,10 @@
         "speed_restriction": 250,
         "waypoints": "OWEDN/a9000/s250 THANO/a7000-9000/ho RAGNR/a7000- LOKII/a5000 MUNKZ/a5000/s210/h201"
       }
-    ],
-    "SHREK2E": [
+    ]
+  },
+    "SHREK2E": {
+      "arrivals": [
       {
         "airlines": {
           "KSFB": [
@@ -7675,8 +7643,10 @@
         "speed_restriction": 250,
         "waypoints": "WAKOS WANDD/ho SHREK/a9000 STNKY/h115"
       }
-    ],
-    "SHREK2W": [
+    ]
+  },
+    "SHREK2W": {
+      "arrivals": [
       {
         "airlines": {
           "KSFB": [
@@ -7732,8 +7702,10 @@
         "speed_restriction": 250,
         "waypoints": "WAKOS WANDD/ho SHREK/a7000 STNKY/h115"
       }
-    ],
-    "SHREK2.MCO": [
+    ]
+  },
+    "SHREK2.MCO": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -7751,8 +7723,10 @@
         "speed_restriction": 250,
         "waypoints": "WAKOS WANDD/a11000/ho STNKY/h115"
       }
-    ],
-    "PRICY3": [
+    ]
+  },
+    "PRICY3": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -8029,8 +8003,10 @@
         "speed_restriction": 250,
         "waypoints": "DECKS/a21000 BULKS/a19000-20000/s280/ho PRICY/a13000-16000"
       }
-    ],
-    "PRICY3_LNU": [
+    ]
+  },
+    "PRICY3_LNU": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -8224,8 +8200,10 @@
         "speed_restriction": 250,
         "waypoints": "BULKS/a19000-20000/ho PRICY/a13000-16000 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210 EXBAN/a4000 AMEBE/a3000 BERDY/a1600 RUTNE/a780 _MCO_36L/a93"
       }
-    ],
-    "PRICY3_LSU": [
+    ]
+  },
+    "PRICY3_LSU": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -8419,8 +8397,10 @@
         "speed_restriction": 250,
         "waypoints": "BULKS/a19000/ho PRICY/a15000 BOCCE JUMBA TAYYE/a10000/s250 ARHIP GIRAF/a8000/s220 DVOLA LYENS/a5000/s210 _MCO_18R_PRICY_FINAL/a3000 HAMMY/a3000 TUFFE/a2200 _MCO_18R/a94 "
       }
-    ],
-    "PRICY3_SFINAL": [
+    ]
+  },
+    "PRICY3_SFINAL": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -8617,8 +8597,10 @@
         "scratchpad": "I8R",
         "waypoints": "GIRAF/a8000/s220 DVOLA/a6500/s220/ho LYENS/a5000/s210/h006"
       }
-    ],
-    "PRICY3_NFINAL": [
+    ]
+  },
+    "PRICY3_NFINAL": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -8814,8 +8796,10 @@
         "scratchpad": "R6L",
         "waypoints": "JUMBA AMADS/a9000/s220/ho LORRA/a7000/s210 EXBAN/a4000 AMEBE/a3000"
       }
-    ],
-    "RIDES2_BNU": [
+    ]
+  },
+    "RIDES2_BNU": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -8886,8 +8870,10 @@
         "speed_restriction": 250,
         "waypoints": "MOOTS/a15000/ho RIDES/a8000+ HAHNA/a6000/s210 SERAY/a4000 FESHA/a3000 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
       }
-    ],
-    "RIDES2_BSU": [
+    ]
+  },
+    "RIDES2_BSU": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -8958,8 +8944,10 @@
         "speed_restriction": 250,
         "waypoints": "MOOTS/a15000/ho RIDES THEAM/a10000 PARRX/a10000/s250 HAANZ/a8000/s220 PTMAN/a5000/s210 _MCO_17L_BITHO COCAS/a1500 JAXES/a540 _MCO_17L/a90"
       }
-    ],
-    "RIDES2": [
+    ]
+  },
+    "RIDES2": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -9103,8 +9091,10 @@
         "speed_restriction": 250,
         "waypoints": "CHEFS/a15000/s280 MOOTS/a13000+/ho RIDES"
       }
-    ],
-    "RIDES2_SFINAL": [
+    ]
+  },
+    "RIDES2_SFINAL": {
+      "arrivals" :[
       {
         "airlines": {
           "KMCO": [
@@ -9178,8 +9168,10 @@
         "scratchpad": "I7l",
         "waypoints": "HAANZ/a8000/s220/ho PTMAN/a5000/s210/h006"
       }
-    ],
-    "RIDES2_NFINAL": [
+    ]
+  },
+    "RIDES2_NFINAL": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -9253,8 +9245,10 @@
         "scratchpad": "I5R",
         "waypoints": "RIDES/a8000 WISRD/ho HAHNA/a6000/s210  SERAY/a4000 FESHA/a3000"
       }
-    ],
-    "SNFLD3_NFINAL": [
+    ]
+  },
+    "SNFLD3_NFINAL": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -9677,8 +9671,10 @@
         "scratchpad": "I5R",
         "waypoints": "VOSSS/a8000/s230 SUNDE/a6000/ho CUBAL/a5000/s210/h186"
       }
-    ],
-    "SNFLD3_BNU": [
+    ]
+  },
+    "SNFLD3_BNU": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -10098,8 +10094,10 @@
         "speed_restriction": 250,
         "waypoints": "NICCK/a12000/ho SNFLD GTOUT/a12000/s280 TUGLE HIGGZ/a10000/s250 VOSSS/a8000/s230 SUNDE/a6000 CUBAL/a5000/s210 _MCO_35R_BITHO/a2500 HEWES/a1600 WOLDI/a540 _MCO_35R/a90"
       }
-    ],
-    "SNFLD3": [
+    ]
+  },
+    "SNFLD3": {
+      "arrivals": [
       {
         "airlines": {
           "KMCO": [
@@ -10548,6 +10546,403 @@
       }
     ]
   },
+    "East_coast/T208 ": {
+      "overflights": [
+        {
+            "airlines": [
+              {
+                "departure_airport": "KPBI",
+                "arrival_airport": "KDAB",
+                "icao": "ERU"
+              },
+              {
+               "departure_airport": "KPBI",
+                "arrival_airport": "KDAB",
+                "icao": "ERU"
+              },
+              {
+               "departure_airport": "KPBI",
+                "arrival_airport": "KDAB",
+                "icao": "LFA"
+              },
+              {
+                "departure_airport": "KPBI",
+                "arrival_airport": "KDAB",
+                "icao": "EPI"
+              },
+              {
+               "departure_airport": "KPBI",
+                "arrival_airport": "KDAB",
+                "icao": "N",
+                "fleet": "lightGA"
+              },
+              {
+                "departure_airport": "KEVB",
+                "arrival_airport": "KDAB",
+                 "icao": "LFA"
+               },
+               {
+                "departure_airport": "KEVB",
+                 "arrival_airport": "KDAB",
+                 "icao": "EPI"
+               },
+               {
+                "departure_airport": "KEVB",
+                 "arrival_airport": "KDAB",
+                 "icao": "N",
+                 "fleet": "lightGA"
+               },
+               {
+                "departure_airport": "KOPF",
+                "arrival_airport": "KDAB",
+                 "icao": "LFA"
+               },
+               {
+                "departure_airport": "KOPF",
+                "arrival_airport": "KDAB",
+                 "icao": "EPI"
+               },
+               {
+                "departure_airport": "KOPF",
+                "arrival_airport": "KDAB",
+                 "icao": "N",
+                 "fleet": "lightGA"
+               },
+               {
+                "departure_airport": "KFXE",
+                "arrival_airport": "KDAB",
+                 "icao": "LFA"
+               },
+               {
+                "departure_airport": "KFXE",
+                "arrival_airport": "KDAB",
+                 "icao": "EPI"
+               },
+               {
+                "departure_airport": "KFXE",
+                "arrival_airport": "KDAB",
+                 "icao": "N",
+                 "fleet": "lightGA"
+               }
+            ],
+          "assigned_altitude": 5000,
+          "initial_altitude": 5000,
+          "initial_controller": "MIA_23_CTR",
+          "initial_speed": 150,
+          "description": "East coast overflights",
+          "waypoints": "WIXED SULTY/ho VALKA DIMBY INDIA TICCO MALET OAKIE SMYRA N029.07.31.229,W081.01.48.297 KDAB/a5"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KDAB",
+              "arrival_airport": "KPBI",
+              "icao": "LFA"
+            },
+            {
+              "departure_airport": "KDAB",
+              "arrival_airport": "KPBI",
+              "icao": "ERU"
+            },
+            {
+              "departure_airport": "KDAB",
+              "arrival_airport": "KPBI",
+              "icao": "N",
+              "fleet": "lightGA"
+            },
+            {
+              "departure_airport": "KEVB",
+              "arrival_airport": "KPBI",
+              "icao": "LFA"
+            },
+            {
+              "departure_airport": "KEVB",
+              "arrival_airport": "KPBI",
+              "icao": "ERU"
+            },
+            {
+              "departure_airport": "KEVB",
+              "arrival_airport": "KPBI",
+              "icao": "N",
+              "fleet": "lightGA"
+            },
+            {
+              "departure_airport": "KFIN",
+              "arrival_airport": "KPBI",
+              "icao": "LFA"
+            },
+            {
+              "departure_airport": "KFIN",
+              "arrival_airport": "KPBI",
+              "icao": "ERU"
+            },
+            {
+              "departure_airport": "KFIN",
+              "arrival_airport": "KPBI",
+              "icao": "N",
+              "fleet": "lightGA"
+            }
+          ],
+          "assigned_altitude": 4000,
+          "initial_altitude": 4000,
+          "initial_controller": "DAB_N_APP",
+          "initial_speed": 150,
+          "description": "East coast overflights",
+          "waypoints": "N029.07.31.229,W081.01.48.297/ho SMYRA T208 MALET"
+        }
+      ],
+      "arrivals": [
+        {
+          "airlines": {
+            "KMLB": [
+              {
+                "airport": "KPBI",
+                "icao": "ERU"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "ERU"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "LFA"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "EPI"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "N",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "assigned_altitude": 5000,
+          "initial_altitude": 5000,
+          "initial_controller": "MIA_23_CTR",
+          "route": "CLEFF T208 VALKA",
+          "description": "PBI-MLB",
+          "initial_speed": 150,
+          "waypoints": "WIXED SULTY/ho VALKA"
+        },
+        {
+          "airlines": {
+            "KMLB": [
+              {
+                "airport": "KPBI",
+                "icao": "ERU"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "ERU"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "LFA"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "EPI"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "N",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "assigned_altitude": 4000,
+          "initial_altitude": 4000,
+          "initial_controller": "DAB_N_APP",
+          "route": "CLEFF T208 VALKA",
+          "description": "DAB-MLB",
+          "initial_speed": 150,
+          "waypoints": "N029.07.31.229,W081.01.48.297/ho SMYRA T208 MALET"
+        },
+        {
+          "airlines": {
+            "KTIX": [
+              {
+                "airport": "KPBI",
+                "icao": "ERU"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "ERU"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "LFA"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "EPI"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "N",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "assigned_altitude": 4000,
+          "initial_altitude": 4000,
+          "initial_controller": "DAB_N_APP",
+          "route": "CLEFF T208 VALKA",
+          "description": "DAB-TIX",
+          "initial_speed": 150,
+          "waypoints": "N029.07.31.229,W081.01.48.297/ho SMYRA T208 MALET"
+        },
+        {
+          "airlines": {
+            "KTIX": [
+              {
+                "airport": "KPBI",
+                "icao": "ERU"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "ERU"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "LFA"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "EPI"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "N",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "assigned_altitude": 5000,
+          "initial_altitude": 5000,
+          "initial_controller": "MIA_23_CTR",
+          "route": "CLEFF T208 VALKA",
+          "description": "PBI-TIX",
+          "initial_speed": 150,
+          "waypoints": "WIXED SULTY/ho VALKA"
+        }
+      ]
+    },
+    "West_coast/T210N": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KPIE",
+              "arrival_airport": "KDAB",
+              "icao": "EPI"
+            },
+            {
+              "departure_airport": "KPIE",
+              "arrival_airport": "KDAB",
+              "icao": "ERU"
+            },
+            {
+              "departure_airport": "KPIE",
+              "arrival_airport": "KDAB",
+              "icao": "N",
+              "fleet": "lightGA"
+            },
+            {
+              "departure_airport": "KPIE",
+              "arrival_airport": "KDAB",
+              "icao": "JED"
+            },
+            {
+              "departure_airport": "KSRQ",
+              "arrival_airport": "KDAB",
+              "icao": "EPI"
+            },
+            {
+              "departure_airport": "KSRQ",
+              "arrival_airport": "KDAB",
+              "icao": "ERU"
+            },
+            {
+              "departure_airport": "KSRQ",
+              "arrival_airport": "KDAB",
+              "icao": "N",
+              "fleet": "lightGA"
+            },
+            {
+              "departure_airport": "KSRQ",
+              "arrival_airport": "KDAB",
+              "icao": "JED"
+            }
+          ],
+          "assigned_altitude": 5000,
+          "initial_altitude": 5000,
+          "initial_controller": "TPA_E_APP",
+          "initial_speed": 150,
+          "description": "Northbound overflights on T210",
+          "waypoints": "N028.08.40.587,W082.13.16.975 N028.14.43.534,W082.04.25.539/ho VARZE T210 GUANO"
+        }
+      ]
+    },
+    "West_coast/T210S": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KDAB",
+              "arrival_airport": "KLAL",
+              "icao": "EPI"
+            },
+            {
+             "departure_airport": "KDAB",
+             "arrival_airport": "KLAL",
+              "icao": "ERU"
+            },
+            {
+              "departure_airport": "KDAB",
+              "arrival_airport": "KLAL",
+              "icao": "N",
+              "fleet": "lightGA"
+            },
+            {
+              "departure_airport": "KDAB",
+              "arrival_airport": "KLAL",
+              "icao": "JED"
+            },
+            {
+              "departure_airport": "KDAB",
+              "arrival_airport": "KSRQ",
+              "icao": "EPI"
+            },
+            {
+             "departure_airport": "KDAB",
+             "arrival_airport": "KSRQ",
+              "icao": "ERU"
+            },
+            {
+              "departure_airport": "KDAB",
+              "arrival_airport": "KSRQ",
+              "icao": "N",
+              "fleet": "lightGA"
+            },
+            {
+              "departure_airport": "KDAB",
+              "arrival_airport": "KSRQ",
+              "icao": "JED"
+            }
+          ],
+          "assigned_altitude": 5000,
+          "initial_altitude": 5000,
+          "initial_controller": "TPA_E_APP",
+          "initial_speed": 150,
+          "description": "Southbound overflights on T210",
+          "waypoints": "N029.16.54.614,W081.10.14.163 N029.10.03.980,W081.14.12.841/ho KIZER T210 PUNQU LAL"
+        }
+      ]
+    }
+  },
   "control_positions": {
     "MIA_23_CTR": {
         "frequency": 126950, 
@@ -10855,18 +11250,6 @@
           "runway": "25"
         },
         {
-          "airport": "KTPA",
-          "runway": "1L"
-        },
-        {
-          "airport": "KDAB",
-          "runway": "7L"
-        },
-        {
-          "airport": "KPBI",
-          "runway": "10L"
-        },
-        {
           "airport": "KMLB",
           "runway": "27L"
         },
@@ -10879,7 +11262,7 @@
           "runway": "18"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ALYNA4": {
           "KMCO": 5,
           "KSFB": 2,
@@ -10941,29 +11324,34 @@
           "KISM": 2
         },
         "DADES1": {
-          "KTPA": 2
+          "overflights": 20
         },
-        "EAST_COAST_OVERFLIGHTS": {
-          "KDAB": 10
+        "East_coast/T208 ": {
+          "overflights": 25,
+          "KMLB": 10,
+          "KTIX": 10
         },
-        "EAST_COAST_OVERFLIGHTN": {
-          "KPBI": 10
+        "West_coast/T210N": {
+          "overflights": 20
+        },
+        "West_coast/T210S": {
+          "overflights": 20
         }
       },
       "solo_controller": "MCO_E_DEP",
       "multi_controllers": {
         "default": {
-          "MCO_E_DEP": {"primary": true, "departures": ["KMCO/17R"], "arrivals": ["ALYNA4", "DADES1"]},
-          "MCO_W_DEP": {"backup": "MCO_E_DEP", "departures": ["KMCO/18L"]},
-          "MCO_D_APP": {"backup": "MCO_E_DEP", "departures": ["KISM", "KORL"],"arrivals": ["GOOFY7", "JOKRS3"]},
+          "MCO_E_DEP": {"primary": true, "departures": ["KMCO/FATHE3", "KMCO/MZULO3", "KMCO/DDANY3"], "inbound_flows": ["ALYNA4", "DADES1"]},
+          "MCO_W_DEP": {"backup": "MCO_E_DEP", "departures": ["KMCO/FSHUN3", "KMCO/JEEMY3", "KMCO/RDSOX1", "KMCO/OSPRY1", "KMCO/ORLA6"]},
+          "MCO_D_APP": {"backup": "MCO_E_DEP", "departures": ["KISM", "KORL", "KMCO/CITR2W"],"inbound_flows": ["GOOFY7", "JOKRS3", "West_coast/T210N"]},
           "MCO_M_APP": {"backup": "MCO_W_DEP"},
           "MCO_G_APP": {"backup": "MCO_M_APP"},
-          "MCO_B_APP": {"backup": "MCO_E_DEP","arrivals": ["GTOUT1", "RIDES2", "BITHO7", "SNFLD3"]},
-          "MCO_L_APP": {"backup": "MCO_B_APP", "arrivals": ["PRICY3", "GRNCH5", "SHREK2W", "SHREK2.MCO", "JOKRS3.MCO"]},
-          "MCO_A_APP": {"backup": "MCO_D_APP", "departures": ["KMLB"], "arrivals": ["EAST_COAST_OVERFLIGHTN"]},
-          "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KTIX"], "arrivals": ["EAST_COAST_OVERFLIGHTS"]},
-          "MCO_N_APP": {"backup": "MCO_D_APP", "departures": ["KSFB"]},
-          "MCO_V_APP": {"backup": "MCO_N_APP", "arrivals": ["TTHOR3"]}
+          "MCO_B_APP": {"backup": "MCO_E_DEP","inbound_flows": ["GTOUT1", "RIDES2", "BITHO7", "SNFLD3"]},
+          "MCO_L_APP": {"backup": "MCO_B_APP", "inbound_flows": ["PRICY3", "GRNCH5", "SHREK2W", "SHREK2.MCO", "JOKRS3.MCO"]},
+          "MCO_A_APP": {"backup": "MCO_D_APP", "departures": ["KMLB", "KMCO/CITR2E"], "inbound_flows": ["East_coast/T208 "]},
+          "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KTIX"]},
+          "MCO_N_APP": {"backup": "MCO_D_APP", "departures": ["KSFB"], "inbound_flows": ["West_coast/T210S"]},
+          "MCO_V_APP": {"backup": "MCO_N_APP", "inbound_flows": ["TTHOR3"]}
         }
       },
       "controllers": [
@@ -11103,18 +11491,6 @@
           "runway": "7"
         },
         {
-          "airport": "KTPA",
-          "runway": "1L"
-        },
-        {
-          "airport": "KDAB",
-          "runway": "7L"
-        },
-        {
-          "airport": "KPBI",
-          "runway": "10L"
-        },
-        {
           "airport": "KMLB",
           "runway": "9R"
         },
@@ -11127,7 +11503,7 @@
           "runway": "36"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ALYNA4": {
           "KMCO": 5,
           "KSFB": 2,
@@ -11186,29 +11562,34 @@
           "KISM": 2
         },
         "DADES1": {
-          "KTPA": 2
+          "overflights": 20
         },
-        "EAST_COAST_OVERFLIGHTS": {
-          "KDAB": 10
+        "East_coast/T208 ": {
+          "overflights": 25,
+          "KMLB": 10,
+          "KTIX": 10
         },
-        "EAST_COAST_OVERFLIGHTN": {
-          "KPBI": 10
+        "West_coast/T210N": {
+          "overflights": 20
+        },
+        "West_coast/T210S": {
+          "overflights": 20
         }
       },
       "solo_controller": "MCO_E_DEP",
       "multi_controllers": {
         "default": {
-          "MCO_E_DEP": {"primary": true, "departures": ["KMCO/35L"], "arrivals": ["ALYNA4", "DADES1"]},
-          "MCO_W_DEP": {"backup": "MCO_E_DEP", "departures": ["KMCO/36R"]},
-          "MCO_D_APP": {"backup": "MCO_W_DEP", "departures": ["KISM"], "arrivals": ["GOOFY7", "JOKRS3"]},
+          "MCO_E_DEP": {"primary": true, "departures": ["KMCO/JEEMY3", "KMCO/FATHE3", "KMCO/MZULO3", "KMCO/DDANY3"], "inbound_flows": ["ALYNA4", "DADES1"]},
+          "MCO_W_DEP": {"backup": "MCO_E_DEP", "departures": ["KMCO/FSHUN3","KMCO/RDSOX1", "KMCO/OSPRY1", "KMCO/ORLA6"]},
+          "MCO_D_APP": {"backup": "MCO_W_DEP", "departures": ["KISM", "KMCO/CITR2W"], "inbound_flows": ["GOOFY7", "JOKRS3", "West_coast/T210N"]},
           "MCO_M_APP": {"backup": "MCO_W_DEP"},
           "MCO_G_APP": {"backup": "MCO_M_APP"},
-          "MCO_B_APP": {"backup": "MCO_E_DEP","arrivals": ["SNFLD3", "RIDES2", "BITHO7"]},
-          "MCO_L_APP": {"backup": "MCO_B_APP", "arrivals": ["PRICY3", "GRNCH5", "SHREK2E", "SHREK2.MCO", "JOKRS3.MCO"]},
-          "MCO_A_APP": {"backup": "MCO_D_APP", "departures": ["KMLB"], "arrivals": ["EAST_COAST_OVERFLIGHTN"]},
-          "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KTIX"], "arrivals": ["EAST_COAST_OVERFLIGHTS"]},
-          "MCO_N_APP": {"backup": "MCO_D_APP"},
-          "MCO_V_APP": {"backup": "MCO_N_APP", "departures": ["KORL", "KSFB"], "arrivals": ["TTHOR3"]}
+          "MCO_B_APP": {"backup": "MCO_E_DEP","inbound_flows": ["SNFLD3", "RIDES2", "BITHO7"]},
+          "MCO_L_APP": {"backup": "MCO_B_APP", "inbound_flows": ["PRICY3", "GRNCH5", "SHREK2E", "SHREK2.MCO", "JOKRS3.MCO"]},
+          "MCO_A_APP": {"backup": "MCO_D_APP", "departures": ["KMLB", "KMCO/CITR2E"], "inbound_flows": ["East_coast/T208 "]},
+          "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KTIX"]},
+          "MCO_N_APP": {"backup": "MCO_D_APP", "inbound_flows": ["West_coast/T210S"]},
+          "MCO_V_APP": {"backup": "MCO_N_APP", "departures": ["KORL", "KSFB"], "inbound_flows": ["TTHOR3"]}
         }
       },
       "controllers": [
@@ -11428,7 +11809,7 @@
           "runway": "18R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FINAL_S_GRNCH5": {
           "KMCO": 10
         },
@@ -11483,7 +11864,7 @@
           "runway": "18R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GRNCH5_LSU": {
           "KMCO": 10
         },
@@ -11534,7 +11915,7 @@
           "runway": "17L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GRNCH5_LSU": {
           "KMCO": 10
         },
@@ -11589,7 +11970,7 @@
           "runway": "17L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GTOUT1_BSU": {
           "KMCO": 10
         },
@@ -11638,7 +12019,7 @@
           "runway": "36L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GRNCH5_LNU": {
           "KMCO": 10
         },
@@ -11689,7 +12070,7 @@
           "runway": "35R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GRNCH5_LNU": {
           "KMCO": 10
         },
@@ -11744,7 +12125,7 @@
           "runway": "35R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SNFLD3_BNU": {
           "KMCO": 10
         },
@@ -11797,7 +12178,7 @@
           "runway": "36L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GRNCH_NFINAL": {
           "KMCO": 10
         },
@@ -11940,6 +12321,13 @@
           "to": "F11",
           "from": "ZJX"
       }
+  ],
+  "KIZER": [
+    {
+      "type": "route",
+      "to": "F11",
+      "from": "ZJX"
+    }
   ],
   "YAGGO": [
       {
@@ -12115,6 +12503,13 @@
               "to": "F11",
               "from": "ZJX"
           }
+      ],
+      "VARZE": [
+        {
+          "type": "route",
+          "to": "F11",
+          "from": "ZJX"
+        }
       ],
       "GRNCH": [
           {
