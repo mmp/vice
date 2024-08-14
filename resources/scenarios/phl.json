@@ -5163,7 +5163,8 @@
       "frequency": 119650,
       "full_name": "Allentown approach",
       "scope_char": "F",
-      "sector_id": "SF"
+      "sector_id": "SF",
+      "facility_id": "4"
     },
     "DC_CTR": {
       "frequency": 133725,
@@ -5177,7 +5178,8 @@
       "frequency": 120800,
       "full_name": "New York approach",
       "scope_char": "V",
-      "sector_id": "1V"
+      "sector_id": "1V",
+      "facility_id": "1"
     },
     "EWR_APP": {
       "frequency": 128550,
