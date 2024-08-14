@@ -561,8 +561,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 			if ctrl.FacilityIdentifier != "" && !ctrl.ERAMFacility {
 				id = STARSTriangleCharacter + ctrl.FacilityIdentifier + id
 			}
-			text.WriteString(fmt.Sprintf("%4s", id) + " " + ctrl.Frequency.String() + " " +
-				ctrl.Callsign + util.Select(ctrl.IsHuman, "*", "") + "\n")
+			text.WriteString(fmt.Sprintf("%4s", id) + " " + ctrl.Callsign +
+				util.Select(ctrl.IsHuman, "*", "") + "\n")
 		}
 
 		// User first
