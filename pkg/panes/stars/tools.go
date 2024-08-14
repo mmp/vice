@@ -44,8 +44,8 @@ type WeatherRadar struct {
 	// reqChan and command buffers to draw each of the 6 weather levels are
 	// returned by cbChan.
 	reqChan chan math.Point2LL
-	cbChan  chan [NumWxLevels]renderer.CommandBuffer
-	cb      [NumWxLevels]renderer.CommandBuffer
+	cbChan  chan [NumWxLevels]*renderer.CommandBuffer
+	cb      [NumWxLevels]*renderer.CommandBuffer
 }
 
 const NumWxLevels = 6
@@ -70,9 +70,17 @@ func (w *WeatherRadar) Activate(center math.Point2LL, r renderer.Renderer, lg *l
 	w.active = true
 	w.reqChan = make(chan math.Point2LL, 1000) // lots of buffering
 	w.reqChan <- center
-	w.cbChan = make(chan [NumWxLevels]renderer.CommandBuffer, 8)
+	w.cbChan = make(chan [NumWxLevels]*renderer.CommandBuffer, 8)
 
 	go fetchWeather(w.reqChan, w.cbChan, lg)
+}
+
+func (w *WeatherRadar) HaveWeather() [NumWxLevels]bool {
+	var r [NumWxLevels]bool
+	for i := range NumWxLevels {
+		r[i] = w.cb[i] != nil
+	}
+	return r
 }
 
 // UpdateCenter provides a new center point for the radar image, causing a
@@ -235,7 +243,7 @@ func invertRadarReflectivity(rgb [3]byte) float32 {
 // reqChan, fetching corresponding radar images from the NOAA, and sending
 // the results back on cbChan.  New images are also automatically
 // fetched periodically, with a wait time specified by the delay parameter.
-func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]renderer.CommandBuffer, lg *log.Logger) {
+func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]*renderer.CommandBuffer, lg *log.Logger) {
 	// NOAA posts new maps every 2 minutes, so fetch a new map at minimum
 	// every 100s to stay current.
 	fetchRate := 100 * time.Second
@@ -314,7 +322,7 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]renderer.
 	}
 }
 
-func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]renderer.CommandBuffer {
+func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]*renderer.CommandBuffer {
 	// Convert the Image returned by png.Decode to a simple 8-bit RGBA image.
 	rgba := image.NewRGBA(img.Bounds())
 	draw.Draw(rgba, img.Bounds(), img, image.Point{}, draw.Over)
@@ -344,12 +352,13 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]r
 	// Now generate the command buffer for each weather level.  We don't
 	// draw anything for level==0, so the indexing into cb is off by 1
 	// below.
-	var cb [NumWxLevels]renderer.CommandBuffer
+	var cb [NumWxLevels]*renderer.CommandBuffer
 	tb := renderer.GetTrianglesDrawBuilder()
 	defer renderer.ReturnTrianglesDrawBuilder(tb)
 
 	for level := 1; level <= NumWxLevels; level++ {
 		tb.Reset()
+		levelHasWeather := false
 
 		// We'd like to be somewhat efficient and not necessarily draw an
 		// individual quad for each block, but on the other hand don't want
@@ -362,6 +371,7 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]r
 				if levels[x+y*nbx] != level {
 					continue
 				}
+				levelHasWeather = true
 
 				// Now see how long a span of repeats we have.
 				// Each quad spans [0,0]->[1,1] in texture coordinates; the
@@ -386,7 +396,10 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]r
 
 		// Subtract one so that level==1 is drawn by cb[0], etc, since we
 		// don't draw anything for level==0.
-		tb.GenerateCommands(&cb[level-1])
+		if levelHasWeather {
+			cb[level-1] = &renderer.CommandBuffer{}
+			tb.GenerateCommands(cb[level-1])
+		}
 	}
 
 	return cb
@@ -502,12 +515,12 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, intensity float32, contrast floa
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	for i := range w.cb {
-		if active[i] {
+		if active[i] && w.cb[i] != nil {
 			// RGBs from STARS Manual, B-5
 			baseColor := util.Select(i < 3,
 				renderer.RGBFromUInt8(37, 77, 77), renderer.RGBFromUInt8(100, 100, 51))
 			cb.SetRGB(baseColor.Scale(intensity))
-			cb.Call(w.cb[i])
+			cb.Call(*w.cb[i])
 
 			if i == 0 || i == 3 {
 				// No stipple
@@ -522,7 +535,7 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, intensity float32, contrast floa
 			}
 			// Draw the same quads again, just with a different color and stippled.
 			cb.SetRGB(renderer.RGB{contrast, contrast, contrast})
-			cb.Call(w.cb[i])
+			cb.Call(*w.cb[i])
 			cb.DisablePolygonStipple()
 		}
 	}

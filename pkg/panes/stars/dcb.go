@@ -182,8 +182,13 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			idx := util.Select(i&1 == 0, i/2, 3+i/2)
 			drawVideoMapButton(idx, videoMaps)
 		}
+		haveWeather := sp.weatherRadar.HaveWeather()
 		for i := range ps.DisplayWeatherLevel {
-			toggleButton(ctx, "WX"+strconv.Itoa(i+1), &ps.DisplayWeatherLevel[i], buttonHalfHorizontal, buttonScale)
+			label := "WX" + strconv.Itoa(i+1)
+			if haveWeather[i] {
+				label += "\nAVL"
+			}
+			toggleButton(ctx, label, &ps.DisplayWeatherLevel[i], buttonHalfHorizontal, buttonScale)
 		}
 		if selectButton(ctx, "BRITE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuBrite
@@ -335,7 +340,6 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			CommandModeNone, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("HST", &ps.Brightness.History, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		// The STARS manual, p.4-74 actually says that weather can't go to OFF... FIXME?
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("WX", &ps.Brightness.Weather, 5, true),
 			CommandModeNone, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("WXC", &ps.Brightness.WxContrast, 5, false),
