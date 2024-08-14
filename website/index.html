@@ -111,7 +111,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airports">Airports</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-approaches">Approaches</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-departures">Departures</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-arrivals">Arrivals</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-arrivals">Arrivals and Overflights</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airspace">Airspace</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenarios">Scenarios</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-stars-videomaps">STARS and Video Maps</a></li>
@@ -124,7 +124,76 @@
 	<article class="docs-article" id="section-using">
 	  <header class="docs-header">
             <div class="text-center">
-              <img src="vice-demo.gif" srcset="vice-demo-2x.gif 2x" width="1250" height="619" class="img-fluid" alt="screen capture of demo">
+              <img src="vice-demo.gif" srcset="vice-demo-2x.gif 2x" width="1428" height="606" class="img-fluid">
+<!--
+diff --git a/pkg/panes/stars/tools.go b/pkg/panes/stars/tools.go
+index ea6067b..acfde15 100644
+--- a/pkg/panes/stars/tools.go
++++ b/pkg/panes/stars/tools.go
+@@ -241,7 +241,7 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]renderer.
+ 	fetchRate := 100 * time.Second
+ 
+ 	// center stores the current center position of the radar image
+-	var center math.Point2LL
++	var center, trueCenter math.Point2LL
+ 	var lastFetch time.Time
+ 	for {
+ 		var ok, timedOut bool
+@@ -253,6 +253,14 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]renderer.
+ 				for len(reqChan) > 0 {
+ 					center = <-reqChan
+ 				}
++
++				trueCenter = center
++				var err error
++				center, err = math.ParseLatLong([]byte("N36.30.24.000,W90.23.34.000"))
++				if err != nil {
++					panic(err)
++				}
++
+ 			} else {
+ 				// The channel is closed; wrap up.
+ 				close(cbChan)
+@@ -308,6 +316,9 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]renderer.
+ 			continue
+ 		}
+ 
++		rb = math.Extent2D{P0: math.Sub2LL(trueCenter, math.Point2LL{WxLatLongExtent, WxLatLongExtent}),
++			P1: math.Add2LL(trueCenter, math.Point2LL{WxLatLongExtent, WxLatLongExtent})}
++
+ 		cbChan <- makeWeatherCommandBuffers(img, rb)
+ 
+ 		lg.Info("finish weather fetch")
+diff --git a/pkg/sim/dispatcher.go b/pkg/sim/dispatcher.go
+index ca31f47..48159e0 100644
+--- a/pkg/sim/dispatcher.go
++++ b/pkg/sim/dispatcher.go
+@@ -347,6 +347,12 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
+ 		return ErrNoSimForControllerToken
+ 	}
+ 
++	if cmds.Commands == "S" {
++		cmds.Commands = "ER3L SPR3L DASALT D30 TS210 AASALT/CR3L"
++	} else if cmds.Commands == "N" {
++		cmds.Commands = "ER2L SPR2L DCAPIT D30 TS210 ACAPIT/CR2L"
++	}
++
+ 	commands := strings.Fields(cmds.Commands)
+ 
+ 	for i, command := range commands {
+@@ -667,6 +673,11 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
+ 					rewriteError(err)
+ 					return nil
+ 				}
++			} else if len(command) > 3 && command[:2] == "SP" {
++				if err := sim.SetScratchpad(token, callsign, command[2:]); err != nil {
++					rewriteError(err)
++					return nil
++				}
+ 			} else {
+ 				if kts, err := strconv.Atoi(command[1:]); err != nil {
+ 					rewriteError(err)
+-->
             </div>
             <br>
 	    <h1 class="docs-heading">About Vice</h1>
@@ -135,7 +204,7 @@
                 It also supports multiple users, where each person controls a different position at a facility.
               </p>
               <p><i>vice</i> supports departure and arrival control
-                scenarios in numerous TRACONs and ATCT/TRACONs:
+                scenarios in numerous TRACONs and ATCT/TRACONs, currently:
 A80,
 A90,
 AAC,
@@ -151,9 +220,11 @@ BNA,
 BUF,
 C90,
 CHS,
+CID,
 CLE,
 CLT,
 COS,
+CPR,
 D01,
 D10,
 D21,
@@ -227,10 +298,10 @@ Y90.
             </div>
             <br>
             <p>
-              In the second configuration window, you can set the average departure rate (ADR)
-              for all of the airports that may have departures in the scenario as well as the average arrival rate (AAR) for all of the
+              In the second configuration window, you can set the airport departure rate (ADR)
+              for all of the airports that may have departures in the scenario as well as the airport arrival rate (AAR) for all of the
               arrival airports.
-              (The PHL scenario only includes the Philadelphia Airport, though other scenarios include both a primary airport as well as satellites.)
+              (The PHL scenario only includes the Philadelphia Airport, though many other scenarios include multiple airports.)
               Both of these rates are specified in terms of aircraft per hour, so an ADR of 30 corresponds to one aircraft departing
               every two minutes (on average).
               If you'd like an arrival-only scenario, for example, just set all of the departure rates to zero.
@@ -240,7 +311,7 @@ Y90.
               that successive departures will be to the same gate or to the same fix.
               For arrivals, the "Go around probability" slider allows setting the probability that each arrival goes around.
               You may also select "Include random arrival pushes", which will periodically bump up the rate of
-              arrivals to increase the challenge of vectoring the aircraft.
+              arrivals to increase the challenge of vectoring aircraft.
               "Push frequency" sets how often arrival pushes happen and "Length of push" sets how long they last
               before traffic returns to regular levels.
             </p>
@@ -301,7 +372,7 @@ Y90.
               When <i>vice</i> is paused, you can hover the mouse above a radar track to see information about the instructions the aircraft has been given so far&mdash;for example, altitude and speed assignments, whether it has been sent direct to a fix, the approach it has been assigned, etc.  An example is shown below.  This information is especially useful when resuming a <i>vice</i> session after you have been away from it for a while.
               </p>
             <div class="text-center">
-              <img src="hover-info.jpg" srcset="hover-info-2x.jpg 2x" width="255" height="140" class="img-fluid" alt="aircraft information">
+              <img src="hover-info.png" srcset="hover-info-2x.png 2x" width="335" height="124">
             </div>
             <br>
             <p>If you are signed in to Discord, <i>vice</i> can
@@ -671,10 +742,10 @@ Y90.
               top of its datablock, as shown below.
               The valid altitudes for the aircraft are shown as well, if there are any valid altitudes
               at its current location.
-              For example, the aircraft below is at 5,000' but should be between 10,000' and 12,000' (or should be at a different location!)
+              For example, the aircraft below is at 5,000' but should be between 11,000' and 12,000' (or should be at a different location!)
             </p>
             <div class="text-center">
-              <img src="violation.jpg" srcset="violation-2x.jpg 2x" width="100" height="89" class="img-fluid" alt="configuration dialog box">
+              <img src="violation.png" srcset="violation-2x.png 2x" width="136" height="66">
             </div>
 
             <p>
@@ -763,6 +834,41 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3>0.11.2 (14 August 2024)</h3>
+            <ul>
+              <li>New scenarios: CPR (Andrew S), CID (Tyler Temerowski).</li>
+              <li>Scenario updates: ASE, COS, CYS, D01 (Andrew S), N90
+                (Kayden Lambert), P50, A80 (radarcontacto), CDW (Mike
+                LeGall), TPA, MIA (Connor Allen), F11 (Michael Knight).</li>
+              <li>Fixed a crash on Windows systems with high-DPI
+                displays.</li>
+              <li>Fixed some cases where a procedure turn would be flown
+                even after aircraft passed a "no pt" fix.</li>
+              <li>STARS improvements:
+                <ul>
+                  <li>Weather radar rendering is much closer to real-world.</li>
+                  <li>Many fixes to how datablocks and tracks / track ids
+                    are drawn (both contents and use of appropriate BRITE
+                    settings).</li>
+                  <li>Fixed some bugs where valid scratchpad entries were rejected.</li>
+                </ul>
+              </li>
+              <li>Facility engineering:
+                <ul>
+                  <li>Intra-facility flights now work as expected.</li>
+                  <li>Overflights can now be specified: "arrival_groups"
+                    has become "inbound_flows", where both arrivals and
+                    overflights can be specified.</li>
+                  <li>The number of video maps specified isn't limited to
+                    the number of slots in the DCB. Excess maps can be
+                    accessed via the MAPS list.</li>
+                  <li>Added "maps_labels" to allow specifying the labels to
+                    use for video maps in the STARS DCB.</li>
+                  <li>Updated version of the CIFP used by <i>vice</i> to Aug 8 2024.</li>
+                </ul>
+              </li>
+            </ul>
 
             <h3>0.11.1 (3 August 2024)</h3>
             <ul>
@@ -886,6 +992,12 @@ how it simulates aircraft or the STARS interface.
               <li>Fixed bug where aircraft callsign numbers could start with 0.</li>
             </ul>
 
+            <div class="container">
+              <button id="toggleButton">🔍 Show Earlier Releases</button>
+              <br>
+            <div id="hiddenText" style="display:none;">
+              <br>
+
             <h3>0.10.22 (28 April 2024)</h3>
             <ul>
               <li>Fixed bug where <i>vice</i> would sometimes crash when
@@ -969,11 +1081,6 @@ how it simulates aircraft or the STARS interface.
 	      <li>STARS: fixed bug with flickering airport weather list.</li>
             </ul>
 
-            <div class="container">
-              <button id="toggleButton">🔍 Show Earlier Releases</button>
-              <br>
-            <div id="hiddenText" style="display:none;">
-              <br>
             <h3>0.10.18 (12 February 2024)</h3>
             <ul>
 	      <li>Added new scenarios: SCT (Justin Nguyen and Eli Thompson), NCT and D01/GJT (Jud Lopez), and TPA (Connor Allen).</li>
@@ -1459,7 +1566,7 @@ how it simulates aircraft or the STARS interface.
               military operations area commands are not supported.
               If you are familiar with the real-world STARS system, suggestions
             about how to improve <i>vice</i>'s accuracy would be happily accepted! Head on over
-            to the <a href="https://discord.gg/y993vgQxhY"><i>vice</i> discord</a>...
+            to the <a href="https://discord.gg/y993vgQxhY"><i>vice</i> discord</a>.
             </p>
 
             <div class="content">
@@ -1493,32 +1600,35 @@ how it simulates aircraft or the STARS interface.
             <p>Here we see the datablock showing the aircraft's callsign, ELY115, its altitude in hundreds of feet (032), and its groundspeed in tens of knots (26). The "B" is the aircraft's consolidated wake turbulence (CWT) category&mdash;upper heavy. (See the section on <a href="#tracks-datablocks">Tracks and Datablocks</a> for extensive documentation of datablocks and the information that they may show.)</p>
           <p>The blue circle shows the aircraft's current position and the purple circles show its course over the past 25 seconds; we can see that it is turning to the right. Finally, the "G" in the middle of the circle indicates which controller has owner of the aircraft's track.
             </p>
-            <p>Two <i>scratchpad entries</i> may be associated with an aircraft&mdash;the primary and secondary scratchpads. The scratchpad is usually used to record information about how to route the aircraft&mdash;the approach it has been cleared for or its exit fix, for example.
-              Here is the datablock for an aircraft where the second line is alternating between showing altitude, speed, and CWT category (here, "G"), and the scratchpad ("27L") and aircraft type ("E145").
-              </p>
-            <div class="text-center">
-              <img src="scratchpad.gif" srcset="scratchpad-2x.gif 2x" width="202" height="70" class="img-fluid">
-            </div>
-            <br>
-            <p>A single controller may own an aircraft's track and a single controller may own control of an aircraft.  The same controller may be responsible for both or different controllers may own and control a track.  A controller must have control of an aircraft in order to issue instructions to the pilot.  See the discussion of <a href="#stars-track-ownership">Track Ownership</a> below for more information about how control and track ownership are transferred between controllers.
+
+            <p>A single controller may own an aircraft's track and a single controller may own control of an aircraft.  The same controller may be own both or two different controllers may the track and and control.  A controller must have control of an aircraft in order to issue instructions to the pilot.  See the discussion of <a href="#stars-track-ownership">Track Ownership</a> below for more information about how control and track ownership are transferred between controllers.
             </p>
 
-            <p>Other controllers, both real and virtual, may be signed in when you're running <i>vice</i> scenario.
+            <p>Other controllers, both real and virtual, may be signed in when you're running a <i>vice</i> scenario.
               The list of controllers is shown in the <i>sign-on list</i>, which is by default on the upper right side of the STARS display.
-              Here is the sign-on list for a SoCal ARTCC scenario: 
+              The the sign-on list for a Philadelphia TRACON scenario is shown below. 
+              The position you are covering is always shown at the top of the sign-on list (here, PHL_NA_APP) and the rest are
+              listed alphabetically.
+              Human controllers are shown with an asterisk to the right of their callsign.
               </p>
             <div class="text-center">
-              <img src="controller-list.png" srcset="controller-list-2x.png 2x" width="217" height="104" class="img-fluid" alt="controller sign-on list">
+              <img src="controller-list.png" srcset="controller-list-2x.png 2x" width="183" height="131">
             </div>
             <br>
-            <p>Each controller has a <i>callsign</i> and a <i>sector id</i> that identifies their <i>terminal control position (TCP)</i>.
-              For example, in the list above, the callsign HHR_TWR (which corresponds to the Hawthorne Tower controller), has TCP 3T.
-              Many STARS commands use the TCP to identify controllers.
-              Human controllers are shown with an asterisk to the right of their callsign; here, both
-              LAX_F_APP and LAX_D_APP are humans.
-              The position you are covering is always shown at the top of the sign-on list (here, LAX_F_APP) and the rest are
-              listed alphabetically.
-              </p>
+            <p>Controllers are shown in the sign-on list with a short alphanumeric identifier and their
+              radio callsign. This identifier may take one of a few forms:
+              <ul>
+                <li>The identifiers for enroute positions (i.e., center controllers), start with a letter identifying
+                  their ARTCC that is followed by a number.
+                  Here, W32 identifies a Washington center position and N26 a New York center position.</li>
+                <li>Identifiers for positions within the current TRACON are shown as
+                  a two character <i>terminal control position (TCP)</i> identifier that identifies each control position.
+                  Here, we have PHL_NA_APP with TCP 6N and PHL_TWR has TCP 6A.</li>
+                <li>Positions at adjacent TRACONs are listed with an upwards-pointing triangle △, a facility
+                  identifier, and then the control position. Thus, we can see that EWR_APP, a Newark approach position,
+                  is at facility 1 and terminal control position 4P.</li>
+                </ul>
+            </p>
 
           </section>
 
@@ -1556,7 +1666,7 @@ how it simulates aircraft or the STARS interface.
             </p>
             <p>Many keyboard commands take an aircraft identifier, which will be denoted <code>(ACID)</code> in the following. The aircraft identifier may be given as either the aircraft's complete callsign, e.g., "UAL650", or as the aircraft's beacon code.
             </p>
-            <p>It is also common for commands to take identify a controller using the controller TCP ID;
+            <p>It is also common for commands to take identify a controller using the controller TCP;
               in the following documentation, <code>(TCP)</code> indicates that case.
               There are a number of rules that define how such TCPs are specified; they are
               <a href="#stars-specifying-tcps">discussed in more detail below</a>.</p>
@@ -3069,7 +3179,14 @@ above</a> for information about the CRDA system list.</p>
           <section class="docs-section" id="fe-routes">
             <h2 class="section-heading">Routes</h2>
 
-            <p><i>vice</i> uses a custom syntax for specifying the routes of aircraft, both for arrivals and departures.
+            <p>When an aircraft's route is given, <i>vice</i> allows airways to be used to describe the route,
+              which simplifies the route specification when an aircraft is in fact flying along an airway.
+              Airways are given as part of the route; for example "WHITE V1 DPK" has the aircraft join V1
+              departing WHITE and follow V1 until DPK. (The alternative, "WHITE DIXIE MOVFA JFK DPK", is
+              more typing and more error-prone to enter.)</p>
+              
+            <p><i>vice</i> uses a custom syntax for specifying the routes of aircraft that allows giving
+              additional information that is used in the simulation.
               In addition to the lateral positions along the route, it is possibly to specify speed and altitude restrictions, handoff points,
               and headings to fly.
             </p>
@@ -3197,9 +3314,10 @@ above</a> for information about the CRDA system list.</p>
                 <td>Defines the extent of controllers' airspace; see <a href="#fe-airspace">airspace</a> for details.</td>
               </tr>
               <tr>
-                <td>"arrival_groups"</td>
+                <td>"inbound_flows"</td>
                 <td>Object</td>
-                <td>Defines the possible arrival routes; see <a href="#fe-arrivals">arrivals</a>.</td>
+                <td>Defines the routes for arrivals and overflights;
+                see <a href="#fe-arrivals">Arrivals and Overflights</a>.</td>
               </tr>
               <tr>
                 <td>"control_positions"</td>
@@ -3716,19 +3834,32 @@ Given the id, the approach can be specified with:</p>
           </section>
 
           <section class="docs-section" id="fe-arrivals">
-            <h2 class="section-heading">Arrivals</h2>
+            <h2 class="section-heading">Arrivals and Overflights</h2>
 
-            <p>Arrivals are specified via the "arrival_groups" variable, which allows specifying one or more STARs that
-              bring aircraft to the TRACON.  Members of "arrival_groups" give the names of arrival groups; each one stores
-              an array of one or more arrival objects.
-            </p>
-            <p>
-              Because arrival rates are specified per-arrival group rather than per-STAR,
-              <i>vice</i> can simulate center controllers sequencing multiple STARs into a single arrival flow rather than
-              spawning arrivals on two STARs that follow nearby routes and thus should be sequences.
-            </p>
-            <p>Each object stored in an "arrival_groups" array corresponds to a STAR.
-              These objects have the following members:
+            <p><i>Note: until recently, overflights were not supported and
+                arrivals were specified using the "arrival_groups" variable.
+                "arrival_groups" is still supported to allow transitioning to
+                "inbound_flows", though it will eventually be removed.</i>
+                <p>
+                <p>Arrivals and overflights are specified via the "inbound_flows" variable,
+                  which allows specifying the ways that aircraft from adjacent facilities
+                  enter the TRACON.  "inbound_flows" has two members, "arrivals" and
+                  "overflights", each of which is an array of arrival and overflight
+                  specifiers, respectively.
+                </p>
+                <p><i>vice</i> allows specifying multiple arrival and
+                  overflight procedures together so that it can sequence
+                  them as a group. Thus, if an overflight route corresponds
+                  to a STAR, at least at the beginning, both should be
+                  specified together in the same "inbound_flow".  Similarly, if
+                  multiple STARs have the same initial route, they should be
+                  together as well.
+                </p>
+
+                <h3>Arrivals</h3>
+
+                <p>Each object stored in the "arrivals" array corresponds to a STAR.
+                  These objects have the following members:
             </p>
             <table class="table">
             <thead>
@@ -3943,7 +4074,129 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
     }
   },
             </pre>
-            
+
+            <h3>Overflights</h3>
+
+                <p>An overflight is an aircraft that enters the TRACON already airborne, and flies through it
+                  without landing. Overflights are also specified in "inbound_flows" in the "overflights"
+                  member, which is an array of overflight specifiers.  Each specifier may have the following
+                  members.</p>
+            <table class="table">
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"airlines"</td>
+                <td>Array of objects</td>
+                <td>Specification of the airlines flying the overflight and their departure/arrival airports. See example below.</td>
+              </tr>
+              <tr>
+                <td>"assigned_altitude"</td>
+                <td>Number</td>
+                <td>(<i>Optional</i>) If specified, gives a controller-assigned altitude for the aircraft.</td>
+              </tr>
+              <tr>
+                <td>"assigned_speed"</td>
+                <td>Number</td>
+                <td>(<i>Optional</i>) If specified, gives a controller-assigned speed for the aircraft.</td>
+              </tr>
+              <tr>
+                <td>"cruise_altitude"</td>
+                <td>Number</td>
+                <td>(<i>Optional</i>) The aircraft's final altitude in its flight plan. If unspecified, a reasonable
+                guess will be made based on direction of flight and the aircraft's departure and arrival airports.</td>
+              </tr>
+              <tr>
+                <td>"description"</td>
+                <td>String</td>
+                <td>(<i>Optional</i>) A description of the overflight for use in <i>vice</i>'s user interface.</td>
+              </tr>
+              <tr>
+                <td>"initial_altitude"</td>
+                <td>Number</td>
+                <td>The altitude aircraft will have when they are spawned at the initial fix.</td>
+              </tr>
+              <tr>
+                <td>"initial_controller"</td>
+                <td>String</td>
+                <td>The identifier of the virtual controller who initially has the aircraft's track.</td>
+              </tr>
+              <tr>
+                <td>"initial_speed"</td>
+                <td>Number</td>
+                <td>The speed aircraft will have when they are initially spawned.</td>
+              </tr>
+              <tr>
+                <td>"scratchpad"</td>
+                <td>String</td>
+                <td>(<i>Optional</i>) If specified, gives the primary scratchpad aircraft will have.</td>
+              </tr>
+              <tr>
+                <td>"secondary_scratchpad"</td>
+                <td>String</td>
+                <td>(<i>Optional</i>) If specified, gives the secondary scratchpad aircraft will have.</td>
+              </tr>
+              <tr>
+                <td>"speed_restriction"</td>
+                <td>Number</td>
+                <td>(<i>Optional</i>) If specified, gives a speed restriction to the aircraft (e.g., as would
+                happen after passing a waypoint on a route with a speed restriction.)</td>
+              </tr>
+              <tr>
+                <td>"waypoints"</td>
+                <td>String</td>
+                <td>The route flown by overflights in this flow. Aircraft are spawned at the initial waypoint.
+                  If one of the waypoints on the route includes the "/ho" directive, aircraft are handed
+                  off to the controller at that waypoint.  (Otherwise, they are kept by the virtual controller
+                  for their entire overflight; this can be useful for adding "ambient" traffic that the controller
+                doesn't have to work themselves.)</td>
+              </tr>
+            </tbody>
+            </table>
+
+            <p>Each overflight specification includes one or more "airlines" in an array of obvious
+              that specify the airlines and aircraft that should be included in the overflight.
+              Each element in the array is an object with the following members:
+            </p>
+
+            <table class="table">
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td>"icao"</td>
+                  <td>String</td>
+                  <td>The ICAO code of the airline (which must be present in <i>vice</i>'s <tt>resources/openscope-airlines.json</tt> file.)</td>
+                </tr>
+                <tr>
+                  <td>"fleet"</td>
+                  <td></td>
+                  <td>(<i>Optional</i>) If specified, gives the fleet of the airline's aircraft
+                  that are used for this overflight. Otherwise, the "default" fleet is used.</td>
+                </tr>
+                <tr>
+                  <td>"departure_airport"</td>
+                  <td>String</td>
+                  <td>Airport to show as the aircraft's departure airport.</td>
+                </tr>
+                <tr>
+                  <td>"arrival_airport"</td>
+                  <td>String</td>
+                  <td>Airport to show as the aircraft's arrival airport.</td>
+                </tr>
+            </tbody>
+            </table>
+
           </section><!--//section-->
 
           <section class="docs-section" id="fe-airspace">
@@ -4044,15 +4297,6 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
-                <td>"arrivals"</td>
-                <td>Object</td>
-                <td>Each member specifies an arrival group and is an object that contains one or more members
-                  that specifies an airport name and a default arrival rate for the arrival group to the airport.
-                  It can be useful to specify an arrival rate of zero&mdash;in this case, the arrival group will still be
-                  included in the UI shown to the user, which allows the user to enable it.
-                </td>
-              </tr>
-              <tr>
                 <td>"center"</td>
                 <td>String</td>
                 <td>(<i>Optional</i>) If specified, this gives the initial radar scope center (as a <a href="#fe-locations">latitude-longitude position</a>.)
@@ -4093,6 +4337,18 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
+                <td>"inbound_rates"</td>
+                <td>Object</td>
+                <td>Each member specifies an inbound flow group and is an object that is a map
+                  specifying default rates for corresponding flows. Each entry should either be
+                  the name of an airport, in which case it specifies the rate of arrivals to that
+                  airport along arrivals in the flow, or the string "overflights", in which it
+                  gives the rate of overflights.
+                  It can be useful to specify a rate of zero&mdash;in this case, the inbound flow
+                  will still be included in the UI shown to the user, which allows the user to enable it.
+                </td>
+              </tr>
+              <tr>
                 <td>"multi_controllers"</td>
                 <td>Object</td>
                 <td>(<i>Optional</i>) If specified, this provides
@@ -4103,10 +4359,10 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 controller with the corresponding callsign.  For each
                 controller, the following members may be specified:
                   <ul>
-                    <li>"arrivals": An optional array of strings
-                    specifying which arrival groups the controller is
-                      covering. (Used to determine where handoffs from
-                    center go.)</li>
+                    <li>"inbound_flows": An optional array of strings
+                    specifying which inbound flows the controller is
+                      covering. (Used to determine where handoffs of inbound
+                    aircraft go.)</li>
                     <li>"backup": Specifies another controller in "multi_controllers" that covers
                     the controller's position if the controller is not
                     signed in.</li>
@@ -4168,13 +4424,6 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             </thead>
             <tbody>
               <tr>
-                <td>"force_ql_self"</td>
-                <td>Boolean</td>
-                <td>Indicates whether controllers may
-                enter <code>**[SLEW]</code> to make a track appear yellow
-                on their own scope.</td>
-              </tr>
-              <tr>
                 <td>"allow_long_scratchpad"</td>
                 <td>Array of two Booleans</td>
                 <td>These indicate whether the primary and secondary scratchpad (respectively)
@@ -4224,6 +4473,13 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
+                <td>"force_ql_self"</td>
+                <td>Boolean</td>
+                <td>Indicates whether controllers may
+                enter <code>**[SLEW]</code> to make a track appear yellow
+                on their own scope.</td>
+              </tr>
+              <tr>
                 <td>"inhibit_ca_volumes"</td>
                 <td>Array of objects</td>
                 <td>Each entry specifies a volume of space where collision
@@ -4250,6 +4506,15 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                     <li>"vertices": an array of locations specifying the
                     outline of the volume.</li>
                   </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"maps_labels"</td>
+                <td>Object</td>
+                <td>Allows overriding the labels used for video maps in the
+                  STARS DCB. Each entry is the name of a video map (as would
+                  be specified in "stars_maps") and its value is the label
+                  that should be assigned to it.
                 </td>
               </tr>
               <tr>
