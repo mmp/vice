@@ -940,7 +940,6 @@ type Overflight struct {
 	Scratchpad          string              `json:"scratchpad"`
 	SecondaryScratchpad string              `json:"secondary_scratchpad"`
 	Description         string              `json:"description"`
-	CoordinationFix     string              `json:"coordination_fix"`
 	Airlines            []OverflightAirline `json:"airlines"`
 }
 
