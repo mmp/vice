@@ -24,7 +24,6 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
-	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
@@ -1186,6 +1185,7 @@ func (ld *LaunchDeparture) Reset() {
 type LaunchArrivalOverflight struct {
 	Aircraft           av.Aircraft
 	Group              string
+	Airport            string
 	LastLaunchCallsign string
 	LastLaunchTime     time.Time
 	TotalLaunches      int
@@ -1218,10 +1218,13 @@ func MakeLaunchControlWindow(controlClient *sim.ControlClient, lg *log.Logger) *
 	}
 
 	for _, group := range util.SortedMapKeys(config.InboundFlowRates) {
-		lc.arrivalsOverflights = append(lc.arrivalsOverflights,
-			&LaunchArrivalOverflight{
-				Group: group,
-			})
+		for ap := range config.InboundFlowRates[group] {
+			lc.arrivalsOverflights = append(lc.arrivalsOverflights,
+				&LaunchArrivalOverflight{
+					Group:   group,
+					Airport: ap,
+				})
+		}
 	}
 	for i := range lc.arrivalsOverflights {
 		lc.spawnArrivalOverflight(lc.arrivalsOverflights[i])
@@ -1236,9 +1239,8 @@ func (lc *LaunchControlWindow) spawnDeparture(dep *LaunchDeparture) {
 }
 
 func (lc *LaunchControlWindow) spawnArrivalOverflight(lac *LaunchArrivalOverflight) {
-	flow, _ := rand.SampleRateMap(lc.controlClient.LaunchConfig.InboundFlowRates[lac.Group])
-	if flow != "overflights" {
-		lc.controlClient.CreateArrival(lac.Group, flow, &lac.Aircraft, nil,
+	if lac.Airport != "overflights" {
+		lc.controlClient.CreateArrival(lac.Group, lac.Airport, &lac.Aircraft, nil,
 			func(err error) { lc.lg.Warnf("CreateArrival: %v", err) })
 	} else {
 		lc.controlClient.CreateOverflight(lac.Group, &lac.Aircraft, nil,
@@ -1421,13 +1423,13 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				imgui.TableNextColumn()
 				imgui.Text(strconv.Itoa(arof.TotalLaunches))
 
+				imgui.TableNextColumn()
+				imgui.Text(arof.Airport)
+
+				imgui.TableNextColumn()
+				imgui.Text(arof.Aircraft.Callsign)
+
 				if arof.Aircraft.Callsign != "" {
-					imgui.TableNextColumn()
-					imgui.Text(arof.Aircraft.FlightPlan.ArrivalAirport)
-
-					imgui.TableNextColumn()
-					imgui.Text(arof.Aircraft.Callsign)
-
 					imgui.TableNextColumn()
 					imgui.Text(arof.Aircraft.FlightPlan.TypeWithoutSuffix())
 
