@@ -1163,7 +1163,7 @@
     "KTEB": {
       "name": "Teterboro",
       "approaches": {
-        "I06": {
+        "I6": {
           "runway": "6",
           "type": "ILS",
           "waypoints": [
@@ -1924,7 +1924,7 @@
             "STW/iaf ELIZE/a3000+ SHOTT/if/a2000+ FIGON/a2000+ BINGG/faf/a2000"
           ]
         },
-        "R05": {
+        "R5": {
           "runway": "5",
           "type": "RNAV",
           "waypoints": [
@@ -2586,14 +2586,14 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 2000,
             "sid": "CDW7",
-            "waypoints": "KCDW-22/h040"
+            "waypoints": "KCDW-22/h180"
           }
         },
         "22": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 2000,
             "sid": "CDW7",
-            "waypoints": "KCDW-4/h220"
+            "waypoints": "KCDW-4/h180"
           }
         }
       },
