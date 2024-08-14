@@ -351,6 +351,32 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			ctx.ControlClient.State.ERAMComputers.DumpMap()
 			status.clear = true
 			return
+
+		case "CR":
+			if sp.capture.enabled && (sp.capture.specifyingRegion || sp.capture.haveRegion) {
+				sp.capture.specifyingRegion = false
+				sp.capture.haveRegion = false
+				status.clear = true
+				return
+			}
+
+		case "CS":
+			if sp.capture.enabled {
+				sp.capture.doStill = true
+				status.clear = true
+				return
+			}
+
+		case "CV":
+			if sp.capture.enabled {
+				sp.capture.doVideo = !sp.capture.doVideo
+				if sp.capture.doVideo {
+					sp.capture.videoFrame = 0
+					sp.capture.videoFrameIndex = 0
+				}
+				status.clear = true
+				return
+			}
 		}
 
 		if len(cmd) > 5 && cmd[:2] == "**" { // Force QL
@@ -2396,6 +2422,20 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			sp.wipRBL.P[0].Loc = transforms.LatLongFromWindowP(mousePosition)
 			sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
 			return
+		}
+		if sp.capture.enabled {
+			if cmd == "CR" {
+				sp.capture.specifyingRegion = true
+				sp.capture.region[0] = mousePosition
+				status.clear = true
+				return
+			} else if sp.capture.specifyingRegion {
+				sp.capture.region[1] = mousePosition
+				sp.capture.specifyingRegion = false
+				sp.capture.haveRegion = true
+				status.clear = true
+				return
+			}
 		}
 	}
 

@@ -7,6 +7,9 @@ package stars
 import (
 	"encoding/json"
 	"fmt"
+	"image"
+	"image/png"
+	"os"
 	"slices"
 	"sort"
 	"strconv"
@@ -141,6 +144,18 @@ type STARSPane struct {
 
 	audioEffects     map[AudioType]int // to handle from Platform.AddPCM()
 	testAudioEndTime time.Time
+
+	// Built-in screenshots / video captures
+	capture struct {
+		enabled          bool
+		specifyingRegion bool
+		haveRegion       bool
+		region           [2][2]float32
+		doStill          bool
+		doVideo          bool
+		videoFrame       int
+		videoFrameIndex  int
+	}
 }
 
 func init() {
@@ -328,6 +343,8 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 
 	sp.lastTrackUpdate = time.Time{} // force immediate update at start
 	sp.lastHistoryTrackUpdate = time.Time{}
+
+	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
 
 func (sp *STARSPane) Reset(ss sim.State, lg *log.Logger) {
@@ -627,6 +644,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	if ctx.Mouse != nil {
 		sp.drawMouseCursor(ctx, scopeExtent, transforms, cb)
 	}
+	sp.handleCapture(ctx, transforms, cb)
 
 	sp.updateAudio(ctx, aircraft)
 
@@ -931,4 +949,88 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, aircraft []*av.Aircraft) {
 		return false
 	}()
 	updateContinuous(playSPCSound, AudioSquawkSPC)
+}
+
+func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	if !sp.capture.enabled {
+		return
+	}
+
+	readPixels := func() image.Image {
+		// Window coords -> fb coords, also accounting for retina 2x
+		p0 := math.Add2f(sp.capture.region[0], ctx.PaneExtent.P0)
+		p1 := math.Add2f(sp.capture.region[1], ctx.PaneExtent.P0)
+		p0, p1 = math.Scale2f(p0, 2), math.Scale2f(p1, 2)
+
+		x := int(math.Min(p0[0], p1[0]))
+		y := int(math.Min(p0[1], p1[1]))
+		w := int(math.Max(p0[0], p1[0])) - x
+		h := int(math.Max(p0[1], p1[1])) - y
+		px := ctx.Renderer.ReadPixelRGBAs(x, y, w, h)
+
+		// Flip in y
+		for i := range h / 2 {
+			for j := range 4 * w {
+				a, b := 4*w*i+j, 4*w*(h-1-i)+j
+				px[a], px[b] = px[b], px[a]
+			}
+		}
+		// Alpha to 1
+		for i := range h {
+			for j := range w {
+				px[4*w*i+4*j+3] = 255
+			}
+		}
+
+		return &image.RGBA{
+			Pix:    px,
+			Stride: 4 * w,
+			Rect: image.Rectangle{
+				Min: image.Point{X: x, Y: y},
+				Max: image.Point{X: x + w, Y: y + h},
+			},
+		}
+	}
+
+	if (sp.capture.doStill || sp.capture.doVideo) && sp.capture.haveRegion {
+		if sp.capture.doVideo && sp.capture.videoFrameIndex != 4 { // capture 15fps, assuming 60Hz render
+			sp.capture.videoFrameIndex++
+		} else {
+			sp.capture.videoFrameIndex = 0
+			sp.capture.videoFrame++
+
+			fn := util.Select(sp.capture.doStill, "capture.png", fmt.Sprintf("capture-%04d.png", sp.capture.videoFrame))
+			if d, err := os.UserHomeDir(); err == nil {
+				fn = d + "/" + fn
+			}
+			w, err := os.Create(fn)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+			} else {
+				img := readPixels()
+				if err = png.Encode(w, img); err != nil {
+					fmt.Fprintf(os.Stderr, "%v\n", err)
+				}
+				w.Close()
+			}
+			sp.capture.doStill = false
+		}
+	} else if sp.capture.specifyingRegion || sp.capture.haveRegion {
+		p0, p1 := sp.capture.region[0], sp.capture.region[1]
+		if sp.capture.specifyingRegion && ctx.Mouse != nil {
+			p1 = ctx.Mouse.Pos
+		}
+		// Offset the outline so it isn't included in the capture
+		p0[0], p1[0] = math.Min(p0[0], p1[0])-1, math.Max(p0[0], p1[0])+1
+		p0[1], p1[1] = math.Min(p0[1], p1[1])-1, math.Max(p0[1], p1[1])+1
+
+		ld := renderer.GetLinesDrawBuilder()
+		defer renderer.ReturnLinesDrawBuilder(ld)
+
+		ld.AddLineLoop([][2]float32{p0, [2]float32{p0[0], p1[1]}, p1, [2]float32{p1[0], p0[1]}})
+		transforms.LoadWindowViewingMatrices(cb)
+		cb.SetRGB(renderer.RGB{R: 0, G: 0.75, B: 0.75})
+		ld.GenerateCommands(cb)
+		cb.DisableBlend()
+	}
 }
