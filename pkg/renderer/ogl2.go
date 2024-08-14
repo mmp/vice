@@ -120,6 +120,22 @@ func (ogl2 *OpenGL2Renderer) DestroyTexture(texid uint32) {
 	delete(ogl2.createdTextures, texid)
 }
 
+func (ogl2 *OpenGL2Renderer) ReadPixelRGBAs(x, y, width, height int) []uint8 {
+	pxf := make([]float32, 4*width*height)
+	px := make([]uint8, 4*width*height)
+	gl.Finish()
+	gl.ReadPixels(int32(x), int32(y), int32(width), int32(height), gl.RGBA, gl.FLOAT, unsafe.Pointer(&pxf[0]))
+
+	for i, v := range pxf {
+		if 255*v > 255 {
+			px[i] = 255
+		} else {
+			px[i] = uint8(255 * v)
+		}
+	}
+	return px
+}
+
 func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats {
 	var stats RendererStats
 	stats.nBuffers++

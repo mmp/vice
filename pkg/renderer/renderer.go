@@ -39,6 +39,11 @@ type Renderer interface {
 	// rendered.
 	RenderCommandBuffer(*CommandBuffer) RendererStats
 
+	// ReadPixelRGBAs returns the RGBA colors of a rectangular region the
+	// framebuffer starting at the given (x,y) coordinate with the given
+	// width and height.
+	ReadPixelRGBAs(x, y, width, height int) []uint8
+
 	// Dispose releases resources allocated by the renderer.
 	Dispose()
 }
