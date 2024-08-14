@@ -1,0 +1,984 @@
+{
+    "tracon": "CID",
+        "airports": {
+            "KCID": {
+                "approaches": {
+                    "R9": {
+                        "cifp_id": "R9"
+                    },
+                    "I27": {
+                        "cifp_id": "I27"
+                    },
+                    "R13": {
+                        "cifp_id": "R13"
+                    },
+                    "R31": {
+                        "cifp_id": "R31"
+                    },
+           	        "R27": {
+               		    "cifp_id": "R27"
+                    }
+                },
+                "departure_routes": {
+                    "9": {
+                        "SGF": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID27/h110 SGF"
+                        },
+                        "BENNR": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID27/h070 BENNR"
+                        },
+                        "MNOSO": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID27/h070 MNOSO"
+                        },
+                        "OBH": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID27/h110 OBH"
+                        },
+                        "KOOOP": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID27/h110 KOOOP"
+                        },
+                        "BDF": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID27/h110 BDF"
+                        },
+                        "GBG": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID27/h110 GBG"
+                        },
+                        "IOW": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID27/h110 IOW"
+                        },
+                        "OVR": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID27/h110 OVR"
+                        }
+                    },
+                    "27": {
+                        "SGF": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID9/h250 SGF"
+                        },
+                        "BENNR": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID9/h290 BENNR"
+                        },
+                        "MNOSO": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID9/h290 MNOSO"
+                        },
+                        "OBH": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID9/h250 OBH"
+                        },
+                        "KOOOP": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID9/h250 KOOOP"
+                        },
+                        "BDF": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID9/h250 BDF"
+                        },
+                        "GBG": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID9/h250 GBG"
+                        },
+                        "IOW": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID9/h250 IOW"
+                        },
+                        "OVR": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID9/h250 OVR"
+                        }
+                    },
+                    "13": {
+                        "SGF": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID31/h310 SGF"
+                        },
+                        "BENNR": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID31/h310 BENNR"
+                        },
+                        "MNOSO": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID31/h310 MNOSO"
+                        },
+                        "OBH": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID31/h310 OBH"
+                        },
+                        "KOOOP": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID31/h310 KOOOP"
+                        },
+                        "BDF": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID31/h310 BDF"
+                        },
+                        "GBG": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID31/h310 GBG"
+                        },
+                        "IOW": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID31/h310 IOW"
+                        },
+                        "OVR": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID31/h310 OVR"
+                        }
+                    },
+                    "31": {
+                        "SGF": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID13/h310 SGF"
+                        },
+                        "BENNR": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID13/h310 BENNR"
+                        },
+                        "MNOSO": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID13/h310 MNOSO"
+                        },
+                        "OBH": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID13/h310 OBH"
+                        },
+                        "KOOOP": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID13/h310 KOOOP"
+                        },
+                        "BDF": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID13/h310 BDF"
+                        },
+                        "GBG": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID13/h310 GBG"
+                        },
+                        "IOW": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID13/h310 IOW"
+                        },
+                        "OVR": {
+                            "cleared_altitude": 5000,
+                            "waypoints": "_CID13/h310 OVR"
+                        }
+                    }
+                },             
+                "departures": [
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "FDX"
+                            }
+                        ],
+                        "altitude": 34000,
+                        "destination": "KMEM",
+                        "route": "KOOOP WHOLL BRBBQ3",
+                        "exit": "KOOOP"
+                    },
+                    { 
+                        "airlines": [
+                            {
+                                "fleet": "short",
+                                "icao": "UAL"
+                            },
+                            {
+                                "fleet": "default",
+                                "icao": "FFT"
+                            }
+                        ],
+                        "altitude": 34000,
+                        "destination": "KDEN",
+                        "route": "OBH BRWRY LAWGR3",
+                        "exit": "OBH"
+                    }, 
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "SKW"
+                            }
+                            
+                        ],
+                        "altitude": 28000,
+                        "destination": "KMSP",
+                        "route": "MNOSO BLUEM4",
+                        "exit": "MNOSO"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "ENY"
+                            }
+                        ],
+                        "altitude": 34000,
+                        "destination": "KDFW",
+                        "route": "SGF RZC FSM RRNET SEEVR4",
+                        "exit": "SGF"
+                        
+                    },
+                    {
+                            "airlines": [
+                                {
+                                    "fleet": "default",
+                                    "icao": "SKW"
+                                },
+                                {
+                                    "fleet": "default",
+                                    "icao": "ENY"
+                                }
+                            ],
+                            "altitude": 21000,
+                            "destination": "KORD",
+                            "route": "BENNR FYTTE7",
+                            "exit": "BENNR"
+                    },
+                    {
+                        "airlines": [
+                                {
+                                    "fleet": "default",
+                                    "icao": "JIA"
+                                }
+                            ],
+                            "altitude": 37000,
+                            "destination": "KDCA",
+                            "route": "BDF J64 FWA J178 APE J30 BUCKO FRDMM6",
+                            "exit": "BDF"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "AAL"
+                            },
+                            {
+                                "fleet": "default",
+                                "icao": "JIA"
+                            }
+                        ],
+                        "altitude": 33000,
+                        "destination": "KCLT",
+                        "route": "GBG AXC LWV MYS SKYWA FILPZ4",
+                        "exit": "GBG"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "AAY"
+                            }
+                        ],
+                        "altitude": 36000,
+                        "destination": "KLAS",
+                        "route": "IOW IRK J96 KIDER J96 GCK J110 RSK J64 TBC SQIRE RKSTR3",
+                        "exit": "IOW"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "AAY"
+                            }
+                        ],
+                        "altitude": 33000,
+                        "destination": "KPIE",
+                        "route": "IOW STL J151 VUZ ACORI BANGZ1",
+                        "exit": "IOW"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "DAL"
+                            }
+                        ],
+                        "altitude": 33000,
+                        "destination": "KATL",
+                        "route": "BDF HITMN NEWBB MTHEW CHPPR1",
+                        "exit": "BDF"
+                    },
+                    {
+                      "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "SKW"
+                            }
+                        ],
+                        "altitude": 36000,
+                        "destination": "KPHX",
+                        "route": "OVR KD60A PUMPS GUP EAGUL6",
+                        "exit": "OVR"  
+                    }
+                ],
+                "exit_categories": {
+                    "KOOOP": "WEST",
+                    "OBH": "WEST",
+                    "MNOSO": "EAST",
+                    "SGF": "WEST",
+                    "BENNR": "EAST",
+                    "BDF": "EAST",
+					"GBG": "EAST",
+                    "IOW": "WEST",
+                    "OVR": "WEST"
+                },
+                "tower_list": 1
+            }
+        },
+        "arrival_groups": {
+            "MSP": [
+                {
+                    "airlines": {
+                        "KCID": [
+                            {
+                                "airport": "KMSP",
+                                "icao": "SKW"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 33000,
+                    "initial_altitude": 10000,
+                    "initial_controller": "CHI_56_CTR",
+                    "initial_speed": 230,
+                    "route": "RST1 ALO CID",
+                    "waypoints": "N042.36.20.717,W092.02.01.343 N042.30.54.917,W092.00.02.059/ho CID"
+                }
+            ],
+            "SE": [
+                {
+                    "airlines": {
+                        "KCID": [
+                            {
+                                "airport": "KMEM",
+                                "icao": "FDX"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 36000,
+                    "initial_altitude": 11000,
+                    "initial_controller": "CHI_56_CTR",
+                    "initial_speed": 230,
+                    "route": "JTEEE5 ODATE KK51I IRK",
+                    "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
+                },
+                {
+                    "airlines": {
+                        "KCID": [
+                            {
+                                "airport": "KATL",
+                                "icao": "DAL"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 36000,
+                    "initial_altitude": 11000,
+                    "initial_controller": "CHI_56_CTR",
+                    "initial_speed": 230,
+                    "route": "PENCL2 EMAHH CEASE",
+                    "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
+                },
+                {
+                    "airlines": {
+                        "KCID": [
+                            {
+                                "airport": "KSFB",
+                                "icao": "AAY"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 32000,
+                    "initial_altitude": 11000,
+                    "initial_controller": "CHI_56_CTR",
+                    "initial_speed": 230,
+                    "route": "RDSOX JFRYS PATOY Q116 JAWJA GOONS BWG AXC IOW",
+                    "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
+                },
+                {
+                    "airlines": {
+                        "KCID": [
+                                    {
+                                        "airport": "KPGD",
+                                        "icao": "AAY"
+                                    }
+                                ]
+                            },
+                            "cruise_altitude": 34000,
+                            "initial_altitude": 11000,
+                            "initial_controller": "CHI_56_CTR",
+                            "initial_speed": 230,
+                            "route": "ROGAN LAL PATOY Q116 DEANR Q116 VLKNN GETME J151 STL IOW",
+                            "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
+                },
+                {
+                    "airlines": {
+                        "KCID": [
+                                    {
+                                        "airport": "KBNA",
+                                        "icao": "AAY"
+                                    }
+                                ]
+                            },
+                            "cruise_altitude": 34000,
+                            "initial_altitude": 11000,
+                            "initial_controller": "CHI_56_CTR",
+                            "initial_speed": 230,
+                            "route": "HGGRD3 TINGS ENL CID",
+                            "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
+                },
+                {
+                    "airlines": {
+                        "KCID": [
+                                    {
+                                        "airport": "KFLL",
+                                        "icao": "AAY"
+                                    }
+                                ]
+                            },
+                            "cruise_altitude": 36000,
+                            "initial_altitude": 11000,
+                            "initial_controller": "CHI_56_CTR",
+                            "initial_speed": 230,
+                            "route": "HROCK2 KPASA Q118 JOHNN LGC J73 PXV SPI CID",
+                            "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
+                },
+                {
+                    "airlines": {
+                        "KCID": [
+                            {
+                                "airport": "KSRQ",
+                                "icao": "AAY"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 34000,
+                    "initial_altitude": 11000,
+                    "initial_controller": "CHI_56_CTR",
+                    "initial_speed": 230,
+                    "route": "TIDES1 MOMIE AMORY Q110 BLANS MAGOO CID",
+                    "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
+                }       
+            ],
+            "E": [
+                {
+                   "airlines": {
+                        "KCID": [
+                            {
+                                "airport": "KDCA",
+                                "icao": "JIA"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 36000,
+                    "initial_altitude": 11000,
+                    "initial_controller": "CHI_56_CTR",
+                    "initial_speed": 230,
+                    "route": "WYNGS5 RAMAY Q72 HACKS J149 ROD",
+                    "waypoints": "N041.40.04.783,W090.37.58.317 N041.41.37.439,W090.48.28.245/ho CID" 
+                },
+                {
+                    "airlines": {
+                        "KCID": [
+                            {
+                                "airport": "KCLT",
+                                "icao": "AAL"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 36000,
+                    "initial_altitude": 11000,
+                    "initial_controller": "CHI_56_CTR",
+                    "initial_speed": 230,
+                    "route": "JOJJO5 DOOGE HYK FFT OOM TTH CMI MZV",
+                    "waypoints": "N041.40.04.783,W090.37.58.317 N041.41.37.439,W090.48.28.245/ho CID"
+                }
+            ],
+            "ORD": [
+                {
+                    "airlines": {
+                        "KCID": [
+                            {
+                                "airport": "KORD",
+                                "icao": "SKW"
+                            },
+                            {
+                                "airport": "KORD",
+                                "icao": "JIA"
+                            },
+                            {
+                                "airport": "KORD",
+                                "icao": "ENY"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 28000,
+                    "initial_altitude": 9000,
+                    "initial_controller": "CHI_56_CTR",
+                    "initial_speed": 210,
+                    "route": "NOONY NIGHT",
+                    "waypoints": "N042.00.12.181,W090.36.11.969 N041.59.30.487,W090.44.34.346/ho CID"
+                }
+            ],
+            "DFW": [
+                {
+                    "airlines": {
+                        "KCID": [
+                            {
+                                "airport": "KDFW",
+                                "icao": "ENY"
+                            },
+                            {
+                                "airport": "KDFW",
+                                "icao": "AAL"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 35000,
+                    "initial_altitude": 11000,
+                    "initial_controller": "CHI_56_CTR",
+                    "initial_speed": 230,
+                    "route": "GRABE8 EAKER EOS AUGIE IRK IOW",
+                    "waypoints": "N041.15.17.028,W092.14.30.474 N041.19.39.244,W092.09.22.692/ho CID"
+                }
+            ],
+            "SW": [
+                {
+                    "airlines": {
+                        "KCID": [
+                            {
+                                "airport": "KLAS",
+                                "icao": "AAY"
+                            },
+                            {
+                                "airport": "KDEN",
+                                "icao": "UAL"
+                            },
+                            {
+                                "airport": "KDEN",
+                                "icao": "FFT"
+                            },
+                            {
+                                "airport": "KPHX",
+                                "icao": "SKW"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 37000,
+                    "initial_altitude": 15000,
+                    "initial_controller": "CHI_56_CTR",
+                    "initial_speed": 250,
+                    "route": "GLD J146 CID",
+                    "waypoints": "N041.42.09.258,W092.52.35.575 N041.44.13.417,W092.43.49.522/ho CID"
+                },
+                {
+                    "airlines": {
+                        "KCID": [
+                            {
+                                "airport": "KIWA",
+                                "icao": "AAY"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 37000,
+                    "initial_altitude": 15000,
+                    "initial_controller": "CHI_56_CTR",
+                    "initial_speed": 250,
+                    "route": "YOTES6 JARPA RSK ALS PUB GLD J146 LNK DSM CID",
+                    "waypoints": "N041.42.09.258,W092.52.35.575 N041.44.13.417,W092.43.49.522/ho CID"
+                }
+            ]
+         },
+         "control_positions": {
+            "CID_S_APP": {
+                "frequency": 119700,
+                "full_name": "Cedar Rapids approach",
+                "scope_char": "A",
+                "sector_id": "1A"
+            },
+			"CID_N_APP": {
+                "frequency": 134050,
+                "full_name": "Cedar Rapids approach",
+                "scope_char": "D",
+                "sector_id": "1D"
+            },
+            "CID_TWR": {
+                "frequency": 118700,
+                "full_name": "Eastern Iowa tower",
+                "scope_char": "1",
+                "sector_id": "1T"
+            },
+            "CHI_56_CTR": {
+                "frequency": 132800,
+                "full_name": "Chicago center",
+                "facility_id": "C",
+                "eram_facility": true,
+                "scope_char": "C",
+                "sector_id": "C56"
+            }
+         },
+         "default_scenario": "Land West",
+         "fixes": {
+            "_CID": "41.8846944,-91.7108056",
+            "_CID9": "N041.53.04.346,W091.43.41.447",
+            "_CID27": "N041.53.02.931,W091.41.50.238",
+            "_CID31": "N041.45.54.396,W091.33.10.805",
+            "_CID13": "N042.00.20.118,W091.51.55.063"
+        },
+        "name": "KCID",
+        "primary_airport": "KCID",
+        "scenarios": {
+            "Land West": {
+                "arrival_runways": [
+                    {
+                        "airport": "KCID",
+                        "runway": "27"
+                    }
+                ],
+                "arrivals": {
+                    "MSP": {
+                        "KCID": 2
+                    },
+                    "SE": {
+                        "KCID": 4
+                    },
+                    "E": {
+                        "KCID": 3
+                    },
+                    "ORD": {
+                        "KCID": 3
+                    },
+                    "DFW": {
+                        "KCID": 1
+                    },
+                    "SW": {
+                        "KCID": 3
+                    }
+                },
+                "solo_controller": "CID_S_APP",
+                "multi_controllers": {
+                    "default": {
+                        "CID_S_APP": {
+                            "primary": true,
+                            "arrivals": [
+                                "SE",
+                                "E",
+                               "DFW",
+                                "SW"
+                            ]
+                        },
+                        "CID_N_APP": {
+                            "backup": "CID_S_APP",
+                            "departures": [
+                                "KCID/27"
+                            ],
+                            "arrivals": [
+                                "MSP",
+                                "ORD"
+                            ]
+                        }
+                    }
+                },
+                "controllers": [
+                    "CID_TWR",
+                    "CHI_56_CTR",
+		            "CID_S_APP",
+                    "CID_N_APP"
+                ],
+                "default_maps": [
+                    "CID RVM"
+                ],
+                "departure_runways": [
+                    {
+                        "airport": "KCID",
+                        "category": "WEST",
+                        "rate": 5,
+                        "runway": "27"
+                    },
+                    {
+                        "airport": "KCID",
+                        "category": "EAST",
+                        "rate": 5,
+                        "runway": "27"
+                    }
+                ],
+                "wind": {
+                    "direction": 270,
+                    "speed": 7
+                }
+            },
+            "Land South": {
+                "arrival_runways": [
+                    {
+                        "airport": "KCID",
+                        "runway": "13"
+                    }
+                ],
+                "arrivals": {
+                    "MSP": {
+                        "KCID": 2
+                    },
+                    "SE": {
+                        "KCID": 4
+                    },
+                    "E": {
+                        "KCID": 3
+                    },
+                    "ORD": {
+                        "KCID": 3
+                    },
+                    "DFW": {
+                        "KCID": 1
+                    },
+                    "SW": {
+                        "KCID": 3
+                    }
+                },
+                "solo_controller": "CID_S_APP",
+                "multi_controllers": {
+                    "default": {
+                        "CID_S_APP": {
+                            "primary": true,
+                            "arrivals": [
+                                "SE",
+                                "E",
+                               "DFW",
+                                "SW"
+                            ]
+                        },
+                        "CID_N_APP": {
+                            "backup": "CID_S_APP",
+                            "departures": [
+                                "KCID/13"
+                            ],
+                            "arrivals": [
+                                "MSP",
+                                "ORD"
+                            ]
+                        }
+                    }
+                },
+                "controllers": [
+                    "CID_TWR",
+                    "CHI_56_CTR",
+                    "CID_S_APP",
+                    "CID_N_APP"
+                ],
+                "default_maps": [
+                    "CID RVM"
+                ],
+                "departure_runways": [
+                    {
+                        "airport": "KCID",
+                        "category": "WEST",
+                        "rate": 5,
+                        "runway": "13"
+                    },
+                    {
+                        "airport": "KCID",
+                        "category": "EAST",
+                        "rate": 5,
+                        "runway": "13"
+                    }
+                ],
+                "wind": {
+                    "direction": 90,
+                    "speed": 7
+                }
+            },
+            "Land East": {
+                "arrival_runways": [
+                    {
+                        "airport": "KCID",
+                        "runway": "9"
+                    }
+                ],
+                "arrivals": {
+                    "MSP": {
+                        "KCID": 2
+                    },
+                    "SE": {
+                        "KCID": 4
+                    },
+                    "E": {
+                        "KCID": 3
+                    },
+                    "ORD": {
+                        "KCID": 3
+                    },
+                    "DFW": {
+                        "KCID": 1
+                    },
+                    "SW": {
+                        "KCID": 3
+                    }
+                },
+                "solo_controller": "CID_S_APP",
+                "multi_controllers": {
+                    "default": {
+                        "CID_S_APP": {
+                            "primary": true,
+                            "arrivals": [
+                                "SE",
+                                "E",
+                                "DFW",
+                                "SW"
+                            ]
+                        },
+                        "CID_N_APP": {
+                            "backup": "CID_S_APP",
+                            "departures": [
+                                "KCID/9"
+                            ],
+                            "arrivals": [
+                                "MSP",
+                                "ORD"
+                            ]
+                        }
+                    }
+                },
+                "controllers": [
+                    "CID_TWR",
+                    "CHI_56_CTR",
+                    "CID_S_APP",
+                    "CID_N_APP"
+                ],
+                "default_maps": [
+                    "CID RVM"
+                ],
+                "departure_runways": [
+                    {
+                        "airport": "KCID",
+                        "category": "WEST",
+                        "rate": 5,
+                        "runway": "9"
+                    },
+                    {
+                        "airport": "KCID",
+                        "category": "EAST",
+                        "rate": 5,
+                        "runway": "9"
+                    }
+                ],
+                "wind": {
+                    "direction": 90,
+                    "speed": 7
+                }  
+        },
+        "Land North": {
+                "arrival_runways": [
+                    {
+                        "airport": "KCID",
+                        "runway": "31"
+                    }
+                ],
+                "arrivals": {
+                    "MSP": {
+                        "KCID": 2
+                    },
+                    "SE": {
+                        "KCID": 4
+                    },
+                    "E": {
+                        "KCID": 3
+                    },
+                    "ORD": {
+                        "KCID": 3
+                    },
+                    "DFW": {
+                        "KCID": 1
+                    },
+                    "SW": {
+                        "KCID": 3
+                    }
+                },
+                "solo_controller": "CID_S_APP",
+                "multi_controllers": {
+                    "default": {
+                        "CID_S_APP": {
+                            "primary": true,
+                            "arrivals": [
+                                "SE",
+                                "E",
+                                "DFW",
+                                "SW"
+                            ]
+                        },
+                        "CID_N_APP": {
+                            "backup": "CID_S_APP",
+                            "departures": [
+                                "KCID/31"
+                            ],
+                            "arrivals": [
+                                "MSP",
+                                "ORD"
+                                
+                            ]
+                        }
+                    }
+                },
+                "controllers": [
+                    "CID_TWR",
+                    "CHI_56_CTR",
+                    "CID_S_APP",
+                    "CID_N_APP"
+                ],
+                "default_maps": [
+                    "CID RVM"
+                ],
+                "departure_runways": [
+                    {
+                        "airport": "KCID",
+                        "category": "WEST",
+                        "rate": 5,
+                        "runway": "31"
+                    },
+                    {
+                        "airport": "KCID",
+                        "category": "EAST",
+                        "rate": 5,
+                        "runway": "31"
+                    }
+                ],
+                "wind": {
+                    "direction": 90,
+                    "speed": 7
+                }
+            }
+        },
+        "stars_config": {
+            "center": "41.8846944,-91.7108056",
+            "range": 40,
+            "scratchpads": {
+                "IOW": "IOW",
+                "CID": "CID",
+                "WAVUM": "WAV",
+                "TNU": "NEW",
+                "KOOOP": "KOO",
+                "OBH": "OBH",
+                "MNOSO": "MNO",
+                "SGF": "SGF",
+                "BENNR": "BEN",
+                "BDF": "BDF",
+                "DBQ": "DBQ",
+                "GBG": "GBG",
+                "OVR": "OVR"
+         },
+            "stars_maps": [
+                "CID MVA",
+                "CID VFR",
+                "CID RVM"
+            ],
+            "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
+        }
+    
+    
+}
