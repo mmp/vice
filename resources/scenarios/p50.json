@@ -1477,9 +1477,9 @@
         }
     ],
     "scratchpads": {
-        "JNIPR": "BRO",
-        "ABQ":   "BRO",
-        "MAXXO": "BRO",
+        "JNIPR": "BRK",
+        "ABQ":   "BRK",
+        "MAXXO": "BRK",
         "PHASE": "ECL",
         "MOHAK": "FYR",
         "MESSI": "KEE",
@@ -1489,7 +1489,7 @@
         "YOOPR": "MRB",
         "JARPA": "MRB",
         "RIMMM": "QUA",
-        "TUS":   "STR",
+        "TUS":   "BNY",
         "RRSTA": "ZEP"
     },
     "stars_maps": [
