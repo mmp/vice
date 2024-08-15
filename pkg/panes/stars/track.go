@@ -717,10 +717,11 @@ func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, headi
 		if trackId != "" {
 			font := sp.systemFont[ps.CharSize.PositionSymbols]
 			outlineFont := sp.systemOutlineFont[ps.CharSize.PositionSymbols]
-			td.AddTextCentered(trackId, pw, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
+			pt := math.Add2f(pw, [2]float32{0.5, -0.5})
+			td.AddTextCentered(trackId, pt, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
 
 			posColor := posBrightness.ScaleRGB(color)
-			td.AddTextCentered(trackId, pw, renderer.TextStyle{Font: font, Color: posColor})
+			td.AddTextCentered(trackId, pt, renderer.TextStyle{Font: font, Color: posColor})
 		} else {
 			// TODO: draw box if in range of squawks we have selected
 
