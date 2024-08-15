@@ -26,6 +26,11 @@
                         "waypoints": "CTR/a4000/h064"
                     }
                 },
+                "CCC": {
+                        "cleared_altitude": 4000,
+                        "sid": "CSTL9",
+                        "waypoints": "HFD THUMB YODER CCC/a4000"
+                },
                 "33": {
                     "VEERS": {
                         "cleared_altitude": 4000,
@@ -36,10 +41,26 @@
                         "cleared_altitude": 4000,
                         "sid": "BDL6",
                         "waypoints": "MAD/a4000/h330"
+                    },
+                    "HFD": {
+                        "cleared_altitude": 4000,
+                        "sid": "BDL6",
+                        "waypoints": "HFD/a4000"
                     }
                 }
             },
             "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "BND",
+                            "fleet": "military"
+                        }
+                    ],
+                    "destination": "KFMH",
+                    "exit": "PVD",
+                    "route": "PVD"
+                },
                 {
                     "airlines": [
                         {
@@ -50,17 +71,6 @@
                     "destination": "KBOS",
                     "exit": "PVD",
                     "route": "PVD WOONS ROBUC3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "BNDIT",
-                            "fleet": "F15"
-                        }
-                    ],
-                    "destination": "KACK",
-                    "exit": "HFD",
-                    "route": "HFD GON MINNK DEEPO DEEPO1"
                 },
                 {
                     "airlines": [
@@ -392,12 +402,13 @@
                 {
                     "airlines": [
                         {
-                            "icao": "BNDIT"
+                            "icao": "BND",
+                            "fleet": "mil"
                         }
                     ],
-                    "destination": "KISP",
-                    "exit": "MAD",
-                    "route": "MAD BELTT"
+                    "destination": "KGTB",
+                    "exit": "CCC",
+                    "route": "CSTL9 CCC V46 DPK J95 STOMP Q812 SYR T634 PAGER"
                 },
                 {
                     "airlines": [

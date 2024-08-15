@@ -27,7 +27,7 @@ func New(server bool, level string) *Logger {
 
 	if server {
 		w = &lumberjack.Logger{
-			Filename: "vice-merry-logs/slog",
+			Filename: "vice-logs/slog",
 			MaxSize:  64, // MB
 			MaxAge:   14,
 			Compress: true,
@@ -38,7 +38,7 @@ func New(server bool, level string) *Logger {
 			fmt.Fprintf(os.Stderr, "Unable to find user config dir: %v", err)
 			dir = "."
 		}
-		fn := path.Join(dir, "Vice-merry", "vice-merry.slog")
+		fn := path.Join(dir, "Vice", "vice.slog")
 
 		w = &lumberjack.Logger{
 			Filename:   fn,
