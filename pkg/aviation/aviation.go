@@ -1094,21 +1094,20 @@ func (sc SplitConfigurationSet) Splits() []string {
 // controller that is responsible for that position (possibly just the
 // provided callsign).
 func (sc SplitConfiguration) ResolveController(callsign string, active func(callsign string) bool) (string, error) {
+	origCallsign := callsign
 	i := 0
 	for {
-		if active(callsign) {
-			return callsign, nil
-		}
-
 		if ctrl, ok := sc[callsign]; !ok {
 			return "", fmt.Errorf("%s: failed to find controller in MultiControllers", callsign)
+		} else if ctrl.Primary || active(callsign) {
+			return callsign, nil
 		} else {
 			callsign = ctrl.BackupController
 		}
 
 		i++
 		if i == 20 {
-			return "", fmt.Errorf("%s: unable to find backup for arrival handoff controller", callsign)
+			return "", fmt.Errorf("%s: unable to find controller backup", origCallsign)
 		}
 	}
 }
