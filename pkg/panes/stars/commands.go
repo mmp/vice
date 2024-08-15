@@ -370,10 +370,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		case "CV":
 			if sp.capture.enabled {
 				sp.capture.doVideo = !sp.capture.doVideo
-				if sp.capture.doVideo {
-					sp.capture.videoFrame = 0
-					sp.capture.videoFrameIndex = 0
-				}
 				status.clear = true
 				return
 			}

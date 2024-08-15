@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"image"
+	"image/color"
+	"image/gif"
 	"image/png"
 	"os"
 	"slices"
@@ -153,8 +155,10 @@ type STARSPane struct {
 		region           [2][2]float32
 		doStill          bool
 		doVideo          bool
-		videoFrame       int
-		videoFrameIndex  int
+		video            struct {
+			frameCh   chan *image.RGBA
+			lastFrame time.Time
+		}
 	}
 }
 
@@ -717,6 +721,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, scopeExtent math.Extent
 	draw := func(idx int, style renderer.TextStyle) {
 		g := sp.cursorsFont.LookupGlyph(rune(idx))
 		p := math.Add2f(ctx.Mouse.Pos, [2]float32{-g.Width() / 2, g.Height() / 2})
+		p[0], p[1] = float32(int(p[0]+0.5)), float32(int(p[1]+0.5))
 		td.AddText(string(byte(idx)), p, style)
 	}
 	// The STARS "+" cursors start at 0 in the STARS cursors font,
@@ -956,7 +961,7 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms ScopeTransform
 		return
 	}
 
-	readPixels := func() image.Image {
+	readPixels := func() *image.RGBA {
 		// Window coords -> fb coords, also accounting for retina 2x
 		p0 := math.Add2f(sp.capture.region[0], ctx.PaneExtent.P0)
 		p1 := math.Add2f(sp.capture.region[1], ctx.PaneExtent.P0)
@@ -992,30 +997,40 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms ScopeTransform
 		}
 	}
 
-	if (sp.capture.doStill || sp.capture.doVideo) && sp.capture.haveRegion {
-		if sp.capture.doVideo && sp.capture.videoFrameIndex != 4 { // capture 15fps, assuming 60Hz render
-			sp.capture.videoFrameIndex++
-		} else {
-			sp.capture.videoFrameIndex = 0
-			sp.capture.videoFrame++
-
-			fn := util.Select(sp.capture.doStill, "capture.png", fmt.Sprintf("capture-%04d.png", sp.capture.videoFrame))
-			if d, err := os.UserHomeDir(); err == nil {
-				fn = d + "/" + fn
-			}
-			w, err := os.Create(fn)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "%v\n", err)
-			} else {
-				img := readPixels()
-				if err = png.Encode(w, img); err != nil {
-					fmt.Fprintf(os.Stderr, "%v\n", err)
-				}
-				w.Close()
-			}
-			sp.capture.doStill = false
+	if sp.capture.doStill && sp.capture.haveRegion {
+		fn := "capture.png"
+		if d, err := os.UserHomeDir(); err == nil {
+			fn = d + "/" + fn
 		}
-	} else if sp.capture.specifyingRegion || sp.capture.haveRegion {
+		w, err := os.Create(fn)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+		} else {
+			img := readPixels()
+			if err = png.Encode(w, img); err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+			}
+			w.Close()
+		}
+		sp.capture.doStill = false
+	} else if sp.capture.doVideo && sp.capture.haveRegion {
+		if sp.capture.video.frameCh == nil {
+			// Starting a new capture
+			sp.capture.video.frameCh = make(chan *image.RGBA, 100)
+			sp.capture.video.lastFrame = time.Time{}
+			go captureEncodeFrames(sp.capture.video.frameCh)
+		}
+		if time.Since(sp.capture.video.lastFrame) > 95*time.Millisecond {
+			sp.capture.video.lastFrame = time.Now()
+			sp.capture.video.frameCh <- readPixels()
+		}
+	} else if !sp.capture.doVideo && sp.capture.video.frameCh != nil {
+		// Finish the capture
+		close(sp.capture.video.frameCh)
+		sp.capture.video.frameCh = nil
+	}
+
+	if sp.capture.specifyingRegion || sp.capture.haveRegion {
 		p0, p1 := sp.capture.region[0], sp.capture.region[1]
 		if sp.capture.specifyingRegion && ctx.Mouse != nil {
 			p1 = ctx.Mouse.Pos
@@ -1032,5 +1047,114 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms ScopeTransform
 		cb.SetRGB(renderer.RGB{R: 0, G: 0.75, B: 0.75})
 		ld.GenerateCommands(cb)
 		cb.DisableBlend()
+	}
+}
+
+// captureEncodeFrames runs in a goroutine that is launched when a video
+// capture is initiated.  It reads images from the given chan and writes
+// out an animated GIF when the chan is closed.
+func captureEncodeFrames(ch chan *image.RGBA) {
+	// Store regular and 2x resolution for retina displays.
+	gifs := [2]*gif.GIF{&gif.GIF{}, &gif.GIF{}}
+	// Though we could have a unique palette per frame, we only need a
+	// handful of colors and having a shared one allows us to check for
+	// image equivalence by just comparing the pixels' palette index
+	// values.
+	var palette []color.RGBA
+
+	for {
+		if img := <-ch; img != nil {
+			nx, ny := img.Bounds().Max.X-img.Bounds().Min.X, img.Bounds().Max.Y-img.Bounds().Min.Y
+			pal := [2]*image.Paletted{
+				&image.Paletted{
+					Pix:    make([]uint8, nx/2*ny/2),
+					Stride: nx / 2,
+					Rect:   image.Rectangle{Max: image.Point{X: nx / 2, Y: ny / 2}},
+				},
+				&image.Paletted{
+					Pix:    make([]uint8, nx*ny),
+					Stride: nx,
+					Rect:   image.Rectangle{Max: image.Point{X: nx, Y: ny}},
+				},
+			}
+
+			for y := range ny {
+				for x := range nx {
+					offset := 4 * (x + y*nx)
+					r, g, b, a := img.Pix[offset], img.Pix[offset+1], img.Pix[offset+2], img.Pix[offset+3]
+
+					// Find the pixel's color in the palette or add it to
+					// the palette if it's not there.
+					idx := -1
+					// Simple linear search; we only have a few colors in
+					// practice so this should be fine.
+					for i, c := range palette {
+						if c.R == r && c.G == g && c.B == b && c.A == a {
+							idx = i
+							break
+						}
+					}
+					if idx == -1 {
+						idx = len(palette)
+						palette = append(palette, color.RGBA{R: r, G: g, B: b, A: a})
+					}
+					if idx > 255 {
+						panic("too many colors")
+					}
+
+					pal[1].Pix[x+y*nx] = uint8(idx)
+
+					if x&1 == 0 && y&1 == 0 {
+						// The downsampled image is done via simple point
+						// sampling. Since MSAA is disabled anyway, this
+						// should be fine.
+						pal[0].Pix[x/2+y/2*nx/2] = uint8(idx)
+					}
+				}
+			}
+
+			for i := range 2 {
+				if n := len(gifs[i].Image); n > 0 && slices.Equal(pal[i].Pix, gifs[i].Image[n-1].Pix) {
+					// If the new frame matches the last one added, just
+					// increase the last frame's display time by another
+					// 100ms rather than duplicating it.
+					gifs[i].Delay[n-1] += 10
+				} else {
+					// The image has changed, so add it to the GIF.
+					for _, c := range palette {
+						pal[i].Palette = append(pal[i].Palette, c)
+					}
+					gifs[i].Image = append(gifs[i].Image, pal[i])
+					gifs[i].Delay = append(gifs[i].Delay, 10 /* 100ths of seconds */)
+				}
+			}
+		} else {
+			// No more images; save the animated GIFs.
+			for i := range 2 {
+				fn := [2]string{"capture.gif", "capture-2x.gif"}[i]
+				if d, err := os.UserHomeDir(); err == nil {
+					fn = d + "/" + fn
+				}
+				w, err := os.Create(fn)
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "%v\n", err)
+				} else {
+					if n := len(gifs[i].Image); n > 3 {
+						// Drop the first and last image so that all of the
+						// ones we keep have been visible for their full
+						// time-slice.
+						gifs[i].Image = gifs[i].Image[1 : n-1]
+						gifs[i].Delay = gifs[i].Delay[1 : n-1]
+					}
+
+					if err := gif.EncodeAll(w, gifs[i]); err != nil {
+						fmt.Fprintf(os.Stderr, "%v\n", err)
+					}
+					w.Close()
+				}
+				fmt.Printf("saved %s; %d frames\n", fn, len(gifs[i].Image))
+			}
+			return
+		}
 	}
 }
