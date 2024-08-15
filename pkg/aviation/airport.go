@@ -243,7 +243,7 @@ func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]math.
 
 func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude float32,
 	magneticVariation float32, controlPositions map[string]*Controller, scratchpads map[string]string,
-	e *util.ErrorLogger) {
+	facilityAirports map[string]*Airport, e *util.ErrorLogger) {
 	if info, ok := DB.Airports[icao]; !ok {
 		e.ErrorString("airport \"%s\" not found in airport database", icao)
 	} else {
@@ -494,25 +494,35 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 		}
 
-		sawExit := false
-		for _, fix := range strings.Fields(dep.Route) {
-			sawExit = sawExit || fix == depExit
-			wp := []Waypoint{Waypoint{Fix: fix}}
-			// Best effort only to find waypoint locations; this will fail
-			// for airways, international ones not in the FAA database,
-			// latlongs in the flight plan, etc.
-			if fix == depExit {
-				initializeWaypointLocations(wp, loc, nmPerLongitude, magneticVariation, e)
-			} else {
-				// nil here so errors aren't logged if it's not the actual exit.
-				initializeWaypointLocations(wp, loc, nmPerLongitude, magneticVariation, nil)
+		if _, intraFacility := facilityAirports[dep.Destination]; intraFacility {
+			// Make sure that the full route is valid.
+			wp, err := parseWaypoints(dep.Route)
+			if err != nil {
+				e.Error(err)
 			}
-			if !wp[0].Location.IsZero() {
-				ap.Departures[i].RouteWaypoints = append(ap.Departures[i].RouteWaypoints, wp[0])
+			initializeWaypointLocations(wp, loc, nmPerLongitude, magneticVariation, e)
+			ap.Departures[i].RouteWaypoints = wp
+		} else {
+			for _, fix := range strings.Fields(dep.Route) {
+				wp := []Waypoint{Waypoint{Fix: fix}}
+				// Best effort only to find waypoint locations; this will fail
+				// for airways, international ones not in the FAA database,
+				// latlongs in the flight plan, etc.
+				if fix == depExit {
+					initializeWaypointLocations(wp, loc, nmPerLongitude, magneticVariation, e)
+				} else {
+					// nil here so errors aren't logged if it's not the actual exit.
+					initializeWaypointLocations(wp, loc, nmPerLongitude, magneticVariation, nil)
+				}
+				if !wp[0].Location.IsZero() {
+					ap.Departures[i].RouteWaypoints = append(ap.Departures[i].RouteWaypoints, wp[0])
+				}
 			}
 		}
-		if !sawExit {
-			e.ErrorString("exit not found in departure route")
+
+		if !slices.ContainsFunc(ap.Departures[i].RouteWaypoints,
+			func(wp Waypoint) bool { return wp.Fix == depExit }) {
+			e.ErrorString("exit %s not found in departure route", depExit)
 		}
 
 		for _, al := range dep.Airlines {

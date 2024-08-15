@@ -2075,8 +2075,9 @@
             }
           ],
           "destination": "KTEB",
-          "exit": "WHITE",
-          "route": "WHITE V276 RBV V249 SBJ"
+          "exit": "DIXIE",
+          "altitude": 4000,
+          "route": "DIXIE V276 RBV V249 SBJ"
         },
         {
           "airlines": [
@@ -6624,14 +6625,12 @@
         "24": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
-            "sid": "SWF7",
             "waypoints": "KFOK-6/h240"
           }
         },
         "6": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
-            "sid": "CDW7",
             "waypoints": "KFOK-24/h060"
           }
         }
@@ -6657,10 +6656,10 @@
               "icao": "LXJ"
             }
           ],
-          "altitude": 38000,
+          "altitude": 3000,
           "destination": "KJFK",
-          "exit": "BEADS",
-          "route": "BEADS V139 SARDI RBV Q430 COPES Q75 SLOJO Q83 ROYCO Q85 LPERD SNFLD3"
+          "exit": "DPK",
+          "route": "DPK"
         },
         {
           "airlines": [
@@ -10334,6 +10333,7 @@
     "COATE": "COA",
     "DEEZZ": "DEZ",
     "DIXIE": "DIX",
+    "DPK": "DPK",
     "ELIOT": "ELI",
     "GAYEL": "GAY",
     "GREKI": "GRE",

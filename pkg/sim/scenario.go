@@ -798,7 +798,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + name)
 		ap.PostDeserialize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
-			sg.ControlPositions, sg.STARSFacilityAdaptation.Scratchpads, e)
+			sg.ControlPositions, sg.STARSFacilityAdaptation.Scratchpads, sg.Airports, e)
 		e.Pop()
 	}
 

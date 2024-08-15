@@ -2253,7 +2253,7 @@
           ],
           "destination": "KLAX",
           "exit": "SLI",
-          "route": "CWARD2 SLI"
+          "route": "SLI"
       },
       {
           "airlines": [
@@ -2264,7 +2264,7 @@
           ],
           "destination": "KLAX",
           "exit": "SLI",
-          "route": "CWARD2 SLI"
+          "route": "SLI"
       },
       {
           "airlines": [
