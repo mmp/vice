@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"errors"
 	"log/slog"
 	"os"
 	"sort"
@@ -86,6 +87,10 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 }
 
 func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
+	if sim.State == nil {
+		return errors.New("incomplete Sim; nil *State")
+	}
+
 	sim.Activate(sm.mapLibrary, sm.lg)
 
 	sm.mu.Lock(sm.lg)
