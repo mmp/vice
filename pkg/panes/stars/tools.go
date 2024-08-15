@@ -710,9 +710,11 @@ func (st *ScopeTransformations) LoadWindowViewingMatrices(cb *renderer.CommandBu
 }
 
 // WindowFromLatLongP transforms a point given in latitude-longitude
-// coordinates to window coordinates.
+// coordinates to window coordinates, snapped to a pixel center.
 func (st *ScopeTransformations) WindowFromLatLongP(p math.Point2LL) [2]float32 {
-	return st.windowFromLatLong.TransformPoint(p)
+	pw := st.windowFromLatLong.TransformPoint(p)
+	pw[0], pw[1] = float32(int(pw[0]+0.5))+0.5, float32(int(pw[1]+0.5))+0.5
+	return pw
 }
 
 // LatLongFromWindowP transforms a point p in window coordinates to
