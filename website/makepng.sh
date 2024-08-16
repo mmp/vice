@@ -1,17 +1,21 @@
 #!/bin/zsh
 
 if [[ $# -ne 1 ]]; then
-    echo makevideo: expected one arg for output filename
+    echo makepng: expected one arg for output filename
 fi
 
 fn=$1
-#ss=`ls -t ~/Desktop/Screenshot* | head -1`
-ss=~/capture.png
 
-#convert -shave 2x2 ${ss} ${fn}-2x.png
+if [[ -f /Users/mmp/capture.png ]]; then 
+    ss=~/capture.png
+else
+    ss=`ls -t ~/Desktop/*.png | head -1`
+fi
+echo using $ss
+
 convert ${ss} ${fn}-2x.png
 convert -scale 50% ${fn}-2x.png ${fn}.png
-rm ${ss}
+#rm ${ss}
 
 w=`file ${fn}.png | awk '{print $5}'`
 h=`file ${fn}.png | awk '{print $7}' | sed s/,//`
