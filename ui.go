@@ -413,7 +413,7 @@ func uiDraw(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r r
 				ui.showScenarioInfo = !ui.showScenarioInfo
 			}
 			if imgui.IsItemHovered() {
-				imgui.SetTooltip("Show available departures, arrivals, approaches, and overflights")
+				imgui.SetTooltip("Show departures, arrivals, approaches, overflights, and airspace awareness")
 			}
 		}
 

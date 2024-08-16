@@ -845,6 +845,45 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 		}
 	}
 
+	if aa := c.State.STARSFacilityAdaptation.AirspaceAwareness; len(aa) > 0 {
+		if imgui.CollapsingHeader("Airspace Awareness") {
+			if imgui.BeginTableV("awareness", 4, tableFlags, imgui.Vec2{}, 0) {
+				imgui.TableSetupColumn("Fix")
+				imgui.TableSetupColumn("Altitude")
+				imgui.TableSetupColumn("A/C Type")
+				imgui.TableSetupColumn("Controller")
+				imgui.TableHeadersRow()
+
+				for _, aware := range aa {
+					for _, fix := range aware.Fix {
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+						imgui.Text(fix)
+						imgui.TableNextColumn()
+						alt := ""
+						if aware.AltitudeRange[0] > 0 {
+							if aware.AltitudeRange[1] < 60000 {
+								alt = av.FormatAltitude(float32(aware.AltitudeRange[0])) + " - " +
+									av.FormatAltitude(float32(aware.AltitudeRange[1]))
+							} else {
+								alt = av.FormatAltitude(float32(aware.AltitudeRange[0])) + "+"
+							}
+						} else if aware.AltitudeRange[1] < 60000 {
+							alt = av.FormatAltitude(float32(aware.AltitudeRange[1])) + "-"
+						}
+						imgui.Text(alt)
+						imgui.TableNextColumn()
+						imgui.Text(strings.Join(aware.AircraftType, ", "))
+						imgui.TableNextColumn()
+						imgui.Text(aware.ReceivingController)
+					}
+				}
+
+				imgui.EndTable()
+			}
+		}
+	}
+
 	imgui.End()
 	return
 }
