@@ -463,7 +463,8 @@ func formatSourceID(id string, t time.Time) string {
 }
 
 func (comp *STARSComputer) SendToOverlyingERAMFacility(msg FlightPlanMessage) {
-	*comp.ERAMInbox = append(*comp.ERAMInbox, msg)
+	// FIXME(mtrokel): this crashes on a handoff to an adjacent facility
+	// *comp.ERAMInbox = append(*comp.ERAMInbox, msg)
 }
 
 func (comp *STARSComputer) RequestFlightPlan(bcn av.Squawk, simTime time.Time) {
