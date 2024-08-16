@@ -2106,6 +2106,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 
 			} else if len(cmd) > 0 {
+				// If it matches the callsign, attempt to initiate track.
+				if cmd == ac.Callsign {
+					status.clear = true
+					sp.initiateTrack(ctx, ac.Callsign)
+					return
+				}
+
 				// See if cmd works as a sector id; if so, make it a handoff.
 				control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
 				if control != nil {
