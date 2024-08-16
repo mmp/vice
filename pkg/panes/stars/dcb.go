@@ -34,6 +34,7 @@ const (
 	buttonHalfVertical
 	buttonHalfHorizontal
 	buttonSelected
+	buttonWXAVL
 )
 
 const (
@@ -185,10 +186,12 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		haveWeather := sp.weatherRadar.HaveWeather()
 		for i := range ps.DisplayWeatherLevel {
 			label := "WX" + strconv.Itoa(i+1)
+			flags := buttonHalfHorizontal
 			if haveWeather[i] {
 				label += "\nAVL"
+				flags = flags | buttonWXAVL
 			}
-			toggleButton(ctx, label, &ps.DisplayWeatherLevel[i], buttonHalfHorizontal, buttonScale)
+			toggleButton(ctx, label, &ps.DisplayWeatherLevel[i], flags, buttonScale)
 		}
 		if selectButton(ctx, "BRITE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuBrite
@@ -680,7 +683,12 @@ func drawDCBButton(ctx *panes.Context, text string, flags int, buttonScale float
 		}
 
 		// Swap selected/regular color to indicate the tentative result
-		buttonColor = util.Select(pushedIn, dcbActiveButtonColor, dcbButtonColor)
+		if flags&buttonWXAVL != 0 {
+			buttonColor = util.Select(pushedIn, renderer.RGBFromUInt8(116, 116, 162), // 70,70,100
+				renderer.RGBFromUInt8(83, 83, 162)) // 50,50,100
+		} else {
+			buttonColor = util.Select(pushedIn, dcbActiveButtonColor, dcbButtonColor)
+		}
 		textColor = util.Select(mouseInside, dcbTextSelectedColor, dcbTextColor)
 	}
 	buttonColor = dcbDrawState.brightness.ScaleRGB(buttonColor)
