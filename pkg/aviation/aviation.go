@@ -220,10 +220,8 @@ func ParseSquawk(s string) (Squawk, error) {
 	}
 
 	sq, err := strconv.ParseInt(s, 8, 32) // base 8!!!
-	if err != nil {
-		return Squawk(0), fmt.Errorf("%s: invalid squawk code", s)
-	} else if sq < 0 || sq > 0o7777 {
-		return Squawk(0), fmt.Errorf("%s: out of range squawk code", s)
+	if err != nil || sq < 0 || sq > 0o7777 {
+		return Squawk(0), ErrInvalidSquawkCode
 	}
 	return Squawk(sq), nil
 }

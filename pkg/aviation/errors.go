@@ -14,6 +14,7 @@ var (
 	ErrInvalidController            = errors.New("Invalid controller")
 	ErrInvalidFacility              = errors.New("Invalid facility")
 	ErrInvalidHeading               = errors.New("Invalid heading")
+	ErrInvalidSquawkCode            = errors.New("Invalid squawk code")
 	ErrNoAircraftForCallsign        = errors.New("No aircraft exists with specified callsign")
 	ErrNoController                 = errors.New("No controller with that callsign")
 	ErrNoERAMFacility               = errors.New("No ERAM facility exists")

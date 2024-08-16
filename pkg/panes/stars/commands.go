@@ -223,9 +223,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		}
 
 		// try to match squawk code
-		for _, ac := range sp.visibleAircraft(ctx) {
-			if ac.Squawk.String() == callsign {
-				return ac
+		if sq, err := av.ParseSquawk(callsign); err == nil {
+			for _, ac := range sp.visibleAircraft(ctx) {
+				if ac.Squawk == sq {
+					return ac
+				}
 			}
 		}
 
