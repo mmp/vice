@@ -246,6 +246,11 @@ var (
 		`STARS weather radar rendering is much closer to real-world`,
 		`STARS: many small fixes to how datablocks and tracks / track ids are drawn`,
 		`STARS: fixed some bugs where valid scratchpad entries were rejected`,
+		`Fixed a crash when handing off to a different facility`,
+		`Fixed a crash with corrupt Sim saves`,
+		`Added airspace awareness information to the scenario information window`,
+		`STARS: fixed colors for WX buttons in the DCB when WX is available`,
+		`STARS: minor improvements to the rendering of tracks and position symbols`,
 	}
 )
 
