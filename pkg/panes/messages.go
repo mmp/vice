@@ -260,6 +260,14 @@ func (mp *MessagesPane) runCommands(ctx *Context) {
 		return
 	}
 
+	if mp.input.cmd[0] == 'P' {
+		ctx.ControlClient.ToggleSimPause()
+		mp.messages = append(mp.messages, Message{contents: ctx.ControlClient.Callsign + ": " + "Toggle Sim Pause/Unpause", global: true})
+		mp.history = append(mp.history, mp.input)
+		mp.input = CLIInput{}
+		return
+	}
+
 	callsign, cmd, ok := strings.Cut(mp.input.cmd, " ")
 	mp.messages = append(mp.messages, Message{contents: "> " + mp.input.cmd})
 	mp.history = append(mp.history, mp.input)
