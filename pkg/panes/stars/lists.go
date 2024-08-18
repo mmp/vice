@@ -430,6 +430,9 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 	if ps.VideoMapsList.Visible {
 		text.Reset()
 		format := func(m *av.VideoMap) {
+			if m.Label == "" {
+				return
+			}
 			_, vis := ps.VideoMapVisible[m.Id]
 			text.WriteString(util.Select(vis, ">", " ") + " ")
 			text.WriteString(fmt.Sprintf("%3d ", m.Id))
