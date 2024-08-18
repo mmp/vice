@@ -1,4 +1,4 @@
-vice but altered by merry; original is here https://github.com/mmp/vice
+vice
 ====
 
 ![dall-e 2 tower](https://github.com/mmp/vice/blob/master/icons/tower-rounded-inset-256x256.png?raw=true)
