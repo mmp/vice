@@ -1862,9 +1862,8 @@ how it simulates aircraft or the STARS interface.
             <p>The display control bar (DCB) is a menu that is shown by default at the top of the STARS window.
               Many aspects of STARS's behavior can be configured using the DCB.</p>
             <div class="text-center">
-              <img src="dcb-basic.png" srcset="dcb-basic-2x.png 2x" width="1428" height="76" style="max-width: 100%; height:auto;">
-            </div>
-            <br>
+              <img src="dcb-basic.png" srcset="dcb-basic-2x.png 2x" width="1423" height="74"  style="max-width: 100%; height:auto;">
+            </div><br>
             <p>There are four types of buttons in the DCB:</p>
               <ul>
                 <li>Toggle buttons: these enable and disable various features. When enabled, they have a lighter
@@ -1880,8 +1879,8 @@ how it simulates aircraft or the STARS interface.
 
             <p>The main DCB menu offers the following controls:</p>
               <ul>
-                <li>RANGE: sets the range of the radar scope (see <a href="#stars-configuration">STARS Configuration</a>).</li>
-                <li>PLACE CNTR/OFF CNTR: controls to set the center point of the radar scope (see <a href="#stars-configuration">STARS Configuration</a>).</li>
+                <li>RANGE: sets the range of the radar scope (see <a href="#stars-range-center">STARS Configuration</a>).</li>
+                <li>PLACE CNTR/OFF CNTR: controls to set the center point of the radar scope (see <a href="#stars-range-center">STARS Configuration</a>).</li>
                 <li>RR/PLACE RR/RR CNTR: controls for <a href="#stars-range-rings">range rings</a> that are shown on the display</li>
                 <li>MAPS (and the six buttons to the right): controls the <a href="#stars-video-maps">visible video maps</a>.</li>
                 <li>WX*: controls which levels of <a href="#stars-weather">weather intensity</a> are displayed.</li>
@@ -1895,12 +1894,12 @@ how it simulates aircraft or the STARS interface.
               </ul>
             <p>Here is the auxiliary DCB:</p>
             <div class="text-center">
-              <img src="dcb-aux.png" srcset="dcb-aux-2x.png 2x" width="1202" height="76" style="max-width: 100%; height:auto;">
+              <img src="dcb-aux.png" srcset="dcb-aux-2x.png 2x" width="1193" height="75" style="max-width: 100%; height:auto;">
             </div>
             <br>
             <p>Many of its buttons are disabled; the enabled ones are:</p>
               <ul>
-                <li>VOL: controls the volume of STARS audio alerts. A short test sound is played when it is changed.</li>
+                <li>VOL: controls the volume of <a href="#audio-alerts">STARS audio alerts</a>. A short test sound is played when it is changed.</li>
                 <li>HISTORY: sets the number of dots drawn showing the aircraft's <a href="#stars-track-ids-history">radar track history</a>.</li>
                 <li>H_RATE: sets the rate in seconds that a new dot is added to aircraft history trails.</li>
                 <li>DCB LEFT/RIGHT/TOP/BOTTOM: sets the side of the radar scope where the DCB is displayed.</li>
@@ -2139,7 +2138,7 @@ how it simulates aircraft or the STARS interface.
               to a 5 second overall rate.</p>
             <p>The brightness of track symbols is controlled with "HST" in the DCB BRITE menu.</p>
 
-            <h3>Position Symbols</h3>
+            <h3 id="stars-position-symbols">Position Symbols</h3>
 
             <p>All tracks have a single-character <i>position symbol</i> at
               their center that indicates which controller owns the track.
@@ -2642,7 +2641,7 @@ how it simulates aircraft or the STARS interface.
               moves away. Only when another track is approached by the mouse cursor does the brightness increase switch to it.
               </p>
         <div class="text-center">
-          <img src="dwell-dcb.png" srcset="dwell-dcb-2x.png 2x" width="74" height="74">
+          <img src="dwell-dcb.png" srcset="dwell-dcb-2x.png 2x" width="75" height="74">
         </div><br>
       
         <h3 id="stars-altitude-filter">Altitude Filters</h3>
@@ -2697,7 +2696,8 @@ how it simulates aircraft or the STARS interface.
             <h2 class="section-heading">Tools</h2>
 
             <p>STARS offers a variety of tools to help with vectoring aircraft and ensuring they
-            remain separated.</p>
+              remain separated. For most of the tools in this section, the font size is based on the TOOLS font
+              size in the CHAR SIZE menu of the DCB and the brightness is based on the TLS setting in the BRITE menu of the DCB.</p>
 
             <h3 id="stars-collision-alerts">Collision Alerts</h3>
             <p>If there is a loss of separation between aircraft or if STARS predicts an imminent loss of separation, a collision alert will be issued where red text "CA" is shown in the aircraft datablocks and an alert sound will be played. The alert sound continues until one of the aircraft is slewed.  Here is an example of a pair of aircraft with CA alerts:</p>
@@ -2789,7 +2789,7 @@ how it simulates aircraft or the STARS interface.
             <p>PTLs can be controlled using these buttons in the auxiliary DCB menu, which is shown by
               selecting SHIFT from the main DCB.</p>
             <div class="text-center">
-              <img src="ptl-dcb.png" srcset="ptl-dcb-2x.png 2x" width="149" height="76">
+              <img src="ptl-dcb.png" srcset="ptl-dcb-2x.png 2x" width="149" height="75">
             </div>
             <br>
             <p>PTL OWN sets whether PTLs are shown for tracks that are owned by the TCP,
@@ -2814,16 +2814,19 @@ how it simulates aircraft or the STARS interface.
             
             <h3>Range Bearing Lines</h3>
             <p>Range bearing lines (RBLs) track the distance and heading between aircraft and/or fixes.
-              For example, the image below shows an RBL between two aircraft, indicating that WJA466 is 8.46nm
-              miles along a 246 heading for DLH0VZ.  (Alternatively, the RBL could have been set up to be
-              from WJA466 to DLH0VZ, in which case the distance would be the same but the heading would be 246-180=66.
-              The "-1" at the end indicates that this is RBL number 1.  If additional RBLs were created, they would
+              For example, the image below shows an RBL between two aircraft, indicating that N63A is 6.50nm
+              miles along a 118 heading from AAL86.  In this case, the RBL was drawn from AAL86 to N63A; if it
+              had been drawn the other way, the label would be next to AAL86 and the heading would be 118+180=298.
+              The "-1" at the end of the label indicates that this is RBL number 1.  If additional RBLs were created, they would
               be given successive numbers to identify them.
               </p>
             <div class="text-center">
-              <img src="rbl-aircraft.png" srcset="rbl-aircraft-2x.png 2x" width="442" height="198" class="img-fluid" alt="tpa ring">
+              <img src="rbl-aircraft.png" srcset="rbl-aircraft-2x.png 2x" width="228" height="120" class="img-fluid">
             </div>
             <br>
+            <p>RBLs may be created between pairs of aircraft, and aircraft and a fixed location, or a pair of fixed locations.
+              When aircraft are involved, the corresponding RBL endpoint moves along with the aircraft.
+              </p>
             <p>The following commands are available to create and delete RBLs:</p>
               <table class="table table-bordered">
                 <thead>
@@ -2838,7 +2841,7 @@ how it simulates aircraft or the STARS interface.
                     <td>Create an RBL between the two slewed aircraft.</td>
                   </tr>
                   <tr>
-                    <td><code>*T[SLEW]FIX</code> or <code>*TFIX[SLEW]</code></td>
+                    <td><code>*T[SLEW](FIX)</code> or <code>*T(FIX)[SLEW]</code></td>
                     <td>Create an RBL between the slewed aircraft and the fix <code>FIX</code>.</td>
                   </tr>
                   <tr>
@@ -2856,7 +2859,7 @@ how it simulates aircraft or the STARS interface.
 
             <p>The predicted minimum separation between two aircraft can be shown. Below we
               see that based on their current routes the two aircraft are predicted to have
-              a minimum separation of 3.19nm and that separation will occur when they are at
+              a minimum separation of 2.15nm and that separation will occur when they are at
               the two points marked by small triangles.</p>
             <div class="text-center">
               <img src="minsep.png" srcset="minsep-2x.png 2x" width="371" height="106" class="img-fluid" alt="tpa ring">
@@ -2882,8 +2885,6 @@ how it simulates aircraft or the STARS interface.
                 </tbody>
               </table>
 
-              <p>TODO: BRITE (here and elsewhere)</p>
-            
             <h3 id="stars-tpa-atpa">TPA/ATPA</h3>
 
             <p>The terminal proximity alert (TPA) and automated TPA (ATPA) tools provide graphical representations that aid
@@ -2968,6 +2969,8 @@ how it simulates aircraft or the STARS interface.
               <img src="atpa-alert.png" srcset="atpa-alert-2x.png 2x" width="365" height="287" class="img-fluid" alt="ATPA alert cone">
             </div>
             <br>
+            <p>This table shows the minimum in-trail distances required by ATPA for aircraft on approaches; NOWGT is used
+              if the weight class of an aircraft is unknown:</p>
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -3028,7 +3031,7 @@ how it simulates aircraft or the STARS interface.
             <p>TPA and ATPA can be configured by selecting "SHIFT" from the main DCB menu and then "TPA/ATPA".
               The following options are provided:</p>
             <div class="text-center">
-              <img src="tpa-atpa-dcb.png" srcset="tpa-atpa-dcb-2x.png 2x" width="376" height="77" class="img-fluid" alt="tpa/atpa DCB menu">
+              <img src="tpa-atpa-dcb.png" srcset="tpa-atpa-dcb-2x.png 2x" width="374" height="74">
             </div>
             <br>
             <p>The first four buttons toggle a particular TPA/ATPA option and display "ENABLED" if the corresponding option is enabled, and "INHIBTD" if it is inhibited. "DONE" returns to the previous DCB menu.</p>
@@ -3122,18 +3125,20 @@ how it simulates aircraft or the STARS interface.
             <div class="text-center">
               <img src="rr-example.png" srcset="rr-example-2x.png 2x" width="362" height="370">
             </div><br>
-            <p>The brightness of range rings can be controlled with the "RR" spinner in the "BRITE" menu of the main DCB.
-              If the brightness is set to 0, range rings are not drawn. A few buttons on the main DCB make it possible to
-              configure range rings.  Clicking on "RR" activates a spinner that allows selecting the step between radii.
-              If "PLACE RR" is clicked, then the next location clicked on the radar scope will become the range rings' center point.
-              Finally, clicking "RR CNTR" causes the range rings to be centered on the point at the center of the radar scope.
+            <p>A few buttons on the main DCB make it possible to
+              configure range rings.  Clicking on RR activates a spinner that allows selecting the step between radii.
+              If PLACE RR is clicked, then the next location clicked on the radar scope will become the range rings' center point.
+              Finally, clicking RR CNTR causes the range rings to be centered on the point at the center of the radar scope;
+              If the range rings are not currently centered, RR CNTR is drawn depressed.
             </p>
             <div class="text-center">
-              <img src="rr-buttons.png" srcset="rr-buttons-2x.png 2x" width="151" height="75" class="img-fluid" alt="Range rings buttons on the DCB">
+              <img src="rr-buttons.png" srcset="rr-buttons-2x.png 2x" width="149" height="76">
             </div>
             <br>
             <p>The radius of the range rings can also be set by entering <code>[RANGE]</code> and then 2, 5, 10, or 20, and then pressing enter.
             </p>
+            <p>The brightness of range rings can be controlled with the "RR" spinner in the "BRITE" menu of the main DCB.
+              If the brightness is set to 0, range rings are not drawn. </p>
             
               <h3 id="crda">CRDA</h3>
 
@@ -3267,7 +3272,8 @@ how it simulates aircraft or the STARS interface.
                 </tbody>
               </table>
               
-            <h3 id="airspace" class="section-heading">Airspace</h3>
+              <h3 id="airspace" class="section-heading">Airspace</h3>
+              <p><i>Note: this feature is not present in real-world STARS.</i></p>
             <p>
               <i>vice</i> is able to indicate when aircraft are outside of the departure or approach airspace,
               if it has information about the airspace boundaries.
@@ -3281,7 +3287,7 @@ how it simulates aircraft or the STARS interface.
             <div class="text-center">
               <img src="violation.png" srcset="violation-2x.png 2x" width="136" height="66">
             </div>
-
+            <br>
             <p>
               Two commands are available to draw the boundaries and altitude ranges of the departure and approach airspace.
               (Note that the placement of the drawn altitude labels is not always ideal.)
@@ -3311,18 +3317,90 @@ how it simulates aircraft or the STARS interface.
 
             <h2 class="section-heading">STARS Configuration</h2>
 
-            <h3 id="stars-character-size">Character Size</h3>
+            <h3 id="stars-range-center">Range and Center</h3>
+
+            <p>The left side of the main DCB has a few buttons for controlling the range of the STARS scope
+              and where it is centered:</p>
+            <div class="text-center">
+              <img src="dcb-range-center.png" srcset="dcb-range-center-2x.png 2x" width="151" height="75">
+            </div><br>
+            <p>Clicking on RANGE activates the range spinner, which allows setting the scope range to be between
+              6 and 256 nautical miles. The center of the scope can be changed by clicking PLACE CNTR and clicking
+              in the scope. Finally, OFF CNTR is shown as depressed when the scope's center is
+              different than the default center specified in the scenario configuration. Clicking on it
+              restores the center to the default.
+              </>
+
+            <p>Alternatively, center of the radar scope can be moved by
+            clicking the right mouse button and dragging.  Zoom in and out
+            using the mouse wheel; each step increases or decreases the
+            radius shown by one nautical mile.  Holding down the control
+            key while using the mouse wheel gives three mile steps in the
+            radius.  Zooming and panning the scope in this way can be disabled
+            with <i>vice</i>'s settings window, which is displayed when
+            the <i class="fas fa-cog"></i> in the menubar is clicked.
+              </p>
             
+            <h3 id="stars-character-size">Character Size</h3>
+
+            <p>Clicking the CHAR SIZE button in the main DCB brings up the character size DCB menu, shown here:</p>
+            <div class="text-center">
+              <img src="dcb-char-size.png" srcset="dcb-char-size-2x.png 2x" width="450" height="75">
+            </div><br>
+            <p>The sizes controlled by the buttons are:</p>
+            <ul>
+              <li>DATA BLOCKS: <a href="#tracks-datablocks">data block</a> text.</li>
+              <li>LISTS: STARS <a href="#stars-system-lists">system lists</a>.</li>
+              <li>DCB: text in the DCB.</li>
+              <li>TOOLS: the various <a href="#stars-tools">STARS tools</a>.</li>
+              <li>POS: track <a href="#stars-position-symbols">position symbols</a></li>
+            </ul>
+            <p>Clicking DONE returns to the main DCB.</p>
+            <p>All types of character sizes may range from 0 to 5, except for DCB, which goes from 0 to 2.</p> 
+
             <h3 id="stars-brightness">Brightness</h3>
+
+            <p>Selecting the BRITE button in the main DCB brings up the brightness DCB menu, shown here:</p>
+            <div class="text-center">
+              <img src="dcb-brite.png" srcset="dcb-brite-2x.png 2x" width="675" height="75">
+            </div><br>
+            <p>The item brightness that the buttons control are:</p>
+            <ul>
+              <li>DCB:</li>
+              <li>MPA:</li>
+              <li>FDB:</li>
+              <li>POS:</li>
+              <li>OTH:</li>
+              <li>RR:</li>
+              <li>BCN:</li>
+              <li>HST:</li>
+              <li>WXC:</li>
+              <li>BKC:</li>
+              <li>MPB:</li>
+              <li>LST:</li>
+              <li>LDB:</li>
+              <li>TLS:</li>
+              <li>CMP:</li>
+              <li>PRI:</li>
+              <li>WX:</li>
+            </ul>
+            <p>Some of these brightnesses can be set to 0, in which case "OFF" is shown in the BRITE menu and 
+              the corresponding item isn't drawn at all. Others have a minimum required brightness.</p>
             
             <h3 id="stars-radar-site">RADAR Sites</h3>
+
+            "SITE" from main DCB, showing mode: FUSED, MULTI, SINGLE.
+
+            <div class="text-center">
+              <img src="dcb-radar.png" srcset="dcb-radar-2x.png 2x" width="1351" height="75" style="max-width: 100%; height:auto;">
+            </div><br>
 
             <h3 id="audio-alerts">Audio</h3>
 
             <p>Audio alerts are played when there is a minimum safe altitude warning for an aircraft,
               if an aircraft is squawking a special purpose code (e.g., 7700 for an emergency),
               it a SPC has been manually assigned to an aircraft, or if there is a conflict alert between
-              two aircraft.  The "VOL" control in the DCB can be used to control the volume of these alerts.
+              two aircraft.  The "VOL" control in the main DCB can be used to control the volume of these alerts.
             </p>
             <p>A few keyboard commands can be used to control audio:</p>
               <table class="table table-bordered">
@@ -3353,26 +3431,24 @@ how it simulates aircraft or the STARS interface.
 
             <h3 id="stars-preferences">Preferences</h3>
 
-            
-            <!-- range, video maps, place cntr, off cntr, maps, maps dcb menu, brite, char size,  -->
+            PREF from main DCB
+
+            <div class="text-center">
+              <img src="dcb-prefs.png" srcset="dcb-prefs-2x.png 2x" width="1495" height="76" style="max-width: 100%; height:auto;">
+            </div><br>            
+
           </section>
           
 
 	  <section class="docs-section" id="stars-display-elements">
             <h2 class="section-heading">Display Elements</h2>
 
-            <p>The center of the radar scope can be moved by clicking the
-            right mouse button and dragging.  Zoom in and out using the
-            mouse wheel; each step increases or decreases the radius shown
-            by one nautical mile.  Holding down the control key while using
-              the mouse wheel gives three mile steps in the radius.  Zooming and
-              panning the scope can be disabled with <i>vice</i>'s settings window,
-              which is displayed when the <i class="fas fa-cog"></i> in the menubar is clicked.
-              </p>
+            <p>In addition to radar tracks and their datablocks, the STARS display contains 
+              various <i>system lists</i> that display useful text information,
+              <i>video maps</i> that provide maps for the local control area, and, optionally,
+              a weather radar showing precipitation. These are all described in this section.</p>
 
-            <!-- DCB RANGE, MAPS -->
-
-            <h3>System Lists</h3>
+            <h3 id="stars-system-lists">System Lists</h3>
             <p>The system lists show various types of useful information in the form of text.  Their font size can be adjusted using the "LISTS" control in the "CHAR SIZE" DCB menu and their brightness is set with "LST" in the "BRITE" DCB menu. 
             </p>
             <p><i>vice</i> currently doesn't support two STARS system
@@ -3388,8 +3464,8 @@ above</a> for information about the CRDA system list.</p>
               <img src="ssa-system-list.png" srcset="ssa-system-list-2x.png 2x" width="209" height="128">
             </div>
             <br>
-            <p>The red triangle indicates that STARS is functioning correctly; in <i>vice</i> it will always be there. The first line of text shows the current zulu time 06:12:27 and the altimeter at the primary airport, JFK. The following line shows the network status (always "OK/OK/NA" in <i>vice</i>) as well as the current radar mode, which may be "FUSED", "MULTI", or "SINGLE". Next is the current range shown from the scope's center, 41nm, and the length of predicted track lines (PTLs). Next are the altitude filters, first for unassociated tracks and then for associated tracks (both in hundreds of feet.) The next few lines show the altimeter at nearby airports.</p>
-            <p>A few lines are only shown when corresponding features are enabled. Here, "QL: 4P" indicates that sector id 4P has been <a href="#quicklook">quicklooked</a> and "TW OFF: MSAW" indicates that <a href="#stars-msaw">MSAW</a> has been disabled system-wide.  When <a href="#crda">CRDA</a> is enabled for a runway pair, an indication is shown here as well.</p>
+            <p>The red triangle indicates that STARS is functioning correctly; in <i>vice</i> it will always be there. The first line of text shows the current zulu time 03:07:27 and the altimeter at the primary airport, PHL. The following line shows the network status (always "OK/OK/NA" in <i>vice</i>) as well as the current radar mode, which may be "FUSED", "MULTI", or "SINGLE". Next is the current range shown from the scope's center, 17nm, and the length of predicted track lines (PTLs), 0.5 minutes. Next are the altitude filters, first for unassociated tracks and then for associated tracks (both in hundreds of feet.) The next few line again shows the altimeter at PHL.</p>
+            <p>A few lines are only shown when corresponding features are enabled. Here, "QL: 6S" indicates that TCP 6S has been <a href="#quicklook">quicklooked</a> and "TW OFF: MSAW" indicates that <a href="#stars-msaw">MSAW</a> has been disabled system-wide.  Finally, we can see that <a href="#crda">CRDA</a> has been enabled for the runway pair 27R/17, with the "S" indicating "stagger" mode.</p>
             <p>Only one keyboard command is available to control the SSA list.</p>
               <table class="table table-bordered">
                 <thead>
@@ -3408,7 +3484,7 @@ above</a> for information about the CRDA system list.</p>
 
             <p>Which elements are displayed in the SSA list can be configured by selecting the "SSA FILTER" menu from the main DCB.</p> 
             <div class="text-center">
-              <img src="ssa-filter-dcb.png" srcset="ssa-filter-dcb-2x.png 2x" width="975" height="75" class="img-fluid" alt="tpa ring">
+              <img src="ssa-filter-dcb.png" srcset="ssa-filter-dcb-2x.png 2x" width="975" height="76" class="img-fluid">
             </div>
             <br>
             <p>The buttons toggle display of the following elements:</p>
@@ -3512,14 +3588,12 @@ above</a> for information about the CRDA system list.</p>
               a blue-grey color. When there is no precipitation at a level, the corresponding button has the regular green color.
             </p>
             <div class="text-center">
-              <img src="wx-buttons.png" srcset="wx-buttons-2x.png 2x" width="230" height="77"  class="img-fluid" alt="WX buttons on DCB">
+              <img src="wx-buttons.png" srcset="wx-buttons-2x.png 2x" width="227" height="74">
             </div>
             <br>
-            <p>With the selection above, the two lowest levels, WX1 and WX2, are not shown, while all of the higher levels
+            <p>With the selection above, the three lowest levels, WX1 and WX2 are not shown, while all of the higher levels
               of precipitation are.</p>
 
-            
-            <!-- <p>TODO: the various lists, BRITE, font size, PREF, SSA FILTER, GI TEXT FILTER, DCB POSITION...</p> -->
           </section>
 
           </article>
