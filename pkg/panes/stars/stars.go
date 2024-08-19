@@ -87,6 +87,9 @@ type STARSPane struct {
 
 	events *sim.EventsSubscription
 
+	// Preference set that was selected when we entered the PREF menu.
+	RestoreSelectedPreferenceSet int
+
 	// All of the aircraft in the world, each with additional information
 	// carried along in an STARSAircraftState.
 	Aircraft map[string]*AircraftState

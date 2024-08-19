@@ -207,6 +207,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		disabledButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
 		if selectButton(ctx, "PREF\n"+ps.Name, buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuPref
+			sp.RestoreSelectedPreferenceSet = sp.SelectedPreferenceSet
 		}
 
 		site := sp.radarSiteId(ctx.ControlClient.RadarSites)
@@ -392,7 +393,9 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 		disabledButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
 		if selectButton(ctx, "RESTORE", buttonHalfVertical, buttonScale) {
-			// TODO: restore settings in effect when entered the Pref sub-menu
+			// Restore settings that were in effect when we entered the PREF sub-menu
+			sp.SelectedPreferenceSet = sp.RestoreSelectedPreferenceSet
+			sp.CurrentPreferenceSet = sp.PreferenceSets[sp.SelectedPreferenceSet]
 		}
 
 		validSelection := sp.SelectedPreferenceSet != -1 && sp.SelectedPreferenceSet < len(sp.PreferenceSets)
