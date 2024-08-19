@@ -68,7 +68,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 	case CommandModeMaps:
 		pt += "MAP\n"
 	case CommandModeSavePrefAs:
-		pt += "SAVE AS\n"
+		pt += "PREF SET NAME\n"
 	case CommandModeLDR:
 		pt += "LLL\n"
 	case CommandModeRangeRings:
