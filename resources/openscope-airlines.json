@@ -44444,20 +44444,18 @@
   },
   {
     "icao": "vxp",
-    "name": "Alevo",
+    "name": "Avelo",
     "callsign": {
-      "name": "Alevo",
+      "name": "Avelo",
       "callsignFormats": [
-        "####",
-        "###",
-        "##"
+        "###"
       ]
     },
     "fleets": {
       "default": [
         [
-          "B38M",
-          8
+          "B738",
+          10
         ],
         [
           "B737",
