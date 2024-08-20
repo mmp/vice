@@ -688,11 +688,20 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			return
 
 		case "E":
-			if cmd == "" {
+			switch cmd {
+			case "":
 				ps.OverflightFullDatablocks = !ps.OverflightFullDatablocks
 				status.clear = true
-				return
+			case "E":
+				ps.OverflightFullDatablocks = true
+				status.clear = true
+			case "I":
+				ps.OverflightFullDatablocks = false
+				status.clear = true
+			default:
+				status.err = ErrSTARSCommandFormat
 			}
+			return
 
 		case "F":
 			// altitude filters

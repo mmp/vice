@@ -353,6 +353,10 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			dt = FullDatablock
 		}
 
+		if sp.CurrentPreferenceSet.OverflightFullDatablocks && sp.isOverflight(ctx, trk) {
+			dt = FullDatablock
+		}
+
 		// Quicklook
 		ps := sp.CurrentPreferenceSet
 		if ps.QuickLookAll {
