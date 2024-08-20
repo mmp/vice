@@ -1418,7 +1418,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 			imgui.TableHeadersRow()
 
 			for _, arof := range lc.arrivalsOverflights {
-				imgui.PushID(arof.Group)
+				imgui.PushID(arof.Group + arof.Airport)
 
 				imgui.TableNextRow()
 
