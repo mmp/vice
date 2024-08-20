@@ -538,29 +538,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		}
 
 	case CommandModeHandOff:
-		if cmd != "" && string(cmd[0]) == "C" { // Enabling/ disabling automatic handoff processing
-			// Manual 4-30
-			if string(cmd[1]) == "X" {
-				if string(cmd[2]) == "E" {
-					sp.AirspaceAwareness.Interfacility = true
-				} else if string(cmd[2]) == "I" {
-					sp.AirspaceAwareness.Interfacility = false
-				}
-			} else if string(cmd[1]) == "T" {
-				if string(cmd[2]) == "E" {
-					sp.AirspaceAwareness.Intrafacility = true
-				} else if string(cmd[2]) == "I" {
-					sp.AirspaceAwareness.Intrafacility = false
-				}
-			}
-			if string(cmd[1]) == "E" {
-				sp.AirspaceAwareness.Intrafacility = true
-				sp.AirspaceAwareness.Interfacility = true
-			} else if string(cmd[1]) == "I" {
-				sp.AirspaceAwareness.Intrafacility = false
-				sp.AirspaceAwareness.Interfacility = false
-			}
-		}
 		f := strings.Fields(cmd)
 		switch len(f) {
 		case 0:
@@ -587,8 +564,38 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			status.clear = true
 			return
 		case 1:
-			sp.cancelHandoff(ctx, lookupCallsign(f[0]))
-			status.clear = true
+			// Is it an ACID?
+			if ac := lookupAircraft(f[0]); ac != nil {
+				sp.cancelHandoff(ctx, ac.Callsign)
+				status.clear = true
+			} else {
+				// Enabling/ disabling automatic handoff processing, 4-30
+				switch f[0] {
+				case "CXE":
+					sp.AirspaceAwareness.Interfacility = true
+					status.clear = true
+				case "CXI":
+					sp.AirspaceAwareness.Interfacility = false
+					status.clear = true
+				case "CTE":
+					sp.AirspaceAwareness.Intrafacility = true
+					status.clear = true
+				case "CTI":
+					sp.AirspaceAwareness.Intrafacility = false
+					status.clear = true
+				case "CE":
+					sp.AirspaceAwareness.Intrafacility = true
+					sp.AirspaceAwareness.Interfacility = true
+					status.clear = true
+				case "CI":
+					sp.AirspaceAwareness.Intrafacility = false
+					sp.AirspaceAwareness.Interfacility = false
+					status.clear = true
+				default:
+					status.err = ErrSTARSCommandFormat
+				}
+			}
+
 			return
 		case 2:
 			if err := sp.handoffTrack(ctx, lookupCallsign(f[1]), f[0]); err != nil {
@@ -1371,7 +1378,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		} else {
 			status.err = ErrSTARSCommandFormat
 		}
-		status.clear = true
+		if status.err == nil {
+			status.clear = true
+		}
 		return
 
 	case CommandModeCollisionAlert:
@@ -1832,7 +1841,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.clear = true
 					state.OutboundHandoffAccepted = false
 					state.OutboundHandoffFlashEnd = ctx.Now
-
 					return
 				} else if ctx.Keyboard != nil {
 					_, ctrl := ctx.Keyboard.Pressed[platform.KeyControl]
@@ -2080,15 +2088,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				}
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[lc-1] == '*' { // Some sort of pointout
-				// First check for errors. (Manual 6-73)
+				// First check for errors. (Manual 6-64, 6-73)
 
-				// Check if arrival
-				for _, airport := range ctx.ControlClient.ArrivalAirports {
-					if airport.Name == ac.FlightPlan.ArrivalAirport {
-						status.err = ErrSTARSIllegalTrack
-						return
-					}
-				}
+				// TODO: if it's to a different facility and it's an arrival, ILL TRK
+
 				// Check if being handed off, pointed out or suspended (TODO suspended)
 				if sp.OutboundPointOuts[ac.Callsign] != "" || sp.InboundPointOuts[ac.Callsign] != "" ||
 					(ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.ControlClient.Callsign) {
@@ -2141,9 +2144,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			}
 
 		case CommandModeInitiateControl:
-			// TODO: error if cmd != ""?
-			status.clear = true
-			sp.initiateTrack(ctx, ac.Callsign)
+			if cmd != ac.Callsign {
+				status.err = ErrSTARSIllegalTrack
+			} else {
+				status.clear = true
+				sp.initiateTrack(ctx, ac.Callsign)
+			}
 			return
 
 		case CommandModeTerminateControl:
