@@ -1657,9 +1657,6 @@ func (sp *STARSPane) acceptHandoff(ctx *panes.Context, callsign string) {
 			if state, ok := sp.Aircraft[callsign]; ok {
 				state.DatablockType = FullDatablock
 			}
-			if ac, ok := ctx.ControlClient.Aircraft[callsign]; ok {
-				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx, ac)
-			}
 		},
 		func(err error) { sp.displayError(err, ctx) })
 }
