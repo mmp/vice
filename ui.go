@@ -1540,7 +1540,7 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*ID*", `"Ident."`, "*ID*"},
 	[3]string{"*CVS*", `"Climb via the SID"`, "*CVS*"},
 	[3]string{"*DVS*", `"Descend via the STAR"`, "*CVS*"},
-	[3]string{"*P*", `"Toggles Pause/Unpause"`, "*P*"}
+	[3]string{"*P*", `"Toggles Pause/Unpause"`, "*P*"},
 }
 
 var starsCommands = [][2]string{
