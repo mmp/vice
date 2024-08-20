@@ -558,29 +558,11 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 	}
 
 	if ps.SignOnList.Visible {
-		text.Reset()
-		format := func(ctrl *av.Controller) {
-			id := ctrl.SectorId
-			if ctrl.FacilityIdentifier != "" && !ctrl.ERAMFacility {
-				id = STARSTriangleCharacter + ctrl.FacilityIdentifier + id
-			}
-			text.WriteString(fmt.Sprintf("%4s", id) + " " + ctrl.Callsign +
-				util.Select(ctrl.IsHuman, "*", "") + "\n")
+		if ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]; ctrl != nil {
+			text.Reset()
+			text.WriteString(ctrl.SectorId + " " + ctrl.SignOnTime.UTC().Format("1504")) // TODO: initials
+			drawList(text.String(), ps.SignOnList.Position)
 		}
-
-		// User first
-		userCtrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]
-		if userCtrl != nil {
-			format(userCtrl)
-		}
-
-		for _, callsign := range util.SortedMapKeys(ctx.ControlClient.Controllers) {
-			if ctrl := ctx.ControlClient.Controllers[callsign]; ctrl != userCtrl {
-				format(ctrl)
-			}
-		}
-
-		drawList(text.String(), ps.SignOnList.Position)
 	}
 
 	td.GenerateCommands(cb)

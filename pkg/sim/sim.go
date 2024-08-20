@@ -1098,7 +1098,10 @@ func (s *Sim) signOn(callsign string) error {
 		if !ok {
 			return av.ErrNoController
 		}
-		s.State.Controllers[callsign] = ctrl
+		// Make a copy of the *Controller and set the sign on time.
+		sctrl := *ctrl
+		sctrl.SignOnTime = time.Now()
+		s.State.Controllers[callsign] = &sctrl
 
 		if callsign == s.State.PrimaryController {
 			// The primary controller signed in so the sim will resume.
