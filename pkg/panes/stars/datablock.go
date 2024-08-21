@@ -407,25 +407,39 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 	// single-character id.
 	handoffId, handoffTCP := "", ""
 	if trk.HandoffController != "" {
-		// For inbound to us, we want to show who owns it currently; for
-		// outbound, we show who it's going to.
-		callsign := util.Select(trk.HandoffController == ctx.ControlClient.Callsign,
-			trk.TrackOwner, trk.HandoffController)
+		toCallsign := util.Select(trk.RedirectedHandoff.RedirectedTo != "",
+			trk.RedirectedHandoff.RedirectedTo, trk.HandoffController)
+		inbound := toCallsign == ctx.ControlClient.Callsign
 
-		if ctrl := ctx.ControlClient.Controllers[callsign]; ctrl != nil {
-			if trk.RedirectedHandoff.RedirectedTo != "" {
-				if toctrl := ctx.ControlClient.Controllers[trk.RedirectedHandoff.RedirectedTo]; toctrl != nil {
-					handoffId = toctrl.SectorId[len(ctrl.SectorId)-1:]
+		if inbound {
+			// Always show our id
+			if toCtrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]; toCtrl != nil {
+				handoffId = toCtrl.SectorId[len(toCtrl.SectorId)-1:]
+			}
+			if fromCtrl := ctx.ControlClient.Controllers[trk.TrackOwner]; fromCtrl != nil {
+				if fromCtrl.ERAMFacility { // Enroute controller
+					// From any center
+					handoffTCP = fromCtrl.SectorId
+				} else if fromCtrl.FacilityIdentifier != "" {
+					// Different facility; show full id of originator
+					handoffTCP = fromCtrl.FacilityIdentifier + fromCtrl.SectorId
 				}
-			} else {
-				if ctrl.ERAMFacility { // Same facility
-					handoffId = "C"
-					handoffTCP = ctrl.SectorId
-				} else if ctrl.FacilityIdentifier == "" { // Enroute handoff
-					handoffId = ctrl.SectorId[len(ctrl.SectorId)-1:]
-				} else { // Different facility
-					handoffId = ctrl.FacilityIdentifier
-					handoffTCP = ctrl.FacilityIdentifier + ctrl.SectorId
+			}
+		} else { // outbound
+			if toCtrl := ctx.ControlClient.Controllers[toCallsign]; toCtrl != nil {
+				if toCtrl.ERAMFacility { // Enroute
+					// Always the one-character id
+					handoffId = toCtrl.FacilityIdentifier
+					if toCtrl.FacilityIdentifier != "C" {
+						// Only show the full id for external
+						handoffTCP = toCtrl.SectorId
+					}
+				} else {
+					handoffId = toCtrl.SectorId[len(toCtrl.SectorId)-1:]
+					if toCtrl.FacilityIdentifier != "" { // Different facility
+						// Different facility: show their TCP
+						handoffTCP = toCtrl.FacilityIdentifier + toCtrl.SectorId
+					}
 				}
 			}
 		}
