@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log/slog"
 	"slices"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -490,6 +489,19 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					ps.QuickLookAll = !ps.QuickLookAll
 					ps.QuickLookAllIsPlus = false
 					ps.QuickLookPositions = nil
+				}
+				status.clear = true
+				return
+			} else if ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]; ctrl != nil && cmd == ctrl.SectorId {
+				// 6-87 show QL information in the preview area
+				if ps.QuickLookAll {
+					status.output = "ALL"
+					if ps.QuickLookAllIsPlus {
+						status.output += "+"
+					}
+				} else {
+					pstrs := util.MapSlice(ps.QuickLookPositions, func(p QuickLookPosition) string { return p.String() })
+					status.output = strings.Join(pstrs, " ")
 				}
 				status.clear = true
 				return
@@ -1534,8 +1546,16 @@ func (sp *STARSPane) updateQL(ctx *panes.Context, input string) (previewInput st
 				ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
 			}
 		}
-		sort.Slice(ps.QuickLookPositions,
-			func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
+		// Quick look plus is listed first; otherwise sort alphabetically
+		slices.SortFunc(ps.QuickLookPositions, func(a, b QuickLookPosition) int {
+			if a.Plus && !b.Plus {
+				return -1
+			} else if b.Plus && !a.Plus {
+				return 1
+			} else {
+				return strings.Compare(a.Id, b.Id)
+			}
+		})
 	}
 
 	if err != nil {
@@ -2775,6 +2795,14 @@ type QuickLookPosition struct {
 	Callsign string
 	Id       string
 	Plus     bool
+}
+
+func (q QuickLookPosition) String() string {
+	s := q.Id
+	if q.Plus {
+		s += "+"
+	}
+	return s
 }
 
 func (sp *STARSPane) parseQuickLookPositions(ctx *panes.Context, s string) ([]QuickLookPosition, string, error) {
