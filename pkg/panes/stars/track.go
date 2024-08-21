@@ -511,16 +511,16 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 			continue
 		}
 
-		/* TODO: Having the scope char reflect who STARS thinks is tracking the target. This will probably take something like a map[string]struct{}
-		in the World struct, which will contain all of the facility specific information. This is where local flight plans will be stored, and any other
-		local information that a STARS facility may contain
-		*/
-
-		trackId := "*"
+		positionSymbol := "*"
 		if trk := sp.getTrack(ctx, ac); trk != nil && trk.TrackOwner != "" {
-			trackId = "?"
+			positionSymbol = "?"
 			if ctrl, ok := ctx.ControlClient.Controllers[trk.TrackOwner]; ok && ctrl != nil {
-				trackId = ctrl.Scope
+				if ctrl.FacilityIdentifier != "" {
+					// For external facilities we use the facility id
+					positionSymbol = ctrl.FacilityIdentifier
+				} else {
+					positionSymbol = ctrl.Scope
+				}
 			}
 		}
 
@@ -530,7 +530,7 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 		heading := util.Select(state.HaveHeading(),
 			state.TrackHeading(ac.NmPerLongitude())+ac.MagneticVariation(), ac.Heading())
 
-		sp.drawRadarTrack(ac, state, heading, ctx, transforms, trackId, trackBuilder,
+		sp.drawRadarTrack(ac, state, heading, ctx, transforms, positionSymbol, trackBuilder,
 			ld, trid, td)
 	}
 
@@ -655,7 +655,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 }
 
 func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, heading float32, ctx *panes.Context,
-	transforms ScopeTransformations, trackId string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
+	transforms ScopeTransformations, positionSymbol string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
 	ps := sp.CurrentPreferenceSet
 	// TODO: orient based on radar center if just one radar
@@ -737,14 +737,14 @@ func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, headi
 	// Draw main track position symbol
 	color, _, posBrightness := sp.trackDatablockColorBrightness(ctx, ac)
 	if posBrightness > 0 {
-		if trackId != "" {
+		if positionSymbol != "" {
 			font := sp.systemFont[ps.CharSize.PositionSymbols]
 			outlineFont := sp.systemOutlineFont[ps.CharSize.PositionSymbols]
 			pt := math.Add2f(pw, [2]float32{0.5, -0.5})
-			td.AddTextCentered(trackId, pt, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
+			td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
 
 			posColor := posBrightness.ScaleRGB(color)
-			td.AddTextCentered(trackId, pt, renderer.TextStyle{Font: font, Color: posColor})
+			td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: font, Color: posColor})
 		} else {
 			// TODO: draw box if in range of squawks we have selected
 
