@@ -1709,10 +1709,12 @@ func (sp *STARSPane) acceptRedirectedHandoff(ctx *panes.Context, callsign string
 		func(err error) { sp.displayError(err, ctx) })
 }
 
-func (sp *STARSPane) RemoveForceQL(ctx *panes.Context, callsign string) {
-	if i := slices.Index(sp.ForceQLAircraft, callsign); i != -1 {
-		sp.ForceQLAircraft = append(sp.ForceQLAircraft[:i], sp.ForceQLAircraft[:i+1]...)
+func (sp *STARSPane) removeForceQL(ctx *panes.Context, callsign string) bool {
+	if _, ok := sp.ForceQLCallsigns[callsign]; ok {
+		delete(sp.ForceQLCallsigns, callsign)
+		return true
 	}
+	return false
 }
 
 func (sp *STARSPane) pointOut(ctx *panes.Context, callsign string, controller string) {
@@ -1794,8 +1796,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
 					return
-				} else if slices.Contains(sp.ForceQLAircraft, ac.Callsign) {
-					sp.RemoveForceQL(ctx, ac.Callsign)
+				} else if sp.removeForceQL(ctx, ac.Callsign) {
 					status.clear = true
 					return
 				} else if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {

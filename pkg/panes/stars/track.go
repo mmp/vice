@@ -352,7 +352,10 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 
 		case sim.ForceQLEvent:
-			sp.ForceQLAircraft = append(sp.ForceQLAircraft, event.Callsign)
+			if sp.ForceQLCallsigns == nil {
+				sp.ForceQLCallsigns = make(map[string]interface{})
+			}
+			sp.ForceQLCallsigns[event.Callsign] = nil
 
 		case sim.TransferRejectedEvent:
 			if state, ok := sp.Aircraft[event.Callsign]; ok {
@@ -366,6 +369,26 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 		}
 	}
+}
+
+func (sp *STARSPane) isQuicklooked(ctx *panes.Context, ac *av.Aircraft) bool {
+	if sp.CurrentPreferenceSet.QuickLookAll {
+		return true
+	}
+	if _, ok := sp.ForceQLCallsigns[ac.Callsign]; ok {
+		return true
+	}
+
+	// Quick Look Positions.
+	if trk := sp.getTrack(ctx, ac); trk != nil {
+		for _, quickLookPositions := range sp.CurrentPreferenceSet.QuickLookPositions {
+			if trk.TrackOwner == quickLookPositions.Callsign {
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {

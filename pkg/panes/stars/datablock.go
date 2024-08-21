@@ -357,12 +357,7 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			dt = FullDatablock
 		}
 
-		// Quicklook
-		ps := sp.CurrentPreferenceSet
-		if ps.QuickLookAll {
-			dt = FullDatablock
-		} else if slices.ContainsFunc(ps.QuickLookPositions,
-			func(q QuickLookPosition) bool { return q.Callsign == trk.TrackOwner }) {
+		if sp.isQuicklooked(ctx, ac) {
 			dt = FullDatablock
 		}
 
@@ -743,7 +738,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 	}
 
 	// Check if we're the controller being ForceQL
-	if slices.Contains(sp.ForceQLAircraft, ac.Callsign) {
+	if _, ok := sp.ForceQLCallsigns[ac.Callsign]; ok {
 		color = STARSInboundPointOutColor
 	}
 
@@ -815,8 +810,7 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 	} else if sp.isOverflight(ctx, trk) && sp.CurrentPreferenceSet.OverflightFullDatablocks { //Need a f7 + e
 		// Overflights
 		return true
-	} else if sp.CurrentPreferenceSet.QuickLookAll {
-		// Quick look all
+	} else if sp.isQuicklooked(ctx, ac) {
 		return true
 	} else if trk != nil && trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.Callsign {
 		// Redirected to
@@ -826,13 +820,7 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 		return true
 	}
 
-	// Quick Look Positions.
-	for _, quickLookPositions := range sp.CurrentPreferenceSet.QuickLookPositions {
-		if trk != nil && trk.TrackOwner == quickLookPositions.Callsign {
-			return true
-		}
-	}
-
+	// Check altitude filters
 	if trk == nil || trk.TrackOwner != "" {
 		return alt >= af.Unassociated[0] && alt <= af.Unassociated[1]
 	} else {

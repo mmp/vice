@@ -112,7 +112,7 @@ type STARSPane struct {
 	InboundPointOuts  map[string]string
 	OutboundPointOuts map[string]string
 	RejectedPointOuts map[string]interface{}
-	ForceQLAircraft   []string
+	ForceQLCallsigns  map[string]interface{}
 
 	queryUnassociated *util.TransientMap[string, interface{}]
 
