@@ -428,12 +428,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		} else { // outbound
 			if toCtrl := ctx.ControlClient.Controllers[toCallsign]; toCtrl != nil {
 				if toCtrl.ERAMFacility { // Enroute
-					// Always the one-character id
+					// Always the one-character id and the sector
 					handoffId = toCtrl.FacilityIdentifier
-					if toCtrl.FacilityIdentifier != "C" {
-						// Only show the full id for external
-						handoffTCP = toCtrl.SectorId
-					}
+					handoffTCP = toCtrl.SectorId
 				} else {
 					handoffId = toCtrl.SectorId[len(toCtrl.SectorId)-1:]
 					if toCtrl.FacilityIdentifier != "" { // Different facility
