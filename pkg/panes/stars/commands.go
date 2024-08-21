@@ -1096,7 +1096,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					status.err = ErrSTARSIllegalTrack
 					return
 				} else {
-					status.output = strings.Join(aircraft.PointOutHistory, " ")
+					if len(trk.PointOutHistory) == 0 {
+						status.output = "PO NONE"
+					} else {
+						status.output = strings.Join(aircraft.PointOutHistory, " ")
+					}
 					status.clear = true
 					return
 				}
@@ -2300,12 +2304,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 
 			case "O": // Pointout history
-				if trk == nil || trk.TrackOwner != ctx.ControlClient.Callsign {
+				if trk == nil {
 					status.err = ErrSTARSIllegalTrack
 					return
 				}
 
-				status.output = strings.Join(trk.PointOutHistory, " ")
+				if len(trk.PointOutHistory) == 0 {
+					status.output = "PO NONE"
+				} else {
+					status.output = strings.Join(trk.PointOutHistory, " ")
+				}
 				status.clear = true
 				return
 

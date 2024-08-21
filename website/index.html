@@ -2177,7 +2177,7 @@ how it simulates aircraft or the STARS interface.
 
             <p>Point outs let controllers direct another controller's attention to an aircraft; some facilities may have prearranged
               coordination procedures where an aircraft may pass through another controller's aircraft after a point out, or a point out
-              may be performed before verbally coordinating with another controller.  The following commands are used for point outs:</p>
+              may be performed before verbally coordinating with another controller.  The following commands are available for point outs:</p>
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -2199,6 +2199,11 @@ how it simulates aircraft or the STARS interface.
                   <tr>
                     <td><code>UN[SLEW]</code></td>
                     <td>If the aircraft is being pointed out to the controller, rejects the point out.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]O[SLEW]</code> /<br><code>[MULTIFUNC]O (ACID)</code></td>
+                    <td>Prints the point out history&mdash;up to the last 20 TCPs to which the aircraft has been pointed out.</td>
                     </td>
                   </tr>
                 </tbody>

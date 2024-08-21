@@ -793,6 +793,7 @@ func (comp *STARSComputer) AcknowledgePointOut(callsign, controller string) erro
 	}
 
 	trk.PointOut = ""
+	// FIXME: we should be storing TCP IDs not callsigns
 	if len(trk.PointOutHistory) < 20 {
 		trk.PointOutHistory = append([]string{controller}, trk.PointOutHistory...)
 	} else {
