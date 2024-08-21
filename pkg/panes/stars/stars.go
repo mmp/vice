@@ -125,6 +125,8 @@ type STARSPane struct {
 	ConvergingRunways []STARSConvergingRunways
 
 	// Various UI state
+	FlipNumericKeypad bool
+
 	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) CommandStatus
 	activeDCBMenu       int
 	selectedPlaceButton string
@@ -514,7 +516,9 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 
 	imgui.Checkbox("Lock display", &sp.LockDisplay)
 
-	imgui.Checkbox("Enable Additional Sound Effects", &config.AudioEnabled)
+	imgui.Checkbox("Invert numeric keypad", &sp.FlipNumericKeypad)
+
+	imgui.Checkbox("Enable additional sound effects", &config.AudioEnabled)
 
 	if !config.AudioEnabled {
 		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)

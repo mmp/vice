@@ -778,7 +778,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		case "L":
 			// leader lines
 			if l := len(cmd); l == 1 {
-				if dir, ok := numpadToDirection(cmd[0]); ok && dir != nil {
+				if dir, ok := sp.numpadToDirection(cmd[0]); ok && dir != nil {
 					// 4-97: tracked by me, '5' not allowed
 					ps.LeaderLineDirection = *dir
 					status.clear = true
@@ -786,7 +786,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					status.err = ErrSTARSCommandFormat
 				}
 			} else if l == 2 {
-				if dir, ok := numpadToDirection(cmd[0]); ok && dir != nil && cmd[1] == 'U' {
+				if dir, ok := sp.numpadToDirection(cmd[0]); ok && dir != nil && cmd[1] == 'U' {
 					// 4-101: unassociated tracks; '5' is not allowed here.
 					ps.UnassociatedLeaderLineDirection = dir
 					status.clear = true
@@ -808,7 +808,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				// tcp has a space if it's given as a single character).
 				tcp := strings.TrimSuffix(cmd[:2], " ")
 				if controller := sp.lookupControllerForId(ctx, tcp, ""); controller != nil {
-					if dir, ok := numpadToDirection(cmd[2]); ok {
+					if dir, ok := sp.numpadToDirection(cmd[2]); ok {
 						// Per-controller leaderline
 						if ps.ControllerLeaderLineDirections == nil {
 							ps.ControllerLeaderLineDirections = make(map[string]math.CardinalOrdinalDirection)
@@ -988,7 +988,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					// or: NL(runway)(1-9); runway must unambiguously define airport
 					if _, _, _, runwayState, num, err := getRunwayState(cmd[1:]); err == nil {
 						if len(num) == 1 {
-							if dir, ok := numpadToDirection(num[0]); ok {
+							if dir, ok := sp.numpadToDirection(num[0]); ok {
 								runwayState.LeaderLineDirection = dir
 								status.clear = true
 								return
@@ -1695,7 +1695,7 @@ func (sp *STARSPane) handoffTrack(ctx *panes.Context, callsign string, controlle
 func (sp *STARSPane) setLeaderLine(ctx *panes.Context, ac *av.Aircraft, cmd string) error {
 	state := sp.Aircraft[ac.Callsign]
 	if len(cmd) == 1 { // Local 6-81
-		if dir, ok := numpadToDirection(cmd[0]); ok {
+		if dir, ok := sp.numpadToDirection(cmd[0]); ok {
 			state.LeaderLineDirection = dir
 			if dir != nil {
 				state.UseGlobalLeaderLine = false
@@ -1706,7 +1706,7 @@ func (sp *STARSPane) setLeaderLine(ctx *panes.Context, ac *av.Aircraft, cmd stri
 		trk := sp.getTrack(ctx, ac)
 		if trk == nil || trk.TrackOwner != ctx.ControlClient.Callsign {
 			return ErrSTARSIllegalTrack
-		} else if dir, ok := numpadToDirection(cmd[0]); ok {
+		} else if dir, ok := sp.numpadToDirection(cmd[0]); ok {
 			sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
 			return nil
 		}
@@ -2553,38 +2553,28 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 // Returns the cardinal-ordinal direction associated with the numbpad keys,
 // interpreting 5 as the center; (nil, true) is returned for '5' and
 // (nil, false) is returned for an invalid key.
-func numpadToDirection(key byte) (*math.CardinalOrdinalDirection, bool) {
-	var dir math.CardinalOrdinalDirection
-	switch key {
-	case '1':
-		dir = math.CardinalOrdinalDirection(math.SouthWest)
-		return &dir, true
-	case '2':
-		dir = math.CardinalOrdinalDirection(math.South)
-		return &dir, true
-	case '3':
-		dir = math.CardinalOrdinalDirection(math.SouthEast)
-		return &dir, true
-	case '4':
-		dir = math.CardinalOrdinalDirection(math.West)
-		return &dir, true
-	case '5':
-		return nil, true
-	case '6':
-		dir = math.CardinalOrdinalDirection(math.East)
-		return &dir, true
-	case '7':
-		dir = math.CardinalOrdinalDirection(math.NorthWest)
-		return &dir, true
-	case '8':
-		dir = math.CardinalOrdinalDirection(math.North)
-		return &dir, true
-	case '9':
-		dir = math.CardinalOrdinalDirection(math.NorthEast)
-		return &dir, true
+func (sp *STARSPane) numpadToDirection(key byte) (*math.CardinalOrdinalDirection, bool) {
+	if key < '1' && key > '9' {
+		return nil, false
 	}
-
-	return nil, false
+	if key == '5' {
+		return nil, true
+	}
+	if sp.FlipNumericKeypad {
+		dirs := [9]math.CardinalOrdinalDirection{
+			math.NorthWest, math.North, math.NorthEast,
+			math.West, math.CardinalOrdinalDirection(-1), math.East,
+			math.SouthWest, math.South, math.SouthEast,
+		}
+		return &dirs[key-'1'], true
+	} else {
+		dirs := [9]math.CardinalOrdinalDirection{
+			math.SouthWest, math.South, math.SouthEast,
+			math.West, math.CardinalOrdinalDirection(-1), math.East,
+			math.NorthWest, math.North, math.NorthEast,
+		}
+		return &dirs[key-'1'], true
+	}
 }
 
 func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, ScopeTransformations) (status CommandStatus) {
