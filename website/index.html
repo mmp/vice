@@ -2337,9 +2337,12 @@ how it simulates aircraft or the STARS interface.
                 The altitude may alternate with the aircraft's scratchpad or destination airport, as in the example below:
             </p>
             <div class="text-center">
-              <img src="pdb-basic.gif" srcset="pdb-basic.gif 2x" width="137" height="95" class="img-fluid">
+              <img src="pdb-basic.gif" srcset="pdb-basic-2x.gif 2x" width="138" height="69" class="img-fluid">
             </div>
             <br>
+            <p>Some STARS facilities use variations on the above PDB format: they may also include the secondary
+              scratchpad, time-share the aircraft type with the groundspeed and CWT category, not include the groundspeed,
+              or show the groundspeed and CWT category separately.</p>
             <p>Slewing a PDB converts it to a full datablock; a second slew returns it to a PDB.</p>
             <div class="text-center">
               <img src="pdb-slew-fdb.gif" srcset="pdb-slew-fdb.gif 2x" width="137" height="95" class="img-fluid">
@@ -5579,6 +5582,21 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   STARS DCB. Each entry is the name of a video map (as would
                   be specified in "stars_maps") and its value is the label
                   that should be assigned to it.
+                </td>
+              </tr>
+              <tr>
+                <td>"pdb"</td>
+                <td>Object</td>
+                <td>Allows specifying various adapted configurations for partial datablocks.
+                  The following members are available (all are "false" by default):
+                  <ul>
+                    <li>"hide_gs": if true, groundspeed is not shown in the PDB.</li>
+                    <li>"show_aircraft_type": if true, the aircraft type is shown, time-shared with the groundspeed.</li>
+                    <li>"show_scratchpad2": if true, the contents of scratchpad 2 are shown, time-shared with altitude
+                    and the first scratchpad.</li>
+                    <li>"split_gs_and_cwt": if true, groundspeed and the flight rules / CWT category are shown separately,
+                    timesliced, rather than together.</li>
+                  </ul>
                 </td>
               </tr>
               <tr>

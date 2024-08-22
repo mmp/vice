@@ -113,18 +113,50 @@ type partialDatablock struct {
 	// line 0
 	field0 [16]dbChar
 	// line 1
-	field1 [2][3]dbChar
-	field2 [1]dbChar
-	field3 [4]dbChar
-	field4 [2]dbChar
+	field12 [3][5]dbChar
+	field3  [2][4]dbChar
+	field4  [2]dbChar
 }
 
 func (db partialDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
 	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
-	f1 := util.Select(fieldEmpty(db.field1[1][:]), 0, (halfSeconds/4)&1)
+	// How many cycles?
+	nc := util.Select(fieldEmpty(db.field3[1][:]), 1, 2)
+	// If all three of field12 are set, it's 4 cycles: 0, 1, 0, 2 for field12
+	e1, e2 := fieldEmpty(db.field12[1][:]), fieldEmpty(db.field12[2][:])
+	switch {
+	case e1 && e2:
+		// all set
+	case (e1 && !e2) || (e2 && !e1):
+		nc = 2
+	case !e1 && !e2:
+		nc = 4
+	}
+
+	// Cycle 1 is 2s, others are 1.5s. Then get that in half seconds.
+	fullCycleHalfSeconds := 4 + 3*(nc-1)
+	// Figure out which cycle we are in
+	cycle := 0
+	for idx := halfSeconds % int64(fullCycleHalfSeconds); idx > 4; idx -= 3 {
+		cycle++
+	}
+
+	f12 := db.field12[0][:]
+	if !fieldEmpty(db.field12[1][:]) && cycle == 1 {
+		f12 = db.field12[1][:]
+	}
+	if !fieldEmpty(db.field12[2][:]) && cycle == 3 {
+		f12 = db.field12[2][:]
+	}
+
+	f3 := db.field3[0][:]
+	if cycle == 1 && !fieldEmpty(db.field3[1][:]) {
+		f3 = db.field3[1][:]
+	}
+
 	lines := []dbLine{
 		dbMakeLine(db.field0[:]),
-		dbMakeLine(db.field1[f1][:], db.field2[:], db.field3[:], db.field4[:]),
+		dbMakeLine(dbChopTrailing(f12), f3, db.field4[:]),
 	}
 	pt[1] += float32(font.Size) // align leader with line 1
 	dbDrawLines(lines, td, pt, font, brightness, leaderLineDirection, halfSeconds)
@@ -403,7 +435,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 	// handoffTCP is only set if it's coming from an enroute position or
 	// from a different facility; otherwise we just show the
 	// single-character id.
-	handoffId, handoffTCP := "", ""
+	handoffId, handoffTCP := " ", ""
 	if trk.HandoffController != "" {
 		toCallsign := util.Select(trk.RedirectedHandoff.RedirectedTo != "",
 			trk.RedirectedHandoff.RedirectedTo, trk.HandoffController)
@@ -442,6 +474,10 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 	// Various other values that will be repeatedly useful below...
 	beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(platform.KeyF1)
+	actype := ac.FlightPlan.TypeWithoutSuffix()
+	if strings.Index(actype, "/") == 1 {
+		actype = actype[2:]
+	}
 	ident := state.Ident(ctx.Now)
 	squawkingSPC, _ := av.SquawkIsSPC(ac.Squawk)
 	altitude := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
@@ -491,6 +527,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		return db
 
 	case PartialDatablock:
+		fa := ctx.ControlClient.STARSFacilityAdaptation
 		db := &partialDatablock{}
 
 		// Field0: TODO cautions in yellow
@@ -503,27 +540,55 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		copy(db.field0[:], alerts[:])
 
 		// Field 1: a) mode-c or pilot reported altitude, b) scratchpad 1
-		// or possibly arrival airport (adapted)
-		// TODO: this can be 4 characters based on adaptation
-		formatDBText(db.field1[0][:], altitude, color, false)
-		if trk.SP1 != "" {
-			formatDBText(db.field1[1][:], trk.SP1, color, false)
-		} else if arrivalAirport != "" {
-			formatDBText(db.field1[1][:], arrivalAirport, color, false)
-		}
-
-		// Field 2: receiving TCP if being handed off.
+		// or possibly arrival airport (adapted), c) scratchpad 2 (adapted)
+		// Combined with:
+		// Field 2: receiving TCP if being handed off or + if sp2 is shown.
 		// TODO: * if field 1 is showing pilot-reported altitude
-		formatDBText(db.field2[:], handoffId, color, false)
-
-		// Field 3: groundspeed + "V" for VFR, "E" for overflight, followed by ac-category, else ac category
-		ve := ""
-		if trk.FlightPlan.Rules == av.VFR {
-			ve = "V"
-		} else if sp.isOverflight(ctx, trk) {
-			ve = "E"
+		field1Length := util.Select(fa.AllowLongScratchpad, 4, 3)
+		fmt1 := func(s string) string {
+			for len(s) < field1Length {
+				s += " "
+			}
+			return s
 		}
-		formatDBText(db.field3[:], groundspeed+ve+state.CWTCategory, color, false)
+		formatDBText(db.field12[0][:], fmt1(altitude)+handoffId, color, false)
+		f12Idx := 1
+		if trk.SP1 != "" {
+			formatDBText(db.field12[1][:], fmt1(trk.SP1)+handoffId, color, false)
+			f12Idx++
+		} else if arrivalAirport != "" {
+			formatDBText(db.field12[1][:], fmt1(arrivalAirport)+handoffId, color, false)
+			f12Idx++
+		}
+		if fa.PDB.ShowScratchpad2 && trk.SP2 != "" {
+			formatDBText(db.field12[f12Idx][:], fmt1(trk.SP2)+"+", color, false)
+		}
+
+		// Field 3: by default, groundspeed and/or "V" for VFR, "E" for overflight, followed by CWT,
+		// but may be adapted.
+		rulesCategory := " "
+		if trk.FlightPlan.Rules == av.VFR {
+			rulesCategory = "V"
+		} else if sp.isOverflight(ctx, trk) {
+			rulesCategory = "E"
+		}
+		if fa.PDB.SplitGSAndCWT {
+			// [GS, CWT] timesliced
+			formatDBText(db.field3[0][:], groundspeed, color, false)
+			formatDBText(db.field3[1][:], rulesCategory+state.CWTCategory, color, false)
+		} else {
+			if fa.PDB.HideGroundspeed {
+				// [CWT]
+				formatDBText(db.field3[0][:], rulesCategory+state.CWTCategory, color, false)
+			} else {
+				// [GS CWT]
+				formatDBText(db.field3[0][:], groundspeed+rulesCategory+state.CWTCategory, color, false)
+			}
+			if fa.PDB.ShowAircraftType {
+				// [ACTYPE]
+				formatDBText(db.field3[1][:], actype, color, false)
+			}
+		}
 
 		// Field 4: ident
 		if ident {
@@ -587,11 +652,10 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			return s
 		}
 
-		ho := util.Select(handoffId != "", handoffId, " ")
-		formatDBText(db.field34[0][:], fmt3(altitude)+ho, color, false)
+		formatDBText(db.field34[0][:], fmt3(altitude)+handoffId, color, false)
 		idx34 := 1
 		if trk.SP1 != "" {
-			formatDBText(db.field34[idx34][:], fmt3(trk.SP1)+ho, color, false)
+			formatDBText(db.field34[idx34][:], fmt3(trk.SP1)+handoffId, color, false)
 			idx34++
 		}
 		if handoffTCP != "" {
@@ -603,7 +667,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			idx34++
 		}
 		if idx34 == 1 && arrivalAirport != "" { // no scratchpad, so maybe show the airport (adapted)
-			formatDBText(db.field34[idx34][:], fmt3(arrivalAirport)+ho, color, false)
+			formatDBText(db.field34[idx34][:], fmt3(arrivalAirport)+handoffId, color, false)
 		}
 
 		// Field 5: groundspeed
@@ -632,10 +696,6 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		// Field 5: +aircraft type and possibly requested altitude, if not
 		// identing.
 		if !ident {
-			actype := ac.FlightPlan.TypeWithoutSuffix()
-			if strings.Index(actype, "/") == 1 {
-				actype = actype[2:]
-			}
 			formatDBText(db.field5[1][:], actype+" ", color, false)
 
 			if (state.DisplayRequestedAltitude != nil && *state.DisplayRequestedAltitude) ||

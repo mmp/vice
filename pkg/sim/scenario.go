@@ -80,6 +80,12 @@ type STARSFacilityAdaptation struct {
 	SingleCharAIDs      map[string]string                `json:"single_char_aids"` // Char to airport
 	BeaconBank          int                              `json:"beacon_bank"`
 	KeepLDB             bool                             `json:"keep_ldb"`
+	PDB                 struct {
+		ShowScratchpad2  bool `json:"show_scratchpad2"`
+		HideGroundspeed  bool `json:"hide_gs"`
+		ShowAircraftType bool `json:"show_aircraft_type"`
+		SplitGSAndCWT    bool `json:"split_gs_and_cwt"`
+	} `json:"pdb"`
 }
 
 type STARSControllerConfig struct {
@@ -1037,6 +1043,13 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	// if s.BeaconBank > 7 || s.BeaconBank < 1 {
 	// 	e.ErrorString("beacon bank \"%v\" is invalid. Must be between 1 and 7", s.BeaconBank)
 	// }
+
+	if s.PDB.SplitGSAndCWT && s.PDB.ShowAircraftType {
+		e.ErrorString("Both \"split_gs_and_cwt\" and \"show_aircraft_type\" cannot be specified for \"pdb\" adaption.")
+	}
+	if s.PDB.SplitGSAndCWT && s.PDB.HideGroundspeed {
+		e.ErrorString("Both \"split_gs_and_cwt\" and \"hide_gs\" cannot be specified for \"pdb\" adaption.")
+	}
 
 	e.Pop() // stars_config
 }
