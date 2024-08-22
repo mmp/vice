@@ -1037,10 +1037,6 @@
             "center": "KPNS"
         }
     ],
-    "allow_long_scratchpad": [
-        false,
-        false
-    ],
     "force_ql_self": true,
     "scratchpads": {
         "AEX":   "",

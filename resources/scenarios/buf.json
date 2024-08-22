@@ -1041,10 +1041,7 @@
   },
   "stars_config": {
   "force_ql_self": true,
-  "allow_long_scratchpad": [
-    true,
-    true
-    ],
+  "allow_long_scratchpad": true,
     "coordination_fixes": {
       "BENEE": [
         {

@@ -65,7 +65,7 @@ type AirspaceAwareness struct {
 type STARSFacilityAdaptation struct {
 	AirspaceAwareness   []AirspaceAwareness              `json:"airspace_awareness"`
 	ForceQLToSelf       bool                             `json:"force_ql_self"`
-	AllowLongScratchpad [2]bool                          `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
+	AllowLongScratchpad bool                             `json:"allow_long_scratchpad"`
 	VideoMapNames       []string                         `json:"stars_maps"`
 	VideoMapLabels      map[string]string                `json:"map_labels"`
 	ControllerConfigs   map[string]STARSControllerConfig `json:"controller_configs"`

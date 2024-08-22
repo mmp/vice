@@ -8522,7 +8522,6 @@
                 "center": "N042.23.05.581,W071.00.43.615"
               }
         ],
-        "allow_long_scratchpad": [false, false],
         "force_ql_self": true,
         "scratchpads": {
             "CCC": "PRT",

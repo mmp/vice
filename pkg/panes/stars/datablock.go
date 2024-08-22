@@ -44,8 +44,6 @@ type dbChar struct {
 // fullDatablock
 
 type fullDatablock struct {
-	longScratchpad [2]bool
-
 	// line 0
 	field0 [16]dbChar
 	// line 1
@@ -535,7 +533,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		return db
 
 	case FullDatablock:
-		db := &fullDatablock{longScratchpad: ctx.ControlClient.STARSFacilityAdaptation.AllowLongScratchpad}
+		db := &fullDatablock{}
 
 		// Line 0
 		// Field 0: special conditions, safety alerts (red), cautions (yellow)
@@ -581,7 +579,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		// Fields 3 and 4: 3 is altitude plus possibly other stuff; 4 is
 		// special indicators, possible associated with 3, so they're a
 		// single field
-		field3Length := util.Select(db.longScratchpad[0] || db.longScratchpad[1], 4, 3)
+		field3Length := util.Select(ctx.ControlClient.STARSFacilityAdaptation.AllowLongScratchpad, 4, 3)
 		fmt3 := func(s string) string {
 			for len(s) < field3Length {
 				s += " "

@@ -2587,7 +2587,6 @@
   ]
   },
   "range": 60,
-      "allow_long_scratchpad": [false, false],
       "force_ql_self": true,
   "inhibit_ca_volumes": [
     {
