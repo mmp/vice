@@ -528,7 +528,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 	case CommandModeInitiateControl:
 		if ac := lookupAircraft(cmd); ac == nil {
-			status.err = ErrSTARSNoFlight
+			status.err = ErrSTARSCommandFormat
 		} else {
 			sp.initiateTrack(ctx, ac.Callsign)
 			status.clear = true
@@ -2175,7 +2175,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 		case CommandModeInitiateControl:
 			if cmd != ac.Callsign {
-				status.err = ErrSTARSIllegalTrack
+				status.err = ErrSTARSCommandFormat
 			} else {
 				status.clear = true
 				sp.initiateTrack(ctx, ac.Callsign)
