@@ -719,7 +719,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		}
 		if beaconMismatch {
 			idx := util.Select(fieldEmpty(db.field6[0][:]), 0, 1)
-			formatDBText(db.field6[idx][:], ac.Squawk.String(), color, beaconMismatch)
+			formatDBText(db.field6[idx][:], ac.Squawk.String(), color, false)
 		}
 
 		// Field 7: assigned altitude, assigned beacon if mismatch
@@ -727,7 +727,6 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			ta := (ac.TempAltitude + 50) / 100
 			formatDBText(db.field7[0][:], fmt.Sprintf("A%03d", ta), color, false)
 		}
-		beaconMismatch := ac.Squawk != trk.FlightPlan.AssignedSquawk && !squawkingSPC
 		if beaconMismatch {
 			idx := util.Select(fieldEmpty(db.field7[0][:]), 0, 1)
 			formatDBText(db.field7[idx][:], trk.FlightPlan.AssignedSquawk.String(), color, true)
