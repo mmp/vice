@@ -11,6 +11,7 @@ import (
 )
 
 var (
+	ErrBeaconMismatch            = errors.New("Beacon code mismatch")
 	ErrControllerAlreadySignedIn = errors.New("Controller with that callsign already signed in")
 	ErrDuplicateSimName          = errors.New("A sim with that name already exists")
 	ErrIllegalACID               = errors.New("Illegal ACID")
@@ -58,6 +59,7 @@ var errorStringToError = map[string]error{
 	av.ErrUnknownApproach.Error():              av.ErrUnknownApproach,
 	av.ErrUnknownRunway.Error():                av.ErrUnknownRunway,
 
+	ErrBeaconMismatch.Error():            ErrBeaconMismatch,
 	ErrControllerAlreadySignedIn.Error(): ErrControllerAlreadySignedIn,
 	ErrDuplicateSimName.Error():          ErrDuplicateSimName,
 	ErrIllegalACID.Error():               ErrIllegalACID,

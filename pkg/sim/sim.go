@@ -2188,6 +2188,16 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			} else if octrl.Callsign == ctrl.Callsign {
 				// Can't handoff to ourself
 				return av.ErrInvalidController
+			} else {
+				// Disallow handoff if there's a beacon code mismatch.
+				squawkingSPC, _ := av.SquawkIsSPC(ac.Squawk)
+				if trk := s.State.STARSComputer().TrackInformation[ac.Callsign]; trk != nil {
+					if ac.Squawk != trk.FlightPlan.AssignedSquawk && !squawkingSPC {
+						return ErrBeaconMismatch
+					}
+				} else if ac.Squawk != ac.FlightPlan.AssignedSquawk && !squawkingSPC { // workaround pending NAS fixes
+					return ErrBeaconMismatch
+				}
 			}
 			return nil
 		},
