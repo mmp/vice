@@ -501,7 +501,8 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 		extended := state.FullLDBEndTime.After(ctx.Now)
 
-		if beaconator || extended || ident {
+		ps := sp.CurrentPreferenceSet
+		if beaconator || extended || ident || ps.DisplayLDBBeaconCodes || state.DisplayLDBBeaconCode {
 			// Field 1: reported beacon code
 			// TODO: Field 1: WHO if unassociated and no flight plan
 			f1 := formatDBText(db.field1[:], ac.Squawk.String(), color, false)

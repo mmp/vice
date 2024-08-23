@@ -96,9 +96,9 @@ type AircraftState struct {
 	displayPilotAltitude bool
 	pilotAltitude        int
 
-	DisplayReportedBeacon bool // note: only for unassociated
-	DisplayPTL            bool
-	DisableCAWarnings     bool
+	DisplayLDBBeaconCode bool
+	DisplayPTL           bool
+	DisableCAWarnings    bool
 
 	MSAW             bool // minimum safe altitude warning
 	DisableMSAW      bool

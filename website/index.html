@@ -2328,6 +2328,34 @@ how it simulates aircraft or the STARS interface.
             <div class="text-center">
               <img src="slewed-ldb.gif" srcset="slewed-ldb-2x.gif 2x" width="137" height="95">
             </div><br>
+            <p>A few commands are also available to control the display of squawk (beacon) codes in LDBs:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]B</code></td>
+                    <td>Toggle the display of beacon codes in LDBs.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]B(SLEW)</code></td>
+                    <td>Toggle the display of the beacon code for an unassociated aircraft.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]BE(SLEW)</code></td>
+                    <td>Enable the display of the beacon code for an unassociated aircraft.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]BI(SLEW)</code></td>
+                    <td>Disable the display of the beacon code for an unassociated aircraft.</td>
+                  </tr>
+                </tbody>
+              </table>
+
             <p>The brightness of LDBs is controlled using LDB in the DCB BRITE menu.</p>
 
             <h4 id="pdb">Partial Datablock (PDBs)</h4>
@@ -2960,7 +2988,7 @@ how it simulates aircraft or the STARS interface.
               remain separated. For most of the tools in this section, the font size is based on the TOOLS font
               size in the CHAR SIZE menu of the DCB and the brightness is based on the TLS setting in the BRITE menu of the DCB.</p>
 
-            <h3>Flight Plan Display</h3>
+            <h3>Flight Plan / Beacon Code Display</h3>
 
               <table class="table table-bordered">
                 <thead>

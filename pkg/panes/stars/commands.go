@@ -2199,7 +2199,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			switch sp.multiFuncPrefix {
 			case "B":
 				if cmd == "" {
-					state.DisplayReportedBeacon = !state.DisplayReportedBeacon
+					if trk := sp.getTrack(ctx, ac); trk != nil && trk.TrackOwner != "" {
+						// Associated track; display ACID, RBC (received beacon code), ABC (assigned beacon code) in preview area.
+						status.output = ac.Callsign + " " + ac.Squawk.String() + " " + trk.FlightPlan.AssignedSquawk.String()
+					} else {
+						// Unassociated track.
+						state.DisplayLDBBeaconCode = !state.DisplayLDBBeaconCode
+					}
 					status.clear = true
 				} else {
 					status.err = ErrSTARSCommandFormat
