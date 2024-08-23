@@ -326,6 +326,8 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 // Wind
 
 type Wind struct {
+	Low       int32 `json:"low"`
+	High      int32 `json:"high"`
 	Direction int32 `json:"direction"`
 	Speed     int32 `json:"speed"`
 	Gust      int32 `json:"gust"`
