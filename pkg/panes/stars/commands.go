@@ -72,13 +72,11 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 				// Record bookmark
 				ps.Bookmarks[idx].Center = ps.CurrentCenter
 				ps.Bookmarks[idx].Range = ps.Range
-				ps.Bookmarks[idx].TopDownMode = ps.TopDownMode
 			} else {
 				// Recall bookmark
 				ps.Center = ps.Bookmarks[idx].Center
 				ps.CurrentCenter = ps.Bookmarks[idx].Center
 				ps.Range = ps.Bookmarks[idx].Range
-				ps.TopDownMode = ps.Bookmarks[idx].TopDownMode
 			}
 		}
 	}
@@ -1376,15 +1374,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				return
 			}
 			status.err = ErrSTARSCommandFormat
-			return
-
-		case "9":
-			if cmd == "" {
-				ps.GroundRangeMode = !ps.GroundRangeMode
-			} else {
-				status.err = ErrSTARSCommandFormat
-			}
-			status.clear = true
 			return
 		}
 

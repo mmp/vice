@@ -102,13 +102,9 @@ type PreferenceSet struct {
 
 	DwellMode DwellMode
 
-	TopDownMode     bool
-	GroundRangeMode bool
-
 	Bookmarks [10]struct {
-		Center      math.Point2LL
-		Range       float32
-		TopDownMode bool
+		Center math.Point2LL
+		Range  float32
 	}
 
 	Brightness struct {
