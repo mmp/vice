@@ -2561,7 +2561,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 // interpreting 5 as the center; (nil, true) is returned for '5' and
 // (nil, false) is returned for an invalid key.
 func (sp *STARSPane) numpadToDirection(key byte) (*math.CardinalOrdinalDirection, bool) {
-	if key < '1' && key > '9' {
+	if key < '1' || key > '9' {
 		return nil, false
 	}
 	if key == '5' {
