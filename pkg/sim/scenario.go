@@ -65,7 +65,7 @@ type AirspaceAwareness struct {
 type STARSFacilityAdaptation struct {
 	AirspaceAwareness   []AirspaceAwareness              `json:"airspace_awareness"`
 	ForceQLToSelf       bool                             `json:"force_ql_self"`
-	AllowLongScratchpad [2]bool                          `json:"allow_long_scratchpad"` // [0] is for the primary. [1] is for the secondary
+	AllowLongScratchpad bool                             `json:"allow_long_scratchpad"`
 	VideoMapNames       []string                         `json:"stars_maps"`
 	VideoMapLabels      map[string]string                `json:"map_labels"`
 	ControllerConfigs   map[string]STARSControllerConfig `json:"controller_configs"`
@@ -80,6 +80,12 @@ type STARSFacilityAdaptation struct {
 	SingleCharAIDs      map[string]string                `json:"single_char_aids"` // Char to airport
 	BeaconBank          int                              `json:"beacon_bank"`
 	KeepLDB             bool                             `json:"keep_ldb"`
+	PDB                 struct {
+		ShowScratchpad2  bool `json:"show_scratchpad2"`
+		HideGroundspeed  bool `json:"hide_gs"`
+		ShowAircraftType bool `json:"show_aircraft_type"`
+		SplitGSAndCWT    bool `json:"split_gs_and_cwt"`
+	} `json:"pdb"`
 }
 
 type STARSControllerConfig struct {
@@ -1037,6 +1043,13 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	// if s.BeaconBank > 7 || s.BeaconBank < 1 {
 	// 	e.ErrorString("beacon bank \"%v\" is invalid. Must be between 1 and 7", s.BeaconBank)
 	// }
+
+	if s.PDB.SplitGSAndCWT && s.PDB.ShowAircraftType {
+		e.ErrorString("Both \"split_gs_and_cwt\" and \"show_aircraft_type\" cannot be specified for \"pdb\" adaption.")
+	}
+	if s.PDB.SplitGSAndCWT && s.PDB.HideGroundspeed {
+		e.ErrorString("Both \"split_gs_and_cwt\" and \"hide_gs\" cannot be specified for \"pdb\" adaption.")
+	}
 
 	e.Pop() // stars_config
 }

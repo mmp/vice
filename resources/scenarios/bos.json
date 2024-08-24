@@ -8027,7 +8027,7 @@
       "center": "N042.23.05.581,W071.00.43.615"
     }
    ],
-    "allow_long_scratchpad": [true, true],
+    "allow_long_scratchpad": true,
     "force_ql_self": true,
     "airspace_awareness": [
       {

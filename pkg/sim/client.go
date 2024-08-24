@@ -12,6 +12,7 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/mmp/imgui-go/v4"
@@ -839,6 +840,45 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 						imgui.Text("--")
 					}
 				}
+			}
+
+			imgui.EndTable()
+		}
+	}
+
+	if imgui.CollapsingHeader("Controllers") {
+		if imgui.BeginTableV("controllers", 4, tableFlags, imgui.Vec2{}, 0) {
+			imgui.TableSetupColumn("TCP")
+			imgui.TableSetupColumn("Human")
+			imgui.TableSetupColumn("Frequency")
+			imgui.TableSetupColumn("Name")
+			imgui.TableHeadersRow()
+
+			for _, callsign := range util.SortedMapKeys(c.Controllers) {
+				ctrl := c.Controllers[callsign]
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				id := ctrl.SectorId
+				if ctrl.FacilityIdentifier != "" && !ctrl.ERAMFacility {
+					id = ctrl.FacilityIdentifier + id
+				}
+				imgui.Text(id)
+				imgui.TableNextColumn()
+				if ctrl.IsHuman {
+					sq := renderer.FontAwesomeIconCheckSquare
+					// Center the square in the column
+					// https://stackoverflow.com/a/66109051
+					pos := imgui.CursorPosX() + float32(imgui.ColumnWidth()) - imgui.CalcTextSize(sq, false, 0).X - imgui.ScrollX() -
+						2*imgui.CurrentStyle().ItemSpacing().X
+					if pos > imgui.CursorPosX() {
+						imgui.SetCursorPos(imgui.Vec2{X: pos, Y: imgui.CursorPos().Y})
+					}
+					imgui.Text(sq)
+				}
+				imgui.TableNextColumn()
+				imgui.Text(ctrl.Frequency.String())
+				imgui.TableNextColumn()
+				imgui.Text(ctrl.Callsign)
 			}
 
 			imgui.EndTable()

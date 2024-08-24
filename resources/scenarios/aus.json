@@ -1318,7 +1318,6 @@
                         }]
                     },
                     "stars_config": {
-                        "allow_long_scratchpad": [false, false],
                         "force_ql_self": true,
                         "coordination_fixes": {
                                 "DXEEE": [

@@ -24,13 +24,17 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 	transforms.LoadWindowViewingMatrices(cb)
 
 	font := sp.systemFont[ps.CharSize.Lists]
-	style := renderer.TextStyle{
+	listStyle := renderer.TextStyle{
 		Font:  font,
 		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
 	}
 	alertStyle := renderer.TextStyle{
 		Font:  font,
 		Color: ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor),
+	}
+	previewAreaStyle := renderer.TextStyle{
+		Font:  font,
+		Color: ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor),
 	}
 
 	td := renderer.GetTextDrawBuilder()
@@ -39,7 +43,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 	normalizedToWindow := func(p [2]float32) [2]float32 {
 		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
 	}
-	drawList := func(text string, p [2]float32) {
+	drawList := func(text string, p [2]float32, style renderer.TextStyle) {
 		if text != "" {
 			pw := normalizedToWindow(p)
 			td.AddText(text, pw, style)
@@ -68,7 +72,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 	case CommandModeMaps:
 		pt += "MAP\n"
 	case CommandModeSavePrefAs:
-		pt += "SAVE AS\n"
+		pt += "PREF SET NAME\n"
 	case CommandModeLDR:
 		pt += "LLL\n"
 	case CommandModeRangeRings:
@@ -79,7 +83,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		pt += "SITE\n"
 	}
 	pt += strings.Join(strings.Fields(sp.previewAreaInput), "\n") // spaces are rendered as newlines
-	drawList(pt, ps.PreviewAreaPosition)
+	drawList(pt, ps.PreviewAreaPosition, previewAreaStyle)
 
 	stripK := func(airport string) string {
 		if len(airport) == 4 && airport[0] == 'K' {
@@ -137,21 +141,21 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 					text += formatMETAR(ctx.ControlClient.PrimaryAirport, metar)
 				}
 			}
-			td.AddText(text, pw, style)
+			td.AddText(text, pw, listStyle)
 			newline()
 		}
 
 		// ATIS and GI text always, apparently
 		if ps.CurrentATIS != "" {
-			pw = td.AddText(ps.CurrentATIS+" "+ps.GIText[0], pw, style)
+			pw = td.AddText(ps.CurrentATIS+" "+ps.GIText[0], pw, listStyle)
 			newline()
 		} else if ps.GIText[0] != "" {
-			pw = td.AddText(ps.GIText[0], pw, style)
+			pw = td.AddText(ps.GIText[0], pw, listStyle)
 			newline()
 		}
 		for i := 1; i < len(ps.GIText); i++ {
 			if txt := ps.GIText[i]; txt != "" {
-				pw = td.AddText(txt, pw, style)
+				pw = td.AddText(txt, pw, listStyle)
 				newline()
 			}
 		}
@@ -159,20 +163,20 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		if filter.All || filter.Status || filter.Radar {
 			if filter.All || filter.Status {
 				if ctx.ControlClient.Connected() {
-					pw = td.AddText("OK/OK/NA ", pw, style)
+					pw = td.AddText("OK/OK/NA ", pw, listStyle)
 				} else {
 					pw = td.AddText("NA/NA/NA ", pw, alertStyle)
 				}
 			}
 			if filter.All || filter.Radar {
-				pw = td.AddText(sp.radarSiteId(ctx.ControlClient.RadarSites), pw, style)
+				pw = td.AddText(sp.radarSiteId(ctx.ControlClient.RadarSites), pw, listStyle)
 			}
 			newline()
 		}
 
 		if filter.All || filter.Codes {
 			if len(ps.SelectedBeaconCodes) > 0 {
-				pw = td.AddText(strings.Join(ps.SelectedBeaconCodes, " "), pw, style)
+				pw = td.AddText(strings.Join(ps.SelectedBeaconCodes, " "), pw, listStyle)
 				newline()
 			}
 		}
@@ -204,7 +208,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 			if (filter.All || filter.PredictedTrackLines) && ps.PTLLength > 0 {
 				text += fmt.Sprintf("PTL: %.1f", ps.PTLLength)
 			}
-			pw = td.AddText(text, pw, style)
+			pw = td.AddText(text, pw, listStyle)
 			newline()
 		}
 
@@ -213,7 +217,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 			text := fmt.Sprintf("%03d %03d U %03d %03d A",
 				af.Unassociated[0]/100, af.Unassociated[1]/100,
 				af.Associated[0]/100, af.Associated[1]/100)
-			pw = td.AddText(text, pw, style)
+			pw = td.AddText(text, pw, listStyle)
 			newline()
 		}
 
@@ -247,12 +251,12 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 				}
 			}
 			for len(altimeters) >= 3 {
-				pw = td.AddText(strings.Join(altimeters[:3], " "), pw, style)
+				pw = td.AddText(strings.Join(altimeters[:3], " "), pw, listStyle)
 				altimeters = altimeters[3:]
 				newline()
 			}
 			if len(altimeters) > 0 {
-				pw = td.AddText(strings.Join(altimeters, " "), pw, style)
+				pw = td.AddText(strings.Join(altimeters, " "), pw, listStyle)
 				newline()
 			}
 		}
@@ -260,9 +264,9 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		if (filter.All || filter.QuickLookPositions) && (ps.QuickLookAll || len(ps.QuickLookPositions) > 0) {
 			if ps.QuickLookAll {
 				if ps.QuickLookAllIsPlus {
-					pw = td.AddText("QL: ALL+", pw, style)
+					pw = td.AddText("QL: ALL+", pw, listStyle)
 				} else {
-					pw = td.AddText("QL: ALL", pw, style)
+					pw = td.AddText("QL: ALL", pw, listStyle)
 				}
 			} else {
 				pos := util.MapSlice(ps.QuickLookPositions,
@@ -270,7 +274,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 						return q.Id + util.Select(q.Plus, "+", "")
 					})
 
-				pw = td.AddText("QL: "+strings.Join(pos, " "), pw, style)
+				pw = td.AddText("QL: "+strings.Join(pos, " "), pw, listStyle)
 			}
 			newline()
 		}
@@ -289,7 +293,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 			// TODO: others?
 			if len(disabled) > 0 {
 				text := "TW OFF: " + strings.Join(disabled, " ")
-				pw = td.AddText(text, pw, style)
+				pw = td.AddText(text, pw, listStyle)
 				newline()
 			}
 		}
@@ -305,7 +309,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 				text += sp.ConvergingRunways[i].Airport + " "
 				text += sp.ConvergingRunways[i].getRunwaysString()
 
-				pw = td.AddText(text, pw, style)
+				pw = td.AddText(text, pw, listStyle)
 				newline()
 			}
 		}
@@ -336,7 +340,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 			}
 		}
 
-		drawList(text.String(), ps.VFRList.Position)
+		drawList(text.String(), ps.VFRList.Position, listStyle)
 	}
 
 	if ps.TABList.Visible {
@@ -366,7 +370,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 			}
 		}
 
-		drawList(text.String(), ps.TABList.Position)
+		drawList(text.String(), ps.TABList.Position, listStyle)
 	}
 
 	if ps.AlertList.Visible {
@@ -417,14 +421,14 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 				}
 			}
 
-			drawList(text.String(), ps.AlertList.Position)
+			drawList(text.String(), ps.AlertList.Position, listStyle)
 		}
 	}
 
 	if ps.CoastList.Visible {
 		text := "COAST/SUSPEND"
 		// TODO
-		drawList(text, ps.CoastList.Position)
+		drawList(text, ps.CoastList.Position, listStyle)
 	}
 
 	if ps.VideoMapsList.Visible {
@@ -462,7 +466,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 			ctx.Lg.Errorf("%d: unhandled VideoMapsList.Selection", ps.VideoMapsList.Selection)
 		}
 
-		drawList(text.String(), ps.VideoMapsList.Position)
+		drawList(text.String(), ps.VideoMapsList.Position, listStyle)
 	}
 
 	if ps.CRDAStatusList.Visible {
@@ -501,7 +505,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 			line.WriteByte('\n')
 			text.WriteString(line.String())
 		}
-		drawList(text.String(), ps.CRDAStatusList.Position)
+		drawList(text.String(), ps.CRDAStatusList.Position, listStyle)
 	}
 
 	// Figure out airport<-->tower list assignments. Sort the airports
@@ -554,33 +558,15 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		for _, key := range k {
 			text.WriteString(m[key] + "\n")
 		}
-		drawList(text.String(), tl.Position)
+		drawList(text.String(), tl.Position, listStyle)
 	}
 
 	if ps.SignOnList.Visible {
-		text.Reset()
-		format := func(ctrl *av.Controller) {
-			id := ctrl.SectorId
-			if ctrl.FacilityIdentifier != "" && !ctrl.ERAMFacility {
-				id = STARSTriangleCharacter + ctrl.FacilityIdentifier + id
-			}
-			text.WriteString(fmt.Sprintf("%4s", id) + " " + ctrl.Callsign +
-				util.Select(ctrl.IsHuman, "*", "") + "\n")
+		if ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]; ctrl != nil {
+			text.Reset()
+			text.WriteString(ctrl.SectorId + " " + ctrl.SignOnTime.UTC().Format("1504")) // TODO: initials
+			drawList(text.String(), ps.SignOnList.Position, listStyle)
 		}
-
-		// User first
-		userCtrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]
-		if userCtrl != nil {
-			format(userCtrl)
-		}
-
-		for _, callsign := range util.SortedMapKeys(ctx.ControlClient.Controllers) {
-			if ctrl := ctx.ControlClient.Controllers[callsign]; ctrl != userCtrl {
-				format(ctrl)
-			}
-		}
-
-		drawList(text.String(), ps.SignOnList.Position)
 	}
 
 	td.GenerateCommands(cb)

@@ -1098,7 +1098,10 @@ func (s *Sim) signOn(callsign string) error {
 		if !ok {
 			return av.ErrNoController
 		}
-		s.State.Controllers[callsign] = ctrl
+		// Make a copy of the *Controller and set the sign on time.
+		sctrl := *ctrl
+		sctrl.SignOnTime = time.Now()
+		s.State.Controllers[callsign] = &sctrl
 
 		if callsign == s.State.PrimaryController {
 			// The primary controller signed in so the sim will resume.
@@ -2185,6 +2188,16 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			} else if octrl.Callsign == ctrl.Callsign {
 				// Can't handoff to ourself
 				return av.ErrInvalidController
+			} else {
+				// Disallow handoff if there's a beacon code mismatch.
+				squawkingSPC, _ := av.SquawkIsSPC(ac.Squawk)
+				if trk := s.State.STARSComputer().TrackInformation[ac.Callsign]; trk != nil {
+					if ac.Squawk != trk.FlightPlan.AssignedSquawk && !squawkingSPC {
+						return ErrBeaconMismatch
+					}
+				} else if ac.Squawk != ac.FlightPlan.AssignedSquawk && !squawkingSPC { // workaround pending NAS fixes
+					return ErrBeaconMismatch
+				}
 			}
 			return nil
 		},
@@ -2510,11 +2523,12 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 				ToController:   s.PointOuts[callsign][ctrl.Callsign].FromController,
 				Callsign:       ac.Callsign,
 			})
+			id := ctrl.FacilityIdentifier + ctrl.SectorId
 			if len(ac.PointOutHistory) < 20 {
-				ac.PointOutHistory = append([]string{ctrl.Callsign}, ac.PointOutHistory...)
+				ac.PointOutHistory = append([]string{id}, ac.PointOutHistory...)
 			} else {
 				ac.PointOutHistory = ac.PointOutHistory[:19]
-				ac.PointOutHistory = append([]string{ctrl.Callsign}, ac.PointOutHistory...)
+				ac.PointOutHistory = append([]string{id}, ac.PointOutHistory...)
 			}
 
 			delete(s.PointOuts[callsign], ctrl.Callsign)

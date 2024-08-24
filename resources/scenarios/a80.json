@@ -2529,7 +2529,6 @@
   },
   "stars_config": {
       "center": "N33.38.24.846,W84.25.42.088",
-      "allow_long_scratchpad": [false, false],
       "force_ql_self": true,
       "coordination_fixes": {
         "CHPPR": [

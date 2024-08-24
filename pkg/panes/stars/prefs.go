@@ -102,13 +102,9 @@ type PreferenceSet struct {
 
 	DwellMode DwellMode
 
-	TopDownMode     bool
-	GroundRangeMode bool
-
 	Bookmarks [10]struct {
-		Center      math.Point2LL
-		Range       float32
-		TopDownMode bool
+		Center math.Point2LL
+		Range  float32
 	}
 
 	Brightness struct {
@@ -241,6 +237,10 @@ func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) PreferenceSet
 	ps.RadarTrackHistoryRate = 4.5
 
 	ps.AudioVolume = 10
+	ps.AudioEffectEnabled = make([]bool, AudioNumTypes)
+	for i := range AudioNumTypes {
+		ps.AudioEffectEnabled[i] = true
+	}
 
 	ps.VideoMapVisible = make(map[int]interface{})
 

@@ -25,6 +25,7 @@ func NewSTARSError(msg string) *STARSError {
 }
 
 var (
+	ErrSTARSBeaconMismatch    = NewSTARSError("BCN MISMATCH")
 	ErrSTARSCommandFormat     = NewSTARSError("FORMAT")
 	ErrSTARSDuplicateBeacon   = NewSTARSError("DUP BCN")
 	ErrSTARSIllegalACID       = NewSTARSError("ILL ACID")
@@ -52,6 +53,7 @@ var (
 )
 
 var starsErrorRemap = map[error]*STARSError{
+	sim.ErrBeaconMismatch:              ErrSTARSBeaconMismatch,
 	av.ErrClearedForUnexpectedApproach: ErrSTARSIllegalValue,
 	av.ErrFixNotInRoute:                ErrSTARSIllegalFix,
 	av.ErrInvalidAltitude:              ErrSTARSIllegalValue,
