@@ -251,6 +251,12 @@ var (
 		`Added airspace awareness information to the scenario information window`,
 		`STARS: fixed colors for WX buttons in the DCB when WX is available`,
 		`STARS: minor improvements to the rendering of tracks and position symbols`,
+		`Fixed a crash loading saved scenarios from the last release`,
+		`vice's documentation is substantially expanded and now discusses all currently-available functionality`,
+		`STARS sign-on list is more realistic. The list of signed-on controllers can now be found in the "scenario info" window`,
+		`STARS: multiple improvements to data block and radar track drawing accuracy`,
+		`STARS: added support for inverted numpads on keyboards`,
+		`STARS: fixed a number of bugs in "quicklook" and in MAPS and PREF management`,
 	}
 )
 
