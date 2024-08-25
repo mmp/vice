@@ -152,7 +152,6 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
 				ps.Center = transforms.LatLongFromWindowP(pw)
 				ps.CurrentCenter = ps.Center
-				sp.weatherRadar.UpdateCenter(ps.Center)
 				status.clear = true
 				return
 			})
@@ -348,9 +347,6 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			CommandModeNone, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("WXC", &ps.Brightness.WxContrast, 5, false),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		if ps.Brightness.Weather != 0 {
-			sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.Renderer, ctx.Lg)
-		}
 		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
 		}

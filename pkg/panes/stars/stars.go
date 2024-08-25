@@ -345,10 +345,8 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 
 	sp.events = eventStream.Subscribe()
 
-	ps := sp.CurrentPreferenceSet
-	if ps.Brightness.Weather != 0 {
-		sp.weatherRadar.Activate(ps.Center, r, lg)
-	}
+	ps := &sp.CurrentPreferenceSet
+	sp.weatherRadar.Activate(ps.Center, r, lg)
 
 	sp.lastTrackUpdate = time.Time{} // force immediate update at start
 	sp.lastHistoryTrackUpdate = time.Time{}
@@ -363,6 +361,8 @@ func (sp *STARSPane) Reset(ss sim.State, lg *log.Logger) {
 	ps.Range = ss.GetInitialRange()
 	ps.CurrentCenter = ps.Center
 	ps.RangeRingsCenter = ps.Center
+
+	sp.weatherRadar.UpdateCenter(ps.Center)
 
 	sp.makeMaps(ss, lg)
 

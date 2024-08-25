@@ -90,9 +90,7 @@ func (w *WeatherRadar) UpdateCenter(center math.Point2LL) {
 	case w.reqChan <- center:
 		// success
 	default:
-		// The channel is full; this may happen if the user is continuously
-		// dragging the radar scope around. Worst case, we drop some
-		// position update requests, which is generally no big deal.
+		// The channel is full..
 	}
 }
 
@@ -244,15 +242,15 @@ func invertRadarReflectivity(rgb [3]byte) float32 {
 // the results back on cbChan.  New images are also automatically
 // fetched periodically, with a wait time specified by the delay parameter.
 func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]*renderer.CommandBuffer, lg *log.Logger) {
-	// NOAA posts new maps every 2 minutes, so fetch a new map at minimum
-	// every 100s to stay current.
-	fetchRate := 100 * time.Second
+	// STARS seems to get new radar roughly every 5 minutes
+	const fetchRate = 5 * time.Minute
 
 	// center stores the current center position of the radar image
 	var center math.Point2LL
-	var lastFetch time.Time
+	fetchTimer := time.NewTimer(fetchRate)
 	for {
-		var ok, timedOut bool
+		var ok bool
+		// Wait until we get an updated center or we've timed out on fetchRate.
 		select {
 		case center, ok = <-reqChan:
 			if ok {
@@ -266,18 +264,13 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]*renderer
 				close(cbChan)
 				return
 			}
-		case <-time.After(fetchRate):
+		case <-fetchTimer.C:
 			// Periodically make a new request even if the center hasn't
 			// changed.
-			timedOut = true
 		}
 
-		// Even if the center has moved, don't fetch more than every 15
-		// seconds.
-		if !timedOut && !lastFetch.IsZero() && time.Since(lastFetch) < 15*time.Second {
-			continue
-		}
-		lastFetch = time.Now()
+		fetchTimer.Reset(fetchRate)
+		lg.Infof("Getting WX, center %v", center)
 
 		// Lat-long bounds of the region we're going to request weather for.
 		rb := math.Extent2D{P0: math.Sub2LL(center, math.Point2LL{WxLatLongExtent, WxLatLongExtent}),
