@@ -1690,6 +1690,7 @@ how it simulates aircraft or the STARS interface.
                   <tr><td><code>[HND OFF]</code></td><td><code>[F5]</code></td></tr>
                   <tr><td><code>[FLT DATA]</code></td><td><code>[F6]</code></td></tr>
                   <tr><td><code>[MULTIFUNC]</code></td><td><code>[F7]</code></td></tr>
+                  <tr><td><code>[WX]</code></td><td><code>[F8]</code></td></tr>
                   <tr><td><code>[VP]</code></td><td><code>[F9]</code></td></tr>
                   <tr><td><code>[CA]</code></td><td><code>[F11]</code></td></tr>
                   <tr><td><code>[CNTR]</code></td><td><code>[Ctrl-F1]</code></td></tr>
@@ -3925,9 +3926,11 @@ how it simulates aircraft or the STARS interface.
               <li>AIRPORT: altimeter at nearby airports</li>
               <li>QL: quick looked sectors</li>
               <li>CRDA: active CRDA runway pairs</li>
+              <li>WX: available and displayed weather precipitation levels</li>
               <li>ALTSTG: show altimeter at primary airport</li>
               <li>CODES: show selected beacon codes</li>
               <li>PTL: length of predicted track lines</li>
+              <li>WX HIST: weather history snapshot currently being displayed</li>
               <li>TW OFF: disabled system features (e.g., CA, MSAW)</li>
             </ul>
 
@@ -4122,6 +4125,48 @@ how it simulates aircraft or the STARS interface.
             <br>
             <p>With the selection above, the three lowest levels, WX1 and WX2 are not shown, while all of the higher levels
               of precipitation are.</p>
+
+            <p>If the WX button in the <a href="#stars-ssa-list">SSA list</a> is enabled, the currently available
+              WX levels and whether they are displayed is shown in the SSA list. In the example below, there is
+              precipitation at levels 1&ndash;5, though not 6. Levels 3, 4, and 5 are shown in the STARS window:</p> 
+            <div class="text-center">
+              <img src="wx-levels-in-ssa.png" srcset="wx-levels-in-ssa-2x.png 2x" width="198" height="101">
+            </div><br>
+            <p>A few keyboard commands related to weather are available:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]W∆</code></td>
+                    <td>Display weather history: the precipitation shown two weather cycles ago is shown for 5 seconds,
+                      then the precipitation from the previous cycle is shown for 5 seconds. (Weather is updated every 5 minutes,
+                      so this shows the last 10 minutes of weather radar.) While the history is drawn, "IN PROGRESS" is shown
+                      in the preview area. If WX HIST is enabled in the SSA list, then "WX HIST:" and the history index
+                      is shown there.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[WX]C</code></td>
+                    <td>Clear weather display: don't show any levels of weather radar in the STARS window.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[WX](#)</code></td>
+                    <td>If # is between 1 and 6, toggle display of the associated weather radar level.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[WX](#)E</code></td>
+                    <td>If # is between 1 and 6, enable display of the associated weather radar level.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[WX](#)I</code></td>
+                    <td>If # is between 1 and 6, disable (inhibit) display of the associated weather radar level.</td>
+                  </tr>
+                </tbody>
+              </table>
 
           </section>
 

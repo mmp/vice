@@ -42,6 +42,7 @@ const (
 	CommandModeRangeRings
 	CommandModeRange
 	CommandModeSiteMenu
+	CommandModeWX
 )
 
 type CommandStatus struct {
@@ -170,6 +171,9 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			if ctx.Keyboard.WasPressed(platform.KeyControl) {
 				sp.disableMenuSpinner(ctx)
 				ps.DisplayDCB = !ps.DisplayDCB
+			} else {
+				sp.resetInputState()
+				sp.commandMode = CommandModeWX
 			}
 		case platform.KeyF9:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
@@ -1315,6 +1319,16 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				return
 			}
 
+		case "W":
+			// WX history 6-11
+			if cmd == STARSTriangleCharacter {
+				sp.wxHistoryDraw = 2
+				sp.wxNextHistoryStepTime = ctx.Now.Add(5 * time.Second)
+				status.output = "IN PROGRESS"
+				status.clear = true
+				return
+			}
+
 		case "Y":
 			isSecondary := false
 			if len(cmd) > 0 && cmd[0] == '+' {
@@ -1508,6 +1522,46 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			status.err = ErrSTARSIllegalParam
 			return
 		}
+
+	case CommandModeWX:
+		// 4-42
+		if cmd == "C" {
+			// Clear all
+			ps.LastDisplayWeatherLevel = ps.DisplayWeatherLevel
+			clear(ps.DisplayWeatherLevel[:])
+			status.clear = true
+			return
+		} else if cmd == "A" {
+			// Toggle between previously displayed levels
+			ps.DisplayWeatherLevel, ps.LastDisplayWeatherLevel = ps.LastDisplayWeatherLevel, ps.DisplayWeatherLevel
+			status.clear = true
+			return
+		} else if len(cmd) >= 1 && cmd[0] >= '1' && cmd[0] <= '6' {
+			lvl := cmd[0] - '1'
+			if len(cmd) == 1 {
+				// Toggle level
+				ps.LastDisplayWeatherLevel = ps.DisplayWeatherLevel
+				ps.DisplayWeatherLevel[lvl] = !ps.DisplayWeatherLevel[lvl]
+				status.clear = true
+				return
+			} else if len(cmd) == 2 && cmd[1] == 'E' {
+				// Enable level
+				ps.LastDisplayWeatherLevel = ps.DisplayWeatherLevel
+				ps.DisplayWeatherLevel[lvl] = true
+				status.clear = true
+				return
+			} else if len(cmd) == 2 && cmd[0] >= '1' && cmd[0] <= '6' && cmd[1] == 'I' {
+				// Inhibit level
+				ps.LastDisplayWeatherLevel = ps.DisplayWeatherLevel
+				ps.DisplayWeatherLevel[lvl] = false
+				status.clear = true
+				return
+			}
+		} else if len(cmd) >= 0 && cmd[0] == '0' || (cmd[0] >= '7' && cmd[0] <= '9') {
+			status.err = ErrSTARSRangeLimit
+			return
+		}
+		// Otherwise fall through to ErrSTARSCommandFormat
 	}
 
 	status.err = ErrSTARSCommandFormat

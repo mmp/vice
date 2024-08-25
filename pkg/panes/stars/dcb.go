@@ -457,8 +457,9 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 
 	case dcbMenuSSAFilter:
+		// 4-44 / 2-71
 		toggleButton(ctx, "ALL", &ps.SSAList.Filter.All, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "WX", buttonHalfVertical, buttonScale) // ?? TODO
+		toggleButton(ctx, "WX", &ps.SSAList.Filter.Wx, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "TIME", &ps.SSAList.Filter.Time, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "ALTSTG", &ps.SSAList.Filter.Altimeter, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "STATUS", &ps.SSAList.Filter.Status, buttonHalfVertical, buttonScale)
@@ -471,16 +472,20 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		toggleButton(ctx, "PTL", &ps.SSAList.Filter.PredictedTrackLines, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "ALT FIL", &ps.SSAList.Filter.AltitudeFilters, buttonHalfVertical, buttonScale)
 		disabledButton(ctx, "NAS I/F", buttonHalfVertical, buttonScale) // ?? TODO
+		// INTRAIL
+		// 2.5
 		toggleButton(ctx, "AIRPORT", &ps.SSAList.Filter.AirportWeather, buttonHalfVertical, buttonScale)
 		disabledButton(ctx, "OP MODE", buttonHalfVertical, buttonScale) // ?? TODO
 		disabledButton(ctx, "TT", buttonHalfVertical, buttonScale)      // ?? TODO
-		disabledButton(ctx, "WX HIST", buttonHalfVertical, buttonScale) // ?? TODO
+		toggleButton(ctx, "WX HIST", &ps.SSAList.Filter.WxHistory, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "QL", &ps.SSAList.Filter.QuickLookPositions, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "TW OFF", &ps.SSAList.Filter.DisabledTerminal, buttonHalfVertical, buttonScale)
 		disabledButton(ctx, "CON/CPL", buttonHalfVertical, buttonScale) // ?? TODO
 		disabledButton(ctx, "OFF IND", buttonHalfVertical, buttonScale) // ?? TODO
 		toggleButton(ctx, "CRDA", &ps.SSAList.Filter.ActiveCRDAPairs, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "", buttonHalfVertical, buttonScale)
+		disabledButton(ctx, "FLOW", buttonHalfVertical, buttonScale) // TODO
+		disabledButton(ctx, "AMZ", buttonHalfVertical, buttonScale)  // TODO
+		disabledButton(ctx, "TBFM", buttonHalfVertical, buttonScale) // TODO
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
 		}

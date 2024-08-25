@@ -78,6 +78,12 @@ type STARSPane struct {
 
 	weatherRadar WeatherRadar
 
+	// Which weather history snapshot to draw: this is always 0 unless the
+	// 'display weather history' command was entered.
+	wxHistoryDraw int
+	// Time at which to step to the next history snapshot (5s intervals).
+	wxNextHistoryStepTime time.Time
+
 	systemFont        [6]*renderer.Font
 	systemOutlineFont [6]*renderer.Font
 	dcbFont           [3]*renderer.Font // 0, 1, 2 only
@@ -573,10 +579,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 		cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	}
 
-	weatherBrightness := float32(ps.Brightness.Weather) / float32(100)
-	weatherContrast := float32(ps.Brightness.WxContrast) / float32(100)
-	sp.weatherRadar.Draw(ctx, weatherBrightness, weatherContrast, ps.DisplayWeatherLevel,
-		transforms, cb)
+	sp.drawWX(ctx, transforms, cb)
 
 	if ps.Brightness.RangeRings > 0 {
 		color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
@@ -669,6 +672,27 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 		sp.lastHistoryTrackUpdate = time.Time{}
 		sp.discardTracks = false
 	}
+}
+
+func (sp *STARSPane) drawWX(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	ps := sp.CurrentPreferenceSet
+	weatherBrightness := float32(ps.Brightness.Weather) / float32(100)
+	weatherContrast := float32(ps.Brightness.WxContrast) / float32(100)
+
+	if !sp.wxNextHistoryStepTime.IsZero() && ctx.Now.After(sp.wxNextHistoryStepTime) {
+		sp.wxHistoryDraw--
+		if sp.wxHistoryDraw > 0 {
+			sp.wxNextHistoryStepTime = ctx.Now.Add(5 * time.Second)
+		} else {
+			sp.wxNextHistoryStepTime = time.Time{}
+			if sp.previewAreaOutput == "IN PROGRESS" {
+				sp.previewAreaOutput = ""
+			}
+		}
+	}
+
+	sp.weatherRadar.Draw(ctx, sp.wxHistoryDraw, weatherBrightness, weatherContrast, ps.DisplayWeatherLevel,
+		transforms, cb)
 }
 
 func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {

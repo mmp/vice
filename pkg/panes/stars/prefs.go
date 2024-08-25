@@ -38,7 +38,8 @@ type PreferenceSet struct {
 	// keyboard input.
 	RadarTrackHistoryRate float32
 
-	DisplayWeatherLevel [6]bool
+	DisplayWeatherLevel     [6]bool
+	LastDisplayWeatherLevel [6]bool
 
 	// If empty, then then MULTI or FUSED mode, depending on
 	// FusedRadarMode.  The custom JSON name is so we don't get errors
@@ -142,6 +143,7 @@ type PreferenceSet struct {
 		Visible  bool
 		Filter   struct {
 			All                 bool
+			Wx                  bool
 			Time                bool
 			Altimeter           bool
 			Status              bool
@@ -155,6 +157,7 @@ type PreferenceSet struct {
 			QuickLookPositions  bool
 			DisabledTerminal    bool
 			ActiveCRDAPairs     bool
+			WxHistory           bool
 
 			Text struct {
 				Main bool

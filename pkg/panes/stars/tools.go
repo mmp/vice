@@ -44,19 +44,21 @@ type WeatherRadar struct {
 	// reqChan and command buffers to draw each of the 6 weather levels are
 	// returned by cbChan.
 	reqChan chan math.Point2LL
-	cbChan  chan [NumWxLevels]*renderer.CommandBuffer
-	cb      [NumWxLevels]*renderer.CommandBuffer
+	cbChan  chan [numWxLevels]*renderer.CommandBuffer
+	cb      [numWxHistory][numWxLevels]*renderer.CommandBuffer
 }
 
-const NumWxLevels = 6
+const numWxHistory = 3
+
+const numWxLevels = 6
 
 // Block size in pixels of the quads in the converted radar image used for
 // display.
-const WxBlockRes = 2
+const wxBlockRes = 2
 
 // Latitude-longitude extent of the fetched image; the requests are +/-
 // this much from the current center.
-const WxLatLongExtent = 2.5
+const wxLatLongExtent = 2.5
 
 // Activate must be called for the WeatherRadar to start fetching weather
 // radar images; it is called with an initial center position in
@@ -70,15 +72,15 @@ func (w *WeatherRadar) Activate(center math.Point2LL, r renderer.Renderer, lg *l
 	w.active = true
 	w.reqChan = make(chan math.Point2LL, 1000) // lots of buffering
 	w.reqChan <- center
-	w.cbChan = make(chan [NumWxLevels]*renderer.CommandBuffer, 8)
+	w.cbChan = make(chan [numWxLevels]*renderer.CommandBuffer, 8)
 
 	go fetchWeather(w.reqChan, w.cbChan, lg)
 }
 
-func (w *WeatherRadar) HaveWeather() [NumWxLevels]bool {
-	var r [NumWxLevels]bool
-	for i := range NumWxLevels {
-		r[i] = w.cb[i] != nil
+func (w *WeatherRadar) HaveWeather() [numWxLevels]bool {
+	var r [numWxLevels]bool
+	for i := range numWxLevels {
+		r[i] = w.cb[0][i] != nil
 	}
 	return r
 }
@@ -241,7 +243,7 @@ func invertRadarReflectivity(rgb [3]byte) float32 {
 // reqChan, fetching corresponding radar images from the NOAA, and sending
 // the results back on cbChan.  New images are also automatically
 // fetched periodically, with a wait time specified by the delay parameter.
-func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]*renderer.CommandBuffer, lg *log.Logger) {
+func fetchWeather(reqChan chan math.Point2LL, cbChan chan [numWxLevels]*renderer.CommandBuffer, lg *log.Logger) {
 	// STARS seems to get new radar roughly every 5 minutes
 	const fetchRate = 5 * time.Minute
 
@@ -273,8 +275,8 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]*renderer
 		lg.Infof("Getting WX, center %v", center)
 
 		// Lat-long bounds of the region we're going to request weather for.
-		rb := math.Extent2D{P0: math.Sub2LL(center, math.Point2LL{WxLatLongExtent, WxLatLongExtent}),
-			P1: math.Add2LL(center, math.Point2LL{WxLatLongExtent, WxLatLongExtent})}
+		rb := math.Extent2D{P0: math.Sub2LL(center, math.Point2LL{wxLatLongExtent, wxLatLongExtent}),
+			P1: math.Add2LL(center, math.Point2LL{wxLatLongExtent, wxLatLongExtent})}
 
 		// The weather radar image comes via a WMS GetMap request from the NOAA.
 		//
@@ -315,29 +317,29 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]*renderer
 	}
 }
 
-func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]*renderer.CommandBuffer {
+func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [numWxLevels]*renderer.CommandBuffer {
 	// Convert the Image returned by png.Decode to a simple 8-bit RGBA image.
 	rgba := image.NewRGBA(img.Bounds())
 	draw.Draw(rgba, img.Bounds(), img, image.Point{}, draw.Over)
 
 	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
-	nby, nbx := ny/WxBlockRes, nx/WxBlockRes
+	nby, nbx := ny/wxBlockRes, nx/wxBlockRes
 
-	// First determine the weather level for each WxBlockRes*WxBlockRes
+	// First determine the weather level for each wxBlockRes*wxBlockRes
 	// block of the image.
 	levels := make([]int, nbx*nby)
 	for y := 0; y < nby; y++ {
 		for x := 0; x < nbx; x++ {
 			avg := float32(0)
-			for dy := 0; dy < WxBlockRes; dy++ {
-				for dx := 0; dx < WxBlockRes; dx++ {
-					px := rgba.RGBAAt(x*WxBlockRes+dx, y*WxBlockRes+dy)
+			for dy := 0; dy < wxBlockRes; dy++ {
+				for dx := 0; dx < wxBlockRes; dx++ {
+					px := rgba.RGBAAt(x*wxBlockRes+dx, y*wxBlockRes+dy)
 					avg += invertRadarReflectivity([3]byte{px.R, px.G, px.B})
 				}
 			}
 
 			// levels from [0,6].
-			level := int(math.Min(avg*7/(WxBlockRes*WxBlockRes), 6))
+			level := int(math.Min(avg*7/(wxBlockRes*wxBlockRes), 6))
 			levels[x+y*nbx] = level
 		}
 	}
@@ -345,11 +347,11 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]*
 	// Now generate the command buffer for each weather level.  We don't
 	// draw anything for level==0, so the indexing into cb is off by 1
 	// below.
-	var cb [NumWxLevels]*renderer.CommandBuffer
+	var cb [numWxLevels]*renderer.CommandBuffer
 	tb := renderer.GetTrianglesDrawBuilder()
 	defer renderer.ReturnTrianglesDrawBuilder(tb)
 
-	for level := 1; level <= NumWxLevels; level++ {
+	for level := 1; level <= numWxLevels; level++ {
 		tb.Reset()
 		levelHasWeather := false
 
@@ -491,12 +493,16 @@ func reverseStippleBytes(stipple [32]uint32) [32]uint32 {
 
 // Draw draws the current weather radar image, if available. (If none is yet
 // available, it returns rather than stalling waiting for it).
-func (w *WeatherRadar) Draw(ctx *panes.Context, intensity float32, contrast float32,
-	active [NumWxLevels]bool, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32, contrast float32,
+	active [numWxLevels]bool, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	select {
-	case w.cb = <-w.cbChan:
+	case cb := <-w.cbChan:
 		// Got updated command buffers, yaay.  Note that we always drain
 		// the cbChan, even if if the WeatherRadar is inactive.
+
+		// Shift history down before storing the latest
+		w.cb[2], w.cb[1] = w.cb[1], w.cb[0]
+		w.cb[0] = cb
 
 	default:
 		// no message
@@ -506,14 +512,15 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, intensity float32, contrast floa
 		return
 	}
 
+	hist = math.Clamp(hist, 0, len(w.cb)-1)
 	transforms.LoadLatLongViewingMatrices(cb)
-	for i := range w.cb {
-		if active[i] && w.cb[i] != nil {
+	for i := range w.cb[hist] {
+		if active[i] && w.cb[hist][i] != nil {
 			// RGBs from STARS Manual, B-5
 			baseColor := util.Select(i < 3,
 				renderer.RGBFromUInt8(37, 77, 77), renderer.RGBFromUInt8(100, 100, 51))
 			cb.SetRGB(baseColor.Scale(intensity))
-			cb.Call(*w.cb[i])
+			cb.Call(*w.cb[hist][i])
 
 			if i == 0 || i == 3 {
 				// No stipple
@@ -528,7 +535,7 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, intensity float32, contrast floa
 			}
 			// Draw the same quads again, just with a different color and stippled.
 			cb.SetRGB(renderer.RGB{contrast, contrast, contrast})
-			cb.Call(*w.cb[i])
+			cb.Call(*w.cb[hist][i])
 			cb.DisablePolygonStipple()
 		}
 	}

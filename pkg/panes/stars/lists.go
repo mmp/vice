@@ -81,6 +81,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		pt += "RANGE\n"
 	case CommandModeSiteMenu:
 		pt += "SITE\n"
+	case CommandModeWX:
+		pt += "WX\n"
 	}
 	pt += strings.Join(strings.Fields(sp.previewAreaInput), "\n") // spaces are rendered as newlines
 	drawList(pt, ps.PreviewAreaPosition, previewAreaStyle)
@@ -131,6 +133,27 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		pw[1] -= 10
 
 		filter := ps.SSAList.Filter
+
+		if filter.All || filter.Wx {
+			var b strings.Builder
+
+			for i, have := range sp.weatherRadar.HaveWeather() {
+				if have && ps.DisplayWeatherLevel[i] {
+					b.WriteByte('(')
+					b.WriteByte(byte('1' + i))
+					b.WriteByte(')')
+				} else if have {
+					b.WriteByte(' ')
+					b.WriteByte(byte('1' + i))
+					b.WriteByte(' ')
+				} else {
+					b.WriteString("   ")
+				}
+			}
+			td.AddText(b.String(), pw, listStyle)
+			newline()
+		}
+
 		if filter.All || filter.Time || filter.Altimeter {
 			text := ""
 			if filter.All || filter.Time {
@@ -257,6 +280,13 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 			}
 			if len(altimeters) > 0 {
 				pw = td.AddText(strings.Join(altimeters, " "), pw, listStyle)
+				newline()
+			}
+		}
+
+		if filter.All || filter.WxHistory {
+			if sp.wxHistoryDraw != 0 {
+				pw = td.AddText("WX HIST:"+strconv.Itoa(sp.wxHistoryDraw), pw, listStyle)
 				newline()
 			}
 		}
