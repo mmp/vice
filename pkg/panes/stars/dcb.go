@@ -377,7 +377,6 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 				// Make this one current
 				sp.SelectedPreferenceSet = i
 				sp.CurrentPreferenceSet = sp.PreferenceSets[i]
-				sp.weatherRadar.Activate(sp.CurrentPreferenceSet.Center, ctx.Renderer, ctx.Lg)
 			}
 		}
 		for i := len(sp.PreferenceSets); i < NumPreferenceSets; i++ {
