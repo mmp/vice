@@ -222,17 +222,11 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 	return
 }
 
-func (gc *Config) Activate(c *sim.ControlClient, r renderer.Renderer, p platform.Platform,
-	eventStream *sim.EventStream, lg *log.Logger) {
-	var state *sim.State
-	if c != nil {
-		state = &c.State
-	}
-
+func (gc *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 	if gc.DisplayRoot == nil {
-		gc.DisplayRoot = panes.NewDisplayPanes(stars.NewSTARSPane(state), panes.NewMessagesPane(),
+		gc.DisplayRoot = panes.NewDisplayPanes(stars.NewSTARSPane(), panes.NewMessagesPane(),
 			panes.NewFlightStripPane())
 	}
 
-	panes.Activate(gc.DisplayRoot, state, r, p, eventStream, lg)
+	panes.Activate(gc.DisplayRoot, r, p, eventStream, lg)
 }

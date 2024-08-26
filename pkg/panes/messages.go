@@ -62,8 +62,7 @@ func (mp *MessagesPane) DisplayName() string { return "Messages" }
 
 func (mp *MessagesPane) Hide() bool { return false }
 
-func (mp *MessagesPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
-	eventStream *sim.EventStream, lg *log.Logger) {
+func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 	if mp.font = renderer.GetFont(mp.FontIdentifier); mp.font == nil {
 		mp.font = renderer.GetDefaultFont()
 		mp.FontIdentifier = mp.font.Id
@@ -74,7 +73,9 @@ func (mp *MessagesPane) Activate(ss *sim.State, r renderer.Renderer, p platform.
 	mp.events = eventStream.Subscribe()
 }
 
-func (mp *MessagesPane) Reset(ss sim.State, lg *log.Logger) {
+func (mp *MessagesPane) LoadedSim(ss sim.State, lg *log.Logger) {}
+
+func (mp *MessagesPane) ResetSim(ss sim.State, lg *log.Logger) {
 	mp.messages = nil
 }
 

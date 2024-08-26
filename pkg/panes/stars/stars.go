@@ -295,24 +295,18 @@ func (b STARSBrightness) ScaleRGB(r renderer.RGB) renderer.RGB {
 ///////////////////////////////////////////////////////////////////////////
 // STARSPane proper
 
-func NewSTARSPane(ss *sim.State) *STARSPane {
-	sp := &STARSPane{
+func NewSTARSPane() *STARSPane {
+	return &STARSPane{
 		SelectedPreferenceSet: -1,
+		CurrentPreferenceSet:  MakePreferenceSet(""),
 	}
-	sp.CurrentPreferenceSet = sp.MakePreferenceSet("", ss)
-	return sp
 }
 
 func (sp *STARSPane) DisplayName() string { return "STARS" }
 
 func (sp *STARSPane) Hide() bool { return false }
 
-func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
-	eventStream *sim.EventStream, lg *log.Logger) {
-	if sp.CurrentPreferenceSet.Range == 0 || sp.CurrentPreferenceSet.Center.IsZero() {
-		// First launch after switching over to serializing the CurrentPreferenceSet...
-		sp.CurrentPreferenceSet = sp.MakePreferenceSet("", ss)
-	}
+func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 	sp.CurrentPreferenceSet.Activate(p, sp)
 
 	if sp.InboundPointOuts == nil {
@@ -331,14 +325,9 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 	sp.initializeFonts(r, p)
 	sp.initializeAudio(p, lg)
 
-	if ss != nil {
-		sp.makeMaps(*ss, lg)
-	}
-
 	if sp.Aircraft == nil {
 		sp.Aircraft = make(map[string]*AircraftState)
 	}
-
 	if sp.AircraftToIndex == nil {
 		sp.AircraftToIndex = make(map[string]int)
 	}
@@ -351,8 +340,7 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 
 	sp.events = eventStream.Subscribe()
 
-	ps := &sp.CurrentPreferenceSet
-	sp.weatherRadar.Activate(ps.Center, r, lg)
+	sp.weatherRadar.Activate(r, lg)
 
 	sp.lastTrackUpdate = time.Time{} // force immediate update at start
 	sp.lastHistoryTrackUpdate = time.Time{}
@@ -360,17 +348,23 @@ func (sp *STARSPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Pla
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
 
-func (sp *STARSPane) Reset(ss sim.State, lg *log.Logger) {
+func (sp *STARSPane) LoadedSim(ss sim.State, lg *log.Logger) {
 	ps := &sp.CurrentPreferenceSet
-
-	ps.Center = ss.GetInitialCenter()
-	ps.Range = ss.GetInitialRange()
-	ps.CurrentCenter = ps.Center
-	ps.RangeRingsCenter = ps.Center
 
 	sp.weatherRadar.UpdateCenter(ps.Center)
 
 	sp.makeMaps(ss, lg)
+}
+
+func (sp *STARSPane) ResetSim(ss sim.State, lg *log.Logger) {
+	ps := &sp.CurrentPreferenceSet
+
+	ps.Center = ss.GetInitialCenter()
+	ps.CurrentCenter = ps.Center
+	ps.RangeRingsCenter = ps.Center
+	sp.weatherRadar.UpdateCenter(ps.Center)
+
+	ps.Range = ss.GetInitialRange()
 
 	ps.CurrentATIS = ""
 	for i := range ps.GIText {
@@ -399,12 +393,22 @@ func (sp *STARSPane) Reset(ss sim.State, lg *log.Logger) {
 
 	sp.lastTrackUpdate = time.Time{} // force update
 	sp.lastHistoryTrackUpdate = time.Time{}
+
+	sp.makeMaps(ss, lg)
+
+	// Make the scenario's default video maps visible
+	ps.VideoMapVisible = make(map[int]interface{})
+	videoMaps, defaultVideoMaps := ss.GetVideoMaps()
+	for _, dm := range defaultVideoMaps {
+		if idx := slices.IndexFunc(videoMaps, func(m av.VideoMap) bool { return m.Name == dm }); idx != -1 {
+			ps.VideoMapVisible[videoMaps[idx].Id] = nil
+		} else {
+			lg.Errorf("%s: \"default_map\" not found in \"stars_maps\"", dm)
+		}
+	}
 }
 
 func (sp *STARSPane) makeMaps(ss sim.State, lg *log.Logger) {
-	ps := &sp.CurrentPreferenceSet
-	ps.VideoMapVisible = make(map[int]interface{})
-
 	// Return an unused video map id starting from base
 	getId := func(base int) int {
 		for i := range 999 {
@@ -421,20 +425,11 @@ func (sp *STARSPane) makeMaps(ss sim.State, lg *log.Logger) {
 	// Put the maps into a map; increment ids as necessary so that they are
 	// all unique.
 	sp.videoMaps = make(map[int]*av.VideoMap)
-	videoMaps, defaultVideoMaps := ss.GetVideoMaps()
+	videoMaps, _ := ss.GetVideoMaps()
 	for _, vm := range videoMaps {
 		id := getId(vm.Id)
 		vm.Id = id
 		sp.videoMaps[vm.Id] = &vm
-	}
-
-	// Make the scenario's default video maps visible
-	for _, dm := range defaultVideoMaps {
-		if idx := slices.IndexFunc(videoMaps, func(m av.VideoMap) bool { return m.Name == dm }); idx != -1 {
-			ps.VideoMapVisible[videoMaps[idx].Id] = nil
-		} else {
-			lg.Errorf("%s: \"default_map\" not found in \"stars_maps\"", dm)
-		}
 	}
 
 	// System maps

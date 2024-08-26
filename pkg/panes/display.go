@@ -99,17 +99,12 @@ type SplitLine struct {
 	Axis SplitType
 }
 
-func (s *SplitLine) Duplicate(nameAsCopy bool) Pane {
-	panic("SplitLine Duplicate shouldn't have been called...")
-}
-
-func (s *SplitLine) Activate(*sim.State, renderer.Renderer, platform.Platform,
-	*sim.EventStream, *log.Logger) {
-}
-func (s *SplitLine) Deactivate()                  {}
-func (s *SplitLine) Reset(sim.State, *log.Logger) {}
-func (s *SplitLine) CanTakeKeyboardFocus() bool   { return false }
-func (s *SplitLine) Hide() bool                   { return false }
+func (s *SplitLine) Activate(renderer.Renderer, platform.Platform, *sim.EventStream, *log.Logger) {}
+func (s *SplitLine) Deactivate()                                                                  {}
+func (s *SplitLine) LoadedSim(sim.State, *log.Logger)                                             {}
+func (s *SplitLine) ResetSim(sim.State, *log.Logger)                                              {}
+func (s *SplitLine) CanTakeKeyboardFocus() bool                                                   { return false }
+func (s *SplitLine) Hide() bool                                                                   { return false }
 
 func (s *SplitLine) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	if ctx.Mouse != nil {
@@ -606,8 +601,7 @@ func NewDisplayPanes(stars, messages, fsp Pane) *DisplayNode {
 	}
 }
 
-func Activate(root *DisplayNode, state *sim.State, r renderer.Renderer, p platform.Platform,
-	eventStream *sim.EventStream, lg *log.Logger) {
+func Activate(root *DisplayNode, r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 	// Upgrade old ones without a MessagesPane
 	haveMessages := false
 	root.VisitPanes(func(p Pane) {
@@ -635,12 +629,18 @@ func Activate(root *DisplayNode, state *sim.State, r renderer.Renderer, p platfo
 	}
 
 	root.VisitPanes(func(pane Pane) {
-		pane.Activate(state, r, p, eventStream, lg)
+		pane.Activate(r, p, eventStream, lg)
 	})
 }
 
-func Reset(root *DisplayNode, state sim.State, lg *log.Logger) {
+func LoadedSim(root *DisplayNode, state sim.State, lg *log.Logger) {
 	root.VisitPanes(func(p Pane) {
-		p.Reset(state, lg)
+		p.LoadedSim(state, lg)
+	})
+}
+
+func ResetSim(root *DisplayNode, state sim.State, lg *log.Logger) {
+	root.VisitPanes(func(p Pane) {
+		p.ResetSim(state, lg)
 	})
 }

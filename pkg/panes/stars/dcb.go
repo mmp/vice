@@ -384,7 +384,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 
 		if selectButton(ctx, "DEFAULT", buttonHalfVertical, buttonScale) {
-			sp.CurrentPreferenceSet = sp.MakePreferenceSet("", &ctx.ControlClient.State)
+			sp.CurrentPreferenceSet.ResetDefault(&ctx.ControlClient.State)
 		}
 		disabledButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
 		if selectButton(ctx, "RESTORE", buttonHalfVertical, buttonScale) {

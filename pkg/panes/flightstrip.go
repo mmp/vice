@@ -73,8 +73,7 @@ func NewFlightStripPane() *FlightStripPane {
 	}
 }
 
-func (fsp *FlightStripPane) Activate(ss *sim.State, r renderer.Renderer, p platform.Platform,
-	eventStream *sim.EventStream, lg *log.Logger) {
+func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 	if fsp.FontSize == 0 {
 		fsp.FontSize = 12
 	}
@@ -88,12 +87,6 @@ func (fsp *FlightStripPane) Activate(ss *sim.State, r renderer.Renderer, p platf
 		fsp.scrollbar = NewVerticalScrollBar(4, true)
 	}
 	fsp.events = eventStream.Subscribe()
-
-	if ss != nil {
-		for _, ac := range ss.Aircraft {
-			fsp.possiblyAddAircraft(ss, ac)
-		}
-	}
 }
 
 func (fsp *FlightStripPane) possiblyAddAircraft(ss *sim.State, ac *av.Aircraft) {
@@ -115,7 +108,9 @@ func (fsp *FlightStripPane) possiblyAddAircraft(ss *sim.State, ac *av.Aircraft) 
 	}
 }
 
-func (fsp *FlightStripPane) Reset(ss sim.State, lg *log.Logger) {
+func (fsp *FlightStripPane) LoadedSim(ss sim.State, lg *log.Logger) {}
+
+func (fsp *FlightStripPane) ResetSim(ss sim.State, lg *log.Logger) {
 	fsp.strips = nil
 	fsp.addedAircraft = make(map[string]interface{})
 }

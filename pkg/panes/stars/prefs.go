@@ -215,21 +215,13 @@ func (ps *PreferenceSet) ResetCRDAState(rwys []STARSConvergingRunways) {
 	}
 }
 
-func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) PreferenceSet {
+func MakePreferenceSet(name string) PreferenceSet {
 	var ps PreferenceSet
 
 	ps.Name = name
 
 	ps.DisplayDCB = true
 	ps.DCBPosition = dcbPositionTop
-
-	if ss != nil {
-		ps.Center = ss.GetInitialCenter()
-		ps.Range = ss.GetInitialRange()
-	} else {
-		ps.Center = math.Point2LL{73.475, 40.395} // JFK-ish
-		ps.Range = 50
-	}
 
 	ps.CurrentCenter = ps.Center
 
@@ -329,8 +321,6 @@ func (sp *STARSPane) MakePreferenceSet(name string, ss *sim.State) PreferenceSet
 	ps.TowerLists[2].Position = [2]float32{.05, .9}
 	ps.TowerLists[2].Lines = 5
 
-	ps.ResetCRDAState(sp.ConvergingRunways)
-
 	return ps
 }
 
@@ -340,6 +330,11 @@ func (ps *PreferenceSet) Duplicate() PreferenceSet {
 	dupe.CRDA.RunwayPairState = util.DuplicateSlice(ps.CRDA.RunwayPairState)
 	dupe.VideoMapVisible = util.DuplicateMap(ps.VideoMapVisible)
 	return dupe
+}
+
+func (ps *PreferenceSet) ResetDefault(ss *sim.State) {
+	ps.Center = ss.GetInitialCenter()
+	ps.Range = ss.GetInitialRange()
 }
 
 func (ps *PreferenceSet) Activate(p platform.Platform, sp *STARSPane) {
@@ -387,6 +382,8 @@ func (ps *PreferenceSet) Activate(p platform.Platform, sp *STARSPane) {
 	if ps.VideoMapVisible == nil {
 		ps.VideoMapVisible = make(map[int]interface{})
 	}
+
+	ps.ResetCRDAState(sp.ConvergingRunways)
 }
 
 func (ps *PreferenceSet) Upgrade(from, to int) {

@@ -160,7 +160,7 @@ func main() {
 		mgr, err = sim.MakeServerConnection(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
 			func(c *sim.ControlClient) { // updated client
 				if c != nil {
-					panes.Reset(config.DisplayRoot, c.State, lg)
+					panes.ResetSim(config.DisplayRoot, c.State, lg)
 				}
 				uiResetControlClient(c)
 				controlClient = c
@@ -205,8 +205,12 @@ func main() {
 		renderer.FontsInit(render, plat)
 
 		if config.Sim != nil && !*resetSim {
-			if err := mgr.LoadLocalSim(config.Sim, lg); err != nil {
+			if client, err := mgr.LoadLocalSim(config.Sim, lg); err != nil {
 				lg.Errorf("Error loading local sim: %v", err)
+			} else {
+				panes.LoadedSim(config.DisplayRoot, client.State, lg)
+				uiResetControlClient(client)
+				controlClient = client
 			}
 		}
 
@@ -214,7 +218,7 @@ func main() {
 
 		uiInit(render, plat, config, eventStream, lg)
 
-		config.Activate(controlClient, render, plat, eventStream, lg)
+		config.Activate(render, plat, eventStream, lg)
 
 		if !mgr.Connected() {
 			uiShowConnectDialog(mgr, false, config, plat, lg)

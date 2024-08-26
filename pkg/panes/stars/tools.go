@@ -60,18 +60,17 @@ const wxBlockRes = 2
 // this much from the current center.
 const wxLatLongExtent = 2.5
 
-// Activate must be called for the WeatherRadar to start fetching weather
-// radar images; it is called with an initial center position in
-// latitude-longitude coordinates.
-func (w *WeatherRadar) Activate(center math.Point2LL, r renderer.Renderer, lg *log.Logger) {
+// Activate must be called to initialize the WeatherRadar before weather
+// radar images can be fetched.
+func (w *WeatherRadar) Activate(r renderer.Renderer, lg *log.Logger) {
 	if w.active {
-		w.reqChan <- center
 		return
 	}
 
 	w.active = true
-	w.reqChan = make(chan math.Point2LL, 1000) // lots of buffering
-	w.reqChan <- center
+	if w.reqChan == nil {
+		w.reqChan = make(chan math.Point2LL, 32)
+	}
 	w.cbChan = make(chan [numWxLevels]*renderer.CommandBuffer, 8)
 
 	go fetchWeather(w.reqChan, w.cbChan, lg)
@@ -88,6 +87,12 @@ func (w *WeatherRadar) HaveWeather() [numWxLevels]bool {
 // UpdateCenter provides a new center point for the radar image, causing a
 // new image to be fetched.
 func (w *WeatherRadar) UpdateCenter(center math.Point2LL) {
+	// UpdateCenter may be called before Activate, e.g. when we are loading
+	// a saved sim, so at least set up the chan so that we keep the center
+	// point.
+	if w.reqChan == nil {
+		w.reqChan = make(chan math.Point2LL, 32)
+	}
 	select {
 	case w.reqChan <- center:
 		// success

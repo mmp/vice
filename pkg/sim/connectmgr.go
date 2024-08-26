@@ -53,24 +53,20 @@ func (cm *ConnectionManager) NewConnection(c Connection) {
 	cm.newSimConnectionChan <- c
 }
 
-func (cm *ConnectionManager) LoadLocalSim(s *Sim, lg *log.Logger) error {
+func (cm *ConnectionManager) LoadLocalSim(s *Sim, lg *log.Logger) (*ControlClient, error) {
 	if cm.localServer == nil {
 		cm.localServer = <-cm.localServerChan
 	}
 
 	var result NewSimResult
 	if err := cm.localServer.Call("SimManager.Add", s, &result); err != nil {
-		return err
+		return nil, err
 	}
 
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken,
-		cm.localServer.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.localServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
-	if cm.onNewClient != nil {
-		cm.onNewClient(cm.client)
-	}
 
-	return nil
+	return cm.client, nil
 }
 
 func (cm *ConnectionManager) Connected() bool {
