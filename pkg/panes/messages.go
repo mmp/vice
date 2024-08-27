@@ -73,9 +73,9 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 	mp.events = eventStream.Subscribe()
 }
 
-func (mp *MessagesPane) LoadedSim(ss sim.State, lg *log.Logger) {}
+func (mp *MessagesPane) LoadedSim(ss sim.State, pl platform.Platform, lg *log.Logger) {}
 
-func (mp *MessagesPane) ResetSim(ss sim.State, lg *log.Logger) {
+func (mp *MessagesPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger) {
 	mp.messages = nil
 }
 

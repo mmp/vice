@@ -348,15 +348,14 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
 
-func (sp *STARSPane) LoadedSim(ss sim.State, lg *log.Logger) {
 	ps := &sp.CurrentPreferenceSet
+func (sp *STARSPane) LoadedSim(ss sim.State, pl platform.Platform, lg *log.Logger) {
 
 	sp.weatherRadar.UpdateCenter(ps.Center)
 
 	sp.makeMaps(ss, lg)
 }
 
-func (sp *STARSPane) ResetSim(ss sim.State, lg *log.Logger) {
 	ps := &sp.CurrentPreferenceSet
 
 	ps.Center = ss.GetInitialCenter()
@@ -372,6 +371,7 @@ func (sp *STARSPane) ResetSim(ss sim.State, lg *log.Logger) {
 	}
 	ps.RadarSiteSelected = ""
 
+func (sp *STARSPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger) {
 	sp.ConvergingRunways = nil
 	for _, name := range util.SortedMapKeys(ss.Airports) {
 		ap := ss.Airports[name]
