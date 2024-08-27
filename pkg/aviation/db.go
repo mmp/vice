@@ -17,7 +17,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/util"
@@ -162,8 +161,6 @@ type FleetAircraft struct {
 }
 
 func init() {
-	start := time.Now()
-
 	db := &StaticDatabase{}
 	var wg sync.WaitGroup
 	wg.Add(1)
@@ -188,8 +185,6 @@ func init() {
 	for icao, ap := range airports {
 		db.Airports[icao] = ap
 	}
-
-	fmt.Printf("Parsed built-in databases in %v\n", time.Since(start))
 
 	DB = db
 }
@@ -263,8 +258,8 @@ func parseAirports() map[string]FAAAirport {
 		Runways: []Runway{
 			Runway{Id: "28L", Heading: 280, Threshold: parse("N036.10.42.301,W095.45.00.247"), Elevation: 677},
 			Runway{Id: "28R", Heading: 280, Threshold: parse("N036.11.26.892,W095.45.00.219"), Elevation: 677},
-			Runway{Id: "10L", Heading: 280, Threshold: parse("N036.11.41.202,W095.46.48.489"), Elevation: 677},
-			Runway{Id: "10R", Heading: 280, Threshold: parse("N036.11.00.182,W095.47.01.783"), Elevation: 677},
+			Runway{Id: "10L", Heading: 100, Threshold: parse("N036.11.41.202,W095.46.48.489"), Elevation: 677},
+			Runway{Id: "10R", Heading: 100, Threshold: parse("N036.11.00.182,W095.47.01.783"), Elevation: 677},
 		}}
 	airports["KBRT"] = FAAAirport{Id: "KBRT", Name: "", Elevation: 689,
 		Location: parse("N36.30.26.585,W96.16.28.968")}
@@ -272,7 +267,7 @@ func parseAirports() map[string]FAAAirport {
 		Location: parse("N035.56.19.765,W095.42.49.812"),
 		Runways: []Runway{
 			Runway{Id: "27", Heading: 270, Threshold: parse("N035.56.23.020,W095.42.09.080"), Elevation: 689},
-			Runway{Id: "9", Heading: 270, Threshold: parse("N035.56.22.388,W095.44.10.094"), Elevation: 689},
+			Runway{Id: "9", Heading: 90, Threshold: parse("N035.56.22.388,W095.44.10.094"), Elevation: 689},
 		}}
 	airports["Z91"] = FAAAirport{Id: "Z91", Name: "", Elevation: 680,
 		Location: parse("N36.05.06.948,W96.26.57.501")}
