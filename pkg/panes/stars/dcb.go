@@ -6,6 +6,7 @@ package stars
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -15,6 +16,8 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/brunoga/deep"
 )
 
 var (
@@ -204,9 +207,21 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			sp.activeDCBMenu = dcbMenuCharSize
 		}
 		disabledButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
-		if selectButton(ctx, "PREF\n"+ps.Name, buttonFull, buttonScale) {
+
+		pref := "PREF"
+		if sp.prefSet.Selected != nil {
+			pref += "\n" + sp.prefSet.Saved[*sp.prefSet.Selected].Name
+		}
+		if selectButton(ctx, pref, buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuPref
-			sp.RestoreSelectedPreferenceSet = sp.SelectedPreferenceSet
+			// Don't alias anything in the restore values
+			sp.RestorePreferences = sp.prefSet.Current.Duplicate()
+			if sp.prefSet.Selected == nil {
+				sp.RestorePreferencesNumber = nil
+			} else {
+				sel := *sp.prefSet.Selected
+				sp.RestorePreferencesNumber = &sel
+			}
 		}
 
 		site := sp.radarSiteId(ctx.ControlClient.RadarSites)
@@ -367,50 +382,67 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 
 	case dcbMenuPref:
-		for i := range sp.PreferenceSets {
-			text := fmt.Sprintf("%d\n%s", i+1, sp.PreferenceSets[i].Name)
+		for i, prefs := range sp.prefSet.Saved {
+			text := strconv.Itoa(i+1) + "\n"
 			flags := buttonHalfVertical
-			if i == sp.SelectedPreferenceSet {
-				flags = flags | buttonSelected
+			if prefs == nil {
+				disabledButton(ctx, text, flags, buttonScale)
+			} else {
+				text += prefs.Name
+				if sp.prefSet.Selected != nil && i == *sp.prefSet.Selected {
+					flags = flags | buttonSelected
+				}
+				if selectButton(ctx, text, flags, buttonScale) {
+					// Make this one current
+					idx := i // copy since i is a loop iteration variable..
+					sp.prefSet.Selected = &idx
+					// Load the prefs.
+					sp.prefSet.SetCurrent(*sp.prefSet.Saved[i], ctx.Platform, sp)
+				}
 			}
-			if selectButton(ctx, text, flags, buttonScale) {
-				// Make this one current
-				sp.SelectedPreferenceSet = i
-				sp.CurrentPreferenceSet = sp.PreferenceSets[i]
-			}
-		}
-		for i := len(sp.PreferenceSets); i < NumPreferenceSets; i++ {
-			disabledButton(ctx, fmt.Sprintf("%d\n", i+1), buttonHalfVertical, buttonScale)
 		}
 
 		if selectButton(ctx, "DEFAULT", buttonHalfVertical, buttonScale) {
-			sp.CurrentPreferenceSet.ResetDefault(&ctx.ControlClient.State)
+			sp.prefSet.ResetDefault(ctx.ControlClient.State, ctx.Platform, sp)
 		}
 		disabledButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
-		if selectButton(ctx, "RESTORE", buttonHalfVertical, buttonScale) {
-			// Restore settings that were in effect when we entered the PREF sub-menu
-			sp.SelectedPreferenceSet = sp.RestoreSelectedPreferenceSet
-			sp.CurrentPreferenceSet = sp.PreferenceSets[sp.SelectedPreferenceSet]
+		if sp.RestorePreferences == nil {
+			// It shouldn't be nil, but...
+			disabledButton(ctx, "RESTORE", buttonHalfVertical, buttonScale)
+		} else if selectButton(ctx, "RESTORE", buttonHalfVertical, buttonScale) {
+			// 4-20: restore display settings that were in effect when we
+			// entered the PREF sub-menu.
+			sp.prefSet.Current = deep.MustCopy(*sp.RestorePreferences)
+			sp.prefSet.Current.Activate(ctx.Platform, sp)
+			if sp.RestorePreferencesNumber == nil {
+				sp.prefSet.Selected = nil
+			} else {
+				n := *sp.RestorePreferencesNumber
+				sp.prefSet.Selected = &n
+			}
 		}
 
-		validSelection := sp.SelectedPreferenceSet != -1 && sp.SelectedPreferenceSet < len(sp.PreferenceSets)
-		if validSelection {
+		if sp.prefSet.Selected != nil {
 			if selectButton(ctx, "SAVE", buttonHalfVertical, buttonScale) {
-				sp.PreferenceSets[sp.SelectedPreferenceSet] = sp.CurrentPreferenceSet
-				// FIXME? globalConfig.Save()
+				sp.prefSet.Saved[*sp.prefSet.Selected] = sp.prefSet.Current.Duplicate()
 			}
 		} else {
 			disabledButton(ctx, "SAVE", buttonHalfVertical, buttonScale)
 		}
 		disabledButton(ctx, "CHG PIN", buttonHalfVertical, buttonScale)
-		if selectButton(ctx, "SAVE AS", buttonHalfVertical, buttonScale) {
-			// A command mode handles prompting for the name and then saves
-			// when enter is pressed.
+
+		canSaveAs := slices.Contains(sp.prefSet.Saved[:], nil)
+		if !canSaveAs {
+			disabledButton(ctx, "SAVE AS", buttonHalfVertical, buttonScale)
+		} else if selectButton(ctx, "SAVE AS", buttonHalfVertical, buttonScale) {
+			// This command mode handles prompting for the name and then
+			// saves when enter is pressed.
 			sp.commandMode = CommandModeSavePrefAs
 		}
-		if validSelection {
+		if sp.prefSet.Selected != nil {
 			if selectButton(ctx, "DELETE", buttonHalfVertical, buttonScale) {
-				sp.PreferenceSets = util.DeleteSliceElement(sp.PreferenceSets, sp.SelectedPreferenceSet)
+				sp.prefSet.Saved[*sp.prefSet.Selected] = nil
+				sp.prefSet.Selected = nil
 			}
 		} else {
 			disabledButton(ctx, "DELETE", buttonHalfVertical, buttonScale)
@@ -418,6 +450,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 
 		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
+			sp.RestorePreferences = nil
+			sp.RestorePreferencesNumber = nil
 		}
 
 	case dcbMenuSite:

@@ -83,6 +83,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		pt += "SITE\n"
 	case CommandModeWX:
 		pt += "WX\n"
+	case CommandModePref:
+		pt += "PREF SET\n"
 	}
 	pt += strings.Join(strings.Fields(sp.previewAreaInput), "\n") // spaces are rendered as newlines
 	drawList(pt, ps.PreviewAreaPosition, previewAreaStyle)
@@ -169,8 +171,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		}
 
 		// ATIS and GI text always, apparently
-		if ps.CurrentATIS != "" {
-			pw = td.AddText(ps.CurrentATIS+" "+ps.GIText[0], pw, listStyle)
+		if ps.ATIS != "" {
+			pw = td.AddText(ps.ATIS+" "+ps.GIText[0], pw, listStyle)
 			newline()
 		} else if ps.GIText[0] != "" {
 			pw = td.AddText(ps.GIText[0], pw, listStyle)

@@ -43,6 +43,7 @@ const (
 	CommandModeRange
 	CommandModeSiteMenu
 	CommandModeWX
+	CommandModePref
 )
 
 type CommandStatus struct {
@@ -200,6 +201,13 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 				sp.resetInputState()
 				sp.commandMode = CommandModeCollisionAlert
 			}
+		case platform.KeyInsert:
+			if ps.DisplayDCB {
+				sp.disableMenuSpinner(ctx)
+				sp.activeDCBMenu = dcbMenuPref
+			}
+			sp.resetInputState()
+			sp.commandMode = CommandModePref
 		}
 	}
 }
@@ -583,27 +591,27 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				sp.cancelHandoff(ctx, ac.Callsign)
 				status.clear = true
 			} else {
-				// Enabling/ disabling automatic handoff processing, 4-30
+				// Enabling / disabling automatic handoff processing, 4-30
 				switch f[0] {
 				case "CXE":
-					sp.AirspaceAwareness.Interfacility = true
+					ps.AutomaticHandoffs.Interfacility = true
 					status.clear = true
 				case "CXI":
-					sp.AirspaceAwareness.Interfacility = false
+					ps.AutomaticHandoffs.Interfacility = false
 					status.clear = true
 				case "CTE":
-					sp.AirspaceAwareness.Intrafacility = true
+					ps.AutomaticHandoffs.Intrafacility = true
 					status.clear = true
 				case "CTI":
-					sp.AirspaceAwareness.Intrafacility = false
+					ps.AutomaticHandoffs.Intrafacility = false
 					status.clear = true
 				case "CE":
-					sp.AirspaceAwareness.Intrafacility = true
-					sp.AirspaceAwareness.Interfacility = true
+					ps.AutomaticHandoffs.Intrafacility = true
+					ps.AutomaticHandoffs.Interfacility = true
 					status.clear = true
 				case "CI":
-					sp.AirspaceAwareness.Intrafacility = false
-					sp.AirspaceAwareness.Interfacility = false
+					ps.AutomaticHandoffs.Intrafacility = false
+					ps.AutomaticHandoffs.Interfacility = false
 					status.clear = true
 				default:
 					status.err = ErrSTARSCommandFormat
@@ -775,6 +783,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				// I* clears the status area(?!)
 				status.clear = true
 				return
+			}
+
+		case "K":
+			if cmd == "" { // 4-21: reset to default prefs
+				sp.prefSet.ResetDefault(ctx.ControlClient.State, ctx.Platform, sp)
 			}
 
 		case "L":
@@ -1205,7 +1218,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			switch len(cmd) {
 			case 0:
 				// S -> clear atis, first line of text
-				ps.CurrentATIS = ""
+				ps.ATIS = ""
 				ps.GIText[0] = ""
 				status.clear = true
 				return
@@ -1213,7 +1226,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			case 1:
 				if cmd[0] == '*' {
 					// S* -> clear atis
-					ps.CurrentATIS = ""
+					ps.ATIS = ""
 					status.clear = true
 					return
 				} else if cmd[0] >= '1' && cmd[0] <= '9' {
@@ -1224,7 +1237,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					return
 				} else if cmd[0] >= 'A' && cmd[0] <= 'Z' {
 					// S(atis) -> set atis code
-					ps.CurrentATIS = string(cmd[0])
+					ps.ATIS = string(cmd[0])
 					status.clear = true
 					return
 				} else {
@@ -1235,13 +1248,13 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			default:
 				if len(cmd) == 2 && cmd[0] >= 'A' && cmd[0] <= 'Z' && cmd[1] == '*' {
 					// S(atis)* -> set atis, delete first line of text
-					ps.CurrentATIS = string(cmd[0])
+					ps.ATIS = string(cmd[0])
 					ps.GIText[0] = ""
 					status.clear = true
 					return
 				} else if cmd[0] == '*' {
 					// S*(text) -> clear atis, set first line of gi text
-					ps.CurrentATIS = ""
+					ps.ATIS = ""
 					ps.GIText[0] = cmd[1:]
 					status.clear = true
 					return
@@ -1253,7 +1266,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					return
 				} else if cmd[0] >= 'A' && cmd[0] <= 'Z' {
 					// S(atis)(text) -> set atis and first line of GI text
-					ps.CurrentATIS = string(cmd[0])
+					ps.ATIS = string(cmd[0])
 					ps.GIText[0] = cmd[1:]
 					status.clear = true
 					return
@@ -1443,12 +1456,31 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		return
 
 	case CommandModeSavePrefAs:
-		psave := sp.CurrentPreferenceSet.Duplicate()
-		psave.Name = cmd
-		sp.PreferenceSets = append(sp.PreferenceSets, psave)
-		sp.SelectedPreferenceSet = len(sp.PreferenceSets) - 1
-		status.clear = true
-		// FIXME? globalConfig.Save()
+		if cmd != "" {
+			if len(cmd) > 7 {
+				status.err = ErrSTARSCommandFormat
+			} else if slices.ContainsFunc(sp.prefSet.Saved[:],
+				func(p *Preferences) bool { return p != nil && p.Name == cmd }) {
+				// Can't repeat pref set names
+				status.err = ErrSTARSIllegalPrefset
+			} else if v, err := strconv.Atoi(cmd); err == nil && v >= 1 && v <= numSavedPreferenceSets {
+				// Can't give it a numeric name that conflicts with pref set #s
+				status.err = ErrSTARSIllegalPrefset
+			} else {
+				// Find the first empty slot
+				idx := slices.Index(sp.prefSet.Saved[:], nil)
+				if idx == -1 {
+					// This shouldn't happen since SAVE AS should be disabled if there are
+					// no free slots...
+					idx = len(sp.prefSet.Saved) - 1
+				}
+				p := sp.prefSet.Current.Duplicate()
+				p.Name = cmd
+				sp.prefSet.Selected = &idx
+				sp.prefSet.Saved[idx] = p
+				status.clear = true
+			}
+		}
 		return
 
 	case CommandModeMaps:
@@ -1562,6 +1594,38 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			return
 		}
 		// Otherwise fall through to ErrSTARSCommandFormat
+
+	case CommandModePref:
+		// 4-10: apply preference set
+		if cmd != "" {
+			idx, err := strconv.Atoi(cmd)
+			if err == nil && (idx <= 0 || idx > numSavedPreferenceSets) {
+				// Got a number but it's out of range
+				status.err = ErrSTARSCommandFormat
+				return
+			} else if err == nil {
+				idx-- // 0-based indexing
+				if sp.prefSet.Saved[idx] == nil {
+					// No saved prefs at the given index
+					status.err = ErrSTARSCommandFormat
+					return
+				}
+			} else {
+				idx = slices.IndexFunc(sp.prefSet.Saved[:], func(p *Preferences) bool { return p != nil && p.Name == cmd })
+				if idx == -1 {
+					// Named pref set doesn't exist
+					status.err = ErrSTARSIllegalPrefset
+					return
+				}
+			}
+			// Success
+			sp.prefSet.Selected = &idx
+			sp.prefSet.SetCurrent(*sp.prefSet.Saved[idx], ctx.Platform, sp)
+
+			sp.activeDCBMenu = dcbMenuMain
+			status.clear = true
+			return
+		}
 	}
 
 	status.err = ErrSTARSCommandFormat

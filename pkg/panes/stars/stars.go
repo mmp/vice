@@ -66,12 +66,17 @@ var (
 	STARSATPAAlertColor   = renderer.RGB{1, .215, 0}
 )
 
-const NumPreferenceSets = 32
-
 type STARSPane struct {
-	CurrentPreferenceSet  PreferenceSet
-	SelectedPreferenceSet int
-	PreferenceSets        []PreferenceSet
+	TRACONPreferenceSets map[string]*PreferenceSet
+	prefSet              *PreferenceSet
+
+	// These are the current prefs from the prior representation; we read
+	// them back in if they're there to use to bootstrap the new
+	// representation.
+	// TODO: remove this at some point in the future.
+	OldPrefsCurrentPreferenceSet  *Preferences  `json:"CurrentPreferenceSet,omitempty"`
+	OldPrefsSelectedPreferenceSet *int          `json:"SelectedPreferenceSet,omitempty"`
+	OldPrefsPreferenceSets        []Preferences `json:"PreferenceSets,omitempty"`
 
 	videoMaps  map[int]*av.VideoMap
 	systemMaps map[int]*av.VideoMap
@@ -93,8 +98,9 @@ type STARSPane struct {
 
 	events *sim.EventsSubscription
 
-	// Preference set that was selected when we entered the PREF menu.
-	RestoreSelectedPreferenceSet int
+	// Preferences that were active when we entered the PREF menu.
+	RestorePreferences       *Preferences
+	RestorePreferencesNumber *int
 
 	// All of the aircraft in the world, each with additional information
 	// carried along in an STARSAircraftState.
@@ -109,10 +115,6 @@ type STARSPane struct {
 	// map[string]interface{}.
 	AutoTrackDepartures bool `json:"autotrack_departures"`
 	LockDisplay         bool
-	AirspaceAwareness   struct {
-		Interfacility bool
-		Intrafacility bool
-	}
 
 	// callsign -> controller id
 	InboundPointOuts  map[string]string
@@ -296,10 +298,7 @@ func (b STARSBrightness) ScaleRGB(r renderer.RGB) renderer.RGB {
 // STARSPane proper
 
 func NewSTARSPane() *STARSPane {
-	return &STARSPane{
-		SelectedPreferenceSet: -1,
-		CurrentPreferenceSet:  MakePreferenceSet(""),
-	}
+	return &STARSPane{}
 }
 
 func (sp *STARSPane) DisplayName() string { return "STARS" }
@@ -307,8 +306,6 @@ func (sp *STARSPane) DisplayName() string { return "STARS" }
 func (sp *STARSPane) Hide() bool { return false }
 
 func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
-	sp.CurrentPreferenceSet.Activate(p, sp)
-
 	if sp.InboundPointOuts == nil {
 		sp.InboundPointOuts = make(map[string]string)
 	}
@@ -320,6 +317,9 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	}
 	if sp.queryUnassociated == nil {
 		sp.queryUnassociated = util.NewTransientMap[string, interface{}]()
+	}
+	if sp.TRACONPreferenceSets == nil {
+		sp.TRACONPreferenceSets = make(map[string]*PreferenceSet)
 	}
 
 	sp.initializeFonts(r, p)
@@ -348,28 +348,13 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
 
-	ps := &sp.CurrentPreferenceSet
 func (sp *STARSPane) LoadedSim(ss sim.State, pl platform.Platform, lg *log.Logger) {
+	sp.initPrefsForLoadedSim(ss, pl)
 
-	sp.weatherRadar.UpdateCenter(ps.Center)
+	sp.weatherRadar.UpdateCenter(sp.currentPrefs().Center)
 
 	sp.makeMaps(ss, lg)
 }
-
-	ps := &sp.CurrentPreferenceSet
-
-	ps.Center = ss.GetInitialCenter()
-	ps.CurrentCenter = ps.Center
-	ps.RangeRingsCenter = ps.Center
-	sp.weatherRadar.UpdateCenter(ps.Center)
-
-	ps.Range = ss.GetInitialRange()
-
-	ps.CurrentATIS = ""
-	for i := range ps.GIText {
-		ps.GIText[i] = ""
-	}
-	ps.RadarSiteSelected = ""
 
 func (sp *STARSPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger) {
 	sp.ConvergingRunways = nil
@@ -386,26 +371,14 @@ func (sp *STARSPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger
 		}
 	}
 
-	ps.ResetCRDAState(sp.ConvergingRunways)
-	for i := range sp.PreferenceSets {
-		sp.PreferenceSets[i].ResetCRDAState(sp.ConvergingRunways)
-	}
+	sp.resetPrefsForNewSim(ss, pl)
+
+	sp.weatherRadar.UpdateCenter(sp.currentPrefs().Center)
 
 	sp.lastTrackUpdate = time.Time{} // force update
 	sp.lastHistoryTrackUpdate = time.Time{}
 
 	sp.makeMaps(ss, lg)
-
-	// Make the scenario's default video maps visible
-	ps.VideoMapVisible = make(map[int]interface{})
-	videoMaps, defaultVideoMaps := ss.GetVideoMaps()
-	for _, dm := range defaultVideoMaps {
-		if idx := slices.IndexFunc(videoMaps, func(m av.VideoMap) bool { return m.Name == dm }); idx != -1 {
-			ps.VideoMapVisible[videoMaps[idx].Id] = nil
-		} else {
-			lg.Errorf("%s: \"default_map\" not found in \"stars_maps\"", dm)
-		}
-	}
 }
 
 func (sp *STARSPane) makeMaps(ss sim.State, lg *log.Logger) {
@@ -544,9 +517,8 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
 
 func (sp *STARSPane) Upgrade(from, to int) {
-	sp.CurrentPreferenceSet.Upgrade(from, to)
-	for i := range sp.PreferenceSets {
-		sp.PreferenceSets[i].Upgrade(from, to)
+	for _, prefs := range sp.TRACONPreferenceSets {
+		prefs.Upgrade(from, to)
 	}
 }
 

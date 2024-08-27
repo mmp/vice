@@ -204,6 +204,13 @@ func main() {
 		}
 		renderer.FontsInit(render, plat)
 
+		eventStream := sim.NewEventStream(lg)
+
+		uiInit(render, plat, config, eventStream, lg)
+
+		config.Activate(render, plat, eventStream, lg)
+
+		// After config.Activate(), if we have a loaded sim, get configured for it.
 		if config.Sim != nil && !*resetSim {
 			if client, err := mgr.LoadLocalSim(config.Sim, lg); err != nil {
 				lg.Errorf("Error loading local sim: %v", err)
@@ -213,12 +220,6 @@ func main() {
 				controlClient = client
 			}
 		}
-
-		eventStream := sim.NewEventStream(lg)
-
-		uiInit(render, plat, config, eventStream, lg)
-
-		config.Activate(render, plat, eventStream, lg)
 
 		if !mgr.Connected() {
 			uiShowConnectDialog(mgr, false, config, plat, lg)

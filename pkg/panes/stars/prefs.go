@@ -5,17 +5,68 @@
 package stars
 
 import (
+	"slices"
+
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/sim"
-	"github.com/mmp/vice/pkg/util"
+
+	"github.com/brunoga/deep"
 )
 
-type PreferenceSet struct {
-	Name string
+const numSavedPreferenceSets = 32
 
-	DisplayDCB  bool
-	DCBPosition int
+// PreferenceSet stores the currently active preferences and up to
+// numSavedPreferenceSets saved preferences; STARSPane keeps a separate
+// PreferenceSet for each TRACON that the user signs in to.
+type PreferenceSet struct {
+	Current  Preferences
+	Selected *int // if non-nil, an index into Saved
+	Saved    [numSavedPreferenceSets]*Preferences
+}
+
+func (p *PreferenceSet) Upgrade(from, to int) {
+	p.Current.Upgrade(from, to)
+	for _, p := range p.Saved {
+		if p != nil {
+			p.Upgrade(from, to)
+		}
+	}
+}
+
+func (p *PreferenceSet) SetCurrent(cur Preferences, pl platform.Platform, sp *STARSPane) {
+	// Make sure we don't alias slices, maps, etc.
+	p.Current = deep.MustCopy(cur)
+
+	// Slightly annoying, but we need to let the Platform know the audio
+	// volume from the prefs.
+	p.Current.Activate(pl, sp)
+}
+
+// Reset ends up being called when a new Sim is started. It is responsible
+// for resetting all of the preference values in the PreferenceSet that we
+// don't expect to persist on a restart (e.g. quick look positions.)
+func (p *PreferenceSet) Reset(ss sim.State, rwys []STARSConvergingRunways) {
+	// Only reset Current; leave everything as is in the saved prefs.
+	p.Current.Reset(ss, rwys)
+}
+
+// ResetDefault resets the current preferences to the system defaults.
+func (p *PreferenceSet) ResetDefault(ss sim.State, pl platform.Platform, sp *STARSPane) {
+	// Start with the full-on STARS defaults and then update for the current Sim.
+	p.Current = *makeDefaultPreferences()
+	p.Reset(ss, sp.ConvergingRunways)
+
+	p.Selected = nil
+	p.Current.Activate(pl, sp)
+}
+
+// Preferences encapsulates the user-settable STARS preferences that
+type Preferences struct {
+	CommonPreferences
+
+	Name string // Name given if it's been saved
 
 	Center math.Point2LL
 	Range  float32
@@ -26,20 +77,9 @@ type PreferenceSet struct {
 	RangeRingsCenter math.Point2LL
 	RangeRingRadius  int
 
-	// TODO? cursor speed
-
-	CurrentATIS string
-	GIText      [9]string
-
-	AudioVolume int // 1-10
-
-	RadarTrackHistory int
-	// 4-94: 0.5s increments via trackball but 0.1s increments allowed if
-	// keyboard input.
-	RadarTrackHistoryRate float32
-
-	DisplayWeatherLevel     [6]bool
-	LastDisplayWeatherLevel [6]bool
+	// User-supplied text for the SSA list
+	ATIS   string
+	GIText [9]string
 
 	// If empty, then then MULTI or FUSED mode, depending on
 	// FusedRadarMode.  The custom JSON name is so we don't get errors
@@ -47,11 +87,6 @@ type PreferenceSet struct {
 	RadarSiteSelected string `json:"RadarSiteSelectedName"`
 	FusedRadarMode    bool
 
-	AudioEffectEnabled []bool
-
-	// For tracked by the user
-	LeaderLineDirection math.CardinalOrdinalDirection
-	LeaderLineLength    int // 0-7
 	// For tracked by other controllers
 	ControllerLeaderLineDirections map[string]math.CardinalOrdinalDirection
 	// If not specified in ControllerLeaderLineDirections...
@@ -64,14 +99,19 @@ type PreferenceSet struct {
 		Associated   [2]int
 	}
 
+	AutomaticHandoffs struct { // 4-30
+		Interfacility bool
+		Intrafacility bool
+	}
+
 	QuickLookAll       bool
 	QuickLookAllIsPlus bool
 	QuickLookPositions []QuickLookPosition
 
 	CRDA struct {
 		Disabled bool
-		// Has the same size and indexing as corresponding STARSPane
-		// STARSConvergingRunways
+		// RunwayPairState has the same size and indexing as corresponding
+		// the STARSPane STARSConvergingRunways member.
 		RunwayPairState []CRDARunwayPairState
 		ForceAllGhosts  bool
 	}
@@ -79,12 +119,45 @@ type PreferenceSet struct {
 	DisplayLDBBeaconCodes bool // TODO: default?
 	SelectedBeaconCodes   []string
 
-	// TODO: review--should some of the below not be in prefs but be in STARSPane?
-
 	// DisplayUncorrelatedTargets bool // NOT USED
 
 	DisableCAWarnings bool
 	DisableMSAW       bool
+
+	VideoMapVisible map[int]interface{}
+
+	DisplayRequestedAltitude bool
+
+	Bookmarks [10]struct {
+		Center math.Point2LL
+		Range  float32
+	}
+}
+
+// CommonPreferences stores the STARS preference settings that are
+// generally TRACON-independent--font size, brightness, etc.  This is
+// admittedly somewhat subjective.  Splitting them out in this way lets us
+// maintain those settings when the user starts a scenario at a new TRACON
+// so that they don't need to start from scratch for each one.
+type CommonPreferences struct {
+	DisplayDCB  bool
+	DCBPosition int
+
+	AudioVolume int // 1-10
+
+	RadarTrackHistory int // Number of history markers
+	// 4-94: 0.5s increments via trackball but 0.1s increments allowed if
+	// keyboard input.
+	RadarTrackHistoryRate float32
+
+	AudioEffectEnabled []bool
+
+	DisplayWeatherLevel     [numWxLevels]bool
+	LastDisplayWeatherLevel [numWxLevels]bool
+
+	// For aircraft tracked by the user.
+	LeaderLineDirection math.CardinalOrdinalDirection
+	LeaderLineLength    int // 0-7
 
 	OverflightFullDatablocks bool
 	AutomaticFDBOffset       bool
@@ -94,19 +167,10 @@ type PreferenceSet struct {
 	DisplayATPAWarningAlertCones bool
 	DisplayATPAMonitorCones      bool
 
-	VideoMapVisible map[int]interface{}
-
 	PTLLength      float32
 	PTLOwn, PTLAll bool
 
-	DisplayRequestedAltitude bool
-
 	DwellMode DwellMode
-
-	Bookmarks [10]struct {
-		Center math.Point2LL
-		Range  float32
-	}
 
 	Brightness struct {
 		DCB                STARSBrightness
@@ -165,228 +229,183 @@ type PreferenceSet struct {
 			}
 		}
 	}
-	VFRList struct {
-		Position [2]float32
-		Visible  bool
-		Lines    int
-	}
-	TABList struct {
-		Position [2]float32
-		Visible  bool
-		Lines    int
-	}
-	AlertList struct {
-		Position [2]float32
-		Visible  bool
-		Lines    int
-	}
-	CoastList struct {
-		Position [2]float32
-		Visible  bool
-		Lines    int
-	}
-	SignOnList struct {
-		Position [2]float32
-		Visible  bool
-	}
+	VFRList       BasicSTARSList
+	TABList       BasicSTARSList
+	AlertList     BasicSTARSList
+	CoastList     BasicSTARSList
+	SignOnList    BasicSTARSList
 	VideoMapsList struct {
 		Position  [2]float32
 		Visible   bool
 		Selection VideoMapsGroup
 	}
-	CRDAStatusList struct {
-		Position [2]float32
-		Visible  bool
-	}
-	TowerLists [3]struct {
-		Position [2]float32
-		Visible  bool
-		Lines    int
-	}
+	CRDAStatusList BasicSTARSList
+	TowerLists     [3]BasicSTARSList
 }
 
-func (ps *PreferenceSet) ResetCRDAState(rwys []STARSConvergingRunways) {
-	ps.CRDA.RunwayPairState = nil
+type BasicSTARSList struct {
+	Position [2]float32
+	Visible  bool
+	Lines    int
+}
+
+func (p *Preferences) Reset(ss sim.State, rwys []STARSConvergingRunways) {
+	// Get the scope centered and set the range according to the Sim's initial values.
+	p.Center = ss.GetInitialCenter()
+	p.CurrentCenter = p.Center
+	p.RangeRingsCenter = p.Center
+	p.Range = ss.GetInitialRange()
+
+	p.ATIS = ""
+	for i := range p.GIText {
+		p.GIText[i] = ""
+	}
+
+	p.RadarSiteSelected = ""
+
+	// Reset CRDA state
+	p.CRDA.RunwayPairState = nil
 	state := CRDARunwayPairState{}
 	// The first runway is enabled by default
 	state.RunwayState[0].Enabled = true
 	for range rwys {
-		ps.CRDA.RunwayPairState = append(ps.CRDA.RunwayPairState, state)
+		p.CRDA.RunwayPairState = append(p.CRDA.RunwayPairState, state)
+	}
+
+	// Make the scenario's default video maps visible
+	p.VideoMapVisible = make(map[int]interface{})
+	videoMaps, defaultVideoMaps := ss.GetVideoMaps()
+	for _, dm := range defaultVideoMaps {
+		if idx := slices.IndexFunc(videoMaps, func(m av.VideoMap) bool { return m.Name == dm }); idx != -1 {
+			p.VideoMapVisible[videoMaps[idx].Id] = nil
+		} else {
+			// This should have been validated at load time.
+			// lg.Errorf("%s: \"default_map\" not found in \"stars_maps\"", dm)
+		}
 	}
 }
 
-func MakePreferenceSet(name string) PreferenceSet {
-	var ps PreferenceSet
+func makeDefaultPreferences() *Preferences {
+	var prefs Preferences
 
-	ps.Name = name
+	prefs.DisplayDCB = true
+	prefs.DCBPosition = dcbPositionTop
 
-	ps.DisplayDCB = true
-	ps.DCBPosition = dcbPositionTop
+	prefs.CurrentCenter = prefs.Center
 
-	ps.CurrentCenter = ps.Center
+	prefs.RangeRingsCenter = prefs.Center
+	prefs.RangeRingRadius = 5
 
-	ps.RangeRingsCenter = ps.Center
-	ps.RangeRingRadius = 5
+	prefs.RadarTrackHistory = 5
+	prefs.RadarTrackHistoryRate = 4.5
 
-	ps.RadarTrackHistory = 5
-	ps.RadarTrackHistoryRate = 4.5
-
-	ps.AudioVolume = 10
-	ps.AudioEffectEnabled = make([]bool, AudioNumTypes)
+	prefs.AudioVolume = 10
+	prefs.AudioEffectEnabled = make([]bool, AudioNumTypes)
 	for i := range AudioNumTypes {
-		ps.AudioEffectEnabled[i] = true
+		prefs.AudioEffectEnabled[i] = true
 	}
 
-	ps.VideoMapVisible = make(map[int]interface{})
+	prefs.VideoMapVisible = make(map[int]interface{})
 
-	ps.FusedRadarMode = true
-	ps.LeaderLineDirection = math.North
-	ps.LeaderLineLength = 1
+	prefs.FusedRadarMode = true
+	prefs.LeaderLineDirection = math.North
+	prefs.LeaderLineLength = 1
 
-	ps.AltitudeFilters.Unassociated = [2]int{100, 60000}
-	ps.AltitudeFilters.Associated = [2]int{100, 60000}
+	prefs.AltitudeFilters.Unassociated = [2]int{100, 60000}
+	prefs.AltitudeFilters.Associated = [2]int{100, 60000}
 
-	//ps.DisplayUncorrelatedTargets = true
+	//prefs.DisplayUncorrelatedTargets = true
 
-	ps.DisplayTPASize = true
-	ps.DisplayATPAWarningAlertCones = true
+	prefs.DisplayTPASize = true
+	prefs.DisplayATPAWarningAlertCones = true
 
-	ps.PTLLength = 1
+	prefs.PTLLength = 1
 
-	ps.Brightness.DCB = 60
-	ps.Brightness.BackgroundContrast = 0
-	ps.Brightness.VideoGroupA = 50
-	ps.Brightness.VideoGroupB = 40
-	ps.Brightness.FullDatablocks = 80
-	ps.Brightness.Lists = 80
-	ps.Brightness.Positions = 80
-	ps.Brightness.LimitedDatablocks = 80
-	ps.Brightness.OtherTracks = 80
-	ps.Brightness.Lines = 40
-	ps.Brightness.RangeRings = 20
-	ps.Brightness.Compass = 40
-	ps.Brightness.BeaconSymbols = 55
-	ps.Brightness.PrimarySymbols = 80
-	ps.Brightness.History = 60
-	ps.Brightness.Weather = 30
-	ps.Brightness.WxContrast = 30
+	prefs.Brightness.DCB = 60
+	prefs.Brightness.BackgroundContrast = 0
+	prefs.Brightness.VideoGroupA = 50
+	prefs.Brightness.VideoGroupB = 40
+	prefs.Brightness.FullDatablocks = 80
+	prefs.Brightness.Lists = 80
+	prefs.Brightness.Positions = 80
+	prefs.Brightness.LimitedDatablocks = 80
+	prefs.Brightness.OtherTracks = 80
+	prefs.Brightness.Lines = 40
+	prefs.Brightness.RangeRings = 20
+	prefs.Brightness.Compass = 40
+	prefs.Brightness.BeaconSymbols = 55
+	prefs.Brightness.PrimarySymbols = 80
+	prefs.Brightness.History = 60
+	prefs.Brightness.Weather = 30
+	prefs.Brightness.WxContrast = 30
 
-	for i := range ps.DisplayWeatherLevel {
-		ps.DisplayWeatherLevel[i] = true
+	for i := range prefs.DisplayWeatherLevel {
+		prefs.DisplayWeatherLevel[i] = true
 	}
 
-	ps.CharSize.DCB = 1
-	ps.CharSize.Datablocks = 1
-	ps.CharSize.Lists = 1
-	ps.CharSize.Tools = 1
-	ps.CharSize.PositionSymbols = 0
+	prefs.CharSize.DCB = 1
+	prefs.CharSize.Datablocks = 1
+	prefs.CharSize.Lists = 1
+	prefs.CharSize.Tools = 1
+	prefs.CharSize.PositionSymbols = 0
 
-	ps.PreviewAreaPosition = [2]float32{.05, .75}
+	prefs.PreviewAreaPosition = [2]float32{.05, .75}
 
-	ps.SSAList.Position = [2]float32{.05, .9}
-	ps.SSAList.Visible = true
-	ps.SSAList.Filter.All = true
+	prefs.SSAList.Position = [2]float32{.05, .9}
+	prefs.SSAList.Visible = true
+	prefs.SSAList.Filter.All = true
 
-	ps.TABList.Position = [2]float32{.05, .65}
-	ps.TABList.Lines = 5
-	ps.TABList.Visible = true
+	prefs.TABList.Position = [2]float32{.05, .65}
+	prefs.TABList.Lines = 5
+	prefs.TABList.Visible = true
 
-	ps.VFRList.Position = [2]float32{.05, .2}
-	ps.VFRList.Lines = 5
-	ps.VFRList.Visible = true
+	prefs.VFRList.Position = [2]float32{.05, .2}
+	prefs.VFRList.Lines = 5
+	prefs.VFRList.Visible = true
 
-	ps.AlertList.Position = [2]float32{.8, .25}
-	ps.AlertList.Lines = 5
-	ps.AlertList.Visible = true
+	prefs.AlertList.Position = [2]float32{.8, .25}
+	prefs.AlertList.Lines = 5
+	prefs.AlertList.Visible = true
 
-	ps.CoastList.Position = [2]float32{.8, .65}
-	ps.CoastList.Lines = 5
-	ps.CoastList.Visible = false
+	prefs.CoastList.Position = [2]float32{.8, .65}
+	prefs.CoastList.Lines = 5
+	prefs.CoastList.Visible = false
 
-	ps.SignOnList.Position = [2]float32{.8, .9}
-	ps.SignOnList.Visible = true
+	prefs.SignOnList.Position = [2]float32{.9, .9}
+	prefs.SignOnList.Visible = true
 
-	ps.VideoMapsList.Position = [2]float32{.85, .5}
-	ps.VideoMapsList.Visible = false
+	prefs.VideoMapsList.Position = [2]float32{.85, .5}
+	prefs.VideoMapsList.Visible = false
 
-	ps.CRDAStatusList.Position = [2]float32{.05, .7}
+	prefs.CRDAStatusList.Position = [2]float32{.05, .7}
 
-	ps.TowerLists[0].Position = [2]float32{.05, .5}
-	ps.TowerLists[0].Lines = 5
-	ps.TowerLists[0].Visible = true
+	prefs.TowerLists[0].Position = [2]float32{.05, .5}
+	prefs.TowerLists[0].Lines = 5
+	prefs.TowerLists[0].Visible = true
 
-	ps.TowerLists[1].Position = [2]float32{.05, .8}
-	ps.TowerLists[1].Lines = 5
+	prefs.TowerLists[1].Position = [2]float32{.05, .8}
+	prefs.TowerLists[1].Lines = 5
 
-	ps.TowerLists[2].Position = [2]float32{.05, .9}
-	ps.TowerLists[2].Lines = 5
+	prefs.TowerLists[2].Position = [2]float32{.05, .9}
+	prefs.TowerLists[2].Lines = 5
 
-	return ps
+	return &prefs
 }
 
-func (ps *PreferenceSet) Duplicate() PreferenceSet {
-	dupe := *ps
-	dupe.SelectedBeaconCodes = util.DuplicateSlice(ps.SelectedBeaconCodes)
-	dupe.CRDA.RunwayPairState = util.DuplicateSlice(ps.CRDA.RunwayPairState)
-	dupe.VideoMapVisible = util.DuplicateMap(ps.VideoMapVisible)
-	return dupe
+func (p *Preferences) Duplicate() *Preferences {
+	c := deep.MustCopy(*p)
+	return &c
 }
 
-func (ps *PreferenceSet) ResetDefault(ss *sim.State) {
-	ps.Center = ss.GetInitialCenter()
-	ps.Range = ss.GetInitialRange()
+func (p *Preferences) Activate(pl platform.Platform, sp *STARSPane) {
+	pl.SetAudioVolume(p.AudioVolume)
+
+	if p.VideoMapVisible == nil {
+		p.VideoMapVisible = make(map[int]interface{})
+	}
 }
 
-func (ps *PreferenceSet) Activate(p platform.Platform, sp *STARSPane) {
-	// It should only take integer values but it's a float32 and we
-	// previously didn't enforce this...
-	ps.Range = float32(int(ps.Range))
-
-	if ps.PTLAll { // both can't be set; we didn't enforce this previously...
-		ps.PTLOwn = false
-	}
-
-	if ps.RadarTrackHistoryRate == 0 {
-		ps.RadarTrackHistoryRate = 4.5 // upgrade from old
-	}
-
-	p.SetAudioVolume(ps.AudioVolume)
-
-	// Brightness goes in steps of 5 (similarly not enforced previously...)
-	remapBrightness := func(b *STARSBrightness) {
-		*b = (*b + 2) / 5 * 5
-		*b = math.Clamp(*b, 0, 100)
-	}
-	remapBrightness(&ps.Brightness.DCB)
-	remapBrightness(&ps.Brightness.BackgroundContrast)
-	remapBrightness(&ps.Brightness.VideoGroupA)
-	remapBrightness(&ps.Brightness.VideoGroupB)
-	remapBrightness(&ps.Brightness.FullDatablocks)
-	remapBrightness(&ps.Brightness.Lists)
-	remapBrightness(&ps.Brightness.Positions)
-	remapBrightness(&ps.Brightness.LimitedDatablocks)
-	remapBrightness(&ps.Brightness.OtherTracks)
-	remapBrightness(&ps.Brightness.Lines)
-	remapBrightness(&ps.Brightness.RangeRings)
-	remapBrightness(&ps.Brightness.Compass)
-	remapBrightness(&ps.Brightness.BeaconSymbols)
-	remapBrightness(&ps.Brightness.PrimarySymbols)
-	remapBrightness(&ps.Brightness.History)
-	remapBrightness(&ps.Brightness.Weather)
-	remapBrightness(&ps.Brightness.WxContrast)
-
-	for len(ps.AudioEffectEnabled) < AudioNumTypes {
-		ps.AudioEffectEnabled = append(ps.AudioEffectEnabled, true)
-	}
-
-	if ps.VideoMapVisible == nil {
-		ps.VideoMapVisible = make(map[int]interface{})
-	}
-
-	ps.ResetCRDAState(sp.ConvergingRunways)
-}
-
-func (ps *PreferenceSet) Upgrade(from, to int) {
+func (ps *Preferences) Upgrade(from, to int) {
 	if from < 8 {
 		ps.Brightness.DCB = 60
 		ps.CharSize.DCB = 1
@@ -451,8 +470,105 @@ func (ps *PreferenceSet) Upgrade(from, to int) {
 	if from < 24 {
 		ps.AudioVolume = 10
 	}
+	if from < 26 {
+		// These are all from earlier releases but were previously done in
+		// PreferenceSet Activate (unfortunately), so some of these may
+		// still be lingering...
+
+		// It should only take integer values but it's a float32 and we
+		// previously didn't enforce this...
+		ps.Range = float32(int(ps.Range))
+
+		if ps.PTLAll { // both can't be set; we didn't enforce this previously...
+			ps.PTLOwn = false
+		}
+
+		if ps.RadarTrackHistoryRate == 0 {
+			ps.RadarTrackHistoryRate = 4.5 // upgrade from old
+		}
+
+		// Brightness goes in steps of 5 (similarly not enforced previously...)
+		remapBrightness := func(b *STARSBrightness) {
+			*b = (*b + 2) / 5 * 5
+			*b = math.Clamp(*b, 0, 100)
+		}
+		remapBrightness(&ps.Brightness.DCB)
+		remapBrightness(&ps.Brightness.BackgroundContrast)
+		remapBrightness(&ps.Brightness.VideoGroupA)
+		remapBrightness(&ps.Brightness.VideoGroupB)
+		remapBrightness(&ps.Brightness.FullDatablocks)
+		remapBrightness(&ps.Brightness.Lists)
+		remapBrightness(&ps.Brightness.Positions)
+		remapBrightness(&ps.Brightness.LimitedDatablocks)
+		remapBrightness(&ps.Brightness.OtherTracks)
+		remapBrightness(&ps.Brightness.Lines)
+		remapBrightness(&ps.Brightness.RangeRings)
+		remapBrightness(&ps.Brightness.Compass)
+		remapBrightness(&ps.Brightness.BeaconSymbols)
+		remapBrightness(&ps.Brightness.PrimarySymbols)
+		remapBrightness(&ps.Brightness.History)
+		remapBrightness(&ps.Brightness.Weather)
+		remapBrightness(&ps.Brightness.WxContrast)
+
+		for len(ps.AudioEffectEnabled) < AudioNumTypes {
+			ps.AudioEffectEnabled = append(ps.AudioEffectEnabled, true)
+		}
+	}
 }
 
-func (sp *STARSPane) currentPrefs() *PreferenceSet {
-	return &sp.CurrentPreferenceSet
+func (sp *STARSPane) initPrefsForLoadedSim(ss sim.State, pl platform.Platform) {
+	prefSet, ok := sp.TRACONPreferenceSets[ss.TRACON]
+	if !ok {
+		// First time we've seen this TRACON. Start out with system defaults.
+		prefSet = &PreferenceSet{
+			Current: *makeDefaultPreferences(),
+		}
+
+		if sp.OldPrefsCurrentPreferenceSet != nil {
+			// We loaded a saved config from a previous version; bootstrap
+			// with the prefs from there.  (We're implicitly assuming that
+			// they all apply to the selected TRACON, which should always
+			// be the case...)
+			prefSet.Current = *sp.OldPrefsCurrentPreferenceSet
+			if sp.OldPrefsSelectedPreferenceSet != nil && *sp.OldPrefsSelectedPreferenceSet < len(sp.OldPrefsPreferenceSets) {
+				prefSet.Selected = sp.OldPrefsSelectedPreferenceSet
+			}
+			for i, p := range sp.OldPrefsPreferenceSets {
+				if i < len(prefSet.Saved) {
+					prefSet.Saved[i] = &p
+				}
+			}
+
+			// No more need for the old prefs representation
+			sp.OldPrefsCurrentPreferenceSet = nil
+			sp.OldPrefsSelectedPreferenceSet = nil
+			sp.OldPrefsPreferenceSets = nil
+		} else if sp.prefSet != nil {
+			// Inherit the common prefs from the previously-active TRACON's
+			// preferences.
+			prefSet.Current.CommonPreferences = sp.prefSet.Current.CommonPreferences
+		}
+
+		sp.TRACONPreferenceSets[ss.TRACON] = prefSet
+	}
+
+	// Cache the PreferenceSet for use throughout the rest of the STARSPane
+	// methods.
+	sp.prefSet = prefSet
+	sp.prefSet.Current.Activate(pl, sp)
+}
+
+// This is called when a new Sim is started from scratch.
+func (sp *STARSPane) resetPrefsForNewSim(ss sim.State, pl platform.Platform) {
+	sp.initPrefsForLoadedSim(ss, pl)
+
+	// Clear out the preference-related state (e.g. quicklooks) that we
+	// don't expect to persist across Sim restarts.
+	sp.prefSet.Reset(ss, sp.ConvergingRunways)
+}
+
+func (sp *STARSPane) currentPrefs() *Preferences {
+	// sp.prefSet is initialized when either LoadSim() or ResetSim() ends
+	// up calling initPrefsForLoadedSim().
+	return &sp.prefSet.Current
 }

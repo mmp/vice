@@ -41,6 +41,7 @@ var (
 	ErrSTARSIllegalMap        = NewSTARSError("ILL MAP")
 	ErrSTARSIllegalParam      = NewSTARSError("ILL PARAM")
 	ErrSTARSIllegalPosition   = NewSTARSError("ILL POS")
+	ErrSTARSIllegalPrefset    = NewSTARSError("ILL PREFSET")
 	ErrSTARSIllegalRPC        = NewSTARSError("ILL RPC") // CRDA runway pair config
 	ErrSTARSIllegalRunway     = NewSTARSError("ILL RWY")
 	ErrSTARSIllegalScratchpad = NewSTARSError("ILL SCR")

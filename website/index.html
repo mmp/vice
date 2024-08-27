@@ -1683,26 +1683,27 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td><code>[TRIANGLE] / ∆</code></td><td><code>`</code></td></tr>
-                  <tr><td><code>[MIN]</code></td><td><code>[End]</code> or <code>\</code></td></tr>
-                  <tr><td><code>[INIT CNTL]</code></td><td><code>[F3]</code></td></tr>
-                  <tr><td><code>[TERM CNTL]</code></td><td><code>[F4]</code></td></tr>
-                  <tr><td><code>[HND OFF]</code></td><td><code>[F5]</code></td></tr>
-                  <tr><td><code>[FLT DATA]</code></td><td><code>[F6]</code></td></tr>
-                  <tr><td><code>[MULTIFUNC]</code></td><td><code>[F7]</code></td></tr>
-                  <tr><td><code>[WX]</code></td><td><code>[F8]</code></td></tr>
-                  <tr><td><code>[VP]</code></td><td><code>[F9]</code></td></tr>
-                  <tr><td><code>[CA]</code></td><td><code>[F11]</code></td></tr>
-                  <tr><td><code>[CNTR]</code></td><td><code>[Ctrl-F1]</code></td></tr>
-                  <tr><td><code>[MAPS]</code></td><td><code>[Ctrl-F2]</code></td></tr>
                   <tr><td><code>[BRITE]</code></td><td><code>[Ctrl-F3]</code></td></tr>
-                  <tr><td><code>[LDR]</code></td><td><code>[Ctrl-F4]</code></td></tr>
+                  <tr><td><code>[CA]</code></td><td><code>[F11]</code></td></tr>
                   <tr><td><code>[CHARSIZE]</code></td><td><code>[Ctrl-F5]</code></td></tr>
+                  <tr><td><code>[CNTR]</code></td><td><code>[Ctrl-F1]</code></td></tr>
                   <tr><td><code>[DCB-SHIFT]</code></td><td><code>[Ctrl-F7]</code></td></tr>
                   <tr><td><code>[DCB]</code></td><td><code>[Ctrl-F8]</code></td></tr>
-                  <tr><td><code>[RNGRING]</code></td><td><code>[Ctrl-F9]</code></td></tr>
+                  <tr><td><code>[FLT DATA]</code></td><td><code>[F6]</code></td></tr>
+                  <tr><td><code>[HND OFF]</code></td><td><code>[F5]</code></td></tr>
+                  <tr><td><code>[INIT CNTL]</code></td><td><code>[F3]</code></td></tr>
+                  <tr><td><code>[LDR]</code></td><td><code>[Ctrl-F4]</code></td></tr>
+                  <tr><td><code>[MAPS]</code></td><td><code>[Ctrl-F2]</code></td></tr>
+                  <tr><td><code>[MIN]</code></td><td><code>[End]</code> or <code>\</code></td></tr>
+                  <tr><td><code>[MULTIFUNC]</code></td><td><code>[F7]</code></td></tr>
+                  <tr><td><code>[PREF SET]</code></td><td><code>[Insert]</code></td></tr>
                   <tr><td><code>[RANGE]</code></td><td><code>[Ctrl-F10]</code></td></tr>
+                  <tr><td><code>[RNGRING]</code></td><td><code>[Ctrl-F9]</code></td></tr>
                   <tr><td><code>[SITE]</code></td><td><code>[Ctrl-F11]</code></td></tr>
+                  <tr><td><code>[TERM CNTL]</code></td><td><code>[F4]</code></td></tr>
+                  <tr><td><code>[TRIANGLE] / ∆</code></td><td><code>`</code></td></tr>
+                  <tr><td><code>[VP]</code></td><td><code>[F9]</code></td></tr>
+                  <tr><td><code>[WX]</code></td><td><code>[F8]</code></td></tr>
                 </tbody>
               </table>
 
@@ -1764,6 +1765,11 @@ how it simulates aircraft or the STARS interface.
 	          <tr>
                     <td>ILL POS</td>
                     <td>Illegal position: the control position specified
+                    is invalid or does not exist.</td>
+                  </tr>
+	          <tr>
+                    <td>ILL PREFSET</td>
+                    <td>Illegal preference set: the preference set specified
                     is invalid or does not exist.</td>
                   </tr>
 	          <tr>
@@ -3815,18 +3821,51 @@ how it simulates aircraft or the STARS interface.
             <h3 id="stars-preferences">Preferences</h3>
 
             <p>Various details of the current STARS configuration like brightness settings, font sizes, and the layout
-              of the system lists can be saved in a STARS preference set.  Functionality for loading and saving preference
-              sets can be accessed by clicking PREF on the main DCB menu.</p>
+              of the system lists can be saved in a STARS preference set.
+              The current preference set stores the preference settings that are currently active, and up to 32
+              additional named preference sets can be stored.
+              <i>vice</i> stores separate preferences for each TRACON, which makes it easy to customize STARS's settings
+              in different ways for different facilities.
+              </p>
+
+            <p>Functionality for loading and saving preference sets can be accessed by clicking PREF on the main DCB menu,
+              which brings up the PREF menu:</p>
             <div class="text-center">
               <img src="dcb-prefs.png" srcset="dcb-prefs-2x.png 2x" width="1495" height="76" style="max-width: 100%; height:auto;">
             </div><br>            
             <p>Here we can see that there are two saved preference sets, PHLN and FINAL, and that PHLN is active.
-              Preferences can be restored to their default values by clicking on DEFAULT and
-              clicking RESTORE restores the preferences to what they were when the PREF button was clicked.
-              Clicking SAVE saves the current preference settings to the selected preference set and DELETE
-              deletes the current preference set.
-              A new preference set is created when SAVE AS is clicked: the preview area will prompt PREF SET NAME and
+              Clicking on a saved preference set selects it and loads its settings.
+              Preferences can be restored to their defaults by clicking on DEFAULT.
+              Clicking RESTORE restores the preferences to what they were when the PREF button was clicked to bring up the PREF DCB menu.
+              If a preference set is selected, then SAVE is enabled; clicking on it
+              saves the current preference settings to the selected preference set.
+              DELETE deletes the selected preference set.</p>
+            <p>A new preference set is created when SAVE AS is clicked: the preview area will prompt PREF SET NAME and
               the name for the preference set can be entered, followed by the <code>ENTER</code> key.
+              Preference set names may be up to 7 alphanumeric characters and may not be a number between 1
+              and 32.</p>
+            <p>These keyboard commands are available for preference sets:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]K</code></td>
+                    <td>Resets the current preferences to the system defaults.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[PREF SET](##)</code> /<br><code>[PREF SET](ABC)</code></td>
+                    <td>Selects a preference set by number (1&ndash;32) or name.</td>
+                  </tr>
+                </tbody>
+              </table>
+
+
+
           </section>
           
 
@@ -3871,6 +3910,17 @@ how it simulates aircraft or the STARS interface.
                     <td><code>[MULTIFUNC]S[SLEW]</code></td>
                     <td>Places the upper-left corner of the SSA list at the selected location.</td>
                   </tr>
+                </tbody>
+              </table>
+              <p>GI text: general information text... TODO</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
                   <tr>
                     <td><code>[MULTIFUNC]S</code></td>
                     <td>Clear ATIS and first line
