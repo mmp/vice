@@ -91,6 +91,7 @@ const (
 	KeyF11
 	KeyF12
 	KeyV
+	KeyInsert
 )
 
 type KeyboardState struct {
@@ -175,6 +176,9 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	}
 	if io.KeySuperPressed() {
 		keyboard.Pressed[KeySuper] = nil
+	}
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyInsert)) {
+		keyboard.Pressed[KeyInsert] = nil
 	}
 
 	return keyboard
