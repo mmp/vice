@@ -511,7 +511,7 @@ func (sp *STARSPane) makeMaps(ss sim.State, lg *log.Logger) {
 }
 
 func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
-	ps := &sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 
 	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
 
@@ -554,7 +554,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.processEvents(ctx)
 	sp.updateRadarTracks(ctx)
 
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 
 	// Clear to background color
 	cb.ClearRGB(ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor))
@@ -670,7 +670,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 }
 
 func (sp *STARSPane) drawWX(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	weatherBrightness := float32(ps.Brightness.Weather) / float32(100)
 	weatherContrast := float32(ps.Brightness.WxContrast) / float32(100)
 
@@ -693,7 +693,7 @@ func (sp *STARSPane) drawWX(ctx *panes.Context, transforms ScopeTransformations,
 func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	transforms.LoadLatLongViewingMatrices(cb)
 
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	for i, state := range ps.CRDA.RunwayPairState {
 		for j, rwyState := range state.RunwayState {
 			if rwyState.DrawCourseLines {
@@ -739,7 +739,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, scopeExtent math.Extent
 	ctx.Mouse.SetCursor(imgui.MouseCursorNone)
 
 	// STARS Operators Manual 4-74: FDB brightness is used for the cursor
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	cursorStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: ps.Brightness.FullDatablocks.RGB()}
 	background := ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor)
 	bgStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: background}
@@ -803,7 +803,7 @@ func (sp *STARSPane) radarMode(radarSites map[string]*av.RadarSite) int {
 		return RadarModeFused
 	}
 
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	if _, ok := radarSites[ps.RadarSiteSelected]; ps.RadarSiteSelected != "" && ok {
 		return RadarModeSingle
 	} else if ps.FusedRadarMode {
@@ -815,7 +815,7 @@ func (sp *STARSPane) radarMode(radarSites map[string]*av.RadarSite) int {
 
 func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 	var aircraft []*av.Aircraft
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	single := sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeSingle
 	now := ctx.ControlClient.SimTime
 	for callsign, state := range sp.Aircraft {
@@ -880,7 +880,7 @@ func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 func (sp *STARSPane) radarSiteId(radarSites map[string]*av.RadarSite) string {
 	switch sp.radarMode(radarSites) {
 	case RadarModeSingle:
-		return sp.CurrentPreferenceSet.RadarSiteSelected
+		return sp.currentPrefs().RadarSiteSelected
 	case RadarModeMulti:
 		return "MULTI"
 	case RadarModeFused:
@@ -922,7 +922,7 @@ func (sp *STARSPane) initializeAudio(p platform.Platform, lg *log.Logger) {
 }
 
 func (sp *STARSPane) playOnce(p platform.Platform, a AudioType) {
-	if sp.CurrentPreferenceSet.AudioEffectEnabled[a] {
+	if sp.currentPrefs().AudioEffectEnabled[a] {
 		p.PlayAudioOnce(sp.audioEffects[a])
 	}
 }
@@ -930,7 +930,7 @@ func (sp *STARSPane) playOnce(p platform.Platform, a AudioType) {
 const AlertAudioDuration = 5 * time.Second
 
 func (sp *STARSPane) updateAudio(ctx *panes.Context, aircraft []*av.Aircraft) {
-	ps := &sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 
 	if !sp.testAudioEndTime.IsZero() && ctx.Now.After(sp.testAudioEndTime) {
 		ctx.Platform.StopPlayAudio(sp.audioEffects[AudioTest])

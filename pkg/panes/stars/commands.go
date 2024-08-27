@@ -63,7 +63,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 	}
 	sp.previewAreaInput += strings.Replace(input, "`", STARSTriangleCharacter, -1)
 
-	ps := &sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 
 	if ctx.Keyboard.WasPressed(platform.KeyControl) && len(input) == 1 && unicode.IsDigit(rune(input[0])) {
 		idx := byte(input[0]) - '0'
@@ -249,7 +249,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		return callsign
 	}
 
-	ps := &sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	switch sp.commandMode {
 	case CommandModeNone:
 		switch cmd {
@@ -904,7 +904,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 						runway, extra = getRunway(s)
 
 						for i, pair := range sp.ConvergingRunways {
-							pairState := &sp.CurrentPreferenceSet.CRDA.RunwayPairState[i]
+							pairState := &sp.currentPrefs().CRDA.RunwayPairState[i]
 							if !pairState.Enabled {
 								continue
 							}
@@ -940,7 +940,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 								continue
 							}
 
-							pairState := &sp.CurrentPreferenceSet.CRDA.RunwayPairState[i]
+							pairState := &sp.currentPrefs().CRDA.RunwayPairState[i]
 							if !pairState.Enabled {
 								continue
 							}
@@ -1576,7 +1576,7 @@ func (sp *STARSPane) updateQL(ctx *panes.Context, input string) (previewInput st
 	}
 
 	if len(positions) > 0 {
-		ps := &sp.CurrentPreferenceSet
+		ps := sp.currentPrefs()
 		ps.QuickLookAll = false
 
 		for _, pos := range positions {
@@ -1804,7 +1804,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 	ac, acDistance := sp.tryGetClosestAircraft(ctx, mousePosition, transforms)
 	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
 
-	ps := &sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 
 	// The only thing that can happen with a ghost is to switch between a full/partial
 	// datablock. Note that if we found both an aircraft and a ghost and a command was entered,
@@ -2660,7 +2660,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 	}
 
 	mouse := ctx.Mouse
-	ps := &sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 
 	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] && !ctx.HaveFocus {
 		if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.Mouse.Pos, transforms); ac != nil {
@@ -2748,7 +2748,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 			}
 		}
 	} else if !ctx.ControlClient.SimIsPaused {
-		switch sp.CurrentPreferenceSet.DwellMode {
+		switch sp.currentPrefs().DwellMode {
 		case DwellModeOff:
 			sp.dwellAircraft = ""
 
@@ -2770,7 +2770,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 			td := renderer.GetTextDrawBuilder()
 			defer renderer.ReturnTextDrawBuilder(td)
 
-			ps := sp.CurrentPreferenceSet
+			ps := sp.currentPrefs()
 			font := sp.systemFont[ps.CharSize.Datablocks]
 			style := renderer.TextStyle{
 				Font:        font,

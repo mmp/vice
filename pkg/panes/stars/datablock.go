@@ -383,7 +383,7 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			dt = FullDatablock
 		}
 
-		if sp.CurrentPreferenceSet.OverflightFullDatablocks && sp.isOverflight(ctx, trk) {
+		if sp.currentPrefs().OverflightFullDatablocks && sp.isOverflight(ctx, trk) {
 			dt = FullDatablock
 		}
 
@@ -501,7 +501,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 		extended := state.FullLDBEndTime.After(ctx.Now)
 
-		ps := sp.CurrentPreferenceSet
+		ps := sp.currentPrefs()
 		if beaconator || extended || ident || ps.DisplayLDBBeaconCodes || state.DisplayLDBBeaconCode {
 			// Field 1: reported beacon code
 			// TODO: Field 1: WHO if unassociated and no flight plan
@@ -700,7 +700,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			formatDBText(db.field5[1][:], actype+" ", color, false)
 
 			if (state.DisplayRequestedAltitude != nil && *state.DisplayRequestedAltitude) ||
-				(state.DisplayRequestedAltitude == nil && sp.CurrentPreferenceSet.DisplayRequestedAltitude) {
+				(state.DisplayRequestedAltitude == nil && sp.currentPrefs().DisplayRequestedAltitude) {
 				formatDBText(db.field5[2][:], fmt.Sprintf("R%03d ", ac.FlightPlan.Altitude/100), color, false)
 			}
 		}
@@ -709,7 +709,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		// TODO: DB for duplicate beacon code as well
 		if state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert {
 			formatDBText(db.field6[0][:], "*TPA", color, false)
-		} else if state.IntrailDistance != 0 && sp.CurrentPreferenceSet.DisplayATPAInTrailDist {
+		} else if state.IntrailDistance != 0 && sp.currentPrefs().DisplayATPAInTrailDist {
 			distColor := color
 			if state.ATPAStatus == ATPAStatusWarning {
 				distColor = STARSATPAWarningColor
@@ -757,7 +757,7 @@ func (sp *STARSPane) getGhostDatablock(ghost *av.GhostAircraft, color renderer.R
 }
 
 func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Aircraft) (color renderer.RGB, dbBrightness, posBrightness STARSBrightness) {
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	dt := sp.datablockType(ctx, ac)
 	state := sp.Aircraft[ac.Callsign]
 	trk := sp.getTrack(ctx, ac)
@@ -854,7 +854,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool {
 	trk := sp.getTrack(ctx, ac)
 
-	af := sp.CurrentPreferenceSet.AltitudeFilters
+	af := sp.currentPrefs().AltitudeFilters
 	alt := sp.Aircraft[ac.Callsign].TrackAltitude()
 	if trk != nil && trk.TrackOwner == ctx.ControlClient.Callsign {
 		// For owned datablocks
@@ -876,7 +876,7 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 		// If FDB, may trump others but idc
 		// This *should* be primarily doing CA and ATPA cones
 		return true
-	} else if sp.isOverflight(ctx, trk) && sp.CurrentPreferenceSet.OverflightFullDatablocks { //Need a f7 + e
+	} else if sp.isOverflight(ctx, trk) && sp.currentPrefs().OverflightFullDatablocks { //Need a f7 + e
 		// Overflights
 		return true
 	} else if sp.isQuicklooked(ctx, ac) {
@@ -904,7 +904,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 
 	now := ctx.ControlClient.SimTime
 	realNow := ctx.Now // for flashing rate...
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	font := sp.systemFont[ps.CharSize.Datablocks]
 
 	for _, ac := range aircraft {
@@ -950,7 +950,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 }
 
 func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) bool {
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	state := sp.Aircraft[ac.Callsign]
 
 	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
@@ -984,7 +984,7 @@ func (sp *STARSPane) getWarnings(ctx *panes.Context, ac *av.Aircraft) []string {
 		}
 	}
 
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	state := sp.Aircraft[ac.Callsign]
 
 	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {

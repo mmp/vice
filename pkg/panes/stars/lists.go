@@ -19,7 +19,7 @@ import (
 
 func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context, paneExtent math.Extent2D,
 	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 
 	transforms.LoadWindowViewingMatrices(cb)
 

@@ -452,3 +452,7 @@ func (ps *PreferenceSet) Upgrade(from, to int) {
 		ps.AudioVolume = 10
 	}
 }
+
+func (sp *STARSPane) currentPrefs() *PreferenceSet {
+	return &sp.CurrentPreferenceSet
+}

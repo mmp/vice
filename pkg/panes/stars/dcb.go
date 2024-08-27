@@ -99,7 +99,7 @@ func (sp *STARSPane) activateMenuSpinner(spinner dcbSpinner) {
 }
 
 func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	// Sigh; on windows we want the button size in pixels on high DPI displays
 	ds := ctx.DrawPixelScale
 	// Scale based on width or height available depending on DCB position
@@ -111,7 +111,7 @@ func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
 }
 
 func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) math.Extent2D {
-	ps := &sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 
 	// Find a scale factor so that the buttons all fit in the window, if necessary
 	buttonScale := sp.dcbButtonScale(ctx)
@@ -569,7 +569,7 @@ func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, trans
 	dcbDrawState.cb = cb
 	dcbDrawState.mouse = ctx.Mouse
 
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	dcbDrawState.brightness = ps.Brightness.DCB
 	dcbDrawState.position = ps.DCBPosition
 	buttonSize := float32(int(sp.dcbButtonScale(ctx)*dcbButtonSize + 0.5))

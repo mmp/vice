@@ -372,7 +372,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 }
 
 func (sp *STARSPane) isQuicklooked(ctx *panes.Context, ac *av.Aircraft) bool {
-	if sp.CurrentPreferenceSet.QuickLookAll {
+	if sp.currentPrefs().QuickLookAll {
 		return true
 	}
 	if _, ok := sp.ForceQLCallsigns[ac.Callsign]; ok {
@@ -381,7 +381,7 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, ac *av.Aircraft) bool {
 
 	// Quick Look Positions.
 	if trk := sp.getTrack(ctx, ac); trk != nil {
-		for _, quickLookPositions := range sp.CurrentPreferenceSet.QuickLookPositions {
+		for _, quickLookPositions := range sp.currentPrefs().QuickLookPositions {
 			if trk.TrackOwner == quickLookPositions.Callsign {
 				return true
 			}
@@ -453,7 +453,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 
 	// History tracks are updated after a radar track update, only if
 	// H_RATE seconds have elapsed (4-94).
-	ps := &sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	if now.Sub(sp.lastHistoryTrackUpdate).Seconds() >= float64(ps.RadarTrackHistoryRate) {
 		sp.lastHistoryTrackUpdate = now
 		for _, state := range sp.Aircraft {
@@ -558,7 +558,7 @@ func (sp *STARSPane) getTrackSize(ctx *panes.Context, transforms ScopeTransforma
 
 func (sp *STARSPane) getGhostAircraft(aircraft []*av.Aircraft, ctx *panes.Context) []*av.GhostAircraft {
 	var ghosts []*av.GhostAircraft
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	now := ctx.ControlClient.SimTime
 
 	for i, pairState := range ps.CRDA.RunwayPairState {
@@ -619,7 +619,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	brightness := ps.Brightness.OtherTracks
 	color := brightness.ScaleRGB(STARSGhostColor)
 	trackFont := sp.systemFont[ps.CharSize.PositionSymbols]
@@ -657,7 +657,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, heading float32, ctx *panes.Context,
 	transforms ScopeTransformations, positionSymbol string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	// TODO: orient based on radar center if just one radar
 
 	pos := state.TrackPosition()
@@ -803,7 +803,7 @@ func getTrackVertices(ctx *panes.Context, diameter float32) [][2]float32 {
 
 func (sp *STARSPane) drawHistoryTrails(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	if ps.Brightness.History == 0 {
 		// Don't draw if brightness == 0.
 		return
@@ -1260,7 +1260,7 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, ctx *panes.Context
 }
 
 func (sp *STARSPane) getLeaderLineDirection(ac *av.Aircraft, ctx *panes.Context) math.CardinalOrdinalDirection {
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	state := sp.Aircraft[ac.Callsign]
 	trk := sp.getTrack(ctx, ac)
 
@@ -1295,7 +1295,7 @@ func (sp *STARSPane) getLeaderLineDirection(ac *av.Aircraft, ctx *panes.Context)
 func (sp *STARSPane) getLeaderLineVector(ctx *panes.Context, dir math.CardinalOrdinalDirection) [2]float32 {
 	angle := dir.Heading()
 	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	pxLengths := []float32{0, 17, 32, 47, 62, 77, 114, 152}
 	idx := min(ps.LeaderLineLength, len(pxLengths)-1)
 	return math.Scale2f(v, pxLengths[idx])
@@ -1308,11 +1308,11 @@ func (sp *STARSPane) isOverflight(ctx *panes.Context, trk *sim.TrackInformation)
 }
 
 func (sp *STARSPane) radarVisibility(radarSites map[string]*av.RadarSite, pos math.Point2LL, alt int) (primary, secondary bool, distance float32) {
-	ps := sp.CurrentPreferenceSet
+	prefs := sp.currentPrefs()
 	distance = 1e30
 	single := sp.radarMode(radarSites) == RadarModeSingle
 	for id, site := range radarSites {
-		if single && ps.RadarSiteSelected != id {
+		if single && prefs.RadarSiteSelected != id {
 			continue
 		}
 

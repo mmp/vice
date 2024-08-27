@@ -789,7 +789,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	color := ps.Brightness.Lines.RGB() // check
 	style := renderer.TextStyle{
 		Font:  sp.systemFont[ps.CharSize.Tools],
@@ -883,7 +883,7 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformati
 		return
 	}
 
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	color := ps.Brightness.Lines.RGB()
 
 	s0, ok0 := sp.Aircraft[ac0.Callsign]
@@ -976,7 +976,7 @@ func (sp *STARSPane) drawAirspace(ctx *panes.Context, transforms ScopeTransforma
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	rgb := ps.Brightness.Lists.ScaleRGB(STARSListColor)
 
 	drawSectors := func(volumes []sim.ControllerAirspaceVolume) {
@@ -993,7 +993,7 @@ func (sp *STARSPane) drawAirspace(ctx *panes.Context, transforms ScopeTransforma
 			}
 
 			center := e.Center()
-			ps := sp.CurrentPreferenceSet
+			ps := sp.currentPrefs()
 			style := renderer.TextStyle{
 				Font:           sp.systemFont[ps.CharSize.Tools],
 				Color:          rgb,
@@ -1482,7 +1482,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 }
 
 func (sp *STARSPane) drawPTLs(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
@@ -1532,7 +1532,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*av.Aircraft, ctx *panes.Conte
 	trid := renderer.GetTrianglesDrawBuilder()
 	defer renderer.ReturnTrianglesDrawBuilder(trid)
 
-	ps := sp.CurrentPreferenceSet
+	ps := sp.currentPrefs()
 	font := sp.systemFont[ps.CharSize.Datablocks]
 	color := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
 
@@ -1674,9 +1674,9 @@ func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms ScopeTrans
 		prev = wp.Location
 	}
 
-	ps := sp.CurrentPreferenceSet
+	prefs := sp.currentPrefs()
 	cb.LineWidth(1, ctx.DPIScale)
-	cb.SetRGB(ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
+	cb.SetRGB(prefs.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
 	transforms.LoadLatLongViewingMatrices(cb)
 	ld.GenerateCommands(cb)
 }
