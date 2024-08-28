@@ -72,7 +72,6 @@ type Preferences struct {
 	Range  float32
 
 	CurrentCenter math.Point2LL
-	OffCenter     bool
 
 	RangeRingsCenter math.Point2LL
 	RangeRingRadius  int

@@ -158,8 +158,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 				status.clear = true
 				return
 			})
-		ps.OffCenter = ps.CurrentCenter != ps.Center
-		if toggleButton(ctx, "OFF\nCNTR", &ps.OffCenter, buttonHalfVertical, buttonScale) {
+		offcenter := ps.CurrentCenter != ps.Center
+		if toggleButton(ctx, "OFF\nCNTR", &offcenter, buttonHalfVertical, buttonScale) {
 			ps.CurrentCenter = ps.Center
 		}
 		sp.drawDCBSpinner(ctx, makeRangeRingRadiusSpinner(&ps.RangeRingRadius), CommandModeRangeRings,
