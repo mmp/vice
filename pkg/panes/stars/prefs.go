@@ -204,7 +204,6 @@ type CommonPreferences struct {
 
 	SSAList struct {
 		Position [2]float32
-		Visible  bool
 		Filter   struct {
 			All                 bool
 			Wx                  bool
@@ -352,7 +351,6 @@ func makeDefaultPreferences() *Preferences {
 	prefs.PreviewAreaPosition = [2]float32{.05, .75}
 
 	prefs.SSAList.Position = [2]float32{.05, .9}
-	prefs.SSAList.Visible = true
 	prefs.SSAList.Filter.All = true
 
 	prefs.TABList.Position = [2]float32{.05, .65}

@@ -2616,7 +2616,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			return
 		} else if cmd == "S" {
 			ps.SSAList.Position = transforms.NormalizedFromWindowP(mousePosition)
-			ps.SSAList.Visible = true
 			status.clear = true
 			return
 		} else if cmd == "T" {
