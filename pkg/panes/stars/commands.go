@@ -471,8 +471,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				}
 			} else if f[0] == ".FIND" {
 				if pos, ok := ctx.ControlClient.Locate(f[1]); ok {
-					highlightedLocation = pos
-					highlightedLocationEndTime = ctx.Now.Add(5 * time.Second)
+					sp.highlightedLocation = pos
+					sp.highlightedLocationEndTime = ctx.Now.Add(5 * time.Second)
 					status.clear = true
 					return
 				} else {

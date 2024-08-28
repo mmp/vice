@@ -555,21 +555,28 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32, con
 // rotation angle, if any.  Drawing commands are added to the provided
 // command buffer, which is assumed to have projection matrices set up for
 // drawing using window coordinates.
-func DrawCompass(p math.Point2LL, ctx *panes.Context, rotationAngle float32, font *renderer.Font,
-	color renderer.RGB, paneBounds math.Extent2D, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, transforms ScopeTransformations,
+	cb *renderer.CommandBuffer) {
+	ps := sp.currentPrefs()
+	if ps.Brightness.Compass == 0 {
+		return
+	}
+
 	// Window coordinates of the center point.
 	// TODO: should we explicitly handle the case of this being outside the window?
-	pw := transforms.WindowFromLatLongP(p)
-	bounds := math.Extent2D{P1: [2]float32{paneBounds.Width(), paneBounds.Height()}}
+	pw := transforms.WindowFromLatLongP(ps.CurrentCenter)
+	bounds := math.Extent2D{P1: [2]float32{scopeExtent.Width(), scopeExtent.Height()}}
+	font := sp.systemFont[ps.CharSize.Tools]
+	color := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
 
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
-	ld := renderer.GetColoredLinesDrawBuilder()
-	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
 
 	// Draw lines at a 5 degree spacing.
 	for h := float32(5); h <= 360; h += 5 {
-		hr := h + rotationAngle
+		hr := h
 		dir := [2]float32{math.Sin(math.Radians(hr)), math.Cos(math.Radians(hr))}
 		// Find the intersection of the line from the center point to the edge of the window.
 		isect, _, t := bounds.IntersectRay(pw, dir)
@@ -583,7 +590,7 @@ func DrawCompass(p math.Point2LL, ctx *panes.Context, rotationAngle float32, fon
 		// point ten pixels back inside the window toward the center.
 		pEdge := math.Add2f(pw, math.Scale2f(dir, t))
 		pInset := math.Add2f(pw, math.Scale2f(dir, t-10))
-		ld.AddLine(pEdge, pInset, color)
+		ld.AddLine(pEdge, pInset)
 
 		// Every 10 degrees draw a heading label.
 		if int(h)%10 == 0 {
@@ -628,26 +635,35 @@ func DrawCompass(p math.Point2LL, ctx *panes.Context, rotationAngle float32, fon
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
+	cb.LineWidth(1, ctx.DPIScale)
+	cb.SetRGB(color)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }
 
 // DrawRangeRings draws ten circles around the specified lat-long point in
 // steps of the specified radius (in nm).
-func DrawRangeRings(ctx *panes.Context, center math.Point2LL, radius float32, color renderer.RGB,
-	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
-	pixelDistanceNm := transforms.PixelDistanceNM(ctx.ControlClient.NmPerLongitude)
-	centerWindow := transforms.WindowFromLatLongP(center)
+func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	ps := sp.currentPrefs()
+	if ps.Brightness.RangeRings == 0 {
+		return
+	}
 
-	ld := renderer.GetColoredLinesDrawBuilder()
-	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	pixelDistanceNm := transforms.PixelDistanceNM(ctx.ControlClient.NmPerLongitude)
+	centerWindow := transforms.WindowFromLatLongP(ps.RangeRingsCenter)
+
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
 
 	for i := 1; i < 40; i++ {
 		// Radius of this ring in pixels
-		r := float32(i) * radius / pixelDistanceNm
-		ld.AddCircle(centerWindow, r, 360, color)
+		r := float32(i) * float32(ps.RangeRingRadius) / pixelDistanceNm
+		ld.AddCircle(centerWindow, r, 360)
 	}
 
+	cb.LineWidth(1, ctx.DPIScale)
+	color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
+	cb.SetRGB(color)
 	transforms.LoadWindowViewingMatrices(cb)
 	ld.GenerateCommands(cb)
 }
@@ -751,15 +767,10 @@ func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 
 ///////////////////////////////////////////////////////////////////////////
 // Other utilities
 
-var (
-	highlightedLocation        math.Point2LL
-	highlightedLocationEndTime time.Time
-)
-
 // If the user has run the "find" command to highlight a point in the
 // world, draw a red circle around that point for a few seconds.
-func DrawHighlighted(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
-	remaining := time.Until(highlightedLocationEndTime)
+func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	remaining := time.Until(sp.highlightedLocationEndTime)
 	if remaining < 0 {
 		return
 	}
@@ -771,13 +782,14 @@ func DrawHighlighted(ctx *panes.Context, transforms ScopeTransformations, cb *re
 		color = renderer.LerpRGB(x, renderer.RGB{}, color)
 	}
 
-	p := transforms.WindowFromLatLongP(highlightedLocation)
+	p := transforms.WindowFromLatLongP(sp.highlightedLocation)
 	radius := float32(10) // 10 pixel radius
-	ld := renderer.GetColoredLinesDrawBuilder()
-	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	ld.AddCircle(p, radius, 360, color)
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+	ld.AddCircle(p, radius, 360)
 
 	transforms.LoadWindowViewingMatrices(cb)
+	cb.SetRGB(color)
 	cb.LineWidth(2, ctx.DPIScale)
 	ld.GenerateCommands(cb)
 }

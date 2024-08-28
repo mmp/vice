@@ -160,6 +160,9 @@ type STARSPane struct {
 	audioEffects     map[AudioType]int // to handle from Platform.AddPCM()
 	testAudioEndTime time.Time
 
+	highlightedLocation        math.Point2LL
+	highlightedLocationEndTime time.Time
+
 	// Built-in screenshots / video captures
 	capture struct {
 		enabled          bool
@@ -565,13 +568,8 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	sp.drawWX(ctx, transforms, cb)
 
-	if ps.Brightness.RangeRings > 0 {
-		color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
-		cb.LineWidth(1, ctx.DPIScale)
-		DrawRangeRings(ctx, ps.RangeRingsCenter, float32(ps.RangeRingRadius), color, transforms, cb)
-	}
+	sp.drawRangeRings(ctx, transforms, cb)
 
-	// Maps
 	sp.drawVideoMaps(ctx, transforms, cb)
 
 	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont[ps.CharSize.Tools],
@@ -580,12 +578,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawCRDARegions(ctx, transforms, cb)
 	sp.drawSelectedRoute(ctx, transforms, cb)
 
-	if ps.Brightness.Compass > 0 {
-		cb.LineWidth(1, ctx.DPIScale)
-		cbright := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
-		font := sp.systemFont[ps.CharSize.Tools]
-		DrawCompass(ps.CurrentCenter, ctx, 0, font, cbright, scopeExtent, transforms, cb)
-	}
+	sp.drawCompass(ctx, scopeExtent, transforms, cb)
 
 	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
 	// Sort the aircraft so that they are always drawn in the same order
@@ -608,7 +601,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawMinSep(ctx, transforms, cb)
 	sp.drawAirspace(ctx, transforms, cb)
 
-	DrawHighlighted(ctx, transforms, cb)
+	sp.drawHighlighted(ctx, transforms, cb)
 
 	sp.drawLeaderLines(aircraft, ctx, transforms, cb)
 	sp.drawTracks(aircraft, ctx, transforms, cb)
