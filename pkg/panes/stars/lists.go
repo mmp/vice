@@ -449,17 +449,14 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 		newline()
 	}
 
-	// ATIS and GI text always, apparently
-	if ps.ATIS != "" {
-		pw = td.AddText(ps.ATIS+" "+ps.GIText[0], pw, listStyle)
-		newline()
-	} else if ps.GIText[0] != "" {
-		pw = td.AddText(ps.GIText[0], pw, listStyle)
+	// ATIS/GI text. (Note that per 4-44 filter.All does not apply to GI text.)
+	if filter.Text.Main && (ps.ATIS != "" || ps.GIText[0] != "") {
+		pw = td.AddText(strings.Join([]string{ps.ATIS, ps.GIText[0]}, " "), pw, listStyle)
 		newline()
 	}
 	for i := 1; i < len(ps.GIText); i++ {
-		if txt := ps.GIText[i]; txt != "" {
-			pw = td.AddText(txt, pw, listStyle)
+		if filter.Text.GI[i] && ps.GIText[i] != "" {
+			pw = td.AddText(ps.GIText[i], pw, listStyle)
 			newline()
 		}
 	}

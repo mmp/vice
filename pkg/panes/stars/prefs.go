@@ -347,6 +347,11 @@ func makeDefaultPreferences() *Preferences {
 	prefs.SSAList.Position = [2]float32{.05, .9}
 	prefs.SSAList.Filter.All = true
 
+	prefs.SSAList.Filter.Text.Main = true
+	for i := range prefs.SSAList.Filter.Text.GI {
+		prefs.SSAList.Filter.Text.GI[i] = true
+	}
+
 	prefs.TABList.Position = [2]float32{.05, .65}
 	prefs.TABList.Lines = 5
 	prefs.TABList.Visible = true
@@ -504,6 +509,12 @@ func (ps *Preferences) Upgrade(from, to int) {
 
 		for len(ps.AudioEffectEnabled) < AudioNumTypes {
 			ps.AudioEffectEnabled = append(ps.AudioEffectEnabled, true)
+		}
+	}
+	if from < 27 {
+		ps.SSAList.Filter.Text.Main = true
+		for i := range ps.SSAList.Filter.Text.GI {
+			ps.SSAList.Filter.Text.GI[i] = true
 		}
 	}
 }

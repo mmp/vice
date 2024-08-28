@@ -42,7 +42,8 @@ import (
 // 24: packages, audio to platform, flight plan processing
 // 25: remove ArrivalGroup/Index from Aircraft
 // 26: make allow_long_scratchpad a single bool
-const CurrentConfigVersion = 26
+// 27: rework prefs, videomaps
+const CurrentConfigVersion = 27
 
 // Slightly convoluted, but the full Config definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first
