@@ -251,6 +251,14 @@ type ForceQLArgs struct {
 	Controller      string
 }
 
+func (sd *Dispatcher) ForceQL(ql *ForceQLArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[ql.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.ForceQL(ql.ControllerToken, ql.Callsign, ql.Controller)
+	}
+}
+
 type GlobalMessageArgs struct {
 	ControllerToken string
 	FromController  string

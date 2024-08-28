@@ -196,7 +196,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		if selectButton(ctx, "BRITE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuBrite
 		}
-		sp.drawDCBSpinner(ctx, makeLeaderLineDirectionSpinner(&ps.LeaderLineDirection), CommandModeNone,
+		sp.drawDCBSpinner(ctx, makeLeaderLineDirectionSpinner(sp, &ps.LeaderLineDirection), CommandModeNone,
 			buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeLeaderLineLengthSpinner(&ps.LeaderLineLength), CommandModeLDR,
 			buttonHalfVertical, buttonScale)
@@ -207,6 +207,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		disabledButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
 		if selectButton(ctx, "PREF\n"+ps.Name, buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuPref
+			sp.RestoreSelectedPreferenceSet = sp.SelectedPreferenceSet
 		}
 
 		site := sp.radarSiteId(ctx.ControlClient.RadarSites)
@@ -392,7 +393,9 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 		disabledButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
 		if selectButton(ctx, "RESTORE", buttonHalfVertical, buttonScale) {
-			// TODO: restore settings in effect when entered the Pref sub-menu
+			// Restore settings that were in effect when we entered the PREF sub-menu
+			sp.SelectedPreferenceSet = sp.RestoreSelectedPreferenceSet
+			sp.CurrentPreferenceSet = sp.PreferenceSets[sp.SelectedPreferenceSet]
 		}
 
 		validSelection := sp.SelectedPreferenceSet != -1 && sp.SelectedPreferenceSet < len(sp.PreferenceSets)
@@ -965,11 +968,12 @@ func makeLeaderLineLengthSpinner(l *int) dcbSpinner {
 }
 
 type dcbLeaderLineDirectionSpinner struct {
-	d *math.CardinalOrdinalDirection
+	sp *STARSPane
+	d  *math.CardinalOrdinalDirection
 }
 
-func makeLeaderLineDirectionSpinner(dir *math.CardinalOrdinalDirection) dcbSpinner {
-	return &dcbLeaderLineDirectionSpinner{dir}
+func makeLeaderLineDirectionSpinner(sp *STARSPane, dir *math.CardinalOrdinalDirection) dcbSpinner {
+	return &dcbLeaderLineDirectionSpinner{sp: sp, d: dir}
 }
 
 func (s *dcbLeaderLineDirectionSpinner) Label() string {
@@ -994,7 +998,7 @@ func (s *dcbLeaderLineDirectionSpinner) MouseWheel(delta int) {
 func (s *dcbLeaderLineDirectionSpinner) KeyboardInput(text string) error {
 	if len(text) > 1 {
 		return ErrSTARSCommandFormat
-	} else if dir, ok := numpadToDirection(text[0]); !ok || dir == nil /* entered 5 */ {
+	} else if dir, ok := s.sp.numpadToDirection(text[0]); !ok || dir == nil /* entered 5 */ {
 		return ErrSTARSCommandFormat
 	} else {
 		*s.d = *dir

@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log/slog"
 	"slices"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -73,13 +72,11 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 				// Record bookmark
 				ps.Bookmarks[idx].Center = ps.CurrentCenter
 				ps.Bookmarks[idx].Range = ps.Range
-				ps.Bookmarks[idx].TopDownMode = ps.TopDownMode
 			} else {
 				// Recall bookmark
 				ps.Center = ps.Bookmarks[idx].Center
 				ps.CurrentCenter = ps.Bookmarks[idx].Center
 				ps.Range = ps.Bookmarks[idx].Range
-				ps.TopDownMode = ps.Bookmarks[idx].TopDownMode
 			}
 		}
 	}
@@ -493,6 +490,19 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				}
 				status.clear = true
 				return
+			} else if ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]; ctrl != nil && cmd == ctrl.SectorId {
+				// 6-87 show QL information in the preview area
+				if ps.QuickLookAll {
+					status.output = "ALL"
+					if ps.QuickLookAllIsPlus {
+						status.output += "+"
+					}
+				} else {
+					pstrs := util.MapSlice(ps.QuickLookPositions, func(p QuickLookPosition) string { return p.String() })
+					status.output = strings.Join(pstrs, " ")
+				}
+				status.clear = true
+				return
 			} else if sp.previewAreaInput, status.err = sp.updateQL(ctx, cmd); status.err == nil {
 				// It was valid quicklook positions
 				status.clear = true
@@ -516,7 +526,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 	case CommandModeInitiateControl:
 		if ac := lookupAircraft(cmd); ac == nil {
-			status.err = ErrSTARSNoFlight
+			status.err = ErrSTARSCommandFormat
 		} else {
 			sp.initiateTrack(ctx, ac.Callsign)
 			status.clear = true
@@ -538,29 +548,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		}
 
 	case CommandModeHandOff:
-		if cmd != "" && string(cmd[0]) == "C" { // Enabling/ disabling automatic handoff processing
-			// Manual 4-30
-			if string(cmd[1]) == "X" {
-				if string(cmd[2]) == "E" {
-					sp.AirspaceAwareness.Interfacility = true
-				} else if string(cmd[2]) == "I" {
-					sp.AirspaceAwareness.Interfacility = false
-				}
-			} else if string(cmd[1]) == "T" {
-				if string(cmd[2]) == "E" {
-					sp.AirspaceAwareness.Intrafacility = true
-				} else if string(cmd[2]) == "I" {
-					sp.AirspaceAwareness.Intrafacility = false
-				}
-			}
-			if string(cmd[1]) == "E" {
-				sp.AirspaceAwareness.Intrafacility = true
-				sp.AirspaceAwareness.Interfacility = true
-			} else if string(cmd[1]) == "I" {
-				sp.AirspaceAwareness.Intrafacility = false
-				sp.AirspaceAwareness.Interfacility = false
-			}
-		}
 		f := strings.Fields(cmd)
 		switch len(f) {
 		case 0:
@@ -587,8 +574,38 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			status.clear = true
 			return
 		case 1:
-			sp.cancelHandoff(ctx, lookupCallsign(f[0]))
-			status.clear = true
+			// Is it an ACID?
+			if ac := lookupAircraft(f[0]); ac != nil {
+				sp.cancelHandoff(ctx, ac.Callsign)
+				status.clear = true
+			} else {
+				// Enabling/ disabling automatic handoff processing, 4-30
+				switch f[0] {
+				case "CXE":
+					sp.AirspaceAwareness.Interfacility = true
+					status.clear = true
+				case "CXI":
+					sp.AirspaceAwareness.Interfacility = false
+					status.clear = true
+				case "CTE":
+					sp.AirspaceAwareness.Intrafacility = true
+					status.clear = true
+				case "CTI":
+					sp.AirspaceAwareness.Intrafacility = false
+					status.clear = true
+				case "CE":
+					sp.AirspaceAwareness.Intrafacility = true
+					sp.AirspaceAwareness.Interfacility = true
+					status.clear = true
+				case "CI":
+					sp.AirspaceAwareness.Intrafacility = false
+					sp.AirspaceAwareness.Interfacility = false
+					status.clear = true
+				default:
+					status.err = ErrSTARSCommandFormat
+				}
+			}
+
 			return
 		case 2:
 			if err := sp.handoffTrack(ctx, lookupCallsign(f[1]), f[0]); err != nil {
@@ -681,11 +698,20 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			return
 
 		case "E":
-			if cmd == "" {
+			switch cmd {
+			case "":
 				ps.OverflightFullDatablocks = !ps.OverflightFullDatablocks
 				status.clear = true
-				return
+			case "E":
+				ps.OverflightFullDatablocks = true
+				status.clear = true
+			case "I":
+				ps.OverflightFullDatablocks = false
+				status.clear = true
+			default:
+				status.err = ErrSTARSCommandFormat
 			}
+			return
 
 		case "F":
 			// altitude filters
@@ -750,7 +776,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		case "L":
 			// leader lines
 			if l := len(cmd); l == 1 {
-				if dir, ok := numpadToDirection(cmd[0]); ok && dir != nil {
+				if dir, ok := sp.numpadToDirection(cmd[0]); ok && dir != nil {
 					// 4-97: tracked by me, '5' not allowed
 					ps.LeaderLineDirection = *dir
 					status.clear = true
@@ -758,7 +784,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					status.err = ErrSTARSCommandFormat
 				}
 			} else if l == 2 {
-				if dir, ok := numpadToDirection(cmd[0]); ok && dir != nil && cmd[1] == 'U' {
+				if dir, ok := sp.numpadToDirection(cmd[0]); ok && dir != nil && cmd[1] == 'U' {
 					// 4-101: unassociated tracks; '5' is not allowed here.
 					ps.UnassociatedLeaderLineDirection = dir
 					status.clear = true
@@ -780,7 +806,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				// tcp has a space if it's given as a single character).
 				tcp := strings.TrimSuffix(cmd[:2], " ")
 				if controller := sp.lookupControllerForId(ctx, tcp, ""); controller != nil {
-					if dir, ok := numpadToDirection(cmd[2]); ok {
+					if dir, ok := sp.numpadToDirection(cmd[2]); ok {
 						// Per-controller leaderline
 						if ps.ControllerLeaderLineDirections == nil {
 							ps.ControllerLeaderLineDirections = make(map[string]math.CardinalOrdinalDirection)
@@ -960,7 +986,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					// or: NL(runway)(1-9); runway must unambiguously define airport
 					if _, _, _, runwayState, num, err := getRunwayState(cmd[1:]); err == nil {
 						if len(num) == 1 {
-							if dir, ok := numpadToDirection(num[0]); ok {
+							if dir, ok := sp.numpadToDirection(num[0]); ok {
 								runwayState.LeaderLineDirection = dir
 								status.clear = true
 								return
@@ -1068,7 +1094,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					status.err = ErrSTARSIllegalTrack
 					return
 				} else {
-					status.output = strings.Join(aircraft.PointOutHistory, " ")
+					if len(trk.PointOutHistory) == 0 {
+						status.output = "PO NONE"
+					} else {
+						status.output = strings.Join(aircraft.PointOutHistory, " ")
+					}
 					status.clear = true
 					return
 				}
@@ -1345,15 +1375,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			}
 			status.err = ErrSTARSCommandFormat
 			return
-
-		case "9":
-			if cmd == "" {
-				ps.GroundRangeMode = !ps.GroundRangeMode
-			} else {
-				status.err = ErrSTARSCommandFormat
-			}
-			status.clear = true
-			return
 		}
 
 	case CommandModeFlightData:
@@ -1371,7 +1392,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		} else {
 			status.err = ErrSTARSCommandFormat
 		}
-		status.clear = true
+		if status.err == nil {
+			status.clear = true
+		}
 		return
 
 	case CommandModeCollisionAlert:
@@ -1516,8 +1539,16 @@ func (sp *STARSPane) updateQL(ctx *panes.Context, input string) (previewInput st
 				ps.QuickLookPositions = append(ps.QuickLookPositions, pos)
 			}
 		}
-		sort.Slice(ps.QuickLookPositions,
-			func(i, j int) bool { return ps.QuickLookPositions[i].Id < ps.QuickLookPositions[j].Id })
+		// Quick look plus is listed first; otherwise sort alphabetically
+		slices.SortFunc(ps.QuickLookPositions, func(a, b QuickLookPosition) int {
+			if a.Plus && !b.Plus {
+				return -1
+			} else if b.Plus && !a.Plus {
+				return 1
+			} else {
+				return strings.Compare(a.Id, b.Id)
+			}
+		})
 	}
 
 	if err != nil {
@@ -1544,8 +1575,7 @@ func (sp *STARSPane) setScratchpad(ctx *panes.Context, callsign string, contents
 
 	// 5-148
 	fac := ctx.ControlClient.STARSFacilityAdaptation
-	long := util.Select(isSecondary, 1, 0)
-	if (fac.AllowLongScratchpad[long] && lc > 4) || (!fac.AllowLongScratchpad[long] && lc > 3) {
+	if fac.AllowLongScratchpad && lc > 4 {
 		return ErrSTARSCommandFormat
 	}
 	if !isSecondary && isImplied && lc == 1 {
@@ -1639,9 +1669,6 @@ func (sp *STARSPane) acceptHandoff(ctx *panes.Context, callsign string) {
 			if state, ok := sp.Aircraft[callsign]; ok {
 				state.DatablockType = FullDatablock
 			}
-			if ac, ok := ctx.ControlClient.Aircraft[callsign]; ok {
-				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx, ac)
-			}
 		},
 		func(err error) { sp.displayError(err, ctx) })
 }
@@ -1660,7 +1687,7 @@ func (sp *STARSPane) handoffTrack(ctx *panes.Context, callsign string, controlle
 func (sp *STARSPane) setLeaderLine(ctx *panes.Context, ac *av.Aircraft, cmd string) error {
 	state := sp.Aircraft[ac.Callsign]
 	if len(cmd) == 1 { // Local 6-81
-		if dir, ok := numpadToDirection(cmd[0]); ok {
+		if dir, ok := sp.numpadToDirection(cmd[0]); ok {
 			state.LeaderLineDirection = dir
 			if dir != nil {
 				state.UseGlobalLeaderLine = false
@@ -1671,7 +1698,7 @@ func (sp *STARSPane) setLeaderLine(ctx *panes.Context, ac *av.Aircraft, cmd stri
 		trk := sp.getTrack(ctx, ac)
 		if trk == nil || trk.TrackOwner != ctx.ControlClient.Callsign {
 			return ErrSTARSIllegalTrack
-		} else if dir, ok := numpadToDirection(cmd[0]); ok {
+		} else if dir, ok := sp.numpadToDirection(cmd[0]); ok {
 			sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
 			return nil
 		}
@@ -1694,10 +1721,12 @@ func (sp *STARSPane) acceptRedirectedHandoff(ctx *panes.Context, callsign string
 		func(err error) { sp.displayError(err, ctx) })
 }
 
-func (sp *STARSPane) RemoveForceQL(ctx *panes.Context, callsign string) {
-	if i := slices.Index(sp.ForceQLAircraft, callsign); i != -1 {
-		sp.ForceQLAircraft = append(sp.ForceQLAircraft[:i], sp.ForceQLAircraft[:i+1]...)
+func (sp *STARSPane) removeForceQL(ctx *panes.Context, callsign string) bool {
+	if _, ok := sp.ForceQLCallsigns[callsign]; ok {
+		delete(sp.ForceQLCallsigns, callsign)
+		return true
 	}
+	return false
 }
 
 func (sp *STARSPane) pointOut(ctx *panes.Context, callsign string, controller string) {
@@ -1779,8 +1808,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
 					return
-				} else if slices.Contains(sp.ForceQLAircraft, ac.Callsign) {
-					sp.RemoveForceQL(ctx, ac.Callsign)
+				} else if sp.removeForceQL(ctx, ac.Callsign) {
 					status.clear = true
 					return
 				} else if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
@@ -1832,7 +1860,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.clear = true
 					state.OutboundHandoffAccepted = false
 					state.OutboundHandoffFlashEnd = ctx.Now
-
 					return
 				} else if ctx.Keyboard != nil {
 					_, ctrl := ctx.Keyboard.Pressed[platform.KeyControl]
@@ -2080,15 +2107,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				}
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[lc-1] == '*' { // Some sort of pointout
-				// First check for errors. (Manual 6-73)
+				// First check for errors. (Manual 6-64, 6-73)
 
-				// Check if arrival
-				for _, airport := range ctx.ControlClient.ArrivalAirports {
-					if airport.Name == ac.FlightPlan.ArrivalAirport {
-						status.err = ErrSTARSIllegalTrack
-						return
-					}
-				}
+				// TODO: if it's to a different facility and it's an arrival, ILL TRK
+
 				// Check if being handed off, pointed out or suspended (TODO suspended)
 				if sp.OutboundPointOuts[ac.Callsign] != "" || sp.InboundPointOuts[ac.Callsign] != "" ||
 					(ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.ControlClient.Callsign) {
@@ -2141,9 +2163,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			}
 
 		case CommandModeInitiateControl:
-			// TODO: error if cmd != ""?
-			status.clear = true
-			sp.initiateTrack(ctx, ac.Callsign)
+			if cmd != ac.Callsign {
+				status.err = ErrSTARSCommandFormat
+			} else {
+				status.clear = true
+				sp.initiateTrack(ctx, ac.Callsign)
+			}
 			return
 
 		case CommandModeTerminateControl:
@@ -2267,12 +2292,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 
 			case "O": // Pointout history
-				if trk == nil || trk.TrackOwner != ctx.ControlClient.Callsign {
+				if trk == nil {
 					status.err = ErrSTARSIllegalTrack
 					return
 				}
 
-				status.output = strings.Join(trk.PointOutHistory, " ")
+				if len(trk.PointOutHistory) == 0 {
+					status.output = "PO NONE"
+				} else {
+					status.output = strings.Join(trk.PointOutHistory, " ")
+				}
 				status.clear = true
 				return
 
@@ -2520,38 +2549,28 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 // Returns the cardinal-ordinal direction associated with the numbpad keys,
 // interpreting 5 as the center; (nil, true) is returned for '5' and
 // (nil, false) is returned for an invalid key.
-func numpadToDirection(key byte) (*math.CardinalOrdinalDirection, bool) {
-	var dir math.CardinalOrdinalDirection
-	switch key {
-	case '1':
-		dir = math.CardinalOrdinalDirection(math.SouthWest)
-		return &dir, true
-	case '2':
-		dir = math.CardinalOrdinalDirection(math.South)
-		return &dir, true
-	case '3':
-		dir = math.CardinalOrdinalDirection(math.SouthEast)
-		return &dir, true
-	case '4':
-		dir = math.CardinalOrdinalDirection(math.West)
-		return &dir, true
-	case '5':
-		return nil, true
-	case '6':
-		dir = math.CardinalOrdinalDirection(math.East)
-		return &dir, true
-	case '7':
-		dir = math.CardinalOrdinalDirection(math.NorthWest)
-		return &dir, true
-	case '8':
-		dir = math.CardinalOrdinalDirection(math.North)
-		return &dir, true
-	case '9':
-		dir = math.CardinalOrdinalDirection(math.NorthEast)
-		return &dir, true
+func (sp *STARSPane) numpadToDirection(key byte) (*math.CardinalOrdinalDirection, bool) {
+	if key < '1' || key > '9' {
+		return nil, false
 	}
-
-	return nil, false
+	if key == '5' {
+		return nil, true
+	}
+	if sp.FlipNumericKeypad {
+		dirs := [9]math.CardinalOrdinalDirection{
+			math.NorthWest, math.North, math.NorthEast,
+			math.West, math.CardinalOrdinalDirection(-1), math.East,
+			math.SouthWest, math.South, math.SouthEast,
+		}
+		return &dirs[key-'1'], true
+	} else {
+		dirs := [9]math.CardinalOrdinalDirection{
+			math.SouthWest, math.South, math.SouthEast,
+			math.West, math.CardinalOrdinalDirection(-1), math.East,
+			math.NorthWest, math.North, math.NorthEast,
+		}
+		return &dirs[key-'1'], true
+	}
 }
 
 func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, ScopeTransformations) (status CommandStatus) {
@@ -2762,6 +2781,14 @@ type QuickLookPosition struct {
 	Callsign string
 	Id       string
 	Plus     bool
+}
+
+func (q QuickLookPosition) String() string {
+	s := q.Id
+	if q.Plus {
+		s += "+"
+	}
+	return s
 }
 
 func (sp *STARSPane) parseQuickLookPositions(ctx *panes.Context, s string) ([]QuickLookPosition, string, error) {

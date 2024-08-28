@@ -793,6 +793,7 @@ func (comp *STARSComputer) AcknowledgePointOut(callsign, controller string) erro
 	}
 
 	trk.PointOut = ""
+	// FIXME: we should be storing TCP IDs not callsigns
 	if len(trk.PointOutHistory) < 20 {
 		trk.PointOutHistory = append([]string{controller}, trk.PointOutHistory...)
 	} else {
@@ -1503,7 +1504,7 @@ func ParseAbbreviatedFPFields(facilityAdaptation STARSFacilityAdaptation, fields
 		}
 
 		badScratchpads := []string{"NAT", "CST", "AMB", "RDR", "ADB", "XXX"}
-		if strings.HasPrefix(field, STARSTriangleCharacter) && len(field) > 3 && len(field) <= 5 || (len(field) <= 6 && facilityAdaptation.AllowLongScratchpad[0]) { // See if it's specifying the SC1
+		if strings.HasPrefix(field, STARSTriangleCharacter) && len(field) > 3 && len(field) <= 5 || (len(field) <= 6 && facilityAdaptation.AllowLongScratchpad) { // See if it's specifying the SC1
 
 			if slices.Contains(badScratchpads, field) {
 				output.Error = ErrIllegalScratchpad
@@ -1514,7 +1515,7 @@ func ParseAbbreviatedFPFields(facilityAdaptation STARSFacilityAdaptation, fields
 			}
 			output.SC1 = field
 		}
-		if strings.HasPrefix(field, "+") && len(field) > 2 && (len(field) <= 4 || (len(field) <= 5 && facilityAdaptation.AllowLongScratchpad[1])) { // See if it's specifying the SC1
+		if strings.HasPrefix(field, "+") && len(field) > 2 && (len(field) <= 4 || (len(field) <= 5 && facilityAdaptation.AllowLongScratchpad)) { // See if it's specifying the SC1
 			if slices.Contains(badScratchpads, field) {
 				output.Error = ErrIllegalScratchpad
 				return output

@@ -4298,10 +4298,6 @@
                     },
                 "stars_config": {
                     "force_ql_self": true,
-                    "allow_long_scratchpad": [
-                        false,
-                        false
-                        ],
                         "coordination_fixes": {
                             "BRWNZ": [
                                 {

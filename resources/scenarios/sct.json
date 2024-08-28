@@ -4118,10 +4118,6 @@
         "receiving_controller": "LAX_55_CTR"
     }
 ],
-  "allow_long_scratchpad": [
-    false,
-    false
-  ],
   "force_ql_self": true,
   "scratchpads": {
     "BEALE": "FIN",
