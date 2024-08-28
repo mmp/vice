@@ -11,7 +11,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode"
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
@@ -65,23 +64,6 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 	sp.previewAreaInput += strings.Replace(input, "`", STARSTriangleCharacter, -1)
 
 	ps := sp.currentPrefs()
-
-	if ctx.Keyboard.WasPressed(platform.KeyControl) && len(input) == 1 && unicode.IsDigit(rune(input[0])) {
-		idx := byte(input[0]) - '0'
-		// This test should be redundant given the IsDigit check, but just to be safe...
-		if int(idx) < len(ps.Bookmarks) {
-			if ctx.Keyboard.WasPressed(platform.KeyAlt) {
-				// Record bookmark
-				ps.Bookmarks[idx].Center = ps.CurrentCenter
-				ps.Bookmarks[idx].Range = ps.Range
-			} else {
-				// Recall bookmark
-				ps.Center = ps.Bookmarks[idx].Center
-				ps.CurrentCenter = ps.Bookmarks[idx].Center
-				ps.Range = ps.Bookmarks[idx].Range
-			}
-		}
-	}
 
 	for key := range ctx.Keyboard.Pressed {
 		switch key {

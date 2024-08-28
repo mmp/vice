@@ -126,11 +126,6 @@ type Preferences struct {
 	VideoMapVisible map[int]interface{}
 
 	DisplayRequestedAltitude bool
-
-	Bookmarks [10]struct {
-		Center math.Point2LL
-		Range  float32
-	}
 }
 
 // CommonPreferences stores the STARS preference settings that are
