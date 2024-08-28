@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"strings"
 
-	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
@@ -121,9 +120,9 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 
 	sp.startDrawDCB(ctx, buttonScale, transforms, cb)
 
-	drawVideoMapButton := func(idx int, videoMaps []av.VideoMap) {
-		if idx < len(videoMaps) && videoMaps[idx].Id != 0 {
-			m := videoMaps[idx]
+	drawVideoMapButton := func(idx int) {
+		if idx < len(sp.videoMaps) && sp.videoMaps[idx].Id != 0 {
+			m := sp.videoMaps[idx]
 
 			// Get the map label, either the default or user-specified.
 			label := m.Label
@@ -177,13 +176,12 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		if selectButton(ctx, "MAPS", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMaps
 		}
-		videoMaps, _ := ctx.ControlClient.GetVideoMaps()
 		for i := 0; i < 6; i++ {
 			// Maps are given left->right, top->down, but we draw the
 			// buttons top->down, left->right, so the indexing is a little
 			// funny.
 			idx := util.Select(i&1 == 0, i/2, 3+i/2)
-			drawVideoMapButton(idx, videoMaps)
+			drawVideoMapButton(idx)
 		}
 		haveWeather := sp.weatherRadar.HaveWeather()
 		for i := range ps.DisplayWeatherLevel {
@@ -300,14 +298,13 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		if selectButton(ctx, "CLR ALL", buttonHalfVertical, buttonScale) {
 			clear(ps.VideoMapVisible)
 		}
-		videoMaps, _ := ctx.ControlClient.GetVideoMaps()
 		for i := 0; i < 32; i++ {
 			// Indexing is tricky both because we are skipping the first 6
 			// maps, which are shown in the main DCB, but also because we
 			// draw top->down, left->right while the maps are specified
 			// left->right, top->down...
 			idx := util.Select(i&1 == 0, 6+i/2, 22+i/2)
-			drawVideoMapButton(idx, videoMaps)
+			drawVideoMapButton(idx)
 		}
 
 		geoMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupGeo && ps.VideoMapsList.Visible

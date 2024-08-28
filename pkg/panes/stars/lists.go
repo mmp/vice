@@ -6,6 +6,7 @@ package stars
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -214,7 +215,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 
 	if ps.VideoMapsList.Visible {
 		text.Reset()
-		format := func(m *av.VideoMap) {
+		format := func(m av.VideoMap) {
 			if m.Label == "" {
 				return
 			}
@@ -226,8 +227,10 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		}
 		if ps.VideoMapsList.Selection == VideoMapsGroupGeo {
 			text.WriteString("GEOGRAPHIC MAPS\n")
-			for _, id := range util.SortedMapKeys(sp.videoMaps) {
-				format(sp.videoMaps[id])
+			m := util.DuplicateSlice(sp.videoMaps)
+			slices.SortFunc(m, func(a, b av.VideoMap) int { return a.Id - b.Id })
+			for _, vm := range m {
+				format(vm)
 			}
 		} else if ps.VideoMapsList.Selection == VideoMapsGroupSysProc {
 			text.WriteString("PROCESSING AREAS\n")
@@ -237,8 +240,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		} else if ps.VideoMapsList.Selection == VideoMapsGroupCurrent {
 			text.WriteString("MAPS\n")
 			for _, id := range util.SortedMapKeys(ps.VideoMapVisible) {
-				if vm, ok := sp.videoMaps[id]; ok {
-					format(vm)
+				if idx := slices.IndexFunc(sp.videoMaps, func(v av.VideoMap) bool { return v.Id == id }); idx != -1 {
+					format(sp.videoMaps[idx])
 				} else if vm, ok := sp.systemMaps[id]; ok {
 					format(vm)
 				}

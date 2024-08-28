@@ -47,16 +47,16 @@ func (p *PreferenceSet) SetCurrent(cur Preferences, pl platform.Platform, sp *ST
 // Reset ends up being called when a new Sim is started. It is responsible
 // for resetting all of the preference values in the PreferenceSet that we
 // don't expect to persist on a restart (e.g. quick look positions.)
-func (p *PreferenceSet) Reset(ss sim.State, rwys []STARSConvergingRunways) {
+func (p *PreferenceSet) Reset(ss sim.State, sp *STARSPane) {
 	// Only reset Current; leave everything as is in the saved prefs.
-	p.Current.Reset(ss, rwys)
+	p.Current.Reset(ss, sp)
 }
 
 // ResetDefault resets the current preferences to the system defaults.
 func (p *PreferenceSet) ResetDefault(ss sim.State, pl platform.Platform, sp *STARSPane) {
 	// Start with the full-on STARS defaults and then update for the current Sim.
 	p.Current = *makeDefaultPreferences()
-	p.Reset(ss, sp.ConvergingRunways)
+	p.Reset(ss, sp)
 
 	p.Selected = nil
 	p.Current.Activate(pl, sp)
@@ -247,7 +247,7 @@ type BasicSTARSList struct {
 	Lines    int
 }
 
-func (p *Preferences) Reset(ss sim.State, rwys []STARSConvergingRunways) {
+func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 	// Get the scope centered and set the range according to the Sim's initial values.
 	p.Center = ss.GetInitialCenter()
 	p.CurrentCenter = p.Center
@@ -266,16 +266,16 @@ func (p *Preferences) Reset(ss sim.State, rwys []STARSConvergingRunways) {
 	state := CRDARunwayPairState{}
 	// The first runway is enabled by default
 	state.RunwayState[0].Enabled = true
-	for range rwys {
+	for range sp.ConvergingRunways {
 		p.CRDA.RunwayPairState = append(p.CRDA.RunwayPairState, state)
 	}
 
 	// Make the scenario's default video maps visible
 	p.VideoMapVisible = make(map[int]interface{})
-	videoMaps, defaultVideoMaps := ss.GetVideoMaps()
+	_, defaultVideoMaps := ss.GetVideoMaps()
 	for _, dm := range defaultVideoMaps {
-		if idx := slices.IndexFunc(videoMaps, func(m av.VideoMap) bool { return m.Name == dm }); idx != -1 {
-			p.VideoMapVisible[videoMaps[idx].Id] = nil
+		if idx := slices.IndexFunc(sp.videoMaps, func(m av.VideoMap) bool { return m.Name == dm }); idx != -1 {
+			p.VideoMapVisible[sp.videoMaps[idx].Id] = nil
 		} else {
 			// This should have been validated at load time.
 			// lg.Errorf("%s: \"default_map\" not found in \"stars_maps\"", dm)
@@ -561,7 +561,7 @@ func (sp *STARSPane) resetPrefsForNewSim(ss sim.State, pl platform.Platform) {
 
 	// Clear out the preference-related state (e.g. quicklooks) that we
 	// don't expect to persist across Sim restarts.
-	sp.prefSet.Reset(ss, sp.ConvergingRunways)
+	sp.prefSet.Reset(ss, sp)
 }
 
 func (sp *STARSPane) currentPrefs() *Preferences {

@@ -1505,9 +1505,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			} else if idx <= 0 {
 				status.err = ErrSTARSIllegalMap
 			} else {
-				_, vok := sp.videoMaps[idx]
 				_, sok := sp.systemMaps[idx]
-				if vok || sok { // valid map index
+				if sok || slices.ContainsFunc(sp.videoMaps, func(v av.VideoMap) bool { return v.Id == idx }) {
+					// valid map index
 					_, vis := ps.VideoMapVisible[idx]
 					if (vis && op == "T") || op == "I" {
 						delete(ps.VideoMapVisible, idx)
