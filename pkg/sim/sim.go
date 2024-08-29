@@ -1195,7 +1195,7 @@ func (s *Sim) TogglePause(token string) error {
 		s.lg.Infof("paused: %v", s.Paused)
 		s.lastUpdateTime = time.Now() // ignore time passage...
 		s.eventStream.Post(Event{
-			Type:    StatusMessageEvent,
+			Type:    	GlobalMessageEvent,
 			Message: controller.Callsign + " has " + util.Select(s.Paused, "paused", "unpaused") + " the sim",
 		})
 		return nil
