@@ -461,12 +461,12 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 					// Always the one-character id and the sector
 					handoffId = toCtrl.FacilityIdentifier
 					handoffTCP = toCtrl.SectorId
+				} else if toCtrl.FacilityIdentifier != "" { // Different facility
+					// Different facility: show their TCP, id is the facility #
+					handoffId = toCtrl.FacilityIdentifier
+					handoffTCP = toCtrl.FacilityIdentifier + toCtrl.SectorId
 				} else {
 					handoffId = toCtrl.SectorId[len(toCtrl.SectorId)-1:]
-					if toCtrl.FacilityIdentifier != "" { // Different facility
-						// Different facility: show their TCP
-						handoffTCP = toCtrl.FacilityIdentifier + toCtrl.SectorId
-					}
 				}
 			}
 		}
