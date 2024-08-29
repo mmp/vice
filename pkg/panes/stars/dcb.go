@@ -206,6 +206,15 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 		disabledButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
 
+		site := sp.radarSiteId(ctx.ControlClient.RadarSites)
+		if len(ctx.ControlClient.RadarSites) == 0 {
+			disabledButton(ctx, "SITE\n"+site, buttonFull, buttonScale)
+		} else {
+			if selectButton(ctx, "SITE\n"+site, buttonFull, buttonScale) {
+				sp.activeDCBMenu = dcbMenuSite
+			}
+		}
+
 		pref := "PREF"
 		if sp.prefSet.Selected != nil {
 			pref += "\n" + sp.prefSet.Saved[*sp.prefSet.Selected].Name
@@ -222,14 +231,6 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			}
 		}
 
-		site := sp.radarSiteId(ctx.ControlClient.RadarSites)
-		if len(ctx.ControlClient.RadarSites) == 0 {
-			disabledButton(ctx, "SITE\n"+site, buttonFull, buttonScale)
-		} else {
-			if selectButton(ctx, "SITE\n"+site, buttonFull, buttonScale) {
-				sp.activeDCBMenu = dcbMenuSite
-			}
-		}
 		if selectButton(ctx, "SSA\nFILTER", buttonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = dcbMenuSSAFilter
 		}
