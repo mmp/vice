@@ -90,6 +90,10 @@ const (
 	KeyF10
 	KeyF11
 	KeyF12
+	KeyF13
+	KeyF14
+	KeyF15
+	KeyF16
 	KeyV
 	KeyInsert
 )
@@ -159,7 +163,7 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 		keyboard.Pressed[KeyV] = nil
 	}
 	const ImguiF1 = 290
-	for i := 0; i < 12; i++ {
+	for i := 0; i < 16; i++ { // 16 f-keys on the STARS keyboard
 		if imgui.IsKeyPressed(ImguiF1 + i) {
 			keyboard.Pressed[Key(int(KeyF1)+i)] = nil
 		}

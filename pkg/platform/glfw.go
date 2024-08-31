@@ -395,7 +395,7 @@ func (g *glfwPlatform) keyChange(window *glfw.Window, key glfw.Key, scancode int
 	}
 
 	for i, k := range []glfw.Key{glfw.KeyF1, glfw.KeyF2, glfw.KeyF3, glfw.KeyF4, glfw.KeyF5, glfw.KeyF6, glfw.KeyF7, glfw.KeyF8,
-		glfw.KeyF9, glfw.KeyF10, glfw.KeyF11, glfw.KeyF12} {
+		glfw.KeyF9, glfw.KeyF10, glfw.KeyF11, glfw.KeyF12, glfw.KeyF13, glfw.KeyF14, glfw.KeyF15, glfw.KeyF16} {
 		if g.window.GetKey(k) == glfw.Press {
 			g.heldFKeys[Key(KeyF1+i)] = nil
 		}
