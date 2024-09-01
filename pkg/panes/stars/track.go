@@ -65,6 +65,8 @@ type AircraftState struct {
 
 	IsSelected bool // middle click
 
+	TabListIndex int // 0-99. If -1, we ran out and haven't assigned one.
+
 	// Only drawn if non-zero
 	JRingRadius    float32
 	ConeLength     float32
@@ -220,6 +222,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			sa.UseGlobalLeaderLine = sa.GlobalLeaderLineDirection != nil
 			sa.FirstSeen = ctx.ControlClient.SimTime
 			sa.CWTCategory = getCwtCategory(ctx, ac)
+			sa.TabListIndex = TabListUnassignedIndex
 
 			sp.Aircraft[callsign] = sa
 		}
@@ -234,8 +237,12 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	}
 
 	// See if any aircraft we have state for have been removed
-	for callsign := range sp.Aircraft {
+	for callsign, state := range sp.Aircraft {
 		if _, ok := ctx.ControlClient.Aircraft[callsign]; !ok {
+			// Free up the Tab list entry
+			if state.TabListIndex != TabListUnassignedIndex {
+				sp.TabListAircraft[state.TabListIndex] = ""
+			}
 			delete(sp.Aircraft, callsign)
 		}
 	}
@@ -474,17 +481,6 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 	// FIXME(mtrokel): should this be happening in the STARSComputer Update method?
 	if !ctx.ControlClient.STARSFacilityAdaptation.KeepLDB {
 		ctx.ControlClient.STARSComputer().UpdateAssociatedFlightPlans(aircraft)
-	}
-}
-
-func (sp *STARSPane) getAircraftIndex(ac *av.Aircraft) int {
-	if idx, ok := sp.AircraftToIndex[ac.Callsign]; ok {
-		return idx
-	} else {
-		idx := len(sp.AircraftToIndex) + 1
-		sp.AircraftToIndex[ac.Callsign] = idx
-		sp.IndexToAircraft[idx] = ac.Callsign
-		return idx
 	}
 }
 

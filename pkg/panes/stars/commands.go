@@ -223,6 +223,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		}
 
 		if idx, err := strconv.Atoi(callsign); err == nil {
+			if idx >= 0 && idx < TabListEntries && sp.TabListAircraft[idx] != "" {
+				return ctx.ControlClient.Aircraft[sp.TabListAircraft[idx]]
+			}
+
 			if trk := ctx.ControlClient.STARSComputer().LookupTrackIndex(idx); trk != nil {
 				// May be nil, but this is our last option
 				return ctx.ControlClient.Aircraft[trk.Identifier]
@@ -2944,13 +2948,13 @@ func (sp *STARSPane) flightPlanSTARS(ctx *panes.Context, ac *av.Aircraft) (strin
 		owner = ctrl.SectorId
 	}
 
+	state := sp.Aircraft[ac.Callsign]
+
 	numType := ""
-	if num, ok := sp.AircraftToIndex[ac.Callsign]; ok {
-		numType += fmt.Sprintf("%d/", num)
+	if state.TabListIndex != TabListUnassignedIndex {
+		numType += fmt.Sprintf("%d/", state.TabListIndex)
 	}
 	numType += fp.AircraftType
-
-	state := sp.Aircraft[ac.Callsign]
 
 	result := ac.Callsign + " "             // all start with aricraft id
 	if ctx.ControlClient.IsOverflight(ac) { // check this first

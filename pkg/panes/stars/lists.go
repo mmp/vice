@@ -100,26 +100,25 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 	var text strings.Builder
 	if ps.VFRList.Visible {
 		text.Reset()
-		vfr := make(map[int]*av.Aircraft)
+		var vfr []*av.Aircraft
 		// Find all untracked av.VFR aircraft
+		// FIXME: this should actually be based on VFR flight plans
 		for _, ac := range aircraft {
 			if ac.Squawk == av.Squawk(0o1200) && ac.TrackingController == "" {
-				vfr[sp.getAircraftIndex(ac)] = ac
+				vfr = append(vfr, ac)
 			}
 		}
+
+		// FIXME: this should actually be sorted by when we first saw the aircraft
+		slices.SortFunc(vfr, func(a, b *av.Aircraft) int { return strings.Compare(a.Callsign, b.Callsign) })
 
 		text.WriteString("VFR LIST\n")
 		if len(vfr) > ps.VFRList.Lines {
 			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr)))
 		}
-		for i, acIdx := range util.SortedMapKeys(vfr) {
-			ac := vfr[acIdx]
-			text.WriteString(fmt.Sprintf("%2d %-7s av.VFR\n", acIdx, ac.Callsign))
-
-			// Limit to the user limit
-			if i == ps.VFRList.Lines {
-				break
-			}
+		for i := range math.Min(len(vfr), ps.VFRList.Lines) {
+			ac := vfr[i]
+			text.WriteString(fmt.Sprintf("%s %-7s VFR\n", sp.getTabListIndex(ac), ac.Callsign))
 		}
 
 		drawList(text.String(), ps.VFRList.Position, listStyle)
@@ -127,29 +126,28 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 
 	if ps.TABList.Visible {
 		text.Reset()
-		dep := make(map[int]*av.Aircraft)
-		// Untracked departures departing from one of our airports
+		var dep []*av.Aircraft
+		// Untracked departures departing from one of the airports we're
+		// responsible for.
 		for _, ac := range aircraft {
 			if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" {
 				if ap := ctx.ControlClient.DepartureAirports[fp.DepartureAirport]; ap != nil {
-					dep[sp.getAircraftIndex(ac)] = ac
-					break
+					if ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.Callsign {
+						dep = append(dep, ac)
+					}
 				}
 			}
 		}
+
+		slices.SortFunc(dep, func(a, b *av.Aircraft) int { return strings.Compare(a.Callsign, b.Callsign) })
 
 		text.WriteString("FLIGHT PLAN\n")
 		if len(dep) > ps.TABList.Lines {
 			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(dep)))
 		}
-		for i, acIdx := range util.SortedMapKeys(dep) {
-			ac := dep[acIdx]
-			text.WriteString(fmt.Sprintf("%2d %-7s %s\n", acIdx, ac.Callsign, ac.Squawk.String()))
-
-			// Limit to the user limit
-			if i == ps.TABList.Lines {
-				break
-			}
+		for i := range math.Min(len(dep), ps.TABList.Lines) {
+			ac := dep[i]
+			text.WriteString(fmt.Sprintf("%s %-7s %s\n", sp.getTabListIndex(ac), ac.Callsign, ac.Squawk.String()))
 		}
 
 		drawList(text.String(), ps.TABList.Position, listStyle)
@@ -354,6 +352,28 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 	}
 
 	td.GenerateCommands(cb)
+}
+
+func (sp *STARSPane) getTabListIndex(ac *av.Aircraft) string {
+	state := sp.Aircraft[ac.Callsign]
+	if state.TabListIndex == TabListUnassignedIndex {
+		// Try to assign a Tab list index
+		for i := range TabListEntries {
+			idx := (sp.TabListSearchStart + i) % TabListEntries
+			if sp.TabListAircraft[idx] == "" {
+				state.TabListIndex = idx
+				sp.TabListAircraft[idx] = ac.Callsign
+				sp.TabListSearchStart = idx + 1
+				break
+			}
+		}
+	}
+
+	if state.TabListIndex != TabListUnassignedIndex {
+		return fmt.Sprintf("%2d", state.TabListIndex)
+	} else {
+		return "  " // no tab list number assigned
+	}
 }
 
 func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*av.Aircraft, td *renderer.TextDrawBuilder,

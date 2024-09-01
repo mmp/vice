@@ -40,6 +40,9 @@ const STARSTriangleCharacter = string(rune(0x80))
 // Filled upward-pointing triangle
 const STARSFilledUpTriangle = string(rune(0x1e))
 
+const TabListEntries = 100
+const TabListUnassignedIndex = -1
+
 var (
 	STARSBackgroundColor    = renderer.RGB{.2, .2, .2} // at 100 contrast
 	STARSListColor          = renderer.RGB{.1, .9, .1}
@@ -106,8 +109,9 @@ type STARSPane struct {
 	// carried along in an STARSAircraftState.
 	Aircraft map[string]*AircraftState
 
-	AircraftToIndex   map[string]int     // for use in lists
-	IndexToAircraft   map[int]string     // map is sort of wasteful since it's dense, but...
+	TabListAircraft    [TabListEntries]string
+	TabListSearchStart int
+
 	UnsupportedTracks map[av.Squawk]bool // visible or not
 
 	// explicit JSON name to avoid errors during config deserialization for
@@ -331,12 +335,6 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	if sp.Aircraft == nil {
 		sp.Aircraft = make(map[string]*AircraftState)
 	}
-	if sp.AircraftToIndex == nil {
-		sp.AircraftToIndex = make(map[string]int)
-	}
-	if sp.IndexToAircraft == nil {
-		sp.IndexToAircraft = make(map[int]string)
-	}
 	if sp.UnsupportedTracks == nil {
 		sp.UnsupportedTracks = make(map[av.Squawk]bool)
 	}
@@ -373,6 +371,11 @@ func (sp *STARSPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger
 			})
 		}
 	}
+
+	for i := range sp.TabListAircraft {
+		sp.TabListAircraft[i] = ""
+	}
+	sp.TabListSearchStart = 0
 
 	// Update maps before resetting the prefs since we may rewrite some map
 	// ids and we want to use the right ones when we're enabling the
