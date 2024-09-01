@@ -1188,12 +1188,16 @@ func (s *Sim) TogglePause(token string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if _, ok := s.controllers[token]; !ok {
+	if controller, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
 	} else {
 		s.Paused = !s.Paused
 		s.lg.Infof("paused: %v", s.Paused)
 		s.lastUpdateTime = time.Now() // ignore time passage...
+		s.eventStream.Post(Event{
+			Type:    GlobalMessageEvent,
+			Message: controller.Callsign + " has " + util.Select(s.Paused, "paused", "unpaused") + " the sim",
+		})
 		return nil
 	}
 }
