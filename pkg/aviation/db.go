@@ -250,27 +250,41 @@ func parseAirports() map[string]FAAAirport {
 	// These aren't in the FAA database but we need to have them defined
 	// for the AAC scenario...
 	airports["4V4"] = FAAAirport{Id: "4V4", Name: "", Elevation: 623,
-		Location: parse("N36.02.19.900,W95.28.49.512")}
-	airports["4Y3"] = FAAAirport{Id: "4Y3", Name: "", Elevation: 624,
-		Location: parse("N36.26.30.006,W95.36.21.936")}
-	airports["KAAC"] = FAAAirport{Id: "KAAC", Name: "", Elevation: 677,
-		Location: parse("N036.11.08.930,W095.45.53.942"),
+		Location: parse("N036.07.26.937,W095.20.20.361"),
 		Runways: []Runway{
-			Runway{Id: "28L", Heading: 280, Threshold: parse("N036.10.42.301,W095.45.00.247"), Elevation: 677},
-			Runway{Id: "28R", Heading: 280, Threshold: parse("N036.11.26.892,W095.45.00.219"), Elevation: 677},
-			Runway{Id: "10L", Heading: 100, Threshold: parse("N036.11.41.202,W095.46.48.489"), Elevation: 677},
-			Runway{Id: "10R", Heading: 100, Threshold: parse("N036.11.00.182,W095.47.01.783"), Elevation: 677},
+			Runway{Id: "16", Heading: 160, Threshold: parse("N35.58.34.000,W095.23.03.000"), Elevation: 623},
+			Runway{Id: "34", Heading: 340, Threshold: parse("N35.58.43.000,W095.23.07.000"), Elevation: 623},
+		}}
+	airports["4Y3"] = FAAAirport{Id: "4Y3", Name: "", Elevation: 624,
+		Location: parse("N036.23.35.505,W095.21.13.590"),
+		Runways: []Runway{
+			Runway{Id: "30", Heading: 300, Threshold: parse("N036.23.20.482,W095.20.46.343"), Elevation: 624},
+			Runway{Id: "12", Heading: 120, Threshold: parse("N036.23.39.117,W095.21.26.911"), Elevation: 624},
+		}}
+	airports["KAAC"] = FAAAirport{Id: "KAAC", Name: "", Elevation: 677,
+		Location: parse("N036.10.01.611,W095.40.40.365"),
+		Runways: []Runway{
+			Runway{Id: "28L", Heading: 280, Threshold: parse("N036.09.45.000,W095.38.40.000"), Elevation: 677},
+			Runway{Id: "28R", Heading: 280, Threshold: parse("N036.10.28.308,W095.38.35.972"), Elevation: 677},
+			Runway{Id: "10L", Heading: 100, Threshold: parse("N036.10.44.801,W095.40.32.977"), Elevation: 677},
+			Runway{Id: "10R", Heading: 100, Threshold: parse("N036.10.01.611,W095.40.40.365"), Elevation: 677},
 		}}
 	airports["KBRT"] = FAAAirport{Id: "KBRT", Name: "", Elevation: 689,
-		Location: parse("N36.30.26.585,W96.16.28.968")}
-	airports["KJKE"] = FAAAirport{Id: "KJKE", Name: "", Elevation: 608,
-		Location: parse("N035.56.19.765,W095.42.49.812"),
+		Location: parse("N036.26.42.685,W095.56.39.032"),
 		Runways: []Runway{
-			Runway{Id: "27", Heading: 270, Threshold: parse("N035.56.23.020,W095.42.09.080"), Elevation: 689},
-			Runway{Id: "9", Heading: 90, Threshold: parse("N035.56.22.388,W095.44.10.094"), Elevation: 689},
+			Runway{Id: "13", Heading: 130, Threshold: parse("N36.27.16.000,W095.57.27.000"), Elevation: 689},
+			Runway{Id: "31", Heading: 310, Threshold: parse("N36.26.32.000,W095.56.25.000"), Elevation: 689},
+			Runway{Id: "4", Heading: 40, Threshold: parse("N36.27.02.000,W095.56.21.000"), Elevation: 689},
+			Runway{Id: "22", Heading: 220, Threshold: parse("N36.26.39.000,W095.56.45.000"), Elevation: 689},
 		}}
-	airports["Z91"] = FAAAirport{Id: "Z91", Name: "", Elevation: 680,
-		Location: parse("N36.05.06.948,W96.26.57.501")}
+	airports["KJKE"] = FAAAirport{Id: "KJKE", Name: "", Elevation: 608,
+		Location: parse("N035.54.58.809,W095.37.01.600"),
+		Runways: []Runway{
+			Runway{Id: "4", Heading: 39, Threshold: parse("N35.53.50.000,W095.37.24.000"), Elevation: 608},
+			Runway{Id: "22", Heading: 219, Threshold: parse("N35.55.17.000,W095.35.49.000"), Elevation: 608},
+			Runway{Id: "27", Heading: 270, Threshold: parse("N35.55.29.000,W95.35.55.000"), Elevation: 608},
+			Runway{Id: "9", Heading: 90, Threshold: parse("N35.55.29.000,W095.38.00.000"), Elevation: 608},
+		}}
 
 	// FAA database
 	mungeCSV("airports", string(airportsRaw),

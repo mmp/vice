@@ -1602,19 +1602,14 @@
   },
   "default_scenario": "KAAC West",
   "fixes": {
-    "KAAC": "N036.11.08.930,W095.45.53.942",
-    "KJKE": "N035.56.19.765,W095.42.49.812",
-    "JKE": "N035.56.19.765,W095.42.49.812",
-    "KBRT": "N036.27.48.809,W096.03.17.863",
-    "BRS": "N036.27.48.809,W096.03.17.863",
-    "4Y3": "N036.24.31.687,W095.27.15.726",
-    "JAM": "N036.24.31.687,W095.27.15.726",
-    "Z91": "N036.06.13.205,W096.09.59.166",
-    "SKR": "N036.17.41.636,W095.54.02.312",
-    "4V4": "N036.07.36.248,W095.20.14.895",
+    "JKE": "KJKE",
+    "BRS": "KBRT",
+    "JAM": "4Y3",
+    "Z91": "N036.05.21.336,W096.02.51.771",
+    "SKR": "N036.16.26.997,W095.47.54.517",
     "COLIN": "TUL@005/33",
     "PRYOR": "TUL@050/30",
-    "REELI": "N036.34.40.920,W095.12.42.066",
+    "REELI": "N036.33.44.766,W095.06.58.084",
     "MAYES": "TUL@090/41",
     "KILLR": "TUL@143/39",
     "NOBLE": "TUL@183/35",
@@ -1744,7 +1739,7 @@
         "ZAE_OKC_LOW",
         "ZAE_TUL_LOW"
       ],
-      "default_maps": [ "AAC VIDEOMAP" ],
+      "default_maps": [ "BASE" ],
       "departure_runways": [
         {
           "airport": "KAAC",
@@ -1827,7 +1822,7 @@
         "ZAE_OKC_LOW",
         "ZAE_TUL_LOW"
       ],
-      "default_maps": [ "AAC VIDEOMAP" ],
+      "default_maps": [ "BASE" ],
       "departure_runways": [
         {
           "airport": "KAAC",
@@ -1944,7 +1939,7 @@
     "SHAWN": "RSH"
   },
   "stars_maps": [
-      "AAC VIDEOMAP" 
+      "BASE", "MVA" 
   ],
   "video_map_file": "videomaps/aac-videomaps.gob.zst"
   }
