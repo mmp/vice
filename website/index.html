@@ -3989,6 +3989,39 @@ how it simulates aircraft or the STARS interface.
               <li>TW OFF: disabled system features (e.g., CA, MSAW)</li>
             </ul>
 
+            <h4>Flight Plan List</h4>
+
+            <p>The flight plan list shows untracked aircraft that have departed an airport that you are responsible for.
+            Once they are tracked, they are automatically removed from the list. Here is an example:</p>
+            <div class="text-center">
+              <img src="flight-plan-list.png" srcset="flight-plan-list-2x.png 2x" width="167" height="71">
+            </div><br>
+            <p>In addition to the aircraft's callsign (middle column) and assigned beacon code (right column), the
+              left column shows a <i>tab number</i> that is associated with the 
+            <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]T</code></td>
+                    <td>Toggles whether the the flight plan list is visible.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]T[SLEW]</code></td>
+                    <td>Places the upper left corner of the flight plan list at the slewed point.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]T(##)</code></td>
+                    <td>Sets how the maximum number of lines of text displayed in the flight plan list.
+                      If not currently visible, the flight plan list is made visible if the number of visible lines is set.</td>
+                  </tr>
+                </tbody>
+              </table>
+
             <h4>Tower List</h4>
 
             <p>The tower list shows arrivals at an airport. Up to three tower lists can be displayed; each show arriving aircraft sorted by their distance to the airport.  The assignment of airports to tower lists is done by the facility engineer in the scenario specification and can't be changed while <i>vice</i> is running. Here is an example, showing a few arrivals to PHL:</p>
