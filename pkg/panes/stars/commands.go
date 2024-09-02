@@ -1268,9 +1268,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				if cmd == "" {
 					*visible = !*visible
 				} else if lines != nil {
-					if n, err := strconv.Atoi(cmd); err == nil {
-						*lines = math.Clamp(n, 1, 100) // TODO: or error if out of range? (and below..)
+					if n, err := strconv.Atoi(cmd); err == nil && n >= 1 && n <= 100 {
+						*lines = n
+						*visible = true
 					} else {
+						// 4-64 et al.
 						status.err = ErrSTARSIllegalParam
 					}
 				}
@@ -1302,6 +1304,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					return
 				case 'N':
 					updateList(cmd[1:], &ps.CRDAStatusList.Visible, nil)
+					return
+				default:
+					status.err = ErrSTARSIllegalFunction
 					return
 				}
 			}
