@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log/slog"
 	gomath "math"
+	"slices"
 	"strings"
 	"time"
 
@@ -315,17 +316,22 @@ func (ss *State) Locate(s string) (math.Point2LL, bool) {
 		return ap.Location, true
 	} else if p, ok := ss.Fixes[s]; ok {
 		return p, true
-	} else if n, ok := av.DB.Navaids[strings.ToUpper(s)]; ok {
+	} else if n, ok := av.DB.Navaids[s]; ok {
 		return n.Location, ok
-	} else if ap, ok := av.DB.Airports[strings.ToUpper(s)]; ok {
+	} else if ap, ok := av.DB.Airports[s]; ok {
 		return ap.Location, ok
-	} else if f, ok := av.DB.Fixes[strings.ToUpper(s)]; ok {
+	} else if f, ok := av.DB.Fixes[s]; ok {
 		return f.Location, ok
 	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
-	} else {
-		return math.Point2LL{}, false
+	} else if ap, rwy, ok := strings.Cut(s, "/"); ok {
+		if ap, ok := av.DB.Airports[ap]; ok {
+			if idx := slices.IndexFunc(ap.Runways, func(r av.Runway) bool { return r.Id == rwy }); idx != -1 {
+				return ap.Runways[idx].Threshold, true
+			}
+		}
 	}
+	return math.Point2LL{}, false
 }
 
 func (ss *State) AircraftFromPartialCallsign(c string) *av.Aircraft {
