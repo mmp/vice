@@ -159,7 +159,7 @@ type Controller struct {
 	FullName           string    `json:"full_name"`
 	Frequency          Frequency `json:"frequency"`
 	SectorId           string    `json:"sector_id"`  // e.g. N56, 2J, ...
-	Scope              string    `json:"scope_char"` // For tracked a/c on the scope--e.g., T
+	Scope              string    `json:"scope_char"` // Optional. If unset, facility id is used for external, last char of sector id for local.
 	IsHuman            bool      // Not provided in scenario JSON
 	FacilityIdentifier string    `json:"facility_id"`     // For example the "N" in "N4P" showing the N90 TRACON
 	ERAMFacility       bool      `json:"eram_facility"`   // To weed out N56 and N4P being the same fac

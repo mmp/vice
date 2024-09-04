@@ -518,8 +518,10 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 				if ctrl.FacilityIdentifier != "" {
 					// For external facilities we use the facility id
 					positionSymbol = ctrl.FacilityIdentifier
-				} else {
+				} else if ctrl.Scope != "" {
 					positionSymbol = ctrl.Scope
+				} else {
+					positionSymbol = ctrl.SectorId[len(ctrl.SectorId)-1:]
 				}
 			}
 		}

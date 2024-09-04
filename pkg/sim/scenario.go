@@ -867,9 +867,6 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		if ctrl.SectorId == "" {
 			e.ErrorString("no \"sector_id\" specified")
 		}
-		if ctrl.Scope == "" {
-			e.ErrorString("no \"scope_char\" specified")
-		}
 		if ctrl.FullName == "" {
 			e.ErrorString("no \"full_name\" specified")
 		}
