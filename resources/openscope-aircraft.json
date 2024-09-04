@@ -1,6 +1,5335 @@
 {
   "aircraft": [
   {
+    "name": "Aero Commander 500",
+    "icao": "AC50",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 3,
+      "cwt": "I"
+    },
+    "ceiling": 14500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.900,
+      "landing": 0.900
+    },
+    "speed": {
+      "min": 65,
+      "landing": 110,
+      "cruise": 155,
+      "cruiseM": null,
+      "max": 165,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Aero Commander 520",
+    "icao": "AC52",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 12500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.900,
+      "landing": 0.900
+    },
+    "speed": {
+      "min": 65,
+      "landing": 110,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 170,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Aero Commander 560",
+    "icao": "AC56",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 4,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.900,
+      "landing": 0.900
+    },
+    "speed": {
+      "min": 65,
+      "landing": 110,
+      "cruise": 150,
+      "cruiseM": null,
+      "max": 160,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Aero Commander 680",
+    "icao": "AC68",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.900,
+      "landing": 0.900
+    },
+    "speed": {
+      "min": 65,
+      "landing": 110,
+      "cruise": 170,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Aero Commander 720",
+    "icao": "AC72",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 4,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.900,
+      "landing": 0.900
+    },
+    "speed": {
+      "min": 65,
+      "landing": 110,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 175,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Aero Commander 680F",
+    "icao": "AC6L",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.900,
+      "landing": 0.900
+    },
+    "speed": {
+      "min": 80,
+      "landing": 110,
+      "cruise": 180,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Aero Commander 680T",
+    "icao": "AC80",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 4,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1600,
+      "descent": 1000,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.200,
+      "landing": 1.200
+    },
+    "speed": {
+      "min": 80,
+      "landing": 110,
+      "cruise": 210,
+      "cruiseM": null,
+      "max": 230,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Aero Commander 840",
+    "icao": "AC90",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 4,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1700,
+      "descent": 1000,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.200,
+      "landing": 1.200
+    },
+    "speed": {
+      "min": 90,
+      "landing": 120,
+      "cruise": 230,
+      "cruiseM": null,
+      "max": 250,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Aero Commander 1000",
+    "icao": "AC95",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1900,
+      "descent": 1000,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.300,
+      "landing": 1.300
+    },
+    "speed": {
+      "min": 90,
+      "landing": 130,
+      "cruise": 250,
+      "cruiseM": null,
+      "max": 270,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Bonanza Turbine",
+    "icao": "B36T",
+    "engines": {
+      "number": 1,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.000,
+      "landing": 1.000
+    },
+    "speed": {
+      "min": 70,
+      "landing": 100,
+      "cruise": 160,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Barron 58 Turbo",
+    "icao": "B58T",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.000,
+      "landing": 1.000
+    },
+    "speed": {
+      "min": 75,
+      "landing": 100,
+      "cruise": 180,
+      "cruiseM": null,
+      "max": 200,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Duke Turbine",
+    "icao": "B60T",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1600,
+      "descent": 1000,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.000,
+      "landing": 1.000
+    },
+    "speed": {
+      "min": 75,
+      "landing": 100,
+      "cruise": 180,
+      "cruiseM": null,
+      "max": 200,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft 100 King Air",
+    "icao": "BE10",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 7,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1700,
+      "descent": 1000,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.200,
+      "landing": 1.200
+    },
+    "speed": {
+      "min": 90,
+      "landing": 120,
+      "cruise": 210,
+      "cruiseM": null,
+      "max": 230,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Musketeer",
+    "icao": "BE19",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 10500,
+    "rate": {
+      "climb": 800,
+      "descent": 800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.900,
+      "landing": 0.900
+    },
+    "speed": {
+      "min": 60,
+      "landing": 90,
+      "cruise": 115,
+      "cruiseM": null,
+      "max": 135,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Sundowner",
+    "icao": "BE23",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 12500,
+    "rate": {
+      "climb": 900,
+      "descent": 900,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.900,
+      "landing": 0.900
+    },
+    "speed": {
+      "min": 60,
+      "landing": 95,
+      "cruise": 125,
+      "cruiseM": null,
+      "max": 145,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Sierra",
+    "icao": "BE24",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 12500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.900,
+      "landing": 0.900
+    },
+    "speed": {
+      "min": 66,
+      "landing": 95,
+      "cruise": 135,
+      "cruiseM": null,
+      "max": 150,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Bonanza 33",
+    "icao": "BE33",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 4,
+      "cwt": "I"
+    },
+    "ceiling": 12500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.35,
+      "landing": 0.45
+    },
+    "speed": {
+      "min": 52,
+      "landing": 80,
+      "cruise": 140,
+      "cruiseM": null,
+      "max": 163,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Bonanza 35",
+    "icao": "BE35",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 3,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.35,
+      "landing": 0.45
+    },
+    "speed": {
+      "min": 52,
+      "landing": 85,
+      "cruise": 150,
+      "cruiseM": null,
+      "max": 170,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Hawker 400XPR",
+    "icao": "BE4W",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "M",
+    "category": {
+      "srs": 3,
+      "lahso": 8,
+      "cwt": "H"
+    },
+    "ceiling": 45000,
+    "rate": {
+      "climb": 3000,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.19,
+      "landing": 1.531
+    },
+    "speed": {
+      "min": 93,
+      "landing": 130,
+      "cruise": 445,
+      "cruiseM": 0.77,
+      "max": 450,
+      "maxM": 0.78
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Twin Bonanza",
+    "icao": "BE50",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 4,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.75,
+      "landing": 0.75
+    },
+    "speed": {
+      "min": 85,
+      "landing": 115,
+      "cruise": 160,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Barron 55",
+    "icao": "BE55",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1100,
+      "descent": 1300,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 110,
+      "cruise": 175,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Barron 56 Turbo",
+    "icao": "BE56",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1100,
+      "descent": 1300,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 110,
+      "cruise": 175,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Barron 58",
+    "icao": "BE58",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1300,
+      "descent": 1300,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 105,
+      "cruise": 170,
+      "cruiseM": null,
+      "max": 185,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Duke",
+    "icao": "BE60",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1300,
+      "descent": 1300,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 75,
+      "landing": 100,
+      "cruise": 180,
+      "cruiseM": null,
+      "max": 200,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Queen Air 65",
+    "icao": "BE65",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 75,
+      "landing": 100,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Queen Air 70",
+    "icao": "BE70",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 75,
+      "landing": 110,
+      "cruise": 175,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Duchess",
+    "icao": "BE76",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 4,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 75,
+      "landing": 105,
+      "cruise": 150,
+      "cruiseM": null,
+      "max": 170,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Skipper",
+    "icao": "BE77",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 10500,
+    "rate": {
+      "climb": 800,
+      "descent": 800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.65,
+      "landing": 0.65
+    },
+    "speed": {
+      "min": 65,
+      "landing": 90,
+      "cruise": 115,
+      "cruiseM": null,
+      "max": 135,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Queen Air 80",
+    "icao": "BE80",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 75,
+      "landing": 110,
+      "cruise": 175,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Queen Air 88",
+    "icao": "BE88",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 75,
+      "landing": 110,
+      "cruise": 175,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Travel Air",
+    "icao": "BE95",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 75,
+      "landing": 110,
+      "cruise": 155,
+      "cruiseM": null,
+      "max": 170,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft King Air 90",
+    "icao": "BE9L",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1500,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.57,
+      "landing": 0.54
+    },
+    "speed": {
+      "min": 90,
+      "landing": 115,
+      "cruise": 225,
+      "cruiseM": 0.48,
+      "max": 260,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft King Air F90",
+    "icao": "BE9T",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1800,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.57,
+      "landing": 0.54
+    },
+    "speed": {
+      "min": 90,
+      "landing": 115,
+      "cruise": 260,
+      "cruiseM": 0.48,
+      "max": 290,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Bonanza 36TC",
+    "icao": "BT36",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 3,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.35,
+      "landing": 0.45
+    },
+    "speed": {
+      "min": 52,
+      "landing": 70,
+      "cruise": 170,
+      "cruiseM": null,
+      "max": 203,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Turbo Mentor",
+    "icao": "T34T",
+    "engines": {
+      "number": 1,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 3,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1300,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.75,
+      "landing": 0.75
+    },
+    "speed": {
+      "min": 80,
+      "landing": 115,
+      "cruise": 175,
+      "cruiseM": null,
+      "max": 200,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Beechcraft Texan",
+    "icao": "TEX2",
+    "engines": {
+      "number": 1,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 3,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1300,
+      "descent": 1300,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.75,
+      "landing": 0.75
+    },
+    "speed": {
+      "min": 80,
+      "landing": 115,
+      "cruise": 195,
+      "cruiseM": null,
+      "max": 220,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 152",
+    "icao": "C152",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 10500,
+    "rate": {
+      "climb": 800,
+      "descent": 800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.35,
+      "landing": 0.45
+    },
+    "speed": {
+      "min": 52,
+      "landing": 70,
+      "cruise": 110,
+      "cruiseM": null,
+      "max": 130,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 162",
+    "icao": "C162",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 10500,
+    "rate": {
+      "climb": 800,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.35,
+      "landing": 0.45
+    },
+    "speed": {
+      "min": 52,
+      "landing": 70,
+      "cruise": 110,
+      "cruiseM": null,
+      "max": 130,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 177",
+    "icao": "C177",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 900,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 52,
+      "landing": 80,
+      "cruise": 125,
+      "cruiseM": null,
+      "max": 150,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 206",
+    "icao": "C206",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 62,
+      "landing": 80,
+      "cruise": 145,
+      "cruiseM": null,
+      "max": 165,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 210",
+    "icao": "C210",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 62,
+      "landing": 90,
+      "cruise": 155,
+      "cruiseM": null,
+      "max": 185,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 240",
+    "icao": "C240",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1200,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 62,
+      "landing": 100,
+      "cruise": 190,
+      "cruiseM": null,
+      "max": 230,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna Citation CJ2",
+    "icao": "C25A",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "I"
+    },
+    "ceiling": 41000,
+    "rate": {
+      "climb": 2200,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.50,
+      "landing": 1.50
+    },
+    "speed": {
+      "min": 95,
+      "landing": 130,
+      "cruise": 390,
+      "cruiseM": 0.70,
+      "max": 400,
+      "maxM": 0.71
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna Citation CJ3",
+    "icao": "C25B",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "I"
+    },
+    "ceiling": 45000,
+    "rate": {
+      "climb": 1900,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.50,
+      "landing": 1.50
+    },
+    "speed": {
+      "min": 95,
+      "landing": 130,
+      "cruise": 491,
+      "cruiseM": 0.71,
+      "max": 400,
+      "maxM": 0.73
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna Citation CJ4",
+    "icao": "C25C",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "I"
+    },
+    "ceiling": 45000,
+    "rate": {
+      "climb": 2500,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.50,
+      "landing": 1.50
+    },
+    "speed": {
+      "min": 95,
+      "landing": 130,
+      "cruise": 395,
+      "cruiseM": 0.73,
+      "max": 410,
+      "maxM": 0.74
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna Citation M2",
+    "icao": "C25M",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "I"
+    },
+    "ceiling": 45000,
+    "rate": {
+      "climb": 2000,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.50,
+      "landing": 1.50
+    },
+    "speed": {
+      "min": 95,
+      "landing": 130,
+      "cruise": 395,
+      "cruiseM": 0.71,
+      "max": 410,
+      "maxM": 0.73
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 303",
+    "icao": "C303",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1200,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 115,
+      "cruise": 155,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 310",
+    "icao": "C310",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1300,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 115,
+      "cruise": 170,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 320",
+    "icao": "C320",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1300,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 115,
+      "cruise": 170,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 404",
+    "icao": "C404",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 115,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 414",
+    "icao": "C414",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1300,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 120,
+      "cruise": 180,
+      "cruiseM": null,
+      "max": 220,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 421",
+    "icao": "C421",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1300,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 130,
+      "cruise": 195,
+      "cruiseM": null,
+      "max": 230,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 441",
+    "icao": "C441",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1800,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 130,
+      "cruise": 275,
+      "cruiseM": null,
+      "max": 290,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna Citation 500",
+    "icao": "C500",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "I"
+    },
+    "ceiling": 41000,
+    "rate": {
+      "climb": 2500,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.50,
+      "landing": 1.50
+    },
+    "speed": {
+      "min": 80,
+	  "v2": 105,
+      "landing": 120,
+      "cruise": 320,
+      "cruiseM": 0.66,
+      "max": 340,
+      "maxM": 0.69
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna Citation 501",
+    "icao": "C501",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "I"
+    },
+    "ceiling": 41000,
+    "rate": {
+      "climb": 2600,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.50,
+      "landing": 1.50
+    },
+    "speed": {
+      "min": 95,
+      "landing": 120,
+      "cruise": 340,
+      "cruiseM": 0.68,
+      "max": 350,
+      "maxM": 0.70
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna Citation 525",
+    "icao": "C525",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "I"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2100,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.50,
+      "landing": 1.50
+    },
+    "speed": {
+      "min": 95,
+      "landing": 130,
+      "cruise": 350,
+      "cruiseM": 0.68,
+      "max": 370,
+      "maxM": 0.70
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna Citation 560XL",
+    "icao": "C56X",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2500,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.50,
+      "landing": 1.50
+    },
+    "speed": {
+      "min": 95,
+      "landing": 130,
+      "cruise": 360,
+      "cruiseM": 0.72,
+      "max": 370,
+      "maxM": 0.73
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna Citation 650",
+    "icao": "C650",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2700,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.50,
+      "landing": 1.50
+    },
+    "speed": {
+      "min": 95,
+      "landing": 130,
+      "cruise": 380,
+      "cruiseM": 0.73,
+      "max": 400,
+      "maxM": 0.74
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna Citation 680A",
+    "icao": "C68A",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "H"
+    },
+    "ceiling": 45000,
+    "rate": {
+      "climb": 2700,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.50,
+      "landing": 1.50
+    },
+    "speed": {
+      "min": 95,
+      "landing": 130,
+      "cruise": 380,
+      "cruiseM": 0.73,
+      "max": 400,
+      "maxM": 0.74
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna Citation 700",
+    "icao": "C700",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2700,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.50,
+      "landing": 1.50
+    },
+    "speed": {
+      "min": 95,
+      "landing": 130,
+      "cruise": 425,
+      "cruiseM": 0.75,
+      "max": 435,
+      "maxM": 0.76
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 172RG",
+    "icao": "C72R",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 12500,
+    "rate": {
+      "climb": 800,
+      "descent": 800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.35,
+      "landing": 0.45
+    },
+    "speed": {
+      "min": 52,
+      "landing": 90,
+      "cruise": 130,
+      "cruiseM": null,
+      "max": 150,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 182RG",
+    "icao": "C82R",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 62,
+      "landing": 90,
+      "cruise": 155,
+      "cruiseM": null,
+      "max": 165,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna 177RG",
+    "icao": "C77R",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 900,
+      "descent": 900,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 52,
+      "landing": 90,
+      "cruise": 140,
+      "cruiseM": null,
+      "max": 160,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna T182",
+    "icao": "C82S",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 52,
+      "landing": 90,
+      "cruise": 155,
+      "cruiseM": null,
+      "max": 170,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna T182RG",
+    "icao": "C82T",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 52,
+      "landing": 90,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna P210",
+    "icao": "P210",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 52,
+      "landing": 105,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna P337",
+    "icao": "P337",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1200,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 52,
+      "landing": 110,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna T206",
+    "icao": "T206",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 52,
+      "landing": 100,
+      "cruise": 145,
+      "cruiseM": null,
+      "max": 160,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cessna T210",
+    "icao": "T210",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1200,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 52,
+      "landing": 100,
+      "cruise": 175,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cirrus SR20",
+    "icao": "SR20",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 900,
+      "descent": 900,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 65,
+      "landing": 100,
+      "cruise": 175,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cirrus SR22",
+    "icao": "SR22",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 65,
+      "landing": 100,
+      "cruise": 195,
+      "cruiseM": null,
+      "max": 210,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cirrus SR22T",
+    "icao": "S22T",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1200,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 65,
+      "landing": 100,
+      "cruise": 195,
+      "cruiseM": null,
+      "max": 210,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Cirrus SF-50",
+    "icao": "SF50",
+    "engines": {
+      "number": 1,
+      "type": "J"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 3,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 900,
+      "descent": 900,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.55,
+      "landing": 1.55
+    },
+    "speed": {
+      "min": 90,
+      "landing": 120,
+      "cruise": 235,
+      "cruiseM": null,
+      "max": 250,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Commander 112/114/115",
+    "icao": "AC11",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 15000,
+    "rate": {
+      "climb": 1100,
+      "descent": 1100,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 65,
+      "landing": 100,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Bellanca 17 Viking",
+    "icao": "BL17",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 15000,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 65,
+      "landing": 100,
+      "cruise": 155,
+      "cruiseM": null,
+      "max": 175,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Columbia 350",
+    "icao": "COL3",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1200,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 75,
+      "landing": 100,
+      "cruise": 185,
+      "cruiseM": null,
+      "max": 210,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Columbia 400",
+    "icao": "COL4",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1100,
+      "descent": 1100,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 75,
+      "landing": 100,
+      "cruise": 195,
+      "cruiseM": null,
+      "max": 220,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Daher Kodiak 100",
+    "icao": "K100",
+    "engines": {
+      "number": 1,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1400,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 65,
+      "landing": 100,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Daher Kodiak 900",
+    "icao": "K900",
+    "engines": {
+      "number": 1,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1300,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.55,
+      "landing": 0.55
+    },
+    "speed": {
+      "min": 65,
+      "landing": 100,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Dassault Falcon 900",
+    "icao": "F900",
+    "engines": {
+      "number": 3,
+      "type": "J"
+    },
+    "weightClass": "L",
+    "category": {
+      "srs": 3,
+      "lahso": 8,
+      "cwt": "G"
+    },
+    "ceiling": 47000,
+    "rate": {
+      "climb": 2800,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.64,
+      "landing": 1.35
+    },
+    "speed": {
+      "min": 100,
+      "landing": 130,
+      "cruise": 470,
+      "cruiseM": 0.80,
+      "max": 530,
+      "maxM": 0.85
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Dassault Falcon 10",
+    "icao": "FA10",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 8,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2500,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.64,
+      "landing": 1.35
+    },
+    "speed": {
+      "min": 100,
+      "landing": 130,
+      "cruise": 450,
+      "cruiseM": 0.78,
+      "max": 480,
+      "maxM": 0.80
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Dassault Falcon 50",
+    "icao": "FA50",
+    "engines": {
+      "number": 3,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 8,
+      "cwt": "H"
+    },
+    "ceiling": 47000,
+    "rate": {
+      "climb": 2900,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.64,
+      "landing": 1.35
+    },
+    "speed": {
+      "min": 100,
+      "landing": 130,
+      "cruise": 470,
+      "cruiseM": 0.8,
+      "max": 530,
+      "maxM": 0.85
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Dassault Falcon 6X",
+    "icao": "FA6X",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 8,
+      "cwt": "H"
+    },
+    "ceiling": 47000,
+    "rate": {
+      "climb": 2900,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.64,
+      "landing": 1.35
+    },
+    "speed": {
+      "min": 100,
+      "landing": 130,
+      "cruise": 470,
+      "cruiseM": 0.8,
+      "max": 530,
+      "maxM": 0.85
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Dassault Falcon 7X",
+    "icao": "FA7X",
+    "engines": {
+      "number": 3,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 8,
+      "cwt": "H"
+    },
+    "ceiling": 47000,
+    "rate": {
+      "climb": 2900,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.64,
+      "landing": 1.35
+    },
+    "speed": {
+      "min": 100,
+      "landing": 130,
+      "cruise": 470,
+      "cruiseM": 0.8,
+      "max": 530,
+      "maxM": 0.85
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Diamond Katana",
+    "icao": "DV20",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 10500,
+    "rate": {
+      "climb": 800,
+      "descent": 800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.35,
+      "landing": 0.45
+    },
+    "speed": {
+      "min": 52,
+      "landing": 70,
+      "cruise": 110,
+      "cruiseM": null,
+      "max": 130,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Diamond Diamond Star",
+    "icao": "DA40",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 12500,
+    "rate": {
+      "climb": 900,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.35,
+      "landing": 0.45
+    },
+    "speed": {
+      "min": 52,
+      "landing": 80,
+      "cruise": 125,
+      "cruiseM": null,
+      "max": 140,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Diamond Magnum",
+    "icao": "DA50",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1100,
+      "descent": 1100,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.85,
+      "landing": 0.85
+    },
+    "speed": {
+      "min": 72,
+      "landing": 100,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Diamond Twin Star",
+    "icao": "DA62",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1300,
+      "descent": 1300,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.85,
+      "landing": 0.85
+    },
+    "speed": {
+      "min": 72,
+      "landing": 100,
+      "cruise": 175,
+      "cruiseM": null,
+      "max": 195,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Epic E1000",
+    "icao": "EPIC",
+    "engines": {
+      "number": 1,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1700,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.85,
+      "landing": 0.85
+    },
+    "speed": {
+      "min": 80,
+      "landing": 110,
+      "cruise": 255,
+      "cruiseM": null,
+      "max": 275,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Fairchild Swearingen Metroliner",
+    "icao": "SW3",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 5,
+      "cwt": "H"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1500,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.68,
+      "landing": 0.68
+    },
+    "speed": {
+      "min": 90,
+      "landing": 115,
+      "cruise": 250,
+      "cruiseM": null,
+      "max": 270,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Bombardier Learjet 31",
+    "icao": "LJ31",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "H"
+    },
+    "ceiling": 51000,
+    "rate": {
+      "climb": 3100,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.3,
+      "landing": 1.35
+    },
+    "speed": {
+      "min": 105,
+      "landing": 136,
+      "cruise": 457,
+      "cruiseM": 0.77,
+      "max": 464,
+      "maxM": 0.79
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Bombardier Learjet 35",
+    "icao": "LJ35",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 9,
+      "cwt": "H"
+    },
+    "ceiling": 51000,
+    "rate": {
+      "climb": 2900,
+      "descent": 1600,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.3,
+      "landing": 1.35
+    },
+    "speed": {
+      "min": 105,
+      "landing": 138,
+      "cruise": 457,
+      "cruiseM": 0.79,
+      "max": 464,
+      "maxM": 0.81
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Grumman American",
+    "icao": "GA7",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 145,
+      "cruiseM": null,
+      "max": 170,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Gulfstream Aerospace G100",
+    "icao": "ASTR",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2300,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 105,
+      "landing": 130,
+      "cruise": 437,
+      "cruiseM": 0.77,
+      "max": 455,
+      "maxM": 0.79
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Gulfstream Aerospace G150",
+    "icao": "G150",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 4,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2400,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 105,
+      "landing": 130,
+      "cruise": 437,
+      "cruiseM": 0.77,
+      "max": 455,
+      "maxM": 0.79
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Gulfstream Aerospace G280",
+    "icao": "G280",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2700,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 105,
+      "landing": 130,
+      "cruise": 437,
+      "cruiseM": 0.78,
+      "max": 455,
+      "maxM": 0.80
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Gulfstream Aerospace G500",
+    "icao": "GA5C",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "L",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "F"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2900,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 105,
+      "landing": 130,
+      "cruise": 457,
+      "cruiseM": 0.79,
+      "max": 475,
+      "maxM": 0.82
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Gulfstream Aerospace G700",
+    "icao": "GA7C",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "L",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "F"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 3100,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 105,
+      "landing": 130,
+      "cruise": 457,
+      "cruiseM": 0.79,
+      "max": 475,
+      "maxM": 0.82
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Hawker HS125",
+    "icao": "H25A",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 6,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2700,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 105,
+      "landing": 130,
+      "cruise": 447,
+      "cruiseM": 0.77,
+      "max": 455,
+      "maxM": 0.80
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Hawker HS125",
+    "icao": "H25C",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 6,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2900,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 105,
+      "landing": 130,
+      "cruise": 447,
+      "cruiseM": 0.77,
+      "max": 455,
+      "maxM": 0.80
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Hawker 4000",
+    "icao": "HA4T",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 6,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2500,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 105,
+      "landing": 130,
+      "cruise": 447,
+      "cruiseM": 0.78,
+      "max": 455,
+      "maxM": 0.80
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Raytheon Premier",
+    "icao": "PRM1",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 6,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2100,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 105,
+      "landing": 130,
+      "cruise": 437,
+      "cruiseM": 0.75,
+      "max": 445,
+      "maxM": 0.77
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "IAI Westwind 23",
+    "icao": "WW23",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2700,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 105,
+      "landing": 130,
+      "cruise": 447,
+      "cruiseM": 0.77,
+      "max": 455,
+      "maxM": 0.80
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "IAI Westwind 24",
+    "icao": "WW24",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "H"
+    },
+    "ceiling": 43000,
+    "rate": {
+      "climb": 2900,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 105,
+      "landing": 130,
+      "cruise": 450,
+      "cruiseM": 0.78,
+      "max": 455,
+      "maxM": 0.80
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Lake Renegade",
+    "icao": "LA25",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 12500,
+    "rate": {
+      "climb": 900,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.46,
+      "landing": 0.41
+    },
+    "speed": {
+      "min": 49,
+      "landing": 65,
+      "cruise": 135,
+      "cruiseM": null,
+      "max": 150,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Lancair EVO",
+    "icao": "EVOP",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1300,
+      "descent": 1300,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.46,
+      "landing": 1.41
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 190,
+      "cruiseM": null,
+      "max": 220,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Lancair EVOT",
+    "icao": "EVOT",
+    "engines": {
+      "number": 1,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1600,
+      "descent": 1300,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.46,
+      "landing": 1.41
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 200,
+      "cruiseM": null,
+      "max": 220,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Lancair Legacy",
+    "icao": "LEG2",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.46,
+      "landing": 1.41
+    },
+    "speed": {
+      "min": 80,
+      "landing": 90,
+      "cruise": 150,
+      "cruiseM": null,
+      "max": 170,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Lancair 200",
+    "icao": "LNC2",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1100,
+      "descent": 1100,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.46,
+      "landing": 1.41
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Lancair 4",
+    "icao": "LNC4",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1200,
+      "descent": 1100,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.46,
+      "landing": 1.41
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 175,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Mooney M20",
+    "icao": "M20P",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 4,
+      "cwt": "I"
+    },
+    "ceiling": 15000,
+    "rate": {
+      "climb": 1000,
+      "descent": 1100,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.46,
+      "landing": 1.41
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 175,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Mooney M20K",
+    "icao": "M20T",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1200,
+      "descent": 1100,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.46,
+      "landing": 1.41
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 195,
+      "cruiseM": null,
+      "max": 210,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Pilatus PC24",
+    "icao": "PC24",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S+",
+    "category": {
+      "srs": 3,
+      "lahso": 5,
+      "cwt": "H"
+    },
+    "ceiling": 45000,
+    "rate": {
+      "climb": 2500,
+      "descent": 1700,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.963,
+      "landing": 1.89
+    },
+    "speed": {
+      "min": 100,
+      "landing": 120,
+      "cruise": 435,
+      "cruiseM": 0.76,
+      "max": 455,
+      "maxM": 0.78
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Aerostar",
+    "icao": "AEST",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1300,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 90,
+      "landing": 115,
+      "cruise": 205,
+      "cruiseM": null,
+      "max": 225,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Sport",
+    "icao": "CRUZ",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 10500,
+    "rate": {
+      "climb": 850,
+      "descent": 850,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.35,
+      "landing": 0.45
+    },
+    "speed": {
+      "min": 52,
+      "landing": 80,
+      "cruise": 117,
+      "cruiseM": null,
+      "max": 135,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper M600",
+    "icao": "M600",
+    "engines": {
+      "number": 1,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1700,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.95,
+      "landing": 1.95
+    },
+    "speed": {
+      "min": 90,
+      "landing": 115,
+      "cruise": 235,
+      "cruiseM": null,
+      "max": 255,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Dakota",
+    "icao": "P28B",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 3,
+      "cwt": "I"
+    },
+    "ceiling": 15000,
+    "rate": {
+      "climb": 900,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.514,
+      "landing": 0.395
+    },
+    "speed": {
+      "min": 50,
+      "landing": 90,
+      "cruise": 135,
+      "cruiseM": null,
+      "max": 150,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Arrow",
+    "icao": "P28R",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 3,
+      "cwt": "I"
+    },
+    "ceiling": 15000,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.514,
+      "landing": 0.395
+    },
+    "speed": {
+      "min": 50,
+      "landing": 95,
+      "cruise": 145,
+      "cruiseM": null,
+      "max": 160,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Turbo Arrow",
+    "icao": "P28S",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 3,
+      "cwt": "I"
+    },
+    "ceiling": 15000,
+    "rate": {
+      "climb": 1100,
+      "descent": 1100,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.514,
+      "landing": 0.395
+    },
+    "speed": {
+      "min": 50,
+      "landing": 90,
+      "cruise": 155,
+      "cruiseM": null,
+      "max": 175,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Saratoga HP",
+    "icao": "P32R",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 3,
+      "cwt": "I"
+    },
+    "ceiling": 15000,
+    "rate": {
+      "climb": 1100,
+      "descent": 1100,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.514,
+      "landing": 0.395
+    },
+    "speed": {
+      "min": 50,
+      "landing": 90,
+      "cruise": 155,
+      "cruiseM": null,
+      "max": 175,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Lance TC",
+    "icao": "P32T",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 15000,
+    "rate": {
+      "climb": 1200,
+      "descent": 1100,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.514,
+      "landing": 0.395
+    },
+    "speed": {
+      "min": 50,
+      "landing": 95,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 185,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Meridian",
+    "icao": "P46T",
+    "engines": {
+      "number": 1,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 4,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1500,
+      "descent": 1300,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.514,
+      "landing": 1.395
+    },
+    "speed": {
+      "min": 90,
+      "landing": 115,
+      "cruise": 225,
+      "cruiseM": null,
+      "max": 245,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Apache",
+    "icao": "PA23",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1200,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 145,
+      "cruiseM": null,
+      "max": 170,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Comanche",
+    "icao": "PA24",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 4,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 180,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Aztec",
+    "icao": "PA27",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1200,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 150,
+      "cruiseM": null,
+      "max": 170,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Twin Comanche",
+    "icao": "PA30",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 110,
+      "cruise": 170,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Navajo",
+    "icao": "PA31",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1200,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 110,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Cherokee 6",
+    "icao": "PA32",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 145,
+      "cruiseM": null,
+      "max": 170,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Seneca",
+    "icao": "PA34",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1200,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 110,
+      "cruise": 155,
+      "cruiseM": null,
+      "max": 175,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Tomahawk",
+    "icao": "PA38",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 10500,
+    "rate": {
+      "climb": 800,
+      "descent": 800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 60,
+      "landing": 90,
+      "cruise": 115,
+      "cruiseM": null,
+      "max": 135,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Seminole",
+    "icao": "PA44",
+    "engines": {
+      "number": 2,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 15500,
+    "rate": {
+      "climb": 1100,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 145,
+      "cruiseM": null,
+      "max": 170,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Malibu",
+    "icao": "PA46",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1200,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.95,
+      "landing": 0.95
+    },
+    "speed": {
+      "min": 80,
+      "landing": 100,
+      "cruise": 175,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Cheyenne 1",
+    "icao": "PAY1",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 6,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1600,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.000,
+      "landing": 1.000
+    },
+    "speed": {
+      "min": 75,
+      "landing": 110,
+      "cruise": 180,
+      "cruiseM": null,
+      "max": 200,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Cheyenne 2",
+    "icao": "PAY2",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1600,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.000,
+      "landing": 1.000
+    },
+    "speed": {
+      "min": 75,
+      "landing": 100,
+      "cruise": 200,
+      "cruiseM": null,
+      "max": 220,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Cheyenne 3",
+    "icao": "PAY3",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 8,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1600,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.000,
+      "landing": 1.000
+    },
+    "speed": {
+      "min": 75,
+      "landing": 100,
+      "cruise": 235,
+      "cruiseM": null,
+      "max": 260,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Piper Cheyenne 4",
+    "icao": "PAY4",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 2,
+      "lahso": 4,
+      "cwt": "I"
+    },
+    "ceiling": 25000,
+    "rate": {
+      "climb": 1900,
+      "descent": 1300,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.000,
+      "landing": 1.000
+    },
+    "speed": {
+      "min": 75,
+      "landing": 120,
+      "cruise": 275,
+      "cruiseM": null,
+      "max": 290,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Socata TBM7",
+    "icao": "TBM7",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 29000,
+    "rate": {
+      "climb": 1400,
+      "descent": 1300,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.000,
+      "landing": 1.000
+    },
+    "speed": {
+      "min": 75,
+      "landing": 120,
+      "cruise": 275,
+      "cruiseM": null,
+      "max": 290,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Socata TBM8",
+    "icao": "TBM8",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 29000,
+    "rate": {
+      "climb": 1500,
+      "descent": 1300,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.000,
+      "landing": 1.000
+    },
+    "speed": {
+      "min": 75,
+      "landing": 120,
+      "cruise": 285,
+      "cruiseM": null,
+      "max": 300,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Socata TBM9",
+    "icao": "TBM9",
+    "engines": {
+      "number": 2,
+      "type": "T"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 5,
+      "cwt": "I"
+    },
+    "ceiling": 29000,
+    "rate": {
+      "climb": 1600,
+      "descent": 1300,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.000,
+      "landing": 1.000
+    },
+    "speed": {
+      "min": 75,
+      "landing": 120,
+      "cruise": 295,
+      "cruiseM": null,
+      "max": 320,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Tecnam P208",
+    "icao": "P208",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 12500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.86,
+      "landing": 0.81
+    },
+    "speed": {
+      "min": 49,
+      "landing": 85,
+      "cruise": 125,
+      "cruiseM": null,
+      "max": 150,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Vans RV10",
+    "icao": "RV10",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 12500,
+    "rate": {
+      "climb": 900,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.86,
+      "landing": 0.81
+    },
+    "speed": {
+      "min": 49,
+      "landing": 85,
+      "cruise": 125,
+      "cruiseM": null,
+      "max": 150,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Vans RV12",
+    "icao": "RV12",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 12500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.86,
+      "landing": 0.81
+    },
+    "speed": {
+      "min": 49,
+      "landing": 95,
+      "cruise": 135,
+      "cruiseM": null,
+      "max": 155,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Vans RV14",
+    "icao": "RV14",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 2,
+      "cwt": "I"
+    },
+    "ceiling": 12500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.86,
+      "landing": 0.81
+    },
+    "speed": {
+      "min": 49,
+      "landing": 105,
+      "cruise": 140,
+      "cruiseM": null,
+      "max": 155,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Velocity XL",
+    "icao": "VELO",
+    "engines": {
+      "number": 1,
+      "type": "P"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 1,
+      "lahso": 1,
+      "cwt": "I"
+    },
+    "ceiling": 12500,
+    "rate": {
+      "climb": 1000,
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 0.86,
+      "landing": 0.81
+    },
+    "speed": {
+      "min": 49,
+      "landing": 115,
+      "cruise": 165,
+      "cruiseM": null,
+      "max": 190,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
     "name": "Airbus A320 Neo",
     "icao": "A20N",
     "engines": {
@@ -16,9 +5345,9 @@
     "ceiling": 39000,
     "rate": {
       "climb": 3500,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.9,
@@ -29,9 +5358,9 @@
       "v2": 145,
       "landing": 130,
       "cruise": 454,
-      "cruiseM": null,
+      "cruiseM": 0.78,
       "max": 487,
-      "maxM": 0.83
+      "maxM": 0.81
     },
     "capability": {
       "ils": true,
@@ -51,12 +5380,12 @@
       "lahso": 7,
       "cwt": "F"
     },
-    "ceiling": 43000,
+    "ceiling": 39000,
     "rate": {
-      "climb": 3500,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 4
+      "climb": 3000,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 2.4,
@@ -64,12 +5393,11 @@
     },
     "speed": {
       "min": 120,
-      "v2": 145,
       "landing": 135,
       "cruise": 447,
-      "cruiseM": null,
+      "cruiseM": 0.78,
       "max": 488,
-      "maxM": 0.83
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -92,9 +5420,9 @@
     "ceiling": 41000,
     "rate": {
       "climb": 3200,
-      "descent": 3000,
-      "accelerate": 8,
-      "decelerate": 4
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 2.7,
@@ -102,11 +5430,11 @@
     },
     "speed": {
       "min": 110,
-      "landing": 125,
+      "landing": 135,
       "cruise": 457,
-      "cruiseM": null,
+      "cruiseM": 0.79,
       "max": 496,
-      "maxM": 0.84
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -128,10 +5456,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3500,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 4
+      "climb": 2100,
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 3.2,
@@ -139,12 +5467,11 @@
     },
     "speed": {
       "min": 125,
-      "v2": 155,
       "landing": 140,
       "cruise": 487,
-      "cruiseM": null,
+      "cruiseM": 0.83,
       "max": 510,
-      "maxM": 0.89
+      "maxM": 0.86
     },
     "capability": {
       "ils": true,
@@ -167,8 +5494,8 @@
     "ceiling": 40000,
     "rate": {
       "climb": 1200,
-      "descent": 3000,
-      "accelerate": 4,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 2
     },
     "runway": {
@@ -204,8 +5531,8 @@
     "ceiling": 47000,
     "rate": {
       "climb": 3000,
-      "descent": 3000,
-      "accelerate": 4,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 2
     },
     "runway": {
@@ -240,10 +5567,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3200,
-      "descent": 3000,
-      "accelerate": 8,
-      "decelerate": 4
+      "climb": 2300,
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 2.7,
@@ -251,9 +5578,9 @@
     },
     "speed": {
       "min": 110,
-      "landing": 125,
+      "landing": 140,
       "cruise": 472,
-      "cruiseM": null,
+      "cruiseM": 0.80,
       "max": 484,
       "maxM": 0.82
     },
@@ -277,9 +5604,9 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 4,
+      "climb": 2500,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 3
     },
     "runway": {
@@ -289,9 +5616,9 @@
     "speed": {
       "min": 110,
       "v2": 160,
-      "landing": 125,
+      "landing": 135,
       "cruise": 459,
-      "cruiseM": 0.8,
+      "cruiseM": 0.80,
       "max": 487,
       "maxM": 0.84
     },
@@ -316,9 +5643,9 @@
     "ceiling": 39000,
     "rate": {
       "climb": 3000,
-      "descent": 3500,
-      "accelerate": 7,
-      "decelerate": 4
+      "descent": 2500,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.7,
@@ -326,9 +5653,9 @@
     },
     "speed": {
       "min": 110,
-      "landing": 120,
+      "landing": 130,
       "cruise": 470,
-      "cruiseM": null,
+      "cruiseM": 0.79,
       "max": 484,
       "maxM": 0.82
     },
@@ -352,10 +5679,10 @@
     },
     "ceiling": 39000,
     "rate": {
-      "climb": 2500,
-      "descent": 3500,
-      "accelerate": 6.5,
-      "decelerate": 4
+      "climb": 2700,
+      "descent": 2500,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.8,
@@ -363,12 +5690,11 @@
     },
     "speed": {
       "min": 110,
-      "v2": 135,
-      "landing": 125,
+      "landing": 130,
       "cruise": 454,
-      "cruiseM": null,
+      "cruiseM": 0.79,
       "max": 487,
-      "maxM": 0.83
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -391,9 +5717,9 @@
     "ceiling": 39000,
     "rate": {
       "climb": 2500,
-      "descent": 3500,
-      "accelerate": 7,
-      "decelerate": 4
+      "descent": 2500,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.9,
@@ -401,10 +5727,9 @@
     },
     "speed": {
       "min": 115,
-      "v2": 145,
-      "landing": 130,
+      "landing": 135,
       "cruise": 454,
-      "cruiseM": null,
+      "cruiseM": 0.79,
       "max": 487,
       "maxM": 0.83
     },
@@ -428,10 +5753,10 @@
     },
     "ceiling": 43000,
     "rate": {
-      "climb": 2500,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 4
+      "climb": 2200,
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 2.4,
@@ -466,10 +5791,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 2500,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 3.5
+      "climb": 2200,
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 2.6,
@@ -477,12 +5802,11 @@
     },
     "speed": {
       "min": 125,
-      "v2": 145,
-      "landing": 130,
+      "landing": 145,
       "cruise": 465,
-      "cruiseM": null,
+      "cruiseM": 0.79,
       "max": 475,
-      "maxM": 0.8
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -505,9 +5829,9 @@
     "ceiling": 41000,
     "rate": {
       "climb": 2000,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 3.5
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 2.8,
@@ -515,12 +5839,11 @@
     },
     "speed": {
       "min": 125,
-      "v2": 145,
-      "landing": 130,
+      "landing": 145,
       "cruise": 464,
-      "cruiseM": null,
+      "cruiseM": 0.79,
       "max": 475,
-      "maxM": 0.8
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -543,9 +5866,9 @@
     "ceiling": 41450,
     "rate": {
       "climb": 2000,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 3.5
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 2.8,
@@ -553,10 +5876,9 @@
     },
     "speed": {
       "min": 125,
-      "v2": 145,
-      "landing": 130,
+      "landing": 140,
       "cruise": 464,
-      "cruiseM": null,
+      "cruiseM": 0.81,
       "max": 496,
       "maxM": 0.86
     },
@@ -581,9 +5903,9 @@
     "ceiling": 41450,
     "rate": {
       "climb": 2000,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 3.5
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 2.8,
@@ -591,10 +5913,9 @@
     },
     "speed": {
       "min": 125,
-      "v2": 145,
-      "landing": 130,
+      "landing": 140,
       "cruise": 464,
-      "cruiseM": null,
+      "cruiseM": 0.82,
       "max": 496,
       "maxM": 0.86
     },
@@ -619,9 +5940,9 @@
     "ceiling": 41000,
     "rate": {
       "climb": 1500,
-      "descent": 3000,
-      "accelerate": 4,
-      "decelerate": 3
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 3,
@@ -629,10 +5950,9 @@
     },
     "speed": {
       "min": 145,
-      "v2": 145,
-      "landing": 150,
+      "landing": 145,
       "cruise": 475,
-      "cruiseM": null,
+      "cruiseM": 0.82,
       "max": 494,
       "maxM": 0.84
     },
@@ -656,10 +5976,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3500,
-      "descent": 3000,
-      "accelerate": 4,
-      "decelerate": 3
+      "climb": 2400,
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 3.2,
@@ -667,7 +5987,7 @@
     },
     "speed": {
       "min": 145,
-      "landing": 160,
+      "landing": 145,
       "cruise": 480,
       "cruiseM": 0.82,
       "max": 494,
@@ -693,10 +6013,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 1500,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 4
+      "climb": 1800,
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 3.2,
@@ -704,10 +6024,9 @@
     },
     "speed": {
       "min": 125,
-      "v2": 145,
       "landing": 140,
       "cruise": 450,
-      "cruiseM": null,
+      "cruiseM": 0.79,
       "max": 490,
       "maxM": 0.83
     },
@@ -731,10 +6050,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 4
+      "climb": 2700,
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 3.2,
@@ -742,10 +6061,9 @@
     },
     "speed": {
       "min": 125,
-      "v2": 150,
-      "landing": 140,
+      "landing": 145,
       "cruise": 487,
-      "cruiseM": null,
+      "cruiseM": 0.83,
       "max": 510,
       "maxM": 0.89
     },
@@ -770,9 +6088,9 @@
     "ceiling": 43000,
     "rate": {
       "climb": 2500,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 4
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 3,
@@ -780,12 +6098,11 @@
     },
     "speed": {
       "min": 125,
-      "v2": 150,
-      "landing": 135,
+      "landing": 140,
       "cruise": 560,
-      "cruiseM": 0.85,
+      "cruiseM": 0.83,
       "max": 595,
-      "maxM": 0.89
+      "maxM": 0.85
     },
     "capability": {
       "ils": true,
@@ -805,11 +6122,11 @@
       "lahso": 1,
       "cwt": "I"
     },
-    "ceiling": 14000,
+    "ceiling": 10500,
     "rate": {
       "climb": 765,
       "descent": 1000,
-      "accelerate": 4,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -818,15 +6135,15 @@
     },
     "speed": {
       "min": 52,
-      "landing": 67,
+      "landing": 75,
       "cruise": 108,
       "cruiseM": null,
-      "max": 119,
+      "max": 125,
       "maxM": null
     },
     "capability": {
       "ils": true,
-      "fix": false
+      "fix": true
     }
   },
   {
@@ -842,11 +6159,11 @@
       "lahso": 1,
       "cwt": "I"
     },
-    "ceiling": 12650,
+    "ceiling": 12500,
     "rate": {
       "climb": 660,
       "descent": 1000,
-      "accelerate": 4,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -855,15 +6172,15 @@
     },
     "speed": {
       "min": 53,
-      "landing": 65,
-      "cruise": 127,
+      "landing": 75,
+      "cruise": 123,
       "cruiseM": null,
-      "max": 164,
+      "max": 155,
       "maxM": null
     },
     "capability": {
       "ils": true,
-      "fix": false
+      "fix": true
     }
   },
   {
@@ -882,8 +6199,8 @@
     "ceiling": 39000,
     "rate": {
       "climb": 1500,
-      "descent": 1500,
-      "accelerate": 5,
+      "descent": 1800,
+      "accelerate": 5.9,
       "decelerate": 4
     },
     "runway": {
@@ -919,7 +6236,7 @@
     "ceiling": 27500,
     "rate": {
       "climb": 1500,
-      "descent": 1500,
+      "descent": 1800,
       "accelerate": 6,
       "decelerate": 4
     },
@@ -956,7 +6273,7 @@
     "ceiling": 35000,
     "rate": {
       "climb": 2500,
-      "descent": 3000,
+      "descent": 2200,
       "accelerate": 8,
       "decelerate": 4
     },
@@ -992,10 +6309,10 @@
     },
     "ceiling": 25000,
     "rate": {
-      "climb": 1000,
-      "descent": 1500,
-      "accelerate": 7,
-      "decelerate": 6
+      "climb": 1300,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.09,
@@ -1003,8 +6320,7 @@
     },
     "speed": {
       "min": 110,
-      "v2": 110,
-      "landing": 100,
+      "landing": 110,
       "cruise": 245,
       "cruiseM": null,
       "max": 265,
@@ -1030,10 +6346,10 @@
     },
     "ceiling": 25000,
     "rate": {
-      "climb": 1500,
-      "descent": 1500,
-      "accelerate": 7,
-      "decelerate": 6
+      "climb": 1600,
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.09,
@@ -1041,8 +6357,7 @@
     },
     "speed": {
       "min": 100,
-      "v2": 110,
-      "landing": 110,
+      "landing": 120,
       "cruise": 299,
       "cruiseM": null,
       "max": 325,
@@ -1068,10 +6383,10 @@
     },
     "ceiling": 25000,
     "rate": {
-      "climb": 1500,
+      "climb": 1700,
       "descent": 1600,
-      "accelerate": 7,
-      "decelerate": 5
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.408,
@@ -1079,8 +6394,7 @@
     },
     "speed": {
       "min": 110,
-      "v2": 110,
-      "landing": 100,
+      "landing": 120,
       "cruise": 248,
       "cruiseM": null,
       "max": 284,
@@ -1107,8 +6421,8 @@
     "ceiling": 25000,
     "rate": {
       "climb": 1500,
-      "descent": 1500,
-      "accelerate": 3,
+      "descent": 1800,
+      "accelerate": 4.5,
       "decelerate": 2
     },
     "runway": {
@@ -1117,7 +6431,6 @@
     },
     "speed": {
       "min": 110,
-      "v2": 110,
       "landing": 120,
       "cruise": 280,
       "cruiseM": null,
@@ -1144,9 +6457,9 @@
     },
     "ceiling": 25000,
     "rate": {
-      "climb": 1355,
-      "descent": 1500,
-      "accelerate": 3,
+      "climb": 1555,
+      "descent": 1800,
+      "accelerate": 4.5,
       "decelerate": 2
     },
     "runway": {
@@ -1155,7 +6468,7 @@
     },
     "speed": {
       "min": 110,
-      "landing": 100,
+      "landing": 125,
       "cruise": 280,
       "cruiseM": null,
       "max": 310,
@@ -1182,8 +6495,8 @@
     "ceiling": 25000,
     "rate": {
       "climb": 1000,
-      "descent": 1500,
-      "accelerate": 3,
+      "descent": 1800,
+      "accelerate": 4.5,
       "decelerate": 4
     },
     "runway": {
@@ -1218,9 +6531,9 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 7,
+      "climb": 2700,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 3
     },
     "runway": {
@@ -1229,12 +6542,11 @@
     },
     "speed": {
       "min": 130,
-      "v2": 145,
       "landing": 140,
       "cruise": 460,
-      "cruiseM": null,
-      "max": 525,
-      "maxM": null
+      "cruiseM": 0.78,
+      "max": 470,
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -1256,9 +6568,9 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3500,
-      "accelerate": 7,
+      "climb": 2500,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 3
     },
     "runway": {
@@ -1267,12 +6579,11 @@
     },
     "speed": {
       "min": 130,
-      "v2": 149,
       "landing": 135,
       "cruise": 460,
-      "cruiseM": null,
-      "max": 525,
-      "maxM": null
+      "cruiseM": 0.77,
+      "max": 470,
+      "maxM": 0.81
     },
     "capability": {
       "ils": true,
@@ -1294,9 +6605,9 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 4,
+      "climb": 2100,
+      "descent": 2200,
+      "accelerate": 2,
       "decelerate": 2
     },
     "runway": {
@@ -1305,11 +6616,11 @@
     },
     "speed": {
       "min": 135,
-      "landing": 150,
-      "cruise": 505,
-      "cruiseM": 0.88,
-      "max": 526,
-      "maxM": 0.92
+      "landing": 145,
+      "cruise": 471,
+      "cruiseM": 0.83,
+      "max": 495,
+      "maxM": 0.85
     },
     "capability": {
       "ils": true,
@@ -1331,10 +6642,10 @@
     },
     "ceiling": 43000,
     "rate": {
-      "climb": 2500,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 3.5
+      "climb": 2100,
+      "descent": 2200,
+      "accelerate": 2,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 3.1,
@@ -1344,9 +6655,9 @@
       "min": 125,
       "landing": 140,
       "cruise": 460,
-      "cruiseM": null,
+      "cruiseM": 0.81,
       "max": 490,
-      "maxM": null
+      "maxM": 0.84
     },
     "capability": {
       "ils": true,
@@ -1368,10 +6679,10 @@
     },
     "ceiling": 43000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 3.5
+      "climb": 2200,
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 3.454,
@@ -1379,12 +6690,11 @@
     },
     "speed": {
       "min": 125,
-      "v2": 168,
       "landing": 140,
-      "cruise": 488,
-      "cruiseM": null,
-      "max": 510,
-      "maxM": null
+      "cruise": 460,
+      "cruiseM": 0.81,
+      "max": 490,
+      "maxM": 0.84
     },
     "capability": {
       "ils": true,
@@ -1406,10 +6716,10 @@
     },
     "ceiling": 43000,
     "rate": {
-      "climb": 2700,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "climb": 2800,
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 2.82,
@@ -1417,11 +6727,11 @@
     },
     "speed": {
       "min": 120,
-      "landing": 130,
+      "landing": 135,
       "cruise": 487,
-      "cruiseM": 0.85,
+      "cruiseM": 0.82,
       "max": 516,
-      "maxM": 0.9
+      "maxM": 0.84
     },
     "capability": {
       "ils": true,
@@ -1443,9 +6753,9 @@
     },
     "ceiling": 25000,
     "rate": {
-      "climb": 2500,
-      "descent": 1500,
-      "accelerate": 5,
+      "climb": 1500,
+      "descent": 1800,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -1455,9 +6765,9 @@
     "speed": {
       "min": 100,
       "landing": 120,
-      "cruise": 270,
+      "cruise": 255,
       "cruiseM": null,
-      "max": 290,
+      "max": 270,
       "maxM": null
     },
     "capability": {
@@ -1480,9 +6790,9 @@
     },
     "ceiling": 35000,
     "rate": {
-      "climb": 2000,
-      "descent": 1500,
-      "accelerate": 5,
+      "climb": 1500,
+      "descent": 1800,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -1491,10 +6801,10 @@
     },
     "speed": {
       "min": 95,
-      "landing": 110,
-      "cruise": 300,
+      "landing": 115,
+      "cruise": 275,
       "cruiseM": 0.47,
-      "max": 320,
+      "max": 295,
       "maxM": null
     },
     "capability": {
@@ -1518,7 +6828,7 @@
     "ceiling": 31000,
     "rate": {
       "climb": 2000,
-      "descent": 3000,
+      "descent": 2200,
       "accelerate": 10,
       "decelerate": 6
     },
@@ -1555,7 +6865,7 @@
     "ceiling": 31000,
     "rate": {
       "climb": 2000,
-      "descent": 3000,
+      "descent": 2200,
       "accelerate": 10,
       "decelerate": 6
     },
@@ -1591,10 +6901,10 @@
     },
     "ceiling": 37000,
     "rate": {
-      "climb": 3000,
-      "descent": 3500,
-      "accelerate": 7,
-      "decelerate": 5
+      "climb": 2000,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.8,
@@ -1602,12 +6912,11 @@
     },
     "speed": {
       "min": 110,
-      "v2": 130,
-      "landing": 125,
+      "landing": 130,
       "cruise": 437,
       "cruiseM": 0.77,
       "max": 500,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -1630,9 +6939,9 @@
     "ceiling": 43000,
     "rate": {
       "climb": 2000,
-      "descent": 3500,
-      "accelerate": 7,
-      "decelerate": 5
+      "descent": 2500,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 3.033,
@@ -1642,9 +6951,9 @@
       "min": 120,
       "landing": 140,
       "cruise": 467,
-      "cruiseM": null,
+      "cruiseM": 0.80,
       "max": 549,
-      "maxM": null
+      "maxM": 0.83
     },
     "capability": {
       "ils": true,
@@ -1664,11 +6973,11 @@
       "lahso": 7,
       "cwt": "F"
     },
-    "ceiling": 37000,
+    "ceiling": 35000,
     "rate": {
       "climb": 1500,
-      "descent": 3500,
-      "accelerate": 5,
+      "descent": 2200,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -1679,9 +6988,9 @@
       "min": 140,
       "landing": 130,
       "cruise": 430,
-      "cruiseM": null,
+      "cruiseM": 0.75,
       "max": 509,
-      "maxM": null
+      "maxM": 0.78
     },
     "capability": {
       "ils": true,
@@ -1701,11 +7010,11 @@
       "lahso": 7,
       "cwt": "F"
     },
-    "ceiling": 43000,
+    "ceiling": 37000,
     "rate": {
       "climb": 2500,
-      "descent": 3500,
-      "accelerate": 6,
+      "descent": 2200,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -1714,12 +7023,11 @@
     },
     "speed": {
       "min": 130,
-      "v2": 140,
       "landing": 140,
       "cruise": 429,
-      "cruiseM": null,
+      "cruiseM": 0.76,
       "max": 492,
-      "maxM": null
+      "maxM": 0.79
     },
     "capability": {
       "ils": true,
@@ -1741,9 +7049,9 @@
     },
     "ceiling": 37000,
     "rate": {
-      "climb": 3000,
-      "descent": 3500,
-      "accelerate": 6,
+      "climb": 2500,
+      "descent": 2200,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -1752,12 +7060,11 @@
     },
     "speed": {
       "min": 130,
-      "v2": 150,
-      "landing": 140,
-      "cruise": 439,
-      "cruiseM": null,
+      "landing": 135,
+      "cruise": 429,
+      "cruiseM": 0.76,
       "max": 492,
-      "maxM": null
+      "maxM": 0.79
     },
     "capability": {
       "ils": true,
@@ -1779,10 +7086,10 @@
     },
     "ceiling": 37000,
     "rate": {
-      "climb": 3000,
-      "descent": 3500,
-      "accelerate": 7,
-      "decelerate": 5
+      "climb": 2700,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 2.633,
@@ -1790,12 +7097,11 @@
     },
     "speed": {
       "min": 130,
-      "v2": 139,
-      "landing": 140,
-      "cruise": 430,
-      "cruiseM": null,
+      "landing": 130,
+      "cruise": 429,
+      "cruiseM": 0.76,
       "max": 492,
-      "maxM": null
+      "maxM": 0.79
     },
     "capability": {
       "ils": true,
@@ -1817,9 +7123,9 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3500,
-      "accelerate": 7,
+      "climb": 2600,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 3
     },
     "runway": {
@@ -1827,13 +7133,12 @@
       "landing": 1.268
     },
     "speed": {
-      "min": 110,
-      "v2": 135,
-      "landing": 125,
-      "cruise": 460,
-      "cruiseM": null,
-      "max": 525,
-      "maxM": null
+      "min": 130,
+      "landing": 135,
+      "cruise": 429,
+      "cruiseM": 0.76,
+      "max": 492,
+      "maxM": 0.79
     },
     "capability": {
       "ils": true,
@@ -1855,9 +7160,9 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3500,
-      "accelerate": 7,
+      "climb": 2600,
+      "descent": 2200,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -1865,13 +7170,12 @@
       "landing": 1.372
     },
     "speed": {
-      "min": 110,
-      "v2": 150,
-      "landing": 125,
-      "cruise": 460,
-      "cruiseM": null,
-      "max": 525,
-      "maxM": null
+      "min": 130,
+      "landing": 135,
+      "cruise": 429,
+      "cruiseM": 0.78,
+      "max": 492,
+      "maxM": 0.81
     },
     "capability": {
       "ils": true,
@@ -1893,9 +7197,9 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3500,
-      "accelerate": 7,
+      "climb": 2800,
+      "descent": 2200,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -1904,12 +7208,11 @@
     },
     "speed": {
       "min": 130,
-      "v2": 145,
-      "landing": 140,
-      "cruise": 460,
-      "cruiseM": null,
-      "max": 525,
-      "maxM": null
+      "landing": 135,
+      "cruise": 429,
+      "cruiseM": 0.78,
+      "max": 492,
+      "maxM": 0.81
     },
     "capability": {
       "ils": true,
@@ -1931,9 +7234,9 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3500,
-      "accelerate": 7,
+      "climb": 2500,
+      "descent": 2500,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -1942,12 +7245,11 @@
     },
     "speed": {
       "min": 130,
-      "v2": 149,
-      "landing": 135,
-      "cruise": 460,
-      "cruiseM": null,
-      "max": 525,
-      "maxM": null
+      "landing": 145,
+      "cruise": 429,
+      "cruiseM": 0.79,
+      "max": 492,
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -1970,21 +7272,21 @@
     "ceiling": 45000,
     "rate": {
       "climb": 1500,
-      "descent": 3000,
-      "accelerate": 4,
+      "descent": 2200,
+      "accelerate": 2,
       "decelerate": 2
     },
     "runway": {
-      "takeoff": 3.2,
-      "landing": 4
+      "takeoff": 2,
+      "landing": 2
     },
     "speed": {
-      "min": 135,
-      "landing": 150,
-      "cruise": 491,
-      "cruiseM": null,
-      "max": 530,
-      "maxM": null
+      "min": 130,
+      "landing": 145,
+      "cruise": 429,
+      "cruiseM": 0.80,
+      "max": 492,
+      "maxM": 0.84
     },
     "capability": {
       "ils": true,
@@ -2007,21 +7309,21 @@
     "ceiling": 45000,
     "rate": {
       "climb": 1500,
-      "descent": 3000,
-      "accelerate": 4,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 2
     },
     "runway": {
-      "takeoff": 3.2,
-      "landing": 4
+      "takeoff": 2,
+      "landing": 2
     },
     "speed": {
-      "min": 135,
-      "landing": 150,
-      "cruise": 491,
-      "cruiseM": null,
-      "max": 530,
-      "maxM": null
+      "min": 130,
+      "landing": 145,
+      "cruise": 429,
+      "cruiseM": 0.80,
+      "max": 492,
+      "maxM": 0.84
     },
     "capability": {
       "ils": true,
@@ -2044,8 +7346,8 @@
     "ceiling": 45000,
     "rate": {
       "climb": 2000,
-      "descent": 3000,
-      "accelerate": 4,
+      "descent": 2200,
+      "accelerate": 2,
       "decelerate": 2
     },
     "runway": {
@@ -2053,13 +7355,12 @@
       "landing": 2.2
     },
     "speed": {
-      "min": 135,
-      "v2": 178,
-      "landing": 160,
-      "cruise": 510,
-      "cruiseM": 0.84,
-      "max": 530,
-      "maxM": 0.9
+      "min": 130,
+      "landing": 145,
+      "cruise": 429,
+      "cruiseM": 0.80,
+      "max": 492,
+      "maxM": 0.84
     },
     "capability": {
       "ils": true,
@@ -2081,9 +7382,9 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 1500,
-      "descent": 3000,
-      "accelerate": 4,
+      "climb": 2000,
+      "descent": 2200,
+      "accelerate": 2,
       "decelerate": 2
     },
     "runway": {
@@ -2091,13 +7392,12 @@
       "landing": 2.072
     },
     "speed": {
-      "min": 135,
-      "v2": 185,
-      "landing": 150,
-      "cruise": 492,
-      "cruiseM": null,
-      "max": 507,
-      "maxM": null
+      "min": 130,
+      "landing": 145,
+      "cruise": 429,
+      "cruiseM": 0.80,
+      "max": 492,
+      "maxM": 0.84
     },
     "capability": {
       "ils": true,
@@ -2119,8 +7419,8 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 2500,
-      "descent": 3000,
+      "climb": 2300,
+      "descent": 2200,
       "accelerate": 6,
       "decelerate": 3
     },
@@ -2130,12 +7430,11 @@
     },
     "speed": {
       "min": 130,
-      "v2": 175,
       "landing": 145,
-      "cruise": 495,
-      "cruiseM": 0.855,
-      "max": 533,
-      "maxM": 0.92
+      "cruise": 429,
+      "cruiseM": 0.80,
+      "max": 492,
+      "maxM": 0.84
     },
     "capability": {
       "ils": true,
@@ -2158,22 +7457,21 @@
     "ceiling": 41000,
     "rate": {
       "climb": 3500,
-      "descent": 3500,
-      "accelerate": 8,
-      "decelerate": 4
+      "descent": 2500,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 2.1,
       "landing": 1.46
     },
     "speed": {
-      "min": 110,
-      "v2": 145,
-      "landing": 125,
-      "cruise": 460,
-      "cruiseM": null,
-      "max": 493,
-      "maxM": null
+      "min": 130,
+      "landing": 135,
+      "cruise": 449,
+      "cruiseM": 0.78,
+      "max": 472,
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -2196,22 +7494,21 @@
     "ceiling": 41000,
     "rate": {
       "climb": 3000,
-      "descent": 3500,
-      "accelerate": 8,
-      "decelerate": 4
+      "descent": 2500,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 2.74,
       "landing": 2.1
     },
     "speed": {
-      "min": 110,
-      "v2": 145,
-      "landing": 125,
-      "cruise": 473,
-      "cruiseM": null,
-      "max": 495,
-      "maxM": null
+      "min": 130,
+      "landing": 135,
+      "cruise": 449,
+      "cruiseM": 0.78,
+      "max": 472,
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -2234,22 +7531,21 @@
     "ceiling": 41000,
     "rate": {
       "climb": 2500,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 2.652,
       "landing": 1.465
     },
     "speed": {
-      "min": 120,
-      "v2": 160,
+      "min": 130,
       "landing": 140,
-      "cruise": 461,
-      "cruiseM": null,
-      "max": 493,
-      "maxM": null
+      "cruise": 449,
+      "cruiseM": 0.78,
+      "max": 472,
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -2271,23 +7567,22 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "climb": 2400,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 2.1,
       "landing": 1.74
     },
     "speed": {
-      "min": 120,
-      "v2": 160,
-      "landing": 140,
-      "cruise": 460,
-      "cruiseM": null,
-      "max": 486,
-      "maxM": null
+      "min": 130,
+      "landing": 135,
+      "cruise": 449,
+      "cruiseM": 0.78,
+      "max": 472,
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -2309,23 +7604,22 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 2500,
-      "descent": 3000,
-      "accelerate": 8,
-      "decelerate": 4
+      "climb": 2000,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 2.9,
       "landing": 1.8
     },
     "speed": {
-      "min": 120,
-      "v2": 160,
-      "landing": 150,
-      "cruise": 460,
-      "cruiseM": 0.8,
-      "max": 490,
-      "maxM": null
+      "min": 130,
+      "landing": 135,
+      "cruise": 449,
+      "cruiseM": 0.78,
+      "max": 472,
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -2347,23 +7641,22 @@
     },
     "ceiling": 43000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 3.5
+      "climb": 2100,
+      "descent": 2200,
+      "accelerate": 2,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 3.1,
       "landing": 1.661
     },
     "speed": {
-      "min": 125,
-      "v2": 170,
+      "min": 130,
       "landing": 140,
-      "cruise": 460,
-      "cruiseM": null,
+      "cruise": 469,
+      "cruiseM": 0.80,
       "max": 490,
-      "maxM": null
+      "maxM": 0.85
     },
     "capability": {
       "ils": true,
@@ -2386,9 +7679,9 @@
     "ceiling": 43000,
     "rate": {
       "climb": 3000,
-      "descent": 3000,
-      "accelerate": 5.5,
-      "decelerate": 3.2
+      "descent": 2200,
+      "accelerate": 2,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 3.454,
@@ -2396,12 +7689,11 @@
     },
     "speed": {
       "min": 130,
-      "v2": 168,
-      "landing": 140,
-      "cruise": 488,
-      "cruiseM": null,
-      "max": 510,
-      "maxM": null
+      "landing": 145,
+      "cruise": 469,
+      "cruiseM": 0.80,
+      "max": 490,
+      "maxM": 0.85
     },
     "capability": {
       "ils": true,
@@ -2424,22 +7716,21 @@
     "ceiling": 43000,
     "rate": {
       "climb": 2700,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "descent": 2200,
+      "accelerate": 2,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 3.2,
       "landing": 1.738
     },
     "speed": {
-      "min": 120,
-      "v2": 165,
-      "landing": 130,
-      "cruise": 487,
-      "cruiseM": 0.85,
-      "max": 516,
-      "maxM": 0.9
+      "min": 130,
+      "landing": 145,
+      "cruise": 469,
+      "cruiseM": 0.82,
+      "max": 490,
+      "maxM": 0.85
     },
     "capability": {
       "ils": true,
@@ -2462,22 +7753,21 @@
     "ceiling": 43000,
     "rate": {
       "climb": 2700,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "descent": 2200,
+      "accelerate": 2,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 2.9,
       "landing": 1.738
     },
     "speed": {
-      "min": 120,
-      "v2": 165,
-      "landing": 130,
-      "cruise": 487,
-      "cruiseM": 0.85,
-      "max": 516,
-      "maxM": 0.9
+      "min": 130,
+      "landing": 145,
+      "cruise": 469,
+      "cruiseM": 0.82,
+      "max": 490,
+      "maxM": 0.85
     },
     "capability": {
       "ils": true,
@@ -2500,9 +7790,9 @@
     "ceiling": 41000,
     "rate": {
       "climb": 3000,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.2,
@@ -2510,7 +7800,7 @@
     },
     "speed": {
       "min": 110,
-      "landing": 120,
+      "landing": 135,
       "cruise": 447,
       "cruiseM": 0.78,
       "max": 470,
@@ -2537,9 +7827,9 @@
     "ceiling": 41000,
     "rate": {
       "climb": 3000,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.5,
@@ -2547,7 +7837,7 @@
     },
     "speed": {
       "min": 110,
-      "landing": 120,
+      "landing": 135,
       "cruise": 447,
       "cruiseM": 0.78,
       "max": 470,
@@ -2574,9 +7864,9 @@
     "ceiling": 35000,
     "rate": {
       "climb": 1500,
-      "descent": 1500,
-      "accelerate": 6,
-      "decelerate": 5
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.57,
@@ -2612,7 +7902,7 @@
     "rate": {
       "climb": 1000,
       "descent": 1000,
-      "accelerate": 4,
+      "accelerate": 5.9,
       "decelerate": 3
     },
     "runway": {
@@ -2621,7 +7911,6 @@
     },
     "speed": {
       "min": 52,
-      "v2": 75,
       "landing": 70,
       "cruise": 160,
       "cruiseM": null,
@@ -2648,9 +7937,9 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 4020,
-      "descent": 3000,
-      "accelerate": 9,
+      "climb": 2200,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 3
     },
     "runway": {
@@ -2659,8 +7948,7 @@
     },
     "speed": {
       "min": 93,
-      "v2": 130,
-      "landing": 120,
+      "landing": 125,
       "cruise": 445,
       "cruiseM": 0.77,
       "max": 450,
@@ -2686,10 +7974,10 @@
     },
     "ceiling": 26000,
     "rate": {
-      "climb": 1000,
-      "descent": 800,
-      "accelerate": 4,
-      "decelerate": 2
+      "climb": 1200,
+      "descent": 1200,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1,
@@ -2725,7 +8013,7 @@
     "rate": {
       "climb": 970,
       "descent": 900,
-      "accelerate": 4,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -2734,7 +8022,7 @@
     },
     "speed": {
       "min": 80,
-      "landing": 50,
+      "landing": 100,
       "cruise": 139,
       "cruiseM": null,
       "max": 147,
@@ -2761,8 +8049,8 @@
     "ceiling": 37000,
     "rate": {
       "climb": 1500,
-      "descent": 3000,
-      "accelerate": 4,
+      "descent": 2200,
+      "accelerate": 2,
       "decelerate": 2
     },
     "runway": {
@@ -2771,11 +8059,11 @@
     },
     "speed": {
       "min": 150,
-      "landing": 160,
+      "landing": 140,
       "cruise": 430,
-      "cruiseM": null,
-      "max": 510,
-      "maxM": 0.77
+      "cruiseM": 0.77,
+      "max": 460,
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -2798,9 +8086,9 @@
     "ceiling": 33000,
     "rate": {
       "climb": 1500,
-      "descent": 1500,
-      "accelerate": 7,
-      "decelerate": 5
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.905,
@@ -2832,11 +8120,11 @@
       "lahso": 1,
       "cwt": "I"
     },
-    "ceiling": 15500,
+    "ceiling": 10500,
     "rate": {
-      "climb": 670,
-      "descent": 1000,
-      "accelerate": 4,
+      "climb": 770,
+      "descent": 800,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -2845,8 +8133,7 @@
     },
     "speed": {
       "min": 48,
-      "v2": 55,
-      "landing": 65,
+      "landing": 75,
       "cruise": 100,
       "cruiseM": null,
       "max": 162,
@@ -2854,7 +8141,7 @@
     },
     "capability": {
       "ils": true,
-      "fix": false
+      "fix": true
     }
   },
   {
@@ -2870,11 +8157,11 @@
       "lahso": 1,
       "cwt": "I"
     },
-    "ceiling": 15000,
+    "ceiling": 12500,
     "rate": {
-      "climb": 700,
+      "climb": 900,
       "descent": 1000,
-      "accelerate": 4,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -2883,8 +8170,7 @@
     },
     "speed": {
       "min": 50,
-      "v2": 60,
-      "landing": 65,
+      "landing": 85,
       "cruise": 122,
       "cruiseM": null,
       "max": 145,
@@ -2892,7 +8178,7 @@
     },
     "capability": {
       "ils": true,
-      "fix": false
+      "fix": true
     }
   },
   {
@@ -2910,9 +8196,9 @@
     },
     "ceiling": 20000,
     "rate": {
-      "climb": 920,
+      "climb": 1000,
       "descent": 1000,
-      "accelerate": 4,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -2921,16 +8207,15 @@
     },
     "speed": {
       "min": 49,
-      "v2": 65,
-      "landing": 65,
+      "landing": 95,
       "cruise": 145,
       "cruiseM": null,
-      "max": 150,
+      "max": 160,
       "maxM": null
     },
     "capability": {
       "ils": true,
-      "fix": false
+      "fix": true
     }
   },
   {
@@ -2950,8 +8235,8 @@
     "rate": {
       "climb": 1670,
       "descent": 1000,
-      "accelerate": 8,
-      "decelerate": 4
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.74,
@@ -2959,11 +8244,10 @@
     },
     "speed": {
       "min": 80,
-      "v2": 85,
-      "landing": 90,
-      "cruise": 184,
+      "landing": 95,
+      "cruise": 155,
       "cruiseM": null,
-      "max": 195,
+      "max": 185,
       "maxM": null
     },
     "capability": {
@@ -2986,9 +8270,9 @@
     },
     "ceiling": 19500,
     "rate": {
-      "climb": 800,
-      "descent": 800,
-      "accelerate": 4,
+      "climb": 1200,
+      "descent": 1000,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -2997,16 +8281,15 @@
     },
     "speed": {
       "min": 60,
-      "v2": 85,
-      "landing": 90,
+      "landing": 100,
       "cruise": 165,
       "cruiseM": null,
-      "max": 173,
+      "max": 180,
       "maxM": null
     },
     "capability": {
       "ils": true,
-      "fix": false
+      "fix": true
     }
   },
   {
@@ -3025,9 +8308,9 @@
     "ceiling": 26500,
     "rate": {
       "climb": 1000,
-      "descent": 800,
-      "accelerate": 3,
-      "decelerate": 4
+      "descent": 1000,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.65,
@@ -3035,10 +8318,10 @@
     },
     "speed": {
       "min": 93,
-      "landing": 93,
-      "cruise": 210,
+      "landing": 110,
+      "cruise": 175,
       "cruiseM": null,
-      "max": 220,
+      "max": 200,
       "maxM": null
     },
     "capability": {
@@ -3062,8 +8345,8 @@
     "ceiling": 26900,
     "rate": {
       "climb": 1200,
-      "descent": 800,
-      "accelerate": 4,
+      "descent": 1000,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -3072,7 +8355,7 @@
     },
     "speed": {
       "min": 80,
-      "landing": 95,
+      "landing": 105,
       "cruise": 175,
       "cruiseM": null,
       "max": 235,
@@ -3098,18 +8381,18 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 4000,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 5
+      "climb": 2000,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.948,
       "landing": 0.729
     },
     "speed": {
-      "min": 120,
-      "landing": 130,
+      "min": 100,
+      "landing": 125,
       "cruise": 340,
       "cruiseM": null,
       "max": 483,
@@ -3136,17 +8419,18 @@
     "ceiling": 45000,
     "rate": {
       "climb": 2000,
-      "descent": 3000,
-      "accelerate": 8,
-      "decelerate": 4
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1,
       "landing": 0.93
     },
     "speed": {
-      "min": 120,
-      "landing": 130,
+      "min": 90,
+	  "v2": 120,
+      "landing": 125,
       "cruise": 384,
       "cruiseM": 0.7,
       "max": 425,
@@ -3172,10 +8456,10 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 3000,
-      "descent": 4000,
-      "accelerate": 8,
-      "decelerate": 4
+      "climb": 2400,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.963,
@@ -3183,11 +8467,11 @@
     },
     "speed": {
       "min": 100,
-      "landing": 110,
+      "landing": 125,
       "cruise": 430,
       "cruiseM": 0.73,
       "max": 450,
-      "maxM": null
+      "maxM": 0.76
     },
     "capability": {
       "ils": true,
@@ -3209,10 +8493,10 @@
     },
     "ceiling": 47000,
     "rate": {
-      "climb": 3500,
-      "descent": 3500,
-      "accelerate": 8,
-      "decelerate": 4
+      "climb": 2800,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.2,
@@ -3220,12 +8504,11 @@
     },
     "speed": {
       "min": 105,
-      "v2": 145,
-      "landing": 125,
+      "landing": 120,
       "cruise": 460,
       "cruiseM": 0.79,
       "max": 470,
-      "maxM": null
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -3247,10 +8530,10 @@
     },
     "ceiling": 51000,
     "rate": {
-      "climb": 3500,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 5
+      "climb": 3000,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.701,
@@ -3258,12 +8541,11 @@
     },
     "speed": {
       "min": 120,
-      "v2": 125,
       "landing": 135,
-      "cruise": 609,
-      "cruiseM": 0.9,
-      "max": 400,
-      "maxM": 0.935
+      "cruise": 470,
+      "cruiseM": 0.85,
+      "max": 495,
+      "maxM": 0.89
     },
     "capability": {
       "ils": true,
@@ -3286,9 +8568,9 @@
     "ceiling": 41000,
     "rate": {
       "climb": 4500,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 5
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.8,
@@ -3296,12 +8578,11 @@
     },
     "speed": {
       "min": 110,
-      "v2": 140,
       "landing": 130,
       "cruise": 460,
-      "cruiseM": 0.75,
+      "cruiseM": 0.77,
       "max": 478,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -3324,9 +8605,9 @@
     "ceiling": 45000,
     "rate": {
       "climb": 5000,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 5
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.466,
@@ -3334,12 +8615,11 @@
     },
     "speed": {
       "min": 110,
-      "v2": 140,
       "landing": 130,
-      "cruise": 459,
-      "cruiseM": 0.8,
-      "max": 470,
-      "maxM": 0.82
+      "cruise": 460,
+      "cruiseM": 0.77,
+      "max": 478,
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -3362,9 +8642,9 @@
     "ceiling": 41000,
     "rate": {
       "climb": 4500,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 5
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.8,
@@ -3372,12 +8652,11 @@
     },
     "speed": {
       "min": 110,
-      "v2": 145,
       "landing": 130,
       "cruise": 460,
-      "cruiseM": 0.75,
+      "cruiseM": 0.79,
       "max": 478,
-      "maxM": null
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -3400,8 +8679,8 @@
     "ceiling": 60000,
     "rate": {
       "climb": 4000,
-      "descent": 3500,
-      "accelerate": 4,
+      "descent": 2500,
+      "accelerate": 5.9,
       "decelerate": 4
     },
     "runway": {
@@ -3436,10 +8715,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 6
+      "climb": 2200,
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.7,
@@ -3447,12 +8726,11 @@
     },
     "speed": {
       "min": 110,
-      "v2": 135,
-      "landing": 100,
+      "landing": 130,
       "cruise": 424,
-      "cruiseM": null,
+      "cruiseM": 0.76,
       "max": 470,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -3474,10 +8752,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3500,
-      "accelerate": 10,
-      "decelerate": 6
+      "climb": 2600,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.7,
@@ -3485,12 +8763,11 @@
     },
     "speed": {
       "min": 110,
-      "v2": 135,
-      "landing": 100,
-      "cruise": 447,
-      "cruiseM": 0.78,
-      "max": 472,
-      "maxM": 0.83
+      "landing": 135,
+      "cruise": 424,
+      "cruiseM": 0.76,
+      "max": 470,
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -3512,10 +8789,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3500,
-      "accelerate": 10,
-      "decelerate": 6
+      "climb": 2200,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.9,
@@ -3523,11 +8800,11 @@
     },
     "speed": {
       "min": 110,
-      "landing": 100,
-      "cruise": 458,
-      "cruiseM": null,
+      "landing": 140,
+      "cruise": 424,
+      "cruiseM": 0.76,
       "max": 470,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -3549,10 +8826,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 9,
-      "decelerate": 5
+      "climb": 2400,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.996,
@@ -3560,11 +8837,11 @@
     },
     "speed": {
       "min": 110,
-      "landing": 130,
-      "cruise": 440,
-      "cruiseM": 0.78,
+      "landing": 135,
+      "cruise": 424,
+      "cruiseM": 0.76,
       "max": 470,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -3588,8 +8865,8 @@
     "rate": {
       "climb": 1500,
       "descent": 800,
-      "accelerate": 3,
-      "decelerate": 2
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.7,
@@ -3597,7 +8874,7 @@
     },
     "speed": {
       "min": 70,
-      "landing": 85,
+      "landing": 125,
       "cruise": 210,
       "cruiseM": null,
       "max": 237,
@@ -3624,9 +8901,9 @@
     "ceiling": 31000,
     "rate": {
       "climb": 2000,
-      "descent": 1500,
-      "accelerate": 3,
-      "decelerate": 2
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.11,
@@ -3660,9 +8937,9 @@
     },
     "ceiling": 18000,
     "rate": {
-      "climb": 1550,
-      "descent": 1550,
-      "accelerate": 4,
+      "climb": 1300,
+      "descent": 1300,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -3671,7 +8948,7 @@
     },
     "speed": {
       "min": 70,
-      "landing": 85,
+      "landing": 105,
       "cruise": 176,
       "cruiseM": null,
       "max": 197,
@@ -3698,9 +8975,9 @@
     "ceiling": 41000,
     "rate": {
       "climb": 2000,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "descent": 2200,
+      "accelerate": 2,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 3.5,
@@ -3708,11 +8985,10 @@
     },
     "speed": {
       "min": 120,
-      "v2": 150,
-      "landing": 140,
-      "cruise": 499,
-      "cruiseM": null,
-      "max": 542,
+      "landing": 145,
+      "cruise": 459,
+      "cruiseM": 0.79,
+      "max": 5495,
       "maxM": 0.82
     },
     "capability": {
@@ -3736,9 +9012,9 @@
     "ceiling": 41000,
     "rate": {
       "climb": 2200,
-      "descent": 3000,
-      "accelerate": 4,
-      "decelerate": 2
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 3.048,
@@ -3773,9 +9049,9 @@
     "ceiling": 37000,
     "rate": {
       "climb": 2000,
-      "descent": 3500,
-      "accelerate": 5,
-      "decelerate": 2
+      "descent": 2500,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 2.1,
@@ -3783,11 +9059,11 @@
     },
     "speed": {
       "min": 135,
-      "landing": 127,
+      "landing": 135,
       "cruise": 430,
-      "cruiseM": null,
-      "max": 490,
-      "maxM": null
+      "cruiseM": 0.77,
+      "max": 450,
+      "maxM": 0.79
     },
     "capability": {
       "ils": true,
@@ -3810,9 +9086,9 @@
     "ceiling": 25000,
     "rate": {
       "climb": 1800,
-      "descent": 1500,
-      "accelerate": 7,
-      "decelerate": 6
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.8,
@@ -3847,9 +9123,9 @@
     "ceiling": 25000,
     "rate": {
       "climb": 1800,
-      "descent": 1500,
-      "accelerate": 7,
-      "decelerate": 6
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.8,
@@ -3884,9 +9160,9 @@
     "ceiling": 25000,
     "rate": {
       "climb": 1800,
-      "descent": 1500,
-      "accelerate": 7,
-      "decelerate": 6
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.8,
@@ -3894,7 +9170,6 @@
     },
     "speed": {
       "min": 75,
-      "v2": 110,
       "landing": 120,
       "cruise": 280,
       "cruiseM": null,
@@ -3921,10 +9196,10 @@
     },
     "ceiling": 27000,
     "rate": {
-      "climb": 3500,
-      "descent": 1500,
-      "accelerate": 10,
-      "decelerate": 6
+      "climb": 2800,
+      "descent": 2500,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.22,
@@ -3932,7 +9207,6 @@
     },
     "speed": {
       "min": 100,
-      "v2": 115,
       "landing": 130,
       "cruise": 340,
       "cruiseM": null,
@@ -3961,8 +9235,8 @@
     "rate": {
       "climb": 1000,
       "descent": 1000,
-      "accelerate": 3,
-      "decelerate": 2
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.46,
@@ -3970,7 +9244,7 @@
     },
     "speed": {
       "min": 58,
-      "landing": 80,
+      "landing": 100,
       "cruise": 150,
       "cruiseM": null,
       "max": 160,
@@ -3997,9 +9271,9 @@
     "ceiling": 37000,
     "rate": {
       "climb": 3500,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 6
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.58,
@@ -4009,9 +9283,9 @@
       "min": 125,
       "landing": 130,
       "cruise": 320,
-      "cruiseM": 0.76,
+      "cruiseM": 0.77,
       "max": 470,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -4033,10 +9307,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3500,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 5
+      "climb": 2700,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.2,
@@ -4046,9 +9320,9 @@
       "min": 120,
       "landing": 130,
       "cruise": 380,
-      "cruiseM": null,
+      "cruiseM": 0.72,
       "max": 400,
-      "maxM": 0.7
+      "maxM": 0.76
     },
     "capability": {
       "ils": true,
@@ -4070,10 +9344,10 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 4000,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 5
+      "climb": 28000,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.2,
@@ -4083,9 +9357,9 @@
       "min": 120,
       "landing": 130,
       "cruise": 453,
-      "cruiseM": null,
-      "max": 450,
-      "maxM": 0.78
+      "cruiseM": 0.76,
+      "max": 460,
+      "maxM": 0.79
     },
     "capability": {
       "ils": true,
@@ -4107,10 +9381,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3400,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "climb": 2800,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.7,
@@ -4118,11 +9392,11 @@
     },
     "speed": {
       "min": 110,
-      "landing": 120,
-      "cruise": 475,
-      "cruiseM": null,
-      "max": 481,
-      "maxM": 0.82
+      "landing": 130,
+      "cruise": 445,
+      "cruiseM": 0.78,
+      "max": 461,
+      "maxM": 0.81
     },
     "capability": {
       "ils": true,
@@ -4144,10 +9418,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3400,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "climb": 2700,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.7,
@@ -4155,11 +9429,11 @@
     },
     "speed": {
       "min": 110,
-      "landing": 120,
-      "cruise": 475,
-      "cruiseM": null,
-      "max": 481,
-      "maxM": 0.82
+      "landing": 135,
+      "cruise": 445,
+      "cruiseM": 0.78,
+      "max": 461,
+      "maxM": 0.81
     },
     "capability": {
       "ils": true,
@@ -4183,7 +9457,7 @@
     "rate": {
       "climb": 1000,
       "descent": 800,
-      "accelerate": 5,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -4192,7 +9466,7 @@
     },
     "speed": {
       "min": 80,
-      "landing": 90,
+      "landing": 110,
       "cruise": 180,
       "cruiseM": null,
       "max": 248,
@@ -4219,8 +9493,8 @@
     "ceiling": 32000,
     "rate": {
       "climb": 1500,
-      "descent": 1500,
-      "accelerate": 6,
+      "descent": 1800,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -4229,7 +9503,7 @@
     },
     "speed": {
       "min": 90,
-      "landing": 95,
+      "landing": 125,
       "cruise": 280,
       "cruiseM": null,
       "max": 315,
@@ -4255,10 +9529,10 @@
     },
     "ceiling": 37000,
     "rate": {
-      "climb": 3500,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 6
+      "climb": 2500,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.58,
@@ -4266,12 +9540,11 @@
     },
     "speed": {
       "min": 110,
-      "v2": 125,
-      "landing": 100,
+      "landing": 130,
       "cruise": 445,
-      "cruiseM": null,
+      "cruiseM": 0.76,
       "max": 470,
-      "maxM": null
+      "maxM": 0.78
     },
     "capability": {
       "ils": true,
@@ -4294,9 +9567,9 @@
     "ceiling": 37000,
     "rate": {
       "climb": 2500,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 6
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.67,
@@ -4304,12 +9577,11 @@
     },
     "speed": {
       "min": 110,
-      "v2": 130,
-      "landing": 100,
-      "cruise": 447,
-      "cruiseM": 0.78,
+      "landing": 130,
+      "cruise": 445,
+      "cruiseM": 0.76,
       "max": 470,
-      "maxM": null
+      "maxM": 0.78
     },
     "capability": {
       "ils": true,
@@ -4331,10 +9603,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3400,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "climb": 2400,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.7,
@@ -4342,11 +9614,10 @@
     },
     "speed": {
       "min": 110,
-      "v2": 138,
-      "landing": 120,
+      "landing": 135,
       "cruise": 475,
-      "cruiseM": null,
-      "max": 481,
+      "cruiseM": 0.78,
+      "max": 461,
       "maxM": 0.82
     },
     "capability": {
@@ -4369,10 +9640,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3400,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "climb": 2900,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.9,
@@ -4380,10 +9651,9 @@
     },
     "speed": {
       "min": 110,
-      "v2": 138,
-      "landing": 120,
+      "landing": 135,
       "cruise": 475,
-      "cruiseM": null,
+      "cruiseM": 0.79,
       "max": 481,
       "maxM": 0.82
     },
@@ -4407,10 +9677,10 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3400,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 4
+      "climb": 2800,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.9,
@@ -4418,7 +9688,7 @@
     },
     "speed": {
       "min": 110,
-      "landing": 120,
+      "landing": 135,
       "cruise": 475,
       "cruiseM": 0.78,
       "max": 481,
@@ -4444,10 +9714,10 @@
     },
     "ceiling": 37000,
     "rate": {
-      "climb": 1500,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 6
+      "climb": 1900,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 2.2,
@@ -4455,11 +9725,11 @@
     },
     "speed": {
       "min": 110,
-      "landing": 100,
+      "landing": 125,
       "cruise": 440,
-      "cruiseM": null,
+      "cruiseM": 0.78,
       "max": 450,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -4481,10 +9751,10 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 1500,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 6
+      "climb": 1800,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 4.1,
@@ -4492,9 +9762,9 @@
     },
     "speed": {
       "min": 104,
-      "landing": 142,
+      "landing": 135,
       "cruise": 450,
-      "cruiseM": null,
+      "cruiseM": 0.79,
       "max": 466,
       "maxM": 0.83
     },
@@ -4516,11 +9786,11 @@
       "lahso": 1,
       "cwt": "I"
     },
-    "ceiling": 12000,
+    "ceiling": 10500,
     "rate": {
       "climb": 500,
       "descent": 700,
-      "accelerate": 4,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -4537,7 +9807,7 @@
     },
     "capability": {
       "ils": true,
-      "fix": false
+      "fix": true
     }
   },
   {
@@ -4555,10 +9825,10 @@
     },
     "ceiling": 47000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 8,
-      "decelerate": 4
+      "climb": 2900,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.64,
@@ -4566,12 +9836,11 @@
     },
     "speed": {
       "min": 120,
-      "v2": 120,
-      "landing": 130,
+      "landing": 135,
       "cruise": 470,
-      "cruiseM": 0.8,
+      "cruiseM": 0.80,
       "max": 530,
-      "maxM": 0.85
+      "maxM": 0.84
     },
     "capability": {
       "ils": true,
@@ -4594,9 +9863,9 @@
     "ceiling": 25000,
     "rate": {
       "climb": 1500,
-      "descent": 1500,
-      "accelerate": 4,
-      "decelerate": 6
+      "descent": 1800,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.89,
@@ -4630,10 +9899,10 @@
     },
     "ceiling": 35000,
     "rate": {
-      "climb": 3000,
-      "descent": 3500,
-      "accelerate": 6,
-      "decelerate": 4
+      "climb": 2500,
+      "descent": 2500,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.573,
@@ -4641,11 +9910,11 @@
     },
     "speed": {
       "min": 122,
-      "landing": 125,
+      "landing": 130,
       "cruise": 401,
-      "cruiseM": null,
+      "cruiseM": 0.74,
       "max": 450,
-      "maxM": null
+      "maxM": 0.77
     },
     "capability": {
       "ils": true,
@@ -4668,8 +9937,8 @@
     "ceiling": 35000,
     "rate": {
       "climb": 2500,
-      "descent": 3500,
-      "accelerate": 6,
+      "descent": 2500,
+      "accelerate": 5.9,
       "decelerate": 3
     },
     "runway": {
@@ -4677,12 +9946,12 @@
       "landing": 1.35
     },
     "speed": {
-      "min": 130,
-      "landing": 140,
-      "cruise": 414,
-      "cruiseM": null,
-      "max": 456,
-      "maxM": null
+      "min": 122,
+      "landing": 130,
+      "cruise": 401,
+      "cruiseM": 0.74,
+      "max": 450,
+      "maxM": 0.77
     },
     "capability": {
       "ils": true,
@@ -4704,10 +9973,10 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 3500,
-      "descent": 4000,
-      "accelerate": 6,
-      "decelerate": 5
+      "climb": 3000,
+      "descent": 3500,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.8,
@@ -4720,7 +9989,7 @@
       "cruise": 470,
       "cruiseM": 0.81,
       "max": 498,
-      "maxM": null
+      "maxM": 0.84
     },
     "capability": {
       "ils": true,
@@ -4743,9 +10012,9 @@
     "ceiling": 51000,
     "rate": {
       "climb": 3000,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 5
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.689,
@@ -4753,11 +10022,11 @@
     },
     "speed": {
       "min": 98,
-      "landing": 122,
+      "landing": 135,
       "cruise": 485,
-      "cruiseM": 0.85,
+      "cruiseM": 0.83,
       "max": 498,
-      "maxM": null
+      "maxM": 0.86
     },
     "capability": {
       "ils": true,
@@ -4780,21 +10049,21 @@
     "ceiling": 51000,
     "rate": {
       "climb": 3600,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 5
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.7,
       "landing": 0.8
     },
     "speed": {
-      "min": 120,
-      "landing": 130,
-      "cruise": 487,
-      "cruiseM": 0.85,
-      "max": 505,
-      "maxM": 0.88
+      "min": 98,
+      "landing": 140,
+      "cruise": 485,
+      "cruiseM": 0.83,
+      "max": 498,
+      "maxM": 0.86
     },
     "capability": {
       "ils": true,
@@ -4816,22 +10085,21 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 4000,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 5
+      "climb": 3100,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.6,
       "landing": 1
     },
     "speed": {
-      "min": 120,
-      "v2": 145,
-      "landing": 140,
-      "cruise": 450,
-      "cruiseM": 0.8,
-      "max": 488,
+      "min": 98,
+      "landing": 135,
+      "cruise": 485,
+      "cruiseM": 0.82,
+      "max": 498,
       "maxM": 0.85
     },
     "capability": {
@@ -4854,23 +10122,22 @@
     },
     "ceiling": 51000,
     "rate": {
-      "climb": 4000,
-      "descent": 3000,
-      "accelerate": 6,
-      "decelerate": 5
+      "climb": 3100,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.57,
       "landing": 0.88
     },
     "speed": {
-      "min": 120,
-      "v2": 145,
-      "landing": 140,
-      "cruise": 459,
-      "cruiseM": 0.85,
-      "max": 488,
-      "maxM": 0.85
+      "min": 98,
+      "landing": 130,
+      "cruise": 485,
+      "cruiseM": 0.83,
+      "max": 498,
+      "maxM": 0.86
     },
     "capability": {
       "ils": true,
@@ -4892,23 +10159,22 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 4,
-      "decelerate": 4
+      "climb": 2500,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.7,
       "landing": 1.2
     },
     "speed": {
-      "min": 120,
-      "v2": 125,
+      "min": 98,
       "landing": 130,
-      "cruise": 402,
-      "cruiseM": 0.79,
-      "max": 448,
-      "maxM": 0.805
+      "cruise": 445,
+      "cruiseM": 0.77,
+      "max": 468,
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -4931,8 +10197,8 @@
     "ceiling": 41000,
     "rate": {
       "climb": 2500,
-      "descent": 3000,
-      "accelerate": 4,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 3
     },
     "runway": {
@@ -4940,12 +10206,12 @@
       "landing": 0.335
     },
     "speed": {
-      "min": 95,
-      "landing": 123,
-      "cruise": 368,
-      "cruiseM": null,
-      "max": 442,
-      "maxM": null
+      "min": 98,
+      "landing": 130,
+      "cruise": 445,
+      "cruiseM": 0.75,
+      "max": 458,
+      "maxM": 0.78
     },
     "capability": {
       "ils": true,
@@ -4968,7 +10234,7 @@
     "ceiling": 39000,
     "rate": {
       "climb": 1000,
-      "descent": 3000,
+      "descent": 2200,
       "accelerate": 6,
       "decelerate": 3
     },
@@ -5005,8 +10271,8 @@
     "ceiling": 39500,
     "rate": {
       "climb": 1000,
-      "descent": 3000,
-      "accelerate": 5,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 2
     },
     "runway": {
@@ -5042,8 +10308,8 @@
     "ceiling": 41000,
     "rate": {
       "climb": 2000,
-      "descent": 3000,
-      "accelerate": 5,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 2
     },
     "runway": {
@@ -5079,9 +10345,9 @@
     "ceiling": 35000,
     "rate": {
       "climb": 2500,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 6
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.3,
@@ -5089,7 +10355,7 @@
     },
     "speed": {
       "min": 132,
-      "landing": 1115,
+      "landing": 125,
       "cruise": 350,
       "cruiseM": 0.66,
       "max": 300,
@@ -5115,10 +10381,10 @@
     },
     "ceiling": 25000,
     "rate": {
-      "climb": 2080,
-      "descent": 1500,
-      "accelerate": 6,
-      "decelerate": 6
+      "climb": 1500,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.798,
@@ -5126,8 +10392,7 @@
     },
     "speed": {
       "min": 87,
-      "v2": 110,
-      "landing": 113,
+      "landing": 115,
       "cruise": 230,
       "cruiseM": 0.385,
       "max": 263,
@@ -5153,8 +10418,8 @@
     },
     "ceiling": 25000,
     "rate": {
-      "climb": 2080,
-      "descent": 1500,
+      "climb": 1600,
+      "descent": 1800,
       "accelerate": 6,
       "decelerate": 6
     },
@@ -5164,12 +10429,11 @@
     },
     "speed": {
       "min": 87,
-      "v2": 110,
-      "landing": 113,
+      "landing": 115,
       "cruise": 230,
-      "cruiseM": 0.382,
-      "max": 250,
-      "maxM": 0.417
+      "cruiseM": 0.385,
+      "max": 263,
+      "maxM": 0.437
     },
     "capability": {
       "ils": true,
@@ -5191,22 +10455,22 @@
     },
     "ceiling": 26000,
     "rate": {
-      "climb": 2200,
-      "descent": 1500,
-      "accelerate": 3,
-      "decelerate": 4
+      "climb": 2000,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.523,
       "landing": 1.28
     },
     "speed": {
-      "min": 90,
-      "landing": 106,
-      "cruise": 260,
-      "cruiseM": null,
-      "max": 295,
-      "maxM": null
+      "min": 87,
+      "landing": 120,
+      "cruise": 270,
+      "cruiseM": 0.385,
+      "max": 283,
+      "maxM": 0.437
     },
     "capability": {
       "ils": true,
@@ -5229,9 +10493,9 @@
     "ceiling": 41000,
     "rate": {
       "climb": 2000,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 5
+      "descent": 2200,
+      "accelerate": 2,
+      "decelerate": 2
     },
     "runway": {
       "takeoff": 2.56,
@@ -5302,10 +10566,10 @@
     },
     "ceiling": 51000,
     "rate": {
-      "climb": 2820,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 5
+      "climb": 2800,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.3,
@@ -5313,12 +10577,11 @@
     },
     "speed": {
       "min": 105,
-      "v2": 110,
-      "landing": 116,
+      "landing": 130,
       "cruise": 457,
-      "cruiseM": null,
+      "cruiseM": 0.77,
       "max": 464,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -5340,23 +10603,22 @@
     },
     "ceiling": 51000,
     "rate": {
-      "climb": 2820,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 5
+      "climb": 2800,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.3,
       "landing": 1.35
     },
     "speed": {
-      "min": 100,
-      "v2": 110,
-      "landing": 110,
-      "cruise": 445,
-      "cruiseM": null,
-      "max": 463,
-      "maxM": null
+      "min": 105,
+      "landing": 130,
+      "cruise": 457,
+      "cruiseM": 0.78,
+      "max": 464,
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -5378,22 +10640,22 @@
     },
     "ceiling": 51000,
     "rate": {
-      "climb": 4500,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 5
+      "climb": 3100,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.5,
       "landing": 1.4
     },
     "speed": {
-      "min": 120,
+      "min": 105,
       "landing": 130,
-      "cruise": 421,
-      "cruiseM": null,
-      "max": 457,
-      "maxM": null
+      "cruise": 457,
+      "cruiseM": 0.79,
+      "max": 464,
+      "maxM": 0.81
     },
     "capability": {
       "ils": true,
@@ -5415,22 +10677,22 @@
     },
     "ceiling": 51000,
     "rate": {
-      "climb": 4000,
-      "descent": 3000,
-      "accelerate": 10,
-      "decelerate": 5
+      "climb": 3300,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.3,
       "landing": 0.8
     },
     "speed": {
-      "min": 120,
-      "landing": 130,
-      "cruise": 432,
-      "cruiseM": 0.75,
-      "max": 465,
-      "maxM": null
+      "min": 105,
+      "landing": 140,
+      "cruise": 457,
+      "cruiseM": 0.79,
+      "max": 464,
+      "maxM": 0.82
     },
     "capability": {
       "ils": true,
@@ -5453,7 +10715,7 @@
     "ceiling": 43000,
     "rate": {
       "climb": 2200,
-      "descent": 3000,
+      "descent": 2200,
       "accelerate": 7,
       "decelerate": 4
     },
@@ -5462,12 +10724,11 @@
       "landing": 2.323
     },
     "speed": {
-      "min": 120,
-      "v2": 160,
-      "landing": 140,
-      "cruise": 473,
-      "cruiseM": 0.8,
-      "max": 550,
+      "min": 105,
+      "landing": 145,
+      "cruise": 457,
+      "cruiseM": 0.79,
+      "max": 464,
       "maxM": 0.83
     },
     "capability": {
@@ -5490,10 +10751,10 @@
     },
     "ceiling": 37000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 5
+      "climb": 2100,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.8,
@@ -5503,9 +10764,9 @@
       "min": 110,
       "landing": 125,
       "cruise": 473,
-      "cruiseM": 0.76,
+      "cruiseM": 0.77,
       "max": 500,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -5527,10 +10788,10 @@
     },
     "ceiling": 37000,
     "rate": {
-      "climb": 2800,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 5
+      "climb": 2500,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.8,
@@ -5538,11 +10799,11 @@
     },
     "speed": {
       "min": 110,
-      "landing": 125,
+      "landing": 130,
       "cruise": 473,
-      "cruiseM": 0.76,
+      "cruiseM": 0.77,
       "max": 500,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -5565,8 +10826,8 @@
     "ceiling": 37000,
     "rate": {
       "climb": 2800,
-      "descent": 3000,
-      "accelerate": 7,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 3
     },
     "runway": {
@@ -5575,11 +10836,11 @@
     },
     "speed": {
       "min": 110,
-      "landing": 125,
+      "landing": 130,
       "cruise": 473,
-      "cruiseM": 0.76,
+      "cruiseM": 0.77,
       "max": 500,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -5601,9 +10862,9 @@
     },
     "ceiling": 37000,
     "rate": {
-      "climb": 3000,
-      "descent": 3000,
-      "accelerate": 7,
+      "climb": 2700,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 3
     },
     "runway": {
@@ -5612,11 +10873,11 @@
     },
     "speed": {
       "min": 110,
-      "landing": 125,
+      "landing": 130,
       "cruise": 473,
-      "cruiseM": 0.76,
+      "cruiseM": 0.77,
       "max": 500,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -5639,9 +10900,9 @@
     "ceiling": 37000,
     "rate": {
       "climb": 2800,
-      "descent": 3000,
-      "accelerate": 7,
-      "decelerate": 5
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.8,
@@ -5649,12 +10910,11 @@
     },
     "speed": {
       "min": 110,
-      "v2": 140,
-      "landing": 125,
+      "landing": 135,
       "cruise": 473,
-      "cruiseM": 0.76,
+      "cruiseM": 0.77,
       "max": 500,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -5676,10 +10936,10 @@
     },
     "ceiling": 37000,
     "rate": {
-      "climb": 3200,
-      "descent": 3500,
-      "accelerate": 7,
-      "decelerate": 5
+      "climb": 2900,
+      "descent": 2500,
+      "accelerate": 5.9,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 2.3,
@@ -5687,12 +10947,11 @@
     },
     "speed": {
       "min": 110,
-      "v2": 140,
-      "landing": 125,
-      "cruise": 437,
-      "cruiseM": 0.76,
+      "landing": 135,
+      "cruise": 473,
+      "cruiseM": 0.77,
       "max": 500,
-      "maxM": null
+      "maxM": 0.80
     },
     "capability": {
       "ils": true,
@@ -5712,11 +10971,11 @@
       "lahso": 1,
       "cwt": "I"
     },
-    "ceiling": 14000,
+    "ceiling": 10500,
     "rate": {
-      "climb": 700,
+      "climb": 900,
       "descent": 1000,
-      "accelerate": 4,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -5725,8 +10984,7 @@
     },
     "speed": {
       "min": 50,
-      "v2": 65,
-      "landing": 65,
+      "landing": 75,
       "cruise": 120,
       "cruiseM": null,
       "max": 133,
@@ -5734,7 +10992,7 @@
     },
     "capability": {
       "ils": true,
-      "fix": false
+      "fix": true
     }
   },
   {
@@ -5753,8 +11011,8 @@
     "ceiling": 41000,
     "rate": {
       "climb": 3000,
-      "descent": 1500,
-      "accelerate": 5,
+      "descent": 1800,
+      "accelerate": 5.9,
       "decelerate": 3
     },
     "runway": {
@@ -5763,11 +11021,11 @@
     },
     "speed": {
       "min": 105,
-      "landing": 120,
+      "landing": 125,
       "cruise": 300,
       "cruiseM": 0.65,
       "max": 320,
-      "maxM": null
+      "maxM": 0.69
     },
     "capability": {
       "ils": true,
@@ -5790,9 +11048,9 @@
     "ceiling": 19500,
     "rate": {
       "climb": 1200,
-      "descent": 2000,
-      "accelerate": 3,
-      "decelerate": 4
+      "descent": 2200,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.791,
@@ -5800,7 +11058,7 @@
     },
     "speed": {
       "min": 68,
-      "landing": 88,
+      "landing": 115,
       "cruise": 175,
       "cruiseM": null,
       "max": 194,
@@ -5826,9 +11084,9 @@
     },
     "ceiling": 30000,
     "rate": {
-      "climb": 1700,
-      "descent": 1500,
-      "accelerate": 5,
+      "climb": 1500,
+      "descent": 1800,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -5837,7 +11095,7 @@
     },
     "speed": {
       "min": 65,
-      "landing": 85,
+      "landing": 115,
       "cruise": 270,
       "cruiseM": null,
       "max": 295,
@@ -5864,7 +11122,7 @@
     "ceiling": 31000,
     "rate": {
       "climb": 2000,
-      "descent": 3000,
+      "descent": 2200,
       "accelerate": 8,
       "decelerate": 5
     },
@@ -5901,7 +11159,7 @@
     "ceiling": 31000,
     "rate": {
       "climb": 2000,
-      "descent": 3000,
+      "descent": 2200,
       "accelerate": 10,
       "decelerate": 6
     },
@@ -5938,7 +11196,7 @@
     "ceiling": 31000,
     "rate": {
       "climb": 2200,
-      "descent": 3000,
+      "descent": 2200,
       "accelerate": 10,
       "decelerate": 6
     },
@@ -5975,9 +11233,9 @@
     "ceiling": 31000,
     "rate": {
       "climb": 2300,
-      "descent": 1500,
-      "accelerate": 3,
-      "decelerate": 2
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.36,
@@ -5985,7 +11243,7 @@
     },
     "speed": {
       "min": 77,
-      "landing": 88,
+      "landing": 120,
       "cruise": 330,
       "cruiseM": null,
       "max": 366,
@@ -6012,9 +11270,9 @@
     "ceiling": 31000,
     "rate": {
       "climb": 1800,
-      "descent": 1500,
-      "accelerate": 3,
-      "decelerate": 2
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 1.39,
@@ -6022,8 +11280,7 @@
     },
     "speed": {
       "min": 88,
-      "v2": 110,
-      "landing": 96,
+      "landing": 115,
       "cruise": 252,
       "cruiseM": null,
       "max": 271,
@@ -6050,7 +11307,7 @@
     "ceiling": 41000,
     "rate": {
       "climb": 1800,
-      "descent": 3000,
+      "descent": 2200,
       "accelerate": 7,
       "decelerate": 4
     },
@@ -6087,8 +11344,8 @@
     "ceiling": 40000,
     "rate": {
       "climb": 2500,
-      "descent": 3000,
-      "accelerate": 4,
+      "descent": 2200,
+      "accelerate": 5.9,
       "decelerate": 4
     },
     "runway": {
@@ -6125,7 +11382,7 @@
     "rate": {
       "climb": 1500,
       "descent": 1000,
-      "accelerate": 5,
+      "accelerate": 4.5,
       "decelerate": 3
     },
     "runway": {
@@ -6161,7 +11418,7 @@
     "ceiling": 39000,
     "rate": {
       "climb": 2000,
-      "descent": 3500,
+      "descent": 2500,
       "accelerate": 7,
       "decelerate": 3
     },
@@ -6198,7 +11455,7 @@
     "ceiling": 43000,
     "rate": {
       "climb": 3000,
-      "descent": 3500,
+      "descent": 2500,
       "accelerate": 9,
       "decelerate": 4
     },
@@ -6235,7 +11492,7 @@
     "ceiling": 41000,
     "rate": {
       "climb": 3500,
-      "descent": 3500,
+      "descent": 2500,
       "accelerate": 8,
       "decelerate": 4
     },
@@ -6271,10 +11528,10 @@
     },
     "ceiling": 25000,
     "rate": {
-      "climb": 1670,
+      "climb": 1200,
       "descent": 1000,
-      "accelerate": 3,
-      "decelerate": 1
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.63,
@@ -6282,8 +11539,8 @@
     },
     "speed": {
       "min": 52,
-      "landing": 59,
-      "cruise": 186,
+      "landing": 90,
+      "cruise": 176,
       "cruiseM": null,
       "max": 199,
       "maxM": null
@@ -6306,12 +11563,12 @@
       "lahso": null,
       "cwt": "I"
     },
-    "ceiling": 15000,
+    "ceiling": 10500,
     "rate": {
-      "climb": 600,
-      "descent": 500,
-      "accelerate": 4,
-      "decelerate": 1
+      "climb": 800,
+      "descent": 800,
+      "accelerate": 4.5,
+      "decelerate": 3
     },
     "runway": {
       "takeoff": 0.505,
@@ -6319,8 +11576,8 @@
     },
     "speed": {
       "min": 53,
-      "landing": 59,
-      "cruise": 116,
+      "landing": 75,
+      "cruise": 110,
       "cruiseM": null,
       "max": 132,
       "maxM": null
@@ -6346,7 +11603,7 @@
     "ceiling": 50000,
     "rate": {
       "climb": 2500,
-      "descent": 1500,
+      "descent": 1800,
       "accelerate": 7,
       "decelerate": 5
     },
@@ -6356,7 +11613,7 @@
     },
     "speed": {
       "min": 150,
-      "landing": 150,
+      "landing": 135,
       "cruise": 480,
       "cruiseM": 0.77,
       "max": 540,
