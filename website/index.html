@@ -1679,7 +1679,6 @@ how it simulates aircraft or the STARS interface.
               There are a number of rules that define how these are specified; they are
               <a href="#stars-specifying-controllers">discussed in more detail below</a>.</p>
             <p>The STARS keyboard has a number of custom keys that are not present on standard keyboards.
-              <i>vice</i> uses the same mappings to regular keys as <a href="https://crc.virtualnas.net/docs/#/stars">CRC STARS</a> does.
               In the following documentation, when one of the STARS keys in square brackets below is shown, the corresponding
               regular keyboard key should be entered.
             </p>
@@ -2849,7 +2848,7 @@ how it simulates aircraft or the STARS interface.
               the association between numbers and directions; consider the aircraft to be at the position of
               the "5" key and then the other numbers specify the direction of the leader line relative to the
               aircraft. If you don't have a numeric keypad, visualize one, or refer to this figure:</p>
-              <table style="table table-centered" style="width: auto;">
+            <table style="table table-centered" style="width: auto;">
                 <tbody>
                   <tr><td>7</td><td>8</td><td>9</td></tr>
                   <tr><td>4</td><td><i class="fas fa-plane fa-rotate-270"></i></td><td>6</td></tr>
@@ -4624,17 +4623,47 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="fe-airlines-aircraft">
             <h2 class="section-heading">Airlines and Aircraft</h2>
 
-            <p>Both departures and arrivals need to know about which airlines fly their routes and which aircraft they use for them.
-              Airlines are specified via their ICAO strings (e.g., AAL for American Airlines).  See the file
-              <a href="https://github.com/mmp/vice/blob/master/resources/openscope-airlines.json">openscope-airlines.json</a>
+            <p>Departures, arrivals, and overflights all need to know about which airlines fly their routes and which aircraft they use for them.
+              Airlines are specified via objects with the following members:
+              
               for the database of possible airlines.
               In that file, each airline may have one or more aircraft fleets specified, in its "fleets" member.
-              If no fleet is specified, <i>vice</i> randomly chooses an aircraft type from the "default" fleet, but if
-              a particular fleet's aircraft is a better match to a route, you may want to use it.
-              For example, AAL's "long" fleet would be a good choice for trans-Atlantic flights.
             </p>
+
+            <table class="table">
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td>"icao"</td>
+                  <td>String</td>
+                  <td>The ICAO code of the airline (which must be present in <i>vice</i>'s <code><a href="https://github.com/mmp/vice/blob/master/resources/openscope-airlines.json">openscope-airlines.json</a></code> file.)</td>
+                </tr>
+                <tr>
+                  <td>"fleet"</td>
+                  <td>String</td>
+                  <td>(<i>Optional</i>) If specified, gives the fleet of the airline's aircraft
+                  that are used for this overflight.</td>
+                </tr>
+                <tr>
+                  <td>"types"</td>
+                  <td>Array of strings</td>
+                  <td>(<i>Optional</i>) If specified, gives one or more aircraft types to use.
+                    It is not allowed to specify both "fleet" and "types".</td>
+                </tr>
+            </tbody>
+            </table>
+            <p>If neither "fleet" nor "types" is specified, <i>vice</i> randomly chooses an aircraft type from the "default" fleet, but if
+            a particular fleet's aircraft is a better match to a route, you may want to use it or to specify aircraft
+            types directly.
+              For example, AAL's "long" fleet would be a good choice for trans-Atlantic flights.</p>
             <p>For reference, the available types of aircraft and their performance characteristics are available in the
-              <a href="https://github.com/mmp/vice/blob/master/resources/openscope-aircraft.json">openscope-aircraft.json</a>
+              <code><a href="https://github.com/mmp/vice/blob/master/resources/openscope-aircraft.json">openscope-aircraft.json</a></code>
               file.
             </p>
             <p>As is probably obvious, both of these databases are by way of <a href="https://github.com/openscope/openscope">openScope</a>,
@@ -4649,7 +4678,7 @@ how it simulates aircraft or the STARS interface.
               a control position (departure, approach, etc.), and airport configurations&mdash;the runways that are active at each
               airport.  Scenarios are organized in <i>scenario groups</i>, which generally collect multiple control scenarios at a single
               airport.
-              Each scenario group is specified by its own JSON file; see the <a href="https://github.com/mmp/vice/tree/master/resources/scenarios"><code>resources/scenarios/</code> directory</a> in the
+              Each scenario group is specified by its own JSON file; see the <a href="https://github.com/mmp/vice/tree/master/resources/scenarios"><code>resources/scenarios/</code></a> directory in the
               <i>vice</i> source code distribution for examples.
             </p>
             <p>These are the elements of a scenario group:</p>
@@ -4949,7 +4978,7 @@ how it simulates aircraft or the STARS interface.
               <code>KXYZ</code> is the ICAO code for the airport. <i>vice</i> will print identifiers for the available approaches
               and their associated waypoints. For example:</p>
 <pre>
-  > ...\vice.exe -routes KMIA
+  > ..\vice.exe -routes KMIA
   [...]  
   Approaches:
   I12  : DHP GLRIA/a3000+/lhilpt1.0min/pta3000/iaf PIANA/a3000+ VEPCO/a2000+
@@ -5160,9 +5189,9 @@ Given the id, the approach can be specified with:</p>
             <tbody>
               <tr>
                 <td>"airlines"</td>
-                <td>String</td>
-                <td>The airlines that fly the route and which part of their fleet of aircraft is used; see <a href="#fe-airlines-aircraft">airlines
-                    and aircraft</a> below for more information</td>
+                <td>Array of objects</td>
+                <td>Each object specifies an airline and the types of aircraft it flies on the route. See <a href="#fe-airlines-aircraft">Airlines
+                    and Aircraft</a> for the form of the airline objects.</td>
               </tr>
               <tr>
                 <td>"destination"</td>
@@ -5237,7 +5266,9 @@ Given the id, the approach can be specified with:</p>
               <tr>
                 <td>"airlines"</td>
                 <td>Object</td>
-                <td>Destination airports and airlines for the arrivals. See example below.</td>
+                <td>Destination airports and airlines for the arrivals. These objects include both the members
+                  "icao", "fleet", and "types" members of the airline object documented in <a href="#fe-airlines-aircraft">Airlines and Aircraft</a>
+                  as well as some additional fields. See the example below.</td>
               </tr>
               <tr>
                 <td>"assigned_altitude"</td>
@@ -5353,7 +5384,7 @@ Given the id, the approach can be specified with:</p>
               and providing the <code>-routes KXYZ</code> argument, where <code>KXYZ</code> is the name of the
               airport.  <i>vice</i> will print the available STARS with their transitions.  For example,</p>
 <pre>
-> ...\vice -routes KLGA
+> ..\vice.exe -routes KLGA
 STARs:
 APPLE3.SHLBK: SHLBK LOUIE/a13000 BACKY ODESA DQO RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE PROUD/flyover/h45
 APPLE3.SWANN: SWANN GATBY KERNO ODESA DQO RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE PROUD/flyover/h45
@@ -5457,7 +5488,8 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"airlines"</td>
                 <td>Array of objects</td>
-                <td>Specification of the airlines flying the overflight and their departure/arrival airports. See example below.</td>
+                <td>Specification of the airlines flying the overflight and their departure/arrival airports. See the
+                  example below.</td>
               </tr>
               <tr>
                 <td>"assigned_altitude"</td>
@@ -5523,11 +5555,11 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             </tbody>
             </table>
 
-            <p>Each overflight specification includes one or more "airlines" in an array of obvious
+            <p>Each overflight specification includes one or more "airlines" in an array of objects
               that specify the airlines and aircraft that should be included in the overflight.
-              Each element in the array is an object with the following members:
+              In addition to the "icao", "fleet", and "types" members documented in <a href="#fe-airlines-aircraft">Airlines and Aircraft</a>,
+              the following members may be specified:
             </p>
-
             <table class="table">
             <thead>
               <tr>
@@ -5537,17 +5569,6 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               </tr>
             </thead>
             <tbody>
-                <tr>
-                  <td>"icao"</td>
-                  <td>String</td>
-                  <td>The ICAO code of the airline (which must be present in <i>vice</i>'s <code>resources/openscope-airlines.json</code> file.)</td>
-                </tr>
-                <tr>
-                  <td>"fleet"</td>
-                  <td></td>
-                  <td>(<i>Optional</i>) If specified, gives the fleet of the airline's aircraft
-                  that are used for this overflight. Otherwise, the "default" fleet is used.</td>
-                </tr>
                 <tr>
                   <td>"departure_airport"</td>
                   <td>String</td>
@@ -5983,7 +6004,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             <!-- Bootstrap template licensed from themes.3rdwavemedia.com -->
             <small class="copyright">
               <a href="https://github.com/mmp/vice-website"><span><i class="fa-brands fa-github"></i></span></a>
-              vice documentation (c)2023 Matt Pharr, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0 License</a>.</small>
+              vice documentation (c)2023-2024 Matt Pharr, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0 License</a>.</small>
           </div>
         </footer>
       </div> 

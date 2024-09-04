@@ -20,8 +20,6 @@ import (
 
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/util"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 var DB *StaticDatabase
@@ -699,44 +697,6 @@ func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
 	}
 
 	return artccs, tracons
-}
-
-func (db *StaticDatabase) CheckAirline(icao, fleet string, e *util.ErrorLogger) {
-	e.Push("Airline " + icao + ", fleet " + fleet)
-	defer e.Pop()
-
-	al, ok := DB.Airlines[icao]
-	if !ok {
-		e.ErrorString("airline not known")
-		return
-	}
-
-	if fleet == "" {
-		fleet = "default"
-	}
-
-	fl, ok := al.Fleets[fleet]
-	if !ok {
-		e.ErrorString("fleet unknown")
-		return
-	}
-
-	for _, aircraft := range fl {
-		e.Push("Aircraft " + aircraft.ICAO)
-		if perf, ok := DB.AircraftPerformance[aircraft.ICAO]; !ok {
-			e.ErrorString("aircraft not present in performance database")
-		} else {
-			if perf.Speed.Min < 35 || perf.Speed.Landing < 35 || perf.Speed.CruiseTAS < 35 ||
-				perf.Speed.MaxTAS < 35 || perf.Speed.Min > perf.Speed.MaxTAS {
-				e.ErrorString("aircraft's speed specification is questionable: %s", spew.Sdump(perf.Speed))
-			}
-			if perf.Rate.Climb == 0 || perf.Rate.Descent == 0 || perf.Rate.Accelerate == 0 ||
-				perf.Rate.Decelerate == 0 {
-				e.ErrorString("aircraft's rate specification is questionable: %s", spew.Sdump(perf.Rate))
-			}
-		}
-		e.Pop()
-	}
 }
 
 func (ap FAAAirport) ValidRunways() string {

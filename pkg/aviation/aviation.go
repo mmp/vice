@@ -52,10 +52,89 @@ type Arrival struct {
 	Airlines map[string][]ArrivalAirline `json:"airlines"`
 }
 
+type AirlineSpecifier struct {
+	ICAO          string   `json:"icao"`
+	Fleet         string   `json:"fleet,omitempty"`
+	AircraftTypes []string `json:"types,omitempty"`
+}
+
 type ArrivalAirline struct {
-	ICAO    string `json:"icao"`
+	AirlineSpecifier
 	Airport string `json:"airport"`
-	Fleet   string `json:"fleet,omitempty"`
+}
+
+func (a AirlineSpecifier) Aircraft() []FleetAircraft {
+	if a.Fleet == "" && len(a.AircraftTypes) == 0 {
+		return DB.Airlines[a.ICAO].Fleets["default"]
+	} else if a.Fleet != "" {
+		return DB.Airlines[a.ICAO].Fleets[a.Fleet]
+	} else {
+		var f []FleetAircraft
+		for _, ty := range a.AircraftTypes {
+			f = append(f, FleetAircraft{ICAO: ty, Count: 1})
+		}
+		return f
+	}
+}
+
+func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
+	e.Push("Airline " + a.ICAO)
+	defer e.Pop()
+
+	al, ok := DB.Airlines[a.ICAO]
+	if !ok {
+		e.ErrorString("airline not known")
+		return
+	}
+
+	if a.Fleet == "" && len(a.AircraftTypes) == 0 {
+		a.Fleet = "default"
+	}
+	if a.Fleet != "" {
+		if len(a.AircraftTypes) != 0 {
+			e.ErrorString("cannot specify both \"fleet\" and \"types\"")
+			return
+		}
+		if _, ok := al.Fleets[a.Fleet]; !ok {
+			e.ErrorString("\"fleet\" %s unknown", a.Fleet)
+			return
+		}
+	}
+	if len(a.AircraftTypes) > 0 {
+		// Also make sure it's in the airline's fleet somewhere
+		inFleet := func(ac string) bool {
+			for _, fleet := range al.Fleets {
+				for _, ty := range fleet {
+					if ty.ICAO == ac {
+						return true
+					}
+				}
+			}
+			return false
+		}
+		for _, ac := range a.Aircraft() {
+			if !inFleet(ac.ICAO) {
+				e.ErrorString("aircraft type \"%s\" is not in the \"%s\" fleet", ac.ICAO, a.ICAO)
+			}
+		}
+	}
+
+	for _, ac := range a.Aircraft() {
+		e.Push("Aircraft " + ac.ICAO)
+		if perf, ok := DB.AircraftPerformance[ac.ICAO]; !ok {
+			e.ErrorString("aircraft not present in performance database")
+		} else {
+			if perf.Speed.Min < 35 || perf.Speed.Landing < 35 || perf.Speed.CruiseTAS < 35 ||
+				perf.Speed.MaxTAS < 35 || perf.Speed.Min > perf.Speed.MaxTAS {
+				e.ErrorString("aircraft's speed specification is questionable: %+v", perf.Speed)
+			}
+			if perf.Rate.Climb == 0 || perf.Rate.Descent == 0 || perf.Rate.Accelerate == 0 ||
+				perf.Rate.Decelerate == 0 {
+				e.ErrorString("aircraft's rate specification is questionable: %+v", perf.Rate)
+			}
+		}
+		e.Pop()
+	}
 }
 
 type Runway struct {
@@ -752,7 +831,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			e.ErrorString("no \"airlines\" specified for arrivals to " + arrivalAirport)
 		}
 		for _, al := range airlines {
-			DB.CheckAirline(al.ICAO, al.Fleet, e)
+			al.Check(e)
 			if _, ok := DB.Airports[al.Airport]; !ok {
 				e.ErrorString("departure airport \"airport\" \"%s\" unknown", al.Airport)
 			}

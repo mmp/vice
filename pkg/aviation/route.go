@@ -944,8 +944,7 @@ type Overflight struct {
 }
 
 type OverflightAirline struct {
-	ICAO             string `json:"icao"`
-	Fleet            string `json:"fleet,omitempty"`
+	AirlineSpecifier
 	DepartureAirport string `json:"departure_airport"`
 	ArrivalAirport   string `json:"arrival_airport"`
 }
@@ -967,7 +966,7 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 		e.ErrorString("must specify at least one airline in \"airlines\"")
 	}
 	for _, al := range of.Airlines {
-		DB.CheckAirline(al.ICAO, al.Fleet, e)
+		al.Check(e)
 	}
 
 	if of.InitialAltitude == 0 {

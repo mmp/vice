@@ -1509,8 +1509,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 			for _, ap := range sg.Airports {
 				for _, dep := range ap.Departures {
 					for _, al := range dep.Airlines {
-						fleet := util.Select(al.Fleet != "", al.Fleet, "default")
-						for _, ac := range av.DB.Airlines[al.ICAO].Fleets[fleet] {
+						for _, ac := range al.Aircraft() {
 							acTypes[ac.ICAO] = struct{}{}
 						}
 					}

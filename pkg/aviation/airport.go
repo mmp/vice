@@ -527,7 +527,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 
 		for _, al := range dep.Airlines {
-			DB.CheckAirline(al.ICAO, al.Fleet, e)
+			al.Check(e)
 		}
 
 		e.Pop()
@@ -682,8 +682,7 @@ type Departure struct {
 }
 
 type DepartureAirline struct {
-	ICAO  string `json:"icao"`
-	Fleet string `json:"fleet,omitempty"`
+	AirlineSpecifier
 }
 
 type ApproachType int

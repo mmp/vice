@@ -3001,29 +3001,18 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 	"ICE001":  nil,
 }
 
-func (ss *State) sampleAircraft(icao, fleet string, lg *log.Logger) (*av.Aircraft, string) {
-	al, ok := av.DB.Airlines[icao]
+func (ss *State) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*av.Aircraft, string) {
+	dbAirline, ok := av.DB.Airlines[al.ICAO]
 	if !ok {
 		// TODO: this should be caught at load validation time...
-		lg.Errorf("Chose airline %s, not found in database", icao)
-		return nil, ""
-	}
-
-	if fleet == "" {
-		fleet = "default"
-	}
-
-	fl, ok := al.Fleets[fleet]
-	if !ok {
-		// TODO: this also should be caught at validation time...
-		lg.Errorf("Airline %s doesn't have a \"%s\" fleet!", icao, fleet)
+		lg.Errorf("Airline %s, not found in database", al.ICAO)
 		return nil, ""
 	}
 
 	// Sample according to fleet count
 	var aircraft string
 	acCount := 0
-	for _, ac := range fl {
+	for _, ac := range al.Aircraft() {
 		// Reservoir sampling...
 		acCount += ac.Count
 		if rand.Float32() < float32(ac.Count)/float32(acCount) {
@@ -3034,17 +3023,17 @@ func (ss *State) sampleAircraft(icao, fleet string, lg *log.Logger) (*av.Aircraf
 	perf, ok := av.DB.AircraftPerformance[aircraft]
 	if !ok {
 		// TODO: validation stage...
-		lg.Errorf("Aircraft %s not found in performance database from fleet %+v, airline %s",
-			aircraft, fleet, icao)
+		lg.Errorf("Aircraft %s not found in performance database from airline %+v",
+			aircraft, al)
 		return nil, ""
 	}
 
 	// random callsign
-	callsign := strings.ToUpper(icao)
+	callsign := strings.ToUpper(dbAirline.ICAO)
 	for {
 		format := "####"
-		if len(al.Callsign.CallsignFormats) > 0 {
-			format = rand.SampleSlice(al.Callsign.CallsignFormats)
+		if len(dbAirline.Callsign.CallsignFormats) > 0 {
+			format = rand.SampleSlice(dbAirline.Callsign.CallsignFormats)
 		}
 
 		id := ""
@@ -3111,7 +3100,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*av.Airc
 	arr := arrivals[idx]
 
 	airline := rand.SampleSlice(arr.Airlines[arrivalAirport])
-	ac, acType := s.State.sampleAircraft(airline.ICAO, airline.Fleet, s.lg)
+	ac, acType := s.State.sampleAircraft(airline.AirlineSpecifier, s.lg)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
@@ -3231,7 +3220,7 @@ func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (
 	}
 
 	airline := rand.SampleSlice(dep.Airlines)
-	ac, acType := s.State.sampleAircraft(airline.ICAO, airline.Fleet, s.lg)
+	ac, acType := s.State.sampleAircraft(airline.AirlineSpecifier, s.lg)
 	if ac == nil {
 		return nil, nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
@@ -3266,7 +3255,7 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 	of := rand.SampleSlice(overflights)
 
 	airline := rand.SampleSlice(of.Airlines)
-	ac, acType := s.State.sampleAircraft(airline.ICAO, airline.Fleet, s.lg)
+	ac, acType := s.State.sampleAircraft(airline.AirlineSpecifier, s.lg)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
