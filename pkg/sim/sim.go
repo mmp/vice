@@ -1479,7 +1479,7 @@ func (s *Sim) updateState() {
 
 				if passedWaypoint.Delete {
 					s.lg.Info("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
-					delete(s.State.Aircraft, ac.Callsign)
+					s.State.DeleteAircraft(ac)
 				}
 			}
 
