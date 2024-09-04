@@ -41,6 +41,9 @@ type Aircraft struct {
 	RedirectedHandoff         RedirectedHandoff
 	SPCOverride               string
 
+	HoldForRelease bool
+	Released       bool // only used for hold for release
+
 	// The controller who gave approach clearance
 	ApproachController string
 
@@ -422,6 +425,8 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	} else {
 		ac.FlightPlan.Altitude = dep.Altitude
 	}
+
+	ac.HoldForRelease = ap.HoldForRelease
 
 	nav := MakeDepartureNav(*ac.FlightPlan, perf, exitRoute.AssignedAltitude,
 		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, nmPerLongitude, magneticVariation, lg)

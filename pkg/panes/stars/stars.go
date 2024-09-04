@@ -126,6 +126,11 @@ type STARSPane struct {
 	RejectedPointOuts map[string]interface{}
 	ForceQLCallsigns  map[string]interface{}
 
+	// Hold for release callsigns we have seen but not released. (We need
+	// to track this since auto release only applies to new ones seen after
+	// it is enabled.)
+	ReleaseRequests map[string]interface{}
+
 	queryUnassociated *util.TransientMap[string, interface{}]
 
 	RangeBearingLines []STARSRangeBearingLine
@@ -548,6 +553,7 @@ func (sp *STARSPane) Upgrade(from, to int) {
 func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.processEvents(ctx)
 	sp.updateRadarTracks(ctx)
+	sp.autoReleaseDepartures(ctx)
 
 	ps := sp.currentPrefs()
 

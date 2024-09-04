@@ -428,6 +428,7 @@ type STARSComputer struct {
 	STARSInbox        map[string]*[]FlightPlanMessage // Other STARS Facilities' inboxes
 	UnsupportedTracks []UnsupportedTrack
 	SquawkCodePool    *av.SquawkCodePool
+	HoldForRelease    []*av.Aircraft
 }
 
 func MakeSTARSComputer(id string, sq *av.SquawkCodePool) *STARSComputer {
@@ -579,6 +580,12 @@ func (comp *STARSComputer) InitiateTrack(callsign string, controller string, fp 
 	// TODO: shouldn't this be done earlier?
 	if fp != nil { // FIXME: why is this nil?
 		delete(comp.ContainedPlans, fp.AssignedSquawk)
+	}
+
+	// Remove it from the released departures list
+	idx := slices.IndexFunc(comp.HoldForRelease, func(ac *av.Aircraft) bool { return ac.Callsign == callsign })
+	if idx != -1 {
+		comp.HoldForRelease = append(comp.HoldForRelease[:idx], comp.HoldForRelease[idx+1:]...)
 	}
 
 	return nil
@@ -813,6 +820,27 @@ func (comp *STARSComputer) RejectPointOut(callsign, controller string) error {
 	return nil
 }
 
+func (comp *STARSComputer) ReleaseDeparture(callsign string) error {
+	idx := slices.IndexFunc(comp.HoldForRelease, func(ac *av.Aircraft) bool { return ac.Callsign == callsign })
+	if idx == -1 {
+		return av.ErrNoAircraftForCallsign
+	}
+	if comp.HoldForRelease[idx].Released {
+		return ErrAircraftAlreadyReleased
+	} else {
+		comp.HoldForRelease[idx].Released = true
+		return nil
+	}
+}
+
+func (comp *STARSComputer) GetReleaseDepartures() []*av.Aircraft {
+	return comp.HoldForRelease
+}
+
+func (comp *STARSComputer) AddHeldDeparture(ac *av.Aircraft) {
+	comp.HoldForRelease = append(comp.HoldForRelease, ac)
+}
+
 func (comp *STARSComputer) Update(s *Sim) {
 	comp.SortReceivedMessages(s.eventStream)
 	comp.AssociateFlightPlans(s)
@@ -931,6 +959,10 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 		// FIXME: should only happen if sp.AutoTrackDepartures is set?
 		if fp, ok := comp.ContainedPlans[ac.Squawk]; ok { // auto associate
 			ctrl := s.State.Callsign
+			// FIXME(mtrokel): the call to DepartureController() leads to
+			// ERROR Unable to resolve departure controller for aircraft
+			// that are initially controlled by a virtual controller
+			// (e.g. LGA water gate departures when controlling JFK.)
 			if inAcquisitionArea(ac) && s.State.DepartureController(ac, s.lg) == ctrl {
 				// If they have already contacted departure, then initiating
 				// track gives control as well; otherwise ControllingController
@@ -956,6 +988,9 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 }
 
 func (comp *STARSComputer) CompletelyDeleteAircraft(ac *av.Aircraft) {
+	comp.HoldForRelease = util.FilterSlice(comp.HoldForRelease,
+		func(a *av.Aircraft) bool { return ac.Callsign != a.Callsign })
+
 	for sq, info := range comp.TrackInformation {
 		if fp := info.FlightPlan; fp != nil {
 			if fp.Callsign == ac.Callsign {

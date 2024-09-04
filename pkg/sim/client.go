@@ -6,6 +6,9 @@ package sim
 
 import (
 	"fmt"
+	"slices"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -343,6 +346,16 @@ func (c *ControlClient) ToggleSPCOverride(callsign string, spc string, success f
 		})
 }
 
+func (c *ControlClient) ReleaseDeparture(callsign string, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.ReleaseDeparture(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (c *ControlClient) ChangeControlPosition(callsign string, keepTracks bool) error {
 	err := c.proxy.ChangeControlPosition(callsign, keepTracks)
 	if err == nil {
@@ -595,6 +608,32 @@ func (c *ControlClient) RunAircraftCommands(callsign string, cmds string, handle
 		})
 }
 
+func (c *ControlClient) TowerListAirports() []string {
+	// Figure out airport<-->tower list assignments. Sort the airports
+	// according to their TowerListIndex, putting zero (i.e., unassigned)
+	// indices at the end. Break ties alphabetically by airport name. The
+	// first three then are assigned to the corresponding tower list.
+	ap := util.SortedMapKeys(c.ArrivalAirports)
+	sort.Slice(ap, func(a, b int) bool {
+		ai := c.ArrivalAirports[ap[a]].TowerListIndex
+		if ai == 0 {
+			ai = 1000
+		}
+		bi := c.ArrivalAirports[ap[b]].TowerListIndex
+		if bi == 0 {
+			bi = 1000
+		}
+		if ai == bi {
+			return a < b
+		}
+		return ai < bi
+	})
+	if len(ap) > 3 {
+		ap = ap[:3]
+	}
+	return ap
+}
+
 func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 	// Ensure that the window is wide enough to show the description
 	sz := imgui.CalcTextSize(c.State.SimDescription, false, 0)
@@ -660,8 +699,6 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 		}
 	}
 
-	imgui.Separator()
-
 	if imgui.CollapsingHeader("Approaches") {
 		if imgui.BeginTableV("appr", 6, tableFlags, imgui.Vec2{}, 0) {
 			if c.scopeDraw.approaches == nil {
@@ -718,8 +755,6 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 			imgui.EndTable()
 		}
 	}
-
-	imgui.Separator()
 
 	if imgui.CollapsingHeader("Departures") {
 		if imgui.BeginTableV("departures", 5, tableFlags, imgui.Vec2{}, 0) {
@@ -795,8 +830,6 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 			imgui.EndTable()
 		}
 	}
-
-	imgui.Separator()
 
 	if imgui.CollapsingHeader("Overflights") {
 		if imgui.BeginTableV("over", 3, tableFlags, imgui.Vec2{}, 0) {
@@ -881,6 +914,39 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 				imgui.Text(ctrl.Callsign)
 			}
 
+			imgui.EndTable()
+		}
+	}
+
+	if imgui.CollapsingHeader("Tower/Coordination Lists") {
+		if imgui.BeginTableV("tclists", 3, tableFlags, imgui.Vec2{}, 0) {
+			imgui.TableSetupColumn("Id")
+			imgui.TableSetupColumn("Type")
+			imgui.TableSetupColumn("Airports")
+			imgui.TableHeadersRow()
+
+			for i, ap := range c.TowerListAirports() {
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text(strconv.Itoa(i))
+				imgui.TableNextColumn()
+				imgui.Text("Tower")
+				imgui.TableNextColumn()
+				imgui.Text(ap)
+			}
+
+			cl := util.DuplicateSlice(c.State.STARSFacilityAdaptation.CoordinationLists)
+			slices.SortFunc(cl, func(a, b CoordinationList) int { return strings.Compare(a.Id, b.Id) })
+
+			for _, list := range cl {
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text(list.Id)
+				imgui.TableNextColumn()
+				imgui.Text("Coord. (" + list.Name + ")")
+				imgui.TableNextColumn()
+				imgui.Text(strings.Join(list.Airports, ", "))
+			}
 			imgui.EndTable()
 		}
 	}

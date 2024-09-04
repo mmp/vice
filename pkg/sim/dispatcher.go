@@ -311,6 +311,16 @@ func (sd *Dispatcher) ToggleSPCOverride(ts *ToggleSPCArgs, _ *struct{}) error {
 	}
 }
 
+type HeldDepartureArgs AircraftSpecifier
+
+func (sd *Dispatcher) ReleaseDeparture(hd *HeldDepartureArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[hd.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.ReleaseDeparture(hd.ControllerToken, hd.Callsign)
+	}
+}
+
 type AssignAltitudeArgs struct {
 	ControllerToken string
 	Callsign        string

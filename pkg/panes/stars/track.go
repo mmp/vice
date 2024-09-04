@@ -67,6 +67,10 @@ type AircraftState struct {
 
 	TabListIndex int // 0-99. If -1, we ran out and haven't assigned one.
 
+	// Hold for release aircraft released and deleted from the coordination
+	// list by the controller.
+	ReleaseDeleted bool
+
 	// Only drawn if non-zero
 	JRingRadius    float32
 	ConeLength     float32

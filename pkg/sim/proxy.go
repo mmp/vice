@@ -233,6 +233,13 @@ func (s *proxy) ToggleSPCOverride(callsign string, spc string) *rpc.Call {
 	}, nil, nil)
 }
 
+func (s *proxy) ReleaseDeparture(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.ReleaseDeparture", &HeldDepartureArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
 func (s *proxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
 	return s.Client.Go("Sim.SetTemporaryAltitude", &AssignAltitudeArgs{
 		ControllerToken: s.ControllerToken,

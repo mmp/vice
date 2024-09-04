@@ -107,6 +107,8 @@ type Preferences struct {
 	QuickLookAllIsPlus bool
 	QuickLookPositions []QuickLookPosition
 
+	DisplayEmptyCoordinationLists bool
+
 	CRDA struct {
 		Disabled bool
 		// RunwayPairState has the same size and indexing as corresponding
@@ -232,14 +234,21 @@ type CommonPreferences struct {
 		Visible   bool
 		Selection VideoMapsGroup
 	}
-	CRDAStatusList BasicSTARSList
-	TowerLists     [3]BasicSTARSList
+	CRDAStatusList    BasicSTARSList
+	TowerLists        [3]*BasicSTARSList
+	CoordinationLists map[string]*CoordinationList
 }
 
 type BasicSTARSList struct {
 	Position [2]float32
 	Visible  bool
 	Lines    int
+}
+
+type CoordinationList struct {
+	BasicSTARSList // Note that Visible is ignored for coordination lists.
+	Group          string
+	AutoRelease    bool
 }
 
 func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
@@ -386,6 +395,8 @@ func makeDefaultPreferences() *Preferences {
 	prefs.TowerLists[2].Position = [2]float32{.05, .9}
 	prefs.TowerLists[2].Lines = 5
 
+	prefs.CoordinationLists = make(map[string]*CoordinationList)
+
 	return &prefs
 }
 
@@ -516,6 +527,7 @@ func (ps *Preferences) Upgrade(from, to int) {
 		for i := range ps.SSAList.Filter.Text.GI {
 			ps.SSAList.Filter.Text.GI[i] = true
 		}
+		ps.CoordinationLists = make(map[string]*CoordinationList)
 	}
 }
 

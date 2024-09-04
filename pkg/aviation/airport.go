@@ -26,6 +26,7 @@ type Airport struct {
 	// Optional: initial tracking controller, for cases where a virtual
 	// controller has the initial track.
 	DepartureController string `json:"departure_controller"`
+	HoldForRelease      bool   `json:"hold_for_release"`
 
 	ExitCategories map[string]string `json:"exit_categories"`
 

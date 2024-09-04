@@ -82,6 +82,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		pt += "WX\n"
 	case CommandModePref:
 		pt += "PREF SET\n"
+	case CommandModeReleaseDeparture:
+		pt += "RD"
 	}
 	pt += strings.Join(strings.Fields(sp.previewAreaInput), "\n") // spaces are rendered as newlines
 	drawList(pt, ps.PreviewAreaPosition, previewAreaStyle)
@@ -290,26 +292,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		drawList(text.String(), ps.CRDAStatusList.Position, listStyle)
 	}
 
-	// Figure out airport<-->tower list assignments. Sort the airports
-	// according to their TowerListIndex, putting zero (i.e., unassigned)
-	// indices at the end. Break ties alphabetically by airport name. The
-	// first three then are assigned to the corresponding tower list.
-	towerListAirports := util.SortedMapKeys(ctx.ControlClient.ArrivalAirports)
-	sort.Slice(towerListAirports, func(a, b int) bool {
-		ai := ctx.ControlClient.ArrivalAirports[towerListAirports[a]].TowerListIndex
-		if ai == 0 {
-			ai = 1000
-		}
-		bi := ctx.ControlClient.ArrivalAirports[towerListAirports[b]].TowerListIndex
-		if bi == 0 {
-			bi = 1000
-		}
-		if ai == bi {
-			return a < b
-		}
-		return ai < bi
-	})
-
+	towerListAirports := ctx.ControlClient.TowerListAirports()
 	for i, tl := range ps.TowerLists {
 		if !tl.Visible || i >= len(towerListAirports) {
 			continue
@@ -350,6 +333,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 			drawList(text.String(), ps.SignOnList.Position, listStyle)
 		}
 	}
+
+	sp.drawCoordinationLists(ctx, paneExtent, transforms, cb)
 
 	td.GenerateCommands(cb)
 }
@@ -641,4 +626,88 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 			newline()
 		}
 	}
+}
+
+func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.Extent2D, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	ps := sp.currentPrefs()
+	font := sp.systemFont[ps.CharSize.Lists]
+	listStyle := renderer.TextStyle{
+		Font:  font,
+		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
+	}
+	dimStyle := renderer.TextStyle{
+		Font:  font,
+		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor).Scale(0.3),
+	}
+
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	normalizedToWindow := func(p [2]float32) [2]float32 {
+		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
+	}
+
+	releaseAircraft := ctx.ControlClient.State.GetReleaseDepartures()
+
+	fa := ctx.ControlClient.STARSFacilityAdaptation
+	for i, cl := range fa.CoordinationLists {
+		// Auto-place the list if we haven't drawn it before
+		list := ps.CoordinationLists[cl.Id]
+		if list == nil {
+			list = &CoordinationList{
+				Group: cl.Name,
+				BasicSTARSList: BasicSTARSList{
+					Position: [2]float32{.25, .9 - .15*float32(i)},
+					Lines:    10,
+				},
+			}
+			if ps.CoordinationLists == nil {
+				ps.CoordinationLists = make(map[string]*CoordinationList)
+			}
+			ps.CoordinationLists[cl.Id] = list
+		}
+
+		// Get the aircraft that should be included in this list: ones that
+		// are from one of this list's departure airports and haven't been
+		// deleted from the list by the controller.
+		aircraft := util.FilterSlice(releaseAircraft,
+			func(ac *av.Aircraft) bool {
+				return slices.Contains(cl.Airports, ac.FlightPlan.DepartureAirport) &&
+					!sp.Aircraft[ac.Callsign].ReleaseDeleted
+			})
+		if len(aircraft) == 0 && !ps.DisplayEmptyCoordinationLists {
+			continue
+		}
+
+		pw := normalizedToWindow(list.Position)
+
+		halfSeconds := ctx.Now.UnixMilli() / 500
+		blinkDim := halfSeconds&1 == 0
+
+		if list.AutoRelease {
+			pw = td.AddText(strings.ToUpper(cl.Name)+"    AUTO\n", pw, listStyle)
+		} else {
+			pw = td.AddText(strings.ToUpper(cl.Name)+"\n", pw, listStyle)
+		}
+		if len(aircraft) > list.Lines {
+			pw = td.AddText(fmt.Sprintf("MORE: %d/%d\n", list.Lines, len(aircraft)), pw, listStyle)
+		}
+		var text strings.Builder
+		for i := range math.Min(len(aircraft), list.Lines) {
+			ac := aircraft[i]
+			text.Reset()
+			trk := sp.getTrack(ctx, ac)
+			// TODO: NO FP if no flight plan
+			text.WriteString("     " + sp.getTabListIndex(ac))
+			text.WriteString(util.Select(ac.Released, "+", " "))
+			text.WriteString(fmt.Sprintf("%10s    %5s %s %5s %03d\n", ac.Callsign, ac.FlightPlan.BaseType(),
+				ac.Squawk, trk.SP1, ac.FlightPlan.Altitude/100))
+			if !ac.Released && blinkDim {
+				pw = td.AddText(text.String(), pw, dimStyle)
+			} else {
+				pw = td.AddText(text.String(), pw, listStyle)
+			}
+		}
+	}
+
+	td.GenerateCommands(cb)
 }

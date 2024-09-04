@@ -28,6 +28,7 @@ var (
 	ErrSTARSBeaconMismatch    = NewSTARSError("BCN MISMATCH")
 	ErrSTARSCommandFormat     = NewSTARSError("FORMAT")
 	ErrSTARSDuplicateBeacon   = NewSTARSError("DUP BCN")
+	ErrSTARSDuplicateCommand  = NewSTARSError("DUP CMD")
 	ErrSTARSIllegalACID       = NewSTARSError("ILL ACID")
 	ErrSTARSIllegalACType     = NewSTARSError("ACTYPE NOT\nADAPTED")
 	ErrSTARSIllegalATIS       = NewSTARSError("ILL ATIS")
@@ -49,11 +50,14 @@ var (
 	ErrSTARSIllegalText       = NewSTARSError("ILL TEXT")
 	ErrSTARSIllegalTrack      = NewSTARSError("ILL TRK")
 	ErrSTARSIllegalValue      = NewSTARSError("ILL VALUE")
+	ErrSTARSMultipleFlights   = NewSTARSError("MULTIPLE FLIGHT")
 	ErrSTARSNoFlight          = NewSTARSError("NO FLIGHT")
 	ErrSTARSRangeLimit        = NewSTARSError("RANGE LIMIT")
 )
 
 var starsErrorRemap = map[error]*STARSError{
+	sim.ErrAircraftAlreadyReleased:     ErrSTARSDuplicateCommand,
+	sim.ErrAircraftNotReleased:         ErrSTARSIllegalFlight,
 	sim.ErrBeaconMismatch:              ErrSTARSBeaconMismatch,
 	av.ErrClearedForUnexpectedApproach: ErrSTARSIllegalValue,
 	av.ErrFixNotInRoute:                ErrSTARSIllegalFix,
@@ -61,6 +65,7 @@ var starsErrorRemap = map[error]*STARSError{
 	av.ErrInvalidApproach:              ErrSTARSIllegalValue,
 	sim.ErrInvalidCommandSyntax:        ErrSTARSCommandFormat,
 	av.ErrInvalidController:            ErrSTARSIllegalPosition,
+	sim.ErrInvalidDepartureController:  ErrSTARSIllegalFunction,
 	av.ErrInvalidFacility:              ErrSTARSIllegalTrack,
 	av.ErrInvalidHeading:               ErrSTARSIllegalValue,
 	av.ErrNoAircraftForCallsign:        ErrSTARSNoFlight,

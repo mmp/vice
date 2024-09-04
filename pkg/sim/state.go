@@ -369,6 +369,11 @@ func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 	}
 }
 
+func (ss *State) GetReleaseDepartures() []*av.Aircraft {
+	return util.FilterSlice(ss.STARSComputer().GetReleaseDepartures(),
+		func(ac *av.Aircraft) bool { return ss.DepartureController(ac, nil) == ss.Callsign })
+}
+
 func (s *State) GetVideoMaps() ([]av.VideoMap, []string) {
 	return s.ControllerVideoMaps, s.ControllerDefaultVideoMaps
 }

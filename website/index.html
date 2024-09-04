@@ -1669,7 +1669,10 @@ how it simulates aircraft or the STARS interface.
               <code>(AIRPORT)</code> denotes an airport given to a command; airports should be specified using
               three letters, dropping the leading "K".
             </p>
-            <p>Many keyboard commands take an aircraft identifier, which will be denoted <code>(ACID)</code> in the following. The aircraft identifier may be given as either the aircraft's complete callsign, e.g., "UAL650", or as the aircraft's beacon code.
+            <p>Many keyboard commands take an aircraft identifier, which will be denoted <code>(ACID)</code> in the following.
+              The aircraft identifier may be given as either the aircraft's complete callsign, e.g., "UAL650", or as the aircraft's beacon code.
+              Some commands also take a <i>tab list identifier</i>, which is a number from 0&ndash;99 that is associated with
+              aircraft that are displayed in system lists like <a href="#coordination-lists">coordination lists</a>.
             </p>
             <p>It is also common for commands to take identify a controller using the controller's ID (e.g., the TCP for a terminal position).
               In the following documentation, <code>(CID)</code> indicates such a controller id.
@@ -1694,6 +1697,7 @@ how it simulates aircraft or the STARS interface.
                   <tr><td><code>[CNTR]</code></td><td><code>[Ctrl-F1]</code></td></tr>
                   <tr><td><code>[DCB-SHIFT]</code></td><td><code>[Ctrl-F7]</code></td></tr>
                   <tr><td><code>[DCB]</code></td><td><code>[Ctrl-F8]</code></td></tr>
+                  <tr><td><code>[F13]</code></td><td><code>[Shift-F1]</code></td></tr>
                   <tr><td><code>[FLT DATA]</code></td><td><code>[F6]</code></td></tr>
                   <tr><td><code>[HND OFF]</code></td><td><code>[F5]</code></td></tr>
                   <tr><td><code>[INIT CNTL]</code></td><td><code>[F3]</code></td></tr>
@@ -1730,12 +1734,19 @@ how it simulates aircraft or the STARS interface.
                       specifying a non-numeric value where a number was expected.
                     </td>
                   </tr>
-                  <!--
 	          <tr>
                     <td>DUP BCN</td>
                     <td>Duplicate beacon code: the same squawk code has
                     been assigned to multiple aircraft.</td>
-                  </tr> -->
+                  </tr>
+	          <tr>
+                    <td>DUP CMD</td>
+                    <td>Duplicate command: a command has been entered a second time and is no longer applicable.</td>
+                  </tr>
+	          <tr>
+                    <td>ILL ACID</td>
+                    <td>Illegal aircraft id.</td>
+                  </tr>
 	          <tr>
                     <td>ILL ATIS</td>
                     <td>Illegal ATIS code.</td>
@@ -1758,6 +1769,14 @@ how it simulates aircraft or the STARS interface.
                     <td>Illegal flight: no flight plan is filed for the specified callsign.</td>
                   </tr>
 	          <tr>
+                    <td>ILL FNCT</td>
+                    <td>Illegal function: the command cannot be executed.</td>
+                  </tr>
+	          <tr>
+                    <td>ILL LINE</td>
+                    <td>Illegal Tab line index entered: no aircraft is associated with that number.</td>
+                  </tr>
+	          <tr>
                     <td>ILL MAP</td>
                     <td>Illegal map: an invalid map was specified to be
                     displayed or hidden.</td>
@@ -1778,6 +1797,14 @@ how it simulates aircraft or the STARS interface.
                     is invalid or does not exist.</td>
                   </tr>
 	          <tr>
+                    <td>ILL RPC</td>
+                    <td>Illegal runway pair configuration specified for CRDA.</td>
+                  </tr>
+	          <tr>
+                    <td>ILL RWY</td>
+                    <td>Illegal runway.</td>
+                  </tr>
+	          <tr>
                     <td>ILL SCR</td>
                     <td>Illegal scratchpad: the scratchpad specified for
                     an aircraft does not meet the requirements of a valid scratchpad.</td>
@@ -1789,7 +1816,7 @@ how it simulates aircraft or the STARS interface.
                   </tr> 
 	          <!-- <tr>
                     <td>ILL TEXT</td>
-                    <td>ErrSTARSIllegalText</td>
+                    <td></td>
                   </tr> -->
 	          <tr>
                     <td>ILL TRK</td>
@@ -1802,8 +1829,16 @@ how it simulates aircraft or the STARS interface.
                     illegal (e.g., an impossible altitude).</td>
                   </tr>
 	          <tr>
+                    <td>MULTIPLE FLIGHT</td>
+                    <td>Multiple flights apply.</td>
+                  </tr>
+	          <tr>
                     <td>NO FLIGHT</td>
                     <td>No flight: there is no aircraft with the specified callsign.</td>
+                  </tr>
+	          <tr>
+                    <td>RANGE LIMIT</td>
+                    <td>Invalid weather range specified.</td>
                   </tr>
                 </tbody>
                 </table>
@@ -4054,6 +4089,7 @@ how it simulates aircraft or the STARS interface.
               </table>
 
             <h4>Alert List</h4>
+
             <p>The Alert List shows the aircraft that currently have altitudes below the minimum vectoring altitude at their present position (LA) or have collision alerts (CA). Below we see that JZA868 is too low (and is currently at 600 feet altitude) and that separation has been lost between JIA1524 and NKS9096.</p>
             <div class="text-center">
               <img src="laca-system-list.png" srcset="laca-system-list-2x.png 2x" width="222" height="70" class="img-fluid" alt="la/ca system list">
@@ -4082,6 +4118,79 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                 </tbody>
               </table>
+
+            <h4 id="coordination-lists">Coordination Lists</h4>
+
+            <p>Coordination lists are used for tower and departure controllers to coordinate aircraft releases.
+              When there is a departure ready to be released from an airport the controller is responsible for, it is added
+              to the coordination list by the tower controller. After the departure controller releases an aircraft,
+              it will depart within the next few minutes. Here is an example coordination list:</p> 
+            <div class="text-center">
+              <img src="coordination-list.gif" srcset="coordination-list-2x.gif 2x" width="415" height="81" class="img-fluid">
+            </div><br>
+            <p>Aircraft that are awaiting release flash, as DPJ7156 is here.  Released aircraft are no longer flashing and have
+              a plus sign after their tab list number (here, 0 and 2 for EJA5253 and LXJ13, respectively.)
+              The coordination list also includes the aircraft type, the aircraft's assigned squawk code, its exit, and
+              its requested final altitude.</p>
+            <p>These keyboard commands are used to manage coordination lists and releases:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[F13]</code></td>
+                    <td>If there is a single unreleased aircraft in the controller's coordination lists, release that aircraft.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[F13](ACID)</code></td>
+                    <td>For an unreleased aircraft, release the specified aircraft; if the aircraft has been released, then
+                      remove it from the coordination list. Aircraft may be specified by their callsign, beacon code, or their list number (the first column).</td>
+                  </tr>
+                  <tr>
+                    <td><code>[F13]P(ID) A*</code></td>
+                    <td>Enable automatic releases for the specified coordination list. Note that automatic releases only apply to
+                      new aircraft; aircraft already in the list waiting to be released still must be released manually.
+                      "AUTO" will appear in the header line of the coordination list when automatic releases are enabled.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[F13]P(ID) M*</code></td>
+                    <td>Disable automatic releases for the specified coordination list.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]P(ID)[SLEW]</code></td>
+                    <td>Specifies the position of the given coordination list in the STARS window.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]P(ID) (##)</code></td>
+                    <td>Specifies the number of lines to display in the given coordination list.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[F13]T</code></td>
+                    <td>Toggles whether empty coordination lists are displayed.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[F13]TE</code></td>
+                    <td>Enables the display of empty coordination lists.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[F13]TI</code></td>
+                    <td>Disables the display of empty coordination lists.</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            <p>Coordination list identifiers (<code>(ID)</code> in the above commands) are one to three alphanumeric
+              characters. They can be found in the scenario information
+              window, accessed by clicking the <i class="fas fa-question-circle"></i> button in the menubar.
+              Here we can see that the "REPUBLIC" coordination list has id "A".</p>
+              <div class="text-center">
+                <img src="coordination-list-ids.png" srcset="coordination-list-ids-2x.png 2x" width="236" height="132">
+              </div><br>
 
             <h4>Sign On List</h4>
 
@@ -4798,6 +4907,11 @@ how it simulates aircraft or the STARS interface.
                 <td>Each member corresponds to a fix used as an exit for departures in the scenario group and allows associating a string category
                   name with each exit. (These categories are used so that users can control the mix of exits used in a scenario.)
                   Example: <code>"ARD": "Southwest"</code></td>
+              </tr>
+              <tr>
+                <td>"hold_for_release"</td>
+                <td>Boolean</td>
+                <td>(<i>Optional</i>) If true, departures from the airport must be released by a controller.</td>
               </tr>
               <tr>
                 <td>"name"</td>
@@ -5718,6 +5832,21 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                       If specified, this overrides any center specified in the scenario or scenario group.</li>
                     <li>"range": the initial range for the controller's scope in nautical miles.
                       If specified, this overrides any range specified in the scenario or scenario group.</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"coordination_lists"</td>
+                <td>Array of objects</td>
+                <td>Each entry specifies a coordination list used for releasing departures from one or more airports.
+                  The following properties must be specified for each one:
+                  <br>
+                  <ul>
+                    <li>"name": a string giving the list name. This is shown at the top of the list when it is visible in the STARS window.</li>
+                    <li>"id": a string giving the list's identifier. The id must be 1&ndash;3 alphanumeric characters and cannot be
+                    the number "1", "2", or "3". It is used to identify the list when entering STARS commands.</li>
+                    <li>"airports": an array of strings giving the airports managed by the list. Any airport with "hold_for_release"
+                    set to "true" must be in exactly one coordination list.</li>
                   </ul>
                 </td>
               </tr>

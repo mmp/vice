@@ -86,6 +86,7 @@ type STARSFacilityAdaptation struct {
 		ShowAircraftType bool `json:"show_aircraft_type"`
 		SplitGSAndCWT    bool `json:"split_gs_and_cwt"`
 	} `json:"pdb"`
+	CoordinationLists []CoordinationList `json:"coordination_lists"`
 }
 
 type STARSControllerConfig struct {
@@ -94,6 +95,12 @@ type STARSControllerConfig struct {
 	Center        math.Point2LL `json:"-"`
 	CenterString  string        `json:"center"`
 	Range         float32       `json:"range"`
+}
+
+type CoordinationList struct {
+	Name     string   `json:"name"`
+	Id       string   `json:"id"`
+	Airports []string `json:"airports"`
 }
 
 type Airspace struct {
@@ -1049,6 +1056,61 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	}
 	if s.PDB.SplitGSAndCWT && s.PDB.HideGroundspeed {
 		e.ErrorString("Both \"split_gs_and_cwt\" and \"hide_gs\" cannot be specified for \"pdb\" adaption.")
+	}
+
+	// Hold for release validation
+	for airport, ap := range sg.Airports {
+		var matches []string
+		for _, list := range s.CoordinationLists {
+			if slices.Contains(list.Airports, airport) {
+				matches = append(matches, list.Name)
+			}
+		}
+
+		if ap.HoldForRelease {
+			// Make sure it's in exactly one of the coordination lists
+			if len(matches) == 0 {
+				e.ErrorString("Airport \"%s\" is \"hold_for_release\" but not in \"coordination_lists\".", airport)
+			} else if len(matches) > 1 {
+				e.ErrorString("Airport \"%s\" is in multiple entries in \"coordination_lists\": %s.", airport, strings.Join(matches, ", "))
+			}
+		} else if len(matches) != 0 {
+			// And it shouldn't be any if it's not hold for release
+			e.ErrorString("Airport \"%s\" isn't \"hold_for_release\" but is in \"coordination_lists\": %s.", airport,
+				strings.Join(matches, ", "))
+		}
+	}
+
+	seenIds := make(map[string][]string)
+	for _, list := range s.CoordinationLists {
+		e.Push("\"coordination_lists\" " + list.Name)
+
+		if list.Name == "" {
+			e.ErrorString("\"name\" must be specified for coordination list.")
+		}
+		if list.Id == "" {
+			e.ErrorString("\"id\" must be specified for coordination list.")
+		}
+		if len(list.Airports) == 0 {
+			e.ErrorString("At least one airport must be specified in \"airports\" for coordination list.")
+		}
+
+		seenIds[list.Id] = append(seenIds[list.Id], list.Name)
+
+		// Make sure all airport names in coordination lists are part of the scenario.
+		for _, ap := range list.Airports {
+			if _, ok := sg.Airports[ap]; !ok {
+				e.ErrorString("Airport \"%s\" not defined in scenario group.", ap)
+			}
+		}
+
+		e.Pop()
+	}
+	// Make sure that no two coordination lists have the same id.
+	for id, groups := range seenIds {
+		if len(groups) > 1 {
+			e.ErrorString("Multiple \"coordination_lists\" are using id \"%s\": %s", id, strings.Join(groups, ", "))
+		}
 	}
 
 	e.Pop() // stars_config

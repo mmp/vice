@@ -1437,6 +1437,11 @@ func (s *Sim) updateState() {
 	if now.Sub(s.lastSimUpdate) >= time.Second {
 		s.lastSimUpdate = now
 		for callsign, ac := range s.State.Aircraft {
+			if ac.HoldForRelease && !ac.Released {
+				// nvm...
+				continue
+			}
+
 			passedWaypoint := ac.Update(s.State, s.lg)
 			if passedWaypoint != nil {
 				if passedWaypoint.Handoff {
@@ -1853,6 +1858,10 @@ func (s *Sim) launchAircraftNoLock(ac av.Aircraft) {
 	}
 
 	s.State.Aircraft[ac.Callsign] = &ac
+
+	if ac.HoldForRelease {
+		s.State.STARSComputer().AddHeldDeparture(&ac)
+	}
 
 	ac.Nav.Check(s.lg)
 
@@ -2586,6 +2595,32 @@ func (s *Sim) ToggleSPCOverride(token, callsign, spc string) error {
 			ac.ToggleSPCOverride(spc)
 			return nil
 		})
+}
+
+func (s *Sim) ReleaseDeparture(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	sc, ok := s.controllers[token]
+	if !ok {
+		return ErrInvalidControllerToken
+	}
+
+	ac, ok := s.State.Aircraft[callsign]
+	if !ok {
+		return av.ErrNoAircraftForCallsign
+	}
+	if s.State.DepartureController(ac, s.lg) != sc.Callsign {
+		return ErrInvalidDepartureController
+	}
+
+	stars := s.State.STARSComputer()
+	if err := stars.ReleaseDeparture(callsign); err == nil {
+		ac.Released = true
+		return nil
+	} else {
+		return err
+	}
 }
 
 func (s *Sim) AssignAltitude(token, callsign string, altitude int, afterSpeed bool) error {

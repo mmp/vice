@@ -43,6 +43,7 @@ const (
 	CommandModeSiteMenu
 	CommandModeWX
 	CommandModePref
+	CommandModeReleaseDeparture
 )
 
 type CommandStatus struct {
@@ -99,6 +100,11 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 				// Recenter
 				ps.Center = ctx.ControlClient.GetInitialCenter()
 				ps.CurrentCenter = ps.Center
+			}
+			if ctx.Keyboard.WasPressed(platform.KeyShift) {
+				// Treat this as F13
+				sp.resetInputState()
+				sp.commandMode = CommandModeReleaseDeparture
 			}
 		case platform.KeyF2:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) {
@@ -183,6 +189,9 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 				sp.resetInputState()
 				sp.commandMode = CommandModeCollisionAlert
 			}
+		case platform.KeyF13:
+			sp.resetInputState()
+			sp.commandMode = CommandModeReleaseDeparture
 		case platform.KeyInsert:
 			if ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
@@ -1121,34 +1130,46 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			}
 
 		case "P":
-			updateTowerList := func(idx int) {
-				if len(cmd[1:]) == 0 {
-					ps.TowerLists[idx].Visible = !ps.TowerLists[idx].Visible
-					status.clear = true
-				} else {
-					if n, err := strconv.Atoi(cmd[1:]); err == nil {
-						n = math.Clamp(n, 1, 100)
-						ps.TowerLists[idx].Lines = n
-					} else {
-						status.err = ErrSTARSIllegalParam
-					}
-					status.clear = true
-				}
+			// Tower/coordination lists: 4-55, 4-59, 4-64, 4-65
+			f := strings.Fields(cmd)
+			if len(f) != 1 && len(f) != 2 {
+				status.err = ErrSTARSCommandFormat
+				return
 			}
 
-			if len(cmd) == 1 {
-				switch cmd[0] {
-				case '1':
-					updateTowerList(0)
-					return
-				case '2':
-					updateTowerList(1)
-					return
-				case '3':
-					updateTowerList(2)
-					return
+			id := f[0]
+			if id == "1" || id == "2" || id == "3" {
+				// Tower list
+				tl := ps.TowerLists[id[0]-'1']
+				if len(f) == 1 {
+					// Toggle list visibility
+					tl.Visible = !tl.Visible
+					status.clear = true
+				} else if n, err := strconv.Atoi(f[1]); err != nil || n < 1 || n > 100 {
+					status.err = ErrSTARSIllegalParam
+				} else {
+					// Set number of visible lines
+					tl.Lines = n
+					// Setting lines also makes the tower list visible.
+					tl.Visible = true
+					status.clear = true
+				}
+			} else if cl, ok := ps.CoordinationLists[id]; ok {
+				// Coordination list
+				if len(f) == 1 {
+					status.err = ErrSTARSCommandFormat
+				} else {
+					n, err := strconv.Atoi(f[1])
+					if err != nil || n < 1 || n > 100 {
+						status.err = ErrSTARSIllegalParam
+					} else {
+						// Set number of visible lines
+						cl.Lines = n
+						status.clear = true
+					}
 				}
 			}
+			return
 
 		case "Q": // quicklook
 			if len(cmd) == 0 {
@@ -1617,10 +1638,167 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			status.clear = true
 			return
 		}
+
+	case CommandModeReleaseDeparture:
+		// 5-45
+		rel := ctx.ControlClient.State.GetReleaseDepartures()
+
+		// Filter out the ones that have been released and then deleted
+		// from the coordination list by the controller.
+		rel = util.FilterSlice(rel, func(ac *av.Aircraft) bool { return !sp.Aircraft[ac.Callsign].ReleaseDeleted })
+
+		if cmd == "" {
+			// If there is only one unacknowledged, then ack/release it.
+			unack := util.FilterSlice(rel, func(ac *av.Aircraft) bool { return !ac.Released })
+			switch len(unack) {
+			case 0:
+				status.err = ErrSTARSIllegalFlight
+			case 1:
+				ctx.ControlClient.ReleaseDeparture(unack[0].Callsign, nil,
+					func(err error) { sp.displayError(err, ctx) })
+				status.clear = true
+			default:
+				status.err = ErrSTARSMultipleFlights
+			}
+			return
+		} else if cmd == "T" {
+			// 5-49: toggle display of empty
+			ps.DisplayEmptyCoordinationLists = !ps.DisplayEmptyCoordinationLists
+			status.clear = true
+			return
+		} else if cmd == "TI" {
+			// 5-49: disable (inhibit) display of empty
+			ps.DisplayEmptyCoordinationLists = false
+			status.clear = true
+			return
+		} else if cmd == "TE" {
+			// 5-49: enable display of empty
+			ps.DisplayEmptyCoordinationLists = true
+			status.clear = true
+			return
+		} else if f := strings.Fields(cmd); len(f) == 2 {
+			// 5-48 enable/disable auto ack (release)
+			if len(f[0]) >= 2 && f[0][0] == 'P' {
+				if cl := ps.CoordinationLists[f[0][1:]]; cl != nil {
+					if f[1] == "A*" { // enable
+						cl.AutoRelease = true
+						status.clear = true
+					} else if f[1] == "M*" { // inhibit
+						cl.AutoRelease = false
+						status.clear = true
+					} else {
+						status.err = ErrSTARSCommandFormat
+					}
+				} else {
+					status.err = ErrSTARSIllegalFunction
+				}
+			} else {
+				status.err = ErrSTARSCommandFormat
+			}
+			return
+		} else {
+			// Release or delete an aircraft in the list
+			ac := func() *av.Aircraft {
+				n, nerr := strconv.Atoi(cmd)
+				sq, sqerr := av.ParseSquawk(cmd)
+				for _, ac := range rel {
+					if ac.Callsign == cmd {
+						return ac
+					}
+					if sqerr == nil && sq == ac.Squawk {
+						return ac
+					}
+					if nerr == nil && n >= 0 && n == sp.Aircraft[ac.Callsign].TabListIndex {
+						return ac
+					}
+				}
+				return nil
+			}()
+			if ac == nil {
+				if _, err := strconv.Atoi(cmd); err == nil && len(cmd) < 4 /* else assume it's a beacon code */ {
+					// Given a line number that doesn't exist.
+					status.err = ErrSTARSIllegalLine
+				} else if ac := lookupAircraft(cmd); ac != nil {
+					// There is such a flight but it's not in our release list.
+					if ac.HoldForRelease {
+						// It's in another controller's list
+						status.err = ErrSTARSIllegalFunction
+					} else {
+						status.err = ErrSTARSIllegalFlight
+					}
+				} else {
+					// No such flight anywhere.
+					status.err = ErrSTARSNoFlight
+				}
+			} else if !ac.Released {
+				ac.Released = true // hack for instant update pending the next server update
+				ctx.ControlClient.ReleaseDeparture(ac.Callsign, nil,
+					func(err error) { sp.displayError(err, ctx) })
+				status.clear = true
+			} else {
+				sp.Aircraft[ac.Callsign].ReleaseDeleted = true
+				status.clear = true
+			}
+			return
+		}
 	}
 
 	status.err = ErrSTARSCommandFormat
 	return
+}
+
+func (sp *STARSPane) autoReleaseDepartures(ctx *panes.Context) {
+	if sp.ReleaseRequests == nil {
+		sp.ReleaseRequests = make(map[string]interface{})
+	}
+
+	ps := sp.currentPrefs()
+	releaseAircraft := ctx.ControlClient.State.GetReleaseDepartures()
+
+	fa := ctx.ControlClient.STARSFacilityAdaptation
+	for _, list := range fa.CoordinationLists {
+		// Get the aircraft that should be included in this list.
+		aircraft := util.FilterSlice(releaseAircraft,
+			func(ac *av.Aircraft) bool { return slices.Contains(list.Airports, ac.FlightPlan.DepartureAirport) })
+
+		cl, ok := ps.CoordinationLists[list.Id]
+		if !ok {
+			// This shouldn't happen, but...
+			continue
+		}
+
+		for _, ac := range aircraft {
+			if _, ok := sp.ReleaseRequests[ac.Callsign]; !ok {
+				// Haven't seen this one before
+				if cl.AutoRelease {
+					ctx.ControlClient.ReleaseDeparture(ac.Callsign, nil,
+						func(err error) { ctx.Lg.Errorf("%s: %v", ac.Callsign, err) })
+				}
+				// Note that we've seen it, whether or not it was auto-released.
+				sp.ReleaseRequests[ac.Callsign] = nil
+			}
+		}
+	}
+
+	// Clean up release requests for aircraft that have departed and aren't
+	// on the hold for release list.
+	for callsign := range sp.ReleaseRequests {
+		if !slices.ContainsFunc(releaseAircraft,
+			func(ac *av.Aircraft) bool { return ac.Callsign == callsign }) {
+			delete(sp.ReleaseRequests, callsign)
+		}
+	}
+}
+
+func (sp *STARSPane) getTowerOrCoordinationList(id string) (*BasicSTARSList, bool) {
+	ps := sp.currentPrefs()
+	if cl, ok := ps.CoordinationLists[id]; ok {
+		return &cl.BasicSTARSList, false
+	}
+	if id == "1" || id == "2" || id == "3" {
+		return ps.TowerLists[id[0]-'1'], true
+	}
+	return nil, false
 }
 
 func (sp *STARSPane) updateQL(ctx *panes.Context, input string) (previewInput string, err error) {
@@ -2644,7 +2822,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			ps.CRDAStatusList.Visible = true
 			status.clear = true
 			return
-		} else if len(cmd) == 2 && cmd[0] == 'P' {
+		} else if len(cmd) >= 2 && cmd[0] == 'P' {
+			list, _ := sp.getTowerOrCoordinationList(cmd[1:])
+			if list == nil {
+				status.err = ErrSTARSIllegalFunction
+				return
+			}
+
+			if list, ok := ps.CoordinationLists[cmd[1:]]; ok {
+				list.Position = transforms.NormalizedFromWindowP(mousePosition)
+				status.clear = true
+				return
+			}
 			if idx, err := strconv.Atoi(cmd[1:]); err == nil && idx > 0 && idx <= 3 {
 				ps.TowerLists[idx-1].Position = transforms.NormalizedFromWindowP(mousePosition)
 				ps.TowerLists[idx-1].Visible = true
