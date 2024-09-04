@@ -293,9 +293,6 @@ func makeDefaultPreferences() *Preferences {
 	prefs.DisplayDCB = true
 	prefs.DCBPosition = dcbPositionTop
 
-	prefs.CurrentCenter = prefs.Center
-
-	prefs.RangeRingsCenter = prefs.Center
 	prefs.RangeRingRadius = 5
 
 	prefs.RadarTrackHistory = 5
@@ -387,7 +384,6 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.TowerLists[0].Position = [2]float32{.05, .5}
 	prefs.TowerLists[0].Lines = 5
-	prefs.TowerLists[0].Visible = true
 
 	prefs.TowerLists[1].Position = [2]float32{.05, .8}
 	prefs.TowerLists[1].Lines = 5
