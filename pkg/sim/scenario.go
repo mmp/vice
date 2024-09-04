@@ -215,7 +215,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 		}
 
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
-			e.ErrorString("airport not found")
+			e.ErrorString("airport not found in scenario group \"airports\"")
 		} else {
 			if routes, ok := ap.DepartureRoutes[rwy.Runway]; !ok {
 				e.ErrorString("runway departure routes not found")
@@ -277,7 +277,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 		e.Push("Arrival runway " + rwy.Airport + " " + rwy.Runway)
 
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
-			e.ErrorString("airport not found")
+			e.ErrorString("airport not found in scenario group \"airports\"")
 		} else {
 			activeAirports[ap] = nil
 
@@ -313,7 +313,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 
 		ap, ok := sg.Airports[rwy.Airport]
 		if !ok {
-			e.ErrorString("%s: airport unknown", rwy.Airport)
+			e.ErrorString("%s: airport not found in \"airports\"", rwy.Airport)
 		} else {
 			activeAirports[ap] = nil
 			activeDepartureAirports[rwy.Airport] = nil
