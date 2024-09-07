@@ -272,7 +272,10 @@ func (s *State) GetStateForController(callsign string) *State {
 	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
 	if config, ok := s.STARSFacilityAdaptation.ControllerConfigs[callsign]; ok && len(config.VideoMapNames) > 0 {
 		for _, name := range config.VideoMapNames {
-			if m, ok := s.videoMaps[name]; !ok || name == "" {
+			// Note that m may be nil if we are restoring a saved sim but
+			// have changed the video map file so that one we're looking
+			// for isn't there any more.
+			if m := s.videoMaps[name]; m == nil || name == "" {
 				state.ControllerVideoMaps = append(state.ControllerVideoMaps, av.VideoMap{})
 			} else {
 				state.ControllerVideoMaps = append(state.ControllerVideoMaps, *m)
@@ -281,7 +284,7 @@ func (s *State) GetStateForController(callsign string) *State {
 		state.ControllerDefaultVideoMaps = config.DefaultMaps
 	} else {
 		for _, name := range s.STARSFacilityAdaptation.VideoMapNames {
-			if m, ok := s.videoMaps[name]; !ok || name == "" {
+			if m := s.videoMaps[name]; m == nil || name == "" {
 				state.ControllerVideoMaps = append(state.ControllerVideoMaps, av.VideoMap{})
 			} else {
 				state.ControllerVideoMaps = append(state.ControllerVideoMaps, *m)
