@@ -66,9 +66,41 @@ func CheckJSONVsSchema[T any](contents []byte, e *ErrorLogger) {
 	checkJSONVsSchemaRecursive(items, ty, e)
 }
 
+type jsonChecker func(json interface{}) bool
+
+var jsonTypeCheckers map[reflect.Type]jsonChecker = make(map[reflect.Type]jsonChecker)
+
+func init() {
+	// OrderedMap has its own unmarshal support; since it is a
+	// map[string]interface{}, there's nothing more to check here...
+	RegisterJSONTypeChecker[orderedmap.OrderedMap](func(json interface{}) bool { return true })
+}
+
+// RegisterJSONTypeChecker allows types that do custom JSON unmarshaling to
+// register a function using that is called when the type is encountered
+// during checkJSONVsSchemaRecursive's traversal.  The associated checker
+// function just returns a Boolean value indicating whether the provided
+// json is valid for the type.
+func RegisterJSONTypeChecker[T any](f func(json interface{}) bool) {
+	var t T
+	ty := reflect.TypeOf(t)
+	if _, ok := jsonTypeCheckers[ty]; ok {
+		panic(fmt.Sprintf("type %T JSON checker redefined", t))
+	}
+	jsonTypeCheckers[ty] = f
+}
+
 func checkJSONVsSchemaRecursive(json interface{}, ty reflect.Type, e *ErrorLogger) {
 	for ty.Kind() == reflect.Ptr {
 		ty = ty.Elem()
+	}
+
+	if f, ok := jsonTypeCheckers[ty]; ok {
+		if !f(json) {
+			e.ErrorString("unexpected data format provided for object: %s",
+				reflect.TypeOf(json))
+		}
+		return
 	}
 
 	switch ty.Kind() {
@@ -102,10 +134,6 @@ func checkJSONVsSchemaRecursive(json interface{}, ty reflect.Type, e *ErrorLogge
 		if items, ok := json.(map[string]interface{}); !ok {
 			e.ErrorString("unexpected data format provided for object: %s",
 				reflect.TypeOf(json))
-		} else if ty == reflect.TypeOf(orderedmap.OrderedMap{}) {
-			// Special case this since it has its own unmarshal support;
-			// since it is a map[string]interface{}, there's nothing more
-			// to check here...
 		} else {
 			for item, values := range items {
 				found := false
