@@ -463,8 +463,10 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			e.ErrorString("exit not in scenario group \"scratchpads\"")
 		}
 
-		if dep.Altitude < 500 && dep.Altitude != 0 {
-			e.ErrorString("altitude of %v is too low to be used. Is it supposed to be %v?", dep.Altitude, dep.Altitude*100)
+		for _, alt := range dep.Altitudes {
+			if alt < 500 {
+				e.ErrorString("altitude of %v is too low to be used. Is it supposed to be %v?", alt, alt*100)
+			}
 		}
 
 		if _, ok := DB.Airports[dep.Destination]; !ok {
@@ -672,13 +674,13 @@ type ExitRoute struct {
 type Departure struct {
 	Exit string `json:"exit"`
 
-	Destination         string             `json:"destination"`
-	Altitude            int                `json:"altitude,omitempty"`
-	Route               string             `json:"route"`
-	RouteWaypoints      WaypointArray      // not specified in user JSON
-	Airlines            []DepartureAirline `json:"airlines"`
-	Scratchpad          string             `json:"scratchpad"`           // optional
-	SecondaryScratchpad string             `json:"secondary_scratchpad"` // optional
+	Destination         string                  `json:"destination"`
+	Altitudes           util.SingleOrArray[int] `json:"altitude,omitempty"`
+	Route               string                  `json:"route"`
+	RouteWaypoints      WaypointArray           // not specified in user JSON
+	Airlines            []DepartureAirline      `json:"airlines"`
+	Scratchpad          string                  `json:"scratchpad"`           // optional
+	SecondaryScratchpad string                  `json:"secondary_scratchpad"` // optional
 }
 
 type DepartureAirline struct {

@@ -419,11 +419,12 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	ac.SecondaryScratchpad = dep.SecondaryScratchpad
 	ac.FlightPlan.Exit = dep.Exit
 
-	if dep.Altitude == 0 || float32(dep.Altitude) > perf.Ceiling {
+	idx := rand.SampleFiltered(dep.Altitudes, func(alt int) bool { return alt <= int(perf.Ceiling) })
+	if idx == -1 {
 		ac.FlightPlan.Altitude =
 			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation)
 	} else {
-		ac.FlightPlan.Altitude = dep.Altitude
+		ac.FlightPlan.Altitude = dep.Altitudes[idx]
 	}
 
 	ac.HoldForRelease = ap.HoldForRelease

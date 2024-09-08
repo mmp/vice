@@ -899,18 +899,18 @@ func (a Airway) WaypointsBetween(wp0, wp1 string) ([]Waypoint, bool) {
 // Overflight
 
 type Overflight struct {
-	Waypoints           WaypointArray       `json:"waypoints"`
-	InitialAltitude     float32             `json:"initial_altitude"`
-	CruiseAltitude      float32             `json:"cruise_altitude"`
-	AssignedAltitude    float32             `json:"assigned_altitude"`
-	InitialSpeed        float32             `json:"initial_speed"`
-	AssignedSpeed       float32             `json:"assigned_speed"`
-	SpeedRestriction    float32             `json:"speed_restriction"`
-	InitialController   string              `json:"initial_controller"`
-	Scratchpad          string              `json:"scratchpad"`
-	SecondaryScratchpad string              `json:"secondary_scratchpad"`
-	Description         string              `json:"description"`
-	Airlines            []OverflightAirline `json:"airlines"`
+	Waypoints           WaypointArray           `json:"waypoints"`
+	InitialAltitudes    util.SingleOrArray[int] `json:"initial_altitude"`
+	CruiseAltitude      float32                 `json:"cruise_altitude"`
+	AssignedAltitude    float32                 `json:"assigned_altitude"`
+	InitialSpeed        float32                 `json:"initial_speed"`
+	AssignedSpeed       float32                 `json:"assigned_speed"`
+	SpeedRestriction    float32                 `json:"speed_restriction"`
+	InitialController   string                  `json:"initial_controller"`
+	Scratchpad          string                  `json:"scratchpad"`
+	SecondaryScratchpad string                  `json:"secondary_scratchpad"`
+	Description         string                  `json:"description"`
+	Airlines            []OverflightAirline     `json:"airlines"`
 }
 
 type OverflightAirline struct {
@@ -939,8 +939,8 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 		al.Check(e)
 	}
 
-	if of.InitialAltitude == 0 {
-		e.ErrorString("must specify \"initial_altitude\"")
+	if len(of.InitialAltitudes) == 0 {
+		e.ErrorString("must specify at least one \"initial_altitude\"")
 	}
 
 	if of.InitialSpeed == 0 {

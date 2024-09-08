@@ -5219,6 +5219,27 @@ Given the id, the approach can be specified with:</p>
               </tr>
             </tbody>
             </table>
+            <p>It is optional to specify the final altitude for departures.</p>
+            <table class="table">
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"altitude"</td>
+                <td>Number or array of numbers</td>
+                <td>(<i>Optional</i>) The final altitude for the flight. If multiple altitudes are given, one is
+                  chosen at random. If none are chosen, a reasonable final altitude is chosen based on the distance
+                  between the departure and arrival airports and the aircraft's capabilities.
+                </td>
+              </tr>
+            </tbody>
+            </table>
+
           </section>
 
           <section class="docs-section" id="fe-arrivals">
@@ -5509,8 +5530,10 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               </tr>
               <tr>
                 <td>"initial_altitude"</td>
-                <td>Number</td>
-                <td>The altitude aircraft will have when they are spawned at the initial fix.</td>
+                <td>Number or array of numbers</td>
+                <td>The altitude aircraft will have when they are spawned at the initial fix.
+                  If multiple altitudes are specified, one is chosen at random.
+                </td>
               </tr>
               <tr>
                 <td>"initial_controller"</td>

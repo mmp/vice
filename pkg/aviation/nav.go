@@ -211,7 +211,7 @@ func MakeOverflightNav(of *Overflight, fp FlightPlan, perf AircraftPerformance,
 			nav.Speed.Assigned = &spd
 		}
 
-		nav.FlightState.Altitude = of.InitialAltitude
+		nav.FlightState.Altitude = float32(rand.SampleSlice(of.InitialAltitudes))
 		nav.FlightState.IAS = of.InitialSpeed
 		// This won't be quite right but it's better than leaving GS to be
 		// 0 for the first nav update tick which leads to various Inf and
