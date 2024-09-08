@@ -396,7 +396,7 @@ Y90.
               next to it in the information window that is shown at
               the start or after clicking on the
               <i class="fas fa-question-circle"></i> button in the menubar.
-              For example, here is how the <a href="https://aeronav.faa.gov/d-tpp/2310/00671R2.PDF">HVN RNAV Runway 2 approach</a> is rendered:
+              For example, here is how the <a href="https://aeronav.faa.gov/d-tpp/2409/00671R2.PDF">HVN RNAV Runway 2 approach</a> is rendered:
             </p>
             <div class="text-center">
               <img src="hvn-rnav2.jpg" srcset="hvn-rnav2-2x.jpg 2x" width="436" height="457" class="img-fluid" alt="manual aircraft launch window">
@@ -2305,7 +2305,7 @@ how it simulates aircraft or the STARS interface.
           </section>
 
 	  <section class="docs-section" id="track-information">
-            <h2 class="section-heading">Tracks Information</h2>
+            <h2 class="section-heading">Track Information</h2>
 
             <p>Much information is encoded in the radar track symbol of an aircraft and the
               datablock displayed next to it. STARS provides many different ways to configure
@@ -4612,7 +4612,7 @@ how it simulates aircraft or the STARS interface.
               <li><code>/pta</code><i>altitude</i>: if the aircraft should descend during the procedure turn, this can be used to specify
               the final altitude it should have at the end of the turn. (The altitude should be given in 100s of feet.)</li>
               <li><code>/nopt180</code>: specifies that aircraft approaching the fix in the 180 degree semicircle of directions aligned
-                with the final approach course should not perform the procedure turn. (As an example, see the <a href="https://aeronav.faa.gov/d-tpp/2305/05570RZ8.PDF">KJAX RNAV Z 8</a> approach; this applies for aircraft between heading 346 and 166
+                with the final approach course should not perform the procedure turn. (As an example, see the <a href="https://aeronav.faa.gov/d-tpp/2409/05570RZ8.PDF">KJAX RNAV Z 8</a> approach; this applies for aircraft between heading 346 and 166
               arriving at UDAQI.)</li>
               <li><code>/nopt</code>: when specified at a fix prior to one with a procedure turn, indicates that aircraft that
               pass that fix should not fly the procedure turn.</li>
@@ -4827,13 +4827,8 @@ how it simulates aircraft or the STARS interface.
                 <td>Object</td>
                 <td>
                   <p>Each member name specifies information about the region of space associated with a runway
-                  when CRDA is used and it is one of the converging runways.  See the
-                  <a href="https://vstars.rosscarlson.dev/Assets/Files/vSTARS%20Facility%20Engineer's%20Guide.PDF">vSTARS Facility Engineer's Guide</a>
-                  for details about their semantics.  Note that if you have a vSTARS XML file for a facility with a CRDA
-                  specification, each of these corresponds to a value in the XML file.
-                  </p>
-                  <p>
-                    The following members specify the lateral extent that
+                  when CRDA is used and it is one of the converging
+                  runways.  First, the following members specify the lateral extent that
                     an aircraft must be inside for a ghost aircraft to be generated for it:
                     </p>
                   <ul>
@@ -5450,7 +5445,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             <p>The "runway_waypoints" member can be used for STARs that have different routes depending on the arrival
               airport and runway.
               When the user instructs the aircraft to expect a particular approach then the corresponding waypoints are
-              added to its route. As an example, the specification of the KPHL <a href="https://aeronav.faa.gov/d-tpp/2305/00320JIIMS.PDF">JIIMS4 arrival</a>
+              added to its route. As an example, the specification of the KPHL <a href="https://aeronav.faa.gov/d-tpp/2409/00320JIIMS.PDF">JIIMS4 arrival</a>
               starts with the following string for "waypoints": "HEKMN N039.27.43.645,W074.56.38.400/ho JIIMS/a8000".
               (The second point is used to set the handoff point to be between HEKMN and JIIMS.)
               It then has the following "runway_waypoints", corresponding to the runway-specific routes into KPHL, the
@@ -6003,8 +5998,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
           <div class="container text-center py-5">
             <!-- Bootstrap template licensed from themes.3rdwavemedia.com -->
             <small class="copyright">
-              <a href="https://github.com/mmp/vice-website"><span><i class="fa-brands fa-github"></i></span></a>
-              vice documentation (c)2023-2024 Matt Pharr, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0 License</a>.</small>
+              <i>vice</i> documentation (c)2023-2024 Matt Pharr, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0 License</a>.</small>
           </div>
         </footer>
       </div> 
