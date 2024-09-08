@@ -1107,6 +1107,7 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (alt, rate float32) {
 	} else if ar := nav.Altitude.Restriction; ar != nil {
 		lg.Debugf("alt: previous restriction %.0f-%.0f", ar.Range[0], ar.Range[1])
 		alt = nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
+		rate = MaximumRate
 	}
 	return
 }
