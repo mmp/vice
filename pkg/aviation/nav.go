@@ -734,7 +734,7 @@ func (nav *Nav) updateAltitude(lg *log.Logger, deltaKts float32) {
 	} else if nav.FlightState.Altitude > targetAltitude {
 		if deltaKts < 0 {
 			// Reduce rate due to concurrent deceleration
-			s := deltaKts / (nav.Perf.Rate.Decelerate / 2)
+			s := -deltaKts / (nav.Perf.Rate.Decelerate / 2)
 			descent *= s
 		}
 		setAltitude(math.Max(targetAltitude, nav.FlightState.Altitude-descent/60))
