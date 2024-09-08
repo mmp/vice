@@ -585,11 +585,11 @@ func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint, star string) st
 ///////////////////////////////////////////////////////////////////////////
 // Simulation
 
-func (nav *Nav) updateAirspeed(lg *log.Logger) (delta float32) {
+func (nav *Nav) updateAirspeed(lg *log.Logger) (float32, bool) {
 	if nav.Altitude.Expedite {
 		// Don't accelerate or decelerate if we're expediting
 		lg.Debug("expediting altitude, so speed unchanged")
-		return 0
+		return 0, false
 	}
 
 	// Figure out what speed we're supposed to be going. The following is
@@ -600,7 +600,7 @@ func (nav *Nav) updateAirspeed(lg *log.Logger) (delta float32) {
 	// Stay within the aircraft's capabilities
 	targetSpeed = math.Clamp(targetSpeed, nav.Perf.Speed.Min, MaxIAS)
 
-	setSpeed := func(next float32) float32 {
+	setSpeed := func(next float32) (float32, bool) {
 		if nav.Altitude.AfterSpeed != nil &&
 			(nav.Altitude.Assigned == nil || *nav.Altitude.Assigned == nav.FlightState.Altitude) {
 			cur := nav.FlightState.IAS
@@ -617,7 +617,9 @@ func (nav *Nav) updateAirspeed(lg *log.Logger) (delta float32) {
 		}
 		delta := next - nav.FlightState.IAS
 		nav.FlightState.IAS = next
-		return delta
+
+		slowingTo250 := targetSpeed == 250 && nav.FlightState.Altitude >= 10000
+		return delta, slowingTo250
 	}
 
 	if nav.FlightState.IAS < targetSpeed {
@@ -651,11 +653,11 @@ func (nav *Nav) updateAirspeed(lg *log.Logger) (delta float32) {
 		}
 		return setSpeed(math.Max(targetSpeed, nav.FlightState.IAS-decel))
 	} else {
-		return 0
+		return 0, false
 	}
 }
 
-func (nav *Nav) updateAltitude(lg *log.Logger, deltaKts float32) {
+func (nav *Nav) updateAltitude(lg *log.Logger, deltaKts float32, slowingTo250 bool) {
 	targetAltitude, targetRate := nav.TargetAltitude(lg)
 
 	if nav.FinalAltitude != 0 { // allow 0 for backwards compatability with saved
@@ -686,12 +688,17 @@ func (nav *Nav) updateAltitude(lg *log.Logger, deltaKts float32) {
 			}
 		}
 
-		if nav.FlightState.Altitude > 10000 && next <= 10000 {
-			// passed through 10k
-			if nav.Speed.Restriction != nil && *nav.Speed.Restriction > 250 {
-				// clear any speed restrictions >250kts we are carrying
-				// from a previous waypoint.
-				nav.Speed.Restriction = nil
+		if nav.FlightState.Altitude >= 10000 && next < 10000 {
+			if slowingTo250 {
+				// Keep it at 10k until we're done slowing
+				next = 10000
+			} else {
+				// passed through 10k
+				if nav.Speed.Restriction != nil && *nav.Speed.Restriction > 250 {
+					// clear any speed restrictions >250kts we are carrying
+					// from a previous waypoint.
+					nav.Speed.Restriction = nil
+				}
 			}
 		}
 
@@ -835,8 +842,8 @@ func (nav *Nav) Check(lg *log.Logger) {
 
 // returns passed waypoint if any
 func (nav *Nav) Update(wind WindModel, lg *log.Logger) *Waypoint {
-	deltaKts := nav.updateAirspeed(lg)
-	nav.updateAltitude(lg, deltaKts)
+	deltaKts, slowingTo250 := nav.updateAirspeed(lg)
+	nav.updateAltitude(lg, deltaKts, slowingTo250)
 	nav.updateHeading(wind, lg)
 	nav.updatePositionAndGS(wind, lg)
 
@@ -1399,6 +1406,26 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 		return nav.FlightState.IAS, MaximumRate
 	}
 
+	target, _ := nav.TargetAltitude(lg)
+	if nav.FlightState.Altitude >= 10000 && target < 10000 && nav.FlightState.IAS > 250 {
+		// Consider slowing to 250; estimate how long until we'll reach 10k
+		dalt := nav.FlightState.Altitude - 10000
+		salt := dalt / (nav.Perf.Rate.Descent / 60) // seconds until we reach 10k
+
+		dspeed := nav.FlightState.IAS - 250
+		sspeed := dspeed / (nav.Perf.Rate.Decelerate / 2) // seconds to decelerate to 250
+
+		if salt <= sspeed {
+			// Time to slow down
+			return 250, MaximumRate
+		} else {
+			// Otherwise reduce in general but in any case don't speed up
+			// again.
+			ias, rate := nav.targetAltitudeIAS()
+			return math.Min(ias, nav.FlightState.IAS), rate
+		}
+	}
+
 	// Nothing assigned by the controller or the route, so set a target
 	// based on the aircraft's altitude.
 	ias, rate := nav.targetAltitudeIAS()
@@ -1421,7 +1448,7 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 	}
 
 	x := math.Clamp((nav.FlightState.Altitude-10000)/(nav.Perf.Ceiling-10000), 0, 1)
-	return math.Lerp(x, math.Min(cruiseIAS, 250), cruiseIAS), 0.8 * maxAccel
+	return math.Lerp(x, math.Min(cruiseIAS, 280), cruiseIAS), 0.8 * maxAccel
 }
 
 func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (*Waypoint, float32, float32) {
