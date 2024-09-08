@@ -5,6 +5,7 @@
 package util
 
 import (
+	"encoding/json"
 	"sort"
 	"time"
 
@@ -101,6 +102,61 @@ func (r *RingBuffer[V]) Size() int {
 // is between 0 and Size()-1 and 0 is the oldest element in the buffer.
 func (r *RingBuffer[V]) Get(i int) V {
 	return r.entries[(r.index+i)%len(r.entries)]
+}
+
+///////////////////////////////////////////////////////////////////////////
+// SingleOrArray
+
+// SingleOrArray makes it possible to have an object in a JSON file that
+// may be initialized with either a single value or an array of values.  In
+// either case, the object's value is represented by a slice of the
+// underlying type.
+type SingleOrArray[V any] []V
+
+func (s *SingleOrArray[V]) UnmarshalJSON(b []byte) error {
+	if string(b) == "null" {
+		*s = nil
+		return nil
+	}
+
+	if n := len(b); n > 2 && b[0] == '[' && b[n-1] == ']' { // Array
+		var v []V
+		err := json.Unmarshal(b, &v)
+		if err != nil {
+			return err
+		}
+		*s = v
+		return nil
+	} else {
+		var v V
+		err := json.Unmarshal(b, &v)
+		if err != nil {
+			return err
+		}
+		*s = []V{v}
+		return nil
+	}
+}
+
+func init() {
+	// Register a custom checker function for SingleOrArray so that our
+	// json type validation pass can handle it.
+	RegisterJSONTypeChecker[SingleOrArray[int]](func(json interface{}) bool {
+		if _, ok := json.(float64); ok {
+			// A single number is fine.
+			return true
+		} else if arr, ok := json.([]interface{}); ok {
+			// Otherwise it has to be an array of numbers.
+			for _, v := range arr {
+				if _, ok := v.(float64); !ok {
+					return false
+				}
+			}
+			return true
+		} else {
+			return false
+		}
+	})
 }
 
 ///////////////////////////////////////////////////////////////////////////

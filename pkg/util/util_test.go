@@ -202,3 +202,30 @@ func TestReduceMap(t *testing.T) {
 		t.Errorf("Expected %d from ReduceMap; got %d", 5+5+6+6+1, length)
 	}
 }
+
+func TestSingleOrArrayJSON(t *testing.T) {
+	type test struct {
+		json   string
+		expect []int
+		err    bool
+	}
+	for _, c := range []test{
+		test{json: "null", expect: []int{}},
+		test{json: "1234", expect: []int{1234}},
+		test{json: "[ 1, 4, 9]", expect: []int{1, 4, 9}},
+		test{json: "hai", err: true},
+		test{json: `{ "foo": 12 }`, err: true},
+	} {
+		var s SingleOrArray[int]
+		err := s.UnmarshalJSON([]byte(c.json))
+		if err != nil && c.err == false {
+			t.Errorf("Unexpected error %q -> %v", c.json, err)
+		} else if err == nil && c.err == true {
+			t.Errorf("Expected error for %q but got none", c.json)
+		}
+
+		if slices.Compare(s, c.expect) != 0 {
+			t.Errorf("Decode mismatch: %q gave %v expected %v", c.json, s, c.expect)
+		}
+	}
+}
