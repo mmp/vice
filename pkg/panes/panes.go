@@ -113,13 +113,6 @@ func (ctx *Context) SetWindowCoordinateMatrices(cb *renderer.CommandBuffer) {
 	cb.LoadModelViewMatrix(math.Identity3x3())
 }
 
-// Helper function to unmarshal the JSON of a Pane of a given type T.
-func unmarshalPaneHelper[T Pane](data []byte) (Pane, error) {
-	var p T
-	err := json.Unmarshal(data, &p)
-	return p, err
-}
-
 var paneUnmarshalRegistry map[string]func([]byte) (Pane, error) = make(map[string]func([]byte) (Pane, error))
 
 func RegisterUnmarshalPane(name string, fn func([]byte) (Pane, error)) {

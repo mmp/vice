@@ -133,18 +133,6 @@ func SortedMapKeys[K constraints.Ordered, V any](m map[K]V) []K {
 	return keys
 }
 
-// SortedMapKeysPred returns the keys of the given map sorted using the
-// provided predicate function which should perform a "less than"
-// comparison of key values.
-func SortedMapKeysPred[K comparable, V any](m map[K]V, pred func(a *K, b *K) bool) []K {
-	keys := make([]K, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
-	}
-	sort.Slice(keys, func(i, j int) bool { return pred(&keys[i], &keys[j]) })
-	return keys
-}
-
 // DuplicateMap returns a newly-allocated map that stores copies of all of
 // the values in the given map.
 func DuplicateMap[K comparable, V any](m map[K]V) map[K]V {

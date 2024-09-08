@@ -74,11 +74,6 @@ func ParseCardinalOrdinalDirection(s string) (CardinalOrdinalDirection, error) {
 	return CardinalOrdinalDirection(0), fmt.Errorf("invalid direction")
 }
 
-func NMPerLongitude(p Point2LL) float32 {
-	return 45
-	// WANT: return 60 * sin(radians(p[1]))
-}
-
 // Heading2ll returns the heading from the point |from| to the point |to|
 // in degrees.  The provided points should be in latitude-longitude
 // coordinates and the provided magnetic correction is applied to the

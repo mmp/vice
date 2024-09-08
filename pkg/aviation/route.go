@@ -636,36 +636,6 @@ func (s STAR) Check(e *util.ErrorLogger) {
 	}
 }
 
-func (s STAR) HasWaypoint(wp string) bool {
-	for _, wps := range s.Transitions {
-		if slices.ContainsFunc(wps, func(w Waypoint) bool { return w.Fix == wp }) {
-			return true
-		}
-	}
-	for _, wps := range s.RunwayWaypoints {
-		if slices.ContainsFunc(wps, func(w Waypoint) bool { return w.Fix == wp }) {
-			return true
-		}
-	}
-	return false
-}
-
-func (s STAR) GetWaypointsFrom(fix string) WaypointArray {
-	for _, tr := range util.SortedMapKeys(s.Transitions) {
-		wps := s.Transitions[tr]
-		if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == fix }); idx != -1 {
-			return wps[idx:]
-		}
-	}
-	for _, tr := range util.SortedMapKeys(s.RunwayWaypoints) {
-		wps := s.RunwayWaypoints[tr]
-		if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == fix }); idx != -1 {
-			return wps[idx:]
-		}
-	}
-	return nil
-}
-
 func MakeSTAR() *STAR {
 	return &STAR{
 		Transitions:     make(map[string]WaypointArray),

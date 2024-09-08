@@ -1,4 +1,4 @@
-// pkg/util/net.go
+// pkg/util/rpc.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -11,7 +11,6 @@ import (
 	"io"
 	"log/slog"
 	"net"
-	"net/http"
 	"net/rpc"
 	"sync/atomic"
 	"time"
@@ -22,24 +21,6 @@ import (
 )
 
 var ErrRPCTimeout = errors.New("RPC call timed out")
-
-///////////////////////////////////////////////////////////////////////////
-// Networking miscellany
-
-func FetchURL(url string) ([]byte, error) {
-	response, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	var text []byte
-	if text, err = io.ReadAll(response.Body); err != nil {
-		return nil, err
-	}
-
-	return text, nil
-}
 
 ///////////////////////////////////////////////////////////////////////////
 // RPC/Networking stuff

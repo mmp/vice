@@ -131,11 +131,3 @@ func GCD(a, b int) int {
 func LCM(a, b int) int {
 	return a / GCD(a, b) * b
 }
-
-func GenRange[T constraints.Integer | constraints.Float](low, high, step T) []T {
-	var r []T
-	for i := low; i < high; i += step {
-		r = append(r, i)
-	}
-	return r
-}
