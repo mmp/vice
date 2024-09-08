@@ -1064,10 +1064,8 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *log.Logger) (heading float3
 
 const MaximumRate = 100000
 
-func (nav *Nav) TargetAltitude(lg *log.Logger) (alt, rate float32) {
-	// Baseline: stay where we are
-	alt, rate = nav.FlightState.Altitude, 0
-
+func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
+	// Clear out altitude restrictions from waypoints if we've made them.
 	if ar := nav.Altitude.Restriction; ar != nil {
 		if nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
 			lg.Debug("clearing earlier altitude restriction now that it is met",
@@ -1076,8 +1074,8 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (alt, rate float32) {
 		}
 	}
 
+	// Stay on the ground if we're still on the takeoff roll.
 	if nav.FlightState.InitialDepartureClimb && !nav.IsAirborne() {
-		// Rolling down the runway
 		lg.Debug("alt: continuing takeoff roll")
 		return nav.FlightState.Altitude, 0
 	}
@@ -1090,26 +1088,42 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (alt, rate float32) {
 		}
 	}
 
+	// Controller-assigned altitude overrides everything else
 	if nav.Altitude.Assigned != nil {
-		alt, rate = *nav.Altitude.Assigned, MaximumRate
-		lg.Debugf("alt: assigned %.0f, rate %.0f", alt, rate)
-	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
+		return *nav.Altitude.Assigned, MaximumRate
+	}
+
+	if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
 		if c.ETA < 5 || nav.FlightState.Altitude < c.Altitude {
+			// Always climb as soon as we can
 			return c.Altitude, MaximumRate
 		} else {
-			rate = math.Abs(c.Altitude-nav.FlightState.Altitude) / c.ETA
-			return c.Altitude, rate * 60 // rate is in feet per minute
+			// Descending
+			rate := (nav.FlightState.Altitude - c.Altitude) / c.ETA
+			rate *= 60 // feet per minute
+			if rate > nav.Perf.Rate.Descent/2 {
+				// Don't start the descent until (more or less) it's
+				// necessary. (But then go a little faster than we think we
+				// need to, to be safe.)
+				return c.Altitude, rate * 1.05
+			} else {
+				// Stay where we are for now.
+				return nav.FlightState.Altitude, 0
+			}
 		}
-	} else if nav.Altitude.Cleared != nil {
-		alt, rate = *nav.Altitude.Cleared, MaximumRate
-		lg.Debugf("alt: cleared %.0f", alt)
-	} else if ar := nav.Altitude.Restriction; ar != nil {
-		lg.Debugf("alt: previous restriction %.0f-%.0f", ar.Range[0], ar.Range[1])
-		alt = nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
-		rate = MaximumRate
 	}
-	return
+
+	if nav.Altitude.Cleared != nil {
+		return *nav.Altitude.Cleared, MaximumRate
+	}
+
+	if ar := nav.Altitude.Restriction; ar != nil {
+		return ar.TargetAltitude(nav.FlightState.Altitude), MaximumRate
+	}
+
+	// Baseline: stay where we are
+	return nav.FlightState.Altitude, 0
 }
 
 func (nav *Nav) flyingPT() bool {
