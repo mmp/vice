@@ -419,7 +419,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	ac.SecondaryScratchpad = dep.SecondaryScratchpad
 	ac.FlightPlan.Exit = dep.Exit
 
-	if dep.Altitude == 0 {
+	if dep.Altitude == 0 || float32(dep.Altitude) > perf.Ceiling {
 		ac.FlightPlan.Altitude =
 			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation)
 	} else {
@@ -699,7 +699,9 @@ func PlausibleFinalAltitude(fp *FlightPlan, perf AircraftPerformance, nmPerLongi
 	altitude = math.Min(altitude, int(perf.Ceiling))
 
 	if math.Heading2LL(pDep, pArr, nmPerLongitude, magneticVariation) > 180 {
-		altitude += 1000
+		// Decrease rather than increasing so that we don't potentially go
+		// above the aircraft's ceiling.
+		altitude -= 1000
 	}
 
 	return
