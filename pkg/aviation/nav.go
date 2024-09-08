@@ -1386,11 +1386,13 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 			return speed, MaximumRate
 		} else {
 			// go slow on deceleration
-			rate := math.Abs(speed-nav.FlightState.IAS) / eta
-			// Ad-hoc since as we slow, ETA increases...
-			rate *= 0.8
-
-			return speed, rate * 60 // per minute
+			rate := (nav.FlightState.IAS - speed) / eta
+			decel := nav.Perf.Rate.Decelerate / 2 // it's specified in per 2 seconds...
+			if rate > decel/2 {
+				// Start to decelerate.
+				return speed, MaximumRate
+			}
+			// Otherwise fall through in case anything else applies.
 		}
 	}
 
