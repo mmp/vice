@@ -1140,7 +1140,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			id := f[0]
 			if id == "1" || id == "2" || id == "3" {
 				// Tower list
-				tl := ps.TowerLists[id[0]-'1']
+				tl := &ps.TowerLists[id[0]-'1']
 				if len(f) == 1 {
 					// Toggle list visibility
 					tl.Visible = !tl.Visible
@@ -1796,7 +1796,7 @@ func (sp *STARSPane) getTowerOrCoordinationList(id string) (*BasicSTARSList, boo
 		return &cl.BasicSTARSList, false
 	}
 	if id == "1" || id == "2" || id == "3" {
-		return ps.TowerLists[id[0]-'1'], true
+		return &ps.TowerLists[id[0]-'1'], true
 	}
 	return nil, false
 }

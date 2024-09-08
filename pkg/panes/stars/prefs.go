@@ -235,7 +235,7 @@ type CommonPreferences struct {
 		Selection VideoMapsGroup
 	}
 	CRDAStatusList    BasicSTARSList
-	TowerLists        [3]*BasicSTARSList
+	TowerLists        [3]BasicSTARSList
 	CoordinationLists map[string]*CoordinationList
 }
 
