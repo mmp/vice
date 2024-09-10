@@ -5,6 +5,7 @@
 package util
 
 import (
+	"maps"
 	"slices"
 	"testing"
 	"time"
@@ -226,6 +227,48 @@ func TestSingleOrArrayJSON(t *testing.T) {
 
 		if slices.Compare(s, c.expect) != 0 {
 			t.Errorf("Decode mismatch: %q gave %v expected %v", c.json, s, c.expect)
+		}
+	}
+}
+
+func TestOneOfJSON(t *testing.T) {
+	type test struct {
+		json string
+		str  string
+		m    map[string]string
+		err  bool
+	}
+	for _, c := range []test{
+		test{json: `"hello"`, str: "hello"},
+		test{json: `{ "a": "1", "b": "2" }`, m: map[string]string{"a": "1", "b": "2"}},
+		test{json: "1234", err: true},
+	} {
+		var o OneOf[string, map[string]string]
+		err := o.UnmarshalJSON([]byte(c.json))
+
+		if err != nil && c.err == false {
+			t.Errorf("Unexpected error %q -> %v", c.json, err)
+		} else if err == nil && c.err == true {
+			t.Errorf("Expected error for %q but got none", c.json)
+		}
+
+		if c.str != "" {
+			if o.A == nil {
+				t.Errorf("Decode mismatch: %q gave no string, expected %q", c.json, c.str)
+			} else if c.str != *o.A {
+				t.Errorf("Decode mismatch: %q gave %q, expected %q", c.json, *o.A, c.str)
+			}
+			if o.B != nil {
+				t.Errorf("Decode of %q gave map result: %v", c.json, *o.B)
+			}
+		}
+		if len(c.m) > 0 {
+			if o.B == nil || len(*o.B) == 0 {
+				t.Errorf("Decode mismatch: %q gave no map, expected %v", c.json, c.m)
+			} else if !maps.Equal(c.m, *o.B) {
+				t.Errorf("Decode error %q gave mismatching maps: got %v expected %v",
+					c.json, *o.B, c.m)
+			}
 		}
 	}
 }

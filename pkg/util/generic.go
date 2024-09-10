@@ -154,6 +154,47 @@ func (s *SingleOrArray[V]) UnmarshalJSON(b []byte) error {
 func (s *SingleOrArray[V]) CheckJSON(json interface{}) bool {
 	return TypeCheckJSON[V](json) || TypeCheckJSON[[]V](json)
 }
+
+///////////////////////////////////////////////////////////////////////////
+// OneOf
+
+type OneOf[A, B any] struct {
+	A *A
+	B *B
+}
+
+func (o OneOf[A, B]) MarshalJSON() ([]byte, error) {
+	if o.A != nil {
+		return json.Marshal(*o.A)
+	} else if o.B != nil {
+		return json.Marshal(*o.B)
+	} else {
+		return []byte("null"), nil
+	}
+}
+
+func (o *OneOf[A, B]) UnmarshalJSON(j []byte) error {
+	o.A = nil
+	o.B = nil
+	if string(j) == "null" {
+		return nil
+	}
+
+	var a A
+	if err := json.Unmarshal(j, &a); err == nil {
+		o.A = &a
+		return nil
+	}
+	var b B
+	err := json.Unmarshal(j, &b)
+	if err == nil {
+		o.B = &b
+	}
+	return err
+}
+
+func (o OneOf[A, B]) CheckJSON(json interface{}) bool {
+	return TypeCheckJSON[A](json) || TypeCheckJSON[B](json)
 }
 
 ///////////////////////////////////////////////////////////////////////////
