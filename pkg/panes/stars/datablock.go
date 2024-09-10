@@ -658,7 +658,8 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		if trk.SP1 != "" {
 			formatDBText(db.field34[idx34][:], fmt3(trk.SP1)+handoffId, color, false)
 			idx34++
-		} else if arrivalAirport != "" { // no scratchpad, so maybe show the airport (adapted)
+		} else if arrivalAirport != "" && !state.ClearedScratchpadAlternate {
+			// no scratchpad, so maybe show the airport (adapted)
 			formatDBText(db.field34[idx34][:], fmt3(arrivalAirport)+handoffId, color, false)
 			idx34++
 		}

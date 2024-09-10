@@ -1908,6 +1908,9 @@ func (sp *STARSPane) setScratchpad(ctx *panes.Context, callsign string, contents
 		ctx.ControlClient.SetSecondaryScratchpad(callsign, contents, nil,
 			func(err error) { sp.displayError(err, ctx) })
 	} else {
+		if trk.SP1 == "" {
+			sp.Aircraft[callsign].ClearedScratchpadAlternate = true
+		}
 		ctx.ControlClient.SetScratchpad(callsign, contents, nil,
 			func(err error) { sp.displayError(err, ctx) })
 	}

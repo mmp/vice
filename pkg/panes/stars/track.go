@@ -128,6 +128,12 @@ type AircraftState struct {
 
 	RDIndicatorEnd time.Time
 
+	// Set when the user enters a command to clear the primary scratchpad,
+	// but it is already empty. (In turn, this causes the exit
+	// fix/destination airport and the like to no longer be displayed, when
+	// it is adapted to be shown in the FDB.)
+	ClearedScratchpadAlternate bool
+
 	// This is a little messy: we maintain maps from callsign->sector id
 	// for pointouts that track the global state of them. Here we track
 	// just inbound pointouts to the current controller so that the first
