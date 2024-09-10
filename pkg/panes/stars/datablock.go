@@ -658,17 +658,15 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		if trk.SP1 != "" {
 			formatDBText(db.field34[idx34][:], fmt3(trk.SP1)+handoffId, color, false)
 			idx34++
+		} else if arrivalAirport != "" { // no scratchpad, so maybe show the airport (adapted)
+			formatDBText(db.field34[idx34][:], fmt3(arrivalAirport)+handoffId, color, false)
+			idx34++
 		}
 		if handoffTCP != "" {
 			formatDBText(db.field34[idx34][:], fmt3(handoffTCP)+handoffId, color, false)
-			idx34++
 		} else if ac.SecondaryScratchpad != "" { // don't show secondary if we're showing a center
 			// TODO: confirm no handoffId here
 			formatDBText(db.field34[idx34][:], fmt3(trk.SP2)+"+", color, false)
-			idx34++
-		}
-		if idx34 == 1 && arrivalAirport != "" { // no scratchpad, so maybe show the airport (adapted)
-			formatDBText(db.field34[idx34][:], fmt3(arrivalAirport)+handoffId, color, false)
 		}
 
 		// Field 5: groundspeed
