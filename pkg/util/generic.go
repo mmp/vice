@@ -11,6 +11,7 @@ import (
 
 	"github.com/mmp/vice/pkg/math"
 
+	"github.com/iancoleman/orderedmap"
 	"golang.org/x/exp/constraints"
 )
 
@@ -105,6 +106,18 @@ func (r *RingBuffer[V]) Get(i int) V {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// OrderedMap
+
+type OrderedMap struct {
+	orderedmap.OrderedMap
+}
+
+func (o *OrderedMap) CheckJSON(json interface{}) bool {
+	_, ok := json.(map[string]interface{})
+	return ok
+}
+
+///////////////////////////////////////////////////////////////////////////
 // SingleOrArray
 
 // SingleOrArray makes it possible to have an object in a JSON file that
@@ -138,25 +151,9 @@ func (s *SingleOrArray[V]) UnmarshalJSON(b []byte) error {
 	}
 }
 
-func init() {
-	// Register a custom checker function for SingleOrArray so that our
-	// json type validation pass can handle it.
-	RegisterJSONTypeChecker[SingleOrArray[int]](func(json interface{}) bool {
-		if _, ok := json.(float64); ok {
-			// A single number is fine.
-			return true
-		} else if arr, ok := json.([]interface{}); ok {
-			// Otherwise it has to be an array of numbers.
-			for _, v := range arr {
-				if _, ok := v.(float64); !ok {
-					return false
-				}
-			}
-			return true
-		} else {
-			return false
-		}
-	})
+func (s *SingleOrArray[V]) CheckJSON(json interface{}) bool {
+	return TypeCheckJSON[V](json) || TypeCheckJSON[[]V](json)
+}
 }
 
 ///////////////////////////////////////////////////////////////////////////

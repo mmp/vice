@@ -16,7 +16,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/iancoleman/orderedmap"
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
@@ -28,7 +27,7 @@ type ScenarioGroup struct {
 	Name             string                    `json:"name"`
 	Airports         map[string]*av.Airport    `json:"airports"`
 	Fixes            map[string]math.Point2LL  `json:"-"`
-	FixesStrings     orderedmap.OrderedMap     `json:"fixes"`
+	FixesStrings     util.OrderedMap           `json:"fixes"`
 	Scenarios        map[string]*Scenario      `json:"scenarios"`
 	DefaultScenario  string                    `json:"default_scenario"`
 	ControlPositions map[string]*av.Controller `json:"control_positions"`
@@ -1271,7 +1270,7 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *Scen
 		return nil
 	}
 
-	util.CheckJSONVsSchema[ScenarioGroup](contents, e)
+	util.CheckJSON[ScenarioGroup](contents, e)
 	if e.HaveErrors() {
 		return nil
 	}
