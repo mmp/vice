@@ -568,7 +568,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				}
 
 				state := sp.Aircraft[ac.Callsign]
-				d := math.NMDistance2LL(ps.RangeRingsCenter, state.TrackPosition())
+				ctr := util.Select(ps.RangeRingsUserCenter, ps.RangeRingsCenter, ps.Center)
+				d := math.NMDistance2LL(ctr, state.TrackPosition())
 				if closest == nil || d < closestDistance {
 					closest = ac
 					closestDistance = d

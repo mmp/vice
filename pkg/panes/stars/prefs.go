@@ -68,13 +68,15 @@ type Preferences struct {
 
 	Name string // Name given if it's been saved
 
-	Center math.Point2LL
+	Center math.Point2LL // The default center
 	Range  float32
 
 	CurrentCenter math.Point2LL
 
 	RangeRingsCenter math.Point2LL
 	RangeRingRadius  int
+	// Whether we center them at RangeRingsCenter or Center
+	RangeRingsUserCenter bool
 
 	// User-supplied text for the SSA list
 	ATIS   string
@@ -256,6 +258,7 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 	p.Center = ss.GetInitialCenter()
 	p.CurrentCenter = p.Center
 	p.RangeRingsCenter = p.Center
+	p.RangeRingsUserCenter = false
 	p.Range = ss.GetInitialRange()
 
 	p.ATIS = ""
@@ -524,6 +527,8 @@ func (ps *Preferences) Upgrade(from, to int) {
 			ps.SSAList.Filter.Text.GI[i] = true
 		}
 		ps.CoordinationLists = make(map[string]*CoordinationList)
+
+		ps.RangeRingsUserCenter = ps.RangeRingsCenter != ps.Center
 	}
 }
 

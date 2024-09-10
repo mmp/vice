@@ -166,12 +166,13 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		sp.placeButton(ctx, "PLACE\nRR", buttonHalfVertical, buttonScale,
 			func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
 				ps.RangeRingsCenter = transforms.LatLongFromWindowP(pw)
+				ps.RangeRingsUserCenter = true
 				status.clear = true
 				return
 			})
-		if selectButton(ctx, "RR\nCNTR", buttonHalfVertical, buttonScale) {
-			cw := [2]float32{ctx.PaneExtent.Width() / 2, ctx.PaneExtent.Height() / 2}
-			ps.RangeRingsCenter = transforms.LatLongFromWindowP(cw)
+		defaultCenter := !ps.RangeRingsUserCenter
+		if toggleButton(ctx, "RR\nCNTR", &defaultCenter, buttonHalfVertical, buttonScale) {
+			ps.RangeRingsUserCenter = !defaultCenter
 		}
 		if selectButton(ctx, "MAPS", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMaps

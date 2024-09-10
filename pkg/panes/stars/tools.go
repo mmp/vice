@@ -650,7 +650,8 @@ func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms ScopeTransfor
 	}
 
 	pixelDistanceNm := transforms.PixelDistanceNM(ctx.ControlClient.NmPerLongitude)
-	centerWindow := transforms.WindowFromLatLongP(ps.RangeRingsCenter)
+	ctr := util.Select(ps.RangeRingsUserCenter, ps.RangeRingsCenter, ps.Center)
+	centerWindow := transforms.WindowFromLatLongP(ctr)
 
 	ld := renderer.GetLinesDrawBuilder()
 	defer renderer.ReturnLinesDrawBuilder(ld)
