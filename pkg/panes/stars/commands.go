@@ -1311,10 +1311,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				case 'V':
 					updateList(cmd[1:], &ps.VFRList.Visible, &ps.VFRList.Lines)
 					return
-				case 'M':
-					updateList(cmd[1:], &ps.AlertList.Visible, &ps.AlertList.Lines)
-					return
 				case 'C':
+					// Note: the coast/suspend list is always visible; we
+					// should probably issue an error if the user attempts
+					// to toggle visibility here.
 					updateList(cmd[1:], &ps.CoastList.Visible, &ps.CoastList.Lines)
 					return
 				case 'S':

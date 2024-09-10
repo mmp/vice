@@ -155,63 +155,8 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		drawList(text.String(), ps.TABList.Position, listStyle)
 	}
 
-	if ps.AlertList.Visible {
-		text.Reset()
-		var lists []string
-		n := 0 // total number of aircraft in the mix
-		if !ps.DisableMSAW {
-			lists = append(lists, "LA")
-			for _, ac := range aircraft {
-				if sp.Aircraft[ac.Callsign].MSAW {
-					n++
-				}
-			}
-		}
-		if !ps.DisableCAWarnings {
-			lists = append(lists, "CA")
-			n += len(sp.CAAircraft)
-		}
-
-		if len(lists) > 0 {
-			text.WriteString(strings.Join(lists, "/") + "\n")
-			if n > ps.AlertList.Lines {
-				text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.AlertList.Lines, n))
-			}
-
-			// LA
-			if !ps.DisableMSAW {
-				for _, ac := range aircraft {
-					if n == 0 {
-						break
-					}
-					if sp.Aircraft[ac.Callsign].MSAW {
-						text.WriteString(fmt.Sprintf("%-14s%03d LA\n", ac.Callsign, int((ac.Altitude()+50)/100)))
-						n--
-					}
-				}
-			}
-
-			// CA
-			if !ps.DisableCAWarnings {
-				for _, pair := range sp.CAAircraft {
-					if n == 0 {
-						break
-					}
-
-					text.WriteString(fmt.Sprintf("%-17s CA\n", pair.Callsigns[0]+"*"+pair.Callsigns[1]))
-					n--
-				}
-			}
-
-			drawList(text.String(), ps.AlertList.Position, listStyle)
-		}
-	}
-
-	if ps.CoastList.Visible {
-		text := "COAST/SUSPEND"
-		// TODO
-		drawList(text, ps.CoastList.Position, listStyle)
-	}
+	sp.drawAlertList(ctx, normalizedToWindow(ps.AlertList.Position), aircraft, td)
+	sp.drawCoastList(ctx, normalizedToWindow(ps.CoastList.Position), listStyle, td)
 
 	if ps.VideoMapsList.Visible {
 		text.Reset()
@@ -626,6 +571,74 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 			newline()
 		}
 	}
+}
+
+func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, aircraft []*av.Aircraft, td *renderer.TextDrawBuilder) {
+	// The alert list can't be hidden.
+	var text strings.Builder
+	var lists []string
+	n := 0 // total number of aircraft in the mix
+	ps := sp.currentPrefs()
+
+	if !ps.DisableMSAW {
+		lists = append(lists, "LA")
+		for _, ac := range aircraft {
+			if sp.Aircraft[ac.Callsign].MSAW {
+				n++
+			}
+		}
+	}
+	if !ps.DisableCAWarnings {
+		lists = append(lists, "CA")
+		n += len(sp.CAAircraft)
+	}
+
+	if len(lists) > 0 {
+		text.WriteString(strings.Join(lists, "/") + "\n")
+		const alertListMaxLines = 50 // this is hard-coded
+		if n > alertListMaxLines {
+			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", alertListMaxLines, n))
+		}
+
+		// LA
+		if !ps.DisableMSAW {
+			for _, ac := range aircraft {
+				if n == 0 {
+					break
+				}
+				if sp.Aircraft[ac.Callsign].MSAW {
+					text.WriteString(fmt.Sprintf("%-14s%03d LA\n", ac.Callsign, int((ac.Altitude()+50)/100)))
+					n--
+				}
+			}
+		}
+
+		// CA
+		if !ps.DisableCAWarnings {
+			for _, pair := range sp.CAAircraft {
+				if n == 0 {
+					break
+				}
+
+				text.WriteString(fmt.Sprintf("%-17s CA\n", pair.Callsigns[0]+"*"+pair.Callsigns[1]))
+				n--
+			}
+		}
+
+		if text.Len() > 0 {
+			font := sp.systemFont[ps.CharSize.Lists]
+			style := renderer.TextStyle{
+				Font:  font,
+				Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
+			}
+			td.AddText(text.String(), pw, style)
+		}
+	}
+}
+
+func (sp *STARSPane) drawCoastList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
+	// TODO
+	td.AddText("COAST/SUSPEND", pw, style)
 }
 
 func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.Extent2D, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
