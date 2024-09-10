@@ -29,10 +29,6 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 		Font:  font,
 		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
 	}
-	previewAreaStyle := renderer.TextStyle{
-		Font:  font,
-		Color: ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor),
-	}
 
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -40,248 +36,84 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 	normalizedToWindow := func(p [2]float32) [2]float32 {
 		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
 	}
-	drawList := func(text string, p [2]float32, style renderer.TextStyle) {
-		if text != "" {
-			pw := normalizedToWindow(p)
-			td.AddText(text, pw, style)
-		}
-	}
 
-	// Do the preview area while we're at it
-	pt := sp.previewAreaOutput + "\n"
-	switch sp.commandMode {
-	case CommandModeInitiateControl:
-		pt += "IC\n"
-	case CommandModeTerminateControl:
-		pt += "TC\n"
-	case CommandModeHandOff:
-		pt += "HD\n"
-	case CommandModeVFRPlan:
-		pt += "VP\n"
-	case CommandModeMultiFunc:
-		pt += "F" + sp.multiFuncPrefix + "\n"
-	case CommandModeFlightData:
-		pt += "DA\n"
-	case CommandModeCollisionAlert:
-		pt += "CA\n"
-	case CommandModeMin:
-		pt += "MIN\n"
-	case CommandModeMaps:
-		pt += "MAP\n"
-	case CommandModeSavePrefAs:
-		pt += "PREF SET NAME\n"
-	case CommandModeLDR:
-		pt += "LLL\n"
-	case CommandModeRangeRings:
-		pt += "RR\n"
-	case CommandModeRange:
-		pt += "RANGE\n"
-	case CommandModeSiteMenu:
-		pt += "SITE\n"
-	case CommandModeWX:
-		pt += "WX\n"
-	case CommandModePref:
-		pt += "PREF SET\n"
-	case CommandModeReleaseDeparture:
-		pt += "RD"
-	}
-	pt += strings.Join(strings.Fields(sp.previewAreaInput), "\n") // spaces are rendered as newlines
-	drawList(pt, ps.PreviewAreaPosition, previewAreaStyle)
+	sp.drawPreviewArea(normalizedToWindow(ps.PreviewAreaPosition), font, td)
 
-	stripK := func(airport string) string {
-		if len(airport) == 4 && airport[0] == 'K' {
-			return airport[1:]
-		} else {
-			return airport
-		}
-	}
-
-	// SSA list is always visible
 	sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), aircraft, td, transforms, cb)
-
-	var text strings.Builder
-	if ps.VFRList.Visible {
-		text.Reset()
-		var vfr []*av.Aircraft
-		// Find all untracked av.VFR aircraft
-		// FIXME: this should actually be based on VFR flight plans
-		for _, ac := range aircraft {
-			if ac.Squawk == av.Squawk(0o1200) && ac.TrackingController == "" {
-				vfr = append(vfr, ac)
-			}
-		}
-
-		// FIXME: this should actually be sorted by when we first saw the aircraft
-		slices.SortFunc(vfr, func(a, b *av.Aircraft) int { return strings.Compare(a.Callsign, b.Callsign) })
-
-		text.WriteString("VFR LIST\n")
-		if len(vfr) > ps.VFRList.Lines {
-			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr)))
-		}
-		for i := range math.Min(len(vfr), ps.VFRList.Lines) {
-			ac := vfr[i]
-			text.WriteString(fmt.Sprintf("%s %-7s VFR\n", sp.getTabListIndex(ac), ac.Callsign))
-		}
-
-		drawList(text.String(), ps.VFRList.Position, listStyle)
-	}
-
-	if ps.TABList.Visible {
-		text.Reset()
-		var dep []*av.Aircraft
-		// Untracked departures departing from one of the airports we're
-		// responsible for.
-		for _, ac := range aircraft {
-			if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" {
-				if ap := ctx.ControlClient.DepartureAirports[fp.DepartureAirport]; ap != nil {
-					if ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.Callsign {
-						dep = append(dep, ac)
-					}
-				}
-			}
-		}
-
-		slices.SortFunc(dep, func(a, b *av.Aircraft) int { return strings.Compare(a.Callsign, b.Callsign) })
-
-		text.WriteString("FLIGHT PLAN\n")
-		if len(dep) > ps.TABList.Lines {
-			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(dep)))
-		}
-		for i := range math.Min(len(dep), ps.TABList.Lines) {
-			ac := dep[i]
-			text.WriteString(fmt.Sprintf("%s %-7s %s\n", sp.getTabListIndex(ac), ac.Callsign, ac.Squawk.String()))
-		}
-
-		drawList(text.String(), ps.TABList.Position, listStyle)
-	}
-
-	sp.drawAlertList(ctx, normalizedToWindow(ps.AlertList.Position), aircraft, td)
+	sp.drawVFRList(ctx, normalizedToWindow(ps.VFRList.Position), aircraft, listStyle, td)
+	sp.drawTABList(ctx, normalizedToWindow(ps.TABList.Position), aircraft, listStyle, td)
+	sp.drawAlertList(ctx, normalizedToWindow(ps.AlertList.Position), aircraft, listStyle, td)
 	sp.drawCoastList(ctx, normalizedToWindow(ps.CoastList.Position), listStyle, td)
-
-	if ps.VideoMapsList.Visible {
-		text.Reset()
-		format := func(m av.VideoMap) {
-			if m.Label == "" {
-				return
-			}
-			_, vis := ps.VideoMapVisible[m.Id]
-			text.WriteString(util.Select(vis, ">", " ") + " ")
-			text.WriteString(fmt.Sprintf("%3d ", m.Id))
-			text.WriteString(fmt.Sprintf("%-8s ", strings.ToUpper(m.Label)))
-			text.WriteString(strings.ToUpper(m.Name) + "\n")
-		}
-		if ps.VideoMapsList.Selection == VideoMapsGroupGeo {
-			text.WriteString("GEOGRAPHIC MAPS\n")
-			m := util.DuplicateSlice(sp.videoMaps)
-			slices.SortFunc(m, func(a, b av.VideoMap) int { return a.Id - b.Id })
-			for _, vm := range m {
-				format(vm)
-			}
-		} else if ps.VideoMapsList.Selection == VideoMapsGroupSysProc {
-			text.WriteString("PROCESSING AREAS\n")
-			for _, index := range util.SortedMapKeys(sp.systemMaps) {
-				format(sp.systemMaps[index])
-			}
-		} else if ps.VideoMapsList.Selection == VideoMapsGroupCurrent {
-			text.WriteString("MAPS\n")
-			for _, id := range util.SortedMapKeys(ps.VideoMapVisible) {
-				if idx := slices.IndexFunc(sp.videoMaps, func(v av.VideoMap) bool { return v.Id == id }); idx != -1 {
-					format(sp.videoMaps[idx])
-				} else if vm, ok := sp.systemMaps[id]; ok {
-					format(vm)
-				}
-			}
-		} else {
-			ctx.Lg.Errorf("%d: unhandled VideoMapsList.Selection", ps.VideoMapsList.Selection)
-		}
-
-		drawList(text.String(), ps.VideoMapsList.Position, listStyle)
-	}
-
-	if ps.CRDAStatusList.Visible {
-		text.Reset()
-		text.WriteString("CRDA STATUS\n")
-		pairIndex := 0 // reset for each new airport
-		currentAirport := ""
-		var line strings.Builder
-		for i, crda := range ps.CRDA.RunwayPairState {
-			line.Reset()
-			if !crda.Enabled {
-				line.WriteString(" ")
-			} else {
-				line.WriteString(util.Select(crda.Mode == CRDAModeStagger, "S", "T"))
-			}
-
-			pair := sp.ConvergingRunways[i]
-			ap := pair.Airport
-			if ap != currentAirport {
-				currentAirport = ap
-				pairIndex = 1
-			}
-
-			line.WriteString(strconv.Itoa(pairIndex))
-			line.WriteByte(' ')
-			pairIndex++
-			line.WriteString(ap + " ")
-			line.WriteString(pair.getRunwaysString())
-			if crda.Enabled {
-				for line.Len() < 16 {
-					line.WriteByte(' ')
-				}
-				ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]
-				line.WriteString(ctrl.SectorId)
-			}
-			line.WriteByte('\n')
-			text.WriteString(line.String())
-		}
-		drawList(text.String(), ps.CRDAStatusList.Position, listStyle)
-	}
+	sp.drawMapsList(ctx, normalizedToWindow(ps.VideoMapsList.Position), listStyle, td)
+	sp.drawCRDAStatusList(ctx, normalizedToWindow(ps.CRDAStatusList.Position), aircraft, listStyle, td)
 
 	towerListAirports := ctx.ControlClient.TowerListAirports()
 	for i, tl := range ps.TowerLists {
-		if !tl.Visible || i >= len(towerListAirports) {
-			continue
-		}
-
-		text.Reset()
-		ap := towerListAirports[i]
-		loc := ctx.ControlClient.ArrivalAirports[ap].Location
-		text.WriteString(stripK(ap) + " TOWER\n")
-		m := make(map[float32]string)
-		for _, ac := range aircraft {
-			if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == ap {
-				dist := math.NMDistance2LL(loc, sp.Aircraft[ac.Callsign].TrackPosition())
-				actype := ac.FlightPlan.TypeWithoutSuffix()
-				actype = strings.TrimPrefix(actype, "H/")
-				actype = strings.TrimPrefix(actype, "S/")
-				// We'll punt on the chance that two aircraft have the
-				// exact same distance to the airport...
-				m[dist] = fmt.Sprintf("%-7s %s", ac.Callsign, actype)
-			}
-		}
-
-		k := util.SortedMapKeys(m)
-		if len(k) > tl.Lines {
-			k = k[:tl.Lines]
-		}
-
-		for _, key := range k {
-			text.WriteString(m[key] + "\n")
-		}
-		drawList(text.String(), tl.Position, listStyle)
-	}
-
-	if ps.SignOnList.Visible {
-		if ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]; ctrl != nil {
-			text.Reset()
-			text.WriteString(ctrl.SectorId + " " + ctrl.SignOnTime.UTC().Format("1504")) // TODO: initials
-			drawList(text.String(), ps.SignOnList.Position, listStyle)
+		if tl.Visible && i < len(towerListAirports) {
+			sp.drawTowerList(ctx, normalizedToWindow(tl.Position), towerListAirports[i], tl.Lines,
+				aircraft, listStyle, td)
 		}
 	}
 
+	sp.drawSignOnList(ctx, normalizedToWindow(ps.SignOnList.Position), listStyle, td)
 	sp.drawCoordinationLists(ctx, paneExtent, transforms, cb)
 
 	td.GenerateCommands(cb)
+}
+
+func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *renderer.TextDrawBuilder) {
+	ps := sp.currentPrefs()
+
+	var text strings.Builder
+	text.WriteString(sp.previewAreaOutput)
+	text.WriteByte('\n')
+
+	switch sp.commandMode {
+	case CommandModeInitiateControl:
+		text.WriteString("IC\n")
+	case CommandModeTerminateControl:
+		text.WriteString("TC\n")
+	case CommandModeHandOff:
+		text.WriteString("HD\n")
+	case CommandModeVFRPlan:
+		text.WriteString("VP\n")
+	case CommandModeMultiFunc:
+		text.WriteString("F")
+		text.WriteString(sp.multiFuncPrefix)
+		text.WriteString("\n")
+	case CommandModeFlightData:
+		text.WriteString("DA\n")
+	case CommandModeCollisionAlert:
+		text.WriteString("CA\n")
+	case CommandModeMin:
+		text.WriteString("MIN\n")
+	case CommandModeMaps:
+		text.WriteString("MAP\n")
+	case CommandModeSavePrefAs:
+		text.WriteString("PREF SET NAME\n")
+	case CommandModeLDR:
+		text.WriteString("LLL\n")
+	case CommandModeRangeRings:
+		text.WriteString("RR\n")
+	case CommandModeRange:
+		text.WriteString("RANGE\n")
+	case CommandModeSiteMenu:
+		text.WriteString("SITE\n")
+	case CommandModeWX:
+		text.WriteString("WX\n")
+	case CommandModePref:
+		text.WriteString("PREF SET\n")
+	case CommandModeReleaseDeparture:
+		text.WriteString("RD")
+	}
+	text.WriteString(strings.Join(strings.Fields(sp.previewAreaInput), "\n")) // spaces are rendered as newlines
+	if text.Len() > 0 {
+		style := renderer.TextStyle{
+			Font:  font,
+			Color: ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor),
+		}
+		td.AddText(text.String(), pw, style)
+	}
 }
 
 func (sp *STARSPane) getTabListIndex(ac *av.Aircraft) string {
@@ -573,7 +405,79 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 	}
 }
 
-func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, aircraft []*av.Aircraft, td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, aircraft []*av.Aircraft, style renderer.TextStyle,
+	td *renderer.TextDrawBuilder) {
+	ps := sp.currentPrefs()
+	if !ps.VFRList.Visible {
+		return
+	}
+
+	var text strings.Builder
+	var vfr []*av.Aircraft
+	// Find all untracked av.VFR aircraft
+	// FIXME: this should actually be based on VFR flight plans
+	for _, ac := range aircraft {
+		if ac.Squawk == av.Squawk(0o1200) && ac.TrackingController == "" {
+			vfr = append(vfr, ac)
+		}
+	}
+
+	// FIXME: this should actually be sorted by when we first saw the aircraft
+	slices.SortFunc(vfr, func(a, b *av.Aircraft) int { return strings.Compare(a.Callsign, b.Callsign) })
+
+	text.WriteString("VFR LIST\n")
+	if len(vfr) > ps.VFRList.Lines {
+		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr)))
+	}
+	for i := range math.Min(len(vfr), ps.VFRList.Lines) {
+		ac := vfr[i]
+		text.WriteString(fmt.Sprintf("%s %-7s VFR\n", sp.getTabListIndex(ac), ac.Callsign))
+	}
+
+	if text.Len() > 0 {
+		td.AddText(text.String(), pw, style)
+	}
+}
+
+func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, aircraft []*av.Aircraft, style renderer.TextStyle,
+	td *renderer.TextDrawBuilder) {
+	ps := sp.currentPrefs()
+	if !ps.TABList.Visible {
+		return
+	}
+
+	var text strings.Builder
+	var dep []*av.Aircraft
+	// Untracked departures departing from one of the airports we're
+	// responsible for.
+	for _, ac := range aircraft {
+		if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" {
+			if ap := ctx.ControlClient.DepartureAirports[fp.DepartureAirport]; ap != nil {
+				if ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.Callsign {
+					dep = append(dep, ac)
+				}
+			}
+		}
+	}
+
+	slices.SortFunc(dep, func(a, b *av.Aircraft) int { return strings.Compare(a.Callsign, b.Callsign) })
+
+	text.WriteString("FLIGHT PLAN\n")
+	if len(dep) > ps.TABList.Lines {
+		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(dep)))
+	}
+	for i := range math.Min(len(dep), ps.TABList.Lines) {
+		ac := dep[i]
+		text.WriteString(fmt.Sprintf("%s %-7s %s\n", sp.getTabListIndex(ac), ac.Callsign, ac.Squawk.String()))
+	}
+
+	if text.Len() > 0 {
+		td.AddText(text.String(), pw, style)
+	}
+}
+
+func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, aircraft []*av.Aircraft, style renderer.TextStyle,
+	td *renderer.TextDrawBuilder) {
 	// The alert list can't be hidden.
 	var text strings.Builder
 	var lists []string
@@ -626,11 +530,6 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, aircraft [
 		}
 
 		if text.Len() > 0 {
-			font := sp.systemFont[ps.CharSize.Lists]
-			style := renderer.TextStyle{
-				Font:  font,
-				Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
-			}
 			td.AddText(text.String(), pw, style)
 		}
 	}
@@ -639,6 +538,155 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, aircraft [
 func (sp *STARSPane) drawCoastList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
 	// TODO
 	td.AddText("COAST/SUSPEND", pw, style)
+}
+
+func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
+	ps := sp.currentPrefs()
+	if !ps.VideoMapsList.Visible {
+		return
+	}
+
+	var text strings.Builder
+	format := func(m av.VideoMap) {
+		if m.Label == "" {
+			return
+		}
+		_, vis := ps.VideoMapVisible[m.Id]
+		text.WriteString(util.Select(vis, ">", " ") + " ")
+		text.WriteString(fmt.Sprintf("%3d ", m.Id))
+		text.WriteString(fmt.Sprintf("%-8s ", strings.ToUpper(m.Label)))
+		text.WriteString(strings.ToUpper(m.Name) + "\n")
+	}
+
+	switch ps.VideoMapsList.Selection {
+	case VideoMapsGroupGeo:
+		text.WriteString("GEOGRAPHIC MAPS\n")
+		m := util.DuplicateSlice(sp.videoMaps)
+		slices.SortFunc(m, func(a, b av.VideoMap) int { return a.Id - b.Id })
+		for _, vm := range m {
+			format(vm)
+		}
+
+	case VideoMapsGroupSysProc:
+		text.WriteString("PROCESSING AREAS\n")
+		for _, index := range util.SortedMapKeys(sp.systemMaps) {
+			format(sp.systemMaps[index])
+		}
+
+	case VideoMapsGroupCurrent:
+		text.WriteString("MAPS\n")
+		for _, id := range util.SortedMapKeys(ps.VideoMapVisible) {
+			if idx := slices.IndexFunc(sp.videoMaps, func(v av.VideoMap) bool { return v.Id == id }); idx != -1 {
+				format(sp.videoMaps[idx])
+			} else if vm, ok := sp.systemMaps[id]; ok {
+				format(vm)
+			}
+		}
+	default:
+		ctx.Lg.Errorf("%d: unhandled VideoMapsList.Selection", ps.VideoMapsList.Selection)
+	}
+
+	if text.Len() > 0 {
+		td.AddText(text.String(), pw, style)
+	}
+}
+
+func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, aircraft []*av.Aircraft, style renderer.TextStyle,
+	td *renderer.TextDrawBuilder) {
+	ps := sp.currentPrefs()
+	if !ps.CRDAStatusList.Visible {
+		return
+	}
+
+	var text strings.Builder
+	text.WriteString("CRDA STATUS\n")
+	pairIndex := 0 // reset for each new airport
+	currentAirport := ""
+	for i, crda := range ps.CRDA.RunwayPairState {
+		if !crda.Enabled {
+			text.WriteString(" ")
+		} else {
+			text.WriteString(util.Select(crda.Mode == CRDAModeStagger, "S", "T"))
+		}
+
+		pair := sp.ConvergingRunways[i]
+		ap := pair.Airport
+		if ap != currentAirport {
+			currentAirport = ap
+			pairIndex = 1
+		}
+
+		text.WriteString(strconv.Itoa(pairIndex))
+		text.WriteByte(' ')
+		pairIndex++
+		text.WriteString(ap + " ")
+		text.WriteString(pair.getRunwaysString())
+		if crda.Enabled {
+			for text.Len() < 16 {
+				text.WriteByte(' ')
+			}
+			ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]
+			text.WriteString(ctrl.SectorId)
+		}
+		text.WriteByte('\n')
+	}
+
+	if text.Len() > 0 {
+		td.AddText(text.String(), pw, style)
+	}
+}
+
+func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport string, lines int, aircraft []*av.Aircraft,
+	style renderer.TextStyle, td *renderer.TextDrawBuilder) {
+	stripK := func(airport string) string {
+		if len(airport) == 4 && airport[0] == 'K' {
+			return airport[1:]
+		} else {
+			return airport
+		}
+	}
+
+	var text strings.Builder
+	loc := ctx.ControlClient.ArrivalAirports[airport].Location
+	text.WriteString(stripK(airport) + " TOWER\n")
+	m := make(map[float32]string)
+	for _, ac := range aircraft {
+		if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == airport {
+			dist := math.NMDistance2LL(loc, sp.Aircraft[ac.Callsign].TrackPosition())
+			actype := ac.FlightPlan.TypeWithoutSuffix()
+			actype = strings.TrimPrefix(actype, "H/")
+			actype = strings.TrimPrefix(actype, "S/")
+			// We'll punt on the chance that two aircraft have the
+			// exact same distance to the airport...
+			m[dist] = fmt.Sprintf("%-7s %s", ac.Callsign, actype)
+		}
+	}
+
+	k := util.SortedMapKeys(m)
+	if len(k) > lines {
+		k = k[:lines]
+	}
+
+	for _, key := range k {
+		text.WriteString(m[key] + "\n")
+	}
+
+	if text.Len() > 0 {
+		td.AddText(text.String(), pw, style)
+	}
+}
+
+func (sp *STARSPane) drawSignOnList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
+	ps := sp.currentPrefs()
+	if !ps.SignOnList.Visible {
+		return
+	}
+
+	var text strings.Builder
+	if ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]; ctrl != nil {
+		text.WriteString(ctrl.SectorId + " " + ctrl.SignOnTime.UTC().Format("1504")) // TODO: initials
+		td.AddText(text.String(), pw, style)
+	}
 }
 
 func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.Extent2D, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
