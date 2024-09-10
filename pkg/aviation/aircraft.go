@@ -383,9 +383,14 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffC
 	}
 	ac.Nav = *nav
 
-	if arr.ExpectApproach != "" {
+	if arr.ExpectApproach.A != nil {
 		lg = lg.With(slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
-		ac.ExpectApproach(arr.ExpectApproach, ap, lg)
+		ac.ExpectApproach(*arr.ExpectApproach.A, ap, lg)
+	} else if arr.ExpectApproach.B != nil {
+		if app, ok := (*arr.ExpectApproach.B)[ac.FlightPlan.ArrivalAirport]; ok {
+			lg = lg.With(slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
+			ac.ExpectApproach(app, ap, lg)
+		}
 	}
 
 	return nil

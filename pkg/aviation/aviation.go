@@ -42,11 +42,12 @@ type Arrival struct {
 	AssignedAltitude    float32 `json:"assigned_altitude"`
 	InitialSpeed        float32 `json:"initial_speed"`
 	SpeedRestriction    float32 `json:"speed_restriction"`
-	ExpectApproach      string  `json:"expect_approach"`
 	Scratchpad          string  `json:"scratchpad"`
 	SecondaryScratchpad string  `json:"secondary_scratchpad"`
 	Description         string  `json:"description"`
 	CoordinationFix     string  `json:"coordination_fix"`
+
+	ExpectApproach util.OneOf[string, map[string]string] `json:"expect_approach"`
 
 	// Airport -> arrival airlines
 	Airlines map[string][]ArrivalAirline `json:"airlines"`
@@ -789,17 +790,41 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			}
 		}
 
-		ap, ok := airports[arrivalAirport]
+		_, ok := airports[arrivalAirport]
 		if !ok {
 			e.ErrorString("arrival airport \"%s\" unknown", arrivalAirport)
-		} else if ar.ExpectApproach != "" {
-			if _, ok := ap.Approaches[ar.ExpectApproach]; !ok {
-				e.ErrorString("arrival airport \"%s\" doesn't have a \"%s\" approach",
-					arrivalAirport, ar.ExpectApproach)
-			}
 		}
 
 		e.Pop()
+	}
+
+	if ar.ExpectApproach.A != nil { // Given a single string
+		if len(ar.Airlines) > 1 {
+			e.ErrorString("There are multiple arrival airports but only one approach in \"expect_approach\"")
+		}
+		// Ugly way to get the key from a one-element map
+		var airport string
+		for airport, _ = range ar.Airlines {
+		}
+		// We checked the arrival airports were valid above, no need to issue an error if not found.
+		if ap, ok := airports[airport]; ok {
+			if _, ok := ap.Approaches[*ar.ExpectApproach.A]; !ok {
+				e.ErrorString("arrival airport %q doesn't have a %q approach for \"expect_approach\"",
+					airport, *ar.ExpectApproach.A)
+			}
+		}
+	} else if ar.ExpectApproach.B != nil {
+		for airport, appr := range *ar.ExpectApproach.B {
+			if _, ok := ar.Airlines[airport]; !ok {
+				e.ErrorString("airport %q is listed in \"expect_approach\" but is not in arrival airports",
+					airport)
+			} else if ap, ok := airports[airport]; ok {
+				if _, ok := ap.Approaches[appr]; !ok {
+					e.ErrorString("arrival airport %q doesn't have a %q approach for \"expect_approach\"",
+						airport, appr)
+				}
+			}
+		}
 	}
 
 	if ar.InitialAltitude == 0 {

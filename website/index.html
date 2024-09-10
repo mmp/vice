@@ -5304,12 +5304,13 @@ Given the id, the approach can be specified with:</p>
               </tr>
               <tr>
                 <td>"expect_approach"</td>
-                <td>String</td>
-                <td>(<i>Optional</i>) If provided, the aircraft has been
-                told to expect the given approach by a previous controller
-                and so it is not necessary to issue an "expect approach"
-                  command before clearing an aircraft for an approach.
-                  (This setting is especially useful in "finals" scenarios.) 
+                <td>String or Object</td>
+                <td>(<i>Optional</i>) This makes it possible to specify an approach that the aircraft has already been
+                  told to expect by a previous controller. (And so, it is not necessary to issue an "expect approach"
+                  command before clearing an aircraft for an approach.). A single string identifying the approach
+                  may be given if the STAR only serves one airport.  Otherwise, a dictionary from airport names to approaches
+                  may be provided&mdash;for example, <code>"expect_approach": { "KFLL": "I0L", "KOPF": "I12" }</code>.
+                  This setting is especially useful in "finals" scenarios.
                  </td>
               </tr>
               <tr>
