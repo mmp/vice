@@ -769,7 +769,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 	if ac.Callsign == sp.dwellAircraft { // dwell overrides everything as far as brightness
 		dbBrightness = STARSBrightness(100)
 		posBrightness = STARSBrightness(100)
-	} else if forceFDB {
+	} else if forceFDB || state.OutboundHandoffAccepted {
 		dbBrightness = ps.Brightness.FullDatablocks
 		posBrightness = ps.Brightness.Positions
 	} else if dt == PartialDatablock || dt == LimitedDatablock {
