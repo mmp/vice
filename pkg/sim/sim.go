@@ -3033,10 +3033,22 @@ func (ss *State) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*av.Air
 	for {
 		format := "####"
 		if len(dbAirline.Callsign.CallsignFormats) > 0 {
-			format = rand.SampleSlice(dbAirline.Callsign.CallsignFormats)
+			idx := rand.SampleWeighted(dbAirline.Callsign.CallsignFormats,
+				func(f string) int {
+					if _, wt, ok := strings.Cut(f, "x"); ok { // we have a weight
+						if v, err := strconv.Atoi(wt); err == nil {
+							return v
+						}
+					}
+					return 1
+				})
+			if idx != -1 {
+				format = dbAirline.Callsign.CallsignFormats[idx]
+			}
 		}
 
 		id := ""
+	loop:
 		for i, ch := range format {
 			switch ch {
 			case '#':
@@ -3048,6 +3060,8 @@ func (ss *State) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*av.Air
 				}
 			case '@':
 				id += string(rune('A' + rand.Intn(26)))
+			case 'x':
+				break loop
 			}
 		}
 		if _, ok := ss.Aircraft[callsign+id]; ok {
