@@ -658,10 +658,37 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		if trk.SP1 != "" {
 			formatDBText(db.field34[idx34][:], fmt3(trk.SP1)+handoffId, color, false)
 			idx34++
-		} else if arrivalAirport != "" && !state.ClearedScratchpadAlternate {
-			// no scratchpad, so maybe show the airport (adapted)
-			formatDBText(db.field34[idx34][:], fmt3(arrivalAirport)+handoffId, color, false)
-			idx34++
+		} else if !state.ClearedScratchpadAlternate {
+			adapt := ctx.ControlClient.STARSFacilityAdaptation
+			falt := func() string {
+				alt := trk.FlightPlan.FlightPlan.Altitude
+				if adapt.AllowLongScratchpad {
+					return fmt.Sprintf("%03d", alt/100)
+				} else {
+					return fmt.Sprintf("%02d", alt/1000)
+				}
+			}
+			exit := func() string {
+				if trk.FlightPlan.FlightPlan.Exit != "" {
+					return string(trk.FlightPlan.FlightPlan.Exit[0])
+				} else {
+					return ""
+				}
+			}
+			if arrivalAirport != "" {
+				// no scratchpad, so maybe show the airport (adapted)
+				formatDBText(db.field34[idx34][:], fmt3(arrivalAirport)+handoffId, color, false)
+				idx34++
+			} else if adapt.FDB.DisplayExitGate {
+				// TODO: via significant points
+				str := exit() + falt()
+				formatDBText(db.field34[idx34][:], str+handoffId, color, false)
+				idx34++
+			} else if adapt.FDB.DisplayAltExitGate {
+				str := falt() + exit()
+				formatDBText(db.field34[idx34][:], str+handoffId, color, false)
+				idx34++
+			}
 		}
 		if handoffTCP != "" {
 			formatDBText(db.field34[idx34][:], fmt3(handoffTCP)+handoffId, color, false)

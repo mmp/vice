@@ -5203,7 +5203,8 @@ Given the id, the approach can be specified with:</p>
                 <td>"scratchpad"</td>
                 <td>Optional String</td>
                 <td>If specified, this gives the aircraft's initial scratchpad. Otherwise, the scratchpad
-              is set based on the exit, using the "scratchpads" dictionary in the scenario definition.</td>
+                  is set based on the exit, either using the "scratchpads" dictionary in the scenario definition or
+                  via "display_exit_gate" or "display_alternate_exit_gate" in "stars_config".</td>
               </tr>
               <tr>
                 <td>"secondary_scratchpad"</td>
@@ -5880,6 +5881,17 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                     the number "1", "2", or "3". It is used to identify the list when entering STARS commands.</li>
                     <li>"airports": an array of strings giving the airports managed by the list. Any airport with "hold_for_release"
                     set to "true" must be in exactly one coordination list.</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"fdb"</td>
+                <td>Object</td>
+                <td>Allows specifying various adapted configurations for full datablocks.
+                  The following members are available (all are "false" by default):
+                  <ul>
+                    <li>"display_exit_gate": if true, groundspeed is not shown in the PDB.</li>
+                    <li>"display_alternate_exit_gate": if true, groundspeed is not shown in the PDB.</li>
                   </ul>
                 </td>
               </tr>
