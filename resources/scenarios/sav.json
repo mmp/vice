@@ -984,6 +984,11 @@
     "JROSS": "JRO",
     "SMALZ": "SMA"
   },
+  "significant_points": {
+      "GIPPL": { },
+      "JROSS": { },
+      "SMALZ": { }
+  },
   "stars_maps": [
       "RADAR MAP", "MVA ", "CLASS C D AIRSPACE", "LOW AIRWAYS SAV", "COASTLINE", "RNAV Z - 28", "RNAV-10", "RNAV-19", "RNAV - 01"
   ],

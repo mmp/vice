@@ -753,6 +753,9 @@
     "scratchpads": {
       "STEWW": "SCA"
     },
+  "significant_points": {
+      "STEWW": { }
+  },
       "stars_maps": ["S56 107 N Flow Base Map", "S56 109 South Flow Base Map", "S56 141 North Final Lines", "S56 142 South Final Lines",
                      "S56 203 3NM Separation MVA", "S56 119 Emergency Obstacle Map", "S56 147 North Finals Extended", "S56 146 South Finals Extended",
                      "S56 162 North Flow SID Lines", "S56 159 South Flow SID Lines", "S56 160 North Flow SID Waypoint Symbols",

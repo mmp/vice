@@ -1492,6 +1492,21 @@
         "TUS":   "BNY",
         "RRSTA": "ZEP"
     },
+  "significant_points": {
+      "ABQ": { },
+      "BLH": { },
+      "GCN": { },
+      "HRRBR": { },
+      "JARPA": { },
+      "JNIPR": { },
+      "MAXXO": { },
+      "MOHAK": { },
+      "PHASE": { },
+      "RIMMM": { },
+      "RRSTA": { },
+      "TUS": { },
+      "YOOPR": { }
+  },
     "stars_maps": [
         "PHX667 RWY7R_8", "PHX668 RWY2526", "PHX101 CLASS_B", "PHX165 PTACWRD", "PHX307 EOVM", "PHX003 PHX003", "PHX166 E_ARR", "PHX167 W_ARR", "PHX168 E_DEP",
         "PHX169 W_DEP", "PHX170 EFINSAT", "PHX171 WFINSAT", "PHX305 HIGHWAY", "PHX302 ZABSCT", "PHX317 V_AIRWY", "PHX318 J_AIRWY", "PHX315 CITY",

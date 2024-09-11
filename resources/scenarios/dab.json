@@ -811,6 +811,11 @@
     "MALET": "MAL",
     "ROYES": "ROY"
   },
+  "significant_points": {
+      "CRG": { },
+      "MALET": { },
+      "ROYES": { }
+  },
   "stars_maps": [
       "DAB EAST FLOW", "DAB WEST FLOW", "DAB CLASS C", "DAB CLASS D", "DAB MVA", "FIN RNAV APPROACHES", "SATELLITE APPROACHES",
       "RNAV", "SECTOR BOUNDARY"

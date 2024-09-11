@@ -1870,7 +1870,7 @@
         }
     },
     "scratchpads": {
-        "GIDGIT": "GID",
+        "GIDGT": "GID",
         "VERKN": "GID",
         "TUKRR": "GID",
         "JOHKR": "JKR",
@@ -1887,9 +1887,28 @@
         "BOJAC": "RYR",
         "RASLR": "RSL",
         "ZAYNE": "RSL",
-        "RAPTK": "RAT",
         "FRNCK": "RAT"
     },
+        "significant_points": {
+            "BLH": { },
+            "BOJAC": { },
+            "FRNCK": { },
+            "GIDGT": { },
+            "HEC": { },
+            "HOCEE": { },
+            "JAYSN": { },
+            "JOHKR": { },
+            "KENNO": { },
+            "LOHLA": { },
+            "LVELL": { },
+            "NIITZ": { },
+            "RADYR": { },
+            "RASLR": { },
+            "SSKEE": { },
+            "TUKRR": { },
+            "VERKN": { },
+            "ZAYNE": { }
+        },
     "stars_maps": [
         "283 BM3M L30", "005 FUS_MVA L30", "004 CLASSB L30", "282 BM2M L30", "281 BM1M L30", "284 BM4M L30", "283 BM3M L30"
     ],

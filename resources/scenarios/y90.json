@@ -983,6 +983,18 @@
             "CCC": "CCC",
             "THUMB": "THUMB"
         },
+        "significant_points": {
+            "BAF": {  },
+            "CCC": {  },
+            "CTR": {  },
+            "GDM": {  },
+            "GON": {  },
+            "HFD": {  },
+            "MAD": {  },
+            "PVD": {  },
+            "THUMB": {  },
+            "VEERS": {  }
+        },
         "stars_maps": [
             "Y90 RWY 6/33",
             "Y90 SATS FAC",

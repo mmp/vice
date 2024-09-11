@@ -853,6 +853,15 @@
       "MHONY": "MHONY",
       "JJENY": "JJENY"
   },
+  "significant_points": {
+    "BZM": {  },
+    "IRQ": {  },
+    "JJENY": {  },
+    "MHONY": {  },
+    "SOT": {  },
+    "SPA": {  },
+    "VXV": {  }
+  },
   "stars_maps": [
 "AVL CLASS C / SECTORS",
 "AVL SECTORS",

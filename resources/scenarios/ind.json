@@ -1572,6 +1572,23 @@
     "SPI": "TTH",
     "STL": "TTH"
   },
+  "significant_points": {
+      "BDOCK": { },
+      "BRATN": { },
+      "BVT": { },
+      "DAWNN": { },
+      "IIU": { },
+      "MAREO": { },
+      "MEARZ": { },
+      "MYS": { },
+      "MZZ": { },
+      "OOM": {  },
+      "PXV": { },
+      "ROCKY": { },
+      "SPI": { },
+      "STL": { },
+      "WEGEE": { }
+  },
   "stars_maps": [
       "RWY 23s", "RWY 5s", "RWY 14", "RWY 32", "IND 3 NM MVA", "Departures (Fixes Only)", "Class C/D", "CLANG STAR", "GIIBS STAR",
       "JAKKS STAR", "KOLTS STAR", "RACYR STAR", "SMUKE STAR", "SNKPT STAR", "DAWNN SID", "MARIO SID", "MEARZ SID", "ROCKY SID",

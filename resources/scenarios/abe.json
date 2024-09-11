@@ -795,6 +795,14 @@
     "RBV": "RBV",
     "SAX": "SAX"
   },
+  "significant_points": {
+    "ARD": {  },
+    "ETX": {  },
+    "FJC": {  },
+    "PTW": {  },
+    "RBV": {  },
+    "SAX": {  }
+  },
       "stars_maps": [ "ABE-103 (MAP 1)", "ABE-105 (VFR)", "ABE-101 (MAP 5)",
                       "ABE-102 (MVA)", "ABE-106 (EOVM)", "ABE-112 (SAT)",
                       "ABE-113 (RNAV)", "", "", "", "", "", "", "", "", "", "", "", "", "",

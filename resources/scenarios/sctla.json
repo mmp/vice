@@ -2168,6 +2168,18 @@
     "COREZ": "COZ",
     "SCTRR": "SCT"
   },
+  "significant_points": {
+      "AVE": {  },
+      "BEALE": { "short_name": "BEL" },
+      "CLEEE": { },
+      "CNERY": { "short_name": "CNR" },
+      "COREZ": { "short_name": "COZ" },
+      "CSTRO": { "short_name": "CTO" },
+      "EHF": {  },
+      "HAILO": { "short_name": "HAL" },
+      "LAS": {  },
+      "SCTRR": { }
+  },
   "stars_maps": [
       "200S LAAB LW SCT", "261S LAX STARS WEST SCT", "264S WEST NORTH RNAV RNP-RNAV24 SCT", "265S WEST SOUTH RNAV RNP-RNAV25 SCT",
       "466S ARR LAX-ONT SCT", "668S DIRBY STAR SCT", "450S ZLA ASW SCT", "202S LAAB LO SCT", "263S LAX STARS OVER OCEAN SCT",

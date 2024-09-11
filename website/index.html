@@ -5890,8 +5890,14 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Allows specifying various adapted configurations for full datablocks.
                   The following members are available (all are "false" by default):
                   <ul>
-                    <li>"display_exit_gate": if true, groundspeed is not shown in the PDB.</li>
-                    <li>"display_alternate_exit_gate": if true, groundspeed is not shown in the PDB.</li>
+                    <li>"display_exit_gate": if true, the datablock displays a single-character identifier
+                      for the exit gate and then two digits giving the requested altitude in thousands of feet.
+                      The exit gate should be listed in "significant_points"; its "abbreviation" value is used
+                      for the identifier. If four-character scratchpads are adapted, three digits giving the
+                      altitude in hundreds of feet are displayed.</li>
+                    <li>"display_alternate_exit_gate": if true, the datablock displays the requested altitude
+                      followed by a single-character identifier for the exit gate. All other details follow
+                      "display_exit_gate".</li>
                   </ul>
                 </td>
               </tr>
@@ -5984,6 +5990,24 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"scratchpads"</td>
                 <td>Object</td>
                 <td>Each member specifies a scratchpad entry that is assigned when a departing aircraft has a given exit fix.  Example: <code>"MERIT": "MER"</code></td>
+              </tr>
+              <tr>
+                <td>"significant_points"</td>
+                <td>Object</td>
+                <td>Each entry specifies information about a fix that is used in the scenario&mdash;for example, as an exit fix or as an airport.
+                  The following values may be specified as the object's members, though all are optional.
+                  <ul>
+                    <li>"abbreviation": a single-character abbreviation used to refer to the fix. If unspecified, the first
+                      character of "short_name" is used.</li>
+                    <li>"description": a brief text description of the fix.</li>
+                    <li>"location": the latitude-longitude location of the fix. This is normally set automatically based on the fix's name.</li>
+                    <li>"short_name": A three-letter abbreviation for the fix that is used when it is shown as the scratchpad in datablocks.
+                      If not specified, then if the fix's name has four letters and starts with a "K" (i.e., it's an airport),
+                      the last three letters are used. Otherwise the first three letters of the fix's name are used.
+                      No two fixes may have the same short "short_name".
+                      (May only be specified for fixes with more than three characters in their name.)</li>
+                  </ul>
+                </td>
               </tr>
               <tr>
                 <td>"stars_maps"</td>

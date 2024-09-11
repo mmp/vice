@@ -576,6 +576,19 @@
             "EGBER": "EGB",
             "SNY": "SNY"
         },
+        "significant_points": {
+            "BARGR": { "short_name": "BRG" },
+            "BENNE": { },
+            "CYS": { },
+            "DEN": {  },
+            "EGBER": { },
+            "HAMER": { },
+            "MILKY": { "short_name": "MLK" },
+            "POGTE": { "short_name": "PGT" },
+            "SENSE": { "short_name": "SNS" },
+            "SHOOP": { "short_name": "SHP" },
+            "SNY": {  }
+        },
         "stars_maps": [
             "ARSPC__CYS AIRSPACE",
             "CLS D__CYS CLASS DELTA",

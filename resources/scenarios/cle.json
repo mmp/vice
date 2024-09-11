@@ -4444,6 +4444,31 @@
                         "DILNE": "DIL",
                         "CRAKN": "CRK",
                         "MONEE": "MON"
-                    }
+                },
+  "significant_points": {
+      "AIR": {  },
+      "ALPHE": { },
+      "APE": { },
+      "BAGEL": { },
+      "CRAKN": { },
+      "CTW": {  },
+      "DAIFE": { },
+      "DILNE": { },
+      "DORET": { },
+      "DUUKR": { },
+      "EWC": { },
+      "JASEE": { },
+      "MAAJR": { },
+      "MONEE": { },
+      "MYCAR": { },
+      "NUSMM": { },
+      "PATRC": { },
+      "PUUDL": { },
+      "SINKR": { },
+      "SNNOH": { },
+      "WEEVR": { },
+      "YABRO": { },
+      "ZZBEE": { }
+  }
                 }
 }

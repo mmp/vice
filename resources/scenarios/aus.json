@@ -1795,6 +1795,18 @@
                         "CLL": "CLL",
                         "KHYI": ""
                     },
+                        "significant_points": {
+                            "ABI": { },
+                            "AMUSE": { },
+                            "BNDIA": { },
+                            "CLL": {  },
+                            "KHYI": { },
+                            "KLNGR": { },
+                            "MUCKY": { },
+                            "SAYBR": { },
+                            "SJT": { },
+                            "ZENZI": { }
+                        },
                     "stars_maps": [
                         "AUS BASE", "AUS VFR", "AUS CLASS C", "SF FINAL APP COURSE", "NF FINAL APP COURSE", "SOUTH FLOW STAR RESTRICTIONS",
                         "STARS SOUTH FLOW", "NORTH FLOW STAR RESTRICTIONS", "STARS NORTH FLOW", "AUS NTZ", "NORTH FLOW SOUTH APP CLSD",

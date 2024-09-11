@@ -1149,6 +1149,28 @@
     "CXR": "CXR",
     "DONEO": "DONE",
     "DAVVK": "DAVK"
+  },
+  "significant_points": {
+    "AIRCO": {  },
+    "BUF": {  },
+    "CXR": {  },
+    "DAVVK": { },
+    "DJB": {  },
+    "DKK": {  },
+    "DONEO": { },
+    "EHMAN": {  },
+    "EWC": {  },
+    "FKL": {  },
+    "GEE": {  },
+    "JHW": {  },
+    "ROC": {  },
+    "SFK": {  },
+    "SLT": {  },
+    "SYR": {  },
+    "VAIRS": { },
+    "WOZEE": {  },
+    "YNG": {  },
+    "YXU": {  }
   }
   }
 }

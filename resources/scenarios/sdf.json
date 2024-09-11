@@ -1000,6 +1000,12 @@
     "OHAGI": "FED",
     "STREP": "STR"
 },
+  "significant_points": {
+      "APALO": { },
+      "CRRGO": { "short_name": "CRG" },
+      "SHIPR": { },
+      "STREP": { }
+  },
 "stars_maps": [
     "RWY 17s BASE", "RWY 35s BASE", "RWY 29 BASE", "SDF 3 NM MVA", "SDF Class C", "FRIZN STAR", "CHERI STAR", "DAMEN STAR", "DARBY STAR",
     "MAUDD STAR", "RDSTN STAR", "DLAMP STAR", "MBELL STAR", "APALO SID", "CRRGO SID", "FEDRA  SID", "STREP SID", "LOU RNAV 24/33",

@@ -1212,6 +1212,15 @@
     "GREAS": "GRE",
     "SQUIB": "SQU"
   },
+  "significant_points": {
+    "ACCRA": { "short_name": "ACR" },
+    "BRAVE": {  },
+    "DELHI": { },
+    "GREAS": {  },
+    "HAWKN": {  },
+    "SAMPL": { },
+    "SQUIB": {  }
+  },
   "stars_maps": [
       "MKE RWY 1L", "MKE MVA", "MKE RWY 19R", "MKE RWY 7R", "MKE RWY 25L"
   ],

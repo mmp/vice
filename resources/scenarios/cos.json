@@ -885,6 +885,20 @@
             "DVV": "DVV",
             "FQF": "FQF"
         },
+        "significant_points": {
+            "ALS": {  },
+            "BRESH": { "short_name": "BSH" },
+            "BRK": {  },
+            "BYEBI": { },
+            "DRAKE": {  },
+            "DVV": {  },
+            "FQF": {  },
+            "HBU": {  },
+            "JEWLS": {  },
+            "LAA": {  },
+            "LUFSE": {  },
+            "PUB": {  }
+        },
         "stars_maps": [
             "COS NORTH",
             "COS SOUTH",

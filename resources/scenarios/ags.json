@@ -650,6 +650,12 @@
         "NOKIE": "JUNPR",
         "DOVER": "DOVER"
   },
+  "significant_points": {
+    "DOVER": {  },
+    "LAYUH": {  },
+    "NOKIE": { },
+    "SAMMI": {  }
+  },
   "stars_maps": [
 "AGS BASE MAP",
 "MAIN",

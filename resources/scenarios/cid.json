@@ -1256,6 +1256,24 @@
                 "ALO": "ALO" ,
                 "MAPPS": "MAP"
          },
+            "significant_points": {
+                "ALO": {  },
+                "BDF": {  },
+                "BENNR": { },
+                "CID": {  },
+                "DBQ": {  },
+                "DSM": {  },
+                "GBG": {  },
+                "IOW": {  },
+                "KOOOP": { },
+                "MAPPS": { },
+                "MNOSO": { },
+                "OBH": {  },
+                "OVR": {  },
+                "SGF": {  },
+                "TNU": { },
+                "WAVUM": { }
+            },
             "stars_maps": [
                 "CID MVA",
                 "CID VFR",

@@ -1828,6 +1828,30 @@
        "YELAH": "ZMM",
        "WYZEE": "ZMM"
     },
+  "significant_points": {
+      "ARRMY": { },
+      "AVRRY": { },
+      "BEALE": { },
+      "BLAZN": { },
+      "BLCKD": { },
+      "BOILL": { },
+      "CNERY": { },
+      "COREZ": { },
+      "CSTRO": { },
+      "CSTWY": { "short_name": "CWY" },
+      "EHF": { },
+      "IKAYE": { },
+      "MISEN": { },
+      "MTBAL": { },
+      "OROSZ": { },
+      "OTAYY": { },
+      "PEELR": { },
+      "TCATE": { },
+      "WAGAV": { },
+      "WIILD": { },
+      "WYZEE": { },
+      "YELAH": { }
+  },
     "stars_maps": [
         "400S CB LWSS SCT", "460S DEPT SNA S SCT", "461S DEPT SNA N SCT", "462S ARR SNA S SCT", "463S ARR SNA N SCT", "701S FUS 3NM MVA SCT",
         "420S CST FIX SCT", "450S ZLA ASW SCT"

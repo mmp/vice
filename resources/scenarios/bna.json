@@ -2418,6 +2418,33 @@
         "BRXTN": "ROR",
         "TIPPN": "ROR"
       },
+  "significant_points": {
+      "ACKEE": { },
+      "BRXTN": { },
+      "BURME": { },
+      "CHADM": { },
+      "DANLS": { },
+      "DRURY": { },
+      "EVVAN": { },
+      "FAPER": { },
+      "FLAME": { },
+      "GDOGG": { },
+      "GENDE": { },
+      "HAGIE": { },
+      "HGGRD": { },
+      "HODJS": { },
+      "JALAR": { },
+      "JJEFF": { },
+      "KRSTA": { },
+      "NAKIY": { },
+      "OLSIE": { },
+      "PARDN": { },
+      "SPKER": { },
+      "SWAPP": { },
+      "TAZMO": { },
+      "TINGS": { },
+      "TIPPN": { }
+  },
       "stars_maps": [
         "BNA_NORTH FLOW", "BNA_SOUTH FLOW", "BNA_CLASS C", "BNA_EOVM",
         "BNA_EW NORTH SPLIT", "BNA_EW SOUTH SPLIT", "BNA_SID EXIT GATES", "BNA_SID EXIT"

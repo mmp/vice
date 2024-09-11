@@ -1590,6 +1590,21 @@
             "FILLI": "SWP",
             "SWPFX": "SWP"
         },
+  "significant_points": {
+      "ALD": { },
+      "CRE": { },
+      "DBN": { },
+      "FILLI": { },
+      "GIPPL": { },
+      "IRQ": { },
+      "JYMSE": { },
+      "LGRHD": { },
+      "MLTRE": { },
+      "PLMTO": { },
+      "STUNO": { },
+      "SWPFX": { },
+      "VANNC": { }
+  },
         "stars_maps": [
             "CHS SHELF", "CHS NO SHELF", "33_3", "15_21", "CHS MVA 3NM", "STARS_N"
             ,"STARS S", "CHS MVA 5NM", "CHS VICTOR AIRWAYS", "CHS RNAV Y03", "CHS RNAV Y15",

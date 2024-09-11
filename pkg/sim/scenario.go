@@ -74,12 +74,17 @@ type STARSFacilityAdaptation struct {
 	CenterString        string                           `json:"center"`
 	Range               float32                          `json:"range"`
 	Scratchpads         map[string]string                `json:"scratchpads"`
-	VideoMapFile        string                           `json:"video_map_file"`
-	CoordinationFixes   map[string]av.AdaptationFixes    `json:"coordination_fixes"`
-	SingleCharAIDs      map[string]string                `json:"single_char_aids"` // Char to airport
-	BeaconBank          int                              `json:"beacon_bank"`
-	KeepLDB             bool                             `json:"keep_ldb"`
-	PDB                 struct {
+	SignificantPoints   map[string]SignificantPoint      `json:"significant_points"`
+	// Not provided by the user: we initialize this during load time, since
+	// we will generally want to access them via short name.
+	SignificantPointsByShortName map[string]SignificantPoint
+
+	VideoMapFile      string                        `json:"video_map_file"`
+	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`
+	SingleCharAIDs    map[string]string             `json:"single_char_aids"` // Char to airport
+	BeaconBank        int                           `json:"beacon_bank"`
+	KeepLDB           bool                          `json:"keep_ldb"`
+	PDB               struct {
 		ShowScratchpad2  bool `json:"show_scratchpad2"`
 		HideGroundspeed  bool `json:"hide_gs"`
 		ShowAircraftType bool `json:"show_aircraft_type"`
@@ -104,6 +109,14 @@ type CoordinationList struct {
 	Name     string   `json:"name"`
 	Id       string   `json:"id"`
 	Airports []string `json:"airports"`
+}
+
+type SignificantPoint struct {
+	Name         string        // JSON comes in as a map from name to SignificantPoint; we set this.
+	ShortName    string        `json:"short_name"`
+	Abbreviation string        `json:"abbreviation"`
+	Description  string        `json:"description"`
+	Location     math.Point2LL `json:"location"`
 }
 
 type Airspace struct {
@@ -724,9 +737,16 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 			sg.ArrivalGroups = nil
 		}
 	}
+
 	// stars_config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
-	sg.STARSFacilityAdaptation.PostDeserialize(e, sg)
+	if ctr := sg.STARSFacilityAdaptation.CenterString; ctr == "" {
+		e.ErrorString("No \"center\" specified")
+	} else if pos, ok := sg.Locate(ctr); !ok {
+		e.ErrorString("unknown location \"%s\" specified for \"center\"", ctr)
+	} else {
+		sg.STARSFacilityAdaptation.Center = pos
+	}
 
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = 60 * math.Cos(math.Radians(sg.STARSFacilityAdaptation.Center[1]))
@@ -784,6 +804,8 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		e.Pop()
 	}
 
+	sg.STARSFacilityAdaptation.PostDeserialize(e, sg)
+
 	for name, volumes := range sg.Airspace.Volumes {
 		for i, vol := range volumes {
 			e.Push("Airspace volume " + name)
@@ -821,45 +843,8 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		e.Pop()
 	}
 
-	fa := sg.STARSFacilityAdaptation
-	if len(fa.VideoMapNames) == 0 {
-		if len(fa.ControllerConfigs) == 0 {
-			e.ErrorString("must provide one of \"stars_maps\" or \"controller_configs\" in \"stars_config\"")
-			fa.ControllerConfigs = util.CommaKeyExpand(fa.ControllerConfigs)
-		}
-	} else if len(fa.ControllerConfigs) > 0 {
-		e.ErrorString("cannot provide both \"stars_maps\" and \"controller_configs\" in \"stars_config\"")
-	}
-
 	if _, ok := sg.Scenarios[sg.DefaultScenario]; !ok {
 		e.ErrorString("default scenario \"%s\" not found in \"scenarios\"", sg.DefaultScenario)
-	}
-
-	for _, aa := range sg.STARSFacilityAdaptation.AirspaceAwareness {
-		e.Push("stars_adaptation")
-
-		for _, fix := range aa.Fix {
-			if _, ok := sg.Locate(fix); !ok && fix != "ALL" {
-				e.ErrorString(fix + ": fix unknown")
-			}
-		}
-
-		if aa.AltitudeRange[0] > aa.AltitudeRange[1] {
-			e.ErrorString("lower end of \"altitude_range\" %d above upper end %d",
-				aa.AltitudeRange[0], aa.AltitudeRange[1])
-		}
-
-		if _, ok := sg.ControlPositions[aa.ReceivingController]; !ok {
-			e.ErrorString(aa.ReceivingController + ": controller unknown")
-		}
-
-		for _, t := range aa.AircraftType {
-			if t != "J" && t != "T" && t != "P" {
-				e.ErrorString("\"%s\": invalid \"aircraft_type\". Expected \"J\", \"T\", or \"P\".", t)
-			}
-		}
-
-		e.Pop()
 	}
 
 	for callsign, ctrl := range sg.ControlPositions {
@@ -980,14 +965,6 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		e.ErrorString("Must specify either \"controller_configs\" or \"stars_maps\"")
 	}
 
-	if s.CenterString == "" {
-		e.ErrorString("No \"center\" specified")
-	} else if pos, ok := sg.Locate(s.CenterString); !ok {
-		e.ErrorString("unknown location \"%s\" specified for \"center\"", s.CenterString)
-	} else {
-		s.Center = pos
-	}
-
 	if s.Range == 0 {
 		s.Range = 50
 	}
@@ -1065,6 +1042,53 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		e.ErrorString("Cannot specify both \"display_exit_gate\" and \"display_alternate_exit_gate\".")
 	}
 
+	// Significant points
+	e.Push("\"significant_points\"")
+	s.SignificantPointsByShortName = make(map[string]SignificantPoint)
+	for name, sp := range s.SignificantPoints {
+		e.Push(name)
+
+		if len(name) < 3 {
+			e.ErrorString("name must be at least 3 characters")
+		} else {
+			sp.Name = name
+
+			if sp.ShortName != "" && len(name) == 3 {
+				e.ErrorString("\"short_name\" can only be given if name is more than 3 characters.")
+			}
+			// Initialize ShortName and Abbreviation if they weren't
+			// specified so code elsewhere can just assume they are there.
+			if sp.ShortName == "" {
+				if len(name) == 4 && name[0] == 'K' { // airport
+					sp.ShortName = name[1:]
+				} else {
+					sp.ShortName = name[:3]
+				}
+			}
+			if sp.Abbreviation == "" {
+				sp.Abbreviation = sp.ShortName[:1]
+			}
+			if sp.Location.IsZero() {
+				if p, ok := sg.Locate(name); !ok {
+					e.ErrorString("unable to find location of %q", name)
+				} else {
+					sp.Location = p
+				}
+			}
+
+			if oth, ok := s.SignificantPointsByShortName[sp.ShortName]; ok {
+				e.ErrorString("\"short_name\" %q is used by both %q and %q", sp.ShortName, oth.Name, name)
+			}
+			s.SignificantPointsByShortName[sp.ShortName] = sp
+		}
+
+		// Update for any changes we made
+		s.SignificantPoints[name] = sp
+
+		e.Pop()
+	}
+	e.Pop()
+
 	// Hold for release validation
 	for airport, ap := range sg.Airports {
 		var matches []string
@@ -1117,6 +1141,38 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	for id, groups := range seenIds {
 		if len(groups) > 1 {
 			e.ErrorString("Multiple \"coordination_lists\" are using id \"%s\": %s", id, strings.Join(groups, ", "))
+		}
+	}
+
+	if len(s.VideoMapNames) == 0 {
+		if len(s.ControllerConfigs) == 0 {
+			e.ErrorString("must provide one of \"stars_maps\" or \"controller_configs\" in \"stars_config\"")
+			s.ControllerConfigs = util.CommaKeyExpand(s.ControllerConfigs)
+		}
+	} else if len(s.ControllerConfigs) > 0 {
+		e.ErrorString("cannot provide both \"stars_maps\" and \"controller_configs\" in \"stars_config\"")
+	}
+
+	for _, aa := range s.AirspaceAwareness {
+		for _, fix := range aa.Fix {
+			if _, ok := sg.Locate(fix); !ok && fix != "ALL" {
+				e.ErrorString(fix + ": fix unknown")
+			}
+		}
+
+		if aa.AltitudeRange[0] > aa.AltitudeRange[1] {
+			e.ErrorString("lower end of \"altitude_range\" %d above upper end %d",
+				aa.AltitudeRange[0], aa.AltitudeRange[1])
+		}
+
+		if _, ok := sg.ControlPositions[aa.ReceivingController]; !ok {
+			e.ErrorString(aa.ReceivingController + ": controller unknown")
+		}
+
+		for _, t := range aa.AircraftType {
+			if t != "J" && t != "T" && t != "P" {
+				e.ErrorString("\"%s\": invalid \"aircraft_type\". Expected \"J\", \"T\", or \"P\".", t)
+			}
 		}
 	}
 

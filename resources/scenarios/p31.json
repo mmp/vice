@@ -1055,6 +1055,23 @@
         "TCATE": "",
         "VOAXA": ""          
     },
+  "significant_points": {
+    "AEX": { },
+    "BDOCK": { },
+    "BRATT": { },
+    "CEW": { },
+    "COLIN": { },
+    "IPTAY": { },
+    "JAYDI": { },
+    "ORRTH": { },
+    "PENCL": { },
+    "PENSI": { "short_name": "PSI" },
+    "ROMMY": { },
+    "SARGE": { },
+    "SJI": { },
+    "TCATE": { },
+    "VOAXA": { }
+  },
     "stars_maps": [
         "NEW NPA 25 MAP",
         "PNS MVA",

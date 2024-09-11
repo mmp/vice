@@ -1218,6 +1218,24 @@
         "BAKEL": "BAK"
 
     },
+  "significant_points": {
+      "BAKEL": { },
+      "CENZA": { },
+      "CHKNN": { },
+      "DINTY": { },
+      "EHF": {  },
+      "IKAYE": { },
+      "IPL": {  },
+      "JLI": {  },
+      "LAX": {  },
+      "MALIT": { },
+      "MTBAL": { },
+      "OCN": {  },
+      "OROSZ": { },
+      "SLI": {  },
+      "SXC": {  },
+      "TANNR": { }
+  },
     "stars_maps": [
         "540S SAN W SCT", "SAN Cab", "541S SAN E SCT", "723S B-C A-S SCT", "722S D-E A-S SCT", "701S FUS 3NM MVA SCT", "500S SB WEST SCT",
         "563S SAN 1 SCT", "564S SAN 2 SCT", "542S SAN 9-27 SCT"

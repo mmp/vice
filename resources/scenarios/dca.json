@@ -1981,6 +1981,21 @@
     "SWANN": "SOK",
     "RAMAY": "RAM"
   },
+  "significant_points": {
+    "AGARD": { },
+    "BUFFR": { "short_name": "BFR" },
+    "DQO": {  },
+    "FLASK": { },
+    "GLANC": { },
+    "JERES": { },
+    "MAULS": { },
+    "MELTN": { },
+    "OTTTO": { "short_name": "OTO" },
+    "RAMAY": {  },
+    "RRSIN": { },
+    "SCOOB": { },
+    "SWANN": { }
+  },
   "stars_maps": [
       "MTV North", "MTV South", "MTV ADWN", "ADW South", "PCT Coastlines", "MTV River", "PCT SFRA", "PCT MVA", "MTV DCA NSTAR",
       "MTV DCA SSTAR", "PCT ClassB", "MTV DCA NSID", "MTV DCA SSID", "MTV ADW STAR", "MTV ADW SID", "MTV BWI STAR", "MTV CGS RNAV",

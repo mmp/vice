@@ -1936,7 +1936,13 @@
     "COLIN": "RCO",
     "MAYES": "RMA",
     "NOBLE": "RNO",
-    "SHAWN": "RSH"
+      "SHAWN": "RSH"
+  },
+  "significant_points": {
+    "COLIN": { "short_name": "RCO" },
+    "MAYES": { "short_name": "RMA" },
+    "NOBLE": { "short_name": "RNO" },
+    "SHAWN": { "short_name": "RSH" }
   },
   "stars_maps": [
       "BASE", "MVA" 

@@ -636,6 +636,16 @@
         "HRS": "HRS",
         "GQO": "GQO"
   },
+  "significant_points": {
+    "ACERB": {  },
+    "DGESS": {  },
+    "DRIVN": {  },
+    "GQO": {  },
+    "HRS": {  },
+    "JLENA": {  },
+    "SOTHH": {  },
+    "SPA": {  }
+  },
   "stars_maps": [
       "GSP MINIMUM VECTORING ALTITUDE", "COUNTY JURISDICTIONS", "RNAV APPROACHES (AND17, 18A26, EOE04, EOE22, EHO05, AVL35)",
       "SIDS/STARS/EXTENDED FINAL APPROACH COURSES", "RNAV APPROACHES (FQD01, SPA05, 35A05, LUX08, GRD09, GMU01, GMU10, GYH05, LQK05, AND05, CEU07)",

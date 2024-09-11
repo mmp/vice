@@ -2644,6 +2644,26 @@
                         "SMIAM": "KRI",
                         "CLAWD": "WEA"
                     },
+                        "significant_points": {
+                            "AUDII": { },
+                            "BNA": { },
+                            "CLAWD": { },
+                            "CUBIM": { },
+                            "DOOGE": { },
+                            "FILDS": { },
+                            "GANDT": { },
+                            "IPTAY": { },
+                            "JENDO": { },
+                            "LILLS": { },
+                            "NOOKS": { "short_name": "NKS" },
+                            "NOOMN": { },
+                            "NUTZE": { },
+                            "PITRW": { },
+                            "RDU": { },
+                            "SMIAM": { },
+                            "TNSLY": { },
+                            "TYI": { }
+                        },
                     "stars_maps": [
                         "CLT NORTH", "CLT SOUTH", "ARRIVAL RADAR NORTH", "ARRIVAL RADAR SOUTH", "CLT TRACON EXTERNAL BOUNDARY", "CLT MINIMUM VECTORING ALTITUDE",
                         "CLT CLASS B", "CLT AIRPORT RNAV (GPS) APPROACHES", "DEPARTURE RADAR NORTH", "DEPARTURE RADAR SOUTH", "SATELLITE RADAR NORTH",

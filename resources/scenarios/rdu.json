@@ -1984,6 +1984,21 @@
             "ROZBO": "ROZ",
             "SHPRD": "SHP"
         },
+        "significant_points": {
+            "BEXGO": { },
+            "BOUSY": { },
+            "CARML": { },
+            "DANCO": { },
+            "DAWTS": { },
+            "DBRAH": { },
+            "FEBEL": { },
+            "HOOKZ": { },
+            "HURIC": { },
+            "LWOOD": { },
+            "OXFRD": { },
+            "ROZBO": { },
+            "SHPRD": { }
+        },
         "stars_maps": [
             "RDU NE RVM", "RDU SW RVM", "RDU MVA"
         ],

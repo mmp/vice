@@ -438,11 +438,19 @@
         },
         "scratchpads": {
             "RLG": "RLG",
-			"RIL": "RIL",
+	    "RIL": "RIL",
             "JNC": "JNC",
             "EKR": "EKR",
             "DBL": "DBL",
-			"LINDZ": "LIN"
+	    "LINDZ": "LIN"
+        },
+        "significant_points": {
+            "DBL": {  },
+            "EKR": {  },
+            "JNC": {  },
+            "LINDZ": { },
+            "RIL": {  },
+            "RLG": {  }
         },
         "stars_maps": [
             "ASE BASE",

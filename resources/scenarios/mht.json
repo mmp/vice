@@ -1108,6 +1108,20 @@
             "STEVO": "PSM",
             "PEASE": "PSM"
         },
+        "significant_points": {
+            "BAF": { },
+            "CAM": {  },
+            "CCC": { },
+            "CLOWW": { },
+            "CON": { },
+            "ENE": {  },
+            "HANNA": { },
+            "MANCH": { },
+            "NELIE": { },
+            "PEASE": { },
+            "STEVO": { },
+            "WEEZE": { }
+        },
         "stars_maps": [
            "A90 MVA", "B, C, D, AIRSPACE", "A90 SAT FINALS", "A90 COASTLINE",
            "A90 EOVM", "MHT MAIN", "MHT RWY 6 ROZZE STAR", "MHT RWY 17 ROZZE STAR",

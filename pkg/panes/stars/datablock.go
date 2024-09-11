@@ -661,7 +661,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		} else if !state.ClearedScratchpadAlternate {
 			adapt := ctx.ControlClient.STARSFacilityAdaptation
 			falt := func() string {
-				alt := trk.FlightPlan.FlightPlan.Altitude
+				alt := ac.FlightPlan.Altitude
 				if adapt.AllowLongScratchpad {
 					return fmt.Sprintf("%03d", alt/100)
 				} else {
@@ -669,8 +669,11 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 				}
 			}
 			exit := func() string {
-				if trk.FlightPlan.FlightPlan.Exit != "" {
-					return string(trk.FlightPlan.FlightPlan.Exit[0])
+				if e := trk.FlightPlan.FlightPlan.Exit; e != "" {
+					if sp, ok := adapt.SignificantPoints[e]; ok {
+						return sp.Abbreviation
+					}
+					return string(e[0])
 				} else {
 					return ""
 				}

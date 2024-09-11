@@ -1345,6 +1345,18 @@
           "GRB": "GRB",
           "ODI": "ODI"
         },
+        "significant_points": {
+            "ABR": {  },
+            "ALO": { },
+            "DLL": {  },
+            "FAR": {  },
+            "GRB": {  },
+            "LEINY": { },
+            "ODI": {  },
+            "ONTIJ": { },
+            "RXANN": { },
+            "SMERF": { }
+        },
         "stars_maps": [
             "M98 219 12 A", "M98 220 12 D", "M98 224 12-17 A", "M98 226 12-17 D", "M98 216 30 A", "M98 217 30 D", "M98 250 30-35 A", "M98 249 30-35 D", "M98 247 30-17 A", "M98 246 30-17 D", "M98 152 12INTER", "M98 151 30INTER", "M98 313 RNAV 12", "M98 331 RNAV 30", "M98 157 SID", "M98 110 FIXES", "M98 ZMPEVNT", "M98 105 BRAV0", "M98 153 MVA", "M98 113 R0ADS"
 

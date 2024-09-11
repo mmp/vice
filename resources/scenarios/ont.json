@@ -1587,6 +1587,24 @@
         "NIKKL": "NIK",
         "SXC": "DTY"
     },
+  "significant_points": {
+      "AVRRY": { },
+      "BEALE": { },
+      "CIVET": { },
+      "COREZ": { },
+      "DINTY": { },
+      "LAS": { },
+      "NIKKL": { },
+      "OTAYY": { },
+      "PDZ": {  },
+      "PMD": { },
+      "POM": {  },
+      "RAVON": { },
+      "RRIZE": { },
+      "SXC": { },
+      "TIFNI": { },
+    "TNP": {  }
+  },
     "inhibit_ca_volumes": [
         {
             "name": "ONT CONFLICT COMPRESS",

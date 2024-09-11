@@ -1519,6 +1519,21 @@
         "AGARD": "AGARD",
         "PSB": "ALL"
       },
+  "significant_points": {
+      "AGARD": {  },
+      "AHTIY": { },
+      "AIR": {  },
+      "BSV": {  },
+      "CKB": {  },
+      "DILNE": { },
+      "EWC": {  },
+      "HAR": {  },
+      "JST": {  },
+      "MGW": {  },
+      "PARKE": { },
+      "PSB": { },
+      "TYROO": { }
+  },
     "stars_maps": [ "PIT-001 (WEST FLOW)",  "PIT-002 (EAST FLOW)",  "PIT-003 (MVA)",  "PIT-005 (VFR)",  "PIT-006 (RNAV APPROACHES)",
                     "PIT-009 (CLASS B)",  "PIT-010 (LIFEFLIGHT APPROACHES)",  "PIT-013 (ADJACENT APPROACHES)",  "PIT-129 (DEMME)",
                     "PIT-131 (FEWGA)",  "PIT-133 (HAYNZ)",  "PIT-135 (JESEY)"

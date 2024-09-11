@@ -1668,6 +1668,19 @@
         "SLI": "SLI",
         "GMN": "GMN"
     },
+  "significant_points": {
+      "BLH": {  },
+      "COREZ": { },
+      "CSTRO": { },
+      "DAG": {  },
+      "GMN": {  },
+      "HAILO": { },
+      "HEC": {  },
+      "LAS": {  },
+      "LAX": {  },
+      "MISEN": { },
+      "SLI": {  }
+  },
     "stars_maps": [
         "100S BURB LW SCT", "101S BURB LE SCT", "101S BURB LE SCT", "005 FUS_MVA L30", "023S T B A-S SCT", "022S T C A-S SCT", "027S T D A-S SCT",
         "701S FUS 3NM MVA SCT", "121S BUR GPS SCT", "024S RWY NW SCT", "711S EOVM SCT"

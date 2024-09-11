@@ -4186,6 +4186,28 @@
             "SLLAP": "SLL",
             "CLVIN": "CLV"
         },
+        "significant_points": {
+            "BGHRT": {  },
+            "BROKK": {  },
+            "CLVIN": {  },
+            "DUNKS": {  },
+            "ESSBE": {  },
+            "GNZOE": {  },
+            "GRIVY": {  },
+            "KAYLN": {  },
+            "LNCON": {  },
+            "MONEE": {  },
+            "MRDOC": {  },
+            "SINKR": {  },
+            "SLLAP": {  },
+            "SMUUV": {  },
+            "SNDRS": {  },
+            "STAZE": {  },
+            "TORRR": {  },
+            "WINNZ": {  },
+            "ZEGBI": {  },
+            "ZETTR": {  }
+        },
         "stars_maps": [
             "DTW-023 (SAT APCH)", "DTW-007 (SF-ARR FEEDER)", "DTW-008 (SF-DEP SAT)", "DTW-009 (NF-ARR FEEDER)", "DTW-011 (WF-ARR FEEDER)", "DTW-012 (WF-DEP SAT)", 
             "DTW-013 (22R Z)", "DTW-014 (4L Z)", "DTW-015 (22L)", "DTW-016 (4R)", "DTW-017 (21L)", "DTW-018 (3R)", "DTW-019 (27R)", 

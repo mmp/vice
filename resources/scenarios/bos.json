@@ -8159,6 +8159,24 @@
     "ENE": "ENE",
     "BOSOX": "BOX"
    },
+  "significant_points": {
+    "BLZZR": { "short_name": "BLZ" },
+    "BOSOX": { "short_name": "BOX" },
+    "BRUWN": { "short_name": "BRU" },
+    "CELTK": { "short_name": "FRI" },
+    "CON": {  },
+    "DUNKK": { "short_name": "DUN" },
+    "ENE": {  },
+    "HYLND": { "short_name": "LUR" },
+    "LBSTA": { "short_name": "LBS" },
+    "LFV": {  },
+    "MANCH": { "short_name": "MHT" },
+    "PATSS": { "short_name": "PAT" },
+    "PEASE": { "short_name": "PSM" },
+    "PVC": {  },
+    "REVSS": { "short_name": "REV" },
+    "SSOXS": { "short_name": "SSO" }
+  },
    "stars_maps": [
     "BOS A90 MAIN", "A90 SAT FINALS", "BOS 4R/L", "BOS 4R/15R", "BOS 15R", "BOS 15R/9", "BOS 22L", "BOS 27",
     "BOS 27/22", "BOS 27/32", "BOS 33L/32", "BOS 33L", "B, C, D, AIRSPACE", "A90 BASE", "A90 MVA",

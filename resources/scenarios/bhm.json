@@ -1067,6 +1067,26 @@
       "VUZ": "VUZ",
       "MEM": "MEM"
   },
+  "significant_points": {
+      "ATL": {  "location": "KATL" },
+    "BNA": {  },
+    "CHEHA": {  },
+    "DAYVS": {  },
+    "GAD": {  },
+    "GQO": {  },
+    "GUMMP": {  },
+    "IGB": {  },
+    "JOEYE": {  },
+    "KELCC": {  },
+    "LGC": {  },
+    "MEI": {  },
+    "MEM": {  },
+    "MGM": {  },
+    "MRICA": {  },
+    "OKW": {  },
+    "RHETT": {  },
+    "VUZ": {  }
+  },
   "stars_maps": [
       "BHM MAIN", "BHM CLASS C", "BHM EMERGENCY", "BHM RNAV RUNWAY 06/24 APPROACH", "BHM/TCL ANNEX", "BHM MINIMUM VECTORING ALTITUDE",
       "BHM IFR MILITARY TRAINING ROUTES", "BHM EMERGENCY OBSTRUCTION VIDEO MAP", "BHM INTERSECTIONS", "BHM STADIUMS", "BHM RNAV RUNWAY 18/36 APPROACHES",

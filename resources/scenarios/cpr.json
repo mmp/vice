@@ -434,6 +434,12 @@
             "KURSE": "KUR",
             "LHO": "LHO"
         },
+        "significant_points": {
+            "CUSGA": {  },
+            "HIPEE": { },
+            "KURSE": {  },
+            "LHO": {  }
+        },
         "stars_maps": [
             "CPR BASE",
             "CPR MVA",
