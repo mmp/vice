@@ -468,22 +468,23 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 	// Update low altitude alerts now that we have updated tracks
 	sp.updateMSAWs(ctx)
 
+	aircraft := sp.visibleAircraft(ctx)
+	sort.Slice(aircraft, func(i, j int) bool {
+		return aircraft[i].Callsign < aircraft[j].Callsign
+	})
+
 	// History tracks are updated after a radar track update, only if
 	// H_RATE seconds have elapsed (4-94).
 	ps := sp.currentPrefs()
 	if now.Sub(sp.lastHistoryTrackUpdate).Seconds() >= float64(ps.RadarTrackHistoryRate) {
 		sp.lastHistoryTrackUpdate = now
-		for _, state := range sp.Aircraft {
+		for _, ac := range aircraft { // We only get radar tracks for visible aircraft
+			state := sp.Aircraft[ac.Callsign]
 			idx := state.historyTracksIndex % len(state.historyTracks)
 			state.historyTracks[idx] = state.track
 			state.historyTracksIndex++
 		}
 	}
-
-	aircraft := sp.visibleAircraft(ctx)
-	sort.Slice(aircraft, func(i, j int) bool {
-		return aircraft[i].Callsign < aircraft[j].Callsign
-	})
 
 	sp.updateCAAircraft(ctx, aircraft)
 	sp.updateInTrailDistance(ctx, aircraft)
