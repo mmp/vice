@@ -1613,28 +1613,14 @@ how it simulates aircraft or the STARS interface.
               of N90; finally, the <code>P</code> is the Yardley sector of the Newark area.</p>
 
             <p>Other controllers, both real and virtual, may be signed in when you're running a <i>vice</i> scenario.
-              The list of controllers is shown in the <i>sign-on list</i>, which is by default on the upper right side of the STARS display.
-              The the sign-on list for a Philadelphia TRACON scenario is shown below. 
-              The position you are covering is always shown at the top of the sign-on list (here, PHL_NA_APP) and the rest are
-              listed alphabetically.
-              Human controllers are shown with an asterisk to the right of their callsign.
+              The list of controllers is available in the "Controllers" drop-down in the scenario information window.
+              Among other useful information, it shows the TCP identifier associated with each controller
+              and whether the controller is human.
               </p>
             <div class="text-center">
-              <img src="controller-list.png" srcset="controller-list-2x.png 2x" width="183" height="131">
-            </div>
-            <br>
-            <p>Controllers are shown in the sign-on list with an identifier and their radio callsign. This identifier may take one of a few forms:</p>
-              <ul>
-                <li>Identifiers for positions within the current facility are shown as
-                  a two character TCP without the facility identifier.
-                  Here, we have PHL_NA_APP with TCP 6N and PHL_TWR with TCP 6A.</li>
-                <li>The identifiers for enroute positions (i.e., center controllers), start with a letter identifying
-                  their ARTCC followed by a number.
-                  Here, W32 identifies a Washington center position and N26 a New York center position.</li>
-                <li>Positions at adjacent TRACONs are listed with an upwards-pointing triangle △, followed by their
-                  full three-character TCP. Here, we can see for example that RDG_APP
-                  is at facility 7, area R, and sector X.</li>
-                </ul>
+              <img src="controller-list.png" srcset="controller-list-2x.png 2x" width="273" height="512">
+            </div><br>
+
           </section>
 
 	  <section class="docs-section" id="stars-command-entry">
