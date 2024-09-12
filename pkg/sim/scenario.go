@@ -91,6 +91,8 @@ type STARSFacilityAdaptation struct {
 		SplitGSAndCWT    bool `json:"split_gs_and_cwt"`
 	} `json:"pdb"`
 	FDB struct {
+		DisplayExitFix     bool `json:"display_exit_fix"`
+		DisplayExitFix1    bool `json:"display_exit_fix_1"`
 		DisplayExitGate    bool `json:"display_exit_gate"`
 		DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
 	} `json:"fdb"`
@@ -836,7 +838,8 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + name)
 		adapt := sg.STARSFacilityAdaptation
-		requireExitScratchpads := !adapt.FDB.DisplayExitGate && !adapt.FDB.DisplayAltExitGate
+		requireExitScratchpads := !adapt.FDB.DisplayExitFix && !adapt.FDB.DisplayExitFix1 &&
+			!adapt.FDB.DisplayExitGate && !adapt.FDB.DisplayAltExitGate
 		ap.PostDeserialize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
 			sg.ControlPositions, sg.STARSFacilityAdaptation.Scratchpads, requireExitScratchpads,
 			sg.Airports, e)
@@ -1038,8 +1041,23 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		e.ErrorString("Both \"split_gs_and_cwt\" and \"hide_gs\" cannot be specified for \"pdb\" adaption.")
 	}
 
-	if s.FDB.DisplayExitGate && s.FDB.DisplayAltExitGate {
-		e.ErrorString("Cannot specify both \"display_exit_gate\" and \"display_alternate_exit_gate\".")
+	disp := make(map[string]interface{})
+	if s.FDB.DisplayExitFix {
+		disp["display_exit_fix"] = nil
+	}
+	if s.FDB.DisplayExitFix1 {
+		disp["display_exit_fix_1"] = nil
+	}
+	if s.FDB.DisplayExitGate {
+		disp["display_exit_gate"] = nil
+	}
+	if s.FDB.DisplayAltExitGate {
+		disp["display_alternate_exit_gate"] = nil
+	}
+	if len(disp) > 1 {
+		d := util.SortedMapKeys(disp)
+		d = util.MapSlice(d, func(s string) string { return `"` + s + `"` })
+		e.ErrorString("Cannot specify " + strings.Join(d, " and "))
 	}
 
 	// Significant points

@@ -5890,6 +5890,12 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Allows specifying various adapted configurations for full datablocks.
                   The following members are available (all are "false" by default):
                   <ul>
+                    <li>"display_exit_fix": if true, the datablock displays a three-character identifier
+                      for the exit fix where the identifier is found from the "short_name" entry for the
+                      fix in "significant_points".</li>
+                    <li>"display_exit_fix1": if true, the datablock displays a one-character identifier
+                      for the exit fix where the identifier is found from the "abbreviation" entry for the
+                      fix in "significant_points".</li>
                     <li>"display_exit_gate": if true, the datablock displays a single-character identifier
                       for the exit gate and then two digits giving the requested altitude in thousands of feet.
                       The exit gate should be listed in "significant_points"; its "abbreviation" value is used
