@@ -115,7 +115,7 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 		}
 		for _, ac := range a.Aircraft() {
 			if !inFleet(ac.ICAO) {
-				e.ErrorString("aircraft type \"%s\" is not in the \"%s\" fleet", ac.ICAO, a.ICAO)
+				e.ErrorString("aircraft type %q is not in the %q fleet", ac.ICAO, a.ICAO)
 			}
 		}
 	}
@@ -636,7 +636,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		spawnT := float32(0)
 		if ok {
 			if st, err := strconv.ParseFloat(spawnTString, 32); err != nil {
-				e.ErrorString("error parsing spawn offset \"%s\": %s", spawnTString, err)
+				e.ErrorString("error parsing spawn offset %q: %s", spawnTString, err)
 			} else {
 				spawnT = float32(st)
 			}
@@ -645,13 +645,13 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		for icao := range ar.Airlines {
 			airport, ok := DB.Airports[icao]
 			if !ok {
-				e.ErrorString("airport \"%s\" not found in database", icao)
+				e.ErrorString("airport %q not found in database", icao)
 				continue
 			}
 
 			star, ok := airport.STARs[ar.STAR]
 			if !ok {
-				e.ErrorString("STAR \"%s\" not available for %s. Options: %s",
+				e.ErrorString("STAR %q not available for %s. Options: %s",
 					ar.STAR, icao, strings.Join(util.SortedMapKeys(airport.STARs), ", "))
 				continue
 			}
@@ -663,7 +663,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 					wps := star.Transitions[tr]
 					if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == spawnPoint }); idx != -1 {
 						if idx == len(wps)-1 {
-							e.ErrorString("Only have one waypoint on STAR: \"%s\". 2 or more are necessary for navigation",
+							e.ErrorString("Only have one waypoint on STAR: %q. 2 or more are necessary for navigation",
 								wps[idx].Fix)
 						}
 
@@ -745,7 +745,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				e.Push("Runway " + rwy)
 
 				if _, ok := LookupRunway(ap, rwy); !ok {
-					e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, DB.Airports[ap].ValidRunways())
+					e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[ap].ValidRunways())
 				}
 
 				initializeWaypointLocations(wp, loc, nmPerLongitude, magneticVariation, e)
@@ -786,13 +786,13 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		for _, al := range airlines {
 			al.Check(e)
 			if _, ok := DB.Airports[al.Airport]; !ok {
-				e.ErrorString("departure airport \"airport\" \"%s\" unknown", al.Airport)
+				e.ErrorString("departure airport \"airport\" %q unknown", al.Airport)
 			}
 		}
 
 		_, ok := airports[arrivalAirport]
 		if !ok {
-			e.ErrorString("arrival airport \"%s\" unknown", arrivalAirport)
+			e.ErrorString("arrival airport %q unknown", arrivalAirport)
 		}
 
 		e.Pop()
@@ -835,7 +835,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		for _, wp := range ar.Waypoints {
 			if wp.AltitudeRestriction != nil &&
 				wp.AltitudeRestriction.TargetAltitude(ar.InitialAltitude) > ar.InitialAltitude {
-				e.ErrorString("\"initial_altitude\" is below altitude restriction at \"%s\"", wp.Fix)
+				e.ErrorString("\"initial_altitude\" is below altitude restriction at %q", wp.Fix)
 			}
 		}
 	}
@@ -847,7 +847,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	if ar.InitialController == "" {
 		e.ErrorString("\"initial_controller\" missing")
 	} else if _, ok := controlPositions[ar.InitialController]; !ok {
-		e.ErrorString("controller \"%s\" not found for \"initial_controller\"", ar.InitialController)
+		e.ErrorString("controller %q not found for \"initial_controller\"", ar.InitialController)
 	}
 
 	for _, controller := range controlPositions {
@@ -932,7 +932,7 @@ func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, referenced
 	for name := range referenced {
 		if name != "" {
 			if _, ok := manifest[name]; !ok {
-				e.Error(fmt.Errorf("%s: video map \"%s\" in \"stars_maps\" not found", filename, name))
+				e.Error(fmt.Errorf("%s: video map %q in \"stars_maps\" not found", filename, name))
 			}
 		}
 	}
@@ -979,7 +979,7 @@ func (v videoMapToLoad) load(filename string, manifest map[string]interface{}) (
 	for _, sm := range maps {
 		if _, ok := v.referenced[sm.Name]; ok || len(v.referenced) == 0 /* empty -> load all */ {
 			if _, ok := manifest[sm.Name]; !ok {
-				panic(fmt.Sprintf("%s: map \"%s\" not found in manifest file", filename, sm.Name))
+				panic(fmt.Sprintf("%s: map %q not found in manifest file", filename, sm.Name))
 			}
 
 			ld := renderer.GetLinesDrawBuilder()
@@ -1004,7 +1004,7 @@ func (v videoMapToLoad) load(filename string, manifest map[string]interface{}) (
 func (ml *VideoMapLibrary) GetMap(filename, mapname string) (*VideoMap, error) {
 	if _, ok := ml.maps[filename]; !ok {
 		if vload, ok := ml.toLoad[filename]; !ok {
-			return nil, fmt.Errorf("%s: video map \"%s\" requested from file that isn't being loaded",
+			return nil, fmt.Errorf("%s: video map %q requested from file that isn't being loaded",
 				filename, mapname)
 		} else {
 			var err error
@@ -1016,7 +1016,7 @@ func (ml *VideoMapLibrary) GetMap(filename, mapname string) (*VideoMap, error) {
 		}
 	}
 	if m, ok := ml.maps[filename][mapname]; !ok {
-		return nil, fmt.Errorf("%s: no video map \"%s\"", filename, mapname)
+		return nil, fmt.Errorf("%s: no video map %q", filename, mapname)
 	} else {
 		return m, nil
 	}

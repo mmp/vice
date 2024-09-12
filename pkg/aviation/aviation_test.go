@@ -61,7 +61,7 @@ func TestParseAltitudeRestriction(t *testing.T) {
 			t.Errorf("%s: got range %v, expected %v", test.s, ar, test.ar)
 		}
 		if enc := ar.Encoded(); enc != test.s {
-			t.Errorf("encoding mismatch: got \"%s\", expected \"%s\"", enc, test.s)
+			t.Errorf("encoding mismatch: got %q, expected %q", enc, test.s)
 		}
 	}
 }

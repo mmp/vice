@@ -247,7 +247,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 				if fix := comp.FixForRouteAndAltitude(fp.Route, fp.Altitude); fix != nil {
 					fp.CoordinationFix = fix.Name
 				} else {
-					lg.Warnf("Coordination fix not found for route \"%s\", altitude \"%s",
+					lg.Warnf("Coordination fix not found for route %q, altitude \"%s",
 						fp.Route, fp.Altitude)
 					continue
 				}
@@ -291,7 +291,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 			for name, fixes := range comp.Adaptation.CoordinationFixes {
 				alt := comp.TrackInformation[msg.Identifier].FlightPlan.Altitude
 				if fix, err := fixes.Fix(alt); err != nil {
-					lg.Warnf("Couldn't find adaptation fix: %v. Altitude \"%s\", Fixes %+v",
+					lg.Warnf("Couldn't find adaptation fix: %v. Altitude %q, Fixes %+v",
 						err, alt, fixes)
 				} else {
 					if name == msg.CoordinationFix && fix.ToFacility != comp.Identifier { // Forward

@@ -246,7 +246,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	magneticVariation float32, controlPositions map[string]*Controller, scratchpads map[string]string,
 	requireExitScratchpads bool, facilityAirports map[string]*Airport, e *util.ErrorLogger) {
 	if info, ok := DB.Airports[icao]; !ok {
-		e.ErrorString("airport \"%s\" not found in airport database", icao)
+		e.ErrorString("airport %q not found in airport database", icao)
 	} else {
 		ap.Location = info.Location
 	}
@@ -264,7 +264,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 		if appr.Id != "" {
 			if wps, ok := DB.Airports[icao].Approaches[appr.Id]; !ok {
-				e.ErrorString("Approach \"%s\" not in database. Options: %s", appr.Id,
+				e.ErrorString("Approach %q not in database. Options: %s", appr.Id,
 					strings.Join(util.SortedMapKeys(DB.Airports[icao].Approaches), ", "))
 				e.Pop()
 				continue
@@ -282,7 +282,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 					}
 				}
 				if len(appr.Runway) == 0 {
-					e.ErrorString("unable to convert approach id \"%s\" to runway", appr.Id)
+					e.ErrorString("unable to convert approach id %q to runway", appr.Id)
 				}
 
 				// This is a little hacky, but we'll duplicate the waypoint
@@ -300,7 +300,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 		rwy, ok := LookupRunway(icao, appr.Runway)
 		if !ok {
-			e.ErrorString("\"runway\" \"%s\" is unknown. Options: %s", appr.Runway,
+			e.ErrorString("\"runway\" %q is unknown. Options: %s", appr.Runway,
 				DB.Airports[icao].ValidRunways())
 		}
 
@@ -370,7 +370,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	}
 
 	if _, ok := controlPositions[ap.DepartureController]; !ok && ap.DepartureController != "" {
-		e.ErrorString("departure_controller \"%s\" unknown", ap.DepartureController)
+		e.ErrorString("departure_controller %q unknown", ap.DepartureController)
 	}
 
 	// Departure routes are specified in the JSON as comma-separated lists
@@ -438,7 +438,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				if route.HandoffController == "" {
 					e.ErrorString("no \"handoff_controller\" specified even though airport has a \"departure_controller\"")
 				} else if _, ok := controlPositions[route.HandoffController]; !ok {
-					e.ErrorString("control position \"%s\" unknown in scenario", route.HandoffController)
+					e.ErrorString("control position %q unknown in scenario", route.HandoffController)
 				}
 			} else if route.HandoffController != "" {
 				e.ErrorString("\"handoff_controller\" specified but won't be used since airport has no \"departure_controller\"")
@@ -472,7 +472,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 
 		if _, ok := DB.Airports[dep.Destination]; !ok {
-			e.ErrorString("destination airport \"%s\" unknown", dep.Destination)
+			e.ErrorString("destination airport %q unknown", dep.Destination)
 		}
 
 		if len(dep.Airlines) == 0 {
@@ -482,7 +482,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		// Make sure that all runways have a route to the exit
 		for rwy := range ap.DepartureRoutes {
 			if _, ok := LookupRunway(icao, rwy); !ok {
-				e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
+				e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
 			}
 		}
 
@@ -543,7 +543,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		def.Runway = rwy
 
 		if _, ok := LookupRunway(icao, rwy); !ok {
-			e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy,
+			e.ErrorString("runway %q is unknown. Options: %s", rwy,
 				DB.Airports[icao].ValidRunways())
 		}
 
@@ -560,7 +560,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 		for _, rwy := range pair.Runways {
 			if _, ok := LookupRunway(icao, rwy); !ok {
-				e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
+				e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
 			}
 		}
 
@@ -624,7 +624,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		vol.Id = icao + rwy
 
 		if _, ok := LookupRunway(icao, rwy); !ok {
-			e.ErrorString("runway \"%s\" is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
+			e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
 		}
 
 		if vol.Threshold.IsZero() { // the location is set directly for default volumes
@@ -633,7 +633,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			} else {
 				var ok bool
 				if vol.Threshold, ok = loc.Locate(vol.ThresholdString); !ok {
-					e.ErrorString("\"%s\" unknown for \"runway_threshold\".", vol.ThresholdString)
+					e.ErrorString("%q unknown for \"runway_threshold\".", vol.ThresholdString)
 				}
 			}
 		}

@@ -271,7 +271,7 @@ func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*
 		if wp.PointOut != "" {
 			if !util.MapContains(controllers,
 				func(callsign string, ctrl *Controller) bool { return ctrl.SectorId == wp.PointOut }) {
-				e.ErrorString("No controller found with TCP id \"%s\" for point out", wp.PointOut)
+				e.ErrorString("No controller found with TCP id %q for point out", wp.PointOut)
 			}
 		}
 		e.Pop()
@@ -386,7 +386,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 	entries := strings.Fields(str)
 	for ei, field := range entries {
 		if len(field) == 0 {
-			return nil, fmt.Errorf("Empty waypoint in string: \"%s\"", str)
+			return nil, fmt.Errorf("Empty waypoint in string: %q", str)
 		}
 
 		components := strings.Split(field, "/")
@@ -414,7 +414,7 @@ func parseWaypoints(str string) ([]Waypoint, error) {
 			if i == 0 {
 				wp.Fix = f
 			} else if len(f) == 0 {
-				return nil, fmt.Errorf("no command found after / in \"%s\"", field)
+				return nil, fmt.Errorf("no command found after / in %q", field)
 			} else {
 				if f == "ho" {
 					wp.Handoff = true
@@ -950,6 +950,6 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 	if of.InitialController == "" {
 		e.ErrorString("\"initial_controller\" missing")
 	} else if _, ok := controlPositions[of.InitialController]; !ok {
-		e.ErrorString("controller \"%s\" not found for \"initial_controller\"", of.InitialController)
+		e.ErrorString("controller %q not found for \"initial_controller\"", of.InitialController)
 	}
 }
