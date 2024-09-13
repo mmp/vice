@@ -41,8 +41,9 @@ type Aircraft struct {
 	RedirectedHandoff         RedirectedHandoff
 	SPCOverride               string
 
-	HoldForRelease bool
-	Released       bool // only used for hold for release
+	HoldForRelease   bool
+	Released         bool // only used for hold for release
+	WaitingForLaunch bool // for departures
 
 	// The controller who gave approach clearance
 	ApproachController string

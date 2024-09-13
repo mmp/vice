@@ -792,7 +792,7 @@ func (sd *Dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *av.Aircraf
 	if !ok {
 		return ErrNoSimForControllerToken
 	}
-	ac, _, err := sim.CreateDeparture(da.Airport, da.Runway, da.Category)
+	ac, err := sim.CreateDeparture(da.Airport, da.Runway, da.Category)
 	if err == nil {
 		*depAc = *ac
 	}
