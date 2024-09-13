@@ -717,7 +717,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 			list = &CoordinationList{
 				Group: cl.Name,
 				BasicSTARSList: BasicSTARSList{
-					Position: [2]float32{.25, .9 - .15*float32(i)},
+					Position: [2]float32{.25, .9 - .08*float32(i)},
 					Lines:    10,
 				},
 			}
