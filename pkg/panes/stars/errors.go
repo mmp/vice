@@ -60,6 +60,7 @@ var starsErrorRemap = map[error]*STARSError{
 	sim.ErrBeaconMismatch:              ErrSTARSBeaconMismatch,
 	av.ErrClearedForUnexpectedApproach: ErrSTARSIllegalValue,
 	av.ErrFixNotInRoute:                ErrSTARSIllegalFix,
+	sim.ErrIllegalACID:                 ErrSTARSIllegalACID,
 	av.ErrInvalidAltitude:              ErrSTARSIllegalValue,
 	av.ErrInvalidApproach:              ErrSTARSIllegalValue,
 	sim.ErrInvalidCommandSyntax:        ErrSTARSCommandFormat,
