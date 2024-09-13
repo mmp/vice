@@ -6,6 +6,7 @@ package util
 
 import (
 	"encoding/json"
+	"iter"
 	"sort"
 	"time"
 
@@ -334,4 +335,49 @@ func FilterSlice[V any](s []V, pred func(V) bool) []V {
 		}
 	}
 	return filtered
+}
+
+// AllPermutations returns an iterator over all permutations of the given
+// slice.  Each permutation can then be iterated over.
+func AllPermutations[S ~[]E, E any](s S) iter.Seq[iter.Seq2[int, E]] {
+	if len(s) == 0 {
+		return func(yield func(iter.Seq2[int, E]) bool) {}
+	}
+
+	// https://stackoverflow.com/a/30230552
+	// Fisher-Yates shuffle offsets
+	shuffle := make([]int, len(s))
+	next := func() {
+		for i := len(shuffle) - 1; i >= 0; i-- {
+			if i == 0 || shuffle[i] < len(shuffle)-i-1 {
+				shuffle[i]++
+				return
+			}
+			shuffle[i] = 0
+		}
+	}
+
+	return func(yield func(iter.Seq2[int, E]) bool) {
+		for shuffle[0] < len(s) {
+			// TODO: it would be nice to incrementally maintain perm in next()
+			perm := make([]int, len(s))
+			for i := range perm {
+				perm[i] = i
+			}
+
+			if !yield(func(yield2 func(int, E) bool) {
+				for i := range s {
+					perm[i], perm[i+shuffle[i]] = perm[i+shuffle[i]], perm[i]
+
+					if !yield2(i, s[perm[i]]) {
+						return
+					}
+				}
+			}) {
+				return
+			}
+
+			next()
+		}
+	}
 }

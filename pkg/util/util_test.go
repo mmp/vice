@@ -272,3 +272,39 @@ func TestOneOfJSON(t *testing.T) {
 		}
 	}
 }
+
+func TestAllPermutations(t *testing.T) {
+	for _, s := range [][]int{[]int{2, 4, 6, 8}, []int{2, 4, 6, 8, 10}, []int{1}, []int{}} {
+		var seen [][]int
+
+		for it := range AllPermutations(s) {
+			var p []int
+			for _, v := range it {
+				if !slices.Contains(s, v) {
+					t.Errorf("Permutation returned value %v not in slice", v)
+				}
+				p = append(p, v)
+			}
+
+			if len(p) != len(s) {
+				t.Errorf("Perm has different number of values? %+v", p)
+			}
+
+			if slices.ContainsFunc(seen, func(a []int) bool { return slices.Compare(a, p) == 0 }) {
+				t.Errorf("Seen %+v already", p)
+			}
+			seen = append(seen, p)
+		}
+
+		var factorial func(int) int
+		factorial = func(n int) int {
+			if n <= 2 {
+				return n
+			}
+			return n * factorial(n-1)
+		}
+		if len(seen) != factorial(len(s)) {
+			t.Errorf("Expected %d permutations, got %d", factorial(len(s)), len(seen))
+		}
+	}
+}
