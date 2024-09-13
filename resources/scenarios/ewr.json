@@ -1162,6 +1162,7 @@
     },
     "KTEB": {
       "name": "Teterboro",
+      "hold_for_release": true,
       "approaches": {
         "I6": {
           "runway": "6",
@@ -1899,6 +1900,7 @@
     },
     "KMMU": {
       "name": "Morristown",
+      "hold_for_release": true,
       "approaches": {
         "I23": {
           "runway": "23",
@@ -5509,6 +5511,10 @@
         }
       ]
     },
+    "coordination_lists": [
+      { "name": "TETERBORO", "id": "A", "airports": [ "KTEB" ] },
+      { "name": "MORRISTOWN", "id": "B", "airports": [ "KMMU" ] }
+    ],
   "inhibit_ca_volumes": [
     {
       "name": "EWR NO CA",
