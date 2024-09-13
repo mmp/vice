@@ -6099,9 +6099,9 @@
     "speed": {
       "min": 125,
       "landing": 140,
-      "cruise": 560,
+      "cruise": 520,
       "cruiseM": 0.83,
-      "max": 595,
+      "max": 540,
       "maxM": 0.85
     },
     "capability": {
@@ -8988,7 +8988,7 @@
       "landing": 145,
       "cruise": 459,
       "cruiseM": 0.79,
-      "max": 5495,
+      "max": 510,
       "maxM": 0.82
     },
     "capability": {
@@ -9344,7 +9344,7 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 28000,
+      "climb": 2800,
       "descent": 2200,
       "accelerate": 5.9,
       "decelerate": 3
@@ -11503,9 +11503,9 @@
     "speed": {
       "min": 110,
       "landing": 125,
-      "cruise": 500,
+      "cruise": 450,
       "cruiseM": null,
-      "max": 559,
+      "max": 470,
       "maxM": null
     },
     "capability": {

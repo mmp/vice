@@ -13,6 +13,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -344,9 +345,30 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 
 		ap[ac.ICAO] = ac
 
+		if ac.Rate.Climb < 500 || ac.Rate.Climb > 5000 {
+			fmt.Fprintf(os.Stderr, "%s: aircraft climb rate %f seems off\n", ac.ICAO, ac.Rate.Climb)
+		}
+		if ac.Rate.Descent < 500 || ac.Rate.Descent > 5000 {
+			fmt.Fprintf(os.Stderr, "%s: aircraft descent rate %f seems off\n", ac.ICAO, ac.Rate.Descent)
+		}
+		if ac.Rate.Accelerate < 2 || ac.Rate.Accelerate > 10 {
+			fmt.Fprintf(os.Stderr, "%s: aircraft accelerate rate %f seems off\n", ac.ICAO, ac.Rate.Accelerate)
+		}
+		if ac.Rate.Decelerate < 2 || ac.Rate.Decelerate > 8 {
+			fmt.Fprintf(os.Stderr, "%s: aircraft decelerate rate %f seems off\n", ac.ICAO, ac.Rate.Decelerate)
+		}
+		if ac.Speed.Min < 34 || ac.Speed.Min > 200 {
+			fmt.Fprintf(os.Stderr, "%s: aircraft min speed %f seems off\n", ac.ICAO, ac.Speed.Min)
+		}
+		if ac.Speed.Landing < 40 || ac.Speed.Landing > 200 {
+			fmt.Fprintf(os.Stderr, "%s: aircraft landing speed %f seems off\n", ac.ICAO, ac.Speed.Landing)
+		}
+		if ac.Speed.MaxTAS < 40 || ac.Speed.MaxTAS > 550 && ac.ICAO != "CONC" {
+			fmt.Fprintf(os.Stderr, "%s: aircraft max TAS %f seems off\n", ac.ICAO, ac.Speed.MaxTAS)
+		}
 		if ac.Speed.V2 != 0 && ac.Speed.V2 > 1.5*ac.Speed.Min {
-			panic(fmt.Sprintf("%s: aircraft V2 %.0f seems suspiciously high (vs min %.01f)",
-				ac.ICAO, ac.Speed.V2, ac.Speed.Min))
+			fmt.Fprintf(os.Stderr, "%s: aircraft V2 %.0f seems suspiciously high (vs min %.01f)",
+				ac.ICAO, ac.Speed.V2, ac.Speed.Min)
 		}
 	}
 
