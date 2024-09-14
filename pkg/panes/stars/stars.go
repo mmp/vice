@@ -548,6 +548,15 @@ func (sp *STARSPane) Upgrade(from, to int) {
 	for _, prefs := range sp.TRACONPreferenceSets {
 		prefs.Upgrade(from, to)
 	}
+	if sp.OldPrefsCurrentPreferenceSet != nil {
+		sp.OldPrefsCurrentPreferenceSet.Upgrade(from, to)
+	}
+	if sp.OldPrefsSelectedPreferenceSet != nil && (*sp.OldPrefsSelectedPreferenceSet < 0 || *sp.OldPrefsSelectedPreferenceSet >= numSavedPreferenceSets) {
+		sp.OldPrefsSelectedPreferenceSet = nil
+	}
+	for i := range sp.OldPrefsPreferenceSets {
+		sp.OldPrefsPreferenceSets[i].Upgrade(from, to)
+	}
 }
 
 func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {

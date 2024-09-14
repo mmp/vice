@@ -27,6 +27,9 @@ type PreferenceSet struct {
 }
 
 func (p *PreferenceSet) Upgrade(from, to int) {
+	if p.Selected != nil && (*p.Selected < 0 || *p.Selected >= len(p.Saved)) {
+		p.Selected = nil
+	}
 	p.Current.Upgrade(from, to)
 	for _, p := range p.Saved {
 		if p != nil {
