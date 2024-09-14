@@ -1832,21 +1832,10 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft) time.Duration {
 	}
 
 	// Check for wake turbulence separation.
-	cwt := cac.AircraftPerformance().Category.CWT
-	switch pac.AircraftPerformance().Category.CWT {
-	case "A":
-		if cwt != "A" {
-			return 3 * time.Minute
-		}
-	case "B", "D":
-		if cwt != "A" {
-			return 2 * time.Minute
-		}
-	case "C":
-		// 2 minutes for E-I behind upper heavy
-		if cwt == "E" || cwt == "F" || cwt == "G" || cwt == "H" || cwt == "I" {
-			return 2 * time.Minute
-		}
+	wtDist := av.CWTDirectlyBehindSeparation(pac.CWT(), cac.CWT())
+	if wtDist != 0 {
+		// Assume '1 gives you 3'
+		return time.Duration(wtDist / 3 * float32(time.Minute))
 	}
 
 	// Assume this will be less than wake turbulence
