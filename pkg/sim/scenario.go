@@ -837,12 +837,8 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	}
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + name)
-		adapt := sg.STARSFacilityAdaptation
-		requireExitScratchpads := !adapt.FDB.DisplayExitFix && !adapt.FDB.DisplayExitFix1 &&
-			!adapt.FDB.DisplayExitGate && !adapt.FDB.DisplayAltExitGate
 		ap.PostDeserialize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
-			sg.ControlPositions, sg.STARSFacilityAdaptation.Scratchpads, requireExitScratchpads,
-			sg.Airports, e)
+			sg.ControlPositions, sg.STARSFacilityAdaptation.Scratchpads, sg.Airports, e)
 		e.Pop()
 	}
 

@@ -244,7 +244,7 @@ func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]math.
 
 func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude float32,
 	magneticVariation float32, controlPositions map[string]*Controller, scratchpads map[string]string,
-	requireExitScratchpads bool, facilityAirports map[string]*Airport, e *util.ErrorLogger) {
+	facilityAirports map[string]*Airport, e *util.ErrorLogger) {
 	if info, ok := DB.Airports[icao]; !ok {
 		e.ErrorString("airport %q not found in airport database", icao)
 	} else {
@@ -458,12 +458,6 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	for i, dep := range ap.Departures {
 		e.Push("Departure exit " + dep.Exit)
 		e.Push("Destination " + dep.Destination)
-
-		if requireExitScratchpads {
-			if _, ok := scratchpads[dep.Exit]; dep.Scratchpad == "" && !ok {
-				e.ErrorString("exit not in scenario group \"scratchpads\"")
-			}
-		}
 
 		for _, alt := range dep.Altitudes {
 			if alt < 500 {
