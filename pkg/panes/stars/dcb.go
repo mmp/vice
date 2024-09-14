@@ -217,7 +217,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 
 		pref := "PREF"
-		if sp.prefSet.Selected != nil {
+		if sp.prefSet.Selected != nil && sp.prefSet.Saved[*sp.prefSet.Selected] != nil {
 			pref += "\n" + sp.prefSet.Saved[*sp.prefSet.Selected].Name
 		}
 		if selectButton(ctx, pref, buttonFull, buttonScale) {
