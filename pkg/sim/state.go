@@ -374,7 +374,16 @@ func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 
 func (ss *State) GetReleaseDepartures() []*av.Aircraft {
 	return util.FilterSlice(ss.STARSComputer().GetReleaseDepartures(),
-		func(ac *av.Aircraft) bool { return ss.DepartureController(ac, nil) == ss.Callsign })
+		func(ac *av.Aircraft) bool {
+			// When ControlClient DeleteAllAircraft() is called, we do our usual trick of
+			// making the update locally pending the next update from the server. However, it
+			// doesn't clear out the ones in the STARSComputer; that happens server side only.
+			// So, here is a band-aid to not return aircraft that no longer exist.
+			if _, ok := ss.Aircraft[ac.Callsign]; !ok {
+				return false
+			}
+			return ss.DepartureController(ac, nil) == ss.Callsign
+		})
 }
 
 func (s *State) GetVideoMaps() ([]av.VideoMap, []string) {
