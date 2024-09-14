@@ -231,7 +231,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			sa.GlobalLeaderLineDirection = ac.GlobalLeaderLineDirection
 			sa.UseGlobalLeaderLine = sa.GlobalLeaderLineDirection != nil
 			sa.FirstSeen = ctx.ControlClient.SimTime
-			sa.CWTCategory = getCwtCategory(ctx, ac)
+			sa.CWTCategory = ac.CWT()
 			sa.TabListIndex = TabListUnassignedIndex
 
 			sp.Aircraft[callsign] = sa
@@ -1067,97 +1067,8 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	return math.Add2f(p, math.Scale2f(ma.v, gs))
 }
 
-func getCwtCategory(ctx *panes.Context, ac *av.Aircraft) string {
-	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.BaseType()]
-	if !ok {
-		ctx.Lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
-		return "NOWGT"
-	}
-	wc := perf.Category.CWT
-	if len(wc) == 0 {
-		ctx.Lg.Errorf("%s: no CWT category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
-		return "NOWGT"
-	}
-
-	switch wc {
-	case "NOWGT":
-		return "NOWGT"
-	case "I":
-		return "I"
-	case "H":
-		return "H"
-	case "G":
-		return "G"
-	case "F":
-		return "F"
-	case "E":
-		return "E"
-	case "D":
-		return "D"
-	case "C":
-		return "C"
-	case "B":
-		return "B"
-	case "A":
-		return "A"
-	default:
-		ctx.Lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
-		return "NOWGT"
-	}
-
-}
-
 func (sp *STARSPane) checkInTrailCwtSeparation(ctx *panes.Context, back, front *av.Aircraft) {
-	cwtClass := func(ac *av.Aircraft) int {
-		perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.BaseType()]
-		if !ok {
-			ctx.Lg.Errorf("%s: unable to get performance model for %s", ac.Callsign, ac.FlightPlan.BaseType())
-			return 9
-		}
-		wc := perf.Category.CWT
-		if len(wc) == 0 {
-			ctx.Lg.Errorf("%s: no CWT category found for %s", ac.Callsign, ac.FlightPlan.BaseType())
-			return 9
-		}
-		switch wc[0] {
-		case 'I':
-			return 0
-		case 'H':
-			return 1
-		case 'G':
-			return 2
-		case 'F':
-			return 3
-		case 'E':
-			return 4
-		case 'D':
-			return 5
-		case 'C':
-			return 6
-		case 'B':
-			return 7
-		case 'A':
-			return 8
-		default:
-			ctx.Lg.Errorf("%s: unexpected weight class \"%c\"", ac.Callsign, wc[0])
-			return 9
-		}
-	}
-	// 7110.126B TBL 5-5-2
-	// 0 value means minimum radar separation
-	cwtOnApproachLookUp := [10][10]float32{ // [front][back]
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 10},          // Behind I
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 10},          // Behind H
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 10},          // Behind G
-		{4, 0, 0, 0, 0, 0, 0, 0, 0, 10},          // Behind F
-		{4, 0, 0, 0, 0, 0, 0, 0, 0, 10},          // Behind E
-		{6, 6, 5, 5, 5, 4, 4, 3, 0, 10},          // Behind D
-		{6, 5, 3.5, 3.5, 3.5, 0, 0, 0, 0, 10},    // Behind C
-		{6, 5, 5, 5, 5, 4, 4, 3, 0, 10},          // Behind B
-		{8, 8, 7, 7, 7, 6, 6, 5, 0, 10},          // Behind A
-		{10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, // Behind NOWGT (No weight: 7110.762)
-	}
-	cwtSeparation := cwtOnApproachLookUp[cwtClass(front)][cwtClass(back)]
+	cwtSeparation := av.CWTApproachSeparation(front.CWT(), back.CWT())
 
 	state := sp.Aircraft[back.Callsign]
 	vol := back.ATPAVolume()

@@ -134,3 +134,47 @@ func TestSquawkCodePoolRandoms(t *testing.T) {
 		}
 	}
 }
+
+func TestApproachCWTSeparation(t *testing.T) {
+	type testcase struct {
+		front, back string
+		expect      float32
+	}
+	for _, tc := range []testcase{
+		testcase{front: "B", back: "G", expect: 5},
+		testcase{front: "NOWGT", back: "G", expect: 10},
+		testcase{front: "A", back: "D", expect: 6},
+		testcase{front: "C", back: "D", expect: 0},
+		testcase{front: "C", back: "E", expect: 3.5},
+		testcase{front: "D", back: "B", expect: 3},
+		testcase{front: "E", back: "H", expect: 0},
+		testcase{front: "E", back: "I", expect: 4},
+	} {
+		if s := CWTApproachSeparation(tc.front, tc.back); s != tc.expect {
+			t.Errorf("CWTApproachSeparation(%q, %q) = %f. Expected %f", tc.front, tc.back, s, tc.expect)
+		}
+	}
+}
+
+func TestDirectlyBehindCWTSeparation(t *testing.T) {
+	type testcase struct {
+		front, back string
+		expect      float32
+	}
+	for _, tc := range []testcase{
+		testcase{front: "B", back: "G", expect: 5},
+		testcase{front: "B", back: "I", expect: 5},
+		testcase{front: "NOWGT", back: "G", expect: 10},
+		testcase{front: "A", back: "D", expect: 6},
+		testcase{front: "C", back: "D", expect: 0},
+		testcase{front: "C", back: "E", expect: 3.5},
+		testcase{front: "D", back: "B", expect: 3},
+		testcase{front: "E", back: "H", expect: 0},
+		testcase{front: "E", back: "I", expect: 4},
+		testcase{front: "F", back: "I", expect: 0},
+	} {
+		if s := CWTDirectlyBehindSeparation(tc.front, tc.back); s != tc.expect {
+			t.Errorf("CWTDirectlyBehindSeparation(%q, %q) = %f. Expected %f", tc.front, tc.back, s, tc.expect)
+		}
+	}
+}

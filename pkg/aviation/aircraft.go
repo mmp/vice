@@ -618,6 +618,18 @@ func (ac *Aircraft) DistanceAlongRoute(fix string) (float32, error) {
 	return ac.Nav.DistanceAlongRoute(fix)
 }
 
+func (ac *Aircraft) CWT() string {
+	perf, ok := DB.AircraftPerformance[ac.FlightPlan.BaseType()]
+	if !ok {
+		return "NOWGT"
+	}
+	cwt := []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "NOWGT"}
+	if !slices.Contains(cwt, perf.Category.CWT) {
+		return "NOWGT"
+	}
+	return perf.Category.CWT
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // RedirectedHandoff methods
 
