@@ -62,6 +62,10 @@ func getResourcesFS() *fs.StatFS {
 
 var resourcesFS *fs.StatFS
 
+func init() {
+	resourcesFS = getResourcesFS()
+}
+
 // LoadResource loads the specified file from the resources directory, decompressing it if
 // it is zstd compressed. It panics if the file is not found; missing resources are pretty
 // much impossible to recover from.
@@ -80,10 +84,6 @@ func LoadResource(path string) []byte {
 }
 
 func LoadRawResource(path string) []byte {
-	if resourcesFS == nil {
-		resourcesFS = getResourcesFS()
-	}
-
 	b, err := fs.ReadFile(*resourcesFS, path)
 	if err != nil {
 		panic(err)
@@ -93,10 +93,6 @@ func LoadRawResource(path string) []byte {
 }
 
 func WalkResources(root string, fn func(path string, d fs.DirEntry, filesystem fs.FS, err error) error) error {
-	if resourcesFS == nil {
-		resourcesFS = getResourcesFS()
-	}
-
 	return fs.WalkDir(*resourcesFS, root,
 		func(path string, d fs.DirEntry, err error) error {
 			return fn(path, d, *resourcesFS, err)
