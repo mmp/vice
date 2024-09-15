@@ -1834,8 +1834,8 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft) time.Duration {
 	// Check for wake turbulence separation.
 	wtDist := av.CWTDirectlyBehindSeparation(pac.CWT(), cac.CWT())
 	if wtDist != 0 {
-		// Assume '1 gives you 3'
-		return time.Duration(wtDist / 3 * float32(time.Minute))
+		// Assume '1 gives you 3.5'
+		return time.Duration(wtDist / 3.5 * float32(time.Minute))
 	}
 
 	// Assume this will be less than wake turbulence
