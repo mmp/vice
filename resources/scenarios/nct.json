@@ -4769,7 +4769,7 @@
         "waypoints": "DYAMD  N037.40.42.398,W120.34.50.313/ho LAANE ALWYS HEFLY/a14000/s250 ARRTU/a10000 ADDMM/a9000/s240 COGGR/a7000/s210 BERKS/a5000/s210"
       }
     ],
-    "BDEGA3": [
+    "BDEGA4": [
       {
         "airlines": {
           "KSFO": [
@@ -4809,9 +4809,9 @@
         "description": "",
         "initial_controller": "OAK_CTR",
         "initial_speed": 280,
-        "route": "BGGLO/a19000 N037.55.57.655,W122.40.56.625/ho LOZIT/a16000 BDEGA/a13000 CORKK/a11000 BRIXX/a11000/h140",
-        "waypoints": "BGGLO/a19000 N037.55.57.655,W122.40.56.625/ho LOZIT/a16000 BDEGA/a13000 CORKK/a11000 BRIXX/a11000/h140"
-      }
+        "route": "BGGLO/a19000 N037.55.57.655,W122.40.56.625/ho LOZIT/a14000-16000 BDEGA/a13000- CORKK/a11000 BRIXX/a11000/h140",
+        "waypoints": "BGGLO/a19000 N037.55.57.655,W122.40.56.625/ho LOZIT/a14000-16000 BDEGA/a13000- CORKK/a11000 BRIXX/a11000/h140"
+       }
     ],
     "BSR3": [
       {
@@ -7464,7 +7464,7 @@
         "ALWYS2": {
           "KSFO": 5
         },
-        "BDEGA3": {
+        "BDEGA4": {
           "KSFO": 5
         },
         "BSR3": {
@@ -7497,7 +7497,7 @@
           "default" : {
             "SFO_B_APP": {
               "primary": true,
-                "arrivals": ["PYE3", "BDEGA3", "STLER3"]
+                "arrivals": ["PYE3", "BDEGA4", "STLER3"]
             },
             "SFO_Z_APP": {
                 "backup": "SFO_B_APP",
@@ -7575,7 +7575,7 @@
         "ALWYS2": {
           "KSFO": 5
         },
-        "BDEGA3": {
+        "BDEGA4": {
           "KSFO": 5
         },
         "BSR3": {
@@ -7608,7 +7608,7 @@
           "default" : {
             "SFO_B_APP": {
               "primary": true,
-                "arrivals": ["PYE3", "BDEGA3", "STLER3" ]
+                "arrivals": ["PYE3", "BDEGA4", "STLER3" ]
             },
             "SFO_Z_APP": {
                 "backup": "SFO_B_APP",
@@ -7686,7 +7686,7 @@
         "ALWYS2": {
           "KSFO": 5
         },
-        "BDEGA3": {
+        "BDEGA4": {
           "KSFO": 5
         },
         "PIRAT2": {
@@ -7701,7 +7701,7 @@
           "default" : {
             "SFO_B_APP": {
               "primary": true,
-                "arrivals": [ "BDEGA3"]
+                "arrivals": [ "BDEGA4"]
             },
             "SFO_Z_APP": {
                 "backup": "SFO_B_APP",
@@ -7778,7 +7778,7 @@
         "ALWYS2": {
           "KSFO": 5
         },
-        "BDEGA3": {
+        "BDEGA4": {
           "KSFO": 5
         },
         "BSR3": {
@@ -7811,7 +7811,7 @@
           "default" : {
             "SFO_B_APP": {
               "primary": true,
-                "arrivals": ["PYE3", "BDEGA3", "STLER3" ]
+                "arrivals": ["PYE3", "BDEGA4", "STLER3" ]
             },
             "SFO_Z_APP": {
                 "backup": "SFO_B_APP",
@@ -8807,7 +8807,7 @@
         "CALWYS2": {
           "KSFO": 4
         },
-        "BDEGA3": {
+        "BDEGA4": {
           "KSFO": 4
         },
         "CBSR3": {
@@ -8871,7 +8871,7 @@
             "NCT_APP": {
               "primary": true,
               "departures": ["KSFO"],
-              "arrivals": ["PYE3", "BDEGA3", "STLER3","CMOD9","YOSEM3","CDYAMD5","CALWYS2","CBSR3", "SERFR4", "PIRAT2", "WWAVS1"]
+              "arrivals": ["PYE3", "BDEGA4", "STLER3","CMOD9","YOSEM3","CDYAMD5","CALWYS2","CBSR3", "SERFR4", "PIRAT2", "WWAVS1"]
           },
             "NCT_1_APP": {
               "backup": "NCT_APP",
