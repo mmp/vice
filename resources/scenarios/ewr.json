@@ -7804,8 +7804,8 @@
       ]
     },
     "coordination_lists": [
-      { "name": "TETERBORO", "id": "A", "airports": [ "KTEB" ] },
-      { "name": "MORRISTOWN", "id": "B", "airports": [ "KMMU" ] }
+      { "name": ".    TEB", "id": "A", "airports": [ "KTEB" ] },
+      { "name": ".    MMU", "id": "B", "airports": [ "KMMU" ] }
     ],
   "inhibit_ca_volumes": [
     {
