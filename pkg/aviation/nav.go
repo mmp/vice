@@ -734,14 +734,16 @@ func (nav *Nav) updateAltitude(lg *log.Logger, deltaKts float32, slowingTo250 bo
 		if deltaKts > 0 {
 			// accelerating in the climb, so reduce climb rate; the scale
 			// factor is w.r.t. the maximum acceleration possible.
-			s := deltaKts / (nav.Perf.Rate.Accelerate / 2)
+			max := nav.Perf.Rate.Accelerate / 2
+			s := math.Clamp(max-deltaKts, .25, 1)
 			climb *= s
 		}
 		setAltitude(math.Min(targetAltitude, nav.FlightState.Altitude+climb/60))
 	} else if nav.FlightState.Altitude > targetAltitude {
 		if deltaKts < 0 {
 			// Reduce rate due to concurrent deceleration
-			s := -deltaKts / (nav.Perf.Rate.Decelerate / 2)
+			max := nav.Perf.Rate.Decelerate / 2
+			s := math.Clamp(max - -deltaKts, .25, 1)
 			descent *= s
 		}
 		setAltitude(math.Max(targetAltitude, nav.FlightState.Altitude-descent/60))
