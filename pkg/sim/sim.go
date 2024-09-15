@@ -1818,7 +1818,12 @@ func (s *Sim) canLaunch(airport string, dep DepartureAircraft) bool {
 // launchInterval returns the amount of time we must wait before launching
 // cur, if prev was the last aircraft launched.
 func (s *Sim) launchInterval(prev, cur DepartureAircraft) time.Duration {
-	cac, pac := s.State.Aircraft[cur.Callsign], s.State.Aircraft[prev.Callsign]
+	cac := s.State.Aircraft[cur.Callsign]
+	pac, ok := s.State.Aircraft[prev.Callsign]
+	if !ok {
+		// Previous was presumably deleted
+		return 0
+	}
 
 	// Same exit
 	if pac.FlightPlan.Exit == cac.FlightPlan.Exit {
