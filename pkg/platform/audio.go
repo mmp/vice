@@ -62,6 +62,9 @@ func (a *audioEngine) Initialize(config *Config, lg *log.Logger) {
 }
 
 func (a *audioEngine) AddPCM(pcm []byte, rate int) (int, error) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if rate != AudioSampleRate {
 		return 0, fmt.Errorf("%d: sample rate doesn't match audio engine's %d",
 			rate, AudioSampleRate)
@@ -71,27 +74,32 @@ func (a *audioEngine) AddPCM(pcm []byte, rate int) (int, error) {
 }
 
 func (a *audioEngine) SetAudioVolume(vol int) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	a.volume = math.Clamp(vol, 0, 10)
 }
 
 func (a *audioEngine) PlayAudioOnce(index int) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if !a.config.AudioEnabled || index == 0 {
 		return
 	}
 
-	a.mu.Lock()
 	a.effects[index-1].playOnceCount++
-	a.mu.Unlock()
 }
 
 func (a *audioEngine) StartPlayAudioContinuous(index int) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if !a.config.AudioEnabled || index == 0 {
 		return
 	}
 
-	a.mu.Lock()
 	a.effects[index-1].playContinuous = true
-	a.mu.Unlock()
 }
 
 func (a *audioEngine) StopPlayAudio(index int) {
