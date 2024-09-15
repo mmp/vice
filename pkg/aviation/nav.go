@@ -1095,6 +1095,14 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 		return *nav.Altitude.Assigned, MaximumRate
 	}
 
+	if nav.Altitude.Cleared != nil {
+		return *nav.Altitude.Cleared, MaximumRate
+	}
+
+	if ar := nav.Altitude.Restriction; ar != nil {
+		return ar.TargetAltitude(nav.FlightState.Altitude), MaximumRate
+	}
+
 	if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
 		if c.ETA < 5 || nav.FlightState.Altitude < c.Altitude {
@@ -1108,20 +1116,12 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 				// Don't start the descent until (more or less) it's
 				// necessary. (But then go a little faster than we think we
 				// need to, to be safe.)
-				return c.Altitude, rate * 1.05
+				return c.Altitude, rate * 1.25
 			} else {
 				// Stay where we are for now.
 				return nav.FlightState.Altitude, 0
 			}
 		}
-	}
-
-	if nav.Altitude.Cleared != nil {
-		return *nav.Altitude.Cleared, MaximumRate
-	}
-
-	if ar := nav.Altitude.Restriction; ar != nil {
-		return ar.TargetAltitude(nav.FlightState.Altitude), MaximumRate
 	}
 
 	// Baseline: stay where we are
@@ -1189,9 +1189,9 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	descending := nav.FlightState.Altitude > getRestriction(lastWp).TargetAltitude(nav.FlightState.Altitude)
 	if descending {
 		altRate = nav.Perf.Rate.Descent
-		// This unfortunately mirrors logic in the Aircraft
-		// updateAltitude() method.  It would be nice to unify the nav
-		// modeling and the aircraft's flight modeling to eliminate this...
+		// This unfortunately mirrors logic in the updateAltitude() method.
+		// It would be nice to unify the nav modeling and the aircraft's
+		// flight modeling to eliminate this...
 		if nav.FlightState.Altitude < 10000 {
 			altRate = math.Min(altRate, 2000)
 			altRate *= math.Min(nav.FlightState.IAS/250, 1)
@@ -1202,11 +1202,10 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		// going the longer way and overflying fixes.
 		altRate *= 0.7
 	} else {
-		// This also mirrors logic in Aircraft updateAltitude() and has its
-		// own fudge factor, though a smaller one. Note that it doesn't
-		// include a model for pausing the climb at 10k feet to accelerate,
-		// though at that point we're likely leaving the TRACON airspace
-		// anyway...
+		// This also mirrors logic in updateAltitude() and has its own
+		// fudge factor, though a smaller one. Note that it doesn't include
+		// a model for pausing the climb at 10k feet to accelerate, though
+		// at that point we're likely leaving the TRACON airspace anyway...
 		altRate = 0.9 * util.Select(nav.Perf.Rate.Climb > 2500, nav.Perf.Rate.Climb-500, nav.Perf.Rate.Climb)
 	}
 
