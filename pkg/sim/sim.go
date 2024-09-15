@@ -1758,16 +1758,22 @@ func (s *Sim) spawnDepartures() {
 			continue
 		}
 
-		// Get the departure and see if it can be launched (accounting for
-		// the previous departure).
+		// Get the departure
 		pool := s.DeparturePool[airport]
 		dep := pool[0]
+		ac := s.State.Aircraft[dep.Callsign]
+
+		// Request a release if necessary.
+		if ac.HoldForRelease && !dep.ReleaseRequested {
+			s.State.STARSComputer().AddHeldDeparture(ac)
+			pool[0].ReleaseRequested = true
+		}
+
 		if !s.canLaunch(airport, dep) {
 			continue
 		}
 
 		// Launch!
-		ac := s.State.Aircraft[dep.Callsign]
 		ac.WaitingForLaunch = false
 
 		// Record the launch so we have it when we consider launching the
@@ -1779,16 +1785,7 @@ func (s *Sim) spawnDepartures() {
 		s.LastDeparture[airport][dep.Runway] = &dep
 
 		// Remove it from the pool of waiting departures.
-		pool = pool[1:]
-		s.DeparturePool[airport] = pool
-
-		// Go ahead and request a release for the next departure if necessary.
-		if len(pool) > 0 && !pool[0].ReleaseRequested {
-			if nextAc := s.State.Aircraft[pool[0].Callsign]; nextAc.HoldForRelease {
-				s.State.STARSComputer().AddHeldDeparture(nextAc)
-				pool[0].ReleaseRequested = true
-			}
-		}
+		s.DeparturePool[airport] = pool[1:]
 
 		// And figure out when we want to ask for the next departure.
 		r := sumDepartureRates(s.LaunchConfig.DepartureRates[airport])
@@ -1876,16 +1873,8 @@ loop:
 		}
 
 		// We've updated the pool; resequence them.
-		pool = s.sequenceDepartures(s.LastDeparture[airport], pool, s.DepartureIndex[airport])
-
-		// Request release for the first one if needed.
-		ac := s.State.Aircraft[pool[0].Callsign]
-		if ac.HoldForRelease && !pool[0].ReleaseRequested {
-			s.State.STARSComputer().AddHeldDeparture(ac)
-			pool[0].ReleaseRequested = true
-		}
-
-		s.DeparturePool[airport] = pool
+		s.DeparturePool[airport] = s.sequenceDepartures(s.LastDeparture[airport], pool,
+			s.DepartureIndex[airport])
 	}
 }
 
