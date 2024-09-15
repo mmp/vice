@@ -278,8 +278,8 @@ func (cb *CommandBuffer) RawBuffer(buf []byte) int {
 
 	cb.growFor(nints)
 	start := len(cb.Buf)
-	ptr := uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(4*start)
-	slice := unsafe.Slice((*byte)(unsafe.Pointer(ptr)), len(buf))
+	ptr := unsafe.Pointer(uintptr(unsafe.Pointer(&cb.Buf[0])) + uintptr(4*start))
+	slice := unsafe.Slice((*byte)(ptr), len(buf))
 	copy(slice, buf)
 	cb.Buf = cb.Buf[:start+nints]
 
