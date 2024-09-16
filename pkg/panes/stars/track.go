@@ -24,7 +24,7 @@ import (
 // everything is wired up, some of the information needed is still being
 // maintained in Aircraft, so we'll make an ad-hoc TrackInformation here.
 func (sp *STARSPane) getTrack(ctx *panes.Context, ac *av.Aircraft) *sim.TrackInformation {
-	trk := ctx.ControlClient.STARSComputer().TrackInformation[ac.Callsign]
+	trk := ctx.ControlClient.STARSComputer(ctx.ControlClient.TRACON).TrackInformation[ac.Callsign]
 	if trk == nil {
 		trk = &sim.TrackInformation{}
 	}
@@ -491,7 +491,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 
 	// FIXME(mtrokel): should this be happening in the STARSComputer Update method?
 	if !ctx.ControlClient.STARSFacilityAdaptation.KeepLDB {
-		ctx.ControlClient.STARSComputer().UpdateAssociatedFlightPlans(aircraft)
+		ctx.ControlClient.STARSComputer(ctx.ControlClient.TRACON).UpdateAssociatedFlightPlans(aircraft)
 	}
 }
 
