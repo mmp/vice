@@ -1796,11 +1796,6 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft) time.Duration {
 		return 0
 	}
 
-	// Same exit
-	if pac.FlightPlan.Exit == cac.FlightPlan.Exit {
-		return 3 * time.Minute // approx 10 MIT
-	}
-
 	// FIXME: for now we assume we can launch on different runways
 	// independently.
 	if prev.Runway != cur.Runway {
