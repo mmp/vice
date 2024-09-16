@@ -928,7 +928,7 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 			for i, ap := range c.TowerListAirports() {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Text(strconv.Itoa(i))
+				imgui.Text(strconv.Itoa(i + 1))
 				imgui.TableNextColumn()
 				imgui.Text("Tower")
 				imgui.TableNextColumn()
