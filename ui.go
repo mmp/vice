@@ -1377,7 +1377,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 					imgui.Text(dep.Aircraft.FlightPlan.TypeWithoutSuffix())
 
 					imgui.TableNextColumn()
-					imgui.Text(dep.Aircraft.Scratchpad)
+					imgui.Text(dep.Aircraft.FlightPlan.Exit)
 
 					mitAndTime(&dep.Aircraft, dep.Aircraft.Position(), dep.LastLaunchCallsign,
 						dep.LastLaunchTime)
