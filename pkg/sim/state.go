@@ -137,10 +137,9 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	}
 
 	// Make some fake METARs; slightly different for all airports.
-	var alt int
+	alt := 2980 + rand.Intn(40)
 
 	fakeMETAR := func(icao string) {
-		alt = 2980 + rand.Intn(40)
 		spd := ss.Wind.Speed - 3 + rand.Int31n(6)
 		var wind string
 		if spd < 0 {
