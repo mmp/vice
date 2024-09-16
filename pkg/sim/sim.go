@@ -105,30 +105,6 @@ func MakeLaunchConfig(dep []ScenarioGroupDepartureRunway, inbound map[string]map
 	return lc
 }
 
-func (lc *LaunchConfig) DrawActiveDepartureRunways() {
-	var runways []string
-	for airport, runwayRates := range lc.DepartureRates {
-		for runway, categoryRates := range runwayRates {
-			for _, rate := range categoryRates {
-				if rate > 0 {
-					runways = append(runways, airport+"/"+runway)
-					break
-				}
-			}
-		}
-	}
-
-	if len(runways) > 0 {
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Departing:")
-		imgui.TableNextColumn()
-
-		sort.Strings(runways)
-		imgui.Text(strings.Join(runways, ", "))
-	}
-}
-
 func (lc *LaunchConfig) DrawDepartureUI(p platform.Platform) (changed bool) {
 	if len(lc.DepartureRates) == 0 {
 		return
@@ -619,8 +595,6 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.Text("Control Position:")
 			imgui.TableNextColumn()
 			imgui.Text(c.Scenario.SelectedController)
-
-			c.Scenario.LaunchConfig.DrawActiveDepartureRunways()
 
 			if len(c.Scenario.ArrivalRunways) > 0 {
 				imgui.TableNextRow()
