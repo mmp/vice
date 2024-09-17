@@ -1377,7 +1377,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 					imgui.Text(dep.Aircraft.FlightPlan.TypeWithoutSuffix())
 
 					imgui.TableNextColumn()
-					imgui.Text(dep.Aircraft.Scratchpad)
+					imgui.Text(dep.Aircraft.FlightPlan.Exit)
 
 					mitAndTime(&dep.Aircraft, dep.Aircraft.Position(), dep.LastLaunchCallsign,
 						dep.LastLaunchTime)
@@ -1472,12 +1472,6 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 			imgui.EndTable()
 		}
 	} else {
-		// Slightly messy, but DrawActiveDepartureRunways expects a table context...
-		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-		if imgui.BeginTableV("runways", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
-			lc.controlClient.LaunchConfig.DrawActiveDepartureRunways()
-			imgui.EndTable()
-		}
 		changed := lc.controlClient.LaunchConfig.DrawDepartureUI(p)
 		changed = lc.controlClient.LaunchConfig.DrawArrivalUI(p) || changed
 		changed = lc.controlClient.LaunchConfig.DrawOverflightUI(p) || changed
