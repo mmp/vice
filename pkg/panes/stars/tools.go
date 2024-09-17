@@ -768,31 +768,35 @@ func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 
 ///////////////////////////////////////////////////////////////////////////
 // Other utilities
 
-// If the user has run the "find" command to highlight a point in the
-// world, draw a red circle around that point for a few seconds.
+// If distance to a significant point is being displayed or if the user has
+// run the "find" command to highlight a point in the world, draw a blinking
+// square at that point for a few seconds.
 func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	remaining := time.Until(sp.highlightedLocationEndTime)
 	if remaining < 0 {
 		return
 	}
 
-	color := panes.UIErrorColor
-	fade := 1.5
-	if sec := remaining.Seconds(); sec < fade {
-		x := float32(sec / fade)
-		color = renderer.LerpRGB(x, renderer.RGB{}, color)
+	// "The color of the blinking square is the same as that for blinking
+	// data block information"(?)
+	ps := sp.currentPrefs()
+	color := ps.Brightness.FullDatablocks.ScaleRGB(STARSUntrackedAircraftColor)
+	halfSeconds := ctx.Now.UnixMilli() / 500
+	blinkDim := halfSeconds&1 == 0
+	if blinkDim {
+		color = color.Scale(0.3)
 	}
 
 	p := transforms.WindowFromLatLongP(sp.highlightedLocation)
-	radius := float32(10) // 10 pixel radius
-	ld := renderer.GetLinesDrawBuilder()
-	defer renderer.ReturnLinesDrawBuilder(ld)
-	ld.AddCircle(p, radius, 360)
+	delta := float32(4)
+	td := renderer.GetTrianglesDrawBuilder()
+	defer renderer.ReturnTrianglesDrawBuilder(td)
+	td.AddQuad(math.Add2f(p, [2]float32{-delta, -delta}), math.Add2f(p, [2]float32{delta, -delta}),
+		math.Add2f(p, [2]float32{delta, delta}), math.Add2f(p, [2]float32{-delta, delta}))
 
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.SetRGB(color)
-	cb.LineWidth(2, ctx.DPIScale)
-	ld.GenerateCommands(cb)
+	td.GenerateCommands(cb)
 }
 
 // Draw all of the range-bearing lines that have been specified.
