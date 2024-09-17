@@ -1726,3 +1726,23 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, visibleAircraft [
 	}
 	return
 }
+
+func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, ScopeTransformations) (status CommandStatus) {
+	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
+		if sp.wipRBL == nil {
+			// this shouldn't happen, but let's not crash if it does...
+			return
+		}
+
+		rbl := *sp.wipRBL
+		sp.wipRBL = nil
+		if ac, _ := sp.tryGetClosestAircraft(ctx, pw, transforms); ac != nil {
+			rbl.P[1].Callsign = ac.Callsign
+		} else {
+			rbl.P[1].Loc = transforms.LatLongFromWindowP(pw)
+		}
+		sp.RangeBearingLines = append(sp.RangeBearingLines, rbl)
+		status.clear = true
+		return
+	}
+}
