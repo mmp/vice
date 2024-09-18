@@ -5901,29 +5901,6 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
-                <td>"fdb"</td>
-                <td>Object</td>
-                <td>Allows specifying various adapted configurations for full datablocks.
-                  The following members are available (all are "false" by default):
-                  <ul>
-                    <li>"display_exit_fix": if true, the datablock displays a three-character identifier
-                      for the exit fix where the identifier is found from the "short_name" entry for the
-                      fix in "significant_points".</li>
-                    <li>"display_exit_fix1": if true, the datablock displays a one-character identifier
-                      for the exit fix where the identifier is found from the "abbreviation" entry for the
-                      fix in "significant_points".</li>
-                    <li>"display_exit_gate": if true, the datablock displays a single-character identifier
-                      for the exit gate and then two digits giving the requested altitude in thousands of feet.
-                      The exit gate should be listed in "significant_points"; its "abbreviation" value is used
-                      for the identifier. If four-character scratchpads are adapted, three digits giving the
-                      altitude in hundreds of feet are displayed.</li>
-                    <li>"display_alternate_exit_gate": if true, the datablock displays the requested altitude
-                      followed by a single-character identifier for the exit gate. All other details follow
-                      "display_exit_gate".</li>
-                  </ul>
-                </td>
-              </tr>
-              <tr>
                 <td>"force_ql_self"</td>
                 <td>Boolean</td>
                 <td>Indicates whether controllers may
@@ -6012,6 +5989,31 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"scratchpads"</td>
                 <td>Object</td>
                 <td>Each member specifies a scratchpad entry that is assigned when a departing aircraft has a given exit fix.  Example: <code>"MERIT": "MER"</code></td>
+              </tr>
+              <tr>
+                <td>"scratchpad1"</td>
+                <td>Object</td>
+                <td>Allows specifying various adapted configurations to
+                  display in place for the first scratchpad in full and
+                  partial datablocks.
+                  The following members are available (all are "false" by default):
+                  <ul>
+                    <li>"display_exit_fix": if true, the datablock displays a three-character identifier
+                      for the exit fix where the identifier is found from the "short_name" entry for the
+                      fix in "significant_points".</li>
+                    <li>"display_exit_fix1": if true, the datablock displays a one-character identifier
+                      for the exit fix where the identifier is found from the "abbreviation" entry for the
+                      fix in "significant_points".</li>
+                    <li>"display_exit_gate": if true, the datablock displays a single-character identifier
+                      for the exit gate and then two digits giving the requested altitude in thousands of feet.
+                      The exit gate should be listed in "significant_points"; its "abbreviation" value is used
+                      for the identifier. If four-character scratchpads are adapted, three digits giving the
+                      altitude in hundreds of feet are displayed.</li>
+                    <li>"display_alternate_exit_gate": if true, the datablock displays the requested altitude
+                      followed by a single-character identifier for the exit gate. All other details follow
+                      "display_exit_gate".</li>
+                  </ul>
+                </td>
               </tr>
               <tr>
                 <td>"significant_points"</td>

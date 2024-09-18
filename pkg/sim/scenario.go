@@ -90,12 +90,12 @@ type STARSFacilityAdaptation struct {
 		ShowAircraftType bool `json:"show_aircraft_type"`
 		SplitGSAndCWT    bool `json:"split_gs_and_cwt"`
 	} `json:"pdb"`
-	FDB struct {
+	Scratchpad1 struct {
 		DisplayExitFix     bool `json:"display_exit_fix"`
 		DisplayExitFix1    bool `json:"display_exit_fix_1"`
 		DisplayExitGate    bool `json:"display_exit_gate"`
 		DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
-	} `json:"fdb"`
+	} `json:"scratchpad1"`
 	CoordinationLists []CoordinationList `json:"coordination_lists"`
 }
 
@@ -1038,22 +1038,22 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	}
 
 	disp := make(map[string]interface{})
-	if s.FDB.DisplayExitFix {
+	if s.Scratchpad1.DisplayExitFix {
 		disp["display_exit_fix"] = nil
 	}
-	if s.FDB.DisplayExitFix1 {
+	if s.Scratchpad1.DisplayExitFix1 {
 		disp["display_exit_fix_1"] = nil
 	}
-	if s.FDB.DisplayExitGate {
+	if s.Scratchpad1.DisplayExitGate {
 		disp["display_exit_gate"] = nil
 	}
-	if s.FDB.DisplayAltExitGate {
+	if s.Scratchpad1.DisplayAltExitGate {
 		disp["display_alternate_exit_gate"] = nil
 	}
 	if len(disp) > 1 {
 		d := util.SortedMapKeys(disp)
 		d = util.MapSlice(d, func(s string) string { return `"` + s + `"` })
-		e.ErrorString("Cannot specify " + strings.Join(d, " and "))
+		e.ErrorString("Cannot specify " + strings.Join(d, " and ") + "for \"scratchpad1\"")
 	}
 
 	// Significant points
