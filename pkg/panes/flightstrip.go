@@ -6,13 +6,16 @@ package panes
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
@@ -48,6 +51,13 @@ type FlightStripPane struct {
 	scrollbar *ScrollBar
 
 	selectedAircraft string
+
+	// computer id number: 000-999
+	CIDs          map[string]int
+	AllocatedCIDs map[int]interface{}
+
+	// estimated departure/arrival or coordination time, depending
+	AircraftTimes map[string]time.Time
 }
 
 func init() {
@@ -70,6 +80,9 @@ func NewFlightStripPane() *FlightStripPane {
 		FontSize:           12,
 		selectedStrip:      -1,
 		selectedAnnotation: -1,
+		CIDs:               make(map[string]int),
+		AllocatedCIDs:      make(map[int]interface{}),
+		AircraftTimes:      make(map[string]time.Time),
 	}
 }
 
@@ -86,11 +99,60 @@ func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, e
 	if fsp.scrollbar == nil {
 		fsp.scrollbar = NewVerticalScrollBar(4, true)
 	}
+	if fsp.CIDs == nil {
+		fsp.CIDs = make(map[string]int)
+	}
+	if fsp.AllocatedCIDs == nil {
+		fsp.AllocatedCIDs = make(map[int]interface{})
+	}
+	if fsp.AircraftTimes == nil {
+		fsp.AircraftTimes = make(map[string]time.Time)
+	}
+
 	fsp.events = eventStream.Subscribe()
+}
+
+func (fsp *FlightStripPane) getCID(callsign string) int {
+	if id, ok := fsp.CIDs[callsign]; ok {
+		return id
+	}
+
+	// Find a free one. Start searching at a random offset.
+	start := rand.Intn(1000)
+	for i := range 1000 {
+		idx := (start + i) % 1000
+		if _, ok := fsp.AllocatedCIDs[idx]; !ok {
+			fsp.CIDs[callsign] = idx
+			fsp.AllocatedCIDs[idx] = nil
+			return idx
+		}
+	}
+	// Couldn't find one(?!)
+	fsp.CIDs[callsign] = start
+	return start
+}
+
+func (fsp *FlightStripPane) getAircraftTime(ctx *Context, callsign string) time.Time {
+	if t, ok := fsp.AircraftTimes[callsign]; ok {
+		return t
+	}
+
+	// Hallucinate a random time around the present for the aircraft.
+	delta := time.Duration(-20 + rand.Intn(40))
+	t := ctx.ControlClient.CurrentTime().Add(delta * time.Minute)
+	if rand.Intn(10) != 9 {
+		// 9 times out of 10, make it a multiple of 5 minutes
+		dm := t.Minute() % 5
+		t = t.Add(time.Duration(5-dm) * time.Minute)
+	}
+
+	fsp.AircraftTimes[callsign] = t
+	return t
 }
 
 func (fsp *FlightStripPane) possiblyAddAircraft(ss *sim.State, ac *av.Aircraft) {
 	if _, ok := fsp.addedAircraft[ac.Callsign]; ok {
+		// We've seen it before.
 		return
 	}
 	if ac.FlightPlan == nil {
@@ -124,22 +186,26 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 		fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 	}
 
-	// Removed aircraft
-	fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool {
-		_, ok := ctx.ControlClient.Aircraft[callsign]
-		return ok
-	})
-
 	remove := func(c string) {
 		fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool { return callsign != c })
 		if fsp.selectedAircraft == c {
 			fsp.selectedAircraft = ""
 		}
+		// Free up the CID
+		if cid, ok := fsp.CIDs[c]; ok {
+			delete(fsp.CIDs, c)
+			delete(fsp.AllocatedCIDs, cid)
+		}
+		delete(fsp.AircraftTimes, c)
 	}
 
 	for _, event := range fsp.events.Get() {
 		switch event.Type {
 		case sim.PushedFlightStripEvent:
+			// For all of these it's possible that we have an event for an
+			// aircraft that was deleted shortly afterward. So it's
+			// necessary to check that it's still in
+			// ControlClient.Aircraft.
 			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok && fsp.AddPushed {
 				fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 			}
@@ -168,7 +234,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 		}
 	}
 
-	// TODO: is this needed? Shouldn't there be a RemovedAircraftEvent?
+	// Remove ones that have been deleted.
 	fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool {
 		return ctx.ControlClient.Aircraft[callsign] != nil
 	})
@@ -225,34 +291,33 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	bx, _ := fsp.font.BoundText("X", 0)
 	fw, fh := float32(bx), float32(fsp.font.Size)
 
-	ctx.SetWindowCoordinateMatrices(cb)
-
-	// 4 lines of text, 2 lines on top and below for padding, 1 pixel separator line
+	// 3 lines of text, 2 lines on top and below for padding, 1 pixel separator line
 	vpad := float32(2)
-	stripHeight := 1 + 2*vpad + 4*fh
+	stripHeight := float32(int(1 + 2*vpad + 4*fh))
 
 	visibleStrips := int(ctx.PaneExtent.Height() / stripHeight)
 	fsp.scrollbar.Update(len(fsp.strips), visibleStrips, ctx)
 
 	indent := float32(int32(fw / 2))
-	// column widths
+	// column widths in pixels
 	width0 := 10 * fw
 	width1 := 6 * fw
-	width2 := 5 * fw
+	width2 := 6 * fw
 	widthAnn := 5 * fw
 
-	widthCenter := ctx.PaneExtent.Width() - width0 - width1 - width2 - 3*widthAnn
-	if fsp.scrollbar.Visible() {
-		widthCenter -= float32(fsp.scrollbar.PixelExtent())
-	}
-	if widthCenter < 0 {
-		// not sure what to do if it comes to this...
-		widthCenter = 20 * fw
-	}
-
+	// The full width in pixels we have for drawing flight strips.
 	drawWidth := ctx.PaneExtent.Width()
 	if fsp.scrollbar.Visible() {
 		drawWidth -= float32(fsp.scrollbar.PixelExtent())
+	}
+
+	// The width of the center region (where the route, etc., go) is set to
+	// take all of the space left after the fixed-width columns have taken
+	// their part.
+	widthCenter := drawWidth - width0 - width1 - width2 - 3*widthAnn
+	if widthCenter < 0 {
+		// not sure what to do if it comes to this...
+		widthCenter = 20 * fw
 	}
 
 	// This can happen if, for example, the last aircraft is selected and
@@ -265,6 +330,16 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		fsp.selectedStrip = len(fsp.strips) - 1
 	}
 
+	// Draw the background for all of them
+	qb := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(qb)
+	bgColor := renderer.RGB{.9, .9, .85}
+	y0, y1 := float32(0), float32(math.Min(len(fsp.strips), visibleStrips))*stripHeight-1
+	qb.AddQuad([2]float32{0, y0}, [2]float32{drawWidth, y0}, [2]float32{drawWidth, y1}, [2]float32{0, y1}, bgColor)
+
+	ctx.SetWindowCoordinateMatrices(cb)
+	qb.GenerateCommands(cb)
+
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	ld := renderer.GetLinesDrawBuilder()
@@ -273,8 +348,9 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	defer renderer.ReturnTrianglesDrawBuilder(trid)
 
 	// Draw from the bottom
+	style := renderer.TextStyle{Font: fsp.font, Color: renderer.RGB{.1, .1, .1}}
 	scrollOffset := fsp.scrollbar.Offset()
-	y := stripHeight - 1 - vpad
+	y := stripHeight - 1
 	for i := scrollOffset; i < math.Min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
 		callsign := fsp.strips[i]
 		strip := ctx.ControlClient.Aircraft[callsign].Strip
@@ -285,82 +361,123 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		}
 		fp := ac.FlightPlan
 
-		style := renderer.TextStyle{Font: fsp.font, Color: renderer.RGB{.1, .1, .1}}
+		x := float32(0)
 
-		// Draw background quad for this flight strip
-		qb := renderer.GetColoredTrianglesDrawBuilder()
-		defer renderer.ReturnColoredTrianglesDrawBuilder(qb)
-		bgColor := func() renderer.RGB {
-			/*if fsp.isDeparture(ac) {
-				return ctx.cs.DepartureStrip
-			} else {
-				return ctx.cs.ArrivalStrip
-			}*/
-			return renderer.RGB{.9, .9, .85}
-		}()
-		y0, y1 := y+1+vpad-stripHeight, y+1+vpad
-		qb.AddQuad([2]float32{0, y0}, [2]float32{drawWidth, y0}, [2]float32{drawWidth, y1}, [2]float32{0, y1}, bgColor)
-		qb.GenerateCommands(cb)
-
-		x := indent
-
-		// First column; 3 entries
-		td.AddText(callsign, [2]float32{x, y}, style)
-		if fp != nil {
-			td.AddText(fp.AircraftType, [2]float32{x, y - fh*3/2}, style)
-			td.AddText(fp.Rules.String(), [2]float32{x, y - fh*3}, style)
-		}
-		ld.AddLine([2]float32{width0, y}, [2]float32{width0, y - stripHeight})
-
-		// Second column; 3 entries
-		x += width0
-		td.AddText(ac.FlightPlan.AssignedSquawk.String(), [2]float32{x, y}, style)
-		td.AddText(strconv.Itoa(ac.TempAltitude), [2]float32{x, y - fh*3/2}, style)
-		if fp != nil {
-			td.AddText(strconv.Itoa(fp.Altitude), [2]float32{x, y - fh*3}, style)
-		}
-		ld.AddLine([2]float32{width0, y - 4./3.*fh}, [2]float32{width0 + width1, y - 4./3.*fh})
-		ld.AddLine([2]float32{width0, y - 8./3.*fh}, [2]float32{width0 + width1, y - 8./3.*fh})
-		ld.AddLine([2]float32{width0 + width1, y}, [2]float32{width0 + width1, y - stripHeight})
-
-		// Third column; (up to) 4 entries
-		x += width1
-		if fp != nil {
-			td.AddText(fp.DepartureAirport, [2]float32{x, y}, style)
-			td.AddText(fp.ArrivalAirport, [2]float32{x, y - fh}, style)
-			td.AddText(fp.AlternateAirport, [2]float32{x, y - 2*fh}, style)
-		}
-		td.AddText(ac.Scratchpad, [2]float32{x, y - 3*fh}, style)
-		ld.AddLine([2]float32{width0 + width1 + width2, y},
-			[2]float32{width0 + width1 + width2, y - stripHeight})
-
-		// Fourth column: route and remarks
-		x += width2
-		if fp != nil {
-			cols := int(widthCenter / fw)
-			// Line-wrap the route to fit the box and break it into lines.
-			route, _ := util.WrapText(fp.Route, cols, 2 /* indent */, true)
-			text := strings.Split(route, "\n")
-			// Add a blank line if the route only used one line.
-			if len(text) < 2 {
-				text = append(text, "")
+		drawColumn := func(line0, line1, line2 string, width float32, lines bool) {
+			td.AddText(line0, [2]float32{x + indent, y - vpad}, style)
+			td.AddText(line1, [2]float32{x + indent, y - vpad - stripHeight/3}, style)
+			td.AddText(line2, [2]float32{x + indent, y - vpad - stripHeight*2/3}, style)
+			// Line on the right
+			ld.AddLine([2]float32{x + width, y}, [2]float32{x + width, y - stripHeight})
+			if lines {
+				// Horizontal lines
+				ld.AddLine([2]float32{x, y - stripHeight/3}, [2]float32{x + width, y - stripHeight/3})
+				ld.AddLine([2]float32{x, y - stripHeight*2/3}, [2]float32{x + width, y - stripHeight*2/3})
 			}
-			// Similarly for the remarks
-			remarks, _ := util.WrapText(fp.Remarks, cols, 2 /* indent */, true)
-			text = append(text, strings.Split(remarks, "\n")...)
-			// Limit to the first four lines so we don't spill over.
-			if len(text) > 4 {
-				text = text[:4]
-			}
-			// Truncate all lines to the column limit; wrapText() lets things
-			// spill over if it's unable to break a long word by itself on a
-			// line, for example.
-			for i, line := range text {
-				if len(line) > cols {
-					text[i] = text[i][:cols]
+		}
+
+		formatRoute := func(route string, width float32, nlines int) []string {
+			// Lay the lines out, breaking at cols, but don't worry about
+			// having too many lines for now.
+			cols := int(width / fw)
+			var lines []string
+			var b strings.Builder
+			fixes := strings.Fields(route)
+			for _, fix := range fixes {
+				n := len(fix)
+				if n > 15 {
+					// Assume it's a latlong; skip it.
+					continue
 				}
+				if b.Len() > 0 {
+					// Space after the previous one on this line.
+					b.WriteByte(' ')
+				}
+				if b.Len()+n > cols {
+					// Would overflow the current line; start a new one.
+					lines = append(lines, b.String())
+					b.Reset()
+				}
+
+				b.WriteString(fix)
 			}
-			td.AddText(strings.Join(text, "\n"), [2]float32{x, y}, style)
+			if b.Len() > 0 {
+				lines = append(lines, b.String())
+			}
+
+			// Make sure we return at least the number of lines requested.
+			for len(lines) < nlines {
+				lines = append(lines, "")
+			}
+
+			if len(lines) > nlines && len(fixes) > 1 {
+				// We have too many lines. Go back and patch up the last
+				// line so that it has *** and the final fix at the end.
+				last := fixes[len(fixes)-1]
+				need := len(last) + 3
+				line := lines[nlines-1]
+				// Keep chopping the last fix off until we have enough space.
+				for len(line)+need > cols {
+					idx := strings.LastIndexByte(line, ' ')
+					if idx == -1 {
+						// We're down to an empty string; give up since
+						// we're inevitably going to overflow.
+						break
+					}
+					line = line[:idx]
+				}
+				lines[nlines-1] = line + "***" + last
+			}
+			return lines[:nlines]
+		}
+
+		// First column; 3 entries: callsign, aircraft type, 3-digit id number
+		cid := fmt.Sprintf("%03d", fsp.getCID(callsign))
+		drawColumn(callsign, ac.CWT()+"/"+fp.BaseType(), cid, width0, false)
+
+		x += width0
+		if ctx.ControlClient.State.IsDeparture(ac) {
+			// Second column; 3 entries: squawk, proposed time, requested altitude
+			proposedTime := "P" + fsp.getAircraftTime(ctx, callsign).UTC().Format("1504")
+			drawColumn(fp.AssignedSquawk.String(), proposedTime, strconv.Itoa(fp.Altitude/100),
+				width1, true)
+
+			// Third column: departure airport, (empty), (empty)
+			x += width1
+			// Departures
+			drawColumn(fp.DepartureAirport, "", "", width2, false)
+
+			x += width2
+			// Fourth column: route and destination airport
+			route := formatRoute(fp.Route+" "+fp.ArrivalAirport, widthCenter, 3)
+			drawColumn(route[0], route[1], route[2], widthCenter, false)
+		} else if ctx.ControlClient.State.IsArrival(ac) {
+			// Second column; 3 entries: squawk, previous fix, coordination fix
+			drawColumn(fp.AssignedSquawk.String(), "", "", width1, true)
+
+			x += width1
+			// Third column: eta of arrival at coordination fix / destination airport, empty, empty
+			arrivalTime := "A" + fsp.getAircraftTime(ctx, callsign).UTC().Format("1504")
+			drawColumn(arrivalTime, "", "", width2, false)
+
+			// Fourth column: IFR, destination airport
+			x += width2
+			drawColumn("IFR", "", fp.ArrivalAirport, widthCenter, false)
+		} else {
+			// Overflight
+			// Second column; 3 entries: squawk, entry fix, exit fix
+			drawColumn(fp.AssignedSquawk.String(), "", "", width1, true)
+
+			x += width1
+			// Third column: eta of arrival at entry coordination fix, empty, empty
+			arrivalTime := "E" + fsp.getAircraftTime(ctx, callsign).UTC().Format("1504")
+			drawColumn(arrivalTime, "", "", width2, false)
+
+			// Fourth column: altitude, route
+			x += width2
+			// TODO: e.g. "VFR/65" for altitude if it's VFR
+			route := formatRoute(fp.DepartureAirport+" "+fp.Route+" "+fp.ArrivalAirport, widthCenter, 2)
+			drawColumn(strconv.Itoa(fp.Altitude/100), route[0], route[1], widthCenter, false)
 		}
 
 		// Annotations
@@ -368,7 +485,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		var editResult int
 		for ai, ann := range strip.Annotations {
 			ix, iy := ai%3, ai/3
-			xp, yp := x+float32(ix)*widthAnn+indent, y-float32(iy)*1.5*fh
+			xp, yp := x+float32(ix)*widthAnn+indent, y-float32(iy)*stripHeight/3
 
 			if ctx.HaveFocus && fsp.selectedStrip == i && ai == fsp.selectedAnnotation {
 				// If were currently editing this annotation, don't draw it
@@ -407,8 +524,8 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		}
 
 		// Horizontal lines
-		ld.AddLine([2]float32{x, y - 4./3.*fh}, [2]float32{drawWidth, y - 4./3.*fh})
-		ld.AddLine([2]float32{x, y - 8./3.*fh}, [2]float32{drawWidth, y - 8./3.*fh})
+		ld.AddLine([2]float32{x, y - stripHeight/3}, [2]float32{drawWidth, y - stripHeight/3})
+		ld.AddLine([2]float32{x, y - stripHeight*2/3}, [2]float32{drawWidth, y - stripHeight*2/3})
 		// Vertical lines
 		for i := 0; i < 3; i++ {
 			xp := x + float32(i)*widthAnn
@@ -416,8 +533,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		}
 
 		// Line at the top
-		yl := y + 1 + vpad
-		ld.AddLine([2]float32{0, yl}, [2]float32{drawWidth, yl})
+		ld.AddLine([2]float32{0, y}, [2]float32{drawWidth, y})
 
 		y += stripHeight
 	}
