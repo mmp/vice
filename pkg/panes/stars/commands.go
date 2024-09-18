@@ -464,30 +464,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			return
 		}
 
-		f := strings.Fields(cmd)
-		if len(f) > 1 {
-			if f[0] == ".AUTOTRACK" && len(f) == 2 {
-				if f[1] == "NONE" {
-					sp.AutoTrackDepartures = false
-					status.clear = true
-					return
-				} else if f[1] == "ALL" {
-					sp.AutoTrackDepartures = true
-					status.clear = true
-					return
-				}
-			} else if f[0] == ".FIND" {
-				if pos, ok := ctx.ControlClient.Locate(f[1]); ok {
-					sp.highlightedLocation = pos
-					sp.highlightedLocationEndTime = ctx.Now.Add(5 * time.Second)
-					status.clear = true
-					return
-				} else {
-					status.err = ErrSTARSIllegalFix
-					return
-				}
-			}
-		}
 		if len(cmd) > 0 {
 			if cmd == "ALL" {
 				if ps.QuickLookAll && ps.QuickLookAllIsPlus {
