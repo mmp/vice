@@ -768,31 +768,35 @@ func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 
 ///////////////////////////////////////////////////////////////////////////
 // Other utilities
 
-// If the user has run the "find" command to highlight a point in the
-// world, draw a red circle around that point for a few seconds.
+// If distance to a significant point is being displayed or if the user has
+// run the "find" command to highlight a point in the world, draw a blinking
+// square at that point for a few seconds.
 func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	remaining := time.Until(sp.highlightedLocationEndTime)
 	if remaining < 0 {
 		return
 	}
 
-	color := panes.UIErrorColor
-	fade := 1.5
-	if sec := remaining.Seconds(); sec < fade {
-		x := float32(sec / fade)
-		color = renderer.LerpRGB(x, renderer.RGB{}, color)
+	// "The color of the blinking square is the same as that for blinking
+	// data block information"(?)
+	ps := sp.currentPrefs()
+	color := ps.Brightness.FullDatablocks.ScaleRGB(STARSUntrackedAircraftColor)
+	halfSeconds := ctx.Now.UnixMilli() / 500
+	blinkDim := halfSeconds&1 == 0
+	if blinkDim {
+		color = color.Scale(0.3)
 	}
 
 	p := transforms.WindowFromLatLongP(sp.highlightedLocation)
-	radius := float32(10) // 10 pixel radius
-	ld := renderer.GetLinesDrawBuilder()
-	defer renderer.ReturnLinesDrawBuilder(ld)
-	ld.AddCircle(p, radius, 360)
+	delta := float32(4)
+	td := renderer.GetTrianglesDrawBuilder()
+	defer renderer.ReturnTrianglesDrawBuilder(td)
+	td.AddQuad(math.Add2f(p, [2]float32{-delta, -delta}), math.Add2f(p, [2]float32{delta, -delta}),
+		math.Add2f(p, [2]float32{delta, delta}), math.Add2f(p, [2]float32{-delta, delta}))
 
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.SetRGB(color)
-	cb.LineWidth(2, ctx.DPIScale)
-	ld.GenerateCommands(cb)
+	td.GenerateCommands(cb)
 }
 
 // Draw all of the range-bearing lines that have been specified.
@@ -1721,4 +1725,98 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, visibleAircraft [
 		}
 	}
 	return
+}
+
+func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, ScopeTransformations) (status CommandStatus) {
+	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
+		if sp.wipRBL == nil {
+			// this shouldn't happen, but let's not crash if it does...
+			return
+		}
+
+		rbl := *sp.wipRBL
+		sp.wipRBL = nil
+		if ac, _ := sp.tryGetClosestAircraft(ctx, pw, transforms); ac != nil {
+			rbl.P[1].Callsign = ac.Callsign
+		} else {
+			rbl.P[1].Loc = transforms.LatLongFromWindowP(pw)
+		}
+		sp.RangeBearingLines = append(sp.RangeBearingLines, rbl)
+		status.clear = true
+		return
+	}
+}
+
+func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, sigpts map[string]sim.SignificantPoint,
+	nmPerLongitude, magneticVariation float32) (status CommandStatus) {
+	// Find the closest significant point to p1.
+	minDist := float32(1000000)
+	var closest *sim.SignificantPoint
+	for _, sigpt := range sigpts {
+		d := math.NMDistance2LL(sigpt.Location, p1)
+		if d < minDist {
+			minDist = d
+			closest = &sigpt
+		}
+	}
+
+	sp.wipSignificantPoint = nil
+	status.clear = true
+
+	if closest == nil {
+		// No significant points defined?
+		return
+	}
+
+	// Display a blinking square at the point
+	sp.highlightedLocation = closest.Location
+	sp.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
+
+	// 6-148
+	format := func(sig sim.SignificantPoint) string {
+		d := math.NMDistance2LL(p0, sig.Location)
+		str := ""
+		if d > 1 { // no bearing range if within 1nm
+			hdg := math.Heading2LL(p0, sig.Location, nmPerLongitude, magneticVariation)
+			str = fmt.Sprintf("%03d/%.2f ", int(hdg), d)
+		}
+
+		if sig.Description != "" {
+			return str + strings.ToUpper(sig.Description)
+		} else {
+			return str + sig.Name
+		}
+	}
+
+	str := format(*closest)
+
+	// Up to 5 additional, if they are within 1nm of the selected point
+	n := 0
+	for _, sig := range sigpts {
+		if sig.Name != closest.Name && math.NMDistance2LL(sig.Location, closest.Location) < 1 {
+			str += "\n" + format(sig)
+			n++
+			if n == 5 {
+				break
+			}
+		}
+	}
+
+	status.output = str
+
+	return
+}
+
+func toSignificantPointClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, ScopeTransformations) (status CommandStatus) {
+	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
+		if sp.wipSignificantPoint == nil {
+			status.clear = true
+			return
+		} else {
+			p1 := transforms.LatLongFromWindowP(pw)
+			return sp.displaySignificantPointInfo(*sp.wipSignificantPoint, p1,
+				ctx.ControlClient.STARSFacilityAdaptation.SignificantPoints, ctx.ControlClient.NmPerLongitude,
+				ctx.ControlClient.MagneticVariation)
+		}
+	}
 }

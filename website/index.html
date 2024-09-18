@@ -3671,7 +3671,37 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                 </tbody>
               </table>
+
+              <h3 id="range-bearing-significant-points">Significant Points</h3>
+
+            <p>There are a number of <i>significant points</i> associated with each TRACON;
+              these include arrival fixes and exits, airports in the TRACON and other relevant
+              fixes (e.g., those with predefined holds.)
+              STARS offers two commands that print the distance and heading from a selected point (e.g. an aircraft)
+              to a significant point.
+              </p>
               
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>*F[SLEW][SLEW]</code></td>
+                    <td>Shows the distance and heading from the first slewed point to the significant
+                    point closest to the second slewed point.</td>
+                  </tr>
+                  <tr>
+                    <td><code>*F[SLEW](FIX)</code></td>
+                    <td>Shows the distance and heading from the slewed point to the significant point identified
+                    by <code>(FIX)</code>.</td>
+                  </tr>
+                </tbody>
+              </table>
+
               <h3 id="airspace" class="section-heading">Airspace</h3>
               <p><i>Note: this feature is not present in real-world STARS.</i></p>
             <p>

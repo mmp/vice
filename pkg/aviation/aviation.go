@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 
@@ -1215,7 +1216,6 @@ func (c *MultiUserController) IsInboundController(group string) bool {
 
 type SquawkCodePool struct {
 	First, Last Squawk // inclusive range of codes
-	GetOffset   int
 	// Available squawk codes are represented by a bitset
 	AssignedBits []uint64
 }
@@ -1224,11 +1224,18 @@ func makePool(first, last int) *SquawkCodePool {
 	ncodes := last - first + 1
 	nalloc := (ncodes + 63) / 64
 
-	return &SquawkCodePool{
+	p := &SquawkCodePool{
 		First:        Squawk(first),
 		Last:         Squawk(last),
 		AssignedBits: make([]uint64, nalloc),
 	}
+
+	// Mark the excess invalid codes in the last entry of AssignedBits as
+	// taken so that we don't try to assign them later.
+	slop := ncodes % 64
+	p.AssignedBits[nalloc-1] = ^((1 << slop) - 1)
+
+	return p
 }
 
 func MakeCompleteSquawkCodePool() *SquawkCodePool {
@@ -1248,32 +1255,34 @@ func MakeSquawkBankCodePool(bank int) *SquawkCodePool {
 }
 
 func (p *SquawkCodePool) Get() (Squawk, error) {
+	start := rand.Intn(len(p.AssignedBits)) // random starting point in p.AssignedBits
+	rot := rand.Intn(64)                    // random rotation to randomize search start within each uint64
+
 	for i := range len(p.AssignedBits) {
-		// Start the search at p.GetOffset, then wrap around.
-		idx := (p.GetOffset + i) % len(p.AssignedBits)
+		// Start the search at start, then wrap around.
+		idx := (start + i) % len(p.AssignedBits)
 
 		if p.AssignedBits[idx] == ^uint64(0) {
-			// All are assigned in this chunk of 64.
+			// All are assigned in this chunk of 64 squawk codes.
 			continue
 		}
 
-		// "available" is a bit of a misnomer since we may have bits
-		// corresponding to invalid codes in the last entry.
+		// Flip it around and see which ones are available.
 		available := ^p.AssignedBits[idx]
-		// Pick the last set bit
-		bit := bits.TrailingZeros64(available)
 
-		sq := p.First + Squawk(64*idx+bit)
-		if sq <= p.Last {
-			// It is in fact in our range of valid codes; take it.
-			p.AssignedBits[idx] |= (1 << bit)
+		// Randomly rotate the bits so that when we start searching for a
+		// set bit starting from the low bit, we effectively randomize
+		// which bit index we're starting from.
+		available = bits.RotateLeft64(available, rot)
 
-			// Update GetOffset so that our next search starts from where
-			// we last successfully found an available code.
-			p.GetOffset = idx
+		// Find the last set bit and then map that back to a bit index in
+		// the unrotated bits.
+		bit := (bits.TrailingZeros64(available) + 64 - rot) % 64
 
-			return sq, nil
-		}
+		// Record that we've taken it
+		p.AssignedBits[idx] |= (1 << bit)
+
+		return p.First + Squawk(64*idx+bit), nil
 	}
 
 	return Squawk(0), ErrNoMoreAvailableSquawkCodes

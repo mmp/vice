@@ -166,6 +166,9 @@ type STARSPane struct {
 	// The start of a RBL--one click received, waiting for the second.
 	wipRBL *STARSRangeBearingLine
 
+	// First point clicked for display bearing/range to significant point.
+	wipSignificantPoint *math.Point2LL
+
 	audioEffects     map[AudioType]int // to handle from Platform.AddPCM()
 	testAudioEndTime time.Time
 

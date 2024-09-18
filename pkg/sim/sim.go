@@ -74,9 +74,11 @@ type LaunchConfig struct {
 
 	GoAroundRate float32
 	// airport -> runway -> category -> rate
-	DepartureRates map[string]map[string]map[string]int
+	DepartureRates     map[string]map[string]map[string]float32
+	DepartureRateScale float32
 	// inbound flow -> airport / "overflights" -> rate
-	InboundFlowRates            map[string]map[string]int
+	InboundFlowRates            map[string]map[string]float32
+	InboundFlowRateScale        float32
 	ArrivalPushes               bool
 	ArrivalPushFrequencyMinutes int
 	ArrivalPushLengthMinutes    int
@@ -85,48 +87,34 @@ type LaunchConfig struct {
 func MakeLaunchConfig(dep []ScenarioGroupDepartureRunway, inbound map[string]map[string]int) LaunchConfig {
 	lc := LaunchConfig{
 		GoAroundRate:                0.05,
-		InboundFlowRates:            inbound,
+		DepartureRateScale:          1,
+		InboundFlowRateScale:        1,
 		ArrivalPushFrequencyMinutes: 20,
 		ArrivalPushLengthMinutes:    10,
 	}
 
 	// Walk the departure runways to create the map for departures.
-	lc.DepartureRates = make(map[string]map[string]map[string]int)
+	lc.DepartureRates = make(map[string]map[string]map[string]float32)
 	for _, rwy := range dep {
 		if _, ok := lc.DepartureRates[rwy.Airport]; !ok {
-			lc.DepartureRates[rwy.Airport] = make(map[string]map[string]int)
+			lc.DepartureRates[rwy.Airport] = make(map[string]map[string]float32)
 		}
 		if _, ok := lc.DepartureRates[rwy.Airport][rwy.Runway]; !ok {
-			lc.DepartureRates[rwy.Airport][rwy.Runway] = make(map[string]int)
+			lc.DepartureRates[rwy.Airport][rwy.Runway] = make(map[string]float32)
 		}
-		lc.DepartureRates[rwy.Airport][rwy.Runway][rwy.Category] = rwy.DefaultRate
+		lc.DepartureRates[rwy.Airport][rwy.Runway][rwy.Category] = float32(rwy.DefaultRate)
+	}
+
+	// Convert the inbound map from int to float32 rates
+	lc.InboundFlowRates = make(map[string]map[string]float32)
+	for flow, airportOverflights := range inbound {
+		lc.InboundFlowRates[flow] = make(map[string]float32)
+		for name, rate := range airportOverflights {
+			lc.InboundFlowRates[flow][name] = float32(rate)
+		}
 	}
 
 	return lc
-}
-
-func (lc *LaunchConfig) DrawActiveDepartureRunways() {
-	var runways []string
-	for airport, runwayRates := range lc.DepartureRates {
-		for runway, categoryRates := range runwayRates {
-			for _, rate := range categoryRates {
-				if rate > 0 {
-					runways = append(runways, airport+"/"+runway)
-					break
-				}
-			}
-		}
-	}
-
-	if len(runways) > 0 {
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Departing:")
-		imgui.TableNextColumn()
-
-		sort.Strings(runways)
-		imgui.Text(strings.Join(runways, ", "))
-	}
 }
 
 func (lc *LaunchConfig) DrawDepartureUI(p platform.Platform) (changed bool) {
@@ -134,18 +122,18 @@ func (lc *LaunchConfig) DrawDepartureUI(p platform.Platform) (changed bool) {
 		return
 	}
 
-	sumRates := 0
-	for _, runwayRates := range lc.DepartureRates {
-		for _, categoryRates := range runwayRates {
-			for _, rate := range categoryRates {
-				sumRates += rate
-			}
-		}
-	}
-
 	imgui.Text("Departures")
 
-	imgui.Text(fmt.Sprintf("Overall departure rate: %d / hour", sumRates))
+	var sumRates float32
+	for _, rates := range lc.DepartureRates {
+		sumRates += sumRateMap2(rates, lc.DepartureRateScale)
+	}
+
+	imgui.Text(fmt.Sprintf("Overall departure rate: %d / hour", int(sumRates+0.5)))
+
+	// SliderFlagsNoInput is more or less a hack to prevent keyboard focus
+	// from being here initially.
+	changed = imgui.SliderFloatV("Departure rate scale", &lc.DepartureRateScale, 0, 5, "%.1f", imgui.SliderFlagsNoInput) || changed
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
@@ -178,9 +166,11 @@ func (lc *LaunchConfig) DrawDepartureUI(p platform.Platform) (changed bool) {
 					}
 					imgui.TableNextColumn()
 
-					r := int32(lc.DepartureRates[airport][runway][category])
-					changed = imgui.InputIntV("##adr", &r, 0, 120, 0) || changed
-					lc.DepartureRates[airport][runway][category] = int(r)
+					r := int32(lc.DepartureRateScale*lc.DepartureRates[airport][runway][category] + 0.5)
+					if imgui.InputIntV("##adr", &r, 0, 120, 0) {
+						lc.DepartureRates[airport][runway][category] = float32(r) / lc.DepartureRateScale
+						changed = true
+					}
 
 					imgui.PopID()
 				}
@@ -199,9 +189,10 @@ func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 	// Figure out how many unique airports we've got for AAR columns in the table
 	// and also sum up the overall arrival rate
 	allAirports := make(map[string]interface{})
-	sumRates := 0
+	var sumRates float32
 	for _, agr := range lc.InboundFlowRates {
 		for ap, rate := range agr {
+			rate = scaleRate(rate, lc.InboundFlowRateScale)
 			if ap != "overflights" {
 				allAirports[ap] = nil
 				sumRates += rate
@@ -213,7 +204,10 @@ func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 	}
 
 	imgui.Text("Arrivals")
-	imgui.Text(fmt.Sprintf("Overall arrival rate: %d / hour", sumRates))
+	imgui.Text(fmt.Sprintf("Overall arrival rate: %d / hour", int(sumRates+0.5)))
+
+	changed = imgui.SliderFloatV("Arrival/overflight rate scale", &lc.InboundFlowRateScale, 0, 5, "%.1f", imgui.SliderFlagsNoInput) || changed
+
 	changed = imgui.SliderFloatV("Go around probability", &lc.GoAroundRate, 0, 1, "%.02f", 0) || changed
 
 	changed = imgui.Checkbox("Include random arrival pushes", &lc.ArrivalPushes) || changed
@@ -234,10 +228,10 @@ func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 		imgui.TableSetupColumn("AAR")
 		imgui.TableHeadersRow()
 
-		for _, group := range util.SortedMapKeys(lc.InboundFlowRates) {
-			imgui.PushID(group)
-			for _, ap := range util.SortedMapKeys(allAirports) {
-				imgui.PushID(ap)
+		for _, ap := range util.SortedMapKeys(allAirports) {
+			imgui.PushID(ap)
+			for _, group := range util.SortedMapKeys(lc.InboundFlowRates) {
+				imgui.PushID(group)
 				if rate, ok := lc.InboundFlowRates[group][ap]; ok {
 					imgui.TableNextRow()
 					imgui.TableNextColumn()
@@ -245,9 +239,11 @@ func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 					imgui.TableNextColumn()
 					imgui.Text(group)
 					imgui.TableNextColumn()
-					r := int32(rate)
-					changed = imgui.InputIntV("##aar-"+ap, &r, 0, 120, 0) || changed
-					lc.InboundFlowRates[group][ap] = int(r)
+					r := int32(rate*lc.InboundFlowRateScale + 0.5)
+					if imgui.InputIntV("##aar-"+ap, &r, 0, 120, 0) {
+						changed = true
+						lc.InboundFlowRates[group][ap] = float32(r) / lc.InboundFlowRateScale
+					}
 				}
 				imgui.PopID()
 			}
@@ -264,19 +260,20 @@ func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 func (lc *LaunchConfig) DrawOverflightUI(p platform.Platform) (changed bool) {
 	// Sum up the overall overflight rate
 	overflightGroups := make(map[string]interface{})
-	sumRates := 0
+	var sumRates float32
 	for group, rates := range lc.InboundFlowRates {
 		if rate, ok := rates["overflights"]; ok {
+			rate = scaleRate(rate, lc.InboundFlowRateScale)
 			sumRates += rate
 			overflightGroups[group] = nil
 		}
 	}
-	if sumRates == 0 {
+	if len(overflightGroups) == 0 {
 		return
 	}
 
 	imgui.Text("Overflights")
-	imgui.Text(fmt.Sprintf("Overall overflight rate: %d / hour", sumRates))
+	imgui.Text(fmt.Sprintf("Overall overflight rate: %d / hour", int(sumRates+0.5)))
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
@@ -291,9 +288,11 @@ func (lc *LaunchConfig) DrawOverflightUI(p platform.Platform) (changed bool) {
 			imgui.TableNextColumn()
 			imgui.Text(group)
 			imgui.TableNextColumn()
-			r := int32(lc.InboundFlowRates[group]["overflights"])
-			changed = imgui.InputIntV("##of", &r, 0, 120, 0) || changed
-			lc.InboundFlowRates[group]["overflights"] = int(r)
+			r := int32(lc.InboundFlowRates[group]["overflights"]*lc.InboundFlowRateScale + 0.5)
+			if imgui.InputIntV("##of", &r, 0, 120, 0) {
+				changed = true
+				lc.InboundFlowRates[group]["overflights"] = float32(r) / lc.InboundFlowRateScale
+			}
 			imgui.PopID()
 		}
 		imgui.EndTable()
@@ -619,8 +618,6 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.Text("Control Position:")
 			imgui.TableNextColumn()
 			imgui.Text(c.Scenario.SelectedController)
-
-			c.Scenario.LaunchConfig.DrawActiveDepartureRunways()
 
 			if len(c.Scenario.ArrivalRunways) > 0 {
 				imgui.TableNextRow()
@@ -1631,19 +1628,20 @@ func (s *Sim) prespawn() {
 func (s *Sim) setInitialSpawnTimes() {
 	// Randomize next spawn time for departures and arrivals; may be before
 	// or after the current time.
-	randomDelay := func(rate int) time.Time {
+	randomDelay := func(rate float32) time.Time {
 		if rate == 0 {
 			return time.Now().Add(365 * 24 * time.Hour)
 		}
-		avgWait := 3600 / rate
+		avgWait := int(3600 / rate)
 		delta := rand.Intn(avgWait) - avgWait/2 - initialSimSeconds
 		return time.Now().Add(time.Duration(delta) * time.Second)
 	}
 
 	s.NextInboundSpawn = make(map[string]time.Time)
 	for group, rates := range s.LaunchConfig.InboundFlowRates {
-		rateSum := 0
+		var rateSum float32
 		for _, rate := range rates {
+			rate = scaleRate(rate, s.LaunchConfig.InboundFlowRateScale)
 			rateSum += rate
 		}
 		s.NextInboundSpawn[group] = randomDelay(rateSum)
@@ -1651,33 +1649,60 @@ func (s *Sim) setInitialSpawnTimes() {
 
 	s.NextDepartureLaunch = make(map[string]time.Time)
 	for airport, runwayRates := range s.LaunchConfig.DepartureRates {
-		r := sumDepartureRates(runwayRates)
+		r := sumRateMap2(runwayRates, s.LaunchConfig.DepartureRateScale)
 		s.NextDepartureLaunch[airport] = randomDelay(r)
 	}
 }
 
-func sumDepartureRates(rates map[string]map[string]int) int {
-	sum := 0
+func scaleRate(rate, scale float32) float32 {
+	rate *= scale
+	if rate <= 0.5 {
+		// Since we round to the nearest int when displaying rates in the UI,
+		// we don't want to ever launch for ones that have rate 0.
+		return 0
+	}
+	return rate
+}
+
+func sumRateMap2(rates map[string]map[string]float32, scale float32) float32 {
+	var sum float32
 	for _, categoryRates := range rates {
 		for _, rate := range categoryRates {
-			sum += rate
+			sum += scaleRate(rate, scale)
 		}
 	}
 	return sum
 }
 
-func sampleRateMap2(rates map[string]map[string]int) (string, string, int) {
+// sampleRateMap randomly samples elements from a map of some type T to a
+// rate with probability proportional to the element's rate.
+func sampleRateMap[T comparable](rates map[T]float32, scale float32) (T, float32) {
+	var rateSum float32
+	var result T
+	for item, rate := range rates {
+		rate = scaleRate(rate, scale)
+		rateSum += rate
+		// Weighted reservoir sampling...
+		if rateSum == 0 || rand.Float32() < rate/rateSum {
+			result = item
+		}
+	}
+	return result, rateSum
+}
+
+func sampleRateMap2(rates map[string]map[string]float32, scale float32) (string, string, float32) {
 	// Choose randomly in proportion to the rates in the map
-	rateSum := 0
+	var rateSum float32
 	var result0, result1 string
 	for item0, rateMap := range rates {
 		for item1, rate := range rateMap {
+			rate = scaleRate(rate, scale)
 			if rate == 0 {
 				continue
 			}
 			rateSum += rate
 			// Weighted reservoir sampling...
-			if rand.Float32() < float32(rate)/float32(rateSum) {
+			if rand.Float32() < rate/rateSum {
 				result0 = item0
 				result1 = item1
 			}
@@ -1686,7 +1711,7 @@ func sampleRateMap2(rates map[string]map[string]int) (string, string, int) {
 	return result0, result1, rateSum
 }
 
-func randomWait(rate int, pushActive bool) time.Duration {
+func randomWait(rate float32, pushActive bool) time.Duration {
 	if rate == 0 {
 		return 365 * 24 * time.Hour
 	}
@@ -1694,7 +1719,7 @@ func randomWait(rate int, pushActive bool) time.Duration {
 		rate = rate * 3 / 2
 	}
 
-	avgSeconds := 3600 / float32(rate)
+	avgSeconds := 3600 / rate
 	seconds := math.Lerp(rand.Float32(), .85*avgSeconds, 1.15*avgSeconds)
 	return time.Duration(seconds * float32(time.Second))
 }
@@ -1725,7 +1750,7 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 
 	for group, rates := range s.LaunchConfig.InboundFlowRates {
 		if now.After(s.NextInboundSpawn[group]) {
-			flow, rateSum := rand.SampleRateMap(rates)
+			flow, rateSum := sampleRateMap(rates, s.LaunchConfig.InboundFlowRateScale)
 
 			var ac *av.Aircraft
 			var err error
@@ -1788,7 +1813,7 @@ func (s *Sim) spawnDepartures() {
 		s.DeparturePool[airport] = pool[1:]
 
 		// And figure out when we want to ask for the next departure.
-		r := sumDepartureRates(s.LaunchConfig.DepartureRates[airport])
+		r := sumRateMap2(s.LaunchConfig.DepartureRates[airport], s.LaunchConfig.DepartureRateScale)
 		s.NextDepartureLaunch[airport] = now.Add(randomWait(r, false))
 	}
 }
@@ -1822,11 +1847,6 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft) time.Duration {
 		return 0
 	}
 
-	// Same exit
-	if pac.FlightPlan.Exit == cac.FlightPlan.Exit {
-		return 3 * time.Minute // approx 10 MIT
-	}
-
 	// FIXME: for now we assume we can launch on different runways
 	// independently.
 	if prev.Runway != cur.Runway {
@@ -1855,7 +1875,7 @@ loop:
 
 		for len(pool) < 5 {
 			// Figure out which category to generate.
-			runway, category, rateSum := sampleRateMap2(rates)
+			runway, category, rateSum := sampleRateMap2(rates, s.LaunchConfig.DepartureRateScale)
 			if rateSum == 0 {
 				// The airport currently has a 0 departure rate.
 				continue loop
@@ -1978,27 +1998,33 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 	} else {
 		// Update the next spawn time for any rates that changed.
 		for ap, rwyRates := range lc.DepartureRates {
-			newSum, oldSum := 0, 0
+			var newSum, oldSum float32
 			for rwy, categoryRates := range rwyRates {
 				for category, rate := range categoryRates {
 					newSum += rate
 					oldSum += s.LaunchConfig.DepartureRates[ap][rwy][category]
 				}
 			}
+			newSum *= lc.DepartureRateScale
+			oldSum *= s.LaunchConfig.DepartureRateScale
+
 			if newSum != oldSum {
-				s.lg.Infof("%s: departure rate changed %d -> %d", ap, oldSum, newSum)
+				s.lg.Infof("%s: departure rate changed %f -> %f", ap, oldSum, newSum)
 				s.NextDepartureLaunch[ap] = s.SimTime.Add(randomWait(newSum, false))
 			}
 		}
 		for group, groupRates := range lc.InboundFlowRates {
-			newSum, oldSum := 0, 0
+			var newSum, oldSum float32
 			for ap, rate := range groupRates {
 				newSum += rate
 				oldSum += s.LaunchConfig.InboundFlowRates[group][ap]
 			}
+			newSum *= lc.InboundFlowRateScale
+			oldSum *= s.LaunchConfig.InboundFlowRateScale
+
 			if newSum != oldSum {
 				pushActive := s.SimTime.Before(s.PushEnd)
-				s.lg.Infof("%s: inbound flow rate changed %d -> %d", group, oldSum, newSum)
+				s.lg.Infof("%s: inbound flow rate changed %f -> %f", group, oldSum, newSum)
 				s.NextInboundSpawn[group] = s.SimTime.Add(randomWait(newSum, pushActive))
 			}
 		}
