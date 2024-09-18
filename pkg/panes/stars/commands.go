@@ -236,7 +236,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				return ctx.ControlClient.Aircraft[sp.TabListAircraft[idx]]
 			}
 
-			if trk := ctx.ControlClient.STARSComputer(ctx.ControlClient.TRACON).LookupTrackIndex(idx); trk != nil {
+			if trk := ctx.ControlClient.STARSComputer().LookupTrackIndex(idx); trk != nil {
 				// May be nil, but this is our last option
 				return ctx.ControlClient.Aircraft[trk.Identifier]
 			}
@@ -516,7 +516,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				return
 			} else {
 				// Is it an abbreviated flight plan?
-				fp, err := sim.MakeSTARSFlightPlanFromAbbreviated(cmd, ctx.ControlClient.STARSComputer(ctx.ControlClient.TRACON),
+				fp, err := sim.MakeSTARSFlightPlanFromAbbreviated(cmd, ctx.ControlClient.STARSComputer(),
 					ctx.ControlClient.STARSFacilityAdaptation)
 				if fp != nil {
 					ctx.ControlClient.UploadFlightPlan(fp, sim.LocalNonEnroute, nil,
@@ -1642,7 +1642,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 	case CommandModeReleaseDeparture:
 		// 5-45
-		rel := ctx.ControlClient.State.GetReleaseDepartures(ctx.ControlClient.TRACON)
+		rel := ctx.ControlClient.State.GetReleaseDepartures()
 
 		// Filter out the ones that have been released and then deleted
 		// from the coordination list by the controller.
@@ -1754,7 +1754,7 @@ func (sp *STARSPane) autoReleaseDepartures(ctx *panes.Context) {
 	}
 
 	ps := sp.currentPrefs()
-	releaseAircraft := ctx.ControlClient.State.GetReleaseDepartures(ctx.ControlClient.TRACON)
+	releaseAircraft := ctx.ControlClient.State.GetReleaseDepartures()
 
 	fa := ctx.ControlClient.STARSFacilityAdaptation
 	for _, list := range fa.CoordinationLists {
@@ -1934,7 +1934,7 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *panes.Context, callsign string, di
 func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string) {
 	// TODO: should we actually be looking up the flight plan on the server
 	// side anyway?
-	fp, err := ctx.ControlClient.STARSComputer(ctx.ControlClient.TRACON).GetFlightPlan(callsign)
+	fp, err := ctx.ControlClient.STARSComputer().GetFlightPlan(callsign)
 	if err != nil {
 		// TODO: do what here?
 	}

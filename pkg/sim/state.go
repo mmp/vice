@@ -372,8 +372,8 @@ func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 	}
 }
 
-func (ss *State) GetReleaseDepartures(fac string) []*av.Aircraft {
-	return util.FilterSlice(ss.STARSComputer(fac).GetReleaseDepartures(),
+func (ss *State) GetReleaseDepartures() []*av.Aircraft {
+	return util.FilterSlice(ss.STARSComputer().GetReleaseDepartures(),
 		func(ac *av.Aircraft) bool {
 			// When ControlClient DeleteAllAircraft() is called, we do our usual trick of
 			// making the update locally pending the next update from the server. However, it
@@ -471,12 +471,12 @@ func (ss *State) DeleteAircraft(ac *av.Aircraft) {
 	ss.ERAMComputers.CompletelyDeleteAircraft(ac)
 }
 
-func (ss *State) STARSComputer(fac string) *STARSComputer {
-	_, stars, _ := ss.ERAMComputers.FacilityComputers(fac)
+func (ss *State) STARSComputer() *STARSComputer {
+	_, stars, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
 	return stars
 }
 
-func (ss *State) ERAMComputer(fac string) *ERAMComputer {
-	eram, _, _ := ss.ERAMComputers.FacilityComputers(fac)
+func (ss *State) ERAMComputer() *ERAMComputer {
+	eram, _, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
 	return eram
 }
