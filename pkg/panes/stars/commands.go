@@ -95,6 +95,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			// the user is mashing escape to get out of one.
 			sp.disableMenuSpinner(ctx)
 			sp.wipRBL = nil
+			sp.wipSignificantPoint = nil
 		case platform.KeyF1:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) {
 				// Recenter
@@ -448,6 +449,17 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				}
 			} else {
 				status.err = ErrSTARSIllegalFix
+			}
+			return
+		}
+
+		if len(cmd) > 3 && cmd[:3] == "*F " && sp.wipSignificantPoint != nil {
+			if sig, ok := ctx.ControlClient.STARSFacilityAdaptation.SignificantPoints[cmd[3:]]; ok {
+				status = sp.displaySignificantPointInfo(*sp.wipSignificantPoint, sig.Location,
+					ctx.ControlClient.STARSFacilityAdaptation.SignificantPoints, ctx.ControlClient.NmPerLongitude,
+					ctx.ControlClient.MagneticVariation)
+			} else {
+				status.err = ErrSTARSCommandFormat
 			}
 			return
 		}
@@ -2210,6 +2222,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				fmt.Println(spew.Sdump(ac) + "\n" + ac.Nav.FlightState.Summary())
 				status.clear = true
 				return
+			} else if cmd == "*F" {
+				// 6-148 range/bearing to significant point
+				p := state.TrackPosition()
+				sp.wipSignificantPoint = &p
+				sp.scopeClickHandler = toSignificantPointClickHandler(ctx, sp)
+				sp.previewAreaInput += " " // sort of a hack: if the fix is entered via keyboard, it appears on the next line
+				return
 			} else if cmd == "*J" {
 				// remove j-ring for aircraft
 				state.JRingRadius = 0
@@ -2748,13 +2767,19 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 	// No aircraft selected
 	if sp.commandMode == CommandModeNone {
-		if cmd == "*T" {
+		if cmd == "*F" {
+			// 6-148 range/bearing to significant point
+			p := transforms.LatLongFromWindowP(mousePosition)
+			sp.wipSignificantPoint = &p
+			sp.scopeClickHandler = toSignificantPointClickHandler(ctx, sp)
+			sp.previewAreaInput += " " // sort of a hack: if the fix is entered via keyboard, it appears on the next line
+			return
+		} else if cmd == "*T" {
 			sp.wipRBL = &STARSRangeBearingLine{}
 			sp.wipRBL.P[0].Loc = transforms.LatLongFromWindowP(mousePosition)
 			sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
 			return
-		}
-		if sp.capture.enabled {
+		} else if sp.capture.enabled {
 			if cmd == "CR" {
 				sp.capture.specifyingRegion = true
 				sp.capture.region[0] = mousePosition
@@ -3052,6 +3077,9 @@ func (sp *STARSPane) resetInputState() {
 	sp.previewAreaOutput = ""
 	sp.commandMode = CommandModeNone
 	sp.multiFuncPrefix = ""
+
+	sp.wipRBL = nil
+	sp.wipSignificantPoint = nil
 
 	sp.scopeClickHandler = nil
 	sp.selectedPlaceButton = ""

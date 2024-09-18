@@ -1746,3 +1746,77 @@ func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, S
 		return
 	}
 }
+
+func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, sigpts map[string]sim.SignificantPoint,
+	nmPerLongitude, magneticVariation float32) (status CommandStatus) {
+	// Find the closest significant point to p1.
+	minDist := float32(1000000)
+	var closest *sim.SignificantPoint
+	for _, sigpt := range sigpts {
+		d := math.NMDistance2LL(sigpt.Location, p1)
+		if d < minDist {
+			minDist = d
+			closest = &sigpt
+		}
+	}
+
+	sp.wipSignificantPoint = nil
+	status.clear = true
+
+	if closest == nil {
+		// No significant points defined?
+		return
+	}
+
+	// Display a blinking square at the point
+	sp.highlightedLocation = closest.Location
+	sp.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
+
+	// 6-148
+	format := func(sig sim.SignificantPoint) string {
+		d := math.NMDistance2LL(p0, sig.Location)
+		str := ""
+		if d > 1 { // no bearing range if within 1nm
+			hdg := math.Heading2LL(p0, sig.Location, nmPerLongitude, magneticVariation)
+			str = fmt.Sprintf("%03d/%.2f ", int(hdg), d)
+		}
+
+		if sig.Description != "" {
+			return str + strings.ToUpper(sig.Description)
+		} else {
+			return str + sig.Name
+		}
+	}
+
+	str := format(*closest)
+
+	// Up to 5 additional, if they are within 1nm of the selected point
+	n := 0
+	for _, sig := range sigpts {
+		if sig.Name != closest.Name && math.NMDistance2LL(sig.Location, closest.Location) < 1 {
+			str += "\n" + format(sig)
+			n++
+			if n == 5 {
+				break
+			}
+		}
+	}
+
+	status.output = str
+
+	return
+}
+
+func toSignificantPointClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, ScopeTransformations) (status CommandStatus) {
+	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
+		if sp.wipSignificantPoint == nil {
+			status.clear = true
+			return
+		} else {
+			p1 := transforms.LatLongFromWindowP(pw)
+			return sp.displaySignificantPointInfo(*sp.wipSignificantPoint, p1,
+				ctx.ControlClient.STARSFacilityAdaptation.SignificantPoints, ctx.ControlClient.NmPerLongitude,
+				ctx.ControlClient.MagneticVariation)
+		}
+	}
+}
