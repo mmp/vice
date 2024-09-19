@@ -798,6 +798,34 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
+            <h3>0.11.5 (19 September 2024)</h3>
+            <ul>
+              <li>Scenario updates: D10 (Austin Jenkins), EWR (Mike LeGall), CID (Tyler T), AAC.</li>
+              <li>Massive update to the aircraft performance database (EkimWasHere).</li>
+              <li>The virtual local controllers now actively try to sequence departures well, including
+                getting wake turbulence separation right.</li>
+              <li>Multiple improvements to the aircraft flight model, including better handling of 250kts at 10,000',
+                more realistic climb/descent and acceleration/deceleration profiles.</li>
+              <li>STARS:
+                <ul>
+                  <li>Added support for coordination lists (used for "hold for release").</li>
+                  <li>Added support for significant points, including *F command to show bearing/distance to them.</li>
+                  <li>Fixed a number of small errors in system lists.</li>
+                  <li>Improved handling of preference sets: a separate one is stored for each TRACON.</li>
+                </ul>
+              </li>
+              <li>Multiple improvements to the accuracy of flight strips.</li>
+              <li>Added global scale controls for departure and arrival/overflight rates.</li>
+              <li>Facility engineering:
+                <ul>
+                  <li>Added "scratchpad1" adaptation to "stars_config", providing 4 preset scratchpad formats for departures.</li>
+                  <li>In "expect_approach" in STARs, different approaches can be specified depending on the destination airport.</li>
+                  <li>An array of altitudes may be specified for departures and overflights; one will be chosen at random for each aircraft.</li>
+                  <li>For GA ("n" airline) aircraft, "GAsinglepiston", "GAmultipiston", and "GAturbine" fleets are now available.</li>
+                </ul>
+              </li>
+            </ul>
+
             <h3>0.11.4 (24 August 2024)</h3>
             <ul>
               <li>Fixed a crash loading saved scenarios from the last release.</li>
