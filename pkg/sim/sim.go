@@ -2352,13 +2352,17 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 			if haveControl {
 				ac.ControllingController = ctrl.Callsign
 			}
-
-			if err := s.State.STARSComputer().InitiateTrack(callsign, ctrl.Callsign, fp, haveControl); err != nil {
-				//s.lg.Errorf("InitiateTrack: %v", err)
+			if strings.HasSuffix(ctrl.Callsign, "CTR") { // If a center ICs, it will update ERAM track info
+				if err := s.State.ERAMComputer().InitiateTrack(callsign, ctrl.Callsign, fp); err != nil {
+					// s.lg.Errorf("InitiateTrack: %v", err)
+				}
+			} else { // ERAM track info wont get updated by a STARS handoff unless it's to that ERAM facility. 
+				if err := s.State.STARSComputer().InitiateTrack(callsign, ctrl.Callsign, fp, haveControl); err != nil {
+					// s.lg.Errorf("InitiateTrack: %v", err)
+				}
 			}
-			if err := s.State.ERAMComputer().InitiateTrack(callsign, ctrl.Callsign, fp); err != nil {
-				//s.lg.Errorf("InitiateTrack: %v", err)
-			}
+			
+			
 
 			s.eventStream.Post(Event{
 				Type:         InitiatedTrackEvent,
