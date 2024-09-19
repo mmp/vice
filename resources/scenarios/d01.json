@@ -187,7 +187,7 @@
             "departure_routes": {
                 "8": {
                     "TEHRU,HBU": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "BAYLR6",
                         "waypoints": "_DEN_26/h185"
                     },
@@ -197,24 +197,24 @@
                         "waypoints": "ROYYL/a10000- TURBN CHICN/a14000+ VELAA/a16000+ YOKES/a17000+ LNGWD"
                     },
                     "WERNR,CONNR": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "CONNR7",
                         "waypoints": "_DEN_26/h185"
                     },
                     "VOAXA": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "COORZ6",
                         "waypoints": "_DEN_26/h085"
                     },
 					"LUFSE": {
                         "cleared_altitude": 10000,
                         "sid": "DEN2",
-                        "waypoints": "_DEN_26/h105"
+                        "waypoints": "_DEN_26/h105 LUFSE V389 ADANE BRK/delete"
                     },
 					"GLL": {
                         "cleared_altitude": 10000,
                         "sid": "DEN2",
-                        "waypoints": "_DEN_26/h065"
+                        "waypoints": "_DEN_26/h065 GLL V89 CYS/delete"
                     },
                     "DDRTH": {
                         "cleared_altitude": 23000,
@@ -254,7 +254,7 @@
                     "SLEEK": {
                         "cleared_altitude": 23000,
                         "sid": "SLEEK2",
-                        "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+ SEGAH/a16000+ BCORP/a17000+ STAKR/a18000+ AZARO"
+                        "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+ SEGAH/a16000+ STAKR/a18000+ AZARO"
                     },
                     "DAAYE,RAITT": {
                         "cleared_altitude": 23000,
@@ -266,13 +266,13 @@
                         "sid": "SUDDZ1",
                         "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+ HANGR/a16000+ SCAGS/a18000+ FRNKE/a23000+"
                     },
-                    "XXWNG1": {
+                    "XXWNG": {
                         "cleared_altitude": 23000,
                         "sid": "XXWNG1",
                         "waypoints": "ROYYL/a10000- TURBN CHICN/a14000+ FAARM/a16000+ RIKKK/a17000+"
                     },
                     "CHNGY": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "ZIMMR3",
                         "waypoints": "_DEN_26/h335"
                     }
@@ -301,12 +301,12 @@
 					"LUFSE": {
                         "cleared_altitude": 10000,
                         "sid": "DEN2",
-                        "waypoints": "_DEN_7/h245"
+                        "waypoints": "_DEN_7/h245 LUFSE V389 ADANE BRK/delete"
                     },
 					"GLL": {
                         "cleared_altitude": 10000,
                         "sid": "DEN2",
-                        "waypoints": "_DEN_7/h290"
+                        "waypoints": "_DEN_7/h290 GLL V89 CYS/delete"
                     },
                     "DDRTH": {
                         "cleared_altitude": 23000,
@@ -314,22 +314,22 @@
                         "waypoints": "MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ HERDR/a16000+ TROTO YAMMI/a17000+"
                     },
                     "EEONS,WYNDM": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "EEONS8",
                         "waypoints": "_DEN_7/h025"
                     },
                     "EMMYS,ZIRKL": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "EMMYS8",
                         "waypoints": "_DEN_7/h025"
                     },
                     "GAETR,DUUZE": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "EPKEE7",
                         "waypoints": "_DEN_7/h105"
                     },
                     "SHAYK,EXTAN": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "EXTAN7",
                         "waypoints": "_DEN_7/h105"
                     },
@@ -356,12 +356,12 @@
                     "SUDDZ": {
                         "cleared_altitude": 23000,
                         "sid": "SUDDZ1",
-                        "waypoints": "BRKEM/a10000- LENNN/a11000 TIKLR CIROS/a16000 RKYMT/a18000 SCAGS/a21000 FRNKE"
+                        "waypoints": "BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ RKYMT/a16000+ SCAGS/a18000+ FRNKE/a23000+"
                     },
-                    "XXWNG1": {
+                    "XXWNG": {
                         "cleared_altitude": 23000,
                         "sid": "XXWNG1",
-                        "waypoints": "MUGBE/a10000- WAZEE LODOE/a13000 RINKR/a15000 HERDR/a17000 RIKKK/a17000+"
+                        "waypoints": "MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ HERDR/a16000+ RIKKK/a17000+"
                     },
                     "CHNGY": {
                         "cleared_altitude": 23000,
@@ -376,7 +376,7 @@
                         "waypoints": "GOROC BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
                     },
                     "CHUWY": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "CHUWY1",
                         "waypoints": "_DEN_35R/h095"
                     },
@@ -393,15 +393,15 @@
 					"LUFSE": {
                         "cleared_altitude": 10000,
                         "sid": "DEN2",
-                        "waypoints": "_DEN_35R/h135"
+                        "waypoints": "_DEN_35R/h135 LUFSE V389 ADANE BRK/delete"
                     },
 					"GLL": {
                         "cleared_altitude": 10000,
                         "sid": "DEN2",
-                        "waypoints": "_DEN_35R/h135"
+                        "waypoints": "_DEN_35R/h135 GLL V89 CYS/delete"
                     },
                     "DDRTH": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "DDRTH1",
                         "waypoints": "_DEN_35R/h065"
                     },
@@ -426,7 +426,7 @@
                         "waypoints": "GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ EXTAN"
                     },
                     "JOBBA,SAABR": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "HHOTH2",
                         "waypoints": "_DEN_35R/h065"
                     },
@@ -443,15 +443,15 @@
                     "DAAYE,RAITT": {
                         "cleared_altitude": 23000,
                         "sid": "SMMUR2",
-                        "waypoints": "RAYDR/a10000- SIGHT/a10000+ SOLAR/a17000+ SMMUR"
+                        "waypoints": "RAYDR/a10000- SIGHT/a10000+ SCRCY/a12000+ SOLAR/a17000+ SMMUR"
                     },
                     "SUDDZ": {
                         "cleared_altitude": 23000,
                         "sid": "SUDDZ1",
-                        "waypoints": "RAYDR/a10000- CHOZN/a12000 FLYYR/a16000 SCAGS/a18000+ FRNKE/a23000+"
+                        "waypoints": "RAYDR/a10000- CHOZN/a10000+ FLYYR/a12000+ CONRD/a17000+ SCAGS/a18000+ FRNKE/a23000+"
                     },
-                    "XXWNG1": {
-                        "cleared_altitude": 23000,
+                    "XXWNG": {
+                        "cleared_altitude": 10000,
                         "sid": "XXWNG1",
                         "waypoints": "_DEN_35R/h065"
                     },
@@ -485,17 +485,17 @@
 					"LUFSE": {
                         "cleared_altitude": 10000,
                         "sid": "DEN2",
-                        "waypoints": "_DEN_16R/h335"
+                        "waypoints": "_DEN_16R/h335 LUFSE V389 ADANE BRK/delete"
                     },
 					"GLL": {
                         "cleared_altitude": 10000,
                         "sid": "DEN2",
-                        "waypoints": "_DEN_16R/h025"
+                        "waypoints": "_DEN_16R/h025 GLL V89 CYS/delete"
                     },
                     "DDRTH": {
                         "cleared_altitude": 23000,
                         "sid": "DDRTH1",
-                        "waypoints": "NKATA/a10000- KAYOO/a11000- YAMMI/a17000+"
+                        "waypoints": "NKATA/a10000- KAYOO/a11000- SHICK/a13000+ YAMMI/a17000+"
                     },
                     "EEONS,WYNDM": {
                         "cleared_altitude": 23000,
@@ -523,26 +523,26 @@
                         "waypoints": "NKATA/a10000- HAWKR CCLYD/a13000+ BRYCC/a17000+ HHOTH"
                     },
                     "JOPLN,VRONI": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "SABTH2",
                         "waypoints": "_DEN_16R/h245"
                     },
                     "SLEEK": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "SLEEK2",
                         "waypoints": "_DEN_16R/h245"
                     },
                     "DAAYE,RAITT": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "SMMUR2",
                         "waypoints": "_DEN_16R/h245"
                     },
                     "SUDDZ": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "SUDDZ1",
                         "waypoints": "_DEN_16R/h245"
                     },
-                    "XXWNG1": {
+                    "XXWNG": {
                         "cleared_altitude": 23000,
                         "sid": "XXWNG1",
                         "waypoints": "NKATA/a10000- HAWKR BNITA/a13000+ RIKKK/a17000+"
@@ -577,17 +577,17 @@
 					"LUFSE": {
                         "cleared_altitude": 10000,
                         "sid": "DEN2",
-                        "waypoints": "_DEN_16L/h335"
+                        "waypoints": "_DEN_16L/h335 LUFSE V389 ADANE BRK/delete"
                     },
 					"GLL": {
                         "cleared_altitude": 10000,
                         "sid": "DEN2",
-                        "waypoints": "_DEN_16L/h025"
+                        "waypoints": "_DEN_16L/h025 GLL V89 CYS/delete"
                     },
                     "DDRTH": {
                         "cleared_altitude": 23000,
                         "sid": "DDRTH1",
-                        "waypoints": "CAAZZ/a10000- KAYOO/a11000- YAMMI/a17000+"
+                        "waypoints": "CAAZZ/a10000- KAYOO/a11000- SHICK/a13000+ YAMMI/a17000+"
                     },
                     "EEONS,WYNDM": {
                         "cleared_altitude": 23000,
@@ -615,26 +615,26 @@
                         "waypoints": "CAAZZ/a10000- HAWKR CCLYD/a13000+ BRYCC/a17000+ HHOTH"
                     },
                     "JOPLN,VRONI": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "SABTH2",
                         "waypoints": "_DEN_16L/h245"
                     },
                     "SLEEK": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "SLEEK2",
                         "waypoints": "_DEN_16L/h245"
                     },
                     "DAAYE,RAITT": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "SMMUR2",
                         "waypoints": "_DEN_16L/h245"
                     },
                     "SUDDZ": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "SUDDZ1",
                         "waypoints": "_DEN_16L/h245"
                     },
-                    "XXWNG1": {
+                    "XXWNG": {
                         "cleared_altitude": 23000,
                         "sid": "XXWNG1",
                         "waypoints": "CAAZZ/a10000- HAWKR BNITA/a13000+ RIKKK/a17000+"
@@ -649,7 +649,7 @@
                     "TEHRU,HBU": {
                         "cleared_altitude": 23000,
                         "sid": "BAYLR6",
-                        "waypoints": "BRKEM/a10000- WAKIR/a11000+ TUULO/a16000 HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
+                        "waypoints": "BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
                     },
                     "CHUWY": {
                         "cleared_altitude": 23000,
@@ -669,15 +669,15 @@
 					"LUFSE": {
                         "cleared_altitude": 10000,
                         "sid": "DEN2",
-                        "waypoints": "_DEN_34R/h135"
+                        "waypoints": "_DEN_34R/h135 LUFSE V389 ADANE BRK/delete"
                     },
 					"GLL": {
                         "cleared_altitude": 10000,
                         "sid": "DEN2",
-                        "waypoints": "_DEN_34R/h190"
+                        "waypoints": "_DEN_34R/h190 GLL V89 CYS/delete"
                     },
                     "DDRTH": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "DDRTH1",
                         "waypoints": "_DEN_34R/h290"
                     },
@@ -702,14 +702,14 @@
                         "waypoints": "GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ EXTAN"
                     },
                     "JOBBA,SAABR": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 10000,
                         "sid": "HHOTH2",
                         "waypoints": "_DEN_34R/h290"
                     },
                     "JOPLN,VRONI": {
                         "cleared_altitude": 23000,
                         "sid": "SABTH2",
-                        "waypoints": "BOGEI/a10000- SHOJO/a18000+ SABTH"
+                        "waypoints": "BOGEI/a10000- JSMNN/a17000+ SHOJO/a18000+ SABTH"
                     },
                     "SLEEK": {
                         "cleared_altitude": 23000,
@@ -719,15 +719,15 @@
                     "DAAYE,RAITT": {
                         "cleared_altitude": 23000,
                         "sid": "SMMUR2",
-                        "waypoints": "BOGEI/a10000- SIGHT/a10000+ SOLAR/a17000+ SMMUR"
+                        "waypoints": "BOGEI/a10000- SIGHT/a10000+ SCRCY/a12000+ SOLAR/a17000+ SMMUR"
                     },
                     "SUDDZ": {
                         "cleared_altitude": 23000,
                         "sid": "SUDDZ1",
-                        "waypoints": "BOGEI/a10000- CHOZN/a12000 FLYYR/a14000 CONRD/a19000 SCAGS/a21000 FRNKE/a23000"
+                        "waypoints": "BOGEI/a10000- CHOZN/a10000+ FLYYR/a12000+ CONRD/a17000+ SCAGS/a18000+ FRNKE/a23000+"
                     },
                     "XXWNG": {
-                        "cleared_altitude": 23000,
+                        "cleared_altitude": 1000,
                         "sid": "XXWNG1",
                         "waypoints": "_DEN_34R/h290"
                     },
@@ -1039,7 +1039,7 @@
                     "altitude": 11000,
                     "destination": "KCOS",
                     "exit": "LUFSE",
-                    "route": "LUFSE V389 ADANE BRK/delete"
+                    "route": "LUFSE V389 ADANE BRK"
                 },
 				{
                     "airlines": [
@@ -1050,7 +1050,7 @@
                     "altitude": 12000,
                     "destination": "KCYS",
                     "exit": "GLL",
-                    "route": "GLL V89 CYS/delete"
+                    "route": "GLL V89 CYS"
                 }
             ],
             "exit_categories": {
@@ -1556,6 +1556,7 @@
                 "VOAXA": "HANKI",
                 "CHNGY": "HANKI"
             },
+			"hold_for_release": true,
             "tower_list": 5
         },
         "KBJC": {
@@ -1991,6 +1992,7 @@
                 "VOAXA": "HANKI",
                 "CHNGY": "HANKI"
             },
+			"hold_for_release": true,
             "tower_list": 5
         },
         "KGXY": {
@@ -2405,6 +2407,7 @@
                 "VOAXA": "HANKI",
                 "CHNGY": "HANKI"
             },
+			"hold_for_release": true,
             "tower_list": 5
         },
         "KFNL": {
@@ -2813,6 +2816,7 @@
                 "VOAXA": "HANKI",
                 "CHNGY": "HANKI"
             },
+			"hold_for_release": true,
             "tower_list": 5
         }
     },
@@ -3233,7 +3237,14 @@
                         },
                         {
                             "airport": "PANC",
-                            "icao": "FDX"
+                            "icao": "FDX",
+							"types": [
+								"B738",
+								"B752",
+								"B763",
+								"B77L",
+								"MD11"
+							]
                         },
                         {
                             "airport": "KLAS",
@@ -4332,7 +4343,14 @@
                         },
                         {
                             "airport": "PANC",
-                            "icao": "FDX"
+                            "icao": "FDX",
+							"types": [
+								"B738",
+								"B752",
+								"B763",
+								"B77L",
+								"MD11"
+							]
                         },
                         {
                             "airport": "KLAS",
@@ -5363,7 +5381,14 @@
                         },
                         {
                             "airport": "PANC",
-                            "icao": "FDX"
+                            "icao": "FDX",
+							"types": [
+								"B738",
+								"B752",
+								"B763",
+								"B77L",
+								"MD11"
+							]
                         },
                         {
                             "airport": "KLAS",
@@ -6181,7 +6206,14 @@
                         },
                         {
                             "airport": "PANC",
-                            "icao": "FDX"
+                            "icao": "FDX",
+							"types": [
+								"B738",
+								"B752",
+								"B763",
+								"B77L",
+								"MD11"
+							]
                         },
                         {
                             "airport": "KLAS",
@@ -6404,7 +6436,7 @@
                     },
                     "assigned_altitude": 13000,
                     "cruise_altitude": 13000,
-                    "initial_altitude": 8000,
+                    "initial_altitude": 13000,
                     "initial_controller": "COS_APP",
                     "initial_speed": 245,
 					"route": "V389 LUFSE JEFEL",
@@ -6429,7 +6461,7 @@
                     "assigned_altitude": 16000,
                     "cruise_altitude": 22000,
                     "description": "Westbound COS departures",
-                    "initial_altitude": 8000,
+                    "initial_altitude": 15000,
                     "initial_controller": "COS_APP",
                     "initial_speed": 225,
                     "scratchpad": "RLG",
@@ -6452,7 +6484,7 @@
                     "assigned_altitude": 16000,
                     "cruise_altitude": 22000,
                     "description": "Westbound COS departures",
-                    "initial_altitude": 8000,
+                    "initial_altitude": 15000,
                     "initial_controller": "COS_APP",
                     "initial_speed": 225,
                     "scratchpad": "DBL",
@@ -6466,7 +6498,7 @@
             "frequency": 118470,
             "full_name": "Denver Center",
             "scope_char": "C",
-            "sector_id": "D15",
+            "sector_id": "C15",
             "facility_id": "C",
             "eram_facility": true
         },
@@ -6474,7 +6506,7 @@
             "frequency": 133950,
             "full_name": "Denver Center",
             "scope_char": "C",
-            "sector_id": "D07",
+            "sector_id": "C07",
             "facility_id": "C",
             "eram_facility": true
         },
@@ -6482,7 +6514,7 @@
             "frequency": 133400,
             "full_name": "Denver Center",
             "scope_char": "C",
-            "sector_id": "D27",
+            "sector_id": "C27",
             "facility_id": "C",
             "eram_facility": true
         },
@@ -6490,7 +6522,7 @@
             "frequency": 128370,
             "full_name": "Denver Center",
             "scope_char": "C",
-            "sector_id": "D41",
+            "sector_id": "C41",
             "facility_id": "C",
             "eram_facility": true
         },
@@ -6498,7 +6530,7 @@
             "frequency": 119850,
             "full_name": "Denver Center",
             "scope_char": "C",
-            "sector_id": "D26",
+            "sector_id": "C26",
             "facility_id": "C",
             "eram_facility": true
         },
@@ -6506,7 +6538,7 @@
             "frequency": 128650,
             "full_name": "Denver Center",
             "scope_char": "C",
-            "sector_id": "D06",
+            "sector_id": "C06",
             "facility_id": "C",
             "eram_facility": true
         },
@@ -6514,7 +6546,7 @@
             "frequency": 126500,
             "full_name": "Denver Center",
             "scope_char": "C",
-            "sector_id": "D13",
+            "sector_id": "C13",
             "facility_id": "C",
             "eram_facility": true
         },
@@ -6522,7 +6554,7 @@
             "frequency": 125900,
             "full_name": "Denver Center",
             "scope_char": "C",
-            "sector_id": "D21",
+            "sector_id": "C21",
             "facility_id": "C",
             "eram_facility": true
         },
@@ -6893,7 +6925,8 @@
                         "departures": [
                             "KDEN/CHUWY1",
                             "KDEN/DDRTH1",
-                            "KDEN/HHOTH2"
+                            "KDEN/HHOTH2",
+							"KDEN/XXWNG1"
                         ]
                     },
                     "DEN_R_DEP": {
@@ -7222,7 +7255,8 @@
                         "departures": [
                             "KDEN/CHUWY1",
                             "KDEN/DDRTH1",
-                            "KDEN/HHOTH2"
+                            "KDEN/HHOTH2",
+							"KDEN/XXWNG1"
                         ]
                     },
                     "DEN_R_DEP": {
@@ -7551,7 +7585,8 @@
                         "departures": [
                             "KDEN/CHUWY1",
                             "KDEN/DDRTH1",
-                            "KDEN/HHOTH2"
+                            "KDEN/HHOTH2",
+							"KDEN/XXWNG1"
                         ]
                     },
                     "DEN_R_DEP": {
@@ -8202,7 +8237,8 @@
                         "departures": [
                             "KDEN/CHUWY1",
                             "KDEN/DDRTH1",
-                            "KDEN/HHOTH2"
+                            "KDEN/HHOTH2",
+							"KDEN/XXWNG1"
                         ]
                     },
                     "DEN_R_DEP": {
@@ -8523,7 +8559,8 @@
                         "departures": [
                             "KDEN/CHUWY1",
                             "KDEN/DDRTH1",
-                            "KDEN/HHOTH2"
+                            "KDEN/HHOTH2",
+							"KDEN/XXWNG1"
                         ]
                     },
                     "DEN_R_DEP": {
@@ -8856,7 +8893,8 @@
                         "departures": [
                             "KDEN/CHUWY1",
                             "KDEN/DDRTH1",
-                            "KDEN/HHOTH2"
+                            "KDEN/HHOTH2",
+							"KDEN/XXWNG1"
                         ]
                     },
                     "DEN_R_DEP": {
@@ -9190,7 +9228,8 @@
                         "departures": [
                             "KDEN/CHUWY1",
                             "KDEN/DDRTH1",
-                            "KDEN/HHOTH2"
+                            "KDEN/HHOTH2",
+							"KDEN/XXWNG1"
                         ]
                     },
                     "DEN_R_DEP": {
@@ -9524,7 +9563,8 @@
                         "departures": [
                             "KDEN/CHUWY1",
                             "KDEN/DDRTH1",
-                            "KDEN/HHOTH2"
+                            "KDEN/HHOTH2",
+							"KDEN/XXWNG1"
                         ]
                     },
                     "DEN_R_DEP": {
@@ -9858,7 +9898,8 @@
                         "departures": [
                             "KDEN/CHUWY1",
                             "KDEN/DDRTH1",
-                            "KDEN/HHOTH2"
+                            "KDEN/HHOTH2",
+							"KDEN/XXWNG1"
                         ]
                     },
                     "DEN_R_DEP": {
@@ -10551,141 +10592,6 @@
         }
     },
     "stars_config": {
-      "coordination_fixes": {
-            "AALLE": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "CLASH": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "FLATI": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "PPINT": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "FLNEL": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "HAGGR": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "BGDEE": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "MNARK": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "ELKEE": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "LARKS": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "ALLAN": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "LANDR": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "POWDR": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "DANDD": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "QUAIL": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "PICKK": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "IMAGN": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "FFEST": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ],
-            "ZOMBZ": [
-                {
-                    "type": "route",
-                    "to": "D01",
-                    "from": "ZDV"
-                }
-            ]
-      },
         "stars_maps": [
             "D01 AR BASE",
             "D01 DR BASE",
@@ -10728,6 +10634,36 @@
         ],
         "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
         "center": "KDEN",
+		"coordination_lists": [
+			{
+				"name": "Centennial",
+				"id": "A",
+				"airports": [
+					"KAPA"
+				]
+			},
+			{
+				"name": "Metro",
+				"id": "B",
+				"airports": [
+					"KBJC"
+				]
+			},
+			{
+				"name": "NoCo",
+				"id": "C",
+				"airports": [
+					"KFNL"
+				]
+			},
+			{
+				"name": "Greely",
+				"id": "D",
+				"airports": [
+					"KGXY"
+				]
+			}
+		],
         "inhibit_ca_volumes": [
             {
                 "name": "D01 NO CA",
@@ -10781,35 +10717,6 @@
             "SUDDZ": "SCA",
             "XXWNG": "RIK",
             "CHNGY": "ZIM"
-        },
-        "significant_points": {
-            "CHNGY": { },
-            "CHUWY": { },
-            "CONNR": { },
-            "DAAYE": { },
-            "DDRTH": { },
-            "DUUZE": { },
-            "EEONS": { },
-            "EMMYS": { },
-            "EXTAN": { },
-            "GAETR": { },
-            "GLL": {  },
-            "HBU": { },
-            "JOBBA": { },
-            "JOPLN": { },
-            "LUFSE": { },
-            "RAITT": { },
-            "SAABR": { },
-            "SHAYK": { },
-            "SLEEK": { },
-            "SUDDZ": { },
-            "TEHRU": { },
-            "VOAXA": { },
-            "VRONI": { },
-            "WERNR": { },
-            "WYNDM": { },
-            "XXWNG": { },
-            "ZIRKL": { }
         },
         "force_ql_self": true,
         "airspace_awareness": [
