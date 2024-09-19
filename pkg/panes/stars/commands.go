@@ -2415,7 +2415,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 			} else if len(cmd) > 0 {
 				// If it matches the callsign, attempt to initiate track.
-				if cmd == ac.Callsign {
+				// TODO: Add squawk option as well
+				_, err := av.ParseSquawk(cmd)
+				if cmd == ac.Callsign || err == nil {
 					status.clear = true
 					sp.initiateTrack(ctx, ac.Callsign)
 					return
@@ -2449,7 +2451,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			}
 
 		case CommandModeInitiateControl:
-			if cmd != ac.Callsign {
+			_, err := av.ParseSquawk(cmd)
+			if cmd != ac.Callsign && err != nil {
 				status.err = ErrSTARSCommandFormat
 			} else {
 				status.clear = true
