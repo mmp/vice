@@ -509,8 +509,14 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		shortExit := func() string {
 			if e := ac.FlightPlan.Exit; e != "" {
 				e, _, _ = strings.Cut(e, ".")
-				if sp, ok := adapt.SignificantPoints[e]; ok {
-					return sp.ShortName
+				if sp, ok := sp.significantPoints[e]; ok {
+					if sp.ShortName != "" {
+						return sp.ShortName
+					} else if len(e) > 3 {
+						return e[:3]
+					} else {
+						return e
+					}
 				}
 			}
 			return ""
@@ -518,8 +524,11 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		abbrevExit := func() string {
 			if e := ac.FlightPlan.Exit; e != "" {
 				e, _, _ = strings.Cut(e, ".")
-				if sp, ok := adapt.SignificantPoints[e]; ok {
-					return sp.Abbreviation
+				if sp, ok := sp.significantPoints[e]; ok {
+					if sp.Abbreviation != "" {
+						return sp.Abbreviation
+					}
+					return e[:1]
 				}
 			}
 			return ""

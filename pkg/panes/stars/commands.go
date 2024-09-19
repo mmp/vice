@@ -454,10 +454,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		}
 
 		if len(cmd) > 3 && cmd[:3] == "*F " && sp.wipSignificantPoint != nil {
-			if sig, ok := ctx.ControlClient.STARSFacilityAdaptation.SignificantPoints[cmd[3:]]; ok {
+			if sig, ok := sp.significantPoints[cmd[3:]]; ok {
 				status = sp.displaySignificantPointInfo(*sp.wipSignificantPoint, sig.Location,
-					ctx.ControlClient.STARSFacilityAdaptation.SignificantPoints, ctx.ControlClient.NmPerLongitude,
-					ctx.ControlClient.MagneticVariation)
+					ctx.ControlClient.NmPerLongitude, ctx.ControlClient.MagneticVariation)
 			} else {
 				status.err = ErrSTARSCommandFormat
 			}

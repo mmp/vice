@@ -1747,12 +1747,11 @@ func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, S
 	}
 }
 
-func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, sigpts map[string]sim.SignificantPoint,
-	nmPerLongitude, magneticVariation float32) (status CommandStatus) {
+func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude, magneticVariation float32) (status CommandStatus) {
 	// Find the closest significant point to p1.
 	minDist := float32(1000000)
 	var closest *sim.SignificantPoint
-	for _, sigpt := range sigpts {
+	for _, sigpt := range sp.significantPointsSlice {
 		d := math.NMDistance2LL(sigpt.Location, p1)
 		if d < minDist {
 			minDist = d
@@ -1779,6 +1778,9 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, sigpts ma
 		if d > 1 { // no bearing range if within 1nm
 			hdg := math.Heading2LL(p0, sig.Location, nmPerLongitude, magneticVariation)
 			str = fmt.Sprintf("%03d/%.2f ", int(hdg), d)
+			for len(str) < 9 {
+				str += " "
+			}
 		}
 
 		if sig.Description != "" {
@@ -1792,7 +1794,7 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, sigpts ma
 
 	// Up to 5 additional, if they are within 1nm of the selected point
 	n := 0
-	for _, sig := range sigpts {
+	for _, sig := range sp.significantPointsSlice {
 		if sig.Name != closest.Name && math.NMDistance2LL(sig.Location, closest.Location) < 1 {
 			str += "\n" + format(sig)
 			n++
@@ -1815,8 +1817,7 @@ func toSignificantPointClickHandler(ctx *panes.Context, sp *STARSPane) func([2]f
 		} else {
 			p1 := transforms.LatLongFromWindowP(pw)
 			return sp.displaySignificantPointInfo(*sp.wipSignificantPoint, p1,
-				ctx.ControlClient.STARSFacilityAdaptation.SignificantPoints, ctx.ControlClient.NmPerLongitude,
-				ctx.ControlClient.MagneticVariation)
+				ctx.ControlClient.NmPerLongitude, ctx.ControlClient.MagneticVariation)
 		}
 	}
 }

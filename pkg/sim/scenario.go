@@ -75,9 +75,6 @@ type STARSFacilityAdaptation struct {
 	Range               float32                          `json:"range"`
 	Scratchpads         map[string]string                `json:"scratchpads"`
 	SignificantPoints   map[string]SignificantPoint      `json:"significant_points"`
-	// Not provided by the user: we initialize this during load time, since
-	// we will generally want to access them via short name.
-	SignificantPointsByShortName map[string]SignificantPoint
 
 	VideoMapFile      string                        `json:"video_map_file"`
 	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`
@@ -1058,7 +1055,6 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 
 	// Significant points
 	e.Push("\"significant_points\"")
-	s.SignificantPointsByShortName = make(map[string]SignificantPoint)
 	for name, sp := range s.SignificantPoints {
 		e.Push(name)
 
@@ -1070,17 +1066,8 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 			if sp.ShortName != "" && len(name) == 3 {
 				e.ErrorString("\"short_name\" can only be given if name is more than 3 characters.")
 			}
-			// Initialize ShortName and Abbreviation if they weren't
-			// specified so code elsewhere can just assume they are there.
-			if sp.ShortName == "" {
-				if len(name) == 4 && name[0] == 'K' { // airport
-					sp.ShortName = name[1:]
-				} else {
-					sp.ShortName = name[:3]
-				}
-			}
-			if sp.Abbreviation == "" {
-				sp.Abbreviation = sp.ShortName[:1]
+			if len(sp.ShortName) > 3 {
+				e.ErrorString("\"short_name\" cannot be more than 3 characters.")
 			}
 			if sp.Location.IsZero() {
 				if p, ok := sg.Locate(name); !ok {
@@ -1089,11 +1076,6 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 					sp.Location = p
 				}
 			}
-
-			if oth, ok := s.SignificantPointsByShortName[sp.ShortName]; ok {
-				e.ErrorString("\"short_name\" %q is used by both %q and %q", sp.ShortName, oth.Name, name)
-			}
-			s.SignificantPointsByShortName[sp.ShortName] = sp
 		}
 
 		// Update for any changes we made
