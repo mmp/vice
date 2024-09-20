@@ -798,6 +798,34 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
+            <h3>0.11.5 (19 September 2024)</h3>
+            <ul>
+              <li>Scenario updates: D10 (Austin Jenkins), EWR (Mike LeGall), CID (Tyler T), AAC.</li>
+              <li>Massive update to the aircraft performance database (EkimWasHere).</li>
+              <li>The virtual local controllers now actively try to sequence departures well, including
+                getting wake turbulence separation right.</li>
+              <li>Multiple improvements to the aircraft flight model, including better handling of 250kts at 10,000',
+                more realistic climb/descent and acceleration/deceleration profiles.</li>
+              <li>STARS:
+                <ul>
+                  <li>Added support for coordination lists (used for "hold for release").</li>
+                  <li>Added support for significant points, including *F command to show bearing/distance to them.</li>
+                  <li>Fixed a number of small errors in system lists.</li>
+                  <li>Improved handling of preference sets: a separate one is stored for each TRACON.</li>
+                </ul>
+              </li>
+              <li>Multiple improvements to the accuracy of flight strips.</li>
+              <li>Added global scale controls for departure and arrival/overflight rates.</li>
+              <li>Facility engineering:
+                <ul>
+                  <li>Added "scratchpad1" adaptation to "stars_config", providing 4 preset scratchpad formats for departures.</li>
+                  <li>In "expect_approach" in STARs, different approaches can be specified depending on the destination airport.</li>
+                  <li>An array of altitudes may be specified for departures and overflights; one will be chosen at random for each aircraft.</li>
+                  <li>For GA ("n" airline) aircraft, "GAsinglepiston", "GAmultipiston", and "GAturbine" fleets are now available.</li>
+                </ul>
+              </li>
+            </ul>
+
             <h3>0.11.4 (24 August 2024)</h3>
             <ul>
               <li>Fixed a crash loading saved scenarios from the last release.</li>
@@ -5901,29 +5929,6 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
-                <td>"fdb"</td>
-                <td>Object</td>
-                <td>Allows specifying various adapted configurations for full datablocks.
-                  The following members are available (all are "false" by default):
-                  <ul>
-                    <li>"display_exit_fix": if true, the datablock displays a three-character identifier
-                      for the exit fix where the identifier is found from the "short_name" entry for the
-                      fix in "significant_points".</li>
-                    <li>"display_exit_fix1": if true, the datablock displays a one-character identifier
-                      for the exit fix where the identifier is found from the "abbreviation" entry for the
-                      fix in "significant_points".</li>
-                    <li>"display_exit_gate": if true, the datablock displays a single-character identifier
-                      for the exit gate and then two digits giving the requested altitude in thousands of feet.
-                      The exit gate should be listed in "significant_points"; its "abbreviation" value is used
-                      for the identifier. If four-character scratchpads are adapted, three digits giving the
-                      altitude in hundreds of feet are displayed.</li>
-                    <li>"display_alternate_exit_gate": if true, the datablock displays the requested altitude
-                      followed by a single-character identifier for the exit gate. All other details follow
-                      "display_exit_gate".</li>
-                  </ul>
-                </td>
-              </tr>
-              <tr>
                 <td>"force_ql_self"</td>
                 <td>Boolean</td>
                 <td>Indicates whether controllers may
@@ -6012,6 +6017,31 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"scratchpads"</td>
                 <td>Object</td>
                 <td>Each member specifies a scratchpad entry that is assigned when a departing aircraft has a given exit fix.  Example: <code>"MERIT": "MER"</code></td>
+              </tr>
+              <tr>
+                <td>"scratchpad1"</td>
+                <td>Object</td>
+                <td>Allows specifying various adapted configurations to
+                  display in place for the first scratchpad in full and
+                  partial datablocks.
+                  The following members are available (all are "false" by default):
+                  <ul>
+                    <li>"display_exit_fix": if true, the datablock displays a three-character identifier
+                      for the exit fix where the identifier is found from the "short_name" entry for the
+                      fix in "significant_points".</li>
+                    <li>"display_exit_fix1": if true, the datablock displays a one-character identifier
+                      for the exit fix where the identifier is found from the "abbreviation" entry for the
+                      fix in "significant_points".</li>
+                    <li>"display_exit_gate": if true, the datablock displays a single-character identifier
+                      for the exit gate and then two digits giving the requested altitude in thousands of feet.
+                      The exit gate should be listed in "significant_points"; its "abbreviation" value is used
+                      for the identifier. If four-character scratchpads are adapted, three digits giving the
+                      altitude in hundreds of feet are displayed.</li>
+                    <li>"display_alternate_exit_gate": if true, the datablock displays the requested altitude
+                      followed by a single-character identifier for the exit gate. All other details follow
+                      "display_exit_gate".</li>
+                  </ul>
+                </td>
               </tr>
               <tr>
                 <td>"significant_points"</td>

@@ -257,6 +257,13 @@ var (
 		`STARS: multiple improvements to data block and radar track drawing accuracy`,
 		`STARS: added support for inverted numpads on keyboards`,
 		`STARS: fixed a number of bugs in "quicklook" and in MAPS and PREF management`,
+		`Scenario updates: D10 (Austin Jenkins), EWR (Mike LeGall), CID (Tyler T), AAC`,
+		`Massive update to the aircraft performance database (EkimWasHere)`,
+		`The virtual local controllers sequence departures much better, including handling wake turbulence separation`,
+		`Multiple improvements to the aircraft flight model`,
+		`STARS: added support for coordination lists (used for "hold for release")`,
+		`STARS: improved handling of preference sets: a separate one is stored for each TRACON`,
+		`Multiple improvements to the accuracy of flight strips`,
 	}
 )
 
@@ -1057,13 +1064,13 @@ func showAboutDialog() {
 - Timely feedback: radarcontacto.
 - Facility engineering: Connor Allen, Adam
   Bolek, Brody Carty, Lucas Chan, Aaron
-  Flett, Mike K, Josh Lambert, Kayden
-  Lambert, Make LeGall, Jonah Lefkoff,
-  Jud Lopez, Ethan Malimon, Jace Martin,
-  Michael McConnell, Merry, Yahya
-  Nazimuddin, Justin Nguyen, Giovanni,
-  Andrew S, Logan S, Arya T, Nelson T,
-  Tyler Temerowski, Eli Thompson,
+  Flett, Austin Jenkins, Mike K, Josh
+  Lambert, Kayden Lambert, Make LeGall,
+  Jonah Lefkoff, Jud Lopez, Ethan Malimon,
+  Jace Martin, Michael McConnell, Merry,
+  Yahya Nazimuddin, Justin Nguyen,
+  Giovanni, Andrew S, Logan S, Arya T,
+  Nelson T, Tyler Temerowski, Eli Thompson,
   Michael Trokel, Samuel Valencia, Gavin
   Velicevic, and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC,

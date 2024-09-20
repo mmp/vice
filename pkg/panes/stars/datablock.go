@@ -492,6 +492,64 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 	}
 	beaconMismatch := ac.Squawk != trk.FlightPlan.AssignedSquawk && !squawkingSPC
 
+	// Figure out what to display for scratchpad 1 (used in both FDB and PDBs)
+	sp1 := trk.SP1
+	// If it hasn't been set to something and the adapted scratchpad hasn't
+	// been cleared, show an adapted one, if appropriate.
+	if sp1 == "" && !state.ClearedScratchpadAlternate {
+		adapt := ctx.ControlClient.STARSFacilityAdaptation
+		falt := func() string {
+			alt := ac.FlightPlan.Altitude
+			if adapt.AllowLongScratchpad {
+				return fmt.Sprintf("%03d", alt/100)
+			} else {
+				return fmt.Sprintf("%02d", alt/1000)
+			}
+		}
+		shortExit := func() string {
+			if e := ac.FlightPlan.Exit; e != "" {
+				e, _, _ = strings.Cut(e, ".")
+				if sp, ok := sp.significantPoints[e]; ok {
+					if sp.ShortName != "" {
+						return sp.ShortName
+					} else if len(e) > 3 {
+						return e[:3]
+					} else {
+						return e
+					}
+				}
+			}
+			return ""
+		}
+		abbrevExit := func() string {
+			if e := ac.FlightPlan.Exit; e != "" {
+				e, _, _ = strings.Cut(e, ".")
+				if sp, ok := sp.significantPoints[e]; ok {
+					if sp.Abbreviation != "" {
+						return sp.Abbreviation
+					}
+					return e[:1]
+				}
+			}
+			return ""
+		}
+		if arrivalAirport != "" {
+			sp1 = arrivalAirport
+		} else if adapt.Scratchpad1.DisplayExitFix {
+			sp1 = shortExit()
+		} else if adapt.Scratchpad1.DisplayExitFix1 {
+			sp1 = abbrevExit()
+		} else if adapt.Scratchpad1.DisplayExitGate {
+			if ex := abbrevExit(); ex != "" {
+				sp1 = ex + falt()
+			}
+		} else if adapt.Scratchpad1.DisplayAltExitGate {
+			if ex := abbrevExit(); ex != "" {
+				sp1 = falt() + ex
+			}
+		}
+	}
+
 	switch sp.datablockType(ctx, ac) {
 	case LimitedDatablock:
 		db := &limitedDatablock{}
@@ -554,11 +612,8 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		}
 		formatDBText(db.field12[0][:], fmt1(altitude)+handoffId, color, false)
 		f12Idx := 1
-		if trk.SP1 != "" {
-			formatDBText(db.field12[1][:], fmt1(trk.SP1)+handoffId, color, false)
-			f12Idx++
-		} else if arrivalAirport != "" {
-			formatDBText(db.field12[1][:], fmt1(arrivalAirport)+handoffId, color, false)
+		if sp1 != "" {
+			formatDBText(db.field12[1][:], fmt1(sp1)+handoffId, color, false)
 			f12Idx++
 		}
 		if fa.PDB.ShowScratchpad2 && trk.SP2 != "" {
@@ -655,62 +710,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 		formatDBText(db.field34[0][:], fmt3(altitude)+handoffId, color, false)
 		idx34 := 1
-		if trk.SP1 != "" {
-			formatDBText(db.field34[idx34][:], fmt3(trk.SP1)+handoffId, color, false)
+		if sp1 != "" {
+			formatDBText(db.field34[idx34][:], fmt3(sp1)+handoffId, color, false)
 			idx34++
-		} else if !state.ClearedScratchpadAlternate {
-			adapt := ctx.ControlClient.STARSFacilityAdaptation
-			falt := func() string {
-				alt := ac.FlightPlan.Altitude
-				if adapt.AllowLongScratchpad {
-					return fmt.Sprintf("%03d", alt/100)
-				} else {
-					return fmt.Sprintf("%02d", alt/1000)
-				}
-			}
-			shortExit := func() string {
-				if e := ac.FlightPlan.Exit; e != "" {
-					e, _, _ = strings.Cut(e, ".")
-					if sp, ok := adapt.SignificantPoints[e]; ok {
-						return sp.ShortName
-					}
-				}
-				return ""
-			}
-			abbrevExit := func() string {
-				if e := ac.FlightPlan.Exit; e != "" {
-					e, _, _ = strings.Cut(e, ".")
-					if sp, ok := adapt.SignificantPoints[e]; ok {
-						return sp.Abbreviation
-					}
-				}
-				return ""
-			}
-			if arrivalAirport != "" {
-				// no scratchpad, so maybe show the airport (adapted)
-				formatDBText(db.field34[idx34][:], fmt3(arrivalAirport)+handoffId, color, false)
-				idx34++
-			} else if adapt.FDB.DisplayExitFix {
-				if ex := shortExit(); ex != "" {
-					formatDBText(db.field34[idx34][:], fmt3(ex)+handoffId, color, false)
-					idx34++
-				}
-			} else if adapt.FDB.DisplayExitFix1 {
-				if ex := abbrevExit(); ex != "" {
-					formatDBText(db.field34[idx34][:], fmt3(ex)+handoffId, color, false)
-					idx34++
-				}
-			} else if adapt.FDB.DisplayExitGate {
-				if ex := abbrevExit(); ex != "" {
-					formatDBText(db.field34[idx34][:], ex+falt()+handoffId, color, false)
-					idx34++
-				}
-			} else if adapt.FDB.DisplayAltExitGate {
-				if ex := abbrevExit(); ex != "" {
-					formatDBText(db.field34[idx34][:], falt()+ex+handoffId, color, false)
-					idx34++
-				}
-			}
 		}
 		if handoffTCP != "" {
 			formatDBText(db.field34[idx34][:], fmt3(handoffTCP)+handoffId, color, false)

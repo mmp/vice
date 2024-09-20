@@ -16,6 +16,8 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
+
+	"github.com/mmp/imgui-go/v4"
 )
 
 type Message struct {
@@ -31,6 +33,8 @@ type CLIInput struct {
 }
 
 type MessagesPane struct {
+	KeepFocusAfterTrackSlew bool
+
 	FontIdentifier renderer.FontIdentifier
 	font           *renderer.Font
 	scrollbar      *ScrollBar
@@ -58,7 +62,7 @@ func NewMessagesPane() *MessagesPane {
 	}
 }
 
-func (mp *MessagesPane) DisplayName() string { return "Messages" }
+func (mp *MessagesPane) DisplayName() string { return "Messages/Commands" }
 
 func (mp *MessagesPane) Hide() bool { return false }
 
@@ -85,6 +89,7 @@ func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 	if newFont, changed := renderer.DrawFontPicker(&mp.FontIdentifier, "Font"); changed {
 		mp.font = newFont
 	}
+	imgui.Checkbox("Keep focus after slewing track for control command", &mp.KeepFocusAfterTrackSlew)
 }
 
 func (mp *MessagesPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
@@ -402,6 +407,10 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			if cmd := strings.TrimSpace(mp.input.cmd); cmd != "" {
 				mp.input.cmd = event.Callsign + " " + cmd
 				mp.runCommands(ctx)
+
+				if mp.KeepFocusAfterTrackSlew {
+					ctx.KeyboardFocus.Take(mp)
+				}
 			}
 		}
 	}

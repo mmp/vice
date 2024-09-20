@@ -4144,7 +4144,7 @@
         "receiving_controller": "BOS_E_CTR"
       }
     ],
-   "fdb": { "display_exit_fix": true },
+  "scratchpad1": { "display_exit_fix": true },
   "significant_points": {
       "ARD": {  },
       "BAYYS": { },

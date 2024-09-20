@@ -15,6 +15,7 @@ import (
 	"slices"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -188,6 +189,13 @@ type STARSPane struct {
 			lastFrame time.Time
 		}
 	}
+
+	// We won't waste the space to serialize these but reconstruct them on load.
+	significantPoints map[string]sim.SignificantPoint
+	// Store them redundantly in a slice so we can sort them and then
+	// search in a consistent order (when we have to do an exhaustive
+	// search).
+	significantPointsSlice []sim.SignificantPoint
 }
 
 func init() {
@@ -363,6 +371,7 @@ func (sp *STARSPane) LoadedSim(ss sim.State, pl platform.Platform, lg *log.Logge
 	sp.weatherRadar.UpdateCenter(sp.currentPrefs().Center)
 
 	sp.makeMaps(ss, lg)
+	sp.makeSignificantPoints(ss)
 }
 
 func (sp *STARSPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger) {
@@ -389,6 +398,7 @@ func (sp *STARSPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger
 	// ids and we want to use the right ones when we're enabling the
 	// default maps.
 	sp.makeMaps(ss, lg)
+	sp.makeSignificantPoints(ss)
 
 	sp.resetPrefsForNewSim(ss, pl)
 
@@ -396,7 +406,6 @@ func (sp *STARSPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger
 
 	sp.lastTrackUpdate = time.Time{} // force update
 	sp.lastHistoryTrackUpdate = time.Time{}
-
 }
 
 func (sp *STARSPane) makeMaps(ss sim.State, lg *log.Logger) {
@@ -798,6 +807,64 @@ func (sp *STARSPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 	sp.dcbFont[1] = get("sddCharFontSetBSize1", 12)
 	sp.dcbFont[2] = get("sddCharFontSetBSize2", 15)
 	sp.cursorsFont = get("STARS cursors", 30)
+}
+
+func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
+	sp.significantPoints = util.DuplicateMap(ss.STARSFacilityAdaptation.SignificantPoints)
+	sp.significantPointsSlice = nil
+	for _, pt := range sp.significantPoints {
+		sp.significantPointsSlice = append(sp.significantPointsSlice, pt)
+	}
+
+	tryAdd := func(name string, short string, desc string, loc math.Point2LL) {
+		if _, ok := sp.significantPoints[name]; ok {
+			return
+		}
+
+		pt := sim.SignificantPoint{
+			Name:        name,
+			ShortName:   short,
+			Description: desc,
+			Location:    loc,
+		}
+		sp.significantPoints[name] = pt
+		sp.significantPointsSlice = append(sp.significantPointsSlice, pt)
+	}
+
+	// All airports within 250nm
+	center := ss.GetInitialCenter()
+	for name, ap := range av.DB.Airports {
+		if math.NMDistance2LL(ap.Location, center) < 250 {
+			shortAp := name
+			if len(name) == 4 && name[0] == 'K' {
+				shortAp = name[1:]
+			}
+			tryAdd(name, shortAp, name+" AIRPORT", ap.Location)
+
+			for _, rwy := range ap.Runways {
+				// e.g. JFK22LT -> JFK RWY 22L THRESHOLD
+				tryAdd(shortAp+rwy.Id+"T", shortAp, shortAp+" RWY "+rwy.Id+" THRESHOLD", rwy.Threshold)
+			}
+		}
+	}
+
+	for name, nav := range av.DB.Navaids {
+		if math.NMDistance2LL(nav.Location, center) < 250 {
+			tryAdd(name, name+" "+nav.Type, "", nav.Location)
+		}
+	}
+
+	for name, fix := range av.DB.Fixes {
+		if math.NMDistance2LL(fix.Location, center) < 250 {
+			// FIXME: should be INTERSECTION not WAYPOINT potentially
+			tryAdd(name, name+" WAYPOINT", "", fix.Location)
+		}
+	}
+
+	// Sort the slice
+	slices.SortFunc(sp.significantPointsSlice, func(a, b sim.SignificantPoint) int {
+		return strings.Compare(a.Name, b.Name)
+	})
 }
 
 const (
