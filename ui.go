@@ -264,6 +264,7 @@ var (
 		`STARS: added support for coordination lists (used for "hold for release")`,
 		`STARS: improved handling of preference sets: a separate one is stored for each TRACON`,
 		`Multiple improvements to the accuracy of flight strips`,
+		`New scenario: SGF (Tyler T)`,
 	}
 )
 

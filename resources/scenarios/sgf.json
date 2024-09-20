@@ -1,0 +1,857 @@
+{
+    "tracon": "SGF",
+        "airports": {
+            "KSGF": {
+                "approaches": {
+                    "I14": {
+                        "cifp_id": "I14"
+                    },
+                    "R32": {
+                        "cifp_id": "R32"
+                    },
+                    "I2": {
+                        "cifp_id": "I2"
+                    },
+                    "R20": {
+                        "cifp_id": "R20"
+                    }
+                },
+                "departure_routes": {
+                    "14": {
+                        "FSM": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF32/h139 FSM"
+                        },
+                        "CNU": {
+                            "cleared_altitude": 5000,
+                            "sid": "WEST",
+                            "waypoints": "_SGF32/h139 CNU"
+                        },
+                        "MEMFS": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF32/h139 MEMFS"
+                        },
+                        "EOS": {
+                            "cleared_altitude": 5000,
+                            "sid": "WEST",
+                            "waypoints": "_SGF32/h139 TUL"
+                        },
+                        "SGF": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF32/h139 SGF"
+                        },
+                        "WHOLL": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF32/h139 WHOLL"
+                        },
+                        "ZAVEL": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF32/h139 ZAVEL"
+                        },
+                        "YATGU": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF32/h139 YATGU"
+                        }
+                    },
+                    "32": {
+                        "FSM": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF14/h319 FSM"
+                        },
+                        "CNU": {
+                            "cleared_altitude": 5000,
+                            "sid": "WEST",
+                            "waypoints": "_SGF14/h319 CNU"
+                        },
+                        "MEMFS": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF14/h319 MEMFS"
+                        },
+                        "EOS": {
+                            "cleared_altitude": 5000,
+                            "sid": "WEST",
+                            "waypoints": "_SGF14/h319 TUL"
+                        },
+                        "SGF": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF14/h319 SGF"
+                        },
+                        "WHOLL": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF14/h319 WHOLL"
+                        },
+                        "ZAVEL": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF14/h319 ZAVEL"
+                        },
+                        "YATGU": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF14/h319 YATGU"
+                        }
+                    },
+                    "2": {
+                        "FSM": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF20/h019 FSM"
+                        },
+                        "CNU": {
+                            "cleared_altitude": 5000,
+                            "sid": "WEST",
+                            "waypoints": "_SGF20/h019 CNU"
+                        },
+                        "MEMFS": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF20/h019 MEMFS"
+                        },
+                        "EOS": {
+                            "cleared_altitude": 5000,
+                            "sid": "WEST",
+                            "waypoints": "_SGF20/h019 TUL"
+                        },
+                        "SGF": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF20/h019 SGF"
+                        },
+                        "WHOLL": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF20/h019 WHOLL"
+                        },
+                        "ZAVEL": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF20/h019 ZAVEL"
+                        },
+                        "YATGU": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF20/h019 YATGU"
+                        }
+                    },
+                    "20": {
+                        "FSM": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF2/h199 FSM"
+                        },
+                        "CNU": {
+                            "cleared_altitude": 5000,
+                            "sid": "WEST",
+                            "waypoints": "_SGF2/h199 CNU"
+                        },
+                        "MEMFS": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF2/h199 MEMFS"
+                        },
+                        "EOS": {
+                            "cleared_altitude": 5000,
+                            "sid": "WEST",
+                            "waypoints": "_SGF2/h199 TUL"
+                        },
+                        "SGF": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF2/h199 SGF"
+                        },
+                        "WHOLL": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF2/h199 WHOLL"
+                        },
+                        "ZAVEL": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF2/h199 ZAVEL"
+                        },
+                        "YATGU": {
+                            "cleared_altitude": 5000,
+                            "sid": "EAST",
+                            "waypoints": "_SGF2/h199 YATGU"
+                        }
+                    }
+                },             
+                "departures": [
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "FDX"
+                            }
+                        ],
+                        "altitude": 25000,
+                        "destination": "KMEM",
+                        "route": "WHOLL BRBBQ3",
+                        "exit": "WHOLL"
+                    },
+                    { 
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "SKW"
+                            }
+                        ],
+                        "altitude": 32000,
+                        "destination": "KDEN",
+                        "route": "CNU KIISS CLASH4",
+                        "exit": "CNU"
+                    }, 
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "SKW"
+                            },
+                            {
+                                "fleet": "default",
+                                "icao": "JIA"
+                            }
+                            
+                        ],
+                        "altitude": 28000,
+                        "destination": "KDFW",
+                        "route": "FSM RRNET BRDJE5",
+                        "exit": "FSM"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "ENY"
+                            },
+                            {
+                                "fleet": "default",
+                                "icao": "JIA"
+                            }
+                        ],
+                        "altitude": 35000,
+                        "destination": "KCLT",
+                        "route": "SGF V159 DGD BNA VXV COMDY FILPZ4",
+                        "exit": "SGF"
+                        
+                    },
+                    {
+                            "airlines": [
+                                {
+                                    "fleet": "default",
+                                    "icao": "SKW"
+                                },
+                                {
+                                    "fleet": "default",
+                                    "icao": "ENY"
+                                }
+                            ],
+                            "altitude": 31000,
+                            "destination": "KORD",
+                            "route": "SGF WELTS TRTLL6",
+                            "exit": "SGF"
+                    },
+                    {
+                        "airlines": [
+                                {
+                                    "fleet": "default",
+                                    "icao": "JIA"
+                                }
+                            ],
+                            "altitude": 35000,
+                            "destination": "KATL",
+                            "route": "MEMFS HUTCC KNSAW RUSSA GLAVN1",
+                            "exit": "MEMFS"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "AAY"
+                            }
+                        ],
+                        "altitude": 37000,
+                        "destination": "KSFB",
+                        "route": "ZAVEL J41 MEM MGM ACORI Q104 CABLO BLUZI BITTE SHREK2",
+                        "exit": "ZAVEL"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "SKW"
+                            },
+                            {
+                                "fleet": "default",
+                                "icao": "UCA"
+                            }
+                        ],
+                        "altitude": 28000,
+                        "destination": "KIAH",
+                        "route": "EOS TUL J87 CVE GUSHR3",
+                        "exit": "EOS"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "default",
+                                "icao": "AAY"
+                            }
+                        ],
+                        "altitude": 35000,
+                        "destination": "KPIE",
+                        "route": "ZAVEL J41 MEM MGM ACORI BANGZ1",
+                        "exit": "ZAVEL"
+                    },
+                    {
+                        "airlines": [
+                            {
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            },
+                            {
+                                "icao": "N"
+                            }
+                        ],
+                        "altitude": 7000,
+                        "destination": "KCOU",
+                        "route": "YATGU",
+                        "exit": "YATGU"
+                    }
+                ],
+                "exit_categories": {
+                    "ZAVEL": "EAST",
+                    "EOS": "WEST",
+                    "MEMFS": "EAST",
+                    "SGF": "EAST",
+                    "FSM": "WEST",
+                    "CNU": "WEST",
+                    "WHOLL": "EAST",
+                    "YATGU": "EAST"
+                },
+                "tower_list": 1
+          },
+          "KLBO": {
+            "approaches": {
+                "R18": {
+                    "cifp_id": "R18"
+                },
+                "R36": {
+                    "cifp_id": "R36"
+                }
+            },
+            "departure_routes": {
+                "18": {
+                    "CATIL": {
+                        "cleared_altitude": 3000,
+                        "sid": "EAST",
+                        "waypoints": "_LBO36/h179"
+                    },
+                    "SGF": {
+                        "cleared_altitude": 3000,
+                        "sid": "WEST",
+                        "waypoints": "_LBO36/h179"
+                    }
+                },
+                "36": {
+                    "CATIL": {
+                        "cleared_altitude": 3000,
+                        "sid": "EAST",
+                        "waypoints": "_LBO18/h359"
+                    },
+                    "SGF": {
+                        "cleared_altitude": 3000,
+                        "sid": "WEST",
+                        "waypoints": "_LBO18/h359"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "fleet": "lightGA",
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 7000,
+                    "destination": "KCOU",
+                    "route": "CATIL",
+                    "exit": "CATIL"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "lightGA",
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 4000,
+                    "destination": "KSGF",
+                    "route": "SGF",
+                    "exit": "SGF"
+                }
+            ],
+            "exit_categories": {
+                "SGF": "WEST",
+                "CATIL": "EAST"
+            },
+            "tower_list": 1
+          } 
+        },
+        "arrival_groups": {
+            "SW": [
+                {
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "airport": "KIAH",
+                                "icao": "SKW"
+                            },
+                            {
+                                "airport": "KIAH",
+                                "icao": "UCA"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 33000,
+                    "initial_altitude": 16000,
+                    "initial_controller": "KC_77_CTR",
+                    "initial_speed": 250,
+                    "route": "INDIE8 INDIE TXK ZALDA SGF",
+                    "waypoints": "ZALDA N036.14.25.406,W093.35.29.287/ho SGF"
+                },
+                {
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "airport": "KDFW",
+                                "icao": "ENY"
+                            },
+                            {
+                                "airport": "KDFW",
+                                "icao": "SKW"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 27000,
+                    "initial_altitude": 16000,
+                    "initial_controller": "KC_77_CTR",
+                    "initial_speed": 250,
+                    "route": "AKUNA9 MLC RZC BILIE SGF",
+                    "waypoints": "ZALDA N036.14.25.406,W093.35.29.287/ho SGF"
+                }
+            ],
+            "SE": [
+                {
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "airport": "KPIE",
+                                "icao": "AAY"
+                            },
+                            {
+                                "airport": "KSFB",
+                                "icao": "AAY"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 34000,
+                    "initial_altitude": 16000,
+                    "initial_controller": "KC_77_CTR",
+                    "initial_speed": 250,
+                    "route": "ENDED2 LACEN PATOY Q116 JAWJA MGMRY MEMFS SGF",
+                    "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF"
+                },
+                {
+                    "airlines": {
+                    "KSGF": [
+                        {
+                            "airport": "KATL",
+                            "icao": "SKW"
+                        }
+                    ]
+                  },
+                  "cruise_altitude": 34000,
+                  "initial_altitude": 16000,
+                  "initial_controller": "KC_77_CTR",
+                  "initial_speed": 250,
+                  "route": "CUTTN2 HANKO MEMFS SGF",
+                  "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF"
+                },
+                {
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "airport": "KCLT",
+                                "icao": "JIA"
+                            },
+                            {
+                                "airport": "KCLT",
+                                "icao": "ENY"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 32000,
+                    "initial_altitude": 16000,
+                    "initial_controller": "KC_77_CTR",
+                    "initial_speed": 250,
+                    "route": "BOBZY5 BNA J46 ARG SGF",
+                    "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF"
+                }
+            ],
+            "ORD": [
+                {
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "airport": "KORD",
+                                "icao": "SKW"
+                            },
+                            {
+                                "airport": "KORD",
+                                "icao": "ENY"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 32000,
+                    "initial_altitude": 16000,
+                    "initial_controller": "KC_77_CTR",
+                    "initial_speed": 250,
+                    "route": "ACITO ADELL ARLYN STL SGF",
+                    "waypoints": "N037.54.04.400,W092.17.46.387 N037.51.01.573,W092.23.30.205/ho SGF"
+                }
+            ],
+            "DEN": [
+                {
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "airport": "KDEN",
+                                "icao": "SKW"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 33000,
+                    "initial_altitude": 16000,
+                    "initial_controller": "KC_77_CTR",
+                    "initial_speed": 250,
+                    "route": "EXTAN7 SHAYK KK54C SGF",
+                    "waypoints": "N037.49.34.232,W094.40.03.176 N037.45.04.064,W094.27.18.665/ho SGF"
+                }
+            ],
+            "NE": [
+                {
+                    "airlines": {
+                        "KLBO": [
+                            {
+                                "airport": "KCOU",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 7000,
+                    "initial_altitude": 4000,
+                    "initial_controller": "KC_77_CTR",
+                    "initial_speed": 160,
+                    "route": "WIKGI",
+                    "waypoints": "N037.58.39.346,W092.27.21.906 N037.56.28.623,W092.30.05.822/ho WIKGI"
+                }
+            ]
+         },
+         "control_positions": {
+            "SGF_E_APP": {
+                "frequency": 124950,
+                "full_name": "Springfield approach",
+                "scope_char": "E",
+                "sector_id": "1E"
+            },
+			"SGF_W_APP": {
+                "frequency": 121100,
+                "full_name": "Springfield approach",
+                "scope_char": "W",
+                "sector_id": "1W"
+            },
+            "SGF_TWR": {
+                "frequency": 119900,
+                "full_name": "Springfield tower",
+                "scope_char": "1",
+                "sector_id": "1T"
+            },
+            "KC_77_CTR": {
+                "frequency": 127500,
+                "full_name": "Kansas City center",
+                "facility_id": "C",
+                "eram_facility": true,
+                "scope_char": "C",
+                "sector_id": "C77"
+            },
+            "MZU_APP": {
+                "frequency": 124375,
+                "full_name": "Mizzu approach",
+                "scope_char": "M",
+                "sector_id": "2M"
+            },
+            "LBO_TWR": {
+                "frequency": 122800,
+                "full_name": "Jones lebanon unicom",
+                "scope_char": "L",
+                "sector_id": "1M"
+            }
+        },
+        "default_scenario": "Land South",
+        "fixes": {
+            "_SGF14": "N037.15.18.168,W093.24.01.516",
+            "_SGF2": "N037.14.07.856,W093.23.22.322",
+            "_SGF20": "N037.15.10.711,W093.22.49.638",
+            "_SGF32": "N037.14.16.384,W093.23.00.404",
+            "_LBO18": "N037.39.18.668,W092.39.07.421",
+            "_LBO36": "N037.38.27.170,W092.39.09.426"
+        },
+        "name": "KSGF",
+        "primary_airport": "KSGF",
+        "scenarios": {
+            "Land South": {
+                "arrival_runways": [
+                    {
+                        "airport": "KSGF",
+                        "runway": "14"
+                    },
+                    {
+                        "airport": "KSGF", 
+                        "runway": "20"
+                    },
+                    {
+                        "airport": "KLBO",
+                        "runway": "18"
+                    }
+                ],
+                "arrivals": {
+                    "SE": {
+                        "KSGF": 2
+                    },
+                    "DEN": {
+                        "KSGF": 1
+                    },
+                    "SW": {
+                        "KSGF": 2
+                    },
+                    "ORD": {
+                        "KSGF": 2
+                    },
+                    "NE": {
+                        "KLBO": 1
+                    }
+                },
+                "solo_controller": "SGF_E_APP",
+                "multi_controllers": {
+                    "default": {
+                        "SGF_E_APP": {
+                            "primary": true,
+                            "arrivals": [
+                                "SE",
+                                "NE",
+                                "ORD",
+                                "NE"
+                            ],
+                            "departures": [
+                                "KSGF/EAST",
+                                "KLBO/EAST",
+                                "KLBO/WEST"
+                            ]
+                        },
+                        "SGF_W_APP": {
+                            "backup": "SGF_E_APP",
+                            "departures": [
+                                "KSGF/WEST"
+                            ],
+                            "arrivals": [
+                                "SW",
+                                "DEN"
+                            ]
+                        }
+                    }
+                },
+                "controllers": [
+                    "SGF_TWR",
+                    "SGF_W_APP",
+                    "SGF_E_APP",
+                    "KC_77_CTR",
+                    "MZU_APP",
+                    "LBO_TWR"
+                ],
+                "default_maps": [
+                    "SGF Primary Map"
+                ],
+                "departure_runways": [
+                    {
+                        "airport": "KSGF",
+                        "category": "WEST",
+                        "rate": 5,
+                        "runway": "14"
+                    },
+                    {
+                        "airport": "KSGF",
+                        "category": "EAST",
+                        "rate": 5,
+                        "runway": "14"
+                    },
+                    {
+                        "airport": "KLBO",
+                        "category": "EAST",
+                        "rate": 2,
+                        "runway": "18"
+                    },
+                    {
+                        "airport": "KLBO",
+                        "category": "WEST",
+                        "rate": 2,
+                        "runway": "18"
+                    }
+                ],
+                "wind": {
+                    "direction": 160,
+                    "speed": 8
+                }
+            },
+            "Land North": {
+                "arrival_runways": [
+                    {
+                        "airport": "KSGF",
+                        "runway": "2"
+                    },
+                    {
+                        "airport": "KSGF", 
+                        "runway": "32"
+                    },
+                    {
+                        "airport": "KLBO",
+                        "runway": "36"
+                    }
+                ],
+                "arrivals": {
+                    "SE": {
+                        "KSGF": 2
+                    },
+                    "DEN": {
+                        "KSGF": 1
+                    },
+                    "SW": {
+                        "KSGF": 2
+                    },
+                    "ORD": {
+                        "KSGF": 2
+                    },
+                    "NE": {
+                        "KLBO": 2
+                    }
+                },
+                "solo_controller": "SGF_E_APP",
+                "multi_controllers": {
+                    "default": {
+                        "SGF_E_APP": {
+                            "primary": true,
+                            "arrivals": [
+                                "SE",
+                                "NE",
+                                "ORD",
+                                "SE"
+                            ],
+                            "departures": [
+                                "KSGF/EAST",
+                                "KLBO/EAST",
+                                "KLBO/WEST"
+                            ]
+                        },
+                        "SGF_W_APP": {
+                            "backup": "SGF_E_APP",
+                            "departures": [
+                                "KSGF/WEST"
+                            ],
+                            "arrivals": [
+                                "SW",
+                                "DEN"
+                            ]
+                        }
+                    }
+                },
+                "controllers": [
+                    "SGF_TWR",
+                    "SGF_W_APP",
+                    "SGF_E_APP",
+                    "KC_77_CTR",
+                    "MZU_APP",
+                    "LBO_TWR"
+                ],
+                "default_maps": [
+                    "SGF Primary Map"
+                ],
+                "departure_runways": [
+                    {
+                        "airport": "KSGF",
+                        "category": "WEST",
+                        "rate": 5,
+                        "runway": "32"
+                    },
+                    {
+                        "airport": "KSGF",
+                        "category": "EAST",
+                        "rate": 5,
+                        "runway": "32"
+                    },
+                    {
+                        "airport": "KLBO",
+                        "category": "EAST",
+                        "rate": 2,
+                        "runway": "36"
+                    },
+                    {
+                        "airport": "KLBO",
+                        "category": "WEST",
+                        "rate": 2,
+                        "runway": "36"
+                    }
+                ],
+                "wind": {
+                    "direction": 340,
+                    "speed": 8
+                }
+            }
+        },
+        "stars_config": {
+            "center": "37.2456614,-93.3886269",
+            "range": 40,
+            "scratchpads": {
+                "FSM": "FSM",
+                "CNU": "CNU",
+                "MEMFS": "MEM",
+                "ZAVEL": "ZAV",
+                "EOS": "EOS",
+                "SGF": "SGF",
+                "WHOLL": "WHO",
+                "YATGU": "YAT",
+                "CATIL": "CAT"
+
+         },
+            "stars_maps": [
+                "SGF Primary Map",
+                "SGF 3NM MVA MAP",
+                "SGF 5NM MVA MAP",
+                "SGF Geography"
+
+            ],
+            "video_map_file": "videomaps/ZKC-videomaps.gob.zst"
+        }
+    
+    
+}
