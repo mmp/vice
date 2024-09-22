@@ -47,9 +47,10 @@ const (
 )
 
 type CommandStatus struct {
-	clear  bool
-	output string
-	err    error
+	clear        bool
+	ignoredClick bool // for scope click handlers
+	output       string
+	err          error
 }
 
 func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
@@ -2956,7 +2957,8 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 		var status CommandStatus
 		if sp.scopeClickHandler != nil {
 			status = sp.scopeClickHandler(ctx.Mouse.Pos, transforms)
-		} else {
+		}
+		if sp.scopeClickHandler == nil || status.ignoredClick {
 			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.Mouse.Pos, ghosts, transforms)
 		}
 
