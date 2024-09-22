@@ -281,6 +281,20 @@ func (t *TrianglesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int
 	}
 }
 
+func (t *TrianglesDrawBuilder) AddLatLongCircle(p [2]float32, nmPerLongitude float32, r float32, nsegs int) {
+	// Like LinesDrawBuilder AddLatLongCircle, do the work in nm space
+	pc := math.LL2NM(p, nmPerLongitude)
+	for i := 0; i < nsegs; i++ {
+		pt := func(i int) [2]float32 {
+			a := float32(i) / float32(nsegs) * 2 * gomath.Pi
+			v := [2]float32{math.Sin(a), math.Cos(a)}
+			v = math.Scale2f(v, r)
+			return math.NM2LL(math.Add2f(pc, v), nmPerLongitude)
+		}
+		t.AddTriangle(p, pt(i), pt(i+1))
+	}
+}
+
 func (t *TrianglesDrawBuilder) Bounds() math.Extent2D {
 	return math.Extent2DFromPoints(t.p)
 }
