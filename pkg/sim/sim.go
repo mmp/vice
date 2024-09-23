@@ -312,6 +312,7 @@ type NewSimConfiguration struct {
 	RequirePassword bool   // for create remote only
 	Password        string // for create remote only
 	NewSimType      int
+	TFRs            []av.TFR
 
 	LiveWeather               bool
 	SelectedRemoteSim         string
@@ -323,9 +324,11 @@ type NewSimConfiguration struct {
 
 	DisplayError error
 
+	// Local use only; not sent to the server when we create one.
 	mgr           *ConnectionManager
 	lg            *log.Logger
 	defaultTRACON *string
+	tfrCache      *av.TFRCache
 }
 
 type RemoteSim struct {
@@ -343,12 +346,13 @@ const (
 	NewSimJoinRemote
 )
 
-func MakeNewSimConfiguration(mgr *ConnectionManager, defaultTRACON *string, lg *log.Logger) *NewSimConfiguration {
+func MakeNewSimConfiguration(mgr *ConnectionManager, defaultTRACON *string, tfrCache *av.TFRCache, lg *log.Logger) *NewSimConfiguration {
 	c := &NewSimConfiguration{
 		lg:             lg,
 		mgr:            mgr,
 		selectedServer: mgr.localServer,
 		defaultTRACON:  defaultTRACON,
+		tfrCache:       tfrCache,
 		NewSimName:     rand.AdjectiveNoun(),
 	}
 
@@ -829,6 +833,8 @@ func (c *NewSimConfiguration) OkDisabled() bool {
 }
 
 func (c *NewSimConfiguration) Start() error {
+	c.TFRs = c.tfrCache.TFRsForTRACON(c.TRACONName, c.lg)
+
 	var result NewSimResult
 	if err := c.selectedServer.CallWithTimeout("SimManager.New", c, &result); err != nil {
 		err = TryDecodeError(err)
@@ -1039,7 +1045,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		add(sc.SoloController)
 	}
 
-	s.State = newState(ssc.Scenario.SelectedSplit, ssc.LiveWeather, isLocal, s, sg, sc, mapLib, lg)
+	s.State = newState(ssc.Scenario.SelectedSplit, ssc.LiveWeather, isLocal, s, sg, sc, mapLib, ssc.TFRs, lg)
 
 	s.setInitialSpawnTimes()
 

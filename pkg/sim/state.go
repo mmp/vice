@@ -72,7 +72,7 @@ type State struct {
 }
 
 func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *ScenarioGroup, sc *Scenario,
-	ml *av.VideoMapLibrary, lg *log.Logger) *State {
+	ml *av.VideoMapLibrary, tfrs []av.TFR, lg *log.Logger) *State {
 	ss := &State{
 		Callsign:      serverCallsign,
 		Aircraft:      make(map[string]*av.Aircraft),

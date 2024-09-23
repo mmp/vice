@@ -650,7 +650,7 @@ func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
 	if c.simConfig == nil {
-		c.simConfig = sim.MakeNewSimConfiguration(c.mgr, &c.config.LastTRACON, c.lg)
+		c.simConfig = sim.MakeNewSimConfiguration(c.mgr, &c.config.LastTRACON, &c.config.TFRCache, c.lg)
 	}
 }
 
