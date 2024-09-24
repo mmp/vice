@@ -257,13 +257,14 @@ var (
 		`STARS: multiple improvements to data block and radar track drawing accuracy`,
 		`STARS: added support for inverted numpads on keyboards`,
 		`STARS: fixed a number of bugs in "quicklook" and in MAPS and PREF management`,
-		`Scenario updates: D10 (Austin Jenkins), EWR (Mike LeGall), CID (Tyler T), AAC`,
+		`Scenario updates: D10 (Austin Jenkins), EWR (Mike LeGall), CID (Tyler T), D01, COS (Andrew S), AAC`,
 		`Massive update to the aircraft performance database (EkimWasHere)`,
 		`The virtual local controllers sequence departures much better, including handling wake turbulence separation`,
 		`Multiple improvements to the aircraft flight model`,
 		`STARS: added support for coordination lists (used for "hold for release")`,
 		`STARS: improved handling of preference sets: a separate one is stored for each TRACON`,
 		`Multiple improvements to the accuracy of flight strips`,
+		`New scenario: SGF (Tyler T)`,
 	}
 )
 

@@ -783,12 +783,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 				e.ErrorString("distance %q: %v", strs[3], err)
 			} else {
 				// Offset along the given heading and distance from the fix.
-				p := math.LL2NM(pll, sg.NmPerLongitude)
-				h := math.Radians(float32(hdg))
-				v := [2]float32{math.Sin(h), math.Cos(h)}
-				v = math.Scale2f(v, float32(dist))
-				p = math.Add2f(p, v)
-				sg.Fixes[fix] = math.NM2LL(p, sg.NmPerLongitude)
+				sg.Fixes[fix] = math.Offset2LL(pll, float32(hdg), float32(dist), sg.NmPerLongitude)
 			}
 		} else if pos, ok := sg.Locate(location); ok {
 			// It's something simple. Check this after FIX@HDG/DIST,

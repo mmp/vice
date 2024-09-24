@@ -9,7 +9,6 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/csv"
-	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -310,7 +309,10 @@ func parseAirports() map[string]FAAAirport {
 
 	artccsRaw := util.LoadResource("airport_artccs.json")
 	data := make(map[string]string) // Airport -> ARTCC
-	json.Unmarshal(artccsRaw, &data)
+	if err := util.UnmarshalJSON(artccsRaw, &data); err != nil {
+		fmt.Fprintf(os.Stderr, "airport_artccs.json: %v\n", err)
+		os.Exit(1)
+	}
 
 	for name, artcc := range data {
 		if entry, ok := airports[name]; ok {
@@ -328,8 +330,9 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 	var acStruct struct {
 		Aircraft []AircraftPerformance `json:"aircraft"`
 	}
-	if err := json.Unmarshal(openscopeAircraft, &acStruct); err != nil {
-		panic(fmt.Sprintf("error in JSON unmarshal of openscope-aircraft: %v", err))
+	if err := util.UnmarshalJSON(openscopeAircraft, &acStruct); err != nil {
+		fmt.Fprintf(os.Stderr, "openscope-aircraft.json: %v\n", err)
+		os.Exit(1)
 	}
 
 	ap := make(map[string]AircraftPerformance)
@@ -385,8 +388,9 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 	var alStruct struct {
 		Airlines []Airline `json:"airlines"`
 	}
-	if err := json.Unmarshal([]byte(openscopeAirlines), &alStruct); err != nil {
-		panic(fmt.Sprintf("error in JSON unmarshal of openscope-airlines: %v", err))
+	if err := util.UnmarshalJSON([]byte(openscopeAirlines), &alStruct); err != nil {
+		fmt.Fprintf(os.Stderr, "openscope-airlines.json: %v\n", err)
+		os.Exit(1)
 	}
 
 	airlines := make(map[string]Airline)
@@ -471,8 +475,9 @@ func parseAdaptations() map[string]ERAMAdaptation {
 	adaptations := make(map[string]ERAMAdaptation)
 
 	adaptationsRaw := util.LoadResource("adaptations.json")
-	if err := json.Unmarshal(adaptationsRaw, &adaptations); err != nil {
-		panic(err)
+	if err := util.UnmarshalJSON(adaptationsRaw, &adaptations); err != nil {
+		fmt.Fprintf(os.Stderr, "adaptations.json: %v\n", err)
+		os.Exit(1)
 	}
 
 	// Wire up names in the structs
@@ -705,14 +710,16 @@ func parseMVAs() map[string][]MVA {
 func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
 	artccJSON := util.LoadResource("artccs.json")
 	var artccs map[string]ARTCC
-	if err := json.Unmarshal(artccJSON, &artccs); err != nil {
-		panic(fmt.Sprintf("error unmarshalling ARTCCs: %v", err))
+	if err := util.UnmarshalJSON(artccJSON, &artccs); err != nil {
+		fmt.Fprintf(os.Stderr, "artccs.json: %v\n", err)
+		os.Exit(1)
 	}
 
 	traconJSON := util.LoadResource("tracons.json")
 	var tracons map[string]TRACON
-	if err := json.Unmarshal(traconJSON, &tracons); err != nil {
-		panic(fmt.Sprintf("error unmarshalling TRACONs: %v", err))
+	if err := util.UnmarshalJSON(traconJSON, &tracons); err != nil {
+		fmt.Fprintf(os.Stderr, "tracons.json: %v\n", err)
+		os.Exit(1)
 	}
 
 	// Validate that all of the TRACON ARTCCs are known.
