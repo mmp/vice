@@ -26,6 +26,7 @@ func NewSTARSError(msg string) *STARSError {
 
 var (
 	ErrSTARSBeaconMismatch    = NewSTARSError("BCN MISMATCH")
+	ErrSTARSCapacity          = NewSTARSError("CAPACITY")
 	ErrSTARSCommandFormat     = NewSTARSError("FORMAT")
 	ErrSTARSDuplicateBeacon   = NewSTARSError("DUP BCN")
 	ErrSTARSDuplicateCommand  = NewSTARSError("DUP CMD")
@@ -37,11 +38,14 @@ var (
 	ErrSTARSIllegalFix        = NewSTARSError("ILL FIX")
 	ErrSTARSIllegalFlight     = NewSTARSError("ILL FLIGHT")
 	ErrSTARSIllegalFunction   = NewSTARSError("ILL FNCT")
+	ErrSTARSIllegalGeoId      = NewSTARSError("ILL GEO ID")
+	ErrSTARSIllegalGeoLoc     = NewSTARSError("ILL GEO LOC")
 	ErrSTARSIllegalLine       = NewSTARSError("ILL LINE")
 	ErrSTARSIllegalMap        = NewSTARSError("ILL MAP")
 	ErrSTARSIllegalParam      = NewSTARSError("ILL PARAM")
 	ErrSTARSIllegalPosition   = NewSTARSError("ILL POS")
 	ErrSTARSIllegalPrefset    = NewSTARSError("ILL PREFSET")
+	ErrSTARSIllegalRange      = NewSTARSError("ILL RANGE")
 	ErrSTARSIllegalRPC        = NewSTARSError("ILL RPC") // CRDA runway pair config
 	ErrSTARSIllegalRunway     = NewSTARSError("ILL RWY")
 	ErrSTARSIllegalScratchpad = NewSTARSError("ILL SCR")
@@ -68,6 +72,7 @@ var starsErrorRemap = map[error]*STARSError{
 	sim.ErrInvalidDepartureController:  ErrSTARSIllegalFunction,
 	av.ErrInvalidFacility:              ErrSTARSIllegalTrack,
 	av.ErrInvalidHeading:               ErrSTARSIllegalValue,
+	sim.ErrInvalidRestrictionAreaIndex: ErrSTARSIllegalGeoId,
 	av.ErrNoAircraftForCallsign:        ErrSTARSNoFlight,
 	av.ErrNoController:                 ErrSTARSIllegalSector,
 	av.ErrNoFlightPlan:                 ErrSTARSIllegalFlight,
@@ -76,6 +81,7 @@ var starsErrorRemap = map[error]*STARSError{
 	av.ErrNotClearedForApproach:        ErrSTARSIllegalValue,
 	av.ErrNotFlyingRoute:               ErrSTARSIllegalValue,
 	av.ErrOtherControllerHasTrack:      ErrSTARSIllegalTrack,
+	sim.ErrTooManyRestrictionAreas:     ErrSTARSCapacity,
 	av.ErrUnableCommand:                ErrSTARSIllegalValue,
 	av.ErrUnknownAircraftType:          ErrSTARSIllegalParam,
 	av.ErrUnknownAirport:               ErrSTARSIllegalAirport,

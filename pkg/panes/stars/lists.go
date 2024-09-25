@@ -15,6 +15,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -45,6 +46,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 	sp.drawAlertList(ctx, normalizedToWindow(ps.AlertList.Position), aircraft, listStyle, td)
 	sp.drawCoastList(ctx, normalizedToWindow(ps.CoastList.Position), listStyle, td)
 	sp.drawMapsList(ctx, normalizedToWindow(ps.VideoMapsList.Position), listStyle, td)
+	sp.drawRestrictionAreasList(ctx, normalizedToWindow(ps.RestrictionAreaList.Position), listStyle, td)
 	sp.drawCRDAStatusList(ctx, normalizedToWindow(ps.CRDAStatusList.Position), aircraft, listStyle, td)
 
 	towerListAirports := ctx.ControlClient.TowerListAirports()
@@ -104,7 +106,9 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 	case CommandModePref:
 		text.WriteString("PREF SET\n")
 	case CommandModeReleaseDeparture:
-		text.WriteString("RD")
+		text.WriteString("RD\n")
+	case CommandModeRestrictionArea:
+		text.WriteString("AR\n")
 	}
 	text.WriteString(strings.Join(strings.Fields(sp.previewAreaInput), "\n")) // spaces are rendered as newlines
 	if text.Len() > 0 {
@@ -589,6 +593,38 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 	if text.Len() > 0 {
 		td.AddText(text.String(), pw, style)
 	}
+}
+
+func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
+	ps := sp.currentPrefs()
+	if !ps.RestrictionAreaList.Visible {
+		return
+	}
+
+	var text strings.Builder
+	text.WriteString("GEO RESTRICTIONS\n")
+
+	add := func(ra sim.RestrictionArea, idx int) {
+		if ra.Deleted {
+			return
+		}
+		text.WriteString(fmt.Sprintf("%-3d ", idx))
+		if ra.Title != "" {
+			text.WriteString(strings.ToUpper(ra.Title))
+		} else {
+			text.WriteString(strings.ToUpper(ra.Text[0]))
+		}
+		text.WriteByte('\n')
+	}
+
+	for i, ra := range ctx.ControlClient.State.UserRestrictionAreas {
+		add(ra, i+1)
+	}
+	for i, ra := range ctx.ControlClient.State.STARSFacilityAdaptation.RestrictionAreas {
+		add(ra, i+101)
+	}
+
+	td.AddText(text.String(), pw, style)
 }
 
 func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, aircraft []*av.Aircraft, style renderer.TextStyle,

@@ -239,9 +239,12 @@ type CommonPreferences struct {
 		Visible   bool
 		Selection VideoMapsGroup
 	}
-	CRDAStatusList    BasicSTARSList
-	TowerLists        [3]BasicSTARSList
-	CoordinationLists map[string]*CoordinationList
+	CRDAStatusList      BasicSTARSList
+	TowerLists          [3]BasicSTARSList
+	CoordinationLists   map[string]*CoordinationList
+	RestrictionAreaList BasicSTARSList
+
+	RestrictionAreaSettings map[int]*RestrictionAreaSettings
 }
 
 type BasicSTARSList struct {
@@ -254,6 +257,15 @@ type CoordinationList struct {
 	BasicSTARSList // Note that Visible is ignored for coordination lists.
 	Group          string
 	AutoRelease    bool
+}
+
+// RestrictionAreaSettings holds local settings related to restriction
+// areas that aren't sent back to the server to be changed for all users.
+type RestrictionAreaSettings struct {
+	Visible           bool
+	HideText          bool
+	StopBlinkingText  bool
+	ForceBlinkingText bool
 }
 
 func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
@@ -279,6 +291,8 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 	for range sp.ConvergingRunways {
 		p.CRDA.RunwayPairState = append(p.CRDA.RunwayPairState, state)
 	}
+
+	clear(p.RestrictionAreaSettings)
 
 	// Make the scenario's default video maps visible
 	p.VideoMapVisible = make(map[int]interface{})
@@ -397,7 +411,10 @@ func makeDefaultPreferences() *Preferences {
 	prefs.TowerLists[2].Position = [2]float32{.05, .9}
 	prefs.TowerLists[2].Lines = 5
 
+	prefs.RestrictionAreaList.Position = [2]float32{.85, .575}
+
 	prefs.CoordinationLists = make(map[string]*CoordinationList)
+	prefs.RestrictionAreaSettings = make(map[int]*RestrictionAreaSettings)
 
 	return &prefs
 }
@@ -412,6 +429,9 @@ func (p *Preferences) Activate(pl platform.Platform, sp *STARSPane) {
 
 	if p.VideoMapVisible == nil {
 		p.VideoMapVisible = make(map[int]interface{})
+	}
+	if p.RestrictionAreaSettings == nil {
+		p.RestrictionAreaSettings = make(map[int]*RestrictionAreaSettings)
 	}
 }
 
@@ -532,6 +552,10 @@ func (ps *Preferences) Upgrade(from, to int) {
 		ps.CoordinationLists = make(map[string]*CoordinationList)
 
 		ps.RangeRingsUserCenter = ps.RangeRingsCenter != ps.Center
+	}
+	if from < 29 {
+		ps.RestrictionAreaList.Position = [2]float32{.8, .575}
+		ps.RestrictionAreaSettings = make(map[int]*RestrictionAreaSettings)
 	}
 }
 

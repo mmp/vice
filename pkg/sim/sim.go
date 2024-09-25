@@ -1230,6 +1230,8 @@ type WorldUpdate struct {
 
 	LaunchConfig LaunchConfig
 
+	UserRestrictionAreas []RestrictionArea
+
 	SimIsPaused      bool
 	SimRate          float32
 	Events           []Event
@@ -1257,17 +1259,18 @@ func (s *Sim) GetWorldUpdate(token string, update *WorldUpdate) error {
 
 		var err error
 		*update, err = deep.Copy(WorldUpdate{
-			Aircraft:         s.State.Aircraft,
-			Controllers:      s.State.Controllers,
-			ERAMComputers:    s.State.ERAMComputers,
-			Time:             s.SimTime,
-			LaunchConfig:     s.LaunchConfig,
-			SimIsPaused:      s.Paused,
-			SimRate:          s.SimRate,
-			Events:           ctrl.events.Get(),
-			TotalDepartures:  s.TotalDepartures,
-			TotalArrivals:    s.TotalArrivals,
-			TotalOverflights: s.TotalOverflights,
+			Aircraft:             s.State.Aircraft,
+			Controllers:          s.State.Controllers,
+			ERAMComputers:        s.State.ERAMComputers,
+			Time:                 s.SimTime,
+			LaunchConfig:         s.LaunchConfig,
+			SimIsPaused:          s.Paused,
+			SimRate:              s.SimRate,
+			Events:               ctrl.events.Get(),
+			TotalDepartures:      s.TotalDepartures,
+			TotalArrivals:        s.TotalArrivals,
+			TotalOverflights:     s.TotalOverflights,
+			UserRestrictionAreas: s.State.UserRestrictionAreas,
 		})
 
 		return err
@@ -3490,4 +3493,56 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 	*/
 
 	return ac, nil
+}
+
+func (s *Sim) CreateRestrictionArea(ra RestrictionArea) (int, error) {
+	ra.UpdateTriangles()
+
+	// Look for a free slot from one that was deleted
+	for i, ua := range s.State.UserRestrictionAreas {
+		if ua.Deleted {
+			s.State.UserRestrictionAreas[i] = ra
+			return i + 1, nil
+		}
+	}
+
+	if n := len(s.State.UserRestrictionAreas); n < MaxRestrictionAreas {
+		s.State.UserRestrictionAreas = append(s.State.UserRestrictionAreas, ra)
+		return n + 1, nil
+	}
+
+	return 0, ErrTooManyRestrictionAreas
+}
+
+func (s *Sim) UpdateRestrictionArea(idx int, ra RestrictionArea) error {
+	// Adjust for one-based indexing in the API call
+	idx--
+
+	if idx < 0 || idx >= len(s.State.UserRestrictionAreas) {
+		return ErrInvalidRestrictionAreaIndex
+	}
+	if s.State.UserRestrictionAreas[idx].Deleted {
+		return ErrInvalidRestrictionAreaIndex
+	}
+
+	// Update the triangulation just in case it's been moved.
+	ra.UpdateTriangles()
+
+	s.State.UserRestrictionAreas[idx] = ra
+	return nil
+}
+
+func (s *Sim) DeleteRestrictionArea(idx int) error {
+	// Adjust for one-based indexing in the API call
+	idx--
+
+	if idx < 0 || idx >= len(s.State.UserRestrictionAreas) {
+		return ErrInvalidRestrictionAreaIndex
+	}
+	if s.State.UserRestrictionAreas[idx].Deleted {
+		return ErrInvalidRestrictionAreaIndex
+	}
+
+	s.State.UserRestrictionAreas[idx] = RestrictionArea{Deleted: true}
+	return nil
 }

@@ -402,6 +402,52 @@ func (c *ControlClient) Disconnect() {
 	c.State.Controllers = nil
 }
 
+// Note that the success callback is passed an integer, giving the index of
+// the newly-created restriction area.
+func (c *ControlClient) CreateRestrictionArea(ra RestrictionArea, success func(int), err func(error)) {
+	var idx int
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.CreateRestrictionArea(ra, &idx),
+			IssueTime: time.Now(),
+			OnSuccess: func(any) { success(idx) },
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) UpdateRestrictionArea(idx int, ra RestrictionArea, success func(any), err func(error)) {
+	// Speculatively make the change locally immediately to reduce perceived latency.
+	if idx <= 100 && idx-1 < len(c.State.UserRestrictionAreas) {
+		c.State.UserRestrictionAreas[idx-1] = ra
+	} else if idx >= 101 && idx-101 < len(c.STARSFacilityAdaptation.RestrictionAreas) {
+		// Trust the caller to not try to update things they're not supposed to.
+		c.STARSFacilityAdaptation.RestrictionAreas[idx-101] = ra
+	}
+
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.UpdateRestrictionArea(idx, ra),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) DeleteRestrictionArea(idx int, success func(any), err func(error)) {
+	// Delete locally to reduce latency; note that only user restriction
+	// areas can be deleted, not system ones from the scenario file.
+	if idx-1 < len(c.State.UserRestrictionAreas) {
+		c.State.UserRestrictionAreas[idx-1] = RestrictionArea{Deleted: true}
+	}
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.DeleteRestrictionArea(idx),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (c *ControlClient) GetUpdates(eventStream *EventStream, onErr func(error)) {
 	if c.proxy == nil {
 		return
@@ -452,6 +498,8 @@ func (c *ControlClient) UpdateWorld(wu *WorldUpdate, eventStream *EventStream) {
 	c.State.ERAMComputers = wu.ERAMComputers
 
 	c.State.LaunchConfig = wu.LaunchConfig
+
+	c.State.UserRestrictionAreas = wu.UserRestrictionAreas
 
 	c.State.SimTime = wu.Time
 	c.State.SimIsPaused = wu.SimIsPaused

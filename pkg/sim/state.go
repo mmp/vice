@@ -64,6 +64,7 @@ type State struct {
 	TotalArrivals            int
 	TotalOverflights         int
 	STARSFacilityAdaptation  STARSFacilityAdaptation
+	UserRestrictionAreas     []RestrictionArea
 
 	ControllerVideoMaps        []av.VideoMap
 	ControllerDefaultVideoMaps []string
@@ -118,9 +119,14 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	ss.SimName = s.Name
 	ss.SimDescription = s.Scenario
 	ss.SimTime = s.SimTime
-	ss.STARSFacilityAdaptation = sg.STARSFacilityAdaptation
+	ss.STARSFacilityAdaptation = deep.MustCopy(sg.STARSFacilityAdaptation)
 	ss.videoMaps = ss.loadVideoMaps(ml, lg)
 
+	// Add the TFR restriction areas
+	for _, tfr := range tfrs {
+		ra := RestrictionAreaFromTFR(tfr)
+		ss.STARSFacilityAdaptation.RestrictionAreas = append(ss.STARSFacilityAdaptation.RestrictionAreas, ra)
+	}
 	for _, callsign := range sc.VirtualControllers {
 		// Skip controllers that are in MultiControllers
 		if ss.MultiControllers != nil {

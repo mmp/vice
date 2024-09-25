@@ -15,8 +15,8 @@ require (
 	github.com/iancoleman/orderedmap v0.3.0
 	github.com/klauspost/compress v1.15.9
 	github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455
+	github.com/mmp/earcut-go v0.0.0-20230128161750-16b51f1632c6
 	github.com/mmp/imgui-go/v4 v4.0.0-20220911181801-968a517f674f
-	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/tosone/minimp3 v1.0.2

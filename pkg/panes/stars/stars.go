@@ -190,6 +190,9 @@ type STARSPane struct {
 		}
 	}
 
+	// Points clicked to define a restriction area.
+	wipRAVertices []math.Point2LL
+
 	// We won't waste the space to serialize these but reconstruct them on load.
 	significantPoints map[string]sim.SignificantPoint
 	// Store them redundantly in a slice so we can sort them and then
@@ -601,6 +604,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawRangeRings(ctx, transforms, cb)
 
 	sp.drawVideoMaps(ctx, transforms, cb)
+	sp.drawRestrictionAreas(ctx, transforms, cb)
 
 	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont[ps.CharSize.Tools],
 		ps.Brightness.Lists.ScaleRGB(STARSListColor), cb)
@@ -706,6 +710,198 @@ func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms ScopeTransform
 		cb.SetRGB(color)
 		cb.Call(vm.CommandBuffer)
 	}
+}
+
+var restrictionAreaStipple [32]uint32 = [32]uint32{
+	0b10001000100010001000100010001000,
+	0,
+	0b00100010001000100010001000100010,
+	0,
+	0b10001000100010001000100010001000,
+	0,
+	0b00100010001000100010001000100010,
+	0,
+	0b10001000100010001000100010001000,
+	0,
+	0b00100010001000100010001000100010,
+	0,
+	0b10001000100010001000100010001000,
+	0,
+	0b00100010001000100010001000100010,
+	0,
+	0b10001000100010001000100010001000,
+	0,
+	0b00100010001000100010001000100010,
+	0,
+	0b10001000100010001000100010001000,
+	0,
+	0b00100010001000100010001000100010,
+	0,
+	0b10001000100010001000100010001000,
+	0,
+	0b00100010001000100010001000100010,
+	0,
+	0b10001000100010001000100010001000,
+	0,
+	0b00100010001000100010001000100010,
+	0,
+}
+
+var restrictionAreaHighDPIStipple [32]uint32 = [32]uint32{
+	0b11000000110000001100000011000000,
+	0b11000000110000001100000011000000,
+	0,
+	0,
+	0b00001100000011000000110000001100,
+	0b00001100000011000000110000001100,
+	0,
+	0,
+	0b11000000110000001100000011000000,
+	0b11000000110000001100000011000000,
+	0,
+	0,
+	0b00001100000011000000110000001100,
+	0b00001100000011000000110000001100,
+	0,
+	0,
+	0b11000000110000001100000011000000,
+	0b11000000110000001100000011000000,
+	0,
+	0,
+	0b00001100000011000000110000001100,
+	0b00001100000011000000110000001100,
+	0,
+	0,
+	0b11000000110000001100000011000000,
+	0b11000000110000001100000011000000,
+	0,
+	0,
+	0b00001100000011000000110000001100,
+	0b00001100000011000000110000001100,
+	0,
+	0,
+}
+
+func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	if sp.commandMode == CommandModeRestrictionArea && len(sp.previewAreaInput) > 0 &&
+		(sp.previewAreaInput[0] == 'A' || sp.previewAreaInput[0] == 'P') {
+		ld := renderer.GetLinesDrawBuilder()
+		defer renderer.ReturnLinesDrawBuilder(ld)
+
+		for i := range len(sp.wipRAVertices) - 1 {
+			ld.AddLine(sp.wipRAVertices[i], sp.wipRAVertices[i+1])
+		}
+
+		transforms.LoadLatLongViewingMatrices(cb)
+		cb.LineWidth(1, ctx.DPIScale)
+		ps := sp.currentPrefs()
+		color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 0})
+		cb.SetRGB(color)
+
+		ld.GenerateCommands(cb)
+	}
+}
+
+func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	sp.drawWIPRestrictionArea(ctx, transforms, cb)
+
+	ps := sp.currentPrefs()
+	draw := make(map[int]*sim.RestrictionArea)
+	for idx, s := range ps.RestrictionAreaSettings {
+		if !s.Visible {
+			continue
+		}
+
+		if ra := getRestrictionAreaByIndex(ctx, idx); ra != nil {
+			draw[idx] = ra
+		}
+	}
+
+	if len(draw) == 0 {
+		return
+	}
+
+	color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 0})
+	transforms.LoadLatLongViewingMatrices(cb)
+	cb.LineWidth(1, ctx.DPIScale)
+	cb.SetRGB(color)
+
+	// Draw the geometric bits before the text
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+	trid := renderer.GetTrianglesDrawBuilder()
+	defer renderer.ReturnTrianglesDrawBuilder(trid)
+	for _, idx := range util.SortedMapKeys(draw) {
+		ra := draw[idx]
+		if ra.CircleRadius > 0 {
+			if ra.Shaded {
+				trid.AddLatLongCircle(ra.Position, ctx.ControlClient.NmPerLongitude, float32(ra.CircleRadius), 90)
+			}
+			ld.AddLatLongCircle(ra.Position, ctx.ControlClient.NmPerLongitude, float32(ra.CircleRadius), 90)
+		} else {
+			for _, loop := range ra.Vertices {
+				if nv := len(loop); nv > 0 {
+					for i := range nv - 1 {
+						ld.AddLine(loop[i], loop[i+1])
+					}
+					if ra.Closed {
+						ld.AddLine(loop[nv-1], loop[0])
+					}
+				}
+			}
+			if ra.Shaded {
+				for _, tri := range ra.Tris {
+					trid.AddTriangle(tri[0], tri[1], tri[2])
+				}
+			}
+		}
+	}
+	cb.EnablePolygonStipple()
+	if ctx.DPIScale > 1.5 {
+		cb.PolygonStipple(restrictionAreaHighDPIStipple)
+	} else {
+		cb.PolygonStipple(restrictionAreaStipple)
+	}
+	trid.GenerateCommands(cb)
+	cb.DisablePolygonStipple()
+	ld.GenerateCommands(cb)
+
+	// Draw text
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	font := sp.systemFont[ps.CharSize.Tools]
+	halfSeconds := ctx.Now.UnixMilli() / 500
+	blinkDim := halfSeconds&1 == 0
+	for _, idx := range util.SortedMapKeys(draw) {
+		ra := draw[idx]
+		var text string
+		if !ra.HideId {
+			text = fmt.Sprintf("[%d]", idx)
+		}
+
+		settings := ps.RestrictionAreaSettings[idx]
+		if ra.Text[0] != "" && !settings.HideText {
+			indent := len(text)
+			text += strings.ToUpper(ra.Text[0])
+			if ra.Text[1] != "" {
+				text += "\n"
+				if indent > 0 {
+					text += fmt.Sprintf("%*c", indent, ' ')
+				}
+				text += strings.ToUpper(ra.Text[1])
+			}
+		}
+
+		p := transforms.WindowFromLatLongP(ra.Position)
+		blinking := settings.ForceBlinkingText || (ra.BlinkingText && !settings.StopBlinkingText)
+		if blinking && blinkDim {
+			td.AddTextCentered(text, p, renderer.TextStyle{Font: font, Color: color.Scale(0.3)})
+		} else {
+			td.AddTextCentered(text, p, renderer.TextStyle{Font: font, Color: color})
+		}
+	}
+	transforms.LoadWindowViewingMatrices(cb)
+	td.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
