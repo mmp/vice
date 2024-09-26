@@ -834,3 +834,37 @@ func (sd *Dispatcher) CreateOverflight(oa *CreateOverflightArgs, ofAc *av.Aircra
 	}
 	return err
 }
+
+type RestrictionAreaArgs struct {
+	ControllerToken string
+	Index           int
+	RestrictionArea RestrictionArea
+}
+
+func (sd *Dispatcher) CreateRestrictionArea(ra *RestrictionAreaArgs, idx *int) error {
+	sim, ok := sd.sm.controllerTokenToSim[ra.ControllerToken]
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+	i, err := sim.CreateRestrictionArea(ra.RestrictionArea)
+	if err == nil {
+		*idx = i
+	}
+	return err
+}
+
+func (sd *Dispatcher) UpdateRestrictionArea(ra *RestrictionAreaArgs, _ *struct{}) error {
+	sim, ok := sd.sm.controllerTokenToSim[ra.ControllerToken]
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+	return sim.UpdateRestrictionArea(ra.Index, ra.RestrictionArea)
+}
+
+func (sd *Dispatcher) DeleteRestrictionArea(ra *RestrictionAreaArgs, _ *struct{}) error {
+	sim, ok := sd.sm.controllerTokenToSim[ra.ControllerToken]
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+	return sim.DeleteRestrictionArea(ra.Index)
+}

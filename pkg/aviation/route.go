@@ -381,8 +381,8 @@ func parsePTExtent(pt *ProcedureTurn, extent string) error {
 	return nil
 }
 
-func parseWaypoints(str string) ([]Waypoint, error) {
-	var waypoints []Waypoint
+func parseWaypoints(str string) (WaypointArray, error) {
+	var waypoints WaypointArray
 	entries := strings.Fields(str)
 	for ei, field := range entries {
 		if len(field) == 0 {
@@ -606,6 +606,167 @@ func ParseAltitudeRestriction(s string) (*AltitudeRestriction, error) {
 			return nil, fmt.Errorf("%s: error parsing altitude restriction: %v", s, err)
 		} else {
 			return &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}}, nil
+		}
+	}
+}
+
+type Locator interface {
+	Locate(fix string) (math.Point2LL, bool)
+}
+
+func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32, magneticVariation float32, e *util.ErrorLogger) {
+	var prev math.Point2LL
+
+	for i, wp := range waypoints {
+		if e != nil {
+			e.Push("Fix " + wp.Fix)
+		}
+		if pos, ok := loc.Locate(wp.Fix); !ok {
+			if e != nil {
+				e.ErrorString("unable to locate waypoint")
+			}
+		} else {
+			waypoints[i].Location = pos
+
+			d := math.NMDistance2LL(prev, waypoints[i].Location)
+			if i > 1 && d > 120 && e != nil {
+				e.ErrorString("waypoint at %s is suspiciously far from previous one (%s at %s): %f nm",
+					waypoints[i].Location.DDString(), waypoints[i-1].Fix, waypoints[i-1].Location.DDString(), d)
+			}
+			prev = waypoints[i].Location
+		}
+
+		if e != nil {
+			e.Pop()
+		}
+	}
+
+	// Do (DME) arcs after wp.Locations have been initialized
+	for i, wp := range waypoints {
+		if wp.Arc == nil {
+			continue
+		}
+
+		if e != nil {
+			e.Push("Fix " + wp.Fix)
+		}
+
+		if i+1 == len(waypoints) {
+			if e != nil {
+				e.ErrorString("can't have DME arc starting at the final waypoint")
+				e.Pop()
+			}
+			break
+		}
+
+		// Which way are we turning as we depart p0? Use either the
+		// previous waypoint or the next one after the end of the arc
+		// to figure it out.
+		var v0, v1 [2]float32
+		p0, p1 := math.LL2NM(wp.Location, nmPerLongitude), math.LL2NM(waypoints[i+1].Location, nmPerLongitude)
+		if i > 0 {
+			v0 = math.Sub2f(p0, math.LL2NM(waypoints[i-1].Location, nmPerLongitude))
+			v1 = math.Sub2f(p1, p0)
+		} else {
+			if i+2 == len(waypoints) {
+				if e != nil {
+					e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
+					e.Pop()
+				}
+				continue
+			}
+			v0 = math.Sub2f(p1, p0)
+			v1 = math.Sub2f(math.LL2NM(waypoints[i+2].Location, nmPerLongitude), p1)
+		}
+		// cross product
+		x := v0[0]*v1[1] - v0[1]*v1[0]
+		wp.Arc.Clockwise = x < 0
+
+		if wp.Arc.Fix != "" {
+			// Center point was specified
+			var ok bool
+			if wp.Arc.Center, ok = loc.Locate(wp.Arc.Fix); !ok {
+				if e != nil {
+					e.ErrorString("unable to locate arc center \"" + wp.Arc.Fix + "\"")
+					e.Pop()
+				}
+				continue
+			}
+		} else {
+			// Just the arc length was specified; need to figure out the
+			// center and radius of the circle that gives that.
+			d := math.Distance2f(p0, p1)
+			if d >= wp.Arc.Length {
+				if e != nil {
+					e.ErrorString("distance between waypoints %.2fnm is greater than specified arc length %.2fnm",
+						d, wp.Arc.Length)
+					e.Pop()
+				}
+				continue
+			}
+			if wp.Arc.Length > d*3.14159 {
+				// No circle is possible to give an arc that long
+				if e != nil {
+					e.ErrorString("no valid circle will give a distance between waypoints %.2fnm", wp.Arc.Length)
+					e.Pop()
+				}
+				continue
+			}
+
+			// Now search for a center point of a circle that goes through
+			// p0 and p1 and has the desired arc length.  We will search
+			// along the line perpendicular to the vector p1-p0 that goes
+			// through its center point.
+
+			// There are two possible center points for the circle, one on
+			// each side of the line p0-p1.  We will take positive or
+			// negative steps in parametric t along the perpendicular line
+			// so that we're searching in the right direction to get the
+			// clockwise/counter clockwise route we want.
+			delta := float32(util.Select(wp.Arc.Clockwise, -.01, .01))
+
+			// We will search with uniform small steps along the line. Some
+			// sort of bisection search would probably be better, but...
+			t := delta
+			limit := 100 * math.Distance2f(p0, p1) // ad-hoc
+			v := math.Normalize2f(math.Sub2f(p1, p0))
+			v[0], v[1] = -v[1], v[0] // perp!
+			for t < limit {
+				center := math.Add2f(math.Mid2f(p0, p1), math.Scale2f(v, t))
+				radius := math.Distance2f(center, p0)
+
+				// Angle subtended by p0 and p1 w.r.t. center
+				cosTheta := math.Dot(math.Sub2f(p0, center), math.Sub2f(p1, center)) / math.Sqr(radius)
+				theta := math.SafeACos(cosTheta)
+
+				arcLength := theta * radius
+
+				if arcLength < wp.Arc.Length {
+					wp.Arc.Center = math.NM2LL(center, nmPerLongitude)
+					wp.Arc.Radius = radius
+					break
+				}
+
+				t += delta
+			}
+
+			if t >= limit {
+				if e != nil {
+					e.ErrorString("unable to find valid circle radius for arc")
+					e.Pop()
+				}
+				continue
+			}
+		}
+
+		// Heading from the center of the arc to the current fix
+		hfix := math.Heading2LL(wp.Arc.Center, wp.Location, nmPerLongitude, magneticVariation)
+
+		// Then perpendicular to that, depending on the arc's direction
+		wp.Arc.InitialHeading = math.NormalizeHeading(hfix + float32(util.Select(wp.Arc.Clockwise, 90, -90)))
+
+		if e != nil {
+			e.Pop()
 		}
 	}
 }
@@ -925,7 +1086,7 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 		e.ErrorString("must provide at least two \"waypoints\" for overflight")
 	}
 
-	initializeWaypointLocations(of.Waypoints, loc, nmPerLongitude, magneticVariation, e)
+	of.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
 
 	of.Waypoints[len(of.Waypoints)-1].Delete = true
 	of.Waypoints[len(of.Waypoints)-1].FlyOver = true

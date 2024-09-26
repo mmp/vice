@@ -12,14 +12,19 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"slices"
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/gocolly/colly/v2"
 )
 
 var DB *StaticDatabase
@@ -160,6 +165,7 @@ type FleetAircraft struct {
 
 func init() {
 	db := &StaticDatabase{}
+
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() { db.Airports = parseAirports(); wg.Done() }()
@@ -757,6 +763,303 @@ func PrintCIFPRoutes(airport string) error {
 		}
 	}
 	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// TFRs
+
+// TFR represents an FAA-issued temporary flight restriction.
+type TFR struct {
+	ARTCC     string
+	Type      string // VIP, SECURITY, EVENT, etc.
+	LocalName string // Short string summarizing it.
+	Effective time.Time
+	Expire    time.Time
+	Points    [][]math.Point2LL // One or more line loops defining its extent.
+}
+
+// TFRCache stores active TFRs that have been retrieved previously; we save
+// it out on the config so that we don't download all of them each time vice is launched.
+type TFRCache struct {
+	TFRs map[string]TFR // URL -> TFR
+	ch   chan map[string]TFR
+}
+
+func MakeTFRCache() TFRCache {
+	return TFRCache{
+		TFRs: make(map[string]TFR),
+	}
+}
+
+// UpdateAsync kicks off an update of the TFRCache; it runs asynchronously
+// with synchronization happening when Sync or TFRsForTRACON is called.
+func (t *TFRCache) UpdateAsync(lg *log.Logger) {
+	if t.ch != nil {
+		return
+	}
+	t.ch = make(chan map[string]TFR)
+	go fetchTFRs(util.DuplicateMap(t.TFRs), t.ch, lg)
+}
+
+// Sync synchronizes the cache, adding any newly-downloaded TFRs.  It
+// returns after the given timeout passes if we haven't gotten results back
+// yet.
+func (t *TFRCache) Sync(timeout time.Duration, lg *log.Logger) {
+	if t.ch != nil {
+		select {
+		case t.TFRs = <-t.ch:
+			t.ch = nil
+		case <-time.After(timeout):
+			lg.Warn("TFR fetch timed out")
+		}
+	}
+}
+
+// TFRsForTRACON returns all TFRs that apply to the given TRACON.  (It
+// currently return all of the ones for the TRACON's ARTCC, which is
+// overkill; we should probably cull them based on distance to the center
+// of the TRACON.)
+func (t *TFRCache) TFRsForTRACON(tracon string, lg *log.Logger) []TFR {
+	t.Sync(3*time.Second, lg)
+
+	if tr, ok := DB.TRACONs[tracon]; !ok {
+		return nil
+	} else {
+		var tfrs []TFR
+		for _, url := range util.SortedMapKeys(t.TFRs) {
+			if tfr := t.TFRs[url]; tfr.ARTCC == tr.ARTCC {
+				tfrs = append(tfrs, tfr)
+			}
+		}
+		return tfrs
+	}
+}
+
+// Returns the URLs to all of the XML-formatted TFRs from the tfr.faa.gov website.
+func allTFRUrls() []string {
+	// Try to look legit.
+	c := colly.NewCollector(
+		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15"))
+
+	c.OnRequest(func(r *colly.Request) {
+		r.Headers.Set("Access-Control-Allow-Origin", "*")
+		r.Headers.Set("Accept", "*/*")
+		r.Headers.Set("Sec-Fetch-Site", "same-origin")
+		r.Headers.Set("Accept-Language", "en-US,en;q=0.9")
+		r.Headers.Set("Accept-Encoding", "gzip, deflate, br")
+		r.Headers.Set("Sec-Fetch-Mode", "cors")
+		r.Headers.Set("Access-Control-Allow-Credentials", "true")
+		r.Headers.Set("Connection", "keep-alive")
+		r.Headers.Set("Sec-Fetch-Dest", "empty")
+	})
+
+	// Find all links that match the pattern to a TFR.  Note that this is
+	// super brittle / tied to the current webpage layout, etc. It will
+	// surely break unexpectedly at some point in the future.
+	var urls []string
+	c.OnHTML("a", func(e *colly.HTMLElement) {
+		if href := e.Attr("href"); strings.HasPrefix(href, "../save_pages") {
+			// Rewrite to an absolute URL to the XML file.
+			url := "https://tfr.faa.gov/" + strings.TrimPrefix(href, "../")
+			url = strings.TrimSuffix(url, "html") + "xml"
+			urls = append(urls, url)
+		}
+	})
+
+	c.Visit("https://tfr.faa.gov/tfr2/list.html")
+
+	// Each TFR has multiple links from the page, so uniquify them before returning them.
+	slices.Sort(urls)
+	return slices.Compact(urls)
+}
+
+// fetchTFRs runs in a goroutine and asynchronously downloads the TFRs from
+// the FAA website, converts them to the TFR struct, and then sends the
+// result on the provided chan when done.
+func fetchTFRs(tfrs map[string]TFR, ch chan<- map[string]TFR, lg *log.Logger) {
+	// Semaphore to limit to 4 concurrent requests.
+	const n = 4
+	sem := make(chan interface{}, 4)
+	defer func() { close(sem) }()
+
+	type TFROrError struct {
+		URL string
+		TFR TFR
+		err error
+	}
+	fetched := make(chan TFROrError, len(tfrs))
+	defer func() { close(fetched) }()
+
+	// fetch fetches a single TFR and converts it.
+	fetch := func(url string) {
+		// Acquire the semaphore.
+		sem <- nil
+		defer func() { <-sem }()
+
+		result := TFROrError{URL: url}
+		resp, err := http.Get(url)
+		if err != nil {
+			result.err = err
+		} else {
+			defer resp.Body.Close()
+			result.TFR, result.err = decodeTFRXML(url, resp.Body, lg)
+		}
+		fetched <- result
+	}
+
+	// Launch a goroutine to fetch each one that we don't already have
+	// downloaded.
+	urls := allTFRUrls()
+	launched := 0
+	for _, url := range urls {
+		if _, ok := tfrs[url]; !ok {
+			go fetch(url)
+			launched++
+		}
+	}
+
+	// Harvest the fetched results.
+	for launched > 0 {
+		result := <-fetched
+		if result.err != nil {
+			lg.Warnf("%s: %v", result.URL, result.err)
+		} else {
+			tfrs[result.URL] = result.TFR
+		}
+		launched--
+	}
+
+	// Cull stale TFRs.
+	for url := range tfrs {
+		// It's no longer on the FAA site.
+		if !slices.Contains(urls, url) {
+			delete(tfrs, url)
+		}
+	}
+
+	ch <- tfrs
+	close(ch)
+}
+
+var tfrTypes = map[string]string{
+	"91.137": "HAZARDS",
+	"91.138": "HI HAZARDS",
+	"91.141": "VIP",
+	"91.143": "SPACE OPS",
+	"91.145": "EVENT",
+	"99.7":   "SECURITY",
+}
+
+// XNOTAMUpdate was generated 2024-09-23 07:39:34 by
+// https://xml-to-go.github.io/, using https://github.com/miku/zek. Then
+// manually chopped down to the parts we care about...
+type XNOTAMUpdate struct {
+	Group struct {
+		Add struct {
+			Not struct {
+				NotUid struct {
+					TxtLocalName string `xml:"txtLocalName"`
+				} `xml:"NotUid"`
+				DateEffective          string `xml:"dateEffective"`
+				DateExpire             string `xml:"dateExpire"`
+				CodeTimeZone           string `xml:"codeTimeZone"`
+				CodeExpirationTimeZone string `xml:"codeExpirationTimeZone"`
+				CodeFacility           string `xml:"codeFacility"`
+				TfrNot                 struct {
+					CodeType     string `xml:"codeType"`
+					TFRAreaGroup []struct {
+						AbdMergedArea struct {
+							Avx []struct {
+								Text      string `xml:",chardata"`
+								CodeDatum string `xml:"codeDatum"`
+								CodeType  string `xml:"codeType"`
+								GeoLat    string `xml:"geoLat"`
+								GeoLong   string `xml:"geoLong"`
+							} `xml:"Avx"`
+						} `xml:"abdMergedArea"`
+					} `xml:"TFRAreaGroup"`
+				} `xml:"TfrNot"`
+			} `xml:"Not"`
+		} `xml:"Add"`
+	} `xml:"Group"`
+}
+
+// decodeTFRXML takes an XML-formatted TFR and converts it to our struct.
+func decodeTFRXML(url string, r io.Reader, lg *log.Logger) (TFR, error) {
+	var tfr TFR
+	var xmlTFR XNOTAMUpdate
+	dec := xml.NewDecoder(r)
+	if err := dec.Decode(&xmlTFR); err != nil {
+		return tfr, err
+	}
+
+	notam := xmlTFR.Group.Add.Not
+	tfr.ARTCC = notam.CodeFacility
+	tfr.Type = tfrTypes[notam.TfrNot.CodeType]
+	tfr.LocalName = notam.NotUid.TxtLocalName
+
+	// Attempt to parse a time; these come to us as a pair of strings,
+	// sometimes misformatted.
+	parseTime := func(date, zone string) (time.Time, error) {
+		if zone == "" {
+			zone = "UTC"
+		}
+		return time.Parse("2006-01-02T15:04:05 MST", date+" "+zone)
+	}
+
+	// Since the provided times are often bogus, patch them up so that they
+	// are currently active if we couldn't get the times.
+	var err error
+	tfr.Effective, err = parseTime(notam.DateEffective, notam.CodeTimeZone)
+	if err != nil {
+		tfr.Effective = time.Now()
+		lg.Warn("%s: %v", url, err)
+	}
+	tfr.Expire, err = parseTime(notam.DateExpire, notam.CodeExpirationTimeZone)
+	if err != nil {
+		tfr.Expire = time.Now().Add(10 * 365 * 24 * time.Hour)
+		lg.Warn("%s: %v", url, err)
+	}
+
+	// The extent is given as one or more line loops.
+	for _, group := range notam.TfrNot.TFRAreaGroup {
+		var pts []math.Point2LL
+		for _, pt := range group.AbdMergedArea.Avx {
+			if len(pt.GeoLat) == 0 || len(pt.GeoLong) == 0 {
+				continue
+			}
+			pf := func(s string) (float32, error) {
+				var v float64
+				v, err = strconv.ParseFloat(s[:len(s)-1], 32)
+				if err != nil {
+					return float32(v), err
+				}
+				neg := s[len(s)-1] == 'S' || s[len(s)-1] == 'W'
+				if neg {
+					v = -v
+				}
+				return float32(v), nil
+			}
+
+			var p math.Point2LL
+			p[0], err = pf(pt.GeoLong)
+			if err != nil {
+				lg.Warn("%s: %v", url, err)
+				continue
+			}
+			p[1], err = pf(pt.GeoLat)
+			if err != nil {
+				lg.Warn("%s: %v", url, err)
+				continue
+			}
+			pts = append(pts, p)
+		}
+		if len(pts) > 0 {
+			tfr.Points = append(tfr.Points, pts)
+		}
+	}
+
+	return tfr, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -20,6 +20,9 @@ import (
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/brunoga/deep"
+	"github.com/mmp/earcut-go"
 )
 
 type ScenarioGroup struct {
@@ -94,6 +97,7 @@ type STARSFacilityAdaptation struct {
 		DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
 	} `json:"scratchpad1"`
 	CoordinationLists []CoordinationList `json:"coordination_lists"`
+	RestrictionAreas  []RestrictionArea  `json:"restriction_areas"`
 }
 
 type STARSControllerConfig struct {
@@ -116,6 +120,25 @@ type SignificantPoint struct {
 	Abbreviation string        `json:"abbreviation"`
 	Description  string        `json:"description"`
 	Location     math.Point2LL `json:"location"`
+}
+
+// This many adapted and then this many user-defined
+const MaxRestrictionAreas = 100
+
+type RestrictionArea struct {
+	Title        string           `json:"title"`
+	Text         [2]string        `json:"text"`
+	BlinkingText bool             `json:"blinking_text"`
+	HideId       bool             `json:"hide_id"`
+	Position     math.Point2LL    `json:"position"`
+	CircleRadius int              `json:"circle_radius"`
+	VerticesUser av.WaypointArray `json:"vertices"`
+	Vertices     [][]math.Point2LL
+	Closed       bool `json:"closed"`
+	Shaded       bool `json:"shade_region"`
+
+	Tris    [][3]math.Point2LL
+	Deleted bool
 }
 
 type Airspace struct {
@@ -1167,6 +1190,57 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		}
 	}
 
+	e.Push("\"restriction_areas\"")
+	if len(s.RestrictionAreas) > MaxRestrictionAreas {
+		e.ErrorString("No more than %d restriction areas may be specified; %d were given.",
+			MaxRestrictionAreas, len(s.RestrictionAreas))
+	}
+	for idx := range s.RestrictionAreas {
+		ra := &s.RestrictionAreas[idx]
+		// Fill in Vertices from the user-specified "vertices"
+		if len(ra.VerticesUser) > 0 {
+			ra.VerticesUser.InitializeLocations(sg, sg.NmPerLongitude, sg.MagneticVariation, e)
+			var verts []math.Point2LL
+			for _, v := range ra.VerticesUser {
+				verts = append(verts, v.Location)
+			}
+
+			ra.Vertices = make([][]math.Point2LL, 1)
+			ra.Vertices[0] = verts
+			ra.ComputePositionFromVertices()
+			ra.UpdateTriangles()
+		}
+
+		if ra.Title == "" {
+			e.ErrorString("Must define \"title\" for restriction area.")
+		}
+		for i := range 2 {
+			if len(ra.Text[i]) > 32 {
+				e.ErrorString("Maximum of 32 characters per line in \"text\": line %d: %q (%d)",
+					i, ra.Text, len(ra.Text[i]))
+			}
+		}
+		if ra.Closed && len(ra.Vertices) == 0 || len(ra.Vertices[0]) < 3 {
+			e.ErrorString("At least 3 \"vertices\" must be given for a closed restriction area.")
+		}
+		if !ra.Closed && len(ra.Vertices) == 0 || len(ra.Vertices[0]) < 2 {
+			e.ErrorString("At least 2 \"vertices\" must be given for an open restriction area.")
+		}
+		if ra.CircleRadius > 125 {
+			e.ErrorString("\"radius\" cannot be larger than 125.")
+		}
+		if ra.CircleRadius > 0 && ra.Position.IsZero() {
+			e.ErrorString("Must specify \"position\" if \"circle_radius\" is given.")
+		}
+		if ra.CircleRadius > 0 && len(ra.Vertices) > 0 {
+			e.ErrorString("Cannot specify both \"circle_radius\" and \"vertices\".")
+		}
+		if ra.Shaded && ra.CircleRadius == 0 && len(ra.Vertices) == 0 {
+			e.ErrorString("\"shaded\" cannot be specified without \"circle_radius\" or \"vertices\".")
+		}
+	}
+	e.Pop()
+
 	e.Pop() // stars_config
 }
 
@@ -1583,4 +1657,66 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 	lg.Warnf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
 	return scenarioGroups, simConfigurations, maplib
+}
+
+///////////////////////////////////////////////////////////////////////////
+// RestrictionArea
+
+func RestrictionAreaFromTFR(tfr av.TFR) RestrictionArea {
+	ra := RestrictionArea{
+		Title:    tfr.LocalName,
+		Vertices: deep.MustCopy(tfr.Points),
+	}
+
+	if len(ra.Title) > 32 {
+		ra.Title = ra.Title[:32]
+	}
+
+	ra.HideId = true
+	ra.Closed = true
+	ra.Shaded = true // ??
+
+	ra.ComputePositionFromVertices()
+	ra.UpdateTriangles()
+
+	return ra
+}
+
+func (ra *RestrictionArea) ComputePositionFromVertices() {
+	var c math.Point2LL
+	var n float32
+	for _, loop := range ra.Vertices {
+		n += float32(len(loop))
+		for _, v := range loop {
+			c = math.Add2f(c, v)
+		}
+	}
+	ra.Position = math.Scale2f(c, 1/n)
+}
+
+func (ra *RestrictionArea) UpdateTriangles() {
+	if !ra.Closed || !ra.Shaded {
+		ra.Tris = nil
+		return
+	}
+
+	clear(ra.Tris)
+	for _, loop := range ra.Vertices {
+		if len(loop) < 3 {
+			continue
+		}
+
+		vertices := make([]earcut.Vertex, len(loop))
+		for i, v := range loop {
+			vertices[i].P = [2]float64{float64(v[0]), float64(v[1])}
+		}
+
+		for _, tri := range earcut.Triangulate(earcut.Polygon{Rings: [][]earcut.Vertex{vertices}}) {
+			var v32 [3]math.Point2LL
+			for i, v64 := range tri.Vertices {
+				v32[i] = [2]float32{float32(v64.P[0]), float32(v64.P[1])}
+			}
+			ra.Tris = append(ra.Tris, v32)
+		}
+	}
 }

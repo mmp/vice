@@ -3731,7 +3731,167 @@ how it simulates aircraft or the STARS interface.
                 </tbody>
               </table>
 
+              <h3 id="restriction-areas" class="section-heading">Restriction Areas</h3>
+
+            <p>Restriction areas are annotations on STARS maps that add additional information,
+              usually related to temporary conditions (flight restrictions, events, etc.) They
+              may be circular, polygonal, or have no shape associated with them, and may include
+              text that provides additional information about them. They are drawn in yellow in the
+              STARS window and their brightness is controlled via the "Map group B" brightness.</p>
+            <p>Here is a circular restriction area with 2nm radius centered at the KFRG airport:</p>
+            <div class="text-center">
+              <img src="restriction-area-circle.png" srcset="restriction-area-circle-2x.png 2x" width="338" height="329">
+            </div><br>
+            <p>Restriction areas may be defined by the controller using commands described below or
+              may be defined in scenario definition files (see <a href="#fe-stars-videomaps">STARS and Video Maps</a>).
+              If a controller defines a restriction area, it is make available to all other controllers
+              in the session.
+              As a convenience, <i>vice</i> also downloads the current <a href="https://tfr.faa.gov/tfr2/list.html">FAA TFRs</a>
+              and automatically generates restriction areas for them.</p>
+            <p>The currently-available restriction areas can be seen via the restriction area list, which can be displayed and
+              positioned using these commands:
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]TRA</code></td>
+                    <td>Toggles whether the restriction area list is visible.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]TRA[SLEW]</code></td>
+                    <td>Places the restriction area list at the slewed location in the STARS window.</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>Here is an example of the restriction area list:</p>
+              <div class="text-center">
+                <img src="restriction-area-list.png" srcset="restriction-area-list-2x.png 2x" width="352" height="116">
+              </div><br>
+            <p>Restriction area numbers 1&mdash;100 are used for user-defined restriction areas
+              and 101&mdash;200 for system-defined restriction areas.</p>
+            <p>The following commands can be used to create and delete restriction areas.
+              (Note that system restriction areas cannot be deleted.) The syntax of the
+              <code>(RATEXT)</code> and <code>(RALOC)</code> specifiers used for restriction areas is
+              discussed below.
+              </p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:30%">Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[F12]G(RATEXT) (RALOC)</code> /<br> <code>[F12]G(RATEXT)[SLEW]</code></td>
+                    <td>Creates a text-only restriction area at the specified location.
+                      A space may be entered between the <code>G</code> and the text.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12]C(###) (RATEXT) (RALOC)</code> /<br> <code>[F12]C(###)(RATEXT)[SLEW]</code></td>
+                    <td>Creates a circular restriction area with given radius in nautical miles at the specified location.
+                      A space may be entered between the radius and the text.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12]A(RALOC) (RALOC)... (RATEXT)</code> /<br> <code>[F12]A[SLEW][SLEW]...(RATEXT)</code></td>
+                    <td>Creates an open polygonal restriction area with the given text with the specified vertices.
+                      At least two vertices but no more than ten must be provided.
+                      Here, the ellipsis <code>...</code> indicates that additional <code>(RALOC)</code> locations may
+                      be given, seperated by spaces.
+                      A space may be entered between the <code>A</code> and the first location.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12]P(RALOC) (RALOC)... (RATEXT)</code> /<br> <code>[F12]P[SLEW][SLEW]...(RATEXT)</code></td>
+                    <td>Creates a closed polygonal restriction area (i.e., the last vertex connects with the first)
+                      with the given text with the specified vertices.
+                      At least three vertices but no more than ten must be provided.
+                      A space may be entered between the <code>P</code> and the first location.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12](###)DEL</code></td>
+                    <td>Deletes the restriction area with the given number.</td>
+                  </tr>
+                </tbody>
+              </table>
+            <p>In the restriction area commands, <code>(RATEXT)</code> is used to indicate specification of the text
+              associated with the restriction area. One or two lines of text may be specified; if a second line is
+              given, it should be separated from the first by a space. Because space is used to separate lines, periods
+              must be entered for spaces within a line of text. These periods are converted to spaces by <i>vice</i>.
+              Depending on the context, a third line with additional qualifiers can be entered: <code>∆</code> to indicate
+              that the text should blink and <code>+</code> to indicate that its associated shape should be shaded.</p>
+            <p>Locations may be specified by clicking on the STARS window or by <code>(RALOC)</code> specifiers.
+              These may be the names of fixes, fixes offset by a given direction in a given direction, or latitude-longitude
+              coordinates. Here are examples of each:
+            </p>
+            <ul>
+              <li><code>CCC</code>: specifies that the location of the CCC VOR should be used.</li>
+              <li><code>CCC/320/2.5</code>: specifies a point 2.5nm miles along the 320 bearing from the CCC VOR.</li>
+              <li><code>403758N/0734617W</code>: specifies a latitude-longitude coordinate 40.37.58N, 73.46.17W.
+                In other words, for latitude, the first two digits are degrees, the next two are minutes, and the next two
+                are seconds, followed by a "N" or an "S". For longitude, three digits are used for degrees (and leading
+                0s must be used if necessary), then two digits for each of minutes and seconds, followed by "W" or "E".
+                Latitude and longitude coordinates are separated by a slash <code>/</code>.</li>
+              </ul>
+            <p>Putting it all together, the a restriction area above that is a 2nm circle around KFRG might be created
+              by <code>[F12]C2 REPUBLIC KFRG</code>. We could instead make a shaded area with two lines of flashing by
+              entering <code>[F12]C2 REPUBLIC SHADED.AREA +∆ KFRG</code>. Here is the result:
+            </p>
+<div class="text-center">
+<img src="restriction-area-shaded-flashing.gif" srcset="restriction-area-shaded-flashing-2x.gif 2x" width="204" height="192" class="img-fluid">
+</div><br>   
+            <p>A number of commands are available to modify existing restriction areas and manage which ones are displayed:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[F12]E(###)</code></td>
+                    <td>Displays the restriction area with the given number.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12]I(###)</code></td>
+                    <td>Hides the restriction area with the given number.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12](###)</code></td>
+                    <td>If the text in the restriction area with the given number is blinking, stops its blinking.
+                    Otherwise, toggles the restriction area's visbility</td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12](###)T</code></td>
+                    <td>Toggles whether the text associated with the restriction area is visible.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12](###)T ∆</code></td>
+                    <td>Toggles whether the text associated with the restriction area is visible.
+                    If it is visible, start the text blinking.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12](###)T(RATEXT)</code></td>
+                    <td>Changes the text for the associated restriction area to the specified text.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12](###)*(RALOC)</code> /<br><code>[F12](###)*[SLEW]</code></td>
+                    <td>Moves the center of the restriction area to the specified location.</td>
+                  </tr>
+                </tbody>
+              </table>
+
               <h3 id="airspace" class="section-heading">Airspace</h3>
+
               <p><i>Note: this feature is not present in real-world STARS.</i></p>
             <p>
               <i>vice</i> is able to indicate when aircraft are outside of the departure or approach airspace,
