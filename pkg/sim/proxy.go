@@ -254,11 +254,12 @@ func (s *proxy) DeleteAllAircraft() *rpc.Call {
 	}, nil, nil)
 }
 
-func (s *proxy) RunAircraftCommands(callsign string, cmds string, result *AircraftCommandsResult) *rpc.Call {
+func (s *proxy) RunAircraftCommands(callsign string, cmds string, nextController string, result *AircraftCommandsResult) *rpc.Call {
 	return s.Client.Go("Sim.RunAircraftCommands", &AircraftCommandsArgs{
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Commands:        cmds,
+		NextController: nextController,
 	}, result, nil)
 }
 

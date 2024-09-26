@@ -238,7 +238,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				return ctx.ControlClient.Aircraft[sp.TabListAircraft[idx]]
 			}
 
-			if trk := ctx.ControlClient.STARSComputer().LookupTrackIndex(idx); trk != nil {
+			if trk := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).LookupTrackIndex(idx); trk != nil {
 				// May be nil, but this is our last option
 				return ctx.ControlClient.Aircraft[trk.Identifier]
 			}
@@ -504,7 +504,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				return
 			} else {
 				// Is it an abbreviated flight plan?
-				fp, err := sim.MakeSTARSFlightPlanFromAbbreviated(cmd, ctx.ControlClient.STARSComputer(),
+				fp, err := sim.MakeSTARSFlightPlanFromAbbreviated(cmd, ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign),
 					ctx.ControlClient.STARSFacilityAdaptation)
 				if fp != nil {
 					ctx.ControlClient.UploadFlightPlan(fp, sim.LocalNonEnroute, nil,
@@ -523,7 +523,13 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		if ac := lookupAircraft(cmd); ac == nil {
 			status.err = ErrSTARSCommandFormat
 		} else {
-			sp.initiateTrack(ctx, ac.Callsign)
+			fp, err := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).GetFlightPlan(ac.Callsign) // TODO: change this so that it's the inputted squawk/ callsign. 
+			if err != nil {
+				ctx.Lg.Errorf("Error getting flight plan for %s: %v", ac.Callsign, err)
+				return
+			}
+
+			sp.initiateTrack(ctx, ac.Callsign, fp)
 			status.clear = true
 		}
 		return
@@ -1842,7 +1848,7 @@ func (sp *STARSPane) setScratchpad(ctx *panes.Context, callsign string, contents
 	}
 
 	trk := sp.getTrack(ctx, ac)
-	if trk != nil && trk.TrackOwner == "" {
+	if trk == nil || trk.TrackOwner == "" {
 		// This is because /OK can be used for associated tracks that are
 		// not owned by this TCP. But /OK cannot be used for unassociated
 		// tracks. So might as well weed them out now.
@@ -1919,12 +1925,19 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *panes.Context, callsign string, di
 		func(err error) { sp.displayError(err, ctx) })
 }
 
-func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string) {
-	// TODO: should we actually be looking up the flight plan on the server
-	// side anyway?
-	fp, err := ctx.ControlClient.STARSComputer().GetFlightPlan(callsign)
-	if err != nil {
-		// TODO: do what here?
+func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string, fp *sim.STARSFlightPlan) {
+
+	comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+	// Do the checking here as well as in pkg/sim/sim.go so that we can assure that the sim side sucseeds and the local calls can be made before.
+
+	if comp.TrackInformation[callsign] != nil {
+		// This is a track that is already being tracked
+		sp.previewAreaOutput = ErrSTARSIllegalTrack.Error()
+		return
+	}
+	comp.TrackInformation[callsign] = &sim.TrackInformation{
+		TrackOwner: ctx.ControlClient.Callsign,
+		FlightPlan: fp,
 	}
 	ctx.ControlClient.InitiateTrack(callsign, fp,
 		func(any) {
@@ -2146,7 +2159,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					if ctrl && shift {
 						// initiate track, CRC style
 						status.clear = true
-						sp.initiateTrack(ctx, ac.Callsign)
+						fp, err := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).GetFlightPlan(ac.Callsign)
+						if err != nil {
+							ctx.Lg.Errorf("Error getting flight plan for %s: %v", ac.Callsign, err)
+							return
+						}
+						sp.initiateTrack(ctx, ac.Callsign, fp)
 						return
 					}
 				}
@@ -2196,6 +2214,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				ctx.Lg.Info("print aircraft", slog.String("callsign", ac.Callsign),
 					slog.Any("aircraft", ac))
 				fmt.Println(spew.Sdump(ac) + "\n" + ac.Nav.FlightState.Summary())
+				// fmt.Println(spew.Sdump(ac), )
 				status.clear = true
 				return
 			} else if cmd == "*F" {
@@ -2414,14 +2433,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 
 			} else if len(cmd) > 0 {
-				// If it matches the callsign, attempt to initiate track.
-				// TODO: Add squawk option as well
-				_, err := av.ParseSquawk(cmd)
-				if cmd == ac.Callsign || err == nil {
-					status.clear = true
-					sp.initiateTrack(ctx, ac.Callsign)
-					return
-				}
 
 				// See if cmd works as a sector id; if so, make it a handoff.
 				control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
@@ -2452,11 +2463,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 		case CommandModeInitiateControl:
 			_, err := av.ParseSquawk(cmd)
-			if cmd != ac.Callsign && err != nil {
+			if cmd != ac.Callsign && err != nil || len(cmd) <= 1 {
 				status.err = ErrSTARSCommandFormat
 			} else {
 				status.clear = true
-				sp.initiateTrack(ctx, ac.Callsign)
+				fp, err := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).GetFlightPlan(cmd)
+				
+				if err != nil {
+					ctx.Lg.Errorf("Error getting flight plan for %s: %v", ac.Callsign, err)
+					return
+				}
+
+				sp.initiateTrack(ctx, ac.Callsign, fp)
 			}
 			return
 

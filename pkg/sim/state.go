@@ -372,7 +372,7 @@ func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 }
 
 func (ss *State) GetReleaseDepartures() []*av.Aircraft {
-	return util.FilterSlice(ss.STARSComputer().GetReleaseDepartures(),
+	return util.FilterSlice(ss.STARSComputer(ss.TRACON).GetReleaseDepartures(),
 		func(ac *av.Aircraft) bool {
 			// When ControlClient DeleteAllAircraft() is called, we do our usual trick of
 			// making the update locally pending the next update from the server. However, it
@@ -470,12 +470,32 @@ func (ss *State) DeleteAircraft(ac *av.Aircraft) {
 	ss.ERAMComputers.CompletelyDeleteAircraft(ac)
 }
 
-func (ss *State) STARSComputer() *STARSComputer {
-	_, stars, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
+func (ss *State) STARSComputer(fac string) *STARSComputer {
+	if strings.Contains(fac, "_") { // A controller was inputted. Gather the facility and use that facility for ERAMComputers FacilityComputers.
+		ok := false 
+		fac, ok = ss.FacilityFromController(fac)
+		if !ok {
+			panic(fmt.Sprintf("Controller %s not found", fac))
+		}
+	}
+	_, stars, err := ss.ERAMComputers.FacilityComputers(fac)
+	if err != nil {
+		panic(fmt.Sprintf("STARSComputer error. Facility %v. Err: %v", fac, err))
+	}
 	return stars
 }
 
-func (ss *State) ERAMComputer() *ERAMComputer {
-	eram, _, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
+func (ss *State) ERAMComputer(fac string ) *ERAMComputer {
+	if strings.Contains(fac, "_") { // A controller was inputted. Gather the facility and use that facility for ERAMComputers FacilityComputers.
+		ok := false 
+		fac, ok = ss.FacilityFromController(fac)
+		if !ok {
+			panic(fmt.Sprintf("Controller %s not found", fac))
+		}
+	}
+	eram, _, err := ss.ERAMComputers.FacilityComputers(fac)
+	if err != nil {
+		panic(fmt.Sprintf("ERAMComputer error. Facility %v. Err: %v", fac, err))
+	}
 	return eram
 }

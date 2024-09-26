@@ -349,6 +349,7 @@ type AircraftCommandsArgs struct {
 	ControllerToken string
 	Callsign        string
 	Commands        string
+	NextController  string
 }
 
 // If an RPC call returns an error, then the result argument is not returned(!?).
@@ -541,7 +542,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 			}
 		case 'F':
 			if command == "FC" {
-				if err := sim.HandoffControl(token, callsign); err != nil {
+				if err := sim.HandoffControl(token, callsign, cmds.NextController); err != nil {
 					rewriteError(err)
 					return nil
 				}

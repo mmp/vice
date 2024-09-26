@@ -24,22 +24,7 @@ import (
 // everything is wired up, some of the information needed is still being
 // maintained in Aircraft, so we'll make an ad-hoc TrackInformation here.
 func (sp *STARSPane) getTrack(ctx *panes.Context, ac *av.Aircraft) *sim.TrackInformation {
-	trk := ctx.ControlClient.STARSComputer().TrackInformation[ac.Callsign]
-	if trk == nil {
-		trk = &sim.TrackInformation{}
-	}
-
-	trk.Identifier = ac.Callsign
-	trk.TrackOwner = ac.TrackingController
-	trk.HandoffController = ac.HandoffTrackController
-	trk.SP1 = ac.Scratchpad
-	trk.SP2 = ac.SecondaryScratchpad
-	trk.RedirectedHandoff = ac.RedirectedHandoff
-	trk.PointOutHistory = ac.PointOutHistory
-	if trk.FlightPlan == nil {
-		trk.FlightPlan = sim.MakeSTARSFlightPlan(ac.FlightPlan)
-	}
-
+	trk := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).TrackInformation[ac.Callsign]
 	return trk
 }
 
@@ -342,6 +327,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
+					state.NextController = event.ToController
 				}
 			}
 
@@ -491,7 +477,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 
 	// FIXME(mtrokel): should this be happening in the STARSComputer Update method?
 	if !ctx.ControlClient.STARSFacilityAdaptation.KeepLDB {
-		ctx.ControlClient.STARSComputer().UpdateAssociatedFlightPlans(aircraft)
+		ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).UpdateAssociatedFlightPlans(aircraft)
 	}
 }
 

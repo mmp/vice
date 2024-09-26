@@ -46,6 +46,7 @@ type MessagesPane struct {
 	history       []CLIInput
 	historyOffset int // for up arrow / downarrow. Note: counts from the end! 0 when not in history
 	savedInput    CLIInput
+	nextController map[string]string // Callsign -> NextController
 }
 
 func init() {
@@ -75,6 +76,7 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 		mp.scrollbar = NewVerticalScrollBar(4, true)
 	}
 	mp.events = eventStream.Subscribe()
+	mp.nextController = make(map[string]string)
 }
 
 func (mp *MessagesPane) LoadedSim(ss sim.State, pl platform.Platform, lg *log.Logger) {}
@@ -280,7 +282,8 @@ func (mp *MessagesPane) runCommands(ctx *Context) {
 
 	if ok {
 		if ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign); ac != nil {
-			ctx.ControlClient.RunAircraftCommands(ac.Callsign, cmd,
+
+			ctx.ControlClient.RunAircraftCommands(ac.Callsign, cmd, mp.nextController[ac.Callsign],
 				func(errorString string, remainingCommands string) {
 					if errorString != "" {
 						mp.messages = append(mp.messages, Message{contents: errorString, error: true})
@@ -412,6 +415,10 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					ctx.KeyboardFocus.Take(mp)
 				}
 			}
+		case sim.AcceptedHandoffEvent:
+			mp.nextController[event.Callsign] = event.ToController
+		case sim.HandoffControllEvent:
+			delete(mp.nextController, event.Callsign) // clear the next controller
 		}
 	}
 
