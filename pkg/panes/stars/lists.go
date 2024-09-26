@@ -739,7 +739,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 	}
 	dimStyle := renderer.TextStyle{
 		Font:  font,
-		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor).Scale(0.3),
+		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor).Scale(0.5),
 	}
 
 	td := renderer.GetTextDrawBuilder()

@@ -841,8 +841,8 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 	// Possibly adjust brightness if it should be flashing.
 	halfSeconds := ctx.Now.UnixMilli() / 500
 	if forceFDB && halfSeconds&1 == 0 { // half-second cycle
-		dbBrightness /= 3
-		posBrightness /= 3
+		dbBrightness /= 2
+		posBrightness /= 2
 	}
 
 	if trk == nil {

@@ -895,7 +895,7 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 		p := transforms.WindowFromLatLongP(ra.Position)
 		blinking := settings.ForceBlinkingText || (ra.BlinkingText && !settings.StopBlinkingText)
 		if blinking && blinkDim {
-			td.AddTextCentered(text, p, renderer.TextStyle{Font: font, Color: color.Scale(0.3)})
+			td.AddTextCentered(text, p, renderer.TextStyle{Font: font, Color: color.Scale(0.5)})
 		} else {
 			td.AddTextCentered(text, p, renderer.TextStyle{Font: font, Color: color})
 		}
