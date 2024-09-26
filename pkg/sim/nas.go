@@ -506,44 +506,28 @@ func (comp *STARSComputer) LookupTrackIndex(idx int) *TrackInformation {
 	return comp.TrackInformation[k[idx]]
 }
 
-func (comp *STARSComputer) AutoAssociateFP(ac *av.Aircraft, fp *STARSFlightPlan) {
-	comp.AddTrackInformation(ac.Callsign, TrackInformation{
-		TrackOwner:      ac.TrackingController, // Should happen initially, so ac.TrackingController can still be used
-		FlightPlan:      fp,
-		AutoAssociateFP: true,
-	})
-}
-
-func (comp *STARSComputer) UpdateAssociatedFlightPlans(aircraft []*av.Aircraft) {
-	for _, ac := range aircraft {
-		fp, ok := comp.ContainedPlans[ac.Squawk]
-		if ok && (!inAcquisitionArea(ac) && !inDropArea(ac)) && comp.TrackInformation[ac.Callsign] == nil { // Prevent departures
-			comp.AutoAssociateFP(ac, fp)
-		}
-	}
-}
-
-// This should be facility-defined in the json file, but for now it's 30nm
+// This should be facility-defined in the json file, but for now it's 2nm
 // near their departure airport.
-func inAcquisitionArea(ac *av.Aircraft) bool {
-	if inDropArea(ac) {
+func InAcquisitionArea(ac *av.Aircraft) bool {
+	if InDropArea(ac) {
 		return false
 	}
 
 	for _, icao := range []string{ac.FlightPlan.DepartureAirport, ac.FlightPlan.ArrivalAirport} {
 		ap := av.DB.Airports[icao]
-		if math.NMDistance2LL(ap.Location, ac.Position()) <= 2 {
+		if math.NMDistance2LL(ap.Location, ac.Position()) <= 4 &&
+		ac.Altitude() <= float32(ap.Elevation+500) {
 			return true
 		}
 	}
 	return false
 }
 
-func inDropArea(ac *av.Aircraft) bool {
+func InDropArea(ac *av.Aircraft) bool {
 	for _, icao := range []string{ac.FlightPlan.DepartureAirport, ac.FlightPlan.ArrivalAirport} {
 		ap := av.DB.Airports[icao]
-		if math.NMDistance2LL(ap.Location, ac.Position()) <= 1 &&
-			ac.Altitude() <= float32(ap.Elevation+50) {
+		if math.NMDistance2LL(ap.Location, ac.Position()) <= 2 &&
+			ac.Altitude() <= float32(ap.Elevation+100) {
 			return true
 		}
 	}
@@ -900,7 +884,7 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 	for _, ac := range s.State.Aircraft {
 		if trk, ok := comp.TrackInformation[ac.Callsign]; ok { // Someone is tracking this
 			if trk.FlightPlan != nil {
-				if trk.FlightPlan.AssignedSquawk == ac.Squawk && inDropArea(ac) {
+				if trk.FlightPlan.AssignedSquawk == ac.Squawk && InDropArea(ac) {
 					ac.TrackingController = ""
 
 					if err := comp.DropTrack(ac); err != nil {
@@ -925,7 +909,7 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 			// ERROR Unable to resolve departure controller for aircraft
 			// that are initially controlled by a virtual controller
 			// (e.g. LGA water gate departures when controlling JFK.)
-			if inAcquisitionArea(ac) && s.State.DepartureController(ac, s.lg) == ctrl {
+			if InAcquisitionArea(ac) && s.State.DepartureController(ac, s.lg) == ctrl {
 				// If they have already contacted departure, then initiating
 				// track gives control as well; otherwise ControllingController
 				// is left unset until contact.
@@ -1092,7 +1076,6 @@ type TrackInformation struct {
 	SP1               string
 	SP2               string
 	TempAltitude      int
-	AutoAssociateFP   bool // If it's white or not
 }
 
 func (trk TrackInformation) HandingOffTo(ctrl string) bool {

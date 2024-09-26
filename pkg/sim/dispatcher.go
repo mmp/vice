@@ -111,14 +111,6 @@ func (sd *Dispatcher) SetSecondaryScratchpad(a *SetScratchpadArgs, _ *struct{}) 
 	}
 }
 
-func (sd *Dispatcher) AutoAssociateFP(it *InitiateTrackArgs, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
-		return ErrNoSimForControllerToken
-	} else {
-		return sim.AutoAssociateFP(it.ControllerToken, it.Callsign, it.Plan)
-	}
-}
-
 type SetGlobalLeaderLineArgs struct {
 	ControllerToken string
 	Callsign        string

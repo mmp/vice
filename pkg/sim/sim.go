@@ -2306,23 +2306,6 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *math.CardinalOrdi
 		})
 }
 
-func (s *Sim) AutoAssociateFP(token, callsign string, fp *STARSFlightPlan) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			_, _, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
-			return err
-		},
-		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			_, stars, _ := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
-			stars.AutoAssociateFP(ac, fp)
-			return nil
-		})
-
-}
-
 func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrack) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

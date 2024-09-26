@@ -449,6 +449,19 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 			Groundspeed: int(ac.Nav.FlightState.GS),
 			Time:        now,
 		}
+		if ac := ctx.ControlClient.Aircraft[callsign]; sp.AutoTrackDepartures && ac.DepartureContactController == ctx.ControlClient.Callsign && sim.InAcquisitionArea(ac) {
+			fp, err := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).GetFlightPlan(ac.Squawk.String())
+			if err != nil {
+				ctx.Lg.Errorf("GetFlightPlan(%s): %v", ac.Squawk, err)
+			}
+			ctx.ControlClient.InitiateTrack(callsign, fp,
+				func(any) {
+					if state, ok := sp.Aircraft[callsign]; ok {
+						state.DatablockType = FullDatablock
+					}
+				},
+				func(err error) { sp.displayError(err, ctx) })
+		}
 	}
 
 	// Update low altitude alerts now that we have updated tracks
@@ -474,11 +487,6 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 
 	sp.updateCAAircraft(ctx, aircraft)
 	sp.updateInTrailDistance(ctx, aircraft)
-
-	// FIXME(mtrokel): should this be happening in the STARSComputer Update method?
-	if !ctx.ControlClient.STARSFacilityAdaptation.KeepLDB {
-		ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).UpdateAssociatedFlightPlans(aircraft)
-	}
 }
 
 func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations,
