@@ -608,6 +608,11 @@ func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, pw [2]float32,
 		if ra.Deleted {
 			return
 		}
+		if settings, ok := ps.RestrictionAreaSettings[idx]; ok && settings.Visible {
+			text.WriteByte('>')
+		} else {
+			text.WriteByte(' ')
+		}
 		text.WriteString(fmt.Sprintf("%-3d ", idx))
 		if ra.Title != "" {
 			text.WriteString(strings.ToUpper(ra.Title))
