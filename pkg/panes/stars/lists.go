@@ -795,7 +795,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 			text.WriteString("     " + sp.getTabListIndex(ac))
 			text.WriteString(util.Select(ac.Released, "+", " "))
 			text.WriteString(fmt.Sprintf(" %-10s %5s %s %5s %03d\n", ac.Callsign, ac.FlightPlan.BaseType(),
-				ac.Squawk, ac.Scratchpad , ac.FlightPlan.Altitude/100))
+				ac.Squawk, ac.Scratchpad, ac.FlightPlan.Altitude/100))
 			if !ac.Released && blinkDim {
 				pw = td.AddText(text.String(), pw, dimStyle)
 			} else {

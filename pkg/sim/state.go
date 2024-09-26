@@ -478,7 +478,7 @@ func (ss *State) DeleteAircraft(ac *av.Aircraft) {
 
 func (ss *State) STARSComputer(fac string) *STARSComputer {
 	if strings.Contains(fac, "_") { // A controller was inputted. Gather the facility and use that facility for ERAMComputers FacilityComputers.
-		ok := false 
+		ok := false
 		fac, ok = ss.FacilityFromController(fac)
 		if !ok {
 			panic(fmt.Sprintf("Controller %s not found", fac))
@@ -491,9 +491,9 @@ func (ss *State) STARSComputer(fac string) *STARSComputer {
 	return stars
 }
 
-func (ss *State) ERAMComputer(fac string ) *ERAMComputer {
+func (ss *State) ERAMComputer(fac string) *ERAMComputer {
 	if strings.Contains(fac, "_") { // A controller was inputted. Gather the facility and use that facility for ERAMComputers FacilityComputers.
-		ok := false 
+		ok := false
 		fac, ok = ss.FacilityFromController(fac)
 		if !ok {
 			panic(fmt.Sprintf("Controller %s not found", fac))

@@ -259,7 +259,7 @@ func (s *proxy) RunAircraftCommands(callsign string, cmds string, nextController
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Commands:        cmds,
-		NextController: nextController,
+		NextController:  nextController,
 	}, result, nil)
 }
 

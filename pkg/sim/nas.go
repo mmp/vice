@@ -21,10 +21,10 @@ import (
 // TODO:
 /*
 General:
-Wait for the receiving system to send an accept/ ok message for things like 
+Wait for the receiving system to send an accept/ ok message for things like
 handoffs and accept handoffs. For example, N90 sends a handoff to PHL, PHL doesn't
-have the flight plan, so it automatically rejects the handoff message and sends a 
-reject message to N90. N90 will not update the trk.TrackController unless PHL sends a 
+have the flight plan, so it automatically rejects the handoff message and sends a
+reject message to N90. N90 will not update the trk.TrackController unless PHL sends a
 okay message.
 
 ERAM:
@@ -55,7 +55,7 @@ const (
 	// Track Data
 	// Test
 	// Response
-) 
+)
 
 type ERAMComputer struct {
 	STARSComputers   map[string]*STARSComputer
@@ -283,7 +283,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 				TrackOwner:        msg.TrackOwner,
 				HandoffController: msg.HandoffController,
 				FlightPlan:        comp.FlightPlans[msg.BCN],
-				Identifier: 	  msg.Identifier,
+				Identifier:        msg.Identifier,
 			}
 			if des := msg.FacilityDestination; des != "" { // Going to another facility
 
@@ -416,7 +416,7 @@ type STARSComputer struct {
 	ContainedPlans    map[av.Squawk]*STARSFlightPlan
 	ReceivedMessages  []FlightPlanMessage
 	TrackInformation  map[string]*TrackInformation
-	ERAMInbox         *[]FlightPlanMessage            // The address of the overlying ERAM's message inbox.
+	ERAMInbox         *[]FlightPlanMessage // The address of the overlying ERAM's message inbox.
 	UnsupportedTracks []UnsupportedTrack
 	SquawkCodePool    *av.SquawkCodePool
 	HoldForRelease    []*av.Aircraft
@@ -561,7 +561,7 @@ func (comp *STARSComputer) InitiateTrack(callsign string, controller string, fp 
 		FlightPlan: fp,
 		Identifier: callsign,
 	}
-	
+
 	comp.TrackInformation[callsign] = trk
 	fmt.Printf("%v: InitiateTrack: %+v\n", comp.Identifier, trk)
 
@@ -608,10 +608,10 @@ func (comp *STARSComputer) HandoffTrack(callsign string, from *av.Controller, to
 		msg.Identifier = callsign
 		msg.MessageType = InitiateTransfer
 		comp.SendTrackInfo(to.Facility, msg, simTime)
-	} 
+	}
 
 	trk.HandoffController = to.Callsign
-	
+
 	return nil
 }
 
@@ -832,7 +832,7 @@ func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
 					TrackOwner:        msg.TrackOwner,
 					HandoffController: msg.HandoffController,
 					FlightPlan:        fp,
-					Identifier: 	  msg.Identifier,
+					Identifier:        msg.Identifier,
 				}
 				fmt.Printf("%vInitiateTransfer: %+v\n", comp.Identifier, msg.Identifier)
 				delete(comp.ContainedPlans, msg.BCN)
@@ -848,7 +848,7 @@ func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
 						TrackOwner:        msg.TrackOwner,
 						HandoffController: msg.HandoffController,
 						FlightPlan:        trk.FlightPlan,
-						Identifier: 	  msg.Identifier,
+						Identifier:        msg.Identifier,
 					}
 
 					delete(comp.ContainedPlans, msg.BCN)
@@ -918,7 +918,7 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 			}
 		}
 
-		// TODO: Only if autotrack departures is set. 
+		// TODO: Only if autotrack departures is set.
 		if fp, ok := comp.ContainedPlans[ac.Squawk]; ok && false { // auto associate
 			ctrl := s.State.Callsign
 			// FIXME(mtrokel): the call to DepartureController() leads to
@@ -1075,7 +1075,7 @@ type FlightPlanMessage struct {
 	Altitude string
 	Route    string
 
-	FacilityDestination string // For InitiateTransfer or AcceptRecallTransfer messages 
+	FacilityDestination string // For InitiateTransfer or AcceptRecallTransfer messages
 	// that are inter-facility handoffs so that the ERAM computer knows where to send the message to.
 
 	TrackInformation // For track messages
@@ -1091,7 +1091,7 @@ type TrackInformation struct {
 	RedirectedHandoff av.RedirectedHandoff
 	SP1               string
 	SP2               string
-	TempAltitude	  int
+	TempAltitude      int
 	AutoAssociateFP   bool // If it's white or not
 }
 

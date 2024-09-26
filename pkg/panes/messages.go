@@ -42,10 +42,10 @@ type MessagesPane struct {
 	messages       []Message
 
 	// Command-input-related
-	input         CLIInput
-	history       []CLIInput
-	historyOffset int // for up arrow / downarrow. Note: counts from the end! 0 when not in history
-	savedInput    CLIInput
+	input          CLIInput
+	history        []CLIInput
+	historyOffset  int // for up arrow / downarrow. Note: counts from the end! 0 when not in history
+	savedInput     CLIInput
 	nextController map[string]string // Callsign -> NextController
 }
 

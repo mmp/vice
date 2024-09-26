@@ -780,7 +780,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			idx := util.Select(fieldEmpty(db.field6[0][:]), 0, 1)
 			formatDBText(db.field6[idx][:], ac.Squawk.String(), color, false)
 		}
-		
+
 		// Field 7: assigned altitude, assigned beacon if mismatch
 		if trk.TempAltitude != 0 {
 			ta := (trk.TempAltitude + 50) / 100

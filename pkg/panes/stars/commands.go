@@ -529,7 +529,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		if ac := lookupAircraft(cmd); ac == nil {
 			status.err = ErrSTARSCommandFormat
 		} else {
-			fp, err := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).GetFlightPlan(ac.Callsign) // TODO: change this so that it's the inputted squawk/ callsign. 
+			fp, err := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).GetFlightPlan(ac.Callsign) // TODO: change this so that it's the inputted squawk/ callsign.
 			if err != nil {
 				ctx.Lg.Errorf("Error getting flight plan for %s: %v", ac.Callsign, err)
 				return
@@ -2935,7 +2935,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			} else {
 				status.clear = true
 				fp, err := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).GetFlightPlan(cmd)
-				
+
 				if err != nil {
 					ctx.Lg.Errorf("Error getting flight plan for %s: %v", ac.Callsign, err)
 					return
