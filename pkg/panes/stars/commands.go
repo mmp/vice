@@ -3325,7 +3325,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		if ok {
 			// 6-45: move restriction area
 			// It starts with digits
-			ra := getUserRestrictionAreaByIndex(ctx, n) // Only user-defined ones can be moved
+			ra := getUserRestrictionAreaByIndex(ctx, n)
+			if ra == nil {
+				// Either it doesn't exist or it's not user-defined.
+				status.err = ErrSTARSIllegalGeoId
+				return
+			}
 
 			if len(cmd) == 0 || cmd[0] != '*' {
 				status.err = ErrSTARSCommandFormat
