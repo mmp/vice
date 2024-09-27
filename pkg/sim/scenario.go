@@ -137,6 +137,7 @@ type RestrictionArea struct {
 	Vertices     [][]math.Point2LL
 	Closed       bool `json:"closed"`
 	Shaded       bool `json:"shade_region"`
+	Color        int  `json:"color"`
 
 	Tris    [][3]math.Point2LL
 	Deleted bool

@@ -810,6 +810,17 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms Scope
 	ld.GenerateCommands(cb)
 }
 
+var raColors [8]renderer.RGB = [8]renderer.RGB{
+	renderer.RGBFromUInt8(255, 255, 0),
+	renderer.RGBFromUInt8(0, 255, 255),
+	renderer.RGBFromUInt8(255, 0, 255),
+	renderer.RGBFromUInt8(238, 201, 0),
+	renderer.RGBFromUInt8(238, 106, 80),
+	renderer.RGBFromUInt8(132, 112, 255),
+	renderer.RGBFromUInt8(118, 238, 198),
+	renderer.RGBFromUInt8(50, 205, 50),
+}
+
 func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	sp.drawWIPRestrictionArea(ctx, transforms, cb)
 
@@ -829,23 +840,38 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 		return
 	}
 
-	color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 0})
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
-	cb.SetRGB(color)
 
 	// Draw the geometric bits before the text
 	ld := renderer.GetLinesDrawBuilder()
 	defer renderer.ReturnLinesDrawBuilder(ld)
 	trid := renderer.GetTrianglesDrawBuilder()
 	defer renderer.ReturnTrianglesDrawBuilder(trid)
+
+	if ctx.DPIScale > 1.5 {
+		cb.PolygonStipple(restrictionAreaHighDPIStipple)
+	} else {
+		cb.PolygonStipple(restrictionAreaStipple)
+	}
+
 	for _, idx := range util.SortedMapKeys(draw) {
+		ld.Reset()
+		trid.Reset()
+
 		ra := draw[idx]
+
+		color := raColors[ra.Color]
+		color = ps.Brightness.VideoGroupB.ScaleRGB(color)
+		cb.SetRGB(color)
+
 		if ra.CircleRadius > 0 {
 			if ra.Shaded {
-				trid.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, float32(ra.CircleRadius), 90)
+				trid.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude,
+					float32(ra.CircleRadius), 90)
 			}
-			ld.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, float32(ra.CircleRadius), 90)
+			ld.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude,
+				float32(ra.CircleRadius), 90)
 		} else {
 			for _, loop := range ra.Vertices {
 				if nv := len(loop); nv > 0 {
@@ -863,16 +889,13 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 				}
 			}
 		}
+		if ra.Shaded {
+			cb.EnablePolygonStipple()
+			trid.GenerateCommands(cb)
+			cb.DisablePolygonStipple()
+		}
+		ld.GenerateCommands(cb)
 	}
-	cb.EnablePolygonStipple()
-	if ctx.DPIScale > 1.5 {
-		cb.PolygonStipple(restrictionAreaHighDPIStipple)
-	} else {
-		cb.PolygonStipple(restrictionAreaStipple)
-	}
-	trid.GenerateCommands(cb)
-	cb.DisablePolygonStipple()
-	ld.GenerateCommands(cb)
 
 	// Draw text
 	td := renderer.GetTextDrawBuilder()
@@ -880,6 +903,8 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 	font := sp.systemFont[ps.CharSize.Tools]
 	halfSeconds := ctx.Now.UnixMilli() / 500
 	blinkDim := halfSeconds&1 == 0
+	color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 0}) // always yellow
+
 	for _, idx := range util.SortedMapKeys(draw) {
 		ra := draw[idx]
 		var text string

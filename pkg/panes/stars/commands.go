@@ -1700,16 +1700,17 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					return
 				}
 
-				text, blink, _, extra, ok := parseRAText(strings.Fields(cmd[1:]), false, false)
-				if len(extra) > 0 || !ok {
+				if parsed, err := parseRAText(strings.Fields(cmd[1:]), false, false); err != nil {
+					status.err = err
+				} else if len(parsed.extra) > 0 {
 					status.err = ErrSTARSCommandFormat
-					return
+				} else {
+					ra.Text = parsed.text
+					ra.BlinkingText = parsed.blink
+					sp.updateRestrictionArea(ctx, n, *ra)
+					status.clear = true
 				}
-
-				ra.Text = text
-				ra.BlinkingText = blink
-				sp.updateRestrictionArea(ctx, n, *ra)
-				status.clear = true
+				return
 			} else if cmd[0] == '*' {
 				// 6-45: move restriction area
 				ra := getUserRestrictionAreaByIndex(ctx, n) // only user-defined
@@ -1824,45 +1825,41 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			switch cmd[0] {
 			case 'G':
 				// 6-37: create text
-				text, blink, _, extra, ok := parseRAText(strings.Fields(cmd[1:]), false, true)
-				if !ok {
-					status.err = ErrSTARSCommandFormat
-				} else if pos, ok := sp.parseRALocation(ctx, strings.Join(extra, " ")); !ok {
+				if parsed, err := parseRAText(strings.Fields(cmd[1:]), false, true); err != nil {
+					status.err = err
+				} else if pos, ok := sp.parseRALocation(ctx, strings.Join(parsed.extra, " ")); !ok {
 					status.err = ErrSTARSIllegalGeoLoc
 				} else {
 					ra := sim.RestrictionArea{
-						Text:         text,
+						Text:         parsed.text,
 						TextPosition: pos,
-						BlinkingText: blink,
+						BlinkingText: parsed.blink,
 					}
 					sp.createRestrictionArea(ctx, ra)
 					status.clear = true
 				}
+				return
 
 			case 'C':
 				// 6-39: circle + text
 				cmd, rad, ok := tryConsumeInt(cmd[1:])
 				if !ok {
 					status.err = ErrSTARSCommandFormat
-					return
 				} else if rad < 1 || rad > 125 {
 					status.err = ErrSTARSIllegalRange
-					return
-				}
-
-				text, blink, shaded, extra, ok := parseRAText(strings.Fields(cmd), true, true)
-				if !ok {
-					status.err = ErrSTARSCommandFormat
-				} else if pos, ok := sp.parseRALocation(ctx, strings.Join(extra, " ")); !ok {
+				} else if parsed, err := parseRAText(strings.Fields(cmd), true, true); err != nil {
+					status.err = err
+				} else if pos, ok := sp.parseRALocation(ctx, strings.Join(parsed.extra, " ")); !ok {
 					status.err = ErrSTARSIllegalGeoLoc
 				} else {
 					// Mostly done but need to allow the text position to be specified.
 					sp.wipRestrictionArea = &sim.RestrictionArea{
-						Text:         text,
+						Text:         parsed.text,
 						CircleCenter: pos,
 						CircleRadius: rad,
-						BlinkingText: blink,
-						Shaded:       shaded,
+						BlinkingText: parsed.blink,
+						Shaded:       parsed.shaded,
+						Color:        parsed.color,
 					}
 					sp.previewAreaInput = ""
 				}
@@ -2114,52 +2111,65 @@ func tidyRAText(s string) string {
 	return s
 }
 
-func parseRAText(f []string, allowPlus bool, expectPosition bool) (text [2]string, blink bool, shaded bool, extra []string, ok bool) {
-	doTriPlus := func(s string) bool {
+type parsedRAText struct {
+	text   [2]string
+	blink  bool
+	shaded bool
+	extra  []string
+	color  int
+}
+
+func parseRAText(f []string, closedShape bool, expectPosition bool) (parsed parsedRAText, err error) {
+	doTriPlus := func(s string) error {
+		var getColor bool
 		for _, ch := range s {
-			if string(ch) == STARSTriangleCharacter {
-				blink = true
-			} else if ch == '+' && allowPlus {
-				shaded = true
+			if getColor {
+				if ch < '1' || ch > '8' {
+					return ErrSTARSIllegalColor
+				}
+				parsed.color = int(ch - '1')
+				getColor = false
+			} else if string(ch) == STARSTriangleCharacter {
+				parsed.blink = true
+			} else if ch == '+' && closedShape {
+				parsed.shaded = true
+			} else if ch == '*' && closedShape {
+				getColor = true
 			} else {
-				return false
+				return ErrSTARSCommandFormat
 			}
 		}
-		return true
+		return nil
 	}
 
 	// We always start with the first text field
 	if len(f) == 0 {
-		ok = false
-		return
+		return parsed, ErrSTARSCommandFormat
 	}
-	text[0] = tidyRAText(f[0])
+	parsed.text[0] = tidyRAText(f[0])
 	f = f[1:]
 
 	// We may be done, may get a ∆ or +, or may have a second line of text.
 	// If the caller needs a position entered, though, don't slurp that up
 	// as text and return nothing.
 	if len(f) == 0 || (expectPosition && len(f) == 1) {
-		extra = f
-		ok = true
+		parsed.extra = f
 		return
 	}
-	if doTriPlus(f[0]) {
-		ok = true
-		extra = f[1:]
+	if doTriPlus(f[0]) == nil {
+		parsed.extra = f[1:]
 		return
 	} else {
-		text[1] = tidyRAText(f[0])
+		parsed.text[1] = tidyRAText(f[0])
 		f = f[1:]
 	}
 
 	// We've been given two lines of text. Last chance for ∆ or +,
 	// but if we don't have that just return what's left.
-	if len(f) > 0 && doTriPlus(f[0]) {
+	if len(f) > 0 && doTriPlus(f[0]) == nil {
 		f = f[1:]
 	}
-	extra = f
-	ok = true
+	parsed.extra = f
 	return
 }
 
@@ -3319,13 +3329,17 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				if cmd != "" {
 					// Input is the text to display, click position is
 					// where to put the text.
-					var extra []string
-					var ok bool
-					ra.Text, ra.BlinkingText, ra.Shaded, extra, ok = parseRAText(strings.Fields(cmd), true, false)
-					if !ok || len(extra) > 0 {
+					if parsed, err := parseRAText(strings.Fields(cmd), true, false); err != nil {
+						status.err = err
+					} else if len(parsed.extra) > 0 {
 						status.err = ErrSTARSCommandFormat
 					} else {
+						ra.Text = parsed.text
+						ra.BlinkingText = parsed.blink
+						ra.Shaded = parsed.shaded
+						ra.Color = parsed.color
 						ra.TextPosition = p
+
 						sp.createRestrictionArea(ctx, *ra)
 						sp.wipRestrictionArea = nil
 						status.clear = true
@@ -3349,37 +3363,36 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			cmd, rad, ok := tryConsumeInt(cmd[1:])
 			if !ok {
 				status.err = ErrSTARSCommandFormat
-				return
 			} else if rad < 1 || rad > 125 {
 				status.err = ErrSTARSIllegalRange
-				return
-			}
-
-			text, blink, shaded, extra, ok := parseRAText(strings.Fields(cmd), true, false)
-			if !ok || len(extra) != 0 {
+			} else if parsed, err := parseRAText(strings.Fields(cmd), true, false); err != nil {
+				status.err = err
+			} else if len(parsed.extra) != 0 {
 				status.err = ErrSTARSCommandFormat
 			} else {
 				// Still need the text position, one way or another.
 				sp.wipRestrictionArea = &sim.RestrictionArea{
-					Text:         text,
+					Text:         parsed.text,
 					CircleRadius: rad,
 					CircleCenter: transforms.LatLongFromWindowP(mousePosition),
-					BlinkingText: blink,
-					Shaded:       shaded,
+					BlinkingText: parsed.blink,
+					Shaded:       parsed.shaded,
+					Color:        parsed.color,
 				}
 				sp.previewAreaInput = ""
 			}
 			return
 		} else if len(cmd) > 2 && cmd[0] == 'G' {
 			// 6-37: create text
-			text, blink, _, extra, ok := parseRAText(strings.Fields(cmd[1:]), false, false)
-			if !ok || len(extra) != 0 {
+			if parsed, err := parseRAText(strings.Fields(cmd[1:]), false, false); err != nil {
+				status.err = err
+			} else if len(parsed.extra) != 0 {
 				status.err = ErrSTARSCommandFormat
 			} else {
 				ra := sim.RestrictionArea{
-					Text:         text,
+					Text:         parsed.text,
 					TextPosition: transforms.LatLongFromWindowP(mousePosition),
-					BlinkingText: blink,
+					BlinkingText: parsed.blink,
 				}
 				sp.createRestrictionArea(ctx, ra)
 				status.clear = true
