@@ -3788,32 +3788,63 @@ how it simulates aircraft or the STARS interface.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[F12]G(RATEXT) (RALOC)</code> /<br> <code>[F12]G(RATEXT)[SLEW]</code></td>
+                    <td><code>[F12]G(RATEXT)(RALOC)</code></td>
                     <td>Creates a text-only restriction area at the specified location.
-                      A space may be entered between the <code>G</code> and the text.
+                      It is optional to enter a space between the <code>G</code> and the text.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[F12]C(###) (RATEXT) (RALOC)</code> /<br> <code>[F12]C(###)(RATEXT)[SLEW]</code></td>
-                    <td>Creates a circular restriction area with given radius in nautical miles at the specified location.
-                      A space may be entered between the radius and the text.
+                    <td><code>[F12]C(###)(RATEXT) (RALOC)[ENTER]</code></td>
+                    <td>Creates a circular restriction area with given radius in nautical miles at the given location.
+                      The text is centered in the circle. A space may be entered between the radius and the text.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[F12]A(RALOC) (RALOC)... (RATEXT)</code> /<br> <code>[F12]A[SLEW][SLEW]...(RATEXT)</code></td>
+                    <td><code>[F12]C(###)(RATEXT) (RALOC)[SLEW]</code></td>
+                    <td>Creates a circular restriction area with given radius in nautical miles at the given location.
+                      The text is centered at the slewed location.  A space may be entered between the radius and the text.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12]A(RALOC)(RALOC)...(RATEXT)[ENTER]</code></td>
                     <td>Creates an open polygonal restriction area with the given text with the specified vertices.
                       At least two vertices but no more than ten must be provided.
+                      The text is centered at the average of all of the specified vertices.
+                      Here, the ellipsis <code>...</code> indicates that multiple successive <code>(RALOC)</code> locations may
+                      be given.
+                      A space may optionally be entered between the <code>A</code> and the first location.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12]A(RALOC)(RALOC)...(RATEXT)[SLEW]</code></td>
+                    <td>Creates an open polygonal restriction area with the given text with the specified vertices.
+                      At least two vertices but no more than ten must be provided.
+                      The text is centered at the final slewed point.
                       Here, the ellipsis <code>...</code> indicates that additional <code>(RALOC)</code> locations may
                       be given, seperated by spaces.
                       A space may be entered between the <code>A</code> and the first location.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[F12]P(RALOC) (RALOC)... (RATEXT)</code> /<br> <code>[F12]P[SLEW][SLEW]...(RATEXT)</code></td>
+                    <td><code>[F12]P(RALOC)(RALOC)...(RATEXT)[ENTER]</code></td>
                     <td>Creates a closed polygonal restriction area (i.e., the last vertex connects with the first)
                       with the given text with the specified vertices.
                       At least three vertices but no more than ten must be provided.
-                      A space may be entered between the <code>P</code> and the first location.
+                      The text is centered at the average of all of the specified vertices.
+                      Here, the ellipsis <code>...</code> indicates that multiple successive <code>(RALOC)</code> locations may
+                      be given.
+                      A space may optionally be entered between the <code>P</code> and the first location.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12]A(RALOC)(RALOC)...(RATEXT)[SLEW]</code></td>
+                    <td>Creates an open polygonal restriction area (i.e., the last vertex connects with the first)
+                      with the given text with the specified vertices.
+                      At least three vertices but no more than ten must be provided.
+                      The text is centered at the final slewed point.
+                      Here, the ellipsis <code>...</code> indicates that multiple successive <code>(RALOC)</code> locations may
+                      be given.
+                      A space may optionally be entered between the <code>P</code> and the first location.
                     </td>
                   </tr>
                   <tr>
@@ -3827,10 +3858,13 @@ how it simulates aircraft or the STARS interface.
               given, it should be separated from the first by a space. Because space is used to separate lines, periods
               must be entered for spaces within a line of text. These periods are converted to spaces by <i>vice</i>.
               Depending on the context, a third line with additional qualifiers can be entered: <code>∆</code> to indicate
-              that the text should blink and <code>+</code> to indicate that its associated shape should be shaded.</p>
-            <p>Locations may be specified by clicking on the STARS window or by <code>(RALOC)</code> specifiers.
-              These may be the names of fixes, fixes offset by a given direction in a given direction, or latitude-longitude
-              coordinates. Here are examples of each:
+              that the text should blink and <code>+</code> to indicate that its associated shape should be shaded,
+              or <code>*</code> followed by a number from 1&mdash;8 to specify a color for the graphics.</p>
+            <p><code>(RALOC)</code> corresponds to specifying a location.
+              One way to do so is by clicking a point in the STARS window;
+              alternatively, the names of a fix, a fix offset by a given distance in a given direction, or a latitude-longitude
+              coordinate may be provided. If keyboard entry is used, <code>[ENTER]</code> must be pressed after each location.
+              Here are a few examples of text input:
             </p>
             <ul>
               <li><code>CCC</code>: specifies that the location of the CCC VOR should be used.</li>
@@ -3841,12 +3875,12 @@ how it simulates aircraft or the STARS interface.
                 0s must be used if necessary), then two digits for each of minutes and seconds, followed by "W" or "E".
                 Latitude and longitude coordinates are separated by a slash <code>/</code>.</li>
               </ul>
-            <p>Putting it all together, the a restriction area above that is a 2nm circle around KFRG might be created
-              by <code>[F12]C2 REPUBLIC KFRG</code>. We could instead make a shaded area with two lines of flashing by
-              entering <code>[F12]C2 REPUBLIC SHADED.AREA +∆ KFRG</code>. Here is the result:
+            <p>Putting all of the above together, the a restriction area above that is a 2nm circle around KFRG might be created
+              by <code>[F12]C2 REPUBLIC FRG[ENTER][ENTER]</code>. We could instead make a shaded area with two lines of flashing by
+              entering <code>[F12]C2 REPUBLIC SHADED.AREA +∆ FRG[ENTER][ENTER]</code>. Here is the result:
             </p>
 <div class="text-center">
-<img src="restriction-area-shaded-flashing.gif" srcset="restriction-area-shaded-flashing-2x.gif 2x" width="204" height="192" class="img-fluid">
+<img src="restriction-area-shaded-flashing.gif" srcset="restriction-area-shaded-flashing-2x.gif 2x" width="346" height="327" class="img-fluid">
 </div><br>   
             <p>A number of commands are available to modify existing restriction areas and manage which ones are displayed:</p>
               <table class="table table-bordered">
@@ -3868,7 +3902,7 @@ how it simulates aircraft or the STARS interface.
                   <tr>
                     <td><code>[F12](###)</code></td>
                     <td>If the text in the restriction area with the given number is blinking, stops its blinking.
-                    Otherwise, toggles the restriction area's visbility</td>
+                    Otherwise, toggles the restriction area's visibility.</td>
                   </tr>
                   <tr>
                     <td><code>[F12](###)T</code></td>
@@ -3885,7 +3919,14 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                   <tr>
                     <td><code>[F12](###)*(RALOC)</code> /<br><code>[F12](###)*[SLEW]</code></td>
-                    <td>Moves the center of the restriction area to the specified location.</td>
+                    <td>Moves the center of the restriction area to the specified location. Note that only user-defined
+                    restriction areas may be moved.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[F12](###)*∆(RALOC)</code> /<br><code>[F12](###)*∆[SLEW]</code></td>
+                    <td>Moves the center of the restriction area to the specified location and display the text blinking.
+                      Note that only user-defined
+                    restriction areas may be moved.</td>
                   </tr>
                 </tbody>
               </table>
@@ -6173,6 +6214,41 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"range"</td>
                 <td>Number</td>
                 <td>Default radar scope center range in nautical miles. If unspecified, a 50 mile range is the default.</td>
+              </tr>
+              <tr>
+                <td>"restriction_areas"</td>
+                <td>Array of objects</td>
+                <td>Allows specifying restriction areas that controllers may display in the STARS window.
+                  The following members are available for all types of restriction area (text-only, circular, polygonal):
+                  <ul>
+                    <li>"title" (string): gives the restriction area title that is displayed in the "GEO RESTRICTIONS" list.</li>
+                    <li>"text" (array of two strings, <i>optional</i>): if provided, each string defines a line of text that can
+                      be displayed with the restriction area.</li>
+                    <li>"blinking_text" (Boolean, <i>optional</i>): if true, the given text will flash when displayed in STARS.</li>
+                    <li>"hide_id" (Boolean, <i>optional</i>): if true, the numeric restriction area is not displayed before
+                      the text when the restriction area is visible.</li>
+                    <li>"text_position" (location, <i>optional for circular and polygonal</i>):
+                      the center point of the text, specified using one of the encodings
+                      in <a href="fe-locations">Specifying Locations</a>.</li>
+                  </ul>
+                  For circular restriction areas, two additional parameters must be specified:
+                  <ul>
+                    <li>"circle_radius" (number): the radius of the circular region in nautical miles.</li>
+                    <li>"circle_center" (location): the location of the center of the circle. If "text_position" is not
+                    specified for a circular area, "circle_center" will be used for it.</li>
+                  </ul>
+                  For polygonal areas, there are three additional parameters:
+                  <ul>
+                    <li>"vertices" (string): the locations of the vertices of the polygon. At least two locations must be
+                    given for open regions and three for closed regions.</li>
+                    <li>"closed" (Boolean, <i>optional</i>): indicates whether the region is closed (i.e., the last vertex is connected
+                    to the first.)</li>
+                    <li>"shade_region" (Boolean, <i>optional</i>): indicates whether the region's interior should be shaded.
+                      This setting is only available for closed regions.
+                    </li>
+                  </ul>
+                  If "text_position" is not specified for a polygonal region, the center point of all of its vertices is used.
+                </td>
               </tr>
               <tr>
                 <td>"scratchpads"</td>

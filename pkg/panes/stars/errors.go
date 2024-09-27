@@ -35,6 +35,7 @@ var (
 	ErrSTARSIllegalATIS       = NewSTARSError("ILL ATIS")
 	ErrSTARSIllegalAirport    = NewSTARSError("ILL AIRPORT")
 	ErrSTARSIllegalCode       = NewSTARSError("ILL CODE")
+	ErrSTARSIllegalColor      = NewSTARSError("ILL COLOR")
 	ErrSTARSIllegalFix        = NewSTARSError("ILL FIX")
 	ErrSTARSIllegalFlight     = NewSTARSError("ILL FLIGHT")
 	ErrSTARSIllegalFunction   = NewSTARSError("ILL FNCT")

@@ -784,7 +784,7 @@ func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms ScopeTransfo
 	halfSeconds := ctx.Now.UnixMilli() / 500
 	blinkDim := halfSeconds&1 == 0
 	if blinkDim {
-		color = color.Scale(0.3)
+		color = color.Scale(0.5)
 	}
 
 	p := transforms.WindowFromLatLongP(sp.highlightedLocation)
