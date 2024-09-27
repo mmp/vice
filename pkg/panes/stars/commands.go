@@ -97,6 +97,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			sp.disableMenuSpinner(ctx)
 			sp.wipRBL = nil
 			sp.wipSignificantPoint = nil
+			sp.wipRestrictionArea = nil
 		case platform.KeyF1:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) {
 				// Recenter
@@ -1770,52 +1771,22 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					sp.previewAreaInput = ""
 				} else {
 					// Not a location so treat it as the text to display.
-
-					parseTriPlus := func(s string) bool {
-						for _, ch := range s {
-							if string(ch) == STARSTriangleCharacter {
-								ra.BlinkingText = true
-							} else if ch == '+' {
-								ra.Shaded = true
-							} else {
-								return false
-							}
-						}
-						return true
-					}
-
-					f := strings.Fields(cmd)
-					switch len(f) {
-					case 1:
-						ra.Text[0] = tidyRAText(f[0])
-
-					case 2:
-						if parseTriPlus(f[1]) {
-							ra.Text[0] = tidyRAText(f[0])
-						} else {
-							ra.Text = [2]string{tidyRAText(f[0]), tidyRAText(f[1])}
-						}
-
-					case 3:
-						ra.Text = [2]string{tidyRAText(f[0]), tidyRAText(f[1])}
-						if !parseTriPlus(f[2]) {
-							status.err = ErrSTARSCommandFormat
-						}
-
-					default:
+					if parsed, err := parseRAText(strings.Fields(cmd), true, false); err != nil {
+						status.err = err
+					} else if len(parsed.extra) > 0 {
 						status.err = ErrSTARSCommandFormat
-					}
-
-					if status.err == nil {
-						if (ra.Closed && len(ra.Vertices[0]) < 3) || (!ra.Closed && len(ra.Vertices[0]) < 2) {
-							status.err = ErrSTARSIllegalFunction
-						} else if len(ra.Vertices[0]) > 10 {
-							status.err = ErrSTARSCapacity
-						} else {
-							sp.createRestrictionArea(ctx, *ra)
-							sp.wipRestrictionArea = nil
-							status.clear = true
-						}
+					} else if (ra.Closed && len(ra.Vertices[0]) < 3) || (!ra.Closed && len(ra.Vertices[0]) < 2) {
+						status.err = ErrSTARSIllegalFunction
+					} else if len(ra.Vertices[0]) > 10 {
+						status.err = ErrSTARSCapacity
+					} else {
+						// Update the restriction area; we still need to
+						// know where to place the text, though.
+						ra.Text = parsed.text
+						ra.BlinkingText = parsed.blink
+						ra.Shaded = parsed.shaded
+						ra.Color = parsed.color
+						sp.previewAreaInput = ""
 					}
 				}
 				return
@@ -2127,7 +2098,7 @@ func parseRAText(f []string, closedShape bool, expectPosition bool) (parsed pars
 				if ch < '1' || ch > '8' {
 					return ErrSTARSIllegalColor
 				}
-				parsed.color = int(ch - '1')
+				parsed.color = int(ch)
 				getColor = false
 			} else if string(ch) == STARSTriangleCharacter {
 				parsed.blink = true

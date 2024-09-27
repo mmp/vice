@@ -796,7 +796,7 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms Scope
 		ld.AddLine(verts[i], verts[i+1])
 	}
 
-	if ctx.Mouse != nil {
+	if ctx.Mouse != nil && sp.previewAreaInput == "" {
 		pm := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
 		ld.AddLine(verts[len(verts)-1], pm)
 	}
@@ -810,7 +810,8 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms Scope
 	ld.GenerateCommands(cb)
 }
 
-var raColors [8]renderer.RGB = [8]renderer.RGB{
+var raColors [9]renderer.RGB = [9]renderer.RGB{
+	renderer.RGBFromUInt8(0, 0, 0), // unused; just here for one-based indexing
 	renderer.RGBFromUInt8(255, 255, 0),
 	renderer.RGBFromUInt8(0, 255, 255),
 	renderer.RGBFromUInt8(255, 0, 255),
