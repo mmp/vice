@@ -712,7 +712,6 @@ func (comp *STARSComputer) RedirectHandoff(ac *av.Aircraft, ctrl, octrl *av.Cont
 		return av.ErrNotBeingHandedOffToMe
 	}
 
-	// FIXME(mtrokel): ac.TrackingController
 	trk.RedirectedHandoff.OriginalOwner = trk.TrackOwner
 	if trk.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Callsign, octrl.Callsign) {
 		trk.HandoffController = trk.RedirectedHandoff.Redirector[0]
@@ -805,7 +804,6 @@ func (comp *STARSComputer) AddHeldDeparture(ac *av.Aircraft) {
 
 func (comp *STARSComputer) Update(s *Sim) {
 	comp.SortReceivedMessages(s.eventStream)
-	comp.AssociateFlightPlans(s)
 }
 
 // Sorting the STARS messages. This will store flight plans with FP
@@ -896,59 +894,6 @@ func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
 	}
 
 	clear(comp.ReceivedMessages)
-}
-
-func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
-	for _, ac := range s.State.Aircraft {
-		if trk, ok := comp.TrackInformation[ac.Callsign]; ok { // Someone is tracking this
-			if trk.FlightPlan != nil {
-				if trk.FlightPlan.AssignedSquawk == ac.Squawk && InDropArea(ac) {
-					ac.TrackingController = ""
-
-					if err := comp.DropTrack(ac); err != nil {
-						//s.lg.Errorf("STARS DropTrack: %v", err)
-					}
-
-					s.eventStream.Post(Event{
-						Type:           DroppedTrackEvent,
-						Callsign:       ac.Callsign,
-						FromController: s.State.Callsign,
-					})
-				}
-			} else {
-				//s.lg.Errorf("%s: no flight plan for squawk %s\n", ac.Callsign, ac.Squawk)
-			}
-		}
-
-		// TODO: Only if autotrack departures is set.
-		if fp, ok := comp.ContainedPlans[ac.Squawk]; ok && false { // auto associate
-			ctrl := s.State.Callsign
-			// FIXME(mtrokel): the call to DepartureController() leads to
-			// ERROR Unable to resolve departure controller for aircraft
-			// that are initially controlled by a virtual controller
-			// (e.g. LGA water gate departures when controlling JFK.)
-			if InAcquisitionArea(ac) && s.State.DepartureController(ac, s.lg) == ctrl {
-				// If they have already contacted departure, then initiating
-				// track gives control as well; otherwise ControllingController
-				// is left unset until contact.
-				haveControl := ac.DepartureContactAltitude == 0
-
-				if err := comp.InitiateTrack(ac.Callsign, ctrl, fp, haveControl); err != nil {
-					//s.lg.Errorf("InitiateTrack: %v", err)
-				}
-
-				s.eventStream.Post(Event{
-					Type:         InitiatedTrackEvent,
-					Callsign:     ac.Callsign,
-					ToController: ctrl,
-				})
-
-				if comp.TrackInformation[ac.Callsign] != nil {
-					//s.lg.Errorf("%v: Initiating track for .%v.\n", ac.Callsign, trk[ac.Callsign].TrackOwner)
-				}
-			}
-		}
-	}
 }
 
 func (comp *STARSComputer) CompletelyDeleteAircraft(ac *av.Aircraft) {

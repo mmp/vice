@@ -2413,7 +2413,9 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 	return s.dispatchCommand(token, callsign,
 		func(c *av.Controller, ac *av.Aircraft) error {
 			// Make sure no one has the track already
-			if ac.TrackingController != "" {
+			comp := s.State.ERAMComputer(c.Callsign)
+			trk := comp.TrackInformation[ac.Callsign]
+			if trk != nil {
 				return av.ErrOtherControllerHasTrack
 			}
 			/*
@@ -2427,9 +2429,8 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 			// If they have already contacted departure, then initiating
 			// track gives control as well; otherwise ControllingController
 			// is left unset until contact.
-			haveControl := ac.DepartureContactAltitude == 0
+			haveControl := ac.DepartureContactAltitude == 0 && ac.ControllingController == ""
 
-			ac.TrackingController = ctrl.Callsign
 			if haveControl {
 				ac.ControllingController = ctrl.Callsign
 			}
@@ -2459,7 +2460,6 @@ func (s *Sim) DropTrack(token, callsign string) error {
 
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			ac.TrackingController = ""
 			ac.ControllingController = ""
 
 			if err := s.State.STARSComputer(ctrl.Facility).DropTrack(ac); err != nil {
@@ -2674,12 +2674,14 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
+			comp := s.State.STARSComputer(ctrl.Facility)
+			trk := comp.TrackInformation[ac.Callsign]
 			if octrl := s.State.Controllers[controller]; octrl == nil {
 				return av.ErrNoController
-			} else if octrl.Callsign == ctrl.Callsign || octrl.Callsign == ac.TrackingController {
+			} else if octrl.Callsign == ctrl.Callsign || octrl.Callsign == trk.TrackOwner {
 				// Can't redirect to ourself and the controller who initiated the handoff
 				return av.ErrInvalidController
-			} else if octrl.FacilityIdentifier != ctrl.FacilityIdentifier {
+			} else if octrl.Facility != ctrl.Facility {
 				// Can't redirect to an interfacility position
 				return av.ErrInvalidFacility
 				/*
@@ -2690,15 +2692,17 @@ func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			comp := s.State.STARSComputer(ctrl.Facility)
+			trk := comp.TrackInformation[ac.Callsign]
 			octrl := s.State.Controllers[controller]
-			ac.RedirectedHandoff.OriginalOwner = ac.TrackingController
-			if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Callsign, octrl.Callsign) {
-				ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[0]
-				ac.RedirectedHandoff = av.RedirectedHandoff{}
+			trk.RedirectedHandoff.OriginalOwner = trk.TrackOwner
+			if trk.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Callsign, octrl.Callsign) {
+				trk.HandoffController = trk.RedirectedHandoff.Redirector[0]
+				trk.RedirectedHandoff = av.RedirectedHandoff{}
 				return nil
 			}
-			ac.RedirectedHandoff.AddRedirector(ctrl)
-			ac.RedirectedHandoff.RedirectedTo = octrl.Callsign
+			trk.RedirectedHandoff.AddRedirector(ctrl)
+			trk.RedirectedHandoff.RedirectedTo = octrl.Callsign
 
 			s.State.STARSComputer(ctrl.Facility).RedirectHandoff(ac, ctrl, octrl)
 
@@ -2715,23 +2719,25 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			if ac.RedirectedHandoff.RedirectedTo == ctrl.Callsign { // Accept
+			comp := s.State.STARSComputer(ctrl.Facility)
+			trk := comp.TrackInformation[ac.Callsign]
+			if trk.RedirectedHandoff.RedirectedTo == ctrl.Callsign { // Accept
 				s.eventStream.Post(Event{
 					Type:           AcceptedRedirectedHandoffEvent,
-					FromController: ac.RedirectedHandoff.OriginalOwner,
+					FromController: trk.RedirectedHandoff.OriginalOwner,
 					ToController:   ctrl.Callsign,
 					Callsign:       ac.Callsign,
 				})
 				ac.ControllingController = ctrl.Callsign
-				ac.HandoffTrackController = ""
-				ac.TrackingController = ac.RedirectedHandoff.RedirectedTo
-				ac.RedirectedHandoff = av.RedirectedHandoff{}
-			} else if ac.RedirectedHandoff.GetLastRedirector() == ctrl.Callsign { // Recall (only the last redirector is able to recall)
-				if len(ac.RedirectedHandoff.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"
-					ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1]
+				trk.HandoffController = ""
+				trk.TrackOwner = trk.RedirectedHandoff.RedirectedTo
+				trk.RedirectedHandoff = av.RedirectedHandoff{}
+			} else if trk.RedirectedHandoff.GetLastRedirector() == ctrl.Callsign { // Recall (only the last redirector is able to recall)
+				if len(trk.RedirectedHandoff.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"
+					trk.RedirectedHandoff.RedirectedTo = trk.RedirectedHandoff.Redirector[len(trk.RedirectedHandoff.Redirector)-1]
 				} else { // One redirect took place, clear the RD and show it as a normal handoff
-					ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1]
-					ac.RedirectedHandoff = av.RedirectedHandoff{}
+					trk.HandoffController = trk.RedirectedHandoff.Redirector[len(trk.RedirectedHandoff.Redirector)-1]
+					trk.RedirectedHandoff = av.RedirectedHandoff{}
 				}
 			}
 
@@ -2768,7 +2774,9 @@ func (s *Sim) ForceQL(token, callsign, controller string) error {
 func (s *Sim) PointOut(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if ac.TrackingController != ctrl.Callsign {
+			comp := s.State.STARSComputer(ctrl.Facility)
+			trk := comp.TrackInformation[ac.Callsign]
+			if trk.TrackOwner != ctrl.Callsign {
 				return av.ErrOtherControllerHasTrack
 			} else if octrl := s.State.Controllers[controller]; octrl == nil {
 				return av.ErrNoController
