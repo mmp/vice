@@ -809,11 +809,9 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms Scope
 		if ra.Shaded {
 			trid = renderer.GetTrianglesDrawBuilder()
 			defer renderer.ReturnTrianglesDrawBuilder(trid)
-			trid.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude,
-				float32(ra.CircleRadius), 90)
+			trid.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, ra.CircleRadius, 90)
 		}
-		ld.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude,
-			float32(ra.CircleRadius), 90)
+		ld.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, ra.CircleRadius, 90)
 	} else if len(ra.Vertices) > 0 && len(ra.Vertices[0]) > 0 {
 		verts := sp.wipRestrictionArea.Vertices[0]
 		for i := range len(verts) - 1 {
@@ -885,11 +883,9 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 
 		if ra.CircleRadius > 0 {
 			if ra.Shaded {
-				trid.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude,
-					float32(ra.CircleRadius), 90)
+				trid.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, ra.CircleRadius, 90)
 			}
-			ld.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude,
-				float32(ra.CircleRadius), 90)
+			ld.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, ra.CircleRadius, 90)
 		} else {
 			for _, loop := range ra.Vertices {
 				if nv := len(loop); nv > 0 {

@@ -1796,7 +1796,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 			case 'C':
 				// 6-39: circle + text
-				cmd, rad, ok := tryConsumeInt(cmd[1:])
+				cmd, rad, ok := tryConsumeFloat(cmd[1:])
 				if !ok {
 					status.err = ErrSTARSCommandFormat
 				} else if rad < 1 || rad > 125 {
@@ -1961,6 +1961,35 @@ func tryConsumeInt(cmd string) (string, int, bool) {
 		return cmd, 0, false
 	}
 	return rest, n, true
+}
+
+// Note: only positive floats.
+func tryConsumeFloat(cmd string) (string, float32, bool) {
+	sawpt := false
+	num, rest := cmd, ""
+
+	// Scan until the first non-numeric character, allowing a single
+	// decimal point along the way.
+	for i, ch := range cmd {
+		if ch == '.' {
+			if sawpt {
+				num = cmd[:i]
+				rest = cmd[i:]
+				break
+			}
+			sawpt = true
+		} else if ch < '0' || ch > '9' {
+			num = cmd[:i]
+			rest = cmd[i:]
+			break
+		}
+	}
+
+	if f, err := strconv.ParseFloat(num, 32); err != nil {
+		return cmd, 0, false
+	} else {
+		return rest, float32(f), true
+	}
 }
 
 func getUserRestrictionAreaByIndex(ctx *panes.Context, idx int) *sim.RestrictionArea {
@@ -3314,7 +3343,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			return
 		} else if len(cmd) > 2 && cmd[0] == 'C' {
 			// 6-39: create circle + text
-			cmd, rad, ok := tryConsumeInt(cmd[1:])
+			cmd, rad, ok := tryConsumeFloat(cmd[1:])
 			if !ok {
 				status.err = ErrSTARSCommandFormat
 			} else if rad < 1 || rad > 125 {
