@@ -190,8 +190,8 @@ type STARSPane struct {
 		}
 	}
 
-	// Points clicked to define a restriction area.
-	wipRAVertices []math.Point2LL
+	// An in-progress restriction area.
+	wipRestrictionArea *sim.RestrictionArea
 
 	// We won't waste the space to serialize these but reconstruct them on load.
 	significantPoints map[string]sim.SignificantPoint
@@ -783,23 +783,31 @@ var restrictionAreaHighDPIStipple [32]uint32 = [32]uint32{
 }
 
 func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
-	if sp.commandMode == CommandModeRestrictionArea && len(sp.previewAreaInput) > 0 &&
-		(sp.previewAreaInput[0] == 'A' || sp.previewAreaInput[0] == 'P') {
-		ld := renderer.GetLinesDrawBuilder()
-		defer renderer.ReturnLinesDrawBuilder(ld)
-
-		for i := range len(sp.wipRAVertices) - 1 {
-			ld.AddLine(sp.wipRAVertices[i], sp.wipRAVertices[i+1])
-		}
-
-		transforms.LoadLatLongViewingMatrices(cb)
-		cb.LineWidth(1, ctx.DPIScale)
-		ps := sp.currentPrefs()
-		color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 0})
-		cb.SetRGB(color)
-
-		ld.GenerateCommands(cb)
+	if sp.wipRestrictionArea == nil || len(sp.wipRestrictionArea.Vertices) == 0 ||
+		len(sp.wipRestrictionArea.Vertices[0]) == 0 {
+		return
 	}
+
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+
+	verts := sp.wipRestrictionArea.Vertices[0]
+	for i := range len(verts) - 1 {
+		ld.AddLine(verts[i], verts[i+1])
+	}
+
+	if ctx.Mouse != nil {
+		pm := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
+		ld.AddLine(verts[len(verts)-1], pm)
+	}
+
+	transforms.LoadLatLongViewingMatrices(cb)
+	cb.LineWidth(1, ctx.DPIScale)
+	ps := sp.currentPrefs()
+	color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 0})
+	cb.SetRGB(color)
+
+	ld.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
@@ -835,9 +843,9 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 		ra := draw[idx]
 		if ra.CircleRadius > 0 {
 			if ra.Shaded {
-				trid.AddLatLongCircle(ra.Position, ctx.ControlClient.NmPerLongitude, float32(ra.CircleRadius), 90)
+				trid.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, float32(ra.CircleRadius), 90)
 			}
-			ld.AddLatLongCircle(ra.Position, ctx.ControlClient.NmPerLongitude, float32(ra.CircleRadius), 90)
+			ld.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, float32(ra.CircleRadius), 90)
 		} else {
 			for _, loop := range ra.Vertices {
 				if nv := len(loop); nv > 0 {
@@ -892,7 +900,7 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 			}
 		}
 
-		p := transforms.WindowFromLatLongP(ra.Position)
+		p := transforms.WindowFromLatLongP(ra.TextPosition)
 		blinking := settings.ForceBlinkingText || (ra.BlinkingText && !settings.StopBlinkingText)
 		if blinking && blinkDim {
 			td.AddTextCentered(text, p, renderer.TextStyle{Font: font, Color: color.Scale(0.5)})

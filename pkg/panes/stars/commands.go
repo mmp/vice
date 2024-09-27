@@ -48,10 +48,9 @@ const (
 )
 
 type CommandStatus struct {
-	clear        bool
-	ignoredClick bool // for scope click handlers
-	output       string
-	err          error
+	clear  bool
+	output string
+	err    error
 }
 
 func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
@@ -195,8 +194,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		case platform.KeyF12:
 			sp.resetInputState()
 			sp.commandMode = CommandModeRestrictionArea
-			sp.wipRAVertices = nil
-			sp.scopeClickHandler = restrictionAreaClickHandler(sp)
+			sp.wipRestrictionArea = nil
 		case platform.KeyF13:
 			sp.resetInputState()
 			sp.commandMode = CommandModeReleaseDeparture
@@ -1726,18 +1724,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					cmd = strings.TrimPrefix(cmd, STARSTriangleCharacter)
 					blink = true
 				}
-				if pos, extra, ok := sp.tryParseRALocation(ctx, strings.Fields(cmd)); !ok {
+				if pos, ok := sp.parseRALocation(ctx, cmd); !ok {
 					status.err = ErrSTARSIllegalGeoLoc
-				} else if len(extra) > 0 {
-					status.err = ErrSTARSCommandFormat
 				} else {
-					delta := math.Sub2f(pos, ra.Position)
-					ra.Position = pos
-					for _, loop := range ra.Vertices {
-						for i := range loop {
-							loop[i] = math.Add2f(loop[i], delta)
-						}
-					}
+					ra.MoveTo(pos)
 					if blink {
 						ra.BlinkingText = true
 					}
@@ -1758,6 +1748,77 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			} else {
 				status.err = ErrSTARSCommandFormat
 			}
+		} else if ra := sp.wipRestrictionArea; ra != nil {
+			// Add to or complete a WIP RA definition
+			if ra.CircleRadius > 0 {
+				// Circle
+				if cmd == "" {
+					ra.TextPosition = ra.CircleCenter
+					sp.createRestrictionArea(ctx, *ra)
+					sp.wipRestrictionArea = nil
+					status.clear = true
+				} else {
+					status.err = ErrSTARSCommandFormat
+				}
+				return
+			} else if len(ra.Vertices) > 0 {
+				// Polygon
+				if p, ok := sp.parseRALocation(ctx, cmd); ok {
+					// Another vertex location
+					ra.Vertices[0] = append(ra.Vertices[0], p)
+					sp.previewAreaInput = ""
+				} else {
+					// Not a location so treat it as the text to display.
+
+					parseTriPlus := func(s string) bool {
+						for _, ch := range s {
+							if string(ch) == STARSTriangleCharacter {
+								ra.BlinkingText = true
+							} else if ch == '+' {
+								ra.Shaded = true
+							} else {
+								return false
+							}
+						}
+						return true
+					}
+
+					f := strings.Fields(cmd)
+					switch len(f) {
+					case 1:
+						ra.Text[0] = tidyRAText(f[0])
+
+					case 2:
+						if parseTriPlus(f[1]) {
+							ra.Text[0] = tidyRAText(f[0])
+						} else {
+							ra.Text = [2]string{tidyRAText(f[0]), tidyRAText(f[1])}
+						}
+
+					case 3:
+						ra.Text = [2]string{tidyRAText(f[0]), tidyRAText(f[1])}
+						if !parseTriPlus(f[2]) {
+							status.err = ErrSTARSCommandFormat
+						}
+
+					default:
+						status.err = ErrSTARSCommandFormat
+					}
+
+					if status.err == nil {
+						if (ra.Closed && len(ra.Vertices[0]) < 3) || (!ra.Closed && len(ra.Vertices[0]) < 2) {
+							status.err = ErrSTARSIllegalFunction
+						} else if len(ra.Vertices[0]) > 10 {
+							status.err = ErrSTARSCapacity
+						} else {
+							sp.createRestrictionArea(ctx, *ra)
+							sp.wipRestrictionArea = nil
+							status.clear = true
+						}
+					}
+				}
+				return
+			}
 		} else {
 			// Doesn't start with digits
 			switch cmd[0] {
@@ -1766,14 +1827,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				text, blink, _, extra, ok := parseRAText(strings.Fields(cmd[1:]), false, true)
 				if !ok {
 					status.err = ErrSTARSCommandFormat
-				} else if pos, extra, ok := sp.tryParseRALocation(ctx, extra); !ok {
+				} else if pos, ok := sp.parseRALocation(ctx, strings.Join(extra, " ")); !ok {
 					status.err = ErrSTARSIllegalGeoLoc
-				} else if len(extra) > 0 {
-					status.err = ErrSTARSCommandFormat
 				} else {
 					ra := sim.RestrictionArea{
 						Text:         text,
-						Position:     pos,
+						TextPosition: pos,
 						BlinkingText: blink,
 					}
 					sp.createRestrictionArea(ctx, ra)
@@ -1794,114 +1853,31 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				text, blink, shaded, extra, ok := parseRAText(strings.Fields(cmd), true, true)
 				if !ok {
 					status.err = ErrSTARSCommandFormat
-				} else if pos, f, ok := sp.tryParseRALocation(ctx, extra); !ok {
+				} else if pos, ok := sp.parseRALocation(ctx, strings.Join(extra, " ")); !ok {
 					status.err = ErrSTARSIllegalGeoLoc
-				} else if len(f) != 0 {
-					status.err = ErrSTARSCommandFormat
 				} else {
-					ra := sim.RestrictionArea{
+					// Mostly done but need to allow the text position to be specified.
+					sp.wipRestrictionArea = &sim.RestrictionArea{
 						Text:         text,
-						Position:     pos,
+						CircleCenter: pos,
 						CircleRadius: rad,
 						BlinkingText: blink,
 						Shaded:       shaded,
 					}
-					sp.createRestrictionArea(ctx, ra)
-					status.clear = true
+					sp.previewAreaInput = ""
 				}
 				return
 
 			case 'A', 'P':
 				// 6-41: closed polygon + text / 6-43: open polygon + text
-				ra := sim.RestrictionArea{
-					Closed:   cmd[0] == 'P',
-					Vertices: make([][]math.Point2LL, 1),
-				}
-
-				parseTriPlus := func(s string) bool {
-					for _, ch := range s {
-						if string(ch) == STARSTriangleCharacter {
-							ra.BlinkingText = true
-						} else if ch == '+' {
-							ra.Shaded = true
-						} else {
-							return false
-						}
-					}
-					return true
-				}
-
-				f := strings.Fields(cmd[1:])
-				if len(sp.wipRAVertices) > 0 {
-					// TODO: is it possible to mix clicking and keyboard-entered fixes?
-					var extra []string
-					var ok bool
-					ra.Text, ra.BlinkingText, ra.Shaded, extra, ok = parseRAText(f, true, false)
-					if !ok || len(extra) != 0 {
-						status.err = ErrSTARSCommandFormat
-						return
-					} else {
-						ra.Vertices[0] = sp.wipRAVertices
-						sp.wipRAVertices = nil
-						// Continue to shared creation code below
-					}
+				if p, ok := sp.parseRALocation(ctx, cmd[1:]); !ok {
+					status.err = ErrSTARSIllegalGeoLoc
 				} else {
-					for len(f) > 0 {
-						// Each time through the loop we add one vertex or wrap
-						// up and extract the text at the end of the spec.
-						if len(f) == 1 {
-							// done
-							ra.Text[0] = tidyRAText(f[0])
-							break
-						} else if len(f) == 2 {
-							if parseTriPlus(f[1]) {
-								ra.Text[0] = tidyRAText(f[0])
-							} else if p, ok := sp.parseRABasicLocation(f[0]); ok {
-								ra.Vertices[0] = append(ra.Vertices[0], p)
-								ra.Text[0] = tidyRAText(f[1])
-							} else {
-								ra.Text = [2]string{tidyRAText(f[0]), tidyRAText(f[1])}
-							}
-							break
-						} else if len(f) == 3 {
-							if p, ok := sp.parseRABasicLocation(f[0]); ok {
-								ra.Vertices[0] = append(ra.Vertices[0], p)
-								f = f[1:]
-								continue
-							} else {
-								ra.Text = [2]string{tidyRAText(f[0]), tidyRAText(f[1])}
-								if ra.Closed {
-									if !parseTriPlus(f[2]) {
-										status.err = ErrSTARSCommandFormat
-										return
-									}
-								} else {
-									if f[2] == STARSTriangleCharacter {
-										ra.BlinkingText = true
-									} else {
-										status.err = ErrSTARSCommandFormat
-									}
-								}
-								break
-							}
-						} else if p, fp, ok := sp.tryParseRALocation(ctx, f); ok {
-							ra.Vertices[0] = append(ra.Vertices[0], p)
-							f = fp
-						} else {
-							status.err = ErrSTARSCommandFormat
-							return
-						}
+					sp.wipRestrictionArea = &sim.RestrictionArea{
+						Closed:   cmd[0] == 'P',
+						Vertices: [][]math.Point2LL{{p}},
 					}
-				}
-
-				if (ra.Closed && len(ra.Vertices[0]) < 3) || (!ra.Closed && len(ra.Vertices[0]) < 2) {
-					status.err = ErrSTARSIllegalFunction
-				} else if len(ra.Vertices[0]) > 10 {
-					status.err = ErrSTARSCapacity
-				} else {
-					ra.ComputePositionFromVertices()
-					sp.createRestrictionArea(ctx, ra)
-					status.clear = true
+					sp.previewAreaInput = ""
 				}
 				return
 
@@ -2058,20 +2034,6 @@ func getRestrictionAreaByIndex(ctx *panes.Context, idx int) *sim.RestrictionArea
 	}
 }
 
-func restrictionAreaClickHandler(sp *STARSPane) func([2]float32, ScopeTransformations) (status CommandStatus) {
-	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
-		if sp.previewAreaInput == "A" || sp.previewAreaInput == "P" {
-			// Only take these if the user has indicated they are defining
-			// a polygonal restriction area.
-			sp.wipRAVertices = append(sp.wipRAVertices, transforms.LatLongFromWindowP(pw))
-		} else {
-			// Allow the click through otherwise so executeSTARSClickedCommand has a chance.
-			status.ignoredClick = true
-		}
-		return
-	}
-}
-
 func (sp *STARSPane) parseRABasicLocation(s string) (math.Point2LL, bool) {
 	if latstr, longstr, ok := strings.Cut(s, "/"); ok {
 		// Latitude
@@ -2112,37 +2074,35 @@ func (sp *STARSPane) parseRABasicLocation(s string) (math.Point2LL, bool) {
 	}
 }
 
-func (sp *STARSPane) tryParseRALocation(ctx *panes.Context, f []string) (math.Point2LL, []string, bool) {
-	if len(f) == 0 {
-		return math.Point2LL{}, nil, false
+func (sp *STARSPane) parseRALocation(ctx *panes.Context, s string) (math.Point2LL, bool) {
+	f := strings.Fields(s)
+	if len(f) != 1 && len(f) != 3 {
+		return math.Point2LL{}, false
 	}
 
 	p, ok := sp.parseRABasicLocation(f[0])
 	if !ok {
-		return math.Point2LL{}, f, false
+		return math.Point2LL{}, false
 	}
-	f = f[1:]
 
-	if len(f) >= 2 {
-		bearing, err := strconv.Atoi(f[0])
+	if len(f) == 3 {
+		bearing, err := strconv.Atoi(f[1])
 		if err != nil {
-			// This is fine; f[0] could be the next fix or text to go with the RA
-			return p, f, true
+			return p, true
 		}
 		if bearing < 1 || bearing > 360 {
-			return p, f, false
+			return p, false
 		}
 
-		dist, err := strconv.ParseFloat(f[1], 32)
+		dist, err := strconv.ParseFloat(f[2], 32)
 		if err != nil || dist > 125 {
-			return p, f, false
+			return p, false
 		}
-		f = f[2:]
 
 		p = math.Offset2LL(p, float32(bearing)-ctx.ControlClient.MagneticVariation, float32(dist),
 			ctx.ControlClient.NmPerLongitude)
 	}
-	return p, f, true
+	return p, true
 }
 
 func tidyRAText(s string) string {
@@ -3340,20 +3300,51 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				ra.BlinkingText = true
 			}
 
-			pos := transforms.LatLongFromWindowP(mousePosition)
-			delta := math.Sub2f(pos, ra.Position)
-			ra.Position = pos
-			for i, loop := range ra.Vertices {
-				for j := range loop {
-					ra.Vertices[i][j] = math.Add2f(ra.Vertices[i][j], delta)
-				}
-			}
+			ra.MoveTo(transforms.LatLongFromWindowP(mousePosition))
 
 			sp.updateRestrictionArea(ctx, n, *ra)
 			status.clear = true
 			return
-		}
-		if len(cmd) > 2 && cmd[0] == 'C' {
+		} else if ra := sp.wipRestrictionArea; ra != nil {
+			p := transforms.LatLongFromWindowP(mousePosition)
+			if ra.CircleRadius > 0 {
+				// Circle
+				ra.TextPosition = p
+				sp.createRestrictionArea(ctx, *ra)
+				sp.wipRestrictionArea = nil
+				status.clear = true
+				return
+			} else if len(ra.Vertices) > 0 {
+				// Polygon
+				if cmd != "" {
+					// Input is the text to display, click position is
+					// where to put the text.
+					var extra []string
+					var ok bool
+					ra.Text, ra.BlinkingText, ra.Shaded, extra, ok = parseRAText(strings.Fields(cmd), true, false)
+					if !ok || len(extra) > 0 {
+						status.err = ErrSTARSCommandFormat
+					} else {
+						ra.TextPosition = p
+						sp.createRestrictionArea(ctx, *ra)
+						sp.wipRestrictionArea = nil
+						status.clear = true
+					}
+				} else {
+					ra.Vertices[0] = append(ra.Vertices[0], p)
+				}
+				return
+			}
+		} else if cmd == "A" || cmd == "P" {
+			// Start a polygon
+			p := transforms.LatLongFromWindowP(mousePosition)
+			sp.wipRestrictionArea = &sim.RestrictionArea{
+				Closed:   cmd[0] == 'P',
+				Vertices: [][]math.Point2LL{{p}},
+			}
+			sp.previewAreaInput = ""
+			return
+		} else if len(cmd) > 2 && cmd[0] == 'C' {
 			// 6-39: create circle + text
 			cmd, rad, ok := tryConsumeInt(cmd[1:])
 			if !ok {
@@ -3368,15 +3359,15 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			if !ok || len(extra) != 0 {
 				status.err = ErrSTARSCommandFormat
 			} else {
-				ra := sim.RestrictionArea{
+				// Still need the text position, one way or another.
+				sp.wipRestrictionArea = &sim.RestrictionArea{
 					Text:         text,
-					Position:     transforms.LatLongFromWindowP(mousePosition),
 					CircleRadius: rad,
+					CircleCenter: transforms.LatLongFromWindowP(mousePosition),
 					BlinkingText: blink,
 					Shaded:       shaded,
 				}
-				sp.createRestrictionArea(ctx, ra)
-				status.clear = true
+				sp.previewAreaInput = ""
 			}
 			return
 		} else if len(cmd) > 2 && cmd[0] == 'G' {
@@ -3387,7 +3378,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			} else {
 				ra := sim.RestrictionArea{
 					Text:         text,
-					Position:     transforms.LatLongFromWindowP(mousePosition),
+					TextPosition: transforms.LatLongFromWindowP(mousePosition),
 					BlinkingText: blink,
 				}
 				sp.createRestrictionArea(ctx, ra)
@@ -3525,7 +3516,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 		if sp.scopeClickHandler != nil {
 			status = sp.scopeClickHandler(ctx.Mouse.Pos, transforms)
 		}
-		if sp.scopeClickHandler == nil || status.ignoredClick {
+		if sp.scopeClickHandler == nil {
 			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.Mouse.Pos, ghosts, transforms)
 		}
 

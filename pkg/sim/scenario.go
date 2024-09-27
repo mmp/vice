@@ -130,7 +130,8 @@ type RestrictionArea struct {
 	Text         [2]string        `json:"text"`
 	BlinkingText bool             `json:"blinking_text"`
 	HideId       bool             `json:"hide_id"`
-	Position     math.Point2LL    `json:"position"`
+	TextPosition math.Point2LL    `json:"text_position"`
+	CircleCenter math.Point2LL    `json:"circle_center"`
 	CircleRadius int              `json:"circle_radius"`
 	VerticesUser av.WaypointArray `json:"vertices"`
 	Vertices     [][]math.Point2LL
@@ -1197,20 +1198,8 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	}
 	for idx := range s.RestrictionAreas {
 		ra := &s.RestrictionAreas[idx]
-		// Fill in Vertices from the user-specified "vertices"
-		if len(ra.VerticesUser) > 0 {
-			ra.VerticesUser.InitializeLocations(sg, sg.NmPerLongitude, sg.MagneticVariation, e)
-			var verts []math.Point2LL
-			for _, v := range ra.VerticesUser {
-				verts = append(verts, v.Location)
-			}
 
-			ra.Vertices = make([][]math.Point2LL, 1)
-			ra.Vertices[0] = verts
-			ra.ComputePositionFromVertices()
-			ra.UpdateTriangles()
-		}
-
+		// General checks
 		if ra.Title == "" {
 			e.ErrorString("Must define \"title\" for restriction area.")
 		}
@@ -1226,15 +1215,44 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		if !ra.Closed && len(ra.Vertices) == 0 || len(ra.Vertices[0]) < 2 {
 			e.ErrorString("At least 2 \"vertices\" must be given for an open restriction area.")
 		}
-		if ra.CircleRadius > 125 {
-			e.ErrorString("\"radius\" cannot be larger than 125.")
+
+		if len(ra.VerticesUser) > 0 {
+			// Polygons
+			ra.VerticesUser.InitializeLocations(sg, sg.NmPerLongitude, sg.MagneticVariation, e)
+			var verts []math.Point2LL
+			for _, v := range ra.VerticesUser {
+				verts = append(verts, v.Location)
+			}
+
+			ra.Vertices = make([][]math.Point2LL, 1)
+			ra.Vertices[0] = verts
+			ra.UpdateTriangles()
+
+			if ra.TextPosition.IsZero() {
+				ra.TextPosition = ra.AverageVertexPosition()
+			}
+
+			if ra.CircleRadius > 0 {
+				e.ErrorString("Cannot specify both \"circle_radius\" and \"vertices\".")
+			}
+		} else if ra.CircleRadius > 0 {
+			// Circle-related checks
+			if ra.CircleRadius > 125 {
+				e.ErrorString("\"radius\" cannot be larger than 125.")
+			}
+			if ra.CircleCenter.IsZero() {
+				e.ErrorString("Must specify \"circle_center\" if \"circle_radius\" is given.")
+			}
+			if ra.TextPosition.IsZero() {
+				ra.TextPosition = ra.CircleCenter
+			}
+		} else {
+			// Must be text-only
+			if ra.Text[0] != "" || ra.Text[1] != "" && ra.TextPosition.IsZero() {
+				e.ErrorString("Must specify \"text_position\" with restriction area")
+			}
 		}
-		if ra.CircleRadius > 0 && ra.Position.IsZero() {
-			e.ErrorString("Must specify \"position\" if \"circle_radius\" is given.")
-		}
-		if ra.CircleRadius > 0 && len(ra.Vertices) > 0 {
-			e.ErrorString("Cannot specify both \"circle_radius\" and \"vertices\".")
-		}
+
 		if ra.Shaded && ra.CircleRadius == 0 && len(ra.Vertices) == 0 {
 			e.ErrorString("\"shaded\" cannot be specified without \"circle_radius\" or \"vertices\".")
 		}
@@ -1675,14 +1693,14 @@ func RestrictionAreaFromTFR(tfr av.TFR) RestrictionArea {
 	ra.HideId = true
 	ra.Closed = true
 	ra.Shaded = true // ??
+	ra.TextPosition = ra.AverageVertexPosition()
 
-	ra.ComputePositionFromVertices()
 	ra.UpdateTriangles()
 
 	return ra
 }
 
-func (ra *RestrictionArea) ComputePositionFromVertices() {
+func (ra *RestrictionArea) AverageVertexPosition() math.Point2LL {
 	var c math.Point2LL
 	var n float32
 	for _, loop := range ra.Vertices {
@@ -1691,7 +1709,7 @@ func (ra *RestrictionArea) ComputePositionFromVertices() {
 			c = math.Add2f(c, v)
 		}
 	}
-	ra.Position = math.Scale2f(c, 1/n)
+	return math.Scale2f(c, 1/n)
 }
 
 func (ra *RestrictionArea) UpdateTriangles() {
@@ -1717,6 +1735,28 @@ func (ra *RestrictionArea) UpdateTriangles() {
 				v32[i] = [2]float32{float32(v64.P[0]), float32(v64.P[1])}
 			}
 			ra.Tris = append(ra.Tris, v32)
+		}
+	}
+}
+
+func (ra *RestrictionArea) MoveTo(p math.Point2LL) {
+	if ra.CircleRadius > 0 {
+		// Circle
+		delta := math.Sub2f(p, ra.CircleCenter)
+		ra.CircleCenter = p
+		ra.TextPosition = math.Add2f(ra.TextPosition, delta)
+	} else {
+		pc := ra.TextPosition
+		if pc.IsZero() {
+			pc = ra.AverageVertexPosition()
+		}
+		delta := math.Sub2f(p, pc)
+		ra.TextPosition = p
+
+		for _, loop := range ra.Vertices {
+			for i := range loop {
+				loop[i] = math.Add2f(loop[i], delta)
+			}
 		}
 	}
 }
