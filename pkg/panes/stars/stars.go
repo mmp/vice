@@ -1063,14 +1063,13 @@ func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
 		sp.significantPointsSlice = append(sp.significantPointsSlice, pt)
 	}
 
-	tryAdd := func(name string, short string, desc string, loc math.Point2LL) {
+	tryAdd := func(name string, desc string, loc math.Point2LL) {
 		if _, ok := sp.significantPoints[name]; ok {
 			return
 		}
 
 		pt := sim.SignificantPoint{
 			Name:        name,
-			ShortName:   short,
 			Description: desc,
 			Location:    loc,
 		}
@@ -1082,29 +1081,28 @@ func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
 	center := ss.GetInitialCenter()
 	for name, ap := range av.DB.Airports {
 		if math.NMDistance2LL(ap.Location, center) < 250 {
-			shortAp := name
 			if len(name) == 4 && name[0] == 'K' {
-				shortAp = name[1:]
+				name = name[1:]
 			}
-			tryAdd(name, shortAp, name+" AIRPORT", ap.Location)
+			tryAdd(name, name+" AIRPORT", ap.Location)
 
 			for _, rwy := range ap.Runways {
 				// e.g. JFK22LT -> JFK RWY 22L THRESHOLD
-				tryAdd(shortAp+rwy.Id+"T", shortAp, shortAp+" RWY "+rwy.Id+" THRESHOLD", rwy.Threshold)
+				tryAdd(name+rwy.Id+"T", name+" RWY "+rwy.Id+" THRESHOLD", rwy.Threshold)
 			}
 		}
 	}
 
 	for name, nav := range av.DB.Navaids {
 		if math.NMDistance2LL(nav.Location, center) < 250 {
-			tryAdd(name, name+" "+nav.Type, "", nav.Location)
+			tryAdd(name, name+" "+nav.Type, nav.Location)
 		}
 	}
 
 	for name, fix := range av.DB.Fixes {
 		if math.NMDistance2LL(fix.Location, center) < 250 {
 			// FIXME: should be INTERSECTION not WAYPOINT potentially
-			tryAdd(name, name+" WAYPOINT", "", fix.Location)
+			tryAdd(name, name+" WAYPOINT", fix.Location)
 		}
 	}
 
