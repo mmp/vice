@@ -1403,10 +1403,19 @@ func (s *Sim) updateState() {
 		if !ok {
 			continue
 		}
-
-		if ac.HandoffTrackController != "" &&
+		eram, stars, _ := s.State.ERAMComputers.FacilityComputers(ho.ReceivingController)
+		trk := eram.TrackInformation[ac.Callsign]
+		if trk == nil {
+			trk = stars.TrackInformation[ac.Callsign]
+		} 
+		if trk == nil {
+			s.lg.Errorf("no track information for %s", ac.Callsign)
+			continue
+		}
+		
+		if trk.HandoffController != "" &&
 			!s.controllerIsSignedIn(ac.HandoffTrackController) {
-			eram, stars, _ := s.State.ERAMComputers.FacilityComputers(ho.ReceivingController)
+			
 			if stars != nil { // STARS Acceptance
 				trk := stars.TrackInformation[ac.Callsign]
 
@@ -2506,7 +2515,6 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 				Callsign:       ac.Callsign,
 			})
 
-			ac.HandoffTrackController = octrl.Callsign
 			_, stars, _ := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
 			if err := stars.HandoffTrack(ac.Callsign, ctrl, octrl, s.SimTime); err != nil {
 				//s.lg.Errorf("HandoffTrack: %v", err)
@@ -2518,6 +2526,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			acceptDelay := 4 + rand.Intn(10)
 			s.Handoffs[ac.Callsign] = Handoff{
 				Time: s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+				ReceivingController: octrl.Callsign,
 			}
 			return nil
 		})
