@@ -3379,7 +3379,15 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 }
 
 func (sp *STARSPane) createRestrictionArea(ctx *panes.Context, ra sim.RestrictionArea) {
+	// Go ahead and make it visible, assuming which index will be assigned
+	// to reduce update latency.
+	ps := sp.currentPrefs()
+	idx := len(ctx.ControlClient.State.UserRestrictionAreas)
+	ps.RestrictionAreaSettings[idx] = &RestrictionAreaSettings{Visible: true}
+
 	ctx.ControlClient.CreateRestrictionArea(ra, func(idx int) {
+		// Just in case (e.g. a race with another controller also adding
+		// one), make sure we have the one we made visible.
 		ps := sp.currentPrefs()
 		ps.RestrictionAreaSettings[idx] = &RestrictionAreaSettings{Visible: true}
 	}, nil)
