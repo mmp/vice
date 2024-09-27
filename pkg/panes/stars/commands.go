@@ -3390,7 +3390,7 @@ func (sp *STARSPane) createRestrictionArea(ctx *panes.Context, ra sim.Restrictio
 		// one), make sure we have the one we made visible.
 		ps := sp.currentPrefs()
 		ps.RestrictionAreaSettings[idx] = &RestrictionAreaSettings{Visible: true}
-	}, nil)
+	}, func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) updateRestrictionArea(ctx *panes.Context, idx int, ra sim.RestrictionArea) {
@@ -3401,7 +3401,7 @@ func (sp *STARSPane) updateRestrictionArea(ctx *panes.Context, idx int, ra sim.R
 		} else {
 			ps.RestrictionAreaSettings[idx] = &RestrictionAreaSettings{Visible: true}
 		}
-	}, nil)
+	}, func(err error) { sp.displayError(err, ctx) })
 }
 
 // Returns the cardinal-ordinal direction associated with the numbpad keys,
