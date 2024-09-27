@@ -2863,13 +2863,13 @@ how it simulates aircraft or the STARS interface.
               the association between numbers and directions; consider the aircraft to be at the position of
               the "5" key and then the other numbers specify the direction of the leader line relative to the
               aircraft. If you don't have a numeric keypad, visualize one, or refer to this figure:</p>
-            <table style="table table-centered" style="width: auto;">
+            <table style="margin: auto;">
                 <tbody>
                   <tr><td>7</td><td>8</td><td>9</td></tr>
                   <tr><td>4</td><td><i class="fas fa-plane fa-rotate-270"></i></td><td>6</td></tr>
                   <tr><td>1</td><td>2</td><td>3</td></tr>
                 </tbody>
-              </table>
+              </table><br>
             <p>A number of commands are available to configure leader lines, where all uses of <code>(#)</code>
               below correspond to a number following the above convention for specifying directions:</p>
               <table class="table table-bordered">
@@ -3835,10 +3835,33 @@ how it simulates aircraft or the STARS interface.
             <p>In the restriction area commands, <code>(RATEXT)</code> is used to indicate specification of the text
               associated with the restriction area. One or two lines of text may be specified; if a second line is
               given, it should be separated from the first by a space. Because space is used to separate lines, periods
-              must be entered for spaces within a line of text. These periods are converted to spaces by <i>vice</i>.
-              Depending on the context, a third line with additional qualifiers can be entered: <code>∆</code> to indicate
+              must be entered for spaces within a line of text. These periods are converted to spaces by <i>vice</i>.</p>
+            <p>Depending on the context, a third line with additional qualifiers can be entered: <code>∆</code> to indicate
               that the text should blink and <code>+</code> to indicate that its associated shape should be shaded,
-              or <code>*</code> followed by a number from 1&mdash;8 to specify a color for the graphics.</p>
+              or <code>*</code> followed by a number from 1&mdash;8 to specify a color for the graphics. Here are the colors
+              associated with each number:</p>
+            <table style="margin: auto;" border="1">
+              <tr>
+                <td style="width: 30px; height: 30px; background-color: rgb(255, 255, 0);"></td>
+                <td style="width: 30px; height: 30px; background-color: rgb(0, 255, 255);"></td>
+                <td style="width: 30px; height: 30px; background-color: rgb(255, 0, 255);"></td>
+                <td style="width: 30px; height: 30px; background-color: rgb(238, 201, 0);"></td>
+                <td style="width: 30px; height: 30px; background-color: rgb(238, 106, 80);"></td>
+                <td style="width: 30px; height: 30px; background-color: rgb(132, 112, 255);"></td>
+                <td style="width: 30px; height: 30px; background-color: rgb(118, 238, 198);"></td>
+                <td style="width: 30px; height: 30px; background-color: rgb(50, 205, 50);"></td>
+              </tr>
+              <tr>
+                <td style="text-align:center;">1</td>
+                <td style="text-align:center;">2</td>
+                <td style="text-align:center;">3</td>
+                <td style="text-align:center;">4</td>
+                <td style="text-align:center;">5</td>
+                <td style="text-align:center;">6</td>
+                <td style="text-align:center;">7</td>
+                <td style="text-align:center;">8</td>
+              </tr>
+            </table><br>
             <p><code>(RALOC)</code> corresponds to specifying a location.
               One way to do so is by clicking a point in the STARS window;
               alternatively, the names of a fix, a fix offset by a given distance in a given direction, or a latitude-longitude
