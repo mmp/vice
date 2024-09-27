@@ -2680,7 +2680,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			} else if cmd == "?" {
 				ctx.Lg.Info("print aircraft", slog.String("callsign", ac.Callsign),
 					slog.Any("aircraft", ac))
-				fmt.Println(spew.Sdump(ac) + "\n" + ac.Nav.FlightState.Summary())
+				comp := ctx.ControlClient.ERAMComputer(ctx.ControlClient.Callsign)
+				fmt.Println(spew.Sdump(ac)+"\n"+comp.FlightPlans[ac.Squawk].CoordinationFix, ac.FlightPlan.ArrivalAirport)
 				// fmt.Println(spew.Sdump(ac), )
 				status.clear = true
 				return

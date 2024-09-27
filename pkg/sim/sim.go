@@ -1407,21 +1407,21 @@ func (s *Sim) updateState() {
 		trk := eram.TrackInformation[ac.Callsign]
 		if trk == nil {
 			trk = stars.TrackInformation[ac.Callsign]
-		} 
+		}
 		if trk == nil {
 			s.lg.Errorf("no track information for %s", ac.Callsign)
 			continue
 		}
-		
+
 		if trk.HandoffController != "" &&
 			!s.controllerIsSignedIn(ac.HandoffTrackController) {
-			
+
 			if stars != nil { // STARS Acceptance
 				trk := stars.TrackInformation[ac.Callsign]
 
 				ctrl := s.State.Controllers[trk.HandoffController]
 				stars.AcceptHandoff(ac, ctrl, s.State.Controllers, s.SimTime)
-			} else { // ERAM Acceptance 
+			} else { // ERAM Acceptance
 				trk := eram.TrackInformation[ac.Callsign]
 				ctrl := s.State.Controllers[trk.HandoffController]
 				receivingFacility := s.State.Controllers[trk.TrackOwner].Facility
@@ -1516,10 +1516,18 @@ func (s *Sim) updateState() {
 						FromController: ac.TrackingController,
 						ToController:   ctrl,
 					})
-
-					err := s.State.ERAMComputers.HandoffTrack(ac, ac.TrackingController, ctrl, s.State.Controllers, s.SimTime)
-					if err != nil {
-						//s.lg.Errorf("HandoffTrack: %v", err)
+					if strings.Contains(ac.TrackingController, "_CTR") { // Coming from an ERAM facility
+						err := s.State.ERAMComputers.HandoffTrack(ac, ac.TrackingController, ctrl, s.State.Controllers, s.SimTime)
+						if err != nil {
+							s.lg.Errorf("HandoffTrack: %v", err)
+						}
+					} else {
+						controller := s.State.Controllers[ac.TrackingController]
+						octrl := s.State.Controllers[ctrl]
+						err := s.State.STARSComputer(ac.TrackingController).HandoffTrack(ac.Callsign, controller, octrl, s.SimTime)
+						if err != nil {
+							s.lg.Errorf("HandoffTrack: %v", err)
+						}
 					}
 
 					ac.HandoffTrackController = ctrl
@@ -2525,7 +2533,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 			// end up accepting it automatically.
 			acceptDelay := 4 + rand.Intn(10)
 			s.Handoffs[ac.Callsign] = Handoff{
-				Time: s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+				Time:                s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
 				ReceivingController: octrl.Callsign,
 			}
 			return nil
@@ -2616,16 +2624,16 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			comp := s.State.STARSComputer(ctrl.Facility)
+			trk := comp.TrackInformation[ac.Callsign]
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
-				FromController: ac.ControllingController,
+				FromController: trk.TrackOwner,
 				ToController:   ctrl.Callsign,
 				Callsign:       ac.Callsign,
 			})
 
-			_, stars, _ := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
-
-			if err := stars.AcceptHandoff(ac, ctrl, s.State.Controllers,
+			if err := comp.AcceptHandoff(ac, ctrl, s.State.Controllers,
 				s.SimTime); err != nil {
 				//s.lg.Errorf("AcceptHandoff: %v", err)
 			}

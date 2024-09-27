@@ -1074,6 +1074,7 @@ func (ea ERAMAdaptation) FixForRouteAndAltitude(route string, altitude string) *
 			}
 		}
 	}
+
 	return nil
 }
 

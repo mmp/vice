@@ -329,7 +329,10 @@ func fieldEmpty(f []dbChar) bool {
 func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) DatablockType {
 	trk := sp.getTrack(ctx, ac)
 
-	if trk == nil || trk.TrackOwner == "" {
+	if trk == nil || trk.FlightPlan == nil || trk.TrackOwner == "" {
+		if trk != nil && trk.FlightPlan == nil {
+			ctx.Lg.Errorf("nil flight plan for %s", ac.Callsign)
+		}
 		// Must be limited, regardless of anything else.
 		return LimitedDatablock
 	} else {

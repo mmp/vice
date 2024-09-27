@@ -449,8 +449,9 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 			Groundspeed: int(ac.Nav.FlightState.GS),
 			Time:        now,
 		}
-		if ac := ctx.ControlClient.Aircraft[callsign]; sp.AutoTrackDepartures && ac.DepartureContactController == ctx.ControlClient.Callsign && sim.InAcquisitionArea(ac) {
-			fp, err := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).GetFlightPlan(ac.Squawk.String())
+		comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+		if ac := ctx.ControlClient.Aircraft[callsign]; comp.TrackInformation[ac.Callsign] == nil && sp.AutoTrackDepartures && ac.DepartureContactController == ctx.ControlClient.Callsign && sim.InAcquisitionArea(ac) {
+			fp, err := comp.GetFlightPlan(ac.Squawk.String())
 			if err != nil {
 				ctx.Lg.Errorf("GetFlightPlan(%s): %v", ac.Squawk, err)
 			}
