@@ -476,6 +476,7 @@ func (ss *State) DeleteAircraft(ac *av.Aircraft) {
 	ss.ERAMComputers.CompletelyDeleteAircraft(ac)
 }
 
+// Input a facility or controller callsign and get the STARSComputer for that facility.
 func (ss *State) STARSComputer(fac string) *STARSComputer {
 	if strings.Contains(fac, "_") { // A controller was inputted. Gather the facility and use that facility for ERAMComputers FacilityComputers.
 		ok := false

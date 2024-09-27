@@ -943,8 +943,8 @@ type DepartureAircraft struct {
 }
 
 type Handoff struct {
-	Time              time.Time
-	ReceivingFacility string // only for auto accept
+	Time                time.Time
+	ReceivingController string // only for auto accept
 }
 
 type PointOut struct {
@@ -1186,6 +1186,18 @@ func (s *Sim) ChangeControlPosition(token string, callsign string, keepTracks bo
 	for _, ac := range s.State.Aircraft {
 		if keepTracks {
 			ac.TransferTracks(oldCallsign, ctrl.Callsign)
+			comp := s.State.STARSComputer(oldCallsign)
+			fac, _ := s.State.FacilityFromController(ctrl.Callsign)
+			for _, trk := range comp.TrackInformation {
+				if trk.TrackOwner == oldCallsign {
+					_, stars, _ := s.State.ERAMComputers.FacilityComputers(fac)
+					if stars != nil {
+						stars.TrackInformation[trk.Identifier] = trk
+					} else { // Tracks going to an ERAM controller
+
+					}
+				}
+			}
 		} else {
 			ac.HandleControllerDisconnect(ctrl.Callsign, s.State.PrimaryController)
 		}
@@ -1387,9 +1399,43 @@ func (s *Sim) updateState() {
 		if !now.After(ho.Time) {
 			continue
 		}
+		ac, ok := s.State.Aircraft[callsign]
+		if !ok {
+			continue
+		}
 
-		if ac, ok := s.State.Aircraft[callsign]; ok && ac.HandoffTrackController != "" &&
+		if ac.HandoffTrackController != "" &&
 			!s.controllerIsSignedIn(ac.HandoffTrackController) {
+			eram, stars, _ := s.State.ERAMComputers.FacilityComputers(ho.ReceivingController)
+			if stars != nil { // STARS Acceptance
+				trk := stars.TrackInformation[ac.Callsign]
+
+				ctrl := s.State.Controllers[trk.HandoffController]
+				stars.AcceptHandoff(ac, ctrl, s.State.Controllers, s.SimTime)
+			} else { // ERAM Acceptance 
+				trk := eram.TrackInformation[ac.Callsign]
+				ctrl := s.State.Controllers[trk.HandoffController]
+				receivingFacility := s.State.Controllers[trk.TrackOwner].Facility
+				eram.TrackInformation[ac.Callsign].HandoffController = ""
+				eram.TrackInformation[ac.Callsign].TrackOwner = ctrl.Callsign
+				// TODO: Put the accept stuff in an ERAM function
+				trk = eram.TrackInformation[ac.Callsign] // Udapte trk to reflect changes
+				fp := trk.FlightPlan
+
+				msg := fp.Message()
+				msg.SourceID = formatSourceID(ctrl.Callsign, s.SimTime)
+				msg.TrackInformation = TrackInformation{
+					TrackOwner: ctrl.Callsign,
+				}
+				msg.MessageType = AcceptRecallTransfer
+				msg.Identifier = ac.Callsign
+
+				if _, ok := eram.STARSComputers[receivingFacility]; ok {
+					eram.SendMessageToSTARSFacility(receivingFacility, msg)
+				} else { // Forward to another ERAM facility
+					eram.SendMessageToERAM(receivingFacility, msg)
+				}
+			}
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
 				FromController: ac.TrackingController,
@@ -1400,7 +1446,7 @@ func (s *Sim) updateState() {
 				slog.String("from", ac.TrackingController),
 				slog.String("to", ac.HandoffTrackController))
 
-			receivingSTARS := s.State.STARSComputer(ho.ReceivingFacility)
+			receivingSTARS := s.State.STARSComputer(ho.ReceivingController)
 
 			if err := receivingSTARS.AutomatedAcceptHandoff(ac, ac.HandoffTrackController,
 				receivingSTARS, s.State.Controllers, s.SimTime); err != nil {
@@ -2571,7 +2617,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 			_, stars, _ := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
 
 			if err := stars.AcceptHandoff(ac, ctrl, s.State.Controllers,
-				s.State.STARSFacilityAdaptation, s.SimTime); err != nil {
+				s.SimTime); err != nil {
 				//s.lg.Errorf("AcceptHandoff: %v", err)
 			}
 

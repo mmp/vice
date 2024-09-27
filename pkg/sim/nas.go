@@ -285,7 +285,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 				FlightPlan:        comp.FlightPlans[msg.BCN],
 				Identifier:        msg.Identifier,
 			}
-			if des := msg.FacilityDestination; des != "" { // Going to another facility
+			if des := msg.FacilityDestination; des != comp.Identifier { // Going to another facility
 
 				// ERAM cannot send to a STARS facility that isn't in the same ARTCC, so first check if the facility is in this ARTCC
 				if _, ok := comp.STARSComputers[des]; ok {
@@ -600,14 +600,14 @@ func (comp *STARSComputer) HandoffTrack(callsign string, from *av.Controller, to
 }
 
 func (comp *STARSComputer) AcceptHandoff(ac *av.Aircraft, ctrl *av.Controller,
-	controllers map[string]*av.Controller, adaptation STARSFacilityAdaptation, simTime time.Time) error {
+	controllers map[string]*av.Controller, simTime time.Time) error {
 	trk := comp.TrackInformation[ac.Callsign]
 	if trk == nil {
 		return av.ErrNoAircraftForCallsign
 	}
 
-	if octrl := controllers[trk.TrackOwner]; octrl != nil && octrl.FacilityIdentifier != "" { // inter-facility
-		fp := comp.ContainedPlans[ac.Squawk]
+	if octrl := controllers[trk.TrackOwner]; octrl != nil && octrl.Facility != ctrl.Facility { // inter-facility
+		fp := comp.ContainedPlans[ac.Squawk] // TODO: Change this to look at tracks first
 		if fp == nil {
 			fp = trk.FlightPlan
 		}
