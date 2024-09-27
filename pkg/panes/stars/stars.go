@@ -811,7 +811,7 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms Scope
 }
 
 var raColors [9]renderer.RGB = [9]renderer.RGB{
-	renderer.RGBFromUInt8(0, 0, 0), // unused; just here for one-based indexing
+	renderer.RGBFromUInt8(255, 255, 0), // double up so 0 by default remains yellow but we have 1-based indexing otherwise
 	renderer.RGBFromUInt8(255, 255, 0),
 	renderer.RGBFromUInt8(0, 255, 255),
 	renderer.RGBFromUInt8(255, 0, 255),

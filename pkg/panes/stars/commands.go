@@ -2098,7 +2098,7 @@ func parseRAText(f []string, closedShape bool, expectPosition bool) (parsed pars
 				if ch < '1' || ch > '8' {
 					return ErrSTARSIllegalColor
 				}
-				parsed.color = int(ch)
+				parsed.color = int(ch - '0') // 1-based indexing
 				getColor = false
 			} else if string(ch) == STARSTriangleCharacter {
 				parsed.blink = true
