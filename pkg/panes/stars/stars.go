@@ -827,7 +827,7 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms Scope
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ps := sp.currentPrefs()
-	color := ps.Brightness.VideoGroupB.ScaleRGB(raGeomColor(ra))
+	color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 1})
 	cb.SetRGB(color)
 
 	ld.GenerateCommands(cb)
