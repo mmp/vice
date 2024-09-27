@@ -1770,24 +1770,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					ra.Vertices[0] = append(ra.Vertices[0], p)
 					sp.previewAreaInput = ""
 				} else {
-					// Not a location so treat it as the text to display.
-					if parsed, err := parseRAText(strings.Fields(cmd), true, false); err != nil {
-						status.err = err
-					} else if len(parsed.extra) > 0 {
-						status.err = ErrSTARSCommandFormat
-					} else if (ra.Closed && len(ra.Vertices[0]) < 3) || (!ra.Closed && len(ra.Vertices[0]) < 2) {
-						status.err = ErrSTARSIllegalFunction
-					} else if len(ra.Vertices[0]) > 10 {
-						status.err = ErrSTARSCapacity
-					} else {
-						// Update the restriction area; we still need to
-						// know where to place the text, though.
-						ra.Text = parsed.text
-						ra.BlinkingText = parsed.blink
-						ra.Shaded = parsed.shaded
-						ra.Color = parsed.color
-						sp.previewAreaInput = ""
-					}
+					status.err = ErrSTARSCommandFormat
 				}
 				return
 			}
