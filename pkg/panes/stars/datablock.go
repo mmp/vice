@@ -549,8 +549,8 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			}
 			if arrivalAirport != "" {
 				sp1 = arrivalAirport
-			} 
-			
+			}
+
 			if adapt.Scratchpad1.DisplayExitFix {
 				sp1 = shortExit()
 			} else if adapt.Scratchpad1.DisplayExitFix1 {

@@ -423,9 +423,9 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 	// 	}
 	// 	if len(ctrl.Facility) != 3 {
 	// 		e.ErrorString("%s: controller's \"facility\" must be three characters", ctrl.Callsign)
-	// 		continue 
-	// 	} 
-	// 	_, ok := av.DB.ARTCCs[ctrl.Facility] 
+	// 		continue
+	// 	}
+	// 	_, ok := av.DB.ARTCCs[ctrl.Facility]
 	// 	if !ok {
 	// 		_, ok = av.DB.TRACONs[ctrl.Facility]
 	// 		if !ok {
