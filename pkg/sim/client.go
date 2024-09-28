@@ -252,7 +252,7 @@ func (c *ControlClient) AcceptHandoff(callsign string, success func(any), err fu
 		trk.HandoffController = ""
 		trk.TrackOwner = c.Callsign
 	}
-	
+
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.AcceptHandoff(callsign),

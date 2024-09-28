@@ -380,7 +380,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			ctx.ControlClient.State.ERAMComputers.DumpMap()
 			status.clear = true
 			return
-		case "??": 
+		case "??":
 			comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
 
 			for sq, trackInfo := range comp.TrackInformation {

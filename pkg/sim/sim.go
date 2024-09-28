@@ -1438,7 +1438,7 @@ func (s *Sim) updateState() {
 					s.AwaitingHandoffs[ac.Callsign] = Handoff{
 						ReceivingController: ctrl.Callsign,
 					}
-					continue 
+					continue
 				}
 			} else { // ERAM Acceptance
 				trk := eram.TrackInformation[ac.Callsign]
@@ -1452,16 +1452,22 @@ func (s *Sim) updateState() {
 				fp := trk.FlightPlan
 
 				msg := fp.Message()
-				msg.SourceID = formatSourceID(ctrl.Callsign, s.SimTime)
+				msg.SourceID = formatSourceID(ctrl.Facility, s.SimTime)
 				msg.TrackInformation = TrackInformation{
 					TrackOwner: ctrl.Callsign,
 				}
 				msg.MessageType = AcceptRecallTransfer
 				msg.Identifier = ac.Callsign
+				msg.FacilityDestination = receivingFacility
 
 				if _, ok := eram.STARSComputers[receivingFacility]; ok {
 					eram.SendMessageToSTARSFacility(receivingFacility, msg)
+					fmt.Printf("%v: Forwarding accept msg of %v to %s (stars)\n", eram.Identifier, ac.Callsign, receivingFacility)
 				} else { // Forward to another ERAM facility
+					if _, ok := av.DB.ARTCCs[receivingFacility]; !ok {
+						receivingFacility = av.DB.TRACONs[receivingFacility].ARTCC
+					}
+					fmt.Printf("%v: Forwarding accept msg of %v to %s (eram) \n", eram.Identifier, ac.Callsign, receivingFacility)
 					eram.SendMessageToERAM(receivingFacility, msg)
 				}
 			}
@@ -1473,7 +1479,7 @@ func (s *Sim) updateState() {
 			})
 			s.lg.Info("automatic handoff accept", slog.String("callsign", ac.Callsign),
 				slog.String("from", octrl.Callsign),
-				slog.String("to", ctrl.Callsign)) 
+				slog.String("to", ctrl.Callsign))
 		}
 		delete(s.Handoffs, callsign)
 	}
@@ -1519,6 +1525,7 @@ func (s *Sim) updateState() {
 				if passedWaypoint.Handoff {
 					// Handoff from virtual controller to a human controller.
 					ctrl := s.ResolveController(ac.WaypointHandoffController)
+					octrl := s.State.Controllers[ctrl]
 
 					s.eventStream.Post(Event{
 						Type:           OfferedHandoffEvent,
@@ -1527,7 +1534,32 @@ func (s *Sim) updateState() {
 						ToController:   ctrl,
 					})
 					controller := s.State.Controllers[ac.TrackingController]
-					octrl := s.State.Controllers[ctrl]
+
+					if trk := s.State.STARSComputer(ac.TrackingController).TrackInformation[ac.Callsign]; trk == nil &&
+						InAcquisitionArea(ac) && !s.controllerIsSignedIn(ac.TrackingController) {
+						comp := s.State.STARSComputer(ac.TrackingController)
+						fp, err := comp.GetFlightPlan(ac.Squawk.String())
+						if err != nil {
+							s.lg.Errorf("GetFlightPlan: %v", err)
+							continue
+						}
+						err = comp.InitiateTrack(ac.Callsign, ac.TrackingController, fp, true)
+						if err != nil {
+							s.lg.Errorf("AutoInitiateTrack: %v", err)
+							continue
+						}
+						ac.ControllingController = ac.TrackingController
+
+						err = comp.HandoffTrack(ac.Callsign, controller, octrl, s.SimTime)
+						if err != nil {
+							s.lg.Errorf("AutoHandoffTrack: %v", err)
+							s.AwaitingHandoffs[ac.Callsign] = Handoff{
+								ReceivingController: ctrl,
+							}
+						}
+
+						continue
+					}
 
 					if controller == nil || octrl == nil {
 						s.lg.Errorf("nil controller %v %v %s %s %v", controller, octrl, ac.TrackingController, ctrl, s.State.Controllers)
@@ -2703,7 +2735,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			comp := s.State.STARSComputer(ctrl.Facility)
 			trk := comp.TrackInformation[ac.Callsign]
-			
+
 			if err := comp.AcceptHandoff(ac, ctrl, s.State.Controllers,
 				s.SimTime); err != nil {
 				s.lg.Errorf("AcceptHandoff: %v", err)
@@ -3594,7 +3626,16 @@ func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (
 		return nil, err
 	}
 
-	eram := s.State.ERAMComputer(ac.DepartureContactController)
+	depCtrl := ac.DepartureContactController
+	if depCtrl == "" {
+		depCtrl = ac.TrackingController
+	}
+	fac, ok := s.State.FacilityFromController(depCtrl)
+	if !ok {
+		return nil, ErrUnknownControllerFacility
+	}
+
+	eram := s.State.ERAMComputer(fac)
 	eram.AddDeparture(ac.FlightPlan, s.State.TRACON, s.SimTime)
 
 	return ac, nil

@@ -293,7 +293,10 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 					fmt.Printf("%v: Forwarding %v %v message to %v's STARS\n", comp.Identifier, msg.Identifier, msg.MessageType, des)
 				} else { // Forward to another ERAM facility
 					// find the overlying ARTCC
-					des = av.DB.TRACONs[des].ARTCC
+					if _, ok := av.DB.ARTCCs[des]; !ok {
+						des = av.DB.TRACONs[des].ARTCC
+					}
+
 					comp.SendMessageToERAM(des, msg)
 					fmt.Printf("%v: Forwarding %v %v message to %v's ERAM\n", comp.Identifier, msg.Identifier, msg.MessageType, des)
 				}
@@ -356,10 +359,10 @@ func (comp *ERAMComputer) HandoffTrack(ac *av.Aircraft, from, to *av.Controller,
 			Identifier:        ac.Callsign,
 		}
 		msg.MessageType = InitiateTransfer
-	
+
 		comp.TrackInformation[ac.Callsign].HandoffController = to.Callsign
 		msg.FacilityDestination = to.Facility
-	
+
 		if stars, ok := comp.STARSComputers[msg.FacilityDestination]; ok { // in host ERAM
 			comp.SendMessageToSTARSFacility(stars.Identifier, msg)
 		} else { // needs to go through another ERAM
@@ -376,10 +379,10 @@ func (comp *ERAMComputer) HandoffTrack(ac *av.Aircraft, from, to *av.Controller,
 				return av.ErrInvalidController
 			}
 			comp.SendMessageToERAM(receivingERAM.Identifier, msg)
-	
+
 		}
 	}
-	
+
 	return nil
 }
 
