@@ -132,7 +132,7 @@ type RestrictionArea struct {
 	HideId       bool             `json:"hide_id"`
 	TextPosition math.Point2LL    `json:"text_position"`
 	CircleCenter math.Point2LL    `json:"circle_center"`
-	CircleRadius int              `json:"circle_radius"`
+	CircleRadius float32          `json:"circle_radius"`
 	VerticesUser av.WaypointArray `json:"vertices"`
 	Vertices     [][]math.Point2LL
 	Closed       bool `json:"closed"`

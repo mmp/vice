@@ -782,44 +782,60 @@ var restrictionAreaHighDPIStipple [32]uint32 = [32]uint32{
 	0,
 }
 
+func raGeomColor(ra *sim.RestrictionArea) renderer.RGB {
+	return [9]renderer.RGB{
+		renderer.RGBFromUInt8(255, 255, 0), // double up so 0 by default remains yellow but we have 1-based indexing otherwise
+		renderer.RGBFromUInt8(255, 255, 0),
+		renderer.RGBFromUInt8(0, 255, 255),
+		renderer.RGBFromUInt8(255, 0, 255),
+		renderer.RGBFromUInt8(238, 201, 0),
+		renderer.RGBFromUInt8(238, 106, 80),
+		renderer.RGBFromUInt8(132, 112, 255),
+		renderer.RGBFromUInt8(118, 238, 198),
+		renderer.RGBFromUInt8(50, 205, 50),
+	}[ra.Color]
+}
+
 func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
-	if sp.wipRestrictionArea == nil || len(sp.wipRestrictionArea.Vertices) == 0 ||
-		len(sp.wipRestrictionArea.Vertices[0]) == 0 {
+	ra := sp.wipRestrictionArea
+	if ra == nil {
 		return
 	}
-
 	ld := renderer.GetLinesDrawBuilder()
 	defer renderer.ReturnLinesDrawBuilder(ld)
+	var trid *renderer.TrianglesDrawBuilder
 
-	verts := sp.wipRestrictionArea.Vertices[0]
-	for i := range len(verts) - 1 {
-		ld.AddLine(verts[i], verts[i+1])
-	}
+	if ra.CircleRadius > 0 {
+		if ra.Shaded {
+			trid = renderer.GetTrianglesDrawBuilder()
+			defer renderer.ReturnTrianglesDrawBuilder(trid)
+			trid.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, ra.CircleRadius, 90)
+		}
+		ld.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, ra.CircleRadius, 90)
+	} else if len(ra.Vertices) > 0 && len(ra.Vertices[0]) > 0 {
+		verts := sp.wipRestrictionArea.Vertices[0]
+		for i := range len(verts) - 1 {
+			ld.AddLine(verts[i], verts[i+1])
+		}
 
-	if ctx.Mouse != nil && sp.previewAreaInput == "" {
-		pm := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
-		ld.AddLine(verts[len(verts)-1], pm)
+		if ctx.Mouse != nil && sp.previewAreaInput == "" {
+			pm := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
+			ld.AddLine(verts[len(verts)-1], pm)
+		}
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ps := sp.currentPrefs()
-	color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 0})
+	color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 1})
 	cb.SetRGB(color)
 
 	ld.GenerateCommands(cb)
-}
-
-var raColors [9]renderer.RGB = [9]renderer.RGB{
-	renderer.RGBFromUInt8(255, 255, 0), // double up so 0 by default remains yellow but we have 1-based indexing otherwise
-	renderer.RGBFromUInt8(255, 255, 0),
-	renderer.RGBFromUInt8(0, 255, 255),
-	renderer.RGBFromUInt8(255, 0, 255),
-	renderer.RGBFromUInt8(238, 201, 0),
-	renderer.RGBFromUInt8(238, 106, 80),
-	renderer.RGBFromUInt8(132, 112, 255),
-	renderer.RGBFromUInt8(118, 238, 198),
-	renderer.RGBFromUInt8(50, 205, 50),
+	if trid != nil {
+		cb.EnablePolygonStipple()
+		trid.GenerateCommands(cb)
+		cb.DisablePolygonStipple()
+	}
 }
 
 func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
@@ -857,22 +873,19 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 	}
 
 	for _, idx := range util.SortedMapKeys(draw) {
+		ra := draw[idx]
+
 		ld.Reset()
 		trid.Reset()
 
-		ra := draw[idx]
-
-		color := raColors[ra.Color]
-		color = ps.Brightness.VideoGroupB.ScaleRGB(color)
+		color := ps.Brightness.VideoGroupB.ScaleRGB(raGeomColor(ra))
 		cb.SetRGB(color)
 
 		if ra.CircleRadius > 0 {
 			if ra.Shaded {
-				trid.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude,
-					float32(ra.CircleRadius), 90)
+				trid.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, ra.CircleRadius, 90)
 			}
-			ld.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude,
-				float32(ra.CircleRadius), 90)
+			ld.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, ra.CircleRadius, 90)
 		} else {
 			for _, loop := range ra.Vertices {
 				if nv := len(loop); nv > 0 {
@@ -1046,14 +1059,13 @@ func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
 		sp.significantPointsSlice = append(sp.significantPointsSlice, pt)
 	}
 
-	tryAdd := func(name string, short string, desc string, loc math.Point2LL) {
+	tryAdd := func(name string, desc string, loc math.Point2LL) {
 		if _, ok := sp.significantPoints[name]; ok {
 			return
 		}
 
 		pt := sim.SignificantPoint{
 			Name:        name,
-			ShortName:   short,
 			Description: desc,
 			Location:    loc,
 		}
@@ -1065,29 +1077,28 @@ func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
 	center := ss.GetInitialCenter()
 	for name, ap := range av.DB.Airports {
 		if math.NMDistance2LL(ap.Location, center) < 250 {
-			shortAp := name
 			if len(name) == 4 && name[0] == 'K' {
-				shortAp = name[1:]
+				name = name[1:]
 			}
-			tryAdd(name, shortAp, name+" AIRPORT", ap.Location)
+			tryAdd(name, name+" AIRPORT", ap.Location)
 
 			for _, rwy := range ap.Runways {
 				// e.g. JFK22LT -> JFK RWY 22L THRESHOLD
-				tryAdd(shortAp+rwy.Id+"T", shortAp, shortAp+" RWY "+rwy.Id+" THRESHOLD", rwy.Threshold)
+				tryAdd(name+rwy.Id+"T", name+" RWY "+rwy.Id+" THRESHOLD", rwy.Threshold)
 			}
 		}
 	}
 
 	for name, nav := range av.DB.Navaids {
 		if math.NMDistance2LL(nav.Location, center) < 250 {
-			tryAdd(name, name+" "+nav.Type, "", nav.Location)
+			tryAdd(name, name+" "+nav.Type, nav.Location)
 		}
 	}
 
 	for name, fix := range av.DB.Fixes {
 		if math.NMDistance2LL(fix.Location, center) < 250 {
 			// FIXME: should be INTERSECTION not WAYPOINT potentially
-			tryAdd(name, name+" WAYPOINT", "", fix.Location)
+			tryAdd(name, name+" WAYPOINT", fix.Location)
 		}
 	}
 

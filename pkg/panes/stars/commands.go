@@ -1776,24 +1776,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					ra.Vertices[0] = append(ra.Vertices[0], p)
 					sp.previewAreaInput = ""
 				} else {
-					// Not a location so treat it as the text to display.
-					if parsed, err := parseRAText(strings.Fields(cmd), true, false); err != nil {
-						status.err = err
-					} else if len(parsed.extra) > 0 {
-						status.err = ErrSTARSCommandFormat
-					} else if (ra.Closed && len(ra.Vertices[0]) < 3) || (!ra.Closed && len(ra.Vertices[0]) < 2) {
-						status.err = ErrSTARSIllegalFunction
-					} else if len(ra.Vertices[0]) > 10 {
-						status.err = ErrSTARSCapacity
-					} else {
-						// Update the restriction area; we still need to
-						// know where to place the text, though.
-						ra.Text = parsed.text
-						ra.BlinkingText = parsed.blink
-						ra.Shaded = parsed.shaded
-						ra.Color = parsed.color
-						sp.previewAreaInput = ""
-					}
+					status.err = ErrSTARSCommandFormat
 				}
 				return
 			}
@@ -1819,7 +1802,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 			case 'C':
 				// 6-39: circle + text
-				cmd, rad, ok := tryConsumeInt(cmd[1:])
+				cmd, rad, ok := tryConsumeFloat(cmd[1:])
 				if !ok {
 					status.err = ErrSTARSCommandFormat
 				} else if rad < 1 || rad > 125 {
@@ -1984,6 +1967,35 @@ func tryConsumeInt(cmd string) (string, int, bool) {
 		return cmd, 0, false
 	}
 	return rest, n, true
+}
+
+// Note: only positive floats.
+func tryConsumeFloat(cmd string) (string, float32, bool) {
+	sawpt := false
+	num, rest := cmd, ""
+
+	// Scan until the first non-numeric character, allowing a single
+	// decimal point along the way.
+	for i, ch := range cmd {
+		if ch == '.' {
+			if sawpt {
+				num = cmd[:i]
+				rest = cmd[i:]
+				break
+			}
+			sawpt = true
+		} else if ch < '0' || ch > '9' {
+			num = cmd[:i]
+			rest = cmd[i:]
+			break
+		}
+	}
+
+	if f, err := strconv.ParseFloat(num, 32); err != nil {
+		return cmd, 0, false
+	} else {
+		return rest, float32(f), true
+	}
 }
 
 func getUserRestrictionAreaByIndex(ctx *panes.Context, idx int) *sim.RestrictionArea {
@@ -3358,7 +3370,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			return
 		} else if len(cmd) > 2 && cmd[0] == 'C' {
 			// 6-39: create circle + text
-			cmd, rad, ok := tryConsumeInt(cmd[1:])
+			cmd, rad, ok := tryConsumeFloat(cmd[1:])
 			if !ok {
 				status.err = ErrSTARSCommandFormat
 			} else if rad < 1 || rad > 125 {
@@ -3406,10 +3418,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 }
 
 func (sp *STARSPane) createRestrictionArea(ctx *panes.Context, ra sim.RestrictionArea) {
+	// Go ahead and make it visible, assuming which index will be assigned
+	// to reduce update latency.
+	ps := sp.currentPrefs()
+	idx := len(ctx.ControlClient.State.UserRestrictionAreas)
+	ps.RestrictionAreaSettings[idx] = &RestrictionAreaSettings{Visible: true}
+
 	ctx.ControlClient.CreateRestrictionArea(ra, func(idx int) {
+		// Just in case (e.g. a race with another controller also adding
+		// one), make sure we have the one we made visible.
 		ps := sp.currentPrefs()
 		ps.RestrictionAreaSettings[idx] = &RestrictionAreaSettings{Visible: true}
-	}, nil)
+	}, func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) updateRestrictionArea(ctx *panes.Context, idx int, ra sim.RestrictionArea) {
@@ -3420,7 +3440,7 @@ func (sp *STARSPane) updateRestrictionArea(ctx *panes.Context, idx int, ra sim.R
 		} else {
 			ps.RestrictionAreaSettings[idx] = &RestrictionAreaSettings{Visible: true}
 		}
-	}, nil)
+	}, func(err error) { sp.displayError(err, ctx) })
 }
 
 // Returns the cardinal-ordinal direction associated with the numbpad keys,

@@ -405,6 +405,11 @@ func (c *ControlClient) Disconnect() {
 // Note that the success callback is passed an integer, giving the index of
 // the newly-created restriction area.
 func (c *ControlClient) CreateRestrictionArea(ra RestrictionArea, success func(int), err func(error)) {
+	// Speculatively make the change locally immediately to reduce perceived latency.
+	if len(c.State.UserRestrictionAreas) < 100 {
+		c.State.UserRestrictionAreas = append(c.State.UserRestrictionAreas, ra)
+	}
+
 	var idx int
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
