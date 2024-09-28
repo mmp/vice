@@ -264,37 +264,13 @@ func (mp *MessagesPane) runCommands(ctx *Context) {
 		mp.history = append(mp.history, mp.input)
 		mp.input = CLIInput{}
 		return
-	}
-
-	if mp.input.cmd == "P" {
+	} else if mp.input.cmd == "P" {
 		ctx.ControlClient.ToggleSimPause()
 		mp.history = append(mp.history, mp.input)
 		mp.input = CLIInput{}
 		return
-	}
-
-	callsign, cmd, ok := strings.Cut(mp.input.cmd, " ")
-	mp.messages = append(mp.messages, Message{contents: "> " + mp.input.cmd})
-	mp.history = append(mp.history, mp.input)
-	mp.input = CLIInput{}
-
-	if ok {
-		if ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign); ac != nil {
-			ctx.ControlClient.RunAircraftCommands(ac.Callsign, cmd,
-				func(errorString string, remainingCommands string) {
-					if errorString != "" {
-						mp.messages = append(mp.messages, Message{contents: errorString, error: true})
-					}
-					if remainingCommands != "" && mp.input.cmd == "" {
-						mp.input.cmd = callsign + " " + remainingCommands
-						mp.input.cursor = len(mp.input.cmd)
-					}
-				})
-		} else {
-			mp.messages = append(mp.messages, Message{contents: callsign + ": no such aircraft", error: true})
-		}
 	} else {
-		mp.messages = append(mp.messages, Message{contents: "invalid command: " + callsign, error: true})
+		mp.messages = append(mp.messages, Message{contents: mp.input.cmd + ": command unknown", error: true})
 	}
 }
 
@@ -402,15 +378,6 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 						contents: event.Message,
 						system:   true,
 					})
-			}
-		case sim.TrackClickedEvent:
-			if cmd := strings.TrimSpace(mp.input.cmd); cmd != "" {
-				mp.input.cmd = event.Callsign + " " + cmd
-				mp.runCommands(ctx)
-
-				if mp.KeepFocusAfterTrackSlew {
-					ctx.KeyboardFocus.Take(mp)
-				}
 			}
 		}
 	}

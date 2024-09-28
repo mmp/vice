@@ -259,6 +259,22 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		return callsign
 	}
 
+	if sp.commandMode == CommandModeNone && len(cmd) > 1 && cmd[0] == ';' {
+		// Aircraft control command
+		if callsign, cmds, ok := strings.Cut(cmd[1:], " "); ok {
+			if ac := lookupAircraft(callsign); ac != nil {
+				sp.runAircraftCommands(ctx, ac, cmds)
+				status.clear = true
+			} else {
+				status.err = ErrSTARSIllegalACID
+			}
+			return
+		} else {
+			status.err = ErrSTARSCommandFormat
+			return
+		}
+	}
+
 	ps := sp.currentPrefs()
 	switch sp.commandMode {
 	case CommandModeNone:
@@ -1950,6 +1966,21 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 	return
 }
 
+func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, ac *av.Aircraft, cmds string) {
+	ctx.ControlClient.RunAircraftCommands(ac.Callsign, cmds,
+		func(errStr string, remaining string) {
+			if errStr != "" {
+				sp.previewAreaInput = ";" + remaining
+				if err := sim.TryDecodeErrorString(errStr); err != nil {
+					err = GetSTARSError(err, ctx.Lg)
+					sp.displayError(err, ctx)
+				} else {
+					sp.displayError(ErrSTARSCommandFormat, ctx)
+				}
+			}
+		})
+}
+
 func (sp *STARSPane) setWIPRestrictionArea(ctx *panes.Context, ra *sim.RestrictionArea) {
 	sp.wipRestrictionArea = ra
 	if ctx.Mouse != nil {
@@ -2509,6 +2540,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 	}
 
 	if ac != nil {
+		if sp.commandMode == CommandModeNone && len(cmd) > 0 && cmd[0] == ';' {
+			sp.runAircraftCommands(ctx, ac, cmd[1:])
+			status.clear = true
+			return
+		}
+
 		state := sp.Aircraft[ac.Callsign]
 		trk := sp.getTrack(ctx, ac)
 
