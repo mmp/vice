@@ -415,6 +415,25 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 		}
 	}
 
+	// Until all FE stuff is done, and there is a lot to do...
+	// for _, ctrl := range sg.ControlPositions {
+	// 	if len(ctrl.Facility) == 0 {
+	// 		e.ErrorString("%s: controller must have \"facility\" specified", ctrl.Callsign)
+	// 		continue
+	// 	}
+	// 	if len(ctrl.Facility) != 3 {
+	// 		e.ErrorString("%s: controller's \"facility\" must be three characters", ctrl.Callsign)
+	// 		continue 
+	// 	} 
+	// 	_, ok := av.DB.ARTCCs[ctrl.Facility] 
+	// 	if !ok {
+	// 		_, ok = av.DB.TRACONs[ctrl.Facility]
+	// 		if !ok {
+	// 			e.ErrorString("%s: controller's \"facility\" %q is unknown", ctrl.Callsign, ctrl.Facility)
+	// 		}
+	// 	}
+	// }
+
 	// Various multi_controllers validations
 	if len(s.SplitConfigurations) > 0 {
 		if len(s.SplitConfigurations) == 1 && s.DefaultSplit == "" {
