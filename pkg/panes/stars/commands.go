@@ -1673,7 +1673,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					}
 				}
 				status.clear = true
-			} else if cmd == "T" || cmd == "T "+STARSTriangleCharacter {
+			} else if cmd == "T" || cmd == "T"+STARSTriangleCharacter || cmd == "T "+STARSTriangleCharacter {
 				// 6-49: hide/show restriction area text
 				ra := getRestrictionAreaByIndex(ctx, n)
 				if ra == nil {
@@ -1683,7 +1683,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 				ps.RestrictionAreaSettings[n].HideText = !ps.RestrictionAreaSettings[n].HideText
 				ps.RestrictionAreaSettings[n].ForceBlinkingText = false
-				if cmd == "T "+STARSTriangleCharacter {
+				if strings.HasSuffix(cmd, STARSTriangleCharacter) {
 					if !ps.RestrictionAreaSettings[n].HideText {
 						ps.RestrictionAreaSettings[n].ForceBlinkingText = true
 					} else {
