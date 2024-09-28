@@ -525,6 +525,9 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 				} else {
 					positionSymbol = ctrl.SectorId[len(ctrl.SectorId)-1:]
 				}
+				if trk.AutoAssociateFP && ac.WaypointHandoffController == ctx.ControlClient.Callsign {
+					positionSymbol = "C" // Always C, even if coming from a TRACON
+				}
 			}
 		}
 

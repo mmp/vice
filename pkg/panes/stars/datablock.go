@@ -357,6 +357,10 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			dt = FullDatablock
 		}
 
+		if trk.AutoAssociateFP && ac.WaypointHandoffController == ctx.ControlClient.Callsign {
+			dt = FullDatablock
+		}
+
 		if trk.HandoffController == ctx.ControlClient.Callsign && trk.RedirectedHandoff.RedirectedTo == "" {
 			// it's being handed off to us
 			dt = FullDatablock
@@ -839,7 +843,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 		dbBrightness = ps.Brightness.LimitedDatablocks
 		posBrightness = ps.Brightness.LimitedDatablocks
 	} else /* dt == FullDatablock */ {
-		if trk != nil && trk.TrackOwner != ctx.ControlClient.Callsign {
+		if trk != nil && (trk.TrackOwner != ctx.ControlClient.Callsign ) || (trk.AutoAssociateFP && ac.WaypointHandoffController == ctx.ControlClient.Callsign) {
 			dbBrightness = ps.Brightness.OtherTracks
 			posBrightness = ps.Brightness.OtherTracks
 		} else {
@@ -900,10 +904,8 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 			func(q QuickLookPosition) bool { return q.Callsign == trk.TrackOwner && q.Plus }) {
 			// individual quicklook plus controller
 			color = STARSTrackedAircraftColor
-			/* FIXME(mtrokel): temporarily disabled. This flashes in and out e.g. in JFK scenarios for the LGA water gate departures.
-			} else if trk.AutoAssociateFP {
-				color = STARSTrackedAircraftColor
-			*/
+		} else if trk.AutoAssociateFP && ac.WaypointHandoffController == ctx.ControlClient.Callsign {
+			color = STARSTrackedAircraftColor
 		} else {
 			color = STARSUntrackedAircraftColor
 		}
