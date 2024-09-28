@@ -442,6 +442,11 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 			continue
 		}
 
+		// Reset the NextController after the frequency change has been made.
+		if ac.ControllingController != ctx.ControlClient.Callsign && state.NextController != "" {
+			state.NextController = ""
+		}
+
 		state.previousTrack = state.track
 		state.track = av.RadarTrack{
 			Position:    ac.Position(),
