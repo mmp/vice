@@ -1014,10 +1014,10 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		SimTime:        time.Now(),
 		lastUpdateTime: time.Now(),
 
-		SimRate:   1,
-		Handoffs:  make(map[string]Handoff),
+		SimRate:          1,
+		Handoffs:         make(map[string]Handoff),
 		AwaitingHandoffs: make(map[string]Handoff),
-		PointOuts: make(map[string]map[string]PointOut),
+		PointOuts:        make(map[string]map[string]PointOut),
 	}
 
 	if !isLocal {
@@ -1587,7 +1587,7 @@ func (s *Sim) updateState() {
 					}
 				}
 
-				if !InAcquisitionArea(ac) && !InDropArea(ac) && ac.WaypointHandoffController != ""{
+				if !InAcquisitionArea(ac) && !InDropArea(ac) && ac.WaypointHandoffController != "" {
 					comp := s.State.STARSComputer(ac.WaypointHandoffController)
 					if !s.State.STARSFacilityAdaptation.KeepLDB {
 						trk := comp.TrackInformation[ac.Callsign]
@@ -2684,7 +2684,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			comp := s.State.STARSComputer(ctrl.Facility)
 			trk := comp.TrackInformation[ac.Callsign]
-			
+
 			if trk == nil || trk.HandoffController != ctrl.Callsign {
 				return av.ErrNotBeingHandedOffToMe
 			}

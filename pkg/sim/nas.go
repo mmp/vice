@@ -1040,7 +1040,7 @@ type TrackInformation struct {
 	SP1               string
 	SP2               string
 	TempAltitude      int
-	AutoAssociateFP  bool
+	AutoAssociateFP   bool
 }
 
 func (trk TrackInformation) HandingOffTo(ctrl string) bool {

@@ -843,7 +843,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 		dbBrightness = ps.Brightness.LimitedDatablocks
 		posBrightness = ps.Brightness.LimitedDatablocks
 	} else /* dt == FullDatablock */ {
-		if trk != nil && (trk.TrackOwner != ctx.ControlClient.Callsign ) || (trk.AutoAssociateFP && ac.WaypointHandoffController == ctx.ControlClient.Callsign) {
+		if trk != nil && (trk.TrackOwner != ctx.ControlClient.Callsign) || (trk.AutoAssociateFP && ac.WaypointHandoffController == ctx.ControlClient.Callsign) {
 			dbBrightness = ps.Brightness.OtherTracks
 			posBrightness = ps.Brightness.OtherTracks
 		} else {
