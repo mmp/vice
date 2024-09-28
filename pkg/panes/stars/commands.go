@@ -262,7 +262,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 	if sp.commandMode == CommandModeNone && len(cmd) > 1 && cmd[0] == ';' {
 		// Aircraft control command
 		if callsign, cmds, ok := strings.Cut(cmd[1:], " "); ok {
-			if ac := lookupAircraft(callsign); ac != nil {
+			if ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign); ac != nil {
 				sp.runAircraftCommands(ctx, ac, cmds)
 				status.clear = true
 			} else {
