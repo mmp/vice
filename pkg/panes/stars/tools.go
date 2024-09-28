@@ -817,7 +817,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 		// Format the range-bearing line text for the two positions.
 		hdg := math.Heading2LL(p0, p1, ctx.ControlClient.NmPerLongitude, ctx.ControlClient.MagneticVariation)
 		dist := math.NMDistance2LL(p0, p1)
-		text := fmt.Sprintf(" %3d/%.2f", int(hdg+.5), dist) // leading space for alignment
+		text := fmt.Sprintf(" %03d/%.2f", int(hdg+.5), dist) // leading space for alignment
 		if gs != 0 {
 			// Add ETA in minutes
 			eta := 60 * dist / gs
