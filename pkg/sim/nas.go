@@ -344,36 +344,42 @@ func (comp *ERAMComputer) HandoffTrack(ac *av.Aircraft, from, to *av.Controller,
 	if plan == nil {
 		return av.ErrNoFlightPlan
 	}
-	msg := plan.Message()
-	msg.SourceID = formatSourceID(from.Facility, simTime)
-	msg.TrackInformation = TrackInformation{
-		TrackOwner:        from.Callsign,
-		HandoffController: to.Callsign,
-		Identifier:        ac.Callsign,
-	}
-	msg.MessageType = InitiateTransfer
-
-	comp.TrackInformation[ac.Callsign].HandoffController = to.Callsign
-	msg.FacilityDestination = to.Facility
-
-	if stars, ok := comp.STARSComputers[msg.FacilityDestination]; ok { // in host ERAM
-		comp.SendMessageToSTARSFacility(stars.Identifier, msg)
-	} else { // needs to go through another ERAM
-		var nextFacility string
-		if receivingARTCC, ok := av.DB.ARTCCs[msg.FacilityDestination]; !ok {
-			nextFacility = av.DB.TRACONs[msg.FacilityDestination].ARTCC
-		} else {
-			nextFacility = receivingARTCC.Name
+	if from.Facility == to.Facility { // intra-facility
+		trk := comp.TrackInformation[ac.Callsign]
+		trk.HandoffController = to.Callsign
+	} else { // inter-facility
+		msg := plan.Message()
+		msg.SourceID = formatSourceID(from.Facility, simTime)
+		msg.TrackInformation = TrackInformation{
+			TrackOwner:        from.Callsign,
+			HandoffController: to.Callsign,
+			Identifier:        ac.Callsign,
 		}
-		receivingERAM, ok := comp.eramComputers.Computers[nextFacility]
-		if !ok {
-			fmt.Printf("ERAMComputer: HandoffTrack: %s not found in ERAMComputers", to.Facility)
-			fmt.Println(comp.eramComputers.Computers)
-			return av.ErrInvalidController
+		msg.MessageType = InitiateTransfer
+	
+		comp.TrackInformation[ac.Callsign].HandoffController = to.Callsign
+		msg.FacilityDestination = to.Facility
+	
+		if stars, ok := comp.STARSComputers[msg.FacilityDestination]; ok { // in host ERAM
+			comp.SendMessageToSTARSFacility(stars.Identifier, msg)
+		} else { // needs to go through another ERAM
+			var nextFacility string
+			if receivingARTCC, ok := av.DB.ARTCCs[msg.FacilityDestination]; !ok {
+				nextFacility = av.DB.TRACONs[msg.FacilityDestination].ARTCC
+			} else {
+				nextFacility = receivingARTCC.Name
+			}
+			receivingERAM, ok := comp.eramComputers.Computers[nextFacility]
+			if !ok {
+				fmt.Printf("ERAMComputer: HandoffTrack: %s not found in ERAMComputers", to.Facility)
+				fmt.Println(comp.eramComputers.Computers)
+				return av.ErrInvalidController
+			}
+			comp.SendMessageToERAM(receivingERAM.Identifier, msg)
+	
 		}
-		comp.SendMessageToERAM(receivingERAM.Identifier, msg)
-
 	}
+	
 	return nil
 }
 

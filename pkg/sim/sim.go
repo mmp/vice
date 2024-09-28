@@ -1427,14 +1427,23 @@ func (s *Sim) updateState() {
 
 		if trk.HandoffController != "" &&
 			!s.controllerIsSignedIn(trk.HandoffController) {
-
+			var ctrl, octrl *av.Controller
 			if stars != nil { // STARS Acceptance
 				trk := stars.TrackInformation[ac.Callsign]
-				ctrl := s.State.Controllers[trk.HandoffController]
-				stars.AcceptHandoff(ac, ctrl, s.State.Controllers, s.SimTime)
+				ctrl = s.State.Controllers[trk.HandoffController]
+				octrl = s.State.Controllers[trk.TrackOwner]
+				err := stars.AcceptHandoff(ac, ctrl, s.State.Controllers, s.SimTime)
+				if err != nil {
+					s.lg.Errorf("AutoAcceptHandoff: %v", err)
+					s.AwaitingHandoffs[ac.Callsign] = Handoff{
+						ReceivingController: ctrl.Callsign,
+					}
+					continue 
+				}
 			} else { // ERAM Acceptance
 				trk := eram.TrackInformation[ac.Callsign]
-				ctrl := s.State.Controllers[trk.HandoffController]
+				ctrl = s.State.Controllers[trk.HandoffController]
+				octrl = s.State.Controllers[trk.TrackOwner]
 				receivingFacility := s.State.Controllers[trk.TrackOwner].Facility
 				eram.TrackInformation[ac.Callsign].HandoffController = ""
 				eram.TrackInformation[ac.Callsign].TrackOwner = ctrl.Callsign
@@ -1458,13 +1467,13 @@ func (s *Sim) updateState() {
 			}
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
-				FromController: ac.TrackingController,
-				ToController:   ac.HandoffTrackController,
+				FromController: octrl.Callsign,
+				ToController:   ctrl.Callsign,
 				Callsign:       ac.Callsign,
 			})
 			s.lg.Info("automatic handoff accept", slog.String("callsign", ac.Callsign),
-				slog.String("from", ac.TrackingController),
-				slog.String("to", ac.HandoffTrackController))
+				slog.String("from", octrl.Callsign),
+				slog.String("to", ctrl.Callsign)) 
 		}
 		delete(s.Handoffs, callsign)
 	}
@@ -2694,6 +2703,12 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			comp := s.State.STARSComputer(ctrl.Facility)
 			trk := comp.TrackInformation[ac.Callsign]
+			
+			if err := comp.AcceptHandoff(ac, ctrl, s.State.Controllers,
+				s.SimTime); err != nil {
+				s.lg.Errorf("AcceptHandoff: %v", err)
+			}
+
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
 				FromController: trk.TrackOwner,
@@ -2701,10 +2716,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				Callsign:       ac.Callsign,
 			})
 
-			if err := comp.AcceptHandoff(ac, ctrl, s.State.Controllers,
-				s.SimTime); err != nil {
-				//s.lg.Errorf("AcceptHandoff: %v", err)
-			}
+			fmt.Printf("accept handoff event init. .%v. .%v. .%v.\n", trk.TrackOwner, ctrl.Callsign, ac.Callsign)
 
 			if !s.controllerIsSignedIn(ac.ControllingController) {
 				// Take immediate control on handoffs from virtual
