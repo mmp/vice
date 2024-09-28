@@ -1410,7 +1410,12 @@ func (s *Sim) updateState() {
 		if !ok {
 			continue
 		}
-		eram, stars, _ := s.State.ERAMComputers.FacilityComputers(ho.ReceivingController)
+		receivingFac, ok := s.State.FacilityFromController(ho.ReceivingController)
+		if !ok {
+			s.lg.Errorf("no facility for %s", ho.ReceivingController)
+			continue
+		}
+		eram, stars, _ := s.State.ERAMComputers.FacilityComputers(receivingFac)
 		trk := eram.TrackInformation[ac.Callsign]
 		if trk == nil {
 			trk = stars.TrackInformation[ac.Callsign]
@@ -1421,11 +1426,10 @@ func (s *Sim) updateState() {
 		}
 
 		if trk.HandoffController != "" &&
-			!s.controllerIsSignedIn(ac.HandoffTrackController) {
+			!s.controllerIsSignedIn(trk.HandoffController) {
 
 			if stars != nil { // STARS Acceptance
 				trk := stars.TrackInformation[ac.Callsign]
-
 				ctrl := s.State.Controllers[trk.HandoffController]
 				stars.AcceptHandoff(ac, ctrl, s.State.Controllers, s.SimTime)
 			} else { // ERAM Acceptance
@@ -1461,16 +1465,6 @@ func (s *Sim) updateState() {
 			s.lg.Info("automatic handoff accept", slog.String("callsign", ac.Callsign),
 				slog.String("from", ac.TrackingController),
 				slog.String("to", ac.HandoffTrackController))
-
-			receivingSTARS := s.State.STARSComputer(ho.ReceivingController)
-
-			if err := receivingSTARS.AutomatedAcceptHandoff(ac, ac.HandoffTrackController,
-				receivingSTARS, s.State.Controllers, s.SimTime); err != nil {
-				//s.lg.Errorf("AutomatedAcceptHandoff: %v", err)
-			}
-
-			ac.TrackingController = ac.HandoffTrackController
-			ac.HandoffTrackController = ""
 		}
 		delete(s.Handoffs, callsign)
 	}
