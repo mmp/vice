@@ -2122,6 +2122,9 @@ func parseRAText(f []string, closedShape bool, expectPosition bool) (parsed pars
 				return ErrSTARSCommandFormat
 			}
 		}
+		if getColor {
+			return ErrSTARSCommandFormat
+		}
 		return nil
 	}
 
