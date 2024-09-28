@@ -380,6 +380,20 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			ctx.ControlClient.State.ERAMComputers.DumpMap()
 			status.clear = true
 			return
+		case "??": 
+			comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+
+			for sq, trackInfo := range comp.TrackInformation {
+				fmt.Printf("\tIdentifier: %s, TrackInfo:\n", sq)
+				fmt.Printf("\t\tIdentifier: %+v\n", trackInfo.Identifier)
+				fmt.Printf("\t\tOwner: %s\n", trackInfo.TrackOwner)
+				fmt.Printf("\t\tHandoffController: %s\n", trackInfo.HandoffController)
+				if trackInfo.FlightPlan != nil {
+					fmt.Printf("\t\tFlightPlan: %+v\n\n", *trackInfo.FlightPlan)
+				} else {
+					fmt.Printf("\t\tFlightPlan: nil\n\n")
+				}
+			}
 
 		case "CR":
 			if sp.capture.enabled && (sp.capture.specifyingRegion || sp.capture.haveRegion) {
