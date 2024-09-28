@@ -604,7 +604,6 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawRangeRings(ctx, transforms, cb)
 
 	sp.drawVideoMaps(ctx, transforms, cb)
-	sp.drawRestrictionAreas(ctx, transforms, cb)
 
 	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont[ps.CharSize.Tools],
 		ps.Brightness.Lists.ScaleRGB(STARSListColor), cb)
@@ -613,6 +612,8 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawSelectedRoute(ctx, transforms, cb)
 
 	sp.drawCompass(ctx, scopeExtent, transforms, cb)
+
+	sp.drawRestrictionAreas(ctx, transforms, cb)
 
 	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
 	// Sort the aircraft so that they are always drawn in the same order
