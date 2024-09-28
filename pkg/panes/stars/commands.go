@@ -1769,6 +1769,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					// Another vertex location
 					ra.Vertices[0] = append(ra.Vertices[0], p)
 					sp.previewAreaInput = ""
+					if ctx.Mouse != nil {
+						sp.wipRestrictionAreaMousePos = ctx.Mouse.Pos
+						sp.wipRestrictionAreaMouseMoved = false
+					}
 				} else {
 					status.err = ErrSTARSCommandFormat
 				}
@@ -1807,14 +1811,14 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					status.err = ErrSTARSIllegalGeoLoc
 				} else {
 					// Mostly done but need to allow the text position to be specified.
-					sp.wipRestrictionArea = &sim.RestrictionArea{
+					sp.setWIPRestrictionArea(ctx, &sim.RestrictionArea{
 						Text:         parsed.text,
 						CircleCenter: pos,
 						CircleRadius: rad,
 						BlinkingText: parsed.blink,
 						Shaded:       parsed.shaded,
 						Color:        parsed.color,
-					}
+					})
 					sp.previewAreaInput = ""
 				}
 				return
@@ -1824,10 +1828,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				if p, ok := sp.parseRALocation(ctx, cmd[1:]); !ok {
 					status.err = ErrSTARSIllegalGeoLoc
 				} else {
-					sp.wipRestrictionArea = &sim.RestrictionArea{
+					sp.setWIPRestrictionArea(ctx, &sim.RestrictionArea{
 						Closed:   cmd[0] == 'P',
 						Vertices: [][]math.Point2LL{{p}},
-					}
+					})
 					sp.previewAreaInput = ""
 				}
 				return
@@ -1944,6 +1948,16 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 	status.err = ErrSTARSCommandFormat
 	return
+}
+
+func (sp *STARSPane) setWIPRestrictionArea(ctx *panes.Context, ra *sim.RestrictionArea) {
+	sp.wipRestrictionArea = ra
+	if ctx.Mouse != nil {
+		sp.wipRestrictionAreaMousePos = ctx.Mouse.Pos
+	} else {
+		sp.wipRestrictionAreaMousePos = [2]float32{-1, -1}
+	}
+	sp.wipRestrictionAreaMouseMoved = false
 }
 
 func tryConsumeInt(cmd string) (string, int, bool) {
@@ -3339,16 +3353,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					}
 				} else {
 					ra.Vertices[0] = append(ra.Vertices[0], p)
+					sp.wipRestrictionAreaMousePos = mousePosition
+					sp.wipRestrictionAreaMouseMoved = false
 				}
 				return
 			}
 		} else if cmd == "A" || cmd == "P" {
 			// Start a polygon
 			p := transforms.LatLongFromWindowP(mousePosition)
-			sp.wipRestrictionArea = &sim.RestrictionArea{
+			sp.setWIPRestrictionArea(ctx, &sim.RestrictionArea{
 				Closed:   cmd[0] == 'P',
 				Vertices: [][]math.Point2LL{{p}},
-			}
+			})
 			sp.previewAreaInput = ""
 			return
 		} else if len(cmd) > 2 && cmd[0] == 'C' {
@@ -3364,14 +3380,14 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				status.err = ErrSTARSCommandFormat
 			} else {
 				// Still need the text position, one way or another.
-				sp.wipRestrictionArea = &sim.RestrictionArea{
+				sp.setWIPRestrictionArea(ctx, &sim.RestrictionArea{
 					Text:         parsed.text,
 					CircleRadius: rad,
 					CircleCenter: transforms.LatLongFromWindowP(mousePosition),
 					BlinkingText: parsed.blink,
 					Shaded:       parsed.shaded,
 					Color:        parsed.color,
-				}
+				})
 				sp.previewAreaInput = ""
 			}
 			return
