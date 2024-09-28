@@ -2320,6 +2320,11 @@ func (sp *STARSPane) setScratchpad(ctx *panes.Context, callsign string, contents
 }
 
 func (sp *STARSPane) setTemporaryAltitude(ctx *panes.Context, callsign string, alt int) {
+	comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+	trk := comp.TrackInformation[callsign]
+	if trk.TrackOwner == ctx.ControlClient.Callsign {
+		trk.TempAltitude = alt
+	}
 	ctx.ControlClient.SetTemporaryAltitude(callsign, alt, nil,
 		func(err error) { sp.displayError(err, ctx) })
 }

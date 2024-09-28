@@ -2940,7 +2940,9 @@ func (s *Sim) SetTemporaryAltitude(token, callsign string, altitude int) error {
 
 	return s.dispatchTrackingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			ac.TempAltitude = altitude
+			comp := s.State.STARSComputer(ctrl.Facility)
+			trk := comp.TrackInformation[ac.Callsign]
+			trk.TempAltitude = altitude
 			return nil
 		})
 }
