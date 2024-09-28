@@ -259,6 +259,22 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		return callsign
 	}
 
+	if sp.commandMode == CommandModeNone && len(cmd) > 1 && cmd[0] == ';' {
+		// Aircraft control command
+		if callsign, cmds, ok := strings.Cut(cmd[1:], " "); ok {
+			if ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign); ac != nil {
+				sp.runAircraftCommands(ctx, ac, cmds)
+				status.clear = true
+			} else {
+				status.err = ErrSTARSIllegalACID
+			}
+			return
+		} else {
+			status.err = ErrSTARSCommandFormat
+			return
+		}
+	}
+
 	ps := sp.currentPrefs()
 	switch sp.commandMode {
 	case CommandModeNone:
@@ -1679,7 +1695,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					}
 				}
 				status.clear = true
-			} else if cmd == "T" || cmd == "T "+STARSTriangleCharacter {
+			} else if cmd == "T" || cmd == "T"+STARSTriangleCharacter || cmd == "T "+STARSTriangleCharacter {
 				// 6-49: hide/show restriction area text
 				ra := getRestrictionAreaByIndex(ctx, n)
 				if ra == nil {
@@ -1689,7 +1705,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 				ps.RestrictionAreaSettings[n].HideText = !ps.RestrictionAreaSettings[n].HideText
 				ps.RestrictionAreaSettings[n].ForceBlinkingText = false
-				if cmd == "T "+STARSTriangleCharacter {
+				if strings.HasSuffix(cmd, STARSTriangleCharacter) {
 					if !ps.RestrictionAreaSettings[n].HideText {
 						ps.RestrictionAreaSettings[n].ForceBlinkingText = true
 					} else {
@@ -1775,6 +1791,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					// Another vertex location
 					ra.Vertices[0] = append(ra.Vertices[0], p)
 					sp.previewAreaInput = ""
+					if ctx.Mouse != nil {
+						sp.wipRestrictionAreaMousePos = ctx.Mouse.Pos
+						sp.wipRestrictionAreaMouseMoved = false
+					}
 				} else {
 					status.err = ErrSTARSCommandFormat
 				}
@@ -1813,14 +1833,14 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					status.err = ErrSTARSIllegalGeoLoc
 				} else {
 					// Mostly done but need to allow the text position to be specified.
-					sp.wipRestrictionArea = &sim.RestrictionArea{
+					sp.setWIPRestrictionArea(ctx, &sim.RestrictionArea{
 						Text:         parsed.text,
 						CircleCenter: pos,
 						CircleRadius: rad,
 						BlinkingText: parsed.blink,
 						Shaded:       parsed.shaded,
 						Color:        parsed.color,
-					}
+					})
 					sp.previewAreaInput = ""
 				}
 				return
@@ -1830,10 +1850,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				if p, ok := sp.parseRALocation(ctx, cmd[1:]); !ok {
 					status.err = ErrSTARSIllegalGeoLoc
 				} else {
-					sp.wipRestrictionArea = &sim.RestrictionArea{
+					sp.setWIPRestrictionArea(ctx, &sim.RestrictionArea{
 						Closed:   cmd[0] == 'P',
 						Vertices: [][]math.Point2LL{{p}},
-					}
+					})
 					sp.previewAreaInput = ""
 				}
 				return
@@ -1950,6 +1970,31 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 	status.err = ErrSTARSCommandFormat
 	return
+}
+
+func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, ac *av.Aircraft, cmds string) {
+	ctx.ControlClient.RunAircraftCommands(ac.Callsign, cmds, sp.Aircraft[ac.Callsign].NextController,
+		func(errStr string, remaining string) {
+			if errStr != "" {
+				sp.previewAreaInput = ";" + remaining
+				if err := sim.TryDecodeErrorString(errStr); err != nil {
+					err = GetSTARSError(err, ctx.Lg)
+					sp.displayError(err, ctx)
+				} else {
+					sp.displayError(ErrSTARSCommandFormat, ctx)
+				}
+			}
+		})
+}
+
+func (sp *STARSPane) setWIPRestrictionArea(ctx *panes.Context, ra *sim.RestrictionArea) {
+	sp.wipRestrictionArea = ra
+	if ctx.Mouse != nil {
+		sp.wipRestrictionAreaMousePos = ctx.Mouse.Pos
+	} else {
+		sp.wipRestrictionAreaMousePos = [2]float32{-1, -1}
+	}
+	sp.wipRestrictionAreaMouseMoved = false
 }
 
 func tryConsumeInt(cmd string) (string, int, bool) {
@@ -2128,6 +2173,9 @@ func parseRAText(f []string, closedShape bool, expectPosition bool) (parsed pars
 				return ErrSTARSCommandFormat
 			}
 		}
+		if getColor {
+			return ErrSTARSCommandFormat
+		}
 		return nil
 	}
 
@@ -2135,6 +2183,13 @@ func parseRAText(f []string, closedShape bool, expectPosition bool) (parsed pars
 	if len(f) == 0 {
 		return parsed, ErrSTARSCommandFormat
 	}
+
+	// It's illegal to give the additional options as the text for the
+	// first line so return an error if it parses cleanly.
+	if doTriPlus(f[0]) == nil {
+		return parsed, ErrSTARSCommandFormat
+	}
+
 	parsed.text[0] = tidyRAText(f[0])
 	f = f[1:]
 
@@ -2503,6 +2558,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 	}
 
 	if ac != nil {
+		if sp.commandMode == CommandModeNone && len(cmd) > 0 && cmd[0] == ';' {
+			sp.runAircraftCommands(ctx, ac, cmd[1:])
+			status.clear = true
+			return
+		}
+
 		state := sp.Aircraft[ac.Callsign]
 		trk := sp.getTrack(ctx, ac)
 
@@ -3356,16 +3417,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					}
 				} else {
 					ra.Vertices[0] = append(ra.Vertices[0], p)
+					sp.wipRestrictionAreaMousePos = mousePosition
+					sp.wipRestrictionAreaMouseMoved = false
 				}
 				return
 			}
 		} else if cmd == "A" || cmd == "P" {
 			// Start a polygon
 			p := transforms.LatLongFromWindowP(mousePosition)
-			sp.wipRestrictionArea = &sim.RestrictionArea{
+			sp.setWIPRestrictionArea(ctx, &sim.RestrictionArea{
 				Closed:   cmd[0] == 'P',
 				Vertices: [][]math.Point2LL{{p}},
-			}
+			})
 			sp.previewAreaInput = ""
 			return
 		} else if len(cmd) > 2 && cmd[0] == 'C' {
@@ -3381,14 +3444,14 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				status.err = ErrSTARSCommandFormat
 			} else {
 				// Still need the text position, one way or another.
-				sp.wipRestrictionArea = &sim.RestrictionArea{
+				sp.setWIPRestrictionArea(ctx, &sim.RestrictionArea{
 					Text:         parsed.text,
 					CircleRadius: rad,
 					CircleCenter: transforms.LatLongFromWindowP(mousePosition),
 					BlinkingText: parsed.blink,
 					Shaded:       parsed.shaded,
 					Color:        parsed.color,
-				}
+				})
 				sp.previewAreaInput = ""
 			}
 			return

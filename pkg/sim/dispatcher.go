@@ -363,14 +363,8 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	for i, command := range commands {
 		rewriteError := func(err error) {
 			result.RemainingInput = strings.Join(commands[i:], " ")
-
-			switch err {
-			case nil:
-				//
-			case av.ErrOtherControllerHasTrack:
-				result.ErrorMessage = "Another controller is controlling this aircraft"
-			default:
-				result.ErrorMessage = "Invalid or unknown command"
+			if err != nil {
+				result.ErrorMessage = err.Error()
 			}
 		}
 

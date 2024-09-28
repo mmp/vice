@@ -1235,6 +1235,10 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		if !ra.Closed && len(ra.Vertices) == 0 || len(ra.Vertices[0]) < 2 {
 			e.ErrorString("At least 2 \"vertices\" must be given for an open restriction area.")
 		}
+		if ra.Color < 0 || ra.Color > 8 {
+			// (We allow 0 for unset and treat it as 1 when we draw.)
+			e.ErrorString("\"color\" must be between 1 and 8 (inclusive).")
+		}
 
 		if len(ra.VerticesUser) > 0 {
 			// Polygons

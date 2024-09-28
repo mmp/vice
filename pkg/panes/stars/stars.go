@@ -191,7 +191,9 @@ type STARSPane struct {
 	}
 
 	// An in-progress restriction area.
-	wipRestrictionArea *sim.RestrictionArea
+	wipRestrictionArea           *sim.RestrictionArea
+	wipRestrictionAreaMousePos   [2]float32 // last click position while defining it
+	wipRestrictionAreaMouseMoved bool       // has moved since last click
 
 	// We won't waste the space to serialize these but reconstruct them on load.
 	significantPoints map[string]sim.SignificantPoint
@@ -604,7 +606,6 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawRangeRings(ctx, transforms, cb)
 
 	sp.drawVideoMaps(ctx, transforms, cb)
-	sp.drawRestrictionAreas(ctx, transforms, cb)
 
 	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont[ps.CharSize.Tools],
 		ps.Brightness.Lists.ScaleRGB(STARSListColor), cb)
@@ -613,6 +614,8 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawSelectedRoute(ctx, transforms, cb)
 
 	sp.drawCompass(ctx, scopeExtent, transforms, cb)
+
+	sp.drawRestrictionAreas(ctx, transforms, cb)
 
 	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
 	// Sort the aircraft so that they are always drawn in the same order
@@ -818,9 +821,14 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms Scope
 			ld.AddLine(verts[i], verts[i+1])
 		}
 
-		if ctx.Mouse != nil && sp.previewAreaInput == "" {
-			pm := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
-			ld.AddLine(verts[len(verts)-1], pm)
+		if ctx.Mouse != nil {
+			sp.wipRestrictionAreaMouseMoved = sp.wipRestrictionAreaMouseMoved ||
+				(ctx.Mouse.Pos != sp.wipRestrictionAreaMousePos)
+			// Only draw the line to the mouse cursor if it has moved since we started entering
+			if sp.wipRestrictionAreaMouseMoved && sp.previewAreaInput == "" {
+				pm := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
+				ld.AddLine(verts[len(verts)-1], pm)
+			}
 		}
 	}
 

@@ -97,3 +97,10 @@ func TryDecodeError(e error) error {
 	}
 	return e
 }
+
+func TryDecodeErrorString(s string) error {
+	if err, ok := errorStringToError[s]; ok {
+		return err
+	}
+	return nil
+}

@@ -446,8 +446,19 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 
 	if wm.focus.Current() == nil || !wmPaneIsPresent(wm.focus.Current(), root) {
 		kp := getKeyboardPanes()
-		focus := kp[0]
-		wm.focus = WMKeyboardFocus{initial: focus, current: focus}
+		// We want to give it to the STARSPane but have to indirect that by
+		// trying not to give it to the messages pane, since we don't have
+		// visibility into STARSPane here.
+		for _, p := range kp {
+			if _, ok := p.(*MessagesPane); !ok {
+				wm.focus = WMKeyboardFocus{initial: p, current: p}
+				break
+			}
+		}
+		if wm.focus.Current() == nil {
+			focus := kp[0]
+			wm.focus = WMKeyboardFocus{initial: focus, current: focus}
+		}
 	}
 
 	// Useful values related to the display size.
