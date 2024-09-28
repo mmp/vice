@@ -7740,6 +7740,10 @@
     "range": 60,
     "beacon_bank": 6,
     "keep_ldb": true,
+    "scratchpad1": {
+      "display_exit_fix": true
+    },
+
     "coordination_fixes": {
       "FLOSI": [
         {

@@ -549,7 +549,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			}
 			if arrivalAirport != "" {
 				sp1 = arrivalAirport
-			} else if adapt.Scratchpad1.DisplayExitFix {
+			} 
+			
+			if adapt.Scratchpad1.DisplayExitFix {
 				sp1 = shortExit()
 			} else if adapt.Scratchpad1.DisplayExitFix1 {
 				sp1 = abbrevExit()
@@ -562,6 +564,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 					sp1 = falt() + ex
 				}
 			}
+			fmt.Println(ac.Callsign, sp1)
 		}
 	}
 
