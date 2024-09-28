@@ -2132,6 +2132,13 @@ func parseRAText(f []string, closedShape bool, expectPosition bool) (parsed pars
 	if len(f) == 0 {
 		return parsed, ErrSTARSCommandFormat
 	}
+
+	// It's illegal to give the additional options as the text for the
+	// first line so return an error if it parses cleanly.
+	if doTriPlus(f[0]) == nil {
+		return parsed, ErrSTARSCommandFormat
+	}
+
 	parsed.text[0] = tidyRAText(f[0])
 	f = f[1:]
 
