@@ -247,12 +247,12 @@ func (c *ControlClient) HandoffTrack(callsign string, controller string, success
 }
 
 func (c *ControlClient) AcceptHandoff(callsign string, success func(any), err func(error)) {
-	if ac := c.State.Aircraft[callsign]; ac != nil && ac.HandoffTrackController == c.State.Callsign {
-		ac.HandoffTrackController = ""
-		ac.TrackingController = c.State.Callsign
-		ac.ControllingController = c.State.Callsign
+	comp := c.STARSComputer(c.Callsign)
+	if trk := comp.TrackInformation[callsign]; trk != nil && trk.HandoffController == c.Callsign {
+		trk.HandoffController = ""
+		trk.TrackOwner = c.Callsign
 	}
-
+	
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.AcceptHandoff(callsign),
