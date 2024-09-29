@@ -168,24 +168,26 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, tracon string, sim
 
 		if _, ok := av.DB.ARTCCs[adaptFix.ToFacility]; !ok {
 			copy := *fp
-			idx := strings.Index(fp.Route, adaptFix.Name)
-			if idx + len(adaptFix.Name) + 1 > len(fp.Route) { // Last fix in the route
-				return nil 
-			}
+			
 			// Convert the route to waypoints.
-			copy.Route = strings.TrimPrefix(copy.Route, "./ ")
+			copy.Route = strings.TrimPrefix(copy.Route, "/. ")
 			rte, err := av.ParseWaypoints(copy.Route)
 			if err != nil {
 				fmt.Printf("Error parsing route %v. Err: %v\n", fp.Route, err)
 				return nil
 			}
 			slicedRoute := rte.RouteString()
+			idx := strings.Index(slicedRoute, adaptFix.Name)
+			if idx + len(adaptFix.Name) + 1 > len(fp.Route) { // Last fix in the route
+				return nil 
+			}
 			slicedRoute = slicedRoute[idx + len(adaptFix.Name) + 1:]
+			slicedRoute = strings.TrimSpace(slicedRoute)
 
 			copy.Route = slicedRoute
 			fix := comp.FixForRouteAndAltitude(copy.Route, copy.Altitude)
 			if fix == nil {
-				fmt.Printf("No fix found for route %v, altitude %v\n", copy.Route, copy.Altitude)
+				fmt.Printf("No fix found for route %v, altitude %v. Origional fix: %v.\n", copy.Route, copy.Altitude, adaptFix.Name)
 				return nil
 			}
 			fp.CoordinationFix = fix.Name
