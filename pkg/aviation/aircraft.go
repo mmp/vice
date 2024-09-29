@@ -190,6 +190,7 @@ func (ac *Aircraft) Update(wind WindModel, simlg *log.Logger) *Waypoint {
 
 func (ac *Aircraft) GoAround() []RadioTransmission {
 	resp := ac.Nav.GoAround()
+	ac.GotContactTower = false
 	return []RadioTransmission{RadioTransmission{
 		Controller: ac.ControllingController,
 		Message:    resp.Message,
