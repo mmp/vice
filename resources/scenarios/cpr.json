@@ -278,24 +278,28 @@
     "control_positions": {
         "CPR_APP": {
             "frequency": 120650,
-            "full_name": "Capser approach",
+            "full_name": "Casper Approach",
             "scope_char": "A",
+            "facility": "CPR",
             "sector_id": "1A"
         },
         "CPR_TWR": {
             "frequency": 118300,
-            "full_name": "Casper tower",
+            "full_name": "Casper Tower",
             "scope_char": "1",
+            "facility": "CPR",
             "sector_id": "1T"
         },
         "DEN_17_CTR": {
             "frequency": 127650,
-            "full_name": "Denver center",
+            "full_name": "Denver Center",
+            "facility": "ZDV",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
             "sector_id": "D17"
         }
+
     },
     "default_scenario": "Land West",
     "fixes": {
