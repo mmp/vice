@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"io"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -93,13 +93,13 @@ func configFilePath(lg *log.Logger) string {
 		dir = "."
 	}
 
-	dir = path.Join(dir, "Vice")
+	dir = filepath.Join(dir, "Vice")
 	err = os.MkdirAll(dir, 0o700)
 	if err != nil {
 		lg.Errorf("%s: unable to make directory for config file: %v", dir, err)
 	}
 
-	return path.Join(dir, "config.json")
+	return filepath.Join(dir, "config.json")
 }
 
 func (gc *Config) Encode(w io.Writer) error {

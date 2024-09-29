@@ -689,16 +689,23 @@ func (nav *Nav) updateAltitude(lg *log.Logger, deltaKts float32, slowingTo250 bo
 		}
 
 		if nav.FlightState.Altitude >= 10000 && next < 10000 {
+			// Descending through 10,000'
+			if nav.Speed.Assigned != nil && *nav.Speed.Assigned > 250 {
+				// Cancel any speed assignments >250kts when we are ready
+				// to descend below 10,000'
+				nav.Speed.Assigned = nil
+				next = 10000
+			}
+			if nav.Speed.Restriction != nil && *nav.Speed.Restriction > 250 {
+				// clear any speed restrictions >250kts we are carrying
+				// from a previous waypoint.
+				nav.Speed.Restriction = nil
+				next = 10000
+			}
+
 			if slowingTo250 {
 				// Keep it at 10k until we're done slowing
 				next = 10000
-			} else {
-				// passed through 10k
-				if nav.Speed.Restriction != nil && *nav.Speed.Restriction > 250 {
-					// clear any speed restrictions >250kts we are carrying
-					// from a previous waypoint.
-					nav.Speed.Restriction = nil
-				}
 			}
 		}
 
@@ -1457,7 +1464,7 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 	maxAccel := nav.Perf.Rate.Accelerate * 30 // per minute
 	cruiseIAS := TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
 
-	if nav.FlightState.Altitude < 10000 {
+	if nav.FlightState.Altitude <= 10000 {
 		// 250kts under 10k.  We can assume a high acceleration rate for
 		// departures when this kicks in at 1500' AGL given that VNav will
 		// slow the rate of climb at that point until we reach the target

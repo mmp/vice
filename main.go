@@ -41,6 +41,7 @@ var (
 	cpuprofile        = flag.String("cpuprofile", "", "write CPU profile to file")
 	memprofile        = flag.String("memprofile", "", "write memory profile to this file")
 	logLevel          = flag.String("loglevel", "info", "logging level: debug, info, warn, error")
+	logDir            = flag.String("logdir", "", "log file directory")
 	lintScenarios     = flag.Bool("lint", false, "check the validity of the built-in scenarios")
 	server            = flag.Bool("runserver", false, "run vice scenario server")
 	serverPort        = flag.Int("port", sim.ViceServerPort, "port to listen on when running server")
@@ -75,7 +76,7 @@ func main() {
 	}
 
 	// Initialize the logging system first and foremost.
-	lg := log.New(*server, *logLevel)
+	lg := log.New(*server, *logLevel, *logDir)
 
 	profiler, err := util.CreateProfiler(*cpuprofile, *memprofile)
 	if err != nil {

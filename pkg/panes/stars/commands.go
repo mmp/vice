@@ -45,6 +45,7 @@ const (
 	CommandModePref
 	CommandModeReleaseDeparture
 	CommandModeRestrictionArea
+	CommandModeTargetGen
 )
 
 type CommandStatus struct {
@@ -61,6 +62,10 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 	input := strings.ToUpper(ctx.Keyboard.Input)
 	if sp.commandMode == CommandModeMultiFunc && sp.multiFuncPrefix == "" && len(input) > 0 {
 		sp.multiFuncPrefix = string(input[0])
+		input = input[1:]
+	}
+	if sp.commandMode == CommandModeNone && len(input) > 0 && input[0] == ';' { // [TGT GEN]
+		sp.commandMode = CommandModeTargetGen
 		input = input[1:]
 	}
 	sp.previewAreaInput += strings.Replace(input, "`", STARSTriangleCharacter, -1)
@@ -257,22 +262,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			return ac.Callsign
 		}
 		return callsign
-	}
-
-	if sp.commandMode == CommandModeNone && len(cmd) > 1 && cmd[0] == ';' {
-		// Aircraft control command
-		if callsign, cmds, ok := strings.Cut(cmd[1:], " "); ok {
-			if ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign); ac != nil {
-				sp.runAircraftCommands(ctx, ac, cmds)
-				status.clear = true
-			} else {
-				status.err = ErrSTARSIllegalACID
-			}
-			return
-		} else {
-			status.err = ErrSTARSCommandFormat
-			return
-		}
 	}
 
 	ps := sp.currentPrefs()
@@ -1996,6 +1985,22 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			}
 			return
 		}
+
+	case CommandModeTargetGen:
+		// Aircraft control command
+		if callsign, cmds, ok := strings.Cut(cmd, " "); ok {
+			if ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign); ac != nil {
+				sp.runAircraftCommands(ctx, ac, cmds)
+				status.clear = true
+			} else {
+				status.err = ErrSTARSIllegalACID
+			}
+			return
+		} else {
+			status.err = ErrSTARSCommandFormat
+			return
+		}
+
 	}
 
 	status.err = ErrSTARSCommandFormat
@@ -2598,12 +2603,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 	}
 
 	if ac != nil {
-		if sp.commandMode == CommandModeNone && len(cmd) > 0 && cmd[0] == ';' {
-			sp.runAircraftCommands(ctx, ac, cmd[1:])
-			status.clear = true
-			return
-		}
-
 		state := sp.Aircraft[ac.Callsign]
 		trk := sp.getTrack(ctx, ac)
 
@@ -3283,6 +3282,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				}
 			} else {
 				status.err = ErrSTARSCommandFormat
+				return
+			}
+
+		case CommandModeTargetGen:
+			if len(cmd) > 0 {
+				sp.runAircraftCommands(ctx, ac, cmd)
+				status.clear = true
 				return
 			}
 		}

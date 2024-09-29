@@ -1692,7 +1692,8 @@ func (s *Sim) updateState() {
 					ac.GoAroundDistance = nil // only go around once
 					assignedApproach := ac.Nav.Approach.Assigned
 					landingRunway := assignedApproach.Runway
-					rt := ac.GoAround()
+					// Update controller before calling GoAround so the
+					// transmission goes to the right controller.
 					if ac.FlightPlan == nil {
 						s.lg.Errorf("nil flight plan for %s", ac.Callsign)
 						continue
@@ -1703,12 +1704,14 @@ func (s *Sim) updateState() {
 					}
 					fmt.Println(ac.Callsign, "going around", depController)
 					ac.ControllingController = depController
+					rt := ac.GoAround()
 					PostRadioEvents(ac.Callsign, rt, s)
 					// TODO: control to departure controller instead of last approach controller
 
 					fac, ok := s.State.FacilityFromController(ac.ApproachController)
 					if !ok {
 						s.lg.Errorf("unable to get facility from controller %s", depController)
+						return 
 					}
 					_, stars, _ := s.State.ERAMComputers.FacilityComputers(fac)
 					trk := stars.TrackInformation[ac.Callsign]
