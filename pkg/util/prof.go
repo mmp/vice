@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"path"
+	"path/filepath"
 	"runtime/pprof"
 )
 
@@ -25,9 +25,9 @@ func CreateProfiler(cpu, mem string) (Profiler, error) {
 	// which in turn was causing profiling data to be written in an
 	// unexpected place...)
 	absPath := func(p string) string {
-		if p != "" && !path.IsAbs(p) {
+		if p != "" && !filepath.IsAbs(p) {
 			if cwd, err := os.Getwd(); err == nil {
-				return path.Join(cwd, p)
+				return filepath.Join(cwd, p)
 			}
 		}
 		return p

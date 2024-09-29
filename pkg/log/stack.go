@@ -5,7 +5,7 @@
 package log
 
 import (
-	"path"
+	"path/filepath"
 	"runtime"
 	"strings"
 )
@@ -29,7 +29,7 @@ func Callstack(fr []StackFrame) []StackFrame {
 	for i := 0; i < n; i++ {
 		frame, more := frames.Next()
 		fr[i] = StackFrame{
-			File:     path.Base(frame.File),
+			File:     filepath.Base(frame.File),
 			Line:     frame.Line,
 			Function: strings.TrimPrefix(frame.Function, "main."),
 		}

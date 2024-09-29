@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"path"
+	"path/filepath"
 	"runtime"
 	"runtime/debug"
 	"time"
@@ -33,21 +33,21 @@ func New(server bool, level string, dir string) *Logger {
 				fmt.Fprintf(os.Stderr, "Unable to find user config dir: %v", err)
 				dir = "."
 			}
-			dir = path.Join(dir, "Vice")
+			dir = filepath.Join(dir, "Vice")
 		}
 	}
 
 	var w *lumberjack.Logger
 	if server {
 		w = &lumberjack.Logger{
-			Filename: path.Join(dir, "slog"),
+			Filename: filepath.Join(dir, "slog"),
 			MaxSize:  64, // MB
 			MaxAge:   14,
 			Compress: true,
 		}
 	} else {
 		w = &lumberjack.Logger{
-			Filename:   path.Join(dir, "vice.slog"),
+			Filename:   filepath.Join(dir, "vice.slog"),
 			MaxSize:    32, // MB
 			MaxBackups: 1,
 		}
