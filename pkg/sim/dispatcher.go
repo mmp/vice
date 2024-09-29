@@ -251,6 +251,14 @@ func (sd *Dispatcher) ForceQL(ql *ForceQLArgs, _ *struct{}) error {
 	}
 }
 
+func (sd *Dispatcher) RequestFP(po *RequestFPArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.RequestFP(po.ControllerToken, po.Identifier, po.ReceivingFacility)
+	}
+}
+
 type GlobalMessageArgs struct {
 	ControllerToken string
 	FromController  string

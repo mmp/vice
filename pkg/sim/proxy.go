@@ -188,6 +188,20 @@ func (s *proxy) ForceQL(callsign, controller string) *rpc.Call {
 	}, nil, nil)
 }
 
+type RequestFPArgs struct {
+	ControllerToken   string
+	Identifier        string
+	ReceivingFacility string
+}
+
+func (s *proxy) RequestFP(identifier, receivingFacility string) *rpc.Call {
+	return s.Client.Go("Sim.RequestFP", &RequestFPArgs{
+		ControllerToken:   s.ControllerToken,
+		Identifier:        identifier,
+		ReceivingFacility: receivingFacility,
+	}, nil, nil)
+}
+
 func (s *proxy) RedirectHandoff(callsign, controller string) *rpc.Call {
 	return s.Client.Go("Sim.RedirectHandoff", &HandoffArgs{
 		ControllerToken: s.ControllerToken,

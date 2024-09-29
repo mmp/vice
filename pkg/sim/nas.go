@@ -262,16 +262,15 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 			}
 
 		case RequestFlightPlan:
-			facility := msg.SourceID[:3] // Facility asking for FP
+			facility := msg.RequestedFacility // Facility asking for FP
 			// Find the flight plan
-			plan, ok := comp.FlightPlans[msg.BCN]
-			if ok {
-				msg := FlightPlanDepartureMessage(*plan.FlightPlan, comp.Identifier, simTime)
-				comp.SendMessageToSTARSFacility(facility, msg)
+			err := comp.RequestFP(msg.Identifier, facility)
+			if err != nil {
+				comp.SendMessageToSTARSFacility(facility, FlightPlanMessage{
+					MessageType: Plan,
+					Error:       err,
+				})
 			}
-
-			// FIXME: why is this here?
-			comp.ReceivedMessages = (comp.ReceivedMessages)[1:]
 
 		case DepartureDM: // Stars ERAM coordination time tracking
 
@@ -394,6 +393,36 @@ func (comp *ERAMComputer) DropTrack(ac *av.Aircraft) error {
 	return nil
 }
 
+func (comp *ERAMComputer) RequestFP(identifier, receivingFaciility string) error {
+	if _, ok := comp.STARSComputers[receivingFaciility]; !ok {
+		return av.ErrNoSTARSFacility
+	}
+	if sq, err := av.ParseSquawk(identifier); err == nil {
+		if fp, ok := comp.FlightPlans[sq]; ok {
+			msg := fp.Message()
+			msg.SourceID = formatSourceID(comp.Identifier, time.Now())
+			msg.FacilityDestination = receivingFaciility
+			msg.MessageType = Plan
+			comp.SendMessageToSTARSFacility(receivingFaciility, msg)
+		} else {
+			return av.ErrNoFlightPlan
+		}
+	} else {
+		for _, plan := range comp.FlightPlans {
+			if plan.ECID == identifier {
+				msg := plan.Message()
+				msg.SourceID = formatSourceID(comp.Identifier, time.Now())
+				msg.FacilityDestination = receivingFaciility
+				msg.MessageType = Plan
+				comp.SendMessageToSTARSFacility(receivingFaciility, msg)
+			} else {
+				return av.ErrNoFlightPlan // Change this to the accurate error code. (and find out what it is)
+			}
+		}
+	}
+	return nil
+}
+
 func (comp *ERAMComputer) CompletelyDeleteAircraft(ac *av.Aircraft) {
 	// Delete their code from the code bank
 
@@ -476,11 +505,15 @@ func (comp *STARSComputer) SendToOverlyingERAMFacility(msg FlightPlanMessage) {
 	*comp.ERAMInbox = append(*comp.ERAMInbox, msg)
 }
 
-func (comp *STARSComputer) RequestFlightPlan(bcn av.Squawk, simTime time.Time) {
+func (comp *STARSComputer) RequestFlightPlan(bcn av.Squawk, simTime time.Time, requestedFacility string) {
+	if requestedFacility == "" {
+		requestedFacility = comp.Identifier
+	}
 	message := FlightPlanMessage{
-		MessageType: RequestFlightPlan,
-		BCN:         bcn,
-		SourceID:    formatSourceID(comp.Identifier, simTime),
+		MessageType:       RequestFlightPlan,
+		BCN:               bcn,
+		SourceID:          formatSourceID(comp.Identifier, simTime),
+		RequestedFacility: requestedFacility,
 	}
 	comp.SendToOverlyingERAMFacility(message)
 }
@@ -818,7 +851,7 @@ func (comp *STARSComputer) Update(s *Sim) {
 // Sorting the STARS messages. This will store flight plans with FP
 // messages, change flight plans with AM messages, cancel flight plans with
 // CX messages, etc.
-func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
+func (comp *STARSComputer)  SortReceivedMessages(e *EventStream) {
 	for _, msg := range comp.ReceivedMessages {
 		switch msg.MessageType {
 		case Plan:
@@ -1036,6 +1069,9 @@ type FlightPlanMessage struct {
 	// that are inter-facility handoffs so that the ERAM computer knows where to send the message to.
 
 	TrackInformation // For track messages
+
+	RequestedFacility string // For RequestFacility messages that don't go to the same facility.
+	Error             error  // For error messages
 }
 
 type TrackInformation struct {

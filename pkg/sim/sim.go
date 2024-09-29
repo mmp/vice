@@ -1522,6 +1522,25 @@ func (s *Sim) updateState() {
 				continue
 			}
 
+			if controller := s.State.Controllers[ac.TrackingController]; controller != nil && !controller.ERAMFacility {
+				
+				if trk := s.State.STARSComputer(ac.TrackingController).TrackInformation[ac.Callsign]; trk == nil &&
+					InAcquisitionArea(ac) && !s.controllerIsSignedIn(ac.TrackingController) {
+					comp := s.State.STARSComputer(ac.TrackingController)
+					fp, err := comp.GetFlightPlan(ac.Squawk.String())
+					if err != nil {
+						// s.lg.Errorf("GetFlightPlan: %v", err)
+						continue
+					}
+					err = comp.InitiateTrack(ac.Callsign, ac.TrackingController, fp, true)
+					if err != nil {
+						continue
+					}
+					ac.ControllingController = ac.TrackingController
+					continue
+				} 
+			}
+
 			passedWaypoint := ac.Update(s.State, s.lg)
 			if passedWaypoint != nil {
 				if passedWaypoint.Handoff {
@@ -1537,7 +1556,10 @@ func (s *Sim) updateState() {
 					})
 					controller := s.State.Controllers[ac.TrackingController]
 					if controller == nil {
-						panic("nil controller for " + ac.TrackingController)
+						s.lg.Errorf("nil controller for " + ac.TrackingController)
+						s.AwaitingHandoffs[ac.Callsign] = Handoff{
+							ReceivingController: ctrl,
+						}
 					}
 
 					if !controller.ERAMFacility {
@@ -1565,7 +1587,7 @@ func (s *Sim) updateState() {
 							}
 
 							continue
-						}
+						} 
 					}
 
 					if controller == nil || octrl == nil {
@@ -2522,11 +2544,20 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 	return s.dispatchCommand(token, callsign,
 		func(c *av.Controller, ac *av.Aircraft) error {
 			// Make sure no one has the track already
-			comp := s.State.ERAMComputer(c.Callsign)
-			trk := comp.TrackInformation[ac.Callsign]
-			if trk != nil {
-				return av.ErrOtherControllerHasTrack
+			if c.ERAMFacility {
+				comp := s.State.ERAMComputer(c.Callsign)
+				trk := comp.TrackInformation[ac.Callsign]
+				if trk != nil {
+					return av.ErrOtherControllerHasTrack
+				}
+			} else {
+				comp := s.State.STARSComputer(c.Callsign)
+				trk := comp.TrackInformation[ac.Callsign]
+				if trk != nil {
+					return av.ErrOtherControllerHasTrack
+				}
 			}
+			
 			/*
 				if s.State.STARSComputer().TrackInformation[ac.Callsign] != nil {
 					return av.ErrOtherControllerHasTrack
@@ -2549,7 +2580,7 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 				}
 			} else { // ERAM track info wont get updated by a STARS handoff unless it's to that ERAM facility.
 				if err := s.State.STARSComputer(ctrl.Facility).InitiateTrack(callsign, ctrl.Callsign, fp, haveControl); err != nil {
-					// s.lg.Errorf("InitiateTrack: %v", err)
+					s.lg.Errorf("InitiateTrack: %v", err)
 				}
 			}
 
@@ -2573,10 +2604,11 @@ func (s *Sim) DropTrack(token, callsign string) error {
 
 			if err := s.State.STARSComputer(ctrl.Facility).DropTrack(ac); err != nil {
 				//s.lg.Errorf("STARS DropTrack: %v", err)
-			}
-			if err := s.State.ERAMComputer(ctrl.Callsign).DropTrack(ac); err != nil {
-				//s.lg.Errorf("ERAM DropTrack: %v", err)
-			}
+				if err := s.State.ERAMComputer(ctrl.Callsign).DropTrack(ac); err != nil {
+					//s.lg.Errorf("ERAM DropTrack: %v", err)
+				}
+			} 
+			
 
 			s.eventStream.Post(Event{
 				Type:           DroppedTrackEvent,
@@ -2888,6 +2920,12 @@ func (s *Sim) ForceQL(token, callsign, controller string) error {
 
 			return nil
 		})
+}
+
+func (s *Sim) RequestFP(token, identifier /*can be squawk or ECID*/, receivingFacility string) error {
+	ctrl := s.State.Controllers[s.controllers[token].Callsign]
+	eram, _, _ := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+	return eram.RequestFP(identifier, receivingFacility)
 }
 
 func (s *Sim) PointOut(token, callsign, controller string) error {

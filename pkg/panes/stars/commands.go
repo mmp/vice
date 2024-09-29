@@ -646,8 +646,33 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		}
 
 	case CommandModeVFRPlan:
-		// TODO
-		status.err = ErrSTARSCommandFormat
+		// Few options for this, one of which is to request a flight plan from an ARTCC
+		comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+		cmds := strings.Fields(cmd)
+		var receivingFacility string
+		switch len(cmds) {
+		case 0:
+			status.err = ErrSTARSCommandFormat
+			return
+		case 1:
+			receivingFacility = comp.Identifier
+		case 2 :
+			receivingFacility = cmds[1]
+		}
+			// Verify squawk code. ECID isn't implemented yet.
+			sq, err := av.ParseSquawk(cmds[0])
+			if err != nil {
+				status.err = ErrSTARSCommandFormat
+				return
+			}
+			if _, ok := comp.ContainedPlans[sq]; ok {
+				status.err = ErrSTARSDuplicateBeacon
+				return
+			}
+			sp.requestFP(ctx, sq.String(), receivingFacility)
+		
+
+		status.clear = true 
 		return
 
 	case CommandModeMultiFunc:
@@ -2418,6 +2443,7 @@ func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string, fp *sim.
 	if comp.TrackInformation[callsign] != nil {
 		// This is a track that is already being tracked
 		sp.previewAreaOutput = ErrSTARSIllegalTrack.Error()
+		fmt.Printf("%v: Track %s is already being tracked: %v\n", comp.Identifier, callsign, comp.TrackInformation[callsign])
 		return
 	}
 	comp.TrackInformation[callsign] = &sim.TrackInformation{
@@ -2433,7 +2459,9 @@ func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string, fp *sim.
 				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx, ac)
 			}
 		},
-		func(err error) { sp.displayError(err, ctx) })
+		func(err error) { sp.displayError(err, ctx)
+			fmt.Printf("%v: Error initiating track %s: %v\n", comp.Identifier, callsign, err)
+		})
 }
 
 func (sp *STARSPane) dropTrack(ctx *panes.Context, callsign string) {
@@ -2504,6 +2532,13 @@ func (sp *STARSPane) removeForceQL(ctx *panes.Context, callsign string) bool {
 		return true
 	}
 	return false
+}
+
+func (sp *STARSPane) requestFP(ctx *panes.Context, identifier, receivingFacility string) {
+	// comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+
+	ctx.ControlClient.RequestFP(identifier, receivingFacility, nil,
+		func(err error) { sp.displayError(err, ctx) })
 }
 
 func (sp *STARSPane) pointOut(ctx *panes.Context, callsign string, controller string) {
@@ -2989,6 +3024,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 		case CommandModeVFRPlan:
 			// TODO: implement
+
 			status.err = ErrSTARSCommandFormat
 			return
 

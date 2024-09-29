@@ -302,6 +302,16 @@ func (c *ControlClient) ForceQL(callsign, controller string, success func(any), 
 		})
 }
 
+func (c *ControlClient) RequestFP(identifier, receivingFacility string, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.RequestFP(identifier, receivingFacility),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (c *ControlClient) PointOut(callsign string, controller string, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{

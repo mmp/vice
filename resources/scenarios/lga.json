@@ -1423,7 +1423,8 @@
       "scope_char": "C",
       "sector_id": "B17",
       "facility_id": "B",
-      "eram_facility": true
+      "eram_facility": true,
+      "facility": "ZBW"
     },
     "DC_32_CTR": {
       "frequency": 133725,
@@ -1431,97 +1432,113 @@
       "scope_char": "C",
       "sector_id": "W32",
       "facility_id": "W",
-      "eram_facility": true
+      "eram_facility": true,
+      "facility": "ZDC"
     },
     "EWR_APP": {
       "frequency": 128550,
       "full_name": "New York approach",
       "scope_char": "P",
-      "sector_id": "4P"
+      "sector_id": "4P",
+      "facility": "N90"
     },
     "EWR_DEP": {
       "frequency": 119200,
       "full_name": "New York departure",
       "scope_char": "N",
-      "sector_id": "4N"
+      "sector_id": "4N",
+      "facility": "N90"
     },
     "FRG_TWR": {
       "frequency": 118800,
       "full_name": "Republic tower",
       "scope_char": "M",
-      "sector_id": "2M"
+      "sector_id": "2M",
+      "facility": "N90"
     },
     "HVN_TWR": {
       "frequency": 124800,
       "full_name": "New Haven tower",
       "scope_char": "T",
-      "sector_id": "3P"
+      "sector_id": "3P",
+      "facility": "N90"
     },
     "ISP_TWR": {
       "frequency": 119300,
       "full_name": "Long Island MacArthur tower",
       "scope_char": "T",
-      "sector_id": "3C"
+      "sector_id": "3C",
+      "facility": "N90"
     },
     "JFK_APP": {
       "frequency": 128125,
       "full_name": "New York approach",
       "scope_char": "G",
-      "sector_id": "2G"
+      "sector_id": "2G",
+      "facility": "N90"
     },
     "JFK_DEP": {
       "frequency": 135900,
       "full_name": "New York departure",
       "scope_char": "J",
-      "sector_id": "2J"
+      "sector_id": "2J",
+      "facility": "N90"
     },
     "JFK_TWR": {
       "frequency": 119100,
       "full_name": "Kennedy tower",
       "scope_char": "T",
-      "sector_id": "2W"
+      "sector_id": "2W",
+      "facility": "N90"
     },
     "LGA_APP": {
       "frequency": 120800,
       "full_name": "New York approach",
       "scope_char": "V",
-      "sector_id": "1V"
+      "sector_id": "1V",
+      "facility": "N90"
     },
     "LGA_V_APP": {
       "frequency": 120800,
       "full_name": "New York approach",
       "scope_char": "V",
-      "sector_id": "1V"
+      "sector_id": "1V",
+      "facility": "N90"
     },
     "LGA_D_APP": {
       "frequency": 127300,
       "full_name": "New York approach",
       "scope_char": "D",
-      "sector_id": "1D"
+      "sector_id": "1D",
+      "facility": "N90"
     },
     "LGA_F_APP": {
       "frequency": 127300,
       "full_name": "New York approach",
       "scope_char": "F",
-      "sector_id": "1F"
+      "sector_id": "1F",
+      "facility": "N90"
     },
     "LGA_DEP": {
       "frequency": 120400,
       "full_name": "New York departure",
       "scope_char": "L",
-      "sector_id": "1L"
+      "sector_id": "1L",
+      "facility": "N90"
     },
     "LGA_Y_DEP": {
       "frequency": 120550,
       "full_name": "New York departure",
       "scope_char": "Y",
-      "sector_id": "1Y"
+      "sector_id": "1Y",
+      "facility": "N90"
     },
     "LGA_TWR": {
       "frequency": 118700,
       "full_name": "LaGuardia tower",
       "scope_char": "T",
-      "sector_id": "1I"
+      "sector_id": "1I",
+      "facility": "N90"
     },
     "NY_B_CTR": {
       "frequency": 125325,
@@ -1529,7 +1546,8 @@
       "scope_char": "C",
       "sector_id": "C56",
       "facility_id": "C",
-      "eram_facility": true
+      "eram_facility": true,
+      "facility": "ZNY"
     },
     "NY_C_CTR": {
       "frequency": 132175,
@@ -1537,7 +1555,8 @@
       "scope_char": "C",
       "sector_id": "C34",
       "facility_id": "C",
-      "eram_facility": true
+      "eram_facility": true,
+      "facility": "ZNY"
     },
     "NY_F_CTR": {
       "frequency": 128300,
@@ -1545,31 +1564,36 @@
       "scope_char": "C",
       "sector_id": "C66",
       "facility_id": "C",
-      "eram_facility": true
+      "eram_facility": true,
+      "facility": "ZNY"
     },
     "NY_LE_APP": {
       "frequency": 126800,
       "full_name": "New York departure",
       "scope_char": "E",
-      "sector_id": "5E"
+      "sector_id": "5E",
+      "facility": "N90"
     },
     "NY_LS_APP": {
       "frequency": 124750,
       "full_name": "New York departure",
       "scope_char": "S",
-      "sector_id": "5S"
+      "sector_id": "5S",
+      "facility": "N90"
     },
     "NY_LN_APP": {
       "frequency": 118170,
       "full_name": "New York departure",
       "scope_char": "T",
-      "sector_id": "5T"
+      "sector_id": "5T",
+      "facility": "N90"
     },
     "NY_LW_APP": {
       "frequency": 120850,
       "full_name": "New York departure",
       "scope_char": "W",
-      "sector_id": "5W"
+      "sector_id": "5W",
+      "facility": "N90"
     }
   },
   "default_scenario": "KLGA Depart 13 Land 22",
