@@ -6121,14 +6121,16 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"coordination_lists"</td>
                 <td>Array of objects</td>
                 <td>Each entry specifies a coordination list used for releasing departures from one or more airports.
-                  The following properties must be specified for each one:
+                  The following properties should be specified for each one:
                   <br>
                   <ul>
                     <li>"name": a string giving the list name. This is shown at the top of the list when it is visible in the STARS window.</li>
                     <li>"id": a string giving the list's identifier. The id must be 1&ndash;3 alphanumeric characters and cannot be
                     the number "1", "2", or "3". It is used to identify the list when entering STARS commands.</li>
                     <li>"airports": an array of strings giving the airports managed by the list. Any airport with "hold_for_release"
-                    set to "true" must be in exactly one coordination list.</li>
+                    set to "true" must be in exactly one coordination
+                      list.</li>
+                    <li>"yellow_entries": (<i>Optional</i>) if true, entries in the list are drawn in yellow rather than green.
                   </ul>
                 </td>
               </tr>

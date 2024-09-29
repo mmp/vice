@@ -733,13 +733,9 @@ func (sp *STARSPane) drawSignOnList(ctx *panes.Context, pw [2]float32, style ren
 func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.Extent2D, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	font := sp.systemFont[ps.CharSize.Lists]
-	listStyle := renderer.TextStyle{
+	titleStyle := renderer.TextStyle{
 		Font:  font,
 		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
-	}
-	dimStyle := renderer.TextStyle{
-		Font:  font,
-		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor).Scale(0.5),
 	}
 
 	td := renderer.GetTextDrawBuilder()
@@ -752,6 +748,15 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 
 	fa := ctx.ControlClient.STARSFacilityAdaptation
 	for i, cl := range fa.CoordinationLists {
+		listStyle := renderer.TextStyle{
+			Font:  font,
+			Color: ps.Brightness.Lists.ScaleRGB(util.Select(cl.YellowEntries, renderer.RGB{1, 1, 0}, STARSListColor)),
+		}
+		dimStyle := renderer.TextStyle{
+			Font:  font,
+			Color: listStyle.Color.Scale(0.5),
+		}
+
 		// Auto-place the list if we haven't drawn it before
 		list := ps.CoordinationLists[cl.Id]
 		if list == nil {
@@ -786,9 +791,9 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 		blinkDim := halfSeconds&1 == 0
 
 		if list.AutoRelease {
-			pw = td.AddText(strings.ToUpper(cl.Name)+"    AUTO\n", pw, listStyle)
+			pw = td.AddText(strings.ToUpper(cl.Name)+"    AUTO\n", pw, titleStyle)
 		} else {
-			pw = td.AddText(strings.ToUpper(cl.Name)+"\n", pw, listStyle)
+			pw = td.AddText(strings.ToUpper(cl.Name)+"\n", pw, titleStyle)
 		}
 		if len(aircraft) > list.Lines {
 			pw = td.AddText(fmt.Sprintf("MORE: %d/%d\n", list.Lines, len(aircraft)), pw, listStyle)
