@@ -1690,37 +1690,22 @@ func (s *Sim) updateState() {
 				if d, err := ac.DistanceToEndOfApproach(); err == nil && d < *ac.GoAroundDistance {
 					s.lg.Info("randomly going around")
 					ac.GoAroundDistance = nil // only go around once
-					assignedApproach := ac.Nav.Approach.Assigned
-					landingRunway := assignedApproach.Runway
-					// Update controller before calling GoAround so the
-					// transmission goes to the right controller.
-					if ac.FlightPlan == nil {
-						s.lg.Errorf("nil flight plan for %s", ac.Callsign)
-						continue
-					}
-					depController, err := s.State.MultiControllers.GetDepartureController(ac.FlightPlan.ArrivalAirport, landingRunway, "")
-					if err != nil {
-						s.lg.Errorf("unable to get departure controller: %v", err)
-					}
+					
+					depController := s.State.DepartureController(ac, s.lg)
 					fmt.Println(ac.Callsign, "going around", depController)
 					ac.ControllingController = depController
 					rt := ac.GoAround()
 					PostRadioEvents(ac.Callsign, rt, s)
 					// TODO: control to departure controller instead of last approach controller
 
-					fac, ok := s.State.FacilityFromController(ac.ApproachController)
-					if !ok {
-						s.lg.Errorf("unable to get facility from controller %s", depController)
-						return 
-					}
-					_, stars, _ := s.State.ERAMComputers.FacilityComputers(fac)
+					stars := s.State.STARSComputer(ac.ApproachController)
 					trk := stars.TrackInformation[ac.Callsign]
 					// If it was handed off to tower, hand it back to us
 					if trk == nil {
 						s.lg.Errorf("no track information for %s. STARS: %v", ac.Callsign, stars.Identifier)
 						continue
 					}
-					if trk.TrackOwner == assignedApproach.TowerController {
+					if trk.TrackOwner != "" && trk.TrackOwner != ac.ApproachController {
 						trk.HandoffController = depController
 						if trk.HandoffController == "" { // We'll see how well the above code works.
 							trk.HandoffController = ac.ApproachController
