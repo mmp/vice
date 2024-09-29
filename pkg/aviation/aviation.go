@@ -906,10 +906,8 @@ func MakeVideoMapLibrary() *VideoMapLibrary {
 	}
 }
 
-// AddFile adds a video map to the library. referenced encodes which maps
-// in the file are actually used; the loading code uses this information to
-// skip the work of generating CommandBuffers for unused video maps.
-func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, referenced map[string]interface{}, e *util.ErrorLogger) {
+// AddFile adds a video map to the library.
+func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, e *util.ErrorLogger) {
 	// Load the manifest and do initial error checking
 	mf, _ := strings.CutSuffix(filename, ".zst")
 	mf, _ = strings.CutSuffix(mf, "-videomaps.gob")
@@ -930,24 +928,13 @@ func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, referenced
 	}
 	ml.manifests[filename] = manifest
 
-	for name := range referenced {
-		if name != "" {
-			if _, ok := manifest[name]; !ok {
-				e.Error(fmt.Errorf("%s: video map %q in \"stars_maps\" not found", filename, name))
-			}
-		}
-	}
-
 	// Make sure the file exists but don't load it until it's needed.
 	f, err := filesystem.Open(filename)
 	if err != nil {
 		e.Error(err)
 	} else {
 		f.Close()
-		ml.toLoad[filename] = videoMapToLoad{
-			referenced: util.DuplicateMap(referenced),
-			filesystem: filesystem,
-		}
+		ml.toLoad[filename] = videoMapToLoad{filesystem: filesystem}
 	}
 }
 
@@ -978,25 +965,23 @@ func (v videoMapToLoad) load(filename string, manifest map[string]interface{}) (
 	// *VideoMap.
 	starsMaps := make(map[string]*VideoMap)
 	for _, sm := range maps {
-		if _, ok := v.referenced[sm.Name]; ok || len(v.referenced) == 0 /* empty -> load all */ {
-			if _, ok := manifest[sm.Name]; !ok {
-				panic(fmt.Sprintf("%s: map %q not found in manifest file", filename, sm.Name))
-			}
-
-			ld := renderer.GetLinesDrawBuilder()
-			for _, lines := range sm.Lines {
-				// Slightly annoying: the line vertices are stored with
-				// Point2LLs but AddLineStrip() expects [2]float32s.
-				fl := util.MapSlice(lines, func(p math.Point2LL) [2]float32 { return p })
-				ld.AddLineStrip(fl)
-			}
-			ld.GenerateCommands(&sm.CommandBuffer)
-
-			// Clear out Lines so that the memory can be reclaimed since they
-			// aren't needed any more.
-			sm.Lines = nil
-			starsMaps[sm.Name] = &sm
+		if _, ok := manifest[sm.Name]; !ok {
+			panic(fmt.Sprintf("%s: map %q not found in manifest file", filename, sm.Name))
 		}
+
+		ld := renderer.GetLinesDrawBuilder()
+		for _, lines := range sm.Lines {
+			// Slightly annoying: the line vertices are stored with
+			// Point2LLs but AddLineStrip() expects [2]float32s.
+			fl := util.MapSlice(lines, func(p math.Point2LL) [2]float32 { return p })
+			ld.AddLineStrip(fl)
+		}
+		ld.GenerateCommands(&sm.CommandBuffer)
+
+		// Clear out Lines so that the memory can be reclaimed since they
+		// aren't needed any more.
+		sm.Lines = nil
+		starsMaps[sm.Name] = &sm
 	}
 
 	return starsMaps, nil
@@ -1058,7 +1043,7 @@ func (ml VideoMapLibrary) HaveMap(filename, mapname string) bool {
 
 func PrintVideoMaps(path string, e *util.ErrorLogger) {
 	lib := MakeVideoMapLibrary()
-	lib.AddFile(os.DirFS("."), path, make(map[string]interface{}), e)
+	lib.AddFile(os.DirFS("."), path, e)
 
 	var videoMaps []VideoMap
 	for _, name := range lib.AvailableMaps(path) {
