@@ -1497,8 +1497,10 @@ func (s *Sim) updateState() {
 				if d, err := ac.DistanceToEndOfApproach(); err == nil && d < *ac.GoAroundDistance {
 					s.lg.Info("randomly going around")
 					ac.GoAroundDistance = nil // only go around once
-					rt := ac.GoAround()
+					// Update controller before calling GoAround so the
+					// transmission goes to the right controller.
 					ac.ControllingController = s.State.DepartureController(ac, s.lg)
+					rt := ac.GoAround()
 					PostRadioEvents(ac.Callsign, rt, s)
 
 					// If it was handed off to tower, hand it back to us
