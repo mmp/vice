@@ -71,7 +71,6 @@ type AircraftState struct {
 	POFlashingEndTime time.Time
 	UNFlashingEndTime time.Time
 	IFFlashing        bool // Will continue to flash unless slewed or a successful handoff
-	NextController    string
 
 	// These are only set if a leader line direction was specified for this
 	// aircraft individually:
@@ -327,7 +326,6 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
-					state.NextController = event.ToController
 				}
 			}
 
@@ -440,11 +438,6 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 		if !ok {
 			ctx.Lg.Errorf("%s: not found in Aircraft?", callsign)
 			continue
-		}
-
-		// Reset the NextController after the frequency change has been made.
-		if ac.ControllingController != ctx.ControlClient.Callsign && state.NextController != "" {
-			state.NextController = ""
 		}
 
 		state.previousTrack = state.track

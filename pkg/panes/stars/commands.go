@@ -384,15 +384,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
 
 			for sq, trackInfo := range comp.TrackInformation {
-				fmt.Printf("\tIdentifier: %s, TrackInfo:\n", sq)
-				fmt.Printf("\t\tIdentifier: %+v\n", trackInfo.Identifier)
-				fmt.Printf("\t\tOwner: %s\n", trackInfo.TrackOwner)
-				fmt.Printf("\t\tHandoffController: %s\n", trackInfo.HandoffController)
-				if trackInfo.FlightPlan != nil {
-					fmt.Printf("\t\tFlightPlan: %+v\n\n", *trackInfo.FlightPlan)
-				} else {
-					fmt.Printf("\t\tFlightPlan: nil\n\n")
-				}
+				fmt.Print(trackInfo.String(sq))
 			}
 
 		case "CR":
@@ -1987,7 +1979,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 }
 
 func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, ac *av.Aircraft, cmds string) {
-	ctx.ControlClient.RunAircraftCommands(ac.Callsign, cmds, sp.Aircraft[ac.Callsign].NextController,
+	ctx.ControlClient.RunAircraftCommands(ac.Callsign, cmds,
 		func(errStr string, remaining string) {
 			if errStr != "" {
 				sp.previewAreaInput = ";" + remaining
@@ -2420,7 +2412,6 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *panes.Context, callsign string, di
 }
 
 func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string, fp *sim.STARSFlightPlan) {
-
 	comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
 	// Do the checking here as well as in pkg/sim/sim.go so that we can assure that the sim side sucseeds and the local calls can be made before.
 
@@ -2713,9 +2704,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			} else if cmd == "?" {
 				ctx.Lg.Info("print aircraft", slog.String("callsign", ac.Callsign),
 					slog.Any("aircraft", ac))
-				comp := ctx.ControlClient.ERAMComputer(ctx.ControlClient.Callsign)
-				fmt.Println(spew.Sdump(ac)+"\n"+comp.FlightPlans[ac.Squawk].CoordinationFix, ac.FlightPlan.ArrivalAirport)
-				// fmt.Println(spew.Sdump(ac), )
+				fmt.Println(spew.Sdump(ac))
 				status.clear = true
 				return
 			} else if cmd == "*F" {

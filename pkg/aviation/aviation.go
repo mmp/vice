@@ -1309,9 +1309,9 @@ func (p *SquawkCodePool) Unassign(code Squawk) error {
 			p.AssignedBits[idx] &^= (1 << bit) // Clear the bit
 			return nil
 		}
-		return fmt.Errorf("squawk code %d is not assigned", code)
+		return ErrSquawkCodeUnassigned
 	}
-	return fmt.Errorf("invalid squawk code %d", code)
+	return ErrInvalidSquawkCode
 }
 
 func (p *SquawkCodePool) Return(code Squawk) error {

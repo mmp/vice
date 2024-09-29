@@ -646,11 +646,11 @@ func (c *ControlClient) DeleteAllAircraft(onErr func(err error)) {
 		})
 }
 
-func (c *ControlClient) RunAircraftCommands(callsign string, cmds string, nextController string, handleResult func(message string, remainingInput string)) {
+func (c *ControlClient) RunAircraftCommands(callsign string, cmds string, handleResult func(message string, remainingInput string)) {
 	var result AircraftCommandsResult
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.RunAircraftCommands(callsign, cmds, nextController, &result),
+			Call:      c.proxy.RunAircraftCommands(callsign, cmds, &result),
 			IssueTime: time.Now(),
 			OnSuccess: func(any) {
 				handleResult(result.ErrorMessage, result.RemainingInput)

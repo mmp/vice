@@ -1434,7 +1434,7 @@ func (s *Sim) updateState() {
 				octrl = s.State.Controllers[trk.TrackOwner]
 				err := stars.AcceptHandoff(ac, ctrl, s.State.Controllers, s.SimTime)
 				if err != nil {
-					s.lg.Errorf("AutoAcceptHandoff: %v", err)
+					// s.lg.Errorf("AutoAcceptHandoff: %v", err)
 					s.AwaitingHandoffs[ac.Callsign] = Handoff{
 						ReceivingController: ctrl.Callsign,
 					}
@@ -1462,12 +1462,10 @@ func (s *Sim) updateState() {
 
 				if _, ok := eram.STARSComputers[receivingFacility]; ok {
 					eram.SendMessageToSTARSFacility(receivingFacility, msg)
-					fmt.Printf("%v: Forwarding accept msg of %v to %s (stars)\n", eram.Identifier, ac.Callsign, receivingFacility)
 				} else { // Forward to another ERAM facility
 					if _, ok := av.DB.ARTCCs[receivingFacility]; !ok {
 						receivingFacility = av.DB.TRACONs[receivingFacility].ARTCC
 					}
-					fmt.Printf("%v: Forwarding accept msg of %v to %s (eram) \n", eram.Identifier, ac.Callsign, receivingFacility)
 					eram.SendMessageToERAM(receivingFacility, msg)
 				}
 			}
@@ -1477,6 +1475,7 @@ func (s *Sim) updateState() {
 				ToController:   ctrl.Callsign,
 				Callsign:       ac.Callsign,
 			})
+			ac.NextControllers = append(ac.NextControllers, ctrl.Callsign)
 			s.lg.Info("automatic handoff accept", slog.String("callsign", ac.Callsign),
 				slog.String("from", octrl.Callsign),
 				slog.String("to", ctrl.Callsign))
@@ -1534,31 +1533,36 @@ func (s *Sim) updateState() {
 						ToController:   ctrl,
 					})
 					controller := s.State.Controllers[ac.TrackingController]
+					if controller == nil {
+						panic("nil controller for " + ac.TrackingController)
+					}
 
-					if trk := s.State.STARSComputer(ac.TrackingController).TrackInformation[ac.Callsign]; trk == nil &&
-						InAcquisitionArea(ac) && !s.controllerIsSignedIn(ac.TrackingController) {
-						comp := s.State.STARSComputer(ac.TrackingController)
-						fp, err := comp.GetFlightPlan(ac.Squawk.String())
-						if err != nil {
-							s.lg.Errorf("GetFlightPlan: %v", err)
-							continue
-						}
-						err = comp.InitiateTrack(ac.Callsign, ac.TrackingController, fp, true)
-						if err != nil {
-							s.lg.Errorf("AutoInitiateTrack: %v", err)
-							continue
-						}
-						ac.ControllingController = ac.TrackingController
-
-						err = comp.HandoffTrack(ac.Callsign, controller, octrl, s.SimTime)
-						if err != nil {
-							s.lg.Errorf("AutoHandoffTrack: %v", err)
-							s.AwaitingHandoffs[ac.Callsign] = Handoff{
-								ReceivingController: ctrl,
+					if !controller.ERAMFacility {
+						if trk := s.State.STARSComputer(ac.TrackingController).TrackInformation[ac.Callsign]; trk == nil &&
+							InAcquisitionArea(ac) && !s.controllerIsSignedIn(ac.TrackingController) {
+							comp := s.State.STARSComputer(ac.TrackingController)
+							fp, err := comp.GetFlightPlan(ac.Squawk.String())
+							if err != nil {
+								// s.lg.Errorf("GetFlightPlan: %v", err)
+								continue
 							}
-						}
+							err = comp.InitiateTrack(ac.Callsign, ac.TrackingController, fp, true)
+							if err != nil {
+								// s.lg.Errorf("AutoInitiateTrack: %v", err)
+								continue
+							}
+							ac.ControllingController = ac.TrackingController
 
-						continue
+							err = comp.HandoffTrack(ac.Callsign, controller, octrl, s.SimTime)
+							if err != nil {
+								// s.lg.Errorf("AutoHandoffTrack: %v", err)
+								s.AwaitingHandoffs[ac.Callsign] = Handoff{
+									ReceivingController: ctrl,
+								}
+							}
+
+							continue
+						}
 					}
 
 					if controller == nil || octrl == nil {
@@ -1567,8 +1571,9 @@ func (s *Sim) updateState() {
 							ReceivingController: ctrl,
 						}
 					} else {
-						if strings.Contains(ac.TrackingController, "_CTR") { // Coming from an ERAM facility
-							err := s.State.ERAMComputer(ac.TrackingController).HandoffTrack(ac, controller, octrl, s.SimTime)
+						eram, stars, _ := s.State.ERAMComputers.FacilityComputers(controller.Facility)
+						if stars != nil { // Coming from a STARS facility
+							err := stars.HandoffTrack(ac.Callsign, controller, octrl, s.SimTime)
 							if err != nil {
 								s.lg.Errorf("HandoffTrack: %v", err)
 								s.AwaitingHandoffs[ac.Callsign] = Handoff{
@@ -1576,7 +1581,7 @@ func (s *Sim) updateState() {
 								}
 							}
 						} else {
-							err := s.State.STARSComputer(ac.TrackingController).HandoffTrack(ac.Callsign, controller, octrl, s.SimTime)
+							err := eram.HandoffTrack(ac, controller, octrl, s.SimTime)
 							if err != nil {
 								s.lg.Errorf("HandoffTrack: %v", err)
 								s.AwaitingHandoffs[ac.Callsign] = Handoff{
@@ -1600,25 +1605,20 @@ func (s *Sim) updateState() {
 						fmt.Println("Awaiting Handoff Error: nil controller", controller, octrl, ac.TrackingController, hnd.ReceivingController)
 						continue
 					}
-					if strings.Contains(ac.TrackingController, "_CTR") {
-						err := s.State.ERAMComputer(ac.TrackingController).HandoffTrack(ac, controller, octrl, s.SimTime)
+					eram, stars, _ := s.State.ERAMComputers.FacilityComputers(controller.Facility)
+					if stars != nil {
+						err := stars.HandoffTrack(ac.Callsign, controller, octrl, s.SimTime)
+						if err == nil {
+							delete(s.AwaitingHandoffs, callsign)
+						}
+					} else {
+						err := eram.HandoffTrack(ac, controller, octrl, s.SimTime)
 						if err == nil {
 							delete(s.AwaitingHandoffs, callsign)
 							fmt.Printf("ERAM Awaiting Handoff Success: %v. %v\n", callsign, octrl)
 						} else {
 							fmt.Printf("ERAM Awaiting Handoff Error: %v\n", err)
 						}
-					} else {
-						err := s.State.STARSComputer(ac.TrackingController).HandoffTrack(ac.Callsign, controller, octrl, s.SimTime)
-						if err == nil {
-							delete(s.AwaitingHandoffs, callsign)
-							fmt.Printf("STARS Awaiting Handoff Success: %v. %v\n", callsign, octrl)
-						} else {
-							fmt.Printf("STARS Awaiting Handoff Error: %v\n", err)
-						}
-					}
-					if len(s.AwaitingHandoffs) > 0 {
-						fmt.Println("Awaiting handoffs", s.AwaitingHandoffs)
 					}
 				}
 
@@ -2540,8 +2540,8 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 			if haveControl {
 				ac.ControllingController = ctrl.Callsign
 			}
-			if strings.HasSuffix(ctrl.Callsign, "CTR") { // If a center ICs, it will update ERAM track info
-				if err := s.State.ERAMComputer(ctrl.Callsign).InitiateTrack(callsign, ctrl.Callsign, fp); err != nil {
+			if ctrl.ERAMFacility { // If a center ICs, it will update ERAM track info
+				if err := s.State.ERAMComputer(ctrl.Facility).InitiateTrack(callsign, ctrl.Callsign, fp); err != nil {
 					// s.lg.Errorf("InitiateTrack: %v", err)
 				}
 			} else { // ERAM track info wont get updated by a STARS handoff unless it's to that ERAM facility.
@@ -2646,7 +2646,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 		})
 }
 
-func (s *Sim) HandoffControl(token, callsign, nextController string) error {
+func (s *Sim) HandoffControl(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -2655,10 +2655,14 @@ func (s *Sim) HandoffControl(token, callsign, nextController string) error {
 			if ac.ControllingController != ctrl.Callsign {
 				return av.ErrOtherControllerHasTrack
 			}
+			if len(ac.NextControllers) == 0 {
+				return av.ErrNoNextController
+			}
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			var radioTransmissions []av.RadioTransmission
+			nextController := ac.NextControllers[0]
 			if octrl := s.State.Controllers[nextController]; octrl != nil {
 				if octrl.Frequency == ctrl.Frequency {
 					radioTransmissions = append(radioTransmissions, av.RadioTransmission{
@@ -2748,7 +2752,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				Callsign:       ac.Callsign,
 			})
 
-			fmt.Printf("accept handoff event init. .%v. .%v. .%v.\n", trk.TrackOwner, ctrl.Callsign, ac.Callsign)
+			ac.NextControllers = append(ac.NextControllers, ctrl.Callsign)
 
 			if !s.controllerIsSignedIn(ac.ControllingController) {
 				// Take immediate control on handoffs from virtual

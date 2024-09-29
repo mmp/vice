@@ -66,6 +66,7 @@ type Aircraft struct {
 
 	// Who to try to hand off to at a waypoint with /ho
 	WaypointHandoffController string
+	NextControllers []string // In Sim Accept handoff, a controller will be added; at Sim TransferControl, a controller will be removed.
 }
 
 type RedirectedHandoff struct {

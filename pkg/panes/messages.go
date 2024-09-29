@@ -46,7 +46,6 @@ type MessagesPane struct {
 	history        []CLIInput
 	historyOffset  int // for up arrow / downarrow. Note: counts from the end! 0 when not in history
 	savedInput     CLIInput
-	nextController map[string]string // Callsign -> NextController
 }
 
 func init() {
@@ -76,7 +75,6 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 		mp.scrollbar = NewVerticalScrollBar(4, true)
 	}
 	mp.events = eventStream.Subscribe()
-	mp.nextController = make(map[string]string)
 }
 
 func (mp *MessagesPane) LoadedSim(ss sim.State, pl platform.Platform, lg *log.Logger) {}

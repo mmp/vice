@@ -482,12 +482,12 @@ func (ss *State) STARSComputer(fac string) *STARSComputer {
 		ok := false
 		fac, ok = ss.FacilityFromController(fac)
 		if !ok {
-			panic(fmt.Sprintf("Controller %s not found", fac))
+			return nil 
 		}
 	}
 	_, stars, err := ss.ERAMComputers.FacilityComputers(fac)
 	if err != nil {
-		panic(fmt.Sprintf("STARSComputer error. Facility %v. Err: %v", fac, err))
+		return nil 
 	}
 	return stars
 }
@@ -497,12 +497,12 @@ func (ss *State) ERAMComputer(fac string) *ERAMComputer {
 		ok := false
 		fac, ok = ss.FacilityFromController(fac)
 		if !ok {
-			panic(fmt.Sprintf("Controller %s not found", fac))
+			return nil 
 		}
 	}
 	eram, _, err := ss.ERAMComputers.FacilityComputers(fac)
 	if err != nil {
-		panic(fmt.Sprintf("ERAMComputer error. Facility %v. Err: %v", fac, err))
+		return nil 
 	}
 	return eram
 }

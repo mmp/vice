@@ -710,7 +710,7 @@ func (comp *STARSComputer) CancelHandoff(ac *av.Aircraft, ctrl *av.Controller,
 			Identifier: ac.Callsign,
 		}
 	} else {
-		trk.HandoffController = octrl.Callsign
+		trk.HandoffController = ""
 	}
 	return nil
 }
@@ -1052,6 +1052,20 @@ type TrackInformation struct {
 	AutoAssociateFP   bool
 }
 
+func (trk TrackInformation) String(sq string) string {
+
+	str := fmt.Sprintf("\tIdentifier: %s, TrackInfo:\n", sq)
+	str = str + fmt.Sprintf("\t\tIdentifier: %+v\n", trk.Identifier)
+	str = str + fmt.Sprintf("\t\tOwner: %s\n", trk.TrackOwner)
+	str = str + fmt.Sprintf("\t\tHandoffController: %s\n", trk.HandoffController)
+	if trk.FlightPlan != nil {
+		str = str + fmt.Sprintf("\t\tFlightPlan: %+v\n\n", *trk.FlightPlan)
+	} else {
+		str = str + "\t\tFlightPlan: nil\n\n"
+	}
+	return str
+}
+
 func (trk TrackInformation) HandingOffTo(ctrl string) bool {
 	return (trk.HandoffController == ctrl && // handing off to them
 		!slices.Contains(trk.RedirectedHandoff.Redirector, ctrl)) || // not a redirector
@@ -1297,15 +1311,7 @@ func (e ERAMComputers) DumpMap() {
 
 			fmt.Println("\tTrackInformation:")
 			for sq, trackInfo := range starsComputer.TrackInformation {
-				fmt.Printf("\tIdentifier: %s, TrackInfo:\n", sq)
-				fmt.Printf("\t\tIdentifier: %+v\n", trackInfo.Identifier)
-				fmt.Printf("\t\tOwner: %s\n", trackInfo.TrackOwner)
-				fmt.Printf("\t\tHandoffController: %s\n", trackInfo.HandoffController)
-				if trackInfo.FlightPlan != nil {
-					fmt.Printf("\t\tFlightPlan: %+v\n\n", *trackInfo.FlightPlan)
-				} else {
-					fmt.Printf("\t\tFlightPlan: nil\n\n")
-				}
+				fmt.Print(trackInfo.String(sq))
 			}
 
 			if starsComputer.ERAMInbox != nil {
