@@ -418,6 +418,12 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 			continue
 		}
 
+		if trk := sp.getTrack(ctx, ac); trk == nil || trk.TrackOwner == "" {
+			// No MSAW for unassociated tracks.
+			state.MSAW = false
+			continue
+		}
+
 		warn := slices.ContainsFunc(mvas, func(mva av.MVA) bool {
 			return state.track.Altitude < mva.MinimumLimit && mva.Inside(state.track.Position)
 		})
@@ -901,9 +907,20 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, aircraft []*av.Aircraf
 		if sa.DisableCAWarnings || sb.DisableCAWarnings {
 			return false
 		}
+
+		// No CA for unassociated tracks
+		aca, acb := ctx.ControlClient.Aircraft[callsigna], ctx.ControlClient.Aircraft[callsignb]
+		if aca != nil && acb != nil {
+			trka, trkb := sp.getTrack(ctx, aca), sp.getTrack(ctx, acb)
+			if trka == nil || trka.TrackOwner == "" || trkb == nil || trkb.TrackOwner == "" {
+				return false
+			}
+		}
+
 		if inCAVolumes(sa) || inCAVolumes(sb) {
 			return false
 		}
+
 		return math.NMDistance2LL(sa.TrackPosition(), sb.TrackPosition()) <= LateralMinimum &&
 			/*small slop for fp error*/
 			math.Abs(sa.TrackAltitude()-sb.TrackAltitude()) <= VerticalMinimum-5 &&
