@@ -1287,7 +1287,8 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	e.Pop() // stars_config
 }
 
-func (fa *STARSFacilityAdaptation) GetCoordinationFix(fp *STARSFlightPlan, acpos math.Point2LL, waypoints []av.Waypoint) (string, bool) {
+func GetCoordinationFix(fa av.ERAMAdaptation, fp *STARSFlightPlan, acpos math.Point2LL, waypoints []av.Waypoint) (string, bool) {
+	
 	for fix, adaptationFixes := range fa.CoordinationFixes {
 		if adaptationFix, err := adaptationFixes.Fix(fp.Altitude); err == nil {
 			if adaptationFix.Type == av.ZoneBasedFix {
