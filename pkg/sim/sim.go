@@ -2557,6 +2557,10 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 					return av.ErrOtherControllerHasTrack
 				}
 			}
+
+			if fp == nil {
+				return av.ErrNoFlightPlan
+			}
 			
 			/*
 				if s.State.STARSComputer().TrackInformation[ac.Callsign] != nil {
