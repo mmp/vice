@@ -580,9 +580,6 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 				sp1 = arrivalAirport
 			}
 
-			
-
-
 		}
 	}
 

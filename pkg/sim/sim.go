@@ -1192,6 +1192,9 @@ func (s *Sim) ChangeControlPosition(token string, callsign string, keepTracks bo
 
 	for _, ac := range s.State.Aircraft {
 		if keepTracks {
+			/* TODO for this:
+			Use MF C winner loser to choose who to transfer the tracks to, if they don't do that before signing off, the tracks go/ stay with the primary controller
+			*/
 			ac.TransferTracks(oldCallsign, ctrl.Callsign)
 			comp := s.State.STARSComputer(oldCallsign)
 			fac, _ := s.State.FacilityFromController(ctrl.Callsign)
@@ -1200,9 +1203,9 @@ func (s *Sim) ChangeControlPosition(token string, callsign string, keepTracks bo
 					_, stars, _ := s.State.ERAMComputers.FacilityComputers(fac)
 					if stars != nil {
 						stars.TrackInformation[trk.Identifier] = trk
-					} else { // Tracks going to an ERAM controller
+					} // else { // Tracks going to an ERAM controller
 
-					}
+					// }
 				}
 			}
 		} else {

@@ -482,12 +482,12 @@ func (ss *State) STARSComputer(fac string) *STARSComputer {
 		ok := false
 		fac, ok = ss.FacilityFromController(fac)
 		if !ok {
-			return nil 
+			return nil
 		}
 	}
 	_, stars, err := ss.ERAMComputers.FacilityComputers(fac)
 	if err != nil {
-		return nil 
+		return nil
 	}
 	return stars
 }
@@ -497,12 +497,12 @@ func (ss *State) ERAMComputer(fac string) *ERAMComputer {
 		ok := false
 		fac, ok = ss.FacilityFromController(fac)
 		if !ok {
-			return nil 
+			return nil
 		}
 	}
 	eram, _, err := ss.ERAMComputers.FacilityComputers(fac)
 	if err != nil {
-		return nil 
+		return nil
 	}
 	return eram
 }

@@ -29,7 +29,7 @@ var (
 	ErrNotFlyingRoute               = errors.New("Aircraft is not currently flying its assigned route")
 	ErrNotPointedOutToMe            = errors.New("Aircraft not being pointed out to current controller")
 	ErrOtherControllerHasTrack      = errors.New("Another controller is already tracking the aircraft")
-	ErrNoNextController				= errors.New("No next controller to handoff control to")
+	ErrNoNextController             = errors.New("No next controller to handoff control to")
 	ErrSquawkCodeAlreadyAssigned    = errors.New("Squawk code has already been assigned")
 	ErrSquawkCodeNotManagedByPool   = errors.New("Squawk code is not managed by this pool")
 	ErrSquawkCodeUnassigned         = errors.New("Squawk code has not been assigned")
