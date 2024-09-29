@@ -1405,9 +1405,12 @@ func (s *Sim) updateState() {
 	for callsign, ho := range s.Handoffs {
 		if !now.After(ho.Time) {
 			continue
+		} else {
+			fmt.Printf("Handoff for %v before time %v, now: %v\n", callsign, ho.Time, now)
 		}
 		ac, ok := s.State.Aircraft[callsign]
 		if !ok {
+			s.lg.Errorf("no aircraft for %s", callsign)
 			continue
 		}
 		receivingFac, ok := s.State.FacilityFromController(ho.ReceivingController)
@@ -1417,24 +1420,21 @@ func (s *Sim) updateState() {
 		}
 		eram, stars, _ := s.State.ERAMComputers.FacilityComputers(receivingFac)
 		trk := eram.TrackInformation[ac.Callsign]
-		if trk == nil {
+		if stars != nil {
 			trk = stars.TrackInformation[ac.Callsign]
-		}
-		if trk == nil {
-			s.lg.Errorf("no track information for %s", ac.Callsign)
-			continue
 		}
 
 		if trk.HandoffController != "" &&
 			!s.controllerIsSignedIn(trk.HandoffController) {
 			var ctrl, octrl *av.Controller
 			if stars != nil { // STARS Acceptance
+				fmt.Printf("STARS Acceptance for %v\n", ac.Callsign)
 				trk := stars.TrackInformation[ac.Callsign]
 				ctrl = s.State.Controllers[trk.HandoffController]
 				octrl = s.State.Controllers[trk.TrackOwner]
 				err := stars.AcceptHandoff(ac, ctrl, s.State.Controllers, s.SimTime)
 				if err != nil {
-					// s.lg.Errorf("AutoAcceptHandoff: %v", err)
+					s.lg.Errorf("AutoAcceptHandoff: %v", err)
 					s.AwaitingHandoffs[ac.Callsign] = Handoff{
 						ReceivingController: ctrl.Callsign,
 					}
@@ -2631,7 +2631,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 
 			_, stars, _ := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
 			if err := stars.HandoffTrack(ac.Callsign, ctrl, octrl, s.SimTime); err != nil {
-				//s.lg.Errorf("HandoffTrack: %v", err)
+				s.lg.Errorf("HandoffTrack: %v", err)
 			}
 
 			// Add them to the auto-accept map even if the target is
