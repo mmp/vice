@@ -547,23 +547,42 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 				}
 				return ""
 			}
-			if arrivalAirport != "" {
-				sp1 = arrivalAirport
-			}
-
-			if adapt.Scratchpad1.DisplayExitFix {
+			switch {
+			case adapt.Scratchpad1.DisplayExitFix:
 				sp1 = shortExit()
-			} else if adapt.Scratchpad1.DisplayExitFix1 {
+				if sp1 != "" {
+					break
+				}
+				fallthrough
+			case adapt.Scratchpad1.DisplayExitFix1:
 				sp1 = abbrevExit()
-			} else if adapt.Scratchpad1.DisplayExitGate {
+				if sp1 != "" {
+					break
+				}
+				fallthrough
+			case adapt.Scratchpad1.DisplayExitGate:
 				if ex := abbrevExit(); ex != "" {
 					sp1 = ex + falt()
 				}
-			} else if adapt.Scratchpad1.DisplayAltExitGate {
+				if sp1 != "" {
+					break
+				}
+				fallthrough
+			case adapt.Scratchpad1.DisplayAltExitGate:
 				if ex := abbrevExit(); ex != "" {
 					sp1 = falt() + ex
 				}
+				if sp1 != "" {
+					break
+				}
+				fallthrough
+			case len(arrivalAirport) >= 3:
+				sp1 = arrivalAirport
 			}
+
+			
+
+
 		}
 	}
 
