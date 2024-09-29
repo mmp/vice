@@ -173,15 +173,15 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, tracon string, sim
 				return nil 
 			}
 			// Convert the route to waypoints.
-			rte, err := av.ParseWaypoints(fp.Route)
+			copy.Route = strings.TrimPrefix(copy.Route, "./ ")
+			rte, err := av.ParseWaypoints(copy.Route)
 			if err != nil {
 				fmt.Printf("Error parsing route %v. Err: %v\n", fp.Route, err)
 				return nil
 			}
 			slicedRoute := rte.RouteString()
-			slicedRoute = fp.Route[idx + len(adaptFix.Name) + 1:]
+			slicedRoute = slicedRoute[idx + len(adaptFix.Name) + 1:]
 
-			
 			copy.Route = slicedRoute
 			fix := comp.FixForRouteAndAltitude(copy.Route, copy.Altitude)
 			if fix == nil {
