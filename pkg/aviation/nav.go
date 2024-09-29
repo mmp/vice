@@ -560,11 +560,15 @@ func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint, star string) st
 
 	if hdg, ok := nav.AssignedHeading(); ok {
 		msgs = append(msgs, fmt.Sprintf("on a %03d heading", int(hdg)))
-	} else if star != "" {
-		if nav.Altitude.Assigned == nil {
-			msgs = append(msgs, "descending on the "+star)
-		} else {
-			msgs = append(msgs, "on the "+star)
+	} else {
+		if star != "" {
+			if nav.Altitude.Assigned == nil {
+				msgs = append(msgs, "descending on the "+star)
+			} else {
+				msgs = append(msgs, "on the "+star)
+			}
+		} else if len(nav.Waypoints) > 0 {
+			msgs = append(msgs, "inbound "+nav.Waypoints[0].Fix)
 		}
 	}
 

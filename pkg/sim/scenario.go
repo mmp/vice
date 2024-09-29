@@ -1503,20 +1503,6 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 	// First load the scenarios.
 	scenarioGroups := make(map[string]map[string]*ScenarioGroup)
 	simConfigurations := make(map[string]map[string]*Configuration)
-	referencedVideoMaps := make(map[string]map[string]interface{}) // filename -> map name -> used
-	updateReferencedMaps := func(fa STARSFacilityAdaptation) {
-		if referencedVideoMaps[fa.VideoMapFile] == nil {
-			referencedVideoMaps[fa.VideoMapFile] = make(map[string]interface{})
-		}
-		for _, m := range fa.VideoMapNames {
-			referencedVideoMaps[fa.VideoMapFile][m] = nil
-		}
-		for _, config := range fa.ControllerConfigs {
-			for _, m := range config.VideoMapNames {
-				referencedVideoMaps[fa.VideoMapFile][m] = nil
-			}
-		}
-	}
 
 	err := util.WalkResources("scenarios", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
 		if err != nil {
@@ -1552,7 +1538,6 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 				}
 				scenarioGroups[s.TRACON][s.Name] = s
 			}
-			updateReferencedMaps(s.STARSFacilityAdaptation)
 		}
 		return nil
 	})
@@ -1591,7 +1576,6 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 						extraScenarioFilename)
 				}
 			}
-			updateReferencedMaps(s.STARSFacilityAdaptation)
 		}
 	}
 
@@ -1608,7 +1592,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 		}
 
 		if strings.HasSuffix(path, "-videomaps.gob") || strings.HasSuffix(path, "-videomaps.gob.zst") {
-			maplib.AddFile(fs, path, referencedVideoMaps[path], e)
+			maplib.AddFile(fs, path, e)
 		}
 
 		return nil
@@ -1629,7 +1613,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 				return os.DirFS(".")
 			}
 		}()
-		maplib.AddFile(fs, extraVideoMapFilename, referencedVideoMaps[extraVideoMapFilename], e)
+		maplib.AddFile(fs, extraVideoMapFilename, e)
 	}
 
 	// Final tidying before we return the loaded scenarios.
