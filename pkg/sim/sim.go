@@ -1523,7 +1523,7 @@ func (s *Sim) updateState() {
 			}
 
 			if controller := s.State.Controllers[ac.TrackingController]; controller != nil && !controller.ERAMFacility {
-				
+
 				if trk := s.State.STARSComputer(ac.TrackingController).TrackInformation[ac.Callsign]; trk == nil &&
 					InAcquisitionArea(ac) && !s.controllerIsSignedIn(ac.TrackingController) {
 					comp := s.State.STARSComputer(ac.TrackingController)
@@ -1538,7 +1538,7 @@ func (s *Sim) updateState() {
 					}
 					ac.ControllingController = ac.TrackingController
 					continue
-				} 
+				}
 			}
 
 			passedWaypoint := ac.Update(s.State, s.lg)
@@ -1587,7 +1587,7 @@ func (s *Sim) updateState() {
 							}
 
 							continue
-						} 
+						}
 					}
 
 					if controller == nil || octrl == nil {
@@ -2561,7 +2561,7 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 			if fp == nil {
 				return av.ErrNoFlightPlan
 			}
-			
+
 			/*
 				if s.State.STARSComputer().TrackInformation[ac.Callsign] != nil {
 					return av.ErrOtherControllerHasTrack
@@ -2611,8 +2611,7 @@ func (s *Sim) DropTrack(token, callsign string) error {
 				if err := s.State.ERAMComputer(ctrl.Callsign).DropTrack(ac); err != nil {
 					//s.lg.Errorf("ERAM DropTrack: %v", err)
 				}
-			} 
-			
+			}
 
 			s.eventStream.Post(Event{
 				Type:           DroppedTrackEvent,

@@ -851,7 +851,7 @@ func (comp *STARSComputer) Update(s *Sim) {
 // Sorting the STARS messages. This will store flight plans with FP
 // messages, change flight plans with AM messages, cancel flight plans with
 // CX messages, etc.
-func (comp *STARSComputer)  SortReceivedMessages(e *EventStream) {
+func (comp *STARSComputer) SortReceivedMessages(e *EventStream) {
 	for _, msg := range comp.ReceivedMessages {
 		switch msg.MessageType {
 		case Plan:

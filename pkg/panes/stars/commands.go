@@ -656,23 +656,22 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			return
 		case 1:
 			receivingFacility = comp.Identifier
-		case 2 :
+		case 2:
 			receivingFacility = cmds[1]
 		}
-			// Verify squawk code. ECID isn't implemented yet.
-			sq, err := av.ParseSquawk(cmds[0])
-			if err != nil {
-				status.err = ErrSTARSCommandFormat
-				return
-			}
-			if _, ok := comp.ContainedPlans[sq]; ok {
-				status.err = ErrSTARSDuplicateBeacon
-				return
-			}
-			sp.requestFP(ctx, sq.String(), receivingFacility)
-		
+		// Verify squawk code. ECID isn't implemented yet.
+		sq, err := av.ParseSquawk(cmds[0])
+		if err != nil {
+			status.err = ErrSTARSCommandFormat
+			return
+		}
+		if _, ok := comp.ContainedPlans[sq]; ok {
+			status.err = ErrSTARSDuplicateBeacon
+			return
+		}
+		sp.requestFP(ctx, sq.String(), receivingFacility)
 
-		status.clear = true 
+		status.clear = true
 		return
 
 	case CommandModeMultiFunc:
@@ -2459,7 +2458,8 @@ func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string, fp *sim.
 				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx, ac)
 			}
 		},
-		func(err error) { sp.displayError(err, ctx)
+		func(err error) {
+			sp.displayError(err, ctx)
 			fmt.Printf("%v: Error initiating track %s: %v\n", comp.Identifier, callsign, err)
 		})
 }
