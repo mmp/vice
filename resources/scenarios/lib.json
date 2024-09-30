@@ -2701,7 +2701,6 @@
     "BOS_SW_CTR": {
       "frequency": 134000,
       "full_name": "Boston center",
-      "scope_char": "C",
       "sector_id": "B19",
       "facility_id": "B",
       "eram_facility": true,
@@ -2710,28 +2709,24 @@
     "EWR_DEP": {
       "frequency": 119200,
       "full_name": "New York departure",
-      "scope_char": "N",
       "sector_id": "4N",
       "facility": "N90"
     },
     "JFK_DEP": {
       "frequency": 135900,
       "full_name": "New York departure",
-      "scope_char": "J",
       "sector_id": "2J",
       "facility": "N90"
     },
     "LGA_DEP": {
       "frequency": 120400,
       "full_name": "New York departure",
-      "scope_char": "L",
       "sector_id": "1L",
       "facility": "N90"
     },
     "NY_56_CTR": {
       "frequency": 125325,
       "full_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C56",
       "facility_id": "C",
       "eram_facility": true,
@@ -2740,7 +2735,6 @@
     "NY_68_CTR": {
       "frequency": 118975,
       "full_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C68",
       "facility_id": "C",
       "eram_facility": true,
@@ -2749,7 +2743,6 @@
     "NY_55_CTR": {
       "frequency": 132175,
       "full_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C55",
       "facility_id": "C",
       "eram_facility": true,
@@ -2758,7 +2751,6 @@
     "NY_35_CTR": {
       "frequency": 132600,
       "full_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C35",
       "facility_id": "C",
       "eram_facility": true,
@@ -2767,7 +2759,6 @@
     "NY_51_CTR": {
       "frequency": 134450,
       "full_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C51",
       "facility_id": "C",
       "eram_facility": true,
@@ -2776,7 +2767,6 @@
     "NY_39_CTR": {
       "frequency": 132100,
       "full_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C39",
       "facility_id": "C",
       "eram_facility": true,
@@ -2785,42 +2775,36 @@
     "NY_LE_APP": {
       "frequency": 126800,
       "full_name": "New York departure",
-      "scope_char": "E",
       "sector_id": "5E",
       "facility": "N90"
     },
     "NY_LN_APP": {
       "frequency": 118170,
       "full_name": "New York departure",
-      "scope_char": "T",
       "sector_id": "5T",
       "facility": "N90"
     },
     "NY_LS_APP": {
       "frequency": 124750,
       "full_name": "New York departure",
-      "scope_char": "S",
       "sector_id": "5S",
       "facility": "N90"
     },
     "NY_LW_APP": {
       "frequency": 120850,
       "full_name": "New York departure",
-      "scope_char": "W",
       "sector_id": "5W",
       "facility": "N90"
     },
     "NY_L_APP": {
       "frequency": 126800,
       "full_name": "New York departure",
-      "scope_char": "E",
       "sector_id": "5E",
       "facility": "N90"
     },
     "WRI_APP": {
       "frequency": 126470,
       "full_name": "McGuire approach",
-      "scope_char": "5",
       "sector_id": "1Y",
       "facility_id": "5",
       "facility": "WRI"
@@ -2828,7 +2812,6 @@
     "AVP_S_APP": {
       "frequency": 126300,
       "full_name": "Wilkes Barre Approach",
-      "scope_char": "7",
       "sector_id": "1E",
       "facility_id": "7",
       "facility": "AVP"
@@ -2836,7 +2819,6 @@
     "AVP_N_APP": {
       "frequency": 120950,
       "full_name": "Wilkes Barre Approach",
-      "scope_char": "7",
       "sector_id": "1B",
       "facility_id": "7",
       "facility": "AVP"
@@ -2844,7 +2826,6 @@
     "ABE_APP": {
       "frequency": 119650,
       "full_name": "Allentown approach",
-      "scope_char": "F",
       "sector_id": "1F",
       "facility_id": "4",
       "facility": "ABE"
