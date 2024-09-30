@@ -621,6 +621,10 @@ func (comp *STARSComputer) DropUnsupportedTrack(callsign string) {
 	delete(comp.UnsupportedTracks, callsign)
 }
 
+func (comp *STARSComputer) HandoffUnsupportedTrack(callsign, handoffController string) {
+	comp.UnsupportedTracks[callsign].HandoffController = handoffController
+}
+
 func (comp *STARSComputer) LookupTrackIndex(idx int) *TrackInformation {
 	if idx >= len(comp.TrackInformation) {
 		return nil

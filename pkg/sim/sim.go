@@ -2525,6 +2525,29 @@ func (s *Sim) DropUnsupportedTrack(token, callsign string) error {
 			return nil 
 }
 
+func (s *Sim) HandoffUnsupportedTrack(token, callsign, handoffController string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+			serverCtrl := s.controllers[token]
+			ctrl := s.State.Controllers[serverCtrl.Callsign]
+			octrl := s.State.Controllers[handoffController]
+			if ctrl.Facility != octrl.Facility { // Must be intra-facility
+				return av.ErrInvalidController
+			}
+			_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+			if err != nil {
+				return err
+			}
+			stars.HandoffUnsupportedTrack(callsign, handoffController)
+			acceptDelay := 4 + rand.Intn(10)
+			s.Handoffs[callsign] = Handoff{
+				Time:                s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+				ReceivingController: handoffController,
+			}
+			return nil 
+}
+
 
 func (s *Sim) UploadFlightPlan(token string, Type int, plan *STARSFlightPlan) error {
 	s.mu.Lock(s.lg)

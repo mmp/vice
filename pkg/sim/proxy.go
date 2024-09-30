@@ -118,6 +118,14 @@ func (s *proxy) DropUnsupportedTrack(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
+func (s *proxy) HandoffUnsupportedTrack(callsign, handoffController string) *rpc.Call {
+	return s.Client.Go("Sim.DropUnsupportedTrack", &HandoffArgs{
+		ControllerToken:  s.ControllerToken,
+		Callsign:         callsign,
+		Controller: 	 handoffController,
+	}, nil, nil)
+}
+
 func (s *proxy) UploadFlightPlan(Type int, fp *STARSFlightPlan) *rpc.Call {
 	return s.Client.Go("Sim.UploadFlightPlan", &UploadPlanArgs{
 		ControllerToken: s.ControllerToken,

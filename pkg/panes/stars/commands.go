@@ -3384,7 +3384,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 	} 
 
 	if ut, _ := sp.tryGetClosestUnsupportedTrack(ctx, mousePosition, transforms); ut != nil && cmd == "" && sp.commandMode == CommandModeTerminateControl{
-		fmt.Println("Drop track")
 		ctx.ControlClient.DropUnsupportedTrack(ut.FlightPlan.Callsign, nil, func(err error) {
 			if err != nil {
 				ctx.Lg.Errorf("Error dropping track: %v", err)
@@ -3393,6 +3392,17 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		})
 		status.clear = true 
 		return 
+	} else if ut != nil && len(cmd) > 1 && (sp.commandMode == CommandModeHandOff || sp.commandMode == CommandModeNone ) {
+		// Handoff unsupported track
+		control := sp.lookupControllerForId(ctx, cmd, ut.FlightPlan.Callsign)
+		if control == nil {
+			status.err = ErrSTARSIllegalPosition
+			return 
+		}
+		ctx.ControlClient.HandoffUnsupportedTrack(ut.FlightPlan.Callsign, control.Callsign, nil, func(err error) {
+			if err != nil {
+				ctx.Lg.Errorf("Error handing off track: %v", err)
+			}})
 	}
 
 	if sp.commandMode == CommandModeMultiFunc {
