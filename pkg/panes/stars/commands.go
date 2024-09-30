@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
@@ -3327,7 +3328,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				status.clear = true
 				return
 			}
-		} else if len(cmd) > 1 { // Create an unsupported track
+		} else if ut, _ := sp.tryGetClosestUnsupportedTrack(ctx, mousePosition, transforms); ut == nil && len(cmd) > 1 { // Create an unsupported track
 			comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
 			var fp *sim.STARSFlightPlan
 			// Find the flightplan (if applicable)
@@ -3355,9 +3356,30 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				FlightPlan: fp,
 			}
 
+			north, _ := sp.numpadToDirection('8')
+			sp.UnsupportedTracks[fp.Callsign] = &UnsupportedState{
+				Visible: true,
+				LeaderLineDirection: north,
+			}
+
 			ctx.ControlClient.CreateUnsupportedTrack(fp.Callsign, data, nil, nil)
 			status.clear = true
 			return 
+		} else if ut != nil && cmd == "" { // Toggle visibility
+			state := sp.UnsupportedTracks[ut.FlightPlan.Callsign]
+			comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+			if comp.UnsupportedTracks[ut.FlightPlan.Callsign].Owner == ctx.ControlClient.Callsign {
+				state.Visible = true 
+			}
+			// TODO: Add more to this like turning green, etc.
+			state.Visible = !state.Visible
+		} else if ut != nil && len(cmd) == 1 && unicode.IsDigit(rune(cmd[0])) { // Change leader line direction
+			state := sp.UnsupportedTracks[ut.FlightPlan.Callsign]
+			if dir, ok := sp.numpadToDirection(cmd[0]); ok {
+				state.LeaderLineDirection = dir
+				status.clear = true
+				return 
+			}
 		}
 	}
 
@@ -4070,6 +4092,22 @@ func (sp *STARSPane) tryGetClosestAircraft(ctx *panes.Context, mousePosition [2]
 	}
 
 	return ac, distance
+}
+
+func (sp *STARSPane) tryGetClosestUnsupportedTrack(ctx *panes.Context, mousePosition [2]float32, transforms ScopeTransformations) (*sim.UnsupportedTrack, float32) {
+	var track *sim.UnsupportedTrack
+	distance := float32(20) // in pixels; don't consider anything farther away
+	comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+	for _, t := range comp.UnsupportedTracks{
+		pw := transforms.WindowFromLatLongP(t.TrackLocation)
+		dist := math.Distance2f(pw, mousePosition)
+		if dist < distance {
+			track = t
+			distance = dist
+		}
+	}
+
+	return track, distance
 }
 
 func (sp *STARSPane) tryGetClosestGhost(ghosts []*av.GhostAircraft, mousePosition [2]float32, transforms ScopeTransformations) (*av.GhostAircraft, float32) {

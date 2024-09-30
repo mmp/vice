@@ -127,6 +127,12 @@ type AircraftState struct {
 	ForceQL    bool
 }
 
+// More eventually?
+type UnsupportedState struct {
+	LeaderLineDirection *math.CardinalOrdinalDirection
+	Visible             bool // If the track is visible to users that aren't controlling the track
+}
+
 type ATPAStatus int
 
 const (
@@ -673,7 +679,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 
 func (sp *STARSPane) drawUnsupportedTrack(data *sim.UnsupportedTrack, ctx *panes.Context, transforms ScopeTransformations, td *renderer.TextDrawBuilder,
 	cb *renderer.CommandBuffer) {
-	// set color and brightness to white/100 for now. 
+	// set color and brightness to white/100 for now.
 	// TODO: Function that looks at track ownership and gives brite/color
 	pos := data.TrackLocation
 	ps := sp.currentPrefs()
@@ -681,10 +687,17 @@ func (sp *STARSPane) drawUnsupportedTrack(data *sim.UnsupportedTrack, ctx *panes
 	defer renderer.ReturnColoredLinesDrawBuilder(ld) // Ensure the builder is returned
 
 	brightness := STARSBrightness(100)
-	color := STARSTrackedAircraftColor
+	var color renderer.RGB
+	if data.Owner == ctx.ControlClient.Callsign || data.HandoffController == ctx.ControlClient.Callsign {
+		color = STARSTrackedAircraftColor
+	} else {
+		color = STARSUntrackedAircraftColor
+	}
+
 	ctrl := ctx.ControlClient.Controllers[data.Owner]
 	positionSymbol := string(ctrl.SectorId[1])
-	
+	state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
+
 	font := sp.systemFont[ps.CharSize.PositionSymbols]
 	outlineFont := sp.systemOutlineFont[ps.CharSize.PositionSymbols]
 	pac := transforms.WindowFromLatLongP(pos)
@@ -693,17 +706,22 @@ func (sp *STARSPane) drawUnsupportedTrack(data *sim.UnsupportedTrack, ctx *panes
 
 	posColor := brightness.ScaleRGB(color)
 	td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: font, Color: posColor})
-	vll := sp.getLeaderLineVector(ctx, math.North)
-	ld.AddLine(pac, math.Add2f(pac, vll), posColor)
+
+	if !state.Visible || data.Owner == ctx.ControlClient.Callsign || data.HandoffController == ctx.ControlClient.Callsign {
+		vll := sp.getLeaderLineVector(ctx, *state.LeaderLineDirection)
+		ld.AddLine(pac, math.Add2f(pac, vll), posColor)
+	}
 
 	// Generate commands to ensure the line is drawn
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
+	// if !state.Visible || data.Owner == ctx.ControlClient.Callsign || data.HandoffController == ctx.ControlClient.Callsign {
+		transforms.LoadWindowViewingMatrices(cb)
+		td.GenerateCommands(cb)
 
-	transforms.LoadWindowViewingMatrices(cb)
-	td.GenerateCommands(cb)
-	
+	// }
+
 }
 
 func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, heading float32, ctx *panes.Context,

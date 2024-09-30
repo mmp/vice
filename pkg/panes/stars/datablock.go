@@ -1030,13 +1030,17 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 	comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
 
 	for _, data := range comp.UnsupportedTracks {
+		if state := sp.UnsupportedTracks[data.FlightPlan.Callsign]; data.Owner != ctx.ControlClient.Callsign || !state.Visible  {
+			continue
+		}
 		db := sp.getUnsupportedDatablock(data, ctx)
 		pac := transforms.WindowFromLatLongP(data.TrackLocation)
-		vll := sp.getLeaderLineVector(ctx, math.North) // TODO: implement directors for unsupported tracks
+		state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
+		vll := sp.getLeaderLineVector(ctx, *state.LeaderLineDirection) 
 		pll := math.Add2f(pac, vll)
 		if math.Length2f(vll) == 0 {
 			sz := sp.getTrackSize(ctx, transforms) / 2
-			rightJustify := math.North >= math.South
+			rightJustify := *state.LeaderLineDirection >= math.South
 			pll[0] += util.Select(rightJustify, -sz, sz)
 			pll[1] += float32(font.Size)
 		} else {
@@ -1045,7 +1049,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		font := sp.systemFont[ps.CharSize.Datablocks]
 		brightness := ps.Brightness.FullDatablocks
 		halfSeconds := realNow.UnixMilli() / 500
-		db.draw(td, pll, font, brightness, math.North, halfSeconds)
+		db.draw(td, pll, font, brightness, *state.LeaderLineDirection, halfSeconds)
 	}
 
 
