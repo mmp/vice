@@ -3381,6 +3381,17 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return 
 			}
 		}
+	} 
+
+	if ut, _ := sp.tryGetClosestUnsupportedTrack(ctx, mousePosition, transforms); ut != nil && cmd == "" && sp.commandMode == CommandModeTerminateControl{
+		fmt.Println("Drop track")
+		ctx.ControlClient.DropUnsupportedTrack(ut.FlightPlan.Callsign, nil, func(err error) {
+			if err != nil {
+				ctx.Lg.Errorf("Error dropping track: %v", err)
+			}
+			status.clear = true 
+		})
+		return 
 	}
 
 	if sp.commandMode == CommandModeMultiFunc {

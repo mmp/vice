@@ -460,6 +460,22 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 			Time:        now,
 		}
 		comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+		for cs, ut := range comp.UnsupportedTracks {
+			fp := ut.FlightPlan
+			if fp.Callsign == ac.Callsign || fp.AssignedSquawk == ac.Squawk {
+				if fp.AssignedSquawk == ac.Squawk {
+					cs = ac.Callsign
+				}
+				ctx.ControlClient.InitiateTrack(cs, fp, func(any) {
+					if state, ok := sp.Aircraft[callsign]; ok {
+						state.DatablockType = FullDatablock
+					}
+				},
+				func(err error) { sp.displayError(err, ctx) })
+				ctx.ControlClient.DropUnsupportedTrack(cs, nil, nil )
+
+			}
+		}
 		if ac := ctx.ControlClient.Aircraft[callsign]; comp.TrackInformation[ac.Callsign] == nil && sp.AutoTrackDepartures && ac.DepartureContactController == ctx.ControlClient.Callsign && sim.InAcquisitionArea(ac) {
 			fp, err := comp.GetFlightPlan(ac.Squawk.String())
 			if err != nil {

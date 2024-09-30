@@ -2490,10 +2490,7 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *math.CardinalOrdi
 
 
 /* Unsupported Track TODO:
-1. Ability to drop and handoff track (can we point out?) (only intra-facility, inter-facility isn't allowed.)
-2. Ability to auto-associate with aircraft squawking the same code that the FP is on. (eg. you make an unsupported track with a fp of 4372
- and UAL1092 pops up squawking that same code, it auto-associates.)
-3. Store cardinal directions of these tracks.
+1. Ability to handoff track (can we point out?) (only intra-facility, inter-facility isn't allowed.)
 */
 func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrack) error {
 	s.mu.Lock(s.lg)
@@ -2502,18 +2499,29 @@ func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrac
 			serverCtrl := s.controllers[token]
 			ctrl := s.State.Controllers[serverCtrl.Callsign]
 
-			_, _, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+			_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
 			if err != nil {
-				fmt.Println("CreateUnsupportedTrack: ", err)
 				return err
 			}
-			
-		
-			_, stars, _ := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+	
 			stars.AddUnsupportedTrack(ut)
-			fmt.Println("Makeunsupported sim")
 			return nil
 		
+}
+
+func (s *Sim) DropUnsupportedTrack(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+			serverCtrl := s.controllers[token]
+			ctrl := s.State.Controllers[serverCtrl.Callsign]
+
+			_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+			if err != nil {
+				return err
+			}
+			stars.DropUnsupportedTrack(callsign)
+			return nil 
 }
 
 

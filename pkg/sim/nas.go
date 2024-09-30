@@ -617,6 +617,10 @@ func (comp *STARSComputer) AddUnsupportedTrack(ut *UnsupportedTrack) {
 	comp.UnsupportedTracks[ut.FlightPlan.Callsign] = ut
 }
 
+func (comp *STARSComputer) DropUnsupportedTrack(callsign string) {
+	delete(comp.UnsupportedTracks, callsign)
+}
+
 func (comp *STARSComputer) LookupTrackIndex(idx int) *TrackInformation {
 	if idx >= len(comp.TrackInformation) {
 		return nil

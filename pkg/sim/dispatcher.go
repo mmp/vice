@@ -152,6 +152,14 @@ func (sd *Dispatcher) CreateUnsupportedTrack(it *CreateUnsupportedTrackArgs, _ *
 	}
 }
 
+func (sd *Dispatcher) DropUnsupportedTrack(it *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.DropUnsupportedTrack(it.ControllerToken, it.Callsign)
+	}
+}
+
 type UploadPlanArgs struct {
 	ControllerToken string
 	Type            int
