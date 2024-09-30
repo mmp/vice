@@ -2491,6 +2491,7 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *math.CardinalOrdi
 
 /* Unsupported Track TODO:
 1. Ability to handoff track (can we point out?) (only intra-facility, inter-facility isn't allowed.)
+2. Send a DM msg to ERAM after a unsupported track is created.
 */
 func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrack) error {
 	s.mu.Lock(s.lg)

@@ -3389,8 +3389,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			if err != nil {
 				ctx.Lg.Errorf("Error dropping track: %v", err)
 			}
-			status.clear = true 
+			
 		})
+		status.clear = true 
 		return 
 	}
 
