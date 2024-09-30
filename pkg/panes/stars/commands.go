@@ -376,6 +376,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				fmt.Print(trackInfo.String(sq))
 			}
 
+			fmt.Println("Unsuppported Tracks:")
+
+			for _, ut := range comp.UnsupportedTracks {
+				fmt.Printf("%+v\n", ut)
+			}
+
 		case "CR":
 			if sp.capture.enabled && (sp.capture.specifyingRegion || sp.capture.haveRegion) {
 				sp.capture.specifyingRegion = false
@@ -3321,6 +3327,37 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				status.clear = true
 				return
 			}
+		} else if len(cmd) > 1 { // Create an unsupported track
+			comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+			var fp *sim.STARSFlightPlan
+			// Find the flightplan (if applicable)
+			sq, err := av.ParseSquawk(cmd)
+			if err == nil { // Find the squawk 
+				fp = comp.ContainedPlans[sq]
+			} else { // Index by callsign
+				for _, plan := range comp.ContainedPlans {
+					if plan.Callsign == cmd {
+						fp = plan
+						break
+					}
+				}
+			}
+			if fp == nil { // Create an FP
+				fp = &sim.STARSFlightPlan{
+					FlightPlan: &av.FlightPlan{
+						Callsign: cmd,
+					},
+				}
+			}
+			data := &sim.UnsupportedTrack{
+				TrackLocation: transforms.LatLongFromWindowP(mousePosition),
+				Owner: 	   ctx.ControlClient.Callsign,
+				FlightPlan: fp,
+			}
+
+			ctx.ControlClient.CreateUnsupportedTrack(fp.Callsign, data, nil, nil)
+			status.clear = true
+			return 
 		}
 	}
 

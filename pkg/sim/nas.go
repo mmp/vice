@@ -532,7 +532,7 @@ type STARSComputer struct {
 	ReceivedMessages  []FlightPlanMessage
 	TrackInformation  map[string]*TrackInformation
 	ERAMInbox         *[]FlightPlanMessage // The address of the overlying ERAM's message inbox.
-	UnsupportedTracks []UnsupportedTrack
+	UnsupportedTracks map[string]*UnsupportedTrack
 	SquawkCodePool    *av.SquawkCodePool
 	HoldForRelease    []*av.Aircraft
 	Adaptation STARSFacilityAdaptation
@@ -543,6 +543,7 @@ func MakeSTARSComputer(id string, sq *av.SquawkCodePool) *STARSComputer {
 		Identifier:       id,
 		ContainedPlans:   make(map[av.Squawk]*STARSFlightPlan),
 		TrackInformation: make(map[string]*TrackInformation),
+		UnsupportedTracks: make(map[string]*UnsupportedTrack),
 		SquawkCodePool:   sq,
 	}
 }
@@ -612,8 +613,8 @@ func (comp *STARSComputer) AddTrackInformation(callsign string, info TrackInform
 	comp.TrackInformation[callsign] = &info
 }
 
-func (comp *STARSComputer) AddUnsupportedTrack(ut UnsupportedTrack) {
-	comp.UnsupportedTracks = append(comp.UnsupportedTracks, ut)
+func (comp *STARSComputer) AddUnsupportedTrack(ut *UnsupportedTrack) {
+	comp.UnsupportedTracks[ut.FlightPlan.Callsign] = ut
 }
 
 func (comp *STARSComputer) LookupTrackIndex(idx int) *TrackInformation {

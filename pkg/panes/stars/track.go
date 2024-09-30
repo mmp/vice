@@ -545,6 +545,12 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 			ld, trid, td)
 	}
 
+	comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+
+	for _, data := range comp.UnsupportedTracks {
+		sp.drawUnsupportedTrack(data, ctx, transforms, td, cb)
+	}
+
 	transforms.LoadWindowViewingMatrices(cb)
 	trackBuilder.GenerateCommands(cb)
 
@@ -663,6 +669,41 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
 	ld.GenerateCommands(cb)
+}
+
+func (sp *STARSPane) drawUnsupportedTrack(data *sim.UnsupportedTrack, ctx *panes.Context, transforms ScopeTransformations, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer) {
+	// set color and brightness to white/100 for now. 
+	// TODO: Function that looks at track ownership and gives brite/color
+	pos := data.TrackLocation
+	ps := sp.currentPrefs()
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld) // Ensure the builder is returned
+
+	brightness := STARSBrightness(100)
+	color := STARSTrackedAircraftColor
+	ctrl := ctx.ControlClient.Controllers[data.Owner]
+	positionSymbol := string(ctrl.SectorId[1])
+	
+	font := sp.systemFont[ps.CharSize.PositionSymbols]
+	outlineFont := sp.systemOutlineFont[ps.CharSize.PositionSymbols]
+	pac := transforms.WindowFromLatLongP(pos)
+	pt := math.Add2f(pac, [2]float32{0.5, -0.5})
+	td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
+
+	posColor := brightness.ScaleRGB(color)
+	td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: font, Color: posColor})
+	vll := sp.getLeaderLineVector(ctx, math.North)
+	ld.AddLine(pac, math.Add2f(pac, vll), posColor)
+
+	// Generate commands to ensure the line is drawn
+	transforms.LoadWindowViewingMatrices(cb)
+	cb.LineWidth(1, ctx.DPIScale)
+	ld.GenerateCommands(cb)
+
+	transforms.LoadWindowViewingMatrices(cb)
+	td.GenerateCommands(cb)
+	
 }
 
 func (sp *STARSPane) drawRadarTrack(ac *av.Aircraft, state *AircraftState, heading float32, ctx *panes.Context,

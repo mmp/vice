@@ -2488,21 +2488,34 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *math.CardinalOrdi
 		})
 }
 
+
+/* Unsupported Track TODO:
+1. Ability to drop and handoff track (can we point out?) (only intra-facility, inter-facility isn't allowed.)
+2. Ability to auto-associate with aircraft squawking the same code that the FP is on. (eg. you make an unsupported track with a fp of 4372
+ and UAL1092 pops up squawking that same code, it auto-associates.)
+3. Store cardinal directions of these tracks.
+*/
 func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrack) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchCommand(token, callsign,
-		func(ctrl *av.Controller, ac *av.Aircraft) error {
+			serverCtrl := s.controllers[token]
+			ctrl := s.State.Controllers[serverCtrl.Callsign]
+
 			_, _, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
-			return err
-		},
-		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			if err != nil {
+				fmt.Println("CreateUnsupportedTrack: ", err)
+				return err
+			}
+			
+		
 			_, stars, _ := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
-			stars.AddUnsupportedTrack(*ut)
+			stars.AddUnsupportedTrack(ut)
+			fmt.Println("Makeunsupported sim")
 			return nil
-		})
+		
 }
+
 
 func (s *Sim) UploadFlightPlan(token string, Type int, plan *STARSFlightPlan) error {
 	s.mu.Lock(s.lg)

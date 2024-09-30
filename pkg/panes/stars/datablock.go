@@ -14,6 +14,7 @@ import (
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -1025,9 +1026,52 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		halfSeconds := realNow.UnixMilli() / 500
 		db.draw(td, pll, font, brightness, sp.getLeaderLineDirection(ac, ctx), halfSeconds)
 	}
+	
+	comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+
+	for _, data := range comp.UnsupportedTracks {
+		db := sp.getUnsupportedDatablock(data, ctx)
+		pac := transforms.WindowFromLatLongP(data.TrackLocation)
+		vll := sp.getLeaderLineVector(ctx, math.North) // TODO: implement directors for unsupported tracks
+		pll := math.Add2f(pac, vll)
+		if math.Length2f(vll) == 0 {
+			sz := sp.getTrackSize(ctx, transforms) / 2
+			rightJustify := math.North >= math.South
+			pll[0] += util.Select(rightJustify, -sz, sz)
+			pll[1] += float32(font.Size)
+		} else {
+			pll[1] += float32(font.Size / 2)
+		}
+		font := sp.systemFont[ps.CharSize.Datablocks]
+		brightness := ps.Brightness.FullDatablocks
+		halfSeconds := realNow.UnixMilli() / 500
+		db.draw(td, pll, font, brightness, math.North, halfSeconds)
+	}
+
 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
+}
+
+func (sp *STARSPane) getUnsupportedDatablock(data *sim.UnsupportedTrack, ctx *panes.Context) datablock {
+	db := &fullDatablock{}
+
+	color := STARSUntrackedAircraftColor
+
+	if data.Owner == ctx.ControlClient.Callsign {
+		color = STARSTrackedAircraftColor
+	}
+
+
+	formatDBText(db.field1[:], data.FlightPlan.Callsign + "*", color, false)
+
+	if len(data.FlightPlan.Callsign) >= 3 {
+		idx := len(data.FlightPlan.Callsign) - 2
+		formatDBText(db.field5[0][idx:], "00V", color, false)
+	} else {
+		formatDBText(db.field5[0][0:], "00V", color, false)
+	}
+	return db 
 }
 
 func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) bool {
