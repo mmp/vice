@@ -955,8 +955,8 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				id := ctrl.SectorId
-				if ctrl.FacilityIdentifier != "" && !ctrl.ERAMFacility {
-					id = ctrl.FacilityIdentifier + id
+				if c.STARSFacilityAdaptation.FacilityIDs[ctrl.Facility] != "" && !ctrl.ERAMFacility {
+					id = c.STARSFacilityAdaptation.FacilityIDs[ctrl.Facility] + id
 				}
 				imgui.Text(id)
 				imgui.TableNextColumn()

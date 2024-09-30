@@ -2985,7 +2985,7 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 				ToController:   s.PointOuts[callsign][ctrl.Callsign].FromController,
 				Callsign:       ac.Callsign,
 			})
-			id := ctrl.FacilityIdentifier + ctrl.SectorId
+			id := s.State.STARSFacilityAdaptation.FacilityIDs[ctrl.Facility] + ctrl.SectorId
 			if len(ac.PointOutHistory) < 20 {
 				ac.PointOutHistory = append([]string{id}, ac.PointOutHistory...)
 			} else {

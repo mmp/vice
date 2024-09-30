@@ -1,5 +1,18 @@
 {
     "ZNY": {
+        "facility_ids": {
+            "ZBW": "ZCB",
+            "ZDC": "ZCW",
+            "ZNY": "ZCN",
+            "ABE": "AAA",
+            "ALB": "ALB",
+            "AVP": "WWW",
+            "BDL": "BDL",
+            "BGM": "BBB",
+            "PHL": "PPP",
+            "PVD": "PVD",
+            "WRI": "MMM"
+        },
         "coordination_fixes": {
             "FLOSI": [
                 {

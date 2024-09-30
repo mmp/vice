@@ -83,6 +83,7 @@ type Fix struct {
 type ERAMAdaptation struct { // add more later
 	ARTCC             string                     // not in JSON
 	CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
+	FacilityIDs map[string]string `json:"facility_ids"`
 }
 
 const (

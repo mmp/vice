@@ -521,9 +521,9 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 		if trk := sp.getTrack(ctx, ac); trk != nil && trk.TrackOwner != "" {
 			positionSymbol = "?"
 			if ctrl, ok := ctx.ControlClient.Controllers[trk.TrackOwner]; ok && ctrl != nil {
-				if ctrl.FacilityIdentifier != "" {
-					// For external facilities we use the facility id
-					positionSymbol = ctrl.FacilityIdentifier
+				facID, ok := ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[ctrl.Facility]
+				if ok {
+					positionSymbol = facID
 				} else if ctrl.Scope != "" {
 					positionSymbol = ctrl.Scope
 				} else {

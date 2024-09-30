@@ -98,6 +98,7 @@ type STARSFacilityAdaptation struct {
 	} `json:"scratchpad1"`
 	CoordinationLists []CoordinationList `json:"coordination_lists"`
 	RestrictionAreas  []RestrictionArea  `json:"restriction_areas"`
+	FacilityIDs    map[string]string `json:"facility_ids"`
 }
 
 type STARSControllerConfig struct {

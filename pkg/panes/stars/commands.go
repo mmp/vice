@@ -413,11 +413,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 						var fac string
 						for _, control := range ctx.ControlClient.Controllers {
 							if control.Callsign == ctx.ControlClient.Callsign {
-								fac = control.FacilityIdentifier
+								fac = ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[control.Facility]
 							}
 						}
 						for _, control := range ctx.ControlClient.Controllers {
-							if !control.ERAMFacility && control.FacilityIdentifier == fac {
+							if !control.ERAMFacility && ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[control.Facility] == fac {
 								sp.forceQL(ctx, aircraft.Callsign, control.Callsign)
 							}
 						}
@@ -2395,7 +2395,7 @@ func (sp *STARSPane) setScratchpad(ctx *panes.Context, callsign string, contents
 		// match one of the TCPs
 		if lc == 2 {
 			for _, ctrl := range ctx.ControlClient.Controllers {
-				if ctrl.FacilityIdentifier == "" && ctrl.SectorId == contents {
+				if ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[ctrl.Facility] == "" && ctrl.SectorId == contents {
 					return ErrSTARSCommandFormat
 				}
 			}
@@ -3795,7 +3795,7 @@ func (sp *STARSPane) parseQuickLookPositions(ctx *panes.Context, s string) ([]Qu
 		id = strings.TrimRight(id, "+")
 
 		control := sp.lookupControllerForId(ctx, id, "")
-		if control == nil || control.FacilityIdentifier != "" || control.Callsign == ctx.ControlClient.Callsign {
+		if control == nil || ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[control.Facility] != "" || control.Callsign == ctx.ControlClient.Callsign {
 			return positions, strings.Join(ids[i:], " "), ErrSTARSCommandFormat
 		} else {
 			positions = append(positions, QuickLookPosition{
@@ -3939,7 +3939,7 @@ func calculateAirspace(ctx *panes.Context, callsign string) (string, error) {
 func singleScope(ctx *panes.Context, facilityIdentifier string) *av.Controller {
 	var controllersInFacility []*av.Controller
 	for _, controller := range ctx.ControlClient.Controllers {
-		if controller.FacilityIdentifier == facilityIdentifier {
+		if ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[controller.Facility] == facilityIdentifier {
 			controllersInFacility = append(controllersInFacility, controller)
 		}
 	}
@@ -3968,7 +3968,7 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id, callsign stri
 		} else if lc == 3 {
 			// ∆N4P for example. Must be a different facility.
 			for _, control := range ctx.ControlClient.Controllers {
-				if control.SectorId == id[1:] && control.FacilityIdentifier == string(id[0]) {
+				if control.SectorId == id[1:] && ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[control.Facility] == string(id[0]) {
 					return control
 				}
 			}
@@ -3985,7 +3985,7 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id, callsign stri
 		}
 		if control, ok := ctx.ControlClient.Controllers[controlCallsign]; ok && control != nil {
 			toCenter := control.ERAMFacility
-			if toCenter || (id == control.FacilityIdentifier && !toCenter) {
+			if toCenter || (id == ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[control.Facility] && !toCenter) {
 				return control
 			}
 		}
@@ -3995,7 +3995,7 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id, callsign stri
 			userController := *ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]
 
 			for _, control := range ctx.ControlClient.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
-				if control.FacilityIdentifier == "" && // Same facility? (Facility ID will be "" if they are the same fac)
+				if ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[control.Facility] == "" && // Same facility? (Facility ID will be "" if they are the same fac)
 					control.SectorId[0] == userController.SectorId[0] && // Same Sector?
 					string(control.SectorId[1]) == id { // The actual controller
 					return control
@@ -4004,7 +4004,7 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id, callsign stri
 		} else if lc == 2 {
 			// Must be a same sector || same facility.
 			for _, control := range ctx.ControlClient.Controllers {
-				if control.SectorId == id && control.FacilityIdentifier == "" {
+				if control.SectorId == id && ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[control.Facility] == "" {
 					return control
 				}
 			}

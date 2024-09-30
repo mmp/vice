@@ -194,7 +194,7 @@ type Controller struct {
 	SectorId           string    `json:"sector_id"`  // e.g. N56, 2J, ...
 	Scope              string    `json:"scope_char"` // Optional. If unset, facility id is used for external, last char of sector id for local.
 	IsHuman            bool      // Not provided in scenario JSON
-	FacilityIdentifier string    `json:"facility_id"`     // For example the "N" in "N4P" showing the N90 TRACON
+	FacilityIdentifier string    `json:"facility_id"`     // TODO: remove this from all facility files
 	ERAMFacility       bool      `json:"eram_facility"`   // To weed out N56 and N4P being the same fac
 	Facility           string    `json:"facility"`        // So we can get the STARS facility from a controller
 	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
@@ -849,12 +849,6 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		e.ErrorString("\"initial_controller\" missing")
 	} else if _, ok := controlPositions[ar.InitialController]; !ok {
 		e.ErrorString("controller %q not found for \"initial_controller\"", ar.InitialController)
-	}
-
-	for _, controller := range controlPositions {
-		if controller.ERAMFacility && controller.FacilityIdentifier == "" {
-			e.ErrorString(fmt.Sprintf("%v is an ERAM facility, but has no facility id specified", controller.Callsign))
-		}
 	}
 }
 

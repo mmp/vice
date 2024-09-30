@@ -465,21 +465,21 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 				if fromCtrl.ERAMFacility { // Enroute controller
 					// From any center
 					handoffTCP = fromCtrl.SectorId
-				} else if fromCtrl.FacilityIdentifier != "" {
+				} else if ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[fromCtrl.Facility] != "" {
 					// Different facility; show full id of originator
-					handoffTCP = fromCtrl.FacilityIdentifier + fromCtrl.SectorId
+					handoffTCP = ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[fromCtrl.Facility] + fromCtrl.SectorId
 				}
 			}
 		} else { // outbound
 			if toCtrl := ctx.ControlClient.Controllers[toCallsign]; toCtrl != nil {
 				if toCtrl.ERAMFacility { // Enroute
 					// Always the one-character id and the sector
-					handoffId = toCtrl.FacilityIdentifier
+					handoffId = ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[toCtrl.Facility]
 					handoffTCP = toCtrl.SectorId
-				} else if toCtrl.FacilityIdentifier != "" { // Different facility
+				} else if ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[toCtrl.Facility] != "" { // Different facility
 					// Different facility: show their TCP, id is the facility #
-					handoffId = toCtrl.FacilityIdentifier
-					handoffTCP = toCtrl.FacilityIdentifier + toCtrl.SectorId
+					handoffId = ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[toCtrl.Facility]
+					handoffTCP = ctx.ControlClient.STARSFacilityAdaptation.FacilityIDs[toCtrl.Facility] + toCtrl.SectorId
 				} else {
 					handoffId = toCtrl.SectorId[len(toCtrl.SectorId)-1:]
 				}

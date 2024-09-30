@@ -73,7 +73,8 @@ type ERAMComputer struct {
 	eramComputers *ERAMComputers // do not include when we serialize
 }
 
-func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsBeaconBank int, eramComputers *ERAMComputers) *ERAMComputer {
+func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsAdapt STARSFacilityAdaptation, eramComputers *ERAMComputers) *ERAMComputer {
+	starsBeaconBank := starsAdapt.BeaconBank
 	ec := &ERAMComputer{
 		Adaptation:       adapt,
 		STARSComputers:   make(map[string]*STARSComputer),
@@ -89,6 +90,7 @@ func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsBeaconBank int, 
 		if tracon.ARTCC == fac {
 			sc := MakeSTARSComputer(id, ec.STARSCodePool)
 			sc.ERAMInbox = &ec.ReceivedMessages
+			sc.Adaptation = starsAdapt
 			ec.STARSComputers[id] = sc
 		}
 	}
@@ -533,6 +535,7 @@ type STARSComputer struct {
 	UnsupportedTracks []UnsupportedTrack
 	SquawkCodePool    *av.SquawkCodePool
 	HoldForRelease    []*av.Aircraft
+	Adaptation STARSFacilityAdaptation
 }
 
 func MakeSTARSComputer(id string, sq *av.SquawkCodePool) *STARSComputer {
@@ -760,7 +763,7 @@ func (comp *STARSComputer) AutomatedAcceptHandoff(ac *av.Aircraft, controller st
 		return av.ErrNoAircraftForCallsign
 	}
 
-	if ctrl := controllers[trk.TrackOwner]; ctrl != nil && ctrl.FacilityIdentifier != "" { // inter-facility
+	if ctrl := controllers[trk.TrackOwner]; ctrl != nil && comp.Adaptation.FacilityIDs[ctrl.Facility] != "" { // inter-facility
 		// TODO: in other places where a *STARSFlightPlan is passed in, can
 		// we look it up this way instead?
 		msg := comp.ContainedPlans[ac.Squawk].Message()
@@ -769,7 +772,7 @@ func (comp *STARSComputer) AutomatedAcceptHandoff(ac *av.Aircraft, controller st
 			TrackOwner: trk.HandoffController,
 		}
 		msg.MessageType = AcceptRecallTransfer
-		comp.SendTrackInfo(ctrl.FacilityIdentifier, msg, simTime)
+		comp.SendTrackInfo(comp.Adaptation.FacilityIDs[ctrl.Facility], msg, simTime)
 	} else {
 		// TODO(mtrokel): AcceptHandoff() always does this, but the code
 		// for automated handoffs has it under an else clause. Intentional?
@@ -1236,14 +1239,13 @@ type UnsupportedTrack struct {
 	FlightPlan        *STARSFlightPlan
 }
 
-func MakeERAMComputers(starsBeaconBank int, lg *log.Logger) *ERAMComputers {
+func MakeERAMComputers(starsAdapt STARSFacilityAdaptation, lg *log.Logger) *ERAMComputers {
 	ec := &ERAMComputers{
 		Computers: make(map[string]*ERAMComputer),
 	}
-
 	// Make the ERAM computer for each ARTCC that we have adaptations defined for.
 	for fac, adapt := range av.DB.ERAMAdaptations {
-		ec.Computers[fac] = MakeERAMComputer(fac, adapt, starsBeaconBank, ec)
+		ec.Computers[fac] = MakeERAMComputer(fac, adapt, starsAdapt, ec)
 	}
 
 	return ec
