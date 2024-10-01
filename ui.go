@@ -1549,7 +1549,7 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*ID*", `"Ident."`, "*ID*"},
 	[3]string{"*CVS*", `"Climb via the SID"`, "*CVS*"},
 	[3]string{"*DVS*", `"Descend via the STAR"`, "*CVS*"},
-	[3]string{"*P*", `"Toggles Pause/Unpause"`, "*P*"},
+	[3]string{"*P*", `Pauses/unpauses the sim`, "*P*"},
 }
 
 var starsCommands = [][2]string{
@@ -1629,9 +1629,11 @@ func uiDrawKeyboardWindow(c *sim.ControlClient, config *Config) {
 	if selectedCommandTypes == ACControlPrimary || selectedCommandTypes == ACControlSecondary {
 		imgui.Text("\n")
 		uiDrawMarkedupText(ui.font, fixedFont, italicFont, `
-To issue a command to an aircraft, enter one the following commands and then click on an
-aircraft to issue the command. Alternatively, enter the aircraft's callsign with a
-space after it and then enter a command. Multiple commands may be given separated by spaces.
+To issue a command to an aircraft, first type *;* to enter "TGT GEN" mode; *TG* will
+appear in the preview area in the STARS window. Then enter one or more commands and click
+on an aircraft to issue the commands to it. Alternatively, first enter the aircraft's
+callsign with a space after it and then enter a command. Multiple commands may be given
+separated by spaces.
 `)
 		imgui.Text("\n\n")
 		uiDrawMarkedupText(ui.font, fixedFont, italicFont, `

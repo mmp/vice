@@ -48,7 +48,6 @@ var (
 	STARSBackgroundColor    = renderer.RGB{.2, .2, .2} // at 100 contrast
 	STARSListColor          = renderer.RGB{.1, .9, .1}
 	STARSTextAlertColor     = renderer.RGB{1, 0, 0}
-	STARSMapColor           = renderer.RGB{.55, .55, .55}
 	STARSCompassColor       = renderer.RGB{.55, .55, .55}
 	STARSRangeRingColor     = renderer.RGB{.55, .55, .55}
 	STARSTrackBlockColor    = renderer.RGB{0.12, 0.48, 1}
@@ -280,9 +279,19 @@ func (c *STARSConvergingRunways) getRunwaysString() string {
 type VideoMapsGroup int
 
 const (
-	VideoMapsGroupGeo = iota
-	VideoMapsGroupSysProc
-	VideoMapsGroupCurrent
+	VideoMapNoCategory = iota - 1
+	VideoMapGeographicMaps
+	VideoMapControlledAirspace
+	VideoMapRunwayExtensions
+	VideoMapDangerAreas
+	VideoMapAerodromes
+	VideoMapGeneralAviation
+	VideoMapSIDsSTARs
+	VideoMapMilitary
+	VideoMapGeographicPoints
+	VideoMapProcessingAreas
+	VideoMapCurrent
+	VideoMapNumCategories
 )
 
 type DwellMode int
@@ -686,6 +695,31 @@ func (sp *STARSPane) drawWX(ctx *panes.Context, transforms ScopeTransformations,
 		transforms, cb)
 }
 
+const numMapColors = 8
+
+var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
+	[numMapColors]renderer.RGB{ // Group A
+		renderer.RGBFromUInt8(140, 140, 140),
+		renderer.RGBFromUInt8(0, 255, 255),
+		renderer.RGBFromUInt8(255, 0, 255),
+		renderer.RGBFromUInt8(238, 201, 0),
+		renderer.RGBFromUInt8(238, 106, 80),
+		renderer.RGBFromUInt8(162, 205, 90),
+		renderer.RGBFromUInt8(218, 165, 32),
+		renderer.RGBFromUInt8(72, 118, 255),
+	},
+	[numMapColors]renderer.RGB{ // Group B
+		renderer.RGBFromUInt8(140, 140, 140),
+		renderer.RGBFromUInt8(132, 112, 255),
+		renderer.RGBFromUInt8(118, 238, 198),
+		renderer.RGBFromUInt8(237, 145, 33),
+		renderer.RGBFromUInt8(218, 112, 214),
+		renderer.RGBFromUInt8(238, 180, 180),
+		renderer.RGBFromUInt8(50, 205, 50),
+		renderer.RGBFromUInt8(255, 106, 106),
+	},
+}
+
 func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
@@ -705,10 +739,10 @@ func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms ScopeTransform
 			vm = sp.videoMaps[idx]
 		}
 
-		color := ps.Brightness.VideoGroupA.ScaleRGB(STARSMapColor)
-		if vm.Group == 1 {
-			color = ps.Brightness.VideoGroupB.ScaleRGB(STARSMapColor)
-		}
+		brite := util.Select(vm.Group == 0, ps.Brightness.VideoGroupA, ps.Brightness.VideoGroupB)
+		cidx := math.Clamp(vm.Color-1, 0, numMapColors-1) // switch to 0-based indexing
+		color := brite.ScaleRGB(mapColors[vm.Group][cidx])
+
 		cb.SetRGB(color)
 		cb.Call(vm.CommandBuffer)
 	}
