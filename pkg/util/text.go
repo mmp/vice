@@ -5,6 +5,8 @@
 package util
 
 import (
+	"crypto/sha256"
+	"io"
 	"strconv"
 	"strings"
 	"unicode"
@@ -137,4 +139,13 @@ func CommaKeyExpand[T any](in map[string]T) map[string]T {
 		}
 	}
 	return m
+}
+
+func Hash(r io.Reader) ([]byte, error) {
+	hash := sha256.New()
+	_, err := io.Copy(hash, r)
+	if err != nil {
+		return nil, err
+	}
+	return hash.Sum(nil), nil
 }
