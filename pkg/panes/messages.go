@@ -77,9 +77,10 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 	mp.events = eventStream.Subscribe()
 }
 
-func (mp *MessagesPane) LoadedSim(ss sim.State, pl platform.Platform, lg *log.Logger) {}
+func (mp *MessagesPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+}
 
-func (mp *MessagesPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (mp *MessagesPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	mp.messages = nil
 }
 

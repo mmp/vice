@@ -170,9 +170,10 @@ func (fsp *FlightStripPane) possiblyAddAircraft(ss *sim.State, ac *av.Aircraft) 
 	}
 }
 
-func (fsp *FlightStripPane) LoadedSim(ss sim.State, pl platform.Platform, lg *log.Logger) {}
+func (fsp *FlightStripPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+}
 
-func (fsp *FlightStripPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	fsp.strips = nil
 	fsp.addedAircraft = make(map[string]interface{})
 }
