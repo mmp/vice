@@ -1995,19 +1995,20 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 	case CommandModeTargetGen:
 		// Aircraft control command
-		if callsign, cmds, ok := strings.Cut(cmd, " "); ok {
+		if cmd == "P" {
+			ctx.ControlClient.ToggleSimPause()
+			status.clear = true
+		} else if callsign, cmds, ok := strings.Cut(cmd, " "); ok {
 			if ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign); ac != nil {
 				sp.runAircraftCommands(ctx, ac, cmds)
 				status.clear = true
 			} else {
 				status.err = ErrSTARSIllegalACID
 			}
-			return
 		} else {
 			status.err = ErrSTARSCommandFormat
-			return
 		}
-
+		return
 	}
 
 	status.err = ErrSTARSCommandFormat
