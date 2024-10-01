@@ -2960,7 +2960,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.err = ErrSTARSIllegalPosition
 				} else {
 					status.clear = true
-					sp.pointOut(ctx, ac.Callsign, control.Callsign)
+					sp.pointOut(ctx, trk.Identifier, control.Callsign)
 				}
 				return
 
@@ -2969,22 +2969,22 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				// See if cmd works as a sector id; if so, make it a handoff.
 				control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
 				if control != nil {
-					if ac.HandoffTrackController == ctx.ControlClient.Callsign || ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.Callsign { // Redirect
+					if trk.HandoffController == ctx.ControlClient.Callsign || trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.Callsign { // Redirect
 						if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctx.ControlClient.Callsign, control.Callsign) {
 							sp.Aircraft[ac.Callsign].DatablockType = PartialDatablock
 						} else {
 							sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 						}
-						sp.redirectHandoff(ctx, ac.Callsign, control.Callsign)
+						sp.redirectHandoff(ctx, trk.Identifier, control.Callsign)
 						status.clear = true
-					} else if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
+					} else if err := sp.handoffTrack(ctx, trk.Identifier, cmd); err == nil {
 						status.clear = true
 					} else {
 						status.err = err
 					}
 				} else {
 					// Try setting the scratchpad
-					if err := sp.setScratchpad(ctx, ac.Callsign, cmd, false, true); err != nil {
+					if err := sp.setScratchpad(ctx, trk.Identifier, cmd, false, true); err != nil {
 						status.err = err
 					} else {
 						status.clear = true
