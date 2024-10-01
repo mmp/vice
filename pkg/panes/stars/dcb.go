@@ -300,7 +300,29 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		if selectButton(ctx, "CLR ALL", buttonHalfVertical, buttonScale) {
 			clear(ps.VideoMapVisible)
 		}
-		for i := 0; i < 32; i++ {
+
+		// Figure out how many map category buttons we need
+		var haveCategory [VideoMapNumCategories]bool
+		for _, vm := range sp.videoMaps {
+			if vm.Category != VideoMapNoCategory {
+				haveCategory[vm.Category] = true
+			}
+		}
+		if len(sp.systemMaps) > 0 {
+			haveCategory[VideoMapProcessingAreas] = true
+		}
+		ncat := 0
+		for _, b := range haveCategory {
+			if b {
+				ncat++
+			}
+		}
+		// There's one slot above current and then after that we start
+		// taking full columns from the right.
+		catCols := (ncat) / 2
+
+		//
+		for i := 0; i < 32-2*catCols; i++ {
 			// Indexing is tricky both because we are skipping the first 6
 			// maps, which are shown in the main DCB, but also because we
 			// draw top->down, left->right while the maps are specified
@@ -309,20 +331,36 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			drawVideoMapButton(idx)
 		}
 
-		geoMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupGeo && ps.VideoMapsList.Visible
-		if toggleButton(ctx, "GEO\nMAPS", &geoMapsSelected, buttonHalfVertical, buttonScale) {
-			ps.VideoMapsList.Selection = VideoMapsGroupGeo
-			ps.VideoMapsList.Visible = geoMapsSelected
+		mapLabels := [VideoMapNumCategories]string{
+			VideoMapGeographicMaps:     "GEO\nMAPS",
+			VideoMapControlledAirspace: "CONTROL",
+			VideoMapRunwayExtensions:   "RUNWAYS",
+			VideoMapDangerAreas:        "DANGER\nAREAS",
+			VideoMapAerodromes:         "AIRPORT",
+			VideoMapGeneralAviation:    "GENERAL\nAV",
+			VideoMapSIDsSTARs:          "SID\nSTAR",
+			VideoMapMilitary:           "MIL",
+			VideoMapGeographicPoints:   "GEO\nPOINTS",
+			VideoMapProcessingAreas:    "SYS\nPROC",
 		}
-		disabledButton(ctx, "AIRPORT", buttonHalfVertical, buttonScale)
-		sysProcSelected := ps.VideoMapsList.Selection == VideoMapsGroupSysProc && ps.VideoMapsList.Visible
-		if toggleButton(ctx, "SYS\nPROC", &sysProcSelected, buttonHalfVertical, buttonScale) {
-			ps.VideoMapsList.Selection = VideoMapsGroupSysProc
-			ps.VideoMapsList.Visible = sysProcSelected
+		for cat, b := range haveCategory {
+			if b {
+				sel := int(ps.VideoMapsList.Selection) == cat && ps.VideoMapsList.Visible
+				if toggleButton(ctx, mapLabels[cat], &sel, buttonHalfVertical, buttonScale) {
+					ps.VideoMapsList.Selection = VideoMapsGroup(cat)
+					ps.VideoMapsList.Visible = sel
+				}
+			}
 		}
-		currentMapsSelected := ps.VideoMapsList.Selection == VideoMapsGroupCurrent && ps.VideoMapsList.Visible
+		if ncat&1 == 0 {
+			// If there are an even number then there's an extra empty button above CURRENT
+			off := false
+			toggleButton(ctx, "", &off, buttonHalfVertical, buttonScale)
+		}
+
+		currentMapsSelected := ps.VideoMapsList.Selection == VideoMapCurrent && ps.VideoMapsList.Visible
 		if toggleButton(ctx, "CURRENT", &currentMapsSelected, buttonHalfVertical, buttonScale) {
-			ps.VideoMapsList.Selection = VideoMapsGroupCurrent
+			ps.VideoMapsList.Selection = VideoMapCurrent
 			ps.VideoMapsList.Visible = currentMapsSelected
 		}
 

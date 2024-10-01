@@ -564,32 +564,39 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 		text.WriteString(strings.ToUpper(m.Name) + "\n")
 	}
 
-	switch ps.VideoMapsList.Selection {
-	case VideoMapsGroupGeo:
-		text.WriteString("GEOGRAPHIC MAPS\n")
-		m := util.DuplicateSlice(sp.videoMaps)
-		slices.SortFunc(m, func(a, b av.VideoMap) int { return a.Id - b.Id })
-		for _, vm := range m {
-			format(vm)
-		}
+	mapTitles := [VideoMapNumCategories]string{
+		VideoMapGeographicMaps:     "GEOGRAPHIC MAPS",
+		VideoMapControlledAirspace: "CONTROLLED AIRSPACE",
+		VideoMapRunwayExtensions:   "RUNWAY EXTENSIONS",
+		VideoMapDangerAreas:        "DANGER AREAS",
+		VideoMapAerodromes:         "AERODROMES",
+		VideoMapGeneralAviation:    "GENERAL AVIATION",
+		VideoMapSIDsSTARs:          "SIDS/STARS",
+		VideoMapMilitary:           "MILITARY",
+		VideoMapGeographicPoints:   "GEOGRAPHIC POINTS",
+		VideoMapProcessingAreas:    "PROCESSING AREAS",
+		VideoMapCurrent:            "MAPS",
+	}
 
-	case VideoMapsGroupSysProc:
-		text.WriteString("PROCESSING AREAS\n")
-		for _, index := range util.SortedMapKeys(sp.systemMaps) {
-			format(sp.systemMaps[index])
-		}
-
-	case VideoMapsGroupCurrent:
-		text.WriteString("MAPS\n")
-		for _, id := range util.SortedMapKeys(ps.VideoMapVisible) {
-			if idx := slices.IndexFunc(sp.videoMaps, func(v av.VideoMap) bool { return v.Id == id }); idx != -1 {
-				format(sp.videoMaps[idx])
-			} else if vm, ok := sp.systemMaps[id]; ok {
-				format(vm)
+	text.WriteString(mapTitles[ps.VideoMapsList.Selection])
+	text.WriteByte('\n')
+	var m []av.VideoMap
+	if ps.VideoMapsList.Selection == VideoMapCurrent {
+		m = util.FilterSlice(sp.videoMaps, func(vm av.VideoMap) bool {
+			_, ok := ps.VideoMapVisible[vm.Id]
+			return ok
+		})
+	} else {
+		m = util.FilterSlice(sp.videoMaps, func(vm av.VideoMap) bool { return vm.Category == int(ps.VideoMapsList.Selection) })
+		if ps.VideoMapsList.Selection == VideoMapProcessingAreas {
+			for _, sysmap := range sp.systemMaps {
+				m = append(m, sysmap)
 			}
 		}
-	default:
-		ctx.Lg.Errorf("%d: unhandled VideoMapsList.Selection", ps.VideoMapsList.Selection)
+	}
+	slices.SortFunc(m, func(a, b av.VideoMap) int { return a.Id - b.Id })
+	for _, vm := range m {
+		format(vm)
 	}
 
 	if text.Len() > 0 {
