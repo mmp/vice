@@ -6700,7 +6700,6 @@
       "full_name": "Allentown approach",
       "scope_char": "4",
       "sector_id": "1A",
-      "facility_id": "4",
       "facility": "ABE"
     },
     "BOS_CTR": {
@@ -6708,7 +6707,6 @@
       "full_name": "Boston center",
       "scope_char": "C",
       "sector_id": "B37",
-      "facility_id": "B",
       "eram_facility": true,
       "facility": "ZBW"
     },
@@ -6724,7 +6722,6 @@
       "full_name": "Washington center",
       "scope_char": "C",
       "sector_id": "W32",
-      "facility_id": "W",
       "eram_facility": true,
       "facility": "ZDC"
     },
@@ -6861,7 +6858,6 @@
       "full_name": "Philly approach",
       "scope_char": "2",
       "sector_id": "1N",
-      "facility_id": "2",
       "facility": "PHL"
     },
     "TEB_TWR": {
@@ -6876,7 +6872,6 @@
       "full_name": "McGuire approach",
       "scope_char": "5",
       "sector_id": "1Y",
-      "facility_id": "5",
       "facility": "WRI"
     }
   },
@@ -7742,6 +7737,14 @@
     "keep_ldb": true,
     "scratchpad1": {
       "display_exit_fix": true
+    },
+    "facility_ids": {
+      "ABE": "4",
+      "BOS_CTR": "C",
+      "DC_CTR": "C",
+      "NY_CTR": "C",
+      "PHL": "2",
+      "WRI": "5"
     },
 
     "coordination_fixes": {
