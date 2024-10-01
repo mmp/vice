@@ -5,6 +5,7 @@
 package util
 
 import (
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -90,6 +91,14 @@ func LoadRawResource(path string) []byte {
 	}
 
 	return b
+}
+
+func GetResourceReader(path string) (io.ReadCloser, error) {
+	if r, err := (*resourcesFS).Open(path); err == nil {
+		return r.(io.ReadCloser), nil
+	} else {
+		return nil, err
+	}
 }
 
 func WalkResources(root string, fn func(path string, d fs.DirEntry, filesystem fs.FS, err error) error) error {
