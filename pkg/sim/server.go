@@ -18,7 +18,6 @@ import (
 	"runtime"
 	"time"
 
-	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/util"
 	"github.com/shirou/gopsutil/cpu"
@@ -100,15 +99,15 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 	return ch
 }
 
-func LaunchLocalServer(extraScenario string, extraVideoMap string, lg *log.Logger) (chan *Server, *av.VideoMapLibrary, error) {
+func LaunchLocalServer(extraScenario string, extraVideoMap string, lg *log.Logger) (chan *Server, error) {
 	l, err := net.Listen("tcp", ":0")
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	port := l.Addr().(*net.TCPAddr).Port
 
-	configsChan, mapLibrary := runServer(l, true, extraScenario, extraVideoMap, lg)
+	configsChan := runServer(l, true, extraScenario, extraVideoMap, lg)
 
 	ch := make(chan *Server, 1)
 	go func() {
@@ -127,15 +126,15 @@ func LaunchLocalServer(extraScenario string, extraVideoMap string, lg *log.Logge
 		}
 	}()
 
-	return ch, mapLibrary, nil
+	return ch, nil
 }
 
 func runServer(l net.Listener, isLocal bool, extraScenario string, extraVideoMap string,
-	lg *log.Logger) (chan map[string]map[string]*Configuration, *av.VideoMapLibrary) {
+	lg *log.Logger) chan map[string]map[string]*Configuration {
 	ch := make(chan map[string]map[string]*Configuration, 1)
 
 	var e util.ErrorLogger
-	scenarioGroups, simConfigurations, mapLib :=
+	scenarioGroups, simConfigurations, mapManifests :=
 		LoadScenarioGroups(isLocal, extraScenario, extraVideoMap, &e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
@@ -145,7 +144,7 @@ func runServer(l net.Listener, isLocal bool, extraScenario string, extraVideoMap
 	server := func() {
 		server := rpc.NewServer()
 
-		sm := NewSimManager(scenarioGroups, simConfigurations, mapLib, lg)
+		sm := NewSimManager(scenarioGroups, simConfigurations, mapManifests, lg)
 		if err := server.Register(sm); err != nil {
 			lg.Errorf("unable to register SimManager: %v", err)
 			os.Exit(1)
@@ -181,7 +180,7 @@ func runServer(l net.Listener, isLocal bool, extraScenario string, extraVideoMap
 	} else {
 		server()
 	}
-	return ch, mapLib
+	return ch
 }
 
 ///////////////////////////////////////////////////////////////////////////

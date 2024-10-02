@@ -26,20 +26,20 @@ type SimManager struct {
 	activeSims           map[string]*Sim
 	controllerTokenToSim map[string]*Sim
 	mu                   util.LoggingMutex
-	mapLibrary           *av.VideoMapLibrary
+	mapManifests         map[string]*av.VideoMapManifest
 	startTime            time.Time
 	lg                   *log.Logger
 }
 
 func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
-	simConfigurations map[string]map[string]*Configuration, mapLib *av.VideoMapLibrary,
+	simConfigurations map[string]map[string]*Configuration, manifests map[string]*av.VideoMapManifest,
 	lg *log.Logger) *SimManager {
 	return &SimManager{
 		scenarioGroups:       scenarioGroups,
 		configs:              simConfigurations,
 		activeSims:           make(map[string]*Sim),
 		controllerTokenToSim: make(map[string]*Sim),
-		mapLibrary:           mapLib,
+		mapManifests:         manifests,
 		startTime:            time.Now(),
 		lg:                   lg,
 	}
@@ -52,7 +52,7 @@ type NewSimResult struct {
 
 func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
 	if config.NewSimType == NewSimCreateLocal || config.NewSimType == NewSimCreateRemote {
-		sim := NewSim(*config, sm.scenarioGroups, config.NewSimType == NewSimCreateLocal, sm.mapLibrary, sm.lg)
+		sim := NewSim(*config, sm.scenarioGroups, config.NewSimType == NewSimCreateLocal, sm.mapManifests, sm.lg)
 		sim.prespawn()
 		return sm.Add(sim, result)
 	} else {
@@ -91,7 +91,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 		return errors.New("incomplete Sim; nil *State")
 	}
 
-	sim.Activate(sm.mapLibrary, sm.lg)
+	sim.Activate(sm.lg)
 
 	sm.mu.Lock(sm.lg)
 

@@ -92,6 +92,19 @@ func main() {
 		var e util.ErrorLogger
 		scenarioGroups, _, _ :=
 			sim.LoadScenarioGroups(true, *scenarioFilename, *videoMapFilename, &e, lg)
+
+		videoMaps := make(map[string]interface{})
+		for _, sgs := range scenarioGroups {
+			for _, sg := range sgs {
+				if sg.STARSFacilityAdaptation.VideoMapFile != "" {
+					videoMaps[sg.STARSFacilityAdaptation.VideoMapFile] = nil
+				}
+			}
+		}
+		for m := range videoMaps {
+			av.CheckVideoMapManifest(m, &e)
+		}
+
 		if e.HaveErrors() {
 			e.PrintErrors(nil)
 			os.Exit(1)

@@ -1520,21 +1520,18 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				status.err = ErrSTARSCommandFormat
 			} else if idx <= 0 {
 				status.err = ErrSTARSIllegalMap
-			} else {
-				_, sok := sp.systemMaps[idx]
-				if sok || slices.ContainsFunc(sp.videoMaps, func(v av.VideoMap) bool { return v.Id == idx }) {
-					// valid map index
-					_, vis := ps.VideoMapVisible[idx]
-					if (vis && op == "T") || op == "I" {
-						delete(ps.VideoMapVisible, idx)
-					} else if (!vis && op == "T") || op == "E" {
-						ps.VideoMapVisible[idx] = nil
-					}
-					sp.activeDCBMenu = dcbMenuMain
-					status.clear = true
-				} else {
-					status.err = ErrSTARSIllegalMap
+			} else if slices.ContainsFunc(sp.allVideoMaps, func(v av.VideoMap) bool { return v.Id == idx }) {
+				// Valid map index.
+				_, vis := ps.VideoMapVisible[idx]
+				if (vis && op == "T") || op == "I" {
+					delete(ps.VideoMapVisible, idx)
+				} else if (!vis && op == "T") || op == "E" {
+					ps.VideoMapVisible[idx] = nil
 				}
+				sp.activeDCBMenu = dcbMenuMain
+				status.clear = true
+			} else {
+				status.err = ErrSTARSIllegalMap
 			}
 			return
 		}

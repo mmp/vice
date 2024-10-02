@@ -12,7 +12,7 @@ import (
 	"runtime"
 )
 
-func getResourcesFS() *fs.StatFS {
+func initResourcesFS() *fs.StatFS {
 	path, err := os.Executable()
 	if err != nil {
 		panic(err)
@@ -64,7 +64,11 @@ func getResourcesFS() *fs.StatFS {
 var resourcesFS *fs.StatFS
 
 func init() {
-	resourcesFS = getResourcesFS()
+	resourcesFS = initResourcesFS()
+}
+
+func GetResourcesFS() fs.StatFS {
+	return *resourcesFS
 }
 
 // LoadResource loads the specified file from the resources directory, decompressing it if

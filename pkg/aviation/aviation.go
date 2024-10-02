@@ -5,12 +5,14 @@
 package aviation
 
 import (
+	"bytes"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
 	"math/bits"
-	"os"
+	"path/filepath"
 	"slices"
 	"sort"
 	"strconv"
@@ -870,7 +872,7 @@ func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
 
 ///////////////////////////////////////////////////////////////////////////
 
-// Note: this should match ViceMapSpec in crc2vice/dat2vice. (crc2vice
+// Note: this should match ViceMapSpec/VideoMap in crc2vice/dat2vice. (crc2vice
 // doesn't support all of these, though.)
 type VideoMap struct {
 	Label       string // for DCB
@@ -878,40 +880,68 @@ type VideoMap struct {
 	Name        string // For maps system list
 	Id          int
 	Category    int
+	Restriction struct {
+		Id        int
+		Text      [2]string
+		TextBlink bool
+		HideText  bool
+	}
 	Color int
 	Lines [][]math.Point2LL
 
 	CommandBuffer renderer.CommandBuffer
 }
 
-// VideoMapLibrary maintains a collection of video maps loaded from multiple
-// files.  Video maps are loaded on demand.
+// This should match VideoMapLibrary in dat2vice
 type VideoMapLibrary struct {
-	manifests map[string]map[string]interface{} // filename -> map name
-	maps      map[string]map[string]*VideoMap
-	toLoad    map[string]videoMapToLoad
+	Maps []VideoMap
+
+	// ProvideAllMaps indicates whether all of the maps in the file will be
+	// available in STARS; otherwise, just the ones used in the DCB are
+	// shown in the maps lists.  This is needed to handle the case that
+	// with dat2vice, we generally get just the maps that are wanted in the
+	// video map file, while the CRC-converted ones have every map for an
+	// ARTCC and in particular usually include multiple maps with the same
+	// number.
+	ProvideAllMaps bool
 }
 
-type videoMapToLoad struct {
-	referenced map[string]interface{}
+// VideoMapManifest stores which maps are available in a video map file and
+// is also able to provide the video map file's hash.
+type VideoMapManifest struct {
+	names      map[string]interface{}
 	filesystem fs.FS
+	filename   string
 }
 
-type LoadedVideoMaps struct {
-	path string
-	maps map[string]*VideoMap
-}
+func CheckVideoMapManifest(filename string, e *util.ErrorLogger) {
+	manifest, err := LoadVideoMapManifest(filename)
+	if err != nil {
+		e.Error(err)
+		return
+	}
 
-func MakeVideoMapLibrary() *VideoMapLibrary {
-	return &VideoMapLibrary{
-		manifests: make(map[string]map[string]interface{}),
-		maps:      make(map[string]map[string]*VideoMap),
-		toLoad:    make(map[string]videoMapToLoad),
+	vms, err := LoadVideoMapLibrary(filename)
+	if err != nil {
+		e.Error(err)
+		return
+	}
+
+	for n := range manifest.names {
+		if !slices.ContainsFunc(vms.Maps, func(v VideoMap) bool { return v.Name == n }) {
+			e.ErrorString("%s: map is in manifest file but not video map file", n)
+		}
+	}
+	for _, m := range vms.Maps {
+		if _, ok := manifest.names[m.Name]; !ok {
+			e.ErrorString("%s: map is in video map file but not manifest", m.Name)
+		}
 	}
 }
 
-// AddFile adds a video map to the library.
-func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, e *util.ErrorLogger) {
+func LoadVideoMapManifest(filename string) (*VideoMapManifest, error) {
+	filesystem := videoMapFS(filename)
+
 	// Load the manifest and do initial error checking
 	mf, _ := strings.CutSuffix(filename, ".zst")
 	mf, _ = strings.CutSuffix(mf, "-videomaps.gob")
@@ -919,159 +949,151 @@ func (ml *VideoMapLibrary) AddFile(filesystem fs.FS, filename string, e *util.Er
 
 	fm, err := filesystem.Open(mf)
 	if err != nil {
-		e.Error(err)
-		return
+		return nil, err
 	}
 	defer fm.Close()
 
-	var manifest map[string]interface{} // the manifest file doesn't include the lines so is fast to parse...
+	var names map[string]interface{}
 	dec := gob.NewDecoder(fm)
-	if err := dec.Decode(&manifest); err != nil {
-		e.Error(err)
-		return
+	if err := dec.Decode(&names); err != nil {
+		return nil, err
 	}
-	ml.manifests[filename] = manifest
 
 	// Make sure the file exists but don't load it until it's needed.
 	f, err := filesystem.Open(filename)
 	if err != nil {
-		e.Error(err)
+		return nil, err
 	} else {
 		f.Close()
-		ml.toLoad[filename] = videoMapToLoad{filesystem: filesystem}
+	}
+
+	return &VideoMapManifest{
+		names:      names,
+		filesystem: filesystem,
+		filename:   filename,
+	}, nil
+}
+
+func (v VideoMapManifest) HasMap(s string) bool {
+	_, ok := v.names[s]
+	return ok
+}
+
+// Hash returns a hash of the underlying video map file (i.e., not the manifest!)
+func (v VideoMapManifest) Hash() ([]byte, error) {
+	if f, err := v.filesystem.Open(v.filename); err == nil {
+		defer f.Close()
+		return util.Hash(f)
+	} else {
+		return nil, err
 	}
 }
 
-// loadVideoMap handles loading the given map; it runs asynchronously and
-// returns the result via the ml.ch chan.
-func (v videoMapToLoad) load(filename string, manifest map[string]interface{}) (map[string]*VideoMap, error) {
-	f, err := v.filesystem.Open(filename)
+func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
+	filesystem := videoMapFS(path)
+	f, err := filesystem.Open(path)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
 
-	r := io.Reader(f)
-	if strings.HasSuffix(strings.ToLower(filename), ".zst") {
-		zr, _ := zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
-		defer zr.Close()
-		r = zr
-	}
-
-	// Initial decoding of the gob file.
-	var maps []VideoMap
-	dec := gob.NewDecoder(r)
-	if err := dec.Decode(&maps); err != nil {
+	contents, err := io.ReadAll(f)
+	if err != nil {
 		return nil, err
 	}
 
-	// We'll return the maps via a map from the map name to the associated
-	// *VideoMap.
-	starsMaps := make(map[string]*VideoMap)
-	for _, sm := range maps {
-		if _, ok := manifest[sm.Name]; !ok {
-			panic(fmt.Sprintf("%s: map %q not found in manifest file", filename, sm.Name))
-		}
+	var r io.Reader
+	br := bytes.NewReader(contents)
+	var zr *zstd.Decoder
+	if len(contents) > 4 && contents[0] == 0x28 && contents[1] == 0xb5 && contents[2] == 0x2f && contents[3] == 0xfd {
+		// zstd compressed
+		zr, _ = zstd.NewReader(br, zstd.WithDecoderConcurrency(0))
+		defer zr.Close()
+		r = zr
+	} else {
+		r = br
+	}
 
-		ld := renderer.GetLinesDrawBuilder()
-		for _, lines := range sm.Lines {
+	// Decode the gobfile.
+	var vmf VideoMapLibrary
+	if err := gob.NewDecoder(r).Decode(&vmf); err != nil {
+		// Try the old format, just an array of maps
+		_, _ = br.Seek(io.SeekStart, 0)
+		if zr != nil {
+			zr.Reset(br)
+		}
+		if err := gob.NewDecoder(r).Decode(&vmf.Maps); err != nil {
+			return nil, err
+		}
+	}
+
+	// Convert the line specifications into command buffers for drawing.
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+	for i, m := range vmf.Maps {
+		ld.Reset()
+
+		for _, lines := range m.Lines {
 			// Slightly annoying: the line vertices are stored with
 			// Point2LLs but AddLineStrip() expects [2]float32s.
 			fl := util.MapSlice(lines, func(p math.Point2LL) [2]float32 { return p })
 			ld.AddLineStrip(fl)
 		}
-		ld.GenerateCommands(&sm.CommandBuffer)
+		ld.GenerateCommands(&m.CommandBuffer)
 
 		// Clear out Lines so that the memory can be reclaimed since they
 		// aren't needed any more.
-		sm.Lines = nil
-		starsMaps[sm.Name] = &sm
+		m.Lines = nil
+		vmf.Maps[i] = m
 	}
 
-	return starsMaps, nil
+	return &vmf, nil
 }
 
-func (ml *VideoMapLibrary) GetMap(filename, mapname string) (*VideoMap, error) {
-	if _, ok := ml.maps[filename]; !ok {
-		if vload, ok := ml.toLoad[filename]; !ok {
-			return nil, fmt.Errorf("%s: video map %q requested from file that isn't being loaded",
-				filename, mapname)
-		} else {
-			var err error
-			ml.maps[filename], err = vload.load(filename, ml.manifests[filename])
-			if err != nil {
-				return nil, err
-			}
-			delete(ml.toLoad, filename)
-		}
+// Loads the specified video map file, though only if its hash matches the
+// provided hash. Returns an error otherwise.
+func HashCheckLoadVideoMap(path string, wantHash []byte) (*VideoMapLibrary, error) {
+	filesystem := videoMapFS(path)
+	f, err := filesystem.Open(path)
+	if err != nil {
+		return nil, err
 	}
-	if m, ok := ml.maps[filename][mapname]; !ok {
-		return nil, fmt.Errorf("%s: no video map %q", filename, mapname)
+
+	gotHash, err := util.Hash(f)
+	f.Close()
+	if true || !slices.Equal(gotHash, wantHash) {
+		return nil, errors.New("hash mismatch")
+	}
+
+	return LoadVideoMapLibrary(path)
+}
+
+// Returns an fs.FS that allows us to load the video map with the given path.
+func videoMapFS(path string) fs.FS {
+	if filepath.IsAbs(path) {
+		return util.RootFS{}
 	} else {
-		return m, nil
+		return util.GetResourcesFS()
 	}
-}
-
-func (ml VideoMapLibrary) HaveFile(filename string) bool {
-	// This can be determined strictly from the manifests and so there's no
-	// need to block.
-	_, ok := ml.manifests[filename]
-	return ok
-}
-
-func (ml VideoMapLibrary) AvailableFiles() []string {
-	return util.MapSlice(util.SortedMapKeys(ml.manifests),
-		func(s string) string {
-			s = strings.TrimPrefix(s, "videomaps/")
-			s, _, _ = strings.Cut(s, "-")
-			return s
-		})
-
-}
-
-func (ml VideoMapLibrary) AvailableMaps(filename string) []string {
-	if mf, ok := ml.manifests[filename]; !ok {
-		return nil
-	} else {
-		return util.SortedMapKeys(mf)
-	}
-}
-
-func (ml VideoMapLibrary) HaveMap(filename, mapname string) bool {
-	mf, ok := ml.manifests[filename]
-	if ok {
-		_, ok = mf[mapname]
-	}
-	return ok
 }
 
 func PrintVideoMaps(path string, e *util.ErrorLogger) {
-	lib := MakeVideoMapLibrary()
-	lib.AddFile(os.DirFS("."), path, e)
+	if vmf, err := LoadVideoMapLibrary(path); err != nil {
+		e.Error(err)
+		return
+	} else {
+		sort.Slice(vmf.Maps, func(i, j int) bool {
+			vi, vj := vmf.Maps[i], vmf.Maps[j]
+			if vi.Id != vj.Id {
+				return vi.Id < vj.Id
+			}
+			return vi.Name < vj.Name
+		})
 
-	var videoMaps []VideoMap
-	for _, name := range lib.AvailableMaps(path) {
-		if name == "" {
-			continue
+		fmt.Printf("%5s\t%20s\t%s\n", "Id", "Label", "Name")
+		for _, m := range vmf.Maps {
+			fmt.Printf("%5d\t%20s\t%s\n", m.Id, m.Label, m.Name)
 		}
-		if m, err := lib.GetMap(path, name); err != nil {
-			e.Error(err)
-		} else {
-			videoMaps = append(videoMaps, *m)
-		}
-	}
-
-	sort.Slice(videoMaps, func(i, j int) bool {
-		vi, vj := videoMaps[i], videoMaps[j]
-		if vi.Id != vj.Id {
-			return vi.Id < vj.Id
-		}
-		return vi.Name < vj.Name
-	})
-
-	fmt.Printf("%5s\t%20s\t%s\n", "Id", "Label", "Name")
-	for _, m := range videoMaps {
-		fmt.Printf("%5d\t%20s\t%s\n", m.Id, m.Label, m.Name)
 	}
 }
 

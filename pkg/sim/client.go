@@ -453,6 +453,12 @@ func (c *ControlClient) DeleteRestrictionArea(idx int, success func(any), err fu
 		})
 }
 
+func (c *ControlClient) GetVideoMapLibrary(filename string) (*av.VideoMapLibrary, error) {
+	var vmf av.VideoMapLibrary
+	err := c.proxy.GetVideoMapLibrary(filename, &vmf)
+	return &vmf, err
+}
+
 func (c *ControlClient) GetUpdates(eventStream *EventStream, onErr func(error)) {
 	if c.proxy == nil {
 		return

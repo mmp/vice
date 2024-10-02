@@ -296,10 +296,10 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 
 	// Make the scenario's default video maps visible
 	p.VideoMapVisible = make(map[int]interface{})
-	_, defaultVideoMaps := ss.GetVideoMaps()
+	_, defaultVideoMaps := ss.GetControllerVideoMaps()
 	for _, dm := range defaultVideoMaps {
-		if idx := slices.IndexFunc(sp.videoMaps, func(m av.VideoMap) bool { return m.Name == dm }); idx != -1 {
-			p.VideoMapVisible[sp.videoMaps[idx].Id] = nil
+		if idx := slices.IndexFunc(sp.allVideoMaps, func(v av.VideoMap) bool { return v.Name == dm }); idx != -1 {
+			p.VideoMapVisible[sp.allVideoMaps[idx].Id] = nil
 		} else {
 			// This should have been validated at load time.
 			// lg.Errorf("%s: \"default_map\" not found in \"stars_maps\"", dm)
