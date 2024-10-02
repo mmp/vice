@@ -2507,6 +2507,14 @@ func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrac
 			}
 	
 			stars.AddUnsupportedTrack(ut)
+
+			s.eventStream.Post(Event{
+				Type: InitiatedTrackEvent,
+				Callsign: callsign,
+				ToController: ctrl.Callsign,
+				UnsupportedAircraft: true,
+			})
+
 			return nil
 		
 }
@@ -2523,6 +2531,12 @@ func (s *Sim) DropUnsupportedTrack(token, callsign string) error {
 				return err
 			}
 			stars.DropUnsupportedTrack(callsign)
+			s.eventStream.Post(Event{
+				Type: DroppedTrackEvent,
+				Callsign: callsign,
+				FromController: ctrl.Callsign,
+				UnsupportedAircraft: true,
+			})
 			return nil 
 }
 
@@ -2546,6 +2560,13 @@ func (s *Sim) HandoffUnsupportedTrack(token, callsign, handoffController string)
 				Time:                s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
 				ReceivingController: handoffController,
 			}
+			s.eventStream.Post(Event{
+				Type: OfferedHandoffEvent,
+				Callsign: callsign,
+				ToController: handoffController,
+				FromController: ctrl.Callsign,
+				UnsupportedAircraft: true,
+			})
 			return nil 
 }
 
@@ -2565,6 +2586,14 @@ func (s *Sim) AcceptUnsupportedhandoff(token, callsign, handoffController string
 			}
 			stars.AcceptUnsupportedHandoff(callsign, handoffController)
 			delete(s.Handoffs, callsign) // If applicable
+
+			s.eventStream.Post(Event{
+				Type: AcceptedHandoffEvent,
+				Callsign: callsign,
+				ToController: ctrl.Callsign,
+				FromController: handoffController,
+				UnsupportedAircraft: true,
+			})
 			return nil 
 }
 

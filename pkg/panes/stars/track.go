@@ -242,6 +242,15 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		}
 	}
 
+	for callsign := range ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).UnsupportedTracks {
+		if _, ok := sp.UnsupportedTracks[callsign]; !ok {
+			north, _ := sp.numpadToDirection('8')
+			sp.UnsupportedTracks[callsign] = &UnsupportedState{
+				LeaderLineDirection: north,
+			}
+		}
+	}
+
 	// See if any aircraft we have state for have been removed
 	for callsign, state := range sp.Aircraft {
 		if _, ok := ctx.ControlClient.Aircraft[callsign]; !ok {
@@ -322,9 +331,22 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 		case sim.InitiatedTrackEvent:
 			if event.ToController == ctx.ControlClient.Callsign {
-				if state, ok := sp.Aircraft[event.Callsign]; ok {
-					state.DatablockType = FullDatablock
+				if event.UnsupportedAircraft {
+					if state, ok := sp.UnsupportedTracks[event.Callsign]; ok {
+						state.Visible = true
+					} else {
+						north, _ := sp.numpadToDirection('8')
+						sp.UnsupportedTracks[event.Callsign] = &UnsupportedState{
+							LeaderLineDirection: north,
+							Visible:             true,
+						}
+					}
+				} else {
+					if state, ok := sp.Aircraft[event.Callsign]; ok {
+						state.DatablockType = FullDatablock
+					}
 				}
+
 			}
 
 		case sim.OfferedHandoffEvent:
@@ -334,13 +356,15 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 		case sim.AcceptedHandoffEvent:
 			if event.FromController == ctx.ControlClient.Callsign && event.ToController != ctx.ControlClient.Callsign {
-				if state, ok := sp.Aircraft[event.Callsign]; ok {
+				if state, ok := sp.Aircraft[event.Callsign]; ok && !event.UnsupportedAircraft {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
+				} else if state, ok := sp.UnsupportedTracks[event.Callsign]; ok && event.UnsupportedAircraft {
+					state.HandoffAccepted = true
+					state.HandoffFlashingEndTime = time.Now().Add(10 * time.Second)
 				}
 			}
-
 		case sim.AcceptedRedirectedHandoffEvent:
 			if event.FromController == ctx.ControlClient.Callsign && event.ToController != ctx.ControlClient.Callsign {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
@@ -709,11 +733,17 @@ func (sp *STARSPane) drawUnsupportedTrack(data *sim.UnsupportedTrack, ctx *panes
 	defer renderer.ReturnColoredLinesDrawBuilder(ld) // Ensure the builder is returned
 
 	color, _, posBrightness := sp.unsupportedTrackDatablockColorBrightness(ctx, data)
-	
 
 	ctrl := ctx.ControlClient.Controllers[data.Owner]
 	positionSymbol := string(ctrl.SectorId[1])
 	state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
+	if state == nil {
+		north, _ := sp.numpadToDirection('8')
+		state = &UnsupportedState{
+			LeaderLineDirection: north,
+		}
+		sp.UnsupportedTracks[data.FlightPlan.Callsign] = state
+	}
 
 	font := sp.systemFont[ps.CharSize.PositionSymbols]
 	outlineFont := sp.systemOutlineFont[ps.CharSize.PositionSymbols]

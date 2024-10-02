@@ -862,7 +862,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 		dbBrightness = ps.Brightness.LimitedDatablocks
 		posBrightness = ps.Brightness.LimitedDatablocks
 	} else /* dt == FullDatablock */ {
-		if trk != nil && (trk.TrackOwner != ctx.ControlClient.Callsign) || (trk.AutoAssociateFP && ac.WaypointHandoffController == ctx.ControlClient.Callsign) {
+		if trk != nil && (trk.TrackOwner != ctx.ControlClient.Callsign) || (trk.AutoAssociateFP && trk.HandoffController == ctx.ControlClient.Callsign) {
 			dbBrightness = ps.Brightness.OtherTracks
 			posBrightness = ps.Brightness.OtherTracks
 		} else {
@@ -936,6 +936,12 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 func (sp *STARSPane) unsupportedTrackDatablockColorBrightness(ctx *panes.Context, data *sim.UnsupportedTrack) (color renderer.RGB, dbBrightness, posBrightness STARSBrightness) {
 	ps := sp.currentPrefs()
 	state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
+	if state == nil {
+		color = STARSUntrackedAircraftColor
+		dbBrightness = ps.Brightness.LimitedDatablocks
+		posBrightness = ps.Brightness.LimitedDatablocks
+		return
+	}
 	dt := sp.unsupportedDatablockType(ctx, data)
 
 	_, forceFDB := sp.InboundPointOuts[data.FlightPlan.Callsign]
@@ -992,6 +998,9 @@ func (sp *STARSPane) unsupportedTrackDatablockColorBrightness(ctx *panes.Context
 
 func (sp *STARSPane) unsupportedDatablockType(ctx *panes.Context, data *sim.UnsupportedTrack) DatablockType {
 	state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
+	if state == nil {
+		return PartialDatablock
+	}
 	if data.Owner == ctx.ControlClient.Callsign {
 		return FullDatablock
 	}
@@ -1118,6 +1127,12 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		db := sp.getUnsupportedDatablock(data, ctx)
 		pac := transforms.WindowFromLatLongP(data.TrackLocation)
 		state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
+		if state == nil {
+			north, _ := sp.numpadToDirection('8')
+			state = &UnsupportedState{
+				LeaderLineDirection: north,
+			}
+		}
 		vll := sp.getLeaderLineVector(ctx, *state.LeaderLineDirection) 
 		pll := math.Add2f(pac, vll)
 		if math.Length2f(vll) == 0 {
@@ -1136,9 +1151,9 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 			leaderLineDirection = *state.LeaderLineDirection
 		}
 		font := sp.systemFont[ps.CharSize.Datablocks]
-		brightness := ps.Brightness.FullDatablocks
+		_, dbBrite, _ := sp.unsupportedTrackDatablockColorBrightness(ctx, data)
 		halfSeconds := realNow.UnixMilli() / 500
-		db.draw(td, pll, font, brightness, leaderLineDirection, halfSeconds)
+		db.draw(td, pll, font, dbBrite, leaderLineDirection, halfSeconds)
 	}
 
 
@@ -1149,21 +1164,8 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 func (sp *STARSPane) getUnsupportedDatablock(data *sim.UnsupportedTrack, ctx *panes.Context) datablock {
 	db := &fullDatablock{}
 
-	color := STARSUntrackedAircraftColor
-	state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
-
+	color, _, _ := sp.unsupportedTrackDatablockColorBrightness(ctx, data)
 	
-
-	if state.IsSelected {
-		color = STARSSelectedAircraftColor
-	} else if data.Owner == ctx.ControlClient.Callsign {
-		color = STARSTrackedAircraftColor
-	} else if data.HandoffController == ctx.ControlClient.Callsign {
-		color = STARSTrackedAircraftColor
-	}
-	
-
-
 	formatDBText(db.field1[:], data.FlightPlan.Callsign + "*", color, false)
 
 	if len(data.FlightPlan.Callsign) >= 3 {
