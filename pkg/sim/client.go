@@ -973,11 +973,12 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 	}
 
 	if imgui.CollapsingHeader("Controllers") {
-		if imgui.BeginTableV("controllers", 4, tableFlags, imgui.Vec2{}, 0) {
+		if imgui.BeginTableV("controllers", 5, tableFlags, imgui.Vec2{}, 0) {
 			imgui.TableSetupColumn("TCP")
 			imgui.TableSetupColumn("Human")
 			imgui.TableSetupColumn("Frequency")
 			imgui.TableSetupColumn("Name")
+			imgui.TableSetupColumn("ERAM ID")
 			imgui.TableHeadersRow()
 
 			for _, callsign := range util.SortedMapKeys(c.Controllers) {
@@ -1005,6 +1006,9 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 				imgui.Text(ctrl.Frequency.String())
 				imgui.TableNextColumn()
 				imgui.Text(ctrl.Callsign)
+				imgui.TableNextColumn()
+				eram, _, _  := c.ERAMComputers.FacilityComputers(c.Controllers[c.Callsign].Facility)
+				imgui.Text(eram.Adaptation.FacilityIDs[ctrl.Facility])
 			}
 
 			imgui.EndTable()

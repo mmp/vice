@@ -651,7 +651,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			status.err = ErrSTARSCommandFormat
 			return
 		case 1:
-			receivingFacility = comp.Identifier
+			receivingFacility = comp.ERAMID
 		case 2:
 			receivingFacility = cmds[1]
 		}

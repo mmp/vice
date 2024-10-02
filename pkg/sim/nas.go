@@ -89,6 +89,7 @@ func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsAdapt STARSFacil
 	for id, tracon := range av.DB.TRACONs {
 		if tracon.ARTCC == fac {
 			sc := MakeSTARSComputer(id, ec.STARSCodePool)
+			sc.ERAMID = ec.Adaptation.FacilityIDs[sc.Identifier]
 			sc.ERAMInbox = &ec.ReceivedMessages
 			sc.Adaptation = starsAdapt
 			ec.STARSComputers[id] = sc
@@ -461,6 +462,10 @@ func (comp *ERAMComputer) DropTrack(ac *av.Aircraft) error {
 }
 
 func (comp *ERAMComputer) RequestFP(identifier, receivingFaciility string) error {
+	receivingFaciility, ok := comp.Adaptation.FacilityIDs[receivingFaciility]
+	if !ok {
+		return av.ErrNoSTARSFacility
+	}
 	if _, ok := comp.STARSComputers[receivingFaciility]; !ok {
 		return av.ErrNoSTARSFacility
 	}
@@ -536,6 +541,7 @@ type STARSComputer struct {
 	SquawkCodePool    *av.SquawkCodePool
 	HoldForRelease    []*av.Aircraft
 	Adaptation STARSFacilityAdaptation
+	ERAMID	string // How ERAM identifies this facility
 }
 
 func MakeSTARSComputer(id string, sq *av.SquawkCodePool) *STARSComputer {
