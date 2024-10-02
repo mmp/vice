@@ -933,6 +933,88 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 	return
 }
 
+func (sp *STARSPane) unsupportedTrackDatablockColorBrightness(ctx *panes.Context, data *sim.UnsupportedTrack) (color renderer.RGB, dbBrightness, posBrightness STARSBrightness) {
+	ps := sp.currentPrefs()
+	state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
+	dt := sp.unsupportedDatablockType(ctx, data)
+
+	_, forceFDB := sp.InboundPointOuts[data.FlightPlan.Callsign]
+
+	forceFDB = forceFDB || (state.HandoffAccepted && ctx.Now.Before(state.HandoffFlashingEndTime))
+	forceFDB = forceFDB || (data.HandoffController == ctx.ControlClient.Callsign)
+
+	// TODO: Dwell aircraft
+
+	if forceFDB || state.HandoffAccepted {
+		dbBrightness = ps.Brightness.FullDatablocks
+		posBrightness = ps.Brightness.Positions
+	} else if dt == PartialDatablock {
+		dbBrightness = ps.Brightness.LimitedDatablocks
+		posBrightness = ps.Brightness.LimitedDatablocks
+	} else {
+		if data.Owner == ctx.ControlClient.Callsign || data.HandoffController == ctx.ControlClient.Callsign {
+			dbBrightness = ps.Brightness.FullDatablocks
+			posBrightness = ps.Brightness.FullDatablocks
+		} else {
+			dbBrightness = ps.Brightness.OtherTracks
+			posBrightness = ps.Brightness.OtherTracks
+		}
+	}
+
+	halfSeconds := ctx.Now.UnixMilli() / 500
+	if forceFDB && halfSeconds&1 == 0 {
+		dbBrightness /= 2
+		posBrightness /= 2
+	}
+
+	// TODO: Redirected handoffs here
+
+	if _, ok := sp.InboundPointOuts[data.FlightPlan.Callsign]; ok || state.PointedOut { // TODO: Add forceQL here
+		color = STARSInboundPointOutColor
+	} else if state.IsSelected {
+		color = STARSSelectedAircraftColor
+	} else if data.Owner == ctx.ControlClient.Callsign {
+		color = STARSTrackedAircraftColor
+	} else if data.HandoffController == ctx.ControlClient.Callsign {
+		color = STARSTrackedAircraftColor
+	} else if state.HandoffAccepted {
+		color = STARSTrackedAircraftColor
+	} else if ps.QuickLookAll && ps.QuickLookAllIsPlus {
+		color = STARSTrackedAircraftColor
+	} else if slices.ContainsFunc(ps.QuickLookPositions,
+		func(q QuickLookPosition) bool { return q.Callsign == data.Owner && q.Plus }) {
+		color = STARSTrackedAircraftColor
+	} else {
+		color = STARSUntrackedAircraftColor
+	}
+	return 
+}
+
+func (sp *STARSPane) unsupportedDatablockType(ctx *panes.Context, data *sim.UnsupportedTrack) DatablockType {
+	state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
+	if data.Owner == ctx.ControlClient.Callsign {
+		return FullDatablock
+	}
+	if data.HandoffController == ctx.ControlClient.Callsign {
+		return FullDatablock
+	}
+	if _, ok := sp.InboundPointOuts[data.FlightPlan.Callsign]; ok {
+	return FullDatablock
+	}
+	if state.PointedOut {
+		return FullDatablock
+	}
+	// TODO: 
+	// Add force QL
+	// Quicklooked
+	// Redirected handoffs
+
+	// if state.ForceQL {
+	// 	return FullDatablock
+	// }
+	return PartialDatablock
+}
+
 func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool {
 	trk := sp.getTrack(ctx, ac)
 
@@ -1046,10 +1128,17 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		} else {
 			pll[1] += float32(font.Size / 2)
 		}
+		var leaderLineDirection math.CardinalOrdinalDirection
+
+		if state.LeaderLineDirection == nil {
+			leaderLineDirection = math.North
+		} else {
+			leaderLineDirection = *state.LeaderLineDirection
+		}
 		font := sp.systemFont[ps.CharSize.Datablocks]
 		brightness := ps.Brightness.FullDatablocks
 		halfSeconds := realNow.UnixMilli() / 500
-		db.draw(td, pll, font, brightness, *state.LeaderLineDirection, halfSeconds)
+		db.draw(td, pll, font, brightness, leaderLineDirection, halfSeconds)
 	}
 
 
@@ -1061,10 +1150,18 @@ func (sp *STARSPane) getUnsupportedDatablock(data *sim.UnsupportedTrack, ctx *pa
 	db := &fullDatablock{}
 
 	color := STARSUntrackedAircraftColor
+	state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
 
-	if data.Owner == ctx.ControlClient.Callsign {
+	
+
+	if state.IsSelected {
+		color = STARSSelectedAircraftColor
+	} else if data.Owner == ctx.ControlClient.Callsign {
+		color = STARSTrackedAircraftColor
+	} else if data.HandoffController == ctx.ControlClient.Callsign {
 		color = STARSTrackedAircraftColor
 	}
+	
 
 
 	formatDBText(db.field1[:], data.FlightPlan.Callsign + "*", color, false)

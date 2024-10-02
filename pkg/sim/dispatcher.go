@@ -168,6 +168,14 @@ func (sd *Dispatcher) HandoffUnsupportedTrack(it *HandoffArgs, _ *struct{}) erro
 	}
 }
 
+func (sd *Dispatcher) AcceptUnsupportedHandoff(it *HandoffArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.HandoffUnsupportedTrack(it.ControllerToken, it.Callsign, it.Controller)
+	}
+}
+
 type UploadPlanArgs struct {
 	ControllerToken string
 	Type            int

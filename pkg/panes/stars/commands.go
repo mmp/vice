@@ -3393,16 +3393,25 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		})
 		status.clear = true 
 		return 
-	} else if ut != nil && len(cmd) > 1 && (sp.commandMode == CommandModeHandOff || sp.commandMode == CommandModeNone ) {
+	} else if ut != nil && len(cmd) >= 1 && (sp.commandMode == CommandModeHandOff || sp.commandMode == CommandModeNone ) {
 		// Handoff unsupported track
 		control := sp.lookupControllerForId(ctx, cmd, ut.FlightPlan.Callsign)
 		if control == nil {
 			status.err = ErrSTARSIllegalPosition
 			return 
 		}
+		if control.Callsign == ctx.ControlClient.Callsign {
+			status.err = ErrSTARSIllegalPosition
+			return
+		}
 		ctx.ControlClient.HandoffUnsupportedTrack(ut.FlightPlan.Callsign, control.Callsign, nil, func(err error) {
 			if err != nil {
-				ctx.Lg.Errorf("Error handing off track: %v", err)
+				ctx.Lg.Errorf("Error handing off unsupported track: %v", err)
+			}})
+	} else if ut != nil && len(cmd) == 0 && sp.commandMode == CommandModeNone { // Accept handoff
+		ctx.ControlClient.AcceptUnsupportedHandoff(ut.FlightPlan.Callsign, ut.HandoffController, nil, func(err error) {
+			if err != nil {
+				ctx.Lg.Errorf("Error accepting unsupported handoff: %v", err)
 			}})
 	}
 
@@ -3728,6 +3737,11 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 					state.IsSelected = !state.IsSelected
 					return
 				}
+			} else if ut, _ := sp.tryGetClosestUnsupportedTrack(ctx, ctx.Mouse.Pos, transforms); ut != nil {
+				if state := sp.UnsupportedTracks[ut.FlightPlan.Callsign]; state != nil {
+					state.IsSelected = !state.IsSelected
+					return
+				}	
 			}
 		}
 

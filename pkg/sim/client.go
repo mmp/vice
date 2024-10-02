@@ -199,6 +199,16 @@ func (c *ControlClient) HandoffUnsupportedTrack(callsign, handoffController stri
 		})
 }
 
+func (c *ControlClient) AcceptUnsupportedHandoff(callsign, handoffController string, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.AcceptUnsupportedHandoff(callsign, handoffController),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (c *ControlClient) AutoAssociateFP(callsign string, fp *STARSFlightPlan, success func(any),
 	err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,

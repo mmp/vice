@@ -625,6 +625,11 @@ func (comp *STARSComputer) HandoffUnsupportedTrack(callsign, handoffController s
 	comp.UnsupportedTracks[callsign].HandoffController = handoffController
 }
 
+func (comp *STARSComputer) AcceptUnsupportedHandoff(callsign, handoffController string) {
+	comp.UnsupportedTracks[callsign].Owner = handoffController
+	comp.UnsupportedTracks[callsign].HandoffController = ""
+}
+
 func (comp *STARSComputer) LookupTrackIndex(idx int) *TrackInformation {
 	if idx >= len(comp.TrackInformation) {
 		return nil

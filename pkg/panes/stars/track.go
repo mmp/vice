@@ -129,8 +129,14 @@ type AircraftState struct {
 
 // More eventually?
 type UnsupportedState struct {
-	LeaderLineDirection *math.CardinalOrdinalDirection
-	Visible             bool // If the track is visible to users that aren't controlling the track
+	LeaderLineDirection    *math.CardinalOrdinalDirection
+	Visible                bool // If the track is visible to users that aren't controlling the track.
+	HandoffAccepted        bool
+	HandoffFlashingEndTime time.Time
+	POFlashingEndTime      time.Time
+	UNFlashingEndTime      time.Time
+	IsSelected             bool
+	PointedOut             bool
 }
 
 type ATPAStatus int
@@ -471,8 +477,8 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 						state.DatablockType = FullDatablock
 					}
 				},
-				func(err error) { sp.displayError(err, ctx) })
-				ctx.ControlClient.DropUnsupportedTrack(cs, nil, nil )
+					func(err error) { sp.displayError(err, ctx) })
+				ctx.ControlClient.DropUnsupportedTrack(cs, nil, nil)
 
 			}
 		}
@@ -702,13 +708,8 @@ func (sp *STARSPane) drawUnsupportedTrack(data *sim.UnsupportedTrack, ctx *panes
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld) // Ensure the builder is returned
 
-	brightness := STARSBrightness(100)
-	var color renderer.RGB
-	if data.Owner == ctx.ControlClient.Callsign || data.HandoffController == ctx.ControlClient.Callsign {
-		color = STARSTrackedAircraftColor
-	} else {
-		color = STARSUntrackedAircraftColor
-	}
+	color, _, posBrightness := sp.unsupportedTrackDatablockColorBrightness(ctx, data)
+	
 
 	ctrl := ctx.ControlClient.Controllers[data.Owner]
 	positionSymbol := string(ctrl.SectorId[1])
@@ -720,10 +721,10 @@ func (sp *STARSPane) drawUnsupportedTrack(data *sim.UnsupportedTrack, ctx *panes
 	pt := math.Add2f(pac, [2]float32{0.5, -0.5})
 	td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
 
-	posColor := brightness.ScaleRGB(color)
+	posColor := posBrightness.ScaleRGB(color)
 	td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: font, Color: posColor})
 
-	if !state.Visible || data.Owner == ctx.ControlClient.Callsign || data.HandoffController == ctx.ControlClient.Callsign {
+	if state.Visible || data.Owner == ctx.ControlClient.Callsign || data.HandoffController == ctx.ControlClient.Callsign {
 		vll := sp.getLeaderLineVector(ctx, *state.LeaderLineDirection)
 		ld.AddLine(pac, math.Add2f(pac, vll), posColor)
 	}
@@ -732,11 +733,9 @@ func (sp *STARSPane) drawUnsupportedTrack(data *sim.UnsupportedTrack, ctx *panes
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
-	// if !state.Visible || data.Owner == ctx.ControlClient.Callsign || data.HandoffController == ctx.ControlClient.Callsign {
-		transforms.LoadWindowViewingMatrices(cb)
-		td.GenerateCommands(cb)
 
-	// }
+	transforms.LoadWindowViewingMatrices(cb)
+	td.GenerateCommands(cb)
 
 }
 
