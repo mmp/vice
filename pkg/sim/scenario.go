@@ -98,7 +98,7 @@ type STARSFacilityAdaptation struct {
 	} `json:"scratchpad1"`
 	CoordinationLists []CoordinationList `json:"coordination_lists"`
 	RestrictionAreas  []RestrictionArea  `json:"restriction_areas"`
-	FacilityIDs    map[string]string `json:"facility_ids"`
+	FacilityIDs       map[string]string  `json:"facility_ids"`
 }
 
 type STARSControllerConfig struct {
@@ -1289,7 +1289,7 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 }
 
 func GetCoordinationFix(fa av.ERAMAdaptation, fp *STARSFlightPlan, acpos math.Point2LL, waypoints []av.Waypoint) (string, bool) {
-	
+
 	for fix, adaptationFixes := range fa.CoordinationFixes {
 		if adaptationFix, err := adaptationFixes.Fix(fp.Altitude); err == nil {
 			if adaptationFix.Type == av.ZoneBasedFix {

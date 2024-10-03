@@ -993,7 +993,7 @@ func (sp *STARSPane) unsupportedTrackDatablockColorBrightness(ctx *panes.Context
 	} else {
 		color = STARSUntrackedAircraftColor
 	}
-	return 
+	return
 }
 
 func (sp *STARSPane) unsupportedDatablockType(ctx *panes.Context, data *sim.UnsupportedTrack) DatablockType {
@@ -1008,7 +1008,7 @@ func (sp *STARSPane) unsupportedDatablockType(ctx *panes.Context, data *sim.Unsu
 		return FullDatablock
 	}
 	if _, ok := sp.InboundPointOuts[data.FlightPlan.Callsign]; ok {
-	return FullDatablock
+		return FullDatablock
 	}
 	if state.PointedOut {
 		return FullDatablock
@@ -1019,7 +1019,7 @@ func (sp *STARSPane) unsupportedDatablockType(ctx *panes.Context, data *sim.Unsu
 	if state.Visible {
 		return FullDatablock
 	}
-	// TODO: 
+	// TODO:
 	// Add force QL
 	// Quicklooked
 	// Redirected handoffs
@@ -1123,7 +1123,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		halfSeconds := realNow.UnixMilli() / 500
 		db.draw(td, pll, font, brightness, sp.getLeaderLineDirection(ac, ctx), halfSeconds)
 	}
-	
+
 	comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
 
 	for _, data := range comp.UnsupportedTracks {
@@ -1133,7 +1133,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		db := sp.getUnsupportedDatablock(data, ctx)
 		pac := transforms.WindowFromLatLongP(data.TrackLocation)
 		state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
-		vll := sp.getLeaderLineVector(ctx, *state.LeaderLineDirection) 
+		vll := sp.getLeaderLineVector(ctx, *state.LeaderLineDirection)
 		pll := math.Add2f(pac, vll)
 		if math.Length2f(vll) == 0 {
 			sz := sp.getTrackSize(ctx, transforms) / 2
@@ -1156,7 +1156,6 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		db.draw(td, pll, font, dbBrite, leaderLineDirection, halfSeconds)
 	}
 
-
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
 }
@@ -1165,8 +1164,8 @@ func (sp *STARSPane) getUnsupportedDatablock(data *sim.UnsupportedTrack, ctx *pa
 	db := &fullDatablock{}
 
 	color, _, _ := sp.unsupportedTrackDatablockColorBrightness(ctx, data)
-	
-	formatDBText(db.field1[:], data.FlightPlan.Callsign + "*", color, false)
+
+	formatDBText(db.field1[:], data.FlightPlan.Callsign+"*", color, false)
 
 	fp := data.FlightPlan
 
@@ -1176,7 +1175,7 @@ func (sp *STARSPane) getUnsupportedDatablock(data *sim.UnsupportedTrack, ctx *pa
 	if fp.AircraftType != "" {
 		formatDBText(db.field5[1][4:], fp.AircraftType, color, false)
 	}
-	return db 
+	return db
 }
 
 func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) bool {

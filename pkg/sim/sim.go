@@ -1408,7 +1408,7 @@ func (s *Sim) updateState() {
 	for callsign, ho := range s.Handoffs {
 		if !now.After(ho.Time) {
 			continue
-		} 
+		}
 		ac, ok := s.State.Aircraft[callsign]
 		if !ok {
 			comp := s.State.STARSComputer(ho.ReceivingController)
@@ -1416,13 +1416,13 @@ func (s *Sim) updateState() {
 				orig := ut.Owner
 				comp.AcceptUnsupportedHandoff(ut.FlightPlan.Callsign, ho.ReceivingController)
 				s.eventStream.Post(Event{
-					Type: AcceptedHandoffEvent,
-					Callsign: callsign,
-					ToController: ho.ReceivingController,
-					FromController: orig,
+					Type:                AcceptedHandoffEvent,
+					Callsign:            callsign,
+					ToController:        ho.ReceivingController,
+					FromController:      orig,
 					UnsupportedAircraft: true,
 				})
-				continue 
+				continue
 			} else {
 				s.lg.Errorf("no aircraft for %s", callsign)
 				continue
@@ -1696,7 +1696,7 @@ func (s *Sim) updateState() {
 				if d, err := ac.DistanceToEndOfApproach(); err == nil && d < *ac.GoAroundDistance {
 					s.lg.Info("randomly going around")
 					ac.GoAroundDistance = nil // only go around once
-					
+
 					depController := s.State.DepartureController(ac, s.lg)
 					s.lg.Info(ac.Callsign, "going around", depController)
 					ac.ControllingController = depController
@@ -2494,8 +2494,9 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *math.CardinalOrdi
 		})
 }
 
+/*
+	Unsupported Track TODO:
 
-/* Unsupported Track TODO:
 1. Ability to pointout track (only intra-facility, inter-facility isn't allowed.)
 2. Send a DM msg to ERAM after a unsupported track is created.
 3. Add DB effects, such as flashing after handoff, etc.
@@ -2504,130 +2505,130 @@ func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrac
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-			serverCtrl := s.controllers[token]
-			ctrl := s.State.Controllers[serverCtrl.Callsign]
+	serverCtrl := s.controllers[token]
+	ctrl := s.State.Controllers[serverCtrl.Callsign]
 
-			_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
-			if err != nil {
-				return err
-			}
-			if ut.FlightPlan.AssignedSquawk == av.Squawk(0) {
-				ut.FlightPlan.AssignedSquawk, _ = stars.SquawkCodePool.Get()
-			}
-			
-			stars.AddUnsupportedTrack(ut)
+	_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+	if err != nil {
+		return err
+	}
+	if ut.FlightPlan.AssignedSquawk == av.Squawk(0) {
+		ut.FlightPlan.AssignedSquawk, _ = stars.SquawkCodePool.Get()
+	}
 
-			fpMsg := true
-			if stars.ContainedPlans[ut.FlightPlan.AssignedSquawk] != nil {
-				fpMsg = false
-			}
-			s.eventStream.Post(Event{
-				Type: InitiatedTrackEvent,
-				Callsign: callsign,
-				ToController: ctrl.Callsign,
-				UnsupportedAircraft: true,
-				ShowFP: fpMsg,
-			})
+	stars.AddUnsupportedTrack(ut)
 
-			return nil
-		
+	fpMsg := true
+	if stars.ContainedPlans[ut.FlightPlan.AssignedSquawk] != nil {
+		fpMsg = false
+	}
+	s.eventStream.Post(Event{
+		Type:                InitiatedTrackEvent,
+		Callsign:            callsign,
+		ToController:        ctrl.Callsign,
+		UnsupportedAircraft: true,
+		ShowFP:              fpMsg,
+	})
+
+	return nil
+
 }
 
 func (s *Sim) ChangeUnsupportedTrack(token, callsign string, ut *UnsupportedTrack) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-			serverCtrl := s.controllers[token]
-			ctrl := s.State.Controllers[serverCtrl.Callsign]
+	serverCtrl := s.controllers[token]
+	ctrl := s.State.Controllers[serverCtrl.Callsign]
 
-			_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
-			if err != nil {
-				return err
-			}
-			stars.ChangeUnsupportedTrack(ut)
+	_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+	if err != nil {
+		return err
+	}
+	stars.ChangeUnsupportedTrack(ut)
 
-			return nil
+	return nil
 }
 
 func (s *Sim) DropUnsupportedTrack(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-			serverCtrl := s.controllers[token]
-			ctrl := s.State.Controllers[serverCtrl.Callsign]
+	serverCtrl := s.controllers[token]
+	ctrl := s.State.Controllers[serverCtrl.Callsign]
 
-			_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
-			if err != nil {
-				return err
-			}
-			stars.DropUnsupportedTrack(callsign)
-			s.eventStream.Post(Event{
-				Type: DroppedTrackEvent,
-				Callsign: callsign,
-				FromController: ctrl.Callsign,
-				UnsupportedAircraft: true,
-			})
-			return nil 
+	_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+	if err != nil {
+		return err
+	}
+	stars.DropUnsupportedTrack(callsign)
+	s.eventStream.Post(Event{
+		Type:                DroppedTrackEvent,
+		Callsign:            callsign,
+		FromController:      ctrl.Callsign,
+		UnsupportedAircraft: true,
+	})
+	return nil
 }
 
 func (s *Sim) HandoffUnsupportedTrack(token, callsign, handoffController string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-			serverCtrl := s.controllers[token]
-			ctrl := s.State.Controllers[serverCtrl.Callsign]
-			octrl := s.State.Controllers[handoffController]
-			if ctrl.Facility != octrl.Facility { // Must be intra-facility
-				return av.ErrInvalidController
-			}
-			_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
-			if err != nil {
-				return err
-			}
-			err = stars.HandoffUnsupportedTrack(callsign, handoffController)
-			if err != nil {
-				return err
-			}
-			acceptDelay := 4 + rand.Intn(10)
-			s.Handoffs[callsign] = Handoff{
-				Time:                s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
-				ReceivingController: handoffController,
-			}
-			s.eventStream.Post(Event{
-				Type: OfferedHandoffEvent,
-				Callsign: callsign,
-				ToController: handoffController,
-				FromController: ctrl.Callsign,
-				UnsupportedAircraft: true,
-			})
-			return nil 
+	serverCtrl := s.controllers[token]
+	ctrl := s.State.Controllers[serverCtrl.Callsign]
+	octrl := s.State.Controllers[handoffController]
+	if ctrl.Facility != octrl.Facility { // Must be intra-facility
+		return av.ErrInvalidController
+	}
+	_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+	if err != nil {
+		return err
+	}
+	err = stars.HandoffUnsupportedTrack(callsign, handoffController)
+	if err != nil {
+		return err
+	}
+	acceptDelay := 4 + rand.Intn(10)
+	s.Handoffs[callsign] = Handoff{
+		Time:                s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+		ReceivingController: handoffController,
+	}
+	s.eventStream.Post(Event{
+		Type:                OfferedHandoffEvent,
+		Callsign:            callsign,
+		ToController:        handoffController,
+		FromController:      ctrl.Callsign,
+		UnsupportedAircraft: true,
+	})
+	return nil
 }
 
 func (s *Sim) AcceptUnsupportedhandoff(token, callsign, handoffController string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-			serverCtrl := s.controllers[token]
-			ctrl := s.State.Controllers[serverCtrl.Callsign]
-			octrl := s.State.Controllers[handoffController]
-			if ctrl.Facility != octrl.Facility { // Must be intra-facility
-				return av.ErrInvalidController
-			}
-			_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
-			if err != nil {
-				return err
-			}
-			orig := stars.UnsupportedTracks[callsign].Owner
-			stars.AcceptUnsupportedHandoff(callsign, handoffController)
-			delete(s.Handoffs, callsign) // If applicable
+	serverCtrl := s.controllers[token]
+	ctrl := s.State.Controllers[serverCtrl.Callsign]
+	octrl := s.State.Controllers[handoffController]
+	if ctrl.Facility != octrl.Facility { // Must be intra-facility
+		return av.ErrInvalidController
+	}
+	_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+	if err != nil {
+		return err
+	}
+	orig := stars.UnsupportedTracks[callsign].Owner
+	stars.AcceptUnsupportedHandoff(callsign, handoffController)
+	delete(s.Handoffs, callsign) // If applicable
 
-			s.eventStream.Post(Event{
-				Type: AcceptedHandoffEvent,
-				Callsign: callsign,
-				ToController: handoffController,
-				FromController: orig, // todo: handoff initiatior
-				UnsupportedAircraft: true,
-			})
-			return nil 
+	s.eventStream.Post(Event{
+		Type:                AcceptedHandoffEvent,
+		Callsign:            callsign,
+		ToController:        handoffController,
+		FromController:      orig, // todo: handoff initiatior
+		UnsupportedAircraft: true,
+	})
+	return nil
 }
 
 func (s *Sim) CancelUnsuppportedHandoff(token, callsign string) error {
@@ -2637,9 +2638,8 @@ func (s *Sim) CancelUnsuppportedHandoff(token, callsign string) error {
 	serverCtrl := s.controllers[token]
 	comp := s.State.STARSComputer(serverCtrl.Callsign)
 	comp.CancelUnsupportedHandoff(callsign)
-	return nil 
+	return nil
 }
-
 
 func (s *Sim) UploadFlightPlan(token string, Type int, plan *STARSFlightPlan) error {
 	s.mu.Lock(s.lg)

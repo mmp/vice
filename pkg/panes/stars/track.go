@@ -344,26 +344,26 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 					state := sp.UnsupportedTracks[event.Callsign]
 					state.Visible = true
 					if event.ShowFP {
-					comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
-					fp := comp.UnsupportedTracks[event.Callsign].FlightPlan
+						comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+						fp := comp.UnsupportedTracks[event.Callsign].FlightPlan
 
-					ut := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).UnsupportedTracks[fp.Callsign]
+						ut := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).UnsupportedTracks[fp.Callsign]
 
-					rte := "NO ROUTE"
-					if ut == nil {
-						ctx.Lg.Error("Error creating unsupported track",)
-						return
+						rte := "NO ROUTE"
+						if ut == nil {
+							ctx.Lg.Error("Error creating unsupported track")
+							return
+						}
+						if ut.FlightPlan == nil {
+							ctx.Lg.Error("Error creating unsupported trackfp:")
+							return
+						}
+						if ut.FlightPlan.Route != "" {
+							rte = ut.FlightPlan.Route
+						}
+						id := ctx.ControlClient.Controllers[ut.Owner].SectorId
+						sp.previewAreaOutput = fmt.Sprintf("%v %v %v\n%v", ut.FlightPlan.Callsign, ut.FlightPlan.AssignedSquawk, id, rte)
 					}
-					if ut.FlightPlan == nil {
-						ctx.Lg.Error("Error creating unsupported trackfp:")
-						return
-					}
-					if ut.FlightPlan.Route != "" {
-						rte = ut.FlightPlan.Route
-					}
-					id := ctx.ControlClient.Controllers[ut.Owner].SectorId
-					sp.previewAreaOutput = fmt.Sprintf("%v %v %v\n%v", ut.FlightPlan.Callsign, ut.FlightPlan.AssignedSquawk, id, rte)
-				}
 				} else {
 					if state, ok := sp.Aircraft[event.Callsign]; ok {
 						state.DatablockType = FullDatablock
@@ -541,7 +541,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 				delete(sp.UnsupportedTracks, callsign)
 			}
 		}
-		
+
 		if ac := ctx.ControlClient.Aircraft[callsign]; comp.TrackInformation[ac.Callsign] == nil && sp.AutoTrackDepartures && ac.DepartureContactController == ctx.ControlClient.Callsign && sim.InAcquisitionArea(ac) {
 			fp, err := comp.GetFlightPlan(ac.Squawk.String())
 			if err != nil {

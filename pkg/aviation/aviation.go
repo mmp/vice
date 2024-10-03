@@ -867,13 +867,13 @@ func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
 // Note: this should match ViceMapSpec in crc2vice/dat2vice. (crc2vice
 // doesn't support all of these, though.)
 type VideoMap struct {
-	Label       string // for DCB
-	Group       int    // 0 -> A, 1 -> B
-	Name        string // For maps system list
-	Id          int
-	Category    int
-	Color int
-	Lines [][]math.Point2LL
+	Label    string // for DCB
+	Group    int    // 0 -> A, 1 -> B
+	Name     string // For maps system list
+	Id       int
+	Category int
+	Color    int
+	Lines    [][]math.Point2LL
 
 	CommandBuffer renderer.CommandBuffer
 }

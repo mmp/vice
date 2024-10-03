@@ -107,7 +107,7 @@ type STARSPane struct {
 
 	// All of the aircraft in the world, each with additional information
 	// carried along in an STARSAircraftState.
-	Aircraft map[string]*AircraftState
+	Aircraft          map[string]*AircraftState
 	UnsupportedTracks map[string]*UnsupportedState
 
 	TabListAircraft    [TabListEntries]string

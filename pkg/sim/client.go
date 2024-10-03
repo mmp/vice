@@ -220,7 +220,7 @@ func (c *ControlClient) AcceptUnsupportedHandoff(callsign, handoffController str
 		})
 }
 
-func (c *ControlClient) CancelUnsupportedHandoff(callsign  string, success func(any), err func(error)) {
+func (c *ControlClient) CancelUnsupportedHandoff(callsign string, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.CancelUnsupportedHandoff(callsign),
@@ -1028,7 +1028,7 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 				imgui.TableNextColumn()
 				imgui.Text(ctrl.Callsign)
 				imgui.TableNextColumn()
-				eram, _, _  := c.ERAMComputers.FacilityComputers(c.Controllers[c.Callsign].Facility)
+				eram, _, _ := c.ERAMComputers.FacilityComputers(c.Controllers[c.Callsign].Facility)
 				imgui.Text(eram.Adaptation.FacilityIDs[ctrl.Facility])
 			}
 

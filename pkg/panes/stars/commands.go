@@ -3445,7 +3445,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			status.err = ErrSTARSIllegalTrack
 			return
 		}
-		
+
 		// Handoff unsupported track
 		ctx.ControlClient.HandoffUnsupportedTrack(ut.FlightPlan.Callsign, control.Callsign, nil, func(err error) {
 			if err != nil {
@@ -3487,7 +3487,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					sp.displayError(err, ctx)
 				}
 			})
-			
 
 		default:
 			if ut.Owner != ctx.ControlClient.Callsign {

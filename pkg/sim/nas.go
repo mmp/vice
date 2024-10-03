@@ -145,7 +145,7 @@ func (comp *ERAMComputer) SendFlightPlans(tracon string, simTime time.Time, lg *
 		}
 	}
 	for _, fp := range comp.FlightPlans {
-		sendPlanIfReady(nil, fp) 
+		sendPlanIfReady(nil, fp)
 	}
 }
 
@@ -165,13 +165,13 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, tracon string, sim
 		if err != nil {
 			comp.SendMessageToERAM(av.DB.TRACONs[tracon].ARTCC, msg)
 		}
-		fp.Sent =  true 
+		fp.Sent = true
 
 		// If the previous facility was not a ERAM facility, find a new coordination fix
 
 		if _, ok := av.DB.ARTCCs[adaptFix.ToFacility]; !ok {
 			copy := *fp
-			
+
 			// Convert the route to waypoints.
 			copy.Route = strings.TrimPrefix(copy.Route, "/. ")
 			rte, err := av.ParseWaypoints(copy.Route)
@@ -180,10 +180,10 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, tracon string, sim
 			}
 			slicedRoute := rte.RouteString()
 			idx := strings.Index(slicedRoute, adaptFix.Name)
-			if idx + len(adaptFix.Name) + 1 > len(fp.Route) { // Last fix in the route
-				return nil 
+			if idx+len(adaptFix.Name)+1 > len(fp.Route) { // Last fix in the route
+				return nil
 			}
-			slicedRoute = slicedRoute[idx + len(adaptFix.Name) + 1:]
+			slicedRoute = slicedRoute[idx+len(adaptFix.Name)+1:]
 			slicedRoute = strings.TrimSpace(slicedRoute)
 
 			copy.Route = slicedRoute
@@ -218,9 +218,7 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, tracon string, sim
 				timeToFix = distanceToFix / float32(ac.FlightPlan.CruiseSpeed) * 60
 				timeToFix -= float32(TransmitFPMessageTime)
 			}
-			
-			
-			
+
 			fp.CoordinationTime.Time = simTime.Add(time.Duration(timeToFix * float32(time.Minute)))
 		}
 
@@ -246,7 +244,7 @@ func (comp *ERAMComputer) AddDeparture(fp *av.FlightPlan, tracon string, simTime
 		comp.SendMessageToERAM(fix.ToFacility, msg)
 
 		starsFP.CoordinationFix = fix.Name
-		starsFP.Sent = true 
+		starsFP.Sent = true
 	}
 
 	comp.AddFlightPlan(starsFP)
@@ -530,17 +528,17 @@ type STARSComputer struct {
 	UnsupportedTracks map[string]*UnsupportedTrack
 	SquawkCodePool    *av.SquawkCodePool
 	HoldForRelease    []*av.Aircraft
-	Adaptation STARSFacilityAdaptation
-	ERAMID	string // How ERAM identifies this facility
+	Adaptation        STARSFacilityAdaptation
+	ERAMID            string // How ERAM identifies this facility
 }
 
 func MakeSTARSComputer(id string, sq *av.SquawkCodePool) *STARSComputer {
 	return &STARSComputer{
-		Identifier:       id,
-		ContainedPlans:   make(map[av.Squawk]*STARSFlightPlan),
-		TrackInformation: make(map[string]*TrackInformation),
+		Identifier:        id,
+		ContainedPlans:    make(map[av.Squawk]*STARSFlightPlan),
+		TrackInformation:  make(map[string]*TrackInformation),
 		UnsupportedTracks: make(map[string]*UnsupportedTrack),
-		SquawkCodePool:   sq,
+		SquawkCodePool:    sq,
 	}
 }
 
@@ -627,7 +625,7 @@ func (comp *STARSComputer) HandoffUnsupportedTrack(callsign, handoffController s
 		}
 	}
 	comp.UnsupportedTracks[callsign].HandoffController = handoffController
-	return nil 
+	return nil
 }
 
 func (comp *STARSComputer) AcceptUnsupportedHandoff(callsign, handoffController string) {
@@ -635,11 +633,11 @@ func (comp *STARSComputer) AcceptUnsupportedHandoff(callsign, handoffController 
 	comp.UnsupportedTracks[callsign].HandoffController = ""
 }
 
-func (comp *STARSComputer) CancelUnsupportedHandoff(callsign  string) {
+func (comp *STARSComputer) CancelUnsupportedHandoff(callsign string) {
 	comp.UnsupportedTracks[callsign].HandoffController = ""
 }
 
-func (comp *STARSComputer) UnsupportedScratchpad(callsign, sp  string, secondary bool ) {
+func (comp *STARSComputer) UnsupportedScratchpad(callsign, sp string, secondary bool) {
 	comp.UnsupportedTracks[callsign].HandoffController = ""
 }
 
@@ -1052,14 +1050,14 @@ func (comp *STARSComputer) CompletelyDeleteAircraft(ac *av.Aircraft) {
 
 type STARSFlightPlan struct {
 	*av.FlightPlan
-	FlightPlanType      int
-	CoordinationTime    CoordinationTime
-	CoordinationFix     string
-	Sent bool 
-	Altitude            string
-	SP1                 string
-	SP2                 string
-	InitialController   string // For abbreviated FPs
+	FlightPlanType    int
+	CoordinationTime  CoordinationTime
+	CoordinationFix   string
+	Sent              bool
+	Altitude          string
+	SP1               string
+	SP2               string
+	InitialController string // For abbreviated FPs
 }
 
 // Flight plan types (STARS)
@@ -1337,7 +1335,6 @@ func (ec *ERAMComputers) AddArrival(ac *av.Aircraft, facility string, fa STARSFa
 		return err
 	}
 
-	
 	sq, err := artcc.CreateSquawk()
 	if err != nil {
 		return err

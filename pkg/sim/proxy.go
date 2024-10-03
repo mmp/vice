@@ -121,31 +121,31 @@ func (s *proxy) ChangeUnsupportedTrack(callsign string, ut *UnsupportedTrack) *r
 
 func (s *proxy) DropUnsupportedTrack(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.DropUnsupportedTrack", &AircraftSpecifier{
-		ControllerToken:  s.ControllerToken,
-		Callsign:         callsign,
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
 	}, nil, nil)
 }
 
 func (s *proxy) HandoffUnsupportedTrack(callsign, handoffController string) *rpc.Call {
 	return s.Client.Go("Sim.HandoffUnsupportedTrack", &HandoffArgs{
-		ControllerToken:  s.ControllerToken,
-		Callsign:         callsign,
-		Controller: 	 handoffController,
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Controller:      handoffController,
 	}, nil, nil)
 }
 
 func (s *proxy) AcceptUnsupportedHandoff(callsign, handoffController string) *rpc.Call {
 	return s.Client.Go("Sim.AcceptUnsupportedHandoff", &HandoffArgs{
-		ControllerToken:  s.ControllerToken,
-		Callsign:         callsign,
-		Controller: 	 handoffController,
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Controller:      handoffController,
 	}, nil, nil)
 }
 
 func (s *proxy) CancelUnsupportedHandoff(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.CancelUnsupportedHandoff", &HandoffArgs{
-		ControllerToken:  s.ControllerToken,
-		Callsign:         callsign,
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
 	}, nil, nil)
 }
 
