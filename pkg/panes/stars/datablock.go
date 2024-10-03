@@ -1013,6 +1013,12 @@ func (sp *STARSPane) unsupportedDatablockType(ctx *panes.Context, data *sim.Unsu
 	if state.PointedOut {
 		return FullDatablock
 	}
+	if state.HandoffAccepted {
+		return FullDatablock
+	}
+	if state.Visible {
+		return FullDatablock
+	}
 	// TODO: 
 	// Add force QL
 	// Quicklooked
@@ -1121,7 +1127,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 	comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
 
 	for _, data := range comp.UnsupportedTracks {
-		if state := sp.UnsupportedTracks[data.FlightPlan.Callsign]; data.Owner != ctx.ControlClient.Callsign || !state.Visible  {
+		if dt := sp.unsupportedDatablockType(ctx, data); dt == PartialDatablock {
 			continue
 		}
 		db := sp.getUnsupportedDatablock(data, ctx)
@@ -1162,11 +1168,13 @@ func (sp *STARSPane) getUnsupportedDatablock(data *sim.UnsupportedTrack, ctx *pa
 	
 	formatDBText(db.field1[:], data.FlightPlan.Callsign + "*", color, false)
 
-	if len(data.FlightPlan.Callsign) >= 3 {
-		idx := len(data.FlightPlan.Callsign) - 2
-		formatDBText(db.field5[0][idx:], "00V", color, false)
-	} else {
-		formatDBText(db.field5[0][0:], "00V", color, false)
+	fp := data.FlightPlan
+
+	formatDBText(db.field5[0][4:], "00V", color, false)
+	formatDBText(db.field5[1][4:], "00V", color, false)
+	formatDBText(db.field5[2][4:], "00V", color, false)
+	if fp.AircraftType != "" {
+		formatDBText(db.field5[1][4:], fp.AircraftType, color, false)
 	}
 	return db 
 }

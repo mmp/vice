@@ -5,6 +5,7 @@
 package stars
 
 import (
+	"fmt"
 	"slices"
 	"sort"
 	"time"
@@ -137,8 +138,8 @@ type UnsupportedState struct {
 	UNFlashingEndTime      time.Time
 	IsSelected             bool
 	PointedOut             bool
-	ForceQL 			   bool	
-	RDIndicatorEnd time.Time
+	ForceQL                bool
+	RDIndicatorEnd         time.Time
 }
 
 type ATPAStatus int
@@ -332,23 +333,42 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 
 		case sim.InitiatedTrackEvent:
+			if event.UnsupportedAircraft {
+				if state, ok := sp.UnsupportedTracks[event.Callsign]; ok {
+					north, _ := sp.numpadToDirection('8')
+					state.LeaderLineDirection = north
+				}
+			}
 			if event.ToController == ctx.ControlClient.Callsign {
 				if event.UnsupportedAircraft {
-					if state, ok := sp.UnsupportedTracks[event.Callsign]; ok {
-						state.Visible = true
-					} else {
-						north, _ := sp.numpadToDirection('8')
-						sp.UnsupportedTracks[event.Callsign] = &UnsupportedState{
-							LeaderLineDirection: north,
-							Visible:             true,
-						}
+					state := sp.UnsupportedTracks[event.Callsign]
+					state.Visible = true
+					if event.ShowFP {
+					comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
+					fp := comp.UnsupportedTracks[event.Callsign].FlightPlan
+
+					ut := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).UnsupportedTracks[fp.Callsign]
+
+					rte := "NO ROUTE"
+					if ut == nil {
+						ctx.Lg.Error("Error creating unsupported track",)
+						return
 					}
+					if ut.FlightPlan == nil {
+						ctx.Lg.Error("Error creating unsupported trackfp:")
+						return
+					}
+					if ut.FlightPlan.Route != "" {
+						rte = ut.FlightPlan.Route
+					}
+					id := ctx.ControlClient.Controllers[ut.Owner].SectorId
+					sp.previewAreaOutput = fmt.Sprintf("%v %v %v\n%v", ut.FlightPlan.Callsign, ut.FlightPlan.AssignedSquawk, id, rte)
+				}
 				} else {
 					if state, ok := sp.Aircraft[event.Callsign]; ok {
 						state.DatablockType = FullDatablock
 					}
 				}
-
 			}
 
 		case sim.OfferedHandoffEvent:
@@ -363,8 +383,10 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
 				} else if state, ok := sp.UnsupportedTracks[event.Callsign]; ok && event.UnsupportedAircraft {
+					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.HandoffAccepted = true
 					state.HandoffFlashingEndTime = time.Now().Add(10 * time.Second)
+					state.Visible = true
 				}
 			}
 		case sim.AcceptedRedirectedHandoffEvent:
@@ -395,7 +417,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				sp.ForceQLCallsigns = make(map[string]interface{})
 			}
 			if _, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
-			sp.ForceQLCallsigns[event.Callsign] = nil
+				sp.ForceQLCallsigns[event.Callsign] = nil
 			} else if state, ok := sp.UnsupportedTracks[event.Callsign]; ok {
 				state.ForceQL = true
 			}
@@ -497,6 +519,9 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 		}
 		comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
 		for cs, ut := range comp.UnsupportedTracks {
+			if !slices.Contains(sp.visibleAircraft(ctx), ac) {
+				continue
+			}
 			fp := ut.FlightPlan
 			if fp.Callsign == ac.Callsign || fp.AssignedSquawk == ac.Squawk {
 				if fp.AssignedSquawk == ac.Squawk {
@@ -509,9 +534,14 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 				},
 					func(err error) { sp.displayError(err, ctx) })
 				ctx.ControlClient.DropUnsupportedTrack(cs, nil, nil)
-
 			}
 		}
+		for callsign := range sp.UnsupportedTracks {
+			if _, ok := comp.UnsupportedTracks[callsign]; !ok {
+				delete(sp.UnsupportedTracks, callsign)
+			}
+		}
+		
 		if ac := ctx.ControlClient.Aircraft[callsign]; comp.TrackInformation[ac.Callsign] == nil && sp.AutoTrackDepartures && ac.DepartureContactController == ctx.ControlClient.Callsign && sim.InAcquisitionArea(ac) {
 			fp, err := comp.GetFlightPlan(ac.Squawk.String())
 			if err != nil {
@@ -753,7 +783,7 @@ func (sp *STARSPane) drawUnsupportedTrack(data *sim.UnsupportedTrack, ctx *panes
 	posColor := posBrightness.ScaleRGB(color)
 	td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: font, Color: posColor})
 
-	if state.Visible || data.Owner == ctx.ControlClient.Callsign || data.HandoffController == ctx.ControlClient.Callsign {
+	if dt := sp.unsupportedDatablockType(ctx, data); dt == FullDatablock {
 		vll := sp.getLeaderLineVector(ctx, *state.LeaderLineDirection)
 		ld.AddLine(pac, math.Add2f(pac, vll), posColor)
 	}

@@ -1411,8 +1411,22 @@ func (s *Sim) updateState() {
 		} 
 		ac, ok := s.State.Aircraft[callsign]
 		if !ok {
-			s.lg.Errorf("no aircraft for %s", callsign)
-			continue
+			comp := s.State.STARSComputer(ho.ReceivingController)
+			if ut := comp.UnsupportedTracks[callsign]; ut != nil {
+				orig := ut.Owner
+				comp.AcceptUnsupportedHandoff(ut.FlightPlan.Callsign, ho.ReceivingController)
+				s.eventStream.Post(Event{
+					Type: AcceptedHandoffEvent,
+					Callsign: callsign,
+					ToController: ho.ReceivingController,
+					FromController: orig,
+					UnsupportedAircraft: true,
+				})
+				continue 
+			} else {
+				s.lg.Errorf("no aircraft for %s", callsign)
+				continue
+			}
 		}
 		receivingFac, ok := s.State.FacilityFromController(ho.ReceivingController)
 		if !ok {
@@ -2497,18 +2511,41 @@ func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrac
 			if err != nil {
 				return err
 			}
-	
+			if ut.FlightPlan.AssignedSquawk == av.Squawk(0) {
+				ut.FlightPlan.AssignedSquawk, _ = stars.SquawkCodePool.Get()
+			}
+			
 			stars.AddUnsupportedTrack(ut)
 
+			fpMsg := true
+			if stars.ContainedPlans[ut.FlightPlan.AssignedSquawk] != nil {
+				fpMsg = false
+			}
 			s.eventStream.Post(Event{
 				Type: InitiatedTrackEvent,
 				Callsign: callsign,
 				ToController: ctrl.Callsign,
 				UnsupportedAircraft: true,
+				ShowFP: fpMsg,
 			})
 
 			return nil
 		
+}
+
+func (s *Sim) ChangeUnsupportedTrack(token, callsign string, ut *UnsupportedTrack) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+			serverCtrl := s.controllers[token]
+			ctrl := s.State.Controllers[serverCtrl.Callsign]
+
+			_, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
+			if err != nil {
+				return err
+			}
+			stars.ChangeUnsupportedTrack(ut)
+
+			return nil
 }
 
 func (s *Sim) DropUnsupportedTrack(token, callsign string) error {
@@ -2579,14 +2616,15 @@ func (s *Sim) AcceptUnsupportedhandoff(token, callsign, handoffController string
 			if err != nil {
 				return err
 			}
+			orig := stars.UnsupportedTracks[callsign].Owner
 			stars.AcceptUnsupportedHandoff(callsign, handoffController)
 			delete(s.Handoffs, callsign) // If applicable
 
 			s.eventStream.Post(Event{
 				Type: AcceptedHandoffEvent,
 				Callsign: callsign,
-				ToController: ctrl.Callsign,
-				FromController: handoffController,
+				ToController: handoffController,
+				FromController: orig, // todo: handoff initiatior
 				UnsupportedAircraft: true,
 			})
 			return nil 

@@ -612,6 +612,10 @@ func (comp *STARSComputer) AddUnsupportedTrack(ut *UnsupportedTrack) {
 	comp.UnsupportedTracks[ut.FlightPlan.Callsign] = ut
 }
 
+func (comp *STARSComputer) ChangeUnsupportedTrack(ut *UnsupportedTrack) {
+	comp.UnsupportedTracks[ut.FlightPlan.Callsign] = ut
+}
+
 func (comp *STARSComputer) DropUnsupportedTrack(callsign string) {
 	delete(comp.UnsupportedTracks, callsign)
 }
@@ -632,6 +636,10 @@ func (comp *STARSComputer) AcceptUnsupportedHandoff(callsign, handoffController 
 }
 
 func (comp *STARSComputer) CancelUnsupportedHandoff(callsign  string) {
+	comp.UnsupportedTracks[callsign].HandoffController = ""
+}
+
+func (comp *STARSComputer) UnsupportedScratchpad(callsign, sp  string, secondary bool ) {
 	comp.UnsupportedTracks[callsign].HandoffController = ""
 }
 

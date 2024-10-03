@@ -379,8 +379,13 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 			fmt.Println("Unsuppported Tracks:")
 
-			for _, ut := range comp.UnsupportedTracks {
-				fmt.Printf("%+v\n", ut)
+			for cs, ut := range comp.UnsupportedTracks {
+				fmt.Printf("%v: %+v\n", cs, ut)
+			}
+
+			for cs, state := range sp.UnsupportedTracks {
+				fmt.Printf("%v: %+v\n", cs, state)
+
 			}
 
 		case "CR":
@@ -3334,8 +3339,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			// Find the flightplan (if applicable)
 			sq, err := av.ParseSquawk(cmd)
 			if err == nil { // Find the squawk
+				for _, ut := range comp.UnsupportedTracks {
+					if ut.FlightPlan.AssignedSquawk == sq {
+						status.err = ErrSTARSIllegalTrack
+						return
+					}
+				}
 				fp = comp.ContainedPlans[sq]
 			} else { // Index by callsign
+				if _, ok := comp.UnsupportedTracks[cmd]; ok {
+					status.err = ErrSTARSIllegalTrack
+					return
+				}
 				for _, plan := range comp.ContainedPlans {
 					if plan.Callsign == cmd {
 						fp = plan
@@ -3368,27 +3383,58 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		} else if ut != nil && len(cmd) == 1 && unicode.IsDigit(rune(cmd[0])) { // Change leader line direction
 			state := sp.UnsupportedTracks[ut.FlightPlan.Callsign]
 			if dir, ok := sp.numpadToDirection(cmd[0]); ok && state != nil {
-				state.LeaderLineDirection = dir
+				if ok {
+					if dir != nil {
+						state.LeaderLineDirection = dir
+						status.clear = true
+					} else {
+						// Global leader lines for unsupported tracks?
+						dir, _ := math.ParseCardinalOrdinalDirection("8")
+						state.LeaderLineDirection = &dir
+						status.clear = true
+					}
+				}
+
 				status.clear = true
 				return
 			}
 		} else if ut != nil && strings.HasPrefix(cmd, "**") {
 			if cmd == "**" {
 				state := sp.UnsupportedTracks[ut.FlightPlan.Callsign]
-				state.ForceQL = true 
+				state.ForceQL = true
 			} else {
 				ctrl := sp.lookupControllerForId(ctx, cmd[2:], ut.FlightPlan.Callsign)
 				sp.forceQL(ctx, ut.FlightPlan.Callsign, ctrl.Callsign)
 			}
-		} 
+		}
 	}
 
-	 if ut, _ := sp.tryGetClosestUnsupportedTrack(ctx, mousePosition, transforms);ut != nil && len(cmd) >= 1 && 
-	 (sp.commandMode == CommandModeHandOff || sp.commandMode == CommandModeNone) {
-		// Handoff unsupported track
+	if ut, _ := sp.tryGetClosestUnsupportedTrack(ctx, mousePosition, transforms); ut != nil && len(cmd) >= 1 &&
+		(sp.commandMode == CommandModeHandOff || sp.commandMode == CommandModeNone) {
+
 		control := sp.lookupControllerForId(ctx, cmd, ut.FlightPlan.Callsign)
-		if control == nil {
-			status.err = ErrSTARSIllegalPosition
+
+		// Change a/c type
+		if control == nil && (len(cmd) == 4 || len(cmd) == 6) &&
+			ut.Owner == ctx.ControlClient.Callsign {
+
+			for _, ch := range cmd[:4] {
+				if !unicode.IsLetter(ch) && !unicode.IsDigit(ch) {
+					status.err = ErrSTARSCommandFormat
+					return
+				}
+			}
+			if len(cmd) == 6 && cmd[len(cmd)-2] == '/' {
+				cmd = cmd[:len(cmd)-2] // Trim equip suffix
+			} else if len(cmd) == 6 {
+				status.err = ErrSTARSCommandFormat
+				return
+			}
+
+			ut.FlightPlan.AircraftType = cmd
+
+			ctx.ControlClient.ChangeUnsupportedTrack(ut.FlightPlan.Callsign, ut, nil, nil)
+			status.clear = true
 			return
 		}
 		if control.Callsign == ctx.ControlClient.Callsign {
@@ -3399,14 +3445,20 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			status.err = ErrSTARSIllegalTrack
 			return
 		}
-
+		
+		// Handoff unsupported track
 		ctx.ControlClient.HandoffUnsupportedTrack(ut.FlightPlan.Callsign, control.Callsign, nil, func(err error) {
 			if err != nil {
 				ctx.Lg.Errorf("Error handing off unsupported track: %v", err)
+				status.err = err
+				return
 			}
 		})
+		status.clear = true
+		return
 	} else if ut != nil && cmd == "" {
 		state := sp.UnsupportedTracks[ut.FlightPlan.Callsign]
+
 		switch {
 		case ut.HandoffController == ctx.ControlClient.Callsign && sp.commandMode == CommandModeNone:
 			ctx.ControlClient.AcceptUnsupportedHandoff(ut.FlightPlan.Callsign, ut.HandoffController, nil, func(err error) {
@@ -3421,25 +3473,31 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			status.clear = true
 			state.HandoffAccepted = false
 			state.HandoffFlashingEndTime = ctx.Now
-		case ut.HandoffController != "" && ut.HandoffController != ctx.ControlClient.Callsign && 
-		ut.Owner == ctx.ControlClient.Callsign && sp.commandMode == CommandModeNone:
+		case ut.HandoffController != "" && ut.HandoffController != ctx.ControlClient.Callsign &&
+			ut.Owner == ctx.ControlClient.Callsign && sp.commandMode == CommandModeNone:
 			ctx.ControlClient.CancelUnsupportedHandoff(ut.FlightPlan.Callsign, nil, func(err error) {
 				fmt.Printf("Error cancelling handoff: %v.\n", err)
 			})
 		case sp.commandMode == CommandModeTerminateControl:
+			status.clear = true
+			delete(sp.UnsupportedTracks, ut.FlightPlan.Callsign)
 			ctx.ControlClient.DropUnsupportedTrack(ut.FlightPlan.Callsign, nil, func(err error) {
 				if err != nil {
 					ctx.Lg.Errorf("Error dropping track: %v", err)
-					status.err = ErrSTARSIllegalTrack
-				} else {
-					status.clear = true 
+					sp.displayError(err, ctx)
 				}
 			})
 			
+
 		default:
-			state.Visible = !state.Visible
+			if ut.Owner != ctx.ControlClient.Callsign {
+				state.Visible = !state.Visible
+			} else {
+				status.output = fmt.Sprintf("%v     %v", ut.FlightPlan.Callsign, ut.FlightPlan.AssignedSquawk)
+			}
+
 		}
-		
+
 	}
 
 	if sp.commandMode == CommandModeMultiFunc {

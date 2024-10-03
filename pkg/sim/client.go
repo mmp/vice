@@ -179,6 +179,17 @@ func (c *ControlClient) CreateUnsupportedTrack(callsign string, ut *UnsupportedT
 		})
 }
 
+func (c *ControlClient) ChangeUnsupportedTrack(callsign string, ut *UnsupportedTrack,
+	success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.ChangeUnsupportedTrack(callsign, ut),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (c *ControlClient) DropUnsupportedTrack(callsign string, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
