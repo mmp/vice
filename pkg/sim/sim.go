@@ -1408,9 +1408,7 @@ func (s *Sim) updateState() {
 	for callsign, ho := range s.Handoffs {
 		if !now.After(ho.Time) {
 			continue
-		} else {
-			fmt.Printf("Handoff for %v before time %v, now: %v\n", callsign, ho.Time, now)
-		}
+		} 
 		ac, ok := s.State.Aircraft[callsign]
 		if !ok {
 			s.lg.Errorf("no aircraft for %s", callsign)
@@ -1431,13 +1429,11 @@ func (s *Sim) updateState() {
 			!s.controllerIsSignedIn(trk.HandoffController) {
 			var ctrl, octrl *av.Controller
 			if stars != nil { // STARS Acceptance
-				fmt.Printf("STARS Acceptance for %v\n", ac.Callsign)
 				trk := stars.TrackInformation[ac.Callsign]
 				ctrl = s.State.Controllers[trk.HandoffController]
 				octrl = s.State.Controllers[trk.TrackOwner]
 				err := stars.AcceptHandoff(ac, ctrl, s.State.Controllers, s.SimTime)
 				if err != nil {
-					s.lg.Errorf("AutoAcceptHandoff: %v", err)
 					s.AwaitingHandoffs[ac.Callsign] = Handoff{
 						ReceivingController: ctrl.Callsign,
 					}
@@ -1627,7 +1623,6 @@ func (s *Sim) updateState() {
 					controller := s.State.Controllers[ac.TrackingController]
 					octrl := s.State.Controllers[hnd.ReceivingController]
 					if controller == nil || octrl == nil {
-						fmt.Println("Awaiting Handoff Error: nil controller", controller, octrl, ac.TrackingController, hnd.ReceivingController)
 						continue
 					}
 					eram, stars, _ := s.State.ERAMComputers.FacilityComputers(controller.Facility)
@@ -1640,9 +1635,6 @@ func (s *Sim) updateState() {
 						err := eram.HandoffTrack(ac, controller, octrl, s.SimTime)
 						if err == nil {
 							delete(s.AwaitingHandoffs, callsign)
-							fmt.Printf("ERAM Awaiting Handoff Success: %v. %v\n", callsign, octrl)
-						} else {
-							fmt.Printf("ERAM Awaiting Handoff Error: %v\n", err)
 						}
 					}
 				}
@@ -1692,7 +1684,7 @@ func (s *Sim) updateState() {
 					ac.GoAroundDistance = nil // only go around once
 					
 					depController := s.State.DepartureController(ac, s.lg)
-					fmt.Println(ac.Callsign, "going around", depController)
+					s.lg.Info(ac.Callsign, "going around", depController)
 					ac.ControllingController = depController
 					rt := ac.GoAround()
 					PostRadioEvents(ac.Callsign, rt, s)
