@@ -558,7 +558,7 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 			return
 		}
 		_, vis := ps.VideoMapVisible[m.Id]
-		text.WriteString(util.Select(vis, ">", " ") + " ")
+		text.WriteString(util.Select(vis, ">", " "))
 		text.WriteString(fmt.Sprintf("%3d ", m.Id))
 		text.WriteString(fmt.Sprintf("%-8s ", strings.ToUpper(m.Label)))
 		text.WriteString(strings.ToUpper(m.Name) + "\n")
