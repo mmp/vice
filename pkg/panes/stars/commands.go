@@ -3347,6 +3347,17 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				}
 				fp = comp.ContainedPlans[sq]
 			} else { // Index by callsign
+				if len(cmd) > 7 {
+					status.err = ErrSTARSCommandFormat
+					return
+				}
+				for _, ch := range cmd {
+					if !unicode.IsDigit(ch) && !unicode.IsLetter(ch) {
+						status.err = ErrSTARSCommandFormat
+						return
+					}
+				}
+				
 				if _, ok := comp.UnsupportedTracks[cmd]; ok {
 					status.err = ErrSTARSIllegalTrack
 					return
