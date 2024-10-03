@@ -3365,23 +3365,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			ctx.ControlClient.CreateUnsupportedTrack(fp.Callsign, data, nil, nil)
 			status.clear = true
 			return
-		} else if ut != nil && cmd == "" { // Toggle visibility
-			state := sp.UnsupportedTracks[ut.FlightPlan.Callsign]
-			if state != nil {
-				comp := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign)
-				if comp.UnsupportedTracks[ut.FlightPlan.Callsign].Owner == ctx.ControlClient.Callsign {
-					state.Visible = true
-				}
-				// TODO: Add more to this like turning green, etc.
-			} else {
-				north, _ := sp.numpadToDirection('8')
-				state := &UnsupportedState{
-					Visible:             true,
-					LeaderLineDirection: north,
-				}
-				sp.UnsupportedTracks[ut.FlightPlan.Callsign] = state
-			}
-			state.Visible = !state.Visible
 		} else if ut != nil && len(cmd) == 1 && unicode.IsDigit(rune(cmd[0])) { // Change leader line direction
 			state := sp.UnsupportedTracks[ut.FlightPlan.Callsign]
 			if dir, ok := sp.numpadToDirection(cmd[0]); ok && state != nil {
@@ -3389,19 +3372,19 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				status.clear = true
 				return
 			}
-		}
+		} else if ut != nil && strings.HasPrefix(cmd, "**") {
+			if cmd == "**" {
+				state := sp.UnsupportedTracks[ut.FlightPlan.Callsign]
+				state.ForceQL = true 
+			} else {
+				ctrl := sp.lookupControllerForId(ctx, cmd[2:], ut.FlightPlan.Callsign)
+				sp.forceQL(ctx, ut.FlightPlan.Callsign, ctrl.Callsign)
+			}
+		} 
 	}
 
-	if ut, _ := sp.tryGetClosestUnsupportedTrack(ctx, mousePosition, transforms); ut != nil && cmd == "" && sp.commandMode == CommandModeTerminateControl {
-		ctx.ControlClient.DropUnsupportedTrack(ut.FlightPlan.Callsign, nil, func(err error) {
-			if err != nil {
-				ctx.Lg.Errorf("Error dropping track: %v", err)
-			}
-
-		})
-		status.clear = true
-		return
-	} else if ut != nil && len(cmd) >= 1 && (sp.commandMode == CommandModeHandOff || sp.commandMode == CommandModeNone) {
+	 if ut, _ := sp.tryGetClosestUnsupportedTrack(ctx, mousePosition, transforms);ut != nil && len(cmd) >= 1 && 
+	 (sp.commandMode == CommandModeHandOff || sp.commandMode == CommandModeNone) {
 		// Handoff unsupported track
 		control := sp.lookupControllerForId(ctx, cmd, ut.FlightPlan.Callsign)
 		if control == nil {
@@ -3422,15 +3405,15 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				ctx.Lg.Errorf("Error handing off unsupported track: %v", err)
 			}
 		})
-	} else if ut != nil && cmd == "" && ut.HandoffController == ctx.ControlClient.Callsign && sp.commandMode == CommandModeNone { // Accept handoff
-		ctx.ControlClient.AcceptUnsupportedHandoff(ut.FlightPlan.Callsign, ut.HandoffController, nil, func(err error) {
-			if err != nil {
-				ctx.Lg.Errorf("Error accepting unsupported handoff: %v", err)
-			}
-		})
-	}  else if ut != nil && cmd == "" {
+	} else if ut != nil && cmd == "" {
 		state := sp.UnsupportedTracks[ut.FlightPlan.Callsign]
 		switch {
+		case ut.HandoffController == ctx.ControlClient.Callsign && sp.commandMode == CommandModeNone:
+			ctx.ControlClient.AcceptUnsupportedHandoff(ut.FlightPlan.Callsign, ut.HandoffController, nil, func(err error) {
+				fmt.Printf("Error accepting handoff: %v.\n", err)
+			})
+		case state.ForceQL:
+			state.ForceQL = false
 		case state.PointedOut:
 			state.PointedOut = false
 			status.clear = true
@@ -3439,9 +3422,24 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			state.HandoffAccepted = false
 			state.HandoffFlashingEndTime = ctx.Now
 		case ut.HandoffController != "" && ut.HandoffController != ctx.ControlClient.Callsign && 
-		ut.Owner == ctx.ControlClient.Callsign:
-			// TODO: Cancel handoff
+		ut.Owner == ctx.ControlClient.Callsign && sp.commandMode == CommandModeNone:
+			ctx.ControlClient.CancelUnsupportedHandoff(ut.FlightPlan.Callsign, nil, func(err error) {
+				fmt.Printf("Error cancelling handoff: %v.\n", err)
+			})
+		case sp.commandMode == CommandModeTerminateControl:
+			ctx.ControlClient.DropUnsupportedTrack(ut.FlightPlan.Callsign, nil, func(err error) {
+				if err != nil {
+					ctx.Lg.Errorf("Error dropping track: %v", err)
+					status.err = ErrSTARSIllegalTrack
+				} else {
+					status.clear = true 
+				}
+			})
+			
+		default:
+			state.Visible = !state.Visible
 		}
+		
 	}
 
 	if sp.commandMode == CommandModeMultiFunc {

@@ -172,7 +172,15 @@ func (sd *Dispatcher) AcceptUnsupportedHandoff(it *HandoffArgs, _ *struct{}) err
 	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return sim.HandoffUnsupportedTrack(it.ControllerToken, it.Callsign, it.Controller)
+		return sim.AcceptUnsupportedhandoff(it.ControllerToken, it.Callsign, it.Controller)
+	}
+}
+
+func (sd *Dispatcher) CancelUnsupportedHandoff(it *HandoffArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.CancelUnsuppportedHandoff(it.ControllerToken, it.Callsign)
 	}
 }
 

@@ -137,6 +137,8 @@ type UnsupportedState struct {
 	UNFlashingEndTime      time.Time
 	IsSelected             bool
 	PointedOut             bool
+	ForceQL 			   bool	
+	RDIndicatorEnd time.Time
 }
 
 type ATPAStatus int
@@ -244,9 +246,9 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 	for callsign := range ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).UnsupportedTracks {
 		if _, ok := sp.UnsupportedTracks[callsign]; !ok {
-			north, _ := sp.numpadToDirection('8')
+			north := math.CardinalOrdinalDirection(math.North)
 			sp.UnsupportedTracks[callsign] = &UnsupportedState{
-				LeaderLineDirection: north,
+				LeaderLineDirection: &north,
 			}
 		}
 	}
@@ -392,7 +394,11 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			if sp.ForceQLCallsigns == nil {
 				sp.ForceQLCallsigns = make(map[string]interface{})
 			}
+			if _, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
 			sp.ForceQLCallsigns[event.Callsign] = nil
+			} else if state, ok := sp.UnsupportedTracks[event.Callsign]; ok {
+				state.ForceQL = true
+			}
 
 		case sim.TransferRejectedEvent:
 			if state, ok := sp.Aircraft[event.Callsign]; ok {
@@ -737,13 +743,6 @@ func (sp *STARSPane) drawUnsupportedTrack(data *sim.UnsupportedTrack, ctx *panes
 	ctrl := ctx.ControlClient.Controllers[data.Owner]
 	positionSymbol := string(ctrl.SectorId[1])
 	state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
-	if state == nil {
-		north, _ := sp.numpadToDirection('8')
-		state = &UnsupportedState{
-			LeaderLineDirection: north,
-		}
-		sp.UnsupportedTracks[data.FlightPlan.Callsign] = state
-	}
 
 	font := sp.systemFont[ps.CharSize.PositionSymbols]
 	outlineFont := sp.systemOutlineFont[ps.CharSize.PositionSymbols]

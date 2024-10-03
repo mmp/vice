@@ -627,12 +627,22 @@ func (comp *STARSComputer) DropUnsupportedTrack(callsign string) {
 	delete(comp.UnsupportedTracks, callsign)
 }
 
-func (comp *STARSComputer) HandoffUnsupportedTrack(callsign, handoffController string) {
+func (comp *STARSComputer) HandoffUnsupportedTrack(callsign, handoffController string) error {
+	if ut, ok := comp.UnsupportedTracks[callsign]; ok {
+		if ut.HandoffController != "" {
+			return av.ErrInvalidController // What error here?
+		}
+	}
 	comp.UnsupportedTracks[callsign].HandoffController = handoffController
+	return nil 
 }
 
 func (comp *STARSComputer) AcceptUnsupportedHandoff(callsign, handoffController string) {
 	comp.UnsupportedTracks[callsign].Owner = handoffController
+	comp.UnsupportedTracks[callsign].HandoffController = ""
+}
+
+func (comp *STARSComputer) CancelUnsupportedHandoff(callsign  string) {
 	comp.UnsupportedTracks[callsign].HandoffController = ""
 }
 

@@ -2314,7 +2314,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 	cmd func(*av.Controller, *av.Aircraft) []av.RadioTransmission) error {
 	if sc, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
-	} else if ac, ok := s.State.Aircraft[callsign]; !ok {
+	} else if ac, ok := s.State.Aircraft[callsign]; !ok && s.State.STARSComputer(sc.Callsign).UnsupportedTracks[callsign] == nil {
 		return av.ErrNoAircraftForCallsign
 	} else {
 		// TODO(mtrokel): this needs to be updated for the STARS tracking stuff
@@ -2554,7 +2554,10 @@ func (s *Sim) HandoffUnsupportedTrack(token, callsign, handoffController string)
 			if err != nil {
 				return err
 			}
-			stars.HandoffUnsupportedTrack(callsign, handoffController)
+			err = stars.HandoffUnsupportedTrack(callsign, handoffController)
+			if err != nil {
+				return err
+			}
 			acceptDelay := 4 + rand.Intn(10)
 			s.Handoffs[callsign] = Handoff{
 				Time:                s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
@@ -2595,6 +2598,16 @@ func (s *Sim) AcceptUnsupportedhandoff(token, callsign, handoffController string
 				UnsupportedAircraft: true,
 			})
 			return nil 
+}
+
+func (s *Sim) CancelUnsuppportedHandoff(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	serverCtrl := s.controllers[token]
+	comp := s.State.STARSComputer(serverCtrl.Callsign)
+	comp.CancelUnsupportedHandoff(callsign)
+	return nil 
 }
 
 

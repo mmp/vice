@@ -892,7 +892,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 
 	// Check if we're the controller being ForceQL
 	if _, ok := sp.ForceQLCallsigns[ac.Callsign]; ok {
-		color = STARSInboundPointOutColor
+		state.ForceQL = true
 	}
 
 	if trk.TrackOwner == "" {
@@ -1127,12 +1127,6 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		db := sp.getUnsupportedDatablock(data, ctx)
 		pac := transforms.WindowFromLatLongP(data.TrackLocation)
 		state := sp.UnsupportedTracks[data.FlightPlan.Callsign]
-		if state == nil {
-			north, _ := sp.numpadToDirection('8')
-			state = &UnsupportedState{
-				LeaderLineDirection: north,
-			}
-		}
 		vll := sp.getLeaderLineVector(ctx, *state.LeaderLineDirection) 
 		pll := math.Add2f(pac, vll)
 		if math.Length2f(vll) == 0 {

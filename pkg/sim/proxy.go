@@ -134,6 +134,13 @@ func (s *proxy) AcceptUnsupportedHandoff(callsign, handoffController string) *rp
 	}, nil, nil)
 }
 
+func (s *proxy) CancelUnsupportedHandoff(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.CancelUnsupportedHandoff", &HandoffArgs{
+		ControllerToken:  s.ControllerToken,
+		Callsign:         callsign,
+	}, nil, nil)
+}
+
 func (s *proxy) UploadFlightPlan(Type int, fp *STARSFlightPlan) *rpc.Call {
 	return s.Client.Go("Sim.UploadFlightPlan", &UploadPlanArgs{
 		ControllerToken: s.ControllerToken,
