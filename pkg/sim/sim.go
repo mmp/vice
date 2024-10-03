@@ -2517,7 +2517,8 @@ func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrac
 	}
 
 	stars.AddUnsupportedTrack(ut)
-
+	delete(stars.ContainedPlans, ut.FlightPlan.AssignedSquawk) // If applicable
+	
 	fpMsg := true
 	if stars.ContainedPlans[ut.FlightPlan.AssignedSquawk] != nil {
 		fpMsg = false
