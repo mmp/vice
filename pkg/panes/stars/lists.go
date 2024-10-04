@@ -594,14 +594,20 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 			}
 		}
 	}
+
+	// Sort by number
 	slices.SortFunc(m, func(a, b av.VideoMap) int { return a.Id - b.Id })
+
+	// If more than 50, only display the first 50.
+	if len(m) > 50 {
+		m = m[:50]
+	}
+
 	for _, vm := range m {
 		format(vm)
 	}
 
-	if text.Len() > 0 {
-		td.AddText(text.String(), pw, style)
-	}
+	td.AddText(text.String(), pw, style)
 }
 
 func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
