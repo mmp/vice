@@ -53,7 +53,7 @@ type fullDatablock struct {
 	field8 [4]dbChar
 	// line 2
 	field34 [3][5]dbChar // field 3 and 4 together, since they're connected
-	field5  [3][7]dbChar
+	field5  [3][8]dbChar
 	// line 3
 	field6 [2][5]dbChar
 	field7 [2][4]dbChar
@@ -1169,11 +1169,31 @@ func (sp *STARSPane) getUnsupportedDatablock(data *sim.UnsupportedTrack, ctx *pa
 
 	fp := data.FlightPlan
 
-	formatDBText(db.field5[0][4:], "00V", color, false)
-	formatDBText(db.field5[1][4:], "00V", color, false)
-	formatDBText(db.field5[2][4:], "00V", color, false)
+	formatDBText(db.field5[0][0:], "00V", color, false)
+	formatDBText(db.field5[1][0:], "00V", color, false)
+	formatDBText(db.field5[2][0:], "00V", color, false)
+
+	formatDBText(db.field34[0][0:], "    ", color, false)
+	formatDBText(db.field34[1][0:], "    ", color, false)
+	formatDBText(db.field34[2][0:], "    ", color, false)
+
+	if data.PilotReportedAltitude != ""{
+		formatDBText(db.field34[0][0:], data.PilotReportedAltitude + "*", color, false)
+		formatDBText(db.field34[1][0:], data.PilotReportedAltitude + "*", color, false)
+		formatDBText(db.field34[2][0:], data.PilotReportedAltitude + "*", color, false)
+	}
+
 	if fp.AircraftType != "" {
 		formatDBText(db.field5[1][4:], fp.AircraftType, color, false)
+	}
+	if data.SP1 != "" {
+		formatDBText(db.field34[1][0:], data.SP1, color, false)
+	}
+	if data.SP2 != "" {
+		formatDBText(db.field34[2][0:], data.SP2 + "+", color, false)
+	}
+	if data.IntermAlt != "" {
+		formatDBText(db.field7[0][0:], "A" + data.IntermAlt, color, false)
 	}
 	return db
 }

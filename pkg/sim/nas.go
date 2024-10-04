@@ -1253,10 +1253,14 @@ type AbbreviatedFPFields struct {
 }
 
 type UnsupportedTrack struct {
-	TrackLocation     math.Point2LL
-	Owner             string
-	HandoffController string
-	FlightPlan        *STARSFlightPlan
+	TrackLocation         math.Point2LL
+	Owner                 string
+	HandoffController     string
+	FlightPlan            *STARSFlightPlan
+	SP1                   string
+	SP2                   string
+	PilotReportedAltitude string
+	IntermAlt              string
 }
 
 func MakeERAMComputers(starsAdapt STARSFacilityAdaptation, lg *log.Logger) *ERAMComputers {
