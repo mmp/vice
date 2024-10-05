@@ -197,7 +197,7 @@ type ScenarioGroupArrivalRunway struct {
 	Runway  string `json:"runway"`
 }
 
-func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
+func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manifest *av.VideoMapManifest) {
 	// Temporary backwards-compatibility for inbound flows
 	if len(s.ArrivalGroupDefaultRates) > 0 {
 		if len(s.InboundFlowDefaultRates) > 0 {
@@ -693,9 +693,9 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger) {
 		}
 
 		for _, dm := range s.DefaultMaps {
-			if !slices.ContainsFunc(fa.VideoMapNames,
-				func(m string) bool { return m == dm }) {
-				e.ErrorString("video map %q not found in \"stars_maps\"", dm)
+			if !manifest.HasMap(dm) {
+				e.ErrorString("video map %q in \"default_maps\" not found. Use -listmaps "+
+					"<path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.", dm)
 			}
 		}
 	} else if len(fa.ControllerConfigs) > 0 {
@@ -745,7 +745,8 @@ var (
 	reFixHeadingDistance = regexp.MustCompile(`^([\w-]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
 )
 
-func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogger, simConfigurations map[string]map[string]*Configuration) {
+func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogger, simConfigurations map[string]map[string]*Configuration,
+	manifest *av.VideoMapManifest) {
 	// Temporary backwards compatibility for inbound flows
 	if len(sg.ArrivalGroups) > 0 {
 		if len(sg.InboundFlows) > 0 {
@@ -779,7 +780,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	if sg.TRACON == "" {
 		e.ErrorString("\"tracon\" must be specified")
 	} else if _, ok := av.DB.TRACONs[sg.TRACON]; !ok {
-		e.ErrorString("TRACON %s is unknown; it must be a 3-letter identifier listed at "+
+		e.ErrorString("TRACON %q is unknown; it must be a 3-letter identifier listed at "+
 			"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon.",
 			sg.TRACON)
 	}
@@ -824,7 +825,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		e.Pop()
 	}
 
-	sg.STARSFacilityAdaptation.PostDeserialize(e, sg)
+	sg.STARSFacilityAdaptation.PostDeserialize(e, sg, manifest)
 
 	for name, volumes := range sg.Airspace.Volumes {
 		for i, vol := range volumes {
@@ -913,14 +914,14 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	}
 	for name, s := range sg.Scenarios {
 		e.Push("Scenario " + name)
-		s.PostDeserialize(sg, e)
+		s.PostDeserialize(sg, e, manifest)
 		e.Pop()
 	}
 
 	initializeSimConfigurations(sg, simConfigurations, multiController, e)
 }
 
-func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *ScenarioGroup) {
+func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *ScenarioGroup, manifest *av.VideoMapManifest) {
 	e.Push("stars_config")
 
 	// Video maps
@@ -929,12 +930,13 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 			e.ErrorString("video map %q in \"map_labels\" is not in \"stars_maps\"", m)
 		}
 	}
-	if len(s.VideoMapNames) > 0 {
-		// Don't try to validate the map names here since we haven't loaded
-		// the video maps yet. (Chicken and egg: we use the map names when
-		// loading maps to figure out which ones we need rendering command
-		// buffers for, so hence we haven't loaded them at this point.)
-	} else if len(s.ControllerConfigs) > 0 {
+	for _, m := range s.VideoMapNames {
+		if m != "" && !manifest.HasMap(m) {
+			e.ErrorString("video map %q in \"stars_maps\" is not a valid video map", m)
+		}
+	}
+
+	if len(s.ControllerConfigs) > 0 {
 		s.ControllerConfigs = util.CommaKeyExpand(s.ControllerConfigs)
 
 		for ctrl, config := range s.ControllerConfigs {
@@ -956,10 +958,21 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 					e.ErrorString("default map %q for %q is not included in the controller's "+
 						"\"controller_maps\"", name, ctrl)
 				}
+
+				if !manifest.HasMap(name) {
+					e.ErrorString("video map %q in \"default_maps\" for controller %q is not a valid video map",
+						name, ctrl)
+				}
 			}
+			for _, name := range config.VideoMapNames {
+				if name != "" && !manifest.HasMap(name) {
+					e.ErrorString("video map %q in \"video_maps\" for controller %q is not a valid video map",
+						name, ctrl)
+				}
+			}
+
 			// Make sure all of the control positions are included in at least
-			// one of the scenarios.  As with VideoMapNames, don't try to
-			// validate the map names yet.
+			// one of the scenarios.
 			if !func() bool {
 				for _, sc := range sg.Scenarios {
 					if ctrl == sc.SoloController {
@@ -978,7 +991,7 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 				e.ErrorString("Control position %q in \"controller_configs\" not found in any of the scenarios", ctrl)
 			}
 		}
-	} else {
+	} else if len(s.VideoMapNames) == 0 {
 		e.ErrorString("Must specify either \"controller_configs\" or \"stars_maps\"")
 	}
 
@@ -1553,7 +1566,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 		}
 	}
 
-	// Next load the video maps; we will kick off work to load
+	// Next load the video map manifests so we can validate the map references in scenarios.
 	mapManifests := make(map[string]*av.VideoMapManifest)
 	err = util.WalkResources("videomaps", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
 		if err != nil {
@@ -1614,16 +1627,9 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 				e.ErrorString("no manifest for video map %q found. Options: %s", vf,
 					strings.Join(util.SortedMapKeys(mapManifests), ", "))
 			} else {
-				for _, name := range fa.VideoMapNames {
-					if name != "" && !manifest.HasMap(name) {
-						e.ErrorString("video map %q not found. Use -listmaps <path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.",
-							name)
-					}
-				}
+				multiController := !isLocal
+				sgroup.PostDeserialize(multiController, e, simConfigurations, manifest)
 			}
-
-			multiController := !isLocal
-			sgroup.PostDeserialize(multiController, e, simConfigurations)
 
 			e.Pop()
 		}
