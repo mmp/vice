@@ -46,7 +46,6 @@ type StaticDatabase struct {
 	ERAMAdaptations     map[string]ERAMAdaptation
 	TRACONs             map[string]TRACON
 	MVAs                map[string][]MVA // TRACON -> MVAs
-	ARTCCBoundaries	 Boundaries
 }
 
 type FAAAirport struct {
@@ -102,27 +101,6 @@ type AdaptationFix struct {
 
 type AdaptationFixes []AdaptationFix
 
-
-type Boundaries struct {
-    ARTCCBoundaries []ARTCCBoundaries `json:"features"`
-}
-
-type ARTCCBoundaries struct {
-    Properties Properties `json:"properties"`
-    Boundaries   Coordinates   `json:"geometry"`
-}
-
-type Properties struct {
-    ID        string  `json:"id"`
-    Oceanic   string  `json:"oceanic"`
-    LabelLon  string  `json:"label_lon"`
-    LabelLat  string  `json:"label_lat"`
-}
-
-type Coordinates struct {
-    Coordinates [][][][]float32 `json:"coordinates"`
-}
-
 ///////////////////////////////////////////////////////////////////////////
 
 func (d StaticDatabase) LookupWaypoint(f string) (math.Point2LL, bool) {
@@ -133,38 +111,6 @@ func (d StaticDatabase) LookupWaypoint(f string) (math.Point2LL, bool) {
 	} else {
 		return math.Point2LL{}, false
 	}
-}
-
-func (d StaticDatabase) GetARTCC(boundaries Boundaries, point math.Point2LL) (string, error) {
-	for _, feature := range boundaries.ARTCCBoundaries {
-        for _, polygon := range feature.Boundaries.Coordinates {
-            if pointInPolygon(point, polygon) {
-                return feature.Properties.ID, nil
-            }
-        }
-    }
-    return "", fmt.Errorf("point not found in any polygon")
-}
-
-func pointInPolygon(point math.Point2LL, polygon [][][]float32) bool {
-    lon := point[0]
-    lat := point[1]
-    inside := false
-
-    for _, ring := range polygon {
-        for i, j := 0, len(ring)-1; i < len(ring); j, i = i, i+1 {
-            xi, yi := ring[i][0], ring[i][1]
-            xj, yj := ring[j][0], ring[j][1]
-
-            intersect := ((yi > lat) != (yj > lat)) &&
-                (lon < (xj-xi)*(lat-yi)/(yj-yi)+xi)
-            if intersect {
-                inside = !inside
-            }
-        }
-    }
-
-    return inside
 }
 
 type AircraftPerformance struct {
@@ -239,8 +185,6 @@ func init() {
 	go func() { db.MVAs = parseMVAs(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.ERAMAdaptations = parseAdaptations(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.ARTCCBoundaries = parseARTCCBoundaries(); wg.Done() }()
 	wg.Wait()
 
 	for icao, ap := range airports {
@@ -557,17 +501,6 @@ func parseAdaptations() map[string]ERAMAdaptation {
 	}
 
 	return adaptations
-}
-
-func parseARTCCBoundaries() Boundaries {
-	boundaries := Boundaries{}
-
-	boundariesRaw := util.LoadResource("artcc_boundaries.json")
-	if err := util.UnmarshalJSON(boundariesRaw, &boundaries); err != nil {
-		panic(fmt.Sprintf("artcc_boundaries.json: %v\n", err))
-	}
-
-	return boundaries
 }
 
 func (mg *MagneticGrid) Lookup(p math.Point2LL) (float32, error) {
