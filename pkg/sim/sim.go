@@ -2337,7 +2337,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 
 		if err := check(ctrl, ac); err != nil {
 			return err
-		} else {
+		} else if ac != nil{
 			preAc := *ac
 			radioTransmissions := cmd(ctrl, ac)
 			s.lg.Info("dispatch_command", slog.String("callsign", ac.Callsign),
@@ -2345,6 +2345,8 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 				slog.Any("radio_transmissions", radioTransmissions))
 			PostRadioEvents(ac.Callsign, radioTransmissions, s)
 			return nil
+		} else {
+			return nil 
 		}
 	}
 }
