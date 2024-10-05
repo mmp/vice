@@ -81,10 +81,12 @@ type STARSPane struct {
 	OldPrefsSelectedPreferenceSet *int          `json:"SelectedPreferenceSet,omitempty"`
 	OldPrefsPreferenceSets        []Preferences `json:"PreferenceSets,omitempty"`
 
-	videoMaps  []av.VideoMap
-	systemMaps map[int]av.VideoMap
+	allVideoMaps []av.VideoMap
+	dcbVideoMaps []*av.VideoMap
 
 	weatherRadar WeatherRadar
+
+	lockTargetGenMode bool
 
 	// Which weather history snapshot to draw: this is always 0 unless the
 	// 'display weather history' command was entered.
@@ -378,16 +380,16 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
 
-func (sp *STARSPane) LoadedSim(ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (sp *STARSPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	sp.initPrefsForLoadedSim(ss, pl)
 
 	sp.weatherRadar.UpdateCenter(sp.currentPrefs().Center)
 
-	sp.makeMaps(ss, lg)
+	sp.makeMaps(client, ss, lg)
 	sp.makeSignificantPoints(ss)
 }
 
-func (sp *STARSPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (sp *STARSPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	sp.ConvergingRunways = nil
 	for _, name := range util.SortedMapKeys(ss.Airports) {
 		ap := ss.Airports[name]
@@ -410,7 +412,7 @@ func (sp *STARSPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger
 	// Update maps before resetting the prefs since we may rewrite some map
 	// ids and we want to use the right ones when we're enabling the
 	// default maps.
-	sp.makeMaps(ss, lg)
+	sp.makeMaps(client, ss, lg)
 	sp.makeSignificantPoints(ss)
 
 	sp.resetPrefsForNewSim(ss, pl)
@@ -421,63 +423,60 @@ func (sp *STARSPane) ResetSim(ss sim.State, pl platform.Platform, lg *log.Logger
 	sp.lastHistoryTrackUpdate = time.Time{}
 }
 
-func (sp *STARSPane) makeMaps(ss sim.State, lg *log.Logger) {
-	// Return a VideoMap with the Id field modified so that it doesn't
-	// clash with any of the ids that have already been assigned to other
-	// maps.
-	fixupId := func(vm av.VideoMap) av.VideoMap {
-		// Unused
-		if vm.Name == "" {
-			return vm
-		}
+func (sp *STARSPane) makeMaps(client *sim.ControlClient, ss sim.State, lg *log.Logger) {
+	usedIds := make(map[int]interface{})
 
+	addMap := func(vm av.VideoMap) {
 		for i := range 999 {
 			// See if id is available
 			id := (vm.Id + i) % 1000
 
-			// Disallow it if we have either a system map or a video map
-			// with this id, unless the name matches, in which case we have
-			// a dupe, which is fine.
-			if m, ok := sp.systemMaps[id]; ok && m.Name != vm.Name {
-				continue
+			if _, ok := usedIds[id]; !ok {
+				vm.Id = id
+				sp.allVideoMaps = append(sp.allVideoMaps, vm)
+				return
 			}
-			idx := slices.IndexFunc(sp.videoMaps, func(v av.VideoMap) bool { return v.Id == id })
-			if idx != -1 && sp.videoMaps[idx].Name != vm.Name {
-				continue
-			}
-
-			// This one is fine, so we're done.
-			vm.Id = id
-			break
 		}
-		return vm
+		// Unable to find a free slot!
 	}
 
-	// Start with the video maps associated with the Sim.
-	maps, _ := ss.GetVideoMaps()
-	sp.videoMaps = nil
-	for _, vm := range maps {
-		sp.videoMaps = append(sp.videoMaps, fixupId(vm))
+	vmf, err := ss.GetVideoMapLibrary(client)
+	if err != nil {
+		lg.Errorf("%v", err)
+	}
+	if !vmf.ProvideAllMaps {
+		// Only provide the maps referenced in the DCB (backwards
+		// compatability for the massive whole-ARTCC Z** videomap files.)
+		ctrlMaps, _ := ss.GetControllerVideoMaps()
+		sp.allVideoMaps = util.FilterSlice(vmf.Maps, func(vm av.VideoMap) bool {
+			return slices.Contains(ctrlMaps, vm.Name)
+		})
+	} else {
+		sp.allVideoMaps = vmf.Maps
+	}
+	for _, vm := range sp.allVideoMaps {
+		usedIds[vm.Id] = nil
 	}
 
-	// System maps
-	sp.systemMaps = make(map[int]av.VideoMap)
+	// Make automatic built-in system maps
 	// CA suppression filters
 	csf := av.VideoMap{
-		Label: "ALLCASU",
-		Name:  "ALL CA SUPPRESSION FILTERS",
-		Id:    700,
+		Label:    "ALLCASU",
+		Name:     "ALL CA SUPPRESSION FILTERS",
+		Id:       700,
+		Category: VideoMapProcessingAreas,
 	}
 	for _, vol := range ss.InhibitCAVolumes() {
 		vol.GenerateDrawCommands(&csf.CommandBuffer, ss.NmPerLongitude)
 	}
-	sp.systemMaps[csf.Id] = fixupId(csf)
+	addMap(csf)
 
 	// MVAs
 	mvas := av.VideoMap{
-		Label: ss.TRACON + " MVA",
-		Name:  "ALL MINIMUM VECTORING ALTITUDES",
-		Id:    701,
+		Label:    ss.TRACON + " MVA",
+		Name:     "ALL MINIMUM VECTORING ALTITUDES",
+		Id:       701,
+		Category: VideoMapProcessingAreas,
 	}
 	ld := renderer.GetLinesDrawBuilder()
 	for _, mva := range av.DB.MVAs[ss.TRACON] {
@@ -487,15 +486,16 @@ func (sp *STARSPane) makeMaps(ss sim.State, lg *log.Logger) {
 	}
 	ld.GenerateCommands(&mvas.CommandBuffer)
 	renderer.ReturnLinesDrawBuilder(ld)
-	sp.systemMaps[mvas.Id] = fixupId(mvas)
+	addMap(mvas)
 
 	// Radar maps
 	radarIndex := 801
 	for _, name := range util.SortedMapKeys(ss.RadarSites) {
 		sm := av.VideoMap{
-			Label: name + "RCM",
-			Name:  name + " RADAR COVERAGE MAP",
-			Id:    radarIndex,
+			Label:    name + "RCM",
+			Name:     name + " RADAR COVERAGE MAP",
+			Id:       radarIndex,
+			Category: VideoMapProcessingAreas,
 		}
 
 		site := ss.RadarSites[name]
@@ -503,7 +503,7 @@ func (sp *STARSPane) makeMaps(ss sim.State, lg *log.Logger) {
 		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.PrimaryRange), 360)
 		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.SecondaryRange), 360)
 		ld.GenerateCommands(&sm.CommandBuffer)
-		sp.systemMaps[radarIndex] = fixupId(sm)
+		addMap(sm)
 
 		radarIndex++
 		renderer.ReturnLinesDrawBuilder(ld)
@@ -517,9 +517,10 @@ func (sp *STARSPane) makeMaps(ss sim.State, lg *log.Logger) {
 			vol := ap.ATPAVolumes[rwy]
 
 			sm := av.VideoMap{
-				Label: name + rwy + " VOL",
-				Name:  name + rwy + " ATPA APPROACH VOLUME",
-				Id:    atpaIndex,
+				Label:    name + rwy + " VOL",
+				Name:     name + rwy + " ATPA APPROACH VOLUME",
+				Id:       atpaIndex,
+				Category: VideoMapProcessingAreas,
 			}
 
 			ld := renderer.GetLinesDrawBuilder()
@@ -529,9 +530,20 @@ func (sp *STARSPane) makeMaps(ss sim.State, lg *log.Logger) {
 			}
 			ld.GenerateCommands(&sm.CommandBuffer)
 
-			sp.systemMaps[atpaIndex] = fixupId(sm)
+			addMap(sm)
 			atpaIndex++
 			renderer.ReturnLinesDrawBuilder(ld)
+		}
+	}
+
+	// Start with the video maps associated with the Sim.
+	ctrlMaps, _ := ss.GetControllerVideoMaps()
+	sp.dcbVideoMaps = nil
+	for _, name := range ctrlMaps {
+		if idx := slices.IndexFunc(sp.allVideoMaps, func(v av.VideoMap) bool { return v.Name == name }); idx != -1 && name != "" {
+			sp.dcbVideoMaps = append(sp.dcbVideoMaps, &sp.allVideoMaps[idx])
+		} else {
+			sp.dcbVideoMaps = append(sp.dcbVideoMaps, nil)
 		}
 	}
 }
@@ -726,19 +738,15 @@ func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms ScopeTransform
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	cb.LineWidth(1, ctx.DPIScale)
-	for _, id := range util.SortedMapKeys(ps.VideoMapVisible) {
-		var vm av.VideoMap
-		if idx := slices.IndexFunc(sp.videoMaps, func(v av.VideoMap) bool { return v.Id == id }); idx == -1 {
-			var ok bool
-			vm, ok = sp.systemMaps[id]
-			if !ok {
-				ctx.Lg.Errorf("Video map %d visible but not found?", id)
-				continue
-			}
-		} else {
-			vm = sp.videoMaps[idx]
+	var draw []av.VideoMap
+	for _, vm := range sp.allVideoMaps {
+		if _, ok := ps.VideoMapVisible[vm.Id]; ok {
+			draw = append(draw, vm)
 		}
+	}
+	slices.SortFunc(draw, func(a, b av.VideoMap) int { return a.Id - b.Id })
 
+	for _, vm := range draw {
 		brite := util.Select(vm.Group == 0, ps.Brightness.VideoGroupA, ps.Brightness.VideoGroupB)
 		cidx := math.Clamp(vm.Color-1, 0, numMapColors-1) // switch to 0-based indexing
 		color := brite.ScaleRGB(mapColors[vm.Group][cidx])

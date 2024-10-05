@@ -558,7 +558,7 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 			return
 		}
 		_, vis := ps.VideoMapVisible[m.Id]
-		text.WriteString(util.Select(vis, ">", " ") + " ")
+		text.WriteString(util.Select(vis, ">", " "))
 		text.WriteString(fmt.Sprintf("%3d ", m.Id))
 		text.WriteString(fmt.Sprintf("%-8s ", strings.ToUpper(m.Label)))
 		text.WriteString(strings.ToUpper(m.Name) + "\n")
@@ -582,15 +582,15 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 	text.WriteByte('\n')
 	var m []av.VideoMap
 	if ps.VideoMapsList.Selection == VideoMapCurrent {
-		m = util.FilterSlice(sp.videoMaps, func(vm av.VideoMap) bool {
-			_, ok := ps.VideoMapVisible[vm.Id]
-			return ok
-		})
+		for _, vm := range sp.allVideoMaps {
+			if _, ok := ps.VideoMapVisible[vm.Id]; ok {
+				m = append(m, vm)
+			}
+		}
 	} else {
-		m = util.FilterSlice(sp.videoMaps, func(vm av.VideoMap) bool { return vm.Category == int(ps.VideoMapsList.Selection) })
-		if ps.VideoMapsList.Selection == VideoMapProcessingAreas {
-			for _, sysmap := range sp.systemMaps {
-				m = append(m, sysmap)
+		for _, vm := range sp.allVideoMaps {
+			if vm.Category == int(ps.VideoMapsList.Selection) {
+				m = append(m, vm)
 			}
 		}
 	}

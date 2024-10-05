@@ -901,3 +901,21 @@ func (sd *Dispatcher) DeleteRestrictionArea(ra *RestrictionAreaArgs, _ *struct{}
 	}
 	return sim.DeleteRestrictionArea(ra.Index)
 }
+
+type VideoMapsArgs struct {
+	ControllerToken string
+	Filename        string
+}
+
+func (sd *Dispatcher) GetVideoMapLibrary(vm *VideoMapsArgs, vmf *av.VideoMapLibrary) error {
+	sim, ok := sd.sm.controllerTokenToSim[vm.ControllerToken]
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+	if v, err := sim.GetVideoMapLibrary(vm.Filename); err == nil {
+		*vmf = *v
+		return nil
+	} else {
+		return err
+	}
+}

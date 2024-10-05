@@ -5,13 +5,14 @@
 package util
 
 import (
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"runtime"
 )
 
-func getResourcesFS() *fs.StatFS {
+func initResourcesFS() *fs.StatFS {
 	path, err := os.Executable()
 	if err != nil {
 		panic(err)
@@ -63,7 +64,11 @@ func getResourcesFS() *fs.StatFS {
 var resourcesFS *fs.StatFS
 
 func init() {
-	resourcesFS = getResourcesFS()
+	resourcesFS = initResourcesFS()
+}
+
+func GetResourcesFS() fs.StatFS {
+	return *resourcesFS
 }
 
 // LoadResource loads the specified file from the resources directory, decompressing it if
@@ -90,6 +95,14 @@ func LoadRawResource(path string) []byte {
 	}
 
 	return b
+}
+
+func GetResourceReader(path string) (io.ReadCloser, error) {
+	if r, err := (*resourcesFS).Open(path); err == nil {
+		return r.(io.ReadCloser), nil
+	} else {
+		return nil, err
+	}
 }
 
 func WalkResources(root string, fn func(path string, d fs.DirEntry, filesystem fs.FS, err error) error) error {

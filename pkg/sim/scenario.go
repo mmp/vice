@@ -1468,12 +1468,6 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *Scen
 	return &s
 }
 
-type RootFS struct{}
-
-func (r RootFS) Open(filename string) (fs.File, error) {
-	return os.Open(filename)
-}
-
 type dbResolver struct{}
 
 func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
@@ -1496,7 +1490,7 @@ func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
 func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMapFilename string,
-	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*Configuration, *av.VideoMapLibrary) {
+	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*Configuration, map[string]*av.VideoMapManifest) {
 	start := time.Now()
 
 	math.SetLocationResolver(&dbResolver{})
@@ -1554,7 +1548,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 	if extraScenarioFilename != "" {
 		fs := func() fs.FS {
 			if filepath.IsAbs(extraScenarioFilename) {
-				return RootFS{}
+				return util.RootFS{}
 			} else {
 				return os.DirFS(".")
 			}
@@ -1581,7 +1575,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 	}
 
 	// Next load the video maps; we will kick off work to load
-	maplib := av.MakeVideoMapLibrary()
+	mapManifests := make(map[string]*av.VideoMapManifest)
 	err = util.WalkResources("videomaps", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
 		if err != nil {
 			lg.Errorf("error walking videomaps: %v", err)
@@ -1593,10 +1587,10 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 		}
 
 		if strings.HasSuffix(path, "-videomaps.gob") || strings.HasSuffix(path, "-videomaps.gob.zst") {
-			maplib.AddFile(fs, path, e)
+			mapManifests[path], err = av.LoadVideoMapManifest(path)
 		}
 
-		return nil
+		return err
 	})
 	if err != nil {
 		lg.Errorf("error loading videomaps: %v", err)
@@ -1607,14 +1601,11 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 
 	// Load the video map specified on the command line, if any.
 	if extraVideoMapFilename != "" {
-		fs := func() fs.FS {
-			if filepath.IsAbs(extraVideoMapFilename) {
-				return RootFS{}
-			} else {
-				return os.DirFS(".")
-			}
-		}()
-		maplib.AddFile(fs, extraVideoMapFilename, e)
+		mapManifests[extraVideoMapFilename], err = av.LoadVideoMapManifest(extraVideoMapFilename)
+		if err != nil {
+			lg.Errorf("%s: %v", extraVideoMapFilename, err)
+			os.Exit(1)
+		}
 	}
 
 	// Final tidying before we return the loaded scenarios.
@@ -1640,12 +1631,12 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 			fa := &sgroup.STARSFacilityAdaptation
 			if vf := fa.VideoMapFile; vf == "" {
 				e.ErrorString("no \"video_map_file\" specified")
-			} else if !maplib.HaveFile(vf) {
+			} else if manifest, ok := mapManifests[vf]; !ok {
 				e.ErrorString("no manifest for video map %q found. Options: %s", vf,
-					strings.Join(maplib.AvailableFiles(), ", "))
+					strings.Join(util.SortedMapKeys(mapManifests), ", "))
 			} else {
 				for _, name := range fa.VideoMapNames {
-					if name != "" && !maplib.HaveMap(vf, name) {
+					if name != "" && !manifest.HasMap(name) {
 						e.ErrorString("video map %q not found. Use -listmaps <path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.",
 							name)
 					}
@@ -1685,7 +1676,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 	}
 	lg.Warnf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
-	return scenarioGroups, simConfigurations, maplib
+	return scenarioGroups, simConfigurations, mapManifests
 }
 
 ///////////////////////////////////////////////////////////////////////////

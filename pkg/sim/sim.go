@@ -884,6 +884,7 @@ type Sim struct {
 
 	eventStream *EventStream
 	lg          *log.Logger
+	mapManifest *av.VideoMapManifest
 
 	LaunchConfig LaunchConfig
 
@@ -973,7 +974,7 @@ func (sc *ServerController) LogValue() slog.Value {
 }
 
 func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*ScenarioGroup, isLocal bool,
-	mapLib *av.VideoMapLibrary, lg *log.Logger) *Sim {
+	manifests map[string]*av.VideoMapManifest, lg *log.Logger) *Sim {
 	lg = lg.With(slog.String("sim_name", ssc.NewSimName))
 
 	tracon, ok := scenarioGroups[ssc.TRACONName]
@@ -1005,6 +1006,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 
 		eventStream: NewEventStream(lg),
 		lg:          lg,
+		mapManifest: manifests[sg.STARSFacilityAdaptation.VideoMapFile],
 
 		ReportingPoints: sg.ReportingPoints,
 
@@ -1052,7 +1054,8 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		add(sc.SoloController)
 	}
 
-	s.State = newState(ssc.Scenario.SelectedSplit, ssc.LiveWeather, isLocal, s, sg, sc, mapLib, ssc.TFRs, lg)
+	s.State = newState(ssc.Scenario.SelectedSplit, ssc.LiveWeather, isLocal, s, sg, sc, s.mapManifest,
+		ssc.TFRs, lg)
 
 	s.setInitialSpawnTimes()
 
@@ -1299,7 +1302,7 @@ func (s *Sim) GetWorldUpdate(token string, update *WorldUpdate) error {
 	}
 }
 
-func (s *Sim) Activate(ml *av.VideoMapLibrary, lg *log.Logger) {
+func (s *Sim) Activate(lg *log.Logger) {
 	if s.Name == "" {
 		s.lg = lg
 	} else {
@@ -1316,7 +1319,7 @@ func (s *Sim) Activate(ml *av.VideoMapLibrary, lg *log.Logger) {
 	now := time.Now()
 	s.lastUpdateTime = now
 
-	s.State.Activate(ml, s.lg)
+	s.State.Activate(s.lg)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -2337,7 +2340,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 
 		if err := check(ctrl, ac); err != nil {
 			return err
-		} else {
+		} else if ac != nil{
 			preAc := *ac
 			radioTransmissions := cmd(ctrl, ac)
 			s.lg.Info("dispatch_command", slog.String("callsign", ac.Callsign),
@@ -2345,6 +2348,8 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 				slog.Any("radio_transmissions", radioTransmissions))
 			PostRadioEvents(ac.Callsign, radioTransmissions, s)
 			return nil
+		} else {
+			return nil 
 		}
 	}
 }
@@ -3920,4 +3925,8 @@ func (s *Sim) DeleteRestrictionArea(idx int) error {
 
 	s.State.UserRestrictionAreas[idx] = RestrictionArea{Deleted: true}
 	return nil
+}
+
+func (s *Sim) GetVideoMapLibrary(filename string) (*av.VideoMapLibrary, error) {
+	return av.LoadVideoMapLibrary(filename)
 }

@@ -1184,7 +1184,7 @@ func (sp *STARSPane) getUnsupportedDatablock(data *sim.UnsupportedTrack, ctx *pa
 	}
 
 	if fp.AircraftType != "" {
-		formatDBText(db.field5[1][4:], fp.AircraftType, color, false)
+		formatDBText(db.field5[1][:], fp.AircraftType, color, false)
 	}
 	if data.SP1 != "" {
 		formatDBText(db.field34[1][0:], data.SP1, color, false)

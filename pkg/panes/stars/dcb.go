@@ -121,8 +121,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 	sp.startDrawDCB(ctx, buttonScale, transforms, cb)
 
 	drawVideoMapButton := func(idx int) {
-		if idx < len(sp.videoMaps) && sp.videoMaps[idx].Id != 0 {
-			m := sp.videoMaps[idx]
+		if idx < len(sp.dcbVideoMaps) && sp.dcbVideoMaps[idx] != nil && sp.dcbVideoMaps[idx].Id != 0 {
+			m := sp.dcbVideoMaps[idx]
 
 			// Get the map label, either the default or user-specified.
 			label := m.Label
@@ -303,13 +303,10 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 
 		// Figure out how many map category buttons we need
 		var haveCategory [VideoMapNumCategories]bool
-		for _, vm := range sp.videoMaps {
+		for _, vm := range sp.allVideoMaps {
 			if vm.Category != VideoMapNoCategory {
 				haveCategory[vm.Category] = true
 			}
-		}
-		if len(sp.systemMaps) > 0 {
-			haveCategory[VideoMapProcessingAreas] = true
 		}
 		ncat := 0
 		for _, b := range haveCategory {
@@ -322,7 +319,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		catCols := (ncat) / 2
 
 		//
-		for i := 0; i < 32-2*catCols; i++ {
+		for i := range 32 - 2*catCols {
 			// Indexing is tricky both because we are skipping the first 6
 			// maps, which are shown in the main DCB, but also because we
 			// draw top->down, left->right while the maps are specified

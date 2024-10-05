@@ -101,6 +101,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			// Also disable any mouse capture from spinners, just in case
 			// the user is mashing escape to get out of one.
 			sp.disableMenuSpinner(ctx)
+			sp.lockTargetGenMode = false
 			sp.wipRBL = nil
 			sp.wipSignificantPoint = nil
 			sp.wipRestrictionArea = nil
@@ -1568,21 +1569,18 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				status.err = ErrSTARSCommandFormat
 			} else if idx <= 0 {
 				status.err = ErrSTARSIllegalMap
-			} else {
-				_, sok := sp.systemMaps[idx]
-				if sok || slices.ContainsFunc(sp.videoMaps, func(v av.VideoMap) bool { return v.Id == idx }) {
-					// valid map index
-					_, vis := ps.VideoMapVisible[idx]
-					if (vis && op == "T") || op == "I" {
-						delete(ps.VideoMapVisible, idx)
-					} else if (!vis && op == "T") || op == "E" {
-						ps.VideoMapVisible[idx] = nil
-					}
-					sp.activeDCBMenu = dcbMenuMain
-					status.clear = true
-				} else {
-					status.err = ErrSTARSIllegalMap
+			} else if slices.ContainsFunc(sp.allVideoMaps, func(v av.VideoMap) bool { return v.Id == idx }) {
+				// Valid map index.
+				_, vis := ps.VideoMapVisible[idx]
+				if (vis && op == "T") || op == "I" {
+					delete(ps.VideoMapVisible, idx)
+				} else if (!vis && op == "T") || op == "E" {
+					ps.VideoMapVisible[idx] = nil
 				}
+				sp.activeDCBMenu = dcbMenuMain
+				status.clear = true
+			} else {
+				status.err = ErrSTARSIllegalMap
 			}
 			return
 		}
@@ -2003,10 +2001,18 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		if cmd == "P" {
 			ctx.ControlClient.ToggleSimPause()
 			status.clear = true
+		} else if cmd == ";" {
+			sp.lockTargetGenMode = true
+			sp.previewAreaInput = ""
 		} else if callsign, cmds, ok := strings.Cut(cmd, " "); ok {
 			if ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign); ac != nil {
 				sp.runAircraftCommands(ctx, ac, cmds)
-				status.clear = true
+				if sp.lockTargetGenMode {
+					// Clear the input but stay in TGT GEN mode.
+					sp.previewAreaInput = ""
+				} else {
+					status.clear = true
+				}
 			} else {
 				status.err = ErrSTARSIllegalACID
 			}
@@ -3300,7 +3306,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		case CommandModeTargetGen:
 			if len(cmd) > 0 {
 				sp.runAircraftCommands(ctx, ac, cmd)
-				status.clear = true
+				if sp.lockTargetGenMode {
+					sp.previewAreaInput = ""
+				} else {
+					status.clear = true
+				}
 				return
 			}
 		}
@@ -4019,6 +4029,8 @@ func (sp *STARSPane) resetInputState() {
 	sp.previewAreaOutput = ""
 	sp.commandMode = CommandModeNone
 	sp.multiFuncPrefix = ""
+
+	sp.lockTargetGenMode = false
 
 	sp.wipRBL = nil
 	sp.wipSignificantPoint = nil
