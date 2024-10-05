@@ -1175,6 +1175,7 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logg
 
 		p.PostRender()
 	}
+	os.Exit(1)
 }
 
 ///////////////////////////////////////////////////////////////////////////
