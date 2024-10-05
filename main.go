@@ -92,6 +92,19 @@ func main() {
 		var e util.ErrorLogger
 		scenarioGroups, _, _ :=
 			sim.LoadScenarioGroups(true, *scenarioFilename, *videoMapFilename, &e, lg)
+
+		videoMaps := make(map[string]interface{})
+		for _, sgs := range scenarioGroups {
+			for _, sg := range sgs {
+				if sg.STARSFacilityAdaptation.VideoMapFile != "" {
+					videoMaps[sg.STARSFacilityAdaptation.VideoMapFile] = nil
+				}
+			}
+		}
+		for m := range videoMaps {
+			av.CheckVideoMapManifest(m, &e)
+		}
+
 		if e.HaveErrors() {
 			e.PrintErrors(nil)
 			os.Exit(1)
@@ -161,7 +174,7 @@ func main() {
 		mgr, err = sim.MakeServerConnection(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
 			func(c *sim.ControlClient) { // updated client
 				if c != nil {
-					panes.ResetSim(config.DisplayRoot, c.State, plat, lg)
+					panes.ResetSim(config.DisplayRoot, c, c.State, plat, lg)
 				}
 				uiResetControlClient(c)
 				controlClient = c
@@ -216,7 +229,7 @@ func main() {
 			if client, err := mgr.LoadLocalSim(config.Sim, lg); err != nil {
 				lg.Errorf("Error loading local sim: %v", err)
 			} else {
-				panes.LoadedSim(config.DisplayRoot, client.State, plat, lg)
+				panes.LoadedSim(config.DisplayRoot, client, client.State, plat, lg)
 				uiResetControlClient(client)
 				controlClient = client
 			}

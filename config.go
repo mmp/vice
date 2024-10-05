@@ -48,7 +48,8 @@ import (
 // 27: rework prefs, videomaps
 // 28: new departure flow
 // 29: TFR cache
-const CurrentConfigVersion = 29
+// 30: video map improvements
+const CurrentConfigVersion = 30
 
 // Slightly convoluted, but the full Config definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first

@@ -366,3 +366,11 @@ func (p *proxy) DeleteRestrictionArea(idx int) *rpc.Call {
 		Index:           idx,
 	}, nil, nil)
 }
+
+func (p *proxy) GetVideoMapLibrary(filename string, vmf *av.VideoMapLibrary) error {
+	// Synchronous call
+	return p.Client.Call("Sim.GetVideoMapLibrary", &VideoMapsArgs{
+		ControllerToken: p.ControllerToken,
+		Filename:        filename,
+	}, vmf)
+}

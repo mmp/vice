@@ -66,14 +66,15 @@ type State struct {
 	STARSFacilityAdaptation  STARSFacilityAdaptation
 	UserRestrictionAreas     []RestrictionArea
 
-	ControllerVideoMaps        []av.VideoMap
+	ControllerVideoMaps        []string
 	ControllerDefaultVideoMaps []string
-	// Not sent to the client
-	videoMaps map[string]*av.VideoMap
+	VideoMapLibraryHash        []byte
+
+	mapLibrary *av.VideoMapLibrary // just cached per session; not saved to disk.
 }
 
 func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *ScenarioGroup, sc *Scenario,
-	ml *av.VideoMapLibrary, tfrs []av.TFR, lg *log.Logger) *State {
+	manifest *av.VideoMapManifest, tfrs []av.TFR, lg *log.Logger) *State {
 	ss := &State{
 		Callsign:      serverCallsign,
 		Aircraft:      make(map[string]*av.Aircraft),
@@ -120,7 +121,9 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	ss.SimDescription = s.Scenario
 	ss.SimTime = s.SimTime
 	ss.STARSFacilityAdaptation = deep.MustCopy(sg.STARSFacilityAdaptation)
-	ss.videoMaps = ss.loadVideoMaps(ml, lg)
+	if manifest != nil {
+		ss.VideoMapLibraryHash, _ = manifest.Hash()
+	}
 
 	// Add the TFR restriction areas
 	for _, tfr := range tfrs {
@@ -236,35 +239,6 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	return ss
 }
 
-func (s *State) loadVideoMaps(ml *av.VideoMapLibrary, lg *log.Logger) map[string]*av.VideoMap {
-	maps := make(map[string]*av.VideoMap)
-
-	add := func(name string) {
-		if _, ok := maps[name]; ok {
-			return
-		} else if name == "" {
-			maps[name] = &av.VideoMap{}
-		} else {
-			var err error
-			maps[name], err = ml.GetMap(s.STARSFacilityAdaptation.VideoMapFile, name)
-			if err != nil {
-				// This should have been caught during post deserialize...
-				lg.Errorf("%s: %v", name, err)
-			}
-		}
-	}
-
-	for _, name := range s.STARSFacilityAdaptation.VideoMapNames {
-		add(name)
-	}
-	for _, ctrl := range s.STARSFacilityAdaptation.ControllerConfigs {
-		for _, name := range ctrl.VideoMapNames {
-			add(name)
-		}
-	}
-	return maps
-}
-
 func (s *State) GetStateForController(callsign string) *State {
 	// Make a deep copy so that if the server is running on the same
 	// system, that the client doesn't see updates until they're explicitly
@@ -276,25 +250,10 @@ func (s *State) GetStateForController(callsign string) *State {
 
 	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
 	if config, ok := s.STARSFacilityAdaptation.ControllerConfigs[callsign]; ok && len(config.VideoMapNames) > 0 {
-		for _, name := range config.VideoMapNames {
-			// Note that m may be nil if we are restoring a saved sim but
-			// have changed the video map file so that one we're looking
-			// for isn't there any more.
-			if m := s.videoMaps[name]; m == nil || name == "" {
-				state.ControllerVideoMaps = append(state.ControllerVideoMaps, av.VideoMap{})
-			} else {
-				state.ControllerVideoMaps = append(state.ControllerVideoMaps, *m)
-			}
-		}
+		state.ControllerVideoMaps = config.VideoMapNames
 		state.ControllerDefaultVideoMaps = config.DefaultMaps
 	} else {
-		for _, name := range s.STARSFacilityAdaptation.VideoMapNames {
-			if m := s.videoMaps[name]; m == nil || name == "" {
-				state.ControllerVideoMaps = append(state.ControllerVideoMaps, av.VideoMap{})
-			} else {
-				state.ControllerVideoMaps = append(state.ControllerVideoMaps, *m)
-			}
-		}
+		state.ControllerVideoMaps = s.STARSFacilityAdaptation.VideoMapNames
 		state.ControllerDefaultVideoMaps = s.ScenarioDefaultVideoMaps
 	}
 
@@ -311,8 +270,7 @@ func getAltimiter(metar string) string {
 	return ""
 }
 
-func (s *State) Activate(ml *av.VideoMapLibrary, lg *log.Logger) {
-	s.videoMaps = s.loadVideoMaps(ml, lg)
+func (s *State) Activate(lg *log.Logger) {
 	// Make the ERAMComputers aware of each other.
 	s.ERAMComputers.Activate()
 }
@@ -391,7 +349,26 @@ func (ss *State) GetReleaseDepartures() []*av.Aircraft {
 		})
 }
 
-func (s *State) GetVideoMaps() ([]av.VideoMap, []string) {
+func (s *State) GetVideoMapLibrary(client *ControlClient) (*av.VideoMapLibrary, error) {
+	if s.mapLibrary != nil {
+		return s.mapLibrary, nil
+	}
+
+	filename := s.STARSFacilityAdaptation.VideoMapFile
+	ml, err := av.HashCheckLoadVideoMap(filename, s.VideoMapLibraryHash)
+	if err == nil {
+		s.mapLibrary = ml
+		return ml, nil
+	} else {
+		ml, err = client.GetVideoMapLibrary(filename)
+		if err == nil {
+			s.mapLibrary = ml
+		}
+		return ml, err
+	}
+}
+
+func (s *State) GetControllerVideoMaps() ([]string, []string) {
 	return s.ControllerVideoMaps, s.ControllerDefaultVideoMaps
 }
 
