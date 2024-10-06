@@ -110,7 +110,9 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 	case CommandModeRestrictionArea:
 		text.WriteString("AR\n")
 	case CommandModeTargetGen:
-		text.WriteString("TG\n")
+		text.WriteString("TG ")
+		text.WriteString(sp.targetGenLastCallsign)
+		text.WriteString("\n")
 	}
 	text.WriteString(strings.Join(strings.Fields(sp.previewAreaInput), "\n")) // spaces are rendered as newlines
 	if text.Len() > 0 {
