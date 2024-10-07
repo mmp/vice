@@ -2340,7 +2340,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 
 		if err := check(ctrl, ac); err != nil {
 			return err
-		} else if ac != nil{
+		} else if ac != nil {
 			preAc := *ac
 			radioTransmissions := cmd(ctrl, ac)
 			s.lg.Info("dispatch_command", slog.String("callsign", ac.Callsign),
@@ -2349,7 +2349,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 			PostRadioEvents(ac.Callsign, radioTransmissions, s)
 			return nil
 		} else {
-			return nil 
+			return nil
 		}
 	}
 }
@@ -2523,7 +2523,7 @@ func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrac
 
 	stars.AddUnsupportedTrack(ut)
 	delete(stars.ContainedPlans, ut.FlightPlan.AssignedSquawk) // If applicable
-	
+
 	fpMsg := true
 	if stars.ContainedPlans[ut.FlightPlan.AssignedSquawk] != nil {
 		fpMsg = false

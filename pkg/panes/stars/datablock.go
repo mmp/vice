@@ -1177,10 +1177,10 @@ func (sp *STARSPane) getUnsupportedDatablock(data *sim.UnsupportedTrack, ctx *pa
 	formatDBText(db.field34[1][0:], "    ", color, false)
 	formatDBText(db.field34[2][0:], "    ", color, false)
 
-	if data.PilotReportedAltitude != ""{
-		formatDBText(db.field34[0][0:], data.PilotReportedAltitude + "*", color, false)
-		formatDBText(db.field34[1][0:], data.PilotReportedAltitude + "*", color, false)
-		formatDBText(db.field34[2][0:], data.PilotReportedAltitude + "*", color, false)
+	if data.PilotReportedAltitude != "" {
+		formatDBText(db.field34[0][0:], data.PilotReportedAltitude+"*", color, false)
+		formatDBText(db.field34[1][0:], data.PilotReportedAltitude+"*", color, false)
+		formatDBText(db.field34[2][0:], data.PilotReportedAltitude+"*", color, false)
 	}
 
 	if fp.AircraftType != "" {
@@ -1190,10 +1190,10 @@ func (sp *STARSPane) getUnsupportedDatablock(data *sim.UnsupportedTrack, ctx *pa
 		formatDBText(db.field34[1][0:], data.SP1, color, false)
 	}
 	if data.SP2 != "" {
-		formatDBText(db.field34[2][0:], data.SP2 + "+", color, false)
+		formatDBText(db.field34[2][0:], data.SP2+"+", color, false)
 	}
 	if data.IntermAlt != "" {
-		formatDBText(db.field7[0][0:], "A" + data.IntermAlt, color, false)
+		formatDBText(db.field7[0][0:], "A"+data.IntermAlt, color, false)
 	}
 	return db
 }

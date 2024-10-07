@@ -1260,7 +1260,7 @@ type UnsupportedTrack struct {
 	SP1                   string
 	SP2                   string
 	PilotReportedAltitude string
-	IntermAlt              string
+	IntermAlt             string
 }
 
 func MakeERAMComputers(starsAdapt STARSFacilityAdaptation, lg *log.Logger) *ERAMComputers {
