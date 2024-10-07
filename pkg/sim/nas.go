@@ -129,7 +129,10 @@ func (comp *ERAMComputer) SendFlightPlans(tracon string, simTime time.Time, lg *
 		} else if _, err := coordFix.Fix(fp.Altitude); err != nil {
 			lg.Errorf("%s @ %s", fp.CoordinationFix, fp.Altitude)
 		} else if !fp.Sent {
-			comp.SendFlightPlan(fp, tracon, simTime, ac)
+			err = comp.SendFlightPlan(fp, tracon, simTime, ac)
+			if err != nil {
+				lg.Errorf("Error sending flight plan %v: %v", fp, err)
+			}
 		}
 	}
 
@@ -163,7 +166,10 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, tracon string, sim
 		// TODO: change tracon to the fix pair assignment (this will be in the adaptation)
 		err := comp.SendMessageToSTARSFacility(tracon, msg)
 		if err != nil {
-			comp.SendMessageToERAM(av.DB.TRACONs[tracon].ARTCC, msg)
+			err = comp.SendMessageToERAM(av.DB.TRACONs[tracon].ARTCC, msg)
+			if err != nil {
+				return err
+			}
 		}
 		fp.Sent = true
 
@@ -214,6 +220,7 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, tracon string, sim
 			} else {
 				distanceToFix, err = ac.Nav.DistanceAlongRoute(fp.CoordinationFix)
 				if err != nil {
+					return err 
 				}
 				timeToFix = distanceToFix / float32(ac.FlightPlan.CruiseSpeed) * 60
 				timeToFix -= float32(TransmitFPMessageTime)
@@ -234,21 +241,27 @@ func (comp *ERAMComputer) AddTrackInformation(callsign string, trk TrackInformat
 	comp.TrackInformation[callsign] = &trk
 }
 
-func (comp *ERAMComputer) AddDeparture(fp *av.FlightPlan, tracon string, simTime time.Time) {
+func (comp *ERAMComputer) AddDeparture(fp *av.FlightPlan, tracon string, simTime time.Time) error {
 	starsFP := MakeSTARSFlightPlan(fp)
 
 	if fix := comp.Adaptation.FixForRouteAndAltitude(starsFP.Route, starsFP.Altitude); fix != nil {
 		msg := starsFP.Message()
 		msg.SourceID = formatSourceID(comp.Identifier, simTime)
 		msg.MessageType = Plan
-		comp.SendMessageToERAM(fix.ToFacility, msg)
+		if err := comp.SendMessageToERAM(fix.ToFacility, msg); err != nil {
+			return err 
+		}
 
 		starsFP.CoordinationFix = fix.Name
 		starsFP.Sent = true
 	}
 
 	comp.AddFlightPlan(starsFP)
-	comp.SendMessageToSTARSFacility(tracon, FlightPlanDepartureMessage(*fp, comp.Identifier, simTime))
+	err := comp.SendMessageToSTARSFacility(tracon, FlightPlanDepartureMessage(*fp, comp.Identifier, simTime))
+	if err != nil {
+		return err 
+	}
+	return nil 
 }
 
 // Sends a message, whether that be a flight plan or any other message type to a STARS computer.
@@ -277,7 +290,7 @@ func (comp *ERAMComputer) Update(s *Sim) {
 
 func (comp *ERAMComputer) SendMessageToERAM(facility string, msg FlightPlanMessage) error {
 	if msg.MessageType == Unset {
-		panic("unset message type")
+		return ErrNoMessageID
 	}
 
 	if facERAM, ok := comp.eramComputers.Computers[facility]; !ok {
@@ -326,10 +339,13 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 			// Find the flight plan
 			err := comp.RequestFP(msg.Identifier, facility)
 			if err != nil {
-				comp.SendMessageToSTARSFacility(facility, FlightPlanMessage{
+				err = comp.SendMessageToSTARSFacility(facility, FlightPlanMessage{
 					MessageType: Plan,
 					Error:       err,
 				})
+				if err != nil {
+					lg.Errorf("Error requesting FP for %v: %v", msg.Identifier, err)
+				}
 			}
 
 		case DepartureDM: // Stars ERAM coordination time tracking
@@ -355,7 +371,10 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 						des = av.DB.TRACONs[des].ARTCC
 					}
 
-					comp.SendMessageToERAM(des, msg)
+					err := comp.SendMessageToERAM(des, msg)
+					if err != nil {
+						lg.Errorf("Error sending message to %s: %v", des, err)
+					}
 				}
 			}
 

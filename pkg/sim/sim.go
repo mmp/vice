@@ -3791,7 +3791,10 @@ func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (
 	}
 
 	eram := s.State.ERAMComputer(fac)
-	eram.AddDeparture(ac.FlightPlan, s.State.TRACON, s.SimTime)
+	err := eram.AddDeparture(ac.FlightPlan, s.State.TRACON, s.SimTime)
+	if err != nil {
+		return nil, err
+	}
 
 	return ac, nil
 }
