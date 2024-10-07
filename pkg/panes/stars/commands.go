@@ -2992,13 +2992,21 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					} else {
 						status.err = err
 					}
-				} else {
+				} else if trk != nil {
 					// Try setting the scratchpad
 					if err := sp.setScratchpad(ctx, trk.Identifier, cmd, false, true); err != nil {
 						status.err = err
 					} else {
 						status.clear = true
 					}
+				} else { // Try to IC a track? 
+					fp, err := ctx.ControlClient.STARSComputer(ctx.ControlClient.Callsign).GetFlightPlan(ac.Callsign)
+					if err != nil {
+						status.err = err 
+						return 
+					}
+					status.clear = true 
+					sp.initiateTrack(ctx, ac.Callsign, fp)
 				}
 				return
 			}
