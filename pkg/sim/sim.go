@@ -1457,33 +1457,9 @@ func (s *Sim) updateState() {
 					continue
 				}
 			} else { // ERAM Acceptance
-				trk := eram.TrackInformation[ac.Callsign]
 				ctrl = s.State.Controllers[trk.HandoffController]
 				octrl = s.State.Controllers[trk.TrackOwner]
-				receivingFacility := s.State.Controllers[trk.TrackOwner].Facility
-				eram.TrackInformation[ac.Callsign].HandoffController = ""
-				eram.TrackInformation[ac.Callsign].TrackOwner = ctrl.Callsign
-				// TODO: Put the accept stuff in an ERAM function
-				trk = eram.TrackInformation[ac.Callsign] // Udapte trk to reflect changes
-				fp := trk.FlightPlan
-
-				msg := fp.Message()
-				msg.SourceID = formatSourceID(ctrl.Facility, s.SimTime)
-				msg.TrackInformation = TrackInformation{
-					TrackOwner: ctrl.Callsign,
-				}
-				msg.MessageType = AcceptRecallTransfer
-				msg.Identifier = ac.Callsign
-				msg.FacilityDestination = receivingFacility
-
-				if _, ok := eram.STARSComputers[receivingFacility]; ok {
-					eram.SendMessageToSTARSFacility(receivingFacility, msg)
-				} else { // Forward to another ERAM facility
-					if _, ok := av.DB.ARTCCs[receivingFacility]; !ok {
-						receivingFacility = av.DB.TRACONs[receivingFacility].ARTCC
-					}
-					eram.SendMessageToERAM(receivingFacility, msg)
-				}
+				eram.AcceptHandoff(ac.Callsign, ctrl, octrl, s.SimTime)
 			}
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,

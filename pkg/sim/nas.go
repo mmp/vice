@@ -441,6 +441,35 @@ func (comp *ERAMComputer) HandoffTrack(ac *av.Aircraft, from, to *av.Controller,
 	return nil
 }
 
+func (comp *ERAMComputer) AcceptHandoff(callsign string, ctrl, octrl *av.Controller, simTime time.Time) error {
+	trk := comp.TrackInformation[callsign]
+	receivingFacility := octrl.Facility
+	trk.HandoffController = ""
+	trk.TrackOwner = ctrl.Callsign
+	// TODO: Put the accept stuff in an ERAM function
+	trk = comp.TrackInformation[callsign] // Udapte trk to reflect changes
+	fp := trk.FlightPlan
+
+	msg := fp.Message()
+	msg.SourceID = formatSourceID(ctrl.Facility, simTime)
+	msg.TrackInformation = TrackInformation{
+		TrackOwner: ctrl.Callsign,
+	}
+	msg.MessageType = AcceptRecallTransfer
+	msg.Identifier = callsign
+	msg.FacilityDestination = receivingFacility
+
+	if _, ok := comp.STARSComputers[receivingFacility]; ok {
+		comp.SendMessageToSTARSFacility(receivingFacility, msg)
+	} else { // Forward to another ERAM facility
+		if _, ok := av.DB.ARTCCs[receivingFacility]; !ok {
+			receivingFacility = av.DB.TRACONs[receivingFacility].ARTCC
+		}
+		comp.SendMessageToERAM(receivingFacility, msg)
+	}
+	return nil 
+}
+
 func (comp *ERAMComputer) DropTrack(ac *av.Aircraft) error {
 	if trk := comp.TrackInformation[ac.Callsign]; trk != nil {
 		delete(comp.FlightPlans, trk.FlightPlan.AssignedSquawk)
