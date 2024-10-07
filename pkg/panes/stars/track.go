@@ -917,6 +917,12 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, aircraft []*av.Aircraf
 			}
 		}
 
+		// No CA if they're in the same ATPA volume; let the ATPA monitor take it
+		va, vb := aca.ATPAVolume(), acb.ATPAVolume()
+		if va != nil && vb != nil && va.Id == vb.Id {
+			return false
+		}
+
 		if inCAVolumes(sa) || inCAVolumes(sb) {
 			return false
 		}
