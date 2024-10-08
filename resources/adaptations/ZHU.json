@@ -1,0 +1,313 @@
+{
+  "coordination_fixes": {
+    "BAYYY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BBQUE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BEATL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BELLR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BOPPR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CAASE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CATTT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CESAN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DOMNO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DXEEE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "AUS",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GABOO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "AUS",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GILLL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HOWLN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "JJACK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LAIKS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "AUS",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SSTAX": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "TKNIQ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "TOAMY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "AUS",
+        "from": "I90",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WAPPL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WLEEE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "AUS",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WUUDZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ZEEKK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "I90",
+        "from": "ZHU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

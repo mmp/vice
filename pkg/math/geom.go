@@ -277,3 +277,61 @@ func CirclePoints(nsegs int) [][2]float32 {
 	// One way or another, it's now available in the map.
 	return circlePoints[nsegs]
 }
+
+func segmentIntersection(p1, p2, q1, q2 [2]float32) (Point2LL, bool) {
+    // Line p1-p2 represented as a1x + b1y = c1
+    a1 := p2[1] - p1[1]
+    b1 := p1[0] - p2[0]
+    c1 := a1*p1[0] + b1*p1[1]
+
+    // Line q1-q2 represented as a2x + b2y = c2
+    a2 := q2[1] - q1[1]
+    b2 := q1[0] - q2[0]
+    c2 := a2*q1[0] + b2*q1[1]
+
+    determinant := a1*b2 - a2*b1
+
+    if determinant == 0 {
+        // Lines are parallel
+        return [2]float32{}, false
+    } else {
+        x := (b2*c1 - b1*c2) / determinant
+        y := (a1*c2 - a2*c1) / determinant
+
+        // Check if the intersection point is within both line segments
+        if gomath.Min(float64(p1[0]), float64(p2[0])) <= float64(x) && float64(x) <= gomath.Max(float64(p1[0]), float64(p2[0])) &&
+            gomath.Min(float64(p1[1]), float64(p2[1])) <= float64(y) && float64(y) <= gomath.Max(float64(p1[1]), float64(p2[1])) &&
+            gomath.Min(float64(q1[0]), float64(q2[0])) <= float64(x) && float64(x) <= gomath.Max(float64(q1[0]), float64(q2[0])) &&
+            gomath.Min(float64(q1[1]), float64(q2[1])) <= float64(y) && float64(y) <= gomath.Max(float64(q1[1]), float64(q2[1])) {
+            return [2]float32{float32(x), float32(y)}, true
+        }
+    }
+
+    return [2]float32{}, false
+}
+
+// Function to find the closest intersection between polygon edges and a line segment
+func LineIntersection(polygon [][2]float32, insidePoint [2]float32, outsidePoint [2]float32) ([2]float32, bool) {
+    var closestIntersection [2]float32
+    minDistance := float32(gomath.MaxFloat32)
+    found := false
+
+    for i := 0; i < len(polygon)-1; i++ {
+        intersect, ok := segmentIntersection(polygon[i], polygon[i+1], insidePoint, outsidePoint)
+        if ok {
+            distance := (intersect[0]-outsidePoint[0])*(intersect[0]-outsidePoint[0]) + (intersect[1]-outsidePoint[1])*(intersect[1]-outsidePoint[1])
+            if distance < minDistance {
+                minDistance = distance
+                closestIntersection = intersect
+                found = true
+            }
+        }
+    }
+
+    if !found {
+        return [2]float32{}, false
+    }
+
+    return closestIntersection, true 
+}
+

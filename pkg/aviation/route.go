@@ -209,6 +209,16 @@ func (w *WaypointArray) UnmarshalJSON(b []byte) error {
 	}
 }
 
+// Makes the route have all the waypoints (getting in airways, etc.)
+func NiceRoute(route string) string {
+	route = strings.TrimPrefix(route, "/. ")
+	rte, err := ParseWaypoints(route)
+	if err != nil {
+		return ""
+	}
+	return rte.RouteString()
+}
+
 func (w WaypointArray) RouteString() string {
 	var r []string
 	airway := ""

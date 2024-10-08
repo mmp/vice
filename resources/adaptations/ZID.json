@@ -1,0 +1,145 @@
+{
+  "coordination_fixes": {
+    "BABNE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "IND",
+        "from": "ZID",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CHERI": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SDF",
+        "from": "ZID",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CIRGO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "IND",
+        "from": "ZID",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "EASEL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "IND",
+        "from": "ZID",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FRIZN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SDF",
+        "from": "ZID",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MAUDD": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SDF",
+        "from": "ZID",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MBELL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SDF",
+        "from": "ZID",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "NERVE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SDF",
+        "from": "CVG",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "OPPIE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "IND",
+        "from": "ZID",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SMUKE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "IND",
+        "from": "ZID",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

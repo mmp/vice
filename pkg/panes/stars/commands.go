@@ -540,7 +540,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 						func(err error) { sp.displayError(err, ctx) })
 					status.output = fmt.Sprintf("%v%v%v %04o\nNO ROUTE %v", fp.Callsign,
 						util.Select(fp.AircraftType != "", " ", ""), fp.AircraftType, fp.AssignedSquawk,
-						util.Select(fp.Altitude != "VFR", fp.Altitude, ""))
+						util.Select(fp.STARSAltitude != "VFR", fp.STARSAltitude, ""))
 				}
 				status.clear = err == nil
 				status.err = err

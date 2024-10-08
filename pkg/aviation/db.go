@@ -14,6 +14,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"slices"
 	"strconv"
 	"strings"
@@ -46,6 +47,7 @@ type StaticDatabase struct {
 	ERAMAdaptations     map[string]ERAMAdaptation
 	TRACONs             map[string]TRACON
 	MVAs                map[string][]MVA // TRACON -> MVAs
+	Boundaries		  map[string]ARTCCSectors // ZNY -> sector boundries, etc.
 }
 
 type FAAAirport struct {
@@ -94,10 +96,36 @@ const (
 type AdaptationFix struct {
 	Name         string // not in JSON
 	Type         string `json:"type"`
-	ToFacility   string `json:"to"`   // controller to handoff to
+	ToFacility   string `json:"to"`   // controller to handoff to // TODO: remove this
 	FromFacility string `json:"from"` // controller to handoff from
 	Altitude     [2]int `json:"altitude"`
+	DepartingAirports []string `json:"departing_airports"`
+	ArrivingAirports []string `json:"arriving_airports"`
 }
+
+
+type Sector struct {
+	Type       string            `json:"type"`
+	Properties SectorProperties `json:"properties"`
+	Geometry   SectorCoordinates   `json:"geometry"`
+}
+
+type SectorProperties struct {
+	Sector        string `json:"sector"` // 66 for MANTA; NNN for N90
+	AltitudeRange [2]int `json:"altitude_range"`
+}
+
+type SectorCoordinates struct {
+	Type        string        `json:"type"`
+	Coordinates [][][2]float32 `json:"coordinates"` //Boundary Coordinates
+}
+
+type ARTCCSectors struct {
+	Type     string           `json:"type"`
+	Name     string           `json:"name"`
+	Features []Sector`json:"features"` // Feature is basically sector
+}
+
 
 type AdaptationFixes []AdaptationFix
 
@@ -185,6 +213,8 @@ func init() {
 	go func() { db.MVAs = parseMVAs(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.ERAMAdaptations = parseAdaptations(); wg.Done() }()
+	wg.Add(1)
+	go func() { db.Boundaries = parseARTCCBoundaries(); wg.Done() }()
 	wg.Wait()
 
 	for icao, ap := range airports {
@@ -481,10 +511,20 @@ func parseMagneticGrid() MagneticGrid {
 func parseAdaptations() map[string]ERAMAdaptation {
 	adaptations := make(map[string]ERAMAdaptation)
 
-	adaptationsRaw := util.LoadResource("adaptations.json")
-	if err := util.UnmarshalJSON(adaptationsRaw, &adaptations); err != nil {
-		fmt.Fprintf(os.Stderr, "adaptations.json: %v\n", err)
-		os.Exit(1)
+	dir, _ := os.Getwd()
+	filesDir := filepath.Join(dir, "resources", "adaptations")
+
+	files, err := os.ReadDir(filesDir)
+	if err != nil {
+		panic(err)
+	}
+	for _, file := range files {
+		b := util.LoadResource("adaptations/" + file.Name())
+		var adapt ERAMAdaptation
+		if err := util.UnmarshalJSON(b, &adapt); err != nil {
+			panic(err)
+		}
+		adaptations[strings.TrimSuffix(file.Name(), ".json")] = adapt
 	}
 
 	// Wire up names in the structs
@@ -542,6 +582,29 @@ func (m *MVA) Inside(p [2]float32) bool {
 		}
 	}
 	return true
+}
+
+// Returns the ARTCC and sector name for the given point, if it's inside.
+func (db *StaticDatabase) GetARTCC(p math.Point2LL, alt int) (string, string, [][2]float32) {
+	for artcc, sectors := range db.Boundaries {
+		sector, polygon:= sectors.Inside(p, alt)
+		if polygon != nil  {
+			return artcc, sector, polygon[0]
+		}
+	}
+	return "", "", nil 
+}
+
+// Sector name and if it's inside the ARTCC
+func (b *ARTCCSectors) Inside(p math.Point2LL, alt int) (string, [][][2]float32) { 
+	for _, sector := range b.Features {
+		for _, geo := range sector.Geometry.Coordinates {
+			if alt >= sector.Properties.AltitudeRange[0] && alt <= sector.Properties.AltitudeRange[1] && math.PointInPolygon(p, geo)  {
+				return sector.Properties.Sector, sector.Geometry.Coordinates
+			}
+		}
+	}
+	return "", nil
 }
 
 type MVALinearRing struct {
@@ -737,6 +800,26 @@ func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
 	}
 
 	return artccs, tracons
+}
+
+func parseARTCCBoundaries() map[string]ARTCCSectors {
+	dir, _ := os.Getwd()
+	filesDir := filepath.Join(dir, "resources", "artcc_boundaries")
+	
+	files, err := os.ReadDir(filesDir)
+	if err != nil {
+		panic(err)
+	}
+	artccSectors := make(map[string]ARTCCSectors)
+	for _, file := range files {
+		b := util.LoadResource("artcc_boundaries/" + file.Name())
+		var sectors ARTCCSectors
+		if err := util.UnmarshalJSON(b, &sectors); err != nil {
+			panic(err)
+		}
+		artccSectors[sectors.Name] = sectors
+	}
+	return artccSectors
 }
 
 func (ap FAAAirport) ValidRunways() string {

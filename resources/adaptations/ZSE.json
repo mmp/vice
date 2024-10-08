@@ -1,0 +1,215 @@
+{
+  "coordination_fixes": {
+    "DIGGN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S46",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FLOWR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "P80",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GLASR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S46",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HHOOD": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "P80",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HUMPP": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S46",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HUVUS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S46",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "KRATR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "P80",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LACEE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S46",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LIINE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S46",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MARNR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S46",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MYCRO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "P80",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SSSUN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "P80",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "VANTZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "P80",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "VOODU": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "P80",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "YORKY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "P80",
+        "from": "ZSE",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

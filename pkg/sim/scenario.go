@@ -779,7 +779,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 				}
 				sg.InboundFlows[name] = flow
 			}
-			sg.ArrivalGroups = nil
+			// sg.ArrivalGroups = nil
 		}
 	}
 
@@ -1291,7 +1291,7 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 func GetCoordinationFix(fa av.ERAMAdaptation, fp *STARSFlightPlan, acpos math.Point2LL, waypoints []av.Waypoint) (string, bool) {
 
 	for fix, adaptationFixes := range fa.CoordinationFixes {
-		if adaptationFix, err := adaptationFixes.Fix(fp.Altitude); err == nil {
+		if adaptationFix, err := adaptationFixes.Fix(fp.STARSAltitude); err == nil {
 			if adaptationFix.Type == av.ZoneBasedFix {
 				// Exclude zone based fixes for now. They come in after the route-based fix
 				continue
@@ -1330,6 +1330,7 @@ func GetCoordinationFix(fa av.ERAMAdaptation, fp *STARSFlightPlan, acpos math.Po
 
 	return closestFix, closestFix != ""
 }
+
 
 func initializeSimConfigurations(sg *ScenarioGroup,
 	simConfigurations map[string]map[string]*Configuration, multiController bool, e *util.ErrorLogger) {

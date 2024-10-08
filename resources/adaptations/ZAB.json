@@ -1,0 +1,61 @@
+{
+  "coordination_fixes": {
+    "BRDEY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "P50",
+        "from": "ZAB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BRUSR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "P50",
+        "from": "ZAB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GEELA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "P50",
+        "from": "ZAB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HOMRR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "P50",
+        "from": "ZAB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

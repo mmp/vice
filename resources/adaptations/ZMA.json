@@ -1,0 +1,397 @@
+{
+  "coordination_fixes": {
+    "ALYNA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BAIRN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BANGZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "TPA",
+        "from": "ZJX",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BANTY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MIA",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CUUDA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MIA",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DSIDE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "TPA",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ECAKE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FROGZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MIA",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GIRAF": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HAANZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HULKY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MIA",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "JOKRS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LACEN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LORRA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LUBBR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "TPA",
+        "from": "ZJX",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MAATY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "TPA",
+        "from": "ZJX",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "OLAHS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MIA",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "OLENE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "TPA",
+        "from": "ZJX",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PRICY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "RAYZZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "TPA",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "RIDES": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SNDBR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MIA",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SURFR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "VIICE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MIA",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WISRD": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WOOSA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MIA",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "YACKO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MIA",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ZINGR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZJX",
+        "from": "ZMA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

@@ -71,9 +71,10 @@ type ERAMComputer struct {
 	Adaptation    av.ERAMAdaptation
 
 	eramComputers *ERAMComputers // do not include when we serialize
+	ArrivalRoutes map[string][]av.Arrival
 }
 
-func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsAdapt STARSFacilityAdaptation, eramComputers *ERAMComputers) *ERAMComputer {
+func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsAdapt STARSFacilityAdaptation, eramComputers *ERAMComputers, arrivalRoutes map[string][]av.Arrival) *ERAMComputer {
 	starsBeaconBank := starsAdapt.BeaconBank
 	ec := &ERAMComputer{
 		Adaptation:       adapt,
@@ -84,6 +85,7 @@ func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsAdapt STARSFacil
 		STARSCodePool:    av.MakeSquawkBankCodePool(starsBeaconBank),
 		Identifier:       fac,
 		eramComputers:    eramComputers,
+		ArrivalRoutes:    arrivalRoutes,
 	}
 
 	for id, tracon := range av.DB.TRACONs {
@@ -126,16 +128,16 @@ func (comp *ERAMComputer) SendFlightPlans(tracon string, simTime time.Time, lg *
 		if coordFix, ok := comp.Adaptation.CoordinationFixes[fp.CoordinationFix]; !ok {
 			// lg.Errorf("%s: no coordination fix found for %v/%v CoordinationFix",
 			// fp.CoordinationFix, fp.Callsign, fp.AssignedSquawk)
-		} else if _, err := coordFix.Fix(fp.Altitude); err != nil {
+		} else if _, err := coordFix.Fix(fp.STARSAltitude); err != nil {
 			lg.Errorf("%s @ %s", fp.CoordinationFix, fp.Altitude)
 		} else if !fp.Sent {
-			comp.SendFlightPlan(fp, tracon, simTime, ac)
+			comp.SendFlightPlan(fp, tracon, simTime)
 		}
 	}
 
 	for _, info := range comp.TrackInformation {
 		if fp := info.FlightPlan; fp != nil {
-			if fp.Callsign == "" && fp.Altitude == "" {
+			if fp.Callsign == "" && fp.STARSAltitude == "" {
 				// FIXME(mtrokel): figure out why these are sneaking in here!
 				delete(comp.TrackInformation, info.Identifier)
 			} else {
@@ -150,80 +152,32 @@ func (comp *ERAMComputer) SendFlightPlans(tracon string, simTime time.Time, lg *
 }
 
 // For individual plans being sent.
-func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, tracon string, simTime time.Time, ac *av.Aircraft) error {
+func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, toFacility string, simTime time.Time) error {
 	msg := fp.Message()
 	msg.MessageType = Plan
 	msg.SourceID = formatSourceID(comp.Identifier, simTime)
 
-	if coordFix, ok := comp.Adaptation.CoordinationFixes[fp.CoordinationFix]; !ok {
-		return av.ErrNoMatchingFix
-	} else if adaptFix, err := coordFix.Fix(fp.Altitude); err != nil {
-		return err
-	} else {
-		// TODO: change tracon to the fix pair assignment (this will be in the adaptation)
-		err := comp.SendMessageToSTARSFacility(tracon, msg)
-		if err != nil {
-			comp.SendMessageToERAM(av.DB.TRACONs[tracon].ARTCC, msg)
+	if err := comp.SendMessageToSTARSFacility(toFacility, msg); err != nil {
+		if err = comp.SendMessageToERAM(toFacility, msg); err != nil {
+			return err
 		}
-		fp.Sent = true
-
-		// If the previous facility was not a ERAM facility, find a new coordination fix
-
-		if _, ok := av.DB.ARTCCs[adaptFix.ToFacility]; !ok {
-			copy := *fp
-
-			// Convert the route to waypoints.
-			copy.Route = strings.TrimPrefix(copy.Route, "/. ")
-			rte, err := av.ParseWaypoints(copy.Route)
-			if err != nil {
-				return nil
-			}
-			slicedRoute := rte.RouteString()
-			idx := strings.Index(slicedRoute, adaptFix.Name)
-			if idx+len(adaptFix.Name)+1 > len(fp.Route) { // Last fix in the route
-				return nil
-			}
-			slicedRoute = slicedRoute[idx+len(adaptFix.Name)+1:]
-			slicedRoute = strings.TrimSpace(slicedRoute)
-
-			copy.Route = slicedRoute
-			fix := comp.FixForRouteAndAltitude(copy.Route, copy.Altitude)
-			if fix == nil {
-				return nil
-			}
-			fp.CoordinationFix = fix.Name
-			// Assign a coordination time for the new fix
-			var distanceToFix, timeToFix float32
-			if ac == nil {
-				// Find the distance between the previous fix and the new fix, then use the filled cruise speed to calculate the time to the new fix
-				route := strings.Fields(slicedRoute)
-				prevFix := adaptFix.Name
-				for _, fix := range route {
-					pos1, ok := av.DB.LookupWaypoint(prevFix)
-					if !ok {
-						return nil
-					}
-					pos2, ok := av.DB.LookupWaypoint(fix)
-					if !ok {
-						return nil
-					}
-					distanceToFix += math.NMDistance2LL(pos1, pos2)
-					timeToFix = distanceToFix / float32(fp.CruiseSpeed) * 60 // No TransmitFPMessage time here because we're taking the distance of the current coordination fix (which in theory should be TransmitFPMessage minutes away from the fix),
-					// so that time is already accounted for.
-				}
-			} else {
-				distanceToFix, err = ac.Nav.DistanceAlongRoute(fp.CoordinationFix)
-				if err != nil {
-				}
-				timeToFix = distanceToFix / float32(ac.FlightPlan.CruiseSpeed) * 60
-				timeToFix -= float32(TransmitFPMessageTime)
-			}
-
-			fp.CoordinationTime.Time = simTime.Add(time.Duration(timeToFix * float32(time.Minute)))
-		}
-
-		return nil
 	}
+
+	// Find a new coordination time
+
+	currentFacilities := []string{comp.Identifier}
+
+	nextFacilityFix, fixLocations, polygon := fp.FindNextFacility(currentFacilities, "", comp.ArrivalRoutes) // FIXME: this is a hack
+	// fmt.Printf("Find next facility fix: %s, next facility: %v, fix locations: %v, polygon: %v\n",
+	// nextFacilityFix, fp.NextFacility, fixLocations, polygon)
+	distance, ok := fp.IntersectionDistance(nextFacilityFix, fixLocations, polygon)
+	if ok {
+		fp.CoordinationTime.Time = simTime.Add(time.Duration(distance / float32(fp.CruiseSpeed) * 60 * float32(time.Minute)))
+	} else { // Not supposed to happen.
+		// fmt.Printf("SendFP: No intersection point found for %s\n", fp.Callsign)
+		fp.CoordinationTime.Time = simTime.Add(5 * time.Minute)
+	}
+	return nil
 }
 
 func (comp *ERAMComputer) AddFlightPlan(plan *STARSFlightPlan) {
@@ -236,16 +190,6 @@ func (comp *ERAMComputer) AddTrackInformation(callsign string, trk TrackInformat
 
 func (comp *ERAMComputer) AddDeparture(fp *av.FlightPlan, tracon string, simTime time.Time) {
 	starsFP := MakeSTARSFlightPlan(fp)
-
-	if fix := comp.Adaptation.FixForRouteAndAltitude(starsFP.Route, starsFP.Altitude); fix != nil {
-		msg := starsFP.Message()
-		msg.SourceID = formatSourceID(comp.Identifier, simTime)
-		msg.MessageType = Plan
-		comp.SendMessageToERAM(fix.ToFacility, msg)
-
-		starsFP.CoordinationFix = fix.Name
-		starsFP.Sent = true
-	}
 
 	comp.AddFlightPlan(starsFP)
 	comp.SendMessageToSTARSFacility(tracon, FlightPlanDepartureMessage(*fp, comp.Identifier, simTime))
@@ -304,7 +248,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 			comp.FlightPlans[msg.BCN] = fp
 
 			if fp.CoordinationFix == "" {
-				if fix := comp.FixForRouteAndAltitude(fp.Route, fp.Altitude); fix != nil {
+				if fix := comp.FixForRouteAndAltitude(fp.Route, fp.STARSAltitude); fix != nil {
 					fp.CoordinationFix = fix.Name
 				} else {
 					lg.Warnf("Coordination fix not found for route %q, altitude \"%s",
@@ -314,7 +258,7 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 			}
 
 			// Check if another facility needs this plan.
-			if af := comp.AdaptationFixForAltitude(fp.CoordinationFix, fp.Altitude); af != nil {
+			if af := comp.AdaptationFixForAltitude(fp.CoordinationFix, fp.STARSAltitude); af != nil {
 				if af.ToFacility != comp.Identifier {
 					// Send the plan to the STARS facility that needs it.
 					comp.SendMessageToSTARSFacility(af.ToFacility, msg)
@@ -333,6 +277,19 @@ func (comp *ERAMComputer) SortMessages(simTime time.Time, lg *log.Logger) {
 			}
 
 		case DepartureDM: // Stars ERAM coordination time tracking
+
+			fp := comp.FlightPlans[msg.BCN]
+
+			currentFacilities := []string{msg.SourceID[:3], comp.Identifier} // Don't send the flight plan to these facilities, they already have it. TODO: Replace N90 in sourceID to something like NNN
+			nextFacilityFix, fixLocations, polygon := fp.FindNextFacility(currentFacilities, "", comp.ArrivalRoutes)
+
+			distance, ok := fp.IntersectionDistance(nextFacilityFix, fixLocations, polygon)
+			if ok {
+				fp.CoordinationTime.Time = simTime.Add(time.Duration(distance / float32(fp.CruiseSpeed) * 60 * float32(time.Minute)))
+			} else { // Not supposed to happen.
+				fmt.Printf("DM: No intersection point found for %s\n", fp.Callsign)
+				fp.CoordinationTime.Time = simTime.Add(5 * time.Minute)
+			}
 
 		case BeaconTerminate: // TODO: Find out what this does
 
@@ -1054,7 +1011,9 @@ type STARSFlightPlan struct {
 	CoordinationTime  CoordinationTime
 	CoordinationFix   string
 	Sent              bool
-	Altitude          string
+	NextFacility      string
+	CutFix            string // The fix where the aircraft route is cut off
+	STARSAltitude     string
 	SP1               string
 	SP2               string
 	InitialController string // For abbreviated FPs
@@ -1083,16 +1042,17 @@ const (
 
 func MakeSTARSFlightPlan(fp *av.FlightPlan) *STARSFlightPlan {
 	return &STARSFlightPlan{
-		FlightPlan: fp,
-		Altitude:   fmt.Sprint(fp.Altitude),
+		FlightPlan:    fp,
+		STARSAltitude: fmt.Sprint(fp.Altitude),
 	}
 }
 
 func (fp STARSFlightPlan) Message() FlightPlanMessage {
 	return FlightPlanMessage{
 		BCN:      fp.AssignedSquawk,
-		Altitude: fp.Altitude, // Eventually we'll change this to a string
+		Altitude: fp.STARSAltitude,
 		Route:    fp.Route,
+		CutFix:   fp.CutFix,
 		AircraftData: AircraftDataMessage{
 			DepartureLocation: fp.DepartureAirport,
 			ArrivalLocation:   fp.ArrivalAirport,
@@ -1134,6 +1094,103 @@ func (fp *STARSFlightPlan) SetCoordinationFix(fa av.ERAMAdaptation, ac *av.Aircr
 	return nil
 }
 
+func (fp *STARSFlightPlan) FindNextFacility(currentFacilities []string, beginFix string, ar map[string][]av.Arrival) (string, [2]math.Point2LL, [][2]float32) {
+	rte := av.NiceRoute(fp.Route)
+	route := strings.Fields(rte)
+	arrivalGroup := route[len(route)-1]
+	fmt.Printf("Arrival group: .%v.\n", arrivalGroup)
+	
+	var arrival av.Arrival
+	
+	Big: for x, arr := range ar {
+		for y, slahedArrs := range strings.Split(x, "/") {
+			fmt.Println(slahedArrs, arrivalGroup)
+			if slahedArrs == arrivalGroup {
+				arrival = arr[y]
+				break Big
+			}
+		}
+	}
+	if arrival.Waypoints != nil {
+		arr := arrival.Waypoints
+		route = route[:len(route)-1]
+
+		for _, waypoint := range arr {
+			route = append(route, waypoint.Fix)
+		}
+		
+	} else {
+		fmt.Printf("No STAR for %v; route is %v\n", arrivalGroup, route)
+	}
+
+	idx := slices.Index(route, beginFix)
+	route = route[idx+1:]
+	fixLocations := [2]math.Point2LL{}
+	polygon := [][2]float32{}
+	nextFacilityFix := ""
+	// Find what altitude to use
+	alt, _ := strconv.Atoi(fp.STARSAltitude)
+	alt = 7000 // For testing
+	
+	for idx, fix := range route {
+		pos, ok := av.DB.LookupWaypoint(fix)
+	
+		var fac, sector string
+		if ok {
+			if arrival.Waypoints != nil {
+				
+			}
+			fac, sector, polygon = av.DB.GetARTCC(pos, alt)
+			fmt.Printf("%v is in %v sector %v\n", fix, fac, sector)
+		} else {
+			fmt.Printf("Couldnt find location for %v\n", fix)
+			continue
+		}
+		if fac != "" && !slices.Contains(currentFacilities, fac) {
+			fp.NextFacility = fac
+			polygon = append(polygon, pos)
+			nextFacilityFix = fix
+			fp.CutFix = fix
+			fixLocations[0] = pos
+			if len(route) > idx+1 {
+				pos, _ = av.DB.LookupWaypoint(route[idx+1])
+				fixLocations[1] = pos
+			} else {
+				fixLocations[1] = av.DB.Airports[fp.ArrivalAirport].Location
+			}
+			return nextFacilityFix, fixLocations, polygon
+		}
+	}
+	return "", [2]math.Point2LL{}, nil
+}
+
+func (fp *STARSFlightPlan) IntersectionDistance(fix string, fixLocations [2]math.Point2LL, polygon [][2]float32) (float32, bool) {
+	rte := av.NiceRoute(fp.Route)
+	route := strings.Fields(rte)
+	interSectionPoint, ok := math.LineIntersection(polygon, fixLocations[0], fixLocations[1])
+	if ok {
+		prevFix := av.DB.Airports[fp.DepartureAirport].Location
+		var distance float32
+		for _, fix := range route {
+			pos, ok := av.DB.LookupWaypoint(fix)
+			if !ok {
+				continue
+			}
+			if fix == fix {
+				prevFix = pos
+				break
+			}
+			distanceToFix := math.NMDistance2LL(prevFix, pos)
+			prevFix = pos
+			distance += distanceToFix
+		}
+		// Calculate the distance to the intersection point
+		distance += math.NMDistance2LL(prevFix, interSectionPoint)
+		return distance, true
+	}
+	return 0, false
+}
+
 type FlightPlanMessage struct {
 	SourceID         string // LLLdddd e.g. ZCN2034 (ZNY at 2034z)
 	MessageType      int
@@ -1152,6 +1209,7 @@ type FlightPlanMessage struct {
 	// could be 310, VFR/170, VFR, 170B210 (block altitude), etc.
 	Altitude string
 	Route    string
+	CutFix   string
 
 	FacilityDestination string // For InitiateTransfer or AcceptRecallTransfer messages
 	// that are inter-facility handoffs so that the ERAM computer knows where to send the message to.
@@ -1260,16 +1318,16 @@ type UnsupportedTrack struct {
 	SP1                   string
 	SP2                   string
 	PilotReportedAltitude string
-	IntermAlt              string
+	IntermAlt             string
 }
 
-func MakeERAMComputers(starsAdapt STARSFacilityAdaptation, lg *log.Logger) *ERAMComputers {
+func MakeERAMComputers(starsAdapt STARSFacilityAdaptation, arrivalRoutes map[string][]av.Arrival, lg *log.Logger) *ERAMComputers {
 	ec := &ERAMComputers{
 		Computers: make(map[string]*ERAMComputer),
 	}
 	// Make the ERAM computer for each ARTCC that we have adaptations defined for.
 	for fac, adapt := range av.DB.ERAMAdaptations {
-		ec.Computers[fac] = MakeERAMComputer(fac, adapt, starsAdapt, ec)
+		ec.Computers[fac] = MakeERAMComputer(fac, adapt, starsAdapt, ec, arrivalRoutes)
 	}
 
 	return ec
@@ -1482,7 +1540,7 @@ func (s FlightPlanMessage) FlightPlan() *STARSFlightPlan {
 		},
 		CoordinationFix:  s.CoordinationFix,
 		CoordinationTime: s.CoordinationTime,
-		Altitude:         s.Altitude,
+		STARSAltitude:    s.Altitude,
 	}
 
 	if len(s.FlightID) > 3 {
@@ -1545,7 +1603,7 @@ func MakeSTARSFlightPlanFromAbbreviated(abbr string, stars *STARSComputer, facil
 					DepartureAirport: info.DepartureAirport,
 					AssignedSquawk:   info.BCN,
 				},
-				Altitude:          util.Select(info.RequestedALT == "", "VFR", info.RequestedALT),
+				STARSAltitude:     util.Select(info.RequestedALT == "", "VFR", info.RequestedALT),
 				SP1:               info.SC1,
 				SP2:               info.SC1,
 				InitialController: info.ControllingPosition,

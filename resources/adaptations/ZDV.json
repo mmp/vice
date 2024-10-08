@@ -1,0 +1,467 @@
+{
+  "coordination_fixes": {
+    "AALLE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ADANE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "COS",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "AGIME": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ALLAN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BGDEE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BRICK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": " D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CLASH": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CYS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DANDD": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DBL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ASE",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ELKEE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FFEST": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FLATI": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FLNEL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FSHER": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "COS",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HAGGR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HORST": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": " D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "IMAGN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "JISIG": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LANDR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LARKS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LUFSE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "COS",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MNARK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "OZZZY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "COS",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PICKK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "POWDR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PPINT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PUB": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "COS",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "QUAIL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SINSY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "TESSY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WERNR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ASE",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ZOMBZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D01",
+        "from": "ZDV",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

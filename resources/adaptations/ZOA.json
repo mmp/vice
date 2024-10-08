@@ -1,0 +1,593 @@
+{
+  "coordination_fixes": {
+    "AANET": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ANAHO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ANJEE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BANND": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BSR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BYRON": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "COGOL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CORKK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DYAMD": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "EELZA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FATHM": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FLOWZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FOOLZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FRLON": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GOALI": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HOBOA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HOSME": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ISYOH": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "KARNN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LAANE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LOMBO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LOZIT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LUCAB": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MOD": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MOVDD": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MYYAA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "NEUPS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "NRRLI": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ORRCA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "OSI": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PIRAT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PXN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "RAZRR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "RYANN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SILCN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SKIZM": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SLMMR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "TEXSS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "TIPRE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WEBRR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WRAPS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ZOMER": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "NCT",
+        "from": "ZOA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

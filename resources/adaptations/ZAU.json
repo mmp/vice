@@ -1,0 +1,327 @@
+{
+  "coordination_fixes": {
+    "BAE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MKE",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BRAVE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MKE",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BRTMN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MKE",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CLUSO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ENDEE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FIYER": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FYTTE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HALIE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HULLS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "KRENA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "KURKK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LEEDR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MKE",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LYSTR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "MKE",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MADII": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "NEWRK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PAPPI": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PLANO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PNT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SHAIN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SWIIS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "TRTLL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "VEECK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WYNDE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "C90",
+        "from": "ZAU",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

@@ -1,0 +1,257 @@
+{
+  "coordination_fixes": {
+    "CAPSS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PCT",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CLIPR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PCT",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DEALE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PCT",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DMSTR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "RDU",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DYLIN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FAVKO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "RDU",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HENBY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZTL",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HOYAS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PCT",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "JAYOH": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PCT",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "JIIMS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PAATS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SMOOT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PCT",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "TAQLE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "RDU",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "TRUPS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PCT",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "VCTRY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PCT",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "VEJAY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "RDU",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "VIBES": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WEWIL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PCT",
+        "from": "ZDC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

@@ -785,7 +785,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 			if (state.DisplayRequestedAltitude != nil && *state.DisplayRequestedAltitude) ||
 				(state.DisplayRequestedAltitude == nil && sp.currentPrefs().DisplayRequestedAltitude) {
-				formatDBText(db.field5[2][:], fmt.Sprintf("R%03d ", trk.FlightPlan.Altitude[:len(trk.FlightPlan.Altitude)-2]), color, false)
+				formatDBText(db.field5[2][:], fmt.Sprintf("R%03d ", trk.FlightPlan.STARSAltitude[:len(trk.FlightPlan.STARSAltitude)-2]), color, false)
 			}
 		}
 

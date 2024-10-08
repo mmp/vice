@@ -1,0 +1,145 @@
+{
+  "coordination_fixes": {
+    "BGHRN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BIL",
+        "from": "ZLC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CARTR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S56",
+        "from": "ZLC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CRAZI": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BIL",
+        "from": "ZLC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "KUSTR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BIL",
+        "from": "ZLC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LEEHY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S56",
+        "from": "ZLC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "NORDK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S56",
+        "from": "ZLC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "QWENN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S56",
+        "from": "ZLC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SKEES": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S56",
+        "from": "ZLC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WAATS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "S56",
+        "from": "ZLC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "YLSTN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BIL",
+        "from": "ZLC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

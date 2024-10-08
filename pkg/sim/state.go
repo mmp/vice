@@ -80,7 +80,7 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 		Aircraft:      make(map[string]*av.Aircraft),
 		METAR:         make(map[string]*av.METAR),
 		Controllers:   make(map[string]*av.Controller),
-		ERAMComputers: MakeERAMComputers(sg.STARSFacilityAdaptation, s.lg),
+		ERAMComputers: MakeERAMComputers(sg.STARSFacilityAdaptation, sg.ArrivalGroups,s.lg),
 	}
 
 	if !isLocal {

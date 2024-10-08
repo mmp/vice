@@ -1,0 +1,579 @@
+{
+  "coordination_fixes": {
+    "AIR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PIT",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ARICO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BUF",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BENEE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BUF",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BONZZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BRWNZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "CLE",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BUDRW": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "CLE",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BUF": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BUF",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CLAPT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "CLE",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CLVTO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "CLE",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CRAKN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CUTTA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PIT",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DKK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BUF",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "EARED": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PIT",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "EHMAN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BUF",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GRAYT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GROHL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "CLE",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HANBL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HAYLL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HFNER": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "CLE",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HOMEE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PIT",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HUMRR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "JHW": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BUF",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "JIIMM": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "CLE",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "KILIT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOBN",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "KINCS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "CLE",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LEJOY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "PIT",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LOPVO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "NACCA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "NUTTZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PETTE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "QUUBE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "CLE",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "RIPPY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ROKNN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "CLE",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ROLNN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "CLE",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SEPLN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "CLE",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SHANX": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SMMNS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "TPGUN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "VCTRZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WNGNT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D21",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WOZEE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BUF",
+        "from": "ZOB",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}
