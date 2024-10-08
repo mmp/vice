@@ -220,7 +220,7 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, tracon string, sim
 			} else {
 				distanceToFix, err = ac.Nav.DistanceAlongRoute(fp.CoordinationFix)
 				if err != nil {
-					return err 
+					return err
 				}
 				timeToFix = distanceToFix / float32(ac.FlightPlan.CruiseSpeed) * 60
 				timeToFix -= float32(TransmitFPMessageTime)
@@ -249,7 +249,7 @@ func (comp *ERAMComputer) AddDeparture(fp *av.FlightPlan, tracon string, simTime
 		msg.SourceID = formatSourceID(comp.Identifier, simTime)
 		msg.MessageType = Plan
 		if err := comp.SendMessageToERAM(fix.ToFacility, msg); err != nil {
-			return err 
+			return err
 		}
 
 		starsFP.CoordinationFix = fix.Name
@@ -259,9 +259,9 @@ func (comp *ERAMComputer) AddDeparture(fp *av.FlightPlan, tracon string, simTime
 	comp.AddFlightPlan(starsFP)
 	err := comp.SendMessageToSTARSFacility(tracon, FlightPlanDepartureMessage(*fp, comp.Identifier, simTime))
 	if err != nil {
-		return err 
+		return err
 	}
-	return nil 
+	return nil
 }
 
 // Sends a message, whether that be a flight plan or any other message type to a STARS computer.
@@ -486,7 +486,7 @@ func (comp *ERAMComputer) AcceptHandoff(callsign string, ctrl, octrl *av.Control
 		}
 		comp.SendMessageToERAM(receivingFacility, msg)
 	}
-	return nil 
+	return nil
 }
 
 func (comp *ERAMComputer) DropTrack(ac *av.Aircraft) error {
@@ -810,30 +810,30 @@ func (comp *STARSComputer) HandoffTrack(callsign string, from *av.Controller, to
 }
 
 func (comp *STARSComputer) AutoInitiateAndHandoffTrack(ac *av.Aircraft, controller, octrl *av.Controller, sim *Sim) error {
-    if trk := comp.TrackInformation[ac.Callsign]; trk == nil &&
-        InAcquisitionArea(ac) && !sim.controllerIsSignedIn(ac.TrackingController) {
+	if trk := comp.TrackInformation[ac.Callsign]; trk == nil &&
+		InAcquisitionArea(ac) && !sim.controllerIsSignedIn(ac.TrackingController) {
 
-        fp, err := comp.GetFlightPlan(ac.Squawk.String())
-        if err != nil {
-            return fmt.Errorf("GetFlightPlan: %v", err)
-        }
+		fp, err := comp.GetFlightPlan(ac.Squawk.String())
+		if err != nil {
+			return fmt.Errorf("GetFlightPlan: %v", err)
+		}
 
-        err = comp.InitiateTrack(ac.Callsign, ac.TrackingController, fp, true)
-        if err != nil {
-            return fmt.Errorf("InitiateTrack: %v", err)
-        }
+		err = comp.InitiateTrack(ac.Callsign, ac.TrackingController, fp, true)
+		if err != nil {
+			return fmt.Errorf("InitiateTrack: %v", err)
+		}
 
-        ac.ControllingController = ac.TrackingController
+		ac.ControllingController = ac.TrackingController
 
-        err = comp.HandoffTrack(ac.Callsign, controller, octrl, sim.SimTime)
-        if err != nil {
-            sim.AwaitingHandoffs[ac.Callsign] = Handoff{
-                ReceivingController: controller.Callsign,
-            }
-            return fmt.Errorf("HandoffTrack: %v", err)
-        }
-    }
-    return nil
+		err = comp.HandoffTrack(ac.Callsign, controller, octrl, sim.SimTime)
+		if err != nil {
+			sim.AwaitingHandoffs[ac.Callsign] = Handoff{
+				ReceivingController: controller.Callsign,
+			}
+			return fmt.Errorf("HandoffTrack: %v", err)
+		}
+	}
+	return nil
 }
 
 func (comp *STARSComputer) AcceptHandoff(ac *av.Aircraft, ctrl *av.Controller,

@@ -1308,7 +1308,6 @@ func (p *SquawkCodePool) IsAssigned(code Squawk) bool {
 	return false
 }
 
-
 func (p *SquawkCodePool) Return(code Squawk) error {
 	if !p.IsAssigned(code) {
 		return ErrSquawkCodeUnassigned

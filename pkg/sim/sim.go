@@ -1619,9 +1619,9 @@ func (s *Sim) updateState() {
 				}
 
 				if !InAcquisitionArea(ac) && !InDropArea(ac) && ac.WaypointHandoffController != "" {
-					
-					if comp := s.State.STARSComputer(ac.WaypointHandoffController); comp != nil && 
-					!s.State.STARSFacilityAdaptation.KeepLDB {
+
+					if comp := s.State.STARSComputer(ac.WaypointHandoffController); comp != nil &&
+						!s.State.STARSFacilityAdaptation.KeepLDB {
 						comp.AssociateLDB(ac)
 					}
 
