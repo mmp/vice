@@ -816,6 +816,7 @@ how it simulates aircraft or the STARS interface.
                 <ul>
                   <li>"star" is now optional for arrivals; the pilot contact message has been improved for arrivals not on STARs.</li>
                   <li>Added an adaptation ("yellow_entries") for coordination lists that causes list entries to be yellow, not green.</li>
+                  <li>Added an adaptation ("use_legacy_font") to "stars_config" to select the legacy STARS font.</li>
                 </ul>
                 </li>
             </ul>
@@ -6335,6 +6336,11 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   Run <code>vice.exe -listmaps [path-to-XXX-videomaps.gob.zst]</code> to list the available
                   maps for an ARTCC.
                 </td>
+              </tr>
+              <tr>
+                <td>"use_legacy_font"</td>
+                <td>Boolean</td>
+                <td>If "true", causes the legacy STARS font to be used in the STARS display.</td>
               </tr>
               <tr>
                 <td>"video_map_file"</td>

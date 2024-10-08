@@ -566,7 +566,7 @@ func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, 
 	// TODO: should we explicitly handle the case of this being outside the window?
 	pw := transforms.WindowFromLatLongP(ps.CurrentCenter)
 	bounds := math.Extent2D{P1: [2]float32{scopeExtent.Width(), scopeExtent.Height()}}
-	font := sp.systemFont[ps.CharSize.Tools]
+	font := sp.systemFont(ctx, ps.CharSize.Tools)
 	color := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
 
 	td := renderer.GetTextDrawBuilder()
@@ -809,7 +809,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 	ps := sp.currentPrefs()
 	color := ps.Brightness.Lines.RGB() // check
 	style := renderer.TextStyle{
-		Font:  sp.systemFont[ps.CharSize.Tools],
+		Font:  sp.systemFont(ctx, ps.CharSize.Tools),
 		Color: color,
 	}
 
@@ -934,7 +934,7 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformati
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	font := sp.systemFont[ps.CharSize.Tools]
+	font := sp.systemFont(ctx, ps.CharSize.Tools)
 
 	// Draw the separator lines (and triangles, if appropriate.)
 	var pw0, pw1 [2]float32          // Window coordinates of the points of minimum approach
@@ -1012,7 +1012,7 @@ func (sp *STARSPane) drawAirspace(ctx *panes.Context, transforms ScopeTransforma
 			center := e.Center()
 			ps := sp.currentPrefs()
 			style := renderer.TextStyle{
-				Font:           sp.systemFont[ps.CharSize.Tools],
+				Font:           sp.systemFont(ctx, ps.CharSize.Tools),
 				Color:          rgb,
 				DrawBackground: true, // default BackgroundColor is fine
 			}
@@ -1550,7 +1550,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*av.Aircraft, ctx *panes.Conte
 	defer renderer.ReturnTrianglesDrawBuilder(trid)
 
 	ps := sp.currentPrefs()
-	font := sp.systemFont[ps.CharSize.Datablocks]
+	font := sp.systemFont(ctx, ps.CharSize.Datablocks)
 	color := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
 
 	for _, ac := range aircraft {

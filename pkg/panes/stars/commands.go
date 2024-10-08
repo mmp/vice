@@ -3649,7 +3649,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 			defer renderer.ReturnTextDrawBuilder(td)
 
 			ps := sp.currentPrefs()
-			font := sp.systemFont[ps.CharSize.Datablocks]
+			font := sp.systemFont(ctx, ps.CharSize.Datablocks)
 			style := renderer.TextStyle{
 				Font:        font,
 				Color:       ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor),

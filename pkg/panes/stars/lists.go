@@ -25,7 +25,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 
 	transforms.LoadWindowViewingMatrices(cb)
 
-	font := sp.systemFont[ps.CharSize.Lists]
+	font := sp.systemFont(ctx, ps.CharSize.Lists)
 	listStyle := renderer.TextStyle{
 		Font:  font,
 		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
@@ -150,7 +150,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
-	font := sp.systemFont[ps.CharSize.Lists]
+	font := sp.systemFont(ctx, ps.CharSize.Lists)
 	listStyle := renderer.TextStyle{
 		Font:  font,
 		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
@@ -749,7 +749,7 @@ func (sp *STARSPane) drawSignOnList(ctx *panes.Context, pw [2]float32, style ren
 
 func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.Extent2D, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
-	font := sp.systemFont[ps.CharSize.Lists]
+	font := sp.systemFont(ctx, ps.CharSize.Lists)
 	titleStyle := renderer.TextStyle{
 		Font:  font,
 		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),

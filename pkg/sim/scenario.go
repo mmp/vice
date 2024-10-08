@@ -98,6 +98,7 @@ type STARSFacilityAdaptation struct {
 	} `json:"scratchpad1"`
 	CoordinationLists []CoordinationList `json:"coordination_lists"`
 	RestrictionAreas  []RestrictionArea  `json:"restriction_areas"`
+	UseLegacyFont     bool               `json:"use_legacy_font"`
 }
 
 type STARSControllerConfig struct {

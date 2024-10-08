@@ -955,7 +955,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 	now := ctx.ControlClient.SimTime
 	realNow := ctx.Now // for flashing rate...
 	ps := sp.currentPrefs()
-	font := sp.systemFont[ps.CharSize.Datablocks]
+	font := sp.systemFont(ctx, ps.CharSize.Datablocks)
 
 	for _, ac := range aircraft {
 		state := sp.Aircraft[ac.Callsign]
