@@ -965,7 +965,7 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 	// Draw text
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
-	font := sp.systemFont[ps.CharSize.Tools]
+	font := sp.systemFont[ps.CharSize.Lists]
 	halfSeconds := ctx.Now.UnixMilli() / 500
 	blinkDim := halfSeconds&1 == 0
 	color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 0}) // always yellow
