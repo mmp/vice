@@ -52,7 +52,11 @@ func RunServer(extraScenario string, extraVideoMap string, serverPort int, lg *l
 
 	// If we're just running the server, we don't care about the returned
 	// configs...
-	runServer(l, false, extraScenario, extraVideoMap, lg)
+	var e util.ErrorLogger
+	if runServer(l, false, extraScenario, extraVideoMap, &e, lg) == nil && e.HaveErrors() {
+		e.PrintErrors(lg)
+		os.Exit(1)
+	}
 }
 
 func getClient(hostname string, lg *log.Logger) (*util.RPCClient, error) {
@@ -99,7 +103,7 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 	return ch
 }
 
-func LaunchLocalServer(extraScenario string, extraVideoMap string, lg *log.Logger) (chan *Server, error) {
+func LaunchLocalServer(extraScenario string, extraVideoMap string, e *util.ErrorLogger, lg *log.Logger) (chan *Server, error) {
 	l, err := net.Listen("tcp", ":0")
 	if err != nil {
 		return nil, err
@@ -107,7 +111,10 @@ func LaunchLocalServer(extraScenario string, extraVideoMap string, lg *log.Logge
 
 	port := l.Addr().(*net.TCPAddr).Port
 
-	configsChan := runServer(l, true, extraScenario, extraVideoMap, lg)
+	configsChan := runServer(l, true, extraScenario, extraVideoMap, e, lg)
+	if e.HaveErrors() {
+		return nil, nil
+	}
 
 	ch := make(chan *Server, 1)
 	go func() {
@@ -130,16 +137,14 @@ func LaunchLocalServer(extraScenario string, extraVideoMap string, lg *log.Logge
 }
 
 func runServer(l net.Listener, isLocal bool, extraScenario string, extraVideoMap string,
-	lg *log.Logger) chan map[string]map[string]*Configuration {
-	ch := make(chan map[string]map[string]*Configuration, 1)
-
-	var e util.ErrorLogger
+	e *util.ErrorLogger, lg *log.Logger) chan map[string]map[string]*Configuration {
 	scenarioGroups, simConfigurations, mapManifests :=
-		LoadScenarioGroups(isLocal, extraScenario, extraVideoMap, &e, lg)
+		LoadScenarioGroups(isLocal, extraScenario, extraVideoMap, e, lg)
 	if e.HaveErrors() {
-		e.PrintErrors(lg)
-		os.Exit(1)
+		return nil
 	}
+
+	ch := make(chan map[string]map[string]*Configuration, 1)
 
 	server := func() {
 		server := rpc.NewServer()
