@@ -1,0 +1,61 @@
+{
+  "coordination_fixes": {
+    "BAWLS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BNA",
+        "from": "ZME",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CARAP": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BNA",
+        "from": "ZME",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HIMAT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BNA",
+        "from": "ZME",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PEKIE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "BNA",
+        "from": "ZME",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

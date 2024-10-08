@@ -1,0 +1,397 @@
+{
+  "coordination_fixes": {
+    "BELIT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CAMTN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CCC": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CREAM": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DPK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DREEM": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ENE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FLOSI": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FREDO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "PVD",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GDM": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GGABE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GOSHI": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HTO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HUO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "JAMMA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "JFUND": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "JOODY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LFV": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MAD": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "Y90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MINNK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "NELIE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "NEWBE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "OOSHN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ROZZE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "STELA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "Y90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "VALRE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WOONS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "PVD",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ZELKA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "A90",
+        "from": "ZBW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

@@ -1,0 +1,299 @@
+{
+  "coordination_fixes": {
+    "ATOKA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "AAC",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BARTS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "AAC",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BEREE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D10",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BOOVE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D10",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BRDJE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D10",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CAMET": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "OKC",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DODJE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D10",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FINGR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D10",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GHOST": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "OKC",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GREGS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D10",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "KILLR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "AAC",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "KNEAD": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D10",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MOTZA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D10",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MURAH": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "OKC",
+        "from": "ZKC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ORVLL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D10",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "REELI": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "AAC",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SASIE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D10",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SLUGG": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D10",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "TSDEL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "OKC",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "VKTRY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "D10",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "YUCKS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "OKC",
+        "from": "ZFW",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

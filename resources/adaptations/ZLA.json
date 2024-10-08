@@ -1,0 +1,537 @@
+{
+  "coordination_fixes": {
+    "ALMST": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ANJLL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ARRAN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BITTY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CHOWW": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "L30",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CHURO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CMA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "COMIX": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "COWWS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "CYNDE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "DUNNN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "FABLE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "L30",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GAMES": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "L30",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GNKEE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GNZZO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GOATZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "GRRIT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HLYWD": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HNAHH": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ISEMN": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ISHEE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "L30",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "KIMMO": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LARKK": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "L30",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LRSON": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MCHNE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "MDOTS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "OHIGH": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PCIFC": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PEPRZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "PMD": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "RKSTR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "L30",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "RNDRZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "L30",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "RUKKI": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "SOLAY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "THRNE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "SCT",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WAPID": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "L30",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "WHIGG": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "L30",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ZLLDA": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "L30",
+        "from": "ZLA",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

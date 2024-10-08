@@ -229,6 +229,8 @@ type Event struct {
 	Message               string
 	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
+	UnsupportedAircraft   bool                           // For untracked commands
+	ShowFP                bool
 }
 
 func (e *Event) String() string {

@@ -193,7 +193,7 @@ func (wslice WaypointArray) Encode() string {
 func (w *WaypointArray) UnmarshalJSON(b []byte) error {
 	if len(b) >= 2 && b[0] == '"' && b[len(b)-1] == '"' {
 		// Handle the string encoding used in scenario JSON files
-		wp, err := parseWaypoints(string(b[1 : len(b)-1]))
+		wp, err := ParseWaypoints(string(b[1 : len(b)-1]))
 		if err == nil {
 			*w = wp
 		}
@@ -207,6 +207,16 @@ func (w *WaypointArray) UnmarshalJSON(b []byte) error {
 		}
 		return err
 	}
+}
+
+// Makes the route have all the waypoints (getting in airways, etc.)
+func NiceRoute(route string) string {
+	route = strings.TrimPrefix(route, "/. ")
+	rte, err := ParseWaypoints(route)
+	if err != nil {
+		return ""
+	}
+	return rte.RouteString()
 }
 
 func (w WaypointArray) RouteString() string {
@@ -381,7 +391,7 @@ func parsePTExtent(pt *ProcedureTurn, extent string) error {
 	return nil
 }
 
-func parseWaypoints(str string) (WaypointArray, error) {
+func ParseWaypoints(str string) (WaypointArray, error) {
 	var waypoints WaypointArray
 	entries := strings.Fields(str)
 	for ei, field := range entries {

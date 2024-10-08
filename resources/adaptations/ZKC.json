@@ -1,0 +1,19 @@
+{
+  "coordination_fixes": {
+    "MURAH": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZFW",
+        "from": "ZKC",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

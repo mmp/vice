@@ -1,0 +1,89 @@
+{
+  "coordination_fixes": {
+    "BAYKS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "M98",
+        "from": "ZMP",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BLUEM": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "M98",
+        "from": "ZMP",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "KKILR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "M98",
+        "from": "ZMP",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "LUCCY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "M98",
+        "from": "ZMP",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "NITZR": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "M98",
+        "from": "ZMP",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "OFSON": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "M98",
+        "from": "ZMP",
+        "altitude": [
+          0,
+          0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ]
+  },
+  "facility_ids": null
+}

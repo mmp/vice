@@ -36,6 +36,7 @@ var (
 	ErrSTARSIllegalAirport    = NewSTARSError("ILL AIRPORT")
 	ErrSTARSIllegalCode       = NewSTARSError("ILL CODE")
 	ErrSTARSIllegalColor      = NewSTARSError("ILL COLOR")
+	ErrSTARSIllegalFacility   = NewSTARSError("ILL FAC ID")
 	ErrSTARSIllegalFix        = NewSTARSError("ILL FIX")
 	ErrSTARSIllegalFlight     = NewSTARSError("ILL FLIGHT")
 	ErrSTARSIllegalFunction   = NewSTARSError("ILL FNCT")
@@ -88,6 +89,7 @@ var starsErrorRemap = map[error]*STARSError{
 	av.ErrUnknownAirport:               ErrSTARSIllegalAirport,
 	av.ErrUnknownApproach:              ErrSTARSIllegalValue,
 	av.ErrUnknownRunway:                ErrSTARSIllegalValue,
+	av.ErrNoSTARSFacility:              ErrSTARSIllegalFacility,
 }
 
 func GetSTARSError(e error, lg *log.Logger) *STARSError {
