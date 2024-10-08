@@ -76,9 +76,9 @@ type ConfigNoSim struct {
 
 	TFRCache av.TFRCache
 
-	AskedDiscordOptIn        bool
-	InhibitDiscordActivity   util.AtomicBool
-	NotifiedNewCommandSyntax bool
+	AskedDiscordOptIn      bool
+	InhibitDiscordActivity util.AtomicBool
+	NotifiedTargetGenMode  bool
 
 	Callsign string
 }
@@ -169,10 +169,10 @@ func getDefaultConfig() *Config {
 				AudioEnabled:          true,
 				InitialWindowPosition: [2]int{100, 100},
 			},
-			TFRCache:                 av.MakeTFRCache(),
-			Version:                  CurrentConfigVersion,
-			WhatsNewIndex:            len(whatsNew),
-			NotifiedNewCommandSyntax: true, // don't warn for new installs
+			TFRCache:              av.MakeTFRCache(),
+			Version:               CurrentConfigVersion,
+			WhatsNewIndex:         len(whatsNew),
+			NotifiedTargetGenMode: true, // don't warn for new installs
 		},
 	}
 }

@@ -171,7 +171,9 @@ func main() {
 		var controlClient *sim.ControlClient
 		var mgr *sim.ConnectionManager
 		var err error
-		mgr, err = sim.MakeServerConnection(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
+		var simErrorLogger util.ErrorLogger
+		mgr, err = sim.MakeServerConnection(*serverAddress, *scenarioFilename, *videoMapFilename,
+			&simErrorLogger, lg,
 			func(c *sim.ControlClient) { // updated client
 				if c != nil {
 					panes.ResetSim(config.DisplayRoot, c, c.State, plat, lg)
@@ -223,6 +225,10 @@ func main() {
 		uiInit(render, plat, config, eventStream, lg)
 
 		config.Activate(render, plat, eventStream, lg)
+
+		if simErrorLogger.HaveErrors() { // After we have plat and render
+			ShowFatalErrorDialog(render, plat, lg, "%s", simErrorLogger.String())
+		}
 
 		// After config.Activate(), if we have a loaded sim, get configured for it.
 		if config.Sim != nil && !*resetSim {

@@ -31,7 +31,7 @@ type ConnectionManager struct {
 	onError     func(error)
 }
 
-func MakeServerConnection(address, additionalScenario, additionalVideoMap string, lg *log.Logger,
+func MakeServerConnection(address, additionalScenario, additionalVideoMap string, e *util.ErrorLogger, lg *log.Logger,
 	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, error) {
 	cm := &ConnectionManager{
 		serverAddress:           address,
@@ -43,7 +43,7 @@ func MakeServerConnection(address, additionalScenario, additionalVideoMap string
 	}
 
 	var err error
-	cm.localServerChan, err = LaunchLocalServer(additionalScenario, additionalVideoMap, lg)
+	cm.localServerChan, err = LaunchLocalServer(additionalScenario, additionalVideoMap, e, lg)
 	return cm, err
 }
 
