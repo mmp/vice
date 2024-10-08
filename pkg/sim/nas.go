@@ -756,6 +756,20 @@ func (comp *STARSComputer) InitiateTrack(callsign string, controller string, fp 
 	return nil
 }
 
+func (comp *STARSComputer) AssociateLDB(ac *av.Aircraft) error {
+	trk := comp.TrackInformation[ac.Callsign]
+	fp, err := comp.GetFlightPlan(ac.Squawk.String())
+	if trk == nil && fp != nil && err == nil {
+		comp.TrackInformation[ac.Callsign] = &TrackInformation{
+			Identifier:      ac.Callsign,
+			TrackOwner:      ac.TrackingController,
+			FlightPlan:      fp,
+			AutoAssociateFP: true,
+		}
+	}
+	return nil
+}
+
 func (comp *STARSComputer) DropTrack(ac *av.Aircraft) error {
 	trk := comp.TrackInformation[ac.Callsign]
 	if trk == nil {
@@ -793,6 +807,33 @@ func (comp *STARSComputer) HandoffTrack(callsign string, from *av.Controller, to
 	trk.HandoffController = to.Callsign
 
 	return nil
+}
+
+func (comp *STARSComputer) AutoInitiateAndHandoffTrack(ac *av.Aircraft, controller, octrl *av.Controller, sim *Sim) error {
+    if trk := comp.TrackInformation[ac.Callsign]; trk == nil &&
+        InAcquisitionArea(ac) && !sim.controllerIsSignedIn(ac.TrackingController) {
+
+        fp, err := comp.GetFlightPlan(ac.Squawk.String())
+        if err != nil {
+            return fmt.Errorf("GetFlightPlan: %v", err)
+        }
+
+        err = comp.InitiateTrack(ac.Callsign, ac.TrackingController, fp, true)
+        if err != nil {
+            return fmt.Errorf("InitiateTrack: %v", err)
+        }
+
+        ac.ControllingController = ac.TrackingController
+
+        err = comp.HandoffTrack(ac.Callsign, controller, octrl, sim.SimTime)
+        if err != nil {
+            sim.AwaitingHandoffs[ac.Callsign] = Handoff{
+                ReceivingController: controller.Callsign,
+            }
+            return fmt.Errorf("HandoffTrack: %v", err)
+        }
+    }
+    return nil
 }
 
 func (comp *STARSComputer) AcceptHandoff(ac *av.Aircraft, ctrl *av.Controller,

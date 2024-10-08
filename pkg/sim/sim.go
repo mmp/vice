@@ -1549,33 +1549,18 @@ func (s *Sim) updateState() {
 						s.AwaitingHandoffs[ac.Callsign] = Handoff{
 							ReceivingController: ctrl,
 						}
+						goto NilCtrl
 					}
 
 					if !controller.ERAMFacility {
 						if trk := s.State.STARSComputer(ac.TrackingController).TrackInformation[ac.Callsign]; trk == nil &&
 							InAcquisitionArea(ac) && !s.controllerIsSignedIn(ac.TrackingController) {
 							comp := s.State.STARSComputer(ac.TrackingController)
-							fp, err := comp.GetFlightPlan(ac.Squawk.String())
+							err := comp.AutoInitiateAndHandoffTrack(ac, controller, octrl, s)
 							if err != nil {
-								// s.lg.Errorf("GetFlightPlan: %v", err)
+								s.lg.Errorf("AutoInitiateAndHandoffTrack: %v", err)
 								continue
 							}
-							err = comp.InitiateTrack(ac.Callsign, ac.TrackingController, fp, true)
-							if err != nil {
-								// s.lg.Errorf("AutoInitiateTrack: %v", err)
-								continue
-							}
-							ac.ControllingController = ac.TrackingController
-
-							err = comp.HandoffTrack(ac.Callsign, controller, octrl, s.SimTime)
-							if err != nil {
-								// s.lg.Errorf("AutoHandoffTrack: %v", err)
-								s.AwaitingHandoffs[ac.Callsign] = Handoff{
-									ReceivingController: ctrl,
-								}
-							}
-
-							continue
 						}
 					}
 
@@ -1606,6 +1591,7 @@ func (s *Sim) updateState() {
 					}
 
 				}
+			NilCtrl:
 
 				for callsign, hnd := range s.AwaitingHandoffs {
 					ac, ok := s.State.Aircraft[callsign]
@@ -1633,18 +1619,10 @@ func (s *Sim) updateState() {
 				}
 
 				if !InAcquisitionArea(ac) && !InDropArea(ac) && ac.WaypointHandoffController != "" {
-					comp := s.State.STARSComputer(ac.WaypointHandoffController)
-					if !s.State.STARSFacilityAdaptation.KeepLDB {
-						trk := comp.TrackInformation[ac.Callsign]
-						fp, err := comp.GetFlightPlan(ac.Squawk.String())
-						if trk == nil && fp != nil && err == nil {
-							comp.TrackInformation[ac.Callsign] = &TrackInformation{
-								Identifier:      ac.Callsign,
-								TrackOwner:      ac.TrackingController,
-								FlightPlan:      fp,
-								AutoAssociateFP: true,
-							}
-						}
+					
+					if comp := s.State.STARSComputer(ac.WaypointHandoffController); comp != nil && 
+					!s.State.STARSFacilityAdaptation.KeepLDB {
+						comp.AssociateLDB(ac)
 					}
 
 				}
