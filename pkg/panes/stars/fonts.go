@@ -54,16 +54,17 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 		}
 
 		for ch, glyph := range sf.Glyphs {
-			if x+scale*glyph.StepX+1 > res {
+			dx := scale*glyph.Bounds[0] + 1 // pad
+			if x+dx > res {
 				// Start a new line
 				x = 0
 				y += scale*sf.Height + 1
 			}
 
 			glyph.rasterize(atlas, x, y, scale)
-			glyph.addToFont(ch, x, y, res, f, scale)
+			glyph.addToFont(ch, x, y, res, sf, f, scale)
 
-			x += scale*glyph.StepX + 1 /* pad */
+			x += dx
 		}
 
 		// Start a new line after finishing a font.
@@ -108,16 +109,23 @@ func (glyph STARSGlyph) rasterize(img *image.RGBA, x0, y0 int, scale int) {
 	}
 }
 
-func (glyph STARSGlyph) addToFont(ch, x, y, res int, f *renderer.Font, scale int) {
+func (glyph STARSGlyph) addToFont(ch, x, y, res int, sf STARSFont, f *renderer.Font, scale int) {
 	g := &renderer.Glyph{
-		X0:       0,
-		X1:       float32(scale * glyph.Bounds[0]),
-		Y0:       0,
-		Y1:       float32(scale * glyph.Bounds[1]),
-		U0:       float32(x) / float32(res),
-		V0:       float32(y) / float32(res),
-		U1:       (float32(x + scale*glyph.Bounds[0])) / float32(res),
-		V1:       (float32(y + scale*glyph.Bounds[1])) / float32(res),
+		// Vertex coordinates for the quad: shift based on the offset
+		// associated with the glyph.  Also, count up from the bottom in y
+		// rather than drawing from the top.
+		X0: float32(glyph.Offset[0]),
+		X1: float32((glyph.Offset[0] + glyph.Bounds[0])),
+		Y0: float32(sf.Height - glyph.Offset[1] - glyph.Bounds[1]),
+		Y1: float32(sf.Height - glyph.Offset[1]),
+
+		// Texture coordinates: just the extent of where we rasterized the
+		// glyph in the atlas, rescaled to [0,1].
+		U0: float32(x) / float32(res),
+		V0: float32(y) / float32(res),
+		U1: (float32(x + scale*glyph.Bounds[0])) / float32(res),
+		V1: (float32(y + scale*glyph.Bounds[1])) / float32(res),
+
 		AdvanceX: float32(scale * glyph.StepX),
 		Visible:  true,
 	}
