@@ -20,8 +20,7 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 	// definition of starsFonts, which stores the bitmaps and additional
 	// information about the glyphs in the STARS fonts.
 
-	// We'll extract the font bitmaps into an atlas image; assume 1k x 1k for starters.
-	res := 1024
+	xres, yres := 2048, 1024
 
 	// Windows high DPI displays are different than Macs in that they
 	// expose the actual pixel count.  So we need to scale the font atlas
@@ -31,11 +30,12 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 	scale := 1
 
 	if doublePixels {
-		res *= 2
+		xres *= 2
+		yres *= 2
 		scale = 2
 	}
 
-	atlas := image.NewRGBA(image.Rectangle{Max: image.Point{X: res, Y: res}})
+	atlas := image.NewRGBA(image.Rectangle{Max: image.Point{X: xres, Y: yres}})
 	x, y := 0, 0
 
 	var newFonts []*renderer.Font
@@ -49,20 +49,20 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 		f := renderer.MakeFont(scale*sf.Height, true /* mono */, id, nil)
 		newFonts = append(newFonts, f)
 
-		if y+scale*sf.Height >= res {
+		if y+scale*sf.Height >= yres {
 			panic("STARS font atlas texture too small")
 		}
 
 		for ch, glyph := range sf.Glyphs {
 			dx := scale*glyph.Bounds[0] + 1 // pad
-			if x+dx > res {
+			if x+dx > xres {
 				// Start a new line
 				x = 0
 				y += scale*sf.Height + 1
 			}
 
 			glyph.rasterize(atlas, x, y, scale)
-			glyph.addToFont(ch, x, y, res, sf, f, scale)
+			glyph.addToFont(ch, x, y, xres, yres, sf, f, scale)
 
 			x += dx
 		}
@@ -109,7 +109,7 @@ func (glyph STARSGlyph) rasterize(img *image.RGBA, x0, y0 int, scale int) {
 	}
 }
 
-func (glyph STARSGlyph) addToFont(ch, x, y, res int, sf STARSFont, f *renderer.Font, scale int) {
+func (glyph STARSGlyph) addToFont(ch, x, y, xres, yres int, sf STARSFont, f *renderer.Font, scale int) {
 	g := &renderer.Glyph{
 		// Vertex coordinates for the quad: shift based on the offset
 		// associated with the glyph.  Also, count up from the bottom in y
@@ -121,10 +121,10 @@ func (glyph STARSGlyph) addToFont(ch, x, y, res int, sf STARSFont, f *renderer.F
 
 		// Texture coordinates: just the extent of where we rasterized the
 		// glyph in the atlas, rescaled to [0,1].
-		U0: float32(x) / float32(res),
-		V0: float32(y) / float32(res),
-		U1: (float32(x + scale*glyph.Bounds[0])) / float32(res),
-		V1: (float32(y + scale*glyph.Bounds[1])) / float32(res),
+		U0: float32(x) / float32(xres),
+		V0: float32(y) / float32(yres),
+		U1: (float32(x + scale*glyph.Bounds[0])) / float32(xres),
+		V1: (float32(y + scale*glyph.Bounds[1])) / float32(yres),
 
 		AdvanceX: float32(scale * glyph.StepX),
 		Visible:  true,
