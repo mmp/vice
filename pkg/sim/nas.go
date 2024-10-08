@@ -538,12 +538,12 @@ func (comp *ERAMComputer) CompletelyDeleteAircraft(ac *av.Aircraft) {
 		if fp := trk.FlightPlan; fp != nil {
 			if fp.Callsign == ac.Callsign {
 				if comp.SquawkCodePool.IsAssigned(fp.AssignedSquawk) {
-					comp.SquawkCodePool.Unassign(fp.AssignedSquawk)
+					comp.SquawkCodePool.Return(fp.AssignedSquawk)
 				}
 				delete(comp.TrackInformation, sq)
 			} else if fp.AssignedSquawk == ac.Squawk {
 				if comp.SquawkCodePool.IsAssigned(fp.AssignedSquawk) {
-					comp.SquawkCodePool.Unassign(fp.AssignedSquawk)
+					comp.SquawkCodePool.Return(fp.AssignedSquawk)
 				}
 				delete(comp.TrackInformation, sq)
 			}
@@ -1083,12 +1083,12 @@ func (comp *STARSComputer) CompletelyDeleteAircraft(ac *av.Aircraft) {
 		if fp := info.FlightPlan; fp != nil {
 			if fp.Callsign == ac.Callsign {
 				if comp.SquawkCodePool.IsAssigned(fp.AssignedSquawk) {
-					comp.SquawkCodePool.Unassign(fp.AssignedSquawk)
+					comp.SquawkCodePool.Return(fp.AssignedSquawk)
 				}
 				delete(comp.TrackInformation, sq)
 			} else if fp.AssignedSquawk == ac.Squawk {
 				if comp.SquawkCodePool.IsAssigned(fp.AssignedSquawk) {
-					comp.SquawkCodePool.Unassign(fp.AssignedSquawk)
+					comp.SquawkCodePool.Return(fp.AssignedSquawk)
 				}
 				delete(comp.TrackInformation, sq)
 			}

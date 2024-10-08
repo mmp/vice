@@ -1308,16 +1308,6 @@ func (p *SquawkCodePool) IsAssigned(code Squawk) bool {
 	return false
 }
 
-func (p *SquawkCodePool) Unassign(code Squawk) error {
-	if idx, bit, err := p.indices(code); err == nil {
-		if p.AssignedBits[idx]&(1<<bit) != 0 {
-			p.AssignedBits[idx] &^= (1 << bit) // Clear the bit
-			return nil
-		}
-		return ErrSquawkCodeUnassigned
-	}
-	return ErrInvalidSquawkCode
-}
 
 func (p *SquawkCodePool) Return(code Squawk) error {
 	if !p.IsAssigned(code) {
