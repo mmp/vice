@@ -101,6 +101,7 @@ type AdaptationFix struct {
 	Altitude     [2]int `json:"altitude"`
 	DepartingAirports []string `json:"departing_airports"`
 	ArrivingAirports []string `json:"arriving_airports"`
+	AircraftType string `json:"aircraft_type"`
 }
 
 

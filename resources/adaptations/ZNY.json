@@ -1,14 +1,28 @@
 {
   "coordination_fixes": {
+    "ARD": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY55",
+        "from": "N90",
+        "altitude": [
+          14000,
+          99900
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
     "BAYYS": [
       {
         "Name": "",
         "type": "route",
         "to": "ZBW",
-        "from": "ZNY",
+        "from": "N90",
         "altitude": [
-          0,
-          0
+          13000,
+          99900
         ],
         "departing_airports": null,
         "arriving_airports": null
@@ -19,24 +33,10 @@
         "Name": "",
         "type": "route",
         "to": "N90",
-        "from": "ZNY",
-        "altitude": [
-          0,
-          0
-        ],
-        "departing_airports": null,
-        "arriving_airports": null
-      }
-    ],
-    "BELIT": [
-      {
-        "Name": "",
-        "type": "route",
-        "to": "N90",
         "from": "ZBW",
         "altitude": [
-          0,
-          0
+          11000,
+          99900
         ],
         "departing_airports": null,
         "arriving_airports": null
@@ -51,6 +51,20 @@
         "altitude": [
           0,
           0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "BIGGY": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY55",
+        "from": "N90",
+        "altitude": [
+          14000,
+          99900
         ],
         "departing_airports": null,
         "arriving_airports": null
@@ -140,6 +154,44 @@
         "arriving_airports": null
       }
     ],
+    "COATE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY35",
+        "from": "N90",
+        "altitude": [
+          15000,
+          99900
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      },
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY51",
+        "from": "N90",
+        "altitude": [
+          11000,
+          14000
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      },
+      {
+        "Name": "",
+        "type": "route",
+        "to": "AVP",
+        "from": "N90",
+        "altitude": [
+          0,
+          10000
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
     "COL": [
       {
         "Name": "",
@@ -210,6 +262,32 @@
         "arriving_airports": null
       }
     ],
+    "DIXIE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY68",
+        "from": "N90",
+        "altitude": [
+          9000,
+          99900
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      },
+      {
+        "Name": "",
+        "type": "route",
+        "to": "WRI",
+        "from": "N90",
+        "altitude": [
+          0,
+          8000
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      } 
+    ],
     "DPK": [
       {
         "Name": "",
@@ -261,6 +339,20 @@
         "altitude": [
           0,
           0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ELIOT": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY39",
+        "from": "N90",
+        "altitude": [
+          14000,
+          99900
         ],
         "departing_airports": null,
         "arriving_airports": null
@@ -320,6 +412,32 @@
         "arriving_airports": null
       }
     ],
+    "GAYEL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY35",
+        "from": "N90",
+        "altitude": [
+          15000,
+          99900
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      },
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY51",
+        "from": "N90",
+        "altitude": [
+          11000,
+          14000
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
     "GGREG": [
       {
         "Name": "",
@@ -339,10 +457,24 @@
         "Name": "",
         "type": "route",
         "to": "ZBW",
-        "from": "ZNY",
+        "from": "N90",
         "altitude": [
           0,
           0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "HAAYS": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "AVP",
+        "from": "N90",
+        "altitude": [
+          0,
+          10000
         ],
         "departing_airports": null,
         "arriving_airports": null
@@ -488,6 +620,20 @@
         "arriving_airports": null
       }
     ],
+    "LANNA": [
+      {
+      "Name": "",
+      "type": "route",
+      "to": "ZNY55",
+      "from": "N90",
+      "altitude": [
+        17000,
+        99900
+      ],
+      "departing_airports": [],
+      "arriving_airports": null
+      }
+    ],
     "LENDY": [
       {
         "Name": "",
@@ -535,10 +681,10 @@
         "Name": "",
         "type": "route",
         "to": "ZBW",
-        "from": "ZNY",
+        "from": "N90",
         "altitude": [
-          0,
-          0
+          13000,
+          99900
         ],
         "departing_airports": null,
         "arriving_airports": null
@@ -572,6 +718,20 @@
         "arriving_airports": null
       }
     ],
+    "NEION": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY35",
+        "from": "N90",
+        "altitude": [
+          15000,
+          99900
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
     "NELIE": [
       {
         "Name": "",
@@ -581,6 +741,20 @@
         "altitude": [
           0,
           0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "NEWEL": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY39",
+        "from": "N90",
+        "altitude": [
+          17000,
+          99900
         ],
         "departing_airports": null,
         "arriving_airports": null
@@ -614,6 +788,20 @@
         "arriving_airports": null
       }
     ],
+    "PARKE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY39",
+        "from": "N90",
+        "altitude": [
+          14000,
+          99900
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
     "RBV": [
       {
         "Name": "",
@@ -635,6 +823,18 @@
         "altitude": [
           6000,
           6000
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      },
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY55",
+        "from": "N90",
+        "altitude": [
+          14000,
+          99900
         ],
         "departing_airports": null,
         "arriving_airports": null
@@ -766,6 +966,44 @@
         "arriving_airports": null
       }
     ],
+    "WHITE": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY68",
+        "from": "N90",
+        "altitude": [
+          9000,
+          99900
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      },
+      {
+        "Name": "",
+        "type": "route",
+        "to": "WRI",
+        "from": "N90",
+        "altitude": [
+          0,
+          99900
+        ],
+        "departing_airports": null,
+        "arriving_airports": ["KWRI", "KNEL"]
+      },
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY68",
+        "from": "N90",
+        "altitude": [
+          0,
+          8000
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
     "ZIGGI": [
       {
         "Name": "",
@@ -775,6 +1013,20 @@
         "altitude": [
           0,
           0
+        ],
+        "departing_airports": null,
+        "arriving_airports": null
+      }
+    ],
+    "ZIMMZ": [
+      {
+        "Name": "",
+        "type": "route",
+        "to": "ZNY39",
+        "from": "N90",
+        "altitude": [
+          17000,
+          99900
         ],
         "departing_airports": null,
         "arriving_airports": null

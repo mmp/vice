@@ -335,3 +335,67 @@ func LineIntersection(polygon [][2]float32, insidePoint [2]float32, outsidePoint
     return closestIntersection, true 
 }
 
+const (
+	earthRadiusNm = 3440.065
+)
+
+// Haversine formula to calculate the great-circle distance between two points
+func haversineDistance(coord1, coord2 [2]float32) float32 {
+	lat1, lon1 := Radians(coord1[0]), Radians(coord1[1])
+	lat2, lon2 := Radians(coord2[0]), Radians(coord2[1])
+
+	// Haversine formula
+	dlat := lat2 - lat1
+	dlon := lon2 - lon1
+
+	a := Sin(dlat/2)*Sin(dlat/2) +
+		Cos(lat1)*Cos(lat2)*Sin(dlon/2)*Sin(dlon/2)
+	c := 2 * Atan2(Sqrt(a), Sqrt(1-a))
+
+	// Distance in nautical miles
+	return earthRadiusNm * c
+}
+
+// Interpolates a point at a given fraction between two coordinates using spherical interpolation
+func interpolate(coord1, coord2 [2]float32, fraction float32) [2]float32 {
+	lat1, lon1 := Radians(coord1[0]), Radians(coord1[1])
+	lat2, lon2 := Radians(coord2[0]), Radians(coord2[1])
+
+	d := haversineDistance(coord1, coord2) / earthRadiusNm // Angular distance in radians
+
+	// Calculate intermediate point using spherical interpolation
+	a := Sin((1-fraction)*d) / Sin(d)
+	b := Sin(fraction*d) / Sin(d)
+
+	x := a*Cos(lat1)*Cos(lon1) + b*Cos(lat2)*Cos(lon2)
+	y := a*Cos(lat1)*Sin(lon1) + b*Cos(lat2)*Sin(lon2)
+	z := a*Sin(lat1) + b*Sin(lat2)
+
+	// Convert back to latitude and longitude
+	interpolatedLat := Atan2(z, Sqrt(x*x+y*y))
+	interpolatedLon := Atan2(y, x)
+
+	// Return the interpolated coordinate in degrees
+	return [2]float32{Degrees(interpolatedLat), Degrees(interpolatedLon)}
+}
+
+// Takes two lat-long coordinates and returns a slice of coordinates spaced by 5 nautical miles
+func getCoordinates(coord1, coord2 [2]float32) [][2]float32 {
+	// Calculate the total distance between the points in nautical miles
+	totalDistance := haversineDistance(coord1, coord2)
+
+	// Calculate the number of segments needed
+	numSegments := int(totalDistance / 5) // 5nm spacing
+
+	// Create a slice to hold the coordinates
+	var coordinates [][2]float32
+
+	// Generate coordinates at each segment
+	for i := 0; i <= numSegments; i++ {
+		fraction := float32(i) / float32(numSegments)
+		interpolatedPoint := interpolate(coord1, coord2, fraction)
+		coordinates = append(coordinates, interpolatedPoint)
+	}
+
+	return coordinates
+}
