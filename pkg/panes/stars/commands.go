@@ -2005,8 +2005,14 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			sp.lockTargetGenMode = true
 			sp.previewAreaInput = ""
 		} else if callsign, cmds, ok := strings.Cut(cmd, " "); ok {
-			if ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign); ac != nil {
+			ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign)
+			if ac == nil && sp.targetGenLastCallsign != "" {
+				// If a valid callsign wasn't given, try the last callsign used.
+				ac = ctx.ControlClient.Aircraft[sp.targetGenLastCallsign]
+			}
+			if ac != nil {
 				sp.runAircraftCommands(ctx, ac, cmds)
+				sp.targetGenLastCallsign = ac.Callsign
 				if sp.lockTargetGenMode {
 					// Clear the input but stay in TGT GEN mode.
 					sp.previewAreaInput = ""
@@ -3314,6 +3320,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		case CommandModeTargetGen:
 			if len(cmd) > 0 {
 				sp.runAircraftCommands(ctx, ac, cmd)
+				sp.targetGenLastCallsign = ac.Callsign
 				if sp.lockTargetGenMode {
 					sp.previewAreaInput = ""
 				} else {

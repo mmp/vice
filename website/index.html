@@ -475,36 +475,35 @@ Y90.
 
 	  <section class="docs-section" id="atc-commands">
             <h2 class="section-heading">ATC Commands</h2>
-            <p>A command prompt is available at the bottom of <i>vice</i>'s window.
-              When <i>vice</i> starts up, keyboard input initially goes to the STARS radar scope.
-              To switch to the command window, either click on the command window or press TAB.
-              Pressing TAB again or clicking on the STARS scope will return keyboard focus to STARS.
-              When the command window has keyboard focus, it is highlighted in yellow, as shown below:
-              </p>
-<div class="text-center">
-<img src="cli-window.png" srcset="cli-window-2x.png 2x" width="913" height="91">
-</div><br>
-            <p>The commands below can be entered to issue control commands to aircraft. To
-              indicate which aircraft should be given a command, you
+
+            <p>A variety of instructions can be issued to aircraft by an aircraft controller.
+              To issue an instruction, first press the semicolon key, <code>;</code>.
+              This will place the STARS radar into "target generation" mode and the characters "TG"
+              will appear above the text input area (which is by default on the left side of the STARS
+              window, towards the top.</p>
+            <p>The commands below can then be entered to issue control commands to aircraft.
+              As you enter commands, they will be shown in the STARS input area.
+              You can correct errors with the backspace key or press the <code>[ESCAPE]</code> key
+              to exit target generation mode.</p>
+            <p>To indicate which aircraft should be given a command, you
               can either enter a command and click on an aircraft's radar
-              track in the STARS window or you can enter the aircraft's callsign, a space, 
-              the command, and then press the "enter" key. The aircraft's callsign may
+              track in the STARS window or you can enter the aircraft's callsign followed by a space
+              before the command, and then press the "enter" key. The aircraft's callsign may
               be abbreviated if unambiguously identifies a single aircraft.
-              After you issue a command, the virtual pilot's readback is
-              shown and keyboard focus returns to the STARS window.
-            </p>
-            <p>
+              The callsign of the last aircraft you issued to a command to is shown after "TG" when
+              target generation mode is activated.
+              If you'd like to give another instruction to that aircraft, you can skip entering its callsign.
+              Entering another aircraft's callsign causes the command to be issued to that aircraft instead.</p>
+            <p>After you issue a command, the virtual pilot's readback is
+              shown in the readback window below the STARS window.
               After receiving an instruction, the aircraft will start
               following that instruction, to the best of its abilities.
               Unlike VATSIM, the pilots will always do exactly what you
               tell them to.
             </p>
-            <p>Start a message with a slash to send a message in ATC chat that will be seen by all other users.
-            </p>
-            <p>If you'd like to issue multiple commands to an aircraft,
-              enter the commands one after another with a space between them and
-              then click on the appropriate aircraft. To open a window that
-              shows the available ATC commands when using <i>vice</i>,
+            <p>If you'd like to issue multiple commands to an aircraft at once,
+              enter the commands one after another with a space between them.
+              To open a window that shows the available ATC commands when using <i>vice</i>,
               click the <i class="fas fa-keyboard"></i> button in the top menubar.
             </p>
 
@@ -797,6 +796,29 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3>0.11.6 (TODO October 2024)</h3>
+            <ul>
+              <li>Updated how <a href="#atc-commands">aircraft control instructions</a> are entered: press <code>;</code> to enable "target generation"
+                mode in STARS, after which control commands can be entered.</li>
+              <li>Fixed a bug where aircraft that went around after being handed off to tower wouldn't contact tower the next time.</li>
+              <li>Fixed a few bugs related to the 250kts speed limit at 10,000'.</li>
+              <li>STARS:
+                <ul>
+                  <li>Added support for <a href="#restriction-areas">restriction areas</a>. System restriction areas are automatically
+                  generated based on the current FAA TFRs.</li>
+                  <li>Multiple improvements to video map handling, including supporting multiple colors and map categories.
+                    (Currently only available through <a href="https://github.com/mmp/dat2vice">dat2vice</a>.)</li>
+                  <li>CA and MSAW alerts are no longer generated for unassociated tracks.</li>
+                </ul>
+              </li>
+              <li>Facility engineering:
+                <ul>
+                  <li>"star" is now optional for arrivals; the pilot contact message has been improved for arrivals not on STARs.</li>
+                  <li>Added an adaptation ("yellow_entries") for coordination lists that causes list entries to be yellow, not green.</li>
+                </ul>
+                </li>
+            </ul>
 
             <h3>0.11.5 (20 September 2024)</h3>
             <ul>
@@ -1723,6 +1745,7 @@ how it simulates aircraft or the STARS interface.
                   <tr><td><code>[RANGE]</code></td><td><code>[Ctrl-F10]</code></td></tr>
                   <tr><td><code>[RNGRING]</code></td><td><code>[Ctrl-F9]</code></td></tr>
                   <tr><td><code>[SITE]</code></td><td><code>[Ctrl-F11]</code></td></tr>
+                  <tr><td><code>[TGT GEN]</code></td><td><code>;</code></td></tr>
                   <tr><td><code>[TERM CNTL]</code></td><td><code>[F4]</code></td></tr>
                   <tr><td><code>[TRIANGLE] / ∆</code></td><td><code>`</code></td></tr>
                   <tr><td><code>[VP]</code></td><td><code>[F9]</code></td></tr>

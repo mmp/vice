@@ -314,11 +314,13 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 				ncat++
 			}
 		}
-		// There's one slot above current and then after that we start
-		// taking full columns from the right.
-		catCols := (ncat) / 2
 
-		//
+		// On the right side, we need at least one column for CURRENT and
+		// then there's one slot above that; we then take as many full
+		// columns as necessary for the categories we have.
+		catCols := 1 + (ncat)/2
+
+		// Draw buttons with the space left.
 		for i := range 32 - 2*catCols {
 			// Indexing is tricky both because we are skipping the first 6
 			// maps, which are shown in the main DCB, but also because we
