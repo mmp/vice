@@ -1158,7 +1158,11 @@ var starsFonts map[string]STARSFont = map[string]STARSFont{
 )");
    }
 
-fprintf(ofp, "\"%s\": STARSFont{\n", get_property_string("FONT"));
+  char *fontname = strdup(ifilename);
+  char *period = strrchr(ifilename, '.');
+  if (period != NULL) *period = '\0';
+
+  fprintf(ofp, "\"%s\": STARSFont{\n", fontname);
 
   fprintf(ofp, "    PointSize: %d,\n", get_property_value("POINT_SIZE") / 10);
   fprintf(ofp, "    Width: %d,\n    Height:%d,\n", fontbbx.widthBits(), fontbbx.height());

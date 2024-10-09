@@ -99,6 +99,7 @@ type STARSFacilityAdaptation struct {
 	CoordinationLists []CoordinationList `json:"coordination_lists"`
 	RestrictionAreas  []RestrictionArea  `json:"restriction_areas"`
 	FacilityIDs       map[string]string  `json:"facility_ids"`
+	UseLegacyFont     bool               `json:"use_legacy_font"`
 }
 
 type STARSControllerConfig struct {

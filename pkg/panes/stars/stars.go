@@ -14,7 +14,6 @@ import (
 	"os"
 	"slices"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 
@@ -95,10 +94,10 @@ type STARSPane struct {
 	// Time at which to step to the next history snapshot (5s intervals).
 	wxNextHistoryStepTime time.Time
 
-	systemFont        [6]*renderer.Font
-	systemOutlineFont [6]*renderer.Font
-	dcbFont           [3]*renderer.Font // 0, 1, 2 only
-	cursorsFont       *renderer.Font
+	systemFontA, systemFontB               [6]*renderer.Font
+	systemOutlineFontA, systemOutlineFontB [6]*renderer.Font
+	dcbFontA, dcbFontB                     [3]*renderer.Font // 0, 1, 2 only
+	cursorsFont                            *renderer.Font
 
 	fusedTrackVertices [][2]float32
 
@@ -145,6 +144,8 @@ type STARSPane struct {
 
 	// Various UI state
 	FlipNumericKeypad bool
+
+	FontSelection int
 
 	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) CommandStatus
 	activeDCBMenu       int
@@ -203,6 +204,12 @@ type STARSPane struct {
 	// search).
 	significantPointsSlice []sim.SignificantPoint
 }
+
+const (
+	fontDefault = iota
+	fontLegacy
+	fontARTS
+)
 
 func init() {
 	panes.RegisterUnmarshalPane("STARSPane", func(d []byte) (panes.Pane, error) {
@@ -552,6 +559,14 @@ func (sp *STARSPane) makeMaps(client *sim.ControlClient, ss sim.State, lg *log.L
 func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	ps := sp.currentPrefs()
 
+	imgui.Text("Font: ")
+	imgui.SameLine()
+	imgui.RadioButtonInt("Default", &sp.FontSelection, fontDefault)
+	imgui.SameLine()
+	imgui.RadioButtonInt("Legacy", &sp.FontSelection, fontLegacy)
+	imgui.SameLine()
+	imgui.RadioButtonInt("ARTS", &sp.FontSelection, fontARTS)
+
 	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
 
 	imgui.Checkbox("Lock display", &sp.LockDisplay)
@@ -628,7 +643,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	sp.drawVideoMaps(ctx, transforms, cb)
 
-	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont[ps.CharSize.Tools],
+	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont(ctx, ps.CharSize.Tools),
 		ps.Brightness.Lists.ScaleRGB(STARSListColor), cb)
 
 	sp.drawCRDARegions(ctx, transforms, cb)
@@ -964,7 +979,7 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 	// Draw text
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
-	font := sp.systemFont[ps.CharSize.Tools]
+	font := sp.systemFont(ctx, ps.CharSize.Lists)
 	halfSeconds := ctx.Now.UnixMilli() / 500
 	blinkDim := halfSeconds&1 == 0
 	color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 0}) // always yellow
@@ -1072,34 +1087,6 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, scopeExtent math.Extent
 	cb.SetDrawBounds(ctx.PaneExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
-}
-
-func (sp *STARSPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
-	fonts := createFontAtlas(r, p)
-	get := func(name string, size int) *renderer.Font {
-		idx := slices.IndexFunc(fonts, func(f *renderer.Font) bool { return f.Id.Name == name && f.Id.Size == size })
-		if idx == -1 {
-			panic(name + " size " + strconv.Itoa(size) + " not found in STARS fonts")
-		}
-		return fonts[idx]
-	}
-
-	sp.systemFont[0] = get("sddCharFontSetBSize0", 11)
-	sp.systemFont[1] = get("sddCharFontSetBSize1", 12)
-	sp.systemFont[2] = get("sddCharFontSetBSize2", 15)
-	sp.systemFont[3] = get("sddCharFontSetBSize3", 16)
-	sp.systemFont[4] = get("sddCharFontSetBSize4", 18)
-	sp.systemFont[5] = get("sddCharFontSetBSize5", 19)
-	sp.systemOutlineFont[0] = get("sddCharOutlineFontSetBSize0", 11)
-	sp.systemOutlineFont[1] = get("sddCharOutlineFontSetBSize1", 12)
-	sp.systemOutlineFont[2] = get("sddCharOutlineFontSetBSize2", 15)
-	sp.systemOutlineFont[3] = get("sddCharOutlineFontSetBSize3", 16)
-	sp.systemOutlineFont[4] = get("sddCharOutlineFontSetBSize4", 18)
-	sp.systemOutlineFont[5] = get("sddCharOutlineFontSetBSize5", 19)
-	sp.dcbFont[0] = get("sddCharFontSetBSize0", 11)
-	sp.dcbFont[1] = get("sddCharFontSetBSize1", 12)
-	sp.dcbFont[2] = get("sddCharFontSetBSize2", 15)
-	sp.cursorsFont = get("STARS cursors", 30)
 }
 
 func (sp *STARSPane) makeSignificantPoints(ss sim.State) {

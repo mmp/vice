@@ -665,7 +665,7 @@ func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, trans
 	dcbDrawState.cursor = dcbDrawState.drawStartPos
 
 	dcbDrawState.style = renderer.TextStyle{
-		Font:        sp.dcbFont[ps.CharSize.DCB],
+		Font:        sp.dcbFont(ctx, ps.CharSize.DCB),
 		Color:       renderer.RGB{1, 1, 1},
 		LineSpacing: 0,
 	}
