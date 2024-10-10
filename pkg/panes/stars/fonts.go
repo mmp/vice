@@ -161,6 +161,14 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 	for _, fontName := range util.SortedMapKeys(starsFonts) { // consistent order
 		addFontToAtlas(fontName, starsFonts[fontName])
 	}
+
+	// Patch up the cursors (which are missing Offset) values so that they
+	// are centered at the point where they are drawn.
+	for i := range starsCursors.Glyphs {
+		g := &starsCursors.Glyphs[i]
+		g.Offset[0] = -(g.Bounds[0] + 1) / 2
+		g.Offset[1] = starsCursors.Height - (g.Bounds[1]+1)/2
+	}
 	addFontToAtlas("STARS cursors", starsCursors)
 
 	atlasId := r.CreateTextureFromImage(atlas, true /* nearest filter */)

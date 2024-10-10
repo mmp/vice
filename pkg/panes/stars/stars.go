@@ -1072,9 +1072,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, scopeExtent math.Extent
 	bgStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: background}
 
 	draw := func(idx int, style renderer.TextStyle) {
-		g := sp.cursorsFont.LookupGlyph(rune(idx))
-		p := math.Add2f(ctx.Mouse.Pos, [2]float32{-g.Width() / 2, g.Height() / 2})
-		p[0], p[1] = float32(int(p[0]+0.5)), float32(int(p[1]+0.5))
+		p := [2]float32{float32(int(ctx.Mouse.Pos[0] + 0.5)), float32(int(ctx.Mouse.Pos[1] + 0.5))}
 		td.AddText(string(byte(idx)), p, style)
 	}
 	// The STARS "+" cursors start at 0 in the STARS cursors font,
