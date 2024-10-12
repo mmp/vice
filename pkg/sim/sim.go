@@ -36,6 +36,7 @@ const initialSimSeconds = 45
 var (
 	airportWind = make(map[string]av.Wind)
 	windRequest = make(map[string]chan getweather.MetarData)
+	Instructor = false 
 )
 
 type Configuration struct {
@@ -622,6 +623,9 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.Text("Control Position:")
 			imgui.TableNextColumn()
 			imgui.Text(c.Scenario.SelectedController)
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Checkbox("Instructor", &Instructor)
 
 			if len(c.Scenario.ArrivalRunways) > 0 {
 				imgui.TableNextRow()
@@ -2134,6 +2138,14 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 		} else {
 			preAc := *ac
 			radioTransmissions := cmd(ctrl, ac)
+			if len(radioTransmissions) > 0 && Instructor && 
+			ac.ControllingController != ctrl.Callsign {
+				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
+					Controller: ctrl.Callsign,
+					Message: radioTransmissions[0].Message,
+					Type: radioTransmissions[0].Type,
+				})
+			}
 			s.lg.Info("dispatch_command", slog.String("callsign", ac.Callsign),
 				slog.Any("prepost_aircraft", []av.Aircraft{preAc, *ac}),
 				slog.Any("radio_transmissions", radioTransmissions))
@@ -2150,7 +2162,7 @@ func (s *Sim) dispatchControllingCommand(token string, callsign string,
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			// TODO(mtrokel): this needs to be updated for the STARS tracking stuff
-			if ac.ControllingController != ctrl.Callsign {
+			if ac.ControllingController != ctrl.Callsign && !Instructor {
 				return av.ErrOtherControllerHasTrack
 			}
 			return nil
@@ -2163,7 +2175,7 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 	cmd func(*av.Controller, *av.Aircraft) []av.RadioTransmission) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if ac.TrackingController != ctrl.Callsign {
+			if ac.TrackingController != ctrl.Callsign && !Instructor{
 				return av.ErrOtherControllerHasTrack
 			}
 
