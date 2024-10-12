@@ -80,7 +80,7 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 		Aircraft:      make(map[string]*av.Aircraft),
 		METAR:         make(map[string]*av.METAR),
 		Controllers:   make(map[string]*av.Controller),
-		ERAMComputers: MakeERAMComputers(sg.STARSFacilityAdaptation.BeaconBank, lg),
+		ERAMComputers: MakeERAMComputers(sg.STARSFacilityAdaptation, s.lg),
 	}
 
 	if !isLocal {
@@ -336,7 +336,7 @@ func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 }
 
 func (ss *State) GetReleaseDepartures() []*av.Aircraft {
-	return util.FilterSlice(ss.STARSComputer().GetReleaseDepartures(),
+	return util.FilterSlice(ss.STARSComputer(ss.TRACON).GetReleaseDepartures(),
 		func(ac *av.Aircraft) bool {
 			// When ControlClient DeleteAllAircraft() is called, we do our usual trick of
 			// making the update locally pending the next update from the server. However, it
@@ -453,12 +453,33 @@ func (ss *State) DeleteAircraft(ac *av.Aircraft) {
 	ss.ERAMComputers.CompletelyDeleteAircraft(ac)
 }
 
-func (ss *State) STARSComputer() *STARSComputer {
-	_, stars, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
+// Input a facility or controller callsign and get the STARSComputer for that facility.
+func (ss *State) STARSComputer(fac string) *STARSComputer {
+	if strings.Contains(fac, "_") { // A controller was inputted. Gather the facility and use that facility for ERAMComputers FacilityComputers.
+		ok := false
+		fac, ok = ss.FacilityFromController(fac)
+		if !ok {
+			return nil
+		}
+	}
+	_, stars, err := ss.ERAMComputers.FacilityComputers(fac)
+	if err != nil {
+		return nil
+	}
 	return stars
 }
 
-func (ss *State) ERAMComputer() *ERAMComputer {
-	eram, _, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
+func (ss *State) ERAMComputer(fac string) *ERAMComputer {
+	if strings.Contains(fac, "_") { // A controller was inputted. Gather the facility and use that facility for ERAMComputers FacilityComputers.
+		ok := false
+		fac, ok = ss.FacilityFromController(fac)
+		if !ok {
+			return nil
+		}
+	}
+	eram, _, err := ss.ERAMComputers.FacilityComputers(fac)
+	if err != nil {
+		return nil
+	}
 	return eram
 }

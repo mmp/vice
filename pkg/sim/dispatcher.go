@@ -111,14 +111,6 @@ func (sd *Dispatcher) SetSecondaryScratchpad(a *SetScratchpadArgs, _ *struct{}) 
 	}
 }
 
-func (sd *Dispatcher) AutoAssociateFP(it *InitiateTrackArgs, _ *struct{}) error {
-	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
-		return ErrNoSimForControllerToken
-	} else {
-		return sim.AutoAssociateFP(it.ControllerToken, it.Callsign, it.Plan)
-	}
-}
-
 type SetGlobalLeaderLineArgs struct {
 	ControllerToken string
 	Callsign        string
@@ -157,6 +149,46 @@ func (sd *Dispatcher) CreateUnsupportedTrack(it *CreateUnsupportedTrackArgs, _ *
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.CreateUnsupportedTrack(it.ControllerToken, it.Callsign, it.UnsupportedTrack)
+	}
+}
+
+func (sd *Dispatcher) ChangeUnsupportedTrack(it *CreateUnsupportedTrackArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.ChangeUnsupportedTrack(it.ControllerToken, it.Callsign, it.UnsupportedTrack)
+	}
+}
+
+func (sd *Dispatcher) DropUnsupportedTrack(it *AircraftSpecifier, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.DropUnsupportedTrack(it.ControllerToken, it.Callsign)
+	}
+}
+
+func (sd *Dispatcher) HandoffUnsupportedTrack(it *HandoffArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.HandoffUnsupportedTrack(it.ControllerToken, it.Callsign, it.Controller)
+	}
+}
+
+func (sd *Dispatcher) AcceptUnsupportedHandoff(it *HandoffArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.AcceptUnsupportedhandoff(it.ControllerToken, it.Callsign, it.Controller)
+	}
+}
+
+func (sd *Dispatcher) CancelUnsupportedHandoff(it *HandoffArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[it.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.CancelUnsuppportedHandoff(it.ControllerToken, it.Callsign)
 	}
 }
 
@@ -256,6 +288,14 @@ func (sd *Dispatcher) ForceQL(ql *ForceQLArgs, _ *struct{}) error {
 		return ErrNoSimForControllerToken
 	} else {
 		return sim.ForceQL(ql.ControllerToken, ql.Callsign, ql.Controller)
+	}
+}
+
+func (sd *Dispatcher) RequestFP(po *RequestFPArgs, _ *struct{}) error {
+	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.RequestFP(po.ControllerToken, po.Identifier, po.ReceivingFacility)
 	}
 }
 

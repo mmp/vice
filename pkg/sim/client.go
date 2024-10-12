@@ -179,6 +179,57 @@ func (c *ControlClient) CreateUnsupportedTrack(callsign string, ut *UnsupportedT
 		})
 }
 
+func (c *ControlClient) ChangeUnsupportedTrack(callsign string, ut *UnsupportedTrack,
+	success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.ChangeUnsupportedTrack(callsign, ut),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) DropUnsupportedTrack(callsign string, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.DropUnsupportedTrack(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) HandoffUnsupportedTrack(callsign, handoffController string, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.HandoffUnsupportedTrack(callsign, handoffController),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) AcceptUnsupportedHandoff(callsign, handoffController string, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.AcceptUnsupportedHandoff(callsign, handoffController),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) CancelUnsupportedHandoff(callsign string, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.CancelUnsupportedHandoff(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (c *ControlClient) AutoAssociateFP(callsign string, fp *STARSFlightPlan, success func(any),
 	err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
@@ -247,10 +298,10 @@ func (c *ControlClient) HandoffTrack(callsign string, controller string, success
 }
 
 func (c *ControlClient) AcceptHandoff(callsign string, success func(any), err func(error)) {
-	if ac := c.State.Aircraft[callsign]; ac != nil && ac.HandoffTrackController == c.State.Callsign {
-		ac.HandoffTrackController = ""
-		ac.TrackingController = c.State.Callsign
-		ac.ControllingController = c.State.Callsign
+	comp := c.STARSComputer(c.Callsign)
+	if trk := comp.TrackInformation[callsign]; trk != nil && trk.HandoffController == c.Callsign {
+		trk.HandoffController = ""
+		trk.TrackOwner = c.Callsign
 	}
 
 	c.pendingCalls = append(c.pendingCalls,
@@ -296,6 +347,16 @@ func (c *ControlClient) ForceQL(callsign, controller string, success func(any), 
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.ForceQL(callsign, controller),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) RequestFP(identifier, receivingFacility string, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.RequestFP(identifier, receivingFacility),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
@@ -939,11 +1000,12 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 	}
 
 	if imgui.CollapsingHeader("Controllers") {
-		if imgui.BeginTableV("controllers", 4, tableFlags, imgui.Vec2{}, 0) {
+		if imgui.BeginTableV("controllers", 5, tableFlags, imgui.Vec2{}, 0) {
 			imgui.TableSetupColumn("TCP")
 			imgui.TableSetupColumn("Human")
 			imgui.TableSetupColumn("Frequency")
 			imgui.TableSetupColumn("Name")
+			imgui.TableSetupColumn("ERAM ID")
 			imgui.TableHeadersRow()
 
 			for _, callsign := range util.SortedMapKeys(c.Controllers) {
@@ -951,8 +1013,8 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				id := ctrl.SectorId
-				if ctrl.FacilityIdentifier != "" && !ctrl.ERAMFacility {
-					id = ctrl.FacilityIdentifier + id
+				if c.STARSFacilityAdaptation.FacilityIDs[ctrl.Facility] != "" && !ctrl.ERAMFacility {
+					id = c.STARSFacilityAdaptation.FacilityIDs[ctrl.Facility] + id
 				}
 				imgui.Text(id)
 				imgui.TableNextColumn()
@@ -971,6 +1033,9 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 				imgui.Text(ctrl.Frequency.String())
 				imgui.TableNextColumn()
 				imgui.Text(ctrl.Callsign)
+				imgui.TableNextColumn()
+				eram, _, _ := c.ERAMComputers.FacilityComputers(c.Controllers[c.Callsign].Facility)
+				imgui.Text(eram.Adaptation.FacilityIDs[ctrl.Facility])
 			}
 
 			imgui.EndTable()

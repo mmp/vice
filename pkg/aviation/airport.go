@@ -495,7 +495,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 		if _, intraFacility := facilityAirports[dep.Destination]; intraFacility {
 			// Make sure that the full route is valid.
-			wp, err := parseWaypoints(dep.Route)
+			wp, err := ParseWaypoints(dep.Route)
 			if err != nil {
 				e.Error(err)
 			}

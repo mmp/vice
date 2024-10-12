@@ -111,6 +111,44 @@ func (s *proxy) CreateUnsupportedTrack(callsign string, ut *UnsupportedTrack) *r
 	}, nil, nil)
 }
 
+func (s *proxy) ChangeUnsupportedTrack(callsign string, ut *UnsupportedTrack) *rpc.Call {
+	return s.Client.Go("Sim.ChangeUnsupportedTrack", &CreateUnsupportedTrackArgs{
+		ControllerToken:  s.ControllerToken,
+		Callsign:         callsign,
+		UnsupportedTrack: ut,
+	}, nil, nil)
+}
+
+func (s *proxy) DropUnsupportedTrack(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.DropUnsupportedTrack", &AircraftSpecifier{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
+func (s *proxy) HandoffUnsupportedTrack(callsign, handoffController string) *rpc.Call {
+	return s.Client.Go("Sim.HandoffUnsupportedTrack", &HandoffArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Controller:      handoffController,
+	}, nil, nil)
+}
+
+func (s *proxy) AcceptUnsupportedHandoff(callsign, handoffController string) *rpc.Call {
+	return s.Client.Go("Sim.AcceptUnsupportedHandoff", &HandoffArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Controller:      handoffController,
+	}, nil, nil)
+}
+
+func (s *proxy) CancelUnsupportedHandoff(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.CancelUnsupportedHandoff", &HandoffArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
 func (s *proxy) UploadFlightPlan(Type int, fp *STARSFlightPlan) *rpc.Call {
 	return s.Client.Go("Sim.UploadFlightPlan", &UploadPlanArgs{
 		ControllerToken: s.ControllerToken,
@@ -185,6 +223,20 @@ func (s *proxy) ForceQL(callsign, controller string) *rpc.Call {
 		ControllerToken: s.ControllerToken,
 		Callsign:        callsign,
 		Controller:      controller,
+	}, nil, nil)
+}
+
+type RequestFPArgs struct {
+	ControllerToken   string
+	Identifier        string
+	ReceivingFacility string
+}
+
+func (s *proxy) RequestFP(identifier, receivingFacility string) *rpc.Call {
+	return s.Client.Go("Sim.RequestFP", &RequestFPArgs{
+		ControllerToken:   s.ControllerToken,
+		Identifier:        identifier,
+		ReceivingFacility: receivingFacility,
 	}, nil, nil)
 }
 

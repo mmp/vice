@@ -37,6 +37,7 @@ var (
 	ErrTooManyRestrictionAreas     = errors.New("Too many restriction areas specified")
 	ErrUnknownFacility             = errors.New("Unknown facility (ARTCC/TRACON)")
 	ErrUnknownControllerFacility   = errors.New("Unknown controller facility")
+	ErrNoMessageID                 = errors.New("No message ID")
 )
 
 var errorStringToError = map[string]error{
