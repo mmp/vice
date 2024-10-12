@@ -54,7 +54,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 	if config.NewSimType == NewSimCreateLocal || config.NewSimType == NewSimCreateRemote {
 		sim := NewSim(*config, sm.scenarioGroups, config.NewSimType == NewSimCreateLocal, sm.mapManifests, sm.lg)
 		sim.prespawn()
-		return sm.Add(sim, result)
+		return sm.Add(sim, result, config.Instructor)
 	} else {
 		sm.mu.Lock(sm.lg)
 		defer sm.mu.Unlock(sm.lg)
@@ -71,7 +71,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 			return ErrInvalidPassword
 		}
 
-		ss, token, err := sim.SignOn(config.SelectedRemoteSimPosition)
+		ss, token, err := sim.SignOn(config.SelectedRemoteSimPosition, config.Instructor)
 		if err != nil {
 			return err
 		}
@@ -86,7 +86,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 	}
 }
 
-func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
+func (sm *SimManager) Add(sim *Sim, result *NewSimResult, instuctor bool) error {
 	if sim.State == nil {
 		return errors.New("incomplete Sim; nil *State")
 	}
@@ -106,7 +106,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 
 	sm.mu.Unlock(sm.lg)
 
-	ss, token, err := sim.SignOn(sim.State.PrimaryController)
+	ss, token, err := sim.SignOn(sim.State.PrimaryController, instuctor)
 	if err != nil {
 		return err
 	}
