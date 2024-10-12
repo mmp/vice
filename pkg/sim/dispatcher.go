@@ -364,7 +364,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	if !ok {
 		return ErrNoSimForControllerToken
 	}
-	
+
 	commands := strings.Fields(cmds.Commands)
 
 	for i, command := range commands {

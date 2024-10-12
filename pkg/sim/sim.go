@@ -36,7 +36,7 @@ const initialSimSeconds = 45
 var (
 	airportWind = make(map[string]av.Wind)
 	windRequest = make(map[string]chan getweather.MetarData)
-	Instructor = false 
+	Instructor  = false
 )
 
 type Configuration struct {
@@ -2138,12 +2138,12 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 		} else {
 			preAc := *ac
 			radioTransmissions := cmd(ctrl, ac)
-			if len(radioTransmissions) > 0 && Instructor && 
-			ac.ControllingController != ctrl.Callsign {
+			if len(radioTransmissions) > 0 && Instructor &&
+				ac.ControllingController != ctrl.Callsign {
 				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
 					Controller: ctrl.Callsign,
-					Message: radioTransmissions[0].Message,
-					Type: radioTransmissions[0].Type,
+					Message:    radioTransmissions[0].Message,
+					Type:       radioTransmissions[0].Type,
 				})
 			}
 			s.lg.Info("dispatch_command", slog.String("callsign", ac.Callsign),
@@ -2175,7 +2175,7 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 	cmd func(*av.Controller, *av.Aircraft) []av.RadioTransmission) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if ac.TrackingController != ctrl.Callsign && !Instructor{
+			if ac.TrackingController != ctrl.Callsign && !Instructor {
 				return av.ErrOtherControllerHasTrack
 			}
 
