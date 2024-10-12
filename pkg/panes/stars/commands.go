@@ -1950,7 +1950,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 	case CommandModeTargetGen:
 		// Aircraft control command
-		fmt.Println("TGT GEN", cmd)
 		if cmd == "P" {
 			ctx.ControlClient.ToggleSimPause()
 			status.clear = true
