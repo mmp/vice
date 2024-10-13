@@ -315,7 +315,7 @@ type NewSimConfiguration struct {
 	TFRs            []av.TFR
 
 	LiveWeather               bool
-	Instructor				bool
+	Instructor                bool
 	SelectedRemoteSim         string
 	SelectedRemoteSimPosition string
 	RemoteSimPassword         string // for join remote only
