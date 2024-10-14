@@ -1956,32 +1956,32 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		} else if cmd == ";" {
 			sp.lockTargetGenMode = true
 			sp.previewAreaInput = ""
-		} 
+		}
 		callsign, cmds, ok := strings.Cut(cmd, " ")
 		if !ok {
 			callsign = sp.targetGenLastCallsign
 			cmds = cmd
 		}
-			ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign)
-			if ac == nil && sp.targetGenLastCallsign != "" {
-				// If a valid callsign wasn't given, try the last callsign used.
-				ac = ctx.ControlClient.Aircraft[sp.targetGenLastCallsign]
-			}
-			if ac != nil {
-				sp.runAircraftCommands(ctx, ac, cmds)
-				sp.targetGenLastCallsign = ac.Callsign
-				if sp.lockTargetGenMode {
-					// Clear the input but stay in TGT GEN mode.
-					sp.previewAreaInput = ""
-				} else {
-					status.clear = true
-				}
-				
+		ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign)
+		if ac == nil && sp.targetGenLastCallsign != "" {
+			// If a valid callsign wasn't given, try the last callsign used.
+			ac = ctx.ControlClient.Aircraft[sp.targetGenLastCallsign]
+		}
+		if ac != nil {
+			sp.runAircraftCommands(ctx, ac, cmds)
+			sp.targetGenLastCallsign = ac.Callsign
+			if sp.lockTargetGenMode {
+				// Clear the input but stay in TGT GEN mode.
+				sp.previewAreaInput = ""
 			} else {
-				status.err = ErrSTARSIllegalACID
+				status.clear = true
 			}
-			return 
-		} 
+
+		} else {
+			status.err = ErrSTARSIllegalACID
+		}
+		return
+	}
 	status.err = ErrSTARSCommandFormat
 	return
 }
