@@ -1956,7 +1956,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		} else if cmd == ";" {
 			sp.lockTargetGenMode = true
 			sp.previewAreaInput = ""
-		} else if callsign, cmds, ok := strings.Cut(cmd, " "); ok {
+		} 
+		callsign, cmds, ok := strings.Cut(cmd, " ")
+		if !ok {
+			callsign = sp.targetGenLastCallsign
+			cmds = cmd
+		}
 			ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign)
 			if ac == nil && sp.targetGenLastCallsign != "" {
 				// If a valid callsign wasn't given, try the last callsign used.
@@ -1971,15 +1976,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				} else {
 					status.clear = true
 				}
+				
 			} else {
 				status.err = ErrSTARSIllegalACID
 			}
-		} else {
-			status.err = ErrSTARSCommandFormat
-		}
-		return
-	}
-
+			return 
+		} 
 	status.err = ErrSTARSCommandFormat
 	return
 }
