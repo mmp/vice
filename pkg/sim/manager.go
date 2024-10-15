@@ -178,6 +178,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 			ScenarioName:       s.Scenario,
 			PrimaryController:  s.State.PrimaryController,
 			RequirePassword:    s.RequirePassword,
+			InstructorAllowed:  s.InstructorAllowed,
 			AvailablePositions: make(map[string]struct{}),
 			CoveredPositions:   make(map[string]struct{}),
 		}

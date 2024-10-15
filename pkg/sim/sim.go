@@ -315,6 +315,7 @@ type NewSimConfiguration struct {
 	TFRs            []av.TFR
 
 	LiveWeather               bool
+	InstructorAllowed         bool
 	Instructor                bool
 	SelectedRemoteSim         string
 	SelectedRemoteSimPosition string
@@ -337,6 +338,7 @@ type RemoteSim struct {
 	ScenarioName       string
 	PrimaryController  string
 	RequirePassword    bool
+	InstructorAllowed  bool
 	AvailablePositions map[string]struct{}
 	CoveredPositions   map[string]struct{}
 }
@@ -625,7 +627,13 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.Text(c.Scenario.SelectedController)
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
+			imgui.Checkbox("Instructor Scenario", &c.InstructorAllowed)
+
+			uiStartDisable(!c.InstructorAllowed)
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
 			imgui.Checkbox("Instructor", &c.Instructor)
+			uiEndDisable(!c.InstructorAllowed)
 
 			if len(c.Scenario.ArrivalRunways) > 0 {
 				imgui.TableNextRow()
@@ -778,7 +786,9 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		if rs.RequirePassword {
 			imgui.InputTextV("Password", &c.RemoteSimPassword, 0, nil)
 		}
+		uiStartDisable(!rs.InstructorAllowed)
 		imgui.Checkbox("Instructor", &c.Instructor)
+		uiEndDisable(!rs.InstructorAllowed)
 	}
 
 	return false
@@ -936,7 +946,8 @@ type Sim struct {
 	NextPushStart time.Time // both w.r.t. sim time
 	PushEnd       time.Time
 
-	Instructors map[string]bool
+	InstructorAllowed bool
+	Instructors       map[string]bool
 }
 
 // DepartureAircraft represents a departing aircraft, either still on the
@@ -1021,7 +1032,8 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		Handoffs:  make(map[string]Handoff),
 		PointOuts: make(map[string]map[string]PointOut),
 
-		Instructors: make(map[string]bool),
+		InstructorAllowed: ssc.InstructorAllowed,
+		Instructors:       make(map[string]bool),
 	}
 
 	if !isLocal {
