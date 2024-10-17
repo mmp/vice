@@ -192,7 +192,7 @@
             "waypoints": "GOHOM/a2600+ MIEGS/a5000- LAPUU/a7000+ UKAYY DDANY"
           },
           "VIYAP": {
-            "cleared_altitude": 7000,
+            "cleared_altitude": 16000,
             "sid": "FATHE3",
             "waypoints": "JWOLF/a2600+ JIRAN/a3000+ BIGSE FATHE/a14000+ MDBOG/a16000+ BKENI FEMON"
           },
@@ -212,7 +212,7 @@
             "waypoints": "SAWZZ/a2300+ HANDD/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- TUPPY FSHUN PLUMR"
           },
           "PAINN": {
-            "cleared_altitude": 7000,
+            "cleared_altitude": 16000,
             "sid": "JEEMY3",
             "waypoints": "JWOLF/a2600+ JIRAN/a3000+ BIGSE SNOBE MDUSA JEEMY/a16000+ ACCHE PAINN"
           },
@@ -316,7 +316,7 @@
             "waypoints": "FACTS/a2300+ EARRS/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- TUPPY FSHUN"
           },
           "PAINN": {
-            "cleared_altitude": 7000,
+            "cleared_altitude": 16000,
             "sid": "JEEMY3",
             "waypoints": "FACTS/a2300+ HANDD/a3000+/s230 SNOBE MDUSA JEEMY/a16000+ ACCHE"
           },
@@ -336,7 +336,7 @@
             "waypoints": "GOHOM/a2600+ MIEGS/a5000- LAPUU/a7000+ UKAYY DDANY"
           },
           "VIYAP": {
-            "cleared_altitude": 7000,
+            "cleared_altitude": 16000,
             "sid": "FATHE3",
             "waypoints": "JWOLF/a2600+ JIRAN/a3000+ BIGSE BUFFI FATHE/a14000+ MDBOG/a16000+ BKENI FEMON"
           },
