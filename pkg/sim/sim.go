@@ -604,13 +604,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.Text(c.Scenario.SelectedController)
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Checkbox("Instructor Scenario", &c.InstructorAllowed)
-
-			uiStartDisable(!c.InstructorAllowed)
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Checkbox("Instructor", &c.Instructor)
-			uiEndDisable(!c.InstructorAllowed)
+			imgui.Checkbox("Allow Instructor Sign-ins", &c.InstructorAllowed)
 
 			if len(c.Scenario.ArrivalRunways) > 0 {
 				imgui.TableNextRow()
@@ -778,7 +772,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.InputTextV("Password", &c.RemoteSimPassword, 0, nil)
 		}
 		uiStartDisable(!rs.InstructorAllowed)
-		imgui.Checkbox("Instructor", &c.Instructor)
+		imgui.Checkbox("Sign-in as Instructor", &c.Instructor)
 		uiEndDisable(!rs.InstructorAllowed)
 	}
 
