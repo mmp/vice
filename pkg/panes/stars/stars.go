@@ -109,12 +109,11 @@ type STARSPane struct {
 
 	// All of the aircraft in the world, each with additional information
 	// carried along in an STARSAircraftState.
-	Aircraft map[string]*AircraftState
+	Aircraft          map[string]*AircraftState
+	UnsupportedTracks map[string]*UnsupportedState
 
 	TabListAircraft    [TabListEntries]string
 	TabListSearchStart int
-
-	UnsupportedTracks map[av.Squawk]bool // visible or not
 
 	// explicit JSON name to avoid errors during config deserialization for
 	// backwards compatibility, since this used to be a
@@ -376,7 +375,7 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 		sp.Aircraft = make(map[string]*AircraftState)
 	}
 	if sp.UnsupportedTracks == nil {
-		sp.UnsupportedTracks = make(map[av.Squawk]bool)
+		sp.UnsupportedTracks = make(map[string]*UnsupportedState)
 	}
 
 	sp.events = eventStream.Subscribe()
@@ -1216,18 +1215,6 @@ func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 
 		if visible {
 			aircraft = append(aircraft, ac)
-
-			// Is this the first we've seen it?
-			if state.FirstRadarTrack.IsZero() {
-				state.FirstRadarTrack = now
-
-				trk := sp.getTrack(ctx, ac)
-				if sp.AutoTrackDepartures && trk != nil && trk.TrackOwner == "" &&
-					ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.Callsign {
-					starsFP := sim.MakeSTARSFlightPlan(ac.FlightPlan)
-					ctx.ControlClient.InitiateTrack(callsign, starsFP, nil, nil) // ignore error...
-				}
-			}
 		}
 	}
 

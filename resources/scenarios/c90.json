@@ -6351,6 +6351,7 @@
                 "frequency": 119000,
                 "full_name": "Chicago Approach",
                 "scope_char": "Z",
+                "facility": "C90",
                 "sector_id": "1Z",
                 "facility": "C90",
                 "default_airport": "KORD"
@@ -6408,6 +6409,7 @@
                 "frequency": 128200,
                 "full_name": "Chicago Approach",
                 "scope_char": "S",
+                "facility": "C90",
                 "sector_id": "1S",
                 "facility": "C90",
                 "default_airport": "KMDW"
@@ -6433,6 +6435,7 @@
                 "facility": "C90",
                 "sector_id": "1U"
             },
+
             "CHI_B_DEP": {
                 "frequency": 125000,
                 "full_name": "Chicago Departure",
@@ -6471,6 +6474,7 @@
             "CHI_81_CTR": {
                 "frequency": 120350,
                 "full_name": "Chicago Center",
+                "facility": "ZAU",
                 "facility_id": "C",
                 "eram_facility": true,
                 "scope_char": "C",

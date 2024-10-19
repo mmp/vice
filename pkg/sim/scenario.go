@@ -98,6 +98,7 @@ type STARSFacilityAdaptation struct {
 	} `json:"scratchpad1"`
 	CoordinationLists []CoordinationList `json:"coordination_lists"`
 	RestrictionAreas  []RestrictionArea  `json:"restriction_areas"`
+	FacilityIDs       map[string]string  `json:"facility_ids"`
 	UseLegacyFont     bool               `json:"use_legacy_font"`
 }
 
@@ -405,6 +406,25 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			}
 		}
 	}
+
+	// Until all FE stuff is done, and there is a lot to do...
+	// for _, ctrl := range sg.ControlPositions {
+	// 	if len(ctrl.Facility) == 0 {
+	// 		e.ErrorString("%s: controller must have \"facility\" specified", ctrl.Callsign)
+	// 		continue
+	// 	}
+	// 	if len(ctrl.Facility) != 3 {
+	// 		e.ErrorString("%s: controller's \"facility\" must be three characters", ctrl.Callsign)
+	// 		continue
+	// 	}
+	// 	_, ok := av.DB.ARTCCs[ctrl.Facility]
+	// 	if !ok {
+	// 		_, ok = av.DB.TRACONs[ctrl.Facility]
+	// 		if !ok {
+	// 			e.ErrorString("%s: controller's \"facility\" %q is unknown", ctrl.Callsign, ctrl.Facility)
+	// 		}
+	// 	}
+	// }
 
 	// Various multi_controllers validations
 	if len(s.SplitConfigurations) > 0 {
@@ -1271,7 +1291,8 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	e.Pop() // stars_config
 }
 
-func (fa *STARSFacilityAdaptation) GetCoordinationFix(fp *STARSFlightPlan, acpos math.Point2LL, waypoints []av.Waypoint) (string, bool) {
+func GetCoordinationFix(fa av.ERAMAdaptation, fp *STARSFlightPlan, acpos math.Point2LL, waypoints []av.Waypoint) (string, bool) {
+
 	for fix, adaptationFixes := range fa.CoordinationFixes {
 		if adaptationFix, err := adaptationFixes.Fix(fp.Altitude); err == nil {
 			if adaptationFix.Type == av.ZoneBasedFix {
