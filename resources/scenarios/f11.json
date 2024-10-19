@@ -1065,6 +1065,7 @@
       }
     },
     "KORL": {
+      "hold_for_release": true,
       "approaches": {
         "I7": {
           "runway": "7",
@@ -1239,6 +1240,7 @@
       "tower_list": 1
     },
     "KSFB": {
+      "hold_for_release": true,
       "approaches": {
         "I9L": {
           "runway": "9L",
@@ -1928,6 +1930,7 @@
       "tower_list": 2
     },
     "KISM": {
+      "hold_for_release": true,
       "approaches": {
         "R6": {
           "runway": "6",
@@ -2049,6 +2052,7 @@
       "tower_list": 1
     },
     "KMLB": {
+      "hold_for_release": true,
       "approaches": {
         "I9R": {
           "cifp_id": "I9R"
@@ -2405,6 +2409,7 @@
       "tower_list": 1
     },
     "KTIX": {
+      "hold_for_release": true,
       "approaches": {
         "I36": {
           "cifp_id": "I36"
@@ -2430,6 +2435,317 @@
           "MLB,WORMS,KIZER,RDSOX,OSPRY,FSHUN": {
           "cleared_altitude": 2000,
           "waypoints": "KTIX-36/h180"
+          }
+        }
+      },
+      "departures": [
+        {
+          "exit": "MLB",
+          "destination": "KFXE",
+          "altitude": 20000,
+          "scratchpad": "D20",
+          "route": "MLB BLUFI4",
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "MLB",
+          "destination": "KFXE",
+          "altitude": 20000,
+          "scratchpad": "D20",
+          "route": "MLB BLUFI4",
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "WORMS",
+          "destination": "KPDK",
+          "altitude": 33000,
+          "scratchpad": "W33",
+          "route": "WORMS JEEMY ACCHE PAINN SHRKS",
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "RDSOX",
+          "destination": "KAUS",
+          "altitude": 36000,
+          "scratchpad": "R36",
+          "route": "RDSOX JFRYS PATOY Q116 JAWJA DYEES LLA WEEED WLEEE7",
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "OSPRY",
+          "destination": "KAUS",
+          "altitude": 36000,
+          "scratchpad": "O36",
+          "route": "OSPRY JFRYS PATOY Q116 JAWJA DYEES LLA WEEED WLEEE7",
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "KIZER",
+          "destination": "KDAB",
+          "altitude": 6000,
+          "route": "GUANO KIZER DAB",
+          "airlines": [
+           {
+            "icao": "ERU"
+           }
+          ]
+        }
+      ],
+      "exit_categories": {
+        "KIZER": "ALL",
+        "WORMS": "ALL",
+        "MLB": "ALL",
+        "FSHUN": "ALL",
+        "RDSOX": "ALL",
+        "OSPRY": "ALL"
+      }
+    },
+    "KCOF": {
+      "hold_for_release": true,
+      "approaches": {
+        "I3 ": {
+          "runway": "3",
+          "type": "ILS",
+          "waypoints": [
+            "ZEVEX/a3000+/arc12COF FIGDA/a3000 JAPEK/a2000 FIVMA/a1300",
+          "FIGDA/a3000 JAPEK/a2000 FIVMA/a1300"
+          ]
+        },
+        "R3": {
+          "runway": "3",
+          "type": "RNAV",
+          "waypoints": [
+            "DOSEY/a3000 FIGDA/a3000 JAPEK/a2000 FIVMA/a1300",
+            "SACOB/a3000 FIGDA/a3000 JAPEK/a2000 FIVMA/a1300"
+          ]
+        },
+        "I21 ": {
+          "runway": "21",
+          "type": "ILS",
+          "waypoints": [
+            "ZEVEX/a3000+/arc12COF LOBKE/a3000 LUREF/a1600",
+          "LOBKE/a3000 LUREF/a1600"
+          ]
+        },
+        "R21": {
+          "runway": "3",
+          "type": "RNAV",
+          "waypoints": [
+            "KEMSE/a3000 YOCUN/a3000 LUREF/a1600",
+            "ZENPI/a3000 YOCUN/a3000 LUREF/a1600"
+          ]
+        }
+      },
+      "departure_routes": {
+        "3": {
+          "MLB,WORMS,KIZER,RDSOX,OSPRY,FSHUN": {
+          "cleared_altitude": 2000,
+          "waypoints": "KCOF-21/h030"
+          }
+        },
+        "21": {
+          "MLB,WORMS,KIZER,RDSOX,OSPRY,FSHUN": {
+          "cleared_altitude": 2000,
+          "waypoints": "KCOF-3/h210"
+          }
+        }
+      },
+      "departures": [
+        {
+          "exit": "MLB",
+          "destination": "KFXE",
+          "altitude": 20000,
+          "scratchpad": "D20",
+          "route": "MLB BLUFI4",
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "MLB",
+          "destination": "KFXE",
+          "altitude": 20000,
+          "scratchpad": "D20",
+          "route": "MLB BLUFI4",
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "WORMS",
+          "destination": "KPDK",
+          "altitude": 33000,
+          "scratchpad": "W33",
+          "route": "WORMS JEEMY ACCHE PAINN SHRKS",
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "RDSOX",
+          "destination": "KAUS",
+          "altitude": 36000,
+          "scratchpad": "R36",
+          "route": "RDSOX JFRYS PATOY Q116 JAWJA DYEES LLA WEEED WLEEE7",
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "OSPRY",
+          "destination": "KAUS",
+          "altitude": 36000,
+          "scratchpad": "O36",
+          "route": "OSPRY JFRYS PATOY Q116 JAWJA DYEES LLA WEEED WLEEE7",
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "KIZER",
+          "destination": "KDAB",
+          "altitude": 6000,
+          "route": "GUANO KIZER DAB",
+          "airlines": [
+           {
+            "icao": "ERU"
+           }
+          ]
+        }
+      ],
+      "exit_categories": {
+        "KIZER": "ALL",
+        "WORMS": "ALL",
+        "MLB": "ALL",
+        "FSHUN": "ALL",
+        "RDSOX": "ALL",
+        "OSPRY": "ALL"
+      }
+    },
+    "KLEE": {
+      "hold_for_release": true,
+      "approaches": {
+        "R4": {
+          "cifp_id": "R4"
+        },
+        "R31": {
+          "cifp_id": "R31"
+        },
+        "R13": {
+          "cifp_id": "R13"
+        }
+      },
+      "departure_routes": {
+        "13": {
+          "MLB,WORMS,KIZER,RDSOX,OSPRY,FSHUN": {
+          "cleared_altitude": 2000,
+          "waypoints": "KLEE-31/h130"
+          }
+        },
+        "31": {
+          "MLB,WORMS,KIZER,RDSOX,OSPRY,FSHUN": {
+          "cleared_altitude": 2000,
+          "waypoints": "KLEE-13/h310"
           }
         }
       },
@@ -3930,6 +4246,21 @@
                 "icao": "N",
                 "fleet": "fastGA"
               }
+            ],
+            "KLEE": [
+              {
+                "airport": "KISP",
+                "icao": "LXJ"
+              },
+              {
+                "airport": "KISP",
+                "icao": "EJA"
+              },
+              {
+                "airport": "KISP",
+                "icao": "N",
+                "fleet": "fastGA"
+              }
             ]
           },
           "assigned_altitude": 14000,
@@ -3959,6 +4290,11 @@
               "KORL": {
                 "7": "SURFR/a14000 ALYNA BUDLE/a6000/h263",
                 "25": "SURFR/a14000 ALYNA BUDLE/a6000/h263"
+              },
+              "KLEE": {
+                "4": "SURFR/a14000 ALYNA BUDLE/a6000/h263",
+                "13": "SURFR/a14000 ALYNA BUDLE/a6000/h263",
+                "31": "SURFR/a14000 ALYNA BUDLE/a6000/h263"
               }
           },
           "speed_restriction": 250,
@@ -4056,6 +4392,25 @@
             }
           ],
           "KTIX": [
+            {
+              "airport": "KPDK",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KPDK",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KPDK",
+              "icao": "EJM"
+            },
+            {
+              "airport": "KPDK",
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "KCOF": [
             {
               "airport": "KPDK",
               "icao": "EJA"
@@ -4384,6 +4739,17 @@
             }
           ],
           "KMLB": [
+            {
+              "airport": "KPBI",
+              "icao": "N",
+              "fleet": "lightGA"
+            },
+            {
+              "airport": "KPBI",
+              "icao": "FIT"
+            }
+          ],
+          "KLEE": [
             {
               "airport": "KPBI",
               "icao": "N",
@@ -7503,6 +7869,28 @@
               "icao": "N"
             }
           ],
+          "KLEE": [
+            {
+              "airport": "KRSW",
+              "fleet": "lightGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KFLL",
+               "fleet": "lightGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KMIA",
+              "fleet": "lightGA",
+              "icao": "N"
+            },
+            {
+              "airport": "KEYW",
+               "fleet": "lightGA",
+              "icao": "N"
+            }
+          ],
           "KSFB": [
             {
               "airport": "KRSW",
@@ -7577,6 +7965,25 @@
             }
           ],
           "KORL": [
+            {
+              "airport": "KPSM",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KPSM",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KPSM",
+              "icao": "EJM"
+            },
+            {
+              "airport": "KPSM",
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "KLEE": [
             {
               "airport": "KPSM",
               "icao": "EJA"
@@ -7933,6 +8340,21 @@
               "fleet": "fastGA"
             }
           ],
+          "KLEE": [
+            {
+              "airport": "KAUS",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KAUS",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KAUS",
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
           "KISM": [
             {
               "airport": "KAUS",
@@ -7994,6 +8416,11 @@
           "KORL": {
             "7": "PRICY/a13000-16000 BOCCE OTKEE/a11000/s250/h056",
             "25":"PRICY/a13000-16000 BOCCE OTKEE/a11000/s250/h056"
+          },
+          "KLEE": {
+            "4": "PRICY/a13000-16000 BOCCE OTKEE/a11000/s250/h056",
+            "13":"PRICY/a13000-16000 BOCCE OTKEE/a11000/s250/h056",
+             "31":"PRICY/a13000-16000 BOCCE OTKEE/a11000/s250/h056"
           },
           "KISM": {
             "15": "PRICY/a13000-16000 BOCCE OTKEE/a11000/s250/h056",
@@ -9025,6 +9452,21 @@
               "fleet": "fastGA"
             }
           ],
+          "KLEE": [
+            {
+              "airport": "KRSW",
+              "icao": "LXJ"
+            },
+            {
+              "airport": "KRSW",
+              "icao": "EJA"
+            },
+            {
+              "airport": "KRSW",
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
           "KISM": [
             {
               "airport": "KRSW",
@@ -9086,6 +9528,11 @@
           "KORL": {
             "7": "RIDES MPLEX/a12000/s250/h351",
             "25": "RIDES MPLEX/a12000/s250/h351"
+          },
+          "KLEE": {
+            "13": "RIDES MPLEX/a12000/s250/h351",
+            "4": "RIDES MPLEX/a12000/s250/h351",
+            "31": "RIDES MPLEX/a12000/s250/h351"
           }
         },
         "speed_restriction": 250,
@@ -10947,26 +11394,26 @@
     "MIA_23_CTR": {
         "frequency": 126950, 
         "full_name": "Miami Center",
-        "facility_id": "R",
+        "facility_id": "Z",
         "eram_facility": true, 
         "scope_char": "Z",
-        "sector_id": "R23"
+        "sector_id": "Z23"
     },
     "MIA_22_CTR": {
         "frequency": 133475,
         "full_name": "Miami Center",
-        "facility_id": "R",
+        "facility_id": "Z",
         "eram_facility": true,
         "scope_char": "Z",
-        "sector_id": "R22"
+        "sector_id": "Z22"
     },
     "MIA_67_CTR": { 
         "frequency": 127200,
         "full_name": "Miami Center",
-        "facility_id": "R",
+        "facility_id": "Z",
         "eram_facility": true,
         "scope_char": "Z",
-        "sector_id": "R67"
+        "sector_id": "Z67"
     },
     "JAX_14_CTR": {
       "frequency": 135750,
@@ -11064,6 +11511,12 @@
       "scope_char": "M",
       "sector_id": "1M"
     },
+    "MCO_R_APP": {
+      "frequency": 127320,
+      "full_name": "Orlando Approach",
+      "scope_char": "R",
+      "sector_id": "1R"
+    },
     "MCO_K_APP": {
       "frequency": 134950,
       "full_name": "Orlando Approach",
@@ -11112,20 +11565,32 @@
     "MCO_W_TWR": {
       "frequency": 126400,
       "full_name": "Orlando tower",
-      "scope_char": "T",
+      "scope_char": "Z",
       "sector_id": "1Z"
     },
     "SFB_N_TWR": {
       "frequency": 120300,
       "full_name": "Sanford tower",
-      "scope_char": "T",
+      "scope_char": "N",
       "sector_id": "3N"
     },
     "SFB_S_TWR": {
       "frequency": 135250,
       "full_name": "Sanford tower",
-      "scope_char": "T",
+      "scope_char": "S",
       "sector_id": "3S"
+    },
+    "LEE_TWR": {
+     "frequency": 119350,
+     "full_name": "Leesburg tower",
+     "scope_char": "L",
+     "sector_id": "3L"
+    },
+    "COF_TWR": {
+      "frequency": 133750,
+      "full_name": "Patrick Tower",
+      "scope_char": "P",
+      "sector_id": "3P"
     },
     "MLB_TWR": {
       "frequency": 118200,
@@ -11260,6 +11725,14 @@
         {
           "airport": "KTIX",
           "runway": "18"
+        },
+        {
+          "airport": "KCOF",
+          "runway": "21"
+        },
+        {
+          "airport": "KLEE",
+          "runway": "13"
         }
       ],
       "inbound_rates": {
@@ -11267,19 +11740,22 @@
           "KMCO": 5,
           "KSFB": 2,
           "KORL": 2,
-          "KISM": 2
+          "KISM": 2,
+          "KLEE": 1
         },
         "BITHO7": {
           "KMLB": 3,
           "KTIX": 1,
-          "KMCO": 2
+          "KMCO": 2,
+          "KCOF": 1
         },
         "GOOFY7": {
           "KISM": 2,
           "KORL": 3,
           "KSFB": 1,
           "KTIX": 1,
-          "KMCO": 2
+          "KMCO": 2,
+          "KLEE": 1
         },
         "GRNCH5": {
           "KMCO": 15
@@ -11290,7 +11766,8 @@
         "JOKRS3": {
           "KORL": 3,
           "KISM": 3,
-          "KMLB": 2
+          "KMLB": 2,
+          "KLEE": 1
         },
         "JOKRS3.MCO": {
           "KMCO": 2
@@ -11321,7 +11798,8 @@
           "KMCO": 10,
           "KSFB": 3,
           "KORL": 2,
-          "KISM": 2
+          "KISM": 2,
+          "KLEE": 1
         },
         "DADES1": {
           "overflights": 20
@@ -11341,7 +11819,8 @@
       "solo_controller": "MCO_E_DEP",
       "multi_controllers": {
         "default": {
-          "MCO_E_DEP": {"primary": true, "departures": ["KMCO/FATHE3", "KMCO/MZULO3", "KMCO/DDANY3"], "inbound_flows": ["ALYNA4", "DADES1"]},
+          "MCO_E_DEP": {"primary": true, "departures": ["KMCO/FATHE3", "KMCO/MZULO3", "KMCO/DDANY3"]},
+          "MCO_R_APP": {"backup": "MCO_E_DEP", "inbound_flows": ["ALYNA4", "DADES1"]},
           "MCO_W_DEP": {"backup": "MCO_E_DEP", "departures": ["KMCO/FSHUN3", "KMCO/JEEMY3", "KMCO/RDSOX1", "KMCO/OSPRY1", "KMCO/ORLA6"]},
           "MCO_D_APP": {"backup": "MCO_E_DEP", "departures": ["KISM", "KORL", "KMCO/CITR2W"],"inbound_flows": ["GOOFY7", "JOKRS3", "West_coast/T210N"]},
           "MCO_M_APP": {"backup": "MCO_W_DEP"},
@@ -11349,8 +11828,8 @@
           "MCO_B_APP": {"backup": "MCO_E_DEP","inbound_flows": ["GTOUT1", "RIDES2", "BITHO7", "SNFLD3"]},
           "MCO_L_APP": {"backup": "MCO_B_APP", "inbound_flows": ["PRICY3", "GRNCH5", "SHREK2W", "SHREK2.MCO", "JOKRS3.MCO"]},
           "MCO_A_APP": {"backup": "MCO_D_APP", "departures": ["KMLB", "KMCO/CITR2E"], "inbound_flows": ["East_coast/T208 "]},
-          "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KTIX"]},
-          "MCO_N_APP": {"backup": "MCO_D_APP", "departures": ["KSFB"], "inbound_flows": ["West_coast/T210S"]},
+          "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KTIX", "KCOF"]},
+          "MCO_N_APP": {"backup": "MCO_D_APP", "departures": ["KSFB", "KLEE"], "inbound_flows": ["West_coast/T210S"]},
           "MCO_V_APP": {"backup": "MCO_N_APP", "inbound_flows": ["TTHOR3"]}
         }
       },
@@ -11457,6 +11936,16 @@
           "runway": "18L",
           "rate": 3,
           "category": "Prop.West"
+        },
+        {
+          "airport": "KCOF",
+          "runway": "21",
+          "rate": 3
+        },
+        {
+          "airport": "KLEE",
+          "runway": "13",
+          "rate": 3
         }
       ],
       "wind": {
@@ -11501,6 +11990,18 @@
         {
           "airport": "KTIX",
           "runway": "36"
+        },
+        {
+          "airport": "KCOF",
+          "runway": "3"
+        },
+        {
+          "airport": "KLEE",
+          "runway": "31"
+        },
+        {
+          "airport": "KLEE",
+          "runway": "4"
         }
       ],
       "inbound_rates": {
@@ -11508,19 +12009,22 @@
           "KMCO": 5,
           "KSFB": 2,
           "KORL": 2,
-          "KISM": 2
+          "KISM": 2,
+          "KLEE": 1
         },
         "BITHO7": {
           "KMLB": 3,
           "KTIX": 1,
-          "KMCO": 2
+          "KMCO": 2,
+          "KCOF": 1
         },
         "GOOFY7": {
           "KISM": 2,
           "KORL": 3,
           "KSFB": 1,
           "KTIX": 1,
-          "KMCO": 2
+          "KMCO": 2,
+          "KLEE": 1
         },
         "GRNCH5": {
           "KMCO": 15
@@ -11532,7 +12036,8 @@
         "JOKRS3": {
           "KORL": 3,
           "KISM": 3,
-          "KMLB": 2
+          "KMLB": 2,
+          "KLEE": 1
         },
         "JOKRS3.MCO": {
           "KMCO": 2
@@ -11542,7 +12047,8 @@
         },
         "TTHOR3": {
           "KSFB": 15,
-          "KORL": 2
+          "KORL": 2,
+          "KLEE": 1
         },
         "SHREK2E": {
           "KSFB": 5,
@@ -11553,13 +12059,15 @@
           "KSFB": 4,
           "KORL": 2,
           "KISM": 2,
-          "KMLB": 2
+          "KMLB": 2,
+          "KLEE": 1
         },
         "RIDES2": {
           "KMCO": 10,
           "KSFB": 3,
           "KORL": 2,
-          "KISM": 2
+          "KISM": 2,
+          "KLEE": 1
         },
         "DADES1": {
           "overflights": 20
@@ -11579,7 +12087,8 @@
       "solo_controller": "MCO_E_DEP",
       "multi_controllers": {
         "default": {
-          "MCO_E_DEP": {"primary": true, "departures": ["KMCO/JEEMY3", "KMCO/FATHE3", "KMCO/MZULO3", "KMCO/DDANY3"], "inbound_flows": ["ALYNA4", "DADES1"]},
+          "MCO_E_DEP": {"primary": true, "departures": ["KMCO/JEEMY3", "KMCO/FATHE3", "KMCO/MZULO3", "KMCO/DDANY3"]},
+          "MCO_R_APP": {"backup": "MCO_E_DEP", "inbound_flows": ["ALYNA4", "DADES1"]},
           "MCO_W_DEP": {"backup": "MCO_E_DEP", "departures": ["KMCO/FSHUN3","KMCO/RDSOX1", "KMCO/OSPRY1", "KMCO/ORLA6"]},
           "MCO_D_APP": {"backup": "MCO_W_DEP", "departures": ["KISM", "KMCO/CITR2W"], "inbound_flows": ["GOOFY7", "JOKRS3", "West_coast/T210N"]},
           "MCO_M_APP": {"backup": "MCO_W_DEP"},
@@ -11587,8 +12096,8 @@
           "MCO_B_APP": {"backup": "MCO_E_DEP","inbound_flows": ["SNFLD3", "RIDES2", "BITHO7"]},
           "MCO_L_APP": {"backup": "MCO_B_APP", "inbound_flows": ["PRICY3", "GRNCH5", "SHREK2E", "SHREK2.MCO", "JOKRS3.MCO"]},
           "MCO_A_APP": {"backup": "MCO_D_APP", "departures": ["KMLB", "KMCO/CITR2E"], "inbound_flows": ["East_coast/T208 "]},
-          "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KTIX"]},
-          "MCO_N_APP": {"backup": "MCO_D_APP", "inbound_flows": ["West_coast/T210S"]},
+          "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KTIX", "KCOF"]},
+          "MCO_N_APP": {"backup": "MCO_D_APP", "inbound_flows": ["West_coast/T210S"], "departures": ["KLEE"]},
           "MCO_V_APP": {"backup": "MCO_N_APP", "departures": ["KORL", "KSFB"], "inbound_flows": ["TTHOR3"]}
         }
       },
@@ -11695,6 +12204,16 @@
           "airport": "KTIX",
           "rate": 3,
           "runway": "36"
+        },
+        {
+          "airport": "KCOF",
+          "rate": 3,
+          "runway": "3"
+        },
+        {
+          "airport": "KLEE",
+          "rate": 3,
+          "runway": "31"
         }
       ],
       "wind": {
@@ -12533,6 +13052,15 @@
           }
       ]
   },
+  "coordination_lists": [
+    { "name": ".      ORL", "id": "O", "airports": ["KORL"]},
+    { "name": ".      MLB", "id": "B", "airports": ["KMLB"]},
+    { "name": ".      SFB", "id": "F", "airports": ["KSFB"]},
+    { "name": ".      ISM", "id": "K", "airports": ["KISM"]},
+    { "name": ".      TIX", "id": "S", "airports": ["KTIX"]},
+    { "name": ".      COF", "id": "P", "airports": ["KCOF"]},
+    { "name": ".      LEE", "id": "L", "airports": ["KLEE"]}
+  ],
   "airspace_awareness": [
     {
         "fixes": [

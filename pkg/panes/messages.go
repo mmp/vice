@@ -261,7 +261,13 @@ func (mp *MessagesPane) runCommands(ctx *Context) {
 			FromController: ctx.ControlClient.Callsign,
 			Message:        ctx.ControlClient.Callsign + ": " + mp.input.cmd[1:],
 		})
-		mp.messages = append(mp.messages, Message{contents: ctx.ControlClient.Callsign + ": " + mp.input.cmd[1:], global: true})
+		for i, line := range strings.Split(mp.input.cmd[1:], "\n") {
+			if i == 0 {
+				mp.messages = append(mp.messages, Message{contents: ctx.ControlClient.Callsign + ": " + line, global: true})
+			} else {
+				mp.messages = append(mp.messages, Message{contents: line, global: true})
+			}
+		}
 		mp.history = append(mp.history, mp.input)
 		mp.input = CLIInput{}
 		return
@@ -366,7 +372,9 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			}
 		case sim.GlobalMessageEvent:
 			if event.FromController != ctx.ControlClient.Callsign {
-				mp.messages = append(mp.messages, Message{contents: event.Message, global: true})
+				for _, line := range strings.Split(event.Message, "\n") {
+					mp.messages = append(mp.messages, Message{contents: line, global: true})
+				}
 			}
 		case sim.StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.

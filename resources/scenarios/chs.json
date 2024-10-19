@@ -1155,6 +1155,157 @@
                 "SWPFX": "North"
             },
             "tower_list": 1
+        },
+        "KJZI": {
+            "hold_for_release": true,
+            "approaches": {
+                "R27": {
+                    "cifp_id": "R27",
+                     "tower_controller": "JZI_TWR"
+                },
+                "R4": {
+                    "cifp_id": "R4",
+                    "tower_controller": "JZI_TWR"
+                },
+                "I9": {
+                    "full_name": "ILS Runway 9",
+                    "runway": "9",
+                    "type": "ILS",
+                     "tower_controller": "JZI_TWR",
+                    "waypoints": [
+                        "GIBLE/a1700 JOBOP/a1600"
+                    ]
+                },
+                "R9": {
+                    "cifp_id": "R9",
+                     "tower_controller": "JZI_TWR"
+                }
+            },
+            "departure_routes": {
+                "9": {
+                    "IRQ,ALD,DBN": {
+                        "cleared_altitude": 2000,
+                        "sid": "EXTVE1",
+                        "waypoints": "RNDAH/a2000+ GECHE GULLA PLFMD"
+                    },
+                    "GIPPL": {
+                        "cleared_altitude": 2000,
+                        "sid": "KIAWA2",
+                        "waypoints": "LGRHD"
+                    },
+                    "CRE,FLO,ASHEL": {
+                        "cleared_altitude": 2000,
+                        "sid": "KMBEE2",
+                        "waypoints": "KMBEE/a2000+/h090"
+                    }
+                },
+                "27": {
+                    "IRQ,ALD,DBN": {
+                        "cleared_altitude": 2000,
+                        "sid": "EXTVE1",
+                        "waypoints": "RNDAH/a2000+ GECHE GULLA PLFMD"
+                    },
+                    "GIPPL": {
+                        "cleared_altitude": 2000,
+                        "sid": "KIAWA2",
+                        "waypoints": "LGRHD"
+                    },
+                    "CRE,FLO,ASHEL": {
+                        "cleared_altitude": 2000,
+                        "sid": "KMBEE2",
+                        "waypoints": "KMBEE/a2000+/h090"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "exit": "IRQ",
+                    "destination": "KPDK",
+                    "altitude": 22000,
+                    "route": "EXTVE1 IRQ AHN",
+                    "airlines": [
+                        {
+                            "icao": "EJA"
+                        },
+                        {
+                            "icao": "LXJ"
+                        },
+                        {
+                            "icao": "N",
+                            "fleet": "fastGA"
+                        }
+                    ]
+                },
+                {
+                    "exit": "GIPPL",
+                    "destination": "KTPA",
+                    "altitude": 36000,
+                    "route": "KIAWA2 GIPPL Q85 BEEGE EDISN DADES1",
+                    "airlines": [
+                        {
+                            "icao": "EJA"
+                        },
+                        {
+                            "icao": "LXJ"
+                        },
+                        {
+                            "icao": "N",
+                            "fleet": "fastGA"
+                        }
+                    ]
+                },
+                {
+                    "exit": "ASHEL",
+                    "destination": "CYYR",
+                    "altitude": 45000,
+                    "route": "KMBEE2 KMBEE ASHEL Q87 HURTS RBV Q223 LLUND CEF FRIAR Q439 PQI OMPOG",
+                    "airlines": [
+                        {
+                            "icao": "TWY"
+                        },
+                        {
+                            "icao": "N",
+                            "fleet": "fastGA"
+                        }
+                    ]
+                },
+                {
+                    "exit": "CRE",
+                    "destination": "KHPN",
+                    "altitude": 33000,
+                    "route": "KMBEE2 KMBEE CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
+                    "airlines": [
+                        {
+                            "icao": "TWY"
+                        },
+                        {
+                            "icao": "N",
+                            "fleet": "fastGA"
+                        },
+                        {
+                            "icao": "EJA"
+                        }
+                    ]
+                },
+                {
+                    "exit": "FLO",
+                    "destination": "KCLT",
+                    "altitude": 31000,
+                    "route": "KMBEE2 KMBEE FLO RASLN3",
+                    "airlines": [
+                        {
+                            "icao": "TWY"
+                        },
+                        {
+                            "icao": "N",
+                            "fleet": "fastGA"
+                        },
+                        {
+                            "icao": "EJA"
+                        }
+                    ]
+                }
+            ]
         }
     },
     "arrival_groups": {
@@ -1213,6 +1364,21 @@
                             "airport": "KEWR",
                             "icao": "NKS"
                         }
+                    ],
+                    "KJZI": [
+                        {
+                            "airport": "KHPN",
+                            "icao": "EJA"
+                        },
+                        {
+                            "airport": "KHPN",
+                            "icao": "LXJ"
+                        },
+                        {
+                            "airport": "KHPN",
+                            "icao": "N",
+                            "fleet": "fastGA"
+                        }
                     ]
                 },
                 "initial_altitude": 17000,
@@ -1225,6 +1391,10 @@
                         "15": "RSRVE KREIS/a3000/flyover/h250",
                         "21": "RSRVE BAMDE/a3000+",
                         "33": "RSRVE SNOBB/a3000/s210/flyover/h218"
+                    },
+                    "KJZI": {
+                        "9": "RSRVE SKILR SHOTZ KMBEE/a4000/h210",
+                        "27": "RSRVE SKILR SHOTZ KMBEE/a4000/h210"
                     }
                 },
                 "waypoints": "AMYLU/a14000-23000/ho WILIT CRAAW/a11000+ FOURD RSRVE"
@@ -1269,6 +1439,21 @@
                             "fleet": "short",
                             "icao": "UAL"
                         }
+                    ],
+                    "KJZI": [
+                        {
+                            "airport": "KHPN",
+                            "icao": "EJA"
+                        },
+                        {
+                            "airport": "KHPN",
+                            "icao": "LXJ"
+                        },
+                        {
+                            "airport": "KHPN",
+                            "icao": "N",
+                            "fleet": "fastGA"
+                        }
                     ]
                 },
                 "initial_altitude": 13000,
@@ -1281,6 +1466,10 @@
                     "15": "DDENA/a5000+ PIPPY/a5000/flyover/h30",
                     "21": " DDENA/a5000+ MURAY/a5000+ ADERY/a4000+ MRISS/a3000/flyover/h31",
                     "33": "DDENA/a5000+ CZSAR/a3000/flyover/h77"
+                  },
+                  "KJZI": {
+                    "9": "DDENA/a5000+ JAISN/a3000/h090",
+                    "27": "DDENA/a5000+ JAISN/a3000/h090"
                   }
                 },
                 "waypoints": "DREWE/a11000/ho BAGGY/a7000+ DDENA/a5000+"
@@ -1333,6 +1522,21 @@
                             "airport": "KORD",
                             "icao": "ENY"
                         }
+                    ],
+                    "KJZI": [
+                        {
+                            "airport": "KHPN",
+                            "icao": "EJA"
+                        },
+                        {
+                            "airport": "KHPN",
+                            "icao": "LXJ"
+                        },
+                        {
+                            "airport": "KHPN",
+                            "icao": "N",
+                            "fleet": "fastGA"
+                        }
                     ]
                 },
                 "initial_altitude": 15000,
@@ -1345,6 +1549,10 @@
                         "15": "OSPRI LUTHR/a4000+",
                         "21": "OSPRI LUTHR/a4000+ MYERS/a3000/flyover/h137",
                         "33": "OSPRI PAMJE/a5000-10000/s250 LLEXI/a5000+/s210 JAARD/a4000+/flyover/h149"
+                    },
+                    "KJZI": {
+                        "9": "OSPRI NKLSS/a5000-10000 CLFTN JACKE/a4000/s210/h174",
+                         "27": "OSPRI NKLSS/a5000-10000 CLFTN JACKE/a4000/s210/h174"
                     }
                 },
                 "waypoints": "COBDA/ho NINJA/a11000-22000 TRTLS/a1000+ OSPRI"
@@ -1389,6 +1597,12 @@
             "scope_char": "T",
             "sector_id": "1T"
         },
+        "JZI_TWR": {
+            "frequency": 122800,
+            "full_name": "Executive Tower",
+            "scope_char": "J",
+            "sector_id": "1J"
+        },
         "CHS_W_APP": {
             "frequency": 120700,
             "full_name": "Charleston Approach",
@@ -1415,24 +1629,31 @@
                 {
                     "airport": "KCHS",
                     "runway": "3"
+                },
+                {
+                    "airport": "KJZI",
+                    "runway": "9"
                 }
             ],
             "arrivals": {
                 "BAGGY3": {
-                    "KCHS": 5
+                    "KCHS": 5,
+                    "KJZI": 3
                 },
                 "AMYLU3": {
-                    "KCHS": 15
+                    "KCHS": 15,
+                    "KJZI": 3
                 },
                 "OSPRI7": {
-                    "KCHS": 10
+                    "KCHS": 10,
+                    "KJZI": 3
                 }
             },
             "solo_controller": "CHS_W_APP",
             "multi_controllers": {
                 "default": {
                     "CHS_W_APP": {"primary": true, 
-                    "departures": ["KCHS/LGRHD3", "KCHS/STUNO1"],
+                    "departures": ["KCHS/LGRHD3", "KCHS/STUNO1", "KJZI"],
                      "arrivals": ["BAGGY3", "OSPRI7"]},
                      "CHS_E_APP": {"backup": "CHS_W_APP",
                     "departures": ["KCHS/MLTRE3", "KCHS/PLMTO3", "KCHS/SWPFX3"],
@@ -1443,7 +1664,8 @@
                 "JAX_72_CTR",
                 "JAX_73_CTR",
                 "JAX_74_CTR",
-                "CHS_TWR"
+                "CHS_TWR",
+                "JZI_TWR"
             ],
             "default_maps": ["CHS SHELF"],
             "departure_runways": [
@@ -1451,6 +1673,11 @@
                     "airport": "KCHS",
                     "rate": 30,
                     "runway": "33"
+                },
+                {
+                    "airport": "KJZI",
+                    "rate": 10,
+                    "runway": "9"
                 }
             ],
             "wind": {
@@ -1467,24 +1694,31 @@
                 {
                     "airport": "KCHS",
                     "runway": "21"
+                },
+                {
+                    "airport": "KJZI",
+                    "runway": "27"
                 }
             ],
             "arrivals": {
                 "BAGGY3": {
-                    "KCHS": 5
+                    "KCHS": 5,
+                    "KJZI": 3
                 },
                 "AMYLU3": {
-                    "KCHS": 15
+                    "KCHS": 15,
+                    "KJZI": 3
                 },
                 "OSPRI7": {
-                    "KCHS": 10
+                    "KCHS": 10,
+                    "KJZI": 3
                 }
             },
             "solo_controller": "CHS_W_APP",
             "multi_controllers": {
                 "default": {
                     "CHS_W_APP": {"primary": true, 
-                    "departures": ["KCHS/LGRHD3", "KCHS/STUNO1"],
+                    "departures": ["KCHS/LGRHD3", "KCHS/STUNO1", "KJZI"],
                      "arrivals": ["BAGGY3", "OSPRI7"]},
                      "CHS_E_APP": {"backup": "CHS_W_APP",
                     "departures": ["KCHS/MLTRE3", "KCHS/PLMTO3", "KCHS/SWPFX3"],
@@ -1495,7 +1729,8 @@
                 "JAX_72_CTR",
                 "JAX_73_CTR",
                 "JAX_74_CTR",
-                "CHS_TWR"
+                "CHS_TWR",
+                "JZI_TWR"
             ],
             "default_maps": ["CHS SHELF"],
             "departure_runways": [
@@ -1503,6 +1738,11 @@
                     "airport": "KCHS",
                     "rate": 30,
                     "runway": "15"
+                },
+                {
+                    "airport": "KJZI",
+                    "rate": 10,
+                    "runway": "27"
                 }
             ],
             "wind": {
@@ -1552,7 +1792,10 @@
                 "fixes": [
                     "MLTRE",
                     "VANNC",
-                    "JYMSE"
+                    "JYMSE",
+                    "ASHEL",
+                    "FLO"
+                    
                 ],
                 "receiving_controller": "JAX_72_CTR"
             },
@@ -1571,10 +1814,22 @@
                 "name": "CHS NO CA",
                 "type": "circle",
                 "floor": 0,
+                "radius": 4,
                 "ceiling": 3000,
                 "center": "KCHS"
+            },
+            {
+                "name": "JZI NO CA",
+                "type": "circle",
+                "floor": 0,
+                "radius": 4,
+                "ceiling": 2000,
+                "center": "KJZI"
             }
         ],
+        "coordination_lists": [
+            { "name": ".    JZI", "id": "J", "airports": [ "KJZI" ] }
+          ],
         "scratchpads": {
             "GIPPL": "LGR",
             "LGRHD": "LGR",
@@ -1610,7 +1865,7 @@
             ,"STARS S", "CHS MVA 5NM", "CHS VICTOR AIRWAYS", "CHS RNAV Y03", "CHS RNAV Y15",
             "CHS RNAV Y21", "CHS RNAV Y33", "CHS RNAV Z RWY 33", "CHS RNAV Z RWY 15", "CHS RNAV Z RWY 21",
             "CHS RNAV Z RWY 33", "CHS LGRHD", "CHS PLFMD", "CHS MLTRE", "CHS SWPFX", "CHS PLMTO", "CHS HIGHWAYS",
-            "CHS STADIUMS", "CHS COPTER"
+            "CHS STADIUMS", "CHS COPTER", "JZI FINALS"
         ],
         "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
     }

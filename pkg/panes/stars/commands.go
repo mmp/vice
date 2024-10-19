@@ -2004,30 +2004,32 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		} else if cmd == ";" {
 			sp.lockTargetGenMode = true
 			sp.previewAreaInput = ""
-		} else if callsign, cmds, ok := strings.Cut(cmd, " "); ok {
-			ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign)
-			if ac == nil && sp.targetGenLastCallsign != "" {
-				// If a valid callsign wasn't given, try the last callsign used.
-				ac = ctx.ControlClient.Aircraft[sp.targetGenLastCallsign]
-			}
-			if ac != nil {
-				sp.runAircraftCommands(ctx, ac, cmds)
-				sp.targetGenLastCallsign = ac.Callsign
-				if sp.lockTargetGenMode {
-					// Clear the input but stay in TGT GEN mode.
-					sp.previewAreaInput = ""
-				} else {
-					status.clear = true
-				}
+		}
+		callsign, cmds, ok := strings.Cut(cmd, " ")
+		if !ok {
+			callsign = sp.targetGenLastCallsign
+			cmds = cmd
+		}
+		ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign)
+		if ac == nil && sp.targetGenLastCallsign != "" {
+			// If a valid callsign wasn't given, try the last callsign used.
+			ac = ctx.ControlClient.Aircraft[sp.targetGenLastCallsign]
+		}
+		if ac != nil {
+			sp.runAircraftCommands(ctx, ac, cmds)
+			sp.targetGenLastCallsign = ac.Callsign
+			if sp.lockTargetGenMode {
+				// Clear the input but stay in TGT GEN mode.
+				sp.previewAreaInput = ""
 			} else {
-				status.err = ErrSTARSIllegalACID
+				status.clear = true
 			}
+
 		} else {
-			status.err = ErrSTARSCommandFormat
+			status.err = ErrSTARSIllegalACID
 		}
 		return
 	}
-
 	status.err = ErrSTARSCommandFormat
 	return
 }
@@ -4125,15 +4127,9 @@ func (sp *STARSPane) flightPlanSTARS(ctx *panes.Context, ac *av.Aircraft) (strin
 
 	state := sp.Aircraft[ac.Callsign]
 
-	numType := ""
-	if state.TabListIndex != TabListUnassignedIndex {
-		numType += fmt.Sprintf("%d/", state.TabListIndex)
-	}
-	numType += fp.AircraftType
-
 	result := ac.Callsign + " "             // all start with aricraft id
 	if ctx.ControlClient.IsOverflight(ac) { // check this first
-		result += numType + " "
+		result += fp.AircraftType + " "
 		result += ac.FlightPlan.AssignedSquawk.String() + " " + owner + "\n"
 
 		// TODO: entry fix
@@ -4145,7 +4141,7 @@ func (sp *STARSPane) flightPlanSTARS(ctx *panes.Context, ac *av.Aircraft) (strin
 	} else if ctx.ControlClient.IsDeparture(ac) {
 		if state.FirstRadarTrack.IsZero() {
 			// Proposed departure
-			result += numType + " "
+			result += fp.AircraftType + " "
 			result += ac.FlightPlan.AssignedSquawk.String() + " " + owner + "\n"
 
 			if len(fp.DepartureAirport) > 0 {
@@ -4166,13 +4162,13 @@ func (sp *STARSPane) flightPlanSTARS(ctx *panes.Context, ac *av.Aircraft) (strin
 			result += ac.Scratchpad + " "
 			result += "R" + fmt.Sprintf("%03d", fp.Altitude/100) + " "
 
-			result += numType
+			result += fp.AircraftType
 
 			// TODO: [mode S equipage] [target identification] [target address]
 		}
 	} else {
 		// Format it as an arrival
-		result += numType + " "
+		result += fp.AircraftType + " "
 		result += ac.FlightPlan.AssignedSquawk.String() + " "
 		result += owner + " "
 		result += fmt.Sprintf("%03d", int(ac.Altitude())/100) + "\n"
