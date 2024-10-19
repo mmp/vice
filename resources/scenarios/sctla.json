@@ -196,7 +196,7 @@
       "departure_routes": {
         "7L": {
           "LAS,HAILO,BEALE": {
-            "assigned_altitude": 8000,
+            "cleared_altitude": 19000,
             "sid": "GARDY4",
             "waypoints": "KLAX-25R/h071 CHVEZ TRAAP/a8000 JIIVE/a10000 CLUTZ/a13000 GARDY/a16000"
           },
@@ -233,7 +233,7 @@
         },
         "7R": {
           "LAS,HAILO,BEALE": {
-            "assigned_altitude": 8000,
+            "cleared_altitude": 19000,
             "sid": "GARDY4",
             "waypoints": "KLAX-25L/h071 TRAAP/a8000 JIIVE/a10000 CLUTZ/a13000 GARDY/a16000"
           },
@@ -270,7 +270,7 @@
         },
         "6R": {
           "LAS,HAILO,BEALE": {
-            "assigned_altitude": 640,
+            "cleared_altitude": 19000,
             "sid": "GARDY4",
             "waypoints": "KOFAX TRAAP/a8000 JIIVE/a10000 CLUTZ/a13000 GARDY/a16000"
           },
@@ -307,7 +307,7 @@
         },
           "6L": {
             "LAS,HAILO,BEALE": {
-              "assigned_altitude": 640,
+              "cleared_altitude": 19000,
               "sid": "GARDY4",
               "waypoints": "CHVEZ TRAAP/a8000 JIIVE/a10000 CLUTZ/a13000 GARDY/a16000"
             },
@@ -343,10 +343,15 @@
             }
         },
         "25R": {
-          "LAS,HAILO": {
-            "assigned_altitude": 640,
-            "sid": "GARDY4",
-            "waypoints": "KLAX-7L/h251"
+         "LAS": {
+            "cleared_altitude": 29000,
+            "sid": "ORCKA5",
+            "waypoints": "DOCKR/a3000-/h236 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
+          },
+          "HAILO": {
+            "cleared_altitude": 29000,
+            "sid": "ORCKA5",
+            "waypoints": "DOCKR/a3000-/h236 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA GUNNR"
           },
           "SCTRR,STOKD,MCKEY,DINTY": {
             "assigned_altitude": 15000,
@@ -385,10 +390,15 @@
           }
       },
       "25L": {
-        "LAS,HAILO": {
-          "assigned_altitude": 640,
-          "sid": "GARDY4",
-          "waypoints": "KLAX-7R/h251"
+       "LAS": {
+          "cleared_altitude": 29000,
+          "sid": "ORCKA5",
+          "waypoints": "HIIPR/a3000-/h236 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
+        },
+        "HAILO": {
+          "cleared_altitude": 29000,
+          "sid": "ORCKA5",
+          "waypoints": "HIIPR/a3000-/h236 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA GUNNR"
         },
         "SCTRR,STOKD,MCKEY,DINTY": {
           "assigned_altitude": 15000,
@@ -427,11 +437,16 @@
         }
     },
     "24R": {
-      "LAS,HAILO": {
-        "assigned_altitude": 640,
-        "sid": "GARDY4",
-        "waypoints": "KLAX-6L/h251"
-      },
+       "LAS": {
+          "cleared_altitude": 29000,
+          "sid": "ORCKA5",
+          "waypoints": "FABRA/a3000-/h251 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
+        },
+        "HAILO": {
+          "cleared_altitude": 29000,
+          "sid": "ORCKA5",
+          "waypoints": "FABRA/a3000-/h251 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA GUNNR"
+        },
       "SCTRR,STOKD,MCKEY,DINTY": {
         "assigned_altitude": 15000,
         "sid": "SUMMR2",
@@ -469,11 +484,16 @@
       }
   },
   "24L": {
-    "LAS,HAILO": {
-      "assigned_altitude": 640,
-      "sid": "GARDY4",
-      "waypoints": "KLAX-6R/h251"
-    },
+       "LAS": {
+          "cleared_altitude": 29000,
+          "sid": "ORCKA5",
+          "waypoints": "DLREY/a3000-/h251 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
+        },
+        "HAILO": {
+          "cleared_altitude": 29000,
+          "sid": "ORCKA5",
+          "waypoints": "DLREY/a3000-/h251 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA GUNNR"
+        },
     "SCTRR,STOKD,MCKEY,DINTY": {
       "assigned_altitude": 15000,
       "sid": "SUMMR2",
