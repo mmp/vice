@@ -315,6 +315,8 @@ type NewSimConfiguration struct {
 	TFRs            []av.TFR
 
 	LiveWeather               bool
+	InstructorAllowed         bool
+	Instructor                bool
 	SelectedRemoteSim         string
 	SelectedRemoteSimPosition string
 	RemoteSimPassword         string // for join remote only
@@ -336,6 +338,7 @@ type RemoteSim struct {
 	ScenarioName       string
 	PrimaryController  string
 	RequirePassword    bool
+	InstructorAllowed  bool
 	AvailablePositions map[string]struct{}
 	CoveredPositions   map[string]struct{}
 }
@@ -599,6 +602,9 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.Text("Control Position:")
 			imgui.TableNextColumn()
 			imgui.Text(c.Scenario.SelectedController)
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Checkbox("Allow Instructor Sign-ins", &c.InstructorAllowed)
 
 			if len(c.Scenario.ArrivalRunways) > 0 {
 				imgui.TableNextRow()
@@ -765,6 +771,9 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		if rs.RequirePassword {
 			imgui.InputTextV("Password", &c.RemoteSimPassword, 0, nil)
 		}
+		uiStartDisable(!rs.InstructorAllowed)
+		imgui.Checkbox("Sign-in as Instructor", &c.Instructor)
+		uiEndDisable(!rs.InstructorAllowed)
 	}
 
 	return false
@@ -921,6 +930,9 @@ type Sim struct {
 
 	NextPushStart time.Time // both w.r.t. sim time
 	PushEnd       time.Time
+
+	InstructorAllowed bool
+	Instructors       map[string]bool
 }
 
 // DepartureAircraft represents a departing aircraft, either still on the
@@ -1004,6 +1016,9 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		SimRate:   1,
 		Handoffs:  make(map[string]Handoff),
 		PointOuts: make(map[string]map[string]PointOut),
+
+		InstructorAllowed: ssc.InstructorAllowed,
+		Instructors:       make(map[string]bool),
 	}
 
 	if !isLocal {
@@ -1069,8 +1084,8 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Any("aircraft", s.State.Aircraft))
 }
 
-func (s *Sim) SignOn(callsign string) (*State, string, error) {
-	if err := s.signOn(callsign); err != nil {
+func (s *Sim) SignOn(callsign string, instructor bool) (*State, string, error) {
+	if err := s.signOn(callsign, instructor); err != nil {
 		return nil, "", err
 	}
 
@@ -1089,7 +1104,7 @@ func (s *Sim) SignOn(callsign string) (*State, string, error) {
 	return s.State.GetStateForController(callsign), token, nil
 }
 
-func (s *Sim) signOn(callsign string) error {
+func (s *Sim) signOn(callsign string, instructor bool) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -1112,6 +1127,9 @@ func (s *Sim) signOn(callsign string) error {
 			// Reset lastUpdateTime so that the next time Update() is
 			// called for the sim, we don't try to run a ton of steps.
 			s.lastUpdateTime = time.Now()
+		}
+		if instructor {
+			s.Instructors[callsign] = true
 		}
 	}
 
@@ -1144,6 +1162,7 @@ func (s *Sim) SignOff(token string) error {
 		ctrl.events.Unsubscribe()
 		delete(s.controllers, token)
 		delete(s.State.Controllers, ctrl.Callsign)
+		delete(s.Instructors, ctrl.Callsign)
 
 		s.eventStream.Post(Event{
 			Type:    StatusMessageEvent,
@@ -1165,7 +1184,7 @@ func (s *Sim) ChangeControlPosition(token string, callsign string, keepTracks bo
 
 	// Make sure we can successfully sign on before signing off from the
 	// current position.
-	if err := s.signOn(callsign); err != nil {
+	if err := s.signOn(callsign, false); err != nil {
 		return err
 	}
 	ctrl.Callsign = callsign
@@ -2125,6 +2144,14 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 		} else {
 			preAc := *ac
 			radioTransmissions := cmd(ctrl, ac)
+			if len(radioTransmissions) > 0 && s.Instructors[ctrl.Callsign] &&
+				ac.ControllingController != ctrl.Callsign {
+				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
+					Controller: ctrl.Callsign,
+					Message:    radioTransmissions[0].Message,
+					Type:       radioTransmissions[0].Type,
+				})
+			}
 			s.lg.Info("dispatch_command", slog.String("callsign", ac.Callsign),
 				slog.Any("prepost_aircraft", []av.Aircraft{preAc, *ac}),
 				slog.Any("radio_transmissions", radioTransmissions))
@@ -2141,7 +2168,7 @@ func (s *Sim) dispatchControllingCommand(token string, callsign string,
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			// TODO(mtrokel): this needs to be updated for the STARS tracking stuff
-			if ac.ControllingController != ctrl.Callsign {
+			if ac.ControllingController != ctrl.Callsign && !s.Instructors[ctrl.Callsign] {
 				return av.ErrOtherControllerHasTrack
 			}
 			return nil
@@ -2154,7 +2181,7 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 	cmd func(*av.Controller, *av.Aircraft) []av.RadioTransmission) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if ac.TrackingController != ctrl.Callsign {
+			if ac.TrackingController != ctrl.Callsign && !s.Instructors[ctrl.Callsign] {
 				return av.ErrOtherControllerHasTrack
 			}
 

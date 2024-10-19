@@ -2421,6 +2421,7 @@ func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string) {
 	if err != nil {
 		// TODO: do what here?
 	}
+
 	ctx.ControlClient.InitiateTrack(callsign, fp,
 		func(any) {
 			if state, ok := sp.Aircraft[callsign]; ok {

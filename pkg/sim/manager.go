@@ -71,7 +71,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 			return ErrInvalidPassword
 		}
 
-		ss, token, err := sim.SignOn(config.SelectedRemoteSimPosition)
+		ss, token, err := sim.SignOn(config.SelectedRemoteSimPosition, config.Instructor)
 		if err != nil {
 			return err
 		}
@@ -105,8 +105,8 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	sm.activeSims[sim.Name] = sim
 
 	sm.mu.Unlock(sm.lg)
-
-	ss, token, err := sim.SignOn(sim.State.PrimaryController)
+	instuctor := sim.Instructors[sim.State.PrimaryController]
+	ss, token, err := sim.SignOn(sim.State.PrimaryController, instuctor)
 	if err != nil {
 		return err
 	}
@@ -178,6 +178,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 			ScenarioName:       s.Scenario,
 			PrimaryController:  s.State.PrimaryController,
 			RequirePassword:    s.RequirePassword,
+			InstructorAllowed:  s.InstructorAllowed,
 			AvailablePositions: make(map[string]struct{}),
 			CoveredPositions:   make(map[string]struct{}),
 		}
