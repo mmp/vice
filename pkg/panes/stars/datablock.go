@@ -287,7 +287,7 @@ func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *
 
 	flush := func() {
 		if len(str) > 0 {
-			pt = td.AddText(str, pt, style)
+			pt = td.AddText(rewriteDelta(str), pt, style)
 			str = ""
 		}
 	}

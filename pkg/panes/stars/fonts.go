@@ -11,6 +11,7 @@ import (
 	"runtime"
 	"slices"
 	"strconv"
+	"strings"
 
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
@@ -97,6 +98,12 @@ func (sp *STARSPane) dcbFont(ctx *panes.Context, idx int) *renderer.Font {
 	} else {
 		return sp.dcbFontB[idx]
 	}
+}
+
+// The ∆ character in the STARS font isn't at the regular ∆ unicode rune,
+// so patch it up.
+func rewriteDelta(s string) string {
+	return strings.ReplaceAll(s, "∆", STARSTriangleCharacter)
 }
 
 func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font {

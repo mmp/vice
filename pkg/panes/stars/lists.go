@@ -120,7 +120,7 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 			Font:  font,
 			Color: ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor),
 		}
-		td.AddText(text.String(), pw, style)
+		td.AddText(rewriteDelta(text.String()), pw, style)
 	}
 }
 
@@ -241,12 +241,12 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 
 	// ATIS/GI text. (Note that per 4-44 filter.All does not apply to GI text.)
 	if filter.Text.Main && (ps.ATIS != "" || ps.GIText[0] != "") {
-		pw = td.AddText(strings.Join([]string{ps.ATIS, ps.GIText[0]}, " "), pw, listStyle)
+		pw = td.AddText(rewriteDelta(strings.Join([]string{ps.ATIS, ps.GIText[0]}, " ")), pw, listStyle)
 		newline()
 	}
 	for i := 1; i < len(ps.GIText); i++ {
 		if filter.Text.GI[i] && ps.GIText[i] != "" {
-			pw = td.AddText(ps.GIText[i], pw, listStyle)
+			pw = td.AddText(rewriteDelta(ps.GIText[i]), pw, listStyle)
 			newline()
 		}
 	}
@@ -354,7 +354,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 
 	if filter.All || filter.WxHistory {
 		if sp.wxHistoryDraw != 0 {
-			pw = td.AddText("WX HIST:"+strconv.Itoa(sp.wxHistoryDraw), pw, listStyle)
+			pw = td.AddText("WX HIST: "+strconv.Itoa(sp.wxHistoryDraw), pw, listStyle)
 			newline()
 		}
 	}
@@ -646,7 +646,7 @@ func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, pw [2]float32,
 		add(ra, i+101)
 	}
 
-	td.AddText(text.String(), pw, style)
+	td.AddText(rewriteDelta(text.String()), pw, style)
 }
 
 func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, aircraft []*av.Aircraft, style renderer.TextStyle,
@@ -826,9 +826,9 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 			text.WriteString(fmt.Sprintf(" %-10s %5s %s %5s %03d\n", ac.Callsign, ac.FlightPlan.BaseType(),
 				ac.Squawk, trk.SP1, ac.FlightPlan.Altitude/100))
 			if !ac.Released && blinkDim {
-				pw = td.AddText(text.String(), pw, dimStyle)
+				pw = td.AddText(rewriteDelta(text.String()), pw, dimStyle)
 			} else {
-				pw = td.AddText(text.String(), pw, listStyle)
+				pw = td.AddText(rewriteDelta(text.String()), pw, listStyle)
 			}
 		}
 	}
