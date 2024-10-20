@@ -1847,7 +1847,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 	case CommandModeReleaseDeparture:
 		// 5-45
-		rel := ctx.ControlClient.State.GetReleaseDepartures()
+		rel := ctx.ControlClient.State.GetSTARSReleaseDepartures()
 
 		// Filter out the ones that have been released and then deleted
 		// from the coordination list by the controller.
@@ -2237,7 +2237,7 @@ func (sp *STARSPane) autoReleaseDepartures(ctx *panes.Context) {
 	}
 
 	ps := sp.currentPrefs()
-	releaseAircraft := ctx.ControlClient.State.GetReleaseDepartures()
+	releaseAircraft := ctx.ControlClient.State.GetSTARSReleaseDepartures()
 
 	fa := ctx.ControlClient.STARSFacilityAdaptation
 	for _, list := range fa.CoordinationLists {

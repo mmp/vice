@@ -413,7 +413,8 @@ Y90.
             <p>When a new simulation starts, <i>vice</i> automatically launches new departures and arrivals based on the
               departure and arrival rates set in the "New Simulation" window.
               During a simulation, clicking on the departing plane icon in the menubar <i class="fas fa-plane-departure"></i>
-              opens a window that allows more control over aircraft launches.
+              opens a window that allows more control over aircraft launches and issuing releases for airports
+              where "hold for release" is in effect.
               (Note that when <i>vice</i> is used with multiple controllers in the same simulation, only one controller
               may have this window open at a time.)
             </p>
@@ -428,8 +429,8 @@ Y90.
 <i class="fas fa-trash"></i>.
             </p>
             <div class="text-center">
-              <img src="manual-launch.jpg" srcset="manual-launch-2x.jpg 2x" width="623" height="354" class="img-fluid" alt="manual aircraft launch window">
-            </div>
+              <img src="manual-launch.png" srcset="manual-launch-2x.png 2x" width="621" height="399">
+            </div><br>
             <br>
           </section>
 
@@ -804,8 +805,11 @@ how it simulates aircraft or the STARS interface.
                 mode in STARS, after which control commands can be entered.</li>
               <li>Fixed a bug where aircraft that went around after being handed off to tower wouldn't contact tower the next time.</li>
               <li>Fixed a few bugs related to the 250kts speed limit at 10,000'.</li>
+              <li>Added more compact "hold for release" interface for airports that don't use STARS coordination lists.</li>
               <li>STARS:
                 <ul>
+                  <li>Added OJTI mode, where an instructor can sign in and issue commands to all aircraft, regardless
+                    of which controller is responsible for them.</li>
                   <li>Added support for <a href="#restriction-areas">restriction areas</a>. System restriction areas are automatically
                   generated based on the current FAA TFRs.</li>
                   <li>Multiple improvements to video map handling, including supporting multiple colors and map categories.
@@ -5203,7 +5207,11 @@ how it simulates aircraft or the STARS interface.
               <tr>
                 <td>"hold_for_release"</td>
                 <td>Boolean</td>
-                <td>(<i>Optional</i>) If true, departures from the airport must be released by a controller.</td>
+                <td>(<i>Optional</i>) If true, departures from the airport must be released by a controller.
+                  If the airport is listed in "coordination_lists" in <a href="#fe-stars-videomaps">"stars_config"</a>,
+                  then the release will be managed using STARS coordination lists; otherwise it will appear
+                  in the <i>Launch Control</i> window.
+                </td>
               </tr>
               <tr>
                 <td>"name"</td>

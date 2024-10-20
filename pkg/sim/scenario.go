@@ -1119,10 +1119,8 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		}
 
 		if ap.HoldForRelease {
-			// Make sure it's in exactly one of the coordination lists
-			if len(matches) == 0 {
-				e.ErrorString("Airport %q is \"hold_for_release\" but not in \"coordination_lists\".", airport)
-			} else if len(matches) > 1 {
+			// Make sure it's in either zero or one of the coordination lists.
+			if len(matches) > 1 {
 				e.ErrorString("Airport %q is in multiple entries in \"coordination_lists\": %s.", airport, strings.Join(matches, ", "))
 			}
 		} else if len(matches) != 0 {

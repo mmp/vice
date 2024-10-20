@@ -761,7 +761,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
 	}
 
-	releaseAircraft := ctx.ControlClient.State.GetReleaseDepartures()
+	releaseAircraft := ctx.ControlClient.State.GetSTARSReleaseDepartures()
 
 	fa := ctx.ControlClient.STARSFacilityAdaptation
 	for i, cl := range fa.CoordinationLists {
