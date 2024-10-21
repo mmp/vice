@@ -11006,26 +11006,8 @@
   ],
   "coordination_lists": [
     {"name": "SMO", "id": "A", "airports": [ "KSMO" ]},
-    {"name": "CRQ", "id": "B", "airports": [ "KCRQ" ]},
-    {"name": "MYF", "id": "C", "airports": [ "KMYF" ]},
-    {"name": "NFG", "id": "D", "airports": [ "KNFG" ]},
-    {"name": "NKX", "id": "E", "airports": [ "KNKX" ]},
-    {"name": "NRS", "id": "F", "airports": [ "KNRS" ]},
     {"name": "NZY", "id": "G", "airports": [ "KNZY" ]},
-    {"name": "RNM", "id": "H", "airports": [ "KRNM" ]},
-    {"name": "SDM", "id": "I", "airports": [ "KSDM" ]},
-    {"name": "SEE", "id": "J", "airports": [ "KSEE" ]},
-    {"name": "FUL", "id": "K", "airports": [ "KFUL" ]},
-    {"name": "SLI", "id": "L", "airports": [ "KSLI" ]},
-    {"name": "TOA", "id": "M", "airports": [ "KTOA" ]},
-    {"name": "CNO", "id": "N", "airports": [ "KCNO" ]},
-    {"name": "EMT", "id": "O", "airports": [ "KEMT" ]},
-    {"name": "POC", "id": "P", "airports": [ "KPOC" ]},
-    {"name": "RIV", "id": "Q", "airports": [ "KRIV" ]},
-    {"name": "POC", "id": "R", "airports": [ "KSBD" ]},
-    {"name": "BUR", "id": "S", "airports": [ "KBUR" ]},
-    {"name": "VNY", "id": "T", "airports": [ "KVNY" ]},
-    {"name": "WHP", "id": "U", "airports": [ "KWHP" ]}
+    {"name": "BUR", "id": "S", "airports": [ "KBUR" ]}
 ],
   "airspace_awareness": [
     {
@@ -11742,7 +11724,7 @@
           "KLAX": 0 
         },
         "BOGET2": {
-          "KLAX": 0,
+          "KLAX": 10,
           "KSMO": 1
         },
         "BRUEN2": {
@@ -11761,7 +11743,7 @@
           "KLAX": 0 
         },
         "ZUUMA3": {
-          "KLAX": 0,
+          "KLAX": 10,
           "KSMO": 1
         },
         "OLAAA2": {
@@ -12301,7 +12283,7 @@
           "KLAX": 0 
         },
         "BOGET2": {
-          "KLAX": 0,
+          "KLAX": 10,
           "KSMO": 1
         },
         "BRUEN2": {
@@ -12320,7 +12302,7 @@
           "KLAX": 0 
         },
         "ZUUMA3": {
-          "KLAX": 0,
+          "KLAX": 10,
           "KSMO": 1
         },
         "OLAAA2": {
@@ -12855,7 +12837,7 @@
           "KLAX": 0 
         },
         "BOGET2": {
-          "KLAX": 0,
+          "KLAX": 10,
           "KSMO": 1
         },
         "BRUEN2": {
@@ -12874,7 +12856,7 @@
           "KLAX": 0 
         },
         "ZUUMA3": {
-          "KLAX": 0,
+          "KLAX": 10,
           "KSMO": 1
         },
         "OLAAA2": {
@@ -13412,7 +13394,7 @@
           "KLAX": 0 
         },
         "BOGET2": {
-          "KLAX": 0,
+          "KLAX": 10,
           "KSMO": 1
         },
         "BRUEN2": {
@@ -13431,7 +13413,7 @@
           "KLAX": 0 
         },
         "ZUUMA3": {
-          "KLAX": 0,
+          "KLAX": 10,
           "KSMO": 1
         },
         "OLAAA2": {
@@ -13971,7 +13953,7 @@
           "KLAX": 0 
         },
         "BOGET2": {
-          "KLAX": 0,
+          "KLAX": 10,
           "KSMO": 1
         },
         "BRUEN2": {
@@ -13990,7 +13972,7 @@
           "KLAX": 0 
         },
         "ZUUMA3": {
-          "KLAX": 0,
+          "KLAX": 10,
           "KSMO": 1
         },
         "OLAAA2": {
@@ -14487,48 +14469,48 @@
       ],
       "arrivals": {
         "ANJLL4": {
-          "KLAX": 0 
+          "KLAX": 10 
         },
         "HLYWD1": {
-          "KLAX": 0 
+          "KLAX": 10 
         },
         "BAYST1": {
-          "KLAX": 0 
+          "KLAX": 10 
         },
         "BIGBR3": {
-          "KLAX": 10 
+          "KLAX": 0 
         },
         "BOGET2": {
           "KLAX": 10,
           "KSMO": 1
         },
         "BRUEN2": {
-          "KLAX": 10
+          "KLAX": 0 
         },
         "DIRBY1": {
-          "KLAX": 0 
+          "KLAX": 10 
         },
         "GOATZ1": {
-          "KLAX": 0 
+          "KLAX": 10 
         },
         "HUULL2": {
-          "KLAX": 0 
+          "KLAX": 10 
         },
         "MDNYT2.AMMOR": {
-          "KLAX": 10 
+          "KLAX": 0 
         },
         "ZUUMA3": {
           "KLAX": 10,
           "KSMO": 1
         },
         "OLAAA2": {
-          "KLAX": 0 
+          "KLAX": 10 
         },
         "RYDRR2.ELKEY": {
-          "KLAX": 0 
+          "KLAX": 10 
         },
         "IRNMN2": {
-          "KLAX": 0 
+          "KLAX": 10 
         },
         "DSNEE5.MARUE": {
           "KSNA": 10,
