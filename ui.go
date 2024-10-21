@@ -444,8 +444,8 @@ func uiDraw(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r r
 			imgui.SetTooltip("Show summary of keyboard commands")
 		}
 
-		flashDep := !ui.showLaunchControl && len(controlClient.State.GetRegularReleaseDepartures()) > 0 &&
-			(time.Now().UnixMilli()/500)&1 == 1
+		flashDep := controlClient != nil && !ui.showLaunchControl &&
+			len(controlClient.State.GetRegularReleaseDepartures()) > 0 && (time.Now().UnixMilli()/500)&1 == 1
 		if flashDep {
 			imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{0, .8, 0, 1})
 		}
