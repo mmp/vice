@@ -549,216 +549,228 @@
       ]
     }
   },
-  "arrival_groups": {
-    "SOOOP": [
+  "inbound_flows": {
+  "LOTTS": {
+    "arrivals": [
       {
-        "airlines": {
-          "KSAV": [
-            {
-              "airport": "KJFK",
-              "icao": "JBU"
-            },
-            {
-              "airport": "KJFK",
-              "icao": "EDV"
-            },
-            {
-              "airport": "KEWR",
-              "icao": "AAY"
-            },
-            {
-              "airport": "KEWR",
-              "fleet": "short",
-              "icao": "UAL"
-            },
-            {
-              "airport": "KLGA",
-              "icao": "JBU"
-            },
-            {
-              "airport": "KLGA",
-              "icao": "EDV"
-            },
-            {
-              "airport": "KIAD",
-              "fleet": "short",
-              "icao": "UAL"
-            },
-            {
-              "airport": "KBWI",
-              "icao": "SWA"
-            },
-            {
-              "airport" : "KDCA",
-              "icao": "JIA"
-            },
-            {
-              "airport": "KBOS",
-              "icao": "JBU"  
-            },
-            {
-              "airport": "KPHL",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KBDL",
-              "icao": "MXY"
-            },
-            {
-              "airport": "KHVN",
-              "icao": "VXP"
-            },
-            {
-              "airport": "KHPN",
-              "icao": "MXY"
-            }
-          ]
-        },
-        "cruise_altitude": 38000,
-        "assigned_altitude": 11000,
-        "initial_altitude": 12000,
-        "initial_controller": "JAX_30_CTR",
-        "initial_speed": 250,
-        "route": "/. SOOOP",
-        "waypoints": "MEECH SOOOP/ho/h252 "
-      }
-    ],
-    "PLZZZ": [
-      {
-        "airlines": {
-          "KSAV": [
-            {
-              "airport": "KCLT",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KORD",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KORD",
-              "fleet": "short",
-              "icao": "UAL"
-            },
-            {
-              "airport": "KMDW",
-              "icao": "SWA"
-            },
-            {
-              "airport": "KMSP",
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KCVG",
-              "icao": "AAY"
-            },
-            {
-              "airport": "KLCK",
-              "icao": "AAY"
-            },
-            {
-              "airport": "KPIT",
-              "icao": "AAY"
-            },
-            {
-              "airport": "KGRR",
-              "icao": "AAY"
-            }
-          ]
-        },
-        "assigned_altitude": 11000,
-        "cruise_altitude": 36000,
-        "initial_altitude": 11000,
-        "initial_controller": "JAX_30_CTR",
-        "initial_speed": 250,
-        "route": "/. PLZZZ",
-        "waypoints": "LUCNE PLZZZ/ho/h184"
-      }
-    ],
-     "LOTTS": [
-      {
-        "airlines": {
-          "KSAV": [
-            {
-              "airport": "KATL",
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KDFW",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KBNA",
-              "icao": "SWA"
-            },
-            {
-              "airport": "KDAL",
-              "icao": "SWA"
-            },
-            {
-              "airport": "KIAH",
-              "fleet": "short",
-              "icao": "UAL"
-            },
-            {
-              "airport": "KHOU",
-              "icao": "SWA"
-            },
-            {
-              "airport": "KDEN",
-              "fleet": "short",
-              "icao": "UAL"
-            },
-            {
-              "airport": "KMSP",
-              "fleet": "short",
-              "icao": "DAL"
-            }
-          ]
-        },
-        "assigned_altitude": 11000,
+        "waypoints": "EHEJO JAMEB/ho LOTTS/h115",
         "cruise_altitude": 33000,
-        "initial_altitude": 12000,
-        "initial_controller": "JAX_30_CTR",
-        "initial_speed": 250,
         "route": "/. LOTTS",
-        "waypoints": "EHEJO JAMEB/ho LOTTS/h115"
-      }
-     ],
-     "VIYAP": [
-      {
+        "initial_controller": "JAX_30_CTR",
+        "initial_altitude": 12000,
+        "assigned_altitude": 11000,
+        "initial_speed": 250,
+        "expect_approach": null,
         "airlines": {
           "KSAV": [
             {
-              "airport": "KMIA",
-              "icao": "ENY"
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KATL"
             },
             {
-              "airport": "KTPA",
-              "icao": "SIL"
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KDFW"
             },
             {
-              "airport": "KFLL",
-              "icao": "SIL"
+              "icao": "SWA",
+              "airport": "KBNA"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KIAH"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KHOU"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KMSP"
             }
           ]
-        },
-        "assigned_altitude": 11000,
-        "cruise_altitude": 31000,
-        "initial_altitude": 12000,
-        "initial_controller": "JAX_30_CTR",
-        "initial_speed": 250,
-        "route": "/. VIYAP",
-        "waypoints": "HUDES VIYAP/ho/h018"
+        }
       }
     ]
   },
+  "PLZZZ": {
+    "arrivals": [
+      {
+        "waypoints": "LUCNE PLZZZ/ho/h184",
+        "cruise_altitude": 36000,
+        "route": "/. PLZZZ",
+        "initial_controller": "JAX_30_CTR",
+        "initial_altitude": 11000,
+        "assigned_altitude": 11000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSAV": [
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KORD"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KORD"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KMSP"
+            },
+            {
+              "icao": "AAY",
+              "airport": "KCVG"
+            },
+            {
+              "icao": "AAY",
+              "airport": "KLCK"
+            },
+            {
+              "icao": "AAY",
+              "airport": "KPIT"
+            },
+            {
+              "icao": "AAY",
+              "airport": "KGRR"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "SOOOP": {
+    "arrivals": [
+      {
+        "waypoints": "MEECH SOOOP/ho/h252",
+        "cruise_altitude": 38000,
+        "route": "/. SOOOP",
+        "initial_controller": "JAX_30_CTR",
+        "initial_altitude": 12000,
+        "assigned_altitude": 11000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSAV": [
+            {
+              "icao": "JBU",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "EDV",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "AAY",
+              "airport": "KEWR"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KEWR"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "EDV",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KIAD"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KBWI"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KDCA"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KPHL"
+            },
+            {
+              "icao": "MXY",
+              "airport": "KBDL"
+            },
+            {
+              "icao": "VXP",
+              "airport": "KHVN"
+            },
+            {
+              "icao": "MXY",
+              "airport": "KHPN"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "VIYAP": {
+    "arrivals": [
+      {
+        "waypoints": "HUDES VIYAP/ho/h18",
+        "cruise_altitude": 31000,
+        "route": "/. VIYAP",
+        "initial_controller": "JAX_30_CTR",
+        "initial_altitude": 12000,
+        "assigned_altitude": 11000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSAV": [
+            {
+              "icao": "ENY",
+              "airport": "KMIA"
+            },
+            {
+              "icao": "SIL",
+              "airport": "KTPA"
+            },
+            {
+              "icao": "SIL",
+              "airport": "KFLL"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
   "control_positions": {
     "JAX_30_CTR": {
       "frequency": 135925,

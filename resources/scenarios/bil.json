@@ -138,92 +138,104 @@
       "tower_list": 1
     }
   },
-  "arrival_groups": {
-    "CRAZI4": [
+  "inbound_flows": {
+  "BGHRN3": {
+    "arrivals": [
       {
-        "airlines": {
-          "KBIL": [
-            {
-              "airport": "KSEA",
-              "icao": "QXE"
-            },
-            {
-              "airport": "KPDX",
-              "icao": "QXE"
-            }
-          ]
-        },
-        "initial_altitude": 16000,
-        "initial_controller": "SLC_17_CTR",
-        "initial_speed": 270,
-        "spawn": "LOKOW@0.8",
-        "star": "CRAZI4"
-      }
-    ],
-    "BGHRN3": [
-      {
-        "airlines": {
-          "KBIL": [
-            {
-              "airport": "KDEN",
-              "icao": "SKW"
-            },
-            {
-              "airport": "KDEN",
-              "icao": "UAL"
-            },
-            {
-              "airport": "KAPA",
-              "icao": "EJA"
-            },
-            {
-              "airport": "KDFW",
-              "icao": "ENY"
-            }
-          ]
-        },
-        "initial_altitude": 15000,
-        "initial_controller": "SLC_17_CTR",
-        "initial_speed": 270,
         "spawn": "CUSGA@0.5",
-        "star": "BGHRN3"
-      }
-    ],
-    "KUSTR3": [
-      {
-        "airlines": {
-          "KBIL": [
-            {
-              "airport": "CYWG",
-              "icao": "ACA"
-            }
-          ]
-        },
-        "initial_altitude": 17000,
+        "star": "BGHRN3",
         "initial_controller": "SLC_17_CTR",
-        "initial_speed": 250,
-        "spawn": "CONUK@0.85",
-        "star": "KUSTR3"
-      }
-    ],
-    "YLSTN3": [
-      {
-        "airlines": {
-          "KBIL": [
-            {
-              "airport": "KSLC",
-              "icao": "SKW"
-            }
-          ]
-        },
         "initial_altitude": 15000,
-        "initial_controller": "SLC_17_CTR",
-        "initial_speed": 250,
-        "spawn": "JEKUG@0.9",
-        "star": "YLSTN3"
+        "initial_speed": 270,
+        "expect_approach": null,
+        "airlines": {
+          "KBIL": [
+            {
+              "icao": "SKW",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KAPA"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KDFW"
+            }
+          ]
+        }
       }
     ]
   },
+  "CRAZI4": {
+    "arrivals": [
+      {
+        "spawn": "LOKOW@0.8",
+        "star": "CRAZI4",
+        "initial_controller": "SLC_17_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 270,
+        "expect_approach": null,
+        "airlines": {
+          "KBIL": [
+            {
+              "icao": "QXE",
+              "airport": "KSEA"
+            },
+            {
+              "icao": "QXE",
+              "airport": "KPDX"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "KUSTR3": {
+    "arrivals": [
+      {
+        "spawn": "CONUK@0.85",
+        "star": "KUSTR3",
+        "initial_controller": "SLC_17_CTR",
+        "initial_altitude": 17000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KBIL": [
+            {
+              "icao": "ACA",
+              "airport": "CYWG"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "YLSTN3": {
+    "arrivals": [
+      {
+        "spawn": "JEKUG@0.9",
+        "star": "YLSTN3",
+        "initial_controller": "SLC_17_CTR",
+        "initial_altitude": 15000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KBIL": [
+            {
+              "icao": "SKW",
+              "airport": "KSLC"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
   "control_positions": {
     "BIL_TWR": {
       "frequency": 127200,

@@ -593,219 +593,235 @@
       "tower_list": 1
     }
   },
-  "arrival_groups": {
-    "SNKPT2": [
+  "inbound_flows": {
+  "GIIBS3": {
+    "arrivals": [
       {
-        "airlines": {
-          "KIND": [
-            {
-              "airport": "KLGA",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KLGA",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KJFK",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KJFK",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KBOS",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KBOS",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KEWR",
-              "icao": "UAL"
-            },
-            {
-              "airport": "KEWR",
-              "icao": "NKS"
-            }
-          ]
-        },
-        "initial_altitude": 24000,
-        "initial_controller": "IND_34_CTR",
-        "initial_speed": 280,
-        "route": "/. RINTE.SNKPT2",
+        "waypoints": "HAGAL HASEV/a24000+ GLNCH N038.55.35.778,W085.42.05.976/ho EASEL/a13000 GIIBS BUPTE",
         "runway_waypoints": {
           "KIND": {
-              "5L": "CCUUK ALCOV/a10000-11000/s250 WEIER/a7000+/s230 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
-              "5R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229",
-              "14": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ORIKE/h320",
-              "23L": "CCUUK FEMGO/a8000-9000 LLARY/a5000/s210",
-              "23R": "CCUUK FEMGO/a8000-9000 RACEN/a5000/s210",
-              "32": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ZESIT/h140"
+            "14": "BUPTE JOCKE/a12000-16000 OPEVE/a10000+ PDIDY ROGIE/a7000+/s230 PNFLD/a6000/s210 WONOK/h320",
+            "23L": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 RAMEY/h50",
+            "23R": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 RAMEY/h50",
+            "32": "BUPTE SADLE/a7000+/s230 OZMOE/a4500/s210",
+            "5L": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 DOCEY/h230",
+            "5R": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 DOCEY/h230"
           }
         },
-        "waypoints": "RINTE JEEDR/a24000+ DOTKE/a23000- SNKPT/a14000-19000/ho BABNE/a11500-15000 CCUUK"
-      },
-      {
-        "airlines": {
-          "KIND": [
-            {
-              "airport": "KDTW",
-              "icao": "DAL"
-            }
-          ]
-        },
-        "initial_altitude": 20000,
-        "initial_controller": "IND_34_CTR",
-        "initial_speed": 280,
-        "route": "/. SJAYY.SNKPT2",
-        "runway_waypoints": {
-          "KIND": {
-              "5L": "CCUUK ALCOV/a10000-11000/s250 WEIER/a7000+/s230 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
-              "5R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229",
-              "14": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ORIKE/h320",
-              "23L": "CCUUK FEMGO/a8000-9000 LLARY/a5000/s210",
-              "23R": "CCUUK FEMGO/a8000-9000 RACEN/a5000/s210",
-              "32": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ZESIT/h140"
-          }
-        },
-        "waypoints": "SJAAY ARCAB/a20000- SNKPT/a14000-19000/ho BABNE/a11500-15000 CCUUK"
-      }
-    ],
-    "GIIBS3": [
-      {
-        "airlines": {
-          "KIND": [
-            {
-              "airport": "KMCO",
-              "icao": "FFT"
-            },
-            {
-              "airport": "KMCO",
-              "icao": "SWA"
-            },
-            {
-              "airport": "KMCO",
-              "icao": "NKS"
-            }
-          ]
-        },
-        "initial_altitude": 26000,
-        "initial_controller": "IND_34_CTR",
-        "initial_speed": 280,
         "route": "/. HAGAL.GIIBS3",
-        "runway_waypoints": {
-          "KIND": {
-              "5L": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 DOCEY/h230",
-              "5R": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 DOCEY/h230",
-              "14": "BUPTE JOCKE/a12000-16000 OPEVE/a10000+ PDIDY ROGIE/a7000+/s230 PNFLD/a6000/s210 WONOK/h320",
-              "23L": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 RAMEY/h050",
-              "23R": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 RAMEY/h050",
-              "32": "BUPTE SADLE/a7000+/s230 OZMOE/a4500/s210"
-          }
-        },
-        "waypoints": "HAGAL HASEV/a24000+ GLNCH N038.55.35.778,W085.42.05.976/ho EASEL/a13000 GIIBS BUPTE"
-      }
-    ],
-    "JAKKS2": [
-      {
-        "airlines": {
-          "KIND": [
-            {
-              "airport": "KORD",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KORD",
-              "icao": "UAL"
-            }
-          ]
-        },
+        "initial_controller": "IND_34_CTR",
         "initial_altitude": 26000,
-        "initial_controller": "CHI_35_CTR",
         "initial_speed": 280,
-        "route": "/. ELANR.JAKKS2",
-        "runway_waypoints": {
-          "KIND": {
-              "5L": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 WANOB/h230",
-              "5R": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 WANOB/h230",
-              "14": "ATILE/a13000- AADIE KEADY/a4000+/s210",
-              "23L": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 ZOSAR/h050",
-              "23R": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 ZOSAR/h050",
-              "32": "ATILE/a13000- BBACK/a10000+ EBEDE/a7000+/s230 PNFLD/a6000/s210 ZASNI/h140"
-          }
-        },
-        "waypoints": "EMMLY JAKKS/ho OPPIE/a11000-16000 ATILE/a13000-"
-      }
-    ],
-    "KOLTS2": [
-      {
+        "expect_approach": null,
         "airlines": {
           "KIND": [
             {
-              "airport": "KPHX",
-              "icao": "SWA"
+              "icao": "FFT",
+              "airport": "KMCO"
             },
             {
-              "airport": "KPHX",
-              "icao": "AAL"
+              "icao": "SWA",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KMCO"
             }
           ]
-        },
-        "initial_altitude": 18000,
-        "initial_controller": "IND_34_CTR",
-        "initial_speed": 280,
-        "route": "/. KOLTS.KOLTS2",
-        "runway_waypoints": {
-          "KIND": {
-              "5L": "EKEKE/a10000+ GAZPA/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
-              "5R": "EKEKE/a10000+ GAZPA/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
-              "23L": "EKEKE/a10000+ MRRRK/a7000+/s230 PETYN/a6000/s210 ZOSAR/a6000/s210/h050",
-              "23R": "EKEKE/a10000+ MRRRK/a7000+/s230 PETYN/a6000/s210 ZOSAR/a6000/s210/h050",
-              "32": "EKEKE/a10000+ FRENY/a7000+/s230 PNFLD/a6000/s210 ZASNI/h139"
-          }
-        },
-        "waypoints": "N039.50.43.583,W087.02.13.483/ho CIRGO/a11000+ EKEKE/a10000+"
-      }
-    ],
-    "SMUKE2": [
-      {
-        "airlines": {
-          "KIND": [
-            {
-              "airport": "KDFW",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KAUS",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KAUS",
-              "icao": "SWA"
-            }
-          ]
-        },
-        "initial_altitude": 15500,
-        "initial_controller": "IND_34_CTR",
-        "initial_speed": 280,
-        "route": "/. RACYR.SMUKE2",
-        "runway_waypoints": {
-          "KIND": {
-              "5L": "FIIRE WESLE/a6000+ WAAYN/a5000/s210",
-              "5R": "FIIRE WESLE/a6000+ IIUUU/a5000/s210",
-              "14": "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 WONOK/h320",
-              "23L": "FIIRE CHERZ/a11000+ TTKAY/a10000+ EDODE/a7000+/s230 KNIGT/a6000/s210 RAMEY/h050",
-              "23R": "FIIRE WOTSN/a11000+ DUBBX/a10000+ BLSTR/a7000+/s230 PETYN/a6000/s210 ZOSAR/h050",
-              "32": "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 ZASNI/h139"
-          }
-        },
-        "waypoints": "RACYR/a12000-19000/ho SMUKE FIIRE"
+        }
       }
     ]
   },
+  "JAKKS2": {
+    "arrivals": [
+      {
+        "waypoints": "EMMLY JAKKS/ho OPPIE/a11000-16000 ATILE/a13000-",
+        "runway_waypoints": {
+          "KIND": {
+            "14": "ATILE/a13000- AADIE KEADY/a4000+/s210",
+            "23L": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 ZOSAR/h50",
+            "23R": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 ZOSAR/h50",
+            "32": "ATILE/a13000- BBACK/a10000+ EBEDE/a7000+/s230 PNFLD/a6000/s210 ZASNI/h140",
+            "5L": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 WANOB/h230",
+            "5R": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 WANOB/h230"
+          }
+        },
+        "route": "/. ELANR.JAKKS2",
+        "initial_controller": "CHI_35_CTR",
+        "initial_altitude": 26000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KIND": [
+            {
+              "icao": "AAL",
+              "airport": "KORD"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KORD"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "KOLTS2": {
+    "arrivals": [
+      {
+        "waypoints": "N039.50.43.583,W087.02.13.483/ho CIRGO/a11000+ EKEKE/a10000+",
+        "runway_waypoints": {
+          "KIND": {
+            "23L": "EKEKE/a10000+ MRRRK/a7000+/s230 PETYN/a6000/s210 ZOSAR/a6000/s210/h50",
+            "23R": "EKEKE/a10000+ MRRRK/a7000+/s230 PETYN/a6000/s210 ZOSAR/a6000/s210/h50",
+            "32": "EKEKE/a10000+ FRENY/a7000+/s230 PNFLD/a6000/s210 ZASNI/h139",
+            "5L": "EKEKE/a10000+ GAZPA/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
+            "5R": "EKEKE/a10000+ GAZPA/a7000+/s230 PETYN/a6000/s210 WANOB/h229"
+          }
+        },
+        "route": "/. KOLTS.KOLTS2",
+        "initial_controller": "IND_34_CTR",
+        "initial_altitude": 18000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KIND": [
+            {
+              "icao": "SWA",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KPHX"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "SMUKE2": {
+    "arrivals": [
+      {
+        "waypoints": "RACYR/a12000-19000/ho SMUKE FIIRE",
+        "runway_waypoints": {
+          "KIND": {
+            "14": "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 WONOK/h320",
+            "23L": "FIIRE CHERZ/a11000+ TTKAY/a10000+ EDODE/a7000+/s230 KNIGT/a6000/s210 RAMEY/h50",
+            "23R": "FIIRE WOTSN/a11000+ DUBBX/a10000+ BLSTR/a7000+/s230 PETYN/a6000/s210 ZOSAR/h50",
+            "32": "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 ZASNI/h139",
+            "5L": "FIIRE WESLE/a6000+ WAAYN/a5000/s210",
+            "5R": "FIIRE WESLE/a6000+ IIUUU/a5000/s210"
+          }
+        },
+        "route": "/. RACYR.SMUKE2",
+        "initial_controller": "IND_34_CTR",
+        "initial_altitude": 15500,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KIND": [
+            {
+              "icao": "AAL",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KAUS"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KAUS"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "SNKPT2": {
+    "arrivals": [
+      {
+        "waypoints": "RINTE JEEDR/a24000+ DOTKE/a23000- SNKPT/a14000-19000/ho BABNE/a11500-15000 CCUUK",
+        "runway_waypoints": {
+          "KIND": {
+            "14": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ORIKE/h320",
+            "23L": "CCUUK FEMGO/a8000-9000 LLARY/a5000/s210",
+            "23R": "CCUUK FEMGO/a8000-9000 RACEN/a5000/s210",
+            "32": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ZESIT/h140",
+            "5L": "CCUUK ALCOV/a10000-11000/s250 WEIER/a7000+/s230 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
+            "5R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229"
+          }
+        },
+        "route": "/. RINTE.SNKPT2",
+        "initial_controller": "IND_34_CTR",
+        "initial_altitude": 24000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KIND": [
+            {
+              "icao": "AAL",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KEWR"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KEWR"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "SJAAY ARCAB/a20000- SNKPT/a14000-19000/ho BABNE/a11500-15000 CCUUK",
+        "runway_waypoints": {
+          "KIND": {
+            "14": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ORIKE/h320",
+            "23L": "CCUUK FEMGO/a8000-9000 LLARY/a5000/s210",
+            "23R": "CCUUK FEMGO/a8000-9000 RACEN/a5000/s210",
+            "32": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ZESIT/h140",
+            "5L": "CCUUK ALCOV/a10000-11000/s250 WEIER/a7000+/s230 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/h229",
+            "5R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229"
+          }
+        },
+        "route": "/. SJAYY.SNKPT2",
+        "initial_controller": "IND_34_CTR",
+        "initial_altitude": 20000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KIND": [
+            {
+              "icao": "DAL",
+              "airport": "KDTW"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
   "control_positions": {
     "IND_33_CTR": {
       "frequency": 124525,

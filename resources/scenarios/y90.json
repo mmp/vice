@@ -407,162 +407,171 @@
             ]
         }
     },
-    "arrival_groups": {
-        "DPK3": [
+    "inbound_flows": {
+  "DPK3": {
+    "arrivals": [
+      {
+        "waypoints": "DPK/a19000 BELTT/ho MAD/a11000 BRISS",
+        "cruise_altitude": 36000,
+        "star": "DPK3",
+        "initial_controller": "BOS_37_CTR",
+        "initial_altitude": 24000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KBDL": [
             {
-                "airlines": {
-                    "KBDL": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "DAL"
-                        },
-                        {
-                            "airport": "KCOS",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KMSP",
-                            "icao": "UAL"
-                        }
-                    ]
-                },
-                "cruise_altitude": 36000,
-                "initial_altitude": 24000,
-                "initial_controller": "BOS_37_CTR",
-                "initial_speed": 250,
-                "star": "DPK3",
-                "waypoints": "DPK/a19000 BELTT/ho MAD/a11000 BRISS"
-            }
-        ],
-        "STELA1.Jets": [
+              "icao": "AAL",
+              "airport": "KORD"
+            },
             {
-                "airlines": {
-                    "KBDL": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KCOS",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KMSP",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 36000,
-                "initial_altitude": 24000,
-                "initial_controller": "BOS_37_CTR",
-                "initial_speed": 250,
-                "star": "STELA1",
-                "waypoints": "SYR WILET RKA SWEDE/a23000 CANAN/ho STELA/a11000 MOLDS TOMES"
-            }
-        ],
-        "STELA1.Ga": [
+              "icao": "DAL",
+              "airport": "KDEN"
+            },
             {
-                "airlines": {
-                    "KBDL": [
-                        {
-                            "airport": "KMDW",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KSBN",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KSYR",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KPIT",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KBUF",
-                            "icao": "N"                         
-                        }
-                    ],
-                    "KORH": [
-                        {
-                            "airport": "KMDW",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KSBN",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KSYR",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KPIT",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KBUF",
-                            "icao": "N"                         
-                        }
-                    ],
-                    "KHFD": [
-                        {
-                            "airport": "KMDW",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KSBN",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KSYR",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KPIT",
-                            "icao": "N"                         
-                        },
-                        {
-                            "airport": "KBUF",
-                            "icao": "N"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 18000,
-                "initial_altitude": 16000,
-                "initial_controller": "BOS_37_CTR",
-                "initial_speed": 250,
-                "star": "STELA1",
-                "waypoints": "SYR WILET RKA SWEDE/a14000 CANAN/ho STELA/a9000 MOLDS TOMES"
+              "icao": "SWA",
+              "airport": "KCOS"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KMSP"
             }
-        ]
-    },
+          ]
+        }
+      }
+    ]
+  },
+  "STELA1.Ga": {
+    "arrivals": [
+      {
+        "waypoints": "SYR WILET RKA SWEDE/a14000 CANAN/ho STELA/a9000 MOLDS TOMES",
+        "cruise_altitude": 18000,
+        "star": "STELA1",
+        "initial_controller": "BOS_37_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KBDL": [
+            {
+              "icao": "N",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "N",
+              "airport": "KSBN"
+            },
+            {
+              "icao": "N",
+              "airport": "KSYR"
+            },
+            {
+              "icao": "N",
+              "airport": "KPIT"
+            },
+            {
+              "icao": "N",
+              "airport": "KBUF"
+            }
+          ],
+          "KHFD": [
+            {
+              "icao": "N",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "N",
+              "airport": "KSBN"
+            },
+            {
+              "icao": "N",
+              "airport": "KSYR"
+            },
+            {
+              "icao": "N",
+              "airport": "KPIT"
+            },
+            {
+              "icao": "N",
+              "airport": "KBUF"
+            }
+          ],
+          "KORH": [
+            {
+              "icao": "N",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "N",
+              "airport": "KSBN"
+            },
+            {
+              "icao": "N",
+              "airport": "KSYR"
+            },
+            {
+              "icao": "N",
+              "airport": "KPIT"
+            },
+            {
+              "icao": "N",
+              "airport": "KBUF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "STELA1.Jets": {
+    "arrivals": [
+      {
+        "waypoints": "SYR WILET RKA SWEDE/a23000 CANAN/ho STELA/a11000 MOLDS TOMES",
+        "cruise_altitude": 36000,
+        "star": "STELA1",
+        "initial_controller": "BOS_37_CTR",
+        "initial_altitude": 24000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KBDL": [
+            {
+              "icao": "AAL",
+              "airport": "KORD"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KCOS"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KMSP"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
     "control_positions": {
         "BDL_C_APP": {
             "frequency": 123950,

@@ -282,136 +282,148 @@
       ]
     }
   },
-  "arrival_groups": {
-    "WORXS2": [
+  "inbound_flows": {
+  "JUNNR3": {
+    "arrivals": [
       {
-        "airlines": {
-          "KGSP": [
-            {
-              "airport": "KCLT",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KATL",
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KATL",
-              "fleet": "short",
-              "icao": "SWA"
-            },
-            {
-              "airport": "KDFW",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KIAH",
-              "fleet": "short",
-              "icao": "UAL"
-            }
-          ]
-        },
+        "waypoints": "KWOOD/ho TANCE/a10000 SPA/h264",
         "cruise_altitude": 34000,
-        "initial_altitude": 14000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 280,
-        "route": "/. TDAAY",
-        "waypoints": "WORXS TUSDE/ho ANGRI/a11000 TDAAY/h043"
-      }
-    ],
-    "MCHLN2": [
-      {
-        "airlines": {
-          "KGSP": [
-            {
-              "airport": "KMIA",
-              "icao": "ENY"
-            },
-            {
-              "airport": "KORD",
-              "icao": "ENY"
-            },
-            {
-              "airport": "KORD",
-              "icao": "SKW"
-            }
-          ]
-        },
-        "cruise_altitude": 34000,
-        "initial_altitude": 11000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 280,
-        "route": "/. TYRES",
-        "waypoints": "PROVN/ho MCHLN/a11000 TYRES/h004"
-      }
-    ],
-    "RCTOR2": [
-      {
-        "airlines": {
-          "KGSP": [
-            {
-              "airport": "KIND",
-              "fleet": "long",
-              "icao": "FDX"
-            },
-            {
-              "airport": "KSDF",
-              "icao": "UPS"
-            },
-            {
-              "airport": "KMEM",
-              "fleet": "long",
-              "icao": "FDX"
-            },
-            {
-              "airport": "KDTW",
-              "fleet": "short",
-              "icao": "DAL"
-            }
-          ]
-        },
-        "cruise_altitude": 34000,
-        "initial_altitude": 11000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 250,
-        "route": "/. UNMAN",
-        "waypoints": "LUVTT/ho/s250/a11000 RCTOR/a7000 UNMAN/h181"
-      }
-    ],
-    "JUNNR3": [
-      {
-        "airlines": {
-          "KGSP": [
-            {
-              "airport": "KDCA",
-              "icao": "RPA"
-            },
-            {
-              "airport": "KEWR",
-              "icao": "RPA"
-            },
-            {
-              "airport": "KCLT",
-              "icao": "JIA"
-            },
-            {
-              "airport": "KLGA",
-              "icao": "EDV"
-            }
-          ]
-        },
-        "cruise_altitude": 34000,
-        "initial_altitude": 11000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 280,
         "route": "/. SPA",
-        "waypoints": "KWOOD/ho TANCE/a10000 SPA/h264"
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KGSP": [
+            {
+              "icao": "RPA",
+              "airport": "KDCA"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KEWR"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "EDV",
+              "airport": "KLGA"
+            }
+          ]
+        }
       }
     ]
   },
+  "MCHLN2": {
+    "arrivals": [
+      {
+        "waypoints": "PROVN/ho MCHLN/a11000 TYRES/h4",
+        "cruise_altitude": 34000,
+        "route": "/. TYRES",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KGSP": [
+            {
+              "icao": "ENY",
+              "airport": "KMIA"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KORD"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KORD"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "RCTOR2": {
+    "arrivals": [
+      {
+        "waypoints": "LUVTT/a11000/s250/ho RCTOR/a7000 UNMAN/h181",
+        "cruise_altitude": 34000,
+        "route": "/. UNMAN",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KGSP": [
+            {
+              "icao": "FDX",
+              "fleet": "long",
+              "airport": "KIND"
+            },
+            {
+              "icao": "UPS",
+              "airport": "KSDF"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "long",
+              "airport": "KMEM"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KDTW"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "WORXS2": {
+    "arrivals": [
+      {
+        "waypoints": "WORXS TUSDE/ho ANGRI/a11000 TDAAY/h43",
+        "cruise_altitude": 34000,
+        "route": "/. TDAAY",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 14000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KGSP": [
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KATL"
+            },
+            {
+              "icao": "SWA",
+              "fleet": "short",
+              "airport": "KATL"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KIAH"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
   "control_positions": {
     "ATL_CTR": {
       "frequency": 132975,

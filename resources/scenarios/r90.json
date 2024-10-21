@@ -1534,1010 +1534,1060 @@
                 "tower_list": 3
             }
         },
-        "arrival_groups": {
-          "AANDY2": [
+        "inbound_flows": {
+  "AANDY2": {
+    "arrivals": [
+      {
+        "waypoints": "MZEEE BRKSR/a11000+ N041.59.18.760,W096.08.36.247/ho AANDY CANIO",
+        "runway_waypoints": {
+          "KOMA": {
+            "14L": "CANIO BLUFS LICIS/a4000+",
+            "14R": "CANIO ERRLE OTSEE/a4000",
+            "18": "CANIO TASKY/a4000",
+            "32L": "CANIO PTERZ/a6000+/s220 BRIKK/a5000+/s210",
+            "32R": "CANIO PTERZ/a6000+/s220 BRIKK/a5000+/s210",
+            "36": "CANIO PTERZ/a6000+/s220 BRIKK/a5000+/s210"
+          }
+        },
+        "star": "AANDY2",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "32L",
+        "airlines": {
+          "KOMA": [
             {
-              "airlines": {
-                "KOMA": [
-                  {
-                    "airport": "KFSD",
-                    "icao": "JTL"
-                  },
-                  {
-                    "airport": "KFAR",
-                    "icao": "EJA"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "AANDY2",
-                "runway_waypoints": {
-                  "KOMA": {
-                    "14L": "CANIO BLUFS LICIS/a4000+",
-                    "14R": "CANIO ERRLE OTSEE/a4000",
-                    "18": "CANIO TASKY/a4000",
-                    "32L": "CANIO PTERZ/a6000+/s220 BRIKK/a5000+/s210",
-                    "32R": "CANIO PTERZ/a6000+/s220 BRIKK/a5000+/s210",
-                    "36": "CANIO PTERZ/a6000+/s220 BRIKK/a5000+/s210"
-                  }
-                },
-                "waypoints": "MZEEE BRKSR/a11000+ N041.59.18.760,W096.08.36.247/ho AANDY CANIO",
-                "expect_approach": "32L"
-            }
-          ],
-          "LANTK2.DABOY": [
+              "icao": "JTL",
+              "airport": "KFSD"
+            },
             {
-              "airlines": {
-                "KOMA": [
-                  {
-                    "airport": "KMSP",
-                    "icao": "SKW"
-                  },
-                  {
-                    "airport": "KMSP",
-                    "icao": "LXJ"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-              "initial_controller": "MSP_27_CTR",
-              "initial_speed": 280,
-              "star": "LANTK2.DABOY",
-              "waypoints": "DABOY N041.37.50.173,W094.55.20.947/ho LANTK/h250",
-              "expect_approach": "32L"
-            }
-          ],
-          "LANTK2.DSM": [
-            {
-              "airlines": {
-                "KOMA": [
-                  {
-                    "airport": "KORD",
-                    "icao": "ENY"
-                  },
-                  {
-                    "airport": "KORD",
-                    "icao": "SKW"
-                  },
-                  {
-                    "airport": "KORD",
-                    "icao": "AAL"
-                  },
-                  {
-                    "airport": "KORD",
-                    "icao": "UAL"
-                  },
-                  {
-                    "airport": "KLGA",
-                    "icao": "RPA"
-                  },
-                  {
-                    "airport": "KLGA",
-                    "icao": "SKW"
-                  },
-                  {
-                    "airport": "KLGA",
-                    "icao": "EDV"
-                  },
-                  {
-                    "airport": "KMDW",
-                    "icao": "SWA"
-                  },
-                  {
-                    "airport": "KMDW",
-                    "icao": "EJA"
-                  },
-                  {
-                    "airport": "KMDW",
-                    "icao": "JTL"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-              "initial_controller": "MSP_27_CTR",
-              "initial_speed": 280,
-              "star": "LANTK2.DSM",
-              "waypoints": "DSM N041.29.32.218,W094.44.43.493/ho LANTK/h250",
-              "expect_approach": "32L"
-            }
-          ],
-          "MARWI4.LMN": [
-            {
-              "airlines": {
-                "KOMA": [
-                  {
-                    "airport": "KSDF",
-                    "icao": "UPS"
-                  },
-                  {
-                    "airport": "KSDF",
-                    "icao": "EJA"
-                  },
-                  {
-                    "airport": "KMCO",
-                    "icao": "SWA"
-                  },
-                  {
-                    "airport": "KCLT",
-                    "icao": "AAL"
-                  },
-                  {
-                    "airport": "KSTL",
-                    "icao": "SWA"
-                  },
-                  {
-                    "airport": "KSTL",
-                    "icao": "EJA"
-                  },
-                  {
-                    "airport": "KSTL",
-                    "icao": "KII"
-                  },
-                  {
-                    "airport": "KSTL",
-                    "icao": "LXJ"
-                  },
-                  {
-                    "airport": "KDCA",
-                    "icao": "SWA"
-                  },
-                  {
-                    "airport": "KDCA",
-                    "icao": "RPA"
-                  },
-                  {
-                    "airport": "KDCA",
-                    "icao": "EJA"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_27_CTR",
-                "initial_speed": 280,
-                "star": "MARWI4.LMN",
-                "runway_waypoints": {
-                  "KOMA": {
-                    "14L": "SWAAB/flyover/h320",
-                    "14R": "SWAAB/flyover/h320",
-                    "18": "SWAAB/flyover/h320",
-                    "32L": "SWAAB/flyover OVR",
-                    "32R": "SWAAB/flyover OVR",
-                    "36": "SWAAB/flyover OVR"
-                  }
-                },
-                "waypoints": "LMN N040.43.31.560,W094.45.27.438/ho MARWI SWAAB/flyover",
-                "expect_approach": "32L"
-            }
-          ],
-          "MARWI4.STJ": [
-            {
-              "airlines": {
-                "KOMA": [
-                  {
-                    "airport": "KIXD",
-                    "icao": "EJA"
-                  },
-                  {
-                    "airport": "KATL",
-                    "icao": "DAL"
-                  },
-                  {
-                    "airport": "KATL",
-                    "icao": "SWA"
-                  },
-                  {
-                    "airport": "KMEM",
-                    "icao": "SKW"
-                  },
-                  {
-                    "airport": "KMEM",
-                    "icao": "EJA"
-                  },
-                  {
-                    "airport": "KMEM",
-                    "icao": "FDX"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_27_CTR",
-                "initial_speed": 280,
-                "star": "MARWI4.STJ",
-                "runway_waypoints": {
-                  "KOMA": {
-                    "14L": "SWAAB/flyover/h320",
-                    "14R": "SWAAB/flyover/h320",
-                    "18": "SWAAB/flyover/h320",
-                    "32L": "SWAAB/flyover OVR",
-                    "32R": "SWAAB/flyover OVR",
-                    "36": "SWAAB/flyover OVR"
-                  }
-                },
-                "waypoints": "N040.14.32.245,W094.58.39.744 N040.38.46.918,W095.03.30.031/ho MARWI SWAAB/flyover",
-                "expect_approach": "32L"
-            }
-          ],
-          "TIMMO1": [
-            {
-              "airlines": {
-                "KOMA": [
-                  {
-                    "airport": "KHOU",
-                    "icao": "SWA"
-                  },
-                  {
-                    "airport": "KHOU",
-                    "icao": "EJA"
-                  },
-                  {
-                    "airport": "KMAF",
-                    "icao": "EJA"
-                  },
-                  {
-                    "airport": "KDFW",
-                    "icao": "AAL"
-                  },
-                  {
-                    "airport": "KDFW",
-                    "icao": "SKW"
-                  },
-                  {
-                    "airport": "KIAH",
-                    "icao": "UAL"
-                  },
-                  {
-                    "airport": "KIAH",
-                    "icao": "SKW"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "TIMMO1",
-                "runway_waypoints": {
-                  "KOMA": {
-                    "14L": "MOONR CRPET/flyover/a5000/s210/h340",
-                    "14R": "MOONR CRPET/flyover/a5000/s210/h340",
-                    "18": "MOONR CRPET/flyover/a5000/s210/h340",
-                    "32L": "MOONR BAARK/flyover/a4000/h030",
-                    "32R": "MOONR BAARK/flyover/a4000/h030",
-                    "36": "MOONR BAARK/flyover/a4000/h030"
-                  }
-                },
-                "waypoints": "HTHWY N040.17.48.365,W096.11.30.188/ho HILRS/a11000+ TIMMO MOONR",
-                "expect_approach": "32L"
-            }
-          ],
-          "HOWRY3.ONL": [
-            {
-              "airlines": {
-                "KOMA": [
-                  {
-                    "airport": "KSEA",
-                    "icao": "ASA"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "HOWRY3.ONL",
-                "runway_waypoints": {
-                  "KOMA": {
-                    "14L": "BOYSS/h060",
-                    "14R": "BOYSS/h060",
-                    "18": "BOYSS/h060",
-                    "32L": "BOYSS/h060",
-                    "32R": "BOYSS/h060",
-                    "36": "BOYSS/h060"
-                    }
-                },
-                "waypoints": "N041.40.51.420,W097.38.49.431 OLU N041.24.31.467,W097.06.23.312/ho HOWRY BOYSS",
-                "expect_approach": "32L"
-            }
-          ],
-          "HOWRY3.GRI": [
-            {
-              "airlines": {
-                "KOMA": [
-                  {
-                    "airport": "KSLC",
-                    "icao": "SKW"
-                  },
-                  {
-                    "airport": "KDEN",
-                    "icao": "SWA"
-                  },
-                  {
-                    "airport": "KDEN",
-                    "icao": "UAL"
-                  },
-                  {
-                    "airport": "KDEN",
-                    "icao": "FFT"
-                  },
-                  {
-                    "airport": "KLAS",
-                    "icao": "SWA"
-                  },
-                  {
-                    "airport": "KLAS",
-                    "icao": "FFT"
-                  },
-                  {
-                    "airport": "KAVQ",
-                    "icao": "EJA"
-                  },
-                  {
-                    "airport": "KPHX",
-                    "icao": "AAL"
-                  },
-                  {
-                    "airport": "KPHX",
-                    "icao": "SWA"
-                  },
-                  {
-                    "airport": "KOAK",
-                    "icao": "EJA"
-                  },
-                  {
-                    "airport": "KOAK",
-                    "icao": "JTL"
-                  },
-                  {
-                    "airport": "KLAX",
-                    "icao": "SKW"
-                  },
-                  {
-                    "airport": "KLAX",
-                    "icao": "EJA"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "HOWRY3.GRI",
-                "runway_waypoints": {
-                  "KOMA": {
-                    "14L": "BOYSS/h060",
-                    "14R": "BOYSS/h060",
-                    "18": "BOYSS/h060",
-                    "32L": "BOYSS/h060",
-                    "32R": "BOYSS/h060",
-                    "36": "BOYSS/h060"
-                    }
-                },
-                "waypoints": "N041.14.32.561,W097.20.22.146 N041.19.00.559,W097.02.42.377/ho HOWRY BOYSS",
-                "expect_approach": "32L"
-            }
-          ],
-          "LNK.KDEN": [
-            {
-              "airlines": {
-                "KLNK": [
-                  {
-                    "airport": "KDEN",
-                    "icao": "UCA"
-                  },
-                  {
-                    "airport": "KDEN",
-                    "icao": "SKW"
-                  }
-                ]
-              },
-              "initial_altitude": 11000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "LNK.KDEN",
-                "waypoints": "DRABS N040.49.07.329,W097.46.32.065/ho KLNK",
-                "expect_approach": "I36"
-            }
-          ],
-          "LNK.KIAH": [
-            {
-              "airlines": {
-                "KLNK": [
-                  {
-                    "airport": "KIAH",
-                    "icao": "UCA"
-                  }
-                ]
-              },
-              "initial_altitude": 11000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "LNK.KIAH",
-                "waypoints": "N039.36.07.478,W096.14.55.852 LEFAM/ho KLNK",
-                "expect_approach": "I36"
-            }
-          ],
-          "LNK.KAIZ": [
-            {
-              "airlines": {
-                "KLNK": [
-                  {
-                    "airport": "KAIZ",
-                    "icao": "SLH"
-                  }
-                ]
-              },
-              "initial_altitude": 11000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "LNK.KAIZ",
-                "waypoints": "N039.50.32.720,W095.24.53.041 N040.16.59.091,W095.57.26.136/ho KLNK",
-                "expect_approach": "I36"
-            }
-          ],
-          "LNK.KSDL": [
-            {
-              "airlines": {
-                "KLNK": [
-                  {
-                    "airport": "KSDL",
-                    "icao": "EJA"
-                  },
-                  {
-                    "airport": "KSDL",
-                    "icao": "LXJ"
-                  }
-                ]
-              },
-              "initial_altitude": 11000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "LNK.KSDL",
-                "waypoints": "N040.15.32.464,W098.07.53.043 N040.31.21.614,W097.34.50.780/ho KLNK",
-                "expect_approach": "I36"
-            }
-          ],
-          "LNK.KORD": [
-            {
-              "airlines": {
-                "KLNK": [
-                  {
-                    "airport": "KORD",
-                    "icao": "SKW"
-                  }
-                ]
-              },
-              "initial_altitude": 11000,
-                "initial_controller": "MSP_27_CTR",
-                "initial_speed": 280,
-                "star": "LNK.KORD",
-                "waypoints": "N041.14.48.011,W094.32.02.991 N041.11.47.876,W094.52.37.196/ho KLNK",
-                "expect_approach": "I36"
-            }
-          ],
-          "LNK.KJLN": [
-            {
-              "airlines": {
-                "KLNK": [
-                  {
-                    "airport": "KJLN",
-                    "icao": "OKC"
-                  }
-                ]
-              },
-              "initial_altitude": 11000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "LNK.KJLN",
-                "waypoints": "N039.37.55.598,W095.59.03.392 N040.11.16.771,W096.18.40.632/ho KLNK",
-                "expect_approach": "I36"
-            }
-          ],
-          "OFF.LMN": [
-            {
-              "airlines": {
-                "KOFF": [
-                  {
-                      "airport": "KOFF",
-                      "icao": "ZIPPY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "TOXIC"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "RIVET"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "GOOFY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "BAZOO"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "COBRA"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "POKER"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "SNOOP"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_27_CTR",
-                "initial_speed": 280,
-                "star": "OFF.LMN",
-                "waypoints": "N040.44.48.230,W094.31.28.604 N040.49.13.262,W094.48.19.291/a16000/ho KOFF/a16000",
-                "expect_approach": "I31"
-            }
-          ],
-          "OFF.DSM": [
-            {
-              "airlines": {
-                "KOFF": [
-                  {
-                      "airport": "KOFF",
-                      "icao": "ZIPPY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "TOXIC"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "RIVET"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "GOOFY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "BAZOO"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "COBRA"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "POKER"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "SNOOP"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_27_CTR",
-                "initial_speed": 280,
-                "star": "OFF.DSM",
-                "waypoints": "N041.19.28.821,W094.26.43.729 N041.16.21.477,W094.48.29.317/a16000/ho KOFF/a16000",
-                "expect_approach": "I31"
-            }
-          ],
-          "OFF.FOD": [
-            {
-              "airlines": {
-                "KOFF": [
-                  {
-                      "airport": "KOFF",
-                      "icao": "ZIPPY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "TOXIC"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "RIVET"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "GOOFY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "BAZOO"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "COBRA"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "POKER"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "SNOOP"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_27_CTR",
-                "initial_speed": 280,
-                "star": "OFF.FOD",
-                "waypoints": "N042.01.02.127,W094.56.14.285 N041.47.35.758,W095.10.52.972/a16000/ho KOFF/a16000",
-                "expect_approach": "I31"
-            }
-          ],
-          "OFF.OFK": [
-            {
-              "airlines": {
-                "KOFF": [
-                  {
-                      "airport": "KOFF",
-                      "icao": "ZIPPY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "TOXIC"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "RIVET"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "GOOFY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "BAZOO"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "COBRA"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "POKER"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "SNOOP"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "OFF.OFK",
-                "waypoints": "N041.49.32.817,W097.09.03.411 N041.41.06.430,W096.54.08.657/a16000/ho KOFF/a16000",
-                "expect_approach": "I31"
-            }
-          ],
-          "OFF.OBH": [
-            {
-              "airlines": {
-                "KOFF": [
-                  {
-                      "airport": "KOFF",
-                      "icao": "ZIPPY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "TOXIC"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "RIVET"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "GOOFY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "BAZOO"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "COBRA"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "POKER"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "SNOOP"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "OFF.OBH",
-                "waypoints": "N041.18.29.220,W097.42.05.949 N041.14.56.333,W097.08.32.374/a16000/ho KOFF/a16000",
-                "expect_approach": "I31"
-            }
-          ],
-          "OFF.GRI": [
-            {
-              "airlines": {
-                "KOFF": [
-                  {
-                      "airport": "KOFF",
-                      "icao": "ZIPPY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "TOXIC"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "RIVET"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "GOOFY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "BAZOO"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "COBRA"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "POKER"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "SNOOP"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "OFF.GRI",
-                "waypoints": "N041.01.22.795,W097.36.43.747 N041.03.03.444,W097.05.45.986/a16000/ho KOFF/a16000",
-                "expect_approach": "I31"
-            }
-          ],
-          "OFF.PWE": [
-            {
-              "airlines": {
-                "KOFF": [
-                  {
-                      "airport": "KOFF",
-                      "icao": "ZIPPY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "TOXIC"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "RIVET"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "GOOFY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "BAZOO"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "COBRA"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "POKER"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "SNOOP"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "OFF.PWE",
-                "waypoints": "N039.45.52.088,W096.22.05.637 PWE/a16000/ho KOFF/a16000",
-                "expect_approach": "I31"
-            }
-          ],
-          "OFF.ONL": [
-            {
-              "airlines": {
-                "KOFF": [
-                  {
-                      "airport": "KOFF",
-                      "icao": "ZIPPY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "TOXIC"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "RIVET"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "GOOFY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "BAZOO"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "COBRA"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "POKER"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "SNOOP"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "OFF.ONL",
-                "waypoints": "N041.49.14.965,W097.21.09.635 N041.38.24.725,W096.58.44.853/a16000/ho KOFF/a16000",
-                "expect_approach": "I31"
-            }
-          ],
-          "OFF.SUX": [
-            {
-              "airlines": {
-                "KOFF": [
-                  {
-                      "airport": "KOFF",
-                      "icao": "ZIPPY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "TOXIC"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "RIVET"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "GOOFY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "BAZOO"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "COBRA"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "POKER"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "SNOOP"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "OFF.SUX",
-                "waypoints": "SUX N041.59.23.690,W096.12.12.870/a16000/ho KOFF/a16000",
-                "expect_approach": "I31"
-            }
-          ],
-          "OFF.TKO": [
-            {
-              "airlines": {
-                "KOFF": [
-                  {
-                      "airport": "KOFF",
-                      "icao": "ZIPPY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "TOXIC"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "RIVET"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "GOOFY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "BAZOO"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "COBRA"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "POKER"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "SNOOP"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "OFF.TKO",
-                "waypoints": "N040.08.35.780,W097.39.16.814 N040.32.19.375,W096.56.54.028/a16000/ho KOFF/a16000",
-                "expect_approach": "I31"
-            }
-          ],
-          "OFF.HSI": [
-            {
-              "airlines": {
-                "KOFF": [
-                  {
-                      "airport": "KOFF",
-                      "icao": "ZIPPY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "TOXIC"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "RIVET"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "GOOFY"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "BAZOO"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "COBRA"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "POKER"
-                  },
-                  {
-                      "airport": "KOFF",
-                      "icao": "SNOOP"
-                  }
-                ]
-              },
-              "initial_altitude": 16000,
-                "initial_controller": "MSP_26_CTR",
-                "initial_speed": 280,
-                "star": "OFF.HSI",
-                "waypoints": "N040.40.19.999,W098.05.38.708 N040.51.14.359,W097.11.59.796/a16000/ho KOFF/a16000",
-                "expect_approach": "I31"
+              "icao": "EJA",
+              "airport": "KFAR"
             }
           ]
+        }
+      }
+    ]
+  },
+  "HOWRY3.GRI": {
+    "arrivals": [
+      {
+        "waypoints": "N041.14.32.561,W097.20.22.146 N041.19.00.559,W097.02.42.377/ho HOWRY BOYSS",
+        "runway_waypoints": {
+          "KOMA": {
+            "14L": "BOYSS/h60",
+            "14R": "BOYSS/h60",
+            "18": "BOYSS/h60",
+            "32L": "BOYSS/h60",
+            "32R": "BOYSS/h60",
+            "36": "BOYSS/h60"
+          }
         },
+        "star": "HOWRY3.GRI",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "32L",
+        "airlines": {
+          "KOMA": [
+            {
+              "icao": "SKW",
+              "airport": "KSLC"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "FFT",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KLAS"
+            },
+            {
+              "icao": "FFT",
+              "airport": "KLAS"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KAVQ"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KOAK"
+            },
+            {
+              "icao": "JTL",
+              "airport": "KOAK"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KLAX"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KLAX"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "HOWRY3.ONL": {
+    "arrivals": [
+      {
+        "waypoints": "N041.40.51.420,W097.38.49.431 OLU N041.24.31.467,W097.06.23.312/ho HOWRY BOYSS",
+        "runway_waypoints": {
+          "KOMA": {
+            "14L": "BOYSS/h60",
+            "14R": "BOYSS/h60",
+            "18": "BOYSS/h60",
+            "32L": "BOYSS/h60",
+            "32R": "BOYSS/h60",
+            "36": "BOYSS/h60"
+          }
+        },
+        "star": "HOWRY3.ONL",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "32L",
+        "airlines": {
+          "KOMA": [
+            {
+              "icao": "ASA",
+              "airport": "KSEA"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "LANTK2.DABOY": {
+    "arrivals": [
+      {
+        "waypoints": "DABOY N041.37.50.173,W094.55.20.947/ho LANTK/h250",
+        "star": "LANTK2.DABOY",
+        "initial_controller": "MSP_27_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "32L",
+        "airlines": {
+          "KOMA": [
+            {
+              "icao": "SKW",
+              "airport": "KMSP"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KMSP"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "LANTK2.DSM": {
+    "arrivals": [
+      {
+        "waypoints": "DSM N041.29.32.218,W094.44.43.493/ho LANTK/h250",
+        "star": "LANTK2.DSM",
+        "initial_controller": "MSP_27_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "32L",
+        "airlines": {
+          "KOMA": [
+            {
+              "icao": "ENY",
+              "airport": "KORD"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KORD"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KORD"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KORD"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "EDV",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "JTL",
+              "airport": "KMDW"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "LNK.KAIZ": {
+    "arrivals": [
+      {
+        "waypoints": "N039.50.32.720,W095.24.53.041 N040.16.59.091,W095.57.26.136/ho KLNK",
+        "star": "LNK.KAIZ",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 280,
+        "expect_approach": "I36",
+        "airlines": {
+          "KLNK": [
+            {
+              "icao": "SLH",
+              "airport": "KAIZ"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "LNK.KDEN": {
+    "arrivals": [
+      {
+        "waypoints": "DRABS N040.49.07.329,W097.46.32.065/ho KLNK",
+        "star": "LNK.KDEN",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 280,
+        "expect_approach": "I36",
+        "airlines": {
+          "KLNK": [
+            {
+              "icao": "UCA",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KDEN"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "LNK.KIAH": {
+    "arrivals": [
+      {
+        "waypoints": "N039.36.07.478,W096.14.55.852 LEFAM/ho KLNK",
+        "star": "LNK.KIAH",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 280,
+        "expect_approach": "I36",
+        "airlines": {
+          "KLNK": [
+            {
+              "icao": "UCA",
+              "airport": "KIAH"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "LNK.KJLN": {
+    "arrivals": [
+      {
+        "waypoints": "N039.37.55.598,W095.59.03.392 N040.11.16.771,W096.18.40.632/ho KLNK",
+        "star": "LNK.KJLN",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 280,
+        "expect_approach": "I36",
+        "airlines": {
+          "KLNK": [
+            {
+              "icao": "OKC",
+              "airport": "KJLN"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "LNK.KORD": {
+    "arrivals": [
+      {
+        "waypoints": "N041.14.48.011,W094.32.02.991 N041.11.47.876,W094.52.37.196/ho KLNK",
+        "star": "LNK.KORD",
+        "initial_controller": "MSP_27_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 280,
+        "expect_approach": "I36",
+        "airlines": {
+          "KLNK": [
+            {
+              "icao": "SKW",
+              "airport": "KORD"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "LNK.KSDL": {
+    "arrivals": [
+      {
+        "waypoints": "N040.15.32.464,W098.07.53.043 N040.31.21.614,W097.34.50.780/ho KLNK",
+        "star": "LNK.KSDL",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 280,
+        "expect_approach": "I36",
+        "airlines": {
+          "KLNK": [
+            {
+              "icao": "EJA",
+              "airport": "KSDL"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KSDL"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "MARWI4.LMN": {
+    "arrivals": [
+      {
+        "waypoints": "LMN N040.43.31.560,W094.45.27.438/ho MARWI SWAAB/flyover",
+        "runway_waypoints": {
+          "KOMA": {
+            "14L": "SWAAB/flyover/h320",
+            "14R": "SWAAB/flyover/h320",
+            "18": "SWAAB/flyover/h320",
+            "32L": "SWAAB/flyover OVR",
+            "32R": "SWAAB/flyover OVR",
+            "36": "SWAAB/flyover OVR"
+          }
+        },
+        "star": "MARWI4.LMN",
+        "initial_controller": "MSP_27_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "32L",
+        "airlines": {
+          "KOMA": [
+            {
+              "icao": "UPS",
+              "airport": "KSDF"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KSDF"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KSTL"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KSTL"
+            },
+            {
+              "icao": "KII",
+              "airport": "KSTL"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KSTL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDCA"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KDCA"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KDCA"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "MARWI4.STJ": {
+    "arrivals": [
+      {
+        "waypoints": "N040.14.32.245,W094.58.39.744 N040.38.46.918,W095.03.30.031/ho MARWI SWAAB/flyover",
+        "runway_waypoints": {
+          "KOMA": {
+            "14L": "SWAAB/flyover/h320",
+            "14R": "SWAAB/flyover/h320",
+            "18": "SWAAB/flyover/h320",
+            "32L": "SWAAB/flyover OVR",
+            "32R": "SWAAB/flyover OVR",
+            "36": "SWAAB/flyover OVR"
+          }
+        },
+        "star": "MARWI4.STJ",
+        "initial_controller": "MSP_27_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "32L",
+        "airlines": {
+          "KOMA": [
+            {
+              "icao": "EJA",
+              "airport": "KIXD"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KATL"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KMEM"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KMEM"
+            },
+            {
+              "icao": "FDX",
+              "airport": "KMEM"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OFF.DSM": {
+    "arrivals": [
+      {
+        "waypoints": "N041.19.28.821,W094.26.43.729 N041.16.21.477,W094.48.29.317/a16000/ho KOFF/a16000",
+        "star": "OFF.DSM",
+        "initial_controller": "MSP_27_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "I31",
+        "airlines": {
+          "KOFF": [
+            {
+              "icao": "ZIPPY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "TOXIC",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "RIVET",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "GOOFY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "BAZOO",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "COBRA",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "POKER",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "SNOOP",
+              "airport": "KOFF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OFF.FOD": {
+    "arrivals": [
+      {
+        "waypoints": "N042.01.02.127,W094.56.14.285 N041.47.35.758,W095.10.52.972/a16000/ho KOFF/a16000",
+        "star": "OFF.FOD",
+        "initial_controller": "MSP_27_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "I31",
+        "airlines": {
+          "KOFF": [
+            {
+              "icao": "ZIPPY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "TOXIC",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "RIVET",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "GOOFY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "BAZOO",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "COBRA",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "POKER",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "SNOOP",
+              "airport": "KOFF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OFF.GRI": {
+    "arrivals": [
+      {
+        "waypoints": "N041.01.22.795,W097.36.43.747 N041.03.03.444,W097.05.45.986/a16000/ho KOFF/a16000",
+        "star": "OFF.GRI",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "I31",
+        "airlines": {
+          "KOFF": [
+            {
+              "icao": "ZIPPY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "TOXIC",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "RIVET",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "GOOFY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "BAZOO",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "COBRA",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "POKER",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "SNOOP",
+              "airport": "KOFF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OFF.HSI": {
+    "arrivals": [
+      {
+        "waypoints": "N040.40.19.999,W098.05.38.708 N040.51.14.359,W097.11.59.796/a16000/ho KOFF/a16000",
+        "star": "OFF.HSI",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "I31",
+        "airlines": {
+          "KOFF": [
+            {
+              "icao": "ZIPPY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "TOXIC",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "RIVET",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "GOOFY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "BAZOO",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "COBRA",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "POKER",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "SNOOP",
+              "airport": "KOFF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OFF.LMN": {
+    "arrivals": [
+      {
+        "waypoints": "N040.44.48.230,W094.31.28.604 N040.49.13.262,W094.48.19.291/a16000/ho KOFF/a16000",
+        "star": "OFF.LMN",
+        "initial_controller": "MSP_27_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "I31",
+        "airlines": {
+          "KOFF": [
+            {
+              "icao": "ZIPPY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "TOXIC",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "RIVET",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "GOOFY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "BAZOO",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "COBRA",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "POKER",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "SNOOP",
+              "airport": "KOFF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OFF.OBH": {
+    "arrivals": [
+      {
+        "waypoints": "N041.18.29.220,W097.42.05.949 N041.14.56.333,W097.08.32.374/a16000/ho KOFF/a16000",
+        "star": "OFF.OBH",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "I31",
+        "airlines": {
+          "KOFF": [
+            {
+              "icao": "ZIPPY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "TOXIC",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "RIVET",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "GOOFY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "BAZOO",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "COBRA",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "POKER",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "SNOOP",
+              "airport": "KOFF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OFF.OFK": {
+    "arrivals": [
+      {
+        "waypoints": "N041.49.32.817,W097.09.03.411 N041.41.06.430,W096.54.08.657/a16000/ho KOFF/a16000",
+        "star": "OFF.OFK",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "I31",
+        "airlines": {
+          "KOFF": [
+            {
+              "icao": "ZIPPY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "TOXIC",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "RIVET",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "GOOFY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "BAZOO",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "COBRA",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "POKER",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "SNOOP",
+              "airport": "KOFF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OFF.ONL": {
+    "arrivals": [
+      {
+        "waypoints": "N041.49.14.965,W097.21.09.635 N041.38.24.725,W096.58.44.853/a16000/ho KOFF/a16000",
+        "star": "OFF.ONL",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "I31",
+        "airlines": {
+          "KOFF": [
+            {
+              "icao": "ZIPPY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "TOXIC",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "RIVET",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "GOOFY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "BAZOO",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "COBRA",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "POKER",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "SNOOP",
+              "airport": "KOFF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OFF.PWE": {
+    "arrivals": [
+      {
+        "waypoints": "N039.45.52.088,W096.22.05.637 PWE/a16000/ho KOFF/a16000",
+        "star": "OFF.PWE",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "I31",
+        "airlines": {
+          "KOFF": [
+            {
+              "icao": "ZIPPY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "TOXIC",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "RIVET",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "GOOFY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "BAZOO",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "COBRA",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "POKER",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "SNOOP",
+              "airport": "KOFF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OFF.SUX": {
+    "arrivals": [
+      {
+        "waypoints": "SUX N041.59.23.690,W096.12.12.870/a16000/ho KOFF/a16000",
+        "star": "OFF.SUX",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "I31",
+        "airlines": {
+          "KOFF": [
+            {
+              "icao": "ZIPPY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "TOXIC",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "RIVET",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "GOOFY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "BAZOO",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "COBRA",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "POKER",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "SNOOP",
+              "airport": "KOFF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OFF.TKO": {
+    "arrivals": [
+      {
+        "waypoints": "N040.08.35.780,W097.39.16.814 N040.32.19.375,W096.56.54.028/a16000/ho KOFF/a16000",
+        "star": "OFF.TKO",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "I31",
+        "airlines": {
+          "KOFF": [
+            {
+              "icao": "ZIPPY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "TOXIC",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "RIVET",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "GOOFY",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "BAZOO",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "COBRA",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "POKER",
+              "airport": "KOFF"
+            },
+            {
+              "icao": "SNOOP",
+              "airport": "KOFF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "TIMMO1": {
+    "arrivals": [
+      {
+        "waypoints": "HTHWY N040.17.48.365,W096.11.30.188/ho HILRS/a11000+ TIMMO MOONR",
+        "runway_waypoints": {
+          "KOMA": {
+            "14L": "MOONR CRPET/a5000/s210/flyover/h340",
+            "14R": "MOONR CRPET/a5000/s210/flyover/h340",
+            "18": "MOONR CRPET/a5000/s210/flyover/h340",
+            "32L": "MOONR BAARK/a4000/flyover/h30",
+            "32R": "MOONR BAARK/a4000/flyover/h30",
+            "36": "MOONR BAARK/a4000/flyover/h30"
+          }
+        },
+        "star": "TIMMO1",
+        "initial_controller": "MSP_26_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "32L",
+        "airlines": {
+          "KOMA": [
+            {
+              "icao": "SWA",
+              "airport": "KHOU"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KHOU"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KMAF"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KIAH"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KIAH"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
         "control_positions": {
           "MSP_26_CTR": {
             "frequency": 119400,

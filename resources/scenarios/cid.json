@@ -410,339 +410,374 @@
              "tower_list": 1
           }     
         },
-        "arrival_groups": {
-            "MSP": [
-                {
-                    "airlines": {
-                        "KCID": [
-                            {
-                                "airport": "KMSP",
-                                "icao": "SKW"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 33000,
-                    "initial_altitude": 10000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 230,
-                    "route": "RST1 ALO CID",
-                    "waypoints": "N042.36.20.717,W092.02.01.343 N042.30.54.917,W092.00.02.059/ho CID"
-                }
-            ],
-            "IOW MSP": [
-                {
-                    "airlines": {
-                        "KIOW": [
-                            {
-                                "airport": "KGFK",
-                                "icao": "N"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 41000,
-                    "initial_altitude": 10000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 250,
-                    "route": "FAR J36 GEP IOW",
-                    "waypoints": "N042.29.08.542,W092.18.43.873 N042.24.13.779,W092.15.44.604/ho IOW"
-                }
-            ],
-            "SE": [
-                {
-                    "airlines": {
-                        "KCID": [
-                            {
-                                "airport": "KMEM",
-                                "icao": "FDX"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 36000,
-                    "initial_altitude": 11000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 230,
-                    "route": "JTEEE5 ODATE KK51I IRK",
-                    "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
-                },
-                {
-                    "airlines": {
-                        "KCID": [
-                            {
-                                "airport": "KATL",
-                                "icao": "DAL"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 36000,
-                    "initial_altitude": 11000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 230,
-                    "route": "PENCL2 EMAHH CEASE",
-                    "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
-                },
-                {
-                    "airlines": {
-                        "KCID": [
-                            {
-                                "airport": "KSFB",
-                                "icao": "AAY"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 32000,
-                    "initial_altitude": 11000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 230,
-                    "route": "RDSOX JFRYS PATOY Q116 JAWJA GOONS BWG AXC IOW",
-                    "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
-                },
-                {
-                    "airlines": {
-                        "KCID": [
-                                    {
-                                        "airport": "KPGD",
-                                        "icao": "AAY"
-                                    }
-                                ]
-                            },
-                            "cruise_altitude": 34000,
-                            "initial_altitude": 11000,
-                            "initial_controller": "CHI_56_CTR",
-                            "initial_speed": 230,
-                            "route": "ROGAN LAL PATOY Q116 DEANR Q116 VLKNN GETME J151 STL IOW",
-                            "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
-                },
-                {
-                    "airlines": {
-                        "KCID": [
-                                    {
-                                        "airport": "KBNA",
-                                        "icao": "AAY"
-                                    }
-                                ]
-                            },
-                            "cruise_altitude": 34000,
-                            "initial_altitude": 11000,
-                            "initial_controller": "CHI_56_CTR",
-                            "initial_speed": 230,
-                            "route": "HGGRD3 TINGS ENL CID",
-                            "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
-                },
-                {
-                    "airlines": {
-                        "KCID": [
-                                    {
-                                        "airport": "KFLL",
-                                        "icao": "AAY"
-                                    }
-                                ]
-                            },
-                            "cruise_altitude": 36000,
-                            "initial_altitude": 11000,
-                            "initial_controller": "CHI_56_CTR",
-                            "initial_speed": 230,
-                            "route": "HROCK2 KPASA Q118 JOHNN LGC J73 PXV SPI CID",
-                            "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
-                },
-                {
-                    "airlines": {
-                        "KCID": [
-                            {
-                                "airport": "KSRQ",
-                                "icao": "AAY"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 34000,
-                    "initial_altitude": 11000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 230,
-                    "route": "TIDES1 MOMIE AMORY Q110 BLANS MAGOO CID",
-                    "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID"
-                }
-            ],
-            "E": [
-                {
-                   "airlines": {
-                        "KCID": [
-                            {
-                                "airport": "KDCA",
-                                "icao": "JIA"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 36000,
-                    "initial_altitude": 11000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 230,
-                    "route": "WYNGS5 RAMAY Q72 HACKS J149 ROD",
-                    "waypoints": "N041.40.04.783,W090.37.58.317 N041.41.37.439,W090.48.28.245/ho CID" 
-                },
-                {
-                    "airlines": {
-                        "KCID": [
-                            {
-                                "airport": "KCLT",
-                                "icao": "AAL"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 36000,
-                    "initial_altitude": 11000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 230,
-                    "route": "JOJJO5 DOOGE HYK FFT OOM TTH CMI MZV",
-                    "waypoints": "N041.40.04.783,W090.37.58.317 N041.41.37.439,W090.48.28.245/ho CID"
-                }
-            ],
-            "ORD": [
-                {
-                    "airlines": {
-                        "KCID": [
-                            {
-                                "airport": "KORD",
-                                "icao": "SKW"
-                            },
-                            {
-                                "airport": "KORD",
-                                "icao": "JIA"
-                            },
-                            {
-                                "airport": "KORD",
-                                "icao": "ENY"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 28000,
-                    "initial_altitude": 9000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 210,
-                    "route": "NOONY NIGHT",
-                    "waypoints": "N042.00.12.181,W090.36.11.969 N041.59.30.487,W090.44.34.346/ho CID"
-                }
-            ],
-            "DFW": [
-                {
-                    "airlines": {
-                        "KCID": [
-                            {
-                                "airport": "KDFW",
-                                "icao": "ENY"
-                            },
-                            {
-                                "airport": "KDFW",
-                                "icao": "AAL"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 35000,
-                    "initial_altitude": 11000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 230,
-                    "route": "GRABE8 EAKER EOS AUGIE IRK IOW",
-                    "waypoints": "N041.15.17.028,W092.14.30.474 N041.19.39.244,W092.09.22.692/ho CID"
-                }
-            ],
-            "SW": [
-                {
-                    "airlines": {
-                        "KCID": [
-                            {
-                                "airport": "KLAS",
-                                "icao": "AAY"
-                            },
-                            {
-                                "airport": "KDEN",
-                                "icao": "UAL"
-                            },
-                            {
-                                "airport": "KDEN",
-                                "icao": "FFT"
-                            },
-                            {
-                                "airport": "KPHX",
-                                "icao": "SKW"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 37000,
-                    "initial_altitude": 15000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 250,
-                    "route": "GLD J146 CID",
-                    "waypoints": "N041.42.09.258,W092.52.35.575 N041.44.13.417,W092.43.49.522/ho CID"
-                },
-                {
-                    "airlines": {
-                        "KCID": [
-                            {
-                                "airport": "KIWA",
-                                "icao": "AAY"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 37000,
-                    "initial_altitude": 15000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 250,
-                    "route": "YOTES6 JARPA RSK ALS PUB GLD J146 LNK DSM CID",
-                    "waypoints": "N041.42.09.258,W092.52.35.575 N041.44.13.417,W092.43.49.522/ho CID"
-                }
-            ],
-            "IOW SW": [
-                {
-                    "airlines": {
-                        "KIOW": [
-                            {
-                                "airport": "KBJC",
-                                "icao": "N"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 45000,
-                    "initial_altitude": 13000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 250,
-                    "route": "ECHOO1 WYNDM HCT OVR DSM",
-                    "waypoints": "N041.31.13.773,W092.43.00.441 N041.31.01.962,W092.32.23.371/ho IOW"
-                },
-                {
-                    "airlines": {
-                        "KIOW": [
-                            {
-                                "airport": "KAPA",
-                                "icao": "N"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 41000,
-                    "initial_altitude": 13000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 250,
-                    "route": "ECHOO1 WYNDM HCT J60 CNOTA",
-                    "waypoints": "N041.31.13.773,W092.43.00.441 N041.31.01.962,W092.32.23.371/ho IOW"
-                }
-              
-            ],
-            "IOW NE": [
-                {
-                    "airlines": {
-                        "KIOW": [
-                            {
-                                "airport": "KGRB",
-                                "icao": "N"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 36000,
-                    "initial_altitude": 13000,
-                    "initial_controller": "CHI_56_CTR",
-                    "initial_speed": 250,
-                    "route": "OSH DBQ IOW",
-                    "waypoints": "N042.22.23.463,W090.57.05.619 N042.18.12.123,W091.00.52.075/ho IOW"
-                }
-            ]
-         },
+        "inbound_flows": {
+  "DFW": {
+    "arrivals": [
+      {
+        "waypoints": "N041.15.17.028,W092.14.30.474 N041.19.39.244,W092.09.22.692/ho CID",
+        "cruise_altitude": 35000,
+        "route": "GRABE8 EAKER EOS AUGIE IRK IOW",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 230,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "ENY",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KDFW"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "E": {
+    "arrivals": [
+      {
+        "waypoints": "N041.40.04.783,W090.37.58.317 N041.41.37.439,W090.48.28.245/ho CID",
+        "cruise_altitude": 36000,
+        "route": "WYNGS5 RAMAY Q72 HACKS J149 ROD",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 230,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "JIA",
+              "airport": "KDCA"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "N041.40.04.783,W090.37.58.317 N041.41.37.439,W090.48.28.245/ho CID",
+        "cruise_altitude": 36000,
+        "route": "JOJJO5 DOOGE HYK FFT OOM TTH CMI MZV",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 230,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "AAL",
+              "airport": "KCLT"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "IOW MSP": {
+    "arrivals": [
+      {
+        "waypoints": "N042.29.08.542,W092.18.43.873 N042.24.13.779,W092.15.44.604/ho IOW",
+        "cruise_altitude": 41000,
+        "route": "FAR J36 GEP IOW",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 10000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KIOW": [
+            {
+              "icao": "N",
+              "airport": "KGFK"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "IOW NE": {
+    "arrivals": [
+      {
+        "waypoints": "N042.22.23.463,W090.57.05.619 N042.18.12.123,W091.00.52.075/ho IOW",
+        "cruise_altitude": 36000,
+        "route": "OSH DBQ IOW",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 13000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KIOW": [
+            {
+              "icao": "N",
+              "airport": "KGRB"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "IOW SW": {
+    "arrivals": [
+      {
+        "waypoints": "N041.31.13.773,W092.43.00.441 N041.31.01.962,W092.32.23.371/ho IOW",
+        "cruise_altitude": 45000,
+        "route": "ECHOO1 WYNDM HCT OVR DSM",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 13000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KIOW": [
+            {
+              "icao": "N",
+              "airport": "KBJC"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "N041.31.13.773,W092.43.00.441 N041.31.01.962,W092.32.23.371/ho IOW",
+        "cruise_altitude": 41000,
+        "route": "ECHOO1 WYNDM HCT J60 CNOTA",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 13000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KIOW": [
+            {
+              "icao": "N",
+              "airport": "KAPA"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "MSP": {
+    "arrivals": [
+      {
+        "waypoints": "N042.36.20.717,W092.02.01.343 N042.30.54.917,W092.00.02.059/ho CID",
+        "cruise_altitude": 33000,
+        "route": "RST1 ALO CID",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 10000,
+        "initial_speed": 230,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "SKW",
+              "airport": "KMSP"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "ORD": {
+    "arrivals": [
+      {
+        "waypoints": "N042.00.12.181,W090.36.11.969 N041.59.30.487,W090.44.34.346/ho CID",
+        "cruise_altitude": 28000,
+        "route": "NOONY NIGHT",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 9000,
+        "initial_speed": 210,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "SKW",
+              "airport": "KORD"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KORD"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KORD"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "SE": {
+    "arrivals": [
+      {
+        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
+        "cruise_altitude": 36000,
+        "route": "JTEEE5 ODATE KK51I IRK",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 230,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "FDX",
+              "airport": "KMEM"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
+        "cruise_altitude": 36000,
+        "route": "PENCL2 EMAHH CEASE",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 230,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
+        "cruise_altitude": 32000,
+        "route": "RDSOX JFRYS PATOY Q116 JAWJA GOONS BWG AXC IOW",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 230,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "AAY",
+              "airport": "KSFB"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
+        "cruise_altitude": 34000,
+        "route": "ROGAN LAL PATOY Q116 DEANR Q116 VLKNN GETME J151 STL IOW",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 230,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "AAY",
+              "airport": "KPGD"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
+        "cruise_altitude": 34000,
+        "route": "HGGRD3 TINGS ENL CID",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 230,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "AAY",
+              "airport": "KBNA"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
+        "cruise_altitude": 36000,
+        "route": "HROCK2 KPASA Q118 JOHNN LGC J73 PXV SPI CID",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 230,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "AAY",
+              "airport": "KFLL"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
+        "cruise_altitude": 34000,
+        "route": "TIDES1 MOMIE AMORY Q110 BLANS MAGOO CID",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 230,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "AAY",
+              "airport": "KSRQ"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "SW": {
+    "arrivals": [
+      {
+        "waypoints": "N041.42.09.258,W092.52.35.575 N041.44.13.417,W092.43.49.522/ho CID",
+        "cruise_altitude": 37000,
+        "route": "GLD J146 CID",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 15000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "AAY",
+              "airport": "KLAS"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "FFT",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KPHX"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "N041.42.09.258,W092.52.35.575 N041.44.13.417,W092.43.49.522/ho CID",
+        "cruise_altitude": 37000,
+        "route": "YOTES6 JARPA RSK ALS PUB GLD J146 LNK DSM CID",
+        "initial_controller": "CHI_56_CTR",
+        "initial_altitude": 15000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KCID": [
+            {
+              "icao": "AAY",
+              "airport": "KIWA"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
          "control_positions": {
             "CID_S_APP": {
                 "frequency": 119700,

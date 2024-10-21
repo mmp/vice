@@ -409,166 +409,184 @@
             "tower_list": 1
           } 
         },
-        "arrival_groups": {
-            "SW": [
+    "inbound_flows": {
+        "DEN": {
+            "arrivals": [
                 {
-                    "airlines": {
-                        "KSGF": [
-                            {
-                                "airport": "KIAH",
-                                "icao": "SKW"
-                            },
-                            {
-                                "airport": "KIAH",
-                                "icao": "UCA"
-                            }
-                        ]
-                    },
+                    "waypoints": "N037.49.34.232,W094.40.03.176 N037.45.04.064,W094.27.18.665/ho SGF",
                     "cruise_altitude": 33000,
-                    "initial_altitude": 16000,
-                    "initial_controller": "KC_77_CTR",
-                    "initial_speed": 250,
-                    "route": "INDIE8 INDIE TXK ZALDA SGF",
-                    "waypoints": "ZALDA N036.14.25.406,W093.35.29.287/ho SGF"
-                },
-                {
-                    "airlines": {
-                        "KSGF": [
-                            {
-                                "airport": "KDFW",
-                                "icao": "ENY"
-                            },
-                            {
-                                "airport": "KDFW",
-                                "icao": "SKW"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 27000,
-                    "initial_altitude": 16000,
-                    "initial_controller": "KC_77_CTR",
-                    "initial_speed": 250,
-                    "route": "AKUNA9 MLC RZC BILIE SGF",
-                    "waypoints": "ZALDA N036.14.25.406,W093.35.29.287/ho SGF"
-                }
-            ],
-            "SE": [
-                {
-                    "airlines": {
-                        "KSGF": [
-                            {
-                                "airport": "KPIE",
-                                "icao": "AAY"
-                            },
-                            {
-                                "airport": "KSFB",
-                                "icao": "AAY"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 34000,
-                    "initial_altitude": 16000,
-                    "initial_controller": "KC_77_CTR",
-                    "initial_speed": 250,
-                    "route": "ENDED2 LACEN PATOY Q116 JAWJA MGMRY MEMFS SGF",
-                    "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF"
-                },
-                {
-                    "airlines": {
-                    "KSGF": [
-                        {
-                            "airport": "KATL",
-                            "icao": "SKW"
-                        }
-                    ]
-                  },
-                  "cruise_altitude": 34000,
-                  "initial_altitude": 16000,
-                  "initial_controller": "KC_77_CTR",
-                  "initial_speed": 250,
-                  "route": "CUTTN2 HANKO MEMFS SGF",
-                  "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF"
-                },
-                {
-                    "airlines": {
-                        "KSGF": [
-                            {
-                                "airport": "KCLT",
-                                "icao": "JIA"
-                            },
-                            {
-                                "airport": "KCLT",
-                                "icao": "ENY"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 32000,
-                    "initial_altitude": 16000,
-                    "initial_controller": "KC_77_CTR",
-                    "initial_speed": 250,
-                    "route": "BOBZY5 BNA J46 ARG SGF",
-                    "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF"
-                }
-            ],
-            "ORD": [
-                {
-                    "airlines": {
-                        "KSGF": [
-                            {
-                                "airport": "KORD",
-                                "icao": "SKW"
-                            },
-                            {
-                                "airport": "KORD",
-                                "icao": "ENY"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 32000,
-                    "initial_altitude": 16000,
-                    "initial_controller": "KC_77_CTR",
-                    "initial_speed": 250,
-                    "route": "ACITO ADELL ARLYN STL SGF",
-                    "waypoints": "N037.54.04.400,W092.17.46.387 N037.51.01.573,W092.23.30.205/ho SGF"
-                }
-            ],
-            "DEN": [
-                {
-                    "airlines": {
-                        "KSGF": [
-                            {
-                                "airport": "KDEN",
-                                "icao": "SKW"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 33000,
-                    "initial_altitude": 16000,
-                    "initial_controller": "KC_77_CTR",
-                    "initial_speed": 250,
                     "route": "EXTAN7 SHAYK KK54C SGF",
-                    "waypoints": "N037.49.34.232,W094.40.03.176 N037.45.04.064,W094.27.18.665/ho SGF"
+                    "initial_controller": "KC_77_CTR",
+                    "initial_altitude": 16000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "icao": "SKW",
+                                "airport": "KDEN"
+                            }
+                        ]
+                    }
                 }
-            ],
-            "NE": [
+            ]
+        },
+        "NE": {
+            "arrivals": [
                 {
+                    "waypoints": "N037.58.39.346,W092.27.21.906 N037.56.28.623,W092.30.05.822/ho WIKGI",
+                    "cruise_altitude": 7000,
+                    "route": "WIKGI",
+                    "initial_controller": "KC_77_CTR",
+                    "initial_altitude": 4000,
+                    "initial_speed": 160,
+                    "expect_approach": null,
                     "airlines": {
                         "KLBO": [
                             {
-                                "airport": "KCOU",
-                                "icao": "N"
+                                "icao": "N",
+                                "airport": "KCOU"
                             }
                         ]
-                    },
-                    "cruise_altitude": 7000,
-                    "initial_altitude": 4000,
-                    "initial_controller": "KC_77_CTR",
-                    "initial_speed": 160,
-                    "route": "WIKGI",
-                    "waypoints": "N037.58.39.346,W092.27.21.906 N037.56.28.623,W092.30.05.822/ho WIKGI"
+                    }
                 }
             ]
-         },
+        },
+        "ORD": {
+            "arrivals": [
+                {
+                    "waypoints": "N037.54.04.400,W092.17.46.387 N037.51.01.573,W092.23.30.205/ho SGF",
+                    "cruise_altitude": 32000,
+                    "route": "ACITO ADELL ARLYN STL SGF",
+                    "initial_controller": "KC_77_CTR",
+                    "initial_altitude": 16000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "icao": "SKW",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "ENY",
+                                "airport": "KORD"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "SE": {
+            "arrivals": [
+                {
+                    "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF",
+                    "cruise_altitude": 34000,
+                    "route": "ENDED2 LACEN PATOY Q116 JAWJA MGMRY MEMFS SGF",
+                    "initial_controller": "KC_77_CTR",
+                    "initial_altitude": 16000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "icao": "AAY",
+                                "airport": "KPIE"
+                            },
+                            {
+                                "icao": "AAY",
+                                "airport": "KSFB"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF",
+                    "cruise_altitude": 34000,
+                    "route": "CUTTN2 HANKO MEMFS SGF",
+                    "initial_controller": "KC_77_CTR",
+                    "initial_altitude": 16000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "icao": "SKW",
+                                "airport": "KATL"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF",
+                    "cruise_altitude": 32000,
+                    "route": "BOBZY5 BNA J46 ARG SGF",
+                    "initial_controller": "KC_77_CTR",
+                    "initial_altitude": 16000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "icao": "JIA",
+                                "airport": "KCLT"
+                            },
+                            {
+                                "icao": "ENY",
+                                "airport": "KCLT"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "SW": {
+            "arrivals": [
+                {
+                    "waypoints": "ZALDA N036.14.25.406,W093.35.29.287/ho SGF",
+                    "cruise_altitude": 33000,
+                    "route": "INDIE8 INDIE TXK ZALDA SGF",
+                    "initial_controller": "KC_77_CTR",
+                    "initial_altitude": 16000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "icao": "SKW",
+                                "airport": "KIAH"
+                            },
+                            {
+                                "icao": "UCA",
+                                "airport": "KIAH"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "waypoints": "ZALDA N036.14.25.406,W093.35.29.287/ho SGF",
+                    "cruise_altitude": 27000,
+                    "route": "AKUNA9 MLC RZC BILIE SGF",
+                    "initial_controller": "KC_77_CTR",
+                    "initial_altitude": 16000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSGF": [
+                            {
+                                "icao": "ENY",
+                                "airport": "KDFW"
+                            },
+                            {
+                                "icao": "SKW",
+                                "airport": "KDFW"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
          "control_positions": {
             "SGF_E_APP": {
                 "frequency": 124950,

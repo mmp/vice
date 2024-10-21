@@ -304,182 +304,197 @@
       ]
     }
   },
-  "arrival_groups": {
-    "TTHOR3": [
+  "inbound_flows": {
+  "DOMES": {
+    "arrivals": [
       {
-        "airlines": {
-          "KDAB": [
-            {
-              "airport": "KPHL",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KDFW",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KCLT",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KATL",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KHVN",
-              "icao": "VXP"
-            },
-            {
-              "airport": "KILG",
-              "icao": "VXP"
-            }
-          ]
-        },
-        "cruise_altitude": 36000,
-        "initial_altitude": 17000,
-        "initial_controller": "JAX_30_CTR",
-        "initial_speed": 250,
-        "star": "TTHOR3",
-        "waypoints": "WEEEK/a16000 TTHOR/a12000/ho BIKEZ/a12000/h165"
-      }
-    ],
-    "FONEX": [
-      {
-        "airlines": {
-          "KDAB": [
-            {
-              "airport": "KLCQ",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KPNS",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KTLH",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KGNV",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KOCF",
-              "icao": "ERU"
-            }
-          ]
-        },
-        "assigned_altitude": 9000,
-        "cruise_altitude": 11000,
-        "initial_altitude": 11000,
-        "initial_controller": "JAX_N_APP",
-        "initial_speed": 130,
-        "route": "/. FONEX OMN",
-        "waypoints": "WEXUR IMEKE/ho FONEX OMN"
-      }
-    ],
-    "FOLUT": [
-      {
-        "airlines": {
-          "KDAB": [
-            {
-              "airport": "KSAV",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KCHS",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KJAX",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KMYR",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KCRE",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KCRG",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KVLD",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KSSI",
-              "icao": "ERU"
-            }
-          ]
-        },
-        "assigned_altitude": 7000,
+        "waypoints": "ROCIT APEAK/ho DOMES EYORE",
         "cruise_altitude": 9000,
-        "initial_altitude": 8000,
-        "initial_controller": "JAX_N_APP",
-        "initial_speed": 130,
-        "route": "/. FOLUT OMN",
-        "waypoints": "BUNDE CODMO/ho FOLUT OMN"
-      }
-    ],
-    "KIZER": [
-      {
-        "airlines": {
-          "KDAB": [
-            {
-              "airport": "KPIE",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KSRQ",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KPGD",
-              "icao": "ERU"
-            }
-          ]
-        },
-        "assigned_altitude": 5000,
-        "cruise_altitude": 7000,
-        "initial_altitude": 6000,
-        "initial_controller": "MCO_B_APP",
-        "initial_speed": 130,
-        "route": "/. KIZER",
-        "waypoints": "WHOVL UDUZI/ho KIZER"
-      }
-    ],
-    "DOMES": [
-      {
-        "airlines": {
-          "KDAB": [
-            {
-              "airport": "KMLB",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KVRB",
-              "icao": "ERU"
-            },
-            {
-              "airport": "KORL",
-              "icao": "ERU"
-            }
-          ]
-        },
-        "assigned_altitude": 5000,
-        "cruise_altitude": 9000,
-        "initial_altitude": 8000,
-        "initial_controller": "MCO_B_APP",
-        "initial_speed": 130,
         "route": "/. DOMES EYORE",
-        "waypoints": "ROCIT APEAK/ho DOMES EYORE"
+        "initial_controller": "MCO_B_APP",
+        "initial_altitude": 8000,
+        "assigned_altitude": 5000,
+        "initial_speed": 130,
+        "expect_approach": null,
+        "airlines": {
+          "KDAB": [
+            {
+              "icao": "ERU",
+              "airport": "KMLB"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KVRB"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KORL"
+            }
+          ]
+        }
       }
     ]
   },
+  "FOLUT": {
+    "arrivals": [
+      {
+        "waypoints": "BUNDE CODMO/ho FOLUT OMN",
+        "cruise_altitude": 9000,
+        "route": "/. FOLUT OMN",
+        "initial_controller": "JAX_N_APP",
+        "initial_altitude": 8000,
+        "assigned_altitude": 7000,
+        "initial_speed": 130,
+        "expect_approach": null,
+        "airlines": {
+          "KDAB": [
+            {
+              "icao": "ERU",
+              "airport": "KSAV"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KCHS"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KJAX"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KMYR"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KCRE"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KCRG"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KVLD"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KSSI"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "FONEX": {
+    "arrivals": [
+      {
+        "waypoints": "WEXUR IMEKE/ho FONEX OMN",
+        "cruise_altitude": 11000,
+        "route": "/. FONEX OMN",
+        "initial_controller": "JAX_N_APP",
+        "initial_altitude": 11000,
+        "assigned_altitude": 9000,
+        "initial_speed": 130,
+        "expect_approach": null,
+        "airlines": {
+          "KDAB": [
+            {
+              "icao": "ERU",
+              "airport": "KLCQ"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KPNS"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KTLH"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KGNV"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KOCF"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "KIZER": {
+    "arrivals": [
+      {
+        "waypoints": "WHOVL UDUZI/ho KIZER",
+        "cruise_altitude": 7000,
+        "route": "/. KIZER",
+        "initial_controller": "MCO_B_APP",
+        "initial_altitude": 6000,
+        "assigned_altitude": 5000,
+        "initial_speed": 130,
+        "expect_approach": null,
+        "airlines": {
+          "KDAB": [
+            {
+              "icao": "ERU",
+              "airport": "KPIE"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KSRQ"
+            },
+            {
+              "icao": "ERU",
+              "airport": "KPGD"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "TTHOR3": {
+    "arrivals": [
+      {
+        "waypoints": "WEEEK/a16000 TTHOR/a12000/ho BIKEZ/a12000/h165",
+        "cruise_altitude": 36000,
+        "star": "TTHOR3",
+        "initial_controller": "JAX_30_CTR",
+        "initial_altitude": 17000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KDAB": [
+            {
+              "icao": "AAL",
+              "airport": "KPHL"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "VXP",
+              "airport": "KHVN"
+            },
+            {
+              "icao": "VXP",
+              "airport": "KILG"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
   "control_positions": {
     "JAX_30_CTR": {
       "frequency": 135925,

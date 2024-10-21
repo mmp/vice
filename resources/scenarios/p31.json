@@ -672,142 +672,151 @@
             "tower_list": 1
         }
     },
-    "arrival_groups": {
-        "SJI": [
+    "inbound_flows": {
+  "CEW": {
+    "arrivals": [
+      {
+        "waypoints": "KOBRA CEW/ho PENSI",
+        "route": "CEW PENSI",
+        "initial_controller": "JAX_10_CTR",
+        "initial_altitude": 14000,
+        "assigned_altitude": 11000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KPNS": [
             {
-                "airlines": {
-                    "KPNS": [
-                        {
-                            "airport": "KIAH",
-                            "icao": "UCA"
-                        },
-                        {
-                            "airport": "KHOU",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KORD",
-                            "icao": "UAL"
-                        }
-                    ]
-                },
-                "assigned_altitude": 11000,
-                "initial_altitude": 13000,
-                "initial_controller": "HOU_25_CTR",
-                "initial_speed": 250,
-                "route": "SJI PENSI",
-                "waypoints": "APCHE SJI/ho PENSI"
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KDCA"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KFLL"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KBNA"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KMIA"
+            },
+            {
+              "icao": "FFT",
+              "airport": "KCLE"
+            },
+            {
+              "icao": "SIL",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "SIL",
+              "airport": "KTPA"
             }
-        ],
-        "LOXLY": [
+          ]
+        }
+      }
+    ]
+  },
+  "LOXLY": {
+    "arrivals": [
+      {
+        "waypoints": "ZUGTI LOXLY/ho PENSI",
+        "route": "LOXLY PENSI",
+        "initial_controller": "HOU_25_CTR",
+        "initial_altitude": 13000,
+        "assigned_altitude": 11000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KPNS": [
             {
-                "airlines": {
-                    "KPNS": [
-                        {
-                            "airport": "KORD",
-                            "icao": "UAL"
-                        },
-                        {
-                            "airport": "KDAL",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KMCI",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KSTL",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KDFW",
-                            "icao": "NKS"
-                        },
-                        {
-                            "airport": "KDFW",
-                            "icao": "JIA"
-                        },
-                        {
-                            "airport": "KDFW",
-                            "icao": "AAL"
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "FFT"
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "SWA"
-                        }
-                    ]
-                },
-                "assigned_altitude": 11000,
-                "initial_altitude": 13000,
-                "initial_controller": "HOU_25_CTR",
-                "initial_speed": 250,
-                "route": "LOXLY PENSI",
-                "waypoints": "ZUGTI LOXLY/ho PENSI"
+              "icao": "UAL",
+              "airport": "KORD"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMCI"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KSTL"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "FFT",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDEN"
             }
-        ],
-        "CEW": [
+          ]
+        }
+      }
+    ]
+  },
+  "SJI": {
+    "arrivals": [
+      {
+        "waypoints": "APCHE SJI/ho PENSI",
+        "route": "SJI PENSI",
+        "initial_controller": "HOU_25_CTR",
+        "initial_altitude": 13000,
+        "assigned_altitude": 11000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KPNS": [
             {
-                "airlines": {
-                    "KPNS": [
-                        {
-                            "airport": "KATL",
-                            "icao": "DAL"
-                        },
-                        {
-                            "airport": "KDCA",
-                            "icao": "JIA"
-                        },
-                        {
-                            "airport": "KCLT",
-                            "icao": "JIA"
-                        },
-                        {
-                            "airport": "KFLL",
-                            "icao": "NKS"
-                        },
-                        {
-                            "airport": "KCLT",
-                            "icao": "AAL"
-                        },
-                        {
-                            "airport": "KBNA",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KMCO",
-                            "icao": "NKS"
-                        },
-                        {
-                            "airport": "KMIA",
-                            "icao": "ENY"
-                        },
-                        {
-                            "airport": "KCLE",
-                            "icao": "FFT"
-                        },
-                        {
-                            "airport": "KMCO",
-                            "icao": "SIL"
-                        },
-                        {
-                            "airport": "KTPA",
-                            "icao": "SIL"
-                        }
-                    ]
-                },  
-                "assigned_altitude": 11000,
-                "initial_altitude": 14000,
-                "initial_controller": "JAX_10_CTR",
-                "initial_speed": 250,
-                "route": "CEW PENSI",
-                "waypoints": "KOBRA CEW/ho PENSI"
-            }                
-        ]
-    },
+              "icao": "UCA",
+              "airport": "KIAH"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KHOU"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KORD"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
     "control_positions": {
         "JAX_10_CTR": {
           "frequency": 120200,

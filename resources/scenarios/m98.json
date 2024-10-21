@@ -350,248 +350,260 @@
               "tower_list": 2
           }
       },
-      "arrival_groups": {
-        "BAINY3": [
-          {
-            "airlines": {
-              "KMSP": [
-                {
-                  "airport": "KSEA",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "KPDX",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "EHAM",
-                  "fleet": "long",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "CYEG",
-                  "icao": "WJA"
-                }
-              ]
-            },
-            "initial_altitude": 16000,
-              "initial_controller": "MSP_10_CTR",
-              "initial_speed": 280,
-              "star": "BAINY3",
-              "runway_waypoints": {
-                "KMSP": {
-                  "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210",
-                  "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210",
-                  "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 JJENI/h121",
-                  "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210 IRRRV/h122",
-                  "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 GWAIT/h176"
-                }
-              },
-              "waypoints": "BAINY/a15000-19000/s280 LUCCY/a11000+/s280/ho SAUGR",
-              "expect_approach": "12L"
+      "inbound_flows": {
+  "BAINY3": {
+    "arrivals": [
+      {
+        "waypoints": "BAINY/a15000-19000/s280 LUCCY/a11000+/s280/ho SAUGR",
+        "runway_waypoints": {
+          "KMSP": {
+            "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210",
+            "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210",
+            "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 JJENI/h121",
+            "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210 IRRRV/h122",
+            "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 GWAIT/h176"
           }
-        ],
-        "BLUEM4": [
-          {
-            "airlines": {
-              "KMSP": [
-                {
-                  "airport": "KSTL",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "KDFW",
-                  "icao": "AAL"
-                },
-                {
-                  "airport": "MMUN",
-                  "fleet": "long",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "KDAL",
-                  "icao": "SWA"
-                }
-              ]
+        },
+        "star": "BAINY3",
+        "initial_controller": "MSP_10_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 280,
+        "expect_approach": "12L",
+        "airlines": {
+          "KMSP": [
+            {
+              "icao": "DAL",
+              "airport": "KSEA"
             },
-            "initial_altitude": 24000,
-            "initial_controller": "MSP_09_CTR",
-            "initial_speed": 280,
-            "star": "BLUEM4",
-            "runway_waypoints": {
-              "KMSP": {
-                "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 DOLEE/h301",
-                "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 COZZZ/h301",
-                "30L": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
-                "30R": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
-                "35": "FARBO JAMEZ/a7000+"
-              }
+            {
+              "icao": "DAL",
+              "airport": "KPDX"
             },
-            "waypoints": "OOPEE/a24000+ LAZYY/a16000+/s280/ho BLUEM/a11000+/s280 HHAMR/a10000+ FARBO",
-            "expect_approach": "12R"
+            {
+              "icao": "DAL",
+              "fleet": "long",
+              "airport": "EHAM"
+            },
+            {
+              "icao": "WJA",
+              "airport": "CYEG"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "BLUEM4": {
+    "arrivals": [
+      {
+        "waypoints": "OOPEE/a24000+ LAZYY/a16000+/s280/ho BLUEM/a11000+/s280 HHAMR/a10000+ FARBO",
+        "runway_waypoints": {
+          "KMSP": {
+            "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 COZZZ/h301",
+            "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 DOLEE/h301",
+            "30L": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
+            "30R": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
+            "35": "FARBO JAMEZ/a7000+"
           }
-        ],
-        "KKILR3": [
-          {
-            "airlines": {
-              "KMSP": [
-                {
-                  "airport": "KMDW",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "KORD",
-                  "icao": "UAL"
-                },
-                {
-                  "airport": "KCLE",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "KEWR",
-                  "icao": "AAL"
-                }
-              ]
+        },
+        "star": "BLUEM4",
+        "initial_controller": "MSP_09_CTR",
+        "initial_altitude": 24000,
+        "initial_speed": 280,
+        "expect_approach": "12R",
+        "airlines": {
+          "KMSP": [
+            {
+              "icao": "DAL",
+              "airport": "KSTL"
             },
-            "initial_altitude": 15000,
-              "initial_controller": "MSP_05_CTR",
-              "initial_speed": 280,
-              "star": "KKILR3",
-              "runway_waypoints": {
-                "KMSP": {
-                  "12L": "KRISP AFTYN/a10000+/s250 CMMOE/a8000/s230 COZZZ/h301",
-                  "12R": "KRISP AFTYN/a10000+/s250 GREAK/a8000/s230 DOLEE/h301",
-                  "30L": "KRISP GEEQU/a7000/s210",
-                  "30R": "KRISP GEEQU/a7000/s210",
-                  "35": "KRISP AFTYN/a10000+/s250 GREAK/a8000/s230 DOLEE/h301"
-                }
-              },
-              "waypoints": "HENDR/a14000+ CMAAC/a14000+/s280/ho KKILR/a12000+/s280 HUGGI/a10000+ KRISP",
-              "expect_approach": "12R"
-          }
-        ],
-        "MUSCL3": [
-          {
-            "airlines": {
-              "KMSP": [
-                {
-                  "airport": "KBOS",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "KBUF",
-                  "icao": "SWA"
-                },
-                {
-                  "airport": "KLGA",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "KJFK",
-                  "icao": "AAL"
-                }
-              ]
+            {
+              "icao": "AAL",
+              "airport": "KDFW"
             },
-            "initial_altitude": 22000,
-              "initial_controller": "MSP_05_CTR",
-              "initial_speed": 280,
-              "star": "MUSCL3",
-              "runway_waypoints": {
-                "KMSP": {
-                  "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 COZZZ/h301",
-                  "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
-                  "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210",
-                  "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210",
-                  "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301"
-                }
-              },
-              "waypoints": "JERMN/a22000+/s280 MUSCL/a17000+/s280/ho BAYKS/a15000+/s280 WOLVS",
-              "expect_approach": "12L"
-          }
-        ],
-        "NITZR3": [
-          {
-            "airlines": {
-              "KMSP": [
-                {
-                  "airport": "KIAH",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "KAUS",
-                  "icao": "SWA"
-                },
-                {
-                  "airport": "KOKC",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "KDFW",
-                  "icao": "AAL"
-                }
-              ]
+            {
+              "icao": "DAL",
+              "fleet": "long",
+              "airport": "MMUN"
             },
-            "initial_altitude": 24000,
-              "initial_controller": "MSP_09_CTR",
-              "initial_speed": 280,
-              "star": "NITZR3",
-              "runway_waypoints": {
-                "KMSP": {
-                  "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 DOLEE/h301",
-                  "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 COZZZ/h301",
-                  "30L": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210",
-                  "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210",
-                  "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000"
-                }
-              },
-              "waypoints": "KBEEE/a24000+ DEMLL/a16000+/s280/ho NITZR/a12000+/s280 WRSAW/a11000+ DAHRL",
-              "expect_approach": "12R"
+            {
+              "icao": "SWA",
+              "airport": "KDAL"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "KKILR3": {
+    "arrivals": [
+      {
+        "waypoints": "HENDR/a14000+ CMAAC/a14000+/s280/ho KKILR/a12000+/s280 HUGGI/a10000+ KRISP",
+        "runway_waypoints": {
+          "KMSP": {
+            "12L": "KRISP AFTYN/a10000+/s250 CMMOE/a8000/s230 COZZZ/h301",
+            "12R": "KRISP AFTYN/a10000+/s250 GREAK/a8000/s230 DOLEE/h301",
+            "30L": "KRISP GEEQU/a7000/s210",
+            "30R": "KRISP GEEQU/a7000/s210",
+            "35": "KRISP AFTYN/a10000+/s250 GREAK/a8000/s230 DOLEE/h301"
           }
-        ],
-        "TORGY3": [
-          {
-            "airlines": {
-              "KMSP": [
-                {
-                  "airport": "KLAX",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "KBUR",
-                  "icao": "SWA"
-                },
-                {
-                  "airport": "KSJC",
-                  "icao": "DAL"
-                },
-                {
-                  "airport": "KSFO",
-                  "icao": "UAL"
-                },
-                {
-                  "airport": "KDEN",
-                  "icao": "UAL"
-                }
-              ]
+        },
+        "star": "KKILR3",
+        "initial_controller": "MSP_05_CTR",
+        "initial_altitude": 15000,
+        "initial_speed": 280,
+        "expect_approach": "12R",
+        "airlines": {
+          "KMSP": [
+            {
+              "icao": "DAL",
+              "airport": "KMDW"
             },
-            "initial_altitude": 24000,
-              "initial_controller": "MSP_10_CTR",
-              "initial_speed": 280,
-              "star": "TORGY3",
-              "runway_waypoints": {
-                "KMSP": {
-                  "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210",
-                  "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210",
-                  "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 JJENI/h121",
-                  "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ OSMOH/a8000/s210 IRRRV/h122",
-                  "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 GWAIT/h176"
-                  }
-              },
-              "waypoints": "ERICX/a24000+/s280 TORGY/a13000+/s280/ho OFSON/a12000 HMBRG CONIA",
-              "expect_approach": "12R"
+            {
+              "icao": "UAL",
+              "airport": "KORD"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KCLE"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KEWR"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "MUSCL3": {
+    "arrivals": [
+      {
+        "waypoints": "JERMN/a22000+/s280 MUSCL/a17000+/s280/ho BAYKS/a15000+/s280 WOLVS",
+        "runway_waypoints": {
+          "KMSP": {
+            "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 COZZZ/h301",
+            "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
+            "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210",
+            "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210",
+            "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301"
           }
-        ]
-      },
+        },
+        "star": "MUSCL3",
+        "initial_controller": "MSP_05_CTR",
+        "initial_altitude": 22000,
+        "initial_speed": 280,
+        "expect_approach": "12L",
+        "airlines": {
+          "KMSP": [
+            {
+              "icao": "DAL",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KBUF"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KJFK"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "NITZR3": {
+    "arrivals": [
+      {
+        "waypoints": "KBEEE/a24000+ DEMLL/a16000+/s280/ho NITZR/a12000+/s280 WRSAW/a11000+ DAHRL",
+        "runway_waypoints": {
+          "KMSP": {
+            "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 COZZZ/h301",
+            "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 DOLEE/h301",
+            "30L": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210",
+            "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210",
+            "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000"
+          }
+        },
+        "star": "NITZR3",
+        "initial_controller": "MSP_09_CTR",
+        "initial_altitude": 24000,
+        "initial_speed": 280,
+        "expect_approach": "12R",
+        "airlines": {
+          "KMSP": [
+            {
+              "icao": "DAL",
+              "airport": "KIAH"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KAUS"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KOKC"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KDFW"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "TORGY3": {
+    "arrivals": [
+      {
+        "waypoints": "ERICX/a24000+/s280 TORGY/a13000+/s280/ho OFSON/a12000 HMBRG CONIA",
+        "runway_waypoints": {
+          "KMSP": {
+            "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210",
+            "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210",
+            "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 JJENI/h121",
+            "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ OSMOH/a8000/s210 IRRRV/h122",
+            "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 GWAIT/h176"
+          }
+        },
+        "star": "TORGY3",
+        "initial_controller": "MSP_10_CTR",
+        "initial_altitude": 24000,
+        "initial_speed": 280,
+        "expect_approach": "12R",
+        "airlines": {
+          "KMSP": [
+            {
+              "icao": "DAL",
+              "airport": "KLAX"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KBUR"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KSJC"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KSFO"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KDEN"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
       "control_positions": {
         "MSP_05_CTR": {
           "frequency": 125300,

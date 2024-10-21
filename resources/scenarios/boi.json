@@ -125,104 +125,116 @@
       "tower_list": 1
     }
   },
-  "arrival_groups": {
-    "KYAAN4": [
+  "inbound_flows": {
+  "KOURT4": {
+    "arrivals": [
       {
-        "airlines": {
-          "KBOI": [
-            {
-              "airport": "KSEA",
-              "icao": "ASA"
-            },
-            {
-              "airport": "KPDX",
-              "icao": "QXE"
-            }
-          ]
-        },
-        "initial_altitude": 16000,
-        "initial_controller": "SLC_17_CTR",
-        "initial_speed": 270,
-        "spawn": "DEVLE@0.8",
-        "star": "KYAAN4"
-      }
-    ],
-    "KOURT4": [
-      {
-        "airlines": {
-          "KBOI": [
-            {
-              "airport": "KDEN",
-              "icao": "SWA"
-            },
-            {
-              "airport": "KDEN",
-              "icao": "UAL"
-            }
-          ]
-        },
-        "initial_altitude": 15000,
-        "initial_controller": "SLC_17_CTR",
-        "initial_speed": 260,
         "spawn": "DERSO@0.2",
-        "star": "KOURT4"
-      }
-    ],
-    "SADYL4": [
-      {
+        "star": "KOURT4",
+        "initial_controller": "SLC_17_CTR",
+        "initial_altitude": 15000,
+        "initial_speed": 260,
+        "expect_approach": null,
         "airlines": {
           "KBOI": [
             {
-              "airport": "KSJC",
-              "icao": "SWA"
+              "icao": "SWA",
+              "airport": "KDEN"
             },
             {
-              "airport": "KLAS",
-              "icao": "NKS"
-            },
-            {
-              "airport": "KPHX",
-              "icao": "SWA"
-            },
-            {
-              "airport": "KSFO",
-              "icao": "UAL"
+              "icao": "UAL",
+              "airport": "KDEN"
             }
           ]
-        },
-        "initial_altitude": 21000,
-        "initial_controller": "SLC_17_CTR",
-        "initial_speed": 270,
-        "spawn": "PELYT@0.5",
-        "star": "SADYL4"
-      }
-    ],
-    "SPUUD4": [
-      {
-        "airlines": {
-          "KBOI": [
-            {
-              "airport": "KSDF",
-              "icao": "UPS"
-            },
-            {
-              "airport": "KMEM",
-              "icao": "FDX"
-            },
-            {
-              "airport": "KSLC",
-              "icao": "DAL"
-            }
-          ]
-        },
-        "initial_altitude": 13000,
-        "initial_controller": "SLC_17_CTR",
-        "initial_speed": 250,
-        "spawn": "ORYDA@0.9",
-        "star": "SPUUD4"
+        }
       }
     ]
   },
+  "KYAAN4": {
+    "arrivals": [
+      {
+        "spawn": "DEVLE@0.8",
+        "star": "KYAAN4",
+        "initial_controller": "SLC_17_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 270,
+        "expect_approach": null,
+        "airlines": {
+          "KBOI": [
+            {
+              "icao": "ASA",
+              "airport": "KSEA"
+            },
+            {
+              "icao": "QXE",
+              "airport": "KPDX"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "SADYL4": {
+    "arrivals": [
+      {
+        "spawn": "PELYT@0.5",
+        "star": "SADYL4",
+        "initial_controller": "SLC_17_CTR",
+        "initial_altitude": 21000,
+        "initial_speed": 270,
+        "expect_approach": null,
+        "airlines": {
+          "KBOI": [
+            {
+              "icao": "SWA",
+              "airport": "KSJC"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KLAS"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KSFO"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "SPUUD4": {
+    "arrivals": [
+      {
+        "spawn": "ORYDA@0.9",
+        "star": "SPUUD4",
+        "initial_controller": "SLC_17_CTR",
+        "initial_altitude": 13000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KBOI": [
+            {
+              "icao": "UPS",
+              "airport": "KSDF"
+            },
+            {
+              "icao": "FDX",
+              "airport": "KMEM"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KSLC"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
   "control_positions": {
     "BOI_TWR": {
       "frequency": 118100,
