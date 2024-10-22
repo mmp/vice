@@ -267,6 +267,16 @@ var (
 		`STARS: improved handling of preference sets: a separate one is stored for each TRACON`,
 		`Multiple improvements to the accuracy of flight strips`,
 		`New scenario: SGF (Tyler T)`,
+		`Updated how aircraft control instructions are entered: press ; to enable "target generation" mode in STARS`,
+		`New scenario: LGA HAARP (Tyler T)`,
+		`Scenario updates: CHS, F11 (Michael Knight), SCT, C90, MKE (Jud Lopez)`,
+		`Fixed a bug where aircraft that went around after being handed off to tower wouldn't contact tower the next time`,
+		`Fixed a few bugs related to the 250kts speed limit at 10,000'`,
+		`Added more compact "hold for release" interface for airports that don't use STARS coordination lists`,
+		`STARS: added OTJI mode, where an instructor can sign in and issue commands to all aircraft`,
+		`STARS: added support for restriction areas`,
+		`STARS: multiple improvements to video map handling, including supporting multiple colors and map categories.`,
+		`STARS: CA and MSAW alerts are no longer generated for unassociated tracks`,
 	}
 )
 
