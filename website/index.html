@@ -820,6 +820,7 @@ how it simulates aircraft or the STARS interface.
               <li>Facility engineering:
                 <ul>
                   <li>It is no longer required that all runways have routes for all exits.</li>
+                  <li>"arrival_groups" is no longer supported: arrivals must be specified using the <a href="#fe-arrivals">"inbound_flows"</a> variable.</li>
                   <li>"star" is now optional for arrivals; the pilot contact message has been improved for arrivals not on STARs.</li>
                   <li>Added an adaptation ("yellow_entries") for coordination lists that causes list entries to be yellow, not green.</li>
                   <li>Added an adaptation ("use_legacy_font") to "stars_config" to select the legacy STARS font.
@@ -5523,11 +5524,8 @@ Given the id, the approach can be specified with:</p>
             <h2 class="section-heading">Arrivals and Overflights</h2>
 
             <p><i>Note: until recently, overflights were not supported and
-                arrivals were specified using the "arrival_groups" variable.
-                "arrival_groups" is still supported to allow transitioning to
-                "inbound_flows", though it will eventually be removed.</i>
-                <p>
-                <p>Arrivals and overflights are specified via the "inbound_flows" variable,
+                arrivals were specified using the "arrival_groups" variable, which is no longer available.</i></p>
+            <p>Arrivals and overflights are specified via the "inbound_flows" variable,
                   which allows specifying the ways that aircraft from adjacent facilities
                   enter the TRACON.  "inbound_flows" has two members, "arrivals" and
                   "overflights", each of which is an array of arrival and overflight

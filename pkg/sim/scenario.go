@@ -37,9 +37,6 @@ type ScenarioGroup struct {
 	Airspace         Airspace                  `json:"airspace"`
 	InboundFlows     map[string]InboundFlow    `json:"inbound_flows"`
 
-	// Temporary for the transition to inbound_flows
-	ArrivalGroups map[string][]av.Arrival `json:"arrival_groups"`
-
 	PrimaryAirport string `json:"primary_airport"`
 
 	ReportingPointStrings []string            `json:"reporting_points"`
@@ -737,23 +734,6 @@ var (
 
 func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogger, simConfigurations map[string]map[string]*Configuration,
 	manifest *av.VideoMapManifest) {
-	// Temporary backwards compatibility for inbound flows
-	if len(sg.ArrivalGroups) > 0 {
-		if len(sg.InboundFlows) > 0 {
-			e.ErrorString("cannot specify both \"arrival_groups\" and \"inbound_flows\"")
-		} else {
-			sg.InboundFlows = make(map[string]InboundFlow)
-			for name, arrivals := range sg.ArrivalGroups {
-				var flow InboundFlow
-				for _, ar := range arrivals {
-					flow.Arrivals = append(flow.Arrivals, ar)
-				}
-				sg.InboundFlows[name] = flow
-			}
-			sg.ArrivalGroups = nil
-		}
-	}
-
 	// stars_config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
 	if ctr := sg.STARSFacilityAdaptation.CenterString; ctr == "" {
