@@ -1,0 +1,749 @@
+{
+  "tracon": "N90",
+      "airports": {
+          "KLGA": {
+              "approaches": {
+                  "I4": {
+                      "cifp_id": "I4"
+                  },
+                  "I22": {
+                      "cifp_id": "I22"
+                  },
+                  "I13": {
+                      "cifp_id": "I13"
+                  },
+                  "RZ31": {
+                      "cifp_id": "RZ31"
+                  },
+                  "L31": {
+                      "cifp_id": "L31"
+                  }
+              },
+              "tower_list": 1
+          },
+          "KHPN": {
+            "approaches": {
+              "I16": {
+                "cifp_id": "I16"
+              },
+              "I34": {
+                "cifp_id": "I34"
+              }
+            },
+            "departure_routes": {
+              "16": {
+                "BIGGY,LANNA,COATE,GAYEL,WHITE,GREKI,CMK": {
+                  "cleared_altitude": 3000,
+                  "sid": "HPN8",
+                  "waypoints": "KHPN-34/s190 N041.03.11.024,W073.41.43.646/flyover/h320"    
+                }    
+              },
+              "34": {
+                "BIGGY,LANNA,COATE,GAYEL,WHITE,GREKI,CMK": {
+                  "cleared_altitude": 3000,
+                  "sid": "HPN8",
+                  "waypoints": "N041.04.59.995,W073.43.07.417/flyover/h295"
+                }        
+              }
+            },
+            "departures": [
+              {
+                "airlines": [
+                  {
+                    "icao": "EDV"
+                  }
+                ],
+                "destination": "KDTW",
+                "exit": "GAYEL",
+                "route": "GAYEL J95 CFB TRAAD JACCI FERRL2"
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "EDV"
+                  },
+                  {
+                    "icao": "DAL"
+                  }
+                ],
+                "destination": "KATL",
+                "exit": "LANNA",
+                "route": "LANNA J48 MOL FLASK OZZZI1"
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "JBU"
+                  }
+                ],
+                "destination": "KPBI",
+                "exit": "WHITE",
+                "route": "WHITE Q409 CRPLR EARZZ Q131 WAALT Y289 DULEE CLMNT2"
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "JBU"
+                  }
+                ],
+                "destination": "KFLL",
+                "exit": "WHITE",
+                "route": "WHITE Q409 CRPLR KOOKI Q133 CHIEZ Y291 MAJIK CUUDA3"
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "JBU"
+                  }
+                ],
+                "destination": "KMCO",
+                "exit": "WHITE",
+                "route": "WHITE Q409 CRPLR Q85 LPERD GTOUT1"
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "JBU"
+                  }
+                ],
+                "destination": "KTPA",
+                "exit": "BIGGY",
+                "route": "BIGGY Q75 TEUFL BAAMF DADES1"
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "JBU"
+                  }
+                ],
+                "destination": "KRSW",
+                "exit": "BIGGY",
+                "route": "BIGGY Q75 SLOJO Q103 CYNTA SHFTY5"
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "JIA"
+                  }
+                ],
+                "destination": "KCLT",
+                "exit": "BIGGY",
+                "route": "BIGGY Q75 GVE AIROW CHSLY6"
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "JIA"
+                  }
+                ],
+                "destination": "KDCA",
+                "exit": "BIGGY",
+                "route": "BIGGY Q75 MXE CLIPR3"
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "ENY"
+                  }
+                ],
+                "destination": "KORD",
+                "exit": "COATE",
+                "route": "COATE Q436 EMMMA WYNDE2"
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "WUP"
+                  }
+                ],
+                "destination": "KSLK",
+                "exit": "GREKI",
+                "route": "GREKI JUDDS CAM"
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "GPD"
+                  }
+                ],
+                "destination": "KJPX",
+                "exit": "CMK",
+                "route": "CMK V374 BETHA HTO"
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "EJA"
+                  }
+                ],
+                "destination": "KCLT",
+                "exit": "BIGGY",
+                "route": "BIGGY Q75 GVE AIROW CHSLY6"
+              }
+            ],
+            "exit_categories": {
+              "BIGGY": "WEST",
+              "GAYEL": "WEST",
+              "LANNA": "WEST",
+              "WHITE": "WEST",
+              "COATE": "WEST",
+              "GREKI": "WEST",
+              "CMK": "WEST"
+          },
+          "tower_list": 1
+        },
+        "KDXR": {
+          "approaches": {
+              "L8": {
+                  "cifp_id": "L8"
+              },
+              "R26": {
+                  "cifp_id": "R26"
+              }
+          },
+          "departure_routes": {
+              "26": {
+                  "MERIT,BAYYS,CMK": {
+                      "cleared_altitude": 3000,
+                      "sid": "DXR3",
+                      "waypoints": "KDXR-8/s200/h263"
+                  }
+              },
+              "8": {
+                  "MERIT,BAYYS,CMK": {
+                      "cleared_altitude": 3000,
+                      "sid": "DXR3",
+                      "waypoints": "KDXR-26/s200/h083"
+                  }
+              }
+          },
+          "departures": [
+              {
+                 "airlines": [
+                  {
+                    "icao": "GPD"
+                  }
+                ],
+                "destination": "KACK",
+                "exit": "BAYYS",
+                "route": "BAYYS SEALL V188 GON DEEPO1" 
+              },
+              {
+                "airlines": [
+                  {
+                    "icao": "GPD"
+                  }
+                ],
+                "destination": "KHPN",
+                "exit": "CMK",
+                "route": "CMK"
+              }
+          ],
+          "exit_categories": {
+              "BAYYS": "WEST",
+              "CMK": "WEST"
+          },
+          "tower_list": 1
+        }
+      },
+  "inbound_flows": {
+    "HAARP4": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KLGA": [
+              {
+                "airport": "KBOS",
+                "icao": "RPA"
+              },
+              {
+                "airport": "KBOS",
+                "icao": "EDV"
+              },
+              {
+                "airport": "KBOS",
+                "icao": "JBU"
+              },
+              {
+                "airport": "KPWM",
+                "icao": "EDV"
+              }
+            ]
+          },
+          "cruise_altitude": 28000,
+          "initial_altitude": 12000,
+          "initial_controller": "BOS_CTR",
+          "initial_speed": 300,
+          "route": "/. HAARP4",
+          "speed_restriction": 250,
+          "waypoints": "PWL IGN/ho VALRE BASYE/a8000 HAARP CRALY LGA/h224"
+        },
+        {
+          "airlines": {
+            "KLGA": [
+              {
+                "airport": "KBTV",
+                "icao": "EDV"
+              },
+              {
+                "airport": "CYUL",
+                "fleet": "short",
+                "icao": "ACA"
+              }
+            ]
+          },
+          "cruise_altitude": 35000,
+          "initial_altitude": 12000,
+          "initial_controller": "BOS_CTR",
+          "initial_speed": 300,
+          "route": "/. HAARP4",
+          "speed_restriction": 250,
+          "waypoints": "STOTT IGN/ho VALRE BASYE/a8000 HAARP CRALY LGA/h224"
+        },
+        {
+          "airlines": {
+            "KLGA": [
+              {
+                "airport": "KDTW",
+                "icao": "EDV"
+              },
+              {
+                "airport": "KORD",
+                "fleet": "short",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KBUF",
+                "icao": "RPA"
+              },
+              {
+                "airport": "KSYR",
+                "icao": "EDV"
+              },
+              {
+                "airport": "CYYZ",
+                "fleet": "short",
+                "icao": "ACA"
+              },
+              {
+                "airport": "CYYZ",
+                "icao": "EDV"
+              },
+              {
+                "airport": "KELM",
+                "icao": "EDV"
+              }
+            ]
+          },
+          "cruise_altitude": 34000,
+          "initial_altitude": 12000,
+          "initial_controller": "BOS_CTR",
+          "initial_speed": 300,
+          "route": "/. HAARP4",
+          "speed_restriction": 250,
+          "waypoints": "TRESA IGN/ho VALRE BASYE/a8000 HAARP CRALY LGA/h224"
+        }
+      ]
+    },
+    "BOUNO5": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KHPN": [
+              {
+                "airport": "KATL",
+                "icao": "EDV"
+              },
+              {
+                "airport": "KMCO",
+                "icao": "JBU"
+              },
+              {
+                "airport": "KFLL",
+                "icao": "JBU"
+              },
+              {
+                "airport": "KRSW",
+                "icao": "JBU"
+              },
+              {
+                "airport": "KTPA",
+                "icao": "JBU"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "JBU"
+              },
+              {
+                "airport": "KCLT",
+                "icao": "JIA"
+              },
+              {
+                "airport": "KDCA",
+                "icao": "JIA"
+              },
+              {
+                "airport": "KFOK",
+                "icao": "GPD"
+              },
+              {
+                "airport": "KJPX",
+                "icao": "GPD"
+              },
+              {
+                "airport": "KACK",
+                "icao": "GPD"
+              },
+              {
+                "airport": "KMVY",
+                "icao": "GPD"
+              },
+              {
+                "airport": "KPHL",
+                "icao": "LXJ"
+              }
+            ]
+          },
+          "cruise_altitude": 35000,
+          "initial_altitude": 11000,
+          "assigned_altitude": 5000,
+          "initial_controller": "ISP_Z_APP",
+          "initial_speed": 230,
+          "star": "BOUNO5",
+          "waypoints": "GWENY/a11000 ZAHNN EILEN WESTO/a6000 BDR/ho ALIXX RYMES/a4000/h289"
+        }
+      ]
+    },
+    "VALRE5": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KHPN": [
+              {
+                "airport": "KDTW",
+                "icao": "EDV"
+              },
+              {
+                "airport": "KORD",
+                "icao": "ENY"
+              }
+            ]
+          },
+          "cruise_altitude": 35000,
+          "initial_altitude": 15000,
+          "initial_controller": "NY_74_CTR",
+          "initial_speed": 230,
+          "star": "VALRE5",
+          "waypoints": "N041.55.38.525,W074.21.46.521 WEETS/a10000/ho VALRE/a6000 BASYE HAARP"
+        },
+        {
+          "airlines": {
+            "KHPN": [
+              {
+                "airport": "KBOS",
+                "icao": "EJA"
+              },
+              {
+                "airport": "KPWM",
+                "icao": "LXJ"
+              }
+            ]
+          },
+          "cruise_altitude": 34000,
+          "initial_altitude": 10000,
+          "initial_controller": "BOS_CTR",
+          "initial_speed": 230,
+          "star": "VALRE5",
+          "waypoints": "VEERS PWL IGN/ho VALRE/a6000 BASYE HAARP"
+        }
+      ]
+    }
+  },
+"control_positions": {
+  "LGA_V_APP": {
+      "frequency": 120800,
+      "full_name": "New York approach",
+      "scope_char": "V",
+      "sector_id": "1V"
+  },
+  "HPN_TWR": {
+      "frequency": 118575,
+      "full_name": "Westchester tower",
+      "scope_char": "T",
+      "sector_id": "WT"
+  },
+  "LGA_TWR": {
+      "frequency": 118700,
+      "full_name": "Laguardia tower",
+      "scope_char": "1",
+      "sector_id": "1T"
+  },
+  "ISP_Z_APP": {
+      "frequency": 124075,
+      "full_name": "New York approach",
+      "scope_char": "Z",
+      "sector_id": "3Z"
+  },
+  "LGA_F_APP": {
+      "frequency": 134900,
+      "full_name": "New York approach",
+      "scope_char": "F",
+      "sector_id": "1F"
+  },
+  "LGA_DEP": {
+    "frequency": 120400,
+      "full_name": "New York approach",
+      "scope_char": "L",
+      "sector_id": "1L"
+  },
+  "NY_74_CTR": {
+      "frequency": 132150,
+      "full_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C74",
+      "facility_id": "C",
+      "eram_facility": true
+  },
+  "BOS_CTR": {
+      "frequency": 134700,
+      "full_name": "Boston center",
+      "scope_char": "C",
+      "sector_id": "B37",
+      "facility_id": "B",
+      "eram_facility": true
+  },
+  "NY_LW_DEP": {
+    "frequency": 120850,
+      "full_name": "New York approach",
+      "scope_char": "W",
+      "sector_id": "5W"
+  },
+  "NY_LN_DEP": {
+      "frequency": 118175,
+      "full_name": "New York approach",
+      "scope_char": "T",
+      "sector_id": "5T"
+  },
+  "SWF_APP": {
+      "frequency": 132750,
+      "full_name": "New York approach",
+      "scope_char": "H",
+      "sector_id": "5H"
+  },
+  "LGA_X_APP": {
+      "frequency": 126400,
+      "full_name": "New York approach",
+      "scope_char": "X",
+      "sector_id": "1X"
+  },
+  "DXR_TWR": {
+    "frequency": 119400,
+    "full_name": "Danbury tower",
+    "scope_char": "M",
+    "sector_id": "1M"
+  }
+},
+"default_scenario": "HAARP Land North",
+"name": "HAARP",
+"primary_airport": "KLGA",
+"scenarios": {
+    "HAARP Land North": {
+        "arrival_runways": [
+            {
+                "airport": "KLGA",
+                "runway": "4"
+            },
+            {
+              "airport": "KLGA",
+              "runway": "31"
+            },
+            {
+                "airport": "KHPN", 
+                "runway": "34"
+            }
+        ],
+        "arrivals": {
+            "HAARP4": {
+              "KLGA": 6
+            },
+            "VALRE5": {
+              "KHPN": 4
+            },
+            "BOUNO5": {
+              "KHPN": 6
+            }
+        },
+        "solo_controller": "LGA_V_APP",
+        "multi_controllers": {
+          "default": {
+              "LGA_V_APP": {
+                  "primary": true,
+                  "arrivals": [
+                      "HAARP4"
+                  ],
+                  "departures": [
+                      "KHPN/HPN8"
+                  ]
+              },
+              "LGA_X_APP": {
+                  "backup": "LGA_V_APP",
+                  "arrivals": [
+                      "BOUNO5",
+                      "VALRE5"
+                  ],
+                  "departures": [
+                    "KDXR/DXR3"
+                  ]
+              }
+          }
+        },
+        "controllers": [
+            "HPN_TWR",
+            "LGA_TWR",
+            "LGA_V_APP",
+            "LGA_F_APP",
+            "ISP_Z_APP",
+            "LGA_DEP",
+            "BOS_CTR",
+            "NY_74_CTR",
+            "NY_LW_DEP",
+            "NY_LN_DEP",
+            "SWF_APP",
+            "LGA_X_APP",
+            "DXR_TWR"
+        ],
+        "default_maps": [
+            "LGA-HPN ARR/DEP"
+        ],
+        "departure_runways": [
+            {
+                "airport": "KHPN",
+                "category": "WEST",
+                "rate": 5,
+                "runway": "34"
+            },
+            {
+                "airport": "KDXR",
+                "category": "WEST",
+                "rate": 1,
+                "runway": "26"
+            }
+        ],
+        "wind": {
+            "direction": 340,
+            "speed": 8
+        }
+    },
+    "HAARP Land South": {
+        "arrival_runways": [
+            {
+                "airport": "KLGA",
+                "runway": "22"
+            },
+            {
+                "airport": "KHPN", 
+                "runway": "16"
+            }
+        ],
+        "arrivals": {
+            "HAARP4": {
+              "KLGA": 6
+            },
+            "VALRE5": {
+              "KHPN": 4
+            },
+            "BOUNO5": {
+              "KHPN": 6
+            }
+        },
+        "solo_controller": "LGA_V_APP",
+        "multi_controllers": {
+          "default": {
+              "LGA_V_APP": {
+                  "primary": true,
+                  "arrivals": [
+                      "HAARP4"
+                  ],
+                  "departures": [
+                      "KHPN/HPN8"
+                  ]
+              },
+              "LGA_X_APP": {
+                  "backup": "LGA_V_APP",
+                  "arrivals": [
+                      "BOUNO5",
+                      "VALRE5"
+                  ],
+                  "departures": [
+                    "KDXR/DXR3"
+                  ]
+              }
+          }
+        },
+        "controllers": [
+            "HPN_TWR",
+            "LGA_TWR",
+            "LGA_V_APP",
+            "LGA_F_APP",
+            "ISP_Z_APP",
+            "LGA_DEP",
+            "BOS_CTR",
+            "NY_74_CTR",
+            "NY_LW_DEP",
+            "NY_LN_DEP",
+            "SWF_APP",
+            "LGA_X_APP",
+            "DXR_TWR"
+        ],
+        "default_maps": [
+            "LGA-HPN ARR/DEP"
+        ],
+        "departure_runways": [
+            {
+                "airport": "KHPN",
+                "category": "WEST",
+                "rate": 5,
+                "runway": "16"
+            },
+            {
+                "airport": "KDXR",
+                "category": "WEST",
+                "rate": 1,
+                "runway": "8"
+            }
+        ],
+        "wind": {
+            "direction": 160,
+            "speed": 8
+        }
+    }
+  },
+  "stars_config": {
+    "center": "41.0669531,-73.7075661",
+    "range": 40,
+    "scratchpads": {
+      "GAYEL": "GAL",
+      "LANNA": "LAN",
+      "WHITE": "WHI",
+      "BIGGY": "BIG",
+      "COATE": "COA",
+      "CMK": "CMK",
+      "GREKI": "GRE",
+      "BAYYS": "BAY"
+    },
+    "stars_maps": [
+      "LGA-HPN ARR/DEP",
+      "Coast",
+      "NY Class B",
+      "MVA",
+      "LGA RNAV",
+      "NE HELI RNAV ROUTES",
+      "HPN 16/34 GPS FIXES",
+      "LIBERTY DEP"
+
+    ],
+    "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
+  }
+
+
+}
