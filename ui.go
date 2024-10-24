@@ -1287,12 +1287,12 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	ctrl := lc.controlClient.LaunchConfig.Controller
 	if lc.controlClient.State.MultiControllers != nil {
 		imgui.Text("Controlling controller: " + util.Select(ctrl == "", "(none)", ctrl))
-		if ctrl == "" {
-			if imgui.Button("Take launch control") {
+		if ctrl == lc.controlClient.Callsign {
+			if imgui.Button("Release launch control") {
 				lc.controlClient.TakeOrReturnLaunchControl(eventStream)
 			}
-		} else if ctrl == lc.controlClient.Callsign {
-			if imgui.Button("Release launch control") {
+		} else {
+			if imgui.Button("Take launch control") {
 				lc.controlClient.TakeOrReturnLaunchControl(eventStream)
 			}
 		}
