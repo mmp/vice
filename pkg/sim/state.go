@@ -326,7 +326,7 @@ func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 				return ok && ctrl.IsHuman
 			})
 		if err != nil {
-			lg.Error("Unable to resolve departure controller", slog.Any("error", err),
+			lg.Warn("Unable to resolve departure controller", slog.Any("error", err),
 				slog.Any("aircraft", ac))
 		}
 		return util.Select(callsign != "", callsign, ss.PrimaryController)
