@@ -1298,7 +1298,9 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		}
 	}
 
-	if ctrl == lc.controlClient.Callsign {
+	canLaunch := (lc.controlClient.State.MultiControllers != nil && ctrl == lc.controlClient.Callsign) ||
+		lc.controlClient.State.MultiControllers == nil && ctrl == ""
+	if canLaunch {
 		imgui.Text("Mode:")
 		imgui.SameLine()
 		if imgui.RadioButtonInt("Manual", &lc.controlClient.LaunchConfig.Mode, sim.LaunchManual) {
