@@ -486,8 +486,8 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 		Speed:   speed,
 		FlyOver: r.waypointDescription[1] == 'Y',
 		IAF:     r.waypointDescription[3] == 'A' || r.waypointDescription[3] == 'C' || r.waypointDescription[3] == 'D',
-		IF:      r.waypointDescription[3] == 'B',
-		FAF:     r.waypointDescription[3] == 'I',
+		IF:      r.waypointDescription[3] == 'B' || r.waypointDescription[3] == 'I',
+		FAF:     r.waypointDescription[3] == 'F',
 	}
 	if alt0 != 0 || alt1 != 0 {
 		switch r.altDescrip { // 5.29
