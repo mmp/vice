@@ -696,8 +696,10 @@ func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude f
 			// Just the arc length was specified; need to figure out the
 			// center and radius of the circle that gives that.
 			d := math.Distance2f(p0, p1)
-			if d >= wp.Arc.Length {
-				if e != nil {
+			if wp.Arc.Length < d { // no bueno
+				if math.Abs(wp.Arc.Length-d) < float32(0.1) { // allow some slop and just make it linear if it's close
+					wp.Arc = nil
+				} else if e != nil {
 					e.ErrorString("distance between waypoints %.2fnm is greater than specified arc length %.2fnm",
 						d, wp.Arc.Length)
 					e.Pop()

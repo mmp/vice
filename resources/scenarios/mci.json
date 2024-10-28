@@ -1602,820 +1602,832 @@
         "tower_list": 5
       }
     },
-    "arrival_groups": {
-      "JSONN4": [
-        {
-            "airlines": {
-                "KMCI": [
-                    {
-                        "airport": "KMCO",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "MMUN",
-                        "icao": "FFT"
-                    },
-                    {
-                        "airport": "KBNA",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KCLT",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KCLT",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KDAL",
-                        "icao": "LXJ"
-                    },
-                    {
-                        "airport": "KMDW",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KLRD",
-                        "icao": "AMF"
-                    },
-                    {
-                        "airport": "KTPA",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KLAS",
-                        "icao": "NKS"
-                    },
-                    {
-                        "airport": "KSDF",
-                        "icao": "UPS"
-                    },
-                    {
-                        "airport": "KRFD",
-                        "icao": "UPS"
-                    },
-                    {
-                        "airport": "KDCA",
-                        "icao": "RPA"
-                    },
-                    {
-                        "airport": "KSLC",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KDFW",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KDEN",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KMSP",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KPHX",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KPHL",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KAUS",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "68ID",
-                        "icao": "FTH"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KMCO",
-                        "icao": "NKS"
-                    },
-                    {
-                        "airport": "KDAL",
-                        "icao": "EJA"
-                    },
-                    {
-                        "airport": "KDAL",
-                        "icao": "EJA"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KDTW",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KPHL",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KPHX",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KORD",
-                        "icao": "ENY"
-                    },
-                    {
-                        "airport": "KDTW",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KMSP",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KDFW",
-                        "icao": "ENY"
-                    }
-                ],
-                "KSTJ": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ],
-                "KIXD": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ],
-                "KOJC": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ],
-                "KMKC": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ]
+    "inbound_flows": {
+  "JSONN4": {
+    "arrivals": [
+      {
+        "waypoints": "DPEAK/a19000-23000/ho JSONN/a12000 SDKIS/a7000+",
+        "runway_waypoints": {
+          "KMCI": {
+            "19L": "SDKIS/a7000+ BURBS/a5000+ FARMS/a4000/s210/flyover/h107",
+            "19R": "SDKIS/a7000+ GRYBL/a5000+ HOLMS/a4000/s210/flyover/h107",
+            "1L": "SDKIS/a7000+ STAKE KALEB/a7000/s210 GOONR/a7000/flyover/h191",
+            "1R": "SDKIS/a7000+ SHIBA FIDVU/a7000/s210 BOOMY/a7000/flyover/h191",
+            "27": "SDKIS/a7000+ ARCOS INNIE BHAMA/a6000/s210/flyover/h94",
+            "9": "SDKIS/a7000+ HHOLE GURRA/a5000/s210/flyover/h160"
+          }
+        },
+        "star": "JSONN4",
+        "initial_controller": "KC_46_CTR",
+        "initial_altitude": 21000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KIXD": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
             },
-            "initial_altitude": 21000,
-            "initial_speed": 280,
-            "initial_controller": "KC_46_CTR",
-            "star": "JSONN4",
-            "runway_waypoints": {
-                "KMCI": {
-                    "9": "SDKIS/a7000+ HHOLE GURRA/a5000/flyover/h160/s210",
-                    "1L": "SDKIS/a7000+ STAKE KALEB/a7000/s210 GOONR/a7000/flyover/h191",
-                    "1R": "SDKIS/a7000+ SHIBA FIDVU/a7000/s210 BOOMY/a7000/flyover/h191",
-                    "27": "SDKIS/a7000+ ARCOS INNIE BHAMA/a6000/flyover/h094/s210",
-                    "19R": "SDKIS/a7000+ GRYBL/a5000+ HOLMS/a4000/flyover/h107/s210",
-                    "19L": "SDKIS/a7000+ BURBS/a5000+ FARMS/a4000/flyover/h107/s210"
-                }
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ],
+          "KMCI": [
+            {
+              "icao": "SWA",
+              "airport": "KMCO"
             },
-            "waypoints": "DPEAK/a19000-23000/ho JSONN/a12000 SDKIS/a7000+"
+            {
+              "icao": "FFT",
+              "airport": "MMUN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KBNA"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "AMF",
+              "airport": "KLRD"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KTPA"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KLAS"
+            },
+            {
+              "icao": "UPS",
+              "airport": "KSDF"
+            },
+            {
+              "icao": "UPS",
+              "airport": "KRFD"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KDCA"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KSLC"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KMSP"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KPHL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KAUS"
+            },
+            {
+              "icao": "FTH",
+              "airport": "68ID"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KATL"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KDTW"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KPHL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KORD"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KDTW"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KMSP"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KDFW"
+            }
+          ],
+          "KMKC": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ],
+          "KOJC": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ],
+          "KSTJ": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ]
         }
-      ],
-      "MHOMS3": [
-        {
-            "airlines": {
-                "KMCI": [
-                    {
-                        "airport": "KMCO",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "MMUN",
-                        "icao": "FFT"
-                    },
-                    {
-                        "airport": "KBNA",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KCLT",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KCLT",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KDAL",
-                        "icao": "LXJ"
-                    },
-                    {
-                        "airport": "KMDW",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KLRD",
-                        "icao": "AMF"
-                    },
-                    {
-                        "airport": "KTPA",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KLAS",
-                        "icao": "NKS"
-                    },
-                    {
-                        "airport": "KSDF",
-                        "icao": "UPS"
-                    },
-                    {
-                        "airport": "KRFD",
-                        "icao": "UPS"
-                    },
-                    {
-                        "airport": "KDCA",
-                        "icao": "RPA"
-                    },
-                    {
-                        "airport": "KSLC",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KDFW",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KDEN",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KMSP",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KPHX",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KPHL",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KAUS",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "68ID",
-                        "icao": "FTH"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KMCO",
-                        "icao": "NKS"
-                    },
-                    {
-                        "airport": "KDAL",
-                        "icao": "EJA"
-                    },
-                    {
-                        "airport": "KDAL",
-                        "icao": "EJA"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KDTW",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KPHL",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KPHX",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KORD",
-                        "icao": "ENY"
-                    },
-                    {
-                        "airport": "KDTW",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KMSP",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KDFW",
-                        "icao": "ENY"
-                    }
-                ],
-                "KSTJ": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ],
-                "KIXD": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ],
-                "KOJC": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ],
-                "KMKC": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ]
+      }
+    ]
+  },
+  "MHOMS3": {
+    "arrivals": [
+      {
+        "waypoints": "FLTCH/ho TYGER MHOMS/a12000 RWLND/a7000+",
+        "runway_waypoints": {
+          "KMCI": {
+            "19L": "RWLND/a7000+ CLRKS JAZEN BYKER/a7000/s210/flyover/h11",
+            "19R": "RWLND/a7000+ LEAHH JUNOS KAALA/a7000/s210/flyover/h11",
+            "1L": "RWLND/a7000+ PAWWS/a6000+ JERLD/a5000/s210/flyover/h297",
+            "1R": "RWLND/a7000+ WILII/a6000+ COOKD/a5000/s210/flyover/h296",
+            "27": "RWLND/a7000+ SALVY/a6000+ DMANN/a4000/s210/flyover/h344",
+            "9": "RWLND/a7000+ MAGGE POINT MAMMA/a6000/s210/flyover/h274"
+          }
+        },
+        "star": "MHOMS3",
+        "initial_controller": "KC_42_CTR",
+        "initial_altitude": 21000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KIXD": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
             },
-            "initial_altitude": 21000,
-            "initial_speed": 280,
-            "initial_controller": "KC_42_CTR",
-            "star": "MHOMS3",
-            "runway_waypoints": {
-                "KMCI": {
-                    "9": "RWLND/a7000+ MAGGE POINT MAMMA/a6000/flyover/h274/s210",
-                    "1L": "RWLND/a7000+ PAWWS/a6000+ JERLD/a5000/flyover/h297/s210",
-                    "1R": "RWLND/a7000+ WILII/a6000+ COOKD/a5000/flyover/h296/s210",
-                    "27": "RWLND/a7000+ SALVY/a6000+ DMANN/a4000/flyover/h344/s210",
-                    "19R": "RWLND/a7000+ LEAHH JUNOS KAALA/a7000/flyover/h011/s210",
-                    "19L": "RWLND/a7000+ CLRKS JAZEN BYKER/a7000/flyover/h011/s210"
-                }
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ],
+          "KMCI": [
+            {
+              "icao": "SWA",
+              "airport": "KMCO"
             },
-            "waypoints": "FLTCH/ho TYGER MHOMS/a12000 RWLND/a7000+"
+            {
+              "icao": "FFT",
+              "airport": "MMUN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KBNA"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "AMF",
+              "airport": "KLRD"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KTPA"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KLAS"
+            },
+            {
+              "icao": "UPS",
+              "airport": "KSDF"
+            },
+            {
+              "icao": "UPS",
+              "airport": "KRFD"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KDCA"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KSLC"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KMSP"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KPHL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KAUS"
+            },
+            {
+              "icao": "FTH",
+              "airport": "68ID"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KATL"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KDTW"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KPHL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KORD"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KDTW"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KMSP"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KDFW"
+            }
+          ],
+          "KMKC": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ],
+          "KOJC": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ],
+          "KSTJ": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ]
         }
-      ],
-      "RUDDH3": [
-        {
-            "airlines": {
-                "KMCI": [
-                    {
-                        "airport": "KMCO",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "MMUN",
-                        "icao": "FFT"
-                    },
-                    {
-                        "airport": "KBNA",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KCLT",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KCLT",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KDAL",
-                        "icao": "LXJ"
-                    },
-                    {
-                        "airport": "KMDW",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KLRD",
-                        "icao": "AMF"
-                    },
-                    {
-                        "airport": "KTPA",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KLAS",
-                        "icao": "NKS"
-                    },
-                    {
-                        "airport": "KSDF",
-                        "icao": "UPS"
-                    },
-                    {
-                        "airport": "KRFD",
-                        "icao": "UPS"
-                    },
-                    {
-                        "airport": "KDCA",
-                        "icao": "RPA"
-                    },
-                    {
-                        "airport": "KSLC",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KDFW",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KDEN",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KMSP",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KPHX",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KPHL",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KAUS",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "68ID",
-                        "icao": "FTH"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KMCO",
-                        "icao": "NKS"
-                    },
-                    {
-                        "airport": "KDAL",
-                        "icao": "EJA"
-                    },
-                    {
-                        "airport": "KDAL",
-                        "icao": "EJA"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KDTW",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KPHL",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KPHX",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KORD",
-                        "icao": "ENY"
-                    },
-                    {
-                        "airport": "KDTW",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KMSP",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KDFW",
-                        "icao": "ENY"
-                    }
-                ],
-                "KSTJ": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ],
-                "KIXD": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ],
-                "KOJC": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ],
-                "KMKC": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ]
+      }
+    ]
+  },
+  "RUDDH3": {
+    "arrivals": [
+      {
+        "waypoints": "BULET FONIX/ho RUDDH/a12000 PAHLL/a7000+",
+        "runway_waypoints": {
+          "KMCI": {
+            "19L": "PAHLL/a7000+ EVALN/a6000+ BUDIE/a4000/s210/flyover/h260",
+            "19R": "PAHLL/a7000+ LAMNT/a6000+ SCIPR/a4000/s210/flyover/h261",
+            "1L": "PAHLL/a7000+ CROKS FLRNC DAUSN/a7000/s210/flyover/h191",
+            "1R": "PAHLL/a7000+ FAKIR HULLL BRSKT/a7000/s210/flyover/h191",
+            "27": "PAHLL/a7000+ MINNO/a6000+ SAWKY/a5000/s210/flyover/h220",
+            "9": "PAHLL/a7000+ CHRZZ GINJR GIRLZ/a6000/s210/flyover/h274"
+          }
+        },
+        "star": "RUDDH3",
+        "initial_controller": "KC_40_CTR",
+        "initial_altitude": 21000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KIXD": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
             },
-            "initial_altitude": 21000,
-            "initial_speed": 280,
-            "initial_controller": "KC_40_CTR",
-            "star": "RUDDH3",
-            "runway_waypoints": {
-                "KMCI": {
-                    "9": "PAHLL/a7000+ CHRZZ GINJR GIRLZ/a6000/flyover/h274/s210",
-                    "1L": "PAHLL/a7000+ CROKS FLRNC DAUSN/a7000/flyover/h191/s210",
-                    "1R": "PAHLL/a7000+ FAKIR HULLL BRSKT/a7000/flyover/h191/s210",
-                    "27": "PAHLL/a7000+ MINNO/a6000+ SAWKY/a5000/flyover/h220/s210",
-                    "19R": "PAHLL/a7000+ LAMNT/a6000+ SCIPR/a4000/flyover/h261/s210",
-                    "19L": "PAHLL/a7000+ EVALN/a6000+ BUDIE/a4000/flyover/h260/s210"
-                }
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ],
+          "KMCI": [
+            {
+              "icao": "SWA",
+              "airport": "KMCO"
             },
-            "waypoints": "BULET FONIX/ho RUDDH/a12000 PAHLL/a7000+"
+            {
+              "icao": "FFT",
+              "airport": "MMUN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KBNA"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "AMF",
+              "airport": "KLRD"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KTPA"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KLAS"
+            },
+            {
+              "icao": "UPS",
+              "airport": "KSDF"
+            },
+            {
+              "icao": "UPS",
+              "airport": "KRFD"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KDCA"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KSLC"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KMSP"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KPHL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KAUS"
+            },
+            {
+              "icao": "FTH",
+              "airport": "68ID"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KATL"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KDTW"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KPHL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KORD"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KDTW"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KMSP"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KDFW"
+            }
+          ],
+          "KMKC": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ],
+          "KOJC": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ],
+          "KSTJ": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ]
         }
-      ],
-      "WUTNG3": [
-        {
-            "airlines": {
-                "KMCI": [
-                    {
-                        "airport": "KMCO",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "MMUN",
-                        "icao": "FFT"
-                    },
-                    {
-                        "airport": "KBNA",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KCLT",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KCLT",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KDAL",
-                        "icao": "LXJ"
-                    },
-                    {
-                        "airport": "KMDW",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KLRD",
-                        "icao": "AMF"
-                    },
-                    {
-                        "airport": "KTPA",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KLAS",
-                        "icao": "NKS"
-                    },
-                    {
-                        "airport": "KSDF",
-                        "icao": "UPS"
-                    },
-                    {
-                        "airport": "KRFD",
-                        "icao": "UPS"
-                    },
-                    {
-                        "airport": "KDCA",
-                        "icao": "RPA"
-                    },
-                    {
-                        "airport": "KSLC",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KDFW",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KDEN",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KMSP",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KPHX",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KPHL",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KAUS",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "68ID",
-                        "icao": "FTH"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KMCO",
-                        "icao": "NKS"
-                    },
-                    {
-                        "airport": "KDAL",
-                        "icao": "EJA"
-                    },
-                    {
-                        "airport": "KDAL",
-                        "icao": "EJA"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KDTW",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KPHL",
-                        "icao": "AAL"
-                    },
-                    {
-                        "airport": "KPHX",
-                        "icao": "SWA"
-                    },
-                    {
-                        "airport": "KORD",
-                        "icao": "ENY"
-                    },
-                    {
-                        "airport": "KDTW",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KMSP",
-                        "icao": "DAL"
-                    },
-                    {
-                        "airport": "KDFW",
-                        "icao": "ENY"
-                    }
-                ],
-                "KSTJ": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ],
-                "KIXD": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ],
-                "KOJC": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ],
-                "KMKC": [
-                    {
-                        "airport": "KLRY",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KGJT",
-                        "icao": "EJA"
-                    }
-                ]
+      }
+    ]
+  },
+  "WUTNG3": {
+    "arrivals": [
+      {
+        "waypoints": "ZOURA/ho WUTNG/a12000 HOOZE SMALS",
+        "runway_waypoints": {
+          "KMCI": {
+            "19L": "SMALS/a7000+ RAHBB TOBYN ONEEL/a7000/s210/flyover/h11",
+            "19R": "SMALS/a7000+ OVALE BUZZR/a7000/s210 ERICM/a7000/flyover/h11",
+            "1L": "SMALS/a7000+ TAHCO/a6000+ GAYLZ/a5000/s210/flyover/h65",
+            "1R": "SMALS/a7000+ GUACC/a6000+ BAUNR/a5000/s210/flyover/h68",
+            "27": "SMALS/a7000+ THICC ROCNE VERNS/a6000/s210/flyover/h94",
+            "9": "SMALS/a7000+ MENEY/a6000+ NOMEE/a5000/s210/flyover/h22"
+          }
+        },
+        "star": "WUTNG3",
+        "initial_controller": "KC_48_CTR",
+        "initial_altitude": 21000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KIXD": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
             },
-            "initial_altitude": 21000,
-            "initial_speed": 280,
-            "initial_controller": "KC_48_CTR",
-            "star": "WUTNG3",
-            "runway_waypoints": {
-                "KMCI": {
-                    "9": "SMALS/a7000+ MENEY/a6000+ NOMEE/a5000/flyover/h022/s210",
-                    "1L": "SMALS/a7000+ TAHCO/a6000+ GAYLZ/a5000/flyover/h065/s210",
-                    "1R": "SMALS/a7000+ GUACC/a6000+ BAUNR/a5000/flyover/h068/s210",
-                    "27": "SMALS/a7000+ THICC ROCNE VERNS/a6000/flyover/h094/s210",
-                    "19R": "SMALS/a7000+ OVALE BUZZR/a7000/s210 ERICM/a7000/flyover/h011",
-                    "19L": "SMALS/a7000+ RAHBB TOBYN ONEEL/a7000/flyover/h011/s210"
-                }
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ],
+          "KMCI": [
+            {
+              "icao": "SWA",
+              "airport": "KMCO"
             },
-            "waypoints": "ZOURA/ho WUTNG/a12000 HOOZE SMALS"
+            {
+              "icao": "FFT",
+              "airport": "MMUN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KBNA"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "AMF",
+              "airport": "KLRD"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KTPA"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KLAS"
+            },
+            {
+              "icao": "UPS",
+              "airport": "KSDF"
+            },
+            {
+              "icao": "UPS",
+              "airport": "KRFD"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KDCA"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KSLC"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KMSP"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KPHL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KAUS"
+            },
+            {
+              "icao": "FTH",
+              "airport": "68ID"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KATL"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KDTW"
+            },
+            {
+              "icao": "AAL",
+              "airport": "KPHL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KORD"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KDTW"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KMSP"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KDFW"
+            }
+          ],
+          "KMKC": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ],
+          "KOJC": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ],
+          "KSTJ": [
+            {
+              "icao": "N",
+              "airport": "KLRY"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KGJT"
+            }
+          ]
         }
-      ]
-    },
+      }
+    ]
+  }
+},
     "control_positions": {
         "KC_46_CTR": {
             "frequency": 127900,

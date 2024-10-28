@@ -552,242 +552,269 @@
       ]
     }
   },
-  "arrival_groups": {
-    "BENEE": [
+  "inbound_flows": {
+  "AIRCO GA": {
+    "arrivals": [
       {
-        "airlines": {
-          "KBUF": [
-            {
-              "airport": "KJFK",
-              "icao": "RPA"
-            },
-            {
-              "airport": "KLGA",
-              "icao": "EDV"
-            },
-            {
-              "airport": "KEWR",
-              "icao": "SKW"
-            }
-          ]
-        },
-        "assigned_altitude": 11000,
-        "cruise_altitude": 26000,
-        "initial_altitude": 20000,
+        "waypoints": "AIRCO_HO/ho AIRCO",
+        "cruise_altitude": 6000,
+        "route": "/. AIRCO",
         "initial_controller": "CLE_66_CTR",
-        "initial_speed": 300,
-        "route": "/. BENEE",
-        "waypoints": "BENEE_HO/ho BENEE"
-      }
-    ],
-    "BUF VOR": [
-      {
-        "airlines": {
-          "KBUF": [
-            {
-              "airport": "KBWI",
-              "icao": "SWA"
-            },
-            {
-              "airport": "KIAD",
-              "icao": "RPA"
-            }
-          ]
-        },
-        "assigned_altitude": 11000,
-        "cruise_altitude": 24000,
-        "initial_altitude": 19000,
-        "initial_controller": "CLE_66_CTR",
-        "initial_speed": 270,
-        "route": "/. BUF",
-        "waypoints": "BUF_HO/ho BUF"
-      }
-    ],
-    "DKK VOR (West)": [
-      {
-        "airlines": {
-          "KBUF": [
-            {
-              "airport": "KORD",
-              "fleet": "short",
-              "icao": "UAL"
-            },
-            {
-              "airport": "KDTW",
-              "fleet": "long",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KMDW",
-              "icao": "SWA"
-            }
-          ]
-        },
-        "assigned_altitude": 11000,
-        "cruise_altitude": 29000,
-        "initial_altitude": 20000,
-        "initial_controller": "CLE_66_CTR",
-        "initial_speed": 290,
-        "route": "/. DKK",
-        "waypoints": "DKK_W_HO/ho DKK"
-      }
-    ],
-      "EHMAN": [
-      {
-        "airlines": {
-          "KBUF": [
-            {
-              "airport": "KBOS",
-              "icao": "JBU"
-            }
-          ]
-        },
-        "assigned_altitude": 11000,
-        "cruise_altitude": 29000,
-        "initial_altitude": 18000,
-        "initial_controller": "CLE_66_CTR",
-        "initial_speed": 270,
-        "route": "/. EHMAN",
-        "waypoints": "ROC/ho EHMAN"
-      }
-    ],
-    "DKK VOR (South/East)": [
-      {
-        "airlines": {
-          "KBUF": [
-            {
-              "airport": "KCLT",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KMCO",
-              "icao": "JBU"
-            },
-            {
-              "airport": "KMEM",
-              "fleet": "long",
-              "icao": "FDX"
-            }
-          ],
-          "KIAG": [
-            {
-              "airport": "KSFB",
-              "fleet": "default",
-              "icao": "AAY"
-            },
-            {
-              "airport": "KPGD",
-              "fleet": "default",
-              "icao": "AAY"
-            }
-          ]
-        },
-        "assigned_altitude": 11000,
-        "cruise_altitude": 35000,
-        "initial_altitude": 20000,
-        "initial_controller": "CLE_66_CTR",
-        "initial_speed": 290,
-        "route": "/. DKK",
-        "waypoints": "DKK_SE_HO/ho DKK BUF"
-      }
-    ],
-    "JHW VOR": [
-      {
-        "airlines": {
-          "KBUF": [
-            {
-              "airport": "KAPF",
-              "icao": "EJA"
-            },
-            {
-              "airport": "KDFW",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KMEM",
-              "fleet": "long",
-              "icao": "FDX"
-            }
-          ],
-          "KIAG": [
-            {
-              "airport": "KGKT",
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ]
-        },
-        "assigned_altitude": 11000,
-        "cruise_altitude": 37000,
-        "initial_altitude": 20000,
-        "initial_controller": "CLE_66_CTR",
-        "initial_speed": 300,
-        "route": "/. JHW",
-        "waypoints": "JHW_HO/ho JHW"
-      }
-    ],
-    "JHW GA": [
-      {
-        "airlines": {
-          "KIAG": [
-            {
-              "airport": "KGKT",
-              "fleet": "lightGA",
-              "icao": "N"
-            }
-          ]
-        },
-        "assigned_altitude": 8500,
-        "cruise_altitude": 8500,
-        "initial_altitude": 8500,
-        "initial_controller": "CLE_66_CTR",
+        "initial_altitude": 6000,
+        "assigned_altitude": 6000,
         "initial_speed": 140,
-        "route": "/. JHW",
-        "waypoints": "JHW_HO/ho JHW"
+        "expect_approach": null,
+        "airlines": {
+          "KIAG": [
+            {
+              "icao": "N",
+              "fleet": "lightGA",
+              "airport": "KITH"
+            }
+          ]
+        }
       }
-    ],
-    "WOZEE": [
+    ]
+  },
+  "BENEE": {
+    "arrivals": [
       {
+        "waypoints": "BENEE_HO/ho BENEE",
+        "cruise_altitude": 26000,
+        "route": "/. BENEE",
+        "initial_controller": "CLE_66_CTR",
+        "initial_altitude": 20000,
+        "assigned_altitude": 11000,
+        "initial_speed": 300,
+        "expect_approach": null,
         "airlines": {
           "KBUF": [
             {
-              "airport": "CYYZ",
-              "icao": "N",
-              "fleet": "fastGA"
+              "icao": "RPA",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "EDV",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KEWR"
             }
           ]
-        },
-        "assigned_altitude": 9000,
-        "cruise_altitude": 9000,
-        "initial_altitude": 9000,
-        "initial_controller": "TOR_CTR",
-        "initial_speed": 250,
-        "route": "/. WOZEE",
-        "waypoints": "WOZEE_HO/ho WOZEE"
+        }
       }
-    ],
-  "AIRCO GA": [
-    {
-      "airlines": {
-        "KIAG": [
-          {
-            "airport": "KITH",
-            "fleet": "lightGA",
-            "icao": "N"
-          }
-        ]
-      },
-      "assigned_altitude": 6000,
-      "cruise_altitude": 6000,
-      "initial_altitude": 6000,
-      "initial_controller": "CLE_66_CTR",
-      "initial_speed": 140,
-      "route": "/. AIRCO",
-      "waypoints": "AIRCO_HO/ho AIRCO"
-    }
-  ]
+    ]
+  },
+  "BUF VOR": {
+    "arrivals": [
+      {
+        "waypoints": "BUF_HO/ho BUF",
+        "cruise_altitude": 24000,
+        "route": "/. BUF",
+        "initial_controller": "CLE_66_CTR",
+        "initial_altitude": 19000,
+        "assigned_altitude": 11000,
+        "initial_speed": 270,
+        "expect_approach": null,
+        "airlines": {
+          "KBUF": [
+            {
+              "icao": "SWA",
+              "airport": "KBWI"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KIAD"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "DKK VOR (South/East)": {
+    "arrivals": [
+      {
+        "waypoints": "DKK_SE_HO/ho DKK BUF",
+        "cruise_altitude": 35000,
+        "route": "/. DKK",
+        "initial_controller": "CLE_66_CTR",
+        "initial_altitude": 20000,
+        "assigned_altitude": 11000,
+        "initial_speed": 290,
+        "expect_approach": null,
+        "airlines": {
+          "KBUF": [
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "long",
+              "airport": "KMEM"
+            }
+          ],
+          "KIAG": [
+            {
+              "icao": "AAY",
+              "fleet": "default",
+              "airport": "KSFB"
+            },
+            {
+              "icao": "AAY",
+              "fleet": "default",
+              "airport": "KPGD"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "DKK VOR (West)": {
+    "arrivals": [
+      {
+        "waypoints": "DKK_W_HO/ho DKK",
+        "cruise_altitude": 29000,
+        "route": "/. DKK",
+        "initial_controller": "CLE_66_CTR",
+        "initial_altitude": 20000,
+        "assigned_altitude": 11000,
+        "initial_speed": 290,
+        "expect_approach": null,
+        "airlines": {
+          "KBUF": [
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KORD"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "long",
+              "airport": "KDTW"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMDW"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "EHMAN": {
+    "arrivals": [
+      {
+        "waypoints": "ROC/ho EHMAN",
+        "cruise_altitude": 29000,
+        "route": "/. EHMAN",
+        "initial_controller": "CLE_66_CTR",
+        "initial_altitude": 18000,
+        "assigned_altitude": 11000,
+        "initial_speed": 270,
+        "expect_approach": null,
+        "airlines": {
+          "KBUF": [
+            {
+              "icao": "JBU",
+              "airport": "KBOS"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "JHW GA": {
+    "arrivals": [
+      {
+        "waypoints": "JHW_HO/ho JHW",
+        "cruise_altitude": 8500,
+        "route": "/. JHW",
+        "initial_controller": "CLE_66_CTR",
+        "initial_altitude": 8500,
+        "assigned_altitude": 8500,
+        "initial_speed": 140,
+        "expect_approach": null,
+        "airlines": {
+          "KIAG": [
+            {
+              "icao": "N",
+              "fleet": "lightGA",
+              "airport": "KGKT"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "JHW VOR": {
+    "arrivals": [
+      {
+        "waypoints": "JHW_HO/ho JHW",
+        "cruise_altitude": 37000,
+        "route": "/. JHW",
+        "initial_controller": "CLE_66_CTR",
+        "initial_altitude": 20000,
+        "assigned_altitude": 11000,
+        "initial_speed": 300,
+        "expect_approach": null,
+        "airlines": {
+          "KBUF": [
+            {
+              "icao": "EJA",
+              "airport": "KAPF"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "long",
+              "airport": "KMEM"
+            }
+          ],
+          "KIAG": [
+            {
+              "icao": "N",
+              "fleet": "fastGA",
+              "airport": "KGKT"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "WOZEE": {
+    "arrivals": [
+      {
+        "waypoints": "WOZEE_HO/ho WOZEE",
+        "cruise_altitude": 9000,
+        "route": "/. WOZEE",
+        "initial_controller": "TOR_CTR",
+        "initial_altitude": 9000,
+        "assigned_altitude": 9000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KBUF": [
+            {
+              "icao": "N",
+              "fleet": "fastGA",
+              "airport": "CYYZ"
+            }
+          ]
+        }
+      }
+    ]
+  }
 },
   "control_positions": {
     "CLE_66_CTR": {

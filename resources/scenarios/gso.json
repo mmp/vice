@@ -483,273 +483,296 @@
       ]
     }
   },
-  "arrival_groups": {
-    "GANTS": [
+  "inbound_flows": {
+  "BLOCC2": {
+    "arrivals": [
       {
-        "airlines": {
-          "KGSO": [
-            {
-              "airport": "KCLT",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KCLT",
-              "icao": "JIA"
-            },
-            {
-              "airport": "KCLT",
-              "icao": "RPA"
-            }
-          ]
-        },
-        "initial_altitude": 9000,
-        "initial_controller": "CLT_APP",
-        "initial_speed": 250,
-        "route": "/. GANTS",
-        "waypoints": "RENZI/ho GANTS/s250/h020"
-      }
-    ],
-    "HENBY3": [
-      {
-        "airlines": {
-          "KGSO": [
-            {
-              "airport": "KCLT",
-              "icao": "ENY"
-            },
-            {
-              "airport": "KDTW",
-              "fleet": "short",
-              "icao": "DAL"
-            }
-          ]
-        },
-        "initial_altitude": 12000,
-        "initial_controller": "DC_CTR",
-        "initial_speed": 280,
-        "star":"HENBY3",
-        "waypoints": "HOKEE PIGGS/ho HENBY/s280/h180"
-      },
-      {
-        "airlines": {
-          "KINT": [
-            {
-              "airport": "KRSW",
-              "icao": "EJA"
-            },
-            {
-              "airport": "KFLL",
-              "icao": "EJA"
-            }
-          ]
-        },
-        "initial_altitude": 10000,
-        "initial_controller": "DC_CTR",
-        "initial_speed": 250,
-        "star":"HENBY3",
-        "waypoints": "LYH PIGGS/ho HENBY/h180"
-      }
-    ],
-  "BROOK4": [
-      {
-        "airlines": {
-          "KGSO": [
-            {
-              "airport": "KCLT",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KATL",
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KJFK",
-              "fleet": "short",
-              "icao": "DAL"
-            }
-          ]
-        },
+        "waypoints": "MMJAY/ho VACUM BLOCC/s250/h332",
+        "star": "BLOCC2",
+        "initial_controller": "ATL_CTR",
         "initial_altitude": 11000,
-        "initial_controller": "ATL_CTR",
         "initial_speed": 250,
-        "star":"BROOK4",
-        "waypoints": "BROOK BURCH/ho TRAKS WALLK/h107"
-      },
-      {
-        "airlines": {
-          "KINT": [
-            {
-              "airport": "KRSW",
-              "icao": "EJA"
-            },
-            {
-              "airport": "KFLL",
-              "icao": "EJA"
-            }
-          ]
-        },
-        "initial_altitude": 9000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 250,
-        "star":"BROOK4",
-        "waypoints": "KHAOS BROOK/ho TRAKS WALLK/h282"
-      }
-    ],
-      "TRAKS3S": [
-      {
+        "expect_approach": null,
         "airlines": {
           "KGSO": [
             {
-              "airport": "KCLT",
-              "fleet": "short",
-              "icao": "AAL"
+              "icao": "ENY",
+              "airport": "KMDW"
             },
             {
-              "airport": "KATL",
-              "fleet": "short",
-              "icao": "DAL"
+              "icao": "RPA",
+              "airport": "KORD"
             },
             {
-              "airport": "KGSO",
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KJFK",
-              "fleet": "short",
-              "icao": "DAL"
-            }
-          ]
-        },
-        "initial_altitude": 11000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 290,
-        "star":"TRAKS3S",
-        "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL GLFRD/h060",
-        "speed_restriction": 250
-      },
-      {
-        "airlines": {
-          "KINT": [
-            {
-              "airport": "KRSW",
-              "icao": "EJA"
-            },
-            {
-              "airport": "KFLL",
-              "icao": "EJA"
-            }
-          ]
-        },
-        "initial_altitude": 9000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 250,
-        "star":"TRAKS3",
-        "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL/h098"
-      }
-    ],
-      "TRAKS3N": [
-        {
-          "airlines": {
-            "KGSO": [
-              {
-                "airport": "KCLT",
-                "fleet": "short",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KATL",
-                "fleet": "short",
-                "icao": "DAL"
-              },
-              {
-                "airport": "KGSO",
-                "fleet": "short",
-                "icao": "DAL"
-              },
-              {
-                "airport": "KJFK",
-                "fleet": "short",
-                "icao": "DAL"
-              }
-            ]
-          },
-          "initial_altitude": 11000,
-          "initial_controller": "ATL_CTR",
-          "initial_speed": 290,
-          "star": "TRAKS3N",
-          "waypoints": "KHAOS TRAKS/ho DEMNZ PDMNT/h080",
-          "speed_restriction": 250
-        },
-        {
-          "airlines": {
-            "KINT": [
-              {
-                "airport": "KRSW",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KFLL",
-                "icao": "EJA"
-              }
-            ]
-          },
-          "initial_altitude": 9000,
-          "initial_controller": "ATL_CTR",
-          "initial_speed": 250,
-          "star":"TRAKS3",
-          "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL/h098"
-        }
-    ],
-    "BLOCC2": [
-      {
-        "airlines": {
-          "KGSO": [
-            {
-              "airport": "KMDW",
-              "icao": "ENY"
-            },
-            {
-              "airport": "KORD",
-              "icao": "RPA"
-            },
-            {
-              "airport": "KMEM",
+              "icao": "FDX",
               "fleet": "long",
-              "icao": "FDX"
+              "airport": "KMEM"
             }
           ]
-        },
-        "initial_altitude": 11000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 250,
-        "star":"BLOCC2",
-        "waypoints": "MMJAY/ho VACUM BLOCC/s250/h332"
+        }
       },
       {
+        "waypoints": "MMJAY/ho VACUM BLOCC/a9000/s250/h332",
+        "star": "BLOCC2",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 9000,
+        "initial_speed": 250,
+        "expect_approach": null,
         "airlines": {
           "KINT": [
             {
-              "airport": "KRSW",
-              "icao": "EJA"
+              "icao": "EJA",
+              "airport": "KRSW"
             },
             {
-              "airport": "KFLL",
-              "icao": "EJA"
+              "icao": "EJA",
+              "airport": "KFLL"
             }
           ]
-        },
-        "initial_altitude": 9000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 250,
-        "star":"BLOCC2",
-        "waypoints": "MMJAY/ho VACUM BLOCC/s250/a9000/h332"
+        }
       }
     ]
   },
+  "BROOK4": {
+    "arrivals": [
+      {
+        "waypoints": "BROOK BURCH/ho TRAKS WALLK/h107",
+        "star": "BROOK4",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KGSO": [
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KATL"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KJFK"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "KHAOS BROOK/ho TRAKS WALLK/h282",
+        "star": "BROOK4",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 9000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KINT": [
+            {
+              "icao": "EJA",
+              "airport": "KRSW"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KFLL"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "GANTS": {
+    "arrivals": [
+      {
+        "waypoints": "RENZI/ho GANTS/s250/h20",
+        "route": "/. GANTS",
+        "initial_controller": "CLT_APP",
+        "initial_altitude": 9000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KGSO": [
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KCLT"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "HENBY3": {
+    "arrivals": [
+      {
+        "waypoints": "HOKEE PIGGS/ho HENBY/s280/h180",
+        "star": "HENBY3",
+        "initial_controller": "DC_CTR",
+        "initial_altitude": 12000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KGSO": [
+            {
+              "icao": "ENY",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KDTW"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "LYH PIGGS/ho HENBY/h180",
+        "star": "HENBY3",
+        "initial_controller": "DC_CTR",
+        "initial_altitude": 10000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KINT": [
+            {
+              "icao": "EJA",
+              "airport": "KRSW"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KFLL"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "TRAKS3N": {
+    "arrivals": [
+      {
+        "waypoints": "KHAOS TRAKS/ho DEMNZ PDMNT/h80",
+        "star": "TRAKS3N",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 290,
+        "speed_restriction": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KGSO": [
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KATL"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KGSO"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KJFK"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL/h98",
+        "star": "TRAKS3",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 9000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KINT": [
+            {
+              "icao": "EJA",
+              "airport": "KRSW"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KFLL"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "TRAKS3S": {
+    "arrivals": [
+      {
+        "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL GLFRD/h60",
+        "star": "TRAKS3S",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 290,
+        "speed_restriction": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KGSO": [
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KATL"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KGSO"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KJFK"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL/h98",
+        "star": "TRAKS3",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 9000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KINT": [
+            {
+              "icao": "EJA",
+              "airport": "KRSW"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KFLL"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
   "control_positions": {
     "ATL_CTR": {
       "frequency": 132975,

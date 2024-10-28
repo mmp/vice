@@ -369,156 +369,162 @@
                 ]
         }
     },
-    "arrival_groups": {
-        "DEEPO1": [
+    "inbound_flows": {
+  "DEEPO1": {
+    "arrivals": [
+      {
+        "spawn": "DEEPO@0.6",
+        "cruise_altitude": 15000,
+        "star": "DEEPO1",
+        "initial_controller": "BOS_37_CTR",
+        "initial_altitude": 13000,
+        "initial_speed": 310,
+        "expect_approach": null,
+        "airlines": {
+          "KACK": [
             {
-              "airlines": {
-                "KACK": [
-                        {
-                            "airport": "KHYA",
-                            "icao": "N"
-                        },
-                        {
-                            "airport": "KHYA",
-                            "icao": "N"
-                        },
-                        {
-                            "airport": "KHYA",
-                            "icao": "N"
-                        },
-                        {
-                            "airport": "KLUK",
-                            "icao": "N"
-                        },
-                        {
-                            "airport": "KLGA",
-                            "icao": "JBU"
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "GJS"
-                        },
-                        {
-                            "airport": "KHYA",
-                            "icao": "AMF"
-                        },
-                        {
-                            "airport": "KHPN",
-                            "icao": "N"
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "RPA"
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "KAP"
-                        },
-                        {
-                            "airport": "KTEB",
-                            "icao": "N"
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "EJA"
-                        },
-                        {
-                            "airport": "KMVY",
-                            "icao": "KAP"
-                        },
-                        {
-                            "airport": "KHPN",
-                            "icao": "CNS"
-                        },
-                        {
-                            "airport": "KHYA",
-                            "icao": "KAP"
-                        }
-                ]
-              },
-              "initial_altitude": 13000,
-              "cruise_altitude": 15000,
-              "initial_controller": "BOS_37_CTR",
-              "initial_speed": 310,
-              "star": "DEEPO1",
-              "spawn": "DEEPO@0.6"
-            }
-          ],
-        "NEWBE3": [
-        {
-            "airlines": {
-            "KACK": [
-                    {
-                        "airport": "KHYA",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KHYA",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KHYA",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KLUK",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KLGA",
-                        "icao": "JBU"
-                    },
-                    {
-                        "airport": "KEWR",
-                        "icao": "GJS"
-                    },
-                    {
-                        "airport": "KHYA",
-                        "icao": "AMF"
-                    },
-                    {
-                        "airport": "KHPN",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KBOS",
-                        "icao": "RPA"
-                    },
-                    {
-                        "airport": "KBOS",
-                        "icao": "KAP"
-                    },
-                    {
-                        "airport": "KTEB",
-                        "icao": "N"
-                    },
-                    {
-                        "airport": "KEWR",
-                        "icao": "EJA"
-                    },
-                    {
-                        "airport": "KMVY",
-                        "icao": "KAP"
-                    },
-                    {
-                        "airport": "KHPN",
-                        "icao": "CNS"
-                    },
-                    {
-                        "airport": "KHYA",
-                        "icao": "KAP"
-                    }
-            ]
+              "icao": "N",
+              "airport": "KHYA"
             },
-            "initial_altitude": 13000,
-            "cruise_altitude": 15000,
-            "initial_controller": "BOS_37_CTR",
-            "initial_speed": 310,
-            "star": "NEWBE3",
-            "spawn": "NEWBE@0.6"
+            {
+              "icao": "N",
+              "airport": "KHYA"
+            },
+            {
+              "icao": "N",
+              "airport": "KHYA"
+            },
+            {
+              "icao": "N",
+              "airport": "KLUK"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "GJS",
+              "airport": "KEWR"
+            },
+            {
+              "icao": "AMF",
+              "airport": "KHYA"
+            },
+            {
+              "icao": "N",
+              "airport": "KHPN"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "KAP",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "N",
+              "airport": "KTEB"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KEWR"
+            },
+            {
+              "icao": "KAP",
+              "airport": "KMVY"
+            },
+            {
+              "icao": "CNS",
+              "airport": "KHPN"
+            },
+            {
+              "icao": "KAP",
+              "airport": "KHYA"
+            }
+          ]
         }
-        ]
-    },
+      }
+    ]
+  },
+  "NEWBE3": {
+    "arrivals": [
+      {
+        "spawn": "NEWBE@0.6",
+        "cruise_altitude": 15000,
+        "star": "NEWBE3",
+        "initial_controller": "BOS_37_CTR",
+        "initial_altitude": 13000,
+        "initial_speed": 310,
+        "expect_approach": null,
+        "airlines": {
+          "KACK": [
+            {
+              "icao": "N",
+              "airport": "KHYA"
+            },
+            {
+              "icao": "N",
+              "airport": "KHYA"
+            },
+            {
+              "icao": "N",
+              "airport": "KHYA"
+            },
+            {
+              "icao": "N",
+              "airport": "KLUK"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "GJS",
+              "airport": "KEWR"
+            },
+            {
+              "icao": "AMF",
+              "airport": "KHYA"
+            },
+            {
+              "icao": "N",
+              "airport": "KHPN"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "KAP",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "N",
+              "airport": "KTEB"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KEWR"
+            },
+            {
+              "icao": "KAP",
+              "airport": "KMVY"
+            },
+            {
+              "icao": "CNS",
+              "airport": "KHPN"
+            },
+            {
+              "icao": "KAP",
+              "airport": "KHYA"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
     "control_positions": {
         "ACK_N_APP": {
       "frequency": 118200,

@@ -1853,242 +1853,254 @@
       }
       }
     },
-    "arrival_groups": {
-      "CHSNE2": [
-        {
-          "airlines": {
-            "KBNA": [
-              {
-                "airport": "KDFW",
-                "icao": "ENY"
-              },
-              {
-                "airport": "KDFW",
-                "fleet": "short",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KIAH",
-                "icao": "ASH"
-              },
-              {
-                "airport": "KIAH",
-                "fleet": "short",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KLAX",
-                "fleet": "short",
-                "icao": "DAL"
-              },
-              {
-                "airport": "KDAL",
-                "icao": "SWA"
-              },
-              {
-                "airport": "KDFW",
-                "icao": "FFT"
-              },
-              {
-                "airport": "KDFW",
-                "icao": "NKS"
-              },
-              {
-                "airport": "MMUN",
-                "icao": "VIV"
-              }
-            ]
-          },
-          "initial_altitude": 15000,
-          "initial_controller": "MEM_42_CTR",
-          "initial_speed": 280,
-          "star": "CHSNE2",
-          "runway_waypoints": {
-            "KBNA": {
-              "2L":  "OLNAH/a6000-11000/s250 BGSTR/a4000 TUPIE/a4000/s210/flyover/h110",
-              "2R":  "OLNAH/a6000-11000/s250 BGSTR/a4000 TUPIE/a4000/s210/flyover/h110",
-              "20L": "OLNAH/a6000-11000/s250 GDSTF/a6000+/s250 NUVOO/a6000+/s220 JOGLO/a5000/s210/flyover/h21",
-              "20R": "OLNAH/a6000-11000/s250 GDSTF/a6000+/s250 NUVOO/a6000+/s220 JOGLO/a5000/s210/flyover/h21"
+    "inbound_flows": {
+  "CHSNE2": {
+    "arrivals": [
+      {
+        "waypoints": "CHSNE/a12000-19000/ho BAWLS/a9000+ JATGO OLNAH/a6000-11000/s250",
+        "runway_waypoints": {
+          "KBNA": {
+            "20L": "OLNAH/a6000-11000/s250 GDSTF/a6000+/s250 NUVOO/a6000+/s220 JOGLO/a5000/s210/flyover/h21",
+            "20R": "OLNAH/a6000-11000/s250 GDSTF/a6000+/s250 NUVOO/a6000+/s220 JOGLO/a5000/s210/flyover/h21",
+            "2L": "OLNAH/a6000-11000/s250 BGSTR/a4000 TUPIE/a4000/s210/flyover/h110",
+            "2R": "OLNAH/a6000-11000/s250 BGSTR/a4000 TUPIE/a4000/s210/flyover/h110"
+          }
+        },
+        "star": "CHSNE2",
+        "initial_controller": "MEM_42_CTR",
+        "initial_altitude": 15000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KBNA": [
+            {
+              "icao": "ENY",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "ASH",
+              "airport": "KIAH"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KIAH"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KLAX"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "FFT",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "VIV",
+              "airport": "MMUN"
             }
-          },
-          "waypoints": "CHSNE/a12000-19000/ho BAWLS/a9000+ JATGO OLNAH/a6000-11000/s250"
+          ]
         }
-      ],
-      "PASLY4": [
-        {
-          "airlines": {
-            "KBNA": [
-              {
-                "airport": "KJFK",
-                "icao": "JBU"
-              },
-              {
-                "airport": "CYYZ",
-                "icao": "WJA"
-              },
-              {
-                "airport": "CYYZ",
-                "fleet": "short",
-                "icao": "ACA"
-              },
-              {
-                "airport": "EGLL",
-                "fleet": "long",
-                "icao": "BAW"
-              },
-              {
-                "airport": "KDFW",
-                "fleet": "short",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KIAH",
-                "fleet": "short",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KLAX",
-                "fleet": "short",
-                "icao": "DAL"
-              },
-              {
-                "airport": "KDAL",
-                "icao": "SWA"
-              },
-              {
-                "airport": "KDFW",
-                "icao": "FFT"
-              },
-              {
-                "airport": "KDFW",
-                "icao": "NKS"
-              }
-            ]
-          },
-          "initial_altitude": 15000,
-          "initial_controller": "MEM_40_CTR",
-          "initial_speed": 280,
-          "star": "PASLY4",
-          "runway_waypoints": {
-            "KBNA": {
-              "2L":  "BODDY/a7000-12000/s250 CLBTY/a6000+/s250 JABUN/a6000+ DRAND/a6000+/s220 ZODKA/a5000/s210/flyover/h201",
-              "2R":  "BODDY/a7000-12000/s250 CLBTY/a6000+/s250 JABUN/a6000+ DRAND/a6000+/s220 ZODKA/a5000/s210/flyover/h201",
-              "20L": "BODDY/a7000-12000/s250 MUUDD/a6000/s250/flyover/h270",
-              "20R": "BODDY/a7000-12000/s250 MUUDD/a6000/s250/flyover/h270"
+      }
+    ]
+  },
+  "PASLY4": {
+    "arrivals": [
+      {
+        "waypoints": "PASLY/a12000-20000/ho CARAP/a10000+ DAANG BODDY/a7000-12000/s250",
+        "runway_waypoints": {
+          "KBNA": {
+            "20L": "BODDY/a7000-12000/s250 MUUDD/a6000/s250/flyover/h270",
+            "20R": "BODDY/a7000-12000/s250 MUUDD/a6000/s250/flyover/h270",
+            "2L": "BODDY/a7000-12000/s250 CLBTY/a6000+/s250 JABUN/a6000+ DRAND/a6000+/s220 ZODKA/a5000/s210/flyover/h201",
+            "2R": "BODDY/a7000-12000/s250 CLBTY/a6000+/s250 JABUN/a6000+ DRAND/a6000+/s220 ZODKA/a5000/s210/flyover/h201"
+          }
+        },
+        "star": "PASLY4",
+        "initial_controller": "MEM_40_CTR",
+        "initial_altitude": 15000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KBNA": [
+            {
+              "icao": "JBU",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "WJA",
+              "airport": "CYYZ"
+            },
+            {
+              "icao": "ACA",
+              "fleet": "short",
+              "airport": "CYYZ"
+            },
+            {
+              "icao": "BAW",
+              "fleet": "long",
+              "airport": "EGLL"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KIAH"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KLAX"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "FFT",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KDFW"
             }
-          },
-          "waypoints": "PASLY/a12000-20000/ho CARAP/a10000+ DAANG BODDY/a7000-12000/s250"
+          ]
         }
-      ],
-      "RYYMN2":[
-        {
-          "airlines": {
-            "KBNA": [
-              {
-                "airport": "KDFW",
-                "fleet": "short",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KIAH",
-                "fleet": "short",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KLAX",
-                "fleet": "short",
-                "icao": "DAL"
-              },
-              {
-                "airport": "KDAL",
-                "icao": "SWA"
-              },
-              {
-                "airport": "KDFW",
-                "icao": "FFT"
-              },
-              {
-                "airport": "KDFW",
-                "icao": "NKS"
-              },
-              {
-                "airport": "KSEA",
-                "icao": "ASA"
-              }
-            ]
-          },
-          "initial_altitude": 14000,
-          "initial_controller": "MEM_41_CTR",
-          "initial_speed": 280,
-          "star": "RYYMN2",
-          "runway_waypoints": {
-            "KBNA": {
-              "20L": "OBATE/a6000-12000/s250 YYALL/a4000 CULAR/a4000/s210/flyover/h110",
-              "20R": "OBATE/a6000-12000/s250 YYALL/a4000 CULAR/a4000/s210/flyover/h110",
-              "2L":  "OBATE/a6000-12000/s250 JNKNS/a6000+/s250 WAMAR/a5000/s210/flyover/h200",
-              "2R":  "OBATE/a6000-12000/s250 JNKNS/a6000+/s250 WAMAR/a5000/s210/flyover/h200"
+      }
+    ]
+  },
+  "RYYMN2": {
+    "arrivals": [
+      {
+        "waypoints": "RYYMN/a11000-19000/ho PEKIE/a10000+ JONIL/a9000+ OBATE/a6000-12000/s250",
+        "runway_waypoints": {
+          "KBNA": {
+            "20L": "OBATE/a6000-12000/s250 YYALL/a4000 CULAR/a4000/s210/flyover/h110",
+            "20R": "OBATE/a6000-12000/s250 YYALL/a4000 CULAR/a4000/s210/flyover/h110",
+            "2L": "OBATE/a6000-12000/s250 JNKNS/a6000+/s250 WAMAR/a5000/s210/flyover/h200",
+            "2R": "OBATE/a6000-12000/s250 JNKNS/a6000+/s250 WAMAR/a5000/s210/flyover/h200"
+          }
+        },
+        "star": "RYYMN2",
+        "initial_controller": "MEM_41_CTR",
+        "initial_altitude": 14000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KBNA": [
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KIAH"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KLAX"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "FFT",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "ASA",
+              "airport": "KSEA"
             }
-          },
-          "waypoints": "RYYMN/a11000-19000/ho PEKIE/a10000+ JONIL/a9000+ OBATE/a6000-12000/s250"
+          ]
         }
-      ],
-      "SWFFT2": [
-        {
-          "airlines": {
-            "KBNA": [
-              {
-                "airport": "KJFK",
-                "icao": "JBU"
-              },
-              {
-                "airport": "KDFW",
-                "fleet": "short",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KIAH",
-                "fleet": "short",
-                "icao": "UAL"
-              },
-              {
-                "airport": "KLAX",
-                "fleet": "short",
-                "icao": "DAL"
-              },
-              {
-                "airport": "KDAL",
-                "icao": "SWA"
-              },
-              {
-                "airport": "KDFW",
-                "icao": "FFT"
-              },
-              {
-                "airport": "KDFW",
-                "icao": "NKS"
-              },
-              {
-                "airport": "KFLL",
-                "icao": "AAY"
-              }
-            ]
-          },
-          "initial_altitude": 15000,
-          "initial_controller": "MEM_60_CTR",
-          "initial_speed": 280,
-          "star": "SWFFT2",
-          "runway_waypoints": {
-            "KBNA": {
-              "2L":  "ADAAY/a8000-12000/s250 TEARS/a6000/s250/flyover/h292",
-              "2R":  "ADAAY/a8000-12000/s250 TEARS/a6000/s250/flyover/h292",
-              "20L": "ADAAY/a8000-12000/s250 BRETH/a6000+/s250 CORRA/a6000+/s220 HAKUM SIPPO/a5000/s210/flyover/h21",
-              "20R": "ADAAY/a8000-12000/s250 BRETH/a6000+/s250 CORRA/a6000+/s220 HAKUM SIPPO/a5000/s210/flyover/h21"
+      }
+    ]
+  },
+  "SWFFT2": {
+    "arrivals": [
+      {
+        "waypoints": "SWFFT/a13000-20000/ho HIMAT/a10000+ WEMAL ADAAY/a8000-12000/s250",
+        "runway_waypoints": {
+          "KBNA": {
+            "20L": "ADAAY/a8000-12000/s250 BRETH/a6000+/s250 CORRA/a6000+/s220 HAKUM SIPPO/a5000/s210/flyover/h21",
+            "20R": "ADAAY/a8000-12000/s250 BRETH/a6000+/s250 CORRA/a6000+/s220 HAKUM SIPPO/a5000/s210/flyover/h21",
+            "2L": "ADAAY/a8000-12000/s250 TEARS/a6000/s250/flyover/h292",
+            "2R": "ADAAY/a8000-12000/s250 TEARS/a6000/s250/flyover/h292"
+          }
+        },
+        "star": "SWFFT2",
+        "initial_controller": "MEM_60_CTR",
+        "initial_altitude": 15000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KBNA": [
+            {
+              "icao": "JBU",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KIAH"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KLAX"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDAL"
+            },
+            {
+              "icao": "FFT",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "AAY",
+              "airport": "KFLL"
             }
-          },
-          "waypoints": "SWFFT/a13000-20000/ho HIMAT/a10000+ WEMAL ADAAY/a8000-12000/s250"
+          ]
         }
-      ]
-    },
+      }
+    ]
+  }
+},
     "control_positions": {
       "MEM_40_CTR": {
         "frequency": 132900,

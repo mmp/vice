@@ -286,7 +286,7 @@ func main() {
 
 			// Periodically log current memory use, etc.
 			if stats.redraws%18000 == 0 {
-				lg.Debug("performance", slog.Any("stats", stats))
+				lg.Info("performance", slog.Any("stats", stats))
 			}
 
 			if plat.ShouldStop() && len(ui.activeModalDialogs) == 0 {

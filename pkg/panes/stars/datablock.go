@@ -287,7 +287,7 @@ func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *
 
 	flush := func() {
 		if len(str) > 0 {
-			pt = td.AddText(str, pt, style)
+			pt = td.AddText(rewriteDelta(str), pt, style)
 			str = ""
 		}
 	}
@@ -605,7 +605,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		// TODO: * if field 1 is showing pilot-reported altitude
 		field1Length := util.Select(fa.AllowLongScratchpad, 4, 3)
 		fmt1 := func(s string) string {
-			for len(s) < field1Length {
+			for len([]rune(s)) < field1Length {
 				s += " "
 			}
 			return s
@@ -702,7 +702,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		// single field
 		field3Length := util.Select(ctx.ControlClient.STARSFacilityAdaptation.AllowLongScratchpad, 4, 3)
 		fmt3 := func(s string) string {
-			for len(s) < field3Length {
+			for len([]rune(s)) < field3Length {
 				s += " "
 			}
 			return s

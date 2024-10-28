@@ -21,7 +21,7 @@ jobs:
 
     steps:
     - name: Checkout source
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0   # fetch whole history so we can get tags for the installer :-(
 
@@ -31,13 +31,13 @@ jobs:
         git describe --tags --abbrev=0
 
     - name: Setup go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version-file: go.mod
         cache-dependency-path: go.sum
 
     - name: Checkout Windows prebuilts
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: mmp/vice-windows-ext
         path: ./ext
@@ -78,13 +78,13 @@ jobs:
         .\windows\makeinstaller.bat
 
     - name: Save executable
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: vice.exe
         path: vice.exe
 
     - name: Save installer
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Vice-installer.msi
         path: Vice-installer.msi

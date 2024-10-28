@@ -413,7 +413,8 @@ Y90.
             <p>When a new simulation starts, <i>vice</i> automatically launches new departures and arrivals based on the
               departure and arrival rates set in the "New Simulation" window.
               During a simulation, clicking on the departing plane icon in the menubar <i class="fas fa-plane-departure"></i>
-              opens a window that allows more control over aircraft launches.
+              opens a window that allows more control over aircraft launches and issuing releases for airports
+              where "hold for release" is in effect.
               (Note that when <i>vice</i> is used with multiple controllers in the same simulation, only one controller
               may have this window open at a time.)
             </p>
@@ -428,8 +429,8 @@ Y90.
 <i class="fas fa-trash"></i>.
             </p>
             <div class="text-center">
-              <img src="manual-launch.jpg" srcset="manual-launch-2x.jpg 2x" width="623" height="354" class="img-fluid" alt="manual aircraft launch window">
-            </div>
+              <img src="manual-launch.png" srcset="manual-launch-2x.png 2x" width="621" height="399">
+            </div><br>
             <br>
           </section>
 
@@ -761,7 +762,7 @@ Y90.
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.11.5/Vice-v0.11.5-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.11.5 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.11.6/Vice-v0.11.6-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.11.6 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -770,7 +771,7 @@ Y90.
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Big Sur or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.11.5/Vice-v0.11.5-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.11.5 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.11.6/Vice-v0.11.6-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.11.6 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -797,15 +798,19 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
-            <h3>0.11.6 (TODO October 2024)</h3>
+            <h3>0.11.6 (22 October 2024)</h3>
             <ul>
-              <li>Scenario updates: CHS, F11 (Michael Knight), C90, MKE (Jud Lopez).</li>
+              <li>New scenario: LGA HAARP (Tyler T).</li>
+              <li>Scenario updates: CHS, F11 (Michael Knight), SCT, C90, MKE (Jud Lopez).</li>
               <li>Updated how <a href="#atc-commands">aircraft control instructions</a> are entered: press <code>;</code> to enable "target generation"
                 mode in STARS, after which control commands can be entered.</li>
               <li>Fixed a bug where aircraft that went around after being handed off to tower wouldn't contact tower the next time.</li>
               <li>Fixed a few bugs related to the 250kts speed limit at 10,000'.</li>
+              <li>Added more compact "hold for release" interface for airports that don't use STARS coordination lists.</li>
               <li>STARS:
                 <ul>
+                  <li>Added OTJI mode, where an instructor can sign in and issue commands to all aircraft, regardless
+                    of which controller is responsible for them.</li>
                   <li>Added support for <a href="#restriction-areas">restriction areas</a>. System restriction areas are automatically
                   generated based on the current FAA TFRs.</li>
                   <li>Multiple improvements to video map handling, including supporting multiple colors and map categories.
@@ -816,6 +821,7 @@ how it simulates aircraft or the STARS interface.
               <li>Facility engineering:
                 <ul>
                   <li>It is no longer required that all runways have routes for all exits.</li>
+                  <li>"arrival_groups" is no longer supported: arrivals must be specified using the <a href="#fe-arrivals">"inbound_flows"</a> variable.</li>
                   <li>"star" is now optional for arrivals; the pilot contact message has been improved for arrivals not on STARs.</li>
                   <li>Added an adaptation ("yellow_entries") for coordination lists that causes list entries to be yellow, not green.</li>
                   <li>Added an adaptation ("use_legacy_font") to "stars_config" to select the legacy STARS font.
@@ -5203,7 +5209,11 @@ how it simulates aircraft or the STARS interface.
               <tr>
                 <td>"hold_for_release"</td>
                 <td>Boolean</td>
-                <td>(<i>Optional</i>) If true, departures from the airport must be released by a controller.</td>
+                <td>(<i>Optional</i>) If true, departures from the airport must be released by a controller.
+                  If the airport is listed in "coordination_lists" in <a href="#fe-stars-videomaps">"stars_config"</a>,
+                  then the release will be managed using STARS coordination lists; otherwise it will appear
+                  in the <i>Launch Control</i> window.
+                </td>
               </tr>
               <tr>
                 <td>"name"</td>
@@ -5515,11 +5525,8 @@ Given the id, the approach can be specified with:</p>
             <h2 class="section-heading">Arrivals and Overflights</h2>
 
             <p><i>Note: until recently, overflights were not supported and
-                arrivals were specified using the "arrival_groups" variable.
-                "arrival_groups" is still supported to allow transitioning to
-                "inbound_flows", though it will eventually be removed.</i>
-                <p>
-                <p>Arrivals and overflights are specified via the "inbound_flows" variable,
+                arrivals were specified using the "arrival_groups" variable, which is no longer available.</i></p>
+            <p>Arrivals and overflights are specified via the "inbound_flows" variable,
                   which allows specifying the ways that aircraft from adjacent facilities
                   enter the TRACON.  "inbound_flows" has two members, "arrivals" and
                   "overflights", each of which is an array of arrival and overflight

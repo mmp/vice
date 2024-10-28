@@ -767,531 +767,555 @@
 
 
     },
-    "arrival_groups": {
-            "BLAID1/CHOWW2": [
+    "inbound_flows": {
+        "BLAID1/CHOWW2": {
+            "arrivals": [
                 {
+                    "waypoints": "AALAN/a23000- N036.26.03.917,W114.09.59.551/ho CHOWW/s250/ho BLAID/a12000/h217",
+                    "cruise_altitude": 35000,
+                    "star": "BLAID1",
+                    "initial_controller": "LAX_55_CTR",
+                    "initial_altitude": 22000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
                     "airlines": {
                         "KLAS": [
                             {
-                                "airport": "KORD",
-                                "icao": "AAL"                         
+                                "icao": "AAL",
+                                "airport": "KORD"
                             },
                             {
-                                "airport": "KJFK",
-                                "icao": "DAL"                         
+                                "icao": "DAL",
+                                "airport": "KJFK"
                             },
                             {
-                                "airport": "KLGA",
-                                "icao": "SWA"                         
+                                "icao": "SWA",
+                                "airport": "KLGA"
                             },
                             {
-                                "airport": "KBOS",
-                                "icao": "JBU"                         
+                                "icao": "JBU",
+                                "airport": "KBOS"
                             },
                             {
-                                "airport": "KDTW",
-                                "icao": "SWA"                         
+                                "icao": "SWA",
+                                "airport": "KDTW"
                             },
                             {
-                                "airport": "KCLE",
-                                "icao": "NKS"                         
+                                "icao": "NKS",
+                                "airport": "KCLE"
                             },
                             {
-                                "airport": "KEWR",
-                                "icao": "UAL"                         
+                                "icao": "UAL",
+                                "airport": "KEWR"
                             }
                         ]
-                    },
-                    "cruise_altitude": 35000,
-                    "initial_altitude": 22000,
-                    "initial_controller": "LAX_55_CTR",
-                    "initial_speed": 250,
-                    "star": "BLAID1",
-                    "waypoints": "AALAN/a17000+/a23000- N036.26.03.917,W114.09.59.551/ho CHOWW/s250/ho BLAID/a12000/h217"
+                    }
                 },
                 {
+                    "waypoints": "AALAN/a23000- N036.26.03.917,W114.09.59.551/ho CHOWW/a19000-/s250 WOLPH",
+                    "runway_waypoints": {
+                        "KLAS": {
+                            "19L": "WOLPH SACHL/a13000- FELAA/a10000- FOOOF/a8000/s220 NNEON PPENN/a6000/s210/h263",
+                            "19R": "WOLPH SACHL/a13000- FELAA/a10000- FOOOF/a8000/s220 NNEON PPENN/a6000/s210/h263",
+                            "1L": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a13000- MAHNA/a9000+ TUUTH/a10000-/s220 TRREY/a7000+/s210",
+                            "1R": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a13000- MAHNA/a9000+ TUUTH/a10000-/s220 BUHLL/a7000/s210",
+                            "26L": "WOLPH TATUU/a10500- KRLOZ/a9000- PRINO/a8000/s210/h221",
+                            "26R": "WOLPH TATUU/a10500- KRLOZ/a9000- FLYES/a8000/s210/h221"
+                        }
+                    },
+                    "cruise_altitude": 35000,
+                    "star": "CHOWW2",
+                    "initial_controller": "LAX_55_CTR",
+                    "initial_altitude": 22000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
                     "airlines": {
                         "KLAS": [
                             {
-                                "airport": "KORD",
-                                "icao": "AAL"                         
+                                "icao": "AAL",
+                                "airport": "KORD"
                             },
                             {
-                                "airport": "KJFK",
-                                "icao": "DAL"                         
+                                "icao": "DAL",
+                                "airport": "KJFK"
                             },
                             {
-                                "airport": "KLGA",
-                                "icao": "SWA"                         
+                                "icao": "SWA",
+                                "airport": "KLGA"
                             },
                             {
-                                "airport": "KBOS",
-                                "icao": "JBU"                         
+                                "icao": "JBU",
+                                "airport": "KBOS"
                             },
                             {
-                                "airport": "KDTW",
-                                "icao": "SWA"                         
+                                "icao": "SWA",
+                                "airport": "KDTW"
                             },
                             {
-                                "airport": "KCLE",
-                                "icao": "NKS"                         
+                                "icao": "NKS",
+                                "airport": "KCLE"
                             },
                             {
-                                "airport": "KEWR",
-                                "icao": "UAL"                         
-                            } 
+                                "icao": "UAL",
+                                "airport": "KEWR"
+                            }
                         ]
-                    },
-                    "cruise_altitude": 35000,
-                    "initial_altitude": 22000,
-                    "initial_controller": "LAX_55_CTR",
-                    "initial_speed": 250,
-                    "star": "CHOWW2",
+                    }
+                }
+            ]
+        },
+        "COKTL3": {
+            "arrivals": [
+                {
+                    "waypoints": "ARYEL/a21000+/ho COKTL/a19000-/s250 ZLLDA/a14000+",
                     "runway_waypoints": {
                         "KLAS": {
-                            "26R": "WOLPH TATUU/a9500/a10500- KRLOZ/a9000- FLYES/a8000/s210/h221",
-                            "26L": "WOLPH TATUU/a9500/a10500- KRLOZ/a9000- PRINO/a8000/s210/h221",
-                            "19L": "WOLPH SACHL/a10000+/a13000- FELAA/a8500+/a10000- FOOOF/a7000+/a8000/s220 NNEON PPENN/a6000/s210/h263",
-                            "19R": "WOLPH SACHL/a10000+/a13000- FELAA/a8500+/a10000- FOOOF/a7000+/a8000/s220 NNEON PPENN/a6000/s210/h263",
-                            "1L": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 TRREY/a7000+/s210",
-                            "1R": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 BUHLL/a7000/s210"
+                            "19L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h79",
+                            "19R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h79",
+                            "1L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- ROAMN/a8000/s210",
+                            "1R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- ROAMN/a8000/s210",
+                            "26L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h79",
+                            "26R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h79",
+                            "8L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- YAGGR/a8000/s210",
+                            "8R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- YAGGR/a8000/s210"
                         }
                     },
-                    "waypoints": "AALAN/a17000+/a23000- N036.26.03.917,W114.09.59.551/ho CHOWW/s250/a19000- WOLPH"
-    
-            }
-        ],
-     
-        "COKTL3": [
-            {
-                "airlines": {
-                    "KLAS": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KJFK",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KLGA",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDTW",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KCLE",
-                            "icao": "NKS"                         
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 35000,
-                "initial_altitude": 21000,
-                "initial_controller": "LAX_55_CTR",
-                "initial_speed": 280,
-                "star": "COKTL3",
-                "runway_waypoints": {
-                    "KLAS": {
-                        "8L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210",
-                        "8R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210",
-                        "1R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210",
-                        "1L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210",
-                        "19R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
-                        "19L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
-                        "26L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079",
-                        "26R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h079"
+                    "cruise_altitude": 35000,
+                    "star": "COKTL3",
+                    "initial_controller": "LAX_55_CTR",
+                    "initial_altitude": 21000,
+                    "initial_speed": 280,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KLAS": [
+                            {
+                                "icao": "AAL",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KLGA"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "NKS",
+                                "airport": "KCLE"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KEWR"
+                            }
+                        ]
                     }
-                },
-                "waypoints": " ARYEL/a21000+/ho COKTL/a16000+/a19000-/s250 ZLLDA/a14000+ "
-            }
-        ],
-        "CRESO5": [
-            {
-                "airlines": {
-                    "KLAS": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KJFK",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KLGA",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDTW",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KCLE",
-                            "icao": "NKS"                         
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 34000,
-                "initial_altitude": 17000,
-                "initial_controller": "LAX_55_CTR",
-                "initial_speed": 280,
-                "star": "CRESO5",
-                "waypoints": "SARAS N035.25.53.315,W115.37.30.988/ho WHIGG CRESO BLD/a7300+/h033"
-            }
-        ],
-        "GAMES2": [
-            {
-                "airlines": {
-                    "KLAS": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KJFK",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KLGA",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDTW",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KCLE",
-                            "icao": "NKS"                         
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 35000,
-                "initial_altitude": 17000,
-                "initial_controller": "LAX_55_CTR",
-                "initial_speed": 280,
-                "star": "GAMES2",
-                "waypoints": "SOTOO QWIST/a14000+/ho GAMES TOROO RATHH PIGOW/a8300/h075"
-            }
-        ],
-        "ISHEE2": [
-            {
-                "airlines": {
-                    "KLAS": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KJFK",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KLGA",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDTW",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KCLE",
-                            "icao": "NKS"                         
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 35000,
-                "initial_altitude": 14000,
-                "initial_controller": "LAX_55_CTR",
-                "initial_speed": 280,
-                "star": "ISHEE2",
-                "waypoints": "PGS PEHTY/a14000/s250/ho ISHEE BLD/h277"
-            }
-        ],
-        
-        
-        "JAYSN2": [
-            {
-                "airlines": {
-                    "KLAS": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KJFK",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KLGA",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDTW",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KCLE",
-                            "icao": "NKS"                         
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 35000,
-                "initial_altitude": 19000,
-                "initial_controller": "LAX_55_CTR",
-                "initial_speed": 280,
-                "star": "JAYSN2",
-                "runway_waypoints": {
-                   "KLAS": {
-                       "19R": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
-                       "19L": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
-                       "26R": "WAPID PESHY/s250/a15000+ NEEMA/a14200+ ENNVY/a11000+ REDQN/s210/a9000+ TWAFL BERBN/a8000/s210/h079",
-                       "26L": "WAPID PESHY/s250/a15000+ NEEMA/a14200+ ENNVY/a11000+ REDQN/s210/a9000+ TWAFL BERBN/a8000/s210/h079",
-                       "1L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
-                       "1R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
-                       "8L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005",
-                       "8R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a10000+/a11000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005"
-                   }
-                },
-                "waypoints": "JAYSN/a19000+/ho WAPID"
-            }
-        ],
-        "LARKK1": [
-            {
-                "airlines": {
-                    "KLAS": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KJFK",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KLGA",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDTW",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KCLE",
-                            "icao": "NKS"                         
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 35000,
-                "initial_altitude": 24000,
-                "initial_controller": "LAX_55_CTR",
-                "initial_speed": 280,
-                "star": "LARKK1",
-                "waypoints": "DAG ZGOSH/a24000+/ho RNDRZ/a15000/s250 LARKK/a12500/h350"
-            }
-        ],
-        "PUMLE1": [
-            {
-                "airlines": {
-                    "KLAS": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KJFK",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KLGA",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDTW",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KCLE",
-                            "icao": "NKS"                         
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 35000,
-                "initial_altitude": 24000,
-                "initial_controller": "LAX_55_CTR",
-                "initial_speed": 250,
-                "star": "PUMLE1",
-                "waypoints": "BTY PUMLE/a16000/s250/ho FABLE/a13000+ ENNVY/a11000+ BLD/a8000/h078"
-            }
-        ],
-        
-        
-        "RKSTR3": [
-            {
-                "airlines": {
-                    "KLAS": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KJFK",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KLGA",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDTW",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KCLE",
-                            "icao": "NKS"                         
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 35000,
-                "initial_altitude": 19000,
-                "initial_controller": "LAX_55_CTR",
-                "initial_speed": 280,
-                "star": "RKSTR3",
-                "runway_waypoints": {
-                    "KLAS": {
-                        "1L": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 TRREY/a7000+/s210",
-                        "1R": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 BUHLL/a7000/s210",
-                        "8R": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 YAGGR/a8000/s210/h005",
-                        "8L": "RKSTR LEEEW/a14000+/s250 JAIDE/a10000+/a13000- MAHNA/a9000+ TUUTH/a8000+/a10000-/s220 YAGGR/a8000/s210/h005",
-                        "26R": "RKSTR HUXLY/a10000+/a13000-/s250 HAYLN/a9000- FLYES/a8000/s210/h292",
-                        "19L": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a8500+/a10000- FOOOF/a7000+/a8000-/s220 NNEON PPENN/a6000/s210/h263",
-                        "19R": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a8500+/a10000- FOOOF/a7000+/a8000-/s220 NNEON PPENN/a6000/s210/h263",
-                        "26L": "RKSTR HUXLY/a10000+/a13000-/s250 HAYLN/a9000- PRINO/a8000/s210/h290"
+                }
+            ]
+        },
+        "CRESO5": {
+            "arrivals": [
+                {
+                    "waypoints": "SARAS N035.25.53.315,W115.37.30.988/ho WHIGG CRESO BLD/a7300+/h33",
+                    "cruise_altitude": 34000,
+                    "star": "CRESO5",
+                    "initial_controller": "LAX_55_CTR",
+                    "initial_altitude": 17000,
+                    "initial_speed": 280,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KLAS": [
+                            {
+                                "icao": "AAL",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KLGA"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "NKS",
+                                "airport": "KCLE"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KEWR"
+                            }
+                        ]
                     }
-                },
-                "waypoints": "KWEAN STYYX/a22000+/a26000-/ho PEHTY/a14000+/a19000-/s250 RKSTR"
-            }
-        ],
-        
-        "RNDRZ2": [
-            {
-                "airlines": {
-                    "KLAS": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KJFK",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KLGA",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDTW",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KCLE",
-                            "icao": "NKS"                         
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 35000,
-                "initial_altitude": 24000,
-                "initial_controller": "LAX_55_CTR",
-                "initial_speed": 280,
-                "star": "RNDRZ2",
-                "runway_waypoints" : {
-                    "KLAS": {
-                        "19R": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
-                        "19L": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
-                        "26R": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
-                        "26L": "RNDRZ/a13000+/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h079",
-                        "1L": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
-                        "1R": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- ROAMN/a8000/s210/h030",
-                        "8L": "RNDRZ/a13000+/a19000-/s250 RUMLY/a10000+/a13000- BAUMM/a8600+/a11000- YAGGR/a8000/s210/h005"
+                }
+            ]
+        },
+        "GAMES2": {
+            "arrivals": [
+                {
+                    "waypoints": "SOTOO QWIST/a14000+/ho GAMES TOROO RATHH PIGOW/a8300/h75",
+                    "cruise_altitude": 35000,
+                    "star": "GAMES2",
+                    "initial_controller": "LAX_55_CTR",
+                    "initial_altitude": 17000,
+                    "initial_speed": 280,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KLAS": [
+                            {
+                                "icao": "AAL",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KLGA"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "NKS",
+                                "airport": "KCLE"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KEWR"
+                            }
+                        ]
                     }
-                },
-                "waypoints": " WATEV/a19000+/ho TOETS RNDRZ/a13000+/a19000-/s250 "
-            }
-        ]
+                }
+            ]
+        },
+        "ISHEE2": {
+            "arrivals": [
+                {
+                    "waypoints": "PGS PEHTY/a14000/s250/ho ISHEE BLD/h277",
+                    "cruise_altitude": 35000,
+                    "star": "ISHEE2",
+                    "initial_controller": "LAX_55_CTR",
+                    "initial_altitude": 14000,
+                    "initial_speed": 280,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KLAS": [
+                            {
+                                "icao": "AAL",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KLGA"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "NKS",
+                                "airport": "KCLE"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KEWR"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "JAYSN2": {
+            "arrivals": [
+                {
+                    "waypoints": "JAYSN/a19000+/ho WAPID",
+                    "runway_waypoints": {
+                        "KLAS": {
+                            "19L": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
+                            "19R": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
+                            "1L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- ROAMN/a8000/s210/h30",
+                            "1R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- ROAMN/a8000/s210/h30",
+                            "26L": "WAPID PESHY/a15000+/s250 NEEMA/a14200+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h79",
+                            "26R": "WAPID PESHY/a15000+/s250 NEEMA/a14200+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h79",
+                            "8L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- YAGGR/a8000/s210/h5",
+                            "8R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- YAGGR/a8000/s210/h5"
+                        }
+                    },
+                    "cruise_altitude": 35000,
+                    "star": "JAYSN2",
+                    "initial_controller": "LAX_55_CTR",
+                    "initial_altitude": 19000,
+                    "initial_speed": 280,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KLAS": [
+                            {
+                                "icao": "AAL",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KLGA"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "NKS",
+                                "airport": "KCLE"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KEWR"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "LARKK1": {
+            "arrivals": [
+                {
+                    "waypoints": "DAG ZGOSH/a24000+/ho RNDRZ/a15000/s250 LARKK/a12500/h350",
+                    "cruise_altitude": 35000,
+                    "star": "LARKK1",
+                    "initial_controller": "LAX_55_CTR",
+                    "initial_altitude": 24000,
+                    "initial_speed": 280,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KLAS": [
+                            {
+                                "icao": "AAL",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KLGA"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "NKS",
+                                "airport": "KCLE"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KEWR"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "PUMLE1": {
+            "arrivals": [
+                {
+                    "waypoints": "BTY PUMLE/a16000/s250/ho FABLE/a13000+ ENNVY/a11000+ BLD/a8000/h78",
+                    "cruise_altitude": 35000,
+                    "star": "PUMLE1",
+                    "initial_controller": "LAX_55_CTR",
+                    "initial_altitude": 24000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KLAS": [
+                            {
+                                "icao": "AAL",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KLGA"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "NKS",
+                                "airport": "KCLE"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KEWR"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "RKSTR3": {
+            "arrivals": [
+                {
+                    "waypoints": "KWEAN STYYX/a26000-/ho PEHTY/a19000-/s250 RKSTR",
+                    "runway_waypoints": {
+                        "KLAS": {
+                            "19L": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a10000- FOOOF/a8000-/s220 NNEON PPENN/a6000/s210/h263",
+                            "19R": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a10000- FOOOF/a8000-/s220 NNEON PPENN/a6000/s210/h263",
+                            "1L": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- MAHNA/a9000+ TUUTH/a10000-/s220 TRREY/a7000+/s210",
+                            "1R": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- MAHNA/a9000+ TUUTH/a10000-/s220 BUHLL/a7000/s210",
+                            "26L": "RKSTR HUXLY/a13000-/s250 HAYLN/a9000- PRINO/a8000/s210/h290",
+                            "26R": "RKSTR HUXLY/a13000-/s250 HAYLN/a9000- FLYES/a8000/s210/h292",
+                            "8L": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- MAHNA/a9000+ TUUTH/a10000-/s220 YAGGR/a8000/s210/h5",
+                            "8R": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- MAHNA/a9000+ TUUTH/a10000-/s220 YAGGR/a8000/s210/h5"
+                        }
+                    },
+                    "cruise_altitude": 35000,
+                    "star": "RKSTR3",
+                    "initial_controller": "LAX_55_CTR",
+                    "initial_altitude": 19000,
+                    "initial_speed": 280,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KLAS": [
+                            {
+                                "icao": "AAL",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KLGA"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "NKS",
+                                "airport": "KCLE"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KEWR"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "RNDRZ2": {
+            "arrivals": [
+                {
+                    "waypoints": "WATEV/a19000+/ho TOETS RNDRZ/a19000-/s250",
+                    "runway_waypoints": {
+                        "KLAS": {
+                            "19L": "RNDRZ/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h79",
+                            "19R": "RNDRZ/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h79",
+                            "1L": "RNDRZ/a19000-/s250 RUMLY/a13000- BAUMM/a11000- ROAMN/a8000/s210/h30",
+                            "1R": "RNDRZ/a19000-/s250 RUMLY/a13000- BAUMM/a11000- ROAMN/a8000/s210/h30",
+                            "26L": "RNDRZ/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h79",
+                            "26R": "RNDRZ/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h79",
+                            "8L": "RNDRZ/a19000-/s250 RUMLY/a13000- BAUMM/a11000- YAGGR/a8000/s210/h5"
+                        }
+                    },
+                    "cruise_altitude": 35000,
+                    "star": "RNDRZ2",
+                    "initial_controller": "LAX_55_CTR",
+                    "initial_altitude": 24000,
+                    "initial_speed": 280,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KLAS": [
+                            {
+                                "icao": "AAL",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KLGA"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "NKS",
+                                "airport": "KCLE"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KEWR"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
     },
     "control_positions": {
         "LAS_APP": {

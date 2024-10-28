@@ -418,169 +418,187 @@
       ]
     }
   },
-  "arrival_groups": {
-    "LEAVI": [
+  "inbound_flows": {
+  "BARRD": {
+    "arrivals": [
       {
-        "airlines": {
-          "KAVL": [
-            {
-              "airport": "KORL",
-              "icao": "N"
-          },
-          {
-              "airport": "KDEN",
-              "icao": "UAL"
-          },
-          {
-              "airport": "KJZP",
-              "icao": "N"
-          }
-          ]
-        },
-        "cruise_altitude": 35000,
-        "initial_altitude": 15000,
+        "waypoints": "AFTEN BARRD/s250/ho/h173",
+        "route": "/. BARRD",
         "initial_controller": "ATL_CTR",
-        "initial_speed": 250,
-        "route": "/. LEAVI",
-        "waypoints": "KOKRE LEAVI/a11000/h343/ho"
-      }
-    ],
-    "JONEB": [
-      {
-        "airlines": {
-          "KAVL": [
-            {
-              "airport": "8NC9",
-              "icao": "N"
-          },
-          {
-              "airport": "K1A5",
-              "icao": "N"
-          },
-          {
-              "airport": "KCLT",
-              "icao": "JIA"
-          }
-          ]
-        },
-        "initial_altitude": 15000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 250,
-        "route": "/. JONEB",
-        "waypoints": "PITTY JAKIB/ho JONEB/a11000/h296"
-      }
-    ],
-  "TUSRE": [
-      {
-        "airlines": {
-          "KAVL": [
-            {
-              "airport": "KMCO",
-              "icao": "EJA"
-          },
-          {
-              "airport": "SC42",
-              "icao": "EJA"
-          },
-          {
-              "airport": "KBWI",
-              "icao": "N"
-          }
-          ]
-        },
-        "initial_altitude": 18000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 250,
-        "route": "/. TUSRE",
-        "waypoints": "BZM WOGAG/ho TUSRE/a11000/s250/h243"
-      }
-    ],
-      "OBURY": [
-      {
-        "airlines": {
-          "KAVL": [
-            {
-              "airport": "KPHF",
-              "icao": "N"
-          },
-          {
-              "airport": "KPIE",
-              "icao": "AAY"
-          },
-          {
-              "airport": "KLGA",
-              "icao": "RPA"
-          },
-          {
-              "airport": "KTPA",
-              "icao": "N"
-          },
-          {
-              "airport": "KMLB",
-              "icao": "N"
-          },
-          {
-              "airport": "KATL",
-              "icao": "DAL"
-          },
-          {
-              "airport": "KHST",
-              "icao": "EDV"
-          }
-          ]
-        },
-        "initial_altitude": 16000,
-        "initial_controller": "ATL_CTR",
+        "initial_altitude": 11000,
         "initial_speed": 290,
-        "route": "/. OBURY",
-        "waypoints": "SPA CARTT OBURY/a11000/s250/h308/ho",
-        "speed_restriction": 250
-      }
-    ],
-      "PUPDG": [
-        {
-          "airlines": {
-            "KAVL": [
-              {
-                "airport": "KTYS",
-                "icao": "N"
+        "expect_approach": null,
+        "airlines": {
+          "KAVL": [
+            {
+              "icao": "N",
+              "airport": "NC72"
             },
             {
-                "airport": "KSCH",
-                "icao": "EJA"
+              "icao": "N",
+              "airport": "2OH9"
             }
-            ]
-          },
-          "initial_altitude": 11000,
-          "initial_controller": "TYS_APP",
-          "initial_speed": 290,
-          "route": "/. PUPDG",
-          "waypoints": "BLAYQ/ho PUPDG/a11000/s250/h135",
-          "speed_restriction": 250
-        }
-    ],
-    "BARRD": [
-      {
-        "airlines": {
-          "KAVL": [
-            {
-              "airport": "NC72",
-              "icao": "N"
-          },
-          {
-              "airport": "2OH9",
-              "icao": "N"
-          }
           ]
-        },
-        "initial_altitude": 11000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 290,
-        "route": "/. BARRD",
-        "waypoints": "AFTEN BARRD/s250/h173/ho"
+        }
       }
     ]
   },
+  "JONEB": {
+    "arrivals": [
+      {
+        "waypoints": "PITTY JAKIB/ho JONEB/a11000/h296",
+        "route": "/. JONEB",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 15000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KAVL": [
+            {
+              "icao": "N",
+              "airport": "8NC9"
+            },
+            {
+              "icao": "N",
+              "airport": "K1A5"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KCLT"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "LEAVI": {
+    "arrivals": [
+      {
+        "waypoints": "KOKRE LEAVI/a11000/ho/h343",
+        "cruise_altitude": 35000,
+        "route": "/. LEAVI",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 15000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KAVL": [
+            {
+              "icao": "N",
+              "airport": "KORL"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "N",
+              "airport": "KJZP"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OBURY": {
+    "arrivals": [
+      {
+        "waypoints": "SPA CARTT OBURY/a11000/s250/ho/h308",
+        "route": "/. OBURY",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 290,
+        "speed_restriction": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KAVL": [
+            {
+              "icao": "N",
+              "airport": "KPHF"
+            },
+            {
+              "icao": "AAY",
+              "airport": "KPIE"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "N",
+              "airport": "KTPA"
+            },
+            {
+              "icao": "N",
+              "airport": "KMLB"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+            {
+              "icao": "EDV",
+              "airport": "KHST"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "PUPDG": {
+    "arrivals": [
+      {
+        "waypoints": "BLAYQ/ho PUPDG/a11000/s250/h135",
+        "route": "/. PUPDG",
+        "initial_controller": "TYS_APP",
+        "initial_altitude": 11000,
+        "initial_speed": 290,
+        "speed_restriction": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KAVL": [
+            {
+              "icao": "N",
+              "airport": "KTYS"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KSCH"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "TUSRE": {
+    "arrivals": [
+      {
+        "waypoints": "BZM WOGAG/ho TUSRE/a11000/s250/h243",
+        "route": "/. TUSRE",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 18000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KAVL": [
+            {
+              "icao": "EJA",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "EJA",
+              "airport": "SC42"
+            },
+            {
+              "icao": "N",
+              "airport": "KBWI"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
   "control_positions": {
     "ATL_CTR": {
       "frequency": 132975,

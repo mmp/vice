@@ -545,234 +545,256 @@
             "tower_list": 1
         }
     },
-    "arrival_groups": {
-        "COMIX2":[
+    "inbound_flows": {
+  "COMIX2": {
+    "arrivals": [
+      {
+        "waypoints": "LEJEN/ho COMIX/a15000- FLSHH LNTRN/a9000+ XMANS/a7000 KLOMN/a6000 NADDO/a6000",
+        "cruise_altitude": 28000,
+        "star": "COMIX2",
+        "initial_controller": "LAX_30_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSAN": [
             {
-                "airlines": {
-                    "KSAN":[
-                        {
-                            "airport": "KSEA",
-                            "icao": "AAL"
-                        },
-                        {
-                            "airport": "KSFO",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KSBP",
-                            "icao": "ASA"
-                        },
-                        {
-                            "airport": "KOAK",
-                            "icao": "FFT"
-                        },
-                        {
-                            "airport": "KSJC",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KPDX",
-                            "icao": "SWA"
-                        }
-                    ]
-                },
-                "cruise_altitude": 28000,
-                "initial_altitude": 16000,
-                "initial_controller": "LAX_30_CTR",
-                "initial_speed": 250,
-                "star": "COMIX2",
-                "waypoints": "LEJEN/ho COMIX/a12000+/a15000- FLSHH LNTRN/a9000+ XMANS/a7000 KLOMN/a6000 NADDO/a6000"
-            }
-        ],
-        
-        "LUCKI1": [
+              "icao": "AAL",
+              "airport": "KSEA"
+            },
             {
-                "airlines": {
-                    "KSAN": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KCOS",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KMSP",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 36000,
-                "initial_altitude": 24000,
-                "initial_controller": "LAX_30_CTR",
-                "initial_speed": 280,
-                "star": "LUCKI1",
-                "waypoints": "MOMAR/a24000 DSURT/a19000 TRIXI/a14000-/ho HSKER/a8700 BARET/a8000 HNAHH/a6100 LUCKI/a6000 LYNDI/a5000"
-                
-            }
-        ],
-        "TOPGN2": [
+              "icao": "SWA",
+              "airport": "KSFO"
+            },
             {
-                "airlines": {
-                    "KSAN": [
-                        {
-                            "airport": "KORD",
-                            "icao": "AAL"                         
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "DAL"                         
-                        },
-                        {
-                            "airport": "KCOS",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"                         
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "SWA"                         
-                        },
-                        {
-                            "airport": "KMSP",
-                            "icao": "UAL"                         
-                        }
-                    ]
-                },
-                "cruise_altitude": 36000,
-                "initial_altitude": 19000,
-                "initial_controller": "LAX_30_CTR",
-                "initial_speed": 280,
-                "star": "TOPGN2",
-                "waypoints": "DSURT/a19000+/a23000- TRIXI/a12000/s270/ho TOPGN/a9000 ISEMN/a6400 ZIPPP/a6000 TMCAT/a6000/s210"
-            }
-        ],
-        "PLYYA1": [
+              "icao": "ASA",
+              "airport": "KSBP"
+            },
             {
-                "airlines":{
-                    "KSAN": [
-                        {
-                            "airport": "KSEA",
-                            "icao": "AAL"
-                        },
-                        {
-                            "airport": "KSFO",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KSBP",
-                            "icao": "ASA"
-                        },
-                        {
-                            "airport": "KOAK",
-                            "icao": "FFT"
-                        },
-                        {
-                            "airport": "KSJC",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KPDX",
-                            "icao": "SWA"
-                        }
-                    ]
-                },
-                "cruise_altitude": 35000,
-                "initial_altitude": 24000,
-                "initial_controller": "LAX_30_CTR",
-                "initial_speed": 280,
-                "star": "PLYYA1",
-                "waypoints": "LAX/a24000 TASCO/a19000 SWAMI/a17000 OHBEA/a15000/ho PLYYA/a11000 MNLYT/a4000 SARGS/a2100"
-            }
-        ],
-        "EAST MYF ARR": [
+              "icao": "FFT",
+              "airport": "KOAK"
+            },
             {
-                "airlines":{
-                    "KMYF": [ 
-                        {
-                            "airport": "KIPL",
-                            "icao": "N"
-                        }
-                    ]
-                },
-                "cruise_altitude": 10000,
-                "initial_altitude": 10000,
-                "initial_controller": "LAX_30_CTR",
-                "initial_speed": 200,
-                "star": "GILYY BARET",
-                "waypoints": "GILYY/ho BARET/a9000"
-            }
-        ],
-        "NORTH MYF ARR": [
+              "icao": "SWA",
+              "airport": "KSJC"
+            },
             {
-                "airlines":{
-                    "KMYF": [ 
-                        {
-                            "airport": "KPSP",
-                            "icao": "N"
-                        }
-                    ]
-                },
-                "cruise_altitude": 10000,
-                "initial_altitude": 10000,
-                "initial_controller": "LAX_30_CTR",
-                "initial_speed": 200,
-                "star": "KARRO BARET",
-                "waypoints": "KARRO/ho BARET/a9000"
+              "icao": "SWA",
+              "airport": "KPDX"
             }
-        ],
-        "NORTH CRQ ARR": [
+          ]
+        }
+      }
+    ]
+  },
+  "EAST MYF ARR": {
+    "arrivals": [
+      {
+        "waypoints": "GILYY/ho BARET/a9000",
+        "cruise_altitude": 10000,
+        "star": "GILYY BARET",
+        "initial_controller": "LAX_30_CTR",
+        "initial_altitude": 10000,
+        "initial_speed": 200,
+        "expect_approach": null,
+        "airlines": {
+          "KMYF": [
             {
-                "airlines":{
-                    "KCRQ": [ 
-                        {
-                            "airport": "KCNO",
-                            "icao": "N"
-                        }
-                    ]
-                },
-                "cruise_altitude": 11000,
-                "initial_altitude": 10000,
-                "initial_controller": "LAX_30_CTR",
-                "initial_speed": 180,
-                "star": "ROBNN OCN",
-                "waypoints": "WESIN/ho ROBNN OCN"
+              "icao": "N",
+              "airport": "KIPL"
             }
-        ],
-        "LEGOZ2": [
+          ]
+        }
+      }
+    ]
+  },
+  "LEGOZ2": {
+    "arrivals": [
+      {
+        "waypoints": "AVOLS/a11000/s250 PACIF/a7000/ho OCN/a5000/h85",
+        "cruise_altitude": 13000,
+        "star": "LEGOZ2",
+        "initial_controller": "LAX_30_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 200,
+        "expect_approach": null,
+        "airlines": {
+          "KCRQ": [
             {
-                "airlines":{
-                    "KCRQ": [ 
-                        {
-                            "airport": "KSBA",
-                            "icao": "N"
-                        }
-                    ]
-                },
-                "cruise_altitude": 13000,
-                "initial_altitude": 11000,
-                "initial_controller": "LAX_30_CTR",
-                "initial_speed": 200,
-                "star": "LEGOZ2",
-                "waypoints": "AVOLS/a11000/s250 PACIF/a7000/ho OCN/a5000/h085"
+              "icao": "N",
+              "airport": "KSBA"
             }
-        ]
-    },
+          ]
+        }
+      }
+    ]
+  },
+  "LUCKI1": {
+    "arrivals": [
+      {
+        "waypoints": "MOMAR/a24000 DSURT/a19000 TRIXI/a14000-/ho HSKER/a8700 BARET/a8000 HNAHH/a6100 LUCKI/a6000 LYNDI/a5000",
+        "cruise_altitude": 36000,
+        "star": "LUCKI1",
+        "initial_controller": "LAX_30_CTR",
+        "initial_altitude": 24000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KSAN": [
+            {
+              "icao": "AAL",
+              "airport": "KORD"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KCOS"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KMSP"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "NORTH CRQ ARR": {
+    "arrivals": [
+      {
+        "waypoints": "WESIN/ho ROBNN OCN",
+        "cruise_altitude": 11000,
+        "star": "ROBNN OCN",
+        "initial_controller": "LAX_30_CTR",
+        "initial_altitude": 10000,
+        "initial_speed": 180,
+        "expect_approach": null,
+        "airlines": {
+          "KCRQ": [
+            {
+              "icao": "N",
+              "airport": "KCNO"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "NORTH MYF ARR": {
+    "arrivals": [
+      {
+        "waypoints": "KARRO/ho BARET/a9000",
+        "cruise_altitude": 10000,
+        "star": "KARRO BARET",
+        "initial_controller": "LAX_30_CTR",
+        "initial_altitude": 10000,
+        "initial_speed": 200,
+        "expect_approach": null,
+        "airlines": {
+          "KMYF": [
+            {
+              "icao": "N",
+              "airport": "KPSP"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "PLYYA1": {
+    "arrivals": [
+      {
+        "waypoints": "LAX/a24000 TASCO/a19000 SWAMI/a17000 OHBEA/a15000/ho PLYYA/a11000 MNLYT/a4000 SARGS/a2100",
+        "cruise_altitude": 35000,
+        "star": "PLYYA1",
+        "initial_controller": "LAX_30_CTR",
+        "initial_altitude": 24000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KSAN": [
+            {
+              "icao": "AAL",
+              "airport": "KSEA"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KSFO"
+            },
+            {
+              "icao": "ASA",
+              "airport": "KSBP"
+            },
+            {
+              "icao": "FFT",
+              "airport": "KOAK"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KSJC"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KPDX"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "TOPGN2": {
+    "arrivals": [
+      {
+        "waypoints": "DSURT/a23000- TRIXI/a12000/s270/ho TOPGN/a9000 ISEMN/a6400 ZIPPP/a6000 TMCAT/a6000/s210",
+        "cruise_altitude": 36000,
+        "star": "TOPGN2",
+        "initial_controller": "LAX_30_CTR",
+        "initial_altitude": 19000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KSAN": [
+            {
+              "icao": "AAL",
+              "airport": "KORD"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KCOS"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "UAL",
+              "airport": "KMSP"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
     "control_positions":{
         "LAX_30_CTR": {
             "frequency": 119950,

@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-12 ]
+        os: [ macos-14 ]
 
     name: Build ${{ matrix.os }}
 
@@ -21,10 +21,10 @@ jobs:
 
     steps:
     - name: Checkout source
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version-file: go.mod
         cache-dependency-path: go.sum
@@ -137,7 +137,7 @@ jobs:
       run: zip -rv Vice-osx.zip Vice.app
 
     - name: Save zip file as build artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Vice-osx.zip
         path: Vice-osx.zip

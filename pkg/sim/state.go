@@ -326,7 +326,7 @@ func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 				return ok && ctrl.IsHuman
 			})
 		if err != nil {
-			lg.Error("Unable to resolve departure controller", slog.Any("error", err),
+			lg.Warn("Unable to resolve departure controller", slog.Any("error", err),
 				slog.Any("aircraft", ac))
 		}
 		return util.Select(callsign != "", callsign, ss.PrimaryController)
@@ -335,7 +335,7 @@ func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 	}
 }
 
-func (ss *State) GetReleaseDepartures() []*av.Aircraft {
+func (ss *State) GetAllReleaseDepartures() []*av.Aircraft {
 	return util.FilterSlice(ss.STARSComputer().GetReleaseDepartures(),
 		func(ac *av.Aircraft) bool {
 			// When ControlClient DeleteAllAircraft() is called, we do our usual trick of
@@ -346,6 +346,35 @@ func (ss *State) GetReleaseDepartures() []*av.Aircraft {
 				return false
 			}
 			return ss.DepartureController(ac, nil) == ss.Callsign
+		})
+}
+
+func (ss *State) GetRegularReleaseDepartures() []*av.Aircraft {
+	return util.FilterSlice(ss.GetAllReleaseDepartures(),
+		func(ac *av.Aircraft) bool {
+			if ac.Released {
+				return false
+			}
+
+			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
+				if slices.Contains(cl.Airports, ac.FlightPlan.DepartureAirport) {
+					// It'll be in a STARS coordination list
+					return false
+				}
+			}
+			return true
+		})
+}
+
+func (ss *State) GetSTARSReleaseDepartures() []*av.Aircraft {
+	return util.FilterSlice(ss.GetAllReleaseDepartures(),
+		func(ac *av.Aircraft) bool {
+			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
+				if slices.Contains(cl.Airports, ac.FlightPlan.DepartureAirport) {
+					return true
+				}
+			}
+			return false
 		})
 }
 

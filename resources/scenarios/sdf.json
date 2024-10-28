@@ -478,199 +478,214 @@
     ]
   }
 },
-"arrival_groups": {
-  "DAMEN5": [
-    {
-      "airlines": {
-        "KSDF": [
-          {
-            "airport": "KORD",
-            "icao": "SKW"
-          },
-          {
-            "airport": "KORD",
-            "fleet": "short",
-            "icao": "AAL"
-          },
-          {
-            "airport": "KORD",
-            "fleet": "short",
-            "icao": "UAL"
-          },
-          {
-            "airport": "KDEN",
-            "fleet": "short",
-            "icao": "UAL"
-          },
-          {
-            "airport": "KDEN",
-            "icao": "SKW"
-          },
-          {
-            "airport": "KLAS",
-            "icao": "SWA"
-          }
-        ]
-      },
-      "cruise_altitude": 37000,
-      "initial_altitude": 11000,
-      "initial_speed": 250,
-      "initial_controller": "IND_CTR",
-      "star": "DAMEN5",
-      "runway_waypoints": {
+"inbound_flows": {
+  "DAMEN5": {
+    "arrivals": [
+      {
+        "waypoints": "PENTO N038.19.01.589,W087.03.38.490/ho CHERI/a11000/s250 DAMEN",
+        "runway_waypoints": {
           "KSDF": {
-              "17L"  : "DAMEN CAESR HAUGN CURNL/h349",
-              "17R":   "DAMEN CAESR HAUGN CURNL/h349",
-              "29":   "DAMEN COORN SQWRL/h116",
-              "35L": "DAMEN HAUGN LEWSS/h170",
-              "35R": "DAMEN HAUGN LEWSS/h170"
+            "17L": "DAMEN CAESR HAUGN CURNL/h349",
+            "17R": "DAMEN CAESR HAUGN CURNL/h349",
+            "29": "DAMEN COORN SQWRL/h116",
+            "35L": "DAMEN HAUGN LEWSS/h170",
+            "35R": "DAMEN HAUGN LEWSS/h170"
           }
-      },
-      "waypoints": " PENTO N038.19.01.589,W087.03.38.490/ho CHERI/a11000/s250 DAMEN"
-    }
-  ],
-  "DLAMP8": [
-    {
-      "airlines": {
-        "KSDF": [
-          {
-            "airport": "KBOS",
-            "icao": "UPS"
-          },
-          {
-            "airport": "KJFK",
-            "icao": "SKW"
-          },
-          {
-            "airport": "KJFK",
-            "icao": "RPA"
-          },
-          {
-            "airport": "KJFK",
-            "fleet": "short",
-            "icao": "AAL"
-          },
-          {
-            "airport": "KEWR",
-            "fleet": "short",
-            "icao": "UAL"
-          }
-        ]
-      },
-      "cruise_altitude": 32000,
-      "initial_altitude": 17000,
-      "initial_controller" : "CVG_APP",
-      "initial_speed": 250,
-      "star": "DLAMP8",
-      "spawn": "ANCHR@0.5"
-    }
-  ],
-  "FRIZN5": [
-    {
-      "airlines": {
-        "KSDF": [
-          {
-            "airport": "KORD",
-            "icao": "RPA"
-          },
-          {
-            "airport": "KORD",
-            "icao": "SKW"
-          },
-          {
-            "airport": "KMDW",
-            "icao": "SWA"
-          },
-          {
-            "airport": "KMSP",
-            "fleet": "short",
-            "icao": "DAL"
-          }
-        ]
-      },
-      "cruise_altitude": 37000,
-      "initial_altitude": 17000,
-      "initial_controller": "IND_CTR",
-      "initial_speed": 250,
-      "star": "FRIZN5",
-      "runway_waypoints": {
-        "KSDF": {
+        },
+        "cruise_altitude": 37000,
+        "star": "DAMEN5",
+        "initial_controller": "IND_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSDF": [
+            {
+              "icao": "SKW",
+              "airport": "KORD"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KORD"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KORD"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KLAS"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "DLAMP8": {
+    "arrivals": [
+      {
+        "spawn": "ANCHR@0.5",
+        "cruise_altitude": 32000,
+        "star": "DLAMP8",
+        "initial_controller": "CVG_APP",
+        "initial_altitude": 17000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSDF": [
+            {
+              "icao": "UPS",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KEWR"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "FRIZN5": {
+    "arrivals": [
+      {
+        "waypoints": "SUSZE UNCOD/ho FRIZN/a11000/s250 HONOS",
+        "runway_waypoints": {
+          "KSDF": {
             "17L": "HONOS THUND/a5000 RACRR/a4000/h170",
             "17R": "HONOS SPYRS/a4000/h170",
-            "29":  "HONOS  HOOLA MIDDR SORTT/h117",
+            "29": "HONOS HOOLA MIDDR SORTT/h117",
             "35L": "HONOS PROUF HAUGN LEWSS/h170",
             "35R": "HONOS PROUF HAUGN LEWSS/h170"
+          }
+        },
+        "cruise_altitude": 37000,
+        "star": "FRIZN5",
+        "initial_controller": "IND_CTR",
+        "initial_altitude": 17000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSDF": [
+            {
+              "icao": "RPA",
+              "airport": "KORD"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KORD"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KMSP"
+            }
+          ]
         }
-      },
-      "waypoints": "SUSZE UNCOD/ho FRIZN/a11000/s250 HONOS"
-    }
-  ],
-  "LEDDL1": [
-    {
-      "airlines": {
-        "KSDF": [
-          {
-            "airport": "KCLT",
-            "icao": "JIA"
-          },
-          {
-            "airport": "KMCO",
-            "icao": "SWA"
-          },
-          {
-            "airport": "KMIA",
-            "icao": "JIA"
-          },
-          {
-            "airport": "KATL",
-            "fleet": "short",
-            "icao": "DAL"
-          },
-          {
-            "airport": "KATL",
-            "icao": "EDV"
-          }
-        ]
-      },
-      "cruise_altitude": 36000,
-      "initial_altitude": 16000,
-      "initial_controller": "IND_CTR",
-      "initial_speed": 250,
-      "star": "LEDDL1",
-      "spawn": "COBBZ"
-    }
-  ],
-  "MBELL5": [
-    {
-      "airlines": {
-        "KSDF": [
-          {
-            "airport": "KIAH",
-            "fleet": "short",
-            "icao": "UAL"
-          },
-          {
-            "airport": "KIAH",
-            "icao": "ASH"
-          },
-          {
-            "airport": "KDFW",
-            "icao": "JIA"
-          },
-          {
-            "airport": "KBHM",
-            "icao": "SWA"
-          }
-        ]
-      },
-      "cruise_altitude": 37000,
-      "initial_altitude": 14000,
-      "initial_controller": "IND_CTR",
-      "initial_speed": 250,
-      "star": "MBELL5",
-      "spawn": "XXTRA@0.5"
-    }
-  ]
+      }
+    ]
+  },
+  "LEDDL1": {
+    "arrivals": [
+      {
+        "spawn": "COBBZ",
+        "cruise_altitude": 36000,
+        "star": "LEDDL1",
+        "initial_controller": "IND_CTR",
+        "initial_altitude": 16000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSDF": [
+            {
+              "icao": "JIA",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KMIA"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KATL"
+            },
+            {
+              "icao": "EDV",
+              "airport": "KATL"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "MBELL5": {
+    "arrivals": [
+      {
+        "spawn": "XXTRA@0.5",
+        "cruise_altitude": 37000,
+        "star": "MBELL5",
+        "initial_controller": "IND_CTR",
+        "initial_altitude": 14000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSDF": [
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KIAH"
+            },
+            {
+              "icao": "ASH",
+              "airport": "KIAH"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KDFW"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KBHM"
+            }
+          ]
+        }
+      }
+    ]
+  }
 },
 "control_positions": {
   "IND_CTR": {

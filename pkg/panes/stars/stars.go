@@ -443,6 +443,7 @@ func (sp *STARSPane) makeMaps(client *sim.ControlClient, ss sim.State, lg *log.L
 			if _, ok := usedIds[id]; !ok {
 				vm.Id = id
 				sp.allVideoMaps = append(sp.allVideoMaps, vm)
+				usedIds[id] = nil
 				return
 			}
 		}

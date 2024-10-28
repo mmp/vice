@@ -1308,257 +1308,266 @@
             ]
         }
     },
-    "arrival_groups": {
-        "AMYLU3": [
+    "inbound_flows": {
+  "AMYLU3": {
+    "arrivals": [
+      {
+        "waypoints": "AMYLU/a14000-23000/ho WILIT CRAAW/a11000+ FOURD RSRVE",
+        "runway_waypoints": {
+          "KCHS": {
+            "15": "RSRVE KREIS/a3000/flyover/h250",
+            "21": "RSRVE BAMDE/a3000+",
+            "3": "RSRVE ROHLO/a5000+/s210 STNNS/a4000+/flyover/h219",
+            "33": "RSRVE SNOBB/a3000/s210/flyover/h218"
+          },
+          "KJZI": {
+            "27": "RSRVE SKILR SHOTZ KMBEE/a4000/h210",
+            "9": "RSRVE SKILR SHOTZ KMBEE/a4000/h210"
+          }
+        },
+        "star": "AMYLU3",
+        "initial_controller": "JAX_74_CTR",
+        "initial_altitude": 17000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KCHS": [
             {
-                "airlines": {
-                    "KCHS": [
-                        {
-                            "airport": "KJFK",
-                            "fleet": "short",
-                            "icao": "DAL"
-                        },
-                        {
-                            "airport": "KJFK",
-                            "icao": "JBU"
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "MXY"
-                        },
-                        {
-                            "airport": "KBOS",
-                            "icao": "JBU"
-                        },
-                        {
-                            "airport": "KEWR",
-                            "fleet": "short",
-                            "icao": "UAL"
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "GJS"
-                        },
-                        {
-                            "airport": "KLGA",
-                            "icao": "EDV"
-                        },
-                        {
-                            "airport": "KJFK",
-                            "fleet": "short",
-                            "icao": "AAL"
-                        },
-                        {
-                            "airport": "KHVN",
-                            "icao": "VXP"
-                        },
-                        {
-                            "airport": "KMHT",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KDCA",
-                            "icao": "JIA"
-                        },
-                        {
-                            "airport": "KEWR",
-                            "icao": "NKS"
-                        }
-                    ],
-                    "KJZI": [
-                        {
-                            "airport": "KHPN",
-                            "icao": "EJA"
-                        },
-                        {
-                            "airport": "KHPN",
-                            "icao": "LXJ"
-                        },
-                        {
-                            "airport": "KHPN",
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ]
-                },
-                "initial_altitude": 17000,
-                "initial_speed": 280,
-                "initial_controller": "JAX_74_CTR",
-                "star": "AMYLU3",
-                "runway_waypoints": {
-                    "KCHS": {
-                        "3": "RSRVE ROHLO/a5000+/s210 STNNS/a4000+/flyover/h219",
-                        "15": "RSRVE KREIS/a3000/flyover/h250",
-                        "21": "RSRVE BAMDE/a3000+",
-                        "33": "RSRVE SNOBB/a3000/s210/flyover/h218"
-                    },
-                    "KJZI": {
-                        "9": "RSRVE SKILR SHOTZ KMBEE/a4000/h210",
-                        "27": "RSRVE SKILR SHOTZ KMBEE/a4000/h210"
-                    }
-                },
-                "waypoints": "AMYLU/a14000-23000/ho WILIT CRAAW/a11000+ FOURD RSRVE"
-            }
-        ],
-        "BAGGY3": [
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KJFK"
+            },
             {
-                "airlines": {
-                    "KCHS": [
-                        {
-                            "airport": "KMIA",
-                            "icao": "ENY"
-                        },
-                        {
-                            "airport": "KMIA",
-                            "fleet": "short",
-                            "icao": "AAL"
-                        },
-                        {
-                            "airport": "KFLL",
-                            "icao": "JBU"
-                        },
-                        {
-                            "airport": "KFLL",
-                            "icao": "NKS"
-                        },
-                        {
-                            "airport": "KMCO",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KMCO",
-                            "icao": "MXY"
-                        },
-                        {
-                            "airport": "KMCO",
-                            "fleet": "short",
-                            "icao": "DAL"
-                        },
-                        {
-                            "airport": "KMCO",
-                            "fleet": "short",
-                            "icao": "UAL"
-                        }
-                    ],
-                    "KJZI": [
-                        {
-                            "airport": "KHPN",
-                            "icao": "EJA"
-                        },
-                        {
-                            "airport": "KHPN",
-                            "icao": "LXJ"
-                        },
-                        {
-                            "airport": "KHPN",
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ]
-                },
-                "initial_altitude": 13000,
-                "initial_speed": 280,
-                "initial_controller": "JAX_72_CTR",
-                "star": "BAGGY3",
-                "runway_waypoints": {
-                  "KCHS": {
-                    "3": "DDENA/a5000+ FEPID/a3000+",
-                    "15": "DDENA/a5000+ PIPPY/a5000/flyover/h30",
-                    "21": " DDENA/a5000+ MURAY/a5000+ ADERY/a4000+ MRISS/a3000/flyover/h31",
-                    "33": "DDENA/a5000+ CZSAR/a3000/flyover/h77"
-                  },
-                  "KJZI": {
-                    "9": "DDENA/a5000+ JAISN/a3000/h090",
-                    "27": "DDENA/a5000+ JAISN/a3000/h090"
-                  }
-                },
-                "waypoints": "DREWE/a11000/ho BAGGY/a7000+ DDENA/a5000+"
-            }
-        ],
-        "OSPRI7": [
+              "icao": "JBU",
+              "airport": "KJFK"
+            },
             {
-                "airlines": {
-                    "KCHS": [
-                        {
-                            "airport": "KATL",
-                            "fleet": "short",
-                            "icao": "DAL"
-                        },
-                        {
-                            "airport": "KATL",
-                            "icao": "EDV"
-                        },
-                        {
-                            "airport": "KCLT",
-                            "icao": "JIA"
-                        },
-                        {
-                            "airport": "KCLT",
-                            "fleet": "short",
-                            "icao": "AAL"
-                        },
-                        {
-                            "airport": "KMSY",
-                            "icao": "MXY"
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "NKS"
-                        },
-                        {
-                            "airport": "KDEN",
-                            "icao": "FFT"
-                        },
-                        {
-                            "airport": "KDEN",
-                            "fleet": "short",
-                            "icao": "UAL"
-                        },
-                        {
-                            "airport": "KMDW",
-                            "icao": "SWA"
-                        },
-                        {
-                            "airport": "KORD",
-                            "icao": "ENY"
-                        }
-                    ],
-                    "KJZI": [
-                        {
-                            "airport": "KHPN",
-                            "icao": "EJA"
-                        },
-                        {
-                            "airport": "KHPN",
-                            "icao": "LXJ"
-                        },
-                        {
-                            "airport": "KHPN",
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ]
-                },
-                "initial_altitude": 15000,
-                "initial_speed": 280,
-                "initial_controller": "JAX_73_CTR",
-                "star": "OSPRI7",
-                "runway_waypoints": {
-                    "KCHS": {
-                        "3": "OSPRI AALEX/a5000-10000/s250 RECHY/a4000/s210/flyover/h125",
-                        "15": "OSPRI LUTHR/a4000+",
-                        "21": "OSPRI LUTHR/a4000+ MYERS/a3000/flyover/h137",
-                        "33": "OSPRI PAMJE/a5000-10000/s250 LLEXI/a5000+/s210 JAARD/a4000+/flyover/h149"
-                    },
-                    "KJZI": {
-                        "9": "OSPRI NKLSS/a5000-10000 CLFTN JACKE/a4000/s210/h174",
-                         "27": "OSPRI NKLSS/a5000-10000 CLFTN JACKE/a4000/s210/h174"
-                    }
-                },
-                "waypoints": "COBDA/ho NINJA/a11000-22000 TRTLS/a1000+ OSPRI"
+              "icao": "MXY",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KEWR"
+            },
+            {
+              "icao": "GJS",
+              "airport": "KEWR"
+            },
+            {
+              "icao": "EDV",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "VXP",
+              "airport": "KHVN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMHT"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KDCA"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KEWR"
             }
-        ]
-    },
+          ],
+          "KJZI": [
+            {
+              "icao": "EJA",
+              "airport": "KHPN"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KHPN"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA",
+              "airport": "KHPN"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "BAGGY3": {
+    "arrivals": [
+      {
+        "waypoints": "DREWE/a11000/ho BAGGY/a7000+ DDENA/a5000+",
+        "runway_waypoints": {
+          "KCHS": {
+            "15": "DDENA/a5000+ PIPPY/a5000/flyover/h30",
+            "21": "DDENA/a5000+ MURAY/a5000+ ADERY/a4000+ MRISS/a3000/flyover/h31",
+            "3": "DDENA/a5000+ FEPID/a3000+",
+            "33": "DDENA/a5000+ CZSAR/a3000/flyover/h77"
+          },
+          "KJZI": {
+            "27": "DDENA/a5000+ JAISN/a3000/h90",
+            "9": "DDENA/a5000+ JAISN/a3000/h90"
+          }
+        },
+        "star": "BAGGY3",
+        "initial_controller": "JAX_72_CTR",
+        "initial_altitude": 13000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KCHS": [
+            {
+              "icao": "ENY",
+              "airport": "KMIA"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KMIA"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KFLL"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KFLL"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "MXY",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KMCO"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KMCO"
+            }
+          ],
+          "KJZI": [
+            {
+              "icao": "EJA",
+              "airport": "KHPN"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KHPN"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA",
+              "airport": "KHPN"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "OSPRI7": {
+    "arrivals": [
+      {
+        "waypoints": "COBDA/ho NINJA/a11000-22000 TRTLS/a1000+ OSPRI",
+        "runway_waypoints": {
+          "KCHS": {
+            "15": "OSPRI LUTHR/a4000+",
+            "21": "OSPRI LUTHR/a4000+ MYERS/a3000/flyover/h137",
+            "3": "OSPRI AALEX/a5000-10000/s250 RECHY/a4000/s210/flyover/h125",
+            "33": "OSPRI PAMJE/a5000-10000/s250 LLEXI/a5000+/s210 JAARD/a4000+/flyover/h149"
+          },
+          "KJZI": {
+            "27": "OSPRI NKLSS/a5000-10000 CLFTN JACKE/a4000/s210/h174",
+            "9": "OSPRI NKLSS/a5000-10000 CLFTN JACKE/a4000/s210/h174"
+          }
+        },
+        "star": "OSPRI7",
+        "initial_controller": "JAX_73_CTR",
+        "initial_altitude": 15000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KCHS": [
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KATL"
+            },
+            {
+              "icao": "EDV",
+              "airport": "KATL"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "MXY",
+              "airport": "KMSY"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "FFT",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "ENY",
+              "airport": "KORD"
+            }
+          ],
+          "KJZI": [
+            {
+              "icao": "EJA",
+              "airport": "KHPN"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KHPN"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA",
+              "airport": "KHPN"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
     "control_positions": {
         "JAX_74_CTR": {
             "frequency": 134475,

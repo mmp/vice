@@ -263,136 +263,154 @@
       ]
     }
   },
-  "arrival_groups": {
-    "West": [
+  "inbound_flows": {
+  "East": {
+    "arrivals": [
       {
-        "airlines": {
-          "KAGS": [
-            {
-              "airport": "KATL",
-              "icao": "EDV"
-            },
-            {
-              "airport": "KATL",
-              "icao": "SKW"
-            }
-          ]
-        },
-        "initial_altitude": 11000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 250,
-        "route":"IRQ",
-        "waypoints": "GAIRY/ho IRQ/h158"
-      }
-    ],
-    "North": [
-      {
-        "airlines": {
-          "KAGS": [
-            {
-              "airport": "KGYH",
-              "icao": "EJA"
-            }
-          ]
-        },
-        "initial_altitude": 15000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 280,
-        "route":"IRQ",
-        "waypoints": "SOTHH GRD/a11000/ho IRQ/h158"
-      }
-    ],
-  "East": [
-      {
-        "airlines": {
-          "KAGS": [
-            {
-              "airport": "KCLT",
-              "icao": "JIA"
-            },
-            {
-              "airport": "KAGS",
-              "fleet": "short",
-              "icao": "AAL"
-            }
-          ]
-        },
-        "initial_altitude": 11000,
+        "waypoints": "PYRES YUTEE/a11000/ho GANDT/h215",
+        "route": "GANDT",
         "initial_controller": "JAX_CTR",
+        "initial_altitude": 11000,
         "initial_speed": 250,
-        "route":"GANDT",
-        "waypoints": "PYRES YUTEE/a11000/ho GANDT/h215"
-      }
-    ],
-      "STUGE3": [
-      {
+        "expect_approach": null,
         "airlines": {
           "KAGS": [
             {
-              "airport": "KAGS",
-              "icao": "EDV"
+              "icao": "JIA",
+              "airport": "KCLT"
             },
             {
-              "airport": "KJFK",
+              "icao": "AAL",
               "fleet": "short",
-              "icao": "DAL"
+              "airport": "KAGS"
             }
           ]
-        },
-        "initial_altitude": 14000,
-        "initial_controller": "ATL_CTR",
-        "initial_speed": 290,
-        "star":"STUGE3",
-        "waypoints": "ALD/ho/a14000 STUGE/a12000-/s250",
-        "speed_restriction": 250
-      }
-    ],
-          "South": [
-      {
-          "airlines": {
-            "KAGS": [
-              {
-                "airport": "KMCO",
-                "fleet": "short",
-                "icao": "AAL"
-              }
-            ]
-          },
-          "initial_altitude": 13000,
-          "initial_controller": "JAX_CTR",
-          "initial_speed": 250,
-          "route":"MILEN",
-          "waypoints": "VIYAP SAV MILEN/ho/a11000",
-          "speed_restriction": 250
         }
-      ],
-    "STWRT3": [
-      {
-        "airlines": {
-          "KAGS": [
-            {
-              "airport": "KMDW",
-              "icao": "ENY"
-            },
-            {
-              "airport": "KORD",
-              "icao": "RPA"
-            },
-            {
-              "airport": "KMEM",
-              "fleet": "long",
-              "icao": "FDX"
-            }
-          ]
-        },
-        "initial_altitude": 11000,
-        "initial_controller": "JAX_CTR",
-        "initial_speed": 250,
-        "star":"STWRT3",
-        "waypoints": "GSO LIARS DOUGH CAE STWRT/ho PAANE/h240"
       }
     ]
   },
+  "North": {
+    "arrivals": [
+      {
+        "waypoints": "SOTHH GRD/a11000/ho IRQ/h158",
+        "route": "IRQ",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 15000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KAGS": [
+            {
+              "icao": "EJA",
+              "airport": "KGYH"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "STUGE3": {
+    "arrivals": [
+      {
+        "waypoints": "ALD/a14000/ho STUGE/a12000-/s250",
+        "star": "STUGE3",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 14000,
+        "initial_speed": 290,
+        "speed_restriction": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KAGS": [
+            {
+              "icao": "EDV",
+              "airport": "KAGS"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KJFK"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "STWRT3": {
+    "arrivals": [
+      {
+        "waypoints": "GSO LIARS DOUGH CAE STWRT/ho PAANE/h240",
+        "star": "STWRT3",
+        "initial_controller": "JAX_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KAGS": [
+            {
+              "icao": "ENY",
+              "airport": "KMDW"
+            },
+            {
+              "icao": "RPA",
+              "airport": "KORD"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "long",
+              "airport": "KMEM"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "South": {
+    "arrivals": [
+      {
+        "waypoints": "VIYAP SAV MILEN/a11000/ho",
+        "route": "MILEN",
+        "initial_controller": "JAX_CTR",
+        "initial_altitude": 13000,
+        "initial_speed": 250,
+        "speed_restriction": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KAGS": [
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KMCO"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "West": {
+    "arrivals": [
+      {
+        "waypoints": "GAIRY/ho IRQ/h158",
+        "route": "IRQ",
+        "initial_controller": "ATL_CTR",
+        "initial_altitude": 11000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KAGS": [
+            {
+              "icao": "EDV",
+              "airport": "KATL"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KATL"
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
   "control_positions": {
     "ATL_CTR": {
       "frequency": 132975,
