@@ -2159,8 +2159,15 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 		} else {
 			preAc := *ac
 			radioTransmissions := cmd(ctrl, ac)
+			alreadyAdressed := false
+			for _, rt := range radioTransmissions {
+				if rt.Controller == ctrl.Callsign {
+					alreadyAdressed = true
+					break
+				}
+			}
 			if len(radioTransmissions) > 0 && s.Instructors[ctrl.Callsign] &&
-				ac.ControllingController != ctrl.Callsign {
+				ac.ControllingController != ctrl.Callsign && !alreadyAdressed { // prevent FC commands as well.
 				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
 					Controller: ctrl.Callsign,
 					Message:    radioTransmissions[0].Message,
