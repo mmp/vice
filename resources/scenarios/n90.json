@@ -438,70 +438,14 @@
     "KEWR": {
       "name": "Newark",
       "approaches": {
-        "I11": {
-          "full_name": "ILS Runway 11",
-          "runway": "11",
-          "type": "ILS",
-          "waypoints": [
-            "JARIT/if/a1600 JEENO/faf/a1600"
-          ]
-        },
-        "I2L": {
-          "full_name": "ILS Runway 22 Left",
-          "runway": "22L",
-          "type": "ILS",
-          "waypoints": [
-            "PATRN/iaf IZEKO/if/a3000 GIMEE/a2500 BUZZD/faf/a1500"
-          ]
-        },
-        "I2R": {
-          "full_name": "ILS Runway 22 Right",
-          "runway": "22R",
-          "type": "ILS",
-          "waypoints": [
-            "PATRN/iaf AGNSS/if/a3000 VERDE/a2500 TALTE/faf/a1500"
-          ]
-        },
-        "I4L": {
-          "full_name": "ILS Runway 4 Left",
-          "runway": "4L",
-          "type": "ILS",
-          "waypoints": [
-            "KILMA/iaf EMBAY/if/a2800 HOWYA/faf/a2000"
-          ]
-        },
-        "I4R": {
-          "full_name": "ILS Runway 4 Right",
-          "runway": "4R",
-          "type": "ILS",
-          "waypoints": [
-            "KILMA/iaf GRITY/if/a2800 DOOIN/faf/a1700"
-          ]
-        },
-        "R29": {
-          "full_name": "RNAV X Runway 29",
-          "runway": "29",
-          "type": "RNAV",
-          "waypoints": [
-            "FLIKR CASHH/iaf/a3000+ ZIAAA/iaf/a3000+ PIJAY/iaf/a2000+ UJODY/if/a2000 STATU/faf/a1400 ISERE"
-          ]
-        },
-        "RY9": {
-          "full_name": "RNAV Y Runway 29",
-          "runway": "29",
-          "type": "RNAV",
-          "waypoints": [
-            "TETER/if/a3000 GIMEE/a2500 JIMLO/faf/a2500 COPKO"
-          ]
-        },
-        "RZ9": {
-          "full_name": "RNAV Z Runway 29",
-          "runway": "29",
-          "type": "RNAV",
-          "waypoints": [
-            "KILMA/iaf GRITY/if/a3000 COWWE/a3000 NNICK/faf/a3000 CORTO/a2327 GOLSN/a2000 HALPA/a823"
-          ]
-        }
+        "I11": { "cifp_id": "I11" },
+        "I2L": { "cifp_id": "I22L" },
+        "I2R": { "cifp_id": "I22R" },
+        "I4L": { "cifp_id": "IZ4L" },
+        "I4R": { "cifp_id": "I4R" },
+        "R29": { "cifp_id": "RX29" },
+        "RY9": { "cifp_id": "RY29" },
+        "RZ9": { "cifp_id": "RZ29" }
       },
       "approach_regions": {
         "22L": {
