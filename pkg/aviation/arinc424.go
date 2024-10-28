@@ -525,8 +525,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 
 	case "RF": // constant radius arc
 		arc = &DMEArc{
-			Fix:    strings.TrimSpace(string(r.centerFix)),
-			Radius: float32(parseInt(r.routeDistance)) / 10,
+			Length: float32(parseInt(r.routeDistance)) / 10,
 		}
 
 	case "HF", "PI": // procedure turns
