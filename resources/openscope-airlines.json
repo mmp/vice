@@ -42318,6 +42318,25 @@
     }
   },
   {
+    "icao": "ujc",
+    "name": "Ultimate Jet",
+    "callsign": {
+      "name": "Ultimate Jet",
+      "callsignFormats": [
+        "##",
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C750",
+          5
+        ]
+      ]
+    }
+  },
+  {
     "icao": "ujx",
     "name": "AtlasGlobal Ukraine",
     "callsign": {

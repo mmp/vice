@@ -288,17 +288,6 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		}
 		e.Pop()
 	}
-	for icao, exits := range airportExits {
-		// We already gave an error above if the airport is unknown, so
-		// don't need to again here..
-		if ap, ok := sg.Airports[icao]; ok {
-			for _, dep := range ap.Departures {
-				if _, ok := exits[dep.Exit]; !ok {
-					e.ErrorString("No active runway at %s covers in-use exit %q", icao, dep.Exit)
-				}
-			}
-		}
-	}
 
 	// Make sure all of the controllers used in airspace awareness will be there.
 	for _, aa := range sg.STARSFacilityAdaptation.AirspaceAwareness {

@@ -588,38 +588,15 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			}
 		}
 
-		if c.NewSimType == NewSimCreateRemote {
-			if imgui.InputTextV("Name", &c.NewSimName, imgui.InputTextFlagsCallbackAlways,
-				func(cb imgui.InputTextCallbackData) int32 {
-					// Prevent excessively-long names...
-					const MaxLength = 32
-					if l := len(cb.Buffer()); l > MaxLength {
-						cb.DeleteBytes(MaxLength-1, l-MaxLength)
-					}
-					return 0
-				}) {
-				c.DisplayError = nil
-			}
-			if c.NewSimName == "" {
-				imgui.SameLine()
-				imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .1, .1, 1})
-				imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
-				imgui.PopStyleColor()
-			}
-
-			imgui.Checkbox("Require Password", &c.RequirePassword)
-			if c.RequirePassword {
-				imgui.InputTextV("Password", &c.Password, 0, nil)
-				if c.Password == "" {
-					imgui.SameLine()
-					imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .1, .1, 1})
-					imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
-					imgui.PopStyleColor()
-				}
-			}
-		}
-
 		if imgui.BeginTableV("scenario", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
+			if c.NewSimType == NewSimCreateRemote {
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text("Name:")
+				imgui.TableNextColumn()
+				imgui.Text(c.NewSimName)
+			}
+
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Control Position:")
@@ -627,13 +604,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.Text(c.Scenario.SelectedController)
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Checkbox("Instructor Scenario", &c.InstructorAllowed)
-
-			uiStartDisable(!c.InstructorAllowed)
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Checkbox("Instructor", &c.Instructor)
-			uiEndDisable(!c.InstructorAllowed)
+			imgui.Checkbox("Allow Instructor Sign-ins", &c.InstructorAllowed)
 
 			if len(c.Scenario.ArrivalRunways) > 0 {
 				imgui.TableNextRow()
@@ -659,6 +630,20 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				c.LiveWeather = false
 			}
 			uiEndDisable(!validAirport)
+
+			if c.NewSimType == NewSimCreateRemote {
+				imgui.Checkbox("Require Password", &c.RequirePassword)
+				if c.RequirePassword {
+					imgui.InputTextV("Password", &c.Password, 0, nil)
+					if c.Password == "" {
+						imgui.SameLine()
+						imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .1, .1, 1})
+						imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
+						imgui.PopStyleColor()
+					}
+				}
+			}
+
 			imgui.TableNextColumn()
 			wind := c.Scenario.Wind
 			if c.LiveWeather {
@@ -787,7 +772,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.InputTextV("Password", &c.RemoteSimPassword, 0, nil)
 		}
 		uiStartDisable(!rs.InstructorAllowed)
-		imgui.Checkbox("Instructor", &c.Instructor)
+		imgui.Checkbox("Sign-in as Instructor", &c.Instructor)
 		uiEndDisable(!rs.InstructorAllowed)
 	}
 

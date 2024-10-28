@@ -895,15 +895,6 @@ type VideoMap struct {
 // This should match VideoMapLibrary in dat2vice
 type VideoMapLibrary struct {
 	Maps []VideoMap
-
-	// ProvideAllMaps indicates whether all of the maps in the file will be
-	// available in STARS; otherwise, just the ones used in the DCB are
-	// shown in the maps lists.  This is needed to handle the case that
-	// with dat2vice, we generally get just the maps that are wanted in the
-	// video map file, while the CRC-converted ones have every map for an
-	// ARTCC and in particular usually include multiple maps with the same
-	// number.
-	ProvideAllMaps bool
 }
 
 // VideoMapManifest stores which maps are available in a video map file and

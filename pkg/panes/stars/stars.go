@@ -453,18 +453,23 @@ func (sp *STARSPane) makeMaps(client *sim.ControlClient, ss sim.State, lg *log.L
 	if err != nil {
 		lg.Errorf("%v", err)
 	}
-	if !vmf.ProvideAllMaps {
-		// Only provide the maps referenced in the DCB (backwards
-		// compatability for the massive whole-ARTCC Z** videomap files.)
-		ctrlMaps, _ := ss.GetControllerVideoMaps()
-		sp.allVideoMaps = util.FilterSlice(vmf.Maps, func(vm av.VideoMap) bool {
-			return slices.Contains(ctrlMaps, vm.Name)
-		})
-	} else {
-		sp.allVideoMaps = vmf.Maps
-	}
+
+	// First grab the video maps needed for the DCB
+	ctrlMaps, _ := ss.GetControllerVideoMaps()
+	sp.allVideoMaps = util.FilterSlice(vmf.Maps, func(vm av.VideoMap) bool {
+		return slices.Contains(ctrlMaps, vm.Name)
+	})
 	for _, vm := range sp.allVideoMaps {
 		usedIds[vm.Id] = nil
+	}
+
+	// Now make a second pass through the maps and add all of the ones that
+	// don't have a conflicting ID with an existing map.
+	for _, vm := range vmf.Maps {
+		if _, ok := usedIds[vm.Id]; !ok {
+			sp.allVideoMaps = append(sp.allVideoMaps, vm)
+			usedIds[vm.Id] = nil
+		}
 	}
 
 	// Make automatic built-in system maps
@@ -546,7 +551,6 @@ func (sp *STARSPane) makeMaps(client *sim.ControlClient, ss sim.State, lg *log.L
 	}
 
 	// Start with the video maps associated with the Sim.
-	ctrlMaps, _ := ss.GetControllerVideoMaps()
 	sp.dcbVideoMaps = nil
 	for _, name := range ctrlMaps {
 		if idx := slices.IndexFunc(sp.allVideoMaps, func(v av.VideoMap) bool { return v.Name == name }); idx != -1 && name != "" {
