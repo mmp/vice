@@ -87,6 +87,7 @@ var starsErrorRemap = map[error]*STARSError{
 	av.ErrUnknownAircraftType:          ErrSTARSIllegalParam,
 	av.ErrUnknownAirport:               ErrSTARSIllegalAirport,
 	av.ErrUnknownApproach:              ErrSTARSIllegalValue,
+	sim.ErrUnknownController:           ErrSTARSIllegalPosition,
 	av.ErrUnknownRunway:                ErrSTARSIllegalValue,
 }
 

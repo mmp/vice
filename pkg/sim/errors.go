@@ -35,6 +35,7 @@ var (
 	ErrRestoringSavedState         = errors.New("Errors during state restoration")
 	ErrServerDisconnected          = errors.New("Server disconnected")
 	ErrTooManyRestrictionAreas     = errors.New("Too many restriction areas specified")
+	ErrUnknownController           = errors.New("Unknown controller")
 	ErrUnknownFacility             = errors.New("Unknown facility (ARTCC/TRACON)")
 	ErrUnknownControllerFacility   = errors.New("Unknown controller facility")
 )

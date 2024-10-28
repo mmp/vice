@@ -2345,6 +2345,10 @@ func (s *Sim) UploadFlightPlan(token string, Type int, plan *STARSFlightPlan) er
 	defer s.mu.Unlock(s.lg)
 
 	ctrl := s.State.Controllers[s.controllers[token].Callsign]
+	if ctrl == nil {
+		s.lg.Errorf("%s: controller unknown", s.controllers[token].Callsign)
+		return ErrUnknownController
+	}
 	eram, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
 	if err != nil {
 		return err
