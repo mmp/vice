@@ -273,7 +273,7 @@ var (
 		`Fixed a bug where aircraft that went around after being handed off to tower wouldn't contact tower the next time`,
 		`Fixed a few bugs related to the 250kts speed limit at 10,000'`,
 		`Added more compact "hold for release" interface for airports that don't use STARS coordination lists`,
-		`STARS: added OTJI mode, where an instructor can sign in and issue commands to all aircraft`,
+		`STARS: added OJTI mode, where an instructor can sign in and issue commands to all aircraft`,
 		`STARS: added support for restriction areas`,
 		`STARS: multiple improvements to video map handling, including supporting multiple colors and map categories.`,
 		`STARS: CA and MSAW alerts are no longer generated for unassociated tracks`,
