@@ -69,9 +69,9 @@ type ArrivalAirline struct {
 
 func (a AirlineSpecifier) Aircraft() []FleetAircraft {
 	if a.Fleet == "" && len(a.AircraftTypes) == 0 {
-		return DB.Airlines[a.ICAO].Fleets["default"]
+		return DB.Airlines[strings.ToUpper(a.ICAO)].Fleets["default"]
 	} else if a.Fleet != "" {
-		return DB.Airlines[a.ICAO].Fleets[a.Fleet]
+		return DB.Airlines[strings.ToUpper(a.ICAO)].Fleets[a.Fleet]
 	} else {
 		var f []FleetAircraft
 		for _, ty := range a.AircraftTypes {
@@ -85,7 +85,7 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 	e.Push("Airline " + a.ICAO)
 	defer e.Pop()
 
-	al, ok := DB.Airlines[a.ICAO]
+	al, ok := DB.Airlines[strings.ToUpper(a.ICAO)]
 	if !ok {
 		e.ErrorString("airline not known")
 		return
