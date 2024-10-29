@@ -51,6 +51,7 @@ type StaticDatabase struct {
 type FAAAirport struct {
 	Id         string
 	Name       string
+	Country    string
 	Elevation  int
 	Location   math.Point2LL
 	Runways    []Runway
@@ -292,7 +293,7 @@ func parseAirports() map[string]FAAAirport {
 
 	// FAA database
 	mungeCSV("airports", string(airportsRaw),
-		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "name"},
+		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "local_code", "name", "iso_country"},
 		func(s []string) {
 			atof := func(s string) float64 {
 				v, err := util.Atof(s)
@@ -303,13 +304,23 @@ func parseAirports() map[string]FAAAirport {
 			}
 
 			elevation := float64(0)
-			if s[2] != "" {
+			if s[2] != "" && s[2] != "NA" {
 				elevation = atof(s[2])
 			}
 			loc := math.Point2LL{float32(atof(s[1])), float32(atof(s[0]))}
-			ap := FAAAirport{Id: s[3], Name: s[4], Location: loc, Elevation: int(elevation)}
-			if ap.Id != "" {
-				airports[ap.Id] = ap
+			id := util.Select(s[3] != "", s[3], s[4])
+
+			// There are some foreign airports with 5-character ids; make
+			// sure not to include them since they can conflict with US fix
+			// names.
+			if len(id) == 3 || len(id) == 4 {
+				ap := FAAAirport{Id: id, Name: s[5], Country: s[6], Location: loc, Elevation: int(elevation)}
+				// US-based takes priority in case of a conflict. When
+				// there are multiple US-based airports with the same id
+				// (e.g. 5MO), then the last one we see takes precedence.
+				if _, ok := airports[id]; !ok || ap.Country == "US" {
+					airports[id] = ap
+				}
 			}
 		})
 
