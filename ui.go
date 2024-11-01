@@ -1298,8 +1298,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		}
 	}
 
-	canLaunch := (lc.controlClient.State.MultiControllers != nil && ctrl == lc.controlClient.Callsign) ||
-		lc.controlClient.State.MultiControllers == nil && ctrl == ""
+	canLaunch := ctrl == lc.controlClient.Callsign || (lc.controlClient.State.MultiControllers == nil && ctrl == "")
 	if canLaunch {
 		imgui.Text("Mode:")
 		imgui.SameLine()
@@ -1574,6 +1573,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 	if !showLaunchControls {
 		lc.controlClient.TakeOrReturnLaunchControl(eventStream)
+		ui.showLaunchControl = false
 	}
 }
 
