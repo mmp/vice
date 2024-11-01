@@ -733,11 +733,10 @@ func drawDCBButton(ctx *panes.Context, text string, flags int, buttonScale float
 	sz := buttonSize(flags, buttonScale)
 
 	// Offset for spacing
-	const delta = 1
-	p0 := math.Add2f(dcbDrawState.cursor, [2]float32{delta, -delta})
-	p1 := math.Add2f(p0, [2]float32{sz[0] - 2*delta, 0})
-	p2 := math.Add2f(p1, [2]float32{0, -sz[1] + 2*delta})
-	p3 := math.Add2f(p2, [2]float32{-sz[0] + 2*delta, 0})
+	p0 := dcbDrawState.cursor
+	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
+	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
+	p3 := math.Add2f(p2, [2]float32{-sz[0], 0})
 
 	ext := math.Extent2DFromPoints([][2]float32{p0, p2})
 	mouse := dcbDrawState.mouse
@@ -806,7 +805,6 @@ func drawDCBButton(ctx *panes.Context, text string, flags int, buttonScale float
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-
 	updateDCBCursor(flags, sz, ctx)
 
 	// Text last!
