@@ -237,7 +237,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			sp.Aircraft[callsign] = sa
 		}
 
-		if ok, _ := av.SquawkIsSPC(ac.Squawk); ok && !sp.Aircraft[callsign].SPCAlert {
+		if ok, _ := ac.Squawk.IsSPC(); ok && !sp.Aircraft[callsign].SPCAlert {
 			// First we've seen it
 			state := sp.Aircraft[callsign]
 			state.SPCAlert = true
