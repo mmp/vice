@@ -281,9 +281,13 @@ var spcs = map[Squawk]string{
 	Squawk(0o7777): "MI", // Military interceptor operations
 }
 
-// SquawkIsSPC returns true if the given squawk code is an SPC.
-// The second return value is a string giving the two-letter abbreviated SPC it corresponds to.
 func SquawkIsSPC(squawk Squawk) (ok bool, code string) {
+	return squawk.IsSPC()
+}
+
+// IsSPC returns true if the given squawk code is an SPC.
+// The second return value is a string giving the two-letter abbreviated SPC it corresponds to.
+func (squawk Squawk) IsSPC() (ok bool, code string) {
 	code, ok = spcs[squawk]
 	return
 }

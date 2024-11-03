@@ -479,7 +479,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		actype = actype[2:]
 	}
 	ident := state.Ident(ctx.Now)
-	squawkingSPC, _ := av.SquawkIsSPC(ac.Squawk)
+	squawkingSPC, _ := ac.Squawk.IsSPC()
 	altitude := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
 	groundspeed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
 	// Note arrivalAirport is only set if it should be shown when there is no scratchpad set
@@ -919,7 +919,7 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 		// Pointouts: This is if its been accepted,
 		// for an incoming pointout, it falls to the FDB check
 		return true
-	} else if ok, _ := av.SquawkIsSPC(ac.Squawk); ok {
+	} else if ok, _ := ac.Squawk.IsSPC(); ok {
 		// Special purpose codes
 		return true
 	} else if sp.Aircraft[ac.Callsign].DatablockType == FullDatablock {
@@ -1006,7 +1006,7 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) boo
 	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
 		return true
 	}
-	if ok, _ := av.SquawkIsSPC(ac.Squawk); ok {
+	if ok, _ := ac.Squawk.IsSPC(); ok {
 		return true
 	}
 	if ac.SPCOverride != "" {
@@ -1040,7 +1040,7 @@ func (sp *STARSPane) getWarnings(ctx *panes.Context, ac *av.Aircraft) []string {
 	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
 		addWarning("LA")
 	}
-	if ok, code := av.SquawkIsSPC(ac.Squawk); ok {
+	if ok, code := ac.Squawk.IsSPC(); ok {
 		addWarning(code)
 	}
 	if ac.SPCOverride != "" {
