@@ -272,28 +272,28 @@ type SPC struct {
 	Code   string
 }
 
-var spcs = []SPC{
-	{Squawk: Squawk(0o7400), Code: "LL"}, // lost link
-	{Squawk: Squawk(0o7500), Code: "HJ"}, // hijack
-	{Squawk: Squawk(0o7600), Code: "RF"}, // radio failure
-	{Squawk: Squawk(0o7700), Code: "EM"}, // emergency condigion
-	{Squawk: Squawk(0o7777), Code: "MI"}, // military intercept
+var spcs = map[Squawk]string{
+	Squawk(0o7400): "LL", // Lost link
+	Squawk(0o7500): "HJ", // Hijack/Unlawful Interference
+	Squawk(0o7600): "RF", // Communication Failure
+	Squawk(0o7700): "EM", // Emergency
+	Squawk(0o7777): "MI", // Military interceptor operations
 }
 
-// SquawkIsSPC returns true if the given beacon code is a SPC.  The second
-// return value is a string giving the two-letter abbreviated SPC it
-// corresponds to.
-func SquawkIsSPC(squawk Squawk) (bool, string) {
-	for _, spc := range spcs {
-		if spc.Squawk == squawk {
-			return true, spc.Code
-		}
-	}
-	return false, ""
+// SquawkIsSPC returns true if the given squawk code is an SPC.
+// The second return value is a string giving the two-letter abbreviated SPC it corresponds to.
+func SquawkIsSPC(squawk Squawk) (ok bool, code string) {
+	code, ok = spcs[squawk]
+	return
 }
 
 func StringIsSPC(code string) bool {
-	return slices.ContainsFunc(spcs, func(spc SPC) bool { return spc.Code == code })
+	for scpCode := range maps.Values(spcs) {
+		if scpCode == code {
+			return true
+		}
+	}
+	return false
 }
 
 type RadarTrack struct {
