@@ -262,7 +262,11 @@ func ParseSquawk(s string) (Squawk, error) {
 	return Squawk(sq), nil
 }
 
-// Special purpose code: beacon codes are squawked in various unusual situations.
+/////////////////////////////////////////////////////////////////////////
+// SPC
+
+// SPC (Special Purpose Code) is a unique beacon code,
+// indicate an emergency or non-standard operation.
 type SPC struct {
 	Squawk Squawk
 	Code   string
