@@ -1330,7 +1330,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, aircraft []*av.Aircraft) {
 	playSPCSound := func() bool {
 		for _, ac := range aircraft {
 			state := sp.Aircraft[ac.Callsign]
-			ok, _ := av.SquawkIsSPC(ac.Squawk)
+			ok, _ := ac.Squawk.IsSPC()
 			if ok && !state.SPCAcknowledged && ctx.Now.Before(state.SPCSoundEnd) {
 				return true
 			}
