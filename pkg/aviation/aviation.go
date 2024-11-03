@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"maps"
 	"math/bits"
 	"path/filepath"
 	"slices"
@@ -272,28 +273,28 @@ type SPC struct {
 	Code   string
 }
 
-var spcs = []SPC{
-	{Squawk: Squawk(0o7400), Code: "LL"}, // lost link
-	{Squawk: Squawk(0o7500), Code: "HJ"}, // hijack
-	{Squawk: Squawk(0o7600), Code: "RF"}, // radio failure
-	{Squawk: Squawk(0o7700), Code: "EM"}, // emergency condigion
-	{Squawk: Squawk(0o7777), Code: "MI"}, // military intercept
+var spcs = map[Squawk]string{
+	Squawk(0o7400): "LL", // Lost link
+	Squawk(0o7500): "HJ", // Hijack/Unlawful Interference
+	Squawk(0o7600): "RF", // Communication Failure
+	Squawk(0o7700): "EM", // Emergency
+	Squawk(0o7777): "MI", // Military interceptor operations
 }
 
-// SquawkIsSPC returns true if the given beacon code is a SPC.  The second
-// return value is a string giving the two-letter abbreviated SPC it
-// corresponds to.
-func SquawkIsSPC(squawk Squawk) (bool, string) {
-	for _, spc := range spcs {
-		if spc.Squawk == squawk {
-			return true, spc.Code
-		}
-	}
-	return false, ""
+// SquawkIsSPC returns true if the given squawk code is an SPC.
+// The second return value is a string giving the two-letter abbreviated SPC it corresponds to.
+func SquawkIsSPC(squawk Squawk) (ok bool, code string) {
+	code, ok = spcs[squawk]
+	return
 }
 
 func StringIsSPC(code string) bool {
-	return slices.ContainsFunc(spcs, func(spc SPC) bool { return spc.Code == code })
+	for scpCode := range maps.Values(spcs) {
+		if scpCode == code {
+			return true
+		}
+	}
+	return false
 }
 
 type RadarTrack struct {
@@ -658,8 +659,10 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 			star, ok := airport.STARs[ar.STAR]
 			if !ok {
-				e.ErrorString("STAR %q not available for %s. Options: %s",
-					ar.STAR, icao, strings.Join(util.SortedMapKeys(airport.STARs), ", "))
+				e.ErrorString(
+					"STAR %q not available for %s. Options: %s",
+					ar.STAR, icao, strings.Join(util.SortedMapKeys(airport.STARs), ", "),
+				)
 				continue
 			}
 
@@ -670,15 +673,19 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 					wps := star.Transitions[tr]
 					if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == spawnPoint }); idx != -1 {
 						if idx == len(wps)-1 {
-							e.ErrorString("Only have one waypoint on STAR: %q. 2 or more are necessary for navigation",
-								wps[idx].Fix)
+							e.ErrorString(
+								"Only have one waypoint on STAR: %q. 2 or more are necessary for navigation",
+								wps[idx].Fix,
+							)
 						}
 
 						ar.Waypoints = util.DuplicateSlice(wps[idx:])
 						ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
 
 						if len(ar.Waypoints) >= 2 && spawnT != 0 {
-							ar.Waypoints[0].Location = math.Lerp2f(spawnT, ar.Waypoints[0].Location, ar.Waypoints[1].Location)
+							ar.Waypoints[0].Location = math.Lerp2f(
+								spawnT, ar.Waypoints[0].Location, ar.Waypoints[1].Location,
+							)
 							ar.Waypoints[0].Fix = "_" + ar.Waypoints[0].Fix
 						}
 
@@ -706,7 +713,9 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 						if starRwy == rwy.Id ||
 							(n == len(rwy.Id) && starRwy[n-1] == 'B' /* both */ && starRwy[:n-1] == rwy.Id[:n-1]) {
 							ar.RunwayWaypoints[icao][rwy.Id] = util.DuplicateSlice(wp)
-							ar.RunwayWaypoints[icao][rwy.Id].InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+							ar.RunwayWaypoints[icao][rwy.Id].InitializeLocations(
+								loc, nmPerLongitude, magneticVariation, e,
+							)
 							break
 						}
 					}
@@ -734,8 +743,10 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		}
 	} else {
 		if len(ar.Waypoints) < 2 {
-			e.ErrorString("must provide at least two \"waypoints\" for arrival " +
-				"(even if \"runway_waypoints\" are provided)")
+			e.ErrorString(
+				"must provide at least two \"waypoints\" for arrival " +
+					"(even if \"runway_waypoints\" are provided)",
+			)
 		}
 
 		ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
@@ -762,8 +773,10 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				}
 
 				if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {
-					e.ErrorString("initial \"runway_waypoints\" fix must match " +
-						"last \"waypoints\" fix")
+					e.ErrorString(
+						"initial \"runway_waypoints\" fix must match " +
+							"last \"waypoints\" fix",
+					)
 				}
 
 				// For the check, splice together the last common
@@ -816,19 +829,25 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		// We checked the arrival airports were valid above, no need to issue an error if not found.
 		if ap, ok := airports[airport]; ok {
 			if _, ok := ap.Approaches[*ar.ExpectApproach.A]; !ok {
-				e.ErrorString("arrival airport %q doesn't have a %q approach for \"expect_approach\"",
-					airport, *ar.ExpectApproach.A)
+				e.ErrorString(
+					"arrival airport %q doesn't have a %q approach for \"expect_approach\"",
+					airport, *ar.ExpectApproach.A,
+				)
 			}
 		}
 	} else if ar.ExpectApproach.B != nil {
 		for airport, appr := range *ar.ExpectApproach.B {
 			if _, ok := ar.Airlines[airport]; !ok {
-				e.ErrorString("airport %q is listed in \"expect_approach\" but is not in arrival airports",
-					airport)
+				e.ErrorString(
+					"airport %q is listed in \"expect_approach\" but is not in arrival airports",
+					airport,
+				)
 			} else if ap, ok := airports[airport]; ok {
 				if _, ok := ap.Approaches[appr]; !ok {
-					e.ErrorString("arrival airport %q doesn't have a %q approach for \"expect_approach\"",
-						airport, appr)
+					e.ErrorString(
+						"arrival airport %q doesn't have a %q approach for \"expect_approach\"",
+						airport, appr,
+					)
 				}
 			}
 		}
@@ -1077,13 +1096,15 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 		e.Error(err)
 		return
 	} else {
-		sort.Slice(vmf.Maps, func(i, j int) bool {
-			vi, vj := vmf.Maps[i], vmf.Maps[j]
-			if vi.Id != vj.Id {
-				return vi.Id < vj.Id
-			}
-			return vi.Name < vj.Name
-		})
+		sort.Slice(
+			vmf.Maps, func(i, j int) bool {
+				vi, vj := vmf.Maps[i], vmf.Maps[j]
+				if vi.Id != vj.Id {
+					return vi.Id < vj.Id
+				}
+				return vi.Name < vj.Name
+			},
+		)
 
 		fmt.Printf("%5s\t%20s\t%s\n", "Id", "Label", "Name")
 		for _, m := range vmf.Maps {
