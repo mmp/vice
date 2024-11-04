@@ -2464,7 +2464,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 				return av.ErrInvalidController
 			} else {
 				// Disallow handoff if there's a beacon code mismatch.
-				squawkingSPC, _ := av.SquawkIsSPC(ac.Squawk)
+				squawkingSPC, _ := ac.Squawk.IsSPC()
 				if trk := s.State.STARSComputer().TrackInformation[ac.Callsign]; trk != nil && trk.FlightPlan != nil {
 					if ac.Squawk != trk.FlightPlan.AssignedSquawk && !squawkingSPC {
 						return ErrBeaconMismatch

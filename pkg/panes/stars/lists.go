@@ -280,7 +280,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 			if ac.SPCOverride != "" {
 				codes[ac.SPCOverride] = nil
 			}
-			if ok, code := av.SquawkIsSPC(ac.Squawk); ok {
+			if ok, code := ac.Squawk.IsSPC(); ok {
 				codes[code] = nil
 			}
 		}
