@@ -702,6 +702,8 @@ func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude f
 				} else if e != nil {
 					e.ErrorString("distance between waypoints %.2fnm is greater than specified arc length %.2fnm",
 						d, wp.Arc.Length)
+				}
+				if e != nil {
 					e.Pop()
 				}
 				continue
