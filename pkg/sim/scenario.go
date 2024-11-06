@@ -196,6 +196,8 @@ type ScenarioGroupArrivalRunway struct {
 }
 
 func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manifest *av.VideoMapManifest) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	// Temporary backwards-compatibility for inbound flows
 	if len(s.ArrivalGroupDefaultRates) > 0 {
 		if len(s.InboundFlowDefaultRates) > 0 {
@@ -734,6 +736,8 @@ var (
 
 func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogger, simConfigurations map[string]map[string]*Configuration,
 	manifest *av.VideoMapManifest) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	// stars_config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
 	if ctr := sg.STARSFacilityAdaptation.CenterString; ctr == "" {
@@ -892,6 +896,8 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 }
 
 func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *ScenarioGroup, manifest *av.VideoMapManifest) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	e.Push("stars_config")
 
 	// Video maps

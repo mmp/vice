@@ -83,6 +83,8 @@ func (a AirlineSpecifier) Aircraft() []FleetAircraft {
 }
 
 func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	e.Push("Airline " + a.ICAO)
 	defer e.Pop()
 
@@ -619,6 +621,8 @@ func TASToIAS(tas, altitude float32) float32 {
 
 func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
 	airports map[string]*Airport, controlPositions map[string]*Controller, e *util.ErrorLogger) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	if ar.Route == "" && ar.STAR == "" {
 		e.ErrorString("neither \"route\" nor \"star\" specified")
 		return
@@ -933,6 +937,8 @@ type VideoMapManifest struct {
 }
 
 func CheckVideoMapManifest(filename string, e *util.ErrorLogger) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	manifest, err := LoadVideoMapManifest(filename)
 	if err != nil {
 		e.Error(err)

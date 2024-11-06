@@ -230,6 +230,8 @@ func (w WaypointArray) RouteString() string {
 }
 
 func (w WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[string]*Controller) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	w.checkBasics(e, controllers)
 
 	var lastMin float32 // previous minimum altitude restriction
@@ -262,6 +264,8 @@ func (w WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[strin
 }
 
 func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*Controller) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	for _, wp := range w {
 		e.Push(wp.Fix)
 		if wp.Speed < 0 || wp.Speed > 300 {
@@ -279,6 +283,8 @@ func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*
 }
 
 func (w WaypointArray) CheckApproach(e *util.ErrorLogger, controllers map[string]*Controller) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	w.checkBasics(e, controllers)
 	w.checkDescending(e)
 
@@ -302,6 +308,8 @@ func (w WaypointArray) CheckApproach(e *util.ErrorLogger, controllers map[string
 }
 
 func (w WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Controller) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	w.checkBasics(e, ctrl)
 	w.checkDescending(e)
 
@@ -319,6 +327,8 @@ func (w WaypointArray) CheckOverflight(e *util.ErrorLogger, ctrl map[string]*Con
 }
 
 func (w WaypointArray) checkDescending(e *util.ErrorLogger) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	// or at least, check not climbing...
 	var lastMin float32
 	var minFix string // last fix that established a specific minimum alt
@@ -615,6 +625,8 @@ type Locator interface {
 }
 
 func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32, magneticVariation float32, e *util.ErrorLogger) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	var prev math.Point2LL
 
 	for i, wp := range waypoints {
@@ -784,6 +796,8 @@ type STAR struct {
 }
 
 func (s STAR) Check(e *util.ErrorLogger) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	check := func(wps WaypointArray) {
 		for _, wp := range wps {
 			_, okn := DB.Navaids[wp.Fix]
@@ -1086,6 +1100,7 @@ type OverflightAirline struct {
 
 func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
 	airports map[string]*Airport, controlPositions map[string]*Controller, e *util.ErrorLogger) {
+	defer e.CheckDepth(e.CurrentDepth())
 	if len(of.Waypoints) < 2 {
 		e.ErrorString("must provide at least two \"waypoints\" for overflight")
 	}

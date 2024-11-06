@@ -59,3 +59,27 @@ func (e *ErrorLogger) PrintErrors(lg *log.Logger) {
 func (e *ErrorLogger) String() string {
 	return strings.Join(e.errors, "\n")
 }
+
+func (e *ErrorLogger) CheckDepth(d int) {
+	if e == nil || e.CurrentDepth() == d {
+		return
+	}
+
+	if r := recover(); r == nil {
+		// Don't give spurious warnings when there's a panic.
+		fmt.Printf("Initial ErrorLogger depth %d, final %d\n", d, e.CurrentDepth())
+		for _, f := range log.Callstack(nil) {
+			fmt.Printf("%15s:%d %s\n", f.File, f.Line, f.Function)
+		}
+		os.Exit(1)
+	} else {
+		panic(r)
+	}
+}
+
+func (e *ErrorLogger) CurrentDepth() int {
+	if e == nil {
+		return 0
+	}
+	return len(e.hierarchy)
+}

@@ -55,6 +55,8 @@ func UnmarshalJSON[T any](b []byte, out *T) error {
 // CheckJSON checks whether the provided JSON is syntactically valid and
 // then typechecks it with respect to the provided type T.
 func CheckJSON[T any](contents []byte, e *ErrorLogger) {
+	defer e.CheckDepth(e.CurrentDepth())
+
 	var items interface{}
 	if err := UnmarshalJSON(contents, &items); err != nil {
 		e.Error(err)
