@@ -913,7 +913,11 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	}
 
 	if len(s.ControllerConfigs) > 0 {
-		s.ControllerConfigs = util.CommaKeyExpand(s.ControllerConfigs)
+		var err error
+		s.ControllerConfigs, err = util.CommaKeyExpand(s.ControllerConfigs)
+		if err != nil {
+			e.Error(err)
+		}
 
 		for ctrl, config := range s.ControllerConfigs {
 			if pos, ok := sg.Locate(config.CenterString); !ok {
@@ -1151,7 +1155,11 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	if len(s.VideoMapNames) == 0 {
 		if len(s.ControllerConfigs) == 0 {
 			e.ErrorString("must provide one of \"stars_maps\" or \"controller_configs\" in \"stars_config\"")
-			s.ControllerConfigs = util.CommaKeyExpand(s.ControllerConfigs)
+		}
+		var err error
+		s.ControllerConfigs, err = util.CommaKeyExpand(s.ControllerConfigs)
+		if err != nil {
+			e.Error(err)
 		}
 	} else if len(s.ControllerConfigs) > 0 {
 		e.ErrorString("cannot provide both \"stars_maps\" and \"controller_configs\" in \"stars_config\"")

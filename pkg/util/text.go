@@ -6,6 +6,7 @@ package util
 
 import (
 	"crypto/sha256"
+	"errors"
 	"io"
 	"strconv"
 	"strings"
@@ -125,20 +126,20 @@ func IsAllLetters(s string) bool {
 
 // Given a map from strings to some type T where the keys are assumed to be
 // of the form "foo,bar,bat", return a new map where each comma-delineated
-// string in the keys has its own entry in the returned map.  Panics if a
-// key is repeated.
-func CommaKeyExpand[T any](in map[string]T) map[string]T {
+// string in the keys has its own entry in the returned map.  Returns an
+// error if a key is repeated.
+func CommaKeyExpand[T any](in map[string]T) (map[string]T, error) {
 	m := make(map[string]T)
 	for k, v := range in {
 		for _, s := range strings.Split(k, ",") {
 			s = strings.TrimSpace(s)
 			if _, ok := m[s]; ok {
-				panic("key repeated in map given to CommaKeyExpand")
+				return nil, errors.New("key repeated in map " + s)
 			}
 			m[s] = v
 		}
 	}
-	return m
+	return m, nil
 }
 
 func Hash(r io.Reader) ([]byte, error) {
