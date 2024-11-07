@@ -1146,8 +1146,8 @@
     "PIT_TWR": {
       "frequency": 120500,
       "full_name": "Pittsburgh Tower",
-      "scope_char": "L",
-      "sector_id": "1B"
+      "scope_char": "W",
+      "sector_id": "1W"
     },
     "PIT_D_APP": {
       "frequency": 123950,

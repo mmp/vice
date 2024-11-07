@@ -2197,12 +2197,6 @@
                         "facility_id": "C",
                         "eram_facility": true
                     },
-                    "CLT_APP": {
-                        "frequency": 119500,
-                        "full_name": "Charlotte Approach",
-                        "scope_char": "W",
-                        "sector_id": "1W"
-                    },
                     "CLT_W_DEP": {
                         "frequency": 119500,
                         "full_name": "Charlotte Approach",
@@ -2355,7 +2349,7 @@
                                     "KCLT": 6
                                 }
                             },
-                            "solo_controller": "CLT_APP",
+                            "solo_controller": "CLT_W_DEP",
                             "multi_controllers": {
                                 "default" : {
                                     "CLT_W_DEP": {"departures": ["KCLT"], "primary": true},
@@ -2487,7 +2481,7 @@
                                     "KCLT": 6
                                 }
                             },
-                            "solo_controller": "CLT_APP",
+                            "solo_controller": "CLT_W_DEP",
                             "multi_controllers": {
                                 "default" : {
                                     "CLT_W_DEP": {"departures": ["KCLT"], "primary": true},

@@ -565,7 +565,7 @@
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
-            "sector_id": "11"
+            "sector_id": "12"
         },
         "GJT_TWR": {
             "frequency": 118100,

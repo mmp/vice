@@ -1387,12 +1387,6 @@
             "scope_char": "Y",
             "sector_id": "4Y"
         },
-        "SNA_APP": {
-            "frequency": 121300,
-            "full_name": "Socal Approach",
-            "scope_char": "T",
-            "sector_id": "4T"
-        },
         "SNA_TWR": {
             "frequency": 126800,
             "full_name": "John Wayne Tower",
@@ -1451,7 +1445,7 @@
                     "KSNA": 15
                 }
             },
-            "solo_controller": "SNA_APP",
+            "solo_controller": "SNA_T_APP",
             "multi_controllers":{
                 "default": {
                     "SNA_T_APP":{
@@ -1510,7 +1504,7 @@
                     "KSNA": 15
                 }
             },
-            "solo_controller": "SNA_APP",
+            "solo_controller": "SNA_T_APP",
             "controllers": [
                 "SNA_TWR",
                 "LAX_D_APP",
@@ -1562,7 +1556,7 @@
                     "KSNA": 15
                 }
             },
-            "solo_controller": "SNA_APP",
+            "solo_controller": "SNA_T_APP",
             "multi_controllers":{
                 "default": {
                     "SNA_T_APP":{

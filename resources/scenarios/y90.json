@@ -606,8 +606,8 @@
         "BDL_W_APP": {
             "frequency": 125350,
             "full_name": "Bradley Approach",
-            "scope_char": "H",
-            "sector_id": "1H"
+            "scope_char": "W",
+            "sector_id": "1W"
         },
         "BDL_E_APP": {
             "frequency": 119000,
@@ -631,7 +631,7 @@
             "frequency": 120500,
             "full_name": "Worcester Tower",
             "scope_char": "W",
-            "sector_id": "1W"
+            "sector_id": "1U"
         },
         "CEF_TWR": {
             "frequency": 118900,
@@ -643,7 +643,7 @@
             "frequency": 134850,
             "full_name": "Westfield Tower",
             "scope_char": "F",
-            "sector_id": "1F"
+            "sector_id": "1X"
         },
         "PVD_APP": {
             "frequency": 123675,

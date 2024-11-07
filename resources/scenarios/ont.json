@@ -1063,12 +1063,6 @@
             "scope_char": "N",
             "sector_id": "3N"
         },
-        "ONT_APP": {
-            "frequency": 127000,
-            "full_name": "Socal Approach",
-            "scope_char": "N",
-            "sector_id": "3N"
-        },
         "ONT_P_APP": {
             "frequency": 125500,
             "full_name": "Socal Approach",
@@ -1176,7 +1170,7 @@
                     "KONT": 7
                 }
             },
-            "solo_controller": "ONT_APP",
+            "solo_controller": "ONT_N_APP",
             "multi_controllers": {
                 "default": {
                     "ONT_N_APP": {
@@ -1341,7 +1335,7 @@
                     "KONT": 2
                 }
             },
-            "solo_controller": "ONT_APP",
+            "solo_controller": "ONT_N_APP",
             "multi_controllers": {
                 "default": {
                     "ONT_N_APP": {  

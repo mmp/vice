@@ -6698,13 +6698,6 @@
       "eram_facility": true,
       "facility": "ZDC"
     },
-    "EWR_APP": {
-      "frequency": 128550,
-      "full_name": "New York approach",
-      "scope_char": "P",
-      "sector_id": "4P",
-      "facility": "N90"
-    },
     "EWR_A_APP": {
       "frequency": 120150,
       "full_name": "New York approach",
@@ -6963,7 +6956,7 @@
           "KEWR": 0
         }
       },
-      "solo_controller": "EWR_APP",
+      "solo_controller": "EWR_P_APP",
       "multi_controllers": {
         "default": {
           "EWR_P_APP": {
@@ -7242,7 +7235,7 @@
           "KEWR": 0
         }
       },
-      "solo_controller": "EWR_APP",
+      "solo_controller": "EWR_P_APP",
       "multi_controllers": {
         "default": {
           "EWR_P_APP": {

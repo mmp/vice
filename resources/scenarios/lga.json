@@ -1514,12 +1514,6 @@
       "scope_char": "T",
       "sector_id": "2W"
     },
-    "LGA_APP": {
-      "frequency": 120800,
-      "full_name": "New York approach",
-      "scope_char": "V",
-      "sector_id": "1V"
-    },
     "LGA_V_APP": {
       "frequency": 120800,
       "full_name": "New York approach",
@@ -1681,7 +1675,7 @@
           "KLGA": 10
         }
       },
-      "solo_controller": "LGA_APP",
+      "solo_controller": "LGA_V_APP",
       "multi_controllers": {
         "default": {
           "LGA_V_APP": {
@@ -1715,7 +1709,7 @@
         "EWR_APP",
         "EWR_DEP",
         "JFK_TWR",
-        "LGA_APP",
+        "LGA_V_APP",
         "LGA_DEP",
         "LGA_Y_DEP",
         "LGA_TWR",
@@ -1795,7 +1789,7 @@
           "KLGA": 10
         }
       },
-      "solo_controller": "LGA_APP",
+      "solo_controller": "LGA_V_APP",
       "multi_controllers": {
         "default": {
           "LGA_V_APP": {
@@ -1829,7 +1823,7 @@
         "EWR_APP",
         "EWR_DEP",
         "JFK_TWR",
-        "LGA_APP",
+        "LGA_V_APP",
         "LGA_DEP",
         "LGA_Y_DEP",
         "LGA_TWR",
@@ -1909,7 +1903,7 @@
           "KLGA": 10
         }
       },
-      "solo_controller": "LGA_APP",
+      "solo_controller": "LGA_V_APP",
       "multi_controllers": {
         "default": {
           "LGA_V_APP": {
@@ -1943,7 +1937,7 @@
         "EWR_APP",
         "EWR_DEP",
         "JFK_TWR",
-        "LGA_APP",
+        "LGA_V_APP",
         "LGA_DEP",
         "LGA_Y_DEP",
         "LGA_TWR",
@@ -2023,7 +2017,7 @@
           "KLGA": 10
         }
       },
-      "solo_controller": "LGA_APP",
+      "solo_controller": "LGA_V_APP",
       "multi_controllers": {
         "default": {
           "LGA_V_APP": {
@@ -2057,7 +2051,7 @@
         "EWR_APP",
         "EWR_DEP",
         "JFK_TWR",
-        "LGA_APP",
+        "LGA_V_APP",
         "LGA_DEP",
         "LGA_Y_DEP",
         "LGA_TWR",
@@ -2137,7 +2131,7 @@
           "KLGA": 10
         }
       },
-      "solo_controller": "LGA_APP",
+      "solo_controller": "LGA_V_APP",
       "multi_controllers": {
         "default": {
           "LGA_V_APP": {
@@ -2172,7 +2166,7 @@
         "EWR_DEP",
         "JFK_TWR",
         "JFK_DEP",
-        "LGA_APP",
+        "LGA_V_APP",
         "LGA_DEP",
         "LGA_Y_DEP",
         "LGA_TWR",

@@ -4067,14 +4067,14 @@
         "DTW_SW_TWR": {
             "frequency": 135000,
             "full_name": "Detroit Tower",
-            "scope_char": "L",
-            "sector_id": "1L"
+            "scope_char": "N",
+            "sector_id": "1N"
         },
         "DTW_NE_TWR": {
             "frequency": 128750,
             "full_name": "Detroit Tower",
-            "scope_char": "L",
-            "sector_id": "1L"
+            "scope_char": "M",
+            "sector_id": "1M"
         },
         "DTW_NW_TWR": {
             "frequency": 128125,

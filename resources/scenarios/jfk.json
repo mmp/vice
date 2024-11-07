@@ -3010,12 +3010,6 @@
       "scope_char": "T",
       "sector_id": "3C"
     },
-    "JFK_APP": {
-      "frequency": 128125,
-      "full_name": "New York approach",
-      "scope_char": "G",
-      "sector_id": "2G"
-    },
     "JFK_A_APP": {
       "frequency": 132400,
       "full_name": "New York approach",
@@ -3099,12 +3093,6 @@
       "full_name": "New York departure",
       "scope_char": "S",
       "sector_id": "5S"
-    },
-    "NY_L_DEP": {
-      "frequency": 126800,
-      "full_name": "New York departure",
-      "scope_char": "E",
-      "sector_id": "5E"
     }
   },
   "default_scenario": "KJFK Depart 13R Land 13L/22L",
@@ -3223,7 +3211,7 @@
           "KJFK": 12
         }
       },
-        "solo_controller": "JFK_APP",
+        "solo_controller": "JFK_G_APP",
         "multi_controllers": {
             "default" : {
                 "JFK_G_APP": {
@@ -3262,7 +3250,7 @@
         "LGA_APP",
         "LGA_DEP",
         "NY_B_CTR",
-        "NY_L_DEP"
+        "NY_LE_DEP"
       ],
       "default_maps": [ "JFK ARR/DEP RWY 13L/R" ],
       "departure_runways": [
@@ -3369,7 +3357,7 @@
           "KJFK": 12
         }
       },
-      "solo_controller": "JFK_APP",
+      "solo_controller": "JFK_G_APP",
         "multi_controllers": {
             "default" : {
                 "JFK_G_APP": {
@@ -3399,7 +3387,7 @@
             }
         },
       "controllers": [
-        "JFK_APP",
+        "JFK_G_APP",
         "BOS_E_CTR",
         "EWR_APP",
         "FRG_TWR",
@@ -3409,7 +3397,7 @@
         "LGA_APP",
         "LGA_DEP",
         "NY_B_CTR",
-        "NY_L_DEP"
+        "NY_LE_DEP"
       ],
       "default_maps": [ "JFK ARR/DEP RWY 22L/R" ],
       "departure_runways": [
@@ -3511,7 +3499,7 @@
           "KJFK": 12
         }
       },
-      "solo_controller": "JFK_APP",
+      "solo_controller": "JFK_G_APP",
         "multi_controllers": {
             "default" : {
                 "JFK_G_APP": {
@@ -3541,7 +3529,7 @@
             }
         },
       "controllers": [
-        "JFK_APP",
+        "JFK_G_APP",
         "BOS_E_CTR",
         "EWR_APP",
         "FRG_TWR",
@@ -3551,7 +3539,7 @@
         "LGA_APP",
         "LGA_DEP",
         "NY_B_CTR",
-        "NY_L_DEP"
+        "NY_LE_DEP"
       ],
       "default_maps": [ "JFK ARR/DEP RWY 22L/R" ],
       "departure_runways": [
@@ -3653,7 +3641,7 @@
           "KJFK": 12
         }
       },
-      "solo_controller": "JFK_APP",
+      "solo_controller": "JFK_G_APP",
         "multi_controllers": {
             "default" : {
                 "JFK_G_APP": {
@@ -3692,7 +3680,7 @@
         "LGA_APP",
         "LGA_DEP",
         "NY_B_CTR",
-        "NY_L_DEP"
+        "NY_LE_DEP"
       ],
       "default_maps": [ "JFK ARR/DEP RWY 31L/R" ],
       "departure_runways": [
@@ -3794,7 +3782,7 @@
           "KJFK": 12
         }
       },
-      "solo_controller": "JFK_APP",
+      "solo_controller": "JFK_G_APP",
         "multi_controllers": {
             "default" : {
                 "JFK_G_APP": {
@@ -3833,7 +3821,7 @@
         "LGA_APP",
         "LGA_DEP",
         "NY_B_CTR",
-        "NY_L_DEP"
+        "NY_LE_DEP"
       ],
       "default_maps": [ "JFK ARR/DEP RWY 4L/R" ],
       "departure_runways": [
@@ -3895,7 +3883,7 @@
           "KJFK": 24
         }
       },
-      "solo_controller": "JFK_APP",
+      "solo_controller": "JFK_G_APP",
       "controllers": [
         "BOS_E_CTR",
         "JFK_TWR"

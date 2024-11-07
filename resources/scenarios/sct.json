@@ -11401,12 +11401,6 @@
     "scope_char": "C",
     "sector_id": "C37"
 },
-"PSP_APP": {
-    "frequency": 126700,
-    "full_name": "Socal Approach",
-    "scope_char": "S",
-    "sector_id": "3S"
-},
 "ONT_TWR": {
     "frequency": 120600,
     "full_name": "Ontario Tower",
@@ -11446,8 +11440,8 @@
 "SNA_TWR": {
     "frequency": 126800,
     "full_name": "John Wayne Tower",
-    "scope_char": "W",
-    "sector_id": "4TJ"
+    "scope_char": "J",
+    "sector_id": "4J"
 },
 "BUR_V_APP": {
     "frequency": 124600,
@@ -11507,31 +11501,19 @@
   "frequency": 118300,
   "full_name": "Van Nuys Tower",
   "scope_char": "T",
-  "sector_id": "2T"
+  "sector_id": "1Y"
 },
 "WHP_TWR": {
   "frequency": 135000,
   "full_name": "Whiteman Tower",
   "scope_char": "T",
-  "sector_id": "3T"
-},
-"LAX_TWR": {
-  "frequency": 120950,
-  "full_name": "Los Angeles Tower",
-  "scope_char": "V",
-  "sector_id": "2V"
+  "sector_id": "1T"
 },
 "SNA_Y_APP": {
   "frequency": 128100,
   "full_name": "Socal Approach",
   "scope_char": "Y",
   "sector_id": "4Y"
-},
-"SNA_APP": {
-  "frequency": 121300,
-  "full_name": "Socal Approach",
-  "scope_char": "T",
-  "sector_id": "4T"
 },
 "LGB_TWR": {
   "frequency": 119400,

@@ -1477,12 +1477,6 @@
     "scope_char": "M",
     "sector_id": "3M"
   },
-  "DCA_APP": {
-    "frequency": 119850,
-    "full_name" : "Potomac Approach",
-    "scope_char": "J",
-    "sector_id": "1J"
-  },
   "DCA_J_APP": {
     "frequency": 119850,
     "full_name" : "Potomac Approach",
@@ -1613,7 +1607,7 @@
           "KBWI": 10
         }
       },
-      "solo_controller": "DCA_APP",
+      "solo_controller": "DCA_J_APP",
       "multi_controllers": {
         "default": {
             "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3","DEALE3"]},
@@ -1686,7 +1680,7 @@
           "KBWI": 10
         }
       },
-      "solo_controller": "DCA_APP",
+      "solo_controller": "DCA_J_APP",
       "multi_controllers": {
         "default": {
             "DCA_J_APP": {"primary": true, "arrivals": ["CAPSS3","CLIPR3","DEALE3"]},

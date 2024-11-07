@@ -2469,12 +2469,6 @@
           "facility_id": "C",
           "eram_facility": true
         },
-      "MCI_APP" : {
-        "frequency": 123950,
-        "full_name": "Kansas City Approach",
-        "scope_char": "E",
-        "sector_id": "1E"
-      },
       "MCI_E_APP": {
         "frequency": 123950,
         "full_name": "Kansas City Approach",
@@ -2510,12 +2504,6 @@
         "full_name": "Kansas City Approach",
         "scope_char": "N",
         "sector_id": "1N"
-      },
-      "MCI_S_DEP": {
-        "frequency": 125200,
-        "full_name": "Kansas City Approach",
-        "scope_char": "S",
-        "sector_id": "1S"
       },
       "MCI_S_APP": {
         "frequency": 118900,

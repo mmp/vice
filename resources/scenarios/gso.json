@@ -793,8 +793,8 @@
     "CLT_APP": {
       "frequency": 120500,
       "full_name": "Charlotte Approach",
-      "scope_char": "W",
-      "sector_id": "1W",
+      "scope_char": "S",
+      "sector_id": "1S",
       "facility_id": "1"
     },
     "GSO_TWR": {

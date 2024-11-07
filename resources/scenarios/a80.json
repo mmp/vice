@@ -2725,12 +2725,6 @@
         "facility_id": "C",
         "eram_facility": true
     },
-    "ATL_APP" : {
-      "frequency": 127900,
-      "full_name": "Atlanta Approach",
-      "scope_char": "H",
-      "sector_id": "1H"
-    },
     "ATL_H_APP": {
       "frequency": 127900,
       "full_name": "Atlanta Approach",
@@ -2908,7 +2902,7 @@
           "KATL": 10
         }
         },
-        "solo_controller": "ATL_APP",
+        "solo_controller": "ATL_H_APP",
         "multi_controllers": {
             "default" : {
                 "ATL_H_APP": {"primary": true, "arrivals": ["JJEDI3"]},
@@ -3010,7 +3004,7 @@
               "KATL": 10
             }
             },
-            "solo_controller": "ATL_APP",
+            "solo_controller": "ATL_H_APP",
             "multi_controllers": {
                 "default" : {
                     "ATL_H_APP": {"primary": true, "arrivals": ["SITTH2"]}, 

@@ -6992,12 +6992,6 @@
       "scope_char": "T",
       "sector_id": "1T"
     },
-    "BOS_APP": {
-      "frequency": 133000,
-      "full_name": "Boston Approach",
-      "scope_char": "D",
-      "sector_id": "1D"
-    },
     "BOS_DEP": {
       "frequency": 133000,
       "full_name": "Boston Departure",
@@ -7007,14 +7001,14 @@
     "BOS_N_APP": {
       "frequency": 118250,
       "full_name": "Boston Approach",
-      "scope_char": "N",
-      "sector_id": "1N"
+      "scope_char": "R",
+      "sector_id": "1R"
     },
     "BOS_S_APP": {
       "frequency": 120600,
       "full_name": "Boston Approach",
-      "scope_char": "S",
-      "sector_id": "1S"
+      "scope_char": "M",
+      "sector_id": "1M"
     },
     "BOS_F_APP": {
       "frequency": 126500,
@@ -7165,8 +7159,8 @@
             "ACK_DEP": {
               "frequency": 126100,
               "full_name": "Boston Approach",
-              "scope_char": "D",
-              "sector_id": "1D"
+              "scope_char": "K",
+              "sector_id": "1K"
             },
             "ACK_A_APP": {
               "frequency": 124050,

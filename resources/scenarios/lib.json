@@ -2791,12 +2791,6 @@
       "scope_char": "W",
       "sector_id": "5W"
     },
-    "NY_L_APP": {
-      "frequency": 126800,
-      "full_name": "New York departure",
-      "scope_char": "E",
-      "sector_id": "5E"
-    },
     "WRI_APP": {
       "frequency": 126470,
       "full_name": "McGuire approach",
@@ -2879,7 +2873,7 @@
   "primary_airport": "KEWR",
   "scenarios": {
     "Liberty Combined - JFK Owns Coney": {
-      "solo_controller": "NY_L_APP",
+      "solo_controller": "NY_LE_APP",
       "multi_controllers": {
         "default": {
           "NY_LE_APP": {
@@ -2897,7 +2891,7 @@
         }
       },
       "controllers": [
-        "NY_L_APP",
+        "NY_LE_APP",
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",
@@ -2964,7 +2958,7 @@
       ]
     },
     "Liberty Combined - LGA Owns Coney": {
-      "solo_controller": "NY_L_APP",
+      "solo_controller": "NY_LE_APP",
       "multi_controllers": {
         "default": {
           "NY_LE_APP": {
@@ -2982,7 +2976,7 @@
         }
       },
       "controllers": [
-        "NY_L_APP",
+        "NY_LE_APP",
         "EWR_DEP",
         "LGA_DEP",
         "JFK_DEP",

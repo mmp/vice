@@ -6563,12 +6563,6 @@
       "scope_char": "T",
       "sector_id": "1T"
     },
-    "BOS_APP": {
-      "frequency": 133000,
-      "full_name": "Boston Approach",
-      "scope_char": "D",
-      "sector_id": "1D"
-    },
     "OWD_TWR": {
       "frequency": 126000,
       "full_name": "Norwood Tower",
@@ -6850,7 +6844,7 @@
           "KBVY": 1
         }
       },
-      "solo_controller": "BOS_APP",
+      "solo_controller": "BOS_DEP",
         "multi_controllers": {
              "default" : {
               "BOS_DEP": {"departures": ["KBOS"], "primary": true},
@@ -7057,7 +7051,7 @@
           "KBVY": 1
         }
       },
-      "solo_controller": "BOS_APP",
+      "solo_controller": "BOS_DEP",
         "multi_controllers": {
           "default" : {
             "BOS_DEP": {"departures": ["KBOS"], "primary": true},
@@ -7261,7 +7255,7 @@
           "KBVY": 1
         }
       },
-      "solo_controller": "BOS_APP",
+      "solo_controller": "BOS_DEP",
         "multi_controllers": {
           "default" : {
             "BOS_DEP": {"departures": ["KBOS"], "primary": true},
@@ -7457,7 +7451,7 @@
           "KBVY": 1
         }
       },
-      "solo_controller": "BOS_APP",
+      "solo_controller": "BOS_DEP",
         "multi_controllers": {
           "default" : {
             "BOS_DEP": {"departures": ["KBOS"], "primary": true},
@@ -7585,7 +7579,7 @@
           "KBOS": 2
         }
       },
-      "solo_controller": "BOS_APP",
+      "solo_controller": "BOS_DEP",
         "multi_controllers": {
           "default" : {
             "BOS_DEP": {"departures": ["KBOS"], "primary": true, "arrivals": ["WOONS.5K", "WOONS.7K"]},
@@ -7681,7 +7675,7 @@
           "KBOS": 2
         }
       },
-      "solo_controller": "BOS_APP",
+      "solo_controller": "BOS_DEP",
         "multi_controllers": {
           "default" : {
             "BOS_DEP": {"departures": ["KBOS"], "primary": true,  "arrivals": ["WOONS.5K", "WOONS.7K"]},
@@ -7777,7 +7771,7 @@
           "KBOS": 2
         }
       },
-      "solo_controller": "BOS_APP",
+      "solo_controller": "BOS_DEP",
         "multi_controllers": {
           "default" : {
             "BOS_DEP": {"departures": ["KBOS"], "primary": true,  "arrivals": ["WOONS.5K", "WOONS.7K"]},
@@ -7869,7 +7863,7 @@
           "KBOS": 2
         }
       },
-      "solo_controller": "BOS_APP",
+      "solo_controller": "BOS_DEP",
         "multi_controllers": {
           "default" : {
             "BOS_DEP": {"departures": ["KBOS"], "primary": true,  "arrivals": ["WOONS.5K", "WOONS.7K"]},

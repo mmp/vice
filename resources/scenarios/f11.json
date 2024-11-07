@@ -11447,13 +11447,6 @@
       "facility_id": "3",
       "sector_id": "1E"
     },
-    "MCO_E_APP": {
-      "frequency": 124800,
-      "full_name": "Orlando approach",
-      "scope_char": "E",
-      "sector_id": "1E",
-      "default_airport": "KMCO"
-    },
     "MCO_E_DEP": {
       "frequency": 124800,
       "full_name": "Orlando approach",

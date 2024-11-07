@@ -10439,7 +10439,7 @@
       "ZIMMZ": { }
   },
   "controller_configs": {
-      "NY_APP": {
+      "JFK_G_APP": {
           "default_maps": ["JFK ARR/DEP RWY 22L/R", "LGA-HPN ARR/DEP", "EWR ARR/DEP", "CATSKILL AREA", "ISP ARR/DEP"],
           "video_maps": [   "JFK RNAV", "Coast", "NY Class B",
                             "JFK GPS", "", "MVA",
@@ -10450,7 +10450,7 @@
               "center": "KLGA",
               "range": 80
       },
-      "JFK_G_APP,JFK_A_APP,JFK_K_APP,JFK_M_APP,JFK_DEP" : {
+      "JFK_A_APP,JFK_K_APP,JFK_M_APP,JFK_DEP" : {
          "video_maps": [   "JFK RNAV", "Coast", "NY Class B",
                            "JFK GPS", "", "MVA",
                            "JFK ARR/DEP", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 22L/R", "JFK RNAV/RNP 22L", "JFK RNAV", "LGA LOC 31", "NE HELI RNAV ROUTES", "HELI GPS",
@@ -10597,43 +10597,43 @@
       "frequency": 118800,
       "full_name": "Republic Tower",
       "scope_char": "T",
-      "sector_id": "DT"
+      "sector_id": "2M"
     },
     "DXR_TWR": {
       "frequency": 119400,
       "full_name": "Danbury Tower",
       "scope_char": "T",
-      "sector_id": "DT"
+      "sector_id": "1M"
     },
     "HVN_TWR": {
       "frequency": 124800,
       "full_name": "New Haven Tower",
       "scope_char": "T",
-      "sector_id": "HT"
+      "sector_id": "3P"
     },
     "ISP_TWR": {
       "frequency": 119300,
       "full_name": "Islip Tower",
       "scope_char": "T",
-      "sector_id": "IT"
+      "sector_id": "3C"
     },
     "MMU_TWR": {
       "frequency": 119400,
-      "full_name": "Danbury Tower",
+      "full_name": "Morristown Tower",
       "scope_char": "T",
-      "sector_id": "DT"
+      "sector_id": "4K"
     },
     "TEB_TWR": {
       "frequency": 119500,
       "full_name": "Teterboro Tower",
       "scope_char": "T",
-      "sector_id": "DT"
+      "sector_id": "4J"
     },
     "HPN_TWR": {
       "frequency": 118750,
       "full_name": "Westchester Tower",
       "scope_char": "T",
-      "sector_id": "WT"
+      "sector_id": "1G"
     },
     "EWR_A_APP": {
       "frequency": 120150,
@@ -10892,13 +10892,6 @@
       "sector_id": "2A"
     },
     "JFK_G_APP": {
-      "frequency": 128125,
-      "full_name": "New York approach",
-      "scope_char": "G",
-      "sector_id": "2G"
-    },
-    "NY_APP": {
-      "default_airport": "KJFK",
       "frequency": 128125,
       "full_name": "New York approach",
       "scope_char": "G",
@@ -11315,7 +11308,7 @@
           "KBDR": 1
         }
       },
-      "solo_controller": "NY_APP",
+      "solo_controller": "JFK_G_APP",
       "multi_controllers": {
         "default": {
           "SWF_APP": {
@@ -11969,7 +11962,7 @@
           "KBDR": 1
         }
       },
-      "solo_controller": "NY_APP",
+      "solo_controller": "JFK_G_APP",
       "multi_controllers": {
         "default": {
           "SWF_APP": {
@@ -12613,7 +12606,7 @@
           "KBDR": 1
         }
       },
-      "solo_controller": "NY_APP",
+      "solo_controller": "JFK_G_APP",
       "multi_controllers": {
         "default": {
           "SWF_APP": {
@@ -13267,7 +13260,7 @@
           "KBDR": 1
         }
       },
-      "solo_controller": "NY_APP",
+      "solo_controller": "JFK_G_APP",
       "multi_controllers": {
         "default": {
           "SWF_APP": {

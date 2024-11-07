@@ -7040,36 +7040,6 @@
   }
 },
   "control_positions": {
-    "NCT_APP": {
-      "frequency": 133950,
-      "full_name": "NorCal Approach",
-      "scope_char": "B",
-      "sector_id": "2B"
-    },
-    "NCT_1_APP": {
-      "frequency": 124525,
-      "full_name": "NorCal Approach",
-      "scope_char": "M",
-      "sector_id": "1M"
-    },
-    "NCT_2_APP": {
-      "frequency": 125100,
-      "full_name": "NorCal Approach",
-      "scope_char": "Y",
-      "sector_id": "3Y"
-    },
-    "NCT_3_APP": {
-      "frequency": 123700,
-      "full_name": "NorCal Approach",
-      "scope_char": "P",
-      "sector_id": "5P"
-    },
-    "NCT_DEP": {
-      "frequency": 135100,
-      "full_name": "NorCal Departure",
-      "scope_char": "U",
-      "sector_id": "4U"
-    },
     "SJC_M_APP": {
       "frequency": 124525,
       "full_name": "NorCal Approach",
@@ -7188,7 +7158,7 @@
       "frequency": 124000,
       "full_name": "San Jose Tower",
       "scope_char": "T",
-      "sector_id": "1S"
+      "sector_id": "1J"
     },
     "OAK_CTR": {
       "frequency": 132200,
@@ -7202,7 +7172,7 @@
       "frequency": 120500,
       "full_name": "San Francisco Tower",
       "scope_char": "T",
-      "sector_id": "2F"
+      "sector_id": "2V"
     },
     "OAK_TWR": {
       "frequency": 118300,
@@ -7214,13 +7184,13 @@
       "frequency": 118700,
       "full_name": "Reno Tower",
       "scope_char": "T",
-      "sector_id": "5R"
+      "sector_id": "8R"
     },
     "SMF_TWR": {
       "frequency": 125700,
       "full_name": "Sacramento Tower",
       "scope_char": "T",
-      "sector_id": "5C"
+      "sector_id": "5V"
     },
     "MRY_TWR": {
       "frequency": 118400,
@@ -7262,7 +7232,7 @@
       "frequency": 119525,
       "full_name": "Salinas Tower",
       "scope_char": "T",
-      "sector_id": "1S"
+      "sector_id": "1Y"
     }
   },
   "default_scenario": "Area B Combined - SFOW (RWYS 28)",
@@ -8050,7 +8020,7 @@
               "departures": ["KSCK","KLVK","KMOD","KMER"],
               "arrivals": ["AANET1","BANND2","EMZOH3","PXN6","PIRAT2","SHARR1","SKIZM2","WNDSR2","SAT.EAST"]
             },
-            "NCT_DEP": { "departures": ["KOAK" ], "backup": "MOD_APP" },
+            "SFO_DEP": { "departures": ["KOAK" ], "backup": "MOD_APP" },
             "OAK_S_APP": {
                 "backup": "MOD_APP"
             },
@@ -8180,7 +8150,7 @@
               "departures": ["KSCK","KLVK","KMOD","KMER"],
               "arrivals": ["AANET1","BANND2","EMZOH3","PXN6","PIRAT2","SHARR1","SKIZM2","WNDSR2","SAT.EAST"]
             },
-            "NCT_DEP": { "departures": ["KOAK"], "backup": "MOD_APP" },
+            "SFO_DEP": { "departures": ["KOAK"], "backup": "MOD_APP" },
             "OAK_S_APP": {
                 "backup": "MOD_APP"
             },
@@ -8979,26 +8949,26 @@
           "KMRY": 1
         }
       },
-      "solo_controller": "NCT_APP",
+      "solo_controller": "SFO_B_APP",
       "multi_controllers": {
           "default" : {
-            "NCT_APP": {
+            "SFO_B_APP": {
               "primary": true,
               "departures": ["KSFO"],
               "arrivals": ["PYE3", "BDEGA4", "STLER3","CMOD9","YOSEM3","CDYAMD5","CALWYS2","CBSR3", "SERFR4", "PIRAT2", "WWAVS1"]
           },
-            "NCT_1_APP": {
-              "backup": "NCT_APP",
+            "SJC_M_APP": {
+              "backup": "SFO_B_APP",
               "departures": ["KMRY","KSJC","KSNS"],
                 "arrivals": ["CBRINY2", "CBRIXX3", "FRLON2", "RAZRR5", "ROBIE5", "SLCN6","SAT.SOUTH"]
             },
-            "NCT_2_APP": {
-              "backup": "NCT_1_APP",
+            "MOD_APP": {
+              "backup": "SJC_M_APP",
               "departures": ["KOAK","KMER","KLVK","KMOD"],
                 "arrivals": ["AANET1","BANND2","EMZOH3","CPXN6","SHARR1","SKIZM2","WNDSR2","SAT.EAST"]
             },
-            "NCT_3_APP": {
-              "backup": "NCT_2_APP",
+            "SMF_P_APP": {
+              "backup": "MOD_APP",
                 "departures": ["KSCK","KSMF","KSAC"],
                 "arrivals": ["SLMMR5","TUDOR2","SUUTR4","CRISTI1.ORRCA","CRISTI1.TIPRE"]
             }

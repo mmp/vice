@@ -1318,12 +1318,6 @@
         }
     },
     "control_positions": {
-        "LAS_APP": {
-            "frequency": 135000,
-            "full_name": "Las Vegas Approach",
-            "scope_char": "F",
-            "sector_id": "1F"
-        },
         "LAX_55_CTR": {
             "frequency": 135550,
             "full_name": "Los Angeles Center",
@@ -1451,7 +1445,7 @@
 
 
             },
-            "solo_controller": "LAS_APP",
+            "solo_controller": "LAS_F_APP",
             "multi_controllers": {
                 "default": {
                     "LAS_F_APP": {
@@ -1554,7 +1548,7 @@
 
 
             },
-            "solo_controller": "LAS_APP",
+            "solo_controller": "LAS_F_APP",
             "multi_controllers": {
                 "default": {
                     "LAS_F_APP": {
@@ -1669,7 +1663,7 @@
 
 
             },
-            "solo_controller": "LAS_APP",
+            "solo_controller": "LAS_F_APP",
             "multi_controllers": {
                 "default": {
                     "LAS_F_APP": {
@@ -1757,7 +1751,7 @@
 
 
             },
-            "solo_controller": "LAS_APP",
+            "solo_controller": "LAS_F_APP",
             "multi_controllers": {
                 "default": {
                     "LAS_F_APP": {
