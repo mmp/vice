@@ -6,7 +6,6 @@
       "approaches": {
         "I1L": {
           "full_name": "ILS Runway 1L",
-          "tower_controller": "TPA_W_TWR",
           "runway": "1L",
           "type": "ILS",
           "waypoints": [
@@ -15,7 +14,6 @@
         },
         "R1L": {
           "full_name": "RNAV Runway 1L",
-          "tower_controller": "TPA_W_TWR",
           "runway": "1L",
           "type": "RNAV",
           "waypoints": [
@@ -24,7 +22,6 @@
         },
         "R1R": {
           "full_name": "RNAV Runway 1R",
-          "tower_controller": "TPA_E_TWR",
           "runway": "1R",
           "type": "RNAV",
           "waypoints": [
@@ -33,7 +30,6 @@
         },
         "I9L": {
           "full_name": "ILS Runway 19L",
-          "tower_controller": "TPA_E_TWR",
           "runway": "19L",
           "type": "ILS",
           "waypoints": [
@@ -42,7 +38,6 @@
         },
         "R9L": {
           "full_name": "RNAV Runway 19L",
-          "tower_controller": "TPA_E_TWR",
           "runway": "19L",
           "type": "RNAV",
           "waypoints": [
@@ -54,7 +49,6 @@
         },
         "I9R": {
           "full_name": "ILS Runway 19R",
-          "tower_controller": "TPA_W_TWR",
           "runway": "19R",
           "type": "ILS",
           "waypoints": [
@@ -63,7 +57,6 @@
         },
         "R9R": {
           "full_name": "RNAV Runway 19R",
-          "tower_controller": "TPA_W_TWR",
           "runway": "19R",
           "type": "RNAV",
           "waypoints": [

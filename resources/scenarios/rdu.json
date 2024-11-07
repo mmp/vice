@@ -46,56 +46,43 @@
             },
             "approaches": {
                 "I3L": {
-                    "cifp_id": "I23L",
-                    "tower_controller": "RDU_E_TWR"
+                    "cifp_id": "I23L"
                 },
                 "I3R": {
-                    "cifp_id": "I23R",
-                    "tower_controller": "RDU_W_TWR"
+                    "cifp_id": "I23R"
                 },
                 "I5L": {
-                    "cifp_id": "I5L",
-                    "tower_controller": "RDU_W_TWR"
+                    "cifp_id": "I5L"
                 },
                 "I5R": {
-                    "cifp_id": "I5R",
-                    "tower_controller": "RDU_E_TWR"
+                    "cifp_id": "I5R"
                 },
                 "R32": {
-                    "cifp_id": "R32",
-                    "tower_controller": "RDU_E_TWR"
+                    "cifp_id": "R32"
                 },
                 "Y3L": {
-                    "cifp_id": "RY23L",
-                    "tower_controller": "RDU_E_TWR"
+                    "cifp_id": "RY23L"
                 },
                 "Y3R": {
-                    "cifp_id": "RY23R",
-                    "tower_controller": "RDU_W_TWR"
+                    "cifp_id": "RY23R"
                 },
                 "Y5L": {
-                    "cifp_id": "RY5L",
-                    "tower_controller": "RDU_W_TWR"
+                    "cifp_id": "RY5L"
                 },
                 "Y5R": {
-                    "cifp_id": "RY5R",
-                    "tower_controller": "RDU_E_TWR"
+                    "cifp_id": "RY5R"
                 },
                 "Z3L": {
-                    "cifp_id": "RZ23L",
-                    "tower_controller": "RDU_E_TWR"
+                    "cifp_id": "RZ23L"
                 },
                 "Z3R": {
-                    "cifp_id": "RZ23R",
-                    "tower_controller": "RDU_W_TWR"
+                    "cifp_id": "RZ23R"
                 },
                 "Z5L": {
-                    "cifp_id": "RZ5L",
-                    "tower_controller": "RDU_W_TWR"
+                    "cifp_id": "RZ5L"
                 },
                 "Z5R": {
-                    "cifp_id": "RZ5R",
-                    "tower_controller": "RDU_E_TWR"
+                    "cifp_id": "RZ5R"
                 }
             },
             "departure_routes": {

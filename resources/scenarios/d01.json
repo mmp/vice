@@ -5,7 +5,6 @@
             "approaches": {
                 "I7": {
                     "runway": "7",
-                    "tower_controller": "DEN_W_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "SARAH/a9000 ASURE/a8000 TAILR/a7000 SUNKE/a5740"
@@ -13,7 +12,6 @@
                 },
                 "R7": {
                     "runway": "7",
-                    "tower_controller": "DEN_W_TWR",
                     "type": "RNAV",
                     "waypoints": [
                         "HAITR/a11000/s210 DWLLT/arc8.5 MNCHH TAILR/faf",
@@ -23,7 +21,6 @@
                 },
                 "I8": {
                     "runway": "8",
-                    "tower_controller": "DEN_N_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "LIPPS/a10000 OWNER/a7000"
@@ -31,7 +28,6 @@
                 },
                 "I6L": {
                     "runway": "16L",
-                    "tower_controller": "DEN_N_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820",
@@ -42,7 +38,6 @@
                 },
                 "I6R": {
                     "runway": "16R",
-                    "tower_controller": "DEN_N_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000",
@@ -53,7 +48,6 @@
                 },
                 "R6R": {
                     "runway": "16R",
-                    "tower_controller": "DEN_N_TWR",
                     "type": "RNAV",
                     "waypoints": [
                         "CLFFF/a11000 HELBY/arc9.8 APASE",
@@ -64,7 +58,6 @@
                 },
                 "I7L": {
                     "runway": "17L",
-                    "tower_controller": "DEN_S_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000",
@@ -76,7 +69,6 @@
                 },
                 "I7R": {
                     "runway": "17R",
-                    "tower_controller": "DEN_S_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000",
@@ -87,7 +79,6 @@
                 },
                 "R7R": {
                     "runway": "17R",
-                    "tower_controller": "DEN_S_TWR",
                     "type": "RNAV",
                     "waypoints": [
                         "HOOPE JNKBX JOULE",
@@ -96,7 +87,6 @@
                 },
                 "I25": {
                     "runway": "25",
-                    "tower_controller": "DEN_W_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "ETHAL/a10000 GASTI/a7000"
@@ -104,7 +94,6 @@
                 },
                 "I26": {
                     "runway": "26",
-                    "tower_controller": "DEN_S_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "FUZZZ/a9000 GRASP/a7000 FEETS/a5820"
@@ -112,7 +101,6 @@
                 },
                 "R26": {
                     "runway": "26",
-                    "tower_controller": "DEN_S_TWR",
                     "type": "RNAV",
                     "waypoints": [
                         "FUZZZ JPBAG GRASP",
@@ -122,7 +110,6 @@
                 },
                 "I4L": {
                     "runway": "34L",
-                    "tower_controller": "DEN_N_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040",
@@ -133,7 +120,6 @@
                 },
                 "I4R": {
                     "runway": "34R",
-                    "tower_controller": "DEN_N_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000",
@@ -144,7 +130,6 @@
                 },
                 "R4R": {
                     "runway": "34R",
-                    "tower_controller": "DEN_N_TWR",
                     "type": "RNAV",
                     "waypoints": [
                         "HIMOM/a11000/s210 MCMUL/arc4.3 KUGLN/arc4.6 BSAYN CORDE",
@@ -153,7 +138,6 @@
                 },
                 "I5L": {
                     "runway": "35L",
-                    "tower_controller": "DEN_S_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120",
@@ -164,7 +148,6 @@
                 },
                 "I5R": {
                     "runway": "35R",
-                    "tower_controller": "DEN_S_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120",
@@ -176,7 +159,6 @@
                 },
                 "R5R": {
                     "runway": "35R",
-                    "tower_controller": "DEN_S_TWR",
                     "type": "RNAV",
                     "waypoints": [
                         "DORRY DEANE DRUMM FRONZ",

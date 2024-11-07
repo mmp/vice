@@ -6,7 +6,6 @@
       "approaches": {
         "R8L": {
           "runway": "8L",
-          "tower_controller": "MIA_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "VICUV/a3000/if KACDE/a1500/faf"
@@ -15,7 +14,6 @@
         "I8R": {
           "runway": "8R",
           "type": "ILS",
-          "tower_controller": "MIA_N_TWR",
           "waypoints": [
             "KROME/a3000/if/iaf/hilpt1min COPRA/a3000 LAWNN/a1500/faf"
           ]
@@ -23,7 +21,6 @@
         "I9": {
           "runway": "9",
           "type": "ILS",
-          "tower_controller": "MIA_S_TWR",
           "waypoints": [
             "LLEGG/a4000/iaf GRITT/a3000/if INESS/a1500/faf"
           ]
@@ -31,7 +28,6 @@
         "I12": {
           "runway": "12",
           "type": "ILS",
-          "tower_controller": "MIA_S_TWR",
           "waypoints": [
             "GLRIA/a3000-5000/if/iaf/lhilpt1min PIANA/a3000 VEPCO/a2000/faf"
           ]
@@ -39,7 +35,6 @@
         "I6L": {
           "runway": "26L",
           "type": "ILS",
-          "tower_controller": "MIA_N_TWR",
           "waypoints": [
             "ZILBI/a5000/iaf CIDUN/a4000 BASHO/a3000/if AGLER/a1600/faf",
             "RHODZ/a6000/s210/iaf CIDUN/a4000 BASHO/a3000/if AGLER/a1600/faf",
@@ -49,7 +44,6 @@
         "R6R": {
           "runway": "26R",
           "type": "RNAV",
-          "tower_controller": "MIA_N_TWR",
           "waypoints": [
             "RHODZ/a6000/s210/iaf TERRI/a4000/iaf HINKU/a3000/if JODAX/a1500/faf",
             "TUBBZ/a6000/iaf HINKU/a3000/if JODAX/a1500/faf"
@@ -58,7 +52,6 @@
         "I27": {
           "runway": "27",
           "type": "ILS",
-          "tower_controller": "MIA_S_TWR",
           "waypoints": [
             "HENDN/a5000/iaf JMROY/a4000 SARCO/a3000/if CHHAZ/a1800/faf",
             "TUBBZ/a6000/iaf SARCO/a3000/if CHHAZ/a1800/faf"
@@ -67,7 +60,6 @@
         "I30": {
           "runway": "30",
           "type": "ILS",
-          "tower_controller": "MIA_S_TWR",
           "waypoints": [
             "SHANN/a5000/if OLDDE/a3000 BIRDD/a1600/faf"
           ]
@@ -928,7 +920,6 @@
           "I0L": {
             "runway": "10L",
             "type": "ILS",
-            "tower_controller": "FLL_N_TWR",
             "waypoints": [
               "HOLID/a5000/if/iaf/lhilpt1min GAMVE/a4000 WAROR/a3000 NOVAE/a1800/faf"
             ]
@@ -936,7 +927,6 @@
           "I0R": {
             "runway": "10R",
             "type": "ILS",
-            "tower_controller": "FLL_S_TWR",
             "waypoints": [
               "BUNKR/a5000/iaf/nopt BEZER/a4000/if/iaf/lhilpt1min BLAIM/a3000 LORII/a1800/faf"
             ]
@@ -944,7 +934,6 @@
           "I8L": {
             "runway": "28L",
             "type": "ILS",
-            "tower_controller": "FLL_S_TWR",
             "waypoints": [
               "ZADIL/iaf/a5000/nopt WIKIR/if/iaf/a2500/hilpt1min YOBUS/a2000/faf",
               "CRNVL/iaf/a5000/nopt WIKIR/if/iaf/a2500/hilpt1min YOBUS/a2000/faf"
@@ -953,7 +942,6 @@
           "I8R": {
             "runway": "28R",
             "type": "ILS",
-            "tower_controller": "FLL_N_TWR",
             "waypoints": [
               "CRNVL/a5000/iaf/nopt FUZYY/a4000/if/iaf/hilpt1min SNAPE/a2000/faf"
             ]
@@ -1532,7 +1520,6 @@
         "I9R": {
           "runway": "9R",
           "type": "ILS",
-          "tower_controller": "TMB_TWR",
           "waypoints": [
             "VKZ/a2500/iaf LAYDN/a1500/faf"
           ]
@@ -1540,7 +1527,6 @@
         "R9L": {
           "runway": "9L",
           "type": "RNAV",
-          "tower_controller": "TMB_TWR",
           "waypoints": [
             "DHP/nopt JULED/a2000/if/hilpt HASDU/a1500/faf JOGNO/a500",
             "VKZ/nopt JULED/a2000/if/hilpt HASDU/a1500/faf JOGNO/a500"
@@ -1549,7 +1535,6 @@
         "R7L": {
           "runway": "27L",
           "type": "RNAV",
-          "tower_controller": "TMB_TWR",
           "waypoints": [
             "LUVLY/iaf/a2000+ CACSA/a2000+/if ZAGUN/a2000/faf"
           ]
@@ -1557,7 +1542,6 @@
         "R7R": {
           "runway": "27R",
           "type": "RNAV",
-          "tower_controller": "TMB_TWR",
           "waypoints": [
             "LUVLY/a2000+/iaf HOTMA/a2000+/if FITOL/a2000/faf"
           ]
@@ -1939,7 +1923,6 @@
         "I9L": {
           "runway": "9L",
           "type": "ILS",
-          "tower_controller": "OPF_TWR",
           "waypoints": [
             "OKANE/a1600/if SAZBO/a1600/faf ZOLTA/a480"
           ]
@@ -1947,7 +1930,6 @@
         "I12": {
           "runway": "12",
           "type": "ILS",
-          "tower_controller": "OPF_TWR",
           "waypoints": [
             "JARNO/a1700/if ZIKNA/a1700/faf"
           ]
@@ -1955,7 +1937,6 @@
         "I7R": {
           "runway": "27R",
           "type": "ILS",
-          "tower_controller": "OPF_TWR",
           "waypoints": [
             "IZROZ/a1700 JOLYN/a1600/faf"
           ]
@@ -1963,7 +1944,6 @@
         "R30": {
           "runway": "30",
           "type": "RNAV",
-          "tower_controller": "OPF_TWR",
           "waypoints": [
             "BOHTZ/iaf/a3000+ HOWHS/a3000/if PRTAL/faf/a1600",
             "HOWHS/a3000/iaf PRTAL/faf/a1600"
@@ -2370,7 +2350,6 @@
         "I9": {
           "runway": "9",
           "type": "ILS",
-          "tower_controller": "FXE_TWR",
           "waypoints": [
             "ENVER/a2000/iaf PADDS/a2000/faf"
           ]
@@ -2378,7 +2357,6 @@
         "R27": {
           "runway": "27",
           "type": "RNAV",
-          "tower_controller": "FXE_TWR",
           "waypoints": [
             "FORSU/a2000/iaf KOKEY/a1500/faf"
           ]

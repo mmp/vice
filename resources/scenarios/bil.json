@@ -4,19 +4,15 @@
     "KBIL": {
       "approaches": {
         "I8R": {
-          "tower_controller": "BIL_TWR",
           "cifp_id": "I28R"
         },
         "I0L": {
-          "tower_controller": "BIL_TWR",
           "cifp_id": "IY10L"
         },
         "R25": {
-          "tower_controller": "BIL_TWR",
           "cifp_id": "R25"
         },
         "R7": {
-          "tower_controller": "BIL_TWR",
           "cifp_id": "R7"
         }
       },

@@ -6,7 +6,6 @@
       "approaches": {
         "I8L": {
           "runway": "8L",
-          "tower_controller": "ATL_1_TWR",
           "type": "ILS",
           "waypoints": [
             "LARII/a5000 JAAJJ/a5000 BAZAR/a4000 SCHEL/a2900"
@@ -14,7 +13,6 @@
         },
         "I8R": {
           "runway": "8R",
-          "tower_controller": "ATL_2_TWR",
           "type": "ILS",
           "waypoints": [
             "GPEAT/a5000 PEARI/a5000 NZBIT/a4000 HARSN/a2800"
@@ -22,7 +20,6 @@
         },
         "I9L": {
           "runway": "9L",
-          "tower_controller": "ATL_3_TWR",
           "type": "ILS",
           "waypoints": [
             "RYENN/a7000 AAKAY/a6000 ARRBE/a5000 HRDEY/a4000 VINII/a2700"
@@ -30,7 +27,6 @@
         },
         "I9R": {
           "runway": "9R",
-          "tower_controller": "ATL_4_TWR",
           "type": "ILS",
           "waypoints": [
             "ANDIY/a7000 DFINS/a6000 GGUYY/a5000 EEASY/a4000 BURNY/a2700"
@@ -38,7 +34,6 @@
         },
         "I10": {
           "runway": "10",
-          "tower_controller": "ATL_5_TWR",
           "type": "ILS",
           "waypoints": [
             "DEWHY/a4000 CTEEE/a4000 ZMANN/a2700"
@@ -46,7 +41,6 @@
         },
         "I6L": {
           "runway": "26L",
-          "tower_controller": "ATL_2_TWR",
           "type": "ILS",
           "waypoints": [
             "JIRRI/a5000 BOYKN/a5000 MARKD/a4000 DEJAA/a2600"
@@ -54,7 +48,6 @@
         },
         "I6R": {
           "runway": "26R",
-          "tower_controller": "ATL_1_TWR",
           "type": "ILS",
           "waypoints": [
             "ZELOW/a5000 HAINZ/a5000 BAMBU/a4000 AJAAY/a2700"
@@ -62,7 +55,6 @@
         },
         "I7L": {
           "runway": "27L",
-          "tower_controller": "ATL_4_TWR",
           "type": "ILS",
           "waypoints": [
             "SLVAA/a7000 ROMMM/a6000 SEJAY/a5000 GRMPI/a4000 DEPOT/a2800"
@@ -70,7 +62,6 @@
         },
         "I7R": {
           "runway": "27R",
-          "tower_controller": "ATL_3_TWR",
           "type": "ILS",
           "waypoints": [
             "YOUYU/a7000 MMCAP/a6000 MAASN/a5000 MRCER/a4000 OSTRR/a2700"
@@ -78,7 +69,6 @@
         },
         "I28": {
           "runway": "28",
-          "tower_controller": "ATL_5_TWR",
           "type": "ILS",
           "waypoints": [
             "N033.37.09.702,W083.54.02.559 PRMAN/a4000 WONZR/a4000 JUBBA/a2700"

@@ -839,7 +839,6 @@
                         "R4R": {
                             "runway": "24R",
                             "type": "RNAV",
-                            "tower_controller": "BKL_TWR",
                             "waypoints": [
                                 "SOOTO/a3000-6000/iaf NAATE/faf/a2400+ JAYTO/a1420+ LOLCY"
                             ]
@@ -847,7 +846,6 @@
                         "I4R": {
                             "runway": "24R",
                             "type": "ILS",
-                            "tower_controller": "BKL_TWR",
                             "waypoints": [
                                 "BOGGE/iaf/a2400+ TABEY/faf/a2400+"
                             ]
@@ -856,7 +854,6 @@
                             "full_name": "Visual Approach Runway 6L",
                             "runway": "6L",
                             "type": "Visual",
-                            "tower_controller": "BKL_TWR",
                             "waypoints": [
                                 "EDMNN/a2000 N041.28.23.498,W081.46.31.571/a1700 N041.28.52.118,W081.45.23.345/a1400 N041.29.23.374,W081.44.13.472/a900 N041.30.29.484,W081.42.05.262/a581"
                             ]
@@ -1043,7 +1040,6 @@
                         "R14": {
                             "runway": "14",
                             "type": "RNAV",
-                            "tower_controller": "MFD_TWR",
                             "waypoints": [
                                 "UPIYO/a3000+/iaf HUGIX/a2700+ WIMOS/a1820+/faf"
                             ]
@@ -1051,7 +1047,6 @@
                         "I32": {
                             "runway": "32",
                             "type": "ILS",
-                            "tower_controller": "MFD_TWR",
                             "waypoints": [
                                 "MANNS/a2700+ ZIXAX/faf"
                             ]

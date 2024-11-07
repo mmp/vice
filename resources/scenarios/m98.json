@@ -8,7 +8,6 @@
                       "full_name": "ILS Runway 12L",
                       "runway": "12L",
                       "type": "ILS",
-                      "tower_controller": "MSP_N_TWR",
                       "waypoints": [
                           "CCJAY/a6000/iaf UBTYA ALGIN/a5000 HAMML/a4000 WASHY/a3000 AASUN/a1420",
                           "KAYQU/a7000/s210/iaf SHUUT HAMML/a4000 WASHY/a3000 AASUN/a1420"
@@ -18,7 +17,6 @@
                       "full_name": "ILS Runway 12R",
                       "runway": "12R",
                       "type": "ILS",
-                      "tower_controller": "MSP_S_TWR",
                       "waypoints": [
                           "PAETN/a6000/iaf UTHNK WAYZA/a5000 ZESTY/a4000 KINNS/a3000 WABBS/a1420",
                           "KRUGG/a7000/s210/iaf EFEXX ZESTY/a4000 KINNS/a3000 WABBS/a1420"
@@ -28,7 +26,6 @@
                     "full_name": "ILS Runway 30L",
                     "runway": "30L",
                     "type": "ILS",
-                    "tower_controller": "MSP_S_TWR",
                     "waypoints": [
                         "HASTI/a7000/iaf PINKE/a6000 PIGZI/a5000 AABEZ/a4000 NARCO/a3000 EAGAN/a1520",
                         "HAPTN/a7000/s210/iaf DBLEM AABEZ/a4000 NARCO/a3000 EAGAN/a1520"
@@ -38,7 +35,6 @@
                     "full_name": "ILS Runway 30R",
                     "runway": "30R",
                     "type": "ILS",
-                    "tower_controller": "MSP_N_TWR",
                     "waypoints": [
                         "GROVZ/a7000/iaf WULAM/a6000 BONNA/a5000 SAMMZ/a4000 JACKO/a3000 CIJOT/a1520",
                         "GEEQU/a7000/s210/iaf SAMMZ/a4000 JACKO/a3000 CIJOT/a1520",
@@ -49,7 +45,6 @@
                     "full_name": "ILS Runway 35",
                     "runway": "35",
                     "type": "ILS",
-                    "tower_controller": "MSP_W_TWR",
                     "waypoints": [
                         "JAMEZ/a7000/iaf OBERR/a6000 SSTAR/a5000 ROZEE/a4000 LORAH/a3000 HUCUM/a1600",
                         "NNEWW/a7000/iaf ROZEE/a4000 LORAH/a3000 HUCUM/a1600"

@@ -315,11 +315,6 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			for _, appr := range ap.Approaches {
 				if appr.Runway == rwy.Runway {
 					found = true
-					// Add the tower controller to the virtual controller
-					// list if it isn't there already.
-					if !slices.Contains(s.VirtualControllers, appr.TowerController) {
-						s.VirtualControllers = append(s.VirtualControllers, appr.TowerController)
-					}
 				}
 			}
 

@@ -289,14 +289,12 @@
                 "I5": {
                     "type": "ILS",
                     "waypoints": ["FOBBS/arc18.24 WHALY HERKK/hilpt BIGEE"],
-                    "runway": "5",
-                    "tower_controller": "CEF_TWR"
+                    "runway": "5"
                 },
                 "I23": {
                     "type": "ILS",
                     "waypoints": ["FOBBS/arc13 BEENS BELCH/hilpt"],
-                    "runway": "23",
-                    "tower_controller": "CEF_TWR"
+                    "runway": "23"
                 }
             },
             "departure_routes": {

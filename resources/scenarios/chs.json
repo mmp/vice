@@ -1160,25 +1160,21 @@
             "hold_for_release": true,
             "approaches": {
                 "R27": {
-                    "cifp_id": "R27",
-                     "tower_controller": "JZI_TWR"
+                    "cifp_id": "R27"
                 },
                 "R4": {
-                    "cifp_id": "R4",
-                    "tower_controller": "JZI_TWR"
+                    "cifp_id": "R4"
                 },
                 "I9": {
                     "full_name": "ILS Runway 9",
                     "runway": "9",
                     "type": "ILS",
-                     "tower_controller": "JZI_TWR",
                     "waypoints": [
                         "GIBLE/a1700 JOBOP/a1600"
                     ]
                 },
                 "R9": {
-                    "cifp_id": "R9",
-                     "tower_controller": "JZI_TWR"
+                    "cifp_id": "R9"
                 }
             },
             "departure_routes": {

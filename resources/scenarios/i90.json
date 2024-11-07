@@ -159,7 +159,6 @@
             "approaches": {
                 "I5R": {
                     "runway": "15R",
-                    "tower_controller": "IAH_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "DUCOZ/a3000+/iaf GRAAF/a3000+/if VETTE/a3000+ JAKPO/a2000+"
@@ -167,7 +166,6 @@
                 },
                 "I6L": {
                     "runway": "26L",
-                    "tower_controller": "IAH_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "BOZZZ/a8000/s210/iaf VANNN/a7000+/s210 MKAYE/a7000+ GRIEG/a5000+/if KERNS/a3000+ JEPNI/a2000+",
@@ -177,7 +175,6 @@
                 },
                 "I6R": {
                     "runway": "26R",
-                    "tower_controller": "IAH_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "HOOTI/a6000/s210/iaf GRIZL/a6000+ ZAPPO/a5000+ NEWLY/a5000+ RAIDS/a4000+/if CHUBS/a3000+ OWELL/a2000+",
@@ -186,7 +183,6 @@
                 },
                 "I27": {
                     "runway": "27",
-                    "tower_controller": "IAH_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "CLSIK/a4000/s210/iaf GRUNG/a4000+ SILLS/a4000 TRANN/a3000+ DENTO/a2000+/if FESTA/a2000+ REDOC/a1500+",
@@ -196,7 +192,6 @@
                 },
                 "I3R": {
                     "runway": "33R",
-                    "tower_controller": "IAH_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "DUDMY/a2000+/faf JOLTE/a1600+"
@@ -204,7 +199,6 @@
                 },
                 "I8L": {
                     "runway": "8L",
-                    "tower_controller": "IAH_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "GUSHR/a6000/s210/iaf BEPEA/a4000+ LIMEE/a3000 KABBY/a3000+ KICKM/a3000+/if FLIBZ/a3000+ JACEN/a2000+",
@@ -213,7 +207,6 @@
                 },
                 "I8R": {
                     "runway": "8R",
-                    "tower_controller": "IAH_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "LASSY/a7000+/s210/iaf DPLOY/a7000+ JELLI/a5000+/if REIGN/a4000+ EELPO/a3000+ MATON/a2000+",
@@ -223,7 +216,6 @@
                 },
                 "I9": {
                     "runway": "9",
-                    "tower_controller": "IAH_C_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "URANG/a5000+/iaf CHILT/a5000+ MEDIC/a4000+/if DOHNN/a4000+ SAYNO/a3000+ HYWAY/a2000+"
@@ -921,7 +913,6 @@
             "approaches" : {
                 "I3R": {
                     "runway": "13R",
-                    "tower_controller": "HOU_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "JABBS/a2000+ ROYCE/a2000+/faf"
@@ -929,7 +920,6 @@
                 },
                 "I1L": {
                     "runway": "31L",
-                    "tower_controller": "HOU_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "BUNER/a4000+ LESLO/a2100+/faf"
@@ -937,7 +927,6 @@
                 },
                 "I4": {
                     "runway": "4",
-                    "tower_controller": "HOU_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "GEEEO/a6000/s210/iaf CARCO/a4000+/if ELREN/a2000+ ESAAY/a1500+"
@@ -945,7 +934,6 @@
                 },
                 "R22": {
                     "runway": "22",
-                    "tower_controller": "HOU_TWR",
                     "type": "RNAV",
                     "waypoints": [
                         "KAFDO/a2000+ AVVOS/a1600+/faf"
@@ -1268,7 +1256,6 @@
             "approaches": {
                 "R17": {
                     "runway": "17",
-                    "tower_controller": "SGR_TWR",
                     "type": "RNAV",
                     "waypoints": [
                         "BASGE/iaf EBOKE/a2000+/if CASOB/a2000+",
@@ -1277,7 +1264,6 @@
                 },
                 "R35": {
                     "runway": "35",
-                    "tower_controller": "SGR_TWR",
                     "type": "RNAV",
                     "waypoints": [
                         "YEYUS/iaf CAPEK/a2000+/if HULLO/a1800+"
@@ -1370,7 +1356,6 @@
             "approaches": {
                 "I14": {
                     "runway": "14",
-                    "tower_controller": "GLS_TWR",
                     "type": "ILS",
                     "waypoints": [
                         "VUH SWANE/a1800+/lpt4510.0nm/pta1800/iaf"
@@ -1378,7 +1363,6 @@
                 },
                 "R32": {
                     "runway": "32",
-                    "tower_controller": "GLS_TWR",
                     "type": "RNAV",
                     "waypoints": [
                         "KICET/iaf IDIYE/a2000+/if HUDIP/a1800+ JEREM/a900+",

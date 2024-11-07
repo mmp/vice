@@ -5,7 +5,6 @@
       "approaches": {
         "I6L": {
           "runway": "6L",
-          "tower_controller": "LAX_N_TWR",
           "type": "ILS",
           "waypoints": [
             "CLVVR/iaf/a3600 NATHN/if/a3600 ALISN/a1800",
@@ -15,7 +14,6 @@
         },
         "RY6L": {
           "runway": "6L",
-          "tower_controller": "LAX_N_TWR",
           "type": "RNAV",
           "full_name": "RNAV Y Runway 6L",
           "waypoints": [
@@ -25,7 +23,6 @@
         },
         "RZ6L": {
           "runway": "6L",
-          "tower_controller": "LAX_N_TWR",
           "type": "RNAV",
           "full_name": "RNAV Z Runway 6L",
           "waypoints": [
@@ -36,7 +33,6 @@
         },
         "I6R": {
           "runway": "6R",
-          "tower_controller": "LAX_N_TWR",
           "type": "ILS",
           "waypoints": [
             "WAKER/iaf/a5600 KILIE/a3600 OTTES/if/a3600 GUPPI/a1800",
@@ -45,7 +41,6 @@
         },
         "RY6R": {
           "runway": "6R",
-          "tower_controller": "LAX_N_TWR",
           "type": "RNAV",
           "full_name": "RNAV Y Runway 6R",
           "waypoints": [
@@ -55,7 +50,6 @@
         },
         "RZ6R": {
           "runway": "6R",
-          "tower_controller": "LAX_N_TWR",
           "type": "RNAV",
           "full_name": "RNAV Z Runway 6R",
           "waypoints": [
@@ -66,7 +60,6 @@
         },
         "I7R": {
           "runway": "7R",
-          "tower_controller": "LAX_S_TWR",
           "type": "ILS",
           "waypoints": [
             "WAKER/iaf/a5600 KILIE/a2600 TIMSE/if/a2600 FUMBL/a1800",
@@ -76,7 +69,6 @@
         },
         "RY7R": {
           "runway": "7R",
-          "tower_controller": "LAX_S_TWR",
           "type": "RNAV",
           "full_name": "RNAV Y Runway 7R",
           "waypoints": [
@@ -86,7 +78,6 @@
         },
         "RZ7R": {
           "runway": "7R",
-          "tower_controller": "LAX_S_TWR",
           "type": "RNAV",
           "full_name": "RNAV Z Runway 7R",
           "waypoints": [
@@ -97,7 +88,6 @@
         },
         "I4R": {
           "runway": "24R",
-          "tower_controller": "LAX_N_TWR",
           "type": "ILS",
           "waypoints": [
             "CRCUS/iaf/s270/a10000 SKOLL/a10000 DECOR/a9000 BREEA/a8000 PALAC/a7000 LIVVN/iaf/a6000 BROUK/a5000 MERCE/if/a4000 KOBEE/a2200 ARBIE/a720",
@@ -106,7 +96,6 @@
         },
         "RY4R": {
           "runway": "24R",
-          "tower_controller": "LAX_N_TWR",
           "type": "RNAV",
           "full_name": "RNAV Y Runway 24R",
           "waypoints": [
@@ -116,7 +105,6 @@
         },
         "RZ4R": {
           "runway": "24R",
-          "tower_controller": "LAX_N_TWR",
           "type": "RNAV",
           "full_name": "RNAV Z Runway 24R",
           "waypoints": [
@@ -129,7 +117,6 @@
         },
         "I4L": {
           "runway": "24L",
-          "tower_controller": "LAX_N_TWR",
           "type": "ILS",
           "waypoints": [
             "CRCUS/iaf/s270/a10000 PFILA/a10000 SALWA/a9000 WLNUT/a8000 HURLR/a7000 FNESE/iaf/a6000 FAYZE/a5000 JULLI/if/a4000 BOUBY/a4000 SUTIE/a2200 CORTY/a740",
@@ -138,7 +125,6 @@
         },
         "RY4L": {
           "runway": "24L",
-          "tower_controller": "LAX_N_TWR",
           "type": "RNAV",
           "full_name": "RNAV Y Runway 24L",
           "waypoints": [
@@ -148,7 +134,6 @@
         },
         "RZ4L": {
           "runway": "24L",
-          "tower_controller": "LAX_N_TWR",
           "type": "RNAV",
           "full_name": "RNAV Z Runway 24L",
           "waypoints": [
@@ -159,7 +144,6 @@
         },
         "I5L": {
           "runway": "25L",
-          "tower_controller": "LAX_S_TWR",
           "type": "ILS",
           "waypoints": [
             "CRCUS/iaf/a10000/s270 KRAIN/a10000 TAROC/a9000 DYMMO/a8000 FUELR/a7000 GAATE/iaf/a5000 HUNDA/if/a3600 GIGII/a1900 LADLE",
@@ -170,7 +154,6 @@
         },
         "RY5L": {
           "runway": "25L",
-          "tower_controller": "LAX_S_TWR",
           "type": "RNAV",
           "full_name": "RNAV Y Runway 25L",
           "waypoints": [
@@ -182,7 +165,6 @@
         },
         "RZ5L": {
           "runway": "25L",
-          "tower_controller": "LAX_S_TWR",
           "type": "RNAV",
           "full_name": "RNAV Z Runway 25L",
           "waypoints": [

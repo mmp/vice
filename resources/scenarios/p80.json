@@ -8,7 +8,6 @@
           "full_name": "ILS Runway 10L",
           "runway": "10L",
           "type": "ILS",
-          "tower_controller": "PDX_N_TWR",
           "waypoints": [
             "BUXOM/if/a3000 TRAYL/a2300 BLAZR/a2000 JALAG/a1100"
           ]
@@ -17,7 +16,6 @@
           "full_name": "ILS Runway 10R",
           "runway": "10R",
           "type": "ILS",
-          "tower_controller": "PDX_S_TWR",
           "waypoints": [
             "SCAPO/if/a4000 HAIRN/a3100 POWLZ/a2000 JADNU/a860",
             "HAIRN/a3100 POWLZ/a2000 JADNU/a860"
@@ -27,7 +25,6 @@
           "full_name": "ILS Runway 28L",
           "runway": "28L",
           "type": "ILS",
-          "tower_controller": "PDX_S_TWR",
           "waypoints": [
             "HANAH/a2900 ADDUM/a2000 YINUP/a1280",
             "REEDI/iaf/a5700 HPSTR/if/a3700 HANAH/a2900 ADDUM/a2000 YINUP/a1280",
@@ -39,7 +36,6 @@
           "full_name": "ILS Runway 28R",
           "runway": "28R",
           "type": "ILS",
-          "tower_controller": "PDX_N_TWR",
           "waypoints": [
             "OMMSI/a2900 TOLOC/a2000 WUGPU/a1260",
             "REEDI/iaf/a5700 NACIY/iaf/a3700 OMMSI/if/a2900 TOLOC/if/a2000 WUGPU/if/a1260",
@@ -51,7 +47,6 @@
           "full_name": "RNAV Z Runway 10L",
           "runway": "10L",
           "type": "RNAV",
-          "tower_controller": "PDX_N_TWR",
           "waypoints": [
             "BLAZR/faf/a2000",
             "BUXOM/if/a3000 TRAYL/if/a2300 TTIDE/a2300 BLAZR/faf/a2000",
@@ -64,7 +59,6 @@
           "full_name": "RNAV Z Runway 10R",
           "runway": "10R",
           "type": "RNAV",
-          "tower_controller": "PDX_S_TWR",
           "waypoints": [
             "POWLZ/faf/a2000",
             "CIZZL/iaf/s210/a5000 DAYSS/arc3.7/if/a4500 CATUL/arc5.0/if/a3500 POWLZ/faf/a2000",
@@ -77,7 +71,6 @@
           "full_name": "RNAV Z Runway 28L",
           "runway": "28L",
           "type": "RNAV",
-          "tower_controller": "PDX_S_TWR",
           "waypoints": [
             "ADDUM/faf/a2000",
             "HPSTR/if/a2900 HANAH/a2900 ADDUM/faf/a2000",
@@ -88,7 +81,6 @@
           "full_name": "RNAV Z Runway 28R",
           "runway": "28R",
           "type": "RNAV",
-          "tower_controller": "PDX_N_TWR",
           "waypoints": [
             "TOLOC/faf/a2000",
             "NACIY/if/a2900 OMMSI/a2900 TOLOC/faf/a2000",

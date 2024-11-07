@@ -4,19 +4,15 @@
     "KBOI": {
       "approaches": {
         "R8L": {
-          "tower_controller": "BOI_TWR",
           "cifp_id": "RX28L"
         },
         "I8R": {
-          "tower_controller": "BOI_TWR",
           "cifp_id": "I28R"
         },
         "I0R": {
-          "tower_controller": "BOI_TWR",
           "cifp_id": "IY10R"
         },
         "R0L": {
-          "tower_controller": "BOI_TWR",
           "cifp_id": "RY10L"
         }
       },

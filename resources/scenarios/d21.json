@@ -10,7 +10,6 @@
                     "full_name": "ILS Runway 4L",
                     "runway": "4L",
                     "type": "ILS",
-                    "tower_controller": "DTW_SW_TWR",
                     "waypoints": [
                         "GRBAC/a5000/s210/iaf MMOTT/a3000 ASLLI/a3000 NATIY/a3000 REGGE/a3000 PAYED/a2000",
                         "SIZOR/a6000/s210/iaf HURRT/a4000 ACIRA ASLLI/a3000 NATIY/a3000 REGGE/a3000 PAYED/a2000",
@@ -21,7 +20,6 @@
                     "full_name": "ILS Y Runway 4L",
                     "runway": "4L",
                     "type": "ILS",
-                    "tower_controller": "DTW_SW_TWR",
                     "waypoints": [
                         "SIZOR/a6000/s210 HURRT/a4000 COZZY RUCOB/a3000+ JITLI/a3000+ PEVSE/a3000+/if MOTWN/a2000+",
                         "GRBAC/a5000/s210 MMOTT/a3000 RUCOB/a3000+ JITLI/a3000+ PEVSE/a3000+/if MOTWN/a2000+",
@@ -32,7 +30,6 @@
                     "full_name": "ILS Runway 4R",
                     "runway": "4R",
                     "type": "ILS",
-                    "tower_controller": "DTW_NW_TWR",
                     "waypoints": [
                         "CLEVR/a8000+/s210/iaf BAANG/a8000- JULEP/a7000- CULOP/a6000- HIMEX/a5000- EVABE/a4000- JELLY/a3000-/if ETALE/a2000-",
                         "CAATZ/a9000/s210/iaf ELDNN BAANG/a8000- JULEP/a7000- CULOP/a6000- HIMEX/a5000- EVABE/a4000- JELLY/a3000-/if ETALE/a2000-",
@@ -43,7 +40,6 @@
                     "full_name": "ILS Runway 3R",
                     "runway": "3R",
                     "type": "ILS",
-                    "tower_controller": "DTW_NE_TWR",
                     "waypoints": [
                         "BRDER/a6000/s210/iaf ROLRR HARLA/a5000 LIONZ/a5000 WATCH/a4000 RIBME/a3000 NUVUE/a2000",
                         "MERCA/a7000/s210/iaf MPALA/a5000 WILOO/a5000 LEWUK/a5000 HARLA/a5000 LIONZ/a5000 WATCH/a4000 RIBME/a3000 NUVUE/a2000",
@@ -54,7 +50,6 @@
                     "full_name": "ILS Runway 21L",
                     "runway": "21L",
                     "type": "ILS",
-                    "tower_controller": "DTW_NE_TWR",
                     "waypoints": [
                         "RYEDR/a7000/iaf TOFFY/a6000- GIVVZ/a5000 COUNT/a5000 TIGRZ/a5000 ROBBI/a5000 BALAS/a4000 NESBI/a3000 PUKLE/a2000",
                         "COBBO/a6000/iaf KAALI TIGRZ/a5000 ROBBI/a5000 BALAS/a4000 NESBI/a3000 PUKLE/a2000",
@@ -65,7 +60,6 @@
                     "full_name": "ILS Runway 22R",
                     "runway": "22R",
                     "type": "ILS",
-                    "tower_controller": "DTW_SW_TWR",
                     "waypoints": [
                         "HRRON/a6000/s210/iaf PRYDE/a4000 FUDDJ/a4000 TARAH/a4000 GUYVE/a4000 JOYDD/a3000 NUJNT/a3000 GEETR/a2000",
                         "VALLI/a6000/s210/iaf KLIER/a4000 FUDDJ/a4000 TARAH/a4000 GUYVE/a4000 JOYDD/a3000 NUJNT/a3000 GEETR/a2000",
@@ -76,7 +70,6 @@
                     "full_name": "ILS Y Runway 22R",
                     "runway": "22R",
                     "type": "ILS",
-                    "tower_controller": "DTW_SW_TWR",
                     "waypoints": [
                         "HRRON/a6000/s210 KLIER/a4000 GRDCY/a4000+ MMOTR/a4000+ TAYUL/a4000+ EMINN/a3000+ WONDR/a3000+/if ANGGL/a2000+",
                         "VALLI/a6000/s210 KLIER/a4000 GRDCY/a4000+ MMOTR/a4000+ TAYUL/a4000+ EMINN/a3000+ WONDR/a3000+/if ANGGL/a2000+",
@@ -87,7 +80,6 @@
                     "full_name": "ILS Runway 22L",
                     "runway": "22L",
                     "type": "ILS",
-                    "tower_controller": "DTW_NW_TWR",
                     "waypoints": [
                         "SPRER/a8000+/s210/iaf AKMEE MCOMB/a8000+ DRBRN/a7000+ BHOLD/a6000+ LUPAY/a5000+ OSKER/a4000+ ROUGE/a3000+ HULKA/a2000+",
                         "MCOMB/a8000+/iaf DRBRN/a7000+ BHOLD/a6000+ LUPAY/a5000+ OSKER/a4000+ ROUGE/a3000+ HULKA/a2000+",
@@ -98,14 +90,12 @@
                     "full_name": "ILS Runway 27L",
                     "runway": "27L",
                     "type": "ILS",
-                    "tower_controller": "DTW_NE_TWR",
                     "waypoints": ["HEYYY/a7000/iaf DONYA/a6000 ALWAZ/a5000 JUSTT/a4000 KNOIT/a3000 NIKNG/a2000"]
                 },
                 "I7R": {
                     "full_name": "ILS Runway 27R",
                     "runway": "27R",
                     "type": "ILS",
-                    "tower_controller": "DTW_SW_TWR",
                     "waypoints": ["FRNDS/a7000/iaf HONOR/a6000 STANS/a5000 AERIC/a4000 DOTTI/a3000 GUGRE/a2000"]
                 }
             },

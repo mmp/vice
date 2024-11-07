@@ -5,7 +5,6 @@
       "approaches": {
         "I7L": {
           "runway": "7L",
-          "tower_controller": "DAB_N_TWR",
           "type": "ILS",
           "waypoints": [
             "HANAV/arc16OMN TIGAE/a1600 FOLIG/a1600 ZOPRI/a680",
@@ -14,7 +13,6 @@
         },
         "R7R": {
           "runway": "7R",
-          "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "GUANO/nopt TACUR/lhilpt4nm/a1700 JUSAD/a1600",
@@ -23,7 +21,6 @@
         },
         "R16": {
           "runway": "16",
-          "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "BARBS/nopt CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800",
@@ -32,7 +29,6 @@
         },
         "I5R": {
           "runway": "25R",
-          "tower_controller": "DAB_N_TWR",
           "type": "ILS",
           "waypoints": [
             "WISPO/a3000 RINEE/a2700 DIYAK/a1600"
@@ -40,7 +36,6 @@
         },
         "R5L": {
           "runway": "25L",
-          "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "FOMRO/a1600/lhilpt4nm ROLKE/a1600 CELAB/a1020"
@@ -48,7 +43,6 @@
         },
         "R34": {
           "runway": "34",
-          "tower_controller": "DAB_N_TWR",
           "type": "RNAV",
           "waypoints": [
             "BARBS/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700",

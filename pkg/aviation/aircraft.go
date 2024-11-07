@@ -323,20 +323,12 @@ func (ac *Aircraft) ContactTower(controllers map[string]*Controller, lg *log.Log
 		return ac.readbackUnexpected("unable. We haven't been cleared for the approach.")
 	} else {
 		ac.GotContactTower = true
-		twr := ac.Nav.Approach.Assigned.TowerController
 		prevController := ac.ControllingController
-		ac.ControllingController = twr
-
-		msg := "contact tower"
-		if ctrl, ok := controllers[twr]; !ok {
-			lg.Error("unknown tower controller", slog.String("tower_callsign", twr), slog.Any("aircraft", ac))
-		} else {
-			msg += ", " + ctrl.Frequency.String()
-		}
+		ac.ControllingController = "_TOWER"
 
 		return []RadioTransmission{RadioTransmission{
 			Controller: prevController,
-			Message:    msg,
+			Message:    "contact tower",
 			Type:       RadioTransmissionReadback,
 		}}
 	}

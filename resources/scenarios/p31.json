@@ -4,24 +4,19 @@
         "KPNS": {
             "approaches": {
                 "I17": {
-                    "cifp_id": "I17",
-                    "tower_controller": "PNS_TWR"
+                    "cifp_id": "I17"
                 },
                 "R17": {
-                    "cifp_id": "R17",
-                    "tower_controller": "PNS_TWR"
+                    "cifp_id": "R17"
                 },
                 "R26": {
-                    "cifp_id": "R26",
-                    "tower_controller": "PNS_TWR"
+                    "cifp_id": "R26"
                 },
                 "R35": {
-                    "cifp_id": "R35",
-                    "tower_controller": "PNS_TWR"
+                    "cifp_id": "R35"
                 },
                 "R8": {
-                    "cifp_id": "R8",
-                    "tower_controller": "PNS_TWR"
+                    "cifp_id": "R8"
                 }
             },
             "departure_routes": {

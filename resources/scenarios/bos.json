@@ -57,56 +57,43 @@
             },
       "approaches": {
         "I4R": {
-          "cifp_id": "I4R",
-          "tower_controller": "BOS_E_TWR"
+          "cifp_id": "I4R"
         },
        "I2L": {
-        "cifp_id": "I22L",
-        "tower_controller": "BOS_E_TWR"
+        "cifp_id": "I22L"
        },
        "I27": {
-        "cifp_id": "I27",
-        "tower_controller": "BOS_E_TWR"
+        "cifp_id": "I27"
        },
        "I3L": {
-        "cifp_id": "I33L",
-        "tower_controller": "BOS_W_TWR"
+        "cifp_id": "I33L"
        },
        "R5R": {
-        "cifp_id": "R15R",
-        "tower_controller": "BOS_W_TWR"
+        "cifp_id": "R15R"
        },
        "R27": {
-        "cifp_id": "R27",
-        "tower_controller": "BOS_W_TWR"
+        "cifp_id": "R27"
        },
        "R32": {
-        "cifp_id": "R32",
-        "tower_controller": "BOS_W_TWR"
+        "cifp_id": "R32"
        },
        "R4L": {
-        "cifp_id": "R4L",
-        "tower_controller": "BOS_W_TWR"
+        "cifp_id": "R4L"
        },
        "R4R": {
-        "cifp_id": "R4R",
-        "tower_controller": "BOS_E_TWR"
+        "cifp_id": "R4R"
        },
        "X2L": {
-        "cifp_id": "RX22L",
-        "tower_controller": "BOS_E_TWR"
+        "cifp_id": "RX22L"
        },
        "X3L": {
-        "cifp_id": "RX33L",
-        "tower_controller": "BOS_W_TWR"
+        "cifp_id": "RX33L"
        },
        "Y2L": {
-        "cifp_id": "RY22L",
-        "tower_controller": "BOS_E_TWR"
+        "cifp_id": "RY22L"
        },
        "Z3L": {
-        "cifp_id": "RZ33L",
-        "tower_controller": "BOS_W_TWR"
+        "cifp_id": "RZ33L"
        }
       },
       "approach_regions": {

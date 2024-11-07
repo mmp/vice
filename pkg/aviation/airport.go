@@ -352,16 +352,6 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			e.ErrorString("Must have \"runway\" in approach's \"full_name\"")
 		}
 
-		if appr.TowerController == "" {
-			appr.TowerController = icao[1:] + "_TWR"
-			if _, ok := controlPositions[appr.TowerController]; !ok {
-				e.ErrorString("No position specified for \"tower_controller\" and \"" +
-					appr.TowerController + "\" is not a valid controller")
-			}
-		} else if _, ok := controlPositions[appr.TowerController]; !ok {
-			e.ErrorString("No control position \"" + appr.TowerController + "\" for \"tower_controller\"")
-		}
-
 		if appr.Type == ChartedVisualApproach && len(appr.Waypoints) != 1 {
 			// Note: this could be relaxed if necessary but the logic in
 			// Nav prepareForChartedVisual() assumes as much.
@@ -730,12 +720,11 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 }
 
 type Approach struct {
-	Id              string          `json:"cifp_id"`
-	FullName        string          `json:"full_name"`
-	Type            ApproachType    `json:"type"`
-	Runway          string          `json:"runway"`
-	Waypoints       []WaypointArray `json:"waypoints"`
-	TowerController string          `json:"tower_controller"`
+	Id        string          `json:"cifp_id"`
+	FullName  string          `json:"full_name"`
+	Type      ApproachType    `json:"type"`
+	Runway    string          `json:"runway"`
+	Waypoints []WaypointArray `json:"waypoints"`
 }
 
 func (ap *Approach) Line() [2]math.Point2LL {

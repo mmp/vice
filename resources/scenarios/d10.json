@@ -8,7 +8,6 @@
                     "full_name": "ILS Runway 13R",
                     "runway": "13R",
                     "type": "ILS",
-                    "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
                         "MORRY/a3000/if POPPA/a3000 HODAX/a2300/faf"
                     ]
@@ -17,7 +16,6 @@
                     "full_name": "ILS Runway 17L",
                     "runway": "17L",
                     "type": "ILS",
-                    "tower_controller": "DFW_E3_TWR",
                     "waypoints": [
                         "RIVET/a5000/if DRAAK/a5000 INWOD/a3000 GBUSH/a2300/faf"
                     ]
@@ -26,7 +24,6 @@
                     "full_name": "ILS Runway 17C",
                     "runway": "17C",
                     "type": "ILS",
-                    "tower_controller": "DFW_E1_TWR",
                     "waypoints": [
                         "BOSSI/a6000/if PENNY/a5000 ZINGG/a3000 JIFFY/a2300/faf"
                     ]
@@ -35,7 +32,6 @@
                     "full_name": "ILS Runway 17R",
                     "runway": "17R",
                     "type": "ILS",
-                    "tower_controller": "DFW_E1_TWR",
                     "waypoints": [
                         "NETTS/a6000/if GARZA/a5000 YALTA/a3000 BBAKR/a2200/faf"
                     ]
@@ -44,7 +40,6 @@
                     "full_name": "ILS Runway 18L",
                     "runway": "18L",
                     "type": "ILS",
-                    "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
                         "GRUCH/a4000/if ALIGN/a3000 UDALL/a3000 JAYCI/a2300/faf"
                     ]
@@ -53,7 +48,6 @@
                     "full_name": "ILS Runway 18R",
                     "runway": "18R",
                     "type": "ILS",
-                    "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
                         "ICKEL/a4000/if YOHAN/a3000 LEGRE/a3000 NETEE/a2400/faf"
                     ]
@@ -62,7 +56,6 @@
                     "full_name": "ILS Runway 31R",
                     "runway": "31R",
                     "type": "ILS",
-                    "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
                         "TULOY/a5000/iaf GACHO/a5000/if VANDE/a3000 FIVIS/a2400/faf GUKSE/a1060"
                     ]
@@ -71,7 +64,6 @@
                     "full_name": "RNAV Yankee Runway 31L",
                     "runway": "31L",
                     "type": "ILS",
-                    "tower_controller": "DFW_E3_TWR",
                     "waypoints": [
                         "ZUREK/a5000/iaf WOLKA/a5000/if NKORT/a3000 TARRO/a2400/faf"
                     ]
@@ -80,7 +72,6 @@
                     "full_name": "ILS Runway 35L",
                     "runway": "35L",
                     "type": "ILS",
-                    "tower_controller":"DFW_E1_TWR",
                     "waypoints": [
                         "TANDE/a6000/if CORMN/a5000 DALLN/a3000 BEGGO/a2500/faf"
                     ]
@@ -89,7 +80,6 @@
                     "full_name": "ILS Runway 35C",
                     "runway": "35C",
                     "type": "ILS",
-                    "tower_controller":"DFW_E1_TWR",
                     "waypoints": [
                         "RAYMA/a6000/if TUFFO/a5000 DAYZZ/a3000 JOBBS/a2100/faf"
                     ]
@@ -98,7 +88,6 @@
                     "full_name": "ILS Runway 35R",
                     "runway": "35R",
                     "type": "ILS",
-                    "tower_controller": "DFW_E3_TWR",
                     "waypoints": [
                         "GALOP/a5000/if FRIZZ/a5000 COROL/a3000 POLKE/a2200"
                     ]
@@ -107,7 +96,6 @@
                     "full_name": "ILS Runway 36L",
                     "runway": "36L",
                     "type": "ILS",
-                    "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
                         "ALLIN/a4000/if HUTEN/a3000 CHAAR/a3000 BOBIN/a2300"
                     ]
@@ -116,7 +104,6 @@
                     "full_name": "ILS Runway 36R",
                     "runway": "36R",
                     "type": "ILS",
-                    "tower_controller": "DFW_W1_TWR",
                     "waypoints": [
                         "SLOCO/a4000/if KICKA/a3000 TUTOO/a3000 BASIN/a2300/faf"
                     ]

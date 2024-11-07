@@ -8,7 +8,6 @@
                         "full_name": "ILS Runway 14L",
                         "runway": "14L",
                         "type": "ILS",
-                        "tower_controller": "OMA_TWR",
                         "waypoints": [
                             "BUFFT/a2400"
                         ]
@@ -17,7 +16,6 @@
                         "full_name": "ILS Runway 14R",
                         "runway": "14R",
                         "type": "ILS",
-                        "tower_controller": "OMA_TWR",
                         "waypoints": [
                             "ZATAR/a2400 FILER/a1800"
                         ]
@@ -26,7 +24,6 @@
                       "full_name": "ILS Runway 18",
                       "runway": "18",
                       "type": "ILS",
-                      "tower_controller": "OMA_TWR",
                       "waypoints": [
                           "TASKY/a3000 CEPUT/a2800 PINNO/a1460"
                       ]
@@ -35,7 +32,6 @@
                       "full_name": "ILS Runway 32L",
                       "runway": "32L",
                       "type": "ILS",
-                      "tower_controller": "OMA_TWR",
                       "waypoints": [
                           "PONYS/a2800 FAPON/a1700"
                       ]
@@ -44,7 +40,6 @@
                       "full_name": "ILS Runway 32R",
                       "runway": "32R",
                       "type": "ILS",
-                      "tower_controller": "OMA_TWR",
                       "waypoints": [
                           "BEEFF/a2800"
                       ]
@@ -53,7 +48,6 @@
                       "full_name": "ILS Runway 36",
                       "runway": "36",
                       "type": "ILS",
-                      "tower_controller": "OMA_TWR",
                       "waypoints": [
                           "CIVIV/a4000 COBIT/a3000 SMTHY/a2500"
                       ]
@@ -835,15 +829,13 @@
                         "full_name": "ILS Runway 18",
                         "runway": "18",
                         "type": "ILS",
-                        "tower_controller": "LNK_TWR",
                         "waypoints": [
                             "HUSKR/iaf ESACO/a3200+/if CLONE/a2900+ ROROC"
                         ]
                     },
                     "I36": {
                         "full_name": "ILS Runway 36",
-                        "cifp_id": "IY36",
-                        "tower_controller": "LNK_TWR"
+                        "cifp_id": "IY36"
                     }
                 },
                 "departure_routes": {
@@ -1052,7 +1044,6 @@
                         "full_name": "ILS Runway 13",
                         "runway": "13",
                         "type": "ILS",
-                        "tower_controller": "OFF_TWR",
                         "waypoints": [
                             "JABMO/a4000+/iaf/if DOTAY/a2800+"
                         ]
@@ -1061,7 +1052,6 @@
                         "full_name": "ILS Y Runway 31",
                         "runway": "31",
                         "type": "ILS",
-                        "tower_controller": "OFF_TWR",
                         "waypoints": [
                             "BOMBR/a9500+/iaf SHACK/a3000+/iaf/if TERPS/a2300+ DACIL/a1720+"
                         ]

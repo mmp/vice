@@ -4,28 +4,22 @@
     "KSLC": {
       "approaches": {
         "I6L": {
-          "tower_controller": "SLC_C_TWR",
           "cifp_id": "I16L"
         },
         "I6R": {
-          "tower_controller": "SLC_C_TWR",
           "cifp_id": "I16R"
         },
         "I7": {
-          "tower_controller": "SLC_C_TWR",
           "cifp_id": "I17"
         },
         "I4L": {
-          "tower_controller": "SLC_C_TWR",
           "cifp_id": "I34L"
         },
         "I4R": {
-          "tower_controller": "SLC_C_TWR",
           "cifp_id": "I34R"
         },
         "L5": {
           "full_name": "LDA Runway 35",
-          "tower_controller": "SLC_C_TWR",
           "cifp_id": "X35"
         }
       },

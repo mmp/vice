@@ -4,16 +4,13 @@
     "KCRG": {
       "approaches": {
         "I32": {
-          "cifp_id": "I32",
-          "tower_controller": "CRG_TWR"
+          "cifp_id": "I32"
         },
         "R14": {
-          "cifp_id": "R14",
-          "tower_controller": "CRG_TWR"
+          "cifp_id": "R14"
         },
         "R32": {
-          "cifp_id": "R32",
-          "tower_controller": "CRG_TWR"
+          "cifp_id": "R32"
         }
       },
       "departure_routes": {
@@ -167,32 +164,25 @@
       },
       "approaches": {
         "I8": {
-          "cifp_id": "IY8",
-          "tower_controller": "JAX_TWR"
+          "cifp_id": "IY8"
         },
         "RZ8": {
-          "cifp_id": "RZ8",
-          "tower_controller": "JAX_TWR"
+          "cifp_id": "RZ8"
         },
         "I14": {
-          "cifp_id": "IY14",
-          "tower_controller": "JAX_TWR"
+          "cifp_id": "IY14"
         },
         "R14": {
-          "cifp_id": "RZ14",
-          "tower_controller": "JAX_TWR"
+          "cifp_id": "RZ14"
         },
         "I26": {
-          "cifp_id": "IY26",
-          "tower_controller": "JAX_TWR"
+          "cifp_id": "IY26"
         },
         "R26": {
-          "cifp_id": "RZ26",
-          "tower_controller": "JAX_TWR"
+          "cifp_id": "RZ26"
         },
         "R32": {
-          "cifp_id": "RZ32",
-          "tower_controller": "JAX_TWR"
+          "cifp_id": "RZ32"
         }
       },
       "approach_regions": {
@@ -560,16 +550,13 @@
     "KSGJ": {
       "approaches": {
         "I31": {
-          "cifp_id": "I31",
-          "tower_controller": "SGJ_TWR"
+          "cifp_id": "I31"
         },
         "R31": {
-          "cifp_id": "R31",
-          "tower_controller": "SGJ_TWR"
+          "cifp_id": "R31"
         },
         "R13": {
-          "cifp_id": "R13",
-          "tower_controller": "SGJ_TWR"
+          "cifp_id": "R13"
         }
       },
       "departure_routes": {
