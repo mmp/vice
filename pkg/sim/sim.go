@@ -1504,7 +1504,7 @@ func (s *Sim) updateState() {
 				if passedWaypoint.PointOut != "" {
 					for _, ctrl := range s.State.Controllers {
 						// Look for a controller with a matching TCP id.
-						if ctrl.SectorId == passedWaypoint.PointOut {
+						if ctrl.TCP == passedWaypoint.PointOut {
 							// Don't do the point out if a human is
 							// controlling the aircraft.
 							if fromCtrl := s.State.Controllers[ac.ControllingController]; fromCtrl != nil && !fromCtrl.IsHuman {
@@ -2814,7 +2814,7 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 				ToController:   s.PointOuts[callsign][ctrl.Callsign].FromController,
 				Callsign:       ac.Callsign,
 			})
-			id := ctrl.FacilityIdentifier + ctrl.SectorId
+			id := ctrl.FacilityIdentifier + ctrl.TCP
 			if len(ac.PointOutHistory) < 20 {
 				ac.PointOutHistory = append([]string{id}, ac.PointOutHistory...)
 			} else {

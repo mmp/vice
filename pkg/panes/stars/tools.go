@@ -1514,7 +1514,7 @@ func (sp *STARSPane) drawPTLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 		}
 
 		trk := sp.getTrack(ctx, ac)
-		ourTrack := trk != nil && trk.TrackOwner == ctx.ControlClient.Callsign
+		ourTrack := trk != nil && trk.TrackOwner == ctx.ControlClient.PrimaryTCP
 		if !state.DisplayPTL && !ps.PTLAll && !(ps.PTLOwn && ourTrack) {
 			continue
 		}

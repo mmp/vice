@@ -159,7 +159,7 @@ func (fsp *FlightStripPane) possiblyAddAircraft(ss *sim.State, ac *av.Aircraft) 
 		return
 	}
 
-	add := fsp.AutoAddTracked && ac.TrackingController == ss.Callsign && ac.FlightPlan != nil
+	add := fsp.AutoAddTracked && ac.TrackingController == ss.PrimaryTCP && ac.FlightPlan != nil
 	add = add || ac.TrackingController == "" && fsp.AutoAddDepartures && ss.IsDeparture(ac)
 	add = add || ac.TrackingController == "" && fsp.AutoAddArrivals && ss.IsArrival(ac)
 	add = add || ac.TrackingController == "" && fsp.AutoAddOverflights && ss.IsOverflight(ac)
@@ -212,7 +212,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 			}
 		case sim.InitiatedTrackEvent:
 			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddTracked && ac.TrackingController == ctx.ControlClient.Callsign {
+				if fsp.AutoAddTracked && ac.TrackingController == ctx.ControlClient.PrimaryTCP {
 					fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 				}
 			}
@@ -222,13 +222,13 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 			}
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
 			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == ctx.ControlClient.Callsign {
+				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == ctx.ControlClient.PrimaryTCP {
 					fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 				}
 			}
 		case sim.HandoffControllEvent:
 			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
-				if fsp.AutoRemoveHandoffs && ac.TrackingController != ctx.ControlClient.Callsign {
+				if fsp.AutoRemoveHandoffs && ac.TrackingController != ctx.ControlClient.PrimaryTCP {
 					remove(event.Callsign)
 				}
 			}

@@ -948,7 +948,7 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 					s.eventStream.Post(Event{
 						Type:           DroppedTrackEvent,
 						Callsign:       ac.Callsign,
-						FromController: s.State.Callsign,
+						FromController: s.State.PrimaryTCP,
 					})
 				}
 			} else {
@@ -958,25 +958,25 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 
 		// FIXME: should only happen if sp.AutoTrackDepartures is set?
 		if fp, ok := comp.ContainedPlans[ac.Squawk]; ok { // auto associate
-			ctrl := s.State.Callsign
+			tcp := s.State.PrimaryTCP
 			// FIXME(mtrokel): the call to DepartureController() leads to
 			// ERROR Unable to resolve departure controller for aircraft
 			// that are initially controlled by a virtual controller
 			// (e.g. LGA water gate departures when controlling JFK.)
-			if inAcquisitionArea(ac) && s.State.DepartureController(ac, s.lg) == ctrl {
+			if inAcquisitionArea(ac) && s.State.DepartureController(ac, s.lg) == tcp {
 				// If they have already contacted departure, then initiating
 				// track gives control as well; otherwise ControllingController
 				// is left unset until contact.
 				haveControl := ac.DepartureContactAltitude == 0
 
-				if err := comp.InitiateTrack(ac.Callsign, ctrl, fp, haveControl); err != nil {
+				if err := comp.InitiateTrack(ac.Callsign, tcp, fp, haveControl); err != nil {
 					//s.lg.Errorf("InitiateTrack: %v", err)
 				}
 
 				s.eventStream.Post(Event{
 					Type:         InitiatedTrackEvent,
 					Callsign:     ac.Callsign,
-					ToController: ctrl,
+					ToController: tcp,
 				})
 
 				if comp.TrackInformation[ac.Callsign] != nil {

@@ -67,9 +67,9 @@ func (c *ControlClient) Status() string {
 		deparr := fmt.Sprintf(" [ %d departures %d arrivals %d overflights ]",
 			c.TotalDepartures, c.TotalArrivals, c.TotalOverflights)
 		if c.SimName == "" {
-			return c.State.Callsign + ": " + c.SimDescription + deparr
+			return c.State.PrimaryTCP + ": " + c.SimDescription + deparr
 		} else {
-			return c.State.Callsign + "@" + c.SimName + ": " + c.SimDescription + deparr
+			return c.State.PrimaryTCP + "@" + c.SimName + ": " + c.SimDescription + deparr
 		}
 	}
 }
@@ -113,7 +113,7 @@ func (c *ControlClient) SendGlobalMessage(global GlobalMessage) {
 }
 
 func (c *ControlClient) SetScratchpad(callsign string, scratchpad string, success func(any), err func(error)) {
-	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.Callsign {
+	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.PrimaryTCP {
 		ac.Scratchpad = scratchpad
 	}
 
@@ -127,7 +127,7 @@ func (c *ControlClient) SetScratchpad(callsign string, scratchpad string, succes
 }
 
 func (c *ControlClient) SetSecondaryScratchpad(callsign string, scratchpad string, success func(any), err func(error)) {
-	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.Callsign {
+	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.PrimaryTCP {
 		ac.SecondaryScratchpad = scratchpad
 	}
 
@@ -141,7 +141,7 @@ func (c *ControlClient) SetSecondaryScratchpad(callsign string, scratchpad strin
 }
 
 func (c *ControlClient) SetTemporaryAltitude(callsign string, alt int, success func(any), err func(error)) {
-	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.Callsign {
+	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.PrimaryTCP {
 		ac.TempAltitude = alt
 	}
 
@@ -209,7 +209,7 @@ func (c *ControlClient) InitiateTrack(callsign string, fp *STARSFlightPlan, succ
 	// As in sim.go, only check for an unset TrackingController; we may already
 	// have ControllingController due to a pilot checkin on a departure.
 	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == "" {
-		ac.TrackingController = c.State.Callsign
+		ac.TrackingController = c.State.PrimaryTCP
 	}
 
 	c.pendingCalls = append(c.pendingCalls,
@@ -222,7 +222,7 @@ func (c *ControlClient) InitiateTrack(callsign string, fp *STARSFlightPlan, succ
 }
 
 func (c *ControlClient) DropTrack(callsign string, success func(any), err func(error)) {
-	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.Callsign {
+	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.PrimaryTCP {
 		ac.TrackingController = ""
 		ac.ControllingController = ""
 	}
@@ -247,10 +247,10 @@ func (c *ControlClient) HandoffTrack(callsign string, controller string, success
 }
 
 func (c *ControlClient) AcceptHandoff(callsign string, success func(any), err func(error)) {
-	if ac := c.State.Aircraft[callsign]; ac != nil && ac.HandoffTrackController == c.State.Callsign {
+	if ac := c.State.Aircraft[callsign]; ac != nil && ac.HandoffTrackController == c.State.PrimaryTCP {
 		ac.HandoffTrackController = ""
-		ac.TrackingController = c.State.Callsign
-		ac.ControllingController = c.State.Callsign
+		ac.TrackingController = c.State.PrimaryTCP
+		ac.ControllingController = c.State.PrimaryTCP
 	}
 
 	c.pendingCalls = append(c.pendingCalls,
@@ -333,7 +333,7 @@ func (c *ControlClient) RejectPointOut(callsign string, success func(any), err f
 }
 
 func (c *ControlClient) ToggleSPCOverride(callsign string, spc string, success func(any), err func(error)) {
-	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.Callsign {
+	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.PrimaryTCP {
 		ac.ToggleSPCOverride(spc)
 	}
 
@@ -356,10 +356,10 @@ func (c *ControlClient) ReleaseDeparture(callsign string, success func(any), err
 		})
 }
 
-func (c *ControlClient) ChangeControlPosition(callsign string, keepTracks bool) error {
-	err := c.proxy.ChangeControlPosition(callsign, keepTracks)
+func (c *ControlClient) ChangeControlPosition(tcp string, keepTracks bool) error {
+	err := c.proxy.ChangeControlPosition(tcp, keepTracks)
 	if err == nil {
-		c.State.Callsign = callsign
+		c.State.PrimaryTCP = tcp
 	}
 	return err
 }
@@ -640,7 +640,7 @@ func (c *ControlClient) ScopeDrawOverflights() map[string]map[int]bool {
 }
 
 func (c *ControlClient) DeleteAllAircraft(onErr func(err error)) {
-	if lctrl := c.LaunchConfig.Controller; lctrl == "" || lctrl == c.State.Callsign {
+	if lctrl := c.LaunchConfig.Controller; lctrl == "" || lctrl == c.State.PrimaryTCP {
 		c.State.Aircraft = nil
 	}
 
@@ -950,7 +950,7 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 				ctrl := c.Controllers[callsign]
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				id := ctrl.SectorId
+				id := ctrl.TCP
 				if ctrl.FacilityIdentifier != "" && !ctrl.ERAMFacility {
 					id = ctrl.FacilityIdentifier + id
 				}

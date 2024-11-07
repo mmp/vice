@@ -842,7 +842,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		if ctrl.Frequency < 118000 || ctrl.Frequency > 138000 {
 			e.ErrorString("invalid frequency: %6.3f", float32(ctrl.Frequency)/1000)
 		}
-		if ctrl.SectorId == "" {
+		if ctrl.TCP == "" {
 			e.ErrorString("no \"sector_id\" specified")
 		}
 		if ctrl.FullName == "" {

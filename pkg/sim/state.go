@@ -52,7 +52,7 @@ type State struct {
 	Center                   math.Point2LL
 	Range                    float32
 	Wind                     av.Wind
-	Callsign                 string
+	PrimaryTCP               string
 	ScenarioDefaultVideoMaps []string
 	ApproachAirspace         []ControllerAirspaceVolume
 	DepartureAirspace        []ControllerAirspaceVolume
@@ -76,7 +76,7 @@ type State struct {
 func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *ScenarioGroup, sc *Scenario,
 	manifest *av.VideoMapManifest, tfrs []av.TFR, lg *log.Logger) *State {
 	ss := &State{
-		Callsign:      serverCallsign,
+		PrimaryTCP:    serverCallsign,
 		Aircraft:      make(map[string]*av.Aircraft),
 		METAR:         make(map[string]*av.METAR),
 		Controllers:   make(map[string]*av.Controller),
@@ -219,17 +219,17 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	return ss
 }
 
-func (s *State) GetStateForController(callsign string) *State {
+func (s *State) GetStateForController(tcp string) *State {
 	// Make a deep copy so that if the server is running on the same
 	// system, that the client doesn't see updates until they're explicitly
 	// sent. (And similarly, that any speculative client changes to the
 	// World state to improve responsiveness don't actually affect the
 	// server.)
 	state := deep.MustCopy(*s)
-	state.Callsign = callsign
+	state.PrimaryTCP = tcp
 
 	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
-	if config, ok := s.STARSFacilityAdaptation.ControllerConfigs[callsign]; ok && len(config.VideoMapNames) > 0 {
+	if config, ok := s.STARSFacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
 		state.ControllerVideoMaps = config.VideoMapNames
 		state.ControllerDefaultVideoMaps = config.DefaultMaps
 	} else {
@@ -277,7 +277,7 @@ func (ss *State) AircraftFromPartialCallsign(c string) *av.Aircraft {
 
 	var final []*av.Aircraft
 	for callsign, ac := range ss.Aircraft {
-		if ac.ControllingController == ss.Callsign && strings.Contains(callsign, c) {
+		if ac.ControllingController == ss.PrimaryTCP && strings.Contains(callsign, c) {
 			final = append(final, ac)
 		}
 	}
@@ -315,7 +315,7 @@ func (ss *State) GetAllReleaseDepartures() []*av.Aircraft {
 			if _, ok := ss.Aircraft[ac.Callsign]; !ok {
 				return false
 			}
-			return ss.DepartureController(ac, nil) == ss.Callsign
+			return ss.DepartureController(ac, nil) == ss.PrimaryTCP
 		})
 }
 
@@ -372,14 +372,14 @@ func (s *State) GetControllerVideoMaps() ([]string, []string) {
 }
 
 func (ss *State) GetInitialRange() float32 {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.Callsign]; ok && config.Range != 0 {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.PrimaryTCP]; ok && config.Range != 0 {
 		return config.Range
 	}
 	return ss.Range
 }
 
 func (ss *State) GetInitialCenter() math.Point2LL {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.Callsign]; ok && !config.Center.IsZero() {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.PrimaryTCP]; ok && !config.Center.IsZero() {
 		return config.Center
 	}
 	return ss.Center

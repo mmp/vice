@@ -461,7 +461,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, aircraft []*
 	for _, ac := range aircraft {
 		if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" {
 			if ap := ctx.ControlClient.DepartureAirports[fp.DepartureAirport]; ap != nil {
-				if ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.Callsign {
+				if ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.PrimaryTCP {
 					dep = append(dep, ac)
 				}
 			}
@@ -683,8 +683,7 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, aircr
 			for text.Len() < 16 {
 				text.WriteByte(' ')
 			}
-			ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]
-			text.WriteString(ctrl.SectorId)
+			text.WriteString(ctx.ControlClient.PrimaryTCP)
 		}
 		text.WriteByte('\n')
 	}
@@ -741,8 +740,8 @@ func (sp *STARSPane) drawSignOnList(ctx *panes.Context, pw [2]float32, style ren
 	}
 
 	var text strings.Builder
-	if ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]; ctrl != nil {
-		text.WriteString(ctrl.SectorId + " " + ctrl.SignOnTime.UTC().Format("1504")) // TODO: initials
+	if ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.PrimaryTCP]; ctrl != nil {
+		text.WriteString(ctx.ControlClient.PrimaryTCP + " " + ctrl.SignOnTime.UTC().Format("1504")) // TODO: initials
 		td.AddText(text.String(), pw, style)
 	}
 }

@@ -80,7 +80,7 @@ type ConfigNoSim struct {
 	InhibitDiscordActivity util.AtomicBool
 	NotifiedTargetGenMode  bool
 
-	Callsign string
+	PrimaryTCP string
 }
 
 type ConfigSim struct {
@@ -123,13 +123,13 @@ func (c *Config) Save(lg *log.Logger) error {
 func (gc *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
 	c *sim.ControlClient, saveSim bool, lg *log.Logger) bool {
 	gc.Sim = nil
-	gc.Callsign = ""
+	gc.PrimaryTCP = ""
 	if saveSim {
 		if sim, err := c.GetSerializeSim(); err != nil {
 			lg.Errorf("%v", err)
 		} else {
 			gc.Sim = sim
-			gc.Callsign = c.Callsign
+			gc.PrimaryTCP = c.PrimaryTCP
 		}
 	}
 
@@ -198,7 +198,7 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 			config.DisplayRoot = nil
 		}
 		if config.Version < 5 {
-			config.Callsign = ""
+			config.PrimaryTCP = ""
 		}
 		if config.Version < 24 {
 			config.AudioEnabled = true

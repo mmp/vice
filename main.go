@@ -259,7 +259,7 @@ func main() {
 				SetDiscordStatus(DiscordStatus{
 					TotalDepartures: controlClient.State.TotalDepartures,
 					TotalArrivals:   controlClient.State.TotalArrivals,
-					Callsign:        controlClient.State.Callsign,
+					Callsign:        controlClient.State.PrimaryTCP,
 					Start:           mgr.ConnectionStartTime(),
 				}, config, lg)
 			}

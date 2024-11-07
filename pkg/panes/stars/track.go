@@ -225,7 +225,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		if _, ok := sp.Aircraft[callsign]; !ok {
 			// First we've seen it; create the *AircraftState for it
 			sa := &AircraftState{}
-			if ac.TrackingController == ctx.ControlClient.Callsign || ac.ControllingController == ctx.ControlClient.Callsign {
+			if ac.TrackingController == ctx.ControlClient.PrimaryTCP || ac.ControllingController == ctx.ControlClient.PrimaryTCP {
 				sa.DatablockType = FullDatablock
 			}
 			sa.GlobalLeaderLineDirection = ac.GlobalLeaderLineDirection
@@ -272,22 +272,22 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	for _, event := range sp.events.Get() {
 		switch event.Type {
 		case sim.PointOutEvent:
-			if event.ToController == ctx.ControlClient.Callsign {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil {
-					sp.InboundPointOuts[event.Callsign] = ctrl.SectorId
-				} else {
-					sp.InboundPointOuts[event.Callsign] = ""
-				}
+			if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil {
+				sp.InboundPointOuts[event.Callsign] = ctrl.TCP
+			} else {
+				sp.InboundPointOuts[event.Callsign] = ""
+			}
+			if event.ToController == ctx.ControlClient.PrimaryTCP {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
 					state.DatablockType = FullDatablock
 				}
 			}
-			if event.FromController == ctx.ControlClient.Callsign {
-				if ctrl := ctx.ControlClient.Controllers[event.ToController]; ctrl != nil {
-					sp.OutboundPointOuts[event.Callsign] = ctrl.SectorId
-				} else {
-					sp.OutboundPointOuts[event.Callsign] = ""
-				}
+			if ctrl := ctx.ControlClient.Controllers[event.ToController]; ctrl != nil {
+				sp.OutboundPointOuts[event.Callsign] = ctrl.TCP
+			} else {
+				sp.OutboundPointOuts[event.Callsign] = ""
+			}
+			if event.FromController == ctx.ControlClient.PrimaryTCP {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
 					state.DatablockType = FullDatablock
 				}
@@ -295,13 +295,13 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 		case sim.AcknowledgedPointOutEvent:
 			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil && ctrl.SectorId == id {
+				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil && ctrl.TCP == id {
 					sp.Aircraft[event.Callsign].POFlashingEndTime = time.Now().Add(5 * time.Second)
 					delete(sp.OutboundPointOuts, event.Callsign)
 				}
 			}
 			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok && ctrl != nil && ctrl.SectorId == id {
+				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok && ctrl != nil && ctrl.TCP == id {
 					delete(sp.InboundPointOuts, event.Callsign)
 					if state, ok := sp.Aircraft[event.Callsign]; ok {
 						state.PointedOut = true
@@ -312,32 +312,32 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 		case sim.RejectedPointOutEvent:
 			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil && ctrl.SectorId == id {
+				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil && ctrl.TCP == id {
 					delete(sp.OutboundPointOuts, event.Callsign)
 					sp.RejectedPointOuts[event.Callsign] = nil
 					sp.Aircraft[event.Callsign].UNFlashingEndTime = time.Now().Add(5 * time.Second)
 				}
 			}
 			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok && ctrl != nil && ctrl.SectorId == id {
+				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok && ctrl != nil && ctrl.TCP == id {
 					delete(sp.InboundPointOuts, event.Callsign)
 				}
 			}
 
 		case sim.InitiatedTrackEvent:
-			if event.ToController == ctx.ControlClient.Callsign {
+			if event.ToController == ctx.ControlClient.PrimaryTCP {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
 					state.DatablockType = FullDatablock
 				}
 			}
 
 		case sim.OfferedHandoffEvent:
-			if event.ToController == ctx.ControlClient.Callsign {
+			if event.ToController == ctx.ControlClient.PrimaryTCP {
 				sp.playOnce(ctx.Platform, AudioInboundHandoff)
 			}
 
 		case sim.AcceptedHandoffEvent:
-			if event.FromController == ctx.ControlClient.Callsign && event.ToController != ctx.ControlClient.Callsign {
+			if event.FromController == ctx.ControlClient.PrimaryTCP && event.ToController != ctx.ControlClient.PrimaryTCP {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
@@ -346,7 +346,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 
 		case sim.AcceptedRedirectedHandoffEvent:
-			if event.FromController == ctx.ControlClient.Callsign && event.ToController != ctx.ControlClient.Callsign {
+			if event.FromController == ctx.ControlClient.PrimaryTCP && event.ToController != ctx.ControlClient.PrimaryTCP {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
@@ -534,7 +534,7 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 				} else if ctrl.Scope != "" {
 					positionSymbol = ctrl.Scope
 				} else {
-					positionSymbol = ctrl.SectorId[len(ctrl.SectorId)-1:]
+					positionSymbol = ctrl.TCP[len(ctrl.TCP)-1:]
 				}
 			}
 		}
@@ -858,7 +858,7 @@ func (sp *STARSPane) drawHistoryTrails(aircraft []*av.Aircraft, ctx *panes.Conte
 
 func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, ac *av.Aircraft) (alts [][2]int, outside bool) {
 	// Only report on ones that are tracked by us
-	if trk := sp.getTrack(ctx, ac); trk == nil || trk.TrackOwner != ctx.ControlClient.Callsign {
+	if trk := sp.getTrack(ctx, ac); trk == nil || trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
 		return
 	}
 
@@ -1220,7 +1220,7 @@ func (sp *STARSPane) getLeaderLineDirection(ac *av.Aircraft, ctx *panes.Context)
 	} else if state.LeaderLineDirection != nil {
 		// The direction was specified for the aircraft specifically
 		return *state.LeaderLineDirection
-	} else if trk.TrackOwner == ctx.ControlClient.Callsign {
+	} else if trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
 		// Tracked by us
 		return ps.LeaderLineDirection
 	} else if dir, ok := ps.ControllerLeaderLineDirections[trk.TrackOwner]; ok {

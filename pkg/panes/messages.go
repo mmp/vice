@@ -258,12 +258,12 @@ func (mp *MessagesPane) runCommands(ctx *Context) {
 
 	if mp.input.cmd[0] == '/' {
 		ctx.ControlClient.SendGlobalMessage(sim.GlobalMessage{
-			FromController: ctx.ControlClient.Callsign,
-			Message:        ctx.ControlClient.Callsign + ": " + mp.input.cmd[1:],
+			FromController: ctx.ControlClient.PrimaryTCP,
+			Message:        ctx.ControlClient.PrimaryTCP + ": " + mp.input.cmd[1:],
 		})
 		for i, line := range strings.Split(mp.input.cmd[1:], "\n") {
 			if i == 0 {
-				mp.messages = append(mp.messages, Message{contents: ctx.ControlClient.Callsign + ": " + line, global: true})
+				mp.messages = append(mp.messages, Message{contents: ctx.ControlClient.PrimaryTCP + ": " + line, global: true})
 			} else {
 				mp.messages = append(mp.messages, Message{contents: line, global: true})
 			}
@@ -337,7 +337,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 		response := strings.Join(transmissions, ", ")
 		var msg Message
 		if lastRadioType == av.RadioTransmissionContact {
-			ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.Callsign]
+			ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.PrimaryTCP]
 			fullName := ctrl.FullName
 			if ac := ctx.ControlClient.Aircraft[callsign]; ac != nil && ctx.ControlClient.State.IsDeparture(ac) {
 				// Always refer to the controller as "departure" for departing aircraft.
@@ -357,7 +357,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 	for _, event := range mp.events.Get() {
 		switch event.Type {
 		case sim.RadioTransmissionEvent:
-			if event.ToController == ctx.ControlClient.Callsign {
+			if event.ToController == ctx.ControlClient.PrimaryTCP {
 				if event.Callsign != lastRadioCallsign || event.RadioTransmissionType != lastRadioType {
 					if len(transmissions) > 0 {
 						addTransmissions()
@@ -371,7 +371,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 				unexpectedTransmission = unexpectedTransmission || (event.RadioTransmissionType == av.RadioTransmissionUnexpected)
 			}
 		case sim.GlobalMessageEvent:
-			if event.FromController != ctx.ControlClient.Callsign {
+			if event.FromController != ctx.ControlClient.PrimaryTCP {
 				for _, line := range strings.Split(event.Message, "\n") {
 					mp.messages = append(mp.messages, Message{contents: line, global: true})
 				}
