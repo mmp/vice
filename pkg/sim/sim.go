@@ -16,6 +16,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -27,15 +28,14 @@ import (
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/brunoga/deep"
-	getweather "github.com/checkandmate1/AirportWeatherData"
 	"github.com/mmp/imgui-go/v4"
 )
 
 const initialSimSeconds = 45
 
 var (
-	airportWind = make(map[string]av.Wind)
-	windRequest = make(map[string]chan getweather.MetarData)
+	airportWind sync.Map
+	windRequest = make(map[string]chan struct{})
 )
 
 type Configuration struct {
@@ -647,35 +647,36 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextColumn()
 			wind := c.Scenario.Wind
 			if c.LiveWeather {
-				var ok bool
-				if wind, ok = airportWind[c.Scenario.PrimaryAirport]; !ok {
+				if w, ok := airportWind.Load(c.Scenario.PrimaryAirport); !ok {
 					primary := c.Scenario.PrimaryAirport
-					wind, ok = getWind(primary, c.lg)
-					if !ok {
+					if wind, ok = getWind(primary, c.lg); !ok {
 						wind = c.Scenario.Wind
 					}
+				} else {
+					wind = w.(av.Wind)
 				}
 			}
+
 			var dir string
 			if wind.Direction == -1 {
 				dir = "Variable"
 			} else {
-				dir = fmt.Sprintf("%v", wind.Direction)
+				dir = fmt.Sprintf("%d", wind.Direction)
 			}
+
 			if wind.Gust > wind.Speed {
-				imgui.Text(fmt.Sprintf("%v at %d gust %d", dir, wind.Speed, wind.Gust))
+				imgui.Text(fmt.Sprintf("%s at %d gust %d", dir, wind.Speed, wind.Gust))
 			} else {
-				imgui.Text(fmt.Sprintf("%v at %d", dir, wind.Speed))
+				imgui.Text(fmt.Sprintf("%s at %d", dir, wind.Speed))
 			}
+
 			uiStartDisable(!c.LiveWeather)
 			refresh := imgui.Button("Refresh Weather")
 			if refresh {
-				clear(airportWind)
-				clear(windRequest)
+				refreshWeather()
 			}
 			uiEndDisable(!c.LiveWeather)
 			imgui.EndTable()
-
 		}
 	} else {
 		// Join remote
@@ -787,45 +788,61 @@ func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 }
 
 func getWind(airport string, lg *log.Logger) (av.Wind, bool) {
-	for airport, ch := range windRequest {
+	for key, done := range windRequest {
 		select {
-		case w := <-ch:
-			dirStr := fmt.Sprintf("%v", w.Wdir)
-			dir, err := strconv.Atoi(dirStr)
-			if err != nil {
-				lg.Errorf("Error converting %v to an int: %v", dirStr, err)
-			}
-			airportWind[airport] = av.Wind{
-				Direction: int32(dir),
-				Speed:     int32(w.Wspd),
-				Gust:      int32(w.Wgst),
-			}
-			delete(windRequest, airport)
+		case <-done:
+			delete(windRequest, key)
 		default:
 			// no wind yet
 		}
 	}
 
-	if _, ok := airportWind[airport]; ok {
+	if wind, ok := airportWind.Load(airport); ok {
 		// The wind is in the map
-		return airportWind[airport], true
+		return wind.(av.Wind), true
 	} else if _, ok := windRequest[airport]; ok {
-		// it's been requested but we don't have it yet
+		// it's been requested, but we don't have it yet
 		return av.Wind{}, false
 	} else {
 		// It hasn't been requested nor is in airportWind
-		c := make(chan getweather.MetarData)
-		windRequest[airport] = c
-		go func() {
-			weather, err := getweather.GetWeather(airport)
-			if len(err) != 0 {
+		done := make(chan struct{}, 1)
+		windRequest[airport] = done
+		go func(done chan<- struct{}, airport string) {
+			defer close(done)
+
+			weather, err := getWeather(airport)
+			if err != nil {
 				lg.Errorf("%v", err)
+				return
 			}
-			c <- weather
-		}()
+
+			airportWind.Store(airport, av.Wind{
+				Direction: int32(weather[0].GetWindDirection()),
+				Speed:     int32(weather[0].Wspd),
+				Gust:      int32(weather[0].Wgst),
+			})
+		}(done, airport)
+
 		return av.Wind{}, false
 	}
+}
 
+func refreshWeather() {
+	var wg sync.WaitGroup
+
+	// Wait for all active requests to complete.
+	wg.Add(len(windRequest))
+	for _, ch := range windRequest {
+		go func(done <-chan struct{}) {
+			defer wg.Done()
+
+			<-done
+		}(ch)
+	}
+	wg.Wait()
+	clear(windRequest)
+
+	airportWind.Clear()
 }
 
 func (c *NewSimConfiguration) OkDisabled() bool {
