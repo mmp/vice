@@ -181,25 +181,10 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 		}
 
 		for i := range metar {
-			dir := metar[i].GetWindDirection()
-
-			var wind string
-			if spd := metar[i].Wspd; spd <= 0 {
-				wind = "00000KT"
-			} else if dir == vrb {
-				wind = fmt.Sprintf("VRB%02dKT", spd)
-			} else {
-				wind = fmt.Sprintf("%03d%02d", dir, spd)
-				if gust := metar[i].Wgst; gust > 5 {
-					wind += fmt.Sprintf("G%02d", gust)
-				}
-				wind += "KT"
-			}
-
 			// Just provide the stuff that the STARS display shows
 			ss.METAR[metar[i].IcaoId] = &av.METAR{
 				AirportICAO: metar[i].IcaoId,
-				Wind:        wind,
+				Wind:        metar[i].getWindInfo(),
 				Altimeter:   fmt.Sprintf("A%d", int(metar[i].getAltimeter()*100)),
 			}
 		}

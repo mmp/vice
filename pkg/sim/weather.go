@@ -64,6 +64,29 @@ func (m METAR) GetWindDirection() int {
 	}
 }
 
+// getWindInfo returns the wind direction and speed in METAR text format.
+func (m METAR) getWindInfo() string {
+	if m.Wspd <= 0 {
+		return "00000KT"
+	}
+
+	if dir, ok := m.Wdir.(int); !ok {
+		return fmt.Sprintf("VRB%02dKT", m.Wspd)
+	} else {
+		wind := fmt.Sprintf("%03d%02d", dir, m.Wspd)
+
+		// According to Federal Meteorological Handbook No. 1 (FCM-H1-2019)
+		//   Gusts are indicated by rapid fluctuations in wind speed
+		//   with a variation of 10 knots or more between peaks and lulls.
+		// The Aviation Weather Center reports gust values according to the above or revised definitions.
+		if m.Wgst > 0 {
+			wind += fmt.Sprintf("G%02d", m.Wgst)
+		}
+
+		return wind + "KT"
+	}
+}
+
 // getAltimeter returns the altimeter setting in inches Hg
 func (m METAR) getAltimeter() float64 {
 	// Conversion formula (hectoPascal to Inch of Mercury): 29.92 * (hpa / 1013.2)
