@@ -5165,6 +5165,7 @@
       "frequency": 124850,
       "full_name": "Miami Approach",
       "scope_char": "V",
+      "default_airport": "KMIA",
       "sector_id": "1V"
     },
     "MIA_A_APP": {

@@ -6996,6 +6996,7 @@
       "frequency": 133000,
       "full_name": "Boston Departure",
       "scope_char": "D",
+      "default_airport": "KBOS",
       "sector_id": "1D"
     },
     "BOS_N_APP": {

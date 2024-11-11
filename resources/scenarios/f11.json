@@ -11504,6 +11504,7 @@
     "MCO_S_APP": {
       "frequency": 132650,
       "full_name": "Orlando Approach",
+      "default_airport": "KMCO",
       "scope_char": "S",
       "sector_id": "1S"
     },

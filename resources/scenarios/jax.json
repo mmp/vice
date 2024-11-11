@@ -1335,6 +1335,7 @@
     "JAX_S_APP": {
       "frequency": 124900,
       "full_name": "Jacksonville approach",
+      "default_airport": "KJAX",
       "scope_char": "S",
       "sector_id": "1S"
     },

@@ -6702,6 +6702,7 @@
       "frequency": 120150,
       "full_name": "New York approach",
       "scope_char": "A",
+      "default_airport": "KEWR",
       "sector_id": "4A",
       "facility": "N90"
     },
@@ -6709,6 +6710,7 @@
       "frequency": 119200,
       "full_name": "New York departure",
       "scope_char": "N",
+      "default_airport": "KEWR",
       "sector_id": "4N",
       "facility": "N90"
     },
@@ -6724,6 +6726,7 @@
       "full_name": "New York approach",
       "scope_char": "P",
       "sector_id": "4P",
+      "default_airport": "KEWR",
       "facility": "N90"
     },
     "EWR_M_APP": {

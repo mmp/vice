@@ -5230,12 +5230,14 @@
     "PHL_F1_APP": {
       "frequency": 124500,
       "full_name": "Philly approach",
+      "default_airport": "KPHL",
       "scope_char": "F",
       "sector_id": "6F"
     },
     "PHL_NA_APP": {
       "frequency": 128400,
       "full_name": "Philly approach",
+      "default_airport": "KPHL",
       "scope_char": "N",
       "sector_id": "6N"
     },
@@ -5247,6 +5249,7 @@
     },
     "PHL_SA_APP": {
       "frequency": 133870,
+      "default_airport": "KPHL",
       "full_name": "Philly approach",
       "scope_char": "S",
       "sector_id": "6S"

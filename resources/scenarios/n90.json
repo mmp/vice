@@ -10894,6 +10894,7 @@
     "JFK_G_APP": {
       "frequency": 128125,
       "full_name": "New York approach",
+      "default_airport": "KJFK",
       "scope_char": "G",
       "sector_id": "2G"
     },

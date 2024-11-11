@@ -374,28 +374,14 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 	}
 	if haveCRDA {
 		// Make sure all of the controllers involved have a valid default airport
-		check := func(ctrl *av.Controller) {
-			if ctrl.DefaultAirport == "" {
-				if ap, _, ok := strings.Cut(ctrl.Callsign, "_"); ok { // see if the first part of the callsign is an airport
-					if _, ok := sg.Airports["K"+ap]; ok {
-						ctrl.DefaultAirport = "K" + ap
-					} else {
-						e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Callsign)
-						return
-					}
-				}
-			}
-			if _, ok := sg.Airports[ctrl.DefaultAirport]; !ok {
-				e.ErrorString("%s: controller's \"default_airport\" %q is unknown", ctrl.Callsign, ctrl.DefaultAirport)
-			}
-		}
-
 		if ctrl, ok := sg.ControlPositions[s.SoloController]; ok {
-			check(ctrl)
+			if ctrl.DefaultAirport == "" {
+				e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Callsign)
+			}
 		}
 		for _, callsign := range s.SplitConfigurations.Splits() {
-			if ctrl, ok := sg.ControlPositions[callsign]; ok {
-				check(ctrl)
+			if ctrl, ok := sg.ControlPositions[callsign]; ok && ctrl.DefaultAirport == "" {
+				e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Callsign)
 			}
 		}
 	}

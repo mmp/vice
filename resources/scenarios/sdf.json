@@ -719,6 +719,7 @@
   "SDF_I_APP": {
     "frequency": 132325,
     "full_name": "Louisville Approach",
+    "default_airport": "KSDF",
     "scope_char": "I",
     "sector_id": "4I"
   },

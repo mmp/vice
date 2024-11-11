@@ -1152,6 +1152,7 @@
     "PIT_D_APP": {
       "frequency": 123950,
       "full_name": "Pittsburgh Approach",
+      "default_airport": "KPIT",
       "scope_char": "D",
       "sector_id": "1D"
     },

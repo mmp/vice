@@ -6579,6 +6579,7 @@
       "frequency": 133000,
       "full_name": "Boston Departure",
       "scope_char": "D",
+      "default_airport": "KBOS",
       "sector_id": "1D"
     },
     "BOS_N_APP": {
@@ -6597,6 +6598,7 @@
       "frequency": 126500,
       "full_name": "Boston Approach",
       "scope_char": "F",
+      "default_airport": "KBOS",
       "sector_id": "1F"
     },
     "BOS_I_APP": {
