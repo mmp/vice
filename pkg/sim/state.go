@@ -7,6 +7,7 @@ package sim
 import (
 	"fmt"
 	"log/slog"
+	"maps"
 	gomath "math"
 	"slices"
 	"strings"
@@ -19,7 +20,6 @@ import (
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/brunoga/deep"
-	getweather "github.com/checkandmate1/AirportWeatherData"
 )
 
 const serverCallsign = "__SERVER__"
@@ -174,37 +174,19 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 		}
 	}
 
-	realMETAR := func(icao string) {
-		weather, errors := getweather.GetWeather(icao)
-		if len(errors) != 0 {
-			lg.Errorf("%s: error getting weather: %+v", icao, errors)
+	realMETAR := func(icao []string) {
+		metar, err := getWeather(icao...)
+		if err != nil {
+			lg.Errorf("%s: error getting weather: %+v", strings.Join(icao, ", "), err)
 		}
 
-		dir := -1 // VRB by default
-		if d, ok := weather.Wdir.(int); ok {
-			dir = d
-		} else if d, ok := weather.Wdir.(float64); ok {
-			dir = int(d)
-		}
-
-		var wind string
-		if spd := weather.Wspd; spd <= 0 {
-			wind = "00000KT"
-		} else if dir == -1 {
-			wind = fmt.Sprintf("VRB%vKT", spd)
-		} else {
-			wind = fmt.Sprintf("%03d%02d", dir, spd)
-			if weather.Wgst > 5 {
-				wind += fmt.Sprintf("G%02d", weather.Wgst)
+		for i := range metar {
+			// Just provide the stuff that the STARS display shows
+			ss.METAR[metar[i].IcaoId] = &av.METAR{
+				AirportICAO: metar[i].IcaoId,
+				Wind:        metar[i].getWindInfo(),
+				Altimeter:   fmt.Sprintf("A%d", int(metar[i].getAltimeter()*100)),
 			}
-			wind += "KT"
-		}
-
-		// Just provide the stuff that the STARS display shows
-		ss.METAR[icao] = &av.METAR{
-			AirportICAO: icao,
-			Wind:        wind,
-			Altimeter:   "A" + getAltimiter(weather.RawMETAR),
 		}
 	}
 
@@ -212,6 +194,7 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	for name := range s.LaunchConfig.DepartureRates {
 		ss.DepartureAirports[name] = ss.Airports[name]
 	}
+
 	ss.ArrivalAirports = make(map[string]*av.Airport)
 	for _, airportRates := range s.LaunchConfig.InboundFlowRates {
 		for name := range airportRates {
@@ -220,13 +203,10 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 			}
 		}
 	}
+
 	if liveWeather {
-		for ap := range ss.DepartureAirports {
-			realMETAR(ap)
-		}
-		for ap := range ss.ArrivalAirports {
-			realMETAR(ap)
-		}
+		realMETAR(slices.Collect(maps.Keys(ss.DepartureAirports)))
+		realMETAR(slices.Collect(maps.Keys(ss.ArrivalAirports)))
 	} else {
 		for ap := range ss.DepartureAirports {
 			fakeMETAR(ap)
@@ -258,16 +238,6 @@ func (s *State) GetStateForController(callsign string) *State {
 	}
 
 	return &state
-}
-
-func getAltimiter(metar string) string {
-	for _, indexString := range []string{" A3", " A2"} {
-		index := strings.Index(metar, indexString)
-		if index != -1 && index+6 < len(metar) {
-			return metar[index+2 : index+6]
-		}
-	}
-	return ""
 }
 
 func (s *State) Activate(lg *log.Logger) {
