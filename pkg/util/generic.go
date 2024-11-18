@@ -7,7 +7,8 @@ package util
 import (
 	"encoding/json"
 	"iter"
-	"sort"
+	"maps"
+	"slices"
 	"time"
 
 	"github.com/mmp/vice/pkg/math"
@@ -223,18 +224,14 @@ func FlattenMap[K comparable, V any](m map[K]V) ([]K, []V) {
 
 // SortedMapKeys returns the keys of the given map, sorted from low to high.
 func SortedMapKeys[K constraints.Ordered, V any](m map[K]V) []K {
-	keys, _ := FlattenMap(m)
-	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
-	return keys
+	return slices.Sorted(maps.Keys(m))
 }
 
-// DuplicateMap returns a newly-allocated map that stores copies of all of
-// the values in the given map.
+// DuplicateMap returns a newly allocated map
+// that stores copies of all the values in the given map.
 func DuplicateMap[K comparable, V any](m map[K]V) map[K]V {
-	mnew := make(map[K]V)
-	for k, v := range m {
-		mnew[k] = v
-	}
+	mnew := make(map[K]V, len(m))
+	maps.Copy(mnew, m)
 	return mnew
 }
 
@@ -293,45 +290,37 @@ func DuplicateSlice[V any](s []V) []V {
 	return dupe
 }
 
-// DeleteSliceElement deletes the i'th element of the given slice,
-// returning the resulting slice.  Note that the provided slice s is
-// modified!
+// DeleteSliceElement deletes the i-th element of the given slice,
+// returning the resulting slice.
+//
+// Note that the provided slice s is modified!
 func DeleteSliceElement[V any](s []V, i int) []V {
-	// First move any subsequent elements down one position.
-	if i+1 < len(s) {
-		copy(s[i:], s[i+1:])
-	}
-	// And drop the now-unnecessary final element.
-	return s[:len(s)-1]
+	return slices.Delete(s, i, i+1)
 }
 
-// InsertSliceElement inserts the given value v at the index i in the slice
-// s, moving all elements after i one place forward.
+// InsertSliceElement inserts the given value v at the index i in the slice s,
+// moving all elements after i one place forward.
 func InsertSliceElement[V any](s []V, i int, v V) []V {
-	s = append(s, v) // just to grow the slice (unless i == len(s))
-	copy(s[i+1:], s[i:])
-	s[i] = v
-	return s
+	return slices.Insert(s, i, v)
 }
 
-// MapSlice returns the slice that is the result of applying the provided
-// xform function to all of the elements of the given slice.
+// MapSlice returns the slice that is the result of
+// applying the provided xform function to all the elements of the given slice.
 func MapSlice[F, T any](from []F, xform func(F) T) []T {
 	var to []T
-	for _, item := range from {
-		to = append(to, xform(item))
+	for k := range from {
+		to = append(to, xform(from[k]))
 	}
 	return to
 }
 
 // FilterSlice applies the given filter function pred to the given slice,
-// returning a new slice that only contains elements where pred returned
-// true.
+// returning a new slice that only contains elements where pred returned true.
 func FilterSlice[V any](s []V, pred func(V) bool) []V {
 	var filtered []V
-	for _, item := range s {
-		if pred(item) {
-			filtered = append(filtered, item)
+	for i := range s {
+		if pred(s[i]) {
+			filtered = append(filtered, s[i])
 		}
 	}
 	return filtered
