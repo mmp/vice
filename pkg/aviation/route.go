@@ -822,12 +822,15 @@ func MakeSTAR() *STAR {
 	}
 }
 
+const routePrintFormat = "%-13s: %s\n"
+
 func (s STAR) Print(name string) {
 	for tr, wps := range s.Transitions {
-		fmt.Printf("%-12s: %s\n", name+"."+tr, wps.Encode())
+		fmt.Printf(routePrintFormat, name+"."+tr, wps.Encode())
 	}
+
 	for rwy, wps := range s.RunwayWaypoints {
-		fmt.Printf("%-12s: %s\n", name+".RWY"+rwy, wps.Encode())
+		fmt.Printf(routePrintFormat, name+".RWY"+rwy, wps.Encode())
 	}
 }
 
