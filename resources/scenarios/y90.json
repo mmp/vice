@@ -571,12 +571,6 @@
   }
 },
     "control_positions": {
-        "BDL_C_APP": {
-            "frequency": 123950,
-            "full_name": "Bradley Approach",
-            "scope_char": "B",
-            "sector_id": "C1"
-        },
         "BOS_37_CTR": {
             "frequency": 134700,
             "full_name": "Boston Center",
@@ -727,7 +721,7 @@
                     "KBDL": 18
                 }
             },
-            "solo_controller": "BDL_C_APP",
+            "solo_controller": "BDL_B_APP",
             "multi_controllers": {
                 "default": {
                     "BDL_B_APP": {
@@ -762,7 +756,6 @@
             },
             "controllers": [
                 "BDL_TWR",
-                "BDL_C_APP",
                 "BDL_B_APP",
                 "BDL_F_APP",
                 "BDL_H_APP",
@@ -858,16 +851,13 @@
                     "KBDL": 15
                 }
             },
-            "solo_controller": "BDL_C_APP",
+            "solo_controller": "BDL_B_APP",
             "multi_controllers": {
                 "default": {
                     "BDL_B_APP": {
                         "primary": true,
                         "departures": [
                             "KBDL"
-                        ],
-                        "arrivals": [
-                            "DPK3"
                         ]
                     },
                     "BDL_F_APP": {
@@ -875,7 +865,8 @@
                     },
                     "BDL_H_APP": {
                         "backup": "BDL_B_APP",
-                        "departures": [ "KHFD" ]
+                        "departures": [ "KHFD" ],
+                        "arrivals": [ "DPK3" ]
                     },
                     "BDL_W_APP": {
                         "backup": "BDL_B_APP",
@@ -893,7 +884,6 @@
             },
             "controllers": [
                 "BDL_TWR",
-                "BDL_C_APP",
                 "BDL_B_APP",
                 "BDL_F_APP",
                 "BDL_H_APP",
