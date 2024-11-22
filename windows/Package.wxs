@@ -1,6 +1,6 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
-  <Package Name="Vice_Test" 
+  <Package Name="Vice" 
     Manufacturer="Matt Pharr" 
     UpgradeCode="A10E3C66-BA55-406A-B4E2-586D7108D622"
     Version="$(Version)">
