@@ -69,13 +69,19 @@ jobs:
       run:
         ./vice.exe -lint
 
-    - name: Add WIX to path
-      run: echo "C:\Program Files (x86)\WiX Toolset v3.14\bin" >> $GITHUB_PATH
-      shell: bash
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9
 
-    - name: Create installer
-      run: |
-        .\windows\makeinstaller.bat
+    - name: Install WiX
+      run: dotnet tool install --global wix
+
+    - name: Get Latest Git Tag
+      run: Write-Output ("VERSION=" + ((git describe --tags --abbrev=0) -replace 'v', '')) >> "$env:GITHUB_ENV"
+
+    - name: Build Installer
+      run: dotnet build ./windows/Vice-Installer.wixproj -r win-x64 -c Release -p:DefineConstants=Version=$VERSION -o out
 
     - name: Save executable
       uses: actions/upload-artifact@v4
@@ -87,14 +93,25 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Vice-installer.msi
-        path: Vice-installer.msi
+        path: ./out/en-US/Vice-installer.msi
 
-    - name: Rename installer for release (maybe)
-      if: startsWith(github.ref, 'refs/tags/')
-      run: move Vice-installer.msi 'Vice-${{ github.ref_name }}-installer.msi'
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
 
-    - name: Upload release (maybe)
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v1
+    runs-on: windows-latest
+
+    steps:
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: Vice-installer.msi
+
+    - name: Rename installer for release
+      run:
+        Rename-Item -Path "Vice-installer.msi" -NewName "Vice-${{ github.ref_name }}-installer.msi"
+
+    - name: Upload release
+      uses: softprops/action-gh-release@v2
       with:
         files: 'Vice-${{ github.ref_name }}-installer.msi'
