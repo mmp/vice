@@ -35,7 +35,7 @@
     <ComponentGroup Id="FontsId"
       Directory="INSTALLFOLDER"
       Subdirectory="resources\fonts">
-      <Files Include="!(bindpath.resources)\fonts\*.otf.zst" />
+      <Files Include="!(bindpath.resources)\fonts\*.zst" />
     </ComponentGroup>
 
     <ComponentGroup Id="VideoMapsId"
