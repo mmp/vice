@@ -81,7 +81,7 @@ jobs:
       run: Write-Output ("VERSION=" + ((git describe --tags --abbrev=0) -replace 'v', '')) >> "$env:GITHUB_ENV"
 
     - name: Build Installer
-      run: dotnet build ./windows/Vice-Installer.wixproj -r win-x64 -c Release -p:DefineConstants=Version=$VERSION -o out
+      run: dotnet build ./windows/Vice-Installer.wixproj -r win-x64 -c Release -p:DefineConstants=Version="$env:VERSION" -o out
 
     - name: Save executable
       uses: actions/upload-artifact@v4
