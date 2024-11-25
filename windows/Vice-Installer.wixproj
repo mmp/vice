@@ -1,0 +1,18 @@
+﻿<Project Sdk="WixToolset.Sdk/5.0.2">
+  <PropertyGroup>
+    <Platform>x64</Platform>
+    <Cultures>en-US</Cultures>
+    <OutputType>Package</OutputType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DefineConstants>Version=0.11.6</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="5.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <BindPath Include="..\resources">
+      <BindName>resources</BindName>
+    </BindPath>
+  </ItemGroup>
+</Project>

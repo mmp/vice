@@ -1,0 +1,89 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="Vice" 
+    Manufacturer="Matt Pharr" 
+    UpgradeCode="A10E3C66-BA55-406A-B4E2-586D7108D622"
+    Version="$(Version)">
+
+    <SummaryInformation Keywords="Installer" Description="Vice Installer" Manufacturer="[Manufacturer]" />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <ui:WixUI Id="InstallDir_NoLicense" InstallDirectory="INSTALLFOLDER" />
+
+    <ComponentGroup Id="Application" Directory="INSTALLFOLDER">
+      <File Id="Vice.exe" Source="..\Vice.exe" KeyPath="yes" />
+      <File Id="SDL2.dll" Source="SDL2.dll" KeyPath="yes" />
+      <File Id="libgcc_s_seh_1.dll" Source="libgcc_s_seh-1.dll" KeyPath="yes" />
+      <File Id="libstdc___6.dll" Source="libstdc++-6.dll" KeyPath="yes" />
+    </ComponentGroup>
+
+    <ComponentGroup Id="ResourcesFilesId" 
+      Directory="INSTALLFOLDER"
+      Subdirectory="resources">
+      <Files Include="!(bindpath.resources)\*.zst" />
+      <Files Include="!(bindpath.resources)\*.json" />
+      <File Source="!(bindpath.resources)\mva-fus3.zip" />
+    </ComponentGroup>
+
+    <ComponentGroup Id="AudioId"
+      Directory="INSTALLFOLDER"
+      Subdirectory="resources\audio">
+      <Files Include="!(bindpath.resources)\audio\*.mp3" />
+    </ComponentGroup>
+
+    <ComponentGroup Id="FontsId"
+      Directory="INSTALLFOLDER"
+      Subdirectory="resources\fonts">
+      <Files Include="!(bindpath.resources)\fonts\*.zst" />
+    </ComponentGroup>
+
+    <ComponentGroup Id="VideoMapsId"
+      Directory="INSTALLFOLDER"
+      Subdirectory="resources\videomaps">
+      <Files Include="!(bindpath.resources)\videomaps\*.gob" />
+      <Files Include="!(bindpath.resources)\videomaps\*.gob.zst" />
+    </ComponentGroup>
+
+    <ComponentGroup Id ="ScenariosId"
+      Directory="INSTALLFOLDER"
+      Subdirectory="resources\scenarios">
+      <Files Include="!(bindpath.resources)\scenarios\*.json" />
+
+      <Component Id="CleanScenariosFolder" Guid="511BE454-F80F-44FE-AF15-A5CD3E94293A">
+        <RemoveFile Name="*.*"
+          Directory="INSTALLFOLDER"
+          Subdirectory="resources\scenarios"
+          On="both" />
+      </Component>
+    </ComponentGroup>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="[ProductName]">
+        <Component Id="ApplicationShortcut" Guid="93fae481-57c0-499a-84c2-517067428f13">
+          <Shortcut Id="ApplicationStartMenuShortcut"
+            Name="!(bind.Property.ProductName)"
+            Description="ATC Simulator"
+            Target="[#Vice.exe]"
+            WorkingDirectory="INSTALLFOLDER" />
+
+          <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
+          <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder">
+      <Component Id="ApplicationShortcutDesktop">
+        <Shortcut Id="ApplicationDesktopShortcut"
+          Name="Vice ATC"
+          Description="Vice ATC Simulator"
+          Target="[#Vice.exe]"
+          WorkingDirectory="INSTALLFOLDER" />
+
+        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
+  </Package>
+</Wix>
