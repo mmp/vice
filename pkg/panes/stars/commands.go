@@ -1962,11 +1962,23 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			callsign = sp.targetGenLastCallsign
 			cmds = cmd
 		}
-		ac := ctx.ControlClient.AircraftFromPartialCallsign(callsign)
-		if ac == nil && sp.targetGenLastCallsign != "" {
+
+		matching := ctx.ControlClient.AircraftFromPartialCallsign(callsign)
+		if len(matching) > 1 {
+			status.err = ErrSTARSAmbiguousACID
+			return
+		}
+
+		var ac *av.Aircraft
+		if len(matching) == 1 {
+			ac = matching[0]
+		} else if len(matching) == 0 && sp.targetGenLastCallsign != "" {
 			// If a valid callsign wasn't given, try the last callsign used.
 			ac = ctx.ControlClient.Aircraft[sp.targetGenLastCallsign]
+			// But now we're going to run all of the given input as commands.
+			cmds = cmd
 		}
+
 		if ac != nil {
 			sp.runAircraftCommands(ctx, ac, cmds)
 			sp.targetGenLastCallsign = ac.Callsign

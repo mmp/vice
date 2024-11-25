@@ -270,22 +270,18 @@ func (ss *State) Locate(s string) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
-func (ss *State) AircraftFromPartialCallsign(c string) *av.Aircraft {
+func (ss *State) AircraftFromPartialCallsign(c string) []*av.Aircraft {
 	if ac, ok := ss.Aircraft[c]; ok {
-		return ac
+		return []*av.Aircraft{ac}
 	}
 
-	var final []*av.Aircraft
+	var matching []*av.Aircraft
 	for callsign, ac := range ss.Aircraft {
 		if ac.ControllingController == ss.PrimaryTCP && strings.Contains(callsign, c) {
-			final = append(final, ac)
+			matching = append(matching, ac)
 		}
 	}
-	if len(final) == 1 {
-		return final[0]
-	} else {
-		return nil
-	}
+	return matching
 }
 
 func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {

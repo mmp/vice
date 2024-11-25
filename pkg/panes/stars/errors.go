@@ -25,6 +25,7 @@ func NewSTARSError(msg string) *STARSError {
 }
 
 var (
+	ErrSTARSAmbiguousACID     = NewSTARSError("AMB ACID")
 	ErrSTARSBeaconMismatch    = NewSTARSError("BCN MISMATCH")
 	ErrSTARSCapacity          = NewSTARSError("CAPACITY")
 	ErrSTARSCommandFormat     = NewSTARSError("FORMAT")
