@@ -65,6 +65,7 @@ type State struct {
 	TotalOverflights         int
 	STARSFacilityAdaptation  STARSFacilityAdaptation
 	UserRestrictionAreas     []RestrictionArea
+	Instructors              map[string]bool
 
 	ControllerVideoMaps        []string
 	ControllerDefaultVideoMaps []string
@@ -81,6 +82,7 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 		METAR:         make(map[string]*av.METAR),
 		Controllers:   make(map[string]*av.Controller),
 		ERAMComputers: MakeERAMComputers(sg.STARSFacilityAdaptation.BeaconBank, lg),
+		Instructors:   make(map[string]bool),
 	}
 
 	if !isLocal {
@@ -270,18 +272,14 @@ func (ss *State) Locate(s string) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
-func (ss *State) AircraftFromPartialCallsign(c string) []*av.Aircraft {
-	if ac, ok := ss.Aircraft[c]; ok {
-		return []*av.Aircraft{ac}
+// Returns all aircraft that match the given suffix. If instructor is true,
+// returns all matching aircraft; otherwise only ones under the current
+// controller's control are considered for matching.
+func (ss *State) AircraftFromCallsignSuffix(suffix string, instructor bool) []*av.Aircraft {
+	match := func(ac *av.Aircraft) bool {
+		return strings.HasSuffix(ac.Callsign, suffix) && (instructor || ac.ControllingController == ss.PrimaryTCP)
 	}
-
-	var matching []*av.Aircraft
-	for callsign, ac := range ss.Aircraft {
-		if ac.ControllingController == ss.PrimaryTCP && strings.Contains(callsign, c) {
-			matching = append(matching, ac)
-		}
-	}
-	return matching
+	return slices.Collect(util.FilterIter(maps.Values(ss.Aircraft), match))
 }
 
 func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
@@ -456,4 +454,9 @@ func (ss *State) STARSComputer() *STARSComputer {
 func (ss *State) ERAMComputer() *ERAMComputer {
 	eram, _, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
 	return eram
+}
+
+func (ss *State) AmInstructor() bool {
+	_, ok := ss.Instructors[ss.PrimaryController]
+	return ok
 }

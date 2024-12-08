@@ -1957,13 +1957,14 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			sp.lockTargetGenMode = true
 			sp.previewAreaInput = ""
 		}
-		callsign, cmds, ok := strings.Cut(cmd, " ")
+		suffix, cmds, ok := strings.Cut(cmd, " ")
 		if !ok {
-			callsign = sp.targetGenLastCallsign
+			suffix = sp.targetGenLastCallsign
 			cmds = cmd
 		}
 
-		matching := ctx.ControlClient.AircraftFromPartialCallsign(callsign)
+		instructor := ctx.ControlClient.AmInstructor()
+		matching := ctx.ControlClient.AircraftFromCallsignSuffix(suffix, instructor)
 		if len(matching) > 1 {
 			status.err = ErrSTARSAmbiguousACID
 			return

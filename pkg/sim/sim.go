@@ -1268,6 +1268,7 @@ type WorldUpdate struct {
 	TotalDepartures  int
 	TotalArrivals    int
 	TotalOverflights int
+	Instructors      map[string]bool
 }
 
 func (s *Sim) GetWorldUpdate(token string, update *WorldUpdate) error {
@@ -1301,6 +1302,7 @@ func (s *Sim) GetWorldUpdate(token string, update *WorldUpdate) error {
 			TotalArrivals:        s.TotalArrivals,
 			TotalOverflights:     s.TotalOverflights,
 			UserRestrictionAreas: s.State.UserRestrictionAreas,
+			Instructors:          s.Instructors,
 		})
 
 		return err

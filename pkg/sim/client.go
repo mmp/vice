@@ -518,6 +518,7 @@ func (c *ControlClient) UpdateWorld(wu *WorldUpdate, eventStream *EventStream) {
 	c.State.TotalDepartures = wu.TotalDepartures
 	c.State.TotalArrivals = wu.TotalArrivals
 	c.State.TotalOverflights = wu.TotalOverflights
+	c.State.Instructors = wu.Instructors
 
 	// Important: do this after updating aircraft, controllers, etc.,
 	// so that they reflect any changes the events are flagging.
