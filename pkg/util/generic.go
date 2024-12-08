@@ -370,3 +370,17 @@ func AllPermutations[S ~[]E, E any](s S) iter.Seq[iter.Seq2[int, E]] {
 		}
 	}
 }
+
+// FilterIter applies uses the given predicate function to filter the elements
+// given by an iterator, returning an iterator over the filtered elements.
+func FilterIter[T any](it iter.Seq[T], pred func(T) bool) iter.Seq[T] {
+	return func(yield func(T) bool) {
+		for v := range it {
+			if pred(v) {
+				if !yield(v) {
+					return
+				}
+			}
+		}
+	}
+}

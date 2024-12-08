@@ -320,3 +320,15 @@ func TestHash(t *testing.T) {
 		t.Errorf("hash mismatch")
 	}
 }
+
+func TestFilterIter(t *testing.T) {
+	m := map[int]string{1: "one", 2: "two", 3: "three", 10: "ten", 0: "zero"}
+
+	threeCh := slices.Collect(FilterIter(maps.Values(m), func(s string) bool { return len(s) == 3 }))
+	if len(threeCh) != 3 {
+		t.Errorf("expected 3 3-letter strings: %+v", threeCh)
+	}
+	if !slices.Contains(threeCh, "one") || !slices.Contains(threeCh, "two") || !slices.Contains(threeCh, "ten") {
+		t.Errorf("didn't find all of \"one\", \"two\" and \"ten\" in 3 char strings: %+v", threeCh)
+	}
+}
