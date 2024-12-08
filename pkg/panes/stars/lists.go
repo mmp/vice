@@ -168,12 +168,12 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 		}
 	}
 
-	formatMETAR := func(ap string, metar *av.METAR) string {
+	formatAltimeter := func(metar *av.METAR) string {
 		alt := strings.TrimPrefix(metar.Altimeter, "A")
 		if len(alt) == 4 {
 			alt = alt[:2] + "." + alt[2:]
 		}
-		return stripK(ap) + " " + alt
+		return alt
 	}
 
 	x := pw[0]
@@ -232,7 +232,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 		}
 		if filter.All || filter.Altimeter {
 			if metar := ctx.ControlClient.METAR[ctx.ControlClient.PrimaryAirport]; metar != nil {
-				text += formatMETAR(ctx.ControlClient.PrimaryAirport, metar)
+				text += formatAltimeter(metar)
 			}
 		}
 		td.AddText(text, pw, listStyle)
@@ -313,32 +313,37 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 	}
 
 	if filter.All || filter.AirportWeather {
-		airports := util.SortedMapKeys(ctx.ControlClient.Airports)
-		// Sort via 1. primary? 2. tower list index, 3. alphabetic
-		sort.Slice(airports, func(i, j int) bool {
-			if airports[i] == ctx.ControlClient.PrimaryAirport {
-				return true
-			} else if airports[j] == ctx.ControlClient.PrimaryAirport {
-				return false
-			} else {
-				a, b := ctx.ControlClient.Airports[airports[i]], ctx.ControlClient.Airports[airports[j]]
-				ai := util.Select(a.TowerListIndex != 0, a.TowerListIndex, 1000)
-				bi := util.Select(b.TowerListIndex != 0, b.TowerListIndex, 1000)
-				if ai != bi {
-					return ai < bi
-				}
-			}
-			return airports[i] < airports[j]
-		})
+		airports := ctx.ControlClient.State.STARSFacilityAdaptation.Altimeters
+		if len(airports) == 0 {
+			airports = util.SortedMapKeys(ctx.ControlClient.Airports)
 
-		// 2-78: apparently it's limited to 6 airports; there are also
-		// some nuances about automatically-entered versus manually
-		// entered, stale entries, and a possible "*" for airports
-		// where "instrument approach statistics are maintained".
+			// Sort via 1. primary? 2. tower list index, 3. alphabetic
+			sort.Slice(airports, func(i, j int) bool {
+				if airports[i] == ctx.ControlClient.PrimaryAirport {
+					return true
+				} else if airports[j] == ctx.ControlClient.PrimaryAirport {
+					return false
+				} else {
+					a, b := ctx.ControlClient.Airports[airports[i]], ctx.ControlClient.Airports[airports[j]]
+					ai := util.Select(a.TowerListIndex != 0, a.TowerListIndex, 1000)
+					bi := util.Select(b.TowerListIndex != 0, b.TowerListIndex, 1000)
+					if ai != bi {
+						return ai < bi
+					}
+				}
+				return airports[i] < airports[j]
+			})
+
+			// 2-79: no more than 6 are displayed.
+			if len(airports) > 6 {
+				airports = airports[:6]
+			}
+		}
+
 		var altimeters []string
-		for _, icao := range airports {
-			if metar := ctx.ControlClient.METAR[icao]; metar != nil {
-				altimeters = append(altimeters, formatMETAR(icao, metar))
+		for _, ap := range airports {
+			if metar := ctx.ControlClient.METAR[ap]; metar != nil {
+				altimeters = append(altimeters, stripK(ap)+" "+formatAltimeter(metar)+"A") // 2-79: A -> automatic
 			}
 		}
 		for len(altimeters) >= 3 {

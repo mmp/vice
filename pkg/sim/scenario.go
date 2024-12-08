@@ -75,6 +75,7 @@ type STARSFacilityAdaptation struct {
 	Range               float32                          `json:"range"`
 	Scratchpads         map[string]string                `json:"scratchpads"`
 	SignificantPoints   map[string]SignificantPoint      `json:"significant_points"`
+	Altimeters          []string                         `json:"altimeters"`
 
 	VideoMapFile      string                        `json:"video_map_file"`
 	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`
@@ -1079,6 +1080,16 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		e.Pop()
 	}
 	e.Pop()
+
+	// Altimeters
+	if len(s.Altimeters) > 6 {
+		e.ErrorString("Only 6 airports may be specified for \"altimeters\"; %d were given", len(s.Altimeters))
+	}
+	for _, ap := range s.Altimeters {
+		if _, ok := sg.Airports[ap]; !ok {
+			e.ErrorString("Airport %q in \"altimeters\" not found in scenario group \"airports\"", ap)
+		}
+	}
 
 	// Hold for release validation
 	for airport, ap := range sg.Airports {
