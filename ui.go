@@ -1298,7 +1298,8 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		}
 	}
 
-	canLaunch := ctrl == lc.controlClient.PrimaryTCP || (lc.controlClient.State.MultiControllers == nil && ctrl == "")
+	canLaunch := ctrl == lc.controlClient.PrimaryTCP || (lc.controlClient.State.MultiControllers == nil && ctrl == "") ||
+		lc.controlClient.AmInstructor()
 	if canLaunch {
 		imgui.Text("Mode:")
 		imgui.SameLine()

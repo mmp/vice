@@ -2034,10 +2034,8 @@ func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if ctrl, ok := s.controllers[token]; !ok {
+	if _, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
-	} else if ctrl.Callsign != s.LaunchConfig.Controller {
-		return ErrNotLaunchController
 	} else {
 		// Update the next spawn time for any rates that changed.
 		for ap, rwyRates := range lc.DepartureRates {
