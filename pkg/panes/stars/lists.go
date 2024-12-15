@@ -187,21 +187,22 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	scale := ctx.DrawPixelScale
 
-	pIndicator := math.Add2f(pw, [2]float32{5, 0})
+	pIndicator := math.Add2f(pw, [2]float32{5 * scale, 0})
 	tv := math.EquilateralTriangleVertices(7)
 	for i := range tv {
-		tv[i] = math.Add2f(pIndicator, math.Scale2f(tv[i], -1))
+		tv[i] = math.Add2f(pIndicator, math.Scale2f(tv[i], -scale))
 	}
 	trid.AddTriangle(tv[0], tv[1], tv[2], ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor))
 	trid.GenerateCommands(cb)
 
 	square := [][2]float32{[2]float32{-5, -5}, [2]float32{5, -5}, [2]float32{5, 5}, [2]float32{-5, 5}}
-	square = util.MapSlice(square, func(p [2]float32) [2]float32 { return math.Add2f(p, pIndicator) })
+	square = util.MapSlice(square, func(p [2]float32) [2]float32 { return math.Add2f(math.Scale2f(p, scale), pIndicator) })
 	ld.AddLineLoop(ps.Brightness.Lists.ScaleRGB(STARSListColor), square)
 	ld.GenerateCommands(cb)
 
-	pw[1] -= 10
+	pw[1] -= 10 * scale
 
 	filter := ps.SSAList.Filter
 
