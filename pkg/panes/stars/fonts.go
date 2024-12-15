@@ -112,24 +112,12 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 	// information about the glyphs in the STARS fonts.
 
 	xres, yres := 2048, 1024
-
-	// Windows high DPI displays are different than Macs in that they
-	// expose the actual pixel count.  So we need to scale the font atlas
-	// accordingly. Here we just double up pixels since we want to maintain
-	// the realistic chunkiness of the original fonts.
-	doublePixels := runtime.GOOS == "windows" && p.DPIScale() > 1.5
-	scale := 1
-
-	if doublePixels {
-		xres *= 2
-		yres *= 2
-		scale = 2
-	}
-
 	atlas := image.NewRGBA(image.Rectangle{Max: image.Point{X: xres, Y: yres}})
 	x, y := 0, 0
 
 	var newFonts []*renderer.Font
+
+	scale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 
 	addFontToAtlas := func(fontName string, sf STARSFont) {
 		id := renderer.FontIdentifier{
@@ -137,22 +125,22 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 			Size: sf.Height,
 		}
 
-		f := renderer.MakeFont(scale*sf.Height, true /* mono */, id, nil)
+		f := renderer.MakeFont(int(scale) * sf.Height, true /* mono */, id, nil)
 		newFonts = append(newFonts, f)
 
-		if y+scale*sf.Height >= yres {
+		if y+sf.Height >= yres {
 			panic("STARS font atlas texture too small")
 		}
 
 		for ch, glyph := range sf.Glyphs {
-			dx := scale*glyph.Bounds[0] + 1 // pad
+			dx := glyph.Bounds[0] + 1 // pad
 			if x+dx > xres {
 				// Start a new line
 				x = 0
-				y += scale*sf.Height + 1
+				y += sf.Height + 1
 			}
 
-			glyph.rasterize(atlas, x, y, scale)
+			glyph.rasterize(atlas, x, y)
 			glyph.addToFont(ch, x, y, xres, yres, sf, f, scale)
 
 			x += dx
@@ -160,7 +148,7 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 
 		// Start a new line after finishing a font.
 		x = 0
-		y += scale*sf.Height + 1
+		y += sf.Height + 1
 	}
 
 	// Iterate over the fonts, create Font/Glyph objects for them, and copy
@@ -186,7 +174,7 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 	return newFonts
 }
 
-func (glyph STARSGlyph) rasterize(img *image.RGBA, x0, y0 int, scale int) {
+func (glyph STARSGlyph) rasterize(img *image.RGBA, x0, y0 int) {
 	// STARSGlyphs store their bitmaps as an array of uint32s, where each
 	// uint32 encodes a scanline and bits are set in it to indicate that
 	// the corresponding pixel should be drawn; thus, there are no
@@ -198,34 +186,30 @@ func (glyph STARSGlyph) rasterize(img *image.RGBA, x0, y0 int, scale int) {
 			mask := uint32(1 << (31 - x))
 			if line&mask != 0 {
 				on := color.RGBA{R: 255, G: 255, B: 255, A: 255}
-				for dy := range scale {
-					for dx := range scale {
-						img.SetRGBA(x0+scale*x+dx, y0+scale*y+dy, on)
-					}
-				}
+				img.SetRGBA(x0+x, y0+y, on)
 			}
 		}
 	}
 }
 
-func (glyph STARSGlyph) addToFont(ch, x, y, xres, yres int, sf STARSFont, f *renderer.Font, scale int) {
+func (glyph STARSGlyph) addToFont(ch, x, y, xres, yres int, sf STARSFont, f *renderer.Font, scale float32) {
 	g := &renderer.Glyph{
 		// Vertex coordinates for the quad: shift based on the offset
 		// associated with the glyph.  Also, count up from the bottom in y
 		// rather than drawing from the top.
-		X0: float32(glyph.Offset[0]),
-		X1: float32((glyph.Offset[0] + glyph.Bounds[0])),
-		Y0: float32(sf.Height - glyph.Offset[1] - glyph.Bounds[1]),
-		Y1: float32(sf.Height - glyph.Offset[1]),
+		X0: scale * float32(glyph.Offset[0]),
+		X1: scale * float32(glyph.Offset[0] + glyph.Bounds[0]),
+		Y0: scale * float32(sf.Height - glyph.Offset[1] - glyph.Bounds[1]),
+		Y1: scale * float32(sf.Height - glyph.Offset[1]),
 
 		// Texture coordinates: just the extent of where we rasterized the
 		// glyph in the atlas, rescaled to [0,1].
 		U0: float32(x) / float32(xres),
 		V0: float32(y) / float32(yres),
-		U1: (float32(x + scale*glyph.Bounds[0])) / float32(xres),
-		V1: (float32(y + scale*glyph.Bounds[1])) / float32(yres),
+		U1: (float32(x + glyph.Bounds[0])) / float32(xres),
+		V1: (float32(y + glyph.Bounds[1])) / float32(yres),
 
-		AdvanceX: float32(scale * glyph.StepX),
+		AdvanceX: scale * float32(glyph.StepX),
 		Visible:  true,
 	}
 	f.AddGlyph(ch, g)
