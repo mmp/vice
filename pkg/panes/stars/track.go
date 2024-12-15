@@ -1193,6 +1193,7 @@ func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, ctx *panes.Context
 			baseColor, brightness, _ := sp.trackDatablockColorBrightness(ctx, ac)
 			pac := transforms.WindowFromLatLongP(state.TrackPosition())
 			v := sp.getLeaderLineVector(ctx, sp.getLeaderLineDirection(ac, ctx))
+			v = math.Scale2f(v, ctx.DrawPixelScale)
 			ld.AddLine(pac, math.Add2f(pac, v), brightness.ScaleRGB(baseColor))
 		}
 	}

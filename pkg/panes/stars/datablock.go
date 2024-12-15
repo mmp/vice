@@ -975,7 +975,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		pac := transforms.WindowFromLatLongP(state.TrackPosition())
 		leaderLineDirection := sp.getLeaderLineDirection(ac, ctx)
 		vll := sp.getLeaderLineVector(ctx, leaderLineDirection)
-		pll := math.Add2f(pac, vll)
+		pll := math.Add2f(pac, math.Scale2f(vll, ctx.DrawPixelScale))
 		if math.Length2f(vll) == 0 {
 			// no leader line is being drawn; make sure that the datablock
 			// doesn't overlap the target track.
