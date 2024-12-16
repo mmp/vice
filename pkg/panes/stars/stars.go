@@ -345,7 +345,7 @@ func (b STARSBrightness) ScaleRGB(r renderer.RGB) renderer.RGB {
 // STARSPane proper
 
 func NewSTARSPane() *STARSPane {
-	return &STARSPane{}
+	return &STARSPane{AutoTrackDepartures: true}
 }
 
 func (sp *STARSPane) DisplayName() string { return "STARS" }
