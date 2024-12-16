@@ -1078,15 +1078,6 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *log.Logger) (heading float3
 const MaximumRate = 100000
 
 func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
-	// Clear out altitude restrictions from waypoints if we've made them.
-	if ar := nav.Altitude.Restriction; ar != nil {
-		if nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
-			lg.Debug("clearing earlier altitude restriction now that it is met",
-				slog.Any("flight_state", nav.FlightState), slog.Any("restriction", nav.Altitude.Restriction))
-			nav.Altitude.Restriction = nil
-		}
-	}
-
 	// Stay on the ground if we're still on the takeoff roll.
 	if nav.FlightState.InitialDepartureClimb && !nav.IsAirborne() {
 		lg.Debug("alt: continuing takeoff roll")
@@ -1110,10 +1101,6 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 		return *nav.Altitude.Cleared, MaximumRate
 	}
 
-	if ar := nav.Altitude.Restriction; ar != nil {
-		return ar.TargetAltitude(nav.FlightState.Altitude), MaximumRate
-	}
-
 	if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
 		if c.ETA < 5 || nav.FlightState.Altitude < c.Altitude {
@@ -1133,6 +1120,10 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 				return nav.FlightState.Altitude, 0
 			}
 		}
+	}
+
+	if ar := nav.Altitude.Restriction; ar != nil {
+		return ar.TargetAltitude(nav.FlightState.Altitude), MaximumRate
 	}
 
 	// Baseline: stay where we are
@@ -1161,6 +1152,13 @@ type WaypointCrossingConstraint struct {
 func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	if nav.Heading.Assigned != nil {
 		// ignore what's going on with the fixes
+		return nil
+	}
+
+	if nav.InterceptedButNotCleared() {
+		// Assuming this must be an altitude constraint on the approach,
+		// we'll ignore it until the aircraft has been cleared for the
+		// approach.
 		return nil
 	}
 
@@ -1606,7 +1604,7 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 			nav.Approach.PassedApproachFix = true
 		}
 
-		if wp.AltitudeRestriction != nil &&
+		if wp.AltitudeRestriction != nil && !nav.InterceptedButNotCleared() &&
 			(!nav.Approach.Cleared || wp.AltitudeRestriction.Range[0] < nav.FlightState.Altitude) {
 			// Don't climb if we're cleared approach and below the next
 			// fix's altitude.
@@ -2537,6 +2535,10 @@ func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
 		}
 		return distance, nil
 	}
+}
+
+func (nav *Nav) InterceptedButNotCleared() bool {
+	return nav.Approach.InterceptState == HoldingLocalizer && !nav.Approach.Cleared
 }
 
 ///////////////////////////////////////////////////////////////////////////
