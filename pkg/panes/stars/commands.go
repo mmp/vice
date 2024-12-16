@@ -1956,6 +1956,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		if cmd == "P" {
 			ctx.ControlClient.ToggleSimPause()
 			status.clear = true
+			return
 		}
 		if cmd == string(sp.TgtGenKey) {
 			sp.lockTargetGenMode = true
