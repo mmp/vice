@@ -64,7 +64,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		sp.multiFuncPrefix = string(input[0])
 		input = input[1:]
 	}
-	if sp.commandMode == CommandModeNone && len(input) > 0 && input[0] == ';' { // [TGT GEN]
+	if sp.commandMode == CommandModeNone && len(input) > 0 && input[0] == sp.TgtGenKey { // [TGT GEN]
 		sp.commandMode = CommandModeTargetGen
 		input = input[1:]
 	}
@@ -1949,14 +1949,21 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		}
 
 	case CommandModeTargetGen:
-		// Aircraft control command
+		// Special cases for non-control commands.
+		if cmd == "" {
+			return
+		}
 		if cmd == "P" {
 			ctx.ControlClient.ToggleSimPause()
 			status.clear = true
-		} else if cmd == ";" {
+		}
+		if cmd == string(sp.TgtGenKey) {
 			sp.lockTargetGenMode = true
 			sp.previewAreaInput = ""
+			return
 		}
+
+		// Otherwise looks like an actual control instruction .
 		suffix, cmds, ok := strings.Cut(cmd, " ")
 		if !ok {
 			suffix = sp.targetGenLastCallsign

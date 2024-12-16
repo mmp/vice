@@ -145,6 +145,7 @@ type STARSPane struct {
 
 	// Various UI state
 	FlipNumericKeypad bool
+	TgtGenKey         byte
 
 	FontSelection int
 
@@ -386,6 +387,10 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	sp.lastTrackUpdate = time.Time{} // force immediate update at start
 	sp.lastHistoryTrackUpdate = time.Time{}
 
+	if sp.TgtGenKey == 0 {
+		sp.TgtGenKey = ';'
+	}
+
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
 
@@ -578,6 +583,15 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Lock display", &sp.LockDisplay)
 
 	imgui.Checkbox("Invert numeric keypad", &sp.FlipNumericKeypad)
+
+	if imgui.BeginComboV("TGT GEN Key", string(sp.TgtGenKey), imgui.ComboFlagsHeightLarge) {
+		for _, key := range []byte{';', ','} {
+			if imgui.SelectableV(string(key), key == sp.TgtGenKey, 0, imgui.Vec2{}) {
+				sp.TgtGenKey = key
+			}
+		}
+		imgui.EndCombo()
+	}
 
 	imgui.Checkbox("Enable additional sound effects", &config.AudioEnabled)
 
