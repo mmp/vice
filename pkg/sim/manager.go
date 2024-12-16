@@ -116,6 +116,8 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	sm.mu.Unlock(sm.lg)
 
 	go func() {
+		defer sm.lg.CatchAndReportCrash()
+
 		// Terminate idle Sims after 4 hours, but not unnamed Sims, since
 		// they're local and not running on the server.
 		for !sm.SimShouldExit(sim) {
@@ -125,6 +127,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 
 		sm.lg.Infof("%s: terminating sim after %s idle", sim.Name, sim.IdleTime())
 		sm.mu.Lock(sm.lg)
+		defer sm.mu.Unlock(sm.lg)
 		delete(sm.activeSims, sim.Name)
 		// FIXME: these don't get cleaned up during Sim SignOff()
 		for tok, s := range sm.controllerTokenToSim {
@@ -132,7 +135,6 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 				delete(sm.controllerTokenToSim, tok)
 			}
 		}
-		sm.mu.Unlock(sm.lg)
 	}()
 
 	*result = NewSimResult{

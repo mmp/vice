@@ -6,19 +6,28 @@ package log
 
 import (
 	"fmt"
+	"io"
 	"log/slog"
+	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
+	"strings"
 	"time"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+const CrashReportServer = "localhost"
+const CrashReportPort = "6504"
+const CrashReportPath = "/crash"
+const CrashReportURL = "http://" + CrashReportServer + ":" + CrashReportPort + CrashReportPath
+
 type Logger struct {
 	*slog.Logger
 	LogFile string
+	LogDir  string
 	Start   time.Time
 }
 
@@ -74,6 +83,7 @@ func New(server bool, level string, dir string) *Logger {
 	l := &Logger{
 		Logger:  slog.New(h),
 		LogFile: w.Filename,
+		LogDir:  dir,
 		Start:   time.Now(),
 	}
 
@@ -102,6 +112,10 @@ func New(server bool, level string, dir string) *Logger {
 			slog.String("Path", bi.Path),
 			slog.Group("Dependencies", deps...),
 			slog.Group("Settings", settings...))
+	}
+
+	if server {
+		go l.launchCrashServer()
 	}
 
 	return l
@@ -180,5 +194,96 @@ func (l *Logger) With(args ...any) *Logger {
 		Logger:  l.Logger.With(args...),
 		LogFile: l.LogFile,
 		Start:   l.Start,
+	}
+}
+
+func (l *Logger) CatchAndReportCrash() any {
+	// Janky way to check if we're running under the debugger.
+	if dlv, ok := os.LookupEnv("_"); ok && strings.HasSuffix(dlv, "/dlv") {
+		return nil
+	}
+
+	err := recover()
+	if err != nil {
+		l.Errorf("Crashed: %v", err)
+
+		// Format the report information
+		report := fmt.Sprintf("Crashed: %v\n", err)
+		report += "Sys: " + runtime.GOARCH + "/" + runtime.GOOS + "\n"
+
+		if bi, ok := debug.ReadBuildInfo(); ok {
+			for _, setting := range bi.Settings {
+				report += setting.Key + ": " + setting.Value + "\n"
+			}
+		}
+		report += string(debug.Stack())
+
+		// Print it to stdout
+		fmt.Println(report)
+
+		// Try to save it to disk locally
+		fn := filepath.Join(l.LogDir, "crash-"+time.Now().Format(time.RFC3339)+".txt")
+		_ = os.WriteFile(fn, []byte(report), 0o600)
+
+		// And pass it along to the crash report server.
+		l.postCrashReport(report)
+	}
+
+	return err
+}
+
+func (l *Logger) postCrashReport(report string) {
+	req, err := http.NewRequest("POST", CrashReportURL, strings.NewReader(report))
+	if err != nil {
+		l.Errorf("Error creating request: %v", err)
+		return
+	}
+
+	client := &http.Client{Timeout: 5 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		l.Errorf("Error sending request: %v", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Handle the response
+	if responseBody, err := io.ReadAll(resp.Body); err != nil {
+		l.Errorf("Error reading response: %v", err)
+	} else {
+		l.Infof("Response: %s", responseBody)
+	}
+}
+
+func (l *Logger) launchCrashServer() {
+	mux := http.NewServeMux()
+	mux.HandleFunc(CrashReportPath, func(w http.ResponseWriter, r *http.Request) {
+		defer r.Body.Close()
+
+		if r.Method != http.MethodPost {
+			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+			return
+		}
+
+		lr := &io.LimitedReader{R: r.Body, N: 4 * 1024}
+		body, err := io.ReadAll(lr)
+		if err != nil {
+			http.Error(w, "Failed to read request body", http.StatusInternalServerError)
+			return
+		}
+
+		l.Info("Received crash report", slog.String("crash", string(body)))
+
+		fn := filepath.Join(l.LogDir, "crash-"+time.Now().Format(time.RFC3339)+".txt")
+		_ = os.WriteFile(fn, []byte(body), 0o600)
+	})
+
+	srv := &http.Server{
+		Addr:    ":" + CrashReportPort,
+		Handler: mux,
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
+		l.Errorf("Failed to start HTTP server for crash reports: %v\n", err)
 	}
 }

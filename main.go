@@ -16,7 +16,6 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"runtime"
-	"runtime/debug"
 	"strings"
 	"time"
 
@@ -146,19 +145,7 @@ func main() {
 		var render renderer.Renderer
 		var plat platform.Platform
 
-		// Catch any panics so that we can put up a dialog box and hopefully
-		// get a bug report.
-		if os.Getenv("DELVE_GOVERSION") == "" { // hack: don't catch panics when debugging..
-			defer func() {
-				if err := recover(); err != nil {
-					lg.Error("Caught panic!", slog.String("stack", string(debug.Stack())))
-					ShowFatalErrorDialog(render, plat, lg,
-						"Unfortunately an unexpected error has occurred and vice is unable to recover.\n"+
-							"Apologies! Please do file a bug and include the vice.log file for this session\nso that "+
-							"this bug can be fixed.\n\nError: %v", err)
-				}
-			}()
-		}
+		defer lg.CatchAndReportCrash()
 
 		///////////////////////////////////////////////////////////////////////////
 		// Global initialization and set up. Note that there are some subtle
