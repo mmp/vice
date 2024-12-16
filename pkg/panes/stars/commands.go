@@ -68,6 +68,17 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		sp.commandMode = CommandModeTargetGen
 		input = input[1:]
 	}
+
+	// Enforce the 32-character-per-line limit
+	if lines := strings.Fields(sp.previewAreaInput); len(lines) > 0 {
+		if len(lines[len(lines)-1]) > 32 {
+			lines[len(lines)-1] = lines[len(lines)-1][:32] // chop to 32 characters
+			sp.previewAreaInput = strings.Join(lines, " ")
+			sp.displayError(ErrSTARSCapacity, ctx)
+			return
+		}
+	}
+
 	sp.previewAreaInput += strings.Replace(input, "`", STARSTriangleCharacter, -1)
 
 	ps := sp.currentPrefs()
