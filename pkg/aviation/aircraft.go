@@ -281,6 +281,10 @@ func (ac *Aircraft) ExpectApproach(id string, ap *Airport, lg *log.Logger) []Rad
 	return ac.transmitResponse(resp)
 }
 
+func (ac *Aircraft) AssignedApproach() string {
+	return ac.Nav.Approach.AssignedId
+}
+
 func (ac *Aircraft) AtFixCleared(fix, approach string) []RadioTransmission {
 	return ac.transmitResponse(ac.Nav.AtFixCleared(fix, approach))
 }

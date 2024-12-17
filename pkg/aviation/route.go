@@ -31,6 +31,7 @@ type Waypoint struct {
 	NoPT                bool                 `json:"nopt,omitempty"`
 	Handoff             bool                 `json:"handoff,omitempty"`
 	PointOut            string               `json:"pointout,omitempty"`
+	ClearApproach       bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
 	FlyOver             bool                 `json:"flyover,omitempty"`
 	Delete              bool                 `json:"delete,omitempty"`
 	Arc                 *DMEArc              `json:"arc,omitempty"`
@@ -70,6 +71,9 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.PointOut != "" {
 		attrs = append(attrs, slog.String("pointout", wp.PointOut))
+	}
+	if wp.ClearApproach {
+		attrs = append(attrs, slog.Bool("clear_approach", wp.ClearApproach))
 	}
 	if wp.FlyOver {
 		attrs = append(attrs, slog.Bool("fly_over", wp.FlyOver))
@@ -157,6 +161,9 @@ func (wslice WaypointArray) Encode() string {
 		}
 		if w.PointOut != "" {
 			s += "/po" + w.PointOut
+		}
+		if w.ClearApproach {
+			s += "/clearapp"
 		}
 		if w.FlyOver {
 			s += "/flyover"
@@ -308,7 +315,7 @@ func (w WaypointArray) CheckApproach(e *util.ErrorLogger, controllers map[string
 	*/
 }
 
-func (w WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Controller) {
+func (w WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Controller, approachAssigned bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	w.checkBasics(e, ctrl)
@@ -318,6 +325,9 @@ func (w WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Contro
 		e.Push(wp.Fix)
 		if wp.IAF || wp.IF || wp.FAF {
 			e.ErrorString("Unexpected IAF/IF/FAF specification in arrival")
+		}
+		if wp.ClearApproach && !approachAssigned {
+			e.ErrorString("/clearapp specified but no approach has been assigned")
 		}
 		e.Pop()
 	}
@@ -429,6 +439,8 @@ func parseWaypoints(str string) (WaypointArray, error) {
 			} else {
 				if f == "ho" {
 					wp.Handoff = true
+				} else if f == "clearapp" {
+					wp.ClearApproach = true
 				} else if f == "flyover" {
 					wp.FlyOver = true
 				} else if f == "delete" {

@@ -792,7 +792,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				// us a repeated first fix, but this way we can check
 				// compliance with restrictions at that fix...
 				ewp := append([]Waypoint{ar.Waypoints[len(ar.Waypoints)-1]}, wp...)
-				WaypointArray(ewp).CheckArrival(e, controlPositions)
+				approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
+				WaypointArray(ewp).CheckArrival(e, controlPositions, approachAssigned)
 
 				e.Pop()
 			}
@@ -804,7 +805,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		ar.Waypoints[i].OnSTAR = true
 	}
 
-	ar.Waypoints.CheckArrival(e, controlPositions)
+	approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
+	ar.Waypoints.CheckArrival(e, controlPositions, approachAssigned)
 
 	for arrivalAirport, airlines := range ar.Airlines {
 		e.Push("Arrival airport " + arrivalAirport)

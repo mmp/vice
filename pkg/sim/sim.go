@@ -1517,6 +1517,10 @@ func (s *Sim) updateState() {
 					}
 				}
 
+				if passedWaypoint.ClearApproach {
+					ac.ClearedApproach(ac.AssignedApproach(), s.lg) // ignore readback
+				}
+
 				if passedWaypoint.Delete {
 					s.lg.Info("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
 					s.State.DeleteAircraft(ac)
