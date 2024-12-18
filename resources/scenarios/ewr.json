@@ -5614,12 +5614,13 @@
   "FLOSI4": {
     "arrivals": [
       {
-        "waypoints": "ACOVE TALCO WEETS/ho HELON FLOSI CRANK/a7000 SHAFF SAX PHLBO HOKIR/h180",
+        "waypoints": "HELON FLOSI/ho CRANK/a7000 SHAFF SAX PHLBO HOKIR/h180",
         "cruise_altitude": 39000,
         "star": "FLOSI4",
         "initial_controller": "BOS_CTR",
-        "initial_altitude": 18000,
-        "initial_speed": 300,
+        "initial_altitude": 10000,
+        "initial_speed": 250,
+        "assigned_altitude": 7000,
         "expect_approach": null,
         "airlines": {
           "KEWR": [
@@ -6480,12 +6481,11 @@
   "South": {
     "arrivals": [
       {
-        "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h25",
+        "waypoints": "DYLIN MERSR METRO MARRT/a5000 N040.45.48.614,W074.33.29.179/h60/ho",
         "cruise_altitude": 39000,
         "star": "PHLBO4",
         "initial_controller": "EWR_P_APP",
         "initial_altitude": 6000,
-        "assigned_altitude": 6000,
         "initial_speed": 250,
         "expect_approach": "I2L",
         "airlines": {
@@ -6558,7 +6558,7 @@
         }
       }
     ]
-  },
+   },
   "South29": {
     "arrivals": [
       {
@@ -7542,10 +7542,10 @@
       ],
       "arrivals": {
         "FLOSI4": {
-          "KEWR": 14
+          "KEWR": 10
         },
         "South": {
-          "KEWR": 28
+          "KEWR": 30
         }
       },
       "solo_controller": "EWR_A_APP",
