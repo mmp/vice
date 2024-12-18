@@ -29,6 +29,8 @@ type State struct {
 	METAR       map[string]*av.METAR
 	Controllers map[string]*av.Controller
 
+	ConsolidatedTCPs map[string][]string
+
 	DepartureAirports map[string]*av.Airport
 	ArrivalAirports   map[string]*av.Airport
 
@@ -59,7 +61,7 @@ type State struct {
 	DepartureRunways         []ScenarioGroupDepartureRunway
 	ArrivalRunways           []ScenarioGroupArrivalRunway
 	Scratchpads              map[string]string
-	InboundFlows             map[string]InboundFlow
+	InboundFlows             map[string]*InboundFlow
 	TotalDepartures          int
 	TotalArrivals            int
 	TotalOverflights         int

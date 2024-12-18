@@ -4775,7 +4775,7 @@
         "assigned_altitude": 8000,
         "cruise_altitude": 39000,
         "initial_altitude": 9000,
-        "initial_controller": "NY_A_CTR",
+        "initial_controller": "N26",
         "initial_speed": 250,
         "spawn": "LRP",
         "star": "BOJID4"
@@ -4793,7 +4793,7 @@
                 "assigned_altitude": 9000,
                 "initial_speed": 300,
                 "description": "KWRI HAR5 arrivals",
-                "initial_controller": "DC_CTR"
+                "initial_controller": "W32"
             }
           ]
       },
@@ -4839,7 +4839,7 @@
         "cruise_altitude": 39000,
         "expect_approach": "27R",
         "initial_altitude": 6000,
-        "initial_controller": "PHL_NA_APP",
+        "initial_controller": "6N",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "BOJID4",
@@ -4877,7 +4877,7 @@
         "cruise_altitude": 37000,
         "expect_approach": "27R",
         "initial_altitude": 6000,
-        "initial_controller": "PHL_SA_APP",
+        "initial_controller": "6S",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "PAATS4",
@@ -4915,7 +4915,7 @@
         "cruise_altitude": 37000,
         "expect_approach": "17Z",
         "initial_altitude": 8000,
-        "initial_controller": "PHL_NA_APP",
+        "initial_controller": "6N",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "BOJID4",
@@ -4966,7 +4966,7 @@
           ]
         },
         "initial_altitude": 9000,
-        "initial_controller": "DC_CTR",
+        "initial_controller": "W32",
         "initial_speed": 250,
         "star": "JIIMS4",
         "spawn": "WNSTN@0.7"
@@ -5001,7 +5001,7 @@
         "assigned_altitude": 10000,
         "cruise_altitude": 37000,
         "initial_altitude": 10000,
-        "initial_controller": "DC_CTR",
+        "initial_controller": "W32",
         "initial_speed": 250,
         "star": "PAATS4",
         "spawn": "CANNY"
@@ -5031,7 +5031,7 @@
         },
         "assigned_altitude": 10000,
         "initial_altitude": 10000,
-        "initial_controller": "NY_A_CTR",
+        "initial_controller": "N26",
         "initial_speed": 250,
         "star": "SPUDS7",
         "spawn": "ETX"
@@ -5049,7 +5049,7 @@
                 "initial_altitude": 24000,
                 "initial_speed": 350,
                 "description": "KLGA PROUD2 arrivals",
-                "initial_controller": "DC_CTR"
+                "initial_controller": "W32"
             }
       ] },
         "PHLBO4/JAKIE4":  { "overflights": [
@@ -5065,7 +5065,7 @@
                 "initial_altitude": 24000,
                 "initial_speed": 350,
                 "description": "KEWR PHLBO4 arrivals",
-                "initial_controller": "DC_CTR"
+                "initial_controller": "W32"
             },
             {
                 "airlines": [
@@ -5078,7 +5078,7 @@
                 "assigned_altitude": 13000,
                 "initial_speed": 300,
                 "description": "KTEB JAKIE4 arrivals",
-                "initial_controller": "DC_CTR"
+                "initial_controller": "W32"
             }
         ] },
         "BRAND1":  { "overflights": [
@@ -5090,7 +5090,7 @@
                 "initial_altitude": 18000,
                 "initial_speed": 250,
                 "description": "KEWR BRAND1 arrivals",
-                "initial_controller": "DC_CTR"
+                "initial_controller": "W32"
             }
         ] },
         "V29.Low":  { "overflights": [
@@ -5103,7 +5103,7 @@
                 "assigned_altitude": 9000,
                 "initial_speed": 150,
                 "description": "V29 overflights",
-                "initial_controller": "DC_CTR"
+                "initial_controller": "W32"
             }
         ] },
         "V29.High":  { "overflights": [
@@ -5117,7 +5117,7 @@
                 "assigned_altitude": 11000,
                 "initial_speed": 150,
                 "description": "V29 overflights",
-                "initial_controller": "DC_CTR"
+                "initial_controller": "W32"
             }
         ] },
         "ABE-ACY":  { "overflights": [
@@ -5130,7 +5130,7 @@
                 "assigned_altitude": 5000,
                 "initial_speed": 150,
                 "description": "ABE-ACY flights",
-                "initial_controller": "ABE_APP"
+                "initial_controller": "41A"
             }
         ] },
         "RDG-WRI":  { "overflights": [
@@ -5143,7 +5143,7 @@
                 "assigned_altitude": 3000,
                 "initial_speed": 150,
                 "description": "RDG-WRI area flights (slow)",
-                "initial_controller": "RDG_APP"
+                "initial_controller": "71X"
             },
             {
                 "airlines": [
@@ -5154,7 +5154,7 @@
                 "assigned_altitude": 5000,
                 "initial_speed": 250,
                 "description": "RDG-WRI area flights (fast)",
-                "initial_controller": "RDG_APP"
+                "initial_controller": "71X"
             }
         ] }
     },
@@ -5163,7 +5163,7 @@
       "frequency": 119650,
       "full_name": "Allentown approach",
       "scope_char": "F",
-      "sector_id": "SF",
+      "sector_id": "1A",
       "facility_id": "4"
     },
     "DC_CTR": {
@@ -5231,27 +5231,23 @@
       "frequency": 124500,
       "full_name": "Philly approach",
       "default_airport": "KPHL",
-      "scope_char": "F",
       "sector_id": "6F"
     },
     "PHL_NA_APP": {
       "frequency": 128400,
       "full_name": "Philly approach",
       "default_airport": "KPHL",
-      "scope_char": "N",
       "sector_id": "6N"
     },
     "PHL_ND_DEP": {
       "frequency": 124350,
       "full_name": "Philly departure",
-      "scope_char": "E",
       "sector_id": "5E"
     },
-    "PHL_SA_APP": {
+    "Philadelphia Approach (South)": {
       "frequency": 133870,
       "default_airport": "KPHL",
       "full_name": "Philly approach",
-      "scope_char": "S",
       "sector_id": "6S"
     },
     "PHL_TWR": {
@@ -5263,14 +5259,12 @@
     "RDG_APP": {
       "frequency": 125150,
       "full_name": "Reading approach",
-      "scope_char": "X",
-      "sector_id": "RX",
+      "sector_id": "1X",
       "facility_id": "7"
     },
     "WRI_APP": {
       "frequency": 126470,
       "full_name": "McGuire approach",
-      "scope_char": "5",
       "sector_id": "1Y",
       "facility_id": "5"
     }
@@ -5319,15 +5313,15 @@
           "KPHL": 20
         }
       },
-      "solo_controller": "PHL_F1_APP",
+      "solo_controller": "6F",
       "center": "N039.55.00.306,W074.59.15.972",
       "range": 30,
       "controllers": [
-        "PHL_TWR",
-        "PHL_NA_APP",
-        "PHL_SA_APP",
-        "DC_CTR",
-        "NY_A_CTR"
+        "6A",
+        "6N",
+        "6S",
+        "W32",
+        "N26"
       ],
       "default_maps": [ "PHL West" ],
       "wind": {
@@ -5378,24 +5372,24 @@
         "ABE-ACY": { "overflights": 5 },
         "RDG-WRI": { "overflights": 5 }
       },
-      "solo_controller": "PHL_NA_APP",
+      "solo_controller": "6N",
       "multi_controllers": {
           "default" : {
-              "PHL_NA_APP": { "primary": true, "inbound_flows": [ "BOJID4/HAR5", "SPUDS7", "ABE-ACY", "RDG-WRI" ] },
-              "PHL_SA_APP": { "backup": "PHL_NA_APP", "inbound_flows": [ "JIIMS4", "PAATS4", "V29.Low" ] },
-              "PHL_F1_APP": { "backup": "PHL_NA_APP" },
-              "PHL_ND_DEP": { "backup": "PHL_NA_APP", "departures": ["KPHL"], "inbound_flows": [ "PHLBO4/JAKIE4", "BRAND1", "V29.High" ] }
+              "6N": { "primary": true, "inbound_flows": [ "BOJID4/HAR5", "SPUDS7", "ABE-ACY", "RDG-WRI" ] },
+              "6S": { "backup": "6N", "inbound_flows": [ "JIIMS4", "PAATS4", "V29.Low" ] },
+              "6F": { "backup": "6N" },
+              "5E": { "backup": "6N", "departures": ["KPHL"], "inbound_flows": [ "PHLBO4/JAKIE4", "BRAND1", "V29.High" ] }
           }
       },
       "controllers": [
-        "PHL_TWR",
-        "DC_CTR",
-        "EWR_APP",
-        "WRI_APP",
-        "RDG_APP",
-        "ABE_APP",
-        "LGA_APP",
-        "NY_A_CTR"
+        "6A",
+        "W32",
+        "14P",
+        "51Y",
+        "71X",
+        "41A",
+        "11V",
+        "N26"
       ],
       "default_maps": [ "PHL West" ],
       "departure_airspace": [
@@ -5460,24 +5454,24 @@
         "ABE-ACY": { "overflights": 5 },
         "RDG-WRI": { "overflights": 5 }
       },
-      "solo_controller": "PHL_NA_APP",
+      "solo_controller": "6N",
       "multi_controllers": {
           "default" : {
-              "PHL_NA_APP": { "primary": true, "inbound_flows": [ "BOJID4/HAR5", "SPUDS7", "ABE-ACY", "RDG-WRI" ] },
-              "PHL_SA_APP": { "backup": "PHL_NA_APP", "inbound_flows": [ "JIIMS4", "PAATS4", "V29.Low" ] },
-              "PHL_F1_APP": { "backup": "PHL_NA_APP" },
-              "PHL_ND_DEP": { "backup": "PHL_NA_APP", "departures": ["KPHL"], "inbound_flows": [ "PHLBO4/JAKIE4", "BRAND1", "V29.High" ] }
+              "6N": { "primary": true, "inbound_flows": [ "BOJID4/HAR5", "SPUDS7", "ABE-ACY", "RDG-WRI" ] },
+              "6S": { "backup": "6N", "inbound_flows": [ "JIIMS4", "PAATS4", "V29.Low" ] },
+              "6F": { "backup": "6N" },
+              "5E": { "backup": "6N", "departures": ["KPHL"], "inbound_flows": [ "PHLBO4/JAKIE4", "BRAND1", "V29.High" ] }
           }
       },
       "controllers": [
-        "PHL_TWR",
-        "DC_CTR",
-        "EWR_APP",
-        "WRI_APP",
-        "RDG_APP",
-        "ABE_APP",
-        "LGA_APP",
-        "NY_A_CTR"
+        "6A",
+        "W32",
+        "14P",
+        "51Y",
+        "71X",
+        "41A",
+        "11V",
+        "N26"
       ],
       "default_maps": [ "PHL East" ],
       "departure_airspace": [

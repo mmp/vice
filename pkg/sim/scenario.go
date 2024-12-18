@@ -35,7 +35,7 @@ type ScenarioGroup struct {
 	DefaultScenario  string                    `json:"default_scenario"`
 	ControlPositions map[string]*av.Controller `json:"control_positions"`
 	Airspace         Airspace                  `json:"airspace"`
-	InboundFlows     map[string]InboundFlow    `json:"inbound_flows"`
+	InboundFlows     map[string]*InboundFlow   `json:"inbound_flows"`
 
 	PrimaryAirport string `json:"primary_airport"`
 
@@ -62,20 +62,20 @@ type AirspaceAwareness struct {
 }
 
 type STARSFacilityAdaptation struct {
-	AirspaceAwareness   []AirspaceAwareness              `json:"airspace_awareness"`
-	ForceQLToSelf       bool                             `json:"force_ql_self"`
-	AllowLongScratchpad bool                             `json:"allow_long_scratchpad"`
-	VideoMapNames       []string                         `json:"stars_maps"`
-	VideoMapLabels      map[string]string                `json:"map_labels"`
-	ControllerConfigs   map[string]STARSControllerConfig `json:"controller_configs"`
-	InhibitCAVolumes    []av.AirspaceVolume              `json:"inhibit_ca_volumes"`
-	RadarSites          map[string]*av.RadarSite         `json:"radar_sites"`
-	Center              math.Point2LL                    `json:"-"`
-	CenterString        string                           `json:"center"`
-	Range               float32                          `json:"range"`
-	Scratchpads         map[string]string                `json:"scratchpads"`
-	SignificantPoints   map[string]SignificantPoint      `json:"significant_points"`
-	Altimeters          []string                         `json:"altimeters"`
+	AirspaceAwareness   []AirspaceAwareness               `json:"airspace_awareness"`
+	ForceQLToSelf       bool                              `json:"force_ql_self"`
+	AllowLongScratchpad bool                              `json:"allow_long_scratchpad"`
+	VideoMapNames       []string                          `json:"stars_maps"`
+	VideoMapLabels      map[string]string                 `json:"map_labels"`
+	ControllerConfigs   map[string]*STARSControllerConfig `json:"controller_configs"`
+	InhibitCAVolumes    []av.AirspaceVolume               `json:"inhibit_ca_volumes"`
+	RadarSites          map[string]*av.RadarSite          `json:"radar_sites"`
+	Center              math.Point2LL                     `json:"-"`
+	CenterString        string                            `json:"center"`
+	Range               float32                           `json:"range"`
+	Scratchpads         map[string]string                 `json:"scratchpads"`
+	SignificantPoints   map[string]SignificantPoint       `json:"significant_points"`
+	Altimeters          []string                          `json:"altimeters"`
 
 	VideoMapFile      string                        `json:"video_map_file"`
 	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`
@@ -188,7 +188,7 @@ type ScenarioGroupDepartureRunway struct {
 	Category    string `json:"category,omitempty"`
 	DefaultRate int    `json:"rate"`
 
-	ExitRoutes map[string]av.ExitRoute // copied from airport's  departure_routes
+	ExitRoutes map[string]*av.ExitRoute // copied from airport's  departure_routes
 }
 
 type ScenarioGroupArrivalRunway struct {
@@ -725,6 +725,9 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	manifest *av.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
+	// Rewrite legacy files to be TCP-based.
+	sg.rewriteControllers(e)
+
 	// stars_config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
 	if ctr := sg.STARSFacilityAdaptation.CenterString; ctr == "" {
@@ -880,6 +883,97 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	}
 
 	initializeSimConfigurations(sg, simConfigurations, multiController, e)
+}
+
+func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
+	mktcp := func(ctrl *av.Controller) string {
+		if ctrl.ERAMFacility {
+			return ctrl.TCP
+		}
+		return ctrl.FacilityIdentifier + ctrl.TCP
+	}
+
+	pos := make(map[string]*av.Controller)
+	for _, ctrl := range sg.ControlPositions {
+		id := mktcp(ctrl)
+		if _, ok := pos[id]; ok {
+			e.ErrorString("%s: TCP / sector_id used for multiple \"control_positions\"", id)
+		}
+		pos[id] = ctrl
+	}
+
+	rewrite := func(s *string) {
+		if *s == "" {
+			return
+		}
+		if ctrl, ok := sg.ControlPositions[*s]; ok {
+			*s = mktcp(ctrl)
+		}
+	}
+
+	for _, s := range sg.Scenarios {
+		rewrite(&s.SoloController)
+
+		for _, rwy := range s.DepartureRunways {
+			if ap, ok := sg.Airports[rwy.Airport]; ok {
+				rewrite(&ap.DepartureController)
+			}
+		}
+
+		for name, config := range s.SplitConfigurations {
+			for callsign, ctrl := range config {
+				tcp := callsign
+				rewrite(&tcp)
+				rewrite(&ctrl.BackupController)
+
+				delete(config, callsign)
+				config[tcp] = ctrl
+			}
+			s.SplitConfigurations[name] = config
+		}
+
+		for i := range s.VirtualControllers {
+			rewrite(&s.VirtualControllers[i])
+		}
+	}
+
+	for _, ap := range sg.Airports {
+		rewrite(&ap.DepartureController)
+
+		for _, exitroutes := range ap.DepartureRoutes {
+			for _, route := range exitroutes {
+				rewrite(&route.HandoffController)
+			}
+		}
+	}
+
+	fa := &sg.STARSFacilityAdaptation
+	for i := range fa.AirspaceAwareness {
+		rewrite(&fa.AirspaceAwareness[i].ReceivingController)
+	}
+	for cs, config := range fa.ControllerConfigs {
+		// Rewrite comma separated list of callsigns
+		tcps := strings.Split(cs, ",")
+		for i, cs := range tcps {
+			tcp := strings.TrimSpace(cs)
+			rewrite(&tcp)
+			tcps[i] = tcp
+		}
+
+		delete(fa.ControllerConfigs, cs)
+		fa.ControllerConfigs[strings.Join(tcps, ",")] = config
+	}
+
+	for _, flow := range sg.InboundFlows {
+		for i := range flow.Arrivals {
+			rewrite(&flow.Arrivals[i].InitialController)
+		}
+		for i := range flow.Overflights {
+			rewrite(&flow.Overflights[i].InitialController)
+		}
+	}
+
+	sg.ControlPositions = pos
 }
 
 func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *ScenarioGroup, manifest *av.VideoMapManifest) {

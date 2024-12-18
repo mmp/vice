@@ -374,10 +374,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 			}
 		} else {
 			pos := util.MapSlice(ps.QuickLookPositions,
-				func(q QuickLookPosition) string {
-					return q.Id + util.Select(q.Plus, "+", "")
-				})
-
+				func(q QuickLookPosition) string { return q.String() })
 			pw = td.AddText("QL: "+strings.Join(pos, " "), pw, listStyle)
 		}
 		newline()

@@ -1154,7 +1154,7 @@ func (sc SplitConfigurationSet) GetConfiguration(split string) (SplitConfigurati
 
 	config, ok := sc[split]
 	if !ok {
-		return config, fmt.Errorf("%s: split not found", split)
+		return nil, fmt.Errorf("%s: split not found", split)
 	}
 	return config, nil
 }

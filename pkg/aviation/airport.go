@@ -31,7 +31,7 @@ type Airport struct {
 	ExitCategories map[string]string `json:"exit_categories"`
 
 	// runway -> (exit -> route)
-	DepartureRoutes map[string]map[string]ExitRoute `json:"departure_routes"`
+	DepartureRoutes map[string]map[string]*ExitRoute `json:"departure_routes"`
 
 	ApproachRegions   map[string]*ApproachRegion `json:"approach_regions"`
 	ConvergingRunways []ConvergingRunways        `json:"converging_runways"`
@@ -368,11 +368,11 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	// Departure routes are specified in the JSON as comma-separated lists
 	// of exits. We'll split those out into individual entries in the
 	// Airport's DepartureRoutes, one per exit, for convenience of future code.
-	splitDepartureRoutes := make(map[string]map[string]ExitRoute)
+	splitDepartureRoutes := make(map[string]map[string]*ExitRoute)
 	for rwy, rwyRoutes := range ap.DepartureRoutes {
 		e.Push("Departure runway " + rwy)
 		seenExits := make(map[string]interface{})
-		splitDepartureRoutes[rwy] = make(map[string]ExitRoute)
+		splitDepartureRoutes[rwy] = make(map[string]*ExitRoute)
 
 		r, ok := LookupRunway(icao, rwy)
 		if !ok {

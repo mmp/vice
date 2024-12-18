@@ -399,7 +399,7 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, ac *av.Aircraft) bool {
 	// Quick Look Positions.
 	if trk := sp.getTrack(ctx, ac); trk != nil {
 		for _, quickLookPositions := range sp.currentPrefs().QuickLookPositions {
-			if trk.TrackOwner == quickLookPositions.Callsign {
+			if trk.TrackOwner == quickLookPositions.TCP {
 				return true
 			}
 		}
