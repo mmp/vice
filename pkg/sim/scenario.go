@@ -616,7 +616,12 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 
 			// For each multi-controller split, sure some controller covers the
 			// flow if there will be a handoff to a non-virtual controller.
-			hasHandoff := len(flow.Arrivals) > 0
+			hasHandoff := false
+			for _, ar := range flow.Arrivals {
+				if slices.ContainsFunc(ar.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff }) {
+					hasHandoff = true
+				}
+			}
 			for _, of := range flow.Overflights {
 				if slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff }) {
 					hasHandoff = true
