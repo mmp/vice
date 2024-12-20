@@ -951,11 +951,7 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 				ctrl := c.Controllers[callsign]
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				id := ctrl.TCP
-				if ctrl.FacilityIdentifier != "" && !ctrl.ERAMFacility {
-					id = ctrl.FacilityIdentifier + id
-				}
-				imgui.Text(id)
+				imgui.Text(ctrl.Id())
 				imgui.TableNextColumn()
 				if ctrl.IsHuman {
 					sq := renderer.FontAwesomeIconCheckSquare
@@ -971,7 +967,7 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 				imgui.TableNextColumn()
 				imgui.Text(ctrl.Frequency.String())
 				imgui.TableNextColumn()
-				imgui.Text(ctrl.Callsign)
+				imgui.Text(ctrl.Position)
 			}
 
 			imgui.EndTable()

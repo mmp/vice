@@ -377,12 +377,12 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		// Make sure all of the controllers involved have a valid default airport
 		if ctrl, ok := sg.ControlPositions[s.SoloController]; ok {
 			if ctrl.DefaultAirport == "" {
-				e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Callsign)
+				e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Position)
 			}
 		}
 		for _, callsign := range s.SplitConfigurations.Splits() {
 			if ctrl, ok := sg.ControlPositions[callsign]; ok && ctrl.DefaultAirport == "" {
-				e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Callsign)
+				e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Position)
 			}
 		}
 	}
@@ -829,10 +829,10 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		e.ErrorString("default scenario %q not found in \"scenarios\"", sg.DefaultScenario)
 	}
 
-	for callsign, ctrl := range sg.ControlPositions {
-		e.Push("Controller " + callsign)
+	for position, ctrl := range sg.ControlPositions {
+		ctrl.Position = position
 
-		ctrl.Callsign = callsign
+		e.Push("Controller " + position)
 
 		if ctrl.Frequency < 118000 || ctrl.Frequency > 138000 {
 			e.ErrorString("invalid frequency: %6.3f", float32(ctrl.Frequency)/1000)
@@ -886,16 +886,9 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 }
 
 func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
-	mktcp := func(ctrl *av.Controller) string {
-		if ctrl.ERAMFacility {
-			return ctrl.TCP
-		}
-		return ctrl.FacilityIdentifier + ctrl.TCP
-	}
-
 	pos := make(map[string]*av.Controller)
 	for _, ctrl := range sg.ControlPositions {
-		id := mktcp(ctrl)
+		id := ctrl.Id()
 		if _, ok := pos[id]; ok {
 			e.ErrorString("%s: TCP / sector_id used for multiple \"control_positions\"", id)
 		}
@@ -907,7 +900,7 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			return
 		}
 		if ctrl, ok := sg.ControlPositions[*s]; ok {
-			*s = mktcp(ctrl)
+			*s = ctrl.Id()
 		}
 	}
 

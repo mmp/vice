@@ -282,7 +282,7 @@ func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*
 
 		if wp.PointOut != "" {
 			if !util.MapContains(controllers,
-				func(callsign string, ctrl *Controller) bool { return ctrl.TCP == wp.PointOut }) {
+				func(callsign string, ctrl *Controller) bool { return ctrl.Id() == wp.PointOut }) {
 				e.ErrorString("No controller found with TCP id %q for point out", wp.PointOut)
 			}
 		}

@@ -193,7 +193,7 @@ func (f Frequency) String() string {
 }
 
 type Controller struct {
-	Callsign           string    // Not provided in scenario JSON
+	Position           string    // This is the key in the controllers map in JSON
 	RadioName          string    `json:"radio_name"`
 	Frequency          Frequency `json:"frequency"`
 	TCP                string    `json:"sector_id"`  // e.g. N56, 2J, ...
@@ -204,6 +204,13 @@ type Controller struct {
 	Facility           string    `json:"facility"`        // So we can get the STARS facility from a controller
 	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
 	SignOnTime         time.Time
+}
+
+func (c Controller) Id() string {
+	if c.ERAMFacility {
+		return c.TCP
+	}
+	return c.FacilityIdentifier + c.TCP
 }
 
 type FlightRules int
@@ -886,9 +893,9 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		e.ErrorString("controller %q not found for \"initial_controller\"", ar.InitialController)
 	}
 
-	for _, controller := range controlPositions {
+	for id, controller := range controlPositions {
 		if controller.ERAMFacility && controller.FacilityIdentifier == "" {
-			e.ErrorString(fmt.Sprintf("%v is an ERAM facility, but has no facility id specified", controller.Callsign))
+			e.ErrorString(fmt.Sprintf("%q is an ERAM facility, but has no facility id specified", id))
 		}
 	}
 }

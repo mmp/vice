@@ -273,7 +273,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		switch event.Type {
 		case sim.PointOutEvent:
 			if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil {
-				sp.InboundPointOuts[event.Callsign] = ctrl.TCP
+				sp.InboundPointOuts[event.Callsign] = ctrl.Id()
 			} else {
 				sp.InboundPointOuts[event.Callsign] = ""
 			}
@@ -283,7 +283,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				}
 			}
 			if ctrl := ctx.ControlClient.Controllers[event.ToController]; ctrl != nil {
-				sp.OutboundPointOuts[event.Callsign] = ctrl.TCP
+				sp.OutboundPointOuts[event.Callsign] = ctrl.Id()
 			} else {
 				sp.OutboundPointOuts[event.Callsign] = ""
 			}
@@ -295,13 +295,13 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 		case sim.AcknowledgedPointOutEvent:
 			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil && ctrl.TCP == id {
+				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil && ctrl.Id() == id {
 					sp.Aircraft[event.Callsign].POFlashingEndTime = time.Now().Add(5 * time.Second)
 					delete(sp.OutboundPointOuts, event.Callsign)
 				}
 			}
 			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok && ctrl != nil && ctrl.TCP == id {
+				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok && ctrl != nil && ctrl.Id() == id {
 					delete(sp.InboundPointOuts, event.Callsign)
 					if state, ok := sp.Aircraft[event.Callsign]; ok {
 						state.PointedOut = true
@@ -312,14 +312,14 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 		case sim.RejectedPointOutEvent:
 			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil && ctrl.TCP == id {
+				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil && ctrl.Id() == id {
 					delete(sp.OutboundPointOuts, event.Callsign)
 					sp.RejectedPointOuts[event.Callsign] = nil
 					sp.Aircraft[event.Callsign].UNFlashingEndTime = time.Now().Add(5 * time.Second)
 				}
 			}
 			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok && ctrl != nil && ctrl.TCP == id {
+				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok && ctrl != nil && ctrl.Id() == id {
 					delete(sp.InboundPointOuts, event.Callsign)
 				}
 			}
@@ -399,7 +399,7 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, ac *av.Aircraft) bool {
 	// Quick Look Positions.
 	if trk := sp.getTrack(ctx, ac); trk != nil {
 		for _, quickLookPositions := range sp.currentPrefs().QuickLookPositions {
-			if trk.TrackOwner == quickLookPositions.TCP {
+			if trk.TrackOwner == quickLookPositions.Id {
 				return true
 			}
 		}

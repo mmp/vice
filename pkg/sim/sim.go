@@ -974,7 +974,7 @@ type PointOut struct {
 }
 
 type ServerController struct {
-	Callsign            string
+	Id                  string
 	lastUpdateCall      time.Time
 	warnedNoUpdateCalls bool
 	events              *EventsSubscription
@@ -982,7 +982,7 @@ type ServerController struct {
 
 func (sc *ServerController) LogValue() slog.Value {
 	return slog.GroupValue(
-		slog.String("callsign", sc.Callsign),
+		slog.String("id", sc.Id),
 		slog.Time("last_update", sc.lastUpdateCall),
 		slog.Bool("warned_no_update", sc.warnedNoUpdateCalls))
 }
@@ -1101,8 +1101,8 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Any("aircraft", s.State.Aircraft))
 }
 
-func (s *Sim) SignOn(callsign string, instructor bool) (*State, string, error) {
-	if err := s.signOn(callsign, instructor); err != nil {
+func (s *Sim) SignOn(id string, instructor bool) (*State, string, error) {
+	if err := s.signOn(id, instructor); err != nil {
 		return nil, "", err
 	}
 
@@ -1113,48 +1113,48 @@ func (s *Sim) SignOn(callsign string, instructor bool) (*State, string, error) {
 	token := base64.StdEncoding.EncodeToString(buf[:])
 
 	s.controllers[token] = &ServerController{
-		Callsign:       callsign,
+		Id:             id,
 		lastUpdateCall: time.Now(),
 		events:         s.eventStream.Subscribe(),
 	}
 
-	return s.State.GetStateForController(callsign), token, nil
+	return s.State.GetStateForController(id), token, nil
 }
 
-func (s *Sim) signOn(callsign string, instructor bool) error {
+func (s *Sim) signOn(id string, instructor bool) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if callsign != "Observer" {
-		if s.controllerIsSignedIn(callsign) {
+	if id != "Observer" {
+		if s.controllerIsSignedIn(id) {
 			return ErrControllerAlreadySignedIn
 		}
 
-		ctrl, ok := s.SignOnPositions[callsign]
+		ctrl, ok := s.SignOnPositions[id]
 		if !ok {
 			return av.ErrNoController
 		}
 		// Make a copy of the *Controller and set the sign on time.
 		sctrl := *ctrl
 		sctrl.SignOnTime = time.Now()
-		s.State.Controllers[callsign] = &sctrl
+		s.State.Controllers[id] = &sctrl
 
-		if callsign == s.State.PrimaryController {
+		if id == s.State.PrimaryController {
 			// The primary controller signed in so the sim will resume.
 			// Reset lastUpdateTime so that the next time Update() is
 			// called for the sim, we don't try to run a ton of steps.
 			s.lastUpdateTime = time.Now()
 		}
 		if instructor {
-			s.Instructors[callsign] = true
+			s.Instructors[id] = true
 		}
 	}
 
 	s.eventStream.Post(Event{
 		Type:    StatusMessageEvent,
-		Message: callsign + " has signed on.",
+		Message: id + " has signed on.",
 	})
-	s.lg.Infof("%s: controller signed on", callsign)
+	s.lg.Infof("%s: controller signed on", id)
 
 	return nil
 }
@@ -1168,56 +1168,57 @@ func (s *Sim) SignOff(token string) error {
 	} else {
 		// Drop track on controlled aircraft
 		for _, ac := range s.State.Aircraft {
-			ac.HandleControllerDisconnect(ctrl.Callsign, s.State.PrimaryController)
+			ac.HandleControllerDisconnect(ctrl.Id, s.State.PrimaryController)
 		}
 
-		if ctrl.Callsign == s.LaunchConfig.Controller {
+		if ctrl.Id == s.LaunchConfig.Controller {
 			// give up control of launches so someone else can take it.
 			s.LaunchConfig.Controller = ""
 		}
 
 		ctrl.events.Unsubscribe()
 		delete(s.controllers, token)
-		delete(s.State.Controllers, ctrl.Callsign)
-		delete(s.Instructors, ctrl.Callsign)
+		delete(s.State.Controllers, ctrl.Id)
+		delete(s.Instructors, ctrl.Id)
 
 		s.eventStream.Post(Event{
 			Type:    StatusMessageEvent,
-			Message: ctrl.Callsign + " has signed off.",
+			Message: ctrl.Id + " has signed off.",
 		})
-		s.lg.Infof("%s: controller signing off", ctrl.Callsign)
+		s.lg.Infof("%s: controller signing off", ctrl.Id)
 	}
 	return nil
 }
 
-func (s *Sim) ChangeControlPosition(token string, callsign string, keepTracks bool) error {
+func (s *Sim) ChangeControlPosition(token string, id string, keepTracks bool) error {
 	ctrl, ok := s.controllers[token]
 	if !ok {
 		return ErrInvalidControllerToken
 	}
-	oldCallsign := ctrl.Callsign
+	oldId := ctrl.Id
+	oldPos := s.State.Controllers[oldId].Position
 
-	s.lg.Infof("%s: switching to %s", oldCallsign, callsign)
+	s.lg.Infof("%s: switching to %s", oldId, id)
 
 	// Make sure we can successfully sign on before signing off from the
 	// current position.
-	if err := s.signOn(callsign, false); err != nil {
+	if err := s.signOn(id, false); err != nil {
 		return err
 	}
-	ctrl.Callsign = callsign
+	ctrl.Id = id
 
-	delete(s.State.Controllers, oldCallsign)
+	delete(s.State.Controllers, oldId)
 
 	s.eventStream.Post(Event{
 		Type:    StatusMessageEvent,
-		Message: oldCallsign + " has signed off.",
+		Message: oldPos + " has signed off.",
 	})
 
 	for _, ac := range s.State.Aircraft {
 		if keepTracks {
-			ac.TransferTracks(oldCallsign, ctrl.Callsign)
+			ac.TransferTracks(oldId, ctrl.Id)
 		} else {
-			ac.HandleControllerDisconnect(ctrl.Callsign, s.State.PrimaryController)
+			ac.HandleControllerDisconnect(ctrl.Id, s.State.PrimaryController)
 		}
 	}
 
@@ -1228,15 +1229,17 @@ func (s *Sim) TogglePause(token string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if controller, ok := s.controllers[token]; !ok {
+	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
 	} else {
 		s.Paused = !s.Paused
 		s.lg.Infof("paused: %v", s.Paused)
 		s.lastUpdateTime = time.Now() // ignore time passage...
+		pos := s.State.Controllers[ctrl.Id].Position
+
 		s.eventStream.Post(Event{
 			Type:    GlobalMessageEvent,
-			Message: controller.Callsign + " has " + util.Select(s.Paused, "paused", "unpaused") + " the sim",
+			Message: pos + " has " + util.Select(s.Paused, "paused", "unpaused") + " the sim",
 		})
 		return nil
 	}
@@ -1281,10 +1284,10 @@ func (s *Sim) GetWorldUpdate(token string, update *WorldUpdate) error {
 		ctrl.lastUpdateCall = time.Now()
 		if ctrl.warnedNoUpdateCalls {
 			ctrl.warnedNoUpdateCalls = false
-			s.lg.Warnf("%s: connection re-established", ctrl.Callsign)
+			s.lg.Warnf("%s: connection re-established", ctrl.Id)
 			s.eventStream.Post(Event{
 				Type:    StatusMessageEvent,
-				Message: ctrl.Callsign + " is back online.",
+				Message: ctrl.Id + " is back online.",
 			})
 		}
 
@@ -1358,15 +1361,15 @@ func (s *Sim) Update() {
 			if time.Since(ctrl.lastUpdateCall) > 5*time.Second {
 				if !ctrl.warnedNoUpdateCalls {
 					ctrl.warnedNoUpdateCalls = true
-					s.lg.Warnf("%s: no messages for 5 seconds", ctrl.Callsign)
+					s.lg.Warnf("%s: no messages for 5 seconds", ctrl.Id)
 					s.eventStream.Post(Event{
 						Type:    StatusMessageEvent,
-						Message: ctrl.Callsign + " has not been heard from for 5 seconds. Connection lost?",
+						Message: ctrl.Id + " has not been heard from for 5 seconds. Connection lost?",
 					})
 				}
 
 				if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
-					s.lg.Warnf("%s: signing off idle controller", ctrl.Callsign)
+					s.lg.Warnf("%s: signing off idle controller", ctrl.Id)
 					s.mu.Unlock(s.lg)
 					s.SignOff(token)
 					s.mu.Lock(s.lg)
@@ -1506,7 +1509,7 @@ func (s *Sim) updateState() {
 				if passedWaypoint.PointOut != "" {
 					for _, ctrl := range s.State.Controllers {
 						// Look for a controller with a matching TCP id.
-						if ctrl.TCP == passedWaypoint.PointOut {
+						if ctrl.Id() == passedWaypoint.PointOut {
 							// Don't do the point out if a human is
 							// controlling the aircraft.
 							if fromCtrl := s.State.Controllers[ac.ControllingController]; fromCtrl != nil && !fromCtrl.IsHuman {
@@ -1641,9 +1644,9 @@ func (s *Sim) IdleTime() time.Duration {
 	return time.Since(s.lastUpdateTime)
 }
 
-func (s *Sim) controllerIsSignedIn(callsign string) bool {
+func (s *Sim) controllerIsSignedIn(id string) bool {
 	for _, ctrl := range s.controllers {
-		if ctrl.Callsign == callsign {
+		if ctrl.Id == id {
 			return true
 		}
 	}
@@ -2085,22 +2088,22 @@ func (s *Sim) TakeOrReturnLaunchControl(token string) error {
 
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
-	} else if lctrl := s.LaunchConfig.Controller; lctrl != "" && ctrl.Callsign != lctrl {
+	} else if lctrl := s.LaunchConfig.Controller; lctrl != "" && ctrl.Id != lctrl {
 		return ErrNotLaunchController
 	} else if lctrl == "" {
-		s.LaunchConfig.Controller = ctrl.Callsign
+		s.LaunchConfig.Controller = ctrl.Id
 		s.eventStream.Post(Event{
 			Type:    StatusMessageEvent,
-			Message: ctrl.Callsign + " is now controlling aircraft launches.",
+			Message: ctrl.Id + " is now controlling aircraft launches.",
 		})
-		s.lg.Infof("%s: now controlling launches", ctrl.Callsign)
+		s.lg.Infof("%s: now controlling launches", ctrl.Id)
 		return nil
 	} else {
 		s.eventStream.Post(Event{
 			Type:    StatusMessageEvent,
 			Message: s.LaunchConfig.Controller + " is no longer controlling aircraft launches.",
 		})
-		s.lg.Infof("%s: no longer controlling launches", ctrl.Callsign)
+		s.lg.Infof("%s: no longer controlling launches", ctrl.Id)
 		s.LaunchConfig.Controller = ""
 		return nil
 	}
@@ -2153,13 +2156,13 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 		return av.ErrNoAircraftForCallsign
 	} else {
 		// TODO(mtrokel): this needs to be updated for the STARS tracking stuff
-		if sc.Callsign == "Observer" {
+		if sc.Id == "Observer" {
 			return av.ErrOtherControllerHasTrack
 		}
 
-		ctrl := s.State.Controllers[sc.Callsign]
+		ctrl := s.State.Controllers[sc.Id]
 		if ctrl == nil {
-			s.lg.Error("controller unknown", slog.String("controller", sc.Callsign),
+			s.lg.Error("controller unknown", slog.String("controller", sc.Id),
 				slog.Any("world_controllers", s.State.Controllers))
 			return av.ErrNoController
 		}
@@ -2171,15 +2174,15 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 			radioTransmissions := cmd(ctrl, ac)
 			alreadyAdressed := false
 			for _, rt := range radioTransmissions {
-				if rt.Controller == ctrl.Callsign {
+				if rt.Controller == ctrl.Id() {
 					alreadyAdressed = true
 					break
 				}
 			}
-			if len(radioTransmissions) > 0 && s.Instructors[ctrl.Callsign] &&
-				ac.ControllingController != ctrl.Callsign && !alreadyAdressed { // prevent FC commands as well.
+			if len(radioTransmissions) > 0 && s.Instructors[ctrl.Id()] &&
+				ac.ControllingController != ctrl.Id() && !alreadyAdressed { // prevent FC commands as well.
 				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
-					Controller: ctrl.Callsign,
+					Controller: ctrl.Id(),
 					Message:    radioTransmissions[0].Message,
 					Type:       radioTransmissions[0].Type,
 				})
@@ -2200,7 +2203,7 @@ func (s *Sim) dispatchControllingCommand(token string, callsign string,
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			// TODO(mtrokel): this needs to be updated for the STARS tracking stuff
-			if ac.ControllingController != ctrl.Callsign && !s.Instructors[ctrl.Callsign] {
+			if ac.ControllingController != ctrl.Id() && !s.Instructors[ctrl.Id()] {
 				return av.ErrOtherControllerHasTrack
 			}
 			return nil
@@ -2213,7 +2216,7 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 	cmd func(*av.Controller, *av.Aircraft) []av.RadioTransmission) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if ac.TrackingController != ctrl.Callsign && !s.Instructors[ctrl.Callsign] {
+			if ac.TrackingController != ctrl.Id() && !s.Instructors[ctrl.Id()] {
 				return av.ErrOtherControllerHasTrack
 			}
 
@@ -2285,7 +2288,7 @@ func (s *Sim) ChangeSquawk(token, callsign string, sq av.Squawk) error {
 			ac.Squawk = sq
 
 			return []av.RadioTransmission{av.RadioTransmission{
-				Controller: ctrl.Callsign,
+				Controller: ctrl.Id(),
 				Message:    "squawk " + sq.String(),
 				Type:       av.RadioTransmissionReadback,
 			}}
@@ -2304,7 +2307,7 @@ func (s *Sim) Ident(token, callsign string) error {
 			})
 
 			return []av.RadioTransmission{av.RadioTransmission{
-				Controller: ctrl.Callsign,
+				Controller: ctrl.Id(),
 				Message:    "ident",
 				Type:       av.RadioTransmissionReadback,
 			}}
@@ -2318,7 +2321,7 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *math.CardinalOrdi
 	return s.dispatchCommand(token, callsign,
 		func(c *av.Controller, ac *av.Aircraft) error {
 			// Make sure no one has the track already
-			if ac.TrackingController != c.Callsign {
+			if ac.TrackingController != c.Id() {
 				return av.ErrOtherControllerHasTrack
 			}
 			return nil
@@ -2372,9 +2375,9 @@ func (s *Sim) UploadFlightPlan(token string, Type int, plan *STARSFlightPlan) er
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	ctrl := s.State.Controllers[s.controllers[token].Callsign]
+	ctrl := s.State.Controllers[s.controllers[token].Id]
 	if ctrl == nil {
-		s.lg.Errorf("%s: controller unknown", s.controllers[token].Callsign)
+		s.lg.Errorf("%s: controller unknown", s.controllers[token].Id)
 		return ErrUnknownController
 	}
 	eram, stars, err := s.State.ERAMComputers.FacilityComputers(ctrl.Facility)
@@ -2416,22 +2419,22 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 			// is left unset until contact.
 			haveControl := ac.DepartureContactAltitude == 0
 
-			ac.TrackingController = ctrl.Callsign
+			ac.TrackingController = ctrl.Id()
 			if haveControl {
-				ac.ControllingController = ctrl.Callsign
+				ac.ControllingController = ctrl.Id()
 			}
 
-			if err := s.State.STARSComputer().InitiateTrack(callsign, ctrl.Callsign, fp, haveControl); err != nil {
+			if err := s.State.STARSComputer().InitiateTrack(callsign, ctrl.Id(), fp, haveControl); err != nil {
 				//s.lg.Errorf("InitiateTrack: %v", err)
 			}
-			if err := s.State.ERAMComputer().InitiateTrack(callsign, ctrl.Callsign, fp); err != nil {
+			if err := s.State.ERAMComputer().InitiateTrack(callsign, ctrl.Id(), fp); err != nil {
 				//s.lg.Errorf("InitiateTrack: %v", err)
 			}
 
 			s.eventStream.Post(Event{
 				Type:         InitiatedTrackEvent,
 				Callsign:     ac.Callsign,
-				ToController: ctrl.Callsign,
+				ToController: ctrl.Id(),
 			})
 
 			return nil
@@ -2457,7 +2460,7 @@ func (s *Sim) DropTrack(token, callsign string) error {
 			s.eventStream.Post(Event{
 				Type:           DroppedTrackEvent,
 				Callsign:       ac.Callsign,
-				FromController: ctrl.Callsign,
+				FromController: ctrl.Id(),
 			})
 			return nil
 		})
@@ -2469,7 +2472,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if ac.TrackingController != ctrl.Callsign {
+			if ac.TrackingController != ctrl.Id() {
 				return av.ErrOtherControllerHasTrack
 			} else if octrl := s.State.Controllers[controller]; octrl == nil {
 				return av.ErrNoController
@@ -2480,7 +2483,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 					} else if trk.TrackOwner != ctrl.Callsign {
 						return av.ErrOtherControllerHasTrack
 				*/
-			} else if octrl.Callsign == ctrl.Callsign {
+			} else if octrl.Id() == ctrl.Id() {
 				// Can't handoff to ourself
 				return av.ErrInvalidController
 			} else {
@@ -2501,12 +2504,12 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 
 			s.eventStream.Post(Event{
 				Type:           OfferedHandoffEvent,
-				FromController: ctrl.Callsign,
-				ToController:   octrl.Callsign,
+				FromController: ctrl.Id(),
+				ToController:   octrl.Id(),
 				Callsign:       ac.Callsign,
 			})
 
-			ac.HandoffTrackController = octrl.Callsign
+			ac.HandoffTrackController = octrl.Id()
 
 			if err := s.State.STARSComputer().HandoffTrack(ac.Callsign, ctrl, octrl, s.SimTime); err != nil {
 				//s.lg.Errorf("HandoffTrack: %v", err)
@@ -2529,7 +2532,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if ac.ControllingController != ctrl.Callsign {
+			if ac.ControllingController != ctrl.Id() {
 				return av.ErrOtherControllerHasTrack
 			}
 			return nil
@@ -2598,7 +2601,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if ac.HandoffTrackController != ctrl.Callsign {
+			if ac.HandoffTrackController != ctrl.Id() {
 				return av.ErrNotBeingHandedOffToMe
 			}
 
@@ -2614,12 +2617,12 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
 				FromController: ac.ControllingController,
-				ToController:   ctrl.Callsign,
+				ToController:   ctrl.Id(),
 				Callsign:       ac.Callsign,
 			})
 
 			ac.HandoffTrackController = ""
-			ac.TrackingController = ctrl.Callsign
+			ac.TrackingController = ctrl.Id()
 
 			if err := s.State.STARSComputer().AcceptHandoff(ac, ctrl, s.State.Controllers,
 				s.State.STARSFacilityAdaptation, s.SimTime); err != nil {
@@ -2628,7 +2631,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 
 			if !s.controllerIsSignedIn(ac.ControllingController) {
 				// Take immediate control on handoffs from virtual
-				ac.ControllingController = ctrl.Callsign
+				ac.ControllingController = ctrl.Id()
 				return []av.RadioTransmission{av.RadioTransmission{
 					Controller: ctrl.RadioName,
 					Message:    ac.ContactMessage(s.ReportingPoints),
@@ -2664,7 +2667,7 @@ func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if octrl := s.State.Controllers[controller]; octrl == nil {
 				return av.ErrNoController
-			} else if octrl.Callsign == ctrl.Callsign || octrl.Callsign == ac.TrackingController {
+			} else if octrl.Id() == ctrl.Id() || octrl.Id() == ac.TrackingController {
 				// Can't redirect to ourself and the controller who initiated the handoff
 				return av.ErrInvalidController
 			} else if octrl.FacilityIdentifier != ctrl.FacilityIdentifier {
@@ -2680,13 +2683,13 @@ func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			octrl := s.State.Controllers[controller]
 			ac.RedirectedHandoff.OriginalOwner = ac.TrackingController
-			if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Callsign, octrl.Callsign) {
+			if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Id(), octrl.Id()) {
 				ac.HandoffTrackController = ac.RedirectedHandoff.Redirector[0]
 				ac.RedirectedHandoff = av.RedirectedHandoff{}
 				return nil
 			}
 			ac.RedirectedHandoff.AddRedirector(ctrl)
-			ac.RedirectedHandoff.RedirectedTo = octrl.Callsign
+			ac.RedirectedHandoff.RedirectedTo = octrl.Id()
 
 			s.State.STARSComputer().RedirectHandoff(ac, ctrl, octrl)
 
@@ -2703,18 +2706,18 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 			return nil
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			if ac.RedirectedHandoff.RedirectedTo == ctrl.Callsign { // Accept
+			if ac.RedirectedHandoff.RedirectedTo == ctrl.Id() { // Accept
 				s.eventStream.Post(Event{
 					Type:           AcceptedRedirectedHandoffEvent,
 					FromController: ac.RedirectedHandoff.OriginalOwner,
-					ToController:   ctrl.Callsign,
+					ToController:   ctrl.Id(),
 					Callsign:       ac.Callsign,
 				})
-				ac.ControllingController = ctrl.Callsign
+				ac.ControllingController = ctrl.Id()
 				ac.HandoffTrackController = ""
 				ac.TrackingController = ac.RedirectedHandoff.RedirectedTo
 				ac.RedirectedHandoff = av.RedirectedHandoff{}
-			} else if ac.RedirectedHandoff.GetLastRedirector() == ctrl.Callsign { // Recall (only the last redirector is able to recall)
+			} else if ac.RedirectedHandoff.GetLastRedirector() == ctrl.Id() { // Recall (only the last redirector is able to recall)
 				if len(ac.RedirectedHandoff.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"
 					ac.RedirectedHandoff.RedirectedTo = ac.RedirectedHandoff.Redirector[len(ac.RedirectedHandoff.Redirector)-1]
 				} else { // One redirect took place, clear the RD and show it as a normal handoff
@@ -2744,8 +2747,8 @@ func (s *Sim) ForceQL(token, callsign, controller string) error {
 			octrl := s.State.Controllers[controller]
 			s.eventStream.Post(Event{
 				Type:           ForceQLEvent,
-				FromController: ctrl.Callsign,
-				ToController:   octrl.Callsign,
+				FromController: ctrl.Id(),
+				ToController:   octrl.Id(),
 				Callsign:       ac.Callsign,
 			})
 
@@ -2756,14 +2759,14 @@ func (s *Sim) ForceQL(token, callsign, controller string) error {
 func (s *Sim) PointOut(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if ac.TrackingController != ctrl.Callsign {
+			if ac.TrackingController != ctrl.Id() {
 				return av.ErrOtherControllerHasTrack
 			} else if octrl := s.State.Controllers[controller]; octrl == nil {
 				return av.ErrNoController
 			} else if octrl.Facility != ctrl.Facility {
 				// Can't point out to another STARS facility.
 				return av.ErrInvalidController
-			} else if octrl.Callsign == ctrl.Callsign {
+			} else if octrl.Id() == ctrl.Id() {
 				// Can't point out to ourself
 				return av.ErrInvalidController
 			}
@@ -2779,12 +2782,12 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 func (s *Sim) pointOut(callsign string, from *av.Controller, to *av.Controller) {
 	s.eventStream.Post(Event{
 		Type:           PointOutEvent,
-		FromController: from.Callsign,
-		ToController:   to.Callsign,
+		FromController: from.Id(),
+		ToController:   to.Id(),
 		Callsign:       callsign,
 	})
 
-	if err := s.State.STARSComputer().PointOut(callsign, to.Callsign); err != nil {
+	if err := s.State.STARSComputer().PointOut(callsign, to.Id()); err != nil {
 		//s.lg.Errorf("PointOut: %v", err)
 	}
 
@@ -2792,8 +2795,8 @@ func (s *Sim) pointOut(callsign string, from *av.Controller, to *av.Controller) 
 	if s.PointOuts[callsign] == nil {
 		s.PointOuts[callsign] = make(map[string]PointOut)
 	}
-	s.PointOuts[callsign][to.Callsign] = PointOut{
-		FromController: from.Callsign,
+	s.PointOuts[callsign][to.Id()] = PointOut{
+		FromController: from.Id(),
 		AcceptTime:     s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
 	}
 }
@@ -2803,7 +2806,7 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if _, ok := s.PointOuts[callsign]; !ok {
 				return av.ErrNotPointedOutToMe
-			} else if _, ok := s.PointOuts[callsign][ctrl.Callsign]; !ok {
+			} else if _, ok := s.PointOuts[callsign][ctrl.Id()]; !ok {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
@@ -2813,21 +2816,20 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
 				Type:           AcknowledgedPointOutEvent,
-				FromController: ctrl.Callsign,
-				ToController:   s.PointOuts[callsign][ctrl.Callsign].FromController,
+				FromController: ctrl.Id(),
+				ToController:   s.PointOuts[callsign][ctrl.Id()].FromController,
 				Callsign:       ac.Callsign,
 			})
-			id := ctrl.FacilityIdentifier + ctrl.TCP
 			if len(ac.PointOutHistory) < 20 {
-				ac.PointOutHistory = append([]string{id}, ac.PointOutHistory...)
+				ac.PointOutHistory = append([]string{ctrl.Id()}, ac.PointOutHistory...)
 			} else {
 				ac.PointOutHistory = ac.PointOutHistory[:19]
-				ac.PointOutHistory = append([]string{id}, ac.PointOutHistory...)
+				ac.PointOutHistory = append([]string{ctrl.Id()}, ac.PointOutHistory...)
 			}
 
-			delete(s.PointOuts[callsign], ctrl.Callsign)
+			delete(s.PointOuts[callsign], ctrl.Id())
 
-			err := s.State.STARSComputer().AcknowledgePointOut(ac.Callsign, ctrl.Callsign)
+			err := s.State.STARSComputer().AcknowledgePointOut(ac.Callsign, ctrl.Id())
 			if err != nil {
 				//s.lg.Errorf("AcknowledgePointOut: %v", err)
 			}
@@ -2841,7 +2843,7 @@ func (s *Sim) RejectPointOut(token, callsign string) error {
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if _, ok := s.PointOuts[callsign]; !ok {
 				return av.ErrNotPointedOutToMe
-			} else if _, ok := s.PointOuts[callsign][ctrl.Callsign]; !ok {
+			} else if _, ok := s.PointOuts[callsign][ctrl.Id()]; !ok {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
@@ -2851,14 +2853,14 @@ func (s *Sim) RejectPointOut(token, callsign string) error {
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
 				Type:           RejectedPointOutEvent,
-				FromController: ctrl.Callsign,
-				ToController:   s.PointOuts[callsign][ctrl.Callsign].FromController,
+				FromController: ctrl.Id(),
+				ToController:   s.PointOuts[callsign][ctrl.Id()].FromController,
 				Callsign:       ac.Callsign,
 			})
 
-			delete(s.PointOuts[callsign], ctrl.Callsign)
+			delete(s.PointOuts[callsign], ctrl.Id())
 
-			err := s.State.STARSComputer().RejectPointOut(ac.Callsign, ctrl.Callsign)
+			err := s.State.STARSComputer().RejectPointOut(ac.Callsign, ctrl.Id())
 			if err != nil {
 				//s.lg.Errorf("RejectPointOut: %v", err)
 			}
@@ -2891,7 +2893,7 @@ func (s *Sim) ReleaseDeparture(token, callsign string) error {
 	if !ok {
 		return av.ErrNoAircraftForCallsign
 	}
-	if s.State.DepartureController(ac, s.lg) != sc.Callsign {
+	if s.State.DepartureController(ac, s.lg) != sc.Id {
 		return ErrInvalidDepartureController
 	}
 
@@ -3185,7 +3187,7 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if lctrl := s.LaunchConfig.Controller; lctrl != "" && lctrl != ctrl.Callsign {
+			if lctrl := s.LaunchConfig.Controller; lctrl != "" && lctrl != ctrl.Id() {
 				return av.ErrOtherControllerHasTrack
 			}
 			return nil
@@ -3204,11 +3206,11 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 
 			s.eventStream.Post(Event{
 				Type:    StatusMessageEvent,
-				Message: fmt.Sprintf("%s deleted %s", ctrl.Callsign, ac.Callsign),
+				Message: fmt.Sprintf("%s deleted %s", ctrl.Id(), ac.Callsign),
 			})
 
 			s.lg.Info("deleted aircraft", slog.String("callsign", ac.Callsign),
-				slog.String("controller", ctrl.Callsign))
+				slog.String("controller", ctrl.Id()))
 
 			s.State.DeleteAircraft(ac)
 

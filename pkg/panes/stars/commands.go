@@ -419,7 +419,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 						fac := ctx.ControlClient.Controllers[ctx.ControlClient.PrimaryTCP].FacilityIdentifier
 						for _, control := range ctx.ControlClient.Controllers {
 							if !control.ERAMFacility && control.FacilityIdentifier == fac {
-								sp.forceQL(ctx, aircraft.Callsign, control.TCP)
+								sp.forceQL(ctx, aircraft.Callsign, control.Id())
 							}
 						}
 					} else {
@@ -428,7 +428,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 							status.err = ErrSTARSIllegalPosition
 							return
 						}
-						sp.forceQL(ctx, aircraft.Callsign, control.TCP)
+						sp.forceQL(ctx, aircraft.Callsign, control.Id())
 					}
 				}
 				status.clear = true
@@ -502,8 +502,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				}
 				status.clear = true
 				return
-			} else if ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.PrimaryTCP]; ctrl != nil && cmd == ctrl.TCP {
-				// 6-87 show QL information in the preview area
+			} else if cmd == ctx.ControlClient.PrimaryTCP { // TODO: any TCP assigned to this scope
+				// 6-91 show QL information in the preview area
 				if ps.QuickLookAll {
 					status.output = "ALL"
 					if ps.QuickLookAllIsPlus {
@@ -830,9 +830,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 							ps.ControllerLeaderLineDirections = make(map[string]math.CardinalOrdinalDirection)
 						}
 						if dir != nil {
-							ps.ControllerLeaderLineDirections[controller.Callsign] = *dir
+							ps.ControllerLeaderLineDirections[controller.Id()] = *dir
 						} else {
-							delete(ps.ControllerLeaderLineDirections, controller.Callsign)
+							delete(ps.ControllerLeaderLineDirections, controller.Id())
 						}
 						status.clear = true
 						return
@@ -2325,8 +2325,8 @@ func (sp *STARSPane) updateQL(ctx *panes.Context, input string) (previewInput st
 
 		for _, pos := range positions {
 			// Toggle
-			match := func(q QuickLookPosition) bool { return q.TCP == pos.TCP && q.Plus == pos.Plus }
-			matchId := func(q QuickLookPosition) bool { return q.TCP == pos.TCP }
+			match := func(q QuickLookPosition) bool { return q.Id == pos.Id && q.Plus == pos.Plus }
+			matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
 			if slices.ContainsFunc(ps.QuickLookPositions, match) {
 				nomatch := func(q QuickLookPosition) bool { return !match(q) }
 				ps.QuickLookPositions = util.FilterSlice(ps.QuickLookPositions, nomatch)
@@ -2344,7 +2344,7 @@ func (sp *STARSPane) updateQL(ctx *panes.Context, input string) (previewInput st
 			} else if b.Plus && !a.Plus {
 				return 1
 			} else {
-				return strings.Compare(a.TCP, b.TCP)
+				return strings.Compare(a.Id, b.Id)
 			}
 		})
 	}
@@ -2481,7 +2481,7 @@ func (sp *STARSPane) handoffTrack(ctx *panes.Context, callsign string, controlle
 		return ErrSTARSIllegalPosition
 	}
 
-	ctx.ControlClient.HandoffTrack(callsign, control.Callsign, nil,
+	ctx.ControlClient.HandoffTrack(callsign, control.Id(), nil,
 		func(err error) { sp.displayError(err, ctx) })
 
 	return nil
@@ -2783,7 +2783,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 							status.err = ErrSTARSIllegalPosition
 							return
 						}
-						sp.forceQL(ctx, ac.Callsign, control.TCP)
+						sp.forceQL(ctx, ac.Callsign, control.Id())
 					}
 					status.clear = true
 					return
@@ -2930,7 +2930,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.err = ErrSTARSIllegalPosition
 				} else {
 					status.clear = true
-					sp.pointOut(ctx, ac.Callsign, control.Callsign)
+					sp.pointOut(ctx, ac.Callsign, control.Id())
 				}
 				return
 
@@ -2946,12 +2946,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
 				if control != nil {
 					if ac.HandoffTrackController == ctx.ControlClient.PrimaryTCP || ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP { // Redirect
-						if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctx.ControlClient.PrimaryTCP, control.TCP) {
+						if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctx.ControlClient.PrimaryTCP, control.Id()) {
 							sp.Aircraft[ac.Callsign].DatablockType = PartialDatablock
 						} else {
 							sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
 						}
-						sp.redirectHandoff(ctx, ac.Callsign, control.Callsign)
+						sp.redirectHandoff(ctx, ac.Callsign, control.Id())
 						status.clear = true
 					} else if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
 						status.clear = true
@@ -3749,12 +3749,12 @@ func (sp *STARSPane) displayError(err error, ctx *panes.Context) {
 }
 
 type QuickLookPosition struct {
-	TCP  string
+	Id   string
 	Plus bool
 }
 
 func (q QuickLookPosition) String() string {
-	return q.TCP + util.Select(q.Plus, "+", "")
+	return q.Id + util.Select(q.Plus, "+", "")
 }
 
 func (sp *STARSPane) parseQuickLookPositions(ctx *panes.Context, s string) ([]QuickLookPosition, string, error) {
@@ -3772,11 +3772,11 @@ func (sp *STARSPane) parseQuickLookPositions(ctx *panes.Context, s string) ([]Qu
 		id = strings.TrimRight(id, "+")
 
 		control := sp.lookupControllerForId(ctx, id, "")
-		if control == nil || control.FacilityIdentifier != "" || control.TCP == ctx.ControlClient.PrimaryTCP {
+		if control == nil || control.FacilityIdentifier != "" || control.Id() == ctx.ControlClient.PrimaryTCP {
 			return positions, strings.Join(ids[i:], " "), ErrSTARSCommandFormat
 		} else {
 			positions = append(positions, QuickLookPosition{
-				TCP:  control.TCP,
+				Id:   control.Id(),
 				Plus: plus,
 			})
 		}

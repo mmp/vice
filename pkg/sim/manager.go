@@ -192,9 +192,9 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 			rs.AvailablePositions[callsign] = struct{}{}
 		}
 		for _, ctrl := range s.controllers {
-			delete(rs.AvailablePositions, ctrl.Callsign)
-			if wc, ok := s.State.Controllers[ctrl.Callsign]; ok && wc.IsHuman {
-				rs.CoveredPositions[ctrl.Callsign] = struct{}{}
+			delete(rs.AvailablePositions, ctrl.Id)
+			if wc, ok := s.State.Controllers[ctrl.Id]; ok && wc.IsHuman {
+				rs.CoveredPositions[ctrl.Id] = struct{}{}
 			}
 		}
 		s.mu.Unlock(s.lg)
@@ -287,7 +287,7 @@ func (sm *SimManager) getSimStatus() []simStatus {
 
 		var controllers []string
 		for _, ctrl := range sim.controllers {
-			controllers = append(controllers, ctrl.Callsign)
+			controllers = append(controllers, ctrl.Id)
 		}
 		sort.Strings(controllers)
 		status.Controllers = strings.Join(controllers, ", ")

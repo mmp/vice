@@ -651,10 +651,10 @@ func (rd *RedirectedHandoff) ShouldFallbackToHandoff(ctrl, octrl string) bool {
 }
 
 func (rd *RedirectedHandoff) AddRedirector(ctrl *Controller) {
-	if len(rd.Redirector) == 0 || rd.Redirector[len(rd.Redirector)-1] != ctrl.Callsign {
+	if len(rd.Redirector) == 0 || rd.Redirector[len(rd.Redirector)-1] != ctrl.Id() {
 		// Don't append the same controller multiple times
 		// (the case in which the last redirector recalls and then redirects again)
-		rd.Redirector = append(rd.Redirector, ctrl.Callsign)
+		rd.Redirector = append(rd.Redirector, ctrl.Id())
 	}
 }
 

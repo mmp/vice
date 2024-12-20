@@ -362,8 +362,8 @@ func (comp *ERAMComputer) HandoffTrack(ac *av.Aircraft, from, to *av.Controller,
 	msg := plan.Message()
 	msg.SourceID = formatSourceID(from.Facility, simTime)
 	msg.TrackInformation = TrackInformation{
-		TrackOwner:        from.Callsign,
-		HandoffController: to.Callsign,
+		TrackOwner:        from.Id(),
+		HandoffController: to.Id(),
 		Identifier:        ac.Callsign,
 	}
 	msg.MessageType = InitiateTransfer
@@ -611,10 +611,10 @@ func (comp *STARSComputer) HandoffTrack(callsign string, from *av.Controller, to
 
 	if to.Facility != from.Facility { // inter-facility
 		msg := trk.FlightPlan.Message()
-		msg.SourceID = formatSourceID(from.Callsign, simTime)
+		msg.SourceID = formatSourceID(from.Id(), simTime)
 		msg.TrackInformation = TrackInformation{
-			TrackOwner:        from.Callsign,
-			HandoffController: to.Callsign,
+			TrackOwner:        from.Id(),
+			HandoffController: to.Id(),
 			Identifier:        callsign,
 		}
 		msg.Identifier = callsign
@@ -622,12 +622,12 @@ func (comp *STARSComputer) HandoffTrack(callsign string, from *av.Controller, to
 		comp.SendTrackInfo(to.Facility, msg, simTime)
 
 		comp.TrackInformation[callsign] = &TrackInformation{
-			TrackOwner:        from.Callsign,
-			HandoffController: to.Callsign,
+			TrackOwner:        from.Id(),
+			HandoffController: to.Id(),
 			FlightPlan:        trk.FlightPlan,
 		}
 	} else {
-		trk.HandoffController = to.Callsign
+		trk.HandoffController = to.Id()
 	}
 	return nil
 }
@@ -661,9 +661,9 @@ func (comp *STARSComputer) AcceptHandoff(ac *av.Aircraft, ctrl *av.Controller,
 		}
 
 		msg := fp.Message()
-		msg.SourceID = formatSourceID(ctrl.Callsign, simTime)
+		msg.SourceID = formatSourceID(ctrl.Id(), simTime)
 		msg.TrackInformation = TrackInformation{
-			TrackOwner: ctrl.Callsign,
+			TrackOwner: ctrl.Id(),
 		}
 		msg.MessageType = AcceptRecallTransfer
 		msg.Identifier = ac.Callsign
@@ -680,7 +680,7 @@ func (comp *STARSComputer) AcceptHandoff(ac *av.Aircraft, ctrl *av.Controller,
 	}
 
 	trk.HandoffController = ""
-	trk.TrackOwner = ctrl.Callsign
+	trk.TrackOwner = ctrl.Id()
 	return nil
 }
 
@@ -725,9 +725,9 @@ func (comp *STARSComputer) CancelHandoff(ac *av.Aircraft, ctrl *av.Controller,
 
 	if octrl.Facility != ctrl.Facility { // inter-facility
 		msg := trk.FlightPlan.Message()
-		msg.SourceID = formatSourceID(ctrl.Callsign, simTime)
+		msg.SourceID = formatSourceID(ctrl.Id(), simTime)
 		msg.TrackInformation = TrackInformation{
-			TrackOwner: ctrl.Callsign,
+			TrackOwner: ctrl.Id(),
 			Identifier: ac.Callsign,
 		}
 		msg.Identifier = ac.Callsign
@@ -735,11 +735,11 @@ func (comp *STARSComputer) CancelHandoff(ac *av.Aircraft, ctrl *av.Controller,
 		comp.SendTrackInfo(octrl.Facility, msg, simTime)
 
 		comp.TrackInformation[ac.Callsign] = &TrackInformation{
-			TrackOwner: ctrl.Callsign,
+			TrackOwner: ctrl.Id(),
 			FlightPlan: trk.FlightPlan,
 		}
 	} else {
-		trk.HandoffController = octrl.Callsign
+		trk.HandoffController = octrl.Id()
 	}
 	return nil
 }
@@ -752,12 +752,12 @@ func (comp *STARSComputer) RedirectHandoff(ac *av.Aircraft, ctrl, octrl *av.Cont
 
 	// FIXME(mtrokel): ac.TrackingController
 	trk.RedirectedHandoff.OriginalOwner = ac.TrackingController
-	if trk.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Callsign, octrl.Callsign) {
+	if trk.RedirectedHandoff.ShouldFallbackToHandoff(ctrl.Id(), octrl.Id()) {
 		trk.HandoffController = trk.RedirectedHandoff.Redirector[0]
 		trk.RedirectedHandoff = av.RedirectedHandoff{}
 	} else {
 		trk.RedirectedHandoff.AddRedirector(ctrl)
-		trk.RedirectedHandoff.RedirectedTo = octrl.Callsign
+		trk.RedirectedHandoff.RedirectedTo = octrl.Id()
 	}
 	return nil
 }
@@ -768,11 +768,11 @@ func (comp *STARSComputer) AcceptRedirectedHandoff(ac *av.Aircraft, ctrl *av.Con
 		return av.ErrNotBeingHandedOffToMe
 	}
 
-	if trk.RedirectedHandoff.RedirectedTo == ctrl.Callsign { // Accept
+	if trk.RedirectedHandoff.RedirectedTo == ctrl.Id() { // Accept
 		trk.HandoffController = ""
 		trk.TrackOwner = trk.RedirectedHandoff.RedirectedTo
 		trk.RedirectedHandoff = av.RedirectedHandoff{}
-	} else if trk.RedirectedHandoff.GetLastRedirector() == ctrl.Callsign { // Recall (only the last redirector is able to recall)
+	} else if trk.RedirectedHandoff.GetLastRedirector() == ctrl.Id() { // Recall (only the last redirector is able to recall)
 		if n := len(trk.RedirectedHandoff.Redirector); n > 1 { // Multiple redirected handoff, recall & still show "RD"
 			trk.RedirectedHandoff.RedirectedTo = trk.RedirectedHandoff.Redirector[n-1]
 		} else { // One redirect took place, clear the RD and show it as a normal handoff
