@@ -813,7 +813,7 @@
   "control_positions": {
     "IND_33_CTR": {
       "frequency": 124525,
-      "full_name": "Indianapolis Center",
+      "radio_name": "Indianapolis Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -821,7 +821,7 @@
     },
     "IND_34_CTR": {
       "frequency": 119550,
-      "full_name": "Indianapolis Center",
+      "radio_name": "Indianapolis Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -829,7 +829,7 @@
     },
     "IND_35_CTR": {
       "frequency": 132200,
-      "full_name": "Indianapolis Center",
+      "radio_name": "Indianapolis Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -837,7 +837,7 @@
     },
     "CHI_35_CTR": {
       "frequency": 134875,
-      "full_name": "Chicago Center",
+      "radio_name": "Chicago Center",
       "facility_id": "Z",
       "eram_facility": true,
       "scope_char": "C",
@@ -845,7 +845,7 @@
     },
     "CHI_51_CTR": {
       "frequency": 133150,
-      "full_name": "Chicago Center",
+      "radio_name": "Chicago Center",
       "facility_id": "Z",
       "eram_facility": true,
       "scope_char": "C",
@@ -853,109 +853,109 @@
     },
     "IND_E_APP": {
       "frequency": 124950,
-      "full_name": "Indianapolis Approach",
+      "radio_name": "Indianapolis Approach",
       "scope_char": "E",
       "sector_id": "1E"
     },
     "IND_W_APP": {
       "frequency": 119050,
-      "full_name": "Indianapolis Approach",
+      "radio_name": "Indianapolis Approach",
       "scope_char": "W",
       "sector_id": "1W"
     },
     "IND_B_APP": {
       "frequency": 121100,
-      "full_name": "Indianapolis Approach",
+      "radio_name": "Indianapolis Approach",
       "scope_char": "B",
       "sector_id": "1B"
     },
     "IND_D_APP": {
       "frequency": 128175,
-      "full_name": "Indianapolis Approach",
+      "radio_name": "Indianapolis Approach",
       "scope_char": "D",
       "sector_id": "1D"
     },
     "IND_F_APP": {
       "frequency": 123950,
-      "full_name": "Indianapolis Approach",
+      "radio_name": "Indianapolis Approach",
       "scope_char": "F",
       "sector_id": "1F"
     },
     "IND_I_APP": {
       "frequency": 120525,
-      "full_name": "Indianapolis Approach",
+      "radio_name": "Indianapolis Approach",
       "scope_char": "I",
       "sector_id": "1I"
     },
     "IND_S_APP": {
       "frequency": 127150,
-      "full_name": "Indianapolis Approach",
+      "radio_name": "Indianapolis Approach",
       "scope_char": "S",
       "sector_id": "1S"
     },
     "IND_N_APP": {
       "frequency": 124650,
-      "full_name": "Indianapolis Approach",
+      "radio_name": "Indianapolis Approach",
       "scope_char": "N",
       "sector_id": "1N"
     },
     "IND_E_TWR": {
       "frequency": 120900,
-      "full_name": "Indianapolis Tower",
+      "radio_name": "Indianapolis Tower",
       "scope_char": "Y",
       "sector_id": "1Y"
     },
     "IND_W_TWR": {
       "frequency": 127825,
-      "full_name": "Indianapolis Tower",
+      "radio_name": "Indianapolis Tower",
       "scope_char": "X",
       "sector_id": "1X"
     },
     "CMH_U_APP": {
       "frequency": 118420,
-      "full_name": "Columbus Approach",
+      "radio_name": "Columbus Approach",
       "facility_id": "1",
       "scope_char": "U",
       "sector_id": "11U"
     },
     "CVG_N_APP": {
       "frequency": 123875,
-      "full_name": "Cincinnati Approach",
+      "radio_name": "Cincinnati Approach",
       "facility_id": "2",
       "scope_char": "N",
       "sector_id": "21N"
     },
     "HUF_H_APP": {
       "frequency": 125450,
-      "full_name": "Hulman Approach",
+      "radio_name": "Hulman Approach",
       "facility_id": "3",
       "scope_char": "H",
       "sector_id": "31H"
     },
     "HUF_Q_APP": {
       "frequency": 119800,
-      "full_name": "Hulman Approach",
+      "radio_name": "Hulman Approach",
       "facility_id": "3",
       "scope_char": "Q",
       "sector_id": "31Q"
     },
     "HUF_G_APP": {
       "frequency": 128025,
-      "full_name": "Hulman Approach",
+      "radio_name": "Hulman Approach",
       "facility_id": "3",
       "scope_char": "G",
       "sector_id": "31G"
     },
     "GUS_E_APP": {
       "frequency": 121050,
-      "full_name": "Grissom Approach",
+      "radio_name": "Grissom Approach",
       "facility_id": "4",
       "scope_char": "E",
       "sector_id": "41E"
     },
     "FWA_W_APP": {
       "frequency": 127200,
-      "full_name": "Fort Wayne Approach",
+      "radio_name": "Fort Wayne Approach",
       "facility_id": "5",
       "scope_char": "W",
       "sector_id": "51W"

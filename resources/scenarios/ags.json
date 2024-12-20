@@ -414,7 +414,7 @@
   "control_positions": {
     "ATL_CTR": {
       "frequency": 132975,
-      "full_name": "Atlanta Center",
+      "radio_name": "Atlanta Center",
       "scope_char": "C",
       "sector_id": "C43",
       "facility_id": "C",
@@ -422,7 +422,7 @@
     },
     "JAX_CTR": {
       "frequency": 135925,
-      "full_name": "Jaxsonville Center",
+      "radio_name": "Jaxsonville Center",
       "scope_char": "J",
       "sector_id": "J30",
       "facility_id": "J",
@@ -430,26 +430,26 @@
     },
     "CAE_APP": {
       "frequency": 133400,
-      "full_name": "Columbia Approach",
+      "radio_name": "Columbia Approach",
       "scope_char": "N",
       "sector_id": "1N",
       "facility_id": "1"
     },
     "AGS_TWR": {
       "frequency": 118700,
-      "full_name": "Augusta Tower",
+      "radio_name": "Augusta Tower",
       "scope_char": "T",
       "sector_id": "1T"
     },
     "AGS_E_APP": {
       "frequency": 119150,
-      "full_name": "Augusta Approach",
+      "radio_name": "Augusta Approach",
       "scope_char": "E",
       "sector_id": "1E"
     },
     "AGS_W_APP": {
       "frequency": 126800,
-      "full_name": "Augusta Approach",
+      "radio_name": "Augusta Approach",
       "scope_char": "W",
       "sector_id": "1W"
   }

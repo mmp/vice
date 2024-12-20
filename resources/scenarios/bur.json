@@ -1039,7 +1039,7 @@
     "control_positions": {
         "LAX_55_CTR": {
             "frequency": 135550,
-            "full_name": "Los Angeles Center",
+            "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
@@ -1047,67 +1047,67 @@
         },
         "BUR_M_APP": {
             "frequency": 128750,
-            "full_name": "SoCal Approach",
+            "radio_name": "SoCal Approach",
             "scope_char": "M",
             "sector_id": "1M"
         },
         "BUR_V_APP": {
             "frequency": 124600,
-            "full_name": "SoCal Approach",
+            "radio_name": "SoCal Approach",
             "scope_char": "V",
             "sector_id": "1V"
         },
         "BUR_W_APP": {
             "frequency": 134200,
-            "full_name": "SoCal Approach",
+            "radio_name": "SoCal Approach",
             "scope_char": "W",
             "sector_id": "1W"
         },
         "ONT_N_APP": {
             "frequency": 127000,
-            "full_name": "SoCal Approach",
+            "radio_name": "SoCal Approach",
             "scope_char": "N",
             "sector_id": "3N"
         },
         "LAX_D_APP": {
             "frequency": 124900,
-            "full_name": "SoCal Approach",
+            "radio_name": "SoCal Approach",
             "scope_char": "D",
             "sector_id": "2D"
         },
         "LAX_S_DEP": {
             "frequency": 124300,
-            "full_name": "SoCal Departure",
+            "radio_name": "SoCal Departure",
             "scope_char": "S",
             "sector_id": "6S"
         },
         "JCF_APP": {
             "frequency": 133650,
-            "full_name": "Joshua Approach",
+            "radio_name": "Joshua Approach",
             "scope_char": "J",
             "sector_id": "1J"
         },
         "NTD_APP": {
             "frequency": 124700,
-            "full_name": "Point Mugu Approach",
+            "radio_name": "Point Mugu Approach",
             "scope_char": "U",
             "sector_id": "1U"
         },
         "BUR_TWR": {
             "frequency": 118700,
-            "full_name": "Burbank Tower",
+            "radio_name": "Burbank Tower",
             "scope_char": "T",
             "sector_id": "1T"
         },
         "VNY_TWR": {
             "frequency": 118300,
-            "full_name": "Van Nuys Tower",
+            "radio_name": "Van Nuys Tower",
             "scope_char": "T",
             "sector_id": "2T"
         },
         "WHP_TWR": {
             "frequency": 135000,
-            "full_name": "Whiteman Tower",
+            "radio_name": "Whiteman Tower",
             "scope_char": "T",
             "sector_id": "3T"
         }

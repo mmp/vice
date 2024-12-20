@@ -1571,7 +1571,7 @@
   "control_positions": {
     "KC_54_CTR": {
       "frequency": 127475,
-      "full_name": "Kansas City Center",
+      "radio_name": "Kansas City Center",
       "scope_char": "C",
       "eram_facility": true,
       "facility_id": "K",
@@ -1579,7 +1579,7 @@
     },
       "FTW_51_CTR": {
         "frequency": 135175,
-        "full_name": "Fort Worth Center",
+        "radio_name": "Fort Worth Center",
         "scope_char": "C",
         "eram_facility": true,
         "facility_id": "C",
@@ -1587,37 +1587,37 @@
     },
     "OKC_TWR": {
       "frequency": 119350,
-      "full_name": "International Tower",
+      "radio_name": "International Tower",
       "sector_id": "1T",
       "scope_char": "T"
     },
     "OKC_W_APP": {
       "frequency": 124600,
-      "full_name": "Oklahoma City Approach",
+      "radio_name": "Oklahoma City Approach",
       "sector_id": "1W",
       "scope_char": "W"
     },
     "OKC_F_APP": {
       "frequency": 133600,
-      "full_name": "Oklahoma City Approach",
+      "radio_name": "Oklahoma City Approach",
       "sector_id": "1F",
       "scope_char": "F"
     },
     "OKC_E_APP": {
       "frequency": 124200,
-      "full_name": "Oklahoma City Approach",
+      "radio_name": "Oklahoma City Approach",
       "sector_id": "1E",
       "scope_char": "E"
     },
     "OKC_D_APP": {
       "frequency": 120450,
-      "full_name": "Oklahoma City Approach",
+      "radio_name": "Oklahoma City Approach",
       "sector_id": "1D",
       "scope_char": "D"
     },
     "OKC_S_APP": {
       "frequency": 126650,
-      "full_name": "Oklahoma City Approach",
+      "radio_name": "Oklahoma City Approach",
       "sector_id": "1S",
       "scope_char": "S" 
     }

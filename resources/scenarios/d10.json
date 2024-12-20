@@ -3481,7 +3481,7 @@
     "control_positions": {
         "FTW_29_CTR": {
             "frequency": 135250, 
-            "full_name": "Forth Worth Center",
+            "radio_name": "Forth Worth Center",
             "scope_char": "C",
             "sector_id": "C29",
             "facility_id": "C",
@@ -3489,14 +3489,14 @@
         },
         "ACT_H_APP": {
             "frequency": 127650,
-            "full_name": "Waco Approach",
+            "radio_name": "Waco Approach",
             "scope_char": "H",
             "sector_id": "1H",
             "facility_id": "W"
         },
         "FTW_32_CTR": {
             "frequency": 127000,
-            "full_name": "Forth Worth Center",
+            "radio_name": "Forth Worth Center",
             "scope_char": "C",
             "sector_id": "C32",
             "facility_id": "C",
@@ -3504,7 +3504,7 @@
         },
         "FTW_37_CTR": {
             "frequency": 124875,
-            "full_name": "Forth Worth Center",
+            "radio_name": "Forth Worth Center",
             "scope_char": "C",
             "sector_id": "C37",
             "facility_id": "C",
@@ -3512,7 +3512,7 @@
         },
         "FTW_53_CTR": {
             "frequency": 124750,
-            "full_name": "Forth Worth Center",
+            "radio_name": "Forth Worth Center",
             "scope_char": "C",
             "sector_id": "C53",
             "facility_id": "C",
@@ -3520,7 +3520,7 @@
         },
         "FTW_62_CTR": {
             "frequency": 127150, 
-            "full_name": "Forth Worth Center",
+            "radio_name": "Forth Worth Center",
             "scope_char": "C",
             "sector_id": "C62",
             "facility_id": "C",
@@ -3528,7 +3528,7 @@
         },
         "FTW_75_CTR": {
             "frequency": 127950,
-            "full_name": "Forth Worth Center",
+            "radio_name": "Forth Worth Center",
             "scope_char": "C",
             "sector_id": "C75",
             "facility_id": "C",
@@ -3536,7 +3536,7 @@
         },
         "FTW_83_CTR": {
             "frequency": 132025,
-            "full_name": "Forth Worth Center",
+            "radio_name": "Forth Worth Center",
             "scope_char": "C",
             "sector_id": "C83",
             "facility_id": "C",
@@ -3544,7 +3544,7 @@
         },
         "FTW_96_CTR": {
             "frequency": 133300, 
-            "full_name": "Forth Worth Center",
+            "radio_name": "Forth Worth Center",
             "scope_char": "C",
             "sector_id": "C96",
             "facility_id": "C",
@@ -3552,189 +3552,189 @@
         },
         "REG_L_DEP": {
             "frequency": 118550,
-            "full_name": "Regional Departure",
+            "radio_name": "Regional Departure",
             "scope_char": "L",
             "sector_id": "1L"
           },
           "REG_Q_DEP": {
             "frequency": 125125,
-            "full_name": "Regional Departure",
+            "radio_name": "Regional Departure",
             "scope_char": "Q",
             "sector_id": "1Q"
           },
           "REG_Z_DEP": {
             "frequency": 126475,
-            "full_name": "Regional Departure",
+            "radio_name": "Regional Departure",
             "scope_char": "Z",
             "sector_id": "1Z"
           },
           "REG_E_APP": {
             "default_airport": "KDFW",
             "frequency": 125020,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "E",
             "sector_id": "1E"
           },
           "REG_A_APP": {
             "default_airport": "KDFW",
             "frequency": 133525,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "A",
             "sector_id": "1A"
           },
           "REG_W_APP": {
             "default_airport": "KDFW",
             "frequency": 119870,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "W",
             "sector_id": "1W"
           },
           "REG_Y_APP": {
             "default_airport": "KDFW",
             "frequency": 133625,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "Y",
             "sector_id": "1Y"
           },
           "REG_G_APP": {
             "default_airport": "KDFW",
             "frequency": 119400,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "G",
             "sector_id": "1G"
           },
           "REG_J_APP": {
             "default_airport": "KDFW",
             "frequency": 127070,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "J",
             "sector_id": "1J"
           },
           "REG_H_APP": {
             "default_airport": "KDFW",
             "frequency": 118425,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "H",
             "sector_id": "1H"
           },
           "REG_N_APP": {
             "default_airport": "KDFW",
             "frequency": 124300,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "N",
             "sector_id": "1N"
           },
           "REG_U_APP": {
             "default_airport": "KDFW",
             "frequency": 125275,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "U",
             "sector_id": "1U"
           },
           "REG_S_APP": {
             "default_airport": "KDFW",
             "frequency": 125200,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "S",
             "sector_id": "1S"
           },
           "REG_V_APP": {
             "default_airport": "KDFW",
             "frequency": 135500,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "V",
             "sector_id": "1V"
           },
           "REG_K_APP": {
             "default_airport": "KDFW",
             "frequency": 123900,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "K",
             "sector_id": "1K"
           },
           "REG_F_APP": {
             "default_airport": "KDFW",
             "frequency": 124250,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "F",
             "sector_id": "1F"
           },
           "REG_M_APP": {
             "default_airport": "KDFW",
             "frequency": 118100,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "M",
             "sector_id": "1M"
           },
           "REG_B_APP": {
             "default_airport": "KDFW",
             "frequency": 119050,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "B",
             "sector_id": "1B"
           },
           "REG_P_APP": {
             "default_airport": "KDFW",
             "frequency": 125800,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "P",
             "sector_id": "1P"
           },
           "REG_D_APP": {
             "default_airport": "KDFW",
             "frequency": 135975,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "D",
             "sector_id": "1D"
           },
           "REG_R_APP": {
             "default_airport": "KDFW",
             "frequency": 133150,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "R",
             "sector_id": "1R"
           },
           "REG_T_APP": {
             "default_airport": "KDFW",
             "frequency": 124825,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "T",
             "sector_id": "1T"
           },
           "REG_X_APP": {
             "default_airport": "KDFW",
             "frequency": 124075,
-            "full_name": "Regional Approach",
+            "radio_name": "Regional Approach",
             "scope_char": "X",
             "sector_id": "1X"
           },        
         "AFW_TWR": {
             "frequency": 135150, 
-            "full_name": "Alliance Tower",
+            "radio_name": "Alliance Tower",
             "scope_char": "T",
             "sector_id": "19"
         },
         "DAL_TWR": {
             "frequency": 123700, 
-            "full_name": "Love Tower", 
+            "radio_name": "Love Tower", 
             "scope_char": "T",
             "sector_id": "16"
         },
         "DFW_E1_TWR": {
             "frequency": 126550, 
-            "full_name": "Forth Worth Tower",
+            "radio_name": "Forth Worth Tower",
             "scope_char": "T",
             "sector_id": "11"
         },
         "DFW_W1_TWR": {
             "frequency": 124150,
-            "full_name": "Forth Worth Tower",
+            "radio_name": "Forth Worth Tower",
             "scope_char": "T",
             "sector_id": "12"
         },
         "DFW_E3_TWR": {
             "frequency": 127500, 
-            "full_name": "Forth Worth Tower",
+            "radio_name": "Forth Worth Tower",
             "scope_char": "T",
             "sector_id": "13"
         }

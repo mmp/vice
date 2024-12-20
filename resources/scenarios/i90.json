@@ -3,7 +3,7 @@
     "control_positions": {
         "HOU_81_CTR": {
             "frequency": 134425,
-            "full_name": "Houston Center",
+            "radio_name": "Houston Center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
@@ -11,145 +11,145 @@
         },
         "I90_DEP": {
             "frequency": 132250,
-            "full_name": "Houston Departure",
+            "radio_name": "Houston Departure",
             "scope_char": "M",
             "sector_id": "1M"
         },
         "I90_R_APP": {
             "frequency": 119700,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "R",
             "sector_id": "1R"
         },
         "I90_P_APP": {
             "frequency": 123800,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "P",
             "sector_id": "1P"
         },
         "I90_N_APP": {
             "frequency": 124350,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "N",
             "sector_id": "1N"
         },
         "I90_X_APP": {
             "frequency": 119175,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "X",
             "sector_id": "1X"
         },
         "I90_U_APP": {
             "frequency": 134300,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "U",
             "sector_id": "1U"
         },
         "I90_T_APP": {
             "frequency": 127475,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "T",
             "sector_id": "1T"
         },
         "I90_Z_APP": {
             "frequency": 124225,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "Z",
             "sector_id": "1Z"
         },
         "I90_B_APP": {
             "frequency": 134450,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "B",
             "sector_id": "1B"
         },
         "I90_J_APP": {
             "frequency": 121300,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "J",
             "sector_id": "1J"
         },
         "I90_D_APP": {
             "frequency": 120050,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "D",
             "sector_id": "1D"
         },
         "I90_G_APP": {
             "frequency": 119625,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "G",
             "sector_id": "1G"
         },
         "I90_H_APP": {
             "frequency": 133050,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "H",
             "sector_id": "1H"
         },
         "I90_A_APP": {
             "frequency": 119100,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "A",
             "sector_id": "1A"
         },
         "I90_I_APP": {
             "frequency": 120650,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "I",
             "sector_id": "1I"
         },
         "I90_O_APP": {
             "frequency": 134000,
-            "full_name": "Houston Approach",
+            "radio_name": "Houston Approach",
             "scope_char": "O",
             "sector_id": "1O"
         },
         "IAH_C_TWR": {
             "frequency": 125350,
-            "full_name": "Houston Tower",
+            "radio_name": "Houston Tower",
             "scope_char": "Z",
             "sector_id": "4Z"
         },
         "HOU_TWR": {
             "frequency": 118700,
-            "full_name": "Hobby Tower",
+            "radio_name": "Hobby Tower",
             "scope_char": "O",
             "sector_id": "4O"
         },
         "SGR_TWR": {
             "frequency": 118650,
-            "full_name": "Sugar Land Tower",
+            "radio_name": "Sugar Land Tower",
             "scope_char": "T",
             "sector_id": "01"
         },
         "DWH_TWR": {
             "frequency": 118400,
-            "full_name": "Hooks Tower",
+            "radio_name": "Hooks Tower",
             "scope_char": "T",
             "sector_id": "02"
         },
         "CXO_TWR": {
             "frequency": 124125,
-            "full_name": "Conroe Tower",
+            "radio_name": "Conroe Tower",
             "scope_char": "R",
             "sector_id": "03"
         },
         "CLL_TWR": {
             "frequency": 118500,
-            "full_name": "Easterwood Tower",
+            "radio_name": "Easterwood Tower",
             "scope_char": "T",
             "sector_id": "04"
         },
         "BPT_TWR": {
             "frequency": 119500,
-            "full_name": "Beaumont Tower",
+            "radio_name": "Beaumont Tower",
             "scope_char": "T",
             "sector_id": "05"
         },
         "GLS_TWR": {
             "frequency": 120575,
-            "full_name": "Galveston Tower",
+            "radio_name": "Galveston Tower",
             "scope_char": "T",
             "sector_id": "06"
         }

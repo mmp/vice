@@ -278,19 +278,19 @@
     "control_positions": {
         "CPR_APP": {
             "frequency": 120650,
-            "full_name": "Capser approach",
+            "radio_name": "Capser approach",
             "scope_char": "A",
             "sector_id": "1A"
         },
         "CPR_TWR": {
             "frequency": 118300,
-            "full_name": "Casper tower",
+            "radio_name": "Casper tower",
             "scope_char": "1",
             "sector_id": "1T"
         },
         "DEN_17_CTR": {
             "frequency": 127650,
-            "full_name": "Denver center",
+            "radio_name": "Denver center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",

@@ -6478,7 +6478,7 @@
     "control_positions": {
         "DEN_15_CTR": {
             "frequency": 118470,
-            "full_name": "Denver Center",
+            "radio_name": "Denver Center",
             "scope_char": "C",
             "sector_id": "C15",
             "facility_id": "C",
@@ -6486,7 +6486,7 @@
         },
         "DEN_07_CTR": {
             "frequency": 133950,
-            "full_name": "Denver Center",
+            "radio_name": "Denver Center",
             "scope_char": "C",
             "sector_id": "C07",
             "facility_id": "C",
@@ -6494,7 +6494,7 @@
         },
         "DEN_27_CTR": {
             "frequency": 133400,
-            "full_name": "Denver Center",
+            "radio_name": "Denver Center",
             "scope_char": "C",
             "sector_id": "C27",
             "facility_id": "C",
@@ -6502,7 +6502,7 @@
         },
         "DEN_41_CTR": {
             "frequency": 128370,
-            "full_name": "Denver Center",
+            "radio_name": "Denver Center",
             "scope_char": "C",
             "sector_id": "C41",
             "facility_id": "C",
@@ -6510,7 +6510,7 @@
         },
         "DEN_26_CTR": {
             "frequency": 119850,
-            "full_name": "Denver Center",
+            "radio_name": "Denver Center",
             "scope_char": "C",
             "sector_id": "C26",
             "facility_id": "C",
@@ -6518,7 +6518,7 @@
         },
         "DEN_06_CTR": {
             "frequency": 128650,
-            "full_name": "Denver Center",
+            "radio_name": "Denver Center",
             "scope_char": "C",
             "sector_id": "C06",
             "facility_id": "C",
@@ -6526,7 +6526,7 @@
         },
         "DEN_13_CTR": {
             "frequency": 126500,
-            "full_name": "Denver Center",
+            "radio_name": "Denver Center",
             "scope_char": "C",
             "sector_id": "C13",
             "facility_id": "C",
@@ -6534,7 +6534,7 @@
         },
         "DEN_21_CTR": {
             "frequency": 125900,
-            "full_name": "Denver Center",
+            "radio_name": "Denver Center",
             "scope_char": "C",
             "sector_id": "C21",
             "facility_id": "C",
@@ -6542,153 +6542,153 @@
         },
         "DEN_I_APP": {
             "frequency": 120350,
-            "full_name": "Denver Approach",
+            "radio_name": "Denver Approach",
             "scope_char": "I",
             "sector_id": "1I"
         },
         "DEN_H_APP": {
             "frequency": 119300,
-            "full_name": "Denver Approach",
+            "radio_name": "Denver Approach",
             "scope_char": "H",
             "sector_id": "1H"
         },
         "DEN_G_APP": {
             "frequency": 124950,
-            "full_name": "Denver Approach",
+            "radio_name": "Denver Approach",
             "scope_char": "G",
             "sector_id": "1G"
         },
         "DEN_X_APP": {
             "frequency": 126550,
-            "full_name": "Denver Approach",
+            "radio_name": "Denver Approach",
             "scope_char": "X",
             "sector_id": "1X"
         },
         "DEN_W_APP": {
             "frequency": 123850,
-            "full_name": "Denver Approach",
+            "radio_name": "Denver Approach",
             "scope_char": "W",
             "sector_id": "1W"
         },
         "DEN_E_APP": {
             "frequency": 120800,
-            "full_name": "Denver Approach",
+            "radio_name": "Denver Approach",
             "scope_char": "E",
             "sector_id": "1E"
         },
         "DEN_O_APP": {
             "frequency": 125750,
-            "full_name": "Denver Approach",
+            "radio_name": "Denver Approach",
             "scope_char": "O",
             "sector_id": "1O"
         },
         "DEN_T_APP": {
             "frequency": 133620,
-            "full_name": "Denver Approach",
+            "radio_name": "Denver Approach",
             "scope_char": "T",
             "sector_id": "1T"
         },
         "DEN_L_DEP": {
             "frequency": 126100,
-            "full_name": "Denver Departure",
+            "radio_name": "Denver Departure",
             "scope_char": "L",
             "sector_id": "1L"
         },
         "DEN_N_DEP": {
             "frequency": 127050,
-            "full_name": "Denver Departure",
+            "radio_name": "Denver Departure",
             "scope_char": "N",
             "sector_id": "1N"
         },
         "DEN_R_DEP": {
             "frequency": 128250,
-            "full_name": "Denver Departure",
+            "radio_name": "Denver Departure",
             "scope_char": "R",
             "sector_id": "1R"
         },
         "DEN_S_DEP": {
             "frequency": 128450,
-            "full_name": "Denver Departure",
+            "radio_name": "Denver Departure",
             "scope_char": "S",
             "sector_id": "1S"
         },
 		"DEN_J_APP": {
             "frequency": 125120,
-            "full_name": "Denver Approach",
+            "radio_name": "Denver Approach",
             "scope_char": "J",
             "sector_id": "1J"
         },
         "DEN_D_APP": {
             "frequency": 134850,
-            "full_name": "Denver Approach",
+            "radio_name": "Denver Approach",
             "scope_char": "D",
             "sector_id": "1D"
         },
         "DEN_A_APP": {
             "frequency": 132750,
-            "full_name": "Denver Approach",
+            "radio_name": "Denver Approach",
             "scope_char": "A",
             "sector_id": "1A"
         },
 		"COS_APP": {
             "frequency": 124000,
-            "full_name": "Springs Approach",
+            "radio_name": "Springs Approach",
 			"facility_id": "2",
             "scope_char": "A",
             "sector_id": "2A"
         },
 		"CYS_APP": {
             "frequency": 124550,
-            "full_name": "Cheyenne Approach",
+            "radio_name": "Cheyenne Approach",
 			"facility_id": "6",
             "scope_char": "A",
             "sector_id": "6A"
         },
         "DEN_E_TWR": {
             "frequency": 132350,
-            "full_name": "Denver Tower",
+            "radio_name": "Denver Tower",
             "scope_char": "1",
             "sector_id": "1ET"
         },
 		"DEN_S_TWR": {
             "frequency": 124300,
-            "full_name": "Denver Tower",
+            "radio_name": "Denver Tower",
             "scope_char": "2",
             "sector_id": "1ST"
         },
         "DEN_W_TWR": {
             "frequency": 128750,
-            "full_name": "Denver Tower",
+            "radio_name": "Denver Tower",
             "scope_char": "3",
             "sector_id": "1WT"
         },
         "DEN_N_TWR": {
             "frequency": 135300,
-            "full_name": "Denver Tower",
+            "radio_name": "Denver Tower",
             "scope_char": "4",
             "sector_id": "1NT"
         },
         "APA_TWR": {
             "frequency": 118900,
-            "full_name": "Centennial Tower",
+            "radio_name": "Centennial Tower",
             "scope_char": "Y",
             "sector_id": "2Y"
         },
         "BJC_TWR": {
             "frequency": 118600,
-            "full_name": "Metro Tower",
+            "radio_name": "Metro Tower",
             "scope_char": "B",
             "sector_id": "2B"
         },
         "FNL_TWR": {
             "frequency": 118400,
-            "full_name": "NoCo Tower",
+            "radio_name": "NoCo Tower",
             "scope_char": "F",
             "sector_id": "2F"
         },
         "GXY_TWR": {
             "frequency": 118800,
-            "full_name": "Greeley Tower",
+            "radio_name": "Greeley Tower",
             "scope_char": "*",
             "sector_id": "GT"
         }

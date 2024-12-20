@@ -1585,43 +1585,43 @@
   "control_positions": {
     "AAC_NR_APP": {
       "frequency": 120200,
-      "full_name": "Academy Approach",
+      "radio_name": "Academy Approach",
       "scope_char": "N",
       "sector_id": "1N"
     },
     "AAC_SR_APP": {
       "frequency": 119500,
-      "full_name": "Academy Approach",
+      "radio_name": "Academy Approach",
       "scope_char": "S",
       "sector_id": "1S"
     },
     "AAC_F_APP": {
       "frequency": 126600,
-      "full_name": "Academy Approach",
+      "radio_name": "Academy Approach",
       "scope_char": "F",
       "sector_id": "1F"
     },
     "AAC_TWR": {
       "frequency": 119200,
-      "full_name": "Academy Tower",
+      "radio_name": "Academy Tower",
       "scope_char": "T",
       "sector_id": "1T"
     },
     "JKE_TWR": {
       "frequency": 126200,
-      "full_name": "Jeske Tower",
+      "radio_name": "Jeske Tower",
       "scope_char": "T",
       "sector_id": "2T"
     },
     "SGF_APP": {
       "frequency": 120500,
-      "full_name": "Springfield Approach",
+      "radio_name": "Springfield Approach",
       "scope_char": "S",
       "sector_id": "3A"
     },
     "ZAE_OKC_LOW": {
       "frequency": 135000,
-      "full_name": "Oklahoma Center",
+      "radio_name": "Oklahoma Center",
       "facility_id": "O",
       "eram_facility": true,
       "scope_char": "C",
@@ -1629,7 +1629,7 @@
     },
     "ZAE_TUL_LOW": {
       "frequency": 136000,
-      "full_name": "Tulsa Center",
+      "radio_name": "Tulsa Center",
       "facility_id": "T",
       "eram_facility": true,
       "scope_char": "C",

@@ -590,25 +590,25 @@
          "control_positions": {
             "SGF_E_APP": {
                 "frequency": 124950,
-                "full_name": "Springfield approach",
+                "radio_name": "Springfield approach",
                 "scope_char": "E",
                 "sector_id": "1E"
             },
 			"SGF_W_APP": {
                 "frequency": 121100,
-                "full_name": "Springfield approach",
+                "radio_name": "Springfield approach",
                 "scope_char": "W",
                 "sector_id": "1W"
             },
             "SGF_TWR": {
                 "frequency": 119900,
-                "full_name": "Springfield tower",
+                "radio_name": "Springfield tower",
                 "scope_char": "1",
                 "sector_id": "1T"
             },
             "KC_77_CTR": {
                 "frequency": 127500,
-                "full_name": "Kansas City center",
+                "radio_name": "Kansas City center",
                 "facility_id": "C",
                 "eram_facility": true,
                 "scope_char": "C",
@@ -616,13 +616,13 @@
             },
             "MZU_APP": {
                 "frequency": 124375,
-                "full_name": "Mizzu approach",
+                "radio_name": "Mizzu approach",
                 "scope_char": "M",
                 "sector_id": "2M"
             },
             "LBO_TWR": {
                 "frequency": 122800,
-                "full_name": "Jones lebanon unicom",
+                "radio_name": "Jones lebanon unicom",
                 "scope_char": "L",
                 "sector_id": "1M"
             }

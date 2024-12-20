@@ -5159,112 +5159,112 @@
         ] }
     },
   "control_positions": {
-    "ABE_APP": {
+    "Allentown Arrival Radar": {
       "frequency": 119650,
-      "full_name": "Allentown approach",
+      "radio_name": "Allentown approach",
       "scope_char": "F",
       "sector_id": "1A",
       "facility_id": "4"
     },
-    "DC_CTR": {
+    "Washington Center": {
       "frequency": 133725,
-      "full_name": "Washington center",
+      "radio_name": "Washington center",
       "scope_char": "C",
       "sector_id": "W32",
       "facility_id": "W",
       "eram_facility": true
     },
-    "LGA_APP": {
+    "HAARP": {
       "frequency": 120800,
-      "full_name": "New York approach",
+      "radio_name": "New York approach",
       "scope_char": "V",
       "sector_id": "1V",
       "facility_id": "1"
     },
-    "EWR_APP": {
+    "Yardley": {
       "frequency": 128550,
-      "full_name": "New York approach",
+      "radio_name": "New York approach",
       "scope_char": "P",
       "sector_id": "4P",
       "facility_id": "1"
     },
-    "LGA_DEP": {
+    "LGA Departure": {
       "frequency": 120400,
-      "full_name": "New York departure",
+      "radio_name": "New York departure",
       "scope_char": "L",
       "sector_id": "1L",
       "facility_id": "1"
     },
-    "NY_A_CTR": {
+    "NY Center (Lancaster 26)": {
       "frequency": 120025,
-      "full_name": "New York center",
+      "radio_name": "New York center",
       "scope_char": "C",
       "sector_id": "N26",
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_B_CTR": {
+    "NY Center (Kennedy 56)": {
       "frequency": 125325,
-      "full_name": "New York center",
+      "radio_name": "New York center",
       "scope_char": "C",
       "sector_id": "N56",
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_C_CTR": {
+    "NY Center (Elmira 34)": {
       "frequency": 132175,
-      "full_name": "New York center",
+      "radio_name": "New York center",
       "scope_char": "C",
       "sector_id": "N34",
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_F_CTR": {
+    "NY Center (MANTA 66)": {
       "frequency": 133500,
-      "full_name": "New York center",
+      "radio_name": "New York center",
       "scope_char": "C",
       "sector_id": "N66",
       "facility_id": "C",
       "eram_facility": true
     },
-    "PHL_F1_APP": {
+    "Philadelphia Final Vectors 1": {
       "frequency": 124500,
-      "full_name": "Philly approach",
+      "radio_name": "Philly approach",
       "default_airport": "KPHL",
       "sector_id": "6F"
     },
-    "PHL_NA_APP": {
+    "Philadelphia North Arrival": {
       "frequency": 128400,
-      "full_name": "Philly approach",
+      "radio_name": "Philly approach",
       "default_airport": "KPHL",
       "sector_id": "6N"
     },
-    "PHL_ND_DEP": {
+    "Philadelphia North Departure": {
       "frequency": 124350,
-      "full_name": "Philly departure",
+      "radio_name": "Philly departure",
       "sector_id": "5E"
     },
-    "Philadelphia Approach (South)": {
+    "Philadelphia South Arrival": {
       "frequency": 133870,
       "default_airport": "KPHL",
-      "full_name": "Philly approach",
+      "radio_name": "Philly approach",
       "sector_id": "6S"
     },
-    "PHL_TWR": {
+    "Philadelphia Tower": {
       "frequency": 118500,
-      "full_name": "Philly tower",
+      "radio_name": "Philly tower",
       "scope_char": "T",
       "sector_id": "6A"
     },
-    "RDG_APP": {
+    "Reading Approach": {
       "frequency": 125150,
-      "full_name": "Reading approach",
+      "radio_name": "Reading approach",
       "sector_id": "1X",
       "facility_id": "7"
     },
-    "WRI_APP": {
+    "McGuire Approach": {
       "frequency": 126470,
-      "full_name": "McGuire approach",
+      "radio_name": "McGuire approach",
       "sector_id": "1Y",
       "facility_id": "5"
     }

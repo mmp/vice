@@ -2581,7 +2581,7 @@
         "control_positions": {
           "MSP_26_CTR": {
             "frequency": 119400,
-            "full_name": "Minnieapolis Center",
+            "radio_name": "Minnieapolis Center",
             "scope_char": "C",
             "sector_id": "C26",
             "facility_id": "C",
@@ -2589,7 +2589,7 @@
           },
           "MSP_27_CTR": {
             "frequency": 119600,
-            "full_name": "Minnieapolis Center",
+            "radio_name": "Minnieapolis Center",
             "scope_char": "C",
             "facility_id": "C",
             "sector_id": "C27",
@@ -2597,55 +2597,55 @@
           },
           "OMA_W_APP": {
             "frequency": 120100,
-            "full_name": "Omaha Approach",
+            "radio_name": "Omaha Approach",
             "scope_char": "W",
             "sector_id": "1W"
           },
           "OMA_X_APP": {
             "frequency": 124500,
-            "full_name": "Omaha Approach",
+            "radio_name": "Omaha Approach",
             "scope_char": "X",
             "sector_id": "1X"
           },
           "OMA_V_APP": {
             "frequency": 133325,
-            "full_name": "Omaha Approach",
+            "radio_name": "Omaha Approach",
             "scope_char": "V",
             "sector_id": "1V"
           },
           "OMA_O_APP": {
             "frequency": 124950,
-            "full_name": "Omaha Approach",
+            "radio_name": "Omaha Approach",
             "scope_char": "O",
             "sector_id": "1O"
           },
           "LNK_L_APP": {
             "frequency": 124000,
-            "full_name": "Omaha Approach",
+            "radio_name": "Omaha Approach",
             "scope_char": "L",
             "sector_id": "1L"
           },
           "LNK_F_APP": {
             "frequency": 128150,
-            "full_name": "Omaha Approach",
+            "radio_name": "Omaha Approach",
             "scope_char": "F",
             "sector_id": "1F"
           },
           "OMA_TWR": {
             "frequency": 132100,
-            "full_name": "Omaha Tower",
+            "radio_name": "Omaha Tower",
             "scope_char": "T",
             "sector_id": "01"
           },
           "OFF_TWR": {
             "frequency": 123700,
-            "full_name": "Offutt Tower",
+            "radio_name": "Offutt Tower",
             "scope_char": "T",
             "sector_id": "02"
           },
           "LNK_TWR": {
             "frequency": 118500,
-            "full_name": "Lincoln Tower",
+            "radio_name": "Lincoln Tower",
             "scope_char": "T",
             "sector_id": "03"
           }

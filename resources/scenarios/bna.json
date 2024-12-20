@@ -2104,7 +2104,7 @@
     "control_positions": {
       "MEM_40_CTR": {
         "frequency": 132900,
-        "full_name": "Memphis Center",
+        "radio_name": "Memphis Center",
         "facility_id": "C",
         "eram_facility": true,
         "scope_char": "C",
@@ -2112,7 +2112,7 @@
       },
       "MEM_41_CTR": {
         "frequency": 133850,
-        "full_name": "Memphis Center",
+        "radio_name": "Memphis Center",
         "facility_id": "C",
         "eram_facility": true,
         "scope_char": "C",
@@ -2120,7 +2120,7 @@
       },
       "MEM_42_CTR": {
         "frequency": 125850,
-        "full_name": "Memphis Center",
+        "radio_name": "Memphis Center",
         "facility_id": "C",
         "eram_facility": true,
         "scope_char": "C",
@@ -2128,7 +2128,7 @@
       },
       "MEM_60_CTR": {
         "frequency": 128150,
-        "full_name": "Memphis Center",
+        "radio_name": "Memphis Center",
         "facility_id": "C",
         "eram_facility": true,
         "scope_char": "C",
@@ -2136,43 +2136,43 @@
       },
       "BNA_TWR": {
         "frequency": 118600,
-        "full_name": "Nashville Tower",
+        "radio_name": "Nashville Tower",
         "scope_char": "T",
         "sector_id": "1T"
       },
       "BNA_X_DEP": {
         "frequency": 119350,
-        "full_name": "Nashville Departure",
+        "radio_name": "Nashville Departure",
         "scope_char": "X",
         "sector_id": "1X"
       },
       "BNA_Y_DEP": {
         "frequency": 118400,
-        "full_name": "Nashville Departure",
+        "radio_name": "Nashville Departure",
         "scope_char": "Y",
         "sector_id": "1Y"
       },
       "BNA_W_APP": {
         "frequency": 120600,
-        "full_name": "Nashville Approach",
+        "radio_name": "Nashville Approach",
         "scope_char": "W",
         "sector_id": "1W"
       },
       "BNA_E_APP": {
         "frequency": 127175,
-        "full_name": "Nashville Approach",
+        "radio_name": "Nashville Approach",
         "scope_char": "E",
         "sector_id": "1E"
       },
       "BNA_F_APP": {
         "frequency": 124750,
-        "full_name": "Nashville Approach",
+        "radio_name": "Nashville Approach",
         "scope_char": "F",
         "sector_id": "1F"
       },
       "BNA_B_APP": {
         "frequency": 133000,
-        "full_name": "Nashville Approach",
+        "radio_name": "Nashville Approach",
         "scope_char": "B",
         "sector_id": "1B"
       }

@@ -1333,7 +1333,7 @@
     "control_positions": {
         "LAX_30_CTR": {
             "frequency": 119950,
-            "full_name": "Los Angeles Center",
+            "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
@@ -1341,61 +1341,61 @@
         },
         "LAX_S_DEP": {
             "frequency": 125800,
-            "full_name": "Socal Departure",
+            "radio_name": "Socal Departure",
             "scope_char": "S",
             "sector_id": "6S"
         },
         "SAN_D_APP": {
             "frequency": 127300,
-            "full_name": "Socal Approach",
+            "radio_name": "Socal Approach",
             "scope_char": "D",
             "sector_id": "5D"
         },
         "SAN_N_APP": {
             "frequency": 125300,
-            "full_name": "Socal Approach",
+            "radio_name": "Socal Approach",
             "scope_char": "N",
             "sector_id": "5N"
         },
         "ONT_N_APP": {
             "frequency": 127000,
-            "full_name": "Socal Approach",
+            "radio_name": "Socal Approach",
             "scope_char": "N",
             "sector_id": "3N"
         },
         "LAX_D_APP": {
             "frequency": 124900,
-            "full_name": "Socal Approach",
+            "radio_name": "Socal Approach",
             "scope_char": "D",
             "sector_id": "2D"
         },
         "LAX_TWR": {
             "frequency": 120950,
-            "full_name": "Los Angeles Tower",
+            "radio_name": "Los Angeles Tower",
             "scope_char": "V",
             "sector_id": "2V"
         },
         "SNA_T_APP": {
             "frequency": 121300,
-            "full_name": "Socal Approach",
+            "radio_name": "Socal Approach",
             "scope_char": "T",
             "sector_id": "4T"
         },
         "SNA_Y_APP": {
             "frequency": 128100,
-            "full_name": "Socal Approach",
+            "radio_name": "Socal Approach",
             "scope_char": "Y",
             "sector_id": "4Y"
         },
         "SNA_TWR": {
             "frequency": 126800,
-            "full_name": "John Wayne Tower",
+            "radio_name": "John Wayne Tower",
             "scope_char": "W",
             "sector_id": "T4J"
         },
         "LGB_TWR": {
             "frequency": 119400,
-            "full_name": "Long Beach Tower",
+            "radio_name": "Long Beach Tower",
             "scope_char": "V",
             "sector_id": "4V"
         }

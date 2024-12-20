@@ -820,50 +820,50 @@
     "CLE_66_CTR": {
       "eram_facility": true,
       "frequency": 125425,
-      "full_name": "Cleveland Center",
+      "radio_name": "Cleveland Center",
       "scope_char": "C",
       "facility_id": "C",
       "sector_id": "66"
     },
     "BUF_TWR": {
       "frequency": 120500,
-      "full_name": "Buffalo Tower",
+      "radio_name": "Buffalo Tower",
       "scope_char": "L",
       "sector_id": "1B"
     },
     "BUF_E_APP": {
       "frequency": 126150,
-      "full_name": "Buffalo Approach",
+      "radio_name": "Buffalo Approach",
       "scope_char": "E",
       "sector_id": "1E"
     },
     "BUF_W_APP": {
       "frequency": 126500,
-      "full_name": "Buffalo Approach",
+      "radio_name": "Buffalo Approach",
       "scope_char": "W",
       "sector_id": "1W"
     },
     "BUF_F_APP": {
       "frequency": 123800,
-      "full_name": "Buffalo Approach",
+      "radio_name": "Buffalo Approach",
       "scope_char": "F",
       "sector_id": "1F"
     },
     "BUF_X_APP": {
       "frequency": 120050,
-      "full_name": "Buffalo Approach",
+      "radio_name": "Buffalo Approach",
       "scope_char": "X",
       "sector_id": "1X"
     },
     "IAG_TWR": {
       "frequency": 118500,
-      "full_name": "Niagara Tower",
+      "radio_name": "Niagara Tower",
       "scope_char": "N",
       "sector_id": "1N"
     },
     "TOR_CTR": {
       "frequency": 128800,
-      "full_name": "Toronto Departure",
+      "radio_name": "Toronto Departure",
       "scope_char": "T",
       "sector_id": "2T"
     }

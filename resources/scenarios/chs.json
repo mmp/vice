@@ -1567,7 +1567,7 @@
     "control_positions": {
         "JAX_74_CTR": {
             "frequency": 134475,
-            "full_name": "Jacksonville Center",
+            "radio_name": "Jacksonville Center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
@@ -1575,7 +1575,7 @@
         },
         "JAX_72_CTR": {
             "frequency": 124700,
-            "full_name": "Jacksonville Center",
+            "radio_name": "Jacksonville Center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
@@ -1583,7 +1583,7 @@
         },
         "JAX_73_CTR": {
             "frequency": 132925,
-            "full_name": "Jacksonville Center",
+            "radio_name": "Jacksonville Center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
@@ -1591,32 +1591,32 @@
         },
         "SAV_N_APP": {
             "frequency": 125300,
-            "full_name": "Savannah Approach",
+            "radio_name": "Savannah Approach",
             "facility_id": "5",
             "scope_char": "N",
             "sector_id": "1N"
         },
         "CHS_TWR": {
             "frequency": 126000,
-            "full_name": "Charleston Tower",
+            "radio_name": "Charleston Tower",
             "scope_char": "T",
             "sector_id": "1T"
         },
         "JZI_TWR": {
             "frequency": 122800,
-            "full_name": "Executive Tower",
+            "radio_name": "Executive Tower",
             "scope_char": "J",
             "sector_id": "1J"
         },
         "CHS_W_APP": {
             "frequency": 120700,
-            "full_name": "Charleston Approach",
+            "radio_name": "Charleston Approach",
             "scope_char": "W",
             "sector_id": "1W"
         },
         "CHS_E_APP": {
             "frequency": 121275,
-            "full_name": "Charleston Approach",
+            "radio_name": "Charleston Approach",
             "scope_char": "E",
             "sector_id": "1E"
         }

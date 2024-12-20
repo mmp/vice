@@ -1439,7 +1439,7 @@
 "control_positions": {
   "DC_CTR": {
   "frequency": 133725,
-  "full_name": "Washington Center",
+  "radio_name": "Washington Center",
   "scope_char": "C",
   "sector_id": "32",
   "facility_id": "C",
@@ -1447,7 +1447,7 @@
   },
   "NY_CTR": {
   "frequency": 125325,
-  "full_name": "New York Center",
+  "radio_name": "New York Center",
   "scope_char": "C",
   "sector_id": "N56",
   "facility_id": "N",
@@ -1455,93 +1455,93 @@
   },
   "BWI_S_APP": {
     "frequency": 119700,
-    "full_name": "Potomac Approach",
+    "radio_name": "Potomac Approach",
     "scope_char": "S",
     "sector_id": "1S"
   },
   "BWI_P_APP": {
     "frequency": 119700,
-    "full_name": "Potomac Approach",
+    "radio_name": "Potomac Approach",
     "scope_char": "P",
     "sector_id": "1P"
   },
   "BWI_W_APP": {
     "frequency": 128700,
-    "full_name": "Potomac Approach",
+    "radio_name": "Potomac Approach",
     "scope_char": "W",
     "sector_id": "1W"
   },
   "IAD_M_APP": {
     "frequency": 126100,
-    "full_name": "Potomac Approach",
+    "radio_name": "Potomac Approach",
     "scope_char": "M",
     "sector_id": "3M"
   },
   "DCA_J_APP": {
     "frequency": 119850,
-    "full_name" : "Potomac Approach",
+    "radio_name" : "Potomac Approach",
     "default_airport": "KDCA",
     "scope_char": "J",
     "sector_id": "1J"
   },
   "DCA_E_APP": {
     "frequency": 124200,
-    "full_name" : "Potomac Approach",
+    "radio_name" : "Potomac Approach",
     "scope_char": "E",
     "sector_id": "1E"
   },
   "DCA_D_APP": {
     "frequency": 128350,
-    "full_name" : "Potomac Approach",
+    "radio_name" : "Potomac Approach",
     "scope_char": "D",
     "sector_id": "1D"
   },
   "DCA_L_APP": {
     "frequency": 118675,
-    "full_name" : "Potomac Approach",
+    "radio_name" : "Potomac Approach",
     "scope_char": "L",
     "sector_id": "1L"
   },
   "DCA_V_APP": {
     "frequency": 124700,
-    "full_name" : "Potomac Approach",
+    "radio_name" : "Potomac Approach",
     "scope_char": "V",
     "default_airport": "KDCA",
     "sector_id": "1V"
   },
   "DCA_F_APP": {
     "frequency": 121050,
-    "full_name" : "Potomac Approach",
+    "radio_name" : "Potomac Approach",
     "scope_char": "F",
     "sector_id": "F"
   },
   "DCA_Y_APP": {
     "frequency": 118950,
-    "full_name" : "Potomac Approach",
+    "radio_name" : "Potomac Approach",
     "scope_char": "Y",
     "sector_id": "1Y"
   },
   "DCA_K_APP": {
     "frequency": 125650,
-    "full_name" : "Potomac Approach",
+    "radio_name" : "Potomac Approach",
     "scope_char": "K",
     "sector_id": "1K"
   },
   "DCA_A_APP": {
     "frequency": 128000,
-    "full_name": "Potomac Approach",
+    "radio_name": "Potomac Approach",
     "scope_char": "A",
     "sector_id": "1A"
   },
   "BWI_TWR": {
     "frequency": 119400,
-    "full_name": "Baltimore Tower",
+    "radio_name": "Baltimore Tower",
     "scope_char": "T",
     "sector_id": "3T"
   },
   "DCA_TWR": {
     "frequency": 119100,
-    "full_name": "Washington Tower",
+    "radio_name": "Washington Tower",
     "scope_char": "T",
     "sector_id": "4T"
   }

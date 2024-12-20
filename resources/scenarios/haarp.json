@@ -462,43 +462,43 @@
 "control_positions": {
   "LGA_V_APP": {
       "frequency": 120800,
-      "full_name": "New York approach",
+      "radio_name": "New York approach",
       "scope_char": "V",
       "sector_id": "1V"
   },
   "HPN_TWR": {
       "frequency": 118575,
-      "full_name": "Westchester tower",
+      "radio_name": "Westchester tower",
       "scope_char": "T",
       "sector_id": "WT"
   },
   "LGA_TWR": {
       "frequency": 118700,
-      "full_name": "Laguardia tower",
+      "radio_name": "Laguardia tower",
       "scope_char": "1",
       "sector_id": "1T"
   },
   "ISP_Z_APP": {
       "frequency": 124075,
-      "full_name": "New York approach",
+      "radio_name": "New York approach",
       "scope_char": "Z",
       "sector_id": "3Z"
   },
   "LGA_F_APP": {
       "frequency": 134900,
-      "full_name": "New York approach",
+      "radio_name": "New York approach",
       "scope_char": "F",
       "sector_id": "1F"
   },
   "LGA_DEP": {
     "frequency": 120400,
-      "full_name": "New York approach",
+      "radio_name": "New York approach",
       "scope_char": "L",
       "sector_id": "1L"
   },
   "NY_74_CTR": {
       "frequency": 132150,
-      "full_name": "New York center",
+      "radio_name": "New York center",
       "scope_char": "C",
       "sector_id": "C74",
       "facility_id": "C",
@@ -506,7 +506,7 @@
   },
   "BOS_CTR": {
       "frequency": 134700,
-      "full_name": "Boston center",
+      "radio_name": "Boston center",
       "scope_char": "C",
       "sector_id": "B37",
       "facility_id": "B",
@@ -514,31 +514,31 @@
   },
   "NY_LW_DEP": {
     "frequency": 120850,
-      "full_name": "New York approach",
+      "radio_name": "New York approach",
       "scope_char": "W",
       "sector_id": "5W"
   },
   "NY_LN_DEP": {
       "frequency": 118175,
-      "full_name": "New York approach",
+      "radio_name": "New York approach",
       "scope_char": "T",
       "sector_id": "5T"
   },
   "SWF_APP": {
       "frequency": 132750,
-      "full_name": "New York approach",
+      "radio_name": "New York approach",
       "scope_char": "H",
       "sector_id": "5H"
   },
   "LGA_X_APP": {
       "frequency": 126400,
-      "full_name": "New York approach",
+      "radio_name": "New York approach",
       "scope_char": "X",
       "sector_id": "1X"
   },
   "DXR_TWR": {
     "frequency": 119400,
-    "full_name": "Danbury tower",
+    "radio_name": "Danbury tower",
     "scope_char": "M",
     "sector_id": "1M"
   }

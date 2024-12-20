@@ -381,27 +381,27 @@
     "control_positions": {
         "CYS_APP": {
             "frequency": 124550,
-            "full_name": "Cheyenne approach",
+            "radio_name": "Cheyenne approach",
             "scope_char": "A",
             "sector_id": "6A",
             "facility_id": "6"
         },
         "CYS_TWR": {
             "frequency": 118700,
-            "full_name": "Cheyenne tower",
+            "radio_name": "Cheyenne tower",
             "scope_char": "T",
             "sector_id": "CT"
         },
         "DEN_D_APP": {
             "frequency": 134850,
-            "full_name": "Denver approach",
+            "radio_name": "Denver approach",
             "facility_id": "1",
             "scope_char": "D",
             "sector_id": "1D"
         },
         "DEN_21_CTR": {
             "frequency": 125900,
-            "full_name": "Denver center",
+            "radio_name": "Denver center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",

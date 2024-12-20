@@ -573,7 +573,7 @@
     "control_positions": {
         "BOS_37_CTR": {
             "frequency": 134700,
-            "full_name": "Boston Center",
+            "radio_name": "Boston Center",
             "scope_char": "C",
             "sector_id": "C37",
             "facility_id": "C",
@@ -581,88 +581,88 @@
         },
         "BDL_B_APP": {
             "frequency": 123950,
-            "full_name": "Bradley Approach",
+            "radio_name": "Bradley Approach",
             "scope_char": "B",
             "sector_id": "1B"
         },
         "BDL_F_APP": {
             "frequency": 127225,
-            "full_name": "Bradley Approach",
+            "radio_name": "Bradley Approach",
             "scope_char": "F",
             "sector_id": "1F"
         },
         "BDL_H_APP": {
             "frequency": 127800,
-            "full_name": "Bradley Approach",
+            "radio_name": "Bradley Approach",
             "scope_char": "H",
             "sector_id": "1H"
         },
         "BDL_W_APP": {
             "frequency": 125350,
-            "full_name": "Bradley Approach",
+            "radio_name": "Bradley Approach",
             "scope_char": "W",
             "sector_id": "1W"
         },
         "BDL_E_APP": {
             "frequency": 119000,
-            "full_name": "Bradley Approach",
+            "radio_name": "Bradley Approach",
             "scope_char": "E",
             "sector_id": "1E"
         },
         "BDL_TWR": {
             "frequency": 120300,
-            "full_name": "Bradley Tower",
+            "radio_name": "Bradley Tower",
             "scope_char": "T",
             "sector_id": "1T"
         },
         "HFD_TWR": {
             "frequency": 119600,
-            "full_name": "Brainard Tower",
+            "radio_name": "Brainard Tower",
             "scope_char": "H",
             "sector_id": "1S"
         },
         "ORH_TWR": {
             "frequency": 120500,
-            "full_name": "Worcester Tower",
+            "radio_name": "Worcester Tower",
             "scope_char": "W",
             "sector_id": "1U"
         },
         "CEF_TWR": {
             "frequency": 118900,
-            "full_name": "Westover Tower",
+            "radio_name": "Westover Tower",
             "scope_char": "C",
             "sector_id": "1C"
         },
         "BAF_TWR": {
             "frequency": 134850,
-            "full_name": "Westfield Tower",
+            "radio_name": "Westfield Tower",
             "scope_char": "F",
             "sector_id": "1X"
         },
         "PVD_APP": {
             "frequency": 123675,
-            "full_name": "Providence Approach",
+            "radio_name": "Providence Approach",
             "scope_char": "P",
             "sector_id": "2P",
             "facility_id": "1"
         },
         "BOS_APP": {
             "frequency": 133000,
-            "full_name": "Boston Approach",
+            "radio_name": "Boston Approach",
             "scope_char": "A",
             "sector_id": "D",
             "facility_id": "1"
         },
         "ISP_APP": {
             "frequency": 120050,
-            "full_name": "New York Approach",
+            "radio_name": "New York Approach",
             "scope_char": "N",
             "sector_id": "3N",
             "facility_id": "4"
         },
         "ALB_APP": {
             "frequency": 118050,
-            "full_name": "Albany Approach",
+            "radio_name": "Albany Approach",
             "scope_char": "A",
             "sector_id": "1A",
             "facility_id": "4"

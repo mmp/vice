@@ -492,7 +492,7 @@
   "control_positions": {
     "JAX_30_CTR": {
       "frequency": 135925,
-      "full_name": "Jacksonville center",
+      "radio_name": "Jacksonville center",
       "scope_char": "C",
       "sector_id": "J30",
       "facility_id": "C",
@@ -500,69 +500,69 @@
     },
     "DAB_H_APP": {
       "frequency": 125725,
-      "full_name": "Daytona Beach approach",
+      "radio_name": "Daytona Beach approach",
       "scope_char": "H",
       "sector_id": "5H"
     },
     "DAB_M_APP": {
       "frequency": 118850,
-      "full_name": "Daytona Beach approach",
+      "radio_name": "Daytona Beach approach",
       "scope_char": "M",
       "sector_id": "5M"
     },
     "DAB_L_APP": {
       "frequency": 127075,
-      "full_name": "Daytona Beach approach",
+      "radio_name": "Daytona Beach approach",
       "scope_char": "L",
       "sector_id": "5L"
     },
     "DAB_N_APP": {
       "frequency": 125800,
-      "full_name": "Daytona Beach approach",
+      "radio_name": "Daytona Beach approach",
       "scope_char": "N",
       "sector_id": "5N"
     },
     "DAB_S_APP": {
       "frequency": 125350,
-      "full_name": "Daytona Beach approach",
+      "radio_name": "Daytona Beach approach",
       "scope_char": "S",
       "sector_id": "5S"
     },
     "DAB_E_APP": {
       "frequency": 123900,
-      "full_name": "Daytona Beach approach",
+      "radio_name": "Daytona Beach approach",
       "scope_char": "E",
       "sector_id": "5E"
     },
     "DAB_W_APP": {
       "frequency": 126550,
-      "full_name": "Daytona Beach approach",
+      "radio_name": "Daytona Beach approach",
       "scope_char": "W",
       "sector_id": "5W"
     },
     "MCO_B_APP": {
       "frequency": 128375,
-      "full_name": "Orlando approach",
+      "radio_name": "Orlando approach",
       "scope_char": "B",
       "sector_id": "4B",
       "facility_id": "4"
     },
     "JAX_N_APP": {
       "frequency": 127000,
-      "full_name": "Jacksonville approach",
+      "radio_name": "Jacksonville approach",
       "scope_char": "N",
       "sector_id": "3N",
       "facility_id": "3"
     },
     "DAB_N_TWR": {
       "frequency": 120700,
-      "full_name": "Daytona Beach tower",
+      "radio_name": "Daytona Beach tower",
       "scope_char": "T",
       "sector_id": "5NT"
     },
     "DAB_S_TWR": {
       "frequency": 118100,
-      "full_name": "Daytona Beach tower",
+      "radio_name": "Daytona Beach tower",
       "scope_char": "T",
       "sector_id": "5ST"
     }

@@ -194,7 +194,7 @@ func (f Frequency) String() string {
 
 type Controller struct {
 	Callsign           string    // Not provided in scenario JSON
-	FullName           string    `json:"full_name"`
+	RadioName          string    `json:"radio_name"`
 	Frequency          Frequency `json:"frequency"`
 	TCP                string    `json:"sector_id"`  // e.g. N56, 2J, ...
 	Scope              string    `json:"scope_char"` // Optional. If unset, facility id is used for external, last char of sector id for local.

@@ -334,19 +334,19 @@
     "control_positions": {
         "ASE_APP": {
             "frequency": 123800,
-            "full_name": "Aspen approach",
+            "radio_name": "Aspen approach",
             "scope_char": "A",
             "sector_id": "1A"
         },
         "ASE_TWR": {
             "frequency": 118850,
-            "full_name": "Aspen tower",
+            "radio_name": "Aspen tower",
             "scope_char": "T",
             "sector_id": "AT"
         },
         "DEN_11_CTR": {
             "frequency": 120475,
-            "full_name": "Denver center",
+            "radio_name": "Denver center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",

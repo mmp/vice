@@ -1350,62 +1350,62 @@
 
     "ORD_TWR": {
       "frequency": 120750,
-      "full_name": "Something Tower (i forgot the name)",
+      "radio_name": "Something Tower (i forgot the name)",
       "scope_char": "T",
       "sector_id": "OT"
     },
     "MWC_TWR": {
       "frequency": 119500,
-      "full_name": "Something Tower (i forgot the name)",
+      "radio_name": "Something Tower (i forgot the name)",
       "scope_char": "T",
       "sector_id": "RT"
     },
     "MKE_E_APP": {
       "frequency": 118000,
-      "full_name": "Milwaukee Approach",
+      "radio_name": "Milwaukee Approach",
       "scope_char": "E",
       "sector_id": "1E"
     },
     "MKE_W_APP": {
       "frequency": 126500,
-      "full_name": "Milwaukee Approach",
+      "radio_name": "Milwaukee Approach",
       "scope_char": "W",
       "sector_id": "1W"
     },
     "MKE_F_APP":{
       "frequency": 118475,
-      "full_name": "Milwaukee Approach",
+      "radio_name": "Milwaukee Approach",
       "scope_char": "F",
       "sector_id": "1F"
     },
     "MKE_M_DEP":{
       "frequency": 135875,
-      "full_name": "Milwaukee Departure",
+      "radio_name": "Milwaukee Departure",
       "scope_char": "M",
       "sector_id": "1M"
     },
     "MKE_B_DEP":{
       "frequency": 125350,
-      "full_name": "Milwaukee Departure",
+      "radio_name": "Milwaukee Departure",
       "scope_char": "B",
       "sector_id": "1B"
     },
     "MKE_H_APP":{
       "frequency": 127375,
-      "full_name": "Milwaukee Approach",
+      "radio_name": "Milwaukee Approach",
       "scope_char": "H",
       "sector_id": "1H"
     },
     "MKE_L_APP":{
       "frequency": 127000,
-      "full_name": "Milwaukee Approach",
+      "radio_name": "Milwaukee Approach",
       "scope_char": "L",
       "sector_id": "1L"
     },
 
     "CHI_81_CTR": {
       "frequency": 120350,
-      "full_name": "Chicago Center",
+      "radio_name": "Chicago Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -1414,7 +1414,7 @@
 
     "MSP_11_CTR": {
       "frequency": 120350,
-      "full_name": "Minneapolis Center",
+      "radio_name": "Minneapolis Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -1423,7 +1423,7 @@
 
     "CHI_Z_APP":{
       "frequency": 119000,
-      "full_name": "Chicago approach",
+      "radio_name": "Chicago approach",
       "scope_char": "1",
       "sector_id": "1Z",
       "facility_id": "1",
@@ -1432,32 +1432,32 @@
 
     "MKE_TWR": {
       "frequency": 124575,
-      "full_name": "Milwaukee Tower",
+      "radio_name": "Milwaukee Tower",
       "scope_char": "T",
       "sector_id": "1T"
     },
     "OSH_TWR": {
       "frequency": 118500,
-      "full_name": "Osh Kosh Tower",
+      "radio_name": "Osh Kosh Tower",
       "scope_char": "V",
       "sector_id": "1V"
     },
     "UES_TWR": {
       "frequency": 123700,
-      "full_name": "Wakeshua Tower",
+      "radio_name": "Wakeshua Tower",
       "scope_char": "W",
       "sector_id": "6W"
     },
     "ENW_TWR": {
       "frequency": 118600,
-      "full_name": "Kenosha Tower",
+      "radio_name": "Kenosha Tower",
       "scope_char": "K",
       "sector_id": "7K"
     },
 
     "RFD_E_APP":{
       "frequency": 121000,
-      "full_name": "Rockford approach",
+      "radio_name": "Rockford approach",
       "scope_char": "2",
       "sector_id": "2E",
       "facility_id": "2",
@@ -1465,7 +1465,7 @@
     },
     "MSN_W_APP":{
       "frequency": 135450,
-      "full_name": "Madison approach",
+      "radio_name": "Madison approach",
       "scope_char": "3",
       "sector_id": "3W",
       "facility_id": "3",
@@ -1473,7 +1473,7 @@
     },
     "AZO_G_APP":{
       "frequency": 121000,
-      "full_name": "Great Lakes Approach",
+      "radio_name": "Great Lakes Approach",
       "scope_char": "4",
       "sector_id": "4G",
       "facility_id": "4",
@@ -1481,7 +1481,7 @@
     },
     "GRB_G_APP":{
       "frequency": 119400,
-      "full_name": "Green Bay approach",
+      "radio_name": "Green Bay approach",
       "scope_char": "5",
       "sector_id": "5E",
       "facility_id": "5",

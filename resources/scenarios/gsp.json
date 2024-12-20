@@ -427,7 +427,7 @@
   "control_positions": {
     "ATL_CTR": {
       "frequency": 132975,
-      "full_name": "Atlanta Center",
+      "radio_name": "Atlanta Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -435,25 +435,25 @@
     },
     "GSP_TWR": {
       "frequency": 119900,
-      "full_name": "Birmingham Tower",
+      "radio_name": "Birmingham Tower",
       "scope_char": "T",
       "sector_id": "1T"
     },
     "GSP_W_APP": {
       "frequency": 118800,
-      "full_name": "Radar West",
+      "radio_name": "Radar West",
       "scope_char": "W",
       "sector_id": "1W"
     },
     "GSP_E_APP": {
       "frequency": 119400,
-      "full_name": "Radar East",
+      "radio_name": "Radar East",
       "scope_char": "E",
       "sector_id": "1E"
     },
     "GSP_S_APP": {
       "frequency": 120600,
-      "full_name": "Radar South",
+      "radio_name": "Radar South",
       "scope_char": "S",
       "sector_id": "1S"
     }

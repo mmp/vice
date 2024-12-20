@@ -2367,7 +2367,7 @@
   "control_positions": {
     "SEA_CTR": {
       "frequency": 135450,
-      "full_name": "Seattle Center",
+      "radio_name": "Seattle Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "S",
@@ -2375,49 +2375,49 @@
     },
     "SEA_TWR": {
       "frequency": 119900,
-      "full_name": "Seattle West Tower",
+      "radio_name": "Seattle West Tower",
       "scope_char": "J",
       "sector_id": "2J"
     },
     "SEA_1_TWR": {
       "frequency": 119900,
-      "full_name": "Seattle East Tower",
+      "radio_name": "Seattle East Tower",
       "scope_char": "T",
       "sector_id": "2A"
     },
     "BFI_TWR": {
       "frequency": 118300,
-      "full_name": "Boeing Field Tower",
+      "radio_name": "Boeing Field Tower",
       "scope_char": "B",
       "sector_id": "2B"
     },
     "SEA_W_APP": {
       "frequency": 125600,
-      "full_name": "Seattle Approach",
+      "radio_name": "Seattle Approach",
       "scope_char": "W",
       "sector_id": "1W"
     },
     "SEA_E_APP": {
       "frequency": 123900,
-      "full_name": "Seattle Approach",
+      "radio_name": "Seattle Approach",
       "scope_char": "E",
       "sector_id": "1E"
     },
     "SEA_F_APP": {
       "frequency": 133650,
-      "full_name": "Seattle Approach",
+      "radio_name": "Seattle Approach",
       "scope_char": "F",
       "sector_id": "1F"
     },
     "SEA_Y_APP": {
       "frequency": 120400,
-      "full_name": "Seattle Approach",
+      "radio_name": "Seattle Approach",
       "scope_char": "Y",
       "sector_id": "1Y"
     },
     "SEA_A_APP": {
       "frequency": 126150,
-      "full_name": "Seattle Approach",
+      "radio_name": "Seattle Approach",
       "scope_char": "A",
       "sector_id": "1A"
     }

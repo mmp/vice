@@ -815,7 +815,7 @@
     "control_positions": {
         "JAX_10_CTR": {
           "frequency": 120200,
-          "full_name": "Jacksonville center",
+          "radio_name": "Jacksonville center",
           "scope_char": "C",
           "sector_id": "C10",
           "facility_id": "C",
@@ -823,7 +823,7 @@
         },
         "HOU_25_CTR": {
             "frequency": 127650,
-            "full_name": "Houston center",
+            "radio_name": "Houston center",
             "scope_char": "H",
             "sector_id": "H25",
             "facility_id": "H",
@@ -831,55 +831,55 @@
         },
         "PNS_E_APP": {
             "frequency": 119000,
-            "full_name": "Pensacola approach",
+            "radio_name": "Pensacola approach",
             "scope_char": "E",
             "sector_id": "1E"
         },
         "PNS_W_APP": {
             "frequency": 118600,
-            "full_name": "Pensacola approach",
+            "radio_name": "Pensacola approach",
             "scope_char": "W",
             "sector_id": "1W"
         },
         "PNS_P_APP": {
             "frequency": 118000,
-            "full_name": "Pensacola approach",
+            "radio_name": "Pensacola approach",
             "scope_char": "P",
             "sector_id": "1P"
         },
         "PNS_K_APP": {
             "frequency": 126850,
-            "full_name": "Pensacola approach",
+            "radio_name": "Pensacola approach",
             "scope_char": "K",
             "sector_id": "1K"
         },
         "PNS_F_APP": {
             "frequency": 125350,
-            "full_name": "Pensacola approach",
+            "radio_name": "Pensacola approach",
             "scope_char": "F",
             "sector_id": "1F"
         },
         "PNS_Z_APP": {
             "frequency": 124850,
-            "full_name": "Pensacola approach",
+            "radio_name": "Pensacola approach",
             "scope_char": "Z",
             "sector_id": "1Z"
         },
         "PNS_S_APP": {
             "frequency": 120050,
-            "full_name": "Pensacola approach",
+            "radio_name": "Pensacola approach",
             "scope_char": "S",
             "sector_id": "1S"
         },
         "PNS_A_APP": {
             "frequency": 120650,
-            "full_name": "Pensacola approach",
+            "radio_name": "Pensacola approach",
             "scope_char": "A",
             "sector_id": "1A"
         },
         "PNS_TWR": {
             "frequency": 119900,
-            "full_name": "Pensacola tower",
+            "radio_name": "Pensacola tower",
             "scope_char": "T",
             "sector_id": "1T"
         }

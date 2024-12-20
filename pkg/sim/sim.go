@@ -2545,10 +2545,9 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 					})
 					return radioTransmissions
 				}
-				name := util.Select(octrl.FullName != "", octrl.FullName, octrl.Callsign)
 				bye := rand.Sample("good day", "seeya")
 				contact := rand.Sample("contact ", "over to ", "")
-				goodbye := contact + name + " on " + octrl.Frequency.String() + ", " + bye
+				goodbye := contact + octrl.RadioName + " on " + octrl.Frequency.String() + ", " + bye
 				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
 					Controller: ac.ControllingController,
 					Message:    goodbye,
@@ -2631,7 +2630,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				// Take immediate control on handoffs from virtual
 				ac.ControllingController = ctrl.Callsign
 				return []av.RadioTransmission{av.RadioTransmission{
-					Controller: ctrl.Callsign,
+					Controller: ctrl.RadioName,
 					Message:    ac.ContactMessage(s.ReportingPoints),
 					Type:       av.RadioTransmissionContact,
 				}}

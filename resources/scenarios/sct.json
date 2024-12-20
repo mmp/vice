@@ -11265,61 +11265,61 @@
   "control_positions": {
     "SCT_APP": {
       "frequency": 128050,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "G",
       "sector_id": "6G"
     },
     "SCT_F_APP": {
       "frequency": 120400,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "F",
       "sector_id": "6F"
     },
     "LAX_D_APP": {
       "frequency": 124900,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "D",
       "sector_id": "2D"
     },
     "LAX_F_APP": {
       "frequency": 124050,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "F",
       "sector_id": "2F"
     },
     "LAX_U_APP": {
       "frequency": 128500,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "U",
       "sector_id": "2U"
     },
     "LAX_Z_APP": {
       "frequency": 124500,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "Z",
       "sector_id": "2Z"
     },
     "LAX_N_TWR": {
       "frequency": 133900,
-      "full_name": "LA Tower",
+      "radio_name": "LA Tower",
       "scope_char": "T",
       "sector_id": "2T"
     },
     "LAX_S_TWR": {
       "frequency": 120950,
-      "full_name": "LA Tower",
+      "radio_name": "LA Tower",
       "scope_char": "T",
       "sector_id": "2V"
     },
     "HHR_TWR": {
       "frequency": 121100,
-      "full_name": "Hawthorne Tower",
+      "radio_name": "Hawthorne Tower",
       "scope_char": "T",
       "sector_id": "3T"
     },
     "LAX_55_CTR": {
       "frequency": 135550,
-      "full_name": "Los Angeles Center",
+      "radio_name": "Los Angeles Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -11327,7 +11327,7 @@
   },
   "LAX_36_CTR": {
       "frequency": 127350,
-      "full_name": "Los Angeles Center",
+      "radio_name": "Los Angeles Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -11335,7 +11335,7 @@
   },
   "LAX_04_CTR": {
       "frequency": 119050,
-      "full_name": "Los Angeles Center",
+      "radio_name": "Los Angeles Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -11343,37 +11343,37 @@
   },
   "SAN_W_APP": {
       "frequency": 119600,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "W",
       "sector_id": "5W"
   },
   "SAN_E_APP": {
       "frequency": 124350,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "E",
       "sector_id": "5E"
   },
   "SAN_N_APP": {
       "frequency": 125300,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "N",
       "sector_id": "5N"
   },
   "SAN_D_APP": {
       "frequency": 127300,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "D",
       "sector_id": "5D"
   },
   "SAN_TWR": {
       "frequency": 118300,
-      "full_name": "Lindbergh Tower",
+      "radio_name": "Lindbergh Tower",
       "scope_char": "S",
       "sector_id": "5S"
   },
   "LAX_39_CTR": {
     "frequency": 133200,
-    "full_name": "Los Angeles Center",
+    "radio_name": "Los Angeles Center",
     "facility_id": "C",
     "eram_facility": true,
     "scope_char": "C",
@@ -11381,7 +11381,7 @@
 },
 "LAX_30_CTR": {
     "frequency": 119950,
-    "full_name": "Los Angeles Center",
+    "radio_name": "Los Angeles Center",
     "facility_id": "C",
     "eram_facility": true,
     "scope_char": "C",
@@ -11389,7 +11389,7 @@
 },
 "LAX_37_CTR": {
     "frequency": 133550,
-    "full_name": "Los Angeles Center",
+    "radio_name": "Los Angeles Center",
     "facility_id": "C",
     "eram_facility": true,
     "scope_char": "C",
@@ -11397,121 +11397,121 @@
 },
 "ONT_TWR": {
     "frequency": 120600,
-    "full_name": "Ontario Tower",
+    "radio_name": "Ontario Tower",
     "scope_char": "O",
     "sector_id": "3O"
 },
 "ONT_N_APP": {
     "frequency": 127000,
-    "full_name": "Socal Approach",
+    "radio_name": "Socal Approach",
     "scope_char": "N",
     "sector_id": "3N"
 },
 "ONT_P_APP": {
     "frequency": 125500,
-    "full_name": "Socal Approach",
+    "radio_name": "Socal Approach",
     "scope_char": "P",
     "sector_id": "3P"
 },
 "ONT_S_APP": {
     "frequency": 126700,
-    "full_name": "Socal Approach",
+    "radio_name": "Socal Approach",
     "scope_char": "S",
     "sector_id": "3S"
 },
 "PSP_TWR": {
     "frequency": 119700,
-    "full_name": "Palm Springs Tower",
+    "radio_name": "Palm Springs Tower",
     "scope_char": "Z",
     "sector_id": "3Z"
 },
 "SNA_T_APP": {
     "frequency": 121300,
-    "full_name": "Socal Approach",
+    "radio_name": "Socal Approach",
     "scope_char": "T",
     "sector_id": "4T"
 },
 "SNA_TWR": {
     "frequency": 126800,
-    "full_name": "John Wayne Tower",
+    "radio_name": "John Wayne Tower",
     "scope_char": "J",
     "sector_id": "4J"
 },
 "BUR_V_APP": {
     "frequency": 124600,
-    "full_name": "Socal Approach",
+    "radio_name": "Socal Approach",
     "scope_char": "V",
     "sector_id": "1V"
 },
 "BUR_TWR": {
     "frequency": 122800,
-    "full_name": "Burbank Tower",
+    "radio_name": "Burbank Tower",
     "scope_char": "W",
     "sector_id": "I1B"
 },
 "BUR_M_APP": {
   "frequency": 128750,
-  "full_name": "SoCal Approach",
+  "radio_name": "SoCal Approach",
   "scope_char": "M",
   "sector_id": "1M"
 },
 "BUR_W_APP": {
   "frequency": 134200,
-  "full_name": "SoCal Approach",
+  "radio_name": "SoCal Approach",
   "scope_char": "W",
   "sector_id": "1W"
 },
 "LAX_S_DEP": {
   "frequency": 124300,
-  "full_name": "SoCal Departure",
+  "radio_name": "SoCal Departure",
   "scope_char": "S",
   "sector_id": "6S"
 },
 "LAX_N_DEP": {
   "frequency": 125200,
-  "full_name": "SoCal Departure",
+  "radio_name": "SoCal Departure",
   "scope_char": "N",
   "sector_id": "6N"
 },
 "LAX_X_DEP": {
   "frequency": 134350,
-  "full_name": "SoCal Departure",
+  "radio_name": "SoCal Departure",
   "scope_char": "X",
   "sector_id": "6X"
 },
 "JCF_APP": {
   "frequency": 133650,
-  "full_name": "Joshua Approach",
+  "radio_name": "Joshua Approach",
   "scope_char": "J",
   "sector_id": "1J"
 },
 "NTD_APP": {
   "frequency": 124700,
-  "full_name": "Point Mugu Approach",
+  "radio_name": "Point Mugu Approach",
   "scope_char": "U",
   "sector_id": "1U"
 },
 "VNY_TWR": {
   "frequency": 118300,
-  "full_name": "Van Nuys Tower",
+  "radio_name": "Van Nuys Tower",
   "scope_char": "T",
   "sector_id": "1Y"
 },
 "WHP_TWR": {
   "frequency": 135000,
-  "full_name": "Whiteman Tower",
+  "radio_name": "Whiteman Tower",
   "scope_char": "T",
   "sector_id": "1T"
 },
 "SNA_Y_APP": {
   "frequency": 128100,
-  "full_name": "Socal Approach",
+  "radio_name": "Socal Approach",
   "scope_char": "Y",
   "sector_id": "4Y"
 },
 "LGB_TWR": {
   "frequency": 119400,
-  "full_name": "Long Beach Tower",
+  "radio_name": "Long Beach Tower",
   "scope_char": "V",
   "sector_id": "4V"
 }

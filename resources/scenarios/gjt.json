@@ -547,13 +547,13 @@
     "control_positions": {
         "GJT_APP": {
             "frequency": 119700,
-            "full_name": "Denver Approach",
+            "radio_name": "Denver Approach",
             "scope_char": "J",
             "sector_id": "1J"
         },
         "DEN_11_CTR": {
             "frequency": 120470,
-            "full_name": "Denver Center",
+            "radio_name": "Denver Center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
@@ -561,7 +561,7 @@
         },
         "DEN_12_CTR": {
             "frequency": 125350,
-            "full_name": "Denver Center",
+            "radio_name": "Denver Center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
@@ -569,7 +569,7 @@
         },
         "GJT_TWR": {
             "frequency": 118100,
-            "full_name": "Grand Junction Tower",
+            "radio_name": "Grand Junction Tower",
             "scope_char": "T",
             "sector_id": "5T"
         }

@@ -764,43 +764,43 @@
     "control_positions": {
         "COS_APP": {
             "frequency": 124000,
-            "full_name": "Springs approach",
+            "radio_name": "Springs approach",
             "scope_char": "A",
             "sector_id": "2A"
         },
         "COS_V_APP": {
             "frequency": 120600,
-            "full_name": "Springs approach",
+            "radio_name": "Springs approach",
             "scope_char": "V",
             "sector_id": "2V"
         },
         "COS_W_TWR": {
             "frequency": 119900,
-            "full_name": "Springs tower",
+            "radio_name": "Springs tower",
             "scope_char": "T",
             "sector_id": "2WT"
         },
         "COS_E_TWR": {
             "frequency": 135150,
-            "full_name": "Springs tower",
+            "radio_name": "Springs tower",
             "scope_char": "T",
             "sector_id": "2ET"
         },
 		"FLY_TWR": {
 			"frequency": 122700,
-			"full_name": "Meadow Lake traffic",
+			"radio_name": "Meadow Lake traffic",
 			"scope_char": "*",
 			"sector_id": "F"
 		},
         "DEN_A_APP": {
             "frequency": 132750,
-            "full_name": "Denver approach",
+            "radio_name": "Denver approach",
             "scope_char": "1",
             "sector_id": "1A"
         },
         "DEN_29_CTR": {
             "frequency": 132225,
-            "full_name": "Denver center",
+            "radio_name": "Denver center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
@@ -808,7 +808,7 @@
         },
         "PUB_APP": {
             "frequency": 120100,
-            "full_name": "Pueblo Approach",
+            "radio_name": "Pueblo Approach",
             "facility_id": "1",
             "scope_char": "P",
             "sector_id": "1P"

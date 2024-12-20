@@ -776,7 +776,7 @@
     "control_positions": {
         "BOS_37_CTR": {
             "frequency": 134700,
-            "full_name": "Boston Center",
+            "radio_name": "Boston Center",
             "scope_char": "C",
             "eram_facility": true,
             "facility_id": "C",
@@ -784,51 +784,51 @@
         },
         "PSM_TWR": {
             "frequency": 128400,
-            "full_name": "Portsmouth Tower",
+            "radio_name": "Portsmouth Tower",
             "scope_char": "T",
             "sector_id": "1R"
         },
         "MHT_TWR": {
             "frequency": 121300,
-            "full_name": "Manchester Tower",
+            "radio_name": "Manchester Tower",
             "scope_char": "T",
             "sector_id": "1M"
         },
         "MHT_Z_APP": {
             "default_airport" :"KMHT",
             "frequency": 124900,
-            "full_name": "Boston Approach",
+            "radio_name": "Boston Approach",
             "scope_char": "Z",
             "sector_id": "1Z"
         },
         "MHT_E_APP": {
             "default_airport": "KPSM",
             "frequency": 125050,
-            "full_name": "Boston Approach",
+            "radio_name": "Boston Approach",
             "scope_char": "E",
             "sector_id": "1E"
         },
         "MHT_W_APP": {
             "frequency": 134750,
-            "full_name": "Boston Approach",
+            "radio_name": "Boston Approach",
             "scope_char": "W",
             "sector_id": "1W"
         },
         "MHT_P_APP": {
             "frequency": 125825,
-            "full_name": "Boston Approach",
+            "radio_name": "Boston Approach",
             "scope_char": "P",
             "sector_id": "1P"
         },
         "MHT_J_APP": {
             "frequency": 127350,
-            "full_name": "Boston Approach",
+            "radio_name": "Boston Approach",
             "scope_char": "J",
             "sector_id": "1J"
         },
         "BOS_DEP": {
             "frequency": 133000,
-            "full_name": "Boston Departure",
+            "radio_name": "Boston Departure",
             "scope_char": "D",
             "facility_id": "1",
             "sector_id": "1D"

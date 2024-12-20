@@ -234,19 +234,19 @@
   "control_positions": {
     "BOI_TWR": {
       "frequency": 118100,
-      "full_name": "Boise Tower",
+      "radio_name": "Boise Tower",
       "scope_char": "T",
       "sector_id": "1T"
     },
     "BOI_APP": {
       "frequency": 126900,
-      "full_name": "Big Sky Approach",
+      "radio_name": "Big Sky Approach",
       "scope_char": "W",
       "sector_id": "1W"
     },
     "SLC_17_CTR": {
       "frequency": 126850,
-      "full_name": "Salt Lake City Center",
+      "radio_name": "Salt Lake City Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",

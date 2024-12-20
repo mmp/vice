@@ -1320,7 +1320,7 @@
     "control_positions": {
         "LAX_55_CTR": {
             "frequency": 135550,
-            "full_name": "Los Angeles Center",
+            "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
@@ -1328,55 +1328,55 @@
         },
         "LAS_D_DEP": {
             "frequency": 125900,
-            "full_name": "Las Vegas Departure",
+            "radio_name": "Las Vegas Departure",
             "scope_char": "D",
             "sector_id": "1D"
         },
         "LAS_M_DEP": {
             "frequency": 133950,
-            "full_name": "Las Vegas Departure",
+            "radio_name": "Las Vegas Departure",
             "scope_char": "M",
             "sector_id": "1M"
         },
         "LAS_Y_APP": {
             "frequency": 125475,
-            "full_name": "Las Vegas Approach",
+            "radio_name": "Las Vegas Approach",
             "scope_char": "Y",
             "sector_id": "1Y"
         },
         "LAS_G_APP": {
             "frequency": 125025,
-            "full_name": "Las Vegas Approach",
+            "radio_name": "Las Vegas Approach",
             "scope_char": "G",
             "sector_id": "1G"
         },
         "LAS_L_APP": {
             "frequency": 119775,
-            "full_name": "Las Vegas Approach",
+            "radio_name": "Las Vegas Approach",
             "scope_char": "L",
             "sector_id": "1L"
         },
         "LAS_F_APP": {
             "frequency": 135000,
-            "full_name": "Las Vegas Approach",
+            "radio_name": "Las Vegas Approach",
             "scope_char": "F",
             "sector_id": "1F"
         },
         "LAS_T_APP": {
             "frequency": 119400,
-            "full_name": "Las Vegas Approach",
+            "radio_name": "Las Vegas Approach",
             "scope_char": "T",
             "sector_id": "1T"
         },
         "LAS_K_APP": {
             "frequency": 120450,
-            "full_name": "Las Vegas Approach",
+            "radio_name": "Las Vegas Approach",
             "scope_char": "K",
             "sector_id": "1K"
         },
         "LAS_TWR": {
             "frequency": 119900,
-            "full_name": "Las Vegas Tower",
+            "radio_name": "Las Vegas Tower",
             "scope_char": "T",
             "sector_id": "LT"
         }

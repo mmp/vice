@@ -602,7 +602,7 @@
   "control_positions": {
     "ATL_CTR": {
       "frequency": 132975,
-      "full_name": "Atlanta Center",
+      "radio_name": "Atlanta Center",
       "scope_char": "C",
       "sector_id": "C43",
       "facility_id": "C",
@@ -610,39 +610,39 @@
     },
     "AVL_W_APP": {
       "frequency": 124650,
-      "full_name": "Asheville Approach",
+      "radio_name": "Asheville Approach",
       "scope_char": "W",
       "sector_id": "1W"
     },
     "AVL_E_APP": {
       "frequency": 125800,
-      "full_name": "Asheville Approach",
+      "radio_name": "Asheville Approach",
       "scope_char": "E",
       "sector_id": "1E"
     },
     "GSP_APP": {
       "frequency": 118800,
-      "full_name": "Greer Approach",
+      "radio_name": "Greer Approach",
       "scope_char": "G",
       "sector_id": "1W",
       "facility_id": "2"
     },
     "TRI_APP": {
       "frequency": 125500,
-      "full_name": "Tri-Cities Approach",
+      "radio_name": "Tri-Cities Approach",
       "scope_char": "T",
       "sector_id": "1W",
       "facility_id": "3"
     },
     "AVL_TWR": {
       "frequency": 121100,
-      "full_name": "Asheville Tower",
+      "radio_name": "Asheville Tower",
       "scope_char": "T",
       "sector_id": "1T"
     },
     "TYS_APP": {
       "frequency": 123900,
-      "full_name": "Knoxville Approach",
+      "radio_name": "Knoxville Approach",
       "scope_char": "K",
       "sector_id": "1W",
       "facility_id": "1"

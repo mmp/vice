@@ -781,25 +781,25 @@
          "control_positions": {
             "CID_S_APP": {
                 "frequency": 119700,
-                "full_name": "Cedar Rapids approach",
+                "radio_name": "Cedar Rapids approach",
                 "scope_char": "A",
                 "sector_id": "1A"
             },
 			"CID_N_APP": {
                 "frequency": 134050,
-                "full_name": "Cedar Rapids approach",
+                "radio_name": "Cedar Rapids approach",
                 "scope_char": "D",
                 "sector_id": "1D"
             },
             "CID_TWR": {
                 "frequency": 118700,
-                "full_name": "Eastern Iowa tower",
+                "radio_name": "Eastern Iowa tower",
                 "scope_char": "1",
                 "sector_id": "1T"
             },
             "CHI_56_CTR": {
                 "frequency": 132800,
-                "full_name": "Chicago center",
+                "radio_name": "Chicago center",
                 "facility_id": "C",
                 "eram_facility": true,
                 "scope_char": "C",
@@ -807,7 +807,7 @@
             },
             "IOW_TWR": {
                 "frequency": 122800,
-                "full_name": "Iowa city traffic",
+                "radio_name": "Iowa city traffic",
                 "scope_char": "T",
                 "sector_id": "2T"
             }

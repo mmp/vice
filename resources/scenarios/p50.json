@@ -1215,7 +1215,7 @@
     "control_positions": {
         "ABQ_CTR": {
             "frequency": 132800,
-            "full_name": "Albuquerque Center",
+            "radio_name": "Albuquerque Center",
             "facility_id": "C",
             "eram_facility": true,
             "scope_char": "C",
@@ -1223,49 +1223,49 @@
         },
         "PHX_A_APP": {
             "frequency": 128650,
-            "full_name": "Phoenix Approach",
+            "radio_name": "Phoenix Approach",
             "scope_char": "A",
             "sector_id": "1A"
         },
         "PHX_Q_APP": {
             "frequency": 124100,
-            "full_name": "Phoenix Approach",
+            "radio_name": "Phoenix Approach",
             "scope_char": "Q",
             "sector_id": "1Q"
         },
         "PHX_N_DEP": {
             "frequency": 119200,
-            "full_name": "Phoenix Departure",
+            "radio_name": "Phoenix Departure",
             "scope_char": "N",
             "sector_id": "1N"
         },
         "PHX_S_DEP": {
             "frequency": 126800,
-            "full_name": "Phoenix Departure",
+            "radio_name": "Phoenix Departure",
             "scope_char": "S",
             "sector_id": "1S"
         },
         "PHX_F_APP": {
             "frequency": 126600,
-            "full_name": "Phoenix Approach",
+            "radio_name": "Phoenix Approach",
             "scope_char": "F",
             "sector_id": "1F"
         },
         "PHX_V_APP": {
             "frequency": 120400,
-            "full_name": "Phoenix Approach",
+            "radio_name": "Phoenix Approach",
             "scope_char": "V",
             "sector_id": "1V"
         },
         "PHX_T_TWR": {
             "frequency": 120900,
-            "full_name": "Phoenix Tower",
+            "radio_name": "Phoenix Tower",
             "scope_char": "T",
             "sector_id": "PT"
         },
         "PHX_E_TWR": {
             "frequency": 118700,
-            "full_name": "Phoenix Tower",
+            "radio_name": "Phoenix Tower",
             "scope_char": "E",
             "sector_id": "PE"
         }

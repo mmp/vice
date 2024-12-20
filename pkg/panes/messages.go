@@ -338,7 +338,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 		var msg Message
 		if lastRadioType == av.RadioTransmissionContact {
 			ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.PrimaryTCP]
-			fullName := ctrl.FullName
+			fullName := ctrl.RadioName
 			if ac := ctx.ControlClient.Aircraft[callsign]; ac != nil && ctx.ControlClient.State.IsDeparture(ac) {
 				// Always refer to the controller as "departure" for departing aircraft.
 				fullName = strings.ReplaceAll(fullName, "approach", "departure")

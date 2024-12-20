@@ -2346,7 +2346,7 @@
   "control_positions": {
     "MIA_46_CTR": {
         "frequency": 135175,
-        "full_name": "Miami Center",
+        "radio_name": "Miami Center",
         "facility_id": "C",
         "eram_facility": true,
         "scope_char": "C",
@@ -2354,7 +2354,7 @@
     },
     "JAX_30_CTR": {
       "frequency": 135925,
-      "full_name": "Jacksonville Center",
+      "radio_name": "Jacksonville Center",
       "facility_id": "J",
       "eram_facility": true,
       "scope_char": "J",
@@ -2362,87 +2362,87 @@
     },
     "MCO_E_APP": {
       "frequency": 124800,
-      "full_name": "Orlando approach",
+      "radio_name": "Orlando approach",
       "facility_id": "4",
       "scope_char": "E",
       "sector_id": "4E"
     },
     "JAX_N_APP": {
       "frequency": 127000,
-      "full_name": "Jacksonville approach",
+      "radio_name": "Jacksonville approach",
       "scope_char": "N",
       "facility_id": "3",
       "sector_id": "3N"
     },
     "TPA_E_APP": {
       "frequency": 118150,
-      "full_name": "Tampa Approach",
+      "radio_name": "Tampa Approach",
       "scope_char": "E",
       "sector_id": "1E"
     },
     "TPA_W_APP": {
       "frequency": 132520,
-      "full_name": "Tampa Approach",
+      "radio_name": "Tampa Approach",
       "scope_char": "W",
       "sector_id": "1W"
     },
     "TPA_G_DEP": {
       "frequency": 134250,
-      "full_name": "Tampa Departure",
+      "radio_name": "Tampa Departure",
       "scope_char": "G",
       "sector_id": "1G"
     },
     "TPA_D_DEP": {
       "frequency": 118800,
-      "full_name": "Tampa Departure",
+      "radio_name": "Tampa Departure",
       "scope_char": "D",
       "sector_id": "1D"
     },
     "TPA_P_APP": {
       "frequency": 125300,
-      "full_name": "Tampa Approach",
+      "radio_name": "Tampa Approach",
       "scope_char": "P",
       "sector_id": "1P"
     },
     "TPA_S_APP": {
       "frequency": 119650,
-      "full_name": "Tampa Approach",
+      "radio_name": "Tampa Approach",
       "scope_char": "S",
       "sector_id": "1S"
     },
     "TPA_F_APP": {
       "frequency": 118500,
-      "full_name": "Tampa Approach",
+      "radio_name": "Tampa Approach",
       "scope_char": "F",
       "sector_id": "1F"
     },
     "TPA_W_TWR": {
       "frequency": 119500,
-      "full_name": "Tampa West Tower",
+      "radio_name": "Tampa West Tower",
       "scope_char": "T",
       "sector_id": "1T"
     },
     "TPA_E_TWR": {
       "frequency": 119050,
-      "full_name": "Tampa East Tower",
+      "radio_name": "Tampa East Tower",
       "scope_char": "T",
       "sector_id": "1Z"
     },
     "PIE_TWR": {
       "frequency": 118300,
-      "full_name": "Saint Petersburg Tower",
+      "radio_name": "Saint Petersburg Tower",
       "scope_char": "T",
       "sector_id": "1I"
     },
     "SRQ_TWR": {
       "frequency": 120100,
-      "full_name": "Sarasota Tower",
+      "radio_name": "Sarasota Tower",
       "scope_char": "T",
       "sector_id": "1Q"
     },
     "LAL_TWR": {
       "frequency": 124500,
-      "full_name": "Lakeland Tower",
+      "radio_name": "Lakeland Tower",
       "scope_char": "T",
       "sector_id": "1X"
     }

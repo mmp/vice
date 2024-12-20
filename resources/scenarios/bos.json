@@ -6534,100 +6534,100 @@
   "control_positions": {
     "BOS_E_TWR": {
       "frequency": 132225,
-      "full_name": "Boston Tower",
+      "radio_name": "Boston Tower",
       "scope_char": "T",
       "sector_id": "1G"
     },
     "BDL_APP": {
       "frequency": 119000,
-      "full_name": "Yankee Approach",
+      "radio_name": "Yankee Approach",
       "scope_char": "2",
       "sector_id": "1W",
       "facility_id": "2"
     },
     "BED_TWR": {
         "frequency": 118500,
-        "full_name": "Bedford Tower",
+        "radio_name": "Bedford Tower",
         "scope_char": "Q",
         "sector_id": "1Q"
     },
     "LWM_TWR": {
       "frequency": 119250,
-      "full_name": "Lawrence Tower",
+      "radio_name": "Lawrence Tower",
       "scope_char": "Q",
       "sector_id": "3Q"
     },
     "BOS_W_TWR": {
       "frequency": 128800,
-      "full_name": "Boston Tower",
+      "radio_name": "Boston Tower",
       "scope_char": "T",
       "sector_id": "1T"
     },
     "OWD_TWR": {
       "frequency": 126000,
-      "full_name": "Norwood Tower",
+      "radio_name": "Norwood Tower",
       "scope_char": "Q",
       "sector_id": "4Q"
     },
     "BVY_TWR": {
       "frequency": 125200,
-      "full_name": "Beverly Tower",
+      "radio_name": "Beverly Tower",
       "scope_char": "Q",
       "sector_id": "2Q"
     },
     "BOS_DEP": {
       "frequency": 133000,
-      "full_name": "Boston Departure",
+      "radio_name": "Boston Departure",
       "scope_char": "D",
       "default_airport": "KBOS",
       "sector_id": "1D"
     },
     "BOS_N_APP": {
       "frequency": 118250,
-      "full_name": "Boston Approach",
+      "radio_name": "Boston Approach",
       "scope_char": "N",
       "sector_id": "1R"
     },
     "BOS_S_APP": {
       "frequency": 120600,
-      "full_name": "Boston Approach",
+      "radio_name": "Boston Approach",
       "scope_char": "S",
       "sector_id": "1M"
     },
     "BOS_F_APP": {
       "frequency": 126500,
-      "full_name": "Boston Approach",
+      "radio_name": "Boston Approach",
       "scope_char": "F",
       "default_airport": "KBOS",
       "sector_id": "1F"
     },
     "BOS_I_APP": {
       "frequency": 119650,
-      "full_name": "Boston Approach",
+      "radio_name": "Boston Approach",
       "scope_char": "I",
       "sector_id": "1I"
     },
     "BOS_B_APP": {
       "frequency": 124400,
-      "full_name": "Boston Approach",
+      "radio_name": "Boston Approach",
       "scope_char": "B",
       "sector_id": "1B"
     },
     "BOS_U_APP": {
       "frequency": 127200,
-      "full_name": "Boston Approach",
+      "radio_name": "Boston Approach",
       "scope_char": "U",
       "sector_id": "1U"
     },
     "BOS_L_APP": {
       "frequency": 124100,
-      "full_name": "Boston Approach",
+      "radio_name": "Boston Approach",
       "scope_char": "L",
       "sector_id": "1L"
     },
     "BOS_37_CTR": {
       "frequency": 134700,
-      "full_name": "Boston Center",
+      "radio_name": "Boston Center",
       "scope_char": "C",
       "sector_id": "C37",
       "facility_id": "C",
@@ -6635,7 +6635,7 @@
     },
     "BOS_36_CTR": {
       "frequency": 123750,
-      "full_name": "Boston Center",
+      "radio_name": "Boston Center",
       "scope_char": "C",
       "sector_id": "C36",
       "facility_id": "C",
@@ -6643,7 +6643,7 @@
     },
     "BOS_42_CTR": {
       "frequency": 133425,
-      "full_name": "Boston Center",
+      "radio_name": "Boston Center",
       "scope_char": "C",
       "sector_id": "C42",
       "facility_id": "C",
@@ -6651,7 +6651,7 @@
     },
     "BOS_34_CTR": {
       "frequency": 124850,
-      "full_name": "Boston Center",
+      "radio_name": "Boston Center",
       "scope_char": "C",
       "sector_id": "C34",
       "facility_id": "C",
@@ -6659,7 +6659,7 @@
     },
     "BOS_16_CTR": {
       "frequency": 128200,
-      "full_name": "Boston Center",
+      "radio_name": "Boston Center",
       "scope_char": "C",
       "sector_id": "C16",
       "facility_id": "C",
@@ -6667,7 +6667,7 @@
     },
     "BOS_18_CTR": {
       "frequency": 128750,
-      "full_name": "Boston Center",
+      "radio_name": "Boston Center",
       "scope_char": "C",
       "sector_id": "C18",
       "facility_id": "C",
@@ -6675,26 +6675,26 @@
     },
     "PVD_APP": {
       "frequency": 123675,
-      "full_name": "Providence Approach",
+      "radio_name": "Providence Approach",
       "scope_char": "1",
       "sector_id": "1D",
       "facility_id": "1"
     },
     "MHT_E_APP": {
       "frequency": 125050,
-      "full_name": "Boston Approach",
+      "radio_name": "Boston Approach",
       "scope_char": "E",
       "sector_id": "1E"
   },
   "MHT_Z_APP": {
       "frequency": 124900,
-      "full_name": "Boston Approach",
+      "radio_name": "Boston Approach",
       "scope_char": "W",
       "sector_id": "1Z"
     },
     "ACK_N_APP": {
       "frequency": 118200,
-      "full_name": "Boston Approach",
+      "radio_name": "Boston Approach",
       "scope_char": "N",
       "sector_id": "1N"
     }

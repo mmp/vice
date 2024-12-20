@@ -651,40 +651,40 @@
   "control_positions": {
     "ABE_APP": {
       "frequency": 119650,
-      "full_name": "Allentown approach",
+      "radio_name": "Allentown approach",
       "scope_char": "F",
       "sector_id": "SF"
     },
     "ABE_TWR": {
       "frequency": 120500,
-      "full_name": "Lehigh Valley tower",
+      "radio_name": "Lehigh Valley tower",
       "scope_char": "T",
       "sector_id": "AL"
     },
     "AVP_S_APP": {
       "frequency": 126300,
-      "full_name": "Wilkes Barre Approach",
+      "radio_name": "Wilkes Barre Approach",
       "scope_char": "7",
       "sector_id": "1E",
       "facility_id": "1"
     },
     "EWR_APP": {
       "frequency": 128550,
-      "full_name": "New York approach",
+      "radio_name": "New York approach",
       "scope_char": "P",
       "sector_id": "4P",
       "facility_id": "2"
     },
     "MDT_SE_APP": {
       "frequency": 126450,
-      "full_name": "Harrisburg approach",
+      "radio_name": "Harrisburg approach",
       "scope_char": "S",
       "sector_id": "HS",
       "facility_id": "5"
     },
     "NY_D_CTR": {
       "frequency": 127725,
-      "full_name": "New York center",
+      "radio_name": "New York center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -692,7 +692,7 @@
     },
     "PHL_NA_APP": {
       "frequency": 128400,
-      "full_name": "Philly approach",
+      "radio_name": "Philly approach",
       "scope_char": "N",
       "sector_id": "6N",
       "facility_id": "3"

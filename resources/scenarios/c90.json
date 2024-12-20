@@ -6334,7 +6334,7 @@
         "control_positions": {
             "CHI_Z_APP": {
                 "frequency": 119000,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "Z",
                 "sector_id": "1Z",
                 "facility": "C90",
@@ -6342,56 +6342,56 @@
             },
             "CHI_W_APP": {
                 "frequency": 133625,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "W",
                 "facility": "C90",
                 "sector_id": "1W"
             },
             "CHI_F_APP": {
                 "frequency": 124350,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "F",
                 "facility": "C90",
                 "sector_id": "1F"
             },
             "CHI_H_APP": {
                 "frequency": 132175,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "H",
                 "facility": "C90",
                 "sector_id": "1H"
             },
             "CHI_X_APP": {
                 "frequency": 135075,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "X",
                 "facility": "C90",
                 "sector_id": "1X"
             },
             "CHI_J_APP": {
                 "frequency": 134625,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "J",
                 "facility": "C90",
                 "sector_id": "1J"
             },
             "CHI_E_APP": {
                 "frequency": 135025,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "E",
                 "facility": "C90",
                 "sector_id": "1E"
             },
             "CHI_Y_APP": {
                 "frequency": 135025,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "Y",
                 "facility": "C90",
                 "sector_id": "1Y"
             },
             "CHI_S_APP": {
                 "frequency": 128200,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "S",
                 "sector_id": "1S",
                 "facility": "C90",
@@ -6399,63 +6399,63 @@
             },
             "CHI_P_APP": {
                 "frequency": 119350,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "P",
                 "facility": "C90",
                 "sector_id": "1P"
             },
             "CHI_L_APP": {
                 "frequency": 133500,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "L",
                 "facility": "C90",
                 "sector_id": "1L"
             },
             "CHI_U_APP": {
                 "frequency": 127875,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "U",
                 "facility": "C90",
                 "sector_id": "1U"
             },
             "CHI_B_DEP": {
                 "frequency": 125000,
-                "full_name": "Chicago Departure",
+                "radio_name": "Chicago Departure",
                 "scope_char": "B",
                 "facility": "C90",
                 "sector_id": "1B"
             },
             "CHI_M_DEP": {
                 "frequency": 126625,
-                "full_name": "Chicago Departure",
+                "radio_name": "Chicago Departure",
                 "scope_char": "M",
                 "facility": "C90",
                 "sector_id": "1M"
             },
             "CHI_G_DEP": {
                 "frequency": 135275,
-                "full_name": "Chicago Departure",
+                "radio_name": "Chicago Departure",
                 "scope_char": "G",
                 "facility": "C90",
                 "sector_id": "1G"
             },
             "CHI_D_DEP": {
                 "frequency": 134400,
-                "full_name": "Chicago Departure",
+                "radio_name": "Chicago Departure",
                 "scope_char": "D",
                 "facility": "C90",
                 "sector_id": "1D"
             },
             "CHI_A_APP": {
                 "frequency": 120555,
-                "full_name": "Chicago Approach",
+                "radio_name": "Chicago Approach",
                 "scope_char": "A",
                 "facility": "C90",
                 "sector_id": "1A"
             },
             "CHI_81_CTR": {
                 "frequency": 120350,
-                "full_name": "Chicago Center",
+                "radio_name": "Chicago Center",
                 "facility_id": "C",
                 "eram_facility": true,
                 "scope_char": "C",
@@ -6464,77 +6464,77 @@
             },
             "ORD_S_TWR": {
                 "frequency": 120750,
-                "full_name": "O'Hare Tower",
+                "radio_name": "O'Hare Tower",
                 "scope_char": "T",
                 "facility": "C90",
                 "sector_id": "SLC"
             },
             "ORD_N_TWR": {
                 "frequency": 126900,
-                "full_name": "O'Hare Tower",
+                "radio_name": "O'Hare Tower",
                 "scope_char": "T",
                 "facility": "C90",
                 "sector_id": "NLC"
             },
             "ORD_C_TWR": {
                 "frequency": 132700,
-                "full_name": "O'Hare Tower",
+                "radio_name": "O'Hare Tower",
                 "scope_char": "T",
                 "facility": "C90",
                 "sector_id": "3LC"
             },
             "ORD_NN_TWR": {
                 "frequency": 128150,
-                "full_name": "O'Hare Tower",
+                "radio_name": "O'Hare Tower",
                 "scope_char": "T",
                 "facility": "C90",
                 "sector_id": "LCN"
             },
             "ORD_SS_TWR": {
                 "frequency": 133000,
-                "full_name": "O'Hare Tower",
+                "radio_name": "O'Hare Tower",
                 "scope_char": "T",
                 "facility": "C90",
                 "sector_id": "LCS"
             },
             "MDW_TWR": {
                 "frequency": 135200,
-                "full_name": "Midway Tower",
+                "radio_name": "Midway Tower",
                 "scope_char": "R",
                 "facility": "C90",
                 "sector_id": "MLC"
             },
             "PWK_TWR": {
                 "frequency": 119900,
-                "full_name": "Executive Tower",
+                "radio_name": "Executive Tower",
                 "scope_char": "6",
                 "facility": "C90",
                 "sector_id": "16"
             },
             "DPA_TWR": {
                 "frequency": 120900,
-                "full_name": "Dupage Tower",
+                "radio_name": "Dupage Tower",
                 "scope_char": "7",
                 "facility": "C90",
                 "sector_id": "17"
             },
             "ARR_TWR": {
                 "frequency": 120600,
-                "full_name": "Aurora Tower",
+                "radio_name": "Aurora Tower",
                 "scope_char": "8",
                 "facility": "C90",
                 "sector_id": "18"
             },
             "LOT_TWR": {
                 "frequency": 134800,
-                "full_name": "Lewis Tower",
+                "radio_name": "Lewis Tower",
                 "scope_char": "5",
                 "facility": "C90",
                 "sector_id": "15"
             },
             "MKE_E_APP": {
                 "frequency": 118000,
-                "full_name": "Milwaukee approach",
+                "radio_name": "Milwaukee approach",
                 "scope_char": "1",
                 "sector_id": "1E",
                 "facility_id": "1",
@@ -6542,7 +6542,7 @@
             },
             "RFD_E_APP": {
                 "frequency": 121000,
-                "full_name": "Rockford approach",
+                "radio_name": "Rockford approach",
                 "scope_char": "3",
                 "sector_id": "3E",
                 "facility_id": "3",
@@ -6550,7 +6550,7 @@
             },
             "SBN_N_APP": {
                 "frequency": 118550,
-                "full_name": "Southbend approach",
+                "radio_name": "Southbend approach",
                 "scope_char": "2",
                 "sector_id": "2N",
                 "facility_id": "2",
@@ -6558,7 +6558,7 @@
             },
             "GYY_TWR": {
                 "frequency": 125600,
-                "full_name": "Gary Tower",
+                "radio_name": "Gary Tower",
                 "scope_char": "G",
                 "facility": "C90",
                 "sector_id": "GT"

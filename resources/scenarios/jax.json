@@ -1243,7 +1243,7 @@
   "control_positions": {
     "JAX_15_CTR": {
       "frequency": 133325,
-      "full_name": "Jacksonville Center",
+      "radio_name": "Jacksonville Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -1251,7 +1251,7 @@
     },
     "JAX_54_CTR": {
       "frequency": 124675,
-      "full_name": "Jacksonville center",
+      "radio_name": "Jacksonville center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -1259,7 +1259,7 @@
     },
     "JAX_57_CTR": {
       "frequency": 134005,
-      "full_name": "Jacksonville Center",
+      "radio_name": "Jacksonville Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -1267,7 +1267,7 @@
     },
     "JAX_77_CTR": {
       "frequency": 125375,
-      "full_name": "Jacksonville Center",
+      "radio_name": "Jacksonville Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -1275,7 +1275,7 @@
     },
     "JAX_79_CTR": {
       "frequency": 133700,
-      "full_name": "Jacksonville Center",
+      "radio_name": "Jacksonville Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -1283,101 +1283,101 @@
     },
     "DAB_N_APP": {
       "frequency": 125800,
-      "full_name": "Daytona Beach approach",
+      "radio_name": "Daytona Beach approach",
       "facility_id": "1",
       "scope_char": "1",
       "sector_id": "1N"
     },
     "MCO_N_APP": {
       "frequency": 121100,
-      "full_name": "Orlando approach",
+      "radio_name": "Orlando approach",
       "facility_id": "2",
       "scope_char": "2",
       "sector_id": "1N"
     },
     "TPA_E_APP": {
       "frequency": 118150,
-      "full_name": "Tampa approach",
+      "radio_name": "Tampa approach",
       "facility_id": "3",
       "scope_char": "3",
       "sector_id": "1E"
     },
     "JAX_N_APP": {
       "frequency": 127000,
-      "full_name": "Jacksonville approach",
+      "radio_name": "Jacksonville approach",
       "scope_char": "N",
       "sector_id": "1N"
     },
     "JAX_W_APP": {
       "frequency": 127775,
-      "full_name": "Jacksonville approach",
+      "radio_name": "Jacksonville approach",
       "scope_char": "W",
       "sector_id": "1W"
     },
     "JAX_E_APP": {
       "frequency": 132775,
-      "full_name": "Jacksonville approach",
+      "radio_name": "Jacksonville approach",
       "scope_char": "E",
       "sector_id": "1E"
     },
     "JAX_R_APP": {
       "frequency": 119000,
-      "full_name": "Jacksonville approach",
+      "radio_name": "Jacksonville approach",
       "scope_char": "R",
       "sector_id": "1R"
     },
     "JAX_J_APP": {
       "frequency": 119850,
-      "full_name": "Jacksonville approach",
+      "radio_name": "Jacksonville approach",
       "scope_char": "J",
       "sector_id": "1J"
     },
     "JAX_S_APP": {
       "frequency": 124900,
-      "full_name": "Jacksonville approach",
+      "radio_name": "Jacksonville approach",
       "default_airport": "KJAX",
       "scope_char": "S",
       "sector_id": "1S"
     },
     "JAX_A_APP": {
       "frequency": 121300,
-      "full_name": "Jacksonville approach",
+      "radio_name": "Jacksonville approach",
       "scope_char": "A",
       "sector_id": "1A"
     },
     "JAX_G_APP": {
       "frequency": 118175,
-      "full_name": "Jacksonville approach",
+      "radio_name": "Jacksonville approach",
       "scope_char": "G",
       "sector_id": "1G"
     },
     "JAX_D_APP": {
       "frequency": 128675,
-      "full_name": "Jacksonville approach",
+      "radio_name": "Jacksonville approach",
       "scope_char": "D",
       "sector_id": "1D"
     },
     "JAX_V_APP": {
       "frequency": 118600,
-      "full_name": "Jacksonville approach",
+      "radio_name": "Jacksonville approach",
       "scope_char": "V",
       "sector_id": "1V"
     },
     "JAX_TWR": {
       "frequency": 118300,
-      "full_name": "Jacksonville Tower",
+      "radio_name": "Jacksonville Tower",
       "scope_char": "T",
       "sector_id": "1T"
     },
     "CRG_TWR": {
       "frequency": 132100,
-      "full_name": "Jacksonville Tower",
+      "radio_name": "Jacksonville Tower",
       "scope_char": "T",
       "sector_id": "3CT"
     },
     "SGJ_TWR": {
       "frequency": 127625,
-      "full_name": "St. Augustine Tower",
+      "radio_name": "St. Augustine Tower",
       "scope_char": "T",
       "sector_id": "3ST"
     }

@@ -1689,7 +1689,7 @@
     "control_positions": {
         "DC_32_CTR": {
             "frequency": 133725,
-            "full_name": "DC Center",
+            "radio_name": "DC Center",
             "scope_char": "C",
             "eram_facility": true,
             "facility_id": "C",
@@ -1697,7 +1697,7 @@
         },
         "DC_9_CTR": {
             "frequency": 118825,
-            "full_name": "DC Center",
+            "radio_name": "DC Center",
             "scope_char": "C",
             "eram_facility": true,
             "facility_id": "C",
@@ -1705,7 +1705,7 @@
         },
         "DC_20_CTR": {
             "frequency": 127750,
-            "full_name": "DC Center",
+            "radio_name": "DC Center",
             "scope_char": "C",
             "eram_facility": true,
             "facility_id": "C",
@@ -1715,49 +1715,49 @@
             "frequency": 119300,
             "scope_char": "Z",
             "sector_id": "1Z",
-            "full_name": "Raleigh Tower"
+            "radio_name": "Raleigh Tower"
         },
         "RDU_E_TWR": {
             "frequency": 127450,
             "scope_char": "T",
             "sector_id": "1T",
-            "full_name": "Raleigh Tower"
+            "radio_name": "Raleigh Tower"
         },
         "RDU_N_DEP": {
             "frequency": 132350,
             "scope_char": "N",
             "sector_id": "1N",
-            "full_name": "Raleigh Departure"
+            "radio_name": "Raleigh Departure"
         },
         "RDU_S_DEP": {
             "frequency": 125300,
             "scope_char": "S",
             "sector_id": "1S",
-            "full_name": "Raleigh Departure"
+            "radio_name": "Raleigh Departure"
         },
         "RDU_E_APP": {
             "frequency": 124950,
             "scope_char": "E",
             "sector_id": "1E",
-            "full_name": "Raleigh Approach"
+            "radio_name": "Raleigh Approach"
         },
         "RDU_W_APP": {
             "frequency": 128300,
             "scope_char": "W",
             "sector_id": "1W",
-            "full_name": "Raleigh Approach"
+            "radio_name": "Raleigh Approach"
         },
         "RDU_U_APP": {
             "frequency": 124800,
             "scope_char": "U",
             "sector_id": "1U",
-            "full_name": "Raleigh Approach"
+            "radio_name": "Raleigh Approach"
         },
         "RDU_Y_APP": {
             "frequency": 135150,
             "scope_char": "Y",
             "sector_id": "1Y",
-            "full_name": "Raleigh Approach"
+            "radio_name": "Raleigh Approach"
         }
     },
     "default_scenario": "KRDU East",

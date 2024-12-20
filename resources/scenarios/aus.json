@@ -1334,7 +1334,7 @@
 	"control_positions": {
 		"HOU_50_CTR": {
 			"frequency": 134200,
-			"full_name": "Houston Center",
+			"radio_name": "Houston Center",
 			"scope_char": "C",
 			"sector_id": "C50",
 			"facility_id": "C",
@@ -1342,7 +1342,7 @@
 		},
 		"HOU_80_CTR": {
 			"frequency": 132150,
-			"full_name": "Houston Center",
+			"radio_name": "Houston Center",
 			"scope_char": "C",
 			"sector_id": "C80",
 			"facility_id": "C",
@@ -1350,7 +1350,7 @@
 		},
 		"HOU_96_CTR": {
 			"frequency": 125650,
-			"full_name": "Houston Center",
+			"radio_name": "Houston Center",
 			"scope_char": "C",
 			"sector_id": "C96",
 			"facility_id": "C",
@@ -1358,64 +1358,64 @@
 		},
 		"AUS_W_APP": {
 			"frequency": 119000,
-			"full_name": "Austin Approach",
+			"radio_name": "Austin Approach",
 			"scope_char": "W",
 			"sector_id": "1W"
 		},
 		"AUS_E_APP": {
 			"frequency": 127225,
-			"full_name": "Austin Approach",
+			"radio_name": "Austin Approach",
 			"scope_char": "E",
 			"sector_id": "1E"
 		},
 		"AUS_F_APP": {
 			"frequency": 125325,
-			"full_name": "Austin Approach",
+			"radio_name": "Austin Approach",
 			"scope_char": "F",
 			"sector_id": "1F"
 		},
 		"SAT_N_APP": {
 			"frequency": 127100,
-			"full_name": "San Antonio Approach",
+			"radio_name": "San Antonio Approach",
 			"scope_char": "S",
 			"sector_id": "1N",
 			"facility_id": "S"
 		},
 		"I90_U_APP": {
 			"frequency": 126150,
-			"full_name": "Houston Approach",
+			"radio_name": "Houston Approach",
 			"scope_char": "U",
 			"sector_id": "1U",
 			"facility_id": "H"
 		},
 		"I90_Z_APP": {
 			"frequency": 124225,
-			"full_name": "Houston Approach",
+			"radio_name": "Houston Approach",
 			"scope_char": "Z",
 			"sector_id": "1Z",
 			"facility_id": "H"
 		},
 		"AUS_E_TWR": {
 			"frequency": 121000,
-			"full_name": "Austin Tower",
+			"radio_name": "Austin Tower",
 			"scope_char": "T",
 			"sector_id": "TE"
 		},
 		"AUS_W_TWR": {
 			"frequency": 118225,
-			"full_name": "Austin Tower",
+			"radio_name": "Austin Tower",
 			"scope_char": "T",
 			"sector_id": "TW"
 		},
 		"HYI_TWR": {
 			"frequency": 126825,
-			"full_name": "San Marcos Tower",
+			"radio_name": "San Marcos Tower",
 			"scope_char": "T",
 			"sector_id": "TH"
 		},
 		"GTU_TWR": {
 			"frequency": 120225,
-			"full_name": "Georgetown Tower",
+			"radio_name": "Georgetown Tower",
 			"scope_char": "T",
 			"sector_id": "TG"
 		}

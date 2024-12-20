@@ -840,8 +840,8 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		if ctrl.TCP == "" {
 			e.ErrorString("no \"sector_id\" specified")
 		}
-		if ctrl.FullName == "" {
-			e.ErrorString("no \"full_name\" specified")
+		if ctrl.RadioName == "" {
+			e.ErrorString("no \"radio_name\" specified")
 		}
 		e.Pop()
 	}

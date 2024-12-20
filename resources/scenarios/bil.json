@@ -235,19 +235,19 @@
   "control_positions": {
     "BIL_TWR": {
       "frequency": 127200,
-      "full_name": "Billings Tower",
+      "radio_name": "Billings Tower",
       "scope_char": "T",
       "sector_id": "1T"
     },
     "BIL_APP": {
       "frequency": 119200,
-      "full_name": "Billings Approach",
+      "radio_name": "Billings Approach",
       "scope_char": "W",
       "sector_id": "1W"
     },
     "SLC_17_CTR": {
       "frequency": 126850,
-      "full_name": "Salt Lake City Center",
+      "radio_name": "Salt Lake City Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",

@@ -1545,43 +1545,43 @@
   "control_positions": {
     "LAX_D_APP": {
       "frequency": 124900,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "D",
       "sector_id": "2D"
     },
     "LAX_F_APP": {
       "frequency": 124050,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "F",
       "sector_id": "2F"
     },
     "LAX_U_APP": {
       "frequency": 128500,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "U",
       "sector_id": "2U"
     },
     "LAX_Z_APP": {
       "frequency": 124500,
-      "full_name": "SoCal Approach",
+      "radio_name": "SoCal Approach",
       "scope_char": "Z",
       "sector_id": "2Z"
     },
     "LAX_N_TWR": {
       "frequency": 133900,
-      "full_name": "LA Tower",
+      "radio_name": "LA Tower",
       "scope_char": "T",
       "sector_id": "2T"
     },
     "LAX_S_TWR": {
       "frequency": 120950,
-      "full_name": "LA Tower",
+      "radio_name": "LA Tower",
       "scope_char": "T",
       "sector_id": "2V"
     },
     "LAX_CTR": {
       "frequency": 135550,
-      "full_name": "LA Center",
+      "radio_name": "LA Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
@@ -1589,7 +1589,7 @@
     },
     "HHR_TWR": {
       "frequency": 121100,
-      "full_name": "Hawthorne Tower",
+      "radio_name": "Hawthorne Tower",
       "scope_char": "T",
       "sector_id": "3T"
     }

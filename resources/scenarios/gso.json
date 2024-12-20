@@ -776,7 +776,7 @@
   "control_positions": {
     "ATL_CTR": {
       "frequency": 132975,
-      "full_name": "Atlanta Center",
+      "radio_name": "Atlanta Center",
       "scope_char": "C",
       "sector_id": "C43",
       "facility_id": "C",
@@ -784,7 +784,7 @@
     },
     "DC_CTR": {
       "frequency": 133725,
-      "full_name": "Washington Center",
+      "radio_name": "Washington Center",
       "scope_char": "W",
       "sector_id": "W32",
       "facility_id": "W",
@@ -792,44 +792,44 @@
     },
     "CLT_APP": {
       "frequency": 120500,
-      "full_name": "Charlotte Approach",
+      "radio_name": "Charlotte Approach",
       "scope_char": "S",
       "sector_id": "1S",
       "facility_id": "1"
     },
     "GSO_TWR": {
       "frequency": 119100,
-      "full_name": "Greensboro Tower",
+      "radio_name": "Greensboro Tower",
       "scope_char": "T",
       "sector_id": "1T"
     },
     "GSO_W_APP": {
       "frequency": 124350,
-      "full_name": "Greensboro Approach",
+      "radio_name": "Greensboro Approach",
       "scope_char": "W",
       "sector_id": "1W"
     },
     "GSO_E_APP": {
       "frequency": 120900,
-      "full_name": "Greensboro Approach",
+      "radio_name": "Greensboro Approach",
       "scope_char": "E",
       "sector_id": "1H"
     },
     "GSO_F_APP": {
       "frequency": 125600,
-      "full_name": "Greensboro Approach",
+      "radio_name": "Greensboro Approach",
       "scope_char": "F",
       "sector_id": "1F"
     },
     "GSO_S_APP": {
       "frequency": 126000,
-      "full_name": "Greensboro Approach",
+      "radio_name": "Greensboro Approach",
       "scope_char": "S",
       "sector_id": "1S"
     },
     "INT_TWR": {
       "frequency": 123750,
-      "full_name": "Winston-Salem Tower",
+      "radio_name": "Winston-Salem Tower",
       "scope_char": "L",
       "sector_id": "1L"
     }
