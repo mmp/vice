@@ -1195,21 +1195,21 @@ func (sc SplitConfigurationSet) Splits() []string {
 // ResolveController takes a controller callsign and returns the signed-in
 // controller that is responsible for that position (possibly just the
 // provided callsign).
-func (sc SplitConfiguration) ResolveController(callsign string, active func(callsign string) bool) (string, error) {
-	origCallsign := callsign
+func (sc SplitConfiguration) ResolveController(id string, active func(id string) bool) (string, error) {
+	origId := id
 	i := 0
 	for {
-		if ctrl, ok := sc[callsign]; !ok {
-			return "", fmt.Errorf("%s: failed to find controller in MultiControllers", callsign)
-		} else if ctrl.Primary || active(callsign) {
-			return callsign, nil
+		if ctrl, ok := sc[id]; !ok {
+			return "", fmt.Errorf("%s: failed to find controller in MultiControllers", id)
+		} else if ctrl.Primary || active(id) {
+			return id, nil
 		} else {
-			callsign = ctrl.BackupController
+			id = ctrl.BackupController
 		}
 
 		i++
 		if i == 20 {
-			return "", fmt.Errorf("%s: unable to find controller backup", origCallsign)
+			return "", fmt.Errorf("%s: unable to find controller backup", origId)
 		}
 	}
 }
