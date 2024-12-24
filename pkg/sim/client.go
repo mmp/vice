@@ -947,8 +947,20 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 			imgui.TableSetupColumn("Name")
 			imgui.TableHeadersRow()
 
-			for _, callsign := range util.SortedMapKeys(c.Controllers) {
-				ctrl := c.Controllers[callsign]
+			// Sort 2-char before 3-char and then alphabetically
+			sorted := maps.Keys(c.Controllers)
+			slices.SortFunc(sorted, func(a, b string) int {
+				if len(a) < len(b) {
+					return -1
+				} else if len(a) > len(b) {
+					return 1
+				} else {
+					return strings.Compare(a, b)
+				}
+			})
+
+			for _, id := range sorted {
+				ctrl := c.Controllers[id]
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.Text(ctrl.Id())
