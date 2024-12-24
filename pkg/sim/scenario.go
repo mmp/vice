@@ -830,8 +830,6 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	}
 
 	for position, ctrl := range sg.ControlPositions {
-		ctrl.Position = position
-
 		e.Push("Controller " + position)
 
 		if ctrl.Frequency < 118000 || ctrl.Frequency > 138000 {
@@ -886,6 +884,11 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 }
 
 func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
+	// Grab the original keys before rewriting.
+	for position, ctrl := range sg.ControlPositions {
+		ctrl.Position = position
+	}
+
 	pos := make(map[string]*av.Controller)
 	for _, ctrl := range sg.ControlPositions {
 		id := ctrl.Id()
