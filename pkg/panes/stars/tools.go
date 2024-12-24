@@ -987,62 +987,15 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformati
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawAirspace(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
-	ld := renderer.GetColoredLinesDrawBuilder()
-	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-
-	ps := sp.currentPrefs()
-	rgb := ps.Brightness.Lists.ScaleRGB(STARSListColor)
-
-	drawSectors := func(volumes []sim.ControllerAirspaceVolume) {
-		for _, v := range volumes {
-			e := math.EmptyExtent2D()
-
-			for _, pts := range v.Boundaries {
-				for i := range pts {
-					e = math.Union(e, pts[i])
-					if i < len(pts)-1 {
-						ld.AddLine(pts[i], pts[i+1], rgb)
-					}
-				}
-			}
-
-			center := e.Center()
-			ps := sp.currentPrefs()
-			style := renderer.TextStyle{
-				Font:           sp.systemFont(ctx, ps.CharSize.Tools),
-				Color:          rgb,
-				DrawBackground: true, // default BackgroundColor is fine
-			}
-			alts := fmt.Sprintf("%d-%d", v.LowerLimit/100, v.UpperLimit/100)
-			td.AddTextCentered(alts, transforms.WindowFromLatLongP(center), style)
-		}
-	}
-
-	if sp.drawApproachAirspace {
-		drawSectors(ctx.ControlClient.ApproachAirspace)
-	}
-
-	if sp.drawDepartureAirspace {
-		drawSectors(ctx.ControlClient.DepartureAirspace)
-	}
-
-	transforms.LoadLatLongViewingMatrices(cb)
-	ld.GenerateCommands(cb)
-	transforms.LoadWindowViewingMatrices(cb)
-	td.GenerateCommands(cb)
-}
-
 func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font, color renderer.RGB,
 	cb *renderer.CommandBuffer) {
 	drawArrivals := ctx.ControlClient.ScopeDrawArrivals()
 	drawApproaches := ctx.ControlClient.ScopeDrawApproaches()
 	drawDepartures := ctx.ControlClient.ScopeDrawDepartures()
 	drawOverflights := ctx.ControlClient.ScopeDrawOverflights()
+	drawAirspace := ctx.ControlClient.ScopeDrawAirspace()
 
-	if len(drawArrivals) == 0 && len(drawApproaches) == 0 && len(drawDepartures) == 0 && len(drawOverflights) == 0 {
+	if len(drawArrivals) == 0 && len(drawApproaches) == 0 && len(drawDepartures) == 0 && len(drawOverflights) == 0 && len(drawAirspace) == 0 {
 		return
 	}
 
@@ -1164,6 +1117,35 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 				}
 
 				drawWaypoints(ctx, of.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr)
+			}
+		}
+	}
+
+	if drawAirspace != nil {
+		ps := sp.currentPrefs()
+		rgb := ps.Brightness.Lists.ScaleRGB(STARSListColor)
+
+		for _, ctrl := range util.SortedMapKeys(drawAirspace) {
+			for _, volname := range util.SortedMapKeys(drawAirspace[ctrl]) {
+				if !drawAirspace[ctrl][volname] {
+					continue
+				}
+
+				for _, vol := range ctx.ControlClient.Airspace[ctrl][volname] {
+					for _, pts := range vol.Boundaries {
+						for i := range pts[:len(pts)-1] {
+							ld.AddLine(pts[i], pts[i+1])
+						}
+					}
+
+					ps := sp.currentPrefs()
+					style := renderer.TextStyle{
+						Font:           sp.systemFont(ctx, ps.CharSize.Tools),
+						Color:          rgb,
+						DrawBackground: true, // default BackgroundColor is fine
+					}
+					td.AddTextCentered(vol.Label, transforms.WindowFromLatLongP(vol.LabelPosition), style)
+				}
 			}
 		}
 	}

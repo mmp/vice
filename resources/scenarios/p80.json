@@ -3470,9 +3470,12 @@
   "primary_airport": "KPDX",
   "scenarios": {
     "KPDX_West Flow": {
-      "approach_airspace": [
-        "PDXAPP"
-      ],
+      "airspace": {
+        "PDX_APP": [ "PDXAPP" ],
+        "PDX_S_APP": [ "PDXAPP" ],
+        "PDX_DEP": [ "PDXAPP" ],
+        "PDX_F_APP" : [ "PDX_WEST_FINAL" ]
+      },
       "arrival_runways": [
         {
           "airport": "KPDX",
@@ -3520,9 +3523,6 @@
         "SEA_46_CTR"
       ],
       "default_maps": ["RWY 28"],
-      "departure_airspace": [
-        "PDXAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KPDX",
@@ -3541,9 +3541,12 @@
       }
     },
     "KPDX_East Flow": {
-      "approach_airspace": [
-        "PDXAPP"
-      ],
+      "airspace": {
+        "PDX_APP": [ "PDXAPP" ],
+        "PDX_S_APP": [ "PDXAPP" ],
+        "PDX_DEP": [ "PDXAPP" ],
+        "PDX_F_APP" : [ "PDX_EAST_FINAL" ]
+      },
       "arrival_runways": [
         {
           "airport": "KPDX",
@@ -3591,9 +3594,6 @@
         "SEA_46_CTR"
       ],
       "default_maps": ["RWY 10" ],
-      "departure_airspace": [
-        "PDXAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KPDX",
@@ -3612,9 +3612,9 @@
       }
     },
     "KPDX_Westflow Final": {
-      "approach_airspace": [
-        "PDX_WEST_FINAL"
-      ],
+      "airspace": {
+        "PDX_F_APP": [ "PDX_WEST_FINAL" ]
+      },
       "arrival_runways": [
         {
           "airport": "KPDX",
@@ -3654,9 +3654,9 @@
       "default_maps": ["RWY 28" ]
     },
     "KPDX_Eastflow Final": {
-      "approach_airspace": [
-        "PDX_EAST_FINAL"
-      ],
+      "airspace": {
+        "PDX_F_APP": [ "PDX_EAST_FINAL" ]
+      },
       "arrival_runways": [
         {
           "airport": "KPDX",

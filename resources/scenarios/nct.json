@@ -7303,8 +7303,12 @@
   "primary_airport": "KSFO",
   "scenarios": {
     "Area A Combined - SJCW": {
-      "approach_airspace": ["SJC_W_FLOW"],
-      "departure_airspace": ["SJC_W_FLOW"],
+      "airspace": {
+        "SJC_M_APP": ["SJC_W_FLOW"],
+        "MRY_APP": ["SJC_W_FLOW"],
+        "SJC_L_APP": ["SJC_W_FLOW"],
+        "SJC_DEP": ["SJC_W_FLOW"]
+      },
       "arrival_runways": [
         {
           "airport": "KSJC",
@@ -7413,8 +7417,12 @@
       }
     },
     "Area A Combined - SJCE": {
-      "approach_airspace": ["SJC_E_FLOW"],
-      "departure_airspace": ["SJC_E_FLOW"],
+      "airspace": {
+        "SJC_M_APP": ["SJC_E_FLOW"],
+        "MRY_APP": ["SJC_E_FLOW"],
+        "SJC_L_APP": ["SJC_E_FLOW"],
+        "SJC_DEP": ["SJC_E_FLOW"]
+      },
       "arrival_runways": [
         {
           "airport": "KSJC",
@@ -7522,8 +7530,15 @@
       }
     },
     "Area B Combined - SFOW (RWYS 28)": {
-      "approach_airspace": ["SFO_W_FLOW"],
-      "departure_airspace": ["SFO_W_FLOW"],
+      "airspace": {
+        "SFO_B_APP": ["SFO_W_FLOW"],
+        "SFO_Z_APP": ["SFO_W_FLOW"],
+        "SFO_F_APP": ["SFO_W_FLOW"],
+        "SFO_G_APP": ["SFO_W_FLOW"],
+        "SFO_N_APP": ["SFO_W_FLOW"],
+        "SFO_W_APP": ["SFO_W_FLOW"],
+        "SFO_DEP": ["SFO_W_FLOW"]
+      },
       "center": "N037.40.38.772,W122.00.31.448",
       "arrival_runways": [
         {
@@ -7633,8 +7648,15 @@
       }
     },
     "Area B Combined - SFOW (Departing 01)": {
-      "approach_airspace": ["SFO_W_FLOW"],
-      "departure_airspace": ["SFO_W_FLOW"],
+      "airspace": {
+        "SFO_B_APP": ["SFO_W_FLOW"],
+        "SFO_Z_APP": ["SFO_W_FLOW"],
+        "SFO_F_APP": ["SFO_W_FLOW"],
+        "SFO_G_APP": ["SFO_W_FLOW"],
+        "SFO_N_APP": ["SFO_W_FLOW"],
+        "SFO_W_APP": ["SFO_W_FLOW"],
+        "SFO_DEP": ["SFO_W_FLOW"]
+      },
       "center": "N037.40.38.772,W122.00.31.448",
       "arrival_runways": [
         {
@@ -7744,8 +7766,15 @@
       }
     },
     "Area B Combined - SFOE": {
-      "approach_airspace": ["SFO_E_FLOW"],
-      "departure_airspace": ["SFO_E_FLOW"],
+      "airspace": {
+        "SFO_B_APP": ["SFO_E_FLOW"],
+        "SFO_Z_APP": ["SFO_E_FLOW"],
+        "SFO_F_APP": ["SFO_E_FLOW"],
+        "SFO_G_APP": ["SFO_E_FLOW"],
+        "SFO_N_APP": ["SFO_E_FLOW"],
+        "SFO_W_APP": ["SFO_E_FLOW"],
+        "SFO_DEP": ["SFO_E_FLOW"]
+      },
       "center": "N037.37.08.796,W122.22.27.006",
       "arrival_runways": [
         {
@@ -7836,8 +7865,15 @@
       }
     },
     "Area B Combined - SFOE (RWYS 19/10)": {
-      "approach_airspace": ["SFO_E_FLOW"],
-      "departure_airspace": ["SFO_E_FLOW"],
+      "airspace": {
+        "SFO_B_APP": ["SFO_E_FLOW"],
+        "SFO_Z_APP": ["SFO_E_FLOW"],
+        "SFO_F_APP": ["SFO_E_FLOW"],
+        "SFO_G_APP": ["SFO_E_FLOW"],
+        "SFO_N_APP": ["SFO_E_FLOW"],
+        "SFO_W_APP": ["SFO_E_FLOW"],
+        "SFO_DEP": ["SFO_E_FLOW"]
+      },
       "center": "N037.40.38.772,W122.00.31.448",
       "arrival_runways": [
         {
@@ -7947,8 +7983,12 @@
       }
     },
     "Area C Combined - OAKW": {
-      "approach_airspace": ["OAK_W_FLOW"],
-      "departure_airspace": ["OAK_W_FLOW"],
+      "airspace": {
+        "MOD_APP": ["OAK_W_FLOW"],
+        "SFO_DEP": ["OAK_W_FLOW"],
+        "OAK_S_APP": ["OAK_W_FLOW"],
+        "OAK_G_APP": ["OAK_W_FLOW"]
+      },
       "center": "N037.40.38.772,W122.00.31.448",
       "arrival_runways": [
         {
@@ -8077,8 +8117,12 @@
       }
     },
     "Area C Combined - OAKE": {
-      "approach_airspace": ["OAK_E_FLOW"],
-      "departure_airspace": ["OAK_E_FLOW"],
+      "airspace": {
+        "MOD_APP": ["OAK_E_FLOW"],
+        "SFO_DEP": ["OAK_E_FLOW"],
+        "OAK_S_APP": ["OAK_E_FLOW"],
+        "OAK_G_APP": ["OAK_E_FLOW"]
+      },
       "center": "N037.40.38.772,W122.00.31.448",
       "arrival_runways": [
         {
@@ -8206,8 +8250,10 @@
       }
     },
     "Area D Combined - SFOW/OAKW (28's)": {
-      "approach_airspace": ["AREADCOMBW"],
-      "departure_airspace": ["AREADCOMBW"],
+      "airspace": {
+        "SFO_DEP": ["AREADCOMBW"],
+        "OAK_DEP": ["AREADCOMBW"]
+      },
       "center": "N037.40.38.772,W122.00.31.448",
       "solo_controller": "SFO_DEP",
       "multi_controllers": {
@@ -8255,8 +8301,10 @@
       }
     },
     "Area D Combined - SFOE/OAKW (10's/28R/30)": {
-      "approach_airspace": ["AREADCOMBW"],
-      "departure_airspace": ["AREADCOMBW"],
+      "airspace": {
+        "SFO_DEP": ["AREADCOMBW"],
+        "OAK_DEP": ["AREADCOMBW"]
+      },
       "center": "N037.37.08.796,W122.22.27.006",
       "solo_controller": "SFO_DEP",
       "multi_controllers": {
@@ -8351,8 +8399,10 @@
       }
     },
     "Area D Combined - SFOW/OAKE (28's/10L/12)": {
-      "approach_airspace": ["AREADCOMBW"],
-      "departure_airspace": ["AREADCOMBW"],
+      "airspace": {
+        "SFO_DEP": ["AREADCOMBW"],
+        "OAK_DEP": ["AREADCOMBW"]
+      },
       "center": "N037.40.38.772,W122.00.31.448",
       "solo_controller": "SFO_DEP",
       "multi_controllers": {
@@ -8400,8 +8450,10 @@
       }
     },
     "Area D Combined - SFOE/OAKE (10's/12)": {
-      "approach_airspace": ["AREADCOMBW"],
-      "departure_airspace": ["AREADCOMBW"],
+      "airspace": {
+        "SFO_DEP": ["AREADCOMBW"],
+        "OAK_DEP": ["AREADCOMBW"]
+      },
       "center": "N037.37.08.796,W122.22.27.006",
       "solo_controller": "SFO_DEP",
       "multi_controllers": {
@@ -8449,8 +8501,10 @@
       }
     },
     "Area E Combined - RNOS": {
-      "approach_airspace": ["RNO"],
-      "departure_airspace": ["RNO"],
+      "airspace": {
+        "RNO_N_APP": ["RNO"],
+        "RNO_S_APP": ["RNO"]
+      },
       "center": "N039.30.02.252,W119.46.13.251",
       "arrival_runways": [
         {
@@ -8523,8 +8577,10 @@
       }
     },
     "Area E Combined - RNON": {
-      "approach_airspace": ["RNO"],
-      "departure_airspace": ["RNO"],
+      "airspace": {
+        "RNO_N_APP": ["RNO"],
+        "RNO_S_APP": ["RNO"]
+      },
       "center": "N039.30.02.252,W119.46.13.251",
       "arrival_runways": [
         {
@@ -8585,8 +8641,10 @@
       }
     },
     "Area E Combined - SMFN": {
-      "approach_airspace": ["SMF"],
-      "departure_airspace": ["SMF"],
+      "airspace": {
+        "SMF_E_APP": ["SMF"],
+        "SMF_P_APP": ["SMF"]
+      },
       "center": "N038.41.41.010,W121.35.27.420",
       "arrival_runways": [
         {
@@ -8664,8 +8722,10 @@
       }
     },
     "Area E Combined - SMFS": {
-      "approach_airspace": ["SMF"],
-      "departure_airspace": ["SMF"],
+      "airspace": {
+        "SMF_E_APP": ["SMF"],
+        "SMF_P_APP": ["SMF"]
+      },
       "center": "N038.41.41.010,W121.35.27.420",
       "arrival_runways": [
         {
@@ -8742,8 +8802,12 @@
       }
     },
     "NCT Combined": {
-      "approach_airspace": ["COMBINED"],
-      "departure_airspace": ["COMBINED"],
+      "airspace": {
+        "SFO_B_APP": ["COMBINED"],
+        "SJC_M_APP": ["COMBINED"],
+        "MOD_APP": ["COMBINED"],
+        "SMF_P_APP": ["COMBINED"]
+      },
       "center": "N038.41.41.010,W121.35.27.420",
       "arrival_runways": [
         {

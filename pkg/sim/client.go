@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
+	"golang.org/x/exp/maps"
 
 	"github.com/mmp/imgui-go/v4"
 )
@@ -37,6 +38,7 @@ type ControlClient struct {
 		approaches  map[string]map[string]bool            // airport->approach
 		departures  map[string]map[string]map[string]bool // airport->runway->exit
 		overflights map[string]map[int]bool               // group->index
+		airspace    map[string]map[string]bool            // ctrl -> volume name
 	}
 
 	// This is all read-only data that we expect other parts of the system
@@ -459,6 +461,16 @@ func (c *ControlClient) GetVideoMapLibrary(filename string) (*av.VideoMapLibrary
 	return &vmf, err
 }
 
+func (c *ControlClient) ControllerAirspace(id string) []ControllerAirspaceVolume {
+	var vols []ControllerAirspaceVolume
+	for _, pos := range c.State.GetConsolidatedPositions(id) {
+		for _, sub := range util.SortedMapKeys(c.State.Airspace[pos]) {
+			vols = append(vols, c.State.Airspace[pos][sub]...)
+		}
+	}
+	return vols
+}
+
 func (c *ControlClient) GetUpdates(eventStream *EventStream, onErr func(error)) {
 	if c.proxy == nil {
 		return
@@ -638,6 +650,10 @@ func (c *ControlClient) ScopeDrawDepartures() map[string]map[string]map[string]b
 
 func (c *ControlClient) ScopeDrawOverflights() map[string]map[int]bool {
 	return c.scopeDraw.overflights
+}
+
+func (c *ControlClient) ScopeDrawAirspace() map[string]map[string]bool {
+	return c.scopeDraw.airspace
 }
 
 func (c *ControlClient) DeleteAllAircraft(onErr func(err error)) {
@@ -983,6 +999,43 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 			}
 
 			imgui.EndTable()
+		}
+	}
+
+	if len(c.State.Airspace) > 0 && imgui.CollapsingHeader("Airspace") {
+		if c.scopeDraw.airspace == nil {
+			c.scopeDraw.airspace = make(map[string]map[string]bool)
+			for ctrl, sectors := range c.State.Airspace {
+				c.scopeDraw.airspace[ctrl] = make(map[string]bool)
+				for _, sector := range util.SortedMapKeys(sectors) {
+					c.scopeDraw.airspace[ctrl][sector] = false
+				}
+			}
+		}
+		for _, id := range util.SortedMapKeys(c.scopeDraw.airspace) {
+			ctrl, ok := c.State.Controllers[id]
+			if !ok { // not signed in
+				continue
+			}
+			if imgui.TreeNode(id + " (" + ctrl.Position + ")") {
+				if imgui.BeginTableV("volumes", 2, tableFlags, imgui.Vec2{}, 0) {
+					for _, pos := range c.State.GetConsolidatedPositions(id) {
+						for _, vol := range util.SortedMapKeys(c.scopeDraw.airspace[pos]) {
+							imgui.TableNextRow()
+							imgui.TableNextColumn()
+							b := c.scopeDraw.airspace[id][vol]
+							if imgui.Checkbox("##"+vol, &b) {
+								c.scopeDraw.airspace[id][vol] = b
+							}
+							imgui.TableNextColumn()
+							imgui.Text(vol)
+						}
+					}
+
+					imgui.EndTable()
+				}
+				imgui.TreePop()
+			}
 		}
 	}
 

@@ -3968,9 +3968,16 @@
                         
                     "scenarios": {
                         "KCLE North": {
-                            "approach_airspace": [
-                                "CLE_APP"
-                            ],
+                            "airspace": {
+                              "CLE_A_APP": [ "CLE_APP" ],
+                              "CLE_F_APP": [ "CLE_APP" ],
+                              "CLE_D_DEP": [ "CLE_APP" ],
+                              "CLE_N_APP": [ "CLE_APP" ],
+                              "CLE_R_DEP": [ "CLE_APP" ],
+                              "CAK_E_APP": [ "CLE_APP" ],
+                              "CAK_S_APP": [ "CLE_APP" ],
+                              "MFD_W_APP": [ "CLE_APP" ]
+                            },
                             "arrival_runways": [
                                 {
                                     "airport": "KCLE",
@@ -4048,9 +4055,6 @@
                                 "CAK_TWR"
                             ],
                             "default_maps": [ "CLE-003 (RY6)" ],
-                            "departure_airspace": [
-                                "CLE_APP"
-                            ],
                             "departure_runways": [
                                 {
                                     "airport": "KCLE",
@@ -4084,9 +4088,9 @@
                             }
                         },
                         "KCLE Final South": {
-                            "approach_airspace": [
-                                "CLE_F_APPS"
-                            ],
+                          "airspace": {
+                            "CLE_F_APP": [ "CLE_F_APPS" ]
+                          },
                             "arrival_runways": [
                                 {
                                     "airport": "KCLE",
@@ -4122,9 +4126,9 @@
                                 }
                             },
                             "KCLE Feeder South": {
-                                "approach_airspace": [
-                                    "CLE_A_APPS"
-                                ],
+                              "airspace": {
+                                "CLE_A_APP": [ "CLE_A_APPS" ]
+                              },
                                 "arrival_runways": [
                                     {
                                         "airport": "KCLE",
@@ -4160,9 +4164,9 @@
                                     }
                                 },
                                 "KCLE Feeder North": {
-                                    "approach_airspace": [
-                                        "CLE_A_APPN"
-                                    ],
+                                  "airspace": {
+                                    "CLE_A_APP": [ "CLE_A_APPN" ]
+                                  },
                                     "arrival_runways": [
                                         {
                                             "airport": "KCLE",
@@ -4198,9 +4202,9 @@
                                         }
                                     },
                             "KCLE Final North": {
-                                "approach_airspace": [
-                                    "CLE_F_APPN"
-                                ],
+                              "airspace": {
+                                "CLE_F_APP": [ "CLE_F_APPN" ]
+                              },
                                 "arrival_runways": [
                                     {
                                         "airport": "KCLE",
@@ -4236,9 +4240,16 @@
                                     }
                                 },
                         "KCLE South": {
-                            "approach_airspace": [
-                                "CLE_APP"
-                            ],
+                            "airspace": {
+                              "CLE_A_APP": [ "CLE_APP" ],
+                              "CLE_F_APP": [ "CLE_APP" ],
+                              "CLE_D_DEP": [ "CLE_APP" ],
+                              "CLE_N_APP": [ "CLE_APP" ],
+                              "CLE_R_DEP": [ "CLE_APP" ],
+                              "CAK_E_APP": [ "CLE_APP" ],
+                              "CAK_S_APP": [ "CLE_APP" ],
+                              "MFD_W_APP": [ "CLE_APP" ]
+                            },
                             "arrival_runways": [
                                 {
                                     "airport": "KCLE",
@@ -4316,9 +4327,6 @@
                                 "CAK_TWR"
                             ],
                             "default_maps": [ "CLE-001 (RY24)" ],
-                            "departure_airspace": [
-                                "CLE_APP"
-                            ],
                             "departure_runways": [
                                 {
                                     "airport": "KCLE",

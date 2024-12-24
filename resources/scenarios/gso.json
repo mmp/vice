@@ -852,9 +852,11 @@
   "primary_airport": "KGSO",
   "scenarios": {
     "KGSO Runway 5L/5R, KINT Runway 33": {
-      "approach_airspace": [
-        "GSOAPP"
-      ],
+      "airspace": {
+        "GSO_W_APP": [ "GSOAPP" ],
+        "GSO_S_APP": [ "GSOAPP" ],
+        "GSO_E_APP": [ "GSOAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KGSO",
@@ -906,9 +908,6 @@
         "INT_TWR"
       ],
       "default_maps": [ "RUNWAY 5L/R BASE MAP" ],
-      "departure_airspace": [
-        "GSOAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KGSO",
@@ -927,9 +926,11 @@
       }
     },
     "KGSO Runway 23L/23R, KINT Runway 15": {
-      "approach_airspace": [
-        "GSOAPP"
-      ],
+      "airspace": {
+        "GSO_W_APP": [ "GSOAPP" ],
+        "GSO_S_APP": [ "GSOAPP" ],
+        "GSO_E_APP": [ "GSOAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KGSO",
@@ -981,9 +982,6 @@
         "INT_TWR"
       ],
       "default_maps": [ "RUNWAY 23L/R BASE MAP" ],
-      "departure_airspace": [
-        "GSOAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KGSO",

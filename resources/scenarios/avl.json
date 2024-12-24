@@ -659,9 +659,10 @@
   "primary_airport": "KAVL",
   "scenarios": {
     "KAVL Land and Depart Runway 17": {
-      "approach_airspace": [
-        "AVLAPP"
-      ],
+      "airspace": {
+        "AVL_W_APP": [ "AVLAPP" ],
+        "AVL_E_APP": [ "AVLAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KAVL",
@@ -703,9 +704,6 @@
         "TRI_APP"
       ],
       "default_maps": [ "AVL AIRSPACE", "RUNWAY 17" ],
-      "departure_airspace": [
-        "AVLAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KAVL",
@@ -719,9 +717,10 @@
       }
     },
     "KAVL Land and Depart Runway 35": {
-      "approach_airspace": [
-        "AVLAPP"
-      ],
+      "airspace": {
+        "AVL_W_APP": [ "AVLAPP" ],
+        "AVL_E_APP": [ "AVLAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KAVL",
@@ -763,9 +762,6 @@
         "TRI_APP"
       ],
       "default_maps": [ "AVL AIRSPACE", "RUNWAY 35" ],
-      "departure_airspace": [
-        "AVLAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KAVL",

@@ -362,16 +362,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			status.clear = true
 			return
 
-		case "DA":
-			sp.drawApproachAirspace = !sp.drawApproachAirspace
-			status.clear = true
-			return
-
-		case "DD":
-			sp.drawDepartureAirspace = !sp.drawDepartureAirspace
-			status.clear = true
-			return
-
 		case ".ROUTE":
 			sp.drawRouteAircraft = ""
 			status.clear = true

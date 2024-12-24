@@ -467,9 +467,10 @@
   "primary_airport": "KAGS",
   "scenarios": {
     "KAGS Land and Depart Runway 17/8": {
-      "approach_airspace": [
-        "AGSAPP"
-      ],
+      "airspace": {
+        "AGS_E_APP": [ "AGSAPP" ],
+        "AGS_W_APP": [ "AGSAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KAGS",
@@ -514,9 +515,6 @@
         "CAE_APP"
       ],
       "default_maps": [ "MAIN" ],
-      "departure_airspace": [
-        "AGSAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KAGS",
@@ -530,9 +528,10 @@
       }
     },
       "KAGS Land and Depart Runway 35/26": {
-      "approach_airspace": [
-        "AGSAPP"
-      ],
+      "airspace": {
+        "AGS_E_APP": [ "AGSAPP" ],
+        "AGS_W_APP": [ "AGSAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KAGS",
@@ -577,9 +576,6 @@
         "CAE_APP"
       ],
       "default_maps": [ "MAIN" ],
-      "departure_airspace": [
-        "AGSAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KAGS",

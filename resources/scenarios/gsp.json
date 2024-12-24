@@ -473,9 +473,11 @@
   ],
   "scenarios": {
     "KGSP Runway 22": {
-      "approach_airspace": [
-        "GSPAPP"
-      ],
+      "airspace": {
+        "GSP_W_APP": [ "GSPAPP" ],
+        "GSP_E_APP": [ "GSPAPP" ],
+        "GSP_S_APP": [ "GSPAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KGSP",
@@ -509,9 +511,6 @@
         "ATL_CTR"
       ],
       "default_maps": [ "SOUTH FLOW" ],
-      "departure_airspace": [
-        "GSPAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KGSP",
@@ -525,9 +524,11 @@
       }
     },
     "KGSP Runway 4": {
-      "approach_airspace": [
-        "GSPAPP"
-      ],
+      "airspace": {
+        "GSP_W_APP": [ "GSPAPP" ],
+        "GSP_E_APP": [ "GSPAPP" ],
+        "GSP_S_APP": [ "GSPAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KGSP",
@@ -561,9 +562,6 @@
         "ATL_CTR"
       ],
       "default_maps": [ "NORTH FLOW" ],
-      "departure_airspace": [
-        "GSPAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KGSP",

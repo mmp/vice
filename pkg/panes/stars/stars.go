@@ -165,9 +165,6 @@ type STARSPane struct {
 	lastHistoryTrackUpdate time.Time
 	discardTracks          bool
 
-	drawApproachAirspace  bool
-	drawDepartureAirspace bool
-
 	// The start of a RBL--one click received, waiting for the second.
 	wipRBL *STARSRangeBearingLine
 
@@ -692,7 +689,6 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawRingsAndCones(aircraft, ctx, transforms, cb)
 	sp.drawRBLs(aircraft, ctx, transforms, cb)
 	sp.drawMinSep(ctx, transforms, cb)
-	sp.drawAirspace(ctx, transforms, cb)
 
 	sp.drawHighlighted(ctx, transforms, cb)
 

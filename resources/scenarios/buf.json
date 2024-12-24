@@ -904,9 +904,11 @@
   ],
   "scenarios": {
     "BUF West": {
-      "approach_airspace": [
-        "BUFAPP"
-      ],
+      "airspace": {
+        "BUF_E_APP": [ "BUFAPP" ],
+        "BUF_W_APP": [ "BUFAPP" ],
+        "BUF_F_APP": [ "BUFAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KBUF",
@@ -964,9 +966,6 @@
         "TOR_CTR"
       ],
       "default_maps": [ "BUF-003 (23 FLOW)" ],
-      "departure_airspace": [
-        "BUFAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KBUF",
@@ -985,9 +984,11 @@
       }
     },
     "BUF East": {
-      "approach_airspace": [
-        "BUFAPP"
-      ],
+      "airspace": {
+        "BUF_E_APP": [ "BUFAPP" ],
+        "BUF_W_APP": [ "BUFAPP" ],
+        "BUF_F_APP": [ "BUFAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KBUF",
@@ -1045,9 +1046,6 @@
         "TOR_CTR"
       ],
       "default_maps": [ "BUF-001 (5 FLOW)" ],
-      "departure_airspace": [
-        "BUFAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KBUF",

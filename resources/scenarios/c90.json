@@ -6602,9 +6602,25 @@
         "primary_airport": "KORD",
         "scenarios": {
             "KORD West": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -6670,9 +6686,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -6718,9 +6731,25 @@
                 }
             },
             "KORD West KMDW 31C": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -6796,9 +6825,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -6849,9 +6875,25 @@
                 }
             },
             "KORD West KMDW 31C KPWK 16": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -6941,9 +6983,6 @@
                     "PWK_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -7018,9 +7057,25 @@
                 }
             },
             "KORD West KMDW 31C + Satellites": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -7146,9 +7201,6 @@
                     "ARR_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -7271,9 +7323,25 @@
                 }
             },
             "KORD West KMDW 22L + Satellites": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -7407,9 +7475,6 @@
                     "ARR_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -7544,9 +7609,25 @@
                 }
             },
             "KORD West KPWK 16": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -7626,9 +7707,6 @@
                     "PWK_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -7698,9 +7776,25 @@
                 }
             },
             "KORD West KMDW 22L": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -7776,9 +7870,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -7830,9 +7921,25 @@
             },
 
             "KORD 4's A Pair": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -7887,9 +7994,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -7923,9 +8027,25 @@
                 }
             },
             "KORD 4's A Pair KMDW 4R": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -7990,9 +8110,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -8031,9 +8148,25 @@
                 }
             },
             "KORD 4's A Pair KMDW 4R PWK 16": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -8111,9 +8244,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -8157,9 +8287,25 @@
                 }
             },
             "KORD 4's A Pair KMDW 4R + Satellites": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -8270,9 +8416,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -8365,9 +8508,25 @@
             },
 
             "KORD 22's A Pair": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -8426,9 +8585,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -8462,9 +8618,25 @@
                 }
             },
             "KORD 22's A Pair KMDW 22L": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -8533,9 +8705,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -8574,9 +8743,25 @@
                 }
             },
             "KORD 22's A Pair KMDW 22L KPWK 16": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -8658,9 +8843,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -8723,9 +8905,25 @@
                 }
             },
             "KORD 22's A Pair KMDW 22L + Satellites": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -8848,9 +9046,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -8974,9 +9169,25 @@
             },
             
             "KORD East": {
-                "approach_airspace": [
-                    "CHI_APPE"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPE" ],
+                "CHI_B_DEP": [ "CHI_APPE" ],
+                "CHI_F_APP": [ "CHI_APPE" ],
+                "CHI_W_APP": [ "CHI_APPE" ],
+                "CHI_H_APP": [ "CHI_APPE" ],
+                "CHI_D_DEP": [ "CHI_APPE" ],
+                "CHI_A_APP": [ "CHI_APPE" ],
+                "CHI_M_DEP": [ "CHI_APPE" ],
+                "CHI_G_DEP": [ "CHI_APPE" ],
+                "CHI_X_APP": [ "CHI_APPE" ],
+                "CHI_E_APP": [ "CHI_APPE" ],
+                "CHI_J_APP": [ "CHI_APPE" ],
+                "CHI_Y_APP": [ "CHI_APPE" ],
+                "CHI_S_APP": [ "CHI_APPE" ],
+                "CHI_U_APP": [ "CHI_APPE" ],
+                "CHI_P_APP": [ "CHI_APPE" ],
+                "CHI_L_APP": [ "CHI_APPE" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -9042,9 +9253,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPE"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -9089,9 +9297,25 @@
                 }
             },
             "KORD East KMDW 4R": {
-                "approach_airspace": [
-                    "CHI_APPE"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPE" ],
+                "CHI_B_DEP": [ "CHI_APPE" ],
+                "CHI_F_APP": [ "CHI_APPE" ],
+                "CHI_W_APP": [ "CHI_APPE" ],
+                "CHI_H_APP": [ "CHI_APPE" ],
+                "CHI_D_DEP": [ "CHI_APPE" ],
+                "CHI_A_APP": [ "CHI_APPE" ],
+                "CHI_M_DEP": [ "CHI_APPE" ],
+                "CHI_G_DEP": [ "CHI_APPE" ],
+                "CHI_X_APP": [ "CHI_APPE" ],
+                "CHI_E_APP": [ "CHI_APPE" ],
+                "CHI_J_APP": [ "CHI_APPE" ],
+                "CHI_Y_APP": [ "CHI_APPE" ],
+                "CHI_S_APP": [ "CHI_APPE" ],
+                "CHI_U_APP": [ "CHI_APPE" ],
+                "CHI_P_APP": [ "CHI_APPE" ],
+                "CHI_L_APP": [ "CHI_APPE" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -9167,9 +9391,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPE"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -9219,9 +9440,25 @@
                 }
             },
             "KORD East KMDW 13C": {
-                "approach_airspace": [
-                    "CHI_APPE"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPE" ],
+                "CHI_B_DEP": [ "CHI_APPE" ],
+                "CHI_F_APP": [ "CHI_APPE" ],
+                "CHI_W_APP": [ "CHI_APPE" ],
+                "CHI_H_APP": [ "CHI_APPE" ],
+                "CHI_D_DEP": [ "CHI_APPE" ],
+                "CHI_A_APP": [ "CHI_APPE" ],
+                "CHI_M_DEP": [ "CHI_APPE" ],
+                "CHI_G_DEP": [ "CHI_APPE" ],
+                "CHI_X_APP": [ "CHI_APPE" ],
+                "CHI_E_APP": [ "CHI_APPE" ],
+                "CHI_J_APP": [ "CHI_APPE" ],
+                "CHI_Y_APP": [ "CHI_APPE" ],
+                "CHI_S_APP": [ "CHI_APPE" ],
+                "CHI_U_APP": [ "CHI_APPE" ],
+                "CHI_P_APP": [ "CHI_APPE" ],
+                "CHI_L_APP": [ "CHI_APPE" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -9297,9 +9534,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPE"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -9349,9 +9583,25 @@
                 }
             },
             "KORD East KMDW 4R + Satellites": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -9478,9 +9728,6 @@
                     "ARR_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -9603,9 +9850,25 @@
                 }
             },
             "KORD East KMDW 13C + Satellites": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -9731,9 +9994,6 @@
                     "ARR_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -9856,9 +10116,25 @@
                 }
             },
             "KORD East KPWK 16": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -9938,9 +10214,6 @@
                     "PWK_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KORD",
@@ -10010,9 +10283,12 @@
                 }
             },
             "KMDW 31C": {
-                    "approach_airspace": [
-                        "CHI_S_APP_31C_22L_4R"
-                    ],
+              "airspace": {
+                "CHI_S_APP": [ "CHI_S_APP_31C_22L_4R" ],
+                "CHI_U_APP": [ "CHI_S_APP_31C_22L_4R", "CHI_S_DEP_31C_22L_4R" ],
+                "CHI_P_APP": [ "CHI_S_APP_31C_22L_4R" ],
+                "CHI_L_APP": [ "CHI_S_APP_31C_22L_4R" ]
+              },
                     "arrival_runways": [
                         {
                             "airport": "KMDW",
@@ -10044,9 +10320,6 @@
                         "MDW_TWR"
                     ],
                     "default_maps": [ "C90 SSAT MDW 31C" ],
-                    "departure_airspace": [
-                        "CHI_S_DEP_31C_22L_4R"
-                    ],
                     "departure_runways": [
                         {
                             "airport": "KMDW",
@@ -10060,10 +10333,13 @@
                     }
             },
             "KMDW 4R": {
-                "approach_airspace": [
-                    "CHI_S_APP_31C_22L_4R"
-                ],
-                "arrival_runways": [
+              "airspace": {
+                "CHI_S_APP": [ "CHI_S_APP_31C_22L_4R" ],
+                "CHI_U_APP": [ "CHI_S_APP_31C_22L_4R", "CHI_S_DEP_31C_22L_4R" ],
+                "CHI_P_APP": [ "CHI_S_APP_31C_22L_4R" ],
+                "CHI_L_APP": [ "CHI_S_APP_31C_22L_4R" ]
+              },
+              "arrival_runways": [
                     {
                         "airport": "KMDW",
                         "runway": "4R"
@@ -10093,9 +10369,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 SSAT MDW 4R" ],
-                "departure_airspace": [
-                    "CHI_S_DEP_31C_22L_4R"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KMDW",
@@ -10109,9 +10382,12 @@
                 }
             },
             "KMDW 13C": {
-                "approach_airspace": [
-                    "CHI_S_APP_13C"
-                ],
+              "airspace": {
+                "CHI_S_APP": [ "CHI_S_APP_13C" ],
+                "CHI_U_APP": [ "CHI_S_APP_13C", "CHI_S_DEP_13C" ],
+                "CHI_P_APP": [ "CHI_S_APP_13C" ],
+                "CHI_L_APP": [ "CHI_S_APP_13C" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KMDW",
@@ -10142,9 +10418,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 SSAT MDW 13C" ],
-                "departure_airspace": [
-                    "CHI_S_DEP_13C"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KMDW",
@@ -10158,9 +10431,12 @@
                 }
             },
             "KMDW 22L": {
-                "approach_airspace": [
-                    "CHI_S_APP_31C_22L_4R"
-                ],
+              "airspace": {
+                "CHI_S_APP": [ "CHI_S_APP_31C_22L_4R" ],
+                "CHI_U_APP": [ "CHI_S_APP_31C_22L_4R", "CHI_S_DEP_31C_22L_4R" ],
+                "CHI_P_APP": [ "CHI_S_APP_31C_22L_4R" ],
+                "CHI_L_APP": [ "CHI_S_APP_31C_22L_4R" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KMDW",
@@ -10191,9 +10467,6 @@
                     "MDW_TWR"
                 ],
                 "default_maps": [ "C90 SSAT MDW 22L" ],
-                "departure_airspace": [
-                    "CHI_S_DEP_31C_22L_4R"
-                ],
                 "departure_runways": [
                     {
                         "airport": "KMDW",
@@ -10207,9 +10480,9 @@
                 }
         },
             "KORD West North Final (F)": {
-                "approach_airspace": [
-                    "CHI_F_APPW"
-                ],
+              "airspace": {
+                "CHI_F_APP": [ "CHI_F_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -10234,9 +10507,9 @@
                 }
             },
             "KORD East North Final (F)": {
-                "approach_airspace": [
-                    "CHI_F_APPE"
-                ],
+              "airspace": {
+                "CHI_F_APP": [ "CHI_F_APPE" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -10261,9 +10534,9 @@
                 }
             },
             "KORD West Center Final (Z)": {
-                "approach_airspace": [
-                    "CHI_Z_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_Z_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -10291,11 +10564,9 @@
                 }
             },
             "KORD West Final Combined": {
-                "approach_airspace": [
-                    "CHI_Z_APPW",
-                    "CHI_W_APPW",
-                    "CHI_F_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_Z_APPW", "CHI_W_APPW", "CHI_F_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -10343,9 +10614,9 @@
                 }
             },
             "KORD West South Final (W)": {
-                "approach_airspace": [
-                    "CHI_W_APPW"
-                ],
+              "airspace": {
+                "CHI_W_APP": [ "CHI_W_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KORD",
@@ -10374,9 +10645,25 @@
                 }
             },
             "Satellites Only": {
-                "approach_airspace": [
-                    "CHI_APPW"
-                ],
+              "airspace": {
+                "CHI_Z_APP": [ "CHI_APPW" ],
+                "CHI_B_DEP": [ "CHI_APPW" ],
+                "CHI_F_APP": [ "CHI_APPW" ],
+                "CHI_W_APP": [ "CHI_APPW" ],
+                "CHI_H_APP": [ "CHI_APPW" ],
+                "CHI_D_DEP": [ "CHI_APPW" ],
+                "CHI_A_APP": [ "CHI_APPW" ],
+                "CHI_M_DEP": [ "CHI_APPW" ],
+                "CHI_G_DEP": [ "CHI_APPW" ],
+                "CHI_X_APP": [ "CHI_APPW" ],
+                "CHI_E_APP": [ "CHI_APPW" ],
+                "CHI_J_APP": [ "CHI_APPW" ],
+                "CHI_Y_APP": [ "CHI_APPW" ],
+                "CHI_S_APP": [ "CHI_APPW" ],
+                "CHI_U_APP": [ "CHI_APPW" ],
+                "CHI_P_APP": [ "CHI_APPW" ],
+                "CHI_L_APP": [ "CHI_APPW" ]
+              },
                 "arrival_runways": [
                     {
                         "airport": "KPWK",
@@ -10451,9 +10738,6 @@
                     "ARR_TWR"
                 ],
                 "default_maps": [ "C90 MAIN" ],
-                "departure_airspace": [
-                    "CHI_APPW"
-                ],
                 "departure_runways": [
                     
                     {

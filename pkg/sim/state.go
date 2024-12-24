@@ -29,8 +29,6 @@ type State struct {
 	METAR       map[string]*av.METAR
 	Controllers map[string]*av.Controller
 
-	ConsolidatedTCPs map[string][]string
-
 	DepartureAirports map[string]*av.Airport
 	ArrivalAirports   map[string]*av.Airport
 
@@ -56,8 +54,7 @@ type State struct {
 	Wind                     av.Wind
 	PrimaryTCP               string
 	ScenarioDefaultVideoMaps []string
-	ApproachAirspace         []ControllerAirspaceVolume
-	DepartureAirspace        []ControllerAirspaceVolume
+	Airspace                 map[string]map[string][]ControllerAirspaceVolume // ctrl id -> vol name -> definition
 	DepartureRunways         []ScenarioGroupDepartureRunway
 	ArrivalRunways           []ScenarioGroupArrivalRunway
 	Scratchpads              map[string]string
@@ -114,8 +111,31 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	ss.ScenarioDefaultVideoMaps = sc.DefaultMaps
 	ss.Scratchpads = fa.Scratchpads
 	ss.InboundFlows = sg.InboundFlows
-	ss.ApproachAirspace = sc.ApproachAirspace
-	ss.DepartureAirspace = sc.DepartureAirspace
+	if len(sc.Airspace) > 0 {
+		ss.Airspace = make(map[string]map[string][]ControllerAirspaceVolume)
+		if isLocal {
+			ss.Airspace[ss.PrimaryController] = make(map[string][]ControllerAirspaceVolume)
+			// Take all the airspace
+			for _, vnames := range sc.Airspace {
+				for _, vname := range vnames {
+					// Remap from strings provided in the scenario to the
+					// actual volumes defined in the scenario group.
+					ss.Airspace[ss.PrimaryController][vname] = sg.Airspace.Volumes[vname]
+				}
+			}
+		} else {
+			for ctrl, vnames := range sc.Airspace {
+				if _, ok := ss.Airspace[ctrl]; !ok {
+					ss.Airspace[ctrl] = make(map[string][]ControllerAirspaceVolume)
+				}
+				for _, vname := range vnames {
+					// Remap from strings provided in the scenario to the
+					// actual volumes defined in the scenario group.
+					ss.Airspace[ctrl][vname] = sg.Airspace.Volumes[vname]
+				}
+			}
+		}
+	}
 	ss.DepartureRunways = sc.DepartureRunways
 	ss.ArrivalRunways = sc.ArrivalRunways
 	ss.LaunchConfig = s.LaunchConfig
@@ -272,6 +292,24 @@ func (ss *State) Locate(s string) (math.Point2LL, bool) {
 		}
 	}
 	return math.Point2LL{}, false
+}
+
+func (ss *State) GetConsolidatedPositions(id string) []string {
+	var cons []string
+
+	for pos := range ss.MultiControllers {
+		rid, _ := ss.MultiControllers.ResolveController(pos, func(id string) bool {
+			_, ok := ss.Controllers[id]
+			return ok // active
+		})
+		if rid == id { // The position resolves to us.
+			cons = append(cons, pos)
+		}
+	}
+
+	slices.Sort(cons)
+
+	return cons
 }
 
 // Returns all aircraft that match the given suffix. If instructor is true,

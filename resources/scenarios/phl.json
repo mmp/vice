@@ -3439,6 +3439,7 @@
           "upper": 10000
         },
         {
+          "label_position": "N040.07.15.140,W075.28.56.114",
           "boundaries": [
             "PHL_NN107_6_W"
           ],
@@ -3446,6 +3447,7 @@
           "upper": 8000
         },
         {
+          "label_position": "N040.06.23.628,W075.10.54.400",
           "boundaries": [
             "PHL_NN107_6_9"
           ],
@@ -3467,6 +3469,7 @@
           "upper": 7000
         },
         {
+          "label_position": "N039.59.48.931,W074.49.11.449",
           "boundaries": [
             "PHL_NN107_9_15_16"
           ],
@@ -4839,7 +4842,7 @@
         "cruise_altitude": 39000,
         "expect_approach": "27R",
         "initial_altitude": 6000,
-        "initial_controller": "6N",
+        "initial_controller": "1N",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "BOJID4",
@@ -4877,7 +4880,7 @@
         "cruise_altitude": 37000,
         "expect_approach": "27R",
         "initial_altitude": 6000,
-        "initial_controller": "6S",
+        "initial_controller": "1S",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "PAATS4",
@@ -4915,7 +4918,7 @@
         "cruise_altitude": 37000,
         "expect_approach": "17Z",
         "initial_altitude": 8000,
-        "initial_controller": "6N",
+        "initial_controller": "1N",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "BOJID4",
@@ -5227,34 +5230,74 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "Philadelphia Final Vectors 1": {
-      "frequency": 124500,
-      "radio_name": "Philly approach",
-      "default_airport": "KPHL",
-      "sector_id": "6F"
-    },
     "Philadelphia North Arrival": {
       "frequency": 128400,
       "radio_name": "Philly approach",
       "default_airport": "KPHL",
-      "sector_id": "6N"
+      "sector_id": "1N"
     },
     "Philadelphia North Departure": {
       "frequency": 124350,
       "radio_name": "Philly departure",
-      "sector_id": "5E"
+      "sector_id": "1E"
+    },
+    "Philadelphia Tower": {
+      "frequency": 118500,
+      "radio_name": "Philly tower",
+      "sector_id": "1Q"
+    },
+    "Philadelphia Dupont Arrival": {
+      "frequency": 118350,
+      "radio_name": "Philly approach",
+      "sector_id": "1D"
+    },
+    "Philadelphia Final Vectors 1": {
+      "frequency": 124500,
+      "radio_name": "Philly approach",
+      "default_airport": "KPHL",
+      "sector_id": "1F"
+    },
+    "Philadelphia Final Vectors 2": {
+      "frequency": 132675,
+      "radio_name": "Philly approach",
+      "default_airport": "KPHL",
+      "sector_id": "1L"
+    },
+    "Philadelphia Pottstown Arrival": {
+      "frequency": 126850,
+      "radio_name": "Philly approach",
+      "sector_id": "1P"
     },
     "Philadelphia South Arrival": {
       "frequency": 133870,
       "default_airport": "KPHL",
       "radio_name": "Philly approach",
-      "sector_id": "6S"
+      "sector_id": "1S"
     },
-    "Philadelphia Tower": {
-      "frequency": 118500,
-      "radio_name": "Philly tower",
-      "scope_char": "T",
-      "sector_id": "6A"
+    "Philadelphia Woodstown Arrival": {
+      "frequency": 127350,
+      "radio_name": "Philly approach",
+      "sector_id": "1W"
+    },
+    "Philadelphia Yardley Arrival": {
+      "frequency": 123800,
+      "radio_name": "Philly approach",
+      "sector_id": "1Y"
+    },
+    "Philadelphia North Departure High": {
+      "frequency": 126075,
+      "radio_name": "Philly departure",
+      "sector_id": "1H"
+    },
+    "Philadelphia South Departure": {
+      "frequency": 119750,
+      "radio_name": "Philly departure",
+      "sector_id": "1V"
+    },
+    "Philadelphia South Departure High": {
+      "frequency": 126600,
+      "radio_name": "Philly departure",
+      "sector_id": "1J"
     },
     "Reading Approach": {
       "frequency": 125150,
@@ -5288,10 +5331,9 @@
   ],
   "scenarios": {
     "KPHL 27R/17 Final": {
-      "approach_airspace": [
-        "PHL_F1_APP27",
-        "PHL_F2_APP27"
-      ],
+      "airspace": {
+        "1F": [ "PHL_F1_APP27", "PHL_F2_APP27" ]
+      },
       "arrival_runways": [
         {
           "airport": "KPHL",
@@ -5313,13 +5355,13 @@
           "KPHL": 20
         }
       },
-      "solo_controller": "6F",
+      "solo_controller": "1F",
       "center": "N039.55.00.306,W074.59.15.972",
       "range": 30,
       "controllers": [
-        "6A",
-        "6N",
-        "6S",
+        "1Q",
+        "1N",
+        "1S",
         "W32",
         "N26"
       ],
@@ -5330,16 +5372,12 @@
       }
     },
     "KPHL Depart 27L Land 27R/35": {
-      "approach_airspace": [
-        "PHL_DU_APP27",
-        "PHL_F1_APP27",
-        "PHL_F2_APP27",
-        "PHL_PT_APP27",
-        "PHL_N_APP27",
-        "PHL_S_APP27",
-        "PHL_WD_APP27",
-        "PHL_YD_APP27"
-      ],
+      "airspace": {
+        "1E": [ "PHL_N_DEP27", "PHL_S_DEP27", "PHL_N_HIGH27", "PHL_S_HIGH27" ],
+        "1F": [ "PHL_F1_APP27", "PHL_F2_APP27" ],
+        "1N": [ "PHL_N_APP27", "PHL_PT_APP27", "PHL_YD_APP27" ],
+        "1S": [ "PHL_S_APP27", "PHL_WD_APP27", "PHL_DU_APP27" ]
+      },
       "arrival_runways": [
         {
           "airport": "KPHL",
@@ -5372,17 +5410,17 @@
         "ABE-ACY": { "overflights": 5 },
         "RDG-WRI": { "overflights": 5 }
       },
-      "solo_controller": "6N",
+      "solo_controller": "1N",
       "multi_controllers": {
           "default" : {
-              "6N": { "primary": true, "inbound_flows": [ "BOJID4/HAR5", "SPUDS7", "ABE-ACY", "RDG-WRI" ] },
-              "6S": { "backup": "6N", "inbound_flows": [ "JIIMS4", "PAATS4", "V29.Low" ] },
-              "6F": { "backup": "6N" },
-              "5E": { "backup": "6N", "departures": ["KPHL"], "inbound_flows": [ "PHLBO4/JAKIE4", "BRAND1", "V29.High" ] }
+              "1N": { "primary": true, "inbound_flows": [ "BOJID4/HAR5", "SPUDS7", "ABE-ACY", "RDG-WRI" ] },
+              "1S": { "backup": "1N", "inbound_flows": [ "JIIMS4", "PAATS4", "V29.Low" ] },
+              "1F": { "backup": "1N" },
+              "1E": { "backup": "1N", "departures": ["KPHL"], "inbound_flows": [ "PHLBO4/JAKIE4", "BRAND1", "V29.High" ] }
           }
       },
       "controllers": [
-        "6A",
+        "1Q",
         "W32",
         "14P",
         "51Y",
@@ -5392,12 +5430,6 @@
         "N26"
       ],
       "default_maps": [ "PHL West" ],
-      "departure_airspace": [
-        "PHL_N_DEP27",
-        "PHL_S_DEP27",
-        "PHL_N_HIGH27",
-        "PHL_S_HIGH27"
-      ],
       "departure_runways": [
         {
           "airport": "KPHL",
@@ -5412,16 +5444,12 @@
       }
     },
     "KPHL Depart 9L Land 9R/17": {
-      "approach_airspace": [
-        "PHL_DU_APP9",
-        "PHL_F1_APP9",
-        "PHL_F2_APP9",
-        "PHL_N_APP9",
-        "PHL_PT_APP9",
-        "PHL_S_APP9",
-        "PHL_WD_APP9",
-        "PHL_YD_APP9"
-      ],
+      "airspace": {
+        "1F": [ "PHL_F1_APP9", "PHL_F2_APP9" ],
+        "1N": [ "PHL_N_APP9", "PHL_PT_APP9", "PHL_YD_APP9"],
+        "1S": [ "PHL_S_APP9", "PHL_WD_APP9", "PHL_DU_APP9" ],
+        "1E": [ "PHL_N_DEP9", "PHL_N_HIGH9", "PHL_S_DEP9", "PHL_S_HIGH9" ]
+      },
       "arrival_runways": [
         {
           "airport": "KPHL",
@@ -5454,17 +5482,17 @@
         "ABE-ACY": { "overflights": 5 },
         "RDG-WRI": { "overflights": 5 }
       },
-      "solo_controller": "6N",
+      "solo_controller": "1N",
       "multi_controllers": {
           "default" : {
-              "6N": { "primary": true, "inbound_flows": [ "BOJID4/HAR5", "SPUDS7", "ABE-ACY", "RDG-WRI" ] },
-              "6S": { "backup": "6N", "inbound_flows": [ "JIIMS4", "PAATS4", "V29.Low" ] },
-              "6F": { "backup": "6N" },
-              "5E": { "backup": "6N", "departures": ["KPHL"], "inbound_flows": [ "PHLBO4/JAKIE4", "BRAND1", "V29.High" ] }
+              "1N": { "primary": true, "inbound_flows": [ "BOJID4/HAR5", "SPUDS7", "ABE-ACY", "RDG-WRI" ] },
+              "1S": { "backup": "1N", "inbound_flows": [ "JIIMS4", "PAATS4", "V29.Low" ] },
+              "1F": { "backup": "1N" },
+              "1E": { "backup": "1N", "departures": ["KPHL"], "inbound_flows": [ "PHLBO4/JAKIE4", "BRAND1", "V29.High" ] }
           }
       },
       "controllers": [
-        "6A",
+        "1Q",
         "W32",
         "14P",
         "51Y",
@@ -5474,12 +5502,6 @@
         "N26"
       ],
       "default_maps": [ "PHL East" ],
-      "departure_airspace": [
-        "PHL_N_DEP9",
-        "PHL_N_HIGH9",
-        "PHL_S_DEP9",
-        "PHL_S_HIGH9"
-      ],
       "departure_runways": [
         {
           "airport": "KPHL",

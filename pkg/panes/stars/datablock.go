@@ -1017,7 +1017,7 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) boo
 			}) {
 		return true
 	}
-	if _, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
+	if _, warn := sp.WarnOutsideAirspace(ctx, ac); warn {
 		return true
 	}
 
@@ -1051,7 +1051,7 @@ func (sp *STARSPane) getWarnings(ctx *panes.Context, ac *av.Aircraft) []string {
 			}) {
 		addWarning("CA")
 	}
-	if alts, outside := sp.WarnOutsideAirspace(ctx, ac); outside {
+	if alts, warn := sp.WarnOutsideAirspace(ctx, ac); warn {
 		altStrs := ""
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)

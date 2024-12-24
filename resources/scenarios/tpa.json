@@ -2453,9 +2453,15 @@
   "primary_airport": "KTPA",
   "scenarios": {
     "Multiplayer (N OPS)": {
-      "approach_airspace": [
-        "MULTIPLAYER"
-      ],
+      "airspace": {
+        "TPA_E_APP": [ "TPA_E_APP (N OPS)" ],
+        "TPA_W_APP": [ "TPA_W_APP (N OPS)" ],
+        "TPA_G_DEP": [ "TPA_G_DEP (N OPS)" ], 
+        "TPA_D_DEP": [ "TPA_D_DEP (N OPS)" ],
+        "TPA_P_APP": [ "TPA_P_APP (N OPS)" ],
+        "TPA_S_APP": [ "TPA_S_APP (B OPS)" ],
+        "TPA_F_APP": [ "TPA_F_APP (N OPS)" ]
+      },
       "arrival_runways": [
         {
           "airport": "KTPA",
@@ -2529,9 +2535,6 @@
         "LAL_TWR"
       ],
       "default_maps": ["TPA-127S MID MAP"],
-      "departure_airspace": [
-        "MULTIPLAYER"
-      ],
       "departure_runways": [
         {
           "airport": "KTPA",
@@ -2575,9 +2578,9 @@
       }
     },
     "Final (N OPS)": {
-      "approach_airspace": [
-        "TPA_F_APP (N OPS)"
-      ],
+      "airspace": {
+        "TPA_F_APP": [ "TPA_F_APP (N OPS)" ]
+      },
       "arrival_runways": [
         {
           "airport": "KTPA",
@@ -2619,9 +2622,15 @@
       }
     },
     "Multiplayer (S OPS)": {
-      "approach_airspace": [
-        "MULTIPLAYER"
-      ],
+      "airspace": {
+        "TPA_E_APP": [ "TPA_E_APP (S OPS)" ],
+        "TPA_W_APP": [ "TPA_W_APP (S OPS)" ],
+        "TPA_G_DEP": [ "TPA_G_DEP (S OPS)" ], 
+        "TPA_D_DEP": [ "TPA_D_DEP (S OPS)" ],
+        "TPA_P_APP": [ "TPA_P_APP (S OPS)" ],
+        "TPA_S_APP": [ "TPA_S_APP (B OPS)" ],
+        "TPA_F_APP": [ "TPA_F_APP (S OPS)" ]
+      },
       "arrival_runways": [
         {
           "airport": "KTPA",
@@ -2695,9 +2704,6 @@
         "LAL_TWR"
       ],
       "default_maps": ["TPA-127S MID MAP"],
-      "departure_airspace": [
-        "MULTIPLAYER"
-      ],
       "departure_runways": [
         {
           "airport": "KTPA",
@@ -2741,9 +2747,9 @@
       }
     },
     "Final (S OPS)": {
-      "approach_airspace": [
-        "TPA_F_APP (S OPS)"
-      ],
+      "airspace": {
+        "TPA_F_APP": [ "TPA_F_APP (S OPS)" ]
+      },
       "arrival_runways": [
         {
           "airport": "KTPA",

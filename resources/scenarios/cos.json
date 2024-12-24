@@ -828,12 +828,9 @@
     "primary_airport": "KCOS",
     "scenarios": {
         "North VMC": {
-            "approach_airspace": [
-                "COS_APP"
-            ],
-            "departure_airspace": [
-                "COS_APP"
-            ],
+            "airspace": {
+              "COS_APP": [ "COS_APP" ]
+            },
             "arrival_runways": [
                 {
                     "airport": "KCOS",
@@ -902,12 +899,9 @@
             }
         },
         "South VMC": {
-            "approach_airspace": [
-                "COS_APP"
-            ],
-            "departure_airspace": [
-                "COS_APP"
-            ],
+            "airspace": {
+              "COS_APP": [ "COS_APP" ]
+            },
             "arrival_runways": [
                 {
                     "airport": "KCOS",

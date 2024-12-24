@@ -2449,9 +2449,10 @@
   ],
   "scenarios": {
     "KSEA South": {
-      "approach_airspace": [
-        "SEAAPP"
-      ],
+      "airspace": {
+        "SEA_W_APP": [ "SEAAPP" ],
+        "SEA_E_APP": [ "SEAAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KSEA",
@@ -2503,9 +2504,6 @@
         "SEA_CTR"
       ],
       "default_maps": ["ZSE__S46N" ],
-      "departure_airspace": [
-        "SEAAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KSEA",
@@ -2519,9 +2517,10 @@
       }
     },
     "KSEA North": {
-      "approach_airspace": [
-        "SEAAPP"
-      ],
+      "airspace": {
+        "SEA_W_APP": [ "SEAAPP" ],
+        "SEA_E_APP": [ "SEAAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KSEA",
@@ -2573,9 +2572,6 @@
         "SEA_CTR"
       ],
       "default_maps": ["ZSE__S46S" ],
-      "departure_airspace": [
-        "SEAAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KSEA",

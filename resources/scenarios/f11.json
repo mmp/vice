@@ -11663,9 +11663,20 @@
   "primary_airport": "KMCO",
   "scenarios": {
     "KMCO South + Sat West": {
-      "approach_airspace": [
-        "MCOAPP"
-      ],
+      "airspace": {
+          "MCO_E_DEP": [ "MCOAPP" ],
+          "MCO_R_APP": [ "MCOAPP" ],
+          "MCO_W_DEP": [ "MCOAPP" ],
+          "MCO_D_APP": [ "MCOAPP" ],
+          "MCO_M_APP": [ "MCOAPP" ],
+          "MCO_G_APP": [ "MCOAPP" ],
+          "MCO_B_APP": [ "MCOAPP" ],
+          "MCO_L_APP": [ "MCOAPP" ],
+          "MCO_A_APP": [ "MCOAPP" ],
+          "MCO_K_APP": [ "MCOAPP" ],
+          "MCO_N_APP": [ "MCOAPP" ],
+          "MCO_V_APP": [ "MCOAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KMCO",
@@ -11827,9 +11838,6 @@
         "MCO_W_TWR"
       ],
       "default_maps": [ "DEPARTURE SOUTH SOLID", "SATELLITE SOUTH DASHED", "SOUTH FINAL BASE"],
-      "departure_airspace": [
-        "MCOAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KMCO",
@@ -11928,9 +11936,20 @@
       }
     },
     "KMCO North + Sat East": {
-      "approach_airspace": [
-        "MCOAPP"
-      ],
+      "airspace": {
+          "MCO_E_DEP": [ "MCOAPP" ],
+          "MCO_R_APP": [ "MCOAPP" ],
+          "MCO_W_DEP": [ "MCOAPP" ],
+          "MCO_D_APP": [ "MCOAPP" ],
+          "MCO_M_APP": [ "MCOAPP" ],
+          "MCO_G_APP": [ "MCOAPP" ],
+          "MCO_B_APP": [ "MCOAPP" ],
+          "MCO_L_APP": [ "MCOAPP" ],
+          "MCO_A_APP": [ "MCOAPP" ],
+          "MCO_K_APP": [ "MCOAPP" ],
+          "MCO_N_APP": [ "MCOAPP" ],
+          "MCO_V_APP": [ "MCOAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KMCO",
@@ -12095,9 +12114,6 @@
         "MCO_W_TWR"
       ],
       "default_maps": [ "DEPARTURE NORTH SOLID", "SATELLITE NORTH DASHED", "NORTH FINAL BASE"],
-      "departure_airspace": [
-        "MCOAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KMCO",
@@ -12196,9 +12212,9 @@
       }
     },
     "KMCO North DEP": {
-      "approach_airspace": [
-        "MCOAPP"
-      ],
+      "airspace": {
+          "MCO_W_DEP": [ "MCOAPP" ]
+      },
       "solo_controller": "MCO_W_DEP",
       "controllers": [
         "TPA_E_APP",
@@ -12219,9 +12235,6 @@
         "MCO_W_TWR"
       ],
       "default_maps": [ "DEPARTURE NORTH SOLID" ],
-      "departure_airspace": [
-        "MCOAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KMCO",
@@ -12288,9 +12301,9 @@
       }
     },
     "KMCO South Final": {
-      "approach_airspace": [
-        "MCO_G_APPS"
-      ],
+      "airspace": {
+        "MCO_M_APP": [ "MCO_G_APPS" ]
+      },
       "arrival_runways":[
         {
           "airport": "KMCO",
@@ -12347,9 +12360,9 @@
       }
     },
     "KMCO West Feeder South": {
-      "approach_airspace": [
-        "MCO_L_APPS"
-      ],
+      "airspace": {
+        "MCO_L_APP": [ "MCO_L_APPS" ]
+      },
       "arrival_runways":[
         {
           "airport": "KMCO",
@@ -12393,10 +12406,9 @@
       }
     },
     "KMCO Combined Feeder South": {
-      "approach_airspace": [
-        "MCO_L_APPS",
-        "MCO_B_APPS"
-      ],
+      "airspace": {
+        "MCO_B_APP": [ "MCO_L_APPS", "MCO_B_APPS" ]
+      },
       "arrival_runways":[
         {
           "airport": "KMCO",
@@ -12453,9 +12465,9 @@
       }
     },
     "KMCO East Feeder South": {
-      "approach_airspace": [
-        "MCO_B_APPS"
-      ],
+      "airspace": {
+        "MCO_B_APP": [ "MCO_B_APPS" ]
+      },
       "arrival_runways":[
         {
           "airport": "KMCO",
@@ -12502,9 +12514,9 @@
       }
     },
     "KMCO West Feeder North": {
-      "approach_airspace": [
-        "MCO_L_APPNU"
-      ],
+      "airspace": {
+        "MCO_L_APP": [ "MCO_L_APPNU" ]
+      },
       "arrival_runways":[
         {
           "airport": "KMCO",
@@ -12548,10 +12560,9 @@
       }
     },
     "KMCO Combined Feeder North": {
-      "approach_airspace": [
-        "MCO_L_APPNU",
-        "MCO_B_APPN"
-      ],
+      "airspace": {
+        "MCO_L_APP": [ "MCO_L_APPNU", "MCO_B_APPN" ]
+      },
       "arrival_runways":[
         {
           "airport": "KMCO",
@@ -12608,9 +12619,9 @@
       }
     },
     "KMCO East Feeder North": {
-      "approach_airspace": [
-        "MCO_B_APPN"
-      ],
+      "airspace": {
+        "MCO_B_APP": [ "MCO_B_APPN" ]
+      },
       "arrival_runways":[
         {
           "airport": "KMCO",
@@ -12657,9 +12668,9 @@
       }
     },
     "KMCO North Final": {
-      "approach_airspace": [
-        "MCO_G_APPN"
-      ],
+      "airspace": {
+        "MCO_M_APP": [ "MCO_G_APPN" ]
+      },
       "arrival_runways":[
         {
           "airport": "KMCO",
@@ -12713,11 +12724,9 @@
       }
     },
     "KMCO South DEP": {
-      "approach_airspace": [
-        "MCO_E_APP",
-        "MCO_E1_APP",
-        "MCO_E2_APP"
-      ],
+      "airspace": {
+        "MCO_W_DEP": [ "MCO_E_APP", "MCO_E1_APP", "MCO_E2_APP" ]
+      },
       "solo_controller": "MCO_W_DEP",
       "controllers": [
         "TPA_E_APP",
@@ -12738,11 +12747,6 @@
         "MCO_W_TWR"
       ],
       "default_maps": [ "DEPARTURE SOUTH SOLID" ],
-      "departure_airspace": [
-        "MCO_E_APP",
-        "MCO_E1_APP",
-        "MCO_E2_APP"
-      ],
       "departure_runways": [
         {
           "airport": "KMCO",

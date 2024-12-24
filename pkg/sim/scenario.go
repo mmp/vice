@@ -153,6 +153,8 @@ type ControllerAirspaceVolume struct {
 	UpperLimit    int               `json:"upper"`
 	Boundaries    [][]math.Point2LL `json:"boundary_polylines"` // not in JSON
 	BoundaryNames []string          `json:"boundaries"`
+	Label         string            `json:"label"`
+	LabelPosition math.Point2LL     `json:"label_position"`
 }
 
 type Scenario struct {
@@ -168,10 +170,7 @@ type Scenario struct {
 	// Temporary backwards compatibility
 	ArrivalGroupDefaultRates map[string]map[string]int `json:"arrivals"`
 
-	ApproachAirspace       []ControllerAirspaceVolume `json:"approach_airspace_volumes"`  // not in JSON
-	DepartureAirspace      []ControllerAirspaceVolume `json:"departure_airspace_volumes"` // not in JSON
-	ApproachAirspaceNames  []string                   `json:"approach_airspace"`
-	DepartureAirspaceNames []string                   `json:"departure_airspace"`
+	Airspace map[string][]string `json:"airspace"`
 
 	DepartureRunways []ScenarioGroupDepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []ScenarioGroupArrivalRunway   `json:"arrival_runways,omitempty"`
@@ -223,19 +222,26 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		e.Pop()
 	}
 
-	for _, as := range s.ApproachAirspaceNames {
-		if vol, ok := sg.Airspace.Volumes[as]; !ok {
-			e.ErrorString("unknown approach airspace %q", as)
-		} else {
-			s.ApproachAirspace = append(s.ApproachAirspace, vol...)
+	for ctrl, vnames := range s.Airspace {
+		e.Push("airspace")
+
+		found := ctrl == s.SoloController
+		// Check multi-controller
+		for _, config := range s.SplitConfigurations {
+			if _, ok := config[ctrl]; ok {
+				found = true
+			}
 		}
-	}
-	for _, as := range s.DepartureAirspaceNames {
-		if vol, ok := sg.Airspace.Volumes[as]; !ok {
-			e.ErrorString("unknown departure airspace %q", as)
-		} else {
-			s.DepartureAirspace = append(s.DepartureAirspace, vol...)
+		if !found {
+			e.ErrorString("Controller %q not used in in scenario", ctrl)
 		}
+		for _, vname := range vnames {
+			if _, ok := sg.Airspace.Volumes[vname]; !ok {
+				e.ErrorString("Airspace volume %q for controller %q not defined in scenario group \"airspace\"",
+					vname, ctrl)
+			}
+		}
+		e.Pop()
 	}
 
 	sort.Slice(s.DepartureRunways, func(i, j int) bool {
@@ -794,6 +800,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	for name, volumes := range sg.Airspace.Volumes {
 		for i, vol := range volumes {
 			e.Push("Airspace volume " + name)
+
 			for _, b := range vol.BoundaryNames {
 				if pts, ok := sg.Airspace.Boundaries[b]; !ok {
 					e.ErrorString("airspace boundary %q not found", b)
@@ -801,6 +808,26 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 					sg.Airspace.Volumes[name][i].Boundaries = append(sg.Airspace.Volumes[name][i].Boundaries, pts)
 				}
 			}
+
+			if vol.Label == "" {
+				// Default label if none specified
+				if vol.LowerLimit == vol.UpperLimit {
+					sg.Airspace.Volumes[name][i].Label = fmt.Sprintf("%d", vol.LowerLimit/100)
+				} else {
+					sg.Airspace.Volumes[name][i].Label = fmt.Sprintf("%d-%d", vol.LowerLimit/100, vol.UpperLimit/100)
+				}
+			}
+			if vol.LabelPosition.IsZero() {
+				// Label at the center if no center specified
+				e := math.EmptyExtent2D()
+				for _, pts := range sg.Airspace.Volumes[name][i].Boundaries {
+					for _, p := range pts {
+						e = math.Union(e, p)
+					}
+				}
+				sg.Airspace.Volumes[name][i].LabelPosition = e.Center()
+			}
+
 			e.Pop()
 		}
 	}
@@ -909,6 +936,15 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 
 	for _, s := range sg.Scenarios {
 		rewrite(&s.SoloController)
+
+		if len(s.Airspace) > 0 {
+			a := make(map[string][]string)
+			for ctrl, vols := range s.Airspace {
+				rewrite(&ctrl)
+				a[ctrl] = vols
+			}
+			s.Airspace = a
+		}
 
 		for _, rwy := range s.DepartureRunways {
 			if ap, ok := sg.Airports[rwy.Airport]; ok {

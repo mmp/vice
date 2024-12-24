@@ -2312,9 +2312,19 @@
                     "primary_airport": "KCLT",
                     "scenarios": {
                         "KCLT Land 18L/C/R Depart 18C/L": {
-                            "approach_airspace": [
-                                "CLT_APP"
-                            ],
+                          "airspace": {
+                            "CLT_W_DEP": [ "CLT_APP" ],
+                            "CLT_H_APP": [ "CLT_APP" ],
+                            "CLT_A_APP": [ "CLT_APP" ],
+                            "CLT_M_APP": [ "CLT_APP" ],
+                            "CLT_F_APP": [ "CLT_APP" ],
+                            "CLT_E_DEP": [ "CLT_APP" ],
+                            "CLT_U_APP": [ "CLT_APP" ],
+                            "CLT_D_APP": [ "CLT_APP" ],
+                            "CLT_S_APP": [ "CLT_APP" ],
+                            "CLT_N_APP": [ "CLT_APP" ],
+                            "CLT_Q_APP": [ "CLT_APP" ]
+                          },
                             "arrival_runways": [
                                 {
                                     "airport": "KCLT",
@@ -2373,9 +2383,6 @@
                             "GSO_APP"
                         ],
                         "default_maps": [ "CLT SOUTH" ],
-                        "departure_airspace": [
-                            "CLT_APP"
-                        ],
                         "departure_runways": [
                             {
                                 "airport": "KCLT",
@@ -2444,9 +2451,19 @@
                         }
                         },
                         "KCLT Land 36L/C/R Depart 36C/R": {
-                            "approach_airspace": [
-                                "CLT_APP"
-                            ],
+                          "airspace": {
+                            "CLT_W_DEP": [ "CLT_APP" ],
+                            "CLT_H_APP": [ "CLT_APP" ],
+                            "CLT_A_APP": [ "CLT_APP" ],
+                            "CLT_M_APP": [ "CLT_APP" ],
+                            "CLT_F_APP": [ "CLT_APP" ],
+                            "CLT_E_DEP": [ "CLT_APP" ],
+                            "CLT_U_APP": [ "CLT_APP" ],
+                            "CLT_D_APP": [ "CLT_APP" ],
+                            "CLT_S_APP": [ "CLT_APP" ],
+                            "CLT_N_APP": [ "CLT_APP" ],
+                            "CLT_Q_APP": [ "CLT_APP" ]
+                          },
                             "arrival_runways": [
                                 {
                                     "airport": "KCLT",
@@ -2505,9 +2522,6 @@
                                 "GSO_APP"
                             ],
                             "default_maps": [ "CLT NORTH" ],
-                            "departure_airspace": [
-                                "CLT_APP"
-                            ],
                             "departure_runways": [
                                 {
                                     "airport": "KCLT",

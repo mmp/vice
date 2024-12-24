@@ -3983,28 +3983,9 @@ how it simulates aircraft or the STARS interface.
               <img src="violation.png" srcset="violation-2x.png 2x" width="136" height="66">
             </div>
             <br>
-            <p>
-              Two commands are available to draw the boundaries and altitude ranges of the departure and approach airspace.
-              (Note that the placement of the drawn altitude labels is not always ideal.)
-              </p>
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Command</th>
-                    <th>Function</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>DA</code></td>
-                    <td>Draw the approach airspace, or stop drawing the approach airspace if it is currently being shown.</td>
-                  </tr>
-                  <tr>
-                    <td><code>DD</code></td>
-                    <td>Draw the departure airspace, or stop drawing the departure airspace if it is currently being shown.</td>
-                  </tr>
-                </tbody>
-              </table>
+            <p>The airspace volumes associated with controllers can be displayed by clicking on the
+              <i class="fas fa-question-circle"></i> button in the menubar to display the information window
+              and then opening the "Airspace" section.</p>
 
           </section>
 
@@ -5923,10 +5904,46 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               volumes of airspace, it's often useful to define boundaries just as polylines and to assemble multiple boundaries
               to define the lateral extent of a volume of airspace.
             </p>
-            <p>Given the boundaries, "volumes" specifies full 3D volumes of airspace.  Airspace volumes have three members; "boundaries"
-              is an array of strings that names the boundaries that give the airspace's lateral extent, and "lower" and "upper" specify the
-              altitude range of the airspace.  Here is an example from KPHL that uses the boundary defined above:
-              </p>
+            <p>Given the boundaries, "volumes" specifies full 3D volumes of airspace.  Airspace volumes have the following members:</p>
+            <table class="table">
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"boundaries"</td>
+                <td>Array of strings</td>
+                <td>The names of one or more lateral airspace boundaries defined in the "airspace" "boundaries" object specifiers.</td>
+              </tr>
+              <tr>
+                <td>"lower"</td>
+                <td>Number</td>
+                <td>Lower altitude of the volume's vertical extent, in feet.</td>
+              </tr>
+              <tr>
+                <td>"upper"</td>
+                <td>Number</td>
+                <td>Upper altitude of the volume's vertical extent, in feet.</td>
+              </tr>
+              <tr>
+                <td>"label"</td>
+                <td>String</td>
+                <td>(<i>Optional</i>) The label to draw on the map for the volume when it is displayed. If not specified, the altitude range
+                (in hundreds of feet) is shown.</td>
+              </tr>
+              <tr>
+                <td>"label_position"</td>
+                <td>String</td>
+                <td>(<i>Optional</i>) If specified, this gives the position at which to draw the label.
+                  If not specified, the center point of the boundary polygons is used.</td>
+              </tr>
+            </tbody>
+            </table>
+            <p>Here is an example from KPHL that uses the boundary defined above:</p>
             <pre>
   "PHL_DU_APP27": [
     {
@@ -5957,10 +5974,13 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             </thead>
             <tbody>
               <tr>
-                <td>"approach_airspace"</td>
-                <td>Array of strings</td>
-                <td>If <a href="#fe-airspace">airspace</a> has been specified in the scenario group, then these strings give the names
-                of the airspace volumes that arrivals should remain inside.</td>
+                <td>"airspace"</td>
+                <td>Object</td>
+                <td>Each member in the object defines the airspace associated with a control position.
+                  The object key is a controller id and the value is an array of strings, each of which
+                  corresponds to an airspace volume defined in the <a href="#fe-airspace">"airspace"</a>
+                  section of the scenario group.
+                </td>
               </tr>
               <tr>
                 <td>"arrival_runways"</td>

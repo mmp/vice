@@ -5221,7 +5221,7 @@
 		  "upper":5000
 	  }
 	  ],
-	  "ZEEB0_NE": [
+	  "ZEEBO_NE": [
 	  {
 		  "boundaries": [
 		  "ZEEBO_SW_F2"
@@ -5800,7 +5800,7 @@
         "waypoints": "JAIKE ILENE/a13000/ho WACKI/a11000 MAZIE REGLE/a7000 GNNZO SBJ/h59",
         "cruise_altitude": 39000,
         "star": "JAIKE4",
-        "initial_controller": "PHL_E_APP",
+        "initial_controller": "21N",
         "initial_altitude": 13000,
         "initial_speed": 300,
         "expect_approach": null,
@@ -6226,7 +6226,7 @@
         "waypoints": "N040.16.57.073,W075.16.42.035 MAZIE/a4000/ho SBJ/h59",
         "cruise_altitude": 4000,
         "star": "MAZIE",
-        "initial_controller": "PHL_E_APP",
+        "initial_controller": "21N",
         "initial_altitude": 4000,
         "initial_speed": 250,
         "expect_approach": null,
@@ -6295,7 +6295,7 @@
         "waypoints": "SHAFF/ho SAX PHLBO HOKIR/h180",
         "cruise_altitude": 39000,
         "star": "FLOSI4",
-        "initial_controller": "EWR_A_APP",
+        "initial_controller": "4A",
         "initial_altitude": 6000,
         "assigned_altitude": 6000,
         "initial_speed": 250,
@@ -6377,7 +6377,7 @@
         "waypoints": "RUUTH/ho RBV KEWR",
         "cruise_altitude": 7000,
         "route": "/. RUUTH V123 RBV",
-        "initial_controller": "PHL_E_APP",
+        "initial_controller": "21N",
         "initial_altitude": 7000,
         "assigned_altitude": 7000,
         "initial_speed": 300,
@@ -6484,7 +6484,7 @@
         "waypoints": "DYLIN MERSR METRO MARRT/a5000 N040.45.48.614,W074.33.29.179/h60/ho",
         "cruise_altitude": 39000,
         "star": "PHLBO4",
-        "initial_controller": "EWR_P_APP",
+        "initial_controller": "4P",
         "initial_altitude": 6000,
         "initial_speed": 250,
         "expect_approach": "I2L",
@@ -6565,7 +6565,7 @@
         "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h25",
         "cruise_altitude": 39000,
         "star": "PHLBO4",
-        "initial_controller": "EWR_P_APP",
+        "initial_controller": "4P",
         "initial_altitude": 6000,
         "assigned_altitude": 6000,
         "initial_speed": 250,
@@ -6647,7 +6647,7 @@
         "waypoints": "CYN/ho GXU RBV METRO KEWR",
         "cruise_altitude": 6000,
         "route": "/. CYN GXU RBV V249 METRO",
-        "initial_controller": "WRI_APP",
+        "initial_controller": "51Y",
         "initial_altitude": 6000,
         "assigned_altitude": 6000,
         "initial_speed": 300,
@@ -6665,11 +6665,11 @@
   }
 },
   "control_positions": {
-    "ABE_APP": {
+    "Allentown Approach": {
       "frequency": 119650,
       "radio_name": "Allentown approach",
       "scope_char": "4",
-      "sector_id": "1A",
+      "sector_id": "4A",
       "facility_id": "4",
       "facility": "ABE"
     },
@@ -6682,7 +6682,7 @@
       "eram_facility": true,
       "facility": "ZBW"
     },
-    "CDW_TWR": {
+    "Caldwell Tower": {
       "frequency": 119800,
       "radio_name": "Caldwell tower",
       "scope_char": "T",
@@ -6698,87 +6698,87 @@
       "eram_facility": true,
       "facility": "ZDC"
     },
-    "EWR_A_APP": {
+    "Newark North Arrival": {
       "frequency": 120150,
-      "radio_name": "New York approach",
+      "radio_name": "Newark approach",
       "scope_char": "A",
       "default_airport": "KEWR",
       "sector_id": "4A",
       "facility": "N90"
     },
-    "EWR_DEP": {
+    "Newark Departure": {
       "frequency": 119200,
-      "radio_name": "New York departure",
+      "radio_name": "Newark departure",
       "scope_char": "N",
       "default_airport": "KEWR",
       "sector_id": "4N",
       "facility": "N90"
     },
-    "EWR_H_APP": {
+    "METRO": {
       "frequency": 132800,
-      "radio_name": "New York approach",
+      "radio_name": "Newark approach",
       "scope_char": "H",
       "sector_id": "4H",
       "facility": "N90"
     },
-    "EWR_P_APP": {
+    "Yardley": {
       "frequency": 128550,
-      "radio_name": "New York approach",
+      "radio_name": "Newark approach",
       "scope_char": "P",
       "sector_id": "4P",
       "default_airport": "KEWR",
       "facility": "N90"
     },
-    "EWR_M_APP": {
+    "Final Vector 22": {
       "frequency": 125550,
-      "radio_name": "New York approach",
+      "radio_name": "Newark approach",
       "scope_char": "M",
       "sector_id": "4M",
       "facility": "N90"
     },
-    "EWR_Q_APP": {
+    "Final Vector 4": {
       "frequency": 125500,
-      "radio_name": "New York approach",
+      "radio_name": "Newark approach",
       "scope_char": "Q",
       "sector_id": "4Q",
       "facility": "N90"
     },
-    "EWR_S_APP": {
+    "ZEEBO": {
       "frequency": 123770,
-      "radio_name": "New York approach",
+      "radio_name": "Newark approach",
       "scope_char": "S",
       "sector_id": "4S",
       "facility": "N90"
     },
-    "EWR_TWR": {
+    "Newark Tower": {
       "frequency": 118300,
       "radio_name": "Newark tower",
       "scope_char": "T",
       "sector_id": "4Z",
       "facility": "N90"
     },
-    "EWR_U_APP": {
+    "MUGZY": {
       "frequency": 127600,
-      "radio_name": "New York approach",
+      "radio_name": "Newark approach",
       "scope_char": "U",
       "sector_id": "4U",
       "facility": "N90"
     },
-    "LGA_APP": {
+    "HAARP": {
       "frequency": 120800,
       "radio_name": "New York approach",
       "scope_char": "V",
       "sector_id": "1V",
       "facility": "N90"
     },
-    "LGA_DEP": {
+    "Laguardia Departure": {
       "frequency": 120400,
       "radio_name": "New York approach",
       "scope_char": "L",
       "sector_id": "1L",
       "facility": "N90"
     },
-    "MMU_TWR": {
+    "Morristown tower": {
       "frequency": 118100,
       "radio_name": "Morristown tower",
       "scope_char": "T",
@@ -6794,35 +6794,35 @@
       "eram_facility": true,
       "facility": "ZNY"
     },
-    "NY_LE_DEP": {
+    "Liberty Departure (East)": {
       "frequency": 126800,
       "radio_name": "New York departure",
       "scope_char": "E",
       "sector_id": "5E",
       "facility": "N90"
     },
-    "NY_LN_DEP": {
+    "Liberty Departure (North)": {
       "frequency": 118170,
       "radio_name": "New York departure",
       "scope_char": "T",
       "sector_id": "5T",
       "facility": "N90"
     },
-    "NY_LS_DEP": {
+    "Liberty Departure (South)": {
       "frequency": 124750,
       "radio_name": "New York departure",
       "scope_char": "S",
       "sector_id": "5S",
       "facility": "N90"
     },
-    "NY_LW_DEP": {
+    "Liberty Departure (West)": {
       "frequency": 120850,
       "radio_name": "New York departure",
       "scope_char": "W",
       "sector_id": "5W",
       "facility": "N90"
     },
-    "PHL_E_APP": {
+    "Philadelphia North Arrival": {
       "frequency": 128400,
       "radio_name": "Philly approach",
       "scope_char": "2",
@@ -6830,14 +6830,14 @@
       "facility_id": "2",
       "facility": "PHL"
     },
-    "TEB_TWR": {
+    "Teterboro Tower": {
       "frequency": 119500,
       "radio_name": "Teterboro tower",
       "scope_char": "T",
       "sector_id": "4J",
       "facility": "N90"
     },
-    "WRI_APP": {
+    "McGuire Approach": {
       "frequency": 126470,
       "radio_name": "McGuire approach",
       "scope_char": "5",
@@ -6896,14 +6896,15 @@
   ],
   "scenarios": {
     "KEWR Depart 22R Land 22L": {
-      "approach_airspace": [
-		"NOA_SW",
-		"FINAL_VECTORS_22",
-		"YARDLEY_SW",
-		"METRO_SW",
-		"ZEEBO_SW",
-		"MUGZY_SW"
-		],
+      "airspace": {
+        "4A": [ "NOA_SW" ],
+	"4M": [ "FINAL_VECTORS_22" ],
+	"4P": [ "YARDLEY_SW" ],
+	"4H": [ "METRO_SW" ],
+	"4S": [ "ZEEBO_SW" ],
+	"4U": [ "MUGZY_SW" ],
+        "4N": [ "DEP_SW" ]
+      },
       "arrival_runways": [
         {
           "airport": "KEWR",
@@ -6959,10 +6960,10 @@
           "KEWR": 0
         }
       },
-      "solo_controller": "EWR_P_APP",
+      "solo_controller": "4P",
       "multi_controllers": {
         "default": {
-          "EWR_P_APP": {
+          "4P": {
             "primary": true,
             "arrivals": [
               "FQM3",
@@ -6971,8 +6972,8 @@
               "WRI"
             ]
           },
-          "EWR_DEP": {
-            "backup": "EWR_P_APP",
+          "4N": {
+            "backup": "4P",
             "departures": [
               "KEWR",
               "KTEB",
@@ -6980,58 +6981,55 @@
 			  "KCDW"
             ]
           },
-          "EWR_A_APP": {
-            "backup": "EWR_P_APP",
+          "4A": {
+            "backup": "4P",
             "arrivals": [
               "FLOSI4"
             ]
           },
-          "EWR_U_APP": {
-            "backup": "EWR_P_APP"
+          "4U": {
+            "backup": "4P"
           },
-          "EWR_H_APP": {
-            "backup": "EWR_U_APP",
+          "4H": {
+            "backup": "4U",
             "arrivals": [
               "JAIKE4",
               "MAZIE"
             ]
           },
-          "EWR_S_APP": {
-            "backup": "EWR_U_APP",
+          "4S": {
+            "backup": "4U",
             "arrivals": [
               "COATE",
               "LVZ4"
             ]
           },
-          "EWR_M_APP": {
-            "backup": "EWR_P_APP"
+          "4M": {
+            "backup": "4P"
           }
         }
       },
       "controllers": [
-        "LGA_DEP",
-        "LGA_APP",
+        "1L",
+        "1V",
         "NY_CTR",
         "DC_CTR",
         "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP",
-        "ABE_APP",
-        "PHL_E_APP",
-        "WRI_APP"
+        "4Z",
+        "4J",
+        "4K",
+        "4T",
+        "5E",
+        "5W",
+        "5T",
+        "5S",
+        "44A",
+        "21N",
+        "51Y"
       ],
       "default_maps": [
         "EWR ARR/DEP"
       ],
-	  "departure_airspace": [
-	  "DEP_SW"
-	  ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -7061,34 +7059,34 @@
       }
     },
     "KEWR 22R Departure": {
-      "solo_controller": "EWR_DEP",
+      "solo_controller": "4N",
       "controllers": [
-        "LGA_DEP",
-        "LGA_APP",
+        "1L",
+        "1V",
         "NY_CTR",
         "DC_CTR",
         "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "EWR_A_APP",
-        "EWR_P_APP",
-        "EWR_U_APP",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP",
-        "ABE_APP",
-        "PHL_E_APP",
-        "WRI_APP"
+        "4Z",
+        "4J",
+        "4K",
+        "4T",
+        "4A",
+        "4P",
+        "4U",
+        "5E",
+        "5W",
+        "5T",
+        "5S",
+        "44A",
+        "21N",
+        "51Y"
       ],
       "default_maps": [
         "EWR ARR/DEP"
       ],
-	  "departure_airspace": [
-	  "DEP_SW"
-	  ],
+      "airspace": {
+        "4N": [ "DEP_SW" ]
+      },
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -7118,34 +7116,34 @@
       }
     },
     "KEWR 4L Departure": {
-      "solo_controller": "EWR_DEP",
+      "solo_controller": "4N",
       "controllers": [
-        "LGA_DEP",
-        "LGA_APP",
+        "1L",
+        "1V",
         "NY_CTR",
         "DC_CTR",
         "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "EWR_A_APP",
-        "EWR_P_APP",
-        "EWR_U_APP",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP",
-        "ABE_APP",
-        "PHL_E_APP",
-        "WRI_APP"
+        "4Z",
+        "4J",
+        "4K",
+        "4T",
+        "4A",
+        "4P",
+        "4U",
+        "5E",
+        "5W",
+        "5T",
+        "5S",
+        "44A",
+        "21N",
+        "51Y"
       ],
       "default_maps": [
         "EWR ARR/DEP"
       ],
-	  "departure_airspace": [
-	  "DEP_NE"
-	  ],
+      "airspace": {
+        "4N": [ "DEP_NE" ]
+      },
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -7193,19 +7191,20 @@
 		  "runway": "4"
 		}
       ],
-	  "approach_airspace": [
-	  "NOA_NE",
-	  "YARDLEY_NE",
-	  "FINAL_VECTORS_4",
-	  "METRO_NE",
-	  "ZEEB0_NE",
-	  "MUGZY_NE"
-	  ],
+      "airspace": {
+        "4A": [ "NOA_NE" ],
+	"4Q": [ "FINAL_VECTORS_4" ],
+	"4P": [ "YARDLEY_NE" ],
+	"4H": [ "METRO_NE" ],
+	"4S": [ "ZEEBO_NE" ],
+	"4U": [ "MUGZY_NE" ],
+        "4N": [ "DEP_NE" ]
+      },
       "arrivals": {
         "COATE": {
           "KTEB": 5,
           "KMMU": 2,
-		  "KCDW": 2
+	  "KCDW": 2
         },
         "FLOSI4": {
           "KEWR": 8
@@ -7238,10 +7237,10 @@
           "KEWR": 0
         }
       },
-      "solo_controller": "EWR_P_APP",
+      "solo_controller": "4P",
       "multi_controllers": {
         "default": {
-          "EWR_P_APP": {
+          "4P": {
             "primary": true,
             "arrivals": [
               "PHLBO4",
@@ -7249,15 +7248,15 @@
               "WRI"
             ]
           },
-          "EWR_A_APP": {
-            "backup": "EWR_P_APP",
+          "4A": {
+            "backup": "4P",
             "arrivals": [
               "FQM3",
               "FLOSI4"
             ]
           },
-          "EWR_DEP": {
-            "backup": "EWR_A_APP",
+          "4N": {
+            "backup": "4A",
             "departures": [
               "KEWR",
               "KTEB",
@@ -7265,52 +7264,49 @@
 			  "KCDW"
             ]
           },
-          "EWR_U_APP": {
-            "backup": "EWR_A_APP"
+          "4U": {
+            "backup": "4A"
           },
-          "EWR_H_APP": {
-            "backup": "EWR_U_APP",
+          "4H": {
+            "backup": "4U",
             "arrivals": [
               "JAIKE4",
               "MAZIE"
             ]
           },
-          "EWR_S_APP": {
-            "backup": "EWR_U_APP",
+          "4S": {
+            "backup": "4U",
             "arrivals": [
               "COATE",
               "LVZ4"
             ]
           },
-          "EWR_Q_APP": {
-            "backup": "EWR_P_APP"
+          "4Q": {
+            "backup": "4P"
           }
         }
       },
       "controllers": [
-        "LGA_DEP",
-        "LGA_APP",
+        "1L",
+        "1V",
         "NY_CTR",
         "DC_CTR",
         "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP",
-        "ABE_APP",
-        "PHL_E_APP",
-        "WRI_APP"
+        "4Z",
+        "4J",
+        "4K",
+        "4T",
+        "5E",
+        "5W",
+        "5T",
+        "5S",
+        "44A",
+        "21N",
+        "51Y"
       ],
       "default_maps": [
         "EWR ARR/DEP"
       ],
-	  "departure_airspace": [
-	  "DEP_NE"
-	  ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -7354,11 +7350,9 @@
 			"runway": "4"
 		}
       ],
-	  "approach_airspace": [
-	  "ZEEB0_NE",
-	  "METRO_NE",
-	  "MUGZY_NE"
-	  ],
+      "airspace": {
+        "4U": [ "ZEEBO_NE", "METRO_NE", "MUGZY_NE" ]
+      },
       "arrivals": {
         "COATE": {
           "KTEB": 7,
@@ -7381,24 +7375,24 @@
 		  "KCDW": 1
         }
       },
-      "solo_controller": "EWR_U_APP",
+      "solo_controller": "4U",
       "controllers": [
-        "LGA_DEP",
-        "LGA_APP",
+        "1L",
+        "1V",
         "NY_CTR",
         "DC_CTR",
         "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP",
-        "ABE_APP",
-        "PHL_E_APP",
-        "WRI_APP"
+        "4Z",
+        "4J",
+        "4K",
+        "4T",
+        "5E",
+        "5W",
+        "5T",
+        "5S",
+        "44A",
+        "21N",
+        "51Y"
       ],
       "default_maps": [
         "EWR ARR/DEP"
@@ -7410,11 +7404,9 @@
       }
     },
     "KEWR Sat. Arrivals landing SW": {
-	  "approach_airspace": [
-		"METRO_SW",
-		"ZEEBO_SW",
-		"MUGZY_SW"
-		],
+      "airspace": {
+        "4U": [ "METRO_SW", "ZEEBO_SW", "MUGZY_SW" ]
+      },
       "arrival_runways": [
         {
           "airport": "KTEB",
@@ -7424,10 +7416,10 @@
           "airport": "KMMU",
           "runway": "23"
         },
-		{
-			"airport": "KCDW",
-			"runway": "22"
-		}
+	{
+	  "airport": "KCDW",
+	  "runway": "22"
+	}
       ],
       "arrivals": {
         "COATE": {
@@ -7451,24 +7443,24 @@
 		  "KCDW": 1
         }
       },
-      "solo_controller": "EWR_U_APP",
+      "solo_controller": "4U",
       "controllers": [
-        "LGA_DEP",
-        "LGA_APP",
+        "1L",
+        "1V",
         "NY_CTR",
         "DC_CTR",
         "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR",
-        "NY_LE_DEP",
-        "NY_LW_DEP",
-        "NY_LN_DEP",
-        "NY_LS_DEP",
-        "ABE_APP",
-        "PHL_E_APP",
-        "WRI_APP"
+        "4Z",
+        "4J",
+        "4K",
+        "4T",
+        "5E",
+        "5W",
+        "5T",
+        "5S",
+        "44A",
+        "21N",
+        "51Y"
       ],
       "default_maps": [
         "EWR ARR/DEP"
@@ -7480,11 +7472,9 @@
       }
     },
     "KEWR Land 22L - ARD": {
-		"approach_airspace": [
-		"NOA_SW",
-		"FINAL_VECTORS_22",
-		"YARDLEY_SW"
-],	
+      "airspace": {
+	"4P": [ "NOA_SW", "FINAL_VECTORS_22", "YARDLEY_SW" ]
+      },
       "arrival_runways": [
         {
           "airport": "KEWR",
@@ -7505,19 +7495,19 @@
           "KEWR": 1
         }
       },
-      "solo_controller": "EWR_P_APP",
+      "solo_controller": "4P",
       "controllers": [
-        "EWR_A_APP",
-        "EWR_P_APP",
-        "EWR_U_APP",
-        "EWR_DEP",
+        "4A",
+        "4P",
+        "4U",
+        "4N",
         "NY_CTR",
         "DC_CTR",
         "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR"
+        "4Z",
+        "4J",
+        "4K",
+        "4T"
       ],
       "default_maps": [
         "EWR ARR/DEP"
@@ -7529,11 +7519,9 @@
       }
     },
     "KEWR Land 22L - NOA + FINAL": {
-		"approach_airspace": [
-		"NOA_SW",
-		"FINAL_VECTORS_22"
-		],
-
+      "airspace": {
+        "4A": [ "NOA_SW", "FINAL_VECTORS_22" ]
+      },
       "arrival_runways": [
         {
           "airport": "KEWR",
@@ -7548,19 +7536,19 @@
           "KEWR": 30
         }
       },
-      "solo_controller": "EWR_A_APP",
+      "solo_controller": "4A",
       "controllers": [
-        "EWR_A_APP",
-        "EWR_P_APP",
-        "EWR_U_APP",
-        "EWR_DEP",
+        "4A",
+        "4P",
+        "4U",
+        "4N",
         "NY_CTR",
         "DC_CTR",
         "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR"
+        "4Z",
+        "4J",
+        "4K",
+        "4T"
       ],
       "default_maps": [
         "EWR ARR/DEP"
@@ -7572,11 +7560,9 @@
       }
     },
     "KEWR Land 29 - NOA + FINAL": {
-		"approach_airspace": [
-		"NOA_SW",
-		"FINAL_VECTORS_22"
-		],
-
+      "airspace": {
+        "4A": [ "NOA_SW", "FINAL_VECTORS_22" ]
+      },
       "arrival_runways": [
         {
           "airport": "KEWR",
@@ -7591,19 +7577,19 @@
           "KEWR": 23
         }
       },
-      "solo_controller": "EWR_A_APP",
+      "solo_controller": "4A",
       "controllers": [
-        "EWR_A_APP",
-        "EWR_P_APP",
-        "EWR_U_APP",
-        "EWR_DEP",
+        "4A",
+        "4P",
+        "4U",
+        "4N",
         "NY_CTR",
         "DC_CTR",
         "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR"
+        "4Z",
+        "4J",
+        "4K",
+        "4T"
       ],
       "default_maps": [
         "EWR ARR/DEP"
@@ -7621,12 +7607,9 @@
           "runway": "4R"
         }
       ],	 
-	  "approach_airspace": [
-	  "NOA_NE",
-	  "YARDLEY_NE",
-	  "FINAL_VECTORS_4"
-	  ],
-
+      "airspace": {
+        "4P": [ "NOA_NE", "YARDLEY_NE", "FINAL_VECTORS_4" ]
+      },
       "arrivals": {
         "North": {
           "KEWR": 25
@@ -7635,19 +7618,19 @@
           "KEWR": 13
         }
       },
-      "solo_controller": "EWR_P_APP",
+      "solo_controller": "4P",
       "controllers": [
-        "EWR_A_APP",
-        "EWR_P_APP",
-        "EWR_U_APP",
-        "EWR_DEP",
+        "4A",
+        "4P",
+        "4U",
+        "4N",
         "NY_CTR",
         "DC_CTR",
         "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR"
+        "4Z",
+        "4J",
+        "4K",
+        "4T"
       ],
       "default_maps": [
         "EWR ARR/DEP"
@@ -7665,10 +7648,9 @@
           "runway": "4R"
         }
       ],	 
-	  "approach_airspace": [
-	  "NOA_NE",
-	  "FINAL_VECTORS_4"
-	  ],
+      "airspace": {
+        "4A": [ "NOA_NE", "FINAL_VECTORS_4" ]
+      },
       "arrivals": {
         "FLOSI4": {
           "KEWR": 10
@@ -7677,19 +7659,19 @@
           "KEWR": 15
         }
       },
-      "solo_controller": "EWR_A_APP",
+      "solo_controller": "4A",
       "controllers": [
-        "EWR_A_APP",
-        "EWR_P_APP",
-        "EWR_U_APP",
-        "EWR_DEP",
+        "4A",
+        "4P",
+        "4U",
+        "4N",
         "NY_CTR",
         "DC_CTR",
         "BOS_CTR",
-        "EWR_TWR",
-        "TEB_TWR",
-        "MMU_TWR",
-        "CDW_TWR"
+        "4Z",
+        "4J",
+        "4K",
+        "4T"
       ],
       "default_maps": [
         "EWR ARR/DEP"

@@ -1211,9 +1211,12 @@
 
   "scenarios": {
     "PIT West (ARR 28L/R)": {
-      "approach_airspace": [
-        "PITAPP"
-      ],
+      "airspace": {
+        "PIT_D_APP": ["PITAPP"],
+        "PIT_B_APP": ["PITAPP"],
+        "PIT_S_DEP": ["PITAPP"],
+        "PIT_N_DEP": ["PITAPP"]
+      },
       "arrival_runways": [
         {
           "airport": "KPIT",
@@ -1265,9 +1268,6 @@
         "CLE_55_CTR"
       ],
       "default_maps": [ "PIT-001 (WEST FLOW)" ],
-      "departure_airspace": [
-        "PITAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KPIT",
@@ -1291,9 +1291,12 @@
       }
     },
     "PIT West (ARR 28L/R + 32)": {
-      "approach_airspace": [
-        "PITAPP"
-      ],
+      "airspace": {
+        "PIT_D_APP": [ "PITAPP" ],
+        "PIT_B_APP": [ "PITAPP" ],
+        "PIT_S_DEP": [ "PITAPP" ],
+        "PIT_N_DEP": [ "PITAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KPIT",
@@ -1351,9 +1354,6 @@
         "CLE_55_CTR"
       ],
       "default_maps": [ "PIT-001 (WEST FLOW)" ],
-      "departure_airspace": [
-        "PITAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KPIT",
@@ -1377,9 +1377,12 @@
       }
     },
     "PIT East": {
-      "approach_airspace": [
-        "PITAPP"
-      ],
+      "airspace": {
+        "PIT_D_APP": [ "PITAPP" ],
+        "PIT_B_APP": [ "PITAPP" ],
+        "PIT_S_DEP": [ "PITAPP" ],
+        "PIT_N_DEP": [ "PITAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KPIT",
@@ -1423,7 +1426,6 @@
         "CLE_55_CTR"
       ],
       "default_maps": [ "PIT-002 (EAST FLOW)" ],
-      "departure_airspace": ["PITAPP"],
       "departure_runways": [
         {
           "airport": "KPIT",

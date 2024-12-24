@@ -862,9 +862,11 @@
   ],
   "scenarios": {
     "KBHM Runway 24": {
-      "approach_airspace": [
-        "BHMAPP"
-      ],
+      "airspace": {
+        "BHM_S_APP": [ "BHMAPP" ],
+        "BHM_N_APP": [ "BHMAPP" ],
+        "BHM_F_APP": [ "BHMAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KBHM",
@@ -911,9 +913,6 @@
         "MEM_CTR"
       ],
       "default_maps": [ "BHM MAIN" ],
-      "departure_airspace": [
-        "BHMAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KBHM",
@@ -927,9 +926,11 @@
       }
     },
     "KBHM Runway 6": {
-      "approach_airspace": [
-        "BHMAPP"
-      ],
+      "airspace": {
+        "BHM_S_APP": [ "BHMAPP" ],
+        "BHM_N_APP": [ "BHMAPP" ],
+        "BHM_F_APP": [ "BHMAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KBHM",
@@ -976,9 +977,6 @@
         "MEM_CTR"
       ],
       "default_maps": [ "BHM MAIN" ],
-      "departure_airspace": [
-        "BHMAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KBHM",

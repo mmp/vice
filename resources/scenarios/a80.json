@@ -2865,9 +2865,23 @@
   "primary_airport": "KATL",
   "scenarios": {
     "KATL West": {
-      "approach_airspace": [
-        "ATLAPP"
-      ],
+      "airspace": {
+        "ATL_H_APP": [ "ATLAPP" ],
+        "ATL_D_APP": [ "ATLAPP" ],
+        "ATL_L_APP": [ "ATLAPP" ],
+        "ATL_Y_APP": [ "ATLAPP" ],
+        "ATL_O_APP": [ "ATLAPP" ],
+        "ATL_V_APP": [ "ATLAPP" ],
+        "ATL_A_APP": [ "ATLAPP" ],
+        "ATL_N_DEP": [ "ATLAPP" ],
+        "ATL_S_DEP": [ "ATLAPP" ],
+        "ATL_I_DEP": [ "ATLAPP" ],
+        "ATL_P_APP": [ "ATLAPP" ],
+        "ATL_F_APP": [ "ATLAPP" ],
+        "ATL_X_APP": [ "ATLAPP" ],
+        "ATL_G_APP": [ "ATLAPP" ],
+        "ATL_Q_APP": [ "ATLAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KATL",
@@ -2931,9 +2945,6 @@
           "ATL_5_TWR"
         ],
         "default_maps": [ "TERMINAL ARRIVAL RADAR WEST" ],
-        "departure_airspace": [
-          "ATLAPP"
-        ],
         "departure_runways": [
           {
             "airport": "KATL",
@@ -2967,9 +2978,23 @@
          }
         },
         "KATL East": {
-          "approach_airspace": [
-            "ATLAPP"
-          ],
+          "airspace": {
+            "ATL_H_APP": [ "ATLAPP" ],
+            "ATL_D_APP": [ "ATLAPP" ],
+            "ATL_L_APP": [ "ATLAPP" ],
+            "ATL_Y_APP": [ "ATLAPP" ],
+            "ATL_O_APP": [ "ATLAPP" ],
+            "ATL_V_APP": [ "ATLAPP" ],
+            "ATL_A_APP": [ "ATLAPP" ],
+            "ATL_N_DEP": [ "ATLAPP" ],
+            "ATL_S_DEP": [ "ATLAPP" ],
+            "ATL_I_DEP": [ "ATLAPP" ],
+            "ATL_P_APP": [ "ATLAPP" ],
+            "ATL_F_APP": [ "ATLAPP" ],
+            "ATL_X_APP": [ "ATLAPP" ],
+            "ATL_G_APP": [ "ATLAPP" ],
+            "ATL_Q_APP": [ "ATLAPP" ]
+          },
           "arrival_runways": [
             {
               "airport": "KATL",
@@ -3033,9 +3058,6 @@
               "ATL_5_TWR"
             ],
             "default_maps": [ "TERMINAL ARRIVAL RADAR EAST" ],
-            "departure_airspace": [
-              "ATLAPP"
-            ],
             "departure_runways": [
               {
                 "airport": "KATL",
@@ -3069,11 +3091,9 @@
              }
             },
             "KATL West Final Trips": {
-              "approach_airspace": [
-                "ATL_V_APPW",
-                "ATL_A_APPW",
-                "ATL_O_APPW"
-              ],
+              "airspace": {
+                "ATL_O_APP": [ "ATL_V_APPW", "ATL_A_APPW", "ATL_O_APPW" ]
+              },
               "arrival_runways": [
                 {
                   "airport" : "KATL",
@@ -3125,11 +3145,9 @@
               }
             },
             "KATL West Final Duals": {
-              "approach_airspace": [
-                "ATL_V_APPW",
-                "ATL_A_APPW",
-                "ATL_O_APPW"
-              ],
+              "airspace": {
+                "ATL_O_APP": [ "ATL_V_APPW", "ATL_A_APPW", "ATL_O_APPW" ]
+              },
               "arrival_runways": [
                 {
                   "airport": "KATL",

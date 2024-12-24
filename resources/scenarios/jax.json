@@ -1387,9 +1387,18 @@
   "primary_airport": "KJAX",
   "scenarios": {
     "KJAX East, No VITTS": {
-      "approach_airspace": [
-        "JAX_N_APP"
-      ],
+      "airspace": {
+        "JAX_N_APP": [ "JAX_N_APP" ],
+        "JAX_W_APP": [ "JAX_N_APP" ],
+        "JAX_E_APP": [ "JAX_N_APP" ],
+        "JAX_R_APP": [ "JAX_N_APP" ],
+        "JAX_J_APP": [ "JAX_N_APP" ],
+        "JAX_S_APP": [ "JAX_N_APP" ],
+        "JAX_A_APP": [ "JAX_N_APP" ],
+        "JAX_G_APP": [ "JAX_N_APP" ],
+        "JAX_D_APP": [ "JAX_N_APP" ],
+        "JAX_V_APP": [ "JAX_N_APP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KJAX",
@@ -1524,9 +1533,6 @@
       "default_maps": [
         "EAST FLOW"
       ],
-      "departure_airspace": [
-        "JAX_N_APP"
-      ],
       "departure_runways": [
         {
           "airport": "KJAX",
@@ -1551,9 +1557,18 @@
       }
     },
     "KJAX West, No VITTS": {
-      "approach_airspace": [
-        "JAX_N_APP"
-      ],
+      "airspace": {
+        "JAX_N_APP": [ "JAX_N_APP" ],
+        "JAX_W_APP": [ "JAX_N_APP" ],
+        "JAX_E_APP": [ "JAX_N_APP" ],
+        "JAX_R_APP": [ "JAX_N_APP" ],
+        "JAX_J_APP": [ "JAX_N_APP" ],
+        "JAX_S_APP": [ "JAX_N_APP" ],
+        "JAX_A_APP": [ "JAX_N_APP" ],
+        "JAX_G_APP": [ "JAX_N_APP" ],
+        "JAX_D_APP": [ "JAX_N_APP" ],
+        "JAX_V_APP": [ "JAX_N_APP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KJAX",
@@ -1681,9 +1696,6 @@
       ],
       "default_maps": [
         "WEST FLOW"
-      ],
-      "departure_airspace": [
-        "JAX_N_APP"
       ],
       "departure_runways": [
         {

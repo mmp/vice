@@ -824,9 +824,11 @@
   ],
   "scenarios": {
     "KSAV Depart 10/1 Land 10/1": {
-      "approach_airspace": [
-        "SAVAPP"
-      ],
+      "airspace": {
+        "SAV_N_APP": [ "SAVAPP" ],
+        "SAV_W_APP": [ "SAVAPP" ],
+        "SAV_S_APP": [ "SAVAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KSAV",
@@ -865,9 +867,6 @@
         "SAV_TWR"
       ],
       "default_maps": [ "RADAR MAP" ],
-      "departure_airspace": [
-        "SAVAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KSAV",
@@ -881,9 +880,11 @@
       }
     },
     "KSAV Depart 28/19 Land 28/19": {
-      "approach_airspace": [
-        "SAVAPP"
-      ],
+      "airspace": {
+        "SAV_N_APP": [ "SAVAPP" ],
+        "SAV_W_APP": [ "SAVAPP" ],
+        "SAV_S_APP": [ "SAVAPP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KSAV",
@@ -922,9 +923,6 @@
         "SAV_TWR"
       ],
       "default_maps": [ "RADAR MAP" ],
-      "departure_airspace": [
-        "SAVAPP"
-      ],
       "departure_runways": [
         {
           "airport": "KSAV",

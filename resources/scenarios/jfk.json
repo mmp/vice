@@ -5458,8 +5458,8 @@
     "FRG_TWR": {
       "frequency": 118800,
       "radio_name": "Republic tower",
-      "scope_char": "M",
-      "sector_id": "2M"
+      "scope_char": "P",
+      "sector_id": "2P"
     },
     "HVN_TWR": {
       "frequency": 124800,
@@ -5497,11 +5497,11 @@
       "scope_char": "K",
       "sector_id": "2K"
     },
-    "JFK_S_APP": {
+    "JFK_M_APP": {
       "frequency": 118400,
       "radio_name": "New York approach",
-      "scope_char": "S",
-      "sector_id": "2S"
+      "scope_char": "M",
+      "sector_id": "2M"
     },
     "JFK_DEP": {
       "frequency": 135900,
@@ -5644,13 +5644,13 @@
           "runway": "13L"
         }
       ],
-	  "approach_airspace": [
-	    "CAMRN_13RL",
-		"LENDY_13RL",
-		"ROBER_4RL",
-		"JFK_FINAL_13RL",
-		"JFK_SATELITE_13RL"
-	  ],
+      "airspace": {
+        "JFK_G_APP": [ "CAMRN_13RL" ],
+        "JFK_K_APP": [ "ROBER_4RL", "LENDY_13RL" ],
+        "JFK_A_APP": [ "JFK_FINAL_13RL" ],
+        "JFK_M_APP": [ "JFK_SATELITE_13RL" ],
+        "JFK_DEP": [ "JFK_DEP_13RL" ]
+      },
       "arrivals": {
         "CAMRN4": {
           "KFRG": 0,
@@ -5707,7 +5707,7 @@
                     "departures": [ "KFRG" ],
                     "arrivals": [ "PARCH3/ROBER2", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG East)" ]
                 },
-                "JFK_S_APP": {
+                "JFK_M_APP": {
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
@@ -5768,9 +5768,6 @@
           "runway": "14"
         }
       ],
-	  "departure_airspace": [
-	  "JFK_DEP_13RL"
-	  ],
       "wind": {
         "direction": 140,
         "gust": 17,
@@ -5800,13 +5797,13 @@
           "runway": "22L"
         }
       ],
-	  "approach_airspace": [
-	    "CAMRN_13RL",
-		"LENDY_13RL",
-		"ROBER_4RL",
-		"JFK_FINAL_13RL",
-		"JFK_SATELITE_13RL"
-	  ],
+      "airspace": {
+        "JFK_G_APP": [ "CAMRN_13RL" ],
+        "JFK_K_APP": [ "ROBER_4RL", "LENDY_13RL" ],
+        "JFK_A_APP": [ "JFK_FINAL_13RL" ],
+        "JFK_M_APP": [ "JFK_SATELITE_13RL" ],
+        "JFK_DEP": [ "JFK_DEP_13RL" ]
+      },
       "arrivals": {
         "CAMRN4": {
           "KFRG": 0,
@@ -5863,7 +5860,7 @@
                     "departures": [ "KFRG" ],
                     "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
                 },
-                "JFK_S_APP": {
+                "JFK_M_APP": {
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
@@ -5920,9 +5917,6 @@
           "runway": "14"
         }
       ],
-	  "departure_airspace": [
-	  "JFK_DEP_13RL"
-	  ],
       "wind": {
         "direction": 140,
         "gust": 17,
@@ -5952,13 +5946,13 @@
           "runway": "22R"
         }
       ],
-	  "approach_airspace": [
-	    "CAMRN_22RL",
-		"LENDY_22RL",
-		"ROBER_22RL",
-		"JFK_FINAL_22RL",
-		"JFK_SATELITE_22RL_E5"
-	  ],
+      "airspace": {
+        "JFK_G_APP": [ "CAMRN_22RL", "LENDY_22RL" ],
+        "JFK_K_APP": [ "ROBER_22RL" ],
+        "JFK_A_APP": [ "JFK_FINAL_22RL" ],
+        "JFK_M_APP": [ "JFK_SATELITE_22RL_E5" ],
+        "JFK_DEP": [ "JFK_DEP_22RL" ]
+      },
       "arrivals": {
         "CAMRN4": {
           "KFRG": 0,
@@ -6015,7 +6009,7 @@
                     "departures": [ "KFRG" ],
                     "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
                 },
-                "JFK_S_APP": {
+                "JFK_M_APP": {
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
@@ -6072,9 +6066,6 @@
           "runway": "19"
         }
       ],
-	  "departure_airspace": [
-	  "JFK_DEP_22RL"
-	  ],
       "wind": {
         "direction": 190,
         "gust": 17,
@@ -6104,13 +6095,13 @@
           "runway": "31L"
         }
       ],
-	  "approach_airspace": [
-	    "CAMRN_31RL",
-		"LENDY_31RL",
-		"ROBER_31RL",
-		"JFK_FINAL_31RL",
-		"JFK_SATELITE_31RL"
-	  ],
+      "airspace": {
+        "JFK_G_APP": [ "CAMRN_31RL", "LENDY_31RL" ],
+        "JFK_K_APP": [ "ROBER_31RL" ],
+        "JFK_A_APP": [ "JFK_FINAL_31RL" ],
+        "JFK_M_APP": [ "JFK_SATELITE_31RL" ],
+        "JFK_DEP": [ "JFK_DEP_31RL" ]
+      },
       "arrivals": {
         "CAMRN4": {
           "KFRG": 0,
@@ -6167,7 +6158,7 @@
                     "departures": [ "KFRG" ],
                     "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
                 },
-                "JFK_S_APP": {
+                "JFK_M_APP": {
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
@@ -6223,9 +6214,6 @@
           "runway": "32"
         }
       ],
-	  "departure_airspace": [
-	   "JFK_DEP_31RL"
-	  ],
       "wind": {
         "direction": 330,
         "gust": 17,
@@ -6255,13 +6243,13 @@
           "runway": "4L"
         }
       ],
-	  "approach_airspace": [
-		  "CAMRN_4RL",
-		  "LENDY_4RL",
-		  "ROBER_4RL",
-		  "JFK_FINAL_4RL",
-		  "JFK_SATELITE_4RL"
-		  ],
+      "airspace": {
+        "JFK_G_APP": [ "CAMRN_4RL" ],
+        "JFK_K_APP": [ "ROBER_4RL", "LENDY_4RL" ],
+        "JFK_A_APP": [ "JFK_FINAL_4RL" ],
+        "JFK_M_APP": [ "JFK_SATELITE_4RL" ],
+        "JFK_DEP": [ "JFK_DEP_4RL" ]
+      },
       "arrivals": {
         "CAMRN4": {
           "KFRG": 0,
@@ -6318,7 +6306,7 @@
                     "departures": [ "KFRG" ],
                     "arrivals": [ "LENDY8/IGN1", "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
                 },
-                "JFK_S_APP": {
+                "JFK_M_APP": {
                     "backup": "JFK_K_APP"
                 },
                 "JFK_DEP": {
@@ -6374,9 +6362,6 @@
           "runway": "1"
         }
       ],
-	  "departure_airspace": [
-	   "JFK_DEP_4RL"
-	  ],
       "wind": {
         "direction": 30,
         "gust": 25,
@@ -6394,9 +6379,7 @@
           "runway": "22R"
         }
       ],
-	  "approach_airspace": [
-		"JFK_FINAL_22RL"
-     ],
+      "airspace": { "JFK_G_APP": [ "JFK_FINAL_22RL" ] },
       "arrivals": {
         "PARCH3/ROBER2.Finals22": {
           "KJFK": 24

@@ -586,10 +586,16 @@
   "primary_airport": "KDAB",
   "scenarios": {
     "KDAB Depart 7L/R Land 7L/R": {
-      "approach_airspace": [
-        "DAB_H_APP"
-      ],
-      "arrival_runways": [
+      "airspace": {
+        "DAB_H_APP": [ "DAB_H_APP" ],
+        "DAB_M_APP": [ "DAB_H_APP" ],
+        "DAB_L_APP": [ "DAB_H_APP" ],
+        "DAB_N_APP": [ "DAB_H_APP" ],
+        "DAB_S_APP": [ "DAB_H_APP" ],
+        "DAB_E_APP": [ "DAB_H_APP" ],
+        "DAB_W_APP": [ "DAB_H_APP" ]
+      },
+      "arrival_runways": [
         {
           "airport": "KDAB",
           "runway": "7L"
@@ -637,9 +643,6 @@
         "JAX_N_APP"
       ],
       "default_maps": [ "DAB EAST FLOW" ],
-      "departure_airspace": [
-        "DAB_H_APP"
-      ],
       "departure_runways": [
         {
           "airport": "KDAB",
@@ -653,9 +656,15 @@
       }
     },
     "KDAB Depart 25L/R Land 25L/R": {
-      "approach_airspace": [
-        "DAB_H_APP"
-      ],
+      "airspace": {
+        "DAB_H_APP": [ "DAB_H_APP" ],
+        "DAB_M_APP": [ "DAB_H_APP" ],
+        "DAB_L_APP": [ "DAB_H_APP" ],
+        "DAB_N_APP": [ "DAB_H_APP" ],
+        "DAB_S_APP": [ "DAB_H_APP" ],
+        "DAB_E_APP": [ "DAB_H_APP" ],
+        "DAB_W_APP": [ "DAB_H_APP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KDAB",
@@ -704,9 +713,6 @@
         "JAX_N_APP"
       ],
       "default_maps": [ "DAB WEST FLOW" ],
-      "departure_airspace": [
-        "DAB_H_APP"
-      ],
       "departure_runways": [
         {
           "airport": "KDAB",

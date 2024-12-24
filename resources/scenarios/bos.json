@@ -6718,9 +6718,16 @@
    "primary_airport": "KBOS",
    "scenarios": {
     "BOS Land 4R/L Depart 9 + Sats": {
-      "approach_airspace": [
-        "BOS_APP4R"
-      ],
+      "airspace": {
+        "BOS_DEP": [ "BOS_APP4R" ],
+        "BOS_N_APP": [ "BOS_APP4R" ],
+        "BOS_S_APP": [ "BOS_APP4R" ],
+        "BOS_F_APP": [ "BOS_APP4R" ],
+        "BOS_I_APP": [ "BOS_APP4R" ],
+        "BOS_B_APP": [ "BOS_APP4R" ],
+        "BOS_L_APP": [ "BOS_APP4R" ],
+        "BOS_U_APP": [ "BOS_APP4R" ]
+      },
       "arrival_runways": [
         {
           "airport": "KBOS",
@@ -6874,9 +6881,6 @@
         "BVY_TWR"
       ],
       "default_maps": [ "BOS A90 MAIN", "BOS 4R/L"],
-      "departure_airspace": [
-        "BOS_APP4R"
-      ],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -6923,9 +6927,16 @@
       }
     },
     "BOS Land 27/22L Depart 22R + Sats": {
-      "approach_airspace": [
-        "BOS_APP"
-      ],
+      "airspace": {
+        "BOS_DEP": [ "BOS_APP" ],
+        "BOS_N_APP": [ "BOS_APP" ],
+        "BOS_S_APP": [ "BOS_APP" ], 
+        "BOS_F_APP":  [ "BOS_APP" ],
+        "BOS_I_APP":  [ "BOS_APP" ],
+        "BOS_B_APP":  [ "BOS_APP" ],
+        "BOS_L_APP":  [ "BOS_APP" ],
+        "BOS_U_APP":  [ "BOS_APP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KBOS",
@@ -7081,9 +7092,6 @@
         "BVY_TWR"
       ],
       "default_maps": [ "BOS A90 MAIN", "BOS 27/22"],
-      "departure_airspace": [
-        "BOS_APP"
-      ],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -7127,9 +7135,16 @@
       }
     },
     "BOS Land 27/32 Depart 33L + Sats": {
-      "approach_airspace": [
-        "BOS_APP"
-      ],
+      "airspace": {
+        "BOS_DEP": [ "BOS_APP" ],
+        "BOS_N_APP": [ "BOS_APP" ],
+        "BOS_S_APP": [ "BOS_APP" ], 
+        "BOS_F_APP":  [ "BOS_APP" ],
+        "BOS_I_APP":  [ "BOS_APP" ],
+        "BOS_B_APP":  [ "BOS_APP" ],
+        "BOS_L_APP":  [ "BOS_APP" ],
+        "BOS_U_APP":  [ "BOS_APP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KBOS",
@@ -7285,9 +7300,6 @@
         "BVY_TWR"
       ],
       "default_maps": [ "BOS A90 MAIN", "BOS 27"],
-      "departure_airspace": [
-        "BOS_APP"
-      ],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -7331,9 +7343,16 @@
       }
     },
     "BOS Land 15R Depart 15R + Sats": {
-      "approach_airspace": [
-        "BOS_APP"
-      ],
+      "airspace": {
+        "BOS_DEP": [ "BOS_APP" ],
+        "BOS_N_APP": [ "BOS_APP" ],
+        "BOS_S_APP": [ "BOS_APP" ], 
+        "BOS_F_APP":  [ "BOS_APP" ],
+        "BOS_I_APP":  [ "BOS_APP" ],
+        "BOS_B_APP":  [ "BOS_APP" ],
+        "BOS_L_APP":  [ "BOS_APP" ],
+        "BOS_U_APP":  [ "BOS_APP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KBOS",
@@ -7481,9 +7500,6 @@
         "BVY_TWR"
       ],
       "default_maps": [ "BOS A90 MAIN", "BOS 15R"],
-      "departure_airspace": [
-        "BOS_APP"
-      ],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -7530,9 +7546,13 @@
       }
     },
     "BOS Land 4R/L Depart 9": {
-      "approach_airspace": [
-        "BOS_APP4R"
-      ],
+      "airspace": {
+        "BOS_DEP": [ "BOS_APP4R" ],
+        "BOS_N_APP": [ "BOS_APP4R" ],
+        "BOS_S_APP": [ "BOS_APP4R" ],
+        "BOS_F_APP": [ "BOS_APP4R" ],
+        "BOS_I_APP": [ "BOS_APP4R" ]
+      },
       "arrival_runways": [
         {
           "airport": "KBOS",
@@ -7597,9 +7617,6 @@
         "BOS_37_CTR"
       ],
       "default_maps": [ "BOS A90 MAIN", "BOS 4R/L"],
-      "departure_airspace": [
-        "BOS_APP4R"
-      ],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -7626,9 +7643,13 @@
       }
     },
     "BOS Land 27/22L Depart 22R": {
-      "approach_airspace": [
-        "BOS_APP"
-      ],
+      "airspace": {
+        "BOS_DEP": [ "BOS_APP" ],
+        "BOS_N_APP": [ "BOS_APP" ],
+        "BOS_S_APP": [ "BOS_APP" ],
+        "BOS_F_APP": [ "BOS_APP" ],
+        "BOS_I_APP": [ "BOS_APP" ]
+     },
       "arrival_runways": [
         {
           "airport": "KBOS",
@@ -7693,9 +7714,6 @@
         "BOS_37_CTR"
       ],
       "default_maps": [ "BOS A90 MAIN", "BOS 27/22"],
-      "departure_airspace": [
-        "BOS_APP"
-      ],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -7722,9 +7740,13 @@
       }
     },
     "BOS Land 27/32 Depart 33L": {
-      "approach_airspace": [
-        "BOS_APP"
-      ],
+      "airspace": {
+        "BOS_DEP": [ "BOS_APP" ],
+        "BOS_N_APP": [ "BOS_APP" ],
+        "BOS_S_APP": [ "BOS_APP" ],
+        "BOS_F_APP": [ "BOS_APP" ],
+        "BOS_I_APP": [ "BOS_APP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KBOS",
@@ -7789,9 +7811,6 @@
         "BOS_37_CTR"
       ],
       "default_maps": [ "BOS A90 MAIN", "BOS 27"],
-      "departure_airspace": [
-        "BOS_APP"
-      ],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -7818,9 +7837,13 @@
       }
     },
     "BOS Land 15R Depart 15R": {
-      "approach_airspace": [
-        "BOS_APP"
-      ],
+      "airspace": {
+        "BOS_DEP": [ "BOS_APP" ],
+        "BOS_N_APP": [ "BOS_APP" ],
+        "BOS_S_APP": [ "BOS_APP" ],
+        "BOS_F_APP": [ "BOS_APP" ],
+        "BOS_I_APP": [ "BOS_APP" ]
+      },
       "arrival_runways": [
         {
           "airport": "KBOS",
@@ -7881,9 +7904,6 @@
         "BOS_37_CTR"
       ],
       "default_maps": [ "BOS A90 MAIN", "BOS 15R"],
-      "departure_airspace": [
-        "BOS_APP"
-      ],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -7910,9 +7930,9 @@
       }
     },
     "KBOS 4R/L Final": {
-      "approach_airspace": [
-        "BOS_F_APP4R"
-      ],
+      "airspace": {
+        "BOS_F_APP": [ "BOS_F_APP4R" ]
+      },
       "arrival_runways": [
         {
           "airport": "KBOS",

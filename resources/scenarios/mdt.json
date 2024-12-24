@@ -1544,12 +1544,11 @@
             "default_maps": [
                 "MDT-006 (WEST FLOW)"
             ],
-            "departure_airspace": [
-                "MDT_APP"
-            ],
-            "approach_airspace": [
-                "MDT_APP"
-            ],
+            "airspace": {
+              "MDT_W_APP": [ "MDT_APP" ],
+              "MDT_E_APP": [ "MDT_APP" ],
+              "MDT_N_APP": [ "MDT_APP" ]
+            },
             "departure_runways": [
                 {
                     "airport": "KMDT",
@@ -1671,12 +1670,11 @@
             "default_maps": [
                 "MDT-005 (EAST FLOW)"
             ],
-            "departure_airspace": [
-                "MDT_APP"
-            ],
-            "approach_airspace": [
-                "MDT_APP"
-            ],
+            "airspace": {
+              "MDT_W_APP": [ "MDT_APP" ],
+              "MDT_E_APP": [ "MDT_APP" ],
+              "MDT_N_APP": [ "MDT_APP" ]
+            },
             "departure_runways": [
                 {
                     "airport": "KMDT",

@@ -116,9 +116,9 @@ type AircraftState struct {
 	SPCAcknowledged bool
 	SPCSoundEnd     time.Time
 
-	FirstSeen           time.Time
-	FirstRadarTrack     time.Time
-	HaveEnteredAirspace bool
+	FirstSeen          time.Time
+	FirstRadarTrack    time.Time
+	EnteredOurAirspace bool
 
 	CWTCategory string // cache this for performance
 
@@ -856,40 +856,27 @@ func (sp *STARSPane) drawHistoryTrails(aircraft []*av.Aircraft, ctx *panes.Conte
 	historyBuilder.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, ac *av.Aircraft) (alts [][2]int, outside bool) {
+func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, ac *av.Aircraft) ([][2]int, bool) {
 	// Only report on ones that are tracked by us
 	if trk := sp.getTrack(ctx, ac); trk == nil || trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
-		return
+		return nil, false
 	}
 
 	if ac.OnApproach(false) {
 		// No warnings once they're flying the approach
-		return
+		return nil, false
 	}
 
 	state := sp.Aircraft[ac.Callsign]
-	if ctx.ControlClient.IsDeparture(ac) {
-		if len(ctx.ControlClient.DepartureAirspace) > 0 {
-			inDepartureAirspace, depAlts := sim.InAirspace(ac.Position(), ac.Altitude(), ctx.ControlClient.DepartureAirspace)
-			if !state.HaveEnteredAirspace {
-				state.HaveEnteredAirspace = inDepartureAirspace
-			} else {
-				alts = depAlts
-				outside = !inDepartureAirspace
-			}
-		}
-	} else {
-		if len(ctx.ControlClient.ApproachAirspace) > 0 {
-			inApproachAirspace, depAlts := sim.InAirspace(ac.Position(), ac.Altitude(), ctx.ControlClient.ApproachAirspace)
-			if !state.HaveEnteredAirspace {
-				state.HaveEnteredAirspace = inApproachAirspace
-			} else {
-				alts = depAlts
-				outside = !inApproachAirspace
-			}
-		}
+	vols := ctx.ControlClient.ControllerAirspace(ctx.ControlClient.PrimaryTCP)
+
+	inside, alts := sim.InAirspace(ac.Position(), ac.Altitude(), vols)
+	if state.EnteredOurAirspace && !inside {
+		return alts, true
+	} else if inside {
+		state.EnteredOurAirspace = true
 	}
-	return
+	return nil, false
 }
 
 func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, aircraft []*av.Aircraft) {

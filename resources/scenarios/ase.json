@@ -363,12 +363,9 @@
     "primary_airport": "KASE",
     "scenarios": {
         "VMC 15": {
-            "approach_airspace": [
-                "ASE_APP"
-            ],
-            "departure_airspace": [
-                "ASE_APP"
-            ],
+            "airspace": {
+              "ASE_APP": [ "ASE_APP" ]
+            },
             "arrival_runways": [
                 {
                     "airport": "KASE",

@@ -1433,7 +1433,11 @@
 	"primary_airport": "KAUS",
 	"scenarios": {
 		"AUS TRACON South": {
-			"approach_airspace": ["AUS_W_APP"],
+		        "airspace": {
+                          "AUS_W_APP": [ "AUS_W_APP" ],
+                          "AUS_E_APP": [ "AUS_W_APP" ],
+                          "AUS_F_APP": [ "AUS_W_APP" ]
+                        },
 			"arrival_runways": [
 				{
 					"airport": "KAUS",
@@ -1501,7 +1505,6 @@
 				"GTU_TWR"
 			],
 			"default_maps": ["AUS BASE"],
-			"departure_airspace": ["AUS_W_APP"],
 			"departure_runways": [
 				{
 					"airport": "KAUS",
@@ -1556,7 +1559,11 @@
 			}
 		},
 		"AUS TRACON North": {
-			"approach_airspace": ["AUS_W_APP"],
+		        "airspace": {
+                          "AUS_W_APP": [ "AUS_W_APP" ],
+                          "AUS_E_APP": [ "AUS_W_APP" ],
+                          "AUS_F_APP": [ "AUS_W_APP" ]
+                        },
 			"arrival_runways": [
 				{
 					"airport": "KAUS",
@@ -1624,7 +1631,6 @@
 				"GTU_TWR"
 			],
 			"default_maps": ["AUS BASE"],
-			"departure_airspace": ["AUS_W_APP"],
 			"departure_runways": [
 				{
 					"airport": "KAUS",

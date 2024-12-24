@@ -783,9 +783,14 @@
 ],
 "scenarios": {
   "KSDF South": {
-    "approach_airspace": [
-      "sdfapp"
-    ],
+    "airspace": {
+      "SDF_I_APP": [ "sdfapp" ],
+      "SDF_B_DEP": [ "sdfapp" ],
+      "SDF_W_APP": [ "sdfapp" ],
+      "SDF_A_APP": [ "sdfapp" ],
+      "SDF_E_APP": [ "sdfapp" ],
+      "SDF_D_DEP": [ "sdfapp" ]
+    },
     "arrival_runways": [
       {
         "airport": "KSDF",
@@ -831,9 +836,6 @@
       "SDF_W_TWR"
     ],
     "default_maps": [ "RWY 17s BASE" ],
-    "departure_airspace": [
-      "sdfapp"
-    ],
     "departure_runways": [
       {
         "airport": "KSDF",
@@ -848,9 +850,14 @@
     }
   },
   "KSDF North": {
-    "approach_airspace": [
-      "sdfapp"
-    ],
+    "airspace": {
+      "SDF_I_APP": [ "sdfapp" ],
+      "SDF_B_DEP": [ "sdfapp" ],
+      "SDF_W_APP": [ "sdfapp" ],
+      "SDF_A_APP": [ "sdfapp" ],
+      "SDF_E_APP": [ "sdfapp" ],
+      "SDF_D_DEP": [ "sdfapp" ]
+    },
     "arrival_runways": [
       {
         "airport": "KSDF",
@@ -896,9 +903,6 @@
       "SDF_W_TWR"
     ],
     "default_maps": [ "RWY 35s BASE" ],
-    "departure_airspace": [
-      "sdfapp"
-    ],
     "departure_runways": [
       {
         "airport": "KSDF",

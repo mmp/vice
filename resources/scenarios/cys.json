@@ -414,12 +414,9 @@
     "primary_airport": "KCYS",
     "scenarios": {
         "KCYS Landing East": {
-            "approach_airspace": [
-                "CYS_APP"
-            ],
-            "departure_airspace": [
-                "CYS_APP"
-            ],
+            "airspace": {
+              "CYS_APP": [ "CYS_APP" ]
+            },
             "arrival_runways": [
                 {
                     "airport": "KCYS",
@@ -472,12 +469,9 @@
             }
         },
         "KCYS Landing West": {
-            "approach_airspace": [
-                "CYS_APP"
-            ],
-            "departure_airspace": [
-                "CYS_APP"
-            ],
+            "airspace": {
+              "CYS_APP": [ "CYS_APP" ]
+            },
             "arrival_runways": [
                 {
                     "airport": "KCYS",
