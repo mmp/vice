@@ -610,16 +610,18 @@ func (comp *STARSComputer) HandoffTrack(callsign string, from *av.Controller, to
 	}
 
 	if to.Facility != from.Facility { // inter-facility
-		msg := trk.FlightPlan.Message()
-		msg.SourceID = formatSourceID(from.Id(), simTime)
-		msg.TrackInformation = TrackInformation{
-			TrackOwner:        from.Id(),
-			HandoffController: to.Id(),
-			Identifier:        callsign,
+		if trk.FlightPlan != nil { // Hack workaround for #444
+			msg := trk.FlightPlan.Message()
+			msg.SourceID = formatSourceID(from.Id(), simTime)
+			msg.TrackInformation = TrackInformation{
+				TrackOwner:        from.Id(),
+				HandoffController: to.Id(),
+				Identifier:        callsign,
+			}
+			msg.Identifier = callsign
+			msg.MessageType = InitiateTransfer
+			comp.SendTrackInfo(to.Facility, msg, simTime)
 		}
-		msg.Identifier = callsign
-		msg.MessageType = InitiateTransfer
-		comp.SendTrackInfo(to.Facility, msg, simTime)
 
 		comp.TrackInformation[callsign] = &TrackInformation{
 			TrackOwner:        from.Id(),
