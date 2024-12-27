@@ -1,6 +1,6 @@
 module github.com/mmp/vice
 
-go 1.23
+go 1.23.0
 
 require (
 	github.com/MichaelTJones/pcg v0.0.0-20180122055547-df440c6ed7ed
