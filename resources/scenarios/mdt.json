@@ -2149,122 +2149,122 @@
     "control_positions": {
         "MDT_W_APP": {
             "frequency": 124100,
-            "full_name": "Harrisburg Approach",
+            "radio_name": "Harrisburg Approach",
             "scope_char": "K",
             "sector_id": "HK",
             "default_airport": "KLNS"
         },
         "MDT_TWR": {
             "frequency": 124800,
-            "full_name": "Harrisburg Tower",
+            "radio_name": "Harrisburg Tower",
             "scope_char": "L",
             "sector_id": "HL"
         },
         "CXY_TWR": {
             "frequency": 119500,
-            "full_name": "Capital City Tower",
+            "radio_name": "Capital City Tower",
             "scope_char": "H",
             "sector_id": "HH"
         },
         "LNS_TWR": {
             "frequency": 120900,
-            "full_name": "Lancaster Tower",
+            "radio_name": "Lancaster Tower",
             "scope_char": "M",
             "sector_id": "HM"
         },
         "MDT_E_APP": {
             "frequency": 126450,
-            "full_name": "Harrisburg Approach",
+            "radio_name": "Harrisburg Approach",
             "scope_char": "S",
             "sector_id": "HS",
             "default_airport": "KLNS"
         },
         "MDT_N_APP": {
             "frequency": 118250,
-            "full_name": "Harrisburg Approach",
+            "radio_name": "Harrisburg Approach",
             "scope_char": "G",
             "sector_id": "HG"
         },
         "AVP_APP": {
             "frequency": 126300,
-            "full_name": "Wilkes Barre Approach",
+            "radio_name": "Wilkes Barre Approach",
             "scope_char": "E",
             "facility_id": "1",
             "sector_id": "WE"
         },
         "ABE_DEP": {
             "frequency": 124450,
-            "full_name": "Allentown Approach",
+            "radio_name": "Allentown Approach",
             "scope_char": "D",
             "facility_id": "2",
             "sector_id": "1D"
         },
         "ABE_APP": {
             "frequency": 119650,
-            "full_name": "Allentown Approach",
+            "radio_name": "Allentown Approach",
             "scope_char": "A",
             "facility_id": "2",
             "sector_id": "1A"
         },
         "PHL_DEP": {
             "frequency": 124350,
-            "full_name": "Philly Approach",
+            "radio_name": "Philly Approach",
             "scope_char": "E",
             "facility_id": "4",
             "sector_id": "4E"
         },
         "PHL_NA_APP": {
             "frequency": 128400,
-            "full_name": "Philly Approach",
+            "radio_name": "Philly Approach",
             "scope_char": "N",
             "facility_id": "4",
             "sector_id": "1N"
         },
         "PHL_PT_APP": {
             "frequency": 126850,
-            "full_name": "Philly Approach",
+            "radio_name": "Philly Approach",
             "scope_char": "P",
             "facility_id": "4",
             "sector_id": "1P"
         },
         "RDG_APP": {
             "frequency": 125150,
-            "full_name": "Reading Approach",
+            "radio_name": "Reading Approach",
             "scope_char": "X",
             "facility_id": "3",
             "sector_id": "RX"
         },
         "JST_APP": {
             "frequency": 121200,
-            "full_name": "Johnstown Approach",
+            "radio_name": "Johnstown Approach",
             "scope_char": "A",
             "facility_id": "7",
             "sector_id": "1A"
         },
         "PCT_B_APP": {
             "frequency": 125525,
-            "full_name": "Potomac Approach",
+            "radio_name": "Potomac Approach",
             "scope_char": "B",
             "facility_id": "6",
             "sector_id": "1B"
         },
         "PCT_L_APP": {
             "frequency": 126825,
-            "full_name": "Potomac Approach",
+            "radio_name": "Potomac Approach",
             "scope_char": "Z",
             "facility_id": "6",
             "sector_id": "3Z"
         },
         "PCT_M_APP": {
             "frequency": 126100,
-            "full_name": "Potomac Approach",
+            "radio_name": "Potomac Approach",
             "scope_char": "M",
             "facility_id": "6",
             "sector_id": "3M"
         },
         "NY_08_CTR": {
             "frequency": 124775,
-            "full_name": "New York Center",
+            "radio_name": "New York Center",
             "scope_char": "C",
             "sector_id": "N8",
             "facility_id": "C",
@@ -2272,7 +2272,7 @@
         },
         "NY_09_CTR": {
             "frequency": 134325,
-            "full_name": "New York Center",
+            "radio_name": "New York Center",
             "scope_char": "C",
             "sector_id": "N9",
             "facility_id": "C",
@@ -2280,7 +2280,7 @@
         },
         "NY_25_CTR": {
             "frequency": 135450,
-            "full_name": "New York Center",
+            "radio_name": "New York Center",
             "scope_char": "C",
             "sector_id": "N25",
             "facility_id": "C",
@@ -2288,7 +2288,7 @@
         },
         "NY_27_CTR": {
             "frequency": 132000,
-            "full_name": "New York Center",
+            "radio_name": "New York Center",
             "scope_char": "C",
             "sector_id": "N27",
             "facility_id": "C",
@@ -2296,7 +2296,7 @@
         },
         "NY_26_CTR": {
             "frequency": 120025,
-            "full_name": "New York Center",
+            "radio_name": "New York Center",
             "scope_char": "C",
             "sector_id": "N26",
             "facility_id": "C",
@@ -2304,7 +2304,7 @@
         },
         "NY_91_CTR": {
             "frequency": 134800,
-            "full_name": "New York Center",
+            "radio_name": "New York Center",
             "scope_char": "C",
             "sector_id": "N91",
             "facility_id": "C",
@@ -2312,7 +2312,7 @@
         },
         "NY_92_CTR": {
             "frequency": 124625,
-            "full_name": "New York Center",
+            "radio_name": "New York Center",
             "scope_char": "C",
             "sector_id": "N92",
             "facility_id": "C",
@@ -2425,12 +2425,11 @@
             "default_maps": [
                 "MDT-006 (WEST FLOW)"
             ],
-            "departure_airspace": [
-                "MDT_APP"
-            ],
-            "approach_airspace": [
-                "MDT_APP"
-            ],
+            "airspace": {
+              "MDT_W_APP": [ "MDT_APP" ],
+              "MDT_E_APP": [ "MDT_APP" ],
+              "MDT_N_APP": [ "MDT_APP" ]
+            },
             "departure_runways": [
                 {
                     "airport": "KMDT",
@@ -2557,12 +2556,11 @@
             "default_maps": [
                 "MDT-005 (EAST FLOW)"
             ],
-            "departure_airspace": [
-                "MDT_APP"
-            ],
-            "approach_airspace": [
-                "MDT_APP"
-            ],
+            "airspace": {
+              "MDT_W_APP": [ "MDT_APP" ],
+              "MDT_E_APP": [ "MDT_APP" ],
+              "MDT_N_APP": [ "MDT_APP" ]
+            },
             "departure_runways": [
                 {
                     "airport": "KMDT",
