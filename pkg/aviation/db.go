@@ -255,7 +255,7 @@ func parseAirports() map[string]FAAAirport {
 	// These aren't in the FAA database but we need to have them defined
 	// for the AAC scenario...
 	airports["4V4"] = FAAAirport{Id: "4V4", Name: "", Elevation: 623,
-		Location: parse("N036.07.26.937,W095.20.20.361"),
+		Location: parse("N035.58.42.052,W095.23.14.329"),
 		Runways: []Runway{
 			Runway{Id: "16", Heading: 160, Threshold: parse("N35.58.34.000,W095.23.03.000"), Elevation: 623},
 			Runway{Id: "34", Heading: 340, Threshold: parse("N35.58.43.000,W095.23.07.000"), Elevation: 623},
