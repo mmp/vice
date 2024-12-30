@@ -416,9 +416,8 @@ func (nav *Nav) Summary(fp FlightPlan, lg *log.Logger) string {
 		}
 	} else if nav.Altitude.Restriction != nil {
 		tgt := nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
-		if nav.FinalAltitude != 0 { // allow 0 for backwards compatability with saved
-			tgt = math.Min(tgt, nav.FinalAltitude)
-		}
+		tgt = math.Min(tgt, nav.FinalAltitude)
+
 		if tgt < nav.FlightState.Altitude {
 			lines = append(lines, "Descending "+FormatAltitude(nav.FlightState.Altitude)+
 				" to "+FormatAltitude(tgt)+" from previous crossing restriction")
@@ -663,10 +662,6 @@ func (nav *Nav) updateAirspeed(lg *log.Logger) (float32, bool) {
 
 func (nav *Nav) updateAltitude(lg *log.Logger, deltaKts float32, slowingTo250 bool) {
 	targetAltitude, targetRate := nav.TargetAltitude(lg)
-
-	if nav.FinalAltitude != 0 { // allow 0 for backwards compatability with saved
-		targetAltitude = math.Min(targetAltitude, nav.FinalAltitude)
-	}
 
 	if targetAltitude == nav.FlightState.Altitude {
 		if nav.IsAirborne() {
@@ -1098,7 +1093,7 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 	}
 
 	if nav.Altitude.Cleared != nil {
-		return *nav.Altitude.Cleared, MaximumRate
+		return math.Min(*nav.Altitude.Cleared, nav.FinalAltitude), MaximumRate
 	}
 
 	if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
