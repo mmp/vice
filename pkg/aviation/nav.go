@@ -1092,10 +1092,6 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 		return *nav.Altitude.Assigned, MaximumRate
 	}
 
-	if nav.Altitude.Cleared != nil {
-		return math.Min(*nav.Altitude.Cleared, nav.FinalAltitude), MaximumRate
-	}
-
 	if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
 		if c.ETA < 5 || nav.FlightState.Altitude < c.Altitude {
@@ -1115,6 +1111,10 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 				return nav.FlightState.Altitude, 0
 			}
 		}
+	}
+
+	if nav.Altitude.Cleared != nil {
+		return math.Min(*nav.Altitude.Cleared, nav.FinalAltitude), MaximumRate
 	}
 
 	if ar := nav.Altitude.Restriction; ar != nil {
