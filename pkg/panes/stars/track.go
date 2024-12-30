@@ -88,6 +88,9 @@ type AircraftState struct {
 	IFFlashing        bool // Will continue to flash unless slewed or a successful handoff
 	NextController    string
 
+	AcceptedOutboundHandoffSector string
+	AcceptedOutboundDisplayEnd    time.Time
+
 	// These are only set if a leader line direction was specified for this
 	// aircraft individually:
 	LeaderLineDirection       *math.CardinalOrdinalDirection
@@ -342,6 +345,9 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
+					state.AcceptedOutboundHandoffSector = event.ToController
+					dur := time.Duration(ctx.ControlClient.STARSFacilityAdaptation.HOSectorDisplayDuration) * time.Second
+					state.AcceptedOutboundDisplayEnd = time.Now().Add(dur)
 				}
 			}
 

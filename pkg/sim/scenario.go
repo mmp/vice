@@ -82,7 +82,11 @@ type STARSFacilityAdaptation struct {
 	SingleCharAIDs    map[string]string             `json:"single_char_aids"` // Char to airport
 	BeaconBank        int                           `json:"beacon_bank"`
 	KeepLDB           bool                          `json:"keep_ldb"`
-	PDB               struct {
+
+	DisplayHOFacilityOnly   bool `json:"display_handoff_facility_only"`
+	HOSectorDisplayDuration int  `json:"handoff_sector_display_duration"`
+
+	PDB struct {
 		ShowScratchpad2  bool `json:"show_scratchpad2"`
 		HideGroundspeed  bool `json:"hide_gs"`
 		ShowAircraftType bool `json:"show_aircraft_type"`

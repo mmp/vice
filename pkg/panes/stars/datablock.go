@@ -469,6 +469,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			}
 		}
 	}
+	if handoffTCP == "" && ctx.Now.Before(state.AcceptedOutboundDisplayEnd) {
+		handoffTCP = state.AcceptedOutboundHandoffSector
+	}
 
 	// Various other values that will be repeatedly useful below...
 	beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(platform.KeyF1)
@@ -712,7 +715,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			formatDBText(db.field34[idx34][:], fmt3(sp1)+handoffId, color, false)
 			idx34++
 		}
-		if handoffTCP != "" {
+		if handoffTCP != "" && !ctx.ControlClient.STARSFacilityAdaptation.DisplayHOFacilityOnly {
 			formatDBText(db.field34[idx34][:], fmt3(handoffTCP)+handoffId, color, false)
 		} else if ac.SecondaryScratchpad != "" { // don't show secondary if we're showing a center
 			// TODO: confirm no handoffId here

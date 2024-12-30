@@ -6196,11 +6196,23 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
+                <td>"display_handoff_facility_only"</td>
+                <td>Boolean</td>
+                <td>If true, then the sector id of external facilities is not shown in the datablock
+                  for inbound and outbound handoffs.</td>
+              </tr>
+              <tr>
                 <td>"force_ql_self"</td>
                 <td>Boolean</td>
                 <td>Indicates whether controllers may
                 enter <code>**[SLEW]</code> to make a track appear yellow
                 on their own scope.</td>
+              </tr>
+              <tr>
+                <td>"handoff_sector_display_duration"</td>
+                <td>Number</td>
+                <td>If non-zero, gives the number of seconds that the sector id for a handoff to/from an
+                  external facilities is shown in the datablock after the handoff has been accepted.</td>
               </tr>
               <tr>
                 <td>"inhibit_ca_volumes"</td>
