@@ -108,25 +108,26 @@ func (w *WeatherRadar) UpdateCenter(center math.Point2LL) {
 var radarReflectivity []byte
 
 type kdNode struct {
-	rgb  [3]byte
-	refl float32
-	c    [2]*kdNode
+	rgb [3]byte
+	dbz float32
+	c   [2]*kdNode
 }
 
 var radarReflectivityKdTree *kdNode
 
 func init() {
 	type rgbRefl struct {
-		rgb  [3]byte
-		refl float32
+		rgb [3]byte
+		dbz float32
 	}
 
 	var r []rgbRefl
 
 	for i := 0; i < len(radarReflectivity); i += 3 {
 		r = append(r, rgbRefl{
-			rgb:  [3]byte{radarReflectivity[i], radarReflectivity[i+1], radarReflectivity[i+2]},
-			refl: float32(i) / float32(len(radarReflectivity)),
+			rgb: [3]byte{radarReflectivity[i], radarReflectivity[i+1], radarReflectivity[i+2]},
+			// Approximate range of the reflectivity color ramp
+			dbz: math.Lerp(float32(i)/float32(len(radarReflectivity)), -25, 73),
 		})
 	}
 
@@ -137,13 +138,14 @@ func init() {
 			return nil
 		}
 		if len(r) == 1 {
-			return &kdNode{rgb: r[0].rgb, refl: r[0].refl}
+			return &kdNode{rgb: r[0].rgb, dbz: r[0].dbz}
 		}
 
 		// The split dimension cycles through RGB with tree depth.
 		dim := depth % 3
 
-		// Sort the points in the current dimension
+		// Sort the points in the current dimension (we actually just need
+		// to partition around the midpoint, but...)
 		sort.Slice(r, func(i, j int) bool {
 			return r[i].rgb[dim] < r[j].rgb[dim]
 		})
@@ -151,23 +153,25 @@ func init() {
 		// Split in the middle and recurse
 		mid := len(r) / 2
 		return &kdNode{
-			rgb:  r[mid].rgb,
-			refl: r[mid].refl,
-			c:    [2]*kdNode{buildTree(r[:mid], depth+1), buildTree(r[mid+1:], depth+1)},
+			rgb: r[mid].rgb,
+			dbz: r[mid].dbz,
+			c:   [2]*kdNode{buildTree(r[:mid], depth+1), buildTree(r[mid+1:], depth+1)},
 		}
 	}
 
 	radarReflectivityKdTree = buildTree(r, 0)
 }
 
-func invertRadarReflectivity(rgb [3]byte) float32 {
-	// All white -> 0
+// Returns estimated dBZ (https://en.wikipedia.org/wiki/DBZ_(meteorology)) for
+// an RGB by going backwards from the color ramp.
+func estimateDBZ(rgb [3]byte) float32 {
+	// All white -> ~nil
 	if rgb[0] == 255 && rgb[1] == 255 && rgb[2] == 255 {
-		return 0
+		return -100
 	}
 
 	// Returns the distnace between the specified RGB and the RGB passed to
-	// invertRadarReflectivity.
+	// estimateDBZ.
 	dist := func(o []byte) float32 {
 		d2 := math.Sqr(int(o[0])-int(rgb[0])) + math.Sqr(int(o[1])-int(rgb[1])) + math.Sqr(int(o[2])-int(rgb[2]))
 		return math.Sqrt(float32(d2))
@@ -212,7 +216,7 @@ func invertRadarReflectivity(rgb [3]byte) float32 {
 
 	if true {
 		n, _ := searchTree(radarReflectivityKdTree, nil, 100000, 0)
-		return n.refl
+		return n.dbz
 	} else {
 		// Debugging: verify the point found is indeed the closest by
 		// exhaustively checking the distance to all of points in the color
@@ -240,7 +244,7 @@ func invertRadarReflectivity(rgb [3]byte) float32 {
 				closestDist)
 		}
 
-		return n.refl
+		return n.dbz
 	}
 }
 
@@ -330,21 +334,37 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [numWxLevels]*
 	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
 	nby, nbx := ny/wxBlockRes, nx/wxBlockRes
 
-	// First determine the weather level for each wxBlockRes*wxBlockRes
-	// block of the image.
+	// First determine the average dBZ for each wxBlockRes*wxBlockRes block
+	// of the image.
 	levels := make([]int, nbx*nby)
 	for y := 0; y < nby; y++ {
 		for x := 0; x < nbx; x++ {
-			avg := float32(0)
+			dbz := float32(0)
 			for dy := 0; dy < wxBlockRes; dy++ {
 				for dx := 0; dx < wxBlockRes; dx++ {
 					px := rgba.RGBAAt(x*wxBlockRes+dx, y*wxBlockRes+dy)
-					avg += invertRadarReflectivity([3]byte{px.R, px.G, px.B})
+					dbz += estimateDBZ([3]byte{px.R, px.G, px.B})
 				}
 			}
 
-			// levels from [0,6].
-			level := int(math.Min(avg*7/(wxBlockRes*wxBlockRes), 6))
+			dbz /= wxBlockRes * wxBlockRes
+
+			// Map the dBZ value to a STARS WX level.
+			level := 0
+			if dbz > 55 {
+				level = 6
+			} else if dbz > 50 {
+				level = 5
+			} else if dbz > 45 {
+				level = 4
+			} else if dbz > 40 {
+				level = 3
+			} else if dbz > 30 {
+				level = 2
+			} else if dbz > 20 {
+				level = 1
+			}
+
 			levels[x+y*nbx] = level
 		}
 	}
