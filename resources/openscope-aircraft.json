@@ -10268,13 +10268,13 @@
         "landing": 0.689
       },
       "speed": {
-        "min": 100,
+        "min": 90,
         "v2": 120,
-        "landing": 100,
+        "landing": 110,
         "cruise": 470,
         "cruiseM": 0.82,
-        "max": 573,
-        "maxM": 0.86
+        "max": 494.416,
+        "maxM": 0.862
       },
       "capability": {
         "ils": true,
