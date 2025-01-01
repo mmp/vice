@@ -1306,7 +1306,8 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				// Regular segment between waypoints: draw the line
 				ld.AddLine(waypoints[i].Location, waypoints[i+1].Location)
 
-				if waypoints[i+1].ProcedureTurn == nil {
+				if waypoints[i+1].ProcedureTurn == nil &&
+					!(waypoints[i].ProcedureTurn != nil && waypoints[i].ProcedureTurn.Type == av.PTStandard45) {
 					// Draw an arrow indicating direction of flight along
 					// the segment, unless the next waypoint has a
 					// procedure turn. In that case, we'll let the PT draw
@@ -1323,11 +1324,13 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 			if i+1 >= len(waypoints) {
 				ctx.Lg.Errorf("Expected another waypoint after the procedure turn?")
 			} else {
-				// In the following, we will generate points a canonical
-				// racetrack vertically-oriented, with width 2, and with
-				// the origin at the left side of the arc at the top.  The
-				// toNM transformation takes that to nm coordinates which
-				// we'll later transform to lat-long to draw on the scope.
+				// In the following, we will draw a canonical procedure
+				// turn of the appropriate type. e.g., for a racetrack, we
+				// generate points for a canonical racetrack
+				// vertically-oriented, with width 2, and with the origin
+				// at the left side of the arc at the top.  The toNM
+				// transformation takes that to nm coordinates which we'll
+				// later transform to lat-long to draw on the scope.
 				toNM := math.Identity3x3()
 
 				pnm := math.LL2NM(wp.Location, ctx.ControlClient.NmPerLongitude)
@@ -1338,7 +1341,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				hdg := math.Atan2(v[0], v[1])
 				toNM = toNM.Rotate(-hdg)
 				if !pt.RightTurns {
-					toNM = toNM.Translate(-2, 0)
+					toNM = toNM.Scale(-1, 1)
 				}
 
 				// FIXME: reuse the logic in nav.go to compute the leg lengths.
@@ -1351,44 +1354,64 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				}
 
 				var lines [][2][2]float32
-				// Lines for the two sides
-				lines = append(lines,
-					[2][2]float32{
-						toNM.TransformPoint([2]float32{0, 0}),
-						toNM.TransformPoint([2]float32{0, -len})},
-					[2][2]float32{
-						toNM.TransformPoint([2]float32{2, 0}),
-						toNM.TransformPoint([2]float32{2, -len})})
+				addseg := func(a, b [2]float32) {
+					lines = append(lines, [2][2]float32{toNM.TransformPoint(a), toNM.TransformPoint(b)})
+				}
+				drawarc := func(center [2]float32, a0, a1 int) [2]float32 {
+					var prev [2]float32
+					step := util.Select(a0 < a1, 1, -1)
+					for i := a0; i != a1; i += step {
+						v := [2]float32{math.Sin(math.Radians(float32(i))), math.Cos(math.Radians(float32(i)))}
+						pt := math.Add2f(center, v)
+						if i != a0 {
+							addseg(prev, pt)
+						}
+						prev = pt
+					}
+					return prev
+				}
 
-				// Arcs at each end; all of this is slightly simpler since
-				// the width of the racetrack is 2, so the radius of the
-				// arcs is 1...
-				// previous top and bottom points
-				prevt := toNM.TransformPoint([2]float32{0, 0})
-				prevb := toNM.TransformPoint([2]float32{2, -len})
-				for i := -90; i <= 90; i++ {
-					v := [2]float32{math.Sin(math.Radians(float32(i))), math.Cos(math.Radians(float32(i)))}
+				if pt.Type == av.PTRacetrack {
+					// Lines for the two sides
+					addseg([2]float32{0, 0}, [2]float32{0, -len})
+					addseg([2]float32{2, 0}, [2]float32{2, -len})
 
-					// top
-					pt := math.Add2f([2]float32{1, 0}, v)
-					pt = toNM.TransformPoint(pt)
-					lines = append(lines, [2][2]float32{prevt, pt})
-					prevt = pt
+					// Arcs at each end; all of this is slightly simpler since
+					// the width of the racetrack is 2, so the radius of the
+					// arcs is 1...
+					drawarc([2]float32{1, 0}, -90, 90)
+					drawarc([2]float32{1, -len}, 90, 270)
 
-					// bottom
-					pb := math.Sub2f([2]float32{1, -len}, v)
-					pb = toNM.TransformPoint(pb)
-					lines = append(lines, [2][2]float32{prevb, pb})
-					prevb = pb
+					drawArrow(toNM.TransformPoint([2]float32{0, -len / 2}), hdg)
+					drawArrow(toNM.TransformPoint([2]float32{2, -len / 2}), hdg+math.Radians(180))
+				} else if pt.Type == av.PTStandard45 {
+					// Line outbound to the next fix
+					addseg([2]float32{0, 0}, [2]float32{0, len / 2})
+
+					// 45 degrees off from that for 4nm
+					const sqrt2over2 = 0.70710678
+					pe := [2]float32{4 * sqrt2over2, len/2 + 4*sqrt2over2}
+					addseg([2]float32{0, len / 2}, pe)
+
+					// Draw an arc from the previous leg around to the inbound course.
+					pae := drawarc(math.Add2f(pe, [2]float32{-sqrt2over2, sqrt2over2}), 135, -45)
+					// Intercept of the 45 degree line from the end of the
+					// arc back to the y axis.
+					pint := [2]float32{0, pae[1] - pae[0]}
+					addseg(pae, pint)
+
+					// inbound course + arrow
+					pinb := math.Add2f(pint, [2]float32{0, -1})
+					addseg(pint, pinb)
+					drawArrow(toNM.TransformPoint(pinb), hdg+math.Radians(180))
+				} else {
+					ctx.Lg.Errorf("unhandled PT type in drawWaypoints")
 				}
 
 				for _, l := range lines {
 					l0, l1 := math.NM2LL(l[0], ctx.ControlClient.NmPerLongitude), math.NM2LL(l[1], ctx.ControlClient.NmPerLongitude)
 					ld.AddLine(l0, l1)
 				}
-
-				drawArrow(toNM.TransformPoint([2]float32{0, -len / 2}), hdg)
-				drawArrow(toNM.TransformPoint([2]float32{2, -len / 2}), hdg+math.Radians(180))
 			}
 		}
 
