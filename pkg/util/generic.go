@@ -384,3 +384,23 @@ func FilterIter[T any](it iter.Seq[T], pred func(T) bool) iter.Seq[T] {
 		}
 	}
 }
+
+func SliceReverseValues[Slice ~[]E, E any](s Slice) iter.Seq[E] {
+	return func(yield func(E) bool) {
+		for _, v := range SliceReverseValues2(s) {
+			if !yield(v) {
+				break
+			}
+		}
+	}
+}
+
+func SliceReverseValues2[Slice ~[]E, E any](s Slice) iter.Seq2[int, E] {
+	return func(yield func(int, E) bool) {
+		for i := len(s) - 1; i >= 0; i-- {
+			if !yield(i, s[i]) {
+				break
+			}
+		}
+	}
+}

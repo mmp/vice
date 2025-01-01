@@ -332,3 +332,31 @@ func TestFilterIter(t *testing.T) {
 		t.Errorf("didn't find all of \"one\", \"two\" and \"ten\" in 3 char strings: %+v", threeCh)
 	}
 }
+
+func TestSlicesReverse(t *testing.T) {
+	type test struct {
+		in, out []int
+	}
+	for _, tc := range []test{
+		test{in: []int{1, 2, 3}, out: []int{3, 2, 1}},
+		test{in: []int{1, 2}, out: []int{2, 1}},
+		test{in: []int{1}, out: []int{1}},
+		test{in: []int{}, out: []int{}},
+	} {
+		result := slices.Collect(SliceReverseValues(tc.in))
+		if !slices.Equal(tc.out, result) {
+			t.Errorf("Reverse %v -> %v, expected %v", tc.in, result, tc.out)
+		}
+
+		idx := len(tc.in) - 1
+		for i, v := range SliceReverseValues2(tc.in) {
+			if i != idx {
+				t.Errorf("%v: unexpected index: %d vs %d", tc.in, i, idx)
+			}
+			if v != tc.in[idx] {
+				t.Errorf("%v: unexpected value %v for index %d, expected %v", tc.in, v, i, tc.in[idx])
+			}
+			idx--
+		}
+	}
+}
