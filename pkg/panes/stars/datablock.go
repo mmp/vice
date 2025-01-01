@@ -469,8 +469,8 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			}
 		}
 	}
-	if handoffTCP == "" && ctx.Now.Before(state.AcceptedOutboundDisplayEnd) {
-		handoffTCP = state.AcceptedOutboundHandoffSector
+	if handoffTCP == "" && ctx.Now.Before(state.AcceptedHandoffDisplayEnd) {
+		handoffTCP = state.AcceptedHandoffSector
 	}
 
 	// Various other values that will be repeatedly useful below...

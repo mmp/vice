@@ -88,8 +88,8 @@ type AircraftState struct {
 	IFFlashing        bool // Will continue to flash unless slewed or a successful handoff
 	NextController    string
 
-	AcceptedOutboundHandoffSector string
-	AcceptedOutboundDisplayEnd    time.Time
+	AcceptedHandoffSector     string
+	AcceptedHandoffDisplayEnd time.Time
 
 	// These are only set if a leader line direction was specified for this
 	// aircraft individually:
@@ -339,26 +339,25 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				sp.playOnce(ctx.Platform, AudioInboundHandoff)
 			}
 
-		case sim.AcceptedHandoffEvent:
-			if event.FromController == ctx.ControlClient.PrimaryTCP && event.ToController != ctx.ControlClient.PrimaryTCP {
-				if state, ok := sp.Aircraft[event.Callsign]; ok {
+		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
+			if state, ok := sp.Aircraft[event.Callsign]; ok {
+				outbound := event.FromController == ctx.ControlClient.PrimaryTCP && event.ToController != ctx.ControlClient.PrimaryTCP
+				inbound := event.FromController != ctx.ControlClient.PrimaryTCP && event.ToController == ctx.ControlClient.PrimaryTCP
+				if outbound {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
-					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
-					state.AcceptedOutboundHandoffSector = event.ToController
-					dur := time.Duration(ctx.ControlClient.STARSFacilityAdaptation.HOSectorDisplayDuration) * time.Second
-					state.AcceptedOutboundDisplayEnd = time.Now().Add(dur)
-				}
-			}
+					dur := time.Duration(ctx.ControlClient.STARSFacilityAdaptation.HandoffAcceptFlashDuration) * time.Second
+					state.OutboundHandoffFlashEnd = time.Now().Add(dur)
 
-		case sim.AcceptedRedirectedHandoffEvent:
-			if event.FromController == ctx.ControlClient.PrimaryTCP && event.ToController != ctx.ControlClient.PrimaryTCP {
-				if state, ok := sp.Aircraft[event.Callsign]; ok {
-					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
-					state.OutboundHandoffAccepted = true
-					state.OutboundHandoffFlashEnd = time.Now().Add(10 * time.Second)
-					state.RDIndicatorEnd = time.Now().Add(30 * time.Second)
-					state.DatablockType = FullDatablock
+					if event.Type == sim.AcceptedRedirectedHandoffEvent {
+						state.RDIndicatorEnd = time.Now().Add(30 * time.Second)
+						state.DatablockType = FullDatablock
+					}
+				}
+				if outbound || inbound {
+					state.AcceptedHandoffSector = util.Select(outbound, event.ToController, event.FromController)
+					dur := time.Duration(ctx.ControlClient.STARSFacilityAdaptation.HOSectorDisplayDuration) * time.Second
+					state.AcceptedHandoffDisplayEnd = time.Now().Add(dur)
 				}
 			}
 

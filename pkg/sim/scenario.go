@@ -83,8 +83,9 @@ type STARSFacilityAdaptation struct {
 	BeaconBank        int                           `json:"beacon_bank"`
 	KeepLDB           bool                          `json:"keep_ldb"`
 
-	DisplayHOFacilityOnly   bool `json:"display_handoff_facility_only"`
-	HOSectorDisplayDuration int  `json:"handoff_sector_display_duration"`
+	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration"`
+	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only"`
+	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration"`
 
 	PDB struct {
 		ShowScratchpad2  bool `json:"show_scratchpad2"`
@@ -1094,6 +1095,9 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 
 	if s.Range == 0 {
 		s.Range = 50
+	}
+	if s.HandoffAcceptFlashDuration == 0 {
+		s.HandoffAcceptFlashDuration = 5
 	}
 
 	for name, rs := range s.RadarSites {
