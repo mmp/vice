@@ -658,7 +658,7 @@
         "landing": 125,
         "cruise": 562,
         "cruiseM": 0.85,
-        "max": 612,
+        "max": 611.9,
         "maxM": 0.925
       },
       "capability": {
