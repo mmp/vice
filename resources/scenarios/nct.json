@@ -26393,7 +26393,7 @@
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "44"
+      "sector_id": "P"
     },
     "OAK_10_CTR": {
       "frequency": 128700,
@@ -26468,12 +26468,12 @@
       "sector_id": "31"
     },
     "OAK_32_CTR": {
-      "frequency": 134975,
+      "frequency": 132950,
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "31"
+      "sector_id": "32"
     },
     "OAK_33_CTR": {
       "frequency": 132050,
@@ -26562,36 +26562,6 @@
       "eram_facility": true,
       "scope_char": "C",
       "sector_id": "46"
-    },
-    "NCT_APP": {
-      "frequency": 133950,
-      "radio_name": "NorCal Approach",
-      "scope_char": "B",
-      "sector_id": "2B"
-    },
-    "NCT_1_APP": {
-      "frequency": 124525,
-      "radio_name": "NorCal Approach",
-      "scope_char": "M",
-      "sector_id": "1M"
-    },
-    "NCT_2_APP": {
-      "frequency": 125100,
-      "radio_name": "NorCal Approach",
-      "scope_char": "Y",
-      "sector_id": "3Y"
-    },
-    "NCT_3_APP": {
-      "frequency": 123700,
-      "radio_name": "NorCal Approach",
-      "scope_char": "P",
-      "sector_id": "5P"
-    },
-    "NCT_DEP": {
-      "frequency": 135100,
-      "radio_name": "NorCal Departure",
-      "scope_char": "U",
-      "sector_id": "4U"
     },
     "SJC_L_APP": {
       "frequency": 120100,
@@ -26783,7 +26753,7 @@
       "frequency": 120500,
       "radio_name": "San Francisco Tower",
       "scope_char": "T",
-      "sector_id": "2F"
+      "sector_id": "2A"
     },
     "OAK_TWR": {
       "frequency": 118300,
@@ -29444,7 +29414,7 @@
     },
     "NCT Combined": {
       "airspace": {
-        "NCT_APP": [
+        "SFO_B_APP": [
           "B_SFOW_Boulder",
           "B_SFOW_Cedar",
           "B_SFOW_Foster",
@@ -29453,23 +29423,23 @@
           "B_SFOW_Woodside",
           "D_SFOW_Sutro"
         ],
-        "NCT_1_APP": [
+        "SJC_M_APP": [
           "A_Morgan",
           "A_SFOW_Licke",
           "A_Seca"
         ],
-        "NCT_2_APP": [
+        "MOD_APP": [
           "C_SFOW_Valley",
           "C_SFOW_Sunol",
           "C_SFOW_Grove",
           "D_SFOW_Richmond"
         ],
-        "NCT_3_APP": [
+        "SMF_P_APP": [
           "E_SMFS_Delta",
           "E_SMFS_Expo",
           "E_SMFS_Elkhorn"
         ],
-        "NCT_DEP": [
+        "SFO_DEP": [
           "A_SFOW_Toga",
           "D_SFOW_Sutro",
           "D_SFOW_Richmond"
@@ -29477,14 +29447,6 @@
       },
       "center": "N038.41.41.010,W121.35.27.420",
       "arrival_runways": [
-        {
-          "airport": "KSJC",
-          "runway": "12L"
-        },
-        {
-          "airport": "KSJC",
-          "runway": "12R"
-        },
         {
           "airport": "KSJC",
           "runway": "30L"
@@ -29503,22 +29465,6 @@
         },
         {
           "airport": "KSFO",
-          "runway": "10L"
-        },
-        {
-          "airport": "KSFO",
-          "runway": "10R"
-        },
-        {
-          "airport": "KSFO",
-          "runway": "19L"
-        },
-        {
-          "airport": "KSFO",
-          "runway": "19R"
-        },
-        {
-          "airport": "KSFO",
           "runway": "28L"
         },
         {
@@ -29527,15 +29473,15 @@
         },
         {
           "airport": "KOAK",
-          "runway": "10L"
+          "runway": "28L"
         },
         {
           "airport": "KOAK",
-          "runway": "10R"
+          "runway": "28R"
         },
         {
           "airport": "KOAK",
-          "runway": "12"
+          "runway": "30"
         },
         {
           "airport": "KLVK",
@@ -29562,22 +29508,11 @@
           "runway": "17R"
         },
         {
-          "airport": "KSMF",
-          "runway": "35R"
-        },
-        {
-          "airport": "KSMF",
-          "runway": "35L"
-        },
-        {
           "airport": "KSAC",
           "runway": "2"
         }
       ],
       "inbound_rates": {
-        "BRINY2": {
-          "KSJC": 3
-        },
         "BRIXX4": {
           "KSJC": 3
         },
@@ -29595,26 +29530,11 @@
         "ROBIE5": {
           "KSJC": 3
         },
-        "FRLON2": {
-          "KSJC": 3
-        },
         "SILCN6": {
           "KSJC": 3
         },
-        "SLMMR5": {
-          "KSMF": 2
-        },
-        "SUUTR4": {
-          "KSMF": 2
-        },
-        "TUDOR2": {
-          "KSMF": 2
-        },
         "PYE3.SFOW": {
-          "KSFO": 4,
-          "KSJC": 2
-        },
-        "ALWYS3": {
+          "KSJC": 2,
           "KSFO": 4
         },
         "BDEGA4": {
@@ -29636,22 +29556,13 @@
         "SERFR4": {
           "KSFO": 4
         },
-        "STLER4": {
-          "KSFO": 4
-        },
-        "WWAVS2": {
-          "KSFO": 4
-        },
         "YOSEM3": {
           "KSFO": 1
         },
-        "AANET1": {
-          "KOAK": 3
-        },
-        "BANND2": {
-          "KOAK": 3
-        },
         "EMZOH3": {
+          "KOAK": 3
+        },
+        "OAKES2": {
           "KOAK": 3
         },
         "PXN6": {
@@ -29660,11 +29571,20 @@
         "SHARR1": {
           "KOAK": 3
         },
-        "SKIZM2": {
-          "KOAK": 3
-        },
         "WNDSR2": {
           "KOAK": 3
+        },
+        "CCR2": {
+          "KSMF": 1
+        },
+        "SLMMR5": {
+          "KSMF": 2
+        },
+        "SUUTR4": {
+          "KSMF": 2
+        },
+        "TUDOR2": {
+          "KSMF": 2
         },
         "SMF.NORTH": {
           "KSMF": 1
@@ -29682,7 +29602,13 @@
         "C_SAT.EAST": {
           "KMOD": 1,
           "KLVK": 1,
-          "KSCK": 3,
+          "KSCK": 1,
+          "KMER": 1
+        },
+        "C_SAT.SOUTH": {
+          "KLVK": 1,
+          "KMOD": 1,
+          "KSCK": 1,
           "KMER": 1
         },
         "E_SAT.NORTH": {
@@ -29701,16 +29627,6 @@
       "departure_runways": [
         {
           "airport": "KSJC",
-          "runway": "12L",
-          "rate": 0
-        },
-        {
-          "airport": "KSJC",
-          "runway": "12R",
-          "rate": 0
-        },
-        {
-          "airport": "KSJC",
           "runway": "30L",
           "rate": 3
         },
@@ -29718,11 +29634,6 @@
           "airport": "KSJC",
           "runway": "30R",
           "rate": 3
-        },
-        {
-          "airport": "KMRY",
-          "runway": "10R",
-          "rate": 0
         },
         {
           "airport": "KMRY",
@@ -29746,26 +29657,6 @@
         },
         {
           "airport": "KSFO",
-          "runway": "10L",
-          "rate": 0
-        },
-        {
-          "airport": "KSFO",
-          "runway": "10R",
-          "rate": 0
-        },
-        {
-          "airport": "KSFO",
-          "runway": "19L",
-          "rate": 0
-        },
-        {
-          "airport": "KSFO",
-          "runway": "19R",
-          "rate": 0
-        },
-        {
-          "airport": "KSFO",
           "runway": "28L",
           "rate": 2
         },
@@ -29773,16 +29664,6 @@
           "airport": "KSFO",
           "runway": "28R",
           "rate": 2
-        },
-        {
-          "airport": "KOAK",
-          "runway": "10L",
-          "rate": 0
-        },
-        {
-          "airport": "KOAK",
-          "runway": "12",
-          "rate": 0
         },
         {
           "airport": "KOAK",
@@ -29817,21 +29698,11 @@
         {
           "airport": "KSMF",
           "runway": "17L",
-          "rate": 0
-        },
-        {
-          "airport": "KSMF",
-          "runway": "17R",
-          "rate": 0
-        },
-        {
-          "airport": "KSMF",
-          "runway": "35L",
           "rate": 2
         },
         {
           "airport": "KSMF",
-          "runway": "35R",
+          "runway": "17R",
           "rate": 2
         },
         {
@@ -29840,10 +29711,10 @@
           "rate": 1
         }
       ],
-      "solo_controller": "NCT_APP",
+      "solo_controller": "SFO_B_APP",
       "multi_controllers": {
         "default": {
-          "NCT_APP": {
+          "SFO_B_APP": {
             "primary": true,
             "inbound_flows": [
               "BDEGA4",
@@ -29857,8 +29728,8 @@
               "PYE3.SFOW"
             ]
           },
-          "NCT_1_APP": {
-            "backup": "NCT_APP",
+          "SJC_M_APP": {
+            "backup": "SFO_B_APP",
             "inbound_flows": [
               "EMZOH3",
               "ROBIE5",
@@ -29869,8 +29740,8 @@
               "SAT.EAST"
             ]
           },
-          "NCT_2_APP": {
-            "backup": "NCT_APP",
+          "MOD_APP": {
+            "backup": "SFO_B_APP",
             "inbound_flows": [
               "OAKES2",
               "SHARR1",
@@ -29881,8 +29752,8 @@
               "E_SAT.EAST"
             ]
           },
-          "NCT_3_APP": {
-            "backup": "NCT_2_APP",
+          "SMF_P_APP": {
+            "backup": "MOD_APP",
             "inbound_flows": [
               "CCR2",
               "SLMMR5",
@@ -29896,8 +29767,8 @@
               "RISTI1.TIPRE"
             ]
           },
-          "NCT_DEP": {
-            "backup": "NCT_APP",
+          "SFO_DEP": {
+            "backup": "SFO_B_APP",
             "departures": [
               "KSJC",
               "KMRY",
