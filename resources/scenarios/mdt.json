@@ -2059,9 +2059,9 @@
                 },
                 {
                     "airlines": [
-                        { "icao": "JZA", "types": ["E75L"], "departure_airport": "CYUL", "arrival_airport": "KIAD" },
+                        { "icao": "JZA", "types": ["E75S"], "departure_airport": "CYUL", "arrival_airport": "KIAD" },
                         { "icao": "RPA", "types": ["E75L", "E75S"], "departure_airport": "CYUL", "arrival_airport": "KIAD" },
-                        { "icao": "JZA", "types": ["E75L"], "departure_airport": "CYYZ", "arrival_airport": "KIAD" },
+                        { "icao": "JZA", "types": ["E75S"], "departure_airport": "CYYZ", "arrival_airport": "KIAD" },
                         { "icao": "RPA", "types": ["E75L", "E170"], "departure_airport": "CYYZ", "arrival_airport": "KIAD" },
                         { "icao": "MXY", "departure_airport": "KOGS", "arrival_airport": "KIAD" },
                         { "icao": "MXY", "departure_airport": "KOGS", "arrival_airport": "KIAD" },
