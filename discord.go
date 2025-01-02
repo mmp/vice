@@ -19,7 +19,7 @@ import (
 // currently controlling, Callsign should be an empty string.
 type DiscordStatus struct {
 	TotalDepartures, TotalArrivals int
-	Callsign                       string
+	Position                       string
 	Start                          time.Time
 }
 
@@ -43,7 +43,7 @@ func SetDiscordStatus(s DiscordStatus, config *Config, lg *log.Logger) {
 
 	if s.TotalDepartures != discord.status.TotalDepartures ||
 		s.TotalArrivals != discord.status.TotalArrivals ||
-		s.Callsign != discord.status.Callsign ||
+		s.Position != discord.status.Position ||
 		s.Start != discord.status.Start {
 		discord.statusChanged = true
 	}
@@ -89,14 +89,14 @@ func updateDiscordStatus(config *Config, lg *log.Logger) {
 					Start: &status.Start,
 				},
 			}
-			if status.Callsign == "" {
+			if status.Position == "" {
 				// Disconnected
 				activity.State = "In the main menu"
 				activity.Details = "On Break"
 			} else {
 				activity.State = strconv.Itoa(status.TotalDepartures) + " departures" + " | " +
 					strconv.Itoa(status.TotalArrivals) + " arrivals"
-				activity.Details = "Controlling " + status.Callsign
+				activity.Details = "Controlling " + status.Position
 			}
 
 			if err := discord_client.SetActivity(activity); err != nil {

@@ -243,10 +243,14 @@ func main() {
 			if controlClient == nil {
 				SetDiscordStatus(DiscordStatus{Start: mgr.ConnectionStartTime()}, config, lg)
 			} else {
+				id := controlClient.State.PrimaryTCP
+				if ctrl, ok := controlClient.State.Controllers[id]; ok {
+					id += " (" + ctrl.Position + ")"
+				}
 				SetDiscordStatus(DiscordStatus{
 					TotalDepartures: controlClient.State.TotalDepartures,
 					TotalArrivals:   controlClient.State.TotalArrivals,
-					Callsign:        controlClient.State.PrimaryTCP,
+					Position:        id,
 					Start:           mgr.ConnectionStartTime(),
 				}, config, lg)
 			}
