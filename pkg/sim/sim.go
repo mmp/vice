@@ -502,6 +502,15 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 	}
 	imgui.Separator()
 
+	fmtPosition := func(id string) string {
+		if tracon := c.TRACON[c.GroupName]; tracon != nil {
+			if ctrl, ok := tracon.ControlPositions[id]; ok {
+				id += " (" + ctrl.Position + ")"
+			}
+		}
+		return id
+	}
+
 	if c.NewSimType == NewSimCreateLocal || c.NewSimType == NewSimCreateRemote {
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingStretchProp
@@ -601,7 +610,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextColumn()
 			imgui.Text("Control Position:")
 			imgui.TableNextColumn()
-			imgui.Text(c.Scenario.SelectedController)
+			imgui.Text(fmtPosition(c.Scenario.SelectedController))
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Checkbox("Allow Instructor Sign-ins", &c.InstructorAllowed)
@@ -753,12 +762,12 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			c.SelectedRemoteSimPosition = util.SortedMapKeys(rs.AvailablePositions)[0]
 		}
 
-		if imgui.BeginComboV("Position", c.SelectedRemoteSimPosition, 0) {
+		if imgui.BeginComboV("Position", fmtPosition(c.SelectedRemoteSimPosition), 0) {
 			for _, pos := range util.SortedMapKeys(rs.AvailablePositions) {
 				if pos[0] == '_' {
 					continue
 				}
-				if imgui.SelectableV(pos, pos == c.SelectedRemoteSimPosition, 0, imgui.Vec2{}) {
+				if imgui.SelectableV(fmtPosition(pos), pos == c.SelectedRemoteSimPosition, 0, imgui.Vec2{}) {
 					c.SelectedRemoteSimPosition = pos
 				}
 			}
