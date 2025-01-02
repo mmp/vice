@@ -88,11 +88,13 @@ func (fs FlightState) LogValue() slog.Value {
 }
 
 type NavAltitude struct {
-	Assigned        *float32 // controller assigned
-	Cleared         *float32 // from initial clearance
-	AfterSpeed      *float32
-	AfterSpeedSpeed *float32
-	Expedite        bool
+	Assigned           *float32 // controller assigned
+	Cleared            *float32 // from initial clearance
+	AfterSpeed         *float32
+	AfterSpeedSpeed    *float32
+	Expedite           bool
+	ExpediteAfterSpeed bool
+
 	// Carried after passing a waypoint if we were unable to meet the
 	// restriction at the way point; we keep trying until we get there (or
 	// are given another instruction..)
@@ -393,7 +395,8 @@ func (nav *Nav) Summary(fp FlightPlan, lg *log.Logger) string {
 		}
 	} else if nav.Altitude.AfterSpeed != nil {
 		dir := util.Select(*nav.Altitude.AfterSpeed > nav.FlightState.Altitude, "climb", "descend")
-		lines = append(lines, fmt.Sprintf("At %.0f kts, %s to %s",
+		exped := util.Select(nav.Altitude.ExpediteAfterSpeed, ", expediting", "")
+		lines = append(lines, fmt.Sprintf("At %.0f kts, %s to %s"+exped,
 			*nav.Altitude.AfterSpeedSpeed, dir, FormatAltitude(*nav.Altitude.AfterSpeed)))
 	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		dir := util.Select(c.Altitude > nav.FlightState.Altitude, "Climbing", "Descending")
@@ -612,6 +615,7 @@ func (nav *Nav) updateAirspeed(lg *log.Logger) (float32, bool) {
 			// after which an altitude assignment should be followed.
 			if (cur > at && next <= at) || (cur < at && next >= at) {
 				nav.Altitude.Assigned = nav.Altitude.AfterSpeed
+				nav.Altitude.Expedite = nav.Altitude.ExpediteAfterSpeed
 				nav.Altitude.AfterSpeed = nil
 				nav.Altitude.AfterSpeedSpeed = nil
 				nav.Altitude.Restriction = nil
@@ -1939,7 +1943,14 @@ func (nav *Nav) SayAltitude() PilotResponse {
 func (nav *Nav) ExpediteDescent() PilotResponse {
 	alt, _ := nav.TargetAltitude(nil)
 	if alt >= nav.FlightState.Altitude {
-		return PilotResponse{Message: "unable. We're not descending", Unexpected: true}
+		if nav.Altitude.AfterSpeed != nil {
+			nav.Altitude.ExpediteAfterSpeed = true
+			resp := rand.Sample("expediting down to", "expedite to")
+			return PilotResponse{Message: resp + " " + FormatAltitude(*nav.Altitude.AfterSpeed) + " once we're at " +
+				fmt.Sprintf("%d", int(*nav.Altitude.AfterSpeedSpeed))}
+		} else {
+			return PilotResponse{Message: "unable. We're not descending", Unexpected: true}
+		}
 	}
 	if nav.Altitude.Expedite {
 		return PilotResponse{Message: rand.Sample("we're already expediting", "that's our best rate")}
@@ -1953,7 +1964,14 @@ func (nav *Nav) ExpediteDescent() PilotResponse {
 func (nav *Nav) ExpediteClimb() PilotResponse {
 	alt, _ := nav.TargetAltitude(nil)
 	if alt <= nav.FlightState.Altitude {
-		return PilotResponse{Message: "unable. We're not climbing", Unexpected: true}
+		if nav.Altitude.AfterSpeed != nil {
+			nav.Altitude.ExpediteAfterSpeed = true
+			resp := rand.Sample("expediting up to", "expedite to")
+			return PilotResponse{Message: resp + " " + FormatAltitude(*nav.Altitude.AfterSpeed) + " once we're at " +
+				fmt.Sprintf("%d", int(*nav.Altitude.AfterSpeedSpeed))}
+		} else {
+			return PilotResponse{Message: "unable. We're not climbing", Unexpected: true}
+		}
 	}
 	if nav.Altitude.Expedite {
 		r := rand.Sample("we're already expediting", "that's our best rate")
