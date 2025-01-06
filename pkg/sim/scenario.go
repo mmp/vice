@@ -1573,20 +1573,6 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *Scen
 	return &s
 }
 
-type dbResolver struct{}
-
-func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
-	if n, ok := av.DB.Navaids[s]; ok {
-		return n.Location, nil
-	} else if n, ok := av.DB.Airports[s]; ok {
-		return n.Location, nil
-	} else if f, ok := av.DB.Fixes[s]; ok {
-		return f.Location, nil
-	} else {
-		return math.Point2LL{}, fmt.Errorf("%s: unknown fix", s)
-	}
-}
-
 // LoadScenarioGroups loads all of the available scenarios, both from the
 // scenarios/ directory in the source code distribution as well as,
 // optionally, a scenario file provided on the command line.  It doesn't
@@ -1597,8 +1583,6 @@ func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
 func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMapFilename string,
 	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*Configuration, map[string]*av.VideoMapManifest) {
 	start := time.Now()
-
-	math.SetLocationResolver(&dbResolver{})
 
 	// First load the scenarios.
 	scenarioGroups := make(map[string]map[string]*ScenarioGroup)
