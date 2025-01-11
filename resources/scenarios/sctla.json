@@ -1585,7 +1585,7 @@
       "facility_id": "C",
       "eram_facility": true,
       "scope_char": "C",
-      "sector_id": "55"
+      "sector_id": "C55"
     },
     "HHR_TWR": {
       "frequency": 121100,
