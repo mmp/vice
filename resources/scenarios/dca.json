@@ -614,6 +614,7 @@
         "initial_altitude": 18000,
         "initial_speed": 290,
         "expect_approach": null,
+        "scratchpad": "CAP",
         "airlines": {
           "KDCA": [
             {
@@ -689,6 +690,69 @@
         "initial_altitude": 14000,
         "initial_speed": 270,
         "expect_approach": null,
+        "scratchpad": "CLP",
+        "airlines": {
+          "KDCA": [
+            {
+              "icao": "EDV",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "EDV",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KLGA"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KBDL"
+            },
+            {
+              "icao": "JIA",
+              "airport": "KPVD"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "CLIPR/a12000 BAL/a10000/s250/ho EYESS",
+        "runway_waypoints": {
+          "KDCA": {
+            "1": "EYESS FELTY HITEK CAVDI/h187",
+            "15": "EYESS EDDWD MEGGS NAYES/h327",
+            "19": "EYESS EDDWD MEGGS NAYES/h327",
+            "22": "EYESS EDDWD MEGGS NAYES/h327",
+            "33": "EYESS FELTY HITEK CAVDI/h187",
+            "4": "EYESS FELTY HITEK CAVDI/h187"
+          }
+        },
+        "star": "SKILS5",
+        "initial_controller": "BWI_W_APP",
+        "initial_altitude": 14000,
+        "initial_speed": 270,
+        "expect_approach": null,
+        "scratchpad": "SKL",
         "airlines": {
           "KDCA": [
             {
@@ -754,6 +818,7 @@
         "initial_altitude": 12000,
         "initial_speed": 280,
         "expect_approach": null,
+        "scratchpad": "DLE",
         "airlines": {
           "KDCA": [
             {
@@ -1286,6 +1351,7 @@
         "initial_altitude": 20000,
         "initial_speed": 280,
         "expect_approach": null,
+        "scratchpad": "FRD",
         "airlines": {
           "KDCA": [
             {
@@ -1348,6 +1414,7 @@
         "initial_altitude": 18000,
         "initial_speed": 280,
         "expect_approach": null,
+        "secondary_scratchpad": "RVN",
         "airlines": {
           "KBWI": [
             {
@@ -1399,6 +1466,7 @@
         "initial_altitude": 18000,
         "initial_speed": 280,
         "expect_approach": null,
+        "scratchpad": "TRP",
         "airlines": {
           "KDCA": [
             {
@@ -1441,14 +1509,14 @@
   "frequency": 133725,
   "radio_name": "Washington Center",
   "scope_char": "C",
-  "sector_id": "32",
+  "sector_id": "C32",
   "facility_id": "C",
   "eram_facility": true
   },
   "NY_CTR": {
   "frequency": 125325,
   "radio_name": "New York Center",
-  "scope_char": "C",
+  "scope_char": "N",
   "sector_id": "N56",
   "facility_id": "N",
   "eram_facility": true
@@ -1789,6 +1857,10 @@
 },
 "stars_config": {
 "center": "KDCA",
+"pdb": {
+    "hide_gs": true,
+    "show_scratchpad2": true
+},
 "coordination_fixes": {
   "CAPSS": [
                 {
@@ -1998,12 +2070,12 @@
     "FLASK": "CLH",
     "DQO": "DQO",
     "AGARD": "DCR",
-    "JERES": "JS1",
+    "JERES": "J11",
     "BUFFR": "BFR",
     "RRSIN": "JDB",
     "MELTN": "JDB",
     "OTTTO": "OTO",
-    "GLANC": "SCM",
+    "GLANC": "SCR",
     "SWANN": "SOK",
     "RAMAY": "RAM"
   },
