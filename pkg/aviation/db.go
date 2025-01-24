@@ -340,6 +340,63 @@ func parseAirports() map[string]FAAAirport {
 			}
 		})
 
+	// Add runway information for some STARS facilities in Japan.
+	addRunways := func(name string, r []Runway) {
+		ap, ok := airports[name]
+		if !ok {
+			panic("Airport " + name + " not found in database")
+		}
+		ap.Runways = r
+		airports[name] = ap
+	}
+
+	addRunways("RJOI", []Runway{
+		Runway{Id: "2", Heading: 14, Threshold: parse("N34.08.03.58,E132.14.41.71"), Elevation: 10},
+		Runway{Id: "20", Threshold: parse("N34.09.19.79,E132.14.56.49"), Heading: 194, Elevation: 10},
+	})
+	addRunways("RJTY", []Runway{
+		Runway{Id: "18", Threshold: parse("N35.45.47.24,E139.20.43.55"), Heading: 177, Elevation: 462},
+		Runway{Id: "36", Threshold: parse("N35.44.01.61,E139.21.05.71"), Heading: 357, Elevation: 416},
+	})
+	addRunways("RJFF", []Runway{
+		Runway{Id: "16", Threshold: parse("N33.35.48.24,E130.26.35.90"), Heading: 158, Elevation: 15},
+		Runway{Id: "34", Threshold: parse("N33.34.30.45,E130.27.29.05"), Heading: 338, Elevation: 32},
+	})
+	addRunways("RJTT", []Runway{
+		Runway{Id: "04", Threshold: parse("N35.32.56.97,E139.45.41.02"), Heading: 42, Elevation: 19},
+		Runway{Id: "22", Threshold: parse("N35.34.02.26,E139.46.37.08"), Heading: 222, Elevation: 35},
+		Runway{Id: "05", Threshold: parse("N35.31.26.95,E139.48.13.09"), Heading: 52, Elevation: 55},
+		Runway{Id: "23", Threshold: parse("N35.32.25.63,E139.49.19.06"), Heading: 232, Elevation: 55},
+		Runway{Id: "34L", Threshold: parse("N35.32.12.34,E139.47.07.97"), Heading: 337, Elevation: 18},
+		Runway{Id: "16R", Threshold: parse("N35.33.21.88,E139.46.18.62"), Heading: 157, Elevation: 16},
+		Runway{Id: "34R", Threshold: parse("N35.32.33.60,E139.48.10.93"), Heading: 337, Elevation: 20},
+		Runway{Id: "16L", Threshold: parse("N35.33.45.69,E139.47.19.77"), Heading: 157, Elevation: 19},
+	})
+	addRunways("RJBB", []Runway{
+		Runway{Id: "06L", Threshold: parse("N34.25.43.25,E135.12.22.94"), Heading: 59, Elevation: 9},
+		Runway{Id: "24R", Threshold: parse("N34.27.04.12,E135.14.23.43"), Heading: 239, Elevation: 16},
+		Runway{Id: "06R", Threshold: parse("N34.25.02.95,E135.13.45.99"), Heading: 59, Elevation: 5},
+		Runway{Id: "24L", Threshold: parse("N34.26.13.59,E135.15.31.23"), Heading: 239, Elevation: 12},
+	})
+	addRunways("RJAA", []Runway{
+		Runway{Id: "34L", Threshold: parse("N35.44.36.49,E140.23.26.27"), Heading: 337, Elevation: 140},
+		Runway{Id: "16R", Threshold: parse("N35.46.27.17,E140.22.06.30"), Heading: 157, Elevation: 130},
+		Runway{Id: "34R", Threshold: parse("N35.47.09.37,E140.23.31.31"), Heading: 337, Elevation: 141},
+		Runway{Id: "16L", Threshold: parse("N35.48.18.11,E140.22.41.62"), Heading: 157, Elevation: 134},
+	})
+	addRunways("RJCC", []Runway{
+		Runway{Id: "01L", Threshold: parse("N42.45.42.50,E141.41.34.10"), Heading: 2, Elevation: 62},
+		Runway{Id: "19R", Threshold: parse("N42.47.17.56,E141.41.17.22"), Heading: 182, Elevation: 82},
+		Runway{Id: "01R", Threshold: parse("N42.45.43.78,E141.41.47.15"), Heading: 2, Elevation: 57},
+		Runway{Id: "19L", Threshold: parse("N42.47.18.86,E141.41.30.36"), Heading: 182, Elevation: 77},
+	})
+	addRunways("RJCJ", []Runway{
+		Runway{Id: "18R", Threshold: parse("N42.48.37.17,E141.39.43.38"), Heading: 182, Elevation: 66},
+		Runway{Id: "36L", Threshold: parse("N42.47.12.16,E141.39.58.39"), Heading: 2, Elevation: 87},
+		Runway{Id: "18L", Threshold: parse("N42.48.06.31,E141.40.02.14"), Heading: 182, Elevation: 70},
+		Runway{Id: "36R", Threshold: parse("N42.46.31.65,E141.40.18.87"), Heading: 2, Elevation: 87},
+	})
+
 	artccsRaw := util.LoadResource("airport_artccs.json")
 	data := make(map[string]string) // Airport -> ARTCC
 	if err := util.UnmarshalJSON(artccsRaw, &data); err != nil {
