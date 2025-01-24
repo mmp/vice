@@ -1012,24 +1012,22 @@ func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 				}
 			}
 		}
-		for _, id := range util.SortedMapKeys(c.scopeDraw.airspace) {
-			ctrl, ok := c.State.Controllers[id]
-			if !ok { // not signed in
-				continue
+		for _, pos := range util.SortedMapKeys(c.scopeDraw.airspace) {
+			hdr := pos
+			if ctrl, ok := c.State.Controllers[pos]; ok {
+				hdr += " (" + ctrl.Position + ")"
 			}
-			if imgui.TreeNode(id + " (" + ctrl.Position + ")") {
+			if imgui.TreeNode(hdr) {
 				if imgui.BeginTableV("volumes", 2, tableFlags, imgui.Vec2{}, 0) {
-					for _, pos := range c.State.GetConsolidatedPositions(id) {
-						for _, vol := range util.SortedMapKeys(c.scopeDraw.airspace[pos]) {
-							imgui.TableNextRow()
-							imgui.TableNextColumn()
-							b := c.scopeDraw.airspace[id][vol]
-							if imgui.Checkbox("##"+vol, &b) {
-								c.scopeDraw.airspace[id][vol] = b
-							}
-							imgui.TableNextColumn()
-							imgui.Text(vol)
+					for _, vol := range util.SortedMapKeys(c.scopeDraw.airspace[pos]) {
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+						b := c.scopeDraw.airspace[pos][vol]
+						if imgui.Checkbox("##"+vol, &b) {
+							c.scopeDraw.airspace[pos][vol] = b
 						}
+						imgui.TableNextColumn()
+						imgui.Text(vol)
 					}
 
 					imgui.EndTable()
