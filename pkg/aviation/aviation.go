@@ -107,24 +107,6 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 			return
 		}
 	}
-	if len(a.AircraftTypes) > 0 {
-		// Also make sure it's in the airline's fleet somewhere
-		inFleet := func(ac string) bool {
-			for _, fleet := range al.Fleets {
-				for _, ty := range fleet {
-					if ty.ICAO == ac {
-						return true
-					}
-				}
-			}
-			return false
-		}
-		for _, ac := range a.Aircraft() {
-			if !inFleet(ac.ICAO) {
-				e.ErrorString("aircraft type %q is not in the %q fleet", ac.ICAO, a.ICAO)
-			}
-		}
-	}
 
 	for _, ac := range a.Aircraft() {
 		e.Push("Aircraft " + ac.ICAO)
