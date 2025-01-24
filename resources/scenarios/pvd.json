@@ -1,0 +1,742 @@
+    {
+    "tracon": "PVD",
+      "airports": {
+        "KPVD": {
+		  "hold_for_release": true,
+          "approaches": {
+            "I23": {
+              "runway": "23",
+              "type": "ILS",
+              "waypoints": [
+                "FEDED/a2100+/if CUSKA/a2000+ WIVPA/a700+"
+              ]
+            },
+            "I5": {
+              "cifp_id": "I5"
+            },
+			
+			"I34":{
+				"runway": "34",
+				"type": "ILS",
+				"waypoints": [
+				"BEVIN/a1900+/iaf ALLEY/a600+"
+				]
+			}
+          },
+          "departure_routes": {
+            "23": {
+              "PUT": {
+                "cleared_altitude": 4000,
+                "waypoints": "_PVD_23/h280"
+              },
+              "JUMPR": {
+                "cleared_altitude": 4000,
+                "waypoints": "_PVD_23/h160"
+              }
+            },
+            "5": {
+              "PUT": {
+                "cleared_altitude": 4000,
+                "waypoints": "_PVD_05/h360"
+              },
+              "JUMPR": {
+                "cleared_altitude": 4000,
+                "waypoints": "_PVD_05/h080"
+              }
+            }
+          },
+          "departures": [
+            {
+              "airlines": [
+                {
+                  "icao": "SWA",
+                  "fleet": "short"
+                }
+              ],
+              "destination": "KBWI",
+              "exit": "PUT",
+              "route": "PUT NELIE Q75 MXE V378 NUGGY TRISH3"
+            },
+            {
+              "airlines": [
+                {
+                  "icao": "SWA",
+                  "fleet": "short"
+                }
+              ],
+              "destination": "KBWI",
+              "exit": "JUMPR",
+              "route": "JUMPR RIFLE Q167 ZIZZI KNUKK ATR LAFLN MIIDY2"
+            }
+          ],
+          "exit_categories": {
+            "PUT": "Northwest",
+            "JUMPR": "South"
+          },
+          "tower_list": 1
+        },
+        "KOQU": {
+		 "hold_for_release": true,
+          "approaches": {
+            "I16": {
+              "runway": "16",
+              "type": "ILS",
+              "waypoints": [
+                "FOSTY/iaf SALME/a2200+/if FALAG/a2000+"
+              ]
+            },
+            "R34": {
+              "runway": "34",
+              "type": "RNAV",
+              "waypoints": [
+                "BADTA/iaf COSAX/a1500+ CONEZ/a1500+ HULEM/a800+"
+              ]
+            }
+          },
+          "departure_routes": {
+            "16": {
+              "PUT": {
+                "cleared_altitude": 2000,
+                "waypoints": "_OQU_16/h280"
+              },
+
+              "JUMPR": {
+                "cleared_altitude": 2000,
+                "waypoints": "_OQU_16/h160"
+              }
+            },
+
+            "34": {
+              "PUT": {
+                "cleared_altitude": 2000,
+                "waypoints": "_OQU_34/h340"
+              },
+
+              "JUMPR": {
+                "cleared_altitude": 2000,
+                "waypoints": "_OQU_34/h180"
+              }
+            }
+          },
+          "departures": [
+            {
+              "airlines": [
+                {
+                  "icao": "N",
+                  "fleet": "fastGA"
+                }
+              ],
+              "destination": "KTEB",
+              "exit": "PUT",
+              "route": "PUT NELIE KTEB"
+            },
+            {
+              "airlines": [
+                {
+                  "icao": "N",
+                  "fleet": "fastGA"
+                }
+              ],
+              "destination": "KBWI",
+              "exit": "JUMPR",
+              "route": "JUMPR RIFLE Q167 ZIZZI KNUKK ATR LAFLN MIIDY2"
+            }
+          ],
+          "exit_categories": {
+            "PUT": "Northwest",
+            "JUMPR": "South"
+          }
+        },
+        "KEWB": {
+	      "hold_for_release": true,
+          "approaches": {
+
+          },
+
+          "departure_routes": {
+            "23": {
+              "PVD_PUT": {
+                "cleared_altitude": 2000,
+                "waypoints": "_EWB_23/h290"
+              },
+
+              "JUMPR": {
+                "cleared_altitude": 2000,
+                "waypoints": "_EWB_23/h220"
+              }
+            },
+
+            "5": {
+              "PVD_PUT": {
+                "cleared_altitude": 2000,
+                "waypoints": "_EWB_05/h290"
+              },
+
+              "JUMPR": {
+                "cleared_altitude": 2000,
+                "waypoints": "_EWB_05/h220"
+              }
+            },
+
+            "32": {
+              "PVD_PUT": {
+                "cleared_altitude": 2000,
+                "waypoints": "_EWB_32/h290"
+              },
+
+              "JUMPR": {
+                "cleared_altitude": 2000,
+                "waypoints": "_EWB_32/h220"
+              }
+            },
+
+            "14": {
+              "PVD_PUT": {
+                "cleared_altitude": 2000,
+                "waypoints": "_EWB_14/h290"
+              },
+
+              "JUMPR": {
+                "cleared_altitude": 2000,
+                "waypoints": "_EWB_14/h220"
+              }
+            }
+          },
+          "departures": [
+            {
+              "airlines": [
+                {
+                  "icao": "N",
+                  "fleet": "fastGA"
+                }
+              ],
+              "destination": "KTEB",
+              "exit": "PVD_PUT",
+              "route": "PVD PUT NELIE KTEB"
+            },
+            {
+              "airlines": [
+                {
+                  "icao": "N",
+                  "fleet": "fastGA"
+                }
+              ],
+              "destination": "KBWI",
+              "exit": "JUMPR",
+              "route": "JUMPR RIFLE Q167 ZIZZI KNUKK ATR LAFLN MIIDY2"
+            }
+          ],
+          "exit_categories": {
+            "PUT": "Northwest",
+            "JUMPR": "South"
+          }
+        }
+    },
+	
+	
+      "inbound_flows": {
+		"GON":{
+			  "arrivals":[
+				  {
+					"airlines": {
+					  "KPVD": [
+						{
+						  "airport": "KEWR",
+						  "icao": "GJS"
+						},
+						{
+						  "airport": "KLGA",
+						  "icao": "EDV"
+						}
+					  ]
+					},
+					"cruise_altitude": 36000,
+					"initial_altitude": 19000,
+					"initial_controller": "C42",
+					"initial_speed": 310,
+					"route":"GON MINNK",
+					"waypoints": "SEALL/ho GON/a11000 MINNK PVD"
+				  }
+			  ]
+		},
+		"WIPOR":{
+			  "arrivals":[
+				  {
+					"airlines": {
+					  "KPVD": [
+						{
+						  "airport": "KORD",
+						  "icao": "ENY"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "DAL"
+						},
+						{
+						  "airport": "KDCA",
+						  "icao": "SWA"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "SWA"
+						},
+						{
+						  "airport": "KMCO",
+						  "icao": "SWA"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "JBU"
+						},
+						{
+						  "airport": "KGSP",
+						  "icao": "MXY"
+						}
+					  ],
+					  "KOQU": [
+						{
+						  "airport": "KALB",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KALB",
+						  "icao": "LXJ"
+
+						}
+					  ]
+					},
+					"initial_altitude": 21000,
+					"initial_controller": "C42",
+					"initial_speed": 310,
+					"star": "WIPOR3",
+					"runway_waypoints": {
+					  "KPVD": {
+						"23": "SAUGY WAWIK SEABE NOSUH/h047",
+						"5": "SAUGY LAFAY",
+						"34": "SAUGY LAFAY",
+						"16": "SAUGY WAWIK SEABE NOSUH/h047"
+					  },
+					  "KOQU": {
+						"16": "SAUGY LAFAY/h129",
+						"34": "SAUGY LAFAY/h129"
+					  }
+					},
+					"waypoints": "NELIE/ho WIPOR/a11000 ORW SAUGY"
+				  }
+			  ],
+			  "overflights": [
+			  {
+				  "description": "NELIE3.FOK",
+				  "airlines": [
+				  { "icao": "EJA", "departure_airport": "KOKC", "arrival_airport": "KFOK"}
+				  ],
+				  "waypoints": "NELIE N041.51.56.670,W072.33.07.509/ho WIPOR/a11000/s280 ORW WANDI CCC",
+					"cruise_altitude": 35000,
+					"initial_altitude": 23000,
+					"initial_controller": "C42",
+					"initial_speed": 310
+			  }
+			  
+			  ]
+		  },
+		"JORDN": {
+				 "arrivals": [
+				  {
+					"airlines": {
+					  "KPVD": [
+						{
+						  "airport": "KCHS",
+						  "icao": "MXY"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "DAL"
+						},
+						{
+						  "airport": "KEWR",
+						  "icao": "UCA"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "SWA"
+						},
+						{
+						  "airport": "KMCO",
+						  "icao": "SWA"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "JBU"
+						},
+						{
+						  "airport": "KCLT",
+						  "icao": "AAL"
+						}
+					  ],
+					  "KOQU": [
+						{
+						  "airport": "KALB",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KALB",
+						  "icao": "LXJ"
+
+						}
+					  ]
+					},
+					"initial_altitude": 19000,
+					"initial_controller": "C32",
+					"initial_speed": 310,
+					"star":  "JORDN2",
+					"runway_waypoints": {
+					  "KPVD": {
+						"23": "MINNK/flyover/h015",
+						"5": "MINNK/flyover/h015",
+						"34": "MINNK/flyover/h015",
+						"16": "MINNK/flyover/h015"
+					  },
+					  "KOQU": {
+						"16": "MINNK KOQU",
+						"34": "MINNK KOQU"
+					  }
+					},
+					"waypoints": "N040.50.38.049,W072.32.49.052 N040.51.32.074,W072.30.08.816/ho HTO JORDN/a11000 MINNK"
+				  }
+				 ]
+			 },
+		"JUMPR":{
+			  "overflights": [
+			  {
+				  "description": "ORW.V374.MVY.ZBW",
+				  "airlines": [
+				  { "icao": "WUP", "departure_airport": "KHPN", "arrival_airport": "KMVY"}
+				  ],
+				  "waypoints": "N041.47.00.272,W072.51.48.361 ORW/ho/a15000+ LAFAY N041.25.51.173,W071.38.09.276/a11000/s280 MINNK FALMA MVY",
+					"initial_altitude": 15000,
+					"initial_controller": "C42",
+					"initial_speed": 310
+			  },
+			  {
+				  "description": "GON.V374.MVY.ZBW",
+				  "airlines": [
+				  { "icao": "CNS", "departure_airport": "KTEB", "arrival_airport": "KMVY"}
+				  ],
+				  "waypoints": "N041.18.21.077,W072.48.27.394 GON/a15000+/ho WACKY/a11000/s280 MINNK FALMA MVY",
+					"initial_altitude": 15000,
+					"initial_controller": "C42",
+					"initial_speed": 310
+			  },
+			  {
+				  "description": "SEY.ARCAV.ZBW",
+				  "airlines": [
+				  { "icao": "EJM", "departure_airport": "KPWM", "arrival_airport": "KISP"},
+				  { "icao": "JRE", "departure_airport": "KPWM", "arrival_airport": "KHWV"},
+				  { "icao": "EJM", "departure_airport": "KPWM", "arrival_airport": "KFOK"}
+				  ],
+				  "waypoints": "N041.41.14.903,W070.21.57.205 N041.33.17.506,W070.40.34.735/a16000+/ho N041.15.36.804,W071.21.26.004/a11000 SEY ARCAV ORCHA CCC",
+					"initial_altitude": 18000,
+					"initial_controller": "C42",
+					"initial_speed": 310
+			  },
+			  {
+				  "description": "FLAPE.MVY.ZBW",
+				  "airlines": [
+				  { "icao": "XOJ", "departure_airport": "KRIC", "arrival_airport": "KMVY"},
+				  { "icao": "JAS", "departure_airport": "KHEF", "arrival_airport": "KMVY"},
+				  { "icao": "RPA", "departure_airport": "KLGA", "arrival_airport": "KMVY"}
+				  ],
+				  "waypoints": "N040.36.16.995,W072.19.32.048 N040.44.08.295,W072.00.24.774/a17000+/ho LIBBE/a11000/s280 FLAPE",
+					"cruise_altitude": 35000,
+					"initial_altitude": 25000,
+					"initial_controller": "C42",
+					"initial_speed": 310
+			  }
+			  ]
+			
+		},
+		"PEAKE": {
+				 "arrivals": [
+				  {
+					"airlines": {
+					  "KPVD": [
+						{
+						  "airport": "KBGR",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KBGR",
+						  "icao": "LXJ"
+						},
+						{
+						  "airport": "EGLL",
+						  "icao": "NJE"
+						},
+						{
+						  "airport": "KBGR",
+						  "icao": "JRE"
+						}
+					  ],
+					  "KOQU": [
+						{
+						  "airport": "KBGR",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KBGR",
+						  "icao": "LXJ"
+						},
+						{
+						  "airport": "EGLL",
+						  "icao": "NJE"
+						},
+						{
+						  "airport": "KBGR",
+						  "icao": "JRE"
+						}
+					  ]
+					},
+					"route": "PEAKE PVD",
+					"initial_altitude": 18000,
+					"initial_controller": "C18",
+					"initial_speed": 290,
+					"waypoints": "N041.33.13.070,W070.11.00.800/ho PEAKE/a11000"
+				  }
+				 ]
+			 }
+	  },
+      "control_positions": {
+        "C18": {
+          "frequency": 128750,
+          "radio_name": "Boston Center",
+          "scope_char": "C",
+          "sector_id": "C18",
+          "facility_id": "C",
+          "eram_facility": true
+        },
+        "C32": {
+          "frequency": 135800,
+          "radio_name": "Boston Center",
+          "scope_char": "C",
+          "sector_id": "C32",
+          "facility_id": "C",
+          "eram_facility": true
+        },
+        "C34": {
+          "frequency": 124850,
+          "radio_name": "Boston Center",
+          "scope_char": "C",
+          "sector_id": "C34",
+          "facility_id": "C",
+          "eram_facility": true
+        },
+        "C42": {
+          "frequency": 133420,
+          "radio_name": "Boston Center",
+          "scope_char": "C",
+          "sector_id": "C42",
+          "facility_id": "C",
+          "eram_facility": true
+        },
+        "1A": {
+          "frequency": 127900,
+          "radio_name": "Providence Approach",
+          "scope_char": "A",
+          "sector_id": "1A"
+        },
+		"1D": {
+          "frequency": 123675,
+          "radio_name": "Providence Approach",
+          "scope_char": "D",
+          "sector_id": "1D"
+        },
+        "PVD_TWR": {
+          "frequency": 120700,
+          "radio_name": "Providence Tower",
+          "scope_char": "T",
+          "sector_id": "1T"
+        },
+        "OQU_TWR": {
+          "frequency": 125650,
+          "radio_name": "Quonset Tower",
+          "scope_char": "Q",
+          "sector_id":  "1Q"
+        }
+      },
+    "default_scenario": "PVD RY23",
+      "fixes": {
+        "_PVD_05": "N041.44.17.194,W071.24.53.783",
+        "_PVD_23": "N041.42.21.577,W071.26.28.046",
+        "_MINNK": "N041.22.22.845,W071.24.49.306",
+        "_OQU_16": "N041.35.12.574,W071.24.09.920",
+        "_OQU_34": "N041.36.51.451,W071.25.36.959",
+        "_EWB_05": "N041.41.21.358,W070.56.51.035",
+        "_EWB_23": "N041.39.58.452,W070.58.17.305",
+        "_EWB_32": "N041.41.12.843,W070.58.25.627",
+        "_EWB_14": "N041.39.59.290,W070.56.22.855"
+      },
+    "name": "KPVD",
+    "primary_airport": "KPVD",
+      "scenarios": {
+        "PVD RY23": {
+          "arrival_runways": [
+            {
+              "airport": "KPVD",
+              "runway": "23"
+            },
+            {
+              "airport": "KOQU",
+              "runway": "16"
+            }
+          ],
+		  "inbound_rates": {
+			  "WIPOR":{
+				  "KPVD": 10,
+				  "KOQU": 0,
+				  "overflights": 0
+			  },
+			  "JORDN": {
+				  "KPVD": 15,
+				  "KOQU": 0		  
+			  },
+			  "GON":{
+				  "KPVD": 3
+			  },
+			  "JUMPR":{
+				  "overflights": 0
+			  },
+			  "PEAKE": {
+				  "KPVD": 0,
+				  "KOQU": 0
+			  }
+			    
+		  },
+          "solo_controller": "1D",
+		  "multi_controllers": {
+			"default": {
+            "1D": {"primary": true, "arrivals": ["GON","JORDN","JUMPR","WIPOR","PEAKE"]},
+            "1A": {"backup": "1D", "departures": [ "KPVD","KOQU","KEWB" ], "arrivals": []}
+			}
+		  },
+          "controllers": [
+            "1A",
+			"C18",
+            "C32",
+			"C34",
+            "C42"
+          ],
+          "default_maps": [ "RVMPVD011S" ],
+          "departure_runways": [
+            {
+              "airport": "KPVD",
+              "rate": 0,
+              "runway": "23"
+            },
+
+            {
+              "airport": "KOQU",
+              "rate": 0,
+              "runway": "16"
+            },
+            {
+              "airport": "KEWB",
+              "rate": 0,
+              "runway": "32"
+            }
+
+          ],
+          "wind": {
+            "direction": 240,
+            "gust": 8,
+            "speed": 4
+          }
+        },
+        "PVD RY05": {
+          "arrival_runways": [
+            {
+              "airport": "KPVD",
+              "runway": "5"
+            },
+            {
+              "airport": "KPVD",
+              "runway": "34"
+            },
+            {
+              "airport": "KOQU",
+              "runway": "34"
+            }
+          ],
+		  "inbound_rates": {
+			  "WIPOR":{
+				  "KPVD": 10,
+				  "KOQU": 0,
+				  "overflights": 0
+			  },
+			  "JORDN": {
+				  "KPVD": 15,
+				  "KOQU": 0		  
+			  },
+			  "GON":{
+				  "KPVD": 3
+			  }    
+		  },
+          "solo_controller": "1A",
+          "controllers": [
+            "1A",
+            "C32",
+            "C42"
+          ],
+          "default_maps": [ "RVMPVD113S" ],
+          "departure_runways": [
+            {
+              "airport": "KPVD",
+              "rate": 0,
+              "runway": "5"
+            }
+          ],
+          "wind": {
+            "direction": 50,
+            "gust": 7,
+            "speed": 5
+          }
+        }
+      },
+     "stars_config": {
+        "center": "N041.43.29.033,W071.25.35.559",
+        "radar_sites": {
+          "PVD": {
+            "char": "P",
+            "position": "PVD",
+            "elevation": 50,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "slope_angle": 0.175
+          }
+        },
+    "allow_long_scratchpad":true,
+    "pdb": {
+	"hide_gs": true
+    },
+    "force_ql_self": true,
+	    "display_handoff_facility_only": false,
+    "handoff_sector_display_duration": 5,
+        "scratchpads": {
+          "PUT": "PUT",
+          "PVD_PUT": "PUT",
+          "JUMPR": "7TN"
+        },
+	"coordination_lists":[
+		{"name": ".     PVD D DEP","id": "D", "airports": ["KPVD"]},
+		{"name": ".     EWB DEP", "id": "N", "airports": ["KEWB"]},
+		{"name": ".     OQU DEP", "id": "Q", "airports": ["KOQU"]}
+	],
+     "stars_maps": [
+          "RVMPVD005S", "RVMPVD113S", "RVMPVD019S", 
+		  "RVMPVD011S", "RVMPVD110S", "RVMPVD006S",
+		  "RVMPVD005S", "RVMPVD113S", "RVMPVD019S", "RVMPVD002S", "RVMPVD001S","RVMPVDCIR1","RVMPVD020S","RVMPVD014S","RVMPVD016S","RVMPVD007S","RVMPVD009S","ALL RADARS 40 MILE MAP","RVMPVD023S","RVMPVD025S","AREA4RSHADED","",
+		  "RVMPVD011S", "RVMPVD110S", "RVMPVD006S","RVMPVD004S","RVMPVD003S","RVMFIXTGTS","RVMPVD018S","RVMPVD021S","RVMPVD017S","RVMPVD008S","RVMPVD010S","RVMPVD012S","RVMPVD024S","RVMPVD028S"
+		  
+     ],
+       "video_map_file": "videomaps/PVD-videomaps.gob.zst"
+    }
+}
