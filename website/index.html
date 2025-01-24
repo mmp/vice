@@ -798,6 +798,47 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
+            <h3>0.11.7 (XX January 2025)</h3>
+            <ul>
+              <li>New scenario: MDT (Darius L), PVD (radarcontacto).</li>
+              <li>Scenario updates: DCA (radarcontacto), SCT (Aiden), JFK airspace (Mike LeGall), Y90 (Merry).</li>
+              <li>Airspace boundaries are now displayed using the scenario information window
+                (displayed by clicking <i class="fas fa-question-circle"></i> in the menubar.)</li>
+              <li>Improve fetching of airport weather (Makoto Sakaguchi.)</li>
+              <li>Fixed a bug that was causing vice to crash when loading saved sims.</li>
+              <li>Fixed a bug where "expedite" would be refused incorrectly.</li>
+              <li>Fixed a bug where departures would climb beyond upcoming altitude constraints in SIDs.</li>
+              <li>Fixed a bug where aircraft would incorrectly descend along an approach they weren't yet cleared for.</li>
+              <li>Fixed multiple bugs with the launch control window.</li>
+              <li>STARS:
+                <ul>
+                  <li>Continue to display the id for external facility handoffs in datablocks for a few seconds.</li>
+                  <li>Improved the accuracy of the mapping of precipitation to WX levels.</li>
+                  <li>Allow selecting "," as an alternative to ";" for TGT GEN.</li>
+                  <li>Departures are now auto-tracked by default.</li>
+                  <li>Improve representation of SPCs (Makoto Sakaguchi.)</li>
+                  <li>Improve handling of altimeters in SSA list: don't draw more than 6, allow developer to specify the ones
+                    to draw via "altimeters" in "stars_config" if there are more than 6.</li>
+                  <li>When a partial callsign is given to specify an aircraft to be given an instruction, it must be
+                    a unique suffix of an aircraft callsign; we no longer accept a prefix or the middle part of a callsign.</li>
+                  <li>OJTI mode now available where an instructor can issue aircraft control commands (Michael Trokel).</li>
+                </ul>
+              <li>Facility engineering:
+                <ul>
+                  <li>New adaptations under "stars_config": "handoff_acceptance_flash_duration" gives the number of seconds
+                    datablocks flash after an accepted handoff, "handoff_sector_display_duration" gives the number of seconds
+                    the external sector id is displayed after a handoff, and "display_handoff_facility_only" inhibits the
+                    display of external facility sector ids in datablocks.</li>
+                  <li>Airspace is now specified per-controller rather than being classified as departure/approach airspace.</li>
+                  <li>In controller specifications, "full_name" is now "radio_name" to better reflect its use.</li>
+                  <li>"/clearapp" can be added after a fix in a route to cause aircraft to be cleared for the approach at that fix.
+                    (Useful for ambient traffic under computer control.)</li>
+                  <li>An error is now issued if more than one controller has the same sector id assigned.</li>
+                  <li>Fix parsing of both approaches and altitude constraints in the ARINC424 data (Makoto Sakaguchi.)</li>
+                </ul>
+              </li>
+            </ul>
+
             <h3>0.11.6 (22 October 2024)</h3>
             <ul>
               <li>New scenario: LGA HAARP (Tyler T).</li>
