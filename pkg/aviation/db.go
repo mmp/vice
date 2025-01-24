@@ -1122,6 +1122,10 @@ func decodeTFRXML(url string, r io.Reader, lg *log.Logger) (TFR, error) {
 				if neg {
 					v = -v
 				}
+
+				if v < -180 || v > 360 {
+					return 0, fmt.Errorf("invalid lat/long coordinate %q -> %f", s, v)
+				}
 				return float32(v), nil
 			}
 
