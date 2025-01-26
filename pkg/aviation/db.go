@@ -526,7 +526,7 @@ func parseMagneticGrid() MagneticGrid {
 		3. awk '{print $5}' < GridResults.txt | zstd -19 -o magnetic_grid.txt.zst
 	*/
 	mg := MagneticGrid{
-		MinLatitude:  24,
+		MinLatitude:  17,
 		MaxLatitude:  50,
 		MinLongitude: -125,
 		MaxLongitude: 150,
