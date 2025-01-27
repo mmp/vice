@@ -103,6 +103,7 @@ func (sp *STARSPane) dcbFont(ctx *panes.Context, idx int) *renderer.Font {
 // The ∆ character in the STARS font isn't at the regular ∆ unicode rune,
 // so patch it up.
 func rewriteDelta(s string) string {
+	s = strings.ReplaceAll(s, "Δ", STARSTriangleCharacter)
 	return strings.ReplaceAll(s, "∆", STARSTriangleCharacter)
 }
 
