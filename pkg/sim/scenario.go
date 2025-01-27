@@ -458,9 +458,10 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			// included arrivals have a controller.
 			for _, flow := range ctrl.InboundFlows {
 				if _, ok := s.InboundFlowDefaultRates[flow]; !ok {
-					e.ErrorString("inbound flow %q not found in scenario", flow)
+					e.ErrorString("inbound flow %q not found in scenario \"inbound_rates\"", flow)
+				} else if f, ok := sg.InboundFlows[flow]; !ok {
+					e.ErrorString("inbound flow %q not found in scenario group \"inbound_flows\"", flow)
 				} else {
-					f := sg.InboundFlows[flow]
 					overflightHasHandoff := func(of av.Overflight) bool {
 						return slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff })
 					}
