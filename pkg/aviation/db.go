@@ -1097,12 +1097,12 @@ func decodeTFRXML(url string, r io.Reader, lg *log.Logger) (TFR, error) {
 	tfr.Effective, err = parseTime(notam.DateEffective, notam.CodeTimeZone)
 	if err != nil {
 		tfr.Effective = time.Now()
-		lg.Warn("%s: %v", url, err)
+		lg.Warnf("%s: %v", url, err)
 	}
 	tfr.Expire, err = parseTime(notam.DateExpire, notam.CodeExpirationTimeZone)
 	if err != nil {
 		tfr.Expire = time.Now().Add(10 * 365 * 24 * time.Hour)
-		lg.Warn("%s: %v", url, err)
+		lg.Warnf("%s: %v", url, err)
 	}
 
 	// The extent is given as one or more line loops.
@@ -1132,12 +1132,12 @@ func decodeTFRXML(url string, r io.Reader, lg *log.Logger) (TFR, error) {
 			var p math.Point2LL
 			p[0], err = pf(pt.GeoLong)
 			if err != nil {
-				lg.Warn("%s: %v", url, err)
+				lg.Warnf("%s: %v", url, err)
 				continue
 			}
 			p[1], err = pf(pt.GeoLat)
 			if err != nil {
-				lg.Warn("%s: %v", url, err)
+				lg.Warnf("%s: %v", url, err)
 				continue
 			}
 			pts = append(pts, p)
