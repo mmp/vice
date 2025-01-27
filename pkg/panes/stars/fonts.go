@@ -126,7 +126,7 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 			Size: sf.Height,
 		}
 
-		f := renderer.MakeFont(int(scale) * sf.Height, true /* mono */, id, nil)
+		f := renderer.MakeFont(int(scale)*sf.Height, true /* mono */, id, nil)
 		newFonts = append(newFonts, f)
 
 		if y+sf.Height >= yres {
@@ -199,9 +199,9 @@ func (glyph STARSGlyph) addToFont(ch, x, y, xres, yres int, sf STARSFont, f *ren
 		// associated with the glyph.  Also, count up from the bottom in y
 		// rather than drawing from the top.
 		X0: scale * float32(glyph.Offset[0]),
-		X1: scale * float32(glyph.Offset[0] + glyph.Bounds[0]),
-		Y0: scale * float32(sf.Height - glyph.Offset[1] - glyph.Bounds[1]),
-		Y1: scale * float32(sf.Height - glyph.Offset[1]),
+		X1: scale * float32(glyph.Offset[0]+glyph.Bounds[0]),
+		Y0: scale * float32(sf.Height-glyph.Offset[1]-glyph.Bounds[1]),
+		Y1: scale * float32(sf.Height-glyph.Offset[1]),
 
 		// Texture coordinates: just the extent of where we rasterized the
 		// glyph in the atlas, rescaled to [0,1].
