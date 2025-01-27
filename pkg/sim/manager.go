@@ -181,20 +181,20 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 			PrimaryController:  s.State.PrimaryController,
 			RequirePassword:    s.RequirePassword,
 			InstructorAllowed:  s.InstructorAllowed,
-			AvailablePositions: make(map[string]struct{}),
-			CoveredPositions:   make(map[string]struct{}),
+			AvailablePositions: make(map[string]av.Controller),
+			CoveredPositions:   make(map[string]av.Controller),
 		}
 
 		// Figure out which positions are available; start with all of the possible ones,
 		// then delete those that are active
-		rs.AvailablePositions[s.State.PrimaryController] = struct{}{}
-		for callsign := range s.State.MultiControllers {
-			rs.AvailablePositions[callsign] = struct{}{}
+		rs.AvailablePositions[s.State.PrimaryController] = *s.SignOnPositions[s.State.PrimaryController]
+		for id := range s.State.MultiControllers {
+			rs.AvailablePositions[id] = *s.SignOnPositions[id]
 		}
 		for _, ctrl := range s.controllers {
 			delete(rs.AvailablePositions, ctrl.Id)
 			if wc, ok := s.State.Controllers[ctrl.Id]; ok && wc.IsHuman {
-				rs.CoveredPositions[ctrl.Id] = struct{}{}
+				rs.CoveredPositions[ctrl.Id] = *s.SignOnPositions[ctrl.Id]
 			}
 		}
 		s.mu.Unlock(s.lg)
