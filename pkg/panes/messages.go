@@ -16,8 +16,6 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
-
-	"github.com/mmp/imgui-go/v4"
 )
 
 type Message struct {
@@ -27,25 +25,12 @@ type Message struct {
 	global   bool
 }
 
-type CLIInput struct {
-	cmd    string
-	cursor int
-}
-
 type MessagesPane struct {
-	KeepFocusAfterTrackSlew bool
-
 	FontIdentifier renderer.FontIdentifier
 	font           *renderer.Font
 	scrollbar      *ScrollBar
 	events         *sim.EventsSubscription
 	messages       []Message
-
-	// Command-input-related
-	input         CLIInput
-	history       []CLIInput
-	historyOffset int // for up arrow / downarrow. Note: counts from the end! 0 when not in history
-	savedInput    CLIInput
 }
 
 func init() {
@@ -84,22 +69,16 @@ func (mp *MessagesPane) ResetSim(client *sim.ControlClient, ss sim.State, pl pla
 	mp.messages = nil
 }
 
-func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return true }
+func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return false }
 
 func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 	if newFont, changed := renderer.DrawFontPicker(&mp.FontIdentifier, "Font"); changed {
 		mp.font = newFont
 	}
-	imgui.Checkbox("Keep focus after slewing track for control command", &mp.KeepFocusAfterTrackSlew)
 }
 
 func (mp *MessagesPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	mp.processEvents(ctx)
-
-	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
-		ctx.KeyboardFocus.Take(mp)
-	}
-	mp.processKeyboard(ctx)
 
 	nLines := len(mp.messages) + 1 /* prompt */
 	lineHeight := float32(mp.font.Size + 1)
@@ -118,30 +97,6 @@ func (mp *MessagesPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 
 	scrollOffset := mp.scrollbar.Offset()
 	y := lineHeight
-
-	// Draw the prompt and any input text
-	cliStyle := renderer.TextStyle{Font: mp.font, Color: renderer.RGB{1, 1, .2}}
-	cursorStyle := renderer.TextStyle{Font: mp.font, LineSpacing: 0,
-		Color: renderer.RGB{1, 1, .2}, DrawBackground: true, BackgroundColor: renderer.RGB{1, 1, 1}}
-	ci := mp.input
-
-	prompt := "> "
-	if !ctx.HaveFocus {
-		// Don't draw the cursor if we don't have keyboard focus
-		td.AddText(prompt+ci.cmd, [2]float32{indent, y}, cliStyle)
-	} else if ci.cursor == len(ci.cmd) {
-		// cursor at the end
-		td.AddTextMulti([]string{prompt + string(ci.cmd), " "}, [2]float32{indent, y},
-			[]renderer.TextStyle{cliStyle, cursorStyle})
-	} else {
-		// cursor in the middle
-		sb := prompt + ci.cmd[:ci.cursor]
-		sc := ci.cmd[ci.cursor : ci.cursor+1]
-		se := ci.cmd[ci.cursor+1:]
-		styles := []renderer.TextStyle{cliStyle, cursorStyle, cliStyle}
-		td.AddTextMulti([]string{sb, sc, se}, [2]float32{indent, y}, styles)
-	}
-	y += lineHeight
 
 	for i := scrollOffset; i < math.Min(len(mp.messages), visibleLines+scrollOffset+1); i++ {
 		// TODO? wrap text
@@ -167,81 +122,6 @@ func (mp *MessagesPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	td.GenerateCommands(cb)
 }
 
-func (mp *MessagesPane) processKeyboard(ctx *Context) {
-	if ctx.Keyboard == nil || !ctx.HaveFocus {
-		return
-	}
-
-	// Grab keyboard input
-	if len(mp.input.cmd) > 0 && mp.input.cmd[0] == '/' {
-		mp.input.InsertAtCursor(ctx.Keyboard.Input)
-	} else {
-		mp.input.InsertAtCursor(strings.ToUpper(ctx.Keyboard.Input))
-	}
-
-	if ctx.Keyboard.WasPressed(platform.KeyUpArrow) {
-		if mp.historyOffset < len(mp.history) {
-			if mp.historyOffset == 0 {
-				mp.savedInput = mp.input // save current input in case we return
-			}
-			mp.historyOffset++
-			mp.input = mp.history[len(mp.history)-mp.historyOffset]
-			mp.input.cursor = len(mp.input.cmd)
-		}
-	}
-	if ctx.Keyboard.WasPressed(platform.KeyDownArrow) {
-		if mp.historyOffset > 0 {
-			mp.historyOffset--
-			if mp.historyOffset == 0 {
-				mp.input = mp.savedInput
-				mp.savedInput = CLIInput{}
-			} else {
-				mp.input = mp.history[len(mp.history)-mp.historyOffset]
-			}
-			mp.input.cursor = len(mp.input.cmd)
-		}
-	}
-
-	if (ctx.Keyboard.WasPressed(platform.KeyControl) || ctx.Keyboard.WasPressed(platform.KeySuper)) && ctx.Keyboard.WasPressed(platform.KeyV) {
-		c, err := ctx.Platform.GetClipboard().Text()
-		if err == nil {
-			mp.input.InsertAtCursor(c)
-		}
-	}
-	if ctx.Keyboard.WasPressed(platform.KeyLeftArrow) {
-		if mp.input.cursor > 0 {
-			mp.input.cursor--
-		}
-	}
-
-	if ctx.Keyboard.WasPressed(platform.KeyRightArrow) {
-		if mp.input.cursor < len(mp.input.cmd) {
-			mp.input.cursor++
-		}
-	}
-	if ctx.Keyboard.WasPressed(platform.KeyHome) {
-		mp.input.cursor = 0
-	}
-	if ctx.Keyboard.WasPressed(platform.KeyEnd) {
-		mp.input.cursor = len(mp.input.cmd)
-	}
-	if ctx.Keyboard.WasPressed(platform.KeyBackspace) {
-		mp.input.DeleteBeforeCursor()
-	}
-	if ctx.Keyboard.WasPressed(platform.KeyDelete) {
-		mp.input.DeleteAfterCursor()
-	}
-	if ctx.Keyboard.WasPressed(platform.KeyEscape) {
-		if mp.input.cursor > 0 {
-			mp.input = CLIInput{}
-		}
-	}
-
-	if ctx.Keyboard.WasPressed(platform.KeyEnter) && strings.TrimSpace(mp.input.cmd) != "" {
-		mp.runCommands(ctx)
-	}
-}
-
 func (msg *Message) Color() renderer.RGB {
 	switch {
 	case msg.error:
@@ -250,58 +130,6 @@ func (msg *Message) Color() renderer.RGB {
 		return renderer.RGB{0.012, 0.78, 0.016}
 	default:
 		return renderer.RGB{1, 1, 1}
-	}
-}
-
-func (mp *MessagesPane) runCommands(ctx *Context) {
-	mp.input.cmd = strings.TrimSpace(mp.input.cmd)
-
-	if mp.input.cmd[0] == '/' {
-		ctx.ControlClient.SendGlobalMessage(sim.GlobalMessage{
-			FromController: ctx.ControlClient.PrimaryTCP,
-			Message:        ctx.ControlClient.PrimaryTCP + ": " + mp.input.cmd[1:],
-		})
-		for i, line := range strings.Split(mp.input.cmd[1:], "\n") {
-			if i == 0 {
-				mp.messages = append(mp.messages, Message{contents: ctx.ControlClient.PrimaryTCP + ": " + line, global: true})
-			} else {
-				mp.messages = append(mp.messages, Message{contents: line, global: true})
-			}
-		}
-		mp.history = append(mp.history, mp.input)
-		mp.input = CLIInput{}
-		return
-	} else if mp.input.cmd == "P" {
-		ctx.ControlClient.ToggleSimPause()
-		mp.history = append(mp.history, mp.input)
-		mp.input = CLIInput{}
-		return
-	} else {
-		mp.messages = append(mp.messages, Message{contents: mp.input.cmd + ": command unknown", error: true})
-	}
-}
-
-func (ci *CLIInput) InsertAtCursor(s string) {
-	if len(s) == 0 {
-		return
-	}
-
-	ci.cmd = ci.cmd[:ci.cursor] + s + ci.cmd[ci.cursor:]
-
-	// place cursor after the inserted text
-	ci.cursor += len(s)
-}
-
-func (ci *CLIInput) DeleteBeforeCursor() {
-	if ci.cursor > 0 {
-		ci.cmd = ci.cmd[:ci.cursor-1] + ci.cmd[ci.cursor:]
-		ci.cursor--
-	}
-}
-
-func (ci *CLIInput) DeleteAfterCursor() {
-	if ci.cursor < len(ci.cmd) {
-		ci.cmd = ci.cmd[:ci.cursor] + ci.cmd[ci.cursor+1:]
 	}
 }
 
