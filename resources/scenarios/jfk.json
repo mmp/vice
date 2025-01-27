@@ -5105,7 +5105,7 @@
       }
     ]
   },
-  "PARCH3/ROBER2": {
+  "PARCH3": {
     "arrivals": [
       {
         "spawn": "PARCH",
@@ -5276,44 +5276,15 @@
             }
           ]
         }
-      },
-      {
-        "spawn": "PARCH",
-        "cruise_altitude": 36000,
-        "star": "ROBER2",
-        "initial_controller": "BOS_E_CTR",
-        "initial_altitude": 18000,
-        "assigned_altitude": 12000,
-        "initial_speed": 275,
-        "speed_restriction": 250,
-        "description": "ROBER2",
-        "expect_approach": null,
-        "airlines": {
-          "KJFK": [
-            {
-              "icao": "VIR",
-              "fleet": "long",
-              "airport": "EGCC"
-            },
-            {
-              "icao": "BAW",
-              "airport": "EGLL"
-            },
-            {
-              "icao": "DLH",
-              "airport": "EDDF"
-            }
-          ]
-        }
       }
     ]
   },
-  "PARCH3/ROBER2.Finals22": {
+  "PARCH3.Finals22": {
     "arrivals": [
       {
         "waypoints": "CCC ROBER/ho/h270",
         "cruise_altitude": 36000,
-        "star": "ROBER2",
+        "star": "PARCH3",
         "initial_controller": "JFK_K_APP",
         "initial_altitude": 12000,
         "assigned_altitude": 5000,
@@ -5682,7 +5653,7 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "PARCH3/ROBER2": {
+        "PARCH3": {
           "KFRG": 0,
           "KJFK": 12
         }
@@ -5705,7 +5676,7 @@
                 "JFK_K_APP": {
                     "backup": "JFK_G_APP",
                     "departures": [ "KFRG" ],
-                    "arrivals": [ "PARCH3/ROBER2", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG East)" ]
+                    "arrivals": [ "PARCH3", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG East)" ]
                 },
                 "JFK_M_APP": {
                     "backup": "JFK_K_APP"
@@ -5835,7 +5806,7 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "PARCH3/ROBER2": {
+        "PARCH3": {
           "KFRG": 0,
           "KJFK": 12
         }
@@ -5858,7 +5829,7 @@
                 "JFK_K_APP": {
                     "backup": "JFK_G_APP",
                     "departures": [ "KFRG" ],
-                    "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
+                    "arrivals": [ "PARCH3", "Intra-TRACON (JFK/FRG East)" ]
                 },
                 "JFK_M_APP": {
                     "backup": "JFK_K_APP"
@@ -5984,7 +5955,7 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "PARCH3/ROBER2": {
+        "PARCH3": {
           "KFRG": 0,
           "KJFK": 12
         }
@@ -6007,7 +5978,7 @@
                 "JFK_K_APP": {
                     "backup": "JFK_G_APP",
                     "departures": [ "KFRG" ],
-                    "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
+                    "arrivals": [ "PARCH3", "Intra-TRACON (JFK/FRG East)" ]
                 },
                 "JFK_M_APP": {
                     "backup": "JFK_K_APP"
@@ -6133,7 +6104,7 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "PARCH3/ROBER2": {
+        "PARCH3": {
           "KFRG": 0,
           "KJFK": 12
         }
@@ -6156,7 +6127,7 @@
                 "JFK_K_APP": {
                     "backup": "JFK_G_APP",
                     "departures": [ "KFRG" ],
-                    "arrivals": [ "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
+                    "arrivals": [ "PARCH3", "Intra-TRACON (JFK/FRG East)" ]
                 },
                 "JFK_M_APP": {
                     "backup": "JFK_K_APP"
@@ -6281,7 +6252,7 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "PARCH3/ROBER2": {
+        "PARCH3": {
           "KFRG": 0,
           "KJFK": 12
         }
@@ -6304,7 +6275,7 @@
                 "JFK_K_APP": {
                     "backup": "JFK_G_APP",
                     "departures": [ "KFRG" ],
-                    "arrivals": [ "LENDY8/IGN1", "PARCH3/ROBER2", "Intra-TRACON (JFK/FRG East)" ]
+                    "arrivals": [ "LENDY8/IGN1", "PARCH3", "Intra-TRACON (JFK/FRG East)" ]
                 },
                 "JFK_M_APP": {
                     "backup": "JFK_K_APP"
@@ -6381,7 +6352,7 @@
       ],
       "airspace": { "JFK_G_APP": [ "JFK_FINAL_22RL" ] },
       "arrivals": {
-        "PARCH3/ROBER2.Finals22": {
+        "PARCH3.Finals22": {
           "KJFK": 24
         },
         "CAMRN/LENDY8.Finals22": {

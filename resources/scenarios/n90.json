@@ -9338,7 +9338,7 @@
       }
     ]
   },
-  "PARCH3/ROBER2": {
+  "PARCH3": {
     "arrivals": [
       {
         "waypoints": "PARCH CCC/a12000/s250/ho ROBER",
@@ -9460,33 +9460,6 @@
               "icao": "VIR",
               "fleet": "long",
               "airport": "EGCC"
-            }
-          ]
-        }
-      },
-      {
-        "waypoints": "PARCH CCC/a12000/s250/ho ROBER JFK",
-        "cruise_altitude": 36000,
-        "star": "ROBER2",
-        "initial_controller": "BOS_CTR",
-        "initial_altitude": 23000,
-        "assigned_altitude": 12000,
-        "initial_speed": 275,
-        "expect_approach": null,
-        "airlines": {
-          "KJFK": [
-            {
-              "icao": "VIR",
-              "fleet": "long",
-              "airport": "EGCC"
-            },
-            {
-              "icao": "BAW",
-              "airport": "EGLL"
-            },
-            {
-              "icao": "DLH",
-              "airport": "EDDF"
             }
           ]
         }
@@ -11272,7 +11245,7 @@
         "LENDY8/IGN1": {
           "KJFK": 12
         },
-        "PARCH3/ROBER2": {
+        "PARCH3": {
           "KJFK": 7
         },
         "(ISP) Q439 SARDI": {
@@ -11356,7 +11329,7 @@
           },
           "JFK_K_APP": {
             "backup": "JFK_G_APP",
-            "arrivals": [ "PARCH3/ROBER2", "LENDY8/IGN1"]
+            "arrivals": [ "PARCH3", "LENDY8/IGN1"]
         },
           "JFK_M_APP": {
             "backup": "JFK_K_APP",
@@ -11926,7 +11899,7 @@
         "LENDY8/IGN1": {
           "KJFK": 12
         },
-        "PARCH3/ROBER2": {
+        "PARCH3": {
           "KJFK": 7
         },
         "(ISP) Q439 SARDI": {
@@ -12010,7 +11983,7 @@
           },
           "JFK_K_APP": {
           "backup": "JFK_G_APP",
-          "arrivals": [ "PARCH3/ROBER2", "LENDY8/IGN1"]
+          "arrivals": [ "PARCH3", "LENDY8/IGN1"]
           },
           "JFK_M_APP": {
             "backup": "JFK_K_APP",
@@ -12570,7 +12543,7 @@
         "LENDY8/IGN1": {
           "KJFK": 12
         },
-        "PARCH3/ROBER2": {
+        "PARCH3": {
           "KJFK": 7
         },
         "(ISP) Q439 SARDI": {
@@ -12654,7 +12627,7 @@
           },
           "JFK_K_APP": {
             "backup": "JFK_G_APP",
-            "arrivals": [ "PARCH3/ROBER2", "LENDY8/IGN1"]
+            "arrivals": [ "PARCH3", "LENDY8/IGN1"]
         },
           "JFK_M_APP": {
             "backup": "JFK_K_APP",
@@ -13224,7 +13197,7 @@
         "LENDY8/IGN1": {
           "KJFK": 12
         },
-        "PARCH3/ROBER2": {
+        "PARCH3": {
           "KJFK": 7
         },
         "(ISP) Q439 SARDI": {
@@ -13308,7 +13281,7 @@
           },
           "JFK_K_APP": {
             "backup": "JFK_G_APP",
-            "arrivals": [ "PARCH3/ROBER2", "LENDY8/IGN1"]
+            "arrivals": [ "PARCH3", "LENDY8/IGN1"]
         },
           "JFK_M_APP": {
             "backup": "JFK_K_APP",
