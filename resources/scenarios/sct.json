@@ -9662,19 +9662,19 @@
       }
     ]
   },
-  "OHSEA2.RDHOT": {
+  "OHSEA3.RDHOT": {
     "arrivals": [
       {
-        "waypoints": "RDHOT ELLBC GOONA/a30000- GUDBY/a28000- YORBS/a25000-/s280 PCIFC/a20000-/ho CRAYN/a17000- SIPPP/a14000 TANDY/a13000-14000 OHSEA STYFF/a9000+",
+        "waypoints": "RDHOT ELLBC GOONA/a30000+ GUDBY/a28000+ YORBS/a25000+/s280 PCIFC/a20000+/ho CRAYN/a17000+ SIPPP/a14000+ TANDY/a13000-14000 OHSEA STYFF/a9000-",
         "runway_waypoints": {
           "KSNA": {
-            "20R": "STYFF/a9000+ KAYNN/a7000+ LAXBB/a5000 KLEVR/a5000 BHEAR/a5000/h16",
-            "2L": "STYFF/a9000+ JJAWS/a6000+ PUZZL/a5000 MINOE/a3000-/s210"
+            "20R": "STYFF/a9000- KAYNN/a7000- LAXBB/a5000 KLEVR/a5000/s200/h16",
+            "2L": "STYFF/a9000- JJAWS/a6000- PUZZL/a5000/s220 MINOE/a3000/s210"
           }
         },
         "route": " RDHOT ELLBC GOONA GUDBY YORBS PCIFC CRAYN SIPPP TANDY OHSEA STYFF",
         "initial_controller": "LAX_55_CTR",
-        "initial_altitude": 28000,
+        "initial_altitude": 30000,
         "initial_speed": 310,
         "expect_approach": null,
         "airlines": {
@@ -9696,13 +9696,13 @@
       }
     ]
   },
-  "OHSEA2.REBRG": {
+  "OHSEA3.REBRG": {
     "arrivals": [
       {
         "waypoints": "REBRG MMTLY REESR/a30000 RCHEL/a28000 SHOLN/a25000/s280 PCIFC/a20000-/ho CRAYN/a17000- SIPPP/a14000 TANDY/a13000-14000 OHSEA STYFF/a9000+",
         "runway_waypoints": {
           "KSNA": {
-            "20R": "STYFF/a9000+ KAYNN/a7000+ LAXBB/a5000 KLEVR/a5000 BHEAR/a5000/h16",
+            "20R": "STYFF/a9000+ KAYNN/a7000+ LAXBB/a5000 KLEVR/a5000/s200/h16",
             "2L": "STYFF/a9000+ JJAWS/a6000+ PUZZL/a5000 MINOE/a3000-/s210"
           }
         },
@@ -10377,7 +10377,7 @@
         "waypoints": "WURLL TCUPS/a26000-/ho RUKKI/a21000/s280 BAUBB/a21000/s280",
         "runway_waypoints": {
           "KSNA": {
-            "20R": "BAUBB/a21000/s280 STYFF/a9000+ KAYNN/a7000+ LAXBB/a5000 KLEVR/a5000 BHEAR/a5000/h16",
+            "20R": "BAUBB/a21000/s280 STYFF/a9000+ KAYNN/a7000+ LAXBB/a5000 KLEVR/a5000/s200/h16",
             "2L": "BAUBB/a21000/s280 JJAWS/a6000+ PUZZL MINOE/a3000-/s210"
           }
         },
@@ -11150,7 +11150,6 @@
     "BLCKD": "FTR",
     "CSTRO": "TPO",
     "COREZ": "TPO",
-    "BOILL": "TPM",
     "ARRMY": "ZMM",
     "BLAZN": "ZMM",
     "YELAH": "ZMM",
@@ -11195,7 +11194,7 @@
       "BLAZN": { },
       "BLCKD": { },
       "BLH": {  },
-      "BOILL": { },
+      "BOILE": { },
       "CENZA": { },
       "CHKNN": { },
       "CIVET": { },
@@ -11747,10 +11746,10 @@
           "KSNA": 10,
           "KLGB": 10
         },
-        "OHSEA2.REBRG": {
+        "OHSEA3.REBRG": {
           "KSNA": 10 
         },
-        "OHSEA2.RDHOT": {
+        "OHSEA3.RDHOT": {
           "KSNA": 10 
         },
         "TILLT2": {
@@ -11879,7 +11878,7 @@
           },
           "LAX_X_DEP": {
             "backup": "LAX_N_DEP",
-            "arrivals": ["DIRBY1","GOATZ1","OHSEA2.RDHOT","OHSEA2.REBRG","TILLT2"]
+            "arrivals": ["DIRBY1","GOATZ1","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
           },
           "LAX_D_APP": {
             "backup": "LAX_Z_APP"
@@ -12306,10 +12305,10 @@
           "KSNA": 10,
           "KLGB": 10
         },
-        "OHSEA2.REBRG": {
+        "OHSEA3.REBRG": {
           "KSNA": 10 
         },
-        "OHSEA2.RDHOT": {
+        "OHSEA3.RDHOT": {
           "KSNA": 10 
         },
         "TILLT2": {
@@ -12438,7 +12437,7 @@
           },
           "LAX_X_DEP": {
             "backup": "LAX_N_DEP",
-            "arrivals": ["DIRBY1","GOATZ1","OHSEA2.RDHOT","OHSEA2.REBRG","TILLT2"]
+            "arrivals": ["DIRBY1","GOATZ1","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
           },
           "LAX_D_APP": {
             "backup": "LAX_Z_APP"
@@ -12860,10 +12859,10 @@
           "KSNA": 10,
           "KLGB": 10
         },
-        "OHSEA2.REBRG": {
+        "OHSEA3.REBRG": {
           "KSNA": 10 
         },
-        "OHSEA2.RDHOT": {
+        "OHSEA3.RDHOT": {
           "KSNA": 10 
         },
         "TILLT2": {
@@ -12992,7 +12991,7 @@
           },
           "LAX_X_DEP": {
             "backup": "LAX_N_DEP",
-            "arrivals": ["DIRBY1","GOATZ1","OHSEA2.RDHOT","OHSEA2.REBRG","TILLT2"]
+            "arrivals": ["DIRBY1","GOATZ1","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
           },
           "LAX_D_APP": {
             "backup": "LAX_Z_APP"
@@ -13417,10 +13416,10 @@
           "KSNA": 10,
           "KLGB": 10
         },
-        "OHSEA2.REBRG": {
+        "OHSEA3.REBRG": {
           "KSNA": 10 
         },
-        "OHSEA2.RDHOT": {
+        "OHSEA3.RDHOT": {
           "KSNA": 10 
         },
         "TILLT2": {
@@ -13549,7 +13548,7 @@
           },
           "LAX_X_DEP": {
             "backup": "LAX_N_DEP",
-            "arrivals": ["DIRBY1","GOATZ1","OHSEA2.RDHOT","OHSEA2.REBRG","TILLT2"]
+            "arrivals": ["DIRBY1","GOATZ1","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
           },
           "LAX_D_APP": {
             "backup": "LAX_Z_APP"
@@ -13976,10 +13975,10 @@
           "KSNA": 10,
           "KLGB": 10
         },
-        "OHSEA2.REBRG": {
+        "OHSEA3.REBRG": {
           "KSNA": 10 
         },
-        "OHSEA2.RDHOT": {
+        "OHSEA3.RDHOT": {
           "KSNA": 10 
         },
         "TILLT2": {
@@ -14107,7 +14106,7 @@
           },
           "LAX_X_DEP": {
             "backup": "LAX_N_DEP",
-            "arrivals": ["DIRBY1","GOATZ1","OHSEA2.RDHOT","OHSEA2.REBRG","TILLT2"]
+            "arrivals": ["DIRBY1","GOATZ1","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
           },
           "LAX_D_APP": {
             "backup": "LAX_Z_APP"
@@ -14504,10 +14503,10 @@
           "KSNA": 10,
           "KLGB": 10
         },
-        "OHSEA2.REBRG": {
+        "OHSEA3.REBRG": {
           "KSNA": 10 
         },
-        "OHSEA2.RDHOT": {
+        "OHSEA3.RDHOT": {
           "KSNA": 10 
         },
         "TILLT2": {
@@ -14636,7 +14635,7 @@
           },
           "LAX_X_DEP": {
             "backup": "LAX_N_DEP",
-            "arrivals": ["DIRBY1","GOATZ1","OHSEA2.RDHOT","OHSEA2.REBRG","TILLT2"]
+            "arrivals": ["DIRBY1","GOATZ1","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
           },
           "LAX_D_APP": {
             "backup": "LAX_Z_APP"

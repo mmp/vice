@@ -740,12 +740,12 @@
       }
     ]
   },
-  "OHSEA2 finals": {
+  "OHSEA3 finals": {
     "arrivals": [
       {
-        "waypoints": "KAYNN/a7000- LAXBB/a5000/s230/ho KLEVR/a5000/s210 BHEAR/h16",
+        "waypoints": "KAYNN/a7000- LAXBB/a5000/s230/ho KLEVR/a5000/s210/h16",
         "cruise_altitude": 35000,
-        "star": "OHSEA2",
+        "star": "OHSEA3",
         "initial_controller": "LAX_S_DEP",
         "initial_altitude": 7000,
         "initial_speed": 220,
@@ -993,7 +993,7 @@
       }
     ]
   },
-  "TILLT2/BAUBB2/PCIFC2/OHSEA2": {
+  "BAUBB2/PCIFC2/OHSEA3": {
     "arrivals": [
       {
         "waypoints": "OHSEA STYFF/a9000-/ho KAYNN/a7000- LAXBB/a5000- ALBAS/a4000 EZKEL/a4000/s210",
@@ -1062,9 +1062,9 @@
         }
       },
       {
-        "waypoints": "OHSEA STYFF/a9000-/ho KAYNN/a7000- LAXBB/a5000 KLEVR/a5000 BHEAR/h16",
+        "waypoints": "OHSEA STYFF/a9000-/ho KAYNN/a7000- LAXBB/a5000 KLEVR/a5000/h16",
         "cruise_altitude": 35000,
-        "star": "OHSEA2",
+        "star": "OHSEA3",
         "initial_controller": "LAX_S_DEP",
         "initial_altitude": 12000,
         "initial_speed": 260,
@@ -1109,59 +1109,10 @@
             }
           ]
         }
-      },
-      {
-        "waypoints": "BAUBB STYFF/a9000-/ho KAYNN/a7000- LAXBB/a5000 KLEVR/a5000 BHEAR/h16",
-        "cruise_altitude": 35000,
-        "star": "TILLT2",
-        "initial_controller": "LAX_S_DEP",
-        "initial_altitude": 11000,
-        "initial_speed": 250,
-        "expect_approach": null,
-        "airlines": {
-          "KSNA": [
-            {
-              "icao": "ASA",
-              "airport": "KSFO"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KOAK"
-            },
-            {
-              "icao": "DAL",
-              "fleet": "short",
-              "airport": "KSJC"
-            },
-            {
-              "icao": "WJA",
-              "airport": "CYVR"
-            },
-            {
-              "icao": "AAL",
-              "airport": "KRNO"
-            },
-            {
-              "icao": "UAL",
-              "fleet": "short",
-              "airport": "KSEA"
-            },
-            {
-              "icao": "DAL",
-              "fleet": "short",
-              "airport": "KSMF"
-            },
-            {
-              "icao": "ACA",
-              "fleet": "short",
-              "airport": "CYVR"
-            }
-          ]
-        }
       }
     ]
   },
-  "TILLT2/BAUBB2/PCIFC2/OHSEA2 East": {
+  "BAUBB2/PCIFC2/OHSEA3 East": {
     "arrivals": [
       {
         "waypoints": "OHSEA STYFF/a9000-/ho KAYNN/a7000- PADDR/a3000 QGATE BREKE/a3000",
@@ -1232,59 +1183,10 @@
       {
         "waypoints": "OHSEA STYFF/a9000-/ho JJAWS/a6000 PUZZL/a5000 MINOE/s210",
         "cruise_altitude": 35000,
-        "star": "OHSEA2",
+        "star": "OHSEA3",
         "initial_controller": "LAX_S_DEP",
         "initial_altitude": 12000,
         "initial_speed": 260,
-        "expect_approach": null,
-        "airlines": {
-          "KSNA": [
-            {
-              "icao": "ASA",
-              "airport": "KSFO"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KOAK"
-            },
-            {
-              "icao": "DAL",
-              "fleet": "short",
-              "airport": "KSJC"
-            },
-            {
-              "icao": "WJA",
-              "airport": "CYVR"
-            },
-            {
-              "icao": "AAL",
-              "airport": "KRNO"
-            },
-            {
-              "icao": "UAL",
-              "fleet": "short",
-              "airport": "KSEA"
-            },
-            {
-              "icao": "DAL",
-              "fleet": "short",
-              "airport": "KSMF"
-            },
-            {
-              "icao": "ACA",
-              "fleet": "short",
-              "airport": "CYVR"
-            }
-          ]
-        }
-      },
-      {
-        "waypoints": "BAUBB STYFF/a9000-/ho JJAWS/a6000 PUZZL/a5000 MINOE/s210",
-        "cruise_altitude": 35000,
-        "star": "TILLT2",
-        "initial_controller": "LAX_S_DEP",
-        "initial_altitude": 11000,
-        "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
           "KSNA": [
@@ -1440,7 +1342,7 @@
                 "GOATZ1": {
                     "KLAX": 5
                 },
-                "TILLT2/BAUBB2/PCIFC2/OHSEA2": {
+                "BAUBB2/PCIFC2/OHSEA3": {
                     "KLGB": 5,
                     "KSNA": 15
                 }
@@ -1455,7 +1357,7 @@
 
                     "SNA_Y_APP":{ "backup": "SNA_T_APP",
                         "departures": ["KSNA", "KLGB"],
-                        "arrivals": ["SANP4R", "OLAAA2", "GOATZ1", "TILLT2/BAUBB2/PCIFC2/OHSEA2"]
+                        "arrivals": ["SANP4R", "OLAAA2", "GOATZ1", "BAUBB2/PCIFC2/OHSEA3"]
                     }
                 }
             },
@@ -1500,7 +1402,7 @@
                 "DSNEE5": {
                     "KSNA": 15
                 },
-                "OHSEA2 finals": {
+                "OHSEA3 finals": {
                     "KSNA": 15
                 }
             },
@@ -1551,7 +1453,7 @@
                 "GOATZ1": {
                     "KLAX": 5
                 },
-                "TILLT2/BAUBB2/PCIFC2/OHSEA2 East": {
+                "BAUBB2/PCIFC2/OHSEA3 East": {
                     "KLGB": 5,
                     "KSNA": 15
                 }
@@ -1566,7 +1468,7 @@
 
                     "SNA_Y_APP":{ "backup": "SNA_T_APP",
                         "departures": ["KSNA"],
-                        "arrivals": ["SANP4R", "OLAAA2", "GOATZ1", "TILLT2/BAUBB2/PCIFC2/OHSEA2 East", "ROOBY3"]
+                        "arrivals": ["SANP4R", "OLAAA2", "GOATZ1", "BAUBB2/PCIFC2/OHSEA3 East", "ROOBY3"]
                     }
                 }
             },
@@ -1847,7 +1749,6 @@
        "BLCKD": "FTR",
        "CSTRO": "TPO",
        "COREZ": "TPO",
-       "BOILL": "TPM",
        "ARRMY": "ZMM",
        "BLAZN": "ZMM",
        "YELAH": "ZMM",
@@ -1859,7 +1760,6 @@
       "BEALE": { },
       "BLAZN": { },
       "BLCKD": { },
-      "BOILL": { },
       "CNERY": { },
       "COREZ": { },
       "CSTRO": { },

@@ -8,7 +8,7 @@
                     "runway": "26L",
                     "type": "ILS",
                     "waypoints": [
-                        "BERBN/if/a8000/s210 BISHP/a7000 KODSE/a5800 HUXAR/a5000 RELIN/faf/a2200"
+                        "BERBN/if/a8000/s210 BISHP/a7000 HOGOG/a6600+/s200 KODSE/a5800 HUXAR/a5000 RELIN/faf/a2200"
                     ]
                 },
                 "IZ6": {
@@ -42,7 +42,7 @@
                     "type": "RNAV",
                     "waypoints": [
                         "CAKNU/iaf/a6000+ FEBET/if/a6000 KIBSE/faf/a5100",
-                        "BUHLL/iaf/a7000/s210 FEBET/if/a6000 KIBSE/faf/a5100"
+                        "VANDL/iaf/a9000/s210 CAKNU/a7400+ FEBET/if/a6000 KIBSE/faf/a5100"
                     ]
                 },
                 "RY9L": {
@@ -768,63 +768,22 @@
 
     },
     "inbound_flows": {
-        "BLAID1/CHOWW2": {
+        "CHOWW3": {
             "arrivals": [
                 {
-                    "waypoints": "AALAN/a23000- N036.26.03.917,W114.09.59.551/ho CHOWW/s250/ho BLAID/a12000/h217",
-                    "cruise_altitude": 35000,
-                    "star": "BLAID1",
-                    "initial_controller": "LAX_55_CTR",
-                    "initial_altitude": 22000,
-                    "initial_speed": 250,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KLAS": [
-                            {
-                                "icao": "AAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KJFK"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KLGA"
-                            },
-                            {
-                                "icao": "JBU",
-                                "airport": "KBOS"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KDTW"
-                            },
-                            {
-                                "icao": "NKS",
-                                "airport": "KCLE"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KEWR"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "AALAN/a23000- N036.26.03.917,W114.09.59.551/ho CHOWW/a19000-/s250 WOLPH",
+                    "waypoints": "AALAN/a23000- N036.26.03.917,W114.09.59.551/ho CHOWW/a16000-/s250 WOLPH",
                     "runway_waypoints": {
                         "KLAS": {
-                            "19L": "WOLPH SACHL/a13000- FELAA/a10000- FOOOF/a8000/s220 NNEON PPENN/a6000/s210/h263",
-                            "19R": "WOLPH SACHL/a13000- FELAA/a10000- FOOOF/a8000/s220 NNEON PPENN/a6000/s210/h263",
-                            "1L": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a13000- MAHNA/a9000+ TUUTH/a10000-/s220 TRREY/a7000+/s210",
-                            "1R": "WOLPH PACKK/a17000+ BEEPR/a15000+ RFUSE/a12000+ DNZIG/a11000+ JAIDE/a13000- MAHNA/a9000+ TUUTH/a10000-/s220 BUHLL/a7000/s210",
-                            "26L": "WOLPH TATUU/a10500- KRLOZ/a9000- PRINO/a8000/s210/h221",
-                            "26R": "WOLPH TATUU/a10500- KRLOZ/a9000- FLYES/a8000/s210/h221"
+                            "19L": "WOLPH SACHL/a10000 FELAA/a9200 BOOOO/a7000 NNEON PPENN/a6000/s190/h263",
+                            "19R": "WOLPH SACHL/a10000 FELAA/a9200 BOOOO/a7000 NNEON PPENN/a6000/s190/h263",
+                            "1L": "WOLPH PACKK/a16000+ BEEPR/a15000+ JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1",
+                            "1R": "WOLPH PACKK/a16000+ BEEPR/a15000+ JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1",
+                            "26L": "WOLPH TATUU/a10500- KRLOZ/a9000- PRINO/a8000/s210",
+                            "26R": "WOLPH TATUU/a10500- KRLOZ/a9000- FLYES/a8000/s210"
                         }
                     },
                     "cruise_altitude": 35000,
-                    "star": "CHOWW2",
+                    "star": "CHOWW3",
                     "initial_controller": "LAX_55_CTR",
                     "initial_altitude": 22000,
                     "initial_speed": 250,
@@ -864,24 +823,24 @@
                 }
             ]
         },
-        "COKTL3": {
+        "COKTL4": {
             "arrivals": [
                 {
                     "waypoints": "ARYEL/a21000+/ho COKTL/a19000-/s250 ZLLDA/a14000+",
                     "runway_waypoints": {
                         "KLAS": {
-                            "19L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h79",
-                            "19R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h79",
-                            "1L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- ROAMN/a8000/s210",
-                            "1R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- ROAMN/a8000/s210",
-                            "26L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h79",
-                            "26R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h79",
-                            "8L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- YAGGR/a8000/s210",
-                            "8R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- YAGGR/a8000/s210"
+                            "19L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
+                            "19R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
+                            "1L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a9000+ SLOTS/a8000 ROAMN/a8000/s210",
+                            "1R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a9000+ SLOTS/a8000 ROAMN/a8000/s210",
+                            "26L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
+                            "26R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
+                            "8L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a11000- SLOTS/a8000 YAGGR/a8000/s210/h5",
+                            "8R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a11000- SLOTS/a8000 YAGGR/a8000/s210/h5"
                         }
                     },
                     "cruise_altitude": 35000,
-                    "star": "COKTL3",
+                    "star": "COKTL4",
                     "initial_controller": "LAX_55_CTR",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
@@ -1056,24 +1015,24 @@
                 }
             ]
         },
-        "JAYSN2": {
+        "JAYSN3": {
             "arrivals": [
                 {
-                    "waypoints": "JAYSN/a19000+/ho WAPID",
+                    "waypoints": "JAYSN/a19000-/ho WAPID",
                     "runway_waypoints": {
                         "KLAS": {
-                            "19L": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
-                            "19R": "WAPID KEEKE/a12000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6100+ KORYN/a4800/h118",
-                            "1L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- ROAMN/a8000/s210/h30",
-                            "1R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- ROAMN/a8000/s210/h30",
-                            "26L": "WAPID PESHY/a15000+/s250 NEEMA/a14200+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h79",
-                            "26R": "WAPID PESHY/a15000+/s250 NEEMA/a14200+ ENNVY/a11000+ REDQN/a9000+/s210 TWAFL BERBN/a8000/s210/h79",
-                            "8L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- YAGGR/a8000/s210/h5",
-                            "8R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a11000- BAUMM/a11000- YAGGR/a8000/s210/h5"
+                            "19L": "WAPID KEEKE/a13000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6200+ KORYN/a4800/h118",
+                            "19R": "WAPID KEEKE/a13000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6200+ KORYN/a4800/h118",
+                            "1L": "WAPID PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a12000- LOOMI ZINPI/a9000/s210 SLOTS/a8000 ROAMN/a8000/s210",
+                            "1R": "WAPID PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a12000- LOOMI ZINPI/a9000/s210 SLOTS/a8000 ROAMN/a8000/s210",
+                            "26L": "WAPID PESHY/a15000+/s250 NEEMA/a14200+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
+                            "26R": "WAPID PESHY/a15000+/s250 NEEMA/a14200+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
+                            "8L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a9000/s210 SLOTS/a8000 YAGGR/a8000/s210/h5",
+                            "8R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a9000/s210 SLOTS/a8000 YAGGR/a8000/s210/h5"
                         }
                     },
                     "cruise_altitude": 35000,
-                    "star": "JAYSN2",
+                    "star": "JAYSN3",
                     "initial_controller": "LAX_55_CTR",
                     "initial_altitude": 19000,
                     "initial_speed": 280,
@@ -1203,24 +1162,24 @@
                 }
             ]
         },
-        "RKSTR3": {
+        "RKSTR4": {
             "arrivals": [
                 {
-                    "waypoints": "KWEAN STYYX/a26000-/ho PEHTY/a19000-/s250 RKSTR",
+                    "waypoints": "KWEAN STYYX/a26000-/ho PEHTY/a14000+/s250 RKSTR",
                     "runway_waypoints": {
                         "KLAS": {
-                            "19L": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a10000- FOOOF/a8000-/s220 NNEON PPENN/a6000/s210/h263",
-                            "19R": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a10000- FOOOF/a8000-/s220 NNEON PPENN/a6000/s210/h263",
-                            "1L": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- MAHNA/a9000+ TUUTH/a10000-/s220 TRREY/a7000+/s210",
-                            "1R": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- MAHNA/a9000+ TUUTH/a10000-/s220 BUHLL/a7000/s210",
-                            "26L": "RKSTR HUXLY/a13000-/s250 HAYLN/a9000- PRINO/a8000/s210/h290",
-                            "26R": "RKSTR HUXLY/a13000-/s250 HAYLN/a9000- FLYES/a8000/s210/h292",
-                            "8L": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- MAHNA/a9000+ TUUTH/a10000-/s220 YAGGR/a8000/s210/h5",
-                            "8R": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- MAHNA/a9000+ TUUTH/a10000-/s220 YAGGR/a8000/s210/h5"
+                            "19L": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a9200 BOOOO/a7000-/s230 NNEON PPENN/a6000/s190/h263",
+                            "19R": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a9200 BOOOO/a7000-/s230 NNEON PPENN/a6000/s190/h263",
+                            "1L": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1",
+                            "1R": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1",
+                            "26L": "RKSTR HUXLY/a10000+/s250 HAYLN/a9000- PRINO/a8000/s210/h290",
+                            "26R": "RKSTR HUXLY/a10000+/s250 HAYLN/a9000- FLYES/a8000/s210/h292",
+                            "8L": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1",
+                            "8R": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1"
                         }
                     },
                     "cruise_altitude": 35000,
-                    "star": "RKSTR3",
+                    "star": "RKSTR4",
                     "initial_controller": "LAX_55_CTR",
                     "initial_altitude": 19000,
                     "initial_speed": 280,
@@ -1260,23 +1219,24 @@
                 }
             ]
         },
-        "RNDRZ2": {
+        "RNDRZ3": {
             "arrivals": [
                 {
-                    "waypoints": "WATEV/a19000+/ho TOETS RNDRZ/a19000-/s250",
+                    "waypoints": "WATEV/a19000+/ho RNDRZ/a13000+/s250",
                     "runway_waypoints": {
                         "KLAS": {
-                            "19L": "RNDRZ/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h79",
-                            "19R": "RNDRZ/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h79",
-                            "1L": "RNDRZ/a19000-/s250 RUMLY/a13000- BAUMM/a11000- ROAMN/a8000/s210/h30",
-                            "1R": "RNDRZ/a19000-/s250 RUMLY/a13000- BAUMM/a11000- ROAMN/a8000/s210/h30",
-                            "26L": "RNDRZ/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h79",
-                            "26R": "RNDRZ/a19000-/s250 GRMMA BUETY/a12500+ ENNVY/a11000+ REDQN/a9000/s210 TWAFL BERBN/a8000/s210/h79",
-                            "8L": "RNDRZ/a19000-/s250 RUMLY/a13000- BAUMM/a11000- YAGGR/a8000/s210/h5"
+                            "19L": "RNDRZ/a19000-/s250 GRMMA BUETY/a13000+ ENNVY/a11000+ REDQN/a9000/s210 BERBN/a8000/s210/h79",
+                            "19R": "RNDRZ/a19000-/s250 GRMMA BUETY/a13000+ ENNVY/a11000+ REDQN/a9000/s210 BERBN/a8000/s210/h79",
+                            "1L": "RNDRZ/a19000-/s250 RUMLY/a13000- HIMIT/a8800+ SLOTS/a8000 ROAMN/a8000/s210",
+                            "1R": "RNDRZ/a19000-/s250 RUMLY/a13000- HIMIT/a8800+ SLOTS/a8000 ROAMN/a8000/s210",
+                            "26L": "RNDRZ/a19000-/s250 GRMMA BUETY/a13000+ ENNVY/a11000+ REDQN/a9000/s210 BERBN/a8000/s210/h79",
+                            "26R": "RNDRZ/a19000-/s250 GRMMA BUETY/a13000+ ENNVY/a11000+ REDQN/a9000/s210 BERBN/a8000/s210/h79",
+                            "8L": "RNDRZ/a19000-/s250 RUMLY/a13000- HIMIT/a8800+ SLOTS/a8000 YAGGR/a8000/s210/h5",
+							"8R": "RNDRZ/a19000-/s250 RUMLY/a13000- HIMIT/a8800+ SLOTS/a8000 YAGGR/a8000/s210/h5"
                         }
                     },
                     "cruise_altitude": 35000,
-                    "star": "RNDRZ2",
+                    "star": "RNDRZ3",
                     "initial_controller": "LAX_55_CTR",
                     "initial_altitude": 24000,
                     "initial_speed": 280,
@@ -1412,10 +1372,10 @@
                
             ],
             "arrivals": {
-                "BLAID1/CHOWW2": {
+                "CHOWW3": {
                     "KLAS": 15
                 },
-                "COKTL3": {
+                "COKTL4": {
                     "KLAS": 10
                 },
                 "CRESO5": {
@@ -1427,7 +1387,7 @@
                 "ISHEE2": {
                     "KLAS": 1
                 },
-                "JAYSN2": {
+                "JAYSN3": {
                     "KLAS": 1
                 },              
                 "LARKK1": {
@@ -1436,10 +1396,10 @@
                 "PUMLE1": {
                     "KLAS": 1
                 },
-                "RKSTR3": {
+                "RKSTR4": {
                     "KLAS": 15
                 },
-                "RNDRZ2": {
+                "RNDRZ3": {
                     "KLAS": 10
                 }
 
@@ -1462,11 +1422,11 @@
                     "arrivals": ["CRESO5"]
                     },
                     "LAS_L_APP": {"backup": "LAS_F_APP", 
-                    "arrivals": ["RKSTR3", "BLAID1/CHOWW2", "ISHEE2"]},
+                    "arrivals": ["RKSTR4", "CHOWW3", "ISHEE2"]},
 
                     "LAS_G_APP": {
                         "backup": "LAS_F_APP",
-                        "arrivals": ["PUMLE1", "GAMES2", "RNDRZ2", "COKTL3", "JAYSN2", "LARKK1"]
+                        "arrivals": ["PUMLE1", "GAMES2", "RNDRZ3", "COKTL4", "JAYSN3", "LARKK1"]
                     },
                     "LAS_T_APP": {
                         "backup": "LAS_F_APP"
@@ -1515,10 +1475,10 @@
                
             ],
             "arrivals": {
-                "BLAID1/CHOWW2": {
+                "CHOWW3": {
                     "KLAS": 15
                 },
-                "COKTL3": {
+                "COKTL4": {
                     "KLAS": 15
                 },
                 "CRESO5": {
@@ -1530,7 +1490,7 @@
                 "ISHEE2": {
                     "KLAS": 0
                 },
-                "JAYSN2": {
+                "JAYSN3": {
                     "KLAS": 4
                 },              
                 "LARKK1": {
@@ -1539,10 +1499,10 @@
                 "PUMLE1": {
                     "KLAS": 0
                 },
-                "RKSTR3": {
+                "RKSTR4": {
                     "KLAS": 15
                 },
-                "RNDRZ2": {
+                "RNDRZ3": {
                     "KLAS": 15
                 }
 
@@ -1565,11 +1525,11 @@
                     "arrivals": ["CRESO5"]
                     },
                     "LAS_L_APP": {"backup": "LAS_F_APP", 
-                    "arrivals": ["RKSTR3", "BLAID1/CHOWW2", "ISHEE2"]},
+                    "arrivals": ["RKSTR4", "CHOWW3", "ISHEE2"]},
 
                     "LAS_G_APP": {
                         "backup": "LAS_F_APP",
-                        "arrivals": ["PUMLE1", "GAMES2", "RNDRZ2", "COKTL3", "JAYSN2", "LARKK1"]
+                        "arrivals": ["PUMLE1", "GAMES2", "RNDRZ3", "COKTL4", "JAYSN3", "LARKK1"]
                     },
                     "LAS_T_APP": {
                         "backup": "LAS_F_APP"
@@ -1630,10 +1590,10 @@
                
             ],
             "arrivals": {
-                "BLAID1/CHOWW2": {
+                "CHOWW3": {
                     "KLAS": 15
                 },
-                "COKTL3": {
+                "COKTL4": {
                     "KLAS": 15
                 },
                 "CRESO5": {
@@ -1645,7 +1605,7 @@
                 "ISHEE2": {
                     "KLAS": 0
                 },
-                "JAYSN2": {
+                "JAYSN3": {
                     "KLAS": 4
                 },              
                 "LARKK1": {
@@ -1654,10 +1614,10 @@
                 "PUMLE1": {
                     "KLAS": 0
                 },
-                "RKSTR3": {
+                "RKSTR4": {
                     "KLAS": 15
                 },
-                "RNDRZ2": {
+                "RNDRZ3": {
                     "KLAS": 15
                 }
 
@@ -1672,10 +1632,10 @@
                     "LAS_D_DEP": {"departures": ["KLAS"], "backup": "LAS_F_APP"},
                     "LAS_M_DEP": {"backup": "LAS_D_DEP"},
                     "LAS_Y_APP": {"backup": "LAS_F_APP", "arrivals": ["CRESO5"]},
-                    "LAS_L_APP": {"backup": "LAS_F_APP", "arrivals": ["RKSTR3", "ISHEE2"]},
-                    "LAS_G_APP": {"backup": "LAS_F_APP", "arrivals": ["PUMLE1", "GAMES2", "RNDRZ2", "COKTL3", "JAYSN2", "LARKK1"]},
+                    "LAS_L_APP": {"backup": "LAS_F_APP", "arrivals": ["RKSTR4", "ISHEE2"]},
+                    "LAS_G_APP": {"backup": "LAS_F_APP", "arrivals": ["PUMLE1", "GAMES2", "RNDRZ3", "COKTL4", "JAYSN3", "LARKK1"]},
                     "LAS_T_APP": {"backup": "LAS_F_APP"},
-                    "LAS_K_APP": {"backup": "LAS_F_APP", "arrivals": ["BLAID1/CHOWW2"]}    
+                    "LAS_K_APP": {"backup": "LAS_F_APP", "arrivals": ["CHOWW3"]}    
                 }
             },
             "controllers": [
@@ -1718,10 +1678,10 @@
                
             ],
             "arrivals": {
-                "BLAID1/CHOWW2": {
+                "CHOWW3": {
                     "KLAS": 15
                 },
-                "COKTL3": {
+                "COKTL4": {
                     "KLAS": 15
                 },
                 "CRESO5": {
@@ -1733,7 +1693,7 @@
                 "ISHEE2": {
                     "KLAS": 0
                 },
-                "JAYSN2": {
+                "JAYSN3": {
                     "KLAS": 4
                 },              
                 "LARKK1": {
@@ -1742,10 +1702,10 @@
                 "PUMLE1": {
                     "KLAS": 0
                 },
-                "RKSTR3": {
+                "RKSTR4": {
                     "KLAS": 15
                 },
-                "RNDRZ2": {
+                "RNDRZ3": {
                     "KLAS": 15
                 }
 
@@ -1768,11 +1728,11 @@
                     "arrivals": ["CRESO5"]
                     },
                     "LAS_L_APP": {"backup": "LAS_F_APP", 
-                    "arrivals": ["RKSTR3", "BLAID1/CHOWW2", "ISHEE2"]},
+                    "arrivals": ["RKSTR4", "CHOWW3", "ISHEE2"]},
 
                     "LAS_G_APP": {
                         "backup": "LAS_F_APP",
-                        "arrivals": ["PUMLE1", "GAMES2", "RNDRZ2", "JAYSN2", "COKTL3", "LARKK1"]
+                        "arrivals": ["PUMLE1", "GAMES2", "RNDRZ3", "JAYSN3", "COKTL4", "LARKK1"]
                     },
                     "LAS_T_APP": {
                         "backup": "LAS_F_APP"

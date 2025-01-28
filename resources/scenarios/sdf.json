@@ -7,7 +7,7 @@
           "runway": "17L",
           "type": "ILS",
           "waypoints": [
-          "THUND/a5000 RACRR/a4000 SLGRR/a2500 KELEI/a1320"
+          "LEXXI/a6000 BLLAM/a5000 RACRR/a4000 SLGRR/a2500 KELEI/a1320"
           ]
         },
         "I7R" : {
@@ -474,59 +474,6 @@
   }
 },
 "inbound_flows": {
-  "DAMEN5": {
-    "arrivals": [
-      {
-        "waypoints": "PENTO N038.19.01.589,W087.03.38.490/ho CHERI/a11000/s250 DAMEN",
-        "runway_waypoints": {
-          "KSDF": {
-            "17L": "DAMEN CAESR HAUGN CURNL/h349",
-            "17R": "DAMEN CAESR HAUGN CURNL/h349",
-            "29": "DAMEN COORN SQWRL/h116",
-            "35L": "DAMEN HAUGN LEWSS/h170",
-            "35R": "DAMEN HAUGN LEWSS/h170"
-          }
-        },
-        "cruise_altitude": 37000,
-        "star": "DAMEN5",
-        "initial_controller": "IND_CTR",
-        "initial_altitude": 11000,
-        "initial_speed": 250,
-        "expect_approach": null,
-        "airlines": {
-          "KSDF": [
-            {
-              "icao": "SKW",
-              "airport": "KORD"
-            },
-            {
-              "icao": "AAL",
-              "fleet": "short",
-              "airport": "KORD"
-            },
-            {
-              "icao": "UAL",
-              "fleet": "short",
-              "airport": "KORD"
-            },
-            {
-              "icao": "UAL",
-              "fleet": "short",
-              "airport": "KDEN"
-            },
-            {
-              "icao": "SKW",
-              "airport": "KDEN"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KLAS"
-            }
-          ]
-        }
-      }
-    ]
-  },
   "DLAMP8": {
     "arrivals": [
       {
@@ -560,49 +507,6 @@
               "icao": "UAL",
               "fleet": "short",
               "airport": "KEWR"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "FRIZN5": {
-    "arrivals": [
-      {
-        "waypoints": "SUSZE UNCOD/ho FRIZN/a11000/s250 HONOS",
-        "runway_waypoints": {
-          "KSDF": {
-            "17L": "HONOS THUND/a5000 RACRR/a4000/h170",
-            "17R": "HONOS SPYRS/a4000/h170",
-            "29": "HONOS HOOLA MIDDR SORTT/h117",
-            "35L": "HONOS PROUF HAUGN LEWSS/h170",
-            "35R": "HONOS PROUF HAUGN LEWSS/h170"
-          }
-        },
-        "cruise_altitude": 37000,
-        "star": "FRIZN5",
-        "initial_controller": "IND_CTR",
-        "initial_altitude": 17000,
-        "initial_speed": 250,
-        "expect_approach": null,
-        "airlines": {
-          "KSDF": [
-            {
-              "icao": "RPA",
-              "airport": "KORD"
-            },
-            {
-              "icao": "SKW",
-              "airport": "KORD"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KMDW"
-            },
-            {
-              "icao": "DAL",
-              "fleet": "short",
-              "airport": "KMSP"
             }
           ]
         }
@@ -802,13 +706,7 @@
       }
     ],
     "arrivals": {
-      "DAMEN5": {
-        "KSDF": 10
-      },
       "DLAMP8": {
-        "KSDF": 5
-      },
-      "FRIZN5": {
         "KSDF": 5
       },
       "LEDDL1": {
@@ -821,7 +719,7 @@
     "solo_controller": "SDF_I_APP",
     "multi_controllers": {
         "default" : {
-            "SDF_I_APP": {"primary": true, "arrivals": ["DAMEN5", "FRIZN5", "MBELL5"]},
+            "SDF_I_APP": {"primary": true, "arrivals": ["MBELL5"]},
             "SDF_B_DEP": {"backup": "SDF_I_APP", "departures": ["KSDF"] },
             "SDF_W_APP": {"backup": "SDF_I_APP"},
             "SDF_A_APP": {"backup": "SDF_I_APP", "arrivals": ["DLAMP8", "LEDDL1"]},
@@ -869,13 +767,7 @@
       }
     ],
     "arrivals": {
-      "DAMEN5": {
-        "KSDF": 10
-      },
       "DLAMP8": {
-        "KSDF": 5
-      },
-      "FRIZN5": {
         "KSDF": 5
       },
       "LEDDL1": {
@@ -888,7 +780,7 @@
     "solo_controller": "SDF_I_APP",
     "multi_controllers": {
         "default" : {
-            "SDF_I_APP": {"primary": true, "arrivals": ["DAMEN5", "FRIZN5", "MBELL5"]},
+            "SDF_I_APP": {"primary": true, "arrivals": ["MBELL5"]},
             "SDF_B_DEP": {"backup": "SDF_I_APP", "departures": ["KSDF"]},
             "SDF_W_APP": {"backup": "SDF_I_APP"},
             "SDF_A_APP": {"backup": "SDF_I_APP", "arrivals": ["DLAMP8", "LEDDL1"]},

@@ -74,7 +74,7 @@
           "waypoints": [
             "ADDUM/faf/a2000",
             "HPSTR/if/a2900 HANAH/a2900 ADDUM/faf/a2000",
-            "WIDMR/if/s210/a5000 DSHUT/arc2.2/a3200 NOLGE/arc1.6/a2500 ADDUM/faf/a2000"
+            "ROAGE/if/s210/a4000+ DSHUT/arc2.2/a3200 NOLGE/arc1.6/a2500 ADDUM/faf/a2000"
           ]
         },
         "Z8R": {
@@ -84,7 +84,7 @@
           "waypoints": [
             "TOLOC/faf/a2000",
             "NACIY/if/a2900 OMMSI/a2900 TOLOC/faf/a2000",
-            "WIDMR/if/s210/a5000 BYKES/a3200/arc4 TOLOC/faf/a2000"
+            "ROAGE/if/s210/a4000+ BYKES/a3200/arc4 TOLOC/faf/a2000"
           ]
         }
       },
@@ -162,7 +162,7 @@
             "HRMNS": {
               "cleared_altitude": 7000,
               "sid": "HERMNS5",
-              "waypoints": "PEGTY KELYY WANOS/s250 TOSEH HRMNS"
+              "waypoints": "PEGTY KELYY RUTGE/a5000/s250 TOSEH HRMNS"
             },
             "YKM,PDT,LAVAA": {
               "cleared_altitude": 7000,
@@ -177,12 +177,12 @@
             "IMB,KOATA,RIELY": {
               "cleared_altitude": 7000,
               "sid": "WHAMY4",
-              "waypoints": "PEGTY KELYY WANOS/s250 TOSEH WHAMY"
+              "waypoints": "PEGTY KELYY RUTGE/a5000/s250 TOSEH WHAMY"
             },
             "DSD,JOGEN,SMIGE,PAWLI": {
               "cleared_altitude": 7000,
               "sid": "CASCD2",
-              "waypoints": "PEGTY KELYY WANOS/s250 TOSEH CHISM"
+              "waypoints": "PEGTY KELYY RUTGE/a5000/s250 TOSEH CHISM"
             }
         },
         "28L": {
@@ -194,7 +194,7 @@
           "HRMNS": {
             "cleared_altitude": 7000,
             "sid": "HERMNS5",
-            "waypoints": "PEGTY KELYY WANOS/s250 TOSEH HRMNS"
+            "waypoints": "PEGTY KELYY RUTGE/a5000/s250 TOSEH HRMNS"
           },
           "YKM,PDT,LAVAA": {
             "cleared_altitude": 7000,
@@ -209,12 +209,12 @@
           "IMB,KOATA,RIELY": {
             "cleared_altitude": 7000,
             "sid": "WHAMY4",
-            "waypoints": "PEGTY KELYY WANOS/s250 TOSEH WHAMY"
+            "waypoints": "PEGTY KELYY RUTGE/a5000/s250 TOSEH WHAMY"
           },
           "DSD,JOGEN,SMIGE,PAWLI": {
             "cleared_altitude": 7000,
             "sid": "CASCD2",
-            "waypoints": "PEGTY KELYY WANOS/s250 TOSEH CHISM"
+            "waypoints": "PEGTY KELYY RUTGE/a5000/s250 TOSEH CHISM"
           }
         }
       },
@@ -430,10 +430,10 @@
     }
   },
   "inbound_flows": {
-  "HHOOD4East": {
+  "HHOOD5East": {
     "arrivals": [
       {
-        "waypoints": "SODDA/a17000+/ho DUFUR RABBI/a13000+/s270 HHOOD/a9000-15000/s250 BLRUN SSDEE/a9000-11000 THEID/a8000-10000 EMZEY/a7000/s230 CIZZL/a5000+/s210 YORKY/a5000 NNUTT/h278",
+        "waypoints": "SODDA/a17000+/ho RABBI/a13000+/s270 HHOOD/a9000-15000/s250 BLRUN SSDEE/a9000-11000 THEID/a8000-10000 EMZEY/a7000/s230 CIZZL/a6000+/s210/h281",
         "cruise_altitude": 34000,
         "route": "/. HHOOD",
         "initial_controller": "SEA_16_CTR",
@@ -502,14 +502,14 @@
       }
     ]
   },
-  "HHOOD4East_Final": {
+  "HHOOD5East_Final": {
     "arrivals": [
       {
-        "waypoints": "CIZZL/a5000+/s210/ho YORKY/a5000 NNUTT/h278",
+        "waypoints": "EMZEY/a7000+/s230 CIZZL/a6000+/s210/h281/ho",
         "cruise_altitude": 34000,
-        "star": "HHOOD4",
+        "star": "HHOOD5",
         "initial_controller": "PDX_APP",
-        "initial_altitude": 5000,
+        "initial_altitude": 7000,
         "assigned_altitude": 5000,
         "initial_speed": 250,
         "speed_restriction": 210,
@@ -802,10 +802,10 @@
       }
     ]
   },
-  "HHOOD4West": {
+  "HHOOD5West": {
     "arrivals": [
       {
-        "waypoints": "SODDA/a17000+ DUFUR RABBI/a13000+/s270 HHOOD/a9000-15000/s250/ho SHAFR/a6700/s210/h259",
+        "waypoints": "SODDA/a17000+ RABBI/a13000+/s270 HHOOD/a9000-15000/s250/ho SHAFR/a6700/s210/h259",
         "cruise_altitude": 34000,
         "route": "/. HHOOD",
         "initial_controller": "SEA_16_CTR",
@@ -854,12 +854,12 @@
       }
     ]
   },
-  "HHOOD4West_Final": {
+  "HHOOD5West_Final": {
     "arrivals": [
       {
         "waypoints": "HHOOD/a9000-15000/s250 N045.32.15.516,W121.54.26.180/ho SHAFR/a6700/s210/h259",
         "cruise_altitude": 34000,
-        "star": "HHOOD4",
+        "star": "HHOOD5",
         "initial_controller": "PDX_APP",
         "initial_altitude": 9000,
         "assigned_altitude": 6700,
@@ -2102,7 +2102,7 @@
       }
     ]
   },
-  "TMBERS2East": {
+  "TMBERS3East": {
     "arrivals": [
       {
         "waypoints": "TMBRS/a11000+/s270/ho VANTZ/a11000-15000/s250 FLOWR/a7000-9000 FFULL/a7000-9000 SSAIL/a6000-8000 MYCRO/a5000/s210 BBREW PUBBB/h305",
@@ -2468,12 +2468,12 @@
       }
     ]
   },
-  "TMBERS2East_Final": {
+  "TMBERS3East_Final": {
     "arrivals": [
       {
         "waypoints": "SSAIL/a6000-8000 N045.28.18.266,W122.45.55.178/ho MYCRO/a5000/s210 BBREW PUBBB/h305",
         "cruise_altitude": 34000,
-        "star": "TMBERS2",
+        "star": "TMBERS3",
         "initial_controller": "PDX_APP",
         "initial_altitude": 6000,
         "assigned_altitude": 5000,
@@ -2768,10 +2768,10 @@
       }
     ]
   },
-  "TMBERS2West": {
+  "TMBERS3West": {
     "arrivals": [
       {
-        "waypoints": "TMBRS/a11000+/s270/ho VANTZ/a11000-15000/s250 FLOWR/a7000-9000 WIDMR/a5000/s210 ROAGE ICEAX/h103",
+        "waypoints": "TMBRS/a11000+/s270/ho VANTZ/a11000-15000/s250 FLOWR/a7000-9000 ROAGE/a4000+/s210/h103",
         "cruise_altitude": 34000,
         "route": "/. TMBRS",
         "initial_controller": "SEA_42_CTR",
@@ -3065,12 +3065,12 @@
       }
     ]
   },
-  "TMBERS2West_Final": {
+  "TMBERS3West_Final": {
     "arrivals": [
       {
-        "waypoints": "FLOWR/a7000-9000 N045.20.24.165,W122.33.37.227/ho WIDMR/a5000/s210 ROAGE ICEAX/h103",
+        "waypoints": "FLOWR/a7000-9000 N045.20.24.165,W122.33.37.227/ho ROAGE/a4000+/s210/h103",
         "cruise_altitude": 34000,
-        "star": "TMBERS2",
+        "star": "TMBERS3",
         "initial_controller": "PDX_APP",
         "initial_altitude": 9000,
         "assigned_altitude": 5000,
@@ -3487,13 +3487,13 @@
         }
       ],
       "arrivals": {
-        "HHOOD4West": {
+        "HHOOD5West": {
           "KPDX": 5
         },
         "KRATR2West": {
           "KPDX": 6
         },
-        "TMBERS2West": {
+        "TMBERS3West": {
           "KPDX": 7
         },
         "OCITY3West": {
@@ -3503,8 +3503,8 @@
       "solo_controller": "PDX_APP",
       "multi_controllers": {
         "default" : {
-          "PDX_APP": {"primary": true, "arrivals": ["HHOOD4West","KRATR2West"]},
-          "PDX_S_APP": {"backup": "PDX_APP", "arrivals": ["OCITY3West","TMBERS2West"]},
+          "PDX_APP": {"primary": true, "arrivals": ["HHOOD5West","KRATR2West"]},
+          "PDX_S_APP": {"backup": "PDX_APP", "arrivals": ["OCITY3West","TMBERS3West"]},
           "PDX_DEP": {"backup": "PDX_APP", "departures": ["KPDX"]},
           "PDX_F_APP": {"backup": "PDX_APP"}
         }
@@ -3558,13 +3558,13 @@
         }
       ],
       "arrivals": {
-        "TMBERS2East": {
+        "TMBERS3East": {
           "KPDX": 5
         },
         "KRATR2East": {
           "KPDX": 6
         },
-        "HHOOD4East": {
+        "HHOOD5East": {
           "KPDX": 7
         },
         "OCITY3East": {
@@ -3574,8 +3574,8 @@
       "solo_controller": "PDX_APP",
       "multi_controllers": {
         "default" : {
-          "PDX_APP": {"primary": true, "arrivals": ["HHOOD4East","KRATR2East"]},
-          "PDX_S_APP": {"backup": "PDX_APP", "arrivals": ["OCITY3East","TMBERS2East"]},
+          "PDX_APP": {"primary": true, "arrivals": ["HHOOD5East","KRATR2East"]},
+          "PDX_S_APP": {"backup": "PDX_APP", "arrivals": ["OCITY3East","TMBERS3East"]},
           "PDX_DEP": {"backup": "PDX_APP", "departures": ["KPDX"]},
           "PDX_F_APP": {"backup": "PDX_APP"}
         }
@@ -3626,13 +3626,13 @@
         }
       ],
       "arrivals": {
-        "HHOOD4West_Final": {
+        "HHOOD5West_Final": {
           "KPDX": 5
         },
         "KRATR2West_Final": {
           "KPDX": 5
         },
-        "TMBERS2West_Final": {
+        "TMBERS3West_Final": {
           "KPDX": 5
         }
       },
@@ -3668,13 +3668,13 @@
         }
       ],
       "arrivals": {
-        "HHOOD4East_Final": {
+        "HHOOD5East_Final": {
           "KPDX": 5
         },
         "KRATR2East_Final": {
           "KPDX": 5
         },
-        "TMBERS2East_Final": {
+        "TMBERS3East_Final": {
           "KPDX": 5
         }
       },
