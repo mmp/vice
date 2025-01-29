@@ -226,7 +226,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 					fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 				}
 			}
-		case sim.HandoffControllEvent:
+		case sim.HandoffControlEvent:
 			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
 				if fsp.AutoRemoveHandoffs && ac.TrackingController != ctx.ControlClient.PrimaryTCP {
 					remove(event.Callsign)

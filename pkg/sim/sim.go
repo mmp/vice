@@ -2576,7 +2576,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 			}
 
 			s.eventStream.Post(Event{
-				Type:           HandoffControllEvent,
+				Type:           HandoffControlEvent,
 				FromController: ac.ControllingController,
 				ToController:   ac.TrackingController,
 				Callsign:       ac.Callsign,

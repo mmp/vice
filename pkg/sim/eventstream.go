@@ -204,7 +204,7 @@ const (
 	AcknowledgedPointOutEvent
 	RejectedPointOutEvent
 	IdentEvent
-	HandoffControllEvent
+	HandoffControlEvent
 	SetGlobalLeaderLineEvent
 	TrackClickedEvent
 	ForceQLEvent
