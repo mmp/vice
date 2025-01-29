@@ -810,6 +810,9 @@ how it simulates aircraft or the STARS interface.
               <li>Fixed a bug where departures would climb beyond upcoming altitude constraints in SIDs.</li>
               <li>Fixed a bug where aircraft would incorrectly descend along an approach they weren't yet cleared for.</li>
               <li>Fixed multiple bugs with the launch control window.</li>
+              <li>Removed text input from the messages pane: it's back to just printing radio calls and messages.</li>
+              <li>Updated handoffs so that there is a delay of 5-10 seconds before aircraft call in after the track is accepted.
+                <b>Note that you can't give control instructions to an aircraft until they call in and are on your frequency.</b></li>
               <li>STARS:
                 <ul>
                   <li>Continue to display the id for external facility handoffs in datablocks for a few seconds.</li>
@@ -835,6 +838,8 @@ how it simulates aircraft or the STARS interface.
                     (Useful for ambient traffic under computer control.)</li>
                   <li>An error is now issued if more than one controller has the same sector id assigned.</li>
                   <li>Fix parsing of both approaches and altitude constraints in the ARINC424 data (Makoto Sakaguchi.)</li>
+                  <li>Updated to latest AIRAC cycle.</li>
+                  <li>Fixed a bug with Δ in scratchpad assignments in scenario definitions.</li>
                 </ul>
               </li>
             </ul>
