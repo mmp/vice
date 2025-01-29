@@ -1834,7 +1834,7 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 			}
 
 			if err != nil {
-				s.lg.Error("create inbound error: %v", err)
+				s.lg.Errorf("create inbound error: %v", err)
 			} else if ac != nil {
 				s.addAircraftNoLock(*ac)
 				s.NextInboundSpawn[group] = now.Add(randomWait(rateSum, pushActive))

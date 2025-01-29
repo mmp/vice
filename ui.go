@@ -1563,7 +1563,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				imgui.TableNextColumn()
 				if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
 					lc.controlClient.ReleaseDeparture(ac.Callsign, nil,
-						func(err error) { lc.lg.Error("%s: %v", ac.Callsign, err) })
+						func(err error) { lc.lg.Errorf("%s: %v", ac.Callsign, err) })
 				}
 			}
 

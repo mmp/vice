@@ -183,7 +183,7 @@ func main() {
 					uiShowConnectDialog(mgr, false, config, plat, lg)
 
 				default:
-					lg.Error("Server connection error: %v", err)
+					lg.Errorf("Server connection error: %v", err)
 				}
 			},
 		)
