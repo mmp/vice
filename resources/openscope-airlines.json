@@ -7930,10 +7930,6 @@
         [
           "B738",
           304
-        ],
-        [
-          "E190",
-          19
         ]
       ],
       "tncmShort": [
@@ -45399,6 +45395,26 @@
         [
           "A320",
           2
+        ]
+      ]
+    }
+  },
+  {
+    "icao": "www",
+    "name": "JANET",
+    "callsign": {
+      "name": "Janet",
+      "callsignFormats": [
+        "##",
+        "###",
+        "####"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "B736",
+          6
         ]
       ]
     }
