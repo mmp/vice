@@ -949,6 +949,9 @@ type Sim struct {
 
 	ReportingPoints []av.ReportingPoint
 
+	FutureControllerContacts []FutureControllerContact
+	FutureOnCourse           []FutureOnCourse
+
 	RequirePassword bool
 	Password        string
 
@@ -1610,6 +1613,9 @@ func (s *Sim) updateState() {
 			}
 		}
 	}
+
+	// Handle assorted deferred radio calls.
+	s.processEnqueued()
 
 	// Don't spawn automatically if someone is spawning manually.
 	if s.LaunchConfig.Mode == LaunchAutomatic {
@@ -2542,6 +2548,8 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			var radioTransmissions []av.RadioTransmission
+			// Immediately respond to the current controller that we're
+			// changing frequency.
 			if octrl := s.State.Controllers[ac.TrackingController]; octrl != nil {
 				if octrl.Frequency == ctrl.Frequency {
 					radioTransmissions = append(radioTransmissions, av.RadioTransmission{
@@ -2559,11 +2567,6 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 					Message:    goodbye,
 					Type:       av.RadioTransmissionReadback,
 				})
-				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
-					Controller: ac.TrackingController,
-					Message:    ac.ContactMessage(s.ReportingPoints),
-					Type:       av.RadioTransmissionContact,
-				})
 			} else {
 				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
 					Controller: ac.ControllingController,
@@ -2579,20 +2582,17 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 				Callsign:       ac.Callsign,
 			})
 
-			ac.ControllingController = ac.TrackingController
-
 			if err := s.State.STARSComputer().HandoffControl(callsign, ac.TrackingController); err != nil {
 				//s.lg.Errorf("HandoffControl: %v", err)
 			}
 
-			// Go ahead and climb departures the rest of the way and send
-			// them direct to their first fix (if they aren't already).
-			octrl := s.State.Controllers[ac.TrackingController]
-			if (s.State.IsDeparture(ac) || s.State.IsOverflight(ac)) && octrl != nil && !octrl.IsHuman {
-				s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
-					slog.Int("final_altitude", ac.FlightPlan.Altitude))
-				ac.DepartOnCourse(s.lg)
-			}
+			// Take away the current controller's ability to issue control
+			// commands.
+			ac.ControllingController = ""
+
+			// In 5-10 seconds, have the aircraft contact the new controller
+			// (and give them control only then).
+			s.enqueueControllerContact(ac.Callsign, ac.TrackingController)
 
 			return radioTransmissions
 		})
@@ -2633,16 +2633,13 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 			}
 
 			if !s.controllerIsSignedIn(ac.ControllingController) {
-				// Take immediate control on handoffs from virtual
-				ac.ControllingController = ctrl.Id()
-				return []av.RadioTransmission{av.RadioTransmission{
-					Controller: ctrl.Id(),
-					Message:    ac.ContactMessage(s.ReportingPoints),
-					Type:       av.RadioTransmissionContact,
-				}}
-			} else {
-				return nil
+				// Don't wait for a frequency change instruction for
+				// handoffs from virtual, but wait a bit before the
+				// aircraft calls in at which point we have control.
+				s.enqueueControllerContact(ac.Callsign, ctrl.Id())
 			}
+
+			return nil
 		})
 }
 
@@ -3612,4 +3609,69 @@ func (s *Sim) DeleteRestrictionArea(idx int) error {
 
 func (s *Sim) GetVideoMapLibrary(filename string) (*av.VideoMapLibrary, error) {
 	return av.LoadVideoMapLibrary(filename)
+}
+
+// Deferred operations
+
+type FutureControllerContact struct {
+	Callsign string
+	TCP      string
+	Time     time.Time
+}
+
+func (s *Sim) enqueueControllerContact(callsign, tcp string) {
+	wait := time.Duration(5+rand.Intn(10)) * time.Second
+	s.FutureControllerContacts = append(s.FutureControllerContacts,
+		FutureControllerContact{Callsign: callsign, TCP: tcp, Time: s.SimTime.Add(wait)})
+}
+
+type FutureOnCourse struct {
+	Callsign string
+	Time     time.Time
+}
+
+func (s *Sim) enqueueDepartOnCourse(callsign string) {
+	wait := time.Duration(10+rand.Intn(15)) * time.Second
+	s.FutureOnCourse = append(s.FutureOnCourse,
+		FutureOnCourse{Callsign: callsign, Time: s.SimTime.Add(wait)})
+}
+
+func (s *Sim) processEnqueued() {
+	s.FutureControllerContacts = util.FilterSlice(s.FutureControllerContacts,
+		func(c FutureControllerContact) bool {
+			if s.SimTime.After(c.Time) {
+				if ac, ok := s.State.Aircraft[c.Callsign]; ok {
+					ac.ControllingController = c.TCP
+					r := []av.RadioTransmission{av.RadioTransmission{
+						Controller: c.TCP,
+						Message:    ac.ContactMessage(s.ReportingPoints),
+						Type:       av.RadioTransmissionContact,
+					}}
+					PostRadioEvents(c.Callsign, r, s)
+
+					// For departures handed off to virtual controllers,
+					// enqueue climbing them to cruise sending them direct
+					// to their first fix if they aren't already.
+					octrl := s.State.Controllers[ac.TrackingController]
+					if (s.State.IsDeparture(ac) || s.State.IsOverflight(ac)) && octrl != nil && !octrl.IsHuman {
+						s.enqueueDepartOnCourse(ac.Callsign)
+					}
+				}
+				return false // remove it from the slice
+			}
+			return true // keep it in the slice
+		})
+
+	s.FutureOnCourse = util.FilterSlice(s.FutureOnCourse,
+		func(oc FutureOnCourse) bool {
+			if s.SimTime.After(oc.Time) {
+				if ac, ok := s.State.Aircraft[oc.Callsign]; ok {
+					s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
+						slog.Int("final_altitude", ac.FlightPlan.Altitude))
+					ac.DepartOnCourse(s.lg)
+				}
+				return false
+			}
+			return true
+		})
 }
