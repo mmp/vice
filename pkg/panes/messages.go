@@ -134,76 +134,91 @@ func (msg *Message) Color() renderer.RGB {
 }
 
 func (mp *MessagesPane) processEvents(ctx *Context) {
-	lastRadioCallsign := ""
-	var lastRadioType av.RadioTransmissionType
-	var unexpectedTransmission bool
-	var transmissions []string
+	consolidateRadioTransmissions := func(events []sim.Event) []sim.Event {
+		canConsolidate := func(a, b sim.Event) bool {
+			return a.Type == sim.RadioTransmissionEvent && b.Type == sim.RadioTransmissionEvent &&
+				a.Callsign == b.Callsign && a.Type == b.Type && a.ToController == b.ToController
+		}
+		var c []sim.Event
+		for _, e := range events {
+			if n := len(c); n > 0 && canConsolidate(e, c[n-1]) {
+				c[n-1].Message += ", " + e.Message
+				if e.RadioTransmissionType == av.RadioTransmissionUnexpected {
+					c[n-1].RadioTransmissionType = av.RadioTransmissionUnexpected
+				}
+			} else {
+				c = append(c, e)
+			}
+		}
+		return c
+	}
 
-	addTransmissions := func() {
-		// Split the callsign into the ICAO and the flight number
-		// Note: this is buggy if we process multiple senders in a
-		// single call here, but that shouldn't happen...
-		callsign := lastRadioCallsign
-		radioCallsign := lastRadioCallsign
-		if idx := strings.IndexAny(callsign, "0123456789"); idx != -1 {
-			// Try to get the telephony.
-			icao, flight := callsign[:idx], callsign[idx:]
-			if telephony, ok := av.DB.Callsigns[icao]; ok {
-				radioCallsign = telephony + " " + flight
-				if ac := ctx.ControlClient.Aircraft[callsign]; ac != nil {
-					if fp := ac.FlightPlan; fp != nil {
-						if strings.HasPrefix(fp.AircraftType, "H/") {
-							radioCallsign += " heavy"
-						} else if strings.HasPrefix(fp.AircraftType, "J/") || strings.HasPrefix(fp.AircraftType, "S/") {
-							radioCallsign += " super"
+	for _, event := range consolidateRadioTransmissions(mp.events.Get()) {
+		switch event.Type {
+		case sim.RadioTransmissionEvent:
+			// Collect multiple successive transmissions from the same
+			// aircraft into a single transmission.
+
+			toUs := event.ToController == ctx.ControlClient.PrimaryTCP
+			amInstructor := ctx.ControlClient.Instructors[ctx.ControlClient.PrimaryTCP]
+			if !toUs && !amInstructor {
+				break
+			}
+
+			// Split the callsign into the ICAO and the flight number
+			// Note: this is buggy if we process multiple senders in a
+			// single call here, but that shouldn't happen...
+
+			radioCallsign := event.Callsign
+			if idx := strings.IndexAny(radioCallsign, "0123456789"); idx != -1 {
+				// Try to get the telephony.
+				icao, flight := radioCallsign[:idx], radioCallsign[idx:]
+				if telephony, ok := av.DB.Callsigns[icao]; ok {
+					radioCallsign = telephony + " " + flight
+					if ac := ctx.ControlClient.Aircraft[event.Callsign]; ac != nil {
+						if fp := ac.FlightPlan; fp != nil {
+							if strings.HasPrefix(fp.AircraftType, "H/") {
+								radioCallsign += " heavy"
+							} else if strings.HasPrefix(fp.AircraftType, "J/") || strings.HasPrefix(fp.AircraftType, "S/") {
+								radioCallsign += " super"
+							}
 						}
 					}
 				}
 			}
-		}
 
-		response := strings.Join(transmissions, ", ")
-		var msg Message
-		if lastRadioType == av.RadioTransmissionContact {
-			ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.PrimaryTCP]
-			fullName := ctrl.RadioName
-			if ac := ctx.ControlClient.Aircraft[callsign]; ac != nil && ctx.ControlClient.State.IsDeparture(ac) {
-				// Always refer to the controller as "departure" for departing aircraft.
-				fullName = strings.ReplaceAll(fullName, "approach", "departure")
+			prefix := ""
+			if !toUs && amInstructor {
+				prefix = "[to " + event.ToController + "] "
 			}
-			msg = Message{contents: fullName + ", " + radioCallsign + ", " + response}
-		} else {
-			if len(response) > 0 {
-				response = strings.ToUpper(response[:1]) + response[1:]
-			}
-			msg = Message{contents: response + ". " + radioCallsign, error: unexpectedTransmission}
-		}
-		ctx.Lg.Debug("radio_transmission", slog.String("callsign", callsign), slog.Any("message", msg))
-		mp.messages = append(mp.messages, msg)
-	}
 
-	for _, event := range mp.events.Get() {
-		switch event.Type {
-		case sim.RadioTransmissionEvent:
-			if event.ToController == ctx.ControlClient.PrimaryTCP {
-				if event.Callsign != lastRadioCallsign || event.RadioTransmissionType != lastRadioType {
-					if len(transmissions) > 0 {
-						addTransmissions()
-						transmissions = nil
-						unexpectedTransmission = false
-					}
-					lastRadioCallsign = event.Callsign
-					lastRadioType = event.RadioTransmissionType
+			var msg Message
+			if event.RadioTransmissionType == av.RadioTransmissionContact {
+				ctrl := ctx.ControlClient.Controllers[event.ToController]
+				fullName := ctrl.RadioName
+				if ac := ctx.ControlClient.Aircraft[event.Callsign]; ac != nil && ctx.ControlClient.State.IsDeparture(ac) {
+					// Always refer to the controller as "departure" for departing aircraft.
+					fullName = strings.ReplaceAll(fullName, "approach", "departure")
 				}
-				transmissions = append(transmissions, event.Message)
-				unexpectedTransmission = unexpectedTransmission || (event.RadioTransmissionType == av.RadioTransmissionUnexpected)
+				msg = Message{contents: prefix + fullName + ", " + radioCallsign + ", " + event.Message}
+			} else {
+				if len(event.Message) > 0 {
+					event.Message = strings.ToUpper(event.Message[:1]) + event.Message[1:]
+				}
+				msg = Message{contents: prefix + event.Message + ". " + radioCallsign,
+					error: event.Type == av.RadioTransmissionUnexpected,
+				}
 			}
+			ctx.Lg.Debug("radio_transmission", slog.String("callsign", event.Callsign), slog.Any("message", msg))
+			mp.messages = append(mp.messages, msg)
+
 		case sim.GlobalMessageEvent:
 			if event.FromController != ctx.ControlClient.PrimaryTCP {
 				for _, line := range strings.Split(event.Message, "\n") {
 					mp.messages = append(mp.messages, Message{contents: line, global: true})
 				}
 			}
+
 		case sim.StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.
 			n := len(mp.messages)
@@ -217,9 +232,5 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					})
 			}
 		}
-	}
-
-	if len(transmissions) > 0 {
-		addTransmissions()
 	}
 }

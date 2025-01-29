@@ -2189,21 +2189,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 		} else {
 			preAc := *ac
 			radioTransmissions := cmd(ctrl, ac)
-			alreadyAdressed := false
-			for _, rt := range radioTransmissions {
-				if rt.Controller == ctrl.Id() {
-					alreadyAdressed = true
-					break
-				}
-			}
-			if len(radioTransmissions) > 0 && s.Instructors[ctrl.Id()] &&
-				ac.ControllingController != ctrl.Id() && !alreadyAdressed { // prevent FC commands as well.
-				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
-					Controller: ctrl.Id(),
-					Message:    radioTransmissions[0].Message,
-					Type:       radioTransmissions[0].Type,
-				})
-			}
+
 			s.lg.Info("dispatch_command", slog.String("callsign", ac.Callsign),
 				slog.Any("prepost_aircraft", []av.Aircraft{preAc, *ac}),
 				slog.Any("radio_transmissions", radioTransmissions))
@@ -2650,7 +2636,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 				// Take immediate control on handoffs from virtual
 				ac.ControllingController = ctrl.Id()
 				return []av.RadioTransmission{av.RadioTransmission{
-					Controller: ctrl.RadioName,
+					Controller: ctrl.Id(),
 					Message:    ac.ContactMessage(s.ReportingPoints),
 					Type:       av.RadioTransmissionContact,
 				}}
