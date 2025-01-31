@@ -275,8 +275,22 @@ var (
 		`Added more compact "hold for release" interface for airports that don't use STARS coordination lists`,
 		`STARS: added OJTI mode, where an instructor can sign in and issue commands to all aircraft`,
 		`STARS: added support for restriction areas`,
-		`STARS: multiple improvements to video map handling, including supporting multiple colors and map categories.`,
+		`STARS: multiple improvements to video map handling, including supporting multiple colors and map categories`,
 		`STARS: CA and MSAW alerts are no longer generated for unassociated tracks`,
+		`New scenarios: MDT (Darius L), PVD (radarcontacto)`,
+		`Scenario updates: DCA (radarcontacto), SCT (Aiden), JFK airspace (Mike LeGall), Y90 (Merry), L30, N90, P80, SCT, SDF (Ketan K)`,
+		`Airspace boundaries are now displayed using the scenario information window`,
+		`Improve fetching of airport weather (Makoto Sakaguchi)`,
+		`Fixed a bug that was causing vice to crash when loading saved sims`,
+		`Fixed a bug where departures would climb beyond upcoming altitude constraints in SIDs`,
+		`Fixed a bug where aircraft would incorrectly descend along an approach they weren't yet cleared for`,
+		`Fixed multiple bugs with the launch control window`,
+		`Removed text input from the messages pane: it's back to just printing radio calls and messages`,
+		`Updated handoffs so that there is a delay of 5-10 seconds before aircraft call in after the track is accepted`,
+		`STARS: continue to display the id for external facility handoffs in datablocks for a few seconds`,
+		`STARS: improved the accuracy of the mapping of precipitation to WX levels`,
+		`STARS: a partial callsign is given to specify an aircraft to be given an instruction, it must be a unique suffix of a callsign`,
+		`STARS: OJTI mode now available where an instructor can issue aircraft control commands (Michael Trokel)`,
 	}
 )
 
