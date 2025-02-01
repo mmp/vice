@@ -3,21 +3,30 @@
     "airports": {
         "KLAS": {
             "approaches": {
-                "IY6": {
+                "Y6L": {
                     "full_name": "ILS Y Runway 26 Left",
                     "runway": "26L",
                     "type": "ILS",
                     "waypoints": [
-                        "BERBN/if/a8000/s210 BISHP/a7000 HOGOG/a6600+/s200 KODSE/a5800 HUXAR/a5000 RELIN/faf/a2200"
+                        "BERBN/if/a8000/s210 BISHP/a7000 HOGOG/a6600+/s200 KODSE/a5800+ HUXAR/a5000+ RELIN/faf/a3800"
                     ]
                 },
-                "IZ6": {
+                "Z6L": {
                     "full_name": "ILS Z Runway 26 Left",
                     "runway": "26L",
                     "type": "ILS",
                     "waypoints": [
-                        "BLD/iaf/a8000 LARRE/if/a6500 SHAND/a4800 RELIN/faf/a3800",
-                        "PRINO/iaf/a8000/s210 LARRE/if/a6500 SHAND/a4800 RELIN/faf/a3800"   
+                        "BLD/iaf LARRE/if/a6500+ SHAND/a4800+ RELIN/faf/a3800",
+                        "PRINO/iaf/a8000/s210 LARRE/if/a6500+ SHAND/a4800+ RELIN/faf/a3800"   
+                    ]
+                },
+				 "R6L": {
+                    "full_name": "RNAV Runway 26 Left",
+                    "runway": "26L",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "PRINO/iaf/a8000/s210 LARRE/if/a6500 SHAND/a4800 RELIN/faf/a3800",
+						"BERBN/if/a8000/s210 BISHP/s205/arc2.2CFFLV SHAND/a4800+ RELIN/faf/a3800"
                     ]
                 },
                 "RZ9R": {
@@ -235,7 +244,7 @@
                     "ZAYNE": {
                         "cleared_altitude": 19000,
                         "sid": "RASLR3",
-                        "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK"
+                        "waypoints": "SILTT/flyover RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK"
                     }, 
                     "FRNCK": {
                         "cleared_altitude": 19000,
@@ -262,7 +271,7 @@
                     "JAYSN": {
                         "cleared_altitude": 14000,
                         "sid": "LOHLA3",
-                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 KNGPN LOHLA/a13400+ JAYSN"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 KNGPN/flyover LOHLA/a13400+ JAYSN"
                     },
                     "HOCEE": {
                         "cleared_altitude": 19000,
@@ -307,7 +316,7 @@
                     "FRNCK": {
                         "cleared_altitude": 19000,
                         "sid": "RATPK3",
-                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN JENFR RATPK DARDN"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN/flyover JENFR RATPK DARDN"
                     }
                 },
                 "8L": {
@@ -329,7 +338,7 @@
                     "JAYSN": {
                         "cleared_altitude": 14000,
                         "sid": "LOHLA3",
-                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 KNGPN LOHLA/a13400+ JAYSN"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 KNGPN/flyover LOHLA/a13400+ JAYSN"
                     },
                     "HOCEE": {
                         "cleared_altitude": 19000,
@@ -374,7 +383,7 @@
                     "FRNCK": {
                         "cleared_altitude": 19000,
                         "sid": "RATPK3",
-                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN JENFR RATPK DARDN"
+                        "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN/flyover JENFR RATPK DARDN"
                     }
                 },
                 "1R": {
@@ -2119,7 +2128,9 @@
             "ZAYNE": { }
         },
     "stars_maps": [
-        "283 BM3M L30", "005 FUS_MVA L30", "004 CLASSB L30", "282 BM2M L30", "281 BM1M L30", "284 BM4M L30", "283 BM3M L30"
+        "427 DPWP_B1 L30", "402 VAIRWAY L30", "005 FUS_MVA L30","426 TROUTSL L30", "004 CLASSB L30", "006 EOVM L30",
+		"427 DPWP_B1 L30", "402 VAIRWAY L30", "005 FUS_MVA L30", "281 BM1M L30", "283 BM3M L30", "","40 HLD_PTN L30", "354 TOWERC2 L30", "018 NOISE_B L30", "026 ZLAC134 L30", "501 LSV_MVA L30", "037 VGT-ILS L30", "", "", "", "",
+		"426 TROUTSL L30", "004 CLASSB L30", "006 EOVM L30", "282 BM2M L30", "284 BM4M L30", "012 HND_D L30", "353 TOWERC1 L30", "356 TOWERC4 L30", "019 NOISE_A L30", "027 ZLA_C2 L30", "500 QAS_MVA L30", "038 HND-VOR L30"
     ],
     "video_map_file": "videomaps/ZLA-videomaps.gob.zst"
     }

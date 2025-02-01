@@ -278,7 +278,7 @@ var (
 		`STARS: multiple improvements to video map handling, including supporting multiple colors and map categories`,
 		`STARS: CA and MSAW alerts are no longer generated for unassociated tracks`,
 		`New scenarios: MDT (Darius L), PVD (radarcontacto)`,
-		`Scenario updates: DCA (radarcontacto), SCT (Aiden), JFK airspace (Mike LeGall), Y90 (Merry), L30, N90, P80, SCT, SDF (Ketan K)`,
+		`Scenario updates: DCA (radarcontacto), SCT (Aiden), JFK airspace (Mike LeGall), Y90 (Merry), L30, NCT, P80, SCT, SDF (Ketan K)`,
 		`Airspace boundaries are now displayed using the scenario information window`,
 		`Improve fetching of airport weather (Makoto Sakaguchi)`,
 		`Fixed a bug that was causing vice to crash when loading saved sims`,
