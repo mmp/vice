@@ -1,0 +1,861 @@
+{
+    "tracon": "SBA",
+    "airports": {
+        "KSBA": {
+            "approaches": {
+                "R7": {
+                    "runway": "7",
+                    "type": "RNAV",
+					 "full_name": "RNAV Runway 7",
+                    "waypoints": [
+                        "AFOXY/iaf/a4400+ RIMVE/a4400+ ECEVA/if/a2800+ NAPPS/faf/a1800",
+						"GOLET LOBER/iaf/a2800+ ECEVA/if/a2800+ NAPPS/faf/a1800"
+                    ]
+                },
+                "I7": {
+                    "runway": "7",
+                    "type": "ILS",
+					"full_name": "ILS Runway 7",
+                    "waypoints": [
+                        "GVO/iaf/a5000+ HABUT/if/a3500+ GOYED/a2700+ NAPPS/faf/a1800",
+						"GOLET/iaf/a4000+ LOBER/a4000+ HABUT/if/a3500+ GOYED/a2700+ NAPPS/faf/a1800"
+                    ]
+                },
+                "V25": {
+                    "runway": "25",
+                    "type": "ILS",
+					"full_name": "VOR Runway 25",
+                    "waypoints": [
+                        "KWANG/iaf/a2100+ ZACKS/a2100+ MARNS",
+						"ZACKS/iaf/nopt180/pt45/a3000 MARNS",
+						"GVO/a6000+ ZACKS/iaf/nopt180/pt45/a3000 MARNS"
+                    ]
+                },
+				"V25T": {
+                    "runway": "25",
+                    "type": "RNAV",
+					 "full_name": "RNAV Visual Runway 25 (TF)",
+                    "waypoints": [
+                        "GVO LOVIE/a8000+ ARIIN/a6000+ FREBD VANCA/s210/a4000+ LARRS STUCC TOUDD/a1900+ RECTR/a1100+ PANTZ/a600 FISHI/a240",
+						"BLOSS/a3000+ STUCC TOUDD/a1900+ RECTR/a1100+ PANTZ/a600 FISHI/a240",
+						"JAAPE/a3000+ STUCC TOUDD/a1900+ RECTR/a1100+ PANTZ/a600 FISHI/a240"
+                    ]
+                },
+				"V25R": {
+                    "runway": "25",
+                    "type": "RNAV",
+					 "full_name": "RNAV Visual Runway 25 (RF)",
+                    "waypoints": [
+                        "GVO LOVIE/a8000+ ARIIN/a6000+ WODDI/a4000+/s210/arc2.1CFXMP WGNRR/a2600+/arc2.1CFXMP TOUDD/a1900+ RECTR/a1100+ BRRAD/a730/arc1.3CFXMN FLUDS/a560 ENNEF/a370/arc1.3CFVXW JAIOH/a240",
+						"BLOSS/a3000+/s210 WGNRR/a2600+/arc2.1CFXMP TOUDD/a1900+ RECTR/a1100+ BRRAD/a730/arc1.3CFXMN FLUDS/a560 ENNEF/a370/arc1.3CFVXW JAIOH/a240",
+						"JAAPE/a3000+/s210 TOUDD/a1900+ RECTR/a1100+ BRRAD/a730/arc1.3CFXMN FLUDS/a560 ENNEF/a370/arc1.3CFVXW JAIOH/a240"
+                    ]
+                }
+            },
+            "departure_routes": {
+                "7": {
+                    "MQO": {
+                        "cleared_altitude": 8000,
+						"sid": "GAUCH3",
+                        "waypoints": "N034.25.43.016,W119.48.44.093 RROJO KELLP CORRK KNNZI GAUCH/a6000+ MQO"
+                    },
+                    "SPLNT": {
+                        "cleared_altitude": 8000,
+						"sid": "GAUCH3",
+                        "waypoints": "N034.25.43.016,W119.48.44.093 RROJO KELLP CORRK KNNZI GAUCH/a6000+ SPLNT"
+                    },
+                    "KPTIN": {
+                        "cleared_altitude": 8000,
+						"sid": "MISHN4",
+                        "waypoints": "N034.25.42.315,W119.49.02.440 EFFRM MISHN KPTIN"
+                    },
+                    "BOILE": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "N034.25.42.315,W119.49.02.440 EFFRM MISHN LYTTL/a19000- BOILE/a10000+"
+                    },
+                    "NNAVY": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "N034.25.42.315,W119.49.02.440 EFFRM MISHN CMA BOILE/a10000+ NNAVY"
+                    },
+					"SXC": {
+                       "cleared_altitude": 8000,
+                       "waypoints": "N034.25.42.315,W119.49.02.440 EFFRM MISHN SXC"
+                    }
+                },
+                "25": {
+                    "MQO": {
+                        "cleared_altitude": 8000,
+						"sid": "GAUCH3",
+                        "waypoints": "GRPES GRRRR GAUCH/a6000+ MQO"
+                    },
+                    "SPLNT": {
+                        "cleared_altitude": 8000,
+						"sid": "GAUCH3",
+                        "waypoints": "GRPES GRRRR GAUCH/a6000+ SPLNT"
+                    },
+                    "KPTIN": {
+                        "cleared_altitude": 8000,
+						"sid": "MISHN4",
+                        "waypoints": "N034.25.33.952,W119.55.02.215 WNFRY DNKYY MISHN KPTIN"
+                    },
+                    "BOILE": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "N034.25.33.952,W119.55.02.215 WNFRY DNKYY MISHN LYTTL/a19000- BOILE/a10000+"
+                    },
+                    "NNAVY": {
+                        "cleared_altitude": 8000,
+                        "waypoints": "N034.25.33.952,W119.55.02.215 WNFRY DNKYY MISHN CMA BOILE/a10000+ NNAVY"
+                    },
+					"SXC": {
+                       "cleared_altitude": 8000,
+                       "waypoints": "N034.25.33.952,W119.55.02.215 WNFRY DNKYY MISHN SXC"
+                    }
+            }
+		},
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        },
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 33000,
+                    "destination": "KDEN",
+                    "route": "MISHN4 NNAVY",
+                    "exit": "NNAVY"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        },
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 11000,
+                    "destination": "KDEN",
+                    "route": "MISHN4 NNAVY",
+                    "exit": "NNAVY"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        },
+                        {
+                            "icao": "EJA"
+                        }
+                    ],
+                    "altitude": 20000,
+                    "destination": "KSFO",
+                    "route": "SPLNT",
+                    "exit": "SPLNT"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "EDV"
+                        }
+                    ],
+                    "altitude": 24000,
+                    "destination": "KSEA",
+                    "route": "SPLNT",
+                    "exit": "SPLNT"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "JIA"
+                        }
+                    ],
+                    "altitude": 23000,
+                    "destination": "KPHX",
+                    "route": "BOILE",
+                    "exit": "BOILE"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DPJ"
+                        }
+                    ],
+                    "altitude": 23000,
+                    "destination": "KSFO",
+                    "route": "MQO",
+                    "exit": "MQO"
+                }
+            ],
+            "exit_categories": {
+                "MQO": "North",
+                "SPLNT": "North",
+                "KPTIN": "East",
+                "BOILE": "Northeast",
+                "IKAYE": "East",
+                "NNAVY": "Northeast",
+                "SXC": "Southeast",
+                "KWANG": "East",
+                "GVO": "Northwest",
+                "VTU": "East",
+                "GINNA": "East"
+            },
+            "tower_list": 1
+        },
+	    "KSBP": {
+            "approaches": {
+                "R11": {
+                    "runway": "11",
+                    "type": "RNAV",
+					 "full_name": "RNAV Runway 11",
+                    "waypoints": [
+                        "PRB/a4300+ NACIN/iaf/a4300+ CREPE/if/a3400+ JAMPO/faf/a2400 ZIRVA",
+						"CALIS/iaf/a3400+ CREPE/if/a3400+ JAMPO/faf/a2400 ZIRVA",
+						"LOGVE/iaf/a3400+ CREPE/if/a3400+ JAMPO/faf/a2400 ZIRVA"
+                    ]
+                },
+                "I11": {
+                    "runway": "11",
+                    "type": "ILS",
+					"full_name": "ILS Runway 11",
+                    "waypoints": [
+                        "PRB OXUNE/iaf/a4800+ CREPE/hilpt/a4000-4700/nopt180 JAMPO/a2400",
+						"FRAMS/iaf CREPE/iaf/hilpt/a4000-4700/nopt180 JAMPO/a2400"
+                    ]
+                },
+                "R29": {
+                    "runway": "29",
+                    "type": "RNAV",
+					"full_name": "RNAV Runway 29",
+                    "waypoints": [
+                        "KIKII CADAB/iaf/lhilpt/a3900-6000/nopt180 HALDA/a2900+ CAVLI/a2400 WUTUB",
+						"WYNNR/iaf CADAB/iaf/lhilpt/a3900-6000/nopt180 HALDA/a2900+ CAVLI/a2400 WUTUB",
+						"FABEG/iaf CADAB/iaf/lhilpt/a3900-6000/nopt180 HALDA/a2900+ CAVLI/a2400 WUTUB"
+                    ]
+                }
+            },
+            "departure_routes": {
+                "11": {
+                    "GVO": {
+                        "cleared_altitude": 5000,
+						"sid": "AVILA4",
+                        "waypoints": "KSBP-29 N035.12.50.443,W120.35.55.984 N035.08.40.504,W120.37.06.928 AVILA ORCUT/a6000+ GVO"
+                    },
+                    "MQO": {
+                        "cleared_altitude": 5000,
+						"sid": "AVILA4",
+                        "waypoints": "KSBP-29 N035.12.50.443,W120.35.55.984 N035.08.40.504,W120.37.06.928 AVILA MQO"
+                    },
+                    "WINCH": {
+                        "cleared_altitude": 5000,
+						"sid": "AVILA4",
+                        "waypoints": "KSBP-29 N035.12.50.443,W120.35.55.984 N035.08.40.504,W120.37.06.928 AVILA SAKWE WINCH"
+                    },
+                    "PRB": {
+                        "cleared_altitude": 5000,
+						"sid": "WYNNR4",
+                        "waypoints": "KSBP-29 N035.12.50.443,W120.35.55.984 N035.10.20.439,W120.33.37.803 MISHI WYNNR/a6000+ PRB"
+                    },
+                    "RZS": {
+                        "cleared_altitude": 5000,
+						"sid": "WYNNR4",
+                        "waypoints": "KSBP-29 N035.12.50.443,W120.35.55.984 N035.10.20.439,W120.33.37.803 MISHI WYNNR/a6000+ RZS"
+                    },
+					"FLW": {
+                       "cleared_altitude": 5000,
+					   "sid": "WYNNR4",
+                       "waypoints": "KSBP-29 N035.12.50.443,W120.35.55.984 N035.10.20.439,W120.33.37.803 MISHI WYNNR/a6000+ FLW"
+                    }
+                },
+                "29": {
+                    "MQO": {
+                        "cleared_altitude": 5000,
+						"sid": "CREPE3",
+                        "waypoints": "KSBP-11 CREPE SOJSU MQO"
+                    },
+                    "FRAMS": {
+                        "cleared_altitude": 5000,
+						"sid": "CREPE3",
+                        "waypoints": "KSBP-11 CREPE RUGTY FRAMS"
+                    },
+                    "PRB": {
+                        "cleared_altitude": 5000,
+						"sid": "CREPE3",
+                        "waypoints": "KSBP-11 CREPE PRB"
+                    }
+            }
+		},
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        },
+                        {
+                            "icao": "SKW"
+                        },
+						{
+                            "icao": "UAL",
+							 "fleet": "short"
+                        }
+                    ],
+                    "altitude": 33000,
+                    "destination": "KDEN",
+                    "route": "PRB CABAB KROST BUMMP SSKII3",
+                    "exit": "PRB"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SKW"
+                        }
+                    ],
+                    "altitude": 22000,
+                    "destination": "KSFO",
+                    "route": "MQO CLMNS LIBBO NRRLI SERFR4",
+                    "exit": "MQO"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "ASA"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "KSEA",
+                    "route": "MQO CLMNS LIBBO RBL LMT HAWKZ8",
+                    "exit": "MQO"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 3000,
+                    "destination": "KSMX",
+                    "route": "WINCH",
+                    "exit": "WINCH"
+                }
+            ],
+            "exit_categories": {
+                "MQO": "North",
+                "PRB": "Northeast",
+                "GVO": "South",
+                "FLW": "East",
+                "WINCH": "South"
+            },
+            "tower_list": 1
+        }
+    },
+    "inbound_flows": {
+    "PITBL1": {
+        "arrivals": [
+      {
+        "waypoints": "PIRYT/a24000 PITBL/ho KWANG",
+		"runway_waypoints": {
+          "KSBA": {
+            "25": "KWANG SWAMM/flyover/h267",
+            "7": "KWANG HHOME GRYSN/flyover/h254"
+		  }
+		  },
+        "cruise_altitude": 30000,
+        "star": "PITBL1",
+        "initial_controller": "LAX_14_CTR",
+		"initial_altitude": 24000,
+        "assigned_altitude": 8000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KSBA": [
+            {
+              "icao": "UAL",
+              "airport": "KDEN"
+            },
+			{
+              "icao": "DAL",
+              "airport": "KATL"
+            },
+			{
+              "icao": "AAL",
+              "airport": "KDFW"
+            },
+			{
+              "icao": "AAL",
+              "airport": "KPHX"
+            },
+			{
+              "icao": "SWA",
+              "airport": "KLAS"
+            }
+          ]	
+        }
+      }
+    ]
+  },
+      "NORTHWEST SBA ARR": {
+        "arrivals": [
+      {
+        "waypoints": "YYUNG N034.51.59.265,W120.25.25.506/ho GVO HABUT",	
+        "cruise_altitude": 31000,
+		"star": "NORTHWEST SBA ARR",
+        "initial_controller": "LAX_25_CTR",
+		"initial_altitude": 25000,
+        "assigned_altitude": 9000,
+        "initial_speed": 300,
+        "expect_approach": null,
+        "airlines": {
+          "KSBA": [
+            {
+              "icao": "UAL",
+              "airport": "KSFO"
+            },
+			{
+              "icao": "SWA",
+              "airport": "KOAK"
+            },
+			{
+              "icao": "SKW",
+              "airport": "KSFO"
+            }
+          ]	
+        }
+      }
+    ]
+  },
+  "NORTH SBA ARR": {
+        "arrivals": [
+      {
+        "waypoints": "AVE N035.00.49.287,W120.02.32.682/ho GVO HABUT",	
+        "cruise_altitude": 37000,
+		"star": "NORTH SBA ARR",
+        "initial_controller": "LAX_25_CTR",
+		"initial_altitude": 20000,
+        "assigned_altitude": 9000,
+        "initial_speed": 300,
+        "expect_approach": null,
+        "airlines": {
+          "KSBA": [
+            {
+              "icao": "ASA",
+              "airport": "KSEA"
+            },
+			{
+              "icao": "SWA",
+              "airport": "KOAK"
+            },
+			{
+              "icao": "SWA",
+              "airport": "KSMF"
+            },
+			{
+              "icao": "QXE",
+              "airport": "KPDX"
+            }
+          ]	
+        }
+      }
+    ]
+  },
+      "NORTH SBP ARR": {
+        "arrivals": [
+      {
+        "waypoints": "N035.49.47.855,W120.37.41.398 PRB CREPE",
+        "cruise_altitude": 34000,
+        "star": "NORTH SBP ARR",
+        "initial_controller": "OAK_10_CTR",
+		"initial_altitude": 12000,
+        "assigned_altitude": 7000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KSBP": [
+            {
+              "icao": "ASA",
+              "airport": "KSEA"
+            },
+			{
+              "icao": "QXE",
+              "airport": "KPDX"
+            }
+          ]	
+        }
+      }
+    ]
+  },
+  "SOUTH SBP ARR": {
+        "arrivals": [
+      {
+        "waypoints": "CNDOR/ho CADAB",
+        "cruise_altitude": 36000,
+        "star": "SOUTH SBP ARR",
+        "initial_controller": "LAX_14_CTR",
+		"initial_altitude": 16000,
+        "assigned_altitude": 9000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSBP": [
+            {
+              "icao": "SKW",
+              "airport": "KPHX"
+            },
+			{
+              "icao": "SKW",
+              "airport": "KLAX"
+            }
+          ]	
+        }
+      }
+    ]
+  },
+  "NORTHWEST SBP ARR": {
+        "arrivals": [
+      {
+        "waypoints": "N035.45.06.111,W121.26.18.186 N035.34.38.201,W121.09.53.536/ho YYUNG MQO",	
+        "cruise_altitude": 27000,
+		"star": "NORTHWEST SBP ARR",
+        "initial_controller": "OAK_10_CTR",
+		"initial_altitude": 16000,
+        "assigned_altitude": 7000,
+        "initial_speed": 300,
+        "expect_approach": null,
+        "airlines": {
+          "KSBP": [
+            {
+              "icao": "UAL",
+              "airport": "KSFO"
+            },
+			{
+              "icao": "SKW",
+              "airport": "KSFO"
+            }
+          ]	
+        }
+      }
+    ]
+  },
+  "EAST SBP ARR": {
+        "arrivals": [
+      {
+        "waypoints": "N035.51.11.955,W120.24.37.276 PRB CREPE",	
+        "cruise_altitude": 36000,
+		"star": "EAST SBP ARR",
+        "initial_controller": "OAK_10_CTR",
+		"initial_altitude": 13000,
+        "assigned_altitude": 7000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSBP": [
+            {
+              "icao": "UAL",
+              "airport": "KDEN"
+            }
+          ]	
+        }
+      }
+    ]
+  }
+},
+    "control_positions":{
+		"LAX_14_CTR": {
+            "frequency": 135500,
+            "radio_name": "Los Angeles Center",
+            "facility_id": "C",
+            "eram_facility": true,
+            "scope_char": "C",
+            "sector_id": "C14"
+        },
+		"LAX_15_CTR": {
+            "frequency": 119050,
+            "radio_name": "Los Angeles Center",
+            "facility_id": "C",
+            "eram_facility": true,
+            "scope_char": "C",
+            "sector_id": "C15"
+        },
+		"LAX_25_CTR": {
+            "frequency": 126525,
+            "radio_name": "Los Angeles Center",
+            "facility_id": "C",
+            "eram_facility": true,
+            "scope_char": "C",
+            "sector_id": "C25"
+        },
+		"OAK_10_CTR": {
+            "frequency": 128700,
+            "radio_name": "Oakland Center",
+            "facility_id": "O",
+            "eram_facility": true,
+            "scope_char": "O",
+            "sector_id": "O10"
+        },
+		"NTD_APP": {
+            "frequency": 124700,
+            "radio_name": "Point Mugu Approach",
+            "scope_char": "M",
+            "sector_id": "1M"
+        },
+        "SBA_R_APP": {
+            "frequency": 124150,
+            "radio_name": "Santa Barbara Approach",
+            "scope_char": "R",
+            "sector_id": "1R"
+        },
+		"SBA_H_APP": {
+            "frequency": 125400,
+            "radio_name": "Santa Barbara Approach",
+            "scope_char": "H",
+            "sector_id": "1H"
+        },
+		"SBA_E_APP": {
+            "frequency": 120550,
+            "radio_name": "Santa Barbara Approach",
+            "scope_char": "E",
+            "sector_id": "1E"
+        },
+		"SBA_I_APP": {
+            "frequency": 127725,
+            "radio_name": "Santa Barbara Approach",
+            "scope_char": "I",
+            "sector_id": "1I"
+        },
+		"SBA_TWR": {
+            "frequency": 119700,
+            "radio_name": "Santa Barbara Tower",
+            "scope_char": "S",
+            "sector_id": "1S"
+		}
+    },
+    "default_scenario": "SBA 07/15",
+    "name": "KSBA",
+    "primary_airport": "KSBA",
+    "scenarios": {
+        "SBA 07/15": {
+            "arrival_runways": [
+                {
+                    "airport": "KSBA",
+                    "runway": "7"
+                },
+				{
+                    "airport": "KSBP",
+                    "runway": "11"
+                }
+            ],
+            "inbound_rates": {
+                "PITBL1": {
+                    "KSBA": 2
+                },
+				 "NORTHWEST SBA ARR": {
+                    "KSBA": 3
+                },
+				 "NORTH SBA ARR": {
+                    "KSBA": 2
+                },
+				"NORTHWEST SBP ARR": {
+                    "KSBP": 1
+                },
+				"NORTH SBP ARR": {
+                    "KSBP": 1
+                },
+				"EAST SBP ARR": {
+                    "KSBP": 1
+                },
+				"SOUTH SBP ARR": {
+                    "KSBP": 1
+                }
+            },
+            "solo_controller": "SBA_H_APP",
+			 "multi_controllers":{
+                "default": {
+                    "SBA_H_APP":{"departures": ["KSBA"],
+					"arrivals": ["PITBL1"],
+                        "primary": true
+                    },
+                    "SBA_I_APP":{"backup": "SBA_R_APP",
+					"departures": ["KSBP"],
+					"arrivals": ["EAST SBP ARR", "NORTH SBP ARR", "NORTHWEST SBP ARR"]
+                    },
+                    "SBA_E_APP":{"backup": "SBA_H_APP",
+                    "arrivals": ["NORTHWEST SBA ARR", "NORTH SBA ARR"]
+                    },
+                    "SBA_R_APP":{"backup": "SBA_H_APP",
+					"arrivals": ["SOUTH SBP ARR"]
+                    }
+                }
+            },
+            "controllers": [
+                "SBA_TWR",
+                "SBA_H_APP",
+                "SBA_R_APP",
+                "LAX_14_CTR",
+				"LAX_15_CTR",
+				"LAX_25_CTR",
+				"OAK_10_CTR"
+            ],
+            "default_maps": ["116S COMPOSITE OF MAPS SBA","112S RWY 7 OVERLAY SBA"],
+            "departure_runways": [
+                {
+                    "airport": "KSBA",
+                    "rate": 5,
+                    "runway": "7"
+                },
+				{
+                    "airport": "KSBP",
+                    "rate": 3,
+                    "runway": "11"
+                }
+            ],
+            "wind": {
+                "direction": 70,
+                "speed": 10
+            }
+        },
+        "KSBA 25/15": {
+            "arrival_runways": [
+                {
+                    "airport": "KSBA",
+                    "runway": "25"
+                },
+				{
+                    "airport": "KSBP",
+                    "runway": "29"
+                }
+            ],
+            "inbound_rates": {
+              "PITBL1": {
+                    "KSBA": 2
+                },
+				 "NORTHWEST SBA ARR": {
+                    "KSBA": 3
+                },
+				 "NORTH SBA ARR": {
+                    "KSBA": 2
+                },
+				"NORTHWEST SBP ARR": {
+                    "KSBP": 1
+                },
+				"NORTH SBP ARR": {
+                    "KSBP": 1
+                },
+				"EAST SBP ARR": {
+                    "KSBP": 1
+                },
+				"SOUTH SBP ARR": {
+                    "KSBP": 1
+                }
+            },
+            "solo_controller": "SBA_H_APP",
+			"multi_controllers":{
+                "default": {
+                    "SBA_H_APP":{"departures": ["KSBA"],
+					"arrivals": ["PITBL1"],
+                        "primary": true
+                    },
+                    "SBA_I_APP":{"backup": "SBA_R_APP",
+					"departures": ["KSBP"],
+					"arrivals": ["EAST SBP ARR", "NORTH SBP ARR", "NORTHWEST SBP ARR"]
+                    },
+                    "SBA_E_APP":{"backup": "SBA_H_APP",
+                    "arrivals": ["NORTHWEST SBA ARR", "NORTH SBA ARR"]
+                    },
+                    "SBA_R_APP":{"backup": "SBA_H_APP",
+					"arrivals": ["SOUTH SBP ARR"]
+                    }
+                }
+            },
+            "controllers": [
+                "SBA_TWR",
+                "SBA_H_APP",
+                "SBA_R_APP",
+                "LAX_14_CTR",
+				"LAX_15_CTR",
+				"LAX_25_CTR",
+				"OAK_10_CTR"
+            ],
+            "default_maps": ["116S COMPOSITE OF MAPS SBA","113S RWY 25 OVERLAY SBA"],
+            "departure_runways": [
+                {
+                    "airport": "KSBA",
+                    "rate": 5,
+                    "runway": "25"
+                },
+				{
+                    "airport": "KSBP",
+                    "rate": 3,
+                    "runway": "29"
+                }
+            ],
+            "wind": {
+                "direction": 260,
+                "speed": 8
+            }
+        }
+    },
+    "stars_config": {
+       "center": "KSBA",
+       "coordination_fixes": {
+           "KWANG": [
+               {
+                   "type": "route",
+                   "to": "SBA",
+                   "from": "ZLA"
+               }
+           ]
+       },
+        "radar_sites": {
+            "SBA": {
+                "char": "S",
+                "position": "35.394728, 120.354325",
+                "elevation": 3622,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "range": 60,
+        "scratchpads": {
+            "SPLNT": "GAU",
+            "MQO": "GAU",
+            "NNAVY": "MIS",
+            "BOILE": "MIS",
+            "KPTIN": "MIS",
+            "SXC": "MIS",
+            "CMA": "CMA",
+            "HENNR": "FIM",
+            "FIM": "FIM",
+            "GINNA": "CMA",
+            "VTU": "VTU"
+        },
+        "significant_points": {
+            "MQO": { },
+            "GVO": { },
+            "CMA": { },
+			"GLJ": { },
+			"VTU": { },
+            "SXC": { },
+            "RZS": { },
+            "FIM": { },
+            "KWANG": { "short_name": "KWG" },
+			"KPTIN": { "short_name": "KPT" },
+            "MISHN": { "short_name": "MIS" },
+            "GAUCH": { "short_name": "GAU" },
+            "HABUT": { "short_name": "HAB" },
+            "PRB": {  }
+        },
+        "stars_maps": [
+            "101S EOVM SBA", "113S RWY 25 OVERLAY SBA", "118S CLASS C SBA", "143S 3NM FUSION MVA SBA", "122S SBA GPS RWY 7 SBA", "144S 5NM FUSION MVA SBA",
+			"101S EOVM SBA","143S 3NM FUSION MVA SBA","144S 5NM FUSION MVA SBA", "112S RWY 7 OVERLAY SBA","113S RWY 25 OVERLAY SBA", "114S VICTOR AIRWAYS SBA", "123S COMPOSITE OF MAP LABELS SBA", "116S COMPOSITE OF MAPS SBA", "401S SMX VFR SBA", "115S CLASS AIRSPACE SBA", "120S IR-200 SBA", "155S ASA RNP 07 SBA","156S ASA RNP 25 SBA","167S SBP RNAV M RWY 29 SBA", "", "",
+			"164S SBA RNAV VISUAL RWY 25 TF SBA","165S SBA RNAV VISUAL RWY 25 RF SBA", "126S SBP GPS RWY 29 SBA", "127S SBP VOR OR TACAN-A SBA", "125S SBP GPS RWY 11 SBA", "130S SMX VOR RWY 12 SBA", "402S SMX GPS RWY 30 SBA","142S SMX COPTER APPROACH SBA", "129S IZA VOR SBA", "109S GPS APCHS SBA", "128S LPC VOR-DME-A SBA", "108S VBG TACAN APCHS SBA", "107S VBG ILS APCHS SBA","166S SBP RNAV M RWY 11 SBA"
+        ],
+        "video_map_file": "videomaps/ZLA-videomaps.gob.zst"
+    }
+}
