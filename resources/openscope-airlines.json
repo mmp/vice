@@ -42711,6 +42711,26 @@
       }
     },
     {
+      "icao": "www",
+      "name": "Janet Airlines",
+      "callsign": {
+        "name": "Janet",
+        "callsignFormats": [
+          "##",
+          "###",
+          "####"
+        ]
+      },
+      "fleets": {
+        "default": [
+          [
+            "B736",
+            6
+          ]
+        ]
+      }
+    },
+    {
       "icao": "wzz",
       "name": "Wizz Air",
       "callsign": {

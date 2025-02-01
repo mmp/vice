@@ -2908,14 +2908,8 @@
           "full_name": "RNAV Y Runway 28L"
         },
         "RZ8L": {
-          "runway": "28L",
-          "type": "RNAV",
-          "full_name": "RNP Z Runway 28L",
-          "waypoints": [
-            "BASEC/iaf SNS/a4900+/if CONIV/a4000+/faf OKUPE/arc1.500CFBRC HUTAD",
-            "JEJMA/iaf SNS/a4900+/if CONIV/a4000+/faf OKUPE/arc1.500CFBRC HUTAD",
-            "SNS/a4900+/hilpt5.0nm/pta4900/iaf CONIV/a4000+/faf OKUPE/arc1.500CFBRC HUTAD"
-          ]
+          "cifp_id": "RZ28L",
+          "full_name": "RNAV Z Runway 28L"
         },
         "V8L": {
           "runway": "28L",
@@ -3983,14 +3977,8 @@
           "cifp_id": "I28R"
         },
         "RY8R": {
-          "runway": "28R",
-          "type": "RNAV",
-          "full_name": "RNP Y Runway 28R",
-          "waypoints": [
-            "ARCHI/a7000/iaf WIBNI/a4900+ GUTTS/a3400+/if DONNG/a1800+/arc2.920CFFJZ/faf JOSUF/arc2.830CFFJX FABLA",
-            "EDDYY/a6000/s240/iaf SIDBY/a4000+ GUTTS/a3400+/if DONNG/a1800+/arc2.920CFFJZ/faf JOSUF/arc2.830CFFJX FABLA",
-            "SIDBY/iaf GUTTS/a3400+/if DONNG/a1800+/arc2.920CFFJZ/faf JOSUF/arc2.830CFFJX FABLA"
-          ]
+          "cifp_id": "RY28R",
+          "full_name": "RNAV Y Runway 28R"
         },
         "RZ8R": {
           "cifp_id": "RZ28R",
@@ -6279,7 +6267,7 @@
         "RZ12": {
           "runway": "12",
           "type": "RNAV",
-          "full_name": "RNP Z Runway 12",
+          "full_name": "RNAV Z Runway 12",
           "waypoints": [
             "HIRMO/a4000/iaf FREEM/a4000/s210/arc2.240CFDTX JENAY/a3700+ BEEEJ/a3200+/if MNNTY/a2400+/arc2.110CFDTZ PLAZA/a1800/faf",
             "NRTHM/a5000/iaf ALCAT/a3600+ SHNGL/a2600+/if PLAZA/a1800/faf"
@@ -6291,7 +6279,7 @@
         },
         "RZ8L": {
           "cifp_id": "RZ28L",
-          "full_name": "RNP Z Runway 28L"
+          "full_name": "RNAV Z Runway 28L"
         },
         "I8R": {
           "cifp_id": "I28R"
@@ -6302,7 +6290,7 @@
         },
         "RZ8R": {
           "cifp_id": "RZ28R",
-          "full_name": "RNP Z Runway 28R"
+          "full_name": "RNAV Z Runway 28R"
         },
         "I30": {
           "cifp_id": "I30"
@@ -6314,7 +6302,7 @@
         "RZ30": {
           "runway": "30",
           "type": "RNAV",
-          "full_name": "RNP Z Runway 30",
+          "full_name": "RNAV Z Runway 30",
           "waypoints": [
             "ALLXX/a5000/s210/if CRSEN/a5000+/arc2.720CFFPC HEPMO/a3100+/arc5.820CFFPB MITOE/a2000+/faf _MITOE",
             "FRNNY/a4100+/iaf WUVON/a2700+/if MITOE/a2000+/faf _MITOE",
@@ -9036,7 +9024,7 @@
         "RZ7L": {
           "runway": "17L",
           "type": "RNAV",
-          "full_name": "RNP Z Runway 17L",
+          "full_name": "RNAV Z Runway 17L",
           "waypoints": [
             "OVOME/a4000/s210/if FIKAN/a3200+/arc2.300CFBJJ JULUK/a2200+ UZIZY/a2000+/arc2.300CFBGB UWFUR/a1100+/faf",
             "TENCO/a4000/iaf ZIMAM/a3000+/s210/if WOSKI/a1600+/arc1.8 UWFUR/a1100+/faf",
@@ -9053,7 +9041,7 @@
         "RZ7R": {
           "runway": "17R",
           "type": "RNAV",
-          "full_name": "RNP Z Runway 17R",
+          "full_name": "RNAV Z Runway 17R",
           "waypoints": [
             "OVOME/a4000/s210/if FIKAN/a3200+/arc2.300CFBGL ZOLOV/a1100+/faf",
             "TENCO/a4000/iaf ZIMAM/a3000+/s210/if JOKUV/a1600+/arc2.1 ZOLOV/a1100+/faf",
@@ -9070,7 +9058,7 @@
         "RZ5L": {
           "runway": "35L",
           "type": "RNAV",
-          "full_name": "RNP Z Runway 35L",
+          "full_name": "RNAV Z Runway 35L",
           "waypoints": [
             "ISYOH/a6000+/iaf ELMAC/a3000/s210/if WOMAV/a1100+/faf",
             "MYNRR/a9000/iaf ELMAC/a3000/s210/if WOMAV/a1100+/faf",
@@ -9084,7 +9072,7 @@
         "RZ5R": {
           "runway": "35R",
           "type": "RNAV",
-          "full_name": "RNP Z Runway 35R",
+          "full_name": "RNAV Z Runway 35R",
           "waypoints": [
             "ISYOH/a6000+/iaf FIPIN/a3000/s210/if JUNBO/a1100+/faf",
             "MYNRR/a9000/iaf FIPIN/a3000/s210/if JUNBO/a1100+/faf",
@@ -10287,18 +10275,13 @@
           "full_name": "RNAV X Runway 17L"
         },
         "RY7L": {
-          "runway": "17L",
-          "type": "RNAV",
-          "full_name": "RNP Y Runway 17L",
-          "waypoints": [
-            "CANYA/a10000/s210/if GOYET/a8000+/arc2.900CFFKL HOMES/a7700+/arc2.900CFFKL WORTH/a6400+/arc2.900CFFKL/faf URATE/a5445+ _RNO17L",
-            "KLOCK/a10000/s210/if ICEYA/a9000+ HOMES/a7700+/arc2.900CFFKL WORTH/a6400+/arc2.900CFFKL/faf URATE/a5445+ _RNO17L"
-          ]
+          "cifp_id": "RY17L",
+          "full_name": "RNAV Y Runway 17L"
         },
         "RZ7L": {
           "runway": "17L",
           "type": "RNAV",
-          "full_name": "RNP Z Runway 17L",
+          "full_name": "RNAV Z Runway 17L",
           "waypoints": [
             "AVVYY/iaf FREEL/a11200+/s210 ROWWS/a11000+/if TLLAK/a9100+/arc3.000CFPPM OQIKO/a9100+/arc3.200CFRVW YETUD/a7800+/arc3.200CFRVW HOGBO/a6900+/faf _RNO17L",
             "HOBOA SNDIT/a11100+/s210 JUDPU/a10500+/iaf GNAAR/a10000+/if OQIKO/a9100+/arc3.200CFRVW YETUD/a7800+/arc3.200CFRVW HOGBO/a6900+/faf _RNO17L",
@@ -10316,15 +10299,8 @@
           "full_name": "ILS Y Runway 17L"
         },
         "IZ7R": {
-          "runway": "17R",
-          "type": "ILS",
-          "full_name": "ILS Z Runway 17R",
-          "waypoints": [
-            "HOBOA/a16000+/iaf JUDPU/a12200+/s230 ZONBI/a10700+/arc3.990CFCDH AMIES/a9400+/arc3.760CFBSB WALAR/a8000+/if ZOMPO/a7500 DISCS/a7400+/faf",
-            "KLOCK/a10000+/s210/iaf BELBE/a9000+/if SLABS/a9000+/arc3.010CFDRJ ZOMPO/a7500 DISCS/a7400+/faf",
-            "LIBGE/a12000+/s230/iaf ROARS/a9200+ WALAR/a8000+/if ZOMPO/a7500 DISCS/a7400+/faf",
-            "WINRZ/a11000+/s230/iaf WALAR/a8000+/if ZOMPO/a7500 DISCS/a7400+/faf"
-          ]
+          "cifp_id": "IZ17R",
+          "full_name": "ILS Z Runway 17R"
         },
         "RX7R": {
           "cifp_id": "RX17R",
@@ -10333,7 +10309,7 @@
         "RY7R": {
           "runway": "17R",
           "type": "RNAV",
-          "full_name": "RNP Y Runway 17R",
+          "full_name": "RNAV Y Runway 17R",
           "waypoints": [
             "CANYA/a10000/s210/if GOYET/a8000+/arc2.900CFFKL HOMES/a7700+/arc2.850CFTWX ZENDO/a7000+/arc3.040CFNWV MASTR/a6400+/arc3.050CFRQN/faf OKITE _RNO17R",
             "KLOCK/a10000/s210/if ICEYA/a9000+ HOMES/a7700+/arc2.850CFTWX ZENDO/a7000+/arc3.040CFNWV MASTR/a6400+/arc3.050CFRQN/faf OKITE _RNO17R"
@@ -10342,7 +10318,7 @@
         "RZ7R": {
           "runway": "17R",
           "type": "RNAV",
-          "full_name": "RNP Z Runway 17R",
+          "full_name": "RNAV Z Runway 17R",
           "waypoints": [
             "AVVYY/iaf FREEL/a11200+/s210 ROWWS/a11000+/if TLLAK/a9100+/arc3.000CFTWZ HMWUD/a9100+/arc3.000CFTWZ LUCEK/a7800+/arc3.760CFVFR BETYA/a6900+/faf _RNO17R",
             "HOBOA SNDIT/a11100+/s210 JUDPU/a10500+/iaf GNAAR/a10000+/if HMWUD/a9100+/arc3.000CFTWZ LUCEK/a7800+/arc3.760CFVFR BETYA/a6900+/faf _RNO17R",
@@ -10365,14 +10341,14 @@
         "RW5L": {
           "runway": "35L",
           "type": "RNAV",
-          "full_name": "RNP W Runway 35L",
+          "full_name": "RNAV W Runway 35L",
           "waypoints": [
             "FMG/a10000/if VCITY/a8900+/s210/arc3.050CFFCW WSHOE/a7900+/arc3.050CFFCW RSNAK/a7800+/arc3.050CFFCW DONER/a7700+/arc3.050CFFCW GRZLI/a7300+/arc2.100CFFTF/faf LDYBG _RNO35L"
           ]
         },
         "RZ5L": {
           "cifp_id": "RZ35L",
-          "full_name": "RNP Z Runway 35L"
+          "full_name": "RNAV Z Runway 35L"
         },
         "RX5R": {
           "cifp_id": "RX35R",
@@ -10385,7 +10361,7 @@
         "RW5R": {
           "runway": "35R",
           "type": "RNAV",
-          "full_name": "RNP W Runway 35R",
+          "full_name": "RNAV W Runway 35R",
           "waypoints": [
             "FMG/a10000/if VRGNA/a8900+/s210/arc3.070CFFHM RLSTN/a7900+/arc3.070CFFHM URKBE/a7600+/arc3.070CFFHM TRMMR/a7400+/arc2.100CFFBN/faf ULOHA _RNO35R"
           ]
@@ -27132,6 +27108,9 @@
         }
       },
       "controllers": [
+        "SJC_TWR",
+        "MRY_TWR",
+        "SNS_TWR",
         "SFO_G_APP",
         "OAK_G_APP",
         "SMF_P_APP",
@@ -27320,6 +27299,9 @@
         }
       },
       "controllers": [
+        "SJC_TWR",
+        "MRY_TWR",
+        "SNS_TWR",
         "SFO_G_APP",
         "SMF_P_APP",
         "OAK_G_APP",
@@ -27476,6 +27458,7 @@
         }
       },
       "controllers": [
+        "SFO_TWR",
         "SMF_P_APP",
         "SJC_M_APP",
         "SFO_DEP",
@@ -27968,6 +27951,9 @@
       "controllers": [
         "OAK_TWR",
         "OAK_S_TWR",
+        "LVK_TWR",
+        "SCK_TWR",
+        "MER_TWR",
         "SJC_M_APP",
         "SFO_B_APP",
         "SMF_P_APP",
@@ -28186,6 +28172,10 @@
       "controllers": [
         "OAK_TWR",
         "OAK_S_TWR",
+        "LVK_TWR",
+        "MOD_TWR",
+        "SCK_TWR",
+        "MER_TWR",
         "SJC_M_APP",
         "SFO_B_APP",
         "SFO_DEP",
@@ -28404,6 +28394,10 @@
       "controllers": [
         "OAK_TWR",
         "OAK_S_TWR",
+        "LVK_TWR",
+        "MOD_TWR",
+        "SCK_TWR",
+        "MER_TWR",
         "SJC_M_APP",
         "SFO_B_APP",
         "SFO_DEP",
@@ -28618,6 +28612,10 @@
       "controllers": [
         "OAK_TWR",
         "OAK_S_TWR",
+        "LVK_TWR",
+        "MOD_TWR",
+        "SCK_TWR",
+        "MER_TWR",
         "SJC_M_APP",
         "SFO_B_APP",
         "SFO_DEP",
@@ -28724,6 +28722,8 @@
         }
       },
       "controllers": [
+        "SFO_TWR",
+        "OAK_TWR",
         "OAK_S_TWR",
         "OAK_D_DEP",
         "SUU_S_APP",
@@ -28799,6 +28799,8 @@
         }
       },
       "controllers": [
+        "SFO_TWR",
+        "OAK_TWR",
         "OAK_S_TWR",
         "SUU_S_APP",
         "OAK_CTR"
@@ -28879,6 +28881,8 @@
         }
       },
       "controllers": [
+        "SFO_TWR",
+        "OAK_TWR",
         "OAK_S_TWR",
         "OAK_CTR"
       ],
@@ -29786,22 +29790,23 @@
         }
       },
       "controllers": [
+        "SJC_TWR",
+        "SFO_TWR",
         "OAK_TWR",
-        "SMF_P_APP",
-        "SJC_DEP",
-        "SJC_M_APP",
-        "OAK_CTR",
+        "OAK_S_TWR",
         "LVK_TWR",
         "SMF_TWR",
         "SAC_TWR",
-        "SFO_TWR",
-        "SJC_TWR",
         "MER_TWR",
         "SNS_TWR",
         "MRY_TWR",
         "SCK_TWR",
         "MOD_TWR",
-        "SMF_TWR"
+        "SMF_TWR",
+        "SMF_P_APP",
+        "SJC_DEP",
+        "SJC_M_APP",
+        "OAK_CTR"
       ],
       "default_maps": [
         "RVMNCT902S"
