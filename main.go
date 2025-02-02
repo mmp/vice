@@ -16,6 +16,7 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"runtime"
+	"runtime/debug"
 	"strings"
 	"time"
 
@@ -146,6 +147,15 @@ func main() {
 		var plat platform.Platform
 
 		defer lg.CatchAndReportCrash()
+
+		go func() {
+			t := time.Tick(15 * time.Second)
+			for {
+				<-t
+				// Try to more aggressively return freed memory to the OS.
+				debug.FreeOSMemory()
+			}
+		}()
 
 		///////////////////////////////////////////////////////////////////////////
 		// Global initialization and set up. Note that there are some subtle
