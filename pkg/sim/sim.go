@@ -137,6 +137,7 @@ func (lc *LaunchConfig) DrawDepartureUI(p platform.Platform) (changed bool) {
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
+	uiStartDisable(lc.DepartureRateScale == 0)
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 	if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
@@ -180,6 +181,7 @@ func (lc *LaunchConfig) DrawDepartureUI(p platform.Platform) (changed bool) {
 		}
 		imgui.EndTable()
 	}
+	uiEndDisable(lc.DepartureRateScale == 0)
 	imgui.Separator()
 
 	return
@@ -222,6 +224,7 @@ func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
+	uiStartDisable(lc.InboundFlowRateScale == 0)
 	if imgui.BeginTableV("arrivalgroups", 3, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
 		imgui.TableSetupColumn("Arrival")
@@ -251,6 +254,7 @@ func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 		}
 		imgui.EndTable()
 	}
+	uiEndDisable(lc.InboundFlowRateScale == 0)
 
 	imgui.Separator()
 
