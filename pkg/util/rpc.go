@@ -184,7 +184,7 @@ func MakeCompressedConn(c net.Conn) (*CompressedConn, error) {
 	if cc.r, err = zstd.NewReader(c); err != nil {
 		return nil, err
 	}
-	if cc.w, err = zstd.NewWriter(c); err != nil {
+	if cc.w, err = zstd.NewWriter(c, zstd.WithEncoderConcurrency(1), zstd.WithWindowSize(16384)); err != nil {
 		return nil, err
 	}
 	return cc, nil
