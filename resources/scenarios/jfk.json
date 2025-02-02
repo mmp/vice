@@ -3208,6 +3208,7 @@
 	 ],
 	    "LENDY_4RL": [
 	 	  {
+		  "label_position": "N040.51.33.763,W074.06.13.260",
 		  "boundaries": [
 		  "LENDY_4RL_A2"
 		  ],
@@ -3238,12 +3239,13 @@
 	 ],	 
 	    "LENDY_13RL": [
 	 	  {
+		  "label_position": "N040.51.17.737,W074.07.13.987",
 		  "boundaries": [
 		  "LENDY_4RL_A2"
 		  ],
 		  "lower":18000,
 		  "upper":16000
-		  },	 
+		  }, 
 		  {
 		  "boundaries": [
 		  "LENDY_4RL_B3"
@@ -3252,6 +3254,7 @@
 		  "upper":13000
 		  },	
 		  {
+		 "label_position": "N040.35.13.165,W074.02.56.495",
 		  "boundaries": [
 		  "LENDY_4RL_A4"
 		  ],
@@ -3268,6 +3271,7 @@
 	  ],	
 	    "LENDY_31RL": [
 	 	  {
+		  "label_position": "N040.50.59.884,W074.07.03.110",
 		  "boundaries": [
 		  "LENDY_4RL_A2"
 		  ],
@@ -3282,6 +3286,7 @@
 		  "upper":13000
 		  },	
 		  {
+	     "label_position": "N040.35.43.432,W074.02.29.661",
 		  "boundaries": [
 		  "LENDY_4RL_A4"
 		  ],
@@ -3312,6 +3317,7 @@
 	  ],
 	    "LENDY_22RL": [
 	 	  {
+		  "label_position": "N040.51.34.120,W074.07.01.188",
 		  "boundaries": [
 		  "LENDY_4RL_A2"
 		  ],
@@ -3326,6 +3332,7 @@
 		  "upper":13000
 		  },		
 		  {
+		  "label_position": "N040.36.23.724,W073.55.52.862",
 		  "boundaries": [
 		  "LENDY_22RL_C5"
 		  ],
@@ -3335,6 +3342,7 @@
 		  ],
 	    "ROBER_4RL": [
 	 	  {
+		  "label_position": "N040.50.34.780,W073.20.32.995",
 		  "boundaries": [
 		  "ROBER_4RL_E3"
 		  ],
@@ -3342,6 +3350,7 @@
 		  "upper":5000
 	      },
 	      {
+		  "label_position": "N040.51.37.196,W073.09.32.277",
 		  "boundaries": [
 		  "ROBER_4RL_F3"
 		  ],
@@ -3349,6 +3358,7 @@
 		  "upper":10000
 		  },
 	      {
+		  "label_position": "N040.48.47.018,W072.59.49.096",
 		  "boundaries": [
 		  "ROBER_4RL_G4"
 		  ],
@@ -3377,6 +3387,7 @@
 		  "upper":12000
 		  },
 		  {
+		  "label_position": "N040.39.29.366,W073.15.43.835",
 		  "boundaries": [
 		  "ROBER_4RL_E5"
 		  ],
@@ -3407,6 +3418,7 @@
 		  ],
 	    "ROBER_31RL": [
 	      {
+		 "label_position": "N040.49.06.080,W073.00.53.585",
 		  "boundaries": [
 		  "ROBER_4RL_G4"
 		  ],
@@ -3414,6 +3426,7 @@
 		  "upper":12000
 		  },
 	      {
+		  "label_position": "N040.49.02.893,W072.50.44.119",
 		  "boundaries": [
 		  "ROBER_4RL_H4"
 		  ],
@@ -3435,6 +3448,7 @@
 		  "upper":12000
 		  },
 		  {
+	     "label_position": "N040.39.18.531,W073.15.20.571",
 		  "boundaries": [
 		  "ROBER_4RL_E5"
 		  ],
@@ -3465,6 +3479,7 @@
 		  ],
 	    "ROBER_22RL": [
 	      {
+		  "label_position": "N040.51.30.454,W073.10.05.950",
 		  "boundaries": [
 		  "ROBER_4RL_F3"
 		  ],
@@ -3472,6 +3487,7 @@
 		  "upper":10000
 		  },
 	      {
+		  "label_position": "N040.49.09.595,W073.00.33.398",
 		  "boundaries": [
 		  "ROBER_4RL_G4"
 		  ],
@@ -3479,6 +3495,7 @@
 		  "upper":12000
 		  },
 	      {
+		  "label_position": "N040.49.00.133,W072.50.37.115",
 		  "boundaries": [
 		  "ROBER_4RL_H4"
 		  ],
@@ -3500,6 +3517,7 @@
 		  "upper":12000
 		  },
 		  {
+		  "label_position": "N040.39.23.117,W073.15.42.352",
 		  "boundaries": [
 		  "ROBER_4RL_E5"
 		  ],
@@ -3567,6 +3585,7 @@
 		  ],
 	    "JFK_FINAL_13RL": [
 		  {
+		  "label_position": "N040.37.57.040,W074.01.46.292",
 		  "boundaries": [
 		  "JFK_FINAL_13RL_B2"
 		  ],
@@ -3604,6 +3623,7 @@
 		  ],
 	    "JFK_FINAL_22RL": [
 		  {
+		  "label_position": "N040.53.55.583,W073.36.07.822",
 		  "boundaries": [
 		  "JFK_FINAL_22RL_C1"
 		  ],
@@ -3611,6 +3631,7 @@
 		  "upper":3000
 		  },
 		  {
+		  "label_position": "N040.48.25.664,W073.40.10.565",
 		  "boundaries": [
 		  "JFK_FINAL_22RL_B3"
 		  ],
@@ -3632,6 +3653,7 @@
 		  "upper":3000
 		  },
 		  {
+		  "label_position": "N040.48.23.919,W073.25.48.880",
 		  "boundaries": [
 		  "JFK_FINAL_22RL_D3"
 		  ],
@@ -3639,6 +3661,7 @@
 		  "upper":5000
 		  },
 		  {
+		  "label_position": "N040.43.22.949,W073.22.10.059",
 		  "boundaries": [
 		  "JFK_FINAL_22RL_E4"
 		  ],
@@ -3669,6 +3692,7 @@
 		  "upper":2000
 		  },
 		  {
+		  "label_position": "N040.33.23.823,W073.37.27.061",
 		  "boundaries": [
 		  "JFK_FINAL_31RL_D3"
 		  ],
@@ -3676,6 +3700,7 @@
 		  "upper":4000
 		  },
 		  {
+		 "label_position": "N040.28.28.209,W073.25.40.969",
 		  "boundaries": [
 		  "JFK_FINAL_31RL_E4"
 		  ],
@@ -3685,6 +3710,7 @@
 		  ],
 	    "JFK_SATELITE_4RL": [
 		  {
+		  "label_position": "N040.48.04.474,W073.25.34.982",
 		  "boundaries": [
 		  "JFK_SATELITE_4RL_D2"
 		  ],
@@ -3701,6 +3727,7 @@
 		  ],
 	    "JFK_SATELITE_13RL": [
 		  {
+		  "label_position": "N040.47.44.533,W073.25.14.080",
 		  "boundaries": [
 		  "JFK_SATELITE_4RL_D2"
 		  ],
@@ -3731,8 +3758,9 @@
 		  "upper":3000
 		  }
 		  ],
-		"JFK_SATELITE_22RL_E5": [
+		"JFK_SATELITE_22RL": [
 		  {
+		  "label_position": "N040.37.11.886,W073.24.34.557",
 		  "boundaries": [
 		  "JFK_SATELITE_22RL_E5"
 		  ],
@@ -3747,11 +3775,12 @@
 		  "upper":3000
 		  },
 		  {
+		  "label_position": "N040.48.39.685,W073.25.51.571",
 		  "boundaries": [
 		  "JFK_FINAL_22RL_D3"
 		  ],
 		  "lower":0,
-		  "upper":3000
+		  "upper":2000
 		  }
 		  ],
 	    "JFK_DEP_4RL": [
@@ -3819,6 +3848,7 @@
 		  "upper":17000
 		  },
 		  {
+		  "label_position": "N040.45.45.249,W073.28.41.365",
 		  "boundaries": [
 		  "JFK_DEP_4RL_E3"
 		  ],
@@ -3854,6 +3884,7 @@
 		  "upper":14000
 		  },
 		  {
+		  "label_position": "N040.44.43.699,W073.21.55.145",
 		  "boundaries": [
 		  "JFK_DEP_4RL_F3"
 		  ],
@@ -3868,6 +3899,7 @@
 		  "upper":13000
 		  },
 		  {
+		  "label_position": "N040.56.09.342,W073.20.14.675",
 		  "boundaries": [
 		  "JFK_DEP_4RL_F1"
 		  ],
@@ -3882,6 +3914,7 @@
 		  "upper":14000
 		  },
 		  {
+	      "label_position": "N040.31.36.638,W073.14.42.064",
 		  "boundaries": [
 		  "JFK_DEP_4RL_G5"
 		  ],
@@ -3898,6 +3931,7 @@
 		  "upper":17000
 		  },
 		  {
+		  "label_position": "N040.46.03.967,W073.28.39.525",
 		  "boundaries": [
 		  "JFK_DEP_4RL_E3"
 		  ],
@@ -3919,6 +3953,7 @@
 		  "upper":14000
 		  },
 		  {
+		  "label_position": "N040.43.15.574,W073.21.39.023",
 		  "boundaries": [
 		  "JFK_DEP_4RL_F3"
 		  ],
@@ -3947,6 +3982,7 @@
 		  "upper":14000
 		  },
 		  {
+		  "label_position": "N040.31.27.698,W073.15.19.281",
 		  "boundaries": [
 		  "JFK_DEP_4RL_G5"
 		  ],
@@ -4147,6 +4183,7 @@
 		  "upper":13000
 		  },
 		  {
+		  "label_position": "N040.31.00.809,W073.15.58.255",
 		  "boundaries": [
 		  "JFK_DEP_22RL_G5"
 		  ],
@@ -4154,6 +4191,7 @@
 		  "upper":12000
 		  },
 		  {
+		  "label_position": "N040.33.59.213,W073.05.33.187",
 		  "boundaries": [
 		  "JFK_DEP_22RL_H5"
 		  ],
@@ -4168,6 +4206,7 @@
 		  "upper":14000
 		  },
 		  {
+		  "label_position": "N040.32.00.382,W073.31.09.708",
 		  "boundaries": [
 		  "JFK_DEP_22RL_E7"
 		  ],
@@ -5921,7 +5960,7 @@
         "JFK_G_APP": [ "CAMRN_22RL", "LENDY_22RL" ],
         "JFK_K_APP": [ "ROBER_22RL" ],
         "JFK_A_APP": [ "JFK_FINAL_22RL" ],
-        "JFK_M_APP": [ "JFK_SATELITE_22RL_E5" ],
+        "JFK_M_APP": [ "JFK_SATELITE_22RL" ],
         "JFK_DEP": [ "JFK_DEP_22RL" ]
       },
       "arrivals": {
