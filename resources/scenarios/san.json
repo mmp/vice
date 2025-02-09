@@ -160,22 +160,22 @@
                 "SLI": {
                     "cleared_altitude": 15000,
                     "sid": "ECHHO2",
-                    "waypoints": "REEBO/a4000+ BAUCA ECHHO GOFUR/a15000+ MMOTO SLI"
+                    "waypoints": "N032.42.26.960,W117.04.56.163/a4000+/flyover/arc1.2 N032.43.09.216,W117.04.18.480 BAUCA ECHHO GOFUR/a15000+ MMOTO SLI"
                 },
                 "IKAYE": {
                     "cleared_altitude": 15000,
                     "sid": "ECHHO2",
-                    "waypoints": "REEBO/a4000+ BAUCA ECHHO GOFUR/a15000+ MMOTO TEDEY GEEGN IKAYE"
+                    "waypoints": "N032.42.26.960,W117.04.56.163/a4000+/flyover/arc1.2 N032.43.09.216,W117.04.18.480 BAUCA ECHHO GOFUR/a15000+ MMOTO TEDEY GEEGN IKAYE"
                 },
                 "DINTY": {
                     "cleared_altitude": 8000,
                     "sid": "MMOTO2",
-                    "waypoints": "REEBO/a4000+ BAUCA ECHHO GOFUR/a15000+ MMOTO/a19000- SXC"
+                    "waypoints": "N032.42.26.960,W117.04.56.163/a4000+/flyover/arc1.2 N032.43.09.216,W117.04.18.480 BAUCA ECHHO GOFUR/a15000+ MMOTO/a19000- SXC"
                 },
                 "MALIT": {
                     "cleared_altitude": 8000,
                     "sid": "MMOTO2",
-                    "waypoints": "REEBO/a4000+ BAUCA ECHHO GOFUR/a15000+ MMOTO/a19000- SXC MALIT"
+                    "waypoints": "N032.42.26.960,W117.04.56.163/a4000+/flyover/arc1.2 N032.43.09.216,W117.04.18.480 BAUCA ECHHO GOFUR/a15000+ MMOTO/a19000- SXC MALIT"
                 },
                 "MTBAL": {
                     "cleared_altitude": 19000,
@@ -199,17 +199,17 @@
                 "EHF": {
                     "cleared_altitude": 15000,
                     "sid": "ECHHO2",
-                    "waypoints": "REEBO/a4000+ BAUCA ECHHO GOFUR/a15000 MMOTO SLI EHF"
+                    "waypoints": "N032.42.26.960,W117.04.56.163/a4000+/flyover/arc1.2 N032.43.09.216,W117.04.18.480 BAUCA ECHHO GOFUR/a15000 MMOTO SLI EHF"
                 },
                 "OROSZ": {
                     "cleared_altitude": 15000,
                     "sid": "ECHHO2",
-                    "waypoints": "REEBO/a4000+ BAUCA ECHHO GOFUR/a15000 MMOTO SLI OROSZ"
+                    "waypoints": "N032.42.26.960,W117.04.56.163/a4000+/flyover/arc1.2 N032.43.09.216,W117.04.18.480 BAUCA ECHHO GOFUR/a15000 MMOTO SLI OROSZ"
                 },
                 "CHKNN": {
                     "cleared_altitude": 15000,
                     "sid": "ECHHO2",
-                    "waypoints": "REEBO/a4000+ BAUCA ECHHO GOFUR/a15000 MMOTO SLI CHKNN"
+                    "waypoints": "N032.42.26.960,W117.04.56.163/a4000+/flyover/arc1.2 N032.43.09.216,W117.04.18.480 BAUCA ECHHO GOFUR/a15000 MMOTO SLI CHKNN"
                 }
             }
          },
@@ -1142,7 +1142,7 @@
   "PLYYA2": {
     "arrivals": [
       {
-        "waypoints": "LAX/a24000 TASCO/a19000 SWAMI/a16500- OHBEA/a15000+/ho PLYYA/a11000+ MNLYT/a4000+ SARGS/a2100+",
+        "waypoints": "LAX/a24000 TASCO/a19000 SWAMI/a16500- OHBEA/a15000+/ho PLYYA/a11000+ MNLYT/a4000+ SARGS/a2100",
         "cruise_altitude": 35000,
         "star": "PLYYA2",
         "initial_controller": "LAX_30_CTR",
