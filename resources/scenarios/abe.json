@@ -653,13 +653,19 @@
       "frequency": 119650,
       "radio_name": "Allentown approach",
       "scope_char": "F",
-      "sector_id": "SF"
+      "sector_id": "1A"
+    },
+    "ABE_DEP": {
+      "frequency": 124450,
+      "radio_name": "Allentown departure",
+      "scope_char": "F",
+      "sector_id": "1D"
     },
     "ABE_TWR": {
       "frequency": 120500,
       "radio_name": "Lehigh Valley tower",
       "scope_char": "T",
-      "sector_id": "AL"
+      "sector_id": "1L"
     },
     "AVP_S_APP": {
       "frequency": 126300,
@@ -738,6 +744,18 @@
         }
       },
       "solo_controller": "ABE_APP",
+      "multi_controllers": {
+        "default": {
+          "ABE_APP": {
+            "primary": true
+          },
+          "ABE_DEP": {
+            "backup": "ABE_APP",
+            "inbound_flows": [ "EWR", "PHL", "MDT/RDG", "ZNY Northwest", "ZNY Southwest" ],
+            "departures": [ "KABE" ]
+          }
+        }
+      },
       "controllers": [
         "ABE_TWR",
         "ABE_APP",
@@ -786,6 +804,18 @@
         }
       },
       "solo_controller": "ABE_APP",
+      "multi_controllers": {
+        "default": {
+          "ABE_APP": {
+            "primary": true
+          },
+          "ABE_DEP": {
+            "backup": "ABE_APP",
+            "inbound_flows": [ "EWR", "PHL", "MDT/RDG", "ZNY Northwest", "ZNY Southwest" ],
+            "departures": [ "KABE" ]
+          }
+        }
+      },
       "controllers": [
         "ABE_TWR",
         "ABE_APP",
