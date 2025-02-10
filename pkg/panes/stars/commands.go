@@ -2623,9 +2623,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				} else if state.MSAW && !state.MSAWAcknowledged {
 					// Acknowledged a MSAW
 					state.MSAWAcknowledged = true
-				} else if state.SPCAlert && !state.SPCAcknowledged {
+					status.clear = true
+					return
+				} else if (state.SPCAlert || ac.SPCOverride != "") && !state.SPCAcknowledged {
 					// Acknowledged SPC alert
 					state.SPCAcknowledged = true
+					status.clear = true
+					return
 				} else if trk != nil && trk.HandoffController != "" && trk.HandoffController != ctx.ControlClient.PrimaryTCP &&
 					trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
 					// cancel offered handoff offered
