@@ -26,7 +26,6 @@ type audioEngine struct {
 	pinner  runtime.Pinner
 	effects []audioEffect
 	mu      sync.Mutex
-	config  *Config
 	volume  int
 }
 
@@ -37,15 +36,13 @@ type audioEffect struct {
 	playOffset     int
 }
 
-func (a *audioEngine) Initialize(config *Config, lg *log.Logger) {
+func (a *audioEngine) Initialize(lg *log.Logger) {
 	lg.Info("Starting to initialize audio")
 
-	a.config = config
 	a.volume = 10
 
 	user := (unsafe.Pointer)(a)
 	a.pinner.Pin(user)
-	a.pinner.Pin(config)
 
 	spec := sdl.AudioSpec{
 		Freq:     AudioSampleRate,
@@ -84,7 +81,7 @@ func (a *audioEngine) PlayAudioOnce(index int) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
-	if !a.config.AudioEnabled || index == 0 {
+	if index == 0 {
 		return
 	}
 
@@ -95,7 +92,7 @@ func (a *audioEngine) StartPlayAudioContinuous(index int) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
-	if !a.config.AudioEnabled || index == 0 {
+	if index == 0 {
 		return
 	}
 

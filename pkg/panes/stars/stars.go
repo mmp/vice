@@ -590,12 +590,8 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 		imgui.EndCombo()
 	}
 
-	imgui.Checkbox("Enable additional sound effects", &config.AudioEnabled)
-
-	if !config.AudioEnabled {
-		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-	}
+	imgui.Separator()
+	imgui.Text("Non-standard Audio Effects")
 
 	// Only offer the non-standard ones to globally disable.
 	for _, i := range []AudioType{AudioInboundHandoff, AudioHandoffAccepted} {
@@ -604,11 +600,6 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 		if imgui.Checkbox(AudioType(i).String(), &ps.AudioEffectEnabled[i]) && ps.AudioEffectEnabled[i] {
 			sp.playOnce(p, i)
 		}
-	}
-
-	if !config.AudioEnabled {
-		imgui.PopItemFlag()
-		imgui.PopStyleVar()
 	}
 }
 

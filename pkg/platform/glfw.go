@@ -48,8 +48,6 @@ type glfwPlatform struct {
 }
 
 type Config struct {
-	AudioEnabled bool
-
 	InitialWindowSize     [2]int
 	InitialWindowPosition [2]int
 
@@ -135,7 +133,7 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 
 	lg.Info("Finished GLFW initialization")
 
-	platform.audioEngine.Initialize(config, lg)
+	platform.audioEngine.Initialize(lg)
 
 	return platform, nil
 }

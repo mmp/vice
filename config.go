@@ -166,7 +166,6 @@ func getDefaultConfig() *Config {
 	return &Config{
 		ConfigNoSim: ConfigNoSim{
 			Config: platform.Config{
-				AudioEnabled:          true,
 				InitialWindowPosition: [2]int{100, 100},
 			},
 			TFRCache:              av.MakeTFRCache(),
@@ -199,9 +198,6 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 		}
 		if config.Version < 5 {
 			config.PrimaryTCP = ""
-		}
-		if config.Version < 24 {
-			config.AudioEnabled = true
 		}
 		if config.Version < 29 {
 			config.TFRCache = av.MakeTFRCache()

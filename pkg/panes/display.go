@@ -414,7 +414,7 @@ func wmPaneIsPresent(pane Pane, root *DisplayNode) bool {
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
 func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
-	menuBarHeight float32, audioEnabled *bool, lg *log.Logger) renderer.RendererStats {
+	menuBarHeight float32, lg *log.Logger) renderer.RendererStats {
 	if controlClient == nil {
 		commandBuffer := renderer.GetCommandBuffer()
 		defer renderer.ReturnCommandBuffer(commandBuffer)
@@ -540,7 +540,6 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 				Now:              time.Now(),
 				Lg:               lg,
 				MenuBarHeight:    menuBarHeight,
-				AudioEnabled:     audioEnabled,
 				KeyboardFocus:    &wm.focus,
 				ControlClient:    controlClient,
 			}

@@ -277,7 +277,7 @@ func main() {
 
 			// Generate and render vice draw lists
 			stats.drawPanes = panes.DrawPanes(config.DisplayRoot, plat, render, controlClient,
-				ui.menuBarHeight, &config.AudioEnabled, lg)
+				ui.menuBarHeight, lg)
 
 			// Draw the user interface
 			stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, eventStream, lg)

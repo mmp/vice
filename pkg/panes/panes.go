@@ -83,7 +83,6 @@ type Context struct {
 	Lg        *log.Logger
 
 	MenuBarHeight float32
-	AudioEnabled  *bool
 
 	KeyboardFocus KeyboardFocus
 
