@@ -364,10 +364,10 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 		}
 
 		// Point outs are FDB until acked.
-		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
+		if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
 			dt = FullDatablock
 		}
-		if state.PointedOut {
+		if state.PointOutAcknowledged {
 			dt = FullDatablock
 		}
 		if state.ForceQL {
@@ -682,9 +682,10 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 		// Field 8: point out, rejected pointout, redirected
 		// handoffs... Some flash, some don't.
-		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut {
+		if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
 			formatDBText(db.field8[:], "PO", color, false)
-		} else if id, ok := sp.OutboundPointOuts[ac.Callsign]; ok {
+		} else if ok && tcps.From == ctx.ControlClient.PrimaryTCP {
+			id := tcps.To
 			if len(id) > 1 && id[0] >= '0' && id[0] <= '9' {
 				id = id[1:]
 			}
@@ -814,9 +815,11 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 	trk := sp.getTrack(ctx, ac)
 
 	// Cases where it's always a full datablock
-	_, forceFDB := sp.InboundPointOuts[ac.Callsign]
-	forceFDB = forceFDB || (state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd))
+	forceFDB := state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd)
 	forceFDB = forceFDB || trk.HandingOffTo(ctx.ControlClient.PrimaryTCP)
+	if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
+		forceFDB = true
+	}
 
 	// Figure out the datablock and position symbol brightness first
 	if ac.Callsign == sp.dwellAircraft { // dwell overrides everything as far as brightness
@@ -865,8 +868,11 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 	if trk.TrackOwner == "" {
 		color = STARSUntrackedAircraftColor
 	} else {
-		if _, ok := sp.InboundPointOuts[ac.Callsign]; ok || state.PointedOut || state.ForceQL {
-			// yellow for pointed out by someone else or uncleared after acknowledged.
+		if state.PointOutAcknowledged || state.ForceQL {
+			// Ack'ed point out to us (but not cleared) or force quick look.
+			color = STARSInboundPointOutColor
+		} else if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
+			// Pointed out to us.
 			color = STARSInboundPointOutColor
 		} else if state.IsSelected {
 			// middle button selected
@@ -916,7 +922,7 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 	} else if ac.ControllingController == ctx.ControlClient.PrimaryTCP {
 		// For non-greened handoffs
 		return true
-	} else if sp.Aircraft[ac.Callsign].PointedOut {
+	} else if sp.Aircraft[ac.Callsign].PointOutAcknowledged {
 		// Pointouts: This is if its been accepted,
 		// for an incoming pointout, it falls to the FDB check
 		return true

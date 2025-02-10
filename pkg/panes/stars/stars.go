@@ -122,9 +122,8 @@ type STARSPane struct {
 	AutoTrackDepartures bool `json:"autotrack_departures"`
 	LockDisplay         bool
 
-	// callsign -> controller id
-	InboundPointOuts  map[string]string
-	OutboundPointOuts map[string]string
+	// a/c callsign -> controllers
+	PointOuts         map[string]PointOutControllers
 	RejectedPointOuts map[string]interface{}
 	ForceQLCallsigns  map[string]interface{}
 
@@ -202,6 +201,10 @@ type STARSPane struct {
 	// search in a consistent order (when we have to do an exhaustive
 	// search).
 	significantPointsSlice []sim.SignificantPoint
+}
+
+type PointOutControllers struct {
+	From, To string
 }
 
 const (
@@ -351,11 +354,8 @@ func (sp *STARSPane) DisplayName() string { return "STARS" }
 func (sp *STARSPane) Hide() bool { return false }
 
 func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
-	if sp.InboundPointOuts == nil {
-		sp.InboundPointOuts = make(map[string]string)
-	}
-	if sp.OutboundPointOuts == nil {
-		sp.OutboundPointOuts = make(map[string]string)
+	if sp.PointOuts == nil {
+		sp.PointOuts = make(map[string]PointOutControllers)
 	}
 	if sp.RejectedPointOuts == nil {
 		sp.RejectedPointOuts = make(map[string]interface{})
