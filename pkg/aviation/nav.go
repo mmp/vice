@@ -2094,14 +2094,9 @@ func (nav *Nav) fixPairInRoute(fixa, fixb string) (fa *Waypoint, fb *Waypoint) {
 }
 
 func (nav *Nav) directFix(fix string) bool {
-	// Look for the fix in the waypoints in the flight plan.
-	for i, wp := range nav.Waypoints {
-		if fix == wp.Fix {
-			nav.Waypoints = nav.Waypoints[i:]
-			return true
-		}
-	}
-
+	// Check the approach (if any) first; this way if the current route
+	// ends with a fix that happens to be on the approach, we pick up the
+	// rest of the approach fixes rather than forgetting about them.
 	if ap := nav.Approach.Assigned; ap != nil {
 		// This is a little hacky, but... Because of the way we currently
 		// interpret ARINC424 files, fixes with procedure turns have no
@@ -2121,8 +2116,19 @@ func (nav *Nav) directFix(fix string) bool {
 				}
 			}
 		}
-		return found
+		if found {
+			return true
+		}
 	}
+
+	// Look for the fix in the waypoints in the flight plan.
+	for i, wp := range nav.Waypoints {
+		if fix == wp.Fix {
+			nav.Waypoints = nav.Waypoints[i:]
+			return true
+		}
+	}
+
 	return false
 }
 
