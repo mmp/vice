@@ -424,9 +424,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 	color, _, _ := sp.trackDatablockColorBrightness(ctx, ac)
 
 	// Alerts are common to all datablock types
-	var alerts [16]dbChar
-	formatDBText(alerts[:], strings.Join(sp.getWarnings(ctx, ac), "/"), STARSTextAlertColor,
-		false /* do these ever flash? */)
+	alerts := sp.getDatablockAlerts(ctx, ac)
 
 	trk := sp.getTrack(ctx, ac)
 
@@ -1033,44 +1031,50 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) boo
 	return false
 }
 
-func (sp *STARSPane) getWarnings(ctx *panes.Context, ac *av.Aircraft) []string {
-	var warnings []string
-	addWarning := func(w string) {
-		if !slices.Contains(warnings, w) {
-			warnings = append(warnings, w)
-		}
-	}
-
+func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, ac *av.Aircraft) []dbChar {
 	ps := sp.currentPrefs()
 	state := sp.Aircraft[ac.Callsign]
 
+	var alerts []dbChar
+	added := make(map[string]interface{})
+	addAlert := func(s string, flash bool) {
+		if _, ok := added[s]; ok {
+			return // don't duplicate it
+		}
+		added[s] = nil
+
+		if len(alerts) > 0 {
+			alerts = append(alerts, dbChar{ch: '/', color: STARSTextAlertColor})
+		}
+		for _, ch := range s {
+			alerts = append(alerts, dbChar{ch: ch, color: STARSTextAlertColor, flashing: flash})
+		}
+	}
+
 	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
-		addWarning("LA")
+		addAlert("LA", !state.MSAWAcknowledged)
 	}
 	if ok, code := ac.Squawk.IsSPC(); ok {
-		addWarning(code)
+		addAlert(code, !state.SPCAcknowledged)
 	}
 	if ac.SPCOverride != "" {
-		addWarning(ac.SPCOverride)
+		addAlert(ac.SPCOverride, !state.SPCAcknowledged)
 	}
-	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
-		slices.ContainsFunc(sp.CAAircraft,
+	if !ps.DisableCAWarnings && !state.DisableCAWarnings {
+		if idx := slices.IndexFunc(sp.CAAircraft,
 			func(ca CAAircraft) bool {
 				return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
-			}) {
-		addWarning("CA")
+			}); idx != -1 {
+			addAlert("CA", !sp.CAAircraft[idx].Acknowledged)
+		}
 	}
 	if alts, warn := sp.WarnOutsideAirspace(ctx, ac); warn {
 		altStrs := ""
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
 		}
-		addWarning("AS" + altStrs)
+		addAlert("AS"+altStrs, false)
 	}
 
-	if len(warnings) > 1 {
-		slices.Sort(warnings)
-	}
-
-	return warnings
+	return alerts
 }
