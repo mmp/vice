@@ -10,9 +10,18 @@ import (
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/log"
 )
+var (
+	ERAMPopupPaneBackgroundColor = renderer.RGB{R: 0, G: 0, B: 0}
+	// ERAMBorderColor			 = renderer.RGB
+	// ERAMButtonColor			 = renderer.RGB
+	// ERAMToolbarColor			 = renderer.RGB
 
+)
 
 type ERAMPane struct {
+	ERAMPreferenceSets map[string]*PrefrenceSet
+	prefSet *PrefrenceSet
+
 	Aircraft map[string]*AircraftState
 
 	allVideoMaps []av.VideoMap
@@ -21,26 +30,36 @@ type ERAMPane struct {
 	OutboundPointOuts map[string]string
 
 	// These colors can be changed (in terms of brightness)
-	ERAMBackgroundColor renderer.RGB // find out what the colors are
-	ERAMPaneBackgroundColor renderer.RGB // the background of the popup windows (eg. wx window or the command entry window)
+	ERAMBackgroundColor renderer.RGB // 0,0,.48
+	activeToolbarMenu int 
 
 }
 
+func NewERAMPane() *ERAMPane {
+	return &ERAMPane{}
+}
+
 func (p *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.EventStream, log *log.Logger) {
-    // implement the Activate method to satisfy panes.Pane interface
+    // Activate maps 
     if p.InboundPointOuts == nil {
         p.InboundPointOuts = make(map[string]string)
     }
     if p.OutboundPointOuts == nil {
         p.OutboundPointOuts = make(map[string]string)
     }
-    // TODO: initialize fonts and audio
 
     if p.Aircraft == nil {
         p.Aircraft = make(map[string]*AircraftState)
     }
 
+	// Colors
+	p.ERAMBackgroundColor = renderer.RGB{R: 0, G: 0, B: 0.48}
+
+	 // TODO: initialize fonts and audio
+
     // Activate weather radar, events
+	p.prefSet = &PrefrenceSet{}
+	p.prefSet.Current = *p.initPrefsForLoadedSim()
 }
 
 func init() {
@@ -53,7 +72,18 @@ func init() {
 func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
 
 func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
 	// draw the ERAMPane
+	cb.ClearRGB(ep.ERAMBackgroundColor) // Scale this eventually 
+
+	transforms := GetScopeTransformations(ctx.PaneExtent, ctx.ControlClient.MagneticVariation, ctx.ControlClient.NmPerLongitude, 
+	ps.CurrentCenter, float32(ps.Range), 0)
+	// scopeExtend := ctx.PaneExtent
+
+	// draw dcb
+	ep.drawtoolbar(ctx, transforms, cb)
+
+	
 }
 func (ep *ERAMPane) Hide() bool {
 	return false
@@ -66,3 +96,5 @@ func (ep *ERAMPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platfo
 func (ep *ERAMPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	// implement the ResetSim method to satisfy panes.Pane interface
 }
+
+type ERAMBrightness int 

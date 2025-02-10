@@ -16,7 +16,8 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/panes"
-	"github.com/mmp/vice/pkg/panes/stars"
+	"github.com/mmp/vice/pkg/panes/eram"
+	// "github.com/mmp/vice/pkg/panes/stars"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
@@ -238,9 +239,10 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 	return
 }
 
+// Figure out a way to both have STARS and ERAM; ask Matt about this
 func (gc *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 	if gc.DisplayRoot == nil {
-		gc.DisplayRoot = panes.NewDisplayPanes(stars.NewSTARSPane(), panes.NewMessagesPane(),
+		gc.DisplayRoot = panes.NewDisplayPanes(eram.NewERAMPane(), panes.NewMessagesPane(),
 			panes.NewFlightStripPane())
 	}
 

@@ -591,7 +591,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 	sp.endDrawDCB()
 
 	sz := buttonSize(buttonFull, buttonScale)
-	paneExtent := ctx.PaneExtent
+		paneExtent := ctx.PaneExtent
 	switch ps.DCBPosition {
 	case dcbPositionTop:
 		paneExtent.P1[1] -= sz[1]
