@@ -301,8 +301,8 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
 					state.UNFlashingEndTime = time.Now().Add(5 * time.Second)
 				}
-				delete(sp.PointOuts, event.Callsign)
 			}
+			delete(sp.PointOuts, event.Callsign)
 
 		case sim.InitiatedTrackEvent:
 			if event.ToController == ctx.ControlClient.PrimaryTCP {
