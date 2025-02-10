@@ -2531,6 +2531,11 @@ func (sp *STARSPane) acknowledgePointOut(ctx *panes.Context, callsign string) {
 		func(err error) { sp.displayError(err, ctx) })
 }
 
+func (sp *STARSPane) recallPointOut(ctx *panes.Context, callsign string) {
+	ctx.ControlClient.RecallPointOut(callsign, nil,
+		func(err error) { sp.displayError(err, ctx) })
+}
+
 func (sp *STARSPane) cancelHandoff(ctx *panes.Context, callsign string) {
 	ctx.ControlClient.CancelHandoff(callsign, nil,
 		func(err error) { sp.displayError(err, ctx) })
@@ -2630,6 +2635,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				} else if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
 					// ack point out
 					sp.acknowledgePointOut(ctx, ac.Callsign)
+					status.clear = true
+					return
+				} else if ok && tcps.From == ctx.ControlClient.PrimaryTCP {
+					// recall point out
+					sp.recallPointOut(ctx, ac.Callsign)
 					status.clear = true
 					return
 				} else if state.PointOutAcknowledged {

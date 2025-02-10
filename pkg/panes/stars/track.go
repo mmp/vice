@@ -292,6 +292,9 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				delete(sp.PointOuts, event.Callsign)
 			}
 
+		case sim.RecalledPointOutEvent:
+			delete(sp.PointOuts, event.Callsign)
+
 		case sim.RejectedPointOutEvent:
 			if tcps, ok := sp.PointOuts[event.Callsign]; ok && tcps.From == ctx.ControlClient.PrimaryTCP {
 				sp.RejectedPointOuts[event.Callsign] = nil

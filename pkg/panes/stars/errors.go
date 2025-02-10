@@ -79,6 +79,7 @@ var starsErrorRemap = map[error]*STARSError{
 	av.ErrNoController:                 ErrSTARSIllegalSector,
 	av.ErrNoFlightPlan:                 ErrSTARSIllegalFlight,
 	av.ErrNotBeingHandedOffToMe:        ErrSTARSIllegalTrack,
+	av.ErrNotPointedOutByMe:            ErrSTARSIllegalTrack,
 	av.ErrNotPointedOutToMe:            ErrSTARSIllegalTrack,
 	av.ErrNotClearedForApproach:        ErrSTARSIllegalValue,
 	av.ErrNotFlyingRoute:               ErrSTARSIllegalValue,

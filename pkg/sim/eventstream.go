@@ -210,6 +210,7 @@ const (
 	ForceQLEvent
 	TransferAcceptedEvent
 	TransferRejectedEvent
+	RecalledPointOutEvent
 	NumEventTypes
 )
 
@@ -218,7 +219,8 @@ func (t EventType) String() string {
 		"OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent", "CanceledHandoff",
 		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ServerBroadcastMessage",
 		"GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut", "Ident", "HandoffControl",
-		"SetGlobalLeaderLine", "TrackClicked", "ForceQL", "TransferAccepted", "TransferRejected"}[t]
+		"SetGlobalLeaderLine", "TrackClicked", "ForceQL", "TransferAccepted", "TransferRejected",
+		"RecalledPointOut"}[t]
 }
 
 type Event struct {

@@ -986,8 +986,8 @@ type Sim struct {
 	NextInboundSpawn map[string]time.Time
 
 	Handoffs map[string]Handoff
-	// callsign -> "to" controller
-	PointOuts map[string]map[string]PointOut
+	// a/c callsign -> PointOut
+	PointOuts map[string]PointOut
 
 	TotalDepartures  int
 	TotalArrivals    int
@@ -1036,6 +1036,7 @@ type Handoff struct {
 
 type PointOut struct {
 	FromController string
+	ToController   string
 	AcceptTime     time.Time
 }
 
@@ -1098,7 +1099,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 
 		SimRate:   1,
 		Handoffs:  make(map[string]Handoff),
-		PointOuts: make(map[string]map[string]PointOut),
+		PointOuts: make(map[string]PointOut),
 
 		InstructorAllowed: ssc.InstructorAllowed,
 		Instructors:       make(map[string]bool),
@@ -1515,27 +1516,25 @@ func (s *Sim) updateState() {
 		delete(s.Handoffs, callsign)
 	}
 
-	for callsign, acPointOuts := range s.PointOuts {
-		for toController, po := range acPointOuts {
-			if !now.After(po.AcceptTime) {
-				continue
-			}
+	for callsign, po := range s.PointOuts {
+		if !now.After(po.AcceptTime) {
+			continue
+		}
 
-			if ac, ok := s.State.Aircraft[callsign]; ok && !s.controllerIsSignedIn(toController) {
-				// Note that "to" and "from" are swapped in the event,
-				// since the ack is coming from the "to" controller of the
-				// original point out.
-				s.eventStream.Post(Event{
-					Type:           AcknowledgedPointOutEvent,
-					FromController: toController,
-					ToController:   po.FromController,
-					Callsign:       ac.Callsign,
-				})
-				s.lg.Info("automatic pointout accept", slog.String("callsign", ac.Callsign),
-					slog.String("by", toController), slog.String("to", po.FromController))
+		if ac, ok := s.State.Aircraft[callsign]; ok && !s.controllerIsSignedIn(po.ToController) {
+			// Note that "to" and "from" are swapped in the event,
+			// since the ack is coming from the "to" controller of the
+			// original point out.
+			s.eventStream.Post(Event{
+				Type:           AcknowledgedPointOutEvent,
+				FromController: po.ToController,
+				ToController:   po.FromController,
+				Callsign:       ac.Callsign,
+			})
+			s.lg.Info("automatic pointout accept", slog.String("callsign", ac.Callsign),
+				slog.String("by", po.ToController), slog.String("to", po.FromController))
 
-				delete(s.PointOuts[callsign], toController)
-			}
+			delete(s.PointOuts, callsign)
 		}
 	}
 
@@ -2838,11 +2837,9 @@ func (s *Sim) pointOut(callsign string, from *av.Controller, to *av.Controller) 
 	}
 
 	acceptDelay := 4 + rand.Intn(10)
-	if s.PointOuts[callsign] == nil {
-		s.PointOuts[callsign] = make(map[string]PointOut)
-	}
-	s.PointOuts[callsign][to.Id()] = PointOut{
+	s.PointOuts[callsign] = PointOut{
 		FromController: from.Id(),
+		ToController:   to.Id(),
 		AcceptTime:     s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
 	}
 }
@@ -2850,9 +2847,7 @@ func (s *Sim) pointOut(callsign string, from *av.Controller, to *av.Controller) 
 func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if _, ok := s.PointOuts[callsign]; !ok {
-				return av.ErrNotPointedOutToMe
-			} else if _, ok := s.PointOuts[callsign][ctrl.Id()]; !ok {
+			if po, ok := s.PointOuts[callsign]; !ok || po.ToController != ctrl.Id() {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
@@ -2863,7 +2858,7 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 			s.eventStream.Post(Event{
 				Type:           AcknowledgedPointOutEvent,
 				FromController: ctrl.Id(),
-				ToController:   s.PointOuts[callsign][ctrl.Id()].FromController,
+				ToController:   s.PointOuts[callsign].FromController,
 				Callsign:       ac.Callsign,
 			})
 			if len(ac.PointOutHistory) < 20 {
@@ -2873,7 +2868,7 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 				ac.PointOutHistory = append([]string{ctrl.Id()}, ac.PointOutHistory...)
 			}
 
-			delete(s.PointOuts[callsign], ctrl.Id())
+			delete(s.PointOuts, callsign)
 
 			err := s.State.STARSComputer().AcknowledgePointOut(ac.Callsign, ctrl.Id())
 			if err != nil {
@@ -2884,12 +2879,37 @@ func (s *Sim) AcknowledgePointOut(token, callsign string) error {
 		})
 }
 
+func (s *Sim) RecallPointOut(token, callsign string) error {
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
+			if po, ok := s.PointOuts[callsign]; !ok || po.FromController != ctrl.Id() {
+				return av.ErrNotPointedOutByMe
+			}
+			return nil
+		},
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			s.eventStream.Post(Event{
+				Type:           RecalledPointOutEvent,
+				FromController: ctrl.Id(),
+				ToController:   s.PointOuts[callsign].ToController,
+				Callsign:       ac.Callsign,
+			})
+
+			delete(s.PointOuts, callsign)
+
+			err := s.State.STARSComputer().RecallPointOut(ac.Callsign, ctrl.Id())
+			if err != nil {
+				//s.lg.Errorf("RecallPointOut: %v", err)
+			}
+
+			return nil
+		})
+}
+
 func (s *Sim) RejectPointOut(token, callsign string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if _, ok := s.PointOuts[callsign]; !ok {
-				return av.ErrNotPointedOutToMe
-			} else if _, ok := s.PointOuts[callsign][ctrl.Id()]; !ok {
+			if po, ok := s.PointOuts[callsign]; !ok || po.ToController != ctrl.Id() {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
@@ -2900,11 +2920,11 @@ func (s *Sim) RejectPointOut(token, callsign string) error {
 			s.eventStream.Post(Event{
 				Type:           RejectedPointOutEvent,
 				FromController: ctrl.Id(),
-				ToController:   s.PointOuts[callsign][ctrl.Id()].FromController,
+				ToController:   s.PointOuts[callsign].FromController,
 				Callsign:       ac.Callsign,
 			})
 
-			delete(s.PointOuts[callsign], ctrl.Id())
+			delete(s.PointOuts, callsign)
 
 			err := s.State.STARSComputer().RejectPointOut(ac.Callsign, ctrl.Id())
 			if err != nil {

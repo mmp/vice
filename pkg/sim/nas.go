@@ -812,6 +812,16 @@ func (comp *STARSComputer) AcknowledgePointOut(callsign, controller string) erro
 	return nil
 }
 
+func (comp *STARSComputer) RecallPointOut(callsign, controller string) error {
+	trk := comp.TrackInformation[callsign]
+	if trk == nil || trk.HandoffController == "" {
+		return av.ErrNoAircraftForCallsign
+	}
+
+	trk.PointOut = ""
+	return nil
+}
+
 func (comp *STARSComputer) RejectPointOut(callsign, controller string) error {
 	trk := comp.TrackInformation[callsign]
 	if trk == nil || trk.HandoffController == "" {

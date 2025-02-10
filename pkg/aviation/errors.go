@@ -27,6 +27,7 @@ var (
 	ErrNotBeingHandedOffToMe        = errors.New("Aircraft not being handed off to current controller")
 	ErrNotClearedForApproach        = errors.New("Aircraft has not been cleared for an approach")
 	ErrNotFlyingRoute               = errors.New("Aircraft is not currently flying its assigned route")
+	ErrNotPointedOutByMe            = errors.New("Aircraft not being pointed out by current controller")
 	ErrNotPointedOutToMe            = errors.New("Aircraft not being pointed out to current controller")
 	ErrOtherControllerHasTrack      = errors.New("Another controller is already tracking the aircraft")
 	ErrSquawkCodeAlreadyAssigned    = errors.New("Squawk code has already been assigned")

@@ -218,6 +218,13 @@ func (s *proxy) AcknowledgePointOut(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
+func (s *proxy) RecallPointOut(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.RecallPointOut", &PointOutArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
 func (s *proxy) RejectPointOut(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.RejectPointOut", &PointOutArgs{
 		ControllerToken: s.ControllerToken,

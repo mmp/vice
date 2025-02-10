@@ -341,6 +341,16 @@ func (sd *Dispatcher) AcknowledgePointOut(po *PointOutArgs, _ *struct{}) error {
 	}
 }
 
+func (sd *Dispatcher) RecallPointOut(po *PointOutArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if sim, ok := sd.sm.controllerTokenToSim[po.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.RecallPointOut(po.ControllerToken, po.Callsign)
+	}
+}
+
 func (sd *Dispatcher) RejectPointOut(po *PointOutArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 

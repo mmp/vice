@@ -324,6 +324,16 @@ func (c *ControlClient) AcknowledgePointOut(callsign string, success func(any), 
 		})
 }
 
+func (c *ControlClient) RecallPointOut(callsign string, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.RecallPointOut(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (c *ControlClient) RejectPointOut(callsign string, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
