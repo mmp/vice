@@ -2007,7 +2007,7 @@ func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, ac *av.Aircraft, cm
 	ctx.ControlClient.RunAircraftCommands(ac.Callsign, cmds,
 		func(errStr string, remaining string) {
 			if errStr != "" {
-				sp.previewAreaInput = ";" + remaining
+				sp.previewAreaInput = remaining
 				if err := sim.TryDecodeErrorString(errStr); err != nil {
 					err = GetSTARSError(err, ctx.Lg)
 					sp.displayError(err, ctx)
