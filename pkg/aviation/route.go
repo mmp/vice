@@ -38,6 +38,7 @@ type Waypoint struct {
 	IAF, IF, FAF        bool                 // not provided in scenario JSON; derived from fix
 	Airway              string               // when parsing waypoints, this is set if we're on an airway after the fix
 	OnSID, OnSTAR       bool                 // set during deserialization
+	OnApproach          bool                 // set during deserialization
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -92,6 +93,9 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.OnSTAR {
 		attrs = append(attrs, slog.Bool("on_star", wp.OnSTAR))
+	}
+	if wp.OnApproach {
+		attrs = append(attrs, slog.Bool("on_approach", wp.OnApproach))
 	}
 
 	return slog.GroupValue(attrs...)
@@ -189,6 +193,9 @@ func (wslice WaypointArray) Encode() string {
 		}
 		if w.OnSTAR {
 			s += "/star"
+		}
+		if w.OnApproach {
+			s += "/appr"
 		}
 
 		entries = append(entries, s)
@@ -455,6 +462,8 @@ func parseWaypoints(str string) (WaypointArray, error) {
 					wp.OnSID = true
 				} else if f == "star" {
 					wp.OnSTAR = true
+				} else if f == "appr" {
+					wp.OnApproach = true
 				} else if len(f) > 2 && f[:2] == "po" {
 					wp.PointOut = f[2:]
 				} else if (len(f) >= 4 && f[:4] == "pt45") || len(f) >= 5 && f[:5] == "lpt45" {

@@ -2016,7 +2016,7 @@ func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
 		// If an arrival is given a heading off of a route with altitude
 		// constraints, set its cleared altitude to its current altitude
 		// for now.
-		if len(nav.Waypoints) > 0 && nav.Waypoints[0].OnSTAR && nav.Altitude.Assigned == nil {
+		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR || nav.Waypoints[0].OnApproach) && nav.Altitude.Assigned == nil {
 			if c := nav.getWaypointAltitudeConstraint(); c != nil {
 				// Don't take a direct pointer to nav.FlightState.Altitude!
 				alt := nav.FlightState.Altitude
