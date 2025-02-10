@@ -2289,12 +2289,15 @@ func (nav *Nav) InterceptLocalizer(airport string) PilotResponse {
 		return PilotResponse{Message: "you never told us to expect an approach", Unexpected: true}
 	}
 
+	_, onHeading := nav.AssignedHeading()
+
 	ap := nav.Approach.Assigned
-	if ap.Type != ILSApproach {
-		return PilotResponse{Message: "we can only intercept an ILS approach", Unexpected: true}
+	if onHeading && ap.Type != ILSApproach {
+		return PilotResponse{Message: "we can only intercept an ILS approach", Unexpected: true} // FIXME!
 	}
-	if _, ok := nav.AssignedHeading(); !ok {
-		return PilotResponse{Message: "we have to be flying a heading to intercept", Unexpected: true}
+
+	if !(onHeading || (len(nav.Waypoints) > 0 && nav.Waypoints[0].OnApproach)) {
+		return PilotResponse{Message: "we have to be on a heading or direct to an approach fix to intercept", Unexpected: true}
 	}
 
 	resp, err := nav.prepareForApproach(false)
