@@ -125,8 +125,17 @@ func (lc *LaunchConfig) DrawDepartureUI(p platform.Platform) (changed bool) {
 	imgui.Text("Departures")
 
 	var sumRates float32
-	for _, rates := range lc.DepartureRates {
-		sumRates += sumRateMap2(rates, lc.DepartureRateScale)
+	airportRunwayNumCategories := make(map[string]int) // key is e.g. JFK/22R, then count of active categories
+	for ap, runwayRates := range lc.DepartureRates {
+		sumRates += sumRateMap2(runwayRates, lc.DepartureRateScale)
+
+		for rwy, categories := range runwayRates {
+			airportRunwayNumCategories[ap+"/"+rwy] = airportRunwayNumCategories[ap+"/"+rwy] + len(categories)
+		}
+	}
+	maxDepartureCategories := 0
+	for _, n := range airportRunwayNumCategories {
+		maxDepartureCategories = math.Max(n, maxDepartureCategories)
 	}
 
 	imgui.Text(fmt.Sprintf("Overall departure rate: %d / hour", int(sumRates+0.5)))
@@ -138,28 +147,41 @@ func (lc *LaunchConfig) DrawDepartureUI(p platform.Platform) (changed bool) {
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
 	uiStartDisable(lc.DepartureRateScale == 0)
+	adrColumns := math.Min(3, maxDepartureCategories)
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-	if imgui.BeginTableV("departureRunways", 4, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
+	if imgui.BeginTableV("departureRunways", 2+2*adrColumns, flags, imgui.Vec2{tableScale * float32(200+200*adrColumns), 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
 		imgui.TableSetupColumn("Runway")
-		imgui.TableSetupColumn("Category")
-		imgui.TableSetupColumn("ADR")
+		for range adrColumns {
+			imgui.TableSetupColumn("Category")
+			imgui.TableSetupColumn("ADR")
+		}
 		imgui.TableHeadersRow()
 
 		for _, airport := range util.SortedMapKeys(lc.DepartureRates) {
 			imgui.PushID(airport)
 			for _, runway := range util.SortedMapKeys(lc.DepartureRates[airport]) {
 				imgui.PushID(runway)
+				adrColumn := 0
+
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text(airport)
+				imgui.TableNextColumn()
+				rshort, _, _ := strings.Cut(runway, ".") // don't include extras in the UI
+				imgui.Text(rshort)
+				imgui.TableNextColumn()
+
 				for _, category := range util.SortedMapKeys(lc.DepartureRates[airport][runway]) {
 					imgui.PushID(category)
 
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					imgui.Text(airport)
-					imgui.TableNextColumn()
-					rshort, _, _ := strings.Cut(runway, ".") // don't include extras in the UI
-					imgui.Text(rshort)
-					imgui.TableNextColumn()
+					if adrColumn > 0 && adrColumn%adrColumns == 0 {
+						// Overflow
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+						imgui.TableNextColumn()
+					}
+
 					if category == "" {
 						imgui.Text("(All)")
 					} else {
@@ -172,6 +194,8 @@ func (lc *LaunchConfig) DrawDepartureUI(p platform.Platform) (changed bool) {
 						lc.DepartureRates[airport][runway][category] = float32(r) / lc.DepartureRateScale
 						changed = true
 					}
+					imgui.TableNextColumn()
+					adrColumn++
 
 					imgui.PopID()
 				}
@@ -188,21 +212,26 @@ func (lc *LaunchConfig) DrawDepartureUI(p platform.Platform) (changed bool) {
 }
 
 func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
-	// Figure out how many unique airports we've got for AAR columns in the table
-	// and also sum up the overall arrival rate
-	allAirports := make(map[string]interface{})
+	// Figure out the maximum number of inbound flows per airport to figure
+	// out the number of table columns and also sum up the overall arrival
+	// rate.
 	var sumRates float32
+	numAirportFlows := make(map[string]int)
 	for _, agr := range lc.InboundFlowRates {
 		for ap, rate := range agr {
 			rate = scaleRate(rate, lc.InboundFlowRateScale)
 			if ap != "overflights" {
-				allAirports[ap] = nil
+				numAirportFlows[ap] = numAirportFlows[ap] + 1
 				sumRates += rate
 			}
 		}
 	}
-	if len(allAirports) == 0 { // no arrivals
+	if len(numAirportFlows) == 0 { // no arrivals
 		return
+	}
+	maxAirportFlows := 0
+	for _, n := range numAirportFlows {
+		maxAirportFlows = math.Max(n, maxAirportFlows)
 	}
 
 	imgui.Text("Arrivals")
@@ -222,23 +251,34 @@ func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 	lc.ArrivalPushLengthMinutes = int(min)
 	uiEndDisable(!lc.ArrivalPushes)
 
+	aarColumns := math.Min(3, maxAirportFlows)
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 	uiStartDisable(lc.InboundFlowRateScale == 0)
-	if imgui.BeginTableV("arrivalgroups", 3, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
+	if imgui.BeginTableV("arrivalgroups", 1+2*aarColumns, flags, imgui.Vec2{tableScale * float32(150+250*aarColumns), 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
-		imgui.TableSetupColumn("Arrival")
-		imgui.TableSetupColumn("AAR")
+		for range aarColumns {
+			imgui.TableSetupColumn("Arrival")
+			imgui.TableSetupColumn("AAR")
+		}
 		imgui.TableHeadersRow()
 
-		for _, ap := range util.SortedMapKeys(allAirports) {
+		for _, ap := range util.SortedMapKeys(numAirportFlows) {
 			imgui.PushID(ap)
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text(ap)
+
+			aarCol := 0
 			for _, group := range util.SortedMapKeys(lc.InboundFlowRates) {
 				imgui.PushID(group)
 				if rate, ok := lc.InboundFlowRates[group][ap]; ok {
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					imgui.Text(ap)
+					if aarCol > 0 && aarCol%aarColumns == 0 {
+						// Overflow
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+					}
+
 					imgui.TableNextColumn()
 					imgui.Text(group)
 					imgui.TableNextColumn()
@@ -247,6 +287,8 @@ func (lc *LaunchConfig) DrawArrivalUI(p platform.Platform) (changed bool) {
 						changed = true
 						lc.InboundFlowRates[group][ap] = float32(r) / lc.InboundFlowRateScale
 					}
+					aarCol++
+
 				}
 				imgui.PopID()
 			}
@@ -281,7 +323,7 @@ func (lc *LaunchConfig) DrawOverflightUI(p platform.Platform) (changed bool) {
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-	if imgui.BeginTableV("overflights", 2, flags, imgui.Vec2{tableScale * 500, 0}, 0.) {
+	if imgui.BeginTableV("overflights", 2, flags, imgui.Vec2{tableScale * 400, 0}, 0.) {
 		imgui.TableSetupColumn("Group")
 		imgui.TableSetupColumn("Rate")
 		imgui.TableHeadersRow()

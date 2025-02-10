@@ -2627,13 +2627,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.clear = true
 					sp.cancelHandoff(ctx, ac.Callsign)
 					return
-				} else if _, ok := sp.InboundPointOuts[ac.Callsign]; ok {
+				} else if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
 					// ack point out
 					sp.acknowledgePointOut(ctx, ac.Callsign)
 					status.clear = true
 					return
-				} else if state.PointedOut {
-					state.PointedOut = false
+				} else if state.PointOutAcknowledged {
+					state.PointOutAcknowledged = false
 					status.clear = true
 					return
 				} else if state.ForceQL {
@@ -2909,8 +2909,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				// TODO: if it's to a different facility and it's an arrival, ILL TRK
 
 				// Check if being handed off, pointed out or suspended (TODO suspended)
-				if sp.OutboundPointOuts[ac.Callsign] != "" || sp.InboundPointOuts[ac.Callsign] != "" ||
-					(ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.ControlClient.PrimaryTCP) {
+				if _, ok := sp.PointOuts[ac.Callsign]; ok {
+					status.err = ErrSTARSIllegalTrack
+					return
+				}
+				if ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.ControlClient.PrimaryTCP {
 					status.err = ErrSTARSIllegalTrack
 					return
 				}

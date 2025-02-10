@@ -259,7 +259,7 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 			}
 
 		case 'P': // Airports
-			icao := string(line[6:10])
+			icao := strings.TrimSpace(string(line[6:10]))
 			subsection := line[12]
 			switch subsection {
 			case 'A': // primary airport records 4.1.7

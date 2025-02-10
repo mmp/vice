@@ -142,8 +142,8 @@ type AircraftState struct {
 	// just inbound pointouts to the current controller so that the first
 	// click acks a point out but leaves it yellow and a second clears it
 	// entirely.
-	PointedOut bool
-	ForceQL    bool
+	PointOutAcknowledged bool
+	ForceQL              bool
 }
 
 type ATPAStatus int
@@ -275,56 +275,30 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	for _, event := range sp.events.Get() {
 		switch event.Type {
 		case sim.PointOutEvent:
-			if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil {
-				sp.InboundPointOuts[event.Callsign] = ctrl.Id()
-			} else {
-				sp.InboundPointOuts[event.Callsign] = ""
-			}
-			if event.ToController == ctx.ControlClient.PrimaryTCP {
-				if state, ok := sp.Aircraft[event.Callsign]; ok {
-					state.DatablockType = FullDatablock
-				}
-			}
-			if ctrl := ctx.ControlClient.Controllers[event.ToController]; ctrl != nil {
-				sp.OutboundPointOuts[event.Callsign] = ctrl.Id()
-			} else {
-				sp.OutboundPointOuts[event.Callsign] = ""
-			}
-			if event.FromController == ctx.ControlClient.PrimaryTCP {
-				if state, ok := sp.Aircraft[event.Callsign]; ok {
-					state.DatablockType = FullDatablock
-				}
+			sp.PointOuts[event.Callsign] = PointOutControllers{
+				From: event.FromController,
+				To:   event.ToController,
 			}
 
 		case sim.AcknowledgedPointOutEvent:
-			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil && ctrl.Id() == id {
-					sp.Aircraft[event.Callsign].POFlashingEndTime = time.Now().Add(5 * time.Second)
-					delete(sp.OutboundPointOuts, event.Callsign)
-				}
-			}
-			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok && ctrl != nil && ctrl.Id() == id {
-					delete(sp.InboundPointOuts, event.Callsign)
-					if state, ok := sp.Aircraft[event.Callsign]; ok {
-						state.PointedOut = true
+			if tcps, ok := sp.PointOuts[event.Callsign]; ok {
+				if state, ok := sp.Aircraft[event.Callsign]; ok {
+					if tcps.From == ctx.ControlClient.PrimaryTCP {
 						state.POFlashingEndTime = time.Now().Add(5 * time.Second)
+					} else if tcps.To == ctx.ControlClient.PrimaryTCP {
+						state.PointOutAcknowledged = true
 					}
 				}
+				delete(sp.PointOuts, event.Callsign)
 			}
 
 		case sim.RejectedPointOutEvent:
-			if id, ok := sp.OutboundPointOuts[event.Callsign]; ok {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.FromController]; ok && ctrl != nil && ctrl.Id() == id {
-					delete(sp.OutboundPointOuts, event.Callsign)
-					sp.RejectedPointOuts[event.Callsign] = nil
-					sp.Aircraft[event.Callsign].UNFlashingEndTime = time.Now().Add(5 * time.Second)
+			if tcps, ok := sp.PointOuts[event.Callsign]; ok && tcps.From == ctx.ControlClient.PrimaryTCP {
+				sp.RejectedPointOuts[event.Callsign] = nil
+				if state, ok := sp.Aircraft[event.Callsign]; ok {
+					state.UNFlashingEndTime = time.Now().Add(5 * time.Second)
 				}
-			}
-			if id, ok := sp.InboundPointOuts[event.Callsign]; ok {
-				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok && ctrl != nil && ctrl.Id() == id {
-					delete(sp.InboundPointOuts, event.Callsign)
-				}
+				delete(sp.PointOuts, event.Callsign)
 			}
 
 		case sim.InitiatedTrackEvent:
