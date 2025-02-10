@@ -1401,31 +1401,67 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 				imgui.Text(fmt.Sprintf("Departures: %d total", ndep))
 
-				if imgui.BeginTableV("dep", 9, flags, imgui.Vec2{tableScale * 600, 0}, 0.0) {
+				// Sort departures by airport, then runway, then category
+				sortedDeps := util.DuplicateSlice(lc.departures)
+				slices.SortFunc(sortedDeps, func(a, b *LaunchDeparture) int {
+					return strings.Compare(a.Airport+"/"+a.Runway+"/"+a.Category,
+						b.Airport+"/"+b.Runway+"/"+b.Category)
+				})
+
+				// Find the maximum number of categories for any airport/runway pair
+				maxCategories, curCategories := 0, 1
+				lastApRwy := ""
+				for _, d := range sortedDeps {
+					ar := d.Airport + "/" + d.Runway
+					if ar != lastApRwy {
+						maxCategories = math.Max(maxCategories, curCategories)
+						curCategories = 1
+						lastApRwy = ar
+					} else {
+						curCategories++
+					}
+				}
+
+				nColumns := math.Min(3, maxCategories)
+				if imgui.BeginTableV("dep", 1+8*nColumns, flags, imgui.Vec2{tableScale * float32(100+300*nColumns), 0}, 0.0) {
 					imgui.TableSetupColumn("Airport")
-					imgui.TableSetupColumn("Launches")
-					imgui.TableSetupColumn("Callsign")
-					imgui.TableSetupColumn("A/C Type")
-					imgui.TableSetupColumn("Exit")
-					imgui.TableSetupColumn("MIT")
-					imgui.TableSetupColumn("Time")
+					for range nColumns {
+						imgui.TableSetupColumn("Category")
+						imgui.TableSetupColumn("#")
+						imgui.TableSetupColumn("Type")
+						imgui.TableSetupColumn("Exit")
+						imgui.TableSetupColumn("MIT")
+						imgui.TableSetupColumn("Time")
+						imgui.TableSetupColumn("")
+						imgui.TableSetupColumn("")
+					}
 					imgui.TableHeadersRow()
 
-					for _, dep := range lc.departures {
-						imgui.PushID(dep.Airport + " " + dep.Runway + " " + dep.Category)
+					lastApRwy = ""
+					curColumn := 0
+					for _, dep := range sortedDeps {
+						apRwy := dep.Airport + " " + dep.Runway
+						if apRwy != lastApRwy {
+							imgui.TableNextRow()
+							lastApRwy = apRwy
+							curColumn = 0
 
-						imgui.TableNextRow()
+							imgui.TableNextColumn()
+							imgui.Text(dep.Airport + " " + dep.Runway)
+						} else if curColumn+1 == nColumns {
+							imgui.TableNextRow()
+							imgui.TableNextColumn()
+						}
 
 						imgui.TableNextColumn()
-						imgui.Text(dep.Airport + " " + dep.Runway + " " + dep.Category)
+						imgui.Text(dep.Category)
+
+						imgui.PushID(dep.Airport + " " + dep.Runway + " " + dep.Category)
 
 						imgui.TableNextColumn()
 						imgui.Text(strconv.Itoa(dep.TotalLaunches))
 
 						if dep.Aircraft.Callsign != "" {
-							imgui.TableNextColumn()
-							imgui.Text(dep.Aircraft.Callsign)
-
 							imgui.TableNextColumn()
 							imgui.Text(dep.Aircraft.FlightPlan.TypeWithoutSuffix())
 
@@ -1451,6 +1487,10 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 								dep.Aircraft = av.Aircraft{}
 								lc.spawnDeparture(dep)
 							}
+						} else {
+							for range 6 {
+								imgui.NextColumn()
+							}
 						}
 
 						imgui.PopID()
@@ -1467,32 +1507,62 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 				imgui.Text(fmt.Sprintf("Arrivals/Overflights: %d total", narof))
 
-				if imgui.BeginTableV("arrof", 9, flags, imgui.Vec2{tableScale * 600, 0}, 0.0) {
-					imgui.TableSetupColumn("Group")
-					imgui.TableSetupColumn("Launches")
+				sortedInbound := util.DuplicateSlice(lc.arrivalsOverflights)
+				slices.SortFunc(sortedInbound, func(a, b *LaunchArrivalOverflight) int {
+					return strings.Compare(a.Airport+"/"+a.Group, b.Airport+"/"+b.Group)
+				})
+
+				maxGroups, numGroups := 0, 1
+				lastAirport := ""
+				for _, ao := range sortedInbound {
+					if ao.Airport != lastAirport {
+						maxGroups = math.Max(maxGroups, numGroups)
+						lastAirport = ao.Airport
+						numGroups = 1
+					} else {
+						numGroups++
+					}
+				}
+				numColumns := math.Min(maxGroups, 3)
+
+				if imgui.BeginTableV("arrof", 1+7*numColumns, flags, imgui.Vec2{tableScale * float32(100+350*numColumns), 0}, 0.0) {
 					imgui.TableSetupColumn("Airport")
-					imgui.TableSetupColumn("Callsign")
-					imgui.TableSetupColumn("A/C Type")
-					imgui.TableSetupColumn("MIT")
-					imgui.TableSetupColumn("Time")
+					for range numColumns {
+						imgui.TableSetupColumn("Group")
+						imgui.TableSetupColumn("#")
+						imgui.TableSetupColumn("A/C Type")
+						imgui.TableSetupColumn("MIT")
+						imgui.TableSetupColumn("Time")
+						imgui.TableSetupColumn("")
+						imgui.TableSetupColumn("")
+					}
 					imgui.TableHeadersRow()
 
-					for _, arof := range lc.arrivalsOverflights {
-						imgui.PushID(arof.Group + arof.Airport)
+					curColumn := 0
+					lastAirport := ""
+					for _, arof := range sortedInbound {
+						if arof.Airport != lastAirport {
+							imgui.TableNextRow()
+							lastAirport = arof.Airport
+							curColumn = 0
+							imgui.TableNextColumn()
+							imgui.Text(arof.Airport)
+						} else if curColumn+1 == numColumns {
+							curColumn = 0
+							imgui.TableNextRow()
+							imgui.TableNextColumn()
+							imgui.Text("")
+						} else {
+							curColumn++
+						}
 
-						imgui.TableNextRow()
+						imgui.PushID(arof.Group + arof.Airport)
 
 						imgui.TableNextColumn()
 						imgui.Text(arof.Group)
 
 						imgui.TableNextColumn()
 						imgui.Text(strconv.Itoa(arof.TotalLaunches))
-
-						imgui.TableNextColumn()
-						imgui.Text(arof.Airport)
-
-						imgui.TableNextColumn()
-						imgui.Text(arof.Aircraft.Callsign)
 
 						if arof.Aircraft.Callsign != "" {
 							imgui.TableNextColumn()
@@ -1516,6 +1586,10 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 							if imgui.Button(renderer.FontAwesomeIconRedo) {
 								arof.Aircraft = av.Aircraft{}
 								lc.spawnArrivalOverflight(arof)
+							}
+						} else {
+							for range 5 {
+								imgui.TableNextColumn()
 							}
 						}
 
