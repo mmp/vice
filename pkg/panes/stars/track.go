@@ -1193,6 +1193,9 @@ func (sp *STARSPane) getLeaderLineDirection(ac *av.Aircraft, ctx *panes.Context)
 	} else if trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
 		// Tracked by us
 		return ps.LeaderLineDirection
+	} else if trk.HandoffController == ctx.ControlClient.PrimaryTCP {
+		// Being handed off to us
+		return ps.LeaderLineDirection
 	} else if dir, ok := ps.ControllerLeaderLineDirections[trk.TrackOwner]; ok {
 		// Tracked by another controller for whom a direction was specified
 		return dir
