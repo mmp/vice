@@ -1258,6 +1258,8 @@ func makePool(first, last int) *SquawkCodePool {
 		AssignedBits: make([]uint64, nalloc),
 	}
 
+	p.removeInvalidCodes()
+
 	// Mark the excess invalid codes in the last entry of AssignedBits as
 	// taken so that we don't try to assign them later.
 	slop := ncodes % 64
@@ -1266,16 +1268,65 @@ func makePool(first, last int) *SquawkCodePool {
 	return p
 }
 
-func MakeCompleteSquawkCodePool() *SquawkCodePool {
-	p := makePool(0o1001, 0o7777)
+func (p *SquawkCodePool) removeInvalidCodes() {
+	// Remove the non-discrete codes (i.e., ones ending in 00).
+	for i := 0; i <= 0o7700; i += 0o100 {
+		p.Claim(Squawk(i))
+	}
 
-	// Don't issue VFR or any SPCs
+	claimRange := func(start, end int) {
+		for i := start; i < end; i++ {
+			p.Claim(Squawk(i))
+		}
+	}
+	claimBlock := func(start int) {
+		claimRange(start, start+64)
+	}
+
+	// Remove various reserved squawk codes, per 7110.66G
+	// https://www.faa.gov/documentLibrary/media/Order/FAA_Order_JO_7110.66G_NBCAP.pdf.
 	p.Claim(0o1200)
+	p.Claim(0o1201)
+	p.Claim(0o1202)
+	p.Claim(0o1205)
+	p.Claim(0o1206)
+	claimRange(0o1207, 0o1233)
+	claimRange(0o1235, 0o1254)
+	claimRange(0o1256, 0o1272)
+	p.Claim(0o1234)
+	p.Claim(0o1255)
+	claimRange(0o1273, 0o1275)
+	p.Claim(0o1276)
+	p.Claim(0o1277)
+	p.Claim(0o2000)
+	claimRange(0o4400, 0o4433)
+	claimRange(0o4434, 0o4437)
+	claimRange(0o4440, 0o4452)
+	p.Claim(0o4453)
+	claimRange(0o4454, 0o4477)
+	claimRange(0o7501, 0o7577)
+	claimRange(0o7601, 0o7607)
+	claimRange(0o7701, 0o7707)
+
+	// TODO? 0100, 0200, 0300, 0400 blocks?
+
+	// FIXME: these probably shouldn't be hardcoded like this but should be available to PCT.
+	claimBlock(0o5100) // PCT TRACON for DC SFRA/FRZ
+	claimBlock(0o5200) // PCT TRACON for DC SFRA/FRZ
+
+	claimBlock(0o5000)
+	claimBlock(0o5400)
+	claimBlock(0o6100)
+	claimBlock(0o6400)
+
+	p.Claim(0o7777)
 	for squawk := range spcs {
 		p.Claim(squawk)
 	}
+}
 
-	return p
+func MakeCompleteSquawkCodePool() *SquawkCodePool {
+	return makePool(0o1001, 0o7777)
 }
 
 func MakeSquawkBankCodePool(bank int) *SquawkCodePool {
