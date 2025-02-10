@@ -49,7 +49,8 @@ import (
 // 28: new departure flow
 // 29: TFR cache
 // 30: video map improvements
-const CurrentConfigVersion = 30
+// 31: audio squelch for pilot readback
+const CurrentConfigVersion = 31
 
 // Slightly convoluted, but the full Config definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first

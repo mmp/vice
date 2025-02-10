@@ -10,10 +10,12 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/mmp/imgui-go/v4"
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 )
@@ -26,11 +28,15 @@ type Message struct {
 }
 
 type MessagesPane struct {
-	FontIdentifier renderer.FontIdentifier
-	font           *renderer.Font
-	scrollbar      *ScrollBar
-	events         *sim.EventsSubscription
-	messages       []Message
+	FontIdentifier              renderer.FontIdentifier
+	ContactTransmissionsStatic  bool
+	ReadbackTransmissionsStatic bool
+
+	font             *renderer.Font
+	scrollbar        *ScrollBar
+	events           *sim.EventsSubscription
+	messages         []Message
+	staticAudioIndex int
 }
 
 func init() {
@@ -60,6 +66,40 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 		mp.scrollbar = NewVerticalScrollBar(4, true)
 	}
 	mp.events = eventStream.Subscribe()
+
+	pcm := brownNoise(platform.AudioSampleRate / 4) // 1/4 second
+	var err error
+	mp.staticAudioIndex, err = p.AddPCM(pcm, platform.AudioSampleRate)
+	if err != nil {
+		lg.Error("Error adding static audio effect: %v", err)
+	}
+}
+
+func brownNoise(n int) []byte {
+	brownNoise := make([]float32, n)
+
+	var prev float32
+	for i := 0; i < n; i++ {
+		// Generate a small random change (-1 to +1 range)
+		randomChange := (rand.Float32()*2 - 1) * 0.04
+		prev += randomChange
+
+		// Apply damping to avoid runaway values
+		prev *= 0.98
+
+		// Ensure values stay within -1.0 to +1.0 for 16-bit PCM
+		brownNoise[i] = math.Max(-1.0, math.Min(1.0, prev))
+	}
+
+	// Convert to 16-bit PCM scale (-32768 to +32767)
+	pcm := make([]byte, 2*n)
+	for i, sample := range brownNoise {
+		v := int(sample * 32767)
+		pcm[2*i] = byte(v >> 8)
+		pcm[2*i+1] = byte(v & 0xff)
+	}
+
+	return pcm
 }
 
 func (mp *MessagesPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
@@ -71,10 +111,18 @@ func (mp *MessagesPane) ResetSim(client *sim.ControlClient, ss sim.State, pl pla
 
 func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return false }
 
+func (mp *MessagesPane) Upgrade(prev, current int) {
+	if prev < 31 {
+		mp.ContactTransmissionsStatic = true
+	}
+}
+
 func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 	if newFont, changed := renderer.DrawFontPicker(&mp.FontIdentifier, "Font"); changed {
 		mp.font = newFont
 	}
+	imgui.Checkbox("Play audio static after pilot initial contact transmissions", &mp.ContactTransmissionsStatic)
+	imgui.Checkbox("Play audio static after pilot readback transmissions", &mp.ReadbackTransmissionsStatic)
 }
 
 func (mp *MessagesPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
@@ -201,12 +249,18 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					fullName = strings.ReplaceAll(fullName, "approach", "departure")
 				}
 				msg = Message{contents: prefix + fullName + ", " + radioCallsign + ", " + event.Message}
+				if mp.ContactTransmissionsStatic {
+					ctx.Platform.PlayAudioOnce(mp.staticAudioIndex)
+				}
 			} else {
 				if len(event.Message) > 0 {
 					event.Message = strings.ToUpper(event.Message[:1]) + event.Message[1:]
 				}
 				msg = Message{contents: prefix + event.Message + ". " + radioCallsign,
 					error: event.Type == av.RadioTransmissionUnexpected,
+				}
+				if mp.ReadbackTransmissionsStatic {
+					ctx.Platform.PlayAudioOnce(mp.staticAudioIndex)
 				}
 			}
 			ctx.Lg.Debug("radio_transmission", slog.String("callsign", event.Callsign), slog.Any("message", msg))
