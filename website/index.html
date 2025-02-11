@@ -4874,7 +4874,11 @@ how it simulates aircraft or the STARS interface.
               <li> <code>/delete</code><i>heading</i>: the aircraft will be deleted when it reaches the fix</li>
               <li> <code>/h</code><i>heading</i>: depart the fix at specified heading</li>
               <li> <code>/s</code><i>speed</i>: cross the fix at the given speed</li>
-              <li> <code>/ho</code>: the aircraft should be handed off from the virtual controller to the user when it departs the fix</li>       
+              <li> <code>/ho</code>: the aircraft should be handed off from the virtual controller departs the fix.
+                A TCP id may be specified after <code>/ho</code>, in which case the aircraft is handed off to the
+                corresponding virtual controller. If no TCP id is specified, the aircraft is handed off to the
+                appropriate human controller.
+              </li>
               <li> <code>/po</code><i>TCP id</i>: when the aircraft passes the waypoint
                 and if it is under the control of a virtual controller,
                 issue a point out to the controller identified by the given TCP id (i.e., the

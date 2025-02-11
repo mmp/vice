@@ -725,7 +725,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			return
 
 		case 1:
-			ar.Waypoints[0].Handoff = true
+			ar.Waypoints[0].Handoff = new(string) // empty string -> to human
 
 		default:
 			// add a handoff point randomly halfway between the first two waypoints.
@@ -734,7 +734,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				// FIXME: it's a little sketchy to lerp Point2ll coordinates
 				// but probably ok over short distances here...
 				Location: math.Lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
-				Handoff:  true,
+				Handoff:  new(string), // to human
 			}
 			ar.Waypoints = append([]Waypoint{ar.Waypoints[0], mid}, ar.Waypoints[1:]...)
 		}

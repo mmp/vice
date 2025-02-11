@@ -29,7 +29,7 @@ type Waypoint struct {
 	Heading             int                  `json:"heading,omitempty"` // outbound heading after waypoint
 	ProcedureTurn       *ProcedureTurn       `json:"pt,omitempty"`
 	NoPT                bool                 `json:"nopt,omitempty"`
-	Handoff             bool                 `json:"handoff,omitempty"`
+	Handoff             *string              `json:"handoff,omitempty"` // if nil, none. If empty, to human, else to named TCP.
 	PointOut            string               `json:"pointout,omitempty"`
 	ClearApproach       bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
 	FlyOver             bool                 `json:"flyover,omitempty"`
@@ -67,8 +67,8 @@ func (wp Waypoint) LogValue() slog.Value {
 	if wp.NoPT {
 		attrs = append(attrs, slog.Bool("no_pt", wp.NoPT))
 	}
-	if wp.Handoff {
-		attrs = append(attrs, slog.Bool("handoff", wp.Handoff))
+	if wp.Handoff != nil {
+		attrs = append(attrs, slog.String("handoff", *wp.Handoff))
 	}
 	if wp.PointOut != "" {
 		attrs = append(attrs, slog.String("pointout", wp.PointOut))
@@ -160,8 +160,8 @@ func (wslice WaypointArray) Encode() string {
 		if w.NoPT {
 			s += "/nopt"
 		}
-		if w.Handoff {
-			s += "/ho"
+		if w.Handoff != nil {
+			s += "/ho" + *w.Handoff
 		}
 		if w.PointOut != "" {
 			s += "/po" + w.PointOut
@@ -444,8 +444,9 @@ func parseWaypoints(str string) (WaypointArray, error) {
 			} else if len(f) == 0 {
 				return nil, fmt.Errorf("no command found after / in %q", field)
 			} else {
-				if f == "ho" {
-					wp.Handoff = true
+				if strings.HasPrefix(f, "ho") {
+					id := f[2:]
+					wp.Handoff = &id
 				} else if f == "clearapp" {
 					wp.ClearApproach = true
 				} else if f == "flyover" {

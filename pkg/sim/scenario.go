@@ -462,8 +462,9 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 				} else if f, ok := sg.InboundFlows[flow]; !ok {
 					e.ErrorString("inbound flow %q not found in scenario group \"inbound_flows\"", flow)
 				} else {
+					// Is there a handoff to a human controller?
 					overflightHasHandoff := func(of av.Overflight) bool {
-						return slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff })
+						return slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff != nil && *wp.Handoff == "" })
 					}
 					if len(f.Arrivals) == 0 && !slices.ContainsFunc(f.Overflights, overflightHasHandoff) {
 						// It's just overflights without handoffs
@@ -630,12 +631,12 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			// flow if there will be a handoff to a non-virtual controller.
 			hasHandoff := false
 			for _, ar := range flow.Arrivals {
-				if slices.ContainsFunc(ar.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff }) {
+				if slices.ContainsFunc(ar.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff != nil && *wp.Handoff == "" }) {
 					hasHandoff = true
 				}
 			}
 			for _, of := range flow.Overflights {
-				if slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff }) {
+				if slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff != nil && *wp.Handoff == "" }) {
 					hasHandoff = true
 				}
 			}
@@ -939,6 +940,13 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			*s = ctrl.Id()
 		}
 	}
+	rewriteWaypoints := func(wp av.WaypointArray) {
+		for _, w := range wp {
+			if w.Handoff != nil && *w.Handoff != "" {
+				rewrite(w.Handoff)
+			}
+		}
+	}
 
 	for _, s := range sg.Scenarios {
 		rewrite(&s.SoloController)
@@ -981,7 +989,17 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		for _, exitroutes := range ap.DepartureRoutes {
 			for _, route := range exitroutes {
 				rewrite(&route.HandoffController)
+				rewriteWaypoints(route.Waypoints)
 			}
+		}
+
+		for _, app := range ap.Approaches {
+			for _, wps := range app.Waypoints {
+				rewriteWaypoints(wps)
+			}
+		}
+		for _, dep := range ap.Departures {
+			rewriteWaypoints(dep.RouteWaypoints)
 		}
 	}
 
@@ -1005,9 +1023,11 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	for _, flow := range sg.InboundFlows {
 		for i := range flow.Arrivals {
 			rewrite(&flow.Arrivals[i].InitialController)
+			rewriteWaypoints(flow.Arrivals[i].Waypoints)
 		}
 		for i := range flow.Overflights {
 			rewrite(&flow.Overflights[i].InitialController)
+			rewriteWaypoints(flow.Overflights[i].Waypoints)
 		}
 	}
 

@@ -1552,23 +1552,17 @@ func (s *Sim) updateState() {
 
 			passedWaypoint := ac.Update(s.State, s.lg)
 			if passedWaypoint != nil {
-				if passedWaypoint.Handoff {
-					// Handoff from virtual controller to a human controller.
-					ctrl := s.ResolveController(ac.WaypointHandoffController)
-
-					s.eventStream.Post(Event{
-						Type:           OfferedHandoffEvent,
-						Callsign:       ac.Callsign,
-						FromController: ac.TrackingController,
-						ToController:   ctrl,
-					})
-
-					err := s.State.ERAMComputers.HandoffTrack(ac, ac.TrackingController, ctrl, s.State.Controllers, s.SimTime)
-					if err != nil {
-						//s.lg.Errorf("HandoffTrack: %v", err)
+				if passedWaypoint.Handoff != nil {
+					var ctrl string
+					if *passedWaypoint.Handoff == "" {
+						// Handoff from virtual controller to a human controller.
+						ctrl = s.ResolveController(ac.WaypointHandoffController)
+					} else {
+						// Virtual to virtual
+						ctrl = *passedWaypoint.Handoff
 					}
 
-					ac.HandoffTrackController = ctrl
+					s.handoffTrack(s.State.Controllers[ac.TrackingController], s.State.Controllers[ctrl], ac.Callsign)
 				}
 
 				if passedWaypoint.PointOut != "" {
@@ -2555,29 +2549,32 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			octrl := s.State.Controllers[controller]
-
-			s.eventStream.Post(Event{
-				Type:           OfferedHandoffEvent,
-				FromController: ctrl.Id(),
-				ToController:   octrl.Id(),
-				Callsign:       ac.Callsign,
-			})
-
-			ac.HandoffTrackController = octrl.Id()
-
-			if err := s.State.STARSComputer().HandoffTrack(ac.Callsign, ctrl, octrl, s.SimTime); err != nil {
-				//s.lg.Errorf("HandoffTrack: %v", err)
-			}
-
-			// Add them to the auto-accept map even if the target is
-			// covered; this way, if they sign off in the interim, we still
-			// end up accepting it automatically.
-			acceptDelay := 4 + rand.Intn(10)
-			s.Handoffs[ac.Callsign] = Handoff{
-				Time: s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
-			}
+			s.handoffTrack(ctrl, octrl, ac.Callsign)
 			return nil
 		})
+}
+
+func (s *Sim) handoffTrack(from, to *av.Controller, callsign string) {
+	s.eventStream.Post(Event{
+		Type:           OfferedHandoffEvent,
+		FromController: from.Id(),
+		ToController:   to.Id(),
+		Callsign:       callsign,
+	})
+
+	s.State.Aircraft[callsign].HandoffTrackController = to.Id()
+
+	if err := s.State.STARSComputer().HandoffTrack(callsign, from, to, s.SimTime); err != nil {
+		//s.lg.Errorf("HandoffTrack: %v", err)
+	}
+
+	// Add them to the auto-accept map even if the target is
+	// covered; this way, if they sign off in the interim, we still
+	// end up accepting it automatically.
+	acceptDelay := 4 + rand.Intn(10)
+	s.Handoffs[callsign] = Handoff{
+		Time: s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+	}
 }
 
 func (s *Sim) HandoffControl(token, callsign string) error {
