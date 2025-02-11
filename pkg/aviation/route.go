@@ -297,9 +297,17 @@ func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*
 		if wp.PointOut != "" {
 			if !util.MapContains(controllers,
 				func(callsign string, ctrl *Controller) bool { return ctrl.Id() == wp.PointOut }) {
-				e.ErrorString("No controller found with TCP id %q for point out", wp.PointOut)
+				e.ErrorString("No controller found with id %q for point out", wp.PointOut)
 			}
 		}
+
+		if wp.Handoff != nil && *wp.Handoff != "" {
+			if !util.MapContains(controllers,
+				func(callsign string, ctrl *Controller) bool { return ctrl.Id() == *wp.Handoff }) {
+				e.ErrorString("No controller found with id %q for handoff", *wp.Handoff)
+			}
+		}
+
 		e.Pop()
 	}
 }
