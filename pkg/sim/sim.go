@@ -3747,8 +3747,8 @@ func (s *Sim) processEnqueued() {
 					// For departures handed off to virtual controllers,
 					// enqueue climbing them to cruise sending them direct
 					// to their first fix if they aren't already.
-					octrl := s.State.Controllers[ac.TrackingController]
-					if (s.State.IsDeparture(ac) || s.State.IsOverflight(ac)) && octrl != nil && !octrl.IsHuman {
+					ctrl := s.State.Controllers[ac.ControllingController]
+					if (s.State.IsDeparture(ac) || s.State.IsOverflight(ac)) && ctrl != nil && !ctrl.IsHuman {
 						s.enqueueDepartOnCourse(ac.Callsign)
 					}
 				}
