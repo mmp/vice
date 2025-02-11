@@ -3761,7 +3761,7 @@ func (s *Sim) processEnqueued() {
 					// enqueue climbing them to cruise sending them direct
 					// to their first fix if they aren't already.
 					ctrl := s.State.Controllers[ac.ControllingController]
-					if (s.State.IsDeparture(ac) || s.State.IsOverflight(ac)) && ctrl != nil && !ctrl.IsHuman {
+					if s.State.IsDeparture(ac) && ctrl != nil && !ctrl.IsHuman {
 						s.enqueueDepartOnCourse(ac.Callsign)
 					}
 				}
