@@ -1263,7 +1263,6 @@ func (s *Sim) ChangeControlPosition(token string, id string, keepTracks bool) er
 		return ErrInvalidControllerToken
 	}
 	oldId := ctrl.Id
-	oldPos := s.State.Controllers[oldId].Position
 
 	s.lg.Infof("%s: switching to %s", oldId, id)
 
@@ -1278,14 +1277,14 @@ func (s *Sim) ChangeControlPosition(token string, id string, keepTracks bool) er
 
 	s.eventStream.Post(Event{
 		Type:    StatusMessageEvent,
-		Message: oldPos + " has signed off.",
+		Message: oldId + " has signed off.",
 	})
 
 	for _, ac := range s.State.Aircraft {
 		if keepTracks {
 			ac.TransferTracks(oldId, ctrl.Id)
 		} else {
-			ac.HandleControllerDisconnect(ctrl.Id, s.State.PrimaryController)
+			ac.HandleControllerDisconnect(oldId, s.State.PrimaryController)
 		}
 	}
 
@@ -1302,11 +1301,10 @@ func (s *Sim) TogglePause(token string) error {
 		s.Paused = !s.Paused
 		s.lg.Infof("paused: %v", s.Paused)
 		s.lastUpdateTime = time.Now() // ignore time passage...
-		pos := s.State.Controllers[ctrl.Id].Position
 
 		s.eventStream.Post(Event{
 			Type:    GlobalMessageEvent,
-			Message: pos + " has " + util.Select(s.Paused, "paused", "unpaused") + " the sim",
+			Message: ctrl.Id + " has " + util.Select(s.Paused, "paused", "unpaused") + " the sim",
 		})
 		return nil
 	}
@@ -1562,7 +1560,13 @@ func (s *Sim) updateState() {
 						ctrl = *passedWaypoint.Handoff
 					}
 
-					s.handoffTrack(s.State.Controllers[ac.TrackingController], s.State.Controllers[ctrl], ac.Callsign)
+					if from, fok := s.State.Controllers[ac.TrackingController]; !fok {
+						s.lg.Errorf("Unable to handoff %s: controller %q not found", ac.Callsign, ac.TrackingController)
+					} else if to, tok := s.State.Controllers[ctrl]; !tok {
+						s.lg.Errorf("Unable to handoff %s: controller %q not found", ac.Callsign, ctrl)
+					} else {
+						s.handoffTrack(from, to, ac.Callsign)
+					}
 				}
 
 				if passedWaypoint.PointOut != "" {
@@ -1571,7 +1575,7 @@ func (s *Sim) updateState() {
 						if ctrl.Id() == passedWaypoint.PointOut {
 							// Don't do the point out if a human is
 							// controlling the aircraft.
-							if fromCtrl := s.State.Controllers[ac.ControllingController]; fromCtrl != nil && !fromCtrl.IsHuman {
+							if fromCtrl, ok := s.State.Controllers[ac.ControllingController]; ok && !fromCtrl.IsHuman {
 								s.pointOut(ac.Callsign, fromCtrl, ctrl)
 								break
 							}
@@ -2540,7 +2544,7 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.TrackingController != ctrl.Id() {
 				return av.ErrOtherControllerHasTrack
-			} else if octrl := s.State.Controllers[controller]; octrl == nil {
+			} else if octrl, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
 				/*
 					} else if trk := s.State.STARSComputer().TrackInformation[ac.Callsign]; trk == nil {
@@ -2610,7 +2614,7 @@ func (s *Sim) HandoffControl(token, callsign string) error {
 			var radioTransmissions []av.RadioTransmission
 			// Immediately respond to the current controller that we're
 			// changing frequency.
-			if octrl := s.State.Controllers[ac.TrackingController]; octrl != nil {
+			if octrl, ok := s.State.Controllers[ac.TrackingController]; ok {
 				if octrl.Frequency == ctrl.Frequency {
 					radioTransmissions = append(radioTransmissions, av.RadioTransmission{
 						Controller: ac.ControllingController,
@@ -2735,7 +2739,7 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 func (s *Sim) RedirectHandoff(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if octrl := s.State.Controllers[controller]; octrl == nil {
+			if octrl, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
 			} else if octrl.Id() == ctrl.Id() || octrl.Id() == ac.TrackingController {
 				// Can't redirect to ourself and the controller who initiated the handoff
@@ -2808,7 +2812,7 @@ func (s *Sim) AcceptRedirectedHandoff(token, callsign string) error {
 func (s *Sim) ForceQL(token, callsign, controller string) error {
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if s.State.Controllers[controller] == nil {
+			if _, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
 			}
 			return nil
@@ -2831,7 +2835,7 @@ func (s *Sim) PointOut(token, callsign, controller string) error {
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
 			if ac.TrackingController != ctrl.Id() {
 				return av.ErrOtherControllerHasTrack
-			} else if octrl := s.State.Controllers[controller]; octrl == nil {
+			} else if octrl, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
 			} else if octrl.Facility != ctrl.Facility {
 				// Can't point out to another STARS facility.
@@ -3268,7 +3272,7 @@ func (s *Sim) ContactTower(token, callsign string) error {
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			return ac.ContactTower(s.State.Controllers, s.lg)
+			return ac.ContactTower(s.lg)
 		})
 }
 

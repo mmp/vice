@@ -242,13 +242,15 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 
 			var msg Message
 			if event.RadioTransmissionType == av.RadioTransmissionContact {
-				ctrl := ctx.ControlClient.Controllers[event.ToController]
-				fullName := ctrl.RadioName
+				name := event.ToController
+				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok {
+					name = ctrl.RadioName
+				}
 				if ac := ctx.ControlClient.Aircraft[event.Callsign]; ac != nil && ctx.ControlClient.State.IsDeparture(ac) {
 					// Always refer to the controller as "departure" for departing aircraft.
-					fullName = strings.ReplaceAll(fullName, "approach", "departure")
+					name = strings.ReplaceAll(name, "approach", "departure")
 				}
-				msg = Message{contents: prefix + fullName + ", " + radioCallsign + ", " + event.Message}
+				msg = Message{contents: prefix + name + ", " + radioCallsign + ", " + event.Message}
 				if mp.ContactTransmissionsStatic {
 					ctx.Platform.PlayAudioOnce(mp.staticAudioIndex)
 				}

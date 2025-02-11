@@ -317,7 +317,7 @@ func (ac *Aircraft) DescendViaSTAR() []RadioTransmission {
 	return ac.transmitResponse(ac.Nav.DescendViaSTAR())
 }
 
-func (ac *Aircraft) ContactTower(controllers map[string]*Controller, lg *log.Logger) []RadioTransmission {
+func (ac *Aircraft) ContactTower(lg *log.Logger) []RadioTransmission {
 	if ac.GotContactTower {
 		// No response; they're not on our frequency any more.
 		return nil
