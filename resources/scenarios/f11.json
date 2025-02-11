@@ -4646,7 +4646,6 @@
             }
           ],
         "initial_altitude": 17000,
-        "assigned_altitude": 17000,
         "initial_controller": "MIA_23_CTR",
         "initial_speed": 290,
         "description": "KTPA DADES1 arrivals",
@@ -4672,7 +4671,6 @@
             }
           ],
         "initial_altitude": 17000,
-        "assigned_altitude": 17000,
         "initial_controller": "MIA_23_CTR",
         "initial_speed": 290,
         "description": "KPIE DADES1 arrivals",
@@ -11051,7 +11049,6 @@
                  "fleet": "lightGA"
                }
             ],
-          "assigned_altitude": 5000,
           "initial_altitude": 5000,
           "initial_controller": "MIA_23_CTR",
           "initial_speed": 150,
@@ -11109,7 +11106,6 @@
               "fleet": "lightGA"
             }
           ],
-          "assigned_altitude": 4000,
           "initial_altitude": 4000,
           "initial_controller": "DAB_N_APP",
           "initial_speed": 150,
