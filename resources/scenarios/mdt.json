@@ -1849,6 +1849,7 @@
                     ],
                     "cruise_altitude": 6000,
                     "initial_altitude": 50,
+                    "assigned_altitude": 6000,
                     "initial_controller": "ABE_DEP",
                     "initial_speed": 60,
                     "waypoints": "KABE-6 ETX V30 PINNA/ho V30 PSB"
@@ -1859,6 +1860,7 @@
                     ],
                     "cruise_altitude": 6000,
                     "initial_altitude": 50,
+                    "assigned_altitude": 6000,
                     "initial_controller": "ABE_DEP",
                     "initial_speed": 60,
                     "waypoints": "KABE-6 ETX V39 FLOAT/ho V39 LRP T295 TAPPA HPW V213 WALLO V1 CRE"
