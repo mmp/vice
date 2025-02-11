@@ -323,6 +323,7 @@ func (lc *LaunchConfig) DrawOverflightUI(p platform.Platform) (changed bool) {
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
+	uiStartDisable(lc.InboundFlowRateScale == 0)
 	if imgui.BeginTableV("overflights", 2, flags, imgui.Vec2{tableScale * 400, 0}, 0.) {
 		imgui.TableSetupColumn("Group")
 		imgui.TableSetupColumn("Rate")
@@ -343,6 +344,7 @@ func (lc *LaunchConfig) DrawOverflightUI(p platform.Platform) (changed bool) {
 		}
 		imgui.EndTable()
 	}
+	uiEndDisable(lc.InboundFlowRateScale == 0)
 
 	return
 }
