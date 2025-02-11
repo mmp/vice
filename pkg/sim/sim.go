@@ -2646,17 +2646,22 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if ac.HandoffTrackController != ctrl.Id() {
-				return av.ErrNotBeingHandedOffToMe
-			}
-
 			/*
 				trk := s.State.STARSComputer().TrackInformation[ac.Callsign]
 				if trk == nil || trk.HandoffController != ctrl.Callsign {
 					return av.ErrNotBeingHandedOffToMe
 				}
 			*/
-			return nil
+
+			if ac.HandoffTrackController == ctrl.Id() {
+				return nil
+			}
+			if po, ok := s.PointOuts[ac.Callsign]; ok && po.ToController == ctrl.Id() {
+				// Point out where the recipient decided to take it as a handoff instead.
+				return nil
+			}
+			return av.ErrNotBeingHandedOffToMe
+
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			s.eventStream.Post(Event{
@@ -2668,6 +2673,11 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 
 			ac.HandoffTrackController = ""
 			ac.TrackingController = ctrl.Id()
+
+			if _, ok := s.PointOuts[ac.Callsign]; ok {
+				// Clean up after a point out was accepted as a handoff
+				delete(s.PointOuts, ac.Callsign)
+			}
 
 			if err := s.State.STARSComputer().AcceptHandoff(ac, ctrl, s.State.Controllers,
 				s.State.STARSFacilityAdaptation, s.SimTime); err != nil {

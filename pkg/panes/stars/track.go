@@ -337,6 +337,8 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 					state.AcceptedHandoffDisplayEnd = time.Now().Add(dur)
 				}
 			}
+			// Clean up if a point out was instead taken as a handoff.
+			delete(sp.PointOuts, event.Callsign)
 
 		case sim.IdentEvent:
 			if state, ok := sp.Aircraft[event.Callsign]; ok {

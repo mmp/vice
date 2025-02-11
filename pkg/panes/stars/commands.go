@@ -2993,8 +2993,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 		case CommandModeHandOff:
 			if cmd == "" {
+				if po, ok := sp.PointOuts[ac.Callsign]; ok && po.To == ctx.ControlClient.PrimaryTCP {
+					sp.acceptHandoff(ctx, ac.Callsign)
+				} else {
+					// Try to cancel it; if it's not ours, we'll get an error from this
+					sp.cancelHandoff(ctx, ac.Callsign)
+				}
 				status.clear = true
-				sp.cancelHandoff(ctx, ac.Callsign)
 			} else {
 				if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err != nil {
 					status.err = err
