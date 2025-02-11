@@ -818,8 +818,14 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 	state := sp.Aircraft[ac.Callsign]
 	trk := sp.getTrack(ctx, ac)
 
+	inboundPointOut := false
+	if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
+		inboundPointOut = true
+	}
+
 	// Cases where it's always a full datablock
-	forceFDB := state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd)
+	forceFDB := inboundPointOut
+	forceFDB = forceFDB || (state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd))
 	forceFDB = forceFDB || trk.HandingOffTo(ctx.ControlClient.PrimaryTCP)
 	if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
 		forceFDB = true
@@ -875,7 +881,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 		if state.PointOutAcknowledged || state.ForceQL {
 			// Ack'ed point out to us (but not cleared) or force quick look.
 			color = STARSInboundPointOutColor
-		} else if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
+		} else if inboundPointOut {
 			// Pointed out to us.
 			color = STARSInboundPointOutColor
 		} else if state.IsSelected {
