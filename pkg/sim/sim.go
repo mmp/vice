@@ -1550,23 +1550,21 @@ func (s *Sim) updateState() {
 
 			passedWaypoint := ac.Update(s.State, s.lg)
 			if passedWaypoint != nil {
-				if passedWaypoint.Handoff != nil {
-					var ctrl string
-					if *passedWaypoint.Handoff == "" {
-						// Handoff from virtual controller to a human controller.
-						ctrl = s.ResolveController(ac.WaypointHandoffController)
-					} else {
-						// Virtual to virtual
-						ctrl = *passedWaypoint.Handoff
-					}
-
+				handoff := func(toTCP string) {
 					if from, fok := s.State.Controllers[ac.TrackingController]; !fok {
 						s.lg.Errorf("Unable to handoff %s: controller %q not found", ac.Callsign, ac.TrackingController)
-					} else if to, tok := s.State.Controllers[ctrl]; !tok {
-						s.lg.Errorf("Unable to handoff %s: controller %q not found", ac.Callsign, ctrl)
+					} else if to, tok := s.State.Controllers[toTCP]; !tok {
+						s.lg.Errorf("Unable to handoff %s: controller %q not found", ac.Callsign, toTCP)
 					} else {
 						s.handoffTrack(from, to, ac.Callsign)
 					}
+				}
+
+				if passedWaypoint.HumanHandoff {
+					// Handoff from virtual controller to a human controller.
+					handoff(s.ResolveController(ac.WaypointHandoffController))
+				} else if passedWaypoint.TCPHandoff != "" {
+					handoff(passedWaypoint.TCPHandoff)
 				}
 
 				if passedWaypoint.PointOut != "" {

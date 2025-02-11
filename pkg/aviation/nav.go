@@ -2251,7 +2251,8 @@ func (nav *Nav) ExpectApproach(airport *Airport, id string, runwayWaypoints map[
 					// set though in general the waypoint from the approach
 					// takes priority for things like altitude, speed, etc.
 					nopt := nav.Waypoints[idx].NoPT
-					handoff := nav.Waypoints[idx].Handoff
+					humanHandoff := nav.Waypoints[idx].HumanHandoff
+					tcpHandoff := nav.Waypoints[idx].TCPHandoff
 					clearapp := nav.Waypoints[idx].ClearApproach
 
 					// Keep the waypoints up to but not including the match.
@@ -2262,7 +2263,8 @@ func (nav *Nav) ExpectApproach(airport *Airport, id string, runwayWaypoints map[
 					nav.Waypoints = append(nav.Waypoints, nav.FlightState.ArrivalAirport)
 
 					nav.Waypoints[idx].NoPT = nopt
-					nav.Waypoints[idx].Handoff = handoff
+					nav.Waypoints[idx].HumanHandoff = humanHandoff
+					nav.Waypoints[idx].TCPHandoff = tcpHandoff
 					nav.Waypoints[idx].ClearApproach = clearapp
 
 					found = true

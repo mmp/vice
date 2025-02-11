@@ -464,7 +464,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 				} else {
 					// Is there a handoff to a human controller?
 					overflightHasHandoff := func(of av.Overflight) bool {
-						return slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff != nil && *wp.Handoff == "" })
+						return slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff })
 					}
 					if len(f.Arrivals) == 0 && !slices.ContainsFunc(f.Overflights, overflightHasHandoff) {
 						// It's just overflights without handoffs
@@ -631,12 +631,12 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			// flow if there will be a handoff to a non-virtual controller.
 			hasHandoff := false
 			for _, ar := range flow.Arrivals {
-				if slices.ContainsFunc(ar.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff != nil && *wp.Handoff == "" }) {
+				if slices.ContainsFunc(ar.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff }) {
 					hasHandoff = true
 				}
 			}
 			for _, of := range flow.Overflights {
-				if slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff != nil && *wp.Handoff == "" }) {
+				if slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff }) {
 					hasHandoff = true
 				}
 			}
@@ -942,8 +942,8 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	}
 	rewriteWaypoints := func(wp av.WaypointArray) {
 		for _, w := range wp {
-			if w.Handoff != nil && *w.Handoff != "" {
-				rewrite(w.Handoff)
+			if w.TCPHandoff != "" {
+				rewrite(&w.TCPHandoff)
 			}
 		}
 	}

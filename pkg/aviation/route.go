@@ -29,7 +29,8 @@ type Waypoint struct {
 	Heading             int                  `json:"heading,omitempty"` // outbound heading after waypoint
 	ProcedureTurn       *ProcedureTurn       `json:"pt,omitempty"`
 	NoPT                bool                 `json:"nopt,omitempty"`
-	Handoff             *string              `json:"handoff,omitempty"` // if nil, none. If empty, to human, else to named TCP.
+	HumanHandoff        bool                 `json:"human_handoff"` // To named TCP.
+	TCPHandoff          string               `json:"tcp_handoff"`   // To named TCP.
 	PointOut            string               `json:"pointout,omitempty"`
 	ClearApproach       bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
 	FlyOver             bool                 `json:"flyover,omitempty"`
@@ -68,8 +69,11 @@ func (wp Waypoint) LogValue() slog.Value {
 	if wp.NoPT {
 		attrs = append(attrs, slog.Bool("no_pt", wp.NoPT))
 	}
-	if wp.Handoff != nil {
-		attrs = append(attrs, slog.String("handoff", *wp.Handoff))
+	if wp.HumanHandoff {
+		attrs = append(attrs, slog.Bool("human_handoff", wp.HumanHandoff))
+	}
+	if wp.TCPHandoff != "" {
+		attrs = append(attrs, slog.String("tcp_handoff", wp.TCPHandoff))
 	}
 	if wp.PointOut != "" {
 		attrs = append(attrs, slog.String("pointout", wp.PointOut))
@@ -164,8 +168,11 @@ func (wslice WaypointArray) Encode() string {
 		if w.NoPT {
 			s += "/nopt"
 		}
-		if w.Handoff != nil {
-			s += "/ho" + *w.Handoff
+		if w.HumanHandoff {
+			s += "/ho"
+		}
+		if w.TCPHandoff != "" {
+			s += "/ho" + w.TCPHandoff
 		}
 		if w.PointOut != "" {
 			s += "/po" + w.PointOut
@@ -301,10 +308,10 @@ func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*
 			}
 		}
 
-		if wp.Handoff != nil && *wp.Handoff != "" {
+		if wp.TCPHandoff != "" {
 			if !util.MapContains(controllers,
-				func(callsign string, ctrl *Controller) bool { return ctrl.Id() == *wp.Handoff }) {
-				e.ErrorString("No controller found with id %q for handoff", *wp.Handoff)
+				func(callsign string, ctrl *Controller) bool { return ctrl.Id() == wp.TCPHandoff }) {
+				e.ErrorString("No controller found with id %q for handoff", wp.TCPHandoff)
 			}
 		}
 
@@ -459,9 +466,10 @@ func parseWaypoints(str string) (WaypointArray, error) {
 			} else if len(f) == 0 {
 				return nil, fmt.Errorf("no command found after / in %q", field)
 			} else {
-				if strings.HasPrefix(f, "ho") {
-					id := f[2:]
-					wp.Handoff = &id
+				if f == "ho" {
+					wp.HumanHandoff = true
+				} else if strings.HasPrefix(f, "ho") {
+					wp.TCPHandoff = f[2:]
 				} else if f == "clearapp" {
 					wp.ClearApproach = true
 				} else if f == "flyover" {
