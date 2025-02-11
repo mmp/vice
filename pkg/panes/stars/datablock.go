@@ -756,9 +756,10 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		}
 
 		// Field 6: ATPA info and possibly beacon code
-		// TODO: DB for duplicate beacon code as well
+		idx6 := 0
 		if state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert {
-			formatDBText(db.field6[0][:], "*TPA", color, false)
+			formatDBText(db.field6[idx6][:], "*TPA", color, false)
+			idx6++
 		} else if state.IntrailDistance != 0 && sp.currentPrefs().DisplayATPAInTrailDist {
 			distColor := color
 			if state.ATPAStatus == ATPAStatusWarning {
@@ -766,11 +767,16 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			} else if state.ATPAStatus == ATPAStatusAlert {
 				distColor = STARSATPAAlertColor
 			}
-			formatDBText(db.field6[0][:], fmt.Sprintf("%.2f", state.IntrailDistance), distColor, false)
+			formatDBText(db.field6[idx6][:], fmt.Sprintf("%.2f", state.IntrailDistance), distColor, false)
+			idx6++
 		}
 		if beaconMismatch {
-			idx := util.Select(fieldEmpty(db.field6[0][:]), 0, 1)
-			formatDBText(db.field6[idx][:], ac.Squawk.String(), color, false)
+			formatDBText(db.field6[idx6][:], ac.Squawk.String(), color, false)
+			idx6++
+		}
+		if _, ok := sp.DuplicateBeacons[ac.Squawk]; ok {
+			acked := state.DBAcknowledged == ac.Squawk
+			formatDBText(db.field6[idx6][:], "DB", color, !acked)
 		}
 
 		// Field 7: assigned altitude, assigned beacon if mismatch

@@ -132,6 +132,9 @@ type STARSPane struct {
 	// it is enabled.)
 	ReleaseRequests map[string]interface{}
 
+	// Periodically updated in processEvents
+	DuplicateBeacons map[av.Squawk]interface{}
+
 	queryUnassociated *util.TransientMap[string, interface{}]
 
 	RangeBearingLines []STARSRangeBearingLine

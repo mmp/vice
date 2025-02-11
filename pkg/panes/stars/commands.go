@@ -2630,6 +2630,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					state.SPCAcknowledged = true
 					status.clear = true
 					return
+				} else if _, ok := sp.DuplicateBeacons[ac.Squawk]; ok && state.DBAcknowledged != ac.Squawk {
+					state.DBAcknowledged = ac.Squawk
+					status.clear = true
+					return
 				} else if trk != nil && trk.HandoffController != "" && trk.HandoffController != ctx.ControlClient.PrimaryTCP &&
 					trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
 					// cancel offered handoff offered

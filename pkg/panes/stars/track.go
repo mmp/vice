@@ -119,6 +119,10 @@ type AircraftState struct {
 	SPCAcknowledged bool
 	SPCSoundEnd     time.Time
 
+	// record the code when it was ack'ed so that if it happens again with
+	// a different code, we get a flashing DB in the datablock.
+	DBAcknowledged av.Squawk
+
 	FirstSeen          time.Time
 	FirstRadarTrack    time.Time
 	EnteredOurAirspace bool
@@ -257,6 +261,16 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				sp.TabListAircraft[state.TabListIndex] = ""
 			}
 			delete(sp.Aircraft, callsign)
+		}
+	}
+
+	// Look for duplicate beacon codes
+	sp.DuplicateBeacons = make(map[av.Squawk]interface{})
+	beaconCount := make(map[av.Squawk]int)
+	for _, ac := range ctx.ControlClient.Aircraft {
+		beaconCount[ac.Squawk] = beaconCount[ac.Squawk] + 1
+		if beaconCount[ac.Squawk] > 1 {
+			sp.DuplicateBeacons[ac.Squawk] = nil
 		}
 	}
 
