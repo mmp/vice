@@ -34,6 +34,7 @@ type Waypoint struct {
 	ClearApproach       bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
 	FlyOver             bool                 `json:"flyover,omitempty"`
 	Delete              bool                 `json:"delete,omitempty"`
+	Land                bool                 `json:"land,omitempty"`
 	Arc                 *DMEArc              `json:"arc,omitempty"`
 	IAF, IF, FAF        bool                 // not provided in scenario JSON; derived from fix
 	Airway              string               // when parsing waypoints, this is set if we're on an airway after the fix
@@ -81,6 +82,9 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.Delete {
 		attrs = append(attrs, slog.Bool("delete", wp.Delete))
+	}
+	if wp.Land {
+		attrs = append(attrs, slog.Bool("land", wp.Land))
 	}
 	if wp.Arc != nil {
 		attrs = append(attrs, slog.Any("arc", wp.Arc))
@@ -174,6 +178,9 @@ func (wslice WaypointArray) Encode() string {
 		}
 		if w.Delete {
 			s += "/delete"
+		}
+		if w.Land {
+			s += "/land"
 		}
 		if w.Heading != 0 {
 			s += fmt.Sprintf("/h%d", w.Heading)
@@ -453,6 +460,8 @@ func parseWaypoints(str string) (WaypointArray, error) {
 					wp.FlyOver = true
 				} else if f == "delete" {
 					wp.Delete = true
+				} else if f == "land" {
+					wp.Land = true
 				} else if f == "iaf" {
 					wp.IAF = true
 				} else if f == "if" {

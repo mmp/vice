@@ -1587,6 +1587,20 @@ func (s *Sim) updateState() {
 					s.lg.Info("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
 					s.State.DeleteAircraft(ac)
 				}
+
+				if passedWaypoint.Land {
+					// There should be an altitude restriction at the final approach waypoint, but
+					// be careful.
+					alt := passedWaypoint.AltitudeRestriction
+					// If we're more than 150 feet AGL, go around.
+					lowEnough := alt == nil || ac.Altitude() <= alt.TargetAltitude(ac.Altitude())+150
+					if lowEnough {
+						s.lg.Info("deleting landing at waypoint", slog.Any("waypoint", passedWaypoint))
+						s.State.DeleteAircraft(ac)
+					} else {
+						s.goAround(ac)
+					}
+				}
 			}
 
 			// Possibly go around
@@ -1595,25 +1609,7 @@ func (s *Sim) updateState() {
 				if d, err := ac.DistanceToEndOfApproach(); err == nil && d < *ac.GoAroundDistance {
 					s.lg.Info("randomly going around")
 					ac.GoAroundDistance = nil // only go around once
-					// Update controller before calling GoAround so the
-					// transmission goes to the right controller.
-					ac.ControllingController = s.State.DepartureController(ac, s.lg)
-					rt := ac.GoAround()
-					PostRadioEvents(ac.Callsign, rt, s)
-
-					// If it was handed off to tower, hand it back to us
-					if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
-						ac.HandoffTrackController = s.State.DepartureController(ac, s.lg)
-						if ac.HandoffTrackController == "" {
-							ac.HandoffTrackController = ac.ApproachController
-						}
-						s.PostEvent(Event{
-							Type:           OfferedHandoffEvent,
-							Callsign:       ac.Callsign,
-							FromController: ac.TrackingController,
-							ToController:   ac.ApproachController,
-						})
-					}
+					s.goAround(ac)
 				}
 			}
 
@@ -1662,6 +1658,28 @@ func (s *Sim) updateState() {
 	}
 
 	s.State.ERAMComputers.Update(s)
+}
+
+func (s *Sim) goAround(ac *av.Aircraft) {
+	// Update controller before calling GoAround so the
+	// transmission goes to the right controller.
+	ac.ControllingController = s.State.DepartureController(ac, s.lg)
+	rt := ac.GoAround()
+	PostRadioEvents(ac.Callsign, rt, s)
+
+	// If it was handed off to tower, hand it back to us
+	if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
+		ac.HandoffTrackController = s.State.DepartureController(ac, s.lg)
+		if ac.HandoffTrackController == "" {
+			ac.HandoffTrackController = ac.ApproachController
+		}
+		s.PostEvent(Event{
+			Type:           OfferedHandoffEvent,
+			Callsign:       ac.Callsign,
+			FromController: ac.TrackingController,
+			ToController:   ac.ApproachController,
+		})
+	}
 }
 
 func PostRadioEvents(from string, transmissions []av.RadioTransmission, ep EventPoster) {
