@@ -997,6 +997,7 @@ type Sim struct {
 
 	FutureControllerContacts []FutureControllerContact
 	FutureOnCourse           []FutureOnCourse
+	FutureSquawkChanges      []FutureChangeSquawk
 
 	RequirePassword bool
 	Password        string
@@ -2353,7 +2354,7 @@ func (s *Sim) ChangeSquawk(token, callsign string, sq av.Squawk) error {
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			ac.Squawk = sq
+			s.enqueueSquawkChange(ac.Callsign, sq)
 
 			return []av.RadioTransmission{av.RadioTransmission{
 				Controller: ctrl.Id(),
@@ -3729,6 +3730,18 @@ func (s *Sim) enqueueDepartOnCourse(callsign string) {
 		FutureOnCourse{Callsign: callsign, Time: s.SimTime.Add(wait)})
 }
 
+type FutureChangeSquawk struct {
+	Callsign string
+	Code     av.Squawk
+	Time     time.Time
+}
+
+func (s *Sim) enqueueSquawkChange(callsign string, code av.Squawk) {
+	wait := time.Duration(5+rand.Intn(5)) * time.Second
+	s.FutureSquawkChanges = append(s.FutureSquawkChanges,
+		FutureChangeSquawk{Callsign: callsign, Code: code, Time: s.SimTime.Add(wait)})
+}
+
 func (s *Sim) processEnqueued() {
 	s.FutureControllerContacts = util.FilterSlice(s.FutureControllerContacts,
 		func(c FutureControllerContact) bool {
@@ -3762,6 +3775,17 @@ func (s *Sim) processEnqueued() {
 					s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 						slog.Int("final_altitude", ac.FlightPlan.Altitude))
 					ac.DepartOnCourse(s.lg)
+				}
+				return false
+			}
+			return true
+		})
+
+	s.FutureSquawkChanges = util.FilterSlice(s.FutureSquawkChanges,
+		func(fcs FutureChangeSquawk) bool {
+			if s.SimTime.After(fcs.Time) {
+				if ac, ok := s.State.Aircraft[fcs.Callsign]; ok {
+					ac.Squawk = fcs.Code
 				}
 				return false
 			}
