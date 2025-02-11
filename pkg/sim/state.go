@@ -228,14 +228,17 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 		}
 	}
 
+	// Get the unique airports we potentially want METAR for.
+	aps := slices.Collect(maps.Keys(ss.DepartureAirports))
+	aps = slices.AppendSeq(aps, maps.Keys(ss.ArrivalAirports))
+	aps = append(aps, ss.STARSFacilityAdaptation.Altimeters...)
+	slices.Sort(aps)
+	aps = slices.Compact(aps)
+
 	if liveWeather {
-		realMETAR(slices.Collect(maps.Keys(ss.DepartureAirports)))
-		realMETAR(slices.Collect(maps.Keys(ss.ArrivalAirports)))
+		realMETAR(aps)
 	} else {
-		for ap := range ss.DepartureAirports {
-			fakeMETAR(ap)
-		}
-		for ap := range ss.ArrivalAirports {
+		for _, ap := range aps {
 			fakeMETAR(ap)
 		}
 	}
