@@ -6633,16 +6633,16 @@
 		"COS_APP": {
             "frequency": 124000,
             "radio_name": "Springs Approach",
-			"facility_id": "2",
+			"facility_id": "1",
             "scope_char": "A",
-            "sector_id": "2A"
+            "sector_id": "1A"
         },
 		"CYS_APP": {
             "frequency": 124550,
             "radio_name": "Cheyenne Approach",
-			"facility_id": "6",
+			"facility_id": "2",
             "scope_char": "A",
-            "sector_id": "6A"
+            "sector_id": "2A"
         },
         "DEN_E_TWR": {
             "frequency": 132350,
@@ -6978,7 +6978,7 @@
             "default_maps": [
                 "D01 AR BASE",
                 "D01 DR BASE",
-                "LN DUMP"
+                "D01 North Dump"
             ],
             "departure_runways": [
                 {
@@ -7308,7 +7308,7 @@
             "default_maps": [
                 "D01 AR BASE",
                 "D01 DR BASE",
-                "LS DUMP"
+                "D01 South Dump"
             ],
             "departure_runways": [
                 {
@@ -7638,7 +7638,7 @@
             "default_maps": [
                 "D01 AR BASE",
                 "D01 DR BASE",
-                "LN DUMP"
+                "D01 North Dump"
             ],
             "departure_runways": [
 				{
@@ -7968,7 +7968,7 @@
             "default_maps": [
                 "D01 AR BASE",
                 "D01 DR BASE",
-                "LS DUMP"
+                "D01 South Dump"
             ],
             "departure_runways": [
 				{
@@ -8946,8 +8946,7 @@
             "default_maps": [
                 "D01 AR BASE",
                 "D01 DR BASE",
-                "LN DUMP",
-                "D01 East Dump"
+                "D01 North Dump"
             ],
             "departure_runways": [
                 {
@@ -9281,8 +9280,7 @@
             "default_maps": [
                 "D01 AR BASE",
                 "D01 DR BASE",
-                "LN DUMP",
-                "D01 West Dump"
+                "D01 North Dump"
             ],
             "departure_runways": [
 				{
@@ -9616,8 +9614,7 @@
             "default_maps": [
                 "D01 AR BASE",
                 "D01 DR BASE",
-                "LS DUMP",
-                "D01 East Dump"
+                "D01 South Dump"
             ],
             "departure_runways": [
                 {
@@ -9951,7 +9948,7 @@
             "default_maps": [
                 "D01 AR BASE",
                 "D01 DR BASE",
-                "D01 West Dump"
+                "D01 South Dump"
             ],
             "departure_runways": [
 				{

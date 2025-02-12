@@ -356,6 +356,9 @@
                     "airlines": [
                         {
                             "icao": "SWA"
+                        },
+						{
+                            "icao": "SKW"
                         }
                     ],
                     "altitude": 13000,
@@ -382,7 +385,8 @@
                     "altitude": 32000,
                     "destination": "KLAX",
                     "route": "DRAKE V83 PUB",
-                    "exit": "DRAKE"
+                    "exit": "DRAKE",
+					"secondary_scratchpad": "PUB"
                 },
                 {
                     "airlines": [
@@ -404,6 +408,21 @@
                     "destination": "KOMA",
                     "route": "BRK JEWLS GLD",
                     "exit": "JEWLS"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "SKW"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "KPHX",
+                    "route": "DRAKE V83 PUB GUP EAGUL6",
+                    "exit": "DRAKE",
+					"secondary_scratchpad": "PUB"
                 }
             ],
             "exit_categories": {
@@ -623,8 +642,8 @@
                     "description": "",
                     "initial_controller": "DEN_29_CTR",
                     "initial_speed": 270,
-                    "route": "HGO OZZZY",
-                    "waypoints": "HGO/a17000 N038.51.21.568,W103.55.28.472/ho OZZZY/a14000/s250"
+                    "route": "HGO OZZZY5",
+                    "waypoints": "HGO/a17000 N038.51.21.568,W103.55.28.472/ho OZZZY/a14000/s250 ADANE"
                 }
             ]
         },
@@ -641,6 +660,10 @@
                                 "airport": "KPHX",
                                 "icao": "EDV"
                             },
+							{
+                                "airport": "KPHX",
+                                "icao": "SWA"
+                            },
                             {
                                 "airport": "KABQ",
                                 "fleet": "GAjet",
@@ -649,8 +672,8 @@
                         ]
                     },
                     "cruise_altitude": 23000,
-                    "initial_altitude": 12000,
-                    "assigned_altitude": 11000,
+                    "initial_altitude": 16000,
+                    "assigned_altitude": 14000,
                     "description": "",
                     "initial_controller": "PUB_APP",
                     "initial_speed": 210,
@@ -710,27 +733,6 @@
                 }
             ]
         },
-        "PUB": {
-            "arrivals": [
-                {
-                    "airlines": {
-                        "KCOS": [
-                            {
-                                "airport": "KPUB",
-                                "icao": "N"
-                            }
-                        ]
-                    },
-                    "cruise_altitude": 11000,
-                    "initial_altitude": 11000,
-                    "description": "",
-                    "initial_controller": "PUB_APP",
-                    "initial_speed": 160,
-                    "route": "KCOS",
-                    "waypoints": "N038.18.27.106,W104.38.51.298 N038.21.18.080,W104.38.42.427/ho"
-                }
-            ]
-        },
         "DEN.NW": {
             "arrivals": [
                 {
@@ -766,25 +768,25 @@
             "frequency": 124000,
             "radio_name": "Springs approach",
             "scope_char": "A",
-            "sector_id": "2A"
+            "sector_id": "1A"
         },
         "COS_V_APP": {
             "frequency": 120600,
             "radio_name": "Springs approach",
             "scope_char": "V",
-            "sector_id": "2V"
+            "sector_id": "1V"
         },
         "COS_W_TWR": {
             "frequency": 119900,
             "radio_name": "Springs tower",
-            "scope_char": "T",
-            "sector_id": "2WT"
+            "scope_char": "W",
+            "sector_id": "1W"
         },
         "COS_E_TWR": {
             "frequency": 135150,
             "radio_name": "Springs tower",
-            "scope_char": "T",
-            "sector_id": "2ET"
+            "scope_char": "1E",
+            "sector_id": "E"
         },
 		"FLY_TWR": {
 			"frequency": 122700,
@@ -795,7 +797,7 @@
         "DEN_A_APP": {
             "frequency": 132750,
             "radio_name": "Denver approach",
-            "scope_char": "1",
+            "facility_id": "1",
             "sector_id": "1A"
         },
         "DEN_29_CTR": {
@@ -810,7 +812,6 @@
             "frequency": 120100,
             "radio_name": "Pueblo Approach",
             "facility_id": "1",
-            "scope_char": "P",
             "sector_id": "1P"
         }
     },
@@ -828,9 +829,6 @@
     "primary_airport": "KCOS",
     "scenarios": {
         "North VMC": {
-            "airspace": {
-              "COS_APP": [ "COS_APP" ]
-            },
             "arrival_runways": [
                 {
                     "airport": "KCOS",
@@ -857,9 +855,6 @@
 					"KFLY": 1
                 },
                 "DEN.NW": {
-                    "KCOS": 2
-                },
-                "PUB": {
                     "KCOS": 2
                 }
             },
@@ -899,9 +894,6 @@
             }
         },
         "South VMC": {
-            "airspace": {
-              "COS_APP": [ "COS_APP" ]
-            },
             "arrival_runways": [
                 {
                     "airport": "KCOS",
@@ -928,9 +920,6 @@
 					"KFLY": 1
                 },
                 "DEN.NW": {
-                    "KCOS": 2
-                },
-                "PUB": {
                     "KCOS": 2
                 }
             },
@@ -1006,13 +995,13 @@
         "scratchpads": {
             "LUFSE": "LUF",
             "BYEBI": "APA",
-            "DRAKE": "DRA",
+            "DRAKE": "83S",
             "JEWLS": "JEW",
-            "PUB": "PUB",
+            "PUB": "83S",
             "BRK": "BRK",
             "HBU": "HBU",
             "LAA": "LAA",
-            "BRESH": "BSH",
+            "BRESH": "BRE",
             "ALS": "ALS",
             "DVV": "DVV",
             "FQF": "FQF"
