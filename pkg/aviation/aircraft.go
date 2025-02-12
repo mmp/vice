@@ -338,8 +338,8 @@ func (ac *Aircraft) ContactTower(lg *log.Logger) []RadioTransmission {
 	}
 }
 
-func (ac *Aircraft) InterceptLocalizer() []RadioTransmission {
-	resp := ac.Nav.InterceptLocalizer(ac.FlightPlan.ArrivalAirport)
+func (ac *Aircraft) InterceptApproach() []RadioTransmission {
+	resp := ac.Nav.InterceptApproach(ac.FlightPlan.ArrivalAirport)
 	return ac.transmitResponse(resp)
 }
 

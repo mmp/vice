@@ -3219,7 +3219,7 @@ func (s *Sim) InterceptLocalizer(token, callsign string) error {
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			return ac.InterceptLocalizer()
+			return ac.InterceptApproach()
 		})
 }
 

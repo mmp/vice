@@ -127,7 +127,7 @@ type NavApproach struct {
 	AssignedId        string
 	ATPAVolume        *ATPAVolume
 	Cleared           bool
-	InterceptState    InterceptLocalizerState
+	InterceptState    InterceptState
 	PassedApproachFix bool // have we passed a fix on the approach yet?
 	NoPT              bool
 	AtFixClearedRoute []Waypoint
@@ -144,13 +144,13 @@ type NavFixAssignment struct {
 	}
 }
 
-type InterceptLocalizerState int
+type InterceptState int
 
 const (
-	NotIntercepting = iota
+	NotIntercepting InterceptState = iota
 	InitialHeading
 	TurningToJoin
-	HoldingLocalizer
+	OnApproachCourse
 )
 
 func MakeArrivalNav(arr *Arrival, fp FlightPlan, perf AircraftPerformance,
@@ -342,7 +342,7 @@ func (nav *Nav) OnApproach(checkAltitude bool) bool {
 
 	// The aircraft either must have passed a fix on the approach or be on
 	// the localizer and also be above any upcoming altitude restrictions.
-	if !nav.Approach.PassedApproachFix && nav.Approach.InterceptState != HoldingLocalizer {
+	if !nav.Approach.PassedApproachFix && nav.Approach.InterceptState != OnApproachCourse {
 		return false
 	}
 
@@ -492,11 +492,11 @@ func (nav *Nav) Summary(fp FlightPlan, lg *log.Logger) string {
 		case NotIntercepting:
 			// nada
 		case InitialHeading:
-			line += ", will join the localizer"
+			line += ", will join the approach"
 		case TurningToJoin:
-			line += ", turning to join the localizer"
-		case HoldingLocalizer:
-			line += ", established on the localizer"
+			line += ", turning to join the approach"
+		case OnApproachCourse:
+			line += ", established on the approach"
 		}
 		lines = append(lines, line)
 
@@ -885,7 +885,7 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *log.Logger) (heading float32, 
 	// nav.Heading.Assigned may still be nil pending a deferred turn
 	if (nav.Approach.InterceptState == InitialHeading ||
 		nav.Approach.InterceptState == TurningToJoin) && nav.Heading.Assigned != nil {
-		return nav.LocalizerHeading(wind, lg)
+		return nav.ApproachHeading(wind, lg)
 	}
 
 	if nav.Heading.RacetrackPT != nil {
@@ -976,7 +976,7 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *log.Logger) (heading float32, 
 	}
 }
 
-func (nav *Nav) LocalizerHeading(wind WindModel, lg *log.Logger) (heading float32, turn TurnMethod, rate float32) {
+func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32, turn TurnMethod, rate float32) {
 	// Baseline
 	heading, turn, rate = *nav.Heading.Assigned, TurnClosest, 3
 
@@ -1014,7 +1014,7 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *log.Logger) (heading float3
 		if !nav.OnExtendedCenterline(.2) {
 			return
 		}
-		lg.Debug("heading: localizer intercepted")
+		lg.Debug("heading: approach intercepted")
 
 		// we'll call that good enough. Now we need to figure out which
 		// fixes in the approach are still ahead and then add them to
@@ -1022,7 +1022,7 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *log.Logger) (heading float3
 		n := len(ap.Waypoints[0])
 		threshold := ap.Waypoints[0][n-1].Location
 		thresholdDistance := math.NMDistance2LL(nav.FlightState.Position, threshold)
-		lg.Debugf("heading: intercepted the localizer @ %.2fnm!", thresholdDistance)
+		lg.Debugf("heading: intercepted the approach @ %.2fnm!", thresholdDistance)
 
 		for i, wp := range ap.Waypoints[0] {
 			// Find the first waypoint that is:
@@ -1063,9 +1063,9 @@ func (nav *Nav) LocalizerHeading(wind WindModel, lg *log.Logger) (heading float3
 		// As with the heading assignment above under the InitialHeading
 		// case, do this immediately.
 		nav.Heading = NavHeading{}
-		nav.Approach.InterceptState = HoldingLocalizer
+		nav.Approach.InterceptState = OnApproachCourse
 
-		// If we have intercepted the localizer, we don't do procedure turns.
+		// If we have intercepted the approach course, we don't do procedure turns.
 		nav.Approach.NoPT = true
 
 		return
@@ -2295,7 +2295,7 @@ func (nav *Nav) ExpectApproach(airport *Airport, id string, runwayWaypoints map[
 	return PilotResponse{Message: opener + " " + ap.FullName + " approach"}
 }
 
-func (nav *Nav) InterceptLocalizer(airport string) PilotResponse {
+func (nav *Nav) InterceptApproach(airport string) PilotResponse {
 	if nav.Approach.AssignedId == "" {
 		return PilotResponse{Message: "you never told us to expect an approach", Unexpected: true}
 	}
@@ -2507,7 +2507,7 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool) (Pil
 		if nav.Approach.PassedApproachFix {
 			// We've already passed an approach fix, so allow it to start descending.
 			nav.Altitude = NavAltitude{}
-		} else if nav.Approach.InterceptState == HoldingLocalizer || nav.Approach.PassedApproachFix {
+		} else if nav.Approach.InterceptState == OnApproachCourse || nav.Approach.PassedApproachFix {
 			// First intercepted then cleared or otherwise passed an
 			// approach fix, so allow it to start descending.
 			nav.Altitude = NavAltitude{}
@@ -2582,7 +2582,7 @@ func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
 }
 
 func (nav *Nav) InterceptedButNotCleared() bool {
-	return nav.Approach.InterceptState == HoldingLocalizer && !nav.Approach.Cleared
+	return nav.Approach.InterceptState == OnApproachCourse && !nav.Approach.Cleared
 }
 
 ///////////////////////////////////////////////////////////////////////////
