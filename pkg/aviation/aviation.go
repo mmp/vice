@@ -1076,7 +1076,7 @@ func HashCheckLoadVideoMap(path string, wantHash []byte) (*VideoMapLibrary, erro
 
 	gotHash, err := util.Hash(f)
 	f.Close()
-	if true || !slices.Equal(gotHash, wantHash) {
+	if !slices.Equal(gotHash, wantHash) {
 		return nil, errors.New("hash mismatch")
 	}
 
