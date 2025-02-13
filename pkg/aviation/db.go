@@ -25,6 +25,7 @@ import (
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/gocolly/colly/v2"
+	"github.com/klauspost/compress/zstd"
 )
 
 var DB *StaticDatabase
@@ -711,17 +712,13 @@ func parseMVAs() map[string][]MVA {
 				panic(err)
 			}
 
-			b, err := io.ReadAll(r)
+			zr, err := zstd.NewReader(r)
 			if err != nil {
 				panic(err)
 			}
+			defer zr.Close()
 
-			contents, err := util.DecompressZstd(string(b))
-			if err != nil {
-				panic(err)
-			}
-
-			decoder := xml.NewDecoder(strings.NewReader(contents))
+			decoder := xml.NewDecoder(zr)
 
 			var mvas []MVA
 			tracon := ""
