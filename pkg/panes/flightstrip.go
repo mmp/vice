@@ -176,6 +176,9 @@ func (fsp *FlightStripPane) LoadedSim(client *sim.ControlClient, ss sim.State, p
 func (fsp *FlightStripPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	fsp.strips = nil
 	fsp.addedAircraft = make(map[string]interface{})
+	fsp.CIDs = make(map[string]int)
+	fsp.AllocatedCIDs = make(map[int]interface{})
+	fsp.AircraftTimes = make(map[string]time.Time)
 }
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
