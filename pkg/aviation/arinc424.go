@@ -6,7 +6,6 @@ package aviation
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"io"
 	"slices"
@@ -16,8 +15,6 @@ import (
 
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/util"
-
-	"github.com/klauspost/compress/zstd"
 )
 
 const ARINC424LineLength = 134 // 132 chars + \r + \n
@@ -53,7 +50,7 @@ func printColumnHeader() {
 	fmt.Printf("\n")
 }
 
-func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[string]Fix, map[string][]Airway) {
+func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[string]Fix, map[string][]Airway) {
 	start := time.Now()
 
 	airports := make(map[string]FAAAirport)
@@ -92,13 +89,7 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 		return p
 	}
 
-	zr, err := zstd.NewReader(bytes.NewReader(file))
-	if err != nil {
-		panic(err)
-	}
-	defer zr.Close()
-
-	br := bufio.NewReader(zr)
+	br := bufio.NewReader(r)
 	var lines [][]byte
 
 	getline := func() []byte {

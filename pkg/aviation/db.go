@@ -217,8 +217,7 @@ func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
 // Utility function for parsing CSV files as strings; it breaks each line
 // of the file into fields and calls the provided callback function for
 // each one.
-func mungeCSV(filename string, raw string, fields []string, callback func([]string)) {
-	r := bytes.NewReader([]byte(raw))
+func mungeCSV(filename string, r io.Reader, fields []string, callback func([]string)) {
 	cr := csv.NewReader(r)
 	cr.ReuseRecord = true
 
@@ -258,8 +257,6 @@ func mungeCSV(filename string, raw string, fields []string, callback func([]stri
 
 func parseAirports() map[string]FAAAirport {
 	airports := make(map[string]FAAAirport)
-
-	airportsRaw := util.LoadResource("airports.csv.zst") // https://ourairports.com/data/
 
 	parse := func(s string) math.Point2LL {
 		loc, err := math.ParseLatLong([]byte(s))
@@ -309,7 +306,9 @@ func parseAirports() map[string]FAAAirport {
 		}}
 
 	// FAA database
-	mungeCSV("airports", string(airportsRaw),
+	r := util.LoadResource("airports.csv.zst") // https://ourairports.com/data/
+	defer r.Close()
+	mungeCSV("airports", r,
 		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "local_code", "name", "iso_country"},
 		func(s []string) {
 			atof := func(s string) float64 {
@@ -398,9 +397,10 @@ func parseAirports() map[string]FAAAirport {
 		Runway{Id: "36R", Threshold: parse("N42.46.31.65,E141.40.18.87"), Heading: 2, Elevation: 87},
 	})
 
-	artccsRaw := util.LoadResource("airport_artccs.json")
+	ar := util.LoadResource("airport_artccs.json")
+	defer ar.Close()
 	data := make(map[string]string) // Airport -> ARTCC
-	if err := util.UnmarshalJSON(artccsRaw, &data); err != nil {
+	if err := util.UnmarshalJSON(ar, &data); err != nil {
 		fmt.Fprintf(os.Stderr, "airport_artccs.json: %v\n", err)
 		os.Exit(1)
 	}
@@ -416,12 +416,13 @@ func parseAirports() map[string]FAAAirport {
 }
 
 func parseAircraftPerformance() map[string]AircraftPerformance {
-	openscopeAircraft := util.LoadResource("openscope-aircraft.json")
+	r := util.LoadResource("openscope-aircraft.json")
+	defer r.Close()
 
 	var acStruct struct {
 		Aircraft []AircraftPerformance `json:"aircraft"`
 	}
-	if err := util.UnmarshalJSON(openscopeAircraft, &acStruct); err != nil {
+	if err := util.UnmarshalJSON(r, &acStruct); err != nil {
 		fmt.Fprintf(os.Stderr, "openscope-aircraft.json: %v\n", err)
 		os.Exit(1)
 	}
@@ -474,12 +475,13 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 }
 
 func parseAirlines() (map[string]Airline, map[string]string) {
-	openscopeAirlines := util.LoadResource("openscope-airlines.json")
+	r := util.LoadResource("openscope-airlines.json")
+	defer r.Close()
 
 	var alStruct struct {
 		Airlines []Airline `json:"airlines"`
 	}
-	if err := util.UnmarshalJSON([]byte(openscopeAirlines), &alStruct); err != nil {
+	if err := util.UnmarshalJSON(r, &alStruct); err != nil {
 		fmt.Fprintf(os.Stderr, "openscope-airlines.json: %v\n", err)
 		os.Exit(1)
 	}
@@ -509,7 +511,9 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 // FAA Coded Instrument Flight Procedures (CIFP)
 // https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/download/
 func parseCIFP() (map[string]FAAAirport, map[string]Navaid, map[string]Fix, map[string][]Airway) {
-	return ParseARINC424(util.LoadRawResource("FAACIFP18.zst"))
+	r := util.LoadResource("FAACIFP18.zst")
+	defer r.Close()
+	return ParseARINC424(r)
 }
 
 type MagneticGrid struct {
@@ -534,11 +538,11 @@ func parseMagneticGrid() MagneticGrid {
 		LatLongStep:  0.25,
 	}
 
-	samples := util.LoadResource("magnetic_grid.txt.zst")
-	r := bufio.NewReader(bytes.NewReader(samples))
-
+	r := util.LoadResource("magnetic_grid.txt.zst")
+	defer r.Close()
+	br := bufio.NewReader(r)
 	for {
-		line, err := r.ReadString('\n')
+		line, err := br.ReadString('\n')
 		if err == io.EOF {
 			break
 		} else if err != nil {
@@ -565,8 +569,9 @@ func parseMagneticGrid() MagneticGrid {
 func parseAdaptations() map[string]ERAMAdaptation {
 	adaptations := make(map[string]ERAMAdaptation)
 
-	adaptationsRaw := util.LoadResource("adaptations.json")
-	if err := util.UnmarshalJSON(adaptationsRaw, &adaptations); err != nil {
+	r := util.LoadResource("adaptations.json")
+	defer r.Close()
+	if err := util.UnmarshalJSON(r, &adaptations); err != nil {
 		fmt.Fprintf(os.Stderr, "adaptations.json: %v\n", err)
 		os.Exit(1)
 	}
@@ -689,7 +694,7 @@ type MVAHorizontalProjection struct {
 func parseMVAs() map[string][]MVA {
 	// The MVA files are stored in a zip file to avoid the overhead of
 	// opening lots of files to read them in.
-	z := util.LoadResource("mva-fus3.zip")
+	z := util.LoadResourceBytes("mva-fus3.zip")
 	zr, err := zip.NewReader(bytes.NewReader(z), int64(len(z)))
 	if err != nil {
 		panic(err)
@@ -795,16 +800,18 @@ func parseMVAs() map[string][]MVA {
 }
 
 func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
-	artccJSON := util.LoadResource("artccs.json")
+	ar := util.LoadResource("artccs.json")
+	defer ar.Close()
 	var artccs map[string]ARTCC
-	if err := util.UnmarshalJSON(artccJSON, &artccs); err != nil {
+	if err := util.UnmarshalJSON(ar, &artccs); err != nil {
 		fmt.Fprintf(os.Stderr, "artccs.json: %v\n", err)
 		os.Exit(1)
 	}
 
-	traconJSON := util.LoadResource("tracons.json")
+	tr := util.LoadResource("tracons.json")
+	defer tr.Close()
 	var tracons map[string]TRACON
-	if err := util.UnmarshalJSON(traconJSON, &tracons); err != nil {
+	if err := util.UnmarshalJSON(tr, &tracons); err != nil {
 		fmt.Fprintf(os.Stderr, "tracons.json: %v\n", err)
 		os.Exit(1)
 	}

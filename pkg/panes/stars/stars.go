@@ -1257,7 +1257,7 @@ func (sp *STARSPane) initializeAudio(p platform.Platform, lg *log.Logger) {
 		sp.audioEffects = make(map[AudioType]int)
 
 		loadMP3 := func(filename string) int {
-			dec, pcm, err := minimp3.DecodeFull(util.LoadResource("audio/" + filename))
+			dec, pcm, err := minimp3.DecodeFull(util.LoadResourceBytes("audio/" + filename))
 			if err != nil {
 				lg.Errorf("%s: unable to decode mp3: %v", filename, err)
 			}

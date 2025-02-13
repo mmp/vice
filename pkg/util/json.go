@@ -7,6 +7,7 @@ package util
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"reflect"
 	"strings"
 )
@@ -14,9 +15,19 @@ import (
 ///////////////////////////////////////////////////////////////////////////
 // JSON
 
+func UnmarshalJSON[T any](r io.Reader, out *T) error {
+	// Unfortunately we need the contents as an array of bytes so that we
+	// can issue reasonable errors.
+	b, err := io.ReadAll(r)
+	if err != nil {
+		return err
+	}
+	return UnmarshalJSONBytes(b, out)
+}
+
 // Unmarshal the bytes into the given type but go through some efforts to
 // return useful error messages when the JSON is invalid...
-func UnmarshalJSON[T any](b []byte, out *T) error {
+func UnmarshalJSONBytes[T any](b []byte, out *T) error {
 	err := json.Unmarshal(b, out)
 	if err == nil {
 		return nil
@@ -58,7 +69,7 @@ func CheckJSON[T any](contents []byte, e *ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	var items interface{}
-	if err := UnmarshalJSON(contents, &items); err != nil {
+	if err := UnmarshalJSONBytes(contents, &items); err != nil {
 		e.Error(err)
 		return
 	}

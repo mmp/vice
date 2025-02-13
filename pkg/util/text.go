@@ -11,23 +11,10 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
-
-	"github.com/klauspost/compress/zstd"
 )
 
 ///////////////////////////////////////////////////////////////////////////
 // decompression
-
-var decoder, _ = zstd.NewReader(nil, zstd.WithDecoderConcurrency(0))
-
-// DecompressZstd decompresses data that was compressed using zstd.
-// There's no error handling to speak of, since this is currently only used
-// for data that's baked into the vice binary, so any issues with that
-// should be evident upon a first run.
-func DecompressZstd(s string) (string, error) {
-	b, err := decoder.DecodeAll([]byte(s), nil)
-	return string(b), err
-}
 
 // WrapText wraps the provided text string to the given column limit, returning the
 // wrapped string and the number of lines it became.  indent gives the amount to

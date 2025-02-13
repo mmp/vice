@@ -1579,7 +1579,7 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *Scen
 	}
 
 	var s ScenarioGroup
-	if err := util.UnmarshalJSON(contents, &s); err != nil {
+	if err := util.UnmarshalJSONBytes(contents, &s); err != nil {
 		e.Error(err)
 		return nil
 	}
