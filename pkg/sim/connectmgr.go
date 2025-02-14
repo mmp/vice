@@ -57,7 +57,7 @@ func (cm *ConnectionManager) LoadLocalSim(s *Sim, lg *log.Logger) (*ControlClien
 	}
 
 	var result NewSimResult
-	if err := cm.localServer.Call("SimManager.Add", s, &result); err != nil {
+	if err := cm.localServer.Call("SimManager.AddLocal", s, &result); err != nil {
 		return nil, err
 	}
 

@@ -53,8 +53,7 @@ type NewSimResult struct {
 func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
 	if config.NewSimType == NewSimCreateLocal || config.NewSimType == NewSimCreateRemote {
 		sim := NewSim(*config, sm.scenarioGroups, config.NewSimType == NewSimCreateLocal, sm.mapManifests, sm.lg)
-		sim.prespawn()
-		return sm.Add(sim, result)
+		return sm.Add(sim, result, true)
 	} else {
 		sm.mu.Lock(sm.lg)
 		defer sm.mu.Unlock(sm.lg)
@@ -86,7 +85,11 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 	}
 }
 
-func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
+func (sm *SimManager) AddLocal(sim *Sim, result *NewSimResult) error {
+	return sm.Add(sim, result, false)
+}
+
+func (sm *SimManager) Add(sim *Sim, result *NewSimResult, prespawn bool) error {
 	if sim.State == nil {
 		return errors.New("incomplete Sim; nil *State")
 	}
@@ -114,6 +117,11 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult) error {
 	sm.mu.Lock(sm.lg)
 	sm.controllerTokenToSim[token] = sim
 	sm.mu.Unlock(sm.lg)
+
+	// Run prespawn after the primary controller is signed in.
+	if prespawn {
+		sim.prespawn()
+	}
 
 	go func() {
 		defer sm.lg.CatchAndReportCrash()
