@@ -6,6 +6,7 @@ package util
 
 import (
 	"bufio"
+	"compress/flate"
 	"encoding/gob"
 	"errors"
 	"io"
@@ -16,8 +17,6 @@ import (
 	"time"
 
 	"github.com/mmp/vice/pkg/log"
-
-	"github.com/klauspost/compress/zstd"
 )
 
 var ErrRPCTimeout = errors.New("RPC call timed out")
@@ -174,17 +173,15 @@ func (c *LoggingClientCodec) ReadResponseHeader(r *rpc.Response) error {
 
 type CompressedConn struct {
 	net.Conn
-	r *zstd.Decoder
-	w *zstd.Encoder
+	r io.ReadCloser
+	w *flate.Writer
 }
 
 func MakeCompressedConn(c net.Conn) (*CompressedConn, error) {
 	cc := &CompressedConn{Conn: c}
 	var err error
-	if cc.r, err = zstd.NewReader(c); err != nil {
-		return nil, err
-	}
-	if cc.w, err = zstd.NewWriter(c, zstd.WithEncoderConcurrency(1), zstd.WithWindowSize(16384)); err != nil {
+	cc.r = flate.NewReader(c)
+	if cc.w, err = flate.NewWriter(c, 3); err != nil {
 		return nil, err
 	}
 	return cc, nil
