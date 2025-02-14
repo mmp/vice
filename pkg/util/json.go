@@ -102,7 +102,7 @@ func typeCheckJSON(json interface{}, ty reflect.Type, e *ErrorLogger) {
 
 	// Use the type's JSONChecker, if there is one.
 	chty := reflect.TypeOf((*JSONChecker)(nil)).Elem()
-	if ty.Implements(chty) || reflect.PtrTo(ty).Implements(chty) {
+	if ty.Implements(chty) || reflect.PointerTo(ty).Implements(chty) {
 		checker := reflect.New(ty).Interface().(JSONChecker)
 		if !checker.CheckJSON(json) {
 			e.ErrorString("unexpected data format provided for object: %s",

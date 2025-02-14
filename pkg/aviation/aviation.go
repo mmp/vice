@@ -877,7 +877,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 	for id, controller := range controlPositions {
 		if controller.ERAMFacility && controller.FacilityIdentifier == "" {
-			e.ErrorString(fmt.Sprintf("%q is an ERAM facility, but has no facility id specified", id))
+			e.ErrorString("%q is an ERAM facility, but has no facility id specified", id)
 		}
 	}
 }
@@ -1033,9 +1033,9 @@ func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
 	var vmf VideoMapLibrary
 	if err := gob.NewDecoder(r).Decode(&vmf); err != nil {
 		// Try the old format, just an array of maps
-		_, _ = br.Seek(io.SeekStart, 0)
+		_, _ = br.Seek(0, io.SeekStart)
 		if zr != nil {
-			zr.Reset(br)
+			_ = zr.Reset(br)
 		}
 		if err := gob.NewDecoder(r).Decode(&vmf.Maps); err != nil {
 			return nil, err
@@ -1073,10 +1073,11 @@ func HashCheckLoadVideoMap(path string, wantHash []byte) (*VideoMapLibrary, erro
 	if err != nil {
 		return nil, err
 	}
+	defer f.Close()
 
-	gotHash, err := util.Hash(f)
-	f.Close()
-	if !slices.Equal(gotHash, wantHash) {
+	if gotHash, err := util.Hash(f); err != nil {
+		return nil, err
+	} else if !slices.Equal(gotHash, wantHash) {
 		return nil, errors.New("hash mismatch")
 	}
 
@@ -1271,12 +1272,12 @@ func makePool(first, last int) *SquawkCodePool {
 func (p *SquawkCodePool) removeInvalidCodes() {
 	// Remove the non-discrete codes (i.e., ones ending in 00).
 	for i := 0; i <= 0o7700; i += 0o100 {
-		p.Claim(Squawk(i))
+		_ = p.Claim(Squawk(i))
 	}
 
 	claimRange := func(start, end int) {
 		for i := start; i < end; i++ {
-			p.Claim(Squawk(i))
+			_ = p.Claim(Squawk(i))
 		}
 	}
 	claimBlock := func(start int) {
@@ -1285,24 +1286,24 @@ func (p *SquawkCodePool) removeInvalidCodes() {
 
 	// Remove various reserved squawk codes, per 7110.66G
 	// https://www.faa.gov/documentLibrary/media/Order/FAA_Order_JO_7110.66G_NBCAP.pdf.
-	p.Claim(0o1200)
-	p.Claim(0o1201)
-	p.Claim(0o1202)
-	p.Claim(0o1205)
-	p.Claim(0o1206)
+	_ = p.Claim(0o1200)
+	_ = p.Claim(0o1201)
+	_ = p.Claim(0o1202)
+	_ = p.Claim(0o1205)
+	_ = p.Claim(0o1206)
 	claimRange(0o1207, 0o1233)
 	claimRange(0o1235, 0o1254)
 	claimRange(0o1256, 0o1272)
-	p.Claim(0o1234)
-	p.Claim(0o1255)
+	_ = p.Claim(0o1234)
+	_ = p.Claim(0o1255)
 	claimRange(0o1273, 0o1275)
-	p.Claim(0o1276)
-	p.Claim(0o1277)
-	p.Claim(0o2000)
+	_ = p.Claim(0o1276)
+	_ = p.Claim(0o1277)
+	_ = p.Claim(0o2000)
 	claimRange(0o4400, 0o4433)
 	claimRange(0o4434, 0o4437)
 	claimRange(0o4440, 0o4452)
-	p.Claim(0o4453)
+	_ = p.Claim(0o4453)
 	claimRange(0o4454, 0o4477)
 	claimRange(0o7501, 0o7577)
 	claimRange(0o7601, 0o7607)
@@ -1319,9 +1320,9 @@ func (p *SquawkCodePool) removeInvalidCodes() {
 	claimBlock(0o6100)
 	claimBlock(0o6400)
 
-	p.Claim(0o7777)
+	_ = p.Claim(0o7777)
 	for squawk := range spcs {
-		p.Claim(squawk)
+		_ = p.Claim(squawk)
 	}
 }
 

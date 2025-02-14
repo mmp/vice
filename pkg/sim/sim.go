@@ -2697,10 +2697,8 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 			ac.HandoffTrackController = ""
 			ac.TrackingController = ctrl.Id()
 
-			if _, ok := s.PointOuts[ac.Callsign]; ok {
-				// Clean up after a point out was accepted as a handoff
-				delete(s.PointOuts, ac.Callsign)
-			}
+			// Clean up if a point out was accepted as a handoff
+			delete(s.PointOuts, ac.Callsign)
 
 			if err := s.State.STARSComputer().AcceptHandoff(ac, ctrl, s.State.Controllers,
 				s.State.STARSFacilityAdaptation, s.SimTime); err != nil {

@@ -2000,10 +2000,8 @@ func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) PilotResponse {
 		return PilotResponse{Message: fmt.Sprintf("turn right heading %03d", int(hdg))}
 	case TurnLeft:
 		return PilotResponse{Message: fmt.Sprintf("turn left heading %03d", int(hdg))}
-
 	default:
 		panic(fmt.Sprintf("%03d: unhandled turn type", turn))
-		return PilotResponse{Message: fmt.Sprintf("fly heading %03d", int(hdg))}
 	}
 }
 
@@ -2757,8 +2755,7 @@ func MakeFlyRacetrackPT(nav *Nav, wp []Waypoint) *FlyRacetrackPT {
 
 		default:
 			panic(fmt.Sprintf("unhandled approach type: %s", nav.Approach.Assigned.Type))
-			fp.OutboundLegLength = nav.FlightState.GS / 60
-
+			//fp.OutboundLegLength = nav.FlightState.GS / 60
 		}
 	}
 	// Lengthen it a bit for teardrop since we're flying along the

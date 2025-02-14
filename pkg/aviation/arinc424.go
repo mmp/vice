@@ -270,9 +270,11 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 			case 'C': // waypoint record 4.1.4
 				id := string(line[13:18])
 				location := parseLatLong(line[32:41], line[41:51])
-				if _, ok := fixes[id]; ok {
-					// fmt.Printf("%s: repeats\n", id)
-				}
+				/*
+					  if _, ok := fixes[id]; ok {
+						 fmt.Printf("%s: repeats\n", id)
+					  }
+				*/
 				fixes[id] = Fix{Id: id, Location: location}
 
 			case 'D': // SID 4.1.9

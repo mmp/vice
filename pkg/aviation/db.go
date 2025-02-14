@@ -966,7 +966,6 @@ func allTFRUrls() []string {
 // result on the provided chan when done.
 func fetchTFRs(tfrs map[string]TFR, ch chan<- map[string]TFR, lg *log.Logger) {
 	// Semaphore to limit to 4 concurrent requests.
-	const n = 4
 	sem := make(chan interface{}, 4)
 	defer func() { close(sem) }()
 

@@ -5,7 +5,6 @@
 package panes
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -146,9 +145,7 @@ func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
 func init() {
 	RegisterUnmarshalPane("EmptyPane", func(d []byte) (Pane, error) {
-		var p EmptyPane
-		err := json.Unmarshal(d, &p)
-		return &p, err
+		return &EmptyPane{}, nil // nothing to unmarshal
 	})
 }
 

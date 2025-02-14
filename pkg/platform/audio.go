@@ -52,7 +52,9 @@ func (a *audioEngine) Initialize(lg *log.Logger) {
 		Callback: sdl.AudioCallback(C.audioCallback),
 		UserData: user,
 	}
-	sdl.OpenAudio(&spec, nil)
+	if err := sdl.OpenAudio(&spec, nil); err != nil {
+		lg.Errorf("SDL OpenAudio: %v", err)
+	}
 	sdl.PauseAudio(false)
 
 	lg.Info("Finished initializing audio")
