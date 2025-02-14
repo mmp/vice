@@ -1492,6 +1492,7 @@ func (s *Sim) updateState() {
 		}
 
 		if ac, ok := s.State.Aircraft[callsign]; ok && ac.HandoffTrackController != "" &&
+			ac.HandoffTrackController != s.State.PrimaryController && // don't accept handoffs during prespawn
 			!s.controllerIsSignedIn(ac.HandoffTrackController) {
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
