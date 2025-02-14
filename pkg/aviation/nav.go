@@ -540,23 +540,32 @@ func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint, star string) st
 	// We'll just handle a few cases here; this isn't supposed to be exhaustive..
 	msgs := []string{}
 
-	var closestRP *ReportingPoint
-	closestRPDistance := float32(10000)
-	for i, rp := range reportingPoints {
-		if d := math.NMDistance2LL(nav.FlightState.Position, rp.Location); d < closestRPDistance {
-			closestRP = &reportingPoints[i]
-			closestRPDistance = d
+	var rp *ReportingPoint
+	rpDistance := float32(1000)
+	for _, wp := range nav.Waypoints {
+		if len(wp.Fix) <= 5 {
+			rp = &ReportingPoint{Fix: wp.Fix, Location: wp.Location}
+			rpDistance = math.NMDistance2LL(nav.FlightState.Position, wp.Location)
+			break
 		}
 	}
-	if closestRP != nil {
-		direction := math.Compass(math.Heading2LL(closestRP.Location, nav.FlightState.Position,
+	if rp == nil {
+		for i, pt := range reportingPoints {
+			if d := math.NMDistance2LL(nav.FlightState.Position, pt.Location); d < rpDistance {
+				rp = &reportingPoints[i]
+				rpDistance = d
+			}
+		}
+	}
+	if rp != nil {
+		direction := math.Compass(math.Heading2LL(rp.Location, nav.FlightState.Position,
 			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation))
 
-		if dist := int(closestRPDistance + 0.5); dist <= 1 {
-			msgs = append(msgs, "passing "+FixReadback(closestRP.Fix))
+		if dist := int(rpDistance + 0.5); dist <= 1 {
+			msgs = append(msgs, "overhead "+FixReadback(rp.Fix))
 		} else {
 			msgs = append(msgs, fmt.Sprintf("%d miles %s of %s", dist, direction,
-				FixReadback(closestRP.Fix)))
+				FixReadback(rp.Fix)))
 		}
 	}
 
