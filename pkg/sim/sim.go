@@ -1554,21 +1554,12 @@ func (s *Sim) updateState() {
 
 			passedWaypoint := ac.Update(s.State, s.lg)
 			if passedWaypoint != nil {
-				handoff := func(toTCP string) {
-					if from, fok := s.State.Controllers[ac.TrackingController]; !fok {
-						s.lg.Errorf("Unable to handoff %s: controller %q not found", ac.Callsign, ac.TrackingController)
-					} else if to, tok := s.State.Controllers[toTCP]; !tok {
-						s.lg.Errorf("Unable to handoff %s: controller %q not found", ac.Callsign, toTCP)
-					} else {
-						s.handoffTrack(from, to, ac.Callsign)
-					}
-				}
-
 				if passedWaypoint.HumanHandoff {
 					// Handoff from virtual controller to a human controller.
-					handoff(s.ResolveController(ac.WaypointHandoffController))
+					s.handoffTrack(ac.TrackingController, s.ResolveController(ac.WaypointHandoffController),
+						ac.Callsign)
 				} else if passedWaypoint.TCPHandoff != "" {
-					handoff(passedWaypoint.TCPHandoff)
+					s.handoffTrack(ac.TrackingController, passedWaypoint.TCPHandoff, ac.Callsign)
 				}
 
 				if passedWaypoint.PointOut != "" {
@@ -2573,22 +2564,26 @@ func (s *Sim) HandoffTrack(token, callsign, controller string) error {
 		},
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
 			octrl := s.State.Controllers[controller]
-			s.handoffTrack(ctrl, octrl, ac.Callsign)
+			s.handoffTrack(ctrl.Id(), octrl.Id(), ac.Callsign)
 			return nil
 		})
 }
 
-func (s *Sim) handoffTrack(from, to *av.Controller, callsign string) {
+func (s *Sim) handoffTrack(fromTCP, toTCP string, callsign string) {
 	s.eventStream.Post(Event{
 		Type:           OfferedHandoffEvent,
-		FromController: from.Id(),
-		ToController:   to.Id(),
+		FromController: fromTCP,
+		ToController:   toTCP,
 		Callsign:       callsign,
 	})
 
-	s.State.Aircraft[callsign].HandoffTrackController = to.Id()
+	s.State.Aircraft[callsign].HandoffTrackController = toTCP
 
-	if err := s.State.STARSComputer().HandoffTrack(callsign, from, to, s.SimTime); err != nil {
+	if from, fok := s.State.Controllers[fromTCP]; !fok {
+		s.lg.Errorf("Unable to handoff %s: from controller %q not found", callsign, fromTCP)
+	} else if to, tok := s.State.Controllers[toTCP]; !tok {
+		s.lg.Errorf("Unable to handoff %s: to controller %q not found", callsign, toTCP)
+	} else if err := s.State.STARSComputer().HandoffTrack(callsign, from, to, s.SimTime); err != nil {
 		//s.lg.Errorf("HandoffTrack: %v", err)
 	}
 
