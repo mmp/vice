@@ -861,58 +861,45 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 
 	if trk == nil {
 		color = STARSUntrackedAircraftColor
-		return
-	}
-
-	for _, controller := range trk.RedirectedHandoff.Redirector {
-		if controller == ctx.ControlClient.PrimaryTCP && trk.RedirectedHandoff.RedirectedTo != ctx.ControlClient.PrimaryTCP {
-			color = STARSUntrackedAircraftColor
-		}
-	}
-
-	// Check if we're the controller being ForceQL
-	if _, ok := sp.ForceQLCallsigns[ac.Callsign]; ok {
+	} else if _, ok := sp.ForceQLCallsigns[ac.Callsign]; ok {
+		// Check if we're the controller being ForceQL
 		color = STARSInboundPointOutColor
-	}
-
-	if trk.TrackOwner == "" {
+	} else if trk.TrackOwner == "" {
 		color = STARSUntrackedAircraftColor
+	} else if state.PointOutAcknowledged || state.ForceQL {
+		// Ack'ed point out to us (but not cleared) or force quick look.
+		color = STARSInboundPointOutColor
+	} else if inboundPointOut {
+		// Pointed out to us.
+		color = STARSInboundPointOutColor
+	} else if state.IsSelected {
+		// middle button selected
+		color = STARSSelectedAircraftColor
+	} else if trk.TrackOwner == ctx.ControlClient.PrimaryTCP { //change
+		// we own the track track
+		color = STARSTrackedAircraftColor
+	} else if trk.RedirectedHandoff.OriginalOwner == ctx.ControlClient.PrimaryTCP || trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
+		color = STARSTrackedAircraftColor
+	} else if trk.HandoffController == ctx.ControlClient.PrimaryTCP &&
+		!slices.Contains(trk.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
+		// flashing white if it's being handed off to us.
+		color = STARSTrackedAircraftColor
+	} else if state.OutboundHandoffAccepted {
+		// we handed it off, it was accepted, but we haven't yet acknowledged
+		color = STARSTrackedAircraftColor
+	} else if ps.QuickLookAll && ps.QuickLookAllIsPlus {
+		// quick look all plus
+		color = STARSTrackedAircraftColor
+	} else if slices.ContainsFunc(ps.QuickLookPositions,
+		func(q QuickLookPosition) bool { return q.Id == trk.TrackOwner && q.Plus }) {
+		// individual quicklook plus controller
+		color = STARSTrackedAircraftColor
+		/* FIXME(mtrokel): temporarily disabled. This flashes in and out e.g. in JFK scenarios for the LGA water gate departures.
+		} else if trk.AutoAssociateFP {
+			color = STARSTrackedAircraftColor
+		*/
 	} else {
-		if state.PointOutAcknowledged || state.ForceQL {
-			// Ack'ed point out to us (but not cleared) or force quick look.
-			color = STARSInboundPointOutColor
-		} else if inboundPointOut {
-			// Pointed out to us.
-			color = STARSInboundPointOutColor
-		} else if state.IsSelected {
-			// middle button selected
-			color = STARSSelectedAircraftColor
-		} else if trk.TrackOwner == ctx.ControlClient.PrimaryTCP { //change
-			// we own the track track
-			color = STARSTrackedAircraftColor
-		} else if trk.RedirectedHandoff.OriginalOwner == ctx.ControlClient.PrimaryTCP || trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
-			color = STARSTrackedAircraftColor
-		} else if trk.HandoffController == ctx.ControlClient.PrimaryTCP &&
-			!slices.Contains(trk.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
-			// flashing white if it's being handed off to us.
-			color = STARSTrackedAircraftColor
-		} else if state.OutboundHandoffAccepted {
-			// we handed it off, it was accepted, but we haven't yet acknowledged
-			color = STARSTrackedAircraftColor
-		} else if ps.QuickLookAll && ps.QuickLookAllIsPlus {
-			// quick look all plus
-			color = STARSTrackedAircraftColor
-		} else if slices.ContainsFunc(ps.QuickLookPositions,
-			func(q QuickLookPosition) bool { return q.Id == trk.TrackOwner && q.Plus }) {
-			// individual quicklook plus controller
-			color = STARSTrackedAircraftColor
-			/* FIXME(mtrokel): temporarily disabled. This flashes in and out e.g. in JFK scenarios for the LGA water gate departures.
-			} else if trk.AutoAssociateFP {
-				color = STARSTrackedAircraftColor
-			*/
-		} else {
-			color = STARSUntrackedAircraftColor
-		}
+		color = STARSUntrackedAircraftColor
 	}
 
 	return
