@@ -319,29 +319,27 @@ func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*
 	}
 }
 
-func (w WaypointArray) CheckApproach(e *util.ErrorLogger, controllers map[string]*Controller) {
+func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, controllers map[string]*Controller) {
 	defer e.CheckDepth(e.CurrentDepth())
 
-	w.checkBasics(e, controllers)
-	w.checkDescending(e)
+	foundFAF := false
+	for _, w := range wps {
+		w.checkBasics(e, controllers)
+		w.checkDescending(e)
 
-	if len(w) < 2 {
-		e.ErrorString("must have at least two waypoints in an approach")
-	}
+		if len(w) < 2 {
+			e.ErrorString("must have at least two waypoints in an approach")
+		}
 
-	/*
-		// Disable for now...
-		foundFAF := false
 		for _, wp := range w {
 			if wp.FAF {
 				foundFAF = true
-				break
 			}
 		}
-		if !foundFAF {
-			e.ErrorString("No /faf specifier found in approach")
-		}
-	*/
+	}
+	if requireFAF && !foundFAF {
+		e.ErrorString("No /faf specifier found in approach")
+	}
 }
 
 func (w WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Controller, approachAssigned bool) {

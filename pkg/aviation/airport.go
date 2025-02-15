@@ -349,9 +349,9 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				}
 				e.Pop()
 			}
-
-			appr.Waypoints[i].CheckApproach(e, controlPositions)
 		}
+		requireFAF := appr.Type != ChartedVisualApproach
+		CheckApproaches(e, appr.Waypoints, requireFAF, controlPositions)
 
 		if appr.FullName == "" {
 			if appr.Type == ChartedVisualApproach {
