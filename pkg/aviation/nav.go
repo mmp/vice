@@ -2322,7 +2322,13 @@ func (nav *Nav) InterceptApproach(airport string) PilotResponse {
 	if err != nil {
 		return resp
 	} else {
-		r := rand.Sample("intercepting the "+ap.FullName+" approach", "intercepting "+ap.FullName)
+		ap := nav.Approach.Assigned
+		var r string
+		if ap.Type == ILSApproach || ap.Type == LocalizerApproach {
+			r = rand.Sample("intercepting the "+ap.FullName+" approach", "intercepting "+ap.FullName)
+		} else {
+			r = rand.Sample("joining the "+ap.FullName+" approach course", "joining "+ap.FullName)
+		}
 		return PilotResponse{Message: r}
 	}
 }
@@ -2754,8 +2760,8 @@ func MakeFlyRacetrackPT(nav *Nav, wp []Waypoint) *FlyRacetrackPT {
 	if fp.OutboundLegLength == 0 {
 		// Select a default based on the approach type.
 		switch nav.Approach.Assigned.Type {
-		case ILSApproach:
-			// 1 minute by default on ILS
+		case ILSApproach, LocalizerApproach, VORApproach:
+			// 1 minute by default on these
 			fp.OutboundLegLength = nav.FlightState.GS / 60
 		case RNAVApproach:
 			// 4nm by default for RNAV, though that's the distance from the

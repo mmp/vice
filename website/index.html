@@ -4917,12 +4917,12 @@ how it simulates aircraft or the STARS interface.
             <p>For approach fixes that have procedure turns, a number of additional items can be specified:</p>
             <ul>
               <li><code>/hilpt</code>: there is a hold in lieu of procedure turn (i.e., a racetrack procedure turn) associated with the fix.
-                The default is right turns and a 1 minute limit for ILS approaches and a 4 nm limit for RNAV approaches.
+                The default is right turns and a 1 minute limit for ILS/VOR/LOC approaches and a 4 nm limit for RNAV approaches.
                 Different limits can be specified directly; for example <code>/hilpt6nm</code> gives a procedure turn with a 6 nm limit and
                 <code>/hilpt2min</code> specifies a 2 minute limit.  For left turns, add a <code>l</code> after the slash, like
                 <code>/lhilpt</code>.</li>
               <li><code>/pt45</code>: specifies that there is a standard 45 degree procedure turn at the fix. (This has the same defaults&mdash;
-                right turns, 1 minute (ILS) / 4 nm (RNAV)&mdash;as HILPTs. Alternative values are specified the same way.)</li>
+                right turns, 1 minute (ILS/VOR/LOC) / 4 nm (RNAV)&mdash;as HILPTs. Alternative values are specified the same way.)</li>
               <li><code>/pta</code><i>altitude</i>: if the aircraft should descend during the procedure turn, this can be used to specify
               the final altitude it should have at the end of the turn. (The altitude should be given in 100s of feet.)</li>
               <li><code>/nopt180</code>: specifies that aircraft approaching the fix in the 180 degree semicircle of directions aligned
@@ -5312,7 +5312,10 @@ Given the id, the approach can be specified with:</p>
               <tr>
                 <td>"cifp_id"</td>
                 <td>String</td>
-                <td>A string giving the identifier of the approach in the CIFP (e.g., "RZ14").</td>
+                <td>A string giving the identifier of the approach in the CIFP (e.g., "RZ14").
+                  When this is specified, the full name of the approach and the corresponding runway are determined
+                  automatically from the string.
+                </td>
               </tr>
               <tr>
                 <td>"tower_controller"</td>
@@ -5341,7 +5344,7 @@ Given the id, the approach can be specified with:</p>
                 <td>"full_name"</td>
                 <td>String</td>
                 <td><i>(Optional)</i> A string giving the full name of the approach (e.g., "RNAV Z Runway 13L").
-                  If not specified and the approach is ILS or RNAV the approach's name is generated automatically using "runway" and "type".</td>
+                  If not specified and the approach is not a visual approach, the approach's name is generated automatically using "runway" and "type".</td>
               </tr>
               <tr>
                 <td>"runway"</td>
@@ -5358,7 +5361,7 @@ Given the id, the approach can be specified with:</p>
               <tr>
                 <td>"type"</td>
                 <td>String</td>
-                <td>The type of the approach; it must be "ILS", "RNAV", or "Visual".</td>
+                <td>The type of the approach; it must be "ILS", "Localizer", "RNAV", "Visual", or "VOR".</td>
               </tr>
               <tr>
                 <td>"waypoints"</td>

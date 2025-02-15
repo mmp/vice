@@ -271,11 +271,18 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				e.Pop()
 				continue
 			} else {
-				if appr.Id[0] == 'H' || appr.Id[0] == 'R' {
+				switch appr.Id[0] {
+				case 'H', 'R':
 					appr.Type = RNAVApproach
-				} else {
-					appr.Type = ILSApproach // close enough
+				case 'L':
+					appr.Type = LocalizerApproach
+				case 'V', 'S':
+					appr.Type = VORApproach
+				default:
+					// TODO? 'B': Localizer Back Course, 'X': LDA
+					appr.Type = ILSApproach
 				}
+
 				// RZ22L -> 22L, IC32 -> 32C
 				center := false
 				for i, ch := range appr.Id {
@@ -347,13 +354,17 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 
 		if appr.FullName == "" {
-			switch appr.Type {
-			case ILSApproach:
-				appr.FullName = "ILS Runway " + appr.Runway
-			case RNAVApproach:
-				appr.FullName = "RNAV Runway " + appr.Runway
-			case ChartedVisualApproach:
+			if appr.Type == ChartedVisualApproach {
 				e.ErrorString("Must provide \"full_name\" for charted visual approach")
+			} else {
+				appr.FullName = appr.Type.String() + " "
+				if len(appr.Id) > 3 && appr.Id[1] >= 'W' && appr.Id[1] <= 'Z' {
+					appr.FullName += string(appr.Id[1]) + " "
+				}
+				if len(appr.Id) > 3 && appr.Id[0] == 'G' {
+					appr.FullName += "GPS "
+				}
+				appr.FullName += "Runway " + appr.Runway
 			}
 		} else if !strings.Contains(appr.FullName, "runway") && !strings.Contains(appr.FullName, "Runway") {
 			e.ErrorString("Must have \"runway\" in approach's \"full_name\"")
@@ -685,13 +696,15 @@ type DepartureAirline struct {
 type ApproachType int
 
 const (
-	ILSApproach = iota
+	ILSApproach ApproachType = iota
 	RNAVApproach
 	ChartedVisualApproach
+	LocalizerApproach
+	VORApproach
 )
 
 func (at ApproachType) String() string {
-	return []string{"ILS", "RNAV", "Charted Visual"}[at]
+	return []string{"ILS", "RNAV", "Charted Visual", "Localizer", "VOR"}[at]
 }
 
 func (at ApproachType) MarshalJSON() ([]byte, error) {
@@ -702,6 +715,10 @@ func (at ApproachType) MarshalJSON() ([]byte, error) {
 		return []byte("\"RNAV\""), nil
 	case ChartedVisualApproach:
 		return []byte("\"Visual\""), nil
+	case LocalizerApproach:
+		return []byte("\"Localizer\""), nil
+	case VORApproach:
+		return []byte("\"VOR\""), nil
 	default:
 		return nil, fmt.Errorf("unhandled approach type in MarshalJSON()")
 	}
@@ -719,6 +736,14 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 
 	case "\"Visual\"":
 		*at = ChartedVisualApproach
+		return nil
+
+	case "\"Localizer\"":
+		*at = LocalizerApproach
+		return nil
+
+	case "\"VOR\"":
+		*at = VORApproach
 		return nil
 
 	default:
