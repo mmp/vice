@@ -3,48 +3,12 @@
     "airports": {
         "KCLT": {
             "approaches": {
-                "I8L": {
-                    "runway": "18L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "N35.41.27.768,W80.58.32.946/a8000 CAVVI/a6000 SNAKK/a5000 GILGE/a4000 QUWED/a3000 EGUUL/a2400 ZIMOG/a1260"
-                    ]
-                },
-                "I8C": {
-                    "runway": "18C",
-                    "type": "ILS",
-                    "waypoints": [
-                        "N35.41.36.112,W80.59.32.857/a8000 JEDKO/a8000 LERDY/a7000 FERSA/a6000 TOMME/a5000 HAGUL/a4000 OZEJI/a3000 CYLOW/a2400"
-                    ]
-                },
-                "I8R": {
-                    "runway": "18R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "N35.41.38.023,W81.00.25.138/a7000 RUDKY/a7000 NELLA/a6000 WOVEN/a5000 EMERS/a4000 JHUNT/a3000 AUUDD/a2400 CILOV/a1200"
-                    ]
-                },
-                "I6L": {
-                    "runway": "36L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "N34.42.03.982,W80.55.20.726/a8000 WELET/a7000 NUXXY/a6000 LONIA/a5000 CUNUK/a4000 DEFOX/a3000 NLSON/a2500"
-                    ]
-                },
-                "I6C": {
-                    "runway": "36C",
-                    "type": "ILS",
-                    "waypoints": [
-                        "N34.42.05.982,W80.54.31.772/a8000 SOLMN/a8000 KRISL/a7000 HUNEX/a6000 DENNE/a5000 MARJO/a4000 NIVSE/a3000 GLASI/a2500"
-                    ]
-                },
-                "I6R": {
-                    "runway": "36R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "N34.42.06.563,W80.53.23.254/a8000 HEKAM/a6000 JENDA/a5000 LANSR/a4000 CIKDU/a3000 HAYOU/a2500"
-                    ]
-                }
+              "I8L": { "cifp_id": "I18L" },
+              "I8C": { "cifp_id": "IC18" },
+              "I8R": { "cifp_id": "I18R" },
+              "I6L": { "cifp_id": "I36L" },
+              "I6C": { "cifp_id": "IC36" },
+              "I6R": { "cifp_id": "I36R" }
             },
             "departure_routes": {
                 "18L": {

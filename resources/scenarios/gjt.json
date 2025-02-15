@@ -3,39 +3,15 @@
     "airports": {
         "KGJT": {
             "approaches": {
-                "I11": {
-                    "runway": "11",
-                    "type": "ILS",
-                    "waypoints": [
-                        "WINDO/a13000 BITAR/a12000 MACKS/iaf/a8200 LOMMA/if/a8200 JINNY/a6700",
-                        "ZUKSO/a8200/arc13JNC JISIG/iaf/a8200/arc13JNC LOMMA/if/a8200 JINNY/a6700"
-                    ]
+              "I11": { "cifp_id": "I11" },
+              "RY11": { "cifp_id": "RY11" },
+              "RZ11": {
+                "cifp_id": "RZ11"
                 },
-                "RY11": {
-                    "runway": "11",
-                    "type": "RNAV",
-                    "full_name": "RNAV Y Runway 11",
-                    "waypoints": [
-                        "MACKS/a9000 LOMMA/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU",
-                        "PACES/a9000 HASKI/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU",
-                        "JNC AVUXE/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU"
-                    ]
-                },
-                "RZ11": {
-                    "cifp_id": "RZ11"
-                },
-                "L29": {
-                    "runway": "29",
-                    "type": "RNAV",
-                    "full_name": "LDA DME Runway 29",
-                    "waypoints": [
-                        "SPADA/iaf/a8500/arc21JNC HRSON/a8500 ALVOJ/a6800"
-                    ]
-                },
-                "R29": {
-                    "runway": "29",
-                    "cifp_id": "R29"
-                }
+              "L29": { "cifp_id": "X29", "full_name": "LDA DME Runway 29" },
+              "R29": {
+                "cifp_id": "R29"
+              }
             },
             "departure_routes": {
                 "11": {

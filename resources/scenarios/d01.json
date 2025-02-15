@@ -3,168 +3,24 @@
     "airports": {
         "KDEN": {
             "approaches": {
-                "I7": {
-                    "runway": "7",
-                    "type": "ILS",
-                    "waypoints": [
-                        "SARAH/a9000 ASURE/a8000 TAILR/a7000 SUNKE/a5740"
-                    ]
-                },
-                "R7": {
-                    "runway": "7",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "HAITR/a11000/s210 DWLLT/arc8.5 MNCHH TAILR/faf",
-                        "BBOOK/a11000/s210 BEEKY/arc9.1 TAILR/faf",
-                        "SARAH/a9000 TAILR/faf"
-                    ]
-                },
-                "I8": {
-                    "runway": "8",
-                    "type": "ILS",
-                    "waypoints": [
-                        "LIPPS/a10000 OWNER/a7000"
-                    ]
-                },
-                "I6L": {
-                    "runway": "16L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820",
-                        "KIPPR/a12000/s210 HAYLY JAPEE JDIZL JEEPR JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820",
-                        "TSHNR/a13000/s210 JAPEE JDIZL JEEPR JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820",
-                        "KAILE/a11000/s210 BJETN BJETN/a10000/s210 JEEPR JEEPR/a10000 JOBOB/a10000 KUURT/a9000 KIKME/a8000 LEETS/a7000 LUWEE/a5820"
-                    ]
-                },
-                "I6R": {
-                    "runway": "16R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000",
-                        "KIPPR/a12000/s210 HAYLY SKIMJ SEEYU SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000",
-                        "TSHNR/a13000/s210 SKIMJ SEEYU SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000",
-                        "KAILE/a11000/s210 SHROM SHRED/a10000 SAKIC/a10000 NEWLN/a9000 MERYN/a8000 JETSN/a7000"
-                    ]
-                },
-                "R6R": {
-                    "runway": "16R",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "CLFFF/a11000 HELBY/arc9.8 APASE",
-                        "KIPPR/a12000/s210 HAYLY PECIY BUDUJ ZOREG HAROS/s210 APASE",
-                        "TSHNR/a13000/s210 PECIY BUDUJ ZOREG HAROS/s210 APASE",
-                        "KAILE/a11000/s210 OGINE ZOREG HAROS/s210 APASE"
-                    ]
-                },
-                "I7L": {
-                    "runway": "17L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000",
-                        "TSHNR/a13000/s210 KLING GAPPY GIRTH GOLFN GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000",
-                        "KIPPR/a12000/s210 GAPPY GIRTH GOLFN GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000",
-                        "WAHUU/a9000/s210 GOLFN GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000",
-                        "KAILE/a11000/s210 OVVAL GWENS/a9000 GRIFS/a9000 HALTR/a9000 HHOLT/a8000 IRINE/a7000"
-                    ]
-                },
-                "I7R": {
-                    "runway": "17R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000",
-                        "KIPPR/a12000/s210 TARIE HALDO HEETT HISSY/a12000 HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000",
-                        "TSHNR/a13000/s210 KLING HALDO HEETT HISSY/a12000 HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000",
-                        "KAILE/a11000/s210 OVVAL HOOPE/a11000 JAPEX/a9600 JOMAG/a9000 JOSEE/a8000 JOULE/a7000"
-                    ]
-                },
-                "R7R": {
-                    "runway": "17R",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "HOOPE JNKBX JOULE",
-                        "QWIKE/a11000/s210 STAAM/arc4.3 DAVTE PAYOG/arc4.3 JNKBX JOULE"
-                    ]
-                },
-                "I25": {
-                    "runway": "25",
-                    "type": "ILS",
-                    "waypoints": [
-                        "ETHAL/a10000 GASTI/a7000"
-                    ]
-                },
-                "I26": {
-                    "runway": "26",
-                    "type": "ILS",
-                    "waypoints": [
-                        "FUZZZ/a9000 GRASP/a7000 FEETS/a5820"
-                    ]
-                },
-                "R26": {
-                    "runway": "26",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "FUZZZ JPBAG GRASP",
-                        "JIBAT/a11000/s210 HOTDG/arc8.8 JPBAG GRASP",
-                        "CAPTJ/a11000/s210 BCALN/arc8.7 JPBAG GRASP"
-                    ]
-                },
-                "I4L": {
-                    "runway": "34L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040",
-                        "BOSSS/a12000/s210 PAAAS AJAKS COGGG/a10000 KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040",
-                        "LDORA/a13000/s210 FLUFF AJAKS COGGG/a10000 KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040",
-                        "TELLR/a11000/s210 ALPNE COGGG/a10000 KALHR/a10000 MERKL/a10000 RNOLD/a9000 WINTR/a7000 WOGIN/a6040"
-                    ]
-                },
-                "I4R": {
-                    "runway": "34R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000",
-                        "BOSSS/a12000/s210 PAAAS BREKK BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000",
-                        "LDORA/a13000/s210 FLUFF BREKK BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000",
-                        "TELLR/a11000/s210 BHAPY BFREE/a10000 BOOBU/a10000 BENGL/a10000 BOENG/a9000 CORDE/a7000"
-                    ]
-                },
-                "R4R": {
-                    "runway": "34R",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "HIMOM/a11000/s210 MCMUL/arc4.3 KUGLN/arc4.6 BSAYN CORDE",
-                        "BOOBU BENGL BOENG BSAYN CORDE"
-                    ]
-                },
-                "I5L": {
-                    "runway": "35L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120",
-                        "BOSSS/a12000/s210 EPICC CPPER CHAPP/a12000 CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120",
-                        "LDORA/a13000/s210 KARVE CPPER CHAPP/a12000 CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120",
-                        "TELLR/a11000/s210 VAIIL CRUUP/a11000 CHOLA/a10000 CELBI/a9000 DYMON/a7000 DAPGE/a6120"
-                    ]
-                },
-                "I5R": {
-                    "runway": "35R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120",
-                        "LDORA/a13000/s210 DASHY DRATS DITSE DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120",
-                        "BOSSS/a12000/s210 DRATS DITSE DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120",
-                        "TELLR/a11000/s210 VAIIL DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120",
-                        "PURRL/a9000/s210 DOVVE DORRY/a9000 DEANE/a9000 DRUMM/a9000 FRONZ/a7000 NOEEE/a6120"
-                    ]
-                },
-                "R5R": {
-                    "runway": "35R",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "DORRY DEANE DRUMM FRONZ",
-                        "DOGGG/a11000/s210 MSIMS/arc10.2 FRONZ"
-                    ]
-                }
+              "I7": { "cifp_id": "I7" },
+              "R7": { "cifp_id": "RZ7" },
+              "I8": { "cifp_id": "I8" },
+              "I6L": { "cifp_id": "I16L" },
+              "I6R": { "cifp_id": "I16R" },
+              "R6R": { "cifp_id": "RY16R" },
+              "I7L": { "cifp_id": "I17L" },
+              "I7R": { "cifp_id": "I17R" },
+              "R7R": { "cifp_id": "RZ17R" },
+              "I25": { "cifp_id": "I25" },
+              "I26": {"cifp_id": "I26" },
+              "R26": { "cifp_id": "RZ26" },
+              "I4L": { "cifp_id": "I34L" },
+              "I4R": { "cifp_id": "I34R" },
+              "R4R": { "cifp_id": "RZ34R" },
+              "I5L": { "cifp_id": "I35L" },
+              "I5R": { "cifp_id": "I35R" },
+              "R5R": { "cifp_id": "RZ35R" }
             },
             "departure_routes": {
                 "8": {
@@ -1068,27 +924,9 @@
         },
         "KAPA": {
             "approaches": {
-                "R7L": {
-                    "runway": "17L",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "LOWRE/if/a7800 AFTRR/a6900"
-                    ]
-                },
-                "I5R": {
-                    "runway": "35R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "XBEEE/iaf/a9000 FIRPI/if/a9000 JIDOG/a8000 RONNI/a7060 LECET/a6700"
-                    ]
-                },
-                "R5R": {
-                    "runway": "35R",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "XBEEE/iaf/a9000 FIRPI/if/a9000 JIDOG/a8000 RONNI/a7060 LECET/a6700"
-                    ]
-                }
+              "R7L": { "cifp_id": "R17L" },
+              "I5R": { "cifp_id": "I35R" },
+              "R5R": { "cifp_id": "R35R" }
             },
             "departure_routes": {
                 "35R": {
@@ -1543,27 +1381,14 @@
         },
         "KBJC": {
             "approaches": {
-                "R2L": {
-                    "runway": "12L",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "PYDRT/iaf/a9000/s210 OTHER HALFF/if/a7100 PYYPP/a6700",
-                        "DRROP/iaf/s210 NTOOO HALFF/if/a7100 PYYPP/a6700"
-                    ]
-                },
-                "I0R": {
-                    "runway": "30R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "ROKXX/iaf PLAAY LAWNG/a7000 BAAWL/if/a7000 ALIKE/a7000"
-                    ]
-                },
-                "V0R": {
+              "R2L": { "cifp_id": "R12L" },
+              "I0R": { "cifp_id": "I30R" },
+              "V0R": {
                     "runway": "30R",
                     "type": "RNAV",
                     "full_name": "VOR Runway 30R",
                     "waypoints": [
-                        "BIZEN/iaf/nopt180/hilpt/a7000 CANED/a6360"
+                        "BIZEN/iaf/nopt180/hilpt/a7000/faf CANED/a6360"
                     ]
                 },
                 "V0L": {
@@ -1571,17 +1396,10 @@
                     "type": "RNAV",
                     "full_name": "VOR Runway 30L",
                     "waypoints": [
-                        "BIZEN/iaf/nopt180/hilpt/a7000 CANED/a6360"
+                        "BIZEN/iaf/nopt180/hilpt/a7000/faf CANED/a6360"
                     ]
                 },
-                "R0L": {
-                    "runway": "30L",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "NSPYR/iaf BLIPS/if/a7000 HESDA/a7000",
-                        "ROKXX/iaf PLAAY LAWNG/a7000 BLIPS/if/a7000 HESDA/a7000"
-                    ]
-                }
+              "R0L": { "cifp_id": "R30L" }
             },
             "departure_routes": {
                 "30R": {

@@ -3,72 +3,28 @@
     "airports": {
         "KSAN": {
             "approaches": {
-                "R9": {
-                    "full_name": "RNAV Runway 9",
-                    "runway": "9",
-                    "type": "RNAV",
-                    "waypoints": [
-                         "SARGS/a2100+ GATTO/a2000"
-                 ]
-                 },
-                "RY7":{
-                    "full_name": "RNAV Y Runway 27 ",
-                    "runway": "27",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "LYNDI/a5000/s210 VYDDA/a4000 OKAIN/a3600 CIJHI/a2700 REEBO/a2000"
-                    ]
-                },
-                "RZ7":{
-                    "full_name": "RNAV Z Runway 27",
-                    "runway": "27",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "LYNDI/a5000/s210 VYDDA OKAIN SAYAE/a3200 CIJHI/a2700 TOKOE/a2000",
-                        "KLOMN/a6000/s210 AJADE/arc2.2CFSCT CATDG/arc2.2CFSCT CRSNR/arc2.2CFSCT SAYAE/a3200 CIJHI/a2700 TOKOE/a2000"
-                    ]
-                },
-                "IY9":{
-                    "full_name": "ILS Y Runway 9",
-                    "runway": "9",
-                    "type": "ILS",
-                    "waypoints": [
-                        "SARGS/a2100+ GATTO/a2000"
-                    ]
-                },
-                "IZ9":{
-                    "full_name": "ILS Z Runway 9",
-                    "runway": "9",
-                    "type": "ILS",
-                    "waypoints": [
-                        "SARGS/a2100+ GATTO/a2000"
-                    ]
-                },
-                "L27":{
-                    "full_name": "Localizer Runway 27",
-                    "runway": "27",
-                    "type": "ILS",
-                    "waypoints": [
-                        "LYNDI/iaf/a5000/s210 VYDDA/if/a4000 OKAIN/a3600 CIJHI/a2700 REEBO/a2000"
-                    ]
-                },
-                "V27":{
-                    "full_name": "Visual Runway 27",
-                    "runway": "27",
-                    "type": "ILS",
-                    "waypoints": [
-                        "LYNDI/iaf/a5000/s210 OKAIN/a3600 CIJHI/a2700 REEBO/a2000"
-                    ]
-                },
-                "V9":{
-                    "full_name": "Visual Runway 9",
-                    "runway": "9",
-                    "type": "ILS",
-                    "waypoints": [
-                        "SARGS/a2100+ GATTO/a2000"
-                    ]
-                }
-
+              "R9": { "cifp_id": "R9" },
+              "RY7":{ "cifp_id": "RY27" },
+              "RZ7":{ "cifp_id": "RZ27" },
+              "IY9":{ "cifp_id": "IY9" },
+              "IZ9":{ "cifp_id": "IZ9" },
+              "L27":{ "cifp_id": "L27" },
+              "V27":{
+                "full_name": "Visual Runway 27",
+                "runway": "27",
+                "type": "Visual",
+                "waypoints": [
+                  "LYNDI/iaf/a5000/s210 OKAIN/a3600 CIJHI/a2700 REEBO/a2000"
+                ]
+              },
+              "V9":{
+                "full_name": "Visual Runway 9",
+                "runway": "9",
+                "type": "Visual",
+                "waypoints": [
+                  "SARGS/a2100+ GATTO/a2000"
+                ]
+              }
          },
         "departure_routes":{
             "27":{
@@ -487,26 +443,8 @@
         },
         "KMYF":  {
             "approaches": {
-                "I8R": {
-                    "full_name": "ILS Runway 28R",
-                    "runway": "28R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "MIBBY/a4200 NESTY/a3600 PENYY/a2500 PALOS/a1380",
-                        "BAKEL MIBBY/a4200 NESTY/a3600 PENYY/a2500 PALOS/a1380",
-                        "BARET/a6100+ OGOTE/a5900 BAKEL/a5900+ MIBBY/a4200 NESTY/a3600 PENYY/a2500 PALOS/a1380"
-                    ]
-                },
-                "R8R": {
-                    "full_name": "RNAV GPS Runway 28R",
-                    "runway": "28R",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "MIBBY/a4200+ NESTY/a3600 PENYY/a2500 PALOS/a1380",
-                        "BAKEL/a4200 MIBBY/a4200 NESTY/a3600 PENYY/a2500 PALOS/a1380",
-                        "BARET/a6100+ OGOTE/a5900 BAKEL/a5900+ MIBBY/a4200 NESTY/a3600 PENYY/a2500 PALOS/a1380"
-                    ]
-                }
+              "I8R": { "cifp_id": "I28R" },
+              "R8R": { "cifp_id": "R28R" }
             },
             "departure_routes":{
                 "28R":{
@@ -557,61 +495,11 @@
         },
         "KCRQ": {
             "approaches": {
-                "RZ4": {
-                    "full_name": "RNAV Z Runway 24",
-                    "runway": "24",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "OCN/a5000 ZAVAN/a4100 PALCI/a3200/s180/arc4.4 EGIVE/a2400/s180/arc3.1 JUBIM/a2400",
-                        "TANNR/a5500+ WAGAV/a3200 EGIVE/a2400/s180/arc3.1 JUBIM/a2400",
-                        "ICUGA/a3600+/s210 CARCA/a2400 JUBIM/a2400",
-                        "TRM/a10000+ ZASOG/a8000 URIJI/a5400 COGID/a3600 CARCA/a2400 JUBIM/a2400",
-                        "JLI/a7200+ VIVOF/a5200 GAETS/a3600 CARCA/a2400 JUBIM/a2400"
-                    ]
-                },
-				"RX4": {
-                    "full_name": "RNAV X Runway 24",
-                    "runway": "24",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "OCN/a5300+ VISTA/a5300+ JIDOV/a5300+/arc9.9 FEHPY/a5300+/s180/arc3.8 KANEC/a4300+ JABAL/a3100+ GUGEC/a2040+ ZUXAX/a1220+",
-                        "VISTA/a5300+/a5300 JIDOV/a5300+/arc9.9 FEHPY/a5300+/s180/arc3.8 KANEC/a4300+ JABAL/a3100+ GUGEC/a2040+ ZUXAX/a1220+",
-                        "KANEC/a4300+ JABAL/a3100+ GUGEC/a2040+ ZUXAX/a1220+"
-                    ]
-                },
-				"RZ6": {
-                    "full_name": "RNAV Z Runway 6",
-                    "runway": "6",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "PACIF/a7000+ DOOGR/a4400+/s210 FLEEE/a2500+ SWWAG/a1700",
-                        "TANNR/a9000+ PASME/a6000+ TRRIP/a5000+/s210 HOLVI/a3600+/arc9.3 SWWAG/a1700",
-                        "ZASOG/a9600+ DEGLE/a7400+ TRRIP/a5000+/s210 HOLVI/a3600+/arc9.3 SWWAG/a1700",
-						"TRRIP/a5000+/s210 HOLVI/a3600+/arc9.3 SWWAG/a1700",
-                        "TRM/a10000 ZASOG/a9600+ DEGLE/a7400+ TRRIP/a5000+/s210 HOLVI/a3600+/arc9.3 SWWAG/a1700",
-                        "JLI/a7300+ ROBNN/a7300+ TRRIP/a5000+/s210 HOLVI/a3600+/arc9.3 SWWAG/a1700"
-                    ]
-                },
-				"RY4": {
-                    "full_name": "RNAV Y Runway 24",
-                    "runway": "24",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "JLI/a8000+ DUNBY/a5000+ KANEC/a4300+ JABAL/a3100 GUGEC/a2040 ZUXAX/a1220",
-                        "DUNBY/a5000+ KANEC/a4300 JABAL/a3100 GUGEC/a2040 ZUXAX/a1220",
-                        "TRM/a11000 ZASOG/a11000 URIJI/a7900 GICEP/a6100 KANEC/a4300 JABAL/a3100 GUGEC/a2040 ZUXAX/a1220",
-                        "ZASOG/a11000 URIJI/a7900 GICEP/a6100 KANEC/a4300 JABAL/a3100 GUGEC/a2040 ZUXAX/a1220"
-                    ]
-                },
-                "I4": {
-                    "full_name": "ILS Runway 24",
-                    "runway": "24",
-                    "type": "ILS",
-                    "waypoints": [
-                        "OCN/a4500+ HOMLY/a4000 ESCON/a3300 WUNUB/a2600 CIDRU/a2300 HUSET/a1640",
-                        "JLI/a7200+ ESCON/a3300 WUNUB/a2600 CIDRU/a2300 HUSET/a1640"
-                    ]
-                }
+              "RZ4": { "cifp_id": "RZ24" },
+	      "RX4": { "cifp_id": "RX24" },
+	      "RZ6": { "cifp_id": "RZ6" },
+	      "RY4": { "cifp_id": "RY24" },
+              "I4": { "cifp_id": "I24" }
             },
             "departure_routes":{
                 "24":{

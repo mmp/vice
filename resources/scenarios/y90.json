@@ -288,12 +288,12 @@
             "approaches": {
                 "I5": {
                     "type": "ILS",
-                    "waypoints": ["FOBBS/arc18.24 WHALY HERKK/hilpt BIGEE"],
+                    "waypoints": ["FOBBS/arc18.24 WHALY/nopt HERKK/if BIGEE/hilpt/iaf/faf/a2600+/pta2200 "],
                     "runway": "5"
                 },
                 "I23": {
                     "type": "ILS",
-                    "waypoints": ["FOBBS/arc13 BEENS BELCH/hilpt"],
+                    "waypoints": ["FOBBS/arc13 BEENS/if/a2600+ BELCH/hilpt/iaf/faf/a2600+/pta2300"],
                     "runway": "23"
                 }
             },

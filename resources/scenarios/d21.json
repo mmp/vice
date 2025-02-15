@@ -6,98 +6,16 @@
         "KDTW": {
             "name": "Detroit Metro",
             "approaches": {
-                "I4L": {
-                    "full_name": "ILS Runway 4L",
-                    "runway": "4L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "GRBAC/a5000/s210/iaf MMOTT/a3000 ASLLI/a3000 NATIY/a3000 REGGE/a3000 PAYED/a2000",
-                        "SIZOR/a6000/s210/iaf HURRT/a4000 ACIRA ASLLI/a3000 NATIY/a3000 REGGE/a3000 PAYED/a2000",
-                        "NBSTN/iaf ACIRA ASLLI/a3000 NATIY/a3000 REGGE/a3000 PAYED/a2000"
-                    ]
-                },
-                "Y4L": {
-                    "full_name": "ILS Y Runway 4L",
-                    "runway": "4L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "SIZOR/a6000/s210 HURRT/a4000 COZZY RUCOB/a3000+ JITLI/a3000+ PEVSE/a3000+/if MOTWN/a2000+",
-                        "GRBAC/a5000/s210 MMOTT/a3000 RUCOB/a3000+ JITLI/a3000+ PEVSE/a3000+/if MOTWN/a2000+",
-                        "SMPTR/a4000 COZZY RUCOB/a3000+ JITLI/a3000+ PEVSE/a3000+/if MOTWN/a2000+"
-                    ]
-                },
-                "I4R": {
-                    "full_name": "ILS Runway 4R",
-                    "runway": "4R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "CLEVR/a8000+/s210/iaf BAANG/a8000- JULEP/a7000- CULOP/a6000- HIMEX/a5000- EVABE/a4000- JELLY/a3000-/if ETALE/a2000-",
-                        "CAATZ/a9000/s210/iaf ELDNN BAANG/a8000- JULEP/a7000- CULOP/a6000- HIMEX/a5000- EVABE/a4000- JELLY/a3000-/if ETALE/a2000-",
-                        "BAANG/a8000-/iaf JULEP/a7000- CULOP/a6000- HIMEX/a5000- EVABE/a4000- JELLY/a3000-/if ETALE/a2000-"
-                    ]
-                },
-                "I3R": {
-                    "full_name": "ILS Runway 3R",
-                    "runway": "3R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "BRDER/a6000/s210/iaf ROLRR HARLA/a5000 LIONZ/a5000 WATCH/a4000 RIBME/a3000 NUVUE/a2000",
-                        "MERCA/a7000/s210/iaf MPALA/a5000 WILOO/a5000 LEWUK/a5000 HARLA/a5000 LIONZ/a5000 WATCH/a4000 RIBME/a3000 NUVUE/a2000",
-                        "WILOO/a5000/iaf LEWUK/a5000 HARLA/a5000 LIONZ/a5000 WATCH/a4000 RIBME/a3000 NUVUE/a2000"
-                    ]
-                },
-                "I1L": {
-                    "full_name": "ILS Runway 21L",
-                    "runway": "21L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "RYEDR/a7000/iaf TOFFY/a6000- GIVVZ/a5000 COUNT/a5000 TIGRZ/a5000 ROBBI/a5000 BALAS/a4000 NESBI/a3000 PUKLE/a2000",
-                        "COBBO/a6000/iaf KAALI TIGRZ/a5000 ROBBI/a5000 BALAS/a4000 NESBI/a3000 PUKLE/a2000",
-                        "COUNT/a5000/iaf TIGRZ/a5000 ROBBI/a5000 BALAS/a4000 NESBI/a3000 PUKLE/a2000"
-                    ]
-                },
-                "I2R": {
-                    "full_name": "ILS Runway 22R",
-                    "runway": "22R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "HRRON/a6000/s210/iaf PRYDE/a4000 FUDDJ/a4000 TARAH/a4000 GUYVE/a4000 JOYDD/a3000 NUJNT/a3000 GEETR/a2000",
-                        "VALLI/a6000/s210/iaf KLIER/a4000 FUDDJ/a4000 TARAH/a4000 GUYVE/a4000 JOYDD/a3000 NUJNT/a3000 GEETR/a2000",
-                        "INKSR/a4000+/iaf FUDDJ/a4000 TARAH/a4000 GUYVE/a4000 JOYDD/a3000 NUJNT/a3000 GEETR/a2000"
-                    ]
-                },
-                "Y2R": {
-                    "full_name": "ILS Y Runway 22R",
-                    "runway": "22R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "HRRON/a6000/s210 KLIER/a4000 GRDCY/a4000+ MMOTR/a4000+ TAYUL/a4000+ EMINN/a3000+ WONDR/a3000+/if ANGGL/a2000+",
-                        "VALLI/a6000/s210 KLIER/a4000 GRDCY/a4000+ MMOTR/a4000+ TAYUL/a4000+ EMINN/a3000+ WONDR/a3000+/if ANGGL/a2000+",
-                        "PYRET GRDCY/a4000+ MMOTR/a4000+ TAYUL/a4000+ EMINN/a3000+ WONDR/a3000+/if ANGGL/a2000+"
-                    ]
-                },
-                "I2L": {
-                    "full_name": "ILS Runway 22L",
-                    "runway": "22L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "SPRER/a8000+/s210/iaf AKMEE MCOMB/a8000+ DRBRN/a7000+ BHOLD/a6000+ LUPAY/a5000+ OSKER/a4000+ ROUGE/a3000+ HULKA/a2000+",
-                        "MCOMB/a8000+/iaf DRBRN/a7000+ BHOLD/a6000+ LUPAY/a5000+ OSKER/a4000+ ROUGE/a3000+ HULKA/a2000+",
-                        "PUZEL/a9000+/s210/iaf MCOMB/a8000+ DRBRN/a7000+ BHOLD/a6000+ LUPAY/a5000+ OSKER/a4000+ ROUGE/a3000+ HULKA/a2000+"
-                    ]
-                },
-                "I7L": {
-                    "full_name": "ILS Runway 27L",
-                    "runway": "27L",
-                    "type": "ILS",
-                    "waypoints": ["HEYYY/a7000/iaf DONYA/a6000 ALWAZ/a5000 JUSTT/a4000 KNOIT/a3000 NIKNG/a2000"]
-                },
-                "I7R": {
-                    "full_name": "ILS Runway 27R",
-                    "runway": "27R",
-                    "type": "ILS",
-                    "waypoints": ["FRNDS/a7000/iaf HONOR/a6000 STANS/a5000 AERIC/a4000 DOTTI/a3000 GUGRE/a2000"]
-                }
+              "I4L": { "cifp_id": "IZ4L" },
+              "Y4L": { "cifp_id": "IY4L" },
+              "I4R": { "cifp_id": "I4R" },
+              "I3R": { "cifp_id": "I3R" },
+              "I1L": { "cifp_id": "I21L" },
+              "I2R": { "cifp_id": "IZ22R" },
+              "Y2R": { "cifp_id": "IY22R" },
+              "I2L": { "cifp_id": "I22L" },
+              "I7L": { "cifp_id": "I27L" },
+              "I7R": { "cifp_id": "I27R" }
             },
             "departure_routes": {
                 "4R": {

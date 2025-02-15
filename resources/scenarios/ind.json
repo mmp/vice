@@ -4,102 +4,18 @@
     "KIND": {
       "name": "Indianapolis",
       "approaches": {
-        "I5L": {
-          "full_name": "ILS Runway 5L",
-          "runway": "5L",
-          "type": "ILS",
-          "waypoints": [
-            "KELLY/a5000 WAAYN/a5000/s210 FTBLL/a4000 STDUM/a3000 OINKK/a2100 OSCRR/a1220"
-          ]
-        },
-        "R5L": {
-          "full_name": "RNAV Y Runway 5L",
-          "runway": "5L",
-          "type": "RNAV",
-          "waypoints": [
-            "KELLY/a5000 WAAYN/a5000/s210 FTBLL/a4000 STDUM/a3000 OINKK/a2100"
-          ]
-        },
-        "I5R": {
-          "full_name": "ILS Runway 5R",
-          "runway": "5R",
-          "type": "ILS",
-          "waypoints": [
-            "KELLY/a5000 IIUUU/a5000/s210 BIGRD/a4000 BGTEN/a3000 HUUPS/a2100 GOLSE/a1240"
-          ]
-        },
-        "R5R": {
-          "full_name": "RNAV Y Runway 5R",
-          "runway": "5R",
-          "type": "RNAV",
-          "waypoints": [
-            "KELLY/a5000 IIUUU/a5000/s210 BIGRD/a4000 BGTEN/a3000 HUUPS/a2100"
-          ]
-        },
-        "I14": {
-          "full_name": "ILS Runway 14",
-          "runway": "14",
-          "type": "ILS",
-          "waypoints": [
-            "JELLS/a4000 KEADY/a4000/s210 RSADE/a2400 YEAAR/a1320"
-          ]
-        },
-        "R14": {
-          "full_name": "RNAV Y Runway 14",
-          "runway": "14",
-          "type": "RNAV",
-          "waypoints": [
-            "JELLS/a4000 KEADY/a4000/s210 RSADE/a2400"
-          ]
-        },
-        "I3L": {
-          "full_name": "ILS Runway 23L",
-          "runway": "23L",
-          "type": "ILS",
-          "waypoints": [
-            "CLANG/a5000 LLARY/a5000/s210 BBIRD/a4000 PACRR/a2600"
-          ]
-        },
-        "R3L": {
-          "full_name": "RNAV Y Runway 23L",
-          "runway": "23L",
-          "type": "RNAV",
-          "waypoints": [
-            "CLANG/a5000 LLARY/a5000/s210 BBIRD/a4000 PACRR/a2600"
-          ]
-        },
-        "I3R": {
-          "full_name": "ILS Runway 23R",
-          "runway": "23R",
-          "type": "ILS",
-          "waypoints": [
-            "CLANG/a5000 RACEN/a5000/s210 DRVVR/a4000 CKERD/a2600"
-          ]
-        },
-        "R3R": {
-          "full_name": "RNAV Y Runway 23R",
-          "runway": "23R",
-          "type": "RNAV",
-          "waypoints": [
-            "CLANG/a5000 RACEN/a5000/s210 DRVVR/a4000 CKERD/a2600"
-          ]
-        },
-        "I32": {
-          "full_name": "ILS Runway 32",
-          "runway": "32",
-          "type": "ILS",
-          "waypoints": [
-            "DECEE/a4500 OZMOE/a4500/s210 BTTLR/a2400"
-          ]
-        },
-        "R32": {
-          "full_name": "RNAV Runway 32",
-          "runway": "32",
-          "type": "RNAV",
-          "waypoints": [
-            "DECEE/a4500 OZMOE/a4500/s210 BTTLR/a2400"
-          ]
-        }
+        "I5L": { "cifp_id": "I5L" },
+        "R5L": { "cifp_id": "RY5L" },
+        "I5R": { "cifp_id": "I5R" },
+        "R5R": { "cifp_id": "RY5R" },
+        "I14": { "cifp_id": "I14" },
+        "R14": { "cifp_id": "RY14" },
+        "I3L": { "cifp_id": "I23L" },
+        "R3L": { "cifp_id": "RY23L" },
+        "I3R": { "cifp_id": "I23R" },
+        "R3R": { "cifp_id": "RY23R" },
+        "I32": { "cifp_id": "I32" },
+        "R32": { "cifp_id": "RY32" }
       },
       "departure_routes": {
         "5L": {

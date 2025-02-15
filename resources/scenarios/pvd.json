@@ -2,26 +2,13 @@
     "tracon": "PVD",
       "airports": {
         "KPVD": {
-		  "hold_for_release": true,
+	  "hold_for_release": true,
           "approaches": {
-            "I23": {
-              "runway": "23",
-              "type": "ILS",
-              "waypoints": [
-                "FEDED/a2100+/if CUSKA/a2000+ WIVPA/a700+"
-              ]
-            },
+            "I23": { "cifp_id": "I23" },
             "I5": {
               "cifp_id": "I5"
             },
-			
-			"I34":{
-				"runway": "34",
-				"type": "ILS",
-				"waypoints": [
-				"BEVIN/a1900+/iaf ALLEY/a600+"
-				]
-			}
+	    "I34":{ "cifp_id": "I34" }
           },
           "departure_routes": {
             "23": {
@@ -76,22 +63,10 @@
           "tower_list": 1
         },
         "KOQU": {
-		 "hold_for_release": true,
+	  "hold_for_release": true,
           "approaches": {
-            "I16": {
-              "runway": "16",
-              "type": "ILS",
-              "waypoints": [
-                "FOSTY/iaf SALME/a2200+/if FALAG/a2000+"
-              ]
-            },
-            "R34": {
-              "runway": "34",
-              "type": "RNAV",
-              "waypoints": [
-                "BADTA/iaf COSAX/a1500+ CONEZ/a1500+ HULEM/a800+"
-              ]
-            }
+            "I16": { "cifp_id": "I16" },
+            "R34": { "cifp_id": "R34" }
           },
           "departure_routes": {
             "16": {
@@ -148,9 +123,8 @@
           }
         },
         "KEWB": {
-	      "hold_for_release": true,
+	  "hold_for_release": true,
           "approaches": {
-
           },
 
           "departure_routes": {

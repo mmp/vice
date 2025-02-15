@@ -649,27 +649,9 @@
                 },
                 "KCGF": {
                     "approaches": {
-                        "R6": {
-                            "runway": "6",
-                            "type": "RNAV",
-                            "waypoints": [
-                                "ZONIA/a2200 EUKER/a2200"
-                            ]
-                        },
-                        "I24": {
-                            "runway": "24",
-                            "type": "ILS",
-                            "waypoints": [
-                                "WEIDS EBLIS/a3000 IMUSY/a3000 KROOK/a2300"
-                            ]
-                        },
-                        "R24": {
-                            "runway": "24",
-                            "type": "RNAV",
-                            "waypoints": [
-                                "WEIDS EBLIS/a3000 IMUSY/a3000 KROOK/a2300"
-                            ]
-                        }
+                      "R6": {"cifp_id": "R6" },
+                      "I24": { "cifp_id": "I24" },
+                      "R24": { "cifp_id": "R24" }
                     },
                     "departure_routes": {
                         "6": {

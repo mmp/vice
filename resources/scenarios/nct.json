@@ -3,88 +3,16 @@
   "airports": {
     "KSJC": {
       "approaches": {
-        "I2R": {
-          "runway": "12R",
-          "type": "ILS",
-          "waypoints": [
-            "ARTAQ/if/a1800 SUNNE/a1800 JUJGE/a520"
-          ]
-        },
-        "Z2R": {
-          "runway": "12R",
-          "type": "RNAV",
-          "waypoints": [
-            "ARTAQ/iaf/a1800 SUNNE/if/a1100 FOXAG/faf/a1100",
-            "HITIR/if/a4000 ZORSA/s210/arc2.2CFBNV PUAKO/s210/arc2.2CFBNV FOXAG/faf/a1100",
-            "WADVA/iaf/a4500+ RERAE/if/a1800 PUAKO/s210/arc2.2CFBNV FOXAG/faf/a1100"
-          ]
-        },
-		"Y2R": {
-          "runway": "12R",
-          "type": "RNAV",
-		  "full_name": "RNAV Y Runway 12R",
-          "waypoints": [
-            "ARTAQ/if/a1800+ SUNNE/faf/a1800"
-          ]
-        },
-		"Y2L": {
-          "runway": "12L",
-          "type": "RNAV",
-		  "full_name": "RNAV Y Runway 12L",
-          "waypoints": [
-            "ROSTE/if/a2300+ OMSEE/faf/a1800"
-          ]
-        },
-        "Z2L": {
-          "runway": "12L",
-          "type": "RNAV",
-          "waypoints": [
-            "ARTAQ/iaf OMSEE/if HINIR/faf/a1100",
-            "HITIR/if/a4000 ZORSA/s210/arc2.2CFBLQ NIBUY/s210 HINIR/faf/a1100",
-            "WADVA/iaf/a4500+ RERAE/if NIBUY/s210/arc2.2CFBLF HINIR/faf/a1100"
-          ]
-        },
-        "I3L": {
-          "runway": "30L",
-          "type": "ILS",
-          "waypoints": [
-            "BORED/iaf/a5200 SWIGS/a4000 KLIDE/iaf/a4000 ZULUP/if/a3600 JENES/a3200 HIVAK/a2700 FORUL/a1000"
-          ]
-        },
-		 "Y3L": {
-          "runway": "30L",
-          "type": "RNAV",
-		  "full_name": "RNAV Y Runway 30L",
-          "waypoints": [
-            "BORED/iaf/a5200+ SWIGS/a4000+ KLIDE/iaf/a4000+/s230 ZULUP/if/a2800+ HIVAK/a2600+ FORUL/a1000"
-          ]
-        },
-        "Z3L": {
-          "runway": "30L",
-          "type": "RNAV",
-		  "full_name": "RNAV Z Runway 30L",
-          "waypoints": [
-            "JILNA/iaf/a7000 YADUT/s210/arc2.3CFBJT HEPAP/if/a4700+ FODPA JEGSA/s180/arc2.1CFBKG WOXAR/faf/a1600",
-			"BORED/iaf/a5200+ SWIGS/a4000+ KLIDE/iaf/a4000+/s230 ZULUP/if/a2800+ HOSBO WOXAR/faf/a1600"
-          ]
-        },
-        "Y3R": {
-          "runway": "30R",
-          "type": "RNAV",
-		  "full_name": "RNAV Y Runway 30R",
-          "waypoints": [
-            "BORED/iaf/a5200+ SWIGS/a4000+ KLIDE/iaf/a4000+/s230 ZULUP/if/a3600+ KIRVE/a2600+ COKOR/a2000 HILUD/a960"
-          ]
-        },
-		 "Z3R": {
-          "runway": "30R",
-          "type": "RNAV",
-		  "full_name": "RNAV Z Runway 30R",
-          "waypoints": [
-            "JILNA/iaf/a7000 YADUT/s210/arc2.3CFBJT HEPAP/if/a4700+ FODPA SIBAE/s180/arc2.1CFBKP TUZGY/faf/a1600",
-			"BORED/iaf/a5200+ SWIGS/a4000+ KLIDE/iaf/a4000+/s230 ZULUP/if/a2800+ KIRVE TUZGY/faf/a1600"
-          ]
-        }
+        "I2R": { "cifp_id": "I12R" },
+        "Z2R": { "cifp_id": "RZ12R" },
+	"Y2R": { "cifp_id": "RY12R" },
+	"Y2L": { "cifp_id": "RY12L" },
+        "Z2L": { "cifp_id": "RZ12L" },
+        "I3L": { "cifp_id": "I30L" },
+	"Y3L": { "cifp_id": "RY30L" },
+        "Z3L": { "cifp_id": "RZ30L" },
+        "Y3R": { "cifp_id": "RY30R" },
+	"Z3R": { "cifp_id": "RZ30R" }
       },
       "departure_routes": {
         "30R": {
@@ -678,26 +606,10 @@
       },
       "tower_list": 1
     },
-	"KSQL": {
+    "KSQL": {
       "approaches": {
-        "Y30": {
-          "runway": "30",
-		  "full_name": "RNAV Y Runway 30",
-          "type": "RNAV",
-          "waypoints": [
-            "OSI JEFNY/iaf/a5100+ JIKPE/a4600+ AMEBY/if/a3900+ CUZUP/faf/a2000 KIZEM",
-			"SAPID JEFNY/iaf/a5500+ JIKPE/a4600+ AMEBY/if/a3900+ CUZUP/faf/a2000 KIZEM"
-          ]
-        },
-        "Z30": {
-          "runway": "30",
-		  "full_name": "RNAV Z Runway 30",
-          "type": "RNAV",
-          "waypoints": [
-            "OSI JEFNY/iaf/a5100+ JIKPE/a4600+ AMEBY/if/a3900+ CUZUP/faf/a2000 KIZEM",
-			"SAPID JEFNY/iaf/a5500+ JIKPE/a4600+ AMEBY/if/a3900+ CUZUP/faf/a2000 KIZEM"
-          ]
-        }
+        "Y30": { "cifp_id": "RY30" },
+        "Z30": { "cifp_id": "RZ30" }
       },
       "departure_routes": {
         "30": {
@@ -771,115 +683,19 @@
     },
     "KOAK": {
       "approaches": {
-        "R0L": {
-          "runway": "10L",
-          "type": "RNAV",
-          "waypoints": [
-            "MICRA/iaf COMMO DATTS/if/a3000+ ENCOL/a1800 AKEVE/a1000 JEPAG"
-          ]
-        },
-        "R0R": {
-          "runway": "10R",
-          "type": "RNAV",
-          "waypoints": [
-            "MICRA/iaf COMMO DATTS/if/a3000+ ENCOL/a1800 ALOIN/a1000 CAXIN"
-          ]
-        },
-        "I12": {
-          "runway": "12",
-          "type": "ILS",
-          "waypoints": [
-            "RAIDR/iaf/a5000 ALCAT/if/a2900+ PLAZA/a1800"
-          ]
-        },
-        "RY12": {
-          "runway": "12",
-          "full_name": "RNAV Y Runway 12",
-          "type": "RNAV",
-          "waypoints": [
-            "RAIDR/iaf ALCAT/if/a2700+ PLAZA/a1800 ILATE"
-          ]
-        },
-        "RZ12": {
-          "runway": "12",
-          "full_name": "RNAV Z Runway 12",
-          "type": "RNAV",
-          "waypoints": [
-            "NRTHM/iaf/a5000 ALCAT/if/a2900 SHNGL/if PLAZA/faf/a1800",
-            "HIRMO/iaf/a4000 FREEM/arc2.2CFDTX/a4000/s210 JENAY BEEEJ/if MNNTY/arc2.1CFDTZ PLAZA/faf/a1800"
-          ]
-        },
-        "I8R": {
-          "runway": "28R",
-          "type": "ILS",
-          "waypoints": [
-            "BBUBB/iaf/a5000 NAGVY/if/a4200+ GROVE/a3400+ URZAF/a2700+ NIXDE/a2100+ CUVSA/a1500",
-			"CYMBL/iaf/a5300 NAGVY/if/a4200+ GROVE/a3400+ URZAF/a2700+ NIXDE/a2100+ CUVSA/a1500"
-          ]
-        },
-        "RY8R": {
-          "runway": "28R",
-          "type": "RNAV",
-          "full_name": "RNAV Y Runway 28R",
-          "waypoints": [
-            "BBUBB/iaf/a5000 NAGVY/if/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500 JAPSO/a980",
-            "CYMBL/iaf/a5300 NAGVY/if/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500 JAPSO/a980"
-          ]
-        },
-        "RZ8R": {
-          "runway": "28R",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 28R",
-          "waypoints": [
-            "BBUBB/iaf/a5000 NAGVY/if/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500",
-            "CYMBL/iaf/a5300 NAGVY/if/a4200 GROVE/a3400 URZAF/a2700 NIXDE/a2100 CUVSA/a1500"
-          ]
-        },
-        "RY8L": {
-          "runway": "28L",
-          "type": "RNAV",
-          "full_name": "RNAV Y Runway 28L",
-          "waypoints": [
-            "BBUBB/iaf/a5000 JUPAP/if/a3700 HEDER/a2800 VODSY/a1900 TENIE/a1080",
-            "CYMBL/iaf/a5300 JUPAP/if/a3700 HEDER/a2800 VODSY/a1900 TENIE/a1080"
-          ]
-        },
-        "RZ8L": {
-          "runway": "28L",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 28L",
-          "waypoints": [
-            "BBUBB/iaf/a5000 JUPAP/if/a3700 HEDER/a2800 VODSY/a1900",
-            "CYMBL/iaf/a5300 JUPAP/if/a3700 HEDER/a2800 VODSY/a1900 "
-          ]
-        },
-        "I30": {
-          "runway": "30",
-          "type": "ILS",
-          "waypoints": [
-            "PARBB/iaf/a4500 ZOLUM WUVON/if/a2700 MITOE/a2000",
-            "FRNNY/iaf/a4100 WUVON/if/a2700 MITOE/a2000"
-          ]
-        },
-        "RY30": {
-          "runway": "30",
-          "type": "RNAV",
-          "full_name": "RNAV Y Runway 30",
-          "waypoints": [
-            "PARBB/iaf/a4500 MITOE/a2000",
-            "FRNNY/iaf/a4100 MITOE/a2000"
-          ]
-        },
-        "RZ30": {
-          "runway": "30",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 30",
-          "waypoints": [
-            "PARBB/iaf/a4500 HEPMO/arc5.8CFFPB MITOE/a2000",
-            "FRNNY/iaf/a4100+ WUVON/if MITOE/a2000",
-            "ALLXX/if/a5000/s210 CRSEN/arc2.7CFFPC HEPMO/arc5.8CFFPB MITOE/a2000"
-          ]
-        }
+        "R0L": { "cifp_id": "R10L" },
+        "R0R": { "cifp_id": "R10R" },
+        "I12": { "cifp_id": "I12" },
+        "RY12": { "cifp_id": "RY12" },
+        "RZ12": { "cifp_id": "RZ12" },
+        "I8R": { "cifp_id": "I28R" },
+        "RY8R": { "cifp_id": "RY28R" },
+        "RZ8R": { "cifp_id": "RZ28R" },
+        "RY8L": { "cifp_id": "RY28L" },
+        "RZ8L": { "cifp_id": "RZ28L" },
+        "I30": { "cifp_id": "I30" },
+        "RY30": { "cifp_id": "RY30" },
+        "RZ30": { "cifp_id": "RZ30" }
       },
       "departure_routes": {
         "28R": {
@@ -1326,137 +1142,30 @@
     },
     "KSFO": {
       "approaches": {
-        "I0L": {
-          "runway": "10L",
-          "type": "ILS",
-          "waypoints": [
-            "STINS/iaf/a3500 NORMM/if/a3500 XATTU/a1800"
-          ]
-        },
-        "G0R": {
-          "runway": "10R",
-          "type": "RNAV",
-          "full_name": "GLS Runway 10R",
-          "waypoints": [
-            "STINS/iaf/a3500 DOTNE/if/a3500 JULOS/a1900"
-          ]
-        },
-        "R0R": {
-          "runway": "10R",
-          "type": "RNAV",
-          "waypoints": [
-            "STINS/iaf/a3500 DOTNE/if/a3500 JULOS/a1900"
-          ]
-        },
-        "I9L": {
-          "runway": "19L",
-          "type": "ILS",
-          "waypoints": [
-            "CCR UPEND/iaf/a5000 BERKS/if/a5000 SHAKE/a2800 ROGGE/a1800"
-          ]
-        },
-        "R9L": {
-          "runway": "19L",
-          "type": "RNAV",
-          "waypoints": [
-            "UPEND/iaf/a5000 BERKS/if/a5000 SHAKE/a2800 ROGGE/a1800"
-          ]
-        },
-        "G9L": {
-          "runway": "19L",
-          "type": "RNAV",
-          "full_name": "GLS Runway 19L",
-          "waypoints": [
-            "UPEND/iaf/a5000 BERKS/if/a5000 SHAKE/a2800"
-          ]
-        },
-        "R9R": {
-          "runway": "19R",
-          "type": "RNAV",
-          "waypoints": [
-            "UPEND/iaf/a5000 HITOD/a4000 ESUME/a2800"
-          ]
-        },
-        "G9R": {
-          "runway": "19R",
-          "type": "RNAV",
-          "full_name": "GLS Runway 19R",
-          "waypoints": [
-            "UPEND/iaf/a5000 HITOD/a4000 ESUME/a2800"
-          ]
-        },
-        "I8L": {
-          "runway": "28L",
-          "type": "ILS",
-          "waypoints": [
-            "ARCHI/iaf/a7000 PONKE/a5000+ WETOR/a4000+ ROKME HEMAN/a3100+ DUYET/a1800 NEPIC/a860",
-            "FAITH/iaf/a7000 PONKE/a5000+ WETOR/a4000+ ROKME HEMAN/a3100+ DUYET/a1800 NEPIC/a860",
-			"EDDYY/iaf/a6000 SIDBY/iaf HEMAN/if/a3100+ DUYET/a1800+ NEPIC/a860"
-          ]
-        },
-        "R8L": {
-          "runway": "28L",
-          "type": "RNAV",
-          "waypoints": [
-            "ARCHI/iaf/a7000 PONKE/a5000+ WETOR/a4000+ ROKME HEMAN/a3100+ DUYET/a1800 NEPIC/a860",
-            "DIVEC/iaf/a7000 PONKE/a5000+ WETOR/a4000+ ROKME HEMAN/a3100+ DUYET/a1800 NEPIC/a860",
-            "EDDYY/iaf/a6000 SIDBY/iaf HEMAN/if/a3100 DUYET/a1800 NEPIC/a860"
-          ]
-        },
-        "GLL": {
-          "runway": "28L",
-          "type": "RNAV",
-          "full_name": "GLS Runway 28L",
-          "waypoints": [
-            "ARCHI/iaf/a7000 PONKE/a5000+ WETOR/a4000+ ROKME HEMAN/a3100+ DUYET/a1800 NEPIC/a860",
-            "DIVEC/iaf/a7000 PONKE/a5000+ WETOR/a4000+ ROKME HEMAN/a3100+ DUYET/a1800 NEPIC/a860",
-            "EDDYY/iaf/a6000 SIDBY/iaf HEMAN/if/a3100+ DUYET/a1800 NEPIC/a860"
-          ]
-        },
-        "I8R": {
+        "R0L": { "cifp_id": "R10L" },
+        "G0R": { "cifp_id": "RY10R", "full_name": "GLS Runway 10R" },
+        "R0R": { "cifp_id": "RZ10R" },
+        "I9L": { "cifp_id": "I19L" },
+        "R9L": { "cifp_id": "R19L" },
+        "G9L": { "cifp_id": "R19L", "full_name": "GLS Runway 19L" },
+        "R9R": { "cifp_id": "RY19R" },
+        "G9R": { "cifp_id": "RY19R", "full_name": "GLS Runway 19R" },
+        "I8L": { "cifp_id": "I28L" },
+        "R8L": { "cifp_id": "R28L" },
+        "GLL": { "cifp_id": "R28L", "full_name": "GLS Runway 28L" },
+        "I8R": { "cifp_id": "I28R" },
+        "Z8R": { "cifp_id": "RZ28R" },
+	"FMS": {
           "runway": "28R",
           "type": "ILS",
-          "waypoints": [
-            "ARCHI/iaf/a7000 ZILED/a5000+ GIRRR/a4000+ DUMBA/iaf/a3000+ CEPIN/if/a3000+ AXMUL/a1800",
-            "EDDYY/iaf/a6000 SIDBY/iaf CEPIN/a3000+ AXMUL/a1800"
-          ]
-        },
-        "Z8R": {
-          "runway": "28R",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 28R",
-          "waypoints": [
-            "ARCHI/iaf/a7000 ZILED/a5000+ GIRRR/a4000+ DUMBA/iaf/a3000+ CEPIN/if/a3000+ AXMUL/a1800",
-            "EDDYY/iaf/a6000 SIDBY/iaf CEPIN/a3000+ AXMUL/a1800"
-          ]
-        },
-		"FMS": {
-          "runway": "28R",
-          "type": "RNAV",
           "full_name": "FMS Bridge Visual Runway 28R",
           "waypoints": [
             "ARCHI/iaf/a7000 TRDOW/a6000+ GAROW/a5000+ JANYY/if/a2500+ SAMML/faf/a1500+ N037.35.10.560,W122.17.31.800/a1200+",
             "EDDYY/iaf/a6000+ SIDBY/iaf/a5000+ JANYY/if/a2500+ SAMML/faf/a1500+ N037.35.10.560,W122.17.31.800/a1200+"
           ]
         },
-        "Y8R": {
-          "runway": "28R",
-          "type": "RNAV",
-          "full_name": "RNAV Y Runway 28R",
-          "waypoints": [
-            "ARCHI/iaf/a7000 WIBNI GUTTS/if/a3400 DONNG/faf/a1800/arc1.7 JOSUF/a1264/arc1.6 FABLA/a743",
-            "EDDYY/iaf/a6000 SIDBY/iaf GUTTS/if/a3400 DONNG/faf/a1800/arc1.7 JOSUF/a1264/arc1.6 FABLA/a743"
-          ]
-        },
-        "GLR": {
-          "runway": "28R",
-          "type": "ILS",
-          "full_name": "GLS Runway 28R",
-          "waypoints": [
-            "ARCHI/iaf/a7000 ZILED/a5000+ GIRRR/a4000+ DUMBA/iaf/a3000+ CEPIN/if/a3000+ AXMUL/a1800",
-            "EDDYY/iaf/a6000 SIDBY/iaf CEPIN/a3000+ AXMUL/a1800"
-          ]
-        },
+        "Y8R": { "cifp_id": "RY28R" },
+        "GLR": { "cifp_id": "I28R", "full_name": "GLS Runway 28R" },
         "TTR": {
           "runway": "28R",
           "type": "Visual",
@@ -2547,17 +2256,9 @@
       },
       "tower_list": 3
     },
-	"KPAO": {
+    "KPAO": {
       "approaches": {
-        "R31": {
-          "runway": "31",
-		  "full_name": "RNAV Runway 31",
-          "type": "RNAV",
-          "waypoints": [
-            "CREDO/iaf DOCAL/if/a4500+ ACHOZ/a3500+ PUDBY/faf/a2200 GIDGY",
-			"SAPID/iaf DOCAL/if/a4500+ ACHOZ/a3500+ PUDBY/faf/a2200 GIDGY"
-          ]
-        }
+        "R31": { "cifp_id": "R31" }
       },
       "departure_routes": {
         "31": {
@@ -2630,187 +2331,24 @@
     },
     "KRNO": {
       "approaches": {
-        "IY7R": {
-          "runway": "17R",
-          "type": "ILS",
-          "full_name": "ILS Y Runway 17R",
-          "waypoints": [
-            "LIBGE/a12000+/iaf/s230 ROARS WALAR/if/a8000+ ZOMPO/a7500 DISCS/a7400 HONEL/a6540 WUMKA"
-          ]
-        },
-		"IX7R": {
-          "runway": "17R",
-          "type": "ILS",
-          "full_name": "ILS X Runway 17R",
-          "waypoints": [
-            "WINRZ/a11000+/iaf/s230 WALAR/if/a8000+ ZOMPO/a7500 DISCS/a7400 HONEL/a6540 WUMKA",
-			"LIBGE/a12000+/iaf/s230 ROARS WALAR/if/a8000+ ZOMPO/a7500 DISCS/a7400 HONEL/a6540 WUMKA"
-          ]
-        },
-		"IZ7R": {
-          "runway": "17R",
-          "type": "ILS",
-          "full_name": "ILS Z Runway 17R",
-          "waypoints": [
-            "HOBOA/a16000+/iaf JUDPU/s230 ZONBI/arc4.0CFCDH AMIES/arc4.0CFBSB WALAR/if/a8000 ZOMPO/a7500 DISCS/a7400 HONEL/a6540 WUMKA",
-			"WINRZ/a11000+/iaf/s230 WALAR/if/a8000+ ZOMPO/a7500 DISCS/a7400 HONEL/a6540 WUMKA",
-			"KLOCK/a10000+/iaf BELBE/if/s210 SLABS/arc3.0CFDRJ ZOMPO/a7500 DISCS/a7400 HONEL/a6540 WUMKA",
-			"LIBGE/a12000+/iaf/s230 ROARS WALAR/if/a8000+ ZOMPO/a7500 DISCS/a7400 HONEL/a6540 WUMKA"
-          ]
-        },
-        "RX7R": {
-          "runway": "17R",
-          "type": "RNAV",
-		  "full_name": "RNAV X Runway 17R",
-          "waypoints": [
-            "LIBGE/a12000+/iaf/s230 CEROX ECOLO/if/a8600 ETARE/a7200 UDADY/faf/a6900",
-            "HALLE/iaf ECOLO/if/a8600 ETARE/a7200 UDADY/faf/a6900",
-            "FMG NUKOE/a10000 ROXJO/iaf/s220 ECOLO/if/a8600 ETARE/a7200 UDADY/faf/a6900",
-            "CAXIL/a10000 NUKOE/a10000 ROXJO/iaf ECOLO/if/a8600 ETARE/a7200 UDADY/faf/a6900"
-          ]
-        },
-		 "RY7R": {
-          "runway": "17R",
-          "type": "RNAV",
-		  "full_name": "RNAV Y Runway 17R",
-          "waypoints": [
-            "CANYA/if/a10000/s210 GOYET/arc2.9CFTWX HOMES/a7700+/arc2.9CFTWX ZENDO/faf/a7000/arc2.9CFTWX MASTR/a6400+/arc3.0CFFKN OKITE/a5471",
-            "KLOCK/if/a10000/s210 ICEYA HOMES/a7700+/arc2.9CFTWX ZENDO/faf/a7000/arc2.9CFTWX MASTR/a6400+/arc3.0CFFKN OKITE/a5471"
-          ]
-        },
-		 "RZ7R": {
-          "runway": "17R",
-          "type": "RNAV",
-		  "full_name": "RNAV Z Runway 17R",
-          "waypoints": [
-            "HOBOA/iaf SNDIT/s210 JUDPU/iaf/s210 GNAAR/if HMWUD/arc3.0CFPPM LUCEK/arc3.0CFVFR BETYA/faf/a6900",
-			"TRUCK/iaf/s210 JUDPU/iaf/s210 GNAAR/if HMWUD/arc3.0CFPPM LUCEK/arc3.0CFVFR BETYA/faf/a6900",
-			"WINRZ/a11000/iaf/s210 DIDBE/if/a7900+ BETYA/faf/a6900",
-			"AVVYY/iaf FREEL/s210 ROWWS/if TLLAK/arc3.0CFPPM HMWUD/arc3.0CFPPM LUCEK/arc3.0CFVFR BETYA/faf/a6900 ",
-			"LIBGE/a12000/iaf OBIVE/s210 DIDBE/if/a7900+ BETYA/faf/a6900"
-          ]
-        },
-         "RX7L": {
-          "runway": "17L",
-          "type": "RNAV",
-		  "full_name": "RNAV X Runway 17L",
-          "waypoints": [
-            "LIBGE/a12000+/iaf/s230 KIGKY TEBOY/if/a8600+/s210 SEKAW/a7800+ BADPE/faf/a6900",
-            "HALLE/iaf TEBOY/if/a8600+/s210 SEKAW/a7800+ BADPE/faf/a6900",
-            "FMG NUKOE/a10000 ROXJO/iaf/s220 TEBOY/if/a8600+/s210 SEKAW/a7800+ BADPE/faf/a6900",
-            "CAXIL/a10000 NUKOE/a10000 ROXJO/iaf TEBOY/if/a8600+/s210 SEKAW/a7800+ BADPE/faf/a6900"
-          ]
-        },
-		"RY7L": {
-          "runway": "17L",
-          "type": "RNAV",
-		  "full_name": "RNAV Y Runway 17L",
-          "waypoints": [
-			"CANYA/if/a10000/s210 GOYET/arc2.9CFTWX HOMES/a7700+/arc2.9CFTWX WORTH/faf/a6400+/arc2.9CFTWX URATE/a5445+",
-			"KLOCK/if/a10000/s210 ICEYA HOMES/a7700+/arc2.9CFTWX WORTH/faf/a6400+/arc2.9CFTWX URATE/a5445+"
-          ]
-        },
-		 "RZ7L": {
-          "runway": "17L",
-          "type": "RNAV",
-		  "full_name": "RNAV Z Runway 17L",
-          "waypoints": [
-            "HOBOA/iaf SNDIT/s210 JUDPU/iaf/s210 GNAAR/if OQIKO/arc3.0CFPPM YETUD/arc3.0CFRVW HOGBO/faf/a6900",
-			"TRUCK/iaf/s210 JUDPU/iaf/s210 GNAAR/if OQIKO/arc3.0CFPPM YETUD/arc3.0CFRVW HOGBO/faf/a6900",
-			"WINRZ/a11000/iaf/s210 DIDBE/if/a7900+ HOGBO/faf/a6900",
-			"AVVYY/iaf FREEL/s210 ROWWS/if TLLAK/arc3.0CFPPM OQIKO/arc3.0CFPPM YETUD/arc3.0CFRVW HOGBO/faf/a6900",
-			"LIBGE/a12000/iaf OBIVE/s210 DIDBE/if/a7900+ HOGBO/faf/a6900"
-          ]
-        },
-        "I5L": {
-          "runway": "35L",
-          "type": "ILS",
-          "waypoints": [
-            "SPOON/iaf/nopt APIME/iaf/if/hilpt/a10500+ WAGGE/a9400+ ZONVI/a8700 EPOSE/a8200 CALEG/a6860 DUYEP/a5800",
-			"SWR APIME/iaf/if/hilpt/a10500+ WAGGE/a9400+ ZONVI/a8700 EPOSE/a8200 CALEG/a6860 DUYEP/a5800",
-			"FMG APIME/iaf/if/hilpt/a10500+ WAGGE/a9400+ ZONVI/a8700 EPOSE/a8200 CALEG/a6860 DUYEP/a5800"
-          ]
-        },
-		"RW5L": {
-          "runway": "35L",
-          "type": "RNAV",
-		  "full_name": "RNAV W Runway 35L",
-          "waypoints": [
-            "FMG/if/a10000 VCITY/a8900+/s210/arc3.1CFFCW WSHOE/a7900+/arc3.1CFFCW RSNAK/a7800+/arc2.4CFFBN DONER/a7700+/arc3.2CFFHM GRZLI/faf/a7300+/arc2.1CFFTF LDYBG"
-          ]
-        },
-        "RX5L": {
-          "runway": "35L",
-          "type": "RNAV",
-		  "full_name": "RNAV X Runway 35L",
-          "waypoints": [
-            "TARVR/iaf/a14000 SPOON/iaf JUKNU/if/a9900+ ZEXUT/a8600+ KARME/a8100 FEBAK/a6740+",
-			"SWR/a11400+ ZAPTU PIDIC/iaf/s250 JUKNU/if/a9900+ ZEXUT/a8600+ KARME/a8100 FEBAK/a6740+",
-			"RICHY/a11400+ PIDIC/iaf/s250 JUKNU/if/a9900+ ZEXUT/a8600+ KARME/a8100 FEBAK/a6740+",
-			"VIKES/a11000+ NIPME/iaf/s250 JUKNU/if/a9900+ ZEXUT/a8600+ KARME/a8100 FEBAK/a6740+",
-			"RAMRE/iaf JUKNU/if/a9900+ ZEXUT/a8600+ KARME/a8100 FEBAK/a6740+"
-          ]
-        },
-		  "RY5L": {
-          "runway": "35L",
-          "type": "RNAV",
-		  "full_name": "RNAV Y Runway 35L",
-          "waypoints": [
-            "TARVR/iaf/a14000 SPOON/iaf JUKNU/if/a9900+ ZEXUT/a8600+ EPOSE/a8200",
-			"SWR/a11400+ ZAPTU PIDIC/iaf/s250 JUKNU/if/a9900+ ZEXUT/a8600+ EPOSE/a8200",
-			"RICHY/a11400+ PIDIC/iaf/s250 JUKNU/if/a9900+ ZEXUT/a8600+ EPOSE/a8200",
-			"VIKES/a11000+ NIPME/iaf/s250 JUKNU/if/a9900+ ZEXUT/a8600+ EPOSE/a8200",
-			"RAMRE/iaf JUKNU/if/a9900+ ZEXUT/a8600+ EPOSE/a8200"
-          ]
-        },
-		  "RZ5L": {
-          "runway": "35L",
-          "type": "RNAV",
-		  "full_name": "RNAV Z Runway 35L",
-          "waypoints": [
-            "TARVR/iaf/a14000 SPOON/iaf/s230 MASUE/a8200+ LANBE/a7000+ GUKCE/a6900"
-          ]
-        },
-		"RW5R": {
-          "runway": "35R",
-          "type": "RNAV",
-		  "full_name": "RNAV W Runway 35R",
-          "waypoints": [
-            "FMG/if/a10000 VRGNA/a8900+/s210/arc3.1CFFHM RLSTN/a7900+/arc3.1CFFHM URKBE/a7600+/arc2.4CFFCW TRMMR/faf/a7400/arc3.2CFFBN ULOHA"
-          ]
-        },
-       "RX5R": {
-          "runway": "35R",
-          "type": "RNAV",
-		  "full_name": "RNAV X Runway 35R",
-          "waypoints": [
-            "TARVR/iaf/a14000 SPOON/iaf ROYDO/if/a9900+ PUNTE/a8600+ SUTEE/a8100 FAXEM/a6660+",
-			"SWR/a11400+ ZAPTU PIDIC/iaf/s250 ROYDO/if/a9900+ PUNTE/a8600+ SUTEE/a8100 FAXEM/a6660+",
-			"RICHY/a11400+ PIDIC/iaf/s250 ROYDO/if/a9900+ PUNTE/a8600+ SUTEE/a8100 FAXEM/a6660+",
-			"VIKES/a11000+ NIPME/iaf/s250 ROYDO/if/a9900+ PUNTE/a8600+ SUTEE/a8100 FAXEM/a6660+",
-			"RAMRE/iaf ROYDO/if/a9900+ PUNTE/a8600+ SUTEE/a8100 FAXEM/a6660+"
-          ]
-        },
-		"RY5R": {
-          "runway": "35R",
-          "type": "RNAV",
-		  "full_name": "RNAV Y Runway 35R",
-          "waypoints": [
-            "TARVR/iaf/a14000 SPOON/iaf ROYDO/if/a9900+ PUNTE/a8600+ SUTEE/a8100",
-			"SWR/a11400+ ZAPTU PIDIC/iaf/s250 ROYDO/if/a9900+ PUNTE/a8600+ SUTEE/a8100",
-			"RICHY/a11400+ PIDIC/iaf/s250 ROYDO/if/a9900+ PUNTE/a8600+ SUTEE/a8100",
-			"VIKES/a11000+ NIPME/iaf/s250 ROYDO/if/a9900+ PUNTE/a8600+ SUTEE/a8100",
-			"RAMRE/iaf ROYDO/if/a9900+ PUNTE/a8600+ SUTEE/a8100"
-          ]
-        },
-		  "RZ5R": {
-          "runway": "35R",
-          "type": "RNAV",
-		  "full_name": "RNAV Z Runway 35R",
-          "waypoints": [
-            "TARVR/iaf/a14000 SPOON/iaf/s230 MASUE/a8200+ LANBE/a7000+ TULVE/a6900"
-          ]
-        }
+        "IY7R": { "cifp_id": "IY17R" },
+	"IX7R": { "cifp_id": "IX17R" },
+	"IZ7R": { "cifp_id": "IZ17R" },
+        "RX7R": { "cifp_id": "RX17R" },
+	"RY7R": { "cifp_id": "RY17R" },
+	"RZ7R": { "cifp_id": "RZ17R" },
+        "RX7L": { "cifp_id": "RX17L" },
+	"RY7L": { "cifp_id": "RY17L" },
+	"RZ7L": { "cifp_id": "RZ17L" },
+        "I5L": { "cifp_id": "I35L" },
+	"RW5L": { "cifp_id": "RW35L" },
+        "RX5L": { "cifp_id": "RX35L" },
+	"RY5L": { "cifp_id": "RY35L" },
+	"RZ5L": { "cifp_id": "RZ35L" },
+	"RW5R": { "cifp_id": "RW35R" },
+        "RX5R": { "cifp_id": "RX35R" },
+	"RY5R": { "cifp_id": "RY35R" },
+	"RZ5R": { "cifp_id": "RZ35R" }
       },
       "departure_routes": {
         "35R": {
@@ -3233,105 +2771,17 @@
     },
     "KSMF": {
       "approaches": {
-        "I7R": {
-          "runway": "17R",
-          "type": "ILS",
-          "waypoints": [
-            "TUDOR/iaf/a1800 FAPIN/if/a1800+ JARNU/a1800+ KAYEG",
-            "TENCO/iaf/a4000 FAPIN/if/a1800+ JARNU/a1800+ KAYEG"
-          ]
-        },
-        "RY7R": {
-          "runway": "17R",
-          "type": "RNAV",
-          "full_name": "RNAV Y Runway 17R",
-          "waypoints": [
-            "TUDOR/iaf/a1800+ FAPIN/if/a1800+ JARNU/a1800+ AMUNE/a1100+",
-            "TENCO/iaf/a4000 FAPIN/if/a1800+ JARNU/a1800+ AMUNE/a1100+"
-          ]
-        },
-        "RZ7R": {
-          "runway": "17R",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 17R",
-          "waypoints": [
-            "TUDOR/a5000+/iaf WAXIX/if/a1800+ WIPEB ZOLOV/a1100",
-            "TENCO/iaf/a4000 ZIMAM/if/s210 JOKUV/arc2.2CFBHT ZOLOV/a1100",
-            "OVOME/if/a4000/s210 FIKAN/arc7.2 ZOLOV/a1100"
-          ]
-        },
-        "I7L": {
-          "runway": "17L",
-          "type": "ILS",
-          "waypoints": [
-            "VRONA/iaf/a1900+ DIRBE/if/a1900+ LEVEY/a1900+ JOBUD/a500+",
-            "TENCO/iaf/a4000 DIRBE/if/a1900+ LEVEY/a1900+ JOBUD/a500+"
-          ]
-        },
-        "RY7L": {
-          "runway": "17L",
-          "type": "RNAV",
-          "full_name": "RNAV Y Runway 17L",
-          "waypoints": [
-            "VRONA/iaf/a1900 DIRBE/if/a1900+ LEVEY/a1900+ JAMIM/a1080+",
-            "TENCO/iaf/a4000 DIRBE/if/a1900+ LEVEY/a1900+ JAMIM/a1080+"
-          ]
-        },
-        "RZ7L": {
-          "runway": "17L",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 17L",
-          "waypoints": [
-            "TUDOR/a5000+/iaf WENUD/if MUKVY UWFUR/a1100",
-            "TENCO/a4000/iaf ZIMAM/if/s210 WOSKI/arc2.2CFBHN UWFUR/a1100",
-            "OVOME/a4000/if/s210 FIKAN/arc2.3CFBGL JULUK UZIZY/arc2.3CFBGB UWFUR/a1100"
-          ]
-        },
-        "I5L": {
-          "runway": "35L",
-          "type": "ILS",
-          "waypoints": [
-            "SAC/iaf/a3000+ ELMAC/if/a3000+ HADSU/a1400 CANLO"
-          ]
-        },
-        "RY5L": {
-          "runway": "35L",
-          "type": "RNAV",
-          "full_name": "RNAV Y Runway 35L",
-          "waypoints": [
-            "MYNRR/iaf/a9000 ELMAC/if/a3000+/s210 HADSU/a1400 CANLO",
-            "ISYOH/iaf ELMAC/if/a3000+/s210 HADSU/a1400 CANLO"
-          ]
-        },
-        "RZ5L": {
-          "runway": "35L",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 35L",
-          "waypoints": [
-            "MYNRR/iaf/a9000 ELMAC/if/a3000/s210 WOMAV/a1100",
-            "ISYOH/iaf/a6000+ ELMAC/if/a3000/s210 WOMAV/a1100",
-            "PIECH/iaf/a4000+ BANZA/if/a4000/s210/arc6.9 ZITUL WOMAV/a1100"
-          ]
-        },
-        "RY5R": {
-          "runway": "35R",
-          "type": "RNAV",
-          "full_name": "RNAV Y Runway 35R",
-          "waypoints": [
-            "MYNRR/iaf/a9000 FIPIN/if/s210/a3000+ CEDRA/faf/a1400 AMNIC/a780",
-            "ISYOH/iaf FIPIN/if/a210/a3000+ CEDRA/faf/a1400 AMNIC/a780"
-          ]
-        },
-        "RZ5R": {
-          "runway": "35L",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 35R",
-          "waypoints": [
-            "MYNRR/iaf/a9000 FIPIN/if/a3000/s210 JUNBO/a1100",
-            "ISYOH/iaf/a6000+ ELMAC/if/a3000/s210 JUNBO/a1100",
-            "PIECH/iaf/a4000 BANZA/if/a4000 ZITUL/arc2.2CFBFX PUGYI LERIY/arc2.2CFBFZ JUNBO/a1100"
-          ]
-        }
+        "I7R": { "cifp_id": "I17R" },
+        "RY7R": { "cifp_id": "RY17R" },
+        "RZ7R": { "cifp_id": "RZ17R" },
+        "I7L": { "cifp_id": "I17L" },
+        "RY7L": { "cifp_id": "RY17L" },
+        "RZ7L": {"cifp_id": "RZ17L" },
+        "I5L": { "cifp_id": "I35L" },
+        "RY5L": { "cifp_id": "RY35L" },
+        "RZ5L": { "cifp_id": "RZ35L" },
+        "RY5R": { "cifp_id": "RY35R" },
+        "RZ5R": { "cifp_id": "RZ35R" }
       },
       "departure_routes": {
         "35R": {
@@ -3613,56 +3063,20 @@
     },
     "KMRY": {
       "approaches": {
-        "L8L": {
-          "runway": "28L",
-          "type": "ILS",
-          "full_name": "Localizer Runway 28L",
-          "waypoints": [
-            "WIGGL/iaf/nopt CHRLE/hilpt/nopt180/if/iaf/a6100 YITUD/a5400+ RODNE/a4600+ WUXUN/a4060+ ZILKU/a3020+",
-            "SNS/nopt CHRLE/hilpt/nopt180/if/iaf/a6100 YITUD/a5400+ RODNE/a4600+ WUXUN/a4060+ ZILKU/a3020+"
-          ]
-        },
-        "RY8L": {
-          "runway": "28L",
-          "type": "RNAV",
-          "full_name": "RNAV Y Runway 28L",
-          "waypoints": [
-            "SNS/nopt/a5100 HIXAR/a5100/nopt180/hilpt IGEYO/a4100+ HUGON/a3200+ INICU/a1740",
-            "WIGGL/iaf/a5100/nopt HIXAR/a5100/nopt180/hilpt IGEYO/a4100+ HUGON/a3200+ INICU/a1740"
-          ]
-        },
-        "RZ8L": {
-          "runway": "28L",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 28L",
-          "waypoints": [
-            "JEJMA/iaf/nopt SNS/if/iaf/nopt180/hilpt CONIV/a4000+ OKUPE/arc1.5CFBRC HUTAD",
-            "BASEC/iaf/nopt/a4900 SNS/if/iaf/nopt180/hilpt CONIV OKUPE/arc1.5CFBRC HUTAD"
-          ]
-        },
+        "L8L": { "cifp_id": "L28L" },
+        "RY8L": { "cifp_id": "RY28L" },
+        "RZ8L": { "cifp_id": "RZ28L" },
         "RV8L": {
           "runway": "28L",
           "type": "ILS",
           "full_name": "Raceway Visual Runway 28L",
           "waypoints": [
-            "CHRLE/a6100 HUTAD/a1500",
-            "SNS/a4500+ OKUPE/arc1.5CFBRC HUTAD/a1500+"
+            "CHRLE/a6100 HUTAD/a1500/faf",
+            "SNS/a4500+ OKUPE/arc1.5CFBRC HUTAD/a1500+/faf"
           ]
         },
-        "I0R": {
-          "runway": "10R",
-          "type": "ILS",
-          "waypoints": [
-            "ZEBED/if/iaf/nopt180/hilpt/a2600 MINCK/a1700"
-          ]
-        },
-        "R0R": {
-          "runway": "10R",
-          "type": "RNAV",
-          "waypoints": [
-            "ZEBED/if/iaf/nopt180/hilpt MINCK"
-          ]
-        }
+        "I0R": { "cifp_id": "I10R" },
+        "R0R": { "cifp_id": "R10R" }
       },
       "departure_routes": {
         "28R": {
@@ -3829,31 +3243,9 @@
     },
     "KMER": {
       "approaches": {
-        "R13": {
-          "runway": "13",
-          "type": "RNAV",
-          "waypoints": [
-            "VOLTA/a2000 DIGQY/iaf/a2000 GANQA/if/a2000 RILRE/a1700",
-            "PATYY/a2000 DIGQY/iaf/a2000 GANQA/if/a2000 RILRE/a1700",
-            "AWALI/iaf/a2000 GANQA/if/a2000 RILRE/a1700"
-          ]
-        },
-        "I31": {
-          "runway": "31",
-          "type": "ILS",
-          "waypoints": [
-            "FEXUM/iaf/nopt/a3000 HYP/nopt180/hilpt/a3000 SARNE/a1800"
-          ]
-        },
-        "R31": {
-          "runway": "31",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 28L",
-          "waypoints": [
-            "UNIGE/a2000 NUPUZ/iaf/a2000 CUMLO/if/a2000 SARNE/a1800",
-            "EBTUW/iaf/a2000 CUMLO/if/a2000 SARNE/a1800"
-          ]
-        }
+        "R13": { "cifp_id": "R13" },
+        "I31": { "cifp_id": "I31" },
+        "R31": { "cifp_id": "R31" }
       },
       "departure_routes": {
         "13": {
@@ -3954,23 +3346,8 @@
     },
     "KMOD": {
       "approaches": {
-        "I8R": {
-          "runway": "28R",
-          "type": "ILS",
-          "waypoints": [
-            "PXN/a7500 KALEI/iaf/a3500/nopt DLRAY/if/a1800 ZELAT/iaf/a1800/nopt180/hilpt",
-            "FRA/a7500 KALEI/iaf/a3500/nopt DLRAY/if/a1800 ZELAT/iaf/a1800/nopt180/hilpt"
-          ]
-        },
-        "R8R": {
-          "runway": "28R",
-          "type": "RNAV",
-          "waypoints": [
-            "PXN KALEI/iaf/a3500 DLRAY/if/a3500 ZELAT/a1800",
-            "FRA KALEI/iaf/a3500 DLRAY/if/a3500 ZELAT/a1800",
-            "VOLTA/a3500 FABNA/iaf/a3500 DLRAY/if/a3500 ZELAT/a1800"
-          ]
-        }
+        "I8R": { "cifp_id": "I28R" },
+        "R8R": { "cifp_id": "R28R" }
       },
       "departure_routes": {
         "28R": {
@@ -4042,33 +3419,9 @@
     },
     "KSCK": {
       "approaches": {
-        "R1L": {
-          "runway": "11L",
-          "type": "RNAV",
-          "waypoints": [
-            "VISTO/a2700/nopt HAXEK/if/iaf/a2700/nopt180/hilpt GIKTE/a1800",
-            "ALTAM/iaf/a2700 LITPE/nopt HAXEK/if/iaf/a2700/nopt180/hilpt GIKTE/a1800",
-            "OAKEY/iaf/a2700 HAXEK/if/iaf/a2700/nopt180/hilpt GIKTE/a1800",
-            "LIN/iaf/a2700 HAXEK/if/iaf/a2700/nopt180/hilpt GIKTE/a1800"
-          ]
-        },
-        "I9R": {
-          "runway": "29R",
-          "type": "ILS",
-          "waypoints": [
-            "MOD/iaf/a2900/nopt SIMMS/if/a1800 IPDEW/iaf/nopt180/hilpt WIGBI",
-            "DIJER/iaf/a2900 SIMMS/if/a1800 IPDEW/iaf/nopt180/hilpt WIGBI",
-            "HONEZ/iaf/a2900 SIMMS/if/a1800 IPDEW/iaf/nopt180/hilpt WIGBI"
-          ]
-        },
-        "R9R": {
-          "runway": "29R",
-          "type": "RNAV",
-          "waypoints": [
-            "FASIT/iaf/a2000/nopt OXJEF/if/iaf/a2000/nopt180/hilpt IPDEW/a1800 WIGBI",
-            "AXING/iaf/a2000/nopt OXJEF/if/iaf/a2000/nopt180/hilpt IPDEW/a1800 WIGBI"
-          ]
-        }
+        "R1L": { "cifp_id": "R11L" },
+        "I9R": { "cifp_id": "I29R" },
+        "R9R": { "cifp_id": "R29R" }
       },
       "departure_routes": {
         "11L": {
@@ -4146,30 +3499,9 @@
     },
     "KSAC": {
       "approaches": {
-        "I2": {
-          "runway": "2",
-          "type": "ILS",
-          "waypoints": [
-            "UBIYI/a2000 TERUY/a1500/nopt SAC/iaf/nopt180/hilpt/a1500"
-          ]
-        },
-        "R2": {
-          "runway": "2",
-          "type": "RNAV",
-          "waypoints": [
-            "COUPS/iaf/a2000 JIRAG/if/a2000 SEBAE/a1500 WUDRO",
-            "VISTO/iaf/a2000 JIRAG/if/a2000 SEBAE/a1500 WUDRO",
-            "EMBER/iaf/a2000 JIRAG/if/a2000 SEBAE/a1500 WUDRO"
-          ]
-        },
-        "V2": {
-          "runway": "2",
-          "type": "ILS",
-          "full_name": "VOR Runway 2",
-          "waypoints": [
-            "COUPS/if/iaf/a1500/nopt SAC/iaf/a1500/nopt180/hilpt"
-          ]
-        }
+        "I2": { "cifp_id": "I2" },
+        "R2": { "cifp_id": "R2" },
+        "V2": { "cifp_id": "L2" }
       },
       "departure_routes": {
         "2": {
@@ -4255,35 +3587,9 @@
     },
     "KLVK": {
       "approaches": {
-        "I5R": {
-          "runway": "25R",
-          "type": "ILS",
-		  "full_name": "ILS Runway 25R",
-          "waypoints": [
-            "LIN/iaf/a3100+ UHHUT/if/a3100 JUSOM/a3100",
-            "MOD/iaf/a3100+ UHHUT/if/a3100 JUSOM/a3100"
-          ]
-        },
-		"R5R": {
-          "runway": "25R",
-          "type": "RNAV",
-		  "full_name": "RNAV Runway  25R",
-          "waypoints": [
-            "EVETT/iaf/nopt UHHUT/if/hilpt/pta37 GAYNS/a3200 OYAHI TORCS",
-            "OOWEN/iaf/nopt UHHUT/if/hilpt/pta37 GAYNS/a3200 OYAHI TORCS",
-			"SMONE/iaf/nopt ZORIR UHHUT/if/hilpt/pta37 GAYNS/a3200 OYAHI TORCS",
-			"UHHUT/if/hilpt/pta37 GAYNS/a3200 OYAHI TORCS"
-          ]
-        },
-        "L5R": {
-          "runway": "25R",
-          "type": "ILS",
-          "full_name": "Localizer Runway 25R",
-          "waypoints": [
-            "LIN/iaf/a3100+ UHHUT/if/a3100 JUSOM/a3100 HINIX/a2520 ZABGO/a2000",
-            "MOD/iaf/a3100+ UHHUT/if/a3100 JUSOM/a3100 HINIX/a2520 ZABGO/a2000"
-          ]
-        }
+        "I5R": { "cifp_id": "I25R" },
+	"R5R": { "cifp_id": "R25R" },
+        "L5R": { "cifp_id": "L25R" }
       },
       "departure_routes": {
         "25R": {
@@ -4362,39 +3668,10 @@
     },
     "KSNS": {
       "approaches": {
-        "I31": {
-          "runway": "31",
-          "type": "ILS",
-          "waypoints": [
-            "ARTYY/iaf/a5900/nopt/arc22SNS AANNE/if/iaf/a5900/nopt180/hilpt FREZZ/a5400 DEBBS/a5000"
-          ]
-        },
-        "L31": {
-          "runway": "31",
-          "type": "ILS",
-          "full_name": "Localizer Runway 31",
-          "waypoints": [
-            "ARTYY/iaf/a5900/arc22SNS AANNE/if/a5900 FREZZ/a5400 MRCDZ/a5300 CASTS/a4900 TATUM/a3800 KNOLS/a1220"
-          ]
-        },
-        "RZ31": {
-          "runway": "31",
-          "type": "RNAV",
-          "full_name": "RNAV Z Runway 31",
-          "waypoints": [
-            "RANCK/a6000 EFGON/iaf/a6000 WABUB/if/a6000 ACIYO/a3600 GIPVY/a3300",
-            "SISGY/iaf/a6000 WABUB/if/a6000 ACIYO/a3600 GIPVY/a3300"
-          ]
-        },
-        "RY31": {
-          "runway": "31",
-          "type": "RNAV",
-          "full_name": "RNAV Y Runway 31",
-          "waypoints": [
-            "RANCK/a6000 EFGON/iaf/a6000 WABUB/if/a6000 ACIYO/a3600 GIPVY/a3300 HEPIK",
-            "SISGY/iaf/a6000 WABUB/if/a6000 ACIYO/a3600 GIPVY/a3300 HEPIK"
-          ]
-        }
+        "I31": { "cifp_id": "I31" },
+        "L31": { "cifp_id": "L31" },
+        "RZ31": { "cifp_id": "RZ31" },
+        "RY31": { "cifp_id": "RY31" }
       },
       "departure_routes": {
         "31": {

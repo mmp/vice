@@ -3,76 +3,13 @@
     "airports":{
         "KONT": {
             "approaches": {
-                "I8L": {
-                    "full_name": "ILS Runway 8L",
-                    "runway": "8L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "COVIN/a4000 JALOT NAROD/a2900",
-                        "JALOT/hilpt1min NAROD/a2900",
-                        "PDZ/a4000/h286 JALOT/hilpt1min NAROD/a2900"
-                    ]
-                },
-                "I6L": {
-                    "full_name": "ILS Runway 26L",
-                    "runway": "26L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "PDZ HIGRO/a4300+ PETIS/a3400 YUCUC/a3400 MUNNS/a3000 BAKES/a1700",
-                        "TAKOE/a4300+ YUCUC/a3400 MUNNS/a3000 BAKES/a1700",
-                        "PETIS/a3400 YUCUC/a3400 MUNNS/a3000 BAKES/a1700"
-                    ]
-                },
-                "I6R": {
-                    "full_name": "ILS Runway 26R",
-                    "runway": "26R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "TAKOE/a4300+ ZEBLU/a3400 EDDSO/a3000 WUNAK/a1700",
-                        "PDZ HIGRO/a4300+ PETIS/a3400 ZEBLU/a3400 EDDSO/a3000 WUNAK/a944",
-                        "PETIS/a3400 ZEBLU/a3400 EDDSO/a3000 WUNAK/a1700"
-                    ]
-                },
-                "R8L": {
-                    "full_name": "RNAV Z Runway 8L",
-                    "runway": "8L",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "EFFXX/a6000/s210 RUKKY COLTN/arc3.1 UNLAY IMANE/s190/arc3.4 LOGJM/a2000",
-                        "NUTZO/a6000 OUTCH PRMNT ICWEB/s180/arc3.6 UGIVE/arc2.7 LOGJM/a2000",
-                        "JALOT/a2900 LEAGE LOGJM/a2000"
-                    ]
-                },
-                "R8R": {
-                    "full_name": "RNAV Z Runway 8R",
-                    "runway": "8R",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "EFFXX/a6000/s210 RUKKY COLTN/arc3.5 YAFFS YETTS/s190/arc3.3 STAAG/a2000",
-                        "NUTZO/a6000 OUTCH PRMNT NIPKE/s180/arc3.5 ICILO/arc2.9 STAAG/a2000",
-                        "JALOT/a2900 GRHRT STAAG/a2000"
-                    ]
-                },
-                "R6L": {
-                    "full_name": "RNAV Z Runway 26L",
-                    "runway": "26L",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "RUMBL/a10000/s240 ZENPO RUXNN GAREY ZIGGY TAKOE/s210 TESRE/a2900",
-                        "MRIAM ADRYN PDZ/a7000 SUZZI/a5300/s210/arc7.7 TESRE/a2900",
-                        "TAKOE/s210 TESRE/a2900"
-                    ]
-                },
-                "R6R": {
-                    "full_name": "RNAV Z Runway 26R",
-                    "runway": "26R",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "RUMBL/a10000/s240 ZENPO RUXNN GAREY ZIGGY TAKOE/s210 SCRIM",
-                        "MRIAM ADRYN PDZ/a7000 EMMER/s210/arc7.9 SCRIM/a2900",
-                        "TAKOE/s210 SCRIM/a2900"
-                    ]
-                }
+              "I8L": { "cifp_id": "I8L" },
+              "I6L": { "cifp_id": "I26L" },
+              "I6R": { "cifp_id": "I26R" },
+              "R8L": { "cifp_id": "RZ8L" },
+              "R8R": { "cifp_id": "RZ8R" },
+              "R6L": { "cifp_id": "RZ26L" },
+              "R6R": { "cifp_id": "RZ26R" }
             },
             "departure_routes": {
                 "26R": {
@@ -247,63 +184,20 @@
             ]
         },
         "KSNA": {
-            "approaches": {
-                "R0R": {
-                    "full_name": "RNAV Z Runway 20R",
-                    "runway": "20R",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "DSNEE/a8000/s220/iaf BONVY/a6000 DEKRT AMELE EHVOX/if/s210 FEBTA WEMDO CALIT/s190 ZETOV/faf",
-                        "KLEVR/iaf/a5000 MNNIE/a4400/s210 KLIPP/arc5.7 CALIT/s190 ZETOV/faf"
-                    ]
-                },
-                "R2L": {
-                    "full_name": "RNAV Z Runway 2L",
-                    "runway": "2L",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "MINOE/a3000/s210 NEWPO/a1600",
-                        "FYTRR/a4000/s210 ARMBR OSOYI/arc5.8 NEWPO/a1600"
-                    ]
-                }
-            }
+          "approaches": {
+            "R0R": { "cifp_id": "RZ20R" },
+            "R2L": { "cifp_id": "RZ2L" }
+          }
         },
         "KBUR": {
-            "approaches": {
-                "I8": {
-                    "runway": "8",
-                    "type": "ILS",
-                    "waypoints": [
-                        "MIKEI/iaf/nopt/a7000 SILEX/iaf/if/a4000/pta3700/hilpt BUDDE/a3000/faf",
-                        "VTU/iaf/nopt TOAKS/iaf/nopt SILEX/iaf/if/a4000/pta3700/hilpt BUDDE/a3000/faf"
-                    ]
-                }
-            }
+          "approaches": {
+            "I8": { "cifp_id": "IY8" }
+          }
         },
         "KPSP": {
             "approaches": {
-                "R1L": {
-                    "full_name": "RNAV Y Runway 31L",
-                    "runway": "31L",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "CLOWD/a11000/s250 WEMIR/a8000- RIYOC/a5300-/s210 TEVUC/a4000 JISOP/a2900",
-                        "SBONO/a9000-/s210 WEMIR/a8000 RIYOC/a5300-/s210 TEVUC/a4000 JISOP/a2900",
-                        "TRM/a5500-/s210 TEVUC/a4000 JISOP/a2900+",
-                        "BALDI/a12000 CUPOL/a8000/s210/arc6 HIXOV/a6500/s210/arc16.9 TEVUC/a4000 JISOP/a2900",
-                        "PSP/a11000 HIXOV/a6500/s210/arc16.9 TEVUC/a4000 JISOP/a2900"
-                    ]
-                },
-                "R3R": {
-                    "full_name": "RNAV Z Runway 13R",
-                    "runway": "13R",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "SBONO/a9000+ YAGUS/s210/arc7.27 CUXIT/s210 HOPLI YOCUL/arc6.8 WASAK/a6000 LACIV/a4400 FIVUT/a3800 JEXOT/a2900 NUDCI/a1713",
-                        "FERNN/a11000 JEVOK/s210/arc13.3 CUXIT/s210 HOPLI YOCUL/arc6.8 WASAK/a6000 LACIV/a4400 FIVUT/a3800 JEXOT/a2900 NUDCI/a1713",
-                        "TRM/a9000+ CUXIT/s210 HOPLI YOCUL/arc6.8 WASAK/a6000 LACIV/a4400 FIVUT/a3800 JEXOT/a2900 NUDCI/a1713"
-                    ]
-                }
+              "R1L": { "cifp_id": "RY31L" },
+              "R3R": { "cifp_id": "RZ13R" }
             },
             "departure_routes": {
                 "31L": {

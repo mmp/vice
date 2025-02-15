@@ -4,89 +4,14 @@
     "KPDX": {
       "name": "Portland Intl Airport",
       "approaches": {
-        "I0L": {
-          "full_name": "ILS Runway 10L",
-          "runway": "10L",
-          "type": "ILS",
-          "waypoints": [
-            "BUXOM/if/a3000 TRAYL/a2300 BLAZR/a2000 JALAG/a1100"
-          ]
-        },
-        "I0R": {
-          "full_name": "ILS Runway 10R",
-          "runway": "10R",
-          "type": "ILS",
-          "waypoints": [
-            "SCAPO/if/a4000 HAIRN/a3100 POWLZ/a2000 JADNU/a860",
-            "HAIRN/a3100 POWLZ/a2000 JADNU/a860"
-          ]
-        },
-        "I8L": {
-          "full_name": "ILS Runway 28L",
-          "runway": "28L",
-          "type": "ILS",
-          "waypoints": [
-            "HANAH/a2900 ADDUM/a2000 YINUP/a1280",
-            "REEDI/iaf/a5700 HPSTR/if/a3700 HANAH/a2900 ADDUM/a2000 YINUP/a1280",
-            "SHAFR/iaf/a5700 REEDI/iaf/a5700 HPSTR/if/a3700 HANAH/a2900 ADDUM/a2000 YINUP/a1280",
-            "MAVER/a4000 WALAP/iaf/a4000 HPSTR/if/a3700 HANAH/a2900 ADDUM/a2000 YINUP/a1280"
-          ]
-        },
-        "I8R": {
-          "full_name": "ILS Runway 28R",
-          "runway": "28R",
-          "type": "ILS",
-          "waypoints": [
-            "OMMSI/a2900 TOLOC/a2000 WUGPU/a1260",
-            "REEDI/iaf/a5700 NACIY/iaf/a3700 OMMSI/if/a2900 TOLOC/if/a2000 WUGPU/if/a1260",
-            "SHAFR/iaf/a5700 REEDI/iaf/a5700 NACIY/if/a3700 OMMSI/a2900 TOLOC/a2000 WUGPU/a1260",
-            "MAVER/a4000 CUKIS/iaf/a4000 NACIY/if/a3700 OMMSI/a2900 TOLOC/a2000 WUGPU/a1260"
-          ]
-        },
-        "Z0L": {
-          "full_name": "RNAV Z Runway 10L",
-          "runway": "10L",
-          "type": "RNAV",
-          "waypoints": [
-            "BLAZR/faf/a2000",
-            "BUXOM/if/a3000 TRAYL/if/a2300 TTIDE/a2300 BLAZR/faf/a2000",
-            "CIZZL/iaf/s210/a5000 DAYSS/arc3.5/if/a4500 RIPPP/arc4.5/if/a3500 TTIDE/a2300 BLAZR/faf/a2000",
-            "MYCRO/iaf/s210/a5000 GAMBE/arc5.9/if/a4000 TTIDE/a2300 BLAZR/faf/a2000",
-            "VOODU/iaf/s210/a5000 RIPPP/arc4.5/if/a3500 TTIDE/a2300 BLAZR/faf/a2000"
-          ]
-        },
-        "Z0R": {
-          "full_name": "RNAV Z Runway 10R",
-          "runway": "10R",
-          "type": "RNAV",
-          "waypoints": [
-            "POWLZ/faf/a2000",
-            "CIZZL/iaf/s210/a5000 DAYSS/arc3.7/if/a4500 CATUL/arc5.0/if/a3500 POWLZ/faf/a2000",
-            "MYCRO/iaf/s210/a5000 TOWWN/arc3.5/if/a3800 MIVUE/arc2.6/a2800 POWLZ/faf/a2000",
-            "SCAPO/if/a4000 WETTR/a4000 SAUVI/a2900 POWLZ/faf/a2000",
-            "VOODU/iaf/s210/a5000 CATUL/arc5/if/a3500 POWLZ/faf/a2000"
-          ]
-        },
-        "Z8L": {
-          "full_name": "RNAV Z Runway 28L",
-          "runway": "28L",
-          "type": "RNAV",
-          "waypoints": [
-            "ADDUM/faf/a2000",
-            "HPSTR/if/a2900 HANAH/a2900 ADDUM/faf/a2000",
-            "ROAGE/if/s210/a4000+ DSHUT/arc2.2/a3200 NOLGE/arc1.6/a2500 ADDUM/faf/a2000"
-          ]
-        },
-        "Z8R": {
-          "full_name": "RNAV Z Runway 28R",
-          "runway": "28R",
-          "type": "RNAV",
-          "waypoints": [
-            "TOLOC/faf/a2000",
-            "NACIY/if/a2900 OMMSI/a2900 TOLOC/faf/a2000",
-            "ROAGE/if/s210/a4000+ BYKES/a3200/arc4 TOLOC/faf/a2000"
-          ]
-        }
+        "I0L": { "cifp_id": "I10L" },
+        "I0R": { "cifp_id": "I10R" },
+        "I8L": { "cifp_id": "I28L" },
+        "I8R": { "cifp_id": "I28R" },
+        "Z0L": { "cifp_id": "RZ10L" },
+        "Z0R": { "cifp_id": "RZ10R" },
+        "Z8L": { "cifp_id": "RZ28L" },
+        "Z8R": { "cifp_id": "RZ28R" }
       },
       "departure_routes": {
         "10L": {

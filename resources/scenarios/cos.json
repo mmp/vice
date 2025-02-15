@@ -3,88 +3,16 @@
     "airports": {
         "KCOS": {
             "approaches": {
-                "I7L": {
-                    "runway": "17L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "ADANE/arc11BRK MOGAL/a10000 AWONE/a9000 ROCCK/iaf/a8700 HUMPE/a7540"
-                    ]
-                },
-                "RY7L": {
-                    "runway": "17L",
-                    "type": "RNAV",
-                    "full_name": "RNAV Y Runway 17L",
-                    "waypoints": [
-                        "ADANE OLAPE/iaf NUBSE/a9500/iaf ROCCK/iaf/a8700 JESLO/a7500"
-                    ]
-                },
-                "RZ7L": {
-                    "runway": "17L",
-                    "type": "RNAV",
-                    "full_name": "RNAV Z Runway 17L",
-                    "waypoints": [
-                        "ADANE/iaf REEFF/a9000+/if SOGKO/a9000+/s180/arc8.200000CFBWR ROCCK/a8700+",
-                        "FSHER/iaf WIPUN/a10000+/if ZIVAD/a9000+/s180/arc4.100000CFBWT SOGKO/a9000+/arc8.200000CFBWR ROCCK/a8700+",
-                        "LUFSE/iaf JONOL/a9100+/if ROCCK/a8700+"
-                    ]
-                },
-                "RY7R": {
-                    "runway": "17R",
-                    "type": "RNAV",
-                    "full_name": "RNAV Y Runway 17R",
-                    "waypoints": [
-                        "LUFSE HIDAN/iaf FEBLA/if/a9500 CEMKA/a8700 KAGHU/a7240 LAXLY/a6860"
-                    ]
-                },
-                "I5L": {
-                    "runway": "35L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "DRAKE/iaf/a8000/arc22.7BRK MIDAY/a8000 N38.41.39.9,W104.42.58.8"
-                    ]
-                },
-                "RY5L": {
-                    "runway": "35L",
-                    "full_name": "RNAV Y Runway 35L",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "DRAKE/a8100 ASHLL/iaf/a8100 MIDAY/if/a8100 KUSAC/a8100"
-                    ]
-                },
-                "RZ5L": {
-                    "runway": "35L",
-                    "type": "RNAV",
-                    "full_name": "RNAV Z Runway 35L",
-                    "waypoints": [
-                        "DRAKE/iaf/a9000 WOVID/if/a9000 HUNSI/s180/arc3.9 KUSAC/a8100",
-                        "FSHER/iaf/a9000 MIDAY/if/a8100 KUSAC/a8100"
-                    ]
-                },
-                "I5R": {
-                    "runway": "35R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "DRAKE/iaf/a8100/arc22.7BRK FALUR/a8100 CEGIX/a8100"
-                    ]
-                },
-                "RY5R": {
-                    "runway": "35R",
-                    "type": "ILS",
-                    "full_name": "RNAV Y Runway 35R",
-                    "waypoints": [
-                        "DRAKE/a8100 HABUK/iaf/a8100 FALUR/a8100 CEGIX/a8100",
-                        "PUB HABUK/iaf/a8100 FALUR/a8100 CEGIX/a8100"
-                    ]
-                },
-                "RZ5R": {
-                    "runway": "35R",
-                    "type": "RNAV",
-                    "full_name": "RNAV Z Runway 35R",
-                    "waypoints": [
-                        "DRAKE/iaf/a8100 JODUM/if/a8100/s180 ZIRKU/a8100/arc4 CEGIX/a8100",
-                        "FSHER/iaf FALUR/if/a8100 CEGIX/a8100"
-                    ]
-                }
+              "I7L": { "cifp_id": "I17L" },
+              "RY7L": { "cifp_id": "RY17L" },
+              "RZ7L": { "cifp_id": "RZ17L" },
+              "RY7R": { "cifp_id": "RY17R" },
+              "I5L": { "cifp_id": "I35L" },
+              "RY5L": { "cifp_id": "RY35L" },
+              "RZ5L": { "cifp_id": "RZ35L" },
+              "I5R": { "cifp_id": "I35R" },
+              "RY5R": { "cifp_id": "RY35R" },
+              "RZ5R": { "cifp_id": "RZ35R" }
             },
             "departure_routes": {
                 "35L": {

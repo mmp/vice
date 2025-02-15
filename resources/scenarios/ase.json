@@ -3,37 +3,37 @@
     "airports": {
         "KASE": {
             "approaches": {
-                "L15": {
-                    "runway": "15",
-                    "full_name": "Localizer DME Runway 15",
-                    "type": "ILS",
-                    "waypoints": [
-                        "AJAXX/iaf/a13600 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG",
-                        "WOKUV/a14000/arc4DBL/iaf IVKEF/arc4DBL/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG",
-                        "BULDG/a16500 WERNR/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG"
-                    ]
-                },
-				"R15": {
-					"cifp_id": "RFNV",
-					"runway": "15"
-				},
-				"LDE": {
-					"runway": "15",
-					"full_name": "Localizer DME Echo Runway 15",
-					"type": "ILS",
-					"waypoints": [
-						"DBL/iaf JARGU/if/a13400 KICER/a12900 FIMSO/a12300 DOYPE/a11700 CEYAG",
-						"AJAXX/iaf JARGU/if/a13400 KICER/a12900 FIMSO/a12300 DOYPE/a11700 CEYAG"
-					]
-				},
-                "V33": {
-                    "full_name": "Visual Approach Runway 33",
-                    "runway": "33",
-                    "type": "Visual",
-                    "waypoints": [
-                        "GUILT/iaf/a10000 N039.06.26.924,W106.45.53.640/faf"
-                    ]
-                }
+              "L15": {
+                "runway": "15",
+                "full_name": "Localizer DME Runway 15",
+                "type": "Localizer",
+                "waypoints": [
+                  "AJAXX/iaf/a13600 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800/faf KYACK/a10300 RAFTR/a9700 CEYAG",
+                  "WOKUV/a14000/arc4DBL/iaf IVKEF/arc4DBL/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800/faf KYACK/a10300 RAFTR/a9700 CEYAG",
+                  "BULDG/a16500 WERNR/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800/faf KYACK/a10300 RAFTR/a9700 CEYAG"
+                ]
+              },
+	      "R15": {
+		"cifp_id": "RFNV",
+		"runway": "15"
+	      },
+	      "LDE": {
+		"runway": "15",
+		"full_name": "Localizer DME Echo Runway 15",
+		"type": "Localizer",
+		"waypoints": [
+		  "DBL/iaf JARGU/if/a13400 KICER/a12900 FIMSO/a12300 DOYPE/a11700/faf CEYAG",
+		  "AJAXX/iaf JARGU/if/a13400 KICER/a12900 FIMSO/a12300 DOYPE/a11700/faf CEYAG"
+		]
+	      },
+              "V33": {
+                "full_name": "Visual Approach Runway 33",
+                "runway": "33",
+                "type": "Visual",
+                "waypoints": [
+                  "GUILT/iaf/a10000 N039.06.26.924,W106.45.53.640/faf"
+                ]
+              }
             },
             "departure_routes": {
                 "33": {

@@ -1195,8 +1195,8 @@
           "full_name": "RNAV Z Runway 10",
           "type": "RNAV",
           "waypoints": [
-            "GNV/a3000 FRESH/iaf HOWLR/a3000/if HUTNO/a3000 IVANZ/a1400/iaf",
-            "MONIA/a3000 REDIE/iaf HOWLR/a3000/if HUTNO/a3000 IVANZ/a1400/iaf"
+            "GNV/a3000 FRESH/iaf HOWLR/a3000/if HUTNO/a3000 IVANZ/a1400/faf",
+            "MONIA/a3000 REDIE/iaf HOWLR/a3000/if HUTNO/a3000 IVANZ/a1400/faf"
           ]
         },
         "Y10": {
@@ -1212,7 +1212,7 @@
           "full_name": "RNAV Z Runway 28",
           "type": "RNAV",
           "waypoints": [
-            "DUWOT/if/iaf/hilpt/nopt180/a1600 DONNO DUBTE/a800"
+            "DUWOT/if/iaf/hilpt/nopt180/a1600 DONNO/faf DUBTE/a800"
           ]
         },
         "Y28": {
@@ -1220,8 +1220,8 @@
           "full_name": "RNAV Y Runway 28",
           "type": "RNAV",
           "waypoints": [
-            "SUBER/iaf/nopt DUWOT/if/iaf/a3000/hilpt/nopt180 DONNO",
-            "JETSO/iaf/nopt DUWOT/if/iaf/a3000/hilpt/nopt180 DONNO"
+            "SUBER/iaf/nopt DUWOT/if/iaf/a3000/hilpt/nopt180 DONNO/faf",
+            "JETSO/iaf/nopt DUWOT/if/iaf/a3000/hilpt/nopt180 DONNO/faf"
           ]
         }
       },
@@ -1534,7 +1534,7 @@
           "full_name": "TACAN Y Runway 5",
           "type": "RNAV",
           "waypoints": [
-            "BENGE/iaf/a3000 ZILPI COPNA/arc8NRB AZELO/a2200 ORVAE/a1200 GEUMS/a660 KNRB_5"
+            "BENGE/iaf/a3000 ZILPI COPNA/arc8NRB AZELO/a2200 ORVAE/a1200/faf GEUMS/a660 KNRB_5"
           ]
         },
         "Y23": {
@@ -1542,7 +1542,7 @@
           "full_name": "TACAN Y Runway 23",
           "type": "RNAV",
           "waypoints": [
-            "HELES/iaf/a3000 MUKOE/if/a1700 IKECA/a1700/arc10 JERBI/a1100 KNRB_23"
+            "HELES/iaf/a3000/arc10NRB MUKOE/if/a1700 IKECA/a1700/arc10 JERBI/a1100/faf KNRB_23"
           ]
         }
       },

@@ -3,88 +3,35 @@
     "airports":{
         "KBUR": {
             "approaches": {
-                "IY8": {
-                    "full_name": "ILS Y Runway 8",
-                    "runway": "8",
-                    "type": "ILS",
-                    "waypoints": [
-                        "VTU TOAKS SILEX/a3700 BUDDE/a3000",
-                        "TOAKS SILEX/a3700 BUDDE/a3000",
-                        "MIKEI/a7000 SILEX/a3700 BUDDE/a3000",
-                        "SILEX/a3700 BUDDE/a3000",
-                        "SMO/a4400 SILEX/hilpt1min BUDDE/a3000"
-
-                    ]
-                },
-                "IZ8": {
-                    "full_name": "ILS Z Runway 8",
-                    "runway": "8",
-                    "type": "ILS",
-                    "waypoints": [
-                        "VTU TOAKS SILEX/a3700 BUDDE/a3000",
-                        "TOAKS SILEX/a3700 BUDDE/a3000",
-                        "MIKEI/a7000 SILEX/a3700 BUDDE/a3000",
-                        "SILEX/a3700 BUDDE/a3000",
-                        "SMO/a4400 SILEX/hilpt1min BUDDE/a3000"
-                    ]
-                },
-                "RZ8": {
-                    "full_name": "RNAV Z Runway 8",
-                    "runway": "8",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "VTU TOAKS/a4600 SILEX BUBNE/a3000",
-                        "MIKEI/a7000 SILEX BUBNE/a3000",
-                        "SILEX BUBNE/a3000"
-                    ]
-                },
-                "RY8": {
-                    "full_name": "RNAV Y Runway 8",
-                    "runway": "8",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "MIKEI/a7000 SILEX/a4500 YEBUN/a3000 WESKI/a2700",
-                        "WABBT/a6000 NIBYI ZEMEP/s210 HIMVI/a3400 YEBUN/a3000 WESKI/a2700",
-                        "SILEX/a4500 YEBUN/a3000 WESKI/a2700"
-                    ]
-                },
-                "VOR8": {
-                    "full_name": "VOR Runway 8",
-                    "runway": "8",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "FIM SUANA/a4400 CANOG/a3700 VNY/a3100/h089",
-                        "VTU SUANA/a4400 CANOG/a3700 VNY/a3100/h089",
-                        "GINNA SUANA/a4400 CANOG/a3700 VNY/a3100/h089",
-                        "SUANA/a4400 CANOG/a3700 VNY/a3100/h089",
-                        "SMO SUANA/hilpt1min CANOG/a3700 VNY/a3100/h089",
-                        "LAX SUANA/hilpt1min CANOG/a3700 VNY/a3100/h089"
-                    ]
-                },
-                "FS5": {
-                    "full_name": "Four Stacks Visual Runway 15",
-                    "runway": "15",
-                    "type": "Visual",
-                    "waypoints": [
-                        "N034.33.03.680,W118.60.06.990/a5000 N034.31.38.070,W118.48.92.780/a4000 N034.28.06.230,W118.38.66.250/a3000 N034.25.39.613,W118.36.89.438/a1500"
-                    ]
-                },
-                "V26": {
-                    "full_name": "Visual Runway 26",
-                    "runway": "26",
-                    "type": "ILS",
-                    "waypoints": [
-                        "N034.17.89.177,W118.30.01.305/a3000 N034.19.73.819,W118.32.54.505/a2200 N034.19.78.123,W118.34.35.608/a1200"
-                    ]
-                },
-                "V33": {
-                    "full_name": "Visual Runway 33",
-                    "runway": "33",
-                    "type": "ILS",
-                    "waypoints": [
-                        "N034.17.63.570,W118.35.03.414/a2500 N034.18.20.331,W118.35.18.006/a2000 N034.18.85.608,W118.35.37.747/a1200"
-                    ]
-                }
+              "IY8": { "cifp_id": "IY8" },
+              "IZ8": { "cifp_id": "IZ8" },
+              "RZ8": { "cifp_id": "RZ8" },
+              "RY8": { "cifp_id": "RY8" },
+              "VOR8": { "cifp_id": "S8" },
+              "FS5": {
+                "full_name": "Four Stacks Visual Runway 15",
+                "runway": "15",
+                "type": "Visual",
+                "waypoints": [
+                  "N034.33.03.680,W118.60.06.990/a5000 N034.31.38.070,W118.48.92.780/a4000 N034.28.06.230,W118.38.66.250/a3000 N034.25.39.613,W118.36.89.438/a1500"
+                ]
+              },
+              "V26": {
+                "full_name": "Visual Runway 26",
+                "runway": "26",
+                "type": "Visual",
+                "waypoints": [
+                  "N034.17.89.177,W118.30.01.305/a3000 N034.19.73.819,W118.32.54.505/a2200 N034.19.78.123,W118.34.35.608/a1200"
+                ]
+              },
+              "V33": {
+                "full_name": "Visual Runway 33",
+                "runway": "33",
+                "type": "Visual",
+                "waypoints": [
+                  "N034.17.63.570,W118.35.03.414/a2500 N034.18.20.331,W118.35.18.006/a2000 N034.18.85.608,W118.35.37.747/a1200"
+                ]
+              }
             },
             "departure_routes": {
                 "8": {
@@ -460,42 +407,24 @@
         },
         "KVNY": {
             "approaches":{
-                "IY6R": {
-                    "full_name": "ILS Y Runway 16 Right",
-                    "runway": "16R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "FIM UMBER/a6000 JINAT/a4900 FURRY/a3800",
-                        "FIM UMBER/a6000 JINAT/a4900 FURRY/a3800",
-                        "FIM JINAT/a4900 FURRY/a3800",
-                        "UMBER/a6000 JINAT/a4900 FURRY/a3800"
-                    ]
-                },
-                "IZ6R": {
-                    "full_name": "ILS Z Runway 16 Right",
-                    "runway": "16R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "FIM UMBER/a6000 JINAT/a4900 FURRY/a3800",
-                        "UMBER/a6000 JINAT/a4900 FURRY/a3800"
-                    ]
-                },
-                "V4L":{
-                    "full_name": "Visual Runway 34L",
-                    "runway": "34L",
-                    "type": "Visual",
-                    "waypoints": [
-                        "N034.18.09.590,W118.48.85.358/a1800 N034.19.18.908,W118.48.88.362/a1100"
-                    ]
-                },
-                "V4R":{
-                    "full_name": "Visual Runway 34R",
-                    "runway": "34R",
-                    "type": "Visual",
-                    "waypoints": [
-                        "N034.19.38.987,W118.48.64.759/a1800 N034.20.35.489,W118.48.79.350/a1100"
-                    ]
-                }
+              "IY6R": { "cifp_id": "IY16R" },
+              "IZ6R": { "cifp_id": "IZ16R" },
+              "V4L":{
+                "full_name": "Visual Runway 34L",
+                "runway": "34L",
+                "type": "Visual",
+                "waypoints": [
+                  "N034.18.09.590,W118.48.85.358/a1800 N034.19.18.908,W118.48.88.362/a1100"
+                ]
+              },
+              "V4R":{
+                "full_name": "Visual Runway 34R",
+                "runway": "34R",
+                "type": "Visual",
+                "waypoints": [
+                  "N034.19.38.987,W118.48.64.759/a1800 N034.20.35.489,W118.48.79.350/a1100"
+                ]
+              }
             },
             "departure_routes": {
                 "16R": {
@@ -696,15 +625,7 @@
         },
         "KWHP": {
             "approaches": {
-                "R2": {
-                    "full_name": "RNAV Runway 12",
-                    "runway": "12",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "FIM NODUQ/a5000 JAZEE/a4700 JIXAP/a3620 WOSIR/a2220",
-                        "NODUQ/a5000 JAZEE/a4700 JIXAP/a3620 WOSIR/a2220/a1003"
-                    ]
-                },
+                "R2": { "cifp_id": "R12" },
                 "V0": {
                     "full_name": "Visual Runway 30",
                     "runway": "30",

@@ -1686,60 +1686,20 @@
         },
         "KARR": {
             "approaches": {
-                "I9": {
-                    "runway": "9",
-                    "type": "ILS",
-                    "waypoints": [
-                        "TOBBY/a2700 WOLFF/a2700"
-                    ]
-                },
-                "R9": {
-                    "runway": "9",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "NUELG DECAK/iaf/nopt TOBBY/a2700/hilpt/nopt180/if/iaf WOLFF/a2700",
-                        "AHMED JUGER/iaf/nopt TOBBY/a2700/hilpt/nopt180/if/iaf WOLFF/a2700",
-                        "HERVY/nopt TOBBY/a2700/hilpt/nopt180/if/iaf WOLFF/a2700"
-                    ]
-                },
-                "R15": {
-                    "runway": "15",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "NUELG/iaf UBEXE/if/a2600 WUYFI/a2300"
-                    ]
-                },
-                "R27": {
-                    "runway": "27",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "HOGIE/if/iaf/nopt180/hilpt KAREY/a2300 NECLY/a1260",
-                        "CIMKO/iaf HOGIE/if/iaf/nopt180/hilpt KAREY/a2300 NECLY/a1260"
-                    ]
-                },
-                "L33": {
-                    "runway": "33",
-                    "type": "RNAV",
-                    "full_name": "Localizer Runway 33",
-                    "waypoints": [
-                        "JOT BOBBB/if/a2600 RIESR/a2300 EPABE/a1320"
-                    ]
-                },
-                "R33": {
-                    "runway": "33",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "JOT/a2600 BOBBB/if/a2600 RIESR/a2300"
-                    ]
-                },
-                "V36": {
-                    "runway": "36",
-                    "type": "RNAV",
-                    "full_name": "VOR Runway 36",
-                    "waypoints": [
-                        "JOT/iaf WHAIL/a2300 USAGE/a2300 COAST/a1360"
-                    ]
-                }
+              "I9": { "cifp_id": "I9" },
+              "R9": { "cifp_id": "R9" },
+              "R15": { "cifp_id": "R15" },
+              "R27": { "cifp_id": "R27" },
+              "L33": { "cifp_id": "L33" },
+              "R33": { "cifp_id": "R33" },
+              "V36": {
+                "runway": "36",
+                "type": "RNAV",
+                "full_name": "VOR Runway 36",
+                "waypoints": [
+                  "JOT/iaf WHAIL/a2300/if USAGE/a2300/faf COAST/a1360"
+                ]
+              }
             },
             "departure_routes": {
                 "27": {
@@ -1937,54 +1897,11 @@
         },
         "KDPA": {
             "approaches": {
-                "I2L": {
-                    "runway": "2L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "JOT/iaf BOMER/a3000 SPNCE/a2500"
-                    ]
-                },
-                "R2L": {
-                    "runway": "2L",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "SHWAG/iaf BOMER/if/a3000 ZETKO/a2500",
-                        "JOJED/iaf BOMER/if/a3000 ZETKO/a2500"
-                    ]
-                },
-                "R2R": {
-                    "runway": "2R",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "JOT/iaf/nopt GIDVE/if/iaf/nopt180/hilpt HEGBI/a2500",
-                        "PLANO CEXAB/iaf/nopt GIDVE/if/iaf/nopt180/hilpt HEGBI/a2500"
-                    ]
-                },
-                "R10": {
-                    "runway": "10",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "NUELG/iaf/nopt NUMIZ/if/iaf/nopt180/hilpt HOSAV/a2600",
-                        "HINCK/iaf/nopt NUMIZ/if/iaf/nopt180/hilpt HOSAV/a2600"
-                    ]
-                },
-                "R0L": {
-                    "runway": "20L",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "NUELG JOLON/if/iaf/nopt180/hilpt/a3000 ZOGUB/a2500 PECBI/a1400",
-                        "DPA JOLON/if/iaf/nopt180/hilpt/a3000 ZOGUB/a2500 PECBI/a1400",
-                        "FARMM/iaf/nopt JOLON/if/iaf/nopt180/hilpt/a3000 ZOGUB/a2500 PECBI/a1400"
-                    ]
-                },
-                "R33": {
-                    "runway": "33",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "DPA/nopt DUKBE/if/iaf/nopt180/hilpt FRTZZ/a2500 SUCOP/a1360",
-                        "SMLLY/nopt DUKBE/if/iaf/nopt180/hilpt FRTZZ/a2500 SUCOP/a1360"
-                    ]
-                }
+              "I2L": { "cifp_id": "I2L" },
+              "R2L": { "cifp_id": "R2L" },
+              "R2R": { "cifp_id": "R2R" },
+              "R10": { "cifp_id": "R10" },
+              "R0L": { "cifp_id": "R20L" }
             },
             "departure_routes": {
                 "20L": {
@@ -2309,48 +2226,14 @@
                     "type": "RNAV",
                     "full_name": "Localizer Runway 2",
                     "waypoints": [
-                        "JIMMO/a2300 TURRK/a1260"
+                        "JIMMO/a2300/faf/iaf/pt4510nm TURRK/a1260"
                     ]
                 },
-                "R2": {
-                    "runway": "2",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "EON/iaf/nopt CAMLI/if/iaf/a2300/nopt180/hilpt JIMMO/a2300",
-                        "MEDAN/iaf/nopt CAMLI/if/iaf/a2300/nopt180/hilpt JIMMO/a2300"
-                    ]
-                },
-                "L9": {
-                    "runway": "9",
-                    "type": "RNAV",
-                    "full_name": "Localizer Runway 9",
-                    "waypoints": [
-                        "DPA/iaf/nopt GATLY/if/iaf/nopt180/hilpt/a2500 HOBLT/a1800"
-                    ]
-                },
-                "R9": {
-                    "runway": "9",
-                    "type": "RNAV",
-                    "full_name": "Localizer Runway 9",
-                    "waypoints": [
-                        "DPA RAYLI/iaf/nopt GATLY/if/iaf/nopt180/hilpt/a2500 HOBLT/a1800",
-                        "MEDAN/iaf/nopt GATLY/if/iaf/nopt180/hilpt/a2500 HOBLT/a1800"
-                    ]
-                },
-                "R20": {
-                    "runway": "20",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "DPA/iaf BEPKE/if/a2300 JESUB/a2300"
-                    ]
-                },
-                "R27": {
-                    "runway": "27",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "CGT/nopt/iaf QAJER/if/iaf/nopt180/hilpt/a2400 NOKIZ/a2300 BAYAK/a1460"
-                    ]
-                }
+              "R2": {"cifp_id": "R2" },
+              "L9": { "cifp_id": "L9" },
+              "R9": { "cifp_id": "R9" },
+              "R20": { "cifp_id": "R20" },
+              "R27": { "cifp_id": "R27" }
             },
             "departure_routes": {
                 "9": {

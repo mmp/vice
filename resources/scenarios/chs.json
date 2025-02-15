@@ -1170,7 +1170,7 @@
                     "runway": "9",
                     "type": "ILS",
                     "waypoints": [
-                        "GIBLE/a1700 JOBOP/a1600"
+                        "GIBLE/a1700/hilpt/if/iaf JOBOP/a1600/faf"
                     ]
                 },
                 "R9": {

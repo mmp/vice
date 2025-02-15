@@ -3,21 +3,8 @@
   "airports": {
   "KDCA": {
     "approaches": {
-      "ILS": {
-        "runway": "1",
-        "type": "ILS",
-        "waypoints": [
-          "KATRN/a2500 BADDN/a1600"
-        ]
-      },
-      "R1": {
-        "runway": "1",
-        "type": "RNAV",
-        "waypoints": [
-          "IRONS/a3500 JWASH/a3500 MRION/a2500 BADDN/a1600",
-          "MRION/a2500 BADDN/a1600"
-        ]
-      },
+      "ILS": { "cifp_id": "I1" },
+      "R1": { "cifp_id": "R1" },
       "MTV": {
         "full_name": "Mount Vernon Visual Runway 1",
         "runway": "1",
@@ -26,20 +13,8 @@
           "KATRN/a2500 BADDN/a1600 N38.45.58.752,W77.01.59.893 N38.46.47.573,W77.02.05.959 N38.47.33.857,W77.02.00.680 N38.49.49.485,W77.02.03.166"
         ]
       },
-      "R15": {
-        "runway": "15",
-        "type": "RNAV",
-        "waypoints": [
-          "AML/a3000 NIPEE/a2500 AVOLE/a2000"
-        ]
-      },
-      "R19": {
-        "runway": "19",
-        "type": "RNAV",
-        "waypoints": [
-            "DARIC/a2700+/s180/faf SUNEY/a2000+ GREYZ/arc1.4 FONVI JUBOL WIRSO/arc0.8 FIROP"
-        ]
-      },
+      "R15": { "cifp_id": "R15" },
+      "R19": {"cifp_id": "RZ19" },
       "RIV": {
         "full_name": "River Visual Runway 19",
         "runway": "19",
@@ -52,7 +27,7 @@
         "runway": "33",
         "type": "RNAV",
         "waypoints": [
-          "KATRN/a2500 NADSE/a1700 IDTEK/a300"
+          "KATRN/a2500/if NADSE/a1700/faf IDTEK/a300"
         ]
       }
     },

@@ -1521,7 +1521,7 @@
             },
             "V1": {
                 "runway": "1",
-                "type": "RNAV",
+                "type": "Visual",
                 "full_name": "Visual Approach Runway 1",
                 "waypoints": [
                   "GRILD WETZL N038.59.52.941,W094.36.51.520"

@@ -3,53 +3,12 @@
   "airports": {
     "KDAB": {
       "approaches": {
-        "I7L": {
-          "runway": "7L",
-          "type": "ILS",
-          "waypoints": [
-            "HANAV/arc16OMN TIGAE/a1600 FOLIG/a1600 ZOPRI/a680",
-            "SMYRA/arc18.9OMN WAMAL/a1900 TIGAE/a1600 FOLIG/a1600 ZOPRI/a680"
-          ]
-        },
-        "R7R": {
-          "runway": "7R",
-          "type": "RNAV",
-          "waypoints": [
-            "GUANO/nopt TACUR/lhilpt4nm/a1700 JUSAD/a1600",
-            "TACUR/lhilpt4nm/a1700 JUSAD/a1600"
-          ]
-        },
-        "R16": {
-          "runway": "16",
-          "type": "RNAV",
-          "waypoints": [
-            "BARBS/nopt CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800",
-            "CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800"
-          ]
-        },
-        "I5R": {
-          "runway": "25R",
-          "type": "ILS",
-          "waypoints": [
-            "WISPO/a3000 RINEE/a2700 DIYAK/a1600"
-          ]
-        },
-        "R5L": {
-          "runway": "25L",
-          "type": "RNAV",
-          "waypoints": [
-            "FOMRO/a1600/lhilpt4nm ROLKE/a1600 CELAB/a1020"
-          ]
-        },
-        "R34": {
-          "runway": "34",
-          "type": "RNAV",
-          "waypoints": [
-            "BARBS/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700",
-            "OAKIE/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700",
-            "KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700"
-          ]
-        }
+        "I7L": { "cifp_id": "I7L" },
+        "R7R": { "cifp_id": "R7R" },
+        "R16": { "cifp_id": "R16" },
+        "I5R": { "cifp_id": "I25R" },
+        "R5L": { "cifp_id": "R25L" },
+        "R34": { "cifp_id": "R34" }
       },
       "departure_routes": {
         "7L": {
