@@ -276,10 +276,17 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				} else {
 					appr.Type = ILSApproach // close enough
 				}
-				// RZ22L -> 22L
+				// RZ22L -> 22L, IC32 -> 32C
+				center := false
 				for i, ch := range appr.Id {
+					if ch == 'C' {
+						center = true
+					}
 					if ch >= '1' && ch <= '9' {
 						appr.Runway = appr.Id[i:]
+						if center {
+							appr.Runway += "C"
+						}
 						break
 					}
 				}
