@@ -642,8 +642,20 @@ func spliceTransition(tr WaypointArray, base WaypointArray) WaypointArray {
 		return nil
 	}
 
-	// Important: we cull the dupe from the common segment, since the transitions may
-	// include procedure turns, etc., in their Waypoint variants for the fix.
+	// We need to merge some properties from the base path but don't want
+	// to take its fix completely, since the given transition may have
+	// things like procedure turn at the last fix that we want to preserve...
+	bwp := base[idx]
+	if bwp.IAF {
+		tr[len(tr)-1].IAF = true
+	}
+	if bwp.IF {
+		tr[len(tr)-1].IF = true
+	}
+	if bwp.FAF {
+		tr[len(tr)-1].FAF = true
+	}
+
 	return append(WaypointArray(tr), base[idx+1:]...)
 }
 
