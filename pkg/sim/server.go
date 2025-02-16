@@ -24,8 +24,8 @@ import (
 )
 
 const ViceServerAddress = "vice.pharr.org"
-const ViceServerPort = 8080 - 21 + ViceRPCVersion
-const ViceRPCVersion = 21
+const ViceServerPort = 8080 + ViceRPCVersion
+const ViceRPCVersion = 22
 
 type Server struct {
 	*util.RPCClient
