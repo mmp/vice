@@ -113,7 +113,7 @@ func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return false }
 
 func (mp *MessagesPane) Upgrade(prev, current int) {
 	if prev < 31 {
-		mp.ContactTransmissionsStatic = true
+		mp.ContactTransmissionsStatic = false
 	}
 }
 

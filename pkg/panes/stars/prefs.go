@@ -321,7 +321,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.AudioVolume = 10
 	prefs.AudioEffectEnabled = make([]bool, AudioNumTypes)
 	for i := range AudioNumTypes {
-		prefs.AudioEffectEnabled[i] = true
+		prefs.AudioEffectEnabled[i] = false // These are all non-standard.
 	}
 
 	prefs.VideoMapVisible = make(map[int]interface{})
@@ -541,7 +541,7 @@ func (ps *Preferences) Upgrade(from, to int) {
 		remapBrightness(&ps.Brightness.WxContrast)
 
 		for len(ps.AudioEffectEnabled) < AudioNumTypes {
-			ps.AudioEffectEnabled = append(ps.AudioEffectEnabled, true)
+			ps.AudioEffectEnabled = append(ps.AudioEffectEnabled, false)
 		}
 	}
 	if from < 27 {
