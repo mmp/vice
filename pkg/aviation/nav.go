@@ -997,7 +997,7 @@ func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32
 		// fly through the localizer if it's too sharp an intercept
 		hdg := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 		if d := math.HeadingDifference(hdg, nav.FlightState.Heading); d > 45 {
-			lg.Infof("heading: difference %.0f too much to intercept the localizer", d)
+			lg.Infof("heading: difference %.0f too much to intercept", d)
 			return
 		}
 
@@ -1028,41 +1028,36 @@ func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32
 		// we'll call that good enough. Now we need to figure out which
 		// fixes in the approach are still ahead and then add them to
 		// the aircraft's waypoints.
-		n := len(ap.Waypoints[0])
-		threshold := ap.Waypoints[0][n-1].Location
-		thresholdDistance := math.NMDistance2LL(nav.FlightState.Position, threshold)
-		lg.Debugf("heading: intercepted the approach @ %.2fnm!", thresholdDistance)
+		lg.Debugf("heading: intercepted the approach!")
+		apHeading := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
-		for i, wp := range ap.Waypoints[0] {
-			// Find the first waypoint that is:
-			// 1. In front of the aircraft.
-			// 2. Closer to the threshold than the aircraft.
-			// 3. On the localizer
-			if i+1 < len(ap.Waypoints[0]) {
-				wpToThresholdHeading := math.Heading2LL(wp.Location, ap.Waypoints[0][n-1].Location,
-					nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		wps, idx := ap.FAFSegment()
+		for idx > 0 {
+			prev := wps[idx-1]
+			hdg := math.Heading2LL(prev.Location, wps[idx].Location,
+				nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
-				lg.Debugf("heading: fix %s wpToThresholdHeading %f", wp.Fix, wpToThresholdHeading)
-				if math.HeadingDifference(wpToThresholdHeading,
-					ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)) >
-					3 {
-					lg.Debugf("heading: fix %s is in front but not on the localizer", wp.Fix)
-					continue
-				}
-			}
-
-			acToWpHeading := math.Heading2LL(nav.FlightState.Position, wp.Location, nav.FlightState.NmPerLongitude,
-				nav.FlightState.MagneticVariation)
-
-			inFront := math.HeadingDifference(nav.FlightState.Heading, acToWpHeading) < 70
-			lg.Debugf("heading: fix %s ac heading %f wp heading %f in front %v threshold distance %f",
-				wp.Fix, nav.FlightState.Heading, acToWpHeading, inFront, thresholdDistance)
-			if inFront && math.NMDistance2LL(wp.Location, threshold) < thresholdDistance {
-				nav.Waypoints = append(util.DuplicateSlice(ap.Waypoints[0][i:]), nav.FlightState.ArrivalAirport)
-				lg.Debug("heading: fix added future waypoints", slog.Any("waypoints", nav.Waypoints))
+			if math.HeadingDifference(hdg, apHeading) > 1 { // not on the final approach course
 				break
 			}
+
+			acToWpHeading := math.Heading2LL(nav.FlightState.Position, wps[idx].Location,
+				nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+			acToPrevHeading := math.Heading2LL(nav.FlightState.Position, wps[idx-1].Location,
+				nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+
+			da := math.Mod(acToWpHeading-nav.FlightState.Heading+360, 360)
+			db := math.Mod(acToPrevHeading-nav.FlightState.Heading+360, 360)
+			if (da < 180 && db > 180) || (da > 180 && db < 180) {
+				// prev and current are on different sides of the current
+				// heading, so don't take the prev so we don't turn away
+				// from where we should be going.
+				break
+			}
+			idx--
 		}
+		nav.Waypoints = append(util.DuplicateSlice(wps[idx:]), nav.FlightState.ArrivalAirport)
+		lg.Debug("heading: fix added future waypoints", slog.Any("waypoints", nav.Waypoints))
 
 		// Ignore the approach altitude constraints if the aircraft is only
 		// intercepting but isn't cleared.
@@ -2308,11 +2303,6 @@ func (nav *Nav) InterceptApproach(airport string) PilotResponse {
 	}
 
 	_, onHeading := nav.AssignedHeading()
-
-	ap := nav.Approach.Assigned
-	if onHeading && ap.Type != ILSApproach {
-		return PilotResponse{Message: "we can only intercept an ILS approach", Unexpected: true} // FIXME!
-	}
 
 	if !(onHeading || (len(nav.Waypoints) > 0 && nav.Waypoints[0].OnApproach)) {
 		return PilotResponse{Message: "we have to be on a heading or direct to an approach fix to intercept", Unexpected: true}

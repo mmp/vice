@@ -759,13 +759,26 @@ type Approach struct {
 	Waypoints []WaypointArray `json:"waypoints"`
 }
 
-func (ap *Approach) Line() [2]math.Point2LL {
-	// assume we have at least one set of waypoints and that it has >= 2 waypoints!
-	wp := ap.Waypoints[0]
+// Find the FAF: return the corresponding waypoint array and the index of the FAF within it.
+func (ap *Approach) FAFSegment() ([]Waypoint, int) {
+	for _, wps := range ap.Waypoints {
+		if idx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF }); idx != -1 {
+			return wps, idx
+		}
+	}
+	// Shouldn't ever happen since we ensure there is a FAF for each approach.
+	return nil, 0
+}
 
-	// use the last two waypoints of the approach
-	n := len(wp)
-	return [2]math.Point2LL{wp[n-2].Location, wp[n-1].Location}
+func (ap *Approach) Line() [2]math.Point2LL {
+	if wps, idx := ap.FAFSegment(); idx > 0 {
+		// Go from the previous fix to the FAF if possible.
+		return [2]math.Point2LL{wps[idx-1].Location, wps[idx].Location}
+	} else {
+		// If we have to, go to the successive fix; there should always be
+		// another one, worst case the auto-added runway threshold.
+		return [2]math.Point2LL{wps[idx].Location, wps[idx+1].Location}
+	}
 }
 
 func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {
