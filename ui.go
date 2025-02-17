@@ -291,6 +291,19 @@ var (
 		`STARS: improved the accuracy of the mapping of precipitation to WX levels`,
 		`STARS: a partial callsign is given to specify an aircraft to be given an instruction, it must be a unique suffix of a callsign`,
 		`STARS: OJTI mode now available where an instructor can issue aircraft control commands (Michael Trokel)`,
+		`New scenario: SBA (Ketan K)`,
+		`Scenario updates: SAN, BUR, NCT, L30 (Ketan K), EWR, JFK (Mike LeGall), JAX (Jud Lopez), D01, GJT, ASE, COS (Andrew S), MDT (Darius L), A90 (radarcontacto)`,
+		`Aircraft can now intercept the approach for non-ILS approaches`,
+		`Aircraft will now intercept an approach if they are direct to a fix on it`,
+		`Fixed bug where overflights would be climbed to their cruising altitude`,
+		`Aircraft wait 5-10 seconds before changing their beacon codes when a new one is assigned`,
+		`Fixed bug where departures would climb prematurely`,
+		`Aircraft that are too high when they cross the threshold go missed`,
+		`Fix bug with delayed descents when aircraft are cleared for the approach after being told to intercept`,
+		`An audio alert can now be optionally played when aircraft check in or transmit radio messages`,
+		`STARS: Multiple bug fixes to how point outs are shown`,
+		`STARS: Flash "DB" in data blocks for duplicate beacon codes`,
+		`STARS: Point outs can now be recalled by slewing the target.`,
 	}
 )
 
