@@ -6,6 +6,7 @@ package rand
 
 import (
 	_ "embed"
+	"iter"
 	"strings"
 
 	"github.com/MichaelTJones/pcg"
@@ -38,6 +39,10 @@ func (r *Rand) Float32() float32 {
 	return float32(r.r.Random()) / (1<<32 - 1)
 }
 
+func (r *Rand) Uint32() uint32 {
+	return r.r.Random()
+}
+
 // Drop-in replacement for the subset of math/rand that we use...
 var r Rand
 
@@ -59,6 +64,10 @@ func Int31n(n int32) int32 {
 
 func Float32() float32 {
 	return float32(r.r.Random()) / (1<<32 - 1)
+}
+
+func Uint32() uint32 {
+	return r.Uint32()
 }
 
 // PermutationElement returns the ith element of a random permutation of the
@@ -96,6 +105,17 @@ func PermutationElement(i int, n int, p uint32) int {
 		}
 	}
 	return int((ui + p) % l)
+}
+
+func PermuteSlice[Slice ~[]E, E any](s Slice, seed uint32) iter.Seq2[int, E] {
+	return func(yield func(int, E) bool) {
+		for i := range len(s) {
+			ip := PermutationElement(i, len(s), seed)
+			if !yield(ip, s[ip]) {
+				break
+			}
+		}
+	}
 }
 
 // SampleSlice uniformly randomly samples an element of a non-empty slice.

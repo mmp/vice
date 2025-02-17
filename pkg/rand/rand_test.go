@@ -4,7 +4,10 @@
 
 package rand
 
-import "testing"
+import (
+	"math/rand/v2"
+	"testing"
+)
 
 func TestPermutationElement(t *testing.T) {
 	for _, n := range []int{8, 31, 10523} {
@@ -17,6 +20,32 @@ func TestPermutationElement(t *testing.T) {
 					t.Errorf("%d: appeared multiple times", perm)
 				}
 				m[perm] = i
+			}
+		}
+	}
+}
+
+func TestRandomPermute(t *testing.T) {
+	for _, n := range []int{0, 1, 5, 11, 42} {
+		s := make([]int, n)
+		for i := range n {
+			s[i] = i
+		}
+		got := make([]bool, n)
+
+		seed := rand.Uint32()
+		for i, v := range PermuteSlice(s, seed) {
+			if i != v {
+				t.Errorf("mismatch index/value: %d/%d slice %+v", i, v, s)
+			}
+			if got[i] {
+				t.Errorf("got %d repeatedly, slice %+v", i, s)
+			}
+			got[i] = true
+		}
+		for i, g := range got {
+			if !g {
+				t.Errorf("never got index %d", i)
 			}
 		}
 	}
