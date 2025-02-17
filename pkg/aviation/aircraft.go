@@ -43,6 +43,7 @@ type Aircraft struct {
 
 	HoldForRelease   bool
 	Released         bool // only used for hold for release
+	ReleaseTime      time.Time
 	WaitingForLaunch bool // for departures
 
 	// The controller who gave approach clearance

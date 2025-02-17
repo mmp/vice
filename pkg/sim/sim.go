@@ -1026,7 +1026,9 @@ type Sim struct {
 type DepartureAircraft struct {
 	Callsign         string
 	Runway           string
+	AddedToList      bool
 	ReleaseRequested bool
+	ReleaseDelay     time.Duration // minimum wait after release before the takeoff roll
 	Index            int
 	MinSeparation    time.Duration // How long after takeoff it will be at ~6000' and airborne
 	LaunchTime       time.Time
@@ -1903,6 +1905,31 @@ func (s *Sim) spawnDepartures() {
 	// Make sure we have a few departing aircraft to work with.
 	s.refreshDeparturePool()
 
+	// Add hold for release to the list a bit before departure time and
+	// request release a few minutes early as well.
+	for airport, _ := range s.NextDepartureLaunch {
+		pool := s.DeparturePool[airport]
+		nlist, nrel := 0, 0
+		for i, dep := range rand.PermuteSlice(pool, rand.Uint32()) {
+			ac := s.State.Aircraft[dep.Callsign]
+			if !ac.HoldForRelease {
+				continue
+			}
+
+			if !dep.AddedToList && nlist < 5 {
+				pool[i].AddedToList = true
+				s.State.STARSComputer().AddHeldDeparture(ac)
+			}
+			nlist++
+
+			if !dep.ReleaseRequested && nrel < 3 {
+				pool[i].ReleaseRequested = true
+				pool[i].ReleaseDelay = time.Duration(20+rand.Intn(100)) * time.Second
+			}
+			nrel++
+		}
+	}
+
 	for airport, launchTime := range s.NextDepartureLaunch {
 		if !now.After(launchTime) {
 			// Don't bother going any further: wait to match the desired
@@ -1910,46 +1937,52 @@ func (s *Sim) spawnDepartures() {
 			continue
 		}
 
-		// Get the departure
+		// Get the first departure that can be launched; we try to do them
+		// in order to honor the sequence but what we can launch also
+		// depends on what's been released.
 		pool := s.DeparturePool[airport]
-		dep := pool[0]
-		ac := s.State.Aircraft[dep.Callsign]
+		for i, dep := range pool {
+			ac := s.State.Aircraft[dep.Callsign]
 
-		// Request a release if necessary.
-		if ac.HoldForRelease && !dep.ReleaseRequested {
-			s.State.STARSComputer().AddHeldDeparture(ac)
-			pool[0].ReleaseRequested = true
+			if !s.canLaunch(airport, dep) {
+				continue
+			}
+
+			// Launch!
+			ac.WaitingForLaunch = false
+
+			// Record the launch so we have it when we consider launching the
+			// next one.
+			dep.LaunchTime = now
+			if s.LastDeparture[airport] == nil {
+				s.LastDeparture[airport] = make(map[string]*DepartureAircraft)
+			}
+			s.LastDeparture[airport][dep.Runway] = &dep
+
+			// Remove it from the pool of waiting departures.
+			s.DeparturePool[airport] = slices.Delete(s.DeparturePool[airport], i, i+1)
+
+			// And figure out when we want to ask for the next departure.
+			r := sumRateMap2(s.LaunchConfig.DepartureRates[airport], s.LaunchConfig.DepartureRateScale)
+			s.NextDepartureLaunch[airport] = now.Add(randomWait(r, false))
+
+			break
 		}
-
-		if !s.canLaunch(airport, dep) {
-			continue
-		}
-
-		// Launch!
-		ac.WaitingForLaunch = false
-
-		// Record the launch so we have it when we consider launching the
-		// next one.
-		dep.LaunchTime = now
-		if s.LastDeparture[airport] == nil {
-			s.LastDeparture[airport] = make(map[string]*DepartureAircraft)
-		}
-		s.LastDeparture[airport][dep.Runway] = &dep
-
-		// Remove it from the pool of waiting departures.
-		s.DeparturePool[airport] = pool[1:]
-
-		// And figure out when we want to ask for the next departure.
-		r := sumRateMap2(s.LaunchConfig.DepartureRates[airport], s.LaunchConfig.DepartureRateScale)
-		s.NextDepartureLaunch[airport] = now.Add(randomWait(r, false))
 	}
 }
 
 // canLaunch checks whether we can go ahead and launch dep.
 func (s *Sim) canLaunch(airport string, dep DepartureAircraft) bool {
 	ac := s.State.Aircraft[dep.Callsign]
-	if ac.HoldForRelease && !ac.Released {
-		return false
+
+	// If it's hold for release make sure both that it has been released
+	// and that a sufficient delay has passed since the release was issued.
+	if ac.HoldForRelease {
+		if !ac.Released {
+			return false
+		} else if s.State.SimTime.Sub(ac.ReleaseTime) < dep.ReleaseDelay {
+			return false
+		}
 	}
 
 	prevDep := s.LastDeparture[airport][dep.Runway]
@@ -2990,6 +3023,7 @@ func (s *Sim) ReleaseDeparture(token, callsign string) error {
 	stars := s.State.STARSComputer()
 	if err := stars.ReleaseDeparture(callsign); err == nil {
 		ac.Released = true
+		ac.ReleaseTime = s.State.SimTime
 		return nil
 	} else {
 		return err
