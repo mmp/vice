@@ -739,12 +739,6 @@ func (nav *Nav) updateAltitude(lg *log.Logger, deltaKts float32, slowingTo250 bo
 		if climb >= 2500 && nav.FlightState.Altitude > 5000 {
 			climb -= 500
 		}
-		if nav.FlightState.Altitude < 10000 {
-			// Have a slower baseline rate of descent on approach
-			descent = math.Min(descent, 2000)
-			// And reduce it based on airspeed as well
-			descent *= math.Min(nav.FlightState.IAS/250, 1)
-		}
 		climb = math.Min(climb, targetRate)
 		descent = math.Min(descent, targetRate)
 	}
@@ -1109,7 +1103,18 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 			// Descending
 			rate := (nav.FlightState.Altitude - c.Altitude) / c.ETA
 			rate *= 60 // feet per minute
-			if rate > nav.Perf.Rate.Descent/2 {
+
+			descent := nav.Perf.Rate.Descent
+			if nav.FlightState.Altitude < 10000 && !nav.Altitude.Expedite {
+				// And reduce it based on airspeed as well
+				descent *= math.Min(nav.FlightState.IAS/250, 1)
+				if descent > 2000 {
+					// Reduce descent rate on approach
+					descent = 2000
+				}
+			}
+
+			if rate > descent/2 {
 				// Don't start the descent until (more or less) it's
 				// necessary. (But then go a little faster than we think we
 				// need to, to be safe.)
