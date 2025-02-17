@@ -93,6 +93,12 @@ type Platform interface {
 	// the audio playing entrypoints.
 	AddPCM(pcm []byte, rate int) (int, error)
 
+	// Registers an MP3-based audio effect. As with AddPCM, assumes one
+	// channel sampled at AudioSampleRate. The integer return value
+	// identifies the effect and can be passed to the audio playing
+	// entrypoints.
+	AddMP3(mp3 []byte) (int, error)
+
 	// SetAudioVolume sets the volume for audio playback; the value passed
 	// should be between 0 and 10.
 	SetAudioVolume(vol int)

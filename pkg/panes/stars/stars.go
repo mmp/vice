@@ -27,7 +27,6 @@ import (
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/mmp/imgui-go/v4"
-	"github.com/tosone/minimp3"
 )
 
 // IFR TRACON separation requirements
@@ -1257,15 +1256,7 @@ func (sp *STARSPane) initializeAudio(p platform.Platform, lg *log.Logger) {
 		sp.audioEffects = make(map[AudioType]int)
 
 		loadMP3 := func(filename string) int {
-			dec, pcm, err := minimp3.DecodeFull(util.LoadResourceBytes("audio/" + filename))
-			if err != nil {
-				lg.Errorf("%s: unable to decode mp3: %v", filename, err)
-			}
-			if dec.Channels != 1 {
-				lg.Errorf("expected 1 channel, got %d", dec.Channels)
-			}
-
-			idx, err := p.AddPCM(pcm, dec.SampleRate)
+			idx, err := p.AddMP3(util.LoadResourceBytes("audio/" + filename))
 			if err != nil {
 				lg.Errorf("%s: %v", filename, err)
 			}

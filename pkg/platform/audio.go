@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 
+	"github.com/tosone/minimp3"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -70,6 +71,16 @@ func (a *audioEngine) AddPCM(pcm []byte, rate int) (int, error) {
 	}
 	a.effects = append(a.effects, audioEffect{pcm: pcm})
 	return len(a.effects), nil
+}
+
+func (a *audioEngine) AddMP3(mp3 []byte) (int, error) {
+	if dec, pcm, err := minimp3.DecodeFull(mp3); err != nil {
+		return -1, err
+	} else if dec.Channels != 1 {
+		return -1, fmt.Errorf("expected 1 channel, got %d", dec.Channels)
+	} else {
+		return a.AddPCM(pcm, dec.SampleRate)
+	}
 }
 
 func (a *audioEngine) SetAudioVolume(vol int) {
