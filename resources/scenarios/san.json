@@ -9,22 +9,22 @@
               "IY9":{ "cifp_id": "IY9" },
               "IZ9":{ "cifp_id": "IZ9" },
               "L27":{ "cifp_id": "L27" },
-              "V27":{
-                "full_name": "Visual Runway 27",
-                "runway": "27",
-                "type": "Visual",
-                "waypoints": [
-                  "LYNDI/iaf/a5000/s210 OKAIN/a3600 CIJHI/a2700 REEBO/a2000"
-                ]
-              },
-              "V9":{
-                "full_name": "Visual Runway 9",
-                "runway": "9",
-                "type": "Visual",
-                "waypoints": [
-                  "SARGS/a2100+ GATTO/a2000"
-                ]
-              }
+                "V27":{
+                    "full_name": "Visual Runway 27",
+                    "runway": "27",
+                    "type": "ILS",
+                    "waypoints": [
+                        "LYNDI/iaf/a5000/s210 OKAIN/a3600 CIJHI/a2700 REEBO/faf/a2000"
+                    ]
+                },
+                "V9":{
+                    "full_name": "Visual Runway 9",
+                    "runway": "9",
+                    "type": "ILS",
+                    "waypoints": [
+                        "SARGS/a2100+ GATTO/faf/a2000"
+                    ]
+                }
          },
         "departure_routes":{
             "27":{
@@ -441,7 +441,7 @@
         "tower_list": 1
 
         },
-        "KMYF":  {
+        "KMYF": {
             "approaches": {
               "I8R": { "cifp_id": "I28R" },
               "R8R": { "cifp_id": "R28R" }
@@ -694,7 +694,7 @@
       }
     ]
   },
-  "EAST CRQ ARR": {
+  "EAST SAT ARR": {
     "arrivals": [
       {
         "waypoints": "BOREN KARRO/ho JLI",
@@ -716,12 +716,8 @@
             }
           ]
         }
-      }
-    ]
-  },
-  "EAST MYF ARR": {
-    "arrivals": [
-      {
+      },
+	  {
         "waypoints": "BOREN KARRO/ho JLI",
         "cruise_altitude": 10000,
         "star": "BOREN KARRO JLI",
@@ -931,12 +927,12 @@
       }
     ]
   },
-    "LAXX1/NORTH SAN ARR(W)": {
+    "LAXX1/V23 NORTH ARR(W)": {
     "arrivals": [
       {
-        "waypoints": "SLI DANAH/ho OCN CARIF MZB",
+        "waypoints": "N033.32.45.467,W117.59.10.314 N033.20.01.876,W117.42.40.556/ho CARIF MZB",
         "cruise_altitude": 13000,
-        "star": "SLI DANAH OCN CARIF MZB",
+        "star": "LAXX1",
         "initial_controller": "SNA_Y_APP",
         "initial_altitude": 13000,
         "initial_speed": 280,
@@ -949,6 +945,31 @@
             }
           ]
         }
+      },
+	  {
+        "waypoints": "SLI DANAH/ho OCN CARIF MZB",
+        "cruise_altitude": 23000,
+        "star": "SLI DANAH OCN MZB",
+        "initial_controller": "SNA_Y_APP",
+        "initial_altitude": 13000,
+        "initial_speed": 200,
+        "expect_approach": null,
+        "airlines": {
+          "KMYF": [
+            {
+              "icao": "N",
+              "airport": "KRHV"
+            },
+			{
+              "icao": "N",
+              "airport": "KSAC"
+            },
+			{
+              "icao": "N",
+              "airport": "KTRK"
+            }
+          ]
+        }
       }
     ]
   },
@@ -957,7 +978,7 @@
       {
         "waypoints": "SLI ALBAS PACIF REDIN SARGS",
         "cruise_altitude": 11000,
-        "star": "SLI DANAH OCN CARIF MZB",
+        "star": "SLI ALBAS PACIF REDIN SARGS",
         "initial_controller": "SNA_Y_APP",
         "initial_altitude": 11000,
         "initial_speed": 270,
@@ -992,35 +1013,6 @@
 			{
               "icao": "N",
               "airport": "KEMT"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "NORTH MYF ARR": {
-    "arrivals": [
-      {
-        "waypoints": "SLI DANAH/ho OCN MZB",
-        "cruise_altitude": 23000,
-        "star": "SLI DANAH OCN MZB",
-        "initial_controller": "SNA_Y_APP",
-        "initial_altitude": 13000,
-        "initial_speed": 200,
-        "expect_approach": null,
-        "airlines": {
-          "KMYF": [
-            {
-              "icao": "N",
-              "airport": "KRHV"
-            },
-			{
-              "icao": "N",
-              "airport": "KSAC"
-            },
-			{
-              "icao": "N",
-              "airport": "KTRK"
             }
           ]
         }
@@ -1256,7 +1248,7 @@
             "sector_id": "5U"
         }
     },
-    "default_scenario": "KSAN West",
+    "default_scenario": "SAN West",
     "fixes": {
         "_SAN_27": "N032.43.48.008,W117.10.29.901",
         "_SAN_9": "N032.44.13.641,W117.12.15.684",
@@ -1274,7 +1266,7 @@
     "name": "KSAN",
     "primary_airport": "KSAN",
     "scenarios": {
-        "KSAN West": {
+        "SAN West": {
             "arrival_runways": [
                 {
                     "airport": "KSAN",
@@ -1299,23 +1291,19 @@
                 "COMIX2":{
                     "KSAN": 12
                 },
-				"LAXX1/NORTH SAN ARR(W)":{
-                    "KSAN": 3
-                },
-                "EAST MYF ARR":{
-                    "KMYF": 2
+				"LAXX1/V23 NORTH ARR(W)":{
+                    "KSAN": 3,
+					"KMYF": 2
                 },
 				"SOUTHEAST MYF ARR":{
                     "KMYF": 2
                 },
-                "NORTH MYF ARR":{
-                    "KMYF": 1
-                },
                 "NORTH CRQ ARR":{
                     "KCRQ": 2
                 },
-                "EAST CRQ ARR":{
-                    "KCRQ": 2
+                "EAST SAT ARR":{
+                    "KCRQ": 2,
+					"KMYF": 2
                 },
                 "LEGOZ2":{
                     "KCRQ": 3
@@ -1328,14 +1316,14 @@
                         "primary": true
                     },
                     "SAN_E_APP":{ "backup": "SAN_W_APP",
-                    "arrivals": ["LUCKI1.MOMAR","LUCKI1.HEELX","EAST MYF ARR", "NORTH MYF ARR", "SOUTHEAST MYF ARR"]
+                    "arrivals": ["LUCKI1.MOMAR","LUCKI1.HEELX","SOUTHEAST MYF ARR"]
                     },
                     "SAN_N_APP":{"backup": "SAN_W_APP",
-                    "arrivals": ["COMIX2","LAXX1/NORTH SAN ARR(W)"]
+                    "arrivals": ["COMIX2","LAXX1/V23 NORTH ARR(W)"]
                     },
                     "SAN_D_APP":{"backup": "SAN_E_APP",
                     "departures": ["KCRQ"],
-                    "arrivals": ["NORTH CRQ ARR", "LEGOZ2", "EAST CRQ ARR"]
+                    "arrivals": ["NORTH CRQ ARR", "LEGOZ2", "EAST SAT ARR"]
                     }
                 }
             },
@@ -1376,7 +1364,7 @@
                 "speed": 5
             }
         },
-        "KSAN East": {
+        "SAN East": {
             "arrival_runways": [
                 {
                     "airport": "KSAN",
@@ -1397,7 +1385,7 @@
                 "TOPGN2.MOMAR":{
                     "KSAN": 7
                 },
-				"EAST CRQ ARR":{
+				"EAST SAT ARR":{
                     "KCRQ": 3
 				},
 				"LAXX1/NORTH SAN ARR(E)":{
@@ -1427,7 +1415,7 @@
 					"arrivals":["LAXX1/NORTH SAN ARR(E)"]
                     },
                     "SAN_D_APP":{"backup": "SAN_W_APP",
-                    "arrivals": ["LEGOZ2", "EAST CRQ ARR", "NORTH CRQ ARR"]
+                    "arrivals": ["LEGOZ2", "EAST SAT ARR", "NORTH CRQ ARR"]
                     }
                 }
             },
