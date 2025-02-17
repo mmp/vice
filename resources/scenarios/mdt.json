@@ -14,6 +14,9 @@
                 },
                 "R31": {
                     "cifp_id": "R31"
+                },
+                "S31": {
+                    "cifp_id": "S31"
                 }
             },
             "departure_routes": {
@@ -739,14 +742,28 @@
                 "R8": {
                     "cifp_id": "R8"
                 },
+                "D8": {
+                    "cifp_id": "D8"
+                },
                 "R13": {
                     "cifp_id": "R13"
                 },
                 "R26": {
                     "cifp_id": "R26"
                 },
+                "D26": {
+                    "cifp_id": "D26"
+                },
                 "R31": {
                     "cifp_id": "R31"
+                },
+                "D31": {
+                    "full_name": "VOR/DME Runway 31",
+                    "runway": "31",
+                    "type": "VOR",
+                    "waypoints": [
+                        "HABER/iaf/if/hilpt1min/a2500+ QUALE/a1500+/faf ACOCU"
+                    ]
                 }
             },
             "departure_routes": {
@@ -1580,7 +1597,7 @@
                         },
                         "cruise_altitude": 16000,
                         "initial_altitude": 16000,
-                        "initial_controller": "NY_26_CTR",
+                        "initial_controller": "NY_92_CTR",
                         "initial_speed": 250,
                         "route": "/. HUO HAR",
                         "scratchpad": "HAR",
@@ -1877,7 +1894,7 @@
                     "initial_altitude": 27000,
                     "initial_controller": "NY_27_CTR",
                     "initial_speed": 280,
-                    "waypoints": "N040.19.14.251,W078.11.33.484 COFAX J152 HAR LRP TRAGG BUNTS RELNY NAGGS CYN/a4000/h306 CISON/a2000+ FENKA/a2000+ KWRI-6/delete/a0"
+                    "waypoints": "N040.19.14.251,W078.11.33.484 COFAX J152 HAR/a18000/hoN26 LRP/a13000/ho41N TRAGG BUNTS/a8000 RELNY NAGGS/ho5WX CYN/a4000 CISON/a2000+ N039.53.25.123,W074.44.45.388 N039.49.58.526,W074.45.22.055 N039.52.14.371,W074.46.43.848 FENKA/a2000+ KWRI-6/delete/a0"
                 },
                 {
                     "airlines": [
@@ -1943,7 +1960,7 @@
                     "initial_altitude": 31000,
                     "initial_controller": "NY_27_CTR",
                     "initial_speed": 280,
-                    "waypoints": "N040.19.06.780,W078.11.18.900 COFAX LOMON HAR/a18000 LRP/a13000 TRAGG BUNTS/a8000 SCOOL N040.03.54.558,W075.21.54.706/a2500+ COWAD/a2000+ KPHL-17/a0/delete"
+                    "waypoints": "N040.19.06.780,W078.11.18.900 COFAX LOMON HAR/a18000 LRP/a13000/ho41N TRAGG BUNTS/a8000/ho41P SCOOL/a6000 N040.03.54.558,W075.21.54.706/a2500+ COWAD/a2000+ KPHL-17/a0/delete"
                 },
                 {
                     "airlines": [
@@ -1960,7 +1977,7 @@
                     "assigned_altitude": 36000,
                     "initial_controller": "ABE_DEP",
                     "initial_speed": 250,
-                    "waypoints": "KABE-6 ETX LRP EMI GVE/delete"
+                    "waypoints": "KABE-6/hoN92 ETX/hoN26 LRP/hoN9 EMI GVE/delete"
                 },
                 {
                     "airlines": [
@@ -1980,7 +1997,7 @@
                     "initial_altitude": 23000,
                     "initial_controller": "NY_27_CTR",
                     "initial_speed": 280,
-                    "waypoints": "N039.36.49.735,W078.04.45.919 REEES/a19000 T299 HAR/a13000 T299 DUMMR/a6000- SAYOV JISTO/a3000+ SHAGY/a2400+ GEBLE/a1400+ KABE-6/a0/delete"
+                    "waypoints": "N039.36.49.735,W078.04.45.919 REEES/a19000 T299 HAR/a13000/hoN26 T299 BOBSS/ho21D T299 DUMMR/a6000- SAYOV JISTO/a3000+ SHAGY/a2400+ GEBLE/a1400+ KABE-6/a0/delete"
                 },
                 {
                     "airlines": [
@@ -1991,7 +2008,7 @@
                     "assigned_altitude": 38000,
                     "initial_controller": "ABE_DEP",
                     "initial_speed": 250,
-                    "waypoints": "KABE-6 ETX LRP EMI Q119 GROKK/delete"
+                    "waypoints": "KABE-6/hoN92 ETX LRP/hoN9 EMI Q119 GROKK/delete"
                 },
                 {
                     "airlines": [
@@ -2002,7 +2019,7 @@
                     "assigned_altitude": 36000,
                     "initial_controller": "ABE_DEP",
                     "initial_speed": 250,
-                    "waypoints": "KABE-6 LRP FLIRT J6 COLNS/delete"
+                    "waypoints": "KABE-6/hoN26 LRP/hoN10 FLIRT J6 COLNS/delete"
                 },
                 {
                     "airlines": [
@@ -2014,7 +2031,7 @@
                     "assigned_altitude": 32000,
                     "initial_controller": "ABE_DEP",
                     "initial_speed": 250,
-                    "waypoints": "KABE-6 ETX LRP EMI J48 MOL/delete"
+                    "waypoints": "KABE-6/hoN92 ETX/hoN26 LRP/hoN9 EMI J48 MOL/delete"
                 },
                 {
                     "airlines": [
@@ -2044,7 +2061,7 @@
                     "initial_altitude": 28000,
                     "initial_controller": "NY_26_CTR",
                     "initial_speed": 280,
-                    "waypoints": "JETTZ SARAA LRP JOANE DELRO LIRCH BINNS HYPER/a10000/s250 PHATT/a9000 NOOXX/a9000+ CRLET/a8000+ COWRR/a7000+ COVUL/a6000+ CHDMN/a5000+ CUTZZ/a4000+ CRAKL/a3000+ CLARZ/a2000+ FEMKO/a1500+ KIAD-19C/a0/delete"
+                    "waypoints": "JETTZ SARAA LRP JOANE DELRO LIRCH/a14000/ho63M BINNS HYPER/a10000/s250/ho63C PHATT/a9000 NOOXX/a9000+ CRLET/a8000+ COWRR/a7000+ COVUL/a6000+ CHDMN/a5000+ CUTZZ/a4000+ CRAKL/a3000+ CLARZ/a2000+ FEMKO/a1500+ KIAD-19C/a0/delete"
                 },
                 {
                     "airlines": [
@@ -2057,7 +2074,7 @@
                     "initial_altitude": 24000,
                     "initial_controller": "NY_26_CTR",
                     "initial_speed": 280,
-                    "waypoints": "N040.21.02.493,W075.22.46.067 HIKES LRP JOANE DELRO LIRCH BINNS HYPER/a10000/s250 PHATT/a9000 NOOXX CRLET/a8000+ COWRR/a7000+ COVUL/a6000+ CHDMN/a5000+ CUTZZ/a4000+ CRAKL/a3000+ CLARZ/a2000+ FEMKO/a1500+ KIAD-19C/a0/delete"
+                    "waypoints": "N040.21.02.493,W075.22.46.067 HIKES LRP JOANE DELRO LIRCH/ho63M BINNS HYPER/a10000/s250/ho63C PHATT/a9000 NOOXX CRLET/a8000+ COWRR/a7000+ COVUL/a6000+ CHDMN/a5000+ CUTZZ/a4000+ CRAKL/a3000+ CLARZ/a2000+ FEMKO/a1500+ KIAD-19C/a0/delete"
                 },
                 {
                     "airlines": [
@@ -2073,7 +2090,7 @@
                     "initial_altitude": 24000,
                     "initial_controller": "NY_27_CTR",
                     "initial_speed": 280,
-                    "waypoints": "PSB JARAF PRIVO DAFIX/a12000 WAYNZ/a10000/s250 SULII/a9000 NOOXX CRLET/a8000+ COWRR/a7000+ COVUL/a6000+ CHDMN/a5000+ CUTZZ/a4000+ CRAKL/a3000+ CLARZ/a2000+ FEMKO/a1500+ KIAD-19C/a0/delete"
+                    "waypoints": "PSB JARAF PRIVO DAFIX/a12000/ho63M WAYNZ/a10000/s250/ho63C SULII/a9000 NOOXX CRLET/a8000+ COWRR/a7000+ COVUL/a6000+ CHDMN/a5000+ CUTZZ/a4000+ CRAKL/a3000+ CLARZ/a2000+ FEMKO/a1500+ KIAD-19C/a0/delete"
                 },
                 {
                     "airlines": [
@@ -2083,7 +2100,7 @@
                     "initial_altitude": 18000,
                     "initial_controller": "NY_27_CTR",
                     "initial_speed": 280,
-                    "waypoints": "IZZEE LEGGO DRRES/a10000 RAUKY/a9000+ TRISH/a9000- WUUDI/a5000+ FINNZ/a5000/s210 KEEYY/a4000/s210 ROAPS/a4000 HOOOK/a4000 JANNS/a4000+ SPLAT/a2400+ GRAFE/a1500+ HAXAK/a620+ KBWI-33L/a0/delete"
+                    "waypoints": "IZZEE LEGGO DRRES/a10000/ho61B RAUKY/a9000+ TRISH/a9000-/ho63S WUUDI/a5000+ FINNZ/a5000/s210 KEEYY/a4000/s210 ROAPS/a4000 HOOOK/a4000 JANNS/a4000+ SPLAT/a2400+ GRAFE/a1500+ HAXAK/a620+ KBWI-33L/a0/delete"
                 },
                 {
                     "airlines": [
@@ -2097,7 +2114,7 @@
                     "initial_altitude": 23000,
                     "initial_controller": "NY_27_CTR",
                     "initial_speed": 280,
-                    "waypoints": "N039.40.23.474,W077.58.24.254 LOYDD GAAPP/a17000- N040.53.50.433,W076.18.23.933/a9000/delete"
+                    "waypoints": "N039.40.23.474,W077.58.24.254 LOYDD GAAPP/a17000-/ho1WE N040.53.50.433,W076.18.23.933/a9000/delete"
                 },
                 {
                     "airlines": [
@@ -2229,6 +2246,13 @@
             "facility_id": "4",
             "sector_id": "1P"
         },
+        "WRI_APP": {
+            "frequency": 126475,
+            "radio_name": "McGuire Approach",
+            "scope_char": "Y",
+            "facility_id": "5",
+            "sector_id": "WX"
+        },
         "RDG_APP": {
             "frequency": 125150,
             "radio_name": "Reading Approach",
@@ -2264,6 +2288,20 @@
             "facility_id": "6",
             "sector_id": "3M"
         },
+        "PCT_C_APP": {
+            "frequency": 134200,
+            "radio_name": "Potomac Approach",
+            "scope_char": "C",
+            "facility_id": "6",
+            "sector_id": "3C"
+        },
+        "PCT_S_APP": {
+            "frequency": 119700,
+            "radio_name": "Potomac Approach",
+            "scope_char": "S",
+            "facility_id": "6",
+            "sector_id": "3S"
+        },
         "NY_08_CTR": {
             "frequency": 124775,
             "radio_name": "New York Center",
@@ -2277,6 +2315,14 @@
             "radio_name": "New York Center",
             "scope_char": "C",
             "sector_id": "N9",
+            "facility_id": "C",
+            "eram_facility": true
+        },
+        "NY_10_CTR": {
+            "frequency": 133475,
+            "radio_name": "New York Center",
+            "scope_char": "C",
+            "sector_id": "N10",
             "facility_id": "C",
             "eram_facility": true
         },
