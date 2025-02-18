@@ -52,13 +52,14 @@ const numWxHistory = 3
 
 const numWxLevels = 6
 
-// Block size in pixels of the quads in the converted radar image used for
-// display.
-const wxBlockRes = 2
+const wxFetchResolution = 512
 
-// Latitude-longitude extent of the fetched image; the requests are +/-
-// this much from the current center.
-const wxLatLongExtent = 2.5
+// Fetch this many nm out from the center; should evenly divide wxFetchResolution
+const wxFetchDistance = 128
+
+// Pixels in the image that correspond to a WX block on the scope; we fetch
+// +/- wxFetchDistance an d blocks are 0.5nm so here we go.
+const wxBlockRes = wxFetchResolution / (2 * wxFetchDistance) * 0.5
 
 // Activate must be called to initialize the WeatherRadar before weather
 // radar images can be fetched.
@@ -283,9 +284,16 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [numWxLevels]*renderer
 		fetchTimer.Reset(fetchRate)
 		lg.Infof("Getting WX, center %v", center)
 
+		// Figure out how far out in degrees latitude / longitude to fetch.
+		// Latitude is easy: 60nm per degree
+		dlat := float32(wxFetchDistance) / 60
+		// Longitude: figure out nm per degree at center
+		nmPerLong := 60 * math.Cos(math.Radians(center[1]))
+		dlong := wxFetchDistance / nmPerLong
+
 		// Lat-long bounds of the region we're going to request weather for.
-		rb := math.Extent2D{P0: math.Sub2LL(center, math.Point2LL{wxLatLongExtent, wxLatLongExtent}),
-			P1: math.Add2LL(center, math.Point2LL{wxLatLongExtent, wxLatLongExtent})}
+		rb := math.Extent2D{P0: math.Sub2LL(center, math.Point2LL{dlong, dlat}),
+			P1: math.Add2LL(center, math.Point2LL{dlong, dlat})}
 
 		// The weather radar image comes via a WMS GetMap request from the NOAA.
 		//
@@ -298,8 +306,8 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [numWxLevels]*renderer
 		params.Add("SERVICE", "WMS")
 		params.Add("REQUEST", "GetMap")
 		params.Add("FORMAT", "image/png")
-		params.Add("WIDTH", "2048")
-		params.Add("HEIGHT", "2048")
+		params.Add("WIDTH", fmt.Sprintf("%d", wxFetchResolution))
+		params.Add("HEIGHT", fmt.Sprintf("%d", wxFetchResolution))
 		params.Add("LAYERS", "conus_bref_qcd")
 		params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", rb.P0[0], rb.P0[1], rb.P1[0], rb.P1[1]))
 
