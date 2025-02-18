@@ -601,12 +601,6 @@ func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint, star string) st
 // Simulation
 
 func (nav *Nav) updateAirspeed(lg *log.Logger) (float32, bool) {
-	if nav.Altitude.Expedite {
-		// Don't accelerate or decelerate if we're expediting
-		lg.Debug("expediting altitude, so speed unchanged")
-		return 0, false
-	}
-
 	// Figure out what speed we're supposed to be going. The following is
 	// prioritized, so once targetSpeed has been set, nothing should
 	// override it.
@@ -636,6 +630,20 @@ func (nav *Nav) updateAirspeed(lg *log.Logger) (float32, bool) {
 
 		slowingTo250 := targetSpeed == 250 && nav.FlightState.Altitude >= 10000
 		return delta, slowingTo250
+	}
+
+	alt, _ := nav.TargetAltitude(lg)
+	if alt > nav.FlightState.Altitude && nav.Perf.Engine.AircraftType == "P" {
+		// Climbing prop; bleed off speed.
+		spd := nav.FlightState.IAS * .995
+		spd = math.Max(spd, 1.1*nav.Perf.Speed.Min)
+		return setSpeed(spd)
+	}
+
+	if nav.Altitude.Expedite {
+		// Don't accelerate or decelerate if we're expediting
+		lg.Debug("expediting altitude, so speed unchanged")
+		return 0, false
 	}
 
 	if nav.FlightState.IAS < targetSpeed {
