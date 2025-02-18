@@ -1436,7 +1436,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				}
 
 				nColumns := math.Min(3, maxCategories)
-				if imgui.BeginTableV("dep", 1+8*nColumns, flags, imgui.Vec2{tableScale * float32(100+400*nColumns), 0}, 0.0) {
+				if imgui.BeginTableV("dep", 1+8*nColumns, flags, imgui.Vec2{tableScale * float32(100+450*nColumns), 0}, 0.0) {
 					imgui.TableSetupColumn("Airport")
 					for range nColumns {
 						imgui.TableSetupColumn("Category")
