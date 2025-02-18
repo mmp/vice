@@ -2223,11 +2223,9 @@ func (s *Sim) LaunchAircraft(ac av.Aircraft) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if ac.HoldForRelease && s.State.IsDeparture(&ac) {
-		s.State.STARSComputer().AddHeldDeparture(&ac)
-	} else {
-		s.addAircraftNoLock(ac)
-	}
+	// Ignore hold for release; this should only be called for manual launches.
+	ac.HoldForRelease = false
+	s.addAircraftNoLock(ac)
 }
 
 // Assumes the lock is already held (as is the case e.g. for automatic spawning...)
