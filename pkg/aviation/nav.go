@@ -292,7 +292,7 @@ func (nav *Nav) TAS() float32 {
 func (nav *Nav) v2() float32 {
 	if nav.Perf.Speed.V2 == 0 {
 		// Unfortunately we don't always have V2 in the performance database, so approximate...
-		return 1.1 * nav.Perf.Speed.Landing
+		return 0.95 * nav.Perf.Speed.Landing
 	}
 	return nav.Perf.Speed.V2
 }
@@ -633,11 +633,15 @@ func (nav *Nav) updateAirspeed(lg *log.Logger) (float32, bool) {
 	}
 
 	alt, _ := nav.TargetAltitude(lg)
-	if alt > nav.FlightState.Altitude && nav.Perf.Engine.AircraftType == "P" {
+	if !nav.FlightState.InitialDepartureClimb && alt > nav.FlightState.Altitude &&
+		nav.Perf.Engine.AircraftType == "P" {
 		// Climbing prop; bleed off speed.
-		spd := nav.FlightState.IAS * .995
-		spd = math.Max(spd, 1.1*nav.Perf.Speed.Min)
-		return setSpeed(spd)
+		cruiseIAS := TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
+		limit := (nav.v2() + cruiseIAS) * 0.5
+		if nav.FlightState.IAS > limit {
+			spd := math.Max(nav.FlightState.IAS*.99, limit)
+			return setSpeed(spd)
+		}
 	}
 
 	if nav.Altitude.Expedite {
