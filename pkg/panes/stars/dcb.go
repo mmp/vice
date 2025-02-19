@@ -295,12 +295,12 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 	}
 
 	if sp.activeDCBMenu == dcbMenuMaps {
-		disableMain = false // HAX FIXME
-
 		rewindDCBCursor(14, buttonScale)
+		dcbStartCaptureMouseRegion()
 
 		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
+			ctx.Platform.EndCaptureMouse()
 		}
 		if selectButton(ctx, "CLR ALL", buttonHalfVertical, buttonScale) {
 			clear(ps.VideoMapVisible)
@@ -367,10 +367,16 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			ps.VideoMapsList.Selection = VideoMapCurrent
 			ps.VideoMapsList.Visible = currentMapsSelected
 		}
+
+		if sp.activeDCBMenu != dcbMenuMain {
+			// Don't capture if DONE was clicked
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
+		}
 	}
 
 	if sp.activeDCBMenu == dcbMenuBrite {
 		rewindDCBCursor(7, buttonScale)
+		dcbStartCaptureMouseRegion()
 
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("DCB", &ps.Brightness.DCB, 25, false),
 			CommandModeNone, buttonHalfVertical, buttonScale)
@@ -408,11 +414,15 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			CommandModeNone, buttonHalfVertical, buttonScale)
 		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
+			ctx.Platform.EndCaptureMouse()
+		} else {
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
 		}
 	}
 
 	if sp.activeDCBMenu == dcbMenuCharSize {
 		rewindDCBCursor(5, buttonScale)
+		dcbStartCaptureMouseRegion()
 
 		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("DATA\nBLOCKS\n", &ps.CharSize.Datablocks, 0, 5),
 			CommandModeNone, buttonFull, buttonScale)
@@ -426,11 +436,15 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			CommandModeNone, buttonFull, buttonScale)
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
+			ctx.Platform.EndCaptureMouse()
+		} else {
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
 		}
 	}
 
 	if sp.activeDCBMenu == dcbMenuSite {
 		rewindDCBCursor(3+len(ctx.ControlClient.RadarSites)+3, buttonScale)
+		dcbStartCaptureMouseRegion()
 
 		for _, id := range util.SortedMapKeys(ctx.ControlClient.RadarSites) {
 			site := ctx.ControlClient.RadarSites[id]
@@ -460,10 +474,14 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
+			ctx.Platform.EndCaptureMouse()
+		} else {
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
 		}
 	}
 
 	if sp.activeDCBMenu == dcbMenuPref {
+		dcbStartCaptureMouseRegion()
 		for i, prefs := range sp.prefSet.Saved {
 			text := strconv.Itoa(i+1) + "\n"
 			flags := buttonHalfVertical
@@ -534,11 +552,15 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			sp.activeDCBMenu = dcbMenuMain
 			sp.RestorePreferences = nil
 			sp.RestorePreferencesNumber = nil
+			ctx.Platform.EndCaptureMouse()
+		} else {
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
 		}
 	}
 
 	if sp.activeDCBMenu == dcbMenuSSAFilter {
 		rewindDCBCursor(16, buttonScale)
+		dcbStartCaptureMouseRegion()
 
 		// 4-44 / 2-71
 		toggleButton(ctx, "ALL", &ps.SSAList.Filter.All, buttonHalfVertical, buttonScale)
@@ -571,11 +593,15 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		unsupportedButton(ctx, "TBFM", buttonHalfVertical, buttonScale) // TODO
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
+			ctx.Platform.EndCaptureMouse()
+		} else {
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
 		}
 	}
 
 	if sp.activeDCBMenu == dcbMenuGITextFilter {
 		rewindDCBCursor(2+1+len(ps.SSAList.Filter.Text.GI)/2+1, buttonScale)
+		dcbStartCaptureMouseRegion()
 
 		toggleButton(ctx, "MAIN", &ps.SSAList.Filter.Text.Main, buttonHalfVertical, buttonScale)
 		for i := range ps.SSAList.Filter.Text.GI {
@@ -584,6 +610,9 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
+			ctx.Platform.EndCaptureMouse()
+		} else {
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
 		}
 	}
 
@@ -652,6 +681,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 
 	if sp.activeDCBMenu == dcbMenuTPA {
 		rewindDCBCursor(1, buttonScale)
+		dcbStartCaptureMouseRegion()
 
 		onoff := func(b bool) string { return util.Select(b, "ENABLED", "INHIBTD") }
 		if selectButton(ctx, "A/TPA\nMILEAGE\n"+onoff(ps.DisplayTPASize), buttonFull, buttonScale) {
@@ -668,6 +698,9 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuAux
+			ctx.Platform.EndCaptureMouse()
+		} else {
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
 		}
 	}
 
@@ -956,6 +989,35 @@ func toggleButton(ctx *panes.Context, text string, state *bool, flags dcbFlags, 
 	return clicked
 }
 
+var dcbCaptureMouseP0 [2]float32
+
+func dcbStartCaptureMouseRegion() {
+	dcbCaptureMouseP0 = dcbDrawState.cursor
+}
+
+func dcbCaptureMouseFromRegion(ctx *panes.Context, buttonScale float32) {
+	p1 := dcbDrawState.cursor
+	sz := buttonSize(buttonFull, buttonScale)
+	if dcbDrawState.position == dcbPositionTop || dcbDrawState.position == dcbPositionBottom {
+		p1[1] -= sz[1]
+	} else {
+		p1[0] += sz[0]
+	}
+	dcbCaptureMouse(ctx, math.Extent2DFromPoints([][2]float32{dcbCaptureMouseP0, p1}))
+}
+
+func dcbCaptureMouse(ctx *panes.Context, bounds math.Extent2D) {
+	// This is horrific and one of many ugly things about capturing the
+	// mouse, but most of Panes' work is in the simplified space of a
+	// pane coordinate system; here we need something in terms of
+	// window coordinates, so need to both account for the viewport
+	// call that lets us draw things oblivious to the menubar as well
+	// as flip things in y.
+	h := ctx.PaneExtent.Height() + ctx.MenuBarHeight
+	bounds.P0[1], bounds.P1[1] = h-bounds.P1[1], h-bounds.P0[1]
+	ctx.Platform.StartCaptureMouse(bounds)
+}
+
 // TODO: think about implications of multiple STARSPanes being active
 // at once w.r.t. this.  This probably should be a member variable,
 // though we also need to think about focus capture; probably should
@@ -969,15 +1031,7 @@ func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, comm
 	if activeSpinner != nil && spinner.Equals(activeSpinner) {
 		// This spinner is active.
 		buttonBounds, clicked := drawDCBButton(ctx, spinner.Label(), flags, buttonScale, true)
-		// This is horrific and one of many ugly things about capturing the
-		// mouse, but most of Panes' work is in the simplified space of a
-		// pane coordinate system; here we need something in terms of
-		// window coordinates, so need to both account for the viewport
-		// call that lets us draw things oblivious to the menubar as well
-		// as flip things in y.
-		h := ctx.PaneExtent.Height() + ctx.MenuBarHeight
-		buttonBounds.P0[1], buttonBounds.P1[1] = h-buttonBounds.P1[1], h-buttonBounds.P0[1]
-		ctx.Platform.StartCaptureMouse(buttonBounds)
+		dcbCaptureMouse(ctx, buttonBounds)
 
 		if clicked {
 			sp.disableMenuSpinner(ctx)
