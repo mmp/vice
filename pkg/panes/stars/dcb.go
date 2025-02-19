@@ -20,12 +20,14 @@ import (
 )
 
 var (
-	dcbButtonColor         = renderer.RGB{0, .173, 0}
-	dcbActiveButtonColor   = renderer.RGB{0, .305, 0}
-	dcbTextColor           = renderer.RGB{1, 1, 1}
-	dcbTextSelectedColor   = renderer.RGB{1, 1, 0}
-	dcbDisabledButtonColor = renderer.RGB{.4, .4, .4}
-	dcbDisabledTextColor   = renderer.RGB{.8, .8, .8}
+	dcbButtonColor            = renderer.RGB{0, .173, 0}
+	dcbActiveButtonColor      = renderer.RGB{0, .305, 0}
+	dcbTextColor              = renderer.RGB{1, 1, 1}
+	dcbTextSelectedColor      = renderer.RGB{1, 1, 0}
+	dcbUnsupportedButtonColor = renderer.RGB{.4, .4, .4}
+	dcbUnsupportedTextColor   = renderer.RGB{.8, .8, .8}
+	dcbDisabledButtonColor    = renderer.RGB{0, .173 / 2, 0}
+	dcbDisabledTextColor      = renderer.RGB{.5, 0.5, 0.5}
 )
 
 const dcbButtonSize = 84
@@ -37,6 +39,8 @@ const (
 	buttonHalfHorizontal
 	buttonSelected
 	buttonWXAVL
+	buttonDisabled
+	buttonUnsupported
 )
 
 const (
@@ -205,7 +209,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		if selectButton(ctx, "CHAR\nSIZE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuCharSize
 		}
-		disabledButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
+		unsupportedButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
 
 		site := sp.radarSiteId(ctx.ControlClient.RadarSites)
 		if len(ctx.ControlClient.RadarSites) == 0 {
@@ -249,13 +253,13 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			CommandModeNone, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeHistoryRateSpinner(&ps.RadarTrackHistoryRate),
 			CommandModeNone, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "CURSOR\nHOME", buttonFull, buttonScale)
-		disabledButton(ctx, "CSR SPD\n4", buttonFull, buttonScale)
-		disabledButton(ctx, "MAP\nUNCOR", buttonFull, buttonScale)
-		disabledButton(ctx, "UNCOR", buttonFull, buttonScale)
-		disabledButton(ctx, "BEACON\nMODE-2", buttonFull, buttonScale)
-		disabledButton(ctx, "RTQC", buttonFull, buttonScale)
-		disabledButton(ctx, "MCP", buttonFull, buttonScale)
+		unsupportedButton(ctx, "CURSOR\nHOME", buttonFull, buttonScale)
+		unsupportedButton(ctx, "CSR SPD\n4", buttonFull, buttonScale)
+		unsupportedButton(ctx, "MAP\nUNCOR", buttonFull, buttonScale)
+		unsupportedButton(ctx, "UNCOR", buttonFull, buttonScale)
+		unsupportedButton(ctx, "BEACON\nMODE-2", buttonFull, buttonScale)
+		unsupportedButton(ctx, "RTQC", buttonFull, buttonScale)
+		unsupportedButton(ctx, "MCP", buttonFull, buttonScale)
 		top := ps.DCBPosition == dcbPositionTop
 		if toggleButton(ctx, "DCB\nTOP", &top, buttonHalfVertical, buttonScale) {
 			ps.DCBPosition = dcbPositionTop
@@ -441,7 +445,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		if selectButton(ctx, "DEFAULT", buttonHalfVertical, buttonScale) {
 			sp.prefSet.ResetDefault(ctx.ControlClient.State, ctx.Platform, sp)
 		}
-		disabledButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
+		unsupportedButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
 		if sp.RestorePreferences == nil {
 			// It shouldn't be nil, but...
 			disabledButton(ctx, "RESTORE", buttonHalfVertical, buttonScale)
@@ -465,7 +469,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		} else {
 			disabledButton(ctx, "SAVE", buttonHalfVertical, buttonScale)
 		}
-		disabledButton(ctx, "CHG PIN", buttonHalfVertical, buttonScale)
+		unsupportedButton(ctx, "CHG PIN", buttonHalfVertical, buttonScale)
 
 		canSaveAs := slices.Contains(sp.prefSet.Saved[:], nil)
 		if !canSaveAs {
@@ -532,29 +536,29 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		toggleButton(ctx, "TIME", &ps.SSAList.Filter.Time, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "ALTSTG", &ps.SSAList.Filter.Altimeter, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "STATUS", &ps.SSAList.Filter.Status, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "PLAN", buttonHalfVertical, buttonScale) // ?? TODO
+		unsupportedButton(ctx, "PLAN", buttonHalfVertical, buttonScale) // ?? TODO
 		toggleButton(ctx, "RADAR", &ps.SSAList.Filter.Radar, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "CODES", &ps.SSAList.Filter.Codes, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "SPC", &ps.SSAList.Filter.SpecialPurposeCodes, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "SYS OFF", buttonHalfVertical, buttonScale) // ?? TODO
+		unsupportedButton(ctx, "SYS OFF", buttonHalfVertical, buttonScale) // ?? TODO
 		toggleButton(ctx, "RANGE", &ps.SSAList.Filter.Range, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "PTL", &ps.SSAList.Filter.PredictedTrackLines, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "ALT FIL", &ps.SSAList.Filter.AltitudeFilters, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "NAS I/F", buttonHalfVertical, buttonScale) // ?? TODO
+		unsupportedButton(ctx, "NAS I/F", buttonHalfVertical, buttonScale) // ?? TODO
 		// INTRAIL
 		// 2.5
 		toggleButton(ctx, "AIRPORT", &ps.SSAList.Filter.AirportWeather, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "OP MODE", buttonHalfVertical, buttonScale) // ?? TODO
-		disabledButton(ctx, "TT", buttonHalfVertical, buttonScale)      // ?? TODO
+		unsupportedButton(ctx, "OP MODE", buttonHalfVertical, buttonScale) // ?? TODO
+		unsupportedButton(ctx, "TT", buttonHalfVertical, buttonScale)      // ?? TODO
 		toggleButton(ctx, "WX HIST", &ps.SSAList.Filter.WxHistory, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "QL", &ps.SSAList.Filter.QuickLookPositions, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "TW OFF", &ps.SSAList.Filter.DisabledTerminal, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "CON/CPL", buttonHalfVertical, buttonScale) // ?? TODO
-		disabledButton(ctx, "OFF IND", buttonHalfVertical, buttonScale) // ?? TODO
+		unsupportedButton(ctx, "CON/CPL", buttonHalfVertical, buttonScale) // ?? TODO
+		unsupportedButton(ctx, "OFF IND", buttonHalfVertical, buttonScale) // ?? TODO
 		toggleButton(ctx, "CRDA", &ps.SSAList.Filter.ActiveCRDAPairs, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "FLOW", buttonHalfVertical, buttonScale) // TODO
-		disabledButton(ctx, "AMZ", buttonHalfVertical, buttonScale)  // TODO
-		disabledButton(ctx, "TBFM", buttonHalfVertical, buttonScale) // TODO
+		unsupportedButton(ctx, "FLOW", buttonHalfVertical, buttonScale) // TODO
+		unsupportedButton(ctx, "AMZ", buttonHalfVertical, buttonScale)  // TODO
+		unsupportedButton(ctx, "TBFM", buttonHalfVertical, buttonScale) // TODO
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.activeDCBMenu = dcbMenuMain
 		}
@@ -722,7 +726,7 @@ func drawDCBText(text string, td *renderer.TextDrawBuilder, buttonSize [2]float3
 	}
 }
 
-func drawDCBButton(ctx *panes.Context, text string, flags int, buttonScale float32, pushedIn bool, disabled bool) (math.Extent2D, bool) {
+func drawDCBButton(ctx *panes.Context, text string, flags int, buttonScale float32, pushedIn bool) (math.Extent2D, bool) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	td := renderer.GetTextDrawBuilder()
@@ -745,11 +749,17 @@ func drawDCBButton(ctx *panes.Context, text string, flags int, buttonScale float
 		ext.Inside([2]float32{dcbDrawState.mouseDownPos[0], dcbDrawState.mouseDownPos[1]})
 
 	var buttonColor, textColor renderer.RGB
+	disabled := flags&buttonDisabled != 0
 	if disabled {
 		buttonColor = dcbDisabledButtonColor
 		textColor = dcbDisabledTextColor
 	}
-	if !disabled {
+	unsupported := flags&buttonUnsupported != 0
+	if unsupported {
+		buttonColor = dcbUnsupportedButtonColor
+		textColor = dcbUnsupportedTextColor
+	}
+	if !disabled && !unsupported {
 		if mouseInside && mouseDownInside {
 			pushedIn = !pushedIn
 		}
@@ -775,7 +785,7 @@ func drawDCBButton(ctx *panes.Context, text string, flags int, buttonScale float
 	shiftp := func(p [2]float32, dx, dy float32) [2]float32 {
 		return math.Add2f(p, [2]float32{dx, dy})
 	}
-	if !disabled && pushedIn { //((selected && !mouseInside) || (!selected && mouseInside && mouse.Down[MouseButtonPrimary])) {
+	if !disabled && !unsupported && pushedIn { //((selected && !mouseInside) || (!selected && mouseInside && mouse.Down[MouseButtonPrimary])) {
 		// Depressed bevel scheme: darker top/left, highlight bottom/right
 		topLeftBevelColor, bottomRightBevelColor = bottomRightBevelColor, topLeftBevelColor
 	}
@@ -863,7 +873,7 @@ func updateDCBCursor(flags int, sz [2]float32, ctx *panes.Context) {
 }
 
 func toggleButton(ctx *panes.Context, text string, state *bool, flags int, buttonScale float32) bool {
-	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, *state, false)
+	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, *state)
 
 	if clicked {
 		*state = !*state
@@ -884,7 +894,7 @@ var activeSpinner dcbSpinner
 func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, commandMode CommandMode, flags int, buttonScale float32) {
 	if activeSpinner != nil && spinner.Equals(activeSpinner) {
 		// This spinner is active.
-		buttonBounds, clicked := drawDCBButton(ctx, spinner.Label(), flags, buttonScale, true, false)
+		buttonBounds, clicked := drawDCBButton(ctx, spinner.Label(), flags, buttonScale, true)
 		// This is horrific and one of many ugly things about capturing the
 		// mouse, but most of Panes' work is in the simplified space of a
 		// pane coordinate system; here we need something in terms of
@@ -905,7 +915,7 @@ func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, comm
 		}
 	} else {
 		// The spinner is not active; draw it (and check if it was clicked...)
-		_, clicked := drawDCBButton(ctx, spinner.Label(), flags, buttonScale, false, false)
+		_, clicked := drawDCBButton(ctx, spinner.Label(), flags, buttonScale, false)
 		if clicked {
 			activeSpinner = spinner
 			sp.resetInputState()
@@ -1326,13 +1336,13 @@ func (s *dcbBrightnessSpinner) KeyboardInput(text string) error {
 func (s *dcbBrightnessSpinner) Disabled() {}
 
 func selectButton(ctx *panes.Context, text string, flags int, buttonScale float32) bool {
-	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, flags&buttonSelected != 0, false)
+	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, flags&buttonSelected != 0)
 	return clicked
 }
 
 func (sp *STARSPane) placeButton(ctx *panes.Context, text string, flags int, buttonScale float32,
 	callback func(pw [2]float32, transforms ScopeTransformations) CommandStatus) {
-	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, text == sp.selectedPlaceButton, false)
+	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, text == sp.selectedPlaceButton)
 	if clicked {
 		sp.selectedPlaceButton = text
 		sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) CommandStatus {
@@ -1343,5 +1353,9 @@ func (sp *STARSPane) placeButton(ctx *panes.Context, text string, flags int, but
 }
 
 func disabledButton(ctx *panes.Context, text string, flags int, buttonScale float32) {
-	drawDCBButton(ctx, text, flags, buttonScale, false, true)
+	drawDCBButton(ctx, text, flags|buttonDisabled, buttonScale, false)
+}
+
+func unsupportedButton(ctx *panes.Context, text string, flags int, buttonScale float32) {
+	drawDCBButton(ctx, text, flags|buttonUnsupported, buttonScale, false)
 }
