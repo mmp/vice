@@ -1226,7 +1226,7 @@ func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 				state.FirstRadarTrack = now
 
 				trk := sp.getTrack(ctx, ac)
-				if sp.AutoTrackDepartures && trk != nil && trk.TrackOwner == "" &&
+				if sp.AutoTrackDepartures && trk != nil && trk.TrackOwner == "" && ac.Squawk != 0o1200 &&
 					ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.PrimaryTCP {
 					starsFP := sim.MakeSTARSFlightPlan(ac.FlightPlan)
 					ctx.ControlClient.InitiateTrack(callsign, starsFP, nil, nil) // ignore error...

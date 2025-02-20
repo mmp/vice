@@ -2500,6 +2500,9 @@ func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
 			if ac.TrackingController != "" {
 				return av.ErrOtherControllerHasTrack
 			}
+			if ac.Squawk == 0o1200 {
+				return av.ErrNoFlightPlan
+			}
 			/*
 				if s.State.STARSComputer().TrackInformation[ac.Callsign] != nil {
 					return av.ErrOtherControllerHasTrack
@@ -3639,6 +3642,9 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
+	if of.Unassociated {
+		ac.Squawk = 0o1200
+	}
 	ac.FlightPlan = ac.NewFlightPlan(av.IFR, acType, airline.DepartureAirport,
 		airline.ArrivalAirport)
 

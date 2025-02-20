@@ -1135,6 +1135,7 @@ type Overflight struct {
 	AssignedSpeed       float32                 `json:"assigned_speed"`
 	SpeedRestriction    float32                 `json:"speed_restriction"`
 	InitialController   string                  `json:"initial_controller"`
+	Unassociated        bool                    `json:"unassociated"`
 	Scratchpad          string                  `json:"scratchpad"`
 	SecondaryScratchpad string                  `json:"secondary_scratchpad"`
 	Description         string                  `json:"description"`
@@ -1176,9 +1177,15 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 		e.ErrorString("must specify \"initial_speed\"")
 	}
 
-	if of.InitialController == "" {
-		e.ErrorString("\"initial_controller\" missing")
-	} else if _, ok := controlPositions[of.InitialController]; !ok {
-		e.ErrorString("controller %q not found for \"initial_controller\"", of.InitialController)
+	if of.Unassociated {
+		if of.InitialController != "" {
+			e.ErrorString("Can't specify \"initial_controller\" if \"unassociated\" is true.")
+		}
+	} else {
+		if of.InitialController == "" {
+			e.ErrorString("Must either specify \"initial_controller\" or set \"unassociated\" to true.")
+		} else if _, ok := controlPositions[of.InitialController]; !ok {
+			e.ErrorString("controller %q not found for \"initial_controller\"", of.InitialController)
+		}
 	}
 }

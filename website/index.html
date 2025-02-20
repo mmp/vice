@@ -831,7 +831,6 @@ how it simulates aircraft or the STARS interface.
                   <li>"VOR" and "Localizer" may now be given for the "type" of approaches.</li>
                   <li><code>/hoID</code> may be given after a fix in a route to cause the aircraft to be handed off to the given
                     controller id at that fix. (Mostly useful for aircraft controlled by virtual controllers.)</li>
-                  <li></li>
                 </ul>
               </li>
             </ul>
@@ -5893,7 +5892,8 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"initial_controller"</td>
                 <td>String</td>
-                <td>The identifier of the virtual controller who initially has the aircraft's track.</td>
+                <td>The identifier of the virtual controller who initially has the aircraft's track.
+                  No controller may be specified if "unassociated" is true.</td>
               </tr>
               <tr>
                 <td>"initial_speed"</td>
@@ -5915,6 +5915,12 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Number</td>
                 <td>(<i>Optional</i>) If specified, gives a speed restriction to the aircraft (e.g., as would
                 happen after passing a waypoint on a route with a speed restriction.)</td>
+              </tr>
+              <tr>
+                <td>"unassociated"</td>
+                <td>Boolean</td>
+                <td>(<i>Optional</i>) If set, the aircraft is an unassociated VFR track that flies its
+                  route without making contact with ATC.</td>
               </tr>
               <tr>
                 <td>"waypoints"</td>

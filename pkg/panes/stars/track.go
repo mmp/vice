@@ -268,6 +268,14 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	sp.DuplicateBeacons = make(map[av.Squawk]interface{})
 	beaconCount := make(map[av.Squawk]int)
 	for _, ac := range ctx.ControlClient.Aircraft {
+		// Don't count SPC or VFR as duplicates.
+		if ok, _ := av.SquawkIsSPC(ac.Squawk); ok {
+			continue
+		}
+		if ac.Squawk == 0o1200 {
+			continue
+		}
+
 		beaconCount[ac.Squawk] = beaconCount[ac.Squawk] + 1
 		if beaconCount[ac.Squawk] > 1 {
 			sp.DuplicateBeacons[ac.Squawk] = nil
@@ -523,7 +531,9 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 		}
 
 		positionSymbol := "*"
-		if trk := sp.getTrack(ctx, ac); trk != nil && trk.TrackOwner != "" {
+		if ac.Squawk == 0o1200 {
+			positionSymbol = string(rune(29)) // square in the STARS font
+		} else if trk := sp.getTrack(ctx, ac); trk != nil && trk.TrackOwner != "" {
 			positionSymbol = "?"
 			if ctrl, ok := ctx.ControlClient.Controllers[trk.TrackOwner]; ok && ctrl != nil {
 				if ctrl.FacilityIdentifier != "" {

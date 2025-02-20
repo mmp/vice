@@ -529,8 +529,9 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 	case CommandModeInitiateControl:
 		if ac := lookupAircraft(cmd); ac == nil {
 			status.err = ErrSTARSCommandFormat
+		} else if err := sp.initiateTrack(ctx, ac.Callsign); err != nil {
+			status.err = err
 		} else {
-			sp.initiateTrack(ctx, ac.Callsign)
 			status.clear = true
 		}
 		return
@@ -2431,12 +2432,16 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *panes.Context, callsign string, di
 		func(err error) { sp.displayError(err, ctx) })
 }
 
-func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string) {
+func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string) error {
 	// TODO: should we actually be looking up the flight plan on the server
 	// side anyway?
 	fp, err := ctx.ControlClient.STARSComputer().GetFlightPlan(callsign)
 	if err != nil {
 		// TODO: do what here?
+	}
+
+	if ctx.ControlClient.Aircraft[callsign].Squawk == 0o1200 {
+		return ErrSTARSIllegalFlight
 	}
 
 	ctx.ControlClient.InitiateTrack(callsign, fp,
@@ -2449,6 +2454,7 @@ func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string) {
 			}
 		},
 		func(err error) { sp.displayError(err, ctx) })
+	return nil
 }
 
 func (sp *STARSPane) dropTrack(ctx *panes.Context, callsign string) {
@@ -2676,8 +2682,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					_, shift := ctx.Keyboard.Pressed[platform.KeyShift]
 					if ctrl && shift {
 						// initiate track, CRC style
-						status.clear = true
-						sp.initiateTrack(ctx, ac.Callsign)
+						if err := sp.initiateTrack(ctx, ac.Callsign); err != nil {
+							status.err = err
+						} else {
+							status.clear = true
+						}
 						return
 					}
 				}
@@ -2948,8 +2957,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			} else if len(cmd) > 0 {
 				// If it matches the callsign, attempt to initiate track.
 				if cmd == ac.Callsign {
-					status.clear = true
-					sp.initiateTrack(ctx, ac.Callsign)
+					if err := sp.initiateTrack(ctx, ac.Callsign); err != nil {
+						status.err = err
+					} else {
+						status.clear = true
+					}
 					return
 				}
 
@@ -2983,9 +2995,10 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		case CommandModeInitiateControl:
 			if cmd != ac.Callsign {
 				status.err = ErrSTARSCommandFormat
+			} else if err := sp.initiateTrack(ctx, ac.Callsign); err != nil {
+				status.err = err
 			} else {
 				status.clear = true
-				sp.initiateTrack(ctx, ac.Callsign)
 			}
 			return
 

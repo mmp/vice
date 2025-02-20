@@ -427,11 +427,13 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, aircraft []*
 	var vfr []*av.Aircraft
 	// Find all untracked av.VFR aircraft
 	// FIXME: this should actually be based on VFR flight plans
-	for _, ac := range aircraft {
-		if ac.Squawk == av.Squawk(0o1200) && ac.TrackingController == "" {
-			vfr = append(vfr, ac)
+	/*
+		for _, ac := range aircraft {
+				if ac.Squawk == av.Squawk(0o1200) && ac.TrackingController == "" {
+					vfr = append(vfr, ac)
+				}
 		}
-	}
+	*/
 
 	// FIXME: this should actually be sorted by when we first saw the aircraft
 	slices.SortFunc(vfr, func(a, b *av.Aircraft) int { return strings.Compare(a.Callsign, b.Callsign) })
