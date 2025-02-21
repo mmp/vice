@@ -41,6 +41,8 @@ type Waypoint struct {
 	Airway              string               // when parsing waypoints, this is set if we're on an airway after the fix
 	OnSID, OnSTAR       bool                 // set during deserialization
 	OnApproach          bool                 // set during deserialization
+	AirworkRadius       int                  // set during deserialization
+	AirworkMinutes      int                  // set during deserialization
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -211,6 +213,9 @@ func (wslice WaypointArray) Encode() string {
 		if w.OnApproach {
 			s += "/appr"
 		}
+		if w.AirworkRadius != 0 {
+			s += fmt.Sprintf("/airwork%dnm%dm", w.AirworkRadius, w.AirworkMinutes)
+		}
 
 		entries = append(entries, s)
 
@@ -299,6 +304,16 @@ func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*
 		e.Push(wp.Fix)
 		if wp.Speed < 0 || wp.Speed > 300 {
 			e.ErrorString("invalid speed restriction %d", wp.Speed)
+		}
+
+		if wp.AirworkMinutes > 0 {
+			if ar := wp.AltitudeRestriction; ar == nil {
+				e.ErrorString("Must provide altitude range via \"/aXXX-YYY\" with /airwork")
+			} else if ar.Range[0] == 0 || ar.Range[1] == 0 {
+				e.ErrorString("Must provide top and bottom in altitude range \"/aXXX-YYY\" with /airwork")
+			} else if ar.Range[1]-ar.Range[0] < 2000 {
+				e.ErrorString("Must provide at least 2,000' of altitude range with /airwork")
+			}
 		}
 
 		if wp.PointOut != "" {
@@ -488,6 +503,32 @@ func parseWaypoints(str string) (WaypointArray, error) {
 					wp.OnSTAR = true
 				} else if f == "appr" {
 					wp.OnApproach = true
+				} else if strings.HasPrefix(f, "airwork") {
+					a := f[7:]
+					radius, minutes := 7, 15
+					i := 0
+					for len(a) > 0 {
+						if a[i] >= '0' && a[i] <= '9' {
+							i++
+						} else if n, err := strconv.Atoi(a[:i]); err != nil {
+							return nil, fmt.Errorf("%v: parsing %q", f, a[:i])
+						} else if a[i] == 'm' {
+							minutes = n
+							a = a[i+1:]
+							i = 0
+						} else if a[i] == 'n' && len(a) > i+1 && a[i+1] == 'm' {
+							radius = n
+							a = a[i+2:]
+							i = 0
+						} else {
+							return nil, fmt.Errorf("unexpected suffix %q after %q in %q", a[i:], a[:i], f)
+						}
+					}
+					if i > 0 {
+						return nil, fmt.Errorf("unexpected numbers %q after %q", a, f)
+					}
+					wp.AirworkRadius = radius
+					wp.AirworkMinutes = minutes
 				} else if len(f) > 2 && f[:2] == "po" {
 					wp.PointOut = f[2:]
 				} else if (len(f) >= 4 && f[:4] == "pt45") || len(f) >= 5 && f[:5] == "lpt45" {

@@ -4913,6 +4913,13 @@ how it simulates aircraft or the STARS interface.
                   <li><i>alt</i>: cross at <i>alt</i>.</li>
                 </ul>
               </li>
+              <li> <code>/airwork</code>: the aircraft (which should be VFR) should perform airwork
+                centered around the fix. An altitude restriction must be specified using <code>/a</code> to give an altitude
+                range for the airwork. By default, they will do so for 15 minutes and remain within 7nm of the fix;
+                alternatively, the time or distance may be specified via <code>/airwork</code><i>radius</i><code>nm</code>
+                and/or  <code>/airwork</code><i>minutes</i><code>m</code>. For example: <code>/airwork30m10nm</code>
+                specifies 30 minutes of airwork within a 10nm radius of the fix.
+              </li>
               <li> <code>/delete</code><i>heading</i>: the aircraft will be deleted when it reaches the fix</li>
               <li> <code>/h</code><i>heading</i>: depart the fix at specified heading</li>
               <li> <code>/s</code><i>speed</i>: cross the fix at the given speed</li>

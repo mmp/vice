@@ -20,12 +20,14 @@ import (
 // State related to navigation. Pointers are used for optional values; nil
 // -> unset/unspecified.
 type Nav struct {
-	FlightState    FlightState
-	Perf           AircraftPerformance
-	Altitude       NavAltitude
-	Speed          NavSpeed
-	Heading        NavHeading
-	Approach       NavApproach
+	FlightState FlightState
+	Perf        AircraftPerformance
+	Altitude    NavAltitude
+	Speed       NavSpeed
+	Heading     NavHeading
+	Approach    NavApproach
+	Airwork     *NavAirwork
+
 	FixAssignments map[string]NavFixAssignment
 
 	// DeferredHeading stores a heading assignment from the controller that
@@ -142,6 +144,22 @@ type NavFixAssignment struct {
 		Fix     *Waypoint
 		Heading *float32
 	}
+}
+
+type NavAirwork struct {
+	Radius   float32
+	Center   math.Point2LL
+	AltRange [2]float32
+
+	RemainingSteps  int
+	NextMoveCounter int
+	Heading         float32
+	TurnRate        float32
+	TurnDirection   TurnMethod
+	IAS             float32
+	Altitude        float32
+	Dive            bool
+	ToCenter        bool
 }
 
 type InterceptState int
@@ -873,13 +891,16 @@ func (nav *Nav) Update(wind WindModel, lg *log.Logger) *Waypoint {
 	nav.updateAltitude(lg, deltaKts, slowingTo250)
 	nav.updateHeading(wind, lg)
 	nav.updatePositionAndGS(wind, lg)
+	if nav.Airwork != nil && !nav.Airwork.Update(nav) {
+		nav.Airwork = nil // Done.
+	}
 
 	lg.Debug("nav_update", slog.Any("flight_state", nav.FlightState))
 
 	// Don't refer to DeferredHeading here; assume that if the pilot hasn't
 	// punched in a new heading assignment, we should update waypoints or
 	// not as per the old assignment.
-	if nav.Heading.Assigned == nil {
+	if nav.Airwork == nil && nav.Heading.Assigned == nil {
 		return nav.updateWaypoints(wind, lg)
 	}
 
@@ -887,6 +908,10 @@ func (nav *Nav) Update(wind WindModel, lg *log.Logger) *Waypoint {
 }
 
 func (nav *Nav) TargetHeading(wind WindModel, lg *log.Logger) (heading float32, turn TurnMethod, rate float32) {
+	if nav.Airwork != nil {
+		return nav.Airwork.TargetHeading()
+	}
+
 	// Is it time to start following a heading given by the controller a
 	// few seconds ago?
 	if dh := nav.DeferredHeading; dh != nil && time.Now().After(dh.Time) {
@@ -1087,6 +1112,10 @@ func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32
 const MaximumRate = 100000
 
 func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
+	if nav.Airwork != nil {
+		return nav.Airwork.TargetAltitude()
+	}
+
 	// Stay on the ground if we're still on the takeoff roll.
 	if nav.FlightState.InitialDepartureClimb && !nav.IsAirborne() {
 		lg.Debug("alt: continuing takeoff roll")
@@ -1334,6 +1363,12 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 }
 
 func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
+	if nav.Airwork != nil {
+		if spd, rate, ok := nav.Airwork.TargetSpeed(); ok {
+			return spd, rate
+		}
+	}
+
 	maxAccel := nav.Perf.Rate.Accelerate * 30 // per minute
 
 	fd, err := nav.distanceToEndOfApproach()
@@ -1665,6 +1700,10 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 			nav.Approach.NoPT = true
 		}
 
+		if wp.AirworkMinutes > 0 {
+			nav.Airwork = StartAirwork(wp, *nav)
+		}
+
 		// Remove the waypoint from the route unless it's the destination
 		// airport, which we leave in any case.
 		if len(nav.Waypoints) == 1 {
@@ -1781,7 +1820,7 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 type TurnMethod int
 
 const (
-	TurnClosest = iota // default
+	TurnClosest TurnMethod = iota // default
 	TurnLeft
 	TurnRight
 )
@@ -2970,4 +3009,116 @@ func (fp *FlyStandard45PT) GetHeading(nav *Nav, wind WindModel, lg *log.Logger) 
 		lg.Errorf("unhandled PT state: %d", fp.State)
 		return nav.FlightState.Heading, TurnClosest, StandardTurnRate
 	}
+}
+
+func StartAirwork(wp Waypoint, nav Nav) *NavAirwork {
+	a := &NavAirwork{
+		Radius:         float32(wp.AirworkRadius),
+		Center:         wp.Location,
+		AltRange:       wp.AltitudeRestriction.Range,
+		RemainingSteps: wp.AirworkMinutes * 60, // sim ticks are 1 second.
+		Altitude:       nav.FlightState.Altitude,
+	}
+
+	a.Start360(nav)
+
+	return a
+}
+
+func (aw *NavAirwork) Update(nav *Nav) bool {
+	// Tick down the number of seconds we're doing this.
+	aw.RemainingSteps--
+	if aw.RemainingSteps == 0 {
+		// Direct to the next waypoint in the route
+		nav.Heading = NavHeading{}
+		return false
+	}
+
+	// If we're getting close to the maximum distance from the center
+	// point, turn back toward it.
+	d := math.NMDistance2LL(nav.FlightState.Position, aw.Center)
+	if aw.ToCenter && d < 1 {
+		// Close enough
+		aw.ToCenter = false
+	} else if float32(aw.Radius)-d < 2.5 || aw.ToCenter {
+		aw.Heading = math.Heading2LL(nav.FlightState.Position, aw.Center, nav.FlightState.NmPerLongitude,
+			nav.FlightState.MagneticVariation)
+		aw.TurnRate = StandardTurnRate
+		aw.TurnDirection = TurnClosest
+		aw.ToCenter = true
+		return true
+	}
+
+	// Don't check IAS; we only care that we reach the heading and altitude
+	// we wanted to do next.
+	if nav.FlightState.Heading == aw.Heading && nav.FlightState.Altitude == aw.Altitude {
+		if aw.NextMoveCounter == 0 {
+			// We just finished. Clean up and Continue straight and level for a bit.
+			aw.Dive = false
+			aw.NextMoveCounter = 5 + rand.Intn(25)
+		} else if aw.NextMoveCounter == 1 {
+			// Pick a new thing.
+			aw.ToCenter = false
+			if rand.Float32() < .2 {
+				// Do a 360
+				aw.Start360(*nav)
+			} else if nav.FlightState.Altitude > aw.AltRange[0]+2000 && rand.Float32() < .2 {
+				// Dive.
+				aw.Dive = true
+				aw.Altitude = aw.AltRange[0] + 200*rand.Float32()
+			} else if nav.FlightState.Altitude+1000 < aw.AltRange[1] && rand.Float32() < .2 {
+				// Climbing turn
+				aw.Altitude = aw.AltRange[1] - 500*rand.Float32()
+				aw.Heading = 360 * rand.Float32()
+				aw.TurnDirection = util.Select(rand.Float32() < .5, TurnLeft, TurnRight)
+			} else if nav.FlightState.Altitude < aw.AltRange[0]+1000 && rand.Float32() < .2 {
+				// Descending turn
+				aw.Altitude = aw.AltRange[0] + 500*rand.Float32()
+				aw.Heading = 360 * rand.Float32()
+				aw.TurnDirection = util.Select(rand.Float32() < .5, TurnLeft, TurnRight)
+			} else if rand.Float32() < .2 {
+				// Slow turn
+				aw.Heading = 360 * rand.Float32()
+				aw.IAS = math.Lerp(.1, nav.Perf.Speed.Min, TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude))
+				aw.TurnDirection = util.Select(rand.Float32() < .5, TurnLeft, TurnRight)
+			} else if rand.Float32() < .2 {
+				// Slow, straight and level
+				aw.IAS = math.Lerp(.1, nav.Perf.Speed.Min, TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude))
+				aw.NextMoveCounter = 20
+			} else {
+				// Straight and level and then we'll reconsider.
+				aw.NextMoveCounter = 10
+			}
+		}
+		// Tick
+		aw.NextMoveCounter--
+	}
+
+	return true
+}
+
+func (aw *NavAirwork) Start360(nav Nav) {
+	if rand.Intn(2) == 0 {
+		aw.TurnDirection = TurnLeft
+		aw.Heading = math.NormalizeHeading(nav.FlightState.Heading + 1)
+	} else {
+		aw.TurnDirection = TurnRight
+		aw.Heading = math.NormalizeHeading(nav.FlightState.Heading - 1)
+	}
+	aw.TurnRate = StandardTurnRate
+}
+
+func (aw *NavAirwork) TargetHeading() (heading float32, turn TurnMethod, rate float32) {
+	return aw.Heading, aw.TurnDirection, aw.TurnRate
+}
+
+func (aw *NavAirwork) TargetAltitude() (float32, float32) {
+	return aw.Altitude, float32(util.Select(aw.Dive, 3000, 500))
+}
+
+func (aw *NavAirwork) TargetSpeed() (float32, float32, bool) {
+	if aw.IAS == 0 {
+		return 0, 0, false
+	}
+	return aw.IAS, 10, true
 }
