@@ -285,13 +285,9 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			}
 
 			if rwy.Category != "" {
-				found := false
-				for _, dep := range ap.Departures {
-					if ap.ExitCategories[dep.Exit] == rwy.Category {
-						found = true
-						break
-					}
-				}
+				found := slices.ContainsFunc(ap.Departures, func(dep av.Departure) bool {
+					return ap.ExitCategories[dep.Exit] == rwy.Category
+				})
 				if !found {
 					e.ErrorString("no departures have exit category %q", rwy.Category)
 				}
