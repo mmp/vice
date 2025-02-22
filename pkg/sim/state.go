@@ -454,7 +454,7 @@ func (ss *State) AverageWindVector() [2]float32 {
 	return math.Scale2f(v, float32(ss.Wind.Speed))
 }
 
-func (ss *State) GetWindVector(p math.Point2LL, alt float32) math.Point2LL {
+func (ss *State) GetWindVector(p math.Point2LL, alt float32) [2]float32 {
 	// Sinusoidal wind speed variation from the base speed up to base +
 	// gust and then back...
 	base := time.UnixMicro(0)

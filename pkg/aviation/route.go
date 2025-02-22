@@ -474,6 +474,8 @@ func (w WaypointArray) RandomizeVFRRoute(nmPerLongitude float32, magneticVariati
 			ralt = jitter(ralt)
 		}
 	}
+
+	return w
 }
 
 func parsePTExtent(pt *ProcedureTurn, extent string) error {

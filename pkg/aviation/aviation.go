@@ -367,7 +367,7 @@ type Wind struct {
 }
 
 type WindModel interface {
-	GetWindVector(p math.Point2LL, alt float32) math.Point2LL
+	GetWindVector(p math.Point2LL, alt float32) [2]float32
 	AverageWindVector() [2]float32
 }
 
