@@ -3558,7 +3558,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*av.Airc
 	}
 
 	if err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr, arrivalController,
-		goAround, s.State.NmPerLongitude, s.State.MagneticVariation, s.lg); err != nil {
+		goAround, s.State.NmPerLongitude, s.State.MagneticVariation, s.State /* wind */, s.lg); err != nil {
 		return nil, err
 	}
 
@@ -3620,7 +3620,7 @@ func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	if err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.Scratchpads,
-		s.State.PrimaryController, s.State.MultiControllers, s.lg); err != nil {
+		s.State.PrimaryController, s.State.MultiControllers, s.State /* wind */, s.lg); err != nil {
 		return nil, err
 	}
 
@@ -3676,7 +3676,8 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 		}
 	}
 
-	if err := ac.InitializeOverflight(&of, controller, s.State.NmPerLongitude, s.State.MagneticVariation, s.lg); err != nil {
+	if err := ac.InitializeOverflight(&of, controller, s.State.NmPerLongitude, s.State.MagneticVariation,
+		s.State /* wind */, s.lg); err != nil {
 		return nil, err
 	}
 

@@ -172,8 +172,8 @@ const (
 )
 
 func MakeArrivalNav(arr *Arrival, fp FlightPlan, perf AircraftPerformance,
-	nmPerLongitude float32, magneticVariation float32, lg *log.Logger) *Nav {
-	if nav := makeNav(fp, perf, arr.Waypoints, nmPerLongitude, magneticVariation, lg); nav != nil {
+	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
+	if nav := makeNav(fp, perf, arr.Waypoints, nmPerLongitude, magneticVariation, wind, lg); nav != nil {
 		spd := arr.SpeedRestriction
 		nav.Speed.Restriction = util.Select(spd != 0, &spd, nil)
 		if arr.AssignedAltitude > 0 {
@@ -197,8 +197,8 @@ func MakeArrivalNav(arr *Arrival, fp FlightPlan, perf AircraftPerformance,
 }
 
 func MakeDepartureNav(fp FlightPlan, perf AircraftPerformance, assignedAlt, clearedAlt, speedRestriction int,
-	wp []Waypoint, nmPerLongitude float32, magneticVariation float32, lg *log.Logger) *Nav {
-	if nav := makeNav(fp, perf, wp, nmPerLongitude, magneticVariation, lg); nav != nil {
+	wp []Waypoint, nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
+	if nav := makeNav(fp, perf, wp, nmPerLongitude, magneticVariation, wind, lg); nav != nil {
 		if assignedAlt != 0 {
 			alt := float32(math.Min(assignedAlt, fp.Altitude))
 			nav.Altitude.Assigned = &alt
@@ -218,8 +218,8 @@ func MakeDepartureNav(fp FlightPlan, perf AircraftPerformance, assignedAlt, clea
 }
 
 func MakeOverflightNav(of *Overflight, fp FlightPlan, perf AircraftPerformance,
-	nmPerLongitude float32, magneticVariation float32, lg *log.Logger) *Nav {
-	if nav := makeNav(fp, perf, of.Waypoints, nmPerLongitude, magneticVariation, lg); nav != nil {
+	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
+	if nav := makeNav(fp, perf, of.Waypoints, nmPerLongitude, magneticVariation, wind, lg); nav != nil {
 		spd := of.SpeedRestriction
 		nav.Speed.Restriction = util.Select(spd != 0, &spd, nil)
 		if of.AssignedAltitude > 0 {
@@ -244,7 +244,7 @@ func MakeOverflightNav(of *Overflight, fp FlightPlan, perf AircraftPerformance,
 }
 
 func makeNav(fp FlightPlan, perf AircraftPerformance, wp []Waypoint, nmPerLongitude float32,
-	magneticVariation float32, lg *log.Logger) *Nav {
+	magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
 	nav := &Nav{
 		Perf:           perf,
 		FinalAltitude:  float32(fp.Altitude),

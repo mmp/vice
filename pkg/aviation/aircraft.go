@@ -345,7 +345,7 @@ func (ac *Aircraft) InterceptApproach() []RadioTransmission {
 }
 
 func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffController string, goAround bool,
-	nmPerLongitude float32, magneticVariation float32, lg *log.Logger) error {
+	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) error {
 	ac.STAR = arr.STAR
 	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.FlightPlan.ArrivalAirport]
 	ac.Scratchpad = arr.Scratchpad
@@ -376,7 +376,7 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffC
 		ac.GoAroundDistance = &d
 	}
 
-	nav := MakeArrivalNav(arr, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation, lg)
+	nav := MakeArrivalNav(arr, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation, wind, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -399,7 +399,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	runway string, exitRoute ExitRoute, nmPerLongitude float32,
 	magneticVariation float32, scratchpads map[string]string,
 	primaryController string, multiControllers SplitConfiguration,
-	lg *log.Logger) error {
+	wind WindModel, lg *log.Logger) error {
 	wp := util.DuplicateSlice(exitRoute.Waypoints)
 	wp = append(wp, dep.RouteWaypoints...)
 	wp = util.FilterSlice(wp, func(wp Waypoint) bool { return !wp.Location.IsZero() })
@@ -434,7 +434,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	ac.HoldForRelease = ap.HoldForRelease
 
 	nav := MakeDepartureNav(*ac.FlightPlan, perf, exitRoute.AssignedAltitude,
-		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, nmPerLongitude, magneticVariation, lg)
+		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, nmPerLongitude, magneticVariation, wind, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -473,7 +473,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 }
 
 func (ac *Aircraft) InitializeOverflight(of *Overflight, controller string, nmPerLongitude float32,
-	magneticVariation float32, lg *log.Logger) error {
+	magneticVariation float32, wind WindModel, lg *log.Logger) error {
 	ac.Scratchpad = of.Scratchpad
 	ac.SecondaryScratchpad = of.SecondaryScratchpad
 	ac.TrackingController = of.InitialController
@@ -493,7 +493,7 @@ func (ac *Aircraft) InitializeOverflight(of *Overflight, controller string, nmPe
 	}
 	ac.FlightPlan.Route = of.Waypoints.RouteString()
 
-	nav := MakeOverflightNav(of, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation, lg)
+	nav := MakeOverflightNav(of, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation, wind, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}

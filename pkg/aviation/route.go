@@ -421,7 +421,7 @@ func (w WaypointArray) checkDescending(e *util.ErrorLogger) {
 
 }
 
-func (w WaypointArray) RandomizeVFRRoute(nmPerLongitude float32, magneticVariation float32) {
+func (w WaypointArray) RandomizeVFRRoute(nmPerLongitude float32, magneticVariation float32, airport string, wind WindModel) WaypointArray {
 	// Random values used for altitude and position randomization
 	rtheta, rrad := rand.Float32(), rand.Float32()
 	ralt := rand.Float32()
