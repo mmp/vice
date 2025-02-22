@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -43,6 +44,7 @@ type Waypoint struct {
 	OnApproach          bool                 // set during deserialization
 	AirworkRadius       int                  // set during deserialization
 	AirworkMinutes      int                  // set during deserialization
+	Radius              float32
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -215,6 +217,9 @@ func (wslice WaypointArray) Encode() string {
 		}
 		if w.AirworkRadius != 0 {
 			s += fmt.Sprintf("/airwork%dnm%dm", w.AirworkRadius, w.AirworkMinutes)
+		}
+		if w.Radius != 0 {
+			s += fmt.Sprintf("/radius%.1f", w.Radius)
 		}
 
 		entries = append(entries, s)
@@ -416,6 +421,61 @@ func (w WaypointArray) checkDescending(e *util.ErrorLogger) {
 
 }
 
+func (w WaypointArray) RandomizeVFRRoute(nmPerLongitude float32, magneticVariation float32) {
+	// Random values used for altitude and position randomization
+	rtheta, rrad := rand.Float32(), rand.Float32()
+	ralt := rand.Float32()
+
+	// We use this to some random variation to the random sample after each
+	// use. In this way, there's some correlation between adjacent
+	// waypoints: if they're relatively high at one, they'll tend to be
+	// relatively high at the next one, though the random choices still
+	// vary a bit.
+	jitter := func(v float32) float32 {
+		v += -0.1 + 0.2*rand.Float32()
+		if v < 0 {
+			v = -v
+		} else if v > 1 {
+			v = 1 - (v - 1)
+		}
+		return v
+	}
+
+	for i := range w {
+		wp := &w[i]
+		if wp.Radius > 0 {
+			// Work in nm coordinates
+			p := math.LL2NM(wp.Location, nmPerLongitude)
+
+			// radius and theta
+			r := math.Sqrt(rrad) * wp.Radius // equi-area mapping
+			const Pi = 3.1415926535
+			t := 2 * Pi * rtheta
+
+			pp := math.Add2f(p, math.Scale2f([2]float32{math.Sin(t), math.Cos(t)}, r))
+			wp.Location = math.NM2LL(pp, nmPerLongitude)
+
+			rtheta = jitter(rtheta)
+			rrad = jitter(rrad)
+		}
+		if ar := wp.AltitudeRestriction; ar != nil {
+			low, high := ar.Range[0], ar.Range[1]
+			// We should clamp low to be a few hundred feet AGL, but
+			// hopefully we'll generally be given a full range.
+			if high == 0 {
+				high = low + 3000
+			}
+			alt := math.Lerp(ralt, low, high)
+
+			// Update the altitude restriction to just be the single altitude.
+			ar.Range[0] = alt
+			ar.Range[1] = alt
+
+			ralt = jitter(ralt)
+		}
+	}
+}
+
 func parsePTExtent(pt *ProcedureTurn, extent string) error {
 	if len(extent) == 0 {
 		// Unspecified; we will use the default of 1min for ILS, 4nm for RNAV
@@ -529,6 +589,13 @@ func parseWaypoints(str string) (WaypointArray, error) {
 					}
 					wp.AirworkRadius = radius
 					wp.AirworkMinutes = minutes
+				} else if strings.HasPrefix(f, "radius") {
+					rstr := f[6:]
+					if rad, err := strconv.ParseFloat(rstr, 32); err != nil {
+						return nil, err
+					} else {
+						wp.Radius = float32(rad)
+					}
 				} else if len(f) > 2 && f[:2] == "po" {
 					wp.PointOut = f[2:]
 				} else if (len(f) >= 4 && f[:4] == "pt45") || len(f) >= 5 && f[:5] == "lpt45" {
