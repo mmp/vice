@@ -198,7 +198,7 @@ func (c Controller) Id() string {
 type FlightRules int
 
 const (
-	UNKNOWN = iota
+	UNKNOWN FlightRules = iota
 	IFR
 	VFR
 	DVFR

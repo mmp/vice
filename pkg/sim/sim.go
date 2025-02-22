@@ -3642,10 +3642,12 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
+	rules := av.IFR
 	if of.Unassociated {
 		ac.Squawk = 0o1200
+		rules = av.VFR
 	}
-	ac.FlightPlan = ac.NewFlightPlan(av.IFR, acType, airline.DepartureAirport,
+	ac.FlightPlan = ac.NewFlightPlan(rules, acType, airline.DepartureAirport,
 		airline.ArrivalAirport)
 
 	// Figure out which controller will (for starters) get the handoff. For
