@@ -440,32 +440,33 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	}
 	ac.Nav = *nav
 
-	if ap.DepartureController != "" {
-		// starting out with a virtual controller
-		ac.TrackingController = ap.DepartureController
-		ac.ControllingController = ap.DepartureController
-		ac.WaypointHandoffController = exitRoute.HandoffController
-	} else {
-		// human controller will be first
-		ctrl := primaryController
-		if len(multiControllers) > 0 {
-			var err error
-			ctrl, err = multiControllers.GetDepartureController(departureAirport, runway, exitRoute.SID)
-			if err != nil {
-				lg.Error("unable to get departure controller", slog.Any("error", err),
-					slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
+	if !dep.Unassociated {
+		if ap.DepartureController != "" {
+			// starting out with a virtual controller
+			ac.TrackingController = ap.DepartureController
+			ac.ControllingController = ap.DepartureController
+			ac.WaypointHandoffController = exitRoute.HandoffController
+		} else {
+			// human controller will be first
+			ctrl := primaryController
+			if len(multiControllers) > 0 {
+				var err error
+				ctrl, err = multiControllers.GetDepartureController(departureAirport, runway, exitRoute.SID)
+				if err != nil {
+					lg.Error("unable to get departure controller", slog.Any("error", err),
+						slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
+				}
 			}
-		}
-		if ctrl == "" {
-			ctrl = primaryController
-		}
+			if ctrl == "" {
+				ctrl = primaryController
+			}
 
-		ac.DepartureContactAltitude =
-			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
-		ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
-		ac.DepartureContactController = ctrl
+			ac.DepartureContactAltitude =
+				ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
+			ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
+			ac.DepartureContactController = ctrl
+		}
 	}
-
 	ac.Nav.Check(lg)
 
 	return nil

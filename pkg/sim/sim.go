@@ -3611,7 +3611,12 @@ func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.FlightPlan = ac.NewFlightPlan(av.IFR, acType, departureAirport, dep.Destination)
+	rules := av.IFR
+	if dep.Unassociated {
+		ac.Squawk = 0o1200
+		rules = av.VFR
+	}
+	ac.FlightPlan = ac.NewFlightPlan(rules, acType, departureAirport, dep.Destination)
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	if err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.Scratchpads,
@@ -3619,8 +3624,10 @@ func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (
 		return nil, err
 	}
 
-	eram := s.State.ERAMComputer()
-	eram.AddDeparture(ac.FlightPlan, s.State.TRACON, s.SimTime)
+	if rules == av.IFR {
+		eram := s.State.ERAMComputer()
+		eram.AddDeparture(ac.FlightPlan, s.State.TRACON, s.SimTime)
+	}
 
 	return ac, nil
 }

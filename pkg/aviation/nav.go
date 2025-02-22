@@ -38,7 +38,7 @@ type Nav struct {
 	DeferredHeading *DeferredHeading
 
 	FinalAltitude float32
-	Waypoints     []Waypoint
+	Waypoints     WaypointArray
 }
 
 // DeferredHeading stores a heading assignment from the controller and the
@@ -250,6 +250,10 @@ func makeNav(fp FlightPlan, perf AircraftPerformance, wp []Waypoint, nmPerLongit
 		FinalAltitude:  float32(fp.Altitude),
 		Waypoints:      util.DuplicateSlice(wp),
 		FixAssignments: make(map[string]NavFixAssignment),
+	}
+
+	if fp.Rules == VFR {
+		nav.Waypoints.RandomizeVFRRoute(nmPerLongitude, magneticVariation)
 	}
 
 	nav.FlightState = FlightState{

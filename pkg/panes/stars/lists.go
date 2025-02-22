@@ -464,7 +464,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, aircraft []*
 	// Untracked departures departing from one of the airports we're
 	// responsible for.
 	for _, ac := range aircraft {
-		if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" {
+		if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" && ac.Squawk != 0o1200 {
 			if ap := ctx.ControlClient.DepartureAirports[fp.DepartureAirport]; ap != nil {
 				if ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.PrimaryTCP {
 					dep = append(dep, ac)

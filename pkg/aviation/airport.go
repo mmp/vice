@@ -503,7 +503,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 		}
 
-		if _, intraFacility := facilityAirports[dep.Destination]; intraFacility {
+		if _, intraFacility := facilityAirports[dep.Destination]; intraFacility || ap.Departures[i].Unassociated {
 			// Make sure that the full route is valid.
 			wp, err := parseWaypoints(dep.Route)
 			if err != nil {
@@ -529,9 +529,9 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 		}
 
-		if !slices.ContainsFunc(ap.Departures[i].RouteWaypoints,
+		if !ap.Departures[i].Unassociated && !slices.ContainsFunc(ap.Departures[i].RouteWaypoints,
 			func(wp Waypoint) bool { return wp.Fix == depExit }) {
-			e.ErrorString("exit %s not found in departure route", depExit)
+			e.ErrorString("exit %q not found in departure route", depExit)
 		}
 
 		for _, al := range dep.Airlines {
@@ -687,6 +687,7 @@ type Departure struct {
 	Airlines            []DepartureAirline      `json:"airlines"`
 	Scratchpad          string                  `json:"scratchpad"`           // optional
 	SecondaryScratchpad string                  `json:"secondary_scratchpad"` // optional
+	Unassociated        bool                    `json:"unassociated"`
 }
 
 type DepartureAirline struct {
