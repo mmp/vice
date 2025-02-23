@@ -371,7 +371,7 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffC
 		ac.FlightPlan.Route = "/. " + arr.STAR
 	}
 
-	if goAround {
+	if goAround && ac.FlightPlan.Rules == IFR { // VFRs don't go around since they aren't talking to us.
 		d := 0.1 + .6*rand.Float32()
 		ac.GoAroundDistance = &d
 	}
