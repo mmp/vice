@@ -29,6 +29,14 @@
             "cleared_altitude": 3000,
             "sid": "REP1",
             "waypoints": "KFRG-32/h220"
+          },
+          "VFR.South,VFR.East": {
+            "cleared_altitude": 1500,
+            "waypoints": "KFRG-32"
+          },
+          "VFR.North": {
+            "cleared_altitude": 1500,
+            "waypoints": "KFRG-32 N040.43.01.855,W073.23.29.848/a500 N040.43.35.364,W073.22.57.053/a700 N040.45.04.985,W073.25.17.871/a1500"
           }
         },
         "19": {
@@ -47,6 +55,42 @@
         }
       },
       "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 1500,
+          "unassociated": true,
+          "destination": "KPOU",
+          "exit": "VFR.South",
+          "route": "N040.40.08.120,W073.21.27.240/a1400 N040.35.41.249,W073.27.10.371/a1000/radius1 N040.34.31.073,W073.34.55.834/a300-500 N040.34.27.379,W073.49.10.845/a300-500 N040.32.26.406,W073.55.42.919/a300-500 N040.33.53.569,W074.00.19.555/a800-1100/radius1 N040.36.49.487,W074.02.52.622/a800-1100/radius1 N040.41.04.260,W074.01.51.868/a1100 N040.45.37.449,W074.00.22.192/a1000 N040.52.04.731,W073.56.24.585/a900 N040.58.21.837,W073.53.52.836/a1200 N041.07.32.197,W073.52.35.410/a1500-2500/radius3/land"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 3500,
+          "unassociated": true,
+          "destination": "KDXR",
+          "exit": "VFR.North",
+          "route": "N040.49.24.179,W073.33.36.375/a1500-2500/radius3 N040.53.42.413,W073.38.18.641/a3000-3500/radius3 N040.58.13.432,W073.43.17.525/a3000-3500/radius3 N041.13.23.031,W073.35.34.368/radius3/a1500-2500/land"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 4500,
+          "unassociated": true,
+          "destination": "KHWV",
+          "exit": "VFR.East",
+          "route": "N040.38.59.840,W073.24.36.535/a3000/radius1 N040.37.50.420,W073.20.34.533/a3900/radius2 N040.37.35.877,W073.15.00.027/a4500-6500/radius2 N040.44.48.093,W072.48.48.295/a4500-6500/radius2 N040.47.01.426,W072.40.22.073/radius3/a2000-3000 N040.51.40.657,W072.44.41.762/a1500-2000/radius1/land"
+        },
         {
           "airlines": [
             {
@@ -177,7 +221,10 @@
         "RBV": "Southwest",
         "SHIPP": "Water",
         "WAVEY": "Water",
-        "WHITE": "Southwest"
+        "WHITE": "Southwest",
+        "VFR.South": "VFR",
+        "VFR.East": "VFR",
+        "VFR.North": "VFR"
       },
       "tower_list": 2
     },
@@ -343,6 +390,14 @@
             "cleared_altitude": 3000,
             "sid": "LONGI7",
             "waypoints": "KISP-33L/h150"
+          },
+          "VFR.South": {
+            "cleared_altitude": 1500,
+            "waypoints": "KISP-33L N040.46.18.483,W073.03.29.756"
+          },
+          "VFR.North": {
+            "cleared_altitude": 1500,
+            "waypoints": "KISP-33L N040.45.41.885,W073.02.23.865 N040.46.56.482,W073.00.53.778 N040.50.32.775,W073.06.41.330"
           }
         },
         "24": {
@@ -368,6 +423,30 @@
         }
       },
       "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 1500,
+          "unassociated": true,
+          "destination": "KLDJ",
+          "exit": "VFR.South",
+          "route": "N040.40.27.648,W073.05.18.603/a1000-1500 N040.36.44.159,W073.19.03.319/a1000-1500/radius2 N040.34.37.803,W073.35.48.294/a300-500/radius1 N040.35.14.016,W073.46.06.522/a300-500/radius1 N040.32.16.271,W073.55.54.867/a300-500/radius1 N040.34.54.145,W073.58.26.506/a900-1300/radius1 N040.36.51.547,W074.00.55.068/a900-1300/radius2 N040.35.43.034,W074.04.44.216/a900-1300/radius2 N040.32.47.294,W074.07.33.845/a900-1300/radius2 N040.30.13.925,W074.14.03.420/a900-1300/radius1 N040.33.18.893,W074.14.46.431/a900-1100 N040.34.34.864,W074.12.41.297/a500-800/land"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 1500,
+          "unassociated": true,
+          "destination": "KHPN",
+          "exit": "VFR.North",
+          "route": "N040.55.20.960,W073.10.52.066/a2500-3500 N040.54.51.737,W073.26.46.228/a2000-2800 N040.50.49.584,W073.38.02.546/a1000-1400 N040.51.43.170,W073.42.55.003/a1000-1400 N040.55.22.705,W073.47.56.715/a1000-1400 N040.59.51.389,W073.45.30.432/a1500-2500/land"
+        },
         {
           "airlines": [
             {
@@ -567,7 +646,9 @@
         "NEION": "North",
         "SAX": "North",
         "SBJ": "West",
-        "WHITE": "South"
+        "WHITE": "South",
+        "VFR.North": "VFR",
+        "VFR.South": "VFR"
       },
       "tower_list": 3
     },
@@ -5440,7 +5521,103 @@
         }
       }
     ]
-  }
+  },
+    "VFR Airwork": {
+      "overflights": [
+        {
+          "airlines": [
+            { "icao": "N", "fleet": "lightGA", "departure_airport": "KBDL", "arrival_airport": "KPOU" }
+          ],
+          "waypoints": "N040.50.53.759,W072.38.27.238/a100 N040.47.52.238,W072.37.29.478/a1000 N040.41.24.352,W073.01.51.181/a2000-5000/airwork20m7nm N040.42.53.300,W072.54.23.845/a2500 N040.49.03.717,W072.32.32.050/a1000 N040.52.41.109,W072.36.54.843/a500 N040.52.23.243,W072.39.03.191/a250 N040.50.58.923,W072.37.59.113/a0/land",
+          "cruise_altitude": 2500,
+          "initial_altitude": 100,
+          "initial_speed": 100,
+          "description": "Airwork bothers",
+          "unassociated": true
+        }
+      ]
+    },
+    "VFR Overflights": {
+      "overflights": [
+        {
+          "airlines": [
+            { "icao": "N", "fleet": "lightGA", "departure_airport": "KBDL", "arrival_airport": "KPOU" }
+          ],
+          "waypoints": "N041.02.42.734,W072.31.29.071 CCC N040.43.22.084,W073.25.52.642/a2500 N040.36.55.901,W073.25.21.469/a1500 N040.35.24.082,W073.26.07.199 N040.34.10.007,W073.33.53.432/a500 N040.34.18.810,W073.45.50.949/a500 N040.31.31.653,W073.55.52.478/a500 N040.33.12.205,W074.01.54.367/a1000 N040.37.22.185,W074.03.18.934/a1000 N040.44.16.178,W074.00.50.839/a1000 N040.50.09.004,W073.57.23.280/a1000 N040.55.25.492,W073.54.49.114/a1000 N040.58.11.880,W073.54.05.690/a1000 N041.03.04.584,W073.53.14.796/a1500 N041.10.10.441,W073.53.41.328/delete",
+          "cruise_altitude": 3500,
+          "initial_altitude": 3500,
+          "initial_speed": 120,
+          "description": "BDL->POU Hudson Exclusion",
+          "unassociated": true
+        },
+        {
+          "airlines": [
+            { "icao": "N", "fleet": "fastGA", "departure_airport": "KBWI", "arrival_airport": "KPVD" }
+          ],
+          "waypoints": "WHITE V1 MAD/delete",
+          "cruise_altitude": 7500,
+          "initial_altitude": [7500,9500,11500],
+          "initial_speed": 180,
+          "description": "V1 Northbound",
+          "unassociated": true
+        },
+        {
+          "airlines": [
+            { "icao": "N", "fleet": "fastGA", "departure_airport": "KBWI", "arrival_airport": "KPVD" }
+          ],
+          "waypoints": "MAD V1 WHITE/delete",
+          "cruise_altitude": 8500,
+          "initial_altitude": [8500,10500],
+          "initial_speed": 180,
+          "description": "V1 Southbound",
+          "unassociated": true
+        },
+        {
+          "airlines": [
+            { "icao": "N", "fleet": "fastGA", "departure_airport": "KBWI", "arrival_airport": "KPVD" }
+          ],
+          "waypoints": "KARRS V44 DENNA/delete",
+          "cruise_altitude": 11500,
+          "initial_altitude": [7500,9500],
+          "initial_speed": 180,
+          "description": "V44 Northbound",
+          "unassociated": true
+        },
+        {
+          "airlines": [
+            { "icao": "N", "fleet": "fastGA", "departure_airport": "KBWI", "arrival_airport": "KPVD" }
+          ],
+          "waypoints": "DENNA V44 KARRS/delete",
+          "cruise_altitude": 10500,
+          "initial_altitude": [8500,10500],
+          "initial_speed": 180,
+          "description": "V44 Southbound",
+          "unassociated": true
+        },
+        {
+          "airlines": [
+            { "icao": "N", "fleet": "lightGA", "departure_airport": "KBWI", "arrival_airport": "KPVD" }
+          ],
+          "waypoints": "VIKKY V16 WHITE/delete",
+          "cruise_altitude": 10500,
+          "initial_altitude": [8500,10500],
+          "initial_speed": 120,
+          "description": "V16 Southbound",
+          "unassociated": true
+        },
+        {
+          "airlines": [
+            { "icao": "N", "fleet": "lightGA", "departure_airport": "KBWI", "arrival_airport": "KPVD" }
+          ],
+          "waypoints": "WHITE V16 VIKKY/delete",
+          "cruise_altitude": 13500,
+          "initial_altitude": [7500,9500,11500],
+          "initial_speed": 120,
+          "description": "V16 Northbound",
+          "unassociated": true
+        }
+      ]
+    }
 },
   "control_positions": {
     "BOS_E_CTR": {
@@ -5661,7 +5838,13 @@
         "JFK_M_APP": [ "JFK_SATELITE_13RL" ],
         "JFK_DEP": [ "JFK_DEP_13RL" ]
       },
-      "arrivals": {
+      "inbound_rates": {
+        "VFR Overflights": {
+          "overflights": 10
+        },
+        "VFR Airwork": {
+          "overflights": 5
+        },
         "CAMRN4": {
           "KFRG": 0,
           "KJFK": 12
@@ -5773,8 +5956,15 @@
           "runway": "15R"
         },
         {
+          "airport": "KISP",
+          "category": "VFR",
+          "rate": 10,
+          "runway": "15R"
+        },
+        {
           "airport": "KFRG",
-          "rate": 0,
+          "category": "VFR",
+          "rate": 10,
           "runway": "14"
         }
       ],
