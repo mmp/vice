@@ -324,7 +324,7 @@ func (nav *Nav) IsAirborne() bool {
 
 	// FIXME: this only considers speed, which is probably ok but is somewhat unsatisfying.
 	// More explicitly model "on the ground" vs "airborne" states?
-	return nav.FlightState.IAS > v2
+	return nav.FlightState.IAS >= v2
 }
 
 // AssignedHeading returns the aircraft's current heading assignment, if
@@ -1440,6 +1440,9 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 		if wp, speed, _ := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && wp != nil {
 			targetSpeed = math.Min(targetSpeed, speed)
 		}
+
+		// However, don't let anything prevent us from taking off!
+		targetSpeed = math.Max(targetSpeed, nav.v2())
 
 		return targetSpeed, 0.8 * maxAccel
 	}
