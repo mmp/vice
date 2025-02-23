@@ -431,7 +431,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 		ac.FlightPlan.Altitude = dep.Altitudes[idx]
 	}
 
-	ac.HoldForRelease = ap.HoldForRelease
+	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == IFR // VFRs aren't held
 
 	nav := MakeDepartureNav(*ac.FlightPlan, perf, exitRoute.AssignedAltitude,
 		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, nmPerLongitude, magneticVariation, wind, lg)
