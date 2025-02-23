@@ -93,6 +93,9 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			} else {
 				sp.multiFuncPrefix = ""
 			}
+			if n := len(sp.drawRoutePoints); n > 0 {
+				sp.drawRoutePoints = sp.drawRoutePoints[:n-1]
+			}
 		case platform.KeyEnd:
 			sp.resetInputState()
 			sp.commandMode = CommandModeMin
@@ -115,6 +118,8 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			sp.wipRBL = nil
 			sp.wipSignificantPoint = nil
 			sp.wipRestrictionArea = nil
+			sp.drawRouteMode = false
+			sp.drawRoutePoints = nil
 		case platform.KeyF1:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) {
 				// Recenter
@@ -365,6 +370,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		case ".ROUTE":
 			sp.drawRouteAircraft = ""
 			status.clear = true
+			return
+
+		case ".DRAWROUTE":
+			sp.drawRouteMode = true
+			status.clear = true
+			status.output = "DRAWROUTE"
 			return
 
 		case "?":
@@ -3595,6 +3606,16 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 
 	mouse := ctx.Mouse
 	ps := sp.currentPrefs()
+
+	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] && sp.drawRouteMode {
+		mouseLatLong := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
+		sp.drawRoutePoints = append(sp.drawRoutePoints, mouseLatLong)
+		var cb []string
+		for _, p := range sp.drawRoutePoints {
+			cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
+		}
+		ctx.Platform.GetClipboard().SetText(strings.Join(cb, " "))
+	}
 
 	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] && !ctx.HaveFocus {
 		if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.Mouse.Pos, transforms); ac != nil {

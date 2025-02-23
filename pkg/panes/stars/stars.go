@@ -157,6 +157,9 @@ type STARSPane struct {
 	dwellAircraft     string
 	drawRouteAircraft string
 
+	drawRouteMode   bool
+	drawRoutePoints []math.Point2LL
+
 	commandMode       CommandMode
 	multiFuncPrefix   string
 	previewAreaOutput string
@@ -658,6 +661,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	sp.drawCRDARegions(ctx, transforms, cb)
 	sp.drawSelectedRoute(ctx, transforms, cb)
+	sp.drawPlotPoints(ctx, transforms, cb)
 
 	sp.drawCompass(ctx, scopeExtent, transforms, cb)
 

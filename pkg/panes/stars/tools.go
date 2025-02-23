@@ -1731,6 +1731,27 @@ func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms ScopeTrans
 	ld.GenerateCommands(cb)
 }
 
+func (sp *STARSPane) drawPlotPoints(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	if len(sp.drawRoutePoints) == 0 {
+		return
+	}
+
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+
+	for i, pt := range sp.drawRoutePoints {
+		pwin := transforms.WindowFromLatLongP(pt)
+		ld.AddCircle(pwin, 10, 30)
+		if i+1 < len(sp.drawRoutePoints) {
+			ld.AddLine(pwin, transforms.WindowFromLatLongP(sp.drawRoutePoints[i+1]))
+		}
+	}
+	cb.LineWidth(1, ctx.DPIScale)
+	cb.SetRGB(renderer.RGB{1, .3, .3})
+	transforms.LoadWindowViewingMatrices(cb)
+	ld.GenerateCommands(cb)
+}
+
 type STARSRangeBearingLine struct {
 	P [2]struct {
 		// If callsign is given, use that aircraft's position;
