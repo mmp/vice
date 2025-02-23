@@ -386,7 +386,7 @@ func (nav *Nav) OnApproach(checkAltitude bool) bool {
 // from the infinite line defined by the assigned approach localizer
 func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 	approach := nav.Approach.Assigned
-	localizer := approach.Line()
+	localizer := approach.Line(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 	distance := math.PointLineDistance(
 		math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude),
 		math.LL2NM(localizer[0], nav.FlightState.NmPerLongitude),
@@ -1037,7 +1037,7 @@ func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32
 			return
 		}
 
-		loc := ap.Line()
+		loc := ap.Line(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
 		if nav.shouldTurnToIntercept(loc[0], hdg, TurnClosest, wind, lg) {
 			lg.Debugf("heading: time to turn for approach heading %.1f", hdg)
@@ -1067,7 +1067,7 @@ func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32
 		lg.Debugf("heading: intercepted the approach!")
 		apHeading := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
-		wps, idx := ap.FAFSegment()
+		wps, idx := ap.FAFSegment(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 		for idx > 0 {
 			prev := wps[idx-1]
 			hdg := math.Heading2LL(prev.Location, wps[idx].Location,

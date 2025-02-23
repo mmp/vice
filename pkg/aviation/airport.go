@@ -7,6 +7,7 @@ package aviation
 import (
 	"fmt"
 	"slices"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -765,18 +766,50 @@ type Approach struct {
 }
 
 // Find the FAF: return the corresponding waypoint array and the index of the FAF within it.
-func (ap *Approach) FAFSegment() ([]Waypoint, int) {
-	for _, wps := range ap.Waypoints {
-		if idx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF }); idx != -1 {
-			return wps, idx
+func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Waypoint, int) {
+	// For approaches with multiple segments, want the segment that is most
+	// closely aligned with the runway. For CIFP routes, we could grab
+	// 5.26, outbound magnetic course, but we don't have that for
+	// user-specified routes. So we'll work out the approximate runway
+	// heading from the runway string and match that one.
+	rwy, _ := strconv.Atoi(strings.TrimRight(ap.Runway, "LRC")) // Not sure what can be done for error handling here...
+	rwy *= 10
+
+	bestWpsIdx, bestWpsFAFIdx := -1, -1
+	minDiff := float32(360)
+
+	for i, wps := range ap.Waypoints {
+		fafIdx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF })
+		if fafIdx == -1 {
+			// no FAF on this segment(?)
+			continue
+		}
+
+		var hdg float32
+		if fafIdx > 0 {
+			hdg = math.Heading2LL(wps[fafIdx-1].Location, wps[fafIdx].Location, nmPerLongitude, magneticVariation)
+		} else {
+			hdg = math.Heading2LL(wps[fafIdx].Location, wps[fafIdx+1].Location, nmPerLongitude, magneticVariation)
+		}
+
+		diff := math.HeadingDifference(hdg, float32(rwy))
+		if diff < minDiff {
+			minDiff = diff
+			bestWpsIdx = i
+			bestWpsFAFIdx = fafIdx
 		}
 	}
-	// Shouldn't ever happen since we ensure there is a FAF for each approach.
-	return nil, 0
+
+	if bestWpsIdx != -1 {
+		return ap.Waypoints[bestWpsIdx], bestWpsFAFIdx
+	} else {
+		// Shouldn't ever happen since we ensure there is a FAF for each approach.
+		return nil, 0
+	}
 }
 
-func (ap *Approach) Line() [2]math.Point2LL {
-	if wps, idx := ap.FAFSegment(); idx > 0 {
+func (ap *Approach) Line(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
+	if wps, idx := ap.FAFSegment(nmPerLongitude, magneticVariation); idx > 0 {
 		// Go from the previous fix to the FAF if possible.
 		return [2]math.Point2LL{wps[idx-1].Location, wps[idx].Location}
 	} else {
@@ -787,6 +820,6 @@ func (ap *Approach) Line() [2]math.Point2LL {
 }
 
 func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {
-	p := ap.Line()
+	p := ap.Line(nmPerLongitude, magneticVariation)
 	return math.Heading2LL(p[0], p[1], nmPerLongitude, magneticVariation)
 }
