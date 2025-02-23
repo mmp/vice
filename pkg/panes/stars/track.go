@@ -532,7 +532,8 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 
 		positionSymbol := "*"
 		if ac.Squawk == 0o1200 {
-			positionSymbol = string(rune(29)) // square in the STARS font
+			// positionSymbol = string(rune(29)) // square in the STARS font
+			positionSymbol = "*"
 		} else if trk := sp.getTrack(ctx, ac); trk != nil && trk.TrackOwner != "" {
 			positionSymbol = "?"
 			if ctrl, ok := ctx.ControlClient.Controllers[trk.TrackOwner]; ok && ctrl != nil {
