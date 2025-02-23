@@ -251,6 +251,10 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		e.ErrorString("airport %q not found in airport database", icao)
 	} else {
 		ap.Location = info.Location
+
+		if len(info.Runways) == 0 {
+			e.ErrorString("no runways found at %q", icao)
+		}
 	}
 
 	if ap.Location.IsZero() {

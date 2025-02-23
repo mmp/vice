@@ -253,7 +253,8 @@ func makeNav(fp FlightPlan, perf AircraftPerformance, wp []Waypoint, nmPerLongit
 	}
 
 	if fp.Rules == VFR {
-		nav.Waypoints.RandomizeVFRRoute(nmPerLongitude, magneticVariation, "", wind)
+		nav.Waypoints = RandomizeVFRRoute(nav.Waypoints, nav.Perf, nmPerLongitude, magneticVariation,
+			fp.ArrivalAirport, wind, lg)
 	}
 
 	nav.FlightState = FlightState{

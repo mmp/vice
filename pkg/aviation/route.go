@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
@@ -421,7 +422,8 @@ func (w WaypointArray) checkDescending(e *util.ErrorLogger) {
 
 }
 
-func (w WaypointArray) RandomizeVFRRoute(nmPerLongitude float32, magneticVariation float32, airport string, wind WindModel) WaypointArray {
+func RandomizeVFRRoute(w []Waypoint, perf AircraftPerformance, nmPerLongitude float32, magneticVariation float32,
+	airport string, wind WindModel, lg *log.Logger) WaypointArray {
 	// Random values used for altitude and position randomization
 	rtheta, rrad := rand.Float32(), rand.Float32()
 	ralt := rand.Float32()
@@ -441,7 +443,7 @@ func (w WaypointArray) RandomizeVFRRoute(nmPerLongitude float32, magneticVariati
 		return v
 	}
 
-	for i := range w {
+	for i := 0; i < len(w); i++ { // NOTE: written this way since we append to w in the following
 		wp := &w[i]
 		if wp.Radius > 0 {
 			// Work in nm coordinates
@@ -454,6 +456,7 @@ func (w WaypointArray) RandomizeVFRRoute(nmPerLongitude float32, magneticVariati
 
 			pp := math.Add2f(p, math.Scale2f([2]float32{math.Sin(t), math.Cos(t)}, r))
 			wp.Location = math.NM2LL(pp, nmPerLongitude)
+			wp.Radius = 0 // clean up
 
 			rtheta = jitter(rtheta)
 			rrad = jitter(rrad)
@@ -473,9 +476,116 @@ func (w WaypointArray) RandomizeVFRRoute(nmPerLongitude float32, magneticVariati
 
 			ralt = jitter(ralt)
 		}
+
+		if wp.Land {
+			land := constructVFRLanding(*wp, perf, airport, wind, nmPerLongitude, magneticVariation, lg)
+			wp.Land = false
+			w = w[:i+1]
+			w = append(w, land...)
+		}
 	}
 
 	return w
+}
+
+func constructVFRLanding(wp Waypoint, perf AircraftPerformance, airport string, wind WindModel, nmPerLongitude float32,
+	magneticVariation float32, lg *log.Logger) []Waypoint {
+	ap, ok := DB.Airports[airport]
+	if !ok {
+		lg.Errorf("%s: couldn't find arrival airport", airport)
+		wp.Delete = true
+		return []Waypoint{wp} // best we can do
+	}
+
+	w := wind.GetWindVector(ap.Location, float32(ap.Elevation))
+	// This gives the vector affecting the aircraft, so negate it. Also, as
+	// elsewhere, swap x and y in the args here since we want to measure
+	// angle w.r.t. +y.
+	angle := math.Degrees(math.Atan2(-w[0], -w[1]))
+	angle = math.NormalizeHeading(angle + magneticVariation)
+
+	// Find best aligned runway
+	minDelta := float32(1000)
+	bestRwy := -1
+	for i, rwy := range ap.Runways {
+		d := math.HeadingDifference(angle, rwy.Heading)
+		if d < minDelta {
+			minDelta = d
+			bestRwy = i
+		}
+	}
+	if bestRwy == -1 {
+		lg.Error("couldn't find a runway to land on", slog.String("airport", airport), slog.Any("runways", ap.Runways))
+		wp.Delete = true
+		return []Waypoint{wp} // best we can do
+	}
+
+	rwy := ap.Runways[bestRwy]
+	opp, ok := LookupOppositeRunway(airport, rwy.Id)
+	if !ok {
+		lg.Errorf("no opposite for %q at %q\n", airport, rwy.Id)
+		wp.Delete = true
+		return []Waypoint{wp} // best we can do
+	}
+
+	pwp := math.LL2NM(wp.Location, nmPerLongitude)
+	p0 := math.LL2NM(rwy.Threshold, nmPerLongitude)
+	p1 := math.LL2NM(opp.Threshold, nmPerLongitude)
+	pmid := math.Mid2f(p0, p1) // runway center
+	// Vector along the runway's direction, half as long as the full runway length
+	rvec := math.Scale2f(math.Sub2f(p1, p0), 0.5)
+	// Vector perpendicular to the runway, toward the left side (assume left closed traffic.)
+	// TODO: does CIFP or something else have the closed traffic side for runways encoded?
+	perpvec := math.Normalize2f([2]float32{-rvec[1], rvec[0]})
+
+	var wps []Waypoint
+	addpt := func(n string, dx, dy, dalt float32, fo bool, slow bool) {
+		pt := math.Add2f(pmid, math.Add2f(math.Scale2f(rvec, dx), math.Scale2f(perpvec, dy)))
+
+		alt := float32(ap.Elevation) + dalt
+		wp := Waypoint{
+			Fix:                 "_" + n,
+			Location:            math.NM2LL(pt, nmPerLongitude),
+			AltitudeRestriction: &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}},
+			FlyOver:             fo,
+			Speed:               util.Select(slow, 70, 0), // 70 may not be attainable, but the nav code will deal.
+		}
+		wps = append(wps, wp)
+	}
+
+	// Scale the points according to min speed so that if they have to be
+	// fast, they're given more space to work with.
+	sc := perf.Speed.Min / 80
+	pdist := sc // pattern offset from runway
+
+	sd := math.SignedPointLineDistance(pwp, p0, p1)
+	if sd < 0 {
+		// coming from the left side of the extended runway centerline; just
+		// add a point so that they enter the pattern at 45 degrees.
+		addpt("enter45", 1, 1+pdist, 1000, false, true)
+	} else {
+		// coming from the right side; cross perpendicularly midfield, make
+		// a descending right 270 and join the pattern.
+		addpt("crossmidfield1", 0, -pdist, 1500, false, false)
+		addpt("crossmidfield2", 0, pdist, 1500, true, false)
+		addpt("crossmidfield3", 0, 1.5*pdist, 1500, true, true) // make some space to turn
+		addpt("right270-1", sc, 2.5*pdist, 1250, false, true)
+		addpt("right270-2", sc*2, 2*pdist, 1150, false, true)
+		addpt("right270-2", sc*1.5, 1.5*pdist, 1000, false, true)
+	}
+	// both sides are the same from here.
+	addpt("joindownwind", 0, pdist, 1000, false, true)
+	addpt("base1", -1.5, pdist, 500, false, true)
+	addpt("base2", -3, pdist/2, 250, false, true)
+	addpt("base2", -1.5, 0, 150, false, true)
+	addpt("threshold", -1, 0, 0, false, true)
+	// Last point is at the far end of the runway just to give plenty of
+	// slop to make sure we hit it so the aircraft is deleted.
+	addpt("fin", 1, 0, 0, false, true)
+
+	wps[len(wps)-1].Delete = true
+
+	return wps
 }
 
 func parsePTExtent(pt *ProcedureTurn, extent string) error {
