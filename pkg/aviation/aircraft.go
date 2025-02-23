@@ -100,10 +100,6 @@ func (ac *Aircraft) TAS() float32 {
 	return ac.Nav.TAS()
 }
 
-func (ac *Aircraft) IsAssociated() bool {
-	return ac.FlightPlan != nil && ac.Squawk == ac.FlightPlan.AssignedSquawk && ac.Mode == Charlie
-}
-
 func (ac *Aircraft) HandleControllerDisconnect(callsign string, primaryController string) {
 	if callsign == primaryController {
 		// Don't change anything; the sim will pause without the primary

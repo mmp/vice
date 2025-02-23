@@ -966,6 +966,10 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 			continue
 		}
+		if ac.Mode == av.Standby {
+			// No datablock if they're not squawking altitude
+			continue
+		}
 
 		db := sp.getDatablock(ctx, ac)
 		if db == nil {

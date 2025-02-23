@@ -321,12 +321,12 @@ func FormatAltitude(falt float32) string {
 type TransponderMode int
 
 const (
-	Standby = iota
-	Charlie
+	Standby TransponderMode = iota
+	Altitude
 )
 
 func (t TransponderMode) String() string {
-	return [...]string{"Standby", "C"}[t]
+	return [...]string{"Standby", "Altitude"}[t]
 }
 
 func (fp FlightPlan) BaseType() string {

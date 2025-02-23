@@ -735,6 +735,16 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					rewriteError(err)
 					return nil
 				}
+			} else if command == "SQS" {
+				if err := sim.ChangeTransponderMode(token, callsign, av.Standby); err != nil {
+					rewriteError(err)
+					return nil
+				}
+			} else if command == "SQA" {
+				if err := sim.ChangeTransponderMode(token, callsign, av.Altitude); err != nil {
+					rewriteError(err)
+					return nil
+				}
 			} else if len(command) == 6 && command[:2] == "SQ" {
 				if sq, err := av.ParseSquawk(command[2:]); err != nil {
 					rewriteError(err)

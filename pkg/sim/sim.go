@@ -2379,11 +2379,27 @@ func (s *Sim) ChangeSquawk(token, callsign string, sq av.Squawk) error {
 
 	return s.dispatchControllingCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
-			s.enqueueSquawkChange(ac.Callsign, sq)
+			s.enqueueTransponderChange(ac.Callsign, sq, ac.Mode)
 
 			return []av.RadioTransmission{av.RadioTransmission{
 				Controller: ctrl.Id(),
 				Message:    "squawk " + sq.String(),
+				Type:       av.RadioTransmissionReadback,
+			}}
+		})
+}
+
+func (s *Sim) ChangeTransponderMode(token, callsign string, mode av.TransponderMode) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControllingCommand(token, callsign,
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			s.enqueueTransponderChange(ac.Callsign, ac.Squawk, mode)
+
+			return []av.RadioTransmission{av.RadioTransmission{
+				Controller: ctrl.Id(),
+				Message:    "squawk " + strings.ToLower(mode.String()),
 				Type:       av.RadioTransmissionReadback,
 			}}
 		})
@@ -3502,7 +3518,7 @@ func (ss *State) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*av.Air
 	return &av.Aircraft{
 		Callsign: callsign,
 		Squawk:   squawk,
-		Mode:     av.Charlie,
+		Mode:     av.Altitude,
 	}, acType
 }
 
@@ -3777,13 +3793,14 @@ func (s *Sim) enqueueDepartOnCourse(callsign string) {
 type FutureChangeSquawk struct {
 	Callsign string
 	Code     av.Squawk
+	Mode     av.TransponderMode
 	Time     time.Time
 }
 
-func (s *Sim) enqueueSquawkChange(callsign string, code av.Squawk) {
+func (s *Sim) enqueueTransponderChange(callsign string, code av.Squawk, mode av.TransponderMode) {
 	wait := time.Duration(5+rand.Intn(5)) * time.Second
 	s.FutureSquawkChanges = append(s.FutureSquawkChanges,
-		FutureChangeSquawk{Callsign: callsign, Code: code, Time: s.SimTime.Add(wait)})
+		FutureChangeSquawk{Callsign: callsign, Code: code, Mode: mode, Time: s.SimTime.Add(wait)})
 }
 
 func (s *Sim) processEnqueued() {
@@ -3830,6 +3847,7 @@ func (s *Sim) processEnqueued() {
 			if s.SimTime.After(fcs.Time) {
 				if ac, ok := s.State.Aircraft[fcs.Callsign]; ok {
 					ac.Squawk = fcs.Code
+					ac.Mode = fcs.Mode
 				}
 				return false
 			}
