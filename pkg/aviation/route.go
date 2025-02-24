@@ -1233,14 +1233,28 @@ func (a AltitudeRestriction) TargetAltitude(alt float32) float32 {
 // ClampRange limits a range of altitudes to satisfy the altitude
 // restriction; the returned Boolean indicates whether the ranges
 // overlapped.
-func (a AltitudeRestriction) ClampRange(r [2]float32) ([2]float32, bool) {
-	a0, a1 := a.Range[0], a.Range[1]
-	if a1 == 0 {
-		a1 = 1000000
+func (a AltitudeRestriction) ClampRange(r [2]float32) (c [2]float32, ok bool) {
+	// r: I could be at any of these altitudes and be fine for a future restriction
+	// a: working backwards, we have this additional restriction, how does it limit r?
+	// c: result
+	ok = true
+	c = r
+
+	if a.Range[0] != 0 { // at or above
+		ok = r[1] == 0 || r[1] >= a.Range[0]
+		c[0] = math.Max(a.Range[0], r[0])
+		if r[1] != 0 {
+			c[1] = math.Max(a.Range[0], r[1])
+		}
 	}
 
-	ok := r[0] <= a1 || r[1] >= a0
-	return [2]float32{math.Clamp(r[0], a0, a1), math.Clamp(r[1], a0, a1)}, ok
+	if a.Range[1] != 0 { // at or below
+		ok = ok && c[0] <= a.Range[1]
+		c[0] = math.Min(c[0], a.Range[1])
+		c[1] = math.Min(c[1], a.Range[1])
+	}
+
+	return
 }
 
 // Summary returns a human-readable summary of the altitude
