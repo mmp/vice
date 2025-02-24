@@ -344,7 +344,6 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			return FullDatablock
 		}
 
-		// TODO: when do we do a partial vs limited datablock?
 		if ac.Squawk != trk.FlightPlan.AssignedSquawk {
 			dt = PartialDatablock
 		}
@@ -1035,7 +1034,7 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) boo
 	if ok, _ := ac.Squawk.IsSPC(); ok {
 		return true
 	}
-	if ac.SPCOverride != "" {
+	if ac.SPCOverride != "" && av.StringIsSPC(ac.SPCOverride) /* only alerts, not custom warning SPCs */ {
 		return true
 	}
 	if !ps.DisableCAWarnings && !state.DisableCAWarnings &&
