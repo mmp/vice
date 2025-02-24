@@ -241,6 +241,21 @@ func (s *proxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
 	}, nil, nil)
 }
 
+func (s *proxy) SetPilotReportedAltitude(callsign string, alt int) *rpc.Call {
+	return s.Client.Go("Sim.SetPilotReportedAltitude", &AssignAltitudeArgs{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+		Altitude:        alt,
+	}, nil, nil)
+}
+
+func (s *proxy) ToggleDisplayModeCAltitude(callsign string) *rpc.Call {
+	return s.Client.Go("Sim.ToggleDisplayModeCAltitude", &AircraftSpecifier{
+		ControllerToken: s.ControllerToken,
+		Callsign:        callsign,
+	}, nil, nil)
+}
+
 func (s *proxy) DeleteAllAircraft() *rpc.Call {
 	return s.Client.Go("Sim.DeleteAllAircraft", &DeleteAircraftArgs{
 		ControllerToken: s.ControllerToken,

@@ -405,6 +405,26 @@ func (sd *Dispatcher) SetTemporaryAltitude(alt *AssignAltitudeArgs, _ *struct{})
 	}
 }
 
+func (sd *Dispatcher) SetPilotReportedAltitude(alt *AssignAltitudeArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if sim, ok := sd.sm.controllerTokenToSim[alt.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.SetPilotReportedAltitude(alt.ControllerToken, alt.Callsign, alt.Altitude)
+	}
+}
+
+func (sd *Dispatcher) ToggleDisplayModeCAltitude(ac *AircraftSpecifier, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if sim, ok := sd.sm.controllerTokenToSim[ac.ControllerToken]; !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return sim.ToggleDisplayModeCAltitude(ac.ControllerToken, ac.Callsign)
+	}
+}
+
 type DeleteAircraftArgs AircraftSpecifier
 
 func (sd *Dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, _ *struct{}) error {

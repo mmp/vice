@@ -156,6 +156,34 @@ func (c *ControlClient) SetTemporaryAltitude(callsign string, alt int, success f
 		})
 }
 
+func (c *ControlClient) SetPilotReportedAltitude(callsign string, alt int, success func(any), err func(error)) {
+	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.PrimaryTCP {
+		ac.PilotReportedAltitude = alt
+	}
+
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.SetPilotReportedAltitude(callsign, alt),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) ToggleDisplayModeCAltitude(callsign string, success func(any), err func(error)) {
+	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.PrimaryTCP {
+		ac.InhibitModeCAltitudeDisplay = !ac.InhibitModeCAltitudeDisplay
+	}
+
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.ToggleDisplayModeCAltitude(callsign),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (c *ControlClient) AmendFlightPlan(callsign string, fp av.FlightPlan) error {
 	return nil // UNIMPLEMENTED
 }

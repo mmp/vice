@@ -102,9 +102,6 @@ type AircraftState struct {
 		State            GhostState
 	}
 
-	displayPilotAltitude bool
-	pilotAltitude        int
-
 	DisplayLDBBeaconCode bool
 	DisplayPTL           bool
 	DisableCAWarnings    bool
@@ -430,8 +427,18 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 			continue
 		}
 
+		if (ac.InhibitModeCAltitudeDisplay || ac.Mode != av.Altitude) && ac.PilotReportedAltitude == 0 {
+			// We can use pilot reported for low altitude alerts: 5-167.
+			state.MSAW = false
+			continue
+		}
+
+		alt := state.track.Altitude
+		if ac.PilotReportedAltitude != 0 {
+			alt = ac.PilotReportedAltitude
+		}
 		warn := slices.ContainsFunc(mvas, func(mva av.MVA) bool {
-			return state.track.Altitude < mva.MinimumLimit && mva.Inside(state.track.Position)
+			return alt < mva.MinimumLimit && mva.Inside(state.track.Position)
 		})
 
 		if !warn && state.InhibitMSAW {
@@ -918,6 +925,14 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, aircraft []*av.Aircraf
 			if trka == nil || trka.TrackOwner == "" || trkb == nil || trkb.TrackOwner == "" {
 				return false
 			}
+		}
+
+		// No CA if we don't have proper mode-C altitude for both.
+		if aca.InhibitModeCAltitudeDisplay || acb.InhibitModeCAltitudeDisplay {
+			return false
+		}
+		if aca.Mode != av.Altitude || acb.Mode != av.Altitude {
+			return false
 		}
 
 		// No CA if they're in the same ATPA volume; let the ATPA monitor take it

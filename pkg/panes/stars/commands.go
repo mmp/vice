@@ -1379,13 +1379,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				// Y callsign -> clear scratchpad and reported altitude
 				// Y+ callsign -> secondary scratchpad..
 				callsign := lookupCallsign(f[0])
-				if state, ok := sp.Aircraft[callsign]; ok {
-					state.pilotAltitude = 0
-					if err := sp.setScratchpad(ctx, callsign, "", isSecondary, false); err != nil {
-						status.err = err
-					} else {
-						status.clear = true
-					}
+				sp.setPilotReportedAltitude(ctx, callsign, 0)
+				if err := sp.setScratchpad(ctx, callsign, "", isSecondary, false); err != nil {
+					status.err = err
+				} else {
+					status.clear = true
 				}
 				return
 			} else if len(f) == 2 {
@@ -1397,13 +1395,15 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				if ac := lookupAircraft(f[0]); ac == nil {
 					status.err = ErrSTARSNoFlight
 				} else if alt, err := strconv.Atoi(f[1]); err == nil {
-					sp.Aircraft[ac.Callsign].pilotAltitude = alt * 100
+					sp.setPilotReportedAltitude(ctx, ac.Callsign, alt)
+					status.clear = true
 				} else {
 					if err := sp.setScratchpad(ctx, ac.Callsign, f[1], isSecondary, false); err != nil {
 						status.err = err
+					} else {
+						status.clear = true
 					}
 				}
-				status.clear = true
 				return
 			}
 
@@ -2434,6 +2434,11 @@ func (sp *STARSPane) setTemporaryAltitude(ctx *panes.Context, callsign string, a
 		func(err error) { sp.displayError(err, ctx) })
 }
 
+func (sp *STARSPane) setPilotReportedAltitude(ctx *panes.Context, callsign string, alt int) {
+	ctx.ControlClient.SetPilotReportedAltitude(callsign, alt*100, nil,
+		func(err error) { sp.displayError(err, ctx) })
+}
+
 func (sp *STARSPane) setGlobalLeaderLine(ctx *panes.Context, callsign string, dir *math.CardinalOrdinalDirection) {
 	state := sp.Aircraft[callsign]
 	state.GlobalLeaderLineDirection = dir // hack for instant update
@@ -2870,7 +2875,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				status.clear = true
 				return
 			} else if alt, err := strconv.Atoi(cmd); err == nil && len(cmd) == 3 {
-				state.pilotAltitude = alt * 100
+				sp.setPilotReportedAltitude(ctx, ac.Callsign, alt)
 				status.clear = true
 				return
 			} else if len(cmd) == 5 && cmd[:2] == "++" {
@@ -3080,7 +3085,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 			case "M":
 				if cmd == "" {
-					state.displayPilotAltitude = !state.displayPilotAltitude
+					ctx.ControlClient.ToggleDisplayModeCAltitude(ac.Callsign, nil, func(err error) { sp.displayError(err, ctx) })
 					status.clear = true
 				} else {
 					status.err = ErrSTARSCommandFormat
@@ -3235,7 +3240,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 				if cmd == "" {
 					// Clear pilot reported altitude and scratchpad
-					state.pilotAltitude = 0
+					sp.setPilotReportedAltitude(ctx, ac.Callsign, 0)
 					if err := sp.setScratchpad(ctx, ac.Callsign, "", isSecondary, false); err != nil {
 						status.err = err
 					} else {
@@ -3245,7 +3250,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				} else {
 					// Is it an altitude or a scratchpad update?
 					if alt, err := strconv.Atoi(cmd); err == nil && len(cmd) == 3 {
-						state.pilotAltitude = alt * 100
+						sp.setPilotReportedAltitude(ctx, ac.Callsign, alt)
 						status.clear = true
 					} else {
 						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary, false); err != nil {

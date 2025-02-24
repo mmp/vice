@@ -39,7 +39,7 @@ var (
 	ErrSTARSIllegalColor      = NewSTARSError("ILL COLOR")
 	ErrSTARSIllegalFix        = NewSTARSError("ILL FIX")
 	ErrSTARSIllegalFlight     = NewSTARSError("ILL FLIGHT")
-	ErrSTARSIllegalFunction   = NewSTARSError("ILL FNCT")
+	ErrSTARSIllegalFunction   = NewSTARSError("ILL FUNC")
 	ErrSTARSIllegalGeoId      = NewSTARSError("ILL GEO ID")
 	ErrSTARSIllegalGeoLoc     = NewSTARSError("ILL GEO LOC")
 	ErrSTARSIllegalLine       = NewSTARSError("ILL LINE")
@@ -67,6 +67,7 @@ var starsErrorRemap = map[error]*STARSError{
 	av.ErrClearedForUnexpectedApproach: ErrSTARSIllegalValue,
 	av.ErrFixNotInRoute:                ErrSTARSIllegalFix,
 	sim.ErrIllegalACID:                 ErrSTARSIllegalACID,
+	sim.ErrIllegalFunction:             ErrSTARSIllegalFunction,
 	av.ErrInvalidAltitude:              ErrSTARSIllegalValue,
 	av.ErrInvalidApproach:              ErrSTARSIllegalValue,
 	sim.ErrInvalidCommandSyntax:        ErrSTARSCommandFormat,

@@ -18,6 +18,7 @@ var (
 	ErrDuplicateSimName            = errors.New("A sim with that name already exists")
 	ErrIllegalACID                 = errors.New("Illegal ACID")
 	ErrIllegalACType               = errors.New("Illegal aircraft type")
+	ErrIllegalFunction             = errors.New("Illegal function")
 	ErrIllegalScratchpad           = errors.New("Illegal scratchpad")
 	ErrInvalidAbbreviatedFP        = errors.New("Invalid abbreviated flight plan")
 	ErrInvalidCommandSyntax        = errors.New("Invalid command syntax")
@@ -72,6 +73,7 @@ var errorStringToError = map[string]error{
 	ErrDuplicateSimName.Error():            ErrDuplicateSimName,
 	ErrIllegalACID.Error():                 ErrIllegalACID,
 	ErrIllegalACType.Error():               ErrIllegalACType,
+	ErrIllegalFunction.Error():             ErrIllegalFunction,
 	ErrIllegalScratchpad.Error():           ErrIllegalScratchpad,
 	ErrInvalidAbbreviatedFP.Error():        ErrInvalidAbbreviatedFP,
 	ErrInvalidCommandSyntax.Error():        ErrInvalidCommandSyntax,

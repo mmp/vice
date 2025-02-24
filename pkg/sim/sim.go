@@ -3068,6 +3068,45 @@ func (s *Sim) SetTemporaryAltitude(token, callsign string, altitude int) error {
 		})
 }
 
+func (s *Sim) SetPilotReportedAltitude(token, callsign string, altitude int) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchCommand(token, callsign,
+		func(ctrl *av.Controller, ac *av.Aircraft) error {
+			// Must own the track
+			if ac.TrackingController != ctrl.Id() && !s.Instructors[ctrl.Id()] {
+				return av.ErrOtherControllerHasTrack
+			}
+			if ac.Mode == av.Altitude && !ac.InhibitModeCAltitudeDisplay {
+				// 5-166: must inhibit mode C display if we are getting altitude from the aircraft
+				return ErrIllegalFunction
+			}
+			return nil
+		},
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			ac.PilotReportedAltitude = altitude
+			return nil
+		})
+}
+
+func (s *Sim) ToggleDisplayModeCAltitude(token, callsign string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchTrackingCommand(token, callsign,
+		func(ctrl *av.Controller, ac *av.Aircraft) []av.RadioTransmission {
+			// 5-167
+			ac.InhibitModeCAltitudeDisplay = !ac.InhibitModeCAltitudeDisplay
+
+			if !ac.InhibitModeCAltitudeDisplay && ac.Mode == av.Altitude {
+				// Clear pilot reported if toggled on and we have mode-C altitude
+				ac.PilotReportedAltitude = 0
+			}
+			return nil
+		})
+}
+
 type HeadingArgs struct {
 	ControllerToken string
 	Callsign        string

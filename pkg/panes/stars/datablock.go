@@ -475,10 +475,18 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 	}
 	ident := state.Ident(ctx.Now)
 	squawkingSPC, _ := ac.Squawk.IsSPC()
+
+	// Note: this is only for PDBs and FDBs. LDBs don't have pilot reported
+	// altitude or inhibit mode C.
 	altitude := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
-	if ac.Mode == av.Standby {
+	if ac.PilotReportedAltitude != 0 {
+		altitude = fmt.Sprintf("%03d", (ac.PilotReportedAltitude+50)/100)
+	} else if ac.InhibitModeCAltitudeDisplay {
+		altitude = "***"
+	} else if ac.Mode != av.Altitude {
 		altitude = "RDR"
 	}
+
 	groundspeed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
 	// Note arrivalAirport is only set if it should be shown when there is no scratchpad set
 	arrivalAirport := ""
@@ -569,6 +577,11 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		}
 
 		// Field 3: mode C altitude
+		altitude := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
+		if ac.Mode != av.Altitude {
+			altitude = "RDR"
+		}
+
 		formatDBText(db.field3[:], altitude, color, false)
 
 		if extended {
@@ -608,7 +621,11 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			}
 			return s
 		}
-		formatDBText(db.field12[0][:], fmt1(altitude)+handoffId, color, false)
+		if ac.PilotReportedAltitude != 0 {
+			formatDBText(db.field12[0][:], fmt1(altitude)+"*", color, false)
+		} else {
+			formatDBText(db.field12[0][:], fmt1(altitude)+handoffId, color, false)
+		}
 		f12Idx := 1
 		if sp1 != "" {
 			formatDBText(db.field12[1][:], fmt1(sp1)+handoffId, color, false)
@@ -707,7 +724,11 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			return s
 		}
 
-		formatDBText(db.field34[0][:], fmt3(altitude)+handoffId, color, false)
+		if ac.PilotReportedAltitude != 0 {
+			formatDBText(db.field34[0][:], fmt3(altitude)+"*", color, false)
+		} else {
+			formatDBText(db.field34[0][:], fmt3(altitude)+handoffId, color, false)
+		}
 		idx34 := 1
 		if sp1 != "" {
 			formatDBText(db.field34[idx34][:], fmt3(sp1)+handoffId, color, false)
@@ -1076,7 +1097,8 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, ac *av.Aircraft) []d
 	}
 
 	if sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeFused &&
-		ac.TrackingController != "" && ac.Mode != av.Altitude {
+		ac.TrackingController != "" &&
+		(ac.Mode != av.Altitude || ac.InhibitModeCAltitudeDisplay) {
 		// No altitude being reported, one way or another (off or mode
 		// A). Only when FUSED and for tracked aircraft.
 		addAlert("ISR", false, false)

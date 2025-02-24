@@ -34,12 +34,14 @@ type Aircraft struct {
 	PointOutHistory     []string
 
 	// STARS-related state that is globally visible
-	TrackingController        string // Who has the radar track
-	ControllingController     string // Who has control; not necessarily the same as TrackingController
-	HandoffTrackController    string // Handoff offered but not yet accepted
-	GlobalLeaderLineDirection *math.CardinalOrdinalDirection
-	RedirectedHandoff         RedirectedHandoff
-	SPCOverride               string
+	TrackingController          string // Who has the radar track
+	ControllingController       string // Who has control; not necessarily the same as TrackingController
+	HandoffTrackController      string // Handoff offered but not yet accepted
+	GlobalLeaderLineDirection   *math.CardinalOrdinalDirection
+	RedirectedHandoff           RedirectedHandoff
+	SPCOverride                 string
+	PilotReportedAltitude       int
+	InhibitModeCAltitudeDisplay bool
 
 	HoldForRelease   bool
 	Released         bool // only used for hold for release
