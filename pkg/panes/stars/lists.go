@@ -267,8 +267,21 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 	}
 
 	if filter.All || filter.Codes {
-		if len(ps.SelectedBeaconCodes) > 0 {
-			pw = td.AddText(strings.Join(ps.SelectedBeaconCodes, " "), pw, listStyle)
+		if len(ps.SelectedBeacons) > 0 {
+			codes := util.MapSlice(ps.SelectedBeacons,
+				func(v av.Squawk) string {
+					if v < 0o100 { // bank
+						return strconv.FormatInt(int64(v), 8)
+					} else {
+						return v.String() // leading 0s as needed
+					}
+				})
+
+			if len(codes) > 5 {
+				pw = td.AddText(strings.Join(codes[:5], " "), pw, listStyle)
+				codes = codes[5:]
+			}
+			pw = td.AddText(strings.Join(codes, " "), pw, listStyle)
 			newline()
 		}
 	}

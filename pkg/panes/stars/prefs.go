@@ -123,7 +123,7 @@ type Preferences struct {
 	}
 
 	DisplayLDBBeaconCodes bool // TODO: default?
-	SelectedBeaconCodes   []string
+	SelectedBeacons       []av.Squawk
 
 	// DisplayUncorrelatedTargets bool // NOT USED
 

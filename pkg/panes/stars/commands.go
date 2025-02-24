@@ -640,23 +640,22 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		switch sp.multiFuncPrefix {
 		case "B":
 			validBeacon := func(s string) bool {
-				for ch := range s {
-					if !(ch == '0' || ch == '1' || ch == '2' || ch == '3' ||
-						ch == '4' || ch == '5' || ch == '6' || ch == '7') {
+				for _, ch := range s {
+					if ch < '0' || ch > '7' {
 						return false
 					}
 				}
 				return true
 			}
 			toggleBeacon := func(code string) {
-				sfilt := util.FilterSlice(ps.SelectedBeaconCodes,
-					func(c string) bool { return c == code })
-
-				if len(sfilt) < len(ps.SelectedBeaconCodes) {
-					// it was in there, so we'll toggle it off
-					ps.SelectedBeaconCodes = sfilt
+				c, _ := strconv.ParseInt(code, 8, 32)
+				if idx := slices.Index(ps.SelectedBeacons, av.Squawk(c)); idx != -1 {
+					ps.SelectedBeacons = slices.Delete(ps.SelectedBeacons, idx, idx+1)
+				} else if len(ps.SelectedBeacons) == 10 {
+					status.err = ErrSTARSCapacity
 				} else {
-					ps.SelectedBeaconCodes = append(ps.SelectedBeaconCodes, code)
+					ps.SelectedBeacons = append(ps.SelectedBeacons, av.Squawk(c))
+					slices.Sort(ps.SelectedBeacons)
 				}
 			}
 
@@ -683,6 +682,10 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			} else if len(cmd) == 4 && validBeacon(cmd) {
 				// B[0-7][0-7][0-7][0-7] -> toggle select discrete beacon code
 				toggleBeacon(cmd)
+				status.clear = true
+				return
+			} else if cmd == "*" {
+				clear(ps.SelectedBeacons)
 				status.clear = true
 				return
 			}

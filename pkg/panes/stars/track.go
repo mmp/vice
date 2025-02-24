@@ -544,9 +544,17 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 			case av.Standby:
 				positionSymbol = string(rune(140)) // 24)) // diamond
 			case av.Altitude:
-				positionSymbol = "*" // TODO: square if beacon code selected
+				if sp.beaconCodeSelected(ac.Squawk) {
+					positionSymbol = string(rune(29)) // square
+				} else {
+					positionSymbol = "*"
+				}
 			case av.On:
-				positionSymbol = string(rune(19)) // plus TODO: triangle if beacon code selected
+				if sp.beaconCodeSelected(ac.Squawk) {
+					positionSymbol = string(rune(128)) // triangle
+				} else {
+					positionSymbol = string(rune(19)) // plus
+				}
 			}
 		} else if trk := sp.getTrack(ctx, ac); trk != nil && trk.TrackOwner != "" {
 			positionSymbol = "?"
@@ -582,6 +590,19 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
+}
+
+func (sp *STARSPane) beaconCodeSelected(code av.Squawk) bool {
+	ps := sp.currentPrefs()
+	for _, c := range ps.SelectedBeacons {
+		if c <= 0o77 && c == code/0o100 {
+			// check the entire code bank
+			return true
+		} else if c == code {
+			return true
+		}
+	}
+	return false
 }
 
 func (sp *STARSPane) getTrackSize(ctx *panes.Context, transforms ScopeTransformations) float32 {
