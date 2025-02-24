@@ -1457,6 +1457,9 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 		if speed > nav.FlightState.IAS {
 			// accelerate immediately
 			return speed, MaximumRate
+		} else if wp.OnSID {
+			// don't accelerate past speed constraints on SIDs
+			return speed, MaximumRate
 		} else {
 			// go slow on deceleration
 			rate := (nav.FlightState.IAS - speed) / eta
