@@ -950,18 +950,23 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 		if trk, ok := comp.TrackInformation[ac.Callsign]; ok { // Someone is tracking this
 			if trk.FlightPlan != nil {
 				if trk.FlightPlan.AssignedSquawk == ac.Squawk && inDropArea(ac) {
-					ac.TrackingController = ""
-					ac.ControllingController = ""
+					// Temp workaround: this is kicking in when we switch
+					// between manual and automatic launches and leading to
+					// untracked departures.
+					/*
+						ac.TrackingController = ""
+						ac.ControllingController = ""
 
-					if err := comp.DropTrack(ac); err != nil {
-						//s.lg.Errorf("STARS DropTrack: %v", err)
-					}
+						if err := comp.DropTrack(ac); err != nil {
+							//s.lg.Errorf("STARS DropTrack: %v", err)
+						}
 
-					s.eventStream.Post(Event{
-						Type:           DroppedTrackEvent,
-						Callsign:       ac.Callsign,
-						FromController: s.State.PrimaryTCP,
-					})
+						s.eventStream.Post(Event{
+							Type:           DroppedTrackEvent,
+							Callsign:       ac.Callsign,
+							FromController: s.State.PrimaryTCP,
+						})
+					*/
 				}
 			} else {
 				//s.lg.Errorf("%s: no flight plan for squawk %s\n", ac.Callsign, ac.Squawk)
