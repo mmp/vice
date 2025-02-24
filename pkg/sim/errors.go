@@ -37,7 +37,6 @@ var (
 	ErrServerDisconnected          = errors.New("Server disconnected")
 	ErrTooManyRestrictionAreas     = errors.New("Too many restriction areas specified")
 	ErrUnknownController           = errors.New("Unknown controller")
-	ErrUnknownFacility             = errors.New("Unknown facility (ARTCC/TRACON)")
 	ErrUnknownControllerFacility   = errors.New("Unknown controller facility")
 )
 
@@ -90,7 +89,6 @@ var errorStringToError = map[string]error{
 	ErrRestoringSavedState.Error():         ErrRestoringSavedState,
 	ErrServerDisconnected.Error():          ErrServerDisconnected,
 	ErrTooManyRestrictionAreas.Error():     ErrTooManyRestrictionAreas,
-	ErrUnknownFacility.Error():             ErrUnknownFacility,
 	ErrUnknownControllerFacility.Error():   ErrUnknownControllerFacility,
 }
 

@@ -203,7 +203,7 @@ func (comp *ERAMComputer) SendMessageToSTARSFacility(facility string, msg Flight
 	}
 
 	if stars, ok := comp.STARSComputers[facility]; !ok {
-		return ErrUnknownFacility
+		return av.ErrInvalidFacility
 	} else {
 		stars.ReceivedMessages = append(stars.ReceivedMessages, msg)
 		return nil
@@ -225,7 +225,7 @@ func (comp *ERAMComputer) SendMessageToERAM(facility string, msg FlightPlanMessa
 	}
 
 	if facERAM, ok := comp.eramComputers.Computers[facility]; !ok {
-		return ErrUnknownFacility
+		return av.ErrInvalidFacility
 	} else {
 		facERAM.ReceivedMessages = append(facERAM.ReceivedMessages, msg)
 		return nil
@@ -1246,7 +1246,7 @@ func (ec *ERAMComputers) FacilityComputers(fac string) (*ERAMComputer, *STARSCom
 
 	tracon, ok := av.DB.TRACONs[fac]
 	if !ok {
-		return nil, nil, ErrUnknownFacility
+		return nil, nil, av.ErrInvalidFacility
 	}
 
 	eram, ok := ec.Computers[tracon.ARTCC]
