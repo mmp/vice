@@ -564,13 +564,15 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		extended := state.FullLDBEndTime.After(ctx.Now)
 
 		ps := sp.currentPrefs()
-		if beaconator || extended || ident || ps.DisplayLDBBeaconCodes || state.DisplayLDBBeaconCode {
-			// Field 1: reported beacon code
-			// TODO: Field 1: WHO if unassociated and no flight plan
-			f1 := formatDBText(db.field1[:], ac.Squawk.String(), color, false)
-			// Field 1: flashing ID after beacon code if ident.
-			if ident {
-				formatDBText(db.field1[f1:], "ID", color, true)
+		if ac.Mode != av.Standby {
+			if beaconator || extended || ident || ps.DisplayLDBBeaconCodes || state.DisplayLDBBeaconCode {
+				// Field 1: reported beacon code
+				// TODO: Field 1: WHO if unassociated and no flight plan
+				f1 := formatDBText(db.field1[:], ac.Squawk.String(), color, false)
+				// Field 1: flashing ID after beacon code if ident.
+				if ident {
+					formatDBText(db.field1[f1:], "ID", color, true)
+				}
 			}
 		}
 
@@ -587,7 +589,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			formatDBText(db.field5[:], groundspeed, color, false)
 		}
 
-		if beaconator {
+		if beaconator && ac.Mode != av.Standby {
 			// Field 6: callsign
 			formatDBText(db.field6[:], ac.Callsign, color, false)
 		}
@@ -677,7 +679,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 		// Line 1
 		// Field 1: callsign (ACID) (or squawk if beaconator)
-		if beaconator {
+		if beaconator && ac.Mode != av.Standby {
 			formatDBText(db.field1[:], ac.Squawk.String(), color, false)
 		} else {
 			formatDBText(db.field1[:], ac.Callsign, color, false)
