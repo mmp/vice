@@ -88,10 +88,11 @@ type STARSFacilityAdaptation struct {
 	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration"`
 
 	PDB struct {
-		ShowScratchpad2  bool `json:"show_scratchpad2"`
-		HideGroundspeed  bool `json:"hide_gs"`
-		ShowAircraftType bool `json:"show_aircraft_type"`
-		SplitGSAndCWT    bool `json:"split_gs_and_cwt"`
+		ShowScratchpad2   bool `json:"show_scratchpad2"`
+		HideGroundspeed   bool `json:"hide_gs"`
+		ShowAircraftType  bool `json:"show_aircraft_type"`
+		SplitGSAndCWT     bool `json:"split_gs_and_cwt"`
+		DisplayCustomSPCs bool `json:"display_custom_spcs"`
 	} `json:"pdb"`
 	Scratchpad1 struct {
 		DisplayExitFix     bool `json:"display_exit_fix"`
@@ -99,6 +100,8 @@ type STARSFacilityAdaptation struct {
 		DisplayExitGate    bool `json:"display_exit_gate"`
 		DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
 	} `json:"scratchpad1"`
+	CustomSPCs []string `json:"custom_spcs"`
+
 	CoordinationLists []CoordinationList `json:"coordination_lists"`
 	RestrictionAreas  []RestrictionArea  `json:"restriction_areas"`
 	UseLegacyFont     bool               `json:"use_legacy_font"`
@@ -1185,6 +1188,9 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	if s.PDB.SplitGSAndCWT && s.PDB.HideGroundspeed {
 		e.ErrorString("Both \"split_gs_and_cwt\" and \"hide_gs\" cannot be specified for \"pdb\" adaption.")
 	}
+	if s.PDB.DisplayCustomSPCs && len(s.CustomSPCs) == 0 {
+		e.ErrorString("\"display_custom_spcs\" was set but none were defined in \"custom_spcs\".")
+	}
 
 	disp := make(map[string]interface{})
 	if s.Scratchpad1.DisplayExitFix {
@@ -1203,6 +1209,15 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		d := util.SortedMapKeys(disp)
 		d = util.MapSlice(d, func(s string) string { return `"` + s + `"` })
 		e.ErrorString("Cannot specify " + strings.Join(d, " and ") + "for \"scratchpad1\"")
+	}
+
+	for _, spc := range s.CustomSPCs {
+		if len(spc) != 2 || spc[0] < 'A' || spc[0] > 'Z' || spc[1] < 'A' || spc[1] > 'Z' {
+			e.ErrorString("Invalid \"custom_spcs\" code %q: must be two characters between A-Z", spc)
+		}
+		if av.StringIsSPC(spc) {
+			e.ErrorString("%q is a standard SPC already", spc)
+		}
 	}
 
 	// Significant points

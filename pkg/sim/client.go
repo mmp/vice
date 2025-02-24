@@ -748,6 +748,10 @@ func (c *ControlClient) TowerListAirports() []string {
 	return ap
 }
 
+func (c *ControlClient) StringIsSPC(s string) bool {
+	return av.StringIsSPC(s) || slices.Contains(c.State.STARSFacilityAdaptation.CustomSPCs, s)
+}
+
 func (c *ControlClient) DrawScenarioInfoWindow(lg *log.Logger) (show bool) {
 	// Ensure that the window is wide enough to show the description
 	sz := imgui.CalcTextSize(c.State.SimDescription, false, 0)

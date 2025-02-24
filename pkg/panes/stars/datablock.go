@@ -20,7 +20,7 @@ import (
 type DatablockType int
 
 const (
-	PartialDatablock = iota
+	PartialDatablock DatablockType = iota
 	LimitedDatablock
 	FullDatablock
 )
@@ -419,9 +419,6 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 	color, _, _ := sp.trackDatablockColorBrightness(ctx, ac)
 
-	// Alerts are common to all datablock types
-	alerts := sp.getDatablockAlerts(ctx, ac)
-
 	trk := sp.getTrack(ctx, ac)
 
 	// Check if the track is being handed off.
@@ -560,7 +557,8 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 	case LimitedDatablock:
 		db := &limitedDatablock{}
 
-		// Field 0: CA, MCI, and SPCs
+		// Field 0: CA, MCI, and squawking special codes
+		alerts := sp.getDatablockAlerts(ctx, ac, LimitedDatablock)
 		copy(db.field0[:], alerts[:])
 
 		extended := state.FullLDBEndTime.After(ctx.Now)
@@ -607,6 +605,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		// TODO: previously we had the following check:
 		// if ac.Squawk != trk.FlightPlan.AssignedSquawk && ac.Squawk != 0o1200 {
 		// and would display ac.Squawk + flashing WHO in field0
+		alerts := sp.getDatablockAlerts(ctx, ac, PartialDatablock)
 		copy(db.field0[:], alerts[:])
 
 		// Field 1: a) mode-c or pilot reported altitude, b) scratchpad 1
@@ -673,6 +672,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 		// Line 0
 		// Field 0: special conditions, safety alerts (red), cautions (yellow)
+		alerts := sp.getDatablockAlerts(ctx, ac, FullDatablock)
 		copy(db.field0[:], alerts[:])
 
 		// Line 1
@@ -1050,7 +1050,7 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) boo
 	return false
 }
 
-func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, ac *av.Aircraft) []dbChar {
+func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, ac *av.Aircraft, dbtype DatablockType) []dbChar {
 	ps := sp.currentPrefs()
 	state := sp.Aircraft[ac.Callsign]
 
@@ -1071,31 +1071,45 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, ac *av.Aircraft) []d
 		}
 	}
 
-	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
-		addAlert("LA", !state.MSAWAcknowledged, true)
-	}
-	if ok, code := ac.Squawk.IsSPC(); ok {
-		addAlert(code, !state.SPCAcknowledged, true)
-	}
-	if ac.SPCOverride != "" {
-		addAlert(ac.SPCOverride, !state.SPCAcknowledged, true)
-	}
-	if !ps.DisableCAWarnings && !state.DisableCAWarnings {
-		if idx := slices.IndexFunc(sp.CAAircraft,
-			func(ca CAAircraft) bool {
-				return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
-			}); idx != -1 {
-			addAlert("CA", !sp.CAAircraft[idx].Acknowledged, true)
+	if dbtype == LimitedDatablock || dbtype == FullDatablock {
+		if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
+			addAlert("LA", !state.MSAWAcknowledged, true)
+		}
+		if ok, code := ac.Squawk.IsSPC(); ok {
+			addAlert(code, !state.SPCAcknowledged, true)
 		}
 	}
-	if alts, warn := sp.WarnOutsideAirspace(ctx, ac); warn {
-		altStrs := ""
-		for _, a := range alts {
-			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
+	if dbtype == FullDatablock {
+		if ac.SPCOverride != "" {
+			red := av.StringIsSPC(ac.SPCOverride) // std ones are red, adapted ones are yellow.
+			addAlert(ac.SPCOverride, !state.SPCAcknowledged, red)
 		}
-		addAlert("AS"+altStrs, false, true)
+		if !ps.DisableCAWarnings && !state.DisableCAWarnings {
+			if idx := slices.IndexFunc(sp.CAAircraft,
+				func(ca CAAircraft) bool {
+					return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
+				}); idx != -1 {
+				addAlert("CA", !sp.CAAircraft[idx].Acknowledged, true)
+			}
+		}
+		if alts, warn := sp.WarnOutsideAirspace(ctx, ac); warn {
+			altStrs := ""
+			for _, a := range alts {
+				altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
+			}
+			addAlert("AS"+altStrs, false, true)
+		}
+	} else if dbtype == PartialDatablock {
+		fa := ctx.ControlClient.State.STARSFacilityAdaptation
+		if ac.SPCOverride != "" && fa.PDB.DisplayCustomSPCs {
+			// We only care about adapted alerts
+			if slices.Contains(fa.CustomSPCs, ac.SPCOverride) {
+				addAlert(ac.SPCOverride, !state.SPCAcknowledged, false)
+			}
+		}
 	}
 
+	// Both FDB and PDB
 	if sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeFused &&
 		ac.TrackingController != "" &&
 		(ac.Mode != av.Altitude || ac.InhibitModeCAltitudeDisplay) {

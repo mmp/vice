@@ -2971,6 +2971,8 @@ how it simulates aircraft or the STARS interface.
                 </tr>
               </tbody>
             </table>
+            <p>It is also possible to add custom codes for a facility via "custom_spcs" in <a href="#fe-stars-videomaps">"stars_config".
+            Custom SPCs are shown in yellow.</p>
 
             <h3 id="stars-leader-lines">Leader Lines and Positioning Datablocks</h3>
 
@@ -6397,6 +6399,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Allows specifying various adapted configurations for partial datablocks.
                   The following members are available (all are "false" by default):
                   <ul>
+                    <li>"display_custom_spcs": if true, custom SPCs (defined via "custom_spcs") are shown in partial datablocks.</li>
                     <li>"hide_gs": if true, groundspeed is not shown in the PDB.</li>
                     <li>"show_aircraft_type": if true, the aircraft type is shown, time-shared with the groundspeed.</li>
                     <li>"show_scratchpad2": if true, the contents of scratchpad 2 are shown, time-shared with altitude

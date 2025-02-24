@@ -2781,7 +2781,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
 				// Do not clear the input area to allow entering a fix for the second location
 				return
-			} else if av.StringIsSPC(cmd) {
+			} else if ctx.ControlClient.StringIsSPC(cmd) {
+				state.SPCAcknowledged = false
 				ctx.ControlClient.ToggleSPCOverride(ac.Callsign, cmd, nil,
 					func(err error) { sp.displayError(err, ctx) })
 				status.clear = true
