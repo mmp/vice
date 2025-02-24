@@ -417,10 +417,6 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		return nil
 	}
 
-	if ac.Mode == av.Standby {
-		return nil
-	}
-
 	color, _, _ := sp.trackDatablockColorBrightness(ctx, ac)
 
 	// Alerts are common to all datablock types
@@ -480,6 +476,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 	ident := state.Ident(ctx.Now)
 	squawkingSPC, _ := ac.Squawk.IsSPC()
 	altitude := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
+	if ac.Mode == av.Standby {
+		altitude = "RDR"
+	}
 	groundspeed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
 	// Note arrivalAirport is only set if it should be shown when there is no scratchpad set
 	arrivalAirport := ""
@@ -966,10 +965,6 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 			continue
 		}
-		if ac.Mode == av.Standby {
-			// No datablock if they're not squawking altitude
-			continue
-		}
 
 		db := sp.getDatablock(ctx, ac)
 		if db == nil {
@@ -1040,35 +1035,36 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, ac *av.Aircraft) []d
 
 	var alerts []dbChar
 	added := make(map[string]interface{})
-	addAlert := func(s string, flash bool) {
+	addAlert := func(s string, flash bool, red bool) {
 		if _, ok := added[s]; ok {
 			return // don't duplicate it
 		}
 		added[s] = nil
 
+		color := util.Select(red, STARSTextAlertColor, STARSTextWarningColor)
 		if len(alerts) > 0 {
-			alerts = append(alerts, dbChar{ch: '/', color: STARSTextAlertColor})
+			alerts = append(alerts, dbChar{ch: '/', color: color})
 		}
 		for _, ch := range s {
-			alerts = append(alerts, dbChar{ch: ch, color: STARSTextAlertColor, flashing: flash})
+			alerts = append(alerts, dbChar{ch: ch, color: color, flashing: flash})
 		}
 	}
 
 	if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
-		addAlert("LA", !state.MSAWAcknowledged)
+		addAlert("LA", !state.MSAWAcknowledged, true)
 	}
 	if ok, code := ac.Squawk.IsSPC(); ok {
-		addAlert(code, !state.SPCAcknowledged)
+		addAlert(code, !state.SPCAcknowledged, true)
 	}
 	if ac.SPCOverride != "" {
-		addAlert(ac.SPCOverride, !state.SPCAcknowledged)
+		addAlert(ac.SPCOverride, !state.SPCAcknowledged, true)
 	}
 	if !ps.DisableCAWarnings && !state.DisableCAWarnings {
 		if idx := slices.IndexFunc(sp.CAAircraft,
 			func(ca CAAircraft) bool {
 				return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
 			}); idx != -1 {
-			addAlert("CA", !sp.CAAircraft[idx].Acknowledged)
+			addAlert("CA", !sp.CAAircraft[idx].Acknowledged, true)
 		}
 	}
 	if alts, warn := sp.WarnOutsideAirspace(ctx, ac); warn {
@@ -1076,7 +1072,14 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, ac *av.Aircraft) []d
 		for _, a := range alts {
 			altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
 		}
-		addAlert("AS"+altStrs, false)
+		addAlert("AS"+altStrs, false, true)
+	}
+
+	if sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeFused &&
+		ac.TrackingController != "" && ac.Mode != av.Altitude {
+		// No altitude being reported, one way or another (off or mode
+		// A). Only when FUSED and for tracked aircraft.
+		addAlert("ISR", false, false)
 	}
 
 	return alerts

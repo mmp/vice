@@ -531,11 +531,16 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 		}
 
 		positionSymbol := "*"
-		if ac.Mode == av.Standby {
-			positionSymbol = string(rune(140)) // 24))
-		} else if ac.Squawk == 0o1200 {
-			// positionSymbol = string(rune(29)) // square in the STARS font
-			positionSymbol = "*"
+		associated := ac.TrackingController != ""
+		if !associated {
+			switch ac.Mode {
+			case av.Standby:
+				positionSymbol = string(rune(140)) // 24)) // diamond
+			case av.Altitude:
+				positionSymbol = "*" // TODO: square if beacon code selected
+			case av.On:
+				positionSymbol = string(rune(19)) // plus TODO: triangle if beacon code selected
+			}
 		} else if trk := sp.getTrack(ctx, ac); trk != nil && trk.TrackOwner != "" {
 			positionSymbol = "?"
 			if ctrl, ok := ctx.ControlClient.Controllers[trk.TrackOwner]; ok && ctrl != nil {
