@@ -159,6 +159,10 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 		Font:  font,
 		Color: ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor),
 	}
+	warnStyle := renderer.TextStyle{
+		Font:  font,
+		Color: ps.Brightness.Lists.ScaleRGB(STARSTextWarningColor),
+	}
 
 	stripK := func(airport string) string {
 		if len(airport) == 4 && airport[0] == 'K' {
@@ -287,7 +291,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 	}
 
 	if filter.All || filter.SpecialPurposeCodes {
-		// Special purpose codes listed in red, if anyone is squawking
+		// Active special purpose codes.
 		// those.
 		codes := make(map[string]interface{})
 		for _, ac := range aircraft {
@@ -300,7 +304,17 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 		}
 
 		if len(codes) > 0 {
-			td.AddText(strings.Join(util.SortedMapKeys(codes), " "), pw, alertStyle)
+			// Two passes: first the red ones then the yellow ones
+			for _, spc := range util.SortedMapKeys(codes) {
+				if av.StringIsSPC(spc) {
+					pw = td.AddText(spc+" ", pw, alertStyle)
+				}
+			}
+			for _, spc := range util.SortedMapKeys(codes) {
+				if !av.StringIsSPC(spc) {
+					pw = td.AddText(spc+" ", pw, warnStyle)
+				}
+			}
 			newline()
 		}
 	}
