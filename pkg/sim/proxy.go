@@ -129,20 +129,6 @@ func (s *proxy) InitiateTrack(callsign string, fp *STARSFlightPlan) *rpc.Call {
 	}, nil, nil)
 }
 
-type IntermTrackArgs struct {
-	Token, Callsign, Initial string
-	fp                       *STARSFlightPlan
-}
-
-func (s *proxy) IntermTrack(callsign, initial string, fp *STARSFlightPlan) *rpc.Call {
-	return s.Client.Go("Sim.InitiateTrack", IntermTrackArgs{
-		Token:    s.ControllerToken,
-		Callsign: callsign,
-		Initial:  initial,
-		fp:       fp,
-	}, nil, nil)
-}
-
 func (s *proxy) DropTrack(callsign string) *rpc.Call {
 	return s.Client.Go("Sim.DropTrack", &DropTrackArgs{
 		ControllerToken: s.ControllerToken,
