@@ -3670,6 +3670,11 @@ func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (
 	if dep.Unassociated {
 		ac.Squawk = 0o1200
 		rules = av.VFR
+		if r := rand.Float32(); r < .02 {
+			ac.Mode = av.On // mode-A
+		} else if r < .03 {
+			ac.Mode = av.Standby // flat out off
+		}
 	}
 	ac.FlightPlan = ac.NewFlightPlan(rules, acType, departureAirport, dep.Destination)
 	exitRoute := rwy.ExitRoutes[dep.Exit]
@@ -3708,6 +3713,11 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 	if of.Unassociated {
 		ac.Squawk = 0o1200
 		rules = av.VFR
+		if r := rand.Float32(); r < .02 {
+			ac.Mode = av.On // mode-A
+		} else if r < .03 {
+			ac.Mode = av.Standby // flat out off
+		}
 	}
 	ac.FlightPlan = ac.NewFlightPlan(rules, acType, airline.DepartureAirport,
 		airline.ArrivalAirport)
