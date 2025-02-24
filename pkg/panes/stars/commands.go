@@ -1218,6 +1218,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 		case "R": // requested altitude: 6-107
 			switch cmd {
+			case "": // clear all individually-enabled PTLs
+				for _, state := range sp.Aircraft {
+					state.DisplayPTL = false
+				}
+				status.clear = true
+				return
 			case "A": // toggle
 				ps.DisplayRequestedAltitude = !ps.DisplayRequestedAltitude
 				status.clear = true
