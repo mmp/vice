@@ -3544,8 +3544,6 @@ func (ss *State) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*av.Air
 		}
 	}
 
-	squawk := av.Squawk(rand.Intn(0o7000))
-
 	acType := aircraft
 	if perf.WeightClass == "H" {
 		acType = "H/" + acType
@@ -3556,7 +3554,6 @@ func (ss *State) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*av.Air
 
 	return &av.Aircraft{
 		Callsign: callsign,
-		Squawk:   squawk,
 		Mode:     av.Altitude,
 	}, acType
 }
@@ -3589,7 +3586,11 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*av.Airc
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	// ac.Squawk = artcc.CreateSquawk()
+	sq, err := s.State.ERAMComputer().CreateSquawk()
+	if err != nil {
+		return nil, err
+	}
+	ac.Squawk = sq
 	ac.FlightPlan = ac.NewFlightPlan(av.IFR, acType, airline.Airport, arrivalAirport)
 
 	// Figure out which controller will (for starters) get the arrival
@@ -3675,8 +3676,15 @@ func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (
 		} else if r < .03 {
 			ac.Mode = av.Standby // flat out off
 		}
+	} else {
+		sq, err := s.State.ERAMComputer().CreateSquawk()
+		if err != nil {
+			return nil, err
+		}
+		ac.Squawk = sq
 	}
 	ac.FlightPlan = ac.NewFlightPlan(rules, acType, departureAirport, dep.Destination)
+
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	if err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.Scratchpads,
@@ -3718,6 +3726,12 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 		} else if r < .03 {
 			ac.Mode = av.Standby // flat out off
 		}
+	} else {
+		sq, err := s.State.ERAMComputer().CreateSquawk()
+		if err != nil {
+			return nil, err
+		}
+		ac.Squawk = sq
 	}
 	ac.FlightPlan = ac.NewFlightPlan(rules, acType, airline.DepartureAirport,
 		airline.ArrivalAirport)
@@ -3745,15 +3759,6 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 		s.State /* wind */, s.lg); err != nil {
 		return nil, err
 	}
-
-	// TODO(mtrokel)
-	/*
-			facility, ok := s.State.FacilityFromController(ac.TrackingController)
-			if !ok {
-				return nil, ErrUnknownControllerFacility
-			}
-		    s.State.ERAMComputers.AddArrival(ac, facility, s.State.STARSFacilityAdaptation, s.SimTime)
-	*/
 
 	return ac, nil
 }

@@ -110,6 +110,10 @@ func (comp *ERAMComputer) CreateSquawk() (av.Squawk, error) {
 	return comp.SquawkCodePool.Get()
 }
 
+func (comp *ERAMComputer) ReturnSquawk(code av.Squawk) error {
+	return comp.SquawkCodePool.Return(code)
+}
+
 func (comp *ERAMComputer) SendFlightPlans(tracon string, simTime time.Time, lg *log.Logger) {
 	// FIXME(mtrokel): does this need to remove plans from comp.FlightPlans
 	// / comp.TrackInformation after sending them?
@@ -448,6 +452,10 @@ func (comp *STARSComputer) Activate(pool *av.SquawkCodePool) {
 // For local codes
 func (comp *STARSComputer) CreateSquawk() (av.Squawk, error) {
 	return comp.SquawkCodePool.Get()
+}
+
+func (comp *STARSComputer) ReturnSquawk(code av.Squawk) error {
+	return comp.SquawkCodePool.Return(code)
 }
 
 func (comp *STARSComputer) SendTrackInfo(receivingFacility string, msg FlightPlanMessage, simTime time.Time) {

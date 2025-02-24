@@ -486,6 +486,7 @@ func (ss *State) FacilityFromController(callsign string) (string, bool) {
 
 func (ss *State) DeleteAircraft(ac *av.Aircraft) {
 	delete(ss.Aircraft, ac.Callsign)
+	ss.ERAMComputer().ReturnSquawk(ac.Squawk)
 	ss.ERAMComputers.CompletelyDeleteAircraft(ac)
 }
 
