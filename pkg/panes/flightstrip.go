@@ -37,6 +37,7 @@ type FlightStripPane struct {
 	AutoRemoveHandoffs        bool
 	AddPushed                 bool
 	CollectDeparturesArrivals bool
+	DarkMode                  bool
 
 	strips        []string // callsigns
 	addedAircraft map[string]interface{}
@@ -277,6 +278,7 @@ func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config)
 	imgui.Checkbox("Automatically remove accepted handoffs", &fsp.AutoRemoveHandoffs)
 
 	imgui.Checkbox("Collect departures and arrivals together", &fsp.CollectDeparturesArrivals)
+	imgui.Checkbox("Night mode", &fsp.DarkMode)
 
 	id := renderer.FontIdentifier{Name: fsp.font.Id.Name, Size: fsp.FontSize}
 	if newFont, changed := renderer.DrawFontSizeSelector(&id); changed {
@@ -334,10 +336,17 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		fsp.selectedStrip = len(fsp.strips) - 1
 	}
 
+	darkmode := func(rgb renderer.RGB) renderer.RGB {
+		if fsp.DarkMode {
+			return renderer.RGB{R: 1 - rgb.R, G: 1 - rgb.G, B: 1 - rgb.B}
+		}
+		return rgb
+	}
+
 	// Draw the background for all of them
 	qb := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(qb)
-	bgColor := renderer.RGB{.9, .9, .85}
+	bgColor := darkmode(renderer.RGB{.9, .9, .85})
 	y0, y1 := float32(0), float32(math.Min(len(fsp.strips), visibleStrips))*stripHeight-1
 	qb.AddQuad([2]float32{0, y0}, [2]float32{drawWidth, y0}, [2]float32{drawWidth, y1}, [2]float32{0, y1}, bgColor)
 
@@ -352,7 +361,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	defer renderer.ReturnTrianglesDrawBuilder(trid)
 
 	// Draw from the bottom
-	style := renderer.TextStyle{Font: fsp.font, Color: renderer.RGB{.1, .1, .1}}
+	style := renderer.TextStyle{Font: fsp.font, Color: darkmode(renderer.RGB{.1, .1, .1})}
 	scrollOffset := fsp.scrollbar.Offset()
 	y := stripHeight - 1
 	for i := scrollOffset; i < math.Min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
@@ -640,12 +649,12 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	*/
 	fsp.scrollbar.Draw(ctx, cb)
 
-	cb.SetRGB(UIControlColor)
+	cb.SetRGB(darkmode(UIControlColor))
 	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 
-	cb.SetRGB(UITextHighlightColor)
+	cb.SetRGB(darkmode(UITextHighlightColor))
 	trid.GenerateCommands(cb)
 }
 
