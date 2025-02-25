@@ -108,11 +108,13 @@ type STARSFacilityAdaptation struct {
 }
 
 type STARSControllerConfig struct {
-	VideoMapNames []string      `json:"video_maps"`
-	DefaultMaps   []string      `json:"default_maps"`
-	Center        math.Point2LL `json:"-"`
-	CenterString  string        `json:"center"`
-	Range         float32       `json:"range"`
+	VideoMapNames                   []string      `json:"video_maps"`
+	DefaultMaps                     []string      `json:"default_maps"`
+	Center                          math.Point2LL `json:"-"`
+	CenterString                    string        `json:"center"`
+	Range                           float32       `json:"range"`
+	MonitoredBeaconCodeBlocksString string        `json:"beacon_code_blocks"`
+	MonitoredBeaconCodeBlocks       []av.Squawk
 }
 
 type CoordinationList struct {
@@ -700,6 +702,19 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 				}
 			}
 		}
+
+		// Handle beacon code blocks
+		for _, config := range fa.ControllerConfigs {
+			config.MonitoredBeaconCodeBlocks = nil // HACK: this is aliased if multiple controllers share a config.
+			for _, s := range strings.Split(config.MonitoredBeaconCodeBlocksString, ",") {
+				s = strings.TrimSpace(s)
+				if code, err := av.ParseSquawk(s); err != nil {
+					e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
+				} else {
+					config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, code)
+				}
+			}
+		}
 	}
 }
 
@@ -1058,11 +1073,13 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		}
 
 		for ctrl, config := range s.ControllerConfigs {
-			if pos, ok := sg.Locate(config.CenterString); !ok {
-				e.ErrorString("unknown location %q specified for \"center\"", s.CenterString)
-			} else {
-				config.Center = pos
-				s.ControllerConfigs[ctrl] = config
+			if config.CenterString != "" {
+				if pos, ok := sg.Locate(config.CenterString); !ok {
+					e.ErrorString("unknown location %q specified for \"center\"", s.CenterString)
+				} else {
+					config.Center = pos
+					s.ControllerConfigs[ctrl] = config
+				}
 			}
 		}
 

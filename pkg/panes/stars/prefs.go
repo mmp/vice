@@ -11,6 +11,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/util"
 
 	"github.com/brunoga/deep"
 )
@@ -282,6 +283,8 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 	}
 
 	p.RadarSiteSelected = ""
+
+	p.SelectedBeacons = util.DuplicateSlice(ss.ControllerMonitoredBeaconCodeBlocks)
 
 	// Reset CRDA state
 	p.CRDA.RunwayPairState = nil

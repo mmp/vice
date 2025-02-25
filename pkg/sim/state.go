@@ -66,9 +66,11 @@ type State struct {
 	UserRestrictionAreas     []RestrictionArea
 	Instructors              map[string]bool
 
-	ControllerVideoMaps        []string
-	ControllerDefaultVideoMaps []string
-	VideoMapLibraryHash        []byte
+	ControllerVideoMaps                 []string
+	ControllerDefaultVideoMaps          []string
+	ControllerMonitoredBeaconCodeBlocks []av.Squawk
+
+	VideoMapLibraryHash []byte
 
 	mapLibrary *av.VideoMapLibrary // just cached per session; not saved to disk.
 }
@@ -259,6 +261,7 @@ func (s *State) GetStateForController(tcp string) *State {
 	if config, ok := s.STARSFacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
 		state.ControllerVideoMaps = config.VideoMapNames
 		state.ControllerDefaultVideoMaps = config.DefaultMaps
+		state.ControllerMonitoredBeaconCodeBlocks = config.MonitoredBeaconCodeBlocks
 	} else {
 		state.ControllerVideoMaps = s.STARSFacilityAdaptation.VideoMapNames
 		state.ControllerDefaultVideoMaps = s.ScenarioDefaultVideoMaps
