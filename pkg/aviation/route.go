@@ -471,8 +471,10 @@ func RandomizeVFRRoute(w []Waypoint, perf AircraftPerformance, nmPerLongitude fl
 			alt := math.Lerp(ralt, low, high)
 
 			// Update the altitude restriction to just be the single altitude.
-			ar.Range[0] = alt
-			ar.Range[1] = alt
+			// Note that we don't want to modify wp.AltitudeRestriction in
+			// place since the pointer is shared with other instances of
+			// the route.
+			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{alt, alt}}
 
 			ralt = jitter(ralt)
 		}
