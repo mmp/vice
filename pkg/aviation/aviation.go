@@ -1306,9 +1306,14 @@ func (p *SquawkCodePool) removeInvalidCodes() {
 	claimRange(0o4440, 0o4452)
 	_ = p.Claim(0o4453)
 	claimRange(0o4454, 0o4477)
+	_ = p.Claim(0o7400)
 	claimRange(0o7501, 0o7577)
+	_ = p.Claim(0o7500)
+	_ = p.Claim(0o7600)
 	claimRange(0o7601, 0o7607)
+	_ = p.Claim(0o7700)
 	claimRange(0o7701, 0o7707)
+	_ = p.Claim(0o7777)
 
 	// TODO? 0100, 0200, 0300, 0400 blocks?
 
