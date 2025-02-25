@@ -559,7 +559,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 	}
 
 	if sp.activeDCBMenu == dcbMenuSSAFilter {
-		rewindDCBCursor(16, buttonScale)
+		rewindDCBCursor(17, buttonScale)
 		dcbStartCaptureMouseRegion()
 
 		// 4-44 / 2-71
@@ -577,8 +577,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		toggleButton(ctx, "PTL", &ps.SSAList.Filter.PredictedTrackLines, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "ALT FIL", &ps.SSAList.Filter.AltitudeFilters, buttonHalfVertical, buttonScale)
 		unsupportedButton(ctx, "NAS I/F", buttonHalfVertical, buttonScale) // ?? TODO
-		// INTRAIL
-		// 2.5
+		unsupportedButton(ctx, "INTRAIL", buttonHalfVertical, buttonScale)
+		unsupportedButton(ctx, "2.5", buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "AIRPORT", &ps.SSAList.Filter.AirportWeather, buttonHalfVertical, buttonScale)
 		unsupportedButton(ctx, "OP MODE", buttonHalfVertical, buttonScale) // ?? TODO
 		unsupportedButton(ctx, "TT", buttonHalfVertical, buttonScale)      // ?? TODO
