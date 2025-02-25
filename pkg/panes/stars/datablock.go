@@ -344,6 +344,11 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			return FullDatablock
 		}
 
+		if ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && ac.Squawk == sp.DisplayBeaconCode {
+			// 6-117
+			return FullDatablock
+		}
+
 		if ac.Squawk != trk.FlightPlan.AssignedSquawk {
 			dt = PartialDatablock
 		}
@@ -416,7 +421,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		return nil
 	}
 
-	color, _, _ := sp.trackDatablockColorBrightness(ctx, ac)
+	color, brightness, _ := sp.trackDatablockColorBrightness(ctx, ac)
 
 	trk := sp.getTrack(ctx, ac)
 
@@ -482,6 +487,8 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 	} else if ac.Mode != av.Altitude {
 		altitude = "RDR"
 	}
+
+	displayBeaconCode := ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && ac.Squawk == sp.DisplayBeaconCode
 
 	groundspeed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
 	// Note arrivalAirport is only set if it should be shown when there is no scratchpad set
@@ -564,10 +571,15 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 		ps := sp.currentPrefs()
 		if ac.Mode != av.Standby {
-			if beaconator || extended || ident || ps.DisplayLDBBeaconCodes || state.DisplayLDBBeaconCode {
+			if beaconator || extended || ident || ps.DisplayLDBBeaconCodes || state.DisplayLDBBeaconCode || displayBeaconCode {
 				// Field 1: reported beacon code
 				// TODO: Field 1: WHO if unassociated and no flight plan
-				f1 := formatDBText(db.field1[:], ac.Squawk.String(), color, false)
+				var f1 int
+				if displayBeaconCode { // flashing yellow
+					f1 = formatDBText(db.field1[:], ac.Squawk.String(), brightness.ScaleRGB(STARSTextWarningColor), true)
+				} else {
+					f1 = formatDBText(db.field1[:], ac.Squawk.String(), color, false)
+				}
 				// Field 1: flashing ID after beacon code if ident.
 				if ident {
 					formatDBText(db.field1[f1:], "ID", color, true)
@@ -791,7 +803,10 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			formatDBText(db.field6[idx6][:], fmt.Sprintf("%.2f", state.IntrailDistance), distColor, false)
 			idx6++
 		}
-		if beaconMismatch {
+		if displayBeaconCode {
+			formatDBText(db.field6[idx6][:], ac.Squawk.String(), brightness.ScaleRGB(STARSTextWarningColor), true)
+			idx6++
+		} else if beaconMismatch {
 			formatDBText(db.field6[idx6][:], ac.Squawk.String(), color, false)
 			idx6++
 		}
@@ -961,6 +976,9 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 		return true
 	} else if trk != nil && slices.Contains(trk.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
 		// Had it but redirected it
+		return true
+	} else if ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && ac.Squawk == sp.DisplayBeaconCode {
+		// beacon code display 6-117
 		return true
 	}
 

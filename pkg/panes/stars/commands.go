@@ -7,6 +7,7 @@ package stars
 import (
 	"fmt"
 	"log/slog"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -404,6 +405,22 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				status.clear = true
 				return
 			}
+		}
+
+		if len(cmd) == 6 && strings.HasPrefix(cmd, "**") {
+			// 6-117 Selected beacon code display
+			code, err := av.ParseSquawk(cmd[2:])
+			if err != nil {
+				status.err = ErrSTARSIllegalCode
+			} else if !util.SeqContainsFunc(maps.Values(ctx.ControlClient.Aircraft),
+				func(ac *av.Aircraft) bool { return ac.Squawk == code }) {
+				status.err = ErrSTARSNoTrack
+			} else {
+				sp.DisplayBeaconCode = code
+				sp.DisplayBeaconCodeEndTime = ctx.Now.Add(15 * time.Second)
+				status.clear = true
+			}
+			return
 		}
 
 		if len(cmd) > 5 && cmd[:2] == "**" { // Force QL

@@ -151,6 +151,9 @@ type STARSPane struct {
 
 	FontSelection int
 
+	DisplayBeaconCode        av.Squawk
+	DisplayBeaconCodeEndTime time.Time
+
 	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) CommandStatus
 	activeDCBMenu       int
 	selectedPlaceButton string

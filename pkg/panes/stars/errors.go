@@ -57,6 +57,7 @@ var (
 	ErrSTARSIllegalValue      = NewSTARSError("ILL VALUE")
 	ErrSTARSMultipleFlights   = NewSTARSError("MULTIPLE FLIGHT")
 	ErrSTARSNoFlight          = NewSTARSError("NO FLIGHT")
+	ErrSTARSNoTrack           = NewSTARSError("NO TRK")
 	ErrSTARSRangeLimit        = NewSTARSError("RANGE LIMIT")
 )
 
