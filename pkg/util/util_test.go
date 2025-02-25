@@ -321,15 +321,45 @@ func TestHash(t *testing.T) {
 	}
 }
 
-func TestFilterIter(t *testing.T) {
+func TestFilterSeq(t *testing.T) {
 	m := map[int]string{1: "one", 2: "two", 3: "three", 10: "ten", 0: "zero"}
 
-	threeCh := slices.Collect(FilterIter(maps.Values(m), func(s string) bool { return len(s) == 3 }))
+	threeCh := slices.Collect(FilterSeq(maps.Values(m), func(s string) bool { return len(s) == 3 }))
 	if len(threeCh) != 3 {
 		t.Errorf("expected 3 3-letter strings: %+v", threeCh)
 	}
 	if !slices.Contains(threeCh, "one") || !slices.Contains(threeCh, "two") || !slices.Contains(threeCh, "ten") {
 		t.Errorf("didn't find all of \"one\", \"two\" and \"ten\" in 3 char strings: %+v", threeCh)
+	}
+}
+
+func TestSeqContains(t *testing.T) {
+	if !SeqContains(SliceSeq([]int{1, 2, 3, 4, 5}), 5) {
+		t.Errorf("SeqContains failure")
+	}
+	if SeqContains(SliceSeq([]int{1, 2, 3, 4, 5}), 0) {
+		t.Errorf("SeqContains failure")
+	}
+
+	m := map[int]string{1: "one", 2: "two", 10: "ten", 50: "fifty"}
+	if SeqContainsFunc(maps.Values(m), func(s string) bool { return s == "" }) {
+		t.Errorf("SeqContainsFunc failure")
+	}
+	if !SeqContainsFunc(maps.Values(m), func(s string) bool { return s == "ten" }) {
+		t.Errorf("SeqContainsFunc failure")
+	}
+}
+
+func TestMapSeq(t *testing.T) {
+	m := map[int]string{1: "one", 2: "two", 10: "ten", 50: "fifty"}
+	dub := MapSeq(maps.Keys(m), func(v int) int { return 2 * v })
+	if !slices.Equal(slices.Collect(dub), []int{2, 4, 20, 100}) {
+		t.Errorf("MapSeq failure: got %+v", dub)
+	}
+
+	xp := MapSeq2(maps.All(m), func(i int, s string) (string, int) { return s, i })
+	if !maps.Equal(maps.Collect(xp), map[string]int{"one": 1, "two": 2, "ten": 10, "fifty": 50}) {
+		t.Errorf("MapSeq2 failure: got %+v", xp)
 	}
 }
 

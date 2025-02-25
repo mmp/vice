@@ -209,19 +209,6 @@ func Select[T any](sel bool, a, b T) T {
 	}
 }
 
-// FlattenMap takes a map and returns separate slices corresponding to the
-// keys and values stored in the map.  (The slices are ordered so that the
-// i'th key corresponds to the i'th value, needless to say.)
-func FlattenMap[K comparable, V any](m map[K]V) ([]K, []V) {
-	keys := make([]K, 0, len(m))
-	values := make([]V, 0, len(m))
-	for k, v := range m {
-		keys = append(keys, k)
-		values = append(values, v)
-	}
-	return keys, values
-}
-
 // SortedMapKeys returns the keys of the given map, sorted from low to high.
 func SortedMapKeys[K constraints.Ordered, V any](m map[K]V) []K {
 	return slices.Sorted(maps.Keys(m))
@@ -232,20 +219,6 @@ func SortedMapKeys[K constraints.Ordered, V any](m map[K]V) []K {
 func DuplicateMap[K comparable, V any](m map[K]V) map[K]V {
 	mnew := make(map[K]V, len(m))
 	maps.Copy(mnew, m)
-	return mnew
-}
-
-// FilterMap returns a newly-allocated result that is the result of
-// applying the given predicate function to all of the elements in the
-// given map and only including those for which the predicate returned
-// true.
-func FilterMap[K comparable, V any](m map[K]V, pred func(K, V) bool) map[K]V {
-	mnew := make(map[K]V)
-	for k, v := range m {
-		if pred(k, v) {
-			mnew[k] = v
-		}
-	}
 	return mnew
 }
 
@@ -371,20 +344,6 @@ func AllPermutations[S ~[]E, E any](s S) iter.Seq[iter.Seq2[int, E]] {
 	}
 }
 
-// FilterIter applies uses the given predicate function to filter the elements
-// given by an iterator, returning an iterator over the filtered elements.
-func FilterIter[T any](it iter.Seq[T], pred func(T) bool) iter.Seq[T] {
-	return func(yield func(T) bool) {
-		for v := range it {
-			if pred(v) {
-				if !yield(v) {
-					return
-				}
-			}
-		}
-	}
-}
-
 func SliceReverseValues[Slice ~[]E, E any](s Slice) iter.Seq[E] {
 	return func(yield func(E) bool) {
 		for _, v := range SliceReverseValues2(s) {
@@ -399,6 +358,82 @@ func SliceReverseValues2[Slice ~[]E, E any](s Slice) iter.Seq2[int, E] {
 	return func(yield func(int, E) bool) {
 		for i := len(s) - 1; i >= 0; i-- {
 			if !yield(i, s[i]) {
+				break
+			}
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// operations on iterator sequences
+
+// FilterSeq applies uses the given predicate function to filter the
+// elements given by a sequence iterator, returning an iterator over the
+// filtered elements.
+func FilterSeq[T any](seq iter.Seq[T], pred func(T) bool) iter.Seq[T] {
+	return func(yield func(T) bool) {
+		for v := range seq {
+			if pred(v) {
+				if !yield(v) {
+					return
+				}
+			}
+		}
+	}
+}
+
+func SliceSeq[Slice ~[]E, E any](s Slice) iter.Seq[E] {
+	return func(yield func(E) bool) {
+		for _, v := range s {
+			if !yield(v) {
+				break
+			}
+		}
+	}
+}
+
+func SliceSeq2[Slice ~[]E, E any](s Slice) iter.Seq2[int, E] {
+	return func(yield func(int, E) bool) {
+		for i, v := range s {
+			if !yield(i, v) {
+				break
+			}
+		}
+	}
+}
+
+func SeqContains[T comparable](seq iter.Seq[T], v T) bool {
+	for s := range seq {
+		if s == v {
+			return true
+		}
+	}
+	return false
+}
+
+func SeqContainsFunc[T any](seq iter.Seq[T], check func(T) bool) bool {
+	for s := range seq {
+		if check(s) {
+			return true
+		}
+	}
+	return false
+}
+
+func MapSeq[T, U any](seq iter.Seq[T], f func(T) U) iter.Seq[U] {
+	return func(yield func(U) bool) {
+		for v := range seq {
+			if !yield(f(v)) {
+				break
+			}
+		}
+	}
+}
+
+func MapSeq2[K, V, K2, V2 any](seq iter.Seq2[K, V], f func(K, V) (K2, V2)) iter.Seq2[K2, V2] {
+	return func(yield func(K2, V2) bool) {
+		for k, v := range seq {
+			if !yield(f(k, v)) {
 				break
 			}
 		}

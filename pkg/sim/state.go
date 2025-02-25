@@ -322,7 +322,7 @@ func (ss *State) AircraftFromCallsignSuffix(suffix string, instructor bool) []*a
 	match := func(ac *av.Aircraft) bool {
 		return strings.HasSuffix(ac.Callsign, suffix) && (instructor || ac.ControllingController == ss.PrimaryTCP)
 	}
-	return slices.Collect(util.FilterIter(maps.Values(ss.Aircraft), match))
+	return slices.Collect(util.FilterSeq(maps.Values(ss.Aircraft), match))
 }
 
 func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
