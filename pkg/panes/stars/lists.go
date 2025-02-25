@@ -319,6 +319,31 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 		}
 	}
 
+	if filter.All || filter.Intrail {
+		// We don't have any way to disable them, so this is easy..
+		pw = td.AddText("INTRAIL ON", pw, listStyle)
+		newline()
+	}
+	if filter.All || filter.Intrail25 {
+		var vols []string
+		for _, r := range ctx.ControlClient.State.ArrivalRunways {
+			if ap, ok := ctx.ControlClient.State.ArrivalAirports[r.Airport]; ok {
+				if vol, ok := ap.ATPAVolumes[r.Runway]; ok && vol.Enable25nmApproach {
+					vols = append(vols, vol.Id) // TODO:include airport?
+				}
+			}
+		}
+		if len(vols) > 0 {
+			v := strings.Join(vols, " ")
+			if len(v) > 16 { // 32 - "INTRAIL 2.5 ON: "
+				[]byte(v)[15] = '+'
+				v = v[:16]
+			}
+			pw = td.AddText("INTRAIL 2.5 ON: "+v, pw, listStyle)
+			newline()
+		}
+	}
+
 	if filter.All || filter.Range || filter.PredictedTrackLines {
 		text := ""
 		if filter.All || filter.Range {

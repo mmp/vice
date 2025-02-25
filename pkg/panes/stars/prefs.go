@@ -218,6 +218,8 @@ type CommonPreferences struct {
 			Range               bool
 			PredictedTrackLines bool
 			AltitudeFilters     bool
+			Intrail             bool
+			Intrail25           bool
 			AirportWeather      bool
 			QuickLookPositions  bool
 			DisabledTerminal    bool

@@ -577,8 +577,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		toggleButton(ctx, "PTL", &ps.SSAList.Filter.PredictedTrackLines, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "ALT FIL", &ps.SSAList.Filter.AltitudeFilters, buttonHalfVertical, buttonScale)
 		unsupportedButton(ctx, "NAS I/F", buttonHalfVertical, buttonScale) // ?? TODO
-		unsupportedButton(ctx, "INTRAIL", buttonHalfVertical, buttonScale)
-		unsupportedButton(ctx, "2.5", buttonHalfVertical, buttonScale)
+		toggleButton(ctx, "INTRAIL", &ps.SSAList.Filter.Intrail, buttonHalfVertical, buttonScale)
+		toggleButton(ctx, "2.5", &ps.SSAList.Filter.Intrail25, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "AIRPORT", &ps.SSAList.Filter.AirportWeather, buttonHalfVertical, buttonScale)
 		unsupportedButton(ctx, "OP MODE", buttonHalfVertical, buttonScale) // ?? TODO
 		unsupportedButton(ctx, "TT", buttonHalfVertical, buttonScale)      // ?? TODO
