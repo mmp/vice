@@ -785,12 +785,18 @@ func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Way
 			continue
 		}
 
-		var hdg float32
-		if fafIdx > 0 {
-			hdg = math.Heading2LL(wps[fafIdx-1].Location, wps[fafIdx].Location, nmPerLongitude, magneticVariation)
-		} else {
-			hdg = math.Heading2LL(wps[fafIdx].Location, wps[fafIdx+1].Location, nmPerLongitude, magneticVariation)
+		if wps[fafIdx].IF || wps[fafIdx].IAF {
+			// Likely a HILPT; don't go outbound for the approach course as
+			// it may be some random feeder fix.
+			fafIdx++
 		}
+
+		// Go from the previous fix to the FAF if possible.
+		if fafIdx == 0 {
+			fafIdx++
+		}
+
+		hdg := math.Heading2LL(wps[fafIdx-1].Location, wps[fafIdx].Location, nmPerLongitude, magneticVariation)
 
 		diff := math.HeadingDifference(hdg, float32(rwy))
 		if diff < minDiff {
@@ -809,14 +815,8 @@ func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Way
 }
 
 func (ap *Approach) Line(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
-	if wps, idx := ap.FAFSegment(nmPerLongitude, magneticVariation); idx > 0 {
-		// Go from the previous fix to the FAF if possible.
-		return [2]math.Point2LL{wps[idx-1].Location, wps[idx].Location}
-	} else {
-		// If we have to, go to the successive fix; there should always be
-		// another one, worst case the auto-added runway threshold.
-		return [2]math.Point2LL{wps[idx].Location, wps[idx+1].Location}
-	}
+	wps, idx := ap.FAFSegment(nmPerLongitude, magneticVariation)
+	return [2]math.Point2LL{wps[idx-1].Location, wps[idx].Location}
 }
 
 func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {
