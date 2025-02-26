@@ -284,6 +284,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 			if len(codes) > 5 {
 				pw = td.AddText(strings.Join(codes[:5], " "), pw, listStyle)
 				codes = codes[5:]
+				newline()
 			}
 			pw = td.AddText(strings.Join(codes, " "), pw, listStyle)
 			newline()
