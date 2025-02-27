@@ -2656,18 +2656,14 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				} else if sp.removeForceQL(ctx, ac.Callsign) {
 					status.clear = true
 					return
-				} else if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
+				} else if idx := slices.IndexFunc(sp.CAAircraft, func(ca CAAircraft) bool {
 					return (ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign) &&
 						!ca.Acknowledged
-				}) {
+				}); idx != -1 {
 					// Acknowledged a CA
-					for i, ca := range sp.CAAircraft {
-						if ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign {
-							status.clear = true
-							sp.CAAircraft[i].Acknowledged = true
-							return
-						}
-					}
+					status.clear = true
+					sp.CAAircraft[idx].Acknowledged = true
+					return
 				} else if state.MSAW && !state.MSAWAcknowledged {
 					// Acknowledged a MSAW
 					state.MSAWAcknowledged = true
