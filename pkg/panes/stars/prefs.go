@@ -128,8 +128,9 @@ type Preferences struct {
 
 	// DisplayUncorrelatedTargets bool // NOT USED
 
-	DisableCAWarnings bool
-	DisableMSAW       bool
+	DisableCAWarnings  bool
+	DisableMCIWarnings bool
+	DisableMSAW        bool
 
 	VideoMapVisible map[int]interface{}
 
@@ -215,6 +216,7 @@ type CommonPreferences struct {
 			Radar               bool
 			Codes               bool
 			SpecialPurposeCodes bool
+			SysOff              bool
 			Range               bool
 			PredictedTrackLines bool
 			AltitudeFilters     bool

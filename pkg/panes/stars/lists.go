@@ -320,6 +320,27 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 		}
 	}
 
+	if filter.All || filter.SysOff {
+		var disabled []string
+		if ps.DisableCAWarnings {
+			disabled = append(disabled, "CA")
+		}
+		if ps.DisableMCIWarnings {
+			disabled = append(disabled, "MCI")
+		}
+		if ps.DisableMSAW {
+			disabled = append(disabled, "MSAW")
+		}
+		if ps.CRDA.Disabled {
+			disabled = append(disabled, "CRDA")
+		}
+		// TODO: others? 2-84
+		if len(disabled) > 0 {
+			pw = td.AddText(strings.Join(disabled, " "), pw, listStyle)
+			newline()
+		}
+	}
+
 	if filter.All || filter.Intrail {
 		// We don't have any way to disable them, so this is easy..
 		pw = td.AddText("INTRAIL ON", pw, listStyle)
@@ -434,20 +455,9 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 	}
 
 	if filter.All || filter.DisabledTerminal {
-		var disabled []string
-		if ps.DisableCAWarnings {
-			disabled = append(disabled, "CA")
-		}
-		if ps.CRDA.Disabled {
-			disabled = append(disabled, "CRDA")
-		}
-		if ps.DisableMSAW {
-			disabled = append(disabled, "MSAW")
-		}
 		// TODO: others?
-		if len(disabled) > 0 {
-			text := "TW OFF: " + strings.Join(disabled, " ")
-			pw = td.AddText(text, pw, listStyle)
+		if ps.CRDA.Disabled {
+			pw = td.AddText("TW OFF: CRDA", pw, listStyle)
 			newline()
 		}
 	}
