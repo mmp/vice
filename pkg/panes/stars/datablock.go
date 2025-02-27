@@ -571,7 +571,11 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 		ps := sp.currentPrefs()
 		if ac.Mode != av.Standby {
-			if beaconator || extended || ident || ps.DisplayLDBBeaconCodes || state.DisplayLDBBeaconCode || displayBeaconCode {
+			mci := !ps.DisableMCIWarnings && slices.ContainsFunc(sp.MCIAircraft, func(mci CAAircraft) bool {
+				return mci.Callsigns[1] == ac.Callsign && sp.Aircraft[mci.Callsigns[0]].MCISuppressedCode != ac.Squawk
+			})
+
+			if mci || beaconator || extended || ident || ps.DisplayLDBBeaconCodes || state.DisplayLDBBeaconCode || displayBeaconCode {
 				// Field 1: reported beacon code
 				// TODO: Field 1: WHO if unassociated and no flight plan
 				var f1 int
@@ -703,7 +707,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			} else {
 				formatDBText(db.field2[:], "*", color, false)
 			}
-		} else if state.DisableCAWarnings {
+		} else if state.DisableCAWarnings || state.MCISuppressedCode != 0 {
 			formatDBText(db.field2[:], STARSTriangleCharacter, color, false)
 		}
 
@@ -1059,6 +1063,11 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, ac *av.Aircraft) boo
 		slices.ContainsFunc(sp.CAAircraft,
 			func(ca CAAircraft) bool {
 				return ca.Callsigns[0] == ac.Callsign || ca.Callsigns[1] == ac.Callsign
+			}) ||
+		slices.ContainsFunc(sp.MCIAircraft,
+			func(ca CAAircraft) bool {
+				return ca.Callsigns[0] == ac.Callsign &&
+					ctx.ControlClient.Aircraft[ca.Callsigns[0]].Squawk != state.MCISuppressedCode
 			}) {
 		return true
 	}
@@ -1091,14 +1100,27 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, ac *av.Aircraft, dbt
 	}
 
 	if dbtype == LimitedDatablock || dbtype == FullDatablock {
-		if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
-			addAlert("LA", !state.MSAWAcknowledged, true)
+		if !ps.DisableMCIWarnings {
+			if idx := slices.IndexFunc(sp.MCIAircraft, func(mci CAAircraft) bool {
+				if mci.Callsigns[0] != ac.Callsign && mci.Callsigns[1] != ac.Callsign {
+					return false
+				}
+				if sp.Aircraft[mci.Callsigns[0]].MCISuppressedCode == ctx.ControlClient.Aircraft[mci.Callsigns[1]].Squawk {
+					return false
+				}
+				return true
+			}); idx != -1 {
+				addAlert("CA", !sp.MCIAircraft[idx].Acknowledged, true)
+			}
 		}
 		if ok, code := ac.Squawk.IsSPC(); ok {
 			addAlert(code, !state.SPCAcknowledged, true)
 		}
 	}
 	if dbtype == FullDatablock {
+		if state.MSAW && !state.InhibitMSAW && !state.DisableMSAW && !ps.DisableMSAW {
+			addAlert("LA", !state.MSAWAcknowledged, true)
+		}
 		if ac.SPCOverride != "" {
 			red := av.StringIsSPC(ac.SPCOverride) // std ones are red, adapted ones are yellow.
 			addAlert(ac.SPCOverride, !state.SPCAcknowledged, red)

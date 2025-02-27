@@ -245,6 +245,7 @@ type CommonPreferences struct {
 		Selection VideoMapsGroup
 	}
 	CRDAStatusList      BasicSTARSList
+	MCISuppressionList  BasicSTARSList
 	TowerLists          [3]BasicSTARSList
 	CoordinationLists   map[string]*CoordinationList
 	RestrictionAreaList BasicSTARSList
@@ -409,6 +410,8 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.CRDAStatusList.Position = [2]float32{.05, .7}
 
+	prefs.MCISuppressionList.Position = [2]float32{.8, .1}
+
 	prefs.TowerLists[0].Position = [2]float32{.05, .5}
 	prefs.TowerLists[0].Lines = 5
 
@@ -418,7 +421,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.TowerLists[2].Position = [2]float32{.05, .9}
 	prefs.TowerLists[2].Lines = 5
 
-	prefs.RestrictionAreaList.Position = [2]float32{.85, .575}
+	prefs.RestrictionAreaList.Position = [2]float32{.8, .575}
 
 	prefs.CoordinationLists = make(map[string]*CoordinationList)
 	prefs.RestrictionAreaSettings = make(map[int]*RestrictionAreaSettings)
@@ -563,6 +566,9 @@ func (ps *Preferences) Upgrade(from, to int) {
 	if from < 29 {
 		ps.RestrictionAreaList.Position = [2]float32{.8, .575}
 		ps.RestrictionAreaSettings = make(map[int]*RestrictionAreaSettings)
+	}
+	if from < 32 {
+		ps.MCISuppressionList.Position = [2]float32{.8, .1}
 	}
 }
 

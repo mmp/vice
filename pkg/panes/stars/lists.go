@@ -48,6 +48,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 	sp.drawMapsList(ctx, normalizedToWindow(ps.VideoMapsList.Position), listStyle, td)
 	sp.drawRestrictionAreasList(ctx, normalizedToWindow(ps.RestrictionAreaList.Position), listStyle, td)
 	sp.drawCRDAStatusList(ctx, normalizedToWindow(ps.CRDAStatusList.Position), aircraft, listStyle, td)
+	sp.drawMCISuppressionList(ctx, normalizedToWindow(ps.MCISuppressionList.Position), aircraft, listStyle, td)
 
 	towerListAirports := ctx.ControlClient.TowerListAirports()
 	for i, tl := range ps.TowerLists {
@@ -557,22 +558,41 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, aircraft [
 	// The alert list can't be hidden.
 	var text strings.Builder
 	var lists []string
-	n := 0 // total number of aircraft in the mix
 	ps := sp.currentPrefs()
 
+	if ps.DisableMSAW && ps.DisableCAWarnings && ps.DisableMCIWarnings {
+		return
+	}
+
+	var msaw []*av.Aircraft
 	if !ps.DisableMSAW {
 		lists = append(lists, "LA")
 		for _, ac := range aircraft {
 			if sp.Aircraft[ac.Callsign].MSAW {
-				n++
+				msaw = append(msaw, ac)
 			}
 		}
+
+		// Sort by start time
+		slices.SortFunc(msaw, func(a, b *av.Aircraft) int {
+			return sp.Aircraft[a.Callsign].MSAWStart.Compare(sp.Aircraft[b.Callsign].MSAWStart)
+		})
 	}
+	var ca, mci []CAAircraft
 	if !ps.DisableCAWarnings {
 		lists = append(lists, "CA")
-		n += len(sp.CAAircraft)
+		ca = sp.CAAircraft
+		// TODO: filter out suppressed CA pairs
+	}
+	if !ps.DisableMCIWarnings {
+		lists = append(lists, "MCI")
+		mci = util.FilterSlice(sp.MCIAircraft, func(mci CAAircraft) bool {
+			// remove suppressed ones
+			return sp.Aircraft[mci.Callsigns[0]].MCISuppressedCode != ctx.ControlClient.Aircraft[mci.Callsigns[1]].Squawk
+		})
 	}
 
+	n := len(msaw) + len(ca) + len(mci)
 	if len(lists) > 0 {
 		text.WriteString(strings.Join(lists, "/") + "\n")
 		const alertListMaxLines = 50 // this is hard-coded
@@ -580,28 +600,50 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, aircraft [
 			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", alertListMaxLines, n))
 		}
 
-		// LA
-		if !ps.DisableMSAW {
-			for _, ac := range aircraft {
-				if n == 0 {
-					break
-				}
-				if sp.Aircraft[ac.Callsign].MSAW {
-					text.WriteString(fmt.Sprintf("%-14s%03d LA\n", ac.Callsign, int((ac.Altitude()+50)/100)))
-					n--
-				}
+		next := func() (*av.Aircraft, *CAAircraft, *CAAircraft) {
+			if len(msaw) > 0 && (len(ca) == 0 || sp.Aircraft[msaw[0].Callsign].MSAWStart.Before(ca[0].Start)) &&
+				(len(mci) == 0 || sp.Aircraft[msaw[0].Callsign].MSAWStart.Before(mci[0].Start)) {
+				ac := msaw[0]
+				msaw = msaw[1:]
+				return ac, nil, nil
+			} else if len(ca) > 0 && (len(mci) == 0 || ca[0].Start.Before(mci[0].Start)) {
+				r := &ca[0]
+				ca = ca[1:]
+				return nil, r, nil
+			} else if len(mci) > 0 {
+				r := &mci[0]
+				mci = mci[1:]
+				return nil, nil, r
+			} else {
+				return nil, nil, nil
 			}
 		}
 
-		// CA
-		if !ps.DisableCAWarnings {
-			for _, pair := range sp.CAAircraft {
-				if n == 0 {
-					break
-				}
+		for range math.Min(n, alertListMaxLines) {
+			msawac, capair, mcipair := next()
 
-				text.WriteString(fmt.Sprintf("%-17s CA\n", pair.Callsigns[0]+"*"+pair.Callsigns[1]))
-				n--
+			alt := func(ac *av.Aircraft) string {
+				if ac.PilotReportedAltitude != 0 {
+					return strconv.Itoa(int((ac.PilotReportedAltitude+50)/100)) + "*"
+				}
+				return strconv.Itoa(int((ac.Altitude() + 50) / 100))
+			}
+
+			if msawac != nil {
+				text.WriteString(fmt.Sprintf("%-14s%4s LA\n", msawac.Callsign, alt(msawac)))
+			} else if capair != nil {
+				text.WriteString(fmt.Sprintf("%-17s CA\n", capair.Callsigns[0]+"*"+capair.Callsigns[1]))
+			} else if mcipair != nil {
+				// For MCIs, the unassociated track is always the second callsign.
+				// Beacon code is reported for MCI or blank if we don't have it.
+				ac1 := ctx.ControlClient.Aircraft[mcipair.Callsigns[1]]
+				if ac1.Mode != av.Standby {
+					text.WriteString(fmt.Sprintf("%-17s MCI\n", mcipair.Callsigns[0]+"*"+ac1.Squawk.String()))
+				} else {
+					text.WriteString(fmt.Sprintf("%-17s MCI\n", mcipair.Callsigns[0]+"*"))
+				}
+			} else {
+				break
 			}
 		}
 
@@ -759,6 +801,26 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, aircr
 	if text.Len() > 0 {
 		td.AddText(text.String(), pw, style)
 	}
+}
+
+func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, aircraft []*av.Aircraft, style renderer.TextStyle,
+	td *renderer.TextDrawBuilder) {
+	ps := sp.currentPrefs()
+	if !ps.MCISuppressionList.Visible {
+		return
+	}
+
+	var text strings.Builder
+	text.WriteString("MCI SUPPRESSION\n")
+	for _, ac := range aircraft {
+		state := sp.Aircraft[ac.Callsign]
+		if state.MCISuppressedCode != av.Squawk(0) {
+			text.WriteString(fmt.Sprintf("%7s %s  %s\n", ac.Callsign, ac.Squawk.String(),
+				state.MCISuppressedCode.String()))
+		}
+	}
+
+	td.AddText(text.String(), pw, style)
 }
 
 func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport string, lines int, aircraft []*av.Aircraft,

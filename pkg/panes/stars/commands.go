@@ -1337,6 +1337,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			if len(cmd) == 0 {
 				updateList("", &ps.TABList.Visible, &ps.TABList.Lines)
 				return
+			} else if cmd == "Q" {
+				// 7-31: can only toggle display
+				ps.MCISuppressionList.Visible = !ps.MCISuppressionList.Visible
+				status.clear = true
+				return
 			} else if cmd == "RA" {
 				// Can't set number of lines, can just toggle display.
 				ps.RestrictionAreaList.Visible = !ps.RestrictionAreaList.Visible
@@ -1480,17 +1485,52 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			if ac := lookupAircraft(cmd[2:]); ac != nil {
 				state := sp.Aircraft[ac.Callsign]
 				state.DisableCAWarnings = !state.DisableCAWarnings
+				state.MCISuppressedCode = av.Squawk(0) // 7-18: this clears the MCI inhibit code
 			} else {
 				status.err = ErrSTARSNoFlight
 			}
 			status.clear = true
 			return
+		} else if strings.HasPrefix(cmd, "M ") {
+			// Suppress a beacon code for MCI
+			f := strings.Fields(cmd[2:])
+			if len(f) != 1 && len(f) != 2 {
+				status.err = ErrSTARSCommandFormat
+			} else if ac := lookupAircraft(f[0]); ac == nil {
+				status.err = ErrSTARSNoFlight
+			} else if len(f) == 1 {
+				status = sp.updateMCISuppression(ctx, ac, "")
+			} else {
+				status = sp.updateMCISuppression(ctx, ac, f[1])
+			}
+			return
+
 		} else if cmd == "AI" {
+			if ps.DisableCAWarnings {
+				status.output = "NO CHANGE"
+			}
 			ps.DisableCAWarnings = true
 			status.clear = true
 			return
 		} else if cmd == "AE" {
+			if !ps.DisableCAWarnings {
+				status.output = "NO CHANGE"
+			}
 			ps.DisableCAWarnings = false
+			status.clear = true
+			return
+		} else if cmd == "MI" {
+			if ps.DisableMCIWarnings {
+				status.output = "NO CHANGE"
+			}
+			ps.DisableMCIWarnings = true
+			status.clear = true
+			return
+		} else if cmd == "ME" {
+			if !ps.DisableMCIWarnings {
+				status.output = "NO CHANGE"
+			}
+			ps.DisableMCIWarnings = false
 			status.clear = true
 			return
 		}
@@ -2589,6 +2629,39 @@ func (sp *STARSPane) cancelHandoff(ctx *panes.Context, callsign string) {
 		func(err error) { sp.displayError(err, ctx) })
 }
 
+func (sp *STARSPane) updateMCISuppression(ctx *panes.Context, ac *av.Aircraft, code string) (status CommandStatus) {
+	ps := sp.currentPrefs()
+	if ps.DisableMCIWarnings {
+		status.err = ErrSTARSIllegalFunction
+	} else if ac.TrackingController != ctx.ControlClient.PrimaryTCP {
+		status.err = ErrSTARSIllegalTrack
+	} else {
+		state := sp.Aircraft[ac.Callsign]
+		if code == "" {
+			if state.MCISuppressedCode != av.Squawk(0) {
+				// clear suppression
+				state.MCISuppressedCode = av.Squawk(0)
+			} else {
+				// TODO: 0477 is the default but it's adaptable
+				state.MCISuppressedCode = av.Squawk(0o0477)
+				state.DisableCAWarnings = false // 7-30; can't have both
+			}
+			status.clear = true
+		} else if sq, err := av.ParseSquawk(code); err != nil {
+			status.err = ErrSTARSIllegalValue // TODO: what should this be?
+		} else {
+			if state.MCISuppressedCode == sq { // entered same code; clear suppression
+				state.MCISuppressedCode = av.Squawk(0)
+			} else {
+				state.MCISuppressedCode = sq
+				state.DisableCAWarnings = false // 7-30; can't have both
+			}
+			status.clear = true
+		}
+	}
+	return
+}
+
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, mousePosition [2]float32,
 	ghosts []*av.GhostAircraft, transforms ScopeTransformations) (status CommandStatus) {
 	// See if an aircraft was clicked
@@ -2663,6 +2736,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					// Acknowledged a CA
 					status.clear = true
 					sp.CAAircraft[idx].Acknowledged = true
+					return
+				} else if idx := slices.IndexFunc(sp.MCIAircraft, func(ca CAAircraft) bool {
+					return ca.Callsigns[0] == ac.Callsign && !ca.Acknowledged
+				}); idx != -1 {
+					// Acknowledged a MCI
+					status.clear = true
+					sp.MCIAircraft[idx].Acknowledged = true
 					return
 				} else if state.MSAW && !state.MSAWAcknowledged {
 					// Acknowledged a MSAW
@@ -3305,9 +3385,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			if cmd == "K" {
 				state := sp.Aircraft[ac.Callsign]
 				state.DisableCAWarnings = !state.DisableCAWarnings
+				state.MCISuppressedCode = av.Squawk(0) // 7-18: this clears the MCI inhibit code
 				status.clear = true
 				// TODO: check should we set sp.commandMode = CommandMode
 				// (applies here and also to others similar...)
+				return
+			} else if len(cmd) > 0 && cmd[0] == 'M' { // 7-29
+				status = sp.updateMCISuppression(ctx, ac, cmd[1:])
 				return
 			}
 

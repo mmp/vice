@@ -107,10 +107,13 @@ type AircraftState struct {
 	DisableCAWarnings    bool
 
 	MSAW             bool // minimum safe altitude warning
+	MSAWStart        time.Time
 	DisableMSAW      bool
 	InhibitMSAW      bool // only applies if in an alert. clear when alert is over?
 	MSAWAcknowledged bool
 	MSAWSoundEnd     time.Time
+
+	MCISuppressedCode av.Squawk
 
 	SPCAlert        bool
 	SPCAcknowledged bool
@@ -279,8 +282,13 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		}
 	}
 
-	// Filter out any removed aircraft from the CA list
+	// Filter out any removed aircraft from the CA and MCI lists
 	sp.CAAircraft = util.FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
+		_, a := ctx.ControlClient.Aircraft[ca.Callsigns[0]]
+		_, b := ctx.ControlClient.Aircraft[ca.Callsigns[1]]
+		return a && b
+	})
+	sp.MCIAircraft = util.FilterSlice(sp.MCIAircraft, func(ca CAAircraft) bool {
 		_, a := ctx.ControlClient.Aircraft[ca.Callsigns[0]]
 		_, b := ctx.ControlClient.Aircraft[ca.Callsigns[1]]
 		return a && b
@@ -449,6 +457,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 			// It's a new alert
 			state.MSAWAcknowledged = false
 			state.MSAWSoundEnd = time.Now().Add(AlertAudioDuration)
+			state.MSAWStart = time.Now()
 		}
 		state.MSAW = warn
 	}
@@ -924,7 +933,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, ac *av.Aircraft) ([
 }
 
 func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, aircraft []*av.Aircraft) {
-	inCAVolumes := func(state *AircraftState) bool {
+	inCAInhibitVolumes := func(state *AircraftState) bool {
 		for _, vol := range ctx.ControlClient.InhibitCAVolumes() {
 			if vol.Inside(state.TrackPosition(), state.TrackAltitude()) {
 				return true
@@ -933,26 +942,38 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, aircraft []*av.Aircraf
 		return false
 	}
 
-	conflicting := func(callsigna, callsignb string) bool {
+	tracked, untracked := make(map[string]*av.Aircraft), make(map[string]*av.Aircraft)
+	for _, ac := range aircraft {
+		if !ac.IsAirborne() {
+			continue
+		}
+		if ac.TrackingController != "" {
+			tracked[ac.Callsign] = ac
+		} else {
+			untracked[ac.Callsign] = ac
+		}
+	}
+
+	caConflict := func(callsigna, callsignb string) bool {
 		sa, sb := sp.Aircraft[callsigna], sp.Aircraft[callsignb]
 		if sa.DisableCAWarnings || sb.DisableCAWarnings {
 			return false
 		}
 
-		// No CA for unassociated tracks
-		aca, acb := ctx.ControlClient.Aircraft[callsigna], ctx.ControlClient.Aircraft[callsignb]
-		if aca != nil && acb != nil {
-			trka, trkb := sp.getTrack(ctx, aca), sp.getTrack(ctx, acb)
-			if trka == nil || trka.TrackOwner == "" || trkb == nil || trkb.TrackOwner == "" {
-				return false
-			}
-		}
-
 		// No CA if we don't have proper mode-C altitude for both.
+		aca, acb := ctx.ControlClient.Aircraft[callsigna], ctx.ControlClient.Aircraft[callsignb]
 		if aca.InhibitModeCAltitudeDisplay || acb.InhibitModeCAltitudeDisplay {
 			return false
 		}
 		if aca.Mode != av.Altitude || acb.Mode != av.Altitude {
+			return false
+		}
+
+		// Quick outs before more expensive checks: using approximate
+		// distance; don't bother if they're >10nm apart or have >5000'
+		// vertical separation.
+		if math.Abs(sa.TrackAltitude()-sb.TrackAltitude()) > 5000 ||
+			math.NMLength2LL(math.Sub2f(sa.TrackPosition(), sb.TrackPosition()), aca.NmPerLongitude()) > 10 {
 			return false
 		}
 
@@ -962,41 +983,103 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, aircraft []*av.Aircraf
 			return false
 		}
 
-		if inCAVolumes(sa) || inCAVolumes(sb) {
+		if inCAInhibitVolumes(sa) || inCAInhibitVolumes(sb) {
 			return false
 		}
 
 		return math.NMDistance2LL(sa.TrackPosition(), sb.TrackPosition()) <= LateralMinimum &&
-			/*small slop for fp error*/
-			math.Abs(sa.TrackAltitude()-sb.TrackAltitude()) <= VerticalMinimum-5 &&
-			!sp.diverging(ctx.ControlClient.Aircraft[callsigna], ctx.ControlClient.Aircraft[callsignb])
+			math.Abs(sa.TrackAltitude()-sb.TrackAltitude()) <= VerticalMinimum-5 && /*small slop for fp error*/
+			!sp.diverging(aca, acb)
 	}
+
+	// Assume that the second one is the untracked one.
+	mciConflict := func(callsigna, callsignb string) bool {
+		sa, sb := sp.Aircraft[callsigna], sp.Aircraft[callsignb]
+		if sa.DisableCAWarnings {
+			return false
+		}
+
+		// No CA if we don't have proper mode-C altitude for both.
+		aca, acb := ctx.ControlClient.Aircraft[callsigna], ctx.ControlClient.Aircraft[callsignb]
+		if aca.InhibitModeCAltitudeDisplay || aca.Mode != av.Altitude || acb.Mode != av.Altitude {
+			return false
+		}
+
+		// Is this beacon code suppressed for this aircraft?
+		if sa.MCISuppressedCode == acb.Squawk {
+			return false
+		}
+
+		// Quick outs before more expensive checks: using approximate
+		// distance; don't bother if they're >10nm apart or have >5000'
+		// vertical separation.
+		if math.Abs(sa.TrackAltitude()-sb.TrackAltitude()) > 5000 ||
+			math.NMLength2LL(math.Sub2f(sa.TrackPosition(), sb.TrackPosition()), aca.NmPerLongitude()) > 10 {
+			return false
+		}
+
+		if inCAInhibitVolumes(sa) || inCAInhibitVolumes(sb) {
+			return false
+		}
+
+		return math.NMDistance2LL(sa.TrackPosition(), sb.TrackPosition()) <= 1.5 &&
+			math.Abs(sa.TrackAltitude()-sb.TrackAltitude()) <= 500-5 && /*small slop for fp error*/
+			!sp.diverging(aca, acb)
+	}
+
+	// Remove ones that no longer exist
+	sp.CAAircraft = util.FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
+		_, ok0 := tracked[ca.Callsigns[0]]
+		_, ok1 := tracked[ca.Callsigns[1]]
+		return ok0 && ok1
+	})
+	sp.MCIAircraft = util.FilterSlice(sp.MCIAircraft, func(ca CAAircraft) bool {
+		_, ok0 := tracked[ca.Callsigns[0]]
+		_, ok1 := untracked[ca.Callsigns[1]]
+		return ok0 && ok1
+	})
 
 	// Remove ones that are no longer conflicting
 	sp.CAAircraft = util.FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
-		return conflicting(ca.Callsigns[0], ca.Callsigns[1])
+		return caConflict(ca.Callsigns[0], ca.Callsigns[1])
 	})
-
-	// Remove ones that are no longer visible
-	sp.CAAircraft = util.FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
-		return slices.ContainsFunc(aircraft, func(ac *av.Aircraft) bool { return ac.Callsign == ca.Callsigns[0] }) &&
-			slices.ContainsFunc(aircraft, func(ac *av.Aircraft) bool { return ac.Callsign == ca.Callsigns[1] })
+	sp.MCIAircraft = util.FilterSlice(sp.MCIAircraft, func(ca CAAircraft) bool {
+		return mciConflict(ca.Callsigns[0], ca.Callsigns[1])
 	})
 
 	// Add new conflicts; by appending we keep them sorted by when they
 	// were first detected...
-	callsigns := util.MapSlice(aircraft, func(ac *av.Aircraft) string { return ac.Callsign })
-	for i, callsign := range callsigns {
-		for _, ocs := range callsigns[i+1:] {
-			if conflicting(callsign, ocs) {
-				if !slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
-					return callsign == ca.Callsigns[0] && ocs == ca.Callsigns[1]
-				}) {
-					sp.CAAircraft = append(sp.CAAircraft, CAAircraft{
-						Callsigns: [2]string{callsign, ocs},
-						SoundEnd:  ctx.Now.Add(AlertAudioDuration),
-					})
-				}
+	for cs0 := range tracked {
+		for cs1 := range tracked {
+			if cs0 >= cs1 { // alphabetically-ordered callsign pair
+				continue
+			}
+			if slices.ContainsFunc(sp.CAAircraft, func(ca CAAircraft) bool {
+				return cs0 == ca.Callsigns[0] && cs1 == ca.Callsigns[1]
+			}) {
+				continue
+			}
+			if caConflict(cs0, cs1) {
+				sp.CAAircraft = append(sp.CAAircraft, CAAircraft{
+					Callsigns: [2]string{cs0, cs1},
+					SoundEnd:  ctx.Now.Add(AlertAudioDuration),
+					Start:     time.Now(), // this rather than ctx.Now so they are unique and sort consistently for the list.
+				})
+			}
+		}
+
+		for cs1 := range untracked {
+			if slices.ContainsFunc(sp.MCIAircraft, func(ca CAAircraft) bool {
+				return cs0 == ca.Callsigns[0] && cs1 == ca.Callsigns[1]
+			}) {
+				continue
+			}
+			if mciConflict(cs0, cs1) {
+				sp.MCIAircraft = append(sp.MCIAircraft, CAAircraft{
+					Callsigns: [2]string{cs0, cs1},
+					SoundEnd:  ctx.Now.Add(AlertAudioDuration),
+					Start:     time.Now(), // this rather than ctx.Now so they are unique and sort consistently for the list.
+				})
 			}
 		}
 	}

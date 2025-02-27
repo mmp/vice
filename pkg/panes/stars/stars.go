@@ -140,7 +140,8 @@ type STARSPane struct {
 	RangeBearingLines []STARSRangeBearingLine
 	MinSepAircraft    [2]string
 
-	CAAircraft []CAAircraft
+	CAAircraft  []CAAircraft
+	MCIAircraft []CAAircraft
 
 	// For CRDA
 	ConvergingRunways []STARSConvergingRunways
@@ -258,10 +259,12 @@ func (ae AudioType) String() string {
 	}[ae]
 }
 
+// Used both for CAs and MCIs.
 type CAAircraft struct {
 	Callsigns    [2]string // sorted alphabetically
 	Acknowledged bool
 	SoundEnd     time.Time
+	Start        time.Time
 }
 
 type CRDAMode int
@@ -1307,11 +1310,19 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, aircraft []*av.Aircraft) {
 	}
 
 	// Play the CA sound if any CAs or MSAWs are unacknowledged
-	playCASound := !ps.DisableCAWarnings && slices.ContainsFunc(sp.CAAircraft,
-		func(ca CAAircraft) bool {
-			return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
-				!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings && ctx.Now.Before(ca.SoundEnd)
-		})
+	playCASound := false
+	if !ps.DisableCAWarnings {
+		playCASound = slices.ContainsFunc(sp.CAAircraft,
+			func(ca CAAircraft) bool {
+				return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
+					!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings && ctx.Now.Before(ca.SoundEnd)
+			})
+		playCASound = playCASound || slices.ContainsFunc(sp.MCIAircraft,
+			func(ca CAAircraft) bool {
+				return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
+					ctx.Now.Before(ca.SoundEnd)
+			})
+	}
 	updateContinuous(playCASound, AudioConflictAlert)
 
 	playMSAWSound := !ps.DisableMSAW && func() bool {
