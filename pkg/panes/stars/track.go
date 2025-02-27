@@ -1209,11 +1209,7 @@ func (sp *STARSPane) diverging(a, b *av.Aircraft) bool {
 	}
 
 	// Intersection behind both; make sure headings are at least 15 degrees apart.
-	if math.HeadingDifference(sa.TrackHeading(a.NmPerLongitude()), sb.TrackHeading(b.NmPerLongitude())) < 15 {
-		return false
-	}
-
-	return true
+	return math.HeadingDifference(sa.TrackHeading(a.NmPerLongitude()), sb.TrackHeading(b.NmPerLongitude())) >= 15
 }
 
 func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations,
