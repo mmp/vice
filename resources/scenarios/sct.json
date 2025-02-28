@@ -1681,57 +1681,52 @@
       },
       "departure_routes": {
           "16R": {
-              "HAILO":{
-                  "cleared_altitude": 25000,
-                  "sid": "HARYS4",
-                  "waypoints": "PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP GUNNR ARRMY HAILO"
-              },
-              "LAS": {
-                  "cleared_altitude": 25000,
-                  "sid": "HARYS4",
-                  "waypoints": "PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY BLAZN LAS"
-              },
-              "MISEN": {
-                  "cleared_altitude": 25000,
-                  "sid": "HARYS4",
-                  "waypoints": "PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP NNAVY MISEN"
-              },
-              "HEC": {
-                  "cleared_altitude": 25000,
-                  "sid": "HARYS4",
-                  "waypoints": "PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 BBITE/a20000 ANTLP HEC"
-              },
-              "BLH": {
-                  "cleared_altitude": 25000,
-                  "sid": "HARYS4",
-                  "waypoints": "PPRRY/a1300/h110 BSHOW/a6000 HARYS SLAPP/a13000 YAAPY/a15000 JETHK/a19000 AERRO DECAS BLH"
-              },
-              "DAG": {
-                  "cleared_altitude": 25000,
-                  "sid": "RSCO3",
-                  "waypoints": "PPRRY/a1300/h110 BSHOW/a5300 KIMMO/a7100 SLAPP JARZO VVERA SSETH DAG"
-              },
-              "CSTRO": {
-                  "cleared_altitude": 24000,
-                  "sid": "WLKKR4",
-                  "waypoints": "PPRRY/a1300/h210 LUVVY/a6000 WLKKR/a8000 OROSZ/a9000 HEYJO CSTRO"
-              },
-              "COREZ": {
-                  "cleared_altitude": 24000,
-                  "sid": "WLKKR4",
-                  "waypoints": "PPRRY/a1300/h210 LUVVY/a6000 WLKKR/a8000 OROSZ/a9000 BRRKK SHORS MDWAY COREZ"
-              },
-              "OROSZ": {
-                  "cleared_altitude": 24000,
-                  "sid": "WLKKR4",
-                  "waypoints": "PPRRY/a1300/h210 LUVVY/a6000 WLKKR/a8000 OROSZ/a9000"
-              },
-              "GMN": {
-                  "cleared_altitude": 24000,
-                  "sid": "CANOG3",
-                  "waypoints": "KVNY-34L/h163 N034.18.00.553,W118.48.79.891/h213 IPIHO CASTA/a8300 GMN"
-              }
-          },
+                    "LAS": {
+                        "cleared_altitude": 4000,
+                        "sid": "HARYS5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY BLAZN LAS"
+                    },
+                    "MISEN": {
+                        "cleared_altitude": 4000,
+                        "sid": "HARYS5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY MISEN"
+                    },
+                    "HEC": {
+                        "cleared_altitude": 4000,
+                        "sid": "HARYS5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP HEC"
+                    },
+                    "BLH": {
+                        "cleared_altitude": 4000,
+                        "sid": "HARYS5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- AERRO DECAS BLH"
+                    },
+                    "DAG": {
+                        "cleared_altitude": 4000,
+                        "sid": "RSCO4",
+                        "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a5300+ KIMMO/a7100+ SLAPP JARZO VVERA SSETH DAG"
+                    },
+                    "CSTRO": {
+                        "cleared_altitude": 4000,
+                        "sid": "WLKKR5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.30.491,W118.29.12.566 BOOGY/a3300+/h213 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+ HEYJO CSTRO"
+                    },
+                    "COREZ": {
+                        "cleared_altitude": 4000,
+                        "sid": "WLKKR5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.30.491,W118.29.12.566 BOOGY/a3300+/h213 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+ BRRKK SHORS MDWAY COREZ"
+                    },
+                    "OROSZ": {
+                        "cleared_altitude": 4000,
+                        "sid": "WLKKR5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.30.491,W118.29.12.566 BOOGY/a3300+/h213 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+"
+                    },
+                    "GMN": {
+                        "cleared_altitude": 4000,
+                        "sid": "CANOG3",
+                        "waypoints": "KVNY-34L/h163 N034.18.00.553,W118.48.79.891/h213 IPIHO CASTA/a8300 GMN"
+                    }
+                },
           "34L":{
               "HAILO":{
                   "cleared_altitude": 25000,
@@ -9276,7 +9271,7 @@
       }
     ]
   },
-  "ROKKR2": {
+  "ROKKR3": {
     "arrivals": [
       {
         "waypoints": "PEPRZ/a14000/ho HEVVY ROKKR/a11000/s250 ZEPPE/a9000/s240 IVINS/a8000",
@@ -9288,7 +9283,7 @@
           }
         },
         "cruise_altitude": 35000,
-        "star": "ROKKR2",
+        "star": "ROKKR3",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 14000,
         "initial_speed": 250,
@@ -9838,12 +9833,12 @@
       }
     ]
   },
-  "THRNE3": {
+  "THRNE4": {
     "arrivals": [
       {
-        "waypoints": "PHRED FOILD QUTIP/a29000- VLLMA DROGO/a24000+ DEWWW/a21000+ DNERY/a20000+/ho ARRYA/a16000 YATZE/a14000 IRONN/a13000 THRNE/a11000 BFOON/a10000 CRCUS/a10000/ho NNEDD/a8000/h253",
+        "waypoints": "PHRED FOILD QUTIP/a29000- VLLMA DROGO/a24000+ DEWWW/a21000+ DNERY/a20000+/ho ARRYA/a16000 YATZE/a14000 IRONN/a13000 THRNE/a11000 CRCUS/a10000/ho EDARD/a10000/s250 NNEDD/a8000/h253",
         "cruise_altitude": 36000,
-        "star": "THRNE3",
+        "star": "THRNE4",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 30000,
         "initial_speed": 250,
@@ -11276,10 +11271,10 @@
         "JANNY5": {
           "KBUR": 10 
         },
-        "ROKKR2": {
+        "ROKKR3": {
           "KBUR": 10 
         },
-        "THRNE3": {
+        "THRNE4": {
           "KBUR": 10,
           "KSMO": 1
         },
@@ -11374,7 +11369,7 @@
         "default" : {
           "BUR_M_APP": {
             "departures": ["KVNY","KWHP"],
-            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR2"],
+            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR3"],
             "backup": "LAX_F_APP"
           },
           "BUR_V_APP": {
@@ -11421,7 +11416,7 @@
           "ONT_S_APP": {
             "backup": "ONT_N_APP",
             "departures": ["KPSP"],
-            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE3","KAYOH8.PSP","SETER5"]
+            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
           },
           "ONT_P_APP": {
             "backup": "ONT_S_APP",
@@ -11835,10 +11830,10 @@
         "JANNY5": {
           "KBUR": 10 
         },
-        "ROKKR2": {
+        "ROKKR3": {
           "KBUR": 10 
         },
-        "THRNE3": {
+        "THRNE4": {
           "KBUR": 10,
           "KSMO": 1
         },
@@ -11933,7 +11928,7 @@
         "default" : {
           "BUR_M_APP": {
             "departures": ["KVNY","KWHP"],
-            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR2"],
+            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR3"],
             "backup": "LAX_F_APP"
           },
           "BUR_V_APP": {
@@ -11979,7 +11974,7 @@
           },
           "ONT_S_APP": {
             "backup": "ONT_N_APP",
-            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE3","KAYOH8.PSP","SETER5"]
+            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
           },
           "ONT_P_APP": {
             "backup": "ONT_S_APP",
@@ -12389,10 +12384,10 @@
         "JANNY5": {
           "KBUR": 10 
         },
-        "ROKKR2": {
+        "ROKKR3": {
           "KBUR": 10 
         },
-        "THRNE3": {
+        "THRNE4": {
           "KBUR": 10,
           "KSMO": 1
         },
@@ -12487,7 +12482,7 @@
         "default" : {
           "BUR_M_APP": {
             "departures": ["KVNY","KWHP"],
-            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR2"],
+            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR3"],
             "backup": "LAX_F_APP"
           },
           "BUR_V_APP": {
@@ -12533,7 +12528,7 @@
           },
           "ONT_S_APP": {
             "backup": "ONT_N_APP",
-            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE3","KAYOH8.PSP","SETER5"]
+            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
           },
           "ONT_P_APP": {
             "backup": "ONT_S_APP",
@@ -12946,10 +12941,10 @@
         "JANNY5": {
           "KBUR": 10 
         },
-        "ROKKR2": {
+        "ROKKR3": {
           "KBUR": 10 
         },
-        "THRNE3": {
+        "THRNE4": {
           "KBUR": 10,
           "KSMO": 1
         },
@@ -13044,7 +13039,7 @@
         "default" : {
           "BUR_M_APP": {
             "departures": ["KVNY","KWHP"],
-            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR2"],
+            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR3"],
             "backup": "LAX_F_APP"
           },
           "BUR_V_APP": {
@@ -13090,7 +13085,7 @@
           },
           "ONT_S_APP": {
             "backup": "ONT_N_APP",
-            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE3","KAYOH8.PSP","SETER5"]
+            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
           },
           "ONT_P_APP": {
             "backup": "ONT_S_APP",
@@ -13505,10 +13500,10 @@
         "JANNY5": {
           "KBUR": 10 
         },
-        "ROKKR2": {
+        "ROKKR3": {
           "KBUR": 10 
         },
-        "THRNE3": {
+        "THRNE4": {
           "KBUR": 10,
           "KSMO": 1
         },
@@ -13603,7 +13598,7 @@
         "default" : {
           "BUR_M_APP": {
             "departures": ["KVNY","KWHP","KBUR"],
-            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR2"],
+            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR3"],
             "backup": "LAX_F_APP"
           },
           "BUR_V_APP": {
@@ -13649,7 +13644,7 @@
           "ONT_S_APP": {
             "backup": "ONT_N_APP",
             "departures": ["KPSP"],
-            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE3","KAYOH8.PSP","SETER5"]
+            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
           },
           "ONT_P_APP": {
             "backup": "ONT_S_APP",
@@ -14033,10 +14028,10 @@
         "JANNY5": {
           "KBUR": 10 
         },
-        "ROKKR2": {
+        "ROKKR3": {
           "KBUR": 10 
         },
-        "THRNE3": {
+        "THRNE4": {
           "KBUR": 10,
           "KSMO": 1
         },
@@ -14131,7 +14126,7 @@
         "default" : {
           "BUR_M_APP": {
             "departures": ["KVNY","KWHP"],
-            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR2"],
+            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR3"],
             "backup": "LAX_F_APP"
           },
           "BUR_V_APP": {
@@ -14178,7 +14173,7 @@
           "ONT_S_APP": {
             "backup": "ONT_N_APP",
             "departures": ["KPSP"],
-            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE3","KAYOH8.PSP","SETER5"]
+            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
           },
           "ONT_P_APP": {
             "backup": "ONT_S_APP",

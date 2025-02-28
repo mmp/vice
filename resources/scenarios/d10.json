@@ -4,7 +4,7 @@
         "KDFW": {
             "name": "Dallas Fort Worth International Airport",
             "approaches": {
-              "I3R": { "cifp_id": "I13R" },
+              "I3R": { "cifp_id": "IV13R" },
               "I7L": { "cifp_id": "I17L" },
               "I7C": { "cifp_id": "IC17" },
               "I7R": { "cifp_id": "I17R" },

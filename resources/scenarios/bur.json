@@ -416,50 +416,45 @@
             },
             "departure_routes": {
                 "16R": {
-                    "HAILO":{
-                        "cleared_altitude": 4000,
-                        "sid": "HARYS4",
-                        "waypoints": "PPRRY/a1300+/h110 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP GUNNR ARRMY HAILO"
-                    },
                     "LAS": {
                         "cleared_altitude": 4000,
-                        "sid": "HARYS4",
-                        "waypoints": "PPRRY/a1300+/h110 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY BLAZN LAS"
+                        "sid": "HARYS5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY BLAZN LAS"
                     },
                     "MISEN": {
                         "cleared_altitude": 4000,
-                        "sid": "HARYS4",
-                        "waypoints": "PPRRY/a1300+/h110 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY MISEN"
+                        "sid": "HARYS5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY MISEN"
                     },
                     "HEC": {
                         "cleared_altitude": 4000,
-                        "sid": "HARYS4",
-                        "waypoints": "PPRRY/a1300+/h110 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP HEC"
+                        "sid": "HARYS5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP HEC"
                     },
                     "BLH": {
                         "cleared_altitude": 4000,
-                        "sid": "HARYS4",
-                        "waypoints": "PPRRY/a1300+/h110 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- AERRO DECAS BLH"
+                        "sid": "HARYS5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- AERRO DECAS BLH"
                     },
                     "DAG": {
                         "cleared_altitude": 4000,
-                        "sid": "RSCO3",
-                        "waypoints": "PPRRY/a1300+/h110 BSHOW/a5300+ KIMMO/a7100+ SLAPP JARZO VVERA SSETH DAG"
+                        "sid": "RSCO4",
+                        "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a5300+ KIMMO/a7100+ SLAPP JARZO VVERA SSETH DAG"
                     },
                     "CSTRO": {
                         "cleared_altitude": 4000,
-                        "sid": "WLKKR4",
-                        "waypoints": "PPRRY/a1300+/h210 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+ HEYJO CSTRO"
+                        "sid": "WLKKR5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.30.491,W118.29.12.566 BOOGY/a3300+/h213 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+ HEYJO CSTRO"
                     },
                     "COREZ": {
                         "cleared_altitude": 4000,
-                        "sid": "WLKKR4",
-                        "waypoints": "PPRRY/a1300+/h210 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+ BRRKK SHORS MDWAY COREZ"
+                        "sid": "WLKKR5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.30.491,W118.29.12.566 BOOGY/a3300+/h213 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+ BRRKK SHORS MDWAY COREZ"
                     },
                     "OROSZ": {
                         "cleared_altitude": 4000,
-                        "sid": "WLKKR4",
-                        "waypoints": "PPRRY/a1300+/h210 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+"
+                        "sid": "WLKKR5",
+                        "waypoints": "KVNY-34L/a1750- N034.10.30.491,W118.29.12.566 BOOGY/a3300+/h213 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+"
                     },
                     "GMN": {
                         "cleared_altitude": 4000,
@@ -539,7 +534,7 @@
                     ],
                     "destination": "KAUS",
                     "exit": "BLH",
-                    "route": "HARYS4 BLH J169 TFD J50 ELP J2 FST DILLO LAIKS3"
+                    "route": "HARYS5 BLH J169 TFD J50 ELP J2 FST DILLO LAIKS3"
                 },
                 {
                     "airlines": [
@@ -559,7 +554,7 @@
                     ],
                     "destination": "KPHX",
                     "exit": "HEC",
-                    "route": "HARYS4 HEC PRFUM WOTRO BRUSR1"
+                    "route": "HARYS5 HEC PRFUM WOTRO BRUSR1"
                 },
                 {
                     "airlines": [
@@ -569,7 +564,7 @@
                     ],
                     "destination": "KRDD",
                     "exit": "CSTRO",
-                    "route": "WLKKR4 CSTRO"
+                    "route": "WLKKR5 CSTRO"
                 }
             ],
             "exit_categories": {
@@ -849,10 +844,10 @@
       }
     ]
   },
-  "ROKKR2/IVINS1/BONJO2": {
+  "ROKKR3/IVINS2/BONJO3": {
     "arrivals": [
       {
-        "waypoints": "PEPRZ/a14000-16000/s270 HEVVY ROKKR/a11000-12000/s250/ho ZEPPE/a9000-10000/s240 IVINS/a8000+",
+        "waypoints": "YUTOO/a14000-16000/s270 TRAVV ROKKR/a11000-12000/s250/ho ZEPPE/a9000-10000/s240 IVINS/a8000+",
         "runway_waypoints": {
           "KBUR": {
             "15": "IVINS/a8000+ MAURK/a6000/h83",
@@ -861,7 +856,7 @@
           }
         },
         "cruise_altitude": 35000,
-        "star": "ROKKR2",
+        "star": "ROKKR3",
         "initial_controller": "LAX_13_CTR",
         "initial_altitude": 14000,
         "initial_speed": 250,
@@ -896,7 +891,7 @@
         }
       },
 	  {
-        "waypoints": "PEPRZ/a14000-16000/s270 HEVVY ROKKR/a11000-12000/s250/ho ZEPPE/a9000-10000/s240 IVINS/a8000+",
+        "waypoints": "YUTOO/a14000-16000/s270 TRAVV ROKKR/a11000-12000/s250/ho ZEPPE/a9000-10000/s240 IVINS/a8000+",
         "runway_waypoints": {
           "KVNY": {
             "16R": "IVINS/a8000+ HNTUN/a7000/h58",
@@ -904,7 +899,7 @@
           }
         },
         "cruise_altitude": 35000,
-        "star": "IVINS1",
+        "star": "IVINS2",
         "initial_controller": "LAX_13_CTR",
         "initial_altitude": 14000,
         "initial_speed": 250,
@@ -932,9 +927,9 @@
         }
       },
 	  {
-        "waypoints": "PEPRZ/a14000-16000/s270 HEVVY ROKKR/a11000-12000/s250/ho ZEPPE/a9000-10000 IVINS/a8000+ ROLLI/a6000+ BONJO/a5000/h103",
+        "waypoints": "YUTOO/a14000-16000/s270 TRAVV ROKKR/a11000-12000/s250/ho ZEPPE/a9000-10000 IVINS/a8000+ ROLLI/a6000+ BONJO/a5000/h103",
         "cruise_altitude": 35000,
-        "star": "BONJO2",
+        "star": "BONJO3",
         "initial_controller": "LAX_13_CTR",
         "initial_altitude": 14000,
         "initial_speed": 250,
@@ -999,12 +994,12 @@
       }
     ]
   },
-  "THRNE3": {
+  "THRNE4": {
     "arrivals": [
       {
-        "waypoints": "BFOON/a10000 CRCUS/a10000/ho NNEDD/a8000/h253",
+        "waypoints": "THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250/ho NNEDD/a8000/h253",
         "cruise_altitude": 36000,
-        "star": "THRNE3",
+        "star": "THRNE4",
         "initial_controller": "ONT_P_APP",
         "initial_altitude": 10000,
         "initial_speed": 250,
@@ -1036,9 +1031,9 @@
         }
       },
 	  {
-        "waypoints": "BFOON/a10000 CRCUS/a10000/ho NNEDD/a8000/h272",
+        "waypoints": "THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250/ho NNEDD/a8000/h272",
         "cruise_altitude": 36000,
-        "star": "THRNE3",
+        "star": "THRNE4",
         "initial_controller": "ONT_P_APP",
         "initial_altitude": 10000,
         "initial_speed": 250,
@@ -1057,28 +1052,6 @@
             {
               "icao": "LXJ",
               "airport": "KDAL"
-            }
-          ]
-        }
-      },
-	  {
-        "waypoints": "BFOON/a10000 CRCUS/a10000/ho SMEGL/a7000+ JOFRY/a6000/h265",
-        "cruise_altitude": 36000,
-        "star": "THRNE3",
-        "initial_controller": "ONT_P_APP",
-        "initial_altitude": 10000,
-        "initial_speed": 250,
-        "expect_approach": null,
-        "airlines": {
-          "KSMO": [
-            {
-              "icao": "EJA",
-              "airport": "KTUS"
-            },
-            {
-              "icao": "N",
-			  "fleet": "fastGA",
-              "airport": "KSDL"
             }
           ]
         }
@@ -1308,19 +1281,16 @@
 					"KCMA": 2,
 					"KVNY": 3
                 },
-                "ROKKR2/IVINS1/BONJO2": {
+                "ROKKR3/IVINS2/BONJO3": {
                     "KBUR": 10,
 					"KVNY": 3,
 					"KSMO": 2
                 },
-                "THRNE3": {
+                "THRNE4": {
                     "KBUR": 7
                 },
-				"THRNE3": {
+				"THRNE4": {
                     "KVNY": 3
-                },
-				"THRNE3": {
-                    "KSMO": 1
                 },
                 "WEESL1": {
                     "KVNY": 2
@@ -1346,12 +1316,12 @@
                 "default": {
                     "BUR_M_APP": {
                         "primary": true,
-                        "inbound_flows": ["WEESL1","FERN7", "JANNY5/GUERA2", "EDWP4", "ROKKR2/IVINS1/BONJO2","LADYJ4"],
+                        "inbound_flows": ["WEESL1","FERN7", "JANNY5/GUERA2", "EDWP4", "ROKKR3/IVINS2/BONJO3","LADYJ4"],
                         "departures": ["KWHP"]
                     },
                     "BUR_V_APP": {"departures": ["KBUR", "KVNY"],
                     "backup": "BUR_M_APP",
-                    "inbound_flows": ["THRNE3", "SANP16"]
+                    "inbound_flows": ["THRNE4", "SANP16"]
                     },
                     "BUR_W_APP": {	
                     "backup": "BUR_M_APP",
@@ -1439,19 +1409,16 @@
 					"KCMA": 2,
 					"KVNY": 3
                 },
-                "ROKKR2/IVINS1/BONJO2": {
+                "ROKKR3/IVINS2/BONJO3": {
                     "KBUR": 10,
 					"KVNY": 3,
 					"KSMO": 2
                 },
-                "THRNE3": {
+                "THRNE4": {
                     "KBUR": 10
                 },
-				"THRNE3": {
+				"THRNE4": {
                     "KVNY": 3
-                },
-				"THRNE3": {
-                    "KSMO": 1
                 },
                 "WEESL1": {
                     "KVNY": 3
@@ -1477,12 +1444,12 @@
                 "default": {
                     "BUR_M_APP": {
                         "primary": true,
-                        "inbound_flows": ["WEESL1","FERN7","JANNY5/GUERA2", "EDWP4", "ROKKR2/IVINS1/BONJO2","LADYJ4"],
+                        "inbound_flows": ["WEESL1","FERN7","JANNY5/GUERA2", "EDWP4", "ROKKR3/IVINS2/BONJO3","LADYJ4"],
                         "departures": ["KWHP"]
                     },
                     "BUR_V_APP": {"departures": ["KBUR", "KVNY"],
                     "backup": "BUR_M_APP",
-                    "inbound_flows": ["THRNE3", "SANP16"]
+                    "inbound_flows": ["THRNE4", "SANP16"]
                     },
                     "BUR_W_APP": {
                     "backup": "BUR_M_APP",
@@ -1570,19 +1537,16 @@
 					"KCMA": 2,
 					"KVNY": 3
                 },
-                "ROKKR2/IVINS1/BONJO2": {
+                "ROKKR3/IVINS2/BONJO3": {
                     "KBUR": 10,
 					"KVNY": 3,
 					"KSMO": 2
                 },
-                "THRNE3": {
+                "THRNE4": {
                     "KBUR": 10
                 },
-				"THRNE3": {
+				"THRNE4": {
                     "KVNY": 3
-                },
-				"THRNE3": {
-                    "KSMO": 1
                 },
                 "WEESL1": {
                     "KVNY": 5
@@ -1608,12 +1572,12 @@
                 "default": {
                     "BUR_M_APP": {
                         "primary": true,
-                        "inbound_flows": ["WEESL1","FERN7", "JANNY5/GUERA2", "EDWP4", "ROKKR2/IVINS1/BONJO2","LADYJ4"],
+                        "inbound_flows": ["WEESL1","FERN7", "JANNY5/GUERA2", "EDWP4", "ROKKR3/IVINS2/BONJO3","LADYJ4"],
                         "departures": ["KWHP"]
                     },
                     "BUR_V_APP": {"departures": ["KBUR", "KVNY"],
                     "backup": "BUR_M_APP",
-                    "inbound_flows": ["THRNE3", "SANP16"]
+                    "inbound_flows": ["THRNE4", "SANP16"]
                     },
                     "BUR_W_APP": {
                     "backup": "BUR_M_APP",

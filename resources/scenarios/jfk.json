@@ -22,6 +22,14 @@
             "cleared_altitude": 3000,
             "sid": "REP1",
             "waypoints": "KFRG-19/h13"
+          },
+          "VFR.South": {
+            "cleared_altitude": 1500,
+            "waypoints": "KFRG-19 N040.45.02.128,W073.24.56.255 N040.45.09.187,W073.23.04.442 N040.41.50.417,W073.22.33.625"
+          },
+          "VFR.North,VFR.East": {
+            "cleared_altitude": 1500,
+            "waypoints": "KFRG-19"
           }
         },
         "14": {
@@ -44,6 +52,14 @@
             "cleared_altitude": 3000,
             "sid": "REP1",
             "waypoints": "KFRG-1/h220"
+          },
+          "VFR.South,VFR.East": {
+            "cleared_altitude": 1500,
+            "waypoints": "KFRG-1"
+          },
+          "VFR.North": {
+            "cleared_altitude": 1500,
+            "waypoints": "KFRG-1 N040.41.28.829,W073.24.39.501 N040.41.25.134,W073.22.12.778 N040.45.02.801,W073.22.26.044"
           }
         },
         "32": {
@@ -51,6 +67,10 @@
             "cleared_altitude": 3000,
             "sid": "REP1",
             "waypoints": "KFRG-14/h10"
+          },
+          "VFR.North,VFR.South,VFR.East": {
+            "cleared_altitude": 1500,
+            "waypoints": "KFRG-1"
           }
         }
       },
@@ -405,21 +425,33 @@
             "cleared_altitude": 3000,
             "sid": "LONGI7",
             "waypoints": "KISP-6/h240"
-          }
+          },
+          "VFR.North,VFR.South": {
+            "cleared_altitude": 1500,
+            "waypoints": "KISP-6"
+          }            
         },
         "33L": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
             "sid": "LONGI7",
             "waypoints": "KISP-15R/h330"
-          }
+          },
+          "VFR.North,VFR.South": {
+            "cleared_altitude": 1500,
+            "waypoints": "KISP-15R"
+          }            
         },
         "6": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 3000,
             "sid": "LONGI7",
             "waypoints": "KISP-24/h60"
-          }
+          },
+          "VFR.North,VFR.South": {
+            "cleared_altitude": 1500,
+            "waypoints": "KISP-24"
+          }            
         }
       },
       "departures": [
