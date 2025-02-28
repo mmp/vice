@@ -135,6 +135,8 @@ type Preferences struct {
 	VideoMapVisible map[int]interface{}
 
 	DisplayRequestedAltitude bool
+
+	InhibitPositionSymOnUnassociatedPrimary bool // 4-29
 }
 
 // CommonPreferences stores the STARS preference settings that are

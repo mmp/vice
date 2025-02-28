@@ -655,6 +655,18 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 	case CommandModeMultiFunc:
 		switch sp.multiFuncPrefix {
+		case "2":
+			// 4-29
+			if cmd == "PE" {
+				ps.InhibitPositionSymOnUnassociatedPrimary = false
+				status.clear = true
+				return
+			} else if cmd == "PI" {
+				ps.InhibitPositionSymOnUnassociatedPrimary = true
+				status.clear = true
+				return
+			}
+
 		case "B":
 			validBeacon := func(s string) bool {
 				for _, ch := range s {

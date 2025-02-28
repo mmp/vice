@@ -551,7 +551,9 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 		if !associated {
 			switch ac.Mode {
 			case av.Standby:
-				positionSymbol = string(rune(140)) // 24)) // diamond
+				ps := sp.currentPrefs()
+				positionSymbol = util.Select(ps.InhibitPositionSymOnUnassociatedPrimary,
+					" ", string(rune(140))) // 24)) // diamond
 			case av.Altitude:
 				if sp.beaconCodeSelected(ac.Squawk) {
 					positionSymbol = string(rune(29)) // square
