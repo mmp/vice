@@ -484,7 +484,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		altitude = fmt.Sprintf("%03d", (ac.PilotReportedAltitude+50)/100)
 	} else if ac.InhibitModeCAltitudeDisplay {
 		altitude = "***"
-	} else if ac.Mode != av.Altitude {
+	} else if ac.Mode == av.Standby {
 		altitude = "RDR"
 	}
 
@@ -593,8 +593,10 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 		// Field 3: mode C altitude
 		altitude := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
-		if ac.Mode != av.Altitude {
+		if ac.Mode == av.Standby {
 			altitude = "RDR"
+		} else if ac.Mode == av.On { // mode-a; altitude is blank
+			altitude = ""
 		}
 
 		formatDBText(db.field3[:], altitude, color, false)
