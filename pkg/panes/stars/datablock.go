@@ -949,9 +949,10 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 
 func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool {
 	trk := sp.getTrack(ctx, ac)
+	state := sp.Aircraft[ac.Callsign]
 
 	af := sp.currentPrefs().AltitudeFilters
-	alt := sp.Aircraft[ac.Callsign].TrackAltitude()
+	alt := state.TrackAltitude()
 	if trk != nil && trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
 		// For owned datablocks
 		return true
@@ -986,6 +987,9 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 	} else if ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && ac.Squawk == sp.DisplayBeaconCode {
 		// beacon code display 6-117
 		return true
+	} else if ac.Mode == av.Standby && (trk == nil || trk.TrackOwner == "") {
+		// unassociated also primary only, only show a datablock if it's been slewed
+		return ctx.Now.Before(state.FullLDBEndTime)
 	}
 
 	// Check altitude filters
