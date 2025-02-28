@@ -989,7 +989,7 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 	}
 
 	// Check altitude filters
-	if trk == nil || trk.TrackOwner != "" {
+	if trk == nil || trk.TrackOwner == "" {
 		return alt >= af.Unassociated[0] && alt <= af.Unassociated[1]
 	} else {
 		return alt >= af.Associated[0] && alt <= af.Associated[1]
