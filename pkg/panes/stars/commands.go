@@ -3509,6 +3509,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			ps.CoastList.Visible = true
 			status.clear = true
 			return
+		} else if cmd == "TQ" {
+			ps.MCISuppressionList.Position = transforms.NormalizedFromWindowP(mousePosition)
+			ps.MCISuppressionList.Visible = true
+			status.clear = true
+			return
 		} else if cmd == "TRA" {
 			ps.RestrictionAreaList.Position = transforms.NormalizedFromWindowP(mousePosition)
 			ps.RestrictionAreaList.Visible = true
