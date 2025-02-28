@@ -1222,8 +1222,19 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		// charted one.
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Altitude != nil {
 			return nfa.Arrive.Altitude
+		} else if ar := nav.Waypoints[i].AltitudeRestriction; ar != nil {
+			// If the controller has given 'cross [wp] at [alt]' for a
+			// future waypoint, however, ignore the charted altitude
+			// restriction.
+			if slices.ContainsFunc(nav.Waypoints[i+1:], func(wp Waypoint) bool {
+				fa, ok := nav.FixAssignments[wp.Fix]
+				return ok && fa.Arrive.Altitude != nil
+			}) {
+				return nil
+			}
+			return ar
 		}
-		return nav.Waypoints[i].AltitudeRestriction
+		return nil
 	}
 
 	// Find the *last* waypoint that has an altitude restriction that
