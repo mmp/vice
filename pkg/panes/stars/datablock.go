@@ -638,7 +638,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			return s
 		}
 		if ac.PilotReportedAltitude != 0 {
-			formatDBText(db.field12[0][:], fmt1(altitude)+"*", color, false)
+			formatDBText(db.field12[0][:], fmt1(altitude+"*"), color, false)
 		} else {
 			formatDBText(db.field12[0][:], fmt1(altitude)+handoffId, color, false)
 		}
@@ -742,7 +742,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		}
 
 		if ac.PilotReportedAltitude != 0 {
-			formatDBText(db.field34[0][:], fmt3(altitude)+"*", color, false)
+			formatDBText(db.field34[0][:], fmt3(altitude+"*"), color, false)
 		} else {
 			formatDBText(db.field34[0][:], fmt3(altitude)+handoffId, color, false)
 		}
