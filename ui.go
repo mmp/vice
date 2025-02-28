@@ -1103,7 +1103,7 @@ func showAboutDialog() {
 - Facility engineering: Connor Allen, Adam
   Bolek, Brody Carty, Lucas Chan, Aaron
   Flett, Austin Jenkins, Ketan K, Mike K,
-  Darius L, Josh Lambert, Kayden Lambert,
+  Allison L, Josh Lambert, Kayden Lambert,
   Mike LeGall, Jonah Lefkoff, Jud Lopez,
   Ethan Malimon, Jace Martin, Michael
   McConnell, Merry, Yahya Nazimuddin,
