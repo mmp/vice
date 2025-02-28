@@ -2434,15 +2434,17 @@ func (nav *Nav) prepareForApproach(straightIn bool) (PilotResponse, error) {
 
 	directApproachFix := false
 	_, assignedHeading := nav.AssignedHeading()
-	if !assignedHeading && len(nav.Waypoints) > 0 {
-		// Try to splice the current route the approach's route
-		for _, approach := range ap.Waypoints {
-			for i, wp := range approach {
-				if wp.Fix == nav.Waypoints[0].Fix {
+	if !assignedHeading {
+		// See if any of the waypoints in our route connect to the approach
+	outer:
+		for i, wp := range nav.Waypoints {
+			for _, app := range ap.Waypoints {
+				if idx := slices.IndexFunc(app, func(awp Waypoint) bool { return wp.Fix == awp.Fix }); idx != -1 {
+					// Splice the routes
 					directApproachFix = true
-					// Add the rest of the approach waypoints to our route
-					nav.Waypoints = append(util.DuplicateSlice(approach[i:]), nav.FlightState.ArrivalAirport)
-					break
+					nav.Waypoints = append(nav.Waypoints[:i], app[idx:]...)
+					nav.Waypoints = append(nav.Waypoints, nav.FlightState.ArrivalAirport)
+					break outer
 				}
 			}
 		}
