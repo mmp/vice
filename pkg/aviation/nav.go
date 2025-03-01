@@ -255,6 +255,11 @@ func makeNav(fp FlightPlan, perf AircraftPerformance, wp []Waypoint, nmPerLongit
 	nav.Waypoints = RandomizeRoute(nav.Waypoints, fp.Rules == VFR, nav.Perf, nmPerLongitude, magneticVariation,
 		fp.ArrivalAirport, wind, lg)
 
+	if fp.Rules == IFR && slices.ContainsFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Land }) {
+		lg.Warn("IFR aircraft has /land in route", slog.Any("waypoints", nav.Waypoints),
+			slog.Any("flightplan", fp))
+	}
+
 	nav.FlightState = FlightState{
 		MagneticVariation: magneticVariation,
 		NmPerLongitude:    nmPerLongitude,
