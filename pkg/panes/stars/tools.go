@@ -1445,6 +1445,12 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 		const nSegments = 8
 		pd.AddCircle(transforms.WindowFromLatLongP(wp.Location), pointRadius, nSegments)
 
+		// If /radius has been specified, draw a corresponding circle
+		if wp.Radius > 0 {
+			ld.AddLatLongCircle(wp.Location, ctx.ControlClient.NmPerLongitude,
+				wp.Radius, 32)
+		}
+
 		offset := calculateOffset(style.Font, func(j int) ([2]float32, bool) {
 			idx := i + j
 			if idx < 0 || idx >= len(waypoints) {
