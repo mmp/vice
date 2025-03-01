@@ -606,7 +606,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			formatDBText(db.field5[:], groundspeed, color, false)
 		}
 
-		if beaconator && ac.Mode != av.Standby {
+		if (extended || beaconator) && ac.Mode != av.Standby {
 			// Field 6: callsign
 			formatDBText(db.field6[:], ac.Callsign, color, false)
 		}
