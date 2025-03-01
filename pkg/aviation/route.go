@@ -422,7 +422,7 @@ func (w WaypointArray) checkDescending(e *util.ErrorLogger) {
 
 }
 
-func RandomizeVFRRoute(w []Waypoint, perf AircraftPerformance, nmPerLongitude float32, magneticVariation float32,
+func RandomizeRoute(w []Waypoint, vfr bool, perf AircraftPerformance, nmPerLongitude float32, magneticVariation float32,
 	airport string, wind WindModel, lg *log.Logger) WaypointArray {
 	// Random values used for altitude and position randomization
 	rtheta, rrad := rand.Float32(), rand.Float32()
@@ -461,29 +461,31 @@ func RandomizeVFRRoute(w []Waypoint, perf AircraftPerformance, nmPerLongitude fl
 			rtheta = jitter(rtheta)
 			rrad = jitter(rrad)
 		}
-		if ar := wp.AltitudeRestriction; ar != nil {
-			low, high := ar.Range[0], ar.Range[1]
-			// We should clamp low to be a few hundred feet AGL, but
-			// hopefully we'll generally be given a full range.
-			if high == 0 {
-				high = low + 3000
+		if vfr {
+			if ar := wp.AltitudeRestriction; ar != nil {
+				low, high := ar.Range[0], ar.Range[1]
+				// We should clamp low to be a few hundred feet AGL, but
+				// hopefully we'll generally be given a full range.
+				if high == 0 {
+					high = low + 3000
+				}
+				alt := math.Lerp(ralt, low, high)
+
+				// Update the altitude restriction to just be the single altitude.
+				// Note that we don't want to modify wp.AltitudeRestriction in
+				// place since the pointer is shared with other instances of
+				// the route.
+				wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{alt, alt}}
+
+				ralt = jitter(ralt)
 			}
-			alt := math.Lerp(ralt, low, high)
 
-			// Update the altitude restriction to just be the single altitude.
-			// Note that we don't want to modify wp.AltitudeRestriction in
-			// place since the pointer is shared with other instances of
-			// the route.
-			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{alt, alt}}
-
-			ralt = jitter(ralt)
-		}
-
-		if wp.Land {
-			land := constructVFRLanding(*wp, perf, airport, wind, nmPerLongitude, magneticVariation, lg)
-			wp.Land = false
-			w = w[:i+1]
-			w = append(w, land...)
+			if wp.Land {
+				land := constructVFRLanding(*wp, perf, airport, wind, nmPerLongitude, magneticVariation, lg)
+				wp.Land = false
+				w = w[:i+1]
+				w = append(w, land...)
+			}
 		}
 	}
 
