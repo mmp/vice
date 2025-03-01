@@ -265,6 +265,7 @@ func (s *State) GetStateForController(tcp string) *State {
 	} else {
 		state.ControllerVideoMaps = s.STARSFacilityAdaptation.VideoMapNames
 		state.ControllerDefaultVideoMaps = s.ScenarioDefaultVideoMaps
+		state.ControllerMonitoredBeaconCodeBlocks = s.STARSFacilityAdaptation.MonitoredBeaconCodeBlocks
 	}
 
 	return &state

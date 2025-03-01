@@ -77,6 +77,9 @@ type STARSFacilityAdaptation struct {
 	SignificantPoints   map[string]SignificantPoint       `json:"significant_points"`
 	Altimeters          []string                          `json:"altimeters"`
 
+	MonitoredBeaconCodeBlocksString *string `json:"beacon_code_blocks"`
+	MonitoredBeaconCodeBlocks       []av.Squawk
+
 	VideoMapFile      string                        `json:"video_map_file"`
 	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`
 	SingleCharAIDs    map[string]string             `json:"single_char_aids"` // Char to airport
@@ -113,7 +116,7 @@ type STARSControllerConfig struct {
 	Center                          math.Point2LL `json:"-"`
 	CenterString                    string        `json:"center"`
 	Range                           float32       `json:"range"`
-	MonitoredBeaconCodeBlocksString string        `json:"beacon_code_blocks"`
+	MonitoredBeaconCodeBlocksString *string       `json:"beacon_code_blocks"`
 	MonitoredBeaconCodeBlocks       []av.Squawk
 }
 
@@ -706,12 +709,17 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		// Handle beacon code blocks
 		for _, config := range fa.ControllerConfigs {
 			config.MonitoredBeaconCodeBlocks = nil // HACK: this is aliased if multiple controllers share a config.
-			for _, s := range strings.Split(config.MonitoredBeaconCodeBlocksString, ",") {
-				s = strings.TrimSpace(s)
-				if code, err := av.ParseSquawk(s); err != nil {
-					e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
-				} else {
-					config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, code)
+			if config.MonitoredBeaconCodeBlocksString == nil {
+				// None specified: 12xx block by default
+				config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, 0o12)
+			} else {
+				for _, s := range strings.Split(*config.MonitoredBeaconCodeBlocksString, ",") {
+					s = strings.TrimSpace(s)
+					if code, err := av.ParseSquawk(s); err != nil {
+						e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
+					} else {
+						config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, code)
+					}
 				}
 			}
 		}
@@ -1297,6 +1305,19 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 			// And it shouldn't be any if it's not hold for release
 			e.ErrorString("Airport %q isn't \"hold_for_release\" but is in \"coordination_lists\": %s.", airport,
 				strings.Join(matches, ", "))
+		}
+	}
+
+	if s.MonitoredBeaconCodeBlocksString == nil {
+		s.MonitoredBeaconCodeBlocks = []av.Squawk{0o12} // 12xx block by default
+	} else {
+		for _, bl := range strings.Split(*s.MonitoredBeaconCodeBlocksString, ",") {
+			bl = strings.TrimSpace(bl)
+			if code, err := av.ParseSquawk(bl); err != nil {
+				e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", bl, err)
+			} else {
+				s.MonitoredBeaconCodeBlocks = append(s.MonitoredBeaconCodeBlocks, code)
+			}
 		}
 	}
 
