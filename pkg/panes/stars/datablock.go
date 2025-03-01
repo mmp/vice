@@ -173,7 +173,7 @@ type limitedDatablock struct {
 	field2 [1]dbChar // unused
 	// Line 2
 	field3 [3]dbChar
-	field4 [2]dbChar // unused
+	field4 [1]dbChar // unused: 2-70 says 2 chars, but evidently 1 is the usual.
 	field5 [4]dbChar
 	// Line 3 (not in manual, but for beaconator callsign)
 	field6 [8]dbChar
