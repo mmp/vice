@@ -693,6 +693,7 @@ type Departure struct {
 	Scratchpad          string                  `json:"scratchpad"`           // optional
 	SecondaryScratchpad string                  `json:"secondary_scratchpad"` // optional
 	Unassociated        bool                    `json:"unassociated"`
+	Description         string                  `json:"description"`
 }
 
 type DepartureAirline struct {
