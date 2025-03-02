@@ -2251,8 +2251,8 @@ func (sp *STARSPane) parseRALocation(ctx *panes.Context, s string) (math.Point2L
 			return p, false
 		}
 
-		p = math.Offset2LL(p, float32(bearing)-ctx.ControlClient.MagneticVariation, float32(dist),
-			ctx.ControlClient.NmPerLongitude)
+		p = math.Offset2LL(p, float32(bearing), float32(dist), ctx.ControlClient.NmPerLongitude,
+			ctx.ControlClient.MagneticVariation)
 	}
 	return p, true
 }

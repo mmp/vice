@@ -308,9 +308,9 @@ func LL2NM(p Point2LL, nmPerLongitude float32) [2]float32 {
 
 // Offset2LL returns the point at distance dist along the vector with heading hdg from
 // the given point. It assumes a (locally) flat earth.
-func Offset2LL(pll Point2LL, hdg float32, dist float32, nmPerLongitude float32) Point2LL {
+func Offset2LL(pll Point2LL, hdg float32, dist float32, nmPerLongitude, magneticVariation float32) Point2LL {
 	p := LL2NM(pll, nmPerLongitude)
-	h := Radians(float32(hdg))
+	h := Radians(float32(hdg - magneticVariation))
 	v := [2]float32{Sin(h), Cos(h)}
 	v = Scale2f(v, float32(dist))
 	p = Add2f(p, v)
