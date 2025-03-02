@@ -695,6 +695,14 @@ func parseApproach(recs []ssaRecord) *Approach {
 		}
 	}
 
+	for _, r := range recs {
+		if r.waypointDescription[3] == 'F' &&
+			strings.TrimSpace(string(r.outboundMagneticCourse)) != "" {
+			hdg := parseInt(r.outboundMagneticCourse)
+			appr.ApproachHeading = float32(hdg) / 10
+		}
+	}
+
 	if len(transitions) == 1 {
 		appr.Waypoints = []WaypointArray{transitions[""]}
 	} else {
