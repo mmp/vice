@@ -483,6 +483,7 @@ func RandomizeRoute(w []Waypoint, vfr bool, perf AircraftPerformance, nmPerLongi
 			if wp.Land {
 				land := constructVFRLanding(*wp, perf, airport, wind, nmPerLongitude, magneticVariation, lg)
 				wp.Land = false
+				wp.Delete = false // overflights have this added to their last waypoint automatically
 				w = w[:i+1]
 				w = append(w, land...)
 			}
