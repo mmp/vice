@@ -45,44 +45,11 @@
       }
         },
       "approaches": {
-        "I1L": {
-          "runway": "1L",
-          "type": "ILS",
-          "waypoints": [
-            "YOUNT/iaf/if/a2700+ CUTMO/faf/a2600+"
-          ]
-        },
-        "I9R": {
-          "runway": "19R",
-          "type": "ILS",
-          "waypoints": [
-            "ADELE/iaf/if/a2900+ OMOGE/faf/a2800+"
-          ]
-        },
-        "Y7R": {
-          "runway": "7R",
-          "type": "RNAV",
-          "waypoints": [
-            "HONUR/iaf/a7000+ GAUSS/if SNAPS/a6000/s210 JITNU/arc3.4 CEMAX/s190/arc3.9 JANSI IRONY/a2800+ WALUM/faf/a1800+",
-            "BONOT/if/a4800+ JANSI IRONY/a2800+ WALUM/faf/a1800+",
-            "BALMS/a5400/s210 HAXUT JANSI IRONY/a2800+ WALUM/faf/a1800+",
-            "ZUGUN/a6000/s210/if HARGU/arc3.7 WIDOS/s190/arc3.5 IRONY/a2800+ WALUM/faf/a1800+"
-          ]
-        },
-        "Z7R": {
-          "runway": "7R",
-          "type": "RNAV",
-          "waypoints":[
-            "EMEWO/a2900+/if FIDNO/faf/a2700+ HULOX/a1340+"
-          ]
-        },
-        "I7R": {
-          "runway": "7R",
-          "type": "ILS",
-          "waypoints": [
-            "BONOT/a2900+/if/iaf FIDNO/a2700+/faf HULOX"
-          ]
-        },
+        "I1L": { "cifp_id": "I1L" },
+        "I9R": { "cifp_id": "I19R" },
+        "Y7R": { "cifp_id": "RY7R" },
+        "Z7R": { "cifp_id": "RZ7R" },
+        "I7R": { "cifp_id": "I7R" },
         "L5L": {
           "cifp_id": "L25L"
         },
