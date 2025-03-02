@@ -31,7 +31,8 @@ import (
 	"github.com/mmp/imgui-go/v4"
 )
 
-const initialSimSeconds = 45
+const initialSimSeconds = 20 * 60
+const initialSimControlledSeconds = 45
 
 var (
 	airportWind sync.Map
@@ -1014,6 +1015,9 @@ type Sim struct {
 	SimRate        float32
 	Paused         bool
 
+	prespawnUncontrolled bool
+	prespawnControlled   bool
+
 	NextPushStart time.Time // both w.r.t. sim time
 	PushEnd       time.Time
 
@@ -1613,7 +1617,8 @@ func (s *Sim) updateState() {
 			}
 
 			// Possibly contact the departure controller
-			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
+			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude &&
+				!s.prespawnUncontrolled && !s.prespawnControlled {
 				// Time to check in
 				ctrl := s.ResolveController(ac.DepartureContactController)
 				s.lg.Info("contacting departure controller", slog.String("callsign", ctrl))
@@ -1737,13 +1742,19 @@ func (s *Sim) prespawn() {
 
 	// Prime the pump before the user gets involved
 	t := time.Now().Add(-(initialSimSeconds + 1) * time.Second)
+	s.prespawnUncontrolled = true
 	for i := 0; i < initialSimSeconds; i++ {
+		// Controlled only at the tail end.
+		s.prespawnControlled = i+initialSimControlledSeconds > initialSimSeconds
+
 		s.SimTime = t
 		s.lastUpdateTime = t
 		t = t.Add(1 * time.Second)
 
 		s.updateState()
 	}
+	s.prespawnUncontrolled, s.prespawnControlled = false, false
+
 	s.SimTime = time.Now()
 	s.State.SimTime = s.SimTime
 	s.lastUpdateTime = time.Now()
@@ -1858,6 +1869,19 @@ func (s *Sim) spawnAircraft() {
 	s.spawnDepartures()
 }
 
+func (s *Sim) isControlled(ac *av.Aircraft, departure bool) bool {
+	if ac.FlightPlan.Rules == av.VFR {
+		// No VFR flights are controlled, so it's easy for them.
+		return false
+	} else {
+		// Otherwise we have to dig around a bit and see if a human is initially or will be involved.
+		if departure && ac.DepartureContactController != "" {
+			return true
+		}
+		return slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff })
+	}
+}
+
 func (s *Sim) spawnArrivalsAndOverflights() {
 	now := s.SimTime
 
@@ -1892,7 +1916,12 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 			if err != nil {
 				s.lg.Errorf("create inbound error: %v", err)
 			} else if ac != nil {
-				s.addAircraftNoLock(*ac)
+				if s.prespawnUncontrolled && !s.prespawnControlled && s.isControlled(ac, false) {
+					s.lg.Infof("%s: discarding arrival/overflight\n", ac.Callsign)
+					s.State.DeleteAircraft(ac)
+				} else {
+					s.addAircraftNoLock(*ac)
+				}
 				s.NextInboundSpawn[group] = now.Add(randomWait(rateSum, pushActive))
 			}
 		}
@@ -1948,16 +1977,21 @@ func (s *Sim) spawnDepartures() {
 				continue
 			}
 
-			// Launch!
-			ac.WaitingForLaunch = false
+			if s.prespawnUncontrolled && !s.prespawnControlled && s.isControlled(ac, true) {
+				s.lg.Infof("%s: discarding departure\n", ac.Callsign)
+				s.State.DeleteAircraft(ac)
+			} else {
+				// Launch!
+				ac.WaitingForLaunch = false
 
-			// Record the launch so we have it when we consider launching the
-			// next one.
-			dep.LaunchTime = now
-			if s.LastDeparture[airport] == nil {
-				s.LastDeparture[airport] = make(map[string]*DepartureAircraft)
+				// Record the launch so we have it when we consider launching the
+				// next one.
+				dep.LaunchTime = now
+				if s.LastDeparture[airport] == nil {
+					s.LastDeparture[airport] = make(map[string]*DepartureAircraft)
+				}
+				s.LastDeparture[airport][dep.Runway] = &dep
 			}
-			s.LastDeparture[airport][dep.Runway] = &dep
 
 			// Remove it from the pool of waiting departures.
 			s.DeparturePool[airport] = slices.Delete(s.DeparturePool[airport], i, i+1)
