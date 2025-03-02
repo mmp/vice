@@ -25,7 +25,7 @@
           "runway": "5R",
           "type" : "ILS",
           "waypoints": [
-            "PAGAN/iaf/a2900/pt45 PAGAN/faf/a2800"
+            "PAGAN/iaf/faf/a2900/pt45/pta2800"
           ]
         },
         "R5R": {
@@ -60,7 +60,7 @@
           "runway": "23L",
           "type": "ILS",
           "waypoints": [
-            "LIB/iaf/a3100 BRANT/iaf/pt45/a3100 BRANT/faf/a2900"
+            "LIB/iaf/a3100 BRANT/iaf/faf/pt45/a3100/pta2900"
           ]
         },
         "R32": {
@@ -78,7 +78,7 @@
             "runway": "23R",
             "type": "ILS",
             "waypoints": [
-                "LIB/iaf/a3100 HEVED/iaf/pt45/a3100 HEVED/faf/a2800"
+                "LIB/iaf/a3100 HEVED/iaf/faf/pt45/a3100/pta2800"
             ]
         },
         "R23L": {

@@ -3,25 +3,9 @@
   "airports": {
     "KAGS": {
       "approaches": {
-        "I17": {
-          "runway": "17",
-          "type": "ILS",
-          "waypoints": [
-            "IRQ/iaf/a2500 WEPUT/if/a2500 HOGEM/faf/a1800",
-            "WEPUT/if/a2500 HOGEM/faf/a1800"
-          ]
-        },
-        "I35": {
-          "full_name": "ILS Runway 35",
-          "runway": "35",
-          "type": "ILS",
-            "waypoints": [
-                "SARDY/iaf/a3000 SHELY/if/a1700 BUSHE/faf/a1700",
-                "SHELY/if/a1700 BUSHE/faf/a1700",
-                "BUSHE/iaf/pt45/a2000 BUSHE/faf/a1700"
-          ]
-        },
-        "R17": {
+        "I17": { "cifp_id": "I17" },
+        "I35": { "cifp_id": "I35" },
+        "R17": { 
           "full_name":"RNAV GPS Runway 17",
           "runway": "17",
           "type" : "RNAV",
@@ -51,27 +35,8 @@
             "HOMRU/iaf/hilpt/nopt180/a2100 WATEM/faf/a1700"
           ]
         },
-        "RY8": {
-            "full_name": "RNAV (GPS) Y Runway 8",
-            "runway": "8",
-            "type": "RNAV",
-            "waypoints": [
-                "SARDY/iaf/a2000 GUKVE/iaf/a2000 CESGO/if/a2000 GONRE/faf/a2000 DAYTE/a1080",
-                "GUKVE/iaf/a2000 CESGO/if/a2000 GONRE/faf/a2000 DAYTE/a1080",
-                "CESGO/if/a2000 GONRE/faf/a2000 DAYTE/a1080"
-            ]
-        },
-        "Z8": {
-          "full_name": "RNAV (GPS) Z Runway 8",
-          "runway": "8",
-          "type": "RNAV",
-          "waypoints": [
-            "SARDY/iaf/a2000 HEPIG/iaf/a2000 WONIL/if/a2000 GONRE/faf/a2000 DAYTE/a1080",
-            "HEPIG/iaf/a2000 WONIL/if/a2000 GONRE/faf/a2000 DAYTE/a1080",
-            "WONIL/if/a2000 GONRE/faf/a2000 DAYTE/a1080",
-            "IRQ/iaf/a2000 WOBAS/iaf/a2000 WONIL/if/a2000 GONRE/faf/a2000 DAYTE/a1080"
-          ]
-        }
+        "RY8": { "cifp_id": "RY8" },
+        "Z8": { "cifp_id": "RZ8" }
       },
       "departure_routes": {
         "8": {
