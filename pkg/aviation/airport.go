@@ -441,22 +441,19 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	}
 	ap.DepartureRoutes = splitDepartureRoutes
 
-	// Make sure if departures are initially controlled by a virtual
-	// controller, all routes have a valid handoff controller (and the
-	// converse).
 	for rwy, routes := range ap.DepartureRoutes {
 		e.Push("Departure runway " + rwy)
 		for exit, route := range routes {
 			e.Push("Exit " + exit)
 
-			if ap.DepartureController != "" {
+			if slices.ContainsFunc(route.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff }) {
 				if route.HandoffController == "" {
-					e.ErrorString("no \"handoff_controller\" specified even though airport has a \"departure_controller\"")
+					e.ErrorString("no \"handoff_controller\" specified even though route has \"/ho\"")
 				} else if _, ok := controlPositions[route.HandoffController]; !ok {
 					e.ErrorString("control position %q unknown in scenario", route.HandoffController)
 				}
 			} else if route.HandoffController != "" {
-				e.ErrorString("\"handoff_controller\" specified but won't be used since airport has no \"departure_controller\"")
+				e.ErrorString("\"handoff_controller\" specified but won't be used since route has no \"/ho\"")
 			}
 
 			if route.AssignedAltitude == 0 && route.ClearedAltitude == 0 {

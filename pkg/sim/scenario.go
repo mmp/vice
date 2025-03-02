@@ -267,6 +267,22 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		}
 	})
 
+	// Add controllers to virtual controllers if not present
+	addController := func(tcp string) {
+		if tcp != "" && !slices.Contains(s.VirtualControllers, tcp) {
+			s.VirtualControllers = append(s.VirtualControllers, tcp)
+		}
+	}
+	addControllersFromWaypoints := func(route []av.Waypoint) {
+		for _, wp := range route {
+			addController(wp.TCPHandoff)
+		}
+	}
+	// Make sure all of the controllers used in airspace awareness will be there.
+	for _, aa := range sg.STARSFacilityAdaptation.AirspaceAwareness {
+		addController(aa.ReceivingController)
+	}
+
 	airportExits := make(map[string]map[string]interface{}) // airport -> exit -> is it covered
 	for i, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
@@ -286,6 +302,10 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 					// It's fine if multiple active runways cover the exit.
 					airportExits[rwy.Airport][exit] = nil
 				}
+
+				for _, r := range routes {
+					addControllersFromWaypoints(r.Waypoints)
+				}
 			}
 
 			if len(ap.Departures) == 0 {
@@ -302,13 +322,6 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			}
 		}
 		e.Pop()
-	}
-
-	// Make sure all of the controllers used in airspace awareness will be there.
-	for _, aa := range sg.STARSFacilityAdaptation.AirspaceAwareness {
-		if !slices.Contains(s.VirtualControllers, aa.ReceivingController) {
-			s.VirtualControllers = append(s.VirtualControllers, aa.ReceivingController)
-		}
 	}
 
 	sort.Slice(s.ArrivalRunways, func(i, j int) bool {
@@ -578,19 +591,13 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		if flow, ok := sg.InboundFlows[name]; !ok {
 			e.ErrorString("inbound flow not found")
 		} else {
-			// Add initial controllers to the controller list, if
-			// necessary.
 			for _, ar := range flow.Arrivals {
-				if ar.InitialController != "" &&
-					!slices.Contains(s.VirtualControllers, ar.InitialController) {
-					s.VirtualControllers = append(s.VirtualControllers, ar.InitialController)
-				}
+				addController(ar.InitialController)
+				addControllersFromWaypoints(ar.Waypoints)
 			}
 			for _, of := range flow.Overflights {
-				if of.InitialController != "" &&
-					!slices.Contains(s.VirtualControllers, of.InitialController) {
-					s.VirtualControllers = append(s.VirtualControllers, of.InitialController)
-				}
+				addController(of.InitialController)
+				addControllersFromWaypoints(of.Waypoints)
 			}
 
 			// Check the airports in it
