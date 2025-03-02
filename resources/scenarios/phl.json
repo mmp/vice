@@ -7,13 +7,7 @@
         "17Z": { "cifp_id": "IZ17" },
         "27L": { "cifp_id": "I27L" },
         "27R": { "cifp_id": "I27R" },
-        "9RZ": {
-          "runway": "9R",
-          "type": "ILS",
-          "waypoints": [
-            "MXE/iaf BWINE/if/a4000 ASOCI/a3000 KELEE/faf/a1800 BALDN/a740"
-          ]
-        },
+        "9RZ": { "cifp_id": "IZ9R" },
         "RVR": {
           "full_name": "River Visual Runway 9 Right",
           "runway": "9R",

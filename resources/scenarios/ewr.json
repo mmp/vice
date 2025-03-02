@@ -1113,67 +1113,14 @@
       "name": "Teterboro",
       "hold_for_release": true,
       "approaches": {
-        "I6": {
-          "runway": "6",
-          "type": "ILS",
-          "waypoints": [
-            "SBJ/iaf MALCN/a2200+ VINGS/if/a2000 LEESY/a1700 DANDY/a1500 TORBY/faf/a1300"
-          ]
-        },
-        "I19": {
-          "runway": "19",
-          "type": "ILS",
-          "waypoints": [
-            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ UNVIL/if/a2100 TUGGZ/faf/a1500"
-          ]
-        },
-        "R24": {
-          "runway": "24",
-          "type": "RNAV",
-          "waypoints": [
-            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ WHEZY/a2200+ SHREW/if/a2000 ANGLE/faf/a1700 BAITH"
-          ]
-        },
-        "RX6": {
-          "full_name": "RNAV X Runway 6",
-          "runway": "6",
-          "type": "RNAV",
-          "waypoints": [
-            "COATE ELIZE/iaf/a3000+ ALIDA/a3000+ FRNKI/if/a2000 PESME/a1700 TBERN/faf/a1300",
-            "STW ELIZE/iaf/a3000+ ALIDA/a3000+ FRNKI/if/a2000 PESME/a1700 TBERN/faf/a1300",
-            "SBJ JERSE/iaf/a3400+ FRNKI/if/a2000 PESME/a1700 TBERN/faf/a1300"
-          ]
-        },
-        "RX9": {
-          "full_name": "RNAV X Runway 19",
-          "runway": "19",
-          "type": "RNAV",
-          "waypoints": [
-            "CUROK/iaf WHOLN/a2300+ MOOGZ/if/a1700 DUUNE/faf/a1500 COFFS"
-          ]
-        },
-        "RY6": {
-          "full_name": "RNAV Y Runway 6",
-          "cifp_id": "RY6"
-        },
-        "RY9": {
-          "full_name": "RNAV Y Runway 19",
-          "runway": "19",
-          "type": "RNAV",
-          "waypoints": [
-            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ UNVIL/if/a2100 TUGGZ/faf/a1500"
-          ]
-        },
-        "RZ6": {
-          "full_name": "RNAV Z Runway 6",
-          "runway": "6",
-          "type": "RNAV",
-          "waypoints": [
-            "COATE ELIZE/iaf/a3000+ GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC",
-            "STW ELIZE/iaf/a3000+ GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC",
-            "SBJ/iaf GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC"
-          ]
-        },
+        "I6": {  "cifp_id": "IZ6" },
+        "I19": { "cifp_id": "I19" },
+        "R24": { "cifp_id": "R24" },
+        "RX6": { "cifp_id": "RX6" },
+        "RX9": { "cifp_id": "RX19" },
+        "RY6": { "cifp_id": "RY6" },
+        "RY9": { "cifp_id": "RY19" },
+        "RZ6": { "cifp_id": "RZ6" },
         "RZ9": {
           "full_name": "RNAV Z Runway 19",
           "runway": "19",
@@ -1851,38 +1798,10 @@
       "name": "Morristown",
       "hold_for_release": true,
       "approaches": {
-        "I23": {
-          "runway": "23",
-          "type": "ILS",
-          "waypoints": [
-            "EMRSN/iaf FALTY/a3000+ GODLY/a3000+ BADDA/if/a3000 BINGG/faf/a2000"
-          ]
-        },
-        "Z23": {
-          "full_name": "RNAV Z Runway 23",
-          "runway": "23",
-          "type": "RNAV",
-          "waypoints": [
-            "EMRSN/iaf FALTY/a3000+ GODLY/a3000+ BADDA/if/a3000 BINGG/faf/a2000"
-          ]
-        },
-        "Y23": {
-          "full_name": "RNAV RNP Y Runway 23",
-          "runway": "23",
-          "type": "RNAV",
-          "waypoints": [
-            "SBJ/iaf SHOTT/if/a2000+ FIGON/a2000+ BINGG/faf/a2000",
-            "STW/iaf ELIZE/a3000+ SHOTT/if/a2000+ FIGON/a2000+ BINGG/faf/a2000"
-          ]
-        },
-        "R5": {
-          "runway": "5",
-          "type": "RNAV",
-          "waypoints": [
-            "SBJ/iaf KWITE/if/a2000 HOSBE/faf/a1800",
-            "ZELEN/iaf KWITE/if/a2000 HOSBE/faf/a1800"
-          ]
-        }
+        "I23": { "cifp_id": "I23" },
+        "Z23": { "cifp_id": "RZ23" },
+        "Y23": { "cifp_id": "RY23" },
+        "R5": { "cifp_id": "R5" }
       },
       "departure_routes": {
         "5": {

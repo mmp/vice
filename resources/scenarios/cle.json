@@ -3,59 +3,12 @@
     "airports": {
         "KCLE": {
             "approaches": {
-                "I6L" : {
-                    "runway": "6L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "KWENE/a6000/s210/iaf DAYZD BETLL/a2900/if DEVYL/a2300 BOEEE/a2000/faf",
-                        "HICKR/a5000/s210/iaf CRTEZ BETLL/a2900/if DEVYL/a2300 BOEEE/a2000/faf",
-                        "GROHL/a6000/s210/iaf FUZED BETLL/a2900/if DEVYL/a2300 BOEEE/a2000/faf"
-                    ]
-                },
-                "I6R": {
-                    "runway": "6R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "RUHSH/a6000/s210/iaf RMONZ DOORZ/a2900/if POAST/a2500 DILYN/a2000/faf",
-                        "HICKR/a5000/s210/iaf DAUGS DOORZ/a2900/if POAST/a2500 DILYN/a2000/faf",
-                        "GROHL/a6000/s210/iaf SHEEP DOORZ/a2900/if POAST/a2500 DILYN/a2000/faf"
-                    ]
-                },
-                "R10": {
-                    "runway": "10",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "GILLS TAMDE/iaf/nopt FIMOL/hilpt4nm/a3000 JUUBA/a2400/faf",
-                        "FIMOL/hilpt4nm/a3000/iaf/if JUUBA/a2400/faf",
-                        "DJB/iaf/nopt FIMOL/hilpt4nm/a3000 JUUBA/a2400"
-                    ]
-                },
-                "I4L": {
-                    "runway": "24L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "THRTN/a5000/iaf HHERB/a4000 ALOMR/a3000/if FELLR/a2000/faf",
-                        "BUDRW/a6000/s240/iaf WIINR/s210 ANJEY ALOMR/a3000/if FELLR/a2000/faf",
-                        "LLROY/a5000/s210/iaf KARAY ALOMR/if FELLR/a2000/faf"
-                    ]
-                },
-                "I4R": {
-                    "runway": "24R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "BUDRW/a6000/s240/iaf WIINR/s210 ANJEY SHERK/a3000/if GROZA/a2000/faf FIDIN/a1600",
-                        "LLROY/a5000/s210/iaf BORNY/a4000 SHERK/a3000/if GROZA/a2000/faf FIDIN/a1600",
-                        "PAULB/a5000/iaf GRHMM SHERK/a3000/if GROZA/a2000/faf FIDIN/a1600"
-                    ]
-                },
-                "I28": {
-                    "runway": "28",
-                    "type": "ILS",
-                    "waypoints": [
-                        "HARDR/a6000/s210/iaf WHONT GETTT/a3600/if FOOLD/a2600/faf",
-                        "YYESS/a6000/iaf JHENY WHONT GETTT/a3600/if FOOLD/a2600/faf"
-                    ]
-                }
+              "I6L" : { "cifp_id": "I6L" },
+              "I6R": { "cifp_id": "I6R" },
+              "R10": { "cifp_id": "R10" },
+              "I4L": { "cifp_id": "I24L" },
+              "I4R": { "cifp_id": "I24R" },
+              "I28": { "cifp_id": "I28" }
             },
             "departure_routes": {
                 "6R": {
@@ -818,20 +771,8 @@
                     },
                 "KBKL": {
                     "approaches": {
-                        "R4R": {
-                            "runway": "24R",
-                            "type": "RNAV",
-                            "waypoints": [
-                                "SOOTO/a3000-6000/iaf NAATE/faf/a2400+ JAYTO/a1420+ LOLCY"
-                            ]
-                        },
-                        "I4R": {
-                            "runway": "24R",
-                            "type": "ILS",
-                            "waypoints": [
-                                "BOGGE/iaf/a2400+ TABEY/faf/a2400+"
-                            ]
-                        },
+                      "R4R": { "cifp_id": "R24R" },
+                      "I4R": { "cifp_id": "I24R" },
                         "V6L": {
                             "full_name": "Visual Approach Runway 6L",
                             "runway": "6L",
@@ -1019,21 +960,9 @@
                     },
                     "KMFD": {
                         "approaches": {
-                        "R14": {
-                            "runway": "14",
-                            "type": "RNAV",
-                            "waypoints": [
-                                "UPIYO/a3000+/iaf HUGIX/a2700+ WIMOS/a1820+/faf"
-                            ]
+                          "R14": { "cifp_id": "R14" },
+                          "I32": { "cifp_id": "I32" }
                         },
-                        "I32": {
-                            "runway": "32",
-                            "type": "ILS",
-                            "waypoints": [
-                                "MANNS/a2700+ ZIXAX/faf"
-                            ]
-                        }
-                    },
                 "departure_routes": {
                         "32": {
                             "CRAKN": {
@@ -1092,37 +1021,10 @@
                     },
                     "KCAK": {
                     "approaches": {
-                        "I23": {
-                            "runway": "23",
-                            "type": "ILS",
-                            "waypoints": [
-                                "OCUGA/if/a3000+ EGGII/a3000+ IZERU/a1700+/faf",
-                                "ACO/iaf OCUGA/if/a3000+ EGGII/a3000+ IZERU/a1700+/faf"
-                            ]
-                        },
-                        "I1": {
-                            "runway": "1",
-                            "type": "ILS",
-                            "waypoints": [
-                                "BULIT/a3000+/if CABLE/a2400+/faf",
-                                "BSV/iaf BULIT/a3000+/if CABLE/a2400+/faf"
-                            ]
-                        },
-                        "I5": {
-                            "runway": "5",
-                            "type": "ILS",
-                            "waypoints": [
-                                "JUNEX/iaf/a3000+ CICEE/a3000+/faf"
-                            ]
-                        },
-                        "I19": {
-                            "runway": "19",
-                            "type": "ILS",
-                            "waypoints": [
-                                "ACO/iaf/a2800+ BUKIN/if/a2800+ DERBY/a2600+ ZEVLO/a1620+/faf",
-                                "BUKIN/if/a2800+ DERBY/a2600+ ZEVLO/a1620+/faf"
-                            ]
-                        }
+                      "I23": { "cifp_id": "I23" },
+                      "I1": { "cifp_id": "I1" },
+                      "I5": { "cifp_id": "I5" },
+                      "I19": { "cifp_id": "I19" }
                     },
                     "departure_routes": {
                         "1": {

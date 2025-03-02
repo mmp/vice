@@ -4,27 +4,9 @@
     "KLGA": {
       "name": "LaGuardia",
       "approaches": {
-        "I4": {
-          "runway": "4",
-          "type": "ILS",
-          "waypoints": [
-            "GGREG/iaf ZARID/a4000+ VADDR/a4000+ JACIE/a4000+ NECOL/a4000+ VARAZ/iaf/a4000+ BENNG/if/a3000 RAHEL/a1800 DNNIS/faf/a1700 WARIN/a640"
-          ]
-        },
-        "I22": {
-          "runway": "22",
-          "type": "ILS",
-          "waypoints": [
-            "YOMAN/if/a3000 GREKO/faf/a1900"
-          ]
-        },
-        "I13": {
-          "runway": "13",
-          "type": "ILS",
-          "waypoints": [
-            "PAYMI/if/a2800 STEED/faf/a1900 COROR/a800"
-          ]
-        },
+        "I4": { "cifp_id": "I4" },
+        "I22": { "cifp_id": "I22" },
+        "I13": { "cifp_id": "I13" },
         "R31": {
           "full_name": "RNAV X Runway 31",
           "runway": "31",
@@ -41,14 +23,7 @@
             "VARAZ/a4000+ PACHU/a3000+ SHAYY/a2500+/s180 GACAR/a2200+/s165 DRRYL/a1100+ KEYTH/a700+ DCTRK/a400+"
           ]
         },
-        "L31": {
-          "full_name": "Localizer Runway 31",
-          "runway": "31",
-          "type": "ILS",
-          "waypoints": [
-            "QUENE/if/a1700 FABRY/faf/a1700"
-          ]
-        }
+        "L31": { "cifp_id": "L31" }
       },
       "departure_routes": {
         "4": {
