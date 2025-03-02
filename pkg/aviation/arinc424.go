@@ -297,24 +297,22 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 
 			case 'F': // Approach 4.1.9
 				recs := matchingSSARecs(line)
-				id := recs[0].id
 
-				if wps := parseApproach(recs); wps != nil {
+				if appr := parseApproach(recs); appr != nil {
 					// Note: database.Airports isn't initialized yet but
 					// the CIFP file is sorted so we get the airports
 					// before the approaches..
 					if airports[icao].Approaches == nil {
 						ap := airports[icao]
-						ap.Approaches = make(map[string][]WaypointArray)
+						ap.Approaches = make(map[string]Approach)
 						airports[icao] = ap
 					}
 
-					id = tidyFAAApproachId(id)
-					if _, ok := airports[icao].Approaches[id]; ok {
-						panic("already seen approach id " + id)
+					if _, ok := airports[icao].Approaches[appr.Id]; ok {
+						panic("already seen approach id " + appr.Id)
 					}
 
-					airports[icao].Approaches[id] = wps
+					airports[icao].Approaches[appr.Id] = *appr
 				}
 
 			case 'G': // runway records 4.1.10
@@ -659,7 +657,7 @@ func spliceTransition(tr WaypointArray, base WaypointArray) WaypointArray {
 	return append(WaypointArray(tr), base[idx+1:]...)
 }
 
-func parseApproach(recs []ssaRecord) []WaypointArray {
+func parseApproach(recs []ssaRecord) *Approach {
 	transitions := parseTransitions(recs,
 		func(r ssaRecord) bool { return false },                                          // log
 		func(r ssaRecord) bool { return r.continuation != '0' && r.continuation != '1' }, // skip continuation records
@@ -668,12 +666,40 @@ func parseApproach(recs []ssaRecord) []WaypointArray {
 				r.waypointDescription[0] == 'G' /* field 40: runway as waypoint */
 		})
 
+	appr := Approach{Id: tidyFAAApproachId(recs[0].id)}
+
+	switch recs[0].id[0] {
+	case 'H', 'R':
+		appr.Type = RNAVApproach
+	case 'L':
+		appr.Type = LocalizerApproach
+	case 'V', 'S':
+		appr.Type = VORApproach
+	default:
+		// TODO? 'B': Localizer Back Course, 'X': LDA
+		appr.Type = ILSApproach
+	}
+
+	// RZ22L -> 22L, IC32 -> 32C
+	center := false
+	for i, ch := range appr.Id[1:] {
+		if ch == 'C' {
+			center = true
+		}
+		if ch >= '1' && ch <= '9' {
+			appr.Runway = appr.Id[i+1:] // +1 since range is over [1:]
+			if center {
+				appr.Runway += "C"
+			}
+			break
+		}
+	}
+
 	if len(transitions) == 1 {
-		return []WaypointArray{transitions[""]}
+		appr.Waypoints = []WaypointArray{transitions[""]}
 	} else {
 		base := transitions[""]
 
-		var wps []WaypointArray
 		for t, w := range transitions {
 			if t != "" {
 				sp := spliceTransition(w, base)
@@ -681,10 +707,11 @@ func parseApproach(recs []ssaRecord) []WaypointArray {
 					//fmt.Printf("%s [%s] [%s]: mismatching fixes for %s transition\n",
 					//recs[0].icao, WaypointArray(w).Encode(), WaypointArray(base).Encode(), t)
 				} else {
-					wps = append(wps, sp)
+					appr.Waypoints = append(appr.Waypoints, sp)
 				}
 			}
 		}
-		return wps
 	}
+
+	return &appr
 }

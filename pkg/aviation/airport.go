@@ -270,48 +270,24 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 
 		if appr.Id != "" {
-			if wps, ok := DB.Airports[icao].Approaches[appr.Id]; !ok {
+			if dbAppr, ok := DB.Airports[icao].Approaches[appr.Id]; !ok {
 				e.ErrorString("Approach %q not in database. Options: %s", appr.Id,
 					strings.Join(util.SortedMapKeys(DB.Airports[icao].Approaches), ", "))
 				e.Pop()
 				continue
 			} else {
-				switch appr.Id[0] {
-				case 'H', 'R':
-					appr.Type = RNAVApproach
-				case 'L':
-					appr.Type = LocalizerApproach
-				case 'V', 'S':
-					appr.Type = VORApproach
-				default:
-					// TODO? 'B': Localizer Back Course, 'X': LDA
-					appr.Type = ILSApproach
-				}
-
-				// RZ22L -> 22L, IC32 -> 32C
-				center := false
-				for i, ch := range appr.Id {
-					if ch == 'C' {
-						center = true
-					}
-					if ch >= '1' && ch <= '9' {
-						appr.Runway = appr.Id[i:]
-						if center {
-							appr.Runway += "C"
-						}
-						break
-					}
-				}
-				if len(appr.Runway) == 0 {
-					e.ErrorString("unable to convert approach id %q to runway", appr.Id)
+				// Copy the approach from the database
+				appr.Type = dbAppr.Type
+				if appr.Runway == "" {
+					appr.Runway = dbAppr.Runway
 				}
 
 				// This is a little hacky, but we'll duplicate the waypoint
 				// arrays since later we e.g., append a waypoint for the
 				// runway threshold.  This leads to errors if a CIFP
 				// approach is referenced in two scenario files.
-				for _, w := range wps {
-					appr.Waypoints = append(appr.Waypoints, util.DuplicateSlice(w))
+				for _, wps := range dbAppr.Waypoints {
+					appr.Waypoints = append(appr.Waypoints, util.DuplicateSlice(wps))
 				}
 			}
 		}

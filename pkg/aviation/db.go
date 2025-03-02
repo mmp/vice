@@ -56,7 +56,7 @@ type FAAAirport struct {
 	Elevation  int
 	Location   math.Point2LL
 	Runways    []Runway
-	Approaches map[string][]WaypointArray
+	Approaches map[string]Approach
 	STARs      map[string]STAR
 	ARTCC      string
 }
@@ -843,7 +843,7 @@ func PrintCIFPRoutes(airport string) error {
 	fmt.Printf("\nApproaches:\n")
 	for _, appr := range util.SortedMapKeys(ap.Approaches) {
 		fmt.Printf("%-5s: ", appr)
-		for i, wp := range ap.Approaches[appr] {
+		for i, wp := range ap.Approaches[appr].Waypoints {
 			if i > 0 {
 				fmt.Printf("       ")
 			}
