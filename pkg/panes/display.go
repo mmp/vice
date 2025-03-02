@@ -424,9 +424,9 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 
 	var filter func(d *DisplayNode) *DisplayNode
 	filter = func(d *DisplayNode) *DisplayNode {
-		if d.Children[0].Pane != nil && d.Children[0].Pane.Hide() {
+		if d.Children[0] != nil && d.Children[0].Pane != nil && d.Children[0].Pane.Hide() {
 			return filter(d.Children[1])
-		} else if d.Children[1].Pane != nil && d.Children[1].Pane.Hide() {
+		} else if d.Children[1] != nil && d.Children[1].Pane != nil && d.Children[1].Pane.Hide() {
 			return filter(d.Children[0])
 		} else {
 			return d
