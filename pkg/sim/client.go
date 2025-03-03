@@ -157,7 +157,8 @@ func (c *ControlClient) SetTemporaryAltitude(callsign string, alt int, success f
 }
 
 func (c *ControlClient) SetPilotReportedAltitude(callsign string, alt int, success func(any), err func(error)) {
-	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.PrimaryTCP {
+	if ac := c.State.Aircraft[callsign]; ac != nil && ac.TrackingController == c.State.PrimaryTCP &&
+		(ac.Mode != av.Altitude || ac.InhibitModeCAltitudeDisplay) {
 		ac.PilotReportedAltitude = alt
 	}
 
