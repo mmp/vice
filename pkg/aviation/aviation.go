@@ -1265,7 +1265,7 @@ func makePool(first, last int) *SquawkCodePool {
 	// Mark the excess invalid codes in the last entry of AssignedBits as
 	// taken so that we don't try to assign them later.
 	slop := ncodes % 64
-	p.AssignedBits[nalloc-1] = ^((1 << slop) - 1)
+	p.AssignedBits[nalloc-1] |= ^uint64(0) << slop
 
 	return p
 }
