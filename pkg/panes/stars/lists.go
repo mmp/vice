@@ -630,7 +630,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, aircraft [
 			}
 
 			if msawac != nil {
-				text.WriteString(fmt.Sprintf("%-14s%4s LA\n", msawac.Callsign, alt(msawac)))
+				text.WriteString(fmt.Sprintf("%-13s%4s LA\n", msawac.Callsign, alt(msawac)))
 			} else if capair != nil {
 				text.WriteString(fmt.Sprintf("%-17s CA\n", capair.Callsigns[0]+"*"+capair.Callsigns[1]))
 			} else if mcipair != nil {
