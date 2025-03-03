@@ -439,7 +439,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	ac.Nav = *nav
 
 	if !dep.Unassociated {
-		if ap.DepartureController != "" {
+		if ap.DepartureController != "" && ap.DepartureController != primaryController {
 			// starting out with a virtual controller
 			ac.TrackingController = ap.DepartureController
 			ac.ControllingController = ap.DepartureController
