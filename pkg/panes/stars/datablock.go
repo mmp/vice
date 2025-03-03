@@ -1010,42 +1010,60 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 	ps := sp.currentPrefs()
 	font := sp.systemFont(ctx, ps.CharSize.Datablocks)
 
+	// Partition them by DB type so we can draw FDBs last
+	var ldbs, pdbs, fdbs []*av.Aircraft
+
 	for _, ac := range aircraft {
 		state := sp.Aircraft[ac.Callsign]
 		if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
 			continue
 		}
 
-		db := sp.getDatablock(ctx, ac)
-		if db == nil {
-			continue
+		switch sp.datablockType(ctx, ac) {
+		case LimitedDatablock:
+			ldbs = append(ldbs, ac)
+		case PartialDatablock:
+			pdbs = append(pdbs, ac)
+		case FullDatablock:
+			fdbs = append(fdbs, ac)
 		}
+	}
 
-		_, brightness, _ := sp.trackDatablockColorBrightness(ctx, ac)
-		if brightness == 0 {
-			continue
+	for _, dbAircraft := range [][]*av.Aircraft{ldbs, pdbs, fdbs} {
+		for _, ac := range dbAircraft {
+			db := sp.getDatablock(ctx, ac)
+			if db == nil {
+				continue
+			}
+
+			_, brightness, _ := sp.trackDatablockColorBrightness(ctx, ac)
+			if brightness == 0 {
+				continue
+			}
+
+			state := sp.Aircraft[ac.Callsign]
+
+			// Calculate the endpoint of the leader line
+			pac := transforms.WindowFromLatLongP(state.TrackPosition())
+			leaderLineDirection := sp.getLeaderLineDirection(ac, ctx)
+			vll := sp.getLeaderLineVector(ctx, leaderLineDirection)
+			pll := math.Add2f(pac, math.Scale2f(vll, ctx.DrawPixelScale))
+			if math.Length2f(vll) == 0 {
+				// no leader line is being drawn; make sure that the datablock
+				// doesn't overlap the target track.
+				sz := sp.getTrackSize(ctx, transforms) / 2
+				rightJustify := leaderLineDirection >= math.South
+				pll[0] += util.Select(rightJustify, -sz, sz)
+				pll[1] += float32(font.Size)
+			} else {
+				// Start drawing down a half line-height to align the leader
+				// line in the middle of the db line.
+				pll[1] += float32(font.Size / 2)
+			}
+
+			halfSeconds := realNow.UnixMilli() / 500
+			db.draw(td, pll, font, brightness, sp.getLeaderLineDirection(ac, ctx), halfSeconds)
 		}
-
-		// Calculate the endpoint of the leader line
-		pac := transforms.WindowFromLatLongP(state.TrackPosition())
-		leaderLineDirection := sp.getLeaderLineDirection(ac, ctx)
-		vll := sp.getLeaderLineVector(ctx, leaderLineDirection)
-		pll := math.Add2f(pac, math.Scale2f(vll, ctx.DrawPixelScale))
-		if math.Length2f(vll) == 0 {
-			// no leader line is being drawn; make sure that the datablock
-			// doesn't overlap the target track.
-			sz := sp.getTrackSize(ctx, transforms) / 2
-			rightJustify := leaderLineDirection >= math.South
-			pll[0] += util.Select(rightJustify, -sz, sz)
-			pll[1] += float32(font.Size)
-		} else {
-			// Start drawing down a half line-height to align the leader
-			// line in the middle of the db line.
-			pll[1] += float32(font.Size / 2)
-		}
-
-		halfSeconds := realNow.UnixMilli() / 500
-		db.draw(td, pll, font, brightness, sp.getLeaderLineDirection(ac, ctx), halfSeconds)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
