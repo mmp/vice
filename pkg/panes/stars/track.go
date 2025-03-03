@@ -553,10 +553,10 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 			case av.Standby:
 				ps := sp.currentPrefs()
 				positionSymbol = util.Select(ps.InhibitPositionSymOnUnassociatedPrimary,
-					" ", string(rune(140))) // 24)) // diamond
+					" ", string(rune(140))) // diamond
 			case av.Altitude:
 				if sp.beaconCodeSelected(ac.Squawk) {
-					positionSymbol = string(rune(29)) // square
+					positionSymbol = string(rune(129)) // square
 				} else {
 					positionSymbol = "*"
 				}
@@ -564,7 +564,7 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 				if sp.beaconCodeSelected(ac.Squawk) {
 					positionSymbol = string(rune(128)) // triangle
 				} else {
-					positionSymbol = string(rune(19)) // plus
+					positionSymbol = "+"
 				}
 			}
 		} else if trk := sp.getTrack(ctx, ac); trk != nil && trk.TrackOwner != "" {
