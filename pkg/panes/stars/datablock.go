@@ -486,6 +486,8 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		altitude = "***"
 	} else if ac.Mode == av.Standby {
 		altitude = "RDR"
+	} else if ac.Mode == av.On {
+		altitude = ""
 	}
 
 	displayBeaconCode := ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && ac.Squawk == sp.DisplayBeaconCode
