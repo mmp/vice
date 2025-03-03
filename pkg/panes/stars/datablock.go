@@ -569,6 +569,10 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 		extended := state.FullLDBEndTime.After(ctx.Now)
 
+		if len(alerts) == 0 && ac.Mode == av.On && !extended {
+			return nil
+		}
+
 		ps := sp.currentPrefs()
 		if ac.Mode != av.Standby {
 			mci := !ps.DisableMCIWarnings && slices.ContainsFunc(sp.MCIAircraft, func(mci CAAircraft) bool {
