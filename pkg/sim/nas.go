@@ -1293,14 +1293,6 @@ func (ec *ERAMComputers) AddArrival(ac *av.Aircraft, facility string, fa STARSFa
 		return err
 	}
 
-	sq, err := artcc.CreateSquawk()
-	if err != nil {
-		return err
-	}
-
-	ac.FlightPlan.AssignedSquawk = sq
-	ac.Squawk = sq
-
 	artcc.AddFlightPlan(starsFP)
 
 	trk := TrackInformation{
