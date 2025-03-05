@@ -40,6 +40,23 @@ func Extent2DFromPoints(pts [][2]float32) Extent2D {
 	return e
 }
 
+// Extent2DFromP2LLs returns an Extent2D that bounds all of the provided
+// points.
+func Extent2DFromP2LLs(pts []Point2LL) Extent2D {
+	e := EmptyExtent2D()
+	for _, p := range pts {
+		for d := 0; d < 2; d++ {
+			if p[d] < e.P0[d] {
+				e.P0[d] = p[d]
+			}
+			if p[d] > e.P1[d] {
+				e.P1[d] = p[d]
+			}
+		}
+	}
+	return e
+}
+
 func (e Extent2D) Width() float32 {
 	return e.P1[0] - e.P0[0]
 }
