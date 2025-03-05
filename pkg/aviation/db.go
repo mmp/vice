@@ -47,6 +47,8 @@ type StaticDatabase struct {
 	ERAMAdaptations     map[string]ERAMAdaptation
 	TRACONs             map[string]TRACON
 	MVAs                map[string][]MVA // TRACON -> MVAs
+	BravoAirspace       map[string][]AirspaceVolume
+	CharlieAirspace     map[string][]AirspaceVolume
 }
 
 type FAAAirport struct {
@@ -186,6 +188,12 @@ func init() {
 	go func() { db.MVAs = parseMVAs(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.ERAMAdaptations = parseAdaptations(); wg.Done() }()
+	wg.Add(1)
+	go func() {
+		db.BravoAirspace = parseAirspace("bravo-airspace.json.zst")
+		db.CharlieAirspace = parseAirspace("charlie-airspace.json.zst")
+		wg.Done()
+	}()
 	wg.Wait()
 
 	for icao, ap := range airports {
@@ -824,6 +832,52 @@ func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
 	}
 
 	return artccs, tracons
+}
+
+func parseAirspace(filename string) map[string][]AirspaceVolume {
+	aj := util.LoadResource(filename)
+	defer aj.Close()
+
+	// These should match the definition in util/airspace.go
+	type AirspaceLoop [][2]float32
+	type Airspace struct {
+		Bottom, Top int
+		// First one is exterior; any additional ones are holes.
+		Loops []AirspaceLoop
+	}
+
+	var airspace map[string][]Airspace
+	if err := util.UnmarshalJSON(aj, &airspace); err != nil {
+		panic(err)
+	}
+
+	// Uplift to vice's internal AirspaceVolume representation.
+	convert := func(v [][2]float32) []math.Point2LL {
+		return util.MapSlice(v, func(p [2]float32) math.Point2LL { return math.Point2LL(p) })
+	}
+	av := make(map[string][]AirspaceVolume)
+	for name, as := range airspace {
+		var vols []AirspaceVolume
+		for _, a := range as {
+			bounds := math.Extent2DFromPoints(a.Loops[0])
+
+			vol := AirspaceVolume{
+				Name:          name,
+				Type:          AirspaceVolumePolygon,
+				Floor:         a.Bottom,
+				Ceiling:       a.Top,
+				Vertices:      convert(a.Loops[0]),
+				PolygonBounds: &bounds,
+			}
+			for _, l := range a.Loops[1:] {
+				vol.Holes = append(vol.Holes, convert(l))
+			}
+			vols = append(vols, vol)
+		}
+		av[name] = vols
+	}
+
+	return av
 }
 
 func (ap FAAAirport) ValidRunways() string {
