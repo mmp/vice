@@ -268,7 +268,7 @@ func Sub2LL(a Point2LL, b Point2LL) Point2LL {
 	return Point2LL(Sub2f(a, b))
 }
 
-// NMDistance2ll returns the distance in nautical miles between two
+// NMDistance2LL returns the distance in nautical miles between two
 // provided lat-long coordinates.
 func NMDistance2LL(a Point2LL, b Point2LL) float32 {
 	// https://www.movable-type.co.uk/scripts/latlong.html
@@ -283,6 +283,12 @@ func NMDistance2LL(a Point2LL, b Point2LL) float32 {
 	dm := R * c // in metres
 
 	return float32(dm * 0.000539957)
+}
+
+// Fast but approximate distance between latlongs.
+func NMDistance2LLFast(a Point2LL, b Point2LL, nmPerLongitude float32) float32 {
+	anm, bnm := LL2NM(a, nmPerLongitude), LL2NM(b, nmPerLongitude)
+	return Distance2f(anm, bnm)
 }
 
 // NMLength2ll returns the length of a vector expressed in lat-long
