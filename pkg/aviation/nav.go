@@ -1458,7 +1458,7 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 		if nav.Speed.Restriction != nil {
 			targetSpeed = math.Min(targetSpeed, *nav.Speed.Restriction)
 		}
-		if wp, speed, _ := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && wp != nil {
+		if _, speed, _, ok := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && ok {
 			targetSpeed = math.Min(targetSpeed, speed)
 		}
 
@@ -1468,7 +1468,7 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 		return targetSpeed, 0.8 * maxAccel
 	}
 
-	if wp, speed, eta := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && wp != nil {
+	if wp, speed, eta, ok := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && ok {
 		//lg.Debugf("speed: %.0f to cross %s in %.0fs", speed, wp.Fix, eta)
 		if eta < 5 { // includes unknown ETA case
 			return speed, MaximumRate
@@ -1564,7 +1564,7 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 	return math.Lerp(x, math.Min(cruiseIAS, 280), cruiseIAS), 0.8 * maxAccel
 }
 
-func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (*Waypoint, float32, float32) {
+func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (Waypoint, float32, float32, bool) {
 	var eta float32
 	for i, wp := range nav.Waypoints {
 		if i == 0 {
@@ -1583,10 +1583,10 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (*Waypoint, float32, float
 		}
 
 		if spd != 0 {
-			return &wp, spd, eta
+			return wp, spd, eta, true
 		}
 	}
-	return nil, 0, 0
+	return Waypoint{}, 0, 0, false
 }
 
 // distanceToEndOfApproach returns the remaining distance to the last
