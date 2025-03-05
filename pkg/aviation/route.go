@@ -502,33 +502,9 @@ func constructVFRLanding(wp Waypoint, perf AircraftPerformance, airport string, 
 		return []Waypoint{wp} // best we can do
 	}
 
-	w := wind.GetWindVector(ap.Location, float32(ap.Elevation))
-	// This gives the vector affecting the aircraft, so negate it. Also, as
-	// elsewhere, swap x and y in the args here since we want to measure
-	// angle w.r.t. +y.
-	angle := math.Degrees(math.Atan2(-w[0], -w[1]))
-	angle = math.NormalizeHeading(angle + magneticVariation)
-
-	// Find best aligned runway
-	minDelta := float32(1000)
-	bestRwy := -1
-	for i, rwy := range ap.Runways {
-		d := math.HeadingDifference(angle, rwy.Heading)
-		if d < minDelta {
-			minDelta = d
-			bestRwy = i
-		}
-	}
-	if bestRwy == -1 {
+	rwy, opp := ap.SelectBestRunway(wind, magneticVariation)
+	if rwy == nil || opp == nil {
 		lg.Error("couldn't find a runway to land on", slog.String("airport", airport), slog.Any("runways", ap.Runways))
-		wp.Delete = true
-		return []Waypoint{wp} // best we can do
-	}
-
-	rwy := ap.Runways[bestRwy]
-	opp, ok := LookupOppositeRunway(airport, rwy.Id)
-	if !ok {
-		lg.Errorf("no opposite for %q at %q\n", airport, rwy.Id)
 		wp.Delete = true
 		return []Waypoint{wp} // best we can do
 	}

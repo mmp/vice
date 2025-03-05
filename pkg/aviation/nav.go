@@ -276,7 +276,6 @@ func makeNav(fp FlightPlan, perf AircraftPerformance, wp []Waypoint, nmPerLongit
 		nav.FlightState.Heading = math.Heading2LL(nav.FlightState.Position,
 			nav.Waypoints[1].Location, nav.FlightState.NmPerLongitude,
 			nav.FlightState.MagneticVariation)
-
 	}
 
 	// Filter out airways...
