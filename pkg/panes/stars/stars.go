@@ -517,6 +517,31 @@ func (sp *STARSPane) makeMaps(client *sim.ControlClient, ss sim.State, lg *log.L
 	renderer.ReturnLinesDrawBuilder(ld)
 	addMap(mvas)
 
+	// Nearby airspace definitions
+	asId := 702
+	addAirspace := func(airspace map[string][]av.AirspaceVolume, class string) {
+		for name, airspace := range airspace {
+			if math.NMDistance2LL(airspace[0].PolygonBounds.ClosestPointInBox(ss.Center), ss.Center) > 75 {
+				continue
+			}
+
+			amap := av.VideoMap{
+				Label:    name,
+				Name:     name + "CLASS " + class,
+				Id:       asId,
+				Category: VideoMapProcessingAreas,
+			}
+			for _, asp := range airspace {
+				asp.GenerateDrawCommands(&amap.CommandBuffer, ss.NmPerLongitude)
+			}
+
+			addMap(amap)
+			asId++
+		}
+	}
+	addAirspace(av.DB.BravoAirspace, "B")
+	addAirspace(av.DB.CharlieAirspace, "C")
+
 	// Radar maps
 	radarIndex := 801
 	for _, name := range util.SortedMapKeys(ss.RadarSites) {
