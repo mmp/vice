@@ -98,7 +98,7 @@
           "unassociated": true,
           "destination": "KDXR",
           "exit": "VFR.North",
-          "route": "N040.49.24.179,W073.33.36.375/a1500-2500/radius3 N040.53.42.413,W073.38.18.641/a3000-3500/radius3 N040.58.13.432,W073.43.17.525/a3000-3500/radius3 N041.13.23.031,W073.35.34.368/radius3/a1500-2500/land",
+          "route": "N040.49.24.179,W073.33.36.375/a1500-2500/radius3 N040.53.42.413,W073.38.18.641/a2000-2800/radius2 N040.58.13.432,W073.43.17.525/a2500-2800/radius2 N041.13.23.031,W073.35.34.368/radius3/a1500-2500/land",
           "description": "North skirting the bravo"
         },
         {
