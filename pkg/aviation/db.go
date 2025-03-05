@@ -1343,3 +1343,41 @@ func CWTDirectlyBehindSeparation(front, back string) float32 {
 	}
 	return cwtBehindLookup[f][b]
 }
+
+///////////////////////////////////////////////////////////////////////////
+// AirspaceGrid
+
+// AirspaceGrid organizes AirspaceVolume definitions and provides efficient in volume tests via
+// a grid in lat-long space that records which of a potentially large set of volumes overlap
+// grid cells. Grid cells are initialized on demand rather than upfront, which saves storage
+type AirspaceGrid struct {
+	volumes []*AirspaceVolume
+	entries map[[2]int][]*AirspaceVolume
+}
+
+func MakeAirspaceGrid(v []*AirspaceVolume) *AirspaceGrid {
+	return &AirspaceGrid{
+		volumes: slices.Clone(v),
+		entries: make(map[[2]int][]*AirspaceVolume),
+	}
+}
+
+func (g *AirspaceGrid) Inside(p math.Point2LL, alt int) bool {
+	// Quantize coordinates to grid; roughly 6nm resolution (at least in
+	// latitude...)
+	xq, yq := int(10*p[0]), int(10*p[1])
+	pq := [2]int{xq, yq}
+
+	if _, ok := g.entries[pq]; !ok {
+		g.entries[pq] = util.FilterSlice(g.volumes, func(v *AirspaceVolume) bool {
+			// Assumes both polygonal and an initialized PolygonBounds...
+			// The distance check has some slop in it just so we can be
+			// lazy about thinking about rounding in the grid quantization.
+			return math.NMDistance2LL(v.PolygonBounds.ClosestPointInBox(p), p) < 10
+		})
+	}
+
+	return slices.ContainsFunc(g.entries[pq], func(av *AirspaceVolume) bool {
+		return av.Inside(p, alt)
+	})
+}
