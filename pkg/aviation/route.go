@@ -114,8 +114,8 @@ func (wp Waypoint) LogValue() slog.Value {
 	return slog.GroupValue(attrs...)
 }
 
-func (wp *Waypoint) ETA(p math.Point2LL, gs float32) time.Duration {
-	dist := math.NMDistance2LL(p, wp.Location)
+func (wp *Waypoint) ETA(p math.Point2LL, gs float32, nmPerLongitude float32) time.Duration {
+	dist := math.NMDistance2LLFast(p, wp.Location, nmPerLongitude)
 	eta := dist / gs
 	return time.Duration(eta * float32(time.Hour))
 }

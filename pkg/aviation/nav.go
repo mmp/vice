@@ -1298,7 +1298,8 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	// one with a waypoint restriction.
 	fix := nav.Waypoints[lastWp].Fix // first one with an alt restriction
 	for i := lastWp - 1; i >= 0; i-- {
-		sumDist += math.NMDistance2LL(nav.Waypoints[i+1].Location, nav.Waypoints[i].Location)
+		sumDist += math.NMDistance2LLFast(nav.Waypoints[i+1].Location, nav.Waypoints[i].Location,
+			nav.FlightState.NmPerLongitude)
 
 		// Does this one have a relevant altitude restriction?
 		restr := getRestriction(i)
@@ -1358,7 +1359,8 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	// Add the distance to the first waypoint to get the total distance
 	// (and then the ETA) between the aircraft and the first waypoint with
 	// an altitude restriction.
-	d := sumDist + math.NMDistance2LL(nav.FlightState.Position, nav.Waypoints[0].Location)
+	d := sumDist + math.NMDistance2LLFast(nav.FlightState.Position, nav.Waypoints[0].Location,
+		nav.FlightState.NmPerLongitude)
 	eta := d / nav.FlightState.GS * 3600 // seconds
 
 	// Prefer to be higher rather than low; deal with "at or above" here as well.
@@ -1561,9 +1563,11 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (*Waypoint, float32, float
 	var eta float32
 	for i, wp := range nav.Waypoints {
 		if i == 0 {
-			eta = float32(wp.ETA(nav.FlightState.Position, nav.FlightState.GS).Seconds())
+			eta = float32(wp.ETA(nav.FlightState.Position, nav.FlightState.GS,
+				nav.FlightState.NmPerLongitude).Seconds())
 		} else {
-			d := math.NMDistance2LL(wp.Location, nav.Waypoints[i-1].Location)
+			d := math.NMDistance2LLFast(wp.Location, nav.Waypoints[i-1].Location,
+				nav.FlightState.NmPerLongitude)
 			etaHours := d / nav.FlightState.GS
 			eta += etaHours * 3600
 		}
