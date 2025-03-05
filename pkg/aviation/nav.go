@@ -1228,11 +1228,16 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 			// If the controller has given 'cross [wp] at [alt]' for a
 			// future waypoint, however, ignore the charted altitude
 			// restriction.
-			if slices.ContainsFunc(nav.Waypoints[i+1:], func(wp Waypoint) bool {
-				fa, ok := nav.FixAssignments[wp.Fix]
-				return ok && fa.Arrive.Altitude != nil
-			}) {
-				return nil
+			if len(nav.FixAssignments) > 0 {
+				// This is surprisingly expensive e.g. during VFR prespawn
+				// airspace violation checks and so we'll skip it entirely
+				// when possible.
+				if slices.ContainsFunc(nav.Waypoints[i+1:], func(wp Waypoint) bool {
+					fa, ok := nav.FixAssignments[wp.Fix]
+					return ok && fa.Arrive.Altitude != nil
+				}) {
+					return nil
+				}
 			}
 			return ar
 		}
