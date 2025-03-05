@@ -2821,11 +2821,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					}
 				}
 				if db := sp.datablockType(ctx, ac); db == LimitedDatablock {
-					if state.FullLDBEndTime.Before(ctx.Now) {
-						state.FullLDBEndTime = ctx.Now.Add(10 * time.Second)
-					} else {
-						state.FullLDBEndTime = ctx.Now
+					s := ctx.ControlClient.STARSFacilityAdaptation.FullLDBSeconds
+					if s == 0 {
+						s = 5
 					}
+					state.FullLDBEndTime = ctx.Now.Add(time.Duration(s) * time.Second)
 				} else if db == FullDatablock && trk != nil && trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
 					// do not collapse datablock if user is tracking the aircraft
 					state.DatablockType = PartialDatablock

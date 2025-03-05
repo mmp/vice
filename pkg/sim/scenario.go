@@ -85,6 +85,7 @@ type STARSFacilityAdaptation struct {
 	SingleCharAIDs    map[string]string             `json:"single_char_aids"` // Char to airport
 	BeaconBank        int                           `json:"beacon_bank"`
 	KeepLDB           bool                          `json:"keep_ldb"`
+	FullLDBSeconds    int                           `json:"full_ldb_seconds"`
 
 	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration"`
 	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only"`
