@@ -422,8 +422,8 @@ func (w WaypointArray) checkDescending(e *util.ErrorLogger) {
 
 }
 
-func RandomizeRoute(w []Waypoint, vfr bool, perf AircraftPerformance, nmPerLongitude float32, magneticVariation float32,
-	airport string, wind WindModel, lg *log.Logger) WaypointArray {
+func RandomizeRoute(w []Waypoint, randomizeAltitudeRange bool, perf AircraftPerformance, nmPerLongitude float32,
+	magneticVariation float32, airport string, wind WindModel, lg *log.Logger) WaypointArray {
 	// Random values used for altitude and position randomization
 	rtheta, rrad := rand.Float32(), rand.Float32()
 	ralt := rand.Float32()
@@ -461,7 +461,7 @@ func RandomizeRoute(w []Waypoint, vfr bool, perf AircraftPerformance, nmPerLongi
 			rtheta = jitter(rtheta)
 			rrad = jitter(rrad)
 		}
-		if vfr {
+		if randomizeAltitudeRange {
 			if ar := wp.AltitudeRestriction; ar != nil {
 				low, high := ar.Range[0], ar.Range[1]
 				// We should clamp low to be a few hundred feet AGL, but
@@ -479,14 +479,13 @@ func RandomizeRoute(w []Waypoint, vfr bool, perf AircraftPerformance, nmPerLongi
 
 				ralt = jitter(ralt)
 			}
-
-			if wp.Land {
-				land := constructVFRLanding(*wp, perf, airport, wind, nmPerLongitude, magneticVariation, lg)
-				wp.Land = false
-				wp.Delete = false // overflights have this added to their last waypoint automatically
-				w = w[:i+1]
-				w = append(w, land...)
-			}
+		}
+		if wp.Land {
+			land := constructVFRLanding(*wp, perf, airport, wind, nmPerLongitude, magneticVariation, lg)
+			wp.Land = false
+			wp.Delete = false // overflights have this added to their last waypoint automatically
+			w = w[:i+1]
+			w = append(w, land...)
 		}
 	}
 

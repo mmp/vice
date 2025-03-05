@@ -433,8 +433,10 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 
 	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == IFR // VFRs aren't held
 
+	randomizeAltitudeRange := ac.FlightPlan.Rules == VFR
 	nav := MakeDepartureNav(*ac.FlightPlan, perf, exitRoute.AssignedAltitude,
-		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, nmPerLongitude, magneticVariation, wind, lg)
+		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, randomizeAltitudeRange,
+		nmPerLongitude, magneticVariation, wind, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}

@@ -173,7 +173,9 @@ const (
 
 func MakeArrivalNav(arr *Arrival, fp FlightPlan, perf AircraftPerformance,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
-	if nav := makeNav(fp, perf, arr.Waypoints, nmPerLongitude, magneticVariation, wind, lg); nav != nil {
+	randomizeAltitudeRange := fp.Rules == VFR
+	if nav := makeNav(fp, perf, arr.Waypoints, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
+		wind, lg); nav != nil {
 		spd := arr.SpeedRestriction
 		nav.Speed.Restriction = util.Select(spd != 0, &spd, nil)
 		if arr.AssignedAltitude > 0 {
@@ -197,8 +199,10 @@ func MakeArrivalNav(arr *Arrival, fp FlightPlan, perf AircraftPerformance,
 }
 
 func MakeDepartureNav(fp FlightPlan, perf AircraftPerformance, assignedAlt, clearedAlt, speedRestriction int,
-	wp []Waypoint, nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
-	if nav := makeNav(fp, perf, wp, nmPerLongitude, magneticVariation, wind, lg); nav != nil {
+	wp []Waypoint, randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32,
+	wind WindModel, lg *log.Logger) *Nav {
+	if nav := makeNav(fp, perf, wp, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
+		wind, lg); nav != nil {
 		if assignedAlt != 0 {
 			alt := float32(math.Min(assignedAlt, fp.Altitude))
 			nav.Altitude.Assigned = &alt
@@ -219,7 +223,9 @@ func MakeDepartureNav(fp FlightPlan, perf AircraftPerformance, assignedAlt, clea
 
 func MakeOverflightNav(of *Overflight, fp FlightPlan, perf AircraftPerformance,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
-	if nav := makeNav(fp, perf, of.Waypoints, nmPerLongitude, magneticVariation, wind, lg); nav != nil {
+	randomizeAltitudeRange := fp.Rules == VFR
+	if nav := makeNav(fp, perf, of.Waypoints, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
+		wind, lg); nav != nil {
 		spd := of.SpeedRestriction
 		nav.Speed.Restriction = util.Select(spd != 0, &spd, nil)
 		if of.AssignedAltitude > 0 {
@@ -243,8 +249,8 @@ func MakeOverflightNav(of *Overflight, fp FlightPlan, perf AircraftPerformance,
 	return nil
 }
 
-func makeNav(fp FlightPlan, perf AircraftPerformance, wp []Waypoint, nmPerLongitude float32,
-	magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
+func makeNav(fp FlightPlan, perf AircraftPerformance, wp []Waypoint, randomizeAltitudeRange bool,
+	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
 	nav := &Nav{
 		Perf:           perf,
 		FinalAltitude:  float32(fp.Altitude),
@@ -252,8 +258,8 @@ func makeNav(fp FlightPlan, perf AircraftPerformance, wp []Waypoint, nmPerLongit
 		FixAssignments: make(map[string]NavFixAssignment),
 	}
 
-	nav.Waypoints = RandomizeRoute(nav.Waypoints, fp.Rules == VFR, nav.Perf, nmPerLongitude, magneticVariation,
-		fp.ArrivalAirport, wind, lg)
+	nav.Waypoints = RandomizeRoute(nav.Waypoints, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
+		magneticVariation, fp.ArrivalAirport, wind, lg)
 
 	if fp.Rules == IFR && slices.ContainsFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Land }) {
 		lg.Warn("IFR aircraft has /land in route", slog.Any("waypoints", nav.Waypoints),
