@@ -429,7 +429,9 @@ type AirspaceVolume struct {
 	Floor   int                `json:"floor"`
 	Ceiling int                `json:"ceiling"`
 	// Polygon
-	Vertices []math.Point2LL `json:"vertices"`
+	PolygonBounds *math.Extent2D    // not always set
+	Vertices      []math.Point2LL   `json:"vertices"`
+	Holes         [][]math.Point2LL `json:"holes"`
 	// Circle
 	Center math.Point2LL `json:"center"`
 	Radius float32       `json:"radius"`
@@ -473,7 +475,18 @@ func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
 
 	switch a.Type {
 	case AirspaceVolumePolygon:
-		return math.PointInPolygon2LL(p, a.Vertices)
+		if a.PolygonBounds != nil && !a.PolygonBounds.Inside(p) {
+			return false
+		}
+		if !math.PointInPolygon2LL(p, a.Vertices) {
+			return false
+		}
+		for _, hole := range a.Holes {
+			if math.PointInPolygon2LL(p, hole) {
+				return false
+			}
+		}
+		return true
 	case AirspaceVolumeCircle:
 		return math.NMDistance2LL(p, a.Center) < a.Radius
 	default:
@@ -491,6 +504,14 @@ func (a *AirspaceVolume) GenerateDrawCommands(cb *renderer.CommandBuffer, nmPerL
 			v = append(v, [2]float32(vtx))
 		}
 		ld.AddLineLoop(v)
+
+		for _, h := range a.Holes {
+			var v [][2]float32
+			for _, vtx := range h {
+				v = append(v, [2]float32(vtx))
+			}
+			ld.AddLineLoop(v)
+		}
 	case AirspaceVolumeCircle:
 		ld.AddLatLongCircle(a.Center, nmPerLongitude, a.Radius, 360)
 	default:
