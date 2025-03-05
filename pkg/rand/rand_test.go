@@ -81,12 +81,16 @@ func TestSampleFiltered(t *testing.T) {
 
 func TestSampleWeighted(t *testing.T) {
 	a := []int{1, 2, 3, 4, 5, 0, 10, 13}
-	counts := make([]int, len(a))
+	counts := make(map[int]int)
 
 	n := 100000
 	for i := 0; i < n; i++ {
-		idx := SampleWeighted(a, func(v int) int { return v })
-		counts[idx]++
+		v, ok := SampleWeighted(a, func(v int) int { return v })
+		if !ok {
+			t.Errorf("Unexpected failure of SampleWeighted")
+		} else {
+			counts[v]++
+		}
 	}
 
 	sum := 0
@@ -94,12 +98,13 @@ func TestSampleWeighted(t *testing.T) {
 		sum += v
 	}
 
-	for i, c := range counts {
-		expected := a[i] * n / sum
-		if a[0] == 0 && c != 0 {
-			t.Errorf("Expected 0 samples for a[%d]. Got %d", i, c)
+	for _, v := range a {
+		expected := v * n / sum
+		c := counts[v]
+		if v == 0 && c != 0 {
+			t.Errorf("Expected 0 samples for 0. Got %d", c)
 		} else if c < expected-300 || c > expected+300 {
-			t.Errorf("Expected roughly %d samples for a[%d]=%d. Got %d", expected, i, a[i], c)
+			t.Errorf("Expected roughly %d samples for %d. Got %d [%v]", expected, v, c, counts)
 		}
 	}
 }

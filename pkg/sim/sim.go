@@ -3537,7 +3537,7 @@ func (ss *State) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*av.Air
 	for {
 		format := "####"
 		if len(dbAirline.Callsign.CallsignFormats) > 0 {
-			idx := rand.SampleWeighted(dbAirline.Callsign.CallsignFormats,
+			f, ok := rand.SampleWeighted(dbAirline.Callsign.CallsignFormats,
 				func(f string) int {
 					if _, wt, ok := strings.Cut(f, "x"); ok { // we have a weight
 						if v, err := strconv.Atoi(wt); err == nil {
@@ -3546,8 +3546,8 @@ func (ss *State) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*av.Air
 					}
 					return 1
 				})
-			if idx != -1 {
-				format = dbAirline.Callsign.CallsignFormats[idx]
+			if ok {
+				format = f
 			}
 		}
 

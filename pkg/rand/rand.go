@@ -7,6 +7,7 @@ package rand
 import (
 	_ "embed"
 	"iter"
+	"slices"
 	"strings"
 
 	"github.com/MichaelTJones/pcg"
@@ -149,11 +150,14 @@ func SampleFiltered[T any](slice []T, pred func(T) bool) int {
 // SampleWeighted randomly samples an element from the given slice with the
 // probability of choosing each element proportional to the value returned
 // by the provided callback.
-func SampleWeighted[T any](slice []T, weight func(T) int) int {
+func SampleWeighted[T any](slice []T, weight func(T) int) (T, bool) {
+	return SampleWeightedSeq(slices.Values(slice), weight)
+}
+
+func SampleWeightedSeq[T any](it iter.Seq[T], weight func(T) int) (sample T, ok bool) {
 	// Weighted reservoir sampling...
-	idx := -1
 	sumWt := 0
-	for i, v := range slice {
+	for v := range it {
 		w := weight(v)
 		if w == 0 {
 			continue
@@ -162,10 +166,11 @@ func SampleWeighted[T any](slice []T, weight func(T) int) int {
 		sumWt += w
 		p := float32(w) / float32(sumWt)
 		if Float32() < p {
-			idx = i
+			sample = v
+			ok = true
 		}
 	}
-	return idx
+	return
 }
 
 var (
