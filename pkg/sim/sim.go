@@ -1931,12 +1931,12 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 func (s *Sim) spawnDepartures() {
 	now := s.SimTime
 
-	// Make sure we have a few departing aircraft to work with.
-	s.refreshDeparturePool()
-
-	// Add hold for release to the list a bit before departure time and
-	// request release a few minutes early as well.
 	for airport, _ := range s.NextDepartureLaunch {
+		// Make sure we have a few departing aircraft to work with.
+		s.refreshDeparturePool(airport)
+
+		// Add hold for release to the list a bit before departure time and
+		// request release a few minutes early as well.
 		pool := s.DeparturePool[airport]
 		nlist, nrel := 0, 0
 		for i, dep := range rand.PermuteSlice(pool, rand.Uint32()) {
@@ -1957,10 +1957,9 @@ func (s *Sim) spawnDepartures() {
 			}
 			nrel++
 		}
-	}
 
-	for airport, launchTime := range s.NextDepartureLaunch {
-		if !now.After(launchTime) {
+		// See if we have anything to launch
+		if !now.After(s.NextDepartureLaunch[airport]) {
 			// Don't bother going any further: wait to match the desired
 			// overall launch rate.
 			continue
@@ -1969,7 +1968,6 @@ func (s *Sim) spawnDepartures() {
 		// Get the first departure that can be launched; we try to do them
 		// in order to honor the sequence but what we can launch also
 		// depends on what's been released.
-		pool := s.DeparturePool[airport]
 		for i, dep := range pool {
 			ac := s.State.Aircraft[dep.Callsign]
 
@@ -2058,38 +2056,36 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft) time.Duration {
 	return prev.MinSeparation
 }
 
-func (s *Sim) refreshDeparturePool() {
-loop:
-	for airport, rates := range s.LaunchConfig.DepartureRates {
-		pool := s.DeparturePool[airport]
-		// Keep a pool of 2-5 around.
-		if len(pool) >= 2 {
-			continue
-		}
-
-		for len(pool) < 5 {
-			// Figure out which category to generate.
-			runway, category, rateSum := sampleRateMap2(rates, s.LaunchConfig.DepartureRateScale)
-			if rateSum == 0 {
-				// The airport currently has a 0 departure rate.
-				continue loop
-			}
-
-			ac, err := s.createDepartureNoLock(airport, runway, category)
-			if err == nil {
-				ac.WaitingForLaunch = true
-				s.addAircraftNoLock(*ac)
-
-				pool = append(pool, makeDepartureAircraft(ac, runway, s.DepartureIndex[airport],
-					s.State, s.lg))
-				s.DepartureIndex[airport]++
-			}
-		}
-
-		// We've updated the pool; resequence them.
-		s.DeparturePool[airport] = s.sequenceDepartures(s.LastDeparture[airport], pool,
-			s.DepartureIndex[airport])
+func (s *Sim) refreshDeparturePool(airport string) {
+	rates := s.LaunchConfig.DepartureRates[airport]
+	pool := s.DeparturePool[airport]
+	// Keep a pool of 2-5 around.
+	if len(pool) >= 2 {
+		return
 	}
+
+	for range 3 {
+		// Figure out which category to generate.
+		runway, category, rateSum := sampleRateMap2(rates, s.LaunchConfig.DepartureRateScale)
+		if rateSum == 0 {
+			// The airport currently has a 0 departure rate.
+			return
+		}
+
+		ac, err := s.createDepartureNoLock(airport, runway, category)
+		if err == nil {
+			ac.WaitingForLaunch = true
+			s.addAircraftNoLock(*ac)
+
+			pool = append(pool, makeDepartureAircraft(ac, runway, s.DepartureIndex[airport],
+				s.State, s.lg))
+			s.DepartureIndex[airport]++
+		}
+	}
+
+	// We've updated the pool; resequence them.
+	s.DeparturePool[airport] = s.sequenceDepartures(s.LastDeparture[airport], pool,
+		s.DepartureIndex[airport])
 }
 
 func makeDepartureAircraft(ac *av.Aircraft, runway string, idx int, wind av.WindModel, lg *log.Logger) DepartureAircraft {
