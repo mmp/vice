@@ -671,7 +671,7 @@ func (nav *Nav) updateAirspeed(lg *log.Logger) (float32, bool) {
 
 	if nav.Altitude.Expedite {
 		// Don't accelerate or decelerate if we're expediting
-		lg.Debug("expediting altitude, so speed unchanged")
+		//lg.Debug("expediting altitude, so speed unchanged")
 		return 0, false
 	}
 
@@ -810,7 +810,7 @@ func (nav *Nav) updateHeading(wind WindModel, lg *log.Logger) {
 		nav.FlightState.Heading = targetHeading
 		return
 	}
-	lg.Debugf("turning for heading %.0f", targetHeading)
+	//lg.Debugf("turning for heading %.0f", targetHeading)
 
 	var turn float32
 	switch turnDirection {
@@ -902,7 +902,7 @@ func (nav *Nav) Update(wind WindModel, lg *log.Logger) *Waypoint {
 		nav.Airwork = nil // Done.
 	}
 
-	lg.Debug("nav_update", slog.Any("flight_state", nav.FlightState))
+	//lg.Debug("nav_update", slog.Any("flight_state", nav.FlightState))
 
 	// Don't refer to DeferredHeading here; assume that if the pilot hasn't
 	// punched in a new heading assignment, we should update waypoints or
@@ -947,7 +947,7 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *log.Logger) (heading float32, 
 		if nav.Heading.Turn != nil {
 			turn = *nav.Heading.Turn
 		}
-		lg.Debugf("heading: assigned %.0f", heading)
+		//lg.Debugf("heading: assigned %.0f", heading)
 		return
 	} else {
 		// Either on an arc or to a waypoint. Figure out the point we're
@@ -978,7 +978,7 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *log.Logger) (heading float32, 
 			pTarget = math.NM2LL(p, nav.FlightState.NmPerLongitude)
 		} else {
 			if len(nav.Waypoints) == 0 {
-				lg.Debug("heading: route empty, no heading assigned", heading)
+				//lg.Debug("heading: route empty, no heading assigned", heading)
 				return // fly present heading...
 			}
 
@@ -1125,14 +1125,14 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 
 	// Stay on the ground if we're still on the takeoff roll.
 	if nav.FlightState.InitialDepartureClimb && !nav.IsAirborne() {
-		lg.Debug("alt: continuing takeoff roll")
+		//lg.Debug("alt: continuing takeoff roll")
 		return nav.FlightState.Altitude, 0
 	}
 
 	// Ugly to be digging into heading here, but anyway...
 	if nav.Heading.RacetrackPT != nil {
 		if alt, ok := nav.Heading.RacetrackPT.GetAltitude(nav); ok {
-			lg.Debugf("alt: descending to %d for procedure turn", int(alt))
+			//lg.Debugf("alt: descending to %d for procedure turn", int(alt))
 			return alt, MaximumRate
 		}
 	}
@@ -1143,7 +1143,7 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 	}
 
 	if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
-		lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
+		//lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
 		if c.ETA < 5 || nav.FlightState.Altitude < c.Altitude {
 			// Always climb as soon as we can
 			return c.Altitude, MaximumRate
@@ -1400,11 +1400,11 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 
 	// Controller assignments: these override anything else.
 	if nav.Speed.MaintainSlowestPractical {
-		lg.Debug("speed: slowest practical")
+		//lg.Debug("speed: slowest practical")
 		return nav.Perf.Speed.Landing + 5, MaximumRate
 	}
 	if nav.Speed.MaintainMaximumForward {
-		lg.Debug("speed: maximum forward")
+		//lg.Debug("speed: maximum forward")
 		if nav.Approach.Cleared {
 			// (We expect this to usually be the case.) Ad-hoc speed based
 			// on V2, also assuming some flaps are out, so we don't just
@@ -1415,7 +1415,7 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 		return nav.targetAltitudeIAS()
 	}
 	if nav.Speed.Assigned != nil {
-		lg.Debugf("speed: %.0f assigned", *nav.Speed.Assigned)
+		//lg.Debugf("speed: %.0f assigned", *nav.Speed.Assigned)
 		return *nav.Speed.Assigned, MaximumRate
 	}
 
@@ -1464,7 +1464,7 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 	}
 
 	if wp, speed, eta := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && wp != nil {
-		lg.Debugf("speed: %.0f to cross %s in %.0fs", speed, wp.Fix, eta)
+		//lg.Debugf("speed: %.0f to cross %s in %.0fs", speed, wp.Fix, eta)
 		if eta < 5 { // includes unknown ETA case
 			return speed, MaximumRate
 		}
@@ -1489,7 +1489,7 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 
 	// Something from a previous waypoint; ignore it if we're cleared for the approach.
 	if nav.Speed.Restriction != nil && !nav.Approach.Cleared {
-		lg.Debugf("speed: previous restriction %.0f", *nav.Speed.Restriction)
+		//lg.Debugf("speed: previous restriction %.0f", *nav.Speed.Restriction)
 		return *nav.Speed.Restriction, MaximumRate
 	}
 
@@ -1504,13 +1504,13 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 		// Don't speed up after being been cleared to land.
 		ias = math.Min(ias, nav.FlightState.IAS)
 
-		lg.Debugf("speed: approach cleared, %.1f nm out, ias %.0f", fd, ias)
+		//lg.Debugf("speed: approach cleared, %.1f nm out, ias %.0f", fd, ias)
 		return ias, MaximumRate
 	}
 
 	if nav.Approach.Cleared {
 		// Don't speed up if we're cleared and farther away
-		lg.Debugf("speed: cleared approach but far away")
+		//lg.Debugf("speed: cleared approach but far away")
 		return nav.FlightState.IAS, MaximumRate
 	}
 
@@ -1537,7 +1537,7 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 	// Nothing assigned by the controller or the route, so set a target
 	// based on the aircraft's altitude.
 	ias, rate := nav.targetAltitudeIAS()
-	lg.Debugf("speed: %.0f based on altitude", ias)
+	//lg.Debugf("speed: %.0f based on altitude", ias)
 	return ias, rate
 }
 
@@ -1664,8 +1664,7 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 	}
 
 	if passedWaypoint {
-		lg.Debugf("turning outbound from %.1f to %.1f for %s", nav.FlightState.Heading,
-			hdg, wp.Fix)
+		//lg.Debugf("turning outbound from %.1f to %.1f for %s", nav.FlightState.Heading,	hdg, wp.Fix)
 
 		clearedAtFix := nav.Approach.AtFixClearedRoute != nil && nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix
 		if clearedAtFix {

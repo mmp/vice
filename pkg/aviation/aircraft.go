@@ -176,8 +176,10 @@ func (ac *Aircraft) transmitResponse(r PilotResponse) []RadioTransmission {
 	}}
 }
 
-func (ac *Aircraft) Update(wind WindModel, simlg *log.Logger) *Waypoint {
-	lg := simlg.With(slog.String("callsign", ac.Callsign))
+func (ac *Aircraft) Update(wind WindModel, lg *log.Logger) *Waypoint {
+	if lg != nil {
+		lg = lg.With(slog.String("callsign", ac.Callsign))
+	}
 
 	passedWaypoint := ac.Nav.Update(wind, lg)
 	if passedWaypoint != nil {
