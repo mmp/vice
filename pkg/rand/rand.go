@@ -9,39 +9,87 @@ import (
 	"iter"
 	"slices"
 	"strings"
-
-	"github.com/MichaelTJones/pcg"
 )
+
+///////////////////////////////////////////////////////////////////////////
+// PCG32
+
+// This is based on mtj's pcg32 implementation, updated with exported
+// variables for the state (so we can serialize it properly.)
+
+const (
+	pcg32State      = 0x853c49e6748fea9b //  9600629759793949339
+	pcg32Increment  = 0xda3e39cb94b95bdb // 15726070495360670683
+	pcg32Multiplier = 0x5851f42d4c957f2d //  6364136223846793005
+)
+
+type PCG32 struct {
+	State     uint64
+	Increment uint64
+}
+
+func NewPCG32() PCG32 {
+	return PCG32{pcg32State, pcg32Increment}
+}
+
+func (p *PCG32) Seed(state, sequence uint64) {
+	p.Increment = (sequence << 1) | 1
+	p.State = (state+p.Increment)*pcg32Multiplier + p.Increment
+}
+
+func (p *PCG32) Random() uint32 {
+	// Advance 64-bit linear congruential generator to new state
+	oldState := p.State
+	p.State = oldState*pcg32Multiplier + p.Increment
+
+	// Confuse and permute 32-bit output from old state
+	xorShifted := uint32(((oldState >> 18) ^ oldState) >> 27)
+	rot := uint32(oldState >> 59)
+	return (xorShifted >> rot) | (xorShifted << ((-rot) & 31))
+}
+
+func (p *PCG32) Bounded(bound uint32) uint32 {
+	if bound == 0 {
+		return 0
+	}
+	threshold := -bound % bound
+	for {
+		r := p.Random()
+		if r >= threshold {
+			return r % bound
+		}
+	}
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // Random numbers.
 
 type Rand struct {
-	r *pcg.PCG32
+	PCG32
 }
 
 func New() Rand {
-	return Rand{r: pcg.NewPCG32()}
+	return Rand{PCG32: NewPCG32()}
 }
 
-func (r *Rand) Seed(s int64) {
-	r.r.Seed(uint64(s), 0xda3e39cb94b95bdb)
+func (r *Rand) Seed(s uint64) {
+	r.PCG32.Seed(s, pcg32Increment)
 }
 
 func (r *Rand) Intn(n int) int {
-	return int(r.r.Bounded(uint32(n)))
+	return int(r.Bounded(uint32(n)))
 }
 
 func (r *Rand) Int31n(n int32) int32 {
-	return int32(r.r.Bounded(uint32(n)))
+	return int32(r.Bounded(uint32(n)))
 }
 
 func (r *Rand) Float32() float32 {
-	return float32(r.r.Random()) / (1<<32 - 1)
+	return float32(r.Random()) / (1<<32 - 1)
 }
 
 func (r *Rand) Uint32() uint32 {
-	return r.r.Random()
+	return r.Random()
 }
 
 // Drop-in replacement for the subset of math/rand that we use...
@@ -52,19 +100,19 @@ func init() {
 }
 
 func Seed(s int64) {
-	r.r.Seed(uint64(s), 0xda3e39cb94b95bdb)
+	r.PCG32.Seed(uint64(s), pcg32Increment)
 }
 
 func Intn(n int) int {
-	return int(r.r.Bounded(uint32(n)))
+	return int(r.Bounded(uint32(n)))
 }
 
 func Int31n(n int32) int32 {
-	return int32(r.r.Bounded(uint32(n)))
+	return int32(r.Bounded(uint32(n)))
 }
 
 func Float32() float32 {
-	return float32(r.r.Random()) / (1<<32 - 1)
+	return float32(r.Random()) / (1<<32 - 1)
 }
 
 func Uint32() uint32 {
