@@ -89,6 +89,7 @@ var errorStringToError = map[string]error{
 	ErrRestoringSavedState.Error():         ErrRestoringSavedState,
 	ErrServerDisconnected.Error():          ErrServerDisconnected,
 	ErrTooManyRestrictionAreas.Error():     ErrTooManyRestrictionAreas,
+	ErrUnknownController.Error():           ErrUnknownController,
 	ErrUnknownControllerFacility.Error():   ErrUnknownControllerFacility,
 }
 
