@@ -76,6 +76,15 @@ func TestNormalizeHeading(t *testing.T) {
 	}
 }
 
+func TestHeadingSignedTurn(t *testing.T) {
+	turns := [][3]float32{{10, 90, 80}, {10, 350, -20}, {120, 10, -110}, {120, 270, 150}}
+	for _, turn := range turns {
+		if result := HeadingSignedTurn(turn[0], turn[1]); result != turn[2] {
+			t.Errorf("HeadingSignedTurn(%f, %f) = %f; expected %f", turn[0], turn[1], result, turn[2])
+		}
+	}
+}
+
 func TestParseLatLong(t *testing.T) {
 	type LL struct {
 		str string

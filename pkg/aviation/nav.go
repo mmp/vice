@@ -829,13 +829,8 @@ func (nav *Nav) updateHeading(wind WindModel, lg *log.Logger) {
 		angle = math.Min(angle, turnRate)
 		turn = angle
 	case TurnClosest:
-		// Figure out which way is closest: first find the angle to rotate
-		// the target heading by so that it's aligned with 180
-		// degrees. This lets us not worry about the complexities of the
-		// wrap around at 0/360..
-		rot := math.NormalizeHeading(180 - targetHeading)
-		cur := math.NormalizeHeading(nav.FlightState.Heading + rot) // w.r.t. 180 target
-		turn = math.Clamp(180-cur, -turnRate, turnRate)
+		turn = math.HeadingSignedTurn(nav.FlightState.Heading, targetHeading)
+		turn = math.Clamp(turn, -turnRate, turnRate)
 	}
 
 	// Finally, do the turn.
