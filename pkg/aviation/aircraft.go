@@ -376,7 +376,8 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffC
 		ac.GoAroundDistance = &d
 	}
 
-	nav := MakeArrivalNav(arr, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation, wind, lg)
+	nav := MakeArrivalNav(ac.Callsign, arr, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation,
+		wind, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -434,7 +435,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == IFR // VFRs aren't held
 
 	randomizeAltitudeRange := ac.FlightPlan.Rules == VFR
-	nav := MakeDepartureNav(*ac.FlightPlan, perf, exitRoute.AssignedAltitude,
+	nav := MakeDepartureNav(ac.Callsign, *ac.FlightPlan, perf, exitRoute.AssignedAltitude,
 		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, randomizeAltitudeRange,
 		nmPerLongitude, magneticVariation, wind, lg)
 	if nav == nil {
@@ -495,7 +496,8 @@ func (ac *Aircraft) InitializeOverflight(of *Overflight, controller string, nmPe
 	}
 	ac.FlightPlan.Route = of.Waypoints.RouteString()
 
-	nav := MakeOverflightNav(of, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation, wind, lg)
+	nav := MakeOverflightNav(ac.Callsign, of, *ac.FlightPlan, perf, nmPerLongitude,
+		magneticVariation, wind, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}

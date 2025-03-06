@@ -39,6 +39,8 @@ type Nav struct {
 
 	FinalAltitude float32
 	Waypoints     WaypointArray
+
+	Rand rand.Rand
 }
 
 // DeferredHeading stores a heading assignment from the controller and the
@@ -171,11 +173,11 @@ const (
 	OnApproachCourse
 )
 
-func MakeArrivalNav(arr *Arrival, fp FlightPlan, perf AircraftPerformance,
+func MakeArrivalNav(callsign string, arr *Arrival, fp FlightPlan, perf AircraftPerformance,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
 	randomizeAltitudeRange := fp.Rules == VFR
-	if nav := makeNav(fp, perf, arr.Waypoints, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
-		wind, lg); nav != nil {
+	if nav := makeNav(callsign, fp, perf, arr.Waypoints, randomizeAltitudeRange, nmPerLongitude,
+		magneticVariation, wind, lg); nav != nil {
 		spd := arr.SpeedRestriction
 		nav.Speed.Restriction = util.Select(spd != 0, &spd, nil)
 		if arr.AssignedAltitude > 0 {
@@ -198,10 +200,10 @@ func MakeArrivalNav(arr *Arrival, fp FlightPlan, perf AircraftPerformance,
 	return nil
 }
 
-func MakeDepartureNav(fp FlightPlan, perf AircraftPerformance, assignedAlt, clearedAlt, speedRestriction int,
-	wp []Waypoint, randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32,
-	wind WindModel, lg *log.Logger) *Nav {
-	if nav := makeNav(fp, perf, wp, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
+func MakeDepartureNav(callsign string, fp FlightPlan, perf AircraftPerformance,
+	assignedAlt, clearedAlt, speedRestriction int, wp []Waypoint, randomizeAltitudeRange bool,
+	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
+	if nav := makeNav(callsign, fp, perf, wp, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
 		wind, lg); nav != nil {
 		if assignedAlt != 0 {
 			alt := float32(math.Min(assignedAlt, fp.Altitude))
@@ -221,11 +223,11 @@ func MakeDepartureNav(fp FlightPlan, perf AircraftPerformance, assignedAlt, clea
 	return nil
 }
 
-func MakeOverflightNav(of *Overflight, fp FlightPlan, perf AircraftPerformance,
+func MakeOverflightNav(callsign string, of *Overflight, fp FlightPlan, perf AircraftPerformance,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
 	randomizeAltitudeRange := fp.Rules == VFR
-	if nav := makeNav(fp, perf, of.Waypoints, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
-		wind, lg); nav != nil {
+	if nav := makeNav(callsign, fp, perf, of.Waypoints, randomizeAltitudeRange, nmPerLongitude,
+		magneticVariation, wind, lg); nav != nil {
 		spd := of.SpeedRestriction
 		nav.Speed.Restriction = util.Select(spd != 0, &spd, nil)
 		if of.AssignedAltitude > 0 {
@@ -249,14 +251,16 @@ func MakeOverflightNav(of *Overflight, fp FlightPlan, perf AircraftPerformance,
 	return nil
 }
 
-func makeNav(fp FlightPlan, perf AircraftPerformance, wp []Waypoint, randomizeAltitudeRange bool,
+func makeNav(callsign string, fp FlightPlan, perf AircraftPerformance, wp []Waypoint, randomizeAltitudeRange bool,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
 	nav := &Nav{
 		Perf:           perf,
 		FinalAltitude:  float32(fp.Altitude),
 		Waypoints:      util.DuplicateSlice(wp),
 		FixAssignments: make(map[string]NavFixAssignment),
+		Rand:           rand.New(),
 	}
+	nav.Rand.Seed(util.HashString64(callsign))
 
 	nav.Waypoints = RandomizeRoute(nav.Waypoints, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
 		magneticVariation, fp.ArrivalAirport, wind, lg)
@@ -354,7 +358,7 @@ func (nav *Nav) AssignedHeading() (float32, bool) {
 // due to controller instructions to the pilot and never in cases where the
 // autopilot is changing the heading assignment.
 func (nav *Nav) EnqueueHeading(h NavHeading) {
-	delay := 3 + 3*rand.Float32()
+	delay := 3 + 3*nav.Rand.Float32()
 	now := time.Now()
 	nav.DeferredHeading = &DeferredHeading{
 		Time:    now.Add(time.Duration(delay * float32(time.Second))),
@@ -3090,33 +3094,33 @@ func (aw *NavAirwork) Update(nav *Nav) bool {
 		if aw.NextMoveCounter == 0 {
 			// We just finished. Clean up and Continue straight and level for a bit.
 			aw.Dive = false
-			aw.NextMoveCounter = 5 + rand.Intn(25)
+			aw.NextMoveCounter = 5 + nav.Rand.Intn(25)
 		} else if aw.NextMoveCounter == 1 {
 			// Pick a new thing.
 			aw.ToCenter = false
-			if rand.Float32() < .2 {
+			if nav.Rand.Float32() < .2 {
 				// Do a 360
 				aw.Start360(*nav)
-			} else if nav.FlightState.Altitude > aw.AltRange[0]+2000 && rand.Float32() < .2 {
+			} else if nav.FlightState.Altitude > aw.AltRange[0]+2000 && nav.Rand.Float32() < .2 {
 				// Dive.
 				aw.Dive = true
-				aw.Altitude = aw.AltRange[0] + 200*rand.Float32()
-			} else if nav.FlightState.Altitude+1000 < aw.AltRange[1] && rand.Float32() < .2 {
+				aw.Altitude = aw.AltRange[0] + 200*nav.Rand.Float32()
+			} else if nav.FlightState.Altitude+1000 < aw.AltRange[1] && nav.Rand.Float32() < .2 {
 				// Climbing turn
-				aw.Altitude = aw.AltRange[1] - 500*rand.Float32()
-				aw.Heading = 360 * rand.Float32()
-				aw.TurnDirection = util.Select(rand.Float32() < .5, TurnLeft, TurnRight)
-			} else if nav.FlightState.Altitude < aw.AltRange[0]+1000 && rand.Float32() < .2 {
+				aw.Altitude = aw.AltRange[1] - 500*nav.Rand.Float32()
+				aw.Heading = 360 * nav.Rand.Float32()
+				aw.TurnDirection = util.Select(nav.Rand.Float32() < .5, TurnLeft, TurnRight)
+			} else if nav.FlightState.Altitude < aw.AltRange[0]+1000 && nav.Rand.Float32() < .2 {
 				// Descending turn
-				aw.Altitude = aw.AltRange[0] + 500*rand.Float32()
-				aw.Heading = 360 * rand.Float32()
-				aw.TurnDirection = util.Select(rand.Float32() < .5, TurnLeft, TurnRight)
-			} else if rand.Float32() < .2 {
+				aw.Altitude = aw.AltRange[0] + 500*nav.Rand.Float32()
+				aw.Heading = 360 * nav.Rand.Float32()
+				aw.TurnDirection = util.Select(nav.Rand.Float32() < .5, TurnLeft, TurnRight)
+			} else if nav.Rand.Float32() < .2 {
 				// Slow turn
-				aw.Heading = 360 * rand.Float32()
+				aw.Heading = 360 * nav.Rand.Float32()
 				aw.IAS = math.Lerp(.1, nav.Perf.Speed.Min, TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude))
-				aw.TurnDirection = util.Select(rand.Float32() < .5, TurnLeft, TurnRight)
-			} else if rand.Float32() < .2 {
+				aw.TurnDirection = util.Select(nav.Rand.Float32() < .5, TurnLeft, TurnRight)
+			} else if nav.Rand.Float32() < .2 {
 				// Slow, straight and level
 				aw.IAS = math.Lerp(.1, nav.Perf.Speed.Min, TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude))
 				aw.NextMoveCounter = 20
@@ -3133,7 +3137,7 @@ func (aw *NavAirwork) Update(nav *Nav) bool {
 }
 
 func (aw *NavAirwork) Start360(nav Nav) {
-	if rand.Intn(2) == 0 {
+	if nav.Rand.Intn(2) == 0 {
 		aw.TurnDirection = TurnLeft
 		aw.Heading = math.NormalizeHeading(nav.FlightState.Heading + 1)
 	} else {
