@@ -508,28 +508,17 @@ func constructVFRLanding(wp Waypoint, perf AircraftPerformance, airport string, 
 		return []Waypoint{wp} // best we can do
 	}
 
-	pwp := math.LL2NM(wp.Location, nmPerLongitude)
-	p0 := math.LL2NM(rwy.Threshold, nmPerLongitude)
-	p1 := math.LL2NM(opp.Threshold, nmPerLongitude)
-	pmid := math.Mid2f(p0, p1) // runway center
-	// Vector along the runway's direction, half as long as the full runway length
-	rvec := math.Scale2f(math.Sub2f(p1, p0), 0.5)
-	// Vector perpendicular to the runway, toward the left side (assume left closed traffic.)
-	// TODO: does CIFP or something else have the closed traffic side for runways encoded?
-	perpvec := math.Normalize2f([2]float32{-rvec[1], rvec[0]})
+	rg := MakeRouteGenerator(rwy.Threshold, opp.Threshold, nmPerLongitude)
 
+	// TODO: does CIFP or something else have the closed traffic side for runways encoded?
 	var wps []Waypoint
 	addpt := func(n string, dx, dy, dalt float32, fo bool, slow bool) {
-		pt := math.Add2f(pmid, math.Add2f(math.Scale2f(rvec, dx), math.Scale2f(perpvec, dy)))
-
+		wp := rg.Waypoint("_"+n, dx, dy)
 		alt := float32(ap.Elevation) + dalt
-		wp := Waypoint{
-			Fix:                 "_" + n,
-			Location:            math.NM2LL(pt, nmPerLongitude),
-			AltitudeRestriction: &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}},
-			FlyOver:             fo,
-			Speed:               util.Select(slow, 70, 0), // 70 may not be attainable, but the nav code will deal.
-		}
+		wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}}
+		wp.FlyOver = fo
+		wp.Speed = util.Select(slow, 70, 0)
+
 		wps = append(wps, wp)
 	}
 
@@ -538,7 +527,8 @@ func constructVFRLanding(wp Waypoint, perf AircraftPerformance, airport string, 
 	sc := perf.Speed.Min / 80
 	pdist := sc // pattern offset from runway
 
-	sd := math.SignedPointLineDistance(pwp, p0, p1)
+	// Slightly sketchy to do in lat-long but works in this case.
+	sd := math.SignedPointLineDistance(wp.Location, rwy.Threshold, opp.Threshold)
 	if sd < 0 {
 		// coming from the left side of the extended runway centerline; just
 		// add a point so that they enter the pattern at 45 degrees.
@@ -1401,5 +1391,41 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 		} else if _, ok := controlPositions[of.InitialController]; !ok {
 			e.ErrorString("controller %q not found for \"initial_controller\"", of.InitialController)
 		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// RouteGenerator
+
+// RouteGenerator is a utility class for describing lateral routes with
+// respect to a local coordinate system. The user provides two points
+// (generally the endpoints of a runway) which are then at (-1,0) and
+// (1,0) in the coordinate system. The y axis is perpendicular to the vector
+// between the two points and points to the left of it. (Thus, note that
+// lengths in the two dimensions are different.)
+type RouteGenerator struct {
+	p0, p1         [2]float32
+	origin         [2]float32
+	xvec, yvec     [2]float32 // basis vectors
+	nmPerLongitude float32
+}
+
+func MakeRouteGenerator(p0ll, p1ll math.Point2LL, nmPerLongitude float32) RouteGenerator {
+	rg := RouteGenerator{
+		p0:             math.LL2NM(p0ll, nmPerLongitude),
+		p1:             math.LL2NM(p1ll, nmPerLongitude),
+		nmPerLongitude: nmPerLongitude,
+	}
+	rg.origin = math.Mid2f(rg.p0, rg.p1)
+	rg.xvec = math.Scale2f(math.Sub2f(rg.p1, rg.p0), 0.5)
+	rg.yvec = math.Normalize2f([2]float32{-rg.xvec[1], rg.xvec[0]})
+	return rg
+}
+
+func (rg RouteGenerator) Waypoint(name string, dx, dy float32) Waypoint {
+	p := math.Add2f(rg.origin, math.Add2f(math.Scale2f(rg.xvec, dx), math.Scale2f(rg.yvec, dy)))
+	return Waypoint{
+		Fix:      name,
+		Location: math.NM2LL(p, rg.nmPerLongitude),
 	}
 }
