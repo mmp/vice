@@ -7,6 +7,7 @@ package util
 import (
 	"crypto/sha256"
 	"errors"
+	"hash/fnv"
 	"io"
 	"strconv"
 	"strings"
@@ -136,4 +137,10 @@ func Hash(r io.Reader) ([]byte, error) {
 		return nil, err
 	}
 	return hash.Sum(nil), nil
+}
+
+func HashString64(s string) uint64 {
+	hash := fnv.New64a()
+	io.Copy(hash, strings.NewReader(s))
+	return hash.Sum64()
 }
