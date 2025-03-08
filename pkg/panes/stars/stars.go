@@ -211,6 +211,8 @@ type STARSPane struct {
 	// search in a consistent order (when we have to do an exhaustive
 	// search).
 	significantPointsSlice []sim.SignificantPoint
+
+	showVFRAirports bool
 }
 
 type PointOutControllers struct {
@@ -720,6 +722,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawMinSep(ctx, transforms, cb)
 
 	sp.drawHighlighted(ctx, transforms, cb)
+	sp.drawVFRAirports(ctx, transforms, cb)
 
 	sp.drawLeaderLines(aircraft, ctx, transforms, cb)
 	sp.drawTracks(aircraft, ctx, transforms, cb)

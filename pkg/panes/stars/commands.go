@@ -379,6 +379,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			status.output = "DRAWROUTE"
 			return
 
+		case ".VFR":
+			sp.showVFRAirports = !sp.showVFRAirports
+			status.clear = true
+			return
+
 		case "?":
 			ctx.ControlClient.State.ERAMComputers.DumpMap()
 			status.clear = true

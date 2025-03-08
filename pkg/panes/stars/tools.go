@@ -827,6 +827,39 @@ func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms ScopeTransfo
 	td.GenerateCommands(cb)
 }
 
+func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	if !sp.showVFRAirports {
+		return
+	}
+
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+
+	ps := sp.currentPrefs()
+	color := ps.Brightness.Lines.RGB()
+	style := renderer.TextStyle{
+		Font:  sp.systemFont(ctx, ps.CharSize.Tools),
+		Color: color,
+	}
+
+	for name, ap := range ctx.ControlClient.State.DepartureAirports {
+		if ap.VFRRateSum() > 0 {
+			pll := av.DB.Airports[name].Location
+			pw := transforms.WindowFromLatLongP(pll)
+			ld.AddCircle(pw, 10, 32)
+
+			td.AddText(name, math.Add2f(pw, [2]float32{12, 0}), style)
+		}
+	}
+
+	transforms.LoadWindowViewingMatrices(cb)
+	cb.SetRGB(color)
+	td.GenerateCommands(cb)
+	ld.GenerateCommands(cb)
+}
+
 // Draw all of the range-bearing lines that have been specified.
 func (sp *STARSPane) drawRBLs(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
