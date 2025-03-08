@@ -282,13 +282,13 @@ func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *
 	// in a call to TextDrawBuider AddText() only when the color
 	// changes. (This is some effort to minimize the number of AddText()
 	// calls.)
-	str := ""
+	var str strings.Builder
 	style := renderer.TextStyle{Font: font}
 
 	flush := func() {
-		if len(str) > 0 {
-			pt = td.AddText(rewriteDelta(str), pt, style)
-			str = ""
+		if str.Len() > 0 {
+			pt = td.AddText(rewriteDelta(str.String()), pt, style)
+			str.Reset()
 		}
 	}
 
@@ -296,7 +296,7 @@ func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *
 		ch := line.ch[i]
 		if ch.ch == 0 {
 			// Treat unset as a space
-			str += " "
+			str.WriteByte(' ')
 		} else {
 			// Flashing text goes on a 0.5 second cycle.
 			br := brightness
@@ -309,7 +309,7 @@ func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *
 				flush()
 				style.Color = c
 			}
-			str += string(ch.ch)
+			str.WriteRune(ch.ch)
 		}
 	}
 	flush()
