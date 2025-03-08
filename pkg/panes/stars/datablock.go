@@ -349,7 +349,7 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			return FullDatablock
 		}
 
-		if ac.Squawk != trk.FlightPlan.AssignedSquawk {
+		if ac.Squawk != ac.FlightPlan.AssignedSquawk {
 			dt = PartialDatablock
 		}
 
@@ -387,7 +387,7 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			dt = FullDatablock
 		}
 
-		if sp.currentPrefs().OverflightFullDatablocks && sp.isOverflight(ctx, trk) {
+		if sp.currentPrefs().OverflightFullDatablocks && sp.isOverflight(ctx, ac) {
 			dt = FullDatablock
 		}
 
@@ -495,13 +495,13 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 	groundspeed := fmt.Sprintf("%02d", (state.TrackGroundspeed()+5)/10)
 	// Note arrivalAirport is only set if it should be shown when there is no scratchpad set
 	arrivalAirport := ""
-	if ap := ctx.ControlClient.Airports[trk.FlightPlan.ArrivalAirport]; ap != nil && !ap.OmitArrivalScratchpad {
-		arrivalAirport = trk.FlightPlan.ArrivalAirport
+	if ap := ctx.ControlClient.Airports[ac.FlightPlan.ArrivalAirport]; ap != nil && !ap.OmitArrivalScratchpad {
+		arrivalAirport = ac.FlightPlan.ArrivalAirport
 		if len(arrivalAirport) == 4 && arrivalAirport[0] == 'K' {
 			arrivalAirport = arrivalAirport[1:]
 		}
 	}
-	beaconMismatch := ac.Squawk != trk.FlightPlan.AssignedSquawk && !squawkingSPC
+	beaconMismatch := ac.Squawk != ac.FlightPlan.AssignedSquawk && !squawkingSPC
 
 	// Figure out what to display for scratchpad 1 (used in both FDB and PDBs)
 	sp1 := trk.SP1
@@ -628,7 +628,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		// those cases? (Note that SPC upgrades partial to full datablocks.)
 		//
 		// TODO: previously we had the following check:
-		// if ac.Squawk != trk.FlightPlan.AssignedSquawk && ac.Squawk != 0o1200 {
+		// if ac.Squawk != ac.FlightPlan.AssignedSquawk && ac.Squawk != 0o1200 {
 		// and would display ac.Squawk + flashing WHO in field0
 		alerts := sp.getDatablockAlerts(ctx, ac, PartialDatablock)
 		copy(db.field0[:], alerts[:])
@@ -662,9 +662,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		// Field 3: by default, groundspeed and/or "V" for VFR, "E" for overflight, followed by CWT,
 		// but may be adapted.
 		rulesCategory := " "
-		if trk.FlightPlan.Rules == av.VFR {
+		if ac.FlightPlan.Rules == av.VFR {
 			rulesCategory = "V"
-		} else if sp.isOverflight(ctx, trk) {
+		} else if sp.isOverflight(ctx, ac) {
 			rulesCategory = "E"
 		}
 		if fa.PDB.SplitGSAndCWT {
@@ -770,7 +770,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		rulesCategory := " "
 		if ac.FlightPlan.Rules == av.VFR {
 			rulesCategory = "V"
-		} else if sp.isOverflight(ctx, trk) {
+		} else if sp.isOverflight(ctx, ac) {
 			rulesCategory = "E"
 		}
 		rulesCategory += state.CWTCategory + " "
@@ -834,7 +834,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		}
 		if beaconMismatch {
 			idx := util.Select(fieldEmpty(db.field7[0][:]), 0, 1)
-			formatDBText(db.field7[idx][:], trk.FlightPlan.AssignedSquawk.String(), color, true)
+			formatDBText(db.field7[idx][:], ac.FlightPlan.AssignedSquawk.String(), color, true)
 		}
 
 		return db
@@ -979,7 +979,7 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 		// If FDB, may trump others but idc
 		// This *should* be primarily doing CA and ATPA cones
 		return true
-	} else if sp.isOverflight(ctx, trk) && sp.currentPrefs().OverflightFullDatablocks { //Need a f7 + e
+	} else if sp.isOverflight(ctx, ac) && sp.currentPrefs().OverflightFullDatablocks { //Need a f7 + e
 		// Overflights
 		return true
 	} else if sp.isQuicklooked(ctx, ac) {

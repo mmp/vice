@@ -36,9 +36,6 @@ func (sp *STARSPane) getTrack(ctx *panes.Context, ac *av.Aircraft) *sim.TrackInf
 	trk.SP2 = ac.SecondaryScratchpad
 	trk.RedirectedHandoff = ac.RedirectedHandoff
 	trk.PointOutHistory = ac.PointOutHistory
-	if trk.FlightPlan == nil {
-		trk.FlightPlan = sim.MakeSTARSFlightPlan(ac.FlightPlan)
-	}
 
 	return trk
 }
@@ -1368,10 +1365,10 @@ func (sp *STARSPane) getLeaderLineVector(ctx *panes.Context, dir math.CardinalOr
 	return math.Scale2f(v, pxLengths[idx])
 }
 
-func (sp *STARSPane) isOverflight(ctx *panes.Context, trk *sim.TrackInformation) bool {
-	return trk != nil && trk.FlightPlan != nil &&
-		ctx.ControlClient.Airports[trk.FlightPlan.DepartureAirport] == nil &&
-		ctx.ControlClient.Airports[trk.FlightPlan.ArrivalAirport] == nil
+func (sp *STARSPane) isOverflight(ctx *panes.Context, ac *av.Aircraft) bool {
+	return ac.FlightPlan != nil &&
+		ctx.ControlClient.Airports[ac.FlightPlan.DepartureAirport] == nil &&
+		ctx.ControlClient.Airports[ac.FlightPlan.ArrivalAirport] == nil
 }
 
 func (sp *STARSPane) radarVisibility(radarSites map[string]*av.RadarSite, pos math.Point2LL, alt int) (primary, secondary bool, distance float32) {
