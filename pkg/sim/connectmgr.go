@@ -20,8 +20,8 @@ type ConnectionManager struct {
 	newSimConnectionChan     chan Connection
 	serverRPCVersionMismatch bool
 
-	localServer   *Server
-	remoteServer  *Server
+	LocalServer   *Server
+	RemoteServer  *Server
 	serverAddress string
 
 	client              *ControlClient
@@ -47,21 +47,27 @@ func MakeServerConnection(address, additionalScenario, additionalVideoMap string
 	return cm, err
 }
 
-func (cm *ConnectionManager) NewConnection(c Connection) {
-	cm.newSimConnectionChan <- c
+func (cm *ConnectionManager) NewConnection(state State, controllerToken string, client *util.RPCClient) {
+	cm.newSimConnectionChan <- Connection{
+		SimState: state,
+		SimProxy: &proxy{
+			ControllerToken: controllerToken,
+			Client:          client,
+		},
+	}
 }
 
 func (cm *ConnectionManager) LoadLocalSim(s *Sim, lg *log.Logger) (*ControlClient, error) {
-	if cm.localServer == nil {
-		cm.localServer = <-cm.localServerChan
+	if cm.LocalServer == nil {
+		cm.LocalServer = <-cm.localServerChan
 	}
 
 	var result NewSimResult
-	if err := cm.localServer.Call("SimManager.AddLocal", s, &result); err != nil {
+	if err := cm.LocalServer.Call("SimManager.AddLocal", s, &result); err != nil {
 		return nil, err
 	}
 
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.localServer.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
 
 	return cm.client, nil
@@ -80,11 +86,11 @@ func (cm *ConnectionManager) ConnectionStartTime() time.Time {
 }
 
 func (cm *ConnectionManager) ClientIsLocal() bool {
-	if cm.localServer == nil {
-		cm.localServer = <-cm.localServerChan
+	if cm.LocalServer == nil {
+		cm.LocalServer = <-cm.localServerChan
 	}
 
-	return cm.client != nil && cm.client.RPCClient() == cm.localServer.RPCClient
+	return cm.client != nil && cm.client.RPCClient() == cm.LocalServer.RPCClient
 }
 
 func (cm *ConnectionManager) Disconnect() {
@@ -98,8 +104,8 @@ func (cm *ConnectionManager) Disconnect() {
 }
 
 func (cm *ConnectionManager) Update(es *EventStream, lg *log.Logger) {
-	if cm.localServer == nil {
-		cm.localServer = <-cm.localServerChan
+	if cm.LocalServer == nil {
+		cm.LocalServer = <-cm.localServerChan
 	}
 
 	select {
@@ -125,15 +131,15 @@ func (cm *ConnectionManager) Update(es *EventStream, lg *log.Logger) {
 					cm.onError(ErrRPCVersionMismatch)
 				}
 			}
-			cm.remoteServer = nil
+			cm.RemoteServer = nil
 		} else {
-			cm.remoteServer = remoteServerConn.Server
+			cm.RemoteServer = remoteServerConn.Server
 		}
 
 	default:
 	}
 
-	if cm.remoteServer == nil && time.Since(cm.lastRemoteServerAttempt) > 10*time.Second && !cm.serverRPCVersionMismatch {
+	if cm.RemoteServer == nil && time.Since(cm.lastRemoteServerAttempt) > 10*time.Second && !cm.serverRPCVersionMismatch {
 		cm.lastRemoteServerAttempt = time.Now()
 		cm.remoteSimServerChan = TryConnectRemoteServer(cm.serverAddress, lg)
 	}
@@ -146,7 +152,7 @@ func (cm *ConnectionManager) Update(es *EventStream, lg *log.Logger) {
 					Message: "Error getting update from server: " + err.Error(),
 				})
 				if err == ErrRPCTimeout || util.IsRPCServerError(err) {
-					cm.remoteServer = nil
+					cm.RemoteServer = nil
 					cm.client = nil
 					if cm.onNewClient != nil {
 						cm.onNewClient(nil)

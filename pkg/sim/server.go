@@ -18,6 +18,7 @@ import (
 	"runtime"
 	"time"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/util"
 	"github.com/shirou/gopsutil/cpu"
@@ -34,6 +35,16 @@ type Server struct {
 	runningSims map[string]*RemoteSim
 }
 
+type RemoteSim struct {
+	GroupName          string
+	ScenarioName       string
+	PrimaryController  string
+	RequirePassword    bool
+	InstructorAllowed  bool
+	AvailablePositions map[string]av.Controller
+	CoveredPositions   map[string]av.Controller
+}
+
 type serverConnection struct {
 	Server *Server
 	Err    error
@@ -41,6 +52,19 @@ type serverConnection struct {
 
 func (s *Server) Close() error {
 	return s.RPCClient.Close()
+}
+
+func (s *Server) GetConfigs() map[string]map[string]*Configuration {
+	return s.configs
+}
+
+// FIXME: we should own the code that updates this
+func (s *Server) SetRunningSims(rs map[string]*RemoteSim) {
+	s.runningSims = rs
+}
+
+func (s *Server) GetRunningSims() map[string]*RemoteSim {
+	return s.runningSims
 }
 
 func RunServer(extraScenario string, extraVideoMap string, serverPort int, lg *log.Logger) {

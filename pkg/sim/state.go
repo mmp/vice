@@ -201,7 +201,7 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	}
 
 	realMETAR := func(icao []string) {
-		metar, err := getWeather(icao...)
+		metar, err := av.GetWeather(icao...)
 		if err != nil {
 			lg.Errorf("%s: error getting weather: %+v", strings.Join(icao, ", "), err)
 		}
@@ -210,8 +210,8 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 			// Just provide the stuff that the STARS display shows
 			ss.METAR[metar[i].IcaoId] = &av.METAR{
 				AirportICAO: metar[i].IcaoId,
-				Wind:        metar[i].getWindInfo(),
-				Altimeter:   fmt.Sprintf("A%d", int(metar[i].getAltimeter()*100)),
+				Wind:        metar[i].GetWind(),
+				Altimeter:   fmt.Sprintf("A%d", int(metar[i].GetAltimeter()*100)),
 			}
 		}
 	}

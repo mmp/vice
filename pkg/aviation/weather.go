@@ -1,4 +1,4 @@
-package sim
+package aviation
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-type METAR struct {
+type RawMETAR struct {
 	//MetarId     int         `json:"metar_id"`
 	IcaoId string `json:"icaoId"` // ICAO identifier
 	//ReceiptTime string      `json:"receiptTime"`
@@ -56,7 +56,7 @@ type cloudLayer struct {
 const vrb = -1
 
 // GetWindDirection returns the wind direction in degrees or VRB for variable winds.
-func (m METAR) GetWindDirection() int {
+func (m RawMETAR) GetWindDirection() int {
 	if windDir, ok := m.Wdir.(int); ok {
 		return windDir
 	} else {
@@ -65,7 +65,7 @@ func (m METAR) GetWindDirection() int {
 }
 
 // getWindInfo returns the wind direction and speed in METAR text format.
-func (m METAR) getWindInfo() string {
+func (m RawMETAR) GetWind() string {
 	if m.Wspd <= 0 {
 		return "00000KT"
 	}
@@ -88,14 +88,14 @@ func (m METAR) getWindInfo() string {
 }
 
 // getAltimeter returns the altimeter setting in inches Hg
-func (m METAR) getAltimeter() float64 {
+func (m RawMETAR) GetAltimeter() float64 {
 	// Conversion formula (hectoPascal to Inch of Mercury): 29.92 * (hpa / 1013.2)
 	return 0.02953 * m.Altim
 }
 
 const aviationWeatherCenterDataApi = `https://aviationweather.gov/api/data/metar?ids=%s&format=json`
 
-func getWeather(icao ...string) ([]METAR, error) {
+func GetWeather(icao ...string) ([]RawMETAR, error) {
 	var query string
 	if len(icao) == 1 {
 		query = icao[0]
@@ -111,7 +111,7 @@ func getWeather(icao ...string) ([]METAR, error) {
 	}
 	defer res.Body.Close()
 
-	data := make([]METAR, 0, len(icao))
+	data := make([]RawMETAR, 0, len(icao))
 	if err = json.NewDecoder(res.Body).Decode(&data); err != nil {
 		return nil, err
 	}
