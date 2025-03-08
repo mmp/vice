@@ -1,6 +1,18 @@
 {
   "tracon": "N90",
   "airports": {
+    "KFRG": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KDXR": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KOXC": { "vfr": { "random_routes": { "rate": 7 } } },
+    "11N": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KMMU": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KCDW": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KBDR": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KFWN": { "vfr": { "random_routes": { "rate": 3 } } },
+    "47N": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KMJX": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KPOU": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KPNE": { "vfr": { "random_routes": { "rate": 7 } } },
     "KLGA": {
       "name": "LaGuardia",
       "approaches": {

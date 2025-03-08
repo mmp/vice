@@ -1,6 +1,19 @@
 {
   "tracon": "PHL",
   "airports": {
+    "KTTN": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KILG": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KDYL": { "vfr": { "random_routes": { "rate": 5 } } },
+    "19N": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KACY": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KAPG": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KMIV": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KPTW": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KOQN": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KLNS": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KXLL": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KRDG": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KESN": { "vfr": { "random_routes": { "rate": 5 } } },
     "KPHL": {
       "name": "Philadelphia",
       "approaches": {
