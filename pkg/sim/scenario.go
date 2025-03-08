@@ -193,6 +193,7 @@ type Scenario struct {
 	CenterString string        `json:"center"`
 	Range        float32       `json:"range"`
 	DefaultMaps  []string      `json:"default_maps"`
+	VFRRateScale *float32      `json:"vfr_rate_scale"`
 }
 
 type ScenarioGroupDepartureRunway struct {
@@ -731,6 +732,11 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 				}
 			}
 		}
+	}
+
+	if s.VFRRateScale == nil { // unspecified -> default to 1
+		one := float32(1)
+		s.VFRRateScale = &one
 	}
 }
 
@@ -1523,10 +1529,18 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 		DefaultScenario:  sg.DefaultScenario,
 	}
 
+	vfrAirports := make(map[string]*av.Airport)
+	for name, ap := range sg.Airports {
+		if ap.VFRRateSum() > 0 {
+			vfrAirports[name] = ap
+		}
+	}
 	for name, scenario := range sg.Scenarios {
+		lc := MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, vfrAirports,
+			scenario.InboundFlowDefaultRates)
 		sc := &SimScenarioConfiguration{
 			SplitConfigurations: scenario.SplitConfigurations,
-			LaunchConfig:        MakeLaunchConfig(scenario.DepartureRunways, scenario.InboundFlowDefaultRates),
+			LaunchConfig:        lc,
 			Wind:                scenario.Wind,
 			DepartureRunways:    scenario.DepartureRunways,
 			ArrivalRunways:      scenario.ArrivalRunways,

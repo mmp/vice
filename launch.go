@@ -698,6 +698,24 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 		imgui.EndTable()
 	}
 	uiEndDisable(lc.DepartureRateScale == 0)
+
+	if len(lc.VFRAirports) > 0 {
+		imgui.Separator()
+
+		imgui.Text("VFR departure airports: " + strings.Join(util.SortedMapKeys(lc.VFRAirports), ", "))
+		sumVFRRates := 0
+		for _, ap := range lc.VFRAirports {
+			r := float32(ap.VFRRateSum()) * lc.VFRDepartureRateScale
+			if r > 0 {
+				sumVFRRates += int(r)
+			}
+		}
+		imgui.Text(fmt.Sprintf("Overall VFR departure rate: %d / hour", sumVFRRates))
+		// SliderFlagsNoInput is more or less a hack to prevent keyboard focus
+		// from being here initially.
+		changed = imgui.SliderFloatV("VFR reparture rate scale", &lc.VFRDepartureRateScale, 0, 5, "%.1f", imgui.SliderFlagsNoInput) || changed
+	}
+
 	imgui.Separator()
 
 	return

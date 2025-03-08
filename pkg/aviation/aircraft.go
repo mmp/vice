@@ -475,6 +475,31 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	return nil
 }
 
+func (ac *Aircraft) InitializeVFRDeparture(ap *Airport, wps WaypointArray, alt int,
+	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, wind WindModel,
+	lg *log.Logger) error {
+	wp := util.DuplicateSlice(wps)
+
+	perf, ok := DB.AircraftPerformance[ac.FlightPlan.BaseType()]
+	if !ok {
+		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.BaseType())
+		return ErrUnknownAircraftType
+	}
+
+	ac.FlightPlan.Altitude = math.Min(alt, int(perf.Ceiling))
+
+	nav := MakeDepartureNav(ac.Callsign, *ac.FlightPlan, perf, 0, /* assigned alt */
+		ac.FlightPlan.Altitude /* cleared alt */, 0 /* speed restriction */, wp,
+		randomizeAltitudeRange, nmPerLongitude, magneticVariation, wind, lg)
+	if nav == nil {
+		return fmt.Errorf("error initializing Nav")
+	}
+	ac.Nav = *nav
+	ac.Nav.Check(lg)
+
+	return nil
+}
+
 func (ac *Aircraft) InitializeOverflight(of *Overflight, controller string, nmPerLongitude float32,
 	magneticVariation float32, wind WindModel, lg *log.Logger) error {
 	ac.Scratchpad = of.Scratchpad

@@ -220,6 +220,11 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	for name := range s.LaunchConfig.DepartureRates {
 		ss.DepartureAirports[name] = ss.Airports[name]
 	}
+	for name, ap := range ss.Airports {
+		if ap.VFRRateSum() > 0 {
+			ss.DepartureAirports[name] = ap
+		}
+	}
 
 	ss.ArrivalAirports = make(map[string]*av.Airport)
 	for _, airportRates := range s.LaunchConfig.InboundFlowRates {

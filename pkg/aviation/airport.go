@@ -6,6 +6,7 @@ package aviation
 
 import (
 	"fmt"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -24,6 +25,11 @@ type Airport struct {
 	Approaches map[string]*Approach `json:"approaches,omitempty"`
 	Departures []Departure          `json:"departures,omitempty"`
 
+	VFR struct {
+		Randoms VFRRandomsSpec `json:"random_routes"`
+		Routes  []VFRRouteSpec `json:"routes"`
+	} `json:"vfr"`
+
 	// Optional: initial tracking controller, for cases where a virtual
 	// controller has the initial track.
 	DepartureController string `json:"departure_controller"`
@@ -39,6 +45,19 @@ type Airport struct {
 
 	ATPAVolumes           map[string]*ATPAVolume `json:"atpa_volumes"`
 	OmitArrivalScratchpad bool                   `json:"omit_arrival_scratchpad"`
+}
+
+type VFRRandomsSpec struct {
+	Rate  int    `json:"rate"`
+	Fleet string `json:"fleet"`
+}
+
+type VFRRouteSpec struct {
+	Name        string        `json:"name"`
+	Rate        int           `json:"rate"`
+	Fleet       string        `json:"fleet"`
+	Waypoints   WaypointArray `json:"waypoints"`
+	Destination string        `json:"destination"`
 }
 
 type ConvergingRunways struct {
@@ -523,6 +542,43 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		e.Pop()
 	}
 
+	ga := DB.Airlines["N"]
+	checkFleet := func(fleet, loc string) {
+		if fleet == "" {
+			return
+		}
+		if _, ok := ga.Fleets[fleet]; !ok {
+			e.ErrorString("Fleet %q in %q is not a valid GA aircraft fleet. Options: %s",
+				fleet, loc, strings.Join(slices.Collect(maps.Keys(ga.Fleets)), ", "))
+		}
+	}
+	e.Push("\"vfr\"")
+	checkFleet(ap.VFR.Randoms.Fleet, "random_routes")
+	for i := range ap.VFR.Routes {
+		ap.VFR.Routes[i].Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+
+		spec := &ap.VFR.Routes[i]
+		e.Push("routes " + spec.Name)
+		if spec.Rate == 0 {
+			e.ErrorString("No \"rate\" specified")
+		}
+		if spec.Fleet == "" {
+			spec.Fleet = "default"
+		} else {
+			checkFleet(spec.Fleet, "routes")
+		}
+		if len(spec.Waypoints) == 0 {
+			e.ErrorString("must specify \"waypoints\"")
+		} else {
+			spec.Waypoints[len(spec.Waypoints)-1].Land = true
+		}
+		if _, ok := DB.Airports[spec.Destination]; !ok {
+			e.ErrorString("Destination airport %q unknown", spec.Destination)
+		}
+		e.Pop()
+	}
+	e.Pop()
+
 	for rwy, def := range ap.ApproachRegions {
 		e.Push(rwy + " region")
 		def.Runway = rwy
@@ -645,6 +701,14 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 		e.Pop()
 	}
+}
+
+func (ap Airport) VFRRateSum() int {
+	sum := ap.VFR.Randoms.Rate
+	for _, spec := range ap.VFR.Routes {
+		sum += spec.Rate
+	}
+	return sum
 }
 
 type ExitRoute struct {

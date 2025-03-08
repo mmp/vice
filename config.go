@@ -51,7 +51,8 @@ import (
 // 30: video map improvements
 // 31: audio squelch for pilot readback
 // 32: VFRs, custom spcs, pilot reported altitude, ...
-const CurrentConfigVersion = 32
+// 33: VFRs v2
+const CurrentConfigVersion = 33
 
 // Slightly convoluted, but the full Config definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first

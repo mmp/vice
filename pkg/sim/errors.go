@@ -38,6 +38,8 @@ var (
 	ErrTooManyRestrictionAreas     = errors.New("Too many restriction areas specified")
 	ErrUnknownController           = errors.New("Unknown controller")
 	ErrUnknownControllerFacility   = errors.New("Unknown controller facility")
+	ErrViolatedAirspace            = errors.New("Violated B/C airspace")
+	ErrVFRSimTookTooLong           = errors.New("VFR simulation took too long")
 )
 
 var errorStringToError = map[string]error{
@@ -91,6 +93,8 @@ var errorStringToError = map[string]error{
 	ErrTooManyRestrictionAreas.Error():     ErrTooManyRestrictionAreas,
 	ErrUnknownController.Error():           ErrUnknownController,
 	ErrUnknownControllerFacility.Error():   ErrUnknownControllerFacility,
+	ErrViolatedAirspace.Error():            ErrViolatedAirspace,
+	ErrVFRSimTookTooLong.Error():           ErrVFRSimTookTooLong,
 }
 
 func TryDecodeError(e error) error {
