@@ -1,6 +1,33 @@
 {
   "tracon": "NCT",
   "airports": {
+    "C83": { "vfr": { "random_routes": { "rate": 5 } } },
+    "CA74": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KSUU": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KCVH": { "vfr": { "random_routes": { "rate": 10 } } },
+    "KGOO": { "vfr": { "random_routes": { "rate": 5 } } },
+    "O69": { "vfr": { "random_routes": { "rate": 5 } } },
+    "1O3": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KHAF": { "vfr": { "random_routes": { "rate": 10 } } },
+    "KPVF": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KOAR": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KKIC": { "vfr": { "random_routes": { "rate": 5 } } },
+    "O88": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KLHM": { "vfr": { "random_routes": { "rate": 5 } } },
+    "A34": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KFLX": { "vfr": { "random_routes": { "rate": 5 } } },
+    "O02": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KMCE": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KTVL": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KRHV": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KLSN": { "vfr": { "random_routes": { "rate": 10 } } },
+    "KCPU": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KAUN": { "vfr": { "random_routes": { "rate": 5 } } },
+    "O08": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KHES": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KCIC": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KFAT": { "vfr": { "random_routes": { "rate": 15 } } },
+    "KSTS": { "vfr": { "random_routes": { "rate": 5 } } },
     "KSJC": {
       "approaches": {
         "I2R": { "cifp_id": "I12R" },
@@ -607,6 +634,7 @@
       "tower_list": 1
     },
     "KSQL": {
+      "vfr": { "random_routes": { "rate": 10 } },
       "approaches": {
         "Y30": { "cifp_id": "RY30" },
         "Z30": { "cifp_id": "RZ30" }
@@ -2257,6 +2285,7 @@
       "tower_list": 3
     },
     "KPAO": {
+      "vfr": { "random_routes": { "rate": 10 } },
       "approaches": {
         "R31": { "cifp_id": "R31" }
       },
@@ -2770,6 +2799,7 @@
       "tower_list": 4
     },
     "KSMF": {
+      "vfr": { "random_routes": { "rate": 10 } },
       "approaches": {
         "I7R": { "cifp_id": "I17R" },
         "RY7R": { "cifp_id": "RY17R" },
@@ -3242,6 +3272,7 @@
       "tower_list": 6
     },
     "KMER": {
+      "vfr": { "random_routes": { "rate": 10 } },
       "approaches": {
         "R13": { "cifp_id": "R13" },
         "I31": { "cifp_id": "I31" },
@@ -3345,6 +3376,7 @@
       "tower_list": 7
     },
     "KMOD": {
+      "vfr": { "random_routes": { "rate": 10 } },
       "approaches": {
         "I8R": { "cifp_id": "I28R" },
         "R8R": { "cifp_id": "R28R" }
@@ -3418,6 +3450,7 @@
       "tower_list": 8
     },
     "KSCK": {
+      "vfr": { "random_routes": { "rate": 10 } },
       "approaches": {
         "R1L": { "cifp_id": "R11L" },
         "I9R": { "cifp_id": "I29R" },
@@ -3498,6 +3531,7 @@
       "tower_list": 9
     },
     "KSAC": {
+      "vfr": { "random_routes": { "rate": 10 } },
       "approaches": {
         "I2": { "cifp_id": "I2" },
         "R2": { "cifp_id": "R2" },
@@ -3586,6 +3620,7 @@
       "tower_list": 10
     },
     "KLVK": {
+      "vfr": { "random_routes": { "rate": 10 } },
       "approaches": {
         "I5R": { "cifp_id": "I25R" },
 	"R5R": { "cifp_id": "R25R" },
@@ -3667,6 +3702,7 @@
       "tower_list": 11
     },
     "KSNS": {
+      "vfr": { "random_routes": { "rate": 10 } },
       "approaches": {
         "I31": { "cifp_id": "I31" },
         "L31": { "cifp_id": "L31" },
