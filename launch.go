@@ -672,6 +672,7 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 						imgui.TableNextRow()
 						imgui.TableNextColumn()
 						imgui.TableNextColumn()
+						imgui.TableNextColumn()
 					}
 
 					if category == "" {
