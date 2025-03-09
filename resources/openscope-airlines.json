@@ -18376,6 +18376,28 @@
     }
   },
   {
+    "icao": "gaj",
+    "name": "Gamma Jet",
+    "callsign": {
+      "name": "Gamma Jet",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "BE40",
+          2
+        ],
+        [
+          "GLF5",
+          2
+        ]
+      ]
+    }
+  },
+  {
     "icao": "twy",
     "name": "Solarius Aviation",
     "callsign": {
