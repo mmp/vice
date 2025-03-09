@@ -1035,6 +1035,24 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 		}
 	}
 
+	if sp.dwellAircraft != "" {
+		// If the dwelled aircraft is in the given slice, move it to the
+		// end so that it is drawn last (among its datablock category) and
+		// appears on top.
+		moveDwelledToEnd := func(aircraft []*av.Aircraft) []*av.Aircraft {
+			isDwelled := func(ac *av.Aircraft) bool { return ac.Callsign == sp.dwellAircraft }
+			if idx := slices.IndexFunc(aircraft, isDwelled); idx != -1 {
+				aircraft = append(aircraft, aircraft[idx])
+				aircraft = append(aircraft[:idx], aircraft[idx+1:]...)
+			}
+			return aircraft
+		}
+
+		ldbs = moveDwelledToEnd(ldbs)
+		pdbs = moveDwelledToEnd(pdbs)
+		fdbs = moveDwelledToEnd(fdbs)
+	}
+
 	for _, dbAircraft := range [][]*av.Aircraft{ldbs, pdbs, fdbs} {
 		for _, ac := range dbAircraft {
 			db := sp.getDatablock(ctx, ac)
