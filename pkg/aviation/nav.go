@@ -484,7 +484,8 @@ func (nav *Nav) Summary(fp FlightPlan, lg *log.Logger) string {
 	}
 
 	// Speed; don't be as exhaustive as we are for altitude
-	ias, _ := nav.TargetSpeed(lg)
+	targetAltitude := nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
+	ias, _ := nav.TargetSpeed(targetAltitude, lg)
 	if nav.Speed.MaintainSlowestPractical {
 		lines = append(lines, fmt.Sprintf("Maintain slowest practical speed: %.0f kts", ias))
 	} else if nav.Speed.MaintainMaximumForward {
@@ -635,11 +636,11 @@ func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint, star string) st
 ///////////////////////////////////////////////////////////////////////////
 // Simulation
 
-func (nav *Nav) updateAirspeed(lg *log.Logger) (float32, bool) {
+func (nav *Nav) updateAirspeed(alt float32, lg *log.Logger) (float32, bool) {
 	// Figure out what speed we're supposed to be going. The following is
 	// prioritized, so once targetSpeed has been set, nothing should
 	// override it.
-	targetSpeed, targetRate := nav.TargetSpeed(lg)
+	targetSpeed, targetRate := nav.TargetSpeed(alt, lg)
 
 	// Stay within the aircraft's capabilities
 	targetSpeed = math.Clamp(targetSpeed, nav.Perf.Speed.Min, MaxIAS)
@@ -667,7 +668,6 @@ func (nav *Nav) updateAirspeed(lg *log.Logger) (float32, bool) {
 		return delta, slowingTo250
 	}
 
-	alt, _ := nav.TargetAltitude(lg)
 	if !nav.FlightState.InitialDepartureClimb && alt > nav.FlightState.Altitude &&
 		nav.Perf.Engine.AircraftType == "P" {
 		// Climbing prop; bleed off speed.
@@ -720,9 +720,7 @@ func (nav *Nav) updateAirspeed(lg *log.Logger) (float32, bool) {
 	}
 }
 
-func (nav *Nav) updateAltitude(lg *log.Logger, deltaKts float32, slowingTo250 bool) {
-	targetAltitude, targetRate := nav.TargetAltitude(lg)
-
+func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logger, deltaKts float32, slowingTo250 bool) {
 	if targetAltitude == nav.FlightState.Altitude {
 		if nav.IsAirborne() {
 			nav.FlightState.InitialDepartureClimb = false
@@ -899,8 +897,9 @@ func (nav *Nav) Check(lg *log.Logger) {
 
 // returns passed waypoint if any
 func (nav *Nav) Update(wind WindModel, lg *log.Logger) *Waypoint {
-	deltaKts, slowingTo250 := nav.updateAirspeed(lg)
-	nav.updateAltitude(lg, deltaKts, slowingTo250)
+	targetAltitude, altitudeRate := nav.TargetAltitude(lg)
+	deltaKts, slowingTo250 := nav.updateAirspeed(targetAltitude, lg)
+	nav.updateAltitude(targetAltitude, altitudeRate, lg, deltaKts, slowingTo250)
 	nav.updateHeading(wind, lg)
 	nav.updatePositionAndGS(wind, lg)
 	if nav.Airwork != nil && !nav.Airwork.Update(nav) {
@@ -1392,7 +1391,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	}
 }
 
-func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
+func (nav *Nav) TargetSpeed(targetAltitude float32, lg *log.Logger) (float32, float32) {
 	if nav.Airwork != nil {
 		if spd, rate, ok := nav.Airwork.TargetSpeed(); ok {
 			return spd, rate
@@ -1524,8 +1523,7 @@ func (nav *Nav) TargetSpeed(lg *log.Logger) (float32, float32) {
 		return nav.FlightState.IAS, MaximumRate
 	}
 
-	target, _ := nav.TargetAltitude(lg)
-	if nav.FlightState.Altitude >= 10000 && target < 10000 && nav.FlightState.IAS > 250 {
+	if nav.FlightState.Altitude >= 10000 && targetAltitude < 10000 && nav.FlightState.IAS > 250 {
 		// Consider slowing to 250; estimate how long until we'll reach 10k
 		dalt := nav.FlightState.Altitude - 10000
 		salt := dalt / (nav.Perf.Rate.Descent / 60) // seconds until we reach 10k
