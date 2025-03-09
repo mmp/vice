@@ -1209,7 +1209,7 @@ func (s *Sim) spawnDepartures() {
 			}
 
 			// Remove it from the pool of waiting departures.
-			s.DeparturePool[airport] = s.DeparturePool[airport][1:]
+			s.DeparturePool[airport] = append(s.DeparturePool[airport][:i], s.DeparturePool[airport][i+1:]...)
 
 			// And figure out when we want to ask for the next departure.
 			ap := s.State.DepartureAirports[airport]
@@ -1218,6 +1218,8 @@ func (s *Sim) spawnDepartures() {
 				r += sumRateMap2(rates, s.LaunchConfig.DepartureRateScale)
 			}
 			s.NextDepartureLaunch[airport] = now.Add(randomWait(r, false))
+
+			break
 		}
 	}
 }
