@@ -1,6 +1,21 @@
 {
   "tracon": "ABE",
   "airports": {
+    "KXLL": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KTTN": { "vfr": { "random_routes": { "rate": 6 } } },
+    "N40": { "vfr": { "random_routes": { "rate": 6 } } },
+    "N43": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KZER": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KHZL": { "vfr": { "random_routes": { "rate": 6 } } },
+    "22N": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KMPO": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KCKZ": { "vfr": { "random_routes": { "rate": 6 } } },
+    "1N7": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KCDW": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KRDG": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KCXY": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KLNS": { "vfr": { "random_routes": { "rate": 6 } } },
+    "39N": { "vfr": { "random_routes": { "rate": 6 } } },
     "KABE": {
       "approaches": {
         "I13": { "cifp_id": "I13" },
