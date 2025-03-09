@@ -484,7 +484,7 @@ func (nav *Nav) Summary(fp FlightPlan, lg *log.Logger) string {
 	}
 
 	// Speed; don't be as exhaustive as we are for altitude
-	targetAltitude := nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
+	targetAltitude, _ := nav.TargetAltitude(lg)
 	ias, _ := nav.TargetSpeed(targetAltitude, lg)
 	if nav.Speed.MaintainSlowestPractical {
 		lines = append(lines, fmt.Sprintf("Maintain slowest practical speed: %.0f kts", ias))
