@@ -118,10 +118,12 @@ func (ap FAAAirport) SelectBestRunway(wind WindModel, magneticVariation float32)
 	minDelta := float32(1000)
 	bestRwy := -1
 	for i, rwy := range ap.Runways {
-		d := math.HeadingDifference(angle, rwy.Heading)
-		if d < minDelta {
-			minDelta = d
-			bestRwy = i
+		if _, ok := LookupOppositeRunway(ap.Id, rwy.Id); ok {
+			d := math.HeadingDifference(angle, rwy.Heading)
+			if d < minDelta {
+				minDelta = d
+				bestRwy = i
+			}
 		}
 	}
 	if bestRwy == -1 {
@@ -129,10 +131,7 @@ func (ap FAAAirport) SelectBestRunway(wind WindModel, magneticVariation float32)
 	}
 
 	rwy := ap.Runways[bestRwy]
-	opp, ok := LookupOppositeRunway(ap.Id, rwy.Id)
-	if !ok {
-		return nil, nil
-	}
+	opp, _ := LookupOppositeRunway(ap.Id, rwy.Id)
 
 	return &rwy, &opp
 }
