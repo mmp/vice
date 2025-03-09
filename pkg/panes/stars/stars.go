@@ -213,6 +213,13 @@ type STARSPane struct {
 	significantPointsSlice []sim.SignificantPoint
 
 	showVFRAirports bool
+	scopeDraw       struct {
+		arrivals    map[string]map[int]bool               // group->index
+		approaches  map[string]map[string]bool            // airport->approach
+		departures  map[string]map[string]map[string]bool // airport->runway->exit
+		overflights map[string]map[int]bool               // group->index
+		airspace    map[string]map[string]bool            // ctrl -> volume name
+	}
 }
 
 type PointOutControllers struct {
@@ -446,6 +453,12 @@ func (sp *STARSPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platfo
 
 	sp.lastTrackUpdate = time.Time{} // force update
 	sp.lastHistoryTrackUpdate = time.Time{}
+
+	clear(sp.scopeDraw.arrivals)
+	clear(sp.scopeDraw.approaches)
+	clear(sp.scopeDraw.departures)
+	clear(sp.scopeDraw.overflights)
+	clear(sp.scopeDraw.airspace)
 }
 
 func (sp *STARSPane) makeMaps(client *sim.ControlClient, ss sim.State, lg *log.Logger) {
@@ -599,45 +612,6 @@ func (sp *STARSPane) makeMaps(client *sim.ControlClient, ss sim.State, lg *log.L
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, &sp.allVideoMaps[idx])
 		} else {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, nil)
-		}
-	}
-}
-
-func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
-	ps := sp.currentPrefs()
-
-	imgui.Text("Font: ")
-	imgui.SameLine()
-	imgui.RadioButtonInt("Default", &sp.FontSelection, fontDefault)
-	imgui.SameLine()
-	imgui.RadioButtonInt("Legacy", &sp.FontSelection, fontLegacy)
-	imgui.SameLine()
-	imgui.RadioButtonInt("ARTS", &sp.FontSelection, fontARTS)
-
-	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
-
-	imgui.Checkbox("Lock display", &sp.LockDisplay)
-
-	imgui.Checkbox("Invert numeric keypad", &sp.FlipNumericKeypad)
-
-	if imgui.BeginComboV("TGT GEN Key", string(sp.TgtGenKey), imgui.ComboFlagsHeightLarge) {
-		for _, key := range []byte{';', ','} {
-			if imgui.SelectableV(string(key), key == sp.TgtGenKey, 0, imgui.Vec2{}) {
-				sp.TgtGenKey = key
-			}
-		}
-		imgui.EndCombo()
-	}
-
-	imgui.Separator()
-	imgui.Text("Non-standard Audio Effects")
-
-	// Only offer the non-standard ones to globally disable.
-	for _, i := range []AudioType{AudioInboundHandoff, AudioHandoffAccepted} {
-		imgui.Text("  ")
-		imgui.SameLine()
-		if imgui.Checkbox(AudioType(i).String(), &ps.AudioEffectEnabled[i]) && ps.AudioEffectEnabled[i] {
-			sp.playOnce(p, i)
 		}
 	}
 }

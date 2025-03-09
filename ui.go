@@ -529,7 +529,7 @@ func uiDraw(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r r
 		uiDrawSettingsWindow(controlClient, config, p)
 
 		if ui.showScenarioInfo {
-			ui.showScenarioInfo = controlClient.DrawScenarioInfoWindow(lg)
+			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, p, lg)
 		}
 
 		uiDrawMissingPrimaryDialog(mgr, controlClient, p)

@@ -1048,15 +1048,10 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformati
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font, color renderer.RGB,
-	cb *renderer.CommandBuffer) {
-	drawArrivals := ctx.ControlClient.ScopeDrawArrivals()
-	drawApproaches := ctx.ControlClient.ScopeDrawApproaches()
-	drawDepartures := ctx.ControlClient.ScopeDrawDepartures()
-	drawOverflights := ctx.ControlClient.ScopeDrawOverflights()
-	drawAirspace := ctx.ControlClient.ScopeDrawAirspace()
-
-	if len(drawArrivals) == 0 && len(drawApproaches) == 0 && len(drawDepartures) == 0 && len(drawOverflights) == 0 && len(drawAirspace) == 0 {
+func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+	color renderer.RGB, cb *renderer.CommandBuffer) {
+	if len(sp.scopeDraw.arrivals) == 0 && len(sp.scopeDraw.approaches) == 0 && len(sp.scopeDraw.departures) == 0 &&
+		len(sp.scopeDraw.overflights) == 0 && len(sp.scopeDraw.airspace) == 0 {
 		return
 	}
 
@@ -1081,15 +1076,15 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 		DrawBackground: true}
 
 	// STARS
-	if drawArrivals != nil {
+	if sp.scopeDraw.arrivals != nil {
 		for _, name := range util.SortedMapKeys(ctx.ControlClient.InboundFlows) {
-			if drawArrivals[name] == nil {
+			if sp.scopeDraw.arrivals[name] == nil {
 				continue
 			}
 
 			arrivals := ctx.ControlClient.InboundFlows[name].Arrivals
 			for i, arr := range arrivals {
-				if drawArrivals == nil || !drawArrivals[name][i] {
+				if sp.scopeDraw.arrivals == nil || !sp.scopeDraw.arrivals[name][i] {
 					continue
 				}
 
@@ -1123,15 +1118,15 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	}
 
 	// Approaches
-	if drawApproaches != nil {
+	if sp.scopeDraw.approaches != nil {
 		for _, rwy := range ctx.ControlClient.ArrivalRunways {
-			if drawApproaches[rwy.Airport] == nil {
+			if sp.scopeDraw.approaches[rwy.Airport] == nil {
 				continue
 			}
 			ap := ctx.ControlClient.Airports[rwy.Airport]
 			for _, name := range util.SortedMapKeys(ap.Approaches) {
 				appr := ap.Approaches[name]
-				if appr.Runway == rwy.Runway && drawApproaches[rwy.Airport][name] {
+				if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
 						drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
 					}
@@ -1141,21 +1136,21 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	}
 
 	// Departure routes
-	if drawDepartures != nil {
+	if sp.scopeDraw.departures != nil {
 		for _, name := range util.SortedMapKeys(ctx.ControlClient.Airports) {
-			if drawDepartures[name] == nil {
+			if sp.scopeDraw.departures[name] == nil {
 				continue
 			}
 
 			ap := ctx.ControlClient.Airports[name]
 			for _, rwy := range util.SortedMapKeys(ap.DepartureRoutes) {
-				if drawDepartures[name][rwy] == nil {
+				if sp.scopeDraw.departures[name][rwy] == nil {
 					continue
 				}
 
 				exitRoutes := ap.DepartureRoutes[rwy]
 				for _, exit := range util.SortedMapKeys(exitRoutes) {
-					if drawDepartures[name][rwy][exit] {
+					if sp.scopeDraw.departures[name][rwy][exit] {
 						drawWaypoints(ctx, exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
 							td, style, ld, pd, ldr)
 					}
@@ -1165,15 +1160,15 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	}
 
 	// Overflights
-	if drawOverflights != nil {
+	if sp.scopeDraw.overflights != nil {
 		for _, name := range util.SortedMapKeys(ctx.ControlClient.InboundFlows) {
-			if drawOverflights[name] == nil {
+			if sp.scopeDraw.overflights[name] == nil {
 				continue
 			}
 
 			overflights := ctx.ControlClient.InboundFlows[name].Overflights
 			for i, of := range overflights {
-				if drawOverflights == nil || !drawOverflights[name][i] {
+				if sp.scopeDraw.overflights == nil || !sp.scopeDraw.overflights[name][i] {
 					continue
 				}
 
@@ -1182,13 +1177,13 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 		}
 	}
 
-	if drawAirspace != nil {
+	if sp.scopeDraw.airspace != nil {
 		ps := sp.currentPrefs()
 		rgb := ps.Brightness.Lists.ScaleRGB(STARSListColor)
 
-		for _, ctrl := range util.SortedMapKeys(drawAirspace) {
-			for _, volname := range util.SortedMapKeys(drawAirspace[ctrl]) {
-				if !drawAirspace[ctrl][volname] {
+		for _, ctrl := range util.SortedMapKeys(sp.scopeDraw.airspace) {
+			for _, volname := range util.SortedMapKeys(sp.scopeDraw.airspace[ctrl]) {
+				if !sp.scopeDraw.airspace[ctrl][volname] {
 					continue
 				}
 

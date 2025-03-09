@@ -7,6 +7,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"net/rpc"
 	"runtime"
 	"slices"
@@ -19,6 +20,7 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
@@ -1325,4 +1327,72 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		lc.controlClient.TakeOrReturnLaunchControl(eventStream)
 		ui.showLaunchControl = false
 	}
+}
+
+func drawScenarioInfoWindow(config *Config, c *sim.ControlClient, p platform.Platform, lg *log.Logger) bool {
+	// Ensure that the window is wide enough to show the description
+	sz := imgui.CalcTextSize(c.State.SimDescription, false, 0)
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
+
+	show := true
+	imgui.BeginV(c.State.SimDescription, &show, imgui.WindowFlagsAlwaysAutoResize)
+
+	if imgui.CollapsingHeader("Controllers") {
+		// Make big(ish) tables somewhat more legible
+		tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
+			imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+		if imgui.BeginTableV("controllers", 4, tableFlags, imgui.Vec2{}, 0) {
+			imgui.TableSetupColumn("TCP")
+			imgui.TableSetupColumn("Human")
+			imgui.TableSetupColumn("Frequency")
+			imgui.TableSetupColumn("Name")
+			imgui.TableHeadersRow()
+
+			// Sort 2-char before 3-char and then alphabetically
+			sorted := slices.Collect(maps.Keys(c.State.Controllers))
+			slices.SortFunc(sorted, func(a, b string) int {
+				if len(a) < len(b) {
+					return -1
+				} else if len(a) > len(b) {
+					return 1
+				} else {
+					return strings.Compare(a, b)
+				}
+			})
+
+			for _, id := range sorted {
+				ctrl := c.State.Controllers[id]
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text(ctrl.Id())
+				imgui.TableNextColumn()
+				if ctrl.IsHuman {
+					sq := renderer.FontAwesomeIconCheckSquare
+					// Center the square in the column
+					// https://stackoverflow.com/a/66109051
+					pos := imgui.CursorPosX() + float32(imgui.ColumnWidth()) - imgui.CalcTextSize(sq, false, 0).X - imgui.ScrollX() -
+						2*imgui.CurrentStyle().ItemSpacing().X
+					if pos > imgui.CursorPosX() {
+						imgui.SetCursorPos(imgui.Vec2{X: pos, Y: imgui.CursorPos().Y})
+					}
+					imgui.Text(sq)
+				}
+				imgui.TableNextColumn()
+				imgui.Text(ctrl.Frequency.String())
+				imgui.TableNextColumn()
+				imgui.Text(ctrl.Position)
+			}
+
+			imgui.EndTable()
+		}
+	}
+
+	config.DisplayRoot.VisitPanes(func(pane panes.Pane) {
+		if draw, ok := pane.(panes.InfoWindowDrawer); ok {
+			draw.DrawInfo(c, p, lg)
+		}
+	})
+	imgui.End()
+
+	return show
 }

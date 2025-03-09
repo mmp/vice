@@ -41,6 +41,10 @@ type UIDrawer interface {
 	DrawUI(p platform.Platform, config *platform.Config)
 }
 
+type InfoWindowDrawer interface {
+	DrawInfo(c *sim.ControlClient, p platform.Platform, lg *log.Logger)
+}
+
 type KeyboardFocus interface {
 	Take(p Pane)
 	TakeTemporary(p Pane)
