@@ -353,13 +353,16 @@ func TestSeqContains(t *testing.T) {
 func TestMapSeq(t *testing.T) {
 	m := map[int]string{1: "one", 2: "two", 10: "ten", 50: "fifty"}
 	dub := MapSeq(maps.Keys(m), func(v int) int { return 2 * v })
-	if !slices.Equal(slices.Collect(dub), []int{2, 4, 20, 100}) {
-		t.Errorf("MapSeq failure: got %+v", dub)
+	sl := slices.Collect(dub)
+	slices.Sort(sl)
+	if !slices.Equal(sl, []int{2, 4, 20, 100}) {
+		t.Errorf("MapSeq failure: got %+v", sl)
 	}
 
 	xp := MapSeq2(maps.All(m), func(i int, s string) (string, int) { return s, i })
-	if !maps.Equal(maps.Collect(xp), map[string]int{"one": 1, "two": 2, "ten": 10, "fifty": 50}) {
-		t.Errorf("MapSeq2 failure: got %+v", xp)
+	ma := maps.Collect(xp)
+	if !maps.Equal(ma, map[string]int{"one": 1, "two": 2, "ten": 10, "fifty": 50}) {
+		t.Errorf("MapSeq2 failure: got %+v", ma)
 	}
 }
 
