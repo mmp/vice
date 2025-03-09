@@ -770,7 +770,7 @@ func (s *Sim) updateState() {
 				continue
 			}
 
-			passedWaypoint := ac.Update(s.State, s.lg)
+			passedWaypoint := ac.Update(s.State, nil /* s.lg*/)
 			if passedWaypoint != nil {
 				if passedWaypoint.HumanHandoff {
 					// Handoff from virtual controller to a human controller.
@@ -1346,7 +1346,7 @@ func makeDepartureAircraft(ac *av.Aircraft, runway string, idx int, wind av.Wind
 	start := ac.Position()
 	d.MinSeparation = 120 * time.Second // just in case
 	for i := range 120 {
-		simAc.Update(wind, lg)
+		simAc.Update(wind, nil /* lg */)
 		// We need 6,000' and airborne, but we'll add a bit of slop
 		if simAc.IsAirborne() && math.NMDistance2LL(start, simAc.Position()) > 7500*math.FeetToNauticalMiles {
 			d.MinSeparation = time.Duration(i) * time.Second
