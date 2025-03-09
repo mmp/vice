@@ -14,9 +14,6 @@ import (
 	"unicode"
 )
 
-///////////////////////////////////////////////////////////////////////////
-// decompression
-
 // WrapText wraps the provided text string to the given column limit, returning the
 // wrapped string and the number of lines it became.  indent gives the amount to
 // indent wrapped lines.  By default, lines that start with a space are assumed to be

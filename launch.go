@@ -702,7 +702,10 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	if len(lc.VFRAirports) > 0 {
 		imgui.Separator()
 
-		imgui.Text("VFR departure airports: " + strings.Join(util.SortedMapKeys(lc.VFRAirports), ", "))
+		aps := strings.Join(util.SortedMapKeys(lc.VFRAirports), ", ")
+		wrap, _ := util.WrapText("VFR departure airports: "+aps, 90, 4, true)
+		imgui.Text(wrap)
+
 		sumVFRRates := 0
 		for _, ap := range lc.VFRAirports {
 			r := float32(ap.VFRRateSum()) * lc.VFRDepartureRateScale
