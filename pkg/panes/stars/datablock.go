@@ -907,13 +907,9 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 		posBrightness /= 2
 	}
 
-	if trk == nil {
-		color = STARSUntrackedAircraftColor
-	} else if _, ok := sp.ForceQLCallsigns[ac.Callsign]; ok {
+	if _, ok := sp.ForceQLCallsigns[ac.Callsign]; ok {
 		// Check if we're the controller being ForceQL
 		color = STARSInboundPointOutColor
-	} else if trk.TrackOwner == "" {
-		color = STARSUntrackedAircraftColor
 	} else if state.PointOutAcknowledged || state.ForceQL {
 		// Ack'ed point out to us (but not cleared) or force quick look.
 		color = STARSInboundPointOutColor
@@ -923,6 +919,8 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 	} else if state.IsSelected {
 		// middle button selected
 		color = STARSSelectedAircraftColor
+	} else if trk.TrackOwner == "" {
+		color = STARSUntrackedAircraftColor
 	} else if trk.TrackOwner == ctx.ControlClient.PrimaryTCP { //change
 		// we own the track track
 		color = STARSTrackedAircraftColor
