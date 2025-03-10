@@ -127,9 +127,6 @@ type Sim struct {
 	FutureOnCourse           []FutureOnCourse
 	FutureSquawkChanges      []FutureChangeSquawk
 
-	RequirePassword bool
-	Password        string
-
 	lastSimUpdate time.Time
 
 	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
@@ -146,8 +143,7 @@ type Sim struct {
 	NextPushStart time.Time // both w.r.t. sim time
 	PushEnd       time.Time
 
-	InstructorAllowed bool
-	Instructors       map[string]bool
+	Instructors map[string]bool
 
 	// No need to serialize these; they're caches anyway.
 	bravoAirspace   *av.AirspaceGrid
@@ -231,9 +227,6 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 
 		ReportingPoints: sg.ReportingPoints,
 
-		Password:        ssc.Password,
-		RequirePassword: ssc.RequirePassword,
-
 		SimTime:        time.Now(),
 		lastUpdateTime: time.Now(),
 
@@ -241,8 +234,7 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		Handoffs:  make(map[string]Handoff),
 		PointOuts: make(map[string]PointOut),
 
-		InstructorAllowed: ssc.InstructorAllowed,
-		Instructors:       make(map[string]bool),
+		Instructors: make(map[string]bool),
 	}
 
 	if !isLocal {

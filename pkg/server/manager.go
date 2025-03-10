@@ -23,12 +23,18 @@ import (
 type SimManager struct {
 	scenarioGroups       map[string]map[string]*sim.ScenarioGroup
 	configs              map[string]map[string]*sim.Configuration
-	activeSims           map[string]*sim.Sim
+	activeSims           map[string]ActiveSim
 	controllerTokenToSim map[string]*sim.Sim
 	mu                   util.LoggingMutex
 	mapManifests         map[string]*av.VideoMapManifest
 	startTime            time.Time
 	lg                   *log.Logger
+}
+
+type ActiveSim struct {
+	sim             *sim.Sim
+	allowInstructor bool
+	password        string
 }
 
 func NewSimManager(scenarioGroups map[string]map[string]*sim.ScenarioGroup,
@@ -37,7 +43,7 @@ func NewSimManager(scenarioGroups map[string]map[string]*sim.ScenarioGroup,
 	return &SimManager{
 		scenarioGroups:       scenarioGroups,
 		configs:              simConfigurations,
-		activeSims:           make(map[string]*sim.Sim),
+		activeSims:           make(map[string]ActiveSim),
 		controllerTokenToSim: make(map[string]*sim.Sim),
 		mapManifests:         manifests,
 		startTime:            time.Now(),
@@ -53,29 +59,34 @@ type NewSimResult struct {
 func (sm *SimManager) New(config *sim.NewSimConfiguration, result *NewSimResult) error {
 	if config.NewSimType == sim.NewSimCreateLocal || config.NewSimType == sim.NewSimCreateRemote {
 		sim := sim.NewSim(*config, sm.scenarioGroups, config.NewSimType == sim.NewSimCreateLocal, sm.mapManifests, sm.lg)
-		return sm.Add(sim, result, true)
+		as := ActiveSim{
+			sim:             sim,
+			password:        config.Password,
+			allowInstructor: config.InstructorAllowed,
+		}
+		return sm.Add(as, result, true)
 	} else {
 		sm.mu.Lock(sm.lg)
 		defer sm.mu.Unlock(sm.lg)
 
-		sim, ok := sm.activeSims[config.SelectedRemoteSim]
+		as, ok := sm.activeSims[config.SelectedRemoteSim]
 		if !ok {
 			return ErrNoNamedSim
 		}
-		if _, ok := sim.State.Controllers[config.SelectedRemoteSimPosition]; ok {
+		if _, ok := as.sim.State.Controllers[config.SelectedRemoteSimPosition]; ok {
 			return av.ErrNoController
 		}
 
-		if sim.RequirePassword && config.RemoteSimPassword != sim.Password {
+		if as.password != "" && config.RemoteSimPassword != as.password {
 			return ErrInvalidPassword
 		}
 
-		ss, token, err := sim.SignOn(config.SelectedRemoteSimPosition, config.Instructor)
+		ss, token, err := as.sim.SignOn(config.SelectedRemoteSimPosition, config.Instructor)
 		if err != nil {
 			return err
 		}
 
-		sm.controllerTokenToSim[token] = sim
+		sm.controllerTokenToSim[token] = as.sim
 
 		*result = NewSimResult{
 			SimState:        ss,
@@ -86,41 +97,42 @@ func (sm *SimManager) New(config *sim.NewSimConfiguration, result *NewSimResult)
 }
 
 func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
-	return sm.Add(sim, result, false)
+	as := ActiveSim{sim: sim} // no password, etc.
+	return sm.Add(as, result, false)
 }
 
-func (sm *SimManager) Add(sim *sim.Sim, result *NewSimResult, prespawn bool) error {
-	if sim.State == nil {
+func (sm *SimManager) Add(as ActiveSim, result *NewSimResult, prespawn bool) error {
+	if as.sim.State == nil {
 		return errors.New("incomplete Sim; nil *State")
 	}
 
-	sim.Activate(sm.lg)
+	as.sim.Activate(sm.lg)
 
 	sm.mu.Lock(sm.lg)
 
 	// Empty sim name is just a local sim, so no problem with replacing it...
-	if _, ok := sm.activeSims[sim.Name]; ok && sim.Name != "" {
+	if _, ok := sm.activeSims[as.sim.Name]; ok && as.sim.Name != "" {
 		sm.mu.Unlock(sm.lg)
 		return ErrDuplicateSimName
 	}
 
-	sm.lg.Infof("%s: adding sim", sim.Name)
-	sm.activeSims[sim.Name] = sim
+	sm.lg.Infof("%s: adding sim", as.sim.Name)
+	sm.activeSims[as.sim.Name] = as
 
 	sm.mu.Unlock(sm.lg)
-	instuctor := sim.Instructors[sim.State.PrimaryController]
-	ss, token, err := sim.SignOn(sim.State.PrimaryController, instuctor)
+	instuctor := as.sim.Instructors[as.sim.State.PrimaryController]
+	ss, token, err := as.sim.SignOn(as.sim.State.PrimaryController, instuctor)
 	if err != nil {
 		return err
 	}
 
 	sm.mu.Lock(sm.lg)
-	sm.controllerTokenToSim[token] = sim
+	sm.controllerTokenToSim[token] = as.sim
 	sm.mu.Unlock(sm.lg)
 
 	// Run prespawn after the primary controller is signed in.
 	if prespawn {
-		sim.Prespawn()
+		as.sim.Prespawn()
 	}
 
 	go func() {
@@ -128,18 +140,18 @@ func (sm *SimManager) Add(sim *sim.Sim, result *NewSimResult, prespawn bool) err
 
 		// Terminate idle Sims after 4 hours, but not unnamed Sims, since
 		// they're local and not running on the server.
-		for !sm.SimShouldExit(sim) {
-			sim.Update()
+		for !sm.SimShouldExit(as.sim) {
+			as.sim.Update()
 			time.Sleep(100 * time.Millisecond)
 		}
 
-		sm.lg.Infof("%s: terminating sim after %s idle", sim.Name, sim.IdleTime())
+		sm.lg.Infof("%s: terminating sim after %s idle", as.sim.Name, as.sim.IdleTime())
 		sm.mu.Lock(sm.lg)
 		defer sm.mu.Unlock(sm.lg)
-		delete(sm.activeSims, sim.Name)
+		delete(sm.activeSims, as.sim.Name)
 		// FIXME: these don't get cleaned up during Sim SignOff()
 		for tok, s := range sm.controllerTokenToSim {
-			if s == sim {
+			if s == as.sim {
 				delete(sm.controllerTokenToSim, tok)
 			}
 		}
@@ -181,18 +193,18 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 	defer sm.mu.Unlock(sm.lg)
 
 	running := make(map[string]*RemoteSim)
-	for name, s := range sm.activeSims {
+	for name, as := range sm.activeSims {
 		rs := &RemoteSim{
-			GroupName:          s.ScenarioGroup,
-			ScenarioName:       s.Scenario,
-			PrimaryController:  s.State.PrimaryController,
-			RequirePassword:    s.RequirePassword,
-			InstructorAllowed:  s.InstructorAllowed,
+			GroupName:          as.sim.ScenarioGroup,
+			ScenarioName:       as.sim.Scenario,
+			PrimaryController:  as.sim.State.PrimaryController,
+			RequirePassword:    as.password != "",
+			InstructorAllowed:  as.allowInstructor,
 			AvailablePositions: make(map[string]av.Controller),
 			CoveredPositions:   make(map[string]av.Controller),
 		}
 
-		rs.AvailablePositions, rs.CoveredPositions = s.GetAvailableCoveredPositions()
+		rs.AvailablePositions, rs.CoveredPositions = as.sim.GetAvailableCoveredPositions()
 
 		running[name] = rs
 	}
@@ -212,8 +224,8 @@ func (sm *SimManager) SimShouldExit(sim *sim.Sim) bool {
 	defer sm.mu.Unlock(sm.lg)
 
 	nIdle := 0
-	for _, sim := range sm.activeSims {
-		if sim.IdleTime() >= simIdleLimit {
+	for _, as := range sm.activeSims {
+		if as.sim.IdleTime() >= simIdleLimit {
 			nIdle++
 		}
 	}
@@ -270,17 +282,17 @@ func (sm *SimManager) getSimStatus() []simStatus {
 
 	var ss []simStatus
 	for _, name := range util.SortedMapKeys(sm.activeSims) {
-		s := sm.activeSims[name]
+		as := sm.activeSims[name]
 		status := simStatus{
 			Name:             name,
-			Config:           s.Scenario,
-			IdleTime:         s.IdleTime().Round(time.Second),
-			TotalDepartures:  s.TotalDepartures,
-			TotalArrivals:    s.TotalArrivals,
-			TotalOverflights: s.TotalOverflights,
+			Config:           as.sim.Scenario,
+			IdleTime:         as.sim.IdleTime().Round(time.Second),
+			TotalDepartures:  as.sim.TotalDepartures,
+			TotalArrivals:    as.sim.TotalArrivals,
+			TotalOverflights: as.sim.TotalOverflights,
 		}
 
-		status.Controllers = strings.Join(s.ActiveControllers(), ", ")
+		status.Controllers = strings.Join(as.sim.ActiveControllers(), ", ")
 
 		ss = append(ss, status)
 	}
@@ -309,8 +321,8 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 
 	sm.lg.Infof("Broadcasting message: %s", m.Message)
 
-	for _, s := range sm.activeSims {
-		s.PostEvent(sim.Event{
+	for _, as := range sm.activeSims {
+		as.sim.PostEvent(sim.Event{
 			Type:    sim.ServerBroadcastMessageEvent,
 			Message: m.Message,
 		})
