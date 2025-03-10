@@ -994,11 +994,10 @@ type VideoMapsArgs struct {
 func (sd *Dispatcher) GetVideoMapLibrary(vm *VideoMapsArgs, vmf *av.VideoMapLibrary) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	s, ok := sd.sm.ControllerTokenToSim(vm.ControllerToken)
-	if !ok {
+	if _, ok := sd.sm.ControllerTokenToSim(vm.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	}
-	if v, err := s.GetVideoMapLibrary(vm.Filename); err == nil {
+	if v, err := av.LoadVideoMapLibrary(vm.Filename); err == nil {
 		*vmf = *v
 		return nil
 	} else {
