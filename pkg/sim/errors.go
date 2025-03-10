@@ -20,7 +20,6 @@ var (
 	ErrInvalidControllerToken      = errors.New("Invalid controller token")
 	ErrInvalidDepartureController  = errors.New("Invalid departure controller")
 	ErrInvalidRestrictionAreaIndex = errors.New("Invalid restriction area index")
-	ErrNoCoordinationFix           = errors.New("No coordination fix found")
 	ErrNoMatchingFlight            = errors.New("No matching flight")
 	ErrNotLaunchController         = errors.New("Not signed in as the launch controller")
 	ErrTooManyRestrictionAreas     = errors.New("Too many restriction areas specified")

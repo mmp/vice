@@ -25,7 +25,9 @@ import (
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 
+	"github.com/brunoga/deep"
 	"github.com/klauspost/compress/zstd"
+	"github.com/mmp/earcut-go"
 )
 
 type ReportingPoint struct {
@@ -1443,4 +1445,370 @@ func (p *SquawkCodePool) NumAvailable() int {
 		n -= bits.OnesCount64(b)
 	}
 	return n
+}
+
+type ControllerAirspaceVolume struct {
+	LowerLimit    int               `json:"lower"`
+	UpperLimit    int               `json:"upper"`
+	Boundaries    [][]math.Point2LL `json:"boundary_polylines"` // not in JSON
+	BoundaryNames []string          `json:"boundaries"`
+	Label         string            `json:"label"`
+	LabelPosition math.Point2LL     `json:"label_position"`
+}
+
+///////////////////////////////////////////////////////////////////////////
+// RestrictionArea
+
+// This many adapted and then this many user-defined
+const MaxRestrictionAreas = 100
+
+type RestrictionArea struct {
+	Title        string        `json:"title"`
+	Text         [2]string     `json:"text"`
+	BlinkingText bool          `json:"blinking_text"`
+	HideId       bool          `json:"hide_id"`
+	TextPosition math.Point2LL `json:"text_position"`
+	CircleCenter math.Point2LL `json:"circle_center"`
+	CircleRadius float32       `json:"circle_radius"`
+	VerticesUser WaypointArray `json:"vertices"`
+	Vertices     [][]math.Point2LL
+	Closed       bool `json:"closed"`
+	Shaded       bool `json:"shade_region"`
+	Color        int  `json:"color"`
+
+	Tris    [][3]math.Point2LL
+	Deleted bool
+}
+
+type Airspace struct {
+	Boundaries map[string][]math.Point2LL            `json:"boundaries"`
+	Volumes    map[string][]ControllerAirspaceVolume `json:"volumes"`
+}
+
+func RestrictionAreaFromTFR(tfr TFR) RestrictionArea {
+	ra := RestrictionArea{
+		Title:    tfr.LocalName,
+		Vertices: deep.MustCopy(tfr.Points),
+	}
+
+	if len(ra.Title) > 32 {
+		ra.Title = ra.Title[:32]
+	}
+
+	ra.HideId = true
+	ra.Closed = true
+	ra.Shaded = true // ??
+	ra.TextPosition = ra.AverageVertexPosition()
+
+	ra.UpdateTriangles()
+
+	return ra
+}
+
+func (ra *RestrictionArea) AverageVertexPosition() math.Point2LL {
+	var c math.Point2LL
+	var n float32
+	for _, loop := range ra.Vertices {
+		n += float32(len(loop))
+		for _, v := range loop {
+			c = math.Add2f(c, v)
+		}
+	}
+	return math.Scale2f(c, math.Max(1, 1/n)) // avoid 1/0 and return (0,0) if there are no verts.
+}
+
+func (ra *RestrictionArea) UpdateTriangles() {
+	if !ra.Closed || !ra.Shaded {
+		ra.Tris = nil
+		return
+	}
+
+	clear(ra.Tris)
+	for _, loop := range ra.Vertices {
+		if len(loop) < 3 {
+			continue
+		}
+
+		vertices := make([]earcut.Vertex, len(loop))
+		for i, v := range loop {
+			vertices[i].P = [2]float64{float64(v[0]), float64(v[1])}
+		}
+
+		for _, tri := range earcut.Triangulate(earcut.Polygon{Rings: [][]earcut.Vertex{vertices}}) {
+			var v32 [3]math.Point2LL
+			for i, v64 := range tri.Vertices {
+				v32[i] = [2]float32{float32(v64.P[0]), float32(v64.P[1])}
+			}
+			ra.Tris = append(ra.Tris, v32)
+		}
+	}
+}
+
+func (ra *RestrictionArea) MoveTo(p math.Point2LL) {
+	if ra.CircleRadius > 0 {
+		// Circle
+		delta := math.Sub2f(p, ra.CircleCenter)
+		ra.CircleCenter = p
+		ra.TextPosition = math.Add2f(ra.TextPosition, delta)
+	} else {
+		pc := ra.TextPosition
+		if pc.IsZero() {
+			pc = ra.AverageVertexPosition()
+		}
+		delta := math.Sub2f(p, pc)
+		ra.TextPosition = p
+
+		for _, loop := range ra.Vertices {
+			for i := range loop {
+				loop[i] = math.Add2f(loop[i], delta)
+			}
+		}
+	}
+}
+
+type STARSFacilityAdaptation struct {
+	AirspaceAwareness   []AirspaceAwareness               `json:"airspace_awareness"`
+	ForceQLToSelf       bool                              `json:"force_ql_self"`
+	AllowLongScratchpad bool                              `json:"allow_long_scratchpad"`
+	VideoMapNames       []string                          `json:"stars_maps"`
+	VideoMapLabels      map[string]string                 `json:"map_labels"`
+	ControllerConfigs   map[string]*STARSControllerConfig `json:"controller_configs"`
+	InhibitCAVolumes    []AirspaceVolume                  `json:"inhibit_ca_volumes"`
+	RadarSites          map[string]*RadarSite             `json:"radar_sites"`
+	Center              math.Point2LL                     `json:"-"`
+	CenterString        string                            `json:"center"`
+	Range               float32                           `json:"range"`
+	Scratchpads         map[string]string                 `json:"scratchpads"`
+	SignificantPoints   map[string]SignificantPoint       `json:"significant_points"`
+	Altimeters          []string                          `json:"altimeters"`
+
+	MonitoredBeaconCodeBlocksString *string `json:"beacon_code_blocks"`
+	MonitoredBeaconCodeBlocks       []Squawk
+
+	VideoMapFile      string                     `json:"video_map_file"`
+	CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
+	SingleCharAIDs    map[string]string          `json:"single_char_aids"` // Char to airport
+	BeaconBank        int                        `json:"beacon_bank"`
+	KeepLDB           bool                       `json:"keep_ldb"`
+	FullLDBSeconds    int                        `json:"full_ldb_seconds"`
+
+	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration"`
+	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only"`
+	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration"`
+
+	PDB struct {
+		ShowScratchpad2   bool `json:"show_scratchpad2"`
+		HideGroundspeed   bool `json:"hide_gs"`
+		ShowAircraftType  bool `json:"show_aircraft_type"`
+		SplitGSAndCWT     bool `json:"split_gs_and_cwt"`
+		DisplayCustomSPCs bool `json:"display_custom_spcs"`
+	} `json:"pdb"`
+	Scratchpad1 struct {
+		DisplayExitFix     bool `json:"display_exit_fix"`
+		DisplayExitFix1    bool `json:"display_exit_fix_1"`
+		DisplayExitGate    bool `json:"display_exit_gate"`
+		DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
+	} `json:"scratchpad1"`
+	CustomSPCs []string `json:"custom_spcs"`
+
+	CoordinationLists []CoordinationList `json:"coordination_lists"`
+	RestrictionAreas  []RestrictionArea  `json:"restriction_areas"`
+	UseLegacyFont     bool               `json:"use_legacy_font"`
+}
+
+type STARSControllerConfig struct {
+	VideoMapNames                   []string      `json:"video_maps"`
+	DefaultMaps                     []string      `json:"default_maps"`
+	Center                          math.Point2LL `json:"-"`
+	CenterString                    string        `json:"center"`
+	Range                           float32       `json:"range"`
+	MonitoredBeaconCodeBlocksString *string       `json:"beacon_code_blocks"`
+	MonitoredBeaconCodeBlocks       []Squawk
+}
+
+type CoordinationList struct {
+	Name          string   `json:"name"`
+	Id            string   `json:"id"`
+	Airports      []string `json:"airports"`
+	YellowEntries bool     `json:"yellow_entries"`
+}
+
+type SignificantPoint struct {
+	Name         string        // JSON comes in as a map from name to SignificantPoint; we set this.
+	ShortName    string        `json:"short_name"`
+	Abbreviation string        `json:"abbreviation"`
+	Description  string        `json:"description"`
+	Location     math.Point2LL `json:"location"`
+}
+
+type AirspaceAwareness struct {
+	Fix                 []string `json:"fixes"`
+	AltitudeRange       [2]int   `json:"altitude_range"`
+	ReceivingController string   `json:"receiving_controller"`
+	AircraftType        []string `json:"aircraft_type"`
+}
+
+type InboundFlow struct {
+	Arrivals    []Arrival    `json:"arrivals"`
+	Overflights []Overflight `json:"overflights"`
+}
+
+func (fa *STARSFacilityAdaptation) GetCoordinationFix(fp *STARSFlightPlan, acpos math.Point2LL, waypoints []Waypoint) (string, bool) {
+	for fix, adaptationFixes := range fa.CoordinationFixes {
+		if adaptationFix, err := adaptationFixes.Fix(fp.Altitude); err == nil {
+			if adaptationFix.Type == ZoneBasedFix {
+				// Exclude zone based fixes for now. They come in after the route-based fix
+				continue
+			}
+
+			// FIXME (as elsewhere): make this more robust
+			if strings.Contains(fp.Route, fix) {
+				return fix, true
+			}
+
+			// FIXME: why both this and checking fp.Route?
+			for _, waypoint := range waypoints {
+				if waypoint.Fix == fix {
+					return fix, true
+				}
+			}
+		}
+
+	}
+
+	var closestFix string
+	minDist := float32(1e30)
+	for fix, adaptationFixes := range fa.CoordinationFixes {
+		for _, adaptationFix := range adaptationFixes {
+			if adaptationFix.Type == ZoneBasedFix {
+				if loc, ok := DB.LookupWaypoint(fix); !ok {
+					// FIXME: check this (if it isn't already) at scenario load time.
+					panic(fix + ": not found in fixes database")
+				} else if dist := math.NMDistance2LL(acpos, loc); dist < minDist {
+					minDist = dist
+					closestFix = fix
+				}
+			}
+		}
+	}
+
+	return closestFix, closestFix != ""
+}
+
+type STARSFlightPlan struct {
+	*FlightPlan
+	FlightPlanType      int
+	CoordinationTime    CoordinationTime
+	CoordinationFix     string
+	ContainedFacilities []string
+	Altitude            string
+	SP1                 string
+	SP2                 string
+	InitialController   string // For abbreviated FPs
+}
+
+type CoordinationTime struct {
+	Time time.Time
+	Type string // A for arrivals, P for Departures, E for overflights
+}
+
+// Flight plan types (STARS)
+const (
+	// Flight plan received from a NAS ARTCC.  This is a flight plan that
+	// has been sent over by an overlying ERAM facility.
+	RemoteEnroute = iota
+
+	// Flight plan received from an adjacent terminal facility This is a
+	// flight plan that has been sent over by another STARS facility.
+	RemoteNonEnroute
+
+	// VFR interfacility flight plan entered locally for which the NAS
+	// ARTCC has not returned a flight plan This is a flight plan that is
+	// made by a STARS facility that gets a NAS code.
+	LocalEnroute
+
+	// Flight plan entered by TCW or flight plan from an adjacent terminal
+	// that has been handed off to this STARS facility This is a flight
+	// plan that is made at a STARS facility and gets a local code.
+	LocalNonEnroute
+)
+
+func MakeSTARSFlightPlan(fp *FlightPlan) *STARSFlightPlan {
+	return &STARSFlightPlan{
+		FlightPlan: fp,
+		Altitude:   fmt.Sprint(fp.Altitude),
+	}
+}
+
+func (fp *STARSFlightPlan) SetCoordinationFix(fa STARSFacilityAdaptation, ac *Aircraft, simTime time.Time) error {
+	cf, ok := fa.GetCoordinationFix(fp, ac.Position(), ac.Waypoints())
+	if !ok {
+		return ErrNoCoordinationFix
+	}
+	fp.CoordinationFix = cf
+
+	if dist, err := ac.DistanceAlongRoute(cf); err == nil {
+		m := dist / float32(fp.CruiseSpeed) * 60
+		fp.CoordinationTime = CoordinationTime{
+			Time: simTime.Add(time.Duration(m * float32(time.Minute))),
+		}
+	} else { // zone based fixes.
+		loc, ok := DB.LookupWaypoint(fp.CoordinationFix)
+		if !ok {
+			return ErrNoCoordinationFix
+		}
+
+		dist := math.NMDistance2LL(ac.Position(), loc)
+		m := dist / float32(fp.CruiseSpeed) * 60
+		fp.CoordinationTime = CoordinationTime{
+			Time: simTime.Add(time.Duration(m * float32(time.Minute))),
+		}
+	}
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Airspace
+
+func InAirspace(p math.Point2LL, alt float32, volumes []ControllerAirspaceVolume) (bool, [][2]int) {
+	var altRanges [][2]int
+	for _, v := range volumes {
+		inside := false
+		for _, pts := range v.Boundaries {
+			if math.PointInPolygon2LL(p, pts) {
+				inside = !inside
+			}
+		}
+		if inside {
+			altRanges = append(altRanges, [2]int{v.LowerLimit, v.UpperLimit})
+		}
+	}
+
+	// Sort altitude ranges and then merge ones that have 1000 foot separation
+	sort.Slice(altRanges, func(i, j int) bool { return altRanges[i][0] < altRanges[j][0] })
+	var mergedAlts [][2]int
+	i := 0
+	inside := false
+	for i < len(altRanges) {
+		low := altRanges[i][0]
+		high := altRanges[i][1]
+
+		for i+1 < len(altRanges) {
+			if altRanges[i+1][0]-high <= 1000 {
+				// merge
+				high = altRanges[i+1][1]
+				i++
+			} else {
+				break
+			}
+		}
+
+		// 10 feet of slop for rounding error
+		inside = inside || (int(alt)+10 >= low && int(alt)-10 <= high)
+
+		mergedAlts = append(mergedAlts, [2]int{low, high})
+		i++
+	}
+
+	return inside, mergedAlts
 }

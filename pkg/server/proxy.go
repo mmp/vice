@@ -94,7 +94,7 @@ func (p *proxy) SetSecondaryScratchpad(callsign string, scratchpad string) *rpc.
 	}, nil, nil)
 }
 
-func (p *proxy) AutoAssociateFP(callsign string, fp *sim.STARSFlightPlan) *rpc.Call {
+func (p *proxy) AutoAssociateFP(callsign string, fp *av.STARSFlightPlan) *rpc.Call {
 	return p.Client.Go("Sim.AutoAssociateFP", &InitiateTrackArgs{
 		AircraftSpecifier: AircraftSpecifier{
 			ControllerToken: p.ControllerToken,
@@ -112,7 +112,7 @@ func (p *proxy) CreateUnsupportedTrack(callsign string, ut *sim.UnsupportedTrack
 	}, nil, nil)
 }
 
-func (p *proxy) UploadFlightPlan(Type int, fp *sim.STARSFlightPlan) *rpc.Call {
+func (p *proxy) UploadFlightPlan(Type int, fp *av.STARSFlightPlan) *rpc.Call {
 	return p.Client.Go("Sim.UploadFlightPlan", &UploadPlanArgs{
 		ControllerToken: p.ControllerToken,
 		Type:            Type,
@@ -120,7 +120,7 @@ func (p *proxy) UploadFlightPlan(Type int, fp *sim.STARSFlightPlan) *rpc.Call {
 	}, nil, nil)
 }
 
-func (p *proxy) InitiateTrack(callsign string, fp *sim.STARSFlightPlan) *rpc.Call {
+func (p *proxy) InitiateTrack(callsign string, fp *av.STARSFlightPlan) *rpc.Call {
 	return p.Client.Go("Sim.InitiateTrack", InitiateTrackArgs{
 		AircraftSpecifier: AircraftSpecifier{
 			ControllerToken: p.ControllerToken,
@@ -302,14 +302,14 @@ func (p *proxy) CreateOverflight(group string, ac *av.Aircraft) *rpc.Call {
 	}, ac, nil)
 }
 
-func (p *proxy) CreateRestrictionArea(ra sim.RestrictionArea, idx *int) *rpc.Call {
+func (p *proxy) CreateRestrictionArea(ra av.RestrictionArea, idx *int) *rpc.Call {
 	return p.Client.Go("Sim.CreateRestrictionArea", &RestrictionAreaArgs{
 		ControllerToken: p.ControllerToken,
 		RestrictionArea: ra,
 	}, idx, nil)
 }
 
-func (p *proxy) UpdateRestrictionArea(idx int, ra sim.RestrictionArea) *rpc.Call {
+func (p *proxy) UpdateRestrictionArea(idx int, ra av.RestrictionArea) *rpc.Call {
 	return p.Client.Go("Sim.UpdateRestrictionArea", &RestrictionAreaArgs{
 		ControllerToken: p.ControllerToken,
 		Index:           idx,

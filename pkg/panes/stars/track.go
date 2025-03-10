@@ -922,7 +922,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, ac *av.Aircraft) ([
 	state := sp.Aircraft[ac.Callsign]
 	vols := ctx.ControlClient.ControllerAirspace(ctx.ControlClient.PrimaryTCP)
 
-	inside, alts := sim.InAirspace(ac.Position(), ac.Altitude(), vols)
+	inside, alts := av.InAirspace(ac.Position(), ac.Altitude(), vols)
 	if state.EnteredOurAirspace && !inside {
 		return alts, true
 	} else if inside {

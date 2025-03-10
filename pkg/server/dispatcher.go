@@ -162,7 +162,7 @@ func (sd *Dispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *struct{
 
 type InitiateTrackArgs struct {
 	AircraftSpecifier
-	Plan *sim.STARSFlightPlan
+	Plan *av.STARSFlightPlan
 }
 
 func (sd *Dispatcher) InitiateTrack(it *InitiateTrackArgs, _ *struct{}) error {
@@ -194,7 +194,7 @@ func (sd *Dispatcher) CreateUnsupportedTrack(it *CreateUnsupportedTrackArgs, _ *
 type UploadPlanArgs struct {
 	ControllerToken string
 	Type            int
-	Plan            *sim.STARSFlightPlan
+	Plan            *av.STARSFlightPlan
 }
 
 func (sd *Dispatcher) UploadFlightPlan(it *UploadPlanArgs, _ *struct{}) error {
@@ -949,7 +949,7 @@ func (sd *Dispatcher) CreateOverflight(oa *CreateOverflightArgs, ofAc *av.Aircra
 type RestrictionAreaArgs struct {
 	ControllerToken string
 	Index           int
-	RestrictionArea sim.RestrictionArea
+	RestrictionArea av.RestrictionArea
 }
 
 func (sd *Dispatcher) CreateRestrictionArea(ra *RestrictionAreaArgs, idx *int) error {

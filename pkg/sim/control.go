@@ -249,7 +249,7 @@ func (s *Sim) SetGlobalLeaderLine(token, callsign string, dir *math.CardinalOrdi
 		})
 }
 
-func (s *Sim) AutoAssociateFP(token, callsign string, fp *STARSFlightPlan) error {
+func (s *Sim) AutoAssociateFP(token, callsign string, fp *av.STARSFlightPlan) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -282,7 +282,7 @@ func (s *Sim) CreateUnsupportedTrack(token, callsign string, ut *UnsupportedTrac
 		})
 }
 
-func (s *Sim) UploadFlightPlan(token string, Type int, plan *STARSFlightPlan) error {
+func (s *Sim) UploadFlightPlan(token string, Type int, plan *av.STARSFlightPlan) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -298,16 +298,16 @@ func (s *Sim) UploadFlightPlan(token string, Type int, plan *STARSFlightPlan) er
 	}
 
 	switch Type {
-	case LocalNonEnroute:
+	case av.LocalNonEnroute:
 		stars.AddFlightPlan(plan)
-	case LocalEnroute, RemoteEnroute:
+	case av.LocalEnroute, av.RemoteEnroute:
 		eram.AddFlightPlan(plan)
 	}
 
 	return nil
 }
 
-func (s *Sim) InitiateTrack(token, callsign string, fp *STARSFlightPlan) error {
+func (s *Sim) InitiateTrack(token, callsign string, fp *av.STARSFlightPlan) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 

@@ -54,16 +54,16 @@ type State struct {
 	Wind                     av.Wind
 	PrimaryTCP               string
 	ScenarioDefaultVideoMaps []string
-	Airspace                 map[string]map[string][]ControllerAirspaceVolume // ctrl id -> vol name -> definition
+	Airspace                 map[string]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
 	DepartureRunways         []ScenarioGroupDepartureRunway
 	ArrivalRunways           []ScenarioGroupArrivalRunway
 	Scratchpads              map[string]string
-	InboundFlows             map[string]*InboundFlow
+	InboundFlows             map[string]*av.InboundFlow
 	TotalDepartures          int
 	TotalArrivals            int
 	TotalOverflights         int
-	STARSFacilityAdaptation  STARSFacilityAdaptation
-	UserRestrictionAreas     []RestrictionArea
+	STARSFacilityAdaptation  av.STARSFacilityAdaptation
+	UserRestrictionAreas     []av.RestrictionArea
 	Instructors              map[string]bool
 
 	ControllerVideoMaps                 []string
@@ -112,9 +112,9 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	ss.Scratchpads = fa.Scratchpads
 	ss.InboundFlows = sg.InboundFlows
 	if len(sc.Airspace) > 0 {
-		ss.Airspace = make(map[string]map[string][]ControllerAirspaceVolume)
+		ss.Airspace = make(map[string]map[string][]av.ControllerAirspaceVolume)
 		if isLocal {
-			ss.Airspace[ss.PrimaryController] = make(map[string][]ControllerAirspaceVolume)
+			ss.Airspace[ss.PrimaryController] = make(map[string][]av.ControllerAirspaceVolume)
 			// Take all the airspace
 			for _, vnames := range sc.Airspace {
 				for _, vname := range vnames {
@@ -126,7 +126,7 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 		} else {
 			for ctrl, vnames := range sc.Airspace {
 				if _, ok := ss.Airspace[ctrl]; !ok {
-					ss.Airspace[ctrl] = make(map[string][]ControllerAirspaceVolume)
+					ss.Airspace[ctrl] = make(map[string][]av.ControllerAirspaceVolume)
 				}
 				for _, vname := range vnames {
 					// Remap from strings provided in the scenario to the
@@ -151,7 +151,7 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 
 	// Add the TFR restriction areas
 	for _, tfr := range tfrs {
-		ra := RestrictionAreaFromTFR(tfr)
+		ra := av.RestrictionAreaFromTFR(tfr)
 		ss.STARSFacilityAdaptation.RestrictionAreas = append(ss.STARSFacilityAdaptation.RestrictionAreas, ra)
 	}
 	for _, callsign := range sc.VirtualControllers {

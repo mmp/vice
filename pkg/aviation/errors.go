@@ -17,6 +17,7 @@ var (
 	ErrInvalidSquawkCode            = errors.New("Invalid squawk code")
 	ErrNoAircraftForCallsign        = errors.New("No aircraft exists with specified callsign")
 	ErrNoController                 = errors.New("No controller with that callsign")
+	ErrNoCoordinationFix            = errors.New("No coordination fix found")
 	ErrNoERAMFacility               = errors.New("No ERAM facility exists")
 	ErrNoFlightPlan                 = errors.New("No flight plan has been filed for aircraft")
 	ErrNoMatchingFix                = errors.New("No matching fix")

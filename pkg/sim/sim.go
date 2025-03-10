@@ -494,7 +494,7 @@ func (s *Sim) GlobalMessage(controller, message string) error {
 	return nil
 }
 
-func (s *Sim) CreateRestrictionArea(ra RestrictionArea) (int, error) {
+func (s *Sim) CreateRestrictionArea(ra av.RestrictionArea) (int, error) {
 	ra.UpdateTriangles()
 
 	// Look for a free slot from one that was deleted
@@ -505,7 +505,7 @@ func (s *Sim) CreateRestrictionArea(ra RestrictionArea) (int, error) {
 		}
 	}
 
-	if n := len(s.State.UserRestrictionAreas); n < MaxRestrictionAreas {
+	if n := len(s.State.UserRestrictionAreas); n < av.MaxRestrictionAreas {
 		s.State.UserRestrictionAreas = append(s.State.UserRestrictionAreas, ra)
 		return n + 1, nil
 	}
@@ -513,7 +513,7 @@ func (s *Sim) CreateRestrictionArea(ra RestrictionArea) (int, error) {
 	return 0, ErrTooManyRestrictionAreas
 }
 
-func (s *Sim) UpdateRestrictionArea(idx int, ra RestrictionArea) error {
+func (s *Sim) UpdateRestrictionArea(idx int, ra av.RestrictionArea) error {
 	// Adjust for one-based indexing in the API call
 	idx--
 
@@ -542,7 +542,7 @@ func (s *Sim) DeleteRestrictionArea(idx int) error {
 		return ErrInvalidRestrictionAreaIndex
 	}
 
-	s.State.UserRestrictionAreas[idx] = RestrictionArea{Deleted: true}
+	s.State.UserRestrictionAreas[idx] = av.RestrictionArea{Deleted: true}
 	return nil
 }
 
@@ -602,7 +602,7 @@ type WorldUpdate struct {
 
 	LaunchConfig LaunchConfig
 
-	UserRestrictionAreas []RestrictionArea
+	UserRestrictionAreas []av.RestrictionArea
 
 	SimIsPaused      bool
 	SimRate          float32

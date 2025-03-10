@@ -197,7 +197,7 @@ func (c *ControlClient) CreateUnsupportedTrack(callsign string, ut *sim.Unsuppor
 		})
 }
 
-func (c *ControlClient) AutoAssociateFP(callsign string, fp *sim.STARSFlightPlan, success func(any),
+func (c *ControlClient) AutoAssociateFP(callsign string, fp *av.STARSFlightPlan, success func(any),
 	err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
@@ -208,7 +208,7 @@ func (c *ControlClient) AutoAssociateFP(callsign string, fp *sim.STARSFlightPlan
 		})
 }
 
-func (c *ControlClient) UploadFlightPlan(fp *sim.STARSFlightPlan, typ int, success func(any), err func(error)) {
+func (c *ControlClient) UploadFlightPlan(fp *av.STARSFlightPlan, typ int, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.UploadFlightPlan(typ, fp),
@@ -218,7 +218,7 @@ func (c *ControlClient) UploadFlightPlan(fp *sim.STARSFlightPlan, typ int, succe
 		})
 }
 
-func (c *ControlClient) InitiateTrack(callsign string, fp *sim.STARSFlightPlan, success func(any),
+func (c *ControlClient) InitiateTrack(callsign string, fp *av.STARSFlightPlan, success func(any),
 	err func(error)) {
 	// Modifying locally is not canonical but improves perceived latency in
 	// the common case; the RPC may fail, though that's fine; the next
@@ -432,7 +432,7 @@ func (c *ControlClient) Disconnect() {
 
 // Note that the success callback is passed an integer, giving the index of
 // the newly-created restriction area.
-func (c *ControlClient) CreateRestrictionArea(ra sim.RestrictionArea, success func(int), err func(error)) {
+func (c *ControlClient) CreateRestrictionArea(ra av.RestrictionArea, success func(int), err func(error)) {
 	// Speculatively make the change locally immediately to reduce perceived latency.
 	if len(c.State.UserRestrictionAreas) < 100 {
 		c.State.UserRestrictionAreas = append(c.State.UserRestrictionAreas, ra)
@@ -448,7 +448,7 @@ func (c *ControlClient) CreateRestrictionArea(ra sim.RestrictionArea, success fu
 		})
 }
 
-func (c *ControlClient) UpdateRestrictionArea(idx int, ra sim.RestrictionArea, success func(any), err func(error)) {
+func (c *ControlClient) UpdateRestrictionArea(idx int, ra av.RestrictionArea, success func(any), err func(error)) {
 	// Speculatively make the change locally immediately to reduce perceived latency.
 	if idx <= 100 && idx-1 < len(c.State.UserRestrictionAreas) {
 		c.State.UserRestrictionAreas[idx-1] = ra
@@ -470,7 +470,7 @@ func (c *ControlClient) DeleteRestrictionArea(idx int, success func(any), err fu
 	// Delete locally to reduce latency; note that only user restriction
 	// areas can be deleted, not system ones from the scenario file.
 	if idx-1 < len(c.State.UserRestrictionAreas) {
-		c.State.UserRestrictionAreas[idx-1] = sim.RestrictionArea{Deleted: true}
+		c.State.UserRestrictionAreas[idx-1] = av.RestrictionArea{Deleted: true}
 	}
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
@@ -487,8 +487,8 @@ func (c *ControlClient) GetVideoMapLibrary(filename string) (*av.VideoMapLibrary
 	return &vmf, err
 }
 
-func (c *ControlClient) ControllerAirspace(id string) []sim.ControllerAirspaceVolume {
-	var vols []sim.ControllerAirspaceVolume
+func (c *ControlClient) ControllerAirspace(id string) []av.ControllerAirspaceVolume {
+	var vols []av.ControllerAirspaceVolume
 	for _, pos := range c.State.GetConsolidatedPositions(id) {
 		for _, sub := range util.SortedMapKeys(c.State.Airspace[pos]) {
 			vols = append(vols, c.State.Airspace[pos][sub]...)

@@ -15,7 +15,6 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -731,7 +730,7 @@ func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, pw [2]float32,
 	var text strings.Builder
 	text.WriteString("GEO RESTRICTIONS\n")
 
-	add := func(ra sim.RestrictionArea, idx int) {
+	add := func(ra av.RestrictionArea, idx int) {
 		if ra.Deleted {
 			return
 		}

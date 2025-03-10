@@ -26,7 +26,6 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -1844,7 +1843,7 @@ func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, S
 func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude, magneticVariation float32) (status CommandStatus) {
 	// Find the closest significant point to p1.
 	minDist := float32(1000000)
-	var closest *sim.SignificantPoint
+	var closest *av.SignificantPoint
 	for _, sigpt := range sp.significantPointsSlice {
 		d := math.NMDistance2LL(sigpt.Location, p1)
 		if d < minDist {
@@ -1866,7 +1865,7 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 	sp.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
 
 	// 6-148
-	format := func(sig sim.SignificantPoint) string {
+	format := func(sig av.SignificantPoint) string {
 		d := math.NMDistance2LL(p0, sig.Location)
 		str := ""
 		if d > 1 { // no bearing range if within 1nm

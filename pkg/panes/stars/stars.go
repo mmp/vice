@@ -202,16 +202,16 @@ type STARSPane struct {
 	}
 
 	// An in-progress restriction area.
-	wipRestrictionArea           *sim.RestrictionArea
+	wipRestrictionArea           *av.RestrictionArea
 	wipRestrictionAreaMousePos   [2]float32 // last click position while defining it
 	wipRestrictionAreaMouseMoved bool       // has moved since last click
 
 	// We won't waste the space to serialize these but reconstruct them on load.
-	significantPoints map[string]sim.SignificantPoint
+	significantPoints map[string]av.SignificantPoint
 	// Store them redundantly in a slice so we can sort them and then
 	// search in a consistent order (when we have to do an exhaustive
 	// search).
-	significantPointsSlice []sim.SignificantPoint
+	significantPointsSlice []av.SignificantPoint
 
 	showVFRAirports bool
 	scopeDraw       struct {
@@ -888,7 +888,7 @@ var restrictionAreaHighDPIStipple [32]uint32 = [32]uint32{
 	0,
 }
 
-func raGeomColor(ra *sim.RestrictionArea) renderer.RGB {
+func raGeomColor(ra *av.RestrictionArea) renderer.RGB {
 	return [9]renderer.RGB{
 		renderer.RGBFromUInt8(255, 255, 0), // double up so 0 by default remains yellow but we have 1-based indexing otherwise
 		renderer.RGBFromUInt8(255, 255, 0),
@@ -953,7 +953,7 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 	sp.drawWIPRestrictionArea(ctx, transforms, cb)
 
 	ps := sp.currentPrefs()
-	draw := make(map[int]*sim.RestrictionArea)
+	draw := make(map[int]*av.RestrictionArea)
 	for idx, s := range ps.RestrictionAreaSettings {
 		if !s.Visible {
 			continue
@@ -1145,7 +1145,7 @@ func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
 			return
 		}
 
-		pt := sim.SignificantPoint{
+		pt := av.SignificantPoint{
 			Name:        name,
 			Description: desc,
 			Location:    loc,
@@ -1184,7 +1184,7 @@ func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
 	}
 
 	// Sort the slice
-	slices.SortFunc(sp.significantPointsSlice, func(a, b sim.SignificantPoint) int {
+	slices.SortFunc(sp.significantPointsSlice, func(a, b av.SignificantPoint) int {
 		return strings.Compare(a.Name, b.Name)
 	})
 }
@@ -1265,7 +1265,7 @@ func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 				trk := sp.getTrack(ctx, ac)
 				if sp.AutoTrackDepartures && trk != nil && trk.TrackOwner == "" && ac.Squawk != 0o1200 &&
 					ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.PrimaryTCP {
-					starsFP := sim.MakeSTARSFlightPlan(ac.FlightPlan)
+					starsFP := av.MakeSTARSFlightPlan(ac.FlightPlan)
 					ctx.ControlClient.InitiateTrack(callsign, starsFP, nil, nil) // ignore error...
 				}
 			}

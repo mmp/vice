@@ -14,7 +14,6 @@ import (
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/server"
-	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/mmp/imgui-go/v4"
@@ -350,7 +349,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 			}
 
 			cl := util.DuplicateSlice(c.State.STARSFacilityAdaptation.CoordinationLists)
-			slices.SortFunc(cl, func(a, b sim.CoordinationList) int { return strings.Compare(a.Id, b.Id) })
+			slices.SortFunc(cl, func(a, b av.CoordinationList) int { return strings.Compare(a.Id, b.Id) })
 
 			for _, list := range cl {
 				imgui.TableNextRow()
