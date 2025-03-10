@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
@@ -101,8 +102,8 @@ type SplitLine struct {
 
 func (s *SplitLine) Activate(renderer.Renderer, platform.Platform, *sim.EventStream, *log.Logger) {}
 func (s *SplitLine) Deactivate()                                                                  {}
-func (s *SplitLine) LoadedSim(*sim.ControlClient, sim.State, platform.Platform, *log.Logger)      {}
-func (s *SplitLine) ResetSim(*sim.ControlClient, sim.State, platform.Platform, *log.Logger)       {}
+func (s *SplitLine) LoadedSim(*server.ControlClient, sim.State, platform.Platform, *log.Logger)   {}
+func (s *SplitLine) ResetSim(*server.ControlClient, sim.State, platform.Platform, *log.Logger)    {}
 func (s *SplitLine) CanTakeKeyboardFocus() bool                                                   { return false }
 func (s *SplitLine) Hide() bool                                                                   { return false }
 
@@ -413,7 +414,7 @@ func wmPaneIsPresent(pane Pane, root *DisplayNode) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
+func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, controlClient *server.ControlClient,
 	menuBarHeight float32, lg *log.Logger) renderer.RendererStats {
 	if controlClient == nil {
 		commandBuffer := renderer.GetCommandBuffer()
@@ -643,13 +644,13 @@ func Activate(root *DisplayNode, r renderer.Renderer, p platform.Platform, event
 	})
 }
 
-func LoadedSim(root *DisplayNode, client *sim.ControlClient, state sim.State, pl platform.Platform, lg *log.Logger) {
+func LoadedSim(root *DisplayNode, client *server.ControlClient, state sim.State, pl platform.Platform, lg *log.Logger) {
 	root.VisitPanes(func(p Pane) {
 		p.LoadedSim(client, state, pl, lg)
 	})
 }
 
-func ResetSim(root *DisplayNode, client *sim.ControlClient, state sim.State, pl platform.Platform, lg *log.Logger) {
+func ResetSim(root *DisplayNode, client *server.ControlClient, state sim.State, pl platform.Platform, lg *log.Logger) {
 	root.VisitPanes(func(p Pane) {
 		p.ResetSim(client, state, pl, lg)
 	})

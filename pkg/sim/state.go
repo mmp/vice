@@ -71,8 +71,6 @@ type State struct {
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
 
 	VideoMapLibraryHash []byte
-
-	mapLibrary *av.VideoMapLibrary // just cached per session; not saved to disk.
 }
 
 func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *ScenarioGroup, sc *Scenario,
@@ -392,25 +390,6 @@ func (ss *State) GetSTARSReleaseDepartures() []*av.Aircraft {
 			}
 			return false
 		})
-}
-
-func (s *State) GetVideoMapLibrary(client *ControlClient) (*av.VideoMapLibrary, error) {
-	if s.mapLibrary != nil {
-		return s.mapLibrary, nil
-	}
-
-	filename := s.STARSFacilityAdaptation.VideoMapFile
-	ml, err := av.HashCheckLoadVideoMap(filename, s.VideoMapLibraryHash)
-	if err == nil {
-		s.mapLibrary = ml
-		return ml, nil
-	} else {
-		ml, err = client.GetVideoMapLibrary(filename)
-		if err == nil {
-			s.mapLibrary = ml
-		}
-		return ml, err
-	}
 }
 
 func (s *State) GetControllerVideoMaps() ([]string, []string) {

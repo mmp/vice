@@ -26,6 +26,7 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -43,9 +44,9 @@ var (
 	logLevel          = flag.String("loglevel", "info", "logging level: debug, info, warn, error")
 	logDir            = flag.String("logdir", "", "log file directory")
 	lintScenarios     = flag.Bool("lint", false, "check the validity of the built-in scenarios")
-	server            = flag.Bool("runserver", false, "run vice scenario server")
-	serverPort        = flag.Int("port", sim.ViceServerPort, "port to listen on when running server")
-	serverAddress     = flag.String("server", sim.ViceServerAddress+fmt.Sprintf(":%d", sim.ViceServerPort), "IP address of vice multi-controller server")
+	runServer         = flag.Bool("runserver", false, "run vice scenario server")
+	serverPort        = flag.Int("port", server.ViceServerPort, "port to listen on when running server")
+	serverAddress     = flag.String("server", server.ViceServerAddress+fmt.Sprintf(":%d", server.ViceServerPort), "IP address of vice multi-controller server")
 	scenarioFilename  = flag.String("scenario", "", "filename of JSON file with a scenario definition")
 	videoMapFilename  = flag.String("videomap", "", "filename of JSON file with video map definitions")
 	broadcastMessage  = flag.String("broadcast", "", "message to broadcast to all active clients on the server")
@@ -76,7 +77,7 @@ func main() {
 	}
 
 	// Initialize the logging system first and foremost.
-	lg := log.New(*server, *logLevel, *logDir)
+	lg := log.New(*runServer, *logLevel, *logDir)
 
 	profiler, err := util.CreateProfiler(*cpuprofile, *memprofile)
 	if err != nil {
@@ -85,7 +86,7 @@ func main() {
 	defer profiler.Cleanup()
 
 	if *serverAddress != "" && !strings.Contains(*serverAddress, ":") {
-		*serverAddress += fmt.Sprintf(":%d", sim.ViceServerPort)
+		*serverAddress += fmt.Sprintf(":%d", server.ViceServerPort)
 	}
 
 	if *lintScenarios {
@@ -128,9 +129,9 @@ func main() {
 		}
 		os.Exit(0)
 	} else if *broadcastMessage != "" {
-		sim.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
-	} else if *server {
-		sim.RunServer(*scenarioFilename, *videoMapFilename, *serverPort, lg)
+		server.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
+	} else if *runServer {
+		server.RunServer(*scenarioFilename, *videoMapFilename, *serverPort, lg)
 	} else if *showRoutes != "" {
 		if err := av.PrintCIFPRoutes(*showRoutes); err != nil {
 			lg.Errorf("%s", err)
@@ -165,13 +166,13 @@ func main() {
 
 		config, configErr := LoadOrMakeDefaultConfig(lg)
 
-		var controlClient *sim.ControlClient
-		var mgr *sim.ConnectionManager
+		var controlClient *server.ControlClient
+		var mgr *server.ConnectionManager
 		var err error
 		var simErrorLogger util.ErrorLogger
-		mgr, err = sim.MakeServerConnection(*serverAddress, *scenarioFilename, *videoMapFilename,
+		mgr, err = server.MakeServerConnection(*serverAddress, *scenarioFilename, *videoMapFilename,
 			&simErrorLogger, lg,
-			func(c *sim.ControlClient) { // updated client
+			func(c *server.ControlClient) { // updated client
 				if c != nil {
 					panes.ResetSim(config.DisplayRoot, c, c.State, plat, lg)
 				}
@@ -180,7 +181,7 @@ func main() {
 			},
 			func(err error) {
 				switch err {
-				case sim.ErrRPCVersionMismatch:
+				case server.ErrRPCVersionMismatch:
 					ShowErrorDialog(plat, lg,
 						"This version of vice is incompatible with the vice multi-controller server.\n"+
 							"If you're using an older version of vice, please upgrade to the latest\n"+
@@ -188,7 +189,7 @@ func main() {
 							"thanks for your help testing vice; when the beta is released, the server\n"+
 							"will be updated as well.)")
 
-				case sim.ErrServerDisconnected:
+				case server.ErrServerDisconnected:
 					ShowErrorDialog(plat, lg, "Lost connection to the vice server.")
 					uiShowConnectDialog(mgr, false, config, plat, lg)
 

@@ -1,8 +1,8 @@
-// pkg/sim/server.go
+// pkg/server/server.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package server
 
 import (
 	"bytes"
@@ -20,6 +20,7 @@ import (
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 	"github.com/shirou/gopsutil/cpu"
 )
@@ -31,7 +32,7 @@ const ViceRPCVersion = 23
 type Server struct {
 	*util.RPCClient
 	name        string
-	configs     map[string]map[string]*Configuration
+	configs     map[string]map[string]*sim.Configuration
 	runningSims map[string]*RemoteSim
 }
 
@@ -45,6 +46,11 @@ type RemoteSim struct {
 	CoveredPositions   map[string]av.Controller
 }
 
+type Connection struct {
+	SimState sim.State
+	SimProxy *proxy
+}
+
 type serverConnection struct {
 	Server *Server
 	Err    error
@@ -54,7 +60,7 @@ func (s *Server) Close() error {
 	return s.RPCClient.Close()
 }
 
-func (s *Server) GetConfigs() map[string]map[string]*Configuration {
+func (s *Server) GetConfigs() map[string]map[string]*sim.Configuration {
 	return s.configs
 }
 
@@ -161,14 +167,14 @@ func LaunchLocalServer(extraScenario string, extraVideoMap string, e *util.Error
 }
 
 func runServer(l net.Listener, isLocal bool, extraScenario string, extraVideoMap string,
-	e *util.ErrorLogger, lg *log.Logger) chan map[string]map[string]*Configuration {
+	e *util.ErrorLogger, lg *log.Logger) chan map[string]map[string]*sim.Configuration {
 	scenarioGroups, simConfigurations, mapManifests :=
-		LoadScenarioGroups(isLocal, extraScenario, extraVideoMap, e, lg)
+		sim.LoadScenarioGroups(isLocal, extraScenario, extraVideoMap, e, lg)
 	if e.HaveErrors() {
 		return nil
 	}
 
-	ch := make(chan map[string]map[string]*Configuration, 1)
+	ch := make(chan map[string]map[string]*sim.Configuration, 1)
 
 	server := func() {
 		server := rpc.NewServer()

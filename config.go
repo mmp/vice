@@ -19,6 +19,7 @@ import (
 	"github.com/mmp/vice/pkg/panes/stars"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -124,7 +125,7 @@ func (c *Config) Save(lg *log.Logger) error {
 }
 
 func (gc *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
-	c *sim.ControlClient, saveSim bool, lg *log.Logger) bool {
+	c *server.ControlClient, saveSim bool, lg *log.Logger) bool {
 	gc.Sim = nil
 	gc.PrimaryTCP = ""
 	if saveSim {

@@ -1,8 +1,8 @@
-// pkg/sim/client.go
+// pkg/server/client.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package server
 
 import (
 	"fmt"
@@ -13,6 +13,7 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -29,14 +30,14 @@ type ControlClient struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
-	State
+	sim.State
 }
 
 func (c *ControlClient) RPCClient() *util.RPCClient {
 	return c.proxy.Client
 }
 
-func NewControlClient(ss State, controllerToken string, client *util.RPCClient, lg *log.Logger) *ControlClient {
+func NewControlClient(ss sim.State, controllerToken string, client *util.RPCClient, lg *log.Logger) *ControlClient {
 	return &ControlClient{
 		State: ss,
 		lg:    lg,
@@ -70,14 +71,14 @@ func (c *ControlClient) SetSquawkAutomatic(callsign string) error {
 	return nil // UNIMPLEMENTED
 }
 
-func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *EventStream) {
+func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *sim.EventStream) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.TakeOrReturnLaunchControl(),
 			IssueTime: time.Now(),
 			OnErr: func(e error) {
-				eventStream.Post(Event{
-					Type:    StatusMessageEvent,
+				eventStream.Post(sim.Event{
+					Type:    sim.StatusMessageEvent,
 					Message: e.Error(),
 				})
 			},
@@ -92,7 +93,7 @@ func (c *ControlClient) LaunchAircraft(ac av.Aircraft) {
 		})
 }
 
-func (c *ControlClient) SendGlobalMessage(global GlobalMessage) {
+func (c *ControlClient) SendGlobalMessage(global sim.GlobalMessage) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.GlobalMessage(global),
@@ -185,7 +186,7 @@ func (c *ControlClient) SetGlobalLeaderLine(callsign string, dir *math.CardinalO
 		})
 }
 
-func (c *ControlClient) CreateUnsupportedTrack(callsign string, ut *UnsupportedTrack,
+func (c *ControlClient) CreateUnsupportedTrack(callsign string, ut *sim.UnsupportedTrack,
 	success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
@@ -196,7 +197,7 @@ func (c *ControlClient) CreateUnsupportedTrack(callsign string, ut *UnsupportedT
 		})
 }
 
-func (c *ControlClient) AutoAssociateFP(callsign string, fp *STARSFlightPlan, success func(any),
+func (c *ControlClient) AutoAssociateFP(callsign string, fp *sim.STARSFlightPlan, success func(any),
 	err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
@@ -207,7 +208,7 @@ func (c *ControlClient) AutoAssociateFP(callsign string, fp *STARSFlightPlan, su
 		})
 }
 
-func (c *ControlClient) UploadFlightPlan(fp *STARSFlightPlan, typ int, success func(any), err func(error)) {
+func (c *ControlClient) UploadFlightPlan(fp *sim.STARSFlightPlan, typ int, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.UploadFlightPlan(typ, fp),
@@ -217,7 +218,7 @@ func (c *ControlClient) UploadFlightPlan(fp *STARSFlightPlan, typ int, success f
 		})
 }
 
-func (c *ControlClient) InitiateTrack(callsign string, fp *STARSFlightPlan, success func(any),
+func (c *ControlClient) InitiateTrack(callsign string, fp *sim.STARSFlightPlan, success func(any),
 	err func(error)) {
 	// Modifying locally is not canonical but improves perceived latency in
 	// the common case; the RPC may fail, though that's fine; the next
@@ -431,7 +432,7 @@ func (c *ControlClient) Disconnect() {
 
 // Note that the success callback is passed an integer, giving the index of
 // the newly-created restriction area.
-func (c *ControlClient) CreateRestrictionArea(ra RestrictionArea, success func(int), err func(error)) {
+func (c *ControlClient) CreateRestrictionArea(ra sim.RestrictionArea, success func(int), err func(error)) {
 	// Speculatively make the change locally immediately to reduce perceived latency.
 	if len(c.State.UserRestrictionAreas) < 100 {
 		c.State.UserRestrictionAreas = append(c.State.UserRestrictionAreas, ra)
@@ -447,7 +448,7 @@ func (c *ControlClient) CreateRestrictionArea(ra RestrictionArea, success func(i
 		})
 }
 
-func (c *ControlClient) UpdateRestrictionArea(idx int, ra RestrictionArea, success func(any), err func(error)) {
+func (c *ControlClient) UpdateRestrictionArea(idx int, ra sim.RestrictionArea, success func(any), err func(error)) {
 	// Speculatively make the change locally immediately to reduce perceived latency.
 	if idx <= 100 && idx-1 < len(c.State.UserRestrictionAreas) {
 		c.State.UserRestrictionAreas[idx-1] = ra
@@ -469,7 +470,7 @@ func (c *ControlClient) DeleteRestrictionArea(idx int, success func(any), err fu
 	// Delete locally to reduce latency; note that only user restriction
 	// areas can be deleted, not system ones from the scenario file.
 	if idx-1 < len(c.State.UserRestrictionAreas) {
-		c.State.UserRestrictionAreas[idx-1] = RestrictionArea{Deleted: true}
+		c.State.UserRestrictionAreas[idx-1] = sim.RestrictionArea{Deleted: true}
 	}
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
@@ -486,8 +487,8 @@ func (c *ControlClient) GetVideoMapLibrary(filename string) (*av.VideoMapLibrary
 	return &vmf, err
 }
 
-func (c *ControlClient) ControllerAirspace(id string) []ControllerAirspaceVolume {
-	var vols []ControllerAirspaceVolume
+func (c *ControlClient) ControllerAirspace(id string) []sim.ControllerAirspaceVolume {
+	var vols []sim.ControllerAirspaceVolume
 	for _, pos := range c.State.GetConsolidatedPositions(id) {
 		for _, sub := range util.SortedMapKeys(c.State.Airspace[pos]) {
 			vols = append(vols, c.State.Airspace[pos][sub]...)
@@ -496,7 +497,7 @@ func (c *ControlClient) ControllerAirspace(id string) []ControllerAirspaceVolume
 	return vols
 }
 
-func (c *ControlClient) GetUpdates(eventStream *EventStream, onErr func(error)) {
+func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, onErr func(error)) {
 	if c.proxy == nil {
 		return
 	}
@@ -520,7 +521,7 @@ func (c *ControlClient) GetUpdates(eventStream *EventStream, onErr func(error)) 
 		}
 		c.lastUpdateRequest = time.Now()
 
-		wu := &WorldUpdate{}
+		wu := &sim.WorldUpdate{}
 		c.updateCall = &util.PendingCall{
 			Call:      c.proxy.GetWorldUpdate(wu),
 			IssueTime: time.Now(),
@@ -538,7 +539,7 @@ func (c *ControlClient) GetUpdates(eventStream *EventStream, onErr func(error)) 
 	}
 }
 
-func (c *ControlClient) UpdateWorld(wu *WorldUpdate, eventStream *EventStream) {
+func (c *ControlClient) UpdateWorld(wu *sim.WorldUpdate, eventStream *sim.EventStream) {
 	c.State.Aircraft = wu.Aircraft
 	if wu.Controllers != nil {
 		c.State.Controllers = wu.Controllers
@@ -564,7 +565,7 @@ func (c *ControlClient) UpdateWorld(wu *WorldUpdate, eventStream *EventStream) {
 	}
 }
 
-func (c *ControlClient) checkPendingRPCs(eventStream *EventStream, onErr func(error)) {
+func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream, onErr func(error)) {
 	c.pendingCalls = util.FilterSlice(c.pendingCalls,
 		func(call *util.PendingCall) bool { return !call.CheckFinished() })
 
@@ -575,10 +576,10 @@ func (c *ControlClient) checkPendingRPCs(eventStream *EventStream, onErr func(er
 	}
 }
 
-func checkTimeout(call *util.PendingCall, eventStream *EventStream, onErr func(error)) bool {
+func checkTimeout(call *util.PendingCall, eventStream *sim.EventStream, onErr func(error)) bool {
 	if time.Since(call.IssueTime) > 5*time.Second {
-		eventStream.Post(Event{
-			Type:    StatusMessageEvent,
+		eventStream.Post(sim.Event{
+			Type:    sim.StatusMessageEvent,
 			Message: "No response from server for over 5 seconds. Network connection may be lost.",
 		})
 		if onErr != nil {
@@ -593,7 +594,7 @@ func (c *ControlClient) Connected() bool {
 	return c.proxy != nil
 }
 
-func (c *ControlClient) GetSerializeSim() (*Sim, error) {
+func (c *ControlClient) GetSerializeSim() (*sim.Sim, error) {
 	return c.proxy.GetSerializeSim()
 }
 
@@ -619,7 +620,7 @@ func (c *ControlClient) SetSimRate(r float32) {
 	c.SimRate = r // so the UI is well-behaved...
 }
 
-func (c *ControlClient) SetLaunchConfig(lc LaunchConfig) {
+func (c *ControlClient) SetLaunchConfig(lc sim.LaunchConfig) {
 	c.pendingCalls = append(c.pendingCalls, &util.PendingCall{
 		Call:      c.proxy.SetLaunchConfig(lc),
 		IssueTime: time.Now(),

@@ -1,14 +1,15 @@
-// pkg/sim/connectmgr.go
+// pkg/server/connectmgr.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package server
 
 import (
 	"log/slog"
 	"time"
 
 	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -47,7 +48,7 @@ func MakeServerConnection(address, additionalScenario, additionalVideoMap string
 	return cm, err
 }
 
-func (cm *ConnectionManager) NewConnection(state State, controllerToken string, client *util.RPCClient) {
+func (cm *ConnectionManager) NewConnection(state sim.State, controllerToken string, client *util.RPCClient) {
 	cm.newSimConnectionChan <- Connection{
 		SimState: state,
 		SimProxy: &proxy{
@@ -57,7 +58,7 @@ func (cm *ConnectionManager) NewConnection(state State, controllerToken string, 
 	}
 }
 
-func (cm *ConnectionManager) LoadLocalSim(s *Sim, lg *log.Logger) (*ControlClient, error) {
+func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlClient, error) {
 	if cm.LocalServer == nil {
 		cm.LocalServer = <-cm.localServerChan
 	}
@@ -103,7 +104,7 @@ func (cm *ConnectionManager) Disconnect() {
 	}
 }
 
-func (cm *ConnectionManager) Update(es *EventStream, lg *log.Logger) {
+func (cm *ConnectionManager) Update(es *sim.EventStream, lg *log.Logger) {
 	if cm.LocalServer == nil {
 		cm.LocalServer = <-cm.localServerChan
 	}
@@ -147,8 +148,8 @@ func (cm *ConnectionManager) Update(es *EventStream, lg *log.Logger) {
 	if cm.client != nil {
 		cm.client.GetUpdates(es,
 			func(err error) {
-				es.Post(Event{
-					Type:    StatusMessageEvent,
+				es.Post(sim.Event{
+					Type:    sim.StatusMessageEvent,
 					Message: "Error getting update from server: " + err.Error(),
 				})
 				if err == ErrRPCTimeout || util.IsRPCServerError(err) {

@@ -24,6 +24,7 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -42,14 +43,14 @@ type NewSimConfiguration struct {
 	lastRemoteSimsUpdate time.Time
 	updateRemoteSimsCall *util.PendingCall
 
-	mgr            *sim.ConnectionManager
-	selectedServer *sim.Server
+	mgr            *server.ConnectionManager
+	selectedServer *server.Server
 	defaultTRACON  *string
 	tfrCache       *av.TFRCache
 	lg             *log.Logger
 }
 
-func MakeNewSimConfiguration(mgr *sim.ConnectionManager, defaultTRACON *string, tfrCache *av.TFRCache, lg *log.Logger) *NewSimConfiguration {
+func MakeNewSimConfiguration(mgr *server.ConnectionManager, defaultTRACON *string, tfrCache *av.TFRCache, lg *log.Logger) *NewSimConfiguration {
 	c := &NewSimConfiguration{
 		lg:                  lg,
 		mgr:                 mgr,
@@ -68,7 +69,7 @@ func (c *NewSimConfiguration) updateRemoteSims() {
 	// FIXME: this should live in a method in pkg/sim
 	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && c.mgr.RemoteServer != nil {
 		c.lastRemoteSimsUpdate = time.Now()
-		var rs map[string]*sim.RemoteSim
+		var rs map[string]*server.RemoteSim
 		c.updateRemoteSimsCall = &util.PendingCall{
 			Call:      c.mgr.RemoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
 			IssueTime: time.Now(),
@@ -144,7 +145,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 
 	if c.DisplayError != nil {
 		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .5, .5, 1})
-		if errors.Is(c.DisplayError, sim.ErrRPCTimeout) || util.IsRPCServerError(c.DisplayError) {
+		if errors.Is(c.DisplayError, server.ErrRPCTimeout) || util.IsRPCServerError(c.DisplayError) {
 			imgui.Text("Unable to reach vice server")
 		} else {
 			imgui.Text(c.DisplayError.Error())
@@ -591,11 +592,11 @@ func (c *NewSimConfiguration) Start() error {
 	c.TFRs = c.tfrCache.TFRsForTRACON(c.TRACONName, c.lg)
 
 	// FIXME: if we're RPCing with a string method name this code should live in pkg/sim
-	var result sim.NewSimResult
+	var result server.NewSimResult
 	if err := c.selectedServer.CallWithTimeout("SimManager.New", c.NewSimConfiguration, &result); err != nil {
-		err = sim.TryDecodeError(err)
+		err = server.TryDecodeError(err)
 
-		if err == sim.ErrRPCTimeout || err == sim.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
+		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
 			// loop try to reconnect.
 			c.mgr.RemoteServer = nil
@@ -868,7 +869,7 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 ///////////////////////////////////////////////////////////////////////////
 
 type LaunchControlWindow struct {
-	controlClient       *sim.ControlClient
+	controlClient       *server.ControlClient
 	departures          []*LaunchDeparture
 	arrivalsOverflights []*LaunchArrivalOverflight
 	lg                  *log.Logger
@@ -905,7 +906,7 @@ func (la *LaunchArrivalOverflight) Reset() {
 	la.TotalLaunches = 0
 }
 
-func MakeLaunchControlWindow(controlClient *sim.ControlClient, lg *log.Logger) *LaunchControlWindow {
+func MakeLaunchControlWindow(controlClient *server.ControlClient, lg *log.Logger) *LaunchControlWindow {
 	lc := &LaunchControlWindow{controlClient: controlClient}
 
 	config := &controlClient.LaunchConfig
@@ -1329,7 +1330,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	}
 }
 
-func drawScenarioInfoWindow(config *Config, c *sim.ControlClient, p platform.Platform, lg *log.Logger) bool {
+func drawScenarioInfoWindow(config *Config, c *server.ControlClient, p platform.Platform, lg *log.Logger) bool {
 	// Ensure that the window is wide enough to show the description
 	sz := imgui.CalcTextSize(c.State.SimDescription, false, 0)
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})

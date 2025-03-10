@@ -31,10 +31,6 @@ type EventStream struct {
 	lg            *log.Logger
 }
 
-type EventPoster interface {
-	PostEvent(Event)
-}
-
 type EventsSubscription struct {
 	stream *EventStream
 	// offset is offset in the EventStream stream array up to which the

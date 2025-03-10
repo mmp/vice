@@ -18,6 +18,7 @@ import (
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -2103,7 +2104,7 @@ func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, ac *av.Aircraft, cm
 		func(errStr string, remaining string) {
 			if errStr != "" {
 				sp.previewAreaInput = remaining
-				if err := sim.TryDecodeErrorString(errStr); err != nil {
+				if err := server.TryDecodeErrorString(errStr); err != nil {
 					err = GetSTARSError(err, ctx.Lg)
 					sp.displayError(err, ctx)
 				} else {

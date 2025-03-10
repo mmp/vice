@@ -1,19 +1,19 @@
-// pkg/sim/manager.go
+// pkg/server/manager.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package server
 
 import (
 	"errors"
 	"log/slog"
 	"os"
-	"sort"
 	"strings"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -21,24 +21,24 @@ import (
 // SimManager
 
 type SimManager struct {
-	scenarioGroups       map[string]map[string]*ScenarioGroup
-	configs              map[string]map[string]*Configuration
-	activeSims           map[string]*Sim
-	controllerTokenToSim map[string]*Sim
+	scenarioGroups       map[string]map[string]*sim.ScenarioGroup
+	configs              map[string]map[string]*sim.Configuration
+	activeSims           map[string]*sim.Sim
+	controllerTokenToSim map[string]*sim.Sim
 	mu                   util.LoggingMutex
 	mapManifests         map[string]*av.VideoMapManifest
 	startTime            time.Time
 	lg                   *log.Logger
 }
 
-func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
-	simConfigurations map[string]map[string]*Configuration, manifests map[string]*av.VideoMapManifest,
+func NewSimManager(scenarioGroups map[string]map[string]*sim.ScenarioGroup,
+	simConfigurations map[string]map[string]*sim.Configuration, manifests map[string]*av.VideoMapManifest,
 	lg *log.Logger) *SimManager {
 	return &SimManager{
 		scenarioGroups:       scenarioGroups,
 		configs:              simConfigurations,
-		activeSims:           make(map[string]*Sim),
-		controllerTokenToSim: make(map[string]*Sim),
+		activeSims:           make(map[string]*sim.Sim),
+		controllerTokenToSim: make(map[string]*sim.Sim),
 		mapManifests:         manifests,
 		startTime:            time.Now(),
 		lg:                   lg,
@@ -46,13 +46,13 @@ func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
 }
 
 type NewSimResult struct {
-	SimState        *State
+	SimState        *sim.State
 	ControllerToken string
 }
 
-func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
-	if config.NewSimType == NewSimCreateLocal || config.NewSimType == NewSimCreateRemote {
-		sim := NewSim(*config, sm.scenarioGroups, config.NewSimType == NewSimCreateLocal, sm.mapManifests, sm.lg)
+func (sm *SimManager) New(config *sim.NewSimConfiguration, result *NewSimResult) error {
+	if config.NewSimType == sim.NewSimCreateLocal || config.NewSimType == sim.NewSimCreateRemote {
+		sim := sim.NewSim(*config, sm.scenarioGroups, config.NewSimType == sim.NewSimCreateLocal, sm.mapManifests, sm.lg)
 		return sm.Add(sim, result, true)
 	} else {
 		sm.mu.Lock(sm.lg)
@@ -85,11 +85,11 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 	}
 }
 
-func (sm *SimManager) AddLocal(sim *Sim, result *NewSimResult) error {
+func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
 	return sm.Add(sim, result, false)
 }
 
-func (sm *SimManager) Add(sim *Sim, result *NewSimResult, prespawn bool) error {
+func (sm *SimManager) Add(sim *sim.Sim, result *NewSimResult, prespawn bool) error {
 	if sim.State == nil {
 		return errors.New("incomplete Sim; nil *State")
 	}
@@ -120,7 +120,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult, prespawn bool) error {
 
 	// Run prespawn after the primary controller is signed in.
 	if prespawn {
-		sim.prespawn()
+		sim.Prespawn()
 	}
 
 	go func() {
@@ -154,7 +154,7 @@ func (sm *SimManager) Add(sim *Sim, result *NewSimResult, prespawn bool) error {
 }
 
 type SignOnResult struct {
-	Configurations map[string]map[string]*Configuration
+	Configurations map[string]map[string]*sim.Configuration
 	RunningSims    map[string]*RemoteSim
 }
 
@@ -182,7 +182,6 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 
 	running := make(map[string]*RemoteSim)
 	for name, s := range sm.activeSims {
-		s.mu.Lock(s.lg)
 		rs := &RemoteSim{
 			GroupName:          s.ScenarioGroup,
 			ScenarioName:       s.Scenario,
@@ -193,19 +192,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 			CoveredPositions:   make(map[string]av.Controller),
 		}
 
-		// Figure out which positions are available; start with all of the possible ones,
-		// then delete those that are active
-		rs.AvailablePositions[s.State.PrimaryController] = *s.SignOnPositions[s.State.PrimaryController]
-		for id := range s.State.MultiControllers {
-			rs.AvailablePositions[id] = *s.SignOnPositions[id]
-		}
-		for _, ctrl := range s.controllers {
-			delete(rs.AvailablePositions, ctrl.Id)
-			if wc, ok := s.State.Controllers[ctrl.Id]; ok && wc.IsHuman {
-				rs.CoveredPositions[ctrl.Id] = *s.SignOnPositions[ctrl.Id]
-			}
-		}
-		s.mu.Unlock(s.lg)
+		rs.AvailablePositions, rs.CoveredPositions = s.GetAvailableCoveredPositions()
 
 		running[name] = rs
 	}
@@ -216,7 +203,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 
 const simIdleLimit = 4 * time.Hour
 
-func (sm *SimManager) SimShouldExit(sim *Sim) bool {
+func (sm *SimManager) SimShouldExit(sim *sim.Sim) bool {
 	if sim.IdleTime() < simIdleLimit {
 		return false
 	}
@@ -233,7 +220,7 @@ func (sm *SimManager) SimShouldExit(sim *Sim) bool {
 	return nIdle > 10
 }
 
-func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
+func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
@@ -248,7 +235,7 @@ func (sm *SimManager) GetSerializeSim(token string, s *Sim) error {
 	return nil
 }
 
-func (sm *SimManager) ControllerTokenToSim(token string) (*Sim, bool) {
+func (sm *SimManager) ControllerTokenToSim(token string) (*sim.Sim, bool) {
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
@@ -283,22 +270,17 @@ func (sm *SimManager) getSimStatus() []simStatus {
 
 	var ss []simStatus
 	for _, name := range util.SortedMapKeys(sm.activeSims) {
-		sim := sm.activeSims[name]
+		s := sm.activeSims[name]
 		status := simStatus{
 			Name:             name,
-			Config:           sim.Scenario,
-			IdleTime:         sim.IdleTime().Round(time.Second),
-			TotalDepartures:  sim.TotalDepartures,
-			TotalArrivals:    sim.TotalArrivals,
-			TotalOverflights: sim.TotalOverflights,
+			Config:           s.Scenario,
+			IdleTime:         s.IdleTime().Round(time.Second),
+			TotalDepartures:  s.TotalDepartures,
+			TotalArrivals:    s.TotalArrivals,
+			TotalOverflights: s.TotalOverflights,
 		}
 
-		var controllers []string
-		for _, ctrl := range sim.controllers {
-			controllers = append(controllers, ctrl.Id)
-		}
-		sort.Strings(controllers)
-		status.Controllers = strings.Join(controllers, ", ")
+		status.Controllers = strings.Join(s.ActiveControllers(), ", ")
 
 		ss = append(ss, status)
 	}
@@ -327,15 +309,11 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 
 	sm.lg.Infof("Broadcasting message: %s", m.Message)
 
-	for _, sim := range sm.activeSims {
-		sim.mu.Lock(sim.lg)
-
-		sim.eventStream.Post(Event{
-			Type:    ServerBroadcastMessageEvent,
+	for _, s := range sm.activeSims {
+		s.PostEvent(sim.Event{
+			Type:    sim.ServerBroadcastMessageEvent,
 			Message: m.Message,
 		})
-
-		sim.mu.Unlock(sim.lg)
 	}
 	return nil
 }

@@ -11,6 +11,7 @@ import (
 	"log/slog"
 	"maps"
 	"slices"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -145,11 +146,6 @@ const (
 
 func MakeNewSimConfiguration() NewSimConfiguration {
 	return NewSimConfiguration{NewSimName: rand.AdjectiveNoun()}
-}
-
-type Connection struct {
-	SimState State
-	SimProxy *proxy
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -532,7 +528,45 @@ func (s *Sim) TogglePause(token string) error {
 }
 
 func (s *Sim) PostEvent(e Event) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
 	s.eventStream.Post(e)
+}
+
+func (s *Sim) ActiveControllers() []string {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	var controllers []string
+	for _, ctrl := range s.controllers {
+		controllers = append(controllers, ctrl.Id)
+	}
+	sort.Strings(controllers)
+	return controllers
+}
+
+func (s *Sim) GetAvailableCoveredPositions() (map[string]av.Controller, map[string]av.Controller) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	available := make(map[string]av.Controller)
+	covered := make(map[string]av.Controller)
+
+	// Figure out which positions are available; start with all of the possible ones,
+	// then delete those that are active
+	available[s.State.PrimaryController] = *s.SignOnPositions[s.State.PrimaryController]
+	for id := range s.State.MultiControllers {
+		available[id] = *s.SignOnPositions[id]
+	}
+	for _, ctrl := range s.controllers {
+		delete(available, ctrl.Id)
+		if wc, ok := s.State.Controllers[ctrl.Id]; ok && wc.IsHuman {
+			covered[ctrl.Id] = *s.SignOnPositions[ctrl.Id]
+		}
+	}
+
+	return available, covered
 }
 
 type GlobalMessage struct {
@@ -841,11 +875,11 @@ func (s *Sim) updateState() {
 				}
 
 				msg := "departing " + airportName + ", " + ac.Nav.DepartureMessage()
-				PostRadioEvents(ac.Callsign, []av.RadioTransmission{av.RadioTransmission{
+				s.postRadioEvents(ac.Callsign, []av.RadioTransmission{av.RadioTransmission{
 					Controller: ctrl,
 					Message:    msg,
 					Type:       av.RadioTransmissionContact,
-				}}, s)
+				}})
 
 				// Clear this out so we only send one contact message
 				ac.DepartureContactAltitude = 0
@@ -881,7 +915,7 @@ func (s *Sim) goAround(ac *av.Aircraft) {
 	// transmission goes to the right controller.
 	ac.ControllingController = s.State.DepartureController(ac, s.lg)
 	rt := ac.GoAround()
-	PostRadioEvents(ac.Callsign, rt, s)
+	s.postRadioEvents(ac.Callsign, rt)
 
 	// If it was handed off to tower, hand it back to us
 	if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
@@ -889,7 +923,7 @@ func (s *Sim) goAround(ac *av.Aircraft) {
 		if ac.HandoffTrackController == "" {
 			ac.HandoffTrackController = ac.ApproachController
 		}
-		s.PostEvent(Event{
+		s.eventStream.Post(Event{
 			Type:           OfferedHandoffEvent,
 			Callsign:       ac.Callsign,
 			FromController: ac.TrackingController,
@@ -898,9 +932,9 @@ func (s *Sim) goAround(ac *av.Aircraft) {
 	}
 }
 
-func PostRadioEvents(from string, transmissions []av.RadioTransmission, ep EventPoster) {
+func (s *Sim) postRadioEvents(from string, transmissions []av.RadioTransmission) {
 	for _, rt := range transmissions {
-		ep.PostEvent(Event{
+		s.eventStream.Post(Event{
 			Type:                  RadioTransmissionEvent,
 			Callsign:              from,
 			ToController:          rt.Controller,
@@ -949,7 +983,7 @@ func (s *Sim) controllerIsSignedIn(id string) bool {
 	return false
 }
 
-func (s *Sim) prespawn() {
+func (s *Sim) Prespawn() {
 	s.lg.Info("starting aircraft prespawn")
 
 	// Prime the pump before the user gets involved
@@ -1792,7 +1826,7 @@ func (s *Sim) dispatchCommand(token string, callsign string,
 			s.lg.Info("dispatch_command", slog.String("callsign", ac.Callsign),
 				slog.Any("prepost_aircraft", []av.Aircraft{preAc, *ac}),
 				slog.Any("radio_transmissions", radioTransmissions))
-			PostRadioEvents(ac.Callsign, radioTransmissions, s)
+			s.postRadioEvents(ac.Callsign, radioTransmissions)
 			return nil
 		}
 	}
@@ -1834,14 +1868,14 @@ func (s *Sim) dispatchTrackingCommand(token string, callsign string,
 		cmd)
 }
 
-func (s *Sim) GlobalMessage(global GlobalMessageArgs) error {
+func (s *Sim) GlobalMessage(controller, message string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	s.eventStream.Post(Event{
 		Type:           GlobalMessageEvent,
-		Message:        global.Message,
-		FromController: global.FromController,
+		Message:        message,
+		FromController: controller,
 	})
 
 	return nil
@@ -3358,7 +3392,7 @@ func (s *Sim) processEnqueued() {
 						Message:    ac.ContactMessage(s.ReportingPoints),
 						Type:       av.RadioTransmissionContact,
 					}}
-					PostRadioEvents(c.Callsign, r, s)
+					s.postRadioEvents(c.Callsign, r)
 
 					// For departures handed off to virtual controllers,
 					// enqueue climbing them to cruise sending them direct

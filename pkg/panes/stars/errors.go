@@ -10,6 +10,7 @@ import (
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 )
 
@@ -63,7 +64,6 @@ var (
 
 var starsErrorRemap = map[error]*STARSError{
 	sim.ErrAircraftAlreadyReleased:     ErrSTARSDuplicateCommand,
-	sim.ErrAircraftNotReleased:         ErrSTARSIllegalFlight,
 	sim.ErrBeaconMismatch:              ErrSTARSBeaconMismatch,
 	av.ErrClearedForUnexpectedApproach: ErrSTARSIllegalValue,
 	av.ErrFixNotInRoute:                ErrSTARSIllegalFix,
@@ -71,7 +71,7 @@ var starsErrorRemap = map[error]*STARSError{
 	sim.ErrIllegalFunction:             ErrSTARSIllegalFunction,
 	av.ErrInvalidAltitude:              ErrSTARSIllegalValue,
 	av.ErrInvalidApproach:              ErrSTARSIllegalValue,
-	sim.ErrInvalidCommandSyntax:        ErrSTARSCommandFormat,
+	server.ErrInvalidCommandSyntax:     ErrSTARSCommandFormat,
 	av.ErrInvalidController:            ErrSTARSIllegalPosition,
 	sim.ErrInvalidDepartureController:  ErrSTARSIllegalFunction,
 	av.ErrInvalidFacility:              ErrSTARSIllegalTrack,
@@ -101,7 +101,7 @@ func GetSTARSError(e error, lg *log.Logger) *STARSError {
 	}
 
 	if _, ok := e.(rpc.ServerError); ok {
-		e = sim.TryDecodeError(e)
+		e = server.TryDecodeError(e)
 	}
 
 	if se, ok := starsErrorRemap[e]; ok {

@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -171,10 +172,10 @@ func (fsp *FlightStripPane) possiblyAddAircraft(ss *sim.State, ac *av.Aircraft) 
 	}
 }
 
-func (fsp *FlightStripPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
 
-func (fsp *FlightStripPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	fsp.strips = nil
 	fsp.addedAircraft = make(map[string]interface{})
 	fsp.CIDs = make(map[string]int)

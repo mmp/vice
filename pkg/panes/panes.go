@@ -13,6 +13,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
@@ -26,10 +27,10 @@ type Pane interface {
 	Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger)
 
 	// LoadedSim is called when vice is restarted and a Sim is loaded from disk.
-	LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
+	LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
 
 	// ResetSim is called when a brand new Sim is launched
-	ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
+	ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
 
 	CanTakeKeyboardFocus() bool
 	Hide() bool
@@ -42,7 +43,7 @@ type UIDrawer interface {
 }
 
 type InfoWindowDrawer interface {
-	DrawInfo(c *sim.ControlClient, p platform.Platform, lg *log.Logger)
+	DrawInfo(c *server.ControlClient, p platform.Platform, lg *log.Logger)
 }
 
 type KeyboardFocus interface {
@@ -89,7 +90,7 @@ type Context struct {
 
 	KeyboardFocus KeyboardFocus
 
-	ControlClient *sim.ControlClient
+	ControlClient *server.ControlClient
 }
 
 func (ctx *Context) InitializeMouse(fullDisplayExtent math.Extent2D, p platform.Platform) {
@@ -154,9 +155,9 @@ func init() {
 }
 
 func (ep *EmptyPane) Activate(renderer.Renderer, platform.Platform, *sim.EventStream, *log.Logger) {}
-func (ep *EmptyPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (ep *EmptyPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
-func (ep *EmptyPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (ep *EmptyPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
 func (ep *EmptyPane) CanTakeKeyboardFocus() bool { return false }
 func (ep *EmptyPane) Hide() bool                 { return false }

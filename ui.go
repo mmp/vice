@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -372,7 +373,7 @@ func uiCloseModalDialog(d *ModalDialogBox) {
 
 }
 
-func uiShowConnectDialog(mgr *sim.ConnectionManager, allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
+func uiShowConnectDialog(mgr *server.ConnectionManager, allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
 	client := &ConnectModalClient{
 		mgr:         mgr,
 		lg:          lg,
@@ -410,8 +411,8 @@ func uiEndDisable(b bool) {
 	}
 }
 
-func uiDraw(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
-	controlClient *sim.ControlClient, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
+func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
+	controlClient *server.ControlClient, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -562,7 +563,7 @@ func uiDraw(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r r
 	return r.RenderCommandBuffer(cb)
 }
 
-func uiResetControlClient(c *sim.ControlClient) {
+func uiResetControlClient(c *server.ControlClient) {
 	ui.launchControlWindow = nil
 }
 
@@ -672,7 +673,7 @@ func (m *ModalDialogBox) Draw() {
 }
 
 type ConnectModalClient struct {
-	mgr         *sim.ConnectionManager
+	mgr         *server.ConnectionManager
 	lg          *log.Logger
 	simConfig   *NewSimConfiguration
 	allowCancel bool
@@ -1286,7 +1287,7 @@ which must be 3 digits (e.g., *040*).`},
 }
 
 // draw the windows that shows the available keyboard commands
-func uiDrawKeyboardWindow(c *sim.ControlClient, config *Config) {
+func uiDrawKeyboardWindow(c *server.ControlClient, config *Config) {
 	if !keyboardWindowVisible {
 		return
 	}
@@ -1534,8 +1535,8 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 }
 
 type MissingPrimaryModalClient struct {
-	mgr           *sim.ConnectionManager
-	controlClient *sim.ControlClient
+	mgr           *server.ConnectionManager
+	controlClient *server.ControlClient
 }
 
 func (mp *MissingPrimaryModalClient) Title() string {
@@ -1563,7 +1564,7 @@ func (mp *MissingPrimaryModalClient) Draw() int {
 	return -1
 }
 
-func uiDrawMissingPrimaryDialog(mgr *sim.ConnectionManager, c *sim.ControlClient, p platform.Platform) {
+func uiDrawMissingPrimaryDialog(mgr *server.ConnectionManager, c *server.ControlClient, p platform.Platform) {
 	if _, ok := c.Controllers[c.PrimaryController]; ok {
 		if ui.missingPrimaryDialog != nil {
 			uiCloseModalDialog(ui.missingPrimaryDialog)
@@ -1580,7 +1581,7 @@ func uiDrawMissingPrimaryDialog(mgr *sim.ConnectionManager, c *sim.ControlClient
 	}
 }
 
-func uiDrawSettingsWindow(c *sim.ControlClient, config *Config, p platform.Platform) {
+func uiDrawSettingsWindow(c *server.ControlClient, config *Config, p platform.Platform) {
 	if !ui.showSettings {
 		return
 	}

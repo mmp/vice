@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -220,6 +221,8 @@ type STARSPane struct {
 		overflights map[string]map[int]bool               // group->index
 		airspace    map[string]map[string]bool            // ctrl -> volume name
 	}
+
+	mapLibrary *av.VideoMapLibrary // just cached per session; not saved to disk.
 }
 
 type PointOutControllers struct {
@@ -412,7 +415,7 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
 
-func (sp *STARSPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (sp *STARSPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	sp.initPrefsForLoadedSim(ss, pl)
 
 	sp.weatherRadar.UpdateCenter(sp.currentPrefs().Center)
@@ -421,7 +424,7 @@ func (sp *STARSPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platf
 	sp.makeSignificantPoints(ss)
 }
 
-func (sp *STARSPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (sp *STARSPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	sp.ConvergingRunways = nil
 	for _, name := range util.SortedMapKeys(ss.Airports) {
 		ap := ss.Airports[name]
@@ -459,9 +462,11 @@ func (sp *STARSPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platfo
 	clear(sp.scopeDraw.departures)
 	clear(sp.scopeDraw.overflights)
 	clear(sp.scopeDraw.airspace)
+
+	sp.mapLibrary = nil
 }
 
-func (sp *STARSPane) makeMaps(client *sim.ControlClient, ss sim.State, lg *log.Logger) {
+func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *log.Logger) {
 	usedIds := make(map[int]interface{})
 
 	addMap := func(vm av.VideoMap) {
@@ -479,7 +484,7 @@ func (sp *STARSPane) makeMaps(client *sim.ControlClient, ss sim.State, lg *log.L
 		// Unable to find a free slot!
 	}
 
-	vmf, err := ss.GetVideoMapLibrary(client)
+	vmf, err := sp.getVideoMapLibrary(ss, client)
 	if err != nil {
 		lg.Errorf("%v", err)
 	}
@@ -613,6 +618,25 @@ func (sp *STARSPane) makeMaps(client *sim.ControlClient, ss sim.State, lg *log.L
 		} else {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, nil)
 		}
+	}
+}
+
+func (sp *STARSPane) getVideoMapLibrary(ss sim.State, client *server.ControlClient) (*av.VideoMapLibrary, error) {
+	if sp.mapLibrary != nil {
+		return sp.mapLibrary, nil
+	}
+
+	filename := ss.STARSFacilityAdaptation.VideoMapFile
+	ml, err := av.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash)
+	if err == nil {
+		sp.mapLibrary = ml
+		return ml, nil
+	} else {
+		ml, err = client.GetVideoMapLibrary(filename)
+		if err == nil {
+			sp.mapLibrary = ml
+		}
+		return ml, err
 	}
 }
 
