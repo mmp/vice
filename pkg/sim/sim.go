@@ -14,84 +14,21 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
-	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/brunoga/deep"
 )
 
-type Configuration struct {
-	ScenarioConfigs  map[string]*SimScenarioConfiguration
-	ControlPositions map[string]*av.Controller
-	DefaultScenario  string
-}
-
-type SimScenarioConfiguration struct {
-	SelectedController  string
-	SelectedSplit       string
-	SplitConfigurations av.SplitConfigurationSet
-	PrimaryAirport      string
-
-	Wind         av.Wind
-	LaunchConfig LaunchConfig
-
-	DepartureRunways []ScenarioGroupDepartureRunway
-	ArrivalRunways   []ScenarioGroupArrivalRunway
-}
-
-type NewSimConfiguration struct {
-	TRACONName      string
-	TRACON          map[string]*Configuration
-	GroupName       string
-	Scenario        *SimScenarioConfiguration
-	ScenarioName    string
-	NewSimName      string // for create remote only
-	RequirePassword bool   // for create remote only
-	Password        string // for create remote only
-	NewSimType      int
-	TFRs            []av.TFR
-
-	LiveWeather               bool
-	InstructorAllowed         bool
-	Instructor                bool
-	SelectedRemoteSim         string
-	SelectedRemoteSimPosition string
-	RemoteSimPassword         string // for join remote only
-
-	DisplayError error
-}
-
-const (
-	NewSimCreateLocal = iota
-	NewSimCreateRemote
-	NewSimJoinRemote
-)
-
-func MakeNewSimConfiguration() NewSimConfiguration {
-	return NewSimConfiguration{NewSimName: rand.AdjectiveNoun()}
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Sim
-
 type Sim struct {
-	Name string
+	State *State
 
 	mu util.LoggingMutex
-
-	ScenarioGroup string
-	Scenario      string
-
-	State *State
 
 	controllers     map[string]*ServerController // from token
 	SignOnPositions map[string]*av.Controller
 
 	eventStream *EventStream
 	lg          *log.Logger
-	mapManifest *av.VideoMapManifest
-
-	LaunchConfig LaunchConfig
 
 	// For each airport, at what time we would like to launch a departure,
 	// based on the airport's departure rate. The actual time an aircraft
@@ -129,13 +66,11 @@ type Sim struct {
 
 	lastSimUpdate time.Time
 
-	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
+	IsLocal        bool
 	updateTimeSlop time.Duration
 
 	lastUpdateTime time.Time // this is w.r.t. true wallclock time
 	lastLogTime    time.Time
-	SimRate        float32
-	Paused         bool
 
 	prespawnUncontrolled bool
 	prespawnControlled   bool
@@ -148,6 +83,20 @@ type Sim struct {
 	// No need to serialize these; they're caches anyway.
 	bravoAirspace   *av.AirspaceGrid
 	charlieAirspace *av.AirspaceGrid
+}
+
+type DepartureRunway struct {
+	Airport     string `json:"airport"`
+	Runway      string `json:"runway"`
+	Category    string `json:"category,omitempty"`
+	DefaultRate int    `json:"rate"`
+
+	ExitRoutes map[string]*av.ExitRoute // copied from airport's  departure_routes
+}
+
+type ArrivalRunway struct {
+	Airport string `json:"airport"`
+	Runway  string `json:"runway"`
 }
 
 // DepartureAircraft represents a departing aircraft, either still on the
@@ -188,30 +137,45 @@ func (sc *ServerController) LogValue() slog.Value {
 		slog.Bool("warned_no_update", sc.warnedNoUpdateCalls))
 }
 
-func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*ScenarioGroup, isLocal bool,
-	manifests map[string]*av.VideoMapManifest, lg *log.Logger) *Sim {
-	lg = lg.With(slog.String("sim_name", ssc.NewSimName))
+// NewSimConfiguration collects all of the information required to create a new Sim
+type NewSimConfiguration struct {
+	TRACON      string
+	Description string
 
-	tracon, ok := scenarioGroups[ssc.TRACONName]
-	if !ok {
-		lg.Errorf("%s: unknown TRACON", ssc.TRACONName)
-		return nil
-	}
-	sg, ok := tracon[ssc.GroupName]
-	if !ok {
-		lg.Errorf("%s: unknown scenario group", ssc.GroupName)
-		return nil
-	}
-	sc, ok := sg.Scenarios[ssc.ScenarioName]
-	if !ok {
-		lg.Errorf("%s: unknown scenario", ssc.ScenarioName)
-		return nil
-	}
+	Airports         map[string]*av.Airport
+	PrimaryAirport   string
+	DepartureRunways []DepartureRunway
+	ArrivalRunways   []ArrivalRunway
+	InboundFlows     map[string]*av.InboundFlow
+	LaunchConfig     LaunchConfig
+	Fixes            map[string]math.Point2LL
 
+	ControlPositions   map[string]*av.Controller
+	PrimaryController  string
+	ControllerAirspace map[string][]string
+	VirtualControllers []string
+	MultiControllers   av.SplitConfiguration
+	SignOnPositions    map[string]*av.Controller
+
+	TFRs                    []av.TFR
+	LiveWeather             bool
+	Wind                    av.Wind
+	STARSFacilityAdaptation av.STARSFacilityAdaptation
+	SimName                 string
+	IsLocal                 bool
+
+	ReportingPoints   []av.ReportingPoint
+	MagneticVariation float32
+	NmPerLongitude    float32
+	Center            math.Point2LL
+	Range             float32
+	DefaultMaps       []string
+	Airspace          av.Airspace
+}
+
+func NewSim(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.Logger) *Sim {
 	s := &Sim{
-		ScenarioGroup: ssc.GroupName,
-		Scenario:      ssc.ScenarioName,
-		LaunchConfig:  ssc.Scenario.LaunchConfig,
+		IsLocal: config.IsLocal,
 
 		DeparturePool:      make(map[string][]DepartureAircraft),
 		DepartureIndex:     make(map[string]int),
@@ -219,58 +183,24 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 		VFRLaunchAttempts:  make(map[string]int),
 		VFRLaunchSuccesses: make(map[string]int),
 
+		SignOnPositions: config.SignOnPositions,
+
 		controllers: make(map[string]*ServerController),
 
 		eventStream: NewEventStream(lg),
 		lg:          lg,
-		mapManifest: manifests[sg.STARSFacilityAdaptation.VideoMapFile],
 
-		ReportingPoints: sg.ReportingPoints,
+		ReportingPoints: config.ReportingPoints,
 
-		SimTime:        time.Now(),
 		lastUpdateTime: time.Now(),
 
-		SimRate:   1,
 		Handoffs:  make(map[string]Handoff),
 		PointOuts: make(map[string]PointOut),
 
 		Instructors: make(map[string]bool),
 	}
 
-	if !isLocal {
-		s.Name = ssc.NewSimName
-	}
-
-	if s.LaunchConfig.ArrivalPushes {
-		// Figure out when the next arrival push will start
-		m := 1 + rand.Intn(s.LaunchConfig.ArrivalPushFrequencyMinutes)
-		s.NextPushStart = time.Now().Add(time.Duration(m) * time.Minute)
-	}
-
-	s.SignOnPositions = make(map[string]*av.Controller)
-	add := func(callsign string) {
-		if ctrl, ok := sg.ControlPositions[callsign]; !ok {
-			lg.Errorf("%s: control position unknown??!", callsign)
-		} else {
-			ctrlCopy := *ctrl
-			ctrlCopy.IsHuman = true
-			s.SignOnPositions[callsign] = &ctrlCopy
-		}
-	}
-	if !isLocal {
-		configs, err := sc.SplitConfigurations.GetConfiguration(ssc.Scenario.SelectedSplit)
-		if err != nil {
-			lg.Errorf("unable to get configurations for split: %v", err)
-		}
-		for callsign := range configs {
-			add(callsign)
-		}
-	} else {
-		add(sc.SoloController)
-	}
-
-	s.State = newState(ssc.Scenario.SelectedSplit, ssc.LiveWeather, isLocal, s, sg, sc, s.mapManifest,
-		ssc.TFRs, lg)
+	s.State = newState(config, manifest, lg)
 
 	s.setInitialSpawnTimes()
 
@@ -278,12 +208,6 @@ func NewSim(ssc NewSimConfiguration, scenarioGroups map[string]map[string]*Scena
 }
 
 func (s *Sim) Activate(lg *log.Logger) {
-	if s.Name == "" {
-		s.lg = lg
-	} else {
-		s.lg = lg.With(slog.String("sim_name", s.Name))
-	}
-
 	if s.controllers == nil {
 		s.controllers = make(map[string]*ServerController)
 	}
@@ -299,11 +223,7 @@ func (s *Sim) Activate(lg *log.Logger) {
 
 func (s *Sim) LogValue() slog.Value {
 	return slog.GroupValue(
-		slog.String("name", s.Name),
-		slog.String("scenario_group", s.ScenarioGroup),
-		slog.String("scenario", s.Scenario),
-		slog.Any("controllers", s.State.Controllers),
-		slog.Any("launch_config", s.LaunchConfig),
+		slog.Any("state", s.State),
 		slog.Any("next_departure_launch", s.NextDepartureLaunch),
 		slog.Any("available_departures", s.DeparturePool),
 		slog.Any("next_inbound_spawn", s.NextInboundSpawn),
@@ -312,9 +232,7 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Int("departures", s.TotalDepartures),
 		slog.Int("arrivals", s.TotalArrivals),
 		slog.Int("overflights", s.TotalOverflights),
-		slog.Time("sim_time", s.SimTime),
-		slog.Float64("sim_rate", float64(s.SimRate)),
-		slog.Bool("paused", s.Paused),
+		slog.Time("sim_time", s.State.SimTime),
 		slog.Time("next_push_start", s.NextPushStart),
 		slog.Time("push_end", s.PushEnd),
 		slog.Any("aircraft", s.State.Aircraft))
@@ -390,9 +308,9 @@ func (s *Sim) SignOff(token string) error {
 			ac.HandleControllerDisconnect(ctrl.Id, s.State.PrimaryController)
 		}
 
-		if ctrl.Id == s.LaunchConfig.Controller {
+		if ctrl.Id == s.State.LaunchConfig.Controller {
 			// give up control of launches so someone else can take it.
-			s.LaunchConfig.Controller = ""
+			s.State.LaunchConfig.Controller = ""
 		}
 
 		ctrl.events.Unsubscribe()
@@ -450,13 +368,13 @@ func (s *Sim) TogglePause(token string) error {
 	if ctrl, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
 	} else {
-		s.Paused = !s.Paused
-		s.lg.Infof("paused: %v", s.Paused)
+		s.State.Paused = !s.State.Paused
+		s.lg.Infof("paused: %v", s.State.Paused)
 		s.lastUpdateTime = time.Now() // ignore time passage...
 
 		s.eventStream.Post(Event{
 			Type:    GlobalMessageEvent,
-			Message: ctrl.Id + " has " + util.Select(s.Paused, "paused", "unpaused") + " the sim",
+			Message: ctrl.Id + " has " + util.Select(s.State.Paused, "paused", "unpaused") + " the sim",
 		})
 		return nil
 	}
@@ -475,8 +393,8 @@ func (s *Sim) SetSimRate(token string, rate float32) error {
 	if _, ok := s.controllers[token]; !ok {
 		return ErrInvalidControllerToken
 	} else {
-		s.SimRate = rate
-		s.lg.Infof("sim rate set to %f", s.SimRate)
+		s.State.SimRate = rate
+		s.lg.Infof("sim rate set to %f", s.State.SimRate)
 		return nil
 	}
 }
@@ -635,10 +553,10 @@ func (s *Sim) GetWorldUpdate(token string, update *WorldUpdate) error {
 			Aircraft:             s.State.Aircraft,
 			Controllers:          s.State.Controllers,
 			ERAMComputers:        s.State.ERAMComputers,
-			Time:                 s.SimTime,
-			LaunchConfig:         s.LaunchConfig,
-			SimIsPaused:          s.Paused,
-			SimRate:              s.SimRate,
+			Time:                 s.State.SimTime,
+			LaunchConfig:         s.State.LaunchConfig,
+			SimIsPaused:          s.State.Paused,
+			SimRate:              s.State.SimRate,
 			Events:               ctrl.events.Get(),
 			TotalDepartures:      s.TotalDepartures,
 			TotalArrivals:        s.TotalArrivals,
@@ -703,7 +621,7 @@ func (s *Sim) Update() {
 		ac.Check(s.lg)
 	}
 
-	if s.Name != "" {
+	if !s.IsLocal {
 		// Sign off controllers we haven't heard from in 15 seconds so that
 		// someone else can take their place. We only make this check for
 		// multi-controller sims; we don't want to do this for local sims
@@ -730,7 +648,7 @@ func (s *Sim) Update() {
 		}
 	}
 
-	if s.Paused {
+	if s.State.Paused {
 		return
 	}
 
@@ -743,7 +661,7 @@ func (s *Sim) Update() {
 	// time is scaled by the sim rate, then we add in any time from the
 	// last update that wasn't accounted for.
 	elapsed := time.Since(s.lastUpdateTime)
-	elapsed = time.Duration(s.SimRate*float32(elapsed)) + s.updateTimeSlop
+	elapsed = time.Duration(s.State.SimRate*float32(elapsed)) + s.updateTimeSlop
 	// Run the sim for this many seconds
 	ns := int(elapsed.Truncate(time.Second).Seconds())
 	if ns > 10 {
@@ -751,11 +669,11 @@ func (s *Sim) Update() {
 			slog.Int("steps", ns), slog.Duration("slop", s.updateTimeSlop))
 	}
 	for i := 0; i < ns; i++ {
-		s.SimTime = s.SimTime.Add(time.Second)
+		s.State.SimTime = s.State.SimTime.Add(time.Second)
 		s.updateState()
 	}
 	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
-	s.State.SimTime = s.SimTime
+	s.State.SimTime = s.State.SimTime
 
 	s.lastUpdateTime = time.Now()
 
@@ -768,7 +686,7 @@ func (s *Sim) Update() {
 
 // separate so time management can be outside this so we can do the prespawn stuff...
 func (s *Sim) updateState() {
-	now := s.SimTime
+	now := s.State.SimTime
 
 	for callsign, ho := range s.Handoffs {
 		if !now.After(ho.Time) {
@@ -792,7 +710,7 @@ func (s *Sim) updateState() {
 			if err != nil {
 				//s.lg.Errorf("%s: FacilityComputers(): %v", ho.ReceivingFacility, err)
 			} else if err := s.State.STARSComputer().AutomatedAcceptHandoff(ac, ac.HandoffTrackController,
-				receivingSTARS, s.State.Controllers, s.SimTime); err != nil {
+				receivingSTARS, s.State.Controllers, s.State.SimTime); err != nil {
 				//s.lg.Errorf("AutomatedAcceptHandoff: %v", err)
 			}
 
@@ -935,7 +853,7 @@ func (s *Sim) updateState() {
 	s.processEnqueued()
 
 	// Don't spawn automatically if someone is spawning manually.
-	if s.LaunchConfig.Mode == LaunchAutomatic {
+	if s.State.LaunchConfig.Mode == LaunchAutomatic {
 		s.spawnAircraft()
 	}
 

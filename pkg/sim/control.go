@@ -93,7 +93,7 @@ func (s *Sim) DeleteAircraft(token, callsign string) error {
 
 	return s.dispatchCommand(token, callsign,
 		func(ctrl *av.Controller, ac *av.Aircraft) error {
-			if lctrl := s.LaunchConfig.Controller; lctrl != "" && lctrl != ctrl.Id() {
+			if lctrl := s.State.LaunchConfig.Controller; lctrl != "" && lctrl != ctrl.Id() {
 				return av.ErrOtherControllerHasTrack
 			}
 			return nil
@@ -434,7 +434,7 @@ func (s *Sim) handoffTrack(fromTCP, toTCP string, callsign string) {
 		s.lg.Errorf("Unable to handoff %s: from controller %q not found", callsign, fromTCP)
 	} else if to, tok := s.State.Controllers[toTCP]; !tok {
 		s.lg.Errorf("Unable to handoff %s: to controller %q not found", callsign, toTCP)
-	} else if err := s.State.STARSComputer().HandoffTrack(callsign, from, to, s.SimTime); err != nil {
+	} else if err := s.State.STARSComputer().HandoffTrack(callsign, from, to, s.State.SimTime); err != nil {
 		//s.lg.Errorf("HandoffTrack: %v", err)
 	}
 
@@ -443,7 +443,7 @@ func (s *Sim) handoffTrack(fromTCP, toTCP string, callsign string) {
 	// end up accepting it automatically.
 	acceptDelay := 4 + rand.Intn(10)
 	s.Handoffs[callsign] = Handoff{
-		Time: s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+		Time: s.State.SimTime.Add(time.Duration(acceptDelay) * time.Second),
 	}
 }
 
@@ -548,7 +548,7 @@ func (s *Sim) AcceptHandoff(token, callsign string) error {
 			delete(s.PointOuts, ac.Callsign)
 
 			if err := s.State.STARSComputer().AcceptHandoff(ac, ctrl, s.State.Controllers,
-				s.State.STARSFacilityAdaptation, s.SimTime); err != nil {
+				s.State.STARSFacilityAdaptation, s.State.SimTime); err != nil {
 				//s.lg.Errorf("AcceptHandoff: %v", err)
 			}
 
@@ -573,7 +573,7 @@ func (s *Sim) CancelHandoff(token, callsign string) error {
 			ac.HandoffTrackController = ""
 			ac.RedirectedHandoff = av.RedirectedHandoff{}
 
-			err := s.State.STARSComputer().CancelHandoff(ac, ctrl, s.State.Controllers, s.SimTime)
+			err := s.State.STARSComputer().CancelHandoff(ac, ctrl, s.State.Controllers, s.State.SimTime)
 			if err != nil {
 				//s.lg.Errorf("CancelHandoff: %v", err)
 			}
@@ -715,7 +715,7 @@ func (s *Sim) pointOut(callsign string, from *av.Controller, to *av.Controller) 
 	s.PointOuts[callsign] = PointOut{
 		FromController: from.Id(),
 		ToController:   to.Id(),
-		AcceptTime:     s.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+		AcceptTime:     s.State.SimTime.Add(time.Duration(acceptDelay) * time.Second),
 	}
 }
 
@@ -825,6 +825,7 @@ func (s *Sim) ReleaseDeparture(token, callsign string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	// FIXME: rewrite to use dispatchCommand()
 	sc, ok := s.controllers[token]
 	if !ok {
 		return ErrInvalidControllerToken
@@ -1174,7 +1175,7 @@ type FutureControllerContact struct {
 func (s *Sim) enqueueControllerContact(callsign, tcp string) {
 	wait := time.Duration(5+rand.Intn(10)) * time.Second
 	s.FutureControllerContacts = append(s.FutureControllerContacts,
-		FutureControllerContact{Callsign: callsign, TCP: tcp, Time: s.SimTime.Add(wait)})
+		FutureControllerContact{Callsign: callsign, TCP: tcp, Time: s.State.SimTime.Add(wait)})
 }
 
 type FutureOnCourse struct {
@@ -1185,7 +1186,7 @@ type FutureOnCourse struct {
 func (s *Sim) enqueueDepartOnCourse(callsign string) {
 	wait := time.Duration(10+rand.Intn(15)) * time.Second
 	s.FutureOnCourse = append(s.FutureOnCourse,
-		FutureOnCourse{Callsign: callsign, Time: s.SimTime.Add(wait)})
+		FutureOnCourse{Callsign: callsign, Time: s.State.SimTime.Add(wait)})
 }
 
 type FutureChangeSquawk struct {
@@ -1198,13 +1199,13 @@ type FutureChangeSquawk struct {
 func (s *Sim) enqueueTransponderChange(callsign string, code av.Squawk, mode av.TransponderMode) {
 	wait := time.Duration(5+rand.Intn(5)) * time.Second
 	s.FutureSquawkChanges = append(s.FutureSquawkChanges,
-		FutureChangeSquawk{Callsign: callsign, Code: code, Mode: mode, Time: s.SimTime.Add(wait)})
+		FutureChangeSquawk{Callsign: callsign, Code: code, Mode: mode, Time: s.State.SimTime.Add(wait)})
 }
 
 func (s *Sim) processEnqueued() {
 	s.FutureControllerContacts = util.FilterSlice(s.FutureControllerContacts,
 		func(c FutureControllerContact) bool {
-			if s.SimTime.After(c.Time) {
+			if s.State.SimTime.After(c.Time) {
 				if ac, ok := s.State.Aircraft[c.Callsign]; ok {
 					ac.ControllingController = c.TCP
 					r := []av.RadioTransmission{av.RadioTransmission{
@@ -1229,7 +1230,7 @@ func (s *Sim) processEnqueued() {
 
 	s.FutureOnCourse = util.FilterSlice(s.FutureOnCourse,
 		func(oc FutureOnCourse) bool {
-			if s.SimTime.After(oc.Time) {
+			if s.State.SimTime.After(oc.Time) {
 				if ac, ok := s.State.Aircraft[oc.Callsign]; ok {
 					s.lg.Info("departing on course", slog.String("callsign", ac.Callsign),
 						slog.Int("final_altitude", ac.FlightPlan.Altitude))
@@ -1242,7 +1243,7 @@ func (s *Sim) processEnqueued() {
 
 	s.FutureSquawkChanges = util.FilterSlice(s.FutureSquawkChanges,
 		func(fcs FutureChangeSquawk) bool {
-			if s.SimTime.After(fcs.Time) {
+			if s.State.SimTime.After(fcs.Time) {
 				if ac, ok := s.State.Aircraft[fcs.Callsign]; ok {
 					ac.Squawk = fcs.Code
 					ac.Mode = fcs.Mode

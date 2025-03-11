@@ -306,8 +306,8 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 
 	// Make the scenario's default video maps visible
 	p.VideoMapVisible = make(map[int]interface{})
-	_, defaultVideoMaps := ss.GetControllerVideoMaps()
-	for _, dm := range defaultVideoMaps {
+
+	for _, dm := range ss.ControllerDefaultVideoMaps {
 		if idx := slices.IndexFunc(sp.allVideoMaps, func(v av.VideoMap) bool { return v.Name == dm }); idx != -1 {
 			p.VideoMapVisible[sp.allVideoMaps[idx].Id] = nil
 		} else {

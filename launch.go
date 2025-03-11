@@ -37,9 +37,12 @@ var (
 )
 
 type NewSimConfiguration struct {
-	sim.NewSimConfiguration
+	server.NewSimConfiguration
 
-	// Local use only; not sent to the server when we create one.
+	TRACON map[string]*server.Configuration
+
+	DisplayError error
+
 	lastRemoteSimsUpdate time.Time
 	updateRemoteSimsCall *util.PendingCall
 
@@ -57,7 +60,7 @@ func MakeNewSimConfiguration(mgr *server.ConnectionManager, defaultTRACON *strin
 		selectedServer:      mgr.LocalServer,
 		defaultTRACON:       defaultTRACON,
 		tfrCache:            tfrCache,
-		NewSimConfiguration: sim.MakeNewSimConfiguration(),
+		NewSimConfiguration: server.MakeNewSimConfiguration(),
 	}
 
 	c.SetTRACON(*defaultTRACON)
@@ -110,7 +113,7 @@ func (c *NewSimConfiguration) SetTRACON(name string) {
 
 func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	var ok bool
-	var groupConfig *sim.Configuration
+	var groupConfig *server.Configuration
 	if groupConfig, ok = c.TRACON[groupName]; !ok {
 		c.lg.Errorf("%s: group not found in TRACON %s", groupName, c.TRACONName)
 		groupName = util.SortedMapKeys(c.TRACON)[0]
@@ -129,11 +132,11 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 }
 
 func (c *NewSimConfiguration) UIButtonText() string {
-	return util.Select(c.NewSimType == sim.NewSimJoinRemote, "Join", "Next")
+	return util.Select(c.NewSimType == server.NewSimJoinRemote, "Join", "Next")
 }
 
 func (c *NewSimConfiguration) ShowRatesWindow() bool {
-	return c.NewSimType == sim.NewSimCreateLocal || c.NewSimType == sim.NewSimCreateRemote
+	return c.NewSimType == server.NewSimCreateLocal || c.NewSimType == server.NewSimCreateRemote
 }
 
 func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
@@ -164,8 +167,8 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			origType := c.NewSimType
 
 			imgui.TableNextColumn()
-			if imgui.RadioButtonInt("Create single-controller", &c.NewSimType, sim.NewSimCreateLocal) &&
-				origType != sim.NewSimCreateLocal {
+			if imgui.RadioButtonInt("Create single-controller", &c.NewSimType, server.NewSimCreateLocal) &&
+				origType != server.NewSimCreateLocal {
 				c.selectedServer = c.mgr.LocalServer
 				c.SetTRACON(*c.defaultTRACON)
 				c.DisplayError = nil
@@ -174,8 +177,8 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.TableNextColumn()
-			if imgui.RadioButtonInt("Create multi-controller", &c.NewSimType, sim.NewSimCreateRemote) &&
-				origType != sim.NewSimCreateRemote {
+			if imgui.RadioButtonInt("Create multi-controller", &c.NewSimType, server.NewSimCreateRemote) &&
+				origType != server.NewSimCreateRemote {
 				c.selectedServer = c.mgr.RemoteServer
 				c.SetTRACON(*c.defaultTRACON)
 				c.DisplayError = nil
@@ -186,8 +189,8 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextColumn()
 
 			uiStartDisable(len(c.mgr.RemoteServer.GetRunningSims()) == 0)
-			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, sim.NewSimJoinRemote) &&
-				origType != sim.NewSimJoinRemote {
+			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, server.NewSimJoinRemote) &&
+				origType != server.NewSimJoinRemote {
 				c.selectedServer = c.mgr.RemoteServer
 				c.DisplayError = nil
 			}
@@ -200,11 +203,11 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		imgui.Text("Unable to connect to the multi-controller vice server; " +
 			"only single-player scenarios are available.")
 		imgui.PopStyleColor()
-		c.NewSimType = sim.NewSimCreateLocal
+		c.NewSimType = server.NewSimCreateLocal
 	}
 	imgui.Separator()
 
-	if c.NewSimType == sim.NewSimCreateLocal || c.NewSimType == sim.NewSimCreateRemote {
+	if c.NewSimType == server.NewSimCreateLocal || c.NewSimType == server.NewSimCreateRemote {
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingStretchProp
 		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
@@ -291,7 +294,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		}
 
 		if imgui.BeginTableV("scenario", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
-			if c.NewSimType == sim.NewSimCreateRemote {
+			if c.NewSimType == server.NewSimCreateRemote {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.Text("Name:")
@@ -342,7 +345,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			}
 			uiEndDisable(!validAirport)
 
-			if c.NewSimType == sim.NewSimCreateRemote {
+			if c.NewSimType == server.NewSimCreateRemote {
 				imgui.Checkbox("Require Password", &c.RequirePassword)
 				if c.RequirePassword {
 					imgui.InputTextV("Password", &c.Password, 0, nil)
@@ -585,7 +588,7 @@ func refreshWeather() {
 }
 
 func (c *NewSimConfiguration) OkDisabled() bool {
-	return c.NewSimType == sim.NewSimCreateRemote && (c.NewSimName == "" || (c.RequirePassword && c.Password == ""))
+	return c.NewSimType == server.NewSimCreateRemote && (c.NewSimName == "" || (c.RequirePassword && c.Password == ""))
 }
 
 func (c *NewSimConfiguration) Start() error {
@@ -993,7 +996,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		//	imgui.SetCursorPos(imgui.Vec2{imgui.CursorPosX() + imgui.ContentRegionAvail().X - float32(3*width+10),
 		imgui.SetCursorPos(imgui.Vec2{imgui.WindowWidth() - float32(7*width), imgui.CursorPosY()})
 		if lc.controlClient != nil && lc.controlClient.Connected() {
-			if lc.controlClient.SimIsPaused {
+			if lc.controlClient.State.Paused {
 				if imgui.Button(renderer.FontAwesomeIconPlayCircle) {
 					lc.controlClient.ToggleSimPause()
 				}

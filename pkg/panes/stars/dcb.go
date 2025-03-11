@@ -252,8 +252,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 		unsupportedButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
 
-		site := sp.radarSiteId(ctx.ControlClient.RadarSites)
-		if len(ctx.ControlClient.RadarSites) == 0 {
+		site := sp.radarSiteId(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites)
+		if len(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) == 0 {
 			disabledButton(ctx, "SITE\n"+site, maybeDisable(buttonFull), buttonScale)
 		} else if selectButton(ctx, "SITE\n"+site, maybeDisable(buttonFull), buttonScale) {
 			sp.activeDCBMenu = dcbMenuSite
@@ -443,11 +443,12 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 	}
 
 	if sp.activeDCBMenu == dcbMenuSite {
-		rewindDCBCursor(3+len(ctx.ControlClient.RadarSites)+3, buttonScale)
+		radarSites := ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites
+		rewindDCBCursor(3+len(radarSites)+3, buttonScale)
 		dcbStartCaptureMouseRegion()
 
-		for _, id := range util.SortedMapKeys(ctx.ControlClient.RadarSites) {
-			site := ctx.ControlClient.RadarSites[id]
+		for _, id := range util.SortedMapKeys(radarSites) {
+			site := radarSites[id]
 			label := " " + site.Char + " " + "\n" + id
 			selected := ps.RadarSiteSelected == id
 			if toggleButton(ctx, label, &selected, buttonFull, buttonScale) {
@@ -458,7 +459,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 				}
 			}
 		}
-		multi := sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeMulti
+		multi := sp.radarMode(radarSites) == RadarModeMulti
 		if toggleButton(ctx, "MULTI", &multi, buttonFull, buttonScale) && multi {
 			ps.RadarSiteSelected = ""
 			if ps.FusedRadarMode {
@@ -466,7 +467,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			}
 			ps.FusedRadarMode = false
 		}
-		fused := sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeFused
+		fused := sp.radarMode(radarSites) == RadarModeFused
 		if toggleButton(ctx, "FUSED", &fused, buttonFull, buttonScale) && fused {
 			ps.RadarSiteSelected = ""
 			ps.FusedRadarMode = true

@@ -1197,7 +1197,7 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, ac *av.Aircraft, dbt
 	}
 
 	// Both FDB and PDB
-	if sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeFused &&
+	if sp.radarMode(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) == RadarModeFused &&
 		ac.TrackingController != "" && ac.PilotReportedAltitude == 0 &&
 		(ac.Mode != av.Altitude || ac.InhibitModeCAltitudeDisplay) {
 		// No altitude being reported, one way or another (off or mode

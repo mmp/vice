@@ -265,7 +265,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 			}
 		}
 		if filter.All || filter.Radar {
-			pw = td.AddText(sp.radarSiteId(ctx.ControlClient.RadarSites), pw, listStyle)
+			pw = td.AddText(sp.radarSiteId(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites), pw, listStyle)
 		}
 		newline()
 	}

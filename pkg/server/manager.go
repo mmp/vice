@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/brunoga/deep"
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/sim"
@@ -21,8 +22,8 @@ import (
 // SimManager
 
 type SimManager struct {
-	scenarioGroups       map[string]map[string]*sim.ScenarioGroup
-	configs              map[string]map[string]*sim.Configuration
+	scenarioGroups       map[string]map[string]*ScenarioGroup
+	configs              map[string]map[string]*Configuration
 	activeSims           map[string]ActiveSim
 	controllerTokenToSim map[string]*sim.Sim
 	mu                   util.LoggingMutex
@@ -31,14 +32,36 @@ type SimManager struct {
 	lg                   *log.Logger
 }
 
+type Configuration struct {
+	ScenarioConfigs  map[string]*SimScenarioConfiguration
+	ControlPositions map[string]*av.Controller
+	DefaultScenario  string
+}
+
+type SimScenarioConfiguration struct {
+	SelectedController  string
+	SelectedSplit       string
+	SplitConfigurations av.SplitConfigurationSet
+	PrimaryAirport      string
+
+	Wind         av.Wind
+	LaunchConfig sim.LaunchConfig
+
+	DepartureRunways []sim.DepartureRunway
+	ArrivalRunways   []sim.ArrivalRunway
+}
+
 type ActiveSim struct {
+	name            string
+	scenarioGroup   string
+	scenario        string
 	sim             *sim.Sim
 	allowInstructor bool
 	password        string
 }
 
-func NewSimManager(scenarioGroups map[string]map[string]*sim.ScenarioGroup,
-	simConfigurations map[string]map[string]*sim.Configuration, manifests map[string]*av.VideoMapManifest,
+func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
+	simConfigurations map[string]map[string]*Configuration, manifests map[string]*av.VideoMapManifest,
 	lg *log.Logger) *SimManager {
 	return &SimManager{
 		scenarioGroups:       scenarioGroups,
@@ -56,15 +79,24 @@ type NewSimResult struct {
 	ControllerToken string
 }
 
-func (sm *SimManager) New(config *sim.NewSimConfiguration, result *NewSimResult) error {
-	if config.NewSimType == sim.NewSimCreateLocal || config.NewSimType == sim.NewSimCreateRemote {
-		sim := sim.NewSim(*config, sm.scenarioGroups, config.NewSimType == sim.NewSimCreateLocal, sm.mapManifests, sm.lg)
-		as := ActiveSim{
-			sim:             sim,
-			password:        config.Password,
-			allowInstructor: config.InstructorAllowed,
+func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
+	if config.NewSimType == NewSimCreateLocal || config.NewSimType == NewSimCreateRemote {
+		lg := sm.lg.With(slog.String("sim_name", config.NewSimName))
+		if nsc := sm.makeSimConfiguration(config, lg); nsc != nil {
+			manifest := sm.mapManifests[nsc.STARSFacilityAdaptation.VideoMapFile]
+			sim := sim.NewSim(*nsc, manifest, lg)
+			as := ActiveSim{
+				name:            config.NewSimName,
+				scenarioGroup:   config.GroupName,
+				scenario:        config.ScenarioName,
+				sim:             sim,
+				password:        config.Password,
+				allowInstructor: config.InstructorAllowed,
+			}
+			return sm.Add(as, result, true)
+		} else {
+			return ErrInvalidSSimConfiguration
 		}
-		return sm.Add(as, result, true)
 	} else {
 		sm.mu.Lock(sm.lg)
 		defer sm.mu.Unlock(sm.lg)
@@ -96,6 +128,91 @@ func (sm *SimManager) New(config *sim.NewSimConfiguration, result *NewSimResult)
 	}
 }
 
+func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.Logger) *sim.NewSimConfiguration {
+	tracon, ok := sm.scenarioGroups[config.TRACONName]
+	if !ok {
+		lg.Errorf("%s: unknown TRACON", config.TRACONName)
+		return nil
+	}
+	sg, ok := tracon[config.GroupName]
+	if !ok {
+		lg.Errorf("%s: unknown scenario group", config.GroupName)
+		return nil
+	}
+	sc, ok := sg.Scenarios[config.ScenarioName]
+	if !ok {
+		lg.Errorf("%s: unknown scenario", config.ScenarioName)
+		return nil
+	}
+
+	nsc := sim.NewSimConfiguration{
+		TFRs:                    config.TFRs,
+		LiveWeather:             config.LiveWeather,
+		TRACON:                  config.TRACONName,
+		LaunchConfig:            config.Scenario.LaunchConfig,
+		STARSFacilityAdaptation: deep.MustCopy(sg.STARSFacilityAdaptation),
+		IsLocal:                 config.NewSimType == NewSimCreateLocal,
+		SimName:                 util.Select(config.NewSimType == NewSimCreateLocal, "", config.NewSimName),
+		DepartureRunways:        sc.DepartureRunways,
+		ArrivalRunways:          sc.ArrivalRunways,
+		ReportingPoints:         sg.ReportingPoints,
+		Description:             config.ScenarioName,
+		MagneticVariation:       sg.MagneticVariation,
+		NmPerLongitude:          sg.NmPerLongitude,
+		Wind:                    sc.Wind,
+		Airports:                sg.Airports,
+		Fixes:                   sg.Fixes,
+		PrimaryAirport:          sg.PrimaryAirport,
+		Center:                  util.Select(sc.Center.IsZero(), sg.STARSFacilityAdaptation.Center, sc.Center),
+		Range:                   util.Select(sc.Range == 0, sg.STARSFacilityAdaptation.Range, sc.Range),
+		DefaultMaps:             sc.DefaultMaps,
+		InboundFlows:            sg.InboundFlows,
+		Airspace:                sg.Airspace,
+		ControllerAirspace:      sc.Airspace,
+		ControlPositions:        sg.ControlPositions,
+		VirtualControllers:      sc.VirtualControllers,
+		SignOnPositions:         make(map[string]*av.Controller),
+	}
+
+	if !nsc.IsLocal {
+		selectedSplit := config.Scenario.SelectedSplit
+		var err error
+		nsc.PrimaryController, err = sc.SplitConfigurations.GetPrimaryController(selectedSplit)
+		if err != nil {
+			lg.Errorf("Unable to get primary controller: %v", err)
+		}
+		nsc.MultiControllers, err = sc.SplitConfigurations.GetConfiguration(selectedSplit)
+		if err != nil {
+			lg.Errorf("Unable to get multi controllers: %v", err)
+		}
+	} else {
+		nsc.PrimaryController = sc.SoloController
+	}
+
+	add := func(callsign string) {
+		if ctrl, ok := sg.ControlPositions[callsign]; !ok {
+			lg.Errorf("%s: control position unknown??!", callsign)
+		} else {
+			ctrlCopy := *ctrl
+			ctrlCopy.IsHuman = true
+			nsc.SignOnPositions[callsign] = &ctrlCopy
+		}
+	}
+	if !nsc.IsLocal {
+		configs, err := sc.SplitConfigurations.GetConfiguration(config.Scenario.SelectedSplit)
+		if err != nil {
+			lg.Errorf("unable to get configurations for split: %v", err)
+		}
+		for callsign := range configs {
+			add(callsign)
+		}
+	} else {
+		add(sc.SoloController)
+	}
+
+	return &nsc
+}
+
 func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
 	as := ActiveSim{sim: sim} // no password, etc.
 	return sm.Add(as, result, false)
@@ -106,18 +223,22 @@ func (sm *SimManager) Add(as ActiveSim, result *NewSimResult, prespawn bool) err
 		return errors.New("incomplete Sim; nil *State")
 	}
 
-	as.sim.Activate(sm.lg)
+	lg := sm.lg
+	if as.name != "" {
+		lg = lg.With(slog.String("sim_name", as.name))
+	}
+	as.sim.Activate(lg)
 
 	sm.mu.Lock(sm.lg)
 
 	// Empty sim name is just a local sim, so no problem with replacing it...
-	if _, ok := sm.activeSims[as.sim.Name]; ok && as.sim.Name != "" {
+	if _, ok := sm.activeSims[as.name]; ok && as.name != "" {
 		sm.mu.Unlock(sm.lg)
 		return ErrDuplicateSimName
 	}
 
-	sm.lg.Infof("%s: adding sim", as.sim.Name)
-	sm.activeSims[as.sim.Name] = as
+	sm.lg.Infof("%s: adding sim", as.name)
+	sm.activeSims[as.name] = as
 
 	sm.mu.Unlock(sm.lg)
 	instuctor := as.sim.Instructors[as.sim.State.PrimaryController]
@@ -145,10 +266,10 @@ func (sm *SimManager) Add(as ActiveSim, result *NewSimResult, prespawn bool) err
 			time.Sleep(100 * time.Millisecond)
 		}
 
-		sm.lg.Infof("%s: terminating sim after %s idle", as.sim.Name, as.sim.IdleTime())
+		sm.lg.Infof("%s: terminating sim after %s idle", as.name, as.sim.IdleTime())
 		sm.mu.Lock(sm.lg)
 		defer sm.mu.Unlock(sm.lg)
-		delete(sm.activeSims, as.sim.Name)
+		delete(sm.activeSims, as.name)
 		// FIXME: these don't get cleaned up during Sim SignOff()
 		for tok, s := range sm.controllerTokenToSim {
 			if s == as.sim {
@@ -166,7 +287,7 @@ func (sm *SimManager) Add(as ActiveSim, result *NewSimResult, prespawn bool) err
 }
 
 type SignOnResult struct {
-	Configurations map[string]map[string]*sim.Configuration
+	Configurations map[string]map[string]*Configuration
 	RunningSims    map[string]*RemoteSim
 }
 
@@ -195,13 +316,11 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 	running := make(map[string]*RemoteSim)
 	for name, as := range sm.activeSims {
 		rs := &RemoteSim{
-			GroupName:          as.sim.ScenarioGroup,
-			ScenarioName:       as.sim.Scenario,
-			PrimaryController:  as.sim.State.PrimaryController,
-			RequirePassword:    as.password != "",
-			InstructorAllowed:  as.allowInstructor,
-			AvailablePositions: make(map[string]av.Controller),
-			CoveredPositions:   make(map[string]av.Controller),
+			GroupName:         as.scenarioGroup,
+			ScenarioName:      as.scenario,
+			PrimaryController: as.sim.State.PrimaryController,
+			RequirePassword:   as.password != "",
+			InstructorAllowed: as.allowInstructor,
 		}
 
 		rs.AvailablePositions, rs.CoveredPositions = as.sim.GetAvailableCoveredPositions()
@@ -285,7 +404,7 @@ func (sm *SimManager) getSimStatus() []simStatus {
 		as := sm.activeSims[name]
 		status := simStatus{
 			Name:             name,
-			Config:           as.sim.Scenario,
+			Config:           as.scenario,
 			IdleTime:         as.sim.IdleTime().Round(time.Second),
 			TotalDepartures:  as.sim.TotalDepartures,
 			TotalArrivals:    as.sim.TotalArrivals,

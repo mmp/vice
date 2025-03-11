@@ -211,8 +211,8 @@ func (comp *ERAMComputer) SendMessageToSTARSFacility(facility string, msg Flight
 }
 
 func (comp *ERAMComputer) Update(s *Sim) {
-	comp.SortMessages(s.SimTime, s.lg)
-	comp.SendFlightPlans(s.State.TRACON, s.SimTime, s.lg)
+	comp.SortMessages(s.State.SimTime, s.lg)
+	comp.SendFlightPlans(s.State.TRACON, s.State.SimTime, s.lg)
 
 	for _, stars := range comp.STARSComputers {
 		stars.Update(s)

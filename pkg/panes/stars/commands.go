@@ -1641,15 +1641,15 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		} else if len(cmd) > 0 {
 			// Index, character id, or name
 			if i, err := strconv.Atoi(cmd); err == nil {
-				if i < 0 || i >= len(ctx.ControlClient.RadarSites) {
+				if i < 0 || i >= len(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) {
 					status.err = ErrSTARSIllegalValue
 				} else {
-					ps.RadarSiteSelected = util.SortedMapKeys(ctx.ControlClient.RadarSites)[i]
+					ps.RadarSiteSelected = util.SortedMapKeys(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites)[i]
 					status.clear = true
 				}
 				return
 			}
-			for id, rs := range ctx.ControlClient.RadarSites {
+			for id, rs := range ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites {
 				if cmd == rs.Char || cmd == id {
 					ps.RadarSiteSelected = id
 					status.clear = true
@@ -3842,7 +3842,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 				state.IsSelected = !state.IsSelected
 			}
 		}
-	} else if !ctx.ControlClient.SimIsPaused {
+	} else if !ctx.ControlClient.State.Paused {
 		switch sp.currentPrefs().DwellMode {
 		case DwellModeOff:
 			sp.dwellAircraft = ""

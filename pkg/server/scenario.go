@@ -1,8 +1,8 @@
-// pkg/sim/scenario.go
+// pkg/server/scenario.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package server
 
 import (
 	"fmt"
@@ -19,6 +19,7 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -61,28 +62,14 @@ type Scenario struct {
 
 	Airspace map[string][]string `json:"airspace"`
 
-	DepartureRunways []ScenarioGroupDepartureRunway `json:"departure_runways,omitempty"`
-	ArrivalRunways   []ScenarioGroupArrivalRunway   `json:"arrival_runways,omitempty"`
+	DepartureRunways []sim.DepartureRunway `json:"departure_runways,omitempty"`
+	ArrivalRunways   []sim.ArrivalRunway   `json:"arrival_runways,omitempty"`
 
 	Center       math.Point2LL `json:"-"`
 	CenterString string        `json:"center"`
 	Range        float32       `json:"range"`
 	DefaultMaps  []string      `json:"default_maps"`
 	VFRRateScale *float32      `json:"vfr_rate_scale"`
-}
-
-type ScenarioGroupDepartureRunway struct {
-	Airport     string `json:"airport"`
-	Runway      string `json:"runway"`
-	Category    string `json:"category,omitempty"`
-	DefaultRate int    `json:"rate"`
-
-	ExitRoutes map[string]*av.ExitRoute // copied from airport's  departure_routes
-}
-
-type ScenarioGroupArrivalRunway struct {
-	Airport string `json:"airport"`
-	Runway  string `json:"runway"`
 }
 
 func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manifest *av.VideoMapManifest) {
@@ -499,7 +486,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 								// Make sure the airport has at least one
 								// active arrival runway.
 								if !slices.ContainsFunc(s.ArrivalRunways,
-									func(r ScenarioGroupArrivalRunway) bool {
+									func(r sim.ArrivalRunway) bool {
 										return r.Airport == airport
 									}) {
 									e.ErrorString("no runways listed in \"arrival_runways\" for %s even though there are %s arrivals in \"arrivals\"",
@@ -1369,7 +1356,7 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 		}
 	}
 	for name, scenario := range sg.Scenarios {
-		lc := MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, vfrAirports,
+		lc := sim.MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, vfrAirports,
 			scenario.InboundFlowDefaultRates)
 		sc := &SimScenarioConfiguration{
 			SplitConfigurations: scenario.SplitConfigurations,

@@ -20,8 +20,9 @@ import (
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
-	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
+
 	"github.com/shirou/gopsutil/cpu"
 )
 
@@ -32,8 +33,43 @@ const ViceRPCVersion = 23
 type Server struct {
 	*util.RPCClient
 	name        string
-	configs     map[string]map[string]*sim.Configuration
+	configs     map[string]map[string]*Configuration
 	runningSims map[string]*RemoteSim
+}
+
+type NewSimConfiguration struct {
+	// FIXME: unify Password/RemoteSimPassword, SelectedRemoteSim / NewSimName, etc.
+	NewSimType   int
+	NewSimName   string
+	GroupName    string
+	ScenarioName string
+
+	SelectedRemoteSim         string
+	SelectedRemoteSimPosition string
+
+	Scenario *SimScenarioConfiguration
+
+	TFRs []av.TFR
+
+	TRACONName        string
+	RequirePassword   bool
+	Password          string // for create remote only
+	RemoteSimPassword string // for join remote only
+
+	LiveWeather bool
+
+	InstructorAllowed bool
+	Instructor        bool
+}
+
+const (
+	NewSimCreateLocal = iota
+	NewSimCreateRemote
+	NewSimJoinRemote
+)
+
+func MakeNewSimConfiguration() NewSimConfiguration {
+	return NewSimConfiguration{NewSimName: rand.AdjectiveNoun()}
 }
 
 type RemoteSim struct {
@@ -46,11 +82,6 @@ type RemoteSim struct {
 	CoveredPositions   map[string]av.Controller
 }
 
-type Connection struct {
-	SimState sim.State
-	SimProxy *proxy
-}
-
 type serverConnection struct {
 	Server *Server
 	Err    error
@@ -60,7 +91,7 @@ func (s *Server) Close() error {
 	return s.RPCClient.Close()
 }
 
-func (s *Server) GetConfigs() map[string]map[string]*sim.Configuration {
+func (s *Server) GetConfigs() map[string]map[string]*Configuration {
 	return s.configs
 }
 
@@ -167,14 +198,14 @@ func LaunchLocalServer(extraScenario string, extraVideoMap string, e *util.Error
 }
 
 func runServer(l net.Listener, isLocal bool, extraScenario string, extraVideoMap string,
-	e *util.ErrorLogger, lg *log.Logger) chan map[string]map[string]*sim.Configuration {
+	e *util.ErrorLogger, lg *log.Logger) chan map[string]map[string]*Configuration {
 	scenarioGroups, simConfigurations, mapManifests :=
-		sim.LoadScenarioGroups(isLocal, extraScenario, extraVideoMap, e, lg)
+		LoadScenarioGroups(isLocal, extraScenario, extraVideoMap, e, lg)
 	if e.HaveErrors() {
 		return nil
 	}
 
-	ch := make(chan map[string]map[string]*sim.Configuration, 1)
+	ch := make(chan map[string]map[string]*Configuration, 1)
 
 	server := func() {
 		server := rpc.NewServer()

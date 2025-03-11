@@ -55,10 +55,10 @@ func (c *ControlClient) Status() string {
 	} else {
 		deparr := fmt.Sprintf(" [ %d departures %d arrivals %d overflights ]",
 			c.TotalDepartures, c.TotalArrivals, c.TotalOverflights)
-		if c.SimName == "" {
+		if c.State.SimName == "" {
 			return c.State.PrimaryTCP + ": " + c.SimDescription + deparr
 		} else {
-			return c.State.PrimaryTCP + "@" + c.SimName + ": " + c.SimDescription + deparr
+			return c.State.PrimaryTCP + "@" + c.State.SimName + ": " + c.SimDescription + deparr
 		}
 	}
 }
@@ -551,7 +551,7 @@ func (c *ControlClient) UpdateWorld(wu *sim.WorldUpdate, eventStream *sim.EventS
 	c.State.UserRestrictionAreas = wu.UserRestrictionAreas
 
 	c.State.SimTime = wu.Time
-	c.State.SimIsPaused = wu.SimIsPaused
+	c.State.Paused = wu.SimIsPaused
 	c.State.SimRate = wu.SimRate
 	c.State.TotalDepartures = wu.TotalDepartures
 	c.State.TotalArrivals = wu.TotalArrivals
@@ -635,12 +635,12 @@ func (c *ControlClient) SetLaunchConfig(lc sim.LaunchConfig) {
 func (c *ControlClient) CurrentTime() time.Time {
 	t := c.SimTime
 
-	if !c.SimIsPaused && !c.lastUpdateRequest.IsZero() {
+	if !c.State.Paused && !c.lastUpdateRequest.IsZero() {
 		d := time.Since(c.lastUpdateRequest)
 
 		// Roughly account for RPC overhead; more for a remote server (where
 		// SimName will be set.)
-		if c.SimName == "" {
+		if c.State.SimName == "" {
 			d -= 10 * time.Millisecond
 		} else {
 			d -= 50 * time.Millisecond

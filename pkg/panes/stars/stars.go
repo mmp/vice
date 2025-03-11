@@ -221,8 +221,6 @@ type STARSPane struct {
 		overflights map[string]map[int]bool               // group->index
 		airspace    map[string]map[string]bool            // ctrl -> volume name
 	}
-
-	mapLibrary *av.VideoMapLibrary // just cached per session; not saved to disk.
 }
 
 type PointOutControllers struct {
@@ -462,8 +460,6 @@ func (sp *STARSPane) ResetSim(client *server.ControlClient, ss sim.State, pl pla
 	clear(sp.scopeDraw.departures)
 	clear(sp.scopeDraw.overflights)
 	clear(sp.scopeDraw.airspace)
-
-	sp.mapLibrary = nil
 }
 
 func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *log.Logger) {
@@ -490,9 +486,8 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	}
 
 	// First grab the video maps needed for the DCB
-	ctrlMaps, _ := ss.GetControllerVideoMaps()
 	sp.allVideoMaps = util.FilterSlice(vmf.Maps, func(vm av.VideoMap) bool {
-		return slices.Contains(ctrlMaps, vm.Name)
+		return slices.Contains(ss.ControllerVideoMaps, vm.Name)
 	})
 	for _, vm := range sp.allVideoMaps {
 		usedIds[vm.Id] = nil
@@ -564,7 +559,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 
 	// Radar maps
 	radarIndex := 801
-	for _, name := range util.SortedMapKeys(ss.RadarSites) {
+	for _, name := range util.SortedMapKeys(ss.STARSFacilityAdaptation.RadarSites) {
 		sm := av.VideoMap{
 			Label:    name + "RCM",
 			Name:     name + " RADAR COVERAGE MAP",
@@ -572,7 +567,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 			Category: VideoMapProcessingAreas,
 		}
 
-		site := ss.RadarSites[name]
+		site := ss.STARSFacilityAdaptation.RadarSites[name]
 		ld := renderer.GetLinesDrawBuilder()
 		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.PrimaryRange), 360)
 		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.SecondaryRange), 360)
@@ -612,7 +607,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 
 	// Start with the video maps associated with the Sim.
 	sp.dcbVideoMaps = nil
-	for _, name := range ctrlMaps {
+	for _, name := range ss.ControllerVideoMaps {
 		if idx := slices.IndexFunc(sp.allVideoMaps, func(v av.VideoMap) bool { return v.Name == name }); idx != -1 && name != "" {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, &sp.allVideoMaps[idx])
 		} else {
@@ -622,21 +617,11 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 }
 
 func (sp *STARSPane) getVideoMapLibrary(ss sim.State, client *server.ControlClient) (*av.VideoMapLibrary, error) {
-	if sp.mapLibrary != nil {
-		return sp.mapLibrary, nil
-	}
-
 	filename := ss.STARSFacilityAdaptation.VideoMapFile
-	ml, err := av.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash)
-	if err == nil {
-		sp.mapLibrary = ml
+	if ml, err := av.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
 		return ml, nil
 	} else {
-		ml, err = client.GetVideoMapLibrary(filename)
-		if err == nil {
-			sp.mapLibrary = ml
-		}
-		return ml, err
+		return client.GetVideoMapLibrary(filename)
 	}
 }
 
@@ -1214,7 +1199,7 @@ func (sp *STARSPane) radarMode(radarSites map[string]*av.RadarSite) int {
 func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 	var aircraft []*av.Aircraft
 	ps := sp.currentPrefs()
-	single := sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeSingle
+	single := sp.radarMode(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) == RadarModeSingle
 	now := ctx.ControlClient.SimTime
 	for callsign, state := range sp.Aircraft {
 		ac, ok := ctx.ControlClient.Aircraft[callsign]
@@ -1229,7 +1214,7 @@ func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 
 		visible := false
 
-		if sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeFused {
+		if sp.radarMode(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) == RadarModeFused {
 			// visible unless if it's almost on the ground
 			alt := float32(state.TrackAltitude())
 			if ctx.ControlClient.IsDeparture(ac) &&
@@ -1244,7 +1229,7 @@ func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 			visible = true
 		} else {
 			// Otherwise see if any of the radars can see it
-			for id, site := range ctx.ControlClient.RadarSites {
+			for id, site := range ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites {
 				if single && ps.RadarSiteSelected != id {
 					continue
 				}

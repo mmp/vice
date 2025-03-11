@@ -32,6 +32,11 @@ type ConnectionManager struct {
 	onError     func(error)
 }
 
+type Connection struct {
+	SimState sim.State
+	SimProxy *proxy
+}
+
 func MakeServerConnection(address, additionalScenario, additionalVideoMap string, e *util.ErrorLogger, lg *log.Logger,
 	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, error) {
 	cm := &ConnectionManager{
@@ -114,8 +119,7 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, lg *log.Logger) {
 		if cm.client != nil {
 			cm.client.Disconnect()
 		}
-		cm.client = NewControlClient(ns.SimState, ns.SimProxy.ControllerToken,
-			ns.SimProxy.Client, lg)
+		cm.client = NewControlClient(ns.SimState, ns.SimProxy.ControllerToken, ns.SimProxy.Client, lg)
 		cm.connectionStartTime = time.Now()
 
 		if cm.onNewClient != nil {

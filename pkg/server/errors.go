@@ -16,6 +16,7 @@ var (
 	ErrDuplicateSimName          = errors.New("A sim with that name already exists")
 	ErrInvalidCommandSyntax      = errors.New("Invalid command syntax")
 	ErrInvalidPassword           = errors.New("Invalid password")
+	ErrInvalidSSimConfiguration  = errors.New("Invalid SimConfiguration")
 	ErrNoNamedSim                = errors.New("No Sim with that name")
 	ErrNoSimForControllerToken   = errors.New("No Sim running for controller token")
 	ErrRPCTimeout                = errors.New("RPC call timed out")

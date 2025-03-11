@@ -92,7 +92,7 @@ func main() {
 	if *lintScenarios {
 		var e util.ErrorLogger
 		scenarioGroups, _, _ :=
-			sim.LoadScenarioGroups(true, *scenarioFilename, *videoMapFilename, &e, lg)
+			server.LoadScenarioGroups(true, *scenarioFilename, *videoMapFilename, &e, lg)
 
 		videoMaps := make(map[string]interface{})
 		for _, sgs := range scenarioGroups {

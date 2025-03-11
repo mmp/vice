@@ -432,7 +432,7 @@ func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, 
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
 
 		if controlClient != nil && controlClient.Connected() {
-			if controlClient.SimIsPaused {
+			if controlClient.State.Paused {
 				if imgui.Button(renderer.FontAwesomeIconPlayCircle) {
 					controlClient.ToggleSimPause()
 				}
