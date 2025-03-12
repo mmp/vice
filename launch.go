@@ -118,6 +118,8 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .5, .5, 1})
 		if errors.Is(c.DisplayError, server.ErrRPCTimeout) || util.IsRPCServerError(c.DisplayError) {
 			imgui.Text("Unable to reach vice server")
+		} else if errors.Is(c.DisplayError, server.ErrInvalidPassword) {
+			imgui.Text("Invalid password entered")
 		} else {
 			imgui.Text(c.DisplayError.Error())
 		}
