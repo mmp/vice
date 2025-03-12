@@ -29,23 +29,8 @@ type Sim struct {
 	eventStream *EventStream
 	lg          *log.Logger
 
-	// For each airport, at what time we would like to launch a departure,
-	// based on the airport's departure rate. The actual time an aircraft
-	// is launched may be later, e.g. if we need longer for wake turbulence
-	// separation, etc.
-	NextDepartureLaunch map[string]time.Time
-	// Map from airport to aircraft that are ready to go. The slice is
-	// ordered according to the departure sequence.
-	DeparturePool map[string][]DepartureAircraft
-	// Index to track departing aircraft; we use this to make sure we don't
-	// keep pushing an aircraft to the end of the queue.
-	DepartureIndex map[string]int
-	// Airport -> runway -> *DepartureAircraft (nil if none launched yet)
-	LastDeparture map[string]map[string]*DepartureAircraft
-
-	VFRLaunchAttempts  map[string]int
-	VFRLaunchSuccesses map[string]int
-
+	// Per-airport
+	DepartureState map[string]*DepartureLaunchState
 	// Key is inbound flow group name
 	NextInboundSpawn map[string]time.Time
 
@@ -157,11 +142,8 @@ type NewSimConfiguration struct {
 
 func NewSim(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.Logger) *Sim {
 	s := &Sim{
-		DeparturePool:      make(map[string][]DepartureAircraft),
-		DepartureIndex:     make(map[string]int),
-		LastDeparture:      make(map[string]map[string]*DepartureAircraft),
-		VFRLaunchAttempts:  make(map[string]int),
-		VFRLaunchSuccesses: make(map[string]int),
+		DepartureState:   make(map[string]*DepartureLaunchState),
+		NextInboundSpawn: make(map[string]time.Time),
 
 		SignOnPositions: config.SignOnPositions,
 
@@ -215,8 +197,7 @@ func (s *Sim) LogValue() slog.Value {
 	return slog.GroupValue(
 		slog.Any("state", s.State),
 		slog.Any("human_controllers", s.humanControllers),
-		slog.Any("next_departure_launch", s.NextDepartureLaunch),
-		slog.Any("available_departures", s.DeparturePool),
+		slog.Any("departure_state", s.DepartureState),
 		slog.Any("next_inbound_spawn", s.NextInboundSpawn),
 		slog.Any("automatic_handoffs", s.Handoffs),
 		slog.Any("automatic_pointouts", s.PointOuts),

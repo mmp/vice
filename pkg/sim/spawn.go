@@ -25,6 +25,28 @@ import (
 const initialSimSeconds = 20 * 60
 const initialSimControlledSeconds = 45
 
+type DepartureLaunchState struct {
+	// For each airport, at what time we would like to launch a departure,
+	// based on the airport's departure rate. The actual time an aircraft
+	// is launched may be later, e.g. if we need longer for wake turbulence
+	// separation, etc.
+	NextLaunch time.Time
+
+	// Aircraft that are ready to go. The slice is ordered according to the
+	// departure sequence.
+	Pool []DepartureAircraft
+
+	// Index to track departing aircraft; we use this to make sure we don't
+	// keep pushing an aircraft to the end of the queue.
+	Index int
+
+	// Runway -> *DepartureAircraft (nil if none launched yet)
+	LastRunwayDeparture map[string]*DepartureAircraft
+
+	VFRAttempts  int
+	VFRSuccesses int
+}
+
 const (
 	LaunchAutomatic = iota
 	LaunchManual
@@ -112,13 +134,13 @@ func (s *Sim) SetLaunchConfig(tcp string, lc LaunchConfig) error {
 
 		if newSum != oldSum {
 			s.lg.Infof("%s: departure rate changed %f -> %f", ap, oldSum, newSum)
-			s.NextDepartureLaunch[ap] = s.State.SimTime.Add(randomWait(newSum, false))
+			s.DepartureState[ap].NextLaunch = s.State.SimTime.Add(randomWait(newSum, false))
 		}
 	}
 	if lc.VFRDepartureRateScale != s.State.LaunchConfig.VFRDepartureRateScale {
 		for name, ap := range lc.VFRAirports {
 			r := scaleRate(float32(ap.VFRRateSum()), lc.VFRDepartureRateScale)
-			s.NextDepartureLaunch[name] = s.State.SimTime.Add(randomWait(r, false))
+			s.DepartureState[name].NextLaunch = s.State.SimTime.Add(randomWait(r, false))
 		}
 	}
 	for group, groupRates := range lc.InboundFlowRates {
@@ -245,7 +267,6 @@ func (s *Sim) setInitialSpawnTimes() {
 		s.NextPushStart = time.Now().Add(time.Duration(m) * time.Minute)
 	}
 
-	s.NextInboundSpawn = make(map[string]time.Time)
 	for group, rates := range s.State.LaunchConfig.InboundFlowRates {
 		var rateSum float32
 		for _, rate := range rates {
@@ -255,13 +276,16 @@ func (s *Sim) setInitialSpawnTimes() {
 		s.NextInboundSpawn[group] = randomDelay(rateSum)
 	}
 
-	s.NextDepartureLaunch = make(map[string]time.Time)
 	for name, ap := range s.State.DepartureAirports {
+		s.DepartureState[name] = &DepartureLaunchState{
+			LastRunwayDeparture: make(map[string]*DepartureAircraft),
+		}
+
 		r := scaleRate(float32(ap.VFRRateSum()), s.State.LaunchConfig.VFRDepartureRateScale)
 		if runwayRates, ok := s.State.LaunchConfig.DepartureRates[name]; ok {
 			r += sumRateMap2(runwayRates, s.State.LaunchConfig.DepartureRateScale)
 		}
-		s.NextDepartureLaunch[name] = randomDelay(r)
+		s.DepartureState[name].NextLaunch = randomDelay(r)
 	}
 }
 
@@ -402,13 +426,13 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 func (s *Sim) spawnDepartures() {
 	now := s.State.SimTime
 
-	for airport, _ := range s.NextDepartureLaunch {
+	for airport, depState := range s.DepartureState {
 		// Make sure we have a few departing aircraft to work with.
 		s.refreshDeparturePool(airport)
 
 		// Add hold for release to the list a bit before departure time and
 		// request release a few minutes early as well.
-		pool := s.DeparturePool[airport]
+		pool := depState.Pool
 		nlist, nrel := 0, 0
 		for i, dep := range rand.PermuteSlice(pool, rand.Uint32()) {
 			ac := s.State.Aircraft[dep.Callsign]
@@ -430,7 +454,7 @@ func (s *Sim) spawnDepartures() {
 		}
 
 		// See if we have anything to launch
-		if !now.After(s.NextDepartureLaunch[airport]) || len(pool) == 0 {
+		if !now.After(depState.NextLaunch) || len(pool) == 0 {
 			// Don't bother going any further: wait to match the desired
 			// overall launch rate.
 			continue
@@ -459,14 +483,11 @@ func (s *Sim) spawnDepartures() {
 				// Record the launch so we have it when we consider launching the
 				// next one.
 				dep.LaunchTime = now
-				if s.LastDeparture[airport] == nil {
-					s.LastDeparture[airport] = make(map[string]*DepartureAircraft)
-				}
-				s.LastDeparture[airport][dep.Runway] = &dep
+				depState.LastRunwayDeparture[dep.Runway] = &dep
 			}
 
 			// Remove it from the pool of waiting departures.
-			s.DeparturePool[airport] = append(s.DeparturePool[airport][:i], s.DeparturePool[airport][i+1:]...)
+			depState.Pool = append(depState.Pool[:i], depState.Pool[i+1:]...)
 
 			// And figure out when we want to ask for the next departure.
 			ap := s.State.DepartureAirports[airport]
@@ -474,7 +495,7 @@ func (s *Sim) spawnDepartures() {
 			if rates, ok := s.State.LaunchConfig.DepartureRates[airport]; ok {
 				r += sumRateMap2(rates, s.State.LaunchConfig.DepartureRateScale)
 			}
-			s.NextDepartureLaunch[airport] = now.Add(randomWait(r, false))
+			depState.NextLaunch = now.Add(randomWait(r, false))
 
 			break
 		}
@@ -495,7 +516,7 @@ func (s *Sim) canLaunch(airport string, dep DepartureAircraft) bool {
 		}
 	}
 
-	prevDep := s.LastDeparture[airport][dep.Runway]
+	prevDep := s.DepartureState[airport].LastRunwayDeparture[dep.Runway]
 	if prevDep == nil {
 		// No previous departure on this runway, so there's nothing
 		// stopping us.
@@ -535,9 +556,9 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft) time.Duration {
 }
 
 func (s *Sim) refreshDeparturePool(airport string) {
-	pool := s.DeparturePool[airport]
+	depState := s.DepartureState[airport]
 	// Keep a pool of 2-5 around.
-	if len(pool) >= 2 {
+	if len(depState.Pool) >= 2 {
 		return
 	}
 
@@ -561,9 +582,8 @@ func (s *Sim) refreshDeparturePool(airport string) {
 		if vfrRate > 0 && rand.Float32() < vfrRate/(vfrRate+ifrRate) {
 			// Don't waste time trying to find a valid launch if it's been
 			// near-impossible to find valid routes.
-			if s.VFRLaunchAttempts[airport] < 400 ||
-				(s.VFRLaunchSuccesses[airport] > 0 &&
-					s.VFRLaunchAttempts[airport]/s.VFRLaunchSuccesses[airport] < 200) {
+			if depState.VFRAttempts < 400 ||
+				(depState.VFRSuccesses > 0 && depState.VFRAttempts/depState.VFRSuccesses < 200) {
 				// Add a VFR
 				ac, runway, err = s.createVFRDeparture(airport)
 			}
@@ -581,15 +601,75 @@ func (s *Sim) refreshDeparturePool(airport string) {
 			ac.WaitingForLaunch = true
 			s.addAircraftNoLock(*ac)
 
-			pool = append(pool, makeDepartureAircraft(ac, runway, s.DepartureIndex[airport],
-				s.State, s.lg))
-			s.DepartureIndex[airport]++
+			depState.addDeparture(ac, runway, s.State /* wind */)
 		}
 	}
 
 	// We've updated the pool; resequence them.
-	s.DeparturePool[airport] = s.sequenceDepartures(s.LastDeparture[airport], pool,
-		s.DepartureIndex[airport])
+	depState.resequence(s)
+}
+
+func (d *DepartureLaunchState) reset() {
+	d.Pool = nil
+	clear(d.LastRunwayDeparture)
+}
+
+func (d *DepartureLaunchState) addDeparture(ac *av.Aircraft, runway string, wind av.WindModel) {
+	d.Pool = append(d.Pool, makeDepartureAircraft(ac, runway, d.Index, wind))
+	d.Index++
+}
+
+func (d *DepartureLaunchState) resequence(s *Sim) {
+	if len(d.Pool) <= 1 {
+		return
+	}
+
+	// If the oldest one has been hanging around and not launched,
+	// eventually force it; this way we don't keep kicking the can down the
+	// road on a super indefinitely...
+	minIdx := 1000000
+	minIdxCallsign := ""
+	for _, dac := range d.Pool {
+		if dac.Index < minIdx && d.Index-dac.Index >= 7 {
+			minIdx = dac.Index
+			minIdxCallsign = dac.Callsign
+		}
+	}
+
+	var bestOrder []DepartureAircraft
+	bestDuration := 24 * time.Hour
+
+	for depPerm := range util.AllPermutations(d.Pool) {
+		// Manifest the permutation into a slice so we can keep the best one.
+		var perm []DepartureAircraft
+		for _, dep := range depPerm {
+			perm = append(perm, dep)
+		}
+
+		// If we have decided that an aircraft that has been waiting is
+		// going to go first, make sure it is so in this permutation. (We
+		// could do this more elegantly...)
+		if minIdxCallsign != "" && perm[0].Callsign != minIdxCallsign {
+			continue
+		}
+
+		// Figure out how long it would take to launch them in this order.
+		var dur time.Duration
+		prevDep := d.LastRunwayDeparture[perm[0].Runway]
+		for i := range perm {
+			if prevDep != nil {
+				dur += s.launchInterval(*prevDep, perm[i])
+			}
+			prevDep = &perm[i]
+		}
+
+		if dur < bestDuration {
+			bestDuration = dur
+			bestOrder = perm
+		}
+	}
+
+	d.Pool = bestOrder
 }
 
 var badCallsigns map[string]interface{} = map[string]interface{}{
@@ -629,6 +709,7 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 	"CAL611":  nil,
 	"LOT5055": nil,
 	"ICE001":  nil,
+	"PSA5342": nil,
 }
 
 func (ss *State) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*av.Aircraft, string) {
@@ -923,7 +1004,7 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 	return ac, nil
 }
 
-func makeDepartureAircraft(ac *av.Aircraft, runway string, idx int, wind av.WindModel, lg *log.Logger) DepartureAircraft {
+func makeDepartureAircraft(ac *av.Aircraft, runway string, idx int, wind av.WindModel) DepartureAircraft {
 	d := DepartureAircraft{
 		Callsign: ac.Callsign,
 		Runway:   runway,
@@ -945,55 +1026,6 @@ func makeDepartureAircraft(ac *av.Aircraft, runway string, idx int, wind av.Wind
 	}
 
 	return d
-}
-
-func (s *Sim) sequenceDepartures(prev map[string]*DepartureAircraft, dep []DepartureAircraft, seq int) []DepartureAircraft {
-	// If the oldest one has been hanging around and not launched,
-	// eventually force it; this way we don't keep kicking the can down the
-	// road on a super indefinitely...
-	minIdx := 1000000
-	minIdxCallsign := ""
-	for _, d := range dep {
-		if d.Index < minIdx && seq-d.Index >= 7 {
-			minIdx = d.Index
-			minIdxCallsign = d.Callsign
-		}
-	}
-
-	var bestOrder []DepartureAircraft
-	bestDuration := 24 * time.Hour
-
-	for depPerm := range util.AllPermutations(dep) {
-		// Manifest the permutation into a slice so we can keep the best one.
-		var perm []DepartureAircraft
-		for _, dep := range depPerm {
-			perm = append(perm, dep)
-		}
-
-		// If we have decided that an aircraft that has been waiting is
-		// going to go first, make sure it is so in this permutation. (We
-		// could do this more elegantly...)
-		if minIdxCallsign != "" && perm[0].Callsign != minIdxCallsign {
-			continue
-		}
-
-		// Figure out how long it would take to launch them in this order.
-		var d time.Duration
-		p := prev[perm[0].Runway]
-		for i := range perm {
-			c := &perm[i]
-			if p != nil {
-				d += s.launchInterval(*p, *c)
-			}
-			p = c
-		}
-
-		if d < bestDuration {
-			bestDuration = d
-			bestOrder = perm
-		}
-	}
-	return bestOrder
 }
 
 func (s *Sim) createVFRDeparture(depart string) (*av.Aircraft, string, error) {
@@ -1019,7 +1051,7 @@ func (s *Sim) createVFRDeparture(depart string) (*av.Aircraft, string, error) {
 	}
 
 	for range 5 {
-		s.VFRLaunchAttempts[depart]++
+		s.DepartureState[depart].VFRAttempts++
 
 		var ac *av.Aircraft
 		var runway string
@@ -1039,7 +1071,7 @@ func (s *Sim) createVFRDeparture(depart string) (*av.Aircraft, string, error) {
 		}
 
 		if err == nil && ac != nil {
-			s.VFRLaunchSuccesses[depart]++
+			s.DepartureState[depart].VFRSuccesses++
 			return ac, runway, nil
 		}
 	}
