@@ -38,7 +38,10 @@ type State struct {
 	ArrivalAirports   map[string]*av.Airport
 	Fixes             map[string]math.Point2LL
 
-	Controllers       map[string]*av.Controller
+	// Signed in human controllers + virtual controllers
+	Controllers      map[string]*av.Controller
+	HumanControllers []string
+
 	PrimaryController string
 	MultiControllers  av.SplitConfiguration
 	PrimaryTCP        string
@@ -341,9 +344,8 @@ func (ss *State) AircraftFromCallsignSuffix(suffix string, instructor bool) []*a
 func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 	if len(ss.MultiControllers) > 0 {
 		callsign, err := ss.MultiControllers.ResolveController(ac.DepartureContactController,
-			func(callsign string) bool {
-				ctrl, ok := ss.Controllers[callsign]
-				return ok && ctrl.IsHuman
+			func(tcp string) bool {
+				return slices.Contains(ss.HumanControllers, tcp)
 			})
 		if err != nil {
 			lg.Warn("Unable to resolve departure controller", slog.Any("error", err),

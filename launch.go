@@ -1366,7 +1366,7 @@ func drawScenarioInfoWindow(config *Config, c *server.ControlClient, p platform.
 				imgui.TableNextColumn()
 				imgui.Text(ctrl.Id())
 				imgui.TableNextColumn()
-				if ctrl.IsHuman {
+				if slices.Contains(c.State.HumanControllers, ctrl.Id()) {
 					sq := renderer.FontAwesomeIconCheckSquare
 					// Center the square in the column
 					// https://stackoverflow.com/a/66109051

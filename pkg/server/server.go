@@ -143,9 +143,9 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 			ch <- &serverConnection{Err: err}
 			return
 		} else {
-			var so SignOnResult
+			var cr ConnectResult
 			start := time.Now()
-			if err := client.CallWithTimeout("SimManager.SignOn", ViceRPCVersion, &so); err != nil {
+			if err := client.CallWithTimeout("SimManager.Connect", ViceRPCVersion, &cr); err != nil {
 				ch <- &serverConnection{Err: err}
 			} else {
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
@@ -153,8 +153,8 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 					Server: &Server{
 						RPCClient:   client,
 						name:        "Network (Multi-controller)",
-						configs:     so.Configurations,
-						runningSims: so.RunningSims,
+						configs:     cr.Configurations,
+						runningSims: cr.RunningSims,
 					},
 				}
 			}

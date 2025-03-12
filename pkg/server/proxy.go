@@ -163,7 +163,6 @@ func (p *proxy) GlobalMessage(global sim.GlobalMessage) *rpc.Call {
 	return p.Client.Go("Sim.GlobalMessage", &GlobalMessageArgs{
 		ControllerToken: p.ControllerToken,
 		Message:         global.Message,
-		FromController:  global.FromController,
 	}, nil, nil)
 }
 

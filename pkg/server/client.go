@@ -544,6 +544,8 @@ func (c *ControlClient) UpdateWorld(wu *sim.WorldUpdate, eventStream *sim.EventS
 	if wu.Controllers != nil {
 		c.State.Controllers = wu.Controllers
 	}
+	c.State.HumanControllers = wu.HumanControllers
+
 	c.State.ERAMComputers = wu.ERAMComputers
 
 	c.State.LaunchConfig = wu.LaunchConfig

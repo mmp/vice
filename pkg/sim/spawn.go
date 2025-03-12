@@ -92,81 +92,75 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports m
 	return lc
 }
 
-func (s *Sim) SetLaunchConfig(token string, lc LaunchConfig) error {
+func (s *Sim) SetLaunchConfig(tcp string, lc LaunchConfig) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if _, ok := s.controllers[token]; !ok {
-		return ErrInvalidControllerToken
-	} else {
-		// Update the next spawn time for any rates that changed.
-		for ap, rwyRates := range lc.DepartureRates {
-			var newSum, oldSum float32
-			for rwy, categoryRates := range rwyRates {
-				for category, rate := range categoryRates {
-					newSum += rate
-					oldSum += s.State.LaunchConfig.DepartureRates[ap][rwy][category]
-				}
-			}
-			newSum = scaleRate(newSum, lc.DepartureRateScale) +
-				scaleRate(float32(s.State.Airports[ap].VFRRateSum()), lc.VFRDepartureRateScale)
-			oldSum = scaleRate(oldSum, s.State.LaunchConfig.DepartureRateScale) +
-				scaleRate(float32(s.State.Airports[ap].VFRRateSum()), s.State.LaunchConfig.VFRDepartureRateScale)
-
-			if newSum != oldSum {
-				s.lg.Infof("%s: departure rate changed %f -> %f", ap, oldSum, newSum)
-				s.NextDepartureLaunch[ap] = s.State.SimTime.Add(randomWait(newSum, false))
-			}
-		}
-		if lc.VFRDepartureRateScale != s.State.LaunchConfig.VFRDepartureRateScale {
-			for name, ap := range lc.VFRAirports {
-				r := scaleRate(float32(ap.VFRRateSum()), lc.VFRDepartureRateScale)
-				s.NextDepartureLaunch[name] = s.State.SimTime.Add(randomWait(r, false))
-			}
-		}
-		for group, groupRates := range lc.InboundFlowRates {
-			var newSum, oldSum float32
-			for ap, rate := range groupRates {
+	// Update the next spawn time for any rates that changed.
+	for ap, rwyRates := range lc.DepartureRates {
+		var newSum, oldSum float32
+		for rwy, categoryRates := range rwyRates {
+			for category, rate := range categoryRates {
 				newSum += rate
-				oldSum += s.State.LaunchConfig.InboundFlowRates[group][ap]
-			}
-			newSum *= lc.InboundFlowRateScale
-			oldSum *= s.State.LaunchConfig.InboundFlowRateScale
-
-			if newSum != oldSum {
-				pushActive := s.State.SimTime.Before(s.PushEnd)
-				s.lg.Infof("%s: inbound flow rate changed %f -> %f", group, oldSum, newSum)
-				s.NextInboundSpawn[group] = s.State.SimTime.Add(randomWait(newSum, pushActive))
+				oldSum += s.State.LaunchConfig.DepartureRates[ap][rwy][category]
 			}
 		}
+		newSum = scaleRate(newSum, lc.DepartureRateScale) +
+			scaleRate(float32(s.State.Airports[ap].VFRRateSum()), lc.VFRDepartureRateScale)
+		oldSum = scaleRate(oldSum, s.State.LaunchConfig.DepartureRateScale) +
+			scaleRate(float32(s.State.Airports[ap].VFRRateSum()), s.State.LaunchConfig.VFRDepartureRateScale)
 
-		s.State.LaunchConfig = lc
-		return nil
+		if newSum != oldSum {
+			s.lg.Infof("%s: departure rate changed %f -> %f", ap, oldSum, newSum)
+			s.NextDepartureLaunch[ap] = s.State.SimTime.Add(randomWait(newSum, false))
+		}
 	}
+	if lc.VFRDepartureRateScale != s.State.LaunchConfig.VFRDepartureRateScale {
+		for name, ap := range lc.VFRAirports {
+			r := scaleRate(float32(ap.VFRRateSum()), lc.VFRDepartureRateScale)
+			s.NextDepartureLaunch[name] = s.State.SimTime.Add(randomWait(r, false))
+		}
+	}
+	for group, groupRates := range lc.InboundFlowRates {
+		var newSum, oldSum float32
+		for ap, rate := range groupRates {
+			newSum += rate
+			oldSum += s.State.LaunchConfig.InboundFlowRates[group][ap]
+		}
+		newSum *= lc.InboundFlowRateScale
+		oldSum *= s.State.LaunchConfig.InboundFlowRateScale
+
+		if newSum != oldSum {
+			pushActive := s.State.SimTime.Before(s.PushEnd)
+			s.lg.Infof("%s: inbound flow rate changed %f -> %f", group, oldSum, newSum)
+			s.NextInboundSpawn[group] = s.State.SimTime.Add(randomWait(newSum, pushActive))
+		}
+	}
+
+	s.State.LaunchConfig = lc
+	return nil
 }
 
-func (s *Sim) TakeOrReturnLaunchControl(token string) error {
+func (s *Sim) TakeOrReturnLaunchControl(tcp string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if ctrl, ok := s.controllers[token]; !ok {
-		return ErrInvalidControllerToken
-	} else if lctrl := s.State.LaunchConfig.Controller; lctrl != "" && ctrl.Id != lctrl {
+	if lctrl := s.State.LaunchConfig.Controller; lctrl != "" && lctrl != tcp {
 		return ErrNotLaunchController
 	} else if lctrl == "" {
-		s.State.LaunchConfig.Controller = ctrl.Id
+		s.State.LaunchConfig.Controller = tcp
 		s.eventStream.Post(Event{
 			Type:    StatusMessageEvent,
-			Message: ctrl.Id + " is now controlling aircraft launches.",
+			Message: tcp + " is now controlling aircraft launches.",
 		})
-		s.lg.Infof("%s: now controlling launches", ctrl.Id)
+		s.lg.Infof("%s: now controlling launches", tcp)
 		return nil
 	} else {
 		s.eventStream.Post(Event{
 			Type:    StatusMessageEvent,
 			Message: s.State.LaunchConfig.Controller + " is no longer controlling aircraft launches.",
 		})
-		s.lg.Infof("%s: no longer controlling launches", ctrl.Id)
+		s.lg.Infof("%s: no longer controlling launches", tcp)
 		s.State.LaunchConfig.Controller = ""
 		return nil
 	}

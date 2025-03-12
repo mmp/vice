@@ -15,6 +15,7 @@ var (
 	ErrControllerAlreadySignedIn = errors.New("Controller with that callsign already signed in")
 	ErrDuplicateSimName          = errors.New("A sim with that name already exists")
 	ErrInvalidCommandSyntax      = errors.New("Invalid command syntax")
+	ErrInvalidControllerToken    = errors.New("Invalid controller token")
 	ErrInvalidPassword           = errors.New("Invalid password")
 	ErrInvalidSSimConfiguration  = errors.New("Invalid SimConfiguration")
 	ErrNoNamedSim                = errors.New("No Sim with that name")
@@ -58,7 +59,6 @@ var errorStringToError = map[string]error{
 	sim.ErrIllegalFunction.Error():             sim.ErrIllegalFunction,
 	sim.ErrIllegalScratchpad.Error():           sim.ErrIllegalScratchpad,
 	sim.ErrInvalidAbbreviatedFP.Error():        sim.ErrInvalidAbbreviatedFP,
-	sim.ErrInvalidControllerToken.Error():      sim.ErrInvalidControllerToken,
 	sim.ErrInvalidDepartureController.Error():  sim.ErrInvalidDepartureController,
 	sim.ErrInvalidRestrictionAreaIndex.Error(): sim.ErrInvalidRestrictionAreaIndex,
 	sim.ErrNoMatchingFlight.Error():            sim.ErrNoMatchingFlight,
@@ -72,6 +72,7 @@ var errorStringToError = map[string]error{
 	ErrControllerAlreadySignedIn.Error(): ErrControllerAlreadySignedIn,
 	ErrDuplicateSimName.Error():          ErrDuplicateSimName,
 	ErrInvalidCommandSyntax.Error():      ErrInvalidCommandSyntax,
+	ErrInvalidControllerToken.Error():    ErrInvalidControllerToken,
 	ErrInvalidPassword.Error():           ErrInvalidPassword,
 	ErrNoNamedSim.Error():                ErrNoNamedSim,
 	ErrNoSimForControllerToken.Error():   ErrNoSimForControllerToken,

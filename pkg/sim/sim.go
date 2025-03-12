@@ -5,10 +5,9 @@
 package sim
 
 import (
-	crand "crypto/rand"
-	"encoding/base64"
 	"log/slog"
-	"sort"
+	"maps"
+	"slices"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -24,8 +23,8 @@ type Sim struct {
 
 	mu util.LoggingMutex
 
-	controllers     map[string]*ServerController // from token
-	SignOnPositions map[string]*av.Controller
+	SignOnPositions  map[string]*av.Controller
+	humanControllers map[string]*EventsSubscription
 
 	eventStream *EventStream
 	lg          *log.Logger
@@ -64,11 +63,8 @@ type Sim struct {
 	FutureOnCourse           []FutureOnCourse
 	FutureSquawkChanges      []FutureChangeSquawk
 
-	lastSimUpdate time.Time
-
-	IsLocal        bool
+	lastSimUpdate  time.Time
 	updateTimeSlop time.Duration
-
 	lastUpdateTime time.Time // this is w.r.t. true wallclock time
 	lastLogTime    time.Time
 
@@ -123,20 +119,6 @@ type PointOut struct {
 	AcceptTime     time.Time
 }
 
-type ServerController struct {
-	Id                  string
-	lastUpdateCall      time.Time
-	warnedNoUpdateCalls bool
-	events              *EventsSubscription
-}
-
-func (sc *ServerController) LogValue() slog.Value {
-	return slog.GroupValue(
-		slog.String("id", sc.Id),
-		slog.Time("last_update", sc.lastUpdateCall),
-		slog.Bool("warned_no_update", sc.warnedNoUpdateCalls))
-}
-
 // NewSimConfiguration collects all of the information required to create a new Sim
 type NewSimConfiguration struct {
 	TRACON      string
@@ -175,8 +157,6 @@ type NewSimConfiguration struct {
 
 func NewSim(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.Logger) *Sim {
 	s := &Sim{
-		IsLocal: config.IsLocal,
-
 		DeparturePool:      make(map[string][]DepartureAircraft),
 		DepartureIndex:     make(map[string]int),
 		LastDeparture:      make(map[string]map[string]*DepartureAircraft),
@@ -185,7 +165,7 @@ func NewSim(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.L
 
 		SignOnPositions: config.SignOnPositions,
 
-		controllers: make(map[string]*ServerController),
+		humanControllers: make(map[string]*EventsSubscription),
 
 		eventStream: NewEventStream(lg),
 		lg:          lg,
@@ -208,12 +188,11 @@ func NewSim(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.L
 }
 
 func (s *Sim) Activate(lg *log.Logger) {
-	if s.controllers == nil {
-		s.controllers = make(map[string]*ServerController)
-	}
 	if s.eventStream == nil {
 		s.eventStream = NewEventStream(lg)
 	}
+	s.humanControllers = make(map[string]*EventsSubscription)
+	s.State.HumanControllers = nil
 
 	now := time.Now()
 	s.lastUpdateTime = now
@@ -221,9 +200,21 @@ func (s *Sim) Activate(lg *log.Logger) {
 	s.State.Activate(s.lg)
 }
 
+func (s *Sim) GetSerializeSim() Sim {
+	ss := *s
+
+	// Clean up so that the user can sign in when they reload.
+	for ctrl := range s.humanControllers {
+		delete(ss.State.Controllers, ctrl)
+	}
+
+	return ss
+}
+
 func (s *Sim) LogValue() slog.Value {
 	return slog.GroupValue(
 		slog.Any("state", s.State),
+		slog.Any("human_controllers", s.humanControllers),
 		slog.Any("next_departure_launch", s.NextDepartureLaunch),
 		slog.Any("available_departures", s.DeparturePool),
 		slog.Any("next_inbound_spawn", s.NextInboundSpawn),
@@ -238,146 +229,135 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Any("aircraft", s.State.Aircraft))
 }
 
-func (s *Sim) SignOn(id string, instructor bool) (*State, string, error) {
-	if err := s.signOn(id, instructor); err != nil {
-		return nil, "", err
+func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
+	if err := s.signOn(tcp, instructor); err != nil {
+		return nil, err
 	}
-
-	var buf [16]byte
-	if _, err := crand.Read(buf[:]); err != nil {
-		return nil, "", err
-	}
-	token := base64.StdEncoding.EncodeToString(buf[:])
-
-	s.controllers[token] = &ServerController{
-		Id:             id,
-		lastUpdateCall: time.Now(),
-		events:         s.eventStream.Subscribe(),
-	}
-
-	return s.State.GetStateForController(id), token, nil
+	return s.State.GetStateForController(tcp), nil
 }
 
-func (s *Sim) signOn(id string, instructor bool) error {
+func (s *Sim) signOn(tcp string, instructor bool) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if id != "Observer" {
-		if s.controllerIsSignedIn(id) {
-			return ErrControllerAlreadySignedIn
-		}
+	if _, ok := s.humanControllers[tcp]; ok {
+		return ErrControllerAlreadySignedIn
+	}
+	if _, ok := s.State.Controllers[tcp]; ok {
+		// Trying to sign in to a virtual position.
+		return av.ErrInvalidController
+	}
+	if _, ok := s.SignOnPositions[tcp]; !ok {
+		return av.ErrNoController
+	}
 
-		ctrl, ok := s.SignOnPositions[id]
-		if !ok {
-			return av.ErrNoController
-		}
-		// Make a copy of the *Controller and set the sign on time.
-		sctrl := *ctrl
-		sctrl.SignOnTime = time.Now()
-		s.State.Controllers[id] = &sctrl
+	s.humanControllers[tcp] = s.eventStream.Subscribe()
+	s.State.Controllers[tcp] = s.SignOnPositions[tcp]
+	s.State.Controllers[tcp].SignOnTime = s.State.SimTime
+	s.State.HumanControllers = append(s.State.HumanControllers, tcp)
 
-		if id == s.State.PrimaryController {
-			// The primary controller signed in so the sim will resume.
-			// Reset lastUpdateTime so that the next time Update() is
-			// called for the sim, we don't try to run a ton of steps.
-			s.lastUpdateTime = time.Now()
-		}
-		if instructor {
-			s.Instructors[id] = true
-		}
+	if tcp == s.State.PrimaryController {
+		// The primary controller signed in so the sim will resume.
+		// Reset lastUpdateTime so that the next time Update() is
+		// called for the sim, we don't try to run a ton of steps.
+		s.lastUpdateTime = time.Now()
+	}
+	if instructor {
+		s.Instructors[tcp] = true
 	}
 
 	s.eventStream.Post(Event{
 		Type:    StatusMessageEvent,
-		Message: id + " has signed on.",
+		Message: tcp + " has signed on.",
 	})
-	s.lg.Infof("%s: controller signed on", id)
+	s.lg.Infof("%s: controller signed on", tcp)
 
 	return nil
 }
 
-func (s *Sim) SignOff(token string) error {
+func (s *Sim) SignOff(tcp string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if ctrl, ok := s.controllers[token]; !ok {
-		return ErrInvalidControllerToken
-	} else {
-		// Drop track on controlled aircraft
-		for _, ac := range s.State.Aircraft {
-			ac.HandleControllerDisconnect(ctrl.Id, s.State.PrimaryController)
-		}
-
-		if ctrl.Id == s.State.LaunchConfig.Controller {
-			// give up control of launches so someone else can take it.
-			s.State.LaunchConfig.Controller = ""
-		}
-
-		ctrl.events.Unsubscribe()
-		delete(s.controllers, token)
-		delete(s.State.Controllers, ctrl.Id)
-		delete(s.Instructors, ctrl.Id)
-
-		s.eventStream.Post(Event{
-			Type:    StatusMessageEvent,
-			Message: ctrl.Id + " has signed off.",
-		})
-		s.lg.Infof("%s: controller signing off", ctrl.Id)
+	if _, ok := s.humanControllers[tcp]; !ok {
+		return av.ErrNoController
 	}
+
+	// Drop track on controlled aircraft
+	for _, ac := range s.State.Aircraft {
+		ac.HandleControllerDisconnect(tcp, s.State.PrimaryController)
+	}
+
+	if tcp == s.State.LaunchConfig.Controller {
+		// give up control of launches so someone else can take it.
+		s.State.LaunchConfig.Controller = ""
+	}
+
+	s.humanControllers[tcp].Unsubscribe()
+
+	delete(s.humanControllers, tcp)
+	delete(s.State.Controllers, tcp)
+	delete(s.Instructors, tcp)
+	s.State.HumanControllers =
+		slices.DeleteFunc(s.State.HumanControllers, func(s string) bool { return s == tcp })
+
+	s.eventStream.Post(Event{
+		Type:    StatusMessageEvent,
+		Message: tcp + " has signed off.",
+	})
+	s.lg.Infof("%s: controller signing off", tcp)
+
 	return nil
 }
 
-func (s *Sim) ChangeControlPosition(token string, id string, keepTracks bool) error {
-	ctrl, ok := s.controllers[token]
-	if !ok {
-		return ErrInvalidControllerToken
-	}
-	oldId := ctrl.Id
-
-	s.lg.Infof("%s: switching to %s", oldId, id)
+func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) error {
+	s.lg.Infof("%s: switching to %s", fromTCP, toTCP)
 
 	// Make sure we can successfully sign on before signing off from the
 	// current position.
-	if err := s.signOn(id, false); err != nil {
+	if err := s.signOn(toTCP, s.Instructors[fromTCP]); err != nil {
 		return err
 	}
-	ctrl.Id = id
 
-	delete(s.State.Controllers, oldId)
+	// Swap the event subscriptions so we don't lose any events pending on the old one.
+	s.humanControllers[toTCP].Unsubscribe()
+	s.humanControllers[toTCP] = s.humanControllers[fromTCP]
+	s.State.HumanControllers = append(s.State.HumanControllers, toTCP)
+
+	delete(s.humanControllers, fromTCP)
+	delete(s.State.Controllers, fromTCP)
+	delete(s.Instructors, fromTCP)
+	slices.DeleteFunc(s.State.HumanControllers, func(s string) bool { return s == fromTCP })
 
 	s.eventStream.Post(Event{
 		Type:    StatusMessageEvent,
-		Message: oldId + " has signed off.",
+		Message: fromTCP + " has signed off.",
 	})
 
 	for _, ac := range s.State.Aircraft {
 		if keepTracks {
-			ac.TransferTracks(oldId, ctrl.Id)
+			ac.TransferTracks(fromTCP, toTCP)
 		} else {
-			ac.HandleControllerDisconnect(oldId, s.State.PrimaryController)
+			ac.HandleControllerDisconnect(fromTCP, s.State.PrimaryController)
 		}
 	}
 
 	return nil
 }
 
-func (s *Sim) TogglePause(token string) error {
+func (s *Sim) TogglePause(tcp string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if ctrl, ok := s.controllers[token]; !ok {
-		return ErrInvalidControllerToken
-	} else {
-		s.State.Paused = !s.State.Paused
-		s.lg.Infof("paused: %v", s.State.Paused)
-		s.lastUpdateTime = time.Now() // ignore time passage...
+	s.State.Paused = !s.State.Paused
+	s.lg.Infof("paused: %v", s.State.Paused)
+	s.lastUpdateTime = time.Now() // ignore time passage...
 
-		s.eventStream.Post(Event{
-			Type:    GlobalMessageEvent,
-			Message: ctrl.Id + " has " + util.Select(s.State.Paused, "paused", "unpaused") + " the sim",
-		})
-		return nil
-	}
+	s.eventStream.Post(Event{
+		Type:    GlobalMessageEvent,
+		Message: tcp + " has " + util.Select(s.State.Paused, "paused", "unpaused") + " the sim",
+	})
+	return nil
 }
 
 func (s *Sim) IdleTime() time.Duration {
@@ -386,27 +366,23 @@ func (s *Sim) IdleTime() time.Duration {
 	return time.Since(s.lastUpdateTime)
 }
 
-func (s *Sim) SetSimRate(token string, rate float32) error {
+func (s *Sim) SetSimRate(tcp string, rate float32) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if _, ok := s.controllers[token]; !ok {
-		return ErrInvalidControllerToken
-	} else {
-		s.State.SimRate = rate
-		s.lg.Infof("sim rate set to %f", s.State.SimRate)
-		return nil
-	}
+	s.State.SimRate = rate
+	s.lg.Infof("sim rate set to %f", s.State.SimRate)
+	return nil
 }
 
-func (s *Sim) GlobalMessage(controller, message string) error {
+func (s *Sim) GlobalMessage(tcp, message string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	s.eventStream.Post(Event{
 		Type:           GlobalMessageEvent,
 		Message:        message,
-		FromController: controller,
+		FromController: tcp,
 	})
 
 	return nil
@@ -475,12 +451,7 @@ func (s *Sim) ActiveControllers() []string {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	var controllers []string
-	for _, ctrl := range s.controllers {
-		controllers = append(controllers, ctrl.Id)
-	}
-	sort.Strings(controllers)
-	return controllers
+	return util.SortedMapKeys(s.humanControllers)
 }
 
 func (s *Sim) GetAvailableCoveredPositions() (map[string]av.Controller, map[string]av.Controller) {
@@ -496,11 +467,9 @@ func (s *Sim) GetAvailableCoveredPositions() (map[string]av.Controller, map[stri
 	for id := range s.State.MultiControllers {
 		available[id] = *s.SignOnPositions[id]
 	}
-	for _, ctrl := range s.controllers {
-		delete(available, ctrl.Id)
-		if wc, ok := s.State.Controllers[ctrl.Id]; ok && wc.IsHuman {
-			covered[ctrl.Id] = *s.SignOnPositions[ctrl.Id]
-		}
+	for tcp := range s.humanControllers {
+		delete(available, tcp)
+		covered[tcp] = *s.SignOnPositions[tcp]
 	}
 
 	return available, covered
@@ -512,9 +481,11 @@ type GlobalMessage struct {
 }
 
 type WorldUpdate struct {
-	Aircraft    map[string]*av.Aircraft
-	Controllers map[string]*av.Controller
-	Time        time.Time
+	Aircraft         map[string]*av.Aircraft
+	Controllers      map[string]*av.Controller
+	HumanControllers []string
+
+	Time time.Time
 
 	ERAMComputers *ERAMComputers
 
@@ -531,59 +502,47 @@ type WorldUpdate struct {
 	Instructors      map[string]bool
 }
 
-func (s *Sim) GetWorldUpdate(token string, update *WorldUpdate) error {
+func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if ctrl, ok := s.controllers[token]; !ok {
-		return ErrInvalidControllerToken
-	} else {
-		ctrl.lastUpdateCall = time.Now()
-		if ctrl.warnedNoUpdateCalls {
-			ctrl.warnedNoUpdateCalls = false
-			s.lg.Warnf("%s: connection re-established", ctrl.Id)
-			s.eventStream.Post(Event{
-				Type:    StatusMessageEvent,
-				Message: ctrl.Id + " is back online.",
-			})
-		}
-
-		var err error
-		*update, err = deep.Copy(WorldUpdate{
-			Aircraft:             s.State.Aircraft,
-			Controllers:          s.State.Controllers,
-			ERAMComputers:        s.State.ERAMComputers,
-			Time:                 s.State.SimTime,
-			LaunchConfig:         s.State.LaunchConfig,
-			SimIsPaused:          s.State.Paused,
-			SimRate:              s.State.SimRate,
-			Events:               ctrl.events.Get(),
-			TotalDepartures:      s.TotalDepartures,
-			TotalArrivals:        s.TotalArrivals,
-			TotalOverflights:     s.TotalOverflights,
-			UserRestrictionAreas: s.State.UserRestrictionAreas,
-			Instructors:          s.Instructors,
-		})
-
-		return err
+	var events []Event
+	if sub, ok := s.humanControllers[tcp]; ok {
+		events = sub.Get()
 	}
+
+	var err error
+	*update, err = deep.Copy(WorldUpdate{
+		Aircraft:             s.State.Aircraft,
+		Controllers:          s.State.Controllers,
+		HumanControllers:     slices.Collect(maps.Keys(s.humanControllers)),
+		ERAMComputers:        s.State.ERAMComputers,
+		Time:                 s.State.SimTime,
+		LaunchConfig:         s.State.LaunchConfig,
+		SimIsPaused:          s.State.Paused,
+		SimRate:              s.State.SimRate,
+		Events:               events,
+		TotalDepartures:      s.TotalDepartures,
+		TotalArrivals:        s.TotalArrivals,
+		TotalOverflights:     s.TotalOverflights,
+		UserRestrictionAreas: s.State.UserRestrictionAreas,
+		Instructors:          s.Instructors,
+	})
+
+	return err
 }
 
-func (s *Sim) ResolveController(callsign string) string {
+func (s *Sim) ResolveController(tcp string) string {
 	if s.State.MultiControllers == nil {
 		// Single controller
 		return s.State.PrimaryController
-	} else if len(s.controllers) == 0 {
-		// This can happen during the prespawn phase right after launching but
-		// before the user has been signed in.
-		return s.State.PrimaryController
 	} else {
-		c, err := s.State.MultiControllers.ResolveController(callsign,
+		c, err := s.State.MultiControllers.ResolveController(tcp,
 			func(callsign string) bool {
-				return s.controllerIsSignedIn(callsign)
+				return s.isActiveHumanController(callsign)
 			})
 		if err != nil {
-			s.lg.Errorf("%s: unable to resolve controller: %v", callsign, err)
+			s.lg.Errorf("%s: unable to resolve controller: %v", tcp, err)
 		}
 
 		if c == "" { // This shouldn't happen...
@@ -593,13 +552,9 @@ func (s *Sim) ResolveController(callsign string) string {
 	}
 }
 
-func (s *Sim) controllerIsSignedIn(id string) bool {
-	for _, ctrl := range s.controllers {
-		if ctrl.Id == id {
-			return true
-		}
-	}
-	return false
+func (s *Sim) isActiveHumanController(tcp string) bool {
+	_, ok := s.humanControllers[tcp]
+	return ok
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -621,38 +576,11 @@ func (s *Sim) Update() {
 		ac.Check(s.lg)
 	}
 
-	if !s.IsLocal {
-		// Sign off controllers we haven't heard from in 15 seconds so that
-		// someone else can take their place. We only make this check for
-		// multi-controller sims; we don't want to do this for local sims
-		// so that we don't kick people off e.g. when their computer
-		// sleeps.
-		for token, ctrl := range s.controllers {
-			if time.Since(ctrl.lastUpdateCall) > 5*time.Second {
-				if !ctrl.warnedNoUpdateCalls {
-					ctrl.warnedNoUpdateCalls = true
-					s.lg.Warnf("%s: no messages for 5 seconds", ctrl.Id)
-					s.eventStream.Post(Event{
-						Type:    StatusMessageEvent,
-						Message: ctrl.Id + " has not been heard from for 5 seconds. Connection lost?",
-					})
-				}
-
-				if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
-					s.lg.Warnf("%s: signing off idle controller", ctrl.Id)
-					s.mu.Unlock(s.lg)
-					s.SignOff(token)
-					s.mu.Lock(s.lg)
-				}
-			}
-		}
-	}
-
 	if s.State.Paused {
 		return
 	}
 
-	if !s.controllerIsSignedIn(s.State.PrimaryController) {
+	if !s.isActiveHumanController(s.State.PrimaryController) {
 		// Pause the sim if the primary controller is gone
 		return
 	}
@@ -695,7 +623,7 @@ func (s *Sim) updateState() {
 
 		if ac, ok := s.State.Aircraft[callsign]; ok && ac.HandoffTrackController != "" &&
 			ac.HandoffTrackController != s.State.PrimaryController && // don't accept handoffs during prespawn
-			!s.controllerIsSignedIn(ac.HandoffTrackController) {
+			!s.isActiveHumanController(ac.HandoffTrackController) {
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
 				FromController: ac.TrackingController,
@@ -725,7 +653,7 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if ac, ok := s.State.Aircraft[callsign]; ok && !s.controllerIsSignedIn(po.ToController) {
+		if ac, ok := s.State.Aircraft[callsign]; ok && !s.isActiveHumanController(po.ToController) {
 			// Note that "to" and "from" are swapped in the event,
 			// since the ack is coming from the "to" controller of the
 			// original point out.
@@ -765,15 +693,12 @@ func (s *Sim) updateState() {
 				}
 
 				if passedWaypoint.PointOut != "" {
-					for _, ctrl := range s.State.Controllers {
-						// Look for a controller with a matching TCP id.
-						if ctrl.Id() == passedWaypoint.PointOut {
-							// Don't do the point out if a human is
-							// controlling the aircraft.
-							if fromCtrl, ok := s.State.Controllers[ac.ControllingController]; ok && !fromCtrl.IsHuman {
-								s.pointOut(ac.Callsign, fromCtrl, ctrl)
-								break
-							}
+					if ctrl, ok := s.State.Controllers[passedWaypoint.PointOut]; ok {
+						// Don't do the point out if a human is controlling the aircraft.
+						if !s.isActiveHumanController(ac.ControllingController) {
+							fromCtrl := s.State.Controllers[ac.ControllingController]
+							s.pointOut(ac.Callsign, fromCtrl, ctrl)
+							break
 						}
 					}
 				}

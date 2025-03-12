@@ -5,6 +5,8 @@
 package server
 
 import (
+	crand "crypto/rand"
+	"encoding/base64"
 	"errors"
 	"log/slog"
 	"os"
@@ -22,20 +24,28 @@ import (
 // SimManager
 
 type SimManager struct {
-	scenarioGroups       map[string]map[string]*ScenarioGroup
-	configs              map[string]map[string]*Configuration
-	activeSims           map[string]ActiveSim
-	controllerTokenToSim map[string]*sim.Sim
-	mu                   util.LoggingMutex
-	mapManifests         map[string]*av.VideoMapManifest
-	startTime            time.Time
-	lg                   *log.Logger
+	scenarioGroups     map[string]map[string]*ScenarioGroup
+	configs            map[string]map[string]*Configuration
+	activeSims         map[string]*ActiveSim
+	controllersByToken map[string]*HumanController
+	mu                 util.LoggingMutex
+	mapManifests       map[string]*av.VideoMapManifest
+	startTime          time.Time
+	lg                 *log.Logger
 }
 
 type Configuration struct {
 	ScenarioConfigs  map[string]*SimScenarioConfiguration
 	ControlPositions map[string]*av.Controller
 	DefaultScenario  string
+}
+
+type HumanController struct {
+	asim                *ActiveSim
+	tcp                 string
+	token               string
+	lastUpdateCall      time.Time
+	warnedNoUpdateCalls bool
 }
 
 type SimScenarioConfiguration struct {
@@ -58,19 +68,33 @@ type ActiveSim struct {
 	sim             *sim.Sim
 	allowInstructor bool
 	password        string
+	local           bool
+
+	controllersByTCP map[string]*HumanController
+}
+
+func (as *ActiveSim) AddHumanController(tcp, token string) *HumanController {
+	hc := &HumanController{
+		asim:           as,
+		tcp:            tcp,
+		lastUpdateCall: time.Now(),
+		token:          token,
+	}
+	as.controllersByTCP[tcp] = hc
+	return hc
 }
 
 func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
 	simConfigurations map[string]map[string]*Configuration, manifests map[string]*av.VideoMapManifest,
 	lg *log.Logger) *SimManager {
 	return &SimManager{
-		scenarioGroups:       scenarioGroups,
-		configs:              simConfigurations,
-		activeSims:           make(map[string]ActiveSim),
-		controllerTokenToSim: make(map[string]*sim.Sim),
-		mapManifests:         manifests,
-		startTime:            time.Now(),
-		lg:                   lg,
+		scenarioGroups:     scenarioGroups,
+		configs:            simConfigurations,
+		activeSims:         make(map[string]*ActiveSim),
+		controllersByToken: make(map[string]*HumanController),
+		mapManifests:       manifests,
+		startTime:          time.Now(),
+		lg:                 lg,
 	}
 }
 
@@ -85,13 +109,15 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 		if nsc := sm.makeSimConfiguration(config, lg); nsc != nil {
 			manifest := sm.mapManifests[nsc.STARSFacilityAdaptation.VideoMapFile]
 			sim := sim.NewSim(*nsc, manifest, lg)
-			as := ActiveSim{
-				name:            config.NewSimName,
-				scenarioGroup:   config.GroupName,
-				scenario:        config.ScenarioName,
-				sim:             sim,
-				password:        config.Password,
-				allowInstructor: config.InstructorAllowed,
+			as := &ActiveSim{
+				name:             config.NewSimName,
+				scenarioGroup:    config.GroupName,
+				scenario:         config.ScenarioName,
+				sim:              sim,
+				allowInstructor:  config.InstructorAllowed,
+				password:         config.Password,
+				local:            config.NewSimType == NewSimCreateLocal,
+				controllersByTCP: make(map[string]*HumanController),
 			}
 			return sm.Add(as, result, true)
 		} else {
@@ -105,20 +131,18 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 		if !ok {
 			return ErrNoNamedSim
 		}
-		if _, ok := as.sim.State.Controllers[config.SelectedRemoteSimPosition]; ok {
-			return av.ErrNoController
-		}
 
 		if as.password != "" && config.RemoteSimPassword != as.password {
 			return ErrInvalidPassword
 		}
 
-		ss, token, err := as.sim.SignOn(config.SelectedRemoteSimPosition, config.Instructor)
+		ss, token, err := sm.signOn(as, config.SelectedRemoteSimPosition, config.Instructor)
 		if err != nil {
 			return err
 		}
 
-		sm.controllerTokenToSim[token] = as.sim
+		hc := as.AddHumanController(config.SelectedRemoteSimPosition, token)
+		sm.controllersByToken[token] = hc
 
 		*result = NewSimResult{
 			SimState:        ss,
@@ -193,9 +217,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		if ctrl, ok := sg.ControlPositions[callsign]; !ok {
 			lg.Errorf("%s: control position unknown??!", callsign)
 		} else {
-			ctrlCopy := *ctrl
-			ctrlCopy.IsHuman = true
-			nsc.SignOnPositions[callsign] = &ctrlCopy
+			nsc.SignOnPositions[callsign] = ctrl
 		}
 	}
 	if !nsc.IsLocal {
@@ -214,11 +236,14 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 }
 
 func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
-	as := ActiveSim{sim: sim} // no password, etc.
+	as := &ActiveSim{ // no password, etc.
+		sim:              sim,
+		controllersByTCP: make(map[string]*HumanController),
+	}
 	return sm.Add(as, result, false)
 }
 
-func (sm *SimManager) Add(as ActiveSim, result *NewSimResult, prespawn bool) error {
+func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) error {
 	if as.sim.State == nil {
 		return errors.New("incomplete Sim; nil *State")
 	}
@@ -240,15 +265,15 @@ func (sm *SimManager) Add(as ActiveSim, result *NewSimResult, prespawn bool) err
 	sm.lg.Infof("%s: adding sim", as.name)
 	sm.activeSims[as.name] = as
 
-	sm.mu.Unlock(sm.lg)
 	instuctor := as.sim.Instructors[as.sim.State.PrimaryController]
-	ss, token, err := as.sim.SignOn(as.sim.State.PrimaryController, instuctor)
+	ss, token, err := sm.signOn(as, as.sim.State.PrimaryController, instuctor)
 	if err != nil {
 		return err
 	}
 
-	sm.mu.Lock(sm.lg)
-	sm.controllerTokenToSim[token] = as.sim
+	hc := as.AddHumanController(as.sim.State.PrimaryController, token)
+	sm.controllersByToken[token] = hc
+
 	sm.mu.Unlock(sm.lg)
 
 	// Run prespawn after the primary controller is signed in.
@@ -262,6 +287,33 @@ func (sm *SimManager) Add(as ActiveSim, result *NewSimResult, prespawn bool) err
 		// Terminate idle Sims after 4 hours, but not unnamed Sims, since
 		// they're local and not running on the server.
 		for !sm.SimShouldExit(as.sim) {
+			if !as.local {
+				// Sign off controllers we haven't heard from in 15 seconds so that
+				// someone else can take their place. We only make this check for
+				// multi-controller sims; we don't want to do this for local sims
+				// so that we don't kick people off e.g. when their computer
+				// sleeps.
+				sm.mu.Lock(sm.lg) // FIXME: have a per-ActiveSim lock?
+				for tcp, ctrl := range as.controllersByTCP {
+					if time.Since(ctrl.lastUpdateCall) > 5*time.Second {
+						if !ctrl.warnedNoUpdateCalls {
+							ctrl.warnedNoUpdateCalls = true
+							sm.lg.Warnf("%s: no messages for 5 seconds", tcp)
+							as.sim.PostEvent(sim.Event{
+								Type:    sim.StatusMessageEvent,
+								Message: tcp + " has not been heard from for 5 seconds. Connection lost?",
+							})
+						}
+
+						if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
+							sm.lg.Warnf("%s: signing off idle controller", tcp)
+							sm.SignOff(ctrl.token)
+						}
+					}
+				}
+				sm.mu.Unlock(sm.lg)
+			}
+
 			as.sim.Update()
 			time.Sleep(100 * time.Millisecond)
 		}
@@ -271,10 +323,8 @@ func (sm *SimManager) Add(as ActiveSim, result *NewSimResult, prespawn bool) err
 		defer sm.mu.Unlock(sm.lg)
 		delete(sm.activeSims, as.name)
 		// FIXME: these don't get cleaned up during Sim SignOff()
-		for tok, s := range sm.controllerTokenToSim {
-			if s == as.sim {
-				delete(sm.controllerTokenToSim, tok)
-			}
+		for _, ctrl := range as.controllersByTCP {
+			delete(sm.controllersByToken, ctrl.token)
 		}
 	}()
 
@@ -286,12 +336,12 @@ func (sm *SimManager) Add(as ActiveSim, result *NewSimResult, prespawn bool) err
 	return nil
 }
 
-type SignOnResult struct {
+type ConnectResult struct {
 	Configurations map[string]map[string]*Configuration
 	RunningSims    map[string]*RemoteSim
 }
 
-func (sm *SimManager) SignOn(version int, result *SignOnResult) error {
+func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 	if version != ViceRPCVersion {
 		return ErrRPCVersionMismatch
 	}
@@ -307,6 +357,38 @@ func (sm *SimManager) SignOn(version int, result *SignOnResult) error {
 	result.Configurations = sm.configs
 
 	return nil
+}
+
+// assume SimManager lock is held
+func (sm *SimManager) signOn(as *ActiveSim, tcp string, instructor bool) (*sim.State, string, error) {
+	ss, err := as.sim.SignOn(tcp, instructor)
+	if err != nil {
+		return nil, "", err
+	}
+
+	var buf [16]byte
+	if _, err := crand.Read(buf[:]); err != nil {
+		return nil, "", err
+	}
+	token := base64.StdEncoding.EncodeToString(buf[:])
+
+	return ss, token, nil
+}
+
+func (sm *SimManager) SignOff(token string) error {
+	if ctrl, s, ok := sm.LookupController(token); !ok {
+		return ErrNoSimForControllerToken
+	} else if err := s.SignOff(ctrl.tcp); err != nil {
+		return err
+	} else {
+		sm.mu.Lock(sm.lg)
+		defer sm.mu.Unlock(sm.lg)
+
+		delete(sm.controllersByToken[token].asim.controllersByTCP, ctrl.tcp)
+		delete(sm.controllersByToken, token)
+
+		return nil
+	}
 }
 
 func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error {
@@ -332,6 +414,16 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 	return nil
 }
 
+func (sm *SimManager) LookupController(token string) (*HumanController, *sim.Sim, bool) {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	if ctrl, ok := sm.controllersByToken[token]; ok {
+		return ctrl, ctrl.asim.sim, true
+	}
+	return nil, nil, false
+}
+
 const simIdleLimit = 4 * time.Hour
 
 func (sm *SimManager) SimShouldExit(sim *sim.Sim) bool {
@@ -352,26 +444,15 @@ func (sm *SimManager) SimShouldExit(sim *sim.Sim) bool {
 }
 
 func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
+	if _, sim, ok := sm.LookupController(token); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		sm.mu.Lock(sm.lg)
+		defer sm.mu.Unlock(sm.lg)
 
-	if sm.controllerTokenToSim == nil {
-		return ErrNoSimForControllerToken
+		*s = sim.GetSerializeSim()
 	}
-	sim, ok := sm.controllerTokenToSim[token]
-	if !ok {
-		return ErrNoSimForControllerToken
-	}
-	*s = *sim
 	return nil
-}
-
-func (sm *SimManager) ControllerTokenToSim(token string) (*sim.Sim, bool) {
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
-
-	sim, ok := sm.controllerTokenToSim[token]
-	return sim, ok
 }
 
 type simStatus struct {
@@ -382,6 +463,26 @@ type simStatus struct {
 	TotalDepartures  int
 	TotalArrivals    int
 	TotalOverflights int
+}
+
+func (sm *SimManager) GetWorldUpdate(token string, update *sim.WorldUpdate) error {
+	if ctrl, s, ok := sm.LookupController(token); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		sm.mu.Lock(sm.lg)
+		ctrl.lastUpdateCall = time.Now()
+		if ctrl.warnedNoUpdateCalls {
+			ctrl.warnedNoUpdateCalls = false
+			sm.lg.Warnf("%s: connection re-established", ctrl.tcp)
+			s.PostEvent(sim.Event{
+				Type:    sim.StatusMessageEvent,
+				Message: ctrl.tcp + " is back online.",
+			})
+		}
+		sm.mu.Unlock(sm.lg)
+
+		return s.GetWorldUpdate(ctrl.tcp, update)
+	}
 }
 
 func (ss simStatus) LogValue() slog.Value {

@@ -17,7 +17,6 @@ var (
 	ErrIllegalFunction             = errors.New("Illegal function")
 	ErrIllegalScratchpad           = errors.New("Illegal scratchpad")
 	ErrInvalidAbbreviatedFP        = errors.New("Invalid abbreviated flight plan")
-	ErrInvalidControllerToken      = errors.New("Invalid controller token")
 	ErrInvalidDepartureController  = errors.New("Invalid departure controller")
 	ErrInvalidRestrictionAreaIndex = errors.New("Invalid restriction area index")
 	ErrNoMatchingFlight            = errors.New("No matching flight")
