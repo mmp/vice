@@ -43,9 +43,6 @@ type NewSimConfiguration struct {
 
 	DisplayError error
 
-	lastRemoteSimsUpdate time.Time
-	updateRemoteSimsCall *util.PendingCall
-
 	mgr            *server.ConnectionManager
 	selectedServer *server.Server
 	defaultTRACON  *string
@@ -66,32 +63,6 @@ func MakeNewSimConfiguration(mgr *server.ConnectionManager, defaultTRACON *strin
 	c.SetTRACON(*defaultTRACON)
 
 	return c
-}
-
-func (c *NewSimConfiguration) updateRemoteSims() {
-	// FIXME: this should live in a method in pkg/sim
-	if time.Since(c.lastRemoteSimsUpdate) > 2*time.Second && c.mgr.RemoteServer != nil {
-		c.lastRemoteSimsUpdate = time.Now()
-		var rs map[string]*server.RemoteSim
-		c.updateRemoteSimsCall = &util.PendingCall{
-			Call:      c.mgr.RemoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
-			IssueTime: time.Now(),
-			OnSuccess: func(result any) {
-				if c.mgr.RemoteServer != nil {
-					c.mgr.RemoteServer.SetRunningSims(rs)
-				}
-			},
-			OnErr: func(e error) {
-				c.lg.Errorf("GetRunningSims error: %v", e)
-
-				// nil out the server if we've lost the connection; the
-				// main loop will attempt to reconnect.
-				if util.IsRPCServerError(e) {
-					c.mgr.RemoteServer = nil
-				}
-			},
-		}
-	}
 }
 
 func (c *NewSimConfiguration) SetTRACON(name string) {
@@ -140,10 +111,8 @@ func (c *NewSimConfiguration) ShowRatesWindow() bool {
 }
 
 func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
-	if c.updateRemoteSimsCall != nil && c.updateRemoteSimsCall.CheckFinished() {
-		c.updateRemoteSimsCall = nil
-	} else {
-		c.updateRemoteSims()
+	if err := c.mgr.UpdateRemoteSims(); err != nil {
+		c.lg.Warnf("UpdateRemoteSims: %v", err)
 	}
 
 	if c.DisplayError != nil {

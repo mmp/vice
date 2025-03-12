@@ -21,6 +21,10 @@ type ConnectionManager struct {
 	newSimConnectionChan     chan Connection
 	serverRPCVersionMismatch bool
 
+	lastRemoteSimsUpdate  time.Time
+	updateRemoteSimsCall  *util.PendingCall
+	updateRemoteSimsError error
+
 	LocalServer   *Server
 	RemoteServer  *Server
 	serverAddress string
@@ -107,6 +111,38 @@ func (cm *ConnectionManager) Disconnect() {
 			cm.onNewClient(nil)
 		}
 	}
+}
+
+func (cm *ConnectionManager) UpdateRemoteSims() error {
+	if cm.updateRemoteSimsCall != nil && cm.updateRemoteSimsCall.CheckFinished() {
+		cm.updateRemoteSimsCall = nil
+		err := cm.updateRemoteSimsError
+		cm.updateRemoteSimsError = nil
+		return err
+	} else if time.Since(cm.lastRemoteSimsUpdate) > 2*time.Second && cm.RemoteServer != nil {
+		cm.lastRemoteSimsUpdate = time.Now()
+		var rs map[string]*RemoteSim
+		cm.updateRemoteSimsError = nil
+		cm.updateRemoteSimsCall = &util.PendingCall{
+			Call:      cm.RemoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
+			IssueTime: time.Now(),
+			OnSuccess: func(result any) {
+				if cm.RemoteServer != nil {
+					cm.RemoteServer.setRunningSims(rs)
+				}
+			},
+			OnErr: func(e error) {
+				cm.updateRemoteSimsError = e
+
+				// nil out the server if we've lost the connection; the
+				// main loop will attempt to reconnect.
+				if util.IsRPCServerError(e) {
+					cm.RemoteServer = nil
+				}
+			},
+		}
+	}
+	return nil
 }
 
 func (cm *ConnectionManager) Update(es *sim.EventStream, lg *log.Logger) {

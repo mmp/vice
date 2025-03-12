@@ -95,8 +95,7 @@ func (s *Server) GetConfigs() map[string]map[string]*Configuration {
 	return s.configs
 }
 
-// FIXME: we should own the code that updates this
-func (s *Server) SetRunningSims(rs map[string]*RemoteSim) {
+func (s *Server) setRunningSims(rs map[string]*RemoteSim) {
 	s.runningSims = rs
 }
 
