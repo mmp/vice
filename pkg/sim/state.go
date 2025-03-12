@@ -164,7 +164,10 @@ func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log
 	}
 
 	for _, callsign := range config.VirtualControllers {
-		// Skip controllers that are in MultiControllers
+		// Filter out any that are actually human-controlled positions.
+		if callsign == ss.PrimaryController {
+			continue
+		}
 		if ss.MultiControllers != nil {
 			if _, ok := ss.MultiControllers[callsign]; ok {
 				continue

@@ -566,6 +566,7 @@ func (c *NewSimConfiguration) Start() error {
 	// FIXME: if we're RPCing with a string method name this code should live in pkg/sim
 	var result server.NewSimResult
 	if err := c.selectedServer.CallWithTimeout("SimManager.New", c.NewSimConfiguration, &result); err != nil {
+		c.lg.Errorf("SimManager.New failed: %v", err)
 		err = server.TryDecodeError(err)
 
 		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
