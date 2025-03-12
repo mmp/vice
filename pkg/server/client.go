@@ -28,6 +28,13 @@ type ControlClient struct {
 
 	pendingCalls []*util.PendingCall
 
+	ControllerStats struct {
+		Departures    int
+		Arrivals      int
+		IntraFacility int
+		Overflights   int
+	}
+
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
 	sim.State
@@ -53,8 +60,9 @@ func (c *ControlClient) Status() string {
 	if c == nil || c.SimDescription == "" {
 		return "[disconnected]"
 	} else {
-		deparr := fmt.Sprintf(" [ %d departures %d arrivals %d overflights ]",
-			c.TotalDepartures, c.TotalArrivals, c.TotalOverflights)
+		stats := c.ControllerStats
+		deparr := fmt.Sprintf(" [ %d departures %d arrivals %d intrafacility %d overflights ]",
+			stats.Departures, stats.Arrivals, stats.IntraFacility, stats.Overflights)
 		if c.State.SimName == "" {
 			return c.State.PrimaryTCP + ": " + c.SimDescription + deparr
 		} else {
@@ -218,6 +226,28 @@ func (c *ControlClient) UploadFlightPlan(fp *av.STARSFlightPlan, typ int, succes
 		})
 }
 
+// Utility function that we shim around the user-supplied "success"
+// callback for control operations where we increment the controller's "#
+// airplanes worked" stats.
+func (c *ControlClient) updateControllerStats(callsign string, next func(any)) func(any) {
+	return func(result any) {
+		if ac, ok := c.State.Aircraft[callsign]; ok {
+			if c.IsIntraFacility(ac) {
+				c.ControllerStats.IntraFacility++
+			} else if c.IsDeparture(ac) {
+				c.ControllerStats.Departures++
+			} else if c.IsArrival(ac) {
+				c.ControllerStats.Arrivals++
+			} else if c.IsOverflight(ac) {
+				c.ControllerStats.Overflights++
+			}
+		}
+		if next != nil {
+			next(result)
+		}
+	}
+}
+
 func (c *ControlClient) InitiateTrack(callsign string, fp *av.STARSFlightPlan, success func(any),
 	err func(error)) {
 	// Modifying locally is not canonical but improves perceived latency in
@@ -234,7 +264,7 @@ func (c *ControlClient) InitiateTrack(callsign string, fp *av.STARSFlightPlan, s
 		&util.PendingCall{
 			Call:      c.proxy.InitiateTrack(callsign, fp),
 			IssueTime: time.Now(),
-			OnSuccess: success,
+			OnSuccess: c.updateControllerStats(callsign, success),
 			OnErr:     err,
 		})
 }
@@ -275,7 +305,7 @@ func (c *ControlClient) AcceptHandoff(callsign string, success func(any), err fu
 		&util.PendingCall{
 			Call:      c.proxy.AcceptHandoff(callsign),
 			IssueTime: time.Now(),
-			OnSuccess: success,
+			OnSuccess: c.updateControllerStats(callsign, success),
 			OnErr:     err,
 		})
 }
@@ -295,7 +325,7 @@ func (c *ControlClient) AcceptRedirectedHandoff(callsign string, success func(an
 		&util.PendingCall{
 			Call:      c.proxy.AcceptRedirectedHandoff(callsign),
 			IssueTime: time.Now(),
-			OnSuccess: success,
+			OnSuccess: c.updateControllerStats(callsign, success),
 			OnErr:     err,
 		})
 }
@@ -555,9 +585,8 @@ func (c *ControlClient) UpdateWorld(wu *sim.WorldUpdate, eventStream *sim.EventS
 	c.State.SimTime = wu.Time
 	c.State.Paused = wu.SimIsPaused
 	c.State.SimRate = wu.SimRate
-	c.State.TotalDepartures = wu.TotalDepartures
-	c.State.TotalArrivals = wu.TotalArrivals
-	c.State.TotalOverflights = wu.TotalOverflights
+	c.State.TotalIFR = wu.TotalIFR
+	c.State.TotalVFR = wu.TotalVFR
 	c.State.Instructors = wu.Instructors
 
 	// Important: do this after updating aircraft, controllers, etc.,

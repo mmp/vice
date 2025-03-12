@@ -38,10 +38,6 @@ type Sim struct {
 	// a/c callsign -> PointOut
 	PointOuts map[string]PointOut
 
-	TotalDepartures  int
-	TotalArrivals    int
-	TotalOverflights int
-
 	ReportingPoints []av.ReportingPoint
 
 	FutureControllerContacts []FutureControllerContact
@@ -201,13 +197,8 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Any("next_inbound_spawn", s.NextInboundSpawn),
 		slog.Any("automatic_handoffs", s.Handoffs),
 		slog.Any("automatic_pointouts", s.PointOuts),
-		slog.Int("departures", s.TotalDepartures),
-		slog.Int("arrivals", s.TotalArrivals),
-		slog.Int("overflights", s.TotalOverflights),
-		slog.Time("sim_time", s.State.SimTime),
 		slog.Time("next_push_start", s.NextPushStart),
-		slog.Time("push_end", s.PushEnd),
-		slog.Any("aircraft", s.State.Aircraft))
+		slog.Time("push_end", s.PushEnd))
 }
 
 func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
@@ -474,13 +465,11 @@ type WorldUpdate struct {
 
 	UserRestrictionAreas []av.RestrictionArea
 
-	SimIsPaused      bool
-	SimRate          float32
-	Events           []Event
-	TotalDepartures  int
-	TotalArrivals    int
-	TotalOverflights int
-	Instructors      map[string]bool
+	SimIsPaused        bool
+	SimRate            float32
+	TotalIFR, TotalVFR int
+	Events             []Event
+	Instructors        map[string]bool
 }
 
 func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
@@ -502,10 +491,9 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 		LaunchConfig:         s.State.LaunchConfig,
 		SimIsPaused:          s.State.Paused,
 		SimRate:              s.State.SimRate,
+		TotalIFR:             s.State.TotalIFR,
+		TotalVFR:             s.State.TotalVFR,
 		Events:               events,
-		TotalDepartures:      s.TotalDepartures,
-		TotalArrivals:        s.TotalArrivals,
-		TotalOverflights:     s.TotalOverflights,
 		UserRestrictionAreas: s.State.UserRestrictionAreas,
 		Instructors:          s.Instructors,
 	})

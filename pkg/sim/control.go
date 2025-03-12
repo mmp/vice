@@ -78,17 +78,6 @@ func (s *Sim) DeleteAircraft(tcp, callsign string) error {
 			return nil
 		},
 		func(tcp string, ac *av.Aircraft) []av.RadioTransmission {
-			if s.State.IsIntraFacility(ac) {
-				s.TotalDepartures--
-				s.TotalArrivals--
-			} else if s.State.IsDeparture(ac) {
-				s.TotalDepartures--
-			} else if s.State.IsArrival(ac) {
-				s.TotalArrivals--
-			} else {
-				s.TotalOverflights--
-			}
-
 			s.eventStream.Post(Event{
 				Type:    StatusMessageEvent,
 				Message: fmt.Sprintf("%s deleted %s", tcp, ac.Callsign),

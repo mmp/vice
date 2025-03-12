@@ -68,15 +68,13 @@ type State struct {
 	METAR map[string]*av.METAR
 	Wind  av.Wind
 
+	TotalIFR, TotalVFR int
+
 	Paused         bool
 	SimRate        float32
 	SimDescription string
 	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
 	SimName        string
-
-	TotalDepartures  int
-	TotalArrivals    int
-	TotalOverflights int
 
 	Instructors map[string]bool
 

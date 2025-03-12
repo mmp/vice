@@ -354,8 +354,8 @@ tr:nth-child(even) {
   <tr>
   <th>Name</th>
   <th>Scenario</th>
-  <th>Dep</th>
-  <th>Arr</th>
+  <th>IFR</th>
+  <th>VFR</th>
   <th>Idle Time</th>
   <th>Active Controllers</th>
 
@@ -363,8 +363,8 @@ tr:nth-child(even) {
   </tr>
   <td>{{.Name}}</td>
   <td>{{.Config}}</td>
-  <td>{{.TotalDepartures}}</td>
-  <td>{{.TotalArrivals}}</td>
+  <td>{{.TotalIFR}}</td>
+  <td>{{.TotalVFR}}</td>
   <td>{{.IdleTime}}</td>
   <td><tt>{{.Controllers}}</tt></td>
 </tr>

@@ -208,18 +208,19 @@ func (s *Sim) addAircraftNoLock(ac av.Aircraft) {
 
 	ac.Nav.Check(s.lg)
 
+	if ac.FlightPlan.Rules == av.IFR {
+		s.State.TotalIFR++
+	} else {
+		s.State.TotalVFR++
+	}
+
 	if s.State.IsIntraFacility(&ac) {
-		s.TotalDepartures++
-		s.TotalArrivals++
 		s.lg.Info("launched intrafacility", slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
 	} else if s.State.IsDeparture(&ac) {
-		s.TotalDepartures++
 		s.lg.Info("launched departure", slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
 	} else if s.State.IsArrival(&ac) {
-		s.TotalArrivals++
 		s.lg.Info("launched arrival", slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
 	} else {
-		s.TotalOverflights++
 		s.lg.Info("launched overflight", slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
 	}
 }

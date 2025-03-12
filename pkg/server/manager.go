@@ -456,13 +456,11 @@ func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
 }
 
 type simStatus struct {
-	Name             string
-	Config           string
-	IdleTime         time.Duration
-	Controllers      string
-	TotalDepartures  int
-	TotalArrivals    int
-	TotalOverflights int
+	Name               string
+	Config             string
+	IdleTime           time.Duration
+	Controllers        string
+	TotalIFR, TotalVFR int
 }
 
 func (sm *SimManager) GetWorldUpdate(token string, update *sim.WorldUpdate) error {
@@ -491,9 +489,8 @@ func (ss simStatus) LogValue() slog.Value {
 		slog.String("config", ss.Config),
 		slog.Duration("idle", ss.IdleTime),
 		slog.String("controllers", ss.Controllers),
-		slog.Int("departures", ss.TotalDepartures),
-		slog.Int("arrivals", ss.TotalArrivals),
-		slog.Int("overflights", ss.TotalOverflights))
+		slog.Int("total_ifr", ss.TotalIFR),
+		slog.Int("total_vfr", ss.TotalVFR))
 }
 
 func (sm *SimManager) getSimStatus() []simStatus {
@@ -504,12 +501,11 @@ func (sm *SimManager) getSimStatus() []simStatus {
 	for _, name := range util.SortedMapKeys(sm.activeSims) {
 		as := sm.activeSims[name]
 		status := simStatus{
-			Name:             name,
-			Config:           as.scenario,
-			IdleTime:         as.sim.IdleTime().Round(time.Second),
-			TotalDepartures:  as.sim.TotalDepartures,
-			TotalArrivals:    as.sim.TotalArrivals,
-			TotalOverflights: as.sim.TotalOverflights,
+			Name:     name,
+			Config:   as.scenario,
+			IdleTime: as.sim.IdleTime().Round(time.Second),
+			TotalIFR: as.sim.State.TotalIFR,
+			TotalVFR: as.sim.State.TotalVFR,
 		}
 
 		status.Controllers = strings.Join(as.sim.ActiveControllers(), ", ")
