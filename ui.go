@@ -708,8 +708,8 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 				uiShowModalDialog(NewModalDialogBox(client, c.platform), false)
 				return true
 			} else {
-				c.simConfig.DisplayError = c.simConfig.Start()
-				return c.simConfig.DisplayError == nil
+				c.simConfig.displayError = c.simConfig.Start()
+				return c.simConfig.displayError == nil
 			}
 		},
 	}
@@ -757,8 +757,8 @@ func (r *RatesModalClient) Buttons() []ModalDialogButton {
 		text:     "Create",
 		disabled: r.connectClient.simConfig.OkDisabled(),
 		action: func() bool {
-			r.connectClient.simConfig.DisplayError = r.connectClient.simConfig.Start()
-			return r.connectClient.simConfig.DisplayError == nil
+			r.connectClient.simConfig.displayError = r.connectClient.simConfig.Start()
+			return r.connectClient.simConfig.displayError == nil
 		},
 	}
 

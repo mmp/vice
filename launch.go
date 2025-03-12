@@ -38,9 +38,9 @@ var (
 type NewSimConfiguration struct {
 	server.NewSimConfiguration
 
-	TRACON map[string]*server.Configuration
+	selectedTRACONConfigs map[string]*server.Configuration
 
-	DisplayError error
+	displayError error
 
 	mgr            *server.ConnectionManager
 	selectedServer *server.Server
@@ -67,27 +67,27 @@ func MakeNewSimConfiguration(mgr *server.ConnectionManager, defaultTRACON *strin
 func (c *NewSimConfiguration) SetTRACON(name string) {
 	var ok bool
 	configs := c.selectedServer.GetConfigs()
-	if c.TRACON, ok = configs[name]; !ok {
+	if c.selectedTRACONConfigs, ok = configs[name]; !ok {
 		if name != "" {
 			c.lg.Errorf("%s: TRACON not found!", name)
 		}
 		// Pick one at random
 		name = util.SortedMapKeys(configs)[rand.Intn(len(configs))]
-		c.TRACON = configs[name]
+		c.selectedTRACONConfigs = configs[name]
 	}
 	c.TRACONName = name
-	c.GroupName = util.SortedMapKeys(c.TRACON)[0]
+	c.GroupName = util.SortedMapKeys(c.selectedTRACONConfigs)[0]
 
-	c.SetScenario(c.GroupName, c.TRACON[c.GroupName].DefaultScenario)
+	c.SetScenario(c.GroupName, c.selectedTRACONConfigs[c.GroupName].DefaultScenario)
 }
 
 func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	var ok bool
 	var groupConfig *server.Configuration
-	if groupConfig, ok = c.TRACON[groupName]; !ok {
+	if groupConfig, ok = c.selectedTRACONConfigs[groupName]; !ok {
 		c.lg.Errorf("%s: group not found in TRACON %s", groupName, c.TRACONName)
-		groupName = util.SortedMapKeys(c.TRACON)[0]
-		groupConfig = c.TRACON[c.GroupName]
+		groupName = util.SortedMapKeys(c.selectedTRACONConfigs)[0]
+		groupConfig = c.selectedTRACONConfigs[c.GroupName]
 	}
 	c.GroupName = groupName
 
@@ -114,14 +114,14 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		c.lg.Warnf("UpdateRemoteSims: %v", err)
 	}
 
-	if c.DisplayError != nil {
+	if c.displayError != nil {
 		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .5, .5, 1})
-		if errors.Is(c.DisplayError, server.ErrRPCTimeout) || util.IsRPCServerError(c.DisplayError) {
+		if errors.Is(c.displayError, server.ErrRPCTimeout) || util.IsRPCServerError(c.displayError) {
 			imgui.Text("Unable to reach vice server")
-		} else if errors.Is(c.DisplayError, server.ErrInvalidPassword) {
+		} else if errors.Is(c.displayError, server.ErrInvalidPassword) {
 			imgui.Text("Invalid password entered")
 		} else {
-			imgui.Text(c.DisplayError.Error())
+			imgui.Text(c.displayError.Error())
 		}
 		imgui.PopStyleColor()
 		imgui.Separator()
@@ -141,7 +141,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				origType != server.NewSimCreateLocal {
 				c.selectedServer = c.mgr.LocalServer
 				c.SetTRACON(*c.defaultTRACON)
-				c.DisplayError = nil
+				c.displayError = nil
 			}
 
 			imgui.TableNextRow()
@@ -151,7 +151,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				origType != server.NewSimCreateRemote {
 				c.selectedServer = c.mgr.RemoteServer
 				c.SetTRACON(*c.defaultTRACON)
-				c.DisplayError = nil
+				c.displayError = nil
 			}
 
 			imgui.TableNextRow()
@@ -162,7 +162,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, server.NewSimJoinRemote) &&
 				origType != server.NewSimJoinRemote {
 				c.selectedServer = c.mgr.RemoteServer
-				c.DisplayError = nil
+				c.displayError = nil
 			}
 			uiEndDisable(len(c.mgr.RemoteServer.GetRunningSims()) == 0)
 
@@ -233,8 +233,8 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextColumn()
 			if imgui.BeginChildV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, false, /* border */
 				imgui.WindowFlagsNoResize) {
-				for _, groupName := range util.SortedMapKeys(c.TRACON) {
-					group := c.TRACON[groupName]
+				for _, groupName := range util.SortedMapKeys(c.selectedTRACONConfigs) {
+					group := c.selectedTRACONConfigs[groupName]
 					for _, name := range util.SortedMapKeys(group.ScenarioConfigs) {
 						if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
 							c.SetScenario(groupName, name)
@@ -273,7 +273,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			}
 
 			fmtPosition := func(id string) string {
-				if tracon := c.TRACON[c.GroupName]; tracon != nil {
+				if tracon := c.selectedTRACONConfigs[c.GroupName]; tracon != nil {
 					if ctrl, ok := tracon.ControlPositions[id]; ok {
 						id += " (" + ctrl.Position + ")"
 					}
