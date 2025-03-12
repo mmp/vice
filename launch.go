@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"maps"
-	"net/rpc"
 	"runtime"
 	"slices"
 	"sort"
@@ -563,26 +562,13 @@ func (c *NewSimConfiguration) OkDisabled() bool {
 func (c *NewSimConfiguration) Start() error {
 	c.TFRs = c.tfrCache.TFRsForTRACON(c.TRACONName, c.lg)
 
-	// FIXME: if we're RPCing with a string method name this code should live in pkg/sim
-	var result server.NewSimResult
-	if err := c.selectedServer.CallWithTimeout("SimManager.New", c.NewSimConfiguration, &result); err != nil {
-		c.lg.Errorf("SimManager.New failed: %v", err)
-		err = server.TryDecodeError(err)
-
-		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
-			// Problem with the connection to the remote server? Let the main
-			// loop try to reconnect.
-			c.mgr.RemoteServer = nil
-		}
-
+	if err := c.mgr.CreateNewSim(c.NewSimConfiguration, c.selectedServer); err != nil {
+		c.lg.Errorf("CreateNewSim failed: %v", err)
 		return err
+	} else {
+		*c.defaultTRACON = c.TRACONName
+		return nil
 	}
-
-	*c.defaultTRACON = c.TRACONName
-
-	c.mgr.NewConnection(*result.SimState, result.ControllerToken, c.selectedServer.RPCClient)
-
-	return nil
 }
 
 func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {

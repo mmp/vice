@@ -5,7 +5,9 @@
 package server
 
 import (
+	"errors"
 	"log/slog"
+	"net/rpc"
 	"time"
 
 	"github.com/mmp/vice/pkg/log"
@@ -81,6 +83,23 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlC
 	cm.connectionStartTime = time.Now()
 
 	return cm.client, nil
+}
+
+func (cm *ConnectionManager) CreateNewSim(config NewSimConfiguration, srv *Server) error {
+	var result NewSimResult
+	if err := srv.CallWithTimeout("SimManager.New", config, &result); err != nil {
+		err = TryDecodeError(err)
+		if err == ErrRPCTimeout || err == ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
+			// Problem with the connection to the remote server? Let the main
+			// loop try to reconnect.
+			cm.RemoteServer = nil
+		}
+		return err
+	} else {
+		cm.NewConnection(*result.SimState, result.ControllerToken, srv.RPCClient)
+	}
+
+	return nil
 }
 
 func (cm *ConnectionManager) Connected() bool {
