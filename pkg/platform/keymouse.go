@@ -120,7 +120,8 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 		keyboard.Pressed[KeyEnd] = nil
 	}
 
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnter)) {
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnter)) ||
+		imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyKeyPadEnter)) {
 		keyboard.Pressed[KeyEnter] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDownArrow)) {
