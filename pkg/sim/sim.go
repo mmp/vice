@@ -739,17 +739,17 @@ func (s *Sim) updateState() {
 				s.State.DeleteAircraft(ac)
 			}
 		}
+
+		// Handle assorted deferred radio calls.
+		s.processEnqueued()
+
+		// Don't spawn automatically if someone is spawning manually.
+		if s.State.LaunchConfig.Mode == LaunchAutomatic {
+			s.spawnAircraft()
+		}
+
+		s.State.ERAMComputers.Update(s)
 	}
-
-	// Handle assorted deferred radio calls.
-	s.processEnqueued()
-
-	// Don't spawn automatically if someone is spawning manually.
-	if s.State.LaunchConfig.Mode == LaunchAutomatic {
-		s.spawnAircraft()
-	}
-
-	s.State.ERAMComputers.Update(s)
 }
 
 func (s *Sim) goAround(ac *av.Aircraft) {
