@@ -3780,11 +3780,14 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 		// Consume mouse wheel
 		if mouse.Wheel[1] != 0 {
 			r := ps.Range
-			if _, ok := ctx.Keyboard.Pressed[platform.KeyControl]; ok {
-				ps.Range += 3 * mouse.Wheel[1]
-			} else {
-				ps.Range += mouse.Wheel[1]
-			}
+			ps.Range += func() float32 {
+				if ctx.Keyboard != nil {
+					if _, ok := ctx.Keyboard.Pressed[platform.KeyControl]; ok {
+						return 3 * mouse.Wheel[1]
+					}
+				}
+				return mouse.Wheel[1]
+			}()
 			ps.Range = math.Clamp(ps.Range, 6, 256) // 4-33
 
 			// We want to zoom in centered at the mouse position; this affects
