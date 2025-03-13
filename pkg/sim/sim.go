@@ -76,19 +76,6 @@ type ArrivalRunway struct {
 	Runway  string `json:"runway"`
 }
 
-// DepartureAircraft represents a departing aircraft, either still on the
-// ground or recently-launched.
-type DepartureAircraft struct {
-	Callsign         string
-	Runway           string
-	AddedToList      bool
-	ReleaseRequested bool
-	ReleaseDelay     time.Duration // minimum wait after release before the takeoff roll
-	Index            int
-	MinSeparation    time.Duration // How long after takeoff it will be at ~6000' and airborne
-	LaunchTime       time.Time
-}
-
 type Handoff struct {
 	Time              time.Time
 	ReceivingFacility string // only for auto accept
@@ -159,7 +146,7 @@ func NewSim(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.L
 
 	s.State = newState(config, manifest, lg)
 
-	s.setInitialSpawnTimes()
+	s.setInitialSpawnTimes(time.Now()) // FIXME? will be clobbered in prespawn
 
 	return s
 }
