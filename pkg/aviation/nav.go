@@ -722,7 +722,7 @@ func (nav *Nav) updateAirspeed(alt float32, lg *log.Logger) (float32, bool) {
 
 func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logger, deltaKts float32, slowingTo250 bool) {
 	if targetAltitude == nav.FlightState.Altitude {
-		if nav.IsAirborne() {
+		if nav.IsAirborne() && nav.FlightState.InitialDepartureClimb {
 			nav.FlightState.InitialDepartureClimb = false
 		}
 		nav.Altitude.Expedite = false
@@ -1128,32 +1128,33 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 	}
 
 	// Stay on the ground if we're still on the takeoff roll.
+	rate := float32(MaximumRate)
 	if nav.FlightState.InitialDepartureClimb && !nav.IsAirborne() {
 		//lg.Debug("alt: continuing takeoff roll")
-		return nav.FlightState.Altitude, 0
+		rate = 0 // still return the desired altitude, just no oomph to get there.
 	}
 
 	// Ugly to be digging into heading here, but anyway...
 	if nav.Heading.RacetrackPT != nil {
 		if alt, ok := nav.Heading.RacetrackPT.GetAltitude(nav); ok {
 			//lg.Debugf("alt: descending to %d for procedure turn", int(alt))
-			return alt, MaximumRate
+			return alt, rate
 		}
 	}
 
 	// Controller-assigned altitude overrides everything else
 	if nav.Altitude.Assigned != nil {
-		return *nav.Altitude.Assigned, MaximumRate
+		return *nav.Altitude.Assigned, rate
 	}
 
 	if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
 		//lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
 		if c.ETA < 5 || nav.FlightState.Altitude < c.Altitude {
 			// Always climb as soon as we can
-			return c.Altitude, MaximumRate
+			return c.Altitude, rate
 		} else {
 			// Descending
-			rate := (nav.FlightState.Altitude - c.Altitude) / c.ETA
+			rate = (nav.FlightState.Altitude - c.Altitude) / c.ETA
 			rate *= 60 // feet per minute
 
 			descent := nav.Perf.Rate.Descent
@@ -1179,11 +1180,11 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 	}
 
 	if nav.Altitude.Cleared != nil {
-		return math.Min(*nav.Altitude.Cleared, nav.FinalAltitude), MaximumRate
+		return math.Min(*nav.Altitude.Cleared, nav.FinalAltitude), rate
 	}
 
 	if ar := nav.Altitude.Restriction; ar != nil {
-		return ar.TargetAltitude(nav.FlightState.Altitude), MaximumRate
+		return ar.TargetAltitude(nav.FlightState.Altitude), rate
 	}
 
 	// Baseline: stay where we are
