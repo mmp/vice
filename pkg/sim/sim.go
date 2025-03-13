@@ -124,7 +124,6 @@ type NewSimConfiguration struct {
 	LiveWeather             bool
 	Wind                    av.Wind
 	STARSFacilityAdaptation av.STARSFacilityAdaptation
-	SimName                 string
 	IsLocal                 bool
 
 	ReportingPoints   []av.ReportingPoint

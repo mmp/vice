@@ -79,7 +79,7 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlC
 		return nil, err
 	}
 
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.LocalServer.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, true, result.ControllerToken, cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
 
 	return cm.client, nil
@@ -174,7 +174,7 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, lg *log.Logger) {
 		if cm.client != nil {
 			cm.client.Disconnect()
 		}
-		cm.client = NewControlClient(ns.SimState, ns.SimProxy.ControllerToken, ns.SimProxy.Client, lg)
+		cm.client = NewControlClient(ns.SimState, false, ns.SimProxy.ControllerToken, ns.SimProxy.Client, lg)
 		cm.connectionStartTime = time.Now()
 
 		if cm.onNewClient != nil {

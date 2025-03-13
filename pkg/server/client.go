@@ -25,6 +25,7 @@ type ControlClient struct {
 	lastUpdateRequest time.Time
 	lastReturnedTime  time.Time
 	updateCall        *util.PendingCall
+	remoteSim         bool
 
 	pendingCalls []*util.PendingCall
 
@@ -44,10 +45,11 @@ func (c *ControlClient) RPCClient() *util.RPCClient {
 	return c.proxy.Client
 }
 
-func NewControlClient(ss sim.State, controllerToken string, client *util.RPCClient, lg *log.Logger) *ControlClient {
+func NewControlClient(ss sim.State, local bool, controllerToken string, client *util.RPCClient, lg *log.Logger) *ControlClient {
 	return &ControlClient{
-		State: ss,
-		lg:    lg,
+		State:     ss,
+		lg:        lg,
+		remoteSim: !local,
 		proxy: &proxy{
 			ControllerToken: controllerToken,
 			Client:          client,
@@ -63,11 +65,7 @@ func (c *ControlClient) Status() string {
 		stats := c.ControllerStats
 		deparr := fmt.Sprintf(" [ %d departures %d arrivals %d intrafacility %d overflights ]",
 			stats.Departures, stats.Arrivals, stats.IntraFacility, stats.Overflights)
-		if c.State.SimName == "" {
-			return c.State.PrimaryTCP + ": " + c.SimDescription + deparr
-		} else {
-			return c.State.PrimaryTCP + "@" + c.State.SimName + ": " + c.SimDescription + deparr
-		}
+		return c.State.PrimaryTCP + c.SimDescription + deparr
 	}
 }
 
@@ -671,7 +669,7 @@ func (c *ControlClient) CurrentTime() time.Time {
 
 		// Roughly account for RPC overhead; more for a remote server (where
 		// SimName will be set.)
-		if c.State.SimName == "" {
+		if !c.remoteSim {
 			d -= 10 * time.Millisecond
 		} else {
 			d -= 50 * time.Millisecond

@@ -74,7 +74,6 @@ type State struct {
 	SimRate        float32
 	SimDescription string
 	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
-	SimName        string
 
 	Instructors map[string]bool
 
@@ -120,7 +119,6 @@ func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log
 		SimRate:        1,
 		SimDescription: config.Description,
 		SimTime:        time.Now(),
-		SimName:        config.SimName,
 
 		Instructors: make(map[string]bool),
 	}

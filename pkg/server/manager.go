@@ -169,6 +169,9 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		return nil
 	}
 
+	description := util.Select(config.NewSimType == NewSimCreateLocal, " "+config.ScenarioName,
+		"@"+config.NewSimName+": "+config.ScenarioName)
+
 	nsc := sim.NewSimConfiguration{
 		TFRs:                    config.TFRs,
 		LiveWeather:             config.LiveWeather,
@@ -176,11 +179,10 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		LaunchConfig:            config.Scenario.LaunchConfig,
 		STARSFacilityAdaptation: deep.MustCopy(sg.STARSFacilityAdaptation),
 		IsLocal:                 config.NewSimType == NewSimCreateLocal,
-		SimName:                 util.Select(config.NewSimType == NewSimCreateLocal, "", config.NewSimName),
 		DepartureRunways:        sc.DepartureRunways,
 		ArrivalRunways:          sc.ArrivalRunways,
 		ReportingPoints:         sg.ReportingPoints,
-		Description:             config.ScenarioName,
+		Description:             description,
 		MagneticVariation:       sg.MagneticVariation,
 		NmPerLongitude:          sg.NmPerLongitude,
 		Wind:                    sc.Wind,
