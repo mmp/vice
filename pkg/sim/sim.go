@@ -224,7 +224,6 @@ func (s *Sim) signOn(tcp string, instructor bool) error {
 
 	s.humanControllers[tcp] = s.eventStream.Subscribe()
 	s.State.Controllers[tcp] = s.SignOnPositions[tcp]
-	s.State.Controllers[tcp].SignOnTime = s.State.SimTime
 	s.State.HumanControllers = append(s.State.HumanControllers, tcp)
 
 	if tcp == s.State.PrimaryController {

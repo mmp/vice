@@ -870,7 +870,8 @@ func (sp *STARSPane) drawSignOnList(ctx *panes.Context, pw [2]float32, style ren
 
 	var text strings.Builder
 	if ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.PrimaryTCP]; ctrl != nil {
-		text.WriteString(ctx.ControlClient.PrimaryTCP + " " + ctrl.SignOnTime.UTC().Format("1504")) // TODO: initials
+		signOnTime := ctx.ControlClient.SessionStats.SignOnTime
+		text.WriteString(ctx.ControlClient.PrimaryTCP + " " + signOnTime.UTC().Format("1504")) // TODO: initials
 		td.AddText(text.String(), pw, style)
 	}
 }

@@ -258,10 +258,10 @@ func main() {
 				if ctrl, ok := controlClient.State.Controllers[id]; ok {
 					id += " (" + ctrl.Position + ")"
 				}
-				stats := controlClient.ControllerStats
+				stats := controlClient.SessionStats
 				SetDiscordStatus(DiscordStatus{
-					TotalDepartures: stats.Departures + stats.IntraFacility/2,
-					TotalArrivals:   stats.Arrivals + stats.IntraFacility/2,
+					TotalDepartures: stats.Departures + stats.IntraFacility,
+					TotalArrivals:   stats.Arrivals + stats.IntraFacility,
 					Position:        id,
 					Start:           mgr.ConnectionStartTime(),
 				}, config, lg)

@@ -29,11 +29,13 @@ type ControlClient struct {
 
 	pendingCalls []*util.PendingCall
 
-	ControllerStats struct {
+	SessionStats struct {
 		Departures    int
 		Arrivals      int
 		IntraFacility int
 		Overflights   int
+
+		SignOnTime time.Time
 	}
 
 	// This is all read-only data that we expect other parts of the system
@@ -46,7 +48,7 @@ func (c *ControlClient) RPCClient() *util.RPCClient {
 }
 
 func NewControlClient(ss sim.State, local bool, controllerToken string, client *util.RPCClient, lg *log.Logger) *ControlClient {
-	return &ControlClient{
+	cc := &ControlClient{
 		State:     ss,
 		lg:        lg,
 		remoteSim: !local,
@@ -56,13 +58,15 @@ func NewControlClient(ss sim.State, local bool, controllerToken string, client *
 		},
 		lastUpdateRequest: time.Now(),
 	}
+	cc.SessionStats.SignOnTime = ss.SimTime
+	return cc
 }
 
 func (c *ControlClient) Status() string {
 	if c == nil || c.SimDescription == "" {
 		return "[disconnected]"
 	} else {
-		stats := c.ControllerStats
+		stats := c.SessionStats
 		deparr := fmt.Sprintf(" [ %d departures %d arrivals %d intrafacility %d overflights ]",
 			stats.Departures, stats.Arrivals, stats.IntraFacility, stats.Overflights)
 		return c.State.PrimaryTCP + c.SimDescription + deparr
@@ -231,13 +235,13 @@ func (c *ControlClient) updateControllerStats(callsign string, next func(any)) f
 	return func(result any) {
 		if ac, ok := c.State.Aircraft[callsign]; ok {
 			if c.IsIntraFacility(ac) {
-				c.ControllerStats.IntraFacility++
+				c.SessionStats.IntraFacility++
 			} else if c.IsDeparture(ac) {
-				c.ControllerStats.Departures++
+				c.SessionStats.Departures++
 			} else if c.IsArrival(ac) {
-				c.ControllerStats.Arrivals++
+				c.SessionStats.Arrivals++
 			} else if c.IsOverflight(ac) {
-				c.ControllerStats.Overflights++
+				c.SessionStats.Overflights++
 			}
 		}
 		if next != nil {
