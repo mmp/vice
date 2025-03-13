@@ -160,7 +160,6 @@
           "tie_offset": 2
         }
       ],
-      "departure_controller": "4N",
       "departure_routes": {
         "22R": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
@@ -169,12 +168,12 @@
             "waypoints": "_EWR4_22Ra/h220"
           },
           "DIXIE,WHITE": {
-            "assigned_altitude": 2500,
+            "cleared_altitude": 2500,
             "sid": "EWR5",
-            "waypoints": "_EWR4_22Ra/h220 ELVAE/a6000- COL/a6000/hoC68"
+            "waypoints": "_EWR4_22Ra/h220 ELVAE COL"
           }
         },
-        "22RB": {
+        "22R.Background": {
           "BIGGY,LANNA,PARKE": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
@@ -212,13 +211,18 @@
           }
         },
         "4L": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
             "cleared_altitude": 3000,
             "sid": "EWR5",
             "waypoints": "_EWR4_4La/h290"
+          },
+          "DIXIE,WHITE": {
+            "cleared_altitude": 3000,
+            "sid": "EWR5",
+            "waypoints": "_EWR4_4La/h290 ELVAE COL"
           }
         },
-        "4LB": {
+        "4L.Background": {
           "BIGGY,ELIOT,LANNA,NEWEL,None,PARKE,SAX,ZIMMZ": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
@@ -1186,77 +1190,17 @@
     },
     "KTEB": {
       "name": "Teterboro",
-      "hold_for_release": false,
+      "hold_for_release": true,
       "approaches": {
-        "I6": {
-          "runway": "6",
-          "type": "ILS",
-          "waypoints": [
-            "SBJ/iaf MALCN/a2200+ VINGS/if/a2000 LEESY/a1700 DANDY/a1500 TORBY/faf/a1300"
-          ]
-        },
-        "IZ6": {
-          "full_name": "ILS Z Runway 6",
-          "runway": "6",
-          "type": "ILS",
-          "waypoints": [
-            "VINGS/if/a2000/s180 LEESY/a1700/s170 DANDY/a1500/s170/clearapp TORBY/faf/a1300"
-          ]
-        },
-        "I19": {
-          "runway": "19",
-          "type": "ILS",
-          "waypoints": [
-            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ UNVIL/if/a2100 TUGGZ/faf/a1500"
-          ]
-        },
-        "R24": {
-          "runway": "24",
-          "type": "RNAV",
-          "waypoints": [
-            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ WHEZY/a2200+ SHREW/if/a2000 ANGLE/faf/a1700 BAITH"
-          ]
-        },
-        "RX6": {
-          "full_name": "RNAV X Runway 6",
-          "runway": "6",
-          "type": "RNAV",
-          "waypoints": [
-            "COATE ELIZE/iaf/a3000+ ALIDA/a3000+ FRNKI/if/a2000 PESME/a1700 TBERN/faf/a1300",
-            "STW ELIZE/iaf/a3000+ ALIDA/a3000+ FRNKI/if/a2000 PESME/a1700 TBERN/faf/a1300",
-            "SBJ JERSE/iaf/a3400+ FRNKI/if/a2000 PESME/a1700 TBERN/faf/a1300"
-          ]
-        },
-        "RX9": {
-          "full_name": "RNAV X Runway 19",
-          "runway": "19",
-          "type": "RNAV",
-          "waypoints": [
-            "CUROK/iaf WHOLN/a2300+ MOOGZ/if/a1700 DUUNE/faf/a1500 COFFS"
-          ]
-        },
-        "RY6": {
-          "full_name": "RNAV Y Runway 6",
-          "cifp_id": "RY6"
-        },
-        "RY9": {
-          "full_name": "RNAV Y Runway 19",
-          "runway": "19",
-          "type": "RNAV",
-          "waypoints": [
-            "STRAD/iaf SKUBY/a2800+ NIPIE/a2600+ UNVIL/if/a2100 TUGGZ/faf/a1500"
-          ]
-        },
-        "RZ6": {
-          "full_name": "RNAV Z Runway 6",
-          "runway": "6",
-          "type": "RNAV",
-          "waypoints": [
-            "COATE ELIZE/iaf/a3000+ GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC",
-            "STW ELIZE/iaf/a3000+ GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC",
-            "SBJ/iaf GUZTI/if/a3000 CATXO/a2000 HOLUR/a1700 EVEGE/faf/a1500 AWKEB/a1300 OFFEC"
-          ]
-        },
+        "I6": {  "cifp_id": "IZ6" },
+        "IZ6": {  "cifp_id": "IZ6" },
+        "I19": { "cifp_id": "I19" },
+        "R24": { "cifp_id": "R24" },
+        "RX6": { "cifp_id": "RX6" },
+        "RX9": { "cifp_id": "RX19" },
+        "RY6": { "cifp_id": "RY6" },
+        "RY9": { "cifp_id": "RY19" },
+        "RZ6": { "cifp_id": "RZ6" },
         "RZ9": {
           "full_name": "RNAV Z Runway 19",
           "runway": "19",
@@ -1268,7 +1212,6 @@
           ]
         }
       },
-     "departure_controller": "4N",
       "departure_routes": {
         "1": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
@@ -1277,7 +1220,7 @@
             "waypoints": "_TEB4_1a/h280"
           }
         },
-        "1B": {
+        "1.Background": {
           "BIGGY,ELIOT,LANNA,NEWEL,None,PARKE,SAX,ZIMMZ": {
             "cleared_altitude": 17000,
             "sid": "TEB4",
@@ -1317,7 +1260,7 @@
             "waypoints": "DAVIM WENTZ/a1500 RUUDY/h280"
           }
         },
-        "24B": {
+        "24.Background": {
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 17000,
             "sid": "RUUDY6",
@@ -1994,40 +1937,12 @@
     },
     "KMMU": {
       "name": "Morristown",
-      "hold_for_release": false,
+      "hold_for_release": true,
       "approaches": {
-        "I23": {
-          "runway": "23",
-          "type": "ILS",
-          "waypoints": [
-            "EMRSN/iaf FALTY/a3000+ GODLY/a3000+ BADDA/if/a3000 BINGG/faf/a2000"
-          ]
-        },
-        "Z23": {
-          "full_name": "RNAV Z Runway 23",
-          "runway": "23",
-          "type": "RNAV",
-          "waypoints": [
-            "EMRSN/iaf FALTY/a3000+ GODLY/a3000+ BADDA/if/a3000 BINGG/faf/a2000"
-          ]
-        },
-        "Y23": {
-          "full_name": "RNAV RNP Y Runway 23",
-          "runway": "23",
-          "type": "RNAV",
-          "waypoints": [
-            "SBJ/iaf SHOTT/if/a2000+ FIGON/a2000+ BINGG/faf/a2000",
-            "STW/iaf ELIZE/a3000+ SHOTT/if/a2000+ FIGON/a2000+ BINGG/faf/a2000"
-          ]
-        },
-        "R5": {
-          "runway": "5",
-          "type": "RNAV",
-          "waypoints": [
-            "SBJ/iaf KWITE/if/a2000 HOSBE/faf/a1800",
-            "ZELEN/iaf KWITE/if/a2000 HOSBE/faf/a1800"
-          ]
-        }
+        "I23": { "cifp_id": "I23" },
+        "Z23": { "cifp_id": "RZ23" },
+        "Y23": { "cifp_id": "RY23" },
+        "R5": { "cifp_id": "R5" }
       },
       "departure_routes": {
         "5": {
@@ -3805,7 +3720,7 @@
         "WAVEY": "South",
         "WHITE": "South",
         "ZIMMZ": "West"
-      }      
+      }
     }
   },
   "airspace": {
@@ -4925,6 +4840,7 @@
 			  "upper": 6000
 		  },
 	  {
+		  "label_position": "N041.04.06.203,W074.26.58.286",
 			  "boundaries": [
 			  "NOA_SW_F3"
 			  ],
@@ -4955,13 +4871,14 @@
 	  ],
 	  "NOA_NE": [
 	  {
-			  "boundaries": [
-			  "NOA_SW_F2"
-			  ],
-			  "lower": 6000,
-			  "upper": 6000
+	      "boundaries": [
+	      "NOA_SW_F2"
+		  ],
+		  "lower": 6000,
+		  "upper": 6000
 	  },
 	  {
+		  "label_position": "N040.55.58.190,W074.31.03.198",
 		  "boundaries": [
 		  "NOA_NE_F3"
 		  ],
@@ -4976,6 +4893,7 @@
 		  "upper":8000
 	  },
 	  {
+		  "label_position": "N040.57.19.036,W074.43.50.841",
 		  "boundaries": [
 		  "YARDLEY_SW_C2"
 		  ],
@@ -4990,6 +4908,7 @@
 		  "upper":8000
 	  },
  	  {
+		  "label_position": "N040.50.26.060,W074.47.22.630",
 		  "boundaries": [
 		  "YARDLEY_SW_C4"
 		  ],
@@ -4997,6 +4916,7 @@
 		  "upper":7000
 	  },
  	  {
+		  "label_position": "N041.03.44.189,W074.13.36.915",
 		  "boundaries": [
 		  "NOA_NE_G3"
 		  ],
@@ -5043,6 +4963,7 @@
 	  ],
 	  "FINAL_VECTORS_4": [
 	  {
+		  "label_position": "N040.32.57.497,W074.33.15.941",
 		   "boundaries": [
 		  "FINAL_4_D6"
 		  ],
@@ -5050,6 +4971,7 @@
 		  "upper":4000
 	  },	  
 	  {
+		  "label_position": "N040.36.22.887,W074.25.10.290",
 		   "boundaries": [
 		  "FINAL_4_E5"
 		  ],
@@ -5101,6 +5023,7 @@
 		  "upper":7000
 	  },
 	  {
+		  "label_position": "N040.57.33.826,W074.43.52.928",
 		  "boundaries": [
 		  "YARDLEY_SW_C2"
 		  ],
@@ -5115,6 +5038,7 @@
 		  "upper":7000
 	  },
  	  {
+		  "label_position": "N040.50.04.307,W074.47.51.633",
 		  "boundaries": [
 		  "YARDLEY_SW_C4"
 		  ],
@@ -5122,6 +5046,7 @@
 		  "upper":7000
 	  },
  	  {
+		  "label_position": "N040.46.09.790,W074.39.45.571",
 		  "boundaries": [
 		  "YARDLEY_SW_D4"
 		  ],
@@ -5143,6 +5068,7 @@
 		  "upper":9000
 	  },
   	  {
+		  "label_position": "N040.24.04.180,W074.40.58.657",
 		  "boundaries": [
 		  "YARDLEY_SW_C7"
 		  ],
@@ -5194,6 +5120,7 @@
 		  "upper":9000
 	  },  	  
 	  {
+		  "label_position": "N040.24.30.629,W074.41.08.133",
 		  "boundaries": [
 		  "YARDLEY_SW_C7"
 		  ],
@@ -5229,6 +5156,7 @@
 		  "upper":7000
 	  },	
 	  {
+		  "label_position": "N040.30.18.443,W074.22.00.721",
 		  "boundaries": [
 		  "YARDLEY_NE_F6"
 		  ],
@@ -5280,6 +5208,7 @@
 	  "upper":6000
 	  },
 	  {
+	  "label_position": "N040.55.18.681,W074.14.39.537",
 	  "boundaries": [
 	  "DEP_SW_E5"
 	  ],
@@ -5301,6 +5230,7 @@
 	  "upper":10000
 	  },
  	  {
+	  "label_position": "N040.43.00.001,W074.18.55.876",
 	  "boundaries": [
 	  "DEP_SW_D6"
 	  ],
@@ -5322,6 +5252,7 @@
 	  "upper":10000
 	  },
  	  {
+	  "label_position": "N040.54.52.396,W074.35.05.062",
 	  "boundaries": [
 	  "DEP_SW_B4"
 	  ],
@@ -5357,6 +5288,7 @@
 	  "upper":2500
 	  },	
 	  {
+	  "label_position": "N040.48.32.324,W074.05.37.637",
 	  "boundaries": [
 	  "DEP_SW_F7"
 	  ],
@@ -5429,6 +5361,7 @@
 		  "upper":6000
 	  },	
 	  {
+		  "label_position": "N040.54.41.369,W074.14.23.525",
 		  "boundaries": [
 		  "DEP_NE_E3"
 		  ],
@@ -5450,6 +5383,7 @@
 		  "upper":10000
 	  },
 	  {
+	      "label_position": "N040.54.52.396,W074.35.05.062",
 		  "boundaries": [
 		  "DEP_SW_B4"
 		  ],
@@ -5457,6 +5391,7 @@
 		  "upper":10000
 	  },
 	  {
+	      "label_position": "N040.46.05.835,W074.32.16.010",
 		  "boundaries": [
 		  "DEP_NE_C6"
 		  ],
@@ -5471,6 +5406,7 @@
 		  "upper":10000
 	  },
 	  {
+		  "label_position": "N040.36.12.189,W074.18.21.736",
 		  "boundaries": [
 		  "DEP_NE_D8"
 		  ],
@@ -5499,6 +5435,7 @@
 		  "upper":8000
 	  },	 
 	  {
+		  "label_position": "N040.57.00.785,W074.16.22.919",
 		  "boundaries": [
 		  "DEP_NE_F4"
 		  ],
@@ -5527,6 +5464,7 @@
 		  "upper":10000
 	  }, 
 	  {
+		  "label_position": "N040.48.46.387,W074.05.11.984",
 		  "boundaries": [
 		  "DEP_NE_G6"
 		  ],
@@ -5571,6 +5509,7 @@
 		  "upper":9000
 	  },
 	  {
+		  "label_position": "N040.55.10.070,W074.35.05.941",
 		  "boundaries": [
 		  "METRO_SW_E4"
 		  ],
@@ -5592,6 +5531,7 @@
 		  "upper":5000
 	  }, 	 
 	  {
+		  "label_position": "N040.46.11.699,W074.48.28.465",
 		  "boundaries": [
 		  "METRO_SW_C5"
 		  ],
@@ -5606,6 +5546,7 @@
 		  "upper":4000
 	  },
 	  {
+		  "label_position": "N040.46.28.673,W074.40.24.600",
 		  "boundaries": [
 		  "METRO_SW_D5"
 		  ],
@@ -5613,6 +5554,7 @@
 		  "upper":9000
 	  },
 	  {
+		  "label_position": "N040.32.38.120,W075.01.04.077",
 		  "boundaries": [
 		  "METRO_SW_A6"
 		  ],
@@ -5627,6 +5569,7 @@
 		  "upper":9000
 	  },
  	  {
+		  "label_position": "N040.33.25.293,W074.39.41.616",
 		  "boundaries": [
 		  "METRO_SW_D6"
 		  ],
@@ -5664,6 +5607,7 @@
 	  ],
 	  "METRO_NE": [
 	  	  {
+			  "label_position": "N040.55.37.152,W074.35.02.838",
 		  "boundaries": [
 		  "METRO_SW_E4"
 		  ],
@@ -5685,6 +5629,7 @@
 		  "upper":5000
 	  }, 	 
 	  {
+		  "label_position": "N040.32.46.635,W075.01.12.537",
 		  "boundaries": [
 		  "METRO_SW_C5"
 		  ],
@@ -5692,6 +5637,7 @@
 		  "upper":9000
 	  },	 
 	  {
+		  "label_position": "N040.32.46.635,W075.01.12.537",
 		  "boundaries": [
 		  "METRO_SW_A6"
 		  ],
@@ -5713,6 +5659,7 @@
 		  "upper":9000
 	  },	
 	  {
+		  "label_position": "N040.52.01.366,W074.39.58.095",
 		  "boundaries": [
 		  "METRO_NE_D4"
 		  ],
@@ -5727,12 +5674,15 @@
 		  "upper":4000
 	  },	 
 	  {
+		  "label_position": "N040.42.05.852,W074.40.17.706",
 		  "boundaries": [
 		  "METRO_NE_D5"
 		  ],
 		  "lower":8000,
 		  "upper":9000
-	  },	  {
+	  },
+	  {
+		  "label_position": "N040.37.29.876,W074.38.56.737",
 		  "boundaries": [
 		  "METRO_NE_D6"
 		  ],
@@ -5754,6 +5704,7 @@
 		  "upper":4000
 	  },	 
 	  {
+		  "label_position": "N040.34.51.618,W074.40.16.882",
 		  "boundaries": [
 		  "METRO_NE_D7"
 		  ],
@@ -5768,6 +5719,7 @@
 		  "upper":4000
 	  },	 
 	  {
+		  "label_position": "N040.33.22.313,W074.33.32.063",
 		  "boundaries": [
 		  "METRO_NE_E7"
 		  ],
@@ -5798,6 +5750,7 @@
 		  "upper":7000
 	  },	  
 	  {
+		  "label_position": "N041.18.53.335,W074.30.07.937",
 		  "boundaries": [
 		  "ZEEBO_SW_F2"
 		  ],
@@ -5805,6 +5758,7 @@
 		  "upper":5000
 	  },
 	  {
+		  "label_position": "N041.01.19.183,W074.51.51.822",
 		  "boundaries": [
 		  "ZEEBO_SW_C3"
 		  ],
@@ -5877,6 +5831,7 @@
 		  "upper":7000
 	  },		
 	  {
+		  "label_position": "N041.01.10.106,W074.52.14.646",
 		  "boundaries": [
 		  "ZEEBO_SW_C3"
 		  ],
@@ -5942,6 +5897,7 @@
 	  ],
 	  "MUGZY_SW":[
 	  {
+		  "label_position": "N041.04.21.982,W074.23.15.895",
 		  "boundaries": [
 		  "MUGZY_SW_E3"
 		  ],
@@ -5949,6 +5905,7 @@
 		  "upper":4000
 	  },	
 	  {
+		  "label_position": "N040.55.57.806,W074.12.55.936",
 		  "boundaries": [
 		  "MUGZY_SW_F3"
 		  ],
@@ -5963,6 +5920,7 @@
 		  "upper":2000
 	   },	
 	   {
+		  "label_position": "N040.52.27.651,W074.03.54.118",
 		  "boundaries": [
 		  "MUGZY_SW_F4"
 		  ],
@@ -9731,12 +9689,12 @@
         {
           "airport": "KEWR",
           "rate": 45,
-          "runway": "4LB"
+          "runway": "4L.Background"
         },
         {
           "airport": "KTEB",
           "rate": 40,
-          "runway": "1B"
+          "runway": "1.Background"
         },
         {
           "airport": "KLGA",
@@ -9906,12 +9864,12 @@
         {
           "airport": "KEWR",
           "rate": 45,
-          "runway": "22RB"
+          "runway": "22R.Background"
         },     
         {
           "airport": "KTEB",
           "rate": 40,
-          "runway": "24B"
+          "runway": "24.Background"
         },
         {
           "airport": "KLGA",
@@ -10075,12 +10033,12 @@
         {
           "airport": "KEWR",
           "rate": 45,
-          "runway": "22RB"
+          "runway": "22R.Background"
         },     
         {
           "airport": "KTEB",
           "rate": 35,
-          "runway": "24B"
+          "runway": "24.Background"
         },
         {
           "airport": "KLGA",
@@ -10300,12 +10258,12 @@
         {
           "airport": "KEWR",
           "rate": 45,
-          "runway": "22RB"
+          "runway": "22R.Background"
         },     
         {
           "airport": "KTEB",
           "rate": 35,
-          "runway": "24B"
+          "runway": "24.Background"
         },
         {
           "airport": "KLGA",
@@ -10422,12 +10380,12 @@
         {
           "airport": "KEWR",
           "rate": 25,
-          "runway": "22RB"
+          "runway": "22R.Background"
         },     
         {
           "airport": "KTEB",
           "rate": 20,
-          "runway": "24B"
+          "runway": "24.Background"
         },
         {
           "airport": "KLGA",
@@ -10584,12 +10542,12 @@
         {
           "airport": "KEWR",
           "rate": 45,
-          "runway": "4LB"
+          "runway": "4L.Background"
         },
         {
           "airport": "KTEB",
           "rate": 40,
-          "runway": "1B"
+          "runway": "1.Background"
         },
         {
           "airport": "KLGA",
@@ -10690,12 +10648,12 @@
          {
            "airport": "KEWR",
            "rate": 45,
-           "runway": "4LB"
+           "runway": "4L.Background"
          },
          {
            "airport": "KTEB",
            "rate": 40,
-           "runway": "1B"
+           "runway": "1.Background"
          },
          {
            "airport": "KLGA",
@@ -10972,7 +10930,9 @@
         }
       ]
     },
-    "coordination_lists": [     
+    "coordination_lists": [
+      { "name": ".    TEB", "id": "A", "airports": [ "KTEB" ] },
+      { "name": ".    MMU", "id": "B", "airports": [ "KMMU" ] }
     ],
     "inhibit_ca_volumes": [
       {
