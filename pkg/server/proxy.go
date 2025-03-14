@@ -270,10 +270,11 @@ func (p *proxy) RunAircraftCommands(callsign string, cmds string, result *Aircra
 	}, result, nil)
 }
 
-func (p *proxy) LaunchAircraft(ac av.Aircraft) *rpc.Call {
+func (p *proxy) LaunchAircraft(ac av.Aircraft, departureRunway string) *rpc.Call {
 	return p.Client.Go("Sim.LaunchAircraft", &LaunchAircraftArgs{
 		ControllerToken: p.ControllerToken,
 		Aircraft:        ac,
+		DepartureRunway: departureRunway,
 	}, nil, nil)
 }
 

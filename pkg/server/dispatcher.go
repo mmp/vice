@@ -864,6 +864,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 type LaunchAircraftArgs struct {
 	ControllerToken string
 	Aircraft        av.Aircraft
+	DepartureRunway string
 }
 
 func (sd *Dispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error {
@@ -873,7 +874,7 @@ func (sd *Dispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error 
 	if !ok {
 		return ErrNoSimForControllerToken
 	}
-	s.LaunchAircraft(ls.Aircraft)
+	s.LaunchAircraft(ls.Aircraft, ls.DepartureRunway)
 	return nil
 }
 

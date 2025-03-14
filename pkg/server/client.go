@@ -95,10 +95,18 @@ func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *sim.EventStream) 
 		})
 }
 
-func (c *ControlClient) LaunchAircraft(ac av.Aircraft) {
+func (c *ControlClient) LaunchDeparture(ac av.Aircraft, rwy string) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.LaunchAircraft(ac),
+			Call:      c.proxy.LaunchAircraft(ac, rwy),
+			IssueTime: time.Now(),
+		})
+}
+
+func (c *ControlClient) LaunchArrivalOverflight(ac av.Aircraft) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.LaunchAircraft(ac, ""),
 			IssueTime: time.Now(),
 		})
 }

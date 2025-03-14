@@ -1093,7 +1093,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-								lc.controlClient.LaunchAircraft(dep.Aircraft)
+								lc.controlClient.LaunchDeparture(dep.Aircraft, dep.Runway)
 								dep.LastLaunchCallsign = dep.Aircraft.Callsign
 								dep.LastLaunchTime = lc.controlClient.CurrentTime()
 								dep.TotalLaunches++
@@ -1193,7 +1193,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-								lc.controlClient.LaunchAircraft(arof.Aircraft)
+								lc.controlClient.LaunchArrivalOverflight(arof.Aircraft)
 								arof.LastLaunchCallsign = arof.Aircraft.Callsign
 								arof.LastLaunchTime = lc.controlClient.CurrentTime()
 								arof.TotalLaunches++

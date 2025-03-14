@@ -209,13 +209,30 @@ func (s *Sim) TakeOrReturnLaunchControl(tcp string) error {
 	}
 }
 
-func (s *Sim) LaunchAircraft(ac av.Aircraft) {
+func (s *Sim) LaunchAircraft(ac av.Aircraft, departureRunway string) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	// Ignore hold for release; this should only be called for manual launches.
-	ac.HoldForRelease = false
-	s.addAircraftNoLock(ac)
+	if departureRunway != "" {
+		s.addDepartureToPool(&ac, departureRunway)
+	} else {
+		s.addAircraftNoLock(ac)
+	}
+}
+
+func (s *Sim) addDepartureToPool(ac *av.Aircraft, runway string) {
+	depac := makeDepartureAircraft(ac, runway, s.State.SimTime, s.State /* wind */)
+
+	ac.WaitingForLaunch = true
+	s.addAircraftNoLock(*ac)
+
+	depState := s.DepartureState[ac.FlightPlan.DepartureAirport]
+	if ac.HoldForRelease {
+		s.State.STARSComputer().AddHeldDeparture(ac)
+		depState.Held = append(depState.Held, depac)
+	} else {
+		depState.Released = append(depState.Released, depac)
+	}
 }
 
 // Assumes the lock is already held (as is the case e.g. for automatic spawning...)
@@ -463,7 +480,9 @@ func (s *Sim) spawnDepartures() {
 		// Possibly spawn another aircraft, depending on how much time has
 		// passed since the last one.
 		if now.After(depState.NextSpawn) {
-			if s.addNewDepartureToPool(airport) {
+			if ac, rwy, err := s.makeNewDeparture(airport); ac != nil && err == nil {
+				s.addDepartureToPool(ac, rwy)
+
 				// Figure out when the next one should be added.
 				ap := s.State.DepartureAirports[airport]
 				r := scaleRate(float32(ap.VFRRateSum()), s.State.LaunchConfig.VFRDepartureRateScale)
@@ -610,11 +629,11 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft) time.Duration {
 	return prev.MinSeparation
 }
 
-func (s *Sim) addNewDepartureToPool(airport string) bool {
+func (s *Sim) makeNewDeparture(airport string) (ac *av.Aircraft, runway string, err error) {
 	depState := s.DepartureState[airport]
 	if len(depState.Held) >= 5 || len(depState.Released) >= 5 || len(depState.Sequenced) >= 5 {
 		// There's a backup; hold off on more.
-		return false
+		return
 	}
 
 	// Figure out which category to generate.
@@ -627,12 +646,9 @@ func (s *Sim) addNewDepartureToPool(airport string) bool {
 	}
 	if ifrRate == 0 && vfrRate == 0 {
 		// The airport currently has a 0 departure rate.
-		return false
+		return
 	}
 
-	var ac *av.Aircraft
-	var err error
-	var runway string
 	if vfrRate > 0 && rand.Float32() < vfrRate/(vfrRate+ifrRate) {
 		// Don't waste time trying to find a valid launch if it's been
 		// near-impossible to find valid routes.
@@ -651,22 +667,7 @@ func (s *Sim) addNewDepartureToPool(airport string) bool {
 		}
 	}
 
-	if err != nil || ac == nil {
-		return false
-	}
-
-	depac := makeDepartureAircraft(ac, runway, s.State.SimTime, s.State /* wind */)
-
-	ac.WaitingForLaunch = true
-	s.addAircraftNoLock(*ac)
-
-	if ac.HoldForRelease {
-		s.State.STARSComputer().AddHeldDeparture(ac)
-		depState.Held = append(depState.Held, depac)
-	} else {
-		depState.Released = append(depState.Released, depac)
-	}
-	return true
+	return
 }
 
 func (d *DepartureLaunchState) reset() {
