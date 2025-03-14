@@ -477,6 +477,17 @@ func (s *Sim) spawnDepartures() {
 			}
 		}
 
+		// Clear out any aircraft that aren't in s.State.Aircraft any more
+		// (i.e., deleted by the user). Thence we will be able to access
+		// Aircraft without checking for success in the following.
+		haveAc := func(dep DepartureAircraft) bool {
+			_, ok := s.State.Aircraft[dep.Callsign]
+			return ok
+		}
+		depState.Held = util.FilterSlice(depState.Held, haveAc)
+		depState.Released = util.FilterSlice(depState.Released, haveAc)
+		depState.Sequenced = util.FilterSlice(depState.Sequenced, haveAc)
+
 		// Possibly spawn another aircraft, depending on how much time has
 		// passed since the last one.
 		if now.After(depState.NextSpawn) {
@@ -508,11 +519,11 @@ func (s *Sim) spawnDepartures() {
 		if len(depState.Held) > 0 {
 			// Held go to Released in FIFO order so only consider the first one.
 			if dep := depState.Held[0]; dep.ReleaseRequested {
-				ac, ok := s.State.Aircraft[dep.Callsign]
-				if ok && ac.Released && now.After(ac.ReleaseTime.Add(dep.ReleaseDelay)) {
-					changed()
+				ac := s.State.Aircraft[dep.Callsign]
+				if ac.Released && now.After(ac.ReleaseTime.Add(dep.ReleaseDelay)) {
 					depState.Released = append(depState.Released, dep)
 					depState.Held = depState.Held[1:]
+					changed()
 				}
 			}
 		}
@@ -523,11 +534,10 @@ func (s *Sim) spawnDepartures() {
 			var maxWait time.Duration
 			maxWaitIdx := -1
 			for i, rel := range depState.Released {
-				if ac, ok := s.State.Aircraft[rel.Callsign]; ok {
-					if w := now.Sub(ac.ReleaseTime); w > 10*time.Minute && w > maxWait {
-						maxWait = w
-						maxWaitIdx = i
-					}
+				ac := s.State.Aircraft[rel.Callsign]
+				if w := now.Sub(ac.ReleaseTime); w > 10*time.Minute && w > maxWait {
+					maxWait = w
+					maxWaitIdx = i
 				}
 			}
 			if maxWaitIdx != -1 {
@@ -566,19 +576,18 @@ func (s *Sim) spawnDepartures() {
 		// See if we have anything to launch
 		if len(depState.Sequenced) > 0 && s.canLaunch(airport, depState.Sequenced[0]) {
 			dep := &depState.Sequenced[0]
-			if ac, ok := s.State.Aircraft[dep.Callsign]; ok {
-				if s.prespawnUncontrolled && !s.prespawnControlled && s.isControlled(ac, true) {
-					s.lg.Infof("%s: discarding departure\n", ac.Callsign)
-					s.State.DeleteAircraft(ac)
-				} else {
-					// Launch!
-					ac.WaitingForLaunch = false
+			ac := s.State.Aircraft[dep.Callsign]
+			if s.prespawnUncontrolled && !s.prespawnControlled && s.isControlled(ac, true) {
+				s.lg.Infof("%s: discarding departure\n", ac.Callsign)
+				s.State.DeleteAircraft(ac)
+			} else {
+				// Launch!
+				ac.WaitingForLaunch = false
 
-					// Record the launch so we have it when we consider launching the
-					// next one.
-					dep.LaunchTime = now
-					depState.LastRunwayDeparture[dep.Runway] = dep
-				}
+				// Record the launch so we have it when we consider launching the
+				// next one.
+				dep.LaunchTime = now
+				depState.LastRunwayDeparture[dep.Runway] = dep
 			}
 
 			// Remove it from the pool of waiting departures.
