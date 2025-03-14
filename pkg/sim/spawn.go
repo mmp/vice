@@ -676,6 +676,10 @@ func (s *Sim) makeNewDeparture(airport string) (ac *av.Aircraft, runway string, 
 		}
 	}
 
+	if !ac.HoldForRelease {
+		ac.ReleaseTime = s.State.SimTime
+	}
+
 	return
 }
 
