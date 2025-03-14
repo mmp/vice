@@ -784,6 +784,7 @@
         "R25": { "cifp_id": "R25" },
         "V25": { "cifp_id": "S25" }
       },
+"vfr": { "random_routes": { "rate": 5 } },
       "tower_list": 2
   },
     "KSNA": {
@@ -911,6 +912,7 @@
               }
           }
       },
+      "vfr": { "random_routes": { "rate": 5 } },
       "departures": [
           {
               "airlines": [
@@ -1220,6 +1222,7 @@
               }
           }
       },
+      "vfr": { "random_routes": { "rate": 5 } },
       "departures": [
           {
               "airlines": [
@@ -1640,6 +1643,7 @@
               "route": "OROSZ2 CSTRO NTELL SHIMR LMT GLORR LOTKE"
           }
       ],
+      "vfr": { "random_routes": { "rate": 5 } },
       "exit_categories": {
           "CSTRO": "Northwest",
           "COREZ": "Northwest",
@@ -1859,6 +1863,7 @@
               "route": "WLKKR4 CSTRO"
           }
       ],
+      "vfr": { "random_routes": { "rate": 5 } },
       "exit_categories": {
           "CSTRO": "Northwest",
           "COREZ": "Northwest",
@@ -1942,6 +1947,7 @@
           "route": "VNY FIM V186 RZS MQO"
         }
     ],
+    "vfr": { "random_routes": { "rate": 5 } },
       "tower_list": 1,
       "hold_for_release": true
 
@@ -2444,6 +2450,7 @@
               }
           }
       },
+      "vfr": { "random_routes": { "rate": 5 } },
       "departures": [
           {
               "airlines": [
@@ -2581,6 +2588,7 @@
               }
           }
       },
+      "vfr": { "random_routes": { "rate": 5 } },
       "departures": [
           {
               "airlines": [
@@ -2950,6 +2958,7 @@
             "route": "JLI MZB"
           }
       ],
+      "vfr": { "random_routes": { "rate": 5 } },
       "hold_for_release": true
     },
     "KSEE": {
@@ -3175,6 +3184,7 @@
               "route": "TNP TFD J50 ELP J183 FUSCO DILLO LAIKS3"
           }
       ],
+      "vfr": { "random_routes": { "rate": 5 } },
       "hold_for_release": true
     },
     "KNKX": {
@@ -3274,6 +3284,7 @@
           "route": "AVE JLI"
         }
       ],
+      "vfr": { "random_routes": { "rate": 5 } },
       "hold_for_release": true
     },
     "KCRQ": {
@@ -3668,6 +3679,7 @@
       "MALIT": "West",
       "JLI": "Northeast"
     },
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
     },
@@ -4022,6 +4034,7 @@
       "ROBNN": "Southeast",
       "QUNTN": "Southwest"
     },
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
     },
@@ -4459,6 +4472,7 @@
       "MALIT": "West",
       "JLI": "Northeast"
     },
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
     },
@@ -4542,6 +4556,7 @@
     "exit_categories": {
       "LAX": "Northwest"
     },
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
     },
@@ -4964,6 +4979,7 @@
           "route": "PADRZ2 EHF SHIMR LKV HAWKZ7"
       }
     ],
+    "vfr": { "random_routes": { "rate": 5 } },
     "exit_categories": {
       "SLI": "Northwest",
       "IPL": "East",
@@ -5415,6 +5431,7 @@
       "MALIT": "West",
       "JLI": "Northeast"
     },
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
 
@@ -5688,6 +5705,7 @@
       "VTU":" Northwest",
       "IKAYE": "Northwest"
     },
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
 
@@ -5950,6 +5968,7 @@
       "VTU":" Northwest",
       "IKAYE": "Northwest"
     },
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
 
@@ -6198,6 +6217,7 @@
       "VTU":" Northwest",
       "IKAYE": "Northwest"
     },
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
 
@@ -6438,6 +6458,7 @@
           "route": "PADRZ2 IKAYE TESEA SCTRR TROXX SILCN6"
       }
     ],
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
     },
@@ -6678,6 +6699,7 @@
           "route": "PADRZ2 IKAYE TESEA SCTRR TROXX SILCN6"
       }
     ],
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
     },
@@ -6915,6 +6937,7 @@
           "route": "PADRZ2 IKAYE TESEA SCTRR TROXX SILCN6"
       }
     ],
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
     },
@@ -7205,6 +7228,7 @@
           "route": "PMD TESEA SCTRR TROXX SILCN6"
       }
     ],
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
     },
@@ -7475,6 +7499,7 @@
           "route": "PMD TESEA SCTRR TROXX SILCN6"
       }
     ],
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
     },
@@ -7768,16 +7793,202 @@
           "route": "PMD TESEA SCTRR TROXX SILCN6"
       }
     ],
+    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
-    }
+    },
+    "KCMA": {
+      "vfr": { "random_routes": { "rate": 5 } }
+    },
+    "KOXR": {     "vfr": { "random_routes": { "rate": 5 } } },
+    "KNTD": {    "vfr": { "random_routes": { "rate": 5 } } },
+    "KPMD": {    "vfr": { "random_routes": { "rate": 5 } }},
+    "KRAL": {
+      "approaches": {
+        "I9": {
+          "cifp_id": "I9"
+      },
+    "R27": {
+          "cifp_id": "R27"
+  },
+  "R9": {
+          "cifp_id": "R9"
+}
+    },
+    "departure_routes":{
+      "27":{
+        "PDZ": {
+          "cleared_altitude": 5000,
+          "sid": "RIV1",
+          "waypoints": "KRAL-9"
+      }
+      },
+      "9": {
+        "PDZ": {
+          "cleared_altitude": 5000,
+          "sid": "RIV1",
+          "waypoints": "KRAL-27 N033.56.12.651,W117.25.10.894 N033.55.55.732,W117.26.34.967"
+      }
+      }
+    },
+    "departures": [
+      {
+        "airlines": [
+          {
+            "icao": "N",
+            "fleet": "fastGA"
+          },
+          {
+            "icao": "EJA"
+          },
+          {
+            "icao": "LXJ"
+          }
+        ],
+        "destination": "KLAS",
+        "exit": "PDZ",
+        "route": "PDZ TRM SEBBY YELAH MISEN RNDRZ2"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "N",
+            "fleet": "fastGA"
+          },
+          {
+            "icao": "EJA"
+          }
+        ],
+        "destination": "KSFO",
+        "exit": "PDZ",
+        "route": "PDZ FICKY RIZIN BSR BSR2"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "N",
+            "fleet": "fastGA"
+          }
+        ],
+        "destination": "KSEA",
+        "exit": "PDZ",
+        "route": "PDZ TNP LAS MLF BOI PDT CHINS4"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "N",
+            "fleet": "fastGA"
+          },
+          {
+            "icao": "SWA"
+          }
+        ],
+        "destination": "KPHX",
+        "exit": "PDZ",
+        "route": "PDZ BANDS BLH EAGUL6"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "N",
+            "fleet": "fastGA"
+          }
+        ],
+        "destination": "KDEN",
+        "exit": "PDZ",
+        "route": "PDZ HITME DVC QUAIL6"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "N",
+            "fleet": "fastGA"
+          }
+        ],
+        "destination": "KLAX",
+        "exit": "PDZ",
+        "route": "PDZ DAG"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "N",
+            "fleet": "fastGA"
+          },
+          {
+            "icao": "SWA"
+          }
+        ],
+        "destination": "KSAN",
+        "exit": "PDZ",
+        "route": "PDZ MZB"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "N",
+            "fleet": "fastGA"
+          }
+        ],
+        "destination": "KORD",
+        "exit": "PDZ",
+        "route": "PDZ DRK TBC J96 OBH FYTTE5"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "N",
+            "fleet": "fastGA"
+          }
+        ],
+        "destination": "KATL",
+        "exit": "PDZ",
+        "route": "PDZ EED TBC GUP TXO DCT MEM ERLIN2"
+      },
+      {
+        "airlines": [
+          {
+            "icao": "N",
+            "fleet": "fastGA"
+          }
+        ],
+        "destination": "KDFW",
+        "exit": "PDZ",
+        "route": "PDZ EED TBC TXO UKW4"
+      }
+    ],
+    "vfr": { "random_routes": { "rate": 5 } },
+    "tower_list": 1,
+    "hold_for_release": true
+  },
+  "KWJF": {
+    "vfr": { "random_routes": { "rate": 5 } }
+  },
+  "KEDW": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KVCV": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KNXP": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KTNP": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KTRM": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KIPL": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KNJK": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KBWC": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KCLR": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "L08": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KUDD": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KNUC": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KAVX": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KNSI": {    "vfr": { "random_routes": { "rate": 5 } }},
+  "KREI": {"vfr": { "random_routes": { "rate": 5 } }},
+  "KRIR": {"vfr": { "random_routes": { "rate": 5 } }},
+  "KAJO": {"vfr": { "random_routes": { "rate": 5 } }}
   },
   "inbound_flows": {
   "ANJLL4": {
     "arrivals": [
       {
         "waypoints": "SALYY GLESN/a24000/s280 ANJLL/a19000/ho CAANN/a17000 BOYEL/a14000 CRCUS/a12000/s270",
-        "route": "SALYY GLESN ANJLL CAANN BOYEL CRCUS",
+        "star": "ANJLL4",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 25000,
         "initial_speed": 310,
@@ -7806,7 +8017,7 @@
       {
         "waypoints": "MOMAR SALTN/a24000/ho CARUL BARET IFHEJ PGY IFSOX/flyover",
         "cruise_altitude": 32000,
-        "route": "MOMAR SALTN CARUL BARET IFHEJ PGY IFSOX",
+        "star": "BARET5",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 25000,
         "initial_speed": 280,
@@ -7843,7 +8054,7 @@
       {
         "waypoints": "IPL KUMBA/ho PILLO/a10000 BARET IFHEJ/flyover",
         "cruise_altitude": 32000,
-        "route": "IPL KUMBA PILLO BARET IFHEJ",
+        "star": "BARET5",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 15000,
         "initial_speed": 280,
@@ -7882,8 +8093,8 @@
   "BAYST1": {
     "arrivals": [
       {
-        "waypoints": "REBRG STADD DOUIT CROWY/a26000-29000 MUPTT/a23000-27000/ho MDOTS/a20000-24000 GRIPR/a19000-23000 BIKNG/a16000-20000 RUNNN/a14000-17000 IRNMN/a12000-16000 SYMON/a12000-13000 BAYST/a9000/s240 JUUSE/a8000-9000 CLIFY/a7000-8000 DWYER/a7000/s210 DWYER/a7000 AYYYY/a6000 PETYR/a5000/flyover",
-        "route": "REBRG STADD DOUIT CROWY MUPTT MDOTS GRIPR BIKNG RUNNN IRNMN SYMON BAYST JUUSE CLIFY DWYER AYYYY PETYR",
+        "waypoints": "REBRG STADD DOUIT CROWY/a26000-29000 MUPTT/a23000-27000/ho MDOTS/a20000-24000 GRIPR/a19000-23000 BIKNG/a16000-20000 RUNNN/a14000-17000 IRNMN/a12000-16000 SYMON/a12000-13000 BAYST/a9000/s240 JUUSE/a8000-9000 CLIFY/a7000-8000 DWYER/a7000/s210 DWYER/a7000 AYYYY/a6000 PETYR/a5000/h071",
+        "star": "BAYST1",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 26000,
         "initial_speed": 310,
@@ -7913,11 +8124,11 @@
         "waypoints": "HAKMN SHTNR SMASH SALYY/a29000/ho GLESN/a27000-32000 ANJLL/a24000-29000 KAOSS/a19000-23000 TOLLA SLACR BIGBR",
         "runway_waypoints": {
           "KLAX": {
-            "6L": "BIGBR DRYSS/a10000-12000 TOMYS/a9000- CLIFY/a7000/s220 HNCHE SASSI/a7000/s210",
-            "7R": "BIGBR LADDD/a10000-12000 JOELZ/a8000-9000 NORML/a6000-/s220 WNDFL/a6000/s210"
+            "6L": "BIGBR DRYSS/a10000-12000 TOMYS/a9000- CLIFY/a7000/s220 HNCHE SASSI/a7000/s210/h251",
+            "7R": "BIGBR LADDD/a10000-12000 JOELZ/a8000-9000 NORML/a6000-/s220 WNDFL/a6000/s210/h251"
           }
         },
-        "route": "HAKMN SHTNR SMASH SALYY GLESN ANJLL KAOSS TOLLA SLACR BIGBR",
+        "star": "BIGBR3",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 29000,
         "initial_speed": 310,
@@ -7944,8 +8155,8 @@
   "BOGET2": {
     "arrivals": [
       {
-        "waypoints": "WNCHL GLAZD SNTRA/a19000 COWWS KOPLE/a14000 ROPEZ/a11000-13000/ho BOGET/a8000 MEETT/a7500 WATSS/a6900 UPDOC/a6000",
-        "route": "WNCHL GLAZD SNTRA COWWS KOPLE ROPEZ BOGET MEETT WATSS UPDOC",
+        "waypoints": "WNCHL GLAZD SNTRA/a19000 COWWS KOPLE/a14000 ROPEZ/a11000-13000/ho BOGET/a8000 MEETT/a7500 WATSS/a6900 UPDOC/a6000/h140",
+        "star": "BOGET2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 20000,
         "initial_speed": 310,
@@ -7982,11 +8193,11 @@
         "waypoints": "GABBL CHPLN NWMAN MDLER/ho MNROE HLYWD BRUEN/a32000 AVATR/a24000-29000 TRUBL/a19000-23000 EMMMY/a14000-17000 WHDDN/a15000- SHRTZ/a13000-14000",
         "runway_waypoints": {
           "KLAX": {
-            "6L": "SHRTZ/a13000-14000 DRYSS/a10000-12000 TOMYS/a9000- CLIFY/a7000/s220 HNCHE SASSI/a7000/s210",
-            "7R": "SHRTZ/a13000-14000 LADDD/a10000-12000 JOELZ/a8000-9000 NORML/a6000-/s220 WNDFL/a6000/s210"
+            "6L": "SHRTZ/a13000-14000 DRYSS/a10000-12000 TOMYS/a9000- CLIFY/a7000/s220 HNCHE SASSI/a7000/s210/h251",
+            "7R": "SHRTZ/a13000-14000 LADDD/a10000-12000 JOELZ/a8000-9000 NORML/a6000-/s220 WNDFL/a6000/s210/h251"
           }
         },
-        "route": "GABBL CHPLN NWMAN MDLER MNROE HLYWD BRUEN AVATR TUBL EMMMY WHDDN SHRTZ",
+        "star": "BRUEN2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 32000,
         "initial_speed": 310,
@@ -8007,7 +8218,7 @@
       {
         "waypoints": "IPL/a24000-26000 BLUZE/a17000-19000 GUUSE/a10000-12000 TOPGN/a7300+ CHASR/a6400/h250",
         "cruise_altitude": 32000,
-        "route": "IPL BLUZE GUUSE TOPGN CHASR",
+        "star": "CHASR2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 25000,
         "initial_speed": 280,
@@ -8070,7 +8281,7 @@
       {
         "waypoints": "MOMAR/a24000-26000 DSURT/a19000-23000/ho TRIXI/a12000-14000/s270 RIPPL/a8500 TOPGN/a7300+ CHASR/a6400/h250",
         "cruise_altitude": 32000,
-        "route": "MOMAR DSURT TRIXI RIPPL TOPGN CHASR",
+        "star": "CHASR2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 25000,
         "initial_speed": 280,
@@ -8137,7 +8348,7 @@
       {
         "waypoints": "HUULK DECEA JOEKR GAMBT LEJEN/ho COMIX/a12000-15000 FLSHH LNTRN/a9000+/s230 XMANS/a7000+ KLOMN/a6000/s210 NADDO/a6000/h95",
         "cruise_altitude": 32000,
-        "route": "HUULK DECEA JOEKR GAMBT LEJEN COMIX FLSHH LNTRN XAMS KLOMN NADDO",
+        "star": "COMIX2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 24000,
         "initial_speed": 280,
@@ -8173,7 +8384,7 @@
       }
     ]
   },
-  "DIRBY1": {
+  "DIRBY2": {
     "arrivals": [
       {
         "waypoints": "TCUPS/a26000- RUKKI/a21000-/ho BAUBB/a19000-21000 DIRBY/a16000-19000 PHUNN/a14000+ SHHOW/a12000- ZAPPP/a9000- BUFIE/a8000+ SLI/a7000 TRNDO/a5000/s210",
@@ -8205,7 +8416,7 @@
     "arrivals": [
       {
         "waypoints": "HIMDU WEELL WURMO THERS FOVOL/ho DRTHI CHURO/a24000/s280 BRCKK/a21000- ROADE/a17000-19000 PHIYA/a12000-14000 DSNEE/a8000/s220 JWARD/h260",
-        "route": "HIMDU WEELL WURMO THERS FOVOL DRTHI CHURO BRCKK ROADE PHIYA DSNEE JWARD",
+        "star": "DSNEE5",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 28000,
         "initial_speed": 310,
@@ -8247,7 +8458,7 @@
     "arrivals": [
       {
         "waypoints": "MARUE SCROW FJAYY LRSON/a28000 GITRR/a25000 DUUNN/a20000/ho CARZZ/a15000 AASPN/a14000 KADYN/a13000+ EROCK/a12000- LUQAS/a11000 DSNEE/a8000/s220 JWARD/h260",
-        "route": "MARUE SCROW FJAYY LRSON GITRR DUUNN CARZZ AASPN KADYN EROCK LUQAS DSNEE JWARD",
+        "star": "DSNEE5",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 28000,
         "initial_speed": 310,
@@ -8312,7 +8523,7 @@
       {
         "waypoints": "DAG BASAL/a10000 APLES/a10000/ho EMMLN CAPTZ/a10000 RRIZE/a8100 PDZ/a6000 DOWDD/a6000 AHEIM/a6000 SLI/a6000",
         "cruise_altitude": 32000,
-        "route": "DAG BASAL APLES EMMLN CAPTZ RRIZE PDZ DOWDD AHEIM SLI",
+        "star": "EMMLN1",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 15000,
         "initial_speed": 280,
@@ -8375,7 +8586,7 @@
       {
         "waypoints": "HEC GILLM APLES/a10000/ho EMMLN CAPTZ/a10000 RRIZE/a8100 PDZ/a6000 DOWDD/a6000 AHEIM/a6000 SLI/a6000",
         "cruise_altitude": 32000,
-        "route": "HEC GILLM APLES EMMLN CAPTZ RRIZE PDZ DOWDD AHEIM SLI",
+        "star": "EMMLN1",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 15000,
         "initial_speed": 280,
@@ -8478,11 +8689,11 @@
       }
     ]
   },
-  "GOATZ1": {
+  "GOATZ2": {
     "arrivals": [
       {
         "waypoints": "MALIT GOATZ/ho DIRBY/a16000-19000 PHUNN/a14000+ SHHOW/a12000+ ZAPPP/a9000- BUFIE/a8000 SLI/a7000 TRNDO/a5000/s210",
-        "route": "MALIT GOATZ DIRBY PHUNN SHHOW ZAPPP BUFIE SLI TRNDO",
+        "star": "GOATZ2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 19000,
         "initial_speed": 310,
@@ -8510,7 +8721,7 @@
     "arrivals": [
       {
         "waypoints": "GABBL CHPLN NWMAN MDLER/ho MNROE HLYWD/a32000 BRUEN/a24000-30000 AVATR/a19000-24000 DAAAY/a17000 WADUP/a15000 NEILE/a14000 SEAVU/a12000-14000",
-        "route": "GABBL CHPLN NWMAN MDLER MNROE GLYWD BRUEN AVATR DAAAY WADUP NEILE SEAVU",
+        "star": "HLYWD1",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 32000,
         "initial_speed": 310,
@@ -8537,8 +8748,8 @@
   "HUULL2": {
     "arrivals": [
       {
-        "waypoints": "LLEVI HUULL/a23000- GNZZO/a13000-14000/ho RYDRR/a11000 KEVVI/a10000- BAYST/a9000-/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/flyover",
-        "route": "LLEVI HUULL GNZZO RYDRR KEVVI BAYST JUUSE CLIFY DAHJR GADDO",
+        "waypoints": "LLEVI HUULL/a23000- GNZZO/a13000-14000/ho RYDRR/a11000 KEVVI/a10000- BAYST/a9000-/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/flyover/h071",
+        "star": "HUULL2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 23000,
         "initial_speed": 310,
@@ -8565,8 +8776,8 @@
   "IRNMN2": {
     "arrivals": [
       {
-        "waypoints": "CROWY/a26000-29000 MUPTT/a23000-27000 MDOTS/a20000-24000 GRIPR/a19000-23000/ho BIKNG/a16000-20000 RUNNN/a14000-17000 IRNMN/a12000-16000 SYMON/a12000-13000/s250 BAYST/a9000-/s240 JUUSE/a8000-9000 CLIFY/a7000-8000 DAHJR/a6000/s210 GADDO/a6000/flyover",
-        "route": "CROWY MUMPTT MDOTS GRIPR BIKNG RUNNN SYMON BAYST JUUSE CLIFY DAHJR GADDO",
+        "waypoints": "CROWY/a26000-29000 MUPTT/a23000-27000 MDOTS/a20000-24000 GRIPR/a19000-23000/ho BIKNG/a16000-20000 RUNNN/a14000-17000 IRNMN/a12000-16000 SYMON/a12000-13000/s250 BAYST/a9000-/s240 JUUSE/a8000-9000 CLIFY/a7000-8000 DAHJR/a6000/s210 GADDO/a6000/flyover/h071",
+        "star": "IRNMN2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 29000,
         "initial_speed": 310,
@@ -8650,7 +8861,7 @@
       {
         "waypoints": "NATEE FEYLA PEIRC/a24000+/s280 LRSON/a21000-22000 JNBOY/a21000-/ho JCKIE/a17000-19000 GBNEY/a14000-16000 GRRAY/a12000-14000 HINOH/a11000-13000 RUMBL/a10000/s240 ARRAN/a10000/s250 FIXUT/a9000 ILONE/a8000 ESAYE/a6000 EFFXX/a6000/s210 CASIE/h267",
         "cruise_altitude": 32000,
-        "route": "NATEE FEYLA PEIRC LRSON JNBOY JCKIE GBNEY GRRAY HINOH RUMBL ARRAN FIXUT ILONE ESAYE EFFXX CASIE",
+        "star": "JCKIE2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 29000,
         "initial_speed": 280,
@@ -8691,7 +8902,7 @@
       {
         "waypoints": "FICKY ROSIN MALIT GOATZ/a16000/s280/ho DIRBY PHUNN/a14000- SHHOW/a12000- OLLLY/a9000+ KARLB/a8000- POXKU/a7000/s220 PDZ/h49",
         "cruise_altitude": 32000,
-        "route": "FICKY ROSIN MALIT GOATZ DIRBY PHUNN SHHOW OLLLY KARLB PXKU PDZ",
+        "star": "KARLB2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 19000,
         "initial_speed": 280,
@@ -8732,7 +8943,7 @@
       {
         "waypoints": "HEC BULGY/a24000+/ho DAWNA/a13000 HDF FRETS/a8000- KAYOH/s210 JOGIT SLI",
         "cruise_altitude": 32000,
-        "route": "HEC BULGY DAWNA HDF FRETS KAYOH JOGIT SLI",
+        "star": "KAYOH8",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 24000,
         "initial_speed": 280,
@@ -8825,7 +9036,7 @@
       {
         "waypoints": "N033.49.17.080,W115.05.31.127 N033.43.36.737,W115.30.14.144/ho PSP AHLEX/a16000 BANDS HDF FRETS/a8000- KAYOH/s210 JOGIT SLI",
         "cruise_altitude": 32000,
-        "route": "PSP AHLEX BANDS HDF FRETS KAYOH JOGIT SLI",
+        "star": "KAYOH8",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 24000,
         "initial_speed": 280,
@@ -8918,7 +9129,7 @@
       {
         "waypoints": "LANDO/a23000- NUGEE/ho LAX LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a7000 OCN/a5000/h85",
         "cruise_altitude": 32000,
-        "route": "LANDO NUGEE LAX LEGOZ BRIKS AVOLS PACIF OCN",
+        "star": "LEGOZ2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 23000,
         "initial_speed": 280,
@@ -8981,7 +9192,7 @@
       {
         "waypoints": "DOUIT BLOXX/a24000+ BLDIT TANDY/a17000/ho LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a7000 OCN/a5000/h85",
         "cruise_altitude": 32000,
-        "route": "DOUIT BLOXX BLDIT TANDY LEGOZ BRIKS AVOLS PACIF OCN",
+        "star": "LEGOZ2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 29000,
         "initial_speed": 280,
@@ -9044,7 +9255,7 @@
       {
         "waypoints": "TILLT ZIPRR WURLL TCUPS RUKKI BAUBB/a16000-17000/ho LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a7000 OCN/a5000/h85",
         "cruise_altitude": 32000,
-        "route": "TILLT ZIPRR WURLL TCUPS RUKKI BAUBB LEGOZ BRIKS AVOLS PACIF OCN",
+        "star": "LEGOZ2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 29000,
         "initial_speed": 280,
@@ -9111,7 +9322,7 @@
       {
         "waypoints": "TTRUE LINNE SRRFR TRRSH SHADI MOMAR/a24000-26000 DSURT/a19000-23000/ho TRIXI/a12000-14000/s270 HSKER/a8700+ BARET/a8000+ HNAHH/a6100+ LUCKI/a6000 LYNDI/a5000+/s210",
         "cruise_altitude": 32000,
-        "route": "TTRUE LINNE SRRFR TRRSH SHADI MOMAR DSURT TRIXI HSKER BARET HNAHH LUCKI LYNDI",
+        "star": "LUCKI1",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 29000,
         "initial_speed": 280,
@@ -9150,8 +9361,8 @@
   "MDNYT2.AMMOR": {
     "arrivals": [
       {
-        "waypoints": "AMMOR RNCHO/a26000- SNSTT/a24000-26000/s280 SOLAY/a19000-/ho LAHVA/a17000 LAAMP/a15000-17000/s280 SNDDR/a15000 SHRTZ/a13000-14000 MDNYT/a10000-13000 DOWNE DOYRS/a10000- CLIFY/a8000-10000/s230 HNCHE SASSI/a7000/s210 SHIPM",
-        "route": "AMMOR RNCHO SNSTT SOLAY LAHVA LAAMP SNDDR SHRTZ MDNYT DOWNE DOYRS CLIFY HNCHE SASSI SHIPM",
+        "waypoints": "AMMOR RNCHO/a26000- SNSTT/a24000-26000/s280 SOLAY/a19000-/ho LAHVA/a17000 LAAMP/a15000-17000/s280 SNDDR/a15000 SHRTZ/a13000-14000 MDNYT/a10000-13000 DOWNE DOYRS/a10000- CLIFY/a8000-10000/s230 HNCHE SASSI/a7000/s210 SHIPM/h251",
+        "star": "MDNYT2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 26000,
         "initial_speed": 310,
@@ -9185,7 +9396,7 @@
             "2L": "STYFF/a9000- JJAWS/a6000- PUZZL/a5000/s220 MINOE/a3000/s210"
           }
         },
-        "route": " RDHOT ELLBC GOONA GUDBY YORBS PCIFC CRAYN SIPPP TANDY OHSEA STYFF",
+        "star": "OHSEA3",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 30000,
         "initial_speed": 310,
@@ -9219,7 +9430,7 @@
             "2L": "STYFF/a9000+ JJAWS/a6000+ PUZZL/a5000 MINOE/a3000-/s210"
           }
         },
-        "route": "REBRG MMTLY REESR RCHEL SHOLN PCIFC CRAYN SIPPP TANDY OHSEA STYFF",
+        "star": "OHSEA3",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 30000,
         "initial_speed": 310,
@@ -9247,7 +9458,7 @@
     "arrivals": [
       {
         "waypoints": "AMMOR RNCHO/a26000- REGGO/a24000-/ho CYNDE/a14000+ OLAAA/a12000-13000 PESOZ MADOW/a8000+ TOZEK/a7000 SLI/a7000/s210 TRNDO/a5000/s210",
-        "route": "AMMOR RNCHO REGGO CYNDE OLAAA PESOZ MADOW TOZEK SLI TRNDO",
+        "star": "OLAAA2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 26000,
         "initial_speed": 310,
@@ -9322,8 +9533,8 @@
   "RYDRR2.ELKEY": {
     "arrivals": [
       {
-        "waypoints": "EESSA/a17000-20000 GKNEE/a12000-13000/ho RYDRR/a11000/s250 KEVVI/a10000- BAYST/a9000/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO",
-        "route": "EESSA GKNEE RYDRR KEVVI BAYST JUUSE CLIFY DAHJR GADDO",
+        "waypoints": "EESSA/a17000-20000 GKNEE/a12000-13000/ho RYDRR/a11000/s250 KEVVI/a10000- BAYST/a9000/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/h071",
+        "star": "RYDRR2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 20000,
         "initial_speed": 310,
@@ -9470,7 +9681,7 @@
           }
         },
         "cruise_altitude": 32000,
-        "route": "DEWWW ZOINK MSTRY MCHNE DEWAY SCBBY",
+        "star": "SCBBY2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 21000,
         "initial_speed": 280,
@@ -9511,7 +9722,7 @@
       {
         "waypoints": "N033.31.24.457,W114.34.42.073 N033.41.05.153,W115.25.24.517/ho PSP/a16000 AHLEX/a16000/ho BANDS SETER BERDU PDZ",
         "cruise_altitude": 32000,
-        "route": "PSP AHLEX SETER BERDU PDZ",
+        "star": "SETER5",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 17000,
         "initial_speed": 280,
@@ -9646,13 +9857,39 @@
               "icao": "EJA",
               "airport": "KSJC"
             }
+          ],
+          "KRAL": [
+            {
+              "icao": "EJA",
+              "airport": "KSFO"
+            },
+            {
+              "icao": "N",
+              "airport": "KSEA"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KOAK"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KPDX"
+            },
+            {
+              "icao": "N",
+              "airport": "KOAK"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KSJC"
+            }
           ]
         }
       },
       {
         "waypoints": "N032.53.15.442,W115.27.56.513 JLI/a24000 N033.25.59.619,W116.49.26.390/ho ROTHY/a12000 SETER BERDU PDZ",
         "cruise_altitude": 32000,
-        "route": "PSP AHLEX SETER BERDU PDZ",
+        "star": "SETER5",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 29000,
         "initial_speed": 280,
@@ -9787,6 +10024,32 @@
               "icao": "EJA",
               "airport": "KSJC"
             }
+          ],
+          "KRAL": [
+            {
+              "icao": "EJA",
+              "airport": "KSFO"
+            },
+            {
+              "icao": "N",
+              "airport": "KSEA"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KOAK"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KPDX"
+            },
+            {
+              "icao": "N",
+              "airport": "KOAK"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KSJC"
+            }
           ]
         }
       }
@@ -9797,7 +10060,7 @@
       {
         "waypoints": "GLRNO/a24000+ SIZLR/a20000-23000 MXIMO/ho HITOP PZUKY/a16000 BITTY/a16000 MORON/a14000 FERNN/a11000 DEZZY/a9000/h124",
         "cruise_altitude": 32000,
-        "route": "GLRNO SIZLR MXIMO HITOP PZUKY BITTY MORON FERNN DEZZY",
+        "route": "SIZLR3",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 24000,
         "initial_speed": 280,
@@ -9836,7 +10099,7 @@
   "THRNE4": {
     "arrivals": [
       {
-        "waypoints": "PHRED FOILD QUTIP/a29000- VLLMA DROGO/a24000+ DEWWW/a21000+ DNERY/a20000+/ho ARRYA/a16000 YATZE/a14000 IRONN/a13000 THRNE/a11000 CRCUS/a10000/ho EDARD/a10000/s250 NNEDD/a8000/h253",
+        "waypoints": "PHRED FOILD QUTIP/a29000- VLLMA DROGO/a24000+ DEWWW/a21000+ DNERY/a20000+/ho ARRYA/a16000 YATZE/a14000 IRONN/a13000 THRNE/a11000 CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h253",
         "cruise_altitude": 36000,
         "star": "THRNE4",
         "initial_controller": "LAX_55_CTR",
@@ -9894,7 +10157,7 @@
             "2L": "BAUBB/a21000/s280 JJAWS/a6000+ PUZZL MINOE/a3000-/s210"
           }
         },
-        "route": "WURLL TCUPS RUKKI BAUBB",
+        "star": "TILLT2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 28000,
         "initial_speed": 310,
@@ -9923,7 +10186,7 @@
       {
         "waypoints": "IPL/a24000-26000 BLUZE/a17000-19000/ho GUUSE/a12000-13000/s270 TOPGN/a9000-10000 ISEMN/a6400+ ZIPPP/a6000-8000 TMCAT/a6000/s210",
         "cruise_altitude": 32000,
-        "route": "IPL BLUZE GUUSE TOPGN ISEMN ZIPPP TMCAT",
+        "star": "TOPGN2",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 29000,
         "initial_speed": 280,
@@ -10001,7 +10264,7 @@
       {
         "waypoints": "EHF ZARTI LANDO BLUUH PMD/ho FLAVR/a14000/s250 MAJEK/s250 HESPE HITOP NITIY ZIGGY PDZ",
         "cruise_altitude": 32000,
-        "route": "EHF ZARTI LANDO BLUUH PMD FLAvR MAJEK HESPE HITOP NITIY ZIGGY PDZ",
+        "star": "ZIGGY8",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 32000,
         "initial_speed": 280,
@@ -10162,6 +10425,32 @@
               "icao": "EJA",
               "airport": "KSJC"
             }
+          ],
+          "KRAL": [
+            {
+              "icao": "EJA",
+              "airport": "KSFO"
+            },
+            {
+              "icao": "N",
+              "airport": "KSEA"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KOAK"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KPDX"
+            },
+            {
+              "icao": "N",
+              "airport": "KOAK"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KSJC"
+            }
           ]
         }
       }
@@ -10172,7 +10461,7 @@
       {
         "waypoints": "N032.53.15.442,W115.27.56.513 JLI/a24000 N033.16.59.503,W116.42.13.419/ho ROTHY/a12000 SETER BERDU PDZ",
         "cruise_altitude": 32000,
-        "route": "PSP AHLEX SETER BERDU PDZ",
+        "star": "ZIGGY8",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 29000,
         "initial_speed": 280,
@@ -10333,6 +10622,32 @@
               "icao": "EJA",
               "airport": "KSJC"
             }
+          ],
+          "KRAL": [
+            {
+              "icao": "EJA",
+              "airport": "KSFO"
+            },
+            {
+              "icao": "N",
+              "airport": "KSEA"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KOAK"
+            },
+            {
+              "icao": "LXJ",
+              "airport": "KPDX"
+            },
+            {
+              "icao": "N",
+              "airport": "KOAK"
+            },
+            {
+              "icao": "EJA",
+              "airport": "KSJC"
+            }
           ]
         }
       }
@@ -10342,7 +10657,7 @@
     "arrivals": [
       {
         "waypoints": "DOUIT UCANN/a29000- ALMST/a17000-21000/ho DANYY/a13000-17000 ZUUMA/a9000-11000 WAKER/a6000/s210",
-        "route": "DOUIT UCANN ALMST DANYY ZUUMA WAKER",
+        "star": "ZUUMA3",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 29000,
         "initial_speed": 310,
@@ -11028,7 +11343,7 @@
   "sector_id": "4V"
 }
   },
-  "default_scenario": "Cmbnd: LAW BUR815 SANW SNAN ONTW",
+  "default_scenario": "SoCal West",
   "fixes": {
     "_LAX": "33.942501,-118.407997",
     "_HHR": "N033.55.22.787,W118.20.05.886",
@@ -11061,15 +11376,15 @@
     "_SNA_20R": "33.68133446771594,-117.86530360060215",
     "_SNA_2L": "33.668238486375174,-117.87360497420696"
   },
-  "name": "SCT Combined",
+  "name": "SoCal West",
   "primary_airport": "KLAX",
   "scenarios": {
 
-    "Cmbnd: LAW BUR815 SANW SNAN ONTW": {
+    "SoCal West": {
       "arrival_runways": [
       {
           "airport": "KWHP",
-          "runway": "12"
+          "runway": "30"
       },
       {
           "airport": "KVNY",
@@ -11085,7 +11400,7 @@
         },
         {
           "airport": "KSNA",
-          "runway": "2L"
+          "runway": "20R"
       },
       {
           "airport": "KLAX",
@@ -11117,17 +11432,17 @@
     },
     {
         "airport": "KBUR",
-        "runway": "8"
+        "runway": "26"
     },
     
 
     {
       "airport": "KBUR",
-      "runway": "15"
+      "runway": "33"
   },
   {
       "airport": "KVNY",
-      "runway": "16R"
+      "runway": "34L"
   },
 {
   "airport": "KSAN",
@@ -11199,11 +11514,15 @@
 },
 {
   "airport": "KSBD",
-  "runway": "6"
+  "runway": "24"
 },
 {
   "airport": "KSMO",
-  "runway": "3"
+  "runway": "21"
+},
+{
+  "airport": "KRAL",
+  "runway": "27"
 }
       ],
       "arrivals": {
@@ -11214,23 +11533,23 @@
           "KLAX": 10 
         },
         "BAYST1": {
-          "KLAX": 10 
+          "KLAX": 0 
         },
         "BIGBR3": {
           "KLAX": 0 
         },
         "BOGET2": {
-          "KLAX": 10,
+          "KLAX": 0,
           "KSMO": 1
         },
         "BRUEN2": {
           "KLAX": 0 
         },
-        "DIRBY1": {
-          "KLAX": 10 
+        "DIRBY2": {
+          "KLAX": 2 
         },
-        "GOATZ1": {
-          "KLAX": 10 
+        "GOATZ2": {
+          "KLAX": 2 
         },
         "HUULL2": {
           "KLAX": 10 
@@ -11239,14 +11558,14 @@
           "KLAX": 0 
         },
         "ZUUMA3": {
-          "KLAX": 10,
+          "KLAX": 0,
           "KSMO": 1
         },
         "OLAAA2": {
           "KLAX": 10 
         },
         "RYDRR2.ELKEY": {
-          "KLAX": 10 
+          "KLAX": 5 
         },
         "IRNMN2": {
           "KLAX": 10 
@@ -11347,21 +11666,27 @@
           "KSBD": 1,
           "KEMT": 1,
           "KRIV": 1,
-          "KPOC": 1
+          "KPOC": 1,
+          "KRAL": 1,
+          "KCNO": 1
         },
         "ZIGGY8.EHF": {
           "KSBD": 1,
           "KEMT": 1,
           "KRIV": 1,
           "KPOC": 1,
-          "KONT": 10
+          "KONT": 1,
+          "KRAL": 1,
+          "KCNO": 1
         },
         "ZIGGY8.JLI": {
           "KSBD": 1,
           "KEMT": 1,
           "KRIV": 1,
           "KPOC": 1,
-          "KONT": 10
+          "KONT": 1,
+          "KRAL": 1,
+          "KCNO": 1
         }
       },
       "solo_controller": "LAX_F_APP",
@@ -11381,6 +11706,7 @@
             "backup": "BUR_V_APP",
             "arrivals": ["SBAP2"]
           },
+
           "LAX_S_DEP": {
             "backup": "BUR_W_APP",
             "departures": ["KLAX/DOTSS2","KLAX/LAXX1","KTOA","KLAX/OSHNN1","KLAX/PNDAH2"]
@@ -11391,7 +11717,7 @@
           },
           "LAX_X_DEP": {
             "backup": "LAX_N_DEP",
-            "arrivals": ["DIRBY1","GOATZ1","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
+            "arrivals": ["DIRBY2","GOATZ2","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
           },
           "LAX_D_APP": {
             "backup": "LAX_Z_APP"
@@ -11409,7 +11735,7 @@
           },
 
           "ONT_N_APP": {
-            "backup": "LAX_X_DEP",
+            "backup": "ONT_P_APP",
             "departures": ["KSBD","KRIV"],
             "arrivals": ["JCKIE2","KARLB3","EMMLN1","KAYOH8.HEC","ZIGGY8.EHF","ZIGGY8.JLI"]
           },
@@ -11419,9 +11745,10 @@
             "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
           },
           "ONT_P_APP": {
-            "backup": "ONT_S_APP",
-            "departures": ["KPOC","KEMT","KCNO","KONT"]
+            "backup": "LAX_X_DEP",
+            "departures": ["KPOC","KEMT","KCNO","KONT","KRAL"]
           },
+
           "SNA_T_APP": {
             "backup": "ONT_P_APP"
           },
@@ -11492,18 +11819,18 @@
     },
     {
       "airport": "KBUR",
-      "rate": 2,
-      "runway":"8"
-  },
-  {
-      "airport": "KBUR",
       "rate": 0,
-      "runway":"15"
+      "runway":"26"
+  },
+  {
+      "airport": "KBUR",
+      "rate": 2,
+      "runway":"33"
   },
   {
       "airport": "KVNY",
       "rate": 2,
-      "runway":"16R"
+      "runway":"34L"
   },
 {
   "airport": "KSAN",
@@ -11624,14 +11951,19 @@
   "airport": "KSMO",
   "rate": 1,
   "runway": "3"
+},
+{
+  "airport": "KRAL",
+  "rate": 1,
+  "runway": "27"
 }
       ],
       "wind": {
-        "direction": 20,
+        "direction": 270,
         "speed": 10
       }
     },
-    "Cmbnd: LAW BUR815 SANW SNAN ONTE": {
+    "SoCal East": {
       "arrival_runways": [
       {
           "airport": "KWHP",
@@ -11641,2210 +11973,6 @@
         "airport": "KONT",
         "runway": "8L"
     },
-        {
-          "airport": "KLAX",
-          "runway": "24R"
-        },
-        {
-          "airport": "KHHR",
-          "runway": "25"
-        },
-        {
-          "airport": "KSNA",
-          "runway": "2L"
-      },
-      {
-          "airport": "KLAX",
-          "runway": "25L"
-      },
-      {
-          "airport": "KLGB",
-          "runway": "30"
-      },
-      {
-        "airport": "KLAX",
-        "runway": "24R"
-      },
-    {
-        "airport": "KPSP",
-        "runway": "13R"
-    },
-    {
-        "airport": "KBUR",
-        "runway": "8"
-    },
-    
-
-    {
-      "airport": "KBUR",
-      "runway": "15"
-  },
-  {
-      "airport": "KVNY",
-      "runway": "16R"
-  },
-{
-  "airport": "KSAN",
-  "runway": "27"
-},
-{
-  "airport": "KCRQ",
-  "runway": "24"
-},
-{
-  "airport": "KMYF",
-  "runway": "28R"
-},
-{
-  "airport": "KNFG",
-  "runway": "21"
-},
-{
-  "airport": "KNZY",
-  "runway": "29"
-},
-{
-  "airport": "KNKX",
-  "runway": "24R"
-},
-{
-  "airport": "KNRS",
-  "runway": "27"
-},
-{
-  "airport": "KRNM",
-  "runway": "9"
-},
-{
-  "airport": "KSDM",
-  "runway": "8L"
-},
-{
-  "airport": "KSEE",
-  "runway": "17"
-},
-
-
-{
-  "airport": "KFUL",
-  "runway": "24"
-},
-{
-  "airport": "KSLI",
-  "runway": "22L"
-},
-{
-  "airport": "KTOA",
-  "runway": "29R"
-},
-
-{
-  "airport": "KCNO",
-  "runway": "8L"
-},
-{
-  "airport": "KEMT",
-  "runway": "1"
-},
-{
-  "airport": "KPOC",
-  "runway": "8R"
-},
-{
-  "airport": "KRIV",
-  "runway": "14"
-},
-{
-  "airport": "KSBD",
-  "runway": "6"
-},
-
-
-{
-  "airport": "KSMO",
-  "runway": "3"
-}
-      ],
-      "arrivals": {
-        "ANJLL4": {
-          "KLAX": 10 
-        },
-        "HLYWD1": {
-          "KLAX": 10 
-        },
-        "BAYST1": {
-          "KLAX": 10 
-        },
-        "BIGBR3": {
-          "KLAX": 0 
-        },
-        "BOGET2": {
-          "KLAX": 10,
-          "KSMO": 1
-        },
-        "BRUEN2": {
-          "KLAX": 0 
-        },
-        "DIRBY1": {
-          "KLAX": 10 
-        },
-        "GOATZ1": {
-          "KLAX": 10 
-        },
-        "HUULL2": {
-          "KLAX": 10 
-        },
-        "MDNYT2.AMMOR": {
-          "KLAX": 0 
-        },
-        "ZUUMA3": {
-          "KLAX": 10,
-          "KSMO": 1
-        },
-        "OLAAA2": {
-          "KLAX": 10 
-        },
-        "RYDRR2.ELKEY": {
-          "KLAX": 10 
-        },
-        "IRNMN2": {
-          "KLAX": 10 
-        },
-        "DSNEE5.MARUE": {
-          "KSNA": 10,
-          "KLGB": 10
-        },
-        "DSNEE5.HIMDU": {
-          "KSNA": 10,
-          "KLGB": 10
-        },
-        "OHSEA3.REBRG": {
-          "KSNA": 10 
-        },
-        "OHSEA3.RDHOT": {
-          "KSNA": 10 
-        },
-        "TILLT2": {
-          "KSNA": 10 
-        },
-        "JANNY5": {
-          "KBUR": 10 
-        },
-        "ROKKR3": {
-          "KBUR": 10 
-        },
-        "THRNE4": {
-          "KBUR": 10,
-          "KSMO": 1
-        },
-        "WEESL1": {
-          "KVNY": 10
-        },
-        "FERN7": {
-          "KVNY": 10 
-        },
-        "SBAP2": {
-          "KWHP": 10 
-        },
-        "EDWP2": {
-          "KWHP": 10 
-        },
-        "JCKIE2": {
-          "KONT": 10 
-        },
-        "KARLB3": {
-          "KONT": 10 
-        },
-        "SCBBY2": {
-          "KONT": 10 
-        },
-        "SIZLR3": {
-          "KPSP": 10 
-        },
-        "COMIX2": {
-          "KSAN": 10 
-        },
-        "LUCKI1": {
-          "KSAN": 10 
-        },
-        "TOPGN2": {
-          "KSAN": 10 
-        },
-        "SANSAT": {
-          "KMYF": 1,
-          "KCRQ": 1,
-          "KNFG": 1,
-          "KNKX": 1,
-          "KNRS": 1,
-          "KNZY": 1,
-          "KRNM": 1,
-          "KSDM": 1,
-          "KSEE": 1
-        },
-        "LEGOZ2": {
-          "KCRQ": 1,
-          "KNFG": 1
-        },
-        "BARET5": {
-          "KNZY": 1
-        },
-        "EMMLN1": {
-          "KFUL": 1,
-          "KSLI": 1
-        },
-        "KAYOH8.HEC": {
-          "KFUL": 1,
-          "KSLI": 1,
-          "KTOA": 1
-        },
-        "KAYOH8.PSP": {
-          "KFUL": 1,
-          "KSLI": 1,
-          "KTOA": 1
-        },
-        "SETER5": {
-          "KSBD": 1,
-          "KEMT": 1,
-          "KRIV": 1,
-          "KPOC": 1
-        },
-        "ZIGGY8.EHF": {
-          "KSBD": 1,
-          "KEMT": 1,
-          "KRIV": 1,
-          "KPOC": 1,
-          "KONT": 10
-        },
-        "ZIGGY8.JLI": {
-          "KSBD": 1,
-          "KEMT": 1,
-          "KRIV": 1,
-          "KPOC": 1,
-          "KONT": 10
-        }
-      },
-      "solo_controller": "LAX_F_APP",
-      "multi_controllers": {
-        "default" : {
-          "BUR_M_APP": {
-            "departures": ["KVNY","KWHP"],
-            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR3"],
-            "backup": "LAX_F_APP"
-          },
-          "BUR_V_APP": {
-            "backup": "BUR_M_APP",
-            "departures": ["KBUR"],
-            "arrivals": ["BOGET2"]
-          },
-          "BUR_W_APP": {
-            "backup": "BUR_V_APP",
-            "arrivals": ["SBAP2"]
-          },
-          "LAX_S_DEP": {
-            "backup": "BUR_W_APP",
-            "departures": ["KLAX/DOTSS2","KLAX/LAXX1","KTOA","KLAX/OSHNN1","KLAX/PNDAH2"]
-          },
-          "LAX_N_DEP": {
-            "backup": "LAX_S_DEP",
-            "departures": ["KLAX/GMN7","KLAX/LADYJ4","KLAX/SUMMR2","KLAX/MOOOS2","KLAX/MUELR4","KSMO"]
-          },
-          "LAX_X_DEP": {
-            "backup": "LAX_N_DEP",
-            "arrivals": ["DIRBY1","GOATZ1","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
-          },
-          "LAX_D_APP": {
-            "backup": "LAX_Z_APP"
-          },
-          "LAX_U_APP": {
-            "backup": "LAX_D_APP"
-          },
-          "LAX_F_APP": {
-            "arrivals": ["ANJLL4","HLYWD1", "BIGBR3","MDNYT2.AMMOR","BRUEN2"],
-            "primary": true
-          },
-          "LAX_Z_APP": {
-            "arrivals": ["HUULL2","ZUUMA3","RYDRR2.ELKEY","IRNMN2","BAYST1"],
-            "backup": "LAX_F_APP"
-          },
-
-          "ONT_N_APP": {
-            "backup": "LAX_X_DEP",
-            "departures": ["KSBD","KRIV","KPSP"],
-            "arrivals": ["JCKIE2","KARLB3","EMMLN1","KAYOH8.HEC","ZIGGY8.EHF","ZIGGY8.JLI"]
-          },
-          "ONT_S_APP": {
-            "backup": "ONT_N_APP",
-            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
-          },
-          "ONT_P_APP": {
-            "backup": "ONT_S_APP",
-            "departures": ["KPOC","KEMT","KCNO","KONT"]
-          },
-          "SNA_T_APP": {
-            "backup": "ONT_P_APP"
-          },
-          "SNA_Y_APP": {
-            "backup": "SNA_T_APP",
-            "departures": ["KSNA", "KLGB","KFUL","KSLI"],
-            "arrivals": ["OLAAA2"]
-          },
-          "SAN_W_APP": {
-            "backup": "SNA_Y_APP",
-            "departures": ["KSAN","KCRQ","KMYF","KSDM"]
-          },
-          "SAN_E_APP": {
-            "backup": "SAN_W_APP",
-            "arrivals": ["LUCKI1","TOPGN2","BARET5"],
-            "departures": ["KSEE"]
-          },
-          "SAN_N_APP": {
-            "backup": "SAN_E_APP",
-            "arrivals": ["COMIX2"]
-          },
-          "SAN_D_APP": {
-            "backup": "SAN_N_APP",
-            "arrivals": ["SANSAT","LEGOZ2"],
-            "departures": ["KNFG","KNKX","KNRS","KNZY","KRNM"]
-          }
-      }
-      },
-      "controllers": [
-          "LAX_55_CTR"
-      ],
-      "default_maps": [
-        "099S SCT NORMAL CFG SCT"
-      ],
-      "departure_runways":[
-        {
-          "airport": "KONT",
-          "rate": 2,
-          "runway":"8L"
-      },
-      {
-          "airport": "KPSP",
-          "rate": 2,
-          "runway":"13R"
-      },
-        {
-          "airport": "KSNA",
-          "rate": 2,
-          "runway": "20R"
-      },
-      {
-          "airport": "KLGB",
-          "rate": 2,
-          "runway": "30"
-      },
-      {
-        "airport":"KLAX",
-        "rate": 25,
-        "runway":"25R",
-        "category": "SOUTH"
-      },
-      {
-        "airport":"KLAX",
-        "rate": 25,
-        "runway":"24L",
-        "category": "NORTH"
-      },
-    {
-      "airport": "KBUR",
-      "rate": 2,
-      "runway":"8"
-  },
-  {
-      "airport": "KBUR",
-      "rate": 0,
-      "runway":"15"
-  },
-  {
-      "airport": "KVNY",
-      "rate": 2,
-      "runway":"16R"
-  },
-{
-  "airport": "KSAN",
-  "rate": 1,
-  "runway": "27"
-},
-{
-  "airport": "KWHP",
-  "rate": 1,
-  "runway": "12"
-},
-{
-  "airport": "KWHP",
-  "rate": 0,
-  "runway": "30"
-},
-{
-  "airport": "KCRQ",
-  "rate": 1,
-  "runway": "24"
-},
-{
-  "airport": "KMYF",
-  "rate": 1,
-  "runway": "28R"
-},
-{
-  "airport": "KNFG",
-  "rate": 1,
-  "runway": "21"
-},
-{
-  "airport": "KNZY",
-  "rate": 1,
-  "runway": "29"
-},
-{
-  "airport": "KNKX",
-  "rate": 1,
-  "runway": "24R"
-},
-{
-  "airport": "KNRS",
-  "rate": 1,
-  "runway": "27"
-},
-{
-  "airport": "KRNM",
-  "rate": 1,
-  "runway": "27"
-},
-{
-  "airport": "KSDM",
-  "rate": 1,
-  "runway": "26R"
-},
-{
-  "airport": "KRNM",
-  "rate": 1,
-  "runway": "27"
-},
-{
-  "airport": "KSEE",
-  "rate": 1,
-  "runway": "17"
-},
-{
-  "airport": "KFUL",
-  "rate": 1,
-  "runway": "24"
-},
-{
-  "airport": "KSLI",
-  "rate": 1,
-  "runway": "22L"
-},
-{
-  "airport": "KTOA",
-  "rate": 1,
-  "runway": "29R"
-},
-{
-  "airport": "KCNO",
-  "rate": 1,
-  "runway": "26R"
-},
-{
-  "airport": "KEMT",
-  "rate": 1,
-  "runway": "19"
-},
-{
-  "airport": "KPOC",
-  "rate": 1,
-  "runway": "8L"
-},
-{
-  "airport": "KCNO",
-  "rate": 1,
-  "runway": "8L"
-},
-
-{
-  "airport": "KRIV",
-  "rate": 1,
-  "runway": "14"
-},
-{
-  "airport": "KSBD",
-  "rate": 1,
-  "runway": "6"
-},
-{
-  "airport": "KSMO",
-  "rate": 1,
-  "runway": "3"
-}
-      ],
-      "wind": {
-        "direction": 20,
-        "speed": 10
-      }
-    },
-    "Cmbnd: LAW BUR815 SANW SNAS ONTE": {
-      "arrival_runways": [
-      {
-          "airport": "KWHP",
-          "runway": "12"
-      },
-      {
-        "airport": "KONT",
-        "runway": "8L"
-    },
-        {
-          "airport": "KLAX",
-          "runway": "24R"
-        },
-        {
-          "airport": "KHHR",
-          "runway": "25"
-        },
-        {
-          "airport": "KSNA",
-          "runway": "20R"
-      },
-      {
-          "airport": "KLAX",
-          "runway": "25L"
-      },
-      {
-          "airport": "KLGB",
-          "runway": "12"
-      },
-      {
-        "airport": "KLAX",
-        "runway": "24R"
-      },
-    {
-        "airport": "KPSP",
-        "runway": "13R"
-    },
-    {
-        "airport": "KBUR",
-        "runway": "8"
-    },
-    
-
-    {
-      "airport": "KBUR",
-      "runway": "15"
-  },
-  {
-      "airport": "KVNY",
-      "runway": "16R"
-  },
-{
-  "airport": "KSAN",
-  "runway": "27"
-},
-{
-  "airport": "KCRQ",
-  "runway": "24"
-},
-{
-  "airport": "KMYF",
-  "runway": "28R"
-},
-{
-  "airport": "KNFG",
-  "runway": "21"
-},
-{
-  "airport": "KNZY",
-  "runway": "29"
-},
-{
-  "airport": "KNKX",
-  "runway": "24R"
-},
-{
-  "airport": "KNRS",
-  "runway": "27"
-},
-{
-  "airport": "KRNM",
-  "runway": "9"
-},
-{
-  "airport": "KSDM",
-  "runway": "8L"
-},
-{
-  "airport": "KSEE",
-  "runway": "17"
-},
-
-{
-  "airport": "KFUL",
-  "runway": "24"
-},
-{
-  "airport": "KSLI",
-  "runway": "22L"
-},
-{
-  "airport": "KTOA",
-  "runway": "11L"
-},
-{
-  "airport": "KCNO",
-  "runway": "26R"
-},
-{
-  "airport": "KEMT",
-  "runway": "1"
-},
-{
-  "airport": "KPOC",
-  "runway": "8R"
-},
-{
-  "airport": "KCNO",
-  "runway": "8L"
-},
-
-{
-  "airport": "KRIV",
-  "runway": "14"
-},
-{
-  "airport": "KSBD",
-  "runway": "6"
-},
-{
-  "airport": "KSMO",
-  "runway": "21"
-}
-      ],
-      "arrivals": {
-        "ANJLL4": {
-          "KLAX": 10 
-        },
-        "HLYWD1": {
-          "KLAX": 10 
-        },
-        "BAYST1": {
-          "KLAX": 10 
-        },
-        "BIGBR3": {
-          "KLAX": 0 
-        },
-        "BOGET2": {
-          "KLAX": 10,
-          "KSMO": 1
-        },
-        "BRUEN2": {
-          "KLAX": 0 
-        },
-        "DIRBY1": {
-          "KLAX": 10 
-        },
-        "GOATZ1": {
-          "KLAX": 10 
-        },
-        "HUULL2": {
-          "KLAX": 10 
-        },
-        "MDNYT2.AMMOR": {
-          "KLAX": 0 
-        },
-        "ZUUMA3": {
-          "KLAX": 10,
-          "KSMO": 1
-        },
-        "OLAAA2": {
-          "KLAX": 10 
-        },
-        "RYDRR2.ELKEY": {
-          "KLAX": 10 
-        },
-        "IRNMN2": {
-          "KLAX": 10 
-        },
-        "DSNEE5.MARUE": {
-          "KSNA": 10,
-          "KLGB": 10
-        },
-        "DSNEE5.HIMDU": {
-          "KSNA": 10,
-          "KLGB": 10
-        },
-        "OHSEA3.REBRG": {
-          "KSNA": 10 
-        },
-        "OHSEA3.RDHOT": {
-          "KSNA": 10 
-        },
-        "TILLT2": {
-          "KSNA": 10 
-        },
-        "JANNY5": {
-          "KBUR": 10 
-        },
-        "ROKKR3": {
-          "KBUR": 10 
-        },
-        "THRNE4": {
-          "KBUR": 10,
-          "KSMO": 1
-        },
-        "WEESL1": {
-          "KVNY": 10
-        },
-        "FERN7": {
-          "KVNY": 10 
-        },
-        "SBAP2": {
-          "KWHP": 10 
-        },
-        "EDWP2": {
-          "KWHP": 10 
-        },
-        "JCKIE2": {
-          "KONT": 10 
-        },
-        "KARLB3": {
-          "KONT": 10 
-        },
-        "SCBBY2": {
-          "KONT": 10 
-        },
-        "SIZLR3": {
-          "KPSP": 10 
-        },
-        "COMIX2": {
-          "KSAN": 10 
-        },
-        "LUCKI1": {
-          "KSAN": 10 
-        },
-        "TOPGN2": {
-          "KSAN": 10 
-        },
-        "SANSAT": {
-          "KMYF": 1,
-          "KCRQ": 1,
-          "KNFG": 1,
-          "KNKX": 1,
-          "KNRS": 1,
-          "KNZY": 1,
-          "KRNM": 1,
-          "KSDM": 1,
-          "KSEE": 1
-        },
-        "LEGOZ2": {
-          "KCRQ": 1,
-          "KNFG": 1
-        },
-        "BARET5": {
-          "KNZY": 1
-        },
-        "EMMLN1": {
-          "KFUL": 1,
-          "KSLI": 1
-        },
-        "KAYOH8.HEC": {
-          "KFUL": 1,
-          "KSLI": 1,
-          "KTOA": 1
-        },
-        "KAYOH8.PSP": {
-          "KFUL": 1,
-          "KSLI": 1,
-          "KTOA": 1
-        },
-        "SETER5": {
-          "KSBD": 1,
-          "KEMT": 1,
-          "KRIV": 1,
-          "KPOC": 1
-        },
-        "ZIGGY8.EHF": {
-          "KSBD": 1,
-          "KEMT": 1,
-          "KRIV": 1,
-          "KPOC": 1,
-          "KONT": 10
-        },
-        "ZIGGY8.JLI": {
-          "KSBD": 1,
-          "KEMT": 1,
-          "KRIV": 1,
-          "KPOC": 1,
-          "KONT": 10
-        }
-      },
-      "solo_controller": "LAX_F_APP",
-      "multi_controllers": {
-        "default" : {
-          "BUR_M_APP": {
-            "departures": ["KVNY","KWHP"],
-            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR3"],
-            "backup": "LAX_F_APP"
-          },
-          "BUR_V_APP": {
-            "backup": "BUR_M_APP",
-            "departures": ["KBUR"],
-            "arrivals": ["BOGET2"]
-          },
-          "BUR_W_APP": {
-            "backup": "BUR_V_APP",
-            "arrivals": ["SBAP2"]
-          },
-          "LAX_S_DEP": {
-            "backup": "BUR_W_APP",
-            "departures": ["KLAX/DOTSS2","KLAX/LAXX1","KTOA","KLAX/OSHNN1","KLAX/PNDAH2"]
-          },
-          "LAX_N_DEP": {
-            "backup": "LAX_S_DEP",
-            "departures": ["KLAX/GMN7","KLAX/LADYJ4","KLAX/SUMMR2","KLAX/MOOOS2","KLAX/MUELR4","KSMO"]
-          },
-          "LAX_X_DEP": {
-            "backup": "LAX_N_DEP",
-            "arrivals": ["DIRBY1","GOATZ1","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
-          },
-          "LAX_D_APP": {
-            "backup": "LAX_Z_APP"
-          },
-          "LAX_U_APP": {
-            "backup": "LAX_D_APP"
-          },
-          "LAX_F_APP": {
-            "arrivals": ["ANJLL4","HLYWD1", "BIGBR3","MDNYT2.AMMOR","BRUEN2"],
-            "primary": true
-          },
-          "LAX_Z_APP": {
-            "arrivals": ["HUULL2","ZUUMA3","RYDRR2.ELKEY","IRNMN2","BAYST1"],
-            "backup": "LAX_F_APP"
-          },
-
-          "ONT_N_APP": {
-            "backup": "LAX_X_DEP",
-            "departures": ["KSBD","KRIV","KPSP"],
-            "arrivals": ["JCKIE2","KARLB3","EMMLN1","KAYOH8.HEC","ZIGGY8.EHF","ZIGGY8.JLI"]
-          },
-          "ONT_S_APP": {
-            "backup": "ONT_N_APP",
-            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
-          },
-          "ONT_P_APP": {
-            "backup": "ONT_S_APP",
-            "departures": ["KPOC","KEMT","KCNO","KONT"]
-          },
-          "SNA_T_APP": {
-            "backup": "ONT_P_APP",
-            "departures": ["KSNA", "KLGB","KFUL","KSLI"],
-            "arrivals": ["OLAAA2"]
-          },
-          "SNA_Y_APP": {
-            "backup": "SNA_T_APP"
-          },
-          "SAN_W_APP": {
-            "backup": "SNA_Y_APP",
-            "departures": ["KSAN","KCRQ","KMYF","KSDM"]
-          },
-          "SAN_E_APP": {
-            "backup": "SAN_W_APP",
-            "arrivals": ["LUCKI1","TOPGN2","BARET5"],
-            "departures": ["KSEE"]
-          },
-          "SAN_N_APP": {
-            "backup": "SAN_E_APP",
-            "arrivals": ["COMIX2"]
-          },
-          "SAN_D_APP": {
-            "backup": "SAN_N_APP",
-            "arrivals": ["SANSAT","LEGOZ2"],
-            "departures": ["KNFG","KNKX","KNRS","KNZY","KRNM"]
-          }
-      }
-      },
-      "controllers": [
-          "LAX_55_CTR"
-      ],
-      "default_maps": [
-        "099S SCT NORMAL CFG SCT"
-      ],
-      "departure_runways":[
-        {
-          "airport": "KONT",
-          "rate": 2,
-          "runway":"8L"
-      },
-      {
-          "airport": "KPSP",
-          "rate": 2,
-          "runway":"13R"
-      },
-      {
-        "airport":"KLAX",
-        "rate": 25,
-        "runway":"25R",
-        "category": "SOUTH"
-      },
-      {
-        "airport":"KLAX",
-        "rate": 25,
-        "runway":"24L",
-        "category": "NORTH"
-      },
-  {
-      "airport": "KBUR",
-      "rate": 2,
-      "runway":"15"
-  },
-  {
-      "airport": "KVNY",
-      "rate": 3,
-      "runway":"16R"
-  },
-  
-  {
-    "airport": "KSNA",
-    "rate": 2,
-    "runway": "20R"
-},
-{
-    "airport": "KLGB",
-    "rate": 2,
-    "runway": "12"
-},
-{
-  "airport": "KSAN",
-  "rate": 1,
-  "runway": "27"
-},
-{
-  "airport": "KWHP",
-  "rate": 1,
-  "runway": "12"
-},
-{
-  "airport": "KWHP",
-  "rate": 1,
-  "runway": "30"
-},
-{
-  "airport": "KCRQ",
-  "rate": 1,
-  "runway": "24"
-},
-{
-  "airport": "KMYF",
-  "rate": 1,
-  "runway": "28R"
-},
-{
-  "airport": "KNFG",
-  "rate": 1,
-  "runway": "21"
-},
-{
-  "airport": "KNZY",
-  "rate": 1,
-  "runway": "18"
-},
-{
-  "airport": "KNKX",
-  "rate": 1,
-  "runway": "24R"
-},
-{
-  "airport": "KNRS",
-  "rate": 1,
-  "runway": "27"
-},
-{
-  "airport": "KRNM",
-  "rate": 1,
-  "runway": "27"
-},
-{
-  "airport": "KSDM",
-  "rate": 1,
-  "runway": "26R"
-},
-{
-  "airport": "KRNM",
-  "rate": 1,
-  "runway": "27"
-},
-{
-  "airport": "KSEE",
-  "rate": 1,
-  "runway": "9L"
-},
-{
-  "airport": "KFUL",
-  "rate": 1,
-  "runway": "24"
-},
-{
-  "airport": "KSLI",
-  "rate": 1,
-  "runway": "22L"
-},
-{
-  "airport": "KTOA",
-  "rate": 1,
-  "runway": "11L"
-},
-{
-  "airport": "KCNO",
-  "rate": 1,
-  "runway": "26R"
-},
-{
-  "airport": "KEMT",
-  "rate": 1,
-  "runway": "1"
-},
-{
-  "airport": "KPOC",
-  "rate": 1,
-  "runway": "26L"
-},
-{
-  "airport": "KCNO",
-  "rate": 1,
-  "runway": "26R"
-},
-{
-  "airport": "KEMT",
-  "rate": 1,
-  "runway": "1"
-},
-{
-  "airport": "KPOC",
-  "rate": 1,
-  "runway": "26L"
-},
-{
-  "airport": "KRIV",
-  "rate": 1,
-  "runway": "32"
-},
-{
-  "airport": "KSBD",
-  "rate": 1,
-  "runway": "6"
-},
-{
-  "airport": "KSMO",
-  "rate": 1,
-  "runway": "3"
-}
-      ],
-      "wind": {
-        "direction": 20,
-        "speed": 10
-      }
-    },
-    "Cmbnd: LAW BUR815 SANE SNAS ONTE": {
-      "arrival_runways": [
-      {
-          "airport": "KWHP",
-          "runway": "12"
-      },
-      {
-        "airport": "KONT",
-        "runway": "8L"
-    },
-        {
-          "airport": "KLAX",
-          "runway": "24R"
-        },
-        {
-          "airport": "KHHR",
-          "runway": "25"
-        },
-        {
-          "airport": "KSNA",
-          "runway": "20R"
-      },
-      {
-          "airport": "KLAX",
-          "runway": "25L"
-      },
-      {
-          "airport": "KLGB",
-          "runway": "12"
-      },
-      {
-        "airport": "KLAX",
-        "runway": "24R"
-      },
-    {
-        "airport": "KONT",
-        "runway": "26L"
-    },
-    {
-        "airport": "KPSP",
-        "runway": "13R"
-    },
-    {
-        "airport": "KBUR",
-        "runway": "8"
-    },
-    
-
-    {
-      "airport": "KBUR",
-      "runway": "15"
-  },
-  {
-      "airport": "KVNY",
-      "runway": "16R"
-  },
-  {
-    "airport": "KSAN",
-    "runway": "9"
-  },
-  {
-    "airport": "KCRQ",
-    "runway": "6"
-  },
-  {
-    "airport": "KMYF",
-    "runway": "10L"
-  },
-  {
-    "airport": "KNFG",
-    "runway": "3"
-  },
-  {
-    "airport": "KNZY",
-    "runway": "36"
-  },
-  {
-    "airport": "KNKX",
-    "runway": "6L"
-  },
-  {
-    "airport": "KNRS",
-    "runway": "9"
-  },
-  {
-    "airport": "KRNM",
-    "runway": "9"
-  },
-  {
-    "airport": "KSDM",
-    "runway": "8L"
-  },
-  {
-    "airport": "KSEE",
-    "runway": "9L"
-  },
-  {
-    "airport": "KFUL",
-    "runway": "6"
-  },
-  {
-    "airport": "KSLI",
-    "runway": "4R"
-  },
-  {
-    "airport": "KTOA",
-    "runway": "11L"
-  },
-  {
-    "airport": "KCNO",
-    "runway": "8L"
-  },
-  {
-    "airport": "KEMT",
-    "runway": "1"
-  },
-  {
-    "airport": "KPOC",
-    "runway": "8R"
-  },
-  {
-    "airport": "KRIV",
-    "runway": "14"
-  },
-  {
-    "airport": "KSBD",
-    "runway": "6"
-  },
-  {
-    "airport": "KSMO",
-    "runway": "21"
-  }
-      ],
-      "arrivals": {
-        "ANJLL4": {
-          "KLAX": 10 
-        },
-        "HLYWD1": {
-          "KLAX": 10 
-        },
-        "BAYST1": {
-          "KLAX": 10 
-        },
-        "BIGBR3": {
-          "KLAX": 0 
-        },
-        "BOGET2": {
-          "KLAX": 10,
-          "KSMO": 1
-        },
-        "BRUEN2": {
-          "KLAX": 0 
-        },
-        "DIRBY1": {
-          "KLAX": 10 
-        },
-        "GOATZ1": {
-          "KLAX": 10 
-        },
-        "HUULL2": {
-          "KLAX": 10 
-        },
-        "MDNYT2.AMMOR": {
-          "KLAX": 0 
-        },
-        "ZUUMA3": {
-          "KLAX": 10,
-          "KSMO": 1
-        },
-        "OLAAA2": {
-          "KLAX": 10 
-        },
-        "RYDRR2.ELKEY": {
-          "KLAX": 10 
-        },
-        "IRNMN2": {
-          "KLAX": 10 
-        },
-        "DSNEE5.MARUE": {
-          "KSNA": 10,
-          "KLGB": 10
-        },
-        "DSNEE5.HIMDU": {
-          "KSNA": 10,
-          "KLGB": 10
-        },
-        "OHSEA3.REBRG": {
-          "KSNA": 10 
-        },
-        "OHSEA3.RDHOT": {
-          "KSNA": 10 
-        },
-        "TILLT2": {
-          "KSNA": 10 
-        },
-        "JANNY5": {
-          "KBUR": 10 
-        },
-        "ROKKR3": {
-          "KBUR": 10 
-        },
-        "THRNE4": {
-          "KBUR": 10,
-          "KSMO": 1
-        },
-        "WEESL1": {
-          "KVNY": 10
-        },
-        "FERN7": {
-          "KVNY": 10 
-        },
-        "SBAP2": {
-          "KWHP": 10 
-        },
-        "EDWP2": {
-          "KWHP": 10 
-        },
-        "JCKIE2": {
-          "KONT": 10 
-        },
-        "KARLB3": {
-          "KONT": 10 
-        },
-        "SCBBY2": {
-          "KONT": 10 
-        },
-        "SIZLR3": {
-          "KPSP": 10 
-        },
-        "COMIX2": {
-          "KSAN": 10 
-        },
-        "LUCKI1": {
-          "KSAN": 10 
-        },
-        "TOPGN2": {
-          "KSAN": 10 
-        },
-        "SANSAT": {
-          "KMYF": 1,
-          "KCRQ": 1,
-          "KNFG": 1,
-          "KNKX": 1,
-          "KNRS": 1,
-          "KNZY": 1,
-          "KRNM": 1,
-          "KSDM": 1,
-          "KSEE": 1
-        },
-        "LEGOZ2": {
-          "KCRQ": 1,
-          "KNFG": 1
-        },
-        "BARET5": {
-          "KNZY": 1
-        },
-        "EMMLN1": {
-          "KFUL": 1,
-          "KSLI": 1
-        },
-        "KAYOH8.HEC": {
-          "KFUL": 1,
-          "KSLI": 1,
-          "KTOA": 1
-        },
-        "KAYOH8.PSP": {
-          "KFUL": 1,
-          "KSLI": 1,
-          "KTOA": 1
-        },
-        "SETER5": {
-          "KSBD": 1,
-          "KEMT": 1,
-          "KRIV": 1,
-          "KPOC": 1
-        },
-        "ZIGGY8.EHF": {
-          "KSBD": 1,
-          "KEMT": 1,
-          "KRIV": 1,
-          "KPOC": 1,
-          "KONT": 10
-        },
-        "ZIGGY8.JLI": {
-          "KSBD": 1,
-          "KEMT": 1,
-          "KRIV": 1,
-          "KPOC": 1,
-          "KONT": 10
-        }
-      },
-      "solo_controller": "LAX_F_APP",
-      "multi_controllers": {
-        "default" : {
-          "BUR_M_APP": {
-            "departures": ["KVNY","KWHP"],
-            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR3"],
-            "backup": "LAX_F_APP"
-          },
-          "BUR_V_APP": {
-            "backup": "BUR_M_APP",
-            "departures": ["KBUR"],
-            "arrivals": ["BOGET2"]
-          },
-          "BUR_W_APP": {
-            "backup": "BUR_V_APP",
-            "arrivals": ["SBAP2"]
-          },
-          "LAX_S_DEP": {
-            "backup": "BUR_W_APP",
-            "departures": ["KLAX/DOTSS2","KLAX/LAXX1","KTOA","KLAX/OSHNN1","KLAX/PNDAH2"]
-          },
-          "LAX_N_DEP": {
-            "backup": "LAX_S_DEP",
-            "departures": ["KLAX/GMN7","KLAX/LADYJ4","KLAX/SUMMR2","KLAX/MOOOS2","KLAX/MUELR4","KSMO"]
-          },
-          "LAX_X_DEP": {
-            "backup": "LAX_N_DEP",
-            "arrivals": ["DIRBY1","GOATZ1","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
-          },
-          "LAX_D_APP": {
-            "backup": "LAX_Z_APP"
-          },
-          "LAX_U_APP": {
-            "backup": "LAX_D_APP"
-          },
-          "LAX_F_APP": {
-            "arrivals": ["ANJLL4","HLYWD1", "BIGBR3","MDNYT2.AMMOR","BRUEN2"],
-            "primary": true
-          },
-          "LAX_Z_APP": {
-            "arrivals": ["HUULL2","ZUUMA3","RYDRR2.ELKEY","IRNMN2","BAYST1"],
-            "backup": "LAX_F_APP"
-          },
-
-          "ONT_N_APP": {
-            "backup": "LAX_X_DEP",
-            "departures": ["KSBD","KRIV","KPSP"],
-            "arrivals": ["JCKIE2","KARLB3","EMMLN1","KAYOH8.HEC","ZIGGY8.EHF","ZIGGY8.JLI"]
-          },
-          "ONT_S_APP": {
-            "backup": "ONT_N_APP",
-            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
-          },
-          "ONT_P_APP": {
-            "backup": "ONT_S_APP",
-            "departures": ["KPOC","KEMT","KCNO","KONT"]
-          },
-          "SNA_T_APP": {
-            "backup": "ONT_P_APP",
-            "departures": ["KSNA", "KLGB","KFUL","KSLI"],
-            "arrivals": ["OLAAA2"]
-          },
-          "SNA_Y_APP": {
-            "backup": "SNA_T_APP"
-          },
-          "SAN_W_APP": {
-            "backup": "SNA_Y_APP",
-            "departures": ["KSDM"]
-          },
-          "SAN_E_APP": {
-            "backup": "SAN_W_APP",
-            "arrivals": ["LUCKI1","TOPGN2","BARET5"],
-            "departures": ["KSEE","KSAN","KCRQ","KMYF"]
-          },
-          "SAN_N_APP": {
-            "backup": "SAN_E_APP",
-            "arrivals": ["COMIX2"]
-          },
-          "SAN_D_APP": {
-            "backup": "SAN_N_APP",
-            "arrivals": ["SANSAT","LEGOZ2"],
-            "departures": ["KNFG","KNKX","KNRS","KNZY","KRNM"]
-          }
-      }
-      },
-      "controllers": [
-          "LAX_55_CTR"
-      ],
-      "default_maps": [
-        "099S SCT NORMAL CFG SCT"
-      ],
-      "departure_runways":[
-        {
-          "airport": "KONT",
-          "rate": 2,
-          "runway":"8L"
-      },
-      {
-          "airport": "KPSP",
-          "rate": 2,
-          "runway":"13R"
-      },
-
-
-        {
-          "airport":"KSAN",
-          "rate": 2,
-          "runway": "9"
-      },
-        {
-          "airport": "KSNA",
-          "rate": 2,
-          "runway": "20R"
-      },
-      {
-        "airport":"KLAX",
-        "rate": 25,
-        "runway":"25R",
-        "category": "SOUTH"
-      },
-      {
-        "airport":"KLAX",
-        "rate": 25,
-        "runway":"24L",
-        "category": "NORTH"
-      },
-    {
-      "airport": "KBUR",
-      "rate": 3,
-      "runway":"8"
-  },
-  {
-      "airport": "KBUR",
-      "rate": 2,
-      "runway":"15"
-  },
-  {
-      "airport": "KVNY",
-      "rate": 2,
-      "runway":"16R"
-  },
-  
-  {
-    "airport": "KSNA",
-    "rate": 2,
-    "runway": "20R"
-},
-{
-    "airport": "KLGB",
-    "rate": 2,
-    "runway": "12"
-},
-{
-  "airport": "KWHP",
-  "rate": 1,
-  "runway": "12"
-},
-{
-  "airport": "KCRQ",
-  "rate": 1,
-  "runway": "6"
-},
-{
-  "airport": "KMYF",
-  "rate": 1,
-  "runway": "10L"
-},
-{
-  "airport": "KNFG",
-  "rate": 1,
-  "runway": "21"
-},
-{
-  "airport": "KNZY",
-  "rate": 1,
-  "runway": "29"
-},
-{
-  "airport": "KNKX",
-  "rate": 1,
-  "runway": "24R"
-},
-{
-  "airport": "KNRS",
-  "rate": 1,
-  "runway": "9"
-},
-{
-  "airport": "KRNM",
-  "rate": 1,
-  "runway": "9"
-},
-{
-  "airport": "KSDM",
-  "rate": 1,
-  "runway": "8L"
-},
-{
-  "airport": "KRNM",
-  "rate": 1,
-  "runway": "9"
-},
-{
-  "airport": "KSEE",
-  "rate": 1,
-  "runway": "9L"
-},
-{
-  "airport": "KFUL",
-  "rate": 1,
-  "runway": "24"
-},
-{
-  "airport": "KSLI",
-  "rate": 1,
-  "runway": "22L"
-},
-{
-  "airport": "KTOA",
-  "rate": 1,
-  "runway": "29R"
-},
-{
-  "airport": "KCNO",
-  "rate": 1,
-  "runway": "26R"
-},
-{
-  "airport": "KEMT",
-  "rate": 1,
-  "runway": "1"
-},
-{
-  "airport": "KPOC",
-  "rate": 1,
-  "runway": "26L"
-},
-{
-  "airport": "KCNO",
-  "rate": 1,
-  "runway": "26R"
-},
-{
-  "airport": "KEMT",
-  "rate": 1,
-  "runway": "1"
-},
-{
-  "airport": "KPOC",
-  "rate": 1,
-  "runway": "26L"
-},
-{
-  "airport": "KRIV",
-  "rate": 1,
-  "runway": "32"
-},
-{
-  "airport": "KSBD",
-  "rate": 1,
-  "runway": "6"
-},
-{
-  "airport": "KSMO",
-  "rate": 1,
-  "runway": "3"
-}
-      ],
-      "wind": {
-        "direction": 20,
-        "speed": 10
-      }
-    },
-    "Cmbnd: LAW BUR2633 SANE SNAS ONTE": {
-      "arrival_runways": [
-      {
-          "airport": "KWHP",
-          "runway": "30"
-      },
-      {
-          "airport": "KVNY",
-          "runway": "34R"
-      },
-        {
-          "airport": "KLAX",
-          "runway": "24R"
-        },
-        {
-          "airport": "KHHR",
-          "runway": "25"
-        },
-        {
-          "airport": "KSNA",
-          "runway": "20R"
-      },
-      {
-          "airport": "KLAX",
-          "runway": "25L"
-      },
-      {
-          "airport": "KLGB",
-          "runway": "12"
-      },
-      {
-        "airport": "KLAX",
-        "runway": "24R"
-      },
-      {
-        "airport": "KONT",
-        "runway": "8L"
-    },
-    {
-        "airport": "KPSP",
-        "runway": "13R"
-    },
-    {
-        "airport": "KBUR",
-        "runway": "26"
-    },
-    
-  {
-      "airport": "KVNY",
-      "runway": "34L"
-  },
-{
-  "airport": "KSAN",
-  "runway": "9"
-},
-{
-  "airport": "KCRQ",
-  "runway": "6"
-},
-{
-  "airport": "KMYF",
-  "runway": "10L"
-},
-{
-  "airport": "KNFG",
-  "runway": "3"
-},
-{
-  "airport": "KNZY",
-  "runway": "36"
-},
-{
-  "airport": "KNKX",
-  "runway": "24R"
-},
-{
-  "airport": "KNRS",
-  "runway": "27"
-},
-{
-  "airport": "KRNM",
-  "runway": "9"
-},
-{
-  "airport": "KSDM",
-  "runway": "8L"
-},
-{
-  "airport": "KSEE",
-  "runway": "9L"
-},
-{
-  "airport": "KFUL",
-  "runway": "6"
-},
-{
-  "airport": "KSLI",
-  "runway": "4R"
-},
-{
-  "airport": "KTOA",
-  "runway": "11L"
-},
-{
-  "airport": "KCNO",
-  "runway": "8L"
-},
-{
-  "airport": "KEMT",
-  "runway": "1"
-},
-{
-  "airport": "KPOC",
-  "runway": "8R"
-},
-{
-  "airport": "KRIV",
-  "runway": "14"
-},
-{
-  "airport": "KSBD",
-  "runway": "6"
-},
-{
-  "airport": "KSMO",
-  "runway": "21"
-}
-      ],
-      "arrivals": {
-        "ANJLL4": {
-          "KLAX": 10 
-        },
-        "HLYWD1": {
-          "KLAX": 10 
-        },
-        "BAYST1": {
-          "KLAX": 10 
-        },
-        "BIGBR3": {
-          "KLAX": 0 
-        },
-        "BOGET2": {
-          "KLAX": 10,
-          "KSMO": 1
-        },
-        "BRUEN2": {
-          "KLAX": 0 
-        },
-        "DIRBY1": {
-          "KLAX": 10 
-        },
-        "GOATZ1": {
-          "KLAX": 10 
-        },
-        "HUULL2": {
-          "KLAX": 10 
-        },
-        "MDNYT2.AMMOR": {
-          "KLAX": 0 
-        },
-        "ZUUMA3": {
-          "KLAX": 10,
-          "KSMO": 1
-        },
-        "OLAAA2": {
-          "KLAX": 10 
-        },
-        "RYDRR2.ELKEY": {
-          "KLAX": 10 
-        },
-        "IRNMN2": {
-          "KLAX": 10 
-        },
-        "DSNEE5.MARUE": {
-          "KSNA": 10,
-          "KLGB": 10
-        },
-        "DSNEE5.HIMDU": {
-          "KSNA": 10,
-          "KLGB": 10
-        },
-        "OHSEA3.REBRG": {
-          "KSNA": 10 
-        },
-        "OHSEA3.RDHOT": {
-          "KSNA": 10 
-        },
-        "TILLT2": {
-          "KSNA": 10 
-        },
-        "JANNY5": {
-          "KBUR": 10 
-        },
-        "ROKKR3": {
-          "KBUR": 10 
-        },
-        "THRNE4": {
-          "KBUR": 10,
-          "KSMO": 1
-        },
-        "WEESL1": {
-          "KVNY": 10
-        },
-        "FERN7": {
-          "KVNY": 10 
-        },
-        "SBAP2": {
-          "KWHP": 10 
-        },
-        "EDWP2": {
-          "KWHP": 10 
-        },
-        "JCKIE2": {
-          "KONT": 10 
-        },
-        "KARLB3": {
-          "KONT": 10 
-        },
-        "SCBBY2": {
-          "KONT": 10 
-        },
-        "SIZLR3": {
-          "KPSP": 10 
-        },
-        "COMIX2": {
-          "KSAN": 10 
-        },
-        "LUCKI1": {
-          "KSAN": 10 
-        },
-        "TOPGN2": {
-          "KSAN": 10 
-        },
-        "SANSAT": {
-          "KMYF": 1,
-          "KCRQ": 1,
-          "KNFG": 1,
-          "KNKX": 1,
-          "KNRS": 1,
-          "KNZY": 1,
-          "KRNM": 1,
-          "KSDM": 1,
-          "KSEE": 1
-        },
-        "LEGOZ2": {
-          "KCRQ": 1,
-          "KNFG": 1
-        },
-        "BARET5": {
-          "KNZY": 1
-        },
-        "EMMLN1": {
-          "KFUL": 1,
-          "KSLI": 1
-        },
-        "KAYOH8.HEC": {
-          "KFUL": 1,
-          "KSLI": 1,
-          "KTOA": 1
-        },
-        "KAYOH8.PSP": {
-          "KFUL": 1,
-          "KSLI": 1,
-          "KTOA": 1
-        },
-        "SETER5": {
-          "KSBD": 1,
-          "KEMT": 1,
-          "KRIV": 1,
-          "KPOC": 1
-        },
-        "ZIGGY8.EHF": {
-          "KSBD": 1,
-          "KEMT": 1,
-          "KRIV": 1,
-          "KPOC": 1,
-          "KONT": 10
-        },
-        "ZIGGY8.JLI": {
-          "KSBD": 1,
-          "KEMT": 1,
-          "KRIV": 1,
-          "KPOC": 1,
-          "KONT": 10
-        }
-      },
-      "solo_controller": "LAX_F_APP",
-      "multi_controllers": {
-        "default" : {
-          "BUR_M_APP": {
-            "departures": ["KVNY","KWHP","KBUR"],
-            "arrivals": ["WEESL1","FERN7", "JANNY5", "EDWP2","ROKKR3"],
-            "backup": "LAX_F_APP"
-          },
-          "BUR_V_APP": {
-            "backup": "BUR_M_APP",
-            "arrivals": ["BOGET2"]
-          },
-          "BUR_W_APP": {
-            "backup": "BUR_V_APP",
-            "arrivals": ["SBAP2"]
-          },
-          "LAX_S_DEP": {
-            "backup": "BUR_W_APP",
-            "departures": ["KLAX/DOTSS2","KLAX/LAXX1","KTOA","KLAX/OSHNN1","KLAX/PNDAH2"]
-          },
-          "LAX_N_DEP": {
-            "backup": "LAX_S_DEP",
-            "departures": ["KLAX/GMN7","KLAX/LADYJ4","KLAX/SUMMR2","KLAX/MOOOS2","KLAX/MUELR4","KSMO"]
-          },
-          "LAX_X_DEP": {
-            "backup": "LAX_N_DEP",
-            "arrivals": ["DIRBY1","GOATZ1","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
-          },
-          "LAX_D_APP": {
-            "backup": "LAX_Z_APP"
-          },
-          "LAX_U_APP": {
-            "backup": "LAX_D_APP"
-          },
-          "LAX_F_APP": {
-            "arrivals": ["ANJLL4","HLYWD1", "BIGBR3","MDNYT2.AMMOR","BRUEN2"],
-            "primary": true
-          },
-          "LAX_Z_APP": {
-            "arrivals": ["HUULL2","ZUUMA3","RYDRR2.ELKEY","IRNMN2","BAYST1"],
-            "backup": "LAX_F_APP"
-          },
-
-          "ONT_N_APP": {
-            "backup": "LAX_X_DEP",
-            "departures": ["KSBD","KRIV"],
-            "arrivals": ["JCKIE2","KARLB3","EMMLN1","KAYOH8.HEC","ZIGGY8.EHF","ZIGGY8.JLI"]
-          },
-          "ONT_S_APP": {
-            "backup": "ONT_N_APP",
-            "departures": ["KPSP"],
-            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
-          },
-          "ONT_P_APP": {
-            "backup": "ONT_S_APP",
-            "departures": ["KPOC","KEMT","KCNO","KONT"]
-          },
-          "SNA_T_APP": {
-            "backup": "ONT_P_APP"
-          },
-          "SNA_Y_APP": {
-            "backup": "SNA_T_APP",
-            "departures": ["KSNA", "KLGB","KFUL","KSLI"],
-            "arrivals": ["OLAAA2"]
-          },
-          "SAN_W_APP": {
-            "backup": "SNA_Y_APP",
-            "arrivals": ["LUCKI1","TOPGN2","COMIX2","SANSAT","LEGOZ2","BARET5"],
-            "departures": ["KSAN","KCRQ","KMYF","KNFG","KNKX","KNRS","KNZY","KRNM","KSDM","KSEE"]
-          },
-          "SAN_E_APP": {
-            "backup": "SAN_W_APP"
-          },
-          "SAN_N_APP": {
-            "backup": "SAN_E_APP"
-          },
-          "SAN_D_APP": {
-            "backup": "SAN_N_APP"
-          }
-      }
-      },
-      "controllers": [
-          "LAX_55_CTR"
-      ],
-      "default_maps": [
-        "099S SCT NORMAL CFG SCT"
-      ],
-      "departure_runways":[
-        {
-          "airport": "KONT",
-          "rate": 2,
-          "runway":"8L"
-      },
-      {
-          "airport": "KPSP",
-          "rate": 2,
-          "runway":"13R"
-      },
-        {
-          "airport": "KBUR",
-          "rate": 2,
-          "runway":"33"
-      },
-      {
-          "airport": "KVNY",
-          "rate": 2,
-          "runway": "34L"
-      },
-
-        {
-          "airport":"KSAN",
-          "rate": 2,
-          "runway": "9"
-      },
-      {
-        "airport":"KLAX",
-        "rate": 5,
-        "runway":"25R",
-        "category": "SOUTH"
-      },
-      {
-        "airport":"KLAX",
-        "rate": 5,
-        "runway":"24L",
-        "category": "NORTH"
-      },
-  {
-    "airport": "KSNA",
-    "rate": 2,
-    "runway": "2L"
-},
-{
-    "airport": "KLGB",
-    "rate": 2,
-    "runway": "12"
-},
-{
-  "airport": "KWHP",
-  "rate": 2,
-  "runway": "30"
-},
-{
-  "airport": "KCRQ",
-  "rate": 1,
-  "runway": "6"
-},
-{
-  "airport": "KMYF",
-  "rate": 1,
-  "runway": "10L"
-},
-{
-  "airport": "KNFG",
-  "rate": 1,
-  "runway": "21"
-},
-{
-  "airport": "KNZY",
-  "rate": 1,
-  "runway": "18"
-},
-{
-  "airport": "KNKX",
-  "rate": 1,
-  "runway": "24R"
-},
-{
-  "airport": "KNRS",
-  "rate": 1,
-  "runway": "27"
-},
-{
-  "airport": "KRNM",
-  "rate": 1,
-  "runway": "27"
-},
-{
-  "airport": "KSDM",
-  "rate": 1,
-  "runway": "26R"
-},
-{
-  "airport": "KRNM",
-  "rate": 1,
-  "runway": "27"
-},
-{
-  "airport": "KSEE",
-  "rate": 1,
-  "runway": "9L"
-},
-{
-  "airport": "KFUL",
-  "rate": 1,
-  "runway": "24"
-},
-{
-  "airport": "KSLI",
-  "rate": 1,
-  "runway": "22L"
-},
-{
-  "airport": "KTOA",
-  "rate": 1,
-  "runway": "11L"
-},
-{
-  "airport": "KCNO",
-  "rate": 1,
-  "runway": "26R"
-},
-{
-  "airport": "KEMT",
-  "rate": 1,
-  "runway": "1"
-},
-{
-  "airport": "KPOC",
-  "rate": 1,
-  "runway": "26L"
-},
-{
-  "airport": "KRIV",
-  "rate": 1,
-  "runway": "32"
-},
-{
-  "airport": "KSBD",
-  "rate": 1,
-  "runway": "6"
-},
-{
-  "airport": "KSMO",
-  "rate": 1,
-  "runway": "3"
-}
-      ],
-      "wind": {
-        "direction": 20,
-        "speed": 10
-      }
-    },
-    "Cmbnd: LAE BUR2633 SANE SNAS ONTE": {
-      "arrival_runways": [
-      {
-          "airport": "KWHP",
-          "runway": "30"
-      },
-      {
-          "airport": "KVNY",
-          "runway": "34R"
-      },
         {
           "airport": "KLAX",
           "runway": "6L"
@@ -13855,7 +11983,7 @@
         },
         {
           "airport": "KSNA",
-          "runway": "20R"
+          "runway": "2L"
       },
       {
           "airport": "KLAX",
@@ -13865,26 +11993,23 @@
           "airport": "KLGB",
           "runway": "12"
       },
-      {
-        "airport": "KLAX",
-        "runway": "6L"
-      },
-      {
-        "airport": "KONT",
-        "runway": "8L"
-    },
     {
         "airport": "KPSP",
         "runway": "13R"
     },
     {
         "airport": "KBUR",
-        "runway": "26"
+        "runway": "8"
     },
     
+
+    {
+      "airport": "KBUR",
+      "runway": "15"
+  },
   {
       "airport": "KVNY",
-      "runway": "34L"
+      "runway": "16R"
   },
 {
   "airport": "KSAN",
@@ -13908,11 +12033,11 @@
 },
 {
   "airport": "KNKX",
-  "runway": "24R"
+  "runway": "6L"
 },
 {
   "airport": "KNRS",
-  "runway": "27"
+  "runway": "9"
 },
 {
   "airport": "KRNM",
@@ -13924,8 +12049,10 @@
 },
 {
   "airport": "KSEE",
-  "runway": "9L"
+  "runway": "17"
 },
+
+
 {
   "airport": "KFUL",
   "runway": "6"
@@ -13938,6 +12065,7 @@
   "airport": "KTOA",
   "runway": "11L"
 },
+
 {
   "airport": "KCNO",
   "runway": "8L"
@@ -13958,55 +12086,61 @@
   "airport": "KSBD",
   "runway": "6"
 },
+
+
 {
   "airport": "KSMO",
-  "runway": "21"
+  "runway": "3"
+},
+{
+  "airport": "KRAL",
+  "runway": "9"
 }
       ],
       "arrivals": {
         "ANJLL4": {
-          "KLAX": 10 
+          "KLAX": 0 
         },
         "HLYWD1": {
-          "KLAX": 10 
+          "KLAX": 0 
         },
         "BAYST1": {
           "KLAX": 10 
         },
         "BIGBR3": {
-          "KLAX": 0 
+          "KLAX": 10 
         },
         "BOGET2": {
           "KLAX": 10,
           "KSMO": 1
         },
         "BRUEN2": {
+          "KLAX": 10 
+        },
+        "DIRBY2": {
           "KLAX": 0 
         },
-        "DIRBY1": {
-          "KLAX": 10 
-        },
-        "GOATZ1": {
-          "KLAX": 10 
+        "GOATZ2": {
+          "KLAX": 0 
         },
         "HUULL2": {
-          "KLAX": 10 
+          "KLAX": 0 
         },
         "MDNYT2.AMMOR": {
-          "KLAX": 0 
+          "KLAX": 10 
         },
         "ZUUMA3": {
           "KLAX": 10,
           "KSMO": 1
         },
         "OLAAA2": {
-          "KLAX": 10 
+          "KLAX": 0 
         },
         "RYDRR2.ELKEY": {
-          "KLAX": 10 
+          "KLAX": 0 
         },
         "IRNMN2": {
-          "KLAX": 10 
+          "KLAX": 0 
         },
         "DSNEE5.MARUE": {
           "KSNA": 10,
@@ -14104,21 +12238,27 @@
           "KSBD": 1,
           "KEMT": 1,
           "KRIV": 1,
-          "KPOC": 1
+          "KPOC": 1,
+          "KCNO": 1,
+          "KRAL": 1
         },
         "ZIGGY8.EHF": {
           "KSBD": 1,
           "KEMT": 1,
           "KRIV": 1,
           "KPOC": 1,
-          "KONT": 10
+          "KONT": 1,
+          "KRAL": 1,
+          "KCNO": 1
         },
         "ZIGGY8.JLI": {
           "KSBD": 1,
           "KEMT": 1,
           "KRIV": 1,
           "KPOC": 1,
-          "KONT": 10
+          "KONT": 1,
+          "KRAL": 1,
+          "KCNO": 1
         }
       },
       "solo_controller": "LAX_F_APP",
@@ -14140,15 +12280,15 @@
           },
           "LAX_S_DEP": {
             "backup": "BUR_W_APP",
-            "departures": ["KLAX/DOTSS2","KLAX/LAXX1","KTOA","KLAX/PNDAH2"]
+            "departures": ["KLAX/DOTSS2","KLAX/LAXX1","KTOA","KLAX/OSHNN1","KLAX/PNDAH2"]
           },
           "LAX_N_DEP": {
             "backup": "LAX_S_DEP",
-            "departures": ["KLAX/GMN7","KLAX/LADYJ4","KLAX/SUMMR2","KLAX/GARDY4","KLAX/MOOOS2","KLAX/MUELR4","KSMO"]
+            "departures": ["KLAX/GMN7","KLAX/LADYJ4","KLAX/SUMMR2","KLAX/MOOOS2","KLAX/MUELR4","KSMO"]
           },
           "LAX_X_DEP": {
             "backup": "LAX_N_DEP",
-            "arrivals": ["DIRBY1","GOATZ1","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
+            "arrivals": ["DIRBY2","GOATZ2","OHSEA3.RDHOT","OHSEA3.REBRG","TILLT2"]
           },
           "LAX_D_APP": {
             "backup": "LAX_Z_APP"
@@ -14166,19 +12306,19 @@
           },
 
           "ONT_N_APP": {
-            "backup": "LAX_X_DEP",
-            "departures": ["KSBD","KRIV"],
+            "backup": "ONT_P_APP",
+            "departures": ["KSBD","KRIV","KPSP"],
             "arrivals": ["JCKIE2","KARLB3","EMMLN1","KAYOH8.HEC","ZIGGY8.EHF","ZIGGY8.JLI"]
           },
           "ONT_S_APP": {
             "backup": "ONT_N_APP",
-            "departures": ["KPSP"],
             "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
           },
           "ONT_P_APP": {
-            "backup": "ONT_S_APP",
-            "departures": ["KPOC","KEMT","KCNO","KONT"]
+            "backup": "LAX_X_DEP",
+            "departures": ["KPOC","KEMT","KCNO","KONT","KRAL"]
           },
+
           "SNA_T_APP": {
             "backup": "ONT_P_APP"
           },
@@ -14189,17 +12329,21 @@
           },
           "SAN_W_APP": {
             "backup": "SNA_Y_APP",
-            "arrivals": ["LUCKI1","TOPGN2","COMIX2","SANSAT","LEGOZ2","BARET5"],
-            "departures": ["KSAN","KCRQ","KMYF","KNFG","KNKX","KNRS","KNZY","KRNM","KSDM","KSEE"]
+            "departures": ["KSAN","KCRQ","KMYF","KSDM"]
           },
           "SAN_E_APP": {
-            "backup": "SAN_W_APP"
+            "backup": "SAN_W_APP",
+            "arrivals": ["LUCKI1","TOPGN2","BARET5"],
+            "departures": ["KSEE"]
           },
           "SAN_N_APP": {
-            "backup": "SAN_E_APP"
+            "backup": "SAN_E_APP",
+            "arrivals": ["COMIX2"]
           },
           "SAN_D_APP": {
-            "backup": "SAN_N_APP"
+            "backup": "SAN_N_APP",
+            "arrivals": ["SANSAT","LEGOZ2"],
+            "departures": ["KNFG","KNKX","KNRS","KNZY","KRNM"]
           }
       }
       },
@@ -14221,48 +12365,56 @@
           "runway":"13R"
       },
         {
-          "airport": "KBUR",
-          "rate": 2,
-          "runway":"33"
-      },
-      {
-          "airport": "KVNY",
-          "rate": 1,
-          "runway": "34L"
-      },
-
-        {
-          "airport":"KSAN",
-          "rate": 2,
-          "runway": "9"
-      },
-        {
-          "airport":"KLAX",
-          "rate": 25,
-          "runway":"7L",
-          "category": "SOUTH"
-        },
-        {
-          "airport":"KLAX",
-          "rate": 25,
-          "runway":"6R",
-          "category": "NORTH"
-        },
-        {
           "airport": "KSNA",
           "rate": 2,
-          "runway": "20R"
+          "runway": "2L"
       },
-  
+      {
+          "airport": "KLGB",
+          "rate": 2,
+          "runway": "12"
+      },
+      {
+        "airport":"KLAX",
+        "rate": 25,
+        "runway":"25R",
+        "category": "SOUTH"
+      },
+      {
+        "airport":"KLAX",
+        "rate": 25,
+        "runway":"24L",
+        "category": "NORTH"
+      },
+    {
+      "airport": "KBUR",
+      "rate": 2,
+      "runway":"8"
+  },
+  {
+      "airport": "KBUR",
+      "rate": 0,
+      "runway":"15"
+  },
+  {
+      "airport": "KVNY",
+      "rate": 2,
+      "runway":"16R"
+  },
 {
-    "airport": "KLGB",
-    "rate": 2,
-    "runway": "12"
+  "airport": "KSAN",
+  "rate": 1,
+  "runway": "9"
 },
 {
   "airport": "KWHP",
   "rate": 1,
-  "runway": "30"
+  "runway": "12"
+},
+{
+  "airport": "KWHP",
+  "rate": 0,
+  "runway": "12"
 },
 {
   "airport": "KCRQ",
@@ -14277,32 +12429,32 @@
 {
   "airport": "KNFG",
   "rate": 1,
-  "runway": "21"
+  "runway": "3"
 },
 {
   "airport": "KNZY",
   "rate": 1,
-  "runway": "18"
+  "runway": "29"
 },
 {
   "airport": "KNKX",
   "rate": 1,
-  "runway": "24R"
+  "runway": "6L"
 },
 {
   "airport": "KNRS",
   "rate": 1,
-  "runway": "27"
+  "runway": "9"
 },
 {
   "airport": "KRNM",
   "rate": 1,
-  "runway": "27"
+  "runway": "9"
 },
 {
   "airport": "KSDM",
   "rate": 1,
-  "runway": "26R"
+  "runway": "8L"
 },
 {
   "airport": "KRNM",
@@ -14312,17 +12464,17 @@
 {
   "airport": "KSEE",
   "rate": 1,
-  "runway": "9L"
+  "runway": "17"
 },
 {
   "airport": "KFUL",
   "rate": 1,
-  "runway": "24"
+  "runway": "6"
 },
 {
   "airport": "KSLI",
   "rate": 1,
-  "runway": "22L"
+  "runway": "4R"
 },
 {
   "airport": "KTOA",
@@ -14332,7 +12484,7 @@
 {
   "airport": "KCNO",
   "rate": 1,
-  "runway": "26R"
+  "runway": "8L"
 },
 {
   "airport": "KEMT",
@@ -14342,12 +12494,18 @@
 {
   "airport": "KPOC",
   "rate": 1,
-  "runway": "26L"
+  "runway": "8L"
 },
+{
+  "airport": "KCNO",
+  "rate": 1,
+  "runway": "8L"
+},
+
 {
   "airport": "KRIV",
   "rate": 1,
-  "runway": "32"
+  "runway": "14"
 },
 {
   "airport": "KSBD",
@@ -14357,11 +12515,16 @@
 {
   "airport": "KSMO",
   "rate": 1,
-  "runway": "21"
+  "runway": "3"
+},
+{
+  "airport": "KRAL",
+  "rate": 1,
+  "runway": "9"
 }
       ],
       "wind": {
-        "direction": 20,
+        "direction": 90,
         "speed": 10
       }
     }
