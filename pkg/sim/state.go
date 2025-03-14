@@ -335,7 +335,17 @@ func (ss *State) GetConsolidatedPositions(id string) []string {
 // controller's control are considered for matching.
 func (ss *State) AircraftFromCallsignSuffix(suffix string, instructor bool) []*av.Aircraft {
 	match := func(ac *av.Aircraft) bool {
-		return strings.HasSuffix(ac.Callsign, suffix) && (instructor || ac.ControllingController == ss.PrimaryTCP)
+		if !strings.HasSuffix(ac.Callsign, suffix) {
+			return false
+		}
+		if instructor || ac.ControllingController == ss.PrimaryTCP {
+			return true
+		}
+		// Hold for release aircraft still in the list
+		if ac.DepartureContactController == ss.PrimaryTCP && ac.ControllingController == "" {
+			return true
+		}
+		return false
 	}
 	return slices.Collect(util.FilterSeq(maps.Values(ss.Aircraft), match))
 }
