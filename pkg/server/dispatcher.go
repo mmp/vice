@@ -619,13 +619,18 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 				rewriteError(ErrInvalidCommandSyntax)
 				return nil
 			}
+
 		case 'F':
 			if command == "FC" {
 				if err := s.HandoffControl(ctrl.tcp, callsign); err != nil {
 					rewriteError(err)
 					return nil
 				}
+			} else {
+				rewriteError(ErrInvalidCommandSyntax)
+				return nil
 			}
+
 		case 'H':
 			if len(command) == 1 {
 				if err := s.AssignHeading(&sim.HeadingArgs{
@@ -780,14 +785,12 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					rewriteError(err)
 					return nil
 				}
-			} else {
-				if kts, err := strconv.Atoi(command[1:]); err != nil {
-					rewriteError(err)
-					return nil
-				} else if err := s.AssignSpeed(ctrl.tcp, callsign, kts, false); err != nil {
-					rewriteError(err)
-					return nil
-				}
+			} else if kts, err := strconv.Atoi(command[1:]); err != nil {
+				rewriteError(err)
+				return nil
+			} else if err := s.AssignSpeed(ctrl.tcp, callsign, kts, false); err != nil {
+				rewriteError(err)
+				return nil
 			}
 
 		case 'T':
@@ -848,7 +851,11 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					rewriteError(ErrInvalidCommandSyntax)
 					return nil
 				}
+			} else {
+				rewriteError(ErrInvalidCommandSyntax)
+				return nil
 			}
+
 		case 'X':
 			s.DeleteAircraft(ctrl.tcp, callsign)
 
