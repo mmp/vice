@@ -508,7 +508,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 				cursorStyle := renderer.TextStyle{Font: fsp.font, Color: bgColor,
 					DrawBackground: true, BackgroundColor: style.Color}
 				editResult, _ = drawTextEdit(&strip.Annotations[fsp.selectedAnnotation], &fsp.annotationCursorPos,
-					ctx.Keyboard, [2]float32{xp, yp}, style, cursorStyle, ctx.KeyboardFocus, cb)
+					ctx.Keyboard, [2]float32{xp, yp}, style, cursorStyle, *ctx.KeyboardFocus, cb)
 				if len(strip.Annotations[fsp.selectedAnnotation]) >= 3 {
 					// Limit it to three characters
 					strip.Annotations[fsp.selectedAnnotation] = strip.Annotations[fsp.selectedAnnotation][:3]

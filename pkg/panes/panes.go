@@ -46,13 +46,6 @@ type InfoWindowDrawer interface {
 	DrawInfo(c *server.ControlClient, p platform.Platform, lg *log.Logger)
 }
 
-type KeyboardFocus interface {
-	Take(p Pane)
-	TakeTemporary(p Pane)
-	Release()
-	Current() Pane
-}
-
 type PaneUpgrader interface {
 	Upgrade(prev, current int)
 }
@@ -88,7 +81,7 @@ type Context struct {
 
 	MenuBarHeight float32
 
-	KeyboardFocus KeyboardFocus
+	KeyboardFocus *KeyboardFocus
 
 	ControlClient *server.ControlClient
 }

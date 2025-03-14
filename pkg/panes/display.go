@@ -15,7 +15,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"runtime"
-	"slices"
 	"time"
 
 	"github.com/mmp/imgui-go/v4"
@@ -38,45 +37,25 @@ var (
 		// is released.  mouseConsumerOverride records such a pane.
 		mouseConsumerOverride Pane
 
-		focus WMKeyboardFocus
+		focus KeyboardFocus
 
 		lastAircraftResponse string
 	}
 )
 
-type WMKeyboardFocus struct {
-	initial Pane
-
-	// Pane that currently holds the keyboard focus
+type KeyboardFocus struct {
 	current Pane
-	// Stack of Panes that previously held focus; if a Pane takes focus
-	// temporarily (e.g., the FlightStripPane), then this lets us pop
-	// back to the previous one (e.g., the CLIPane.)
-	stack []Pane
 }
 
-func (f *WMKeyboardFocus) Take(p Pane) {
+func (f *KeyboardFocus) Take(p Pane) {
 	f.current = p
-	f.stack = nil
 }
 
-func (f *WMKeyboardFocus) TakeTemporary(p Pane) {
-	if f.current != p {
-		f.stack = append(f.stack, f.current)
-		f.current = p
-	}
+func (f *KeyboardFocus) Release() {
+	f.current = nil
 }
 
-func (f *WMKeyboardFocus) Release() {
-	if n := len(f.stack); n > 0 {
-		f.current = f.stack[n-1]
-		f.stack = f.stack[:n-1]
-	} else {
-		f.current = f.initial
-	}
-}
-
-func (f *WMKeyboardFocus) Current() Pane {
+func (f *KeyboardFocus) Current() Pane {
 	return f.current
 }
 
@@ -435,31 +414,13 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 	}
 	root = filter(root)
 
-	getKeyboardPanes := func() []Pane {
-		var kp []Pane
+	if wm.focus.Current() == nil || !wmPaneIsPresent(wm.focus.Current(), root) {
+		wm.focus.Release()
 		root.VisitPanes(func(p Pane) {
-			if p.CanTakeKeyboardFocus() {
-				kp = append(kp, p)
+			if p.CanTakeKeyboardFocus() && wm.focus.Current() == nil {
+				wm.focus.Take(p)
 			}
 		})
-		return kp
-	}
-
-	if wm.focus.Current() == nil || !wmPaneIsPresent(wm.focus.Current(), root) {
-		kp := getKeyboardPanes()
-		// We want to give it to the STARSPane but have to indirect that by
-		// trying not to give it to the messages pane, since we don't have
-		// visibility into STARSPane here.
-		for _, p := range kp {
-			if _, ok := p.(*MessagesPane); !ok {
-				wm.focus = WMKeyboardFocus{initial: p, current: p}
-				break
-			}
-		}
-		if wm.focus.Current() == nil {
-			focus := kp[0]
-			wm.focus = WMKeyboardFocus{initial: focus, current: focus}
-		}
 	}
 
 	// Useful values related to the display size.
@@ -511,17 +472,6 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 	var keyboard *platform.KeyboardState
 	if !imgui.CurrentIO().WantCaptureKeyboard() {
 		keyboard = p.GetKeyboard()
-	}
-
-	if keyboard != nil && keyboard.WasPressed(platform.KeyTab) {
-		cur := wm.focus.Current()
-		kp := getKeyboardPanes()
-		if idx := slices.Index(kp, cur); idx == -1 {
-			panic("Current focus pane not found in keyboard panes?")
-		} else {
-			next := kp[(idx+1)%len(kp)]
-			wm.focus.Take(next)
-		}
 	}
 
 	// Actually visit the panes.
