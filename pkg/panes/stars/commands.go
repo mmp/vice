@@ -116,7 +116,6 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			// Also disable any mouse capture from spinners, just in case
 			// the user is mashing escape to get out of one.
 			sp.disableMenuSpinner(ctx)
-			sp.lockTargetGenMode = false
 			sp.wipRBL = nil
 			sp.wipSignificantPoint = nil
 			sp.wipRestrictionArea = nil
@@ -230,6 +229,9 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			}
 			sp.resetInputState()
 			sp.commandMode = CommandModePref
+		case platform.KeyTab:
+			sp.resetInputState()
+			sp.commandMode = CommandModeTargetGen
 		}
 	}
 }
@@ -2050,11 +2052,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			status.clear = true
 			return
 		}
-		if cmd == string(sp.TgtGenKey) {
-			sp.lockTargetGenMode = true
-			sp.previewAreaInput = ""
-			return
-		}
 
 		// Otherwise looks like an actual control instruction .
 		suffix, cmds, ok := strings.Cut(cmd, " ")
@@ -2083,13 +2080,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		if ac != nil {
 			sp.runAircraftCommands(ctx, ac, cmds)
 			sp.targetGenLastCallsign = ac.Callsign
-			if sp.lockTargetGenMode {
-				// Clear the input but stay in TGT GEN mode.
-				sp.previewAreaInput = ""
-			} else {
-				status.clear = true
-			}
-
+			status.clear = true
 		} else {
 			status.err = ErrSTARSIllegalACID
 		}
@@ -2103,6 +2094,7 @@ func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, ac *av.Aircraft, cm
 	ctx.ControlClient.RunAircraftCommands(ac.Callsign, cmds,
 		func(errStr string, remaining string) {
 			if errStr != "" {
+				sp.commandMode = CommandModeTargetGen
 				sp.previewAreaInput = remaining
 				if err := server.TryDecodeErrorString(errStr); err != nil {
 					err = GetSTARSError(err, ctx.Lg)
@@ -3438,11 +3430,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			if len(cmd) > 0 {
 				sp.runAircraftCommands(ctx, ac, cmd)
 				sp.targetGenLastCallsign = ac.Callsign
-				if sp.lockTargetGenMode {
-					sp.previewAreaInput = ""
-				} else {
-					status.clear = true
-				}
+				status.clear = true
 				return
 			}
 		}
@@ -3923,8 +3911,6 @@ func (sp *STARSPane) resetInputState() {
 	sp.previewAreaOutput = ""
 	sp.commandMode = CommandModeNone
 	sp.multiFuncPrefix = ""
-
-	sp.lockTargetGenMode = false
 
 	sp.wipRBL = nil
 	sp.wipSignificantPoint = nil
