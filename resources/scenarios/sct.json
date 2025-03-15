@@ -11735,17 +11735,17 @@
           },
 
           "ONT_N_APP": {
-            "backup": "ONT_P_APP",
+            "backup": "LAX_X_DEP",
             "departures": ["KSBD","KRIV"],
             "arrivals": ["JCKIE2","KARLB3","EMMLN1","KAYOH8.HEC","ZIGGY8.EHF","ZIGGY8.JLI"]
           },
           "ONT_S_APP": {
-            "backup": "ONT_N_APP",
+            "backup": "ONT_P_APP",
             "departures": ["KPSP"],
             "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
           },
           "ONT_P_APP": {
-            "backup": "LAX_X_DEP",
+            "backup": "ONT_N_APP",
             "departures": ["KPOC","KEMT","KCNO","KONT","KRAL"]
           },
 
@@ -12306,16 +12306,16 @@
           },
 
           "ONT_N_APP": {
-            "backup": "ONT_P_APP",
+            "backup": "LAX_X_DEP",
             "departures": ["KSBD","KRIV","KPSP"],
             "arrivals": ["JCKIE2","KARLB3","EMMLN1","KAYOH8.HEC","ZIGGY8.EHF","ZIGGY8.JLI"]
           },
           "ONT_S_APP": {
-            "backup": "ONT_N_APP",
+            "backup": "ONT_P_APP",
             "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
           },
           "ONT_P_APP": {
-            "backup": "LAX_X_DEP",
+            "backup": "ONT_N_APP",
             "departures": ["KPOC","KEMT","KCNO","KONT","KRAL"]
           },
 
