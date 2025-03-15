@@ -1336,12 +1336,8 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	releaseAircraft := lc.controlClient.State.GetRegularReleaseDepartures()
 	if len(releaseAircraft) > 0 && imgui.CollapsingHeader("Hold For Release") {
 		slices.SortFunc(releaseAircraft, func(a, b *av.Aircraft) int {
-			// First by airport, then by callsign
-			cmp := strings.Compare(a.FlightPlan.DepartureAirport, b.FlightPlan.DepartureAirport)
-			if cmp != 0 {
-				return cmp
-			}
-			return strings.Compare(a.Callsign, b.Callsign)
+			// Just by airport, otherwise leave in FIFO order
+			return strings.Compare(a.FlightPlan.DepartureAirport, b.FlightPlan.DepartureAirport)
 		})
 
 		if imgui.BeginTableV("Releases", 5, flags, imgui.Vec2{tableScale * 600, 0}, 0) {
@@ -1352,7 +1348,9 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 			// imgui.TableSetupColumn("#Release")
 			imgui.TableHeadersRow()
 
+			lastAp := ""
 			for _, ac := range releaseAircraft {
+				imgui.PushID(ac.Callsign)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.Text(ac.FlightPlan.DepartureAirport)
@@ -1362,11 +1360,16 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				imgui.Text(ac.FlightPlan.TypeWithoutSuffix())
 				imgui.TableNextColumn()
 				imgui.Text(ac.FlightPlan.Exit)
-				imgui.TableNextColumn()
-				if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-					lc.controlClient.ReleaseDeparture(ac.Callsign, nil,
-						func(err error) { lc.lg.Errorf("%s: %v", ac.Callsign, err) })
+				if ac.FlightPlan.DepartureAirport != lastAp && !ac.Released {
+					// Only allow releasing the first-up unreleased one.
+					lastAp = ac.FlightPlan.DepartureAirport
+					imgui.TableNextColumn()
+					if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
+						lc.controlClient.ReleaseDeparture(ac.Callsign, nil,
+							func(err error) { lc.lg.Errorf("%s: %v", ac.Callsign, err) })
+					}
 				}
+				imgui.PopID()
 			}
 
 			imgui.EndTable()
