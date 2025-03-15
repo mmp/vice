@@ -98,8 +98,10 @@ func (s *Sim) DeleteAllAircraft(tcp string) error {
 			return err
 		}
 	}
-	for _, state := range s.DepartureState {
-		state.reset()
+	for _, rwyState := range s.DepartureState {
+		for _, state := range rwyState {
+			state.reset(s)
+		}
 	}
 
 	return nil

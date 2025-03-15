@@ -29,8 +29,8 @@ type Sim struct {
 	eventStream *EventStream
 	lg          *log.Logger
 
-	// Per-airport
-	DepartureState map[string]*DepartureLaunchState
+	// Airport -> runway -> state
+	DepartureState map[string]map[string]*RunwayLaunchState
 	// Key is inbound flow group name
 	NextInboundSpawn map[string]time.Time
 
@@ -124,7 +124,7 @@ type NewSimConfiguration struct {
 
 func NewSim(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.Logger) *Sim {
 	s := &Sim{
-		DepartureState:   make(map[string]*DepartureLaunchState),
+		DepartureState:   make(map[string]map[string]*RunwayLaunchState),
 		NextInboundSpawn: make(map[string]time.Time),
 
 		SignOnPositions: config.SignOnPositions,

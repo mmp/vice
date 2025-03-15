@@ -890,6 +890,7 @@ type CreateDepartureArgs struct {
 	Airport         string
 	Runway          string
 	Category        string
+	Rules           av.FlightRules
 }
 
 func (sd *Dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *av.Aircraft) error {
@@ -899,8 +900,15 @@ func (sd *Dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *av.Aircraf
 	if !ok {
 		return ErrNoSimForControllerToken
 	}
-	ac, err := s.CreateDeparture(da.Airport, da.Runway, da.Category)
-	if err == nil {
+	var ac *av.Aircraft
+	var err error
+	if da.Rules == av.IFR {
+		ac, err = s.CreateDeparture(da.Airport, da.Runway, da.Category)
+	} else {
+		ac, err = s.CreateVFRDeparture(da.Airport)
+	}
+
+	if ac != nil && err == nil {
 		*depAc = *ac
 	}
 	return err

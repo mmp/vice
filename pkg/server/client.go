@@ -432,10 +432,11 @@ func (c *ControlClient) ChangeControlPosition(tcp string, keepTracks bool) error
 	return err
 }
 
-func (c *ControlClient) CreateDeparture(airport, runway, category string, ac *av.Aircraft, success func(any), err func(error)) {
+func (c *ControlClient) CreateDeparture(airport, runway, category string, rules av.FlightRules, ac *av.Aircraft,
+	success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.CreateDeparture(airport, runway, category, ac),
+			Call:      c.proxy.CreateDeparture(airport, runway, category, rules, ac),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
