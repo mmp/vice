@@ -506,12 +506,16 @@ func (s *Sim) spawnDepartures() {
 
 			// Possibly spawn another aircraft, depending on how much time has
 			// passed since the last one.
-			if now.After(depState.NextIFRSpawn) && !s.prespawnUncontrolledOnly {
+			if now.After(depState.NextIFRSpawn) {
 				if ac, err := s.makeNewIFRDeparture(airport, runway); ac != nil && err == nil {
-					s.addDepartureToPool(ac, runway)
-					r := scaleRate(depState.IFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
-					depState.NextIFRSpawn = now.Add(randomWait(r, false))
-					changed()
+					if !s.prespawnUncontrolledOnly || !s.isControlled(ac, true) { // keep virtual-controller-only ones
+						s.addDepartureToPool(ac, runway)
+						r := scaleRate(depState.IFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
+						depState.NextIFRSpawn = now.Add(randomWait(r, false))
+						changed()
+					} else {
+						s.State.DeleteAircraft(ac)
+					}
 				}
 			}
 			if now.After(depState.NextVFRSpawn) {
