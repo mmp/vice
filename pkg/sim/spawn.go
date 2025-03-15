@@ -221,8 +221,11 @@ func (s *Sim) addDepartureToPool(ac *av.Aircraft, runway string) {
 	s.addAircraftNoLock(*ac)
 
 	depState := s.DepartureState[ac.FlightPlan.DepartureAirport][runway]
-	s.State.STARSComputer().AddHeldDeparture(ac)
-	depState.Held = append(depState.Held, depac)
+	if ac.HoldForRelease {
+		depState.Held = append(depState.Held, depac)
+	} else {
+		depState.Released = append(depState.Released, depac)
+	}
 }
 
 // Assumes the lock is already held (as is the case e.g. for automatic spawning...)
@@ -259,10 +262,10 @@ func (s *Sim) Prespawn() {
 	// Prime the pump before the user gets involved
 	t := time.Now().Add(-(initialSimSeconds + 1) * time.Second)
 	s.setInitialSpawnTimes(t)
-	s.prespawnUncontrolled = true
+	s.prespawn = true
 	for i := 0; i < initialSimSeconds; i++ {
 		// Controlled only at the tail end.
-		s.prespawnControlled = i+initialSimControlledSeconds > initialSimSeconds
+		s.prespawnUncontrolledOnly = i < initialSimSeconds-initialSimControlledSeconds
 
 		s.State.SimTime = t
 		s.lastUpdateTime = t
@@ -270,7 +273,7 @@ func (s *Sim) Prespawn() {
 
 		s.updateState()
 	}
-	s.prespawnUncontrolled, s.prespawnControlled = false, false
+	s.prespawnUncontrolledOnly, s.prespawn = false, false
 
 	s.State.SimTime = time.Now()
 	s.State.SimTime = s.State.SimTime
@@ -461,7 +464,7 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 			if err != nil {
 				s.lg.Errorf("create inbound error: %v", err)
 			} else if ac != nil {
-				if s.prespawnUncontrolled && !s.prespawnControlled && s.isControlled(ac, false) {
+				if s.prespawnUncontrolledOnly && s.isControlled(ac, false) {
 					s.lg.Infof("%s: discarding arrival/overflight\n", ac.Callsign)
 					s.State.DeleteAircraft(ac)
 				} else {
@@ -503,7 +506,7 @@ func (s *Sim) spawnDepartures() {
 
 			// Possibly spawn another aircraft, depending on how much time has
 			// passed since the last one.
-			if now.After(depState.NextIFRSpawn) {
+			if now.After(depState.NextIFRSpawn) && !s.prespawnUncontrolledOnly {
 				if ac, err := s.makeNewIFRDeparture(airport, runway); ac != nil && err == nil {
 					s.addDepartureToPool(ac, runway)
 					r := scaleRate(depState.IFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
@@ -522,16 +525,28 @@ func (s *Sim) spawnDepartures() {
 
 			// Handle hold for release aircraft
 			for i, held := range depState.Held {
-				if now.After(held.AddToHFRListTime) && !held.AddedToList {
-					depState.Held[i].AddedToList = true
+				if !now.After(held.AddToHFRListTime) {
+					// Add them FIFO regardless of the times
+					break
 				}
-				if now.After(held.RequestReleaseTime) && !held.ReleaseRequested {
+				if !held.AddedToList {
+					depState.Held[i].AddedToList = true
+					ac := s.State.Aircraft[depState.Held[i].Callsign]
+					s.State.STARSComputer().AddHeldDeparture(ac)
+				}
+			}
+			for i, held := range depState.Held {
+				if !now.After(held.RequestReleaseTime) {
+					// As above, ensure FIFO
+					break
+				}
+				if !held.ReleaseRequested {
 					depState.Held[i].ReleaseRequested = true
 					depState.Held[i].ReleaseDelay = time.Duration(20+rand.Intn(100)) * time.Second
 				}
 			}
 			if len(depState.Held) > 0 {
-				// Held go to Released in FIFO order so only consider the first one.
+				// Held go to Released in FIFO order so only consider the first one added.
 				if dep := depState.Held[0]; dep.ReleaseRequested {
 					ac := s.State.Aircraft[dep.Callsign]
 					if ac.Released && now.After(ac.ReleaseTime.Add(dep.ReleaseDelay)) {
@@ -596,18 +611,14 @@ func (s *Sim) spawnDepartures() {
 			if len(depState.Sequenced) > 0 && s.canLaunch(depState.LastDeparture, depState.Sequenced[0], considerExit) {
 				dep := &depState.Sequenced[0]
 				ac := s.State.Aircraft[dep.Callsign]
-				if s.prespawnUncontrolled && !s.prespawnControlled && s.isControlled(ac, true) {
-					s.lg.Infof("%s: discarding departure\n", ac.Callsign)
-					s.State.DeleteAircraft(ac)
-				} else {
-					// Launch!
-					ac.WaitingForLaunch = false
 
-					// Record the launch so we have it when we consider launching the
-					// next one.
-					dep.LaunchTime = now
-					depState.LastDeparture = dep
-				}
+				// Launch!
+				ac.WaitingForLaunch = false
+
+				// Record the launch so we have it when we consider
+				// launching the next one.
+				dep.LaunchTime = now
+				depState.LastDeparture = dep
 
 				// Remove it from the pool of waiting departures.
 				depState.Sequenced = depState.Sequenced[1:]
@@ -638,7 +649,9 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft, considerExit bool) tim
 	pac, pok := s.State.Aircraft[prev.Callsign]
 
 	if !cok || !pok {
-		s.lg.Errorf("Sim launchInterval missing an aircraft %q: %v / %q: %v", cur.Callsign, cok, prev.Callsign, pok)
+		// Presumably the last launch has already landed or otherwise been
+		// deleted.
+		s.lg.Infof("Sim launchInterval missing an aircraft %q: %v / %q: %v", cur.Callsign, cok, prev.Callsign, pok)
 		return 0
 	}
 

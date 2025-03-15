@@ -49,8 +49,8 @@ type Sim struct {
 	lastUpdateTime time.Time // this is w.r.t. true wallclock time
 	lastLogTime    time.Time
 
-	prespawnUncontrolled bool
-	prespawnControlled   bool
+	prespawn                 bool
+	prespawnUncontrolledOnly bool
 
 	NextPushStart time.Time // both w.r.t. sim time
 	PushEnd       time.Time
@@ -576,8 +576,8 @@ func (s *Sim) updateState() {
 		}
 
 		if ac, ok := s.State.Aircraft[callsign]; ok && ac.HandoffTrackController != "" &&
-			ac.HandoffTrackController != s.State.PrimaryController && // don't accept handoffs during prespawn
-			!s.isActiveHumanController(ac.HandoffTrackController) {
+			ac.HandoffTrackController != s.State.PrimaryController &&
+			!s.prespawn { // don't accept handoffs during prespawn
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
 				FromController: ac.TrackingController,
@@ -693,7 +693,7 @@ func (s *Sim) updateState() {
 
 			// Possibly contact the departure controller
 			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude &&
-				!s.prespawnUncontrolled && !s.prespawnControlled {
+				!s.prespawn {
 				// Time to check in
 				ctrl := s.ResolveController(ac.DepartureContactController)
 				s.lg.Info("contacting departure controller", slog.String("callsign", ctrl))
