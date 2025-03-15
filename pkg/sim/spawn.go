@@ -525,10 +525,13 @@ func (s *Sim) spawnDepartures() {
 
 			// Handle hold for release aircraft
 			for i, held := range depState.Held {
-				if !now.After(held.AddToHFRListTime) {
-					// Add them FIFO regardless of the times
-					break
-				}
+				/*
+					   // Workaround STARSComputer not seeing HFRs and thus holding up launches.
+						if !now.After(held.AddToHFRListTime) {
+							// Add them FIFO regardless of the times
+							break
+						}
+				*/
 				if !held.AddedToList {
 					depState.Held[i].AddedToList = true
 					ac := s.State.Aircraft[depState.Held[i].Callsign]
