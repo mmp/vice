@@ -229,7 +229,9 @@ func init() {
 	wg.Wait()
 
 	for icao, ap := range airports {
-		db.Airports[icao] = ap
+		if icao != "4V4" { // Ignore the rw one for AAC.
+			db.Airports[icao] = ap
+		}
 	}
 
 	DB = db
@@ -369,7 +371,7 @@ func parseAirports() map[string]FAAAirport {
 			// There are some foreign airports with 5-character ids; make
 			// sure not to include them since they can conflict with US fix
 			// names.
-			if len(id) == 3 || len(id) == 4 {
+			if (len(id) == 3 || len(id) == 4) && id != "4V4" { // Memory hole the rw 4V4 to make way for AAC
 				ap := FAAAirport{Id: id, Name: s[5], Country: s[6], Location: loc, Elevation: int(elevation)}
 				// US-based takes priority in case of a conflict. When
 				// there are multiple US-based airports with the same id
