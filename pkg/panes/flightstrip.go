@@ -157,7 +157,7 @@ func (fsp *FlightStripPane) possiblyAddAircraft(ss *sim.State, ac *av.Aircraft) 
 		// We've seen it before.
 		return
 	}
-	if ac.FlightPlan == nil {
+	if ac.FlightPlan == nil || ac.FlightPlan.Rules != av.IFR {
 		return
 	}
 
