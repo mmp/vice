@@ -508,7 +508,9 @@ func (s *Sim) spawnDepartures() {
 			// passed since the last one.
 			if now.After(depState.NextIFRSpawn) {
 				if ac, err := s.makeNewIFRDeparture(airport, runway); ac != nil && err == nil {
-					if !s.prespawnUncontrolledOnly || !s.isControlled(ac, true) { // keep virtual-controller-only ones
+					dropUncontrolled := s.prespawnUncontrolledOnly && s.isControlled(ac, true)
+					dropHFR := s.prespawn && ac.HoldForRelease
+					if !dropUncontrolled && !dropHFR {
 						s.addDepartureToPool(ac, runway)
 						r := scaleRate(depState.IFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
 						depState.NextIFRSpawn = now.Add(randomWait(r, false))
