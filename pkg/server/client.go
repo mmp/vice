@@ -415,6 +415,10 @@ func (c *ControlClient) ToggleSPCOverride(callsign string, spc string, success f
 }
 
 func (c *ControlClient) ReleaseDeparture(callsign string, success func(any), err func(error)) {
+	if ac := c.State.Aircraft[callsign]; ac != nil {
+		ac.Released = true
+	}
+
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.ReleaseDeparture(callsign),
