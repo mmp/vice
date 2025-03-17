@@ -149,11 +149,7 @@ func (s *Sim) SetLaunchConfig(tcp string, lc LaunchConfig) error {
 
 		for name, ap := range lc.VFRAirports {
 			r := scaleRate(float32(ap.VFRRateSum()), lc.VFRDepartureRateScale)
-			depap := av.DB.Airports[name]
-			rwy, _ := depap.SelectBestRunway(s.State /* wind */, s.State.MagneticVariation)
-			if _, ok := s.DepartureState[name][rwy.Id]; !ok {
-				panic(name + "/" + rwy.Id)
-			}
+			rwy := s.State.VFRRunways[name]
 			s.DepartureState[name][rwy.Id].setVFRRate(s, r)
 		}
 
@@ -323,8 +319,7 @@ func (s *Sim) setInitialSpawnTimes(now time.Time) {
 		}
 
 		if vfrRate := float32(ap.VFRRateSum()); vfrRate > 0 {
-			depap := av.DB.Airports[name]
-			rwy, _ := depap.SelectBestRunway(s.State /* wind */, s.State.MagneticVariation)
+			rwy := s.State.VFRRunways[name]
 			state, ok := s.DepartureState[name][rwy.Id]
 			if !ok {
 				state = &RunwayLaunchState{}
@@ -1179,7 +1174,7 @@ func makeDepartureAircraft(ac *av.Aircraft, now time.Time, wind av.WindModel) De
 
 func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, routeWps []av.Waypoint) (*av.Aircraft, string, error) {
 	depap, arrap := av.DB.Airports[depart], av.DB.Airports[arrive]
-	rwy, opp := depap.SelectBestRunway(s.State /* wind */, s.State.MagneticVariation)
+	rwy := s.State.VFRRunways[depart]
 
 	ac, acType := s.State.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: fleet}, s.lg)
 	if ac == nil {
@@ -1228,9 +1223,11 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 
 	var wps []av.Waypoint
 	wps = append(wps, av.Waypoint{Fix: "_dep_threshold", Location: rwy.Threshold})
-	wps = append(wps, av.Waypoint{Fix: "_opp", Location: opp.Threshold})
+	opp := math.Offset2LL(rwy.Threshold, rwy.Heading, 1 /* nm */, s.State.NmPerLongitude,
+		s.State.MagneticVariation)
+	wps = append(wps, av.Waypoint{Fix: "_opp", Location: opp})
 
-	rg := av.MakeRouteGenerator(rwy.Threshold, opp.Threshold, s.State.NmPerLongitude)
+	rg := av.MakeRouteGenerator(rwy.Threshold, opp, s.State.NmPerLongitude)
 	wp0 := rg.Waypoint("_dep_climb", 3, 0)
 	wp0.FlyOver = true
 	wps = append(wps, wp0)
@@ -1238,9 +1235,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	// Fly a downwind if needed
 	var hdg float32
 	if len(routeWps) > 0 {
-		hdg = math.Heading2LL(opp.Threshold, routeWps[0].Location, s.State.NmPerLongitude, s.State.MagneticVariation)
+		hdg = math.Heading2LL(opp, routeWps[0].Location, s.State.NmPerLongitude, s.State.MagneticVariation)
 	} else {
-		hdg = math.Heading2LL(opp.Threshold, mid, s.State.NmPerLongitude, s.State.MagneticVariation)
+		hdg = math.Heading2LL(opp, mid, s.State.NmPerLongitude, s.State.MagneticVariation)
 	}
 	turn := math.HeadingSignedTurn(rwy.Heading, hdg)
 	if turn < -120 {

@@ -37,6 +37,7 @@ type State struct {
 	DepartureAirports map[string]*av.Airport
 	ArrivalAirports   map[string]*av.Airport
 	Fixes             map[string]math.Point2LL
+	VFRRunways        map[string]av.Runway // assume just one runway per airport
 
 	// Signed in human controllers + virtual controllers
 	Controllers      map[string]*av.Controller
@@ -87,9 +88,10 @@ type State struct {
 
 func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.Logger) *State {
 	ss := &State{
-		Aircraft: make(map[string]*av.Aircraft),
-		Airports: config.Airports,
-		Fixes:    config.Fixes,
+		Aircraft:   make(map[string]*av.Aircraft),
+		Airports:   config.Airports,
+		Fixes:      config.Fixes,
+		VFRRunways: make(map[string]av.Runway),
 
 		Controllers:       make(map[string]*av.Controller),
 		PrimaryController: config.PrimaryController,
@@ -229,6 +231,12 @@ func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log
 	for name, ap := range ss.Airports {
 		if ap.VFRRateSum() > 0 {
 			ss.DepartureAirports[name] = ap
+
+			if rwy, _ := av.DB.Airports[name].SelectBestRunway(ss /* wind */, ss.MagneticVariation); rwy != nil {
+				ss.VFRRunways[name] = *rwy
+			} else {
+				lg.Errorf("%s: unable to find runway for VFRs", name)
+			}
 		}
 	}
 

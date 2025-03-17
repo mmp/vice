@@ -54,6 +54,7 @@ import (
 // 32: VFRs, custom spcs, pilot reported altitude, ...
 // 33: VFRs v2
 // 34: sim/server refactor, signon flow
+// 35: VFRRunways in sim.State
 const CurrentConfigVersion = 34
 
 // Slightly convoluted, but the full Config definition is split into
