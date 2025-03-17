@@ -691,7 +691,7 @@ func (s *Sim) makeNewIFRDeparture(airport, runway string) (ac *av.Aircraft, err 
 	if ok {
 		category, rateSum := sampleRateMap(rates, s.State.LaunchConfig.DepartureRateScale)
 		if rateSum > 0 {
-			ac, err = s.createDepartureNoLock(airport, runway, category)
+			ac, err = s.createIFRDepartureNoLock(airport, runway, category)
 
 			if ac != nil && !ac.HoldForRelease {
 				ac.ReleaseTime = s.State.SimTime
@@ -1008,10 +1008,10 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*av.Airc
 	return ac, nil
 }
 
-func (s *Sim) CreateDeparture(departureAirport, runway, category string) (*av.Aircraft, error) {
+func (s *Sim) CreateIFRDeparture(departureAirport, runway, category string) (*av.Aircraft, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-	return s.createDepartureNoLock(departureAirport, runway, category)
+	return s.createIFRDepartureNoLock(departureAirport, runway, category)
 }
 
 // Note that this may fail without an error if it's having trouble finding a route.
@@ -1037,7 +1037,7 @@ func (s *Sim) CreateVFRDeparture(departureAirport string) (*av.Aircraft, error) 
 	return nil, nil
 }
 
-func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (*av.Aircraft, error) {
+func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string) (*av.Aircraft, error) {
 	ap := s.State.Airports[departureAirport]
 	if ap == nil {
 		return nil, av.ErrUnknownAirport
