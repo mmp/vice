@@ -1076,23 +1076,12 @@ func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	rules := av.IFR
-	if dep.Unassociated {
-		ac.Squawk = 0o1200
-		rules = av.VFR
-		if r := rand.Float32(); r < .02 {
-			ac.Mode = av.On // mode-A
-		} else if r < .03 {
-			ac.Mode = av.Standby // flat out off
-		}
-	} else {
-		sq, err := s.State.ERAMComputer().CreateSquawk()
-		if err != nil {
-			return nil, err
-		}
-		ac.Squawk = sq
+	sq, err := s.State.ERAMComputer().CreateSquawk()
+	if err != nil {
+		return nil, err
 	}
-	ac.FlightPlan = ac.NewFlightPlan(rules, acType, departureAirport, dep.Destination)
+	ac.Squawk = sq
+	ac.FlightPlan = ac.NewFlightPlan(av.IFR, acType, departureAirport, dep.Destination)
 
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	if err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute,
@@ -1101,10 +1090,8 @@ func (s *Sim) createDepartureNoLock(departureAirport, runway, category string) (
 		return nil, err
 	}
 
-	if rules == av.IFR {
-		eram := s.State.ERAMComputer()
-		eram.AddDeparture(ac.FlightPlan, s.State.TRACON, s.State.SimTime)
-	}
+	eram := s.State.ERAMComputer()
+	eram.AddDeparture(ac.FlightPlan, s.State.TRACON, s.State.SimTime)
 
 	return ac, nil
 }
@@ -1126,23 +1113,13 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	rules := av.IFR
-	if of.Unassociated {
-		ac.Squawk = 0o1200
-		rules = av.VFR
-		if r := rand.Float32(); r < .02 {
-			ac.Mode = av.On // mode-A
-		} else if r < .03 {
-			ac.Mode = av.Standby // flat out off
-		}
-	} else {
-		sq, err := s.State.ERAMComputer().CreateSquawk()
-		if err != nil {
-			return nil, err
-		}
-		ac.Squawk = sq
+	sq, err := s.State.ERAMComputer().CreateSquawk()
+	if err != nil {
+		return nil, err
 	}
-	ac.FlightPlan = ac.NewFlightPlan(rules, acType, airline.DepartureAirport,
+	ac.Squawk = sq
+
+	ac.FlightPlan = ac.NewFlightPlan(av.IFR, acType, airline.DepartureAirport,
 		airline.ArrivalAirport)
 
 	// Figure out which controller will (for starters) get the handoff. For

@@ -5630,22 +5630,7 @@
         }
       }
     ]
-  },
-    "VFR Airwork": {
-      "overflights": [
-        {
-          "airlines": [
-            { "icao": "N", "fleet": "lightGA", "departure_airport": "KBDR", "arrival_airport": "KPOU" }
-          ],
-          "waypoints": "N040.50.53.759,W072.38.27.238/a100 N040.47.52.238,W072.37.29.478/a1000 N040.41.24.352,W073.01.51.181/a2000-5000/airwork20m7nm N040.42.53.300,W072.54.23.845/a2500 N040.49.03.717,W072.32.32.050/a1000 N040.52.41.109,W072.36.54.843/a500 N040.52.23.243,W072.39.03.191/a250 N040.50.58.923,W072.37.59.113/a0/land",
-          "cruise_altitude": 2500,
-          "initial_altitude": 100,
-          "initial_speed": 100,
-          "description": "Airwork bothers",
-          "unassociated": true
-        }
-      ]
-    }
+  }
 },
   "control_positions": {
     "BOS_E_CTR": {
@@ -5879,9 +5864,6 @@
         "JFK_DEP": [ "JFK_DEP_13RL" ]
       },
       "inbound_rates": {
-        "VFR Airwork": {
-          "overflights": 5
-        },
         "CAMRN4": {
           "KFRG": 0,
           "KJFK": 12
@@ -6028,9 +6010,6 @@
         "JFK_DEP": [ "JFK_DEP_13RL" ]
       },
       "inbound_rates": {
-        "VFR Airwork": {
-          "overflights": 5
-        },
         "CAMRN4": {
           "KFRG": 0,
           "KJFK": 12
@@ -6173,9 +6152,6 @@
         "JFK_DEP": [ "JFK_DEP_22RL" ]
       },
       "inbound_rates": {
-        "VFR Airwork": {
-          "overflights": 5
-        },
         "CAMRN4": {
           "KFRG": 0,
           "KJFK": 12
@@ -6318,9 +6294,6 @@
         "JFK_DEP": [ "JFK_DEP_31RL" ]
       },
       "inbound_rates": {
-        "VFR Airwork": {
-          "overflights": 5
-        },
         "CAMRN4": {
           "KFRG": 0,
           "KJFK": 12
@@ -6462,9 +6435,6 @@
         "JFK_DEP": [ "JFK_DEP_4RL" ]
       },
       "inbound_rates": {
-        "VFR Airwork": {
-          "overflights": 5
-        },
         "CAMRN4": {
           "KFRG": 0,
           "KJFK": 12

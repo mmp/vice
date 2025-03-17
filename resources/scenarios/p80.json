@@ -276,6 +276,84 @@
         "RIELY": "WHAMY4"
       },
       "tower_list": 1
+    },
+    "KDLS": {
+      "vfr": {
+        "random_routes": { "fleet": "GAturbine", "rate": 7 }
+      }
+    },
+    "KTMK": {
+      "vfr": {
+        "random_routes": { "fleet": "GAturbine", "rate": 7 }
+      }
+    },
+    "KAST": {
+      "vfr": {
+        "random_routes": { "fleet": "GAmultipiston", "rate": 7 }
+      }
+    },
+    "KSLE": {
+      "vfr": {
+        "random_routes": { "fleet": "GAmultipiston", "rate": 7 }
+      }
+    },
+    "KYKM": {
+      "vfr": {
+        "random_routes": { "fleet": "GAmultipiston", "rate": 7 }
+      }
+    },
+    "KONP": {
+      "vfr": {
+        "random_routes": { "fleet": "GAmultipiston", "rate": 7 }
+      }
+    },
+    "KTTD": {
+      "vfr": {
+        "routes": [
+          {
+            "rate": 8,
+            "waypoints": "N045.26.15.563,W122.15.14.913/a1000-1500 N045.16.10.875,W122.10.04.193 N045.15.57.032,W122.22.19.617/a4000 N045.20.25.305,W122.31.07.813 N045.25.25.135,W122.26.12.308 N045.22.19.233,W122.32.28.452 N045.28.13.405,W122.29.25.640/a1000-1500",
+            "fleet": "lightGA",
+            "destination": "KTTD"
+          }
+        ]
+      }
+    },
+    "KUAO": {
+      "vfr": {
+        "routes": [
+          {
+            "rate": 8,
+            "waypoints": "N045.13.40.857,W122.44.15.258/a1500 N045.17.42.144,W122.44.16.301/a2500 N045.25.07.022,W122.48.16.215",
+            "fleet": "lightGA",
+            "destination": "KHIO"
+          }
+        ]
+      }
+    },
+    "KKLS": {
+      "vfr": {
+        "routes": [
+          {
+          "rate": 8,
+          "waypoints": "N046.17.48.695,W122.43.38.893 N046.05.36.634,W122.38.55.665/a6000 N045.55.49.676,W122.43.35.295 N045.51.34.052,W122.30.21.890 N046.03.16.270,W122.26.02.585 N045.53.20.317,W122.07.47.907 N045.44.57.555,W122.10.52.203 N046.19.54.406,W122.48.42.308",
+          "fleet": "GAmultipiston",
+            "destination": "KKLS"
+          }
+        ]
+      }
+    },
+    "KHIO": {
+      "vfr": {
+        "routes": [
+          {
+            "rate": 8,
+            "waypoints": "N045.35.24.920,W123.01.23.743/a1500 N045.38.42.399,W123.10.12.982/a3000",
+            "fleet": "lightGA",
+            "destination": "KTMK"
+          }
+        ]
+      }
     }
   },
   "airspace": {
@@ -3289,102 +3367,6 @@
         }
       }
     ]
-  },
-  "VFR OverFlights": {
-    "overflights":[
-      {
-        "airlines": [
-          {"icao": "N", "fleet": "GAturbine", "departure_airport": "KDLS", "arrival_airport": "KTMK"}
-        ],
-        "waypoints": "N045.12.12.815,W121.44.28.304/a8000 N045.30.40.841,W123.36.25.372",
-        "cruise_altitude": 8000,
-        "initial_altitude": 5000,
-        "initial_speed": 160,
-        "description": "Airspace Transition EAST -> WEST",
-        "unassociated": true
-      },
-      {
-        "airlines": [
-          {"icao": "N", "fleet": "GAmultipiston", "departure_airport": "KAST", "arrival_airport": "KSLE"}
-        ],
-        "waypoints": "N046.08.31.743,W122.56.56.720 N045.48.49.284,W122.52.36.481/a8000 N045.48.49.284,W122.52.36.481 N045.18.55.697,W122.39.10.305 N044.41.48.892,W122.41.32.221",
-        "cruise_altitude": 8000,
-        "initial_altitude": 5000,
-        "initial_speed": 160,
-        "description": "Airspace Transition NORTH -> SOUTH",
-        "unassociated": true
-      },
-      {
-        "airlines": [
-          {"icao": "N", "fleet": "GAmultipiston", "departure_airport": "KYKM", "arrival_airport": "KONP"}
-        ],
-        "waypoints": "N045.47.49.258,W121.41.53.397 N045.48.28.918,W122.34.58.937/a10000 N045.30.15.380,W122.34.38.640 N045.24.10.250,W122.44.50.167 N045.24.10.250,W122.44.50.167 N045.17.30.650,W123.43.51.280 ",
-        "cruise_altitude": 10000,
-        "initial_altitude": 5000,
-        "initial_speed": 160,
-        "description": "Airspace Transition NORTH -> SOUTH",
-        "unassociated": true
-      }
-    ]
-  },
-  "VFR Airwork": {
-    "overflights":[
-      {
-        "airlines": [
-          {"icao": "N", "fleet": "lightGA", "departure_airport": "KTTD", "arrival_airport": "KTTD"}
-        ],
-        "waypoints": "KTTD-7 N045.30.30.116,W122.19.42.376/a500-1000 N045.26.15.563,W122.15.14.913/a1000-1500 N045.16.10.875,W122.10.04.193 N045.15.57.032,W122.22.19.617/a4000 N045.20.25.305,W122.31.07.813 N045.25.25.135,W122.26.12.308 N045.22.19.233,W122.32.28.452 N045.28.13.405,W122.29.25.640/a1000-1500 N045.32.55.067,W122.26.29.474 KTTD-7/a0",
-        "cruise_altitude": 4000,
-        "initial_altitude": 100,
-        "initial_speed": 120,
-        "description": "KTTD -> KTTD (VFR Flying)",
-        "unassociated": true
-      },
-      {
-        "airlines": [
-          {"icao": "N", "fleet": "lightGA", "departure_airport": "KUAO", "arrival_airport": "KUAO"}
-        ],
-        "waypoints": "KUAO-17 N045.12.43.082,W122.46.14.844 N045.12.45.939,W122.49.18.755 N045.16.56.784,W122.48.04.954 N045.16.51.085,W122.45.55.480 KUAO-17/land",
-        "cruise_altitude": 1000,
-        "initial_altitude": 100,
-        "initial_speed": 120,
-        "description": "KUAO Pattern Work",
-        "unassociated": true
-      },
-      {
-        "airlines": [
-          {"icao": "N", "fleet": "lightGA", "departure_airport": "KUAO", "arrival_airport": "KHIO"}
-        ],
-        "waypoints": "KUAO-17 N045.13.12.031,W122.46.21.655/a500 N045.13.40.857,W122.44.15.258/a1500 N045.17.42.144,W122.44.16.301/a2500 N045.25.07.022,W122.48.16.215 KHIO-31L/a0",
-        "cruise_altitude": 4000,
-        "initial_altitude": 100,
-        "initial_speed": 120,
-        "description": "KUAO -> KHIO",
-        "unassociated": true
-      },
-      {
-        "airlines": [
-          {"icao": "N", "fleet": "GAmultipiston", "departure_airport": "KKLS", "arrival_airport": "KKLS"}
-        ],
-        "waypoints": "N046.17.48.695,W122.43.38.893 N046.05.36.634,W122.38.55.665/a6000 N045.55.49.676,W122.43.35.295 N045.51.34.052,W122.30.21.890 N046.03.16.270,W122.26.02.585 N045.53.20.317,W122.07.47.907 N045.44.57.555,W122.10.52.203 N046.19.54.406,W122.48.42.308",
-        "cruise_altitude": 6000,
-        "initial_altitude": 5000,
-        "initial_speed": 160,
-        "description": "VFR Flying",
-        "unassociated": true
-      },
-      {
-        "airlines": [
-          {"icao": "N", "fleet": "lightGA", "departure_airport": "KHIO", "arrival_airport": "KTMK"}
-        ],
-        "waypoints": "KHIO-31L N045.35.24.920,W123.01.23.743/a1500 N045.38.42.399,W123.10.12.982/a3000 N045.55.43.222,W124.20.34.259/delete",
-        "cruise_altitude": 7000,
-        "initial_altitude": 100,
-        "initial_speed": 120,
-        "description": "KHIO -> KTMK",
-        "unassociated": true
-      }
-    ]
   }
 },
 
@@ -3509,12 +3491,6 @@
         "PDX_F_APP" : [ "PDX_WEST_FINAL" ]
       },
       "inbound_rates": {
-        "VFR Airwork": {
-          "overflights": 35
-        },
-        "VFR OverFlights": {
-          "overflights": 35
-        },
         "HHOOD5West": {
           "KPDX": 5
         },
@@ -3586,12 +3562,6 @@
         }
       ],
       "inbound_rates": {
-        "VFR Airwork": {
-          "overflights": 35
-        },
-        "VFR OverFlights": {
-          "overflights": 35
-        },
         "HHOOD5East": {
           "KPDX": 5
         },

@@ -9,7 +9,7 @@
               "I6L": { "cifp_id": "I16L" },
               "I6R": { "cifp_id": "I16R" },
               "RY6R": { "cifp_id": "RY16R" },
-			  "RZ6R": { "cifp_id": "RZ16R" },
+	      "RZ6R": { "cifp_id": "RZ16R" },
               "I7L": { "cifp_id": "I17L" },
               "I7R": { "cifp_id": "I17R" },
               "R7R": { "cifp_id": "RZ17R" },
@@ -929,6 +929,9 @@
               "I5R": { "cifp_id": "I35R" },
               "R5R": { "cifp_id": "R35R" }
             },
+          "vfr": {
+            "random_routes": { "rate": 10 }
+          },
             "departure_routes": {
                 "35R": {
                     "HANKI,BFF": {
@@ -1080,28 +1083,8 @@
                         "cleared_altitude": 8000,
                         "sid": "WNGSS1",
                         "waypoints": "KAPA-17L/h320 BUMPZ/a8000 WNGSS/a12000+ ZENLO/a15000+ ZIMMR/a17000+"
-                    },
-					"VFR.SE": {
-						"cleared_altitude": 6800,
-						"waypoints": "KAPA-17L N039.35.36.538,W104.51.07.849 N039.35.34.423,W104.50.06.600 N039.34.11.010,W104.49.59.212 N039.32.04.667,W104.46.04.984 N039.30.14.515,W104.45.46.362"
-					},
-					"VFR.SW": {
-						"cleared_altitude": 6800,
-						"waypoints": "KAPA-17L N039.35.36.538,W104.51.07.849 N039.35.39.985,W104.52.06.654 N039.34.05.063,W104.52.17.722 N039.30.59.587,W104.55.15.234"
-					},
-					"VFR.W": {
-						"cleared_altitude": 6800,
-						"waypoints": "KAPA-17L N039.35.36.538,W104.51.07.849 N039.35.39.985,W104.52.06.654 N039.34.05.063,W104.52.17.722 N039.34.23.452,W104.56.34.555"
-					},
-					"VFR.N": {
-						"cleared_altitude": 6800,
-						"waypoints": "KAPA-17L N039.35.36.538,W104.51.07.849 N039.35.39.985,W104.52.06.654 N039.37.33.968,W104.54.35.491"
-					},
-					"VFR.E": {
-						"cleared_altitude": 6800,
-						"waypoints": "KAPA-17L N039.35.36.538,W104.51.07.849 N039.35.34.423,W104.50.06.600 N039.34.11.010,W104.49.59.212 N039.33.29.893,W104.45.53.063 N039.33.21.544,W104.43.44.057 N039.33.25.458,W104.41.34.830/radius1/a7000-7800"
-					}
-				},
+                    }
+                },
                 "17L": {
                     "HANKI,BFF": {
                         "cleared_altitude": 8000,
@@ -1252,23 +1235,7 @@
                         "cleared_altitude": 8000,
                         "sid": "WNGSS1",
                         "waypoints": "KAPA-35R/h170 BUMPZ/a8000 WNGSS/a12000+ ZENLO/a15000+ ZIMMR/a17000+"
-                    },
-					"VFR.SE, VFR.E": {
-						"cleared_altitude": 6800,
-						"waypoints": "KAPA-35R N039.32.46.223,W104.50.55.709/a6400 N039.30.08.638,W104.46.59.750/a7300"
-					},
-					"VFR.SW": {
-						"cleared_altitude": 6800,
-						"waypoints": "KAPA-35R N039.32.46.223,W104.50.55.709/a6400 N039.31.11.809,W104.50.51.754/a6800 N039.30.21.505,W104.52.23.518/a7300"
-					},
-					"VFR.W": {
-						"cleared_altitude": 6800,
-						"waypoints": "KAPA-35R N039.32.46.223,W104.50.55.709/a6400 N039.31.11.809,W104.50.51.754/a6800 N039.31.16.492,W104.54.30.904/a7000-7900 N039.32.05.628,W104.57.11.469/radius1/a7000-9600"
-					},
-					"VFR.N": {
-						"cleared_altitude": 6800,
-						"waypoints": "KAPA-35R N039.32.46.223,W104.50.55.709/a6400 N039.31.11.809,W104.50.51.754/a6800 N039.31.16.492,W104.54.30.904 N039.36.43.211,W104.55.28.033 N039.38.12.366,W104.51.36.469/a6900-7900"
-					}
+                    }
                 }
             },
             "departures": [
@@ -1375,30 +1342,6 @@
                     "destination": "KDAL",
                     "exit": "SLEEK",
                     "route": "SLEEK HBR HYDES GREGS1"
-                },
-				{
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "altitude": 9500,
-					"unassociated": true,
-                    "destination": "KAPA",
-                    "exit": "VFR.SE",
-                    "route": "N039.23.59.799,W104.37.29.011/a6900-8000/radius3 N039.21.12.079,W104.33.25.169/a6800-8700/airwork15m6nm N039.26.59.165,W104.45.28.427/a7300-8600/radius1 N039.29.56.237,W104.45.56.250/a7000-7900/land"
-                },
-				{
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "altitude": 9500,
-					"unassociated": true,
-                    "destination": "KAPA",
-                    "exit": "VFR.SW",
-                    "route": "N039.24.41.753,W105.03.05.256/a7500-9500/radius4 N039.22.18.807,W105.07.04.978/a7900-9900/airwork15m10nm N039.21.50.394,W105.04.56.603/a7900-9900/radius5 N039.29.54.342,W104.54.28.789/a7000-8200/land"
                 }
             ],
             "exit_categories": {
@@ -1435,14 +1378,9 @@
                 "TEHRU": "HANKI",
                 "WERNR": "HANKI",
                 "VOAXA": "HANKI",
-                "CHNGY": "HANKI",
-				"VFR.SE": "VFR",
-				"VFR.SW": "VFR",
-				"VFR.W": "VFR",
-				"VFR.N": "VFR",
-				"VFR.E": "VFR"
+                "CHNGY": "HANKI"
             },
-			"hold_for_release": true,
+	  "hold_for_release": true,
             "tower_list": 5
         },
         "KBJC": {
@@ -1467,6 +1405,9 @@
                 },
               "R0L": { "cifp_id": "R30L" }
             },
+          "vfr": {
+            "random_routes": { "rate": 10 }
+          },
             "departure_routes": {
                 "30R": {
                     "HANKI,BFF": {
@@ -1882,6 +1823,9 @@
                     "cifp_id": "R35"
                 }
             },
+          "vfr": {
+            "random_routes": { "rate": 10, "fleet": "GAsinglepiston" }
+          },
             "departure_routes": {
                 "17": {
                     "HANKI,BFF": {
@@ -2291,6 +2235,9 @@
                     "cifp_id": "R33"
                 }
             },
+          "vfr": {
+            "random_routes": { "rate": 10, "fleet": "GAsinglepiston" }
+          },
             "departure_routes": {
                 "15": {
                     "HANKI,BFF": {
@@ -2685,7 +2632,7 @@
 			"hold_for_release": true,
             "tower_list": 5
         },
-		"KBKF": {
+        "KBKF": {
             "approaches": {
                 "T14": {
                     "runway": "14",
@@ -2718,6 +2665,9 @@
                     ]
                   }
             },
+          "vfr": {
+            "random_routes": { "rate": 10, "fleet": "GAsinglepiston" }
+          },
             "departure_routes": {
                 "32": {
                     "HANKI,BFF": {
@@ -3142,6 +3092,9 @@
                     "cifp_id": "L35"
                 }
             },
+          "vfr": {
+            "random_routes": { "rate": 10, "fleet": "GAsinglepiston" }
+          },
             "departure_routes": {
                 "8": {
                     "HANKI,BFF": {
@@ -7632,20 +7585,6 @@
                     "initial_speed": 225,
                     "scratchpad": "DBL",
                     "waypoints": "BRK N039.01.12.015,W104.37.55.241/ho FQF J80 DBL"
-                },
-				{
-                    "airlines": [
-						{
-                            "icao": "N",
-                            "departure_airport": "KCOS",
-                            "arrival_airport": "KAPA"
-                        }
-                    ],
-                    "cruise_altitude": 10500,
-                    "initial_altitude": 9000,
-					"initial_speed": 120,
-                    "waypoints": "N038.59.45.237,W104.41.47.382 N039.11.12.583,W104.43.45.375/a10200-10800/radius3 N039.21.15.018,W104.44.48.052/a7500-8500/radius2 N039.28.56.320,W104.45.53.750/a7000-7800/land",
-					"unassociated": true
                 }
             ]
         },
@@ -7774,154 +7713,6 @@
 					"route": "CYS",
                     "waypoints": "CYS N041.09.27.059,W104.50.57.055 N041.00.39.331,W104.46.19.376/ho BJC"
                 }
-			]
-		},
-		"VFR Airwork": {
-			"overflights": [
-				{
-					"airlines": [
-						{
-							"icao": "N",
-							"fleet": "GAsinglepiston",
-							"departure_airport": "KAPA",
-							"arrival_airport": "KFNL"
-						}
-					],
-					"waypoints": "N039.39.00.101,W104.51.17.078/a7500 N040.15.46.925,W104.55.36.108/land",
-					"cruise_altitude": 7500,
-					"initial_altitude": 6800,
-					"initial_speed": 75,
-					"description": "APA-FNL Overflights",
-					"unassociated": true
-				},
-				{
-					"airlines": [
-						{
-							"icao": "N",
-							"fleet": "GAsinglepiston",
-							"departure_airport": "KAPA",
-							"arrival_airport": "KAPA"
-						}
-					],
-					"waypoints": "N039.34.56.905,W104.52.49.912 N039.32.25.912,W104.52.51.340",
-					"cruise_altitude": 6500,
-					"initial_altitude": 6000,
-					"initial_speed": 75,
-					"description": "APA Pattern Work",
-					"unassociated": true
-				},
-				{
-					"airlines": [
-						{
-							"icao": "N",
-							"fleet": "GAsinglepiston",
-							"departure_airport": "KAPA",
-							"arrival_airport": "KAPA"
-						}
-					],
-					"waypoints": "N039.37.41.178,W104.37.46.012 N039.43.03.970,W104.01.27.615",
-					"cruise_altitude": 7000,
-					"initial_altitude": 6800,
-					"initial_speed": 75,
-					"description": "APA Eastbound",
-					"unassociated": true
-				},
-				{
-					"airlines": [
-						{
-							"icao": "N",
-							"fleet": "GAsinglepiston",
-							"departure_airport": "KAPA",
-							"arrival_airport": "KCFO"
-						}
-					],
-					"waypoints": "N039.37.41.178,W104.37.46.012 N039.43.18.431,W104.32.50.727/land/a7500",
-					"cruise_altitude": 7500,
-					"initial_altitude": 6000,
-					"initial_speed": 75,
-					"description": "APA BKF",
-					"unassociated": true
-				},
-				{
-					"airlines": [
-						{
-							"icao": "N",
-							"fleet": "GAsinglepiston",
-							"departure_airport": "KAPA",
-							"arrival_airport": "KBJC"
-						}
-					],
-					"waypoints": "N039.43.00.770,W104.53.38.444. N039.48.05.833,W105.02.13.895/a7500/land",
-					"cruise_altitude": 7500,
-					"initial_altitude": 6000,
-					"initial_speed": 75,
-					"description": "APA BJC",
-					"unassociated": true
-				},
-				{
-					"airlines": [
-						{
-							"icao": "N",
-							"fleet": "GAsinglepiston",
-							"departure_airport": "KAPA",
-							"arrival_airport": "KGXY"
-						}
-					],
-					"waypoints": "N039.47.24.827,W104.55.07.955/a7500 N040.18.42.363,W104.41.46.228/a6500/land",
-					"cruise_altitude": 7500,
-					"initial_altitude": 6000,
-					"initial_speed": 75,
-					"description": "APA GXY",
-					"unassociated": true
-				},
-				{
-					"airlines": [
-						{
-							"icao": "N",
-							"fleet": "GAsinglepiston",
-							"departure_airport": "KAPA",
-							"arrival_airport": "KFNL"
-						}
-					],
-					"waypoints": "N039.51.36.949,W104.53.08.452/a7500 N040.21.03.290,W104.58.16.371/land",
-					"cruise_altitude": 7500,
-					"initial_altitude": 6000,
-					"initial_speed": 75,
-					"description": "APA FNL",
-					"unassociated": true
-				},
-				{
-					"airlines": [
-						{
-							"icao": "N",
-							"fleet": "GAsinglepiston",
-							"departure_airport": "KAPA",
-							"arrival_airport": "KBKF"
-						}
-					],
-					"waypoints": "N039.38.16.348,W104.48.38.408 N039.38.16.348,W104.48.38.409/a6500/land",
-					"cruise_altitude": 6500,
-					"initial_altitude": 6000,
-					"initial_speed": 75,
-					"description": "APA BKF",
-					"unassociated": true
-				},
-				{
-					"airlines": [
-						{
-							"icao": "N",
-							"fleet": "GAsinglepiston",
-							"departure_airport": "KAPA",
-							"arrival_airport": "KBKF"
-						}
-					],
-					"waypoints": "N039.38.43.580,W104.46.48.984 N039.38.06.584,W104.38.34.682/a7500 N039.44.19.501,W104.19.48.995 N039.53.32.937,W104.08.35.011/a9500 N040.09.02.449,W104.21.11.969/a7500 N040.12.19.352,W104.31.59.860 N040.06.21.253,W104.38.25.975/a6500 N039.56.34.473,W104.52.09.867 N039.39.58.342,W104.54.14.919/land",
-					"cruise_altitude": 7500,
-					"initial_altitude": 6000,
-					"initial_speed": 75,
-					"description": "APA Test Flights",
-					"unassociated": true
-				}
 			]
 		}
 	},
@@ -8316,10 +8107,7 @@
                     "KGXY": 1,
                     "KBJC": 1,
                     "KBKF": 1
-				},
-                "VFR Airwork": {
-					"overflights": 75
-				}
+		}
             },
             "solo_controller": "DEN_I_APP",
             "multi_controllers": {
@@ -8502,12 +8290,6 @@
                 {
                     "airport": "KAPA",
                     "rate": 8,
-                    "runway": "35R"
-                },
-				{
-                    "airport": "KAPA",
-					"category": "VFR",
-                    "rate": 15,
                     "runway": "35R"
                 },
                 {
@@ -8843,12 +8625,6 @@
                 {
                     "airport": "KAPA",
                     "rate": 8,
-                    "runway": "17L"
-                },
-				{
-                    "airport": "KAPA",
-					"category": "VFR",
-                    "rate": 15,
                     "runway": "17L"
                 },
                 {

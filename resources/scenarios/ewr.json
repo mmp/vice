@@ -3087,6 +3087,18 @@
           "cifp_id": "R4"
         }
       },
+      "vfr": {
+        "random_routes": { "rate": 5 },
+        "routes": [
+          {
+            "rate": 8,
+            "waypoints": "N040.53.47.041,W074.16.04.572/a500+ N040.58.38.481,W074.17.56.577/a1500-2800 N041.05.15.898,W074.22.25.056/a1400-6500/airwork20m20nm N041.08.20.083,W074.29.17.015/a1400-7700/airwork20m20nm N040.56.00.511,W074.23.47.728/a1500-2800 N040.51.43.445,W074.20.49.777/a900 N040.50.30.825,W074.18.34.343/a500",
+            "destination": "KCDW",
+            "fleet": "lightGA",
+            "description": "Airwork bothers SAX"
+          }
+        ]
+      },
       "departure_routes": {
         "4": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
@@ -3721,6 +3733,46 @@
         "WHITE": "South",
         "ZIMMZ": "West"
       }
+    },
+    "KTTN": {
+      "vfr": {
+        "random_routes": { "rate": 5 },
+        "routes": [
+          {
+            "rate": 8,
+            "waypoints": "N040.21.49.295,W074.46.38.822/a3000+ N040.25.33.924,W074.40.05.868/a3000-5500/airwork20m15nm N040.20.26.390,W074.43.53.505/a2500 N040.18.19.305,W074.46.39.920/a1000+",
+            "destination": "KTTN",
+            "fleet": "lightGA",
+            "description": "Airwork bothers 39N"
+          },
+          {
+            "rate": 8,
+            "waypoints": "N040.20.31.402,W074.53.35.066/a2000+ N040.27.10.577,W074.56.14.038/a2000-5500/airwork20m15nm N040.20.25.991,W074.44.41.872/a1500+ N040.17.12.865,W074.47.40.949/a1000+",
+            "destination": "KTTN",
+            "fleet": "lightGA",
+            "description": "Airwork bothers SBJ"
+          },
+          {
+            "rate": 8,
+            "waypoints": "N040.17.16.999,W074.41.17.526/a1500+ N040.22.18.395,W074.29.58.077/a1400-3500/airwork20m15nm N040.20.12.231,W074.43.09.999/a1500+ N040.17.57.951,W074.47.17.796/a400+",
+            "destination": "KTTN",
+            "fleet": "lightGA",
+            "description": "Airwork bothers RBV"
+          }
+        ]
+      }
+    },
+    "1N7": {
+      "vfr": { "random_routes": { "rate": 10 } }
+    },
+    "KPOU": {
+      "vfr": { "random_routes": { "rate": 10 } }
+    },
+    "KHPN": {
+      "vfr": {  "random_routes": { "rate": 10 } }
+    },
+    "KBLM": {
+      "vfr": { "random_routes": { "rate": 10 } }
     }
   },
   "airspace": {
@@ -8809,92 +8861,7 @@
         }
       }
     ]
-  },
-  "VFR Airwork": {
-      "overflights": [
-        {
-          "airlines": [
-            { "icao": "N", "fleet": "lightGA", "departure_airport": "KTTN", "arrival_airport": "KTTN" }
-          ],
-          "waypoints": "KTTN N040.15.41.006,W074.49.59.844/a700+ N040.21.49.295,W074.46.38.822/a3000+ N040.25.33.924,W074.40.05.868/a3000-5500/airwork20m15nm N040.20.26.390,W074.43.53.505/a2500 N040.18.19.305,W074.46.39.920/a1000+ N040.17.21.284,W074.47.41.581/a200+ KTTN/a0/land",
-          "cruise_altitude": 3500,
-          "initial_altitude": 100,
-          "initial_speed": 100,
-          "description": "Airwork bothers 39N",
-          "unassociated": true
-        },
-        {
-          "airlines": [
-            { "icao": "N", "fleet": "lightGA", "departure_airport": "KTTN", "arrival_airport": "KTTN" }
-          ],
-          "waypoints": "KTTN N040.15.42.228,W074.50.47.387/a1000+ N040.20.31.402,W074.53.35.066/a2000+ N040.27.10.577,W074.56.14.038/a2000-5500/airwork20m15nm N040.20.25.991,W074.44.41.872/a1500+ N040.17.12.865,W074.47.40.949/a1000+ N040.17.21.284,W074.47.41.581/a200+ KTTN/a0/land",
-          "cruise_altitude": 2500,
-          "initial_altitude": 100,
-          "initial_speed": 100,
-          "description": "Airwork bothers SBJ",
-          "unassociated": true
-        },
-        {
-          "airlines": [
-            { "icao": "N", "fleet": "lightGA", "departure_airport": "KTTN", "arrival_airport": "KTTN" }
-          ],
-          "waypoints": "KTTN N040.14.49.151,W074.50.22.311/a1000+ N040.17.16.999,W074.41.17.526/a1500+ N040.22.18.395,W074.29.58.077/a1400-3500/airwork20m15nm N040.20.12.231,W074.43.09.999/a1500+ N040.17.57.951,W074.47.17.796/a400+ N040.17.21.600,W074.48.01.521/a100/s60 KTTN/a0/land",
-          "cruise_altitude": 2500,
-          "initial_altitude": 100,
-          "initial_speed": 100,
-          "description": "Airwork bothers RBV",
-          "unassociated": true
-        },
-        {
-          "airlines": [
-            { "icao": "N", "fleet": "lightGA", "departure_airport": "KCDW", "arrival_airport": "KCDW" }
-          ],
-          "waypoints": "KCDW N040.53.47.041,W074.16.04.572/a500+ N040.58.38.481,W074.17.56.577/a1500-2800 N041.05.15.898,W074.22.25.056/a1400-6500/airwork20m20nm N041.08.20.083,W074.29.17.015/a1400-7700/airwork20m20nm N040.56.00.511,W074.23.47.728/a1500-2800 N040.51.43.445,W074.20.49.777/a900 N040.50.30.825,W074.18.34.343/a500 N040.51.59.540,W074.17.13.346/a100/s60 KCDW/a0/land",
-          "cruise_altitude": 2500,
-          "initial_altitude": 100,
-          "initial_speed": 100,
-          "description": "Airwork bothers SAX",
-          "unassociated": true
-        }
-      ]          
-    },      
-    "VFR Pattern work": {
-      "overflights": [
-        {
-          "airlines": [
-            { "icao": "N", "fleet": "lightGA", "departure_airport": "KTTN", "arrival_airport": "KTTN" }
-          ],
-          "waypoints": "KTTN N040.15.52.954,W074.49.38.778/a500 N040.15.26.106,W074.50.06.188/a800 N040.14.47.063,W074.49.02.935/a1200 N040.16.32.628,W074.46.48.929/a1200 N040.17.13.401,W074.45.51.388/a1000 N040.18.13.276,W074.46.39.920/a400 N040.16.56.056,W074.48.14.595/a100/s60 KTTN/a0/delete",
-          "cruise_altitude": 1200,
-          "initial_altitude": 100,
-          "initial_speed": 100,
-          "description": "KTTN",
-          "unassociated": true
-        },
-        {
-          "airlines": [
-            { "icao": "N", "fleet": "lightGA", "departure_airport": "39N", "arrival_airport": "39N" }
-          ],
-          "waypoints": "39N N040.24.00.005,W074.41.12.335/a400 N040.24.05.622,W074.42.11.909/a700 N040.22.54.307,W074.42.16.550/a1200 N040.22.49.445,W074.38.08.177/a1200 N040.22.52.370,W074.36.48.609/a900 N040.23.04.373,W074.36.11.804/a700 N040.24.02.669,W074.36.16.831/a500 N040.23.55.295,W074.38.11.390/a200 N040.23.55.652,W074.38.57.396/a50/s60 39N/a0/delete",
-          "cruise_altitude": 1200,
-          "initial_altitude": 100,
-          "initial_speed": 70,
-          "description": "39N",
-          "unassociated": true
-        },
-        {
-          "airlines": [
-            { "icao": "N", "fleet": "lightGA", "departure_airport": "KMMU", "arrival_airport": "KMMU" }
-          ],
-          "waypoints": "KMMU N040.48.45.013,W074.23.58.549/a300 N040.49.33.010,W074.23.25.178/a500+ N040.50.01.231,W074.24.34.804/a1200 N040.48.39.534,W074.26.00.278/a1200 N040.47.57.127,W074.26.47.904/a900 N040.47.10.215,W074.27.00.126/a700 N040.46.48.558,W074.26.06.870/a500 N040.47.25.513,W074.25.19.354/a50/s60 KMMU/a0/delete",
-          "cruise_altitude": 1200,
-          "initial_altitude": 100,
-          "initial_speed": 70,
-          "description": "MMU5",
-          "unassociated": true
-        }
-      ]     
-    }
+  }
 },
   "control_positions": {
     "Allentown Approach": {
@@ -10577,12 +10544,6 @@
         }
       ],      
       "arrivals": {
-        "VFR Airwork": {
-          "overflights": 5
-        },
-        "VFR Pattern work": {
-          "overflights": 10
-        },
         "North": {
           "KEWR": 12
         },

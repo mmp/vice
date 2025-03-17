@@ -58,6 +58,7 @@ type VFRRouteSpec struct {
 	Fleet       string        `json:"fleet"`
 	Waypoints   WaypointArray `json:"waypoints"`
 	Destination string        `json:"destination"`
+	Description string        `json:"description"`
 }
 
 type ConvergingRunways struct {
@@ -503,7 +504,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 		}
 
-		if _, intraFacility := facilityAirports[dep.Destination]; intraFacility || ap.Departures[i].Unassociated {
+		if _, intraFacility := facilityAirports[dep.Destination]; intraFacility {
 			// Make sure that the full route is valid.
 			wp, err := parseWaypoints(dep.Route)
 			if err != nil {
@@ -529,7 +530,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 		}
 
-		if !ap.Departures[i].Unassociated && !slices.ContainsFunc(ap.Departures[i].RouteWaypoints,
+		if !slices.ContainsFunc(ap.Departures[i].RouteWaypoints,
 			func(wp Waypoint) bool { return wp.Fix == depExit }) {
 			e.ErrorString("exit %q not found in departure route", depExit)
 		}
@@ -553,7 +554,12 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 	}
 	e.Push("\"vfr\"")
-	checkFleet(ap.VFR.Randoms.Fleet, "random_routes")
+	if ap.VFR.Randoms.Fleet != "" {
+		checkFleet(ap.VFR.Randoms.Fleet, "random_routes")
+		if ap.VFR.Randoms.Rate == 0 {
+			e.ErrorString("\"fleet\" specified for \"vfr\" \"random_routes\" but \"rate\" is not specified or is zero.")
+		}
+	}
 	for i := range ap.VFR.Routes {
 		ap.VFR.Routes[i].Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
 
@@ -734,7 +740,6 @@ type Departure struct {
 	Airlines            []DepartureAirline      `json:"airlines"`
 	Scratchpad          string                  `json:"scratchpad"`           // optional
 	SecondaryScratchpad string                  `json:"secondary_scratchpad"` // optional
-	Unassociated        bool                    `json:"unassociated"`
 	Description         string                  `json:"description"`
 }
 
