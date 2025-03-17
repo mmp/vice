@@ -245,6 +245,7 @@
     },
     "KHVN": {
       "name": "New Haven",
+      "vfr": { "random_routes": { "rate": 5 } },
       "hold_for_release": true,
       "approaches": {
         "I2": { "cifp_id": "I2" },
@@ -393,6 +394,7 @@
     },
     "KBDR": {
       "name": "Bridgeport",
+      "vfr": { "random_routes": { "rate": 5 } },
       "hold_for_release": true,
       "approaches": {
         "R6": { "cifp_id": "R6" },
@@ -564,6 +566,7 @@
     "KFOK": {
       "name": "Suffolk County",
       "hold_for_release": true,
+      "vfr": { "random_routes": { "rate": 8 } },
       "approaches": {
         "RG6": { "cifp_id": "R6" },
         "RG24": { "cifp_id": "R24" },
@@ -737,6 +740,7 @@
     "KOXC": {
       "name": "Waterbury",
       "hold_for_release": true,
+      "vfr": { "random_routes": { "rate": 5 } },
       "approaches": {
         "I36": { "cifp_id": "I36" },
         "R36": { "cifp_id": "R36" },
@@ -879,7 +883,13 @@
         "WHITE": "South"
       },
       "tower_list": 5
-    }
+    },
+    "KACK": { "vfr": { "random_routes": { "rate": 5 } } },
+      "KDXR": { "vfr": { "random_routes": { "rate": 5 } } },
+      "N69": { "vfr": { "random_routes": { "rate": 5 } } },
+      "KMMK": { "vfr": { "random_routes": { "rate": 5 } } },
+      "21N": { "vfr": { "random_routes": { "rate": 5 } } },
+      "KSNC": { "vfr": { "random_routes": { "rate": 5 } } }
     },
     "airspace": {
       "boundaries": {
