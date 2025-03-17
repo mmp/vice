@@ -23,7 +23,7 @@ import (
 )
 
 const initialSimSeconds = 20 * 60
-const initialSimControlledSeconds = 90
+const initialSimControlledSeconds = 30
 
 type RunwayLaunchState struct {
 	IFRSpawnRate float32
