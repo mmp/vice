@@ -181,9 +181,13 @@ func (ac *Aircraft) Update(wind WindModel, lg *log.Logger) *Waypoint {
 		lg = lg.With(slog.String("callsign", ac.Callsign))
 	}
 
-	passedWaypoint := ac.Nav.Update(wind, lg)
+	passedWaypoint := ac.Nav.Update(wind, ac.FlightPlan, lg)
 	if passedWaypoint != nil {
 		lg.Info("passed", slog.Any("waypoint", passedWaypoint))
+
+		if passedWaypoint.ClearApproach {
+			ac.ApproachController = ac.ControllingController
+		}
 	}
 
 	return passedWaypoint

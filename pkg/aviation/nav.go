@@ -896,7 +896,7 @@ func (nav *Nav) Check(lg *log.Logger) {
 }
 
 // returns passed waypoint if any
-func (nav *Nav) Update(wind WindModel, lg *log.Logger) *Waypoint {
+func (nav *Nav) Update(wind WindModel, fp *FlightPlan, lg *log.Logger) *Waypoint {
 	targetAltitude, altitudeRate := nav.TargetAltitude(lg)
 	deltaKts, slowingTo250 := nav.updateAirspeed(targetAltitude, lg)
 	nav.updateAltitude(targetAltitude, altitudeRate, lg, deltaKts, slowingTo250)
@@ -912,7 +912,7 @@ func (nav *Nav) Update(wind WindModel, lg *log.Logger) *Waypoint {
 	// punched in a new heading assignment, we should update waypoints or
 	// not as per the old assignment.
 	if nav.Airwork == nil && nav.Heading.Assigned == nil {
-		return nav.updateWaypoints(wind, lg)
+		return nav.updateWaypoints(wind, fp, lg)
 	}
 
 	return nil
@@ -1626,7 +1626,7 @@ func (nav *Nav) distanceToEndOfApproach() (float32, error) {
 	}
 }
 
-func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
+func (nav *Nav) updateWaypoints(wind WindModel, fp *FlightPlan, lg *log.Logger) *Waypoint {
 	if len(nav.Waypoints) == 0 {
 		return nil
 	}
@@ -1686,6 +1686,17 @@ func (nav *Nav) updateWaypoints(wind WindModel, lg *log.Logger) *Waypoint {
 		}
 		if nav.Heading.Arc != nil {
 			nav.Heading = NavHeading{}
+		}
+
+		if wp.ClearApproach {
+			if fp == nil {
+				lg.Warnf("nil *FlightPlan at waypoint /clearapp")
+			} else {
+				_, err := nav.clearedApproach(fp.ArrivalAirport, nav.Approach.AssignedId, false)
+				if err != nil {
+					lg.Errorf("/clearapp: %s", err)
+				}
+			}
 		}
 
 		if nav.Approach.Cleared {
@@ -1800,7 +1811,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 	// Don't simulate the turn longer than it will take to do it.
 	n := int(1 + turnAngle/3)
 	for i := 0; i < n; i++ {
-		nav2.Update(wind, nil)
+		nav2.Update(wind, nil, nil)
 		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position,
 			nav2.FlightState.NmPerLongitude),
 			p0, p1)
@@ -1841,7 +1852,7 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 
 	n := int(1 + turnAngle/3)
 	for i := 0; i < n; i++ {
-		nav2.Update(wind, nil)
+		nav2.Update(wind, nil, nil)
 		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position, nav2.FlightState.NmPerLongitude), p0, p1)
 		if math.Sign(initialDist) != math.Sign(curDist) && math.Abs(curDist) < .25 && math.HeadingDifference(hdg, nav2.FlightState.Heading) < 3.5 {
 			lg.Debugf("turning now to intercept radial in %d seconds", i)
