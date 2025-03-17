@@ -836,7 +836,8 @@ how it simulates aircraft or the STARS interface.
                   <li>Added "beacon_code_blocks" to "controller_configs" to allow specifying per-controller default monitored
                     beacon code blocks.</li>
                   <li>STARS now has a <code>.VFR</code> command to toggle whether the VFR airports are shown on the scope and
-                    a new <code>.DRAWROUTE</code> command for drawing complex routes.
+                    a new <code>.DRAWROUTE</code> command for drawing complex routes.</li>
+                  <li>For "atpa_volumes", an optional string "id" may be given for the name of the volume in the STARS SSA INTRAIL list item.</li>
                 </ul>
               </li>
             </ul>
@@ -5437,24 +5438,25 @@ how it simulates aircraft or the STARS interface.
                 the STARS automated terminal proximity alert (ATPA) feature is active for the runway.  (If not specified, a default
                 volume is generated along the runway's extended centerline.) The following members define the region of space:
                 <ul>
-	            <li>"runway_threshold": position of the runway threshold or point at which should be used for the start of the volume.</li>
-	            <li>"heading": runway heading or orientation of the volume.</li>
+                  <li>"id": an optional string naming the volume. If not specified, the runway is used.</li>
+	          <li>"runway_threshold": position of the runway threshold or point at which should be used for the start of the volume.</li>
+	          <li>"heading": runway heading or orientation of the volume.</li>
 	          <li>"max_heading_deviation": maximum deviation between an aircraft's heading and the ATPA volume heading allowed for an
                   aircraft to be included in ATPA.</li>
-	            <li>"floor": bottom altitude of the volume, in feet.</li>
-	            <li>"ceiling": top altitude of the volume, in feet.</li>
-	            <li>"length": length of the volume, from "runway_threshold" in direction "heading", given in nautical miles.</li>
+	          <li>"floor": bottom altitude of the volume, in feet.</li>
+	          <li>"ceiling": top altitude of the volume, in feet.</li>
+	          <li>"length": length of the volume, from "runway_threshold" in direction "heading", given in nautical miles.</li>
 	          <li>"left_width": width the volume extends to the left of the extended centerline, where "left" is with respect to an
                   aircraft flying the approach.</li>
-	            <li>"right_width": width the volume extends to the right of the extended centerline.</li>
-	            <li>"filtered_scratchpads": aircraft scratchpads that do not receive ATPA warnings/alerts but that do still
-                      participate in ATPA calculations for other aircraft. (Thus, this should include for example aircraft cleared
-                      for visual approaches that should not themselves receive alerts but where other non-visual aircraft must still
+	          <li>"right_width": width the volume extends to the right of the extended centerline.</li>
+	          <li>"filtered_scratchpads": aircraft scratchpads that do not receive ATPA warnings/alerts but that do still
+                    participate in ATPA calculations for other aircraft. (Thus, this should include for example aircraft cleared
+                    for visual approaches that should not themselves receive alerts but where other non-visual aircraft must still
                     be separated from them.)</li>
 	          <li>"excluded_scratchpads": aircraft scratchpads that do not participate at all in ATPA for this runway.
-                  This should include scratchpads of aircraft arriving on parallel runways, for example.</li>
-	            <li>"enable_2.5nm": a Boolean value that indicates whether reduced 2.5nm separation is allowed on final approach.</li>
-	            <li>"2.5nm_distance": distance from runway threshold at which 2.5nm separation is allowed, if "enamble_2.5nm" is true.</li>
+                    This should include scratchpads of aircraft arriving on parallel runways, for example.</li>
+	          <li>"enable_2.5nm": a Boolean value that indicates whether reduced 2.5nm separation is allowed on final approach.</li>
+	          <li>"2.5nm_distance": distance from runway threshold at which 2.5nm separation is allowed, if "enamble_2.5nm" is true.</li>
                 </ul>
               </td>
               </tr>

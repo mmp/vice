@@ -95,7 +95,7 @@ type ApproachRegion struct {
 }
 
 type ATPAVolume struct {
-	Id                  string // Unique identifier, set after deserialization
+	Id                  string `json:"id"`
 	ThresholdString     string `json:"runway_threshold"`
 	Threshold           math.Point2LL
 	Heading             float32  `json:"heading"`
@@ -662,7 +662,9 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	for rwy, vol := range ap.ATPAVolumes {
 		e.Push("ATPA " + rwy)
 
-		vol.Id = icao + rwy
+		if vol.Id == "" {
+			vol.Id = rwy
+		}
 
 		if _, ok := LookupRunway(icao, rwy); !ok {
 			e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
