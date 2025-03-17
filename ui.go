@@ -1100,16 +1100,16 @@ func showAboutDialog() {
 - Timely feedback: radarcontacto.
 - Facility engineering: Connor Allen, Adam
   Bolek, Brody Carty, Lucas Chan, Aaron
-  Flett, Austin Jenkins, Ketan K, Mike K,
-  Allison L, Josh Lambert, Kayden Lambert,
-  Mike LeGall, Jonah Lefkoff, Jud Lopez,
-  Ethan Malimon, Jace Martin, Michael
-  McConnell, Merry, Yahya Nazimuddin,
-  Justin Nguyen, Giovanni, Andrew S,
-  Logan S, Arya T, Nelson T, Tyler
-  Temerowski, Eli Thompson, Michael Trokel,
-  Samuel Valencia, Gavin Velicevic, and
-  Jackson Verdoorn.
+  Flett, Thomas Halpin, Austin Jenkins,
+  Ketan K, Mike K, Allison L, Josh Lambert,
+  Kayden Lambert, Mike LeGall, Jonah
+  Lefkoff, Jud Lopez, Ethan Malimon, Jace
+  Martin, Michael McConnell, Merry, Yahya
+  Nazimuddin, Justin Nguyen, Giovanni,
+  Andrew S, Logan S, Arya T, Nelson T,
+  Tyler Temerowski, Eli Thompson, Michael
+  Trokel, Samuel Valencia, Gavin Velicevic,
+  and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC,
   ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
   ZSE, and ZTL VATSIM ARTCCs and to the
