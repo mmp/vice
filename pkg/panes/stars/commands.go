@@ -66,7 +66,8 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		sp.multiFuncPrefix = string(input[0])
 		input = input[1:]
 	}
-	if sp.commandMode == CommandModeNone && len(input) > 0 && input[0] == sp.TgtGenKey { // [TGT GEN]
+	if len(input) > 0 && input[0] == sp.TgtGenKey { // [TGT GEN]
+		sp.resetInputState()
 		sp.commandMode = CommandModeTargetGen
 		input = input[1:]
 	}
