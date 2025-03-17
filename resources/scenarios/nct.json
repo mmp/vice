@@ -26,7 +26,6 @@
     "O08": { "vfr": { "random_routes": { "rate": 5 } } },
     "KHES": { "vfr": { "random_routes": { "rate": 5 } } },
     "KCIC": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KFAT": { "vfr": { "random_routes": { "rate": 15 } } },
     "KSTS": { "vfr": { "random_routes": { "rate": 5 } } },
     "KSJC": {
       "approaches": {
@@ -2799,7 +2798,6 @@
       "tower_list": 4
     },
     "KSMF": {
-      "vfr": { "random_routes": { "rate": 10 } },
       "approaches": {
         "I7R": { "cifp_id": "I17R" },
         "RY7R": { "cifp_id": "RY17R" },

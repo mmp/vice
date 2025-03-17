@@ -912,7 +912,6 @@
               }
           }
       },
-      "vfr": { "random_routes": { "rate": 5 } },
       "departures": [
           {
               "airlines": [
@@ -1643,7 +1642,6 @@
               "route": "OROSZ2 CSTRO NTELL SHIMR LMT GLORR LOTKE"
           }
       ],
-      "vfr": { "random_routes": { "rate": 5 } },
       "exit_categories": {
           "CSTRO": "Northwest",
           "COREZ": "Northwest",
@@ -2450,7 +2448,6 @@
               }
           }
       },
-      "vfr": { "random_routes": { "rate": 5 } },
       "departures": [
           {
               "airlines": [
@@ -3284,7 +3281,6 @@
           "route": "AVE JLI"
         }
       ],
-      "vfr": { "random_routes": { "rate": 5 } },
       "hold_for_release": true
     },
     "KCRQ": {
@@ -7228,7 +7224,6 @@
           "route": "PMD TESEA SCTRR TROXX SILCN6"
       }
     ],
-    "vfr": { "random_routes": { "rate": 5 } },
     "tower_list": 1,
     "hold_for_release": true
     },

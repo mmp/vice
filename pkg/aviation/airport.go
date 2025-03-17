@@ -6,6 +6,7 @@ package aviation
 
 import (
 	"fmt"
+	"iter"
 	"maps"
 	"slices"
 	"strconv"
@@ -584,6 +585,21 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		e.Pop()
 	}
 	e.Pop()
+
+	// Check if airport has VFR departures but is in class B or C airspace
+	if ap.VFR.Randoms.Rate > 0 || len(ap.VFR.Routes) > 0 {
+		elevation := DB.Airports[icao].Elevation
+		checkAllVolumes := func(volsIter iter.Seq[[]AirspaceVolume]) bool {
+			return util.SeqContainsFunc(volsIter, func(vols []AirspaceVolume) bool {
+				return slices.ContainsFunc(vols, func(vol AirspaceVolume) bool {
+					return vol.Inside(ap.Location, elevation)
+				})
+			})
+		}
+		if checkAllVolumes(maps.Values(DB.BravoAirspace)) || checkAllVolumes(maps.Values(DB.CharlieAirspace)) {
+			e.ErrorString("Airport has VFR departures specified but is located in class B or C airspace")
+		}
+	}
 
 	for rwy, def := range ap.ApproachRegions {
 		e.Push(rwy + " region")

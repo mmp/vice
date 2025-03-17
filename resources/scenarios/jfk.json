@@ -4,7 +4,6 @@
     "KBDR": { "vfr": { "random_routes": { "rate": 5 } } },
     "KPOU": { "vfr": { "random_routes": { "rate": 5 } } },
     "KHPN": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KBDL": { "vfr": { "random_routes": { "rate": 5 } } },
     "KACK": { "vfr": { "random_routes": { "rate": 5 } } },
     "KCDW": { "vfr": { "random_routes": { "rate": 5 } } },
     "KFOK": { "vfr": { "random_routes": { "rate": 5 } } },
