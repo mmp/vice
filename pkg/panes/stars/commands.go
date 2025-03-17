@@ -3349,14 +3349,14 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 
 			case "Y":
-				isSecondary := false
-				if len(cmd) > 0 && cmd[0] == '+' {
-					isSecondary = true
-					cmd = cmd[1:]
-				}
-
 				if cmd == "" {
 					// Clear pilot reported altitude and scratchpad
+					isSecondary := false
+					if len(cmd) > 0 && cmd[0] == '+' {
+						isSecondary = true
+						cmd = cmd[1:]
+					}
+
 					sp.setPilotReportedAltitude(ctx, ac.Callsign, 0)
 					if err := sp.setScratchpad(ctx, ac.Callsign, "", isSecondary, false); err != nil {
 						status.err = err
@@ -3370,6 +3370,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 						sp.setPilotReportedAltitude(ctx, ac.Callsign, alt)
 						status.clear = true
 					} else {
+						isSecondary := false
+						if len(cmd) > 0 && cmd[0] == '+' {
+							isSecondary = true
+							cmd = cmd[1:]
+						}
+
 						if err := sp.setScratchpad(ctx, ac.Callsign, cmd, isSecondary, false); err != nil {
 							status.err = err
 						} else {
