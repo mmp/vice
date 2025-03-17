@@ -35850,7 +35850,6 @@
     },
     "KBED": {
     "name": "Hanscom Field",
-    "departure_controller": "BOS_B_APP",
 	  "hold_for_release": true,
       "vfr": { 
         "random_routes": { "rate": 8 },
@@ -35899,40 +35898,34 @@
                 "MANCH,HYLND,PEASE,LBSTA": {
                   "cleared_altitude": 2000,
                   "sid": "HNSCM5",
-                  "waypoints": "KBED-29/h070/ho",
-                  "handoff_controller": "BOS_R_APP"
+                  "waypoints": "KBED-29/h070"
                 },
                 "CELTK,FRILL": {
                   "cleared_altitude": 2000,
                   "sid": "HNSCM5",
-                  "waypoints": "KBED-29/h090/ho",
-                  "handoff_controller": "BOS_R_APP"
+                  "waypoints": "KBED-29/h090"
                 },
                 "REVSS,GLYDE,SSOXS": {
                   "cleared_altitude": 2000,
                   "sid": "HNSCM5",
-                  "waypoints": "KBED-29/h250/ho",
-                  "handoff_controller": "BOS_D_APP"
+                  "waypoints": "KBED-29/h250"
                 },
                 "PUT,BOSOX,BURDY": {
                   "cleared_altitude": 2000,
                   "sid": "HNSCM5",
-                  "waypoints": "KBED-29/h250/ho",
-                  "handoff_controller": "BOS_D_APP"
+                  "waypoints": "KBED-29/h250"
                 }
             },
             "29": {
-                "MANCH,HYLND,PEASE,LBSTA,CELTK,FRILL,BURDY,REVSS,GLYDE,PUT,BOSOX,SSOXS": {
+                "MANCH,HYLND,PEASE,LBSTA": {
                     "cleared_altitude": 2000,
                     "sid": "HNSCM5",
-                    "waypoints": "N042.28.22.633,W071.18.46.675/h290/ho",
-                    "handoff_controller": "BOS_D_APP"
+                    "waypoints": "N042.28.22.633,W071.18.46.675/h290"
                 },
-                "BURDY.IDSL,REVSS.IDSL,GLYDE.IDSL,PUT.IDSL,BOSOX.IDSL,SSOXS.IDSL": {
-                    "cleared_altitude": 3000,
+                "CELTK,BURDY,REVSS,GLYDE,PUT,BOSOX,SSOXS": {
+                    "cleared_altitude": 2000,
                     "sid": "HNSCM5",
-                    "waypoints": "N042.28.22.633,W071.18.46.675/h230/ho",
-                    "handoff_controller": "BOS_D_APP"
+                    "waypoints": "N042.28.22.633,W071.18.46.675/h270"
                 }
             }
         },
@@ -36055,7 +36048,7 @@
                    }
                 ],
                 "destination": "KCHS",
-                "exit": "SSOXS.IDSL",
+                "exit": "SSOXS",
                 "altitude": [12000,14000,16000,18000,20000,22000,24000,26000,28000,30000,32000,34000,360000,38000],
                 "route": "SSOXS Q167 RIFLE HEADI Q97 SAWED DFENC Q109 LAANA AMYLU AMYLU3"
             },
@@ -36071,12 +36064,12 @@
                 }
               ],
               "destination": "KBDL",
-              "exit": "BOSOX.IDSL",
+              "exit": "BOSOX",
               "altitude": [4000,6000,8000,10000],
               "route": "BOSOX T303 GRAYM"
             },
             {
-              "exit": "GLYDE.IDSL",
+              "exit": "GLYDE",
               "destination": "KTEB",
               "altitude": [6000,8000,10000],
               "route": "GLYDE BAF MOBBS SAGES V489 COATE",
@@ -36102,12 +36095,12 @@
                     }
                 ],
                 "destination": "KTEB",
-                "exit": "REVSS.IDSL",
+                "exit": "REVSS",
                 "altitude": [12000,14000,16000,18000,20000,22000,24000,26000,28000,30000,32000,34000,36000,38000],
                 "route": "REVSS BAF MOBBS T295 SAGES V489 COATE"
             },
             {
-                "exit": "PUT.IDSL",
+                "exit": "PUT",
                 "destination": "KORF",
                 "altitude": [12000,14000,16000,18000,20000,22000,24000,26000,28000,30000,32000,34000,36000,38000,40000],
                 "route": "PUT CCC EMJAY J174 ORF KORF",
@@ -36139,12 +36132,7 @@
           "BOSOX": "ALL",
           "SSOXS": "ALL",
           "DUNKK": "ALL",
-          "LFV": "ALL",
-          "SSOXS.IDSL": "SSOXS",
-          "REVSS.IDSL": "REVSS",
-          "BOSOX.IDSL": "TEC WEST",
-          "GLYDE.IDSL": "TEC.WEST",
-          "PUT.IDSL": "PUT"
+          "LFV": "ALL"
         },
         "tower_list": 5
     },
@@ -43381,7 +43369,7 @@
               "BOS_M_APP": {"backup": "BOS_R_APP", "arrivals": ["ROBUC3", "FREDO"]},
               "BOS_F_APP": {"backup": "BOS_R_APP"},
               "BOS_I_APP": {"backup": "BOS_F_APP"},
-			  "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBVY","KLWM"]},
+			  "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBED","KBVY","KLWM"]},
               "BOS_L_APP": {"backup": "BOS_M_APP", "arrivals":["WOONS.LO"], "departures":["KOWD"]},
               "BOS_U_APP": {"backup": "BOS_D_APP",  "arrivals": ["WOONS"]}
             }
@@ -43591,7 +43579,7 @@
               "BOS_M_APP": {"backup": "BOS_R_APP", "arrivals": ["ROBUC3", "FREDO"]},
               "BOS_F_APP": {"backup": "BOS_R_APP"},
               "BOS_I_APP": {"backup": "BOS_F_APP"},
-			  "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBVY","KLWM"]},
+			  "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBED","KBVY","KLWM"]},
               "BOS_L_APP": {"backup": "BOS_M_APP", "arrivals":["WOONS.LO"], "departures":["KOWD"]},
               "BOS_U_APP": {"backup": "BOS_D_APP",  "arrivals": ["WOONS"]}
             }
@@ -43819,7 +43807,7 @@
                 "BOS_M_APP": {"backup": "BOS_R_APP", "arrivals": ["ROBUC3", "FREDO"]},
                 "BOS_F_APP": {"backup": "BOS_R_APP"},
                 "BOS_I_APP": {"backup": "BOS_F_APP"},
-                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBVY","KLWM"]},
+                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBED","KBVY","KLWM"]},
                 "BOS_L_APP": {"backup": "BOS_M_APP", "arrivals":["WOONS.LO"], "departures":["KOWD"]},
                 "BOS_U_APP": {"backup": "BOS_D_APP",  "arrivals": ["WOONS"]}
               }
@@ -44021,7 +44009,7 @@
                 "BOS_M_APP": {"backup": "BOS_R_APP", "arrivals": ["ROBUC3", "FREDO"]},
                 "BOS_F_APP": {"backup": "BOS_R_APP"},
                 "BOS_I_APP": {"backup": "BOS_F_APP"},
-                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBVY","KLWM"]},
+                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBED","KBVY","KLWM"]},
                 "BOS_L_APP": {"backup": "BOS_M_APP", "arrivals":["WOONS.LO"], "departures":["KOWD"]},
                 "BOS_U_APP": {"backup": "BOS_D_APP",  "arrivals": ["WOONS"]}
               }
@@ -44212,7 +44200,7 @@
                 "BOS_M_APP": {"backup": "BOS_R_APP", "arrivals": ["ROBUC3", "FREDO"]},
                 "BOS_F_APP": {"backup": "BOS_R_APP"},
                 "BOS_I_APP": {"backup": "BOS_F_APP"},
-                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBVY","KLWM"]},
+                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBED","KBVY","KLWM"]},
                 "BOS_L_APP": {"backup": "BOS_M_APP", "arrivals":["WOONS.LO"], "departures":["KOWD"]},
                 "BOS_U_APP": {"backup": "BOS_D_APP",  "arrivals": ["WOONS"]}
               }
@@ -44397,7 +44385,7 @@
               "BOS_M_APP": {"backup": "BOS_R_APP", "arrivals": ["ROBUC3", "FREDO"]},
               "BOS_F_APP": {"backup": "BOS_R_APP"},
               "BOS_I_APP": {"backup": "BOS_F_APP"},
-			  "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBVY","KLWM"]},
+			  "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBED","KBVY","KLWM"]},
               "BOS_L_APP": {"backup": "BOS_M_APP", "arrivals":["WOONS.LO"], "departures":["KOWD"]},
               "BOS_U_APP": {"backup": "BOS_D_APP",  "arrivals": ["WOONS"]}
             }
@@ -44594,7 +44582,7 @@
                 "BOS_M_APP": {"backup": "BOS_R_APP", "arrivals": ["ROBUC3", "FREDO"]},
                 "BOS_F_APP": {"backup": "BOS_R_APP"},
                 "BOS_I_APP": {"backup": "BOS_F_APP"},
-                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBVY","KLWM"]},
+                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBED","KBVY","KLWM"]},
                 "BOS_L_APP": {"backup": "BOS_M_APP", "arrivals":["WOONS.LO"], "departures":["KOWD"]},
                 "BOS_U_APP": {"backup": "BOS_D_APP",  "arrivals": ["WOONS"]}
               }
@@ -44779,7 +44767,7 @@
                 "BOS_M_APP": {"backup": "BOS_R_APP", "arrivals": ["ROBUC3", "FREDO"]},
                 "BOS_F_APP": {"backup": "BOS_R_APP"},
                 "BOS_I_APP": {"backup": "BOS_F_APP"},
-                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBVY","KLWM"]},
+                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBED","KBVY","KLWM"]},
                 "BOS_L_APP": {"backup": "BOS_M_APP", "arrivals":["WOONS.LO"], "departures":["KOWD"]},
                 "BOS_U_APP": {"backup": "BOS_D_APP",  "arrivals": ["WOONS"]}
               }
@@ -44964,7 +44952,7 @@
                 "BOS_M_APP": {"backup": "BOS_R_APP", "arrivals": ["ROBUC3", "FREDO"]},
                 "BOS_F_APP": {"backup": "BOS_R_APP"},
                 "BOS_I_APP": {"backup": "BOS_F_APP"},
-                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBVY","KLWM"]},
+                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBED","KBVY","KLWM"]},
                 "BOS_L_APP": {"backup": "BOS_M_APP", "arrivals":["WOONS.LO"], "departures":["KOWD"]},
                 "BOS_U_APP": {"backup": "BOS_D_APP",  "arrivals": ["WOONS"]}
               }
@@ -45149,7 +45137,7 @@
               "BOS_M_APP": {"backup": "BOS_R_APP", "arrivals": ["ROBUC3", "FREDO"]},
               "BOS_F_APP": {"backup": "BOS_R_APP"},
               "BOS_I_APP": {"backup": "BOS_F_APP"},
-			  "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBVY","KLWM"]},
+			  "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBED","KBVY","KLWM"]},
               "BOS_L_APP": {"backup": "BOS_M_APP", "arrivals":["WOONS.LO"], "departures":["KOWD"]},
               "BOS_U_APP": {"backup": "BOS_D_APP",  "arrivals": ["WOONS"]}
             }
@@ -45344,7 +45332,7 @@
                 "BOS_M_APP": {"backup": "BOS_R_APP", "arrivals": ["ROBUC3", "FREDO"]},
                 "BOS_F_APP": {"backup": "BOS_R_APP"},
                 "BOS_I_APP": {"backup": "BOS_F_APP"},
-                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBVY","KLWM"]},
+                "BOS_B_APP": {"backup": "BOS_R_APP", "arrivals": ["DREEM2", "ZELKA2"], "departures": ["KBED","KBVY","KLWM"]},
                 "BOS_L_APP": {"backup": "BOS_M_APP", "arrivals":["WOONS.LO"], "departures":["KOWD"]},
                 "BOS_U_APP": {"backup": "BOS_D_APP",  "arrivals": ["WOONS"]}
               }
@@ -45427,361 +45415,6 @@
           "direction": 350,
           "speed": 15
         }
-    },
-    "IDSL - 27+32": {
-        "arrival_runways": [
-          {
-            "airport": "KBOS",
-            "runway": "33L"
-          },
-          {
-              "airport": "KBED",
-              "runway": "29"
-          },
-          {
-            "airport": "KLWM",
-            "runway": "23"
-          },
-          {
-            "airport": "KBVY",
-            "runway": "27"
-          },
-          {
-            "airport": "KOWD",
-            "runway": "35"
-          },
-          {
-            "airport": "KPSM",
-            "runway": "34"
-          },
-          {
-            "airport": "KMHT",
-            "runway": "35"
-          },
-          {
-            "airport": "KASH",
-            "runway": "32"
-          },
-          {
-            "airport": "KACK",
-            "runway": "6"
-          },
-          {
-            "airport": "KMVY",
-            "runway": "6"
-          },
-          {
-            "airport": "KHYA",
-            "runway": "6"
-          },
-          {
-            "airport": "KFMH",
-            "runway": "5"
-          }
-        ],
-        "arrivals": {
-          "JFUND2": {
-            "KBOS": 0
-          },
-          "ROBUC3": {
-            "KBOS": 0
-          },
-          "OOSHN5": {
-            "KBOS": 0
-          },
-          "DREEM2": {
-            "KBED": 0,
-            "KBVY": 0,
-            "KLWM":0
-          },
-          "ZELKA2": {
-            "KBED": 0,
-            "KBVY": 0,
-            "KLWM": 0
-          },
-          "WOONS.LO": {
-            "KBED": 0,
-            "KOWD": 0,
-            "KLWM": 0,
-            "KBVY": 0
-          },
-          "WOONS": {
-            "KBOS": 0
-          },
-          "GDM": {
-            "KBOS": 0,
-            "KBED": 0,
-            "KOWD": 0,
-            "KLWM": 0,
-            "KBVY": 0
-          },
-          "FREDO": {
-            "KBOS": 0
-          },
-          "LWRNC": {
-            "KBOS": 0
-          },
-          "LWRNC.SAT": {
-            "KBED": 0,
-            "KOWD": 0,
-            "KLWM": 0,
-            "KBVY": 0
-          },
-          "KLANE":{
-              "KPSM": 0	
-          }
-        },
-        "solo_controller": "BOS_D_APP",
-        "controllers": [
-            "BOS_B_APP",
-            "BOS_E_TWR",
-            "BOS_W_TWR",
-            "BOS_37_CTR",
-            "BOS_36_CTR",
-            "BOS_42_CTR",
-            "BOS_34_CTR",
-            "BOS_16_CTR",
-            "BOS_18_CTR",
-            "BED_TWR",
-            "OWD_TWR",
-            "LWM_TWR",
-            "BVY_TWR",
-            "PSM_TWR",
-            "MHT_TWR",
-            "ASH_TWR",
-            "ACK_TWR",
-            "MVY_TWR",
-            "HYA_TWR",
-            "FMH_TWR"
-        ],
-        "default_maps": [ "A90 MASTER BASE MAP A","RWY 27/32","RWY 33L RNAV SID ROUTES"],
-        "departure_runways": [
-          {
-           "airport": "KBOS",
-           "rate": 10,
-           "runway": "33L",
-           "category" : "Primary.27+32/33"
-          },
-          {
-            "airport": "KBOS",
-            "rate": 5,
-            "runway": "33L",
-            "category": "PROP.27+32/33"
-          },
-          {
-            "airport": "KBOS",
-            "rate": 5,
-            "runway": "4R",
-            "category": "PROP.27+32/33"
-          },
-          {
-              "airport": "KBED",
-              "rate": 0,
-              "runway": "29",
-              "category": "PUT"
-          },
-          {
-            "airport": "KLWM",
-            "rate": 0,
-            "runway": "5"
-          },
-          {
-            "airport": "KOWD",
-            "rate": 0,
-            "runway": "35"
-          },
-          {
-            "airport": "KBVY",
-            "rate": 0,
-            "runway": "27"
-          }
-        ],
-        "wind": {
-          "direction": 350,
-          "speed": 17
-        }
-    },
-    "SB - BED11,LWM5,BVY16,BOS4/9": {
-      "arrival_runways": [
-        {
-          "airport": "KBOS",
-          "runway": "4R"
-        },
-        {
-          "airport": "KBOS",
-          "runway": "4L"
-        },
-        {
-            "airport": "KBED",
-            "runway": "11"
-        },
-        {
-          "airport": "KLWM",
-          "runway": "5"
-        },
-        {
-          "airport": "KBVY",
-          "runway": "16"
-        },
-        {
-            "airport": "6B6",
-            "runway": "21"
-        },
-        {
-            "airport": "KFIT",
-            "runway": "32"
-        },
-        {
-          "airport": "KOWD",
-          "runway": "35"
-        },
-		{
-		  "airport": "KPSM",
-		  "runway": "34"
-		},
-        {
-          "airport": "KMHT",
-          "runway": "35"
-        },
-        {
-          "airport": "KASH",
-          "runway": "32"
-        },
-        {
-          "airport": "KACK",
-          "runway": "6"
-        },
-        {
-          "airport": "KMVY",
-          "runway": "6"
-        },
-        {
-          "airport": "KHYA",
-          "runway": "6"
-        },
-        {
-          "airport": "KFMH",
-          "runway": "5"
-        }
-      ],
-      "arrivals": {
-        "DREEM2": {
-          "KBED": 6,
-		  "KBVY": 2,
-		  "KLWM":1
-        },
-        "ZELKA2": {
-          "KBED": 6,
-		  "KBVY": 2,
-		  "KLWM": 1
-		},
-        "GDM": {
-          "KBOS": 0,
-          "KBED": 0,
-          "KOWD": 0,
-          "KLWM": 0,
-          "KBVY": 0
-        },
-        "LWRNC.SAT": {
-          "KBED": 5,
-          "KOWD": 2,
-          "KLWM": 1,
-          "KBVY": 1
-        },
-		"BASUU.SB":{
-			"KBED": 2,
-            "6B6": 1,
-            "KOWD":1	
-		},
-        "AL.SB":{
-			"KBED": 2,
-            "6B6": 1,
-            "KFIT":1	
-		}
-      },
-      "solo_controller": "BOS_B_APP",
-      "controllers": [
-        "BOS_E_TWR",
-        "BOS_W_TWR",
-        "BOS_R_APP",
-        "BOS_D_APP",
-        "BOS_U_APP",
-        "BOS_L_APP",
-        "BOS_37_CTR",
-        "BOS_36_CTR",
-        "BOS_42_CTR",
-        "BOS_34_CTR",
-        "BOS_16_CTR",
-        "BOS_18_CTR",
-        "BED_TWR",
-        "OWD_TWR",
-        "LWM_TWR",
-        "BVY_TWR",
-		"PSM_TWR",
-		"MHT_TWR",
-		"ASH_TWR",
-		"ACK_TWR",
-		"MVY_TWR",
-		"HYA_TWR",
-		"FMH_TWR"
-      ],
-      "default_maps": [ "A90 MASTER BASE MAP A", "RWY 4R/L","A90 SAT FINALS 1"],
-      "departure_runways": [
-		{
-		 "airport": "KBOS",
-		 "rate": 0,
-		 "runway": "4R",
-		 "category" : "Secondary.4/9"
-		},
-        {
-          "airport": "KBOS",
-          "rate": 0,
-          "runway": "9",
-          "category": "Primary.4/9"
-        },
-        {
-          "airport": "KBOS",
-          "rate": 0,
-          "runway": "4L",
-          "category": "PROP.4/9"
-        },
-        {
-          "airport": "KBOS",
-          "rate": 0,
-          "runway": "9",
-          "category": "PROP.4/9"
-        },
-		{
-		 "airport": "KBOS",
-		 "rate": 0,
-		 "runway": "15R",
-		 "category" : "Secondary.4/9"
-		},
-        {
-            "airport": "KBED",
-            "rate": 10,
-            "runway": "11"
-        },
-        {
-          "airport": "KLWM",
-          "rate": 2,
-          "runway": "5"
-        },
-        {
-          "airport": "KOWD",
-          "rate": 0,
-          "runway": "35"
-        },
-        {
-          "airport": "KBVY",
-          "rate": 3,
-          "runway": "16"
-        }
-      ],
-      "wind": {
-        "direction": 110,
-        "speed": 10
-      }
     }
     },
   "stars_config": {
