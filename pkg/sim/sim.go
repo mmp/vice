@@ -575,29 +575,31 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if ac, ok := s.State.Aircraft[callsign]; ok && ac.HandoffTrackController != "" &&
-			ac.HandoffTrackController != s.State.PrimaryController &&
-			!s.prespawn { // don't accept handoffs during prespawn
-			s.eventStream.Post(Event{
-				Type:           AcceptedHandoffEvent,
-				FromController: ac.TrackingController,
-				ToController:   ac.HandoffTrackController,
-				Callsign:       ac.Callsign,
-			})
-			s.lg.Info("automatic handoff accept", slog.String("callsign", ac.Callsign),
-				slog.String("from", ac.TrackingController),
-				slog.String("to", ac.HandoffTrackController))
+		if ac, ok := s.State.Aircraft[callsign]; ok && ac.HandoffTrackController != "" {
+			human := s.isActiveHumanController(ac.HandoffTrackController)
+			if !human && !s.prespawn {
+				// Automated accept
+				s.eventStream.Post(Event{
+					Type:           AcceptedHandoffEvent,
+					FromController: ac.TrackingController,
+					ToController:   ac.HandoffTrackController,
+					Callsign:       ac.Callsign,
+				})
+				s.lg.Info("automatic handoff accept", slog.String("callsign", ac.Callsign),
+					slog.String("from", ac.TrackingController),
+					slog.String("to", ac.HandoffTrackController))
 
-			_, receivingSTARS, err := s.State.ERAMComputers.FacilityComputers(ho.ReceivingFacility)
-			if err != nil {
-				//s.lg.Errorf("%s: FacilityComputers(): %v", ho.ReceivingFacility, err)
-			} else if err := s.State.STARSComputer().AutomatedAcceptHandoff(ac, ac.HandoffTrackController,
-				receivingSTARS, s.State.Controllers, s.State.SimTime); err != nil {
-				//s.lg.Errorf("AutomatedAcceptHandoff: %v", err)
+				_, receivingSTARS, err := s.State.ERAMComputers.FacilityComputers(ho.ReceivingFacility)
+				if err != nil {
+					//s.lg.Errorf("%s: FacilityComputers(): %v", ho.ReceivingFacility, err)
+				} else if err := s.State.STARSComputer().AutomatedAcceptHandoff(ac, ac.HandoffTrackController,
+					receivingSTARS, s.State.Controllers, s.State.SimTime); err != nil {
+					//s.lg.Errorf("AutomatedAcceptHandoff: %v", err)
+				}
+
+				ac.TrackingController = ac.HandoffTrackController
+				ac.HandoffTrackController = ""
 			}
-
-			ac.TrackingController = ac.HandoffTrackController
-			ac.HandoffTrackController = ""
 		}
 		delete(s.Handoffs, callsign)
 	}
