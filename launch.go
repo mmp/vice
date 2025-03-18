@@ -885,7 +885,8 @@ func MakeLaunchControlWindow(controlClient *server.ControlClient, lg *log.Logger
 	}
 
 	for _, airport := range util.SortedMapKeys(config.VFRAirports) {
-		lc.vfrDepartures = append(lc.vfrDepartures, &LaunchDeparture{Airport: airport})
+		rwy := controlClient.State.VFRRunways[airport]
+		lc.vfrDepartures = append(lc.vfrDepartures, &LaunchDeparture{Airport: airport, Runway: rwy.Id})
 	}
 	for i := range lc.vfrDepartures {
 		lc.spawnVFRDeparture(lc.vfrDepartures[i])
@@ -914,7 +915,11 @@ func (lc *LaunchControlWindow) spawnIFRDeparture(dep *LaunchDeparture) {
 
 func (lc *LaunchControlWindow) spawnVFRDeparture(dep *LaunchDeparture) {
 	lc.controlClient.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.VFR, &dep.Aircraft, nil,
-		func(err error) { lc.lg.Warnf("CreateDeparture: %v", err) })
+		func(err error) {
+			if server.TryDecodeError(err) != sim.ErrViolatedAirspace {
+				lc.lg.Warnf("CreateDeparture: %v", err)
+			}
+		})
 }
 
 func (lc *LaunchControlWindow) spawnArrivalOverflight(lac *LaunchArrivalOverflight) {
@@ -925,6 +930,21 @@ func (lc *LaunchControlWindow) spawnArrivalOverflight(lac *LaunchArrivalOverflig
 		lc.controlClient.CreateOverflight(lac.Group, &lac.Aircraft, nil,
 			func(err error) { lc.lg.Warnf("CreateOverflight: %v", err) })
 	}
+}
+
+func (lc *LaunchControlWindow) getLastDeparture(airport, runway string) (callsign string, launch time.Time) {
+	match := func(dep *LaunchDeparture) bool {
+		return dep.Airport == airport && dep.Runway == runway
+	}
+	if idx := slices.IndexFunc(lc.departures, match); idx != -1 {
+		callsign, launch = lc.departures[idx].LastLaunchCallsign, lc.departures[idx].LastLaunchTime
+	}
+	if idx := slices.IndexFunc(lc.vfrDepartures, match); idx != -1 {
+		if callsign == "" || lc.vfrDepartures[idx].LastLaunchTime.After(launch) {
+			callsign, launch = lc.vfrDepartures[idx].LastLaunchCallsign, lc.vfrDepartures[idx].LastLaunchTime
+		}
+	}
+	return
 }
 
 func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Platform) {
@@ -1011,19 +1031,19 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		if lc.controlClient.LaunchConfig.Mode == sim.LaunchManual {
 			mitAndTime := func(ac *av.Aircraft, launchPosition math.Point2LL,
 				lastLaunchCallsign string, lastLaunchTime time.Time) {
-				imgui.TableNextColumn()
-				if lastLaunchCallsign != "" {
-					if ac := lc.controlClient.Aircraft[lastLaunchCallsign]; ac != nil {
-						d := math.NMDistance2LL(ac.Position(), launchPosition)
-						imgui.Text(fmt.Sprintf("%.1f", d))
-					}
-				}
 
 				imgui.TableNextColumn()
-				if lastLaunchCallsign != "" {
-					d := lc.controlClient.CurrentTime().Sub(lastLaunchTime).Round(time.Second).Seconds()
-					m, s := int(d)/60, int(d)%60
+				if prev := lc.controlClient.Aircraft[lastLaunchCallsign]; prev != nil {
+					dist := math.NMDistance2LL(prev.Position(), launchPosition)
+					imgui.Text(fmt.Sprintf("%.1f", dist))
+
+					imgui.TableNextColumn()
+
+					delta := lc.controlClient.CurrentTime().Sub(lastLaunchTime).Round(time.Second).Seconds()
+					m, s := int(delta)/60, int(delta)%60
 					imgui.Text(fmt.Sprintf("%02d:%02d", m, s))
+				} else {
+					imgui.TableNextColumn()
 				}
 			}
 
@@ -1106,8 +1126,8 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 							imgui.TableNextColumn()
 							imgui.Text(dep.Aircraft.FlightPlan.Exit)
 
-							mitAndTime(&dep.Aircraft, dep.Aircraft.Position(), dep.LastLaunchCallsign,
-								dep.LastLaunchTime)
+							lastCallsign, lastTime := lc.getLastDeparture(dep.Airport, dep.Runway)
+							mitAndTime(&dep.Aircraft, dep.Aircraft.Position(), lastCallsign, lastTime)
 
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
@@ -1146,9 +1166,10 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				imgui.Text(fmt.Sprintf("VFR Departures: %d total", ndep))
 
 				nColumns := math.Min(2, len(lc.vfrDepartures))
-				if imgui.BeginTableV("vfrdep", 8*nColumns, flags, imgui.Vec2{tableScale * float32(100+450*nColumns), 0}, 0.0) {
+				if imgui.BeginTableV("vfrdep", 9*nColumns, flags, imgui.Vec2{tableScale * float32(100+450*nColumns), 0}, 0.0) {
 					for range nColumns {
 						imgui.TableSetupColumn("Airport")
+						imgui.TableSetupColumn("Rwy")
 						imgui.TableSetupColumn("#")
 						imgui.TableSetupColumn("Dest.")
 						imgui.TableSetupColumn("Type")
@@ -1169,6 +1190,8 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 						imgui.TableNextColumn()
 						imgui.Text(dep.Airport)
 						imgui.TableNextColumn()
+						imgui.Text(dep.Runway)
+						imgui.TableNextColumn()
 						imgui.Text(strconv.Itoa(dep.TotalLaunches))
 
 						if dep.Aircraft.Callsign != "" {
@@ -1178,9 +1201,8 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 							imgui.TableNextColumn()
 							imgui.Text(dep.Aircraft.FlightPlan.TypeWithoutSuffix())
 
-							// FIXME: isn't right if we have a launched IFR (and vice versa)
-							mitAndTime(&dep.Aircraft, dep.Aircraft.Position(), dep.LastLaunchCallsign,
-								dep.LastLaunchTime)
+							lastCallsign, lastTime := lc.getLastDeparture(dep.Airport, dep.Runway)
+							mitAndTime(&dep.Aircraft, dep.Aircraft.Position(), lastCallsign, lastTime)
 
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
