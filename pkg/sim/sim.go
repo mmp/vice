@@ -726,10 +726,7 @@ func (s *Sim) updateState() {
 		// Handle assorted deferred radio calls.
 		s.processEnqueued()
 
-		// Don't spawn automatically if someone is spawning manually.
-		if s.State.LaunchConfig.Mode == LaunchAutomatic {
-			s.spawnAircraft()
-		}
+		s.spawnAircraft()
 
 		s.State.ERAMComputers.Update(s)
 	}

@@ -408,8 +408,12 @@ func randomWait(rate float32, pushActive bool) time.Duration {
 }
 
 func (s *Sim) spawnAircraft() {
-	s.spawnArrivalsAndOverflights()
-	s.spawnDepartures()
+	if s.State.LaunchConfig.Mode == LaunchAutomatic {
+		// Don't spawn automatically if someone is spawning manually.
+		s.spawnArrivalsAndOverflights()
+		s.spawnDepartures()
+	}
+	s.updateDepartureSequence()
 }
 
 func (s *Sim) isControlled(ac *av.Aircraft, departure bool) bool {
@@ -476,8 +480,45 @@ func (s *Sim) spawnDepartures() {
 
 	for airport, runways := range s.DepartureState {
 		for runway, depState := range runways {
+			// Possibly spawn another aircraft, depending on how much time has
+			// passed since the last one.
+			if now.After(depState.NextIFRSpawn) {
+				if ac, err := s.makeNewIFRDeparture(airport, runway); ac != nil && err == nil {
+					dropUncontrolled := s.prespawnUncontrolledOnly && s.isControlled(ac, true)
+					dropHFR := s.prespawn && ac.HoldForRelease
+					if !dropUncontrolled && !dropHFR {
+						s.addDepartureToPool(ac, runway)
+						r := scaleRate(depState.IFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
+						depState.NextIFRSpawn = now.Add(randomWait(r, false))
+					} else {
+						s.State.DeleteAircraft(ac)
+					}
+				}
+			}
+			if now.After(depState.NextVFRSpawn) {
+				if ac, err := s.makeNewVFRDeparture(airport, runway); ac != nil && err == nil {
+					s.addDepartureToPool(ac, runway)
+					r := scaleRate(depState.VFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
+					depState.NextVFRSpawn = now.Add(randomWait(r, false))
+				}
+			}
+		}
+	}
+}
+
+func (s *Sim) updateDepartureSequence() {
+	now := s.State.SimTime
+
+	for airport, runways := range s.DepartureState {
+		// Get the airport's runway groups
+		ap := s.State.Airports[airport]
+		if ap == nil {
+			continue
+		}
+
+		for runway, depState := range runways {
 			changed := func() { // Debugging...
-				if false {
+				if true {
 					callsign := func(dep DepartureAircraft) string {
 						return dep.Callsign + "/" + runway + "/" + s.State.Aircraft[dep.Callsign].FlightPlan.Exit
 					}
@@ -499,40 +540,8 @@ func (s *Sim) spawnDepartures() {
 			depState.Released = util.FilterSlice(depState.Released, haveAc)
 			depState.Sequenced = util.FilterSlice(depState.Sequenced, haveAc)
 
-			// Possibly spawn another aircraft, depending on how much time has
-			// passed since the last one.
-			if now.After(depState.NextIFRSpawn) {
-				if ac, err := s.makeNewIFRDeparture(airport, runway); ac != nil && err == nil {
-					dropUncontrolled := s.prespawnUncontrolledOnly && s.isControlled(ac, true)
-					dropHFR := s.prespawn && ac.HoldForRelease
-					if !dropUncontrolled && !dropHFR {
-						s.addDepartureToPool(ac, runway)
-						r := scaleRate(depState.IFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
-						depState.NextIFRSpawn = now.Add(randomWait(r, false))
-						changed()
-					} else {
-						s.State.DeleteAircraft(ac)
-					}
-				}
-			}
-			if now.After(depState.NextVFRSpawn) {
-				if ac, err := s.makeNewVFRDeparture(airport, runway); ac != nil && err == nil {
-					s.addDepartureToPool(ac, runway)
-					r := scaleRate(depState.VFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
-					depState.NextVFRSpawn = now.Add(randomWait(r, false))
-					changed()
-				}
-			}
-
 			// Handle hold for release aircraft
 			for i, held := range depState.Held {
-				/*
-					   // Workaround STARSComputer not seeing HFRs and thus holding up launches.
-						if !now.After(held.AddToHFRListTime) {
-							// Add them FIFO regardless of the times
-							break
-						}
-				*/
 				if !held.AddedToList {
 					depState.Held[i].AddedToList = true
 					ac := s.State.Aircraft[depState.Held[i].Callsign]
