@@ -2,6 +2,7 @@
   "tracon": "SCT",
   "airports": {
     "KLAX": {
+      "departure_runways_as_one": [ "25L,25R", "24L,24R" ],
       "approaches": {
         "I6L": { "cifp_id": "I6L" },
         "RY6L": { "cifp_id": "RY6L" },

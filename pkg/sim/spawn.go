@@ -510,15 +510,9 @@ func (s *Sim) updateDepartureSequence() {
 	now := s.State.SimTime
 
 	for airport, runways := range s.DepartureState {
-		// Get the airport's runway groups
-		ap := s.State.Airports[airport]
-		if ap == nil {
-			continue
-		}
-
 		for runway, depState := range runways {
 			changed := func() { // Debugging...
-				if true {
+				if false {
 					callsign := func(dep DepartureAircraft) string {
 						return dep.Callsign + "/" + runway + "/" + s.State.Aircraft[dep.Callsign].FlightPlan.Exit
 					}
@@ -635,6 +629,23 @@ func (s *Sim) updateDepartureSequence() {
 
 				// Remove it from the pool of waiting departures.
 				depState.Sequenced = depState.Sequenced[1:]
+
+				// If this runway is part of a group, update the last departure time for all runways in the group
+				for _, group := range s.State.Airports[airport].DepartureRunwaysAsOne {
+					groupRunways := strings.Split(group, ",")
+					if slices.ContainsFunc(groupRunways, func(r string) bool { return strings.TrimSpace(r) == runway }) {
+						// This runway is in a group, update all other runways in the group
+						for _, rwy := range groupRunways {
+							rwy = strings.TrimSpace(rwy)
+							if rwy != runway {
+								if state, ok := runways[rwy]; ok {
+									state.LastDeparture = dep
+								}
+							}
+						}
+						break
+					}
+				}
 
 				changed()
 			}

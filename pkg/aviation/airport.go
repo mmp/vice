@@ -46,6 +46,7 @@ type Airport struct {
 
 	ATPAVolumes           map[string]*ATPAVolume `json:"atpa_volumes"`
 	OmitArrivalScratchpad bool                   `json:"omit_arrival_scratchpad"`
+	DepartureRunwaysAsOne []string               `json:"departure_runways_as_one"`
 }
 
 type VFRRandomsSpec struct {
@@ -599,6 +600,27 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		if checkAllVolumes(maps.Values(DB.BravoAirspace)) || checkAllVolumes(maps.Values(DB.CharlieAirspace)) {
 			e.ErrorString("Airport has VFR departures specified but is located in class B or C airspace")
 		}
+	}
+
+	// Validate DepartureRunwaysAsOne entries
+	seenRunways := make(map[string]bool)
+	for i, group := range ap.DepartureRunwaysAsOne {
+		e.Push(fmt.Sprintf("departure_runways_as_one[%d]", i))
+		runways := strings.Split(group, ",")
+		if len(runways) < 2 {
+			e.ErrorString("must specify at least two runways")
+		}
+		for _, rwy := range runways {
+			rwy = strings.TrimSpace(rwy)
+			if _, ok := LookupRunway(icao, rwy); !ok {
+				e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
+			}
+			if seenRunways[rwy] {
+				e.ErrorString("runway %q appears in multiple groups", rwy)
+			}
+			seenRunways[rwy] = true
+		}
+		e.Pop()
 	}
 
 	for rwy, def := range ap.ApproachRegions {

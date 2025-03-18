@@ -838,6 +838,7 @@ how it simulates aircraft or the STARS interface.
                   <li>STARS now has a <code>.VFR</code> command to toggle whether the VFR airports are shown on the scope and
                     a new <code>.DRAWROUTE</code> command for drawing complex routes.</li>
                   <li>For "atpa_volumes", an optional string "id" may be given for the name of the volume in the STARS SSA INTRAIL list item.</li>
+                  <li>Added "departure_runways_as_one" to airport definitions to allow treating groups of runways as a single unit for departure sequencing purposes.</li>
                 </ul>
               </li>
             </ul>
@@ -5543,6 +5544,11 @@ how it simulates aircraft or the STARS interface.
                 <td>Object</td>
                 <td>Allows specifying VFR departures from the airport. See <a href="#fe-vfr">VFR Aircraft</a> for details about
                   the members of this object and for further discussion of VFR in Vice.)</td>
+              </tr>
+              <tr>
+                <td>"departure_runways_as_one"</td>
+                <td>array of strings</td>
+                <td>Each string contains a comma-separated list of runways that should be treated as a single unit for departure sequencing purposes. When an aircraft departs from any runway in a group, the last departure time is updated for all runways in that group. This is particularly useful for maintaining separation between departures from parallel runways.</td>
               </tr>
             </tbody>
             </table>
