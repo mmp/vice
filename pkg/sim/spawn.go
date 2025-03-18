@@ -272,7 +272,6 @@ func (s *Sim) Prespawn() {
 	s.prespawnUncontrolledOnly, s.prespawn = false, false
 
 	s.State.SimTime = time.Now()
-	s.State.SimTime = s.State.SimTime
 	s.lastUpdateTime = time.Now()
 
 	s.lg.Info("finished aircraft prespawn")
@@ -341,14 +340,6 @@ func scaleRate(rate, scale float32) float32 {
 	return rate
 }
 
-func sumRateMap2(rates map[string]map[string]float32, scale float32) float32 {
-	var sum float32
-	for _, categoryRates := range rates {
-		sum += sumRateMap(categoryRates, scale)
-	}
-	return sum
-}
-
 func sumRateMap(rates map[string]float32, scale float32) float32 {
 	var sum float32
 	for _, rate := range rates {
@@ -371,27 +362,6 @@ func sampleRateMap[T comparable](rates map[T]float32, scale float32) (T, float32
 		}
 	}
 	return result, rateSum
-}
-
-func sampleRateMap2(rates map[string]map[string]float32, scale float32) (string, string, float32) {
-	// Choose randomly in proportion to the rates in the map
-	var rateSum float32
-	var result0, result1 string
-	for item0, rateMap := range rates {
-		for item1, rate := range rateMap {
-			rate = scaleRate(rate, scale)
-			if rate == 0 {
-				continue
-			}
-			rateSum += rate
-			// Weighted reservoir sampling...
-			if rand.Float32() < rate/rateSum {
-				result0 = item0
-				result1 = item1
-			}
-		}
-	}
-	return result0, result1, rateSum
 }
 
 func randomWait(rate float32, pushActive bool) time.Duration {
